@@ -1,0 +1,7 @@
+export * from './__root'
+export * from './health'
+export * from './info'
+export * from './service-discovery'
+export * from './services'
+export * from './specification'
+export * from './specification-openapiv3'

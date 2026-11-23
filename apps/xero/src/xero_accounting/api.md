@@ -1,4 +1,4 @@
-<h1 id="xero-accounting-api">Xero Accounting API v19.1.0</h1>
+<h1 id="xero-accounting-api">Xero Accounting API v20.1.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -4932,6 +4932,7 @@ curl https://api.xero.com/api.xro/2.0/Budgets \
   "Budgets": [
     {
       "BudgetID": "847da917-9565-466c-a9cd-3ecf7eb9d094",
+      "CreatedIn": "BUDGETS_MANAGER",
       "Status": "APPROVED",
       "Description": "FY2021 budget",
       "Type": "TRACKING",
@@ -4941,6 +4942,7 @@ curl https://api.xero.com/api.xro/2.0/Budgets \
     },
     {
       "BudgetID": "93a4bab1-0021-4320-a2ec-c250528b4bc5",
+      "CreatedIn": "XERO_ANALYTICS",
       "Status": "APPROVED",
       "Description": "Overall Budget",
       "Type": "OVERALL",
@@ -4999,6 +5001,7 @@ curl https://api.xero.com/api.xro/2.0/Budgets/00000000-0000-0000-0000-0000000000
   "DateTimeUTC": "/Date(1551399323399)/",
   "Budgets": {
     "BudgetID": "c1d195d4-92aa-4abd-867a-7ac2f9d60500",
+    "CreatedIn": "BUDGETS_MANAGER",
     "Type": "TRACKING",
     "Description": "Daniels Northern Budget",
     "UpdatedDateUTC": "2017-08-14T01:18:26.74",
@@ -5023,18 +5026,15 @@ curl https://api.xero.com/api.xro/2.0/Budgets/00000000-0000-0000-0000-0000000000
         "BudgetBalances": [
           {
             "Period": "2019-08",
-            "Amount": "1000",
-            "Notes": "Sample note"
+            "Amount": "1000"
           },
           {
             "Period": "2019-09",
-            "Amount": "1050",
-            "Notes": ""
+            "Amount": "1050"
           },
           {
             "Period": "2019-10",
-            "Amount": "1102",
-            "Notes": ""
+            "Amount": "1102"
           }
         ]
       },
@@ -5044,18 +5044,15 @@ curl https://api.xero.com/api.xro/2.0/Budgets/00000000-0000-0000-0000-0000000000
         "BudgetBalances": [
           {
             "Period": "2019-08",
-            "Amount": "500",
-            "Notes": ""
+            "Amount": "500"
           },
           {
             "Period": "2019-09",
-            "Amount": "505",
-            "Notes": "Special Month"
+            "Amount": "505"
           },
           {
             "Period": "2019-10",
-            "Amount": "510",
-            "Notes": ""
+            "Amount": "510"
           }
         ]
       }
@@ -28224,6 +28221,7 @@ OAuth2 ( Scopes: accounting.settings accounting.settings.read )
       "ReportingCodeName": "string",
       "HasAttachments": "false",
       "UpdatedDateUTC": "/Date(1573755038314)/",
+      "CreatedDateUTC": "/Date(1573755038314)/",
       "AddToWatchlist": true,
       "ValidationErrors": [
         {
@@ -28268,6 +28266,7 @@ OAuth2 ( Scopes: accounting.settings accounting.settings.read )
   "ReportingCodeName": "string",
   "HasAttachments": "false",
   "UpdatedDateUTC": "/Date(1573755038314)/",
+  "CreatedDateUTC": "/Date(1573755038314)/",
   "AddToWatchlist": true,
   "ValidationErrors": [
     {
@@ -28299,6 +28298,7 @@ OAuth2 ( Scopes: accounting.settings accounting.settings.read )
 |ReportingCodeName|string|false|read-only|Shown if set|
 |HasAttachments|boolean|false|read-only|boolean to indicate if an account has an attachment (read only)|
 |UpdatedDateUTC|string|false|read-only|Last modified date UTC format|
+|CreatedDateUTC|string|false|read-only|Created date UTC format. Only returned by GET Accounts and GET Accounts/{AccountID}, not on POST or PUT responses|
 |AddToWatchlist|boolean|false|none|Boolean – describes whether the account is shown in the watchlist widget on the dashboard|
 |ValidationErrors|[[ValidationError](#schemavalidationerror)]|false|none|Displays array of validation error messages from the API|
 
@@ -28813,6 +28813,7 @@ See Account Types
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -29058,6 +29059,7 @@ See Account Types
     "ReportingCodeName": "string",
     "HasAttachments": "false",
     "UpdatedDateUTC": "/Date(1573755038314)/",
+    "CreatedDateUTC": "/Date(1573755038314)/",
     "AddToWatchlist": true,
     "ValidationErrors": [
       {
@@ -29482,6 +29484,7 @@ Line amounts are exclusive of tax by default if you don’t specify this element
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -29508,6 +29511,7 @@ Line amounts are exclusive of tax by default if you don’t specify this element
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -29587,6 +29591,7 @@ Line amounts are exclusive of tax by default if you don’t specify this element
     "ReportingCodeName": "string",
     "HasAttachments": "false",
     "UpdatedDateUTC": "/Date(1573755038314)/",
+    "CreatedDateUTC": "/Date(1573755038314)/",
     "AddToWatchlist": true,
     "ValidationErrors": [
       {
@@ -29613,6 +29618,7 @@ Line amounts are exclusive of tax by default if you don’t specify this element
     "ReportingCodeName": "string",
     "HasAttachments": "false",
     "UpdatedDateUTC": "/Date(1573755038314)/",
+    "CreatedDateUTC": "/Date(1573755038314)/",
     "AddToWatchlist": true,
     "ValidationErrors": [
       {
@@ -29804,6 +29810,7 @@ Line amounts are exclusive of tax by default if you don’t specify this element
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -29872,6 +29879,7 @@ Line amounts are exclusive of tax by default if you don’t specify this element
     "ReportingCodeName": "string",
     "HasAttachments": "false",
     "UpdatedDateUTC": "/Date(1573755038314)/",
+    "CreatedDateUTC": "/Date(1573755038314)/",
     "AddToWatchlist": true,
     "ValidationErrors": [
       {
@@ -29916,6 +29924,7 @@ Line amounts are exclusive of tax by default if you don’t specify this element
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -30747,6 +30756,7 @@ Bank details for use on a batch payment stored with each contact
   "Budgets": [
     {
       "BudgetID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "CreatedIn": "XERO_ANALYTICS",
       "Type": "OVERALL",
       "Description": "string",
       "UpdatedDateUTC": "/Date(1573755038314)/",
@@ -30757,9 +30767,7 @@ Bank details for use on a batch payment stored with each contact
           "BudgetBalances": [
             {
               "Period": "string",
-              "Amount": 0,
-              "UnitAmount": 0,
-              "Notes": "string"
+              "Amount": 0
             }
           ]
         }
@@ -30802,6 +30810,7 @@ Bank details for use on a batch payment stored with each contact
 ```json
 {
   "BudgetID": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "CreatedIn": "XERO_ANALYTICS",
   "Type": "OVERALL",
   "Description": "string",
   "UpdatedDateUTC": "/Date(1573755038314)/",
@@ -30812,9 +30821,7 @@ Bank details for use on a batch payment stored with each contact
       "BudgetBalances": [
         {
           "Period": "string",
-          "Amount": 0,
-          "UnitAmount": 0,
-          "Notes": "string"
+          "Amount": 0
         }
       ]
     }
@@ -30844,6 +30851,7 @@ Bank details for use on a batch payment stored with each contact
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |BudgetID|string(uuid)|false|none|Xero identifier|
+|CreatedIn|string|false|none|The tool used to create the budget|
 |Type|string|false|none|Type of Budget. OVERALL or TRACKING|
 |Description|string|false|none|The Budget description|
 |UpdatedDateUTC|string|false|read-only|UTC timestamp of last update to budget|
@@ -30854,6 +30862,8 @@ Bank details for use on a batch payment stored with each contact
 
 |Property|Value|
 |---|---|
+|CreatedIn|XERO_ANALYTICS|
+|CreatedIn|BUDGETS_MANAGER|
 |Type|OVERALL|
 |Type|TRACKING|
 
@@ -30871,9 +30881,7 @@ Bank details for use on a batch payment stored with each contact
   "BudgetBalances": [
     {
       "Period": "string",
-      "Amount": 0,
-      "UnitAmount": 0,
-      "Notes": "string"
+      "Amount": 0
     }
   ]
 }
@@ -30897,9 +30905,7 @@ Bank details for use on a batch payment stored with each contact
 ```json
 {
   "Period": "string",
-  "Amount": 0,
-  "UnitAmount": 0,
-  "Notes": "string"
+  "Amount": 0
 }
 ```
 
@@ -30909,8 +30915,6 @@ Bank details for use on a batch payment stored with each contact
 |---|---|---|---|---|
 |Period|string|false|none|Period the amount applies to (e.g. “2019-08”)|
 |Amount|number(double)|false|none|LineItem Quantity|
-|UnitAmount|number(double)|false|none|Budgeted amount|
-|Notes|string|false|none|Any footnotes associated with this balance|
 
 <h2 id="tocS_Balances">Balances</h2>
 <!-- backwards compatibility -->
@@ -31695,6 +31699,7 @@ The raw AccountsReceivable(sales invoices) and AccountsPayable(bills) outstandin
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -32812,6 +32817,7 @@ The raw AccountsReceivable(sales invoices) and AccountsPayable(bills) outstandin
             "ReportingCodeName": "string",
             "HasAttachments": "false",
             "UpdatedDateUTC": "/Date(1573755038314)/",
+            "CreatedDateUTC": "/Date(1573755038314)/",
             "AddToWatchlist": true,
             "ValidationErrors": [
               {
@@ -33135,6 +33141,7 @@ The raw AccountsReceivable(sales invoices) and AccountsPayable(bills) outstandin
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -33887,6 +33894,7 @@ The raw AccountsReceivable(sales invoices) and AccountsPayable(bills) outstandin
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -36685,6 +36693,7 @@ Timezone specifications
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -36994,6 +37003,7 @@ Timezone specifications
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -37488,6 +37498,7 @@ Timezone specifications
       "ReportingCodeName": "string",
       "HasAttachments": "false",
       "UpdatedDateUTC": "/Date(1573755038314)/",
+      "CreatedDateUTC": "/Date(1573755038314)/",
       "AddToWatchlist": true,
       "ValidationErrors": [
         {
@@ -37537,6 +37548,7 @@ Timezone specifications
     "ReportingCodeName": "string",
     "HasAttachments": "false",
     "UpdatedDateUTC": "/Date(1573755038314)/",
+    "CreatedDateUTC": "/Date(1573755038314)/",
     "AddToWatchlist": true,
     "ValidationErrors": [
       {
@@ -37986,6 +37998,7 @@ Timezone specifications
         "ReportingCodeName": "string",
         "HasAttachments": "false",
         "UpdatedDateUTC": "/Date(1573755038314)/",
+        "CreatedDateUTC": "/Date(1573755038314)/",
         "AddToWatchlist": true,
         "ValidationErrors": [
           {
@@ -41472,6 +41485,7 @@ See Tax Types – can only be used on update calls
       "ReportingCodeName": "string",
       "HasAttachments": "false",
       "UpdatedDateUTC": "/Date(1573755038314)/",
+      "CreatedDateUTC": "/Date(1573755038314)/",
       "AddToWatchlist": true,
       "ValidationErrors": [
         {

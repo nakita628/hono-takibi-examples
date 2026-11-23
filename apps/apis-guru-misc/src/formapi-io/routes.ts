@@ -11,7 +11,7 @@ const CombinedSubmissionActionSchema = z
     action_type: z.enum(['webhook', 'slack_webhook', 'email', 'aws_s3_upload']),
     id: z.string(),
     integration_id: z.string().nullable(),
-    result_data: z.object({}),
+    result_data: z.looseObject({}),
     state: z.enum(['pending', 'processed', 'failed', 'error']),
   })
   .openapi({
@@ -36,7 +36,7 @@ const SubmissionActionSchema = z
     action_type: z.enum(['webhook', 'slack_webhook', 'email', 'aws_s3_upload']),
     id: z.string(),
     integration_id: z.string().nullable(),
-    result_data: z.object({}),
+    result_data: z.looseObject({}),
     state: z.enum(['pending', 'processed', 'failed', 'error']),
   })
   .openapi({
@@ -64,7 +64,7 @@ const SubmissionDataRequestSchema = z
     fields: z.array(z.string()).nullable(),
     id: z.string(),
     ip_address: z.string().nullable().exactOptional(),
-    metadata: z.object({}),
+    metadata: z.looseObject({}),
     name: z.string().nullable(),
     order: z.int(),
     sort_order: z.int(),
@@ -83,14 +83,14 @@ const SubmissionSchema = z
   .object({
     actions: z.array(SubmissionActionSchema).exactOptional(),
     batch_id: z.string().nullable().exactOptional(),
-    data: z.object({}).nullable().exactOptional(),
+    data: z.looseObject({}).nullable().exactOptional(),
     data_requests: z.array(SubmissionDataRequestSchema).exactOptional(),
     download_url: z.string().nullable().exactOptional(),
     editable: z.boolean().nullable().exactOptional(),
     expired: z.boolean(),
     expires_at: z.string().nullable().exactOptional(),
     id: z.string(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     pdf_hash: z.string().nullable().exactOptional(),
     permanent_download_url: z.string().nullable().exactOptional(),
     processed_at: z.string().nullable().exactOptional(),
@@ -111,7 +111,7 @@ const SubmissionSchema = z
     ]),
     template_id: z.string().exactOptional(),
     test: z.boolean(),
-    truncated_text: z.object({}).exactOptional(),
+    truncated_text: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: ['id', 'state', 'test', 'expired'], title: 'submission' })
   .openapi('Submission')
@@ -221,7 +221,7 @@ export const getCombinedSubmissionsRoute = createRoute({
                   expires_at: z.string().nullable().exactOptional(),
                   expires_in: z.int().nullable().exactOptional(),
                   id: z.string(),
-                  metadata: z.object({}).exactOptional(),
+                  metadata: z.looseObject({}).exactOptional(),
                   password: z.string().nullable().exactOptional(),
                   pdf_hash: z.string().nullable().exactOptional(),
                   source_pdfs: z.array(
@@ -350,7 +350,7 @@ export const postCombinedSubmissionsRoute = createRoute({
           schema: z
             .object({
               expires_in: z.int().exactOptional(),
-              metadata: z.object({}).exactOptional(),
+              metadata: z.looseObject({}).exactOptional(),
               password: z.string().exactOptional(),
               submission_ids: z.array(z.string()),
               test: z.boolean().exactOptional(),
@@ -386,7 +386,7 @@ export const postCombinedSubmissionsRoute = createRoute({
                   expires_at: z.string().nullable().exactOptional(),
                   expires_in: z.int().nullable().exactOptional(),
                   id: z.string(),
-                  metadata: z.object({}).exactOptional(),
+                  metadata: z.looseObject({}).exactOptional(),
                   password: z.string().nullable().exactOptional(),
                   pdf_hash: z.string().nullable().exactOptional(),
                   source_pdfs: z.array(
@@ -528,7 +528,7 @@ export const getCombinedSubmissionsCombinedSubmissionIdRoute = createRoute({
               expires_at: z.string().nullable().exactOptional(),
               expires_in: z.int().nullable().exactOptional(),
               id: z.string(),
-              metadata: z.object({}).exactOptional(),
+              metadata: z.looseObject({}).exactOptional(),
               password: z.string().nullable().exactOptional(),
               pdf_hash: z.string().nullable().exactOptional(),
               source_pdfs: z.array(
@@ -653,7 +653,7 @@ export const deleteCombinedSubmissionsCombinedSubmissionIdRoute = createRoute({
               expires_at: z.string().nullable().exactOptional(),
               expires_in: z.int().nullable().exactOptional(),
               id: z.string(),
-              metadata: z.object({}).exactOptional(),
+              metadata: z.looseObject({}).exactOptional(),
               password: z.string().nullable().exactOptional(),
               pdf_hash: z.string().nullable().exactOptional(),
               source_pdfs: z.array(
@@ -773,7 +773,7 @@ export const postCombinedSubmissionsV2Route = createRoute({
             .strictObject({
               delete_custom_files: z.boolean().exactOptional(),
               expires_in: z.int().exactOptional(),
-              metadata: z.object({}).exactOptional(),
+              metadata: z.looseObject({}).exactOptional(),
               password: z.string().exactOptional(),
               source_pdfs: z.array(
                 z.xor([
@@ -833,7 +833,7 @@ export const postCombinedSubmissionsV2Route = createRoute({
                   expires_at: z.string().nullable().exactOptional(),
                   expires_in: z.int().nullable().exactOptional(),
                   id: z.string(),
-                  metadata: z.object({}).exactOptional(),
+                  metadata: z.looseObject({}).exactOptional(),
                   password: z.string().nullable().exactOptional(),
                   pdf_hash: z.string().nullable().exactOptional(),
                   source_pdfs: z.array(
@@ -1161,7 +1161,7 @@ export const putDataRequestsDataRequestIdRoute = createRoute({
               auth_username_hash: z.string().nullable().exactOptional(),
               email: z.string().nullable().exactOptional(),
               fields: z.array(z.string()).exactOptional(),
-              metadata: z.object({}).exactOptional(),
+              metadata: z.looseObject({}).exactOptional(),
               name: z.string().nullable().exactOptional(),
               order: z.int().exactOptional(),
             })
@@ -1944,14 +1944,14 @@ export const postSubmissionsBatchesRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              metadata: z.object({}).exactOptional(),
+              metadata: z.looseObject({}).exactOptional(),
               submissions: z.array(
                 z
                   .object({
                     css: z.string().exactOptional(),
-                    data: z.object({}),
+                    data: z.looseObject({}),
                     html: z.string().exactOptional(),
-                    metadata: z.object({}).exactOptional(),
+                    metadata: z.looseObject({}).exactOptional(),
                     template_id: z.string().nullable(),
                     test: z.boolean().exactOptional(),
                   })
@@ -2005,7 +2005,7 @@ export const postSubmissionsBatchesRoute = createRoute({
                   completion_percentage: z.int(),
                   error_count: z.int(),
                   id: z.string(),
-                  metadata: z.object({}),
+                  metadata: z.looseObject({}),
                   pending_count: z.int(),
                   processed_at: z.string().nullable(),
                   state: z.enum(['pending', 'processed', 'error']),
@@ -2107,7 +2107,7 @@ export const postSubmissionsBatchesRoute = createRoute({
                   completion_percentage: z.int(),
                   error_count: z.int(),
                   id: z.string(),
-                  metadata: z.object({}),
+                  metadata: z.looseObject({}),
                   pending_count: z.int(),
                   processed_at: z.string().nullable(),
                   state: z.enum(['pending', 'processed', 'error']),
@@ -2287,7 +2287,7 @@ export const getSubmissionsBatchesSubmissionBatchIdRoute = createRoute({
               completion_percentage: z.int(),
               error_count: z.int(),
               id: z.string(),
-              metadata: z.object({}),
+              metadata: z.looseObject({}),
               pending_count: z.int(),
               processed_at: z.string().nullable(),
               state: z.enum(['pending', 'processed', 'error']),
@@ -3807,10 +3807,10 @@ export const getTemplatesTemplateIdSchemaRoute = createRoute({
             .strictObject({
               $schema: z.url().exactOptional(),
               additionalProperties: z.boolean().exactOptional(),
-              definitions: z.object({}).default({}).exactOptional(),
+              definitions: z.looseObject({}).default({}).exactOptional(),
               description: z.string().exactOptional(),
               id: z.string().exactOptional(),
-              properties: z.object({}).exactOptional(),
+              properties: z.looseObject({}).exactOptional(),
               required: z.array(z.any()).exactOptional(),
               title: z.string().exactOptional(),
               type: z.string().exactOptional(),
@@ -4136,7 +4136,7 @@ export const postTemplatesTemplateIdSubmissionsRoute = createRoute({
           schema: z
             .object({
               css: z.string().exactOptional(),
-              data: z.object({}),
+              data: z.looseObject({}),
               data_requests: z
                 .array(
                   z
@@ -4168,7 +4168,7 @@ export const postTemplatesTemplateIdSubmissionsRoute = createRoute({
                       auth_username_hash: z.string().nullable().exactOptional(),
                       email: z.string().nullable(),
                       fields: z.array(z.string()).nullable().exactOptional(),
-                      metadata: z.object({}).exactOptional(),
+                      metadata: z.looseObject({}).exactOptional(),
                       name: z.string().nullable().exactOptional(),
                       order: z.int().exactOptional(),
                     })
@@ -4179,9 +4179,9 @@ export const postTemplatesTemplateIdSubmissionsRoute = createRoute({
                 )
                 .exactOptional(),
               expires_in: z.int().exactOptional(),
-              field_overrides: z.object({}).exactOptional(),
+              field_overrides: z.looseObject({}).exactOptional(),
               html: z.string().exactOptional(),
-              metadata: z.object({}).exactOptional(),
+              metadata: z.looseObject({}).exactOptional(),
               password: z.string().exactOptional(),
               test: z.boolean().exactOptional(),
             })
@@ -4336,69 +4336,20 @@ export const postTemplatesTemplateIdSubmissionsBatchRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .object({
-              css: z.string().exactOptional(),
-              data: z.object({}),
-              data_requests: z
-                .array(
-                  z
-                    .object({
-                      auth_phone_number_hash: z.string().nullable().exactOptional(),
-                      auth_provider: z.string().nullable().exactOptional(),
-                      auth_second_factor_type: z
-                        .enum([
-                          'none',
-                          'phone_number',
-                          'totp',
-                          'mobile_push',
-                          'security_key',
-                          'fingerprint',
-                        ])
-                        .exactOptional(),
-                      auth_session_id_hash: z.string().nullable().exactOptional(),
-                      auth_session_started_at: z.string().nullable().exactOptional(),
-                      auth_type: z.enum([
-                        'none',
-                        'password',
-                        'oauth',
-                        'email_link',
-                        'phone_number',
-                        'ldap',
-                        'saml',
-                      ]),
-                      auth_user_id_hash: z.string().nullable().exactOptional(),
-                      auth_username_hash: z.string().nullable().exactOptional(),
-                      email: z.string().nullable(),
-                      fields: z.array(z.string()).nullable().exactOptional(),
-                      metadata: z.object({}).exactOptional(),
-                      name: z.string().nullable().exactOptional(),
-                      order: z.int().exactOptional(),
-                    })
-                    .openapi({
-                      required: ['email', 'auth_type'],
-                      title: 'create_submission_data_request_data',
-                    }),
-                )
-                .exactOptional(),
-              html: z.string().exactOptional(),
-              metadata: z.object({}).exactOptional(),
-              test: z.boolean().exactOptional(),
-            })
-            .openapi({
-              example: [
-                {
-                  data: { first_name: 'Johnny', last_name: 'Smith' },
-                  metadata: { submission_number: 1 },
-                },
-                {
-                  data: { first_name: 'Jane', last_name: 'Doe' },
-                  metadata: { submission_number: 2 },
-                },
-              ],
-              required: ['data'],
-              title: 'create_submission_batch_v1',
-            }),
+          schema: z.array(z.looseObject({}).openapi({ title: 'submission_data' })).openapi({
+            example: [
+              {
+                data: { first_name: 'Johnny', last_name: 'Smith' },
+                metadata: { submission_number: 1 },
+              },
+              {
+                data: { first_name: 'Jane', last_name: 'Doe' },
+                metadata: { submission_number: 2 },
+              },
+            ],
+            required: ['data'],
+            title: 'create_submission_batch_v1',
+          }),
         },
       },
       required: true,
@@ -4625,7 +4576,7 @@ export const getTemplatesTemplateIdFullTrueRoute = createRoute({
               expire_after: z.number(),
               expire_submissions: z.boolean(),
               field_order: z.array(z.array(z.number())),
-              fields: z.object({}),
+              fields: z.looseObject({}),
               first_template: z.boolean(),
               footer_html: z.string().nullable(),
               header_html: z.string().nullable(),
@@ -4642,7 +4593,7 @@ export const getTemplatesTemplateIdFullTrueRoute = createRoute({
               public_web_form: z.boolean(),
               redirect_url: z.string().nullable(),
               scss: z.string().nullable(),
-              shared_field_data: z.object({}),
+              shared_field_data: z.looseObject({}),
               slack_webhook_url: z.string().nullable(),
               template_type: z.string(),
               webhook_url: z.string().nullable(),
@@ -5153,7 +5104,7 @@ export const getUploadsPresignRoute = createRoute({
                     'x-amz-signature',
                   ],
                 }),
-              headers: z.object({}),
+              headers: z.looseObject({}),
               method: z.literal('post').exactOptional(),
               url: z.string(),
             })

@@ -1305,12 +1305,12 @@ An empty object that indicates that the event destination was updated successful
 
 An array that contains all of the configuration sets in your Amazon Pinpoint account in the current AWS Region.
 
-<h2 id="tocS___string">__string</h2>
+<h2 id="tocS___string2">__string2</h2>
 <!-- backwards compatibility -->
-<a id="schema__string"></a>
-<a id="schema___string"></a>
-<a id="tocS__string"></a>
-<a id="tocs__string"></a>
+<a id="schema__string2"></a>
+<a id="schema___string2"></a>
+<a id="tocS__string2"></a>
+<a id="tocs__string2"></a>
 
 ```json
 "string"

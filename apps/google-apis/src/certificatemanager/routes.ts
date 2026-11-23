@@ -1,5 +1,104 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const IpConfigSchema = z
+  .object({
+    ipAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. An external IP address.', readOnly: true }),
+    ports: z
+      .array(z.uint32())
+      .exactOptional()
+      .openapi({ description: 'Output only. Ports.', readOnly: true }),
+  })
+  .openapi({
+    description: 'Defines IP configuration where this Certificate Map is serving.',
+    required: [],
+  })
+  .openapi('IpConfig')
+
+const GclbTargetSchema = z
+  .object({
+    ipConfigs: z
+      .array(IpConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. IP configurations for this Target Proxy where the Certificate Map is serving.',
+        readOnly: true,
+      }),
+    targetHttpsProxy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. This field returns the resource name in the following format: `//compute.googleapis.com/projects/*/global/targetHttpsProxies/*`.',
+        readOnly: true,
+      }),
+    targetSslProxy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. This field returns the resource name in the following format: `//compute.googleapis.com/projects/*/global/targetSslProxies/*`.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Describes a Target Proxy that uses this Certificate Map.',
+    required: [],
+  })
+  .openapi('GclbTarget')
+
+const CertificateMapSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The creation timestamp of a Certificate Map.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'One or more paragraphs of text description of a certificate map.' }),
+    gclbTargets: z
+      .array(GclbTargetSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. A list of GCLB targets that use this Certificate Map. A Target Proxy is only present on this list if it's attached to a Forwarding Rule.",
+        readOnly: true,
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Set of labels associated with a Certificate Map.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A user-defined name of the Certificate Map. Certificate Map names must be unique globally and match pattern `projects/*/locations/*/certificateMaps/*`.',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The update timestamp of a Certificate Map.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Defines a collection of certificate configurations.', required: [] })
+  .openapi('CertificateMap')
+
+type ListCertificateMapsResponseType = {
+  certificateMaps?: z.infer<typeof CertificateMapSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
 const AuthorizationAttemptInfoSchema = z
   .object({
     details: z
@@ -34,6 +133,11 @@ const AuthorizationAttemptInfoSchema = z
     required: [],
   })
   .openapi('AuthorizationAttemptInfo')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
 
 const ProvisioningIssueSchema = z
   .object({
@@ -127,93 +231,68 @@ const SelfManagedCertificateSchema = z
   })
   .openapi('SelfManagedCertificate')
 
-type CertificateType = {
-  createTime?: string
-  description?: string
-  expireTime?: string
-  labels?: { [key: string]: string }
-  managed?: z.infer<typeof ManagedCertificateSchema>
-  name?: string
-  pemCertificate?: string
-  sanDnsnames?: string[]
-  scope?: 'DEFAULT' | 'EDGE_CACHE'
-  selfManaged?: z.infer<typeof SelfManagedCertificateSchema>
-  updateTime?: string
-}
-
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const CertificateSchema: z.ZodType<CertificateType> = z
-  .lazy(() =>
-    z
-      .object({
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The creation timestamp of a Certificate.',
-            readOnly: true,
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'One or more paragraphs of text description of a certificate.' }),
-        expireTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The expiry timestamp of a Certificate.',
-            readOnly: true,
-          }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({ description: 'Set of labels associated with a Certificate.' }),
-        managed: ManagedCertificateSchema.exactOptional().openapi({
-          description: 'If set, contains configuration and state of a managed certificate.',
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A user-defined name of the certificate. Certificate names must be unique globally and match pattern `projects/*/locations/*/certificates/*`.',
-          }),
-        pemCertificate: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The PEM-encoded certificate chain.',
-            readOnly: true,
-          }),
-        sanDnsnames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              "Output only. The list of Subject Alternative Names of dnsName type defined in the certificate (see RFC 5280 4.2.1.6). Managed certificates that haven't been provisioned yet have this field populated with a value of the managed.domains field.",
-            readOnly: true,
-          }),
-        scope: z
-          .enum(['DEFAULT', 'EDGE_CACHE'])
-          .exactOptional()
-          .openapi({ description: 'Immutable. The scope of the certificate.' }),
-        selfManaged: SelfManagedCertificateSchema.exactOptional().openapi({
-          description: 'If set, defines data of a self-managed certificate.',
-        }),
-        updateTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The last update timestamp of a Certificate.',
-            readOnly: true,
-          }),
-      })
-      .openapi({ description: 'Defines TLS certificate.', required: [] }),
-  )
+const CertificateSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The creation timestamp of a Certificate.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'One or more paragraphs of text description of a certificate.' }),
+    expireTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The expiry timestamp of a Certificate.',
+        readOnly: true,
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Set of labels associated with a Certificate.' }),
+    managed: ManagedCertificateSchema.exactOptional().openapi({
+      description: 'If set, contains configuration and state of a managed certificate.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A user-defined name of the certificate. Certificate names must be unique globally and match pattern `projects/*/locations/*/certificates/*`.',
+      }),
+    pemCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The PEM-encoded certificate chain.', readOnly: true }),
+    sanDnsnames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The list of Subject Alternative Names of dnsName type defined in the certificate (see RFC 5280 4.2.1.6). Managed certificates that haven't been provisioned yet have this field populated with a value of the managed.domains field.",
+        readOnly: true,
+      }),
+    scope: z
+      .enum(['DEFAULT', 'EDGE_CACHE'])
+      .exactOptional()
+      .openapi({ description: 'Immutable. The scope of the certificate.' }),
+    selfManaged: SelfManagedCertificateSchema.exactOptional().openapi({
+      description: 'If set, defines data of a self-managed certificate.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The last update timestamp of a Certificate.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Defines TLS certificate.', required: [] })
   .openapi('Certificate')
 
 const CertificateAuthorityServiceConfigSchema = z
@@ -303,99 +382,6 @@ const CertificateIssuanceConfigSchema = z
     required: [],
   })
   .openapi('CertificateIssuanceConfig')
-
-const IpConfigSchema = z
-  .object({
-    ipAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. An external IP address.', readOnly: true }),
-    ports: z
-      .array(z.uint32())
-      .exactOptional()
-      .openapi({ description: 'Output only. Ports.', readOnly: true }),
-  })
-  .openapi({
-    description: 'Defines IP configuration where this Certificate Map is serving.',
-    required: [],
-  })
-  .openapi('IpConfig')
-
-const GclbTargetSchema = z
-  .object({
-    ipConfigs: z
-      .array(IpConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. IP configurations for this Target Proxy where the Certificate Map is serving.',
-        readOnly: true,
-      }),
-    targetHttpsProxy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. This field returns the resource name in the following format: `//compute.googleapis.com/projects/*/global/targetHttpsProxies/*`.',
-        readOnly: true,
-      }),
-    targetSslProxy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. This field returns the resource name in the following format: `//compute.googleapis.com/projects/*/global/targetSslProxies/*`.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Describes a Target Proxy that uses this Certificate Map.',
-    required: [],
-  })
-  .openapi('GclbTarget')
-
-const CertificateMapSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The creation timestamp of a Certificate Map.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'One or more paragraphs of text description of a certificate map.' }),
-    gclbTargets: z
-      .array(GclbTargetSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. A list of GCLB targets that use this Certificate Map. A Target Proxy is only present on this list if it's attached to a Forwarding Rule.",
-        readOnly: true,
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Set of labels associated with a Certificate Map.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A user-defined name of the Certificate Map. Certificate Map names must be unique globally and match pattern `projects/*/locations/*/certificateMaps/*`.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The update timestamp of a Certificate Map.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Defines a collection of certificate configurations.', required: [] })
-  .openapi('CertificateMap')
 
 const CertificateMapEntrySchema = z
   .object({
@@ -544,7 +530,7 @@ const DnsAuthorizationSchema = z
   .openapi('DnsAuthorization')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -609,7 +595,7 @@ const ListCertificateMapEntriesResponseSchema = z
   .openapi({ description: 'Response for the `ListCertificateMapEntries` method.', required: [] })
   .openapi('ListCertificateMapEntriesResponse')
 
-const ListCertificateMapsResponseSchema = z
+const ListCertificateMapsResponseSchema: z.ZodType<ListCertificateMapsResponseType> = z
   .object({
     certificateMaps: z
       .array(CertificateMapSchema)

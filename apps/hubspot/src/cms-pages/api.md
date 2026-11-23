@@ -21,13 +21,10 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|cms.pages.landing_pages.read||
+|cms.pages.site_pages.read||
 |content||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|marketplace_validation||
 
 <h1 id="pages-ab-tests">A/B tests</h1>
 
@@ -40,9 +37,10 @@ Base URLs:
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/ab-test/create-variation \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/ab-test/create-variation`
@@ -105,8 +103,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/ab-test/end \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/ab-test/end`
@@ -156,8 +155,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/ab-test/rerun \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/ab-test/rerun`
@@ -207,9 +207,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/ab-test/create-variation \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/ab-test/create-variation`
@@ -260,7 +261,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## End an active A/B test
@@ -272,8 +273,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/ab-test/end \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/ab-test/end`
@@ -311,7 +313,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Rerun a previous A/B test
@@ -323,8 +325,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/ab-test/rerun \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/ab-test/rerun`
@@ -362,7 +365,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 <h1 id="pages-advanced">Advanced</h1>
@@ -415,7 +418,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve a previous version of a landing page
@@ -464,7 +467,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Restore a previous version of a landing page
@@ -614,7 +617,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 <h1 id="pages-basic">Basic</h1>
@@ -658,7 +661,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve all previous versions of a website page
@@ -709,7 +712,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.site_pages.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve a previous version of a website page
@@ -758,7 +761,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.site_pages.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Restore a previous draft of a website page
@@ -808,7 +811,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 <h1 id="pages-batch">Batch</h1>
@@ -822,8 +825,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/batch/archive \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/batch/archive`
@@ -845,6 +850,12 @@ null
 
 > Example responses
 
+> 207 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -856,6 +867,7 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|No content|None|
+|207|Multi-Status|multiple statuses|[BatchResponsePageWithErrors](#schemabatchresponsepagewitherrors)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="warning">
@@ -872,9 +884,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/batch/create \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/batch/create`
@@ -936,9 +949,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/batch/read \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/batch/read`
@@ -989,7 +1003,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update landing pages
@@ -1001,9 +1015,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/batch/update \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/batch/update`
@@ -1066,8 +1081,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/folders/batch/archive \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/folders/batch/archive`
@@ -1089,6 +1106,12 @@ null
 
 > Example responses
 
+> 207 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -1100,6 +1123,7 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|No content|None|
+|207|Multi-Status|multiple statuses|[BatchResponseContentFolderWithErrors](#schemabatchresponsecontentfolderwitherrors)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="warning">
@@ -1116,9 +1140,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/folders/batch/create \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/folders/batch/create`
@@ -1180,9 +1205,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/folders/batch/update \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/folders/batch/update`
@@ -1245,8 +1271,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/batch/archive \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/batch/archive`
@@ -1268,6 +1296,12 @@ null
 
 > Example responses
 
+> 207 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -1279,11 +1313,12 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|No content|None|
+|207|Multi-Status|multiple statuses|[BatchResponsePageWithErrors](#schemabatchresponsepagewitherrors)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create website pages
@@ -1295,9 +1330,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/batch/create \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/batch/create`
@@ -1347,7 +1383,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve website pages
@@ -1359,9 +1395,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/batch/read \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/batch/read`
@@ -1412,7 +1449,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.site_pages.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update website pages
@@ -1424,9 +1461,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/batch/update \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/batch/update`
@@ -1477,7 +1515,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 <h1 id="pages-folders">Folders</h1>
@@ -1538,7 +1576,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create a landing page folder
@@ -1550,9 +1588,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/folders \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/folders`
@@ -1619,9 +1658,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/folders/batch/read \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/folders/batch/read`
@@ -1672,7 +1712,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve a landing page folder
@@ -1722,7 +1762,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Delete a landing page folder
@@ -1777,9 +1817,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/pages/2026-09/landing-pages/folders/{objectId}' \
   -X PATCH \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PATCH /cms/pages/2026-09/landing-pages/folders/{objectId}`
@@ -1882,7 +1923,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve a previous version of a folder
@@ -1931,7 +1972,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Restore a previous version of a folder
@@ -2041,7 +2082,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create a landing page
@@ -2053,9 +2094,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages`
@@ -3137,9 +3179,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/clone \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/clone`
@@ -3195,8 +3238,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/schedule \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/schedule`
@@ -3284,7 +3328,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Delete a landing page
@@ -3339,9 +3383,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/pages/2026-09/landing-pages/{objectId}' \
   -X PATCH \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PATCH /cms/pages/2026-09/landing-pages/{objectId}`
@@ -4456,7 +4501,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.landing_pages.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update the draft of a landing page
@@ -4468,9 +4513,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/pages/2026-09/landing-pages/{objectId}/draft' \
   -X PATCH \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PATCH /cms/pages/2026-09/landing-pages/{objectId}/draft`
@@ -5634,8 +5680,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/multi-language/attach-to-lang-group \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/multi-language/attach-to-lang-group`
@@ -7475,9 +7522,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/multi-language/create-language-variation \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/multi-language/create-language-variation`
@@ -7535,8 +7583,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/multi-language/detach-from-lang-group \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/multi-language/detach-from-lang-group`
@@ -7584,8 +7633,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/multi-language/update-languages \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/landing-pages/multi-language/update-languages`
@@ -8531,8 +8581,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/multi-language/attach-to-lang-group \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/multi-language/attach-to-lang-group`
@@ -10372,9 +10423,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/multi-language/create-language-variation \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/multi-language/create-language-variation`
@@ -10432,8 +10484,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/multi-language/detach-from-lang-group \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/multi-language/detach-from-lang-group`
@@ -10481,8 +10534,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/multi-language/set-new-lang-primary \
   -X PUT \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PUT /cms/pages/2026-09/site-pages/multi-language/set-new-lang-primary`
@@ -10531,8 +10585,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/multi-language/update-languages \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/multi-language/update-languages`
@@ -11480,8 +11535,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/landing-pages/multi-language/set-new-lang-primary \
   -X PUT \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PUT /cms/pages/2026-09/landing-pages/multi-language/set-new-lang-primary`
@@ -11576,7 +11632,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.site_pages.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create a website page
@@ -11588,9 +11644,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages`
@@ -12660,7 +12717,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Clone a website page
@@ -12672,9 +12729,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/clone \
   -X POST \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/clone`
@@ -12718,7 +12776,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Schedule a website page to be published
@@ -12730,8 +12788,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/pages/2026-09/site-pages/schedule \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/pages/2026-09/site-pages/schedule`
@@ -12769,7 +12828,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve a website page
@@ -12819,7 +12878,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.site_pages.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Delete a website page
@@ -12862,7 +12921,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update a website page
@@ -12874,9 +12933,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/pages/2026-09/site-pages/{objectId}' \
   -X PATCH \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PATCH /cms/pages/2026-09/site-pages/{objectId}`
@@ -13943,7 +14003,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve a website page draft
@@ -13991,7 +14051,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.pages.site_pages.read ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update a website page draft
@@ -14003,9 +14063,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/pages/2026-09/site-pages/{objectId}/draft' \
   -X PATCH \
-  -H 'Content-Type: */*' \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PATCH /cms/pages/2026-09/site-pages/{objectId}/draft`
@@ -15070,7 +15131,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Publish website page draft
@@ -15112,7 +15173,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 # Schemas

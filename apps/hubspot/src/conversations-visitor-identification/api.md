@@ -23,12 +23,6 @@ Base URLs:
 |---|---|
 |conversations.visitor_identification.tokens.create||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="conversations-visitor-identification-basic">Basic</h1>
 
 ## Generate visitor token

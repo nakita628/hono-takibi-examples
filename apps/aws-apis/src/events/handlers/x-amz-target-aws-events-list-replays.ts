@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAWSEventsListReplaysRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetAwsEventsListReplaysHandler = app.openapi(
+  postXAmzTargetAWSEventsListReplaysRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

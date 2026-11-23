@@ -1,73 +1,17 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const TurnTraceContextSchema = z
+const AppContextSchema = z
   .strictObject({
-    traceId: z
-      .string()
-      .regex(/^[0-9a-f]{32}$/)
-      .openapi({ title: 'Traceid' }),
-    rootSpanId: z
-      .string()
-      .regex(/^[0-9a-f]{16}$/)
-      .openapi({ title: 'Rootspanid' }),
-    startedAt: z.iso.datetime({ offset: true }).openapi({ title: 'Startedat' }),
+    type: z.literal('app').openapi({ title: 'Type' }),
+    currentDateTime: z.string().openapi({ title: 'Currentdatetime' }),
+    timeZone: z.string().openapi({ title: 'Timezone' }),
   })
   .openapi({
-    required: ['traceId', 'rootSpanId', 'startedAt'],
-    title: 'TurnTraceContext',
-    description: "The trace identity a turn's spans are parented to.",
+    required: ['type', 'currentDateTime', 'timeZone'],
+    title: 'AppContext',
+    description: 'Per-turn browser clock context for resolving relative time requests.',
   })
-  .openapi('TurnTraceContext')
-
-const AssistantMessageMetadataUsageTokensSchema = z
-  .strictObject({
-    prompt: z.int().openapi({ title: 'Prompt' }),
-    completion: z.int().openapi({ title: 'Completion' }),
-    total: z.int().openapi({ title: 'Total' }),
-  })
-  .openapi({
-    required: ['prompt', 'completion', 'total'],
-    title: 'AssistantMessageMetadataUsageTokens',
-  })
-  .openapi('AssistantMessageMetadataUsageTokens')
-
-const AssistantMessageMetadataUsageCacheTokenDetailsSchema = z
-  .strictObject({
-    cacheRead: z.int().openapi({ title: 'Cacheread' }),
-    cacheWrite: z.int().openapi({ title: 'Cachewrite' }),
-  })
-  .openapi({
-    required: ['cacheRead', 'cacheWrite'],
-    title: 'AssistantMessageMetadataUsageCacheTokenDetails',
-    description:
-      "Prompt-cache token counts, mounted as the usage payload's\n``prompt_details`` because cached tokens are a breakdown of the prompt.",
-  })
-  .openapi('AssistantMessageMetadataUsageCacheTokenDetails')
-
-const AssistantMessageMetadataUsageSchema = z
-  .strictObject({
-    tokens: AssistantMessageMetadataUsageTokensSchema,
-    promptDetails: z
-      .union([AssistantMessageMetadataUsageCacheTokenDetailsSchema, z.null().nullable()])
-      .exactOptional(),
-  })
-  .openapi({ required: ['tokens'], title: 'AssistantMessageMetadataUsage' })
-  .openapi('AssistantMessageMetadataUsage')
-
-const PhoenixAssistantMessageMetadataSchema = z
-  .strictObject({
-    type: z.literal('assistant').openapi({ title: 'Type' }),
-    sessionId: z.string().openapi({ title: 'Sessionid' }),
-    turnTraceContext: z.union([TurnTraceContextSchema, z.null().nullable()]).exactOptional(),
-    usage: z.union([AssistantMessageMetadataUsageSchema, z.null().nullable()]).exactOptional(),
-    interrupted: z.boolean().default(false).exactOptional().openapi({ title: 'Interrupted' }),
-  })
-  .openapi({
-    required: ['type', 'sessionId'],
-    title: 'PhoenixAssistantMessageMetadata',
-    description: 'The ``phoenix`` metadata namespace of an assistant message.',
-  })
-  .openapi('PhoenixAssistantMessageMetadata')
+  .openapi('AppContext')
 
 const ProjectUIContextSchema = z
   .strictObject({
@@ -102,25 +46,6 @@ const SessionUIContextSchema = z
   .openapi({ required: ['type', 'projectNodeId', 'sessionNodeId'], title: 'SessionUIContext' })
   .openapi('SessionUIContext')
 
-const SpanUIContextSchema = z
-  .strictObject({
-    type: z.literal('span').openapi({ title: 'Type' }),
-    projectNodeId: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Projectnodeid' }),
-    spanNodeId: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Spannodeid' }),
-    otelSpanId: z
-      .union([z.string().regex(/^[0-9a-f]{16}$/), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Otelspanid' }),
-  })
-  .openapi({ required: ['type'], title: 'SpanUIContext' })
-  .openapi('SpanUIContext')
-
 const PromptUIContextSchema = z
   .strictObject({
     type: z.literal('prompt').openapi({ title: 'Type' }),
@@ -141,17 +66,24 @@ const PromptVersionUIContextSchema = z
   })
   .openapi('PromptVersionUIContext')
 
-const DatasetUIContextSchema = z
+const SpanUIContextSchema = z
   .strictObject({
-    type: z.literal('dataset').openapi({ title: 'Type' }),
-    datasetNodeId: z.string().openapi({ title: 'Datasetnodeid' }),
-    datasetVersionNodeId: z
+    type: z.literal('span').openapi({ title: 'Type' }),
+    projectNodeId: z
       .union([z.string(), z.null().nullable()])
       .exactOptional()
-      .openapi({ title: 'Datasetversionnodeid' }),
+      .openapi({ title: 'Projectnodeid' }),
+    spanNodeId: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Spannodeid' }),
+    otelSpanId: z
+      .union([z.string().regex(/^[0-9a-f]{16}$/), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Otelspanid' }),
   })
-  .openapi({ required: ['type', 'datasetNodeId'], title: 'DatasetUIContext' })
-  .openapi('DatasetUIContext')
+  .openapi({ required: ['type'], title: 'SpanUIContext' })
+  .openapi('SpanUIContext')
 
 const PlaygroundExperimentScaffoldUIContextSchema = z
   .strictObject({
@@ -279,846 +211,17 @@ const LlmEvaluatorUIContextSchema = z
   .openapi({ required: ['type'], title: 'LlmEvaluatorUIContext' })
   .openapi('LlmEvaluatorUIContext')
 
-const UIContextsSchema = z
+const DatasetUIContextSchema = z
   .strictObject({
-    project: z.union([ProjectUIContextSchema, z.null().nullable()]).exactOptional(),
-    trace: z.union([TraceUIContextSchema, z.null().nullable()]).exactOptional(),
-    session: z.union([SessionUIContextSchema, z.null().nullable()]).exactOptional(),
-    span: z.union([SpanUIContextSchema, z.null().nullable()]).exactOptional(),
-    prompt: z.union([PromptUIContextSchema, z.null().nullable()]).exactOptional(),
-    promptVersion: z.union([PromptVersionUIContextSchema, z.null().nullable()]).exactOptional(),
-    dataset: z.union([DatasetUIContextSchema, z.null().nullable()]).exactOptional(),
-    playground: z.union([PlaygroundUIContextSchema, z.null().nullable()]).exactOptional(),
-    codeEvaluator: z.union([CodeEvaluatorUIContextSchema, z.null().nullable()]).exactOptional(),
-    llmEvaluator: z.union([LlmEvaluatorUIContextSchema, z.null().nullable()]).exactOptional(),
-  })
-  .openapi({ title: 'UIContexts', required: [] })
-  .openapi('UIContexts')
-
-const PhoenixUserMessageMetadataSchema = z
-  .strictObject({
-    type: z.literal('user').openapi({ title: 'Type' }),
-    currentDateTime: z.string().max(128).openapi({ title: 'Currentdatetime' }),
-    timeZone: z.string().max(128).openapi({ title: 'Timezone' }),
-    isCompactionMessage: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ title: 'Iscompactionmessage' }),
-    uiContexts: z.union([UIContextsSchema, z.null().nullable()]).exactOptional(),
-    editPermission: z
-      .enum(['manual', 'bypass'])
-      .default('manual')
-      .exactOptional()
-      .openapi({ title: 'Editpermission' }),
-  })
-  .openapi({
-    required: ['type', 'currentDateTime', 'timeZone'],
-    title: 'PhoenixUserMessageMetadata',
-    description:
-      'The ``phoenix`` metadata namespace the browser attaches to outgoing\nuser messages.',
-  })
-  .openapi('PhoenixUserMessageMetadata')
-
-const PydanticAIMessageMetadataSchema = z
-  .strictObject({
-    timestamp: z
-      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Timestamp' }),
-  })
-  .openapi({
-    title: 'PydanticAIMessageMetadata',
-    description:
-      "Local pin of pydantic-ai's message-level ``pydantic_ai`` metadata\nnamespace (its private ``_PydanticAIMessageMetadata``), merged into the\nassistant metadata by the stream's metadata chunk.",
-    required: [],
-  })
-  .openapi('PydanticAIMessageMetadata')
-
-type MessageMetadataType = {
-  phoenix?:
-    | (
-        | z.infer<typeof PhoenixAssistantMessageMetadataSchema>
-        | z.infer<typeof PhoenixUserMessageMetadataSchema>
-      )
-    | ({ [key: string]: unknown } | null)
-  pydantic_ai?:
-    | z.infer<typeof PydanticAIMessageMetadataSchema>
-    | ({ [key: string]: unknown } | null)
-}
-
-const OtlpArrayValueSchema: z.ZodType<OtlpArrayValueType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        values: z
-          .union([z.array(OtlpAnyValueSchema), z.null().nullable()])
-          .exactOptional()
-          .openapi({
-            title: 'Values',
-            description: 'Array of values. The array may be empty (contain 0 elements).',
-          }),
-      })
-      .openapi({ title: 'OtlpArrayValue', required: [] }),
-  )
-  .openapi('OtlpArrayValue')
-
-type OtlpDoubleValueType = 'Infinity' | '-Infinity' | 'NaN'
-
-const OtlpDoubleValueSchema: z.ZodType<OtlpDoubleValueType> = z
-  .enum(['Infinity', '-Infinity', 'NaN'])
-  .openapi({ title: 'OtlpDoubleValue' })
-  .openapi('OtlpDoubleValue')
-
-type OtlpAnyValueType = {
-  array_value?: z.infer<typeof OtlpArrayValueSchema> | ({ [key: string]: unknown } | null)
-  bool_value?: boolean | ({ [key: string]: unknown } | null)
-  bytes_value?: string | ({ [key: string]: unknown } | null)
-  double_value?:
-    | number
-    | z.infer<typeof OtlpDoubleValueSchema>
-    | string
-    | ({ [key: string]: unknown } | null)
-  int_value?: number | string | ({ [key: string]: unknown } | null)
-  kvlist_value?: { [key: string]: unknown } | null
-  string_value?: string | ({ [key: string]: unknown } | null)
-}
-
-const OtlpAnyValueSchema: z.ZodType<OtlpAnyValueType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        array_value: z.union([OtlpArrayValueSchema, z.null().nullable()]).exactOptional(),
-        bool_value: z
-          .union([z.boolean(), z.null().nullable()])
-          .exactOptional()
-          .openapi({ title: 'Bool Value' }),
-        bytes_value: z
-          .union([z.string().regex(/^[A-Za-z0-9+\/]*={0,2}$/), z.null().nullable()])
-          .exactOptional()
-          .openapi({ title: 'Bytes Value' }),
-        double_value: z
-          .union([z.number(), OtlpDoubleValueSchema, z.string(), z.null().nullable()])
-          .exactOptional()
-          .openapi({ title: 'Double Value' }),
-        int_value: z
-          .union([
-            z.int().min(-9223372036854776000).lt(9223372036854776000),
-            z.string().regex(/^-?[0-9]+$/),
-            z.null().nullable(),
-          ])
-          .exactOptional()
-          .openapi({ title: 'Int Value' }),
-        kvlist_value: z.null().nullable().exactOptional().openapi({ title: 'Kvlist Value' }),
-        string_value: z
-          .union([z.string(), z.null().nullable()])
-          .exactOptional()
-          .openapi({ title: 'String Value' }),
-      })
-      .openapi({ title: 'OtlpAnyValue', required: [] }),
-  )
-  .openapi('OtlpAnyValue')
-
-type OtlpArrayValueType = {
-  values?: z.infer<typeof OtlpAnyValueSchema>[] | ({ [key: string]: unknown } | null)
-}
-
-const DatasetLabelSchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id' }),
-    name: z.string().openapi({ title: 'Name' }),
-    description: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Description' }),
-    color: z.string().openapi({ title: 'Color' }),
-  })
-  .openapi({ required: ['id', 'name', 'description', 'color'], title: 'DatasetLabel' })
-  .openapi('DatasetLabel')
-
-const AddDatasetLabelToDatasetResponseBodySchema = z
-  .object({ data: DatasetLabelSchema })
-  .openapi({ required: ['data'], title: 'AddDatasetLabelToDatasetResponseBody' })
-  .openapi('AddDatasetLabelToDatasetResponseBody')
-
-const CustomProviderModelSelectionSchema = z
-  .object({
-    providerType: z.literal('custom').openapi({ title: 'Providertype' }),
-    providerId: z.string().openapi({ title: 'Providerid' }),
-    modelName: z.string().openapi({ title: 'Modelname' }),
-  })
-  .openapi({
-    required: ['providerType', 'providerId', 'modelName'],
-    title: 'CustomProviderModelSelection',
-    description: 'Chat against a stored custom provider record.',
-  })
-  .openapi('CustomProviderModelSelection')
-
-const ModelProviderSchema = z
-  .enum([
-    'OPENAI',
-    'AZURE_OPENAI',
-    'ANTHROPIC',
-    'GOOGLE',
-    'DEEPSEEK',
-    'XAI',
-    'OLLAMA',
-    'AWS',
-    'CEREBRAS',
-    'FIREWORKS',
-    'GROQ',
-    'MOONSHOT',
-    'MINIMAX',
-    'PERPLEXITY',
-    'TOGETHER',
-    'ZAI',
-    'META',
-  ])
-  .openapi({ title: 'ModelProvider' })
-  .openapi('ModelProvider')
-
-const BuiltInProviderModelSelectionSchema = z
-  .object({
-    providerType: z.literal('builtin').openapi({ title: 'Providertype' }),
-    provider: ModelProviderSchema,
-    modelName: z.string().openapi({ title: 'Modelname' }),
-  })
-  .openapi({
-    required: ['providerType', 'provider', 'modelName'],
-    title: 'BuiltInProviderModelSelection',
-    description:
-      'Chat against a Phoenix built-in provider.\n\nCredentials and connection details (base URL, Azure endpoint, AWS\nregion) are resolved from the secret store first and the process\nenvironment second.',
-  })
-  .openapi('BuiltInProviderModelSelection')
-
-const AgentModelSelectionSchema = z
-  .discriminatedUnion('providerType', [
-    CustomProviderModelSelectionSchema,
-    BuiltInProviderModelSelectionSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'providerType',
-      mapping: {
-        builtin: '#/components/schemas/BuiltInProviderModelSelection',
-        custom: '#/components/schemas/CustomProviderModelSelection',
-      },
-    },
-  })
-  .openapi('AgentModelSelection')
-
-const AgentSessionConflictErrorSchema = z
-  .object({
-    code: z
-      .enum([
-        'agent_session_busy',
-        'agent_session_model_stale',
-        'agent_session_messages_stale',
-        'agent_session_tool_outputs_conflict',
-        'agent_session_tool_approvals_conflict',
-        'agent_session_already_compact',
-        'agent_session_compaction_conflict',
-      ])
-      .openapi({ title: 'Code', description: 'Machine-readable reason the request conflicted.' }),
-    message: z
+    type: z.literal('dataset').openapi({ title: 'Type' }),
+    datasetNodeId: z.string().openapi({ title: 'Datasetnodeid' }),
+    datasetVersionNodeId: z
       .union([z.string(), z.null().nullable()])
       .exactOptional()
-      .openapi({
-        title: 'Message',
-        description: 'Optional human-readable elaboration on the conflict.',
-      }),
+      .openapi({ title: 'Datasetversionnodeid' }),
   })
-  .openapi({
-    required: ['code'],
-    title: 'AgentSessionConflictError',
-    description:
-      "Body of every HTTP 409 returned by the agent session routes.\n\n- ``agent_session_busy``: another turn holds the session's turn lock.\n- ``agent_session_model_stale``: the request asserted a model the session\n  is no longer set to; refetch the session before retrying.\n- ``agent_session_messages_stale``: the send's ``lastMessageId`` no longer\n  matches the persisted transcript — another client appended; refetch the\n  transcript and retry.\n- ``agent_session_tool_outputs_conflict``: the submitted ``toolOutputs`` do\n  not match the transcript's trailing assistant message (no trailing\n  assistant message to continue, an unknown ``toolCallId``, or a tool-name\n  mismatch). Unlike ``agent_session_messages_stale`` this is not a\n  concurrent-writer race but an inconsistent request; fix the client\n  rather than retrying.\n- ``agent_session_tool_approvals_conflict``: the submitted ``toolApprovals``\n  do not match the transcript's trailing assistant message (no trailing\n  assistant message to answer, an unknown ``toolCallId``, a call that is\n  not awaiting approval, or a reversal of an already-persisted answer).\n  Like the tool-output conflict this is an inconsistent request rather than\n  a concurrent-writer race; fix the client rather than retrying.\n- ``agent_session_already_compact``: there are no complete turns to\n  compact — either nothing new has finished since the transcript's latest\n  checkpoint, or a concurrent request's checkpoint already covers them.\n  Not retryable; the conversation is as compact as it can get.\n- ``agent_session_compaction_conflict``: the conversation changed while it\n  was being compacted; retry.",
-  })
-  .openapi('AgentSessionConflictError')
-
-const AgentSessionDataSchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id' }),
-    title: z.string().openapi({ title: 'Title' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
-    is_ephemeral: z.boolean().openapi({ title: 'Is Ephemeral' }),
-    model: AgentModelSelectionSchema,
-    is_active: z
-      .boolean()
-      .openapi({
-        title: 'Is Active',
-        description:
-          'Whether a response is currently streaming on this session, i.e. its lock has a live (non-stale) heartbeat.',
-      }),
-    last_message_id: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Last Message Id',
-        description:
-          'The message ID of the most recently persisted transcript message, or null for an empty transcript.',
-      }),
-  })
-  .openapi({
-    required: ['id', 'title', 'created_at', 'updated_at', 'is_ephemeral', 'model', 'is_active'],
-    title: 'AgentSessionData',
-  })
-  .openapi('AgentSessionData')
-
-const AgentSessionSummarySchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id' }),
-    title: z.string().openapi({ title: 'Title' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
-    is_ephemeral: z.boolean().openapi({ title: 'Is Ephemeral' }),
-  })
-  .openapi({
-    required: ['id', 'title', 'created_at', 'updated_at', 'is_ephemeral'],
-    title: 'AgentSessionSummary',
-  })
-  .openapi('AgentSessionSummary')
-
-const AnnotationResultSchema = z
-  .object({
-    label: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Label', description: 'The label assigned by the annotation' }),
-    score: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Score', description: 'The score assigned by the annotation' }),
-    explanation: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Explanation', description: 'Explanation of the annotation result' }),
-  })
-  .openapi({ title: 'AnnotationResult', required: [] })
-  .openapi('AnnotationResult')
-
-const SessionAnnotationDataSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name', description: 'The name of the annotation' }),
-    annotator_kind: z
-      .enum(['LLM', 'CODE', 'HUMAN', 'DECISION', 'AGENT'])
-      .openapi({
-        title: 'Annotator Kind',
-        description: 'The kind of annotator used for the annotation',
-      }),
-    result: z
-      .union([AnnotationResultSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'The result of the annotation' }),
-    metadata: z
-      .union([z.looseObject({}), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Metadata', description: 'Metadata for the annotation' }),
-    identifier: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({
-        title: 'Identifier',
-        description:
-          'The identifier of the annotation. If provided, the annotation will be updated if it already exists.',
-      }),
-    session_id: z.string().openapi({ title: 'Session Id', description: 'Session ID' }),
-  })
-  .openapi({ required: ['name', 'annotator_kind', 'session_id'], title: 'SessionAnnotationData' })
-  .openapi('SessionAnnotationData')
-
-const AnnotateSessionsRequestBodySchema = z
-  .object({ data: z.array(SessionAnnotationDataSchema).openapi({ title: 'Data' }) })
-  .openapi({ required: ['data'], title: 'AnnotateSessionsRequestBody' })
-  .openapi('AnnotateSessionsRequestBody')
-
-const InsertedSessionAnnotationSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ title: 'Id', description: 'The ID of the inserted session annotation' }),
-  })
-  .openapi({ required: ['id'], title: 'InsertedSessionAnnotation' })
-  .openapi('InsertedSessionAnnotation')
-
-const AnnotateSessionsResponseBodySchema = z
-  .object({ data: z.array(InsertedSessionAnnotationSchema).openapi({ title: 'Data' }) })
-  .openapi({ required: ['data'], title: 'AnnotateSessionsResponseBody' })
-  .openapi('AnnotateSessionsResponseBody')
-
-const SpanDocumentAnnotationDataSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name', description: 'The name of the annotation' }),
-    annotator_kind: z
-      .enum(['LLM', 'CODE', 'HUMAN', 'DECISION', 'AGENT'])
-      .openapi({
-        title: 'Annotator Kind',
-        description: 'The kind of annotator used for the annotation',
-      }),
-    result: z
-      .union([AnnotationResultSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'The result of the annotation' }),
-    metadata: z
-      .union([z.looseObject({}), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Metadata', description: 'Metadata for the annotation' }),
-    identifier: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({
-        title: 'Identifier',
-        description:
-          'The identifier of the annotation. If provided, the annotation will be updated if it already exists.',
-      }),
-    span_id: z
-      .string()
-      .openapi({
-        title: 'Span Id',
-        description: 'OpenTelemetry Span ID (hex format w/o 0x prefix)',
-      }),
-    document_position: z
-      .int()
-      .openapi({
-        title: 'Document Position',
-        description:
-          'A 0 based index of the document. E.x. the first document during retrieval is 0',
-      }),
-  })
-  .openapi({
-    required: ['name', 'annotator_kind', 'span_id', 'document_position'],
-    title: 'SpanDocumentAnnotationData',
-  })
-  .openapi('SpanDocumentAnnotationData')
-
-const AnnotateSpanDocumentsRequestBodySchema = z
-  .object({ data: z.array(SpanDocumentAnnotationDataSchema).openapi({ title: 'Data' }) })
-  .openapi({ required: ['data'], title: 'AnnotateSpanDocumentsRequestBody' })
-  .openapi('AnnotateSpanDocumentsRequestBody')
-
-const InsertedSpanDocumentAnnotationSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ title: 'Id', description: 'The ID of the inserted span document annotation' }),
-  })
-  .openapi({ required: ['id'], title: 'InsertedSpanDocumentAnnotation' })
-  .openapi('InsertedSpanDocumentAnnotation')
-
-const AnnotateSpanDocumentsResponseBodySchema = z
-  .object({ data: z.array(InsertedSpanDocumentAnnotationSchema).openapi({ title: 'Data' }) })
-  .openapi({ required: ['data'], title: 'AnnotateSpanDocumentsResponseBody' })
-  .openapi('AnnotateSpanDocumentsResponseBody')
-
-const SpanAnnotationDataSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name', description: 'The name of the annotation' }),
-    annotator_kind: z
-      .enum(['LLM', 'CODE', 'HUMAN', 'DECISION', 'AGENT'])
-      .openapi({
-        title: 'Annotator Kind',
-        description: 'The kind of annotator used for the annotation',
-      }),
-    result: z
-      .union([AnnotationResultSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'The result of the annotation' }),
-    metadata: z
-      .union([z.looseObject({}), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Metadata', description: 'Metadata for the annotation' }),
-    identifier: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({
-        title: 'Identifier',
-        description:
-          'The identifier of the annotation. If provided, the annotation will be updated if it already exists.',
-      }),
-    span_id: z
-      .string()
-      .openapi({
-        title: 'Span Id',
-        description: 'OpenTelemetry Span ID (hex format w/o 0x prefix)',
-      }),
-  })
-  .openapi({ required: ['name', 'annotator_kind', 'span_id'], title: 'SpanAnnotationData' })
-  .openapi('SpanAnnotationData')
-
-const AnnotateSpansRequestBodySchema = z
-  .object({ data: z.array(SpanAnnotationDataSchema).openapi({ title: 'Data' }) })
-  .openapi({ required: ['data'], title: 'AnnotateSpansRequestBody' })
-  .openapi('AnnotateSpansRequestBody')
-
-const InsertedSpanAnnotationSchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id', description: 'The ID of the inserted span annotation' }),
-  })
-  .openapi({ required: ['id'], title: 'InsertedSpanAnnotation' })
-  .openapi('InsertedSpanAnnotation')
-
-const AnnotateSpansResponseBodySchema = z
-  .object({ data: z.array(InsertedSpanAnnotationSchema).openapi({ title: 'Data' }) })
-  .openapi({ required: ['data'], title: 'AnnotateSpansResponseBody' })
-  .openapi('AnnotateSpansResponseBody')
-
-const TraceAnnotationDataSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name', description: 'The name of the annotation' }),
-    annotator_kind: z
-      .enum(['LLM', 'CODE', 'HUMAN', 'DECISION', 'AGENT'])
-      .openapi({
-        title: 'Annotator Kind',
-        description: 'The kind of annotator used for the annotation',
-      }),
-    result: z
-      .union([AnnotationResultSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'The result of the annotation' }),
-    metadata: z
-      .union([z.looseObject({}), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Metadata', description: 'Metadata for the annotation' }),
-    identifier: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({
-        title: 'Identifier',
-        description:
-          'The identifier of the annotation. If provided, the annotation will be updated if it already exists.',
-      }),
-    trace_id: z
-      .string()
-      .openapi({
-        title: 'Trace Id',
-        description: 'OpenTelemetry Trace ID (hex format w/o 0x prefix)',
-      }),
-  })
-  .openapi({ required: ['name', 'annotator_kind', 'trace_id'], title: 'TraceAnnotationData' })
-  .openapi('TraceAnnotationData')
-
-const AnnotateTracesRequestBodySchema = z
-  .object({
-    data: z
-      .array(TraceAnnotationDataSchema)
-      .openapi({ title: 'Data', description: 'The trace annotations to be upserted' }),
-  })
-  .openapi({ required: ['data'], title: 'AnnotateTracesRequestBody' })
-  .openapi('AnnotateTracesRequestBody')
-
-const InsertedTraceAnnotationSchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id', description: 'The ID of the inserted trace annotation' }),
-  })
-  .openapi({ required: ['id'], title: 'InsertedTraceAnnotation' })
-  .openapi('InsertedTraceAnnotation')
-
-const AnnotateTracesResponseBodySchema = z
-  .object({ data: z.array(InsertedTraceAnnotationSchema).openapi({ title: 'Data' }) })
-  .openapi({ required: ['data'], title: 'AnnotateTracesResponseBody' })
-  .openapi('AnnotateTracesResponseBody')
-
-const AnonymousUserSchema = z
-  .object({ auth_method: z.literal('ANONYMOUS').openapi({ title: 'Auth Method' }) })
-  .openapi({ required: ['auth_method'], title: 'AnonymousUser' })
-  .openapi('AnonymousUser')
-
-const ApiKeySchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id' }),
-    name: z.string().openapi({ title: 'Name' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
-    expires_at: z
-      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Expires At' }),
-  })
-  .openapi({ required: ['id', 'name', 'created_at'], title: 'ApiKey' })
-  .openapi('ApiKey')
-
-const ApiKeyDataSchema = z
-  .object({
-    name: z
-      .string()
-      .openapi({ title: 'Name', description: 'A human-readable name for the API key.' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Description',
-        description: 'An optional description of what the API key is for.',
-      }),
-    expires_at: z
-      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Expires At',
-        description: 'When the API key expires. The key never expires when omitted.',
-      }),
-  })
-  .openapi({ required: ['name'], title: 'ApiKeyData' })
-  .openapi('ApiKeyData')
-
-const ApiKeyUserSchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id' }),
-    username: z.string().openapi({ title: 'Username' }),
-    email: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Email' }),
-  })
-  .openapi({ required: ['id', 'username', 'email'], title: 'ApiKeyUser' })
-  .openapi('ApiKeyUser')
-
-const AppContextSchema = z
-  .strictObject({
-    type: z.literal('app').openapi({ title: 'Type' }),
-    currentDateTime: z.string().openapi({ title: 'Currentdatetime' }),
-    timeZone: z.string().openapi({ title: 'Timezone' }),
-  })
-  .openapi({
-    required: ['type', 'currentDateTime', 'timeZone'],
-    title: 'AppContext',
-    description: 'Per-turn browser clock context for resolving relative time requests.',
-  })
-  .openapi('AppContext')
-
-const OptimizationDirectionSchema = z
-  .enum(['MINIMIZE', 'MAXIMIZE', 'NONE'])
-  .openapi({ title: 'OptimizationDirection' })
-  .openapi('OptimizationDirection')
-
-const CategoricalAnnotationValueSchema = z
-  .object({
-    label: z.string().openapi({ title: 'Label' }),
-    score: z.union([z.number(), z.null().nullable()]).exactOptional().openapi({ title: 'Score' }),
-  })
-  .openapi({ required: ['label'], title: 'CategoricalAnnotationValue' })
-  .openapi('CategoricalAnnotationValue')
-
-const CategoricalAnnotationConfigSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name' }),
-    type: z.literal('CATEGORICAL').openapi({ title: 'Type' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    optimization_direction: OptimizationDirectionSchema,
-    values: z.array(CategoricalAnnotationValueSchema).openapi({ title: 'Values' }),
-    id: z.string().openapi({ title: 'Id' }),
-  })
-  .openapi({
-    required: ['name', 'type', 'optimization_direction', 'values', 'id'],
-    title: 'CategoricalAnnotationConfig',
-  })
-  .openapi('CategoricalAnnotationConfig')
-
-const ContinuousAnnotationConfigSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name' }),
-    type: z.literal('CONTINUOUS').openapi({ title: 'Type' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    optimization_direction: OptimizationDirectionSchema,
-    lower_bound: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Lower Bound' }),
-    upper_bound: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Upper Bound' }),
-    id: z.string().openapi({ title: 'Id' }),
-  })
-  .openapi({
-    required: ['name', 'type', 'optimization_direction', 'id'],
-    title: 'ContinuousAnnotationConfig',
-  })
-  .openapi('ContinuousAnnotationConfig')
-
-const FreeformAnnotationConfigSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name' }),
-    type: z.literal('FREEFORM').openapi({ title: 'Type' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    optimization_direction: z
-      .union([OptimizationDirectionSchema, z.null().nullable()])
-      .exactOptional(),
-    threshold: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Threshold' }),
-    lower_bound: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Lower Bound' }),
-    upper_bound: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Upper Bound' }),
-    id: z.string().openapi({ title: 'Id' }),
-  })
-  .openapi({ required: ['name', 'type', 'id'], title: 'FreeformAnnotationConfig' })
-  .openapi('FreeformAnnotationConfig')
-
-const AssignAnnotationConfigToProjectResponseBodySchema = z
-  .object({
-    data: z
-      .discriminatedUnion('type', [
-        CategoricalAnnotationConfigSchema,
-        ContinuousAnnotationConfigSchema,
-        FreeformAnnotationConfigSchema,
-      ])
-      .openapi({
-        title: 'Data',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            CATEGORICAL: '#/components/schemas/CategoricalAnnotationConfig',
-            CONTINUOUS: '#/components/schemas/ContinuousAnnotationConfig',
-            FREEFORM: '#/components/schemas/FreeformAnnotationConfig',
-          },
-        },
-      }),
-  })
-  .openapi({ required: ['data'], title: 'AssignAnnotationConfigToProjectResponseBody' })
-  .openapi('AssignAnnotationConfigToProjectResponseBody')
-
-const BuiltInModelProviderSchema = z
-  .object({
-    provider: ModelProviderSchema.openapi({
-      description:
-        "The provider family identifier, accepted wherever a built-in model provider is specified (e.g. 'OPENAI').",
-    }),
-    name: z
-      .string()
-      .openapi({
-        title: 'Name',
-        description: "The human-readable name of the provider family (e.g. 'OpenAI').",
-      }),
-  })
-  .openapi({ required: ['provider', 'name'], title: 'BuiltInModelProvider' })
-  .openapi('BuiltInModelProvider')
-
-const CategoricalAnnotationConfigDataSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name' }),
-    type: z.literal('CATEGORICAL').openapi({ title: 'Type' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    optimization_direction: OptimizationDirectionSchema,
-    values: z.array(CategoricalAnnotationValueSchema).openapi({ title: 'Values' }),
-  })
-  .openapi({
-    required: ['name', 'type', 'optimization_direction', 'values'],
-    title: 'CategoricalAnnotationConfigData',
-  })
-  .openapi('CategoricalAnnotationConfigData')
-
-const ChatCompletionMessageSchema = z
-  .object({
-    role: z.literal('assistant').default('assistant').exactOptional().openapi({ title: 'Role' }),
-    content: z.string().openapi({ title: 'Content' }),
-  })
-  .openapi({ required: ['content'], title: 'ChatCompletionMessage' })
-  .openapi('ChatCompletionMessage')
-
-const ChatCompletionChoiceSchema = z
-  .object({
-    index: z.int().default(0).exactOptional().openapi({ title: 'Index' }),
-    message: ChatCompletionMessageSchema,
-    finish_reason: z.string().openapi({ title: 'Finish Reason' }),
-  })
-  .openapi({ required: ['message', 'finish_reason'], title: 'ChatCompletionChoice' })
-  .openapi('ChatCompletionChoice')
-
-const ChatCompletionUsagePromptTokensDetailsSchema = z
-  .object({ cached_tokens: z.int().openapi({ title: 'Cached Tokens' }) })
-  .openapi({ required: ['cached_tokens'], title: 'ChatCompletionUsagePromptTokensDetails' })
-  .openapi('ChatCompletionUsagePromptTokensDetails')
-
-const ChatCompletionUsageSchema = z
-  .object({
-    prompt_tokens: z.int().openapi({ title: 'Prompt Tokens' }),
-    completion_tokens: z.int().openapi({ title: 'Completion Tokens' }),
-    total_tokens: z.int().openapi({ title: 'Total Tokens' }),
-    prompt_tokens_details: z
-      .union([ChatCompletionUsagePromptTokensDetailsSchema, z.null().nullable()])
-      .exactOptional(),
-  })
-  .openapi({
-    required: ['prompt_tokens', 'completion_tokens', 'total_tokens'],
-    title: 'ChatCompletionUsage',
-  })
-  .openapi('ChatCompletionUsage')
-
-const ChatCompletionSchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id' }),
-    object: z
-      .literal('chat.completion')
-      .default('chat.completion')
-      .exactOptional()
-      .openapi({ title: 'Object' }),
-    created: z.int().openapi({ title: 'Created' }),
-    model: z.string().openapi({ title: 'Model' }),
-    choices: z.array(ChatCompletionChoiceSchema).openapi({ title: 'Choices' }),
-    usage: ChatCompletionUsageSchema,
-  })
-  .openapi({ required: ['id', 'created', 'model', 'choices', 'usage'], title: 'ChatCompletion' })
-  .openapi('ChatCompletion')
-
-const ChatCompletionErrorDetailSchema = z
-  .object({
-    message: z.string().openapi({ title: 'Message' }),
-    type: z.string().openapi({ title: 'Type' }),
-    param: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Param' }),
-    code: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Code' }),
-  })
-  .openapi({ required: ['message', 'type'], title: 'ChatCompletionErrorDetail' })
-  .openapi('ChatCompletionErrorDetail')
-
-const ChatCompletionErrorResponseSchema = z
-  .object({ error: ChatCompletionErrorDetailSchema })
-  .openapi({ required: ['error'], title: 'ChatCompletionErrorResponse' })
-  .openapi('ChatCompletionErrorResponse')
-
-const ChatCompletionTextPartSchema = z
-  .object({
-    type: z.literal('text').openapi({ title: 'Type' }),
-    text: z.string().openapi({ title: 'Text' }),
-  })
-  .openapi({ required: ['type', 'text'], title: 'ChatCompletionTextPart' })
-  .openapi('ChatCompletionTextPart')
-
-const ChatCompletionRequestMessageSchema = z
-  .object({
-    role: z.enum(['system', 'developer', 'user', 'assistant']).openapi({ title: 'Role' }),
-    content: z
-      .union([z.string(), z.array(ChatCompletionTextPartSchema)])
-      .openapi({ title: 'Content' }),
-  })
-  .openapi({ required: ['role', 'content'], title: 'ChatCompletionRequestMessage' })
-  .openapi('ChatCompletionRequestMessage')
-
-const ChatCompletionStreamOptionsSchema = z
-  .object({
-    include_usage: z.boolean().default(false).exactOptional().openapi({ title: 'Include Usage' }),
-  })
-  .openapi({ title: 'ChatCompletionStreamOptions', required: [] })
-  .openapi('ChatCompletionStreamOptions')
+  .openapi({ required: ['type', 'datasetNodeId'], title: 'DatasetUIContext' })
+  .openapi('DatasetUIContext')
 
 const GraphQLContextSchema = z
   .strictObject({
@@ -1199,40 +302,226 @@ const ChatContextSchema = z
   })
   .openapi('ChatContext')
 
-const MessageMetadataSchema: z.ZodType<MessageMetadataType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        phoenix: z
-          .union([
-            z
-              .discriminatedUnion('type', [
-                PhoenixAssistantMessageMetadataSchema,
-                PhoenixUserMessageMetadataSchema,
-              ])
-              .openapi({
-                discriminator: {
-                  propertyName: 'type',
-                  mapping: {
-                    assistant: '#/components/schemas/PhoenixAssistantMessageMetadata',
-                    user: '#/components/schemas/PhoenixUserMessageMetadata',
-                  },
-                },
-              }),
-            z.null().nullable(),
+const CustomProviderModelSelectionSchema = z
+  .object({
+    providerType: z.literal('custom').openapi({ title: 'Providertype' }),
+    providerId: z.string().openapi({ title: 'Providerid' }),
+    modelName: z.string().openapi({ title: 'Modelname' }),
+  })
+  .openapi({
+    required: ['providerType', 'providerId', 'modelName'],
+    title: 'CustomProviderModelSelection',
+    description: 'Chat against a stored custom provider record.',
+  })
+  .openapi('CustomProviderModelSelection')
+
+const ModelProviderSchema = z
+  .enum([
+    'OPENAI',
+    'AZURE_OPENAI',
+    'ANTHROPIC',
+    'GOOGLE',
+    'DEEPSEEK',
+    'XAI',
+    'OLLAMA',
+    'AWS',
+    'CEREBRAS',
+    'FIREWORKS',
+    'GROQ',
+    'MOONSHOT',
+    'MINIMAX',
+    'PERPLEXITY',
+    'TOGETHER',
+    'ZAI',
+    'META',
+  ])
+  .openapi({ title: 'ModelProvider' })
+  .openapi('ModelProvider')
+
+const BuiltInProviderModelSelectionSchema = z
+  .object({
+    providerType: z.literal('builtin').openapi({ title: 'Providertype' }),
+    provider: ModelProviderSchema,
+    modelName: z.string().openapi({ title: 'Modelname' }),
+  })
+  .openapi({
+    required: ['providerType', 'provider', 'modelName'],
+    title: 'BuiltInProviderModelSelection',
+    description:
+      'Chat against a Phoenix built-in provider.\n\nCredentials and connection details (base URL, Azure endpoint, AWS\nregion) are resolved from the secret store first and the process\nenvironment second.',
+  })
+  .openapi('BuiltInProviderModelSelection')
+
+const AgentModelSelectionSchema = z
+  .discriminatedUnion('providerType', [
+    CustomProviderModelSelectionSchema,
+    BuiltInProviderModelSelectionSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'providerType',
+      mapping: {
+        builtin: '#/components/schemas/BuiltInProviderModelSelection',
+        custom: '#/components/schemas/CustomProviderModelSelection',
+      },
+    },
+  })
+  .openapi('AgentModelSelection')
+
+const TurnTraceContextSchema = z
+  .strictObject({
+    traceId: z
+      .string()
+      .regex(/^[0-9a-f]{32}$/)
+      .openapi({ title: 'Traceid' }),
+    rootSpanId: z
+      .string()
+      .regex(/^[0-9a-f]{16}$/)
+      .openapi({ title: 'Rootspanid' }),
+    startedAt: z.iso.datetime({ offset: true }).openapi({ title: 'Startedat' }),
+  })
+  .openapi({
+    required: ['traceId', 'rootSpanId', 'startedAt'],
+    title: 'TurnTraceContext',
+    description: "The trace identity a turn's spans are parented to.",
+  })
+  .openapi('TurnTraceContext')
+
+const AssistantMessageMetadataUsageTokensSchema = z
+  .strictObject({
+    prompt: z.int().openapi({ title: 'Prompt' }),
+    completion: z.int().openapi({ title: 'Completion' }),
+    total: z.int().openapi({ title: 'Total' }),
+  })
+  .openapi({
+    required: ['prompt', 'completion', 'total'],
+    title: 'AssistantMessageMetadataUsageTokens',
+  })
+  .openapi('AssistantMessageMetadataUsageTokens')
+
+const AssistantMessageMetadataUsageCacheTokenDetailsSchema = z
+  .strictObject({
+    cacheRead: z.int().openapi({ title: 'Cacheread' }),
+    cacheWrite: z.int().openapi({ title: 'Cachewrite' }),
+  })
+  .openapi({
+    required: ['cacheRead', 'cacheWrite'],
+    title: 'AssistantMessageMetadataUsageCacheTokenDetails',
+    description:
+      "Prompt-cache token counts, mounted as the usage payload's\n``prompt_details`` because cached tokens are a breakdown of the prompt.",
+  })
+  .openapi('AssistantMessageMetadataUsageCacheTokenDetails')
+
+const AssistantMessageMetadataUsageSchema = z
+  .strictObject({
+    tokens: AssistantMessageMetadataUsageTokensSchema,
+    promptDetails: z
+      .union([AssistantMessageMetadataUsageCacheTokenDetailsSchema, z.null().nullable()])
+      .exactOptional(),
+  })
+  .openapi({ required: ['tokens'], title: 'AssistantMessageMetadataUsage' })
+  .openapi('AssistantMessageMetadataUsage')
+
+const PhoenixAssistantMessageMetadataSchema = z
+  .strictObject({
+    type: z.literal('assistant').openapi({ title: 'Type' }),
+    sessionId: z.string().openapi({ title: 'Sessionid' }),
+    turnTraceContext: z.union([TurnTraceContextSchema, z.null().nullable()]).exactOptional(),
+    usage: z.union([AssistantMessageMetadataUsageSchema, z.null().nullable()]).exactOptional(),
+    interrupted: z.boolean().default(false).exactOptional().openapi({ title: 'Interrupted' }),
+  })
+  .openapi({
+    required: ['type', 'sessionId'],
+    title: 'PhoenixAssistantMessageMetadata',
+    description: 'The ``phoenix`` metadata namespace of an assistant message.',
+  })
+  .openapi('PhoenixAssistantMessageMetadata')
+
+const UIContextsSchema = z
+  .strictObject({
+    project: z.union([ProjectUIContextSchema, z.null().nullable()]).exactOptional(),
+    trace: z.union([TraceUIContextSchema, z.null().nullable()]).exactOptional(),
+    session: z.union([SessionUIContextSchema, z.null().nullable()]).exactOptional(),
+    span: z.union([SpanUIContextSchema, z.null().nullable()]).exactOptional(),
+    prompt: z.union([PromptUIContextSchema, z.null().nullable()]).exactOptional(),
+    promptVersion: z.union([PromptVersionUIContextSchema, z.null().nullable()]).exactOptional(),
+    dataset: z.union([DatasetUIContextSchema, z.null().nullable()]).exactOptional(),
+    playground: z.union([PlaygroundUIContextSchema, z.null().nullable()]).exactOptional(),
+    codeEvaluator: z.union([CodeEvaluatorUIContextSchema, z.null().nullable()]).exactOptional(),
+    llmEvaluator: z.union([LlmEvaluatorUIContextSchema, z.null().nullable()]).exactOptional(),
+  })
+  .openapi({ title: 'UIContexts', required: [] })
+  .openapi('UIContexts')
+
+const PhoenixUserMessageMetadataSchema = z
+  .strictObject({
+    type: z.literal('user').openapi({ title: 'Type' }),
+    currentDateTime: z.string().max(128).openapi({ title: 'Currentdatetime' }),
+    timeZone: z.string().max(128).openapi({ title: 'Timezone' }),
+    isCompactionMessage: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ title: 'Iscompactionmessage' }),
+    uiContexts: z.union([UIContextsSchema, z.null().nullable()]).exactOptional(),
+    editPermission: z
+      .enum(['manual', 'bypass'])
+      .default('manual')
+      .exactOptional()
+      .openapi({ title: 'Editpermission' }),
+  })
+  .openapi({
+    required: ['type', 'currentDateTime', 'timeZone'],
+    title: 'PhoenixUserMessageMetadata',
+    description:
+      'The ``phoenix`` metadata namespace the browser attaches to outgoing\nuser messages.',
+  })
+  .openapi('PhoenixUserMessageMetadata')
+
+const PydanticAIMessageMetadataSchema = z
+  .strictObject({
+    timestamp: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Timestamp' }),
+  })
+  .openapi({
+    title: 'PydanticAIMessageMetadata',
+    description:
+      "Local pin of pydantic-ai's message-level ``pydantic_ai`` metadata\nnamespace (its private ``_PydanticAIMessageMetadata``), merged into the\nassistant metadata by the stream's metadata chunk.",
+    required: [],
+  })
+  .openapi('PydanticAIMessageMetadata')
+
+const MessageMetadataSchema = z
+  .strictObject({
+    phoenix: z
+      .union([
+        z
+          .discriminatedUnion('type', [
+            PhoenixAssistantMessageMetadataSchema,
+            PhoenixUserMessageMetadataSchema,
           ])
-          .exactOptional()
-          .openapi({ title: 'Phoenix' }),
-        pydantic_ai: z
-          .union([PydanticAIMessageMetadataSchema, z.null().nullable()])
-          .exactOptional(),
-      })
-      .openapi({
-        title: 'MessageMetadata',
-        description: '``UIMessage.metadata`` as a registry of namespaces.',
-        required: [],
-      }),
-  )
+          .openapi({
+            discriminator: {
+              propertyName: 'type',
+              mapping: {
+                assistant: '#/components/schemas/PhoenixAssistantMessageMetadata',
+                user: '#/components/schemas/PhoenixUserMessageMetadata',
+              },
+            },
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({ title: 'Phoenix' }),
+    pydantic_ai: z.union([PydanticAIMessageMetadataSchema, z.null().nullable()]).exactOptional(),
+  })
+  .openapi({
+    title: 'MessageMetadata',
+    description: '``UIMessage.metadata`` as a registry of namespaces.',
+    required: [],
+  })
   .openapi('MessageMetadata')
 
 const TextUIPartSchema = z
@@ -1917,7 +1206,40 @@ const StepStartUIPartSchema = z
   })
   .openapi('StepStartUIPart')
 
-const PhoenixUIMessageSchema = z
+type PhoenixUIMessageType = {
+  id: string
+  role: 'system' | 'user' | 'assistant'
+  metadata?: z.infer<typeof MessageMetadataSchema> | null
+  parts: (
+    | z.infer<typeof TextUIPartSchema>
+    | z.infer<typeof ReasoningUIPartSchema>
+    | z.infer<typeof PhoenixDbTypesDataStreamProtocolRequestTypesToolInputStreamingPartSchema>
+    | z.infer<typeof ToolInputAvailablePartSchema>
+    | z.infer<typeof PhoenixDbTypesDataStreamProtocolRequestTypesToolOutputAvailablePartSchema>
+    | z.infer<typeof PhoenixDbTypesDataStreamProtocolRequestTypesToolOutputErrorPartSchema>
+    | z.infer<typeof ToolApprovalRequestedPartSchema>
+    | z.infer<typeof ToolApprovalRespondedPartSchema>
+    | z.infer<typeof ToolOutputDeniedPartSchema>
+    | z.infer<
+        typeof PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolInputStreamingPartSchema
+      >
+    | z.infer<typeof DynamicToolInputAvailablePartSchema>
+    | z.infer<
+        typeof PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolOutputAvailablePartSchema
+      >
+    | z.infer<typeof PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolOutputErrorPartSchema>
+    | z.infer<typeof DynamicToolApprovalRequestedPartSchema>
+    | z.infer<typeof DynamicToolApprovalRespondedPartSchema>
+    | z.infer<typeof DynamicToolOutputDeniedPartSchema>
+    | z.infer<typeof SourceUrlUIPartSchema>
+    | z.infer<typeof SourceDocumentUIPartSchema>
+    | z.infer<typeof FileUIPartSchema>
+    | z.infer<typeof DataUIPartSchema>
+    | z.infer<typeof StepStartUIPartSchema>
+  )[]
+}
+
+const PhoenixUIMessageSchema: z.ZodType<PhoenixUIMessageType> = z
   .strictObject({
     id: z.string().openapi({ title: 'Id' }),
     role: z.enum(['system', 'user', 'assistant']).openapi({ title: 'Role' }),
@@ -1986,682 +1308,32 @@ const ChatRequestCredentialSchema = z
   })
   .openapi('ChatRequestCredential')
 
-const ChatRequestBodySchema = z
-  .object({
-    headless: z
-      .boolean()
-      .openapi({
-        title: 'Headless',
-        description:
-          'Whether a headless client (terminal or scripted) is driving the turn, as opposed to the browser assistant. Selects the agent configuration the turn runs on.',
-      }),
-    contexts: z.array(ChatContextSchema).exactOptional().openapi({ title: 'Contexts' }),
-    editPermission: z
-      .enum(['manual', 'bypass'])
-      .default('manual')
-      .exactOptional()
-      .openapi({ title: 'Editpermission' }),
-    requestedSkills: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        title: 'Requestedskills',
-        description:
-          "Skills the user explicitly requested via the prompt's slash-command affordance. The server force-loads each available skill by injecting a synthetic load_skill tool call/result at the tail of the message history. Unknown or context-unavailable names are ignored.",
-      }),
-    model: AgentModelSelectionSchema.openapi({
-      description:
-        "The model the client believes the session is set to. This is a precondition, not an instruction: the turn always runs on the session's persisted selection, and a mismatch is rejected with HTTP 409 and code ``agent_session_model_stale`` rather than silently running on — or switching to — an unexpected model. Change the session's model with ``PATCH .../agent_sessions/{session_id}``.",
-    }),
-    trigger: z
-      .literal('submit-message')
-      .default('submit-message')
-      .exactOptional()
-      .openapi({ title: 'Trigger' }),
-    id: z.string().openapi({ title: 'Id' }),
-    message: z
-      .union([PhoenixUIMessageSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        description:
-          "The turn's new user message to append. May be omitted for client-tool continuation, where ``toolOutputs`` resolve the trailing assistant message's pending tool calls instead.",
-      }),
-    toolOutputs: z
-      .array(
-        z.union([
-          PhoenixDbTypesDataStreamProtocolRequestTypesToolOutputAvailablePartSchema,
-          PhoenixDbTypesDataStreamProtocolRequestTypesToolOutputErrorPartSchema,
-          PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolOutputAvailablePartSchema,
-          PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolOutputErrorPartSchema,
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        title: 'Tooloutputs',
-        description:
-          "Client-executed tool results for pending tool calls on the transcript's trailing assistant message, matched by ``toolCallId``. Submitted alone they continue the assistant turn; submitted with ``message`` they resolve dangling tool calls before the new user turn runs.",
-      }),
-    toolApprovals: z
-      .array(ToolApprovalSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Toolapprovals',
-        description:
-          'Responses to tool calls awaiting approval on the trailing assistant message, matched by ``toolCallId``. Cannot be combined with ``message``.',
-      }),
-    lastMessageId: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Lastmessageid',
-        description:
-          'The id of the last transcript message the client has rendered, used for optimistic concurrency. Omit when the session has no messages; required (and validated against the persisted transcript) once it does. On mismatch the server rejects the send with HTTP 409 and code ``agent_session_messages_stale`` — the client should refetch the session before retrying.',
-      }),
-    credentials: z
-      .array(ChatRequestCredentialSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Credentials',
-        description:
-          "Client-held credentials for optional integrations (e.g. the user's own GitHub personal access token under the key ``GITHUB_PERSONAL_ACCESS_TOKEN``), used only for the duration of the turn and never persisted. Unknown keys are rejected.",
-      }),
-    recordLocalTraces: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ title: 'Recordlocaltraces' }),
-    exportRemoteTraces: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ title: 'Exportremotetraces' }),
-    instrumentUserId: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Instrumentuserid',
-        description:
-          "When true and the request is authenticated as a PhoenixUser, attaches the user's email as the OpenInference ``user.id`` span attribute on all traced work for this request.",
-      }),
-  })
-  .openapi({
-    required: ['headless', 'model', 'id'],
-    title: 'ChatRequestBody',
-    description: 'Assistant chat submit request payload.',
-  })
-  .openapi('ChatRequestBody')
+type ChatRequestBodyType = {
+  headless: boolean
+  contexts?: z.infer<typeof ChatContextSchema>[]
+  editPermission?: 'manual' | 'bypass'
+  requestedSkills?: string[]
+  model: z.infer<typeof AgentModelSelectionSchema>
+  trigger?: 'submit-message'
+  id: string
+  message?: z.infer<typeof PhoenixUIMessageSchema> | null
+  toolOutputs?: (
+    | z.infer<typeof PhoenixDbTypesDataStreamProtocolRequestTypesToolOutputAvailablePartSchema>
+    | z.infer<typeof PhoenixDbTypesDataStreamProtocolRequestTypesToolOutputErrorPartSchema>
+    | z.infer<
+        typeof PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolOutputAvailablePartSchema
+      >
+    | z.infer<typeof PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolOutputErrorPartSchema>
+  )[]
+  toolApprovals?: z.infer<typeof ToolApprovalSchema>[]
+  lastMessageId?: string | null
+  credentials?: z.infer<typeof ChatRequestCredentialSchema>[]
+  recordLocalTraces?: boolean
+  exportRemoteTraces?: boolean
+  instrumentUserId?: boolean
+}
 
-const CompactAgentSessionRequestBodySchema = z
-  .object({
-    model: AgentModelSelectionSchema.openapi({
-      description:
-        "The model the client believes the session is set to. As on the chat route this is a precondition: the summary is generated with the session's persisted selection, and a mismatch is rejected with HTTP 409 and code ``agent_session_model_stale``.",
-    }),
-  })
-  .openapi({
-    required: ['model'],
-    title: 'CompactAgentSessionRequestBody',
-    description: 'Request a model-generated checkpoint for a persisted conversation.',
-  })
-  .openapi('CompactAgentSessionRequestBody')
-
-const CompactAgentSessionResponseBodySchema = z
-  .object({ data: PhoenixUIMessageSchema })
-  .openapi({
-    required: ['data'],
-    title: 'CompactAgentSessionResponseBody',
-    description:
-      "The checkpoint message this request created. A 200 always means a new\ncheckpoint was persisted; every other outcome is an HTTP 409 whose body's\n``code`` says why (see ``AgentSessionConflictError``).",
-  })
-  .openapi('CompactAgentSessionResponseBody')
-
-const ContinuousAnnotationConfigDataSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name' }),
-    type: z.literal('CONTINUOUS').openapi({ title: 'Type' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    optimization_direction: OptimizationDirectionSchema,
-    lower_bound: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Lower Bound' }),
-    upper_bound: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Upper Bound' }),
-  })
-  .openapi({
-    required: ['name', 'type', 'optimization_direction'],
-    title: 'ContinuousAnnotationConfigData',
-  })
-  .openapi('ContinuousAnnotationConfigData')
-
-const CreateAgentSessionRequestBodySchema = z
-  .object({
-    model: AgentModelSelectionSchema,
-    title: z
-      .string()
-      .max(100)
-      .default('')
-      .exactOptional()
-      .openapi({ title: 'Title', description: 'Optional initial title.' }),
-    is_ephemeral: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Is Ephemeral',
-        description: 'Whether the session should expire after a period of inactivity.',
-      }),
-  })
-  .openapi({
-    required: ['model'],
-    title: 'CreateAgentSessionRequestBody',
-    description: 'Request body for creating a persisted agent session.',
-  })
-  .openapi('CreateAgentSessionRequestBody')
-
-const CreatedAgentSessionSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        title: 'Id',
-        description: "The session's GlobalID — the ``session_id`` the chat route expects.",
-      }),
-  })
-  .openapi({ required: ['id'], title: 'CreatedAgentSession' })
-  .openapi('CreatedAgentSession')
-
-const CreateAgentSessionResponseBodySchema = z
-  .object({ data: CreatedAgentSessionSchema })
-  .openapi({ required: ['data'], title: 'CreateAgentSessionResponseBody' })
-  .openapi('CreateAgentSessionResponseBody')
-
-const FreeformAnnotationConfigDataSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name' }),
-    type: z.literal('FREEFORM').openapi({ title: 'Type' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    optimization_direction: z
-      .union([OptimizationDirectionSchema, z.null().nullable()])
-      .exactOptional(),
-    threshold: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Threshold' }),
-    lower_bound: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Lower Bound' }),
-    upper_bound: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Upper Bound' }),
-  })
-  .openapi({ required: ['name', 'type'], title: 'FreeformAnnotationConfigData' })
-  .openapi('FreeformAnnotationConfigData')
-
-const CreateAnnotationConfigDataSchema = z
-  .discriminatedUnion('type', [
-    CategoricalAnnotationConfigDataSchema,
-    ContinuousAnnotationConfigDataSchema,
-    FreeformAnnotationConfigDataSchema,
-  ])
-  .openapi({
-    title: 'CreateAnnotationConfigData',
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        CATEGORICAL: '#/components/schemas/CategoricalAnnotationConfigData',
-        CONTINUOUS: '#/components/schemas/ContinuousAnnotationConfigData',
-        FREEFORM: '#/components/schemas/FreeformAnnotationConfigData',
-      },
-    },
-  })
-  .openapi('CreateAnnotationConfigData')
-
-const CreateAnnotationConfigResponseBodySchema = z
-  .object({
-    data: z
-      .discriminatedUnion('type', [
-        CategoricalAnnotationConfigSchema,
-        ContinuousAnnotationConfigSchema,
-        FreeformAnnotationConfigSchema,
-      ])
-      .openapi({
-        title: 'Data',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            CATEGORICAL: '#/components/schemas/CategoricalAnnotationConfig',
-            CONTINUOUS: '#/components/schemas/ContinuousAnnotationConfig',
-            FREEFORM: '#/components/schemas/FreeformAnnotationConfig',
-          },
-        },
-      }),
-  })
-  .openapi({ required: ['data'], title: 'CreateAnnotationConfigResponseBody' })
-  .openapi('CreateAnnotationConfigResponseBody')
-
-const CreateApiKeyRequestBodySchema = z
-  .object({ data: ApiKeyDataSchema })
-  .openapi({ required: ['data'], title: 'CreateApiKeyRequestBody' })
-  .openapi('CreateApiKeyRequestBody')
-
-const CreatedApiKeySchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id' }),
-    name: z.string().openapi({ title: 'Name' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
-    expires_at: z
-      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Expires At' }),
-    key: z
-      .string()
-      .openapi({
-        title: 'Key',
-        description:
-          'The API key. This is the only time it is returned; it cannot be recovered from the listing endpoints.',
-      }),
-  })
-  .openapi({ required: ['id', 'name', 'created_at', 'key'], title: 'CreatedApiKey' })
-  .openapi('CreatedApiKey')
-
-const CreateApiKeyResponseBodySchema = z
-  .object({ data: CreatedApiKeySchema })
-  .openapi({ required: ['data'], title: 'CreateApiKeyResponseBody' })
-  .openapi('CreateApiKeyResponseBody')
-
-const CreateChatCompletionRequestBodySchema = z
-  .object({
-    model: z
-      .string()
-      .openapi({
-        title: 'Model',
-        description:
-          "Model must be '{provider}:{model_name}' for a built-in provider (one of anthropic, aws, azure_openai, cerebras, deepseek, fireworks, google, groq, meta, minimax, moonshot, ollama, openai, perplexity, together, xai, zai) or 'custom:{provider_id}:{model_name}' for a stored custom provider, e.g. 'openai:gpt-4o' or 'anthropic:claude-sonnet-4-5'.",
-      }),
-    messages: z.array(ChatCompletionRequestMessageSchema).min(1).openapi({ title: 'Messages' }),
-    stream: z.boolean().default(false).exactOptional().openapi({ title: 'Stream' }),
-    temperature: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Temperature' }),
-    top_p: z.union([z.number(), z.null().nullable()]).exactOptional().openapi({ title: 'Top P' }),
-    max_tokens: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Max Tokens' }),
-    max_completion_tokens: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Max Completion Tokens' }),
-    stop: z
-      .union([z.string(), z.array(z.string()), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Stop' }),
-    frequency_penalty: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Frequency Penalty' }),
-    presence_penalty: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Presence Penalty' }),
-    seed: z.union([z.int(), z.null().nullable()]).exactOptional().openapi({ title: 'Seed' }),
-    n: z.union([z.int(), z.null().nullable()]).exactOptional().openapi({ title: 'N' }),
-    stream_options: z
-      .union([ChatCompletionStreamOptionsSchema, z.null().nullable()])
-      .exactOptional(),
-    tools: z
-      .union([z.array(z.any()), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Tools' }),
-    tool_choice: z
-      .union([z.any(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Tool Choice' }),
-    response_format: z
-      .union([z.looseObject({}), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Response Format' }),
-  })
-  .openapi({
-    required: ['model', 'messages'],
-    title: 'CreateChatCompletionRequestBody',
-    examples: [
-      {
-        messages: [
-          { content: 'You are a helpful assistant.', role: 'system' },
-          { content: 'Say hello.', role: 'user' },
-        ],
-        model: 'openai:gpt-4o',
-      },
-    ],
-  })
-  .openapi('CreateChatCompletionRequestBody')
-
-const CreateDatasetLabelRequestBodySchema = z
-  .object({
-    name: z
-      .string()
-      .min(1)
-      .openapi({ title: 'Name', description: 'The name of the dataset label' }),
-    color: z
-      .string()
-      .regex(/^#([0-9a-f]{6})$/)
-      .openapi({
-        title: 'Color',
-        description: "A lowercase hex color code (e.g. '#00cc88') used to display the label",
-      }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Description',
-        description: 'An optional description of the dataset label',
-      }),
-  })
-  .openapi({ required: ['name', 'color'], title: 'CreateDatasetLabelRequestBody' })
-  .openapi('CreateDatasetLabelRequestBody')
-
-const CreateDatasetLabelResponseBodySchema = z
-  .object({ data: DatasetLabelSchema })
-  .openapi({ required: ['data'], title: 'CreateDatasetLabelResponseBody' })
-  .openapi('CreateDatasetLabelResponseBody')
-
-const CreateDatasetSplitRequestBodySchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name', description: 'A unique name for the split.' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description', description: 'An optional description of the split.' }),
-    color: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Color',
-        description: 'An optional hex color for the split (e.g. #33c5e8). Omit for a default.',
-      }),
-    metadata: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ title: 'Metadata', description: 'Arbitrary JSON metadata for the split.' }),
-    example_ids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        title: 'Example Ids',
-        description:
-          'Optional dataset example identifiers (GlobalIDs or user-provided IDs) to seed the split with. Each example must belong to this dataset. Omit to create an empty split.',
-      }),
-  })
-  .openapi({ required: ['name'], title: 'CreateDatasetSplitRequestBody' })
-  .openapi('CreateDatasetSplitRequestBody')
-
-const DatasetSplitSchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id' }),
-    name: z.string().openapi({ title: 'Name' }),
-    description: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Description' }),
-    color: z.string().openapi({ title: 'Color' }),
-    metadata: z.looseObject({}).openapi({ title: 'Metadata' }),
-    example_count: z.int().openapi({ title: 'Example Count' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'description',
-      'color',
-      'metadata',
-      'example_count',
-      'created_at',
-      'updated_at',
-    ],
-    title: 'DatasetSplit',
-  })
-  .openapi('DatasetSplit')
-
-const CreateDatasetSplitResponseBodySchema = z
-  .object({ data: DatasetSplitSchema })
-  .openapi({ required: ['data'], title: 'CreateDatasetSplitResponseBody' })
-  .openapi('CreateDatasetSplitResponseBody')
-
-const CreateExperimentRequestBodySchema = z
-  .object({
-    name: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Name',
-        description: 'Name of the experiment (if omitted, a random name will be generated)',
-      }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description', description: 'An optional description of the experiment' }),
-    metadata: z
-      .union([z.looseObject({}), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Metadata', description: 'Metadata for the experiment' }),
-    version_id: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Version Id',
-        description:
-          'ID of the dataset version over which the experiment will be run (if omitted, the latest version will be used)',
-      }),
-    splits: z
-      .union([z.array(z.string()), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Splits',
-        description: 'List of dataset split identifiers (GlobalIDs or names) to filter by',
-      }),
-    repetitions: z
-      .int()
-      .default(1)
-      .exactOptional()
-      .openapi({
-        title: 'Repetitions',
-        description: 'Number of times the experiment should be repeated for each example',
-      }),
-  })
-  .openapi({
-    title: 'CreateExperimentRequestBody',
-    description: 'Details of the experiment to be created',
-    required: [],
-  })
-  .openapi('CreateExperimentRequestBody')
-
-const ExperimentSchema = z
-  .object({
-    id: z.string().openapi({ title: 'Id', description: 'The ID of the experiment' }),
-    dataset_id: z
-      .string()
-      .openapi({
-        title: 'Dataset Id',
-        description: 'The ID of the dataset associated with the experiment',
-      }),
-    dataset_version_id: z
-      .string()
-      .openapi({
-        title: 'Dataset Version Id',
-        description: 'The ID of the dataset version associated with the experiment',
-      }),
-    name: z.string().openapi({ title: 'Name', description: 'The name of the experiment' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .openapi({ title: 'Description', description: 'The description of the experiment' }),
-    repetitions: z
-      .int()
-      .gt(0)
-      .openapi({ title: 'Repetitions', description: 'Number of times the experiment is repeated' }),
-    metadata: z
-      .looseObject({})
-      .openapi({ title: 'Metadata', description: 'Metadata of the experiment' }),
-    project_name: z
-      .union([z.string(), z.null().nullable()])
-      .openapi({
-        title: 'Project Name',
-        description: 'The name of the project associated with the experiment',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({ title: 'Created At', description: 'The creation timestamp of the experiment' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({ title: 'Updated At', description: 'The last update timestamp of the experiment' }),
-    example_count: z
-      .int()
-      .openapi({ title: 'Example Count', description: 'Number of examples in the experiment' }),
-    successful_run_count: z
-      .int()
-      .openapi({
-        title: 'Successful Run Count',
-        description: 'Number of successful runs in the experiment',
-      }),
-    failed_run_count: z
-      .int()
-      .openapi({
-        title: 'Failed Run Count',
-        description: 'Number of failed runs in the experiment',
-      }),
-    missing_run_count: z
-      .int()
-      .openapi({
-        title: 'Missing Run Count',
-        description: 'Number of missing (not yet executed) runs in the experiment',
-      }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'dataset_id',
-      'dataset_version_id',
-      'name',
-      'description',
-      'repetitions',
-      'metadata',
-      'project_name',
-      'created_at',
-      'updated_at',
-      'example_count',
-      'successful_run_count',
-      'failed_run_count',
-      'missing_run_count',
-    ],
-    title: 'Experiment',
-  })
-  .openapi('Experiment')
-
-const CreateExperimentResponseBodySchema = z
-  .object({ data: ExperimentSchema })
-  .openapi({ required: ['data'], title: 'CreateExperimentResponseBody' })
-  .openapi('CreateExperimentResponseBody')
-
-const CreateExperimentRunRequestBodySchema = z
-  .object({
-    dataset_example_id: z
-      .string()
-      .openapi({
-        title: 'Dataset Example Id',
-        description: 'The ID of the dataset example used in the experiment run',
-      }),
-    output: z.any().openapi({ title: 'Output', description: 'The output of the experiment task' }),
-    repetition_number: z
-      .int()
-      .gt(0)
-      .openapi({
-        title: 'Repetition Number',
-        description: 'The repetition number of the experiment run',
-      }),
-    start_time: z.iso
-      .datetime({ offset: true })
-      .openapi({ title: 'Start Time', description: 'The start time of the experiment run' }),
-    end_time: z.iso
-      .datetime({ offset: true })
-      .openapi({ title: 'End Time', description: 'The end time of the experiment run' }),
-    trace_id: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Trace Id',
-        description: 'The ID of the corresponding trace (if one exists)',
-      }),
-    error: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Error',
-        description: 'Optional error message if the experiment run encountered an error',
-      }),
-  })
-  .openapi({
-    required: ['dataset_example_id', 'output', 'repetition_number', 'start_time', 'end_time'],
-    title: 'CreateExperimentRunRequestBody',
-  })
-  .openapi('CreateExperimentRunRequestBody')
-
-const CreateExperimentRunResponseBodyDataSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ title: 'Id', description: 'The ID of the newly created experiment run' }),
-  })
-  .openapi({ required: ['id'], title: 'CreateExperimentRunResponseBodyData' })
-  .openapi('CreateExperimentRunResponseBodyData')
-
-const CreateExperimentRunResponseBodySchema = z
-  .object({ data: CreateExperimentRunResponseBodyDataSchema })
-  .openapi({ required: ['data'], title: 'CreateExperimentRunResponseBody' })
-  .openapi('CreateExperimentRunResponseBody')
-
-const CreateProjectRequestBodySchema = z
-  .object({
-    name: z.string().min(1).openapi({ title: 'Name' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-  })
-  .openapi({ required: ['name'], title: 'CreateProjectRequestBody' })
-  .openapi('CreateProjectRequestBody')
-
-const ProjectSchema = z
-  .object({
-    name: z.string().min(1).openapi({ title: 'Name' }),
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    id: z.string().openapi({ title: 'Id' }),
-  })
-  .openapi({ required: ['name', 'id'], title: 'Project' })
-  .openapi('Project')
-
-const CreateProjectResponseBodySchema = z
-  .object({ data: ProjectSchema })
-  .openapi({ required: ['data'], title: 'CreateProjectResponseBody' })
-  .openapi('CreateProjectResponseBody')
+type CompactAgentSessionResponseBodyType = { data: z.infer<typeof PhoenixUIMessageSchema> }
 
 const IdentifierSchema = z
   .string()
@@ -3489,10 +2161,10 @@ const PromptVersionDataSchema = z
   })
   .openapi('PromptVersionData')
 
-const CreatePromptRequestBodySchema = z
-  .object({ prompt: PromptDataSchema, version: PromptVersionDataSchema })
-  .openapi({ required: ['prompt', 'version'], title: 'CreatePromptRequestBody' })
-  .openapi('CreatePromptRequestBody')
+type CreatePromptRequestBodyType = {
+  prompt: z.infer<typeof PromptDataSchema>
+  version: z.infer<typeof PromptVersionDataSchema>
+}
 
 const PromptVersionSchema = z
   .object({
@@ -3604,10 +2276,7 @@ const PromptVersionSchema = z
   })
   .openapi('PromptVersion')
 
-const CreatePromptResponseBodySchema = z
-  .object({ data: PromptVersionSchema })
-  .openapi({ required: ['data'], title: 'CreatePromptResponseBody' })
-  .openapi('CreatePromptResponseBody')
+type CreatePromptResponseBodyType = { data: z.infer<typeof PromptVersionSchema> }
 
 const PromptVersionTagDataSchema = z
   .object({
@@ -3620,7 +2289,1646 @@ const PromptVersionTagDataSchema = z
   .openapi({ required: ['name'], title: 'PromptVersionTagData' })
   .openapi('PromptVersionTagData')
 
-const CreatePromptVersionRequestBodySchema = z
+type CreatePromptVersionRequestBodyType = {
+  version: z.infer<typeof PromptVersionDataSchema>
+  tags?: z.infer<typeof PromptVersionTagDataSchema>[] | null
+}
+
+type CreatePromptVersionResponseBodyType = { data: z.infer<typeof PromptVersionSchema> }
+
+type GetPromptResponseBodyType = { data: z.infer<typeof PromptVersionSchema> }
+
+type GetPromptVersionsResponseBodyType = {
+  data: z.infer<typeof PromptVersionSchema>[]
+  next_cursor: string | null
+}
+
+type ListAgentSessionMessagesResponseBodyType = {
+  data: z.infer<typeof PhoenixUIMessageSchema>[]
+  next_cursor: string | null
+}
+
+const OtlpArrayValueSchema: z.ZodType<OtlpArrayValueType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        values: z
+          .union([z.array(OtlpAnyValueSchema), z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            title: 'Values',
+            description: 'Array of values. The array may be empty (contain 0 elements).',
+          }),
+      })
+      .openapi({ title: 'OtlpArrayValue', required: [] }),
+  )
+  .openapi('OtlpArrayValue')
+
+type OtlpDoubleValueType = 'Infinity' | '-Infinity' | 'NaN'
+
+const OtlpDoubleValueSchema: z.ZodType<OtlpDoubleValueType> = z
+  .enum(['Infinity', '-Infinity', 'NaN'])
+  .openapi({ title: 'OtlpDoubleValue' })
+  .openapi('OtlpDoubleValue')
+
+type OtlpAnyValueType = {
+  array_value?: z.infer<typeof OtlpArrayValueSchema> | null
+  bool_value?: boolean | null
+  bytes_value?: string | null
+  double_value?: number | z.infer<typeof OtlpDoubleValueSchema> | string | null
+  int_value?: number | string | null
+  kvlist_value?: null
+  string_value?: string | null
+}
+
+const OtlpAnyValueSchema: z.ZodType<OtlpAnyValueType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        array_value: z.union([OtlpArrayValueSchema, z.null().nullable()]).exactOptional(),
+        bool_value: z
+          .union([z.boolean(), z.null().nullable()])
+          .exactOptional()
+          .openapi({ title: 'Bool Value' }),
+        bytes_value: z
+          .union([z.string().regex(/^[A-Za-z0-9+\/]*={0,2}$/), z.null().nullable()])
+          .exactOptional()
+          .openapi({ title: 'Bytes Value' }),
+        double_value: z
+          .union([z.number(), OtlpDoubleValueSchema, z.string(), z.null().nullable()])
+          .exactOptional()
+          .openapi({ title: 'Double Value' }),
+        int_value: z
+          .union([
+            z.int().min(-9223372036854776000).lt(9223372036854776000),
+            z.string().regex(/^-?[0-9]+$/),
+            z.null().nullable(),
+          ])
+          .exactOptional()
+          .openapi({ title: 'Int Value' }),
+        kvlist_value: z.null().nullable().exactOptional().openapi({ title: 'Kvlist Value' }),
+        string_value: z
+          .union([z.string(), z.null().nullable()])
+          .exactOptional()
+          .openapi({ title: 'String Value' }),
+      })
+      .openapi({ title: 'OtlpAnyValue', required: [] }),
+  )
+  .openapi('OtlpAnyValue')
+
+type OtlpArrayValueType = { values?: z.infer<typeof OtlpAnyValueSchema>[] | null }
+
+const OtlpKeyValueSchema = z
+  .strictObject({
+    key: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Key' }),
+    value: z.union([OtlpAnyValueSchema, z.null().nullable()]).exactOptional(),
+  })
+  .openapi({ title: 'OtlpKeyValue', required: [] })
+  .openapi('OtlpKeyValue')
+
+const OtlpEventSchema = z
+  .strictObject({
+    attributes: z
+      .union([z.array(OtlpKeyValueSchema), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Attributes',
+        description:
+          'attributes is a collection of attribute key/value pairs on the event. Attribute keys MUST be unique (it is not allowed to have more than one attribute with the same key).',
+      }),
+    dropped_attributes_count: z
+      .union([z.int().min(0).max(4294967295), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Dropped Attributes Count',
+        description:
+          'dropped_attributes_count is the number of dropped attributes. If the value is 0, then no attributes were dropped.',
+      }),
+    name: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Name',
+        description:
+          'name of the event. This field is semantically required to be set to non-empty string.',
+      }),
+    time_unix_nano: z
+      .union([
+        z.int().min(0).lt(18446744073709552000),
+        z.string().regex(/^[0-9]+$/),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({
+        title: 'Time Unix Nano',
+        description:
+          'time_unix_nano is the time the event occurred. Value is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.',
+      }),
+  })
+  .openapi({ title: 'OtlpEvent', required: [] })
+  .openapi('OtlpEvent')
+
+const OtlpKindSchema = z
+  .enum([
+    'SPAN_KIND_UNSPECIFIED',
+    'SPAN_KIND_INTERNAL',
+    'SPAN_KIND_SERVER',
+    'SPAN_KIND_CLIENT',
+    'SPAN_KIND_PRODUCER',
+    'SPAN_KIND_CONSUMER',
+  ])
+  .openapi({ title: 'OtlpKind' })
+  .openapi('OtlpKind')
+
+const OtlpStatusSchema = z
+  .strictObject({
+    code: z
+      .union([z.int().min(-2147483648).max(2147483647), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Code', description: 'The status code.' }),
+    message: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Message',
+        description: 'A developer-facing human readable error message.',
+      }),
+  })
+  .openapi({ title: 'OtlpStatus', required: [] })
+  .openapi('OtlpStatus')
+
+type OtlpSpanType = {
+  attributes?: z.infer<typeof OtlpKeyValueSchema>[] | null
+  dropped_attributes_count?: number | null
+  dropped_events_count?: number | null
+  dropped_links_count?: number | null
+  end_time_unix_nano?: number | string | null
+  events?: z.infer<typeof OtlpEventSchema>[] | null
+  flags?: number | null
+  kind?: z.infer<typeof OtlpKindSchema> | number | null
+  links?: null
+  name?: string | null
+  parent_span_id?: string | null
+  span_id?: string | null
+  start_time_unix_nano?: number | string | null
+  status?: z.infer<typeof OtlpStatusSchema> | null
+  trace_id?: string | null
+  trace_state?: string | null
+}
+
+const OtlpSpanSchema: z.ZodType<OtlpSpanType> = z
+  .strictObject({
+    attributes: z
+      .union([z.array(OtlpKeyValueSchema), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Attributes',
+        description:
+          'attributes is a collection of key/value pairs. Note, global attributes like server name can be set using the resource API. Examples of attributes:\n\n    "/http/user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"\n    "/http/server_latency": 300\n    "example.com/myattribute": true\n    "example.com/score": 10.239\n\nThe OpenTelemetry API specification further restricts the allowed value types:\nhttps://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/common/README.md#attribute\nAttribute keys MUST be unique (it is not allowed to have more than one attribute with the same key).',
+      }),
+    dropped_attributes_count: z
+      .union([z.int().min(0).max(4294967295), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Dropped Attributes Count',
+        description:
+          'dropped_attributes_count is the number of attributes that were discarded. Attributes can be discarded because their keys are too long or because there are too many attributes. If this value is 0, then no attributes were dropped.',
+      }),
+    dropped_events_count: z
+      .union([z.int().min(0).max(4294967295), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Dropped Events Count',
+        description:
+          'dropped_events_count is the number of dropped events. If the value is 0, then no events were dropped.',
+      }),
+    dropped_links_count: z
+      .union([z.int().min(0).max(4294967295), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Dropped Links Count',
+        description:
+          'dropped_links_count is the number of dropped links after the maximum size was enforced. If this value is 0, then no links were dropped.',
+      }),
+    end_time_unix_nano: z
+      .union([
+        z.int().min(0).lt(18446744073709552000),
+        z.string().regex(/^[0-9]+$/),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({
+        title: 'End Time Unix Nano',
+        description:
+          'end_time_unix_nano is the end time of the span. On the client side, this is the time kept by the local machine where the span execution ends. On the server side, this is the time when the server application handler stops running.\nValue is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.\n\nThis field is semantically required and it is expected that end_time >= start_time.',
+      }),
+    events: z
+      .union([z.array(OtlpEventSchema), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Events',
+        description: 'events is a collection of Event items. A span with no events is valid.',
+      }),
+    flags: z
+      .union([z.int().min(0).max(4294967295), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Flags',
+        description:
+          "Flags, a bit field.\n\nBits 0-7 (8 least significant bits) are the trace flags as defined in W3C Trace Context specification. To read the 8-bit W3C trace flag, use `flags & SPAN_FLAGS_TRACE_FLAGS_MASK`.\n\nSee https://www.w3.org/TR/trace-context-2/#trace-flags for the flag definitions.\n\nBits 8 and 9 represent the 3 states of whether a span's parent is remote. The states are (unknown, is not remote, is remote).\nTo read whether the value is known, use `(flags & SPAN_FLAGS_CONTEXT_HAS_IS_REMOTE_MASK) != 0`.\nTo read whether the span is remote, use `(flags & SPAN_FLAGS_CONTEXT_IS_REMOTE_MASK) != 0`.\n\nWhen creating span messages, if the message is logically forwarded from another source with an equivalent flags fields (i.e., usually another OTLP span message), the field SHOULD be copied as-is. If creating from a source that does not have an equivalent flags field (such as a runtime representation of an OpenTelemetry span), the high 22 bits MUST be set to zero.\nReaders MUST NOT assume that bits 10-31 (22 most significant bits) will be zero.\n\n[Optional].",
+      }),
+    kind: z
+      .union([OtlpKindSchema, z.int().min(-2147483648).max(2147483647), z.null().nullable()])
+      .default('SPAN_KIND_INTERNAL')
+      .exactOptional()
+      .openapi({
+        title: 'Kind',
+        description:
+          'Distinguishes between spans generated in a particular context. For example, two spans with the same name may be distinguished using `CLIENT` (caller) and `SERVER` (callee) to identify queueing latency associated with the span.',
+      }),
+    links: z.null().nullable().exactOptional().openapi({ title: 'Links' }),
+    name: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Name',
+        description:
+          "A description of the span's operation.\n\nFor example, the name can be a qualified method name or a file name and a line number where the operation is called. A best practice is to use the same display name at the same call point in an application. This makes it easier to correlate spans in different traces.\n\nThis field is semantically required to be set to non-empty string. Empty value is equivalent to an unknown span name.\n\nThis field is required.",
+      }),
+    parent_span_id: z
+      .union([z.string().regex(/^[A-Za-z0-9+\/]*={0,2}$/), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Parent Span Id',
+        description:
+          "The `span_id` of this span's parent span. If this is a root span, then this field must be empty. The ID is an 8-byte array.",
+      }),
+    span_id: z
+      .union([z.string().regex(/^[A-Za-z0-9+\/]*={0,2}$/), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Span Id',
+        description:
+          'A unique identifier for a span within a trace, assigned when the span is created. The ID is an 8-byte array. An ID with all zeroes OR of length other than 8 bytes is considered invalid (empty string in OTLP/JSON is zero-length and thus is also invalid).\n\nThis field is required.',
+      }),
+    start_time_unix_nano: z
+      .union([
+        z.int().min(0).lt(18446744073709552000),
+        z.string().regex(/^[0-9]+$/),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({
+        title: 'Start Time Unix Nano',
+        description:
+          "start_time_unix_nano is the start time of the span. On the client side, this is the time kept by the local machine where the span execution starts. On the server side, this is the time when the server's application handler starts running.\nValue is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.\n\nThis field is semantically required and it is expected that end_time >= start_time.",
+      }),
+    status: z
+      .union([OtlpStatusSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "An optional final status for this span. Semantically when Status isn't set, it means span's status code is unset, i.e. assume STATUS_CODE_UNSET (code = 0).",
+      }),
+    trace_id: z
+      .union([z.string().regex(/^[A-Za-z0-9+\/]*={0,2}$/), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Trace Id',
+        description:
+          'A unique identifier for a trace. All spans from the same trace share the same `trace_id`. The ID is a 16-byte array. An ID with all zeroes OR of length other than 16 bytes is considered invalid (empty string in OTLP/JSON is zero-length and thus is also invalid).\n\nThis field is required.',
+      }),
+    trace_state: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Trace State',
+        description:
+          'trace_state conveys information about request position in multiple distributed tracing graphs. It is a trace_state in w3c-trace-context format: https://www.w3.org/TR/trace-context/#tracestate-header\nSee also https://github.com/w3c/distributed-tracing for more details about this field.',
+      }),
+  })
+  .openapi({ title: 'OtlpSpan', required: [] })
+  .openapi('OtlpSpan')
+
+type OtlpSpansResponseBodyType = {
+  data: z.infer<typeof OtlpSpanSchema>[]
+  next_cursor: string | null
+}
+
+type SubmitAgentSessionToolApprovalsResponseBodyType = {
+  data: z.infer<typeof PhoenixUIMessageSchema>
+}
+
+type SubmitAgentSessionToolOutputsResponseBodyType = {
+  data: z.infer<typeof PhoenixUIMessageSchema>
+}
+
+const DatasetLabelSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    name: z.string().openapi({ title: 'Name' }),
+    description: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Description' }),
+    color: z.string().openapi({ title: 'Color' }),
+  })
+  .openapi({ required: ['id', 'name', 'description', 'color'], title: 'DatasetLabel' })
+  .openapi('DatasetLabel')
+
+const AddDatasetLabelToDatasetResponseBodySchema = z
+  .object({ data: DatasetLabelSchema })
+  .openapi({ required: ['data'], title: 'AddDatasetLabelToDatasetResponseBody' })
+  .openapi('AddDatasetLabelToDatasetResponseBody')
+
+const AgentSessionConflictErrorSchema = z
+  .object({
+    code: z
+      .enum([
+        'agent_session_busy',
+        'agent_session_model_stale',
+        'agent_session_messages_stale',
+        'agent_session_tool_outputs_conflict',
+        'agent_session_tool_approvals_conflict',
+        'agent_session_already_compact',
+        'agent_session_compaction_conflict',
+      ])
+      .openapi({ title: 'Code', description: 'Machine-readable reason the request conflicted.' }),
+    message: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Message',
+        description: 'Optional human-readable elaboration on the conflict.',
+      }),
+  })
+  .openapi({
+    required: ['code'],
+    title: 'AgentSessionConflictError',
+    description:
+      "Body of every HTTP 409 returned by the agent session routes.\n\n- ``agent_session_busy``: another turn holds the session's turn lock.\n- ``agent_session_model_stale``: the request asserted a model the session\n  is no longer set to; refetch the session before retrying.\n- ``agent_session_messages_stale``: the send's ``lastMessageId`` no longer\n  matches the persisted transcript — another client appended; refetch the\n  transcript and retry.\n- ``agent_session_tool_outputs_conflict``: the submitted ``toolOutputs`` do\n  not match the transcript's trailing assistant message (no trailing\n  assistant message to continue, an unknown ``toolCallId``, or a tool-name\n  mismatch). Unlike ``agent_session_messages_stale`` this is not a\n  concurrent-writer race but an inconsistent request; fix the client\n  rather than retrying.\n- ``agent_session_tool_approvals_conflict``: the submitted ``toolApprovals``\n  do not match the transcript's trailing assistant message (no trailing\n  assistant message to answer, an unknown ``toolCallId``, a call that is\n  not awaiting approval, or a reversal of an already-persisted answer).\n  Like the tool-output conflict this is an inconsistent request rather than\n  a concurrent-writer race; fix the client rather than retrying.\n- ``agent_session_already_compact``: there are no complete turns to\n  compact — either nothing new has finished since the transcript's latest\n  checkpoint, or a concurrent request's checkpoint already covers them.\n  Not retryable; the conversation is as compact as it can get.\n- ``agent_session_compaction_conflict``: the conversation changed while it\n  was being compacted; retry.",
+  })
+  .openapi('AgentSessionConflictError')
+
+const AgentSessionDataSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    title: z.string().openapi({ title: 'Title' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
+    is_ephemeral: z.boolean().openapi({ title: 'Is Ephemeral' }),
+    model: AgentModelSelectionSchema,
+    is_active: z
+      .boolean()
+      .openapi({
+        title: 'Is Active',
+        description:
+          'Whether a response is currently streaming on this session, i.e. its lock has a live (non-stale) heartbeat.',
+      }),
+    last_message_id: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Last Message Id',
+        description:
+          'The message ID of the most recently persisted transcript message, or null for an empty transcript.',
+      }),
+  })
+  .openapi({
+    required: ['id', 'title', 'created_at', 'updated_at', 'is_ephemeral', 'model', 'is_active'],
+    title: 'AgentSessionData',
+  })
+  .openapi('AgentSessionData')
+
+const AgentSessionSummarySchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    title: z.string().openapi({ title: 'Title' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
+    is_ephemeral: z.boolean().openapi({ title: 'Is Ephemeral' }),
+  })
+  .openapi({
+    required: ['id', 'title', 'created_at', 'updated_at', 'is_ephemeral'],
+    title: 'AgentSessionSummary',
+  })
+  .openapi('AgentSessionSummary')
+
+const AnnotationResultSchema = z
+  .object({
+    label: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Label', description: 'The label assigned by the annotation' }),
+    score: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Score', description: 'The score assigned by the annotation' }),
+    explanation: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Explanation', description: 'Explanation of the annotation result' }),
+  })
+  .openapi({ title: 'AnnotationResult', required: [] })
+  .openapi('AnnotationResult')
+
+const SessionAnnotationDataSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name', description: 'The name of the annotation' }),
+    annotator_kind: z
+      .enum(['LLM', 'CODE', 'HUMAN', 'DECISION', 'AGENT'])
+      .openapi({
+        title: 'Annotator Kind',
+        description: 'The kind of annotator used for the annotation',
+      }),
+    result: z
+      .union([AnnotationResultSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The result of the annotation' }),
+    metadata: z
+      .union([z.looseObject({}), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Metadata', description: 'Metadata for the annotation' }),
+    identifier: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        title: 'Identifier',
+        description:
+          'The identifier of the annotation. If provided, the annotation will be updated if it already exists.',
+      }),
+    session_id: z.string().openapi({ title: 'Session Id', description: 'Session ID' }),
+  })
+  .openapi({ required: ['name', 'annotator_kind', 'session_id'], title: 'SessionAnnotationData' })
+  .openapi('SessionAnnotationData')
+
+const AnnotateSessionsRequestBodySchema = z
+  .object({ data: z.array(SessionAnnotationDataSchema).openapi({ title: 'Data' }) })
+  .openapi({ required: ['data'], title: 'AnnotateSessionsRequestBody' })
+  .openapi('AnnotateSessionsRequestBody')
+
+const InsertedSessionAnnotationSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ title: 'Id', description: 'The ID of the inserted session annotation' }),
+  })
+  .openapi({ required: ['id'], title: 'InsertedSessionAnnotation' })
+  .openapi('InsertedSessionAnnotation')
+
+const AnnotateSessionsResponseBodySchema = z
+  .object({ data: z.array(InsertedSessionAnnotationSchema).openapi({ title: 'Data' }) })
+  .openapi({ required: ['data'], title: 'AnnotateSessionsResponseBody' })
+  .openapi('AnnotateSessionsResponseBody')
+
+const SpanDocumentAnnotationDataSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name', description: 'The name of the annotation' }),
+    annotator_kind: z
+      .enum(['LLM', 'CODE', 'HUMAN', 'DECISION', 'AGENT'])
+      .openapi({
+        title: 'Annotator Kind',
+        description: 'The kind of annotator used for the annotation',
+      }),
+    result: z
+      .union([AnnotationResultSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The result of the annotation' }),
+    metadata: z
+      .union([z.looseObject({}), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Metadata', description: 'Metadata for the annotation' }),
+    identifier: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        title: 'Identifier',
+        description:
+          'The identifier of the annotation. If provided, the annotation will be updated if it already exists.',
+      }),
+    span_id: z
+      .string()
+      .openapi({
+        title: 'Span Id',
+        description: 'OpenTelemetry Span ID (hex format w/o 0x prefix)',
+      }),
+    document_position: z
+      .int()
+      .openapi({
+        title: 'Document Position',
+        description:
+          'A 0 based index of the document. E.x. the first document during retrieval is 0',
+      }),
+  })
+  .openapi({
+    required: ['name', 'annotator_kind', 'span_id', 'document_position'],
+    title: 'SpanDocumentAnnotationData',
+  })
+  .openapi('SpanDocumentAnnotationData')
+
+const AnnotateSpanDocumentsRequestBodySchema = z
+  .object({ data: z.array(SpanDocumentAnnotationDataSchema).openapi({ title: 'Data' }) })
+  .openapi({ required: ['data'], title: 'AnnotateSpanDocumentsRequestBody' })
+  .openapi('AnnotateSpanDocumentsRequestBody')
+
+const InsertedSpanDocumentAnnotationSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ title: 'Id', description: 'The ID of the inserted span document annotation' }),
+  })
+  .openapi({ required: ['id'], title: 'InsertedSpanDocumentAnnotation' })
+  .openapi('InsertedSpanDocumentAnnotation')
+
+const AnnotateSpanDocumentsResponseBodySchema = z
+  .object({ data: z.array(InsertedSpanDocumentAnnotationSchema).openapi({ title: 'Data' }) })
+  .openapi({ required: ['data'], title: 'AnnotateSpanDocumentsResponseBody' })
+  .openapi('AnnotateSpanDocumentsResponseBody')
+
+const SpanAnnotationDataSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name', description: 'The name of the annotation' }),
+    annotator_kind: z
+      .enum(['LLM', 'CODE', 'HUMAN', 'DECISION', 'AGENT'])
+      .openapi({
+        title: 'Annotator Kind',
+        description: 'The kind of annotator used for the annotation',
+      }),
+    result: z
+      .union([AnnotationResultSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The result of the annotation' }),
+    metadata: z
+      .union([z.looseObject({}), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Metadata', description: 'Metadata for the annotation' }),
+    identifier: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        title: 'Identifier',
+        description:
+          'The identifier of the annotation. If provided, the annotation will be updated if it already exists.',
+      }),
+    span_id: z
+      .string()
+      .openapi({
+        title: 'Span Id',
+        description: 'OpenTelemetry Span ID (hex format w/o 0x prefix)',
+      }),
+  })
+  .openapi({ required: ['name', 'annotator_kind', 'span_id'], title: 'SpanAnnotationData' })
+  .openapi('SpanAnnotationData')
+
+const AnnotateSpansRequestBodySchema = z
+  .object({ data: z.array(SpanAnnotationDataSchema).openapi({ title: 'Data' }) })
+  .openapi({ required: ['data'], title: 'AnnotateSpansRequestBody' })
+  .openapi('AnnotateSpansRequestBody')
+
+const InsertedSpanAnnotationSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id', description: 'The ID of the inserted span annotation' }),
+  })
+  .openapi({ required: ['id'], title: 'InsertedSpanAnnotation' })
+  .openapi('InsertedSpanAnnotation')
+
+const AnnotateSpansResponseBodySchema = z
+  .object({ data: z.array(InsertedSpanAnnotationSchema).openapi({ title: 'Data' }) })
+  .openapi({ required: ['data'], title: 'AnnotateSpansResponseBody' })
+  .openapi('AnnotateSpansResponseBody')
+
+const TraceAnnotationDataSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name', description: 'The name of the annotation' }),
+    annotator_kind: z
+      .enum(['LLM', 'CODE', 'HUMAN', 'DECISION', 'AGENT'])
+      .openapi({
+        title: 'Annotator Kind',
+        description: 'The kind of annotator used for the annotation',
+      }),
+    result: z
+      .union([AnnotationResultSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({ description: 'The result of the annotation' }),
+    metadata: z
+      .union([z.looseObject({}), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Metadata', description: 'Metadata for the annotation' }),
+    identifier: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        title: 'Identifier',
+        description:
+          'The identifier of the annotation. If provided, the annotation will be updated if it already exists.',
+      }),
+    trace_id: z
+      .string()
+      .openapi({
+        title: 'Trace Id',
+        description: 'OpenTelemetry Trace ID (hex format w/o 0x prefix)',
+      }),
+  })
+  .openapi({ required: ['name', 'annotator_kind', 'trace_id'], title: 'TraceAnnotationData' })
+  .openapi('TraceAnnotationData')
+
+const AnnotateTracesRequestBodySchema = z
+  .object({
+    data: z
+      .array(TraceAnnotationDataSchema)
+      .openapi({ title: 'Data', description: 'The trace annotations to be upserted' }),
+  })
+  .openapi({ required: ['data'], title: 'AnnotateTracesRequestBody' })
+  .openapi('AnnotateTracesRequestBody')
+
+const InsertedTraceAnnotationSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id', description: 'The ID of the inserted trace annotation' }),
+  })
+  .openapi({ required: ['id'], title: 'InsertedTraceAnnotation' })
+  .openapi('InsertedTraceAnnotation')
+
+const AnnotateTracesResponseBodySchema = z
+  .object({ data: z.array(InsertedTraceAnnotationSchema).openapi({ title: 'Data' }) })
+  .openapi({ required: ['data'], title: 'AnnotateTracesResponseBody' })
+  .openapi('AnnotateTracesResponseBody')
+
+const AnonymousUserSchema = z
+  .object({ auth_method: z.literal('ANONYMOUS').openapi({ title: 'Auth Method' }) })
+  .openapi({ required: ['auth_method'], title: 'AnonymousUser' })
+  .openapi('AnonymousUser')
+
+const ApiKeySchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    name: z.string().openapi({ title: 'Name' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
+    expires_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Expires At' }),
+  })
+  .openapi({ required: ['id', 'name', 'created_at'], title: 'ApiKey' })
+  .openapi('ApiKey')
+
+const ApiKeyDataSchema = z
+  .object({
+    name: z
+      .string()
+      .openapi({ title: 'Name', description: 'A human-readable name for the API key.' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Description',
+        description: 'An optional description of what the API key is for.',
+      }),
+    expires_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Expires At',
+        description: 'When the API key expires. The key never expires when omitted.',
+      }),
+  })
+  .openapi({ required: ['name'], title: 'ApiKeyData' })
+  .openapi('ApiKeyData')
+
+const ApiKeyUserSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    username: z.string().openapi({ title: 'Username' }),
+    email: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Email' }),
+  })
+  .openapi({ required: ['id', 'username', 'email'], title: 'ApiKeyUser' })
+  .openapi('ApiKeyUser')
+
+const OptimizationDirectionSchema = z
+  .enum(['MINIMIZE', 'MAXIMIZE', 'NONE'])
+  .openapi({ title: 'OptimizationDirection' })
+  .openapi('OptimizationDirection')
+
+const CategoricalAnnotationValueSchema = z
+  .object({
+    label: z.string().openapi({ title: 'Label' }),
+    score: z.union([z.number(), z.null().nullable()]).exactOptional().openapi({ title: 'Score' }),
+  })
+  .openapi({ required: ['label'], title: 'CategoricalAnnotationValue' })
+  .openapi('CategoricalAnnotationValue')
+
+const CategoricalAnnotationConfigSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name' }),
+    type: z.literal('CATEGORICAL').openapi({ title: 'Type' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    optimization_direction: OptimizationDirectionSchema,
+    values: z.array(CategoricalAnnotationValueSchema).openapi({ title: 'Values' }),
+    id: z.string().openapi({ title: 'Id' }),
+  })
+  .openapi({
+    required: ['name', 'type', 'optimization_direction', 'values', 'id'],
+    title: 'CategoricalAnnotationConfig',
+  })
+  .openapi('CategoricalAnnotationConfig')
+
+const ContinuousAnnotationConfigSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name' }),
+    type: z.literal('CONTINUOUS').openapi({ title: 'Type' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    optimization_direction: OptimizationDirectionSchema,
+    lower_bound: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Lower Bound' }),
+    upper_bound: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Upper Bound' }),
+    id: z.string().openapi({ title: 'Id' }),
+  })
+  .openapi({
+    required: ['name', 'type', 'optimization_direction', 'id'],
+    title: 'ContinuousAnnotationConfig',
+  })
+  .openapi('ContinuousAnnotationConfig')
+
+const FreeformAnnotationConfigSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name' }),
+    type: z.literal('FREEFORM').openapi({ title: 'Type' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    optimization_direction: z
+      .union([OptimizationDirectionSchema, z.null().nullable()])
+      .exactOptional(),
+    threshold: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Threshold' }),
+    lower_bound: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Lower Bound' }),
+    upper_bound: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Upper Bound' }),
+    id: z.string().openapi({ title: 'Id' }),
+  })
+  .openapi({ required: ['name', 'type', 'id'], title: 'FreeformAnnotationConfig' })
+  .openapi('FreeformAnnotationConfig')
+
+const AssignAnnotationConfigToProjectResponseBodySchema = z
+  .object({
+    data: z
+      .discriminatedUnion('type', [
+        CategoricalAnnotationConfigSchema,
+        ContinuousAnnotationConfigSchema,
+        FreeformAnnotationConfigSchema,
+      ])
+      .openapi({
+        title: 'Data',
+        discriminator: {
+          propertyName: 'type',
+          mapping: {
+            CATEGORICAL: '#/components/schemas/CategoricalAnnotationConfig',
+            CONTINUOUS: '#/components/schemas/ContinuousAnnotationConfig',
+            FREEFORM: '#/components/schemas/FreeformAnnotationConfig',
+          },
+        },
+      }),
+  })
+  .openapi({ required: ['data'], title: 'AssignAnnotationConfigToProjectResponseBody' })
+  .openapi('AssignAnnotationConfigToProjectResponseBody')
+
+const BuiltInModelProviderSchema = z
+  .object({
+    provider: ModelProviderSchema.openapi({
+      description:
+        "The provider family identifier, accepted wherever a built-in model provider is specified (e.g. 'OPENAI').",
+    }),
+    name: z
+      .string()
+      .openapi({
+        title: 'Name',
+        description: "The human-readable name of the provider family (e.g. 'OpenAI').",
+      }),
+  })
+  .openapi({ required: ['provider', 'name'], title: 'BuiltInModelProvider' })
+  .openapi('BuiltInModelProvider')
+
+const CategoricalAnnotationConfigDataSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name' }),
+    type: z.literal('CATEGORICAL').openapi({ title: 'Type' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    optimization_direction: OptimizationDirectionSchema,
+    values: z.array(CategoricalAnnotationValueSchema).openapi({ title: 'Values' }),
+  })
+  .openapi({
+    required: ['name', 'type', 'optimization_direction', 'values'],
+    title: 'CategoricalAnnotationConfigData',
+  })
+  .openapi('CategoricalAnnotationConfigData')
+
+const ChatCompletionMessageSchema = z
+  .object({
+    role: z.literal('assistant').default('assistant').exactOptional().openapi({ title: 'Role' }),
+    content: z.string().openapi({ title: 'Content' }),
+  })
+  .openapi({ required: ['content'], title: 'ChatCompletionMessage' })
+  .openapi('ChatCompletionMessage')
+
+const ChatCompletionChoiceSchema = z
+  .object({
+    index: z.int().default(0).exactOptional().openapi({ title: 'Index' }),
+    message: ChatCompletionMessageSchema,
+    finish_reason: z.string().openapi({ title: 'Finish Reason' }),
+  })
+  .openapi({ required: ['message', 'finish_reason'], title: 'ChatCompletionChoice' })
+  .openapi('ChatCompletionChoice')
+
+const ChatCompletionUsagePromptTokensDetailsSchema = z
+  .object({ cached_tokens: z.int().openapi({ title: 'Cached Tokens' }) })
+  .openapi({ required: ['cached_tokens'], title: 'ChatCompletionUsagePromptTokensDetails' })
+  .openapi('ChatCompletionUsagePromptTokensDetails')
+
+const ChatCompletionUsageSchema = z
+  .object({
+    prompt_tokens: z.int().openapi({ title: 'Prompt Tokens' }),
+    completion_tokens: z.int().openapi({ title: 'Completion Tokens' }),
+    total_tokens: z.int().openapi({ title: 'Total Tokens' }),
+    prompt_tokens_details: z
+      .union([ChatCompletionUsagePromptTokensDetailsSchema, z.null().nullable()])
+      .exactOptional(),
+  })
+  .openapi({
+    required: ['prompt_tokens', 'completion_tokens', 'total_tokens'],
+    title: 'ChatCompletionUsage',
+  })
+  .openapi('ChatCompletionUsage')
+
+const ChatCompletionSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    object: z
+      .literal('chat.completion')
+      .default('chat.completion')
+      .exactOptional()
+      .openapi({ title: 'Object' }),
+    created: z.int().openapi({ title: 'Created' }),
+    model: z.string().openapi({ title: 'Model' }),
+    choices: z.array(ChatCompletionChoiceSchema).openapi({ title: 'Choices' }),
+    usage: ChatCompletionUsageSchema,
+  })
+  .openapi({ required: ['id', 'created', 'model', 'choices', 'usage'], title: 'ChatCompletion' })
+  .openapi('ChatCompletion')
+
+const ChatCompletionErrorDetailSchema = z
+  .object({
+    message: z.string().openapi({ title: 'Message' }),
+    type: z.string().openapi({ title: 'Type' }),
+    param: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Param' }),
+    code: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Code' }),
+  })
+  .openapi({ required: ['message', 'type'], title: 'ChatCompletionErrorDetail' })
+  .openapi('ChatCompletionErrorDetail')
+
+const ChatCompletionErrorResponseSchema = z
+  .object({ error: ChatCompletionErrorDetailSchema })
+  .openapi({ required: ['error'], title: 'ChatCompletionErrorResponse' })
+  .openapi('ChatCompletionErrorResponse')
+
+const ChatCompletionTextPartSchema = z
+  .object({
+    type: z.literal('text').openapi({ title: 'Type' }),
+    text: z.string().openapi({ title: 'Text' }),
+  })
+  .openapi({ required: ['type', 'text'], title: 'ChatCompletionTextPart' })
+  .openapi('ChatCompletionTextPart')
+
+const ChatCompletionRequestMessageSchema = z
+  .object({
+    role: z.enum(['system', 'developer', 'user', 'assistant']).openapi({ title: 'Role' }),
+    content: z
+      .union([z.string(), z.array(ChatCompletionTextPartSchema)])
+      .openapi({ title: 'Content' }),
+  })
+  .openapi({ required: ['role', 'content'], title: 'ChatCompletionRequestMessage' })
+  .openapi('ChatCompletionRequestMessage')
+
+const ChatCompletionStreamOptionsSchema = z
+  .object({
+    include_usage: z.boolean().default(false).exactOptional().openapi({ title: 'Include Usage' }),
+  })
+  .openapi({ title: 'ChatCompletionStreamOptions', required: [] })
+  .openapi('ChatCompletionStreamOptions')
+
+const ChatRequestBodySchema: z.ZodType<ChatRequestBodyType> = z
+  .object({
+    headless: z
+      .boolean()
+      .openapi({
+        title: 'Headless',
+        description:
+          'Whether a headless client (terminal or scripted) is driving the turn, as opposed to the browser assistant. Selects the agent configuration the turn runs on.',
+      }),
+    contexts: z.array(ChatContextSchema).exactOptional().openapi({ title: 'Contexts' }),
+    editPermission: z
+      .enum(['manual', 'bypass'])
+      .default('manual')
+      .exactOptional()
+      .openapi({ title: 'Editpermission' }),
+    requestedSkills: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        title: 'Requestedskills',
+        description:
+          "Skills the user explicitly requested via the prompt's slash-command affordance. The server force-loads each available skill by injecting a synthetic load_skill tool call/result at the tail of the message history. Unknown or context-unavailable names are ignored.",
+      }),
+    model: AgentModelSelectionSchema.openapi({
+      description:
+        "The model the client believes the session is set to. This is a precondition, not an instruction: the turn always runs on the session's persisted selection, and a mismatch is rejected with HTTP 409 and code ``agent_session_model_stale`` rather than silently running on — or switching to — an unexpected model. Change the session's model with ``PATCH .../agent_sessions/{session_id}``.",
+    }),
+    trigger: z
+      .literal('submit-message')
+      .default('submit-message')
+      .exactOptional()
+      .openapi({ title: 'Trigger' }),
+    id: z.string().openapi({ title: 'Id' }),
+    message: z
+      .union([PhoenixUIMessageSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "The turn's new user message to append. May be omitted for client-tool continuation, where ``toolOutputs`` resolve the trailing assistant message's pending tool calls instead.",
+      }),
+    toolOutputs: z
+      .array(
+        z.union([
+          PhoenixDbTypesDataStreamProtocolRequestTypesToolOutputAvailablePartSchema,
+          PhoenixDbTypesDataStreamProtocolRequestTypesToolOutputErrorPartSchema,
+          PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolOutputAvailablePartSchema,
+          PhoenixDbTypesDataStreamProtocolRequestTypesDynamicToolOutputErrorPartSchema,
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        title: 'Tooloutputs',
+        description:
+          "Client-executed tool results for pending tool calls on the transcript's trailing assistant message, matched by ``toolCallId``. Submitted alone they continue the assistant turn; submitted with ``message`` they resolve dangling tool calls before the new user turn runs.",
+      }),
+    toolApprovals: z
+      .array(ToolApprovalSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Toolapprovals',
+        description:
+          'Responses to tool calls awaiting approval on the trailing assistant message, matched by ``toolCallId``. Cannot be combined with ``message``.',
+      }),
+    lastMessageId: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Lastmessageid',
+        description:
+          'The id of the last transcript message the client has rendered, used for optimistic concurrency. Omit when the session has no messages; required (and validated against the persisted transcript) once it does. On mismatch the server rejects the send with HTTP 409 and code ``agent_session_messages_stale`` — the client should refetch the session before retrying.',
+      }),
+    credentials: z
+      .array(ChatRequestCredentialSchema)
+      .exactOptional()
+      .openapi({
+        title: 'Credentials',
+        description:
+          "Client-held credentials for optional integrations (e.g. the user's own GitHub personal access token under the key ``GITHUB_PERSONAL_ACCESS_TOKEN``), used only for the duration of the turn and never persisted. Unknown keys are rejected.",
+      }),
+    recordLocalTraces: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ title: 'Recordlocaltraces' }),
+    exportRemoteTraces: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ title: 'Exportremotetraces' }),
+    instrumentUserId: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Instrumentuserid',
+        description:
+          "When true and the request is authenticated as a PhoenixUser, attaches the user's email as the OpenInference ``user.id`` span attribute on all traced work for this request.",
+      }),
+  })
+  .openapi({
+    required: ['headless', 'model', 'id'],
+    title: 'ChatRequestBody',
+    description: 'Assistant chat submit request payload.',
+  })
+  .openapi('ChatRequestBody')
+
+const CompactAgentSessionRequestBodySchema = z
+  .object({
+    model: AgentModelSelectionSchema.openapi({
+      description:
+        "The model the client believes the session is set to. As on the chat route this is a precondition: the summary is generated with the session's persisted selection, and a mismatch is rejected with HTTP 409 and code ``agent_session_model_stale``.",
+    }),
+  })
+  .openapi({
+    required: ['model'],
+    title: 'CompactAgentSessionRequestBody',
+    description: 'Request a model-generated checkpoint for a persisted conversation.',
+  })
+  .openapi('CompactAgentSessionRequestBody')
+
+const CompactAgentSessionResponseBodySchema: z.ZodType<CompactAgentSessionResponseBodyType> = z
+  .object({ data: PhoenixUIMessageSchema })
+  .openapi({
+    required: ['data'],
+    title: 'CompactAgentSessionResponseBody',
+    description:
+      "The checkpoint message this request created. A 200 always means a new\ncheckpoint was persisted; every other outcome is an HTTP 409 whose body's\n``code`` says why (see ``AgentSessionConflictError``).",
+  })
+  .openapi('CompactAgentSessionResponseBody')
+
+const ContinuousAnnotationConfigDataSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name' }),
+    type: z.literal('CONTINUOUS').openapi({ title: 'Type' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    optimization_direction: OptimizationDirectionSchema,
+    lower_bound: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Lower Bound' }),
+    upper_bound: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Upper Bound' }),
+  })
+  .openapi({
+    required: ['name', 'type', 'optimization_direction'],
+    title: 'ContinuousAnnotationConfigData',
+  })
+  .openapi('ContinuousAnnotationConfigData')
+
+const CreateAgentSessionRequestBodySchema = z
+  .object({
+    model: AgentModelSelectionSchema,
+    title: z
+      .string()
+      .max(100)
+      .default('')
+      .exactOptional()
+      .openapi({ title: 'Title', description: 'Optional initial title.' }),
+    is_ephemeral: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Is Ephemeral',
+        description: 'Whether the session should expire after a period of inactivity.',
+      }),
+  })
+  .openapi({
+    required: ['model'],
+    title: 'CreateAgentSessionRequestBody',
+    description: 'Request body for creating a persisted agent session.',
+  })
+  .openapi('CreateAgentSessionRequestBody')
+
+const CreatedAgentSessionSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        title: 'Id',
+        description: "The session's GlobalID — the ``session_id`` the chat route expects.",
+      }),
+  })
+  .openapi({ required: ['id'], title: 'CreatedAgentSession' })
+  .openapi('CreatedAgentSession')
+
+const CreateAgentSessionResponseBodySchema = z
+  .object({ data: CreatedAgentSessionSchema })
+  .openapi({ required: ['data'], title: 'CreateAgentSessionResponseBody' })
+  .openapi('CreateAgentSessionResponseBody')
+
+const FreeformAnnotationConfigDataSchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name' }),
+    type: z.literal('FREEFORM').openapi({ title: 'Type' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    optimization_direction: z
+      .union([OptimizationDirectionSchema, z.null().nullable()])
+      .exactOptional(),
+    threshold: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Threshold' }),
+    lower_bound: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Lower Bound' }),
+    upper_bound: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Upper Bound' }),
+  })
+  .openapi({ required: ['name', 'type'], title: 'FreeformAnnotationConfigData' })
+  .openapi('FreeformAnnotationConfigData')
+
+const CreateAnnotationConfigDataSchema = z
+  .discriminatedUnion('type', [
+    CategoricalAnnotationConfigDataSchema,
+    ContinuousAnnotationConfigDataSchema,
+    FreeformAnnotationConfigDataSchema,
+  ])
+  .openapi({
+    title: 'CreateAnnotationConfigData',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        CATEGORICAL: '#/components/schemas/CategoricalAnnotationConfigData',
+        CONTINUOUS: '#/components/schemas/ContinuousAnnotationConfigData',
+        FREEFORM: '#/components/schemas/FreeformAnnotationConfigData',
+      },
+    },
+  })
+  .openapi('CreateAnnotationConfigData')
+
+const CreateAnnotationConfigResponseBodySchema = z
+  .object({
+    data: z
+      .discriminatedUnion('type', [
+        CategoricalAnnotationConfigSchema,
+        ContinuousAnnotationConfigSchema,
+        FreeformAnnotationConfigSchema,
+      ])
+      .openapi({
+        title: 'Data',
+        discriminator: {
+          propertyName: 'type',
+          mapping: {
+            CATEGORICAL: '#/components/schemas/CategoricalAnnotationConfig',
+            CONTINUOUS: '#/components/schemas/ContinuousAnnotationConfig',
+            FREEFORM: '#/components/schemas/FreeformAnnotationConfig',
+          },
+        },
+      }),
+  })
+  .openapi({ required: ['data'], title: 'CreateAnnotationConfigResponseBody' })
+  .openapi('CreateAnnotationConfigResponseBody')
+
+const CreateApiKeyRequestBodySchema = z
+  .object({ data: ApiKeyDataSchema })
+  .openapi({ required: ['data'], title: 'CreateApiKeyRequestBody' })
+  .openapi('CreateApiKeyRequestBody')
+
+const CreatedApiKeySchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    name: z.string().openapi({ title: 'Name' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
+    expires_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Expires At' }),
+    key: z
+      .string()
+      .openapi({
+        title: 'Key',
+        description:
+          'The API key. This is the only time it is returned; it cannot be recovered from the listing endpoints.',
+      }),
+  })
+  .openapi({ required: ['id', 'name', 'created_at', 'key'], title: 'CreatedApiKey' })
+  .openapi('CreatedApiKey')
+
+const CreateApiKeyResponseBodySchema = z
+  .object({ data: CreatedApiKeySchema })
+  .openapi({ required: ['data'], title: 'CreateApiKeyResponseBody' })
+  .openapi('CreateApiKeyResponseBody')
+
+const CreateChatCompletionRequestBodySchema = z
+  .object({
+    model: z
+      .string()
+      .openapi({
+        title: 'Model',
+        description:
+          "Model must be '{provider}:{model_name}' for a built-in provider (one of anthropic, aws, azure_openai, cerebras, deepseek, fireworks, google, groq, meta, minimax, moonshot, ollama, openai, perplexity, together, xai, zai) or 'custom:{provider_id}:{model_name}' for a stored custom provider, e.g. 'openai:gpt-4o' or 'anthropic:claude-sonnet-4-5'.",
+      }),
+    messages: z.array(ChatCompletionRequestMessageSchema).min(1).openapi({ title: 'Messages' }),
+    stream: z.boolean().default(false).exactOptional().openapi({ title: 'Stream' }),
+    temperature: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Temperature' }),
+    top_p: z.union([z.number(), z.null().nullable()]).exactOptional().openapi({ title: 'Top P' }),
+    max_tokens: z
+      .union([z.int(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Max Tokens' }),
+    max_completion_tokens: z
+      .union([z.int(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Max Completion Tokens' }),
+    stop: z
+      .union([z.string(), z.array(z.string()), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Stop' }),
+    frequency_penalty: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Frequency Penalty' }),
+    presence_penalty: z
+      .union([z.number(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Presence Penalty' }),
+    seed: z.union([z.int(), z.null().nullable()]).exactOptional().openapi({ title: 'Seed' }),
+    n: z.union([z.int(), z.null().nullable()]).exactOptional().openapi({ title: 'N' }),
+    stream_options: z
+      .union([ChatCompletionStreamOptionsSchema, z.null().nullable()])
+      .exactOptional(),
+    tools: z
+      .union([z.array(z.any()), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Tools' }),
+    tool_choice: z
+      .union([z.any(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Tool Choice' }),
+    response_format: z
+      .union([z.looseObject({}), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Response Format' }),
+  })
+  .openapi({
+    required: ['model', 'messages'],
+    title: 'CreateChatCompletionRequestBody',
+    examples: [
+      {
+        messages: [
+          { content: 'You are a helpful assistant.', role: 'system' },
+          { content: 'Say hello.', role: 'user' },
+        ],
+        model: 'openai:gpt-4o',
+      },
+    ],
+  })
+  .openapi('CreateChatCompletionRequestBody')
+
+const CreateDatasetLabelRequestBodySchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .openapi({ title: 'Name', description: 'The name of the dataset label' }),
+    color: z
+      .string()
+      .regex(/^#([0-9a-f]{6})$/)
+      .openapi({
+        title: 'Color',
+        description: "A lowercase hex color code (e.g. '#00cc88') used to display the label",
+      }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Description',
+        description: 'An optional description of the dataset label',
+      }),
+  })
+  .openapi({ required: ['name', 'color'], title: 'CreateDatasetLabelRequestBody' })
+  .openapi('CreateDatasetLabelRequestBody')
+
+const CreateDatasetLabelResponseBodySchema = z
+  .object({ data: DatasetLabelSchema })
+  .openapi({ required: ['data'], title: 'CreateDatasetLabelResponseBody' })
+  .openapi('CreateDatasetLabelResponseBody')
+
+const CreateDatasetSplitRequestBodySchema = z
+  .object({
+    name: z.string().openapi({ title: 'Name', description: 'A unique name for the split.' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description', description: 'An optional description of the split.' }),
+    color: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Color',
+        description: 'An optional hex color for the split (e.g. #33c5e8). Omit for a default.',
+      }),
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ title: 'Metadata', description: 'Arbitrary JSON metadata for the split.' }),
+    example_ids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        title: 'Example Ids',
+        description:
+          'Optional dataset example identifiers (GlobalIDs or user-provided IDs) to seed the split with. Each example must belong to this dataset. Omit to create an empty split.',
+      }),
+  })
+  .openapi({ required: ['name'], title: 'CreateDatasetSplitRequestBody' })
+  .openapi('CreateDatasetSplitRequestBody')
+
+const DatasetSplitSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    name: z.string().openapi({ title: 'Name' }),
+    description: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Description' }),
+    color: z.string().openapi({ title: 'Color' }),
+    metadata: z.looseObject({}).openapi({ title: 'Metadata' }),
+    example_count: z.int().openapi({ title: 'Example Count' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'description',
+      'color',
+      'metadata',
+      'example_count',
+      'created_at',
+      'updated_at',
+    ],
+    title: 'DatasetSplit',
+  })
+  .openapi('DatasetSplit')
+
+const CreateDatasetSplitResponseBodySchema = z
+  .object({ data: DatasetSplitSchema })
+  .openapi({ required: ['data'], title: 'CreateDatasetSplitResponseBody' })
+  .openapi('CreateDatasetSplitResponseBody')
+
+const CreateExperimentRequestBodySchema = z
+  .object({
+    name: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Name',
+        description: 'Name of the experiment (if omitted, a random name will be generated)',
+      }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description', description: 'An optional description of the experiment' }),
+    metadata: z
+      .union([z.looseObject({}), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Metadata', description: 'Metadata for the experiment' }),
+    version_id: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Version Id',
+        description:
+          'ID of the dataset version over which the experiment will be run (if omitted, the latest version will be used)',
+      }),
+    splits: z
+      .union([z.array(z.string()), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Splits',
+        description: 'List of dataset split identifiers (GlobalIDs or names) to filter by',
+      }),
+    repetitions: z
+      .int()
+      .default(1)
+      .exactOptional()
+      .openapi({
+        title: 'Repetitions',
+        description: 'Number of times the experiment should be repeated for each example',
+      }),
+  })
+  .openapi({
+    title: 'CreateExperimentRequestBody',
+    description: 'Details of the experiment to be created',
+    required: [],
+  })
+  .openapi('CreateExperimentRequestBody')
+
+const ExperimentSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id', description: 'The ID of the experiment' }),
+    dataset_id: z
+      .string()
+      .openapi({
+        title: 'Dataset Id',
+        description: 'The ID of the dataset associated with the experiment',
+      }),
+    dataset_version_id: z
+      .string()
+      .openapi({
+        title: 'Dataset Version Id',
+        description: 'The ID of the dataset version associated with the experiment',
+      }),
+    name: z.string().openapi({ title: 'Name', description: 'The name of the experiment' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({ title: 'Description', description: 'The description of the experiment' }),
+    repetitions: z
+      .int()
+      .gt(0)
+      .openapi({ title: 'Repetitions', description: 'Number of times the experiment is repeated' }),
+    metadata: z
+      .looseObject({})
+      .openapi({ title: 'Metadata', description: 'Metadata of the experiment' }),
+    project_name: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({
+        title: 'Project Name',
+        description: 'The name of the project associated with the experiment',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ title: 'Created At', description: 'The creation timestamp of the experiment' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ title: 'Updated At', description: 'The last update timestamp of the experiment' }),
+    example_count: z
+      .int()
+      .openapi({ title: 'Example Count', description: 'Number of examples in the experiment' }),
+    successful_run_count: z
+      .int()
+      .openapi({
+        title: 'Successful Run Count',
+        description: 'Number of successful runs in the experiment',
+      }),
+    failed_run_count: z
+      .int()
+      .openapi({
+        title: 'Failed Run Count',
+        description: 'Number of failed runs in the experiment',
+      }),
+    missing_run_count: z
+      .int()
+      .openapi({
+        title: 'Missing Run Count',
+        description: 'Number of missing (not yet executed) runs in the experiment',
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'dataset_id',
+      'dataset_version_id',
+      'name',
+      'description',
+      'repetitions',
+      'metadata',
+      'project_name',
+      'created_at',
+      'updated_at',
+      'example_count',
+      'successful_run_count',
+      'failed_run_count',
+      'missing_run_count',
+    ],
+    title: 'Experiment',
+  })
+  .openapi('Experiment')
+
+const CreateExperimentResponseBodySchema = z
+  .object({ data: ExperimentSchema })
+  .openapi({ required: ['data'], title: 'CreateExperimentResponseBody' })
+  .openapi('CreateExperimentResponseBody')
+
+const CreateExperimentRunRequestBodySchema = z
+  .object({
+    dataset_example_id: z
+      .string()
+      .openapi({
+        title: 'Dataset Example Id',
+        description: 'The ID of the dataset example used in the experiment run',
+      }),
+    output: z.any().openapi({ title: 'Output', description: 'The output of the experiment task' }),
+    repetition_number: z
+      .int()
+      .gt(0)
+      .openapi({
+        title: 'Repetition Number',
+        description: 'The repetition number of the experiment run',
+      }),
+    start_time: z.iso
+      .datetime({ offset: true })
+      .openapi({ title: 'Start Time', description: 'The start time of the experiment run' }),
+    end_time: z.iso
+      .datetime({ offset: true })
+      .openapi({ title: 'End Time', description: 'The end time of the experiment run' }),
+    trace_id: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Trace Id',
+        description: 'The ID of the corresponding trace (if one exists)',
+      }),
+    error: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Error',
+        description: 'Optional error message if the experiment run encountered an error',
+      }),
+  })
+  .openapi({
+    required: ['dataset_example_id', 'output', 'repetition_number', 'start_time', 'end_time'],
+    title: 'CreateExperimentRunRequestBody',
+  })
+  .openapi('CreateExperimentRunRequestBody')
+
+const CreateExperimentRunResponseBodyDataSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ title: 'Id', description: 'The ID of the newly created experiment run' }),
+  })
+  .openapi({ required: ['id'], title: 'CreateExperimentRunResponseBodyData' })
+  .openapi('CreateExperimentRunResponseBodyData')
+
+const CreateExperimentRunResponseBodySchema = z
+  .object({ data: CreateExperimentRunResponseBodyDataSchema })
+  .openapi({ required: ['data'], title: 'CreateExperimentRunResponseBody' })
+  .openapi('CreateExperimentRunResponseBody')
+
+const CreateProjectRequestBodySchema = z
+  .object({
+    name: z.string().min(1).openapi({ title: 'Name' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+  })
+  .openapi({ required: ['name'], title: 'CreateProjectRequestBody' })
+  .openapi('CreateProjectRequestBody')
+
+const ProjectSchema = z
+  .object({
+    name: z.string().min(1).openapi({ title: 'Name' }),
+    description: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Description' }),
+    id: z.string().openapi({ title: 'Id' }),
+  })
+  .openapi({ required: ['name', 'id'], title: 'Project' })
+  .openapi('Project')
+
+const CreateProjectResponseBodySchema = z
+  .object({ data: ProjectSchema })
+  .openapi({ required: ['data'], title: 'CreateProjectResponseBody' })
+  .openapi('CreateProjectResponseBody')
+
+const CreatePromptRequestBodySchema: z.ZodType<CreatePromptRequestBodyType> = z
+  .object({ prompt: PromptDataSchema, version: PromptVersionDataSchema })
+  .openapi({ required: ['prompt', 'version'], title: 'CreatePromptRequestBody' })
+  .openapi('CreatePromptRequestBody')
+
+const CreatePromptResponseBodySchema: z.ZodType<CreatePromptResponseBodyType> = z
+  .object({ data: PromptVersionSchema })
+  .openapi({ required: ['data'], title: 'CreatePromptResponseBody' })
+  .openapi('CreatePromptResponseBody')
+
+const CreatePromptVersionRequestBodySchema: z.ZodType<CreatePromptVersionRequestBodyType> = z
   .object({
     version: PromptVersionDataSchema,
     tags: z
@@ -3631,7 +3939,7 @@ const CreatePromptVersionRequestBodySchema = z
   .openapi({ required: ['version'], title: 'CreatePromptVersionRequestBody' })
   .openapi('CreatePromptVersionRequestBody')
 
-const CreatePromptVersionResponseBodySchema = z
+const CreatePromptVersionResponseBodySchema: z.ZodType<CreatePromptVersionResponseBodyType> = z
   .object({ data: PromptVersionSchema })
   .openapi({ required: ['data'], title: 'CreatePromptVersionResponseBody' })
   .openapi('CreatePromptVersionResponseBody')
@@ -4469,7 +4777,7 @@ const GetProjectsResponseBodySchema = z
   .openapi({ required: ['data', 'next_cursor'], title: 'GetProjectsResponseBody' })
   .openapi('GetProjectsResponseBody')
 
-const GetPromptResponseBodySchema = z
+const GetPromptResponseBodySchema: z.ZodType<GetPromptResponseBodyType> = z
   .object({ data: PromptVersionSchema })
   .openapi({ required: ['data'], title: 'GetPromptResponseBody' })
   .openapi('GetPromptResponseBody')
@@ -4494,7 +4802,7 @@ const GetPromptVersionTagsResponseBodySchema = z
   .openapi({ required: ['data', 'next_cursor'], title: 'GetPromptVersionTagsResponseBody' })
   .openapi('GetPromptVersionTagsResponseBody')
 
-const GetPromptVersionsResponseBodySchema = z
+const GetPromptVersionsResponseBodySchema: z.ZodType<GetPromptVersionsResponseBodyType> = z
   .object({
     data: z.array(PromptVersionSchema).openapi({ title: 'Data' }),
     next_cursor: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Next Cursor' }),
@@ -4724,7 +5032,7 @@ const ValidationErrorSchema = z
     msg: z.string().openapi({ title: 'Message' }),
     type: z.string().openapi({ title: 'Error Type' }),
     input: z.any().exactOptional().openapi({ title: 'Input' }),
-    ctx: z.object({}).exactOptional().openapi({ title: 'Context' }),
+    ctx: z.looseObject({}).exactOptional().openapi({ title: 'Context' }),
   })
   .openapi({ required: ['loc', 'msg', 'type'], title: 'ValidationError' })
   .openapi('ValidationError')
@@ -5124,13 +5432,14 @@ const LegacyChatRequestSchema = z
   })
   .openapi('LegacyChatRequest')
 
-const ListAgentSessionMessagesResponseBodySchema = z
-  .object({
-    data: z.array(PhoenixUIMessageSchema).openapi({ title: 'Data' }),
-    next_cursor: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Next Cursor' }),
-  })
-  .openapi({ required: ['data', 'next_cursor'], title: 'ListAgentSessionMessagesResponseBody' })
-  .openapi('ListAgentSessionMessagesResponseBody')
+const ListAgentSessionMessagesResponseBodySchema: z.ZodType<ListAgentSessionMessagesResponseBodyType> =
+  z
+    .object({
+      data: z.array(PhoenixUIMessageSchema).openapi({ title: 'Data' }),
+      next_cursor: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Next Cursor' }),
+    })
+    .openapi({ required: ['data', 'next_cursor'], title: 'ListAgentSessionMessagesResponseBody' })
+    .openapi('ListAgentSessionMessagesResponseBody')
 
 const ListAgentSessionsResponseBodySchema = z
   .object({
@@ -5205,220 +5514,7 @@ const ListExperimentsResponseBodySchema = z
   .openapi({ required: ['data', 'next_cursor'], title: 'ListExperimentsResponseBody' })
   .openapi('ListExperimentsResponseBody')
 
-const OtlpKeyValueSchema = z
-  .strictObject({
-    key: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Key' }),
-    value: z.union([OtlpAnyValueSchema, z.null().nullable()]).exactOptional(),
-  })
-  .openapi({ title: 'OtlpKeyValue', required: [] })
-  .openapi('OtlpKeyValue')
-
-const OtlpEventSchema = z
-  .strictObject({
-    attributes: z
-      .union([z.array(OtlpKeyValueSchema), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Attributes',
-        description:
-          'attributes is a collection of attribute key/value pairs on the event. Attribute keys MUST be unique (it is not allowed to have more than one attribute with the same key).',
-      }),
-    dropped_attributes_count: z
-      .union([z.int().min(0).max(4294967295), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Dropped Attributes Count',
-        description:
-          'dropped_attributes_count is the number of dropped attributes. If the value is 0, then no attributes were dropped.',
-      }),
-    name: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Name',
-        description:
-          'name of the event. This field is semantically required to be set to non-empty string.',
-      }),
-    time_unix_nano: z
-      .union([
-        z.int().min(0).lt(18446744073709552000),
-        z.string().regex(/^[0-9]+$/),
-        z.null().nullable(),
-      ])
-      .exactOptional()
-      .openapi({
-        title: 'Time Unix Nano',
-        description:
-          'time_unix_nano is the time the event occurred. Value is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.',
-      }),
-  })
-  .openapi({ title: 'OtlpEvent', required: [] })
-  .openapi('OtlpEvent')
-
-const OtlpKindSchema = z
-  .enum([
-    'SPAN_KIND_UNSPECIFIED',
-    'SPAN_KIND_INTERNAL',
-    'SPAN_KIND_SERVER',
-    'SPAN_KIND_CLIENT',
-    'SPAN_KIND_PRODUCER',
-    'SPAN_KIND_CONSUMER',
-  ])
-  .openapi({ title: 'OtlpKind' })
-  .openapi('OtlpKind')
-
-const OtlpStatusSchema = z
-  .strictObject({
-    code: z
-      .union([z.int().min(-2147483648).max(2147483647), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Code', description: 'The status code.' }),
-    message: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Message',
-        description: 'A developer-facing human readable error message.',
-      }),
-  })
-  .openapi({ title: 'OtlpStatus', required: [] })
-  .openapi('OtlpStatus')
-
-const OtlpSpanSchema = z
-  .strictObject({
-    attributes: z
-      .union([z.array(OtlpKeyValueSchema), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Attributes',
-        description:
-          'attributes is a collection of key/value pairs. Note, global attributes like server name can be set using the resource API. Examples of attributes:\n\n    "/http/user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"\n    "/http/server_latency": 300\n    "example.com/myattribute": true\n    "example.com/score": 10.239\n\nThe OpenTelemetry API specification further restricts the allowed value types:\nhttps://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/common/README.md#attribute\nAttribute keys MUST be unique (it is not allowed to have more than one attribute with the same key).',
-      }),
-    dropped_attributes_count: z
-      .union([z.int().min(0).max(4294967295), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Dropped Attributes Count',
-        description:
-          'dropped_attributes_count is the number of attributes that were discarded. Attributes can be discarded because their keys are too long or because there are too many attributes. If this value is 0, then no attributes were dropped.',
-      }),
-    dropped_events_count: z
-      .union([z.int().min(0).max(4294967295), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Dropped Events Count',
-        description:
-          'dropped_events_count is the number of dropped events. If the value is 0, then no events were dropped.',
-      }),
-    dropped_links_count: z
-      .union([z.int().min(0).max(4294967295), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Dropped Links Count',
-        description:
-          'dropped_links_count is the number of dropped links after the maximum size was enforced. If this value is 0, then no links were dropped.',
-      }),
-    end_time_unix_nano: z
-      .union([
-        z.int().min(0).lt(18446744073709552000),
-        z.string().regex(/^[0-9]+$/),
-        z.null().nullable(),
-      ])
-      .exactOptional()
-      .openapi({
-        title: 'End Time Unix Nano',
-        description:
-          'end_time_unix_nano is the end time of the span. On the client side, this is the time kept by the local machine where the span execution ends. On the server side, this is the time when the server application handler stops running.\nValue is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.\n\nThis field is semantically required and it is expected that end_time >= start_time.',
-      }),
-    events: z
-      .union([z.array(OtlpEventSchema), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Events',
-        description: 'events is a collection of Event items. A span with no events is valid.',
-      }),
-    flags: z
-      .union([z.int().min(0).max(4294967295), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Flags',
-        description:
-          "Flags, a bit field.\n\nBits 0-7 (8 least significant bits) are the trace flags as defined in W3C Trace Context specification. To read the 8-bit W3C trace flag, use `flags & SPAN_FLAGS_TRACE_FLAGS_MASK`.\n\nSee https://www.w3.org/TR/trace-context-2/#trace-flags for the flag definitions.\n\nBits 8 and 9 represent the 3 states of whether a span's parent is remote. The states are (unknown, is not remote, is remote).\nTo read whether the value is known, use `(flags & SPAN_FLAGS_CONTEXT_HAS_IS_REMOTE_MASK) != 0`.\nTo read whether the span is remote, use `(flags & SPAN_FLAGS_CONTEXT_IS_REMOTE_MASK) != 0`.\n\nWhen creating span messages, if the message is logically forwarded from another source with an equivalent flags fields (i.e., usually another OTLP span message), the field SHOULD be copied as-is. If creating from a source that does not have an equivalent flags field (such as a runtime representation of an OpenTelemetry span), the high 22 bits MUST be set to zero.\nReaders MUST NOT assume that bits 10-31 (22 most significant bits) will be zero.\n\n[Optional].",
-      }),
-    kind: z
-      .union([OtlpKindSchema, z.int().min(-2147483648).max(2147483647), z.null().nullable()])
-      .default('SPAN_KIND_INTERNAL')
-      .exactOptional()
-      .openapi({
-        title: 'Kind',
-        description:
-          'Distinguishes between spans generated in a particular context. For example, two spans with the same name may be distinguished using `CLIENT` (caller) and `SERVER` (callee) to identify queueing latency associated with the span.',
-      }),
-    links: z.null().nullable().exactOptional().openapi({ title: 'Links' }),
-    name: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Name',
-        description:
-          "A description of the span's operation.\n\nFor example, the name can be a qualified method name or a file name and a line number where the operation is called. A best practice is to use the same display name at the same call point in an application. This makes it easier to correlate spans in different traces.\n\nThis field is semantically required to be set to non-empty string. Empty value is equivalent to an unknown span name.\n\nThis field is required.",
-      }),
-    parent_span_id: z
-      .union([z.string().regex(/^[A-Za-z0-9+\/]*={0,2}$/), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Parent Span Id',
-        description:
-          "The `span_id` of this span's parent span. If this is a root span, then this field must be empty. The ID is an 8-byte array.",
-      }),
-    span_id: z
-      .union([z.string().regex(/^[A-Za-z0-9+\/]*={0,2}$/), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Span Id',
-        description:
-          'A unique identifier for a span within a trace, assigned when the span is created. The ID is an 8-byte array. An ID with all zeroes OR of length other than 8 bytes is considered invalid (empty string in OTLP/JSON is zero-length and thus is also invalid).\n\nThis field is required.',
-      }),
-    start_time_unix_nano: z
-      .union([
-        z.int().min(0).lt(18446744073709552000),
-        z.string().regex(/^[0-9]+$/),
-        z.null().nullable(),
-      ])
-      .exactOptional()
-      .openapi({
-        title: 'Start Time Unix Nano',
-        description:
-          "start_time_unix_nano is the start time of the span. On the client side, this is the time kept by the local machine where the span execution starts. On the server side, this is the time when the server's application handler starts running.\nValue is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.\n\nThis field is semantically required and it is expected that end_time >= start_time.",
-      }),
-    status: z
-      .union([OtlpStatusSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        description:
-          "An optional final status for this span. Semantically when Status isn't set, it means span's status code is unset, i.e. assume STATUS_CODE_UNSET (code = 0).",
-      }),
-    trace_id: z
-      .union([z.string().regex(/^[A-Za-z0-9+\/]*={0,2}$/), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Trace Id',
-        description:
-          'A unique identifier for a trace. All spans from the same trace share the same `trace_id`. The ID is a 16-byte array. An ID with all zeroes OR of length other than 16 bytes is considered invalid (empty string in OTLP/JSON is zero-length and thus is also invalid).\n\nThis field is required.',
-      }),
-    trace_state: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Trace State',
-        description:
-          'trace_state conveys information about request position in multiple distributed tracing graphs. It is a trace_state in w3c-trace-context format: https://www.w3.org/TR/trace-context/#tracestate-header\nSee also https://github.com/w3c/distributed-tracing for more details about this field.',
-      }),
-  })
-  .openapi({ title: 'OtlpSpan', required: [] })
-  .openapi('OtlpSpan')
-
-const OtlpSpansResponseBodySchema = z
+const OtlpSpansResponseBodySchema: z.ZodType<OtlpSpansResponseBodyType> = z
   .object({
     data: z.array(OtlpSpanSchema).openapi({ title: 'Data' }),
     next_cursor: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Next Cursor' }),
@@ -5781,14 +5877,15 @@ const SubmitAgentSessionToolApprovalsRequestBodySchema = z
   })
   .openapi('SubmitAgentSessionToolApprovalsRequestBody')
 
-const SubmitAgentSessionToolApprovalsResponseBodySchema = z
-  .object({ data: PhoenixUIMessageSchema })
-  .openapi({
-    required: ['data'],
-    title: 'SubmitAgentSessionToolApprovalsResponseBody',
-    description: 'The trailing assistant message with the submitted approvals applied.',
-  })
-  .openapi('SubmitAgentSessionToolApprovalsResponseBody')
+const SubmitAgentSessionToolApprovalsResponseBodySchema: z.ZodType<SubmitAgentSessionToolApprovalsResponseBodyType> =
+  z
+    .object({ data: PhoenixUIMessageSchema })
+    .openapi({
+      required: ['data'],
+      title: 'SubmitAgentSessionToolApprovalsResponseBody',
+      description: 'The trailing assistant message with the submitted approvals applied.',
+    })
+    .openapi('SubmitAgentSessionToolApprovalsResponseBody')
 
 const SubmitAgentSessionToolOutputsRequestBodySchema = z
   .object({
@@ -5822,14 +5919,15 @@ const SubmitAgentSessionToolOutputsRequestBodySchema = z
   })
   .openapi('SubmitAgentSessionToolOutputsRequestBody')
 
-const SubmitAgentSessionToolOutputsResponseBodySchema = z
-  .object({ data: PhoenixUIMessageSchema })
-  .openapi({
-    required: ['data'],
-    title: 'SubmitAgentSessionToolOutputsResponseBody',
-    description: 'The trailing assistant message with the submitted outputs applied.',
-  })
-  .openapi('SubmitAgentSessionToolOutputsResponseBody')
+const SubmitAgentSessionToolOutputsResponseBodySchema: z.ZodType<SubmitAgentSessionToolOutputsResponseBodyType> =
+  z
+    .object({ data: PhoenixUIMessageSchema })
+    .openapi({
+      required: ['data'],
+      title: 'SubmitAgentSessionToolOutputsResponseBody',
+      description: 'The trailing assistant message with the submitted outputs applied.',
+    })
+    .openapi('SubmitAgentSessionToolOutputsResponseBody')
 
 const TraceAnnotationSchema = z
   .object({
@@ -8746,9 +8844,9 @@ export const postV1DatasetsUploadRoute = createRoute({
               action: z.enum(['create', 'append', 'update']).exactOptional(),
               name: z.string(),
               description: z.string().exactOptional(),
-              inputs: z.array(z.object({})),
-              outputs: z.array(z.object({})).exactOptional(),
-              metadata: z.array(z.object({})).exactOptional(),
+              inputs: z.array(z.looseObject({})),
+              outputs: z.array(z.looseObject({})).exactOptional(),
+              metadata: z.array(z.looseObject({})).exactOptional(),
               splits: z
                 .array(z.xor([z.string(), z.array(z.string()), z.null().nullable()]))
                 .exactOptional()

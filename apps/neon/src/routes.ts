@@ -32,7 +32,7 @@ const PaginationResponseSchema = z
   .openapi('PaginationResponse')
 
 const EmptyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Empty response.' })
   .openapi('EmptyResponse')
 
@@ -446,7 +446,7 @@ const DefaultEndpointSettingsSchema = z
     suspend_timeout_seconds: SuspendTimeoutSecondsSchema.exactOptional(),
   })
   .catchall(z.string())
-  .openapi({ description: 'A collection of settings for a Neon endpoint' })
+  .openapi({ description: 'A collection of settings for a Neon endpoint', required: [] })
   .openapi('DefaultEndpointSettings')
 
 const ProjectQuotaSchema = z

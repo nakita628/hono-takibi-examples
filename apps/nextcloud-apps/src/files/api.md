@@ -2371,23 +2371,7 @@ bearer_auth, basic_auth
 {
   "files": {
     "windows_compatible_filenames": true,
-    "$comment": "string",
     "bigfilechunking": true,
-    "blacklisted_files": [
-      {}
-    ],
-    "forbidden_filenames": [
-      "string"
-    ],
-    "forbidden_filename_basenames": [
-      "string"
-    ],
-    "forbidden_filename_characters": [
-      "string"
-    ],
-    "forbidden_filename_extensions": [
-      "string"
-    ],
     "chunked_upload": {
       "max_size": 0,
       "max_parallel_count": 0
@@ -2461,6 +2445,42 @@ bearer_auth, basic_auth
 |message|string|false|none|none|
 |totalitems|string|false|none|none|
 |itemsperpage|string|false|none|none|
+
+<h2 id="tocS_PublicCapabilities">PublicCapabilities</h2>
+<!-- backwards compatibility -->
+<a id="schemapubliccapabilities"></a>
+<a id="schema_PublicCapabilities"></a>
+<a id="tocSpubliccapabilities"></a>
+<a id="tocspubliccapabilities"></a>
+
+```json
+{
+  "files": {
+    "$comment": "string",
+    "blacklisted_files": [
+      {}
+    ],
+    "forbidden_filenames": [
+      "string"
+    ],
+    "forbidden_filename_basenames": [
+      "string"
+    ],
+    "forbidden_filename_characters": [
+      "string"
+    ],
+    "forbidden_filename_extensions": [
+      "string"
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|files|object|true|none|none|
 
 <h2 id="tocS_Template">Template</h2>
 <!-- backwards compatibility -->

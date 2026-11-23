@@ -7208,26 +7208,20 @@ const _200DomesticPaymentConsentsConsentIdFundsConfirmationReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteFundsConfirmationResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7239,26 +7233,20 @@ const _200DomesticPaymentConsentsConsentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticConsentResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7270,26 +7258,20 @@ const _200DomesticPaymentsDomesticPaymentIdPaymentDetailsReadResponse = {
     'application/json; charset=utf-8': { schema: OBWritePaymentDetailsResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7301,26 +7283,20 @@ const _200DomesticPaymentsDomesticPaymentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7332,26 +7308,20 @@ const _200DomesticScheduledPaymentConsentsConsentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticScheduledConsentResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7363,26 +7333,20 @@ const _200DomesticScheduledPaymentsDomesticScheduledPaymentIdPaymentDetailsReadR
     'application/json; charset=utf-8': { schema: OBWritePaymentDetailsResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7394,26 +7358,20 @@ const _200DomesticScheduledPaymentsDomesticScheduledPaymentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticScheduledResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7427,26 +7385,20 @@ const _200DomesticStandingOrderConsentsConsentIdReadResponse = {
     },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7458,26 +7410,20 @@ const _200DomesticStandingOrdersDomesticStandingOrderIdPaymentDetailsReadRespons
     'application/json; charset=utf-8': { schema: OBWritePaymentDetailsResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7489,42 +7435,33 @@ const _200DomesticStandingOrdersDomesticStandingOrderIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticStandingOrderResponse6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
 const _200FilePaymentConsentsConsentIdFileCreatedResponse = {
   description: 'File Payment Consents Created',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7536,26 +7473,20 @@ const _200FilePaymentConsentsConsentIdFileReadResponse = {
     'application/json; charset=utf-8': { schema: FileSchema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7567,26 +7498,20 @@ const _200FilePaymentConsentsConsentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteFileConsentResponse4Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7598,26 +7523,20 @@ const _200FilePaymentsFilePaymentIdPaymentDetailsReadResponse = {
     'application/json; charset=utf-8': { schema: OBWritePaymentDetailsResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7629,26 +7548,20 @@ const _200FilePaymentsFilePaymentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteFileResponse3Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7660,26 +7573,20 @@ const _200FilePaymentsFilePaymentIdReportFileReadResponse = {
     'application/json; charset=utf-8': { schema: FileSchema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7691,26 +7598,20 @@ const _200InternationalPaymentConsentsConsentIdFundsConfirmationReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteFundsConfirmationResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7722,26 +7623,20 @@ const _200InternationalPaymentConsentsConsentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteInternationalConsentResponse6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7753,26 +7648,20 @@ const _200InternationalPaymentsInternationalPaymentIdPaymentDetailsReadResponse 
     'application/json; charset=utf-8': { schema: OBWritePaymentDetailsResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7784,26 +7673,20 @@ const _200InternationalPaymentsInternationalPaymentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBWriteInternationalResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7815,26 +7698,20 @@ const _200InternationalScheduledPaymentConsentsConsentIdFundsConfirmationReadRes
     'application/json; charset=utf-8': { schema: OBWriteFundsConfirmationResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7848,26 +7725,20 @@ const _200InternationalScheduledPaymentConsentsConsentIdReadResponse = {
     },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7880,26 +7751,20 @@ const _200InternationalScheduledPaymentsInternationalScheduledPaymentIdPaymentDe
       'application/json; charset=utf-8': { schema: OBWritePaymentDetailsResponse1Schema },
     },
     headers: z.object({
-      'x-fapi-interaction-id': {
-        description: 'An RFC4122 UID used as a correlation id.',
-        schema: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'An RFC4122 UID used as a correlation id.',
-            param: { required: false },
-          }),
-      },
-      'x-jws-signature': {
-        description: 'Header containing a detached JWS signature of the body of the payload.\n',
-        schema: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Header containing a detached JWS signature of the body of the payload.\n',
-            param: { required: false },
-          }),
-      },
+      'x-fapi-interaction-id': z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'An RFC4122 UID used as a correlation id.',
+          param: { required: false },
+        }),
+      'x-jws-signature': z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Header containing a detached JWS signature of the body of the payload.\n',
+          param: { required: false },
+        }),
     }),
   }
 
@@ -7911,26 +7776,20 @@ const _200InternationalScheduledPaymentsInternationalScheduledPaymentIdReadRespo
     'application/json; charset=utf-8': { schema: OBWriteInternationalScheduledResponse6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7944,26 +7803,20 @@ const _200InternationalStandingOrderConsentsConsentIdReadResponse = {
     },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -7976,26 +7829,20 @@ const _200InternationalStandingOrdersInternationalStandingOrderPaymentIdPaymentD
       'application/json; charset=utf-8': { schema: OBWritePaymentDetailsResponse1Schema },
     },
     headers: z.object({
-      'x-fapi-interaction-id': {
-        description: 'An RFC4122 UID used as a correlation id.',
-        schema: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'An RFC4122 UID used as a correlation id.',
-            param: { required: false },
-          }),
-      },
-      'x-jws-signature': {
-        description: 'Header containing a detached JWS signature of the body of the payload.\n',
-        schema: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Header containing a detached JWS signature of the body of the payload.\n',
-            param: { required: false },
-          }),
-      },
+      'x-fapi-interaction-id': z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'An RFC4122 UID used as a correlation id.',
+          param: { required: false },
+        }),
+      'x-jws-signature': z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Header containing a detached JWS signature of the body of the payload.\n',
+          param: { required: false },
+        }),
     }),
   }
 
@@ -8007,26 +7854,20 @@ const _200InternationalStandingOrdersInternationalStandingOrderPaymentIdReadResp
     'application/json; charset=utf-8': { schema: OBWriteInternationalStandingOrderResponse7Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8038,26 +7879,20 @@ const _201DomesticPaymentConsentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticConsentResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8069,26 +7904,20 @@ const _201DomesticPaymentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8100,26 +7929,20 @@ const _201DomesticScheduledPaymentConsentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticScheduledConsentResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8131,26 +7954,20 @@ const _201DomesticScheduledPaymentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticScheduledResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8164,26 +7981,20 @@ const _201DomesticStandingOrderConsentsCreatedResponse = {
     },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8195,26 +8006,20 @@ const _201DomesticStandingOrdersCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteDomesticStandingOrderResponse6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8226,26 +8031,20 @@ const _201FilePaymentConsentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteFileConsentResponse4Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8257,26 +8056,20 @@ const _201FilePaymentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteFileResponse3Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8288,26 +8081,20 @@ const _201InternationalPaymentConsentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteInternationalConsentResponse6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8319,26 +8106,20 @@ const _201InternationalPaymentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteInternationalResponse5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8352,26 +8133,20 @@ const _201InternationalScheduledPaymentConsentsCreatedResponse = {
     },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8383,26 +8158,20 @@ const _201InternationalScheduledPaymentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteInternationalScheduledResponse6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8416,26 +8185,20 @@ const _201InternationalStandingOrderConsentsCreatedResponse = {
     },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8447,26 +8210,20 @@ const _201InternationalStandingOrdersCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBWriteInternationalStandingOrderResponse7Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8478,42 +8235,33 @@ const _400ErrorResponse = {
     'application/json; charset=utf-8': { schema: OBErrorResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
 const _401ErrorResponse = {
   description: 'Unauthorized',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8525,113 +8273,89 @@ const _403ErrorResponse = {
     'application/json; charset=utf-8': { schema: OBErrorResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 
 const _404ErrorResponse = {
   description: 'Not found',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _405ErrorResponse = {
   description: 'Method Not Allowed',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _406ErrorResponse = {
   description: 'Not Acceptable',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _415ErrorResponse = {
   description: 'Unsupported Media Type',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _429ErrorResponse = {
   description: 'Too Many Requests',
   headers: z.object({
-    'Retry-After': {
-      description: 'Number in seconds to wait',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'Number in seconds to wait', param: { required: false } }),
-    },
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number in seconds to wait', param: { required: false } }),
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -8643,26 +8367,20 @@ const _500ErrorResponse = {
     'application/json; charset=utf-8': { schema: OBErrorResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
-    'x-jws-signature': {
-      description: 'Header containing a detached JWS signature of the body of the payload.\n',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Header containing a detached JWS signature of the body of the payload.\n',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
+    'x-jws-signature': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Header containing a detached JWS signature of the body of the payload.\n',
+        param: { required: false },
+      }),
   }),
 }
 

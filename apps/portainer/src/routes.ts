@@ -16737,7 +16737,7 @@ export const putEndpointsIdForceupdateserviceRoute = createRoute({
     },
     400: { description: 'Invalid request' },
     403: { description: 'Permission denied' },
-    404: { description: 'endpoint not found' },
+    404: { description: 'endpoint not found, or service not found or not accessible' },
     500: { description: 'Server error' },
   },
   security: [{ ApiKeyAuth: [] }, { jwt: [] }],
@@ -26077,13 +26077,15 @@ export const putStacksIdRoute = createRoute({
               : val,
           z.int(),
         )
+        .exactOptional()
         .openapi({
           param: {
-            description: 'Environment identifier',
+            description:
+              'Environment(endpoint) identifier the stack belongs to. It can only be used by an administrator to bind a legacy stack that has no environment recorded.',
             in: 'query',
             name: 'endpointId',
-            required: true,
             schema: { type: 'integer' },
+            required: false,
           },
         }),
     }),
@@ -26364,7 +26366,7 @@ export const postStacksIdGitRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Stacks created before version 1.18.0 might not have an associated environment(endpoint) identifier. Use this optional parameter to set the environment(endpoint) identifier used by the stack.',
+              'Environment(Endpoint) identifier the stack belongs to. It can only be used by an administrator to bind a legacy stack that has no environment recorded.',
             in: 'query',
             name: 'endpointId',
             schema: { type: 'integer' },
@@ -26435,7 +26437,7 @@ export const putStacksIdGitRedeployRoute = createRoute({
         .openapi({
           param: {
             description:
-              'Stacks created before version 1.18.0 might not have an associated environment(endpoint) identifier. Use this optional parameter to set the environment(endpoint) identifier used by the stack.',
+              'Environment(Endpoint) identifier the stack belongs to. It can only be used by an administrator to bind a legacy stack that has no environment recorded.',
             in: 'query',
             name: 'endpointId',
             schema: { type: 'integer' },
@@ -26582,7 +26584,7 @@ export const postStacksIdStartRoute = createRoute({
         )
         .openapi({
           param: {
-            description: 'Environment identifier',
+            description: 'Environment(Endpoint) identifier the stack belongs to',
             in: 'query',
             name: 'endpointId',
             required: true,
@@ -26644,7 +26646,7 @@ export const postStacksIdStopRoute = createRoute({
         )
         .openapi({
           param: {
-            description: 'Environment identifier',
+            description: 'Environment(Endpoint) identifier the stack belongs to',
             in: 'query',
             name: 'endpointId',
             required: true,
@@ -28997,6 +28999,8 @@ export const getWebsocketExecRoute = createRoute({
   responses: {
     200: { description: 'OK' },
     400: { description: 'Bad Request' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
     409: { description: 'Conflict' },
     500: { description: 'Internal Server Error' },
   },

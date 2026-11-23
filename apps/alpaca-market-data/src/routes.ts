@@ -1046,6 +1046,7 @@ const CorporateActionEventSchema = z
     description:
       'A single corporate-action mutation delivered over the\n[Corporate Actions Events Stream](#operation/SubscribeToCorporateActionsEventsSSE).\n\nEvery event uses the same envelope. The `event_type` field selects which of\nthe 15 per-type schemas populates `ca`; see\n[`corporate_action_event_type`](#/components/schemas/corporate_action_event_type)\nfor the full mapping and follow the link on each row to the per-type `ca`\npayload schema.\n\nOptional fields (including `currency` and, on most CA types, `isin`) are\nomitted from the JSON when empty; `null` is never emitted.\n',
     discriminator: {
+      propertyName: 'event_type',
       mapping: {
         capital_gains_distribution_corporateaction_event:
           '#/components/schemas/corporate_action_event_capital_gains_distribution',
@@ -1077,7 +1078,6 @@ const CorporateActionEventSchema = z
         worthless_removal_corporateaction_event:
           '#/components/schemas/corporate_action_event_worthless_removal',
       },
-      propertyName: 'event_type',
     },
   })
   .openapi('CorporateActionEvent')
@@ -1748,9 +1748,17 @@ const CryptoLatestOrderbooksRespSchema = z
 const CryptoQuoteSchema = z
   .object({
     ap: z.float64().openapi({ description: 'Ask price.' }),
-    as: z.float64().openapi({ description: 'Ask size.' }),
+    as: z
+      .float64()
+      .openapi({
+        description: 'Ask size in the base asset (left side of the pair), with no lot multiplier.',
+      }),
     bp: z.float64().openapi({ description: 'Bid price.' }),
-    bs: z.float64().openapi({ description: 'Bid size.' }),
+    bs: z
+      .float64()
+      .openapi({
+        description: 'Bid size in the base asset (left side of the pair), with no lot multiplier.',
+      }),
     t: TimestampSchema,
   })
   .openapi({
@@ -2105,11 +2113,10 @@ const NewsImageSchema = z
 
 const NewsSchema = z
   .object({
-    author: z.string().min(1).openapi({ description: 'Original author of news article.' }),
+    author: z.string().openapi({ description: 'Original author of news article (may be empty).' }),
     content: z
       .string()
-      .min(1)
-      .openapi({ description: 'Content of the news article (might contain HTML).' }),
+      .openapi({ description: 'Content of the news article (might contain HTML, may be empty).' }),
     created_at: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Date article was created (RFC-3339).' }),
@@ -2136,14 +2143,13 @@ const NewsSchema = z
         }
       })
       .openapi({ description: 'List of images (URLs) related to given article (may be empty).' }),
-    source: z
-      .string()
-      .min(1)
-      .openapi({ description: 'Source where the news originated from (e.g. Benzinga).' }),
+    source: z.string().min(1).openapi({ description: 'Source from which the news originated.' }),
     summary: z
       .string()
-      .min(1)
-      .openapi({ description: 'Summary text for the article (may be first sentence of content).' }),
+      .openapi({
+        description:
+          'Summary text for the article (may be first sentence of content or may be empty).',
+      }),
     symbols: z.array(z.string()).openapi({ description: 'List of related or mentioned symbols.' }),
     updated_at: z.iso
       .datetime({ offset: true })
@@ -2369,6 +2375,11 @@ const SortSchema = z
   .default('asc')
   .openapi({ description: 'Sort data in ascending or descending order.' })
   .openapi('Sort')
+
+const StockAdjustmentSchema = z
+  .enum(['raw', 'split', 'dividend', 'spin-off', 'all'])
+  .openapi({ description: 'One adjustment applied to historical stock bars.' })
+  .openapi('StockAdjustment')
 
 const StockAuctionSchema = z
   .object({
@@ -2702,11 +2713,11 @@ const StockSnapshotsRespSchema = z
   .record(z.string(), StockSnapshotSchema)
   .openapi('StockSnapshotsResp')
 
-const StockSnapshotsRespSingleSchema = z
-  .object({ currency: z.string().exactOptional(), symbol: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .and(StockSnapshotSchema)
-  .openapi('StockSnapshotsRespSingle')
+const StockSnapshotsRespSingleSchema = StockSnapshotSchema.and(
+  z
+    .object({ currency: z.string().exactOptional(), symbol: z.string().exactOptional() })
+    .openapi({ required: [] }),
+).openapi('StockSnapshotsRespSingle')
 
 const StockTradesRespSchema = z
   .object({
@@ -2726,6 +2737,188 @@ const StockTradesRespSingleSchema = z
   })
   .openapi({ required: ['trades', 'next_page_token', 'symbol'] })
   .openapi('StockTradesRespSingle')
+
+const StockV3BarSchema = z
+  .object({
+    c: z
+      .string()
+      .openapi({
+        description: 'Price of the last trade in the bar, in the native quotation currency.',
+      }),
+    h: z
+      .string()
+      .openapi({
+        description: 'Highest trade price in the bar, in the native quotation currency.',
+      }),
+    l: z
+      .string()
+      .openapi({ description: 'Lowest trade price in the bar, in the native quotation currency.' }),
+    n: z.string().openapi({ description: 'Number of trades in the bar.' }),
+    o: z
+      .string()
+      .openapi({
+        description: 'Price of the first trade in the bar, in the native quotation currency.',
+      }),
+    t: TimestampSchema,
+    v: z.string().openapi({ description: 'Number of shares traded in the bar.' }),
+    vw: z
+      .string()
+      .openapi({
+        description:
+          'Volume-weighted average price of the trades in the bar, in the native quotation currency.',
+      }),
+  })
+  .openapi({
+    description:
+      'OHLC aggregate of trades in an interval.\nBars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used.\nBars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.\n',
+    examples: [
+      {
+        c: '57.88',
+        h: '60.08',
+        l: '57.88',
+        n: '14950',
+        o: '59.92',
+        t: '2026-09-22T22:00:00Z',
+        v: '2540940',
+        vw: '58.365',
+      },
+    ],
+    required: ['t', 'o', 'h', 'l', 'c', 'v', 'n', 'vw'],
+  })
+  .openapi('StockV3Bar')
+
+const StockV3BarsRespSchema = z
+  .object({
+    bars: z
+      .record(z.string(), z.array(StockV3BarSchema))
+      .openapi({ description: 'Bars keyed by symbol (`TICKER:MIC`).' }),
+    next_page_token: NextPageTokenSchema,
+  })
+  .openapi({ required: ['bars', 'next_page_token'] })
+  .openapi('StockV3BarsResp')
+
+const StockV3HistoricalFeedSchema = z
+  .enum(['euroctp', 'xetr', 'xhkg', 'xlon', 'xsau'])
+  .openapi('StockV3HistoricalFeed')
+
+const StockV3LatestBarsRespSchema = z
+  .object({
+    bars: z
+      .record(z.string(), StockV3BarSchema)
+      .openapi({ description: 'The latest minute bars keyed by symbol (`TICKER:MIC`).' }),
+  })
+  .openapi({ required: ['bars'] })
+  .openapi('StockV3LatestBarsResp')
+
+const StockV3LatestFeedSchema = z
+  .enum(['euroctp', 'xetr', 'xhkg', 'xlon', 'xsau'])
+  .openapi('StockV3LatestFeed')
+
+const StockV3QuoteSchema = z
+  .object({
+    ap: z.string().openapi({ description: 'Best ask price, in the native quotation currency.' }),
+    as: z.string().openapi({ description: 'Number of shares available at the best ask price.' }),
+    bp: z.string().openapi({ description: 'Best bid price, in the native quotation currency.' }),
+    bs: z.string().openapi({ description: 'Number of shares available at the best bid price.' }),
+    t: TimestampSchema,
+  })
+  .openapi({
+    description: 'The best bid and offer (BBO) for the symbol.\n',
+    examples: [
+      { ap: '57.84', as: '260', bp: '57.82', bs: '520', t: '2026-09-24T13:30:00.041325568Z' },
+    ],
+    required: ['t', 'bp', 'bs', 'ap', 'as'],
+  })
+  .openapi('StockV3Quote')
+
+const StockV3LatestQuotesRespSchema = z
+  .object({
+    quotes: z
+      .record(z.string(), StockV3QuoteSchema)
+      .openapi({ description: 'The latest quotes keyed by symbol (`TICKER:MIC`).' }),
+  })
+  .openapi({ required: ['quotes'] })
+  .openapi('StockV3LatestQuotesResp')
+
+const StockV3TradeSchema = z
+  .object({
+    i: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Trade ID. Omitted when the venue does not publish one.' }),
+    m: z
+      .string()
+      .openapi({
+        description:
+          'MIC of the execution venue that published the print. It can differ from the listing MIC in the symbol.',
+      }),
+    p: z.string().openapi({ description: 'Trade price, in the native quotation currency.' }),
+    s: z.string().openapi({ description: 'Number of shares traded.' }),
+    t: TimestampSchema,
+  })
+  .openapi({
+    description:
+      'A trade print published by an execution venue.\nTrades may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.\n',
+    examples: [
+      { i: '1', m: 'XETR', p: '57.84', s: '120', t: '2026-09-24T13:30:00.086175744Z' },
+      { m: 'CEUX', p: '57.84', s: '45', t: '2026-09-24T13:30:01.244839680Z' },
+    ],
+    required: ['t', 'm', 'p', 's'],
+  })
+  .openapi('StockV3Trade')
+
+const StockV3LatestTradesRespSchema = z
+  .object({
+    trades: z
+      .record(z.string(), StockV3TradeSchema)
+      .openapi({ description: 'The latest trades keyed by symbol (`TICKER:MIC`).' }),
+  })
+  .openapi({ required: ['trades'] })
+  .openapi('StockV3LatestTradesResp')
+
+const StockV3QuotesRespSchema = z
+  .object({
+    next_page_token: NextPageTokenSchema,
+    quotes: z
+      .record(z.string(), z.array(StockV3QuoteSchema))
+      .openapi({ description: 'Quotes keyed by symbol (`TICKER:MIC`).' }),
+  })
+  .openapi({ required: ['quotes', 'next_page_token'] })
+  .openapi('StockV3QuotesResp')
+
+const StockV3SnapshotSchema = z
+  .object({
+    daily_bar: StockV3BarSchema.exactOptional(),
+    latest_quote: StockV3QuoteSchema.exactOptional(),
+    latest_trade: StockV3TradeSchema.exactOptional(),
+    minute_bar: StockV3BarSchema.exactOptional(),
+    prev_daily_bar: StockV3BarSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The latest trade, latest quote, minute bar, current daily bar, and previous daily bar for one symbol.\nBars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used.\nTrades and bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.\n',
+    required: [],
+  })
+  .openapi('StockV3Snapshot')
+
+const StockV3SnapshotsRespSchema = z
+  .object({
+    snapshots: z
+      .record(z.string(), StockV3SnapshotSchema)
+      .openapi({ description: 'Snapshots keyed by symbol (`TICKER:MIC`).' }),
+  })
+  .openapi({ required: ['snapshots'] })
+  .openapi('StockV3SnapshotsResp')
+
+const StockV3TradesRespSchema = z
+  .object({
+    next_page_token: NextPageTokenSchema,
+    trades: z
+      .record(z.string(), z.array(StockV3TradeSchema))
+      .openapi({ description: 'Trades keyed by symbol (`TICKER:MIC`).' }),
+  })
+  .openapi({ required: ['trades', 'next_page_token'] })
+  .openapi('StockV3TradesResp')
 
 const RatelimitLimitHeaderSchema = z
   .int()
@@ -2764,7 +2957,15 @@ const _401Response = {
     'Authentication headers are missing or invalid. Make sure you authenticate your request with a valid API key.\n',
 }
 
-const _403Response = { description: 'The requested resource is forbidden.\n' }
+const _403Response = {
+  description:
+    'The requested resource is forbidden, for example because the subscription does not cover the requested data.\n',
+}
+
+const _404Response = {
+  description:
+    'The requested resource was not found, for example because the requested feed does not exist.\n',
+}
 
 const _429Response = {
   description:
@@ -3207,7 +3408,7 @@ const NewsSortParamsSchema = z
 const OptionFeedParamsSchema = OptionFeedSchema.openapi({
   param: {
     description:
-      'The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the user has a subscription, otherwise `indicative`.\n',
+      'The source feed of the data. `opra` is the official OPRA feed, `indicative` is a free indicative feed where trades are delayed and quotes are modified. Default: `opra` if the request uses broker partner API credentials and the partner has an OPRA subscription, or if the account has a real-time subscription and has signed the OPRA agreement; otherwise `indicative`.\n',
     in: 'query',
     name: 'feed',
     schema: { $ref: '#/components/schemas/option_feed' },
@@ -3215,7 +3416,7 @@ const OptionFeedParamsSchema = OptionFeedSchema.openapi({
   },
 }).exactOptional()
 
-const OptionLimitParamsSchema = z
+const OptionSnapshotLimitParamsSchema = z
   .preprocess(
     (val) =>
       typeof val === 'string' &&
@@ -3292,16 +3493,14 @@ const PageTokenParamsSchema = z
     },
   })
 
-const SortParamsSchema = z
-  .string()
-  .and(SortSchema)
+const SortParamsSchema = SortSchema.and(z.string())
   .exactOptional()
   .openapi({
     param: {
       description: 'Sort data in ascending or descending order.',
       in: 'query',
       name: 'sort',
-      schema: { allOf: [{ type: 'string' }, { $ref: '#/components/schemas/sort' }] },
+      schema: { allOf: [{ $ref: '#/components/schemas/sort' }, { type: 'string' }] },
       required: false,
     },
   })
@@ -3336,16 +3535,32 @@ const StartParamsSchema = z.iso
   })
 
 const StockAdjustmentParamsSchema = z
-  .string()
-  .default('raw')
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z.array(StockAdjustmentSchema).min(1),
+  )
+  .default(['raw'])
   .exactOptional()
   .openapi({
     param: {
       description:
-        'Specifies the adjustments for the bars.\n\n - `raw`: no adjustments\n - `split`: adjust price and volume for forward and reverse stock splits\n - `dividend`: adjust price for cash dividends\n - `spin-off`: adjust price for spin-offs\n - `all`: apply all above adjustments\n\nYou can combine multiple adjustments by separating them with a comma, e.g. `split,spin-off`.\n',
+        'Specifies the adjustments for the bars. Passed as a comma-separated list, e.g. `split,spin-off`.\n\n - `raw`: no adjustments\n - `split`: adjust price and volume for forward and reverse stock splits\n - `dividend`: adjust price for cash dividends\n - `spin-off`: adjust price for spin-offs\n - `all`: apply split, dividend, and spin-off adjustments\n\nDefault: `raw`.\n\nThe following are rejected with a `400`:\n - Unknown values\n - Empty values\n - Repeated keys like `?adjustment=split&adjustment=all`\n',
+      example: ['split', 'spin-off'],
+      explode: false,
       in: 'query',
       name: 'adjustment',
-      schema: { default: 'raw', type: 'string' },
+      schema: {
+        default: ['raw'],
+        items: { $ref: '#/components/schemas/stock_adjustment' },
+        minItems: 1,
+        type: 'array',
+      },
+      style: 'form',
       required: false,
     },
   })
@@ -3428,6 +3643,145 @@ const StockSymbolsParamsSchema = z
     param: {
       description: 'A comma-separated list of stock symbols.',
       example: 'AAPL,TSLA',
+      in: 'query',
+      name: 'symbols',
+      required: true,
+      schema: { type: 'string' },
+    },
+  })
+
+const StockV3EndParamsSchema = z
+  .union([z.iso.datetime({ offset: true }), z.iso.date()])
+  .exactOptional()
+  .openapi({
+    param: {
+      description:
+        "The inclusive end of the interval. A data point is returned when `start <= t <= end`. Format: RFC-3339 or YYYY-MM-DD.\nA date means the end of that day in the market's time zone.\nDefaults to the current time if not specified.\n",
+      examples: {
+        'RFC-3339 nanosecond': {
+          summary: 'RFC-3339 date-time with nanosecond accuracy',
+          value: '2026-09-24T01:02:03.123456789Z',
+        },
+        'RFC-3339 second': {
+          summary: 'RFC-3339 date-time with second accuracy',
+          value: '2026-09-24T00:00:00Z',
+        },
+        'RFC-3339 with timezone': {
+          summary: 'RFC-3339 date-time with time zone',
+          value: '2026-09-24T09:30:00-04:00',
+        },
+        date: { summary: 'Date', value: '2026-09-24' },
+      },
+      in: 'query',
+      name: 'end',
+      required: false,
+      schema: {
+        anyOf: [
+          { format: 'date-time', type: 'string' },
+          { format: 'date', type: 'string' },
+        ],
+      },
+    },
+  })
+
+const StockV3HistoricalFeedParamsSchema = StockV3HistoricalFeedSchema.openapi({
+  param: {
+    description:
+      'The source feed of the data. All feeds require a subscription.\n - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues\n - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)\n - `xhkg`: Hong Kong Stock Exchange (HKEX)\n - `xlon`: London Stock Exchange (LSE)\n - `xsau`: Saudi Exchange (Tadawul)\n',
+    example: 'xetr',
+    in: 'path',
+    name: 'feed',
+    required: true,
+    schema: { $ref: '#/components/schemas/stock_v3_historical_feed' },
+  },
+})
+
+const StockV3LatestFeedParamsSchema = StockV3LatestFeedSchema.openapi({
+  param: {
+    description:
+      'The source feed of the data. All feeds require a subscription.\n - `euroctp`: EuroCTP, the official EU consolidated tape, covering trades from all EU trading venues\n - `xetr`: Xetra, the electronic trading venue of the Frankfurt Stock Exchange (Deutsche Börse)\n - `xhkg`: Hong Kong Stock Exchange (HKEX)\n - `xlon`: London Stock Exchange (LSE)\n - `xsau`: Saudi Exchange (Tadawul)\n',
+    example: 'xetr',
+    in: 'path',
+    name: 'feed',
+    required: true,
+    schema: { $ref: '#/components/schemas/stock_v3_latest_feed' },
+  },
+})
+
+const StockV3PageSizeParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int().min(1).max(10000),
+  )
+  .default(1000)
+  .exactOptional()
+  .openapi({
+    param: {
+      description:
+        'The maximum number of data points to return in the response page.\nThe page_size applies to the total number of data points across all symbols, not per symbol.\nThe API may return fewer, even if more data points exist in the requested interval.\nAlways check `next_page_token` for more pages.\n',
+      in: 'query',
+      name: 'page_size',
+      required: false,
+      schema: { default: 1000, maximum: 10000, minimum: 1, type: 'integer' },
+    },
+  })
+
+const StockV3SortParamsSchema = SortSchema.and(z.string())
+  .exactOptional()
+  .openapi({
+    param: {
+      description:
+        'Sort the data points of each symbol by timestamp in ascending or descending order.',
+      in: 'query',
+      name: 'sort',
+      schema: { allOf: [{ $ref: '#/components/schemas/sort' }, { type: 'string' }] },
+      required: false,
+    },
+  })
+
+const StockV3StartParamsSchema = z.union([z.iso.datetime({ offset: true }), z.iso.date()]).openapi({
+  param: {
+    description:
+      "The inclusive start of the interval. Format: RFC-3339 or YYYY-MM-DD.\nA date means the start of that day in the market's time zone.\n",
+    examples: {
+      'RFC-3339 nanosecond': {
+        summary: 'RFC-3339 date-time with nanosecond accuracy',
+        value: '2026-09-23T01:02:03.123456789Z',
+      },
+      'RFC-3339 second': {
+        summary: 'RFC-3339 date-time with second accuracy',
+        value: '2026-09-23T00:00:00Z',
+      },
+      'RFC-3339 with timezone': {
+        summary: 'RFC-3339 date-time with time zone',
+        value: '2026-09-23T09:30:00-04:00',
+      },
+      date: { summary: 'Date', value: '2026-09-23' },
+    },
+    in: 'query',
+    name: 'start',
+    required: true,
+    schema: {
+      anyOf: [
+        { format: 'date-time', type: 'string' },
+        { format: 'date', type: 'string' },
+      ],
+    },
+  },
+})
+
+const StockV3SymbolsParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      description:
+        "A comma-separated list of symbols with a limit of 1000.\nEach symbol must be in `TICKER:MIC` format, where MIC is the ISO 10383 defined code of the symbol's primary market.\nThe market must be one the feed covers, e.g. `XETR` on `xetr`; `euroctp` accepts any market.\n",
+      example: 'BMW:XETR,SAP:XETR',
       in: 'query',
       name: 'symbols',
       required: true,
@@ -3958,7 +4312,6 @@ export const getV1beta1EventsCorporateActionsRoute = createRoute({
   servers: [
     { description: 'Production', url: 'https://stream.data.alpaca.markets' },
     { description: 'Sandbox', url: 'https://stream.data.sandbox.alpaca.markets' },
-    { description: 'Staging', url: 'https://stream.data.staging-v2.tradetalk.us' },
   ],
 })
 
@@ -4230,23 +4583,51 @@ export const getV1beta1NewsRoute = createRoute({
               value: {
                 news: [
                   {
-                    author: 'Charles Gross',
+                    author: '',
                     content:
-                      '<p>This headline-only article is meant to show you why a stock is moving, the most difficult aspect of stock trading....</p>',
-                    created_at: '2021-12-31T11:08:42Z',
-                    headline:
-                      'Apple Leader in Phone Sales in China for Second Straight Month in November With 23.6% Share, According to Market Research Data',
-                    id: 24843171,
+                      "Following the release of SpaceX's third-quarter 2026 financial results, several analysts have updated their outlook on the company. UBS maintained a Buy rating while raising its price target to $230 from $210. Additionally, Wells Fargo maintained an Overweight rating and increased its price target to $274 from $214. These adjustments reflect analyst reactions to the company's reported revenue growth and strategic focus on artificial intelligence.",
+                    created_at: '2026-10-21T15:02:10Z',
+                    headline: 'Analysts Adjust Price Targets for SpaceX Following Q3 Results',
+                    id: 100536145,
                     images: [],
+                    source: 'fiscal.ai',
+                    summary:
+                      "Financial institutions including UBS and Wells Fargo have updated their price targets for SpaceX following the company's third-quarter earnings report.",
+                    symbols: ['SPCX'],
+                    updated_at: '2026-10-21T15:02:10Z',
+                    url: 'https://www.moomoo.com/stock/SPCX-US/news?chain_id=Name1K9-3FXPhg.1lcj000&global_content=%7B%22promote_id%22%3A13764,%22sub_promote_id%22%3A64,%22f%22%3A%22www.moomoo.com%2Fcommunity%2Fprofile%2F105275796%2Fpost%2Fall%22%7D',
+                  },
+                  {
+                    author: 'Badar Shaikh',
+                    content:
+                      "<p>It was yet another eventful week for <strong>Tesla Inc</strong> (NASDAQ:TSLA) and CEO <strong>Elon Musk</strong> amid the Roadster's high-flying debut, questions about a possible SpaceX merger and more.</p>",
+                    created_at: '2026-10-18T12:51:02Z',
+                    headline:
+                      "This Week in TSLA: Roadster's Flying Debut, Cybercab Speeding in School Zones, SpaceX Merger and More",
+                    id: 62429279,
+                    images: [
+                      {
+                        size: 'large',
+                        url: 'https://cdn.benzinga.com/files/images/story/2026/10/18/Kaunas--Lithuania-2022---April-14-Tesla-.jpg?width=2048&height=1536',
+                      },
+                      {
+                        size: 'small',
+                        url: 'https://cdn.benzinga.com/files/images/story/2026/10/18/Kaunas--Lithuania-2022---April-14-Tesla-.jpg?width=1024&height=768',
+                      },
+                      {
+                        size: 'thumb',
+                        url: 'https://cdn.benzinga.com/files/images/story/2026/10/18/Kaunas--Lithuania-2022---April-14-Tesla-.jpg?width=250&height=187',
+                      },
+                    ],
                     source: 'benzinga',
                     summary:
-                      'This headline-only article is meant to show you why a stock is moving, the most difficult aspect of stock trading',
-                    symbols: ['AAPL'],
-                    updated_at: '2021-12-31T11:08:43Z',
-                    url: 'https://www.benzinga.com/news/21/12/24843171/apple-leader-in-phone-sales-in-china-for-second-straight-month-in-november-with-23-6-share-according',
+                      'This week, Tesla unveiled its flying Roadster, faced Cybercab questions and merger speculation with SpaceX.',
+                    symbols: ['SPCX', 'TSLA'],
+                    updated_at: '2026-10-18T12:51:02Z',
+                    url: 'https://www.benzinga.com/markets/tech/26/10/62429279/this-week-in-tsla-roadsters-flying-debut-cybercab-speeding-in-school-zones-spacex-merger-and-more',
                   },
                 ],
-                next_page_token: 'MTY0MDk0ODkyMzAwMDAwMDAwMHwyNDg0MzE3MQ==',
+                next_page_token: 'MTc5MjMyNzg2MjAwMDAwMDAwMHw2MjQyOTI3OQ==',
               },
             },
           },
@@ -4468,7 +4849,7 @@ export const getV1beta1OptionsSnapshotsRoute = createRoute({
       symbols: OptionSymbolsParamsSchema,
       feed: OptionFeedParamsSchema,
       updated_since: OptionUpdatedSinceParamsSchema,
-      limit: OptionLimitParamsSchema,
+      limit: OptionSnapshotLimitParamsSchema,
       page_token: PageTokenParamsSchema,
     }),
   },
@@ -4543,7 +4924,7 @@ export const getV1beta1OptionsSnapshotsUnderlyingSymbolRoute = createRoute({
     params: z.object({ underlying_symbol: OptionUnderlyingSymbolParamsSchema }),
     query: z.object({
       feed: OptionFeedParamsSchema,
-      limit: OptionLimitParamsSchema,
+      limit: OptionSnapshotLimitParamsSchema,
       updated_since: OptionUpdatedSinceParamsSchema,
       page_token: PageTokenParamsSchema,
       type: z
@@ -6708,6 +7089,466 @@ export const getV2StocksTradesLatestRoute = createRoute({
     400: _400Response,
     401: _401Response,
     403: _403Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ apiKey: [], apiSecret: [] }, { BasicAuth: [] }],
+})
+
+export const getV3StocksFeedBarsRoute = createRoute({
+  method: 'get',
+  path: '/v3/stocks/{feed}/bars',
+  tags: ['Stock v3'],
+  summary: 'Historical bars',
+  description:
+    "The historical bars API provides aggregates for a list of symbols between the specified times.\n\nBars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used. Bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.\n\nDaily, weekly and monthly bars start at midnight in the market's time zone. Weekly bars start on the market's first trading day of the week.\n\nThe bars of each symbol are sorted by timestamp. The order of symbols is not guaranteed. Continue with `next_page_token`.\n",
+  operationId: 'StockV3Bars',
+  request: {
+    params: z.object({ feed: StockV3HistoricalFeedParamsSchema }),
+    query: z.object({
+      symbols: StockV3SymbolsParamsSchema,
+      timeframe: TimeframeParamsSchema,
+      start: StockV3StartParamsSchema,
+      end: StockV3EndParamsSchema,
+      sort: StockV3SortParamsSchema,
+      page_size: StockV3PageSizeParamsSchema,
+      page_token: PageTokenParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: StockV3BarsRespSchema,
+          examples: {
+            xlon: {
+              summary: 'VOD:XLON daily bars on the xlon feed, two per page',
+              value: {
+                bars: {
+                  'VOD:XLON': [
+                    {
+                      c: '116.95',
+                      h: '117.506',
+                      l: '115.6',
+                      n: '4274',
+                      o: '116.1',
+                      t: '2026-11-09T00:00:00Z',
+                      v: '41294069',
+                      vw: '116.842699',
+                    },
+                    {
+                      c: '116.6281',
+                      h: '119.05',
+                      l: '114.3',
+                      n: '7210',
+                      o: '117.05',
+                      t: '2026-11-10T00:00:00Z',
+                      v: '98346873',
+                      vw: '116.519345',
+                    },
+                  ],
+                },
+                next_page_token: 'MURheXxWT0Q6WExPTnxEfDE3OTQzNTUyMDAwMDAwMDAwMDA=',
+              },
+            },
+          },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': RatelimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': RatelimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': RatelimitResetHeaderSchema,
+      }),
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ apiKey: [], apiSecret: [] }, { BasicAuth: [] }],
+})
+
+export const getV3StocksFeedLatestBarsRoute = createRoute({
+  method: 'get',
+  path: '/v3/stocks/{feed}/latest/bars',
+  tags: ['Stock v3'],
+  summary: 'Latest bars',
+  description:
+    'The latest bars endpoint provides the latest minute bar for the given symbols.\n\nBars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used. Latest bars may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.\n',
+  operationId: 'StockV3LatestBars',
+  request: {
+    params: z.object({ feed: StockV3LatestFeedParamsSchema }),
+    query: z.object({ symbols: StockV3SymbolsParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: StockV3LatestBarsRespSchema,
+          examples: {
+            euroctp: {
+              summary: 'BMW:XETR on the euroctp feed after the close of 2026-11-13',
+              value: {
+                bars: {
+                  'BMW:XETR': {
+                    c: '57.92',
+                    h: '57.92',
+                    l: '57.92',
+                    n: '1',
+                    o: '57.92',
+                    t: '2026-11-13T21:58:00Z',
+                    v: '87',
+                    vw: '57.92',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': RatelimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': RatelimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': RatelimitResetHeaderSchema,
+      }),
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ apiKey: [], apiSecret: [] }, { BasicAuth: [] }],
+})
+
+export const getV3StocksFeedLatestQuotesRoute = createRoute({
+  method: 'get',
+  path: '/v3/stocks/{feed}/latest/quotes',
+  tags: ['Stock v3'],
+  summary: 'Latest quotes',
+  description:
+    'The latest quotes endpoint provides the latest best bid and ask prices for the given symbols.\n',
+  operationId: 'StockV3LatestQuotes',
+  request: {
+    params: z.object({ feed: StockV3LatestFeedParamsSchema }),
+    query: z.object({ symbols: StockV3SymbolsParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: StockV3LatestQuotesRespSchema,
+          examples: {
+            xlon: {
+              summary: 'VOD:XLON on the xlon feed after the close of 2026-11-13',
+              value: {
+                quotes: {
+                  'VOD:XLON': {
+                    ap: '120',
+                    as: '55563',
+                    bp: '114.2',
+                    bs: '4000',
+                    t: '2026-11-13T17:30:00.12296Z',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': RatelimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': RatelimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': RatelimitResetHeaderSchema,
+      }),
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ apiKey: [], apiSecret: [] }, { BasicAuth: [] }],
+})
+
+export const getV3StocksFeedLatestTradesRoute = createRoute({
+  method: 'get',
+  path: '/v3/stocks/{feed}/latest/trades',
+  tags: ['Stock v3'],
+  summary: 'Latest trades',
+  description: 'The latest trades endpoint provides the latest trade for the given symbols.\n',
+  operationId: 'StockV3LatestTrades',
+  request: {
+    params: z.object({ feed: StockV3LatestFeedParamsSchema }),
+    query: z.object({ symbols: StockV3SymbolsParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: StockV3LatestTradesRespSchema,
+          examples: {
+            euroctp: {
+              summary: 'BMW:XETR on the euroctp feed after the close of 2026-11-13',
+              value: {
+                trades: {
+                  'BMW:XETR': {
+                    m: 'SINT',
+                    p: '57.92',
+                    s: '87',
+                    t: '2026-11-13T21:58:07.933045226Z',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': RatelimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': RatelimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': RatelimitResetHeaderSchema,
+      }),
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ apiKey: [], apiSecret: [] }, { BasicAuth: [] }],
+})
+
+export const getV3StocksFeedQuotesRoute = createRoute({
+  method: 'get',
+  path: '/v3/stocks/{feed}/quotes',
+  tags: ['Stock v3'],
+  summary: 'Historical quotes',
+  description:
+    'The historical quotes API provides quote data for a list of symbols between the specified times.\n\nThe quotes of each symbol are sorted by timestamp. The order of symbols is not guaranteed. Continue with `next_page_token`.\n',
+  operationId: 'StockV3Quotes',
+  request: {
+    params: z.object({ feed: StockV3HistoricalFeedParamsSchema }),
+    query: z.object({
+      symbols: StockV3SymbolsParamsSchema,
+      start: StockV3StartParamsSchema,
+      end: StockV3EndParamsSchema,
+      sort: StockV3SortParamsSchema,
+      page_size: StockV3PageSizeParamsSchema,
+      page_token: PageTokenParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: StockV3QuotesRespSchema,
+          examples: {
+            euroctp: {
+              summary: 'ENI:XMIL best bid and offer on the euroctp feed, three per page',
+              value: {
+                next_page_token:
+                  'cXVvdGVzfEVOSTpYTUlMfDE3OTQ0OTAyMDMwOTM4NDAwMDB8WFhYWHwyNS42MjV8NTI0fDI1LjYzfDc3Nw==',
+                quotes: {
+                  'ENI:XMIL': [
+                    {
+                      ap: '25.63',
+                      as: '777',
+                      bp: '25.62',
+                      bs: '2045',
+                      t: '2026-11-12T13:30:00.52471Z',
+                    },
+                    {
+                      ap: '25.63',
+                      as: '777',
+                      bp: '25.62',
+                      bs: '2033',
+                      t: '2026-11-12T13:30:01.79933Z',
+                    },
+                    {
+                      ap: '25.63',
+                      as: '777',
+                      bp: '25.62',
+                      bs: '4343',
+                      t: '2026-11-12T13:30:02.87255Z',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': RatelimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': RatelimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': RatelimitResetHeaderSchema,
+      }),
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ apiKey: [], apiSecret: [] }, { BasicAuth: [] }],
+})
+
+export const getV3StocksFeedSnapshotsRoute = createRoute({
+  method: 'get',
+  path: '/v3/stocks/{feed}/snapshots',
+  tags: ['Stock v3'],
+  summary: 'Snapshots',
+  description:
+    'The snapshot endpoint provides the latest trade, latest quote, minute bar, daily bar, and previous daily bar for each requested symbol.\n\nBars are not adjusted after splits or dividends. Symbol mapping is also not supported: in case of a name change the symbol active at the time must be used. Trades, bars, and snapshots may include prints that were later corrected or cancelled. Corrections and cancel/error events are not applied.\n',
+  operationId: 'StockV3Snapshots',
+  request: {
+    params: z.object({ feed: StockV3LatestFeedParamsSchema }),
+    query: z.object({ symbols: StockV3SymbolsParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: StockV3SnapshotsRespSchema,
+          examples: {
+            euroctp: {
+              summary: 'BMW:XETR on the euroctp feed after the close of 2026-11-13',
+              value: {
+                snapshots: {
+                  'BMW:XETR': {
+                    daily_bar: {
+                      c: '57.92',
+                      h: '57.98',
+                      l: '56.7',
+                      n: '12829',
+                      o: '57.08',
+                      t: '2026-11-12T23:00:00Z',
+                      v: '2044549',
+                      vw: '57.541271',
+                    },
+                    latest_quote: {
+                      ap: '59.2',
+                      as: '150',
+                      bp: '55.84',
+                      bs: '300',
+                      t: '2026-11-13T18:48:19.89115Z',
+                    },
+                    latest_trade: {
+                      m: 'SINT',
+                      p: '57.92',
+                      s: '87',
+                      t: '2026-11-13T21:58:07.933045226Z',
+                    },
+                    minute_bar: {
+                      c: '57.92',
+                      h: '57.92',
+                      l: '57.92',
+                      n: '1',
+                      o: '57.92',
+                      t: '2026-11-13T21:58:00Z',
+                      v: '87',
+                      vw: '57.92',
+                    },
+                    prev_daily_bar: {
+                      c: '56.76',
+                      h: '58.8',
+                      l: '56.76',
+                      n: '15403',
+                      o: '58.32',
+                      t: '2026-11-11T23:00:00Z',
+                      v: '4858215',
+                      vw: '57.939011',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': RatelimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': RatelimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': RatelimitResetHeaderSchema,
+      }),
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ apiKey: [], apiSecret: [] }, { BasicAuth: [] }],
+})
+
+export const getV3StocksFeedTradesRoute = createRoute({
+  method: 'get',
+  path: '/v3/stocks/{feed}/trades',
+  tags: ['Stock v3'],
+  summary: 'Historical trades',
+  description:
+    'The historical trades API provides trade data for a list of symbols between the specified times.\n\nThe trades of each symbol are sorted by timestamp. The order of symbols is not guaranteed. A page can contain one symbol when that symbol fills `page_size`. Continue with `next_page_token`.\n',
+  operationId: 'StockV3Trades',
+  request: {
+    params: z.object({ feed: StockV3HistoricalFeedParamsSchema }),
+    query: z.object({
+      symbols: StockV3SymbolsParamsSchema,
+      start: StockV3StartParamsSchema,
+      end: StockV3EndParamsSchema,
+      sort: StockV3SortParamsSchema,
+      page_size: StockV3PageSizeParamsSchema,
+      page_token: PageTokenParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: StockV3TradesRespSchema,
+          examples: {
+            euroctp: {
+              summary: 'BMW:XETR trades from several venues on the euroctp feed',
+              value: {
+                next_page_token: 'dHJhZGVzfEJNVzpYRVRSfDE3OTQ0OTAyNDgxNjYwNDg4MzJ8RVJGUXww',
+                trades: {
+                  'BMW:XETR': [
+                    { m: 'XGAT', p: '57.14', s: '400', t: '2026-11-12T13:30:41.54608138Z' },
+                    { m: 'CEUX', p: '57.14', s: '10', t: '2026-11-12T13:30:43.05075Z' },
+                    { m: 'CEUX', p: '57.14', s: '11', t: '2026-11-12T13:30:43.05077Z' },
+                    { m: 'TQEX', p: '57.16', s: '287', t: '2026-11-12T13:30:44.37277Z' },
+                    { m: 'XETA', p: '57.16', s: '449', t: '2026-11-12T13:30:48.16554Z' },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': RatelimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': RatelimitRemainingHeaderSchema,
+        'X-RateLimit-Reset': RatelimitResetHeaderSchema,
+      }),
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
     429: _429Response,
     500: _500Response,
   },

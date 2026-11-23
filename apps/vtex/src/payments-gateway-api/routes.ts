@@ -229,7 +229,7 @@ const _2SendPaymentsWithSavedCreditCardRequestSchema = z
   .openapi('_2SendPaymentsWithSavedCreditCardRequest')
 
 const _3SendAdditionalDataRequestSchema = z
-  .object({ name: z.string(), value: z.string() })
+  .array(z.any())
   .openapi({
     example: [
       {
@@ -5262,18 +5262,7 @@ export const postApiPvtTransactionsTransactionIdAdditionalDataRoute = createRout
       description: '',
       content: {
         'application/json': {
-          schema: z
-            .object({
-              name: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'Type of data that will be added to the transaction.' }),
-              value: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'Data to be added to the transaction.' }),
-            })
-            .openapi({ description: '', required: [] }),
+          schema: z.array(_3SendAdditionalDataRequestSchema).openapi({ description: '' }),
         },
       },
       required: true,

@@ -2106,7 +2106,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» description|body|string|true|Your description of the store.|
 |» externalReferenceId|body|string|false|The unique identifier of the store, used by certain payment methods and tax authorities.<br><br>Required for CNPJ in Brazil, in the format 00.000.000/0000-00 separated by dots, slashes, hyphens, or without separators.<br><br>Optional for SIRET in France, up to 14 digits.<br><br>Optional for Zip in Australia, up to 50 digits.<br><br>|
 |» localizedInformation|body|[LocalizedInformation](#schemalocalizedinformation)|false|Localized information about the store.|
-|» phoneNumber|body|string|true|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. |
+|» phoneNumber|body|string|true|The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.<br><br>You can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.<br><br>The phone number can be from a different country than the store address.|
 |» reference|body|string|false|Your reference to recognize the store by. Also known as the store code.<br> Allowed characters: lowercase and uppercase letters without diacritics, numbers 0 through 9, hyphen (-), and underscore (_).<br><br>If you do not provide a reference in your POST request, it is populated with the Adyen-generated [id](https://docs.adyen.com/api-explorer/Management/latest/post/stores#responses-200-id).|
 |» shopperStatement|body|string|true|The store name to be shown on the shopper's bank or credit card statement and on the shopper receipt.<br>Maximum length: 22 characters; can't be all numbers.|
 |» splitConfiguration|body|[StoreSplitConfiguration](#schemastoresplitconfiguration)|false|Rules for Adyen for Platforms merchants to split the transaction amount and fees.|
@@ -2508,7 +2508,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» businessLineIds|body|[string]|false|The unique identifiers of the [business lines](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/businessLines__resParam_id) that the store is associated with.|
 |» description|body|string|false|The description of the store.|
 |» externalReferenceId|body|string|false|The unique identifier of the store, used by certain payment methods and tax authorities.<br><br>Required for CNPJ in Brazil, in the format 00.000.000/0000-00 separated by dots, slashes, hyphens, or without separators.<br><br>Optional for SIRET in France, up to 14 digits.<br><br>Optional for Zip in Australia, up to 50 digits.<br><br>|
-|» phoneNumber|body|string|false|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. |
+|» phoneNumber|body|string|false|The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.<br><br>You can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.<br><br>The phone number can be from a different country than the store address.|
 |» splitConfiguration|body|[StoreSplitConfiguration](#schemastoresplitconfiguration)|false|Rules for Adyen for Platforms merchants to split the transaction amount and fees.|
 |» status|body|string|false|The status of the store. Possible values are:<br><br>- **active**: This value is assigned automatically when a store is created. <br>- **inactive**: The maximum [transaction limits and number of Store-and-Forward transactions](https://docs.adyen.com/point-of-sale/determine-account-structure/configure-features#payment-features) for the store are set to 0. This blocks new transactions, but captures are still possible.<br>- **closed**: The terminals of the store are reassigned to the merchant inventory, so they can't process payments.<br><br>You can change the status from **active** to **inactive**, and from **inactive** to **active** or **closed**. <br>Once **closed**, a store can't be reopened.|
 |» subMerchantData|body|[SubMerchantData](#schemasubmerchantdata)|false|The sub-merchant data relevant for registered payment facilitators transacting on standalone terminals.|
@@ -2976,7 +2976,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» externalReferenceId|body|string|false|The unique identifier of the store, used by certain payment methods and tax authorities.<br><br>Required for CNPJ in Brazil, in the format 00.000.000/0000-00 separated by dots, slashes, hyphens, or without separators.<br><br>Optional for SIRET in France, up to 14 digits.<br><br>Optional for Zip in Australia, up to 50 digits.<br><br>|
 |» localizedInformation|body|[LocalizedInformation](#schemalocalizedinformation)|false|Localized information about the store.|
 |» merchantId|body|string|true|The unique identifier of the merchant account that the store belongs to.|
-|» phoneNumber|body|string|true|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. |
+|» phoneNumber|body|string|true|The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.<br><br>You can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.<br><br>The phone number can be from a different country than the store address.|
 |» reference|body|string|false|Your reference to recognize the store by. Also known as the store code.<br> Allowed characters: lowercase and uppercase letters without diacritics, numbers 0 through 9, hyphen (-), and underscore (_).<br><br>If you do not provide a reference in your POST request, it is populated with the Adyen-generated [id](https://docs.adyen.com/api-explorer/Management/latest/post/stores#responses-200-id).|
 |» shopperStatement|body|string|true|The store name to be shown on the shopper's bank or credit card statement and on the shopper receipt.<br>Maximum length: 22 characters; can't be all numbers.|
 |» splitConfiguration|body|[StoreSplitConfiguration](#schemastoresplitconfiguration)|false|Rules for Adyen for Platforms merchants to split the transaction amount and fees.|
@@ -3376,7 +3376,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» businessLineIds|body|[string]|false|The unique identifiers of the [business lines](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/businessLines__resParam_id) that the store is associated with.|
 |» description|body|string|false|The description of the store.|
 |» externalReferenceId|body|string|false|The unique identifier of the store, used by certain payment methods and tax authorities.<br><br>Required for CNPJ in Brazil, in the format 00.000.000/0000-00 separated by dots, slashes, hyphens, or without separators.<br><br>Optional for SIRET in France, up to 14 digits.<br><br>Optional for Zip in Australia, up to 50 digits.<br><br>|
-|» phoneNumber|body|string|false|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. |
+|» phoneNumber|body|string|false|The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.<br><br>You can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.<br><br>The phone number can be from a different country than the store address.|
 |» splitConfiguration|body|[StoreSplitConfiguration](#schemastoresplitconfiguration)|false|Rules for Adyen for Platforms merchants to split the transaction amount and fees.|
 |» status|body|string|false|The status of the store. Possible values are:<br><br>- **active**: This value is assigned automatically when a store is created. <br>- **inactive**: The maximum [transaction limits and number of Store-and-Forward transactions](https://docs.adyen.com/point-of-sale/determine-account-structure/configure-features#payment-features) for the store are set to 0. This blocks new transactions, but captures are still possible.<br>- **closed**: The terminals of the store are reassigned to the merchant inventory, so they can't process payments.<br><br>You can change the status from **active** to **inactive**, and from **inactive** to **active** or **closed**. <br>Once **closed**, a store can't be reopened.|
 |» subMerchantData|body|[SubMerchantData](#schemasubmerchantdata)|false|The sub-merchant data relevant for registered payment facilitators transacting on standalone terminals.|
@@ -5248,6 +5248,19 @@ To make this request, your API credential must have the following [role](https:/
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "type": "https://docs.adyen.com/development-resources/error-codes",
+  "errorCode": "00_409",
+  "title": "Conflict",
+  "status": 409,
+  "detail": "The user already has access to an account specified in the request.",
+  "requestId": "MKUDJSF3JGHB3B7L"
+}
+```
+
 > 422 Response
 
 ```json
@@ -5300,6 +5313,7 @@ To make this request, your API credential must have the following [role](https:/
 |400|Bad Request|Bad Request - a problem reading or understanding the request.|[RestServiceError](#schemarestserviceerror)|
 |401|Unauthorized|Unauthorized - authentication required.|[RestServiceError](#schemarestserviceerror)|
 |403|Forbidden|Forbidden - insufficient permissions to process the request.|[RestServiceError](#schemarestserviceerror)|
+|409|Conflict|Conflict - the user already has access to an account, account group, or role specified in the request, or the specified username is already in use.|[RestServiceError](#schemarestserviceerror)|
 |422|Unprocessable Entity|Unprocessable Entity - a request validation error.|[RestServiceError](#schemarestserviceerror)|
 |500|Internal Server Error|Internal Server Error - the server could not process the request.|[RestServiceError](#schemarestserviceerror)|
 
@@ -6099,6 +6113,19 @@ To make this request, your API credential must have the following [role](https:/
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "type": "https://docs.adyen.com/development-resources/error-codes",
+  "errorCode": "00_409",
+  "title": "Conflict",
+  "status": 409,
+  "detail": "The user already has access to an account specified in the request.",
+  "requestId": "MKUDJSF3JGHB3C7Q"
+}
+```
+
 > 422 Response
 
 ```json
@@ -6152,6 +6179,7 @@ To make this request, your API credential must have the following [role](https:/
 |400|Bad Request|Bad Request - a problem reading or understanding the request.|[RestServiceError](#schemarestserviceerror)|
 |401|Unauthorized|Unauthorized - authentication required.|[RestServiceError](#schemarestserviceerror)|
 |403|Forbidden|Forbidden - insufficient permissions to process the request.|[RestServiceError](#schemarestserviceerror)|
+|409|Conflict|Conflict - the user already has access to an account, account group, or role specified in the request, or the specified username is already in use.|[RestServiceError](#schemarestserviceerror)|
 |422|Unprocessable Entity|Unprocessable Entity - a request validation error.|[RestServiceError](#schemarestserviceerror)|
 |500|Internal Server Error|Internal Server Error - the server could not process the request.|[RestServiceError](#schemarestserviceerror)|
 
@@ -15000,6 +15028,7 @@ To make this request, your API credential must have the following [role](https:/
   "data": [
     {
       "accel": {
+        "networkProcessingMode": "auth",
         "processingType": "billpay",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -15043,6 +15072,9 @@ To make this request, your API credential must have the following [role](https:/
           "doingBusinessAsName": "string",
           "type": "dynamic"
         }
+      },
+      "boncard": {
+        "terminalId": "string"
       },
       "businessLineId": "string",
       "carnet": {
@@ -15179,6 +15211,7 @@ To make this request, your API credential must have the following [role](https:/
       "merchantCategoryCode": "string",
       "mid": "string",
       "nyce": {
+        "networkProcessingMode": "auth",
         "processingType": "billpay",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -15186,6 +15219,13 @@ To make this request, your API credential must have the following [role](https:/
         }
       },
       "paybybank_plaid": {
+        "logo": "string",
+        "transactionDescription": {
+          "doingBusinessAsName": "string",
+          "type": "dynamic"
+        }
+      },
+      "paybybank_plaid_ca": {
         "logo": "string",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -15206,7 +15246,12 @@ To make this request, your API credential must have the following [role](https:/
         "merchantName": "string",
         "payToPurpose": "string"
       },
+      "pix": {
+        "allowRecurring": true,
+        "allowPayByBank": true
+      },
       "pulse": {
+        "networkProcessingMode": "auth",
         "processingType": "billpay",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -15230,6 +15275,7 @@ To make this request, your API credential must have the following [role](https:/
         "logo": "string"
       },
       "star": {
+        "networkProcessingMode": "auth",
         "processingType": "billpay",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -15498,6 +15544,7 @@ To make this request, your API credential must have the following [role](https:/
 |» ancv|body|[AncvInfo](#schemaancvinfo)|false|Details to provide if `type` is **ancv**.|
 |» applePay|body|[ApplePayInfo](#schemaapplepayinfo)|false|Details to provide if `type` is **applepay**.|
 |» bcmc|body|[BcmcInfo](#schemabcmcinfo)|false|Details to provide if `type` is **bcmc** (Bancontact).|
+|» boncard|body|[BoncardInfo](#schemaboncardinfo)|false|Details to provide if `type` is **boncard**.|
 |» businessLineId|body|string|false|The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms).|
 |» carnet|body|[CarnetInfo](#schemacarnetinfo)|false|Details to provide if `type` is **carnet**.|
 |» cartesBancaires|body|[CartesBancairesInfo](#schemacartesbancairesinfo)|false|Details to provide if `type` is **cartebancaire**.|
@@ -15524,9 +15571,11 @@ To make this request, your API credential must have the following [role](https:/
 |» mealVoucher_FR|body|[MealVoucherFRInfo](#schemamealvoucherfrinfo)|false|Details to provide if `type` is **mealVoucher_FR**.|
 |» nyce|body|[NyceInfo](#schemanyceinfo)|false|Details to provide if `type` is **nyce**.|
 |» paybybank_plaid|body|[PayByBankPlaidInfo](#schemapaybybankplaidinfo)|false|Details to provide if `type` is **paybybank_plaid**.|
+|» paybybank_plaid_ca|body|[PayByBankPlaidInfo](#schemapaybybankplaidinfo)|false|Details to provide if `type` is **paybybank_plaid_ca**.|
 |» payme|body|[PayMeInfo](#schemapaymeinfo)|false|Details to provide if `type` is **payme**.|
 |» paypal|body|[PayPalInfo](#schemapaypalinfo)|false|Details to provide if `type` is **paypal**.|
 |» payto|body|[PayToInfo](#schemapaytoinfo)|false|Details to provide if `type` is **payto**.|
+|» pix|body|[PixInfo](#schemapixinfo)|false|Details to provide if `type` is **pix**.|
 |» pulse|body|[PulseInfo](#schemapulseinfo)|false|Details to provide if `type` is **pulse**.|
 |» reference|body|string|false|Your reference for the payment method. Supported characters a-z, A-Z, 0-9.|
 |» sepadirectdebit|body|[SepaDirectDebitInfo](#schemasepadirectdebitinfo)|false|Details to provide if `type` is **sepadirectdebit**.|
@@ -15591,6 +15640,7 @@ To make this request, your API credential must have the following [role](https:/
 |» type|bcmc|
 |» type|blik|
 |» type|blik_pos|
+|» type|boncard|
 |» type|br_schemes|
 |» type|carnet|
 |» type|cartebancaire|
@@ -15659,6 +15709,7 @@ To make this request, your API credential must have the following [role](https:/
 |» type|onlineBanking_PL|
 |» type|paybybank|
 |» type|paybybank_plaid|
+|» type|paybybank_plaid_ca|
 |» type|payme|
 |» type|payme_pos|
 |» type|paynow|
@@ -15668,6 +15719,7 @@ To make this request, your API credential must have the following [role](https:/
 |» type|personal_card|
 |» type|personal_card_credit|
 |» type|personal_card_debit|
+|» type|pix|
 |» type|pulse|
 |» type|romcard|
 |» type|romcard_credit|
@@ -15907,6 +15959,7 @@ To make this request, your API credential must have the following [role](https:/
 ```json
 {
   "accel": {
+    "networkProcessingMode": "auth",
     "processingType": "billpay",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -15950,6 +16003,9 @@ To make this request, your API credential must have the following [role](https:/
       "doingBusinessAsName": "string",
       "type": "dynamic"
     }
+  },
+  "boncard": {
+    "terminalId": "string"
   },
   "businessLineId": "string",
   "carnet": {
@@ -16086,6 +16142,7 @@ To make this request, your API credential must have the following [role](https:/
   "merchantCategoryCode": "string",
   "mid": "string",
   "nyce": {
+    "networkProcessingMode": "auth",
     "processingType": "billpay",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -16093,6 +16150,13 @@ To make this request, your API credential must have the following [role](https:/
     }
   },
   "paybybank_plaid": {
+    "logo": "string",
+    "transactionDescription": {
+      "doingBusinessAsName": "string",
+      "type": "dynamic"
+    }
+  },
+  "paybybank_plaid_ca": {
     "logo": "string",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -16113,7 +16177,12 @@ To make this request, your API credential must have the following [role](https:/
     "merchantName": "string",
     "payToPurpose": "string"
   },
+  "pix": {
+    "allowRecurring": true,
+    "allowPayByBank": true
+  },
   "pulse": {
+    "networkProcessingMode": "auth",
     "processingType": "billpay",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -16137,6 +16206,7 @@ To make this request, your API credential must have the following [role](https:/
     "logo": "string"
   },
   "star": {
+    "networkProcessingMode": "auth",
     "processingType": "billpay",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -16392,6 +16462,7 @@ To make this request, your API credential must have the following [role](https:/
 |» accel|body|[AccelUpdateInfo](#schemaaccelupdateinfo)|false|Details to provide if `type` is **accel**.|
 |» affirm|body|[AffirmUpdateInfo](#schemaaffirmupdateinfo)|false|Details to provide if `type` is **affirm**.|
 |» bcmc|body|[BcmcUpdateInfo](#schemabcmcupdateinfo)|false|Details to provide if `type` is **bcmc** (Bancontact).|
+|» boncard|body|[BoncardUpdateInfo](#schemaboncardupdateinfo)|false|Details to provide if `type` is **boncard**.|
 |» carnet|body|[GenericPmWithTdiUpdateInfo](#schemagenericpmwithtdiupdateinfo)|false|Details to provide if `type` is **carnet**.|
 |» cartesBancaires|body|[CartesBancairesUpdateInfo](#schemacartesbancairesupdateinfo)|false|Details to provide if `type` is **cartebancaire**.|
 |» cashapp|body|[CashAppUpdateInfo](#schemacashappupdateinfo)|false|Details to provide if `type` is **cashapp**.|
@@ -16414,6 +16485,7 @@ To make this request, your API credential must have the following [role](https:/
 |» mc|body|[GenericPmWithTdiUpdateInfo](#schemagenericpmwithtdiupdateinfo)|false|Details to provide if `type` is **mc**.|
 |» nyce|body|[NyceUpdateInfo](#schemanyceupdateinfo)|false|Details to provide if `type` is **nyce**.|
 |» paybybank_plaid|body|[PayByBankPlaidUpdateInfo](#schemapaybybankplaidupdateinfo)|false|Details to provide if `type` is **paybybank_plaid**.|
+|» paybybank_plaid_ca|body|[PayByBankPlaidUpdateInfo](#schemapaybybankplaidupdateinfo)|false|Details to provide if `type` is **paybybank_plaid_ca**.|
 |» pulse|body|[PulseUpdateInfo](#schemapulseupdateinfo)|false|Details to provide if `type` is **pulse**.|
 |» sepadirectdebit|body|[SepaDirectDebitUpdateInfo](#schemasepadirectdebitupdateinfo)|false|Details to provide if `type` is **sepadirectdebit**.|
 |» star|body|[StarUpdateInfo](#schemastarupdateinfo)|false|Details to provide if `type` is **star**.|
@@ -23403,6 +23475,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» refunds|body|[Refunds](#schemarefunds)|false|Settings for refunds.|
 |» showCalculatedPercentageTippingAmount|body|boolean \| null|false|Show the tipping amount calculated from the percentage next to each tipping percentage option on the terminal screen, for example `10 % \| 10 EUR` for a 100 EUR payment.|
 |» signature|body|[Signature](#schemasignature)|false|Settings to skip signature, sign on display, or sign on receipt.|
+|» skipTipConfirmationOnTerminal|body|boolean \| null|false|Skip the tip confirmation step of the Adyen payment app on the terminal. Set to **true** only if your own app that handles tipping is installed on the same terminal. If your app is not installed on the terminal, set to **false**.|
 |» standalone|body|[Standalone](#schemastandalone)|false|Settings for [standalone](https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone#set-up-standalone-using-an-api-call) features.|
 |» storeAndForward|body|[StoreAndForward](#schemastoreandforward)|false|Settings for store-and-forward offline payments. The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure.|
 |» surcharge|body|[Surcharge](#schemasurcharge)|false|Settings for payment [surcharge](https://docs.adyen.com/point-of-sale/surcharge) features.|
@@ -24424,6 +24497,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» refunds|body|[Refunds](#schemarefunds)|false|Settings for refunds.|
 |» showCalculatedPercentageTippingAmount|body|boolean \| null|false|Show the tipping amount calculated from the percentage next to each tipping percentage option on the terminal screen, for example `10 % \| 10 EUR` for a 100 EUR payment.|
 |» signature|body|[Signature](#schemasignature)|false|Settings to skip signature, sign on display, or sign on receipt.|
+|» skipTipConfirmationOnTerminal|body|boolean \| null|false|Skip the tip confirmation step of the Adyen payment app on the terminal. Set to **true** only if your own app that handles tipping is installed on the same terminal. If your app is not installed on the terminal, set to **false**.|
 |» standalone|body|[Standalone](#schemastandalone)|false|Settings for [standalone](https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone#set-up-standalone-using-an-api-call) features.|
 |» storeAndForward|body|[StoreAndForward](#schemastoreandforward)|false|Settings for store-and-forward offline payments. The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure.|
 |» surcharge|body|[Surcharge](#schemasurcharge)|false|Settings for payment [surcharge](https://docs.adyen.com/point-of-sale/surcharge) features.|
@@ -25421,6 +25495,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» refunds|body|[Refunds](#schemarefunds)|false|Settings for refunds.|
 |» showCalculatedPercentageTippingAmount|body|boolean \| null|false|Show the tipping amount calculated from the percentage next to each tipping percentage option on the terminal screen, for example `10 % \| 10 EUR` for a 100 EUR payment.|
 |» signature|body|[Signature](#schemasignature)|false|Settings to skip signature, sign on display, or sign on receipt.|
+|» skipTipConfirmationOnTerminal|body|boolean \| null|false|Skip the tip confirmation step of the Adyen payment app on the terminal. Set to **true** only if your own app that handles tipping is installed on the same terminal. If your app is not installed on the terminal, set to **false**.|
 |» standalone|body|[Standalone](#schemastandalone)|false|Settings for [standalone](https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone#set-up-standalone-using-an-api-call) features.|
 |» storeAndForward|body|[StoreAndForward](#schemastoreandforward)|false|Settings for store-and-forward offline payments. The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure.|
 |» surcharge|body|[Surcharge](#schemasurcharge)|false|Settings for payment [surcharge](https://docs.adyen.com/point-of-sale/surcharge) features.|
@@ -26457,6 +26532,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» refunds|body|[Refunds](#schemarefunds)|false|Settings for refunds.|
 |» showCalculatedPercentageTippingAmount|body|boolean \| null|false|Show the tipping amount calculated from the percentage next to each tipping percentage option on the terminal screen, for example `10 % \| 10 EUR` for a 100 EUR payment.|
 |» signature|body|[Signature](#schemasignature)|false|Settings to skip signature, sign on display, or sign on receipt.|
+|» skipTipConfirmationOnTerminal|body|boolean \| null|false|Skip the tip confirmation step of the Adyen payment app on the terminal. Set to **true** only if your own app that handles tipping is installed on the same terminal. If your app is not installed on the terminal, set to **false**.|
 |» standalone|body|[Standalone](#schemastandalone)|false|Settings for [standalone](https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone#set-up-standalone-using-an-api-call) features.|
 |» storeAndForward|body|[StoreAndForward](#schemastoreandforward)|false|Settings for store-and-forward offline payments. The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure.|
 |» surcharge|body|[Surcharge](#schemasurcharge)|false|Settings for payment [surcharge](https://docs.adyen.com/point-of-sale/surcharge) features.|
@@ -27500,6 +27576,7 @@ In the live environment, requests to this endpoint are subject to [rate limits](
 |» refunds|body|[Refunds](#schemarefunds)|false|Settings for refunds.|
 |» showCalculatedPercentageTippingAmount|body|boolean \| null|false|Show the tipping amount calculated from the percentage next to each tipping percentage option on the terminal screen, for example `10 % \| 10 EUR` for a 100 EUR payment.|
 |» signature|body|[Signature](#schemasignature)|false|Settings to skip signature, sign on display, or sign on receipt.|
+|» skipTipConfirmationOnTerminal|body|boolean \| null|false|Skip the tip confirmation step of the Adyen payment app on the terminal. Set to **true** only if your own app that handles tipping is installed on the same terminal. If your app is not installed on the terminal, set to **false**.|
 |» standalone|body|[Standalone](#schemastandalone)|false|Settings for [standalone](https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone#set-up-standalone-using-an-api-call) features.|
 |» storeAndForward|body|[StoreAndForward](#schemastoreandforward)|false|Settings for store-and-forward offline payments. The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure.|
 |» surcharge|body|[Surcharge](#schemasurcharge)|false|Settings for payment [surcharge](https://docs.adyen.com/point-of-sale/surcharge) features.|
@@ -33888,7 +33965,7 @@ Adds an image or video (an 'asset') to a terminal theme owned by the company spe
 An asset is used for a specific screen type or screen element, and a specific Android terminal model. You must specify this using the query parameters `type` and `model`. The asset binary itself is uploaded as multipart/form-data with a single file part called `file`, which must declare one of the following supported Content-Type values:
 
 - **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.
-- **video/mp4** or **video/quicktime**: only for `model` **SFO1** or **M450**.
+- **video/mp4** or **video/quicktime**: for all `model` values except **All**.
 - **image/jpeg** (or **image/jpg**): for all `model` values except **All**.
 - **image/png**: for all `model` values except **All**.
 - **image/gif**: for all `model` values except **SFO1** and **M450**.
@@ -34220,7 +34297,7 @@ The asset binary itself is uploaded as multipart/form-data with a single file pa
 called `file`, which must declare one of the following supported Content-Type values:
 
 - **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.
-- **video/mp4** or **video/quicktime**: only for `model` **SFO1** or **M450**.
+- **video/mp4** or **video/quicktime**: for all `model` values except **All**.
 - **image/jpeg** (or **image/jpg**): for all `model` values except **All**.
 - **image/png**: for all `model` values except **All**.
 - **image/gif**: for all `model` values except **SFO1** and **M450**.
@@ -35302,7 +35379,7 @@ Adds an image or video (an 'asset') to a terminal theme owned by the merchant ac
 An asset is used for a specific screen type or screen element, and a specific Android terminal model. You must specify this using the query parameters `type` and `model`. The asset binary itself is uploaded as multipart/form-data with a single file part called `file`, which must declare one of the following supported Content-Type values:
 
 - **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.
-- **video/mp4** or **video/quicktime**: only for `model` **SFO1** or **M450**.
+- **video/mp4** or **video/quicktime**: for all `model` values except **All**.
 - **image/jpeg** (or **image/jpg**): for all `model` values except **All**.
 - **image/png**: for all `model` values except **All**.
 - **image/gif**: for all `model` values except **SFO1** and **M450**.
@@ -35634,7 +35711,7 @@ The asset binary itself is uploaded as multipart/form-data with a single file pa
 called `file`, which must declare one of the following supported Content-Type values:
 
 - **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.
-- **video/mp4** or **video/quicktime**: only for `model` **SFO1** or **M450**.
+- **video/mp4** or **video/quicktime**: for all `model` values except **All**.
 - **image/jpeg** (or **image/jpg**): for all `model` values except **All**.
 - **image/png**: for all `model` values except **All**.
 - **image/gif**: for all `model` values except **SFO1** and **M450**.
@@ -36250,7 +36327,7 @@ BasicAuth, ApiKeyAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|processingType|string|true|none|The type of transactions processed over this payment method.<br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
+|processingType|string|false|none|The type of transactions processed over this payment method. The recommended usage is to not specify a processing type. We then set up the payment method to process all transaction types. <br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
 |transactionDescription|[TransactionDescriptionInfo](#schematransactiondescriptioninfo)|false|none|Information regarding the transaction description.<br>> You cannot configure the transaction description in the test environment.|
 
 #### Enumerated Values
@@ -36270,6 +36347,7 @@ BasicAuth, ApiKeyAuth
 
 ```json
 {
+  "networkProcessingMode": "auth",
   "processingType": "billpay",
   "transactionDescription": {
     "doingBusinessAsName": "string",
@@ -36282,6 +36360,7 @@ BasicAuth, ApiKeyAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|networkProcessingMode|string|false|none|Indicates the processing flow for the payment method. Possible values:<br>- **auth**: If you have not [configured automatic capture](https://docs.adyen.com/online-payments/capture#types-of-capture) for the transaction, you must manually capture the funds. <br>- **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction, together with authorization.<br>|
 |processingType|string|false|none|The type of transactions processed over this payment method.<br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
 |transactionDescription|[TransactionDescriptionResponseInfo](#schematransactiondescriptionresponseinfo)|false|none|Information regarding the transaction description.|
 
@@ -36289,6 +36368,8 @@ BasicAuth, ApiKeyAuth
 
 |Property|Value|
 |---|---|
+|networkProcessingMode|auth|
+|networkProcessingMode|sale|
 |processingType|billpay|
 |processingType|ecom|
 |processingType|pos|
@@ -37152,6 +37233,63 @@ BasicAuth, ApiKeyAuth
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |transactionDescription|[TransactionDescriptionInfo](#schematransactiondescriptioninfo)|false|none|Information regarding the transaction description.<br>> You cannot configure the transaction description in the test environment.|
+
+<h2 id="tocS_BoncardInfo">BoncardInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemaboncardinfo"></a>
+<a id="schema_BoncardInfo"></a>
+<a id="tocSboncardinfo"></a>
+<a id="tocsboncardinfo"></a>
+
+```json
+{
+  "terminalId": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|terminalId|string|true|none|The TerminalID that Boncard assigns to the merchant. Format: 6 to 10 alphanumeric characters.<br>Example: 5Z6G8PV9.|
+
+<h2 id="tocS_BoncardResponseInfo">BoncardResponseInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemaboncardresponseinfo"></a>
+<a id="schema_BoncardResponseInfo"></a>
+<a id="tocSboncardresponseinfo"></a>
+<a id="tocsboncardresponseinfo"></a>
+
+```json
+{
+  "terminalId": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|terminalId|string|false|none|The TerminalID that Boncard assigns to the merchant. Format: 6 to 10 alphanumeric characters.<br>Example: 5Z6G8PV9.|
+
+<h2 id="tocS_BoncardUpdateInfo">BoncardUpdateInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemaboncardupdateinfo"></a>
+<a id="schema_BoncardUpdateInfo"></a>
+<a id="tocSboncardupdateinfo"></a>
+<a id="tocsboncardupdateinfo"></a>
+
+```json
+{
+  "terminalId": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|terminalId|string|false|none|The TerminalID that Boncard assigns to the merchant. Format: 6 to 10 alphanumeric characters.<br>Example: 5Z6G8PV9.|
 
 <h2 id="tocS_BillingEntitiesResponse">BillingEntitiesResponse</h2>
 <!-- backwards compatibility -->
@@ -39340,6 +39478,70 @@ BasicAuth, ApiKeyAuth
 {}
 ```
 
+<h2 id="tocS_JapaneseLocalizedAddress">JapaneseLocalizedAddress</h2>
+<!-- backwards compatibility -->
+<a id="schemajapaneselocalizedaddress"></a>
+<a id="schema_JapaneseLocalizedAddress"></a>
+<a id="tocSjapaneselocalizedaddress"></a>
+<a id="tocsjapaneselocalizedaddress"></a>
+
+```json
+{
+  "fields": {
+    "building": "string",
+    "city": "string",
+    "district": "string",
+    "line1": "string",
+    "postalCode": "string",
+    "prefecture": "string"
+  },
+  "script": "ja-Kana"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|fields|[JapaneseLocalizedAddressFields](#schemajapaneselocalizedaddressfields)|true|none|The address fields in the specified character set.|
+|script|string|true|none|The character set of the localized address.<br><br>Possible values: **ja-Hani**, **ja-Kana**.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|script|ja-Kana|
+|script|ja-Hani|
+
+<h2 id="tocS_JapaneseLocalizedAddressFields">JapaneseLocalizedAddressFields</h2>
+<!-- backwards compatibility -->
+<a id="schemajapaneselocalizedaddressfields"></a>
+<a id="schema_JapaneseLocalizedAddressFields"></a>
+<a id="tocSjapaneselocalizedaddressfields"></a>
+<a id="tocsjapaneselocalizedaddressfields"></a>
+
+```json
+{
+  "building": "string",
+  "city": "string",
+  "district": "string",
+  "line1": "string",
+  "postalCode": "string",
+  "prefecture": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|building|string|false|none|The building name, floor, and room number (建物名・階・部屋番号).|
+|city|string|true|none|The city (市区町村).<br><br>Required for both `ja-Hani` and `ja-Kana` addresses.|
+|district|string|false|none|The town or locality  (町域 / 町名).|
+|line1|string|true|none|The street address including chōme, block/lot, and house number (丁目・番地・号等).<br><br>Required for both `ja-Hani` and `ja-Kana` addresses.|
+|postalCode|string|false|none|The postal code (郵便番号).<br><br>Required for both `ja-Hani` and `ja-Kana` addresses only when `address.postalCode` is omitted. <br>Otherwise, the value in `address.postalCode` is used.|
+|prefecture|string|true|none|The prefecture, state, or province (都道府県).<br><br>Required for both `ja-Hani` and `ja-Kana` addresses.|
+
 <h2 id="tocS_Key">Key</h2>
 <!-- backwards compatibility -->
 <a id="schemakey"></a>
@@ -40037,6 +40239,25 @@ BasicAuth, ApiKeyAuth
             "script": "string",
             "value": "string"
           }
+        ],
+        "localStoreName": [
+          {
+            "script": "string",
+            "value": "string"
+          }
+        ],
+        "localizedAddress": [
+          {
+            "fields": {
+              "building": "string",
+              "city": "string",
+              "district": "string",
+              "line1": "string",
+              "postalCode": "string",
+              "prefecture": "string"
+            },
+            "script": "ja-Kana"
+          }
         ]
       },
       "merchantId": "string",
@@ -40279,7 +40500,28 @@ BasicAuth, ApiKeyAuth
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |script|string|true|none|The character set of the local shopper statement.<br><br>Possible values: **ja-Hani**, **ja-Kana**.|
-|value|string|true|none|The text of the local shopper statement in the specified character set.|
+|value|string|true|none|The localized shopper statement in the specified character set.<br><br>* For `ja-Hani` the allowed characters are: Full-width kanji including letters, numbers, and symbols.<br><br>* For `ja-Kana` the allowed characters are:<br>    * `Half-width katakana`<br>    * Letters: `a-z`, `A-Z`<br>    * Numbers: `0-9`<br>    * Symbols: `!`, `"`, `#`, `$`, `%`, `&`, `'`, `(`, `)`, `*`, `+`, `,`, `-`, `.`, `/`, `:`, `;`, `<`, `=`, `>`, `?`, `@`, `[`, `\`, `]`, `^`, `_`, `` ` ``, `{`, `\|`, `}`, `~`, `｡`, `｢`, `｣`, `､`, `･`, `ｰ`<br>|
+
+<h2 id="tocS_LocalStoreName">LocalStoreName</h2>
+<!-- backwards compatibility -->
+<a id="schemalocalstorename"></a>
+<a id="schema_LocalStoreName"></a>
+<a id="tocSlocalstorename"></a>
+<a id="tocslocalstorename"></a>
+
+```json
+{
+  "script": "string",
+  "value": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|script|string|true|none|The character set of the localized store name.<br><br>Possible values: **ja-Hani**, **ja-Kana**.|
+|value|string|true|none|The text of the localized store name in the specified character set.<br>* For `ja-Hani` the allowed characters are: Full-width kanji including letters, numbers and symbols.<br><br>* For `ja-Kana` the allowed characters are:<br>    * Half-width katakana<br>    * Letters: `a-z`, `A-Z`<br>    * Numbers: `0-9`<br>    * Symbols: `-`,`ｰ`,`･`,`.`<br>|
 
 <h2 id="tocS_Localization">Localization</h2>
 <!-- backwards compatibility -->
@@ -40318,6 +40560,25 @@ BasicAuth, ApiKeyAuth
       "script": "string",
       "value": "string"
     }
+  ],
+  "localStoreName": [
+    {
+      "script": "string",
+      "value": "string"
+    }
+  ],
+  "localizedAddress": [
+    {
+      "fields": {
+        "building": "string",
+        "city": "string",
+        "district": "string",
+        "line1": "string",
+        "postalCode": "string",
+        "prefecture": "string"
+      },
+      "script": "ja-Kana"
+    }
   ]
 }
 ```
@@ -40327,6 +40588,8 @@ BasicAuth, ApiKeyAuth
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |localShopperStatement|[[LocalShopperStatement](#schemalocalshopperstatement)]|true|none|An array of local shopper statements. Card schemes use this in the bank statement.<br><br>For Japan local shopper statements in both ja-Hani and ja-Kana are required.|
+|localStoreName|[[LocalStoreName](#schemalocalstorename)]|false|none|An array of localized store names. Used for payment method onboarding in Japan.<br><br>Possible scripts: **ja-Hani**, **ja-Kana**.|
+|localizedAddress|[[JapaneseLocalizedAddress](#schemajapaneselocalizedaddress)]|false|none|An array of localized addresses. Used for payment method onboarding in Japan.<br><br>The `script` of each address selects which fields it carries, so each locale sends the fields its addresses have.<br><br>For Japanese stores, both **ja-Hani** and **ja-Kana** addresses are required.|
 
 <h2 id="tocS_Logo">Logo</h2>
 <!-- backwards compatibility -->
@@ -40879,7 +41142,7 @@ BasicAuth, ApiKeyAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|processingType|string|true|none|The type of transactions processed over this payment method.<br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
+|processingType|string|false|none|The type of transactions processed over this payment method. The recommended usage is to not specify a processing type. We then set up the payment method to process all transaction types. <br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
 |transactionDescription|[TransactionDescriptionInfo](#schematransactiondescriptioninfo)|false|none|Information regarding the transaction description.<br>> You cannot configure the transaction description in the test environment.|
 
 #### Enumerated Values
@@ -40899,6 +41162,7 @@ BasicAuth, ApiKeyAuth
 
 ```json
 {
+  "networkProcessingMode": "auth",
   "processingType": "billpay",
   "transactionDescription": {
     "doingBusinessAsName": "string",
@@ -40911,6 +41175,7 @@ BasicAuth, ApiKeyAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|networkProcessingMode|string|false|none|Indicates the processing flow for the payment method. Possible values:<br>- **auth**: If you have not [configured automatic capture](https://docs.adyen.com/online-payments/capture#types-of-capture) for the transaction, you must manually capture the funds. <br>- **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction, together with authorization.<br>|
 |processingType|string|false|none|The type of transactions processed over this payment method.<br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
 |transactionDescription|[TransactionDescriptionResponseInfo](#schematransactiondescriptionresponseinfo)|false|none|Information regarding the transaction description.|
 
@@ -40918,6 +41183,8 @@ BasicAuth, ApiKeyAuth
 
 |Property|Value|
 |---|---|
+|networkProcessingMode|auth|
+|networkProcessingMode|sale|
 |processingType|billpay|
 |processingType|ecom|
 |processingType|pos|
@@ -41342,6 +41609,7 @@ BasicAuth, ApiKeyAuth
 ```json
 {
   "accel": {
+    "networkProcessingMode": "auth",
     "processingType": "billpay",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -41385,6 +41653,9 @@ BasicAuth, ApiKeyAuth
       "doingBusinessAsName": "string",
       "type": "dynamic"
     }
+  },
+  "boncard": {
+    "terminalId": "string"
   },
   "businessLineId": "string",
   "carnet": {
@@ -41521,6 +41792,7 @@ BasicAuth, ApiKeyAuth
   "merchantCategoryCode": "string",
   "mid": "string",
   "nyce": {
+    "networkProcessingMode": "auth",
     "processingType": "billpay",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -41528,6 +41800,13 @@ BasicAuth, ApiKeyAuth
     }
   },
   "paybybank_plaid": {
+    "logo": "string",
+    "transactionDescription": {
+      "doingBusinessAsName": "string",
+      "type": "dynamic"
+    }
+  },
+  "paybybank_plaid_ca": {
     "logo": "string",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -41548,7 +41827,12 @@ BasicAuth, ApiKeyAuth
     "merchantName": "string",
     "payToPurpose": "string"
   },
+  "pix": {
+    "allowRecurring": true,
+    "allowPayByBank": true
+  },
   "pulse": {
+    "networkProcessingMode": "auth",
     "processingType": "billpay",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -41572,6 +41856,7 @@ BasicAuth, ApiKeyAuth
     "logo": "string"
   },
   "star": {
+    "networkProcessingMode": "auth",
     "processingType": "billpay",
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -41637,6 +41922,7 @@ BasicAuth, ApiKeyAuth
 |applePay|[ApplePayResponseInfo](#schemaapplepayresponseinfo)|false|none|**applepay** details|
 |associatedPaymentMethods|[[AssociatedPaymentMethod](#schemaassociatedpaymentmethod)]|false|none|Payment methods that were also updated as part of an associated transition.|
 |bcmc|[BcmcResponseInfo](#schemabcmcresponseinfo)|false|none|**bcmc** (Bancontact) details|
+|boncard|[BoncardResponseInfo](#schemaboncardresponseinfo)|false|none|**boncard** details|
 |businessLineId|string|false|none|The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms).|
 |carnet|[CarnetResponseInfo](#schemacarnetresponseinfo)|false|none|**carnet** details|
 |cartesBancaires|[CartesBancairesResponseInfo](#schemacartesbancairesresponseinfo)|false|none|**cartesbancaires** details|
@@ -41667,9 +41953,11 @@ BasicAuth, ApiKeyAuth
 |mid|string|false|none|The Merchant Identifier (MID) associated with the payment method.|
 |nyce|[NyceResponseInfo](#schemanyceresponseinfo)|false|none|**nyce** details|
 |paybybank_plaid|[PayByBankPlaidResponseInfo](#schemapaybybankplaidresponseinfo)|false|none|**paybybank_plaid** details|
+|paybybank_plaid_ca|[PayByBankPlaidResponseInfo](#schemapaybybankplaidresponseinfo)|false|none|**paybybank_plaid_ca** details|
 |payme|[PayMeResponseInfo](#schemapaymeresponseinfo)|false|none|**payme** details|
 |paypal|[PayPalResponseInfo](#schemapaypalresponseinfo)|false|none|**paypal** details|
 |payto|[PayToResponseInfo](#schemapaytoresponseinfo)|false|none|**payto** details|
+|pix|[PixResponseInfo](#schemapixresponseinfo)|false|none|**pix** details|
 |pulse|[PulseResponseInfo](#schemapulseresponseinfo)|false|none|**pulse** details|
 |reference|string|false|none|Your reference for the payment method. Supported characters a-z, A-Z, 0-9.|
 |sepadirectdebit|[SepaDirectDebitResponseInfo](#schemasepadirectdebitresponseinfo)|false|none|**sepadirectdebit** details|
@@ -41728,6 +42016,7 @@ BasicAuth, ApiKeyAuth
   "data": [
     {
       "accel": {
+        "networkProcessingMode": "auth",
         "processingType": "billpay",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -41771,6 +42060,9 @@ BasicAuth, ApiKeyAuth
           "doingBusinessAsName": "string",
           "type": "dynamic"
         }
+      },
+      "boncard": {
+        "terminalId": "string"
       },
       "businessLineId": "string",
       "carnet": {
@@ -41907,6 +42199,7 @@ BasicAuth, ApiKeyAuth
       "merchantCategoryCode": "string",
       "mid": "string",
       "nyce": {
+        "networkProcessingMode": "auth",
         "processingType": "billpay",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -41914,6 +42207,13 @@ BasicAuth, ApiKeyAuth
         }
       },
       "paybybank_plaid": {
+        "logo": "string",
+        "transactionDescription": {
+          "doingBusinessAsName": "string",
+          "type": "dynamic"
+        }
+      },
+      "paybybank_plaid_ca": {
         "logo": "string",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -41934,7 +42234,12 @@ BasicAuth, ApiKeyAuth
         "merchantName": "string",
         "payToPurpose": "string"
       },
+      "pix": {
+        "allowRecurring": true,
+        "allowPayByBank": true
+      },
       "pulse": {
+        "networkProcessingMode": "auth",
         "processingType": "billpay",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -41958,6 +42263,7 @@ BasicAuth, ApiKeyAuth
         "logo": "string"
       },
       "star": {
+        "networkProcessingMode": "auth",
         "processingType": "billpay",
         "transactionDescription": {
           "doingBusinessAsName": "string",
@@ -42067,6 +42373,7 @@ BasicAuth, ApiKeyAuth
 |typesWithErrors|bcmc|
 |typesWithErrors|blik|
 |typesWithErrors|blik_pos|
+|typesWithErrors|boncard|
 |typesWithErrors|br_schemes|
 |typesWithErrors|carnet|
 |typesWithErrors|cartebancaire|
@@ -42135,6 +42442,7 @@ BasicAuth, ApiKeyAuth
 |typesWithErrors|onlineBanking_PL|
 |typesWithErrors|paybybank|
 |typesWithErrors|paybybank_plaid|
+|typesWithErrors|paybybank_plaid_ca|
 |typesWithErrors|payme|
 |typesWithErrors|payme_pos|
 |typesWithErrors|paynow|
@@ -42144,6 +42452,7 @@ BasicAuth, ApiKeyAuth
 |typesWithErrors|personal_card|
 |typesWithErrors|personal_card_credit|
 |typesWithErrors|personal_card_debit|
+|typesWithErrors|pix|
 |typesWithErrors|pulse|
 |typesWithErrors|romcard|
 |typesWithErrors|romcard_credit|
@@ -42227,6 +42536,9 @@ BasicAuth, ApiKeyAuth
   },
   "bcmc": {
     "enableBcmcMobile": true
+  },
+  "boncard": {
+    "terminalId": "string"
   },
   "businessLineId": "string",
   "carnet": {
@@ -42373,6 +42685,13 @@ BasicAuth, ApiKeyAuth
       "type": "dynamic"
     }
   },
+  "paybybank_plaid_ca": {
+    "logo": "string",
+    "transactionDescription": {
+      "doingBusinessAsName": "string",
+      "type": "dynamic"
+    }
+  },
   "payme": {
     "displayName": "string",
     "logo": "string",
@@ -42386,6 +42705,10 @@ BasicAuth, ApiKeyAuth
   "payto": {
     "merchantName": "string",
     "payToPurpose": "string"
+  },
+  "pix": {
+    "allowRecurring": false,
+    "allowPayByBank": false
   },
   "pulse": {
     "processingType": "billpay",
@@ -42473,6 +42796,7 @@ BasicAuth, ApiKeyAuth
 |ancv|[AncvInfo](#schemaancvinfo)|false|none|Details to provide if `type` is **ancv**.|
 |applePay|[ApplePayInfo](#schemaapplepayinfo)|false|none|Details to provide if `type` is **applepay**.|
 |bcmc|[BcmcInfo](#schemabcmcinfo)|false|none|Details to provide if `type` is **bcmc** (Bancontact).|
+|boncard|[BoncardInfo](#schemaboncardinfo)|false|none|Details to provide if `type` is **boncard**.|
 |businessLineId|string|false|none|The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms).|
 |carnet|[CarnetInfo](#schemacarnetinfo)|false|none|Details to provide if `type` is **carnet**.|
 |cartesBancaires|[CartesBancairesInfo](#schemacartesbancairesinfo)|false|none|Details to provide if `type` is **cartebancaire**.|
@@ -42499,9 +42823,11 @@ BasicAuth, ApiKeyAuth
 |mealVoucher_FR|[MealVoucherFRInfo](#schemamealvoucherfrinfo)|false|none|Details to provide if `type` is **mealVoucher_FR**.|
 |nyce|[NyceInfo](#schemanyceinfo)|false|none|Details to provide if `type` is **nyce**.|
 |paybybank_plaid|[PayByBankPlaidInfo](#schemapaybybankplaidinfo)|false|none|Details to provide if `type` is **paybybank_plaid**.|
+|paybybank_plaid_ca|[PayByBankPlaidInfo](#schemapaybybankplaidinfo)|false|none|Details to provide if `type` is **paybybank_plaid_ca**.|
 |payme|[PayMeInfo](#schemapaymeinfo)|false|none|Details to provide if `type` is **payme**.|
 |paypal|[PayPalInfo](#schemapaypalinfo)|false|none|Details to provide if `type` is **paypal**.|
 |payto|[PayToInfo](#schemapaytoinfo)|false|none|Details to provide if `type` is **payto**.|
+|pix|[PixInfo](#schemapixinfo)|false|none|Details to provide if `type` is **pix**.|
 |pulse|[PulseInfo](#schemapulseinfo)|false|none|Details to provide if `type` is **pulse**.|
 |reference|string|false|none|Your reference for the payment method. Supported characters a-z, A-Z, 0-9.|
 |sepadirectdebit|[SepaDirectDebitInfo](#schemasepadirectdebitinfo)|false|none|Details to provide if `type` is **sepadirectdebit**.|
@@ -42566,6 +42892,7 @@ BasicAuth, ApiKeyAuth
 |type|bcmc|
 |type|blik|
 |type|blik_pos|
+|type|boncard|
 |type|br_schemes|
 |type|carnet|
 |type|cartebancaire|
@@ -42634,6 +42961,7 @@ BasicAuth, ApiKeyAuth
 |type|onlineBanking_PL|
 |type|paybybank|
 |type|paybybank_plaid|
+|type|paybybank_plaid_ca|
 |type|payme|
 |type|payme_pos|
 |type|paynow|
@@ -42643,6 +42971,7 @@ BasicAuth, ApiKeyAuth
 |type|personal_card|
 |type|personal_card_credit|
 |type|personal_card_debit|
+|type|pix|
 |type|pulse|
 |type|romcard|
 |type|romcard_credit|
@@ -42776,6 +43105,48 @@ BasicAuth, ApiKeyAuth
 |---|---|---|---|---|
 |data|[[PayoutSettings](#schemapayoutsettings)]|false|none|The list of payout accounts.|
 
+<h2 id="tocS_PixInfo">PixInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemapixinfo"></a>
+<a id="schema_PixInfo"></a>
+<a id="tocSpixinfo"></a>
+<a id="tocspixinfo"></a>
+
+```json
+{
+  "allowRecurring": false,
+  "allowPayByBank": false
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allowRecurring|boolean|false|none|Indicates whether to set up Pix Recurring (Pix Automático) instead of standard Pix. The default value is **false**.|
+|allowPayByBank|boolean|false|none|Indicates whether to set up Pix Pay by Bank instead of standard Pix. The default value is **false**.|
+
+<h2 id="tocS_PixResponseInfo">PixResponseInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemapixresponseinfo"></a>
+<a id="schema_PixResponseInfo"></a>
+<a id="tocSpixresponseinfo"></a>
+<a id="tocspixresponseinfo"></a>
+
+```json
+{
+  "allowRecurring": true,
+  "allowPayByBank": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allowRecurring|boolean|false|none|Indicates whether the Pix payment method is set up as Pix Recurring (Pix Automático) instead of standard Pix.|
+|allowPayByBank|boolean|false|none|Indicates whether the Pix payment method is set up as Pix Pay by Bank instead of standard Pix.|
+
 <h2 id="tocS_Profile">Profile</h2>
 <!-- backwards compatibility -->
 <a id="schemaprofile"></a>
@@ -42864,7 +43235,7 @@ BasicAuth, ApiKeyAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|processingType|string|true|none|The type of transactions processed over this payment method.<br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
+|processingType|string|false|none|The type of transactions processed over this payment method. The recommended usage is to not specify a processing type. We then set up the payment method to process all transaction types. <br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
 |transactionDescription|[TransactionDescriptionInfo](#schematransactiondescriptioninfo)|false|none|Information regarding the transaction description.<br>> You cannot configure the transaction description in the test environment.|
 
 #### Enumerated Values
@@ -42884,6 +43255,7 @@ BasicAuth, ApiKeyAuth
 
 ```json
 {
+  "networkProcessingMode": "auth",
   "processingType": "billpay",
   "transactionDescription": {
     "doingBusinessAsName": "string",
@@ -42896,6 +43268,7 @@ BasicAuth, ApiKeyAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|networkProcessingMode|string|false|none|Indicates the processing flow for the payment method. Possible values:<br>- **auth**: If you have not [configured automatic capture](https://docs.adyen.com/online-payments/capture#types-of-capture) for the transaction, you must manually capture the funds. <br>- **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction, together with authorization.<br>|
 |processingType|string|false|none|The type of transactions processed over this payment method.<br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
 |transactionDescription|[TransactionDescriptionResponseInfo](#schematransactiondescriptionresponseinfo)|false|none|Information regarding the transaction description.|
 
@@ -42903,6 +43276,8 @@ BasicAuth, ApiKeyAuth
 
 |Property|Value|
 |---|---|
+|networkProcessingMode|auth|
+|networkProcessingMode|sale|
 |processingType|billpay|
 |processingType|ecom|
 |processingType|pos|
@@ -43847,7 +44222,8 @@ BasicAuth, ApiKeyAuth
 {
   "currencyCode": "str",
   "enableGratuities": true,
-  "enableStandalone": true
+  "enableStandalone": true,
+  "merchantReference": "string"
 }
 ```
 
@@ -43858,6 +44234,7 @@ BasicAuth, ApiKeyAuth
 |currencyCode|string|false|none|The default currency of the standalone payment terminal as an [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code.|
 |enableGratuities|boolean|false|none|Indicates whether the tipping options specified in `gratuities` are enabled on the standalone terminal.|
 |enableStandalone|boolean|false|none|Enable standalone mode.|
+|merchantReference|string|false|none|The merchant reference to be sent with every transaction when the terminal is in standalone mode. Used for reconciliation.<br><br>This property also accepts one or more variables as input, together with plain text. When this property reaches the terminal, the terminal replaces the variables with the values that apply to it. For the list of allowed variables, see [Configure the merchant reference](https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone#configure-merchant-reference).<br>|
 
 <h2 id="tocS_StarInfo">StarInfo</h2>
 <!-- backwards compatibility -->
@@ -43880,7 +44257,7 @@ BasicAuth, ApiKeyAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|processingType|string|true|none|The type of transactions processed over this payment method.<br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
+|processingType|string|false|none|The type of transactions processed over this payment method. The recommended usage is to not specify a processing type. We then set up the payment method to process all transaction types. <br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
 |transactionDescription|[TransactionDescriptionInfo](#schematransactiondescriptioninfo)|false|none|Information regarding the transaction description.<br>> You cannot configure the transaction description in the test environment.|
 
 #### Enumerated Values
@@ -43900,6 +44277,7 @@ BasicAuth, ApiKeyAuth
 
 ```json
 {
+  "networkProcessingMode": "auth",
   "processingType": "billpay",
   "transactionDescription": {
     "doingBusinessAsName": "string",
@@ -43912,6 +44290,7 @@ BasicAuth, ApiKeyAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|networkProcessingMode|string|false|none|Indicates the processing flow for the payment method. Possible values:<br>- **auth**: If you have not [configured automatic capture](https://docs.adyen.com/online-payments/capture#types-of-capture) for the transaction, you must manually capture the funds. <br>- **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction, together with authorization.<br>|
 |processingType|string|false|none|The type of transactions processed over this payment method.<br> Allowed values:<br>- **pos** for in-person payments. <br>- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. <br>- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.<br>|
 |transactionDescription|[TransactionDescriptionResponseInfo](#schematransactiondescriptionresponseinfo)|false|none|Information regarding the transaction description.|
 
@@ -43919,6 +44298,8 @@ BasicAuth, ApiKeyAuth
 
 |Property|Value|
 |---|---|
+|networkProcessingMode|auth|
+|networkProcessingMode|sale|
 |processingType|billpay|
 |processingType|ecom|
 |processingType|pos|
@@ -43980,6 +44361,25 @@ BasicAuth, ApiKeyAuth
         "script": "string",
         "value": "string"
       }
+    ],
+    "localStoreName": [
+      {
+        "script": "string",
+        "value": "string"
+      }
+    ],
+    "localizedAddress": [
+      {
+        "fields": {
+          "building": "string",
+          "city": "string",
+          "district": "string",
+          "line1": "string",
+          "postalCode": "string",
+          "prefecture": "string"
+        },
+        "script": "ja-Kana"
+      }
     ]
   },
   "merchantId": "string",
@@ -44012,7 +44412,7 @@ BasicAuth, ApiKeyAuth
 |id|string|false|none|The unique identifier of the store. This value is generated by Adyen.|
 |localizedInformation|[LocalizedInformation](#schemalocalizedinformation)|false|none|The localized information of the store.|
 |merchantId|string|false|none|The unique identifier of the merchant account that the store belongs to.|
-|phoneNumber|string|false|none|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. |
+|phoneNumber|string|false|none|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format.|
 |reference|string|false|none|A reference to recognize the store by. Also known as the store code.<br> Allowed characters: lowercase and uppercase letters without diacritics, numbers 0 through 9, hyphen (-), and underscore (_)|
 |shopperStatement|string|false|none|The store name shown on the shopper's bank or credit card statement and on the shopper receipt.|
 |splitConfiguration|[StoreSplitConfiguration](#schemastoresplitconfiguration)|false|none|Rules for Adyen for Platforms merchants to split the transaction amount and fees.|
@@ -44090,6 +44490,25 @@ BasicAuth, ApiKeyAuth
         "script": "string",
         "value": "string"
       }
+    ],
+    "localStoreName": [
+      {
+        "script": "string",
+        "value": "string"
+      }
+    ],
+    "localizedAddress": [
+      {
+        "fields": {
+          "building": "string",
+          "city": "string",
+          "district": "string",
+          "line1": "string",
+          "postalCode": "string",
+          "prefecture": "string"
+        },
+        "script": "ja-Kana"
+      }
     ]
   },
   "phoneNumber": "string",
@@ -44117,7 +44536,7 @@ BasicAuth, ApiKeyAuth
 |description|string|true|none|Your description of the store.|
 |externalReferenceId|string|false|none|The unique identifier of the store, used by certain payment methods and tax authorities.<br><br>Required for CNPJ in Brazil, in the format 00.000.000/0000-00 separated by dots, slashes, hyphens, or without separators.<br><br>Optional for SIRET in France, up to 14 digits.<br><br>Optional for Zip in Australia, up to 50 digits.<br><br>|
 |localizedInformation|[LocalizedInformation](#schemalocalizedinformation)|false|none|Localized information about the store.|
-|phoneNumber|string|true|none|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. |
+|phoneNumber|string|true|none|The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.<br><br>You can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.<br><br>The phone number can be from a different country than the store address.|
 |reference|string|false|none|Your reference to recognize the store by. Also known as the store code.<br> Allowed characters: lowercase and uppercase letters without diacritics, numbers 0 through 9, hyphen (-), and underscore (_).<br><br>If you do not provide a reference in your POST request, it is populated with the Adyen-generated [id](https://docs.adyen.com/api-explorer/Management/latest/post/stores#responses-200-id).|
 |shopperStatement|string|true|none|The store name to be shown on the shopper's bank or credit card statement and on the shopper receipt.<br>Maximum length: 22 characters; can't be all numbers.|
 |splitConfiguration|[StoreSplitConfiguration](#schemastoresplitconfiguration)|false|none|Rules for Adyen for Platforms merchants to split the transaction amount and fees.|
@@ -44152,6 +44571,25 @@ BasicAuth, ApiKeyAuth
         "script": "string",
         "value": "string"
       }
+    ],
+    "localStoreName": [
+      {
+        "script": "string",
+        "value": "string"
+      }
+    ],
+    "localizedAddress": [
+      {
+        "fields": {
+          "building": "string",
+          "city": "string",
+          "district": "string",
+          "line1": "string",
+          "postalCode": "string",
+          "prefecture": "string"
+        },
+        "script": "ja-Kana"
+      }
     ]
   },
   "merchantId": "string",
@@ -44181,7 +44619,7 @@ BasicAuth, ApiKeyAuth
 |externalReferenceId|string|false|none|The unique identifier of the store, used by certain payment methods and tax authorities.<br><br>Required for CNPJ in Brazil, in the format 00.000.000/0000-00 separated by dots, slashes, hyphens, or without separators.<br><br>Optional for SIRET in France, up to 14 digits.<br><br>Optional for Zip in Australia, up to 50 digits.<br><br>|
 |localizedInformation|[LocalizedInformation](#schemalocalizedinformation)|false|none|Localized information about the store.|
 |merchantId|string|true|none|The unique identifier of the merchant account that the store belongs to.|
-|phoneNumber|string|true|none|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. |
+|phoneNumber|string|true|none|The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.<br><br>You can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.<br><br>The phone number can be from a different country than the store address.|
 |reference|string|false|none|Your reference to recognize the store by. Also known as the store code.<br> Allowed characters: lowercase and uppercase letters without diacritics, numbers 0 through 9, hyphen (-), and underscore (_).<br><br>If you do not provide a reference in your POST request, it is populated with the Adyen-generated [id](https://docs.adyen.com/api-explorer/Management/latest/post/stores#responses-200-id).|
 |shopperStatement|string|true|none|The store name to be shown on the shopper's bank or credit card statement and on the shopper receipt.<br>Maximum length: 22 characters; can't be all numbers.|
 |splitConfiguration|[StoreSplitConfiguration](#schemastoresplitconfiguration)|false|none|Rules for Adyen for Platforms merchants to split the transaction amount and fees.|
@@ -45260,10 +45698,12 @@ BasicAuth, ApiKeyAuth
     "deviceSlogan": "string",
     "skipSignature": true
   },
+  "skipTipConfirmationOnTerminal": true,
   "standalone": {
     "currencyCode": "str",
     "enableGratuities": true,
-    "enableStandalone": true
+    "enableStandalone": true,
+    "merchantReference": "string"
   },
   "storeAndForward": {
     "maxAmount": [
@@ -45384,6 +45824,7 @@ BasicAuth, ApiKeyAuth
 |refunds|[Refunds](#schemarefunds)|false|none|Settings for refunds.|
 |showCalculatedPercentageTippingAmount|boolean \| null|false|none|Show the tipping amount calculated from the percentage next to each tipping percentage option on the terminal screen, for example `10 % \| 10 EUR` for a 100 EUR payment.|
 |signature|[Signature](#schemasignature)|false|none|Settings to skip signature, sign on display, or sign on receipt.|
+|skipTipConfirmationOnTerminal|boolean \| null|false|none|Skip the tip confirmation step of the Adyen payment app on the terminal. Set to **true** only if your own app that handles tipping is installed on the same terminal. If your app is not installed on the terminal, set to **false**.|
 |standalone|[Standalone](#schemastandalone)|false|none|Settings for [standalone](https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone#set-up-standalone-using-an-api-call) features.|
 |storeAndForward|[StoreAndForward](#schemastoreandforward)|false|none|Settings for store-and-forward offline payments. The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure.|
 |surcharge|[Surcharge](#schemasurcharge)|false|none|Settings for payment [surcharge](https://docs.adyen.com/point-of-sale/surcharge) features.|
@@ -46083,6 +46524,9 @@ BasicAuth, ApiKeyAuth
       "type": "dynamic"
     }
   },
+  "boncard": {
+    "terminalId": "string"
+  },
   "carnet": {
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -46196,6 +46640,12 @@ BasicAuth, ApiKeyAuth
       "type": "dynamic"
     }
   },
+  "paybybank_plaid_ca": {
+    "transactionDescription": {
+      "doingBusinessAsName": "string",
+      "type": "dynamic"
+    }
+  },
   "pulse": {
     "transactionDescription": {
       "doingBusinessAsName": "string",
@@ -46234,6 +46684,7 @@ BasicAuth, ApiKeyAuth
 |accel|[AccelUpdateInfo](#schemaaccelupdateinfo)|false|none|Details to provide if `type` is **accel**.|
 |affirm|[AffirmUpdateInfo](#schemaaffirmupdateinfo)|false|none|Details to provide if `type` is **affirm**.|
 |bcmc|[BcmcUpdateInfo](#schemabcmcupdateinfo)|false|none|Details to provide if `type` is **bcmc** (Bancontact).|
+|boncard|[BoncardUpdateInfo](#schemaboncardupdateinfo)|false|none|Details to provide if `type` is **boncard**.|
 |carnet|[GenericPmWithTdiUpdateInfo](#schemagenericpmwithtdiupdateinfo)|false|none|Details to provide if `type` is **carnet**.|
 |cartesBancaires|[CartesBancairesUpdateInfo](#schemacartesbancairesupdateinfo)|false|none|Details to provide if `type` is **cartebancaire**.|
 |cashapp|[CashAppUpdateInfo](#schemacashappupdateinfo)|false|none|Details to provide if `type` is **cashapp**.|
@@ -46256,6 +46707,7 @@ BasicAuth, ApiKeyAuth
 |mc|[GenericPmWithTdiUpdateInfo](#schemagenericpmwithtdiupdateinfo)|false|none|Details to provide if `type` is **mc**.|
 |nyce|[NyceUpdateInfo](#schemanyceupdateinfo)|false|none|Details to provide if `type` is **nyce**.|
 |paybybank_plaid|[PayByBankPlaidUpdateInfo](#schemapaybybankplaidupdateinfo)|false|none|Details to provide if `type` is **paybybank_plaid**.|
+|paybybank_plaid_ca|[PayByBankPlaidUpdateInfo](#schemapaybybankplaidupdateinfo)|false|none|Details to provide if `type` is **paybybank_plaid_ca**.|
 |pulse|[PulseUpdateInfo](#schemapulseupdateinfo)|false|none|Details to provide if `type` is **pulse**.|
 |sepadirectdebit|[SepaDirectDebitUpdateInfo](#schemasepadirectdebitupdateinfo)|false|none|Details to provide if `type` is **sepadirectdebit**.|
 |star|[StarUpdateInfo](#schemastarupdateinfo)|false|none|Details to provide if `type` is **star**.|
@@ -46478,7 +46930,7 @@ BasicAuth, ApiKeyAuth
 |businessLineIds|[string]|false|none|The unique identifiers of the [business lines](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/businessLines__resParam_id) that the store is associated with.|
 |description|string|false|none|The description of the store.|
 |externalReferenceId|string|false|none|The unique identifier of the store, used by certain payment methods and tax authorities.<br><br>Required for CNPJ in Brazil, in the format 00.000.000/0000-00 separated by dots, slashes, hyphens, or without separators.<br><br>Optional for SIRET in France, up to 14 digits.<br><br>Optional for Zip in Australia, up to 50 digits.<br><br>|
-|phoneNumber|string|false|none|The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. |
+|phoneNumber|string|false|none|The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.<br><br>You can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.<br><br>The phone number can be from a different country than the store address.|
 |splitConfiguration|[StoreSplitConfiguration](#schemastoresplitconfiguration)|false|none|Rules for Adyen for Platforms merchants to split the transaction amount and fees.|
 |status|string|false|none|The status of the store. Possible values are:<br><br>- **active**: This value is assigned automatically when a store is created. <br>- **inactive**: The maximum [transaction limits and number of Store-and-Forward transactions](https://docs.adyen.com/point-of-sale/determine-account-structure/configure-features#payment-features) for the store are set to 0. This blocks new transactions, but captures are still possible.<br>- **closed**: The terminals of the store are reassigned to the merchant inventory, so they can't process payments.<br><br>You can change the status from **active** to **inactive**, and from **inactive** to **active** or **closed**. <br>Once **closed**, a store can't be reopened.|
 |subMerchantData|[SubMerchantData](#schemasubmerchantdata)|false|none|The sub-merchant data relevant for registered payment facilitators transacting on standalone terminals.|

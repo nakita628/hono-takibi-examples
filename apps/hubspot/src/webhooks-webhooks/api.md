@@ -19,12 +19,6 @@ Base URLs:
     - Authorization URL = [https://app.hubspot.com/oauth/authorize](https://app.hubspot.com/oauth/authorize)
     - Token URL = [https://api.hubapi.com/oauth/v1/token](https://api.hubapi.com/oauth/v1/token)
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="webhooks-webhooks-advanced">Advanced</h1>
 
 ## Create Snapshot
@@ -613,7 +607,8 @@ developer_hapikey
 > Code samples
 
 ```bash
-curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/earliest
+curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/earliest \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal-local/2026-09/earliest`
@@ -628,6 +623,12 @@ Retrieve the earliest entry from the webhooks journal for the specified portal. 
 
 > Example responses
 
+> 200 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -638,6 +639,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|The journal has no entries|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -651,7 +654,8 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/latest
+curl https://api.hubapi.com/webhooks-journal/journal-local/2026-09/latest \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal-local/2026-09/latest`
@@ -666,6 +670,12 @@ Retrieve the latest entries from the webhooks journal for the specified portal. 
 
 > Example responses
 
+> 200 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -676,6 +686,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|The journal has no entries|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -689,7 +701,8 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.hubapi.com/webhooks-journal/journal-local/2026-09/offset/{offset}/next'
+curl 'https://api.hubapi.com/webhooks-journal/journal-local/2026-09/offset/{offset}/next' \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal-local/2026-09/offset/{offset}/next`
@@ -705,6 +718,12 @@ Retrieve the next set of webhook journal entries starting from a specified offse
 
 > Example responses
 
+> 200 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -715,6 +734,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|No journal entry exists after the given offset|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -774,7 +795,8 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://api.hubapi.com/webhooks-journal/journal/2026-09/earliest
+curl https://api.hubapi.com/webhooks-journal/journal/2026-09/earliest \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal/2026-09/earliest`
@@ -789,6 +811,12 @@ Retrieve the earliest entry from the webhooks journal for the specified version.
 
 > Example responses
 
+> 200 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -799,6 +827,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|The journal has no entries|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -812,7 +842,8 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl https://api.hubapi.com/webhooks-journal/journal/2026-09/latest
+curl https://api.hubapi.com/webhooks-journal/journal/2026-09/latest \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal/2026-09/latest`
@@ -827,6 +858,12 @@ Retrieve the latest entries from the webhooks journal for the specified portal. 
 
 > Example responses
 
+> 200 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -837,6 +874,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|The journal has no entries|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -850,7 +889,8 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.hubapi.com/webhooks-journal/journal/2026-09/offset/{offset}/next'
+curl 'https://api.hubapi.com/webhooks-journal/journal/2026-09/offset/{offset}/next' \
+  -H 'Accept: application/json'
 ```
 
 `GET /webhooks-journal/journal/2026-09/offset/{offset}/next`
@@ -866,6 +906,12 @@ Retrieve the next batch of webhook journal entries starting from a specified off
 
 > Example responses
 
+> 200 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -876,6 +922,8 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|[JournalFetchResponse](#schemajournalfetchresponse)|
+|204|No Content|No journal entry exists after the given offset|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -961,7 +1009,7 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|successful operation|[CollectionResponseSubscriptionResponseMarch2027NoPaging](#schemacollectionresponsesubscriptionresponsemarch2027nopaging)|
+|200|OK|successful operation|[CollectionResponseSubscriptionResponseNoPaging](#schemacollectionresponsesubscriptionresponsenopaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">
@@ -2023,12 +2071,12 @@ null
 |status|PENDING|
 |status|PROCESSING|
 
-<h2 id="tocS_CollectionResponseSubscriptionResponseMarch2027NoPaging">CollectionResponseSubscriptionResponseMarch2027NoPaging</h2>
+<h2 id="tocS_CollectionResponseSubscriptionResponseNoPaging">CollectionResponseSubscriptionResponseNoPaging</h2>
 <!-- backwards compatibility -->
-<a id="schemacollectionresponsesubscriptionresponsemarch2027nopaging"></a>
-<a id="schema_CollectionResponseSubscriptionResponseMarch2027NoPaging"></a>
-<a id="tocScollectionresponsesubscriptionresponsemarch2027nopaging"></a>
-<a id="tocscollectionresponsesubscriptionresponsemarch2027nopaging"></a>
+<a id="schemacollectionresponsesubscriptionresponsenopaging"></a>
+<a id="schema_CollectionResponseSubscriptionResponseNoPaging"></a>
+<a id="tocScollectionresponsesubscriptionresponsenopaging"></a>
+<a id="tocscollectionresponsesubscriptionresponsenopaging"></a>
 
 ```json
 null
@@ -2038,7 +2086,7 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|results|[[SubscriptionResponseMarch2027](#schemasubscriptionresponsemarch2027)]|true|none|none|
+|results|[[SubscriptionResponse_1](#schemasubscriptionresponse_1)]|true|none|An array of SubscriptionResponse objects, each representing a subscription's details such as actions, appId, createdAt, and other relevant properties.|
 
 <h2 id="tocS_Condition">Condition</h2>
 <!-- backwards compatibility -->
@@ -2723,62 +2771,6 @@ null
 |eventType|ticket.merge|
 |eventType|ticket.propertyChange|
 |eventType|ticket.restore|
-
-<h2 id="tocS_SubscriptionResponseMarch2027">SubscriptionResponseMarch2027</h2>
-<!-- backwards compatibility -->
-<a id="schemasubscriptionresponsemarch2027"></a>
-<a id="schema_SubscriptionResponseMarch2027"></a>
-<a id="tocSsubscriptionresponsemarch2027"></a>
-<a id="tocssubscriptionresponsemarch2027"></a>
-
-```json
-null
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|actionOverrides|object|false|none|none|
-|actions|[string]|true|none|none|
-|appId|integer(int64)|true|none|none|
-|associatedObjectTypeIds|[string]|false|none|none|
-|createdAt|string(date-time)|true|none|none|
-|createdBy|integer(int64)|false|none|none|
-|deletedAt|string(date-time)|false|none|none|
-|id|integer(int64)|true|none|none|
-|includeSensitivePropertiesChanged|boolean|false|none|none|
-|listIds|[integer(int64)]|false|none|none|
-|objectIds|[integer(int64)]|false|none|none|
-|objectTypeId|string|true|none|none|
-|portalId|integer(int64)|false|none|none|
-|properties|[string]|false|none|none|
-|subscriptionType|string|true|none|none|
-|updatedAt|string(date-time)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|actions|CREATE|
-|actions|UPDATE|
-|actions|DELETE|
-|actions|MERGE|
-|actions|RESTORE|
-|actions|ASSOCIATION_ADDED|
-|actions|ASSOCIATION_REMOVED|
-|actions|SNAPSHOT|
-|actions|APP_INSTALL|
-|actions|APP_UNINSTALL|
-|actions|ADDED_TO_LIST|
-|actions|REMOVED_FROM_LIST|
-|actions|GDPR_DELETE|
-|subscriptionType|APP_LIFECYCLE_EVENT|
-|subscriptionType|ASSOCIATION|
-|subscriptionType|EVENT|
-|subscriptionType|GDPR_PRIVACY_DELETION|
-|subscriptionType|LIST_MEMBERSHIP|
-|subscriptionType|OBJECT|
 
 <h2 id="tocS_SubscriptionResponse_1">SubscriptionResponse_1</h2>
 <!-- backwards compatibility -->

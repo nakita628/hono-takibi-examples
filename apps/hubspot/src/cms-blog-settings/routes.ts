@@ -1814,7 +1814,10 @@ const AttachToLangPrimaryRequestVNextSchema = z
   .openapi({ required: ['id', 'language', 'primaryId'], example: null })
   .openapi('AttachToLangPrimaryRequestVNext')
 
-const PublicAccessRuleSchema = z.object({}).openapi({ example: null }).openapi('PublicAccessRule')
+const PublicAccessRuleSchema = z
+  .looseObject({})
+  .openapi({ example: null })
+  .openapi('PublicAccessRule')
 
 const BlogSchema = z
   .object({
@@ -4028,11 +4031,8 @@ const Oauth2SecurityScheme = {
       scopes: { content: '' },
     },
   },
+  'x-hubspot-app-availability': { content: { portal: ['public', 'private'], developer: false } },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCmsBlogSettings202609SettingsRoute = createRoute({
   method: 'get',

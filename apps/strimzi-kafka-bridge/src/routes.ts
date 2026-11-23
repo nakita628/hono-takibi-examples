@@ -30,7 +30,7 @@ const KafkaHeaderListSchema = z
 const RecordKeySchema = z
   .xor([
     z.array(z.any()).openapi({ description: 'Array representation of the key.' }),
-    z.object({}).openapi({ description: 'JSON object representation of the key.' }),
+    z.looseObject({}).openapi({ description: 'JSON object representation of the key.' }),
     z
       .string()
       .openapi({
@@ -47,7 +47,7 @@ const RecordKeySchema = z
 const RecordValueSchema = z
   .xor([
     z.array(z.any()).openapi({ description: 'Array representation of the value.' }),
-    z.object({}).openapi({ description: 'JSON object representation of the value.' }),
+    z.looseObject({}).openapi({ description: 'JSON object representation of the value.' }),
     z
       .string()
       .openapi({
@@ -1338,7 +1338,8 @@ export const postTopicsTopicnameRoute = createRoute({
   },
   responses: {
     200: {
-      description: 'Records sent successfully.',
+      description:
+        'Records sent. The response is returned with this status code even if some records failed to be delivered. Check each entry in the offsets array: a delivered record has partition and offset properties, and a record that failed to be delivered has error_code and message properties.',
       content: {
         'application/vnd.kafka.v2+json': {
           schema: OffsetRecordSentListSchema,
@@ -1352,17 +1353,6 @@ export const postTopicsTopicnameRoute = createRoute({
                 ],
               },
             },
-          },
-        },
-      },
-    },
-    404: {
-      description: 'The specified topic was not found.',
-      content: {
-        'application/vnd.kafka.v2+json': {
-          schema: ErrorSchema,
-          examples: {
-            response: { value: { error_code: 404, message: 'The specified topic was not found.' } },
           },
         },
       },
@@ -1745,7 +1735,8 @@ export const postTopicsTopicnamePartitionsPartitionidRoute = createRoute({
   },
   responses: {
     200: {
-      description: 'Records sent successfully.',
+      description:
+        'Records sent. The response is returned with this status code even if some records failed to be delivered. Check each entry in the offsets array: a delivered record has partition and offset properties, and a record that failed to be delivered has error_code and message properties.',
       content: {
         'application/vnd.kafka.v2+json': {
           schema: OffsetRecordSentListSchema,
@@ -1758,19 +1749,6 @@ export const postTopicsTopicnamePartitionsPartitionidRoute = createRoute({
                   { partition: 2, offset: 2 },
                 ],
               },
-            },
-          },
-        },
-      },
-    },
-    404: {
-      description: 'The specified topic partition was not found.',
-      content: {
-        'application/vnd.kafka.v2+json': {
-          schema: ErrorSchema,
-          examples: {
-            response: {
-              value: { error_code: 404, message: 'The specified topic partition was not found.' },
             },
           },
         },

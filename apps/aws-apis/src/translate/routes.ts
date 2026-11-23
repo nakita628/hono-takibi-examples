@@ -13,21 +13,13 @@ const ParallelDataStatusSchema = z
 
 const CreateParallelDataResponseSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The custom name that you assigned to the parallel data resource.',
-        }),
-    ).exactOptional(),
-    Status: ParallelDataStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the parallel data resource. When the resource is ready for you to use, the status is <code>ACTIVE</code>.',
-        }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The custom name that you assigned to the parallel data resource.',
+    }),
+    Status: ParallelDataStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the parallel data resource. When the resource is ready for you to use, the status is <code>ACTIVE</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateParallelDataResponse')
@@ -48,17 +40,13 @@ const ParallelDataFormatSchema = z.enum(['TSV', 'CSV', 'TMX']).openapi('Parallel
 
 const ParallelDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI of the Amazon S3 folder that contains the parallel data input file. The folder must be in the same Region as the API endpoint you are calling.',
-        }),
-    ),
-    Format: ParallelDataFormatSchema.and(
-      z.any().openapi({ description: 'The format of the parallel data input file.' }),
-    ),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        'The URI of the Amazon S3 folder that contains the parallel data input file. The folder must be in the same Region as the API endpoint you are calling.',
+    }),
+    Format: ParallelDataFormatSchema.openapi({
+      description: 'The format of the parallel data input file.',
+    }),
   })
   .openapi({
     required: ['S3Uri', 'Format'],
@@ -79,22 +67,13 @@ const EncryptionKeyIDSchema = z
 
 const EncryptionKeySchema = z
   .object({
-    Type: EncryptionKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of encryption key used by Amazon Translate to encrypt this object.',
-        }),
-    ),
-    Id: EncryptionKeyIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the encryption key being used to encrypt this object.',
-        }),
-    ),
+    Type: EncryptionKeyTypeSchema.openapi({
+      description: 'The type of encryption key used by Amazon Translate to encrypt this object.',
+    }),
+    Id: EncryptionKeyIDSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the encryption key being used to encrypt this object.',
+    }),
   })
   .openapi({
     required: ['Type', 'Id'],
@@ -115,22 +94,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The initial part of a key-value pair that forms a tag associated with a given resource. ',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The second part of a key-value pair that forms a tag associated with a given resource.',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'The initial part of a key-value pair that forms a tag associated with a given resource. ',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        ' The second part of a key-value pair that forms a tag associated with a given resource.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -143,45 +114,25 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const CreateParallelDataRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A custom name for the parallel data resource in Amazon Translate. You must assign a name that is unique in the account and region.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A custom description for the parallel data resource in Amazon Translate.',
-        }),
-    ).exactOptional(),
-    ParallelDataConfig: ParallelDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and S3 location of the parallel data input file.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        'A custom name for the parallel data resource in Amazon Translate. You must assign a name that is unique in the account and region.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A custom description for the parallel data resource in Amazon Translate.',
+    }),
+    ParallelDataConfig: ParallelDataConfigSchema.openapi({
+      description: 'Specifies the format and S3 location of the parallel data input file.',
+    }),
     EncryptionKey: EncryptionKeySchema.exactOptional(),
-    ClientToken: ClientTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the request. This token is automatically generated when you use Amazon Translate through an AWS SDK.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to be associated with this resource. A tag is a key-value pair that adds metadata to a resource. Each tag key for the resource must be unique. For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/tagging.html"> Tagging your resources</a>.',
-        }),
-    ).exactOptional(),
+    ClientToken: ClientTokenStringSchema.openapi({
+      description:
+        'A unique identifier for the request. This token is automatically generated when you use Amazon Translate through an AWS SDK.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to be associated with this resource. A tag is a key-value pair that adds metadata to a resource. Each tag key for the resource must be unique. For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/tagging.html"> Tagging your resources</a>.',
+    }),
   })
   .openapi({
     required: ['Name', 'ParallelDataConfig', 'ClientToken'],
@@ -207,25 +158,21 @@ const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 
 const DeleteParallelDataResponseSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the parallel data resource that is being deleted.' }),
-    ).exactOptional(),
-    Status: ParallelDataStatusSchema.and(
-      z.any().openapi({ description: 'The status of the parallel data deletion.' }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the parallel data resource that is being deleted.',
+    }),
+    Status: ParallelDataStatusSchema.exactOptional().openapi({
+      description: 'The status of the parallel data deletion.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteParallelDataResponse')
 
 const DeleteParallelDataRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the parallel data resource that is being deleted.' }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description: 'The name of the parallel data resource that is being deleted.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteParallelDataRequest' })
   .openapi('DeleteParallelDataRequest')
@@ -234,9 +181,9 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const DeleteTerminologyRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the custom terminology being deleted. ' }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description: 'The name of the custom terminology being deleted. ',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteTerminologyRequest' })
   .openapi('DeleteTerminologyRequest')
@@ -271,26 +218,15 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const JobDetailsSchema = z
   .object({
-    TranslatedDocumentsCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of documents successfully processed during a translation job.',
-        }),
-    ).exactOptional(),
-    DocumentsWithErrorsCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of documents that could not be processed during a translation job.',
-        }),
-    ).exactOptional(),
-    InputDocumentsCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of documents used as input in a translation job.' }),
-    ).exactOptional(),
+    TranslatedDocumentsCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of documents successfully processed during a translation job.',
+    }),
+    DocumentsWithErrorsCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of documents that could not be processed during a translation job.',
+    }),
+    InputDocumentsCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of documents used as input in a translation job.',
+    }),
   })
   .openapi({
     description:
@@ -320,22 +256,14 @@ const ContentTypeSchema = z
 
 const InputDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI of the AWS S3 folder that contains the input files. Amazon Translate translates all the files in the folder and all its sub-folders. The folder must be in the same Region as the API endpoint you are calling.',
-        }),
-    ),
-    ContentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the format of the data that you submit to Amazon Translate as input. You can specify one of the following multipurpose internet mail extension (MIME) types:</p> <ul> <li> <p> <code>text/html</code>: The input data consists of one or more HTML files. Amazon Translate translates only the text that resides in the <code>html</code> element in each file.</p> </li> <li> <p> <code>text/plain</code>: The input data consists of one or more unformatted text files. Amazon Translate translates every character in this type of input.</p> </li> <li> <p> <code>application/vnd.openxmlformats-officedocument.wordprocessingml.document</code>: The input data consists of one or more Word documents (.docx).</p> </li> <li> <p> <code>application/vnd.openxmlformats-officedocument.presentationml.presentation</code>: The input data consists of one or more PowerPoint Presentation files (.pptx).</p> </li> <li> <p> <code>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</code>: The input data consists of one or more Excel Workbook files (.xlsx).</p> </li> <li> <p> <code>application/x-xliff+xml</code>: The input data consists of one or more XML Localization Interchange File Format (XLIFF) files (.xlf). Amazon Translate supports only XLIFF version 1.2.</p> </li> </ul> <important> <p>If you structure your input data as HTML, ensure that you set this parameter to <code>text/html</code>. By doing so, you cut costs by limiting the translation to the contents of the <code>html</code> element in each file. Otherwise, if you set this parameter to <code>text/plain</code>, your costs will cover the translation of every character.</p> </important>',
-        }),
-    ),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        'The URI of the AWS S3 folder that contains the input files. Amazon Translate translates all the files in the folder and all its sub-folders. The folder must be in the same Region as the API endpoint you are calling.',
+    }),
+    ContentType: ContentTypeSchema.openapi({
+      description:
+        '<p>Describes the format of the data that you submit to Amazon Translate as input. You can specify one of the following multipurpose internet mail extension (MIME) types:</p> <ul> <li> <p> <code>text/html</code>: The input data consists of one or more HTML files. Amazon Translate translates only the text that resides in the <code>html</code> element in each file.</p> </li> <li> <p> <code>text/plain</code>: The input data consists of one or more unformatted text files. Amazon Translate translates every character in this type of input.</p> </li> <li> <p> <code>application/vnd.openxmlformats-officedocument.wordprocessingml.document</code>: The input data consists of one or more Word documents (.docx).</p> </li> <li> <p> <code>application/vnd.openxmlformats-officedocument.presentationml.presentation</code>: The input data consists of one or more PowerPoint Presentation files (.pptx).</p> </li> <li> <p> <code>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</code>: The input data consists of one or more Excel Workbook files (.xlsx).</p> </li> <li> <p> <code>application/x-xliff+xml</code>: The input data consists of one or more XML Localization Interchange File Format (XLIFF) files (.xlf). Amazon Translate supports only XLIFF version 1.2.</p> </li> </ul> <important> <p>If you structure your input data as HTML, ensure that you set this parameter to <code>text/html</code>. By doing so, you cut costs by limiting the translation to the contents of the <code>html</code> element in each file. Otherwise, if you set this parameter to <code>text/plain</code>, your costs will cover the translation of every character.</p> </important>',
+    }),
   })
   .openapi({
     required: ['S3Uri', 'ContentType'],
@@ -345,14 +273,10 @@ const InputDataConfigSchema = z
 
 const OutputDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The URI of the S3 folder that contains a translation job's output file. The folder must be in the same Region as the API endpoint that you are calling.",
-        }),
-    ),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        "The URI of the S3 folder that contains a translation job's output file. The folder must be in the same Region as the API endpoint that you are calling.",
+    }),
     EncryptionKey: EncryptionKeySchema.exactOptional(),
   })
   .openapi({
@@ -374,22 +298,14 @@ const ProfanitySchema = z.literal('MASK').openapi('Profanity')
 
 const TranslationSettingsSchema = z
   .object({
-    Formality: FormalitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>You can optionally specify the desired level of formality for translations to supported target languages. The formality setting controls the level of formal language usage (also known as <a href="https://en.wikipedia.org/wiki/Register_(sociolinguistics)">register</a>) in the translation output. You can set the value to informal or formal. If you don\'t specify a value for formality, or if the target language doesn\'t support formality, the translation will ignore the formality setting.</p> <p> If you specify multiple target languages for the job, translate ignores the formality setting for any unsupported target language.</p> <p>For a list of target languages that support formality, see <a href="https://docs.aws.amazon.com/translate/latest/dg/customizing-translations-formality.html#customizing-translations-formality-languages">Supported languages</a> in the Amazon Translate Developer Guide.</p>',
-        }),
-    ).exactOptional(),
-    Profanity: ProfanitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Enable the profanity setting if you want Amazon Translate to mask profane words and phrases in your translation output.</p> <p>To mask profane words and phrases, Amazon Translate replaces them with the grawlix string “?$#@$“. This 5-character sequence is used for each profane word or phrase, regardless of the length or number of words.</p> <p>Amazon Translate doesn't detect profanity in all of its supported languages. For languages that don't support profanity detection, see <a href=\"https://docs.aws.amazon.com/translate/latest/dg/customizing-translations-profanity.html#customizing-translations-profanity-languages\">Unsupported languages</a> in the Amazon Translate Developer Guide.</p> <p>If you specify multiple target languages for the job, all the target languages must support profanity masking. If any of the target languages don't support profanity masking, the translation job won't mask profanity for any target language.</p>",
-        }),
-    ).exactOptional(),
+    Formality: FormalitySchema.exactOptional().openapi({
+      description:
+        '<p>You can optionally specify the desired level of formality for translations to supported target languages. The formality setting controls the level of formal language usage (also known as <a href="https://en.wikipedia.org/wiki/Register_(sociolinguistics)">register</a>) in the translation output. You can set the value to informal or formal. If you don\'t specify a value for formality, or if the target language doesn\'t support formality, the translation will ignore the formality setting.</p> <p> If you specify multiple target languages for the job, translate ignores the formality setting for any unsupported target language.</p> <p>For a list of target languages that support formality, see <a href="https://docs.aws.amazon.com/translate/latest/dg/customizing-translations-formality.html#customizing-translations-formality-languages">Supported languages</a> in the Amazon Translate Developer Guide.</p>',
+    }),
+    Profanity: ProfanitySchema.exactOptional().openapi({
+      description:
+        "<p>Enable the profanity setting if you want Amazon Translate to mask profane words and phrases in your translation output.</p> <p>To mask profane words and phrases, Amazon Translate replaces them with the grawlix string “?$#@$“. This 5-character sequence is used for each profane word or phrase, regardless of the length or number of words.</p> <p>Amazon Translate doesn't detect profanity in all of its supported languages. For languages that don't support profanity detection, see <a href=\"https://docs.aws.amazon.com/translate/latest/dg/customizing-translations-profanity.html#customizing-translations-profanity-languages\">Unsupported languages</a> in the Amazon Translate Developer Guide.</p> <p>If you specify multiple target languages for the job, all the target languages must support profanity masking. If any of the target languages don't support profanity masking, the translation job won't mask profanity for any target language.</p>",
+    }),
   })
   .openapi({
     description:
@@ -400,124 +316,78 @@ const TranslationSettingsSchema = z
 
 const TextTranslationJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the translation job.' }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The user-defined name of the translation job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the translation job.' }),
-    ).exactOptional(),
-    JobDetails: JobDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of documents successfully and unsuccessfully processed during the translation job.',
-        }),
-    ).exactOptional(),
-    SourceLanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the language of the source text. The language must be a language supported by Amazon Translate.',
-        }),
-    ).exactOptional(),
-    TargetLanguageCodes: TargetLanguageCodeStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the language of the target text. The language must be a language supported by Amazon Translate.',
-        }),
-    ).exactOptional(),
-    TerminologyNames: ResourceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the names of the terminologies applied to a translation job. Only one terminology can be applied per <a>StartTextTranslationJob</a> request at this time.',
-        }),
-    ).exactOptional(),
-    ParallelDataNames: ResourceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the names of the parallel data resources applied to the translation job.',
-        }),
-    ).exactOptional(),
-    Message: UnboundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An explanation of any errors that may have occurred during the translation job.',
-        }),
-    ).exactOptional(),
-    SubmittedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the translation job was submitted.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the translation job ended.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input configuration properties that were specified when the job was requested.',
-        }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output configuration properties that were specified when the job was requested.',
-        }),
-    ).exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of an AWS Identity Access and Management (IAM) role that granted Amazon Translate read access to the job's input data.",
-        }),
-    ).exactOptional(),
-    Settings: TranslationSettingsSchema.and(
-      z.any().openapi({ description: 'Settings that modify the translation output.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({ description: 'The ID of the translation job.' }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The user-defined name of the translation job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'The status of the translation job.',
+    }),
+    JobDetails: JobDetailsSchema.exactOptional().openapi({
+      description:
+        'The number of documents successfully and unsuccessfully processed during the translation job.',
+    }),
+    SourceLanguageCode: LanguageCodeStringSchema.exactOptional().openapi({
+      description:
+        'The language code of the language of the source text. The language must be a language supported by Amazon Translate.',
+    }),
+    TargetLanguageCodes: TargetLanguageCodeStringListSchema.exactOptional().openapi({
+      description:
+        'The language code of the language of the target text. The language must be a language supported by Amazon Translate.',
+    }),
+    TerminologyNames: ResourceNameListSchema.exactOptional().openapi({
+      description:
+        'A list containing the names of the terminologies applied to a translation job. Only one terminology can be applied per <a>StartTextTranslationJob</a> request at this time.',
+    }),
+    ParallelDataNames: ResourceNameListSchema.exactOptional().openapi({
+      description:
+        'A list containing the names of the parallel data resources applied to the translation job.',
+    }),
+    Message: UnboundedLengthStringSchema.exactOptional().openapi({
+      description:
+        'An explanation of any errors that may have occurred during the translation job.',
+    }),
+    SubmittedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the translation job was submitted.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the translation job ended.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The input configuration properties that were specified when the job was requested.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.exactOptional().openapi({
+      description:
+        'The output configuration properties that were specified when the job was requested.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of an AWS Identity Access and Management (IAM) role that granted Amazon Translate read access to the job's input data.",
+    }),
+    Settings: TranslationSettingsSchema.exactOptional().openapi({
+      description: 'Settings that modify the translation output.',
+    }),
   })
   .openapi({ description: 'Provides information about a translation job.', required: [] })
   .openapi('TextTranslationJobProperties')
 
 const DescribeTextTranslationJobResponseSchema = z
   .object({
-    TextTranslationJobProperties: TextTranslationJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the properties associated with an asynchronous batch translation job.',
-        }),
-    ).exactOptional(),
+    TextTranslationJobProperties: TextTranslationJobPropertiesSchema.exactOptional().openapi({
+      description:
+        'An object that contains the properties associated with an asynchronous batch translation job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTextTranslationJobResponse')
 
 const DescribeTextTranslationJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that Amazon Translate generated for the job. The <a>StartTextTranslationJob</a> operation returns this identifier in its response.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier that Amazon Translate generated for the job. The <a>StartTextTranslationJob</a> operation returns this identifier in its response.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeTextTranslationJobRequest' })
   .openapi('DescribeTextTranslationJobRequest')
@@ -532,107 +402,61 @@ const LongSchema = z.int().openapi('Long')
 
 const ParallelDataPropertiesSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The custom name assigned to the parallel data resource.' }),
-    ).exactOptional(),
-    Arn: ParallelDataArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the parallel data resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description assigned to the parallel data resource.' }),
-    ).exactOptional(),
-    Status: ParallelDataStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the parallel data resource. When the parallel data is ready for you to use, the status is <code>ACTIVE</code>.',
-        }),
-    ).exactOptional(),
-    SourceLanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The source language of the translations in the parallel data file.',
-        }),
-    ).exactOptional(),
-    TargetLanguageCodes: LanguageCodeStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language codes for the target languages available in the parallel data file. All possible target languages are returned as an array.',
-        }),
-    ).exactOptional(),
-    ParallelDataConfig: ParallelDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and S3 location of the parallel data input file.',
-        }),
-    ).exactOptional(),
-    Message: UnboundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information from Amazon Translate about the parallel data resource. ',
-        }),
-    ).exactOptional(),
-    ImportedDataSize: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of UTF-8 characters that Amazon Translate imported from the parallel data input file. This number includes only the characters in your translation examples. It does not include characters that are used to format your file. For example, if you provided a Translation Memory Exchange (.tmx) file, this number does not include the tags.',
-        }),
-    ).exactOptional(),
-    ImportedRecordCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of records successfully imported from the parallel data input file.',
-        }),
-    ).exactOptional(),
-    FailedRecordCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of records unsuccessfully imported from the parallel data input file.',
-        }),
-    ).exactOptional(),
-    SkippedRecordCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of items in the input file that Amazon Translate skipped when you created or updated the parallel data resource. For example, Amazon Translate skips empty records, empty target texts, and empty lines.',
-        }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The custom name assigned to the parallel data resource.',
+    }),
+    Arn: ParallelDataArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the parallel data resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description assigned to the parallel data resource.',
+    }),
+    Status: ParallelDataStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the parallel data resource. When the parallel data is ready for you to use, the status is <code>ACTIVE</code>.',
+    }),
+    SourceLanguageCode: LanguageCodeStringSchema.exactOptional().openapi({
+      description: 'The source language of the translations in the parallel data file.',
+    }),
+    TargetLanguageCodes: LanguageCodeStringListSchema.exactOptional().openapi({
+      description:
+        'The language codes for the target languages available in the parallel data file. All possible target languages are returned as an array.',
+    }),
+    ParallelDataConfig: ParallelDataConfigSchema.exactOptional().openapi({
+      description: 'Specifies the format and S3 location of the parallel data input file.',
+    }),
+    Message: UnboundedLengthStringSchema.exactOptional().openapi({
+      description:
+        'Additional information from Amazon Translate about the parallel data resource. ',
+    }),
+    ImportedDataSize: LongSchema.exactOptional().openapi({
+      description:
+        'The number of UTF-8 characters that Amazon Translate imported from the parallel data input file. This number includes only the characters in your translation examples. It does not include characters that are used to format your file. For example, if you provided a Translation Memory Exchange (.tmx) file, this number does not include the tags.',
+    }),
+    ImportedRecordCount: LongSchema.exactOptional().openapi({
+      description: 'The number of records successfully imported from the parallel data input file.',
+    }),
+    FailedRecordCount: LongSchema.exactOptional().openapi({
+      description:
+        'The number of records unsuccessfully imported from the parallel data input file.',
+    }),
+    SkippedRecordCount: LongSchema.exactOptional().openapi({
+      description:
+        'The number of items in the input file that Amazon Translate skipped when you created or updated the parallel data resource. For example, Amazon Translate skips empty records, empty target texts, and empty lines.',
+    }),
     EncryptionKey: EncryptionKeySchema.exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the parallel data resource was created.' }),
-    ).exactOptional(),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time at which the parallel data resource was last updated.' }),
-    ).exactOptional(),
-    LatestUpdateAttemptStatus: ParallelDataStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the most recent update attempt for the parallel data resource.',
-        }),
-    ).exactOptional(),
-    LatestUpdateAttemptAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the most recent update was attempted.' }),
-    ).exactOptional(),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the parallel data resource was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the parallel data resource was last updated.',
+    }),
+    LatestUpdateAttemptStatus: ParallelDataStatusSchema.exactOptional().openapi({
+      description: 'The status of the most recent update attempt for the parallel data resource.',
+    }),
+    LatestUpdateAttemptAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the most recent update was attempted.',
+    }),
   })
   .openapi({ description: 'The properties of a parallel data resource.', required: [] })
   .openapi('ParallelDataProperties')
@@ -645,21 +469,13 @@ const StringSchema = z
 
 const ParallelDataDataLocationSchema = z
   .object({
-    RepositoryType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the repository that contains the parallel data input file.',
-        }),
-    ),
-    Location: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the parallel data input file. The location is returned as a presigned URL to that has a 30-minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>",
-        }),
-    ),
+    RepositoryType: StringSchema.openapi({
+      description: 'Describes the repository that contains the parallel data input file.',
+    }),
+    Location: StringSchema.openapi({
+      description:
+        "<p>The Amazon S3 location of the parallel data input file. The location is returned as a presigned URL to that has a 30-minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>",
+    }),
   })
   .openapi({
     required: ['RepositoryType', 'Location'],
@@ -670,50 +486,31 @@ const ParallelDataDataLocationSchema = z
 
 const GetParallelDataResponseSchema = z
   .object({
-    ParallelDataProperties: ParallelDataPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The properties of the parallel data resource that is being retrieved.',
-        }),
-    ).exactOptional(),
-    DataLocation: ParallelDataDataLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the most recent parallel data input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>",
-        }),
-    ).exactOptional(),
-    AuxiliaryDataLocation: ParallelDataDataLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a parallel data resource. The location is returned as a presigned URL to that has a 30-minute expiration.',
-        }),
-    ).exactOptional(),
-    LatestUpdateAttemptAuxiliaryDataLocation: ParallelDataDataLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to update a parallel data resource. The location is returned as a presigned URL to that has a 30-minute expiration.',
-        }),
-    ).exactOptional(),
+    ParallelDataProperties: ParallelDataPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the parallel data resource that is being retrieved.',
+    }),
+    DataLocation: ParallelDataDataLocationSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of the most recent parallel data input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>",
+    }),
+    AuxiliaryDataLocation: ParallelDataDataLocationSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a parallel data resource. The location is returned as a presigned URL to that has a 30-minute expiration.',
+    }),
+    LatestUpdateAttemptAuxiliaryDataLocation:
+      ParallelDataDataLocationSchema.exactOptional().openapi({
+        description:
+          'The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to update a parallel data resource. The location is returned as a presigned URL to that has a 30-minute expiration.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetParallelDataResponse')
 
 const GetParallelDataRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the parallel data resource that is being retrieved.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description: 'The name of the parallel data resource that is being retrieved.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'GetParallelDataRequest' })
   .openapi('GetParallelDataRequest')
@@ -726,104 +523,66 @@ const TerminologyDataFormatSchema = z.enum(['CSV', 'TMX', 'TSV']).openapi('Termi
 
 const TerminologyPropertiesSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the custom terminology.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the custom terminology properties.' }),
-    ).exactOptional(),
-    Arn: TerminologyArnSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The Amazon Resource Name (ARN) of the custom terminology. ' }),
-    ).exactOptional(),
-    SourceLanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code for the source text of the translation request for which the custom terminology is being used.',
-        }),
-    ).exactOptional(),
-    TargetLanguageCodes: LanguageCodeStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language codes for the target languages available with the custom terminology resource. All possible target languages are returned in array.',
-        }),
-    ).exactOptional(),
-    EncryptionKey: EncryptionKeySchema.and(
-      z.any().openapi({ description: 'The encryption key for the custom terminology.' }),
-    ).exactOptional(),
-    SizeBytes: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The size of the file used when importing a custom terminology.' }),
-    ).exactOptional(),
-    TermCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of terms included in the custom terminology.' }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the custom terminology was created, based on the timestamp.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the custom terminology was last update, based on the timestamp.',
-        }),
-    ).exactOptional(),
-    Directionality: DirectionalitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The directionality of your terminology resource indicates whether it has one source language (uni-directional) or multiple (multi-directional). </p> <dl> <dt>UNI</dt> <dd> <p>The terminology resource has one source language (the first column in a CSV file), and all of its other languages are target languages.</p> </dd> <dt>MULTI</dt> <dd> <p>Any language in the terminology resource can be the source language.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    Message: UnboundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information from Amazon Translate about the terminology resource.',
-        }),
-    ).exactOptional(),
-    SkippedTermCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of terms in the input file that Amazon Translate skipped when you created or updated the terminology resource.',
-        }),
-    ).exactOptional(),
-    Format: TerminologyDataFormatSchema.and(
-      z.any().openapi({ description: 'The format of the custom terminology input file.' }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the custom terminology.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the custom terminology properties.',
+    }),
+    Arn: TerminologyArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the custom terminology. ',
+    }),
+    SourceLanguageCode: LanguageCodeStringSchema.exactOptional().openapi({
+      description:
+        'The language code for the source text of the translation request for which the custom terminology is being used.',
+    }),
+    TargetLanguageCodes: LanguageCodeStringListSchema.exactOptional().openapi({
+      description:
+        'The language codes for the target languages available with the custom terminology resource. All possible target languages are returned in array.',
+    }),
+    EncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description: 'The encryption key for the custom terminology.',
+    }),
+    SizeBytes: IntegerSchema.exactOptional().openapi({
+      description: 'The size of the file used when importing a custom terminology.',
+    }),
+    TermCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of terms included in the custom terminology.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the custom terminology was created, based on the timestamp.',
+    }),
+    LastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time at which the custom terminology was last update, based on the timestamp.',
+    }),
+    Directionality: DirectionalitySchema.exactOptional().openapi({
+      description:
+        '<p>The directionality of your terminology resource indicates whether it has one source language (uni-directional) or multiple (multi-directional). </p> <dl> <dt>UNI</dt> <dd> <p>The terminology resource has one source language (the first column in a CSV file), and all of its other languages are target languages.</p> </dd> <dt>MULTI</dt> <dd> <p>Any language in the terminology resource can be the source language.</p> </dd> </dl>',
+    }),
+    Message: UnboundedLengthStringSchema.exactOptional().openapi({
+      description: 'Additional information from Amazon Translate about the terminology resource.',
+    }),
+    SkippedTermCount: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of terms in the input file that Amazon Translate skipped when you created or updated the terminology resource.',
+    }),
+    Format: TerminologyDataFormatSchema.exactOptional().openapi({
+      description: 'The format of the custom terminology input file.',
+    }),
   })
   .openapi({ description: 'The properties of the custom terminology.', required: [] })
   .openapi('TerminologyProperties')
 
 const TerminologyDataLocationSchema = z
   .object({
-    RepositoryType: StringSchema.and(
-      z.any().openapi({ description: 'The repository type for the custom terminology data.' }),
-    ),
-    Location: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the most recent custom terminology input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration .</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>",
-        }),
-    ),
+    RepositoryType: StringSchema.openapi({
+      description: 'The repository type for the custom terminology data.',
+    }),
+    Location: StringSchema.openapi({
+      description:
+        "<p>The Amazon S3 location of the most recent custom terminology input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration .</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>",
+    }),
   })
   .openapi({
     required: ['RepositoryType', 'Location'],
@@ -833,59 +592,43 @@ const TerminologyDataLocationSchema = z
 
 const GetTerminologyResponseSchema = z
   .object({
-    TerminologyProperties: TerminologyPropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the custom terminology being retrieved.' }),
-    ).exactOptional(),
-    TerminologyDataLocation: TerminologyDataLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon S3 location of the most recent custom terminology input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>",
-        }),
-    ).exactOptional(),
-    AuxiliaryDataLocation: TerminologyDataLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a terminology resource. The location is returned as a presigned URL to that has a 30-minute expiration.',
-        }),
-    ).exactOptional(),
+    TerminologyProperties: TerminologyPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the custom terminology being retrieved.',
+    }),
+    TerminologyDataLocation: TerminologyDataLocationSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon S3 location of the most recent custom terminology input file that was successfully imported into Amazon Translate. The location is returned as a presigned URL that has a 30-minute expiration.</p> <important> <p>Amazon Translate doesn't scan all input files for the risk of CSV injection attacks. </p> <p>CSV injection occurs when a .csv or .tsv file is altered so that a record contains malicious code. The record begins with a special character, such as =, +, -, or @. When the file is opened in a spreadsheet program, the program might interpret the record as a formula and run the code within it.</p> <p>Before you download an input file from Amazon S3, ensure that you recognize the file and trust its creator.</p> </important>",
+    }),
+    AuxiliaryDataLocation: TerminologyDataLocationSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a terminology resource. The location is returned as a presigned URL to that has a 30-minute expiration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTerminologyResponse')
 
 const GetTerminologyRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the custom terminology being retrieved.' }),
-    ),
-    TerminologyDataFormat: TerminologyDataFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The data format of the custom terminology being retrieved.</p> <p>If you don't specify this parameter, Amazon Translate returns a file with the same format as the file that was imported to create the terminology. </p> <p>If you specify this parameter when you retrieve a multi-directional terminology resource, you must specify the same format as the input file that was imported to create it. Otherwise, Amazon Translate throws an error.</p>",
-        }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.openapi({
+      description: 'The name of the custom terminology being retrieved.',
+    }),
+    TerminologyDataFormat: TerminologyDataFormatSchema.exactOptional().openapi({
+      description:
+        "<p>The data format of the custom terminology being retrieved.</p> <p>If you don't specify this parameter, Amazon Translate returns a file with the same format as the file that was imported to create the terminology. </p> <p>If you specify this parameter when you retrieve a multi-directional terminology resource, you must specify the same format as the input file that was imported to create it. Otherwise, Amazon Translate throws an error.</p>",
+    }),
   })
   .openapi({ required: ['Name'], title: 'GetTerminologyRequest' })
   .openapi('GetTerminologyRequest')
 
 const ImportTerminologyResponseSchema = z
   .object({
-    TerminologyProperties: TerminologyPropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the custom terminology being imported.' }),
-    ).exactOptional(),
-    AuxiliaryDataLocation: TerminologyDataLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a terminology resource. The location is returned as a presigned URL to that has a 30 minute expiration.',
-        }),
-    ).exactOptional(),
+    TerminologyProperties: TerminologyPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the custom terminology being imported.',
+    }),
+    AuxiliaryDataLocation: TerminologyDataLocationSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 location of a file that provides any errors or warnings that were produced by your input file. This file was created when Amazon Translate attempted to create a terminology resource. The location is returned as a presigned URL to that has a 30 minute expiration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportTerminologyResponse')
@@ -896,25 +639,17 @@ const TerminologyFileSchema = z.string().max(10485760).openapi('TerminologyFile'
 
 const TerminologyDataSchema = z
   .object({
-    File: TerminologyFileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file containing the custom terminology data. Your version of the AWS SDK performs a Base64-encoding on this field before sending a request to the AWS service. Users of the SDK should not perform Base64-encoding themselves.',
-        }),
-    ),
-    Format: TerminologyDataFormatSchema.and(
-      z.any().openapi({ description: 'The data format of the custom terminology.' }),
-    ),
-    Directionality: DirectionalitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The directionality of your terminology resource indicates whether it has one source language (uni-directional) or multiple (multi-directional).</p> <dl> <dt>UNI</dt> <dd> <p>The terminology resource has one source language (for example, the first column in a CSV file), and all of its other languages are target languages. </p> </dd> <dt>MULTI</dt> <dd> <p>Any language in the terminology resource can be the source language or a target language. A single multi-directional terminology resource can be used for jobs that translate different language pairs. For example, if the terminology contains English and Spanish terms, it can be used for jobs that translate English to Spanish and Spanish to English.</p> </dd> </dl> <p>When you create a custom terminology resource without specifying the directionality, it behaves as uni-directional terminology, although this parameter will have a null value.</p>',
-        }),
-    ).exactOptional(),
+    File: TerminologyFileSchema.openapi({
+      description:
+        'The file containing the custom terminology data. Your version of the AWS SDK performs a Base64-encoding on this field before sending a request to the AWS service. Users of the SDK should not perform Base64-encoding themselves.',
+    }),
+    Format: TerminologyDataFormatSchema.openapi({
+      description: 'The data format of the custom terminology.',
+    }),
+    Directionality: DirectionalitySchema.exactOptional().openapi({
+      description:
+        '<p>The directionality of your terminology resource indicates whether it has one source language (uni-directional) or multiple (multi-directional).</p> <dl> <dt>UNI</dt> <dd> <p>The terminology resource has one source language (for example, the first column in a CSV file), and all of its other languages are target languages. </p> </dd> <dt>MULTI</dt> <dd> <p>Any language in the terminology resource can be the source language or a target language. A single multi-directional terminology resource can be used for jobs that translate different language pairs. For example, if the terminology contains English and Spanish terms, it can be used for jobs that translate English to Spanish and Spanish to English.</p> </dd> </dl> <p>When you create a custom terminology resource without specifying the directionality, it behaves as uni-directional terminology, although this parameter will have a null value.</p>',
+    }),
   })
   .openapi({
     required: ['File', 'Format'],
@@ -925,40 +660,26 @@ const TerminologyDataSchema = z
 
 const ImportTerminologyRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the custom terminology being imported.' }),
-    ),
-    MergeStrategy: MergeStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The merge strategy of the custom terminology being imported. Currently, only the OVERWRITE merge strategy is supported. In this case, the imported terminology will overwrite an existing terminology of the same name.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the custom terminology being imported.' }),
-    ).exactOptional(),
-    TerminologyData: TerminologyDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The terminology data for the custom terminology being imported.',
-        }),
-    ),
-    EncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The encryption key for the custom terminology being imported.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to be associated with this resource. A tag is a key-value pair that adds metadata to a resource. Each tag key for the resource must be unique. For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/tagging.html"> Tagging your resources</a>.',
-        }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.openapi({
+      description: 'The name of the custom terminology being imported.',
+    }),
+    MergeStrategy: MergeStrategySchema.openapi({
+      description:
+        'The merge strategy of the custom terminology being imported. Currently, only the OVERWRITE merge strategy is supported. In this case, the imported terminology will overwrite an existing terminology of the same name.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the custom terminology being imported.',
+    }),
+    TerminologyData: TerminologyDataSchema.openapi({
+      description: 'The terminology data for the custom terminology being imported.',
+    }),
+    EncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description: 'The encryption key for the custom terminology being imported.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to be associated with this resource. A tag is a key-value pair that adds metadata to a resource. Each tag key for the resource must be unique. For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/tagging.html"> Tagging your resources</a>.',
+    }),
   })
   .openapi({
     required: ['Name', 'MergeStrategy', 'TerminologyData'],
@@ -970,12 +691,12 @@ const LocalizedNameStringSchema = z.string().min(1).max(256).openapi('LocalizedN
 
 const LanguageSchema = z
   .object({
-    LanguageName: LocalizedNameStringSchema.and(
-      z.any().openapi({ description: 'Language name of the supported language.' }),
-    ),
-    LanguageCode: LanguageCodeStringSchema.and(
-      z.any().openapi({ description: 'Language code for the supported language.' }),
-    ),
+    LanguageName: LocalizedNameStringSchema.openapi({
+      description: 'Language name of the supported language.',
+    }),
+    LanguageCode: LanguageCodeStringSchema.openapi({
+      description: 'Language code for the supported language.',
+    }),
   })
   .openapi({ required: ['LanguageName', 'LanguageCode'], description: 'A supported language.' })
   .openapi('Language')
@@ -994,20 +715,16 @@ const NextTokenSchema = z
 
 const ListLanguagesResponseSchema = z
   .object({
-    Languages: LanguagesListSchema.and(
-      z.any().openapi({ description: 'The list of supported languages.' }),
-    ).exactOptional(),
-    DisplayLanguageCode: DisplayLanguageCodeSchema.and(
-      z.any().openapi({ description: 'The language code passed in with the request.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the response does not include all remaining results, use the NextToken in the next request to fetch the next group of supported languages.',
-        }),
-    ).exactOptional(),
+    Languages: LanguagesListSchema.exactOptional().openapi({
+      description: 'The list of supported languages.',
+    }),
+    DisplayLanguageCode: DisplayLanguageCodeSchema.exactOptional().openapi({
+      description: 'The language code passed in with the request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' If the response does not include all remaining results, use the NextToken in the next request to fetch the next group of supported languages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLanguagesResponse')
@@ -1016,25 +733,16 @@ const MaxResultsIntegerSchema = z.int().min(1).max(500).openapi('MaxResultsInteg
 
 const ListLanguagesRequestSchema = z
   .object({
-    DisplayLanguageCode: DisplayLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code for the language to use to display the language names in the response. The language code is <code>en</code> by default. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Include the NextToken value to fetch the next group of supported languages. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in each response.' }),
-    ).exactOptional(),
+    DisplayLanguageCode: DisplayLanguageCodeSchema.exactOptional().openapi({
+      description:
+        'The language code for the language to use to display the language names in the response. The language code is <code>en</code> by default. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Include the NextToken value to fetch the next group of supported languages. ',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in each response.',
+    }),
   })
   .openapi({ title: 'ListLanguagesRequest', required: [] })
   .openapi('ListLanguagesRequest')
@@ -1049,56 +757,36 @@ const ParallelDataPropertiesListSchema = z
 
 const ListParallelDataResponseSchema = z
   .object({
-    ParallelDataPropertiesList: ParallelDataPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The properties of the parallel data resources returned by this request.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to use in a subsequent request to get the next page of results in a paginated response. This value is null if there are no additional pages.',
-        }),
-    ).exactOptional(),
+    ParallelDataPropertiesList: ParallelDataPropertiesListSchema.exactOptional().openapi({
+      description: 'The properties of the parallel data resources returned by this request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to use in a subsequent request to get the next page of results in a paginated response. This value is null if there are no additional pages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListParallelDataResponse')
 
 const ListParallelDataRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that specifies the next page of results to return in a paginated response.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of parallel data resources returned for each request.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A string that specifies the next page of results to return in a paginated response.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of parallel data resources returned for each request.',
+    }),
   })
   .openapi({ title: 'ListParallelDataRequest', required: [] })
   .openapi('ListParallelDataRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags associated with the Amazon Translate resource being queried. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Translate. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. ',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags associated with the Amazon Translate resource being queried. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Translate. For example, a tag with "Sales" as the key might be added to a resource to indicate its use by the sales department. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1107,14 +795,10 @@ const ResourceArnSchema = z.string().min(1).max(512).openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the given Amazon Translate resource you are querying. ',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the given Amazon Translate resource you are querying. ',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -1125,43 +809,26 @@ const TerminologyPropertiesListSchema = z
 
 const ListTerminologiesResponseSchema = z
   .object({
-    TerminologyPropertiesList: TerminologyPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The properties list of the custom terminologies returned on the list request.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the response to the ListTerminologies was truncated, the NextToken fetches the next group of custom terminologies.',
-        }),
-    ).exactOptional(),
+    TerminologyPropertiesList: TerminologyPropertiesListSchema.exactOptional().openapi({
+      description: 'The properties list of the custom terminologies returned on the list request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' If the response to the ListTerminologies was truncated, the NextToken fetches the next group of custom terminologies.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTerminologiesResponse')
 
 const ListTerminologiesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the request to ListTerminologies was truncated, include the NextToken to fetch the next group of custom terminologies. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of custom terminologies returned per list request.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the request to ListTerminologies was truncated, include the NextToken to fetch the next group of custom terminologies. ',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of custom terminologies returned per list request.',
+    }),
   })
   .openapi({ title: 'ListTerminologiesRequest', required: [] })
   .openapi('ListTerminologiesRequest')
@@ -1172,47 +839,34 @@ const TextTranslationJobPropertiesListSchema = z
 
 const ListTextTranslationJobsResponseSchema = z
   .object({
-    TextTranslationJobPropertiesList: TextTranslationJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing the properties of each job that is returned.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    TextTranslationJobPropertiesList:
+      TextTranslationJobPropertiesListSchema.exactOptional().openapi({
+        description: 'A list containing the properties of each job that is returned.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTextTranslationJobsResponse')
 
 const TextTranslationJobFilterSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'Filters the list of jobs by name.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'Filters the list of jobs based by job status.' }),
-    ).exactOptional(),
-    SubmittedBeforeTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing and returns only the jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
-        }),
-    ).exactOptional(),
-    SubmittedAfterTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of jobs based on the time that the job was submitted for processing and returns only the jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'Filters the list of jobs by name.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description: 'Filters the list of jobs based by job status.',
+    }),
+    SubmittedBeforeTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing and returns only the jobs submitted before the specified time. Jobs are returned in ascending order, oldest to newest.',
+    }),
+    SubmittedAfterTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Filters the list of jobs based on the time that the job was submitted for processing and returns only the jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.',
+    }),
   })
   .openapi({
     description:
@@ -1223,25 +877,17 @@ const TextTranslationJobFilterSchema = z
 
 const ListTextTranslationJobsRequestSchema = z
   .object({
-    Filter: TextTranslationJobFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parameters that specify which batch translation jobs to retrieve. Filters include job name, job status, and submission time. You can only set one filter at a time.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in each page. The default value is 100.',
-        }),
-    ).exactOptional(),
+    Filter: TextTranslationJobFilterSchema.exactOptional().openapi({
+      description:
+        'The parameters that specify which batch translation jobs to retrieve. Filters include job name, job status, and submission time. You can only set one filter at a time.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in each page. The default value is 100.',
+    }),
   })
   .openapi({ title: 'ListTextTranslationJobsRequest', required: [] })
   .openapi('ListTextTranslationJobsRequest')
@@ -1250,102 +896,58 @@ const InvalidFilterExceptionSchema = z.any().openapi('InvalidFilterException')
 
 const StartTextTranslationJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier generated for the job. To get the status of a job, use this ID with the <a>DescribeTextTranslationJob</a> operation.',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the job. Possible values include:</p> <ul> <li> <p> <code>SUBMITTED</code> - The job has been received and is queued for processing.</p> </li> <li> <p> <code>IN_PROGRESS</code> - Amazon Translate is processing the job.</p> </li> <li> <p> <code>COMPLETED</code> - The job was successfully completed and the output is available.</p> </li> <li> <p> <code>COMPLETED_WITH_ERROR</code> - The job was completed with errors. The errors can be analyzed in the job's output.</p> </li> <li> <p> <code>FAILED</code> - The job did not complete. To get details, use the <a>DescribeTextTranslationJob</a> operation.</p> </li> <li> <p> <code>STOP_REQUESTED</code> - The user who started the job has requested that it be stopped.</p> </li> <li> <p> <code>STOPPED</code> - The job has been stopped.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier generated for the job. To get the status of a job, use this ID with the <a>DescribeTextTranslationJob</a> operation.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the job. Possible values include:</p> <ul> <li> <p> <code>SUBMITTED</code> - The job has been received and is queued for processing.</p> </li> <li> <p> <code>IN_PROGRESS</code> - Amazon Translate is processing the job.</p> </li> <li> <p> <code>COMPLETED</code> - The job was successfully completed and the output is available.</p> </li> <li> <p> <code>COMPLETED_WITH_ERROR</code> - The job was completed with errors. The errors can be analyzed in the job's output.</p> </li> <li> <p> <code>FAILED</code> - The job did not complete. To get details, use the <a>DescribeTextTranslationJob</a> operation.</p> </li> <li> <p> <code>STOP_REQUESTED</code> - The user who started the job has requested that it be stopped.</p> </li> <li> <p> <code>STOPPED</code> - The job has been stopped.</p> </li> </ul>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartTextTranslationJobResponse')
 
 const StartTextTranslationJobRequestSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the batch translation job to be performed.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the format and location of the input documents for the translation job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the S3 folder to which your job output will be saved. ',
-        }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an AWS Identity Access and Management (IAM) role that grants Amazon Translate read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/identity-and-access-management.html">Identity and access management </a>.',
-        }),
-    ),
-    SourceLanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code of the input language. Specify the language if all input documents share the same language. If you don\'t know the language of the source files, or your input documents contains different source languages, select <code>auto</code>. Amazon Translate auto detects the source language for each input document. For a list of supported language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.',
-        }),
-    ),
-    TargetLanguageCodes: TargetLanguageCodeStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target languages of the translation job. Enter up to 10 language codes. Each input file is translated into each target language.</p> <p>Each language code is 2 or 5 characters long. For a list of language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.</p>',
-        }),
-    ),
-    TerminologyNames: ResourceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a custom terminology resource to add to the translation job. This resource lists examples source terms and the desired translation for each term.</p> <p>This parameter accepts only one custom terminology resource.</p> <p>If you specify multiple target languages for the job, translate uses the designated terminology for each requested target language that has an entry for the source term in the terminology file.</p> <p>For a list of available custom terminology resources, use the <a>ListTerminologies</a> operation.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/how-custom-terminology.html">Custom terminology</a>.</p>',
-        }),
-    ).exactOptional(),
-    ParallelDataNames: ResourceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a parallel data resource to add to the translation job. This resource consists of examples that show how you want segments of text to be translated. If you specify multiple target languages for the job, the parallel data file must include translations for all the target languages.</p> <p>When you add parallel data to a translation job, you create an <i>Active Custom Translation</i> job. </p> <p>This parameter accepts only one parallel data resource.</p> <note> <p>Active Custom Translation jobs are priced at a higher rate than other jobs that don\'t use parallel data. For more information, see <a href="http://aws.amazon.com/translate/pricing/">Amazon Translate pricing</a>.</p> </note> <p>For a list of available parallel data resources, use the <a>ListParallelData</a> operation.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/customizing-translations-parallel-data.html"> Customizing your translations with parallel data</a>.</p>',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the request. This token is generated for you when using the Amazon Translate SDK.',
-        }),
-    ),
-    Settings: TranslationSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Settings to configure your translation output, including the option to set the formality level of the output text and the option to mask profane words and phrases.',
-        }),
-    ).exactOptional(),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name of the batch translation job to be performed.',
+    }),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description:
+        'Specifies the format and location of the input documents for the translation job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description: 'Specifies the S3 folder to which your job output will be saved. ',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an AWS Identity Access and Management (IAM) role that grants Amazon Translate read access to your input data. For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/identity-and-access-management.html">Identity and access management </a>.',
+    }),
+    SourceLanguageCode: LanguageCodeStringSchema.openapi({
+      description:
+        'The language code of the input language. Specify the language if all input documents share the same language. If you don\'t know the language of the source files, or your input documents contains different source languages, select <code>auto</code>. Amazon Translate auto detects the source language for each input document. For a list of supported language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.',
+    }),
+    TargetLanguageCodes: TargetLanguageCodeStringListSchema.openapi({
+      description:
+        '<p>The target languages of the translation job. Enter up to 10 language codes. Each input file is translated into each target language.</p> <p>Each language code is 2 or 5 characters long. For a list of language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.</p>',
+    }),
+    TerminologyNames: ResourceNameListSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a custom terminology resource to add to the translation job. This resource lists examples source terms and the desired translation for each term.</p> <p>This parameter accepts only one custom terminology resource.</p> <p>If you specify multiple target languages for the job, translate uses the designated terminology for each requested target language that has an entry for the source term in the terminology file.</p> <p>For a list of available custom terminology resources, use the <a>ListTerminologies</a> operation.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/how-custom-terminology.html">Custom terminology</a>.</p>',
+    }),
+    ParallelDataNames: ResourceNameListSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a parallel data resource to add to the translation job. This resource consists of examples that show how you want segments of text to be translated. If you specify multiple target languages for the job, the parallel data file must include translations for all the target languages.</p> <p>When you add parallel data to a translation job, you create an <i>Active Custom Translation</i> job. </p> <p>This parameter accepts only one parallel data resource.</p> <note> <p>Active Custom Translation jobs are priced at a higher rate than other jobs that don\'t use parallel data. For more information, see <a href="http://aws.amazon.com/translate/pricing/">Amazon Translate pricing</a>.</p> </note> <p>For a list of available parallel data resources, use the <a>ListParallelData</a> operation.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/translate/latest/dg/customizing-translations-parallel-data.html"> Customizing your translations with parallel data</a>.</p>',
+    }),
+    ClientToken: ClientTokenStringSchema.openapi({
+      description:
+        'A unique identifier for the request. This token is generated for you when using the Amazon Translate SDK.',
+    }),
+    Settings: TranslationSettingsSchema.exactOptional().openapi({
+      description:
+        'Settings to configure your translation output, including the option to set the formality level of the output text and the option to mask profane words and phrases.',
+    }),
   })
   .openapi({
     required: [
@@ -1364,50 +966,34 @@ const UnsupportedLanguagePairExceptionSchema = z.any().openapi('UnsupportedLangu
 
 const StopTextTranslationJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The job ID of the stopped batch translation job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the designated job. Upon successful completion, the job's status will be <code>STOPPED</code>.",
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description: 'The job ID of the stopped batch translation job.',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        "The status of the designated job. Upon successful completion, the job's status will be <code>STOPPED</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopTextTranslationJobResponse')
 
 const StopTextTranslationJobRequestSchema = z
-  .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The job ID of the job to be stopped.' }),
-    ),
-  })
+  .object({ JobId: JobIdSchema.openapi({ description: 'The job ID of the job to be stopped.' }) })
   .openapi({ required: ['JobId'], title: 'StopTextTranslationJobRequest' })
   .openapi('StopTextTranslationJobRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the given Amazon Translate resource to which you want to associate the tags. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags being associated with a specific Amazon Translate resource. There can be a maximum of 50 tags (both existing and pending) associated with a specific resource.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the given Amazon Translate resource to which you want to associate the tags. ',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'Tags being associated with a specific Amazon Translate resource. There can be a maximum of 50 tags (both existing and pending) associated with a specific resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
@@ -1416,29 +1002,21 @@ const TranslatedDocumentContentSchema = z.string().openapi('TranslatedDocumentCo
 
 const TranslatedDocumentSchema = z
   .object({
-    Content: TranslatedDocumentContentSchema.and(
-      z.any().openapi({ description: 'The document containing the translated content.' }),
-    ),
+    Content: TranslatedDocumentContentSchema.openapi({
+      description: 'The document containing the translated content.',
+    }),
   })
   .openapi({ required: ['Content'], description: 'The translated content.' })
   .openapi('TranslatedDocument')
 
 const TermSchema = z
   .object({
-    SourceText: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The source text of the term being translated by the custom terminology.',
-        }),
-    ).exactOptional(),
-    TargetText: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The target text of the term being translated by the custom terminology.',
-        }),
-    ).exactOptional(),
+    SourceText: StringSchema.exactOptional().openapi({
+      description: 'The source text of the term being translated by the custom terminology.',
+    }),
+    TargetText: StringSchema.exactOptional().openapi({
+      description: 'The target text of the term being translated by the custom terminology.',
+    }),
   })
   .openapi({ description: 'The term being translated by the custom terminology.', required: [] })
   .openapi('Term')
@@ -1447,22 +1025,14 @@ const TermListSchema = z.array(TermSchema).openapi('TermList')
 
 const AppliedTerminologySchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom terminology applied to the input text by Amazon Translate for the translated text response.',
-        }),
-    ).exactOptional(),
-    Terms: TermListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specific terms of the custom terminology applied to the input text by Amazon Translate for the translated text response. A maximum of 250 terms will be returned, and the specific terms applied will be the first 250 terms in the source text. ',
-        }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the custom terminology applied to the input text by Amazon Translate for the translated text response.',
+    }),
+    Terms: TermListSchema.exactOptional().openapi({
+      description:
+        'The specific terms of the custom terminology applied to the input text by Amazon Translate for the translated text response. A maximum of 250 terms will be returned, and the specific terms applied will be the first 250 terms in the source text. ',
+    }),
   })
   .openapi({
     description:
@@ -1477,28 +1047,20 @@ const AppliedTerminologyListSchema = z
 
 const TranslateDocumentResponseSchema = z
   .object({
-    TranslatedDocument: TranslatedDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The document containing the translated content. The document format matches the source document format.',
-        }),
-    ),
-    SourceLanguageCode: LanguageCodeStringSchema.and(
-      z.any().openapi({ description: 'The language code of the source document.' }),
-    ),
-    TargetLanguageCode: LanguageCodeStringSchema.and(
-      z.any().openapi({ description: 'The language code of the translated document. ' }),
-    ),
-    AppliedTerminologies: AppliedTerminologyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the custom terminologies applied to the input text by Amazon Translate to produce the translated text document.',
-        }),
-    ).exactOptional(),
+    TranslatedDocument: TranslatedDocumentSchema.openapi({
+      description:
+        'The document containing the translated content. The document format matches the source document format.',
+    }),
+    SourceLanguageCode: LanguageCodeStringSchema.openapi({
+      description: 'The language code of the source document.',
+    }),
+    TargetLanguageCode: LanguageCodeStringSchema.openapi({
+      description: 'The language code of the translated document. ',
+    }),
+    AppliedTerminologies: AppliedTerminologyListSchema.exactOptional().openapi({
+      description:
+        'The names of the custom terminologies applied to the input text by Amazon Translate to produce the translated text document.',
+    }),
     AppliedSettings: TranslationSettingsSchema.exactOptional(),
   })
   .openapi({ required: ['TranslatedDocument', 'SourceLanguageCode', 'TargetLanguageCode'] })
@@ -1508,22 +1070,14 @@ const DocumentContentSchema = z.string().max(102400).openapi('DocumentContent')
 
 const DocumentSchema = z
   .object({
-    Content: DocumentContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>Content</code>field type is Binary large object (blob). This object contains the document content converted into base64-encoded binary data. If you use one of the AWS SDKs, the SDK performs the Base64-encoding on this field before sending the request. ',
-        }),
-    ),
-    ContentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the format of the document. You can specify one of the following:</p> <ul> <li> <p> <code>text/html</code> - The input data consists of HTML content. Amazon Translate translates only the text in the HTML element.</p> </li> <li> <p> <code>text/plain</code> - The input data consists of unformatted text. Amazon Translate translates every character in the content. </p> </li> <li> <p> <code>application/vnd.openxmlformats-officedocument.wordprocessingml.document</code> - The input data consists of a Word document (.docx).</p> </li> </ul>',
-        }),
-    ),
+    Content: DocumentContentSchema.openapi({
+      description:
+        'The <code>Content</code>field type is Binary large object (blob). This object contains the document content converted into base64-encoded binary data. If you use one of the AWS SDKs, the SDK performs the Base64-encoding on this field before sending the request. ',
+    }),
+    ContentType: ContentTypeSchema.openapi({
+      description:
+        '<p>Describes the format of the document. You can specify one of the following:</p> <ul> <li> <p> <code>text/html</code> - The input data consists of HTML content. Amazon Translate translates only the text in the HTML element.</p> </li> <li> <p> <code>text/plain</code> - The input data consists of unformatted text. Amazon Translate translates every character in the content. </p> </li> <li> <p> <code>application/vnd.openxmlformats-officedocument.wordprocessingml.document</code> - The input data consists of a Word document (.docx).</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Content', 'ContentType'],
@@ -1533,38 +1087,22 @@ const DocumentSchema = z
 
 const TranslateDocumentRequestSchema = z
   .object({
-    Document: DocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content and content type for the document to be translated. The document size must not exceed 100 KB.',
-        }),
-    ),
-    TerminologyNames: ResourceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a terminology list file to add to the translation job. This file provides source terms and the desired translation for each term. A terminology list can contain a maximum of 256 terms. You can use one custom terminology resource in your translation request.</p> <p>Use the <a>ListTerminologies</a> operation to get the available terminology lists.</p> <p>For more information about custom terminology lists, see <a href="https://docs.aws.amazon.com/translate/latest/dg/how-custom-terminology.html">Custom terminology</a>.</p>',
-        }),
-    ).exactOptional(),
-    SourceLanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code for the language of the source text. Do not use <code>auto</code>, because <code>TranslateDocument</code> does not support language auto-detection. For a list of supported language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.',
-        }),
-    ),
-    TargetLanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code requested for the translated document. For a list of supported language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.',
-        }),
-    ),
+    Document: DocumentSchema.openapi({
+      description:
+        'The content and content type for the document to be translated. The document size must not exceed 100 KB.',
+    }),
+    TerminologyNames: ResourceNameListSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a terminology list file to add to the translation job. This file provides source terms and the desired translation for each term. A terminology list can contain a maximum of 256 terms. You can use one custom terminology resource in your translation request.</p> <p>Use the <a>ListTerminologies</a> operation to get the available terminology lists.</p> <p>For more information about custom terminology lists, see <a href="https://docs.aws.amazon.com/translate/latest/dg/how-custom-terminology.html">Custom terminology</a>.</p>',
+    }),
+    SourceLanguageCode: LanguageCodeStringSchema.openapi({
+      description:
+        'The language code for the language of the source text. Do not use <code>auto</code>, because <code>TranslateDocument</code> does not support language auto-detection. For a list of supported language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.',
+    }),
+    TargetLanguageCode: LanguageCodeStringSchema.openapi({
+      description:
+        'The language code requested for the translated document. For a list of supported language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.',
+    }),
     Settings: TranslationSettingsSchema.exactOptional(),
   })
   .openapi({
@@ -1583,26 +1121,20 @@ const TranslatedTextStringSchema = z
 
 const TranslateTextResponseSchema = z
   .object({
-    TranslatedText: TranslatedTextStringSchema.and(
-      z.any().openapi({ description: 'The translated text.' }),
-    ),
-    SourceLanguageCode: LanguageCodeStringSchema.and(
-      z.any().openapi({ description: 'The language code for the language of the source text.' }),
-    ),
-    TargetLanguageCode: LanguageCodeStringSchema.and(
-      z.any().openapi({ description: 'The language code for the language of the target text. ' }),
-    ),
-    AppliedTerminologies: AppliedTerminologyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the custom terminologies applied to the input text by Amazon Translate for the translated text response.',
-        }),
-    ).exactOptional(),
-    AppliedSettings: TranslationSettingsSchema.and(
-      z.any().openapi({ description: 'Optional settings that modify the translation output.' }),
-    ).exactOptional(),
+    TranslatedText: TranslatedTextStringSchema.openapi({ description: 'The translated text.' }),
+    SourceLanguageCode: LanguageCodeStringSchema.openapi({
+      description: 'The language code for the language of the source text.',
+    }),
+    TargetLanguageCode: LanguageCodeStringSchema.openapi({
+      description: 'The language code for the language of the target text. ',
+    }),
+    AppliedTerminologies: AppliedTerminologyListSchema.exactOptional().openapi({
+      description:
+        'The names of the custom terminologies applied to the input text by Amazon Translate for the translated text response.',
+    }),
+    AppliedSettings: TranslationSettingsSchema.exactOptional().openapi({
+      description: 'Optional settings that modify the translation output.',
+    }),
   })
   .openapi({ required: ['TranslatedText', 'SourceLanguageCode', 'TargetLanguageCode'] })
   .openapi('TranslateTextResponse')
@@ -1616,46 +1148,26 @@ const BoundedLengthStringSchema = z
 
 const TranslateTextRequestSchema = z
   .object({
-    Text: BoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text to translate. The text string can be a maximum of 10,000 bytes long. Depending on your character set, this may be fewer than 10,000 characters.',
-        }),
-    ),
-    TerminologyNames: ResourceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a terminology list file to add to the translation job. This file provides source terms and the desired translation for each term. A terminology list can contain a maximum of 256 terms. You can use one custom terminology resource in your translation request.</p> <p>Use the <a>ListTerminologies</a> operation to get the available terminology lists.</p> <p>For more information about custom terminology lists, see <a href="https://docs.aws.amazon.com/translate/latest/dg/how-custom-terminology.html">Custom terminology</a>.</p>',
-        }),
-    ).exactOptional(),
-    SourceLanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code for the language of the source text. For a list of language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.</p> <p>To have Amazon Translate determine the source language of your text, you can specify <code>auto</code> in the <code>SourceLanguageCode</code> field. If you specify <code>auto</code>, Amazon Translate will call <a href="https://docs.aws.amazon.com/comprehend/latest/dg/comprehend-general.html">Amazon Comprehend</a> to determine the source language.</p> <note> <p>If you specify <code>auto</code>, you must send the <code>TranslateText</code> request in a region that supports Amazon Comprehend. Otherwise, the request returns an error indicating that autodetect is not supported. </p> </note>',
-        }),
-    ),
-    TargetLanguageCode: LanguageCodeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language code requested for the language of the target text. For a list of language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.',
-        }),
-    ),
-    Settings: TranslationSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Settings to configure your translation output, including the option to set the formality level of the output text and the option to mask profane words and phrases.',
-        }),
-    ).exactOptional(),
+    Text: BoundedLengthStringSchema.openapi({
+      description:
+        'The text to translate. The text string can be a maximum of 10,000 bytes long. Depending on your character set, this may be fewer than 10,000 characters.',
+    }),
+    TerminologyNames: ResourceNameListSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a terminology list file to add to the translation job. This file provides source terms and the desired translation for each term. A terminology list can contain a maximum of 256 terms. You can use one custom terminology resource in your translation request.</p> <p>Use the <a>ListTerminologies</a> operation to get the available terminology lists.</p> <p>For more information about custom terminology lists, see <a href="https://docs.aws.amazon.com/translate/latest/dg/how-custom-terminology.html">Custom terminology</a>.</p>',
+    }),
+    SourceLanguageCode: LanguageCodeStringSchema.openapi({
+      description:
+        '<p>The language code for the language of the source text. For a list of language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.</p> <p>To have Amazon Translate determine the source language of your text, you can specify <code>auto</code> in the <code>SourceLanguageCode</code> field. If you specify <code>auto</code>, Amazon Translate will call <a href="https://docs.aws.amazon.com/comprehend/latest/dg/comprehend-general.html">Amazon Comprehend</a> to determine the source language.</p> <note> <p>If you specify <code>auto</code>, you must send the <code>TranslateText</code> request in a region that supports Amazon Comprehend. Otherwise, the request returns an error indicating that autodetect is not supported. </p> </note>',
+    }),
+    TargetLanguageCode: LanguageCodeStringSchema.openapi({
+      description:
+        'The language code requested for the language of the target text. For a list of language codes, see <a href="https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html">Supported languages</a>.',
+    }),
+    Settings: TranslationSettingsSchema.exactOptional().openapi({
+      description:
+        'Settings to configure your translation output, including the option to set the formality level of the output text and the option to mask profane words and phrases.',
+    }),
   })
   .openapi({
     required: ['Text', 'SourceLanguageCode', 'TargetLanguageCode'],
@@ -1669,87 +1181,59 @@ const DetectedLanguageLowConfidenceExceptionSchema = z
   .any()
   .openapi('DetectedLanguageLowConfidenceException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the given Amazon Translate resource from which you want to remove the tags. ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The initial part of a key-value pair that forms a tag being removed from a given resource. Keys must be unique and cannot be duplicated for a particular resource. ',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of the given Amazon Translate resource from which you want to remove the tags. ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'The initial part of a key-value pair that forms a tag being removed from a given resource. Keys must be unique and cannot be duplicated for a particular resource. ',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateParallelDataResponseSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the parallel data resource being updated.' }),
-    ).exactOptional(),
-    Status: ParallelDataStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the parallel data resource that you are attempting to update. Your update request is accepted only if this status is either <code>ACTIVE</code> or <code>FAILED</code>.',
-        }),
-    ).exactOptional(),
-    LatestUpdateAttemptStatus: ParallelDataStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the parallel data update attempt. When the updated parallel data resource is ready for you to use, the status is <code>ACTIVE</code>.',
-        }),
-    ).exactOptional(),
-    LatestUpdateAttemptAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the most recent update was attempted.' }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the parallel data resource being updated.',
+    }),
+    Status: ParallelDataStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the parallel data resource that you are attempting to update. Your update request is accepted only if this status is either <code>ACTIVE</code> or <code>FAILED</code>.',
+    }),
+    LatestUpdateAttemptStatus: ParallelDataStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the parallel data update attempt. When the updated parallel data resource is ready for you to use, the status is <code>ACTIVE</code>.',
+    }),
+    LatestUpdateAttemptAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the most recent update was attempted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateParallelDataResponse')
 
 const UpdateParallelDataRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the parallel data resource being updated.' }),
-    ),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A custom description for the parallel data resource in Amazon Translate.',
-        }),
-    ).exactOptional(),
-    ParallelDataConfig: ParallelDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the format and S3 location of the parallel data input file.',
-        }),
-    ),
-    ClientToken: ClientTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the request. This token is automatically generated when you use Amazon Translate through an AWS SDK.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description: 'The name of the parallel data resource being updated.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A custom description for the parallel data resource in Amazon Translate.',
+    }),
+    ParallelDataConfig: ParallelDataConfigSchema.openapi({
+      description: 'Specifies the format and S3 location of the parallel data input file.',
+    }),
+    ClientToken: ClientTokenStringSchema.openapi({
+      description:
+        'A unique identifier for the request. This token is automatically generated when you use Amazon Translate through an AWS SDK.',
+    }),
   })
   .openapi({
     required: ['Name', 'ParallelDataConfig', 'ClientToken'],

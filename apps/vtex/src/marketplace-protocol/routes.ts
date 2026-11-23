@@ -1,5 +1,22 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type SendCategoryMappingToVtexMapperType = {
+  categories: {
+    children?: {
+      children: unknown[] | null
+      id: string
+      name: string
+      specifications: {
+        attributeName: string
+        attributeValues: { valueName: string }[]
+        required: boolean
+      }[]
+    }[]
+    id?: string
+    name?: string
+  }[]
+}
+
 const ApproveorderSchema = z
   .object({
     accountName: z
@@ -1011,6 +1028,7 @@ const EnqueueNewOrderRequestSchema = z
         ],
       },
       invoiceData: { userPaymentInfo: { paymentMethods: ['creditCardPaymentGroup'] } },
+      items: [{ id: '1', price: 975, quantity: 1 }],
       marketplaceOrderId: '{{$guid}}',
       marketplaceOrderStatus: 'NEW',
       marketplacePaymentValue: 3025,
@@ -1446,7 +1464,7 @@ const VtexMapperRegistrationSchema = z
         example: 'http://api.vtexinternal.com.br/api/{{marketplaceName}}/mapper/mapping',
       }),
     properties: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Refers to the `allowsRemap` property.', required: ['allowsRemap'] }),
   })
   .openapi({ required: ['displayName', 'categoryTreeEndPoint', 'mappingEndPoint', 'properties'] })
@@ -1751,7 +1769,7 @@ const OrderPlacementSchema = z
         example: 'open-text-example',
       }),
     paymentData: z
-      .object({})
+      .looseObject({})
       .nullable()
       .default(null)
       .exactOptional()
@@ -1935,7 +1953,7 @@ const OrderPlacementSchema = z
   .openapi({ required: [] })
   .openapi('OrderPlacement')
 
-const SendCategoryMappingToVtexMapperSchema = z
+const SendCategoryMappingToVtexMapperSchema: z.ZodType<SendCategoryMappingToVtexMapperType> = z
   .object({
     categories: z
       .array(
@@ -2572,36 +2590,9 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                               z
                                 .object({
                                   assemblyOptions: z
-                                    .object({
-                                      composition: z
-                                        .string()
-                                        .nullable()
-                                        .exactOptional()
-                                        .openapi({ description: 'Composition information.' }),
-                                      id: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({ description: 'Item ID.' }),
-                                      inputValues: z
-                                        .object({})
-                                        .exactOptional()
-                                        .openapi({ description: 'Input values information.' }),
-                                      name: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({ description: 'Item name.' }),
-                                      required: z
-                                        .boolean()
-                                        .exactOptional()
-                                        .openapi({
-                                          description: 'Indicates whether the item is required.',
-                                        }),
-                                    })
+                                    .array(z.any())
                                     .exactOptional()
-                                    .openapi({
-                                      description: 'Assembly options information.',
-                                      required: [],
-                                    }),
+                                    .openapi({ description: 'Assembly options information.' }),
                                   id: z
                                     .string()
                                     .exactOptional()
@@ -2809,7 +2800,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                                                   description: 'Additional information.',
                                                 }),
                                               address: z
-                                                .object({})
+                                                .looseObject({})
                                                 .nullable()
                                                 .exactOptional()
                                                 .openapi({ description: 'Address information.' }),
@@ -3039,7 +3030,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                                     .exactOptional()
                                     .openapi({ description: 'Additional information.' }),
                                   address: z
-                                    .object({})
+                                    .looseObject({})
                                     .nullable()
                                     .exactOptional()
                                     .openapi({ description: 'Address information.' }),
@@ -3103,7 +3094,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: 'Information on available SLAs.' }),
                       subscriptionData: z
-                        .object({})
+                        .looseObject({})
                         .nullable()
                         .exactOptional()
                         .openapi({ description: 'Subscription information.' }),
@@ -3134,7 +3125,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                     'Array with logistics information on each item of the `items` array in the `orderForm`.',
                 }),
               marketingData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -3148,7 +3139,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'Available accounts.' }),
                   availableAssociations: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Available associations.' }),
                   availableTokens: z
@@ -3164,64 +3155,9 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'Gift card information, if it applies to the order.' }),
                   installmentOptions: z
-                    .object({
-                      bin: z.string().nullable().exactOptional().openapi({ description: 'Bin.' }),
-                      installments: z
-                        .object({
-                          count: z
-                            .int()
-                            .exactOptional()
-                            .openapi({ description: 'Count information.' }),
-                          hasInterestRate: z
-                            .boolean()
-                            .exactOptional()
-                            .openapi({
-                              description: 'Indicates whether the payment has interest.',
-                            }),
-                          interestRate: z
-                            .int()
-                            .exactOptional()
-                            .openapi({ description: 'Interest rate value.' }),
-                          sellerMerchantInstallments: z
-                            .array(z.any())
-                            .exactOptional()
-                            .openapi({ description: 'Seller merchant installments information.' }),
-                          total: z
-                            .int()
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'Total value of the order without separating cents. For example, $24.99 is represented `2499`.',
-                            }),
-                          value: z
-                            .int()
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'Value of the order without the interest rate. The value is shown without separating cents.',
-                            }),
-                        })
-                        .exactOptional()
-                        .openapi({ description: 'Installments information.', required: [] }),
-                      paymentGroupName: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'Payment group name.' }),
-                      paymentName: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'Payment name.' }),
-                      paymentSystem: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ description: 'Payment system identification.' }),
-                      value: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ description: 'Total value assigned to this payment.' }),
-                    })
+                    .array(z.any())
                     .exactOptional()
-                    .openapi({ description: 'Installment options information.', required: [] }),
+                    .openapi({ description: 'Installment options information.' }),
                   paymentSystems: z
                     .array(
                       z
@@ -3278,7 +3214,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'Template.' }),
                           validator: z
-                            .object({})
+                            .looseObject({})
                             .nullable()
                             .exactOptional()
                             .openapi({ description: 'Payment system validator.' }),
@@ -4551,7 +4487,7 @@ export const postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRoute = creat
                   example: 'open-text-example',
                 }),
               paymentData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .default(null)
                 .exactOptional()
@@ -5790,6 +5726,24 @@ export const postFulfillmentEndpointPvtOrderFormsSimulationRoute = createRoute({
               description: 'Expected response body of fulfillment simulation',
               example: {
                 country: 'BRA',
+                items: [
+                  {
+                    id: '2000037',
+                    listPrice: 67203,
+                    measurementUnit: 'un',
+                    merchantName: 'mySeller1',
+                    offerings: [
+                      { id: '5', name: '1 year warranty', price: 10000, type: 'Warranty' },
+                    ],
+                    price: 67203,
+                    priceTags: [],
+                    priceValidUntil: '2014-03-01T22:58:28.143',
+                    quantity: 1,
+                    requestIndex: 0,
+                    seller: '1',
+                    unitMultiplier: 1,
+                  },
+                ],
                 logisticsInfo: [
                   {
                     deliveryChannels: [

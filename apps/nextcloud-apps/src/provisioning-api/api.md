@@ -5644,6 +5644,27 @@ This endpoint requires password confirmation
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "data": {
+        "message": "string"
+      }
+    }
+  }
+}
+```
+
 > 401 Response
 
 ```json
@@ -5687,6 +5708,7 @@ This endpoint requires password confirmation
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Value updated successfully|Inline|
+|400|Bad Request|Value rejected|Inline|
 |401|Unauthorized|Current user is not logged in|Inline|
 |403|Forbidden|App or key is not allowed|Inline|
 
@@ -5699,6 +5721,16 @@ Status Code **200**
 |ocs|object|true|none|none|
 |» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
 |» data|object|true|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » data|object|true|none|none|
+|» » » message|string|true|none|none|
 
 Status Code **401**
 
@@ -5769,6 +5801,27 @@ This endpoint requires password confirmation
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "ocs": {
+    "meta": {
+      "status": "string",
+      "statuscode": 0,
+      "message": "string",
+      "totalitems": "string",
+      "itemsperpage": "string"
+    },
+    "data": {
+      "data": {
+        "message": "string"
+      }
+    }
+  }
+}
+```
+
 > 401 Response
 
 ```json
@@ -5812,6 +5865,7 @@ This endpoint requires password confirmation
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Key deleted successfully|Inline|
+|400|Bad Request|Deletion rejected|Inline|
 |401|Unauthorized|Current user is not logged in|Inline|
 |403|Forbidden|App or key is not allowed|Inline|
 
@@ -5824,6 +5878,16 @@ Status Code **200**
 |ocs|object|true|none|none|
 |» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
 |» data|object|true|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ocs|object|true|none|none|
+|» meta|[OCSMeta](#schemaocsmeta)|true|none|none|
+|» data|object|true|none|none|
+|» » data|object|true|none|none|
+|» » » message|string|true|none|none|
 
 Status Code **401**
 

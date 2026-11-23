@@ -21,13 +21,8 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|commerce.payment_accounts.read||
 |cpq.quotes.write||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
 
 <h1 id="commerce-paymentsaccounts-basic">Basic</h1>
 
@@ -70,7 +65,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: cpq.quotes.write )
+oauth2 ( Scopes: cpq.quotes.write ), oauth2 ( Scopes: commerce.payment_accounts.read )
 </aside>
 
 # Schemas

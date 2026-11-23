@@ -1173,14 +1173,27 @@ const ErrorSchema = z
   .openapi({ required: ['code'] })
   .openapi('Error')
 
-const ErrorLimitSchema = z
-  .object({
-    retryAfterSec: z
-      .int()
-      .openapi({ description: 'Number of seconds to wait before attempting a similar request' }),
-  })
-  .openapi({ required: ['retryAfterSec'] })
-  .and(ErrorSchema)
+const ErrorLimitSchema = (() => {
+  const Schema = z
+    .object({
+      retryAfterSec: z
+        .int()
+        .openapi({ description: 'Number of seconds to wait before attempting a similar request' }),
+    })
+    .openapi({ required: ['retryAfterSec'] })
+    .and(ErrorSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ 'x-error-model': true })
   .openapi('ErrorLimit')
 

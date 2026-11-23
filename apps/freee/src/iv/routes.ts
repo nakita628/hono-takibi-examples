@@ -12,7 +12,7 @@ const DeliverySlipCancelStatusResponseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854775000n),
+            z.int64().min(1n).max(9223372036854774784n),
           )
           .openapi({
             type: 'integer',
@@ -40,7 +40,7 @@ const DeliverySlipIndexResponseDeliverySlipsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -57,7 +57,7 @@ const DeliverySlipIndexResponseDeliverySlipsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -76,7 +76,7 @@ const DeliverySlipIndexResponseDeliverySlipsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -117,7 +117,7 @@ const DeliverySlipIndexResponseDeliverySlipsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -145,7 +145,7 @@ const DeliverySlipIndexResponseDeliverySlipsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -293,7 +293,7 @@ const DeliverySlipRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -312,7 +312,7 @@ const DeliverySlipRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -331,7 +331,7 @@ const DeliverySlipRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -356,7 +356,7 @@ const DeliverySlipRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -373,7 +373,7 @@ const DeliverySlipRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -441,7 +441,7 @@ const DeliverySlipRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -611,7 +611,7 @@ const DeliverySlipResponseDeliverySlipLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -692,7 +692,7 @@ const DeliverySlipResponseDeliverySlipLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -711,7 +711,7 @@ const DeliverySlipResponseDeliverySlipLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -730,7 +730,7 @@ const DeliverySlipResponseDeliverySlipLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -755,7 +755,7 @@ const DeliverySlipResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -772,7 +772,7 @@ const DeliverySlipResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -798,7 +798,7 @@ const DeliverySlipResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -858,7 +858,7 @@ const DeliverySlipResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -968,7 +968,7 @@ const DeliverySlipResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1102,7 +1102,7 @@ const DeliverySlipShowResponseDeliverySlipLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1160,7 +1160,7 @@ const DeliverySlipShowResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1177,7 +1177,7 @@ const DeliverySlipShowResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1203,7 +1203,7 @@ const DeliverySlipShowResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -1250,7 +1250,7 @@ const DeliverySlipShowResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -1360,7 +1360,7 @@ const DeliverySlipShowResponseDeliverySlipSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1505,7 +1505,7 @@ const InvoiceCancelStatusResponseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854775000n),
+            z.int64().min(1n).max(9223372036854774784n),
           )
           .openapi({
             type: 'integer',
@@ -1533,7 +1533,7 @@ const InvoiceIndexResponseInvoicesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1550,7 +1550,7 @@ const InvoiceIndexResponseInvoicesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1569,7 +1569,7 @@ const InvoiceIndexResponseInvoicesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -1629,7 +1629,7 @@ const InvoiceIndexResponseInvoicesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -1663,7 +1663,7 @@ const InvoiceIndexResponseInvoicesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1817,7 +1817,7 @@ const InvoiceRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -1836,7 +1836,7 @@ const InvoiceRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -1855,7 +1855,7 @@ const InvoiceRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -1880,7 +1880,7 @@ const InvoiceRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -1897,7 +1897,7 @@ const InvoiceRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -2002,7 +2002,7 @@ const InvoiceRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -2189,7 +2189,7 @@ const InvoiceResponseInvoiceLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -2276,7 +2276,7 @@ const InvoiceResponseInvoiceLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -2295,7 +2295,7 @@ const InvoiceResponseInvoiceLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -2314,7 +2314,7 @@ const InvoiceResponseInvoiceLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -2339,7 +2339,7 @@ const InvoiceResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -2356,7 +2356,7 @@ const InvoiceResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -2382,7 +2382,7 @@ const InvoiceResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -2448,7 +2448,7 @@ const InvoiceResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -2564,7 +2564,7 @@ const InvoiceResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -2698,7 +2698,7 @@ const InvoiceShowResponseInvoiceLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -2762,7 +2762,7 @@ const InvoiceShowResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -2779,7 +2779,7 @@ const InvoiceShowResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -2805,7 +2805,7 @@ const InvoiceShowResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -2871,7 +2871,7 @@ const InvoiceShowResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -2987,7 +2987,7 @@ const InvoiceShowResponseInvoiceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3138,7 +3138,7 @@ const PaymentNoticeCancelStatusResponseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854775000n),
+            z.int64().min(1n).max(9223372036854774784n),
           )
           .openapi({
             type: 'integer',
@@ -3166,7 +3166,7 @@ const PaymentNoticeIndexResponsePaymentNoticesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3183,7 +3183,7 @@ const PaymentNoticeIndexResponsePaymentNoticesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3202,7 +3202,7 @@ const PaymentNoticeIndexResponsePaymentNoticesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -3246,7 +3246,7 @@ const PaymentNoticeIndexResponsePaymentNoticesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3370,7 +3370,7 @@ const PaymentNoticeRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3387,7 +3387,7 @@ const PaymentNoticeRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -3455,7 +3455,7 @@ const PaymentNoticeRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -3594,7 +3594,7 @@ const PaymentNoticeResponsePaymentNoticeLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3654,7 +3654,7 @@ const PaymentNoticeResponsePaymentNoticeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3671,7 +3671,7 @@ const PaymentNoticeResponsePaymentNoticeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3697,7 +3697,7 @@ const PaymentNoticeResponsePaymentNoticeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -3825,7 +3825,7 @@ const PaymentNoticeResponsePaymentNoticeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -3962,7 +3962,7 @@ const PaymentNoticeShowResponsePaymentNoticeLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -4025,7 +4025,7 @@ const PaymentNoticeShowResponsePaymentNoticeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -4042,7 +4042,7 @@ const PaymentNoticeShowResponsePaymentNoticeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -4068,7 +4068,7 @@ const PaymentNoticeShowResponsePaymentNoticeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -4196,7 +4196,7 @@ const PaymentNoticeShowResponsePaymentNoticeSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -4335,7 +4335,7 @@ const PurchaseOrderCancelStatusResponseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854775000n),
+            z.int64().min(1n).max(9223372036854774784n),
           )
           .openapi({
             type: 'integer',
@@ -4363,7 +4363,7 @@ const PurchaseOrderIndexResponsePurchaseOrdersSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -4380,7 +4380,7 @@ const PurchaseOrderIndexResponsePurchaseOrdersSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -4399,7 +4399,7 @@ const PurchaseOrderIndexResponsePurchaseOrdersSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -4446,7 +4446,7 @@ const PurchaseOrderIndexResponsePurchaseOrdersSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -4474,7 +4474,7 @@ const PurchaseOrderIndexResponsePurchaseOrdersSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -4618,7 +4618,7 @@ const PurchaseOrderRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -4637,7 +4637,7 @@ const PurchaseOrderRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -4656,7 +4656,7 @@ const PurchaseOrderRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -4681,7 +4681,7 @@ const PurchaseOrderRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -4698,7 +4698,7 @@ const PurchaseOrderRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -4776,7 +4776,7 @@ const PurchaseOrderRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -4923,7 +4923,7 @@ const PurchaseOrderResponsePurchaseOrderLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5004,7 +5004,7 @@ const PurchaseOrderResponsePurchaseOrderLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -5023,7 +5023,7 @@ const PurchaseOrderResponsePurchaseOrderLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -5042,7 +5042,7 @@ const PurchaseOrderResponsePurchaseOrderLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -5067,7 +5067,7 @@ const PurchaseOrderResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5084,7 +5084,7 @@ const PurchaseOrderResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5110,7 +5110,7 @@ const PurchaseOrderResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -5154,7 +5154,7 @@ const PurchaseOrderResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -5264,7 +5264,7 @@ const PurchaseOrderResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5377,7 +5377,7 @@ const PurchaseOrderShowResponsePurchaseOrderLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5435,7 +5435,7 @@ const PurchaseOrderShowResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5452,7 +5452,7 @@ const PurchaseOrderShowResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5478,7 +5478,7 @@ const PurchaseOrderShowResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -5546,7 +5546,7 @@ const PurchaseOrderShowResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -5656,7 +5656,7 @@ const PurchaseOrderShowResponsePurchaseOrderSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5796,7 +5796,7 @@ const QuotationCancelStatusResponseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854775000n),
+            z.int64().min(1n).max(9223372036854774784n),
           )
           .openapi({
             type: 'integer',
@@ -5824,7 +5824,7 @@ const QuotationIndexResponseQuotationsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5841,7 +5841,7 @@ const QuotationIndexResponseQuotationsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -5860,7 +5860,7 @@ const QuotationIndexResponseQuotationsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -5904,7 +5904,7 @@ const QuotationIndexResponseQuotationsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6028,7 +6028,7 @@ const QuotationRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6045,7 +6045,7 @@ const QuotationRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -6117,7 +6117,7 @@ const QuotationRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -6283,7 +6283,7 @@ const QuotationResponseQuotationLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6338,7 +6338,7 @@ const QuotationResponseQuotationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6355,7 +6355,7 @@ const QuotationResponseQuotationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6381,7 +6381,7 @@ const QuotationResponseQuotationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -6515,7 +6515,7 @@ const QuotationResponseQuotationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6644,7 +6644,7 @@ const QuotationShowResponseQuotationLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6702,7 +6702,7 @@ const QuotationShowResponseQuotationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6719,7 +6719,7 @@ const QuotationShowResponseQuotationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -6745,7 +6745,7 @@ const QuotationShowResponseQuotationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -6879,7 +6879,7 @@ const QuotationShowResponseQuotationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -7024,7 +7024,7 @@ const ReceiptCancelStatusResponseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(1n).max(9223372036854775000n),
+            z.int64().min(1n).max(9223372036854774784n),
           )
           .openapi({
             type: 'integer',
@@ -7052,7 +7052,7 @@ const ReceiptIndexResponseReceiptsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -7069,7 +7069,7 @@ const ReceiptIndexResponseReceiptsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -7088,7 +7088,7 @@ const ReceiptIndexResponseReceiptsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -7129,7 +7129,7 @@ const ReceiptIndexResponseReceiptsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -7157,7 +7157,7 @@ const ReceiptIndexResponseReceiptsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -7301,7 +7301,7 @@ const ReceiptRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -7320,7 +7320,7 @@ const ReceiptRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -7339,7 +7339,7 @@ const ReceiptRequestLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -7364,7 +7364,7 @@ const ReceiptRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -7381,7 +7381,7 @@ const ReceiptRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -7444,7 +7444,7 @@ const ReceiptRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -7591,7 +7591,7 @@ const ReceiptResponseReceiptLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -7672,7 +7672,7 @@ const ReceiptResponseReceiptLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -7691,7 +7691,7 @@ const ReceiptResponseReceiptLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -7710,7 +7710,7 @@ const ReceiptResponseReceiptLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -7735,7 +7735,7 @@ const ReceiptResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -7752,7 +7752,7 @@ const ReceiptResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -7778,7 +7778,7 @@ const ReceiptResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -7825,7 +7825,7 @@ const ReceiptResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -7935,7 +7935,7 @@ const ReceiptResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -8047,7 +8047,7 @@ const ReceiptShowResponseReceiptLinesSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -8105,7 +8105,7 @@ const ReceiptShowResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -8122,7 +8122,7 @@ const ReceiptShowResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -8148,7 +8148,7 @@ const ReceiptShowResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .exactOptional()
       .openapi({
@@ -8195,7 +8195,7 @@ const ReceiptShowResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .nullable()
       .exactOptional()
@@ -8305,7 +8305,7 @@ const ReceiptShowResponseReceiptSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854775000n),
+        z.int64().min(1n).max(9223372036854774784n),
       )
       .openapi({
         type: 'integer',
@@ -9036,7 +9036,7 @@ export const putDeliverySlipsIdCancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -9125,7 +9125,7 @@ export const putDeliverySlipsIdUncancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -9707,7 +9707,7 @@ export const putInvoicesIdCancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -9796,7 +9796,7 @@ export const putInvoicesIdUncancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -10340,7 +10340,7 @@ export const putPaymentNoticesIdCancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -10429,7 +10429,7 @@ export const putPaymentNoticesIdUncancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -11000,7 +11000,7 @@ export const putPurchaseOrdersIdCancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -11089,7 +11089,7 @@ export const putPurchaseOrdersIdUncancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -11640,7 +11640,7 @@ export const putQuotationsIdCancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -11729,7 +11729,7 @@ export const putQuotationsIdUncancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -12268,7 +12268,7 @@ export const putReceiptsIdCancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',
@@ -12357,7 +12357,7 @@ export const putReceiptsIdUncancelRoute = createRoute({
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().min(1n).max(9223372036854775000n),
+                  z.int64().min(1n).max(9223372036854774784n),
                 )
                 .openapi({
                   type: 'integer',

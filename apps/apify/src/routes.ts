@@ -4,7 +4,7 @@ const HttpBearerSecurityScheme = {
   type: 'http',
   scheme: 'bearer',
   description:
-    'Bearer token provided in the `Authorization` header (e.g., `Authorization: Bearer your_token`—recommended). For details, see the [`Authorization` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) on MDN.\n\nUse your API token to authenticate requests. You can find it on the [Integrations page](https://console.apify.com/account#/integrations) in Apify Console. This method is more secure than query parameters, as headers are not logged in browser history or server logs.\n\n:::danger Security\n\nDo not share your API token (or account password) with untrusted parties.\n\n:::\n\n_When is authentication required?_\n- _Required_ for private Actors, tasks, or resources (e.g., builds of private Actors).\n- _Required_ when using named formats for IDs (e.g., `username~store-name` for stores or `username~queue-name` for queues).\n- _Optional_ for public Actors or resources (e.g., builds of public Actors can be queried without a token).\n\nFor more information, see our [integrations documentation](https://docs.apify.com/platform/integrations).',
+    'Bearer token provided in the `Authorization` header (e.g., `Authorization: Bearer your_token`—recommended). For details, see the [`Authorization` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) on MDN.\n\nUse your API token to authenticate requests. You can create one on the [Integrations page](https://console.apify.com/settings/integrations) in Apify Console. The Console shows the token only once, right after you create or rotate it, so copy it and store it somewhere safe. This method is more secure than query parameters, as headers are not logged in browser history or server logs.\n\n:::danger Security\n\nDo not share your API token (or account password) with untrusted parties.\n\n:::\n\n_When is authentication required?_\n- _Required_ for private Actors, tasks, or resources (e.g., builds of private Actors).\n- _Required_ when using named formats for IDs (e.g., `username~store-name` for stores or `username~queue-name` for queues).\n- _Optional_ for public Actors or resources (e.g., builds of public Actors can be queried without a token).\n\nFor more information, see our [integrations documentation](https://docs.apify.com/platform/integrations).',
 }
 
 const ApiKeySecurityScheme = {
@@ -12,13 +12,13 @@ const ApiKeySecurityScheme = {
   name: 'token',
   in: 'query',
   description:
-    'API token provided as a query parameter (e.g., `?token=your_token`—less secure).\n\nUse your API token to authenticate requests. You can find it on the [Integrations page](https://console.apify.com/account#/integrations) in Apify Console.\n\n:::danger Security\n\nDo not share your API token (or account password) with untrusted parties.\n\n:::\n\n_When is authentication required?_\n- _Required_ for private Actors, tasks, or resources (e.g., builds of private Actors).\n- _Required_ when using named formats for IDs (e.g., `username~store-name` for stores or `username~queue-name` for queues).\n- _Optional_ for public Actors or resources (e.g., builds of public Actors can be queried without a token).\n\nFor more information, see our [integrations documentation](https://docs.apify.com/platform/integrations).',
+    'API token provided as a query parameter (e.g., `?token=your_token`—less secure).\n\nUse your API token to authenticate requests. You can create one on the [Integrations page](https://console.apify.com/settings/integrations) in Apify Console. The Console shows the token only once, right after you create or rotate it, so copy it and store it somewhere safe.\n\n:::danger Security\n\nDo not share your API token (or account password) with untrusted parties.\n\n:::\n\n_When is authentication required?_\n- _Required_ for private Actors, tasks, or resources (e.g., builds of private Actors).\n- _Required_ when using named formats for IDs (e.g., `username~store-name` for stores or `username~queue-name` for queues).\n- _Optional_ for public Actors or resources (e.g., builds of public Actors can be queried without a token).\n\nFor more information, see our [integrations documentation](https://docs.apify.com/platform/integrations).',
 }
 
 export const getV2ActorsRoute = createRoute({
   method: 'get',
   path: '/v2/actors',
-  tags: ['Actors'],
+  tags: ['Actors', 'Actor Runtime API/Actors'],
   summary: 'Get list of Actors',
   description:
     'Gets the list of all Actors that the user created or used. The response is a\nlist of objects, where each object contains a basic information about a single Actor.\n\nTo only get Actors created by the user, add the `my=1` query parameter.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 records.\n\nBy default, the records are sorted by the `createdAt` field in ascending\norder, therefore you can use pagination to incrementally fetch all Actors while new\nones are still being created. To sort the records in descending order, use the `desc=1` parameter.\n\nYou can also sort by your last run by using the `sortBy=stats.lastRunStartedAt` query parameter.\nIn this case, descending order means the most recently run Actor appears first.\n',
@@ -2637,7 +2637,7 @@ export const getV2ActorsRoute = createRoute({
 export const postV2ActorsRoute = createRoute({
   method: 'post',
   path: '/v2/actors',
-  tags: ['Actors'],
+  tags: ['Actors', 'Actor Runtime API/Actors'],
   summary: 'Create Actor',
   description:
     'Creates an Actor with the settings specified in an `Actor` object passed as\nJSON in the POST payload.\n\nReturns the created `Actor` object.\n\nIn the HTTP request, set the `Content-Type` header to `application/json`.\n\n### Define a source code version\n\nAn Actor must specify at least one version of the source code.\nFor details, see [Actor versions](/api/v2/actors-actor-versions).\n\n### Publish an Actor\n\nTo make your Actor [public](https://docs.apify.com/platform/actors/publishing),\nuse the [Update Actor](/api/v2/actor-put) endpoint.\n',
@@ -3070,7 +3070,7 @@ export const postV2ActorsRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    "The configuration of the Actor's standby mode. For details, see [Standby mode](https://docs.apify.com/platform/actors/development/programming-interface/standby).",
+                    "The configuration of the Actor's standby mode. For details, see [Develop Server Actors](https://docs.apify.com/platform/actors/development/programming-interface/server-actors).",
                 }),
               exampleRunInput: z
                 .union([
@@ -7579,7 +7579,7 @@ export const postV2ActorsRoute = createRoute({
 export const getV2ActorsActorIdRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}',
-  tags: ['Actors'],
+  tags: ['Actors', 'Actor Runtime API/Actors'],
   summary: 'Get Actor',
   description:
     'Gets an object that contains all the details about the Actor with the specified ID.',
@@ -11608,7 +11608,7 @@ export const getV2ActorsActorIdRoute = createRoute({
 export const putV2ActorsActorIdRoute = createRoute({
   method: 'put',
   path: '/v2/actors/{actorId}',
-  tags: ['Actors'],
+  tags: ['Actors', 'Actor Runtime API/Actors'],
   summary: 'Update Actor',
   description:
     'Updates an Actor\'s settings with the values specified in an `Actor` object\npassed as JSON in the POST payload. Only the fields specified in the request body are updated.\n\nReturns the full `Actor` object, the same as the\n[Get Actor](/api/v2/actor-get) endpoint.\n\nIn the HTTP request, set the `Content-Type` header to `application/json`.\n\n### Authentication\n\nTo provide the authentication token, we recommend using the request\'s\n`Authorization` header, rather than the URL. For details,\nsee [Authentication](/api/v2#authentication).\n\n### Make an Actor public\n\nTo make your Actor [public](https://docs.apify.com/platform/actors/publishing):\n- Set `isPublic` to `true`.\n- Provide `title` and `categories`. For reference, see [constants from the `apify-shared-js`\npackage](https://github.com/apify/apify-shared-js/blob/2d43ebc41ece9ad31cd6525bd523fb86939bf860/packages/consts/src/consts.ts#L452-L471)\n\n### Update build tags\n\nTo change tags assigned to Actor builds, use the `taggedBuilds` object. It\'s a dictionary that maps tag names\nto specific builds, where:\n- the key is the tag name, for example `latest` or `beta`\n- the value is either `null` or an object with a build ID\n\nChanging tags is a patch operation. Only the tags that you provide in this object are updated.\n\nNote that you can assign multiple tags to a single build, but you can\'t assign the same tag to multiple builds.\n\n- To create or reassign a tag, provide the tag name with a build ID. For example, to assign\nthe `latest` tag to a build, use:\n\n```json\n{\n  "latest": { "buildId": "z2EryhbfhgSyqj6Hn" }\n}\n```\n\n- To remove a tag from a build, provide the tag name with a `null` value. For example, to remove the `beta` tag, use:\n\n```json\n{\n  "beta": null\n}\n```\n\n- You can perform multiple actions at once. The following example reassigns `latest`\nand removes `beta`, while preserving other existing tags:\n\n```json\n{\n  "latest": { "buildId": "z2EryhbfhgSyqj6Hn" },\n  "beta": null\n}\n```\n',
@@ -12492,7 +12492,7 @@ export const putV2ActorsActorIdRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    "The configuration of the Actor's standby mode. For details, see [Standby mode](https://docs.apify.com/platform/actors/development/programming-interface/standby).",
+                    "The configuration of the Actor's standby mode. For details, see [Develop Server Actors](https://docs.apify.com/platform/actors/development/programming-interface/server-actors).",
                 }),
               exampleRunInput: z
                 .union([
@@ -17487,7 +17487,7 @@ export const putV2ActorsActorIdRoute = createRoute({
 export const deleteV2ActorsActorIdRoute = createRoute({
   method: 'delete',
   path: '/v2/actors/{actorId}',
-  tags: ['Actors'],
+  tags: ['Actors', 'Actor Runtime API/Actors'],
   summary: 'Delete Actor',
   description: 'Deletes an Actor with the specified ID.',
   operationId: 'actor_delete',
@@ -20194,7 +20194,7 @@ export const deleteV2ActorsActorIdRoute = createRoute({
 export const getV2ActorsActorIdVersionsRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/versions',
-  tags: ['Actors/Actor versions'],
+  tags: ['Actors/Actor versions', 'Actor Runtime API/Actor versions'],
   summary: 'Get list of Actor versions',
   description:
     'Gets the list of versions of a specific Actor. The response is a JSON object\nwith the list of `Version` objects, where each\ncontains basic information about a single version.\n',
@@ -23169,7 +23169,7 @@ export const getV2ActorsActorIdVersionsRoute = createRoute({
 export const postV2ActorsActorIdVersionsRoute = createRoute({
   method: 'post',
   path: '/v2/actors/{actorId}/versions',
-  tags: ['Actors/Actor versions'],
+  tags: ['Actors/Actor versions', 'Actor Runtime API/Actor versions'],
   summary: 'Create Actor version',
   description:
     'Creates a version of an Actor using values specified in a `Version`\nobject passed as JSON in the POST\npayload.\n\nThe request must specify `versionNumber` and `sourceType` parameters (as\nstrings) in the JSON payload and a `Content-Type: application/json` HTTP\nheader.\n\nEach `sourceType` requires its own additional properties to be passed to the\nJSON payload object. These are outlined in the `Version`\nobject table below and in more detail in\nthe [Apify\ndocumentation](https://docs.apify.com/platform/actors/development/deployment/source-types).\n\nFor example, if an Actor\'s source code is stored in a [GitHub\nrepository](https://docs.apify.com/platform/actors/development/deployment/source-types#git-repository),\nyou will set the `sourceType` to `GIT_REPO` and pass the repository\'s URL in\nthe `gitRepoUrl` property.\n\n```\n{\n    "versionNumber": "0.1",\n    "sourceType": "GIT_REPO",\n    "gitRepoUrl": "https://github.com/my-github-account/actor-repo"\n}\n```\n\nIf the Actor is in a subdirectory of the uploaded `SOURCE_FILES` or\n`TARBALL` source, such as in a monorepo, set `actorPath` to that\ndirectory, for example `"actorPath": "actors/typescript-actor"`.\n\nThe response is the `Version` object as\nreturned by the [Get Actor version](/api/v2/actor-version-get) endpoint.\n',
@@ -27161,7 +27161,7 @@ export const postV2ActorsActorIdVersionsRoute = createRoute({
 export const getV2ActorsActorIdVersionsVersionNumberRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/versions/{versionNumber}',
-  tags: ['Actors/Actor versions'],
+  tags: ['Actors/Actor versions', 'Actor Runtime API/Actor versions'],
   summary: 'Get Actor version',
   description:
     'Gets a `Version` object that contains all the details about a specific version of an Actor.\n',
@@ -30091,7 +30091,7 @@ export const getV2ActorsActorIdVersionsVersionNumberRoute = createRoute({
 export const deleteV2ActorsActorIdVersionsVersionNumberRoute = createRoute({
   method: 'delete',
   path: '/v2/actors/{actorId}/versions/{versionNumber}',
-  tags: ['Actors/Actor versions'],
+  tags: ['Actors/Actor versions', 'Actor Runtime API/Actor versions'],
   summary: 'Delete Actor version',
   description: "Deletes a specific version of Actor's source code.\n",
   operationId: 'actor_version_delete',
@@ -36445,7 +36445,7 @@ export const putV2ActorsActorIdVersionsVersionNumberBuildOnPushRoute = createRou
 export const getV2ActorsActorIdVersionsVersionNumberEnvVarsRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/versions/{versionNumber}/env-vars',
-  tags: ['Actors/Actor versions'],
+  tags: ['Actors/Actor versions', 'Actor Runtime API/Actor versions'],
   summary: 'Get list of environment variables of Actor version',
   description:
     'Gets the list of environment variables for a specific version of an Actor.\nThe response is a JSON object with the list of `EnvVar` objects, where each contains basic information about a single environment variable.\n',
@@ -39215,7 +39215,7 @@ export const getV2ActorsActorIdVersionsVersionNumberEnvVarsRoute = createRoute({
 export const postV2ActorsActorIdVersionsVersionNumberEnvVarsRoute = createRoute({
   method: 'post',
   path: '/v2/actors/{actorId}/versions/{versionNumber}/env-vars',
-  tags: ['Actors/Actor versions'],
+  tags: ['Actors/Actor versions', 'Actor Runtime API/Actor versions'],
   summary: 'Create environment variable in Actor version',
   description:
     'Creates an environment variable of an Actor using values specified in an\n`EnvVar` object passed as\nJSON in the POST payload.\n\nThe request must specify `name` and `value` parameters (as strings) in the\nJSON payload and a `Content-Type: application/json` HTTP header.\n\n```\n{\n    "name": "ENV_VAR_NAME",\n    "value": "my-env-var"\n}\n```\n\nThe response is the `EnvVar`\nobject as returned by the [Get environment variable of Actor version](/api/v2/actor-version-env-var-get)\nendpoint.\n',
@@ -42913,7 +42913,7 @@ export const postV2ActorsActorIdVersionsVersionNumberEnvVarsRoute = createRoute(
 export const getV2ActorsActorIdVersionsVersionNumberEnvVarsEnvVarNameRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/versions/{versionNumber}/env-vars/{envVarName}',
-  tags: ['Actors/Actor versions'],
+  tags: ['Actors/Actor versions', 'Actor Runtime API/Actor versions'],
   summary: 'Get environment variable of Actor version',
   description:
     'Gets an `EnvVar` object that\ncontains all the details about a specific environment variable of an Actor.\n\nIf `isSecret` is set to `true`, then `value` will never be returned.\n',
@@ -45688,7 +45688,7 @@ export const getV2ActorsActorIdVersionsVersionNumberEnvVarsEnvVarNameRoute = cre
 export const deleteV2ActorsActorIdVersionsVersionNumberEnvVarsEnvVarNameRoute = createRoute({
   method: 'delete',
   path: '/v2/actors/{actorId}/versions/{versionNumber}/env-vars/{envVarName}',
-  tags: ['Actors/Actor versions'],
+  tags: ['Actors/Actor versions', 'Actor Runtime API/Actor versions'],
   summary: 'Delete environment variable from Actor version',
   description: 'Deletes a specific environment variable.',
   operationId: 'actor_version_envVar_delete',
@@ -48421,7 +48421,7 @@ export const deleteV2ActorsActorIdVersionsVersionNumberEnvVarsEnvVarNameRoute = 
 export const getV2ActorsActorIdWebhooksRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/webhooks',
-  tags: ['Actors/Webhook collection'],
+  tags: ['Actors/Webhook collection', 'Actor Runtime API/Webhooks'],
   summary: "Get list of Actor's webhooks",
   description:
     'Gets the list of webhooks of a specific Actor. The response is a JSON with\nthe list of objects, where each object contains basic information about a single webhook.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 records.\n\nBy default, the records are sorted by the `createdAt` field in ascending\norder, to sort the records in descending order, use the `desc=1` parameter.\n',
@@ -54362,7 +54362,7 @@ export const getV2ActorsActorIdOauthConnectionsRoute = createRoute({
 export const getV2ActorsActorIdBuildsRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/builds',
-  tags: ['Actors/Actor builds'],
+  tags: ['Actors/Actor builds', 'Actor Runtime API/Actor builds'],
   summary: "Get list of Actor's builds",
   description:
     'Gets the list of builds of a specific Actor. The response is a JSON with the\nlist of objects, where each object contains basic information about a single build.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 records.\n\nBy default, the records are sorted by the `startedAt` field in ascending order,\ntherefore you can use pagination to incrementally fetch all builds while new\nones are still being started. To sort the records in descending order, use\nthe `desc=1` parameter.\n',
@@ -57333,7 +57333,7 @@ export const getV2ActorsActorIdBuildsRoute = createRoute({
 export const postV2ActorsActorIdBuildsRoute = createRoute({
   method: 'post',
   path: '/v2/actors/{actorId}/builds',
-  tags: ['Actors/Actor builds'],
+  tags: ['Actors/Actor builds', 'Actor Runtime API/Actor builds'],
   summary: 'Build Actor',
   description:
     'Builds an Actor.\nThe response is the build object as returned by the\n[Get Actor build](/api/v2/actor-build-get) endpoint.\n',
@@ -61692,7 +61692,7 @@ export const postV2ActorsActorIdBuildsRoute = createRoute({
 export const getV2ActorsActorIdBuildsDefaultRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/builds/default',
-  tags: ['Actors/Actor builds'],
+  tags: ['Actors/Actor builds', 'Actor Runtime API/Actor builds'],
   summary: 'Get default Actor build',
   description:
     "Get the default build for an Actor.\n\nUse the optional `waitForFinish` parameter to synchronously wait for the build to finish.\nThis avoids the need for periodic polling when waiting for the build to complete.\n\nThis endpoint does not require an authentication token. Instead, calls are authenticated using the Actor's unique ID.\nHowever, if you access the endpoint without a token, certain attributes (e.g., `usageUsd` and `usageTotalUsd`) will be hidden.\n",
@@ -65553,6 +65553,11 @@ export const getV2ActorsActorIdBuildsBuildIdOpenapiJsonRoute = createRoute({
             schema: { type: 'string', example: 'compass~google-maps-extractor' },
           },
           example: 'compass~google-maps-extractor',
+        }),
+      buildId: z
+        .string()
+        .openapi({
+          param: { name: 'buildId', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
   },
@@ -74615,7 +74620,7 @@ export const postV2ActorsActorIdBuildsBuildIdAbortRoute = createRoute({
 export const getV2ActorsActorIdRunsRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/runs',
-  tags: ['Actors/Actor runs'],
+  tags: ['Actors/Actor runs', 'Actor Runtime API/Actor runs'],
   summary: "Get list of Actor's runs",
   description:
     'Gets the list of runs of a specific Actor. The response is a list of\nobjects, where each object contains basic information about a single Actor run.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 array elements.\n\nBy default, the records are sorted by the `startedAt` field in ascending\norder, therefore you can use pagination to incrementally fetch all records while\nnew ones are still being created. To sort the records in descending order, use\n`desc=1` parameter. You can also filter runs by status ([available\nstatuses](https://docs.apify.com/platform/actors/running/runs-and-builds#lifecycle)).\n',
@@ -77776,7 +77781,7 @@ export const getV2ActorsActorIdRunsRoute = createRoute({
 export const postV2ActorsActorIdRunsRoute = createRoute({
   method: 'post',
   path: '/v2/actors/{actorId}/runs',
-  tags: ['Actors/Actor runs'],
+  tags: ['Actors/Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Run Actor',
   description:
     "Runs an Actor and immediately returns without waiting for the run to finish.\n\nThe POST payload including its `Content-Type` header is passed as `INPUT` to\nthe Actor (usually `application/json`).\n\nThe Actor is started with the default options; you can override them using\nvarious URL query parameters.\n\nThe response is the Run object as returned by the [Get Actor run](/api/v2/actor-run-get) API\nendpoint.\n\nIf you want to wait for the run to finish and receive the actual output of\nthe Actor as the response, please use the [Run Actor synchronously and get key-value store record](/api/v2/actor-run-sync-post)\nor [Run Actor synchronously and get dataset items](/api/v2/actor-run-sync-get-dataset-items-post)\nendpoint instead.\n\nTo fetch the Actor run results that are typically stored in the default\ndataset, you'll need to pass the ID received in the `defaultDatasetId` field\nreceived in the response JSON to the [Get dataset items](/api/v2/dataset-items-get)\nAPI endpoint.\n",
@@ -78995,7 +79000,10 @@ export const postV2ActorsActorIdRunsRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased dataset IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased dataset IDs for this run.',
+                          required: [],
+                        }),
                       keyValueStores: z
                         .object({
                           default: z
@@ -79008,7 +79016,10 @@ export const postV2ActorsActorIdRunsRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased key-value store IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased key-value store IDs for this run.',
+                          required: [],
+                        }),
                       requestQueues: z
                         .object({
                           default: z
@@ -79021,7 +79032,10 @@ export const postV2ActorsActorIdRunsRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased request queue IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased request queue IDs for this run.',
+                          required: [],
+                        }),
                     })
                     .exactOptional()
                     .openapi({
@@ -79227,7 +79241,7 @@ export const postV2ActorsActorIdRunsRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
+                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
                     }),
                   metamorphs: z
                     .union([
@@ -83787,7 +83801,7 @@ export const postV2ActorsActorIdRunsRoute = createRoute({
 export const getV2ActorsActorIdRunSyncRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/run-sync',
-  tags: ['Actors/Actor runs'],
+  tags: ['Actors/Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Run Actor synchronously and get key-value store record (GET)',
   description:
     "Runs a specific Actor and returns a key-value store record. The response contains the\nrecord stored under the `OUTPUT` key in the run's default key-value store.\nThis is a legacy approach that has been replaced by the Actor\n[output object](https://docs.apify.com/platform/actors/development/actor-definition/output-schema#output-object-definition);\nthe record may not exist, in which case the response contains no data. Use the\n`outputRecordKey` query parameter to return a different record.\nThe run must finish in 300<!-- MAX_ACTOR_JOB_SYNC_WAIT_SECS --> seconds\notherwise the API endpoint returns a timeout error.\nThe Actor is not passed any input.\n\nBeware that it might be impossible to maintain an idle HTTP connection for a\nlong period of time,\ndue to client timeout or network conditions. Make sure your HTTP client is\nconfigured to have a long enough connection timeout.\nIf the connection breaks, you will not receive any information about the run\nand its status.\n\nTo run the Actor asynchronously, use the [Run Actor](/api/v2/actors-runs-post) API endpoint instead.\n",
@@ -87227,7 +87241,7 @@ export const getV2ActorsActorIdRunSyncRoute = createRoute({
 export const postV2ActorsActorIdRunSyncRoute = createRoute({
   method: 'post',
   path: '/v2/actors/{actorId}/run-sync',
-  tags: ['Actors/Actor runs'],
+  tags: ['Actors/Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Run Actor synchronously and get key-value store record',
   description:
     "Runs a specific Actor and returns a key-value store record.\n\nThe POST payload including its `Content-Type` header is passed as `INPUT` to\nthe Actor (usually <code>application/json</code>).\n\nThe response contains the record stored under the `OUTPUT` key in the run's\ndefault key-value store. This is a legacy approach that has been replaced by\nthe Actor [output object](https://docs.apify.com/platform/actors/development/actor-definition/output-schema#output-object-definition);\nActors aren't required to store a record under this key, so the response may\nnot contain any data. Use the `outputRecordKey` query parameter to return a\ndifferent record.\n\nThe Actor is started with the default options; you can override them using\nvarious URL query parameters.\nIf the Actor run exceeds 300<!-- MAX_ACTOR_JOB_SYNC_WAIT_SECS --> seconds,\nthe HTTP response will have status 408 (Request Timeout).\n\nBeware that it might be impossible to maintain an idle HTTP connection for a\nlong period of time, due to client timeout or network conditions. Make sure your HTTP client is\nconfigured to have a long enough connection timeout.\nIf the connection breaks, you will not receive any information about the run\nand its status.\n\nTo run the Actor asynchronously, use the [Run Actor](/api/v2/actors-runs-post) API endpoint instead.\n",
@@ -91122,7 +91136,7 @@ export const postV2ActorsActorIdRunSyncRoute = createRoute({
 export const getV2ActorsActorIdRunSyncGetDatasetItemsRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/run-sync-get-dataset-items',
-  tags: ['Actors/Actor runs'],
+  tags: ['Actors/Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Run Actor synchronously and get dataset items (GET)',
   description:
     'Runs a specific Actor and returns its dataset items.\nThe run must finish in 300<!-- MAX_ACTOR_JOB_SYNC_WAIT_SECS --> seconds\notherwise the API endpoint returns a timeout error.\nThe Actor is not passed any input.\n\nIt allows to send all possible options in parameters from [Get dataset items](/api/v2/dataset-items-get) API endpoint.\n\nBeware that it might be impossible to maintain an idle HTTP connection for a\nlong period of time,\ndue to client timeout or network conditions. Make sure your HTTP client is\nconfigured to have a long enough connection timeout.\nIf the connection breaks, you will not receive any information about the run\nand its status.\n\nTo run the Actor asynchronously, use the [Run Actor](/api/v2/actors-runs-post) API endpoint instead.\n',
@@ -95418,7 +95432,7 @@ export const getV2ActorsActorIdRunSyncGetDatasetItemsRoute = createRoute({
 export const postV2ActorsActorIdRunSyncGetDatasetItemsRoute = createRoute({
   method: 'post',
   path: '/v2/actors/{actorId}/run-sync-get-dataset-items',
-  tags: ['Actors/Actor runs'],
+  tags: ['Actors/Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Run Actor synchronously and get dataset items',
   description:
     "Runs a specific Actor and returns its dataset items.\n\nThe POST payload including its `Content-Type` header is passed as `INPUT` to\nthe Actor (usually `application/json`).\nThe HTTP response contains the Actors dataset items, while the format of\nitems depends on specifying dataset items' `format` parameter.\n\nYou can send all the same options in parameters as the [Get dataset items](/api/v2/dataset-items-get) API endpoint.\n\nThe Actor is started with the default options; you can override them using\nURL query parameters.\nIf the Actor run exceeds 300<!-- MAX_ACTOR_JOB_SYNC_WAIT_SECS --> seconds,\nthe HTTP response will return the 408 status code (Request Timeout).\n\nBeware that it might be impossible to maintain an idle HTTP connection for a\nlong period of time,\ndue to client timeout or network conditions. Make sure your HTTP client is\nconfigured to have a long enough connection timeout.\nIf the connection breaks, you will not receive any information about the run\nand its status.\n\nTo run the Actor asynchronously, use the [Run Actor](/api/v2/actors-runs-post) API endpoint instead.\n",
@@ -102911,7 +102925,7 @@ export const postV2ActorsActorIdValidateInputRoute = createRoute({
 export const getV2ActorsActorIdRunsLastRoute = createRoute({
   method: 'get',
   path: '/v2/actors/{actorId}/runs/last',
-  tags: ['Actors/Actor runs'],
+  tags: ['Actors/Actor runs', 'Actor Runtime API/Actor runs'],
   summary: "Get Actor's last run",
   description:
     "This is not a single endpoint, but an entire group of endpoints that lets you to\nretrieve and manage the last run of given Actor or any of its default storages.\nAll the endpoints require an authentication token.\n\nThe base path represents the last Actor run object is:\n\n`/v2/actors/{actorId}/runs/last{?token,status,origin}`\n\nUsing the `status` query parameter you can ensure to only get a run with a certain status\n(e.g. `status=SUCCEEDED`). Similarly, the `origin` query parameter filters runs by the means\nby which they were started (e.g. `origin=API`). The output of this endpoint and other query\nparameters are the same as in the [Get Actor run](/api/v2/actor-run-get) endpoint.\n\n##### Convenience endpoints for last Actor run\n\n* [Last Actor run's default dataset](/api/v2/last-actor-runs-default-dataset)\n\n* [Last Actor run's default key-value store](/api/v2/last-actor-runs-default-key-value-store)\n\n* [Last Actor run's default request queue](/api/v2/last-actor-runs-default-request-queue)\n\n* [Last Actor run's log](/api/v2/last-actor-runs-log)\n",
@@ -103910,7 +103924,10 @@ export const getV2ActorsActorIdRunsLastRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased dataset IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased dataset IDs for this run.',
+                          required: [],
+                        }),
                       keyValueStores: z
                         .object({
                           default: z
@@ -103923,7 +103940,10 @@ export const getV2ActorsActorIdRunsLastRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased key-value store IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased key-value store IDs for this run.',
+                          required: [],
+                        }),
                       requestQueues: z
                         .object({
                           default: z
@@ -103936,7 +103956,10 @@ export const getV2ActorsActorIdRunsLastRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased request queue IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased request queue IDs for this run.',
+                          required: [],
+                        }),
                     })
                     .exactOptional()
                     .openapi({
@@ -104142,7 +104165,7 @@ export const getV2ActorsActorIdRunsLastRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
+                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
                     }),
                   metamorphs: z
                     .union([
@@ -107861,7 +107884,10 @@ export const getV2ActorsActorIdRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased dataset IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased dataset IDs for this run.',
+                          required: [],
+                        }),
                       keyValueStores: z
                         .object({
                           default: z
@@ -107874,7 +107900,10 @@ export const getV2ActorsActorIdRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased key-value store IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased key-value store IDs for this run.',
+                          required: [],
+                        }),
                       requestQueues: z
                         .object({
                           default: z
@@ -107887,7 +107916,10 @@ export const getV2ActorsActorIdRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased request queue IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased request queue IDs for this run.',
+                          required: [],
+                        }),
                     })
                     .exactOptional()
                     .openapi({
@@ -108093,7 +108125,7 @@ export const getV2ActorsActorIdRunsRunIdRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
+                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
                     }),
                   metamorphs: z
                     .union([
@@ -110859,7 +110891,7 @@ export const getV2ActorsActorIdRunsRunIdRoute = createRoute({
 export const getV2ActorTasksRoute = createRoute({
   method: 'get',
   path: '/v2/actor-tasks',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Get list of Actor tasks',
   description:
     'Gets the complete list of tasks that a user has created or used.\n\nThe response is a list of objects in which each object contains essential\ninformation about a single task.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters,\nand it does not return more than a 1000 records.\n\nBy default, the records are sorted by the `createdAt` field in ascending\norder; therefore you can use pagination to incrementally fetch all tasks while new\nones are still being created. To sort the records in descending order, use\nthe `desc=1` parameter.\n',
@@ -113357,7 +113389,7 @@ export const getV2ActorTasksRoute = createRoute({
 export const postV2ActorTasksRoute = createRoute({
   method: 'post',
   path: '/v2/actor-tasks',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Create Actor task',
   description:
     "Create a new task with settings specified by the object passed as JSON in\nthe POST payload.\n\nThe response is the full task object as returned by the\n[Get Actor task](/api/v2/actor-task-get) endpoint.\n\nThe request needs to specify the `Content-Type: application/json` HTTP header!\n\nWhen providing your API authentication token, we recommend using the\nrequest's `Authorization` header, rather than the URL.\n",
@@ -118076,7 +118108,7 @@ export const postV2ActorTasksRoute = createRoute({
 export const getV2ActorTasksActorTaskIdRoute = createRoute({
   method: 'get',
   path: '/v2/actor-tasks/{actorTaskId}',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Get Actor task',
   description: 'Get an object that contains all the details about a task.',
   operationId: 'actorTask_get',
@@ -121132,7 +121164,7 @@ export const getV2ActorTasksActorTaskIdRoute = createRoute({
 export const putV2ActorTasksActorTaskIdRoute = createRoute({
   method: 'put',
   path: '/v2/actor-tasks/{actorTaskId}',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Update Actor task',
   description:
     "Update settings of a task using values specified by an object passed as JSON\nin the POST payload.\n\nIf the object does not define a specific property, its value is not updated.\n\nThe `publicConfig` field carries the display configuration of the task's public\nlanding page, and `isPublic` publishes or unpublishes the task itself. Both require\nwrite permission to the task's Actor.\n\nTo publish a task, its Actor must be public and both `publicConfig.inputSchemaFields` and\n`publicConfig.datasetView` must be set. Note that an Actor can have up to 10 published tasks\nand your account up to 100.\nIf the task doesn't meet all these conditions, the request fails and no fields are updated,\nincluding those unrelated to publishing.\n\nPublishing lists the task among the Actor's examples and makes its input public, so anyone\ncan view and copy it. The landing page itself is shown only while `publicConfig` still\nvalidates against the Actor's current build, so a new build can stop the page from being\noffered while the task stays published and copyable.\n\nThe response is the full task object as returned by the\n[Get Actor task](/api/v2/actor-task-get) endpoint.\n\nThe request needs to specify the `Content-Type: application/json` HTTP\nheader!\n\nWhen providing your API authentication token, we recommend using the\nrequest's `Authorization` header, rather than the URL.\n",
@@ -125838,7 +125870,7 @@ export const putV2ActorTasksActorTaskIdRoute = createRoute({
 export const deleteV2ActorTasksActorTaskIdRoute = createRoute({
   method: 'delete',
   path: '/v2/actor-tasks/{actorTaskId}',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Delete Actor task',
   description: 'Delete the task specified through the `actorTaskId` parameter.',
   operationId: 'actorTask_delete',
@@ -128542,7 +128574,7 @@ export const deleteV2ActorTasksActorTaskIdRoute = createRoute({
 export const getV2ActorTasksActorTaskIdInputRoute = createRoute({
   method: 'get',
   path: '/v2/actor-tasks/{actorTaskId}/input',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Get Actor task input',
   description: 'Returns the input of a given task.',
   operationId: 'actorTask_input_get',
@@ -131251,7 +131283,7 @@ export const getV2ActorTasksActorTaskIdInputRoute = createRoute({
 export const putV2ActorTasksActorTaskIdInputRoute = createRoute({
   method: 'put',
   path: '/v2/actor-tasks/{actorTaskId}/input',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Update Actor task input',
   description:
     "Updates the input of a task using values specified by an object passed as\nJSON in the PUT payload.\n\nIf the object does not define a specific property, its value is not updated.\n\nThe response is the full task input as returned by the\n[Get Actor task input](/api/v2/actor-task-input-get) endpoint.\n\nThe request needs to specify the `Content-Type: application/json` HTTP\nheader!\n\nWhen providing your API authentication token, we recommend using the\nrequest's `Authorization` header, rather than the URL.\nFor details, see [Authentication](/api/v2#authentication).\n",
@@ -134861,7 +134893,7 @@ export const putV2ActorTasksActorTaskIdInputRoute = createRoute({
 export const getV2ActorTasksActorTaskIdWebhooksRoute = createRoute({
   method: 'get',
   path: '/v2/actor-tasks/{actorTaskId}/webhooks',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: "Get list of Actor task's webhooks",
   description:
     'Gets the list of webhooks of a specific Actor task. The response is a JSON\nwith the list of objects, where each object contains basic information about a single webhook.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 records.\n\nBy default, the records are sorted by the `createdAt` field in ascending\norder, to sort the records in descending order, use the `desc=1` parameter.\n',
@@ -138072,7 +138104,7 @@ export const getV2ActorTasksActorTaskIdWebhooksRoute = createRoute({
 export const getV2ActorTasksActorTaskIdRunsRoute = createRoute({
   method: 'get',
   path: '/v2/actor-tasks/{actorTaskId}/runs',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: "Get list of Actor task's runs",
   description:
     'Get a list of runs of a specific task. The response is a list of objects,\nwhere each object contains essential information about a single task run.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters,\nand it does not return more than a 1000 array elements.\n\nBy default, the records are sorted by the `startedAt` field in ascending\norder; therefore you can use pagination to incrementally fetch all records while\nnew ones are still being created. To sort the records in descending order, use\nthe `desc=1` parameter. You can also filter runs by status ([available\nstatuses](https://docs.apify.com/platform/actors/running/runs-and-builds#lifecycle)).\n',
@@ -141128,7 +141160,7 @@ export const getV2ActorTasksActorTaskIdRunsRoute = createRoute({
 export const postV2ActorTasksActorTaskIdRunsRoute = createRoute({
   method: 'post',
   path: '/v2/actor-tasks/{actorTaskId}/runs',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Run Actor task',
   description:
     "Runs an Actor task and immediately returns without waiting for the run to\nfinish.\n\nOptionally, you can override the Actor input configuration by passing a JSON\nobject as the POST payload and setting the `Content-Type: application/json` HTTP header.\n\nNote that if the object in the POST payload does not define a particular\ninput property, the Actor run uses the default value defined by the task (or Actor's input\nschema if not defined by the task).\n\nThe response is the Actor Run object as returned by the [Get Actor run](/api/v2/actor-run-get) endpoint.\n\nIf you want to wait for the run to finish and receive the actual output of\nthe Actor run as the response, use the [Run Actor task synchronously and get key-value store record](/api/v2/actor-task-run-sync-post)\nor [Run Actor task synchronously and get dataset items](/api/v2/actor-task-run-sync-get-dataset-items-post)\nendpoint instead.\n\nTo fetch the Actor run results that are typically stored in the default\ndataset, you'll need to pass the ID received in the `defaultDatasetId` field\nreceived in the response JSON to the\n[Get dataset items](/api/v2/dataset-items-get) API endpoint.\n",
@@ -142326,7 +142358,10 @@ export const postV2ActorTasksActorTaskIdRunsRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased dataset IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased dataset IDs for this run.',
+                          required: [],
+                        }),
                       keyValueStores: z
                         .object({
                           default: z
@@ -142339,7 +142374,10 @@ export const postV2ActorTasksActorTaskIdRunsRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased key-value store IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased key-value store IDs for this run.',
+                          required: [],
+                        }),
                       requestQueues: z
                         .object({
                           default: z
@@ -142352,7 +142390,10 @@ export const postV2ActorTasksActorTaskIdRunsRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased request queue IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased request queue IDs for this run.',
+                          required: [],
+                        }),
                     })
                     .exactOptional()
                     .openapi({
@@ -142558,7 +142599,7 @@ export const postV2ActorTasksActorTaskIdRunsRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
+                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
                     }),
                   metamorphs: z
                     .union([
@@ -146673,7 +146714,7 @@ export const postV2ActorTasksActorTaskIdRunsRoute = createRoute({
 export const getV2ActorTasksActorTaskIdRunSyncRoute = createRoute({
   method: 'get',
   path: '/v2/actor-tasks/{actorTaskId}/run-sync',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Run Actor task synchronously and get key-value store record (GET)',
   description:
     "Runs an Actor task and synchronously returns a key-value store record.\n\nThe response contains the record stored under the `OUTPUT` key in the run's\ndefault key-value store. This is a legacy approach that has been replaced by\nthe Actor [output object](https://docs.apify.com/platform/actors/development/actor-definition/output-schema#output-object-definition);\nActors aren't required to store a record under this key, so the response may\nnot contain any data. Use the `outputRecordKey` query parameter to return a\ndifferent record.\n\nThe run must finish in 300<!-- MAX_ACTOR_JOB_SYNC_WAIT_SECS --> seconds\notherwise the HTTP request fails with a timeout error (this won't abort\nthe run itself).\n\nBeware that it might be impossible to maintain an idle HTTP connection for\nan extended period, due to client timeout or network conditions. Make sure your HTTP client is\nconfigured to have a long enough connection timeout.\n\nIf the connection breaks, you will not receive any information about the run\nand its status.\n\nTo run the Task asynchronously, use the\n[Run Actor task](/api/v2/actor-task-runs-post)\nendpoint instead.\n",
@@ -150092,7 +150133,7 @@ export const getV2ActorTasksActorTaskIdRunSyncRoute = createRoute({
 export const postV2ActorTasksActorTaskIdRunSyncRoute = createRoute({
   method: 'post',
   path: '/v2/actor-tasks/{actorTaskId}/run-sync',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Run Actor task synchronously and get key-value store record',
   description:
     "Runs an Actor task and synchronously returns a key-value store record.\n\nThe response contains the record stored under the `OUTPUT` key in the run's\ndefault key-value store. This is a legacy approach that has been replaced by\nthe Actor [output object](https://docs.apify.com/platform/actors/development/actor-definition/output-schema#output-object-definition);\nActors aren't required to store a record under this key, so the response may\nnot contain any data. Use the `outputRecordKey` query parameter to return a\ndifferent record.\n\nThe run must finish in 300<!-- MAX_ACTOR_JOB_SYNC_WAIT_SECS --> seconds\notherwise the HTTP request fails with a timeout error (this won't abort\nthe run itself).\n\nOptionally, you can override the Actor input configuration by passing a JSON\nobject as the POST payload and setting the `Content-Type: application/json` HTTP header.\n\nNote that if the object in the POST payload does not define a particular\ninput property, the Actor run uses the default value defined by the task (or Actor's input\nschema if not defined by the task).\n\nBeware that it might be impossible to maintain an idle HTTP connection for\nan extended period, due to client timeout or network conditions. Make sure your HTTP client is\nconfigured to have a long enough connection timeout.\n\nIf the connection breaks, you will not receive any information about the run\nand its status.\n\nInput fields from Actor task configuration can be overloaded with values\npassed as the POST payload.\n\nJust make sure to specify `Content-Type` header to be `application/json` and\ninput to be an object.\n\nTo run the task asynchronously, use the [Run Actor task](/api/v2/actor-task-runs-post) API endpoint instead.\n",
@@ -154860,7 +154901,7 @@ export const postV2ActorTasksActorTaskIdRunSyncRoute = createRoute({
 export const getV2ActorTasksActorTaskIdRunSyncGetDatasetItemsRoute = createRoute({
   method: 'get',
   path: '/v2/actor-tasks/{actorTaskId}/run-sync-get-dataset-items',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Run Actor task synchronously and get dataset items (GET)',
   description:
     "Run a specific task and return its dataset items.\n\nThe run must finish in 300<!-- MAX_ACTOR_JOB_SYNC_WAIT_SECS --> seconds\notherwise the HTTP request fails with a timeout error (this won't abort\nthe run itself).\n\nYou can send all the same options in parameters as the [Get dataset items](/api/v2/dataset-items-get) API endpoint.\n\nBeware that it might be impossible to maintain an idle HTTP connection for\nan extended period, due to client timeout or network conditions. Make sure your HTTP client is\nconfigured to have a long enough connection timeout.\n\nIf the connection breaks, you will not receive any information about the run\nand its status.\n\nTo run the Task asynchronously, use the [Run Actor task](/api/v2/actor-task-runs-post) endpoint\ninstead.\n",
@@ -159115,7 +159156,7 @@ export const getV2ActorTasksActorTaskIdRunSyncGetDatasetItemsRoute = createRoute
 export const postV2ActorTasksActorTaskIdRunSyncGetDatasetItemsRoute = createRoute({
   method: 'post',
   path: '/v2/actor-tasks/{actorTaskId}/run-sync-get-dataset-items',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Run Actor task synchronously and get dataset items',
   description:
     "Runs an Actor task and synchronously returns its dataset items.\n\nThe run must finish in 300<!-- MAX_ACTOR_JOB_SYNC_WAIT_SECS --> seconds\notherwise the HTTP request fails with a timeout error (this won't abort\nthe run itself).\n\nOptionally, you can override the Actor input configuration by passing a JSON\nobject as the POST payload and setting the `Content-Type: application/json` HTTP header.\n\nNote that if the object in the POST payload does not define a particular\ninput property, the Actor run uses the default value defined by the task (or the Actor's\ninput schema if not defined by the task).\n\nYou can send all the same options in parameters as the [Get dataset items](/api/v2/dataset-items-get) API endpoint.\n\nBeware that it might be impossible to maintain an idle HTTP connection for\nan extended period, due to client timeout or network conditions. Make sure your HTTP client is\nconfigured to have a long enough connection timeout.\n\nIf the connection breaks, you will not receive any information about the run\nand its status.\n\nInput fields from Actor task configuration can be overloaded with values\npassed as the POST payload.\n\nJust make sure to specify the `Content-Type` header as `application/json`\nand that the input is an object.\n\nTo run the task asynchronously, use the [Run Actor task](/api/v2/actor-task-runs-post) API endpoint instead.\n",
@@ -164286,7 +164327,7 @@ export const postV2ActorTasksActorTaskIdRunSyncGetDatasetItemsRoute = createRout
 export const getV2ActorTasksActorTaskIdRunsLastRoute = createRoute({
   method: 'get',
   path: '/v2/actor-tasks/{actorTaskId}/runs/last',
-  tags: ['Actor tasks'],
+  tags: ['Actor tasks', 'Actor Runtime API/Actor tasks'],
   summary: 'Get last run of an Actor task',
   description:
     "This is not a single endpoint, but an entire group of endpoints that lets you to\nretrieve and manage the last run of given actor task or any of its default storages.\nAll the endpoints require an authentication token.\n\nThe base path represents the last actor task run object is:\n\n`/v2/actor-tasks/{actorTaskId}/runs/last{?token,status,origin}`\n\nUsing the `status` query parameter you can ensure to only get a run with a certain status\n(e.g. `status=SUCCEEDED`). Similarly, the `origin` query parameter filters runs by the means\nby which they were started (e.g. `origin=API`). The output of this endpoint and other query\nparameters are the same as in the [Get Actor run](/api/v2/actor-run-get) endpoint.\n\n##### Convenience endpoints for last Actor task run\n\n* [Last Actor task run's default dataset](/api/v2/last-actor-task-runs-default-dataset)\n\n* [Last Actor task run's default key-value store](/api/v2/last-actor-task-runs-default-key-value-store)\n\n* [Last Actor task run's default request queue](/api/v2/last-actor-task-runs-default-request-queue)\n\n* [Last Actor task run's log](/api/v2/last-actor-task-runs-log)\n",
@@ -165284,7 +165325,10 @@ export const getV2ActorTasksActorTaskIdRunsLastRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased dataset IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased dataset IDs for this run.',
+                          required: [],
+                        }),
                       keyValueStores: z
                         .object({
                           default: z
@@ -165297,7 +165341,10 @@ export const getV2ActorTasksActorTaskIdRunsLastRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased key-value store IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased key-value store IDs for this run.',
+                          required: [],
+                        }),
                       requestQueues: z
                         .object({
                           default: z
@@ -165310,7 +165357,10 @@ export const getV2ActorTasksActorTaskIdRunsLastRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased request queue IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased request queue IDs for this run.',
+                          required: [],
+                        }),
                     })
                     .exactOptional()
                     .openapi({
@@ -165516,7 +165566,7 @@ export const getV2ActorTasksActorTaskIdRunsLastRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
+                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
                     }),
                   metamorphs: z
                     .union([
@@ -168281,7 +168331,7 @@ export const getV2ActorTasksActorTaskIdRunsLastRoute = createRoute({
 export const getV2ActorRunsRoute = createRoute({
   method: 'get',
   path: '/v2/actor-runs',
-  tags: ['Actor runs'],
+  tags: ['Actor runs', 'Actor Runtime API/Actor runs'],
   summary: "Get list of user's Actor runs",
   description:
     'Gets a list of all runs for a user. The response is a list of objects, where\neach object contains basic information about a single Actor run.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 array elements.\n\nBy default, the records are sorted by the `startedAt` field in ascending\norder. Therefore, you can use pagination to incrementally fetch all records while\nnew ones are still being created. To sort the records in descending order, use\n`desc=1` parameter. You can also filter runs by `startedAt`` and `status`` fields ([available\nstatuses](https://docs.apify.com/platform/actors/running/runs-and-builds#lifecycle)).\n',
@@ -170983,7 +171033,7 @@ export const getV2ActorRunsRoute = createRoute({
 export const getV2ActorRunsRunIdRoute = createRoute({
   method: 'get',
   path: '/v2/actor-runs/{runId}',
-  tags: ['Actor runs'],
+  tags: ['Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Get Actor run',
   description:
     'This is not a single endpoint, but an entire group of endpoints that lets\nyou retrieve the run or any of its default storages.\n\n##### Convenience endpoints for Actor run default storages\n\n* [Default dataset](/api/v2/default-dataset)\n\n* [Default key-value store](/api/v2/default-key-value-store)\n\n* [Default request queue](/api/v2/default-request-queue)\n\nGets an object that contains all the details about a\nspecific run of an Actor.\n\nBy passing the optional `waitForFinish` parameter the API endpoint will synchronously wait\nfor the run to finish. This is useful to avoid periodic polling when waiting for Actor run to complete.\nNote that the first response after completion can still show preliminary `stats`, costs, and event counts.\nFor stable figures, wait about 10 seconds and call the endpoint again.\n\nThis endpoint does not require the authentication token. Instead, calls are authenticated using a hard-to-guess ID of the run. However,\nif you access the endpoint without the token, certain attributes, such as `usageUsd` and `usageTotalUsd`, will be hidden.\n',
@@ -171923,7 +171973,10 @@ export const getV2ActorRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased dataset IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased dataset IDs for this run.',
+                          required: [],
+                        }),
                       keyValueStores: z
                         .object({
                           default: z
@@ -171936,7 +171989,10 @@ export const getV2ActorRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased key-value store IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased key-value store IDs for this run.',
+                          required: [],
+                        }),
                       requestQueues: z
                         .object({
                           default: z
@@ -171949,7 +172005,10 @@ export const getV2ActorRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased request queue IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased request queue IDs for this run.',
+                          required: [],
+                        }),
                     })
                     .exactOptional()
                     .openapi({
@@ -172155,7 +172214,7 @@ export const getV2ActorRunsRunIdRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
+                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
                     }),
                   metamorphs: z
                     .union([
@@ -175366,7 +175425,7 @@ export const getV2ActorRunsRunIdRoute = createRoute({
 export const putV2ActorRunsRunIdRoute = createRoute({
   method: 'put',
   path: '/v2/actor-runs/{runId}',
-  tags: ['Actor runs'],
+  tags: ['Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Update Actor run',
   description:
     "This endpoint can be used to update both the run's status message and to configure its general resource access level.\n\n**Status message:**\n\nYou can set a single status message on your run that will be displayed in\nthe Apify Console UI. During an Actor run, you will typically do this in order\nto inform users of your Actor about the Actor's progress.\n\nThe request body must contain `runId` and `statusMessage` properties. The\n`isStatusMessageTerminal` property is optional and it indicates if the\nstatus message is the very last one. In the absence of a status message, the\nplatform will try to substitute sensible defaults.\n\n**General resource access:**\n\nYou can also update the run's general resource access setting, which determines who can view the run and its related data.\n\nAllowed values:\n\n* `FOLLOW_USER_SETTING` - The run inherits the general access setting from the account level.\n* `ANYONE_WITH_ID_CAN_READ` - The run can be viewed anonymously by anyone who has its ID.\n* `RESTRICTED` - Only users with explicit access to the resource can access the run.\n\nWhen a run is accessible anonymously, all of the run's default storages and logs also become accessible anonymously.\n",
@@ -176329,7 +176388,10 @@ export const putV2ActorRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased dataset IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased dataset IDs for this run.',
+                          required: [],
+                        }),
                       keyValueStores: z
                         .object({
                           default: z
@@ -176342,7 +176404,10 @@ export const putV2ActorRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased key-value store IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased key-value store IDs for this run.',
+                          required: [],
+                        }),
                       requestQueues: z
                         .object({
                           default: z
@@ -176355,7 +176420,10 @@ export const putV2ActorRunsRunIdRoute = createRoute({
                         })
                         .catchall(z.string())
                         .exactOptional()
-                        .openapi({ description: 'Aliased request queue IDs for this run.' }),
+                        .openapi({
+                          description: 'Aliased request queue IDs for this run.',
+                          required: [],
+                        }),
                     })
                     .exactOptional()
                     .openapi({
@@ -176561,7 +176629,7 @@ export const putV2ActorRunsRunIdRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
+                        'Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.',
                     }),
                   metamorphs: z
                     .union([
@@ -180219,7 +180287,7 @@ export const putV2ActorRunsRunIdRoute = createRoute({
 export const deleteV2ActorRunsRunIdRoute = createRoute({
   method: 'delete',
   path: '/v2/actor-runs/{runId}',
-  tags: ['Actor runs'],
+  tags: ['Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Delete Actor run',
   description:
     'Delete the run. Only finished runs can be deleted. Only the person or\norganization that initiated the run can delete it.\n',
@@ -182920,10 +182988,10 @@ export const deleteV2ActorRunsRunIdRoute = createRoute({
 export const postV2ActorRunsRunIdChargeRoute = createRoute({
   method: 'post',
   path: '/v2/actor-runs/{runId}/charge',
-  tags: ['Actor runs'],
+  tags: ['Actor runs', 'Actor Runtime API/Actor runs'],
   summary: 'Charge events in Actor run',
   description:
-    'Charge for events in the run of your [pay-per-event Actor](/actors/monetize/pay-per-event).\nThe event you are charging for must be one of the configured events in your Actor. If the Actor is not set up as pay per event, or if the event is not configured,\nthe endpoint will return an error. The endpoint must be called from the Actor run itself, with the same API token that the run was started with.\n',
+    "Charge for events in the run of your [pay-per-event Actor](/actors/monetize/pay-per-event).\nThe event you are charging for must be one of the configured events in your Actor. If the Actor is not set up as pay per event, or if the event is not configured,\nthe endpoint will return an error. The endpoint must be called from the Actor run itself, with the API token provided to the run at startup in the `APIFY_TOKEN` environment variable.\n\nTo charge a request to a multi-tenant Server Actor, set `requestId` to the request's `X-Actor-Request-ID` header value.\nSee [Charge for a request](/actors/monetize/server-actors#charge-for-a-request).\n",
   operationId: 'PostChargeRun',
   request: {
     params: z.object({
@@ -182969,7 +183037,7 @@ export const postV2ActorRunsRunIdChargeRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description:
-                    'ID of the Server Actor request being charged, from the `X-Actor-Request-ID` header of the incoming request. Required for multi-tenant Server Actor runs, where it identifies the request the charge belongs to.',
+                    'ID of the Server Actor request being charged, from the `X-Actor-Request-ID` header of the incoming request. Required for multi-tenant Server Actor runs, where it identifies the request the charge belongs to. Runs of single-tenant Server Actors ignore it.',
                   examples: ['7Hs2kQw9LxP4mN1vB'],
                 }),
             })
@@ -186556,7 +186624,7 @@ export const postV2ActorRunsRunIdChargeRoute = createRoute({
 export const getV2ActorBuildsRoute = createRoute({
   method: 'get',
   path: '/v2/actor-builds',
-  tags: ['Actor builds'],
+  tags: ['Actor builds', 'Actor Runtime API/Actor builds'],
   summary: "Get list of user's Actor builds",
   description:
     'Gets a list of all builds for a user. The response is a JSON array of\nobjects, where each object contains basic information about a single build.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 records.\n\nBy default, the records are sorted by the `startedAt` field in ascending\norder. Therefore, you can use pagination to incrementally fetch all builds while\nnew ones are still being started. To sort the records in descending order, use\nthe `desc=1` parameter.\n',
@@ -189068,7 +189136,7 @@ export const getV2ActorBuildsRoute = createRoute({
 export const getV2ActorBuildsBuildIdRoute = createRoute({
   method: 'get',
   path: '/v2/actor-builds/{buildId}',
-  tags: ['Actor builds'],
+  tags: ['Actor builds', 'Actor Runtime API/Actor builds'],
   summary: 'Get Actor build',
   description:
     'Gets an object that contains all the details about a specific build of an\nActor.\n\nBy passing the optional `waitForFinish` parameter the API endpoint will\nsynchronously wait for the build to finish. This is useful to avoid periodic\npolling when waiting for an Actor build to finish.\n\nThis endpoint does not require the authentication token. Instead, calls are authenticated using a hard-to-guess ID of the build. However,\nif you access the endpoint without the token, certain attributes, such as `usageUsd` and `usageTotalUsd`, will be hidden.\n',
@@ -192908,7 +192976,7 @@ export const getV2ActorBuildsBuildIdRoute = createRoute({
 export const deleteV2ActorBuildsBuildIdRoute = createRoute({
   method: 'delete',
   path: '/v2/actor-builds/{buildId}',
-  tags: ['Actor builds'],
+  tags: ['Actor builds', 'Actor Runtime API/Actor builds'],
   summary: 'Delete Actor build',
   description:
     'Delete the build. The build that is the current default build for the Actor\ncannot be deleted.\n\nOnly users with build permissions for the Actor can delete builds.\n',
@@ -195609,7 +195677,7 @@ export const deleteV2ActorBuildsBuildIdRoute = createRoute({
 export const postV2ActorBuildsBuildIdAbortRoute = createRoute({
   method: 'post',
   path: '/v2/actor-builds/{buildId}/abort',
-  tags: ['Actor builds'],
+  tags: ['Actor builds', 'Actor Runtime API/Actor builds'],
   summary: 'Abort Actor build',
   description:
     'Aborts an Actor build and returns an object that contains all the details\nabout the build.\n\nOnly builds that are starting or running are aborted. For builds with status\n`FINISHED`, `FAILED`, `ABORTING` and `TIMED-OUT` this call does nothing.\n',
@@ -198981,6 +199049,15 @@ export const getV2ActorBuildsBuildIdOpenapiJsonRoute = createRoute({
   description:
     "Get the OpenAPI definition for Actor builds. Two similar endpoints are available:\n\n- [Get OpenAPI definition of Actor build](/api/v2/actor-openapi-json-get) (`/v2/actors/{actorId}/builds/{buildId}/openapi.json`): Requires both `actorId` and `buildId`. Use `default` as the `buildId` to get the OpenAPI schema for the default Actor build.\n- [Get OpenAPI definition of Actor build](/api/v2/actor-build-openapi-json-get) (`/v2/actor-builds/{buildId}/openapi.json`): Requires only `buildId`.\n\nGet the OpenAPI definition for a specific Actor build.\nAuthentication is based on the build's unique ID. No authentication token is required.\n\n:::note\n\nYou can also use the [Get OpenAPI definition of Actor build](/api/v2/actor-openapi-json-get) endpoint (`/v2/actors/{actorId}/builds/{buildId}/openapi.json`) to get the OpenAPI definition for a build.\n\n:::\n",
   operationId: 'actorBuild_openapi_json_get',
+  request: {
+    params: z.object({
+      buildId: z
+        .string()
+        .openapi({
+          param: { name: 'buildId', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
   responses: {
     200: {
       description: 'The OpenAPI specification document for the Actor build.',
@@ -206294,7 +206371,7 @@ export const getV2ActorOauthAccountsAccountIdRoute = createRoute({
 export const getV2KeyValueStoresRoute = createRoute({
   method: 'get',
   path: '/v2/key-value-stores',
-  tags: ['Storage/Key-value stores'],
+  tags: ['Storage/Key-value stores', 'Actor Runtime API/Key-value stores'],
   summary: 'Get list of key-value stores',
   description:
     'Gets the list of key-value stores owned by the user.\n\nThe response is a list of objects, where each objects contains a basic\ninformation about a single key-value store.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 array elements.\n\nBy default, the records are sorted by the `createdAt` field in ascending\norder, therefore you can use pagination to incrementally fetch all key-value stores\nwhile new ones are still being created. To sort the records in descending order, use\nthe `desc=1` parameter.\n',
@@ -208835,7 +208912,7 @@ export const getV2KeyValueStoresRoute = createRoute({
 export const postV2KeyValueStoresRoute = createRoute({
   method: 'post',
   path: '/v2/key-value-stores',
-  tags: ['Storage/Key-value stores'],
+  tags: ['Storage/Key-value stores', 'Actor Runtime API/Key-value stores'],
   summary: 'Create key-value store',
   description:
     'Creates a key-value store and returns its object. The response is the same\nobject as returned by the [Get key-value store](/api/v2/key-value-store-get)\nendpoint.\n\nKeep in mind that data stored under unnamed store follows [data retention\nperiod](https://docs.apify.com/platform/storage#data-retention).\n\nIt creates a store with the given name if the parameter name is used.\nIf there is another store with the same name, the endpoint does not create a\nnew one and returns the existing object instead.\n',
@@ -211445,7 +211522,7 @@ export const headV2KeyValueStoresStoreIdRecordsRecordKeyRoute = createRoute({
 export const getV2DatasetsRoute = createRoute({
   method: 'get',
   path: '/v2/datasets',
-  tags: ['Storage/Datasets'],
+  tags: ['Storage/Datasets', 'Actor Runtime API/Datasets'],
   summary: 'Get list of datasets',
   description:
     "Lists all of a user's datasets.\n\nThe response is a JSON array of objects,\nwhere each object contains basic information about one dataset.\n\nBy default, the objects are sorted by the `createdAt` field in ascending\norder, therefore you can use pagination to incrementally fetch all datasets while new\nones are still being created. To sort them in descending order, use `desc=1`\nparameter. The endpoint supports pagination using `limit` and `offset`\nparameters and it will not return more than 1000 array elements.\n",
@@ -213981,7 +214058,7 @@ export const getV2DatasetsRoute = createRoute({
 export const postV2DatasetsRoute = createRoute({
   method: 'post',
   path: '/v2/datasets',
-  tags: ['Storage/Datasets'],
+  tags: ['Storage/Datasets', 'Actor Runtime API/Datasets'],
   summary: 'Create dataset',
   description:
     'Creates a dataset and returns its object.\nKeep in mind that data stored under unnamed dataset follows [data retention period](https://docs.apify.com/platform/storage#data-retention).\nIt creates a dataset with the given name if the parameter name is used.\nIf a dataset with the given name already exists then returns its object.\n',
@@ -216552,6 +216629,15 @@ export const headV2DatasetsDatasetIdItemsRoute = createRoute({
   description:
     'Returns only the HTTP headers for the dataset items endpoint, without the response body.\nThis is useful to check pagination metadata or verify access without downloading the full dataset.\n',
   operationId: 'dataset_items_head',
+  request: {
+    params: z.object({
+      datasetId: z
+        .string()
+        .openapi({
+          param: { name: 'datasetId', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
   responses: {
     200: {
       description: '',
@@ -217051,7 +217137,7 @@ export const headV2DatasetsDatasetIdItemsRoute = createRoute({
 export const getV2RequestQueuesRoute = createRoute({
   method: 'get',
   path: '/v2/request-queues',
-  tags: ['Storage/Request queues'],
+  tags: ['Storage/Request queues', 'Actor Runtime API/Request queues'],
   summary: 'Get list of request queues',
   description:
     "Lists all of a user's request queues. The response is a JSON array of\nobjects, where each object\ncontains basic information about one queue.\n\nBy default, the objects are sorted by the `createdAt` field in ascending order,\ntherefore you can use pagination to incrementally fetch all queues while new\nones are still being created. To sort them in descending order, use `desc=1`\nparameter. The endpoint supports pagination using `limit` and `offset`\nparameters and it will not return more than 1000\narray elements.\n",
@@ -219702,7 +219788,7 @@ export const getV2RequestQueuesRoute = createRoute({
 export const postV2RequestQueuesRoute = createRoute({
   method: 'post',
   path: '/v2/request-queues',
-  tags: ['Storage/Request queues'],
+  tags: ['Storage/Request queues', 'Actor Runtime API/Request queues'],
   summary: 'Create request queue',
   description:
     'Creates a request queue and returns its object.\nKeep in mind that requests stored under unnamed queue follows [data\nretention period](https://docs.apify.com/platform/storage#data-retention).\n\nIt creates a queue of given name if the parameter name is used. If a queue\nwith the given name already exists then the endpoint returns\nits object.\n',
@@ -222357,7 +222443,7 @@ export const postV2RequestQueuesRoute = createRoute({
 export const getV2WebhooksRoute = createRoute({
   method: 'get',
   path: '/v2/webhooks',
-  tags: ['Webhooks/Webhooks'],
+  tags: ['Webhooks/Webhooks', 'Actor Runtime API/Webhooks'],
   summary: 'Get list of webhooks',
   description:
     'Gets the list of webhooks that the user created.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 records.\nBy default, the records are sorted by the `createdAt` field in ascending\norder. To sort the records in descending order, use the `desc=1`\nparameter.\n',
@@ -225043,7 +225129,7 @@ export const getV2WebhooksRoute = createRoute({
 export const postV2WebhooksRoute = createRoute({
   method: 'post',
   path: '/v2/webhooks',
-  tags: ['Webhooks/Webhooks'],
+  tags: ['Webhooks/Webhooks', 'Actor Runtime API/Webhooks'],
   summary: 'Create webhook',
   description:
     'Creates a new webhook with settings provided by the webhook object passed as\nJSON in the payload.\nThe response is the created webhook object.\n\nTo avoid duplicating a webhook, use the `idempotencyKey` parameter in the\nrequest body.\nMultiple calls to create a webhook with the same `idempotencyKey` will only\ncreate the webhook with the first call and return the existing webhook on\nsubsequent calls.\nIdempotency keys must be unique, so use a UUID or another random string with\nenough entropy.\n\nTo assign the new webhook to an Actor or task, the request body must contain\n`requestUrl`, `eventTypes`, and `condition` properties.\n\n* `requestUrl` is the webhook\'s target URL, to which data is sent as a POST\nrequest with a JSON payload.\n* `eventTypes` is a list of events that will trigger the webhook, e.g. when\nthe Actor run succeeds.\n* `condition` should be an object containing the ID of the Actor or task to\nwhich the webhook will be assigned.\n* `payloadTemplate` is a JSON-like string, whose syntax is extended with the\nuse of variables.\n* `headersTemplate` is a JSON-like string, whose syntax is extended with the\nuse of variables. Following values will be re-written to defaults: "host",\n"Content-Type", "X-Apify-Webhook", "X-Apify-Webhook-Dispatch-Id",\n"X-Apify-Request-Origin"\n* `description` is an optional string.\n* `shouldInterpolateStrings` is a boolean indicating whether to interpolate\nvariables contained inside strings in the `payloadTemplate`\n\n```\n    "isAdHoc" : false,\n    "requestUrl" : "https://example.com",\n    "eventTypes" : [\n        "ACTOR.RUN.SUCCEEDED",\n        "ACTOR.RUN.ABORTED"\n    ],\n    "condition" : {\n        "actorId": "5sTMwDQywwsLzKRRh",\n        "actorTaskId" : "W9bs9JE9v7wprjAnJ"\n    },\n    "payloadTemplate": "",\n    "headersTemplate": "",\n    "description": "my awesome webhook",\n    "shouldInterpolateStrings": false,\n```\n\n**Important**: The request must specify the `Content-Type: application/json`\nHTTP header.\n',
@@ -229046,7 +229132,7 @@ export const postV2WebhooksRoute = createRoute({
 export const getV2WebhooksWebhookIdRoute = createRoute({
   method: 'get',
   path: '/v2/webhooks/{webhookId}',
-  tags: ['Webhooks/Webhooks'],
+  tags: ['Webhooks/Webhooks', 'Actor Runtime API/Webhooks'],
   summary: 'Get webhook',
   description: 'Gets webhook object with all details.',
   operationId: 'webhook_get',
@@ -232064,7 +232150,7 @@ export const getV2WebhooksWebhookIdRoute = createRoute({
 export const putV2WebhooksWebhookIdRoute = createRoute({
   method: 'put',
   path: '/v2/webhooks/{webhookId}',
-  tags: ['Webhooks/Webhooks'],
+  tags: ['Webhooks/Webhooks', 'Actor Runtime API/Webhooks'],
   summary: 'Update webhook',
   description:
     "Updates a webhook using values specified by a webhook object passed as JSON\nin the POST payload.\nIf the object does not define a specific property, its value will not be\nupdated.\n\nThe response is the full webhook object as returned by the\n[Get webhook](/api/v2/webhook-get) endpoint.\n\nThe request needs to specify the `Content-Type: application/json` HTTP\nheader!\n\nWhen providing your API authentication token, we recommend using the\nrequest's `Authorization` header, rather than the URL.\nFor details, see [Authentication](/api/v2#authentication).\n",
@@ -236077,7 +236163,7 @@ export const putV2WebhooksWebhookIdRoute = createRoute({
 export const deleteV2WebhooksWebhookIdRoute = createRoute({
   method: 'delete',
   path: '/v2/webhooks/{webhookId}',
-  tags: ['Webhooks/Webhooks'],
+  tags: ['Webhooks/Webhooks', 'Actor Runtime API/Webhooks'],
   summary: 'Delete webhook',
   description: 'Deletes a webhook.',
   operationId: 'webhook_delete',
@@ -238781,7 +238867,7 @@ export const deleteV2WebhooksWebhookIdRoute = createRoute({
 export const postV2WebhooksWebhookIdTestRoute = createRoute({
   method: 'post',
   path: '/v2/webhooks/{webhookId}/test',
-  tags: ['Webhooks/Webhooks'],
+  tags: ['Webhooks/Webhooks', 'Actor Runtime API/Webhooks'],
   summary: 'Test webhook',
   description: 'Tests a webhook. Creates a webhook dispatch with a dummy payload.',
   operationId: 'webhook_test_post',
@@ -241792,7 +241878,7 @@ export const postV2WebhooksWebhookIdTestRoute = createRoute({
 export const getV2WebhooksWebhookIdDispatchesRoute = createRoute({
   method: 'get',
   path: '/v2/webhooks/{webhookId}/dispatches',
-  tags: ['Webhooks/Webhooks'],
+  tags: ['Webhooks/Webhooks', 'Actor Runtime API/Webhooks'],
   summary: "Get list of webhook's dispatches",
   description: "Gets a given webhook's list of dispatches.",
   operationId: 'webhook_webhookDispatches_get',
@@ -244959,7 +245045,7 @@ export const getV2WebhooksWebhookIdDispatchesRoute = createRoute({
 export const getV2WebhookDispatchesRoute = createRoute({
   method: 'get',
   path: '/v2/webhook-dispatches',
-  tags: ['Webhooks/Webhook dispatches'],
+  tags: ['Webhooks/Webhook dispatches', 'Actor Runtime API/Webhooks'],
   summary: 'Get list of webhook dispatches',
   description:
     'Gets the list of webhook dispatches that the user have.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters\nand it will not return more than 1000 records.\nBy default, the records are sorted by the `createdAt` field in ascending\norder. To sort the records in descending order, use the `desc=1`\nparameter.\n',
@@ -247669,7 +247755,7 @@ export const getV2WebhookDispatchesRoute = createRoute({
 export const getV2WebhookDispatchesDispatchIdRoute = createRoute({
   method: 'get',
   path: '/v2/webhook-dispatches/{dispatchId}',
-  tags: ['Webhooks/Webhook dispatches'],
+  tags: ['Webhooks/Webhook dispatches', 'Actor Runtime API/Webhooks'],
   summary: 'Get webhook dispatch',
   description: 'Gets webhook dispatch object with all details.',
   operationId: 'webhookDispatch_get',
@@ -250680,7 +250766,7 @@ export const getV2WebhookDispatchesDispatchIdRoute = createRoute({
 export const getV2SchedulesRoute = createRoute({
   method: 'get',
   path: '/v2/schedules',
-  tags: ['Schedules'],
+  tags: ['Schedules', 'Actor Runtime API/Schedules'],
   summary: 'Get list of schedules',
   description:
     'Gets the list of schedules that the user created.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters.\nIt will not return more than 1000 records.\n\nBy default, the records are sorted by the `createdAt` field in ascending\norder. To sort the records in descending order, use the `desc=1` parameter.\n',
@@ -253212,7 +253298,7 @@ export const getV2SchedulesRoute = createRoute({
 export const postV2SchedulesRoute = createRoute({
   method: 'post',
   path: '/v2/schedules',
-  tags: ['Schedules'],
+  tags: ['Schedules', 'Actor Runtime API/Schedules'],
   summary: 'Create schedule',
   description:
     "Creates a new schedule with settings provided by the schedule object passed\nas JSON in the payload. The response is the created schedule object.\n\nThe request needs to specify the `Content-Type: application/json` HTTP header!\n\nWhen providing your API authentication token, we recommend using the\nrequest's `Authorization` header, rather than the URL.\nFor details, see [Authentication](/api/v2#authentication).\n",
@@ -253492,11 +253578,12 @@ export const postV2SchedulesRoute = createRoute({
                               required: [],
                             }),
                         })
+                        .nullable()
                         .exactOptional()
                         .openapi({
                           title: 'ScheduleUiState',
                           description:
-                            "State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`.",
+                            "State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`, after which it is `null`.",
                           required: [],
                         }),
                       integrationTracking: z
@@ -257689,7 +257776,7 @@ export const postV2SchedulesRoute = createRoute({
 export const getV2SchedulesScheduleIdRoute = createRoute({
   method: 'get',
   path: '/v2/schedules/{scheduleId}',
-  tags: ['Schedules'],
+  tags: ['Schedules', 'Actor Runtime API/Schedules'],
   summary: 'Get schedule',
   description: 'Gets the schedule object with all details.',
   operationId: 'schedule_get',
@@ -257806,11 +257893,12 @@ export const getV2SchedulesScheduleIdRoute = createRoute({
                               required: [],
                             }),
                         })
+                        .nullable()
                         .exactOptional()
                         .openapi({
                           title: 'ScheduleUiState',
                           description:
-                            "State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`.",
+                            "State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`, after which it is `null`.",
                           required: [],
                         }),
                       integrationTracking: z
@@ -260655,7 +260743,7 @@ export const getV2SchedulesScheduleIdRoute = createRoute({
 export const putV2SchedulesScheduleIdRoute = createRoute({
   method: 'put',
   path: '/v2/schedules/{scheduleId}',
-  tags: ['Schedules'],
+  tags: ['Schedules', 'Actor Runtime API/Schedules'],
   summary: 'Update schedule',
   description:
     "Updates a schedule using values specified by a schedule object passed as\nJSON in the POST payload. If the object does not define a specific property,\nits value will not be updated.\n\nThe response is the full schedule object as returned by the\n[Get schedule](/api/v2/schedule-get) endpoint.\n\n**The request needs to specify the `Content-Type: application/json` HTTP\nheader!**\n\nWhen providing your API authentication token, we recommend using the\nrequest's `Authorization` header, rather than the URL.\nFor details, see [Authentication](/api/v2#authentication).\n",
@@ -260950,11 +261038,12 @@ export const putV2SchedulesScheduleIdRoute = createRoute({
                               required: [],
                             }),
                         })
+                        .nullable()
                         .exactOptional()
                         .openapi({
                           title: 'ScheduleUiState',
                           description:
-                            "State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`.",
+                            "State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`, after which it is `null`.",
                           required: [],
                         }),
                       integrationTracking: z
@@ -265139,7 +265228,7 @@ export const putV2SchedulesScheduleIdRoute = createRoute({
 export const deleteV2SchedulesScheduleIdRoute = createRoute({
   method: 'delete',
   path: '/v2/schedules/{scheduleId}',
-  tags: ['Schedules'],
+  tags: ['Schedules', 'Actor Runtime API/Schedules'],
   summary: 'Delete schedule',
   description: 'Deletes a schedule.',
   operationId: 'schedule_delete',
@@ -267845,7 +267934,7 @@ export const deleteV2SchedulesScheduleIdRoute = createRoute({
 export const postV2SchedulesScheduleIdInvokeRoute = createRoute({
   method: 'post',
   path: '/v2/schedules/{scheduleId}/invoke',
-  tags: ['Schedules'],
+  tags: ['Schedules', 'Actor Runtime API/Schedules'],
   summary: 'Invoke schedule',
   description:
     "Immediately runs all actions of the schedule, the same way as the **Run now** button in Apify Console.\n\nThe invocation is recorded in the [schedule log](/api/v2/schedule-log-get). It doesn't change the schedule's\n`lastRunAt` or `nextRunAt`. The response doesn't contain the started runs.\n",
@@ -270550,7 +270639,7 @@ export const postV2SchedulesScheduleIdInvokeRoute = createRoute({
 export const getV2SchedulesScheduleIdLogRoute = createRoute({
   method: 'get',
   path: '/v2/schedules/{scheduleId}/log',
-  tags: ['Schedules'],
+  tags: ['Schedules', 'Actor Runtime API/Schedules'],
   summary: 'Get schedule log',
   description:
     'Gets the schedule log as a JSON array containing information about up to a\n1000 invocations of the schedule.\n',
@@ -275807,7 +275896,7 @@ export const getV2StoreRoute = createRoute({
 export const getV2UsersUserIdRoute = createRoute({
   method: 'get',
   path: '/v2/users/{userId}',
-  tags: ['Users'],
+  tags: ['Users', 'Actor Runtime API/Users'],
   summary: 'Get public user data',
   description:
     'Returns public information about a specific user account, similar to what\ncan be seen on public profile pages (e.g. https://apify.com/apify).\n\nThis operation requires no authentication token.\n\nWhen the request is authenticated with an API token of the requested user account, or with a token\nthat impersonates it, the response also contains the private information, the same as in\n[Get private user data](/api/v2/users-me-get). Tokens with limited permissions never receive it.\n',
@@ -276532,6 +276621,366 @@ export const getV2UsersUserIdRoute = createRoute({
                   .openapi({ title: 'UserPrivateInfo', required: ['username'] }),
               })
               .openapi({ title: 'UserPrivateInfoResponse', required: ['data'] }),
+            z
+              .object({
+                data: z
+                  .object({
+                    plan: z
+                      .object({
+                        availableProxyGroups: z
+                          .record(
+                            z.string(),
+                            z
+                              .int()
+                              .openapi({
+                                description: 'The number of available proxies in this group.',
+                              }),
+                          )
+                          .openapi({
+                            title: 'AvailableProxyGroups',
+                            description:
+                              'A dictionary mapping proxy group names to the number of available proxies in each group.\nThe keys are proxy group names (e.g., "RESIDENTIAL", "DATACENTER") and values are\nthe count of available proxies.\n',
+                            example: { RESIDENTIAL: 1000, DATACENTER: 500, GOOGLE_SERP: 200 },
+                          }),
+                      })
+                      .openapi({ title: 'UserProxyPlan', required: ['availableProxyGroups'] }),
+                    effectivePlatformFeatures: z
+                      .object({
+                        ACTORS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        STORAGE: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        SCHEDULER: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_EXTERNAL_ACCESS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_RESIDENTIAL: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_SERPS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        WEBHOOKS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        ACTORS_PUBLIC_ALL: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        ACTORS_PUBLIC_DEVELOPER: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                      })
+                      .openapi({
+                        title: 'EffectivePlatformFeatures',
+                        required: [
+                          'ACTORS',
+                          'STORAGE',
+                          'SCHEDULER',
+                          'PROXY',
+                          'PROXY_EXTERNAL_ACCESS',
+                          'PROXY_RESIDENTIAL',
+                          'PROXY_SERPS',
+                          'WEBHOOKS',
+                          'ACTORS_PUBLIC_ALL',
+                          'ACTORS_PUBLIC_DEVELOPER',
+                        ],
+                      }),
+                    isPaying: z.boolean().openapi({ examples: [true] }),
+                  })
+                  .openapi({
+                    title: 'UserProxyInfo',
+                    description: 'Reduced user data with only the fields Apify Proxy reads.',
+                    required: ['plan', 'effectivePlatformFeatures', 'isPaying'],
+                  }),
+              })
+              .openapi({ title: 'UserProxyInfoResponse', required: ['data'] }),
           ]),
         },
       },
@@ -278768,7 +279217,7 @@ export const getV2UsersUserIdRoute = createRoute({
 export const getV2UsersMeRoute = createRoute({
   method: 'get',
   path: '/v2/users/me',
-  tags: ['Users'],
+  tags: ['Users', 'Actor Runtime API/Users'],
   summary: 'Get private user data',
   description:
     'Returns information about the current user account, including both public\nand private information.\n\nThe user account is identified by the provided authentication token.\n\nThe fields `plan`, `email` and `profile` are omitted when this endpoint is accessed from Actor run.\n',
@@ -278778,645 +279227,1010 @@ export const getV2UsersMeRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z
-            .object({
-              data: z
-                .object({
-                  id: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ examples: ['YiKoxjkaS9gjGTqhF'] }),
-                  username: z.string().openapi({ examples: ['myusername'] }),
-                  profile: z
-                    .object({
-                      bio: z
-                        .string()
-                        .nullable()
-                        .exactOptional()
-                        .openapi({
-                          examples: ['I started web scraping in 1985 using Altair BASIC.'],
-                        }),
-                      readme: z
-                        .string()
-                        .nullable()
-                        .exactOptional()
-                        .openapi({
-                          description: "Markdown README shown on the user's public profile page.",
-                          examples: ['### Hello world 👋🏻\nI build web scrapers.'],
-                        }),
-                      name: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ examples: ['Jane Doe'] }),
-                      pictureUrl: z
-                        .url()
-                        .nullable()
-                        .exactOptional()
-                        .openapi({
-                          examples: ['https://apify.com/img/anonymous_user_picture.png'],
-                        }),
-                      githubUsername: z
-                        .string()
-                        .nullable()
-                        .exactOptional()
-                        .openapi({ examples: ['torvalds.'] }),
-                      websiteUrl: z
-                        .url()
-                        .nullable()
-                        .exactOptional()
-                        .openapi({ examples: ['http://www.example.com'] }),
-                      twitterUsername: z
-                        .string()
-                        .nullable()
-                        .exactOptional()
-                        .openapi({ examples: ['@BillGates'] }),
-                    })
-                    .exactOptional()
-                    .openapi({ title: 'UserProfile', required: [] }),
-                  email: z
-                    .email()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Primary email of the user. It is `null` when the email is not verified.',
-                      examples: ['bob@example.com'],
-                    }),
-                  proxy: z
-                    .object({
-                      password: z
-                        .string()
-                        .nullable()
-                        .exactOptional()
-                        .openapi({ examples: ['ad78knd9Jkjd86'] }),
-                      groups: z.array(
-                        z
+          schema: z.union([
+            z
+              .object({
+                data: z
+                  .object({
+                    id: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ examples: ['YiKoxjkaS9gjGTqhF'] }),
+                    username: z.string().openapi({ examples: ['myusername'] }),
+                    profile: z
+                      .object({
+                        bio: z
+                          .string()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            examples: ['I started web scraping in 1985 using Altair BASIC.'],
+                          }),
+                        readme: z
+                          .string()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            description: "Markdown README shown on the user's public profile page.",
+                            examples: ['### Hello world 👋🏻\nI build web scrapers.'],
+                          }),
+                        name: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ examples: ['Jane Doe'] }),
+                        pictureUrl: z
+                          .url()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            examples: ['https://apify.com/img/anonymous_user_picture.png'],
+                          }),
+                        githubUsername: z
+                          .string()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({ examples: ['torvalds.'] }),
+                        websiteUrl: z
+                          .url()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({ examples: ['http://www.example.com'] }),
+                        twitterUsername: z
+                          .string()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({ examples: ['@BillGates'] }),
+                      })
+                      .exactOptional()
+                      .openapi({ title: 'UserProfile', required: [] }),
+                    email: z
+                      .email()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Primary email of the user. It is `null` when the email is not verified.',
+                        examples: ['bob@example.com'],
+                      }),
+                    proxy: z
+                      .object({
+                        password: z
+                          .string()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({ examples: ['ad78knd9Jkjd86'] }),
+                        groups: z.array(
+                          z
+                            .object({
+                              id: z
+                                .string()
+                                .exactOptional()
+                                .openapi({ examples: ['Hsu2Sk8jPqxd3dNsB'] }),
+                              name: z.string().openapi({ examples: ['Group1'] }),
+                              description: z
+                                .string()
+                                .nullable()
+                                .openapi({ examples: ['Group1 description'] }),
+                              availableCount: z
+                                .int()
+                                .exactOptional()
+                                .openapi({ examples: [10] }),
+                            })
+                            .openapi({ title: 'ProxyGroup', required: ['name', 'description'] }),
+                        ),
+                      })
+                      .exactOptional()
+                      .openapi({
+                        title: 'ProxyResource',
+                        description:
+                          'Proxy access info. Omitted when the user has no access to Apify Proxy.',
+                        required: ['groups'],
+                      }),
+                    plan: z
+                      .object({
+                        id: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ examples: ['Personal'] }),
+                        description: z
+                          .string()
+                          .exactOptional()
+                          .openapi({
+                            examples: [
+                              'Cost-effective plan for freelancers, developers and students.',
+                            ],
+                          }),
+                        isEnabled: z
+                          .boolean()
+                          .exactOptional()
+                          .openapi({ examples: [true] }),
+                        monthlyBasePriceUsd: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ examples: [49] }),
+                        monthlyUsageCreditsUsd: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ examples: [49] }),
+                        usageDiscountPercent: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ examples: [0] }),
+                        enabledPlatformFeatures: z
+                          .array(z.string())
+                          .exactOptional()
+                          .openapi({
+                            example: ['ACTORS', 'STORAGE', 'PROXY_SERPS', 'SCHEDULER', 'WEBHOOKS'],
+                          }),
+                        maxMonthlyUsageUsd: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ examples: [9999] }),
+                        maxActorMemoryGbytes: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ examples: [32] }),
+                        maxMonthlyActorComputeUnits: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ examples: [1000] }),
+                        maxMonthlyResidentialProxyGbytes: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ examples: [10] }),
+                        maxMonthlyProxySerps: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [30000] }),
+                        maxMonthlyExternalDataTransferGbytes: z
+                          .number()
+                          .exactOptional()
+                          .openapi({ examples: [1000] }),
+                        maxActorCount: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [100] }),
+                        maxActorTaskCount: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [1000] }),
+                        dataRetentionDays: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [14] }),
+                        availableProxyGroups: z
+                          .record(
+                            z.string(),
+                            z
+                              .int()
+                              .openapi({
+                                description: 'The number of available proxies in this group.',
+                              }),
+                          )
+                          .openapi({
+                            title: 'AvailableProxyGroups',
+                            description:
+                              'A dictionary mapping proxy group names to the number of available proxies in each group.\nThe keys are proxy group names (e.g., "RESIDENTIAL", "DATACENTER") and values are\nthe count of available proxies.\n',
+                            example: { RESIDENTIAL: 1000, DATACENTER: 500, GOOGLE_SERP: 200 },
+                          }),
+                        teamAccountSeatCount: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [1] }),
+                        supportLevel: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ examples: ['COMMUNITY'] }),
+                        availableAddOns: z
+                          .array(z.string())
+                          .exactOptional()
+                          .openapi({ examples: [[]] }),
+                        tier: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ examples: ['FREE'] }),
+                        apiRateLimitBoosts: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [0] }),
+                        maxScheduleCount: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [100] }),
+                        maxConcurrentActorRuns: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [25] }),
+                        planPricing: z
+                          .looseObject({})
+                          .exactOptional()
+                          .openapi({ description: 'Pricing details for this plan.' }),
+                        planVersion: z
+                          .number()
+                          .exactOptional()
+                          .openapi({
+                            description: 'Version of the plan definition.',
+                            examples: [2],
+                          }),
+                        legacyPlanId: z
+                          .string()
+                          .exactOptional()
+                          .openapi({
+                            description: 'ID of the legacy plan this plan was migrated from.',
+                            examples: ['STARTER'],
+                          }),
+                        planTags: z
+                          .array(z.string())
+                          .exactOptional()
+                          .openapi({ examples: [[]] }),
+                        overageThresholdUsd: z
+                          .number()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Mid-cycle overage threshold above which the user is billed for the current-cycle overage.',
+                            examples: [500],
+                          }),
+                        maxMonthlyUnblockerUnits: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [1000000] }),
+                        maxPublicActorTaskCount: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [100] }),
+                        maxPublicActorTaskCountPerActor: z
+                          .int()
+                          .exactOptional()
+                          .openapi({ examples: [10] }),
+                        forceBillingInterval: z
+                          .string()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'If set, the plan can be subscribed only in this billing interval.',
+                            examples: ['ANNUAL'],
+                          }),
+                        personalizedSupport: z
+                          .string()
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Hours of personalized support with Apify engineers included in the plan, as `Nh/P`: `N` hours per period\n`P`, where `P` is `M` (monthly), `Q` (quarterly), `B` (every 6 months) or `A` (annually), for example `1h/M`.\n`null` or missing means the plan includes no personalized support.\n',
+                            examples: ['4h/M'],
+                          }),
+                        monitoringLevel: z
+                          .union([z.literal('STANDARD'), z.literal(null)])
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Level of monitoring services included in the plan. `null` or missing means the plan includes no monitoring service.',
+                            examples: ['STANDARD'],
+                          }),
+                        isPayingCustomer: z
+                          .boolean()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Marks the user as a paying customer even without a subscription.',
+                            examples: [false],
+                          }),
+                      })
+                      .exactOptional()
+                      .openapi({ title: 'UserPlan', required: ['availableProxyGroups'] }),
+                    effectivePlatformFeatures: z
+                      .object({
+                        ACTORS: z
                           .object({
-                            id: z
-                              .string()
-                              .exactOptional()
-                              .openapi({ examples: ['Hsu2Sk8jPqxd3dNsB'] }),
-                            name: z.string().openapi({ examples: ['Group1'] }),
-                            description: z
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
                               .string()
                               .nullable()
-                              .openapi({ examples: ['Group1 description'] }),
-                            availableCount: z
-                              .int()
-                              .exactOptional()
-                              .openapi({ examples: [10] }),
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
                           })
-                          .openapi({ title: 'ProxyGroup', required: ['name', 'description'] }),
-                      ),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      title: 'ProxyResource',
-                      description:
-                        'Proxy access info. Omitted when the user has no access to Apify Proxy.',
-                      required: ['groups'],
-                    }),
-                  plan: z
-                    .object({
-                      id: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ examples: ['Personal'] }),
-                      description: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          examples: [
-                            'Cost-effective plan for freelancers, developers and students.',
-                          ],
-                        }),
-                      isEnabled: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({ examples: [true] }),
-                      monthlyBasePriceUsd: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ examples: [49] }),
-                      monthlyUsageCreditsUsd: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ examples: [49] }),
-                      usageDiscountPercent: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ examples: [0] }),
-                      enabledPlatformFeatures: z
-                        .array(z.string())
-                        .exactOptional()
-                        .openapi({
-                          example: ['ACTORS', 'STORAGE', 'PROXY_SERPS', 'SCHEDULER', 'WEBHOOKS'],
-                        }),
-                      maxMonthlyUsageUsd: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ examples: [9999] }),
-                      maxActorMemoryGbytes: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ examples: [32] }),
-                      maxMonthlyActorComputeUnits: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ examples: [1000] }),
-                      maxMonthlyResidentialProxyGbytes: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ examples: [10] }),
-                      maxMonthlyProxySerps: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [30000] }),
-                      maxMonthlyExternalDataTransferGbytes: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ examples: [1000] }),
-                      maxActorCount: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [100] }),
-                      maxActorTaskCount: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [1000] }),
-                      dataRetentionDays: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [14] }),
-                      availableProxyGroups: z
-                        .record(
-                          z.string(),
-                          z
-                            .int()
-                            .openapi({
-                              description: 'The number of available proxies in this group.',
-                            }),
-                        )
-                        .openapi({
-                          title: 'AvailableProxyGroups',
-                          description:
-                            'A dictionary mapping proxy group names to the number of available proxies in each group.\nThe keys are proxy group names (e.g., "RESIDENTIAL", "DATACENTER") and values are\nthe count of available proxies.\n',
-                          example: { RESIDENTIAL: 1000, DATACENTER: 500, GOOGLE_SERP: 200 },
-                        }),
-                      teamAccountSeatCount: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [1] }),
-                      supportLevel: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ examples: ['COMMUNITY'] }),
-                      availableAddOns: z
-                        .array(z.string())
-                        .exactOptional()
-                        .openapi({ examples: [[]] }),
-                      tier: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ examples: ['FREE'] }),
-                      apiRateLimitBoosts: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [0] }),
-                      maxScheduleCount: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [100] }),
-                      maxConcurrentActorRuns: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [25] }),
-                      planPricing: z
-                        .looseObject({})
-                        .exactOptional()
-                        .openapi({ description: 'Pricing details for this plan.' }),
-                      planVersion: z
-                        .number()
-                        .exactOptional()
-                        .openapi({ description: 'Version of the plan definition.', examples: [2] }),
-                      legacyPlanId: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description: 'ID of the legacy plan this plan was migrated from.',
-                          examples: ['STARTER'],
-                        }),
-                      planTags: z
-                        .array(z.string())
-                        .exactOptional()
-                        .openapi({ examples: [[]] }),
-                      overageThresholdUsd: z
-                        .number()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Mid-cycle overage threshold above which the user is billed for the current-cycle overage.',
-                          examples: [500],
-                        }),
-                      maxMonthlyUnblockerUnits: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [1000000] }),
-                      maxPublicActorTaskCount: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [100] }),
-                      maxPublicActorTaskCountPerActor: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ examples: [10] }),
-                      forceBillingInterval: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'If set, the plan can be subscribed only in this billing interval.',
-                          examples: ['ANNUAL'],
-                        }),
-                      personalizedSupport: z
-                        .string()
-                        .nullable()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Hours of personalized support with Apify engineers included in the plan, as `Nh/P`: `N` hours per period\n`P`, where `P` is `M` (monthly), `Q` (quarterly), `B` (every 6 months) or `A` (annually), for example `1h/M`.\n`null` or missing means the plan includes no personalized support.\n',
-                          examples: ['4h/M'],
-                        }),
-                      monitoringLevel: z
-                        .union([z.literal('STANDARD'), z.literal(null)])
-                        .nullable()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Level of monitoring services included in the plan. `null` or missing means the plan includes no monitoring service.',
-                          examples: ['STANDARD'],
-                        }),
-                      isPayingCustomer: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Marks the user as a paying customer even without a subscription.',
-                          examples: [false],
-                        }),
-                    })
-                    .exactOptional()
-                    .openapi({ title: 'UserPlan', required: ['availableProxyGroups'] }),
-                  effectivePlatformFeatures: z
-                    .object({
-                      ACTORS: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      STORAGE: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      SCHEDULER: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      PROXY: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      PROXY_EXTERNAL_ACCESS: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      PROXY_RESIDENTIAL: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      PROXY_SERPS: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      WEBHOOKS: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      ACTORS_PUBLIC_ALL: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                      ACTORS_PUBLIC_DEVELOPER: z
-                        .object({
-                          isEnabled: z.boolean().openapi({ examples: [true] }),
-                          disabledReason: z
-                            .string()
-                            .nullable()
-                            .openapi({
-                              examples: [
-                                'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
-                              ],
-                            }),
-                          disabledReasonType: z
-                            .string()
-                            .nullable()
-                            .openapi({ examples: ['DISABLED'] }),
-                          isTrial: z.boolean().openapi({ examples: [false] }),
-                          trialExpirationAt: z.iso
-                            .datetime({ offset: true })
-                            .nullable()
-                            .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
-                        })
-                        .openapi({
-                          title: 'EffectivePlatformFeature',
-                          required: [
-                            'isEnabled',
-                            'disabledReason',
-                            'disabledReasonType',
-                            'isTrial',
-                            'trialExpirationAt',
-                          ],
-                        }),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      title: 'EffectivePlatformFeatures',
-                      required: [
-                        'ACTORS',
-                        'STORAGE',
-                        'SCHEDULER',
-                        'PROXY',
-                        'PROXY_EXTERNAL_ACCESS',
-                        'PROXY_RESIDENTIAL',
-                        'PROXY_SERPS',
-                        'WEBHOOKS',
-                        'ACTORS_PUBLIC_ALL',
-                        'ACTORS_PUBLIC_DEVELOPER',
-                      ],
-                    }),
-                  createdAt: z.iso
-                    .datetime({ offset: true })
-                    .exactOptional()
-                    .openapi({ examples: ['2022-11-29T14:48:29.381Z'] }),
-                  isPaying: z
-                    .boolean()
-                    .exactOptional()
-                    .openapi({ examples: [true] }),
-                  organizationOwnerUserId: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'ID of the user who owns the organization. Present only for organization accounts.',
-                      examples: ['wRsJZtadYvn4mBZmm'],
-                    }),
-                })
-                .openapi({ title: 'UserPrivateInfo', required: ['username'] }),
-            })
-            .openapi({ title: 'UserPrivateInfoResponse', required: ['data'] }),
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        STORAGE: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        SCHEDULER: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_EXTERNAL_ACCESS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_RESIDENTIAL: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_SERPS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        WEBHOOKS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        ACTORS_PUBLIC_ALL: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        ACTORS_PUBLIC_DEVELOPER: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                      })
+                      .exactOptional()
+                      .openapi({
+                        title: 'EffectivePlatformFeatures',
+                        required: [
+                          'ACTORS',
+                          'STORAGE',
+                          'SCHEDULER',
+                          'PROXY',
+                          'PROXY_EXTERNAL_ACCESS',
+                          'PROXY_RESIDENTIAL',
+                          'PROXY_SERPS',
+                          'WEBHOOKS',
+                          'ACTORS_PUBLIC_ALL',
+                          'ACTORS_PUBLIC_DEVELOPER',
+                        ],
+                      }),
+                    createdAt: z.iso
+                      .datetime({ offset: true })
+                      .exactOptional()
+                      .openapi({ examples: ['2022-11-29T14:48:29.381Z'] }),
+                    isPaying: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({ examples: [true] }),
+                    organizationOwnerUserId: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'ID of the user who owns the organization. Present only for organization accounts.',
+                        examples: ['wRsJZtadYvn4mBZmm'],
+                      }),
+                  })
+                  .openapi({ title: 'UserPrivateInfo', required: ['username'] }),
+              })
+              .openapi({ title: 'UserPrivateInfoResponse', required: ['data'] }),
+            z
+              .object({
+                data: z
+                  .object({
+                    plan: z
+                      .object({
+                        availableProxyGroups: z
+                          .record(
+                            z.string(),
+                            z
+                              .int()
+                              .openapi({
+                                description: 'The number of available proxies in this group.',
+                              }),
+                          )
+                          .openapi({
+                            title: 'AvailableProxyGroups',
+                            description:
+                              'A dictionary mapping proxy group names to the number of available proxies in each group.\nThe keys are proxy group names (e.g., "RESIDENTIAL", "DATACENTER") and values are\nthe count of available proxies.\n',
+                            example: { RESIDENTIAL: 1000, DATACENTER: 500, GOOGLE_SERP: 200 },
+                          }),
+                      })
+                      .openapi({ title: 'UserProxyPlan', required: ['availableProxyGroups'] }),
+                    effectivePlatformFeatures: z
+                      .object({
+                        ACTORS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        STORAGE: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        SCHEDULER: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_EXTERNAL_ACCESS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_RESIDENTIAL: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        PROXY_SERPS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        WEBHOOKS: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        ACTORS_PUBLIC_ALL: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                        ACTORS_PUBLIC_DEVELOPER: z
+                          .object({
+                            isEnabled: z.boolean().openapi({ examples: [true] }),
+                            disabledReason: z
+                              .string()
+                              .nullable()
+                              .openapi({
+                                examples: [
+                                  'The "Selected public Actors for developers" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com',
+                                ],
+                              }),
+                            disabledReasonType: z
+                              .string()
+                              .nullable()
+                              .openapi({ examples: ['DISABLED'] }),
+                            isTrial: z.boolean().openapi({ examples: [false] }),
+                            trialExpirationAt: z.iso
+                              .datetime({ offset: true })
+                              .nullable()
+                              .openapi({ examples: ['2025-01-01T14:00:00.000Z'] }),
+                          })
+                          .openapi({
+                            title: 'EffectivePlatformFeature',
+                            required: [
+                              'isEnabled',
+                              'disabledReason',
+                              'disabledReasonType',
+                              'isTrial',
+                              'trialExpirationAt',
+                            ],
+                          }),
+                      })
+                      .openapi({
+                        title: 'EffectivePlatformFeatures',
+                        required: [
+                          'ACTORS',
+                          'STORAGE',
+                          'SCHEDULER',
+                          'PROXY',
+                          'PROXY_EXTERNAL_ACCESS',
+                          'PROXY_RESIDENTIAL',
+                          'PROXY_SERPS',
+                          'WEBHOOKS',
+                          'ACTORS_PUBLIC_ALL',
+                          'ACTORS_PUBLIC_DEVELOPER',
+                        ],
+                      }),
+                    isPaying: z.boolean().openapi({ examples: [true] }),
+                  })
+                  .openapi({
+                    title: 'UserProxyInfo',
+                    description: 'Reduced user data with only the fields Apify Proxy reads.',
+                    required: ['plan', 'effectivePlatformFeatures', 'isPaying'],
+                  }),
+              })
+              .openapi({ title: 'UserProxyInfoResponse', required: ['data'] }),
+          ]),
         },
       },
       headers: z.object({}),

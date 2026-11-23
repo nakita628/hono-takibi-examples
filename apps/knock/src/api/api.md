@@ -4826,7 +4826,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/objects/{collection}/{object_id}/preferences/{id}/categories' \
+curl https://api.knock.app/v1/objects/string/string/preferences/string/categories \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -4839,6 +4839,14 @@ This operation is deprecated
 </aside>
 
 Updates the category preferences for an object's preference set.
+
+<h3 id="update-categories-in-preference-set-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|collection|path|string|true|none|
+|object_id|path|string|true|none|
+|id|path|string|true|none|
 
 > Example responses
 
@@ -4971,7 +4979,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/objects/{collection}/{object_id}/preferences/{id}/categories/{key}' \
+curl https://api.knock.app/v1/objects/string/string/preferences/string/categories/string \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -4984,6 +4992,15 @@ This operation is deprecated
 </aside>
 
 Updates a specific category preference for an object's preference set. Deprecated.
+
+<h3 id="update-a-category-preference-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|collection|path|string|true|none|
+|object_id|path|string|true|none|
+|id|path|string|true|none|
+|key|path|string|true|none|
 
 > Example responses
 
@@ -5113,7 +5130,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/objects/{collection}/{object_id}/preferences/{id}/workflows' \
+curl https://api.knock.app/v1/objects/string/string/preferences/string/workflows \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -5126,6 +5143,14 @@ This operation is deprecated
 </aside>
 
 Updates the workflow preferences for an object's preference set.
+
+<h3 id="update-workflows-in-preference-set-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|collection|path|string|true|none|
+|object_id|path|string|true|none|
+|id|path|string|true|none|
 
 > Example responses
 
@@ -5362,7 +5387,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/objects/{collection}/{object_id}/preferences/{id}/channel_types/{type}' \
+curl https://api.knock.app/v1/objects/string/string/preferences/string/channel_types/string \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -5375,6 +5400,15 @@ This operation is deprecated
 </aside>
 
 Updates a specific channel type preference for an object's preference set.
+
+<h3 id="update-a-channel-type-preference-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|collection|path|string|true|none|
+|object_id|path|string|true|none|
+|id|path|string|true|none|
+|type|path|string|true|none|
 
 > Example responses
 
@@ -5427,7 +5461,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/objects/{collection}/{object_id}/preferences/{id}/channel_types' \
+curl https://api.knock.app/v1/objects/string/string/preferences/string/channel_types \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -5440,6 +5474,14 @@ This operation is deprecated
 </aside>
 
 Updates the channel type preferences for an object's preference set.
+
+<h3 id="update-channel-types-in-preference-set-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|collection|path|string|true|none|
+|object_id|path|string|true|none|
+|id|path|string|true|none|
 
 > Example responses
 
@@ -5492,7 +5534,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/objects/{collection}/{object_id}/preferences/{id}/workflows/{key}' \
+curl https://api.knock.app/v1/objects/string/string/preferences/string/workflows/string \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -5505,6 +5547,15 @@ This operation is deprecated
 </aside>
 
 Updates a specific workflow preference for an object's preference set.
+
+<h3 id="update-a-workflow-preference-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|collection|path|string|true|none|
+|object_id|path|string|true|none|
+|id|path|string|true|none|
+|key|path|string|true|none|
 
 > Example responses
 
@@ -8215,7 +8266,7 @@ A user is an individual from your system, represented in Knock. They are most co
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/{user_id}/preferences/{id}/channel_types' \
+curl https://api.knock.app/v1/users/string/preferences/string/channel_types \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -8228,6 +8279,13 @@ This operation is deprecated
 </aside>
 
 Updates the channel types in a specific user preference set. This operation is deprecated.
+
+<h3 id="update-channel-types-in-preference-set-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|user_id|path|string|true|none|
+|id|path|string|true|none|
 
 > Example responses
 
@@ -8280,7 +8338,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/{user_id}/preferences/{id}/channel_types/{type}' \
+curl https://api.knock.app/v1/users/string/preferences/string/channel_types/string \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -8293,6 +8351,14 @@ This operation is deprecated
 </aside>
 
 Updates a single channel type in a specific user preference set. This operation is deprecated.
+
+<h3 id="update-channel-type-in-preference-set-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|user_id|path|string|true|none|
+|id|path|string|true|none|
+|type|path|string|true|none|
 
 > Example responses
 
@@ -8345,7 +8411,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/{user_id}/preferences/{id}/workflows' \
+curl https://api.knock.app/v1/users/string/preferences/string/workflows \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -8358,6 +8424,13 @@ This operation is deprecated
 </aside>
 
 Updates the workflows in a specific user preference set. This operation is deprecated.
+
+<h3 id="update-workflows-in-preference-set-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|user_id|path|string|true|none|
+|id|path|string|true|none|
 
 > Example responses
 
@@ -8410,7 +8483,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/{user_id}/preferences/{id}/categories/{key}' \
+curl https://api.knock.app/v1/users/string/preferences/string/categories/string \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -8423,6 +8496,14 @@ This operation is deprecated
 </aside>
 
 Updates a single category in a specific user preference set. This operation is deprecated.
+
+<h3 id="update-category-in-user-preference-set-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|user_id|path|string|true|none|
+|id|path|string|true|none|
+|key|path|string|true|none|
 
 > Example responses
 
@@ -8538,7 +8619,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/{user_id}/preferences/{id}/categories' \
+curl https://api.knock.app/v1/users/string/preferences/string/categories \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -8551,6 +8632,13 @@ This operation is deprecated
 </aside>
 
 Updates the categories in a specific user preference set. This operation is deprecated.
+
+<h3 id="update-categories-in-user-preference-set-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|user_id|path|string|true|none|
+|id|path|string|true|none|
 
 > Example responses
 
@@ -9124,7 +9212,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/{user_id}/preferences/{id}/workflows/{key}' \
+curl https://api.knock.app/v1/users/string/preferences/string/workflows/string \
   -X PUT \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -9137,6 +9225,14 @@ This operation is deprecated
 </aside>
 
 Updates a single workflow in a specific user preference set. This operation is deprecated.
+
+<h3 id="update-workflow-in-user-preference-set-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|user_id|path|string|true|none|
+|id|path|string|true|none|
+|key|path|string|true|none|
 
 > Example responses
 
@@ -10674,7 +10770,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/string/guides/messages/{message_id}/archived' \
+curl https://api.knock.app/v1/users/string/guides/messages/string/archived \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -10713,6 +10809,7 @@ Records that a guide has been archived by a user, triggering any associated arch
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |user_id|path|string|true|The unique identifier of the user.|
+|message_id|path|string|true|none|
 |body|body|[GuideArchivedRequest](#schemaguidearchivedrequest)|true|Params|
 |» channel_id|body|string(uuid)|true|The unique identifier for the channel.|
 |» guide_id|body|string(uuid)|true|The unique identifier for the guide.|
@@ -10840,7 +10937,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/string/guides/messages/{message_id}/seen' \
+curl https://api.knock.app/v1/users/string/guides/messages/string/seen \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -10893,6 +10990,7 @@ Records that a guide has been seen by a user, triggering any associated seen eve
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |user_id|path|string|true|The unique identifier of the user.|
+|message_id|path|string|true|none|
 |body|body|[GuideSeenRequest](#schemaguideseenrequest)|true|Params|
 |» channel_id|body|string(uuid)|true|The unique identifier for the channel.|
 |» content|body|object|true|The content of the guide.|
@@ -10930,7 +11028,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.knock.app/v1/users/string/guides/messages/{message_id}/interacted' \
+curl https://api.knock.app/v1/users/string/guides/messages/string/interacted \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -10975,6 +11073,7 @@ Records that a user has interacted with a guide, triggering any associated inter
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |user_id|path|string|true|The unique identifier of the user.|
+|message_id|path|string|true|none|
 |body|body|[GuideInteractedRequest](#schemaguideinteractedrequest)|true|Params|
 |» channel_id|body|string(uuid)|true|The unique identifier for the channel.|
 |» guide_id|body|string(uuid)|true|The unique identifier for the guide.|

@@ -1,5 +1,33 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const DiscTypeSchema = z
+  .enum([
+    'Unknown',
+    'Album',
+    'Single',
+    'EP',
+    'SplitAlbum',
+    'Compilation',
+    'Video',
+    'Artbook',
+    'Game',
+    'Fanmade',
+    'Instrumental',
+    'Other',
+  ])
+  .openapi('DiscType')
+
+const OptionalDateTimeContractSchema = z
+  .strictObject({
+    day: z.int32().nullable().exactOptional(),
+    formatted: z.string().nullable().exactOptional(),
+    isEmpty: z.boolean().exactOptional(),
+    month: z.int32().nullable().exactOptional(),
+    year: z.int32().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OptionalDateTimeContract')
+
 const ArtistTypeSchema = z
   .enum([
     'Unknown',
@@ -42,92 +70,46 @@ const ArtistContractSchema = z
   .openapi({ required: [] })
   .openapi('ArtistContract')
 
-const ArtistCategoriesSchema = z
-  .enum([
-    'Nothing',
-    'Vocalist',
-    'Producer',
-    'Animator',
-    'Label',
-    'Circle',
-    'Other',
-    'Band',
-    'Illustrator',
-    'Subject',
-  ])
-  .openapi('ArtistCategories')
-
-const ArtistRolesSchema = z
+const ArtistEventRolesSchema = z
   .enum([
     'Default',
-    'Animator',
-    'Arranger',
-    'Composer',
-    'Distributor',
-    'Illustrator',
+    'Dancer',
+    'DJ',
     'Instrumentalist',
-    'Lyricist',
-    'Mastering',
-    'Publisher',
+    'Organizer',
+    'Promoter',
+    'VJ',
     'Vocalist',
     'VoiceManipulator',
+    'OtherPerformer',
     'Other',
-    'Mixer',
-    'Chorus',
-    'Encoder',
-    'VocalDataProvider',
   ])
-  .openapi('ArtistRoles')
+  .openapi('ArtistEventRoles')
 
-const ArtistForAlbumForApiContractSchema = z
+const ArtistForEventContractSchema = z
   .strictObject({
     artist: ArtistContractSchema.exactOptional(),
-    categories: ArtistCategoriesSchema.exactOptional(),
-    effectiveRoles: ArtistRolesSchema.exactOptional(),
-    isSupport: z.boolean().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    roles: ArtistRolesSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistForAlbumForApiContract')
-
-const ContentLanguageSelectionSchema = z
-  .enum(['Unspecified', 'Japanese', 'Romaji', 'English'])
-  .openapi('ContentLanguageSelection')
-
-const DiscTypeSchema = z
-  .enum([
-    'Unknown',
-    'Album',
-    'Single',
-    'EP',
-    'SplitAlbum',
-    'Compilation',
-    'Video',
-    'Artbook',
-    'Game',
-    'Fanmade',
-    'Instrumental',
-    'Other',
-  ])
-  .openapi('DiscType')
-
-const DiscMediaTypeSchema = z.enum(['Audio', 'Video']).openapi('DiscMediaType')
-
-const AlbumDiscPropertiesContractSchema = z
-  .strictObject({
-    discNumber: z.int32().exactOptional(),
+    effectiveRoles: ArtistEventRolesSchema.exactOptional(),
     id: z.int32().exactOptional(),
-    mediaType: DiscMediaTypeSchema.exactOptional(),
     name: z.string().nullable().exactOptional(),
+    roles: ArtistEventRolesSchema.exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('AlbumDiscPropertiesContract')
+  .openapi('ArtistForEventContract')
 
-const AlbumIdentifierContractSchema = z
-  .strictObject({ value: z.string().nullable().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AlbumIdentifierContract')
+const EventCategorySchema = z
+  .enum([
+    'Unspecified',
+    'AlbumRelease',
+    'Anniversary',
+    'Club',
+    'Concert',
+    'Contest',
+    'Convention',
+    'Other',
+    'Festival',
+  ])
+  .openapi('EventCategory')
 
 const EntryThumbForApiContractSchema = z
   .strictObject({
@@ -140,6 +122,10 @@ const EntryThumbForApiContractSchema = z
   })
   .openapi({ required: [] })
   .openapi('EntryThumbForApiContract')
+
+const ContentLanguageSelectionSchema = z
+  .enum(['Unspecified', 'Japanese', 'Romaji', 'English'])
+  .openapi('ContentLanguageSelection')
 
 const LocalizedStringContractSchema = z
   .strictObject({
@@ -189,58 +175,6 @@ const PVContractSchema = z
   })
   .openapi({ required: [] })
   .openapi('PVContract')
-
-const OptionalDateTimeContractSchema = z
-  .strictObject({
-    day: z.int32().nullable().exactOptional(),
-    formatted: z.string().nullable().exactOptional(),
-    isEmpty: z.boolean().exactOptional(),
-    month: z.int32().nullable().exactOptional(),
-    year: z.int32().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OptionalDateTimeContract')
-
-const ArtistEventRolesSchema = z
-  .enum([
-    'Default',
-    'Dancer',
-    'DJ',
-    'Instrumentalist',
-    'Organizer',
-    'Promoter',
-    'VJ',
-    'Vocalist',
-    'VoiceManipulator',
-    'OtherPerformer',
-    'Other',
-  ])
-  .openapi('ArtistEventRoles')
-
-const ArtistForEventContractSchema = z
-  .strictObject({
-    artist: ArtistContractSchema.exactOptional(),
-    effectiveRoles: ArtistEventRolesSchema.exactOptional(),
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    roles: ArtistEventRolesSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistForEventContract')
-
-const EventCategorySchema = z
-  .enum([
-    'Unspecified',
-    'AlbumRelease',
-    'Anniversary',
-    'Club',
-    'Concert',
-    'Contest',
-    'Convention',
-    'Other',
-    'Festival',
-  ])
-  .openapi('EventCategory')
 
 const WebLinkCategorySchema = z
   .enum(['Official', 'Commercial', 'Reference', 'Other'])
@@ -416,11 +350,94 @@ const ReleaseEventForApiContractSchema = z
   .openapi({ required: [] })
   .openapi('ReleaseEventForApiContract')
 
+type AlbumContractType = {
+  additionalNames?: string | null
+  artistString?: string | null
+  coverPictureMime?: string | null
+  createDate?: string
+  deleted?: boolean
+  discType?: z.infer<typeof DiscTypeSchema>
+  id?: number
+  name?: string | null
+  ratingAverage?: number
+  ratingCount?: number
+  releaseDate?: z.infer<typeof OptionalDateTimeContractSchema>
+  releaseEvent?: z.infer<typeof ReleaseEventForApiContractSchema>
+  status?: z.infer<typeof EntryStatusSchema>
+  version?: number
+}
+
+const ArtistCategoriesSchema = z
+  .enum([
+    'Nothing',
+    'Vocalist',
+    'Producer',
+    'Animator',
+    'Label',
+    'Circle',
+    'Other',
+    'Band',
+    'Illustrator',
+    'Subject',
+  ])
+  .openapi('ArtistCategories')
+
+const ArtistRolesSchema = z
+  .enum([
+    'Default',
+    'Animator',
+    'Arranger',
+    'Composer',
+    'Distributor',
+    'Illustrator',
+    'Instrumentalist',
+    'Lyricist',
+    'Mastering',
+    'Publisher',
+    'Vocalist',
+    'VoiceManipulator',
+    'Other',
+    'Mixer',
+    'Chorus',
+    'Encoder',
+    'VocalDataProvider',
+  ])
+  .openapi('ArtistRoles')
+
+const ArtistForAlbumForApiContractSchema = z
+  .strictObject({
+    artist: ArtistContractSchema.exactOptional(),
+    categories: ArtistCategoriesSchema.exactOptional(),
+    effectiveRoles: ArtistRolesSchema.exactOptional(),
+    isSupport: z.boolean().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    roles: ArtistRolesSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ArtistForAlbumForApiContract')
+
+const DiscMediaTypeSchema = z.enum(['Audio', 'Video']).openapi('DiscMediaType')
+
+const AlbumDiscPropertiesContractSchema = z
+  .strictObject({
+    discNumber: z.int32().exactOptional(),
+    id: z.int32().exactOptional(),
+    mediaType: DiscMediaTypeSchema.exactOptional(),
+    name: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AlbumDiscPropertiesContract')
+
+const AlbumIdentifierContractSchema = z
+  .strictObject({ value: z.string().nullable().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AlbumIdentifierContract')
+
 const SongVoteRatingSchema = z
   .enum(['Nothing', 'Dislike', 'Like', 'Favorite'])
   .openapi('SongVoteRating')
 
-const AlbumContractSchema = z
+const AlbumContractSchema: z.ZodType<AlbumContractType> = z
   .strictObject({
     additionalNames: z.string().nullable().exactOptional(),
     artistString: z.string().nullable().exactOptional(),
@@ -504,7 +521,40 @@ const SongTypeSchema = z
   ])
   .openapi('SongType')
 
-const SongForApiContractSchema = z
+type SongForApiContractType = {
+  additionalNames?: string | null
+  albums?: z.infer<typeof AlbumContractSchema>[] | null
+  artistString?: string | null
+  artists?: z.infer<typeof ArtistForSongContractSchema>[] | null
+  createDate?: string
+  defaultName?: string | null
+  defaultNameLanguage?: z.infer<typeof ContentLanguageSelectionSchema>
+  deleted?: boolean
+  favoritedTimes?: number
+  id?: number
+  lengthSeconds?: number
+  lyrics?: z.infer<typeof LyricsForSongContractSchema>[] | null
+  mainPicture?: z.infer<typeof EntryThumbForApiContractSchema>
+  maxMilliBpm?: number | null
+  mergedTo?: number
+  minMilliBpm?: number | null
+  name?: string | null
+  names?: z.infer<typeof LocalizedStringContractSchema>[] | null
+  originalVersionId?: number
+  publishDate?: string | null
+  pvServices?: z.infer<typeof PVServicesSchema>
+  pvs?: z.infer<typeof PVContractSchema>[] | null
+  ratingScore?: number
+  releaseEvent?: z.infer<typeof ReleaseEventForApiContractSchema>
+  songType?: z.infer<typeof SongTypeSchema>
+  status?: z.infer<typeof EntryStatusSchema>
+  tags?: z.infer<typeof TagUsageForApiContractSchema>[] | null
+  thumbUrl?: string | null
+  version?: number
+  webLinks?: z.infer<typeof WebLinkForApiContractSchema>[] | null
+}
+
+const SongForApiContractSchema: z.ZodType<SongForApiContractType> = z
   .strictObject({
     additionalNames: z.string().nullable().exactOptional(),
     albums: z.array(AlbumContractSchema).nullable().exactOptional(),
@@ -540,7 +590,16 @@ const SongForApiContractSchema = z
   .openapi({ required: [] })
   .openapi('SongForApiContract')
 
-const SongInAlbumForApiContractSchema = z
+type SongInAlbumForApiContractType = {
+  discNumber?: number
+  id?: number
+  name?: string | null
+  rating?: z.infer<typeof SongVoteRatingSchema>
+  song?: z.infer<typeof SongForApiContractSchema>
+  trackNumber?: number
+}
+
+const SongInAlbumForApiContractSchema: z.ZodType<SongInAlbumForApiContractType> = z
   .strictObject({
     discNumber: z.int32().exactOptional(),
     id: z.int32().exactOptional(),
@@ -583,90 +642,51 @@ type AlbumForApiContractType = {
   webLinks?: z.infer<typeof WebLinkForApiContractSchema>[] | null
 }
 
-const ArtistLinkTypeSchema = z
-  .enum(['CharacterDesigner', 'Group', 'Illustrator', 'Manager', 'VoiceProvider'])
-  .openapi('ArtistLinkType')
-
-const ArtistForArtistForApiContractSchema = z
+const AlbumForApiContractSchema: z.ZodType<AlbumForApiContractType> = z
   .strictObject({
-    artist: ArtistContractSchema.exactOptional(),
-    linkType: ArtistLinkTypeSchema.exactOptional(),
+    additionalNames: z.string().nullable().exactOptional(),
+    artistString: z.string().nullable().exactOptional(),
+    artists: z.array(ArtistForAlbumForApiContractSchema).nullable().exactOptional(),
+    barcode: z.string().nullable().exactOptional(),
+    catalogNumber: z.string().nullable().exactOptional(),
+    createDate: z.iso.datetime({ offset: true }).exactOptional(),
+    defaultName: z.string().nullable().exactOptional(),
+    defaultNameLanguage: ContentLanguageSelectionSchema.exactOptional(),
+    deleted: z.boolean().exactOptional(),
+    description: z.string().nullable().exactOptional(),
+    discType: DiscTypeSchema.exactOptional(),
+    discs: z.array(AlbumDiscPropertiesContractSchema).nullable().exactOptional(),
+    id: z.int32().exactOptional(),
+    identifiers: z.array(AlbumIdentifierContractSchema).nullable().exactOptional(),
+    mainPicture: EntryThumbForApiContractSchema.exactOptional(),
+    mergedTo: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    names: z.array(LocalizedStringContractSchema).nullable().exactOptional(),
+    pvs: z.array(PVContractSchema).nullable().exactOptional(),
+    ratingAverage: z.float64().exactOptional(),
+    ratingCount: z.int32().exactOptional(),
+    releaseDate: OptionalDateTimeContractSchema.exactOptional(),
+    releaseEvent: ReleaseEventForApiContractSchema.exactOptional(),
+    status: EntryStatusSchema.exactOptional(),
+    tags: z.array(TagUsageForApiContractSchema).nullable().exactOptional(),
+    tracks: z.array(SongInAlbumForApiContractSchema).nullable().exactOptional(),
+    version: z.int32().exactOptional(),
+    webLinks: z.array(WebLinkForApiContractSchema).nullable().exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('ArtistForArtistForApiContract')
-
-const AlbumForApiContractSchema: z.ZodType<AlbumForApiContractType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        additionalNames: z.string().nullable().exactOptional(),
-        artistString: z.string().nullable().exactOptional(),
-        artists: z.array(ArtistForAlbumForApiContractSchema).nullable().exactOptional(),
-        barcode: z.string().nullable().exactOptional(),
-        catalogNumber: z.string().nullable().exactOptional(),
-        createDate: z.iso.datetime({ offset: true }).exactOptional(),
-        defaultName: z.string().nullable().exactOptional(),
-        defaultNameLanguage: ContentLanguageSelectionSchema.exactOptional(),
-        deleted: z.boolean().exactOptional(),
-        description: z.string().nullable().exactOptional(),
-        discType: DiscTypeSchema.exactOptional(),
-        discs: z.array(AlbumDiscPropertiesContractSchema).nullable().exactOptional(),
-        id: z.int32().exactOptional(),
-        identifiers: z.array(AlbumIdentifierContractSchema).nullable().exactOptional(),
-        mainPicture: EntryThumbForApiContractSchema.exactOptional(),
-        mergedTo: z.int32().exactOptional(),
-        name: z.string().nullable().exactOptional(),
-        names: z.array(LocalizedStringContractSchema).nullable().exactOptional(),
-        pvs: z.array(PVContractSchema).nullable().exactOptional(),
-        ratingAverage: z.float64().exactOptional(),
-        ratingCount: z.int32().exactOptional(),
-        releaseDate: OptionalDateTimeContractSchema.exactOptional(),
-        releaseEvent: ReleaseEventForApiContractSchema.exactOptional(),
-        status: EntryStatusSchema.exactOptional(),
-        tags: z.array(TagUsageForApiContractSchema).nullable().exactOptional(),
-        tracks: z.array(SongInAlbumForApiContractSchema).nullable().exactOptional(),
-        version: z.int32().exactOptional(),
-        webLinks: z.array(WebLinkForApiContractSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
   .openapi('AlbumForApiContract')
 
-const ArtistRelationsForApiSchema = z
-  .strictObject({
-    latestAlbums: z.array(AlbumForApiContractSchema).nullable().exactOptional(),
-    latestEvents: z.array(ReleaseEventForApiContractSchema).nullable().exactOptional(),
-    latestSongs: z.array(SongForApiContractSchema).nullable().exactOptional(),
-    popularAlbums: z.array(AlbumForApiContractSchema).nullable().exactOptional(),
-    popularSongs: z.array(SongForApiContractSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistRelationsForApi')
-
-type ArtistForApiContractType = {
-  additionalNames?: string | null
-  artistLinks?: z.infer<typeof ArtistForArtistForApiContractSchema>[] | null
-  artistLinksReverse?: z.infer<typeof ArtistForArtistForApiContractSchema>[] | null
-  artistType?: z.infer<typeof ArtistTypeSchema>
-  baseVoicebank?: z.infer<typeof ArtistContractSchema>
-  createDate?: string
-  defaultName?: string | null
-  defaultNameLanguage?: z.infer<typeof ContentLanguageSelectionSchema>
-  deleted?: boolean
-  description?: string | null
-  id?: number
-  mainPicture?: z.infer<typeof EntryThumbForApiContractSchema>
-  mergedTo?: number
-  name?: string | null
-  names?: z.infer<typeof LocalizedStringContractSchema>[] | null
-  pictureMime?: string | null
-  relations?: z.infer<typeof ArtistRelationsForApiSchema>
-  releaseDate?: string | null
-  status?: z.infer<typeof EntryStatusSchema>
-  tags?: z.infer<typeof TagUsageForApiContractSchema>[] | null
-  version?: number
-  webLinks?: z.infer<typeof WebLinkForApiContractSchema>[] | null
+type AlbumForApiContractPartialFindResultType = {
+  items?: z.infer<typeof AlbumForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
 }
+
+const MediaTypeSchema = z.enum(['PhysicalDisc', 'DigitalDownload', 'Other']).openapi('MediaType')
+
+const PurchaseStatusSchema = z
+  .enum(['Nothing', 'Wishlisted', 'Ordered', 'Owned'])
+  .openapi('PurchaseStatus')
 
 const UserGroupIdSchema = z
   .enum(['Nothing', 'Limited', 'Regular', 'Trusted', 'Moderator', 'Admin'])
@@ -707,27 +727,139 @@ const UserForApiContractSchema = z
   .openapi({ required: [] })
   .openapi('UserForApiContract')
 
-const ArchivedObjectVersionForApiContractSchema = z
+type AlbumForUserForApiContractType = {
+  album?: z.infer<typeof AlbumForApiContractSchema>
+  mediaType?: z.infer<typeof MediaTypeSchema>
+  purchaseStatus?: z.infer<typeof PurchaseStatusSchema>
+  rating?: number
+  user?: z.infer<typeof UserForApiContractSchema>
+}
+
+const AlbumForUserForApiContractSchema: z.ZodType<AlbumForUserForApiContractType> = z
   .strictObject({
-    agentName: z.string().nullable().exactOptional(),
-    anythingChanged: z.boolean().exactOptional(),
-    author: UserForApiContractSchema.exactOptional(),
-    changedFields: z.array(z.string()).nullable().exactOptional(),
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    hidden: z.boolean().exactOptional(),
-    id: z.int32().exactOptional(),
-    isSnapshot: z.boolean().exactOptional(),
-    notes: z.string().nullable().exactOptional(),
-    reason: z.string().nullable().exactOptional(),
-    status: EntryStatusSchema.exactOptional(),
-    version: z.int32().exactOptional(),
+    album: AlbumForApiContractSchema.exactOptional(),
+    mediaType: MediaTypeSchema.exactOptional(),
+    purchaseStatus: PurchaseStatusSchema.exactOptional(),
+    rating: z.int32().exactOptional(),
+    user: UserForApiContractSchema.exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('ArchivedObjectVersionForApiContract')
+  .openapi('AlbumForUserForApiContract')
 
-const EntryEditEventSchema = z
-  .enum(['Created', 'Updated', 'Deleted', 'Restored'])
-  .openapi('EntryEditEvent')
+type AlbumForUserForApiContractPartialFindResultType = {
+  items?: z.infer<typeof AlbumForUserForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+const ArtistLinkTypeSchema = z
+  .enum(['CharacterDesigner', 'Group', 'Illustrator', 'Manager', 'VoiceProvider'])
+  .openapi('ArtistLinkType')
+
+const ArtistForArtistForApiContractSchema = z
+  .strictObject({
+    artist: ArtistContractSchema.exactOptional(),
+    linkType: ArtistLinkTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ArtistForArtistForApiContract')
+
+type ArtistRelationsForApiType = {
+  latestAlbums?: z.infer<typeof AlbumForApiContractSchema>[] | null
+  latestEvents?: z.infer<typeof ReleaseEventForApiContractSchema>[] | null
+  latestSongs?: z.infer<typeof SongForApiContractSchema>[] | null
+  popularAlbums?: z.infer<typeof AlbumForApiContractSchema>[] | null
+  popularSongs?: z.infer<typeof SongForApiContractSchema>[] | null
+}
+
+const ArtistRelationsForApiSchema: z.ZodType<ArtistRelationsForApiType> = z
+  .strictObject({
+    latestAlbums: z.array(AlbumForApiContractSchema).nullable().exactOptional(),
+    latestEvents: z.array(ReleaseEventForApiContractSchema).nullable().exactOptional(),
+    latestSongs: z.array(SongForApiContractSchema).nullable().exactOptional(),
+    popularAlbums: z.array(AlbumForApiContractSchema).nullable().exactOptional(),
+    popularSongs: z.array(SongForApiContractSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ArtistRelationsForApi')
+
+type ArtistForApiContractType = {
+  additionalNames?: string | null
+  artistLinks?: z.infer<typeof ArtistForArtistForApiContractSchema>[] | null
+  artistLinksReverse?: z.infer<typeof ArtistForArtistForApiContractSchema>[] | null
+  artistType?: z.infer<typeof ArtistTypeSchema>
+  baseVoicebank?: z.infer<typeof ArtistContractSchema>
+  createDate?: string
+  defaultName?: string | null
+  defaultNameLanguage?: z.infer<typeof ContentLanguageSelectionSchema>
+  deleted?: boolean
+  description?: string | null
+  id?: number
+  mainPicture?: z.infer<typeof EntryThumbForApiContractSchema>
+  mergedTo?: number
+  name?: string | null
+  names?: z.infer<typeof LocalizedStringContractSchema>[] | null
+  pictureMime?: string | null
+  relations?: z.infer<typeof ArtistRelationsForApiSchema>
+  releaseDate?: string | null
+  status?: z.infer<typeof EntryStatusSchema>
+  tags?: z.infer<typeof TagUsageForApiContractSchema>[] | null
+  version?: number
+  webLinks?: z.infer<typeof WebLinkForApiContractSchema>[] | null
+}
+
+const ArtistForApiContractSchema: z.ZodType<ArtistForApiContractType> = z
+  .strictObject({
+    additionalNames: z.string().nullable().exactOptional(),
+    artistLinks: z.array(ArtistForArtistForApiContractSchema).nullable().exactOptional(),
+    artistLinksReverse: z.array(ArtistForArtistForApiContractSchema).nullable().exactOptional(),
+    artistType: ArtistTypeSchema.exactOptional(),
+    baseVoicebank: ArtistContractSchema.exactOptional(),
+    createDate: z.iso.datetime({ offset: true }).exactOptional(),
+    defaultName: z.string().nullable().exactOptional(),
+    defaultNameLanguage: ContentLanguageSelectionSchema.exactOptional(),
+    deleted: z.boolean().exactOptional(),
+    description: z.string().nullable().exactOptional(),
+    id: z.int32().exactOptional(),
+    mainPicture: EntryThumbForApiContractSchema.exactOptional(),
+    mergedTo: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    names: z.array(LocalizedStringContractSchema).nullable().exactOptional(),
+    pictureMime: z.string().nullable().exactOptional(),
+    relations: ArtistRelationsForApiSchema.exactOptional(),
+    releaseDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    status: EntryStatusSchema.exactOptional(),
+    tags: z.array(TagUsageForApiContractSchema).nullable().exactOptional(),
+    version: z.int32().exactOptional(),
+    webLinks: z.array(WebLinkForApiContractSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ArtistForApiContract')
+
+type ArtistForApiContractPartialFindResultType = {
+  items?: z.infer<typeof ArtistForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+type ArtistForUserForApiContractType = {
+  artist?: z.infer<typeof ArtistForApiContractSchema>
+  id?: number
+}
+
+const ArtistForUserForApiContractSchema: z.ZodType<ArtistForUserForApiContractType> = z
+  .strictObject({
+    artist: ArtistForApiContractSchema.exactOptional(),
+    id: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ArtistForUserForApiContract')
+
+type ArtistForUserForApiContractPartialFindResultType = {
+  items?: z.infer<typeof ArtistForUserForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
 
 const EntryTypeSchema = z
   .enum([
@@ -787,6 +919,238 @@ const EntryForApiContractSchema = z
   .openapi({ required: [] })
   .openapi('EntryForApiContract')
 
+const CommentForApiContractSchema = z
+  .strictObject({
+    author: UserForApiContractSchema.exactOptional(),
+    authorName: z.string().nullable().exactOptional(),
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    entry: EntryForApiContractSchema.exactOptional(),
+    id: z.int32().exactOptional(),
+    message: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CommentForApiContract')
+
+const DiscussionTopicContractSchema = z
+  .strictObject({
+    author: UserForApiContractSchema.exactOptional(),
+    commentCount: z.int32().exactOptional(),
+    comments: z.array(CommentForApiContractSchema).nullable().exactOptional(),
+    content: z.string().nullable().exactOptional(),
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    folderId: z.int32().exactOptional(),
+    id: z.int32().exactOptional(),
+    lastComment: CommentForApiContractSchema.exactOptional(),
+    locked: z.boolean().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DiscussionTopicContract')
+
+type DiscussionTopicContractPartialFindResultType = {
+  items?: z.infer<typeof DiscussionTopicContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+type RatedSongForUserForApiContractType = {
+  date?: string
+  rating?: z.infer<typeof SongVoteRatingSchema>
+  song?: z.infer<typeof SongForApiContractSchema>
+  user?: z.infer<typeof UserForApiContractSchema>
+}
+
+const RatedSongForUserForApiContractSchema: z.ZodType<RatedSongForUserForApiContractType> = z
+  .strictObject({
+    date: z.iso.datetime({ offset: true }).exactOptional(),
+    rating: SongVoteRatingSchema.exactOptional(),
+    song: SongForApiContractSchema.exactOptional(),
+    user: UserForApiContractSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RatedSongForUserForApiContract')
+
+type RatedSongForUserForApiContractPartialFindResultType = {
+  items?: z.infer<typeof RatedSongForUserForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+type RelatedSongsContractType = {
+  artistMatches?: z.infer<typeof SongForApiContractSchema>[] | null
+  likeMatches?: z.infer<typeof SongForApiContractSchema>[] | null
+  tagMatches?: z.infer<typeof SongForApiContractSchema>[] | null
+}
+
+type ReleaseEventForApiContractPartialFindResultType = {
+  items?: z.infer<typeof ReleaseEventForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+type ReleaseEventSeriesForApiContractType = {
+  additionalNames?: string | null
+  category?: z.infer<typeof EventCategorySchema>
+  description?: string | null
+  events?: z.infer<typeof ReleaseEventForApiContractSchema>[] | null
+  id?: number
+  mainPicture?: z.infer<typeof EntryThumbForApiContractSchema>
+  name?: string | null
+  names?: z.infer<typeof LocalizedStringContractSchema>[] | null
+  status?: z.infer<typeof EntryStatusSchema>
+  urlSlug?: string | null
+  version?: number
+  webLinks?: z.infer<typeof WebLinkForApiContractSchema>[] | null
+}
+
+const ReleaseEventSeriesForApiContractSchema: z.ZodType<ReleaseEventSeriesForApiContractType> = z
+  .strictObject({
+    additionalNames: z.string().nullable().exactOptional(),
+    category: EventCategorySchema.exactOptional(),
+    description: z.string().nullable().exactOptional(),
+    events: z.array(ReleaseEventForApiContractSchema).nullable().exactOptional(),
+    id: z.int32().exactOptional(),
+    mainPicture: EntryThumbForApiContractSchema.exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    names: z.array(LocalizedStringContractSchema).nullable().exactOptional(),
+    status: EntryStatusSchema.exactOptional(),
+    urlSlug: z.string().nullable().exactOptional(),
+    version: z.int32().exactOptional(),
+    webLinks: z.array(WebLinkForApiContractSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReleaseEventSeriesForApiContract')
+
+type ReleaseEventSeriesForApiContractPartialFindResultType = {
+  items?: z.infer<typeof ReleaseEventSeriesForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+type SongForApiContractPartialFindResultType = {
+  items?: z.infer<typeof SongForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+type SongInListEditContractType = {
+  notes?: string | null
+  order?: number
+  song?: z.infer<typeof SongForApiContractSchema>
+  songInListId?: number
+}
+
+type SongInListForApiContractType = {
+  notes?: string | null
+  order?: number
+  song?: z.infer<typeof SongForApiContractSchema>
+}
+
+const SongInListForApiContractSchema: z.ZodType<SongInListForApiContractType> = z
+  .strictObject({
+    notes: z.string().nullable().exactOptional(),
+    order: z.int32().exactOptional(),
+    song: SongForApiContractSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SongInListForApiContract')
+
+type SongInListForApiContractPartialFindResultType = {
+  items?: z.infer<typeof SongInListForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+type SongListForApiContractType = {
+  author?: z.infer<typeof UserForApiContractSchema>
+  deleted?: boolean
+  description?: string | null
+  eventDate?: string | null
+  events?: z.infer<typeof ReleaseEventForApiContractSchema>[] | null
+  featuredCategory?: z.infer<typeof SongListFeaturedCategorySchema>
+  id?: number
+  latestComments?: z.infer<typeof CommentForApiContractSchema>[] | null
+  mainPicture?: z.infer<typeof EntryThumbForApiContractSchema>
+  name?: string | null
+  status?: z.infer<typeof EntryStatusSchema>
+  tags?: z.infer<typeof TagUsageForApiContractSchema>[] | null
+}
+
+const SongListForApiContractSchema: z.ZodType<SongListForApiContractType> = z
+  .strictObject({
+    author: UserForApiContractSchema.exactOptional(),
+    deleted: z.boolean().exactOptional(),
+    description: z.string().nullable().exactOptional(),
+    eventDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    events: z.array(ReleaseEventForApiContractSchema).nullable().exactOptional(),
+    featuredCategory: SongListFeaturedCategorySchema.exactOptional(),
+    id: z.int32().exactOptional(),
+    latestComments: z.array(CommentForApiContractSchema).nullable().exactOptional(),
+    mainPicture: EntryThumbForApiContractSchema.exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    status: EntryStatusSchema.exactOptional(),
+    tags: z.array(TagUsageForApiContractSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SongListForApiContract')
+
+type SongListForApiContractPartialFindResultType = {
+  items?: z.infer<typeof SongListForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+const SongInListEditContractSchema: z.ZodType<SongInListEditContractType> = z
+  .strictObject({
+    notes: z.string().nullable().exactOptional(),
+    order: z.int32().exactOptional(),
+    song: SongForApiContractSchema.exactOptional(),
+    songInListId: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SongInListEditContract')
+
+type SongListForEditForApiContractType = {
+  deleted?: boolean
+  description?: string | null
+  eventDate?: string | null
+  featuredCategory?: z.infer<typeof SongListFeaturedCategorySchema>
+  id?: number
+  mainPicture?: z.infer<typeof EntryThumbForApiContractSchema>
+  name?: string | null
+  songLinks?: z.infer<typeof SongInListEditContractSchema>[] | null
+  status?: z.infer<typeof EntryStatusSchema>
+  updateNotes?: string | null
+}
+
+type VenueForApiContractPartialFindResultType = {
+  items?: z.infer<typeof VenueForApiContractSchema>[] | null
+  term?: string | null
+  totalCount?: number
+}
+
+const ArchivedObjectVersionForApiContractSchema = z
+  .strictObject({
+    agentName: z.string().nullable().exactOptional(),
+    anythingChanged: z.boolean().exactOptional(),
+    author: UserForApiContractSchema.exactOptional(),
+    changedFields: z.array(z.string()).nullable().exactOptional(),
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    hidden: z.boolean().exactOptional(),
+    id: z.int32().exactOptional(),
+    isSnapshot: z.boolean().exactOptional(),
+    notes: z.string().nullable().exactOptional(),
+    reason: z.string().nullable().exactOptional(),
+    status: EntryStatusSchema.exactOptional(),
+    version: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ArchivedObjectVersionForApiContract')
+
+const EntryEditEventSchema = z
+  .enum(['Created', 'Updated', 'Deleted', 'Restored'])
+  .openapi('EntryEditEvent')
+
 const ActivityEntryForApiContractSchema = z
   .strictObject({
     archivedVersion: ArchivedObjectVersionForApiContractSchema.exactOptional(),
@@ -845,40 +1209,25 @@ const AdvancedSearchFilterParamsSchema = z
   .openapi({ required: [] })
   .openapi('AdvancedSearchFilterParams')
 
-const AlbumForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(AlbumForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AlbumForApiContractPartialFindResult')
+const AlbumForApiContractPartialFindResultSchema: z.ZodType<AlbumForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(AlbumForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('AlbumForApiContractPartialFindResult')
 
-const MediaTypeSchema = z.enum(['PhysicalDisc', 'DigitalDownload', 'Other']).openapi('MediaType')
-
-const PurchaseStatusSchema = z
-  .enum(['Nothing', 'Wishlisted', 'Ordered', 'Owned'])
-  .openapi('PurchaseStatus')
-
-const AlbumForUserForApiContractSchema = z
-  .strictObject({
-    album: AlbumForApiContractSchema.exactOptional(),
-    mediaType: MediaTypeSchema.exactOptional(),
-    purchaseStatus: PurchaseStatusSchema.exactOptional(),
-    rating: z.int32().exactOptional(),
-    user: UserForApiContractSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AlbumForUserForApiContract')
-
-const AlbumForUserForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(AlbumForUserForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AlbumForUserForApiContractPartialFindResult')
+const AlbumForUserForApiContractPartialFindResultSchema: z.ZodType<AlbumForUserForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(AlbumForUserForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('AlbumForUserForApiContractPartialFindResult')
 
 const AlbumOptionalFieldsSchema = z
   .enum([
@@ -929,62 +1278,25 @@ const ArtistAlbumParticipationStatusSchema = z
   .enum(['Everything', 'OnlyMainAlbums', 'OnlyCollaborations'])
   .openapi('ArtistAlbumParticipationStatus')
 
-const ArtistForApiContractSchema: z.ZodType<ArtistForApiContractType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        additionalNames: z.string().nullable().exactOptional(),
-        artistLinks: z.array(ArtistForArtistForApiContractSchema).nullable().exactOptional(),
-        artistLinksReverse: z.array(ArtistForArtistForApiContractSchema).nullable().exactOptional(),
-        artistType: ArtistTypeSchema.exactOptional(),
-        baseVoicebank: ArtistContractSchema.exactOptional(),
-        createDate: z.iso.datetime({ offset: true }).exactOptional(),
-        defaultName: z.string().nullable().exactOptional(),
-        defaultNameLanguage: ContentLanguageSelectionSchema.exactOptional(),
-        deleted: z.boolean().exactOptional(),
-        description: z.string().nullable().exactOptional(),
-        id: z.int32().exactOptional(),
-        mainPicture: EntryThumbForApiContractSchema.exactOptional(),
-        mergedTo: z.int32().exactOptional(),
-        name: z.string().nullable().exactOptional(),
-        names: z.array(LocalizedStringContractSchema).nullable().exactOptional(),
-        pictureMime: z.string().nullable().exactOptional(),
-        relations: ArtistRelationsForApiSchema.exactOptional(),
-        releaseDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        status: EntryStatusSchema.exactOptional(),
-        tags: z.array(TagUsageForApiContractSchema).nullable().exactOptional(),
-        version: z.int32().exactOptional(),
-        webLinks: z.array(WebLinkForApiContractSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('ArtistForApiContract')
+const ArtistForApiContractPartialFindResultSchema: z.ZodType<ArtistForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(ArtistForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('ArtistForApiContractPartialFindResult')
 
-const ArtistForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(ArtistForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistForApiContractPartialFindResult')
-
-const ArtistForUserForApiContractSchema = z
-  .strictObject({
-    artist: ArtistForApiContractSchema.exactOptional(),
-    id: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistForUserForApiContract')
-
-const ArtistForUserForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(ArtistForUserForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistForUserForApiContractPartialFindResult')
+const ArtistForUserForApiContractPartialFindResultSchema: z.ZodType<ArtistForUserForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(ArtistForUserForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('ArtistForUserForApiContractPartialFindResult')
 
 const ArtistOptionalFieldsSchema = z
   .enum([
@@ -1026,18 +1338,6 @@ const ArtistSortRuleSchema = z
     'ArtistType',
   ])
   .openapi('ArtistSortRule')
-
-const CommentForApiContractSchema = z
-  .strictObject({
-    author: UserForApiContractSchema.exactOptional(),
-    authorName: z.string().nullable().exactOptional(),
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    entry: EntryForApiContractSchema.exactOptional(),
-    id: z.int32().exactOptional(),
-    message: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CommentForApiContract')
 
 const CommentForApiContractPartialFindResultSchema = z
   .strictObject({
@@ -1086,30 +1386,15 @@ const DiscussionFolderOptionalFieldsSchema = z
   .enum(['None', 'LastTopic', 'TopicCount'])
   .openapi('DiscussionFolderOptionalFields')
 
-const DiscussionTopicContractSchema = z
-  .strictObject({
-    author: UserForApiContractSchema.exactOptional(),
-    commentCount: z.int32().exactOptional(),
-    comments: z.array(CommentForApiContractSchema).nullable().exactOptional(),
-    content: z.string().nullable().exactOptional(),
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    folderId: z.int32().exactOptional(),
-    id: z.int32().exactOptional(),
-    lastComment: CommentForApiContractSchema.exactOptional(),
-    locked: z.boolean().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DiscussionTopicContract')
-
-const DiscussionTopicContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(DiscussionTopicContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DiscussionTopicContractPartialFindResult')
+const DiscussionTopicContractPartialFindResultSchema: z.ZodType<DiscussionTopicContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(DiscussionTopicContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('DiscussionTopicContractPartialFindResult')
 
 const DiscussionTopicOptionalFieldsSchema = z
   .enum(['None', 'Comments', 'CommentCount', 'Content', 'LastComment', 'All'])
@@ -1259,24 +1544,15 @@ const PurchaseStatusesSchema = z
   .enum(['Nothing', 'Wishlisted', 'Ordered', 'Owned', 'All'])
   .openapi('PurchaseStatuses')
 
-const RatedSongForUserForApiContractSchema = z
-  .strictObject({
-    date: z.iso.datetime({ offset: true }).exactOptional(),
-    rating: SongVoteRatingSchema.exactOptional(),
-    song: SongForApiContractSchema.exactOptional(),
-    user: UserForApiContractSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RatedSongForUserForApiContract')
-
-const RatedSongForUserForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(RatedSongForUserForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RatedSongForUserForApiContractPartialFindResult')
+const RatedSongForUserForApiContractPartialFindResultSchema: z.ZodType<RatedSongForUserForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(RatedSongForUserForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('RatedSongForUserForApiContractPartialFindResult')
 
 const RatedSongForUserSortRuleSchema = z
   .enum([
@@ -1290,7 +1566,7 @@ const RatedSongForUserSortRuleSchema = z
   ])
   .openapi('RatedSongForUserSortRule')
 
-const RelatedSongsContractSchema = z
+const RelatedSongsContractSchema: z.ZodType<RelatedSongsContractType> = z
   .strictObject({
     artistMatches: z.array(SongForApiContractSchema).nullable().exactOptional(),
     likeMatches: z.array(SongForApiContractSchema).nullable().exactOptional(),
@@ -1299,14 +1575,15 @@ const RelatedSongsContractSchema = z
   .openapi({ required: [] })
   .openapi('RelatedSongsContract')
 
-const ReleaseEventForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(ReleaseEventForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReleaseEventForApiContractPartialFindResult')
+const ReleaseEventForApiContractPartialFindResultSchema: z.ZodType<ReleaseEventForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(ReleaseEventForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('ReleaseEventForApiContractPartialFindResult')
 
 const ReleaseEventOptionalFieldsSchema = z
   .enum([
@@ -1325,32 +1602,15 @@ const ReleaseEventOptionalFieldsSchema = z
   ])
   .openapi('ReleaseEventOptionalFields')
 
-const ReleaseEventSeriesForApiContractSchema = z
-  .strictObject({
-    additionalNames: z.string().nullable().exactOptional(),
-    category: EventCategorySchema.exactOptional(),
-    description: z.string().nullable().exactOptional(),
-    events: z.array(ReleaseEventForApiContractSchema).nullable().exactOptional(),
-    id: z.int32().exactOptional(),
-    mainPicture: EntryThumbForApiContractSchema.exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    names: z.array(LocalizedStringContractSchema).nullable().exactOptional(),
-    status: EntryStatusSchema.exactOptional(),
-    urlSlug: z.string().nullable().exactOptional(),
-    version: z.int32().exactOptional(),
-    webLinks: z.array(WebLinkForApiContractSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReleaseEventSeriesForApiContract')
-
-const ReleaseEventSeriesForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(ReleaseEventSeriesForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReleaseEventSeriesForApiContractPartialFindResult')
+const ReleaseEventSeriesForApiContractPartialFindResultSchema: z.ZodType<ReleaseEventSeriesForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(ReleaseEventSeriesForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('ReleaseEventSeriesForApiContractPartialFindResult')
 
 const ReleaseEventSeriesForEditForApiContractSchema = z
   .strictObject({
@@ -1372,71 +1632,37 @@ const ReleaseEventSeriesOptionalFieldsSchema = z
   .enum(['None', 'AdditionalNames', 'Description', 'Events', 'MainPicture', 'Names', 'WebLinks'])
   .openapi('ReleaseEventSeriesOptionalFields')
 
-const SongForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(SongForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SongForApiContractPartialFindResult')
+const SongForApiContractPartialFindResultSchema: z.ZodType<SongForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(SongForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('SongForApiContractPartialFindResult')
 
-const SongInListEditContractSchema = z
-  .strictObject({
-    notes: z.string().nullable().exactOptional(),
-    order: z.int32().exactOptional(),
-    song: SongForApiContractSchema.exactOptional(),
-    songInListId: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SongInListEditContract')
+const SongInListForApiContractPartialFindResultSchema: z.ZodType<SongInListForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(SongInListForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('SongInListForApiContractPartialFindResult')
 
-const SongInListForApiContractSchema = z
-  .strictObject({
-    notes: z.string().nullable().exactOptional(),
-    order: z.int32().exactOptional(),
-    song: SongForApiContractSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SongInListForApiContract')
+const SongListForApiContractPartialFindResultSchema: z.ZodType<SongListForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(SongListForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('SongListForApiContractPartialFindResult')
 
-const SongInListForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(SongInListForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SongInListForApiContractPartialFindResult')
-
-const SongListForApiContractSchema = z
-  .strictObject({
-    author: UserForApiContractSchema.exactOptional(),
-    deleted: z.boolean().exactOptional(),
-    description: z.string().nullable().exactOptional(),
-    eventDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    events: z.array(ReleaseEventForApiContractSchema).nullable().exactOptional(),
-    featuredCategory: SongListFeaturedCategorySchema.exactOptional(),
-    id: z.int32().exactOptional(),
-    latestComments: z.array(CommentForApiContractSchema).nullable().exactOptional(),
-    mainPicture: EntryThumbForApiContractSchema.exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    status: EntryStatusSchema.exactOptional(),
-    tags: z.array(TagUsageForApiContractSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SongListForApiContract')
-
-const SongListForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(SongListForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SongListForApiContractPartialFindResult')
-
-const SongListForEditForApiContractSchema = z
+const SongListForEditForApiContractSchema: z.ZodType<SongListForEditForApiContractType> = z
   .strictObject({
     deleted: z.boolean().exactOptional(),
     description: z.string().nullable().exactOptional(),
@@ -1625,14 +1851,15 @@ const UserOptionalFieldsSchema = z
 
 const UserSortRuleSchema = z.enum(['RegisterDate', 'Name', 'Group']).openapi('UserSortRule')
 
-const VenueForApiContractPartialFindResultSchema = z
-  .strictObject({
-    items: z.array(VenueForApiContractSchema).nullable().exactOptional(),
-    term: z.string().nullable().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('VenueForApiContractPartialFindResult')
+const VenueForApiContractPartialFindResultSchema: z.ZodType<VenueForApiContractPartialFindResultType> =
+  z
+    .strictObject({
+      items: z.array(VenueForApiContractSchema).nullable().exactOptional(),
+      term: z.string().nullable().exactOptional(),
+      totalCount: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('VenueForApiContractPartialFindResult')
 
 const VenueOptionalFieldsSchema = z
   .enum(['None', 'AdditionalNames', 'Description', 'Events', 'Names', 'WebLinks'])

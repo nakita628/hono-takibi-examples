@@ -72,7 +72,7 @@ const DeleteRequestSchema = z
   .openapi({ required: [] })
   .openapi('DeleteRequest')
 
-const DeleteResponseSchema = z.object({}).openapi('DeleteResponse')
+const DeleteResponseSchema = z.looseObject({}).openapi('DeleteResponse')
 
 const DescribeIndexStatsRequestSchema = z
   .object({ filter: VectorFilterSchema.exactOptional() })
@@ -373,7 +373,7 @@ const UpdateRequestSchema = z
   .openapi({ required: ['id'] })
   .openapi('UpdateRequest')
 
-const UpdateResponseSchema = z.object({}).openapi('UpdateResponse')
+const UpdateResponseSchema = z.looseObject({}).openapi('UpdateResponse')
 
 const UpsertVectorSchema = z
   .object({

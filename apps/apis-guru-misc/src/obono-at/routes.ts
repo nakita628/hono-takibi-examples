@@ -853,16 +853,13 @@ export const postRegistrierkassenRegistrierkasseUuidAbschlussRoute = createRoute
       description:
         'The `Abschlussbeleg` has been created, signed and added to the "Datenerfassungsprotokoll".',
       headers: z.object({
-        Location: {
-          description: 'The URL (`_href`) of the newly created `Beleg` resource.',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({
-              description: 'The URL (`_href`) of the newly created `Beleg` resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({
+            description: 'The URL (`_href`) of the newly created `Beleg` resource.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1115,16 +1112,13 @@ export const putRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRoute = create
     201: {
       description: 'The `Beleg` has been signed and added to the "Datenerfassungsprotokoll".',
       headers: z.object({
-        Location: {
-          description: 'The URL (`_href`) of the newly created `Beleg` resource.',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({
-              description: 'The URL (`_href`) of the newly created `Beleg` resource.',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({
+            description: 'The URL (`_href`) of the newly created `Beleg` resource.',
+            param: { required: false },
+          }),
       }),
     },
     400: {

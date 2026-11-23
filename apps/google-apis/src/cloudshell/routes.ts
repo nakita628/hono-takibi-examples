@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AddPublicKeyMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Message included in the metadata field of operations returned from AddPublicKey.',
   })
@@ -31,7 +31,7 @@ const AddPublicKeyResponseSchema = z
   .openapi('AddPublicKeyResponse')
 
 const AuthorizeEnvironmentMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Message included in the metadata field of operations returned from AuthorizeEnvironment.',
@@ -60,17 +60,17 @@ const AuthorizeEnvironmentRequestSchema = z
   .openapi('AuthorizeEnvironmentRequest')
 
 const AuthorizeEnvironmentResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response message for AuthorizeEnvironment.' })
   .openapi('AuthorizeEnvironmentResponse')
 
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
 
 const CreateEnvironmentMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Message included in the metadata field of operations returned from CreateEnvironment.',
@@ -78,7 +78,7 @@ const CreateEnvironmentMetadataSchema = z
   .openapi('CreateEnvironmentMetadata')
 
 const DeleteEnvironmentMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Message included in the metadata field of operations returned from DeleteEnvironment.',
@@ -86,7 +86,7 @@ const DeleteEnvironmentMetadataSchema = z
   .openapi('DeleteEnvironmentMetadata')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -283,7 +283,7 @@ const ListOperationsResponseSchema = z
   .openapi('ListOperationsResponse')
 
 const RemovePublicKeyMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Message included in the metadata field of operations returned from RemovePublicKey.',
@@ -301,7 +301,7 @@ const RemovePublicKeyRequestSchema = z
   .openapi('RemovePublicKeyRequest')
 
 const RemovePublicKeyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response message for RemovePublicKey.' })
   .openapi('RemovePublicKeyResponse')
 

@@ -47,12 +47,12 @@ const ExperimentTemplateTargetFilterValuesSchema = z
 
 const ExperimentTemplateTargetFilterSchema = z
   .object({
-    path: ExperimentTemplateTargetFilterPathSchema.and(
-      z.any().openapi({ description: 'The attribute path for the filter.' }),
-    ).exactOptional(),
-    values: ExperimentTemplateTargetFilterValuesSchema.and(
-      z.any().openapi({ description: 'The attribute values for the filter.' }),
-    ).exactOptional(),
+    path: ExperimentTemplateTargetFilterPathSchema.exactOptional().openapi({
+      description: 'The attribute path for the filter.',
+    }),
+    values: ExperimentTemplateTargetFilterValuesSchema.exactOptional().openapi({
+      description: 'The attribute values for the filter.',
+    }),
   })
   .openapi({
     description: 'Describes a filter used for the target resources in an experiment template.',
@@ -83,33 +83,24 @@ const ExperimentTemplateTargetParameterMapSchema = z
 
 const ExperimentTemplateTargetSchema = z
   .object({
-    resourceType: TargetResourceTypeIdSchema.and(
-      z.any().openapi({ description: 'The resource type.' }),
-    ).exactOptional(),
-    resourceArns: ResourceArnListSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Names (ARNs) of the targets.' }),
-    ).exactOptional(),
-    resourceTags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the target resources.' }),
-    ).exactOptional(),
-    filters: ExperimentTemplateTargetFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to apply to identify target resources using specific attributes.',
-        }),
-    ).exactOptional(),
-    selectionMode: ExperimentTemplateTargetSelectionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Scopes the identified resources to a specific count or percentage.',
-        }),
-    ).exactOptional(),
-    parameters: ExperimentTemplateTargetParameterMapSchema.and(
-      z.any().openapi({ description: 'The resource type parameters.' }),
-    ).exactOptional(),
+    resourceType: TargetResourceTypeIdSchema.exactOptional().openapi({
+      description: 'The resource type.',
+    }),
+    resourceArns: ResourceArnListSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Names (ARNs) of the targets.',
+    }),
+    resourceTags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags for the target resources.',
+    }),
+    filters: ExperimentTemplateTargetFilterListSchema.exactOptional().openapi({
+      description: 'The filters to apply to identify target resources using specific attributes.',
+    }),
+    selectionMode: ExperimentTemplateTargetSelectionModeSchema.exactOptional().openapi({
+      description: 'Scopes the identified resources to a specific count or percentage.',
+    }),
+    parameters: ExperimentTemplateTargetParameterMapSchema.exactOptional().openapi({
+      description: 'The resource type parameters.',
+    }),
   })
   .openapi({ description: 'Describes a target for an experiment template.', required: [] })
   .openapi('ExperimentTemplateTarget')
@@ -158,26 +149,20 @@ const ExperimentTemplateActionStartAfterListSchema = z
 
 const ExperimentTemplateActionSchema = z
   .object({
-    actionId: ActionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the action.' }),
-    ).exactOptional(),
-    description: ExperimentTemplateActionDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the action.' }),
-    ).exactOptional(),
-    parameters: ExperimentTemplateActionParameterMapSchema.and(
-      z.any().openapi({ description: 'The parameters for the action.' }),
-    ).exactOptional(),
-    targets: ExperimentTemplateActionTargetMapSchema.and(
-      z.any().openapi({ description: 'The targets for the action.' }),
-    ).exactOptional(),
-    startAfter: ExperimentTemplateActionStartAfterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the action that must be completed before the current action starts.',
-        }),
-    ).exactOptional(),
+    actionId: ActionIdSchema.exactOptional().openapi({ description: 'The ID of the action.' }),
+    description: ExperimentTemplateActionDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the action.',
+    }),
+    parameters: ExperimentTemplateActionParameterMapSchema.exactOptional().openapi({
+      description: 'The parameters for the action.',
+    }),
+    targets: ExperimentTemplateActionTargetMapSchema.exactOptional().openapi({
+      description: 'The targets for the action.',
+    }),
+    startAfter: ExperimentTemplateActionStartAfterListSchema.exactOptional().openapi({
+      description:
+        'The name of the action that must be completed before the current action starts.',
+    }),
   })
   .openapi({ description: 'Describes an action for an experiment template.', required: [] })
   .openapi('ExperimentTemplateAction')
@@ -197,16 +182,12 @@ const StopConditionValueSchema = z
 
 const ExperimentTemplateStopConditionSchema = z
   .object({
-    source: StopConditionSourceSchema.and(
-      z.any().openapi({ description: 'The source for the stop condition.' }),
-    ).exactOptional(),
-    value: StopConditionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the CloudWatch alarm, if applicable.',
-        }),
-    ).exactOptional(),
+    source: StopConditionSourceSchema.exactOptional().openapi({
+      description: 'The source for the stop condition.',
+    }),
+    value: StopConditionValueSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the CloudWatch alarm, if applicable.',
+    }),
   })
   .openapi({ description: 'Describes a stop condition for an experiment template.', required: [] })
   .openapi('ExperimentTemplateStopCondition')
@@ -230,14 +211,10 @@ const CloudWatchLogGroupArnSchema = z
 
 const ExperimentTemplateCloudWatchLogsLogConfigurationSchema = z
   .object({
-    logGroupArn: CloudWatchLogGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.',
-        }),
-    ).exactOptional(),
+    logGroupArn: CloudWatchLogGroupArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.',
+    }),
   })
   .openapi({
     description: 'Describes the configuration for experiment logging to Amazon CloudWatch Logs.',
@@ -256,12 +233,10 @@ const S3ObjectKeySchema = z
 
 const ExperimentTemplateS3LogConfigurationSchema = z
   .object({
-    bucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the destination bucket.' }),
-    ).exactOptional(),
-    prefix: S3ObjectKeySchema.and(
-      z.any().openapi({ description: 'The bucket prefix.' }),
-    ).exactOptional(),
+    bucketName: S3BucketNameSchema.exactOptional().openapi({
+      description: 'The name of the destination bucket.',
+    }),
+    prefix: S3ObjectKeySchema.exactOptional().openapi({ description: 'The bucket prefix.' }),
   })
   .openapi({
     description: 'Describes the configuration for experiment logging to Amazon S3.',
@@ -273,86 +248,75 @@ const LogSchemaVersionSchema = z.int().openapi('LogSchemaVersion')
 
 const ExperimentTemplateLogConfigurationSchema = z
   .object({
-    cloudWatchLogsConfiguration: ExperimentTemplateCloudWatchLogsLogConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for experiment logging to Amazon CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    s3Configuration: ExperimentTemplateS3LogConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for experiment logging to Amazon S3.' }),
-    ).exactOptional(),
-    logSchemaVersion: LogSchemaVersionSchema.and(
-      z.any().openapi({ description: 'The schema version.' }),
-    ).exactOptional(),
+    cloudWatchLogsConfiguration:
+      ExperimentTemplateCloudWatchLogsLogConfigurationSchema.exactOptional().openapi({
+        description: 'The configuration for experiment logging to Amazon CloudWatch Logs.',
+      }),
+    s3Configuration: ExperimentTemplateS3LogConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for experiment logging to Amazon S3.',
+    }),
+    logSchemaVersion: LogSchemaVersionSchema.exactOptional().openapi({
+      description: 'The schema version.',
+    }),
   })
   .openapi({ description: 'Describes the configuration for experiment logging.', required: [] })
   .openapi('ExperimentTemplateLogConfiguration')
 
 const ExperimentTemplateSchema = z
   .object({
-    id: ExperimentTemplateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the experiment template.' }),
-    ).exactOptional(),
-    description: ExperimentTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the experiment template.' }),
-    ).exactOptional(),
-    targets: ExperimentTemplateTargetMapSchema.and(
-      z.any().openapi({ description: 'The targets for the experiment.' }),
-    ).exactOptional(),
-    actions: ExperimentTemplateActionMapSchema.and(
-      z.any().openapi({ description: 'The actions for the experiment.' }),
-    ).exactOptional(),
-    stopConditions: ExperimentTemplateStopConditionListSchema.and(
-      z.any().openapi({ description: 'The stop conditions for the experiment.' }),
-    ).exactOptional(),
-    creationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time the experiment template was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: LastUpdateTimeSchema.and(
-      z.any().openapi({ description: 'The time the experiment template was last updated.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of an IAM role.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the experiment template.' }),
-    ).exactOptional(),
-    logConfiguration: ExperimentTemplateLogConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for experiment logging.' }),
-    ).exactOptional(),
+    id: ExperimentTemplateIdSchema.exactOptional().openapi({
+      description: 'The ID of the experiment template.',
+    }),
+    description: ExperimentTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the experiment template.',
+    }),
+    targets: ExperimentTemplateTargetMapSchema.exactOptional().openapi({
+      description: 'The targets for the experiment.',
+    }),
+    actions: ExperimentTemplateActionMapSchema.exactOptional().openapi({
+      description: 'The actions for the experiment.',
+    }),
+    stopConditions: ExperimentTemplateStopConditionListSchema.exactOptional().openapi({
+      description: 'The stop conditions for the experiment.',
+    }),
+    creationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The time the experiment template was created.',
+    }),
+    lastUpdateTime: LastUpdateTimeSchema.exactOptional().openapi({
+      description: 'The time the experiment template was last updated.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of an IAM role.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags for the experiment template.',
+    }),
+    logConfiguration: ExperimentTemplateLogConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for experiment logging.',
+    }),
   })
   .openapi({ description: 'Describes an experiment template.', required: [] })
   .openapi('ExperimentTemplate')
 
 const CreateExperimentTemplateResponseSchema = z
   .object({
-    experimentTemplate: ExperimentTemplateSchema.and(
-      z.any().openapi({ description: 'Information about the experiment template.' }),
-    ).exactOptional(),
+    experimentTemplate: ExperimentTemplateSchema.exactOptional().openapi({
+      description: 'Information about the experiment template.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateExperimentTemplateResponse')
 
 const CreateExperimentTemplateStopConditionInputSchema = z
   .object({
-    source: StopConditionSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source for the stop condition. Specify <code>aws:cloudwatch:alarm</code> if the stop condition is defined by a CloudWatch alarm. Specify <code>none</code> if there is no stop condition.',
-        }),
-    ),
-    value: StopConditionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the CloudWatch alarm. This is required if the source is a CloudWatch alarm.',
-        }),
-    ).exactOptional(),
+    source: StopConditionSourceSchema.openapi({
+      description:
+        'The source for the stop condition. Specify <code>aws:cloudwatch:alarm</code> if the stop condition is defined by a CloudWatch alarm. Specify <code>none</code> if there is no stop condition.',
+    }),
+    value: StopConditionValueSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the CloudWatch alarm. This is required if the source is a CloudWatch alarm.',
+    }),
   })
   .openapi({
     required: ['source'],
@@ -362,12 +326,12 @@ const CreateExperimentTemplateStopConditionInputSchema = z
 
 const ExperimentTemplateTargetInputFilterSchema = z
   .object({
-    path: ExperimentTemplateTargetFilterPathSchema.and(
-      z.any().openapi({ description: 'The attribute path for the filter.' }),
-    ),
-    values: ExperimentTemplateTargetFilterValuesSchema.and(
-      z.any().openapi({ description: 'The attribute values for the filter.' }),
-    ),
+    path: ExperimentTemplateTargetFilterPathSchema.openapi({
+      description: 'The attribute path for the filter.',
+    }),
+    values: ExperimentTemplateTargetFilterValuesSchema.openapi({
+      description: 'The attribute values for the filter.',
+    }),
   })
   .openapi({
     required: ['path', 'values'],
@@ -382,39 +346,26 @@ const ExperimentTemplateTargetFilterInputListSchema = z
 
 const CreateExperimentTemplateTargetInputSchema = z
   .object({
-    resourceType: TargetResourceTypeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type. The resource type must be supported for the specified action.',
-        }),
-    ),
-    resourceArns: ResourceArnListSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Names (ARNs) of the resources.' }),
-    ).exactOptional(),
-    resourceTags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the target resources.' }),
-    ).exactOptional(),
-    filters: ExperimentTemplateTargetFilterInputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to apply to identify target resources using specific attributes.',
-        }),
-    ).exactOptional(),
-    selectionMode: ExperimentTemplateTargetSelectionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Scopes the identified resources to a specific count of the resources at random, or a percentage of the resources. All identified resources are included in the target.</p> <ul> <li> <p>ALL - Run the action on all identified targets. This is the default.</p> </li> <li> <p>COUNT(n) - Run the action on the specified number of targets, chosen from the identified targets at random. For example, COUNT(1) selects one of the targets.</p> </li> <li> <p>PERCENT(n) - Run the action on the specified percentage of targets, chosen from the identified targets at random. For example, PERCENT(25) selects 25% of the targets.</p> </li> </ul>',
-        }),
-    ),
-    parameters: ExperimentTemplateTargetParameterMapSchema.and(
-      z.any().openapi({ description: 'The resource type parameters.' }),
-    ).exactOptional(),
+    resourceType: TargetResourceTypeIdSchema.openapi({
+      description:
+        'The resource type. The resource type must be supported for the specified action.',
+    }),
+    resourceArns: ResourceArnListSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Names (ARNs) of the resources.',
+    }),
+    resourceTags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags for the target resources.',
+    }),
+    filters: ExperimentTemplateTargetFilterInputListSchema.exactOptional().openapi({
+      description: 'The filters to apply to identify target resources using specific attributes.',
+    }),
+    selectionMode: ExperimentTemplateTargetSelectionModeSchema.openapi({
+      description:
+        '<p>Scopes the identified resources to a specific count of the resources at random, or a percentage of the resources. All identified resources are included in the target.</p> <ul> <li> <p>ALL - Run the action on all identified targets. This is the default.</p> </li> <li> <p>COUNT(n) - Run the action on the specified number of targets, chosen from the identified targets at random. For example, COUNT(1) selects one of the targets.</p> </li> <li> <p>PERCENT(n) - Run the action on the specified percentage of targets, chosen from the identified targets at random. For example, PERCENT(25) selects 25% of the targets.</p> </li> </ul>',
+    }),
+    parameters: ExperimentTemplateTargetParameterMapSchema.exactOptional().openapi({
+      description: 'The resource type parameters.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'selectionMode'],
@@ -425,31 +376,23 @@ const CreateExperimentTemplateTargetInputSchema = z
 
 const CreateExperimentTemplateActionInputSchema = z
   .object({
-    actionId: ActionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the action. The format of the action ID is: aws:<i>service-name</i>:<i>action-type</i>.',
-        }),
-    ),
-    description: ExperimentTemplateActionDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the action.' }),
-    ).exactOptional(),
-    parameters: ExperimentTemplateActionParameterMapSchema.and(
-      z.any().openapi({ description: 'The parameters for the action, if applicable.' }),
-    ).exactOptional(),
-    targets: ExperimentTemplateActionTargetMapSchema.and(
-      z.any().openapi({ description: 'The targets for the action.' }),
-    ).exactOptional(),
-    startAfter: ExperimentTemplateActionStartAfterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the action that must be completed before the current action starts. Omit this parameter to run the action at the start of the experiment.',
-        }),
-    ).exactOptional(),
+    actionId: ActionIdSchema.openapi({
+      description:
+        'The ID of the action. The format of the action ID is: aws:<i>service-name</i>:<i>action-type</i>.',
+    }),
+    description: ExperimentTemplateActionDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the action.',
+    }),
+    parameters: ExperimentTemplateActionParameterMapSchema.exactOptional().openapi({
+      description: 'The parameters for the action, if applicable.',
+    }),
+    targets: ExperimentTemplateActionTargetMapSchema.exactOptional().openapi({
+      description: 'The targets for the action.',
+    }),
+    startAfter: ExperimentTemplateActionStartAfterListSchema.exactOptional().openapi({
+      description:
+        'The name of the action that must be completed before the current action starts. Omit this parameter to run the action at the start of the experiment.',
+    }),
   })
   .openapi({
     required: ['actionId'],
@@ -460,14 +403,10 @@ const CreateExperimentTemplateActionInputSchema = z
 
 const ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema = z
   .object({
-    logGroupArn: CloudWatchLogGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.',
-        }),
-    ),
+    logGroupArn: CloudWatchLogGroupArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.',
+    }),
   })
   .openapi({
     required: ['logGroupArn'],
@@ -477,12 +416,8 @@ const ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema = z
 
 const ExperimentTemplateS3LogConfigurationInputSchema = z
   .object({
-    bucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the destination bucket.' }),
-    ),
-    prefix: S3ObjectKeySchema.and(
-      z.any().openapi({ description: 'The bucket prefix.' }),
-    ).exactOptional(),
+    bucketName: S3BucketNameSchema.openapi({ description: 'The name of the destination bucket.' }),
+    prefix: S3ObjectKeySchema.exactOptional().openapi({ description: 'The bucket prefix.' }),
   })
   .openapi({
     required: ['bucketName'],
@@ -500,9 +435,9 @@ const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceede
 
 const DeleteExperimentTemplateResponseSchema = z
   .object({
-    experimentTemplate: ExperimentTemplateSchema.and(
-      z.any().openapi({ description: 'Information about the experiment template.' }),
-    ).exactOptional(),
+    experimentTemplate: ExperimentTemplateSchema.exactOptional().openapi({
+      description: 'Information about the experiment template.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteExperimentTemplateResponse')
@@ -523,12 +458,12 @@ const ActionParameterRequiredSchema = z.boolean().openapi('ActionParameterRequir
 
 const ActionParameterSchema = z
   .object({
-    description: ActionParameterDescriptionSchema.and(
-      z.any().openapi({ description: 'The parameter description.' }),
-    ).exactOptional(),
-    required: ActionParameterRequiredSchema.and(
-      z.any().openapi({ description: 'Indicates whether the parameter is required.' }),
-    ).exactOptional(),
+    description: ActionParameterDescriptionSchema.exactOptional().openapi({
+      description: 'The parameter description.',
+    }),
+    required: ActionParameterRequiredSchema.exactOptional().openapi({
+      description: 'Indicates whether the parameter is required.',
+    }),
   })
   .openapi({ description: 'Describes a parameter for an action.', required: [] })
   .openapi('ActionParameter')
@@ -539,9 +474,9 @@ const ActionParameterMapSchema = z
 
 const ActionTargetSchema = z
   .object({
-    resourceType: TargetResourceTypeIdSchema.and(
-      z.any().openapi({ description: 'The resource type of the target.' }),
-    ).exactOptional(),
+    resourceType: TargetResourceTypeIdSchema.exactOptional().openapi({
+      description: 'The resource type of the target.',
+    }),
   })
   .openapi({ description: 'Describes a target for an action.', required: [] })
   .openapi('ActionTarget')
@@ -550,21 +485,17 @@ const ActionTargetMapSchema = z.record(z.string(), ActionTargetSchema).openapi('
 
 const ActionSchema = z
   .object({
-    id: ActionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the action.' }),
-    ).exactOptional(),
-    description: ActionDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the action.' }),
-    ).exactOptional(),
-    parameters: ActionParameterMapSchema.and(
-      z.any().openapi({ description: 'The action parameters, if applicable.' }),
-    ).exactOptional(),
-    targets: ActionTargetMapSchema.and(
-      z.any().openapi({ description: 'The supported targets for the action.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the action.' }),
-    ).exactOptional(),
+    id: ActionIdSchema.exactOptional().openapi({ description: 'The ID of the action.' }),
+    description: ActionDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the action.',
+    }),
+    parameters: ActionParameterMapSchema.exactOptional().openapi({
+      description: 'The action parameters, if applicable.',
+    }),
+    targets: ActionTargetMapSchema.exactOptional().openapi({
+      description: 'The supported targets for the action.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags for the action.' }),
   })
   .openapi({
     description:
@@ -575,9 +506,7 @@ const ActionSchema = z
 
 const GetActionResponseSchema = z
   .object({
-    action: ActionSchema.and(
-      z.any().openapi({ description: 'Information about the action.' }),
-    ).exactOptional(),
+    action: ActionSchema.exactOptional().openapi({ description: 'Information about the action.' }),
   })
   .openapi({ required: [] })
   .openapi('GetActionResponse')
@@ -596,12 +525,12 @@ const ExperimentStatusReasonSchema = z
 
 const ExperimentStateSchema = z
   .object({
-    status: ExperimentStatusSchema.and(
-      z.any().openapi({ description: 'The state of the experiment.' }),
-    ).exactOptional(),
-    reason: ExperimentStatusReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the state.' }),
-    ).exactOptional(),
+    status: ExperimentStatusSchema.exactOptional().openapi({
+      description: 'The state of the experiment.',
+    }),
+    reason: ExperimentStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason for the state.',
+    }),
   })
   .openapi({ description: 'Describes the state of an experiment.', required: [] })
   .openapi('ExperimentState')
@@ -624,12 +553,12 @@ const ExperimentTargetFilterValuesSchema = z
 
 const ExperimentTargetFilterSchema = z
   .object({
-    path: ExperimentTargetFilterPathSchema.and(
-      z.any().openapi({ description: 'The attribute path for the filter.' }),
-    ).exactOptional(),
-    values: ExperimentTargetFilterValuesSchema.and(
-      z.any().openapi({ description: 'The attribute values for the filter.' }),
-    ).exactOptional(),
+    path: ExperimentTargetFilterPathSchema.exactOptional().openapi({
+      description: 'The attribute path for the filter.',
+    }),
+    values: ExperimentTargetFilterValuesSchema.exactOptional().openapi({
+      description: 'The attribute values for the filter.',
+    }),
   })
   .openapi({
     description: 'Describes a filter used for the target resources in an experiment.',
@@ -659,33 +588,24 @@ const ExperimentTargetParameterMapSchema = z
 
 const ExperimentTargetSchema = z
   .object({
-    resourceType: TargetResourceTypeIdSchema.and(
-      z.any().openapi({ description: 'The resource type.' }),
-    ).exactOptional(),
-    resourceArns: ResourceArnListSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Names (ARNs) of the resources.' }),
-    ).exactOptional(),
-    resourceTags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the target resources.' }),
-    ).exactOptional(),
-    filters: ExperimentTargetFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to apply to identify target resources using specific attributes.',
-        }),
-    ).exactOptional(),
-    selectionMode: ExperimentTargetSelectionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Scopes the identified resources to a specific count or percentage.',
-        }),
-    ).exactOptional(),
-    parameters: ExperimentTargetParameterMapSchema.and(
-      z.any().openapi({ description: 'The resource type parameters.' }),
-    ).exactOptional(),
+    resourceType: TargetResourceTypeIdSchema.exactOptional().openapi({
+      description: 'The resource type.',
+    }),
+    resourceArns: ResourceArnListSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Names (ARNs) of the resources.',
+    }),
+    resourceTags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags for the target resources.',
+    }),
+    filters: ExperimentTargetFilterListSchema.exactOptional().openapi({
+      description: 'The filters to apply to identify target resources using specific attributes.',
+    }),
+    selectionMode: ExperimentTargetSelectionModeSchema.exactOptional().openapi({
+      description: 'Scopes the identified resources to a specific count or percentage.',
+    }),
+    parameters: ExperimentTargetParameterMapSchema.exactOptional().openapi({
+      description: 'The resource type parameters.',
+    }),
   })
   .openapi({ description: 'Describes a target for an experiment.', required: [] })
   .openapi('ExperimentTarget')
@@ -747,12 +667,12 @@ const ExperimentActionStatusReasonSchema = z
 
 const ExperimentActionStateSchema = z
   .object({
-    status: ExperimentActionStatusSchema.and(
-      z.any().openapi({ description: 'The state of the action.' }),
-    ).exactOptional(),
-    reason: ExperimentActionStatusReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the state.' }),
-    ).exactOptional(),
+    status: ExperimentActionStatusSchema.exactOptional().openapi({
+      description: 'The state of the action.',
+    }),
+    reason: ExperimentActionStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason for the state.',
+    }),
   })
   .openapi({ description: 'Describes the state of an action.', required: [] })
   .openapi('ExperimentActionState')
@@ -767,34 +687,28 @@ const ExperimentActionEndTimeSchema = z.iso
 
 const ExperimentActionSchema = z
   .object({
-    actionId: ActionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the action.' }),
-    ).exactOptional(),
-    description: ExperimentActionDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the action.' }),
-    ).exactOptional(),
-    parameters: ExperimentActionParameterMapSchema.and(
-      z.any().openapi({ description: 'The parameters for the action.' }),
-    ).exactOptional(),
-    targets: ExperimentActionTargetMapSchema.and(
-      z.any().openapi({ description: 'The targets for the action.' }),
-    ).exactOptional(),
-    startAfter: ExperimentActionStartAfterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the action that must be completed before this action starts.',
-        }),
-    ).exactOptional(),
-    state: ExperimentActionStateSchema.and(
-      z.any().openapi({ description: 'The state of the action.' }),
-    ).exactOptional(),
-    startTime: ExperimentActionStartTimeSchema.and(
-      z.any().openapi({ description: 'The time that the action started.' }),
-    ).exactOptional(),
-    endTime: ExperimentActionEndTimeSchema.and(
-      z.any().openapi({ description: 'The time that the action ended.' }),
-    ).exactOptional(),
+    actionId: ActionIdSchema.exactOptional().openapi({ description: 'The ID of the action.' }),
+    description: ExperimentActionDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the action.',
+    }),
+    parameters: ExperimentActionParameterMapSchema.exactOptional().openapi({
+      description: 'The parameters for the action.',
+    }),
+    targets: ExperimentActionTargetMapSchema.exactOptional().openapi({
+      description: 'The targets for the action.',
+    }),
+    startAfter: ExperimentActionStartAfterListSchema.exactOptional().openapi({
+      description: 'The name of the action that must be completed before this action starts.',
+    }),
+    state: ExperimentActionStateSchema.exactOptional().openapi({
+      description: 'The state of the action.',
+    }),
+    startTime: ExperimentActionStartTimeSchema.exactOptional().openapi({
+      description: 'The time that the action started.',
+    }),
+    endTime: ExperimentActionEndTimeSchema.exactOptional().openapi({
+      description: 'The time that the action ended.',
+    }),
   })
   .openapi({ description: 'Describes the action for an experiment.', required: [] })
   .openapi('ExperimentAction')
@@ -805,16 +719,12 @@ const ExperimentActionMapSchema = z
 
 const ExperimentStopConditionSchema = z
   .object({
-    source: StopConditionSourceSchema.and(
-      z.any().openapi({ description: 'The source for the stop condition.' }),
-    ).exactOptional(),
-    value: StopConditionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the CloudWatch alarm, if applicable.',
-        }),
-    ).exactOptional(),
+    source: StopConditionSourceSchema.exactOptional().openapi({
+      description: 'The source for the stop condition.',
+    }),
+    value: StopConditionValueSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the CloudWatch alarm, if applicable.',
+    }),
   })
   .openapi({ description: 'Describes the stop condition for an experiment.', required: [] })
   .openapi('ExperimentStopCondition')
@@ -829,14 +739,10 @@ const ExperimentEndTimeSchema = z.iso.datetime({ offset: true }).openapi('Experi
 
 const ExperimentCloudWatchLogsLogConfigurationSchema = z
   .object({
-    logGroupArn: CloudWatchLogGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.',
-        }),
-    ).exactOptional(),
+    logGroupArn: CloudWatchLogGroupArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.',
+    }),
   })
   .openapi({
     description: 'Describes the configuration for experiment logging to Amazon CloudWatch Logs.',
@@ -846,12 +752,10 @@ const ExperimentCloudWatchLogsLogConfigurationSchema = z
 
 const ExperimentS3LogConfigurationSchema = z
   .object({
-    bucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the destination bucket.' }),
-    ).exactOptional(),
-    prefix: S3ObjectKeySchema.and(
-      z.any().openapi({ description: 'The bucket prefix.' }),
-    ).exactOptional(),
+    bucketName: S3BucketNameSchema.exactOptional().openapi({
+      description: 'The name of the destination bucket.',
+    }),
+    prefix: S3ObjectKeySchema.exactOptional().openapi({ description: 'The bucket prefix.' }),
   })
   .openapi({
     description: 'Describes the configuration for experiment logging to Amazon S3.',
@@ -861,84 +765,73 @@ const ExperimentS3LogConfigurationSchema = z
 
 const ExperimentLogConfigurationSchema = z
   .object({
-    cloudWatchLogsConfiguration: ExperimentCloudWatchLogsLogConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for experiment logging to Amazon CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    s3Configuration: ExperimentS3LogConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for experiment logging to Amazon S3.' }),
-    ).exactOptional(),
-    logSchemaVersion: LogSchemaVersionSchema.and(
-      z.any().openapi({ description: 'The schema version.' }),
-    ).exactOptional(),
+    cloudWatchLogsConfiguration:
+      ExperimentCloudWatchLogsLogConfigurationSchema.exactOptional().openapi({
+        description: 'The configuration for experiment logging to Amazon CloudWatch Logs.',
+      }),
+    s3Configuration: ExperimentS3LogConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for experiment logging to Amazon S3.',
+    }),
+    logSchemaVersion: LogSchemaVersionSchema.exactOptional().openapi({
+      description: 'The schema version.',
+    }),
   })
   .openapi({ description: 'Describes the configuration for experiment logging.', required: [] })
   .openapi('ExperimentLogConfiguration')
 
 const ExperimentSchema = z
   .object({
-    id: ExperimentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the experiment.' }),
-    ).exactOptional(),
-    experimentTemplateId: ExperimentTemplateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the experiment template.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.',
-        }),
-    ).exactOptional(),
-    state: ExperimentStateSchema.and(
-      z.any().openapi({ description: 'The state of the experiment.' }),
-    ).exactOptional(),
-    targets: ExperimentTargetMapSchema.and(
-      z.any().openapi({ description: 'The targets for the experiment.' }),
-    ).exactOptional(),
-    actions: ExperimentActionMapSchema.and(
-      z.any().openapi({ description: 'The actions for the experiment.' }),
-    ).exactOptional(),
-    stopConditions: ExperimentStopConditionListSchema.and(
-      z.any().openapi({ description: 'The stop conditions for the experiment.' }),
-    ).exactOptional(),
-    creationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time that the experiment was created.' }),
-    ).exactOptional(),
-    startTime: ExperimentStartTimeSchema.and(
-      z.any().openapi({ description: 'The time that the experiment started.' }),
-    ).exactOptional(),
-    endTime: ExperimentEndTimeSchema.and(
-      z.any().openapi({ description: 'The time that the experiment ended.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the experiment.' }),
-    ).exactOptional(),
-    logConfiguration: ExperimentLogConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for experiment logging.' }),
-    ).exactOptional(),
+    id: ExperimentIdSchema.exactOptional().openapi({ description: 'The ID of the experiment.' }),
+    experimentTemplateId: ExperimentTemplateIdSchema.exactOptional().openapi({
+      description: 'The ID of the experiment template.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.',
+    }),
+    state: ExperimentStateSchema.exactOptional().openapi({
+      description: 'The state of the experiment.',
+    }),
+    targets: ExperimentTargetMapSchema.exactOptional().openapi({
+      description: 'The targets for the experiment.',
+    }),
+    actions: ExperimentActionMapSchema.exactOptional().openapi({
+      description: 'The actions for the experiment.',
+    }),
+    stopConditions: ExperimentStopConditionListSchema.exactOptional().openapi({
+      description: 'The stop conditions for the experiment.',
+    }),
+    creationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The time that the experiment was created.',
+    }),
+    startTime: ExperimentStartTimeSchema.exactOptional().openapi({
+      description: 'The time that the experiment started.',
+    }),
+    endTime: ExperimentEndTimeSchema.exactOptional().openapi({
+      description: 'The time that the experiment ended.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags for the experiment.' }),
+    logConfiguration: ExperimentLogConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for experiment logging.',
+    }),
   })
   .openapi({ description: 'Describes an experiment.', required: [] })
   .openapi('Experiment')
 
 const GetExperimentResponseSchema = z
   .object({
-    experiment: ExperimentSchema.and(
-      z.any().openapi({ description: 'Information about the experiment.' }),
-    ).exactOptional(),
+    experiment: ExperimentSchema.exactOptional().openapi({
+      description: 'Information about the experiment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetExperimentResponse')
 
 const GetExperimentTemplateResponseSchema = z
   .object({
-    experimentTemplate: ExperimentTemplateSchema.and(
-      z.any().openapi({ description: 'Information about the experiment template.' }),
-    ).exactOptional(),
+    experimentTemplate: ExperimentTemplateSchema.exactOptional().openapi({
+      description: 'Information about the experiment template.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetExperimentTemplateResponse')
@@ -961,12 +854,12 @@ const TargetResourceTypeParameterRequiredSchema = z
 
 const TargetResourceTypeParameterSchema = z
   .object({
-    description: TargetResourceTypeParameterDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the parameter.' }),
-    ).exactOptional(),
-    required: TargetResourceTypeParameterRequiredSchema.and(
-      z.any().openapi({ description: 'Indicates whether the parameter is required.' }),
-    ).exactOptional(),
+    description: TargetResourceTypeParameterDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the parameter.',
+    }),
+    required: TargetResourceTypeParameterRequiredSchema.exactOptional().openapi({
+      description: 'Indicates whether the parameter is required.',
+    }),
   })
   .openapi({
     description:
@@ -981,42 +874,38 @@ const TargetResourceTypeParameterMapSchema = z
 
 const TargetResourceTypeSchema = z
   .object({
-    resourceType: TargetResourceTypeIdSchema.and(
-      z.any().openapi({ description: 'The resource type.' }),
-    ).exactOptional(),
-    description: TargetResourceTypeDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the resource type.' }),
-    ).exactOptional(),
-    parameters: TargetResourceTypeParameterMapSchema.and(
-      z.any().openapi({ description: 'The parameters for the resource type.' }),
-    ).exactOptional(),
+    resourceType: TargetResourceTypeIdSchema.exactOptional().openapi({
+      description: 'The resource type.',
+    }),
+    description: TargetResourceTypeDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the resource type.',
+    }),
+    parameters: TargetResourceTypeParameterMapSchema.exactOptional().openapi({
+      description: 'The parameters for the resource type.',
+    }),
   })
   .openapi({ description: 'Describes a resource type.', required: [] })
   .openapi('TargetResourceType')
 
 const GetTargetResourceTypeResponseSchema = z
   .object({
-    targetResourceType: TargetResourceTypeSchema.and(
-      z.any().openapi({ description: 'Information about the resource type.' }),
-    ).exactOptional(),
+    targetResourceType: TargetResourceTypeSchema.exactOptional().openapi({
+      description: 'Information about the resource type.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTargetResourceTypeResponse')
 
 const ActionSummarySchema = z
   .object({
-    id: ActionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the action.' }),
-    ).exactOptional(),
-    description: ActionDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the action.' }),
-    ).exactOptional(),
-    targets: ActionTargetMapSchema.and(
-      z.any().openapi({ description: 'The targets for the action.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the action.' }),
-    ).exactOptional(),
+    id: ActionIdSchema.exactOptional().openapi({ description: 'The ID of the action.' }),
+    description: ActionDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the action.',
+    }),
+    targets: ActionTargetMapSchema.exactOptional().openapi({
+      description: 'The targets for the action.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags for the action.' }),
   })
   .openapi({ description: 'Provides a summary of an action.', required: [] })
   .openapi('ActionSummary')
@@ -1027,38 +916,32 @@ const NextTokenSchema = z.string().regex(/[\S]+/).min(1).max(1024).openapi('Next
 
 const ListActionsResponseSchema = z
   .object({
-    actions: ActionSummaryListSchema.and(
-      z.any().openapi({ description: 'The actions.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    actions: ActionSummaryListSchema.exactOptional().openapi({ description: 'The actions.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListActionsResponse')
 
 const ExperimentTemplateSummarySchema = z
   .object({
-    id: ExperimentTemplateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the experiment template.' }),
-    ).exactOptional(),
-    description: ExperimentTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the experiment template.' }),
-    ).exactOptional(),
-    creationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time that the experiment template was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: LastUpdateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the experiment template was last updated.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the experiment template.' }),
-    ).exactOptional(),
+    id: ExperimentTemplateIdSchema.exactOptional().openapi({
+      description: 'The ID of the experiment template.',
+    }),
+    description: ExperimentTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the experiment template.',
+    }),
+    creationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The time that the experiment template was created.',
+    }),
+    lastUpdateTime: LastUpdateTimeSchema.exactOptional().openapi({
+      description: 'The time that the experiment template was last updated.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags for the experiment template.',
+    }),
   })
   .openapi({ description: 'Provides a summary of an experiment template.', required: [] })
   .openapi('ExperimentTemplateSummary')
@@ -1069,38 +952,30 @@ const ExperimentTemplateSummaryListSchema = z
 
 const ListExperimentTemplatesResponseSchema = z
   .object({
-    experimentTemplates: ExperimentTemplateSummaryListSchema.and(
-      z.any().openapi({ description: 'The experiment templates.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    experimentTemplates: ExperimentTemplateSummaryListSchema.exactOptional().openapi({
+      description: 'The experiment templates.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListExperimentTemplatesResponse')
 
 const ExperimentSummarySchema = z
   .object({
-    id: ExperimentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the experiment.' }),
-    ).exactOptional(),
-    experimentTemplateId: ExperimentTemplateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the experiment template.' }),
-    ).exactOptional(),
-    state: ExperimentStateSchema.and(
-      z.any().openapi({ description: 'The state of the experiment.' }),
-    ).exactOptional(),
-    creationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time that the experiment was created.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the experiment.' }),
-    ).exactOptional(),
+    id: ExperimentIdSchema.exactOptional().openapi({ description: 'The ID of the experiment.' }),
+    experimentTemplateId: ExperimentTemplateIdSchema.exactOptional().openapi({
+      description: 'The ID of the experiment template.',
+    }),
+    state: ExperimentStateSchema.exactOptional().openapi({
+      description: 'The state of the experiment.',
+    }),
+    creationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The time that the experiment was created.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags for the experiment.' }),
   })
   .openapi({ description: 'Provides a summary of an experiment.', required: [] })
   .openapi('ExperimentSummary')
@@ -1111,38 +986,32 @@ const ExperimentSummaryListSchema = z
 
 const ListExperimentsResponseSchema = z
   .object({
-    experiments: ExperimentSummaryListSchema.and(
-      z.any().openapi({ description: 'The experiments.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    experiments: ExperimentSummaryListSchema.exactOptional().openapi({
+      description: 'The experiments.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListExperimentsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the resource.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags for the resource.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const TargetResourceTypeSummarySchema = z
   .object({
-    resourceType: TargetResourceTypeIdSchema.and(
-      z.any().openapi({ description: 'The resource type.' }),
-    ).exactOptional(),
-    description: TargetResourceTypeDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the resource type.' }),
-    ).exactOptional(),
+    resourceType: TargetResourceTypeIdSchema.exactOptional().openapi({
+      description: 'The resource type.',
+    }),
+    description: TargetResourceTypeDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the resource type.',
+    }),
   })
   .openapi({ description: 'Describes a resource type.', required: [] })
   .openapi('TargetResourceTypeSummary')
@@ -1153,42 +1022,38 @@ const TargetResourceTypeSummaryListSchema = z
 
 const ListTargetResourceTypesResponseSchema = z
   .object({
-    targetResourceTypes: TargetResourceTypeSummaryListSchema.and(
-      z.any().openapi({ description: 'The target resource types.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    targetResourceTypes: TargetResourceTypeSummaryListSchema.exactOptional().openapi({
+      description: 'The target resource types.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTargetResourceTypesResponse')
 
 const StartExperimentResponseSchema = z
   .object({
-    experiment: ExperimentSchema.and(
-      z.any().openapi({ description: 'Information about the experiment.' }),
-    ).exactOptional(),
+    experiment: ExperimentSchema.exactOptional().openapi({
+      description: 'Information about the experiment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartExperimentResponse')
 
 const StopExperimentResponseSchema = z
   .object({
-    experiment: ExperimentSchema.and(
-      z.any().openapi({ description: 'Information about the experiment.' }),
-    ).exactOptional(),
+    experiment: ExperimentSchema.exactOptional().openapi({
+      description: 'Information about the experiment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopExperimentResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -1198,26 +1063,22 @@ const TagKeySchema = z
 
 const UpdateExperimentTemplateResponseSchema = z
   .object({
-    experimentTemplate: ExperimentTemplateSchema.and(
-      z.any().openapi({ description: 'Information about the experiment template.' }),
-    ).exactOptional(),
+    experimentTemplate: ExperimentTemplateSchema.exactOptional().openapi({
+      description: 'Information about the experiment template.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateExperimentTemplateResponse')
 
 const UpdateExperimentTemplateStopConditionInputSchema = z
   .object({
-    source: StopConditionSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source for the stop condition. Specify <code>aws:cloudwatch:alarm</code> if the stop condition is defined by a CloudWatch alarm. Specify <code>none</code> if there is no stop condition.',
-        }),
-    ),
-    value: StopConditionValueSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the CloudWatch alarm.' }),
-    ).exactOptional(),
+    source: StopConditionSourceSchema.openapi({
+      description:
+        'The source for the stop condition. Specify <code>aws:cloudwatch:alarm</code> if the stop condition is defined by a CloudWatch alarm. Specify <code>none</code> if there is no stop condition.',
+    }),
+    value: StopConditionValueSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the CloudWatch alarm.',
+    }),
   })
   .openapi({
     required: ['source'],
@@ -1228,38 +1089,25 @@ const UpdateExperimentTemplateStopConditionInputSchema = z
 
 const UpdateExperimentTemplateTargetInputSchema = z
   .object({
-    resourceType: TargetResourceTypeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type. The resource type must be supported for the specified action.',
-        }),
-    ),
-    resourceArns: ResourceArnListSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Names (ARNs) of the targets.' }),
-    ).exactOptional(),
-    resourceTags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags for the target resources.' }),
-    ).exactOptional(),
-    filters: ExperimentTemplateTargetFilterInputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to apply to identify target resources using specific attributes.',
-        }),
-    ).exactOptional(),
-    selectionMode: ExperimentTemplateTargetSelectionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Scopes the identified resources to a specific count or percentage.',
-        }),
-    ),
-    parameters: ExperimentTemplateTargetParameterMapSchema.and(
-      z.any().openapi({ description: 'The resource type parameters.' }),
-    ).exactOptional(),
+    resourceType: TargetResourceTypeIdSchema.openapi({
+      description:
+        'The resource type. The resource type must be supported for the specified action.',
+    }),
+    resourceArns: ResourceArnListSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Names (ARNs) of the targets.',
+    }),
+    resourceTags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags for the target resources.',
+    }),
+    filters: ExperimentTemplateTargetFilterInputListSchema.exactOptional().openapi({
+      description: 'The filters to apply to identify target resources using specific attributes.',
+    }),
+    selectionMode: ExperimentTemplateTargetSelectionModeSchema.openapi({
+      description: 'Scopes the identified resources to a specific count or percentage.',
+    }),
+    parameters: ExperimentTemplateTargetParameterMapSchema.exactOptional().openapi({
+      description: 'The resource type parameters.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'selectionMode'],
@@ -1270,26 +1118,20 @@ const UpdateExperimentTemplateTargetInputSchema = z
 
 const UpdateExperimentTemplateActionInputItemSchema = z
   .object({
-    actionId: ActionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the action.' }),
-    ).exactOptional(),
-    description: ExperimentTemplateActionDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the action.' }),
-    ).exactOptional(),
-    parameters: ExperimentTemplateActionParameterMapSchema.and(
-      z.any().openapi({ description: 'The parameters for the action, if applicable.' }),
-    ).exactOptional(),
-    targets: ExperimentTemplateActionTargetMapSchema.and(
-      z.any().openapi({ description: 'The targets for the action.' }),
-    ).exactOptional(),
-    startAfter: ExperimentTemplateActionStartAfterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the action that must be completed before the current action starts. Omit this parameter to run the action at the start of the experiment.',
-        }),
-    ).exactOptional(),
+    actionId: ActionIdSchema.exactOptional().openapi({ description: 'The ID of the action.' }),
+    description: ExperimentTemplateActionDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the action.',
+    }),
+    parameters: ExperimentTemplateActionParameterMapSchema.exactOptional().openapi({
+      description: 'The parameters for the action, if applicable.',
+    }),
+    targets: ExperimentTemplateActionTargetMapSchema.exactOptional().openapi({
+      description: 'The targets for the action.',
+    }),
+    startAfter: ExperimentTemplateActionStartAfterListSchema.exactOptional().openapi({
+      description:
+        'The name of the action that must be completed before the current action starts. Omit this parameter to run the action at the start of the experiment.',
+    }),
   })
   .openapi({ description: 'Specifies an action for an experiment template.', required: [] })
   .openapi('UpdateExperimentTemplateActionInputItem')
@@ -1306,19 +1148,14 @@ const CreateExperimentTemplateActionInputMapSchema = z
 
 const CreateExperimentTemplateLogConfigurationInputSchema = z
   .object({
-    cloudWatchLogsConfiguration: ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for experiment logging to Amazon CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    s3Configuration: ExperimentTemplateS3LogConfigurationInputSchema.and(
-      z.any().openapi({ description: 'The configuration for experiment logging to Amazon S3.' }),
-    ).exactOptional(),
-    logSchemaVersion: LogSchemaVersionSchema.and(
-      z.any().openapi({ description: 'The schema version.' }),
-    ),
+    cloudWatchLogsConfiguration:
+      ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema.exactOptional().openapi({
+        description: 'The configuration for experiment logging to Amazon CloudWatch Logs.',
+      }),
+    s3Configuration: ExperimentTemplateS3LogConfigurationInputSchema.exactOptional().openapi({
+      description: 'The configuration for experiment logging to Amazon S3.',
+    }),
+    logSchemaVersion: LogSchemaVersionSchema.openapi({ description: 'The schema version.' }),
   })
   .openapi({
     required: ['logSchemaVersion'],
@@ -1336,40 +1173,32 @@ const CreateExperimentTemplateTargetInputMapSchema = z
 
 const CreateExperimentTemplateRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
-    description: ExperimentTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the experiment template.' }),
-    ),
-    stopConditions: CreateExperimentTemplateStopConditionInputListSchema.and(
-      z.any().openapi({ description: 'The stop conditions.' }),
-    ),
-    targets: CreateExperimentTemplateTargetInputMapSchema.and(
-      z.any().openapi({ description: 'The targets for the experiment.' }),
-    ).exactOptional(),
-    actions: CreateExperimentTemplateActionInputMapSchema.and(
-      z.any().openapi({ description: 'The actions for the experiment.' }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the experiment template.' }),
-    ).exactOptional(),
-    logConfiguration: CreateExperimentTemplateLogConfigurationInputSchema.and(
-      z.any().openapi({ description: 'The configuration for experiment logging.' }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    description: ExperimentTemplateDescriptionSchema.openapi({
+      description: 'A description for the experiment template.',
+    }),
+    stopConditions: CreateExperimentTemplateStopConditionInputListSchema.openapi({
+      description: 'The stop conditions.',
+    }),
+    targets: CreateExperimentTemplateTargetInputMapSchema.exactOptional().openapi({
+      description: 'The targets for the experiment.',
+    }),
+    actions: CreateExperimentTemplateActionInputMapSchema.openapi({
+      description: 'The actions for the experiment.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags to apply to the experiment template.',
+    }),
+    logConfiguration: CreateExperimentTemplateLogConfigurationInputSchema.exactOptional().openapi({
+      description: 'The configuration for experiment logging.',
+    }),
   })
   .openapi({
     required: ['clientToken', 'description', 'stopConditions', 'actions', 'roleArn'],
@@ -1378,7 +1207,7 @@ const CreateExperimentTemplateRequestSchema = z
   .openapi('CreateExperimentTemplateRequest')
 
 const DeleteExperimentTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteExperimentTemplateRequest' })
   .openapi('DeleteExperimentTemplateRequest')
 
@@ -1427,29 +1256,29 @@ const ExperimentTemplateTargetParameterNameSchema = z
   .openapi('ExperimentTemplateTargetParameterName')
 
 const GetActionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetActionRequest' })
   .openapi('GetActionRequest')
 
 const GetExperimentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetExperimentRequest' })
   .openapi('GetExperimentRequest')
 
 const GetExperimentTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetExperimentTemplateRequest' })
   .openapi('GetExperimentTemplateRequest')
 
 const GetTargetResourceTypeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTargetResourceTypeRequest' })
   .openapi('GetTargetResourceTypeRequest')
 
 const ListActionsMaxResultsSchema = z.int().min(1).max(100).openapi('ListActionsMaxResults')
 
 const ListActionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListActionsRequest' })
   .openapi('ListActionsRequest')
 
@@ -1460,19 +1289,19 @@ const ListExperimentTemplatesMaxResultsSchema = z
   .openapi('ListExperimentTemplatesMaxResults')
 
 const ListExperimentTemplatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListExperimentTemplatesRequest' })
   .openapi('ListExperimentTemplatesRequest')
 
 const ListExperimentsMaxResultsSchema = z.int().min(1).max(100).openapi('ListExperimentsMaxResults')
 
 const ListExperimentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListExperimentsRequest' })
   .openapi('ListExperimentsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -1483,41 +1312,35 @@ const ListTargetResourceTypesMaxResultsSchema = z
   .openapi('ListTargetResourceTypesMaxResults')
 
 const ListTargetResourceTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTargetResourceTypesRequest' })
   .openapi('ListTargetResourceTypesRequest')
 
 const StartExperimentRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
-    experimentTemplateId: ExperimentTemplateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the experiment template.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the experiment.' }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    experimentTemplateId: ExperimentTemplateIdSchema.openapi({
+      description: 'The ID of the experiment template.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags to apply to the experiment.',
+    }),
   })
   .openapi({ required: ['clientToken', 'experimentTemplateId'], title: 'StartExperimentRequest' })
   .openapi('StartExperimentRequest')
 
 const StopExperimentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopExperimentRequest' })
   .openapi('StopExperimentRequest')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
-  .object({
-    tags: TagMapSchema.and(z.any().openapi({ description: 'The tags for the resource.' })),
-  })
+  .object({ tags: TagMapSchema.openapi({ description: 'The tags for the resource.' }) })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
@@ -1528,7 +1351,7 @@ const TargetResourceTypeParameterNameSchema = z
   .openapi('TargetResourceTypeParameterName')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -1538,19 +1361,16 @@ const UpdateExperimentTemplateActionInputMapSchema = z
 
 const UpdateExperimentTemplateLogConfigurationInputSchema = z
   .object({
-    cloudWatchLogsConfiguration: ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for experiment logging to Amazon CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    s3Configuration: ExperimentTemplateS3LogConfigurationInputSchema.and(
-      z.any().openapi({ description: 'The configuration for experiment logging to Amazon S3.' }),
-    ).exactOptional(),
-    logSchemaVersion: LogSchemaVersionSchema.and(
-      z.any().openapi({ description: 'The schema version.' }),
-    ).exactOptional(),
+    cloudWatchLogsConfiguration:
+      ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema.exactOptional().openapi({
+        description: 'The configuration for experiment logging to Amazon CloudWatch Logs.',
+      }),
+    s3Configuration: ExperimentTemplateS3LogConfigurationInputSchema.exactOptional().openapi({
+      description: 'The configuration for experiment logging to Amazon S3.',
+    }),
+    logSchemaVersion: LogSchemaVersionSchema.exactOptional().openapi({
+      description: 'The schema version.',
+    }),
   })
   .openapi({ description: 'Specifies the configuration for experiment logging.', required: [] })
   .openapi('UpdateExperimentTemplateLogConfigurationInput')
@@ -1565,29 +1385,25 @@ const UpdateExperimentTemplateTargetInputMapSchema = z
 
 const UpdateExperimentTemplateRequestSchema = z
   .object({
-    description: ExperimentTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the template.' }),
-    ).exactOptional(),
-    stopConditions: UpdateExperimentTemplateStopConditionInputListSchema.and(
-      z.any().openapi({ description: 'The stop conditions for the experiment.' }),
-    ).exactOptional(),
-    targets: UpdateExperimentTemplateTargetInputMapSchema.and(
-      z.any().openapi({ description: 'The targets for the experiment.' }),
-    ).exactOptional(),
-    actions: UpdateExperimentTemplateActionInputMapSchema.and(
-      z.any().openapi({ description: 'The actions for the experiment.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.',
-        }),
-    ).exactOptional(),
-    logConfiguration: UpdateExperimentTemplateLogConfigurationInputSchema.and(
-      z.any().openapi({ description: 'The configuration for experiment logging.' }),
-    ).exactOptional(),
+    description: ExperimentTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the template.',
+    }),
+    stopConditions: UpdateExperimentTemplateStopConditionInputListSchema.exactOptional().openapi({
+      description: 'The stop conditions for the experiment.',
+    }),
+    targets: UpdateExperimentTemplateTargetInputMapSchema.exactOptional().openapi({
+      description: 'The targets for the experiment.',
+    }),
+    actions: UpdateExperimentTemplateActionInputMapSchema.exactOptional().openapi({
+      description: 'The actions for the experiment.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.',
+    }),
+    logConfiguration: UpdateExperimentTemplateLogConfigurationInputSchema.exactOptional().openapi({
+      description: 'The configuration for experiment logging.',
+    }),
   })
   .openapi({ title: 'UpdateExperimentTemplateRequest', required: [] })
   .openapi('UpdateExperimentTemplateRequest')
@@ -1792,24 +1608,19 @@ export const postExperimentTemplatesRoute = createRoute({
               logConfiguration: z
                 .object({
                   cloudWatchLogsConfiguration:
-                    ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The configuration for experiment logging to Amazon CloudWatch Logs.',
-                        }),
-                    ).exactOptional(),
-                  s3Configuration: ExperimentTemplateS3LogConfigurationInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The configuration for experiment logging to Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  logSchemaVersion: LogSchemaVersionSchema.and(
-                    z.any().openapi({ description: 'The schema version.' }),
-                  ).exactOptional(),
+                    ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema.exactOptional().openapi(
+                      {
+                        description:
+                          'The configuration for experiment logging to Amazon CloudWatch Logs.',
+                      },
+                    ),
+                  s3Configuration:
+                    ExperimentTemplateS3LogConfigurationInputSchema.exactOptional().openapi({
+                      description: 'The configuration for experiment logging to Amazon S3.',
+                    }),
+                  logSchemaVersion: LogSchemaVersionSchema.exactOptional().openapi({
+                    description: 'The schema version.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2009,24 +1820,19 @@ export const patchExperimentTemplatesIdRoute = createRoute({
               logConfiguration: z
                 .object({
                   cloudWatchLogsConfiguration:
-                    ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The configuration for experiment logging to Amazon CloudWatch Logs.',
-                        }),
-                    ).exactOptional(),
-                  s3Configuration: ExperimentTemplateS3LogConfigurationInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The configuration for experiment logging to Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  logSchemaVersion: LogSchemaVersionSchema.and(
-                    z.any().openapi({ description: 'The schema version.' }),
-                  ).exactOptional(),
+                    ExperimentTemplateCloudWatchLogsLogConfigurationInputSchema.exactOptional().openapi(
+                      {
+                        description:
+                          'The configuration for experiment logging to Amazon CloudWatch Logs.',
+                      },
+                    ),
+                  s3Configuration:
+                    ExperimentTemplateS3LogConfigurationInputSchema.exactOptional().openapi({
+                      description: 'The configuration for experiment logging to Amazon S3.',
+                    }),
+                  logSchemaVersion: LogSchemaVersionSchema.exactOptional().openapi({
+                    description: 'The schema version.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

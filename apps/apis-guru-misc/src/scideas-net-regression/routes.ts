@@ -100,7 +100,7 @@ const ResultSchema = z
     summary: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({ description: 'array of text summaries, one per contributing varible' }),
       )
       .exactOptional()
@@ -134,7 +134,7 @@ const RegressionApiBodySchema = z
     data: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'array of comma separated variable strings, one element from each line of the csv file',
@@ -148,7 +148,9 @@ const RegressionApiBodySchema = z
       }),
     ignore_variables: z
       .array(
-        z.object({}).openapi({ description: 'array of variable names to ignore when processing' }),
+        z
+          .looseObject({})
+          .openapi({ description: 'array of variable names to ignore when processing' }),
       )
       .exactOptional()
       .openapi({ example: ['VAT', 'post code'] }),

@@ -24,507 +24,6 @@ const AcceleratorSchema = z
   })
   .openapi('Accelerator')
 
-const ActionConditionSchema = z
-  .object({
-    exitCodes: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          'Exit codes of a task execution. If there are more than 1 exit codes, when task executes with any of the exit code in the list, the condition is met and the action will be executed.',
-      }),
-  })
-  .openapi({ description: 'Conditions for actions to deal with task failures.', required: [] })
-  .openapi('ActionCondition')
-
-const TaskExecutionSchema = z
-  .object({
-    exitCode: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'When task is completed as the status of FAILED or SUCCEEDED, exit code is for one task execution result, default is 0 as success.',
-      }),
-  })
-  .openapi({
-    description:
-      'This Task Execution field includes detail information for task execution procedures, based on StatusEvent types.',
-    required: [],
-  })
-  .openapi('TaskExecution')
-
-const StatusEventSchema = z
-  .object({
-    description: z.string().exactOptional().openapi({ description: 'Description of the event.' }),
-    eventTime: z.string().exactOptional().openapi({ description: 'The time this event occurred.' }),
-    taskExecution: TaskExecutionSchema.exactOptional().openapi({ description: 'Task Execution' }),
-    taskState: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'ASSIGNED',
-        'RUNNING',
-        'FAILED',
-        'SUCCEEDED',
-        'UNEXECUTED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Task State' }),
-    type: z.string().exactOptional().openapi({ description: 'Type of the event.' }),
-  })
-  .openapi({ description: 'Status event', required: [] })
-  .openapi('StatusEvent')
-
-const TaskStatusSchema = z
-  .object({
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'ASSIGNED',
-        'RUNNING',
-        'FAILED',
-        'SUCCEEDED',
-        'UNEXECUTED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Task state' }),
-    statusEvents: z
-      .array(StatusEventSchema)
-      .exactOptional()
-      .openapi({ description: 'Detailed info about why the state is reached.' }),
-  })
-  .openapi({ description: 'Status of a task', required: [] })
-  .openapi('TaskStatus')
-
-const AgentTaskInfoSchema = z
-  .object({
-    runnable: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The highest index of a runnable started by the agent for this task. The runnables are indexed from 1. Value 0 is undefined.',
-      }),
-    taskId: z.string().exactOptional().openapi({ description: 'ID of the Task' }),
-    taskStatus: TaskStatusSchema.exactOptional().openapi({
-      description:
-        'The status of the Task. If we need agent specific fields we should fork the public TaskStatus into an agent specific one. Or add them below.',
-    }),
-  })
-  .openapi({ description: 'Task Info', required: [] })
-  .openapi('AgentTaskInfo')
-
-const AgentInfoSchema = z
-  .object({
-    jobId: z.string().exactOptional().openapi({ description: 'The assigned Job ID' }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'When the AgentInfo is generated.' }),
-    state: z
-      .enum(['AGENT_STATE_UNSPECIFIED', 'AGENT_STARTING', 'AGENT_RUNNING', 'AGENT_STOPPED'])
-      .exactOptional()
-      .openapi({ description: 'Agent state.' }),
-    taskGroupId: z.string().exactOptional().openapi({ description: 'The assigned task group ID.' }),
-    tasks: z.array(AgentTaskInfoSchema).exactOptional().openapi({ description: 'Task Info.' }),
-  })
-  .openapi({ description: 'VM Agent Info.', required: [] })
-  .openapi('AgentInfo')
-
-const AgentMetadataSchema = z
-  .object({
-    creationTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'When the VM agent started. Use agent_startup_time instead.' }),
-    creator: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Full name of the entity that created this vm. For MIG, this path is: projects/{project}/regions/{region}/InstanceGroupManagers/{igm} The value is retrieved from the vm metadata key of "created-by".',
-      }),
-    imageVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'image version for the VM that this agent is installed on.' }),
-    instance: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'GCP instance name (go/instance-name).' }),
-    instanceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'GCP instance ID (go/instance-id).' }),
-    instancePreemptionNoticeReceived: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If the GCP instance has received preemption notice.' }),
-    osRelease: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'parsed contents of /etc/os-release' }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'agent binary version running on VM' }),
-    zone: z.string().exactOptional().openapi({ description: 'Agent zone.' }),
-  })
-  .openapi({ description: 'VM Agent Metadata.', required: [] })
-  .openapi('AgentMetadata')
-
-const ComputeResourceSchema = z
-  .object({
-    bootDiskMib: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Extra boot disk size in MiB for each task.' }),
-    cpuMilli: z.string().exactOptional().openapi({ description: 'The milliCPU count.' }),
-    memoryMib: z.string().exactOptional().openapi({ description: 'Memory in MiB.' }),
-  })
-  .openapi({ description: 'Compute resource requirements', required: [] })
-  .openapi('ComputeResource')
-
-const KMSEnvMapSchema = z
-  .object({
-    cipherText: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value of the cipherText response from the `encrypt` method.' }),
-    keyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the KMS key that will be used to decrypt the cipher text.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('KMSEnvMap')
-
-const EnvironmentSchema = z
-  .object({
-    encryptedVariables: KMSEnvMapSchema.exactOptional().openapi({
-      description:
-        'An encrypted JSON dictionary where the key/value pairs correspond to environment variable names and their values.',
-    }),
-    secretVariables: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of environment variable names to Secret Manager secret names. The VM will access the named secrets to set the value of each environment variable.',
-      }),
-    variables: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'A map of environment variable names to values.' }),
-  })
-  .openapi({
-    description:
-      'An Environment describes a collection of environment variables to set when executing Tasks.',
-    required: [],
-  })
-  .openapi('Environment')
-
-const LifecyclePolicySchema = z
-  .object({
-    action: z
-      .enum(['ACTION_UNSPECIFIED', 'RETRY_TASK', 'FAIL_TASK'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Action to execute when ActionCondition is true. When RETRY_TASK is specified, we will retry failed tasks if we notice any exit code match and fail tasks if no match is found. Likewise, when FAIL_TASK is specified, we will fail tasks if we notice any exit code match and retry tasks if no match is found.',
-      }),
-    actionCondition: ActionConditionSchema.exactOptional().openapi({
-      description: 'Conditions that decide why a task failure is dealt with a specific action.',
-    }),
-  })
-  .openapi({
-    description:
-      'LifecyclePolicy describes how to deal with task failures based on different conditions.',
-    required: [],
-  })
-  .openapi('LifecyclePolicy')
-
-const BarrierSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Barriers are identified by their index in runnable list. Names are not required, but if present should be an identifier.',
-      }),
-  })
-  .openapi({
-    description: 'Barrier runnable blocks until all tasks in a taskgroup reach it.',
-    required: [],
-  })
-  .openapi('Barrier')
-
-const ContainerSchema = z
-  .object({
-    blockExternalNetwork: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, external network access to and from container will be blocked, containers that are with block_external_network as true can still communicate with each other, network cannot be specified in the `container.options` field.',
-      }),
-    commands: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Overrides the `CMD` specified in the container. If there is an ENTRYPOINT (either in the container image or with the entrypoint field below) then commands are appended as arguments to the ENTRYPOINT.',
-      }),
-    entrypoint: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Overrides the `ENTRYPOINT` specified in the container.' }),
-    imageUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URI to pull the container image from.' }),
-    options: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Arbitrary additional options to include in the "docker run" command when running this container, e.g. "--network host".',
-      }),
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional password for logging in to a docker registry. If password matches `projects/*/secrets/*/versions/*` then Batch will read the password from the Secret Manager;',
-      }),
-    username: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional username for logging in to a docker registry. If username matches `projects/*/secrets/*/versions/*` then Batch will read the username from the Secret Manager.',
-      }),
-    volumes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Volumes to mount (bind mount) from the host machine files or directories into the container, formatted to match docker run's --volume option, e.g. /foo:/bar, or /foo:/bar:ro",
-      }),
-  })
-  .openapi({ description: 'Container runnable.', required: [] })
-  .openapi('Container')
-
-const ScriptSchema = z
-  .object({
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Script file path on the host VM. To specify an interpreter, please add a `#!`(also known as [shebang line](https://en.wikipedia.org/wiki/Shebang_(Unix))) as the first line of the file.(For example, to execute the script using bash, `#!/bin/bash` should be the first line of the file. To execute the script using`Python3`, `#!/usr/bin/env python3` should be the first line of the file.) Otherwise, the file will by default be excuted by `/bin/sh`.',
-      }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Shell script text. To specify an interpreter, please add a `#!\\n` at the beginning of the text.(For example, to execute the script using bash, `#!/bin/bash\\n` should be added. To execute the script using`Python3`, `#!/usr/bin/env python3\\n` should be added.) Otherwise, the script will by default be excuted by `/bin/sh`.',
-      }),
-  })
-  .openapi({ description: 'Script runnable.', required: [] })
-  .openapi('Script')
-
-const RunnableSchema = z
-  .object({
-    alwaysRun: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "By default, after a Runnable fails, no further Runnable are executed. This flag indicates that this Runnable must be run even if the Task has already failed. This is useful for Runnables that copy output files off of the VM or for debugging. The always_run flag does not override the Task's overall max_run_duration. If the max_run_duration has expired then no further Runnables will execute, not even always_run Runnables.",
-      }),
-    background: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'This flag allows a Runnable to continue running in the background while the Task executes subsequent Runnables. This is useful to provide services to other Runnables (or to provide debugging support tools like SSH servers).',
-      }),
-    barrier: BarrierSchema.exactOptional().openapi({ description: 'Barrier runnable.' }),
-    container: ContainerSchema.exactOptional().openapi({ description: 'Container runnable.' }),
-    environment: EnvironmentSchema.exactOptional().openapi({
-      description:
-        'Environment variables for this Runnable (overrides variables set for the whole Task or TaskGroup).',
-    }),
-    ignoreExitStatus: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Normally, a non-zero exit status causes the Task to fail. This flag allows execution of other Runnables to continue instead.',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Labels for this Runnable.' }),
-    script: ScriptSchema.exactOptional().openapi({ description: 'Script runnable.' }),
-    timeout: z.string().exactOptional().openapi({ description: 'Timeout for this Runnable.' }),
-  })
-  .openapi({
-    description:
-      'Runnable describes instructions for executing a specific script or container as part of a Task.',
-    required: [],
-  })
-  .openapi('Runnable')
-
-const GCSSchema = z
-  .object({
-    remotePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Remote path, either a bucket name or a subdirectory of a bucket, e.g.: bucket_name, bucket_name/subdirectory/',
-      }),
-  })
-  .openapi({ description: 'Represents a Google Cloud Storage volume.', required: [] })
-  .openapi('GCS')
-
-const NFSSchema = z
-  .object({
-    remotePath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Remote source path exported from the NFS, e.g., "/share".' }),
-    server: z.string().exactOptional().openapi({ description: 'The IP address of the NFS.' }),
-  })
-  .openapi({ description: 'Represents an NFS volume.', required: [] })
-  .openapi('NFS')
-
-const VolumeSchema = z
-  .object({
-    deviceName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Device name of an attached disk volume, which should align with a device_name specified by job.allocation_policy.instances[0].policy.disks[i].device_name or defined by the given instance template in job.allocation_policy.instances[0].instance_template.',
-      }),
-    gcs: GCSSchema.exactOptional().openapi({ description: 'A Google Cloud Storage (GCS) volume.' }),
-    mountOptions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'For Google Cloud Storage (GCS), mount options are the options supported by the gcsfuse tool (https://github.com/GoogleCloudPlatform/gcsfuse). For existing persistent disks, mount options provided by the mount command (https://man7.org/linux/man-pages/man8/mount.8.html) except writing are supported. This is due to restrictions of multi-writer mode (https://cloud.google.com/compute/docs/disks/sharing-disks-between-vms). For other attached disks and Network File System (NFS), mount options are these supported by the mount command (https://man7.org/linux/man-pages/man8/mount.8.html).',
-      }),
-    mountPath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The mount path for the volume, e.g. /mnt/disks/share.' }),
-    nfs: NFSSchema.exactOptional().openapi({
-      description: 'A Network File System (NFS) volume. For example, a Filestore file share.',
-    }),
-  })
-  .openapi({
-    description: 'Volume describes a volume and parameters for it to be mounted to a VM.',
-    required: [],
-  })
-  .openapi('Volume')
-
-const TaskSpecSchema = z
-  .object({
-    computeResource: ComputeResourceSchema.exactOptional().openapi({
-      description: 'ComputeResource requirements.',
-    }),
-    environment: EnvironmentSchema.exactOptional().openapi({
-      description: 'Environment variables to set before running the Task.',
-    }),
-    environments: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Deprecated: please use environment(non-plural) instead.' }),
-    lifecyclePolicies: z
-      .array(LifecyclePolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Lifecycle management schema when any task in a task group is failed. Currently we only support one lifecycle policy. When the lifecycle policy condition is met, the action in the policy will execute. If task execution result does not meet with the defined lifecycle policy, we consider it as the default policy. Default policy means if the exit code is 0, exit task. If task ends with non-zero exit code, retry the task with max_retry_count.',
-      }),
-    maxRetryCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum number of retries on failures. The default, 0, which means never retry. The valid value range is [0, 10].',
-      }),
-    maxRunDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum duration the task should run. The task will be killed and marked as FAILED if over this limit.',
-      }),
-    runnables: z
-      .array(RunnableSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The sequence of scripts or containers to run for this Task. Each Task using this TaskSpec executes its list of runnables in order. The Task succeeds if all of its runnables either exit with a zero status or any that exit with a non-zero status have the ignore_exit_status flag. Background runnables are killed automatically (if they have not already exited) a short time after all foreground runnables have completed. Even though this is likely to result in a non-zero exit status for the background runnable, these automatic kills are not treated as Task failures.',
-      }),
-    volumes: z
-      .array(VolumeSchema)
-      .exactOptional()
-      .openapi({ description: 'Volumes to mount before running Tasks using this TaskSpec.' }),
-  })
-  .openapi({ description: 'Spec of a task', required: [] })
-  .openapi('TaskSpec')
-
-const AgentTaskSchema = z
-  .object({
-    intendedState: z
-      .enum(['INTENDED_STATE_UNSPECIFIED', 'ASSIGNED', 'CANCELLED', 'DELETED'])
-      .exactOptional()
-      .openapi({ description: 'The intended state of the task.' }),
-    reachedBarrier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The highest barrier reached by all tasks in the task's TaskGroup.",
-      }),
-    spec: TaskSpecSchema.exactOptional().openapi({ description: 'Task Spec.' }),
-    status: TaskStatusSchema.exactOptional().openapi({ description: 'Task status.' }),
-    task: z.string().exactOptional().openapi({ description: 'Task name.' }),
-    taskSource: z
-      .enum(['TASK_SOURCE_UNSPECIFIED', 'BATCH_INTERNAL', 'USER'])
-      .exactOptional()
-      .openapi({ description: 'TaskSource represents the source of the task.' }),
-  })
-  .openapi({
-    description:
-      'TODO(b/182501497) The message needs to be redefined when the Agent API server updates data in storage per the backend design.',
-    required: [],
-  })
-  .openapi('AgentTask')
-
-const AgentTimingInfoSchema = z
-  .object({
-    agentStartupTime: z.string().exactOptional().openapi({ description: 'Agent startup time' }),
-    bootTime: z.string().exactOptional().openapi({ description: 'Boot timestamp of the VM OS' }),
-    scriptStartupTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Startup time of the Batch VM script.' }),
-  })
-  .openapi({ description: 'VM timing information', required: [] })
-  .openapi('AgentTimingInfo')
-
 const DiskSchema = z
   .object({
     diskInterface: z
@@ -784,38 +283,6 @@ const AllocationPolicySchema = z
   })
   .openapi('AllocationPolicy')
 
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const InstanceStatusSchema = z
-  .object({
-    bootDisk: DiskSchema.exactOptional().openapi({ description: 'The VM boot disk.' }),
-    machineType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Compute Engine machine type.' }),
-    provisioningModel: z
-      .enum(['PROVISIONING_MODEL_UNSPECIFIED', 'STANDARD', 'SPOT', 'PREEMPTIBLE'])
-      .exactOptional()
-      .openapi({ description: 'The VM instance provisioning model.' }),
-    taskPack: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The max number of tasks can be assigned to this instance type.' }),
-  })
-  .openapi({ description: 'VM instance status.', required: [] })
-  .openapi('InstanceStatus')
-
 const LogsPolicySchema = z
   .object({
     destination: z
@@ -892,6 +359,64 @@ const JobNotificationSchema = z
   .openapi({ description: 'Notification configurations.', required: [] })
   .openapi('JobNotification')
 
+const TaskExecutionSchema = z
+  .object({
+    exitCode: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'When task is completed as the status of FAILED or SUCCEEDED, exit code is for one task execution result, default is 0 as success.',
+      }),
+  })
+  .openapi({
+    description:
+      'This Task Execution field includes detail information for task execution procedures, based on StatusEvent types.',
+    required: [],
+  })
+  .openapi('TaskExecution')
+
+const StatusEventSchema = z
+  .object({
+    description: z.string().exactOptional().openapi({ description: 'Description of the event.' }),
+    eventTime: z.string().exactOptional().openapi({ description: 'The time this event occurred.' }),
+    taskExecution: TaskExecutionSchema.exactOptional().openapi({ description: 'Task Execution' }),
+    taskState: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'ASSIGNED',
+        'RUNNING',
+        'FAILED',
+        'SUCCEEDED',
+        'UNEXECUTED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Task State' }),
+    type: z.string().exactOptional().openapi({ description: 'Type of the event.' }),
+  })
+  .openapi({ description: 'Status event', required: [] })
+  .openapi('StatusEvent')
+
+const InstanceStatusSchema = z
+  .object({
+    bootDisk: DiskSchema.exactOptional().openapi({ description: 'The VM boot disk.' }),
+    machineType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Compute Engine machine type.' }),
+    provisioningModel: z
+      .enum(['PROVISIONING_MODEL_UNSPECIFIED', 'STANDARD', 'SPOT', 'PREEMPTIBLE'])
+      .exactOptional()
+      .openapi({ description: 'The VM instance provisioning model.' }),
+    taskPack: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The max number of tasks can be assigned to this instance type.' }),
+  })
+  .openapi({ description: 'VM instance status.', required: [] })
+  .openapi('InstanceStatus')
+
 const TaskGroupStatusSchema = z
   .object({
     counts: z
@@ -941,6 +466,330 @@ const JobStatusSchema = z
   })
   .openapi({ description: 'Job status.', required: [] })
   .openapi('JobStatus')
+
+const KMSEnvMapSchema = z
+  .object({
+    cipherText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value of the cipherText response from the `encrypt` method.' }),
+    keyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the KMS key that will be used to decrypt the cipher text.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('KMSEnvMap')
+
+const EnvironmentSchema = z
+  .object({
+    encryptedVariables: KMSEnvMapSchema.exactOptional().openapi({
+      description:
+        'An encrypted JSON dictionary where the key/value pairs correspond to environment variable names and their values.',
+    }),
+    secretVariables: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A map of environment variable names to Secret Manager secret names. The VM will access the named secrets to set the value of each environment variable.',
+      }),
+    variables: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'A map of environment variable names to values.' }),
+  })
+  .openapi({
+    description:
+      'An Environment describes a collection of environment variables to set when executing Tasks.',
+    required: [],
+  })
+  .openapi('Environment')
+
+const ComputeResourceSchema = z
+  .object({
+    bootDiskMib: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Extra boot disk size in MiB for each task.' }),
+    cpuMilli: z.string().exactOptional().openapi({ description: 'The milliCPU count.' }),
+    memoryMib: z.string().exactOptional().openapi({ description: 'Memory in MiB.' }),
+  })
+  .openapi({ description: 'Compute resource requirements', required: [] })
+  .openapi('ComputeResource')
+
+const ActionConditionSchema = z
+  .object({
+    exitCodes: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'Exit codes of a task execution. If there are more than 1 exit codes, when task executes with any of the exit code in the list, the condition is met and the action will be executed.',
+      }),
+  })
+  .openapi({ description: 'Conditions for actions to deal with task failures.', required: [] })
+  .openapi('ActionCondition')
+
+const LifecyclePolicySchema = z
+  .object({
+    action: z
+      .enum(['ACTION_UNSPECIFIED', 'RETRY_TASK', 'FAIL_TASK'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Action to execute when ActionCondition is true. When RETRY_TASK is specified, we will retry failed tasks if we notice any exit code match and fail tasks if no match is found. Likewise, when FAIL_TASK is specified, we will fail tasks if we notice any exit code match and retry tasks if no match is found.',
+      }),
+    actionCondition: ActionConditionSchema.exactOptional().openapi({
+      description: 'Conditions that decide why a task failure is dealt with a specific action.',
+    }),
+  })
+  .openapi({
+    description:
+      'LifecyclePolicy describes how to deal with task failures based on different conditions.',
+    required: [],
+  })
+  .openapi('LifecyclePolicy')
+
+const BarrierSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Barriers are identified by their index in runnable list. Names are not required, but if present should be an identifier.',
+      }),
+  })
+  .openapi({
+    description: 'Barrier runnable blocks until all tasks in a taskgroup reach it.',
+    required: [],
+  })
+  .openapi('Barrier')
+
+const ContainerSchema = z
+  .object({
+    blockExternalNetwork: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, external network access to and from container will be blocked, containers that are with block_external_network as true can still communicate with each other, network cannot be specified in the `container.options` field.',
+      }),
+    commands: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Overrides the `CMD` specified in the container. If there is an ENTRYPOINT (either in the container image or with the entrypoint field below) then commands are appended as arguments to the ENTRYPOINT.',
+      }),
+    entrypoint: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Overrides the `ENTRYPOINT` specified in the container.' }),
+    imageUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URI to pull the container image from.' }),
+    options: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Arbitrary additional options to include in the "docker run" command when running this container, e.g. "--network host".',
+      }),
+    password: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional password for logging in to a docker registry. If password matches `projects/*/secrets/*/versions/*` then Batch will read the password from the Secret Manager;',
+      }),
+    username: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional username for logging in to a docker registry. If username matches `projects/*/secrets/*/versions/*` then Batch will read the username from the Secret Manager.',
+      }),
+    volumes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Volumes to mount (bind mount) from the host machine files or directories into the container, formatted to match docker run's --volume option, e.g. /foo:/bar, or /foo:/bar:ro",
+      }),
+  })
+  .openapi({ description: 'Container runnable.', required: [] })
+  .openapi('Container')
+
+const ScriptSchema = z
+  .object({
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Script file path on the host VM. To specify an interpreter, please add a `#!`(also known as [shebang line](https://en.wikipedia.org/wiki/Shebang_(Unix))) as the first line of the file.(For example, to execute the script using bash, `#!/bin/bash` should be the first line of the file. To execute the script using`Python3`, `#!/usr/bin/env python3` should be the first line of the file.) Otherwise, the file will by default be excuted by `/bin/sh`.',
+      }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Shell script text. To specify an interpreter, please add a `#!\\n` at the beginning of the text.(For example, to execute the script using bash, `#!/bin/bash\\n` should be added. To execute the script using`Python3`, `#!/usr/bin/env python3\\n` should be added.) Otherwise, the script will by default be excuted by `/bin/sh`.',
+      }),
+  })
+  .openapi({ description: 'Script runnable.', required: [] })
+  .openapi('Script')
+
+const RunnableSchema = z
+  .object({
+    alwaysRun: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "By default, after a Runnable fails, no further Runnable are executed. This flag indicates that this Runnable must be run even if the Task has already failed. This is useful for Runnables that copy output files off of the VM or for debugging. The always_run flag does not override the Task's overall max_run_duration. If the max_run_duration has expired then no further Runnables will execute, not even always_run Runnables.",
+      }),
+    background: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'This flag allows a Runnable to continue running in the background while the Task executes subsequent Runnables. This is useful to provide services to other Runnables (or to provide debugging support tools like SSH servers).',
+      }),
+    barrier: BarrierSchema.exactOptional().openapi({ description: 'Barrier runnable.' }),
+    container: ContainerSchema.exactOptional().openapi({ description: 'Container runnable.' }),
+    environment: EnvironmentSchema.exactOptional().openapi({
+      description:
+        'Environment variables for this Runnable (overrides variables set for the whole Task or TaskGroup).',
+    }),
+    ignoreExitStatus: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Normally, a non-zero exit status causes the Task to fail. This flag allows execution of other Runnables to continue instead.',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Labels for this Runnable.' }),
+    script: ScriptSchema.exactOptional().openapi({ description: 'Script runnable.' }),
+    timeout: z.string().exactOptional().openapi({ description: 'Timeout for this Runnable.' }),
+  })
+  .openapi({
+    description:
+      'Runnable describes instructions for executing a specific script or container as part of a Task.',
+    required: [],
+  })
+  .openapi('Runnable')
+
+const GCSSchema = z
+  .object({
+    remotePath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Remote path, either a bucket name or a subdirectory of a bucket, e.g.: bucket_name, bucket_name/subdirectory/',
+      }),
+  })
+  .openapi({ description: 'Represents a Google Cloud Storage volume.', required: [] })
+  .openapi('GCS')
+
+const NFSSchema = z
+  .object({
+    remotePath: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Remote source path exported from the NFS, e.g., "/share".' }),
+    server: z.string().exactOptional().openapi({ description: 'The IP address of the NFS.' }),
+  })
+  .openapi({ description: 'Represents an NFS volume.', required: [] })
+  .openapi('NFS')
+
+const VolumeSchema = z
+  .object({
+    deviceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Device name of an attached disk volume, which should align with a device_name specified by job.allocation_policy.instances[0].policy.disks[i].device_name or defined by the given instance template in job.allocation_policy.instances[0].instance_template.',
+      }),
+    gcs: GCSSchema.exactOptional().openapi({ description: 'A Google Cloud Storage (GCS) volume.' }),
+    mountOptions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'For Google Cloud Storage (GCS), mount options are the options supported by the gcsfuse tool (https://github.com/GoogleCloudPlatform/gcsfuse). For existing persistent disks, mount options provided by the mount command (https://man7.org/linux/man-pages/man8/mount.8.html) except writing are supported. This is due to restrictions of multi-writer mode (https://cloud.google.com/compute/docs/disks/sharing-disks-between-vms). For other attached disks and Network File System (NFS), mount options are these supported by the mount command (https://man7.org/linux/man-pages/man8/mount.8.html).',
+      }),
+    mountPath: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The mount path for the volume, e.g. /mnt/disks/share.' }),
+    nfs: NFSSchema.exactOptional().openapi({
+      description: 'A Network File System (NFS) volume. For example, a Filestore file share.',
+    }),
+  })
+  .openapi({
+    description: 'Volume describes a volume and parameters for it to be mounted to a VM.',
+    required: [],
+  })
+  .openapi('Volume')
+
+const TaskSpecSchema = z
+  .object({
+    computeResource: ComputeResourceSchema.exactOptional().openapi({
+      description: 'ComputeResource requirements.',
+    }),
+    environment: EnvironmentSchema.exactOptional().openapi({
+      description: 'Environment variables to set before running the Task.',
+    }),
+    environments: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Deprecated: please use environment(non-plural) instead.' }),
+    lifecyclePolicies: z
+      .array(LifecyclePolicySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Lifecycle management schema when any task in a task group is failed. Currently we only support one lifecycle policy. When the lifecycle policy condition is met, the action in the policy will execute. If task execution result does not meet with the defined lifecycle policy, we consider it as the default policy. Default policy means if the exit code is 0, exit task. If task ends with non-zero exit code, retry the task with max_retry_count.',
+      }),
+    maxRetryCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of retries on failures. The default, 0, which means never retry. The valid value range is [0, 10].',
+      }),
+    maxRunDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum duration the task should run. The task will be killed and marked as FAILED if over this limit.',
+      }),
+    runnables: z
+      .array(RunnableSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The sequence of scripts or containers to run for this Task. Each Task using this TaskSpec executes its list of runnables in order. The Task succeeds if all of its runnables either exit with a zero status or any that exit with a non-zero status have the ignore_exit_status flag. Background runnables are killed automatically (if they have not already exited) a short time after all foreground runnables have completed. Even though this is likely to result in a non-zero exit status for the background runnable, these automatic kills are not treated as Task failures.',
+      }),
+    volumes: z
+      .array(VolumeSchema)
+      .exactOptional()
+      .openapi({ description: 'Volumes to mount before running Tasks using this TaskSpec.' }),
+  })
+  .openapi({ description: 'Spec of a task', required: [] })
+  .openapi('TaskSpec')
 
 const TaskGroupSchema = z
   .object({
@@ -1002,7 +851,21 @@ const TaskGroupSchema = z
   })
   .openapi('TaskGroup')
 
-const JobSchema = z
+type JobType = {
+  allocationPolicy?: z.infer<typeof AllocationPolicySchema>
+  createTime?: string
+  labels?: { [key: string]: string }
+  logsPolicy?: z.infer<typeof LogsPolicySchema>
+  name?: string
+  notifications?: z.infer<typeof JobNotificationSchema>[]
+  priority?: string
+  status?: z.infer<typeof JobStatusSchema>
+  taskGroups?: z.infer<typeof TaskGroupSchema>[]
+  uid?: string
+  updateTime?: string
+}
+
+const JobSchema: z.ZodType<JobType> = z
   .object({
     allocationPolicy: AllocationPolicySchema.exactOptional().openapi({
       description: 'Compute resource allocation for all TaskGroups in the Job.',
@@ -1065,7 +928,176 @@ const JobSchema = z
   .openapi({ description: 'The Cloud Batch Job description.', required: [] })
   .openapi('Job')
 
-const ListJobsResponseSchema = z
+type ListJobsResponseType = {
+  jobs?: z.infer<typeof JobSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const TaskStatusSchema = z
+  .object({
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'ASSIGNED',
+        'RUNNING',
+        'FAILED',
+        'SUCCEEDED',
+        'UNEXECUTED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Task state' }),
+    statusEvents: z
+      .array(StatusEventSchema)
+      .exactOptional()
+      .openapi({ description: 'Detailed info about why the state is reached.' }),
+  })
+  .openapi({ description: 'Status of a task', required: [] })
+  .openapi('TaskStatus')
+
+const AgentTaskInfoSchema = z
+  .object({
+    runnable: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The highest index of a runnable started by the agent for this task. The runnables are indexed from 1. Value 0 is undefined.',
+      }),
+    taskId: z.string().exactOptional().openapi({ description: 'ID of the Task' }),
+    taskStatus: TaskStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the Task. If we need agent specific fields we should fork the public TaskStatus into an agent specific one. Or add them below.',
+    }),
+  })
+  .openapi({ description: 'Task Info', required: [] })
+  .openapi('AgentTaskInfo')
+
+const AgentInfoSchema = z
+  .object({
+    jobId: z.string().exactOptional().openapi({ description: 'The assigned Job ID' }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'When the AgentInfo is generated.' }),
+    state: z
+      .enum(['AGENT_STATE_UNSPECIFIED', 'AGENT_STARTING', 'AGENT_RUNNING', 'AGENT_STOPPED'])
+      .exactOptional()
+      .openapi({ description: 'Agent state.' }),
+    taskGroupId: z.string().exactOptional().openapi({ description: 'The assigned task group ID.' }),
+    tasks: z.array(AgentTaskInfoSchema).exactOptional().openapi({ description: 'Task Info.' }),
+  })
+  .openapi({ description: 'VM Agent Info.', required: [] })
+  .openapi('AgentInfo')
+
+const AgentTimingInfoSchema = z
+  .object({
+    agentStartupTime: z.string().exactOptional().openapi({ description: 'Agent startup time' }),
+    bootTime: z.string().exactOptional().openapi({ description: 'Boot timestamp of the VM OS' }),
+    scriptStartupTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Startup time of the Batch VM script.' }),
+  })
+  .openapi({ description: 'VM timing information', required: [] })
+  .openapi('AgentTimingInfo')
+
+const AgentMetadataSchema = z
+  .object({
+    creationTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'When the VM agent started. Use agent_startup_time instead.' }),
+    creator: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Full name of the entity that created this vm. For MIG, this path is: projects/{project}/regions/{region}/InstanceGroupManagers/{igm} The value is retrieved from the vm metadata key of "created-by".',
+      }),
+    imageVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'image version for the VM that this agent is installed on.' }),
+    instance: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'GCP instance name (go/instance-name).' }),
+    instanceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'GCP instance ID (go/instance-id).' }),
+    instancePreemptionNoticeReceived: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If the GCP instance has received preemption notice.' }),
+    osRelease: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'parsed contents of /etc/os-release' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'agent binary version running on VM' }),
+    zone: z.string().exactOptional().openapi({ description: 'Agent zone.' }),
+  })
+  .openapi({ description: 'VM Agent Metadata.', required: [] })
+  .openapi('AgentMetadata')
+
+type ReportAgentStateRequestType = {
+  agentInfo?: z.infer<typeof AgentInfoSchema>
+  agentTimingInfo?: z.infer<typeof AgentTimingInfoSchema>
+  metadata?: z.infer<typeof AgentMetadataSchema>
+}
+
+const AgentTaskSchema = z
+  .object({
+    intendedState: z
+      .enum(['INTENDED_STATE_UNSPECIFIED', 'ASSIGNED', 'CANCELLED', 'DELETED'])
+      .exactOptional()
+      .openapi({ description: 'The intended state of the task.' }),
+    reachedBarrier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The highest barrier reached by all tasks in the task's TaskGroup.",
+      }),
+    spec: TaskSpecSchema.exactOptional().openapi({ description: 'Task Spec.' }),
+    status: TaskStatusSchema.exactOptional().openapi({ description: 'Task status.' }),
+    task: z.string().exactOptional().openapi({ description: 'Task name.' }),
+    taskSource: z
+      .enum(['TASK_SOURCE_UNSPECIFIED', 'BATCH_INTERNAL', 'USER'])
+      .exactOptional()
+      .openapi({ description: 'TaskSource represents the source of the task.' }),
+  })
+  .openapi({
+    description:
+      'TODO(b/182501497) The message needs to be redefined when the Agent API server updates data in storage per the backend design.',
+    required: [],
+  })
+  .openapi('AgentTask')
+
+type ReportAgentStateResponseType = {
+  defaultReportInterval?: string
+  minReportInterval?: string
+  tasks?: z.infer<typeof AgentTaskSchema>[]
+}
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const ListJobsResponseSchema: z.ZodType<ListJobsResponseType> = z
   .object({
     jobs: z.array(JobSchema).exactOptional().openapi({ description: 'Jobs.' }),
     nextPageToken: z.string().exactOptional().openapi({ description: 'Next page token.' }),
@@ -1330,7 +1362,7 @@ const OperationMetadataSchema = z
   .openapi({ description: 'Represents the metadata of the long-running operation.', required: [] })
   .openapi('OperationMetadata')
 
-const ReportAgentStateRequestSchema = z
+const ReportAgentStateRequestSchema: z.ZodType<ReportAgentStateRequestType> = z
   .object({
     agentInfo: AgentInfoSchema.exactOptional().openapi({ description: 'Agent info.' }),
     agentTimingInfo: AgentTimingInfoSchema.exactOptional().openapi({
@@ -1345,7 +1377,7 @@ const ReportAgentStateRequestSchema = z
   })
   .openapi('ReportAgentStateRequest')
 
-const ReportAgentStateResponseSchema = z
+const ReportAgentStateResponseSchema: z.ZodType<ReportAgentStateResponseType> = z
   .object({
     defaultReportInterval: z
       .string()

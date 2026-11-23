@@ -24,12 +24,6 @@ Base URLs:
 |conversations.read||
 |conversations.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="conversations-inbox-messages-actors">Actors</h1>
 
 ## Batch read actors

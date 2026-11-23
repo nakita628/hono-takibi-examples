@@ -1,265 +1,349 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const TimestampSchema = z
+const DeviceRamSchema = z
   .object({
+    maxBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Maximum RAM in bytes (bound excluded).' }),
+    minBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Minimum RAM in bytes (bound included).' }),
+  })
+  .openapi({ description: "Conditions about a device's RAM capabilities.", required: [] })
+  .openapi('DeviceRam')
+
+const DeviceIdSchema = z
+  .object({
+    buildBrand: z.string().exactOptional().openapi({ description: 'Value of Build.BRAND.' }),
+    buildDevice: z.string().exactOptional().openapi({ description: 'Value of Build.DEVICE.' }),
+  })
+  .openapi({ description: 'Identifier of a device.', required: [] })
+  .openapi('DeviceId')
+
+const SystemFeatureSchema = z
+  .object({ name: z.string().exactOptional().openapi({ description: 'The name of the feature.' }) })
+  .openapi({ description: 'Representation of a system feature.', required: [] })
+  .openapi('SystemFeature')
+
+const DeviceSelectorSchema = z
+  .object({
+    deviceRam: DeviceRamSchema.exactOptional().openapi({
+      description: "Conditions on the device's RAM.",
+    }),
+    excludedDeviceIds: z
+      .array(DeviceIdSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Device models excluded by this selector, even if they match all other conditions.',
+      }),
+    forbiddenSystemFeatures: z
+      .array(SystemFeatureSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A device that has any of these system features is excluded by this selector, even if it matches all other conditions.',
+      }),
+    includedDeviceIds: z
+      .array(DeviceIdSchema)
+      .exactOptional()
+      .openapi({ description: 'Device models included by this selector.' }),
+    requiredSystemFeatures: z
+      .array(SystemFeatureSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A device needs to have all these system features to be included by the selector.',
+      }),
+  })
+  .openapi({
+    description:
+      "Selector for a device group. A selector consists of a set of conditions on the device that should all match (logical AND) to determine a device group eligibility. For instance, if a selector specifies RAM conditions, device model inclusion and device model exclusion, a device is considered to match if: device matches RAM conditions AND device matches one of the included device models AND device doesn't match excluded device models",
+    required: [],
+  })
+  .openapi('DeviceSelector')
+
+const DeviceGroupSchema = z
+  .object({
+    deviceSelectors: z
+      .array(DeviceSelectorSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Device selectors for this group. A device matching any of the selectors is included in this group.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the group.' }),
+  })
+  .openapi({
+    description:
+      'A group of devices. A group is defined by a set of device selectors. A device belongs to the group if it matches any selector (logical OR).',
+    required: [],
+  })
+  .openapi('DeviceGroup')
+
+const DeviceTierSchema = z
+  .object({
+    deviceGroupNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Groups of devices included in this tier. These groups must be defined explicitly under device_groups in this configuration.',
+      }),
+    level: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The priority level of the tier. Tiers are evaluated in descending order of level: the highest level tier has the highest priority. The highest tier matching a given device is selected for that device. You should use a contiguous range of levels for your tiers in a tier set; tier levels in a tier set must be unique. For instance, if your tier set has 4 tiers (including the global fallback), you should define tiers 1, 2 and 3 in this configuration. Note: tier 0 is implicitly defined as a global fallback and selected for devices that don't match any of the tiers explicitly defined here. You mustn't define level 0 explicitly in this configuration.",
+      }),
+  })
+  .openapi({
+    description:
+      'A single device tier. Devices matching any of the device groups in device_group_names are considered to match the tier.',
+    required: [],
+  })
+  .openapi('DeviceTier')
+
+const DeviceTierSetSchema = z
+  .object({
+    deviceTiers: z
+      .array(DeviceTierSchema)
+      .exactOptional()
+      .openapi({ description: 'Device tiers belonging to the set.' }),
+  })
+  .openapi({
+    description:
+      'A set of device tiers. A tier set determines what variation of app content gets served to a specific device, for device-targeted content. You should assign a priority level to each tier, which determines the ordering by which they are evaluated by Play. See the documentation of DeviceTier.level for more details.',
+    required: [],
+  })
+  .openapi('DeviceTierSet')
+
+const UserCountrySetSchema = z
+  .object({
+    countryCodes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of country codes representing countries. A Country code is represented in ISO 3166 alpha-2 format. For Example:- "IT" for Italy, "GE" for Georgia.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Country set name.' }),
+  })
+  .openapi({
+    description:
+      'A set of user countries. A country set determines what variation of app content gets served to a specific location.',
+    required: [],
+  })
+  .openapi('UserCountrySet')
+
+const DeviceTierConfigSchema = z
+  .object({
+    deviceGroups: z
+      .array(DeviceGroupSchema)
+      .exactOptional()
+      .openapi({ description: 'Definition of device groups for the app.' }),
+    deviceTierConfigId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The device tier config ID.', readOnly: true }),
+    deviceTierSet: DeviceTierSetSchema.exactOptional().openapi({
+      description: 'Definition of the set of device tiers for the app.',
+    }),
+    userCountrySets: z
+      .array(UserCountrySetSchema)
+      .exactOptional()
+      .openapi({ description: 'Definition of user country sets for the app.' }),
+  })
+  .openapi({
+    description: 'Configuration describing device targeting criteria for the content of an app.',
+    required: [],
+  })
+  .openapi('DeviceTierConfig')
+
+type ListDeviceTierConfigsResponseType = {
+  deviceTierConfigs?: z.infer<typeof DeviceTierConfigSchema>[]
+  nextPageToken?: string
+}
+
+const OfferTagSchema = z
+  .object({
+    tag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Must conform with RFC-1034. That is, this string can only contain lower-case letters (a-z), numbers (0-9), and hyphens (-), and be at most 20 characters.',
+      }),
+  })
+  .openapi({
+    description: 'Represents a custom tag specified for base plans and subscription offers.',
+    required: [],
+  })
+  .openapi('OfferTag')
+
+const OtherRegionsSubscriptionOfferConfigSchema = z
+  .object({
+    otherRegionsNewSubscriberAvailability: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the subscription offer in any new locations Play may launch in the future. If not specified, this will default to false.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration for any new locations Play may launch in specified on a subscription offer.',
+    required: [],
+  })
+  .openapi('OtherRegionsSubscriptionOfferConfig')
+
+const MoneySchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
     nanos: z
       .int32()
       .exactOptional()
       .openapi({
         description:
-          'Non-negative fractions of a second at nanosecond resolution. Must be from 0 to 999,999,999 inclusive.',
+          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
       }),
-    seconds: z
+    units: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Represents seconds of UTC time since Unix epoch.' }),
+      .openapi({
+        description:
+          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
+      }),
+  })
+  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
+  .openapi('Money')
+
+const OtherRegionsSubscriptionOfferPhasePricesSchema = z
+  .object({
+    eurPrice: MoneySchema.exactOptional().openapi({
+      description: 'Required. Price in EUR to use for any new locations Play may launch in.',
+    }),
+    usdPrice: MoneySchema.exactOptional().openapi({
+      description: 'Required. Price in USD to use for any new locations Play may launch in.',
+    }),
   })
   .openapi({
-    description:
-      'A Timestamp represents a point in time independent of any time zone or local calendar, encoded as a count of seconds and fractions of seconds at nanosecond resolution. The count is relative to an epoch at UTC midnight on January 1, 1970.',
+    description: 'Pricing information for any new locations Play may launch in.',
     required: [],
   })
-  .openapi('Timestamp')
+  .openapi('OtherRegionsSubscriptionOfferPhasePrices')
 
-const DeveloperCommentSchema = z
+const OtherRegionsSubscriptionOfferPhaseConfigSchema = z
   .object({
-    lastModified: TimestampSchema.exactOptional().openapi({
-      description: 'The last time at which this comment was updated.',
+    absoluteDiscounts: OtherRegionsSubscriptionOfferPhasePricesSchema.exactOptional().openapi({
+      description:
+        'The absolute amount of money subtracted from the base plan price prorated over the phase duration that the user pays for this offer phase. For example, if the base plan price for this region is $12 for a period of 1 year, then a $1 absolute discount for a phase of a duration of 3 months would correspond to a price of $2. The resulting price may not be smaller than the minimum price allowed for any new locations Play may launch in.',
     }),
-    text: z
-      .string()
+    otherRegionsPrices: OtherRegionsSubscriptionOfferPhasePricesSchema.exactOptional().openapi({
+      description:
+        'The absolute price the user pays for this offer phase. The price must not be smaller than the minimum price allowed for any new locations Play may launch in.',
+    }),
+    relativeDiscount: z
+      .float64()
       .exactOptional()
-      .openapi({ description: 'The content of the comment, i.e. reply body.' }),
+      .openapi({
+        description:
+          'The fraction of the base plan price prorated over the phase duration that the user pays for this offer phase. For example, if the base plan price for this region is $12 for a period of 1 year, then a 50% discount for a phase of a duration of 3 months would correspond to a price of $1.50. The discount must be specified as a fraction strictly larger than 0 and strictly smaller than 1. The resulting price will be rounded to the nearest billable unit (e.g. cents for USD). The relative discount is considered invalid if the discounted price ends up being smaller than the minimum price allowed in any new locations Play may launch in.',
+      }),
   })
   .openapi({
-    description: 'Developer entry from conversation between user and developer.',
+    description: 'Configuration for any new locations Play may launch in for a single offer phase.',
     required: [],
   })
-  .openapi('DeveloperComment')
+  .openapi('OtherRegionsSubscriptionOfferPhaseConfig')
 
-const DeviceMetadataSchema = z
+const RegionalSubscriptionOfferPhaseConfigSchema = z
   .object({
-    cpuMake: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Device CPU make, e.g. "Qualcomm"' }),
-    cpuModel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Device CPU model, e.g. "MSM8974"' }),
-    deviceClass: z.string().exactOptional().openapi({ description: 'Device class (e.g. tablet)' }),
-    glEsVersion: z.int32().exactOptional().openapi({ description: 'OpenGL version' }),
-    manufacturer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Device manufacturer (e.g. Motorola)' }),
-    nativePlatform: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Comma separated list of native platforms (e.g. "arm", "arm7")' }),
-    productName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Device model name (e.g. Droid)' }),
-    ramMb: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Device RAM in Megabytes, e.g. "2048"' }),
-    screenDensityDpi: z.int32().exactOptional().openapi({ description: 'Screen density in DPI' }),
-    screenHeightPx: z.int32().exactOptional().openapi({ description: 'Screen height in pixels' }),
-    screenWidthPx: z.int32().exactOptional().openapi({ description: 'Screen width in pixels' }),
-  })
-  .openapi({ description: "Characteristics of the user's device.", required: [] })
-  .openapi('DeviceMetadata')
-
-const UserCommentSchema = z
-  .object({
-    androidOsVersion: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Integer Android SDK version of the user's device at the time the review was written, e.g. 23 is Marshmallow. May be absent.",
-      }),
-    appVersionCode: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Integer version code of the app as installed at the time the review was written. May be absent.',
-      }),
-    appVersionName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'String version name of the app as installed at the time the review was written. May be absent.',
-      }),
-    device: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Codename for the reviewer's device, e.g. klte, flounder. May be absent.",
-      }),
-    deviceMetadata: DeviceMetadataSchema.exactOptional().openapi({
-      description: "Information about the characteristics of the user's device.",
+    absoluteDiscount: MoneySchema.exactOptional().openapi({
+      description:
+        'The absolute amount of money subtracted from the base plan price prorated over the phase duration that the user pays for this offer phase. For example, if the base plan price for this region is $12 for a period of 1 year, then a $1 absolute discount for a phase of a duration of 3 months would correspond to a price of $2. The resulting price may not be smaller than the minimum price allowed for this region.',
     }),
-    lastModified: TimestampSchema.exactOptional().openapi({
-      description: 'The last time at which this comment was updated.',
+    price: MoneySchema.exactOptional().openapi({
+      description:
+        'The absolute price the user pays for this offer phase. The price must not be smaller than the minimum price allowed for this region.',
     }),
-    originalText: z
+    regionCode: z
       .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Immutable. The region to which this config applies.' }),
+    relativeDiscount: z
+      .float64()
       .exactOptional()
       .openapi({
         description:
-          'Untranslated text of the review, where the review was translated. If the review was not translated this is left blank.',
+          'The fraction of the base plan price prorated over the phase duration that the user pays for this offer phase. For example, if the base plan price for this region is $12 for a period of 1 year, then a 50% discount for a phase of a duration of 3 months would correspond to a price of $1.50. The discount must be specified as a fraction strictly larger than 0 and strictly smaller than 1. The resulting price will be rounded to the nearest billable unit (e.g. cents for USD). The relative discount is considered invalid if the discounted price ends up being smaller than the minimum price allowed in this region.',
       }),
-    reviewerLanguage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Language code for the reviewer. This is taken from the device settings so is not guaranteed to match the language the review is written in. May be absent.',
-      }),
-    starRating: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The star rating associated with the review, from 1 to 5.' }),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content of the comment, i.e. review body. In some cases users have been able to write a review with separate title and body; in those cases the title and body are concatenated and separated by a tab character.',
-      }),
-    thumbsDownCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of users who have given this review a thumbs down.' }),
-    thumbsUpCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of users who have given this review a thumbs up.' }),
   })
   .openapi({
-    description: 'User entry from conversation between user and developer.',
+    description: 'Configuration for a single phase of a subscription offer in a single region.',
     required: [],
   })
-  .openapi('UserComment')
+  .openapi('RegionalSubscriptionOfferPhaseConfig')
 
-type CommentType = {
-  developerComment?: z.infer<typeof DeveloperCommentSchema>
-  userComment?: z.infer<typeof UserCommentSchema>
-}
-
-const PriceSchema = z
+const SubscriptionOfferPhaseSchema = z
   .object({
-    currency: z
+    duration: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          '3 letter Currency code, as defined by ISO 4217. See java/com/google/common/money/CurrencyCode.java',
+          'Required. The duration of a single recurrence of this phase. Specified in ISO 8601 format.',
       }),
-    priceMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Price in 1/million of the currency base unit, represented as a string.',
-      }),
-  })
-  .openapi({ description: 'Definition of a price, i.e. currency and units.', required: [] })
-  .openapi('Price')
-
-const OneTimeExternalTransactionSchema = z
-  .object({
-    externalTransactionToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Input only. Provided during the call to Create. Retrieved from the client when the alternative billing flow is launched.',
-      }),
-  })
-  .openapi({ description: 'Represents a one-time transaction.', required: [] })
-  .openapi('OneTimeExternalTransaction')
-
-const ExternalSubscriptionSchema = z
-  .object({
-    subscriptionType: z
-      .enum(['SUBSCRIPTION_TYPE_UNSPECIFIED', 'RECURRING', 'PREPAID'])
-      .exactOptional()
-      .openapi({ description: 'Required. The type of the external subscription.' }),
-  })
-  .openapi({ description: 'Details of an external subscription.', required: [] })
-  .openapi('ExternalSubscription')
-
-const RecurringExternalTransactionSchema = z
-  .object({
-    externalSubscription: ExternalSubscriptionSchema.exactOptional().openapi({
-      description: 'Details of an external subscription.',
+    otherRegionsConfig: OtherRegionsSubscriptionOfferPhaseConfigSchema.exactOptional().openapi({
+      description: 'Pricing information for any new locations Play may launch in.',
     }),
-    externalTransactionToken: z
-      .string()
+    recurrenceCount: z
+      .int32()
       .exactOptional()
       .openapi({
         description:
-          'Input only. Provided during the call to Create. Retrieved from the client when the alternative billing flow is launched. Required only for the initial purchase.',
+          'Required. The number of times this phase repeats. If this offer phase is not free, each recurrence charges the user the price of this offer phase.',
       }),
-    initialExternalTransactionId: z
-      .string()
+    regionalConfigs: z
+      .array(RegionalSubscriptionOfferPhaseConfigSchema)
       .exactOptional()
       .openapi({
         description:
-          'The external transaction id of the first transaction of this recurring series of transactions. For example, for a subscription this would be the transaction id of the first payment. Required when creating recurring external transactions.',
+          'Required. The region-specific configuration of this offer phase. This list must contain exactly one entry for each region for which the subscription offer has a regional config.',
       }),
   })
-  .openapi({
-    description:
-      'Represents a transaction that is part of a recurring series of payments. This can be a subscription or a one-time product with multiple payments (such as preorder).',
-    required: [],
-  })
-  .openapi('RecurringExternalTransaction')
+  .openapi({ description: 'A single phase of a subscription offer.', required: [] })
+  .openapi('SubscriptionOfferPhase')
 
-const ExternalTransactionTestPurchaseSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Represents a transaction performed using a test account. These transactions will not be charged by Google.',
-  })
-  .openapi('ExternalTransactionTestPurchase')
-
-const ExternalTransactionAddressSchema = z
+const RegionalSubscriptionOfferConfigSchema = z
   .object({
+    newSubscriberAvailability: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the subscription offer in the specified region is available for new subscribers. Existing subscribers will not have their subscription cancelled if this value is set to false. If not specified, this will default to false.',
+      }),
     regionCode: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. Two letter region code based on ISO-3166-1 Alpha-2 (UN region codes).',
+          'Required. Immutable. Region code this configuration applies to, as defined by ISO 3166-2, e.g. "US".',
       }),
   })
-  .openapi({ description: "User's address for the external transaction.", required: [] })
-  .openapi('ExternalTransactionAddress')
-
-type ExternalTransactionType = {
-  createTime?: string
-  currentPreTaxAmount?: z.infer<typeof PriceSchema>
-  currentTaxAmount?: z.infer<typeof PriceSchema>
-  externalTransactionId?: string
-  oneTimeTransaction?: z.infer<typeof OneTimeExternalTransactionSchema>
-  originalPreTaxAmount?: z.infer<typeof PriceSchema>
-  originalTaxAmount?: z.infer<typeof PriceSchema>
-  packageName?: string
-  recurringTransaction?: z.infer<typeof RecurringExternalTransactionSchema>
-  testPurchase?: z.infer<typeof ExternalTransactionTestPurchaseSchema>
-  transactionState?:
-    | 'TRANSACTION_STATE_UNSPECIFIED'
-    | 'TRANSACTION_REPORTED'
-    | 'TRANSACTION_CANCELED'
-  transactionTime?: string
-  userTaxAddress?: z.infer<typeof ExternalTransactionAddressSchema>
-}
+  .openapi({
+    description: 'Configuration for a subscription offer in a single region.',
+    required: [],
+  })
+  .openapi('RegionalSubscriptionOfferConfig')
 
 const TargetingRuleScopeSchema = z
   .object({
@@ -291,13 +375,457 @@ const AcquisitionTargetingRuleSchema = z
   })
   .openapi('AcquisitionTargetingRule')
 
+const UpgradeTargetingRuleSchema = z
+  .object({
+    billingPeriodDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The specific billing period duration, specified in ISO 8601 format, that a user must be currently subscribed to to be eligible for this rule. If not specified, users subscribed to any billing period are matched.',
+      }),
+    oncePerUser: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Limit this offer to only once per user. If set to true, a user can never be eligible for this offer again if they ever subscribed to this offer.',
+      }),
+    scope: TargetingRuleScopeSchema.exactOptional().openapi({
+      description:
+        'Required. The scope of subscriptions this rule considers. Only allows "this subscription" and "specific subscription in app".',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a targeting rule of the form: User currently has {scope} [with billing period {billing_period}].',
+    required: [],
+  })
+  .openapi('UpgradeTargetingRule')
+
+const SubscriptionOfferTargetingSchema = z
+  .object({
+    acquisitionRule: AcquisitionTargetingRuleSchema.exactOptional().openapi({
+      description: 'Offer targeting rule for new user acquisition.',
+    }),
+    upgradeRule: UpgradeTargetingRuleSchema.exactOptional().openapi({
+      description: "Offer targeting rule for upgrading users' existing plans.",
+    }),
+  })
+  .openapi({
+    description: 'Defines the rule a user needs to satisfy to receive this offer.',
+    required: [],
+  })
+  .openapi('SubscriptionOfferTargeting')
+
+const SubscriptionOfferSchema = z
+  .object({
+    basePlanId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The ID of the base plan to which this offer is an extension.',
+      }),
+    offerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. Unique ID of this subscription offer. Must be unique within the base plan.',
+      }),
+    offerTags: z
+      .array(OfferTagSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of up to 20 custom tags specified for this offer, and returned to the app through the billing library.',
+      }),
+    otherRegionsConfig: OtherRegionsSubscriptionOfferConfigSchema.exactOptional().openapi({
+      description: 'The configuration for any new locations Play may launch in the future.',
+    }),
+    packageName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The package name of the app the parent subscription belongs to.',
+      }),
+    phases: z
+      .array(SubscriptionOfferPhaseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The phases of this subscription offer. Must contain at least one entry, and may contain at most five. Users will always receive all these phases in the specified order. Phases may not be added, removed, or reordered after initial creation.',
+      }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The ID of the parent subscription this offer belongs to.',
+      }),
+    regionalConfigs: z
+      .array(RegionalSubscriptionOfferConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The region-specific configuration of this offer. Must contain at least one entry.',
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'DRAFT', 'ACTIVE', 'INACTIVE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The current state of this offer. Can be changed using Activate and Deactivate actions. NB: the base plan state supersedes this state, so an active offer may not be available if the base plan is not active.',
+        readOnly: true,
+      }),
+    targeting: SubscriptionOfferTargetingSchema.exactOptional().openapi({
+      description:
+        'The requirements that users need to fulfil to be eligible for this offer. Represents the requirements that Play will evaluate to decide whether an offer should be returned. Developers may further filter these offers themselves.',
+    }),
+  })
+  .openapi({ description: 'A single, temporary offer', required: [] })
+  .openapi('SubscriptionOffer')
+
+type ListSubscriptionOffersResponseType = {
+  nextPageToken?: string
+  subscriptionOffers?: z.infer<typeof SubscriptionOfferSchema>[]
+}
+
+const AutoRenewingBasePlanTypeSchema = z
+  .object({
+    billingPeriodDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Subscription period, specified in ISO 8601 format. For a list of acceptable billing periods, refer to the help center.',
+      }),
+    gracePeriodDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Grace period of the subscription, specified in ISO 8601 format. Acceptable values are P0D (zero days), P3D (3 days), P7D (7 days), P14D (14 days), and P30D (30 days). If not specified, a default value will be used based on the recurring period duration.',
+      }),
+    legacyCompatible: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the renewing base plan is backward compatible. The backward compatible base plan is returned by the Google Play Billing Library deprecated method querySkuDetailsAsync(). Only one renewing base plan can be marked as legacy compatible for a given subscription.',
+      }),
+    legacyCompatibleSubscriptionOfferId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subscription offer id which is legacy compatible. The backward compatible subscription offer is returned by the Google Play Billing Library deprecated method querySkuDetailsAsync(). Only one subscription offer can be marked as legacy compatible for a given renewing base plan. To have no Subscription offer as legacy compatible set this field as empty string.',
+      }),
+    prorationMode: z
+      .enum([
+        'SUBSCRIPTION_PRORATION_MODE_UNSPECIFIED',
+        'SUBSCRIPTION_PRORATION_MODE_CHARGE_ON_NEXT_BILLING_DATE',
+        'SUBSCRIPTION_PRORATION_MODE_CHARGE_FULL_PRICE_IMMEDIATELY',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The proration mode for the base plan determines what happens when a user switches to this plan from another base plan. If unspecified, defaults to CHARGE_ON_NEXT_BILLING_DATE.',
+      }),
+    resubscribeState: z
+      .enum([
+        'RESUBSCRIBE_STATE_UNSPECIFIED',
+        'RESUBSCRIBE_STATE_ACTIVE',
+        'RESUBSCRIBE_STATE_INACTIVE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether users should be able to resubscribe to this base plan in Google Play surfaces. Defaults to RESUBSCRIBE_STATE_ACTIVE if not specified.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a base plan that automatically renews at the end of its subscription period.',
+    required: [],
+  })
+  .openapi('AutoRenewingBasePlanType')
+
+const OtherRegionsBasePlanConfigSchema = z
+  .object({
+    eurPrice: MoneySchema.exactOptional().openapi({
+      description: 'Required. Price in EUR to use for any new locations Play may launch in.',
+    }),
+    newSubscriberAvailability: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the base plan is available for new subscribers in any new locations Play may launch in. If not specified, this will default to false.',
+      }),
+    usdPrice: MoneySchema.exactOptional().openapi({
+      description: 'Required. Price in USD to use for any new locations Play may launch in.',
+    }),
+  })
+  .openapi({
+    description: 'Pricing information for any new locations Play may launch in.',
+    required: [],
+  })
+  .openapi('OtherRegionsBasePlanConfig')
+
+const PrepaidBasePlanTypeSchema = z
+  .object({
+    billingPeriodDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Subscription period, specified in ISO 8601 format. For a list of acceptable billing periods, refer to the help center.',
+      }),
+    timeExtension: z
+      .enum(['TIME_EXTENSION_UNSPECIFIED', 'TIME_EXTENSION_ACTIVE', 'TIME_EXTENSION_INACTIVE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether users should be able to extend this prepaid base plan in Google Play surfaces. Defaults to TIME_EXTENSION_ACTIVE if not specified.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a base plan that does not automatically renew at the end of the base plan, and must be manually renewed by the user.',
+    required: [],
+  })
+  .openapi('PrepaidBasePlanType')
+
+const RegionalBasePlanConfigSchema = z
+  .object({
+    newSubscriberAvailability: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the base plan in the specified region is available for new subscribers. Existing subscribers will not have their subscription canceled if this value is set to false. If not specified, this will default to false.',
+      }),
+    price: MoneySchema.exactOptional().openapi({
+      description:
+        'The price of the base plan in the specified region. Must be set if the base plan is available to new subscribers. Must be set in the currency that is linked to the specified region.',
+    }),
+    regionCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Region code this configuration applies to, as defined by ISO 3166-2, e.g. "US".',
+      }),
+  })
+  .openapi({ description: 'Configuration for a base plan specific to a region.', required: [] })
+  .openapi('RegionalBasePlanConfig')
+
+const BasePlanSchema = z
+  .object({
+    autoRenewingBasePlanType: AutoRenewingBasePlanTypeSchema.exactOptional().openapi({
+      description: 'Set when the base plan automatically renews at a regular interval.',
+    }),
+    basePlanId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The unique identifier of this base plan. Must be unique within the subscription, and conform with RFC-1034. That is, this ID can only contain lower-case letters (a-z), numbers (0-9), and hyphens (-), and be at most 63 characters.',
+      }),
+    offerTags: z
+      .array(OfferTagSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of up to 20 custom tags specified for this base plan, and returned to the app through the billing library. Subscription offers for this base plan will also receive these offer tags in the billing library.',
+      }),
+    otherRegionsConfig: OtherRegionsBasePlanConfigSchema.exactOptional().openapi({
+      description:
+        'Pricing information for any new locations Play may launch in the future. If omitted, the BasePlan will not be automatically available any new locations Play may launch in the future.',
+    }),
+    prepaidBasePlanType: PrepaidBasePlanTypeSchema.exactOptional().openapi({
+      description:
+        'Set when the base plan does not automatically renew at the end of the billing period.',
+    }),
+    regionalConfigs: z
+      .array(RegionalBasePlanConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'Region-specific information for this base plan.' }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'DRAFT', 'ACTIVE', 'INACTIVE'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The state of the base plan, i.e. whether it's active. Draft and inactive base plans can be activated or deleted. Active base plans can be made inactive. Inactive base plans can be canceled. This field cannot be changed by updating the resource. Use the dedicated endpoints instead.",
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A single base plan for a subscription.', required: [] })
+  .openapi('BasePlan')
+
+const SubscriptionListingSchema = z
+  .object({
+    benefits: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of benefits shown to the user on platforms such as the Play Store and in restoration flows in the language of this listing. Plain text. Ordered list of at most four benefits.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description of this subscription in the language of this listing. Maximum length - 80 characters. Plain text.',
+      }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The language of this listing, as defined by BCP-47, e.g. "en-US".',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The title of this subscription in the language of this listing. Plain text.',
+      }),
+  })
+  .openapi({ description: 'The consumer-visible metadata of a subscription.', required: [] })
+  .openapi('SubscriptionListing')
+
+const RegionalTaxRateInfoSchema = z
+  .object({
+    eligibleForStreamingServiceTaxRate: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'You must tell us if your app contains streaming products to correctly charge US state and local sales tax. Field only supported in United States.',
+      }),
+    streamingTaxType: z
+      .enum([
+        'STREAMING_TAX_TYPE_UNSPECIFIED',
+        'STREAMING_TAX_TYPE_TELCO_VIDEO_RENTAL',
+        'STREAMING_TAX_TYPE_TELCO_VIDEO_SALES',
+        'STREAMING_TAX_TYPE_TELCO_VIDEO_MULTI_CHANNEL',
+        'STREAMING_TAX_TYPE_TELCO_AUDIO_RENTAL',
+        'STREAMING_TAX_TYPE_TELCO_AUDIO_SALES',
+        'STREAMING_TAX_TYPE_TELCO_AUDIO_MULTI_CHANNEL',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'To collect communications or amusement taxes in the United States, choose the appropriate tax category. [Learn more](https://support.google.com/googleplay/android-developer/answer/10463498#streaming_tax).',
+      }),
+    taxTier: z
+      .enum([
+        'TAX_TIER_UNSPECIFIED',
+        'TAX_TIER_BOOKS_1',
+        'TAX_TIER_NEWS_1',
+        'TAX_TIER_NEWS_2',
+        'TAX_TIER_MUSIC_OR_AUDIO_1',
+        'TAX_TIER_LIVE_OR_BROADCAST_1',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Tax tier to specify reduced tax rate. Developers who sell digital news, magazines, newspapers, books, or audiobooks in various regions may be eligible for reduced tax rates. [Learn more](https://support.google.com/googleplay/android-developer/answer/10463498).',
+      }),
+  })
+  .openapi({
+    description: 'Specified details about taxation in a given geographical region.',
+    required: [],
+  })
+  .openapi('RegionalTaxRateInfo')
+
+const SubscriptionTaxAndComplianceSettingsSchema = z
+  .object({
+    eeaWithdrawalRightType: z
+      .enum([
+        'WITHDRAWAL_RIGHT_TYPE_UNSPECIFIED',
+        'WITHDRAWAL_RIGHT_DIGITAL_CONTENT',
+        'WITHDRAWAL_RIGHT_SERVICE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Digital content or service classification for products distributed to users in the European Economic Area (EEA). The withdrawal regime under EEA consumer laws depends on this classification. Refer to the [Help Center article](https://support.google.com/googleplay/android-developer/answer/10463498) for more information.',
+      }),
+    taxRateInfoByRegionCode: z
+      .record(z.string(), RegionalTaxRateInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A mapping from region code to tax rate details. The keys are region codes as defined by Unicode\'s "CLDR".',
+      }),
+  })
+  .openapi({
+    description:
+      'Details about taxation, Google Play policy and legal compliance for subscription products.',
+    required: [],
+  })
+  .openapi('SubscriptionTaxAndComplianceSettings')
+
+const SubscriptionSchema = z
+  .object({
+    archived: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Whether this subscription is archived. Archived subscriptions are not available to any subscriber any longer, cannot be updated, and are not returned in list requests unless the show archived flag is passed in.',
+        readOnly: true,
+      }),
+    basePlans: z
+      .array(BasePlanSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The set of base plans for this subscription. Represents the prices and duration of the subscription if no other offers apply.',
+      }),
+    listings: z
+      .array(SubscriptionListingSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. List of localized listings for this subscription. Must contain at least an entry for the default language of the parent app.',
+      }),
+    packageName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Immutable. Package name of the parent app.' }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. Unique product ID of the product. Unique within the parent app. Product IDs must be composed of lower-case letters (a-z), numbers (0-9), underscores (_) and dots (.). It must start with a lower-case letter or number, and be between 1 and 40 (inclusive) characters in length.',
+      }),
+    taxAndComplianceSettings: SubscriptionTaxAndComplianceSettingsSchema.exactOptional().openapi({
+      description: 'Details about taxes and legal compliance.',
+    }),
+  })
+  .openapi({ description: 'A single subscription for an app.', required: [] })
+  .openapi('Subscription')
+
+type ListSubscriptionsResponseType = {
+  nextPageToken?: string
+  subscriptions?: z.infer<typeof SubscriptionSchema>[]
+}
+
 const ActivateBasePlanRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for ActivateBasePlan.' })
   .openapi('ActivateBasePlanRequest')
 
 const ActivateSubscriptionOfferRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for ActivateSubscriptionOffer.' })
   .openapi('ActivateSubscriptionOfferRequest')
 
@@ -494,93 +1022,9 @@ const AppEditSchema = z
   .openapi('AppEdit')
 
 const ArchiveSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for ArchiveSubscription.' })
   .openapi('ArchiveSubscriptionRequest')
-
-const AutoRenewingBasePlanTypeSchema = z
-  .object({
-    billingPeriodDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Subscription period, specified in ISO 8601 format. For a list of acceptable billing periods, refer to the help center.',
-      }),
-    gracePeriodDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Grace period of the subscription, specified in ISO 8601 format. Acceptable values are P0D (zero days), P3D (3 days), P7D (7 days), P14D (14 days), and P30D (30 days). If not specified, a default value will be used based on the recurring period duration.',
-      }),
-    legacyCompatible: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the renewing base plan is backward compatible. The backward compatible base plan is returned by the Google Play Billing Library deprecated method querySkuDetailsAsync(). Only one renewing base plan can be marked as legacy compatible for a given subscription.',
-      }),
-    legacyCompatibleSubscriptionOfferId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Subscription offer id which is legacy compatible. The backward compatible subscription offer is returned by the Google Play Billing Library deprecated method querySkuDetailsAsync(). Only one subscription offer can be marked as legacy compatible for a given renewing base plan. To have no Subscription offer as legacy compatible set this field as empty string.',
-      }),
-    prorationMode: z
-      .enum([
-        'SUBSCRIPTION_PRORATION_MODE_UNSPECIFIED',
-        'SUBSCRIPTION_PRORATION_MODE_CHARGE_ON_NEXT_BILLING_DATE',
-        'SUBSCRIPTION_PRORATION_MODE_CHARGE_FULL_PRICE_IMMEDIATELY',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The proration mode for the base plan determines what happens when a user switches to this plan from another base plan. If unspecified, defaults to CHARGE_ON_NEXT_BILLING_DATE.',
-      }),
-    resubscribeState: z
-      .enum([
-        'RESUBSCRIBE_STATE_UNSPECIFIED',
-        'RESUBSCRIBE_STATE_ACTIVE',
-        'RESUBSCRIBE_STATE_INACTIVE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether users should be able to resubscribe to this base plan in Google Play surfaces. Defaults to RESUBSCRIBE_STATE_ACTIVE if not specified.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a base plan that automatically renews at the end of its subscription period.',
-    required: [],
-  })
-  .openapi('AutoRenewingBasePlanType')
-
-const MoneySchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
-      }),
-    units: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-      }),
-  })
-  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
-  .openapi('Money')
 
 const SubscriptionItemPriceChangeDetailsSchema = z
   .object({
@@ -627,135 +1071,6 @@ const AutoRenewingPlanSchema = z
   })
   .openapi({ description: 'Information related to an auto renewing plan.', required: [] })
   .openapi('AutoRenewingPlan')
-
-const OfferTagSchema = z
-  .object({
-    tag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Must conform with RFC-1034. That is, this string can only contain lower-case letters (a-z), numbers (0-9), and hyphens (-), and be at most 20 characters.',
-      }),
-  })
-  .openapi({
-    description: 'Represents a custom tag specified for base plans and subscription offers.',
-    required: [],
-  })
-  .openapi('OfferTag')
-
-const OtherRegionsBasePlanConfigSchema = z
-  .object({
-    eurPrice: MoneySchema.exactOptional().openapi({
-      description: 'Required. Price in EUR to use for any new locations Play may launch in.',
-    }),
-    newSubscriberAvailability: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the base plan is available for new subscribers in any new locations Play may launch in. If not specified, this will default to false.',
-      }),
-    usdPrice: MoneySchema.exactOptional().openapi({
-      description: 'Required. Price in USD to use for any new locations Play may launch in.',
-    }),
-  })
-  .openapi({
-    description: 'Pricing information for any new locations Play may launch in.',
-    required: [],
-  })
-  .openapi('OtherRegionsBasePlanConfig')
-
-const PrepaidBasePlanTypeSchema = z
-  .object({
-    billingPeriodDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Subscription period, specified in ISO 8601 format. For a list of acceptable billing periods, refer to the help center.',
-      }),
-    timeExtension: z
-      .enum(['TIME_EXTENSION_UNSPECIFIED', 'TIME_EXTENSION_ACTIVE', 'TIME_EXTENSION_INACTIVE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether users should be able to extend this prepaid base plan in Google Play surfaces. Defaults to TIME_EXTENSION_ACTIVE if not specified.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a base plan that does not automatically renew at the end of the base plan, and must be manually renewed by the user.',
-    required: [],
-  })
-  .openapi('PrepaidBasePlanType')
-
-const RegionalBasePlanConfigSchema = z
-  .object({
-    newSubscriberAvailability: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the base plan in the specified region is available for new subscribers. Existing subscribers will not have their subscription canceled if this value is set to false. If not specified, this will default to false.',
-      }),
-    price: MoneySchema.exactOptional().openapi({
-      description:
-        'The price of the base plan in the specified region. Must be set if the base plan is available to new subscribers. Must be set in the currency that is linked to the specified region.',
-    }),
-    regionCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Region code this configuration applies to, as defined by ISO 3166-2, e.g. "US".',
-      }),
-  })
-  .openapi({ description: 'Configuration for a base plan specific to a region.', required: [] })
-  .openapi('RegionalBasePlanConfig')
-
-const BasePlanSchema = z
-  .object({
-    autoRenewingBasePlanType: AutoRenewingBasePlanTypeSchema.exactOptional().openapi({
-      description: 'Set when the base plan automatically renews at a regular interval.',
-    }),
-    basePlanId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. The unique identifier of this base plan. Must be unique within the subscription, and conform with RFC-1034. That is, this ID can only contain lower-case letters (a-z), numbers (0-9), and hyphens (-), and be at most 63 characters.',
-      }),
-    offerTags: z
-      .array(OfferTagSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of up to 20 custom tags specified for this base plan, and returned to the app through the billing library. Subscription offers for this base plan will also receive these offer tags in the billing library.',
-      }),
-    otherRegionsConfig: OtherRegionsBasePlanConfigSchema.exactOptional().openapi({
-      description:
-        'Pricing information for any new locations Play may launch in the future. If omitted, the BasePlan will not be automatically available any new locations Play may launch in the future.',
-    }),
-    prepaidBasePlanType: PrepaidBasePlanTypeSchema.exactOptional().openapi({
-      description:
-        'Set when the base plan does not automatically renew at the end of the billing period.',
-    }),
-    regionalConfigs: z
-      .array(RegionalBasePlanConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Region-specific information for this base plan.' }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'DRAFT', 'ACTIVE', 'INACTIVE'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The state of the base plan, i.e. whether it's active. Draft and inactive base plans can be activated or deleted. Active base plans can be made inactive. Inactive base plans can be canceled. This field cannot be changed by updating the resource. Use the dedicated endpoints instead.",
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A single base plan for a subscription.', required: [] })
-  .openapi('BasePlan')
 
 const BundleSchema = z
   .object({
@@ -828,19 +1143,19 @@ const CancelSurveyResultSchema = z
   .openapi('CancelSurveyResult')
 
 const DeveloperInitiatedCancellationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Information specific to cancellations initiated by developers.' })
   .openapi('DeveloperInitiatedCancellation')
 
 const ReplacementCancellationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Information specific to cancellations caused by subscription replacement.',
   })
   .openapi('ReplacementCancellation')
 
 const SystemInitiatedCancellationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Information specific to cancellations initiated by Google system.' })
   .openapi('SystemInitiatedCancellation')
 
@@ -886,22 +1201,163 @@ const CanceledStateContextSchema = z
   })
   .openapi('CanceledStateContext')
 
-const CommentSchema: z.ZodType<CommentType> = z
-  .lazy(() =>
-    z
-      .object({
-        developerComment: DeveloperCommentSchema.exactOptional().openapi({
-          description: 'A comment from a developer.',
-        }),
-        userComment: UserCommentSchema.exactOptional().openapi({
-          description: 'A comment from a user.',
-        }),
-      })
+const TimestampSchema = z
+  .object({
+    nanos: z
+      .int32()
+      .exactOptional()
       .openapi({
-        description: 'An entry of conversation between user and developer.',
-        required: [],
+        description:
+          'Non-negative fractions of a second at nanosecond resolution. Must be from 0 to 999,999,999 inclusive.',
       }),
-  )
+    seconds: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Represents seconds of UTC time since Unix epoch.' }),
+  })
+  .openapi({
+    description:
+      'A Timestamp represents a point in time independent of any time zone or local calendar, encoded as a count of seconds and fractions of seconds at nanosecond resolution. The count is relative to an epoch at UTC midnight on January 1, 1970.',
+    required: [],
+  })
+  .openapi('Timestamp')
+
+const DeveloperCommentSchema = z
+  .object({
+    lastModified: TimestampSchema.exactOptional().openapi({
+      description: 'The last time at which this comment was updated.',
+    }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The content of the comment, i.e. reply body.' }),
+  })
+  .openapi({
+    description: 'Developer entry from conversation between user and developer.',
+    required: [],
+  })
+  .openapi('DeveloperComment')
+
+const DeviceMetadataSchema = z
+  .object({
+    cpuMake: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Device CPU make, e.g. "Qualcomm"' }),
+    cpuModel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Device CPU model, e.g. "MSM8974"' }),
+    deviceClass: z.string().exactOptional().openapi({ description: 'Device class (e.g. tablet)' }),
+    glEsVersion: z.int32().exactOptional().openapi({ description: 'OpenGL version' }),
+    manufacturer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Device manufacturer (e.g. Motorola)' }),
+    nativePlatform: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Comma separated list of native platforms (e.g. "arm", "arm7")' }),
+    productName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Device model name (e.g. Droid)' }),
+    ramMb: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Device RAM in Megabytes, e.g. "2048"' }),
+    screenDensityDpi: z.int32().exactOptional().openapi({ description: 'Screen density in DPI' }),
+    screenHeightPx: z.int32().exactOptional().openapi({ description: 'Screen height in pixels' }),
+    screenWidthPx: z.int32().exactOptional().openapi({ description: 'Screen width in pixels' }),
+  })
+  .openapi({ description: "Characteristics of the user's device.", required: [] })
+  .openapi('DeviceMetadata')
+
+const UserCommentSchema = z
+  .object({
+    androidOsVersion: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Integer Android SDK version of the user's device at the time the review was written, e.g. 23 is Marshmallow. May be absent.",
+      }),
+    appVersionCode: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Integer version code of the app as installed at the time the review was written. May be absent.',
+      }),
+    appVersionName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'String version name of the app as installed at the time the review was written. May be absent.',
+      }),
+    device: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Codename for the reviewer's device, e.g. klte, flounder. May be absent.",
+      }),
+    deviceMetadata: DeviceMetadataSchema.exactOptional().openapi({
+      description: "Information about the characteristics of the user's device.",
+    }),
+    lastModified: TimestampSchema.exactOptional().openapi({
+      description: 'The last time at which this comment was updated.',
+    }),
+    originalText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Untranslated text of the review, where the review was translated. If the review was not translated this is left blank.',
+      }),
+    reviewerLanguage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Language code for the reviewer. This is taken from the device settings so is not guaranteed to match the language the review is written in. May be absent.',
+      }),
+    starRating: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The star rating associated with the review, from 1 to 5.' }),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content of the comment, i.e. review body. In some cases users have been able to write a review with separate title and body; in those cases the title and body are concatenated and separated by a tab character.',
+      }),
+    thumbsDownCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of users who have given this review a thumbs down.' }),
+    thumbsUpCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of users who have given this review a thumbs up.' }),
+  })
+  .openapi({
+    description: 'User entry from conversation between user and developer.',
+    required: [],
+  })
+  .openapi('UserComment')
+
+const CommentSchema = z
+  .object({
+    developerComment: DeveloperCommentSchema.exactOptional().openapi({
+      description: 'A comment from a developer.',
+    }),
+    userComment: UserCommentSchema.exactOptional().openapi({
+      description: 'A comment from a user.',
+    }),
+  })
+  .openapi({ description: 'An entry of conversation between user and developer.', required: [] })
   .openapi('Comment')
 
 const ConvertRegionPricesRequestSchema = z
@@ -975,12 +1431,12 @@ const CountryTargetingSchema = z
   .openapi('CountryTargeting')
 
 const DeactivateBasePlanRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for DeactivateBasePlan.' })
   .openapi('DeactivateBasePlanRequest')
 
 const DeactivateSubscriptionOfferRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for DeactivateSubscriptionOffer.' })
   .openapi('DeactivateSubscriptionOfferRequest')
 
@@ -1003,89 +1459,6 @@ const DeobfuscationFilesUploadResponseSchema = z
   .openapi({ description: 'Responses for the upload.', required: [] })
   .openapi('DeobfuscationFilesUploadResponse')
 
-const DeviceRamSchema = z
-  .object({
-    maxBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Maximum RAM in bytes (bound excluded).' }),
-    minBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Minimum RAM in bytes (bound included).' }),
-  })
-  .openapi({ description: "Conditions about a device's RAM capabilities.", required: [] })
-  .openapi('DeviceRam')
-
-const DeviceIdSchema = z
-  .object({
-    buildBrand: z.string().exactOptional().openapi({ description: 'Value of Build.BRAND.' }),
-    buildDevice: z.string().exactOptional().openapi({ description: 'Value of Build.DEVICE.' }),
-  })
-  .openapi({ description: 'Identifier of a device.', required: [] })
-  .openapi('DeviceId')
-
-const SystemFeatureSchema = z
-  .object({ name: z.string().exactOptional().openapi({ description: 'The name of the feature.' }) })
-  .openapi({ description: 'Representation of a system feature.', required: [] })
-  .openapi('SystemFeature')
-
-const DeviceSelectorSchema = z
-  .object({
-    deviceRam: DeviceRamSchema.exactOptional().openapi({
-      description: "Conditions on the device's RAM.",
-    }),
-    excludedDeviceIds: z
-      .array(DeviceIdSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Device models excluded by this selector, even if they match all other conditions.',
-      }),
-    forbiddenSystemFeatures: z
-      .array(SystemFeatureSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A device that has any of these system features is excluded by this selector, even if it matches all other conditions.',
-      }),
-    includedDeviceIds: z
-      .array(DeviceIdSchema)
-      .exactOptional()
-      .openapi({ description: 'Device models included by this selector.' }),
-    requiredSystemFeatures: z
-      .array(SystemFeatureSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A device needs to have all these system features to be included by the selector.',
-      }),
-  })
-  .openapi({
-    description:
-      "Selector for a device group. A selector consists of a set of conditions on the device that should all match (logical AND) to determine a device group eligibility. For instance, if a selector specifies RAM conditions, device model inclusion and device model exclusion, a device is considered to match if: device matches RAM conditions AND device matches one of the included device models AND device doesn't match excluded device models",
-    required: [],
-  })
-  .openapi('DeviceSelector')
-
-const DeviceGroupSchema = z
-  .object({
-    deviceSelectors: z
-      .array(DeviceSelectorSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Device selectors for this group. A device matching any of the selectors is included in this group.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the group.' }),
-  })
-  .openapi({
-    description:
-      'A group of devices. A group is defined by a set of device selectors. A device belongs to the group if it matches any selector (logical OR).',
-    required: [],
-  })
-  .openapi('DeviceGroup')
-
 const DeviceSpecSchema = z
   .object({
     screenDensity: z.uint32().exactOptional().openapi({ description: 'Screen dpi.' }),
@@ -1105,86 +1478,6 @@ const DeviceSpecSchema = z
   })
   .openapi({ description: 'The device spec used to generate a system APK.', required: [] })
   .openapi('DeviceSpec')
-
-const DeviceTierSchema = z
-  .object({
-    deviceGroupNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Groups of devices included in this tier. These groups must be defined explicitly under device_groups in this configuration.',
-      }),
-    level: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The priority level of the tier. Tiers are evaluated in descending order of level: the highest level tier has the highest priority. The highest tier matching a given device is selected for that device. You should use a contiguous range of levels for your tiers in a tier set; tier levels in a tier set must be unique. For instance, if your tier set has 4 tiers (including the global fallback), you should define tiers 1, 2 and 3 in this configuration. Note: tier 0 is implicitly defined as a global fallback and selected for devices that don't match any of the tiers explicitly defined here. You mustn't define level 0 explicitly in this configuration.",
-      }),
-  })
-  .openapi({
-    description:
-      'A single device tier. Devices matching any of the device groups in device_group_names are considered to match the tier.',
-    required: [],
-  })
-  .openapi('DeviceTier')
-
-const DeviceTierSetSchema = z
-  .object({
-    deviceTiers: z
-      .array(DeviceTierSchema)
-      .exactOptional()
-      .openapi({ description: 'Device tiers belonging to the set.' }),
-  })
-  .openapi({
-    description:
-      'A set of device tiers. A tier set determines what variation of app content gets served to a specific device, for device-targeted content. You should assign a priority level to each tier, which determines the ordering by which they are evaluated by Play. See the documentation of DeviceTier.level for more details.',
-    required: [],
-  })
-  .openapi('DeviceTierSet')
-
-const UserCountrySetSchema = z
-  .object({
-    countryCodes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of country codes representing countries. A Country code is represented in ISO 3166 alpha-2 format. For Example:- "IT" for Italy, "GE" for Georgia.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'Country set name.' }),
-  })
-  .openapi({
-    description:
-      'A set of user countries. A country set determines what variation of app content gets served to a specific location.',
-    required: [],
-  })
-  .openapi('UserCountrySet')
-
-const DeviceTierConfigSchema = z
-  .object({
-    deviceGroups: z
-      .array(DeviceGroupSchema)
-      .exactOptional()
-      .openapi({ description: 'Definition of device groups for the app.' }),
-    deviceTierConfigId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The device tier config ID.', readOnly: true }),
-    deviceTierSet: DeviceTierSetSchema.exactOptional().openapi({
-      description: 'Definition of the set of device tiers for the app.',
-    }),
-    userCountrySets: z
-      .array(UserCountrySetSchema)
-      .exactOptional()
-      .openapi({ description: 'Definition of user country sets for the app.' }),
-  })
-  .openapi({
-    description: 'Configuration describing device targeting criteria for the content of an app.',
-    required: [],
-  })
-  .openapi('DeviceTierConfig')
 
 const ExpansionFileSchema = z
   .object({
@@ -1245,84 +1538,171 @@ const ExternalAccountIdentifiersSchema = z
   .openapi({ description: 'User account identifier in the third-party service.', required: [] })
   .openapi('ExternalAccountIdentifiers')
 
-const ExternalTransactionSchema: z.ZodType<ExternalTransactionType> = z
-  .lazy(() =>
-    z
-      .object({
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The time when this transaction was created. This is the time when Google was notified of the transaction.',
-            readOnly: true,
-          }),
-        currentPreTaxAmount: PriceSchema.exactOptional().openapi({
-          description:
-            'Output only. The current transaction amount before tax. This represents the current pre-tax amount including any refunds that may have been applied to this transaction.',
-          readOnly: true,
-        }),
-        currentTaxAmount: PriceSchema.exactOptional().openapi({
-          description:
-            'Output only. The current tax amount. This represents the current tax amount including any refunds that may have been applied to this transaction.',
-          readOnly: true,
-        }),
-        externalTransactionId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The id of this transaction. All transaction ids under the same package name must be unique. Set when creating the external transaction.',
-            readOnly: true,
-          }),
-        oneTimeTransaction: OneTimeExternalTransactionSchema.exactOptional().openapi({
-          description: 'This is a one-time transaction and not part of a subscription.',
-        }),
-        originalPreTaxAmount: PriceSchema.exactOptional().openapi({
-          description:
-            'Required. The original transaction amount before taxes. This represents the pre-tax amount originally notified to Google before any refunds were applied.',
-        }),
-        originalTaxAmount: PriceSchema.exactOptional().openapi({
-          description:
-            'Required. The original tax amount. This represents the tax amount originally notified to Google before any refunds were applied.',
-        }),
-        packageName: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Output only. The resource name of the external transaction. The package name of the application the inapp products were sold (for example, 'com.some.app').",
-            readOnly: true,
-          }),
-        recurringTransaction: RecurringExternalTransactionSchema.exactOptional().openapi({
-          description: 'This transaction is part of a recurring series of transactions.',
-        }),
-        testPurchase: ExternalTransactionTestPurchaseSchema.exactOptional().openapi({
-          description:
-            'Output only. If set, this transaction was a test purchase. Google will not charge for a test transaction.',
-          readOnly: true,
-        }),
-        transactionState: z
-          .enum(['TRANSACTION_STATE_UNSPECIFIED', 'TRANSACTION_REPORTED', 'TRANSACTION_CANCELED'])
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The current state of the transaction.',
-            readOnly: true,
-          }),
-        transactionTime: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Required. The time when the transaction was completed.' }),
-        userTaxAddress: ExternalTransactionAddressSchema.exactOptional().openapi({
-          description: 'Required. User address for tax computation.',
-        }),
-      })
-      .openapi({ description: 'The details of an external transaction.', required: [] }),
-  )
+const ExternalSubscriptionSchema = z
+  .object({
+    subscriptionType: z
+      .enum(['SUBSCRIPTION_TYPE_UNSPECIFIED', 'RECURRING', 'PREPAID'])
+      .exactOptional()
+      .openapi({ description: 'Required. The type of the external subscription.' }),
+  })
+  .openapi({ description: 'Details of an external subscription.', required: [] })
+  .openapi('ExternalSubscription')
+
+const PriceSchema = z
+  .object({
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '3 letter Currency code, as defined by ISO 4217. See java/com/google/common/money/CurrencyCode.java',
+      }),
+    priceMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Price in 1/million of the currency base unit, represented as a string.',
+      }),
+  })
+  .openapi({ description: 'Definition of a price, i.e. currency and units.', required: [] })
+  .openapi('Price')
+
+const OneTimeExternalTransactionSchema = z
+  .object({
+    externalTransactionToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Input only. Provided during the call to Create. Retrieved from the client when the alternative billing flow is launched.',
+      }),
+  })
+  .openapi({ description: 'Represents a one-time transaction.', required: [] })
+  .openapi('OneTimeExternalTransaction')
+
+const RecurringExternalTransactionSchema = z
+  .object({
+    externalSubscription: ExternalSubscriptionSchema.exactOptional().openapi({
+      description: 'Details of an external subscription.',
+    }),
+    externalTransactionToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Input only. Provided during the call to Create. Retrieved from the client when the alternative billing flow is launched. Required only for the initial purchase.',
+      }),
+    initialExternalTransactionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The external transaction id of the first transaction of this recurring series of transactions. For example, for a subscription this would be the transaction id of the first payment. Required when creating recurring external transactions.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a transaction that is part of a recurring series of payments. This can be a subscription or a one-time product with multiple payments (such as preorder).',
+    required: [],
+  })
+  .openapi('RecurringExternalTransaction')
+
+const ExternalTransactionTestPurchaseSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Represents a transaction performed using a test account. These transactions will not be charged by Google.',
+  })
+  .openapi('ExternalTransactionTestPurchase')
+
+const ExternalTransactionAddressSchema = z
+  .object({
+    regionCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Two letter region code based on ISO-3166-1 Alpha-2 (UN region codes).',
+      }),
+  })
+  .openapi({ description: "User's address for the external transaction.", required: [] })
+  .openapi('ExternalTransactionAddress')
+
+const ExternalTransactionSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time when this transaction was created. This is the time when Google was notified of the transaction.',
+        readOnly: true,
+      }),
+    currentPreTaxAmount: PriceSchema.exactOptional().openapi({
+      description:
+        'Output only. The current transaction amount before tax. This represents the current pre-tax amount including any refunds that may have been applied to this transaction.',
+      readOnly: true,
+    }),
+    currentTaxAmount: PriceSchema.exactOptional().openapi({
+      description:
+        'Output only. The current tax amount. This represents the current tax amount including any refunds that may have been applied to this transaction.',
+      readOnly: true,
+    }),
+    externalTransactionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The id of this transaction. All transaction ids under the same package name must be unique. Set when creating the external transaction.',
+        readOnly: true,
+      }),
+    oneTimeTransaction: OneTimeExternalTransactionSchema.exactOptional().openapi({
+      description: 'This is a one-time transaction and not part of a subscription.',
+    }),
+    originalPreTaxAmount: PriceSchema.exactOptional().openapi({
+      description:
+        'Required. The original transaction amount before taxes. This represents the pre-tax amount originally notified to Google before any refunds were applied.',
+    }),
+    originalTaxAmount: PriceSchema.exactOptional().openapi({
+      description:
+        'Required. The original tax amount. This represents the tax amount originally notified to Google before any refunds were applied.',
+    }),
+    packageName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The resource name of the external transaction. The package name of the application the inapp products were sold (for example, 'com.some.app').",
+        readOnly: true,
+      }),
+    recurringTransaction: RecurringExternalTransactionSchema.exactOptional().openapi({
+      description: 'This transaction is part of a recurring series of transactions.',
+    }),
+    testPurchase: ExternalTransactionTestPurchaseSchema.exactOptional().openapi({
+      description:
+        'Output only. If set, this transaction was a test purchase. Google will not charge for a test transaction.',
+      readOnly: true,
+    }),
+    transactionState: z
+      .enum(['TRANSACTION_STATE_UNSPECIFIED', 'TRANSACTION_REPORTED', 'TRANSACTION_CANCELED'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The current state of the transaction.',
+        readOnly: true,
+      }),
+    transactionTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The time when the transaction was completed.' }),
+    userTaxAddress: ExternalTransactionAddressSchema.exactOptional().openapi({
+      description: 'Required. User address for tax computation.',
+    }),
+  })
+  .openapi({ description: 'The details of an external transaction.', required: [] })
   .openapi('ExternalTransaction')
 
 const FullRefundSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A full refund of the remaining amount of a transaction.' })
   .openapi('FullRefund')
 
@@ -1528,51 +1908,6 @@ const InAppProductListingSchema = z
   .openapi({ description: 'Store listing of a single in-app product.', required: [] })
   .openapi('InAppProductListing')
 
-const RegionalTaxRateInfoSchema = z
-  .object({
-    eligibleForStreamingServiceTaxRate: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'You must tell us if your app contains streaming products to correctly charge US state and local sales tax. Field only supported in United States.',
-      }),
-    streamingTaxType: z
-      .enum([
-        'STREAMING_TAX_TYPE_UNSPECIFIED',
-        'STREAMING_TAX_TYPE_TELCO_VIDEO_RENTAL',
-        'STREAMING_TAX_TYPE_TELCO_VIDEO_SALES',
-        'STREAMING_TAX_TYPE_TELCO_VIDEO_MULTI_CHANNEL',
-        'STREAMING_TAX_TYPE_TELCO_AUDIO_RENTAL',
-        'STREAMING_TAX_TYPE_TELCO_AUDIO_SALES',
-        'STREAMING_TAX_TYPE_TELCO_AUDIO_MULTI_CHANNEL',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'To collect communications or amusement taxes in the United States, choose the appropriate tax category. [Learn more](https://support.google.com/googleplay/android-developer/answer/10463498#streaming_tax).',
-      }),
-    taxTier: z
-      .enum([
-        'TAX_TIER_UNSPECIFIED',
-        'TAX_TIER_BOOKS_1',
-        'TAX_TIER_NEWS_1',
-        'TAX_TIER_NEWS_2',
-        'TAX_TIER_MUSIC_OR_AUDIO_1',
-        'TAX_TIER_LIVE_OR_BROADCAST_1',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Tax tier to specify reduced tax rate. Developers who sell digital news, magazines, newspapers, books, or audiobooks in various regions may be eligible for reduced tax rates. [Learn more](https://support.google.com/googleplay/android-developer/answer/10463498).',
-      }),
-  })
-  .openapi({
-    description: 'Specified details about taxation in a given geographical region.',
-    required: [],
-  })
-  .openapi('RegionalTaxRateInfo')
-
 const ManagedProductTaxAndComplianceSettingsSchema = z
   .object({
     eeaWithdrawalRightType: z
@@ -1599,34 +1934,6 @@ const ManagedProductTaxAndComplianceSettingsSchema = z
     required: [],
   })
   .openapi('ManagedProductTaxAndComplianceSettings')
-
-const SubscriptionTaxAndComplianceSettingsSchema = z
-  .object({
-    eeaWithdrawalRightType: z
-      .enum([
-        'WITHDRAWAL_RIGHT_TYPE_UNSPECIFIED',
-        'WITHDRAWAL_RIGHT_DIGITAL_CONTENT',
-        'WITHDRAWAL_RIGHT_SERVICE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Digital content or service classification for products distributed to users in the European Economic Area (EEA). The withdrawal regime under EEA consumer laws depends on this classification. Refer to the [Help Center article](https://support.google.com/googleplay/android-developer/answer/10463498) for more information.',
-      }),
-    taxRateInfoByRegionCode: z
-      .record(z.string(), RegionalTaxRateInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A mapping from region code to tax rate details. The keys are region codes as defined by Unicode\'s "CLDR".',
-      }),
-  })
-  .openapi({
-    description:
-      'Details about taxation, Google Play policy and legal compliance for subscription products.',
-    required: [],
-  })
-  .openapi('SubscriptionTaxAndComplianceSettings')
 
 const InAppProductSchema = z
   .object({
@@ -1839,7 +2146,7 @@ const IntroductoryPriceInfoSchema = z
   })
   .openapi('IntroductoryPriceInfo')
 
-const ListDeviceTierConfigsResponseSchema = z
+const ListDeviceTierConfigsResponseSchema: z.ZodType<ListDeviceTierConfigsResponseType> = z
   .object({
     deviceTierConfigs: z
       .array(DeviceTierConfigSchema)
@@ -1856,257 +2163,7 @@ const ListDeviceTierConfigsResponseSchema = z
   .openapi({ description: 'Response listing existing device tier configs.', required: [] })
   .openapi('ListDeviceTierConfigsResponse')
 
-const OtherRegionsSubscriptionOfferConfigSchema = z
-  .object({
-    otherRegionsNewSubscriberAvailability: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the subscription offer in any new locations Play may launch in the future. If not specified, this will default to false.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration for any new locations Play may launch in specified on a subscription offer.',
-    required: [],
-  })
-  .openapi('OtherRegionsSubscriptionOfferConfig')
-
-const OtherRegionsSubscriptionOfferPhasePricesSchema = z
-  .object({
-    eurPrice: MoneySchema.exactOptional().openapi({
-      description: 'Required. Price in EUR to use for any new locations Play may launch in.',
-    }),
-    usdPrice: MoneySchema.exactOptional().openapi({
-      description: 'Required. Price in USD to use for any new locations Play may launch in.',
-    }),
-  })
-  .openapi({
-    description: 'Pricing information for any new locations Play may launch in.',
-    required: [],
-  })
-  .openapi('OtherRegionsSubscriptionOfferPhasePrices')
-
-const OtherRegionsSubscriptionOfferPhaseConfigSchema = z
-  .object({
-    absoluteDiscounts: OtherRegionsSubscriptionOfferPhasePricesSchema.exactOptional().openapi({
-      description:
-        'The absolute amount of money subtracted from the base plan price prorated over the phase duration that the user pays for this offer phase. For example, if the base plan price for this region is $12 for a period of 1 year, then a $1 absolute discount for a phase of a duration of 3 months would correspond to a price of $2. The resulting price may not be smaller than the minimum price allowed for any new locations Play may launch in.',
-    }),
-    otherRegionsPrices: OtherRegionsSubscriptionOfferPhasePricesSchema.exactOptional().openapi({
-      description:
-        'The absolute price the user pays for this offer phase. The price must not be smaller than the minimum price allowed for any new locations Play may launch in.',
-    }),
-    relativeDiscount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fraction of the base plan price prorated over the phase duration that the user pays for this offer phase. For example, if the base plan price for this region is $12 for a period of 1 year, then a 50% discount for a phase of a duration of 3 months would correspond to a price of $1.50. The discount must be specified as a fraction strictly larger than 0 and strictly smaller than 1. The resulting price will be rounded to the nearest billable unit (e.g. cents for USD). The relative discount is considered invalid if the discounted price ends up being smaller than the minimum price allowed in any new locations Play may launch in.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for any new locations Play may launch in for a single offer phase.',
-    required: [],
-  })
-  .openapi('OtherRegionsSubscriptionOfferPhaseConfig')
-
-const RegionalSubscriptionOfferPhaseConfigSchema = z
-  .object({
-    absoluteDiscount: MoneySchema.exactOptional().openapi({
-      description:
-        'The absolute amount of money subtracted from the base plan price prorated over the phase duration that the user pays for this offer phase. For example, if the base plan price for this region is $12 for a period of 1 year, then a $1 absolute discount for a phase of a duration of 3 months would correspond to a price of $2. The resulting price may not be smaller than the minimum price allowed for this region.',
-    }),
-    price: MoneySchema.exactOptional().openapi({
-      description:
-        'The absolute price the user pays for this offer phase. The price must not be smaller than the minimum price allowed for this region.',
-    }),
-    regionCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Immutable. The region to which this config applies.' }),
-    relativeDiscount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fraction of the base plan price prorated over the phase duration that the user pays for this offer phase. For example, if the base plan price for this region is $12 for a period of 1 year, then a 50% discount for a phase of a duration of 3 months would correspond to a price of $1.50. The discount must be specified as a fraction strictly larger than 0 and strictly smaller than 1. The resulting price will be rounded to the nearest billable unit (e.g. cents for USD). The relative discount is considered invalid if the discounted price ends up being smaller than the minimum price allowed in this region.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for a single phase of a subscription offer in a single region.',
-    required: [],
-  })
-  .openapi('RegionalSubscriptionOfferPhaseConfig')
-
-const SubscriptionOfferPhaseSchema = z
-  .object({
-    duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The duration of a single recurrence of this phase. Specified in ISO 8601 format.',
-      }),
-    otherRegionsConfig: OtherRegionsSubscriptionOfferPhaseConfigSchema.exactOptional().openapi({
-      description: 'Pricing information for any new locations Play may launch in.',
-    }),
-    recurrenceCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The number of times this phase repeats. If this offer phase is not free, each recurrence charges the user the price of this offer phase.',
-      }),
-    regionalConfigs: z
-      .array(RegionalSubscriptionOfferPhaseConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The region-specific configuration of this offer phase. This list must contain exactly one entry for each region for which the subscription offer has a regional config.',
-      }),
-  })
-  .openapi({ description: 'A single phase of a subscription offer.', required: [] })
-  .openapi('SubscriptionOfferPhase')
-
-const RegionalSubscriptionOfferConfigSchema = z
-  .object({
-    newSubscriberAvailability: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the subscription offer in the specified region is available for new subscribers. Existing subscribers will not have their subscription cancelled if this value is set to false. If not specified, this will default to false.',
-      }),
-    regionCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. Region code this configuration applies to, as defined by ISO 3166-2, e.g. "US".',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for a subscription offer in a single region.',
-    required: [],
-  })
-  .openapi('RegionalSubscriptionOfferConfig')
-
-const UpgradeTargetingRuleSchema = z
-  .object({
-    billingPeriodDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The specific billing period duration, specified in ISO 8601 format, that a user must be currently subscribed to to be eligible for this rule. If not specified, users subscribed to any billing period are matched.',
-      }),
-    oncePerUser: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Limit this offer to only once per user. If set to true, a user can never be eligible for this offer again if they ever subscribed to this offer.',
-      }),
-    scope: TargetingRuleScopeSchema.exactOptional().openapi({
-      description:
-        'Required. The scope of subscriptions this rule considers. Only allows "this subscription" and "specific subscription in app".',
-    }),
-  })
-  .openapi({
-    description:
-      'Represents a targeting rule of the form: User currently has {scope} [with billing period {billing_period}].',
-    required: [],
-  })
-  .openapi('UpgradeTargetingRule')
-
-const SubscriptionOfferTargetingSchema = z
-  .object({
-    acquisitionRule: AcquisitionTargetingRuleSchema.exactOptional().openapi({
-      description: 'Offer targeting rule for new user acquisition.',
-    }),
-    upgradeRule: UpgradeTargetingRuleSchema.exactOptional().openapi({
-      description: "Offer targeting rule for upgrading users' existing plans.",
-    }),
-  })
-  .openapi({
-    description: 'Defines the rule a user needs to satisfy to receive this offer.',
-    required: [],
-  })
-  .openapi('SubscriptionOfferTargeting')
-
-const SubscriptionOfferSchema = z
-  .object({
-    basePlanId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. The ID of the base plan to which this offer is an extension.',
-      }),
-    offerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. Unique ID of this subscription offer. Must be unique within the base plan.',
-      }),
-    offerTags: z
-      .array(OfferTagSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of up to 20 custom tags specified for this offer, and returned to the app through the billing library.',
-      }),
-    otherRegionsConfig: OtherRegionsSubscriptionOfferConfigSchema.exactOptional().openapi({
-      description: 'The configuration for any new locations Play may launch in the future.',
-    }),
-    packageName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. The package name of the app the parent subscription belongs to.',
-      }),
-    phases: z
-      .array(SubscriptionOfferPhaseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The phases of this subscription offer. Must contain at least one entry, and may contain at most five. Users will always receive all these phases in the specified order. Phases may not be added, removed, or reordered after initial creation.',
-      }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Immutable. The ID of the parent subscription this offer belongs to.',
-      }),
-    regionalConfigs: z
-      .array(RegionalSubscriptionOfferConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The region-specific configuration of this offer. Must contain at least one entry.',
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'DRAFT', 'ACTIVE', 'INACTIVE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The current state of this offer. Can be changed using Activate and Deactivate actions. NB: the base plan state supersedes this state, so an active offer may not be available if the base plan is not active.',
-        readOnly: true,
-      }),
-    targeting: SubscriptionOfferTargetingSchema.exactOptional().openapi({
-      description:
-        'The requirements that users need to fulfil to be eligible for this offer. Represents the requirements that Play will evaluate to decide whether an offer should be returned. Developers may further filter these offers themselves.',
-    }),
-  })
-  .openapi({ description: 'A single, temporary offer', required: [] })
-  .openapi('SubscriptionOffer')
-
-const ListSubscriptionOffersResponseSchema = z
+const ListSubscriptionOffersResponseSchema: z.ZodType<ListSubscriptionOffersResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2123,82 +2180,7 @@ const ListSubscriptionOffersResponseSchema = z
   .openapi({ description: 'Response message for ListSubscriptionOffers.', required: [] })
   .openapi('ListSubscriptionOffersResponse')
 
-const SubscriptionListingSchema = z
-  .object({
-    benefits: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of benefits shown to the user on platforms such as the Play Store and in restoration flows in the language of this listing. Plain text. Ordered list of at most four benefits.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description of this subscription in the language of this listing. Maximum length - 80 characters. Plain text.',
-      }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The language of this listing, as defined by BCP-47, e.g. "en-US".',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The title of this subscription in the language of this listing. Plain text.',
-      }),
-  })
-  .openapi({ description: 'The consumer-visible metadata of a subscription.', required: [] })
-  .openapi('SubscriptionListing')
-
-const SubscriptionSchema = z
-  .object({
-    archived: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Whether this subscription is archived. Archived subscriptions are not available to any subscriber any longer, cannot be updated, and are not returned in list requests unless the show archived flag is passed in.',
-        readOnly: true,
-      }),
-    basePlans: z
-      .array(BasePlanSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The set of base plans for this subscription. Represents the prices and duration of the subscription if no other offers apply.',
-      }),
-    listings: z
-      .array(SubscriptionListingSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. List of localized listings for this subscription. Must contain at least an entry for the default language of the parent app.',
-      }),
-    packageName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Immutable. Package name of the parent app.' }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. Unique product ID of the product. Unique within the parent app. Product IDs must be composed of lower-case letters (a-z), numbers (0-9), underscores (_) and dots (.). It must start with a lower-case letter or number, and be between 1 and 40 (inclusive) characters in length.',
-      }),
-    taxAndComplianceSettings: SubscriptionTaxAndComplianceSettingsSchema.exactOptional().openapi({
-      description: 'Details about taxes and legal compliance.',
-    }),
-  })
-  .openapi({ description: 'A single subscription for an app.', required: [] })
-  .openapi('Subscription')
-
-const ListSubscriptionsResponseSchema = z
+const ListSubscriptionsResponseSchema: z.ZodType<ListSubscriptionsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2416,7 +2398,7 @@ const MigrateBasePlanPricesRequestSchema = z
   .openapi('MigrateBasePlanPricesRequest')
 
 const MigrateBasePlanPricesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response message for MigrateBasePlanPrices.' })
   .openapi('MigrateBasePlanPricesResponse')
 
@@ -3006,7 +2988,7 @@ const SubscriptionPurchaseLineItemSchema = z
   .openapi('SubscriptionPurchaseLineItem')
 
 const TestPurchaseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Whether this subscription purchase is a test purchase.' })
   .openapi('TestPurchase')
 

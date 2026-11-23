@@ -973,7 +973,7 @@ export const getListsDateListJsonRoute = createRoute({
                         .openapi({ required: [] }),
                     )
                     .exactOptional(),
-                  corrections: z.array(z.object({})).exactOptional(),
+                  corrections: z.array(z.looseObject({})).exactOptional(),
                   display_name: z.string().exactOptional(),
                   list_name: z.string().exactOptional(),
                   normal_list_ends_at: z.int().exactOptional(),

@@ -164,11 +164,13 @@ const Oauth2SecurityScheme = {
       scopes: { 'conversations.visitor_identification.tokens.create': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'conversations.visitor_identification.tokens.create': {
+      portal: ['public', 'private'],
+      developer: false,
+    },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postVisitorIdentification202609TokensCreateRoute = createRoute({
   method: 'post',

@@ -19,6 +19,8 @@ Email: <a href="mailto:support@telnyx.com">support@telnyx.com</a>
 
 - HTTP Authentication, scheme: bearer Telnyx API key
 
+- HTTP Authentication, scheme: bearer Telnyx API key
+
 - HTTP Authentication, scheme: bearer
 
 - HTTP Authentication, scheme: bearer Telnyx API key. Generate one at https://portal.telnyx.com/#/app/api-keys.
@@ -158,7 +160,7 @@ Returns a paginated list of collections in your organization.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a collection
@@ -346,7 +348,7 @@ Creates a new collection scoped to your organization. Optionally attach sources 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a collection by slug
@@ -448,7 +450,7 @@ Fetches a single collection by its `slug`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a collection
@@ -550,7 +552,7 @@ Fetches a single collection by its `uuid`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a collection
@@ -619,7 +621,7 @@ Soft-deletes a collection. Its `slug` is freed and may be reused by a new collec
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a collection
@@ -757,7 +759,7 @@ Updates a collection's metadata (`name` and/or `description`). Sources and setti
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get collection settings
@@ -839,7 +841,7 @@ Returns the retrieval settings for a collection.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Replace collection settings
@@ -978,7 +980,7 @@ Replaces the collection's retrieval settings.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update collection settings
@@ -1117,7 +1119,7 @@ Partially updates the collection's retrieval settings.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List collection sources
@@ -1202,7 +1204,7 @@ Returns the sources attached to a collection.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Replace collection sources
@@ -1377,7 +1379,7 @@ Replaces the collection's entire source set. The response `meta` reports which s
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add a collection source
@@ -1541,7 +1543,7 @@ Attaches a new content source to the specified collection and returns the create
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove a collection source
@@ -1611,7 +1613,7 @@ Removes a single source from a collection.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Search collection documents
@@ -1784,7 +1786,7 @@ Runs search over the documents in a collection, ranked by relevance to `query`. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-ai-gateway">AI Gateway</h1>
@@ -6466,7 +6468,7 @@ Returns the scheduled test jobs in your organization, optionally filtered by tes
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a scheduled test job
@@ -6679,7 +6681,7 @@ Creates a scheduled test job that runs the selected scenarios on a cron expressi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a scheduled test job
@@ -6842,7 +6844,7 @@ Returns the specified scheduled test job.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a scheduled test job
@@ -6974,7 +6976,7 @@ Deletes the specified scheduled test job.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a scheduled test job
@@ -7178,7 +7180,7 @@ Updates the specified scheduled test job.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List test agents
@@ -7343,7 +7345,7 @@ Returns a paginated list of test agents in your organization. A test agent wraps
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a test agent
@@ -7551,7 +7553,7 @@ Creates a test agent in your organization. The agent wraps a Telnyx AI assistant
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a test agent
@@ -7708,7 +7710,7 @@ Returns the specified test agent.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a test agent
@@ -7899,7 +7901,7 @@ Updates the specified test agent.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a test agent
@@ -8031,7 +8033,7 @@ Deletes the specified test agent.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List test metrics
@@ -8206,7 +8208,7 @@ Returns the metrics available in your organization, optionally filtered by test 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a test metric
@@ -8425,7 +8427,7 @@ Creates a metric in your organization.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Bulk create test metrics
@@ -8624,7 +8626,7 @@ Creates several metrics in one request. Accepts an array of metric objects and r
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Generate test metrics
@@ -8781,7 +8783,7 @@ Starts background generation of suggested metrics for a test agent. Returns a pr
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get test metric generation progress
@@ -8926,7 +8928,7 @@ Returns the status of a background metric-generation job started with the genera
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a test metric
@@ -9098,7 +9100,7 @@ Returns the specified metric.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a test metric
@@ -9230,7 +9232,7 @@ Deletes the specified metric.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a test metric
@@ -9433,7 +9435,7 @@ Updates the specified metric.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List test personalities
@@ -9568,7 +9570,7 @@ Returns the catalogue of test personalities available to your organization. A pe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List test run results
@@ -9736,7 +9738,7 @@ Returns a paginated list of test run batches in your organization, optionally fi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a test run result
@@ -9893,7 +9895,7 @@ Returns the specified test run batch, optionally with per-run detail.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a test run result
@@ -10025,7 +10027,7 @@ Deletes the specified test run batch.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Rerun a test run result
@@ -10183,7 +10185,7 @@ Re-executes the scenarios of the specified test run batch and creates a new run 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List evaluator scenarios
@@ -10359,7 +10361,7 @@ Returns a paginated list of evaluator scenarios in your organization, optionally
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an evaluator scenario
@@ -10574,7 +10576,7 @@ Creates an evaluator scenario in your organization.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Export evaluator scenarios
@@ -10708,7 +10710,7 @@ Exports the selected evaluator scenarios as a CSV or XLSX file download.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Generate evaluator scenarios
@@ -10882,7 +10884,7 @@ Starts background generation of evaluator scenarios for a test agent. Returns a 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get scenario generation progress
@@ -11018,7 +11020,7 @@ Returns the status of a background scenario-generation job started with the gene
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Run evaluator scenarios
@@ -11200,7 +11202,7 @@ Runs the selected evaluator scenarios against their test agents and creates a ru
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Improve evaluator scenarios
@@ -11368,7 +11370,7 @@ Starts an interactive session that improves selected evaluator scenarios from a 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get improve-scenarios progress
@@ -11509,7 +11511,7 @@ Returns the status of an improve-scenarios session started with the improve-eval
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an evaluator scenario
@@ -11679,7 +11681,7 @@ Returns the specified evaluator scenario with full detail.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an evaluator scenario
@@ -11811,7 +11813,7 @@ Deletes the specified evaluator scenario.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an evaluator scenario
@@ -12020,7 +12022,7 @@ Updates the specified evaluator scenario.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-access-tokens">Access Tokens</h1>
@@ -12140,7 +12142,7 @@ Create an Access Token (JWT) for the credential.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve token material.
@@ -12215,7 +12217,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-actions">Actions</h1>
@@ -12457,7 +12459,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get action result
@@ -12578,7 +12580,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-addresses">Addresses</h1>
@@ -12677,7 +12679,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates an address
@@ -12829,7 +12831,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Validate an address
@@ -13001,7 +13003,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an address
@@ -13095,7 +13097,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes an address
@@ -13190,7 +13192,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Accepts this address suggestion as a new emergency address for Operator Connect and finishes the uploads of the numbers associated with it to Microsoft.
@@ -13280,7 +13282,5706 @@ Accept the validated address suggestion for this address, replacing the original
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-apis">Agent Gateway APIs</h1>
+
+REST APIs on an instance, served to agents as tools.
+
+## List APIs
+
+<a id="opIdListAgentGatewayApis"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/apis \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/apis`
+
+Lists the REST APIs the instance serves as tools, without their credentials. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="list-apis-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "dbe53cc0-bf7e-4f7a-8d84-752d19890eb3",
+      "name": "petstore",
+      "spec_url": "https://petstore3.swagger.io/api/v3/openapi.json",
+      "base_url": "https://petstore3.swagger.io/api/v3",
+      "auth": {
+        "type": "none"
+      },
+      "tools": [],
+      "static_headers": {},
+      "forwarded_headers": [],
+      "open_to_every_key": true,
+      "created_at": "2026-10-28T17:07:27.083000Z",
+      "updated_at": "2026-10-28T17:07:27.083000Z"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="list-apis-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance's APIs|[AgentGatewayApiListResponse](#schemaagentgatewayapilistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Add an API
+
+<a id="opIdCreateAgentGatewayApi"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/apis \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "petstore",
+    "spec_url": "https://petstore3.swagger.io/api/v3/openapi.json",
+    "base_url": "https://petstore3.swagger.io/api/v3",
+    "open_to_every_key": true
+  }'
+```
+
+`POST /agent_gateways/{instance_id}/apis`
+
+Adds a REST API by its OpenAPI description. Each operation becomes a tool at `{gateway_url}/mcp`, named with the API's `name`, a hyphen, and the lowercased `operationId`. A description the gateway cannot fetch yields an API with no tools. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "name": "petstore",
+  "spec_url": "https://petstore3.swagger.io/api/v3/openapi.json",
+  "base_url": "https://petstore3.swagger.io/api/v3",
+  "open_to_every_key": true
+}
+```
+
+<h3 id="add-an-api-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|body|body|[AgentGatewayApiCreate](#schemaagentgatewayapicreate)|true|none|
+|» name|body|string|true|A name for the API, unique on the instance across MCP servers and APIs, regardless of case. Up to 100 letters, digits, `_`, and `.`. The gateway prefixes the API's tools with it and a hyphen.|
+|» spec_url|body|string|true|The URL of the API's OpenAPI description: OpenAPI 3.0, OpenAPI 3.1, or Swagger 2.0.|
+|» base_url|body|string \| null|false|Where the gateway sends the API's requests. Without it, the gateway takes the description's first `servers` entry.|
+|» auth|body|[AgentGatewayNoAuth](#schemaagentgatewaynoauth) \| [AgentGatewayStaticAuth](#schemaagentgatewaystaticauth) \| [AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials) \| [AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth)|false|How the gateway authenticates to the API. AWS Signature Version 4 is for MCP servers only. Replaced whole on an update.|
+|» » *oneOf*|body|[AgentGatewayNoAuth](#schemaagentgatewaynoauth)|false|The gateway sends no credential.|
+|» » *oneOf*|body|[AgentGatewayStaticAuth](#schemaagentgatewaystaticauth)|false|A static credential the gateway sends on every request. Write-only: responses show its `type` only.|
+|» » *oneOf*|body|[AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials)|false|The gateway gets its own access token with the `client_credentials` grant and sends it as a bearer token on every request, renewing it before it expires. The client ID and secret are write-only.|
+|» » *oneOf*|body|[AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth)|false|The gateway forwards the agent's own `Authorization` header to the server unchanged.|
+|» tools|body|[string]|false|The operations the API exposes as tools, by tool name. `[]` exposes every operation.|
+|» static_headers|body|object|false|Headers sent on every request.|
+|» » **additionalProperties**|body|string|false|none|
+|» forwarded_headers|body|[string]|false|Headers copied from the agent's request, by name.|
+|» open_to_every_key|body|boolean|false|`true` lets every key on the instance use the server, granted or not.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "id": "dbe53cc0-bf7e-4f7a-8d84-752d19890eb3",
+    "name": "petstore",
+    "spec_url": "https://petstore3.swagger.io/api/v3/openapi.json",
+    "base_url": "https://petstore3.swagger.io/api/v3",
+    "auth": {
+      "type": "none"
+    },
+    "tools": [],
+    "static_headers": {},
+    "forwarded_headers": [],
+    "open_to_every_key": true,
+    "created_at": "2026-10-28T17:07:27.083000Z",
+    "updated_at": "2026-10-28T17:07:27.083000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10012",
+      "title": "Duplicate resource",
+      "detail": "Resource is a duplicate.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10012"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10032",
+      "title": "Invalid enumerated value",
+      "detail": "Input tag does not match any of the expected tags: 'none', 'api_key', 'bearer_token', 'basic', 'token', 'authorization', 'oauth_client_credentials', 'passthrough'",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10032"
+      },
+      "source": {
+        "pointer": "/auth"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="add-an-api-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The added API|[AgentGatewayApiResponse](#schemaagentgatewayapiresponse)|
+|400|Bad Request|A name the instance already uses|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A field fails validation|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Delete an API
+
+<a id="opIdDeleteAgentGatewayApi"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/apis/dbe53cc0-bf7e-4f7a-8d84-752d19890eb3 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /agent_gateways/{instance_id}/apis/{api_id}`
+
+Removes an API and returns it as it was. An MCP server's `id` answers `404`. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="delete-an-api-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|api_id|path|string(uuid)|true|The API's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "dbe53cc0-bf7e-4f7a-8d84-752d19890eb3",
+    "name": "petstore",
+    "spec_url": "https://petstore3.swagger.io/api/v3/openapi.json",
+    "base_url": "https://petstore3.swagger.io/api/v3",
+    "auth": {
+      "type": "none"
+    },
+    "tools": [],
+    "static_headers": {},
+    "forwarded_headers": [],
+    "open_to_every_key": true,
+    "created_at": "2026-10-28T17:07:27.083000Z",
+    "updated_at": "2026-10-28T17:07:27.083000Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="delete-an-api-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The deleted API|[AgentGatewayApiResponse](#schemaagentgatewayapiresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Update an API
+
+<a id="opIdUpdateAgentGatewayApi"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/apis/dbe53cc0-bf7e-4f7a-8d84-752d19890eb3 \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "tools": [
+      "findpetsbystatus",
+      "getpetbyid"
+    ]
+  }'
+```
+
+`PATCH /agent_gateways/{instance_id}/apis/{api_id}`
+
+Changes an API's settings. A field left out stays as it is, `"base_url": null` clears the base URL, and `auth` is replaced whole. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "tools": [
+    "findpetsbystatus",
+    "getpetbyid"
+  ]
+}
+```
+
+<h3 id="update-an-api-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|api_id|path|string(uuid)|true|The API's `id`.|
+|body|body|[AgentGatewayApiUpdate](#schemaagentgatewayapiupdate)|true|none|
+|» name|body|string|false|A name for the API, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the API's tools with it and a hyphen.|
+|» spec_url|body|string|false|The URL of the API's OpenAPI description: OpenAPI 3.0, OpenAPI 3.1, or Swagger 2.0.|
+|» base_url|body|string \| null|false|Where the gateway sends the API's requests. Without it, the gateway takes the description's first `servers` entry.|
+|» auth|body|[AgentGatewayNoAuth](#schemaagentgatewaynoauth) \| [AgentGatewayStaticAuth](#schemaagentgatewaystaticauth) \| [AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials) \| [AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth)|false|How the gateway authenticates to the API. AWS Signature Version 4 is for MCP servers only. Replaced whole on an update.|
+|» » *oneOf*|body|[AgentGatewayNoAuth](#schemaagentgatewaynoauth)|false|The gateway sends no credential.|
+|» » *oneOf*|body|[AgentGatewayStaticAuth](#schemaagentgatewaystaticauth)|false|A static credential the gateway sends on every request. Write-only: responses show its `type` only.|
+|» » *oneOf*|body|[AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials)|false|The gateway gets its own access token with the `client_credentials` grant and sends it as a bearer token on every request, renewing it before it expires. The client ID and secret are write-only.|
+|» » *oneOf*|body|[AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth)|false|The gateway forwards the agent's own `Authorization` header to the server unchanged.|
+|» tools|body|[string]|false|The operations the API exposes as tools, by tool name. `[]` exposes every operation.|
+|» static_headers|body|object|false|Headers sent on every request.|
+|» » **additionalProperties**|body|string|false|none|
+|» forwarded_headers|body|[string]|false|Headers copied from the agent's request, by name.|
+|» open_to_every_key|body|boolean|false|`true` lets every key on the instance use the server, granted or not.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "dbe53cc0-bf7e-4f7a-8d84-752d19890eb3",
+    "name": "petstore",
+    "spec_url": "https://petstore3.swagger.io/api/v3/openapi.json",
+    "base_url": "https://petstore3.swagger.io/api/v3",
+    "auth": {
+      "type": "none"
+    },
+    "tools": [
+      "findpetsbystatus",
+      "getpetbyid"
+    ],
+    "static_headers": {},
+    "forwarded_headers": [],
+    "open_to_every_key": true,
+    "created_at": "2026-10-28T17:07:27.083000Z",
+    "updated_at": "2026-10-28T17:07:27.083000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10012",
+      "title": "Duplicate resource",
+      "detail": "Resource is a duplicate.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10012"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "The value is invalid.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/spec_url"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="update-an-api-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated API|[AgentGatewayApiResponse](#schemaagentgatewayapiresponse)|
+|400|Bad Request|A name the instance already uses|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A field fails validation|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-guardrails">Agent Gateway Guardrails</h1>
+
+Checks an instance runs on model and tool requests.
+
+## List guardrails
+
+<a id="opIdListAgentGatewayGuardrails"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/guardrails \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/guardrails`
+
+Lists the instance's guardrails, without their secrets. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="list-guardrails-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "9645e556-6532-4341-8cab-21b58cdef529",
+      "name": "mask-pii",
+      "modes": [
+        "before_request"
+      ],
+      "always_on": false,
+      "type": "content_filter",
+      "settings": {
+        "patterns": [
+          {
+            "name": "us_ssn",
+            "action": "mask"
+          },
+          {
+            "name": "email",
+            "action": "mask"
+          }
+        ],
+        "regexes": [],
+        "keywords": [],
+        "categories": []
+      },
+      "created_at": "2026-10-28T17:07:48.905000Z",
+      "updated_at": "2026-10-28T17:07:48.905000Z"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="list-guardrails-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance's guardrails|[AgentGatewayGuardrailListResponse](#schemaagentgatewayguardraillistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Add a guardrail
+
+<a id="opIdCreateAgentGatewayGuardrail"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/guardrails \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "mask-pii",
+    "modes": [
+      "before_request"
+    ],
+    "type": "content_filter",
+    "settings": {
+      "patterns": [
+        {
+          "name": "us_ssn",
+          "action": "mask"
+        },
+        {
+          "name": "email",
+          "action": "mask"
+        }
+      ]
+    }
+  }'
+```
+
+`POST /agent_gateways/{instance_id}/guardrails`
+
+Adds a check the instance runs on model and tool requests. It runs on every request when `always_on`, and otherwise on the requests that name it in `guardrails`. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "name": "mask-pii",
+  "modes": [
+    "before_request"
+  ],
+  "type": "content_filter",
+  "settings": {
+    "patterns": [
+      {
+        "name": "us_ssn",
+        "action": "mask"
+      },
+      {
+        "name": "email",
+        "action": "mask"
+      }
+    ]
+  }
+}
+```
+
+<h3 id="add-a-guardrail-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|body|body|[AgentGatewayGuardrailCreate](#schemaagentgatewayguardrailcreate)|true|none|
+|» name|body|string|true|A name, unique on the instance. A request names it in its `guardrails` field.|
+|» modes|body|[string]|true|When the guardrail runs. Each type runs in some modes only.|
+|» always_on|body|boolean|false|`true` runs the guardrail on every request, and a request cannot turn it off. `false` runs it on the requests that name it.|
+|» type|body|string|true|The kind of check. It cannot change after create.|
+|» settings|body|object|false|The type's settings. `content_filter`: `patterns` (prebuilt patterns by `name`, such as `us_ssn` or `email`), `regexes` (each a `name`, which tags masked matches, and a `pattern`), `keywords` (each a `keyword`), and `categories` (each a `name`), each entry with an `action` of `block` or `mask`. `tool_permission`: `rules` (`id`, `tool_name`, `tool_type`, `decision`, `argument_patterns`), a `default` decision, and `on_denied` (`block` or `rewrite`). `model_judge`: a `model` on the instance and weighted `criteria` (`name`, `description`, `weight`, the weights summing to 100). `custom_code`: `code` defining `apply_guardrail(inputs, request_data, input_type)`. `lakera`: `api_key`, `project_id`, `api_base`. `presidio`: `analyzer_url`, `anonymizer_url`, `entities` (entity name to `block` or `mask`), `language`. `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`, `endpoint`, `severity` (0 to 7). Provider secrets are write-only.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» modes|before_request|
+|» modes|during_request|
+|» modes|after_request|
+|» modes|logging_only|
+|» modes|before_tool_request|
+|» modes|during_tool_request|
+|» modes|after_tool_request|
+|» type|content_filter|
+|» type|tool_permission|
+|» type|model_judge|
+|» type|custom_code|
+|» type|lakera|
+|» type|presidio|
+|» type|bedrock|
+|» type|azure_content_safety|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "id": "9645e556-6532-4341-8cab-21b58cdef529",
+    "name": "mask-pii",
+    "modes": [
+      "before_request"
+    ],
+    "always_on": false,
+    "type": "content_filter",
+    "settings": {
+      "patterns": [
+        {
+          "name": "us_ssn",
+          "action": "mask"
+        },
+        {
+          "name": "email",
+          "action": "mask"
+        }
+      ],
+      "regexes": [],
+      "keywords": [],
+      "categories": []
+    },
+    "created_at": "2026-10-28T17:07:48.905000Z",
+    "updated_at": "2026-10-28T17:07:48.905000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10012",
+      "title": "Duplicate resource",
+      "detail": "Resource is a duplicate.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10012"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "The type does not run in one of these modes.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/modes"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="add-a-guardrail-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The added guardrail|[AgentGatewayGuardrailResponse](#schemaagentgatewayguardrailresponse)|
+|400|Bad Request|A name the instance already uses|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A mode the type does not run in|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Delete a guardrail
+
+<a id="opIdDeleteAgentGatewayGuardrail"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/guardrails/9645e556-6532-4341-8cab-21b58cdef529 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /agent_gateways/{instance_id}/guardrails/{guardrail_id}`
+
+Removes a guardrail and returns it as it was. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="delete-a-guardrail-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|guardrail_id|path|string(uuid)|true|The guardrail's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "9645e556-6532-4341-8cab-21b58cdef529",
+    "name": "mask-pii",
+    "modes": [
+      "before_request"
+    ],
+    "always_on": false,
+    "type": "content_filter",
+    "settings": {
+      "patterns": [
+        {
+          "name": "us_ssn",
+          "action": "mask"
+        },
+        {
+          "name": "email",
+          "action": "mask"
+        }
+      ],
+      "regexes": [],
+      "keywords": [],
+      "categories": []
+    },
+    "created_at": "2026-10-28T17:07:48.905000Z",
+    "updated_at": "2026-10-28T17:07:48.905000Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="delete-a-guardrail-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The deleted guardrail|[AgentGatewayGuardrailResponse](#schemaagentgatewayguardrailresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Update a guardrail
+
+<a id="opIdUpdateAgentGatewayGuardrail"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/guardrails/9645e556-6532-4341-8cab-21b58cdef529 \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "always_on": true
+  }'
+```
+
+`PATCH /agent_gateways/{instance_id}/guardrails/{guardrail_id}`
+
+Changes a guardrail's `name`, `modes`, `always_on`, or `settings`. `settings` is replaced whole, secrets included. The `type` cannot change. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "always_on": true
+}
+```
+
+<h3 id="update-a-guardrail-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|guardrail_id|path|string(uuid)|true|The guardrail's `id`.|
+|body|body|[AgentGatewayGuardrailUpdate](#schemaagentgatewayguardrailupdate)|true|none|
+|» name|body|string|false|A name, unique on the instance. A request names it in its `guardrails` field.|
+|» modes|body|[string]|false|When the guardrail runs. Each type runs in some modes only.|
+|» always_on|body|boolean|false|`true` runs the guardrail on every request, and a request cannot turn it off. `false` runs it on the requests that name it.|
+|» settings|body|object|false|The type's settings. `content_filter`: `patterns` (prebuilt patterns by name, such as `us_ssn` or `email`), `regexes`, `keywords`, and `categories` (such as `prompt_injection`), each with an `action` of `block` or `mask`. `tool_permission`: `rules` (`id`, `tool_name`, `tool_type`, `decision`, `argument_patterns`), a `default` decision, and `on_denied` (`block` or `rewrite`). `model_judge`: a `model` on the instance and weighted `criteria` (`name`, `description`, `weight`, the weights summing to 100). `custom_code`: `code` defining `apply_guardrail(inputs, request_data, input_type)`. `lakera`: `api_key`, `project_id`, `api_base`. `presidio`: `analyzer_url`, `anonymizer_url`, `entities` (entity name to `block` or `mask`), `language`. `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`, `endpoint`, `severity` (0 to 7). Provider secrets are write-only.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» modes|before_request|
+|» modes|during_request|
+|» modes|after_request|
+|» modes|logging_only|
+|» modes|before_tool_request|
+|» modes|during_tool_request|
+|» modes|after_tool_request|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "9645e556-6532-4341-8cab-21b58cdef529",
+    "name": "mask-pii",
+    "modes": [
+      "before_request"
+    ],
+    "always_on": true,
+    "type": "content_filter",
+    "settings": {
+      "patterns": [
+        {
+          "name": "us_ssn",
+          "action": "mask"
+        },
+        {
+          "name": "email",
+          "action": "mask"
+        }
+      ],
+      "regexes": [],
+      "keywords": [],
+      "categories": []
+    },
+    "created_at": "2026-10-28T17:07:48.905000Z",
+    "updated_at": "2026-10-28T17:07:48.905000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10012",
+      "title": "Duplicate resource",
+      "detail": "Resource is a duplicate.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10012"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "The type does not run in one of these modes.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/modes"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="update-a-guardrail-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated guardrail|[AgentGatewayGuardrailResponse](#schemaagentgatewayguardrailresponse)|
+|400|Bad Request|A name the instance already uses|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A field fails validation|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-keys">Agent Gateway Keys</h1>
+
+Keys on an instance.
+
+## List keys
+
+<a id="opIdListAgentGatewayKeys"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/keys \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/keys`
+
+Lists the instance's keys, without their values. Returns the first 100. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="list-keys-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|team_id|query|string(uuid)|false|Only the keys of this team.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b",
+      "name": "support-agent",
+      "team_id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+      "models": [
+        "GLM-5.3-Flash"
+      ],
+      "max_budget": 20,
+      "budget_resets_every": "30d",
+      "budget_resets_at": "2026-11-20T19:40:00Z",
+      "spend": 0,
+      "expires_at": null,
+      "created_at": "2026-10-21T19:40:00Z",
+      "blocked": false,
+      "requests_per_minute": 60,
+      "tokens_per_minute": null,
+      "max_parallel_requests": 4
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="list-keys-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance's keys|[AgentGatewayKeyListResponse](#schemaagentgatewaykeylistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Create a key
+
+<a id="opIdCreateAgentGatewayKey"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/keys \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "support-agent",
+    "team_id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+    "models": [
+      "GLM-5.3-Flash"
+    ],
+    "max_budget": 20,
+    "budget_resets_every": "30d",
+    "requests_per_minute": 60,
+    "max_parallel_requests": 4
+  }'
+```
+
+`POST /agent_gateways/{instance_id}/keys`
+
+Issues a key on the instance. The key's value is in this response only. Every field is optional; a key without `models` may use every model the instance serves. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "name": "support-agent",
+  "team_id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+  "models": [
+    "GLM-5.3-Flash"
+  ],
+  "max_budget": 20,
+  "budget_resets_every": "30d",
+  "requests_per_minute": 60,
+  "max_parallel_requests": 4
+}
+```
+
+<h3 id="create-a-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|body|body|[AgentGatewayKeyCreate](#schemaagentgatewaykeycreate)|true|none|
+|» name|body|string \| null|false|A label for people, unique on the instance.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» models|body|[string] \| null|false|The models the key may use. Leave it out to allow every model.|
+|» » *anyOf*|body|[string]|false|none|
+|» » *anyOf*|body|null|false|none|
+|» max_budget|body|number \| null|false|The most the key may spend, in USD.|
+|» » *anyOf*|body|number|false|none|
+|» » *anyOf*|body|null|false|none|
+|» budget_resets_every|body|string \| null|false|How often the spend resets: a number and a unit, `s`, `m`, `h`, or `d`.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» expires_in|body|string \| null|false|How long until the key stops working: a number and a unit, `s`, `m`, `h`, or `d`.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» team_id|body|string(uuid) \| null|false|A team on the instance. The key shares the team's model list, budget, and rate limits.|
+|» » *anyOf*|body|string(uuid)|false|none|
+|» » *anyOf*|body|null|false|none|
+|» requests_per_minute|body|integer \| null|false|The most requests the key may make per minute.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+|» tokens_per_minute|body|integer \| null|false|The most tokens the key may use per minute.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+|» max_parallel_requests|body|integer \| null|false|The most requests the key may have in flight at once.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "id": "5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b",
+    "name": "support-agent",
+    "team_id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+    "models": [
+      "GLM-5.3-Flash"
+    ],
+    "max_budget": 20,
+    "budget_resets_every": "30d",
+    "budget_resets_at": "2026-11-20T19:40:00Z",
+    "spend": 0,
+    "expires_at": null,
+    "created_at": "2026-10-21T19:40:00Z",
+    "blocked": false,
+    "requests_per_minute": 60,
+    "tokens_per_minute": null,
+    "max_parallel_requests": 4,
+    "key": "sk-EXAMPLE-KEY-VALUE"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10013",
+      "title": "Missing association",
+      "detail": "One of the associated fields does not exist.",
+      "source": {
+        "pointer": "/team_id"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10013"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10033",
+      "title": "Value outside of range",
+      "detail": "Input should be greater than or equal to 0",
+      "source": {
+        "pointer": "/max_budget"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10033"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="create-a-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The key, with its value|[AgentGatewayCreatedKeyResponse](#schemaagentgatewaycreatedkeyresponse)|
+|400|Bad Request|The team does not exist|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|Invalid request body|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Delete a key
+
+<a id="opIdDeleteAgentGatewayKey"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/keys/5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /agent_gateways/{instance_id}/keys/{key_id}`
+
+Revokes a key and returns it as it was, without its value. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="delete-a-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|key_id|path|string|true|The key's `id`, a 64-character hash the instance stores in place of the key.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b",
+    "name": "support-agent",
+    "team_id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+    "models": [
+      "GLM-5.3-Flash"
+    ],
+    "max_budget": 20,
+    "budget_resets_every": "30d",
+    "budget_resets_at": "2026-11-20T19:40:00Z",
+    "spend": 0,
+    "expires_at": null,
+    "created_at": "2026-10-21T19:40:00Z",
+    "blocked": false,
+    "requests_per_minute": 60,
+    "tokens_per_minute": null,
+    "max_parallel_requests": 4
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="delete-a-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The revoked key|[AgentGatewayKeyResponse](#schemaagentgatewaykeyresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Update a key
+
+<a id="opIdUpdateAgentGatewayKey"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/keys/5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "blocked": true
+  }'
+```
+
+`PATCH /agent_gateways/{instance_id}/keys/{key_id}`
+
+Changes a key's settings without reissuing it. A field left out stays as it is, and `null` clears it. `models: []` lifts the model restriction. `expires_in` counts from now. Setting `blocked` to `true` makes the instance refuse the key with `401` while keeping its settings and spend; `false` lets it through again. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "blocked": true
+}
+```
+
+<h3 id="update-a-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|key_id|path|string|true|The key's `id`, a 64-character hash the instance stores in place of the key.|
+|body|body|[AgentGatewayKeyUpdate](#schemaagentgatewaykeyupdate)|true|none|
+|» name|body|string|false|A label for people.|
+|» models|body|[string]|false|The models the key may use. `[]` allows every model.|
+|» max_budget|body|number \| null|false|The most the key may spend, in USD.|
+|» » *anyOf*|body|number|false|none|
+|» » *anyOf*|body|null|false|none|
+|» budget_resets_every|body|string \| null|false|How often the spend resets.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» expires_in|body|string \| null|false|How long from now until the key stops working.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» team_id|body|string(uuid) \| null|false|Move the key to this team, or `null` to leave its team.|
+|» » *anyOf*|body|string(uuid)|false|none|
+|» » *anyOf*|body|null|false|none|
+|» blocked|body|boolean|false|`true` makes the instance refuse the key; `false` lets it through again.|
+|» requests_per_minute|body|integer \| null|false|The most requests the key may make per minute.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+|» tokens_per_minute|body|integer \| null|false|The most tokens the key may use per minute.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+|» max_parallel_requests|body|integer \| null|false|The most requests the key may have in flight at once.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b",
+    "name": "support-agent",
+    "team_id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+    "models": [
+      "GLM-5.3-Flash"
+    ],
+    "max_budget": 20,
+    "budget_resets_every": "30d",
+    "budget_resets_at": "2026-11-20T19:40:00Z",
+    "spend": 0,
+    "expires_at": null,
+    "created_at": "2026-10-21T19:40:00Z",
+    "blocked": true,
+    "requests_per_minute": 60,
+    "tokens_per_minute": null,
+    "max_parallel_requests": 4
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10033",
+      "title": "Value outside of range",
+      "detail": "Input should be greater than or equal to 1",
+      "source": {
+        "pointer": "/requests_per_minute"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10033"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="update-a-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated key|[AgentGatewayKeyResponse](#schemaagentgatewaykeyresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|Invalid request body|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-mcp-servers">Agent Gateway MCP Servers</h1>
+
+MCP servers on an instance, served to agents at one MCP endpoint.
+
+## List MCP servers
+
+<a id="opIdListAgentGatewayMcpServers"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/mcp_servers \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/mcp_servers`
+
+Lists the MCP servers the instance serves at `{gateway_url}/mcp`, without their credentials. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="list-mcp-servers-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+      "name": "orders",
+      "url": "http://10.40.3.7:9000/mcp",
+      "transport": "http",
+      "auth": {
+        "type": "api_key"
+      },
+      "tools": [],
+      "static_headers": {
+        "X-Env": "prod"
+      },
+      "forwarded_headers": [
+        "X-Request-Id"
+      ],
+      "open_to_every_key": false,
+      "created_at": "2026-10-28T16:50:43.184000Z",
+      "updated_at": "2026-10-28T16:50:43.184000Z"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="list-mcp-servers-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance's MCP servers|[AgentGatewayMcpServerListResponse](#schemaagentgatewaymcpserverlistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Add an MCP server
+
+<a id="opIdCreateAgentGatewayMcpServer"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/mcp_servers \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "orders",
+    "url": "http://10.40.3.7:9000/mcp",
+    "auth": {
+      "type": "api_key",
+      "value": "example-orders-key"
+    },
+    "static_headers": {
+      "X-Env": "prod"
+    },
+    "forwarded_headers": [
+      "X-Request-Id"
+    ]
+  }'
+```
+
+`POST /agent_gateways/{instance_id}/mcp_servers`
+
+Adds an MCP server. The instance serves its tools at `{gateway_url}/mcp`, each named with the server's `name` and a hyphen, to the keys granted the server and, with `open_to_every_key`, to every key. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "name": "orders",
+  "url": "http://10.40.3.7:9000/mcp",
+  "auth": {
+    "type": "api_key",
+    "value": "example-orders-key"
+  },
+  "static_headers": {
+    "X-Env": "prod"
+  },
+  "forwarded_headers": [
+    "X-Request-Id"
+  ]
+}
+```
+
+<h3 id="add-an-mcp-server-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|body|body|[AgentGatewayMcpServerCreate](#schemaagentgatewaymcpservercreate)|true|none|
+|» name|body|string|true|A name for the server, unique on the instance across MCP servers and APIs, regardless of case. Up to 100 letters, digits, `_`, and `.`. The gateway prefixes the server's tools with it and a hyphen.|
+|» url|body|string|true|The server's MCP endpoint, `http` or `https`.|
+|» transport|body|string|false|`http` for Streamable HTTP, or `sse` for Server-Sent Events.|
+|» auth|body|[AgentGatewayNoAuth](#schemaagentgatewaynoauth) \| [AgentGatewayStaticAuth](#schemaagentgatewaystaticauth) \| [AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials) \| [AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth) \| [AgentGatewayAwsSigV4Auth](#schemaagentgatewayawssigv4auth)|false|How the gateway authenticates to the server. Replaced whole on an update; `{"type": "none"}` removes the credential.|
+|» » *oneOf*|body|[AgentGatewayNoAuth](#schemaagentgatewaynoauth)|false|The gateway sends no credential.|
+|» » *oneOf*|body|[AgentGatewayStaticAuth](#schemaagentgatewaystaticauth)|false|A static credential the gateway sends on every request. Write-only: responses show its `type` only.|
+|» » *oneOf*|body|[AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials)|false|The gateway gets its own access token with the `client_credentials` grant and sends it as a bearer token on every request, renewing it before it expires. The client ID and secret are write-only.|
+|» » *oneOf*|body|[AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth)|false|The gateway forwards the agent's own `Authorization` header to the server unchanged.|
+|» » *oneOf*|body|[AgentGatewayAwsSigV4Auth](#schemaagentgatewayawssigv4auth)|false|The gateway signs each request with AWS Signature Version 4. Without keys or a role, it uses the instance's own AWS identity. Keys are write-only.|
+|» tools|body|[string]|false|The tools the server exposes to every key, by name. `[]` exposes every tool.|
+|» static_headers|body|object|false|Headers sent on every request.|
+|» » **additionalProperties**|body|string|false|none|
+|» forwarded_headers|body|[string]|false|Headers copied from the agent's request, by name.|
+|» open_to_every_key|body|boolean|false|`true` lets every key on the instance use the server, granted or not.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» transport|http|
+|» transport|sse|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+    "name": "orders",
+    "url": "http://10.40.3.7:9000/mcp",
+    "transport": "http",
+    "auth": {
+      "type": "api_key"
+    },
+    "tools": [],
+    "static_headers": {
+      "X-Env": "prod"
+    },
+    "forwarded_headers": [
+      "X-Request-Id"
+    ],
+    "open_to_every_key": false,
+    "created_at": "2026-10-28T16:50:43.184000Z",
+    "updated_at": "2026-10-28T16:50:43.184000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10012",
+      "title": "Duplicate resource",
+      "detail": "Resource is a duplicate.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10012"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "String should match pattern '^[A-Za-z0-9_.]{1,100}$'",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="add-an-mcp-server-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The added MCP server|[AgentGatewayMcpServerResponse](#schemaagentgatewaymcpserverresponse)|
+|400|Bad Request|A name the instance already uses|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A field fails validation|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Delete an MCP server
+
+<a id="opIdDeleteAgentGatewayMcpServer"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/mcp_servers/88d5a97b-4080-4855-8bac-a39811b1dc24 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /agent_gateways/{instance_id}/mcp_servers/{server_id}`
+
+Removes an MCP server and returns it as it was. Its `id` stays in the tool permissions that name it until they are next set. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="delete-an-mcp-server-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|server_id|path|string(uuid)|true|The MCP server's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+    "name": "orders",
+    "url": "http://10.40.3.7:9000/mcp",
+    "transport": "http",
+    "auth": {
+      "type": "api_key"
+    },
+    "tools": [],
+    "static_headers": {
+      "X-Env": "prod"
+    },
+    "forwarded_headers": [
+      "X-Request-Id"
+    ],
+    "open_to_every_key": false,
+    "created_at": "2026-10-28T16:50:43.184000Z",
+    "updated_at": "2026-10-28T16:50:43.184000Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="delete-an-mcp-server-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The deleted MCP server|[AgentGatewayMcpServerResponse](#schemaagentgatewaymcpserverresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Update an MCP server
+
+<a id="opIdUpdateAgentGatewayMcpServer"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/mcp_servers/88d5a97b-4080-4855-8bac-a39811b1dc24 \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "tools": [
+      "get_order",
+      "create_ticket"
+    ]
+  }'
+```
+
+`PATCH /agent_gateways/{instance_id}/mcp_servers/{server_id}`
+
+Changes an MCP server's settings. A field left out stays as it is. `auth` is replaced whole, `tools: []` exposes every tool, and `static_headers: {}` clears the headers. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "tools": [
+    "get_order",
+    "create_ticket"
+  ]
+}
+```
+
+<h3 id="update-an-mcp-server-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|server_id|path|string(uuid)|true|The MCP server's `id`.|
+|body|body|[AgentGatewayMcpServerUpdate](#schemaagentgatewaymcpserverupdate)|true|none|
+|» name|body|string|false|A name for the server, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the server's tools with it and a hyphen.|
+|» url|body|string|false|The server's MCP endpoint, `http` or `https`.|
+|» transport|body|string|false|`http` for Streamable HTTP, or `sse` for Server-Sent Events.|
+|» auth|body|[AgentGatewayNoAuth](#schemaagentgatewaynoauth) \| [AgentGatewayStaticAuth](#schemaagentgatewaystaticauth) \| [AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials) \| [AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth) \| [AgentGatewayAwsSigV4Auth](#schemaagentgatewayawssigv4auth)|false|How the gateway authenticates to the server. Replaced whole on an update; `{"type": "none"}` removes the credential.|
+|» » *oneOf*|body|[AgentGatewayNoAuth](#schemaagentgatewaynoauth)|false|The gateway sends no credential.|
+|» » *oneOf*|body|[AgentGatewayStaticAuth](#schemaagentgatewaystaticauth)|false|A static credential the gateway sends on every request. Write-only: responses show its `type` only.|
+|» » *oneOf*|body|[AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials)|false|The gateway gets its own access token with the `client_credentials` grant and sends it as a bearer token on every request, renewing it before it expires. The client ID and secret are write-only.|
+|» » *oneOf*|body|[AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth)|false|The gateway forwards the agent's own `Authorization` header to the server unchanged.|
+|» » *oneOf*|body|[AgentGatewayAwsSigV4Auth](#schemaagentgatewayawssigv4auth)|false|The gateway signs each request with AWS Signature Version 4. Without keys or a role, it uses the instance's own AWS identity. Keys are write-only.|
+|» tools|body|[string]|false|The tools the server exposes to every key, by name. `[]` exposes every tool.|
+|» static_headers|body|object|false|Headers sent on every request.|
+|» » **additionalProperties**|body|string|false|none|
+|» forwarded_headers|body|[string]|false|Headers copied from the agent's request, by name.|
+|» open_to_every_key|body|boolean|false|`true` lets every key on the instance use the server, granted or not.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» transport|http|
+|» transport|sse|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+    "name": "orders",
+    "url": "http://10.40.3.7:9000/mcp",
+    "transport": "http",
+    "auth": {
+      "type": "api_key"
+    },
+    "tools": [
+      "get_order",
+      "create_ticket"
+    ],
+    "static_headers": {
+      "X-Env": "prod"
+    },
+    "forwarded_headers": [
+      "X-Request-Id"
+    ],
+    "open_to_every_key": false,
+    "created_at": "2026-10-28T16:50:43.184000Z",
+    "updated_at": "2026-10-28T16:50:43.184000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10012",
+      "title": "Duplicate resource",
+      "detail": "Resource is a duplicate.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10012"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "The value is invalid.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/transport"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="update-an-mcp-server-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated MCP server|[AgentGatewayMcpServerResponse](#schemaagentgatewaymcpserverresponse)|
+|400|Bad Request|A name the instance already uses|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A field fails validation|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-policies">Agent Gateway Policies</h1>
+
+Named sets of guardrails an instance applies to requests.
+
+## List policies
+
+<a id="opIdListAgentGatewayPolicies"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/policies \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/policies`
+
+Lists the instance's policies, each in its current version.
+
+<h3 id="list-policies-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "name": "baseline",
+      "description": "Mask personal data",
+      "base": null,
+      "guardrails": {
+        "add": [
+          "mask-pii"
+        ],
+        "remove": []
+      },
+      "model": null,
+      "pipeline": null,
+      "created_at": "2026-11-02T12:58:53.995000Z",
+      "updated_at": "2026-11-02T12:58:53.995000Z"
+    },
+    {
+      "name": "strict",
+      "description": null,
+      "base": "baseline",
+      "guardrails": {
+        "add": [
+          "no-forbidden"
+        ],
+        "remove": []
+      },
+      "model": "GLM-5.3.*",
+      "pipeline": null,
+      "created_at": "2026-11-02T12:58:54.285000Z",
+      "updated_at": "2026-11-02T12:58:54.285000Z"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="list-policies-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance's policies|[AgentGatewayPolicyListResponse](#schemaagentgatewaypolicylistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Create a policy
+
+<a id="opIdCreateAgentGatewayPolicy"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/policies \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "baseline",
+    "description": "Mask personal data",
+    "guardrails": {
+      "add": [
+        "mask-pii"
+      ]
+    }
+  }'
+```
+
+`POST /agent_gateways/{instance_id}/policies`
+
+Creates a named set of guardrails. It applies from the next request on, to the requests that name it in `policies` and to those its [attachments](https://developers.telnyx.com/api-reference/agent-gateway-policy-attachments/attach-a-policy) match.
+
+> Body parameter
+
+```json
+{
+  "name": "baseline",
+  "description": "Mask personal data",
+  "guardrails": {
+    "add": [
+      "mask-pii"
+    ]
+  }
+}
+```
+
+<h3 id="create-a-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|body|body|[AgentGatewayPolicyCreate](#schemaagentgatewaypolicycreate)|true|none|
+|» name|body|string|true|A name, unique on the instance. A request names the policy in its `policies` field.|
+|» description|body|string \| null|false|What the policy is for.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» base|body|string \| null|false|A policy this one builds on, by name. The policy starts with the base's guardrails.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» guardrails|body|[AgentGatewayPolicyGuardrails](#schemaagentgatewaypolicyguardrails)|false|The guardrails a policy adds to its base's, and the ones it removes from them, by name.|
+|» model|body|string \| null|false|A condition on the model, by name or regular expression. The policy's guardrails run only on requests for a matching model. `null` matches every model.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» pipeline|body|[AgentGatewayPolicyPipeline](#schemaagentgatewaypolicypipeline) \| null|false|Ordered steps, in place of the guardrails running independently.|
+|» » *anyOf*|body|[AgentGatewayPolicyPipeline](#schemaagentgatewaypolicypipeline)|false|Ordered steps that run in place of the policy's guardrails running independently.|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "name": "baseline",
+    "description": "Mask personal data",
+    "base": null,
+    "guardrails": {
+      "add": [
+        "mask-pii"
+      ],
+      "remove": []
+    },
+    "model": null,
+    "pipeline": null,
+    "created_at": "2026-11-02T12:58:53.995000Z",
+    "updated_at": "2026-11-02T12:58:53.995000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10013",
+      "title": "Missing association",
+      "detail": "One of the associated fields does not exist.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10013"
+      },
+      "source": {
+        "pointer": "/base"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "String should match pattern '^[A-Za-z0-9_.-]{1,100}$'",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="create-a-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The created policy|[AgentGatewayPolicyResponse](#schemaagentgatewaypolicyresponse)|
+|400|Bad Request|A name the instance already uses, or a base or guardrail it does not have|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|An invalid name or pipeline|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Retrieve a policy
+
+<a id="opIdRetrieveAgentGatewayPolicy"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/policies/strict \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/policies/{name}`
+
+Returns one policy, in its current version.
+
+<h3 id="retrieve-a-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|name|path|string|true|The policy's `name`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "name": "strict",
+    "description": null,
+    "base": "baseline",
+    "guardrails": {
+      "add": [
+        "no-forbidden"
+      ],
+      "remove": []
+    },
+    "model": "GLM-5.3.*",
+    "pipeline": null,
+    "created_at": "2026-11-02T12:58:54.285000Z",
+    "updated_at": "2026-11-02T12:58:54.285000Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="retrieve-a-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The policy|[AgentGatewayPolicyResponse](#schemaagentgatewaypolicyresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Delete a policy
+
+<a id="opIdDeleteAgentGatewayPolicy"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/policies/strict \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /agent_gateways/{instance_id}/policies/{name}`
+
+Deletes a policy and every version of it, and returns it as it was. A policy that an attachment names, or that another policy builds on, cannot be deleted.
+
+<h3 id="delete-a-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|name|path|string|true|The policy's `name`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "name": "strict",
+    "description": null,
+    "base": "baseline",
+    "guardrails": {
+      "add": [
+        "no-forbidden"
+      ],
+      "remove": []
+    },
+    "model": "GLM-5.3.*",
+    "pipeline": null,
+    "created_at": "2026-11-02T12:58:54.285000Z",
+    "updated_at": "2026-11-02T12:58:54.285000Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10021",
+      "title": "Resource in use",
+      "detail": "The resource can not be removed as it is still in use.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10021"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="delete-a-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The deleted policy|[AgentGatewayPolicyResponse](#schemaagentgatewaypolicyresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|An attachment names the policy, or another policy builds on it|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Update a policy
+
+<a id="opIdUpdateAgentGatewayPolicy"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/policies/strict \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "description": "Baseline plus a word check"
+  }'
+```
+
+`PATCH /agent_gateways/{instance_id}/policies/{name}`
+
+Changes a policy, which publishes a new version of it. A field left out stays as it is; `guardrails` and `pipeline` are replaced whole, and `model: null` removes the condition.
+
+> Body parameter
+
+```json
+{
+  "description": "Baseline plus a word check"
+}
+```
+
+<h3 id="update-a-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|name|path|string|true|The policy's `name`.|
+|body|body|[AgentGatewayPolicyUpdate](#schemaagentgatewaypolicyupdate)|true|none|
+|» description|body|string \| null|false|What the policy is for.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» base|body|string \| null|false|A policy this one builds on, by name. The policy starts with the base's guardrails.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» guardrails|body|[AgentGatewayPolicyGuardrails](#schemaagentgatewaypolicyguardrails)|false|The guardrails a policy adds to its base's, and the ones it removes from them, by name.|
+|» model|body|string \| null|false|A condition on the model, by name or regular expression. The policy's guardrails run only on requests for a matching model. `null` matches every model.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» pipeline|body|[AgentGatewayPolicyPipeline](#schemaagentgatewaypolicypipeline) \| null|false|Ordered steps, in place of the guardrails running independently.|
+|» » *anyOf*|body|[AgentGatewayPolicyPipeline](#schemaagentgatewaypolicypipeline)|false|Ordered steps that run in place of the policy's guardrails running independently.|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "name": "strict",
+    "description": "Baseline plus a word check",
+    "base": "baseline",
+    "guardrails": {
+      "add": [
+        "no-forbidden"
+      ],
+      "remove": []
+    },
+    "model": "GLM-5.3.*",
+    "pipeline": null,
+    "created_at": "2026-11-02T12:58:55.140000Z",
+    "updated_at": "2026-11-02T12:58:55.178000Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "Extra inputs are not permitted",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/name"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="update-a-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated policy|[AgentGatewayPolicyResponse](#schemaagentgatewaypolicyresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A field the update cannot change|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-policy-attachments">Agent Gateway Policy Attachments</h1>
+
+Where an instance applies each policy.
+
+## List policy attachments
+
+<a id="opIdListAgentGatewayPolicyAttachments"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/policy_attachments \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/policy_attachments`
+
+Lists where the instance applies each policy.
+
+<h3 id="list-policy-attachments-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "03244d7b-a1ba-4914-a77c-95edfc700ad5",
+      "policy": "baseline",
+      "models": [],
+      "priority": null,
+      "default": true,
+      "created_at": "2026-11-02T12:58:55.590000Z",
+      "updated_at": "2026-11-02T12:58:55.590000Z"
+    },
+    {
+      "id": "3394712f-2ad5-428a-8a3d-7a08d4b2906d",
+      "policy": "strict",
+      "models": [
+        "GLM-5.3*"
+      ],
+      "priority": 10,
+      "default": false,
+      "created_at": "2026-11-02T12:58:55.388000Z",
+      "updated_at": "2026-11-02T12:58:55.388000Z"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="list-policy-attachments-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance's attachments|[AgentGatewayPolicyAttachmentListResponse](#schemaagentgatewaypolicyattachmentlistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Attach a policy
+
+<a id="opIdCreateAgentGatewayPolicyAttachment"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/policy_attachments \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "policy": "strict",
+    "models": [
+      "GLM-5.3*"
+    ],
+    "priority": 10
+  }'
+```
+
+`POST /agent_gateways/{instance_id}/policy_attachments`
+
+Applies a policy to every request, or to the requests for the models named. It applies from the next request on.
+
+> Body parameter
+
+```json
+{
+  "policy": "strict",
+  "models": [
+    "GLM-5.3*"
+  ],
+  "priority": 10
+}
+```
+
+<h3 id="attach-a-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|body|body|[AgentGatewayPolicyAttachmentCreate](#schemaagentgatewaypolicyattachmentcreate)|true|none|
+|» policy|body|string|true|The policy to apply, by name.|
+|» models|body|[string]|false|The models whose requests the policy applies to, by name. A name can use `*` as a wildcard. Empty applies the policy to every request.|
+|» priority|body|integer \| null|false|An attachment with a priority applies before the others.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+|» default|body|boolean|false|`true` applies the policy only to the requests no other attachment matches.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "id": "3394712f-2ad5-428a-8a3d-7a08d4b2906d",
+    "policy": "strict",
+    "models": [
+      "GLM-5.3*"
+    ],
+    "priority": 10,
+    "default": false,
+    "created_at": "2026-11-02T12:58:55.388000Z",
+    "updated_at": "2026-11-02T12:58:55.388000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10013",
+      "title": "Missing association",
+      "detail": "One of the associated fields does not exist.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10013"
+      },
+      "source": {
+        "pointer": "/policy"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="attach-a-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The attachment|[AgentGatewayPolicyAttachmentResponse](#schemaagentgatewaypolicyattachmentresponse)|
+|400|Bad Request|A policy the instance does not have|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Detach a policy
+
+<a id="opIdDeleteAgentGatewayPolicyAttachment"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/policy_attachments/3394712f-2ad5-428a-8a3d-7a08d4b2906d \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /agent_gateways/{instance_id}/policy_attachments/{attachment_id}`
+
+Removes an attachment and returns it as it was. The policy stays.
+
+<h3 id="detach-a-policy-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|attachment_id|path|string(uuid)|true|The attachment's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "3394712f-2ad5-428a-8a3d-7a08d4b2906d",
+    "policy": "strict",
+    "models": [
+      "GLM-5.3*"
+    ],
+    "priority": 10,
+    "default": false,
+    "created_at": "2026-11-02T12:58:55.388000Z",
+    "updated_at": "2026-11-02T12:58:55.388000Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="detach-a-policy-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The removed attachment|[AgentGatewayPolicyAttachmentResponse](#schemaagentgatewaypolicyattachmentresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-spend-logs">Agent Gateway Spend Logs</h1>
+
+The requests an instance served, with their cost.
+
+## List spend logs
+
+<a id="opIdListAgentGatewaySpendLogs"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/spend_logs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/spend_logs`
+
+Lists the requests the instance served with its keys, newest first, one page at a time. The window defaults to the last 24 hours and spans at most 31 days. A row appears a few seconds after its request. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="list-spend-logs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|page[number]|query|integer|false|The page to return, counting from 1.|
+|page[size]|query|integer|false|Results per page.|
+|start|query|string(date-time)|false|The window's start, an RFC 3339 timestamp with an offset. Defaults to 24 hours before `end`.|
+|end|query|string(date-time)|false|The window's end, an RFC 3339 timestamp with an offset. Defaults to now.|
+|key_id|query|string|false|Only the requests made with this key.|
+|team_id|query|string(uuid)|false|Only the requests made with this team's keys.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "chatcmpl-1c0032cc-3d9f-439f-af62-b7f2b6623da4",
+      "key_id": "5f1c3a0e9b7d4c2a8e6f0b1d3c5a7e9f2b4d6c8a0e1f3a5c7e9b1d3f5a7c9e0b",
+      "team_id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+      "model": "zai-org/GLM-5.3-Flash",
+      "operation": "acompletion",
+      "status": "success",
+      "spend": 0.00027747,
+      "prompt_tokens": 22,
+      "completion_tokens": 610,
+      "total_tokens": 632,
+      "started_at": "2026-10-21T19:41:02.114000Z",
+      "ended_at": "2026-10-21T19:41:04.879000Z",
+      "duration_ms": 2765
+    }
+  ],
+  "meta": {
+    "total_results": 1,
+    "page_number": 1,
+    "page_size": 50,
+    "total_pages": 1,
+    "total_results_capped": false
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10033",
+      "title": "Value outside of range",
+      "detail": "The value is outside of allowed range the start to 31 days after it",
+      "source": {
+        "parameter": "end"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10033"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="list-spend-logs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|One page of spend logs|[AgentGatewaySpendLogListResponse](#schemaagentgatewayspendloglistresponse)|
+|400|Bad Request|The window is longer than 31 days|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-teams">Agent Gateway Teams</h1>
+
+Teams on an instance: shared model lists, budgets, and rate limits.
+
+## List teams
+
+<a id="opIdListAgentGatewayTeams"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/teams \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/teams`
+
+Lists the instance's teams. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="list-teams-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+      "name": "support",
+      "models": [
+        "GLM-5.3-Flash",
+        "Qwen3.8-27B-nothink"
+      ],
+      "max_budget": 50,
+      "budget_resets_every": "30d",
+      "budget_resets_at": "2026-11-20T19:35:00Z",
+      "spend": 0,
+      "created_at": "2026-10-21T19:35:00Z",
+      "blocked": false,
+      "requests_per_minute": 120,
+      "tokens_per_minute": null
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="list-teams-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance's teams|[AgentGatewayTeamListResponse](#schemaagentgatewayteamlistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Create a team
+
+<a id="opIdCreateAgentGatewayTeam"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/teams \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "support",
+    "models": [
+      "GLM-5.3-Flash",
+      "Qwen3.8-27B-nothink"
+    ],
+    "max_budget": 50,
+    "budget_resets_every": "30d",
+    "requests_per_minute": 120
+  }'
+```
+
+`POST /agent_gateways/{instance_id}/teams`
+
+Creates a team on the instance. A team is a model list, a budget, and rate limits that its keys share. Names need not be unique; the `id` identifies the team. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "name": "support",
+  "models": [
+    "GLM-5.3-Flash",
+    "Qwen3.8-27B-nothink"
+  ],
+  "max_budget": 50,
+  "budget_resets_every": "30d",
+  "requests_per_minute": 120
+}
+```
+
+<h3 id="create-a-team-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|body|body|[AgentGatewayTeamCreate](#schemaagentgatewayteamcreate)|true|none|
+|» name|body|string|true|A label for people.|
+|» models|body|[string] \| null|false|The models the team's keys may use. Leave it out to allow every model.|
+|» » *anyOf*|body|[string]|false|none|
+|» » *anyOf*|body|null|false|none|
+|» max_budget|body|number \| null|false|The most the team's keys may spend together, in USD.|
+|» » *anyOf*|body|number|false|none|
+|» » *anyOf*|body|null|false|none|
+|» budget_resets_every|body|string \| null|false|How often the spend resets: a number and a unit, `s`, `m`, `h`, or `d`.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» requests_per_minute|body|integer \| null|false|The most requests the team's keys may make per minute, together.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+|» tokens_per_minute|body|integer \| null|false|The most tokens the team's keys may use per minute, together.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+    "name": "support",
+    "models": [
+      "GLM-5.3-Flash",
+      "Qwen3.8-27B-nothink"
+    ],
+    "max_budget": 50,
+    "budget_resets_every": "30d",
+    "budget_resets_at": "2026-11-20T19:35:00Z",
+    "spend": 0,
+    "created_at": "2026-10-21T19:35:00Z",
+    "blocked": false,
+    "requests_per_minute": 120,
+    "tokens_per_minute": null
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10004",
+      "title": "Missing required parameter",
+      "detail": "Field required",
+      "source": {
+        "pointer": "/name"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10004"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="create-a-team-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The team|[AgentGatewayTeamResponse](#schemaagentgatewayteamresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|Invalid request body|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Delete a team
+
+<a id="opIdDeleteAgentGatewayTeam"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/teams/0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /agent_gateways/{instance_id}/teams/{team_id}`
+
+Deletes a team that has no keys and returns it. A team that still has keys answers `409`; delete or move its keys first. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="delete-a-team-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|team_id|path|string(uuid)|true|The team's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+    "name": "support",
+    "models": [
+      "GLM-5.3-Flash",
+      "Qwen3.8-27B-nothink"
+    ],
+    "max_budget": 50,
+    "budget_resets_every": "30d",
+    "budget_resets_at": "2026-11-20T19:35:00Z",
+    "spend": 0,
+    "created_at": "2026-10-21T19:35:00Z",
+    "blocked": false,
+    "requests_per_minute": 120,
+    "tokens_per_minute": null
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10021",
+      "title": "Resource in use",
+      "detail": "The resource can not be removed as it is still in use.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10021"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="delete-a-team-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The deleted team|[AgentGatewayTeamResponse](#schemaagentgatewayteamresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The team still has keys, or the instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Update a team
+
+<a id="opIdUpdateAgentGatewayTeam"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996/teams/0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "max_budget": 100
+  }'
+```
+
+`PATCH /agent_gateways/{instance_id}/teams/{team_id}`
+
+Changes a team's settings. A field left out stays as it is, and `null` clears it. `models: []` lifts the model restriction. Setting `blocked` to `true` makes the instance refuse every key in the team with `401`. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "max_budget": 100
+}
+```
+
+<h3 id="update-a-team-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|team_id|path|string(uuid)|true|The team's `id`.|
+|body|body|[AgentGatewayTeamUpdate](#schemaagentgatewayteamupdate)|true|none|
+|» name|body|string|false|A label for people.|
+|» models|body|[string]|false|The models the team's keys may use. `[]` allows every model.|
+|» max_budget|body|number \| null|false|The most the team's keys may spend together, in USD.|
+|» » *anyOf*|body|number|false|none|
+|» » *anyOf*|body|null|false|none|
+|» budget_resets_every|body|string \| null|false|How often the spend resets.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» blocked|body|boolean|false|`true` makes the instance refuse every key in the team; `false` lets them through again.|
+|» requests_per_minute|body|integer \| null|false|The most requests the team's keys may make per minute, together.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+|» tokens_per_minute|body|integer \| null|false|The most tokens the team's keys may use per minute, together.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "0b6c5d4e-3f2a-4b1c-9d8e-7f6a5b4c3d2e",
+    "name": "support",
+    "models": [
+      "GLM-5.3-Flash",
+      "Qwen3.8-27B-nothink"
+    ],
+    "max_budget": 100,
+    "budget_resets_every": "30d",
+    "budget_resets_at": "2026-11-20T19:35:00Z",
+    "spend": 0,
+    "created_at": "2026-10-21T19:35:00Z",
+    "blocked": false,
+    "requests_per_minute": 120,
+    "tokens_per_minute": null
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10033",
+      "title": "Value outside of range",
+      "detail": "Input should be greater than or equal to 0",
+      "source": {
+        "pointer": "/max_budget"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10033"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="update-a-team-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The updated team|[AgentGatewayTeamResponse](#schemaagentgatewayteamresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|Invalid request body|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateway-tool-permissions">Agent Gateway Tool Permissions</h1>
+
+The MCP servers and tools a key or team may use.
+
+## Retrieve a key's tool permissions
+
+<a id="opIdGetAgentGatewayKeyToolPermissions"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/keys/f739ad190d29e2a5e658c3a486111953e6c18d746fd04374962ab150aae17757/tool_permissions \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/keys/{key_id}/tool_permissions`
+
+Returns the MCP servers and APIs the key may use, and the tools within each. `servers: []` means none. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="retrieve-a-keys-tool-permissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|key_id|path|string|true|The key's `id`, a 64-character hash the instance stores in place of the key.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "servers": [
+      {
+        "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+        "tools": [
+          "get_order"
+        ]
+      }
+    ]
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="retrieve-a-keys-tool-permissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The grant|[AgentGatewayToolPermissionsResponse](#schemaagentgatewaytoolpermissionsresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Set a key's tool permissions
+
+<a id="opIdSetAgentGatewayKeyToolPermissions"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/keys/f739ad190d29e2a5e658c3a486111953e6c18d746fd04374962ab150aae17757/tool_permissions \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "servers": [
+      {
+        "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+        "tools": [
+          "get_order"
+        ]
+      }
+    ]
+  }'
+```
+
+`PUT /agent_gateways/{instance_id}/keys/{key_id}/tool_permissions`
+
+Replaces the grant whole and returns it. Every server must be one of the instance's MCP servers or APIs, named once. A key reaches the servers granted to it or to its team, and the servers open to every key; when both grant, only the servers in both. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "servers": [
+    {
+      "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+      "tools": [
+        "get_order"
+      ]
+    }
+  ]
+}
+```
+
+<h3 id="set-a-keys-tool-permissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|key_id|path|string|true|The key's `id`, a 64-character hash the instance stores in place of the key.|
+|body|body|[AgentGatewayToolPermissions](#schemaagentgatewaytoolpermissions)|true|none|
+|» servers|body|[[AgentGatewayServerGrant](#schemaagentgatewayservergrant)]|true|The servers granted, each with its tools. `[]` grants none.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "servers": [
+      {
+        "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+        "tools": [
+          "get_order"
+        ]
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10013",
+      "title": "Missing association",
+      "detail": "One of the associated fields does not exist.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10013"
+      },
+      "source": {
+        "pointer": "/servers/0/id"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "The value is invalid.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/servers"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="set-a-keys-tool-permissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The grant|[AgentGatewayToolPermissionsResponse](#schemaagentgatewaytoolpermissionsresponse)|
+|400|Bad Request|A server that is not one of the instance's|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A server named twice|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Retrieve a team's tool permissions
+
+<a id="opIdGetAgentGatewayTeamToolPermissions"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/teams/d7b21324-a2bf-406c-ba49-c6ec4d23d476/tool_permissions \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/teams/{team_id}/tool_permissions`
+
+Returns the MCP servers and APIs the team's keys may use, and the tools within each. `servers: []` means none. The instance must be `ready`; otherwise the request answers `409`.
+
+<h3 id="retrieve-a-teams-tool-permissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|team_id|path|string(uuid)|true|The team's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "servers": [
+      {
+        "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+        "tools": [
+          "get_order"
+        ]
+      }
+    ]
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="retrieve-a-teams-tool-permissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The grant|[AgentGatewayToolPermissionsResponse](#schemaagentgatewaytoolpermissionsresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Set a team's tool permissions
+
+<a id="opIdSetAgentGatewayTeamToolPermissions"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/teams/d7b21324-a2bf-406c-ba49-c6ec4d23d476/tool_permissions \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "servers": [
+      {
+        "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+        "tools": [
+          "get_order"
+        ]
+      }
+    ]
+  }'
+```
+
+`PUT /agent_gateways/{instance_id}/teams/{team_id}/tool_permissions`
+
+Replaces the grant whole and returns it. Every server must be one of the instance's MCP servers or APIs, named once. A key reaches the servers granted to it or to its team, and the servers open to every key; when both grant, only the servers in both. The instance must be `ready`; otherwise the request answers `409`.
+
+> Body parameter
+
+```json
+{
+  "servers": [
+    {
+      "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+      "tools": [
+        "get_order"
+      ]
+    }
+  ]
+}
+```
+
+<h3 id="set-a-teams-tool-permissions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+|team_id|path|string(uuid)|true|The team's `id`.|
+|body|body|[AgentGatewayToolPermissions](#schemaagentgatewaytoolpermissions)|true|none|
+|» servers|body|[[AgentGatewayServerGrant](#schemaagentgatewayservergrant)]|true|The servers granted, each with its tools. `[]` grants none.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "servers": [
+      {
+        "id": "88d5a97b-4080-4855-8bac-a39811b1dc24",
+        "tools": [
+          "get_order"
+        ]
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10013",
+      "title": "Missing association",
+      "detail": "One of the associated fields does not exist.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10013"
+      },
+      "source": {
+        "pointer": "/servers/0/id"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99901",
+      "title": "Instance not ready",
+      "detail": "The instance is not ready; its engine is not running."
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10027",
+      "title": "Unprocessable Entity",
+      "detail": "The value is invalid.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10027"
+      },
+      "source": {
+        "pointer": "/servers"
+      }
+    }
+  ]
+}
+```
+
+> 502 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "99903",
+      "title": "Engine unavailable",
+      "detail": "The instance's engine did not answer; try again shortly."
+    }
+  ]
+}
+```
+
+<h3 id="set-a-teams-tool-permissions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The grant|[AgentGatewayToolPermissionsResponse](#schemaagentgatewaytoolpermissionsresponse)|
+|400|Bad Request|A server that is not one of the instance's|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+|409|Conflict|The instance is not `ready`|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|A server named twice|[TelnyxErrors](#schematelnyxerrors)|
+|502|Bad Gateway|The instance's engine did not answer|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-agent-gateways">Agent Gateways</h1>
+
+Create, list, retrieve, and delete Agent Gateway instances.
+
+## List Agent Gateways
+
+<a id="opIdListAgentGateways"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways`
+
+Lists the account's Agent Gateway instances, newest first, one page at a time.
+
+<h3 id="list-agent-gateways-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|page[number]|query|integer|false|The page to return, counting from 1.|
+|page[size]|query|integer|false|Results per page.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "ecffdf4b-93ea-4a7b-8295-51dfd2077996",
+      "name": "support-gw",
+      "engine": "litellm",
+      "engine_version": "v1.105.1",
+      "status": "ready",
+      "gateway_url": "http://172.27.0.3:4000",
+      "wireguard_interface_id": "c788eb40-a4c0-4bf5-8f84-976027960f8e",
+      "network_id": "7ade8c3c-95a7-447b-92f2-c829f760159c",
+      "created_at": "2026-10-21T19:32:48.377714Z"
+    }
+  ],
+  "meta": {
+    "total_results": 1,
+    "page_number": 1,
+    "page_size": 50,
+    "total_pages": 1
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10033",
+      "title": "Value outside of range",
+      "detail": "Input should be greater than or equal to 1",
+      "source": {
+        "parameter": "page[size]"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10033"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="list-agent-gateways-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|One page of instances|[AgentGatewayListResponse](#schemaagentgatewaylistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|Invalid paging parameters|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Create an Agent Gateway
+
+<a id="opIdCreateAgentGateway"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "support-gw",
+    "wireguard_interface_id": "c788eb40-a4c0-4bf5-8f84-976027960f8e"
+  }'
+```
+
+`POST /agent_gateways`
+
+Creates an Agent Gateway instance on one of the account's WireGuard Interfaces. The instance starts `pending`, moves to `provisioning`, and then to `ready` or `failed`. It joins the WireGuard Interface as a peer named `agw-<instance id>`, and its `gateway_url` is set when it is `ready`.
+
+> Body parameter
+
+```json
+{
+  "name": "support-gw",
+  "wireguard_interface_id": "c788eb40-a4c0-4bf5-8f84-976027960f8e"
+}
+```
+
+<h3 id="create-an-agent-gateway-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AgentGatewayCreate](#schemaagentgatewaycreate)|true|none|
+|» name|body|string \| null|false|A label for people.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» wireguard_interface_id|body|string(uuid)|true|One of the account's WireGuard Interfaces. The instance joins it as a peer, and the interface's other peers reach the instance.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "id": "ecffdf4b-93ea-4a7b-8295-51dfd2077996",
+    "name": "support-gw",
+    "engine": "litellm",
+    "engine_version": "v1.105.1",
+    "status": "pending",
+    "gateway_url": null,
+    "wireguard_interface_id": "c788eb40-a4c0-4bf5-8f84-976027960f8e",
+    "network_id": "7ade8c3c-95a7-447b-92f2-c829f760159c",
+    "created_at": "2026-10-21T19:32:48.377714Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10013",
+      "title": "Missing association",
+      "detail": "One of the associated fields does not exist.",
+      "source": {
+        "pointer": "/wireguard_interface_id"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10013"
+      }
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10004",
+      "title": "Missing required parameter",
+      "detail": "Field required",
+      "source": {
+        "pointer": "/wireguard_interface_id"
+      },
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10004"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="create-an-agent-gateway-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The instance, `pending`|[AgentGatewayResponse](#schemaagentgatewayresponse)|
+|400|Bad Request|The WireGuard Interface does not exist or belongs to another account|[TelnyxErrors](#schematelnyxerrors)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|422|Unprocessable Entity|Invalid request body|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Retrieve an Agent Gateway
+
+<a id="opIdGetAgentGateway"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}`
+
+Returns one of the account's Agent Gateway instances.
+
+<h3 id="retrieve-an-agent-gateway-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "ecffdf4b-93ea-4a7b-8295-51dfd2077996",
+    "name": "support-gw",
+    "engine": "litellm",
+    "engine_version": "v1.105.1",
+    "status": "ready",
+    "gateway_url": "http://172.27.0.3:4000",
+    "wireguard_interface_id": "c788eb40-a4c0-4bf5-8f84-976027960f8e",
+    "network_id": "7ade8c3c-95a7-447b-92f2-c829f760159c",
+    "created_at": "2026-10-21T19:32:48.377714Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="retrieve-an-agent-gateway-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance|[AgentGatewayResponse](#schemaagentgatewayresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Delete an Agent Gateway
+
+<a id="opIdDeleteAgentGateway"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/ecffdf4b-93ea-4a7b-8295-51dfd2077996 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /agent_gateways/{instance_id}`
+
+Deletes an Agent Gateway instance in any status. The response shows it `deleting`; repeating the request answers the same until the instance is gone, and then `404`. The instance's engine and everything stored on it are removed.
+
+<h3 id="delete-an-agent-gateway-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "ecffdf4b-93ea-4a7b-8295-51dfd2077996",
+    "name": "support-gw",
+    "engine": "litellm",
+    "engine_version": "v1.105.1",
+    "status": "deleting",
+    "gateway_url": "http://172.27.0.3:4000",
+    "wireguard_interface_id": "c788eb40-a4c0-4bf5-8f84-976027960f8e",
+    "network_id": "7ade8c3c-95a7-447b-92f2-c829f760159c",
+    "created_at": "2026-10-21T19:32:48.377714Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="delete-an-agent-gateway-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance, `deleting`|[AgentGatewayResponse](#schemaagentgatewayresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## List an Agent Gateway's models
+
+<a id="opIdListAgentGatewayModels"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/agent_gateways/32ce035d-3165-4031-b1a7-a7c0c259590a/models \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /agent_gateways/{instance_id}/models`
+
+Lists the models the instance serves. Each has the name a request uses, the Telnyx Inference model behind it, and its price per million tokens.
+
+<h3 id="list-an-agent-gateways-models-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|instance_id|path|string(uuid)|true|The Agent Gateway's `id`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "4e416b40-84f1-46e4-9935-bb75079e4b08",
+      "name": "DeepSeek-V4.1-Flash",
+      "model": "deepseek-ai/DeepSeek-V4.1-Flash",
+      "pricing": {
+        "input": 0.3,
+        "output": 1.2,
+        "cached_input": 0.006,
+        "currency": "USD",
+        "unit": "1M_tokens"
+      },
+      "priced_at": "2026-10-29T14:53:48.436741Z"
+    },
+    {
+      "id": "bc74a861-f8ed-4963-a15c-c7670811220a",
+      "name": "GLM-5.3",
+      "model": "zai-org/GLM-5.3",
+      "pricing": {
+        "input": 1.25,
+        "output": 4,
+        "cached_input": 0.24,
+        "currency": "USD",
+        "unit": "1M_tokens"
+      },
+      "priced_at": "2026-10-29T14:53:48.684077Z"
+    },
+    {
+      "id": "4384def6-12c6-47ae-b67b-9d153fd5a58d",
+      "name": "GLM-5.3-Flash",
+      "model": "zai-org/GLM-5.3-Flash",
+      "pricing": {
+        "input": 0.135,
+        "output": 0.45,
+        "cached_input": 0.027,
+        "currency": "USD",
+        "unit": "1M_tokens"
+      },
+      "priced_at": "2026-10-29T14:53:48.862281Z"
+    },
+    {
+      "id": "879ec00c-399a-4937-b9d3-362b2a4deaaf",
+      "name": "Qwen3.8-27B",
+      "model": "Qwen/Qwen3.8-27B",
+      "pricing": {
+        "input": 0.4,
+        "output": 3,
+        "cached_input": 0.05,
+        "currency": "USD",
+        "unit": "1M_tokens"
+      },
+      "priced_at": "2026-10-29T14:53:49.168161Z"
+    },
+    {
+      "id": "0adc4aae-1b3b-498f-ba75-9db64cbef0af",
+      "name": "Qwen3.8-27B-nothink",
+      "model": "Qwen/Qwen3.8-27B",
+      "pricing": {
+        "input": 0.4,
+        "output": 3,
+        "cached_input": 0.05,
+        "currency": "USD",
+        "unit": "1M_tokens"
+      },
+      "priced_at": "2026-10-29T14:53:49.289731Z"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10009",
+      "title": "Authentication failed",
+      "detail": "The required authentication headers were either invalid or not included in the request.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10009"
+      }
+    }
+  ]
+}
+```
+
+> 404 Response
+
+```json
+{
+  "errors": [
+    {
+      "code": "10005",
+      "title": "Resource not found",
+      "detail": "The requested resource or URL could not be found.",
+      "meta": {
+        "url": "https://developers.telnyx.com/docs/overview/errors/10005"
+      }
+    }
+  ]
+}
+```
+
+<h3 id="list-an-agent-gateways-models-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The instance's models|[AgentGatewayModelListResponse](#schemaagentgatewaymodellistresponse)|
+|401|Unauthorized|Unauthorized|[TelnyxErrors](#schematelnyxerrors)|
+|404|Not Found|Not found|[TelnyxErrors](#schematelnyxerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-artifacts">Artifacts</h1>
@@ -13355,7 +19056,7 @@ Downloads the artifact content. The signed URL (with expires and sig query param
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get artifact metadata
@@ -13452,7 +19153,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-assistants">Assistants</h1>
@@ -13836,7 +19537,7 @@ Retrieve a list of all AI Assistants configured by the user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an assistant
@@ -14963,7 +20664,7 @@ Creates a new AI assistant from the provided configuration, including its model,
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful Response|[inference-embedding_Assistant](#schemainference-embedding_assistant)|
-|400|Bad Request|Bad Request / Validation Failed (10015). Invalid, duplicate, empty, malformed, or overlong Idempotency-Key headers are rejected by Edge with HTTP 400 and error code 10015. The assistant configuration is validated too: enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is not Telnyx-hosted, or when its `insight_settings.model` is not available in that region.|[inference-embedding_ErrorResponse](#schemainference-embedding_errorresponse)|
+|400|Bad Request|Bad Request / Validation Failed (10015). Invalid, duplicate, empty, malformed, or overlong Idempotency-Key headers are rejected by Edge with HTTP 400 and error code 10015. The assistant configuration is validated too: enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is a third-party model (a customer-provided `external_llm` endpoint is accepted), or when its `insight_settings.model` is not available in that region.|[inference-embedding_ErrorResponse](#schemainference-embedding_errorresponse)|
 |409|Conflict|A request with the same Idempotency-Key is still being processed (10036). Retry later with the same key and request.|[email_ErrorResponse](#schemaemail_errorresponse)|
 |413|Payload Too Large|Payload Too Large. A request sent with an Idempotency-Key whose body exceeds the endpoint's Edge replay-protection limit (256 KB) is rejected before it reaches the service. Requests sent without the header are not subject to this limit.|[inference-embedding_ErrorResponse](#schemainference-embedding_errorresponse)|
 |422|Unprocessable Entity|Validation Error. Reusing an Idempotency-Key with a different request body also returns 422 with error code 10027.|Inline|
@@ -14986,7 +20687,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List deleted assistants
@@ -15066,7 +20767,7 @@ Each entry includes `deleted_at` and `permanently_deleted_at`, the point after w
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Import assistants from external provider
@@ -15572,7 +21273,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get All Tags
@@ -15629,7 +21330,7 @@ Retrieve all tags that have been applied to your AI assistants.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List assistant tests with pagination
@@ -15717,7 +21418,7 @@ Retrieves a paginated list of assistant tests with optional filtering capabiliti
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new assistant test
@@ -15935,7 +21636,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all test suite names
@@ -15994,7 +21695,7 @@ Retrieves a list of all distinct test suite names available to the current user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get test suite run history
@@ -16084,7 +21785,7 @@ Retrieves paginated history of test runs for a specific test suite with filterin
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Trigger test suite execution
@@ -16272,7 +21973,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get assistant test by ID
@@ -16347,7 +22048,7 @@ Retrieves detailed information about a specific assistant test
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an assistant test
@@ -16479,7 +22180,7 @@ Updates an existing assistant test configuration with new settings
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an assistant test
@@ -16532,7 +22233,7 @@ Permanently removes an assistant test and all associated data
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get test run history for a specific test
@@ -16621,7 +22322,7 @@ Retrieves paginated execution history for a specific assistant test with filteri
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Trigger a manual test run
@@ -16801,7 +22502,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get specific test run details
@@ -16879,7 +22580,7 @@ Retrieves detailed information about a specific test run execution
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an assistant
@@ -17265,7 +22966,7 @@ Retrieve an AI Assistant configuration by `assistant_id`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an assistant
@@ -18389,12 +24090,12 @@ Updates the specified AI assistant's attributes and returns the updated assistan
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful Response|[inference-embedding_Assistant](#schemainference-embedding_assistant)|
-|400|Bad Request|Bad Request. The resulting assistant configuration was rejected. For example, enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is not Telnyx-hosted, or when its `insight_settings.model` is not available in that region. The response detail names the model and where it is configured. Validation runs against the merged result of the update, not only the fields sent.|[inference-embedding_ErrorResponse](#schemainference-embedding_errorresponse)|
+|400|Bad Request|Bad Request. The resulting assistant configuration was rejected. For example, enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is a third-party model (a customer-provided `external_llm` endpoint is accepted), or when its `insight_settings.model` is not available in that region. The response detail names the model and where it is configured. Validation runs against the merged result of the update, not only the fields sent.|[inference-embedding_ErrorResponse](#schemainference-embedding_errorresponse)|
 |422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an assistant
@@ -18480,7 +24181,7 @@ Deletion fails with `400` if other assistants reference this one through a hando
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Canary Deploy
@@ -18568,7 +24269,7 @@ traffic percentages for the specified assistant.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Canary Deploy
@@ -18713,7 +24414,7 @@ Updates the existing canary deploy configuration with new version IDs and percen
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create Canary Deploy
@@ -18946,7 +24647,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Canary Deploy
@@ -19001,7 +24702,7 @@ Removes all canary deploy configurations for the specified assistant.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Assistant Chat
@@ -19104,7 +24805,7 @@ This endpoint allows a client to send a chat message to a specific AI Assistant.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Assistant Sms Chat
@@ -19287,7 +24988,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Assistant WhatsApp Chat
@@ -19521,7 +25222,7 @@ When the customer replies, the reply is routed to the same conversation and the 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Clone Assistant
@@ -19992,7 +25693,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a deleted assistant
@@ -20059,7 +25760,7 @@ Retrieve a soft-deleted assistant from the Recently Deleted list by `assistant_i
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Enhance Assistant Instructions
@@ -20146,7 +25847,7 @@ Enhanced Instructions Stream
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Restore an assistant
@@ -20214,7 +25915,7 @@ The assistant becomes fully active again with its versions and TeXML application
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List scheduled events
@@ -20326,7 +26027,7 @@ Get scheduled events for an assistant with pagination and filtering
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a scheduled event
@@ -20575,7 +26276,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a scheduled event
@@ -20667,7 +26368,7 @@ Returns the details of a single scheduled event configured for the specified ass
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a scheduled event
@@ -20721,7 +26422,7 @@ If the event is pending, this will cancel the event. Otherwise, this will simply
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add Assistant Tag
@@ -20799,7 +26500,7 @@ Add a tag to an AI assistant. Tags help you organize and filter your assistants.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove Assistant Tag
@@ -20864,7 +26565,7 @@ Removes the specified tag from the AI assistant and returns the assistant's upda
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get assistant texml
@@ -20923,7 +26624,7 @@ Get an assistant texml by `assistant_id`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add Assistant Tool
@@ -20984,7 +26685,7 @@ Attach an existing tool to an AI assistant.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove Assistant Tool
@@ -21045,7 +26746,7 @@ Detaches the specified tool from the AI assistant so the assistant can no longer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Test Assistant Tool
@@ -21142,7 +26843,7 @@ Executes a test invocation of the specified webhook tool for the assistant and r
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all versions of an assistant
@@ -21528,7 +27229,7 @@ Retrieves all versions of a specific assistant with complete configuration and m
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a specific assistant version
@@ -21912,7 +27613,7 @@ Retrieves a specific version of an assistant by assistant_id and version_id
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a specific assistant version
@@ -23034,12 +28735,12 @@ Updates the configuration of a specific assistant version. Can not update main v
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Returns the updated assistant version configuration|[inference-embedding_Assistant](#schemainference-embedding_assistant)|
-|400|Bad Request|Bad Request. The resulting assistant configuration was rejected. For example, enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is not Telnyx-hosted, or when its `insight_settings.model` is not available in that region. The response detail names the model and where it is configured. Validation runs against the merged result of the update, not only the fields sent.|[inference-embedding_ErrorResponse](#schemainference-embedding_errorresponse)|
+|400|Bad Request|Bad Request. The resulting assistant configuration was rejected. For example, enabling `privacy_settings.in_transit_data_locality` is refused when the organization's data-locality region has no in-region inference, when any model the assistant could use — its `model`, its `fallback_config`, or a conversation-flow node override — is a third-party model (a customer-provided `external_llm` endpoint is accepted), or when its `insight_settings.model` is not available in that region. The response detail names the model and where it is configured. Validation runs against the merged result of the update, not only the fields sent.|[inference-embedding_ErrorResponse](#schemainference-embedding_errorresponse)|
 |422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a specific assistant version
@@ -23093,7 +28794,7 @@ Permanently removes a specific version of an assistant. Can not delete main vers
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Promote an assistant version to main
@@ -23477,7 +29178,7 @@ Promotes a specific version to be the main/current version of the assistant. Thi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Tools
@@ -23558,7 +29259,7 @@ Retrieve a list of the custom AI tools configured on your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create Tool
@@ -23837,7 +29538,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Tool
@@ -23905,7 +29606,7 @@ Retrieve the details of a specific AI tool.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Tool
@@ -23977,7 +29678,7 @@ Permanently deletes the specified custom AI tool from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Tool
@@ -24169,7 +29870,7 @@ Update the configuration of an existing AI tool.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-audit-logs">Audit Logs</h1>
@@ -24280,7 +29981,7 @@ Retrieve a list of audit log entries. Audit logs are a best-effort, eventually c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-autorechargepreferences">AutoRechargePreferences</h1>
@@ -24340,7 +30041,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update auto recharge preferences
@@ -24435,7 +30136,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-avatars">Avatars</h1>
@@ -24561,7 +30262,7 @@ Returns a paginated list of the Telnyx stock avatars and custom avatars availabl
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a custom avatar
@@ -24685,7 +30386,7 @@ name: Customer portrait
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an avatar
@@ -24797,7 +30498,7 @@ Returns a Telnyx stock avatar or a custom avatar owned by the authenticated orga
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a custom avatar
@@ -24942,7 +30643,7 @@ Updates the customer-facing name of a custom avatar owned by the authenticated o
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-billing">Billing</h1>
@@ -25058,7 +30759,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-billing-groups">Billing Groups</h1>
@@ -25166,7 +30867,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a billing group
@@ -25293,7 +30994,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a billing group
@@ -25406,7 +31107,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a billing group
@@ -25556,7 +31257,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a billing group
@@ -25702,7 +31403,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-bot-signup">Bot Signup</h1>
@@ -26287,7 +31988,7 @@ This endpoint is used to list all brands associated with your organization.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create Brand
@@ -26488,7 +32189,7 @@ This endpoint is used to create a new brand. A brand is an entity created by The
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Brand Feedback By Id
@@ -26591,7 +32292,7 @@ Possible values for `.category[].id`:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Brand SMS OTP Status
@@ -26702,7 +32403,7 @@ The response includes delivery status, verification dates, and detailed delivery
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Brand
@@ -26821,7 +32522,7 @@ Returns the details of a 10DLC brand by its brandId, including the count of camp
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Brand
@@ -27039,7 +32740,7 @@ Update a brand's attributes by `brandId`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Brand
@@ -27141,7 +32842,7 @@ Delete Brand. This endpoint is used to delete a brand. Note the brand cannot be 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Resend brand 2FA email
@@ -27196,7 +32897,7 @@ Requests a new two-factor authentication email for the specified 10DLC brand. Co
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List External Vettings
@@ -27283,7 +32984,7 @@ Get list of valid external vetting record for a given brand
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Import External Vetting Record
@@ -27391,7 +33092,7 @@ saved with the brand and will be considered for future campaign qualification.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Order Brand External Vetting
@@ -27496,7 +33197,7 @@ Duplicate orders for the same `evpId` and `vettingClass` return `400` with code 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Revet Brand
@@ -27615,7 +33316,7 @@ This operation allows you to revet the brand. However, revetting is allowed once
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Brand SMS OTP Status by Brand ID
@@ -27724,7 +33425,7 @@ The response includes delivery status, verification dates, and detailed delivery
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Verify Brand SMS OTP
@@ -27843,7 +33544,7 @@ Provides proper error responses for:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Trigger Brand SMS OTP
@@ -27971,7 +33672,7 @@ Trigger or re-trigger an SMS OTP (One-Time Password) for Sole Proprietor brand v
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Brand Feedback By Id
@@ -28070,7 +33771,7 @@ Possible values for `.category[].id`:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-browser-sessions">Browser Sessions</h1>
@@ -28191,7 +33892,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create browser session
@@ -28362,7 +34063,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get browser session
@@ -28466,7 +34167,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Close browser session
@@ -28597,7 +34298,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-bucket-ssl-certificate">Bucket SSL Certificate</h1>
@@ -28670,7 +34371,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add SSL Certificate
@@ -28752,7 +34453,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove SSL Certificate
@@ -28822,7 +34523,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-bucket-usage">Bucket Usage</h1>
@@ -28900,7 +34601,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Bucket Usage
@@ -28968,7 +34669,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-bulk-phone-number-campaigns">Bulk Phone Number Campaigns</h1>
@@ -29066,7 +34767,7 @@ This endpoint allows you to link all phone numbers associated with a Messaging P
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Assignment Task Status
@@ -29131,7 +34832,7 @@ Check the status of the task associated with assigning all phone numbers on a me
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Phone Number Status
@@ -29220,7 +34921,7 @@ Check the status of the individual phone number/campaign assignments associated 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-bulk-phone-number-operations">Bulk Phone Number Operations</h1>
@@ -29421,7 +35122,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a batch of numbers
@@ -29641,7 +35342,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update the emergency settings from a batch of numbers
@@ -29867,7 +35568,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a batch of numbers
@@ -30124,7 +35825,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a phone numbers job
@@ -30322,7 +36023,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-cdr-reports">CDR Reports</h1>
@@ -30413,7 +36114,7 @@ Retrieves all CDR report requests for the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new CDR report request
@@ -30601,7 +36302,7 @@ Creates a new CDR report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get available CDR report fields
@@ -30672,7 +36373,7 @@ Retrieves all available fields that can be used in CDR reports
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a specific CDR report request
@@ -30758,7 +36459,7 @@ Retrieves a specific CDR report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a CDR report request
@@ -30845,7 +36546,7 @@ Deletes a specific CDR report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all CDR report requests
@@ -30932,7 +36633,7 @@ Retrieves all CDR report requests for the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new CDR report request
@@ -31120,7 +36821,7 @@ Creates a new CDR report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get available CDR report fields
@@ -31191,7 +36892,7 @@ Retrieves all available fields that can be used in CDR reports
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a specific CDR report request
@@ -31277,7 +36978,7 @@ Retrieves a specific CDR report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a CDR report request
@@ -31364,7 +37065,7 @@ Deletes a specific CDR report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-cdr-usage-reports">CDR Usage Reports</h1>
@@ -31451,7 +37152,7 @@ Fetch all previous requests for cdr usage reports.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new legacy usage V2 CDR report request
@@ -31544,7 +37245,7 @@ Creates a new legacy usage V2 CDR report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a CDR usage report
@@ -31607,7 +37308,7 @@ Returns a single CDR (Call Detail Record) usage report by its identifier, includ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a V2 legacy usage CDR report request
@@ -31671,7 +37372,7 @@ Deletes a specific V2 legacy usage CDR report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List CDR usage reports
@@ -31754,7 +37455,7 @@ Fetch all previous requests for cdr usage reports.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new legacy usage V2 CDR report request
@@ -31847,7 +37548,7 @@ Creates a new legacy usage V2 CDR report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a CDR usage report
@@ -31910,7 +37611,7 @@ Returns a single CDR (Call Detail Record) usage report by its identifier, includ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a V2 legacy usage CDR report request
@@ -31974,7 +37675,7 @@ Deletes a specific V2 legacy usage CDR report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Generates and fetches CDR Usage Reports
@@ -32065,7 +37766,7 @@ Generate and fetch voice usage report synchronously. This endpoint will both gen
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-call-commands">Call Commands</h1>
@@ -32630,7 +38331,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add messages to AI Assistant
@@ -32692,7 +38393,7 @@ Add messages to the conversation started by an AI assistant on the call.
 |» » *oneOf*|body|[ToolMessage](#schematoolmessage)|false|none|
 |» » *oneOf*|body|[SystemMessage](#schemasystemmessage)|false|Developer-provided instructions that the model should follow, regardless of messages sent by the user.|
 |» » *oneOf*|body|[DeveloperMessage](#schemadevelopermessage)|false|Developer-provided instructions that the model should follow, regardless of messages sent by the user.|
-|» trigger_response|body|boolean|false|When `true`, the injected messages immediately trigger an assistant response/turn instead of waiting for the next natural turn or idle timeout. This may interrupt a user who is still speaking.|
+|» trigger_response|body|boolean|false|When `true`, the injected messages immediately trigger an assistant response/turn instead of waiting for the next natural turn or idle timeout. This may interrupt a user who is still speaking. How the turn starts depends on the last message in `messages`: if it is a `user` message, the assistant responds to that message as if the caller had said it, whether or not `trigger_response` is set. Any other last role (`system`, `developer`, `assistant`, `tool`) starts a turn with no new user input, as after a long silence. When `trigger_response` is not set, a payload that does not end in a `user` message is context only and does not start a turn. GPT Live models (`openai/gpt-live-*`) do not support a forced mid-session turn: injected `system`, `developer`, and `assistant` content is appended to the Live session's instructions and the model brings it into its next turn on its own; an injected `tool` record is not forwarded to the Live session, so it stays context only and never reaches the Live model. Any of `user`, `system`, `developer`, or `assistant` is the supported way to get content into the Live session.|
 
 > Example responses
 
@@ -32755,7 +38456,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Join AI Assistant Conversation
@@ -32876,7 +38577,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Start AI Assistant
@@ -33164,7 +38865,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Stop AI Assistant
@@ -33268,7 +38969,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Answer call
@@ -33489,7 +39190,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Bridge calls
@@ -33679,7 +39380,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update client state
@@ -33780,7 +39481,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Start Conversation Relay
@@ -33877,7 +39578,7 @@ Start a Conversation Relay session on an active call. Conversation Relay connect
 |» conversation_relay_url|body|string|false|WebSocket URL for your Conversation Relay server. Must start with `ws://` or `wss://`.|
 |» conversation_relay_dtmf_detection|body|boolean|false|Enable DTMF detection for the relay session.|
 |» voice|body|[VoiceConfig](#schemavoiceconfig)|false|The voice to be used by the voice assistant. Currently we support ElevenLabs, Telnyx and AWS voices.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-CA-LiamNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration secret under `"voice_settings": {"api_key_ref": "<secret_id>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br> - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.|
-|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|The settings associated with the voice selected|
+|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|The settings associated with the voice selected|
 |» » *oneOf*|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings)|false|none|
 |» » *oneOf*|body|[TelnyxVoiceSettings](#schematelnyxvoicesettings)|false|none|
 |» » *oneOf*|body|[AWSVoiceSettings](#schemaawsvoicesettings)|false|none|
@@ -33887,7 +39588,6 @@ Start a Conversation Relay session on an active call. Conversation Relay connect
 |» » *oneOf*|body|[InworldVoiceSettings](#schemainworldvoicesettings)|false|none|
 |» » *oneOf*|body|[XAIVoiceSettings](#schemaxaivoicesettings)|false|none|
 |» » *oneOf*|body|[SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|
-|» » *oneOf*|body|[AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|
 |» greeting|body|string|false|Text played when the relay session starts.|
 |» language|body|string|false|Default language for the relay session. This value is used for both text-to-speech and speech recognition.|
 |» languages|body|[[ConversationRelayLanguage](#schemaconversationrelaylanguage)]|false|Per-language TTS and transcription settings.|
@@ -33990,7 +39690,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Stop Conversation Relay
@@ -34094,7 +39794,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Enqueue call
@@ -34208,7 +39908,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Forking start
@@ -34335,7 +40035,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Forking stop
@@ -34452,7 +40152,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Gather
@@ -34588,7 +40288,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Gather stop
@@ -34697,7 +40397,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Gather using AI
@@ -34818,7 +40518,7 @@ Gather parameters defined in the request payload using a voice assistant.
 |» language|body|[GoogleTranscriptionLanguage](#schemagoogletranscriptionlanguage)|false|none|
 |» » *oneOf*|body|[GoogleTranscriptionLanguage](#schemagoogletranscriptionlanguage)|false|Language to use for speech recognition|
 |» voice|body|[VoiceConfig](#schemavoiceconfig)|false|The voice to be used by the voice assistant. Currently we support ElevenLabs, Telnyx and AWS voices.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-CA-LiamNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration secret under `"voice_settings": {"api_key_ref": "<secret_id>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br> - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.|
-|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|The settings associated with the voice selected|
+|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|The settings associated with the voice selected|
 |» » *oneOf*|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings)|false|none|
 |» » *oneOf*|body|[TelnyxVoiceSettings](#schematelnyxvoicesettings)|false|none|
 |» » *oneOf*|body|[AWSVoiceSettings](#schemaawsvoicesettings)|false|none|
@@ -34826,7 +40526,6 @@ Gather parameters defined in the request payload using a voice assistant.
 |» » *oneOf*|body|[ResembleVoiceSettings](#schemaresemblevoicesettings)|false|none|
 |» » *oneOf*|body|[XAIVoiceSettings](#schemaxaivoicesettings)|false|none|
 |» » *oneOf*|body|[SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|
-|» » *oneOf*|body|[AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|
 |» greeting|body|string|false|Text that will be played when the gathering starts, if none then nothing will be played when the gathering starts. The greeting can be text for any voice or SSML for `AWS.Polly.<voice_id>` voices. There is a 3,000 character limit.|
 |» send_partial_results|body|boolean|false|Default is `false`. If set to `true`, the voice assistant will send partial results via the `call.ai_gather.partial_results` callback in real time as individual fields are gathered. If set to `false`, the voice assistant will only send the final result via the `call.ai_gather.ended` callback.|
 |» send_message_history_updates|body|boolean|false|Default is `false`. If set to `true`, the voice assistant will send updates to the message history via the `call.ai_gather.message_history_updated` callback in real time as the message history is updated.|
@@ -34988,7 +40687,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Gather using audio
@@ -35129,7 +40828,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Gather using speak
@@ -35204,7 +40903,7 @@ You can pass a list of valid digits along with an 'invalid_payload', which will 
 |» payload_type|body|string|false|The type of the provided payload. The payload can either be plain text, or Speech Synthesis Markup Language (SSML).|
 |» service_level|body|string|false|This parameter impacts speech quality, language options and payload types. When using `basic`, only the `en-US` language and payload type `text` are allowed.|
 |» voice|body|string|true|Specifies the voice used in speech synthesis.<br><br>- Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only the provider will give default values for voice_id and model_id.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery). Use `voice_settings` to configure custom deployments, regions, or API keys.<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration identifier secret in `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br>- **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`). Use `voice_settings` to configure voice_speed and other synthesis parameters. `Bayan` provides Arabic (multiple dialects) and English voices (e.g., `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.<br>- **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g., `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`, `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings` to configure speed, volume, pitch, and language_boost.<br>- **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g., `Resemble.Turbo.Aaron_en-US`). Supported models: `Pro`, `Turbo`, `Urdu`. `<VoiceId>` is a stock voice name or the ID of a Resemble voice clone. Use `voice_settings` to configure precision, sample_rate, and format.<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`, `BALANCED`, `CREATIVE`), supported by `TTS2` only.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.<br><br>For service_level basic, you may define the gender of the speaker (male or female).|
-|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|The settings associated with the voice selected|
+|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|The settings associated with the voice selected|
 |» » *oneOf*|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings)|false|none|
 |» » *oneOf*|body|[TelnyxVoiceSettings](#schematelnyxvoicesettings)|false|none|
 |» » *oneOf*|body|[AWSVoiceSettings](#schemaawsvoicesettings)|false|none|
@@ -35214,7 +40913,6 @@ You can pass a list of valid digits along with an 'invalid_payload', which will 
 |» » *oneOf*|body|[InworldVoiceSettings](#schemainworldvoicesettings)|false|none|
 |» » *oneOf*|body|[XAIVoiceSettings](#schemaxaivoicesettings)|false|none|
 |» » *oneOf*|body|[SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|
-|» » *oneOf*|body|[AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|
 |» language|body|string|false|The language you want spoken. This parameter is ignored when a `Polly.*` voice is specified.|
 |» minimum_digits|body|integer(int32)|false|The minimum number of digits to fetch. This parameter has a minimum value of 1.|
 |» maximum_digits|body|integer(int32)|false|The maximum number of digits to fetch. This parameter has a maximum value of 128.|
@@ -35325,7 +41023,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Hangup call
@@ -35437,7 +41135,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove call from a queue
@@ -35541,7 +41239,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Process a payment
@@ -35715,7 +41413,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Play audio URL
@@ -35857,7 +41555,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Stop audio playback
@@ -35972,7 +41670,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Record pause
@@ -36084,7 +41782,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Record resume
@@ -36196,7 +41894,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Recording start
@@ -36614,7 +42312,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Recording stop
@@ -36726,7 +42424,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## SIP Refer a call
@@ -36840,7 +42538,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Reject a call
@@ -36961,7 +42659,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send DTMF
@@ -37076,7 +42774,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send SIP info
@@ -37191,7 +42889,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## SIPREC start
@@ -37324,7 +43022,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## SIPREC stop
@@ -37433,7 +43131,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Speak text
@@ -37496,7 +43194,7 @@ Convert text to speech and play it back on the call. If multiple speak text comm
 |» service_level|body|string|false|This parameter impacts speech quality, language options and payload types. When using `basic`, only the `en-US` language and payload type `text` are allowed.|
 |» stop|body|string|false|When specified, it stops the current audio being played. Specify `current` to stop the current audio being played, and to play the next file in the queue. Specify `all` to stop the current audio file being played and to also clear all audio files from the queue.|
 |» voice|body|string|true|Specifies the voice used in speech synthesis.<br><br>- Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only the provider will give default values for voice_id and model_id.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery). Use `voice_settings` to configure custom deployments, regions, or API keys.<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration identifier secret in `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br>- **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`). Use `voice_settings` to configure voice_speed and other synthesis parameters. `Bayan` provides Arabic (multiple dialects) and English voices (e.g., `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.<br>- **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g., `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`, `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings` to configure speed, volume, pitch, and language_boost.<br>- **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g., `Resemble.Turbo.Aaron_en-US`). Supported models: `Pro`, `Turbo`, `Urdu`. `<VoiceId>` is a stock voice name or the ID of a Resemble voice clone. Use `voice_settings` to configure precision, sample_rate, and format.<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`, `BALANCED`, `CREATIVE`), supported by `TTS2` only.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.<br><br>For service_level basic, you may define the gender of the speaker (male or female).|
-|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|The settings associated with the voice selected|
+|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|The settings associated with the voice selected|
 |» » *oneOf*|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings)|false|none|
 |» » *oneOf*|body|[TelnyxVoiceSettings](#schematelnyxvoicesettings)|false|none|
 |» » *oneOf*|body|[AWSVoiceSettings](#schemaawsvoicesettings)|false|none|
@@ -37506,7 +43204,6 @@ Convert text to speech and play it back on the call. If multiple speak text comm
 |» » *oneOf*|body|[InworldVoiceSettings](#schemainworldvoicesettings)|false|none|
 |» » *oneOf*|body|[XAIVoiceSettings](#schemaxaivoicesettings)|false|none|
 |» » *oneOf*|body|[SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|
-|» » *oneOf*|body|[AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|
 |» language|body|string|false|The language you want spoken. This parameter is ignored when a `Polly.*` voice is specified.|
 |» client_state|body|string|false|Use this field to add state to every subsequent webhook. It must be a valid Base-64 encoded string.|
 |» command_id|body|string|false|Use this field to avoid duplicate commands. Telnyx will ignore any command with the same `command_id` for the same `call_control_id`.|
@@ -37615,7 +43312,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Streaming start
@@ -37779,7 +43476,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Streaming stop
@@ -37891,7 +43588,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Noise Suppression Start (BETA)
@@ -38026,7 +43723,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Noise Suppression Stop (BETA)
@@ -38130,7 +43827,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Switch supervisor role
@@ -38239,7 +43936,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Transcription start
@@ -38394,7 +44091,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Transcription stop
@@ -38498,7 +44195,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Transfer call
@@ -38805,7 +44502,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-call-control-applications">Call Control Applications</h1>
@@ -38926,7 +44623,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a call control application
@@ -39093,7 +44790,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a call control application
@@ -39191,7 +44888,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a call control application
@@ -39290,7 +44987,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a call control application
@@ -39498,7 +45195,7 @@ Status Code **409**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-call-information">Call Information</h1>
@@ -39596,7 +45293,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all active calls for given connection
@@ -39701,7 +45398,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List dial metrics
@@ -39931,7 +45628,7 @@ This endpoint is in development and can change before general availability.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-call-recordings">Call Recordings</h1>
@@ -40032,7 +45729,7 @@ Returns the information about custom storage credentials.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a stored credential
@@ -40168,7 +45865,7 @@ Updates a stored custom credentials configuration.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a custom storage credential
@@ -40304,7 +46001,7 @@ Creates a custom storage credentials configuration.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a stored credential
@@ -40385,7 +46082,7 @@ Deletes a stored custom credentials configuration.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all recording transcriptions
@@ -40502,7 +46199,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a recording transcription
@@ -40607,7 +46304,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a recording transcription
@@ -40713,7 +46410,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all call recordings
@@ -40872,7 +46569,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a list of call recordings
@@ -40994,7 +46691,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a call recording
@@ -41105,7 +46802,7 @@ Retrieves the details of an existing call recording.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a call recording
@@ -41217,7 +46914,7 @@ Permanently deletes the specified call recording and returns the deleted recordi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-campaign">Campaign</h1>
@@ -41376,7 +47073,7 @@ Retrieve a list of campaigns associated with a supplied `brandId`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Accept Shared Campaign
@@ -41454,7 +47151,7 @@ Manually accept a campaign shared with Telnyx
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Campaign Cost
@@ -41536,7 +47233,7 @@ Returns the upfront and monthly cost associated with the selected 10DLC campaign
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Campaign Cost
@@ -41614,7 +47311,7 @@ Retrieve the campaign cost associated with a given 10DLC use case, including any
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get campaign
@@ -41744,7 +47441,7 @@ Retrieve campaign details by `campaignId`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update campaign
@@ -41919,7 +47616,7 @@ Update a campaign's properties by `campaignId`. **Please note:** only sample mes
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deactivate campaign
@@ -42001,7 +47698,7 @@ Terminate a campaign. Note that once deactivated, a campaign cannot be restored.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit campaign appeal for manual review
@@ -42133,7 +47830,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Campaign Mno Metadata
@@ -42221,7 +47918,7 @@ Get the campaign metadata for each MNO it was submitted to.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get campaign operation status
@@ -42301,7 +47998,7 @@ Retrieve campaign's operation status at MNO level.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get OSR campaign attributes
@@ -42382,7 +48079,7 @@ Returns the optional shared-responsibility attributes recorded for the campaign.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get OSR campaign attributes
@@ -42459,7 +48156,7 @@ Retrieve the OSR attributes assigned to a 10DLC campaign.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Sharing Status
@@ -42551,7 +48248,7 @@ Returns whether the campaign is configured for partner sharing and the current s
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit Campaign
@@ -42839,7 +48536,7 @@ Before creating a campaign, use the [Qualify By Usecase endpoint](https://develo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Qualify By Usecase
@@ -42924,7 +48621,7 @@ This endpoint allows you to see whether or not the supplied brand is suitable fo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-chat">Chat</h1>
@@ -43074,7 +48771,7 @@ This operation is deprecated
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get available models
@@ -43176,7 +48873,7 @@ Model ids follow the `{organization}/{model_name}` convention from Hugging Face.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a response
@@ -43292,7 +48989,7 @@ This operation is deprecated
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Summarize file content
@@ -43470,7 +49167,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-clusters">Clusters</h1>
@@ -43551,7 +49248,7 @@ Retrieve a paginated list of clustering tasks and their statuses.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Compute new clusters
@@ -43644,7 +49341,7 @@ Starts a background task to compute how the data in an [embedded storage bucket]
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch a cluster
@@ -43776,7 +49473,7 @@ Fetch the results of a clustering task, including the discovered clusters.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a cluster
@@ -43829,7 +49526,7 @@ Delete a clustering task and its computed results.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch a cluster visualization
@@ -43883,7 +49580,7 @@ Fetch a visualization image of the clusters computed by a clustering task.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-comments">Comments</h1>
@@ -44004,7 +49701,7 @@ List the comments on a DIR. The enterprise is resolved server-side from the DIR 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Post a comment on a DIR
@@ -44114,7 +49811,7 @@ Post a customer comment on a DIR (for example, to respond to reviewer notes). Se
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-conference-commands">Conference Commands</h1>
@@ -44240,7 +49937,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create conference
@@ -44406,7 +50103,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List conference participants
@@ -44549,7 +50246,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a conference
@@ -44640,7 +50337,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## End a conference
@@ -44755,7 +50452,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Gather DTMF using audio prompt in a conference
@@ -44897,7 +50594,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Hold conference participants
@@ -45034,7 +50731,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Join a conference
@@ -45200,7 +50897,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Leave a conference
@@ -45327,7 +51024,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Mute conference participants
@@ -45460,7 +51157,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Play audio to conference participants
@@ -45592,7 +51289,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference recording pause
@@ -45726,7 +51423,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference recording resume
@@ -45860,7 +51557,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference recording start
@@ -46022,7 +51719,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference recording stop
@@ -46162,7 +51859,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send DTMF to conference participants
@@ -46286,7 +51983,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Speak text to conference participants
@@ -46342,7 +52039,7 @@ Convert text to speech and play it to all or some participants.
 |» payload|body|string|true|The text or SSML to be converted into speech. There is a 3,000 character limit.|
 |» payload_type|body|string|false|The type of the provided payload. The payload can either be plain text, or Speech Synthesis Markup Language (SSML).|
 |» voice|body|string|true|Specifies the voice used in speech synthesis.<br><br>- Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only the provider will give default values for voice_id and model_id.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery). Use `voice_settings` to configure custom deployments, regions, or API keys.<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration identifier secret in `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br>- **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`). Use `voice_settings` to configure voice_speed and other synthesis parameters. `Bayan` provides Arabic (multiple dialects) and English voices (e.g., `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.<br>- **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g., `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`, `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings` to configure speed, volume, pitch, and language_boost.<br>- **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g., `Resemble.Turbo.Aaron_en-US`). Supported models: `Pro`, `Turbo`, `Urdu`. `<VoiceId>` is a stock voice name or the ID of a Resemble voice clone. Use `voice_settings` to configure precision, sample_rate, and format.<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`, `BALANCED`, `CREATIVE`), supported by `TTS2` only.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.<br><br>For service_level basic, you may define the gender of the speaker (male or female).|
-|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|The settings associated with the voice selected|
+|» voice_settings|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|The settings associated with the voice selected|
 |» » *oneOf*|body|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings)|false|none|
 |» » *oneOf*|body|[TelnyxVoiceSettings](#schematelnyxvoicesettings)|false|none|
 |» » *oneOf*|body|[AWSVoiceSettings](#schemaawsvoicesettings)|false|none|
@@ -46352,7 +52049,6 @@ Convert text to speech and play it to all or some participants.
 |» » *oneOf*|body|[InworldVoiceSettings](#schemainworldvoicesettings)|false|none|
 |» » *oneOf*|body|[XAIVoiceSettings](#schemaxaivoicesettings)|false|none|
 |» » *oneOf*|body|[SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|
-|» » *oneOf*|body|[AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|
 |» language|body|string|false|The language you want spoken. This parameter is ignored when a `Polly.*` voice is specified.|
 |» command_id|body|string|false|Use this field to avoid execution of duplicate commands. Telnyx will ignore subsequent commands with the same `command_id` as one that has already been executed.|
 |» region|body|[ConferenceRegion](#schemaconferenceregion)|false|Region where the conference data is located. Defaults to the region defined in user's data locality settings (Europe or US).|
@@ -46476,7 +52172,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Stop audio being played on the conference
@@ -46611,7 +52307,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Unhold conference participants
@@ -46744,7 +52440,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Unmute conference participants
@@ -46877,7 +52573,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update conference participant
@@ -47010,7 +52706,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a conference participant
@@ -47121,7 +52817,7 @@ Retrieve details of a specific conference participant by their ID or label.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a conference participant
@@ -47260,7 +52956,7 @@ Update properties of a conference participant.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-connections">Connections</h1>
@@ -47406,7 +53102,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Count connections
@@ -47489,7 +53185,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a connection
@@ -47633,7 +53329,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-contents">Contents</h1>
@@ -47804,7 +53500,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-conversation-histories">Conversation Histories</h1>
@@ -48005,7 +53701,7 @@ Supported filter operators:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-conversations">Conversations</h1>
@@ -48095,7 +53791,7 @@ Retrieve a list of all AI conversations configured by the user. Supports [PostgR
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a conversation
@@ -48269,7 +53965,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Aggregate Conversation Insights
@@ -48338,7 +54034,7 @@ Aggregate conversation insights by specified fields
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Insight Template Groups
@@ -48424,7 +54120,7 @@ Returns a paginated list of your insight template groups. Groups organize relate
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create Insight Template Group
@@ -48610,7 +54306,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Insight Template Group
@@ -48688,7 +54384,7 @@ Returns the details of a single insight template group, including the insight te
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Insight Template Group
@@ -48787,7 +54483,7 @@ Updates the specified insight template group and returns the updated group.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Insight Template Group
@@ -48840,7 +54536,7 @@ Permanently deletes the specified insight template group by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Assign Insight Template To Group
@@ -48894,7 +54590,7 @@ Assigns the specified insight template to the specified insight template group.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Unassign Insight Template From Group
@@ -48948,7 +54644,7 @@ Removes the specified insight template from the specified group. The insight tem
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Insight Templates
@@ -49025,7 +54721,7 @@ Returns a paginated list of your insight templates. Insight templates define ana
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create Insight Template
@@ -49207,7 +54903,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Insight Template
@@ -49276,7 +54972,7 @@ Returns the details of a single insight template by its ID, including its config
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Insight Template
@@ -49371,7 +55067,7 @@ Updates the specified insight template and returns the updated template.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Insight Template
@@ -49424,7 +55120,7 @@ Permanently deletes the specified insight template by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a conversation
@@ -49505,7 +55201,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update conversation metadata
@@ -49606,7 +55302,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a conversation
@@ -49660,7 +55356,7 @@ Delete a specific conversation by its ID. Permanently deletes the conversation a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get insights for a conversation
@@ -49739,7 +55435,7 @@ Retrieve insights for a specific conversation
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a conversation's insight generation results
@@ -49795,7 +55491,7 @@ Delete one insight generation request for a conversation. Generation results are
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create Message
@@ -49979,7 +55675,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get conversation messages
@@ -50069,7 +55765,7 @@ Retrieve messages for a specific conversation, including tool calls made by the 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-country-coverage">Country Coverage</h1>
@@ -50301,7 +55997,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get coverage for a specific country
@@ -50499,7 +56195,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-credential-connections">Credential Connections</h1>
@@ -50703,7 +56399,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a credential connection
@@ -51071,7 +56767,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a credential connection
@@ -51273,7 +56969,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a credential connection
@@ -51476,7 +57172,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a credential connection
@@ -51887,7 +57583,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Check a Credential Connection Registration Status
@@ -52048,7 +57744,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-credentials">Credentials</h1>
@@ -52128,7 +57824,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a credential
@@ -52211,7 +57907,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a credential
@@ -52277,7 +57973,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a credential
@@ -52344,7 +58040,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a credential
@@ -52430,7 +58126,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-customer-service-record">Customer Service Record</h1>
@@ -52635,7 +58331,7 @@ Status Code **500**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a customer service record
@@ -52848,7 +58544,7 @@ Status Code **500**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Verify CSR phone number coverage
@@ -53038,7 +58734,7 @@ Status Code **500**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a customer service record
@@ -53229,7 +58925,7 @@ Status Code **500**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-dir-references">DIR References</h1>
@@ -53314,7 +59010,7 @@ Returns the two business references (slots 1 and 2) followed by the single finan
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit a DIR's references
@@ -53546,7 +59242,7 @@ Who qualifies: the two business references confirm the company's reputation and 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a DIR reference
@@ -53686,7 +59382,7 @@ Cosmetic fields (full name, job title, organization, relationship, email) are al
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-data-migration">Data Migration</h1>
@@ -53749,7 +59445,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Migration Sources
@@ -53814,7 +59510,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Migration Source
@@ -53914,7 +59610,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Migration Source
@@ -53977,7 +59673,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Migration Source
@@ -54041,7 +59737,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Migrations
@@ -54110,7 +59806,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Migration
@@ -54199,7 +59895,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Migration
@@ -54266,7 +59962,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Stop a Migration
@@ -54334,7 +60030,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-debugging">Debugging</h1>
@@ -54443,7 +60139,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-decision-models">Decision Models</h1>
@@ -54705,7 +60401,7 @@ Use the TypeSafe Python SDK with base_url set to https://api.telnyx.com/v2/ai/ty
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-dedicated-ips">Dedicated IPs</h1>
@@ -54820,7 +60516,7 @@ List the dedicated sending IPs owned by the account, newest first. Narrow the li
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Purchase a dedicated IP
@@ -55032,7 +60728,7 @@ Purchase a dedicated sending IP. Requires a verified, enterprise, or legacy acco
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a dedicated IP
@@ -55153,7 +60849,7 @@ Retrieve a single dedicated IP by its identifier, including warm-up state, billi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Release a dedicated IP
@@ -55356,7 +61052,7 @@ Release the dedicated IP to Telnyx. The IP stops carrying mail immediately, leav
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a dedicated IP
@@ -55552,7 +61248,7 @@ Move the IP to another pool, or pause/resume its warm-up ramp. One change applie
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Manually complete warmup
@@ -55726,7 +61422,7 @@ Manually complete the warm-up ramp (`warming_up` to `active`), bypassing the sch
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Pause warmup
@@ -55882,7 +61578,7 @@ Pause the warm-up ramp at its current stage. While paused, the IP releases no fi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Resume warmup
@@ -56038,7 +61734,7 @@ Resume a paused warm-up ramp from its held stage. Only a `warming_up` IP can be 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Start warmup for a dedicated IP
@@ -56212,7 +61908,7 @@ Start the warm-up ramp (`provisioning` to `warming_up`). The ramp never starts a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-detail-records">Detail Records</h1>
@@ -56318,7 +62014,7 @@ Search for any detail record across the Telnyx Platform
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-dialogflow-integration">Dialogflow Integration</h1>
@@ -56401,7 +62097,7 @@ Return details of the Dialogflow connection associated with the given CallContro
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update stored Dialogflow Connection
@@ -56554,7 +62250,7 @@ Updates the stored Dialogflow connection for the specified connection and return
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Dialogflow Connection
@@ -56692,7 +62388,7 @@ Save Dialogflow Credentiails to Telnyx, so it can be used with other Telnyx serv
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete stored Dialogflow Connection
@@ -56758,7 +62454,7 @@ Deletes the stored Dialogflow connection for the specified connection.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-display-identity-records">Display Identity Records</h1>
@@ -56928,7 +62624,7 @@ Returns every DIR (Display Identity Record) you own, across all of your enterpri
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a DIR by id
@@ -57054,7 +62750,7 @@ Returns a single DIR by id. The enterprise is resolved server-side from the DIR 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request deletion of a DIR
@@ -57143,7 +62839,7 @@ Request deletion of a DIR. This does not remove the DIR on this call: it records
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a DIR
@@ -57307,7 +63003,7 @@ Edit a DIR. DIRs in `draft`, `rejected`, `unsuccessful`, or `suspended` can be e
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List a DIR's authorized BPOs
@@ -57389,7 +63085,7 @@ Authorizations are supplied as the `bpo_authorizations` array when creating or u
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Render the BPO Authorization LOA for a DIR
@@ -57496,7 +63192,7 @@ Returns `application/pdf`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Render the Branded Calling LOA for a DIR
@@ -57648,7 +63344,7 @@ Returns `application/pdf`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit a DIR for vetting
@@ -57777,7 +63473,7 @@ Returns `400` from `submitted`/`in_review`/`permanently_rejected`. Returns `400`
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List DIRs in an enterprise
@@ -57950,7 +63646,7 @@ Return the DIRs (Display Identity Records) belonging to a single enterprise. Pag
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Display Identity Record (DIR)
@@ -58146,7 +63842,7 @@ Create a new DIR under the given enterprise. The DIR starts in `draft` status; i
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-documents">Documents</h1>
@@ -58249,7 +63945,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all documents
@@ -58367,7 +64063,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Upload a document
@@ -58486,7 +64182,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a document
@@ -58582,7 +64278,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a document
@@ -58679,7 +64375,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a document
@@ -58793,7 +64489,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Download a document
@@ -58864,7 +64560,7 @@ string
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Generate a temporary download link for a document
@@ -58964,7 +64660,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-dynamic-emergency-addresses">Dynamic Emergency Addresses</h1>
@@ -59122,7 +64818,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a dynamic emergency address.
@@ -59318,7 +65014,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a dynamic emergency address
@@ -59462,7 +65158,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a dynamic emergency address
@@ -59607,7 +65303,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-dynamic-emergency-endpoints">Dynamic Emergency Endpoints</h1>
@@ -59757,7 +65453,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a dynamic emergency endpoint.
@@ -59913,7 +65609,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a dynamic emergency endpoint
@@ -60049,7 +65745,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a dynamic emergency endpoint
@@ -60186,7 +65882,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-domain-dns-records">Email Domain DNS Records</h1>
@@ -60275,7 +65971,7 @@ Returns the DNS records Telnyx generated for domain ownership and DKIM verificat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Verify DNS records for an email domain
@@ -60426,7 +66122,7 @@ Checks the published DNS records against the records required for the email doma
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-domains">Email Domains</h1>
@@ -60585,7 +66281,7 @@ Shared (`type: shared`) Telnyx-managed domains are included/readable for every a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an email domain
@@ -60746,7 +66442,7 @@ Registers a domain for email sending and optional inbound delivery. The response
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Rotate the DKIM key for an email domain
@@ -60902,7 +66598,7 @@ Generates a new DKIM key for the domain, activates it, and retires the previous 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an email domain
@@ -61016,7 +66712,7 @@ Shared (`type: shared`) Telnyx-managed domains are included/readable for every a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an email domain
@@ -61168,7 +66864,7 @@ Deletes an email domain configuration. Verified domains require `force=true`, an
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an email domain
@@ -61356,7 +67052,7 @@ Updates mutable settings for an existing email domain, including inbound deliver
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get domain health summary
@@ -61443,7 +67139,7 @@ Returns a summary of domain health including verification status and usability.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-drafts">Email Drafts</h1>
@@ -61599,7 +67295,7 @@ to the authenticated account and the given inbox.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a draft
@@ -61807,7 +67503,7 @@ Drafts are unbillable and emit no Email Detail Records until they are sent.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a draft
@@ -61943,7 +67639,7 @@ exact content that was sent stays auditable.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a draft
@@ -62135,7 +67831,7 @@ actually sent.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a draft
@@ -62237,7 +67933,7 @@ cannot be deleted; sent drafts are retained for audit.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a draft (alias)
@@ -62422,7 +68118,7 @@ Identical to `PUT`; both apply a partial update to the supplied fields.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send a draft
@@ -62687,7 +68383,7 @@ Status Code **429**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a reply draft
@@ -62879,7 +68575,7 @@ or `subject` explicitly overrides the pre-filled value.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-events">Email Events</h1>
@@ -62980,7 +68676,7 @@ Lists account-level email events sorted oldest first by `occurred_at asc, id asc
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get email event statistics
@@ -63068,7 +68764,7 @@ Returns counts and rates for email events over a time range. The default start t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-inboxes">Email Inboxes</h1>
@@ -63183,7 +68879,7 @@ Lists the account's non-deleted inboxes newest first using stable cursor paginat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an email inbox
@@ -63301,7 +68997,7 @@ without customer DNS setup. When `username` is omitted, a unique username is gen
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an email inbox
@@ -63402,7 +69098,7 @@ Returns an account-scoped, non-deleted inbox. Missing and foreign inboxes are in
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an email inbox
@@ -63486,7 +69182,7 @@ Soft-deletes an account-scoped inbox. Its address remains reserved and the inbox
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List sender filters for an inbox
@@ -63589,7 +69285,7 @@ when both lists are empty, all senders are accepted.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Replace sender filters for an inbox
@@ -63737,7 +69433,7 @@ that list. Use `POST` or `DELETE` for incremental changes.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add sender filter entries to an inbox
@@ -63886,7 +69582,7 @@ idempotent set union: entries already present remain unchanged.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove sender filter entries from an inbox
@@ -64036,7 +69732,7 @@ filter lists.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List and search messages in an inbox
@@ -64202,7 +69898,7 @@ plain-text body, and HTML body. Filters compose with stable cursor pagination.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an inbox message
@@ -64399,7 +70095,7 @@ the same update is idempotent.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Forward an inbox message
@@ -64647,7 +70343,7 @@ Status Code **429**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Reply to an inbox message
@@ -64867,7 +70563,7 @@ Status Code **429**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Reply all to an inbox message
@@ -65100,7 +70796,7 @@ Status Code **429**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add labels to an inbox message
@@ -65283,7 +70979,7 @@ case-sensitive, and message labels are independent of thread labels.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove labels from an inbox message
@@ -65456,7 +71152,7 @@ Removal is case-sensitive.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List threads in an inbox
@@ -65589,7 +71285,7 @@ Lists thread summaries newest first using stable cursor pagination.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a thread and a page of its messages
@@ -65770,7 +71466,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add labels to an inbox thread
@@ -65931,7 +71627,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove labels from an inbox thread
@@ -66087,7 +71783,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-messages">Email Messages</h1>
@@ -66243,7 +71939,7 @@ Lists messages sorted newest first by `created_at desc, id desc`. Tags and metad
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create or send an email message
@@ -66584,7 +72280,7 @@ Status Code **429**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete email messages by address
@@ -66688,7 +72384,7 @@ operation never searches or reports matches in another account. The legacy
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a batch of email messages
@@ -66990,7 +72686,7 @@ Status Code **429**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List events for an email message
@@ -67096,7 +72792,7 @@ every unchanged outcome carries identical `event_type` and
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List recipients for an email message
@@ -67218,7 +72914,7 @@ Default page size is 25, maximum is 100.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a single recipient's delivery state
@@ -67311,7 +73007,7 @@ BCC recipient addresses are redacted (returned as null).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Cancel a scheduled email message
@@ -67477,7 +73173,7 @@ Cancels a scheduled email and returns it with status `cancelled`. The legacy `/v
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Reschedule a scheduled email message
@@ -67679,7 +73375,7 @@ Moves an existing scheduled email to a new future send time. Only the delivery t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an email message
@@ -67823,7 +73519,7 @@ The legacy `/v2/emails/{id}` GET route is a backward-compatible alias for this o
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an email message
@@ -67926,7 +73622,7 @@ route is a backward-compatible alias.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-suppression-imports">Email Suppression Imports</h1>
@@ -68124,7 +73820,7 @@ block_ttl_days: 30
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Poll an import job
@@ -68233,7 +73929,7 @@ failure.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-suppressions">Email Suppressions</h1>
@@ -68391,7 +74087,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a manual suppression
@@ -68548,7 +74244,7 @@ suppression endpoint or the internal create surface for those.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Export suppressions as CSV
@@ -68672,7 +74368,7 @@ string
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a suppression
@@ -68774,7 +74470,7 @@ Returns the account-owned suppression identified by ID. Cross-account lookups an
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Soft-delete a suppression
@@ -68899,7 +74595,7 @@ Mutates `updated_at`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List audit events for a suppression
@@ -69027,7 +74723,7 @@ belongs to the account first (cross-account → 404).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-templates">Email Templates</h1>
@@ -69147,7 +74843,7 @@ Lists templates sorted newest first by `created_at desc, id desc`. Optional filt
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an email template
@@ -69357,7 +75053,7 @@ Creates a Liquid email template. Variables are auto-extracted when omitted.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an email template
@@ -69449,7 +75145,7 @@ Returns the account-owned template identified by ID, including its Liquid subjec
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Replace an email template
@@ -69590,7 +75286,7 @@ Replaces template fields. Behaves identically to PATCH; provided for compatibili
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an email template
@@ -69677,7 +75373,7 @@ Deletes the account-owned template. The operation returns `204` with no body and
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an email template
@@ -69818,7 +75514,7 @@ Updates one or more fields of the specified email template and returns the updat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Render an email template
@@ -69946,7 +75642,7 @@ When the template has `strict_variables` enabled and a required variable (per `v
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-threads">Email Threads</h1>
@@ -70104,7 +75800,7 @@ inboxes, each result is identified by its `(inbox_id, id)` pair.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an account-wide thread and a page of its messages
@@ -70287,7 +75983,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-unsubscribe-groups">Email Unsubscribe Groups</h1>
@@ -70386,7 +76082,7 @@ default 25, max 100). No `sort`/`filter`/cursor — ordering fixed
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an unsubscribe group
@@ -70501,7 +76197,7 @@ Creates an account-owned unsubscribe group for associating email categories with
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an unsubscribe group
@@ -70596,7 +76292,7 @@ Returns the account-owned unsubscribe group identified by ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an unsubscribe group
@@ -70718,7 +76414,7 @@ values are false.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an unsubscribe group
@@ -70847,7 +76543,7 @@ Partial update (only `name` / `description`). `PUT` is not routed.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List suppressions in a group
@@ -70966,7 +76662,7 @@ includes `total_pages`. Rows reuse the standard suppression shape
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add a group suppression
@@ -71127,7 +76823,7 @@ Creates a suppression with `reason: unsubscribe`, `source: manual`,
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove a group suppression
@@ -71237,7 +76933,7 @@ exists but has **no active suppression** for that email returns
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-validations">Email Validations</h1>
@@ -71430,7 +77126,7 @@ Validates a single email address and returns deliverability checks.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a batch email validation job
@@ -71624,7 +77320,7 @@ Creates an asynchronous batch validation job for up to 1,000 email addresses.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a batch email validation job
@@ -71707,7 +77403,7 @@ Retrieves the current status and, once completed, validation results for a batch
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-verification">Email Verification</h1>
@@ -71781,7 +77477,7 @@ Whether the DIR's current authorizer email has been verified.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send an email-ownership verification code
@@ -71921,7 +77617,7 @@ Submit the code to `POST /dir/{dir_id}/verify_email/confirm`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Confirm an email-ownership verification code
@@ -72029,7 +77725,7 @@ For security, any failure (wrong, expired, already-used, or too many attempts) r
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send an email-ownership verification code to an enterprise
@@ -72167,7 +77863,7 @@ The code expires in 15 minutes. Requesting a new code invalidates any previous o
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Confirm an enterprise email-ownership verification code
@@ -72275,7 +77971,7 @@ For security, any failure (wrong, expired, already-used, or too many attempts) r
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-email-webhooks">Email Webhooks</h1>
@@ -72382,7 +78078,7 @@ Returns a paginated list of webhook subscriptions scoped to the email domain. Re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a webhook for an email domain
@@ -72539,7 +78235,7 @@ Creates a webhook endpoint subscribed to a specific allowlist of event types. Bo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a webhook
@@ -72625,7 +78321,7 @@ Returns the webhook subscription identified by ID within the specified email dom
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a webhook
@@ -72712,7 +78408,7 @@ Deletes the webhook subscription identified by ID within the specified email dom
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a webhook
@@ -72868,7 +78564,7 @@ Update a webhook's URL and/or event subscription. A webhook is bound to its doma
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-embeddings">Embeddings</h1>
@@ -72942,7 +78638,7 @@ Retrieve tasks for the user that are either `queued`, `processing`, `failed`, `s
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Embed documents
@@ -73142,7 +78838,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List embedded buckets
@@ -73201,7 +78897,7 @@ Returns the list of storage buckets that have been embedded for your account, fo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get file-level embedding statuses for a bucket
@@ -73271,7 +78967,7 @@ Get all embedded files for a given user bucket, including their processing statu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Disable AI for an Embedded Bucket
@@ -73340,7 +79036,7 @@ Deletes an entire bucket's embeddings and disables the bucket for AI-use, return
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Search for documents
@@ -73441,7 +79137,7 @@ If a bucket was embedded using a custom loader, such as `intercom`, the addition
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Embed URL content
@@ -73613,7 +79309,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an embedding task's status
@@ -73684,7 +79380,7 @@ Check the status of a current embedding task. Will be one of the following:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-enterprises">Enterprises</h1>
@@ -73824,7 +79520,7 @@ Return the enterprises you own, paginated. The default page size is 20; the maxi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an enterprise
@@ -74161,7 +79857,7 @@ Common failure modes:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an enterprise
@@ -74299,7 +79995,7 @@ Retrieve a single enterprise by id. Returns `404` if the id does not exist or do
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Replace an enterprise
@@ -74611,7 +80307,7 @@ If Number Reputation is enabled on the enterprise, `legal_name`, `doing_business
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an enterprise
@@ -74715,7 +80411,7 @@ Failure modes:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Activate Branded Calling on an enterprise
@@ -74867,7 +80563,7 @@ Failure modes:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-external-connections">External Connections</h1>
@@ -74946,7 +80642,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates an External Connection
@@ -75048,7 +80744,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all log messages
@@ -75123,7 +80819,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a log message
@@ -75190,7 +80886,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Dismiss a log message
@@ -75244,7 +80940,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an External Connection
@@ -75309,7 +81005,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes an External Connection
@@ -75375,7 +81071,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an External Connection
@@ -75483,7 +81179,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all civic addresses and locations
@@ -75571,7 +81267,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Civic Address
@@ -75657,7 +81353,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a location's static emergency address
@@ -75763,7 +81459,7 @@ Update the static emergency address assigned to a specific location of an extern
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all phone numbers
@@ -75838,7 +81534,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a phone number
@@ -75902,7 +81598,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a phone number
@@ -75982,7 +81678,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Releases
@@ -76059,7 +81755,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Release request
@@ -76125,7 +81821,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Upload requests
@@ -76212,7 +81908,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates an Upload request
@@ -76312,7 +82008,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Refresh the status of all Upload requests
@@ -76367,7 +82063,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get the count of pending upload requests
@@ -76425,7 +82121,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an Upload request
@@ -76501,7 +82197,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retry an Upload request
@@ -76580,7 +82276,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Refresh Operator Connect integration
@@ -76646,7 +82342,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-fqdn-connections">FQDN Connections</h1>
@@ -76874,7 +82570,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an FQDN connection
@@ -77286,7 +82982,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an FQDN authentication
@@ -77411,7 +83107,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an FQDN authentication
@@ -77618,7 +83314,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an FQDN connection
@@ -77823,7 +83519,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an FQDN connection
@@ -78029,7 +83725,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an FQDN connection
@@ -78421,7 +84117,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-fqdns">FQDNs</h1>
@@ -78534,7 +84230,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an FQDN
@@ -78677,7 +84373,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an FQDN
@@ -78818,7 +84514,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an FQDN
@@ -78960,7 +84656,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an FQDN
@@ -79138,322 +84834,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
-</aside>
-
-<h1 id="telnyx-api-fine-tuning">Fine Tuning</h1>
-
-Customize LLMs for your unique needs
-
-## List fine tuning jobs
-
-<a id="opIdget_finetuningjob_public_finetuning_get"></a>
-
-> Code samples
-
-```bash
-curl https://api.telnyx.com/v2/ai/fine_tuning/jobs \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /ai/fine_tuning/jobs`
-
-Retrieve a list of all fine tuning jobs created by the user.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {
-      "id": "string",
-      "created_at": 0,
-      "hyperparameters": {
-        "n_epochs": 3
-      },
-      "model": "string",
-      "organization_id": "string",
-      "status": "queued",
-      "training_file": "string",
-      "finished_at": null,
-      "trained_tokens": null
-    }
-  ]
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "body",
-        "name"
-      ],
-      "msg": "Field required",
-      "type": "missing"
-    }
-  ]
-}
-```
-
-<h3 id="list-fine-tuning-jobs-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successful Response|[FineTuningJobsListData](#schemafinetuningjobslistdata)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
-</aside>
-
-## Create a fine tuning job
-
-<a id="opIdcreate_new_finetuningjob_public_finetuning_post"></a>
-
-> Code samples
-
-```bash
-curl https://api.telnyx.com/v2/ai/fine_tuning/jobs \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "model": "string",
-    "training_file": "string",
-    "suffix": "string",
-    "hyperparameters": {
-      "n_epochs": 3
-    }
-  }'
-```
-
-`POST /ai/fine_tuning/jobs`
-
-Creates a new fine-tuning job that trains a model on the provided dataset, and returns the created job.
-
-> Body parameter
-
-```json
-{
-  "model": "string",
-  "training_file": "string",
-  "suffix": "string",
-  "hyperparameters": {
-    "n_epochs": 3
-  }
-}
-```
-
-<h3 id="create-a-fine-tuning-job-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[CreateFineTuningJobRequest](#schemacreatefinetuningjobrequest)|true|none|
-|» model|body|string|true|The base model that is being fine-tuned.|
-|» training_file|body|string|true|The storage bucket or object used for training.|
-|» suffix|body|string|false|Optional suffix to append to the fine tuned model's name.|
-|» hyperparameters|body|object|false|The hyperparameters used for the fine-tuning job.|
-|» » n_epochs|body|integer|false|The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset. 'auto' decides the optimal number of epochs based on the size of the dataset. If setting the number manually, we support any number between 1 and 50 epochs.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "string",
-  "created_at": 0,
-  "hyperparameters": {
-    "n_epochs": 3
-  },
-  "model": "string",
-  "organization_id": "string",
-  "status": "queued",
-  "training_file": "string",
-  "finished_at": null,
-  "trained_tokens": null
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "body",
-        "name"
-      ],
-      "msg": "Field required",
-      "type": "missing"
-    }
-  ]
-}
-```
-
-<h3 id="create-a-fine-tuning-job-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successful Response|[FineTuningJob](#schemafinetuningjob)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
-</aside>
-
-## Get a fine tuning job
-
-<a id="opIdget_finetuningjob_public_finetuning__job_id__get"></a>
-
-> Code samples
-
-```bash
-curl https://api.telnyx.com/v2/ai/fine_tuning/jobs/string \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /ai/fine_tuning/jobs/{job_id}`
-
-Returns the details of a single fine-tuning job by its job_id, including its current status.
-
-<h3 id="get-a-fine-tuning-job-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|job_id|path|string|true|Unique identifier of the job.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "string",
-  "created_at": 0,
-  "hyperparameters": {
-    "n_epochs": 3
-  },
-  "model": "string",
-  "organization_id": "string",
-  "status": "queued",
-  "training_file": "string",
-  "finished_at": null,
-  "trained_tokens": null
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "body",
-        "name"
-      ],
-      "msg": "Field required",
-      "type": "missing"
-    }
-  ]
-}
-```
-
-<h3 id="get-a-fine-tuning-job-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successful Response|[FineTuningJob](#schemafinetuningjob)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
-</aside>
-
-## Cancel a fine tuning job
-
-<a id="opIdcancel_new_finetuningjob_public_finetuning_post"></a>
-
-> Code samples
-
-```bash
-curl https://api.telnyx.com/v2/ai/fine_tuning/jobs/string/cancel \
-  -X POST \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /ai/fine_tuning/jobs/{job_id}/cancel`
-
-Cancels the specified in-progress fine-tuning job and returns the updated job.
-
-<h3 id="cancel-a-fine-tuning-job-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|job_id|path|string|true|Unique identifier of the job.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "string",
-  "created_at": 0,
-  "hyperparameters": {
-    "n_epochs": 3
-  },
-  "model": "string",
-  "organization_id": "string",
-  "status": "cancelled",
-  "training_file": "string",
-  "finished_at": 1706033402,
-  "trained_tokens": null
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "body",
-        "name"
-      ],
-      "msg": "Field required",
-      "type": "missing"
-    }
-  ]
-}
-```
-
-<h3 id="cancel-a-fine-tuning-job-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successful Response|[FineTuningJob](#schemafinetuningjob)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-global-ips">Global IPs</h1>
@@ -79547,7 +84928,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Global IP Assignment Health Check Metrics
@@ -79654,7 +85035,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Global IP assignments
@@ -79761,7 +85142,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Global IP assignment
@@ -79876,7 +85257,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Global IP Assignment Usage Metrics
@@ -79991,7 +85372,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Global IP assignment
@@ -80089,7 +85470,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Global IP assignment
@@ -80188,7 +85569,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Global IP assignment
@@ -80307,7 +85688,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Global IP Assignment Usage Metrics
@@ -80418,7 +85799,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Global IP Health check types
@@ -80510,7 +85891,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Global IP health checks
@@ -80617,7 +85998,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Global IP health check
@@ -80738,7 +86119,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Global IP health check
@@ -80836,7 +86217,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Global IP health check
@@ -80935,7 +86316,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Global IP Latency Metrics
@@ -81070,7 +86451,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Global IP Protocols
@@ -81157,7 +86538,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Global IP Usage Metrics
@@ -81260,7 +86641,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Global IPs
@@ -81374,7 +86755,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Global IP
@@ -81514,7 +86895,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Global IP
@@ -81619,7 +87000,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Global IP
@@ -81725,7 +87106,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-hosted-numbers">Hosted Numbers</h1>
@@ -81827,7 +87208,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a messaging hosted number order
@@ -81939,7 +87320,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Check hosted messaging eligibility
@@ -82039,7 +87420,7 @@ Checks whether the supplied phone numbers are eligible for hosted messaging befo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a messaging hosted number order
@@ -82128,7 +87509,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a messaging hosted number order
@@ -82218,7 +87599,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Upload hosted number document
@@ -82320,7 +87701,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Validate hosted number codes
@@ -82425,7 +87806,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create hosted number verification codes
@@ -82523,7 +87904,7 @@ Create verification codes to validate numbers of the hosted order. The verificat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a messaging hosted number
@@ -82613,7 +87994,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-ip-addresses">IP Addresses</h1>
@@ -82693,7 +88074,7 @@ Retrieve a paginated list of access IP addresses configured on your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create new Access IP Address
@@ -82775,7 +88156,7 @@ Create a new access IP address entry on your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an access IP address
@@ -82840,7 +88221,7 @@ Retrieve the details of a specific access IP address.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete access IP address
@@ -82906,7 +88287,7 @@ Delete an access IP address entry from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-ip-connections">IP Connections</h1>
@@ -83117,7 +88498,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an Ip connection
@@ -83507,7 +88888,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an Ip connection
@@ -83716,7 +89097,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an Ip connection
@@ -83926,7 +89307,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an Ip connection
@@ -84352,7 +89733,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-ip-pools">IP Pools</h1>
@@ -84419,7 +89800,7 @@ List the account's dedicated-IP pools. Member IPs are not included (`ips` is emp
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an IP pool
@@ -84560,7 +89941,7 @@ Create an account-scoped pool of dedicated IPs. Set `is_default` or `domain_id` 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an IP pool
@@ -84693,7 +90074,7 @@ Retrieve a single IP pool by its identifier, including its dedicated-IP members 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an IP pool
@@ -84799,7 +90180,7 @@ Delete the pool. Member IPs are kept but leave the pool, so they carry no mail u
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an IP pool
@@ -84939,7 +90320,7 @@ Rename the pool, set or clear the default flag, or change its domain scope. Rout
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add a dedicated IP to a pool
@@ -85076,7 +90457,7 @@ Add a dedicated IP to the pool with an optional routing weight. An IP can belong
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove a dedicated IP from a pool
@@ -85183,7 +90564,7 @@ Remove the dedicated IP from the pool. The IP is kept but carries no mail until 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-ip-ranges">IP Ranges</h1>
@@ -85262,7 +90643,7 @@ Retrieve a paginated list of access IP ranges configured on your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create new Access IP Range
@@ -85343,7 +90724,7 @@ Create a new access IP range on your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete access IP ranges
@@ -85408,7 +90789,7 @@ Delete an access IP range from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-ips">IPs</h1>
@@ -85541,7 +90922,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an Ip
@@ -85680,7 +91061,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an Ip
@@ -85820,7 +91201,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an Ip
@@ -85961,7 +91342,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an Ip
@@ -86135,7 +91516,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-inexplicit-number-orders">Inexplicit Number Orders</h1>
@@ -86326,7 +91707,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an inexplicit number order
@@ -86564,7 +91945,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an inexplicit number order
@@ -86741,7 +92122,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-infringement-claims">Infringement Claims</h1>
@@ -86875,7 +92256,7 @@ Return the trademark or copyright claims filed against this DIR. Each claim's `s
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a DIR to resolve an infringement concern
@@ -87104,7 +92485,7 @@ Push a fix for a DIR that is `suspended` with an open infringement claim back in
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an infringement claim
@@ -87224,7 +92605,7 @@ Retrieve a single claim by id. Returns `404` if the claim does not exist or is n
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Contest an infringement claim
@@ -87381,7 +92762,7 @@ Failure modes:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-integration-secrets">Integration Secrets</h1>
@@ -87458,7 +92839,7 @@ Retrieve a list of all integration secrets configured by the user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a secret
@@ -87551,7 +92932,7 @@ Create a new secret with an associated identifier that can be used to securely i
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an integration secret
@@ -87602,7 +92983,7 @@ Delete an integration secret given its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-inventory-level">Inventory Level</h1>
@@ -87764,7 +93145,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mdr-detailed-reports">MDR Detailed Reports</h1>
@@ -87850,7 +93231,7 @@ Retrieves all MDR detailed report requests for the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new MDR detailed report request
@@ -88028,7 +93409,7 @@ Creates a new MDR detailed report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a specific MDR detailed report request
@@ -88109,7 +93490,7 @@ Retrieves a specific MDR detailed report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a MDR detailed report request
@@ -88191,7 +93572,7 @@ Deletes a specific MDR detailed report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all MDR detailed report requests
@@ -88273,7 +93654,7 @@ Retrieves all MDR detailed report requests for the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new MDR detailed report request
@@ -88451,7 +93832,7 @@ Creates a new MDR detailed report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a specific MDR detailed report request
@@ -88532,7 +93913,7 @@ Retrieves a specific MDR detailed report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a MDR detailed report request
@@ -88614,7 +93995,7 @@ Deletes a specific MDR detailed report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mdr-usage-reports">MDR Usage Reports</h1>
@@ -88704,7 +94085,7 @@ Fetch all previous requests for MDR usage reports.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new legacy usage V2 MDR report request
@@ -88798,7 +94179,7 @@ Creates a new legacy usage V2 MDR report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an MDR usage report
@@ -88864,7 +94245,7 @@ Returns a single MDR (Message Detail Record) usage report by its identifier, inc
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a V2 legacy usage MDR report request
@@ -88931,7 +94312,7 @@ Deletes a specific V2 legacy usage MDR report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List MDR usage reports
@@ -89017,7 +94398,7 @@ Fetch all previous requests for MDR usage reports.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new legacy usage V2 MDR report request
@@ -89111,7 +94492,7 @@ Creates a new legacy usage V2 MDR report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an MDR usage report
@@ -89177,7 +94558,7 @@ Returns a single MDR (Message Detail Record) usage report by its identifier, inc
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a V2 legacy usage MDR report request
@@ -89244,7 +94625,7 @@ Deletes a specific V2 legacy usage MDR report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch all Messaging usage reports
@@ -89342,7 +94723,7 @@ Fetch all messaging usage reports. Usage reports are aggregated messaging data f
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create MDR Usage Report
@@ -89458,7 +94839,7 @@ Submit request for new new messaging usage report. This endpoint will pull and a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Generate and fetch MDR Usage Report
@@ -89559,7 +94940,7 @@ Generate and fetch messaging usage report synchronously. This endpoint will both
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve messaging report
@@ -89649,7 +95030,7 @@ Fetch a single messaging usage report by id
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete MDR Usage Report
@@ -89740,7 +95121,7 @@ Permanently deletes the specified messaging usage report by its identifier.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-machine-payments">Machine Payments</h1>
@@ -89953,7 +95334,7 @@ Status Code **403**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth, Payment
+bearerAuth2, Payment
 </aside>
 
 <h1 id="telnyx-api-managed-accounts">Managed Accounts</h1>
@@ -90039,7 +95420,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new managed account.
@@ -90158,7 +95539,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Display information about allocatable global outbound channels for the current user.
@@ -90209,7 +95590,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a managed account
@@ -90282,7 +95663,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a managed account
@@ -90391,7 +95772,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Disables a managed account
@@ -90486,7 +95867,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Enables a managed account
@@ -90595,7 +95976,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update the amount of allocatable global outbound channels allocated to a specific managed account.
@@ -90690,7 +96071,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-media-storage-api">Media Storage API</h1>
@@ -90798,7 +96179,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Upload media
@@ -90932,7 +96313,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve stored media
@@ -91046,7 +96427,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update stored media
@@ -91197,7 +96578,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes stored media
@@ -91290,7 +96671,7 @@ Permanently deletes the specified media file from storage.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Download stored media
@@ -91401,7 +96782,1291 @@ Downloads the raw content of the specified stored media file.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
+</aside>
+
+<h1 id="telnyx-api-meeting-calendar-connections">Meeting Calendar Connections</h1>
+
+Connect calendars and manage automatic meeting joins.
+
+## List meeting calendar connections
+
+<a id="opIdlistMeetingCalendarConnections"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/calendar_connections \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /calendar_connections`
+
+List only the authenticated connecting user’s calendar connections. Session resources created by those connections are shared within the organization.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "calconn_example",
+      "platform": "google_calendar",
+      "platform_email": "organizer@example.com",
+      "status": "connected",
+      "status_detail": null,
+      "auto_join_policy": "all_meetings",
+      "bot_name": "Notetaker",
+      "default_barge_in": null,
+      "default_summarize_on_end": null,
+      "default_voice": null,
+      "default_assistant": null,
+      "default_recording": null,
+      "default_recording_export": null,
+      "default_webhook_url": null,
+      "created_at": "2026-11-05T09:00:00Z",
+      "updated_at": "2026-11-05T09:00:00Z"
+    }
+  ]
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "invalid or missing credentials"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "credential is not permitted"
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "error": {
+    "code": "auth_overloaded",
+    "message": "authentication temporarily overloaded"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "code": "internal_error",
+    "message": "internal server error"
+  }
+}
+```
+
+> 503 Response
+
+```json
+{
+  "error": {
+    "code": "not_configured",
+    "message": "required feature is not configured"
+  }
+}
+```
+
+<h3 id="list-meeting-calendar-connections-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response.|[CalendarConnectionListResponse](#schemacalendarconnectionlistresponse)|
+|401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Connect a meeting calendar
+
+<a id="opIdcreateMeetingCalendarConnection"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/calendar_connections \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "platform": "google_calendar"
+  }'
+```
+
+`POST /calendar_connections`
+
+Start Google Calendar or Microsoft Outlook OAuth. Open oauth_url in a browser. No connection exists until authorization succeeds. The resulting connection is owned by the connecting user.
+
+> Body parameter
+
+```json
+{
+  "platform": "google_calendar"
+}
+```
+
+<h3 id="connect-a-meeting-calendar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[CreateCalendarConnectionRequest](#schemacreatecalendarconnectionrequest)|true|none|
+|» platform|body|string|true|Calendar provider: Google Calendar or Microsoft Outlook.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» platform|google_calendar|
+|» platform|microsoft_outlook|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "platform": "google_calendar",
+    "status": "pending_oauth",
+    "oauth_url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=example"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "request is invalid"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "invalid or missing credentials"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "credential is not permitted"
+  }
+}
+```
+
+> 413 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "request body too large"
+  }
+}
+```
+
+> 422 Response
+
+```json
+{
+  "error": {
+    "code": "unsupported_capability",
+    "message": "avatar video is not supported on platform 'unknown'"
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "error": {
+    "code": "auth_overloaded",
+    "message": "authentication temporarily overloaded"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "code": "internal_error",
+    "message": "internal server error"
+  }
+}
+```
+
+> 503 Response
+
+```json
+{
+  "error": {
+    "code": "not_configured",
+    "message": "required feature is not configured"
+  }
+}
+```
+
+<h3 id="connect-a-meeting-calendar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Successful response.|[CalendarConnectionPendingResponse](#schemacalendarconnectionpendingresponse)|
+|400|Bad Request|Bad Request|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|413|Payload Too Large|Payload Too Large|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|422|Unprocessable Entity|Unprocessable Entity, including an unsupported capability|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Retrieve a meeting calendar connection
+
+<a id="opIdretrieveMeetingCalendarConnection"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/calendar_connections/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /calendar_connections/{id}`
+
+Retrieve a calendar connection owned by the authenticated connecting user. Missing and foreign connections both return 404. Signing secrets are omitted.
+
+<h3 id="retrieve-a-meeting-calendar-connection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|Calendar connection ID.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "calconn_example",
+    "platform": "google_calendar",
+    "platform_email": "organizer@example.com",
+    "status": "connected",
+    "status_detail": null,
+    "auto_join_policy": "all_meetings",
+    "bot_name": "Notetaker",
+    "default_barge_in": null,
+    "default_summarize_on_end": null,
+    "default_voice": null,
+    "default_assistant": null,
+    "default_recording": null,
+    "default_recording_export": null,
+    "default_webhook_url": null,
+    "created_at": "2026-11-05T09:00:00Z",
+    "updated_at": "2026-11-05T09:00:00Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "invalid or missing credentials"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "credential is not permitted"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "meeting session not found"
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "error": {
+    "code": "auth_overloaded",
+    "message": "authentication temporarily overloaded"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "code": "internal_error",
+    "message": "internal server error"
+  }
+}
+```
+
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
+> 503 Response
+
+```json
+{
+  "error": {
+    "code": "not_configured",
+    "message": "required feature is not configured"
+  }
+}
+```
+
+<h3 id="retrieve-a-meeting-calendar-connection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response.|[CalendarConnectionResponse](#schemacalendarconnectionresponse)|
+|401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Disconnect a meeting calendar
+
+<a id="opIddisconnectMeetingCalendar"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/calendar_connections/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /calendar_connections/{id}`
+
+Disconnect the calendar, cancel future joins, and clear retained calendar identity fields. Previously created session records, transcripts, artifacts, and Storage objects remain. The response is the updated connection.
+
+<h3 id="disconnect-a-meeting-calendar-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|Calendar connection ID.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "calconn_example",
+    "platform": "google_calendar",
+    "platform_email": "organizer@example.com",
+    "status": "disconnected",
+    "status_detail": null,
+    "auto_join_policy": "all_meetings",
+    "bot_name": "Notetaker",
+    "default_barge_in": null,
+    "default_summarize_on_end": null,
+    "default_voice": null,
+    "default_assistant": null,
+    "default_recording": null,
+    "default_recording_export": null,
+    "default_webhook_url": null,
+    "created_at": "2026-11-05T09:00:00Z",
+    "updated_at": "2026-11-05T09:00:00Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "invalid or missing credentials"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "credential is not permitted"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "meeting session not found"
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "error": {
+    "code": "auth_overloaded",
+    "message": "authentication temporarily overloaded"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "code": "internal_error",
+    "message": "internal server error"
+  }
+}
+```
+
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
+> 503 Response
+
+```json
+{
+  "error": {
+    "code": "not_configured",
+    "message": "required feature is not configured"
+  }
+}
+```
+
+<h3 id="disconnect-a-meeting-calendar-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response.|[CalendarConnectionResponse](#schemacalendarconnectionresponse)|
+|401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Update a meeting calendar connection
+
+<a id="opIdupdateMeetingCalendarConnection"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/calendar_connections/string \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "default_recording": true,
+    "default_recording_export": {
+      "bucket": "meeting-recordings"
+    },
+    "default_webhook_url": "https://example.com/meeting-events"
+  }'
+```
+
+`PATCH /calendar_connections/{id}`
+
+Update policy or defaults for future sessions. Supply at least one field. Existing sessions retain their configuration. Null clears nullable overrides. Assistant, recording, and webhook defaults apply to Google Meet and Teams. Assistant defaults require default_barge_in to be false or null and default_voice to be null. Recording=true requires a destination; false rejects one. A non-null default_webhook_url update returns webhook_secret once; save it to verify future session deliveries.
+
+> Body parameter
+
+```json
+{
+  "default_recording": true,
+  "default_recording_export": {
+    "bucket": "meeting-recordings"
+  },
+  "default_webhook_url": "https://example.com/meeting-events"
+}
+```
+
+<h3 id="update-a-meeting-calendar-connection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|Calendar connection ID.|
+|body|body|[UpdateCalendarConnectionRequest](#schemaupdatecalendarconnectionrequest)|true|none|
+|» auto_join_policy|body|string|false|all_meetings joins eligible events; external_organizer_excluded requires the connected user to be the organizer; per_meeting requires an explicit opt-in.|
+|» bot_name|body|string \| null|false|none|
+|» » *anyOf*|body|string|false|Bot display name; null clears the override.|
+|» » *anyOf*|body|null|false|none|
+|» default_barge_in|body|boolean \| null|false|none|
+|» » *anyOf*|body|boolean|false|Default manual speech interruption. Cannot be true with default_assistant.|
+|» » *anyOf*|body|null|false|none|
+|» default_summarize_on_end|body|boolean \| null|false|none|
+|» » *anyOf*|body|boolean|false|Generate a summary when each future session transcript finalizes.|
+|» » *anyOf*|body|null|false|none|
+|» default_voice|body|string \| null|false|none|
+|» » *anyOf*|body|string|false|Manual-speech voice; must be null when default_assistant is set.|
+|» » *anyOf*|body|null|false|none|
+|» default_assistant|body|[CalendarAssistantDefaults](#schemacalendarassistantdefaults) \| null|false|none|
+|» » *anyOf*|body|[CalendarAssistantDefaults](#schemacalendarassistantdefaults)|false|Default assistant for future calendar-scheduled Google Meet and Teams sessions. The saved configuration must fit within 8 KiB. Use id, audio_gate, dynamic_variables, and leave_on_end; avatar is not accepted. audio_gate defaults to full_duplex.|
+|» » *anyOf*|body|null|false|none|
+|» default_recording|body|boolean \| null|false|none|
+|» » *anyOf*|body|boolean|false|Google Meet and Teams recording intent. When null, recording is enabled only if a destination is set. True requires default_recording_export; false cannot be combined with a destination.|
+|» » *anyOf*|body|null|false|none|
+|» default_recording_export|body|[MeetingSessionRecordingDestination](#schemameetingsessionrecordingdestination) \| null|false|none|
+|» » *anyOf*|body|[MeetingSessionRecordingDestination](#schemameetingsessionrecordingdestination)|false|Customer-owned Telnyx Storage destination for recording exports. Uses the authenticated organization and user; do not supply credentials, region, organization ID or object key.|
+|» » *anyOf*|body|null|false|none|
+|» default_webhook_url|body|string(uri) \| null|false|none|
+|» » *anyOf*|body|string(uri)|false|HTTPS destination for future session webhooks. Null clears the default. A non-null update returns webhook_secret once; save it to verify signatures for sessions created with this default. Existing sessions retain their original signing secret.|
+|» » *anyOf*|body|null|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» auto_join_policy|all_meetings|
+|» auto_join_policy|external_organizer_excluded|
+|» auto_join_policy|per_meeting|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "calconn_example",
+    "platform": "google_calendar",
+    "platform_email": "organizer@example.com",
+    "status": "connected",
+    "status_detail": null,
+    "auto_join_policy": "all_meetings",
+    "bot_name": "Notetaker",
+    "default_barge_in": null,
+    "default_summarize_on_end": null,
+    "default_voice": null,
+    "default_assistant": null,
+    "default_recording": true,
+    "default_recording_export": {
+      "bucket": "meeting-recordings"
+    },
+    "default_webhook_url": "https://example.com/meeting-events",
+    "created_at": "2026-11-05T09:00:00Z",
+    "updated_at": "2026-11-05T09:00:00Z",
+    "webhook_secret": "whsec_example"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "request is invalid"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "invalid or missing credentials"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "credential is not permitted"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "meeting session not found"
+  }
+}
+```
+
+> 409 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_state",
+    "message": "only scheduled sessions can be updated"
+  }
+}
+```
+
+> 413 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "request body too large"
+  }
+}
+```
+
+> 422 Response
+
+```json
+{
+  "error": {
+    "code": "unsupported_capability",
+    "message": "avatar video is not supported on platform 'unknown'"
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "error": {
+    "code": "auth_overloaded",
+    "message": "authentication temporarily overloaded"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "code": "internal_error",
+    "message": "internal server error"
+  }
+}
+```
+
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
+> 503 Response
+
+```json
+{
+  "error": {
+    "code": "not_configured",
+    "message": "required feature is not configured"
+  }
+}
+```
+
+<h3 id="update-a-meeting-calendar-connection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response.|[CalendarConnectionUpdatedResponse](#schemacalendarconnectionupdatedresponse)|
+|400|Bad Request|Bad Request|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|409|Conflict|Conflict|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|413|Payload Too Large|Payload Too Large|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|422|Unprocessable Entity|Unprocessable Entity, including an unsupported capability|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## List calendar meetings
+
+<a id="opIdlistMeetingCalendarMeetings"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/calendar_connections/string/meetings \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /calendar_connections/{id}/meetings`
+
+List tracked meetings in a window. Defaults from now through seven days from now. from must not exceed to and the window must not exceed 31 days. bot_will_join is the effective policy decision; check session_id and the linked session status for actual attendance.
+
+<h3 id="list-calendar-meetings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|Calendar connection ID.|
+|from|query|string(date-time)|false|Window start; defaults to now.|
+|to|query|string(date-time)|false|Window end; defaults to seven days from now.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "calmtg_example",
+      "platform": "google_meet",
+      "start_time": "2026-12-05T09:00:00Z",
+      "end_time": "2026-12-05T09:30:00Z",
+      "organizer": {
+        "email": "organizer@example.com",
+        "display_name": "Organizer",
+        "self": true
+      },
+      "attendees": [],
+      "is_external_organizer": false,
+      "bot_will_join": true,
+      "bot_will_join_override": null,
+      "decision": "scheduled",
+      "session_id": "mtgsess_example"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "request is invalid"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "invalid or missing credentials"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "credential is not permitted"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "meeting session not found"
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "error": {
+    "code": "auth_overloaded",
+    "message": "authentication temporarily overloaded"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "code": "internal_error",
+    "message": "internal server error"
+  }
+}
+```
+
+> 503 Response
+
+```json
+{
+  "error": {
+    "code": "not_configured",
+    "message": "required feature is not configured"
+  }
+}
+```
+
+<h3 id="list-calendar-meetings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response.|[CalendarMeetingListResponse](#schemacalendarmeetinglistresponse)|
+|400|Bad Request|Bad Request|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Update calendar meeting auto-join
+
+<a id="opIdupdateMeetingCalendarMeeting"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/calendar_connections/string/meetings/string \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "bot_will_join": false
+  }'
+```
+
+`PATCH /calendar_connections/{id}/meetings/{meeting_id}`
+
+Set an individual meeting override: true opts in, false opts out, null follows the connection policy. A supported meeting link is required. Changes re-evaluate the meeting immediately; poll the linked session for its final lifecycle outcome.
+
+> Body parameter
+
+```json
+{
+  "bot_will_join": false
+}
+```
+
+<h3 id="update-calendar-meeting-auto-join-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|Calendar connection ID.|
+|meeting_id|path|string|true|Tracked meeting ID.|
+|body|body|[UpdateCalendarMeetingRequest](#schemaupdatecalendarmeetingrequest)|true|none|
+|» bot_will_join|body|boolean \| null|true|none|
+|» » *anyOf*|body|boolean|false|True opts in, false opts out, null follows connection policy. A supported meeting URL is still required.|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "calmtg_example",
+    "platform": "google_meet",
+    "start_time": "2026-12-05T09:00:00Z",
+    "end_time": "2026-12-05T09:30:00Z",
+    "organizer": {
+      "email": "organizer@example.com",
+      "display_name": "Organizer",
+      "self": true
+    },
+    "attendees": [],
+    "is_external_organizer": false,
+    "bot_will_join": false,
+    "bot_will_join_override": false,
+    "decision": "skipped_policy",
+    "session_id": "mtgsess_example"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "request is invalid"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "invalid or missing credentials"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "credential is not permitted"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "meeting session not found"
+  }
+}
+```
+
+> 409 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_state",
+    "message": "only scheduled sessions can be updated"
+  }
+}
+```
+
+> 413 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "request body too large"
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "error": {
+    "code": "auth_overloaded",
+    "message": "authentication temporarily overloaded"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "code": "internal_error",
+    "message": "internal server error"
+  }
+}
+```
+
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
+> 503 Response
+
+```json
+{
+  "error": {
+    "code": "not_configured",
+    "message": "required feature is not configured"
+  }
+}
+```
+
+<h3 id="update-calendar-meeting-auto-join-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response.|[CalendarMeetingResponse](#schemacalendarmeetingresponse)|
+|400|Bad Request|Bad Request|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|409|Conflict|Conflict|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|413|Payload Too Large|Payload Too Large|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
+</aside>
+
+## Complete meeting calendar authorization
+
+<a id="opIdcompleteMeetingCalendarAuthorization"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/meeting_bot/calendar/oauth_callback
+```
+
+`GET /meeting_bot/calendar/oauth_callback`
+
+Browser redirect after calendar consent. Use the returned oauth_url rather than constructing this request. Verified state identifies the connecting user. Returns HTML for success, cancellation, or failure; no JSON error envelope or bearer token is used.
+
+<h3 id="complete-meeting-calendar-authorization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|code|query|string|false|Authorization code supplied by the calendar provider.|
+|state|query|string|false|Unmodified signed state from the authorization URL.|
+|error|query|string|false|Authorization error supplied by the calendar provider, such as access_denied.|
+
+> Example responses
+
+> 200 Response
+
+```text
+<!doctype html><html><body><h1>Calendar connected</h1></body></html>
+```
+
+> 400 Response
+
+```text
+<!doctype html><html><body><h1>Invalid request</h1></body></html>
+```
+
+> 409 Response
+
+```text
+<!doctype html><html><body><h1>Calendar already connected</h1></body></html>
+```
+
+> 500 Response
+
+```text
+<!doctype html><html><body><h1>Calendar connection failed</h1></body></html>
+```
+
+> 502 Response
+
+```text
+<!doctype html><html><body><h1>Calendar connection failed</h1></body></html>
+```
+
+> 503 Response
+
+```text
+<!doctype html><html><body><h1>Calendar connections unavailable</h1></body></html>
+```
+
+<h3 id="complete-meeting-calendar-authorization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Calendar connected, or the user cancelled authorization.|Inline|
+|400|Bad Request|Invalid, expired, or rejected authorization.|Inline|
+|409|Conflict|This user already has a connection for this calendar platform.|Inline|
+|500|Internal Server Error|Unexpected connection failure.|Inline|
+|502|Bad Gateway|Calendar authorization exchange failed.|Inline|
+|503|Service Unavailable|Calendar connection is temporarily unavailable.|Inline|
+
+<aside class="success">
+This operation does not require authentication
 </aside>
 
 <h1 id="telnyx-api-meeting-session-actions">Meeting Session Actions</h1>
@@ -91427,7 +98092,7 @@ curl https://api.telnyx.com/v2/meeting_sessions/mtgsess_a1b2c3d4-e5f6-7890-abcd-
 
 `POST /meeting_sessions/{id}/actions/send_chat`
 
-Sends a chat message into a meeting session.
+Send chat as the bot in an active meeting. Returns 202 with data.accepted=true. Google Meet and Teams confirm sending before success; 502 chat_not_sent means not sent, while chat_delivery_unknown means delivery may have occurred. Inspect chat and chat.sent events before retrying an uncertain send. Each request is a new message and is not idempotent. Google Meet and Teams allow at most 1000 chat requests per session, including an entrance message; exceeding this returns 409 invalid_state.
 
 > Body parameter
 
@@ -91443,7 +98108,7 @@ Sends a chat message into a meeting session.
 |---|---|---|---|---|
 |id|path|string|true|Unique identifier for the meeting session.|
 |body|body|[SendChatMeetingSessionRequest](#schemasendchatmeetingsessionrequest)|true|none|
-|» text|body|string|true|Chat message text to send in the meeting.|
+|» text|body|string|true|Message text, 1–4000 characters. On Google Meet and Teams, also at most 4096 UTF-8 bytes and nonblank; control characters other than tab and line breaks are rejected. CRLF is normalized to LF.|
 
 > Example responses
 
@@ -91561,8 +98226,8 @@ Sends a chat message into a meeting session.
 ```json
 {
   "error": {
-    "code": "provider_error",
-    "message": "meeting provider rejected chat message"
+    "code": "chat_not_sent",
+    "message": "Chat was not sent."
   }
 }
 ```
@@ -91592,7 +98257,7 @@ Sends a chat message into a meeting session.
 |422|Unprocessable Entity|Unprocessable Entity, including an unsupported capability|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|502|Bad Gateway|The meeting provider rejected native chat delivery.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Chat failed or its delivery is uncertain. Each new action sends a new message. Check chat before retrying an unknown outcome.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 
 ### Response Headers
@@ -91603,7 +98268,7 @@ Sends a chat message into a meeting session.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Speak in a meeting session
@@ -91626,7 +98291,7 @@ curl https://api.telnyx.com/v2/meeting_sessions/mtgsess_a1b2c3d4-e5f6-7890-abcd-
 
 `POST /meeting_sessions/{id}/actions/speak`
 
-Sends audio / text-to-speech into a meeting session. With a Telnyx AI Assistant attached, the bot is a webpage-output bot: the speak audio routes through the assistant's output page rather than the bot mic and plays once the assistant is connected -- it is not refused. If that page cannot be reached, delivery fails with the 502 below, which may arrive without an error envelope, so branch on the status code before parsing a body. The assistant is designed to own the conversation, so prefer letting it speak or use `send_chat`. With a digital avatar (`assistant.avatar: true`), speak is refused with 409 `invalid_state` (message prefix `avatar_requires_assistant_speech:`): the avatar renders only the assistant's own speech.
+Sends audio / text-to-speech into a meeting session. With a Telnyx AI Assistant attached, wait for the assistant to connect before requesting speech. If audio delivery fails, the response can be 502, which may arrive without an error envelope, so branch on the status code before parsing a body. The assistant is designed to own the conversation, so prefer letting it speak or use `send_chat`. With a digital avatar (`assistant.avatar: true`), speak is refused with 409 `invalid_state` (message prefix `avatar_requires_assistant_speech:`): the avatar renders only the assistant's own speech.
 
 > Body parameter
 
@@ -91805,7 +98470,7 @@ Sends audio / text-to-speech into a meeting session. With a Telnyx AI Assistant 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Stop speaking in a meeting session
@@ -91965,7 +98630,7 @@ Stops any active text-to-speech playback in a meeting session. Sessions with a d
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-meeting-session-artifacts">Meeting Session Artifacts</h1>
@@ -92072,6 +98737,17 @@ Returns a list of artifacts for a meeting session.
 }
 ```
 
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
 > 503 Response
 
 ```json
@@ -92093,7 +98769,8 @@ Returns a list of artifacts for a meeting session.
 |404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|503|Service Unavailable|Authentication is temporarily unavailable.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|Authentication or session data is temporarily unavailable. Retry reads with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 
 ### Response Headers
 
@@ -92103,7 +98780,7 @@ Returns a list of artifacts for a meeting session.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a meeting session artifact
@@ -92125,7 +98802,7 @@ curl https://api.telnyx.com/v2/meeting_sessions/mtgsess_a1b2c3d4-e5f6-7890-abcd-
 
 `POST /meeting_sessions/{id}/artifacts`
 
-Requests asynchronous generation of one artifact: `summary`, `action_items`, `decisions`, `topics`, `open_questions`, or `custom`. Each request produces one artifact. `custom` is answered from a `prompt` you supply, which is required for `custom` and rejected on the five named types. Generation requires transcript content and configured inference and currently reads at most the first 10,000 segments, so exceptionally long transcripts may produce incomplete artifacts or fail model limits. **Not idempotent, and every call is billed**: each request is a separate inference run, so a retry or a duplicate POST produces a second artifact and a second charge. Guard the call rather than relying on the service to collapse it. The automatic `summarize_on_end` attempt is billed on the same basis.
+Requests asynchronous generation of one artifact: `summary`, `action_items`, `decisions`, `topics`, `open_questions`, or `custom`. Each request produces one artifact. `custom` is answered from a `prompt` you supply, which is required for `custom` and rejected on the five named types. Generation requires transcript content. Input is limited to 10,000 segments and 1,000,000 UTF-8 bytes including segment text, speaker labels, timestamps, and sequence numbers. An oversized transcript returns 409 invalid_state before an artifact is created; it is not silently truncated. Model context limits can still cause an accepted artifact to fail. **Not idempotent, and every call is billed**: each request is a separate inference run, so a retry or a duplicate POST produces a second artifact and a second charge. Guard the call rather than relying on the service to collapse it. The automatic `summarize_on_end` attempt is billed on the same basis.
 
 > Body parameter
 
@@ -92300,7 +98977,7 @@ Requests asynchronous generation of one artifact: `summary`, `action_items`, `de
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a meeting session artifact
@@ -92402,6 +99079,17 @@ Retrieves a single meeting session artifact by ID.
 }
 ```
 
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
 > 503 Response
 
 ```json
@@ -92423,7 +99111,8 @@ Retrieves a single meeting session artifact by ID.
 |404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|503|Service Unavailable|Authentication is temporarily unavailable.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|Authentication or session data is temporarily unavailable. Retry reads with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 
 ### Response Headers
 
@@ -92433,7 +99122,7 @@ Retrieves a single meeting session artifact by ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-meeting-session-data">Meeting Session Data</h1>
@@ -92550,6 +99239,17 @@ Returns stored events ordered by ascending `seq`. To continue, pass the last ret
 }
 ```
 
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
 > 503 Response
 
 ```json
@@ -92572,7 +99272,8 @@ Returns stored events ordered by ascending `seq`. To continue, pass the last ret
 |404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|503|Service Unavailable|Authentication is temporarily unavailable.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|Authentication or session data is temporarily unavailable. Retry reads with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 
 ### Response Headers
 
@@ -92582,7 +99283,7 @@ Returns stored events ordered by ascending `seq`. To continue, pass the last ret
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete meeting session recording media
@@ -92600,7 +99301,7 @@ curl https://api.telnyx.com/v2/meeting_sessions/mtgsess_a1b2c3d4-e5f6-7890-abcd-
 
 `DELETE /meeting_sessions/{id}/recording_media`
 
-Irreversibly requests deletion of the aggregate recording media for the session. The operation retains the Telnyx-local Meeting session, transcript segments, events, artifacts, and usage records. It is separate from `DELETE /meeting_sessions/{id}`, which stops or cancels participation without deleting the persisted session. A missing/foreign session returns 404; a deletion request whose outcome is unknown returns 502.
+Irreversibly requests deletion of the aggregate recording media for the session. The operation retains the Telnyx-local Meeting session, transcript segments, events, artifacts, and usage records. It is separate from `DELETE /meeting_sessions/{id}`, which stops or cancels participation without deleting the persisted session. A missing/foreign session returns 404; a deletion request whose outcome is unknown returns 502. Customer Storage exports do not support this operation (422 unsupported_capability); delete the exported object through Storage instead. Stopping a session does not delete an exported object.
 
 <h3 id="delete-meeting-session-recording-media-parameters">Parameters</h3>
 
@@ -92745,7 +99446,149 @@ Irreversibly requests deletion of the aggregate recording media for the session.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
+</aside>
+
+## List meeting session recordings
+
+<a id="opIdlistMeetingSessionRecordings"></a>
+
+> Code samples
+
+```bash
+curl https://api.telnyx.com/v2/meeting_sessions/mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890/recordings \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /meeting_sessions/{id}/recordings`
+
+Retrieve recording export status. Customer Storage exports include recording_export with the bucket, region, key and pending/exported/failed status, or null when no reference is available. The data array is empty for these exports. Download or share the object using the Storage API once its status is exported. Zoom recordings and existing Google Meet or Teams recordings held by the Meeting service continue returning temporary download links in data through this same endpoint and session ID. Those recordings do not require Storage setup or migration. Refresh this endpoint when a link expires. Select the download method from the returned fields, not the platform alone.
+
+<h3 id="list-meeting-session-recordings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|Unique identifier for the meeting session.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [],
+  "recording_export": {
+    "type": "video",
+    "bucket": "meeting-recordings",
+    "region": "us-central-1",
+    "key": "weekly-planning/recording.mp4",
+    "bytes": 1048576,
+    "status": "exported",
+    "exported_at": "2026-11-03T12:00:00Z"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "invalid or missing credentials"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "code": "forbidden",
+    "message": "credential is not permitted"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "meeting session not found"
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "error": {
+    "code": "auth_overloaded",
+    "message": "authentication temporarily overloaded"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "error": {
+    "code": "internal_error",
+    "message": "internal server error"
+  }
+}
+```
+
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
+> 503 Response
+
+```json
+{
+  "error": {
+    "code": "auth_unavailable",
+    "message": "authentication service unavailable"
+  }
+}
+```
+
+<h3 id="list-meeting-session-recordings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Recording results; a pending or empty result does not mean a file is ready.|[MeetingSessionRecordingsResponse](#schemameetingsessionrecordingsresponse)|
+|401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|404|Not Found|The meeting session does not exist or belongs to another account.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|Authentication or session data is temporarily unavailable. Retry reads with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth2
 </aside>
 
 ## List meeting session transcript
@@ -92762,7 +99605,7 @@ curl https://api.telnyx.com/v2/meeting_sessions/mtgsess_a1b2c3d4-e5f6-7890-abcd-
 
 `GET /meeting_sessions/{id}/transcript`
 
-Returns transcript segments ordered by ascending `seq`. Default `limit` is 100 and maximum is 1,000. Continue with `after=meta.next_after`. A long-poll timeout returns 200 with empty `data` and `meta.next_after: null`; retain the cursor supplied to that request because null is not a replacement cursor.
+Returns transcript segments ordered by ascending seq. Default limit is 100, maximum 1000. Continue with after=meta.next_after. On an empty page, meta.next_after preserves a positive supplied after cursor, or is null when no positive cursor was supplied. wait_seconds holds an empty read for up to 25 seconds; a timeout still returns 200.
 
 <h3 id="list-meeting-session-transcript-parameters">Parameters</h3>
 
@@ -92861,6 +99704,17 @@ Returns transcript segments ordered by ascending `seq`. Default `limit` is 100 a
 }
 ```
 
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
 > 503 Response
 
 ```json
@@ -92883,7 +99737,8 @@ Returns transcript segments ordered by ascending `seq`. Default `limit` is 100 a
 |404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|503|Service Unavailable|Authentication is temporarily unavailable.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|Authentication or session data is temporarily unavailable. Retry reads with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 
 ### Response Headers
 
@@ -92893,7 +99748,7 @@ Returns transcript segments ordered by ascending `seq`. Default `limit` is 100 a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-meeting-sessions">Meeting Sessions</h1>
@@ -92914,7 +99769,7 @@ curl https://api.telnyx.com/v2/meeting_sessions \
 
 `GET /meeting_sessions`
 
-Returns a list of meeting sessions, optionally filtered by status.
+Returns a list of meeting sessions, optionally filtered by status. List items omit assistant.dynamic_variables and recording_export. Some items include remote_state_observed_at; retrieve the individual session for current state.
 
 <h3 id="list-meeting-sessions-parameters">Parameters</h3>
 
@@ -92957,7 +99812,11 @@ Returns a list of meeting sessions, optionally filtered by status.
         "speak_on_enter": null,
         "barge_in": false,
         "summarize_on_end": true,
-        "chat_on_enter": null
+        "chat_on_enter": null,
+        "deepfake_detection": {
+          "audio": false,
+          "video": false
+        }
       },
       "avatar": null,
       "avatar_state": null,
@@ -93033,6 +99892,17 @@ Returns a list of meeting sessions, optionally filtered by status.
 }
 ```
 
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
 > 503 Response
 
 ```json
@@ -93054,7 +99924,8 @@ Returns a list of meeting sessions, optionally filtered by status.
 |403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|503|Service Unavailable|Authentication is temporarily unavailable.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|Authentication or session data is temporarily unavailable. Retry reads with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 
 ### Response Headers
 
@@ -93064,7 +99935,7 @@ Returns a list of meeting sessions, optionally filtered by status.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a meeting session
@@ -93087,7 +99958,7 @@ curl https://api.telnyx.com/v2/meeting_sessions \
 
 `POST /meeting_sessions`
 
-Creates a new meeting session. When an idempotency_key is supplied in the request body, replay lookup is scoped to the authenticated account and compares only the key; the request payload is not fingerprinted or compared. If a session with that key already exists for the account, the existing session is replayed (200); otherwise a new session is created (201). The session may enter asynchronous states (e.g. joining, waiting_for_admission) before becoming active. Optional `camera_image` input is write-only and applies only when no avatar or Assistant webpage output takes precedence. An ignored URL is not fetched. An effective URL source is resolved before bot creation; neither the source URL nor image bytes are persisted, returned, or logged. Treat signed URLs as credentials. With `assistant.avatar: true`, the assistant is read before the bot is created: an assistant without a Telnyx avatar configured is rejected with 400 `invalid_request` (message prefix `assistant_avatar_not_configured:`), an unknown assistant with 400 `invalid_request` (prefix `assistant_not_found:`), and a failed lookup with 503 `assistant_lookup_unavailable`; no bot is created in any of these cases.
+Creates a meeting session and returns 201, or 200 for a replay. Use a unique `idempotency_key` per intended join and reuse the same key and request on retries. Reusing a key with a different join configuration or meeting URL can return 409 invalid_state. Always retry with the original request. The session can pass through joining and waiting_for_admission before active. Optional `camera_image` input is write-only and applies when no assistant avatar takes precedence. An ignored URL is not fetched. An effective URL source is resolved before bot creation; the source URL and image bytes are not returned in the session response. Treat signed URLs as credentials. With `assistant.avatar: true`, the assistant is read before the bot is created: an assistant without a Telnyx avatar configured is rejected with 400 `invalid_request` (message prefix `assistant_avatar_not_configured:`), an unknown assistant with 400 `invalid_request` (prefix `assistant_not_found:`), and a failed lookup with 503 `assistant_lookup_unavailable`; no bot is created in any of these cases.
 
 > Body parameter
 
@@ -93105,17 +99976,29 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
 |body|body|[CreateMeetingSessionRequest](#schemacreatemeetingsessionrequest)|true|none|
 |» meeting_url|body|string(uri)|true|The meeting URL the bot should join.|
 |» bot_name|body|string|false|Display name for the bot in the meeting. Defaults to "Meeting Bot".|
-|» join_at|body|string(date-time)|false|ISO-8601 timestamp in the future at which the bot should join. If omitted, the bot joins immediately.|
-|» voice|body|string|false|Session-default voice identifier used for `speak_on_enter` and ordinary speak actions. A voice supplied on an individual speak action overrides this default for that utterance.|
-|» speak_on_enter|body|string|false|Text the bot speaks when it enters the meeting. **Not spoken when an `assistant` is attached**: the value is accepted and echoed back on the session, but the assistant owns the voice and the line is never delivered, with no event reporting the omission. Use `chat_on_enter` to announce an assistant-backed bot. Rejected with 400 `invalid_request` when `assistant.avatar` is `true`.|
-|» chat_on_enter|body|string|false|A message the bot posts to the meeting's chat as soon as it becomes active — typically a recording disclosure. Delivered at most once. Independent of `speak_on_enter`: both may be set, and the chat message posts first because it does not wait for text-to-speech or avatar startup. Rejected with 422 `unsupported_capability` on platforms without meeting chat.|
+|» join_at|body|string(date-time)|false|Future ISO-8601 join timestamp including timezone. Google Meet and Teams accept dates at most three years ahead. Omit for an immediate join. Assistant sessions created through this endpoint must join immediately.|
+|» voice|body|string|false|Session-default voice identifier used for `speak_on_enter` and ordinary speak actions. A voice supplied on an individual speak action overrides this default for that utterance. With an assistant attached, its conversational voice remains configured on the assistant.|
+|» speak_on_enter|body|string|false|Text the bot speaks after joining. Available for sessions without a digital avatar. With an AI Assistant, the greeting waits until the assistant is connected. Rejected with 400 invalid_request when assistant.avatar is true.|
+|» chat_on_enter|body|string|false|A message the bot posts to the meeting's chat as soon as it becomes active — typically a recording disclosure. Delivered at most once. Independent of `speak_on_enter`: both may be set, and the chat message posts first because it does not wait for text-to-speech or avatar startup. Rejected with 422 `unsupported_capability` on platforms without meeting chat. For Google Meet and Teams, text must be nonblank, at most 4096 UTF-8 bytes, with no control characters except tabs and line breaks. Counts toward the 1000-chat-request session limit.|
 |» barge_in|body|boolean|false|When enabled, a human participant `speech_on` event interrupts and stops the current bot audio; it does not bypass admission or initiate speech. Assistant sessions reject `barge_in: true`.|
 |» summarize_on_end|body|boolean|false|If true, generate a summary artifact when the session ends.|
-|» camera_image|body|[MeetingSessionCameraImage](#schemameetingsessioncameraimage)|false|Write-only static camera-tile image for this session, not a native account or participant profile photo. Supply exactly one JPEG source. When effective, the image is used as the bot's static camera/video output; presentation varies by meeting platform and recording configuration and is not guaranteed in recordings. An effective Avatar or Assistant webpage output takes precedence, so this input is ignored and a URL source is not fetched.|
+|» camera_image|body|[MeetingSessionCameraImage](#schemameetingsessioncameraimage)|false|Not supported for Google Meet and Teams joins (422 unsupported_capability). Write-only static camera-tile image for this session, not an account or participant profile photo. Supply exactly one JPEG source. When effective, the image is used as the bot's static camera/video output; presentation varies by meeting platform and recording configuration and is not guaranteed in recordings. An attached assistant or avatar takes precedence, so this input is ignored and a URL source is not fetched.|
 |» webhook_url|body|string(uri)|false|HTTPS endpoint to receive session lifecycle callbacks. Static validation requires HTTPS, rejects embedded credentials and blocked hosts, and enforces egress policy. Validation makes no network request to the endpoint.|
 |» metadata|body|object|false|Arbitrary key-value metadata attached to the session. The serialized JSON representation must not exceed 16384 characters at runtime.|
-|» idempotency_key|body|string|false|Client-supplied idempotency key to safely retry creation requests without duplicating sessions. Lookup is scoped to the authenticated account and compares the key only; the request payload is not fingerprinted or compared.|
-|» assistant|body|[MeetingSessionAssistantRequest](#schemameetingsessionassistantrequest)|false|Attach a Telnyx AI Assistant to the session. Supply the Assistant's ID; the Meeting service connects it to the meeting directly. The Call Control connection, caller ID and loopback SIP URI previously required here have been removed and are now rejected as unknown fields.|
+|» idempotency_key|body|string|false|Use a unique key per intended join and reuse the same key and request on retries. Reusing a key with a different join configuration or meeting URL can return 409 invalid_state. Always retry with the original request.|
+|» assistant|body|[MeetingSessionAssistantRequest](#schemameetingsessionassistantrequest)|false|Attach a Telnyx AI Assistant owned by the authenticated account. Supply its ID and optional conversation settings. Unknown fields are rejected.|
+|» leave_policy|body|[MeetingSessionLeavePolicy](#schemameetingsessionleavepolicy)|false|Automatic departure settings for Google Meet and Teams. Omitted fields use the default behavior. Set at creation; cannot be changed later. Zoom ignores this policy.|
+|» recording|body|boolean|false|Google Meet and Teams only. Defaults to true when recording_export is supplied and false otherwise. True requires recording_export.bucket; false cannot be combined with recording_export. Fixed at creation, with no pause/resume action. Zoom rejects recording, recording_view, and recording_export with 422 unsupported_capability; omit these fields for Zoom.|
+|» recording_view|body|string|false|Recording layout for Google Meet and Teams. Defaults to speaker_view. Accepted at creation only; does not enable recording by itself.|
+|» recording_export|body|[MeetingSessionRecordingDestination](#schemameetingsessionrecordingdestination)|false|Customer-owned Telnyx Storage destination for recording exports. Uses the authenticated organization and user; do not supply credentials, region, organization ID or object key.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» recording_view|speaker_view|
+|» recording_view|gallery_view|
+|» recording_view|speaker_view_no_sidebar|
 
 > Example responses
 
@@ -93126,7 +100009,7 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
   "data": {
     "id": "string",
     "account_id": "string",
-    "provider": "string",
+    "provider": "telnyx",
     "status": "scheduled",
     "status_detail": "string",
     "recording": true,
@@ -93138,7 +100021,22 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
       "speak_on_enter": "string",
       "chat_on_enter": "string",
       "barge_in": true,
-      "summarize_on_end": true
+      "summarize_on_end": true,
+      "leave_policy": {
+        "silence_seconds": 600,
+        "silence_grace_seconds": 1200,
+        "alone_seconds": 60,
+        "host_wait_seconds": 600,
+        "lobby_wait_seconds": 900,
+        "max_duration_seconds": null,
+        "bot_name_keywords": null
+      },
+      "recording": true,
+      "recording_view": "gallery_view",
+      "deepfake_detection": {
+        "audio": true,
+        "video": true
+      }
     },
     "avatar": {
       "provider": "telnyx",
@@ -93166,7 +100064,17 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
     "join_at": "1970-01-01T00:00:00Z",
     "joined_at": "1970-01-01T00:00:00Z",
     "ended_at": "1970-01-01T00:00:00Z",
-    "updated_at": "1970-01-01T00:00:00Z"
+    "updated_at": "1970-01-01T00:00:00Z",
+    "recording_export": {
+      "type": "video",
+      "bucket": "string",
+      "region": "string",
+      "key": "string",
+      "bytes": 0,
+      "status": "pending",
+      "exported_at": "1970-01-01T00:00:00Z"
+    },
+    "remote_state_observed_at": "1970-01-01T00:00:00Z"
   }
 }
 ```
@@ -93190,7 +100098,11 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
       "speak_on_enter": null,
       "barge_in": false,
       "summarize_on_end": false,
-      "chat_on_enter": null
+      "chat_on_enter": null,
+      "deepfake_detection": {
+        "audio": false,
+        "video": false
+      }
     },
     "avatar": null,
     "avatar_state": null,
@@ -93243,6 +100155,17 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
 }
 ```
 
+> 409 Response
+
+```json
+{
+  "error": {
+    "code": "invalid_state",
+    "message": "The idempotency key belongs to a different join"
+  }
+}
+```
+
 > 413 Response
 
 ```json
@@ -93270,8 +100193,8 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
 ```json
 {
   "error": {
-    "code": "auth_overloaded",
-    "message": "authentication temporarily overloaded"
+    "code": "capacity_exceeded",
+    "message": "Meeting capacity is reached; retry later."
   }
 }
 ```
@@ -93318,9 +100241,10 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
 |400|Bad Request|Bad Request|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|409|Conflict|The idempotency key belongs to a different or cancelled join.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |413|Payload Too Large|Payload Too Large|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |422|Unprocessable Entity|Unprocessable Entity, including an unsupported capability|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|429|Too Many Requests|Meeting capacity is reached (capacity_exceeded), or authentication is overloaded (auth_overloaded). Honor Retry-After when present; otherwise back off. Retry the original create request with the same idempotency key.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |502|Bad Gateway|The meeting provider rejected bot creation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |503|Service Unavailable|A required feature or dependency is not configured, authentication is unavailable, or (`assistant_lookup_unavailable`) the assistant could not be read to check its avatar.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
@@ -93329,11 +100253,11 @@ Creates a new meeting session. When an idempotency_key is supplied in the reques
 
 |Status|Header|Type|Format|Description|
 |---|---|---|---|---|
-|429|Retry-After|integer||Seconds to wait before retrying.|
+|429|Retry-After|integer||Seconds to wait, when supplied.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a meeting session
@@ -93379,7 +100303,11 @@ Retrieves a single meeting session by ID. A session that does not exist or that 
       "speak_on_enter": null,
       "barge_in": false,
       "summarize_on_end": true,
-      "chat_on_enter": null
+      "chat_on_enter": null,
+      "deepfake_detection": {
+        "audio": false,
+        "video": false
+      }
     },
     "avatar": null,
     "avatar_state": null,
@@ -93454,6 +100382,17 @@ Retrieves a single meeting session by ID. A session that does not exist or that 
 }
 ```
 
+> 502 Response
+
+```json
+{
+  "error": {
+    "code": "provider_error",
+    "message": "Meeting data is temporarily unavailable."
+  }
+}
+```
+
 > 503 Response
 
 ```json
@@ -93475,7 +100414,8 @@ Retrieves a single meeting session by ID. A session that does not exist or that 
 |404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|503|Service Unavailable|Authentication is temporarily unavailable.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|502|Bad Gateway|Current meeting data could not be retrieved. Retry the read with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|503|Service Unavailable|Authentication or session data is temporarily unavailable. Retry reads with backoff.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 
 ### Response Headers
 
@@ -93485,7 +100425,7 @@ Retrieves a single meeting session by ID. A session that does not exist or that 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a meeting session
@@ -93503,7 +100443,7 @@ curl https://api.telnyx.com/v2/meeting_sessions/mtgsess_a1b2c3d4-e5f6-7890-abcd-
 
 `DELETE /meeting_sessions/{id}`
 
-Stops a meeting session without deleting its persisted record. Scheduled bots are cancelled, while bots that are joining or active are asked to leave. The persisted meeting session record remains available.
+Stops a meeting session without deleting its persisted record. Scheduled bots are cancelled, while bots that are joining or active are asked to leave. The persisted meeting session record remains available. A successful response can report leaving while departure is pending. Poll until ended, failed, or admission_denied. Exported Storage objects are unaffected.
 
 <h3 id="delete-a-meeting-session-parameters">Parameters</h3>
 
@@ -93532,7 +100472,11 @@ Stops a meeting session without deleting its persisted record. Scheduled bots ar
       "speak_on_enter": null,
       "barge_in": false,
       "summarize_on_end": true,
-      "chat_on_enter": null
+      "chat_on_enter": null,
+      "deepfake_detection": {
+        "audio": false,
+        "video": false
+      }
     },
     "avatar": null,
     "avatar_state": null,
@@ -93662,7 +100606,7 @@ Stops a meeting session without deleting its persisted record. Scheduled bots ar
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a meeting session
@@ -93684,7 +100628,7 @@ curl https://api.telnyx.com/v2/meeting_sessions/mtgsess_a1b2c3d4-e5f6-7890-abcd-
 
 `PATCH /meeting_sessions/{id}`
 
-Updates mutable properties of a meeting session. Only sessions in the scheduled state can be updated; any other state returns 409 with the invalid_state error code. All request fields are optional, and an empty object is a valid no-op update.
+Updates mutable properties of a meeting session. Only sessions in the scheduled state can be updated; any other state returns 409 with the invalid_state error code. All request fields are optional, and an empty object is a valid no-op update. Calendar-controlled Google Meet and Teams sessions return 409 calendar_managed; change the event instead. A conflicting pending edit returns 409 edit_in_progress. On a timeout or 503, read the session and retry the same changes.
 
 > Body parameter
 
@@ -93724,7 +100668,11 @@ Updates mutable properties of a meeting session. Only sessions in the scheduled 
       "speak_on_enter": null,
       "barge_in": false,
       "summarize_on_end": true,
-      "chat_on_enter": null
+      "chat_on_enter": null,
+      "deepfake_detection": {
+        "audio": false,
+        "video": false
+      }
     },
     "avatar": null,
     "avatar_state": null,
@@ -93863,7 +100811,7 @@ Updates mutable properties of a meeting session. Only sessions in the scheduled 
 |401|Unauthorized|Unauthorized. On api.telnyx.com, authentication is enforced by the API gateway before the request reaches the Meeting service, so a missing or invalid API key returns the standard Telnyx error envelope (`{"errors": [{"code": "10009", ...}]}`) rather than the single-`error` shape below.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |403|Forbidden|The authenticated credential is not permitted to perform this operation.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |404|Not Found|Not Found|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
-|409|Conflict|Conflict|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
+|409|Conflict|The session is no longer editable, the calendar controls it, or another edit remains pending.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |413|Payload Too Large|Payload Too Large|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |429|Too Many Requests|Authentication is temporarily overloaded. Retry after the number of seconds in `Retry-After`.|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
 |500|Internal Server Error|Internal Server Error|[meeting-sessions_ErrorResponse](#schemameeting-sessions_errorresponse)|
@@ -93878,7 +100826,7 @@ Updates mutable properties of a meeting session. Only sessions in the scheduled 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-memory">Memory</h1>
@@ -94029,7 +100977,7 @@ Store a session. Facts are extracted from whatever you send — the body is take
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Recall a profile's memories, ranked
@@ -94163,7 +101111,7 @@ Ranked memories for a question. Matching runs over the profile's memories and re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remember one fact, stored as written
@@ -94289,7 +101237,7 @@ For a fact the agent has already distilled: `text` is stored as given, with noth
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a profile's precomputed summary
@@ -94389,7 +101337,7 @@ A summary is generated in the background. `is_stale` tells you newer memories ha
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Preview a candidate note before saving it
@@ -94516,7 +101464,7 @@ Try a candidate note on one profile and see how that profile's summary would rea
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-messages">Messages</h1>
@@ -94770,7 +101718,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send a message using an alphanumeric sender ID
@@ -94952,7 +101900,7 @@ Send an SMS message using an alphanumeric sender ID. This is SMS only.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send a message using an alphanumeric sender ID
@@ -95189,7 +102137,7 @@ Send an SMS message using an alphanumeric sender ID. This is SMS only.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve group MMS messages
@@ -95334,7 +102282,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send a group MMS message
@@ -95566,7 +102514,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send a long code message
@@ -95807,7 +102755,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send a message using number pool
@@ -96048,7 +102996,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Schedule a message
@@ -96235,7 +103183,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send a short code message
@@ -96476,7 +103424,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a message
@@ -96610,7 +103558,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Cancel a scheduled message
@@ -96748,7 +103696,7 @@ Cancel a scheduled message that has not yet been sent. Only messages with `statu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-messaging-url-domains">Messaging URL Domains</h1>
@@ -96836,7 +103784,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mobile-network-operators">Mobile Network Operators</h1>
@@ -96926,7 +103874,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mobile-phone-numbers">Mobile Phone Numbers</h1>
@@ -96940,12 +103888,12 @@ Mobile phone number operations
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/mobile_phone_numbers \
+curl https://api.telnyx.com/v2/mobile_phone_numbers \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /v2/mobile_phone_numbers`
+`GET /mobile_phone_numbers`
 
 Retrieve a paginated list of mobile phone numbers on your account.
 
@@ -97034,7 +103982,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Mobile Phone Number
@@ -97044,12 +103992,12 @@ bearerAuth
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/mobile_phone_numbers/string \
+curl https://api.telnyx.com/v2/mobile_phone_numbers/string \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /v2/mobile_phone_numbers/{id}`
+`GET /mobile_phone_numbers/{id}`
 
 Retrieve the details of a specific mobile phone number.
 
@@ -97128,7 +104076,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Mobile Phone Number
@@ -97138,7 +104086,7 @@ bearerAuth
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/mobile_phone_numbers/string \
+curl https://api.telnyx.com/v2/mobile_phone_numbers/string \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -97165,7 +104113,7 @@ curl https://api.telnyx.com/v2/v2/mobile_phone_numbers/string \
   }'
 ```
 
-`PATCH /v2/mobile_phone_numbers/{id}`
+`PATCH /mobile_phone_numbers/{id}`
 
 Update the settings of a specific mobile phone number.
 
@@ -97305,7 +104253,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mobile-voice-connections">Mobile Voice Connections</h1>
@@ -97319,12 +104267,12 @@ Mobile voice connection operations
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/mobile_voice_connections \
+curl https://api.telnyx.com/v2/mobile_voice_connections \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /v2/mobile_voice_connections`
+`GET /mobile_voice_connections`
 
 Retrieve a paginated list of mobile voice connections on your account.
 
@@ -97394,7 +104342,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Mobile Voice Connection
@@ -97404,7 +104352,7 @@ bearerAuth
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/mobile_voice_connections \
+curl https://api.telnyx.com/v2/mobile_voice_connections \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -97426,7 +104374,7 @@ curl https://api.telnyx.com/v2/v2/mobile_voice_connections \
   }'
 ```
 
-`POST /v2/mobile_voice_connections`
+`POST /mobile_voice_connections`
 
 Creates a new mobile voice connection with the provided configuration and returns the created connection.
 
@@ -97524,7 +104472,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Mobile Voice Connection
@@ -97534,12 +104482,12 @@ bearerAuth
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/mobile_voice_connections/string \
+curl https://api.telnyx.com/v2/mobile_voice_connections/string \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`GET /v2/mobile_voice_connections/{id}`
+`GET /mobile_voice_connections/{id}`
 
 Retrieve the details of a specific mobile voice connection.
 
@@ -97597,7 +104545,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Mobile Voice Connection
@@ -97607,13 +104555,13 @@ bearerAuth
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/mobile_voice_connections/string \
+curl https://api.telnyx.com/v2/mobile_voice_connections/string \
   -X DELETE \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
-`DELETE /v2/mobile_voice_connections/{id}`
+`DELETE /mobile_voice_connections/{id}`
 
 Delete a mobile voice connection from your account.
 
@@ -97671,7 +104619,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Mobile Voice Connection
@@ -97681,7 +104629,7 @@ bearerAuth
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/mobile_voice_connections/string \
+curl https://api.telnyx.com/v2/mobile_voice_connections/string \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -97704,7 +104652,7 @@ curl https://api.telnyx.com/v2/v2/mobile_voice_connections/string \
   }'
 ```
 
-`PATCH /v2/mobile_voice_connections/{id}`
+`PATCH /mobile_voice_connections/{id}`
 
 Update the settings of a specific mobile voice connection.
 
@@ -97824,7 +104772,7 @@ Status Code **409**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-network-routes">Network Routes</h1>
@@ -97959,7 +104907,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Network Route
@@ -97986,7 +104934,7 @@ curl https://api.telnyx.com/v2/network_routes \
 
 `POST /network_routes`
 
-Adds a route to a Network. Traffic on the Network to an address in `cidr` goes via `next_hop`. With a tunnel as the next hop, functions on the Network reach the CIDR through the tunnel without a redeploy. A Network holds each CIDR once.
+Adds a route to a Network. Traffic on the Network to an address in `cidr` goes via `next_hop`. With a tunnel as the next hop, functions on the Network reach the CIDR through the tunnel without a redeploy. With a WireGuard peer as the next hop, the peer routes the CIDR as a subnet router. A Network holds each CIDR once.
 
 > Body parameter
 
@@ -98007,16 +104955,17 @@ Adds a route to a Network. Traffic on the Network to an address in `cidr` goes v
 |---|---|---|---|---|
 |body|body|[NetworkRouteCreate](#schemanetworkroutecreate)|true|none|
 |» network_id|body|string(uuid)|true|The id of the Network to add the route to.|
-|» cidr|body|string|true|The IPv4 subnet to route, such as a subnet behind the tunnel. It must be a canonical CIDR. Default, loopback, link-local, multicast, and shared address space (`100.64.0.0/10`) ranges are rejected. So are ranges that overlap the Tailscale Subnet Router ranges, `172.27.254.0/24` and `198.18.0.0/20`, or a subnet already on the Network.|
+|» cidr|body|string|true|The IPv4 subnet to route, such as a subnet behind a tunnel or a WireGuard peer. It must be a canonical CIDR. Default, loopback, link-local, multicast, and shared address space (`100.64.0.0/10`) ranges are rejected. So are ranges that overlap the Tailscale Subnet Router ranges, `172.27.254.0/24` and `198.18.0.0/20`, or a subnet already on the Network.|
 |» next_hop|body|object|true|Where the Network sends traffic for `cidr`.|
 |» » type|body|string|true|The type of the next hop.|
-|» » id|body|string(uuid)|true|The id of the tunnel.|
+|» » id|body|string(uuid)|true|The id of the tunnel, or of a WireGuard peer on the Network's WireGuard Interface.|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
 |» » type|tunnel|
+|» » type|wireguard_peer|
 
 > Example responses
 
@@ -98122,7 +105071,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Network Route
@@ -98218,7 +105167,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Network Route
@@ -98302,7 +105251,7 @@ Deletes a route that was added with `POST /network_routes`. Traffic to its CIDR 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-networks">Networks</h1>
@@ -98409,7 +105358,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Network
@@ -98513,7 +105462,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Network
@@ -98606,7 +105555,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Network
@@ -98700,7 +105649,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Network
@@ -98808,7 +105757,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Default Gateway status.
@@ -98912,7 +105861,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create Default Gateway.
@@ -99031,7 +105980,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Default Gateway.
@@ -99136,7 +106085,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Interfaces for a Network.
@@ -99249,7 +106198,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-noise-suppression-engines">Noise Suppression Engines</h1>
@@ -99316,7 +106265,7 @@ Returns all noise suppression engines available to the authenticated user. Engin
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-notifications">Notifications</h1>
@@ -99433,7 +106382,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a notification channel
@@ -99565,7 +106514,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a notification channel
@@ -99683,7 +106632,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a notification channel
@@ -99787,7 +106736,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a notification channel
@@ -99920,7 +106869,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Notifications Events Conditions
@@ -100050,7 +106999,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Notifications Events
@@ -100162,7 +107111,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Notifications Profiles
@@ -100272,7 +107221,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a notification profile
@@ -100387,7 +107336,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a notification profile
@@ -100503,7 +107452,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a notification profile
@@ -100605,7 +107554,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a notification profile
@@ -100721,7 +107670,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List notification settings
@@ -100843,7 +107792,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add a Notification Setting
@@ -101021,7 +107970,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a notification setting
@@ -101148,7 +108097,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a notification setting
@@ -101292,7 +108241,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-number-lookup">Number Lookup</h1>
@@ -101441,7 +108390,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-number-portout">Number Portout</h1>
@@ -101541,7 +108490,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all port-out events
@@ -101628,7 +108577,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Show a port-out event
@@ -101705,7 +108654,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Republish a port-out event
@@ -101740,7 +108689,7 @@ Republishes the specified port-out event, triggering re-delivery of the correspo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List eligible port-out rejection codes for a specific order
@@ -101801,7 +108750,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List port-out related reports
@@ -101888,7 +108837,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a port-out related report
@@ -102019,7 +108968,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a report
@@ -102096,7 +109045,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a portout request
@@ -102182,7 +109131,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all comments for a portout request
@@ -102252,7 +109201,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a comment on a portout request
@@ -102328,7 +109277,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List supporting documents on a portout request
@@ -102391,7 +109340,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a list of supporting documents on a portout request
@@ -102489,7 +109438,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Status
@@ -102601,7 +109550,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-number-settings">Number Settings</h1>
@@ -102707,7 +109656,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve bulk update status
@@ -102783,7 +109732,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Bulk update phone number profiles
@@ -102889,7 +109838,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve bulk update status
@@ -102969,7 +109918,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List phone numbers with messaging settings
@@ -103091,7 +110040,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a phone number with messaging settings
@@ -103189,7 +110138,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update the messaging profile and/or messaging product of a phone number
@@ -103306,7 +110255,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-ota-updates">OTA updates</h1>
@@ -103395,7 +110344,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get OTA update
@@ -103479,7 +110428,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-openai-embeddings">OpenAI Embeddings</h1>
@@ -103587,7 +110536,7 @@ Creates an embedding vector representing the input text. This endpoint is compat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List embedding models
@@ -103650,7 +110599,7 @@ Returns a list of available embedding models. This endpoint is compatible with t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-operations">Operations</h1>
@@ -103752,7 +110701,7 @@ Whether a write has finished. Both `ingest` and `remember` return an `operation_
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-opt-out-management">Opt-Out Management</h1>
@@ -103848,7 +110797,7 @@ Returns a paginated list of opt-out blocks created when message recipients opt o
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Auto-Response Settings
@@ -103955,7 +110904,7 @@ Returns the auto-response rules configured for the specified messaging profile.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create auto-response setting
@@ -104065,7 +111014,7 @@ Creates an auto-response rule on the specified messaging profile. Matching inbou
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Auto-Response Setting
@@ -104138,7 +111087,7 @@ Returns the matching criteria and response content for the specified auto-respon
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Auto-Response Setting
@@ -104250,7 +111199,7 @@ Replaces the configuration of the specified auto-response rule.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Auto-Response Setting
@@ -104312,7 +111261,7 @@ Deletes the specified auto-response rule from the messaging profile.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-organization-users">Organization Users</h1>
@@ -104456,7 +111405,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get organization users groups report
@@ -104604,7 +111553,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get organization user
@@ -104745,7 +111694,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete organization user
@@ -104886,7 +111835,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-outbound-voice-profiles">Outbound Voice Profiles</h1>
@@ -105008,7 +111957,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an outbound voice profile
@@ -105181,7 +112130,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an outbound voice profile
@@ -105272,7 +112221,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an outbound voice profile
@@ -105364,7 +112313,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Updates an existing outbound voice profile.
@@ -105551,7 +112500,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-pay-connectors">Pay Connectors</h1>
@@ -105637,7 +112586,7 @@ List connectors belonging to the authenticated organization, including connector
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Pay connector
@@ -105749,7 +112698,7 @@ Create a generic payment connector in the authenticated organization. The name m
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Pay connector
@@ -105819,7 +112768,7 @@ Retrieve a connector by name within the authenticated organization. Password and
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Pay connector
@@ -105868,7 +112817,7 @@ Delete a connector by name in the authenticated organization. Both test and live
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Pay connector
@@ -105981,7 +112930,7 @@ Update a generic connector by name in the authenticated organization. Both test 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-batches">Phone Number Batches</h1>
@@ -106128,7 +113077,7 @@ List the phone-number batches submitted under a DIR. The enterprise is resolved 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a phone-number batch
@@ -106249,7 +113198,7 @@ Get a single phone-number batch by id. The enterprise is resolved server-side fr
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-blocks-background-jobs">Phone Number Blocks Background Jobs</h1>
@@ -106421,7 +113370,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes all numbers associated with a phone number block
@@ -106586,7 +113535,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieves a phone number blocks job
@@ -106737,7 +113686,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-campaigns">Phone Number Campaigns</h1>
@@ -106834,7 +113783,7 @@ Returns phone-number-to-campaign assignments for the authenticated account. Appl
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create New Phone Number Campaign
@@ -106924,7 +113873,7 @@ Assigns a phone number to a 10DLC campaign. The assignment controls which regist
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Single Phone Number Campaign
@@ -106997,7 +113946,7 @@ Retrieve an individual phone number/campaign assignment by `phoneNumber`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Phone Number Campaign
@@ -107088,7 +114037,7 @@ Replaces the 10DLC campaign assignment for the specified phone number.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Phone Number Campaign
@@ -107162,7 +114111,7 @@ This endpoint allows you to remove a campaign assignment from the supplied `phon
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-configurations">Phone Number Configurations</h1>
@@ -107379,7 +114328,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Verify ownership of phone numbers
@@ -107549,7 +114498,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Slim List phone numbers
@@ -107737,7 +114686,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List phone numbers with voice settings
@@ -107931,7 +114880,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a phone number
@@ -108106,7 +115055,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a phone number
@@ -108278,7 +115227,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a phone number
@@ -108492,7 +115441,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Change the bundle status for a phone number (set to being in a bundle or remove from a bundle)
@@ -108681,7 +115630,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Enable emergency for a phone number
@@ -108921,7 +115870,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a phone number with voice settings
@@ -109095,7 +116044,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a phone number with voice settings
@@ -109348,7 +116297,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-orders">Phone Number Orders</h1>
@@ -109512,7 +116461,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a comment
@@ -109708,7 +116657,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a comment
@@ -109877,7 +116826,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Mark a comment as read
@@ -110047,7 +116996,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a list of phone numbers associated to orders
@@ -110220,7 +117169,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a single phone number within a number order.
@@ -110384,7 +117333,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update requirements for a single phone number within a number order.
@@ -110573,7 +117522,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List number orders
@@ -110745,7 +117694,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a number order
@@ -110966,7 +117915,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a number order
@@ -111140,7 +118089,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a number order
@@ -111342,7 +118291,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List sub number orders
@@ -111535,7 +118484,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a sub number orders report
@@ -111722,7 +118671,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a sub number orders report
@@ -111894,7 +118843,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Download a sub number orders report
@@ -112042,7 +118991,7 @@ id,order_request_id,is_block_sub_number_order,status,phone_number_type,requireme
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a sub number order
@@ -112227,7 +119176,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a sub number order's requirements
@@ -112436,7 +119385,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Cancel a sub number order
@@ -112621,7 +119570,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a sub number orders report
@@ -112796,7 +119745,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a sub number orders report
@@ -112952,7 +119901,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Download a sub number orders report
@@ -113084,7 +120033,7 @@ id,order_request_id,is_block_sub_number_order,status,phone_number_type,requireme
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-porting">Phone Number Porting</h1>
@@ -113171,7 +120120,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-reservations">Phone Number Reservations</h1>
@@ -113345,7 +120294,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a number reservation
@@ -113554,7 +120503,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a number reservation
@@ -113714,7 +120663,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Extend a number reservation
@@ -113875,7 +120824,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-search">Phone Number Search</h1>
@@ -114050,7 +120999,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List available phone numbers
@@ -114229,7 +121178,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-numbers">Phone Numbers</h1>
@@ -114345,7 +121294,7 @@ List the phone numbers registered under a DIR. The enterprise is resolved server
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add phone numbers to a DIR
@@ -114487,7 +121436,7 @@ Register phone numbers under a DIR. The enterprise is resolved server-side from 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove phone numbers from a DIR
@@ -114603,7 +121552,7 @@ Deregister phone numbers from a DIR. The enterprise is resolved server-side from
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-porting-orders">Porting Orders</h1>
@@ -114686,7 +121635,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Show a porting event
@@ -114755,7 +121704,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Republish a porting event
@@ -114790,7 +121739,7 @@ Republishes the specified porting event, triggering re-delivery of the correspon
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List LOA configurations
@@ -114876,7 +121825,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a LOA configuration
@@ -115012,7 +121961,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Preview the LOA configuration parameters
@@ -115105,7 +122054,7 @@ Preview the LOA template that would be generated without need to create LOA conf
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a LOA configuration
@@ -115182,7 +122131,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a LOA configuration
@@ -115217,7 +122166,7 @@ Permanently deletes the specified LOA configuration so it can no longer be used 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a LOA configuration
@@ -115355,7 +122304,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Preview a LOA configuration
@@ -115389,7 +122338,7 @@ Renders a preview of the LOA document produced by this configuration so you can 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List porting related reports
@@ -115472,7 +122421,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a porting related report
@@ -115591,7 +122540,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a report
@@ -115664,7 +122613,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List available carriers in the UK
@@ -115723,7 +122672,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all porting orders
@@ -115768,7 +122717,15 @@ Returns a paginated list of your porting orders. Supports filtering and sorting,
         "details": [
           {
             "code": "ENTITY_NAME_MISMATCH",
-            "description": "Entity name does not match that on the CSR"
+            "description": "Entity name does not match that on the CSR",
+            "remediation": {
+              "action": "update_order_fields",
+              "fields": [
+                "end_user.location.postal_code"
+              ],
+              "required_document": "loa",
+              "retryable": true
+            }
           }
         ],
         "value": "ported"
@@ -115891,7 +122848,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a porting order
@@ -116055,7 +123012,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all exception types
@@ -116083,7 +123040,15 @@ Returns a list of all possible exception types for a porting order.
   "data": [
     {
       "code": "ENTITY_NAME_MISMATCH",
-      "description": "Entity name does not match that on the CSR"
+      "description": "Entity name does not match that on the CSR",
+      "remediation": {
+        "action": "update_order_fields",
+        "fields": [
+          "end_user.location.postal_code"
+        ],
+        "required_document": "loa",
+        "retryable": true
+      }
     }
   ]
 }
@@ -116107,7 +123072,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all phone number configurations
@@ -116178,7 +123143,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a list of phone number configurations
@@ -116266,7 +123231,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a porting order
@@ -116308,7 +123273,15 @@ Retrieves the details of an existing porting order.
       "details": [
         {
           "code": "ENTITY_NAME_MISMATCH",
-          "description": "Entity name does not match that on the CSR"
+          "description": "Entity name does not match that on the CSR",
+          "remediation": {
+            "action": "update_order_fields",
+            "fields": [
+              "end_user.location.postal_code"
+            ],
+            "required_document": "loa",
+            "retryable": true
+          }
         }
       ],
       "value": "ported"
@@ -116427,7 +123400,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a porting order
@@ -116462,7 +123435,7 @@ Deletes an existing porting order. This operation is restrict to porting orders 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Edit a porting order
@@ -116740,7 +123713,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Activate every number in a porting order asynchronously.
@@ -116808,7 +123781,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Cancel a porting order
@@ -116933,7 +123906,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit a porting order.
@@ -117064,7 +124037,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Share a porting order
@@ -117154,7 +124127,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all porting activation jobs
@@ -117231,7 +124204,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a porting activation job
@@ -117299,7 +124272,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a porting activation job
@@ -117382,7 +124355,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List additional documents
@@ -117455,7 +124428,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a list of additional documents
@@ -117563,7 +124536,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an additional document
@@ -117599,7 +124572,7 @@ Deletes an additional document for a porting order.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List allowed FOC dates
@@ -117664,7 +124637,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all comments of a porting order
@@ -117734,7 +124707,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a comment for a porting order
@@ -117809,7 +124782,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Download a porting order loa template
@@ -117843,7 +124816,7 @@ Downloads the Letter of Authorization (LOA) template document for this porting o
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List porting order requirements
@@ -117921,7 +124894,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve the associated V1 sub_request_id and port_request_id
@@ -117977,7 +124950,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List verification codes
@@ -118057,7 +125030,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send the verification codes
@@ -118123,7 +125096,7 @@ Send the verification code for all porting phone numbers.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Verify the verification code for a list of phone numbers
@@ -118229,7 +125202,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List action requirements for a porting order
@@ -118306,7 +125279,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Initiate an action requirement
@@ -118396,7 +125369,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all associated phone numbers
@@ -118475,7 +125448,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an associated phone number
@@ -118574,7 +125547,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an associated phone number
@@ -118642,7 +125615,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all phone number blocks
@@ -118725,7 +125698,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a phone number block
@@ -118833,7 +125806,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a phone number block
@@ -118905,7 +125878,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all phone number extensions
@@ -118987,7 +125960,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a phone number extension
@@ -119097,7 +126070,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a phone number extension
@@ -119168,7 +126141,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all porting phone numbers
@@ -119241,7 +126214,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-presigned-object-urls">Presigned Object URLs</h1>
@@ -119314,7 +126287,7 @@ Refer to: https://developers.telnyx.com/docs/cloud-storage/presigned-urls
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-pricing">Pricing</h1>
@@ -119571,7 +126544,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Private Wireless Gateway
@@ -119703,7 +126676,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Private Wireless Gateway
@@ -119806,7 +126779,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Private Wireless Gateway
@@ -119910,7 +126883,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-profiles">Profiles</h1>
@@ -120033,7 +127006,7 @@ Profiles are never created, only written to, so this lists the ones that hold a 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Forget a profile's memories
@@ -120130,7 +127103,7 @@ Delete everything held about one profile. A 2xx means none of its memories are l
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List a profile's memories, most recent first
@@ -120254,7 +127227,7 @@ Everything stored under one profile, unranked -- ask `recall` for the memories t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Read one memory, and what it came from
@@ -120368,7 +127341,7 @@ One memory by its id, as `recall` and the listing return it, together with what 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List messaging profiles
@@ -120493,7 +127466,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a messaging profile
@@ -120695,7 +127668,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a messaging profile
@@ -120808,7 +127781,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a messaging profile
@@ -120922,7 +127895,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a messaging profile
@@ -121128,7 +128101,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List phone numbers associated with a messaging profile
@@ -121236,7 +128209,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List short codes associated with a messaging profile
@@ -121327,7 +128300,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-programmable-fax-applications">Programmable Fax Applications</h1>
@@ -121461,7 +128434,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates a Fax Application
@@ -121646,7 +128619,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Fax Application
@@ -121772,7 +128745,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes a Fax Application
@@ -121899,7 +128872,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Fax Application
@@ -122114,7 +129087,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-programmable-fax-commands">Programmable Fax Commands</h1>
@@ -122229,7 +129202,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Send a fax
@@ -122417,7 +129390,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## View a fax
@@ -122518,7 +129491,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a fax
@@ -122584,7 +129557,7 @@ Delete a fax resource from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Cancel a fax
@@ -122684,7 +129657,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Refresh a fax
@@ -122769,7 +129742,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-pronunciation-dictionaries">Pronunciation Dictionaries</h1>
@@ -122858,7 +129831,7 @@ List all pronunciation dictionaries for the authenticated organization. Results 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a pronunciation dictionary
@@ -122972,7 +129945,7 @@ Limits:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a pronunciation dictionary
@@ -123045,7 +130018,7 @@ Retrieve a single pronunciation dictionary by ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a pronunciation dictionary
@@ -123100,7 +130073,7 @@ Permanently delete a pronunciation dictionary.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a pronunciation dictionary
@@ -123239,7 +130212,7 @@ Update the name and/or items of an existing pronunciation dictionary. Uses optim
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-public-internet-gateways">Public Internet Gateways</h1>
@@ -123350,7 +130323,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Public Internet Gateway
@@ -123464,7 +130437,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Public Internet Gateway
@@ -123561,7 +130534,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Public Internet Gateway
@@ -123659,7 +130632,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-push-credentials">Push Credentials</h1>
@@ -123746,7 +130719,7 @@ Returns a paginated list of the mobile push credentials on your account, with su
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates a new mobile push credential
@@ -123859,7 +130832,7 @@ Creates a new mobile push credential for delivering push notifications to iOS or
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieves a mobile push credential
@@ -123969,7 +130942,7 @@ Retrieves mobile push credential based on the given `push_credential_id`
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes a mobile push credential
@@ -124059,7 +131032,7 @@ Deletes a mobile push credential based on the given `push_credential_id`
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-queue-commands">Queue Commands</h1>
@@ -124169,7 +131142,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a queue
@@ -124282,7 +131255,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a call queue
@@ -124357,7 +131330,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a queue
@@ -124483,7 +131456,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a queue
@@ -124552,7 +131525,7 @@ Permanently deletes the specified call queue from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve calls from a queue
@@ -124641,7 +131614,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a call from a queue
@@ -124721,7 +131694,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Force remove a call from a queue
@@ -124773,7 +131746,7 @@ Removes an inactive call from a queue. If the call is no longer active, use this
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update queued call
@@ -124839,7 +131812,7 @@ Update queued call's keep_after_hangup flag
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-rcs">RCS</h1>
@@ -125525,7 +132498,7 @@ Queues an outbound RCS message through the selected RCS agent. Check recipient c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Generate RCS deeplink
@@ -125591,7 +132564,7 @@ Generate a deeplink URL that can be used to start an RCS conversation with a spe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Generate RCS deeplink
@@ -125653,7 +132626,7 @@ Generate a deeplink URL that can be used to start an RCS conversation with a spe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all RCS agents
@@ -125733,7 +132706,7 @@ Returns RCS agents available to the authenticated account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an RCS agent
@@ -125805,7 +132778,7 @@ Returns the configuration and current state of the specified RCS agent.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Modify an RCS agent
@@ -125898,7 +132871,7 @@ Updates the supplied configuration fields on the specified RCS agent.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Check RCS capabilities (batch)
@@ -125991,7 +132964,7 @@ Returns RCS capability information for multiple recipients in one request.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Check RCS capabilities
@@ -126062,7 +133035,7 @@ Returns the RCS features supported by the specified recipient for the selected a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add RCS test number
@@ -126131,7 +133104,7 @@ Adds a test phone number to an RCS agent for testing purposes.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-rcs-agents">RCS Agents</h1>
@@ -126263,7 +133236,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an RCS agent
@@ -126476,7 +133449,7 @@ Creates an editable RCS agent draft under a brand. The `Idempotency-Key` is scop
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an RCS agent
@@ -126576,7 +133549,7 @@ Retrieves an RCS agent, section statuses, test devices, carrier approvals, and p
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an RCS agent
@@ -126740,7 +133713,7 @@ Updates one or more fields on an agent while its status is `CREATED`. Submitted 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List RCS agent carrier approvals
@@ -126817,7 +133790,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit an RCS agent for launch
@@ -127022,7 +133995,7 @@ Adds the campaign and testing configuration, then starts asynchronous carrier la
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit RCS agent basics
@@ -127132,7 +134105,7 @@ Starts asynchronous provider provisioning and submits the agent's basic configur
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List RCS agent test devices
@@ -127205,7 +134178,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add an RCS agent test device
@@ -127319,7 +134292,7 @@ Adds an RCS-capable test number after provider agent creation. Repeating the req
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove an RCS agent test device
@@ -127383,7 +134356,7 @@ Removes a test device from an RCS agent and its provider registration.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-rcs-brands">RCS Brands</h1>
@@ -127486,7 +134459,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an RCS brand
@@ -127715,7 +134688,7 @@ Creates an editable RCS brand draft. Creating the draft does not begin external 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an RCS brand
@@ -127819,7 +134792,7 @@ Retrieves an RCS brand and its current lifecycle status.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an RCS brand
@@ -127998,7 +134971,7 @@ Updates one or more fields on a brand while its status is `CREATED`. Submitted b
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit an RCS brand
@@ -128112,7 +135085,7 @@ Starts asynchronous provider provisioning and external review for a brand. Repea
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-reference-data">Reference Data</h1>
@@ -128219,7 +135192,7 @@ Telnyx maintains a library of pre-vetted call-reason phrases (e.g. "Appointment 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Validate a list of call reasons
@@ -128326,7 +135299,7 @@ Check up to 10 candidate `call_reasons` strings against Telnyx's vetting heurist
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List supported DIR document types
@@ -128420,7 +135393,7 @@ Reference list of `document_type` values accepted by `DirCreateRequest.documents
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-regions">Regions</h1>
@@ -128516,7 +135489,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-regulatory-requirements">Regulatory Requirements</h1>
@@ -128711,7 +135684,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve regulatory requirements for a list of phone numbers
@@ -128886,7 +135859,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve regulatory requirements
@@ -129054,7 +136027,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-reporting">Reporting</h1>
@@ -129137,7 +136110,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Wireless Detail Records (WDRs) Report
@@ -129245,7 +136218,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Wireless Detail Record (WDR) Report
@@ -129336,7 +136309,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Wireless Detail Record (WDR) Report
@@ -129428,7 +136401,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all Wireless Detail Records (WDRs) Reports
@@ -129507,7 +136480,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Wireless Detail Records (WDRs) Report
@@ -129615,7 +136588,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Wireless Detail Record (WDR) Report
@@ -129706,7 +136679,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Wireless Detail Record (WDR) Report
@@ -129798,7 +136771,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-reports">Reports</h1>
@@ -129913,7 +136886,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a ledger billing group report
@@ -130007,7 +136980,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-reputation">Reputation</h1>
@@ -130111,7 +137084,7 @@ Returns `404` if reputation has never been enabled for this enterprise.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Enable phone-number reputation for an enterprise
@@ -130258,7 +137231,7 @@ Failure modes:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Disable phone-number reputation for an enterprise
@@ -130357,7 +137330,7 @@ Disable Phone Number Reputation. All registered numbers are de-registered as a c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get the ownership-proof review status
@@ -130454,7 +137427,7 @@ Get the review status of the enterprise's ownership proof for phone numbers host
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit ownership proof for numbers hosted elsewhere
@@ -130613,7 +137586,7 @@ Request permission to add phone numbers that the enterprise owns but that are ho
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Change the reputation refresh frequency
@@ -130760,7 +137733,7 @@ The enterprise's reputation must be in `approved` status. A request made while t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Render a phone-number reputation Letter of Authorization
@@ -130891,7 +137864,7 @@ Render the LOA for this enterprise as a PDF. The enterprise identity, address, a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Replace the reputation Letter of Authorization document
@@ -131025,7 +137998,7 @@ Point the enterprise's reputation settings at a new signed LOA document. This re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List reputation-monitored phone numbers for an enterprise
@@ -131156,7 +138129,7 @@ Paginated list of phone numbers registered for reputation monitoring under this 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Register phone numbers for reputation monitoring
@@ -131339,7 +138312,7 @@ A phone number that is not in your Telnyx inventory is treated as a number hoste
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Force a reputation refresh
@@ -131456,7 +138429,7 @@ Immediately refresh the stored reputation data for the listed numbers. This is i
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a single reputation-monitored phone number
@@ -131585,7 +138558,7 @@ Retrieve one registered number with its latest reputation snapshot. The `phone_n
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove a phone number from reputation monitoring
@@ -131664,7 +138637,7 @@ Stop tracking the reputation of this phone number. The number itself remains in 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a phone number's ownership tracking detail
@@ -131766,7 +138739,7 @@ Get the ownership status of a phone number, when it was last checked, the carrie
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Confirm or give up ownership of a phone number
@@ -131935,7 +138908,7 @@ Send `still_own: false` to report that you no longer own the number. It is remov
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List reputation remediation requests for an enterprise
@@ -132052,7 +139025,7 @@ Paginated list of remediation requests for this enterprise. List items omit per-
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit phone numbers for reputation remediation
@@ -132262,7 +139235,7 @@ Each phone number must be in E.164 format and belong to this enterprise. A numbe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a reputation remediation request
@@ -132378,7 +139351,7 @@ Retrieve the full detail of a remediation request, including current status, per
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Set the number-ownership webhook URL
@@ -132512,7 +139485,7 @@ Set the HTTPS URL that receives number-ownership events for this enterprise: `nu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List reputation-monitored phone numbers across all enterprises
@@ -132622,7 +139595,7 @@ Convenience alias for `GET /v2/enterprises/{enterprise_id}/reputation/numbers` t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a reputation-monitored number (no enterprise_id required)
@@ -132729,7 +139702,7 @@ Convenience alias for `GET /v2/enterprises/{enterprise_id}/reputation/numbers/{p
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Remove a phone number from reputation monitoring (no enterprise_id required)
@@ -132807,7 +139780,7 @@ Convenience alias for `DELETE /v2/enterprises/{enterprise_id}/reputation/numbers
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-requirement-groups">Requirement Groups</h1>
@@ -132946,7 +139919,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fulfill an action requirement for a sub number order
@@ -133123,7 +140096,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update requirement group for a phone number order
@@ -133302,7 +140275,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List requirement groups
@@ -133446,7 +140419,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new requirement group
@@ -133630,7 +140603,7 @@ Creates a regulatory requirement group for a country, number type, and ordering 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a single requirement group by ID
@@ -133782,7 +140755,7 @@ Returns the regulatory requirement group identified by `id`, including its requi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a requirement group by ID
@@ -133935,7 +140908,7 @@ Deletes the regulatory requirement group identified by `id`. The response contai
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update requirement values in requirement group
@@ -134117,7 +141090,7 @@ Updates the customer reference or regulatory requirement values on the specified
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit a Requirement Group for Approval
@@ -134270,7 +141243,7 @@ Submits the specified regulatory requirement group for approval. The response co
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update requirement group for a sub number order
@@ -134459,7 +141432,7 @@ Associates an existing requirement group with the specified sub number order. Th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-requirement-types">Requirement Types</h1>
@@ -134584,7 +141557,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a requirement types
@@ -134684,7 +141657,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-requirements">Requirements</h1>
@@ -134828,7 +141801,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a document requirement
@@ -134944,7 +141917,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Schedule a future requirement version
@@ -135096,7 +142069,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Cancel a pending requirement version
@@ -135256,7 +142229,7 @@ Cancel a pending requirement version. The pending version is marked as cancelled
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-research">Research</h1>
@@ -135424,7 +142397,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get research task status
@@ -135536,7 +142509,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-room-compositions">Room Compositions</h1>
@@ -135646,7 +142619,7 @@ Status Code **4XX**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a room composition.
@@ -135823,7 +142796,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## View a room composition.
@@ -135917,7 +142890,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a room composition.
@@ -135968,7 +142941,7 @@ Synchronously delete a room composition.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-room-participants">Room Participants</h1>
@@ -136058,7 +143031,7 @@ Status Code **4XX**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## View a room participant.
@@ -136132,7 +143105,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-room-recordings">Room Recordings</h1>
@@ -136231,7 +143204,7 @@ Status Code **4XX**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete several room recordings in a bulk.
@@ -136302,7 +143275,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## View a room recording.
@@ -136385,7 +143358,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a room recording.
@@ -136436,7 +143409,7 @@ Synchronously deletes the specified video room recording. The recording's media 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-room-sessions">Room Sessions</h1>
@@ -136528,7 +143501,7 @@ Status Code **4XX**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## View a room session.
@@ -136604,7 +143577,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## End a room session.
@@ -137058,7 +144031,7 @@ Status Code **4XX**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-rooms">Rooms</h1>
@@ -137164,7 +144137,7 @@ Status Code **4XX**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a room.
@@ -137282,7 +144255,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## View a room.
@@ -137372,7 +144345,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a room.
@@ -137423,7 +144396,7 @@ Synchronously delete a Room. Participants from that room will be kicked out, the
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a room.
@@ -137544,7 +144517,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## View a list of room sessions.
@@ -137633,7 +144606,7 @@ Status Code **4XX**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-rooms-client-tokens">Rooms Client Tokens</h1>
@@ -137731,7 +144704,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Refresh Client Token to join a room.
@@ -137887,7 +144860,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-sim-card-actions">SIM Card Actions</h1>
@@ -137990,7 +144963,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get bulk SIM card action details
@@ -138070,7 +145043,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List SIM card actions
@@ -138159,7 +145132,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get SIM card action details
@@ -138238,7 +145211,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-sim-card-group-actions">SIM Card Group Actions</h1>
@@ -138346,7 +145319,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get SIM card group action details
@@ -138425,7 +145398,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-sim-card-groups">SIM Card Groups</h1>
@@ -138527,7 +145500,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a SIM card group
@@ -138636,7 +145609,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get SIM card group
@@ -138721,7 +145694,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a SIM card group
@@ -138806,7 +145779,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a SIM card group
@@ -138916,7 +145889,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request Private Wireless Gateway removal from SIM card group
@@ -138996,7 +145969,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request Wireless Blocklist removal from SIM card group
@@ -139118,7 +146091,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request Private Wireless Gateway assignment for SIM card group
@@ -139212,7 +146185,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request Wireless Blocklist assignment for SIM card group
@@ -139348,7 +146321,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-sim-card-orders">SIM Card Orders</h1>
@@ -139450,7 +146423,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all SIM card orders
@@ -139548,7 +146521,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a SIM card order
@@ -139653,7 +146626,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a single SIM card order
@@ -139756,7 +146729,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-sim-cards">SIM Cards</h1>
@@ -139926,7 +146899,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Register SIM cards
@@ -140094,7 +147067,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List SIM card data usage notifications
@@ -140181,7 +147154,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new SIM card data usage notification
@@ -140289,7 +147262,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a single SIM card data usage notification
@@ -140380,7 +147353,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete SIM card data usage notifications
@@ -140457,7 +147430,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Updates information for a SIM Card Data Usage Notification
@@ -140572,7 +147545,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all SIM cards
@@ -140697,7 +147670,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request bulk disabling voice on SIM cards.
@@ -140788,7 +147761,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request bulk enabling voice on SIM cards.
@@ -140903,7 +147876,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request bulk setting SIM card public IPs.
@@ -140996,7 +147969,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Validate SIM cards registration codes
@@ -141082,7 +148055,7 @@ It validates whether SIM card registration codes are valid or not.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get SIM card
@@ -141207,7 +148180,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes a SIM card
@@ -141334,7 +148307,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a SIM card
@@ -141515,7 +148488,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request a SIM card disable
@@ -141597,7 +148570,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request disabling voice on a SIM card
@@ -141699,7 +148672,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request a SIM card enable
@@ -141796,7 +148769,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request enabling voice on a SIM card
@@ -141933,7 +148906,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request removing a SIM card public IP
@@ -142014,7 +148987,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request setting a SIM card public IP
@@ -142097,7 +149070,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request setting a SIM card to standby
@@ -142180,7 +149153,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get activation code for an eSIM
@@ -142252,7 +149225,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get SIM card device details
@@ -142327,7 +149300,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get SIM card public IP definition
@@ -142403,7 +149376,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List wireless connectivity logs
@@ -142500,7 +149473,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-siprec-connectors">SIPREC Connectors</h1>
@@ -142611,7 +149584,7 @@ Creates a new SIPREC connector configuration.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a SIPREC connector
@@ -142695,7 +149668,7 @@ Returns details of a stored SIPREC connector.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a SIPREC connector
@@ -142818,7 +149791,7 @@ Updates a stored SIPREC connector configuration.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a SIPREC connector
@@ -142887,7 +149860,7 @@ Deletes the stored SIPREC connector with the specified connector name.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-session-analysis">Session Analysis</h1>
@@ -143003,7 +149976,7 @@ Returns all available record types and supported query parameters for session an
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get record type metadata
@@ -143092,7 +150065,7 @@ Returns detailed metadata for a specific record type, including relationships an
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get session analysis
@@ -143236,7 +150209,7 @@ Retrieves a full session analysis tree for a given event, including costs, child
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-settings">Settings</h1>
@@ -143336,7 +150309,7 @@ What is currently set for this namespace. `instructions: null` means none are se
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Change a namespace's settings
@@ -143469,7 +150442,7 @@ Instructions are capped at 2000 characters. A longer note is refused rather than
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-short-codes">Short Codes</h1>
@@ -143564,7 +150537,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a short code
@@ -143645,7 +150618,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update short code
@@ -143749,7 +150722,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-sources">Sources</h1>
@@ -143884,7 +150857,7 @@ Everything a profile has stored and extracts memories from: each ingested sessio
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Read one source, with what was stored
@@ -144006,7 +150979,7 @@ One source and its content, as it was stored: an ingested session's payload or a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Forget one source
@@ -144119,7 +151092,7 @@ Deletes one source -- an ingested session or a remembered fact -- together with 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-speech-to-text-capabilities">Speech To Text Capabilities</h1>
@@ -144250,7 +151223,7 @@ Use this endpoint to discover which (provider, model) combinations are available
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-speech-to-text-over-websockets">Speech To Text over WebSockets</h1>
@@ -144361,7 +151334,7 @@ Supported engines: `Azure`, `Deepgram`, `Google`, `Telnyx`, `xAI`, `Speechmatics
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-speech-to-text-batch-reports">Speech to Text Batch Reports</h1>
@@ -144415,7 +151388,7 @@ Retrieves all Speech to Text batch report requests for the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new Speech to Text batch report request
@@ -144487,7 +151460,7 @@ Creates a new Speech to Text batch report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a specific Speech to Text batch report request
@@ -144542,7 +151515,7 @@ Retrieves a specific Speech to Text batch report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Speech to Text batch report request
@@ -144598,7 +151571,7 @@ Deletes a specific Speech to Text batch report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all Speech to Text batch report requests
@@ -144648,7 +151621,7 @@ Retrieves all Speech to Text batch report requests for the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new Speech to Text batch report request
@@ -144720,7 +151693,7 @@ Creates a new Speech to Text batch report request with the specified filters
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a specific Speech to Text batch report request
@@ -144775,7 +151748,7 @@ Retrieves a specific Speech to Text batch report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Speech to Text batch report request
@@ -144831,7 +151804,7 @@ Deletes a specific Speech to Text batch report request by ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-speech-to-text-usage-reports">Speech to text Usage Reports</h1>
@@ -144892,7 +151865,7 @@ Generate and fetch speech to text usage report synchronously. This endpoint will
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get speech to text usage report
@@ -144949,7 +151922,7 @@ Generate and fetch speech to text usage report synchronously. This endpoint will
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-spend-limits">Spend Limits</h1>
@@ -145067,7 +152040,7 @@ Returns one entry per product and period you can set a limit on, with the limit,
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a spend limit
@@ -145217,7 +152190,7 @@ Sets a limit for a product and period that has none. Send exactly one of `amount
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a spend limit
@@ -145352,7 +152325,7 @@ Removes the limit for the product and period. For `inference`, which has no defa
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a spend limit
@@ -145506,7 +152479,7 @@ Replaces the value of the existing limit for the product and period. Send exactl
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-stored-payment-transactions">Stored Payment Transactions</h1>
@@ -145520,7 +152493,7 @@ Operations for managing stored payment transactions.
 > Code samples
 
 ```bash
-curl https://api.telnyx.com/v2/v2/payment/stored_payment_transactions \
+curl https://api.telnyx.com/v2/payment/stored_payment_transactions \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -145530,7 +152503,7 @@ curl https://api.telnyx.com/v2/v2/payment/stored_payment_transactions \
   }'
 ```
 
-`POST /v2/payment/stored_payment_transactions`
+`POST /payment/stored_payment_transactions`
 
 Create a transaction that charges a stored payment method on the account.
 
@@ -145627,7 +152600,7 @@ Create a transaction that charges a stored payment method on the account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-tailscale-subnet-routers">Tailscale Subnet Routers</h1>
@@ -145744,7 +152717,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Tailscale Subnet Router
@@ -145892,7 +152865,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Tailscale Subnet Router
@@ -145998,7 +152971,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Tailscale Subnet Router
@@ -146123,7 +153096,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Tailscale Subnet Router
@@ -146304,7 +153277,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-texml-applications">TeXML Applications</h1>
@@ -146463,7 +153436,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates a TeXML Application
@@ -146723,7 +153696,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a TeXML Application
@@ -146880,7 +153853,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes a TeXML Application
@@ -147038,7 +154011,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a TeXML Application
@@ -147335,7 +154308,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-texml-rest-commands">TeXML REST Commands</h1>
@@ -147424,7 +154397,7 @@ Returns multiple call resouces for an account. This endpoint is eventually consi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Initiate an outbound call
@@ -147522,6 +154495,14 @@ Initiate an outbound TeXML call. Telnyx will request TeXML from the XML Request 
 |» MediaEncryption|body|string|false|Defines whether media should be encrypted on the call. When set to `SRTP`, the call will use Secure Real-time Transport Protocol for media encryption. When set to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP destinations.|
 |» SuperviseCallSid|body|string|false|The call control ID of the existing call to supervise. When provided, the created leg will be added to the specified call in supervising mode. Status callbacks and action callbacks will NOT be sent for the supervising leg.|
 |» SupervisingRole|body|string|false|The supervising role for the new leg. Determines the audio behavior: barge (hear both sides), whisper (only hear supervisor), monitor (hear both sides but supervisor muted). Default: barge|
+|» StreamUrl|body|string|false|The destination WebSocket address where the call's media stream is delivered, for example `wss://www.example.com/websocket`. When set, a media stream is started on the outbound call. Required when any other `Stream*` parameter is set. Can't be combined with `SuperviseCallSid`.|
+|» StreamTrack|body|string|false|Specifies which track should be streamed. Requires `StreamUrl`.|
+|» StreamCodec|body|string|false|Specifies the codec to be used for the streamed audio. When set to `default` or when transcoding is not possible, the codec from the call will be used. Requires `StreamUrl`.|
+|» StreamBidirectionalMode|body|string|false|Configures the method of bidirectional streaming: `mp3` or `rtp`. Requires `StreamUrl`.|
+|» StreamBidirectionalCodec|body|string|false|Indicates the codec for bidirectional streaming RTP payloads. Used only with `StreamBidirectionalMode=rtp`. Case sensitive. Requires `StreamUrl`.|
+|» StreamBidirectionalSamplingRate|body|integer|false|Audio sampling rate for bidirectional streaming, in Hz. Requires `StreamUrl`.|
+|» StreamAuthToken|body|string|false|An authentication token for the WebSocket server. It is sent as the `x-telnyx-streaming-auth-token` header of the WebSocket handshake and repeated as `connected.x-telnyx-streaming-auth-token` in the `connected` event. Maximum length is 4000 characters. Requires `StreamUrl`.|
+|» StreamEstablishBeforeCallOriginate|body|boolean|false|Establishes the WebSocket connection before the destination is dialed, so no audio is missed while the connection is set up. If the WebSocket connection can't be established, the call is not placed and the request fails with a `422` error. `StreamUrl` is required when this is `true`.|
 |» Timeout|body|integer|false|The number of seconds to wait for the called party to answer the call before the call is canceled. The minimum value is 5 and the maximum value is 120. Default is 30 seconds.|
 |» TimeLimit|body|integer|false|The maximum duration of the call in seconds. The minimum value is 30 and the maximum value is 14400 (4 hours). Default is 14400 seconds.|
 |» Texml|body|string|false|TeXML to be used as instructions for the call. If provided, the call will execute these instructions instead of fetching from the Url.|
@@ -147574,6 +154555,29 @@ Initiate an outbound TeXML call. Telnyx will request TeXML from the XML Request 
 |» SupervisingRole|barge|
 |» SupervisingRole|whisper|
 |» SupervisingRole|monitor|
+|» StreamTrack|inbound_track|
+|» StreamTrack|outbound_track|
+|» StreamTrack|both_tracks|
+|» StreamCodec|PCMU|
+|» StreamCodec|PCMA|
+|» StreamCodec|G722|
+|» StreamCodec|OPUS|
+|» StreamCodec|AMR-WB|
+|» StreamCodec|L16|
+|» StreamCodec|default|
+|» StreamBidirectionalMode|mp3|
+|» StreamBidirectionalMode|rtp|
+|» StreamBidirectionalCodec|PCMU|
+|» StreamBidirectionalCodec|PCMA|
+|» StreamBidirectionalCodec|G722|
+|» StreamBidirectionalCodec|OPUS|
+|» StreamBidirectionalCodec|AMR-WB|
+|» StreamBidirectionalCodec|L16|
+|» StreamBidirectionalSamplingRate|8000|
+|» StreamBidirectionalSamplingRate|16000|
+|» StreamBidirectionalSamplingRate|22050|
+|» StreamBidirectionalSamplingRate|24000|
+|» StreamBidirectionalSamplingRate|48000|
 
 > Example responses
 
@@ -147643,7 +154647,7 @@ Initiate an outbound TeXML call. Telnyx will request TeXML from the XML Request 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch a call
@@ -147715,7 +154719,7 @@ Returns an individual call identified by its CallSid. This endpoint is eventuall
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update call
@@ -147834,7 +154838,7 @@ Status: completed
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch recordings for a call
@@ -147919,7 +154923,7 @@ Returns recordings for a call identified by call_sid.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request recording for a call
@@ -148025,7 +155029,7 @@ SendRecordingUrl: false
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update recording on a call
@@ -148116,7 +155120,7 @@ Status: paused
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request siprec session for a call
@@ -148226,7 +155230,7 @@ StatusCallbackMethod: GET
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Updates siprec session for a call
@@ -148307,7 +155311,7 @@ Status: stopped
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Start streaming media from a call.
@@ -148408,7 +155412,7 @@ Url: "wss://www.example.com/websocket"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update streaming on a call
@@ -148488,7 +155492,7 @@ Status: stopped
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List conference resources
@@ -148566,7 +155570,7 @@ Returns a paginated list of conference resources for the account, with support f
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch a conference resource
@@ -148635,7 +155639,7 @@ Returns a single conference resource for the account by its ConferenceSid.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a conference resource
@@ -148724,7 +155728,7 @@ Status: completed
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List conference participants
@@ -148787,7 +155791,7 @@ Returns the list of participants currently in the specified conference.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Dial a new conference participant
@@ -148957,7 +155961,7 @@ From: "+12065550200"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get conference participant resource
@@ -149027,7 +156031,7 @@ Returns a single conference participant resource by call SID or participant labe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a conference participant
@@ -149127,7 +156131,7 @@ BeepOnExit: false
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a conference participant
@@ -149178,7 +156182,7 @@ Removes the specified participant from the conference, ending their leg of the c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List conference recordings
@@ -149241,7 +156245,7 @@ Returns the list of recordings made for the specified conference.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch recordings for a conference
@@ -149326,7 +156330,7 @@ Returns recordings for a conference identified by conference_sid.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List queue resources
@@ -149394,7 +156398,7 @@ Returns a paginated list of queue resources for the account, with support for fi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a new queue
@@ -149473,7 +156477,7 @@ FriendlyName: Support Queue
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch a queue resource
@@ -149540,7 +156544,7 @@ Returns a single queue resource for the account by its QueueSid.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a queue resource
@@ -149618,7 +156622,7 @@ MaxSize: 10
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a queue resource
@@ -149668,7 +156672,7 @@ Permanently deletes the specified queue resource from the account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch multiple recording resources
@@ -149755,7 +156759,7 @@ Returns multiple recording resources for an account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch recording resource
@@ -149828,7 +156832,7 @@ Returns recording resource identified by recording id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete recording resource
@@ -149878,7 +156882,7 @@ Deletes recording resource identified by recording id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List recording transcriptions
@@ -149974,7 +156978,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch a recording transcription resource
@@ -150041,7 +157045,7 @@ Returns the recording transcription resource identified by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a recording transcription
@@ -150091,7 +157095,7 @@ Permanently deletes a recording transcription.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Initiate an outbound AI call
@@ -150284,7 +157288,7 @@ Recording, AMD, transcription, and deepfake detection callbacks are only sent wh
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a connection-scoped TeXML call
@@ -150413,7 +157417,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a TeXML secret
@@ -150502,7 +157506,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-telco-data-usage-reports">Telco Data Usage Reports</h1>
@@ -150587,7 +157591,7 @@ Retrieve a paginated list of telco data usage reports
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit telco data usage report
@@ -150688,7 +157692,7 @@ Submits a new telco data (number lookup) usage report request. The report is gen
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get telco data usage report by ID
@@ -150760,7 +157764,7 @@ Retrieve a specific telco data usage report by its ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete telco data usage report
@@ -150797,7 +157801,7 @@ Delete a specific telco data usage report by its ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List telco data usage reports
@@ -150878,7 +157882,7 @@ Retrieve a paginated list of telco data usage reports
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit telco data usage report
@@ -150979,7 +157983,7 @@ Submits a new telco data (number lookup) usage report request. The report is gen
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get telco data usage report by ID
@@ -151051,7 +158055,7 @@ Retrieve a specific telco data usage report by its ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete telco data usage report
@@ -151088,7 +158092,7 @@ Delete a specific telco data usage report by its ID
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-terms-of-service">Terms of Service</h1>
@@ -151205,7 +158209,7 @@ By default this returns agreements for **all** products the user has agreed to. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Terms of Service agreement by id
@@ -151297,7 +158301,7 @@ Retrieve a single ToS agreement record. Returns `404` if the agreement does not 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Agree to the Branded Calling Terms of Service
@@ -151386,7 +158390,7 @@ This is a prerequisite for activating Branded Calling on any enterprise (`POST /
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Terms of Service information
@@ -151486,7 +158490,7 @@ Returns the available Terms of Service agreements (product, current version, ter
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Agree to the Phone Number Reputation Terms of Service
@@ -151575,7 +158579,7 @@ Prerequisite for using any of the `/v2/.../reputation/*` endpoints.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get the calling user's Terms of Service status
@@ -151676,7 +158680,7 @@ Returns whether the authenticated user has agreed to the current Terms of Servic
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-text-to-speech-commands">Text To Speech Commands</h1>
@@ -151699,7 +158703,7 @@ curl https://api.telnyx.com/v2/text-to-speech/speech \
 
 Open a WebSocket connection to stream text and receive synthesized audio in real time. Authentication is provided via the standard `Authorization: Bearer <API_KEY>` header. Send JSON frames with text to synthesize; receive JSON frames containing base64-encoded audio chunks.
 
-Supported providers: `aws`, `telnyx`, `azure`, `minimax`, `resemble`, `elevenlabs`, `xai`, `humain`, `soniox`, `assemblyai`.
+Supported providers: `aws`, `telnyx`, `azure`, `minimax`, `resemble`, `elevenlabs`, `xai`, `humain`, `soniox`.
 
 **Connection flow:**
 1. Open WebSocket with query parameters specifying provider, voice, and model.
@@ -151737,7 +158741,6 @@ To interrupt and restart synthesis mid-stream, send `{"force": true}` — the cu
 |provider|xai|
 |provider|humain|
 |provider|soniox|
-|provider|assemblyai|
 |audio_format|pcm|
 |audio_format|wav|
 |audio_format|mp3|
@@ -151775,7 +158778,7 @@ Status Code **101**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Generate speech from text
@@ -151856,12 +158859,6 @@ curl https://api.telnyx.com/v2/text-to-speech/speech \
       "language": "en",
       "speed": 1,
       "audio_format": "mp3"
-    },
-    "assemblyai": {
-      "voice_id": "aai-jane",
-      "model_id": "assemblyai-tts-1",
-      "language": "en",
-      "audio_format": "mp3"
     }
   }'
 ```
@@ -151874,7 +158871,7 @@ Authentication is provided via the standard `Authorization: Bearer <API_KEY>` he
 
 The `voice` parameter provides a convenient shorthand to specify provider, model, and voice in a single string (e.g. `Telnyx.Ultra.<voice_id>`). Alternatively, specify `provider` explicitly along with provider-specific parameters.
 
-Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `resemble`, `xai`, `humain`, `soniox`, `assemblyai`.
+Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `resemble`, `xai`, `humain`, `soniox`.
 
 The Telnyx `Ultra` model supports 44 languages with emotion control, speed adjustment, and volume control. Use the `telnyx` provider-specific parameters to configure these features.
 
@@ -151947,12 +158944,6 @@ The Telnyx `Ultra` model supports 44 languages with emotion control, speed adjus
     "language": "en",
     "speed": 1,
     "audio_format": "mp3"
-  },
-  "assemblyai": {
-    "voice_id": "aai-jane",
-    "model_id": "assemblyai-tts-1",
-    "language": "en",
-    "audio_format": "mp3"
   }
 }
 ```
@@ -151979,7 +158970,6 @@ The Telnyx `Ultra` model supports 44 languages with emotion control, speed adjus
 |» xai|body|[XAIProviderParams](#schemaxaiproviderparams)|false|xAI provider-specific parameters.|
 |» humain|body|[HumainProviderParams](#schemahumainproviderparams)|false|Humain provider-specific parameters. Unlike other providers, Humain has no format/sample-rate negotiation (output is always PCM16 24kHz mono) and no language parameter — language is fixed per voice.|
 |» soniox|body|[SonioxProviderParams](#schemasonioxproviderparams)|false|Soniox provider-specific parameters. Every voice speaks all supported languages; set `language` to the language of the text.|
-|» assemblyai|body|[AssemblyAIProviderParams](#schemaassemblyaiproviderparams)|false|AssemblyAI provider-specific parameters. Every voice speaks all six supported languages; set `language` to the language of the text.|
 
 #### Enumerated Values
 
@@ -151994,7 +158984,6 @@ The Telnyx `Ultra` model supports 44 languages with emotion control, speed adjus
 |» provider|xai|
 |» provider|humain|
 |» provider|soniox|
-|» provider|assemblyai|
 |» text_type|text|
 |» text_type|ssml|
 |» output_type|binary_output|
@@ -152050,7 +159039,7 @@ The Telnyx `Ultra` model supports 44 languages with emotion control, speed adjus
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List available voices
@@ -152091,7 +159080,6 @@ Some providers (ElevenLabs) require an API key to list voices.
 |provider|xai|
 |provider|humain|
 |provider|soniox|
-|provider|assemblyai|
 
 > Example responses
 
@@ -152135,7 +159123,7 @@ Some providers (ElevenLabs) require an API key to list voices.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-traffic-policy-profiles">Traffic Policy Profiles</h1>
@@ -152250,7 +159238,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a traffic policy profile
@@ -152403,7 +159391,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all available traffic policy profile services
@@ -152487,7 +159475,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a traffic policy profile
@@ -152588,7 +159576,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a traffic policy profile
@@ -152674,7 +159662,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a traffic policy profile
@@ -152840,7 +159828,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all traffic policy profiles
@@ -152951,7 +159939,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a traffic policy profile
@@ -153104,7 +160092,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all available traffic policy profile services
@@ -153188,7 +160176,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a traffic policy profile
@@ -153289,7 +160277,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a traffic policy profile
@@ -153375,7 +160363,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a traffic policy profile
@@ -153541,7 +160529,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-tunnels">Tunnels</h1>
@@ -153674,7 +160662,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Tunnel
@@ -153784,7 +160772,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Tunnel
@@ -153889,7 +160877,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Tunnel
@@ -153978,7 +160966,7 @@ Deletes a tunnel. A tunnel that a route names as its next hop cannot be deleted;
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Rotate a Tunnel Token
@@ -154085,7 +161073,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-uac-connections">UAC Connections</h1>
@@ -154170,7 +161158,7 @@ The authenticated account is taken from your API key; you can only read the regi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List UAC connections
@@ -154401,7 +161389,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a UAC connection
@@ -154830,7 +161818,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a UAC connection
@@ -155063,7 +162051,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a UAC connection
@@ -155297,7 +162285,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a UAC connection
@@ -155768,7 +162756,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Check a UAC Connection Registration Status
@@ -155929,7 +162917,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-usage-reports-beta">Usage Reports (BETA)</h1>
@@ -156065,7 +163053,7 @@ Get Telnyx usage data by product, broken out by the specified dimensions
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Usage Reports query options (BETA)
@@ -156184,7 +163172,7 @@ Get the Usage Reports options for querying usage, including the products availab
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-user-profile">User Profile</h1>
@@ -156312,7 +163300,7 @@ Status Code **403**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update the current user profile (Beta)
@@ -156482,7 +163470,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-user-tags">User Tags</h1>
@@ -156564,7 +163552,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-useraddresses">UserAddresses</h1>
@@ -156661,7 +163649,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates a user address
@@ -156784,7 +163772,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a user address
@@ -156856,7 +163844,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all user addresses
@@ -156949,7 +163937,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates a user address
@@ -157072,7 +164060,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a user address
@@ -157144,7 +164132,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-verification-requests">Verification Requests</h1>
@@ -157211,7 +164199,7 @@ Returns a paginated list of historical status changes including the reason for e
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Verification Requests
@@ -157291,7 +164279,7 @@ Get a list of previously-submitted tollfree verification requests
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit Verification Request
@@ -157552,7 +164540,7 @@ Submit a new tollfree verification request
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Verification Request
@@ -157665,7 +164653,7 @@ Get a single verification request by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Verification Request
@@ -157745,7 +164733,7 @@ A request may only be deleted when when the request is in the "rejected" state.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Verification Request
@@ -158007,7 +164995,7 @@ Update an existing tollfree verification request. This is particularly useful wh
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Verification Request Status History
@@ -158074,7 +165062,7 @@ Returns a paginated list of historical status changes including the reason for e
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-verified-numbers">Verified Numbers</h1>
@@ -158178,7 +165166,7 @@ Gets a paginated list of Verified Numbers.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Request phone number verification
@@ -158292,7 +165280,7 @@ Initiates phone number verification procedure. Supports DTMF extension dialing f
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a verified number
@@ -158384,7 +165372,7 @@ Retrieve the details of a verified number on your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a verified number
@@ -158477,7 +165465,7 @@ Remove a verified number from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit verification code
@@ -158599,7 +165587,7 @@ Submit the verification code received via the selected verification method to ve
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-verify">Verify</h1>
@@ -158683,7 +165671,7 @@ Returns a paginated list of verifications associated with the specified phone nu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Verify verification code by phone number
@@ -158765,7 +165753,7 @@ Submits a verification code for the specified phone number and Verify profile. T
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Trigger Call verification
@@ -158862,7 +165850,7 @@ Starts a verification for the specified phone number and delivers its code in a 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Trigger Flash call verification
@@ -158953,7 +165941,7 @@ Starts a verification for the specified phone number and places a brief call wit
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Trigger SMS verification
@@ -159048,7 +166036,7 @@ Starts a verification for the specified phone number and sends its code by SMS u
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Trigger WhatsApp verification
@@ -159143,7 +166131,7 @@ Starts a verification for the specified phone number and sends its code over Wha
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve verification
@@ -159215,7 +166203,7 @@ Returns the verification identified by ID, including its channel, phone number, 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Verify verification code by ID
@@ -159304,7 +166292,7 @@ Checks the supplied code, or the supplied status for a custom-code verification,
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all Verify profiles
@@ -159423,7 +166411,7 @@ Gets a paginated list of Verify profiles.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Verify profile
@@ -159644,7 +166632,7 @@ Creates a new Verify profile to associate verifications with.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve Verify profile message templates
@@ -159722,7 +166710,7 @@ List all Verify profile message templates.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create message template
@@ -159800,7 +166788,7 @@ Create a new Verify profile message template.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update message template
@@ -159879,7 +166867,7 @@ Update an existing Verify profile message template.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve Verify profile
@@ -159989,7 +166977,7 @@ Returns the details of a single Verify profile by its ID, including its verifica
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Verify profile
@@ -160100,7 +167088,7 @@ Deletes the specified Verify profile and returns the deleted profile record.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Verify profile
@@ -160305,7 +167293,7 @@ Updates the specified Verify profile's name, webhook destinations, language, dai
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-virtual-cross-connects">Virtual Cross Connects</h1>
@@ -160436,7 +167424,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Virtual Cross Connect
@@ -160614,7 +167602,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Virtual Cross Connect Cloud Coverage
@@ -160733,7 +167721,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a Virtual Cross Connect
@@ -160850,7 +167838,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Virtual Cross Connect
@@ -160968,7 +167956,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update the Virtual Cross Connect
@@ -161112,7 +168100,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Virtual Cross Connect Cloud Coverage
@@ -161227,7 +168215,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-voice-channels">Voice Channels</h1>
@@ -161330,7 +168318,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update voice channels for non-US Zones
@@ -161440,7 +168428,7 @@ Update the number of Voice Channels for the Non-US Zones. This allows your accou
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List your voice channels for US Zone
@@ -161493,7 +168481,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update voice channels for US Zone
@@ -161594,7 +168582,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List All Numbers using Channel Billing
@@ -161667,7 +168655,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Numbers using Channel Billing for a specific Zone
@@ -161746,7 +168734,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-voice-clones">Voice Clones</h1>
@@ -161861,7 +168849,7 @@ Returns a paginated list of voice clones belonging to the authenticated account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a voice clone from a voice design
@@ -162005,7 +168993,7 @@ Creates a new voice clone by capturing the voice identity of an existing voice d
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a voice clone from an audio file upload
@@ -162194,7 +169182,7 @@ provider: telnyx
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a voice clone
@@ -162260,7 +169248,7 @@ Permanently deletes a voice clone. This action cannot be undone.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a voice clone
@@ -162391,7 +169379,7 @@ Updates the name, language, or gender of a voice clone.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Download voice clone audio sample
@@ -162456,7 +169444,7 @@ Downloads the WAV audio sample that was used to create the voice clone.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-voice-designs">Voice Designs</h1>
@@ -162548,7 +169536,7 @@ Returns a paginated list of voice designs belonging to the authenticated account
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create or add a version to a voice design
@@ -162723,7 +169711,7 @@ Creates a new voice design (version 1) when `voice_design_id` is omitted. When `
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a voice design
@@ -162813,7 +169801,7 @@ Returns the latest version of a voice design, or a specific version when `?versi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a voice design
@@ -162879,7 +169867,7 @@ Permanently deletes a voice design and all of its versions. This action cannot b
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Rename a voice design
@@ -162988,7 +169976,7 @@ Updates the name of a voice design. All versions retain their other properties.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Download voice design audio sample
@@ -163054,7 +170042,7 @@ Downloads the WAV audio sample for the voice design. Returns the latest version'
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a specific version of a voice design
@@ -163136,7 +170124,7 @@ Permanently deletes a specific version of a voice design. The version number mus
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-voice-sdk-stats">Voice SDK Stats</h1>
@@ -163338,7 +170326,7 @@ Returns paginated raw call report stats JSON payloads stored for the authenticat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve Voice SDK call reports by call ID
@@ -163540,7 +170528,7 @@ Returns raw call report stats JSON payloads stored for the authenticated user an
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-voicemail">Voicemail</h1>
@@ -163605,7 +170593,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create voicemail
@@ -163702,7 +170690,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update voicemail
@@ -163799,7 +170787,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-web-search">Web Search</h1>
@@ -163982,7 +170970,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-webhooks">Webhooks</h1>
@@ -164126,7 +171114,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Find webhook_delivery details by ID
@@ -164256,7 +171244,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-whatsapp-business-accounts">Whatsapp Business Accounts</h1>
@@ -164350,7 +171338,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a single Whatsapp Business Account
@@ -164431,7 +171419,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Whatsapp Business Account
@@ -164486,7 +171474,7 @@ Unlinks and deletes the specified WhatsApp Business Account resource from Telnyx
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List phone numbers for a WABA
@@ -164588,7 +171576,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get WABA settings
@@ -164670,7 +171658,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update WABA settings
@@ -164786,7 +171774,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch Whatsapp user data
@@ -164856,7 +171844,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Whatsapp user data
@@ -164949,7 +171937,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Whatsapp Business Accounts
@@ -165039,7 +172027,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a single Whatsapp Business Account
@@ -165120,7 +172108,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Whatsapp Business Account
@@ -165175,7 +172163,7 @@ Delete a WhatsApp Business Account connection from your Telnyx account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List phone numbers for a WABA
@@ -165277,7 +172265,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get WABA settings
@@ -165359,7 +172347,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update WABA settings
@@ -165475,7 +172463,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-whatsapp-message-templates">Whatsapp Message Templates</h1>
@@ -165587,7 +172575,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Whatsapp message template
@@ -165741,7 +172729,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Whatsapp message template by ID
@@ -165828,7 +172816,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Whatsapp message template
@@ -165883,7 +172871,7 @@ Deletes the specified WhatsApp message template.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Whatsapp message template
@@ -166029,7 +173017,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Whatsapp message templates
@@ -166137,7 +173125,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Whatsapp message template
@@ -166291,7 +173279,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Whatsapp message template by ID
@@ -166378,7 +173366,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Whatsapp message template
@@ -166433,7 +173421,7 @@ Permanently deletes the specified WhatsApp message template from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Whatsapp message template
@@ -166579,7 +173567,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-whatsapp-phone-numbers">Whatsapp Phone Numbers</h1>
@@ -166668,7 +173656,7 @@ Starts verification of a phone number for the specified WhatsApp Business Accoun
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Whatsapp phone numbers
@@ -166769,7 +173757,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a WhatsApp phone number
@@ -166861,7 +173849,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Whatsapp phone number
@@ -166916,7 +173904,7 @@ Removes the specified phone number from Telnyx WhatsApp management.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get calling settings for a phone number
@@ -166991,7 +173979,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Enable or disable Whatsapp calling for a phone number
@@ -167081,7 +174069,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get conversation window status for a phone number
@@ -167157,7 +174145,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get phone number conversational components
@@ -167239,7 +174227,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update phone number conversational components
@@ -167355,7 +174343,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get phone number business profile
@@ -167440,7 +174428,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update phone number business profile
@@ -167561,7 +174549,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Whatsapp profile photo
@@ -167627,7 +174615,7 @@ Returns the current business-profile photo for the specified WhatsApp phone numb
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Upload Whatsapp profile photo
@@ -167722,7 +174710,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Whatsapp profile photo
@@ -167777,7 +174765,7 @@ Removes the business-profile photo from the specified WhatsApp phone number.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Resend verification code
@@ -167853,7 +174841,7 @@ Requests a new verification code for the specified WhatsApp phone number.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit verification code for a phone number
@@ -167922,7 +174910,7 @@ Submits the verification code received for the specified WhatsApp phone number.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Initialize Whatsapp phone number verification
@@ -168007,7 +174995,7 @@ Start the verification process to register a phone number with a WhatsApp Busine
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Whatsapp phone numbers
@@ -168108,7 +175096,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Connection ID for a WhatsApp Calling BYON number
@@ -168229,7 +175217,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Connection ID for a WhatsApp Calling BYON number
@@ -168380,7 +175368,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a WhatsApp phone number
@@ -168472,7 +175460,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Whatsapp phone number
@@ -168527,7 +175515,7 @@ Delete a phone number's WhatsApp registration from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get calling settings for a phone number
@@ -168602,7 +175590,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Enable or disable Whatsapp calling for a phone number
@@ -168692,7 +175680,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get conversation window status for a phone number
@@ -168768,7 +175756,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get phone number conversational components
@@ -168850,7 +175838,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update phone number conversational components
@@ -168966,7 +175954,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get phone number business profile
@@ -169051,7 +176039,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update phone number business profile
@@ -169172,7 +176160,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Whatsapp profile photo
@@ -169238,7 +176226,7 @@ Retrieve the profile photo of a WhatsApp phone number.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Upload Whatsapp profile photo
@@ -169333,7 +176321,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Whatsapp profile photo
@@ -169388,7 +176376,7 @@ Delete the profile photo of a WhatsApp phone number.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Resend verification code
@@ -169464,7 +176452,7 @@ Resend the verification code for a phone number that is being registered with Wh
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Submit verification code for a phone number
@@ -169533,7 +176521,7 @@ Submit the verification code to complete WhatsApp registration of a phone number
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-whatsapp-messaging">Whatsapp messaging</h1>
@@ -170375,7 +177363,7 @@ Sends a WhatsApp message using a Telnyx WhatsApp-enabled number. The message bod
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-wireguard-interfaces">WireGuard Interfaces</h1>
@@ -170493,7 +177481,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a WireGuard Interface
@@ -170617,7 +177605,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a WireGuard Interfaces
@@ -170721,7 +177709,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a WireGuard Interface
@@ -170826,7 +177814,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List all WireGuard Peers
@@ -170932,7 +177920,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a WireGuard Peer
@@ -171042,7 +178030,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve the WireGuard Peer
@@ -171138,7 +178126,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete the WireGuard Peer
@@ -171235,7 +178223,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update the WireGuard Peer
@@ -171343,7 +178331,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve Wireguard config template for Peer
@@ -171414,7 +178402,7 @@ Retrieve Wireguard config template for Peer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-wireless-blocklists">Wireless Blocklists</h1>
@@ -171519,7 +178507,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get all Wireless Blocklists
@@ -171609,7 +178597,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Wireless Blocklist
@@ -171738,7 +178726,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Wireless Blocklist
@@ -171831,7 +178819,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a Wireless Blocklist
@@ -171915,7 +178903,7 @@ Permanently deletes the specified wireless blocklist from your account. The requ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a Wireless Blocklist
@@ -172034,7 +179022,7 @@ Status Code **202**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-wireless-regions">Wireless Regions</h1>
@@ -172127,7 +179115,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-cloudfs-filesystems">cloudfs filesystems</h1>
@@ -172274,7 +179262,7 @@ Lists the CloudFS filesystems for the authenticated user's organization. Results
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a CloudFS filesystem
@@ -172456,7 +179444,7 @@ Creates a CloudFS filesystem. Provisioning is synchronous — typically a few se
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a CloudFS filesystem
@@ -172587,7 +179575,7 @@ Retrieves a CloudFS filesystem by its ID. The returned `meta_url` omits the cred
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a CloudFS filesystem
@@ -172737,7 +179725,7 @@ Permanently deletes a CloudFS filesystem, removing its S3 bucket and its metadat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a CloudFS filesystem
@@ -172901,7 +179889,7 @@ Updates a CloudFS filesystem. Only `name` can be changed; other fields are immut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Rotate the metadata token
@@ -173077,7 +180065,7 @@ Issues a new metadata access token for the filesystem and returns the full files
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-functions">functions</h1>
@@ -173200,7 +180188,7 @@ List functions for the authenticated organization. Each function includes its pe
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get function logs
@@ -173346,7 +180334,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get log export configuration
@@ -173474,7 +180462,7 @@ Returns the function's configured log export destination and which log types are
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Configure log export destination
@@ -173652,7 +180640,7 @@ The endpoint must be an HTTPS URL. When export is configured, new log records ar
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete log export configuration
@@ -173763,7 +180751,7 @@ Stops exporting a function's logs and removes its destination configuration. Ide
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get function metric aggregates
@@ -173846,7 +180834,7 @@ Returns aggregate request, latency, CPU, memory, and resource-limit metrics for 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List function revisions
@@ -173927,7 +180915,7 @@ Lists a function's ship history newest first, including per-ship failure stage a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Inspect latest function ship
@@ -173980,7 +180968,7 @@ Returns the latest ship outcome. The stage is `none` on success, `pending` while
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-kv-keys">kv keys</h1>
@@ -174003,7 +180991,7 @@ curl https://api.telnyx.com/v2/storage/kvs/497f6eca-6276-4993-bfeb-53cbbbba6f08/
 
 Lists the keys in a namespace. Returns key names and metadata only, never values. Results are paginated with `limit` and an opaque `cursor`.
 
-<h3 id="list-keys-parameters">Parameters</h3>
+<h3 id="list-keys-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -174122,7 +181110,7 @@ Lists the keys in a namespace. Returns key names and metadata only, never values
 }
 ```
 
-<h3 id="list-keys-responses">Responses</h3>
+<h3 id="list-keys-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -174135,7 +181123,7 @@ Lists the keys in a namespace. Returns key names and metadata only, never values
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a key's value
@@ -174265,7 +181253,7 @@ Returns the raw stored value for a key. The response body is the value exactly a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Set a key's value
@@ -174443,7 +181431,7 @@ my-value
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a key
@@ -174463,7 +181451,7 @@ curl https://api.telnyx.com/v2/storage/kvs/497f6eca-6276-4993-bfeb-53cbbbba6f08/
 
 Deletes a key. Idempotent: deleting a key that does not exist still succeeds. The namespace itself must exist and be provisioned.
 
-<h3 id="delete-a-key-parameters">Parameters</h3>
+<h3 id="delete-a-key-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -174561,7 +181549,7 @@ Deletes a key. Idempotent: deleting a key that does not exist still succeeds. Th
 }
 ```
 
-<h3 id="delete-a-key-responses">Responses</h3>
+<h3 id="delete-a-key-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -174574,7 +181562,7 @@ Deletes a key. Idempotent: deleting a key that does not exist still succeeds. Th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-kv-namespaces">kv namespaces</h1>
@@ -174677,7 +181665,7 @@ Lists the KV namespaces for the authenticated user's organization. Results use p
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a KV namespace
@@ -174817,7 +181805,7 @@ Creates a new KV namespace. Provisioning is asynchronous: the namespace is retur
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a KV namespace
@@ -174943,7 +181931,7 @@ Retrieves a KV namespace by its ID, including its provisioning status.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a KV namespace
@@ -175088,7 +182076,7 @@ Deletes a KV namespace and all of the keys it contains. Deletion is asynchronous
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-sql-databases">sql databases</h1>
@@ -175228,7 +182216,7 @@ Lists the SQL databases for the authenticated user's organization. Results use p
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a SQL database
@@ -175386,7 +182374,7 @@ Creates a new SQL database. Provisioning is asynchronous: the database is return
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a SQL database
@@ -175512,7 +182500,7 @@ Retrieves a SQL database by its ID, including its provisioning status.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a SQL database
@@ -175661,7 +182649,7 @@ Deletes a SQL database and all of the data it holds. Deletion is asynchronous an
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Run SQL against a SQL database
@@ -175870,7 +182858,7 @@ Runs SQL against the database and returns the resulting rows — empty for state
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-stateful-actors">stateful actors</h1>
@@ -176024,7 +183012,7 @@ Retrieve one account-scoped Stateful Actor type. owner_function_id identifies th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-x402-payment-transactions">x402 Payment Transactions</h1>
@@ -176221,7 +183209,7 @@ Settles an x402 payment using the quote ID and a signed payment authorization. T
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List x402 payments
@@ -176324,7 +183312,7 @@ Returns a paginated list of the authenticated user's x402 payment transactions, 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get an x402 payment
@@ -176428,7 +183416,7 @@ Returns a single x402 payment transaction by ID. The transaction must belong to 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a payment quote
@@ -176576,7 +183564,7 @@ Creates a payment quote for the specified USD amount. Returns payment details in
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-oauth-discovery">OAuth Discovery</h1>
@@ -176827,7 +183815,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-shared-campaigns">Shared Campaigns</h1>
@@ -176923,7 +183911,7 @@ from the response from this endpoint.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Sharing Status
@@ -177008,7 +183996,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Shared Campaigns
@@ -177152,7 +184140,7 @@ This endpoint is currently limited to only returning shared campaigns that Telny
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Single Shared Campaign
@@ -177269,7 +184257,7 @@ Retrieve campaign details by `campaignId`.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Single Shared Campaign
@@ -177404,7 +184392,7 @@ Update campaign details by `campaignId`. **Please note:** Only webhook urls are 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-advanced-number-orders">Advanced Number Orders</h1>
@@ -177561,7 +184549,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create Advanced Order
@@ -177765,7 +184753,7 @@ Creates an advanced number order from the requested order configuration. The res
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update Advanced Order
@@ -177970,7 +184958,7 @@ Updates the requirement-group configuration for the specified advanced number or
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Advanced Order
@@ -178119,7 +185107,7 @@ Returns the advanced number order identified by `order_id`, including its config
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-anthropic-messages">Anthropic Messages</h1>
@@ -178263,7 +185251,7 @@ The endpoint translates Anthropic-format requests into Telnyx's inference intern
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-audio">Audio</h1>
@@ -178390,7 +185378,7 @@ model_config:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-integrations">Integrations</h1>
@@ -178459,7 +185447,7 @@ Returns the list of third-party integrations available to connect to your AI ass
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List User Integrations
@@ -178522,7 +185510,7 @@ Returns the list of integration connections you have set up, linking your accoun
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get User Integration connection By Id
@@ -178589,7 +185577,7 @@ Returns the details of a single integration connection by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete Integration Connection
@@ -178642,7 +185630,7 @@ Delete a specific integration connection.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Integration By Id
@@ -178711,7 +185699,7 @@ Returns the details of a single available integration, including its configurati
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mcp-servers">MCP Servers</h1>
@@ -178732,7 +185720,7 @@ curl https://api.telnyx.com/v2/ai/mcp_servers \
 
 Returns a paginated list of the MCP servers configured on your account, with optional filtering by type or URL.
 
-<h3 id="list-mcp-servers-parameters">Parameters</h3>
+<h3 id="list-mcp-servers-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -178774,7 +185762,7 @@ Returns a paginated list of the MCP servers configured on your account, with opt
 }
 ```
 
-<h3 id="list-mcp-servers-responses">Responses</h3>
+<h3 id="list-mcp-servers-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -178783,7 +185771,7 @@ Returns a paginated list of the MCP servers configured on your account, with opt
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create MCP Server
@@ -178958,7 +185946,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get MCP Server
@@ -179023,7 +186011,7 @@ Retrieve details for a specific MCP server.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update MCP Server
@@ -179117,7 +186105,7 @@ Updates the specified MCP server's configuration and returns the updated server.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete MCP Server
@@ -179188,7 +186176,7 @@ Permanently deletes the specified MCP server configuration from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-namespaces">Namespaces</h1>
@@ -179271,7 +186259,7 @@ Every namespace in your organization, `default` among them.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a namespace
@@ -179384,7 +186372,7 @@ Create a namespace. An organization can have at most five, `default` among them 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete a namespace
@@ -179473,7 +186461,7 @@ Delete a namespace and every profile and memory in it. `default` cannot be delet
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-missions">Missions</h1>
@@ -179554,7 +186542,7 @@ Returns a paginated list of all mission definitions in your organization. Missio
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create mission
@@ -179658,7 +186646,7 @@ Creates a new mission definition from the provided configuration and returns the
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List recent events
@@ -179738,7 +186726,7 @@ Returns a paginated list of recent events across every mission in your organizat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List recent runs
@@ -179815,7 +186803,7 @@ Returns a paginated list of recent runs across every mission in your organizatio
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get mission
@@ -179885,7 +186873,7 @@ Get a mission by ID (includes tools, knowledge_bases, mcp_servers)
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update mission
@@ -179990,7 +186978,7 @@ Replaces the specified mission's definition with the provided configuration and 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete mission
@@ -180043,7 +187031,7 @@ Permanently deletes the specified mission definition and returns no content on s
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Clone mission
@@ -180103,7 +187091,7 @@ Creates a copy of the specified mission as a new mission definition, so you can 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List knowledge bases
@@ -180162,7 +187150,7 @@ Returns the knowledge bases attached to the specified mission. Knowledge bases p
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create knowledge base
@@ -180222,7 +187210,7 @@ Create a new knowledge base for a mission
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get knowledge base
@@ -180282,7 +187270,7 @@ Returns the details of a single knowledge base attached to the specified mission
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update knowledge base
@@ -180343,7 +187331,7 @@ Replaces the definition of the specified knowledge base on this mission.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete knowledge base
@@ -180397,7 +187385,7 @@ Detaches the specified knowledge base from the mission so its content is no long
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List MCP servers
@@ -180416,7 +187404,7 @@ curl https://api.telnyx.com/v2/ai/missions/string/mcp-servers \
 
 Returns the MCP servers configured on the specified mission. MCP servers expose external tools and data sources agents can use during runs.
 
-<h3 id="list-mcp-servers-1-parameters">Parameters</h3>
+<h3 id="list-mcp-servers-2-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -180447,7 +187435,7 @@ Returns the MCP servers configured on the specified mission. MCP servers expose 
 }
 ```
 
-<h3 id="list-mcp-servers-1-responses">Responses</h3>
+<h3 id="list-mcp-servers-2-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -180456,7 +187444,7 @@ Returns the MCP servers configured on the specified mission. MCP servers expose 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create MCP server
@@ -180516,7 +187504,7 @@ Adds an MCP server to the specified mission, making the server's tools available
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get MCP server
@@ -180576,7 +187564,7 @@ Returns the configuration of a single MCP server attached to the specified missi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update MCP server
@@ -180637,7 +187625,7 @@ Replaces the configuration of the specified MCP server on this mission.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete MCP server
@@ -180691,7 +187679,7 @@ Removes the specified MCP server from the mission, revoking agent access to its 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List runs for mission
@@ -180769,7 +187757,7 @@ Returns a paginated list of runs for the specified mission, optionally filtered 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Start a run
@@ -180862,7 +187850,7 @@ Starts a new run of the specified mission and returns the created run object. Tr
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get run details
@@ -180930,7 +187918,7 @@ Returns the full details of a single run, including its current status. Use this
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update run
@@ -181032,7 +188020,7 @@ Updates a run's status and/or result and returns the updated run object. Typical
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Cancel run
@@ -181103,7 +188091,7 @@ Cancels a running or paused run and returns the updated run object. A cancelled 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List events
@@ -181187,7 +188175,7 @@ Returns a paginated list of events logged for the specified run, filterable by e
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Log event
@@ -181300,7 +188288,7 @@ Logs a new event against the specified run and returns the created event. Events
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get event details
@@ -181372,7 +188360,7 @@ Returns the details of a single event logged for the specified run, including it
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Pause run
@@ -181441,7 +188429,7 @@ Pauses a currently running run and returns the updated run object. Execution hal
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get plan
@@ -181513,7 +188501,7 @@ Returns the plan for the specified run, including all plan steps and their statu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create initial plan
@@ -181614,7 +188602,7 @@ Creates the initial plan for the specified run from the provided steps and retur
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Add step(s) to plan
@@ -181715,7 +188703,7 @@ Add one or more steps to an existing plan
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get step details
@@ -181786,7 +188774,7 @@ Returns the details of a single plan step within a run's plan, including its sta
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update step status
@@ -181883,7 +188871,7 @@ Updates the status of a single plan step and returns the updated step. Typically
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Resume run
@@ -181952,7 +188940,7 @@ Resumes a previously paused run and returns the updated run object, letting exec
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List linked Telnyx agents
@@ -182020,7 +189008,7 @@ Returns the Telnyx agents currently linked to the specified run. Linked agents p
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Link Telnyx agent to run
@@ -182101,7 +189089,7 @@ Link a Telnyx AI agent (voice/messaging) to a run
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Unlink Telnyx agent
@@ -182156,7 +189144,7 @@ Unlinks the specified Telnyx agent from the run so it no longer participates in 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List tools
@@ -182215,7 +189203,7 @@ Returns the tools configured on the specified mission. Tools define the actions 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create tool
@@ -182275,7 +189263,7 @@ Adds a new tool to the specified mission, defining an action agents can invoke d
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get tool
@@ -182335,7 +189323,7 @@ Returns the definition of a single tool configured on the specified mission.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update tool
@@ -182396,7 +189384,7 @@ Replaces the definition of the specified tool on this mission.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete tool
@@ -182450,7 +189438,7 @@ Removes the specified tool from the mission so agents can no longer invoke it in
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-openai-chat">OpenAI Chat</h1>
@@ -182614,7 +189602,7 @@ Chat with a language model. This endpoint is consistent with the [OpenAI Chat Co
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get available models (OpenAI-compatible)
@@ -182712,7 +189700,7 @@ Model ids follow the `{organization}/{model_name}` convention from Hugging Face 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an OpenAI-compatible response
@@ -182870,7 +189858,7 @@ You can attach arbitrary metadata when creating a conversation (for example to t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-messaging">Messaging</h1>
@@ -182971,7 +189959,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create an alphanumeric sender ID
@@ -183079,7 +190067,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an alphanumeric sender ID
@@ -183167,7 +190155,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete an alphanumeric sender ID
@@ -183256,7 +190244,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List messaging hosted numbers
@@ -183371,7 +190359,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Regenerate messaging profile secret
@@ -183488,7 +190476,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List alphanumeric sender IDs for a messaging profile
@@ -183587,7 +190575,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get detailed messaging profile metrics
@@ -183693,7 +190681,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List messaging hosted numbers
@@ -183808,7 +190796,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a messaging hosted number
@@ -183917,7 +190905,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update a messaging hosted number
@@ -184045,7 +191033,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List high-level messaging profile metrics
@@ -184146,7 +191134,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Regenerate messaging profile secret
@@ -184271,7 +191259,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List alphanumeric sender IDs for a messaging profile
@@ -184370,7 +191358,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get detailed messaging profile metrics
@@ -184476,7 +191464,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-authentication-providers">Authentication Providers</h1>
@@ -184601,7 +191589,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Creates an authentication provider
@@ -184721,7 +191709,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve an authentication provider
@@ -184819,7 +191807,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deletes an authentication provider
@@ -184918,7 +191906,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update an authentication provider
@@ -185051,7 +192039,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-bundles">Bundles</h1>
@@ -185194,7 +192182,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Bundle By Id
@@ -185339,7 +192327,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-user-bundles">User Bundles</h1>
@@ -185490,7 +192478,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create User Bundles
@@ -185709,7 +192697,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Unused User Bundles
@@ -185849,7 +192837,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get User Bundle by Id
@@ -185989,7 +192977,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Deactivate User Bundle
@@ -186154,7 +193142,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get User Bundle Resources
@@ -186280,7 +193268,7 @@ Status Code **default**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-default">Default</h1>
@@ -186400,7 +193388,7 @@ Retrieve a detailed breakdown of monthly charges for phone numbers in a specifie
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get monthly charges summary
@@ -186536,7 +193524,7 @@ Retrieve a summary of monthly charges for a specified date range. The date range
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List invoices
@@ -186645,7 +193633,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get invoice by ID
@@ -186772,7 +193760,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mobile-number-settings">Mobile Number Settings</h1>
@@ -186871,7 +193859,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a mobile phone number with messaging settings
@@ -186959,7 +193947,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-coverage">Coverage</h1>
@@ -187071,7 +194059,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-phone-number-block-orders">Phone Number Block Orders</h1>
@@ -187237,7 +194225,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a number block order
@@ -187411,7 +194399,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a number block order
@@ -187565,7 +194553,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-numbers-features">numbers features</h1>
@@ -187717,7 +194705,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-oauth-protocol">OAuth Protocol</h1>
@@ -187846,7 +194834,7 @@ Retrieve details about an OAuth consent token
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create OAuth grant
@@ -187916,7 +194904,7 @@ Creates an OAuth authorization grant and returns the grant response for completi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Token introspection
@@ -188423,7 +195411,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create OAuth client
@@ -188579,7 +195567,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get OAuth client
@@ -188659,7 +195647,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update OAuth client
@@ -188805,7 +195793,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete OAuth client
@@ -188851,7 +195839,7 @@ Permanently deletes the specified OAuth client from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List OAuth clients
@@ -188957,7 +195945,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create OAuth client
@@ -189113,7 +196101,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get OAuth client
@@ -189193,7 +196181,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Update OAuth client
@@ -189339,7 +196327,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delete OAuth client
@@ -189385,7 +196373,7 @@ Permanently deletes the specified OAuth client from your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-oauth-grants">OAuth Grants</h1>
@@ -189476,7 +196464,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get OAuth grant
@@ -189545,7 +196533,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Revoke OAuth grant
@@ -189615,7 +196603,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List OAuth grants
@@ -189704,7 +196692,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get OAuth grant
@@ -189773,7 +196761,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Revoke OAuth grant
@@ -189843,7 +196831,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-csv-downloads">CSV Downloads</h1>
@@ -190000,7 +196988,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a CSV download
@@ -190158,7 +197146,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Retrieve a CSV download
@@ -190306,7 +197294,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mdr-detail-reports">MDR Detail Reports</h1>
@@ -190412,7 +197400,7 @@ Returns message detail records (MDRs) matching the provided criteria, such as da
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-wdr-detail-reports">WDR Detail Reports</h1>
@@ -190519,7 +197507,7 @@ Returns wireless detail records (WDRs) matching the provided criteria, such as d
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-whatsapp-signup">Whatsapp Signup</h1>
@@ -190608,7 +197596,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Create a Whatsapp hosted signup
@@ -190727,7 +197715,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get a Whatsapp hosted signup
@@ -190820,7 +197808,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## List Whatsapp signup sessions
@@ -190916,7 +197904,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Get Whatsapp signup session status
@@ -191014,7 +198002,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-webhooks-1">Webhooks</h1>
@@ -191083,7 +198071,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call AI Gather Message History Updated
@@ -191145,7 +198133,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call AI Gather Partial Results
@@ -191211,7 +198199,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML AI Gather
@@ -191262,7 +198250,7 @@ To: "+13129457420"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Call AMD
@@ -191319,7 +198307,7 @@ MachineDetectionDuration: "2500"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Call Answered
@@ -191401,7 +198389,7 @@ To: "+13129457420"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Call Completed
@@ -191526,7 +198514,7 @@ UserId: f5586561-8ff0-4291-a51b-c7dfe4139ff9
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Call DTMF
@@ -191604,7 +198592,7 @@ To: "+13129457420"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Call Initiated
@@ -191680,7 +198668,7 @@ To: "+13129457420"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Call Ringing
@@ -191758,7 +198746,7 @@ To: "+13129457420"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Conference End
@@ -191827,7 +198815,7 @@ ToSipUri: "sip:conference@example.com"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Conference Join
@@ -191896,7 +198884,7 @@ ToSipUri: "sip:conference@example.com"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Conference Leave
@@ -191965,7 +198953,7 @@ ToSipUri: "sip:conference@example.com"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Conference Speaker
@@ -192035,7 +199023,7 @@ ToSipUri: "sip:conference@example.com"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Conference Start
@@ -192104,7 +199092,7 @@ ToSipUri: "sip:conference@example.com"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Gather
@@ -192153,7 +199141,7 @@ To: "+12132045020"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML HTTP Request
@@ -192200,7 +199188,7 @@ To: "+13129457420"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Queue
@@ -192255,7 +199243,7 @@ To: "+13129457420"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Recording Completed
@@ -192316,7 +199304,7 @@ RecordingUrl: "https://recording.com/your-recording-url"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Recording In-Progress
@@ -192373,7 +199361,7 @@ RecordingStatus: in-progress
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Refer Status
@@ -192429,7 +199417,7 @@ Timestamp: "2024-01-15T10:30:00Z"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML SIPREC
@@ -192482,7 +199470,7 @@ Timestamp: "2024-01-15T10:30:00Z"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Stream
@@ -192539,7 +199527,7 @@ Timestamp: "2024-01-15T10:30:00Z"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## TeXML Transcription
@@ -192594,7 +199582,7 @@ TranscriptionText: "Good morning, how may I help you?"
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## artifact.completed
@@ -192844,7 +199832,7 @@ Delivered after an AI assistant conversation ends and post-call processing compl
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Answered
@@ -192898,7 +199886,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Bridged
@@ -192950,7 +199938,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Conversation Created
@@ -193008,7 +199996,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Conversation Ended
@@ -193083,7 +200071,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Conversation Insights Generated
@@ -193141,7 +200129,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Conversation Start Failed
@@ -193196,7 +200184,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Cost
@@ -193274,7 +200262,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Deepfake Detection Error
@@ -193325,7 +200313,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Deepfake Detection Result
@@ -193378,7 +200366,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Dtmf Received
@@ -193431,7 +200419,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Enqueued
@@ -193483,7 +200471,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Fork Started
@@ -193534,7 +200522,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Fork Stopped
@@ -193585,7 +200573,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Gather Ended
@@ -193639,7 +200627,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Hangup
@@ -193709,7 +200697,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Hold
@@ -193761,7 +200749,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Initiated
@@ -193815,7 +200803,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Left Queue
@@ -193868,7 +200856,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Machine Detection Ended
@@ -193920,7 +200908,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Machine Greeting Ended
@@ -193972,7 +200960,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Machine Premium Call Screening Detected
@@ -194025,7 +201013,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Machine Premium Detection Ended
@@ -194077,7 +201065,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Machine Premium Detection Started
@@ -194129,7 +201117,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Machine Premium Greeting Ended
@@ -194181,7 +201169,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Payment Completed
@@ -194242,7 +201230,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Payment Progress
@@ -194300,7 +201288,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Playback Ended
@@ -194353,7 +201341,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Playback Started
@@ -194405,7 +201393,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Recording Error
@@ -194455,7 +201443,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Recording Saved
@@ -194515,7 +201503,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Recording Transcription Saved
@@ -194570,7 +201558,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Refer Completed
@@ -194623,7 +201611,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Refer Failed
@@ -194676,7 +201664,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Refer Started
@@ -194729,7 +201717,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Siprec Failed
@@ -194780,7 +201768,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Siprec Started
@@ -194830,7 +201818,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Siprec Stopped
@@ -194881,7 +201869,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Speak Ended
@@ -194932,7 +201920,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Speak Started
@@ -194982,7 +201970,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Streaming Failed
@@ -195039,7 +202027,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Streaming Started
@@ -195090,7 +202078,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Streaming Stopped
@@ -195141,7 +202129,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Call Unhold
@@ -195193,7 +202181,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Campaign Status Update
@@ -195263,7 +202251,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Created
@@ -195314,7 +202302,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Ended
@@ -195366,7 +202354,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Floor Changed
@@ -195432,7 +202420,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Participant Joined
@@ -195483,7 +202471,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Participant Left
@@ -195534,7 +202522,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Participant Playback Ended
@@ -195587,7 +202575,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Participant Playback Started
@@ -195640,7 +202628,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Participant Speak Ended
@@ -195692,7 +202680,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Participant Speak Started
@@ -195744,7 +202732,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Playback Ended
@@ -195793,7 +202781,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Playback Started
@@ -195842,7 +202830,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Recording Saved
@@ -195904,7 +202892,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Speak Ended
@@ -195952,7 +202940,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Conference Speak Started
@@ -196000,7 +202988,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Delivery Update
@@ -196112,7 +203100,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fax Delivered
@@ -196202,7 +203190,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fax Failed
@@ -196292,7 +203280,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fax Media Processed
@@ -196378,7 +203366,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fax Queued
@@ -196464,7 +203452,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fax Sending Started
@@ -196550,7 +203538,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Hosted Number Order Event
@@ -196607,7 +203595,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Inbound Message
@@ -196705,7 +203693,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Number Order Status Update
@@ -196800,7 +203788,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Ownership verification reviewed
@@ -196877,7 +203865,7 @@ Sent to the enterprise's ownership webhook URL (`PATCH /enterprises/{enterprise_
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Number ownership needs confirmation
@@ -196961,7 +203949,7 @@ Sent to the enterprise's ownership webhook URL (`PATCH /enterprises/{enterprise_
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Number removed for an ownership reason
@@ -197047,7 +204035,141 @@ Sent to the enterprise's ownership webhook URL (`PATCH /enterprises/{enterprise_
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
+</aside>
+
+## recording.export_failed
+
+<a id="opIdMeetingRecordingExportFailedWebhook"></a>
+
+`POST recordingExportFailed`
+
+Sent when a customer Storage recording export fails terminally. Uses the same signed envelope and retry contract as other meeting webhooks. Applies to recordings exported to customer Storage buckets.
+
+> Body parameter
+
+```json
+{
+  "id": "whdel_9f2c...",
+  "event": "recording.export_failed",
+  "version": "1",
+  "occurred_at": "2026-06-16T09:06:00Z",
+  "data": {
+    "session_id": "mtgsess_example",
+    "type": "video",
+    "bucket": "meeting-recordings",
+    "region": "us-central-1",
+    "key": "weekly-planning/recording.mp4",
+    "reason": "storage_unavailable"
+  }
+}
+```
+
+<h3 id="recordingexportfailed-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Meeting-Bot-Signature|header|string|true|Signature header `t=<unix-seconds>,v1=<hex>`. Compute HMAC-SHA256 with the webhook secret over the timestamp ASCII bytes, a literal `.` byte, and the exact raw request-body bytes; hex-encode and compare `v1` in constant time. Reject timestamps outside your accepted skew. No bearer token is sent.|
+|body|body|object|true|none|
+|» id|body|string|true|Unique event id; deduplicate deliveries on it.|
+|» event|body|string|true|Event type.|
+|» version|body|string|true|Envelope version.|
+|» occurred_at|body|string(date-time)|true|When the event occurred.|
+|» data|body|object|true|none|
+|» » session_id|body|string|true|none|
+|» » type|body|string|true|none|
+|» » bucket|body|string|true|none|
+|» » region|body|string|true|none|
+|» » key|body|string|true|none|
+|» » reason|body|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» event|recording.export_failed|
+|» » reason|invalid_target|
+|» » reason|invalid_media|
+|» » reason|source_changed|
+|» » reason|source_unavailable|
+|» » reason|too_large|
+|» » reason|storage_unavailable|
+|» » reason|object_conflict|
+|» » reason|verification_failed|
+|» » reason|worker_lost|
+|» » reason|internal_error|
+
+<h3 id="recordingexportfailed-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Return any 2xx status promptly to acknowledge the delivery; non-2xx responses and timeouts are retried.|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## recording.exported
+
+<a id="opIdMeetingRecordingExportedWebhook"></a>
+
+`POST recordingExported`
+
+Sent after a customer Storage recording export is verified. Uses the same signed envelope and retry contract as other meeting webhooks. Applies to recordings exported to customer Storage buckets.
+
+> Body parameter
+
+```json
+{
+  "id": "whdel_9f2c...",
+  "event": "recording.exported",
+  "version": "1",
+  "occurred_at": "2026-06-16T09:06:00Z",
+  "data": {
+    "session_id": "mtgsess_example",
+    "type": "video",
+    "bucket": "meeting-recordings",
+    "region": "us-central-1",
+    "key": "weekly-planning/recording.mp4",
+    "bytes": 1048576,
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}
+```
+
+<h3 id="recordingexported-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Meeting-Bot-Signature|header|string|true|Signature header `t=<unix-seconds>,v1=<hex>`. Compute HMAC-SHA256 with the webhook secret over the timestamp ASCII bytes, a literal `.` byte, and the exact raw request-body bytes; hex-encode and compare `v1` in constant time. Reject timestamps outside your accepted skew. No bearer token is sent.|
+|body|body|object|true|none|
+|» id|body|string|true|Unique event id; deduplicate deliveries on it.|
+|» event|body|string|true|Event type.|
+|» version|body|string|true|Envelope version.|
+|» occurred_at|body|string(date-time)|true|When the event occurred.|
+|» data|body|object|true|none|
+|» » session_id|body|string|true|none|
+|» » type|body|string|true|none|
+|» » bucket|body|string|true|none|
+|» » region|body|string|true|none|
+|» » key|body|string|true|none|
+|» » bytes|body|integer|true|none|
+|» » sha256|body|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» event|recording.exported|
+
+<h3 id="recordingexported-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Return any 2xx status promptly to acknowledge the delivery; non-2xx responses and timeouts are retried.|None|
+
+<aside class="success">
+This operation does not require authentication
 </aside>
 
 ## Replaced Link Click
@@ -197091,7 +204213,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## session.status_changed
@@ -197134,12 +204256,21 @@ Sent when the session moves to a new lifecycle status. Deliveries are best effor
 |» » status|body|string|true|The new session status.|
 |» » status_detail|body|string \| null|true|Additional detail about the status (for example `cancelled`), or null.|
 |» » recording|body|boolean|true|Whether the session is recording at this lifecycle edge.|
+|» » previous_status|body|string|false|Previous lifecycle status, when supplied.|
 
 #### Enumerated Values
 
 |Parameter|Value|
 |---|---|
 |» event|session.status_changed|
+|» » previous_status|scheduled|
+|» » previous_status|joining|
+|» » previous_status|waiting_for_admission|
+|» » previous_status|active|
+|» » previous_status|leaving|
+|» » previous_status|ended|
+|» » previous_status|failed|
+|» » previous_status|admission_denied|
 
 <h3 id="sessionstatuschanged-responses">Responses</h3>
 
@@ -197259,7 +204390,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## WhatsApp Account Update
@@ -197307,7 +204438,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## WhatsApp Business App Message Echo
@@ -197382,7 +204513,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## WhatsApp WABA Added
@@ -197434,7 +204565,7 @@ This webhook uses Telnyx headers (telnyx-timestamp, telnyx-signature-ed25519) th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 # Schemas
@@ -197615,7 +204746,7 @@ A header sent when fetching an A2A agent's card and on every call made to that a
 |client_state|string|false|none|Use this field to add state to every subsequent webhook. It must be a valid Base-64 encoded string.|
 |command_id|string|false|none|Use this field to avoid duplicate commands. Telnyx will ignore any command with the same `command_id` for the same `call_control_id`.|
 |messages|[[UserMessage](#schemausermessage) \| [AssistantMessage](#schemaassistantmessage) \| [ToolMessage](#schematoolmessage) \| [SystemMessage](#schemasystemmessage) \| [DeveloperMessage](#schemadevelopermessage)]|false|none|The messages to add to the conversation.|
-|trigger_response|boolean|false|none|When `true`, the injected messages immediately trigger an assistant response/turn instead of waiting for the next natural turn or idle timeout. This may interrupt a user who is still speaking.|
+|trigger_response|boolean|false|none|When `true`, the injected messages immediately trigger an assistant response/turn instead of waiting for the next natural turn or idle timeout. This may interrupt a user who is still speaking. How the turn starts depends on the last message in `messages`: if it is a `user` message, the assistant responds to that message as if the caller had said it, whether or not `trigger_response` is set. Any other last role (`system`, `developer`, `assistant`, `tool`) starts a turn with no new user input, as after a long silence. When `trigger_response` is not set, a payload that does not end in a `user` message is context only and does not start a turn. GPT Live models (`openai/gpt-live-*`) do not support a forced mid-session turn: injected `system`, `developer`, and `assistant` content is appended to the Live session's instructions and the model brings it into its next turn on its own; an injected `tool` record is not forwarded to the Live session, so it stays context only and never reaches the Live model. Any of `user`, `system`, `developer`, or `assistant` is the supported way to get content into the Live session.|
 
 <h2 id="tocS_AIAssistantJoinParticipant">AIAssistantJoinParticipant</h2>
 <!-- backwards compatibility -->
@@ -199238,6 +206369,2190 @@ Basic agent identity and contact information. At least one complete phone, websi
 |address|string(email)|true|none|none|
 |label|string|true|none|none|
 
+<h2 id="tocS_AgentGateway">AgentGateway</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgateway"></a>
+<a id="schema_AgentGateway"></a>
+<a id="tocSagentgateway"></a>
+<a id="tocsagentgateway"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "engine": "litellm",
+  "engine_version": "string",
+  "status": "pending",
+  "gateway_url": "string",
+  "wireguard_interface_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "network_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "created_at": "1970-01-01T00:00:00Z"
+}
+```
+
+An Agent Gateway instance on a WireGuard Interface.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifies the instance.|
+|name|string \| null|true|none|A label for people; `null` when none was given.|
+|engine|string|true|none|The gateway engine.|
+|engine_version|string|true|none|The engine version the instance runs.|
+|status|[AgentGatewayStatus](#schemaagentgatewaystatus)|true|none|Where the instance is in its lifecycle. `pending`: created and waiting to start. `provisioning`: starting. `ready`: running, with its `gateway_url` set. `failed`: did not start in time; delete it. `deleting`: being removed.|
+|gateway_url|string \| null|true|none|The base URL of the instance's API, `http://<address>:4000`, where the address is the instance's peer address on the WireGuard Interface. Reachable only from hosts on the instance's *Network*, and every request to it carries a key from this API. `null` until the instance is `ready`.|
+|wireguard_interface_id|string(uuid) \| null|true|none|The WireGuard Interface the instance joins as a peer.|
+|network_id|string(uuid) \| null|true|none|The [*Network*](https://developers.telnyx.com/docs/network/overview) the WireGuard Interface belongs to.|
+|created_at|string(date-time)|true|none|When the instance was created.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|pending|
+|status|provisioning|
+|status|ready|
+|status|failed|
+|status|deleting|
+
+<h2 id="tocS_AgentGatewayApi">AgentGatewayApi</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayapi"></a>
+<a id="schema_AgentGatewayApi"></a>
+<a id="tocSagentgatewayapi"></a>
+<a id="tocsagentgatewayapi"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "spec_url": "string",
+  "base_url": "string",
+  "auth": {
+    "type": "string"
+  },
+  "tools": [
+    "string"
+  ],
+  "static_headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "forwarded_headers": [
+    "string"
+  ],
+  "open_to_every_key": false,
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifies the API.|
+|name|string|true|none|A name for the API, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the API's tools with it and a hyphen.|
+|spec_url|string|true|none|The URL of the API's OpenAPI description.|
+|base_url|string \| null|true|none|Where the gateway sends the API's requests. `null` takes the description's first `servers` entry.|
+|auth|[AgentGatewayShownAuth](#schemaagentgatewayshownauth)|true|none|The server's outbound authentication method. Credentials are never returned.|
+|tools|[string]|true|none|The operations the API exposes as tools, by tool name. `[]` exposes every operation.|
+|static_headers|object|true|none|Headers sent on every request.|
+|forwarded_headers|[string]|true|none|Headers copied from the agent's request, by name.|
+|open_to_every_key|boolean|true|none|`true` lets every key on the instance use the server, granted or not.|
+|created_at|string \| null(date-time)|true|none|none|
+|updated_at|string \| null(date-time)|true|none|none|
+
+<h2 id="tocS_AgentGatewayApiCreate">AgentGatewayApiCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayapicreate"></a>
+<a id="schema_AgentGatewayApiCreate"></a>
+<a id="tocSagentgatewayapicreate"></a>
+<a id="tocsagentgatewayapicreate"></a>
+
+```json
+{
+  "name": "string",
+  "spec_url": "string",
+  "base_url": "string",
+  "auth": {
+    "type": "none"
+  },
+  "tools": [
+    "string"
+  ],
+  "static_headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "forwarded_headers": [
+    "string"
+  ],
+  "open_to_every_key": false
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A name for the API, unique on the instance across MCP servers and APIs, regardless of case. Up to 100 letters, digits, `_`, and `.`. The gateway prefixes the API's tools with it and a hyphen.|
+|spec_url|string|true|none|The URL of the API's OpenAPI description: OpenAPI 3.0, OpenAPI 3.1, or Swagger 2.0.|
+|base_url|string \| null|false|none|Where the gateway sends the API's requests. Without it, the gateway takes the description's first `servers` entry.|
+|auth|[AgentGatewayNoAuth](#schemaagentgatewaynoauth) \| [AgentGatewayStaticAuth](#schemaagentgatewaystaticauth) \| [AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials) \| [AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth)|false|none|How the gateway authenticates to the API. AWS Signature Version 4 is for MCP servers only. Replaced whole on an update.|
+|tools|[string]|false|none|The operations the API exposes as tools, by tool name. `[]` exposes every operation.|
+|static_headers|object|false|none|Headers sent on every request.|
+|forwarded_headers|[string]|false|none|Headers copied from the agent's request, by name.|
+|open_to_every_key|boolean|false|none|`true` lets every key on the instance use the server, granted or not.|
+
+<h2 id="tocS_AgentGatewayApiListResponse">AgentGatewayApiListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayapilistresponse"></a>
+<a id="schema_AgentGatewayApiListResponse"></a>
+<a id="tocSagentgatewayapilistresponse"></a>
+<a id="tocsagentgatewayapilistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "spec_url": "string",
+      "base_url": "string",
+      "auth": {
+        "type": "string"
+      },
+      "tools": [
+        "string"
+      ],
+      "static_headers": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "forwarded_headers": [
+        "string"
+      ],
+      "open_to_every_key": false,
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewayApi](#schemaagentgatewayapi)]|true|none|none|
+
+<h2 id="tocS_AgentGatewayApiResponse">AgentGatewayApiResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayapiresponse"></a>
+<a id="schema_AgentGatewayApiResponse"></a>
+<a id="tocSagentgatewayapiresponse"></a>
+<a id="tocsagentgatewayapiresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "spec_url": "string",
+    "base_url": "string",
+    "auth": {
+      "type": "string"
+    },
+    "tools": [
+      "string"
+    ],
+    "static_headers": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "forwarded_headers": [
+      "string"
+    ],
+    "open_to_every_key": false,
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayApi](#schemaagentgatewayapi)|true|none|none|
+
+<h2 id="tocS_AgentGatewayApiUpdate">AgentGatewayApiUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayapiupdate"></a>
+<a id="schema_AgentGatewayApiUpdate"></a>
+<a id="tocSagentgatewayapiupdate"></a>
+<a id="tocsagentgatewayapiupdate"></a>
+
+```json
+{
+  "name": "string",
+  "spec_url": "string",
+  "base_url": "string",
+  "auth": {
+    "type": "none"
+  },
+  "tools": [
+    "string"
+  ],
+  "static_headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "forwarded_headers": [
+    "string"
+  ],
+  "open_to_every_key": false
+}
+```
+
+The fields to change. A field left out stays as it is, and `"base_url": null` clears the base URL.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|A name for the API, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the API's tools with it and a hyphen.|
+|spec_url|string|false|none|The URL of the API's OpenAPI description: OpenAPI 3.0, OpenAPI 3.1, or Swagger 2.0.|
+|base_url|string \| null|false|none|Where the gateway sends the API's requests. Without it, the gateway takes the description's first `servers` entry.|
+|auth|[AgentGatewayNoAuth](#schemaagentgatewaynoauth) \| [AgentGatewayStaticAuth](#schemaagentgatewaystaticauth) \| [AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials) \| [AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth)|false|none|How the gateway authenticates to the API. AWS Signature Version 4 is for MCP servers only. Replaced whole on an update.|
+|tools|[string]|false|none|The operations the API exposes as tools, by tool name. `[]` exposes every operation.|
+|static_headers|object|false|none|Headers sent on every request.|
+|forwarded_headers|[string]|false|none|Headers copied from the agent's request, by name.|
+|open_to_every_key|boolean|false|none|`true` lets every key on the instance use the server, granted or not.|
+
+<h2 id="tocS_AgentGatewayAwsSigV4Auth">AgentGatewayAwsSigV4Auth</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayawssigv4auth"></a>
+<a id="schema_AgentGatewayAwsSigV4Auth"></a>
+<a id="tocSagentgatewayawssigv4auth"></a>
+<a id="tocsagentgatewayawssigv4auth"></a>
+
+```json
+{
+  "type": "aws_sigv4",
+  "region": "string",
+  "service": "bedrock-agentcore",
+  "access_key_id": "string",
+  "secret_access_key": "string",
+  "session_token": "string",
+  "role_name": "string"
+}
+```
+
+The gateway signs each request with AWS Signature Version 4. Without keys or a role, it uses the instance's own AWS identity. Keys are write-only.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|region|string|true|none|The AWS region to sign for.|
+|service|string|false|none|The AWS service to sign for.|
+|access_key_id|string \| null|false|write-only|none|
+|secret_access_key|string \| null|false|write-only|none|
+|session_token|string \| null|false|write-only|none|
+|role_name|string \| null|false|none|The ARN of a role for the gateway to assume.|
+
+<h2 id="tocS_AgentGatewayCreate">AgentGatewayCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaycreate"></a>
+<a id="schema_AgentGatewayCreate"></a>
+<a id="tocSagentgatewaycreate"></a>
+<a id="tocsagentgatewaycreate"></a>
+
+```json
+{
+  "name": "string",
+  "wireguard_interface_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|false|none|A label for people.|
+|wireguard_interface_id|string(uuid)|true|none|One of the account's WireGuard Interfaces. The instance joins it as a peer, and the interface's other peers reach the instance.|
+
+<h2 id="tocS_AgentGatewayCreatedKey">AgentGatewayCreatedKey</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaycreatedkey"></a>
+<a id="schema_AgentGatewayCreatedKey"></a>
+<a id="tocSagentgatewaycreatedkey"></a>
+<a id="tocsagentgatewaycreatedkey"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "team_id": "string",
+  "models": [
+    "string"
+  ],
+  "max_budget": 0,
+  "budget_resets_every": "string",
+  "budget_resets_at": "1970-01-01T00:00:00Z",
+  "spend": 0,
+  "expires_at": "1970-01-01T00:00:00Z",
+  "created_at": "1970-01-01T00:00:00Z",
+  "blocked": true,
+  "requests_per_minute": 0,
+  "tokens_per_minute": 0,
+  "max_parallel_requests": 0,
+  "key": "string"
+}
+```
+
+A key that was just issued: the only response that carries its value.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Identifies the key. It is a 64-character hash the instance stores in place of the key's value.|
+|name|string \| null|true|none|A label for people; `null` when none was given.|
+|team_id|string \| null|true|none|The team the key belongs to, if any.|
+|models|[string]|true|none|The models the key may use. Empty means every model the instance serves.|
+|max_budget|number \| null|true|none|The most the key may spend, in USD, until its budget resets.|
+|budget_resets_every|string \| null|true|none|How often the key's spend resets, such as `30d`.|
+|budget_resets_at|string(date-time) \| null|true|none|When the key's spend next resets.|
+|spend|number|true|none|What the key has spent since its budget last reset, in USD.|
+|expires_at|string(date-time) \| null|true|none|When the key stops working; `null` when it does not expire.|
+|created_at|string(date-time) \| null|true|none|When the key was issued.|
+|blocked|boolean|true|none|Whether the instance refuses the key.|
+|requests_per_minute|integer \| null|true|none|The most requests the key may make per minute.|
+|tokens_per_minute|integer \| null|true|none|The most tokens the key may use per minute.|
+|max_parallel_requests|integer \| null|true|none|The most requests the key may have in flight at once.|
+|key|string|true|none|The key's value, sent as `Authorization: Bearer <key>` to the instance. Shown only in this response.|
+
+<h2 id="tocS_AgentGatewayCreatedKeyResponse">AgentGatewayCreatedKeyResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaycreatedkeyresponse"></a>
+<a id="schema_AgentGatewayCreatedKeyResponse"></a>
+<a id="tocSagentgatewaycreatedkeyresponse"></a>
+<a id="tocsagentgatewaycreatedkeyresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "name": "string",
+    "team_id": "string",
+    "models": [
+      "string"
+    ],
+    "max_budget": 0,
+    "budget_resets_every": "string",
+    "budget_resets_at": "1970-01-01T00:00:00Z",
+    "spend": 0,
+    "expires_at": "1970-01-01T00:00:00Z",
+    "created_at": "1970-01-01T00:00:00Z",
+    "blocked": true,
+    "requests_per_minute": 0,
+    "tokens_per_minute": 0,
+    "max_parallel_requests": 0,
+    "key": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayCreatedKey](#schemaagentgatewaycreatedkey)|true|none|A key that was just issued: the only response that carries its value.|
+
+<h2 id="tocS_AgentGatewayGuardrail">AgentGatewayGuardrail</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayguardrail"></a>
+<a id="schema_AgentGatewayGuardrail"></a>
+<a id="tocSagentgatewayguardrail"></a>
+<a id="tocsagentgatewayguardrail"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "modes": [
+    "before_request"
+  ],
+  "always_on": true,
+  "type": "content_filter",
+  "settings": {},
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifies the guardrail.|
+|name|string|true|none|What a request names in its `guardrails` field.|
+|modes|[string]|true|none|When the guardrail runs.|
+|always_on|boolean|true|none|Whether it runs on every request.|
+|type|string|true|none|none|
+|settings|object|true|none|The type's settings. `content_filter`: `patterns` (prebuilt patterns by name, such as `us_ssn` or `email`), `regexes`, `keywords`, and `categories` (such as `prompt_injection`), each with an `action` of `block` or `mask`. `tool_permission`: `rules` (`id`, `tool_name`, `tool_type`, `decision`, `argument_patterns`), a `default` decision, and `on_denied` (`block` or `rewrite`). `model_judge`: a `model` on the instance and weighted `criteria` (`name`, `description`, `weight`, the weights summing to 100). `custom_code`: `code` defining `apply_guardrail(inputs, request_data, input_type)`. `lakera`: `api_key`, `project_id`, `api_base`. `presidio`: `analyzer_url`, `anonymizer_url`, `entities` (entity name to `block` or `mask`), `language`. `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`, `endpoint`, `severity` (0 to 7). Provider secrets are write-only. Responses leave the secrets out.|
+|created_at|string \| null(date-time)|true|none|none|
+|updated_at|string \| null(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|modes|before_request|
+|modes|during_request|
+|modes|after_request|
+|modes|logging_only|
+|modes|before_tool_request|
+|modes|during_tool_request|
+|modes|after_tool_request|
+|type|content_filter|
+|type|tool_permission|
+|type|model_judge|
+|type|custom_code|
+|type|lakera|
+|type|presidio|
+|type|bedrock|
+|type|azure_content_safety|
+
+<h2 id="tocS_AgentGatewayGuardrailCreate">AgentGatewayGuardrailCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayguardrailcreate"></a>
+<a id="schema_AgentGatewayGuardrailCreate"></a>
+<a id="tocSagentgatewayguardrailcreate"></a>
+<a id="tocsagentgatewayguardrailcreate"></a>
+
+```json
+{
+  "name": "string",
+  "modes": [
+    "before_request"
+  ],
+  "always_on": false,
+  "type": "content_filter",
+  "settings": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A name, unique on the instance. A request names it in its `guardrails` field.|
+|modes|[string]|true|none|When the guardrail runs. Each type runs in some modes only.|
+|always_on|boolean|false|none|`true` runs the guardrail on every request, and a request cannot turn it off. `false` runs it on the requests that name it.|
+|type|string|true|none|The kind of check. It cannot change after create.|
+|settings|object|false|none|The type's settings. `content_filter`: `patterns` (prebuilt patterns by `name`, such as `us_ssn` or `email`), `regexes` (each a `name`, which tags masked matches, and a `pattern`), `keywords` (each a `keyword`), and `categories` (each a `name`), each entry with an `action` of `block` or `mask`. `tool_permission`: `rules` (`id`, `tool_name`, `tool_type`, `decision`, `argument_patterns`), a `default` decision, and `on_denied` (`block` or `rewrite`). `model_judge`: a `model` on the instance and weighted `criteria` (`name`, `description`, `weight`, the weights summing to 100). `custom_code`: `code` defining `apply_guardrail(inputs, request_data, input_type)`. `lakera`: `api_key`, `project_id`, `api_base`. `presidio`: `analyzer_url`, `anonymizer_url`, `entities` (entity name to `block` or `mask`), `language`. `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`, `endpoint`, `severity` (0 to 7). Provider secrets are write-only.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|modes|before_request|
+|modes|during_request|
+|modes|after_request|
+|modes|logging_only|
+|modes|before_tool_request|
+|modes|during_tool_request|
+|modes|after_tool_request|
+|type|content_filter|
+|type|tool_permission|
+|type|model_judge|
+|type|custom_code|
+|type|lakera|
+|type|presidio|
+|type|bedrock|
+|type|azure_content_safety|
+
+<h2 id="tocS_AgentGatewayGuardrailListResponse">AgentGatewayGuardrailListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayguardraillistresponse"></a>
+<a id="schema_AgentGatewayGuardrailListResponse"></a>
+<a id="tocSagentgatewayguardraillistresponse"></a>
+<a id="tocsagentgatewayguardraillistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "modes": [
+        "before_request"
+      ],
+      "always_on": true,
+      "type": "content_filter",
+      "settings": {},
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewayGuardrail](#schemaagentgatewayguardrail)]|true|none|none|
+
+<h2 id="tocS_AgentGatewayGuardrailResponse">AgentGatewayGuardrailResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayguardrailresponse"></a>
+<a id="schema_AgentGatewayGuardrailResponse"></a>
+<a id="tocSagentgatewayguardrailresponse"></a>
+<a id="tocsagentgatewayguardrailresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "modes": [
+      "before_request"
+    ],
+    "always_on": true,
+    "type": "content_filter",
+    "settings": {},
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayGuardrail](#schemaagentgatewayguardrail)|true|none|none|
+
+<h2 id="tocS_AgentGatewayGuardrailUpdate">AgentGatewayGuardrailUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayguardrailupdate"></a>
+<a id="schema_AgentGatewayGuardrailUpdate"></a>
+<a id="tocSagentgatewayguardrailupdate"></a>
+<a id="tocsagentgatewayguardrailupdate"></a>
+
+```json
+{
+  "name": "string",
+  "modes": [
+    "before_request"
+  ],
+  "always_on": false,
+  "settings": {}
+}
+```
+
+The fields to change. `settings` is replaced whole, secrets included.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|A name, unique on the instance. A request names it in its `guardrails` field.|
+|modes|[string]|false|none|When the guardrail runs. Each type runs in some modes only.|
+|always_on|boolean|false|none|`true` runs the guardrail on every request, and a request cannot turn it off. `false` runs it on the requests that name it.|
+|settings|object|false|none|The type's settings. `content_filter`: `patterns` (prebuilt patterns by name, such as `us_ssn` or `email`), `regexes`, `keywords`, and `categories` (such as `prompt_injection`), each with an `action` of `block` or `mask`. `tool_permission`: `rules` (`id`, `tool_name`, `tool_type`, `decision`, `argument_patterns`), a `default` decision, and `on_denied` (`block` or `rewrite`). `model_judge`: a `model` on the instance and weighted `criteria` (`name`, `description`, `weight`, the weights summing to 100). `custom_code`: `code` defining `apply_guardrail(inputs, request_data, input_type)`. `lakera`: `api_key`, `project_id`, `api_base`. `presidio`: `analyzer_url`, `anonymizer_url`, `entities` (entity name to `block` or `mask`), `language`. `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`, `endpoint`, `severity` (0 to 7). Provider secrets are write-only.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|modes|before_request|
+|modes|during_request|
+|modes|after_request|
+|modes|logging_only|
+|modes|before_tool_request|
+|modes|during_tool_request|
+|modes|after_tool_request|
+
+<h2 id="tocS_AgentGatewayKey">AgentGatewayKey</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaykey"></a>
+<a id="schema_AgentGatewayKey"></a>
+<a id="tocSagentgatewaykey"></a>
+<a id="tocsagentgatewaykey"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "team_id": "string",
+  "models": [
+    "string"
+  ],
+  "max_budget": 0,
+  "budget_resets_every": "string",
+  "budget_resets_at": "1970-01-01T00:00:00Z",
+  "spend": 0,
+  "expires_at": "1970-01-01T00:00:00Z",
+  "created_at": "1970-01-01T00:00:00Z",
+  "blocked": true,
+  "requests_per_minute": 0,
+  "tokens_per_minute": 0,
+  "max_parallel_requests": 0
+}
+```
+
+A key on an instance, without its value.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Identifies the key. It is a 64-character hash the instance stores in place of the key's value.|
+|name|string \| null|true|none|A label for people; `null` when none was given.|
+|team_id|string \| null|true|none|The team the key belongs to, if any.|
+|models|[string]|true|none|The models the key may use. Empty means every model the instance serves.|
+|max_budget|number \| null|true|none|The most the key may spend, in USD, until its budget resets.|
+|budget_resets_every|string \| null|true|none|How often the key's spend resets, such as `30d`.|
+|budget_resets_at|string(date-time) \| null|true|none|When the key's spend next resets.|
+|spend|number|true|none|What the key has spent since its budget last reset, in USD.|
+|expires_at|string(date-time) \| null|true|none|When the key stops working; `null` when it does not expire.|
+|created_at|string(date-time) \| null|true|none|When the key was issued.|
+|blocked|boolean|true|none|Whether the instance refuses the key.|
+|requests_per_minute|integer \| null|true|none|The most requests the key may make per minute.|
+|tokens_per_minute|integer \| null|true|none|The most tokens the key may use per minute.|
+|max_parallel_requests|integer \| null|true|none|The most requests the key may have in flight at once.|
+
+<h2 id="tocS_AgentGatewayKeyCreate">AgentGatewayKeyCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaykeycreate"></a>
+<a id="schema_AgentGatewayKeyCreate"></a>
+<a id="tocSagentgatewaykeycreate"></a>
+<a id="tocsagentgatewaykeycreate"></a>
+
+```json
+{
+  "name": "string",
+  "models": [
+    "string"
+  ],
+  "max_budget": 0,
+  "budget_resets_every": "30d",
+  "expires_in": "30d",
+  "team_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "requests_per_minute": 1,
+  "tokens_per_minute": 1,
+  "max_parallel_requests": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|false|none|A label for people, unique on the instance.|
+|models|[string] \| null|false|none|The models the key may use. Leave it out to allow every model.|
+|max_budget|number \| null|false|none|The most the key may spend, in USD.|
+|budget_resets_every|string \| null|false|none|How often the spend resets: a number and a unit, `s`, `m`, `h`, or `d`.|
+|expires_in|string \| null|false|none|How long until the key stops working: a number and a unit, `s`, `m`, `h`, or `d`.|
+|team_id|string(uuid) \| null|false|none|A team on the instance. The key shares the team's model list, budget, and rate limits.|
+|requests_per_minute|integer \| null|false|none|The most requests the key may make per minute.|
+|tokens_per_minute|integer \| null|false|none|The most tokens the key may use per minute.|
+|max_parallel_requests|integer \| null|false|none|The most requests the key may have in flight at once.|
+
+<h2 id="tocS_AgentGatewayKeyListResponse">AgentGatewayKeyListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaykeylistresponse"></a>
+<a id="schema_AgentGatewayKeyListResponse"></a>
+<a id="tocSagentgatewaykeylistresponse"></a>
+<a id="tocsagentgatewaykeylistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "name": "string",
+      "team_id": "string",
+      "models": [
+        "string"
+      ],
+      "max_budget": 0,
+      "budget_resets_every": "string",
+      "budget_resets_at": "1970-01-01T00:00:00Z",
+      "spend": 0,
+      "expires_at": "1970-01-01T00:00:00Z",
+      "created_at": "1970-01-01T00:00:00Z",
+      "blocked": true,
+      "requests_per_minute": 0,
+      "tokens_per_minute": 0,
+      "max_parallel_requests": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewayKey](#schemaagentgatewaykey)]|true|none|none|
+
+<h2 id="tocS_AgentGatewayKeyResponse">AgentGatewayKeyResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaykeyresponse"></a>
+<a id="schema_AgentGatewayKeyResponse"></a>
+<a id="tocSagentgatewaykeyresponse"></a>
+<a id="tocsagentgatewaykeyresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "name": "string",
+    "team_id": "string",
+    "models": [
+      "string"
+    ],
+    "max_budget": 0,
+    "budget_resets_every": "string",
+    "budget_resets_at": "1970-01-01T00:00:00Z",
+    "spend": 0,
+    "expires_at": "1970-01-01T00:00:00Z",
+    "created_at": "1970-01-01T00:00:00Z",
+    "blocked": true,
+    "requests_per_minute": 0,
+    "tokens_per_minute": 0,
+    "max_parallel_requests": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayKey](#schemaagentgatewaykey)|true|none|A key on an instance, without its value.|
+
+<h2 id="tocS_AgentGatewayKeyUpdate">AgentGatewayKeyUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaykeyupdate"></a>
+<a id="schema_AgentGatewayKeyUpdate"></a>
+<a id="tocSagentgatewaykeyupdate"></a>
+<a id="tocsagentgatewaykeyupdate"></a>
+
+```json
+{
+  "name": "string",
+  "models": [
+    "string"
+  ],
+  "max_budget": 0,
+  "budget_resets_every": "30d",
+  "expires_in": "30d",
+  "team_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "blocked": true,
+  "requests_per_minute": 1,
+  "tokens_per_minute": 1,
+  "max_parallel_requests": 1
+}
+```
+
+A field left out stays as it is; `null` clears it.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|A label for people.|
+|models|[string]|false|none|The models the key may use. `[]` allows every model.|
+|max_budget|number \| null|false|none|The most the key may spend, in USD.|
+|budget_resets_every|string \| null|false|none|How often the spend resets.|
+|expires_in|string \| null|false|none|How long from now until the key stops working.|
+|team_id|string(uuid) \| null|false|none|Move the key to this team, or `null` to leave its team.|
+|blocked|boolean|false|none|`true` makes the instance refuse the key; `false` lets it through again.|
+|requests_per_minute|integer \| null|false|none|The most requests the key may make per minute.|
+|tokens_per_minute|integer \| null|false|none|The most tokens the key may use per minute.|
+|max_parallel_requests|integer \| null|false|none|The most requests the key may have in flight at once.|
+
+<h2 id="tocS_AgentGatewayListResponse">AgentGatewayListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaylistresponse"></a>
+<a id="schema_AgentGatewayListResponse"></a>
+<a id="tocSagentgatewaylistresponse"></a>
+<a id="tocsagentgatewaylistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "engine": "litellm",
+      "engine_version": "string",
+      "status": "pending",
+      "gateway_url": "string",
+      "wireguard_interface_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "network_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "created_at": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "total_results": 0,
+    "page_number": 0,
+    "page_size": 0,
+    "total_pages": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGateway](#schemaagentgateway)]|true|none|none|
+|meta|[PageMeta](#schemapagemeta)|true|none|none|
+
+<h2 id="tocS_AgentGatewayMcpServer">AgentGatewayMcpServer</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaymcpserver"></a>
+<a id="schema_AgentGatewayMcpServer"></a>
+<a id="tocSagentgatewaymcpserver"></a>
+<a id="tocsagentgatewaymcpserver"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "url": "string",
+  "transport": "http",
+  "auth": {
+    "type": "string"
+  },
+  "tools": [
+    "string"
+  ],
+  "static_headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "forwarded_headers": [
+    "string"
+  ],
+  "open_to_every_key": false,
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|Identifies the server.|
+|name|string|true|none|A name for the server, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the server's tools with it and a hyphen.|
+|url|string|true|none|The server's MCP endpoint.|
+|transport|string|true|none|`http` for Streamable HTTP, or `sse` for Server-Sent Events.|
+|auth|[AgentGatewayShownAuth](#schemaagentgatewayshownauth)|true|none|The server's outbound authentication method. Credentials are never returned.|
+|tools|[string]|true|none|The tools the server exposes to every key, by name. `[]` exposes every tool.|
+|static_headers|object|true|none|Headers sent on every request.|
+|forwarded_headers|[string]|true|none|Headers copied from the agent's request, by name.|
+|open_to_every_key|boolean|true|none|`true` lets every key on the instance use the server, granted or not.|
+|created_at|string \| null(date-time)|true|none|none|
+|updated_at|string \| null(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|transport|http|
+|transport|sse|
+
+<h2 id="tocS_AgentGatewayMcpServerCreate">AgentGatewayMcpServerCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaymcpservercreate"></a>
+<a id="schema_AgentGatewayMcpServerCreate"></a>
+<a id="tocSagentgatewaymcpservercreate"></a>
+<a id="tocsagentgatewaymcpservercreate"></a>
+
+```json
+{
+  "name": "string",
+  "url": "string",
+  "transport": "http",
+  "auth": {
+    "type": "none"
+  },
+  "tools": [
+    "string"
+  ],
+  "static_headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "forwarded_headers": [
+    "string"
+  ],
+  "open_to_every_key": false
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A name for the server, unique on the instance across MCP servers and APIs, regardless of case. Up to 100 letters, digits, `_`, and `.`. The gateway prefixes the server's tools with it and a hyphen.|
+|url|string|true|none|The server's MCP endpoint, `http` or `https`.|
+|transport|string|false|none|`http` for Streamable HTTP, or `sse` for Server-Sent Events.|
+|auth|[AgentGatewayNoAuth](#schemaagentgatewaynoauth) \| [AgentGatewayStaticAuth](#schemaagentgatewaystaticauth) \| [AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials) \| [AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth) \| [AgentGatewayAwsSigV4Auth](#schemaagentgatewayawssigv4auth)|false|none|How the gateway authenticates to the server. Replaced whole on an update; `{"type": "none"}` removes the credential.|
+|tools|[string]|false|none|The tools the server exposes to every key, by name. `[]` exposes every tool.|
+|static_headers|object|false|none|Headers sent on every request.|
+|forwarded_headers|[string]|false|none|Headers copied from the agent's request, by name.|
+|open_to_every_key|boolean|false|none|`true` lets every key on the instance use the server, granted or not.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|transport|http|
+|transport|sse|
+
+<h2 id="tocS_AgentGatewayMcpServerListResponse">AgentGatewayMcpServerListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaymcpserverlistresponse"></a>
+<a id="schema_AgentGatewayMcpServerListResponse"></a>
+<a id="tocSagentgatewaymcpserverlistresponse"></a>
+<a id="tocsagentgatewaymcpserverlistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "url": "string",
+      "transport": "http",
+      "auth": {
+        "type": "string"
+      },
+      "tools": [
+        "string"
+      ],
+      "static_headers": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "forwarded_headers": [
+        "string"
+      ],
+      "open_to_every_key": false,
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewayMcpServer](#schemaagentgatewaymcpserver)]|true|none|none|
+
+<h2 id="tocS_AgentGatewayMcpServerResponse">AgentGatewayMcpServerResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaymcpserverresponse"></a>
+<a id="schema_AgentGatewayMcpServerResponse"></a>
+<a id="tocSagentgatewaymcpserverresponse"></a>
+<a id="tocsagentgatewaymcpserverresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "url": "string",
+    "transport": "http",
+    "auth": {
+      "type": "string"
+    },
+    "tools": [
+      "string"
+    ],
+    "static_headers": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "forwarded_headers": [
+      "string"
+    ],
+    "open_to_every_key": false,
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayMcpServer](#schemaagentgatewaymcpserver)|true|none|none|
+
+<h2 id="tocS_AgentGatewayMcpServerUpdate">AgentGatewayMcpServerUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaymcpserverupdate"></a>
+<a id="schema_AgentGatewayMcpServerUpdate"></a>
+<a id="tocSagentgatewaymcpserverupdate"></a>
+<a id="tocsagentgatewaymcpserverupdate"></a>
+
+```json
+{
+  "name": "string",
+  "url": "string",
+  "transport": "http",
+  "auth": {
+    "type": "none"
+  },
+  "tools": [
+    "string"
+  ],
+  "static_headers": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "forwarded_headers": [
+    "string"
+  ],
+  "open_to_every_key": false
+}
+```
+
+The fields to change. A field left out stays as it is.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|A name for the server, unique on the instance across MCP servers and APIs, regardless of case. Letters, digits, `_`, and `.`. The gateway prefixes the server's tools with it and a hyphen.|
+|url|string|false|none|The server's MCP endpoint, `http` or `https`.|
+|transport|string|false|none|`http` for Streamable HTTP, or `sse` for Server-Sent Events.|
+|auth|[AgentGatewayNoAuth](#schemaagentgatewaynoauth) \| [AgentGatewayStaticAuth](#schemaagentgatewaystaticauth) \| [AgentGatewayOAuthClientCredentials](#schemaagentgatewayoauthclientcredentials) \| [AgentGatewayPassthroughAuth](#schemaagentgatewaypassthroughauth) \| [AgentGatewayAwsSigV4Auth](#schemaagentgatewayawssigv4auth)|false|none|How the gateway authenticates to the server. Replaced whole on an update; `{"type": "none"}` removes the credential.|
+|tools|[string]|false|none|The tools the server exposes to every key, by name. `[]` exposes every tool.|
+|static_headers|object|false|none|Headers sent on every request.|
+|forwarded_headers|[string]|false|none|Headers copied from the agent's request, by name.|
+|open_to_every_key|boolean|false|none|`true` lets every key on the instance use the server, granted or not.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|transport|http|
+|transport|sse|
+
+<h2 id="tocS_AgentGatewayModel">AgentGatewayModel</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaymodel"></a>
+<a id="schema_AgentGatewayModel"></a>
+<a id="tocSagentgatewaymodel"></a>
+<a id="tocsagentgatewaymodel"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "name": "string",
+  "model": "string",
+  "pricing": {
+    "input": 0,
+    "output": 0,
+    "cached_input": 0,
+    "currency": "string",
+    "unit": "string"
+  },
+  "priced_at": "1970-01-01T00:00:00Z"
+}
+```
+
+A model an instance serves.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|The model's ID on the instance.|
+|name|string|true|none|The name a request uses, such as `GLM-5.3-Flash`.|
+|model|string|true|none|The Telnyx Inference model behind it, such as `zai-org/GLM-5.3-Flash`.|
+|pricing|[AgentGatewayModelPricing](#schemaagentgatewaymodelpricing)|true|none|A model's price in USD per million tokens.|
+|priced_at|string(date-time) \| null|true|none|When the price was last set.|
+
+<h2 id="tocS_AgentGatewayModelListResponse">AgentGatewayModelListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaymodellistresponse"></a>
+<a id="schema_AgentGatewayModelListResponse"></a>
+<a id="tocSagentgatewaymodellistresponse"></a>
+<a id="tocsagentgatewaymodellistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "name": "string",
+      "model": "string",
+      "pricing": {
+        "input": 0,
+        "output": 0,
+        "cached_input": 0,
+        "currency": "string",
+        "unit": "string"
+      },
+      "priced_at": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewayModel](#schemaagentgatewaymodel)]|true|none|none|
+
+<h2 id="tocS_AgentGatewayModelPricing">AgentGatewayModelPricing</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaymodelpricing"></a>
+<a id="schema_AgentGatewayModelPricing"></a>
+<a id="tocSagentgatewaymodelpricing"></a>
+<a id="tocsagentgatewaymodelpricing"></a>
+
+```json
+{
+  "input": 0,
+  "output": 0,
+  "cached_input": 0,
+  "currency": "string",
+  "unit": "string"
+}
+```
+
+A model's price in USD per million tokens.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|input|number|true|none|USD per million input tokens.|
+|output|number|true|none|USD per million output tokens.|
+|cached_input|number \| null|true|none|USD per million cached input tokens.|
+|currency|string|true|none|Always `USD`.|
+|unit|string|true|none|Always `1M_tokens`.|
+
+<h2 id="tocS_AgentGatewayNoAuth">AgentGatewayNoAuth</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaynoauth"></a>
+<a id="schema_AgentGatewayNoAuth"></a>
+<a id="tocSagentgatewaynoauth"></a>
+<a id="tocsagentgatewaynoauth"></a>
+
+```json
+{
+  "type": "none"
+}
+```
+
+The gateway sends no credential.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|none|
+
+<h2 id="tocS_AgentGatewayOAuthClientCredentials">AgentGatewayOAuthClientCredentials</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayoauthclientcredentials"></a>
+<a id="schema_AgentGatewayOAuthClientCredentials"></a>
+<a id="tocSagentgatewayoauthclientcredentials"></a>
+<a id="tocsagentgatewayoauthclientcredentials"></a>
+
+```json
+{
+  "type": "oauth_client_credentials",
+  "token_url": "string",
+  "client_id": "string",
+  "client_secret": "string",
+  "credentials_in": "body",
+  "scopes": [
+    "string"
+  ],
+  "audience": "string",
+  "resource": "string"
+}
+```
+
+The gateway gets its own access token with the `client_credentials` grant and sends it as a bearer token on every request, renewing it before it expires. The client ID and secret are write-only.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|token_url|string|true|none|The OAuth provider's token endpoint.|
+|client_id|string|true|write-only|none|
+|client_secret|string|true|write-only|none|
+|credentials_in|string|false|none|Whether the client ID and secret go in the token request's body or as HTTP Basic authentication.|
+|scopes|[string]|false|none|The scopes to request.|
+|audience|string \| null|false|none|The token's audience, sent in the token request.|
+|resource|string \| null|false|none|The resource the token is for, sent in the token request.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|credentials_in|body|
+|credentials_in|basic|
+
+<h2 id="tocS_AgentGatewayPassthroughAuth">AgentGatewayPassthroughAuth</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypassthroughauth"></a>
+<a id="schema_AgentGatewayPassthroughAuth"></a>
+<a id="tocSagentgatewaypassthroughauth"></a>
+<a id="tocsagentgatewaypassthroughauth"></a>
+
+```json
+{
+  "type": "passthrough"
+}
+```
+
+The gateway forwards the agent's own `Authorization` header to the server unchanged.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|none|
+
+<h2 id="tocS_AgentGatewayPolicy">AgentGatewayPolicy</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicy"></a>
+<a id="schema_AgentGatewayPolicy"></a>
+<a id="tocSagentgatewaypolicy"></a>
+<a id="tocsagentgatewaypolicy"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "base": "string",
+  "guardrails": {
+    "add": [],
+    "remove": []
+  },
+  "model": "string",
+  "pipeline": {
+    "hook": "before_request",
+    "steps": [
+      {
+        "guardrail": "string",
+        "on_pass": "allow",
+        "on_fail": "block",
+        "on_error": "next",
+        "message": "string",
+        "pass_data": false
+      }
+    ]
+  },
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+A named set of guardrails.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A name, unique on the instance. A request names the policy in its `policies` field.|
+|description|string \| null|true|none|What the policy is for.|
+|base|string \| null|true|none|A policy this one builds on, by name. The policy starts with the base's guardrails.|
+|guardrails|[AgentGatewayPolicyGuardrails](#schemaagentgatewaypolicyguardrails)|true|none|The guardrails a policy adds to its base's, and the ones it removes from them, by name.|
+|model|string \| null|true|none|A condition on the model, by name or regular expression. The policy's guardrails run only on requests for a matching model. `null` matches every model.|
+|pipeline|[AgentGatewayPolicyPipeline](#schemaagentgatewaypolicypipeline) \| null|true|none|Ordered steps, in place of the guardrails running independently.|
+|created_at|string(date-time) \| null|true|none|When the policy's current version was created. An update creates a new version.|
+|updated_at|string(date-time) \| null|true|none|When the policy last changed.|
+
+<h2 id="tocS_AgentGatewayPolicyAttachment">AgentGatewayPolicyAttachment</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicyattachment"></a>
+<a id="schema_AgentGatewayPolicyAttachment"></a>
+<a id="tocSagentgatewaypolicyattachment"></a>
+<a id="tocsagentgatewaypolicyattachment"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "policy": "string",
+  "models": [],
+  "priority": 0,
+  "default": false,
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+Where an instance applies a policy.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|The attachment's ID.|
+|policy|string|true|none|The policy to apply, by name.|
+|models|[string]|true|none|The models whose requests the policy applies to, by name. A name can use `*` as a wildcard. Empty applies the policy to every request.|
+|priority|integer \| null|true|none|An attachment with a priority applies before the others.|
+|default|boolean|true|none|`true` applies the policy only to the requests no other attachment matches.|
+|created_at|string(date-time) \| null|true|none|When the attachment was created.|
+|updated_at|string(date-time) \| null|true|none|When the attachment last changed.|
+
+<h2 id="tocS_AgentGatewayPolicyAttachmentCreate">AgentGatewayPolicyAttachmentCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicyattachmentcreate"></a>
+<a id="schema_AgentGatewayPolicyAttachmentCreate"></a>
+<a id="tocSagentgatewaypolicyattachmentcreate"></a>
+<a id="tocsagentgatewaypolicyattachmentcreate"></a>
+
+```json
+{
+  "policy": "string",
+  "models": [],
+  "priority": 0,
+  "default": false
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|policy|string|true|none|The policy to apply, by name.|
+|models|[string]|false|none|The models whose requests the policy applies to, by name. A name can use `*` as a wildcard. Empty applies the policy to every request.|
+|priority|integer \| null|false|none|An attachment with a priority applies before the others.|
+|default|boolean|false|none|`true` applies the policy only to the requests no other attachment matches.|
+
+<h2 id="tocS_AgentGatewayPolicyAttachmentListResponse">AgentGatewayPolicyAttachmentListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicyattachmentlistresponse"></a>
+<a id="schema_AgentGatewayPolicyAttachmentListResponse"></a>
+<a id="tocSagentgatewaypolicyattachmentlistresponse"></a>
+<a id="tocsagentgatewaypolicyattachmentlistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "policy": "string",
+      "models": [],
+      "priority": 0,
+      "default": false,
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewayPolicyAttachment](#schemaagentgatewaypolicyattachment)]|true|none|none|
+
+<h2 id="tocS_AgentGatewayPolicyAttachmentResponse">AgentGatewayPolicyAttachmentResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicyattachmentresponse"></a>
+<a id="schema_AgentGatewayPolicyAttachmentResponse"></a>
+<a id="tocSagentgatewaypolicyattachmentresponse"></a>
+<a id="tocsagentgatewaypolicyattachmentresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "policy": "string",
+    "models": [],
+    "priority": 0,
+    "default": false,
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayPolicyAttachment](#schemaagentgatewaypolicyattachment)|true|none|Where an instance applies a policy.|
+
+<h2 id="tocS_AgentGatewayPolicyCreate">AgentGatewayPolicyCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicycreate"></a>
+<a id="schema_AgentGatewayPolicyCreate"></a>
+<a id="tocSagentgatewaypolicycreate"></a>
+<a id="tocsagentgatewaypolicycreate"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "base": "string",
+  "guardrails": {
+    "add": [],
+    "remove": []
+  },
+  "model": "string",
+  "pipeline": {
+    "hook": "before_request",
+    "steps": [
+      {
+        "guardrail": "string",
+        "on_pass": "allow",
+        "on_fail": "block",
+        "on_error": "next",
+        "message": "string",
+        "pass_data": false
+      }
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A name, unique on the instance. A request names the policy in its `policies` field.|
+|description|string \| null|false|none|What the policy is for.|
+|base|string \| null|false|none|A policy this one builds on, by name. The policy starts with the base's guardrails.|
+|guardrails|[AgentGatewayPolicyGuardrails](#schemaagentgatewaypolicyguardrails)|false|none|The guardrails a policy adds to its base's, and the ones it removes from them, by name.|
+|model|string \| null|false|none|A condition on the model, by name or regular expression. The policy's guardrails run only on requests for a matching model. `null` matches every model.|
+|pipeline|[AgentGatewayPolicyPipeline](#schemaagentgatewaypolicypipeline) \| null|false|none|Ordered steps, in place of the guardrails running independently.|
+
+<h2 id="tocS_AgentGatewayPolicyGuardrails">AgentGatewayPolicyGuardrails</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicyguardrails"></a>
+<a id="schema_AgentGatewayPolicyGuardrails"></a>
+<a id="tocSagentgatewaypolicyguardrails"></a>
+<a id="tocsagentgatewaypolicyguardrails"></a>
+
+```json
+{
+  "add": [],
+  "remove": []
+}
+```
+
+The guardrails a policy adds to its base's, and the ones it removes from them, by name.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|add|[string]|false|none|Guardrails the policy runs in addition to its base's.|
+|remove|[string]|false|none|Guardrails from its base that the policy does not run.|
+
+<h2 id="tocS_AgentGatewayPolicyListResponse">AgentGatewayPolicyListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicylistresponse"></a>
+<a id="schema_AgentGatewayPolicyListResponse"></a>
+<a id="tocSagentgatewaypolicylistresponse"></a>
+<a id="tocsagentgatewaypolicylistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "name": "string",
+      "description": "string",
+      "base": "string",
+      "guardrails": {
+        "add": [],
+        "remove": []
+      },
+      "model": "string",
+      "pipeline": {
+        "hook": "before_request",
+        "steps": [
+          {
+            "guardrail": "string",
+            "on_pass": "allow",
+            "on_fail": "block",
+            "on_error": "next",
+            "message": "string",
+            "pass_data": false
+          }
+        ]
+      },
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewayPolicy](#schemaagentgatewaypolicy)]|true|none|none|
+
+<h2 id="tocS_AgentGatewayPolicyPipeline">AgentGatewayPolicyPipeline</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicypipeline"></a>
+<a id="schema_AgentGatewayPolicyPipeline"></a>
+<a id="tocSagentgatewaypolicypipeline"></a>
+<a id="tocsagentgatewaypolicypipeline"></a>
+
+```json
+{
+  "hook": "before_request",
+  "steps": [
+    {
+      "guardrail": "string",
+      "on_pass": "allow",
+      "on_fail": "block",
+      "on_error": "next",
+      "message": "string",
+      "pass_data": false
+    }
+  ]
+}
+```
+
+Ordered steps that run in place of the policy's guardrails running independently.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|hook|string|true|none|`before_request` runs the steps on the request, and `after_request` on the model's response.|
+|steps|[[AgentGatewayPolicyStep](#schemaagentgatewaypolicystep)]|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|hook|before_request|
+|hook|after_request|
+
+<h2 id="tocS_AgentGatewayPolicyResponse">AgentGatewayPolicyResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicyresponse"></a>
+<a id="schema_AgentGatewayPolicyResponse"></a>
+<a id="tocSagentgatewaypolicyresponse"></a>
+<a id="tocsagentgatewaypolicyresponse"></a>
+
+```json
+{
+  "data": {
+    "name": "string",
+    "description": "string",
+    "base": "string",
+    "guardrails": {
+      "add": [],
+      "remove": []
+    },
+    "model": "string",
+    "pipeline": {
+      "hook": "before_request",
+      "steps": [
+        {
+          "guardrail": "string",
+          "on_pass": "allow",
+          "on_fail": "block",
+          "on_error": "next",
+          "message": "string",
+          "pass_data": false
+        }
+      ]
+    },
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayPolicy](#schemaagentgatewaypolicy)|true|none|A named set of guardrails.|
+
+<h2 id="tocS_AgentGatewayPolicyStep">AgentGatewayPolicyStep</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicystep"></a>
+<a id="schema_AgentGatewayPolicyStep"></a>
+<a id="tocSagentgatewaypolicystep"></a>
+<a id="tocsagentgatewaypolicystep"></a>
+
+```json
+{
+  "guardrail": "string",
+  "on_pass": "allow",
+  "on_fail": "block",
+  "on_error": "next",
+  "message": "string",
+  "pass_data": false
+}
+```
+
+One pipeline step: a guardrail, and what happens when it passes, fails, or errors.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|guardrail|string|true|none|A guardrail on the instance, by name.|
+|on_pass|string|false|none|What happens when the guardrail passes. `next` goes on to the next step, `allow` allows the request, `block` blocks it, and `respond` answers with `message`.|
+|on_fail|string|false|none|What happens when the guardrail fails.|
+|on_error|string \| null|false|none|What happens when the guardrail errors. Left out, the same as `on_fail`.|
+|message|string \| null|false|none|The response that replaces the model's when an outcome is `respond`. Required with `respond`.|
+|pass_data|boolean|false|none|`true` hands the step's modified request, such as masked text, to the next step.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|on_pass|next|
+|on_pass|allow|
+|on_pass|block|
+|on_pass|respond|
+|on_fail|next|
+|on_fail|allow|
+|on_fail|block|
+|on_fail|respond|
+
+<h2 id="tocS_AgentGatewayPolicyUpdate">AgentGatewayPolicyUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaypolicyupdate"></a>
+<a id="schema_AgentGatewayPolicyUpdate"></a>
+<a id="tocSagentgatewaypolicyupdate"></a>
+<a id="tocsagentgatewaypolicyupdate"></a>
+
+```json
+{
+  "description": "string",
+  "base": "string",
+  "guardrails": {
+    "add": [],
+    "remove": []
+  },
+  "model": "string",
+  "pipeline": {
+    "hook": "before_request",
+    "steps": [
+      {
+        "guardrail": "string",
+        "on_pass": "allow",
+        "on_fail": "block",
+        "on_error": "next",
+        "message": "string",
+        "pass_data": false
+      }
+    ]
+  }
+}
+```
+
+A field left out stays as it is. `guardrails` and `pipeline` are replaced whole, and `model: null` removes the condition. The name cannot change.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string \| null|false|none|What the policy is for.|
+|base|string \| null|false|none|A policy this one builds on, by name. The policy starts with the base's guardrails.|
+|guardrails|[AgentGatewayPolicyGuardrails](#schemaagentgatewaypolicyguardrails)|false|none|The guardrails a policy adds to its base's, and the ones it removes from them, by name.|
+|model|string \| null|false|none|A condition on the model, by name or regular expression. The policy's guardrails run only on requests for a matching model. `null` matches every model.|
+|pipeline|[AgentGatewayPolicyPipeline](#schemaagentgatewaypolicypipeline) \| null|false|none|Ordered steps, in place of the guardrails running independently.|
+
+<h2 id="tocS_AgentGatewayResponse">AgentGatewayResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayresponse"></a>
+<a id="schema_AgentGatewayResponse"></a>
+<a id="tocSagentgatewayresponse"></a>
+<a id="tocsagentgatewayresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "name": "string",
+    "engine": "litellm",
+    "engine_version": "string",
+    "status": "pending",
+    "gateway_url": "string",
+    "wireguard_interface_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "network_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "created_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGateway](#schemaagentgateway)|true|none|An Agent Gateway instance on a WireGuard Interface.|
+
+<h2 id="tocS_AgentGatewayServerGrant">AgentGatewayServerGrant</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayservergrant"></a>
+<a id="schema_AgentGatewayServerGrant"></a>
+<a id="tocSagentgatewayservergrant"></a>
+<a id="tocsagentgatewayservergrant"></a>
+
+```json
+{
+  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "tools": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string(uuid)|true|none|An MCP server's or API's `id` on the instance.|
+|tools|[string]|false|none|The tools the grant covers, by name without the server prefix. `[]` covers every tool the server exposes.|
+
+<h2 id="tocS_AgentGatewayShownAuth">AgentGatewayShownAuth</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayshownauth"></a>
+<a id="schema_AgentGatewayShownAuth"></a>
+<a id="tocSagentgatewayshownauth"></a>
+<a id="tocsagentgatewayshownauth"></a>
+
+```json
+{
+  "type": "string"
+}
+```
+
+The server's outbound authentication method. Credentials are never returned.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The method's `type`.|
+
+<h2 id="tocS_AgentGatewaySpendLog">AgentGatewaySpendLog</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayspendlog"></a>
+<a id="schema_AgentGatewaySpendLog"></a>
+<a id="tocSagentgatewayspendlog"></a>
+<a id="tocsagentgatewayspendlog"></a>
+
+```json
+{
+  "id": "string",
+  "key_id": "string",
+  "team_id": "string",
+  "model": "string",
+  "operation": "string",
+  "status": "string",
+  "spend": 0,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "total_tokens": 0,
+  "started_at": "1970-01-01T00:00:00Z",
+  "ended_at": "1970-01-01T00:00:00Z",
+  "duration_ms": 0
+}
+```
+
+One request the instance served.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The request's ID.|
+|key_id|string \| null|true|none|The key the request used.|
+|team_id|string \| null|true|none|The key's team.|
+|model|string \| null|true|none|The Telnyx Inference model that answered, such as `zai-org/GLM-5.3-Flash`. For an MCP tool request, `MCP: ` and the tool's name.|
+|operation|string|true|none|The request type. `acompletion` is a chat completion, `aresponses` a response, `anthropic_messages` a message, `call_mcp_tool` an MCP tool request, and `list_mcp_tools` an MCP tool list.|
+|status|string \| null|true|none|`success` or `failure`.|
+|spend|number|true|none|What the request cost, in USD, with its tokens at Telnyx Inference prices.|
+|prompt_tokens|integer|true|none|Input tokens.|
+|completion_tokens|integer|true|none|Output tokens, reasoning included.|
+|total_tokens|integer|true|none|Input and output tokens.|
+|started_at|string(date-time)|true|none|When the request started.|
+|ended_at|string(date-time) \| null|true|none|When the request ended.|
+|duration_ms|integer \| null|true|none|How long the request took, in milliseconds.|
+
+<h2 id="tocS_AgentGatewaySpendLogListResponse">AgentGatewaySpendLogListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayspendloglistresponse"></a>
+<a id="schema_AgentGatewaySpendLogListResponse"></a>
+<a id="tocSagentgatewayspendloglistresponse"></a>
+<a id="tocsagentgatewayspendloglistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "key_id": "string",
+      "team_id": "string",
+      "model": "string",
+      "operation": "string",
+      "status": "string",
+      "spend": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "started_at": "1970-01-01T00:00:00Z",
+      "ended_at": "1970-01-01T00:00:00Z",
+      "duration_ms": 0
+    }
+  ],
+  "meta": {
+    "total_results": 0,
+    "page_number": 0,
+    "page_size": 0,
+    "total_pages": 0,
+    "total_results_capped": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewaySpendLog](#schemaagentgatewayspendlog)]|true|none|none|
+|meta|[AgentGatewaySpendLogPageMeta](#schemaagentgatewayspendlogpagemeta)|true|none|none|
+
+<h2 id="tocS_AgentGatewaySpendLogPageMeta">AgentGatewaySpendLogPageMeta</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayspendlogpagemeta"></a>
+<a id="schema_AgentGatewaySpendLogPageMeta"></a>
+<a id="tocSagentgatewayspendlogpagemeta"></a>
+<a id="tocsagentgatewayspendlogpagemeta"></a>
+
+```json
+{
+  "total_results": 0,
+  "page_number": 0,
+  "page_size": 0,
+  "total_pages": 0,
+  "total_results_capped": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|total_results|integer|true|none|Results across every page.|
+|page_number|integer|true|none|The page returned, counting from 1.|
+|page_size|integer|true|none|Results per page.|
+|total_pages|integer|true|none|Pages that can be requested; 0 when nothing matched.|
+|total_results_capped|boolean|true|none|`true` when the window holds more than 10,000 rows. The two totals are then lower bounds: narrow the window, or page until a page comes back empty.|
+
+<h2 id="tocS_AgentGatewayStaticAuth">AgentGatewayStaticAuth</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaystaticauth"></a>
+<a id="schema_AgentGatewayStaticAuth"></a>
+<a id="tocSagentgatewaystaticauth"></a>
+<a id="tocsagentgatewaystaticauth"></a>
+
+```json
+{
+  "type": "api_key",
+  "value": "string",
+  "header": "string"
+}
+```
+
+A static credential the gateway sends on every request. Write-only: responses show its `type` only.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|How the credential is sent: `api_key` as `X-API-Key: <value>`, `bearer_token` as `Authorization: Bearer <value>`, `basic` as `Authorization: Basic <base64 of value>` with `value` in the form `user:password`, `token` as `Authorization: token <value>`, and `authorization` as `Authorization: <value>`.|
+|value|string|true|write-only|The credential.|
+|header|string \| null|false|none|A header name that replaces `X-API-Key` or `Authorization`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|api_key|
+|type|bearer_token|
+|type|basic|
+|type|token|
+|type|authorization|
+
+<h2 id="tocS_AgentGatewayStatus">AgentGatewayStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaystatus"></a>
+<a id="schema_AgentGatewayStatus"></a>
+<a id="tocSagentgatewaystatus"></a>
+<a id="tocsagentgatewaystatus"></a>
+
+```json
+"pending"
+```
+
+Where the instance is in its lifecycle. `pending`: created and waiting to start. `provisioning`: starting. `ready`: running, with its `gateway_url` set. `failed`: did not start in time; delete it. `deleting`: being removed.
+
+<h2 id="tocS_AgentGatewayTeam">AgentGatewayTeam</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayteam"></a>
+<a id="schema_AgentGatewayTeam"></a>
+<a id="tocSagentgatewayteam"></a>
+<a id="tocsagentgatewayteam"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "models": [
+    "string"
+  ],
+  "max_budget": 0,
+  "budget_resets_every": "string",
+  "budget_resets_at": "1970-01-01T00:00:00Z",
+  "spend": 0,
+  "created_at": "1970-01-01T00:00:00Z",
+  "blocked": true,
+  "requests_per_minute": 0,
+  "tokens_per_minute": 0
+}
+```
+
+A team on an instance: a model list, a budget, and rate limits that its keys share.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Identifies the team.|
+|name|string \| null|true|none|A label for people. Names need not be unique.|
+|models|[string]|true|none|The models the team's keys may use. Empty means every model the instance serves.|
+|max_budget|number \| null|true|none|The most the team's keys may spend together, in USD, until the budget resets.|
+|budget_resets_every|string \| null|true|none|How often the team's spend resets, such as `30d`.|
+|budget_resets_at|string(date-time) \| null|true|none|When the team's spend next resets.|
+|spend|number|true|none|What the team's keys have spent since the budget last reset, in USD.|
+|created_at|string(date-time) \| null|true|none|When the team was created.|
+|blocked|boolean|true|none|Whether the instance refuses every key in the team.|
+|requests_per_minute|integer \| null|true|none|The most requests the team's keys may make per minute, together.|
+|tokens_per_minute|integer \| null|true|none|The most tokens the team's keys may use per minute, together.|
+
+<h2 id="tocS_AgentGatewayTeamCreate">AgentGatewayTeamCreate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayteamcreate"></a>
+<a id="schema_AgentGatewayTeamCreate"></a>
+<a id="tocSagentgatewayteamcreate"></a>
+<a id="tocsagentgatewayteamcreate"></a>
+
+```json
+{
+  "name": "string",
+  "models": [
+    "string"
+  ],
+  "max_budget": 0,
+  "budget_resets_every": "30d",
+  "requests_per_minute": 1,
+  "tokens_per_minute": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|A label for people.|
+|models|[string] \| null|false|none|The models the team's keys may use. Leave it out to allow every model.|
+|max_budget|number \| null|false|none|The most the team's keys may spend together, in USD.|
+|budget_resets_every|string \| null|false|none|How often the spend resets: a number and a unit, `s`, `m`, `h`, or `d`.|
+|requests_per_minute|integer \| null|false|none|The most requests the team's keys may make per minute, together.|
+|tokens_per_minute|integer \| null|false|none|The most tokens the team's keys may use per minute, together.|
+
+<h2 id="tocS_AgentGatewayTeamListResponse">AgentGatewayTeamListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayteamlistresponse"></a>
+<a id="schema_AgentGatewayTeamListResponse"></a>
+<a id="tocSagentgatewayteamlistresponse"></a>
+<a id="tocsagentgatewayteamlistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "name": "string",
+      "models": [
+        "string"
+      ],
+      "max_budget": 0,
+      "budget_resets_every": "string",
+      "budget_resets_at": "1970-01-01T00:00:00Z",
+      "spend": 0,
+      "created_at": "1970-01-01T00:00:00Z",
+      "blocked": true,
+      "requests_per_minute": 0,
+      "tokens_per_minute": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[AgentGatewayTeam](#schemaagentgatewayteam)]|true|none|none|
+
+<h2 id="tocS_AgentGatewayTeamResponse">AgentGatewayTeamResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayteamresponse"></a>
+<a id="schema_AgentGatewayTeamResponse"></a>
+<a id="tocSagentgatewayteamresponse"></a>
+<a id="tocsagentgatewayteamresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "name": "string",
+    "models": [
+      "string"
+    ],
+    "max_budget": 0,
+    "budget_resets_every": "string",
+    "budget_resets_at": "1970-01-01T00:00:00Z",
+    "spend": 0,
+    "created_at": "1970-01-01T00:00:00Z",
+    "blocked": true,
+    "requests_per_minute": 0,
+    "tokens_per_minute": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayTeam](#schemaagentgatewayteam)|true|none|A team on an instance: a model list, a budget, and rate limits that its keys share.|
+
+<h2 id="tocS_AgentGatewayTeamUpdate">AgentGatewayTeamUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewayteamupdate"></a>
+<a id="schema_AgentGatewayTeamUpdate"></a>
+<a id="tocSagentgatewayteamupdate"></a>
+<a id="tocsagentgatewayteamupdate"></a>
+
+```json
+{
+  "name": "string",
+  "models": [
+    "string"
+  ],
+  "max_budget": 0,
+  "budget_resets_every": "30d",
+  "blocked": true,
+  "requests_per_minute": 1,
+  "tokens_per_minute": 1
+}
+```
+
+A field left out stays as it is; `null` clears it.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|A label for people.|
+|models|[string]|false|none|The models the team's keys may use. `[]` allows every model.|
+|max_budget|number \| null|false|none|The most the team's keys may spend together, in USD.|
+|budget_resets_every|string \| null|false|none|How often the spend resets.|
+|blocked|boolean|false|none|`true` makes the instance refuse every key in the team; `false` lets them through again.|
+|requests_per_minute|integer \| null|false|none|The most requests the team's keys may make per minute, together.|
+|tokens_per_minute|integer \| null|false|none|The most tokens the team's keys may use per minute, together.|
+
+<h2 id="tocS_AgentGatewayToolPermissions">AgentGatewayToolPermissions</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaytoolpermissions"></a>
+<a id="schema_AgentGatewayToolPermissions"></a>
+<a id="tocSagentgatewaytoolpermissions"></a>
+<a id="tocsagentgatewaytoolpermissions"></a>
+
+```json
+{
+  "servers": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "tools": [
+        "string"
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|servers|[[AgentGatewayServerGrant](#schemaagentgatewayservergrant)]|true|none|The servers granted, each with its tools. `[]` grants none.|
+
+<h2 id="tocS_AgentGatewayToolPermissionsResponse">AgentGatewayToolPermissionsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaagentgatewaytoolpermissionsresponse"></a>
+<a id="schema_AgentGatewayToolPermissionsResponse"></a>
+<a id="tocSagentgatewaytoolpermissionsresponse"></a>
+<a id="tocsagentgatewaytoolpermissionsresponse"></a>
+
+```json
+{
+  "data": {
+    "servers": [
+      {
+        "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+        "tools": [
+          "string"
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AgentGatewayToolPermissions](#schemaagentgatewaytoolpermissions)|true|none|none|
+
 <h2 id="tocS_AgentInput">AgentInput</h2>
 <!-- backwards compatibility -->
 <a id="schemaagentinput"></a>
@@ -200289,83 +209604,6 @@ Both operands should resolve to numbers at runtime.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |text|string|true|none|none|
-
-<h2 id="tocS_AssemblyAIProviderParams">AssemblyAIProviderParams</h2>
-<!-- backwards compatibility -->
-<a id="schemaassemblyaiproviderparams"></a>
-<a id="schema_AssemblyAIProviderParams"></a>
-<a id="tocSassemblyaiproviderparams"></a>
-<a id="tocsassemblyaiproviderparams"></a>
-
-```json
-{
-  "voice_id": "string",
-  "model_id": "assemblyai-tts-1",
-  "language": "en",
-  "audio_format": "mp3",
-  "sample_rate": 8000
-}
-```
-
-AssemblyAI provider-specific parameters. Every voice speaks all six supported languages; set `language` to the language of the text.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|voice_id|string|true|none|AssemblyAI voice from the [voices listing](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices), for example `aai-jane`.|
-|model_id|string|false|none|AssemblyAI model.|
-|language|string|false|none|Two-letter ISO 639-1 code of the text. AssemblyAI does not detect the language.|
-|audio_format|string|false|none|Audio output format.|
-|sample_rate|integer|false|none|Audio sample rate in Hz. Defaults to 24000, or 8000 for `pcm_mulaw` and `pcm_alaw`.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|model_id|assemblyai-tts-1|
-|language|en|
-|language|es|
-|language|de|
-|language|fr|
-|language|it|
-|language|pt|
-|audio_format|mp3|
-|audio_format|wav|
-|audio_format|pcm_s16le|
-|audio_format|pcm_mulaw|
-|audio_format|pcm_alaw|
-|sample_rate|8000|
-|sample_rate|16000|
-|sample_rate|22050|
-|sample_rate|24000|
-|sample_rate|44100|
-|sample_rate|48000|
-
-<h2 id="tocS_AssemblyAIVoiceSettings">AssemblyAIVoiceSettings</h2>
-<!-- backwards compatibility -->
-<a id="schemaassemblyaivoicesettings"></a>
-<a id="schema_AssemblyAIVoiceSettings"></a>
-<a id="tocSassemblyaivoicesettings"></a>
-<a id="tocsassemblyaivoicesettings"></a>
-
-```json
-{
-  "type": "assemblyai"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|true|none|Voice settings provider type|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|assemblyai|
 
 <h2 id="tocS_AssignProfileToCampaignRequest">AssignProfileToCampaignRequest</h2>
 <!-- backwards compatibility -->
@@ -204933,6 +214171,594 @@ An enumeration.
 |---|---|
 |direction|inbound|
 |direction|outbound|
+
+<h2 id="tocS_CalendarAssistantDefaults">CalendarAssistantDefaults</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarassistantdefaults"></a>
+<a id="schema_CalendarAssistantDefaults"></a>
+<a id="tocScalendarassistantdefaults"></a>
+<a id="tocscalendarassistantdefaults"></a>
+
+```json
+{
+  "id": "string",
+  "audio_gate": "full_duplex",
+  "dynamic_variables": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "leave_on_end": false
+}
+```
+
+Default assistant for future calendar-scheduled Google Meet and Teams sessions. The saved configuration must fit within 8 KiB. Use id, audio_gate, dynamic_variables, and leave_on_end; avatar is not accepted. audio_gate defaults to full_duplex.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Identifier of the assistant to attach.|
+|audio_gate|string|false|none|Use full_duplex (default) to allow participants to interrupt, or half_duplex to pause listening while the assistant speaks. Full-duplex pricing depends on participant audio usage; see the Meeting pricing guide.|
+|dynamic_variables|object|false|none|Per-conversation values for the [dynamic variables](/docs/inference/ai-assistants/dynamic-variables) used in the Assistant's instructions, greeting, or tools. Delivered before the Assistant's first utterance, so they resolve for the opening line as well as the rest of the conversation. At most 63 entries; keys 1-128 characters; values must be strings. The map is budgeted in aggregate at 1,047,552 bytes (1023 KiB) rather than capped per value. `streaming_audio`, `ai_assistant_streaming_audio` and `meeting_session_id` are reserved and rejected with `400 invalid_request`.|
+|leave_on_end|boolean|false|none|Leave when the assistant conversation ends or fails. Defaults to false. Other leave-policy rules and explicit leave requests still apply.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|audio_gate|half_duplex|
+|audio_gate|full_duplex|
+
+<h2 id="tocS_CalendarAttendee">CalendarAttendee</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarattendee"></a>
+<a id="schema_CalendarAttendee"></a>
+<a id="tocScalendarattendee"></a>
+<a id="tocscalendarattendee"></a>
+
+```json
+{
+  "email": "string",
+  "display_name": "string",
+  "self": true,
+  "response_status": "string",
+  "optional": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|email|string \| null|true|none|none|
+|display_name|string \| null|true|none|none|
+|self|boolean \| null|true|none|none|
+|response_status|string \| null|true|none|none|
+|optional|boolean \| null|true|none|none|
+
+<h2 id="tocS_CalendarConnection">CalendarConnection</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarconnection"></a>
+<a id="schema_CalendarConnection"></a>
+<a id="tocScalendarconnection"></a>
+<a id="tocscalendarconnection"></a>
+
+```json
+{
+  "id": "string",
+  "platform": "google_calendar",
+  "platform_email": "string",
+  "status": "connected",
+  "status_detail": "string",
+  "auto_join_policy": "all_meetings",
+  "bot_name": "string",
+  "default_barge_in": true,
+  "default_summarize_on_end": true,
+  "default_voice": "string",
+  "default_assistant": {
+    "id": "string",
+    "audio_gate": "half_duplex",
+    "dynamic_variables": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "leave_on_end": true
+  },
+  "default_recording": true,
+  "default_recording_export": {
+    "bucket": "string",
+    "prefix": "string"
+  },
+  "default_webhook_url": "http://example.com",
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Calendar connection ID.|
+|platform|string|true|none|Calendar provider: Google Calendar or Microsoft Outlook.|
+|platform_email|string \| null|true|none|none|
+|status|string|true|none|Connection status.|
+|status_detail|string \| null|true|none|none|
+|auto_join_policy|string|true|none|all_meetings joins eligible events; external_organizer_excluded requires the connected user to be the organizer; per_meeting requires an explicit opt-in.|
+|bot_name|string \| null|true|none|none|
+|default_barge_in|boolean \| null|true|none|none|
+|default_summarize_on_end|boolean \| null|true|none|none|
+|default_voice|string \| null|true|none|none|
+|default_assistant|[MeetingSessionAssistant](#schemameetingsessionassistant) \| null|true|none|none|
+|default_recording|boolean \| null|true|none|none|
+|default_recording_export|[MeetingSessionRecordingDestination](#schemameetingsessionrecordingdestination) \| null|true|none|none|
+|default_webhook_url|string(uri) \| null|true|none|none|
+|created_at|string(date-time)|true|none|Creation time.|
+|updated_at|string(date-time)|true|none|Last update time.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|platform|google_calendar|
+|platform|microsoft_outlook|
+|status|connected|
+|status|disconnected|
+|status|error|
+|auto_join_policy|all_meetings|
+|auto_join_policy|external_organizer_excluded|
+|auto_join_policy|per_meeting|
+
+<h2 id="tocS_CalendarConnectionListResponse">CalendarConnectionListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarconnectionlistresponse"></a>
+<a id="schema_CalendarConnectionListResponse"></a>
+<a id="tocScalendarconnectionlistresponse"></a>
+<a id="tocscalendarconnectionlistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "platform": "google_calendar",
+      "platform_email": "string",
+      "status": "connected",
+      "status_detail": "string",
+      "auto_join_policy": "all_meetings",
+      "bot_name": "string",
+      "default_barge_in": true,
+      "default_summarize_on_end": true,
+      "default_voice": "string",
+      "default_assistant": {
+        "id": "string",
+        "audio_gate": "half_duplex",
+        "dynamic_variables": {
+          "property1": "string",
+          "property2": "string"
+        },
+        "leave_on_end": true
+      },
+      "default_recording": true,
+      "default_recording_export": {
+        "bucket": "string",
+        "prefix": "string"
+      },
+      "default_webhook_url": "http://example.com",
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[CalendarConnection](#schemacalendarconnection)]|true|none|none|
+
+<h2 id="tocS_CalendarConnectionPending">CalendarConnectionPending</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarconnectionpending"></a>
+<a id="schema_CalendarConnectionPending"></a>
+<a id="tocScalendarconnectionpending"></a>
+<a id="tocscalendarconnectionpending"></a>
+
+```json
+{
+  "platform": "google_calendar",
+  "status": "pending_oauth",
+  "oauth_url": "http://example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|platform|string|true|none|Calendar provider: Google Calendar or Microsoft Outlook.|
+|status|string|true|none|Authorization has not completed.|
+|oauth_url|string(uri)|true|none|Open in a browser to authorize calendar access.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|platform|google_calendar|
+|platform|microsoft_outlook|
+
+<h2 id="tocS_CalendarConnectionPendingResponse">CalendarConnectionPendingResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarconnectionpendingresponse"></a>
+<a id="schema_CalendarConnectionPendingResponse"></a>
+<a id="tocScalendarconnectionpendingresponse"></a>
+<a id="tocscalendarconnectionpendingresponse"></a>
+
+```json
+{
+  "data": {
+    "platform": "google_calendar",
+    "status": "pending_oauth",
+    "oauth_url": "http://example.com"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CalendarConnectionPending](#schemacalendarconnectionpending)|true|none|none|
+
+<h2 id="tocS_CalendarConnectionResponse">CalendarConnectionResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarconnectionresponse"></a>
+<a id="schema_CalendarConnectionResponse"></a>
+<a id="tocScalendarconnectionresponse"></a>
+<a id="tocscalendarconnectionresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "platform": "google_calendar",
+    "platform_email": "string",
+    "status": "connected",
+    "status_detail": "string",
+    "auto_join_policy": "all_meetings",
+    "bot_name": "string",
+    "default_barge_in": true,
+    "default_summarize_on_end": true,
+    "default_voice": "string",
+    "default_assistant": {
+      "id": "string",
+      "audio_gate": "half_duplex",
+      "dynamic_variables": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "leave_on_end": true
+    },
+    "default_recording": true,
+    "default_recording_export": {
+      "bucket": "string",
+      "prefix": "string"
+    },
+    "default_webhook_url": "http://example.com",
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CalendarConnection](#schemacalendarconnection)|true|none|none|
+
+<h2 id="tocS_CalendarConnectionUpdated">CalendarConnectionUpdated</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarconnectionupdated"></a>
+<a id="schema_CalendarConnectionUpdated"></a>
+<a id="tocScalendarconnectionupdated"></a>
+<a id="tocscalendarconnectionupdated"></a>
+
+```json
+{
+  "id": "string",
+  "platform": "google_calendar",
+  "platform_email": "string",
+  "status": "connected",
+  "status_detail": "string",
+  "auto_join_policy": "all_meetings",
+  "bot_name": "string",
+  "default_barge_in": true,
+  "default_summarize_on_end": true,
+  "default_voice": "string",
+  "default_assistant": {
+    "id": "string",
+    "audio_gate": "half_duplex",
+    "dynamic_variables": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "leave_on_end": true
+  },
+  "default_recording": true,
+  "default_recording_export": {
+    "bucket": "string",
+    "prefix": "string"
+  },
+  "default_webhook_url": "http://example.com",
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z",
+  "webhook_secret": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Calendar connection ID.|
+|platform|string|true|none|Calendar provider: Google Calendar or Microsoft Outlook.|
+|platform_email|string \| null|true|none|none|
+|status|string|true|none|Connection status.|
+|status_detail|string \| null|true|none|none|
+|auto_join_policy|string|true|none|all_meetings joins eligible events; external_organizer_excluded requires the connected user to be the organizer; per_meeting requires an explicit opt-in.|
+|bot_name|string \| null|true|none|none|
+|default_barge_in|boolean \| null|true|none|none|
+|default_summarize_on_end|boolean \| null|true|none|none|
+|default_voice|string \| null|true|none|none|
+|default_assistant|[MeetingSessionAssistant](#schemameetingsessionassistant) \| null|true|none|none|
+|default_recording|boolean \| null|true|none|none|
+|default_recording_export|[MeetingSessionRecordingDestination](#schemameetingsessionrecordingdestination) \| null|true|none|none|
+|default_webhook_url|string(uri) \| null|true|none|none|
+|created_at|string(date-time)|true|none|Creation time.|
+|updated_at|string(date-time)|true|none|Last update time.|
+|webhook_secret|string|false|none|Returned only when PATCH supplies a non-null default_webhook_url. Not returned by list or retrieve. Save this secret to verify webhooks for future sessions.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|platform|google_calendar|
+|platform|microsoft_outlook|
+|status|connected|
+|status|disconnected|
+|status|error|
+|auto_join_policy|all_meetings|
+|auto_join_policy|external_organizer_excluded|
+|auto_join_policy|per_meeting|
+
+<h2 id="tocS_CalendarConnectionUpdatedResponse">CalendarConnectionUpdatedResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarconnectionupdatedresponse"></a>
+<a id="schema_CalendarConnectionUpdatedResponse"></a>
+<a id="tocScalendarconnectionupdatedresponse"></a>
+<a id="tocscalendarconnectionupdatedresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "platform": "google_calendar",
+    "platform_email": "string",
+    "status": "connected",
+    "status_detail": "string",
+    "auto_join_policy": "all_meetings",
+    "bot_name": "string",
+    "default_barge_in": true,
+    "default_summarize_on_end": true,
+    "default_voice": "string",
+    "default_assistant": {
+      "id": "string",
+      "audio_gate": "half_duplex",
+      "dynamic_variables": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "leave_on_end": true
+    },
+    "default_recording": true,
+    "default_recording_export": {
+      "bucket": "string",
+      "prefix": "string"
+    },
+    "default_webhook_url": "http://example.com",
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z",
+    "webhook_secret": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CalendarConnectionUpdated](#schemacalendarconnectionupdated)|true|none|none|
+
+<h2 id="tocS_CalendarMeeting">CalendarMeeting</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarmeeting"></a>
+<a id="schema_CalendarMeeting"></a>
+<a id="tocScalendarmeeting"></a>
+<a id="tocscalendarmeeting"></a>
+
+```json
+{
+  "id": "string",
+  "platform": "zoom",
+  "start_time": "1970-01-01T00:00:00Z",
+  "end_time": "1970-01-01T00:00:00Z",
+  "organizer": {
+    "email": "string",
+    "display_name": "string",
+    "self": true
+  },
+  "attendees": [
+    {
+      "email": "string",
+      "display_name": "string",
+      "self": true,
+      "response_status": "string",
+      "optional": true
+    }
+  ],
+  "is_external_organizer": true,
+  "bot_will_join": true,
+  "bot_will_join_override": true,
+  "decision": "pending",
+  "session_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Tracked calendar meeting ID.|
+|platform|string|true|none|Detected meeting platform.|
+|start_time|string(date-time)|true|none|Event start time.|
+|end_time|string(date-time) \| null|true|none|none|
+|organizer|[CalendarPerson](#schemacalendarperson) \| null|true|none|none|
+|attendees|[[CalendarAttendee](#schemacalendarattendee)]|true|none|Calendar attendees; identity fields are cleared after the retention window.|
+|is_external_organizer|boolean \| null|true|none|none|
+|bot_will_join|boolean|true|none|Effective policy decision, not proof that the bot has joined.|
+|bot_will_join_override|boolean \| null|true|none|none|
+|decision|string|true|none|Scheduling decision.|
+|session_id|string \| null|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|platform|zoom|
+|platform|google_meet|
+|platform|teams|
+|platform|webex|
+|platform|unknown|
+|decision|pending|
+|decision|scheduled|
+|decision|skipped_policy|
+|decision|skipped_no_url|
+|decision|skipped_duplicate|
+|decision|skipped_unsupported|
+|decision|cancelled|
+
+<h2 id="tocS_CalendarMeetingListResponse">CalendarMeetingListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarmeetinglistresponse"></a>
+<a id="schema_CalendarMeetingListResponse"></a>
+<a id="tocScalendarmeetinglistresponse"></a>
+<a id="tocscalendarmeetinglistresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "platform": "zoom",
+      "start_time": "1970-01-01T00:00:00Z",
+      "end_time": "1970-01-01T00:00:00Z",
+      "organizer": {
+        "email": "string",
+        "display_name": "string",
+        "self": true
+      },
+      "attendees": [
+        {
+          "email": "string",
+          "display_name": "string",
+          "self": true,
+          "response_status": "string",
+          "optional": true
+        }
+      ],
+      "is_external_organizer": true,
+      "bot_will_join": true,
+      "bot_will_join_override": true,
+      "decision": "pending",
+      "session_id": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[CalendarMeeting](#schemacalendarmeeting)]|true|none|none|
+
+<h2 id="tocS_CalendarMeetingResponse">CalendarMeetingResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarmeetingresponse"></a>
+<a id="schema_CalendarMeetingResponse"></a>
+<a id="tocScalendarmeetingresponse"></a>
+<a id="tocscalendarmeetingresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "platform": "zoom",
+    "start_time": "1970-01-01T00:00:00Z",
+    "end_time": "1970-01-01T00:00:00Z",
+    "organizer": {
+      "email": "string",
+      "display_name": "string",
+      "self": true
+    },
+    "attendees": [
+      {
+        "email": "string",
+        "display_name": "string",
+        "self": true,
+        "response_status": "string",
+        "optional": true
+      }
+    ],
+    "is_external_organizer": true,
+    "bot_will_join": true,
+    "bot_will_join_override": true,
+    "decision": "pending",
+    "session_id": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CalendarMeeting](#schemacalendarmeeting)|true|none|none|
+
+<h2 id="tocS_CalendarPerson">CalendarPerson</h2>
+<!-- backwards compatibility -->
+<a id="schemacalendarperson"></a>
+<a id="schema_CalendarPerson"></a>
+<a id="tocScalendarperson"></a>
+<a id="tocscalendarperson"></a>
+
+```json
+{
+  "email": "string",
+  "display_name": "string",
+  "self": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|email|string \| null|true|none|none|
+|display_name|string \| null|true|none|none|
+|self|boolean \| null|true|none|none|
 
 <h2 id="tocS_Call">Call</h2>
 <!-- backwards compatibility -->
@@ -214222,7 +224048,7 @@ Region where the conference data is located. Defaults to the region defined in u
 |payload|string|true|none|The text or SSML to be converted into speech. There is a 3,000 character limit.|
 |payload_type|string|false|none|The type of the provided payload. The payload can either be plain text, or Speech Synthesis Markup Language (SSML).|
 |voice|string|true|none|Specifies the voice used in speech synthesis.<br><br>- Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only the provider will give default values for voice_id and model_id.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery). Use `voice_settings` to configure custom deployments, regions, or API keys.<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration identifier secret in `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br>- **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`). Use `voice_settings` to configure voice_speed and other synthesis parameters. `Bayan` provides Arabic (multiple dialects) and English voices (e.g., `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.<br>- **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g., `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`, `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings` to configure speed, volume, pitch, and language_boost.<br>- **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g., `Resemble.Turbo.Aaron_en-US`). Supported models: `Pro`, `Turbo`, `Urdu`. `<VoiceId>` is a stock voice name or the ID of a Resemble voice clone. Use `voice_settings` to configure precision, sample_rate, and format.<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`, `BALANCED`, `CREATIVE`), supported by `TTS2` only.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.<br><br>For service_level basic, you may define the gender of the speaker (male or female).|
-|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|The settings associated with the voice selected|
+|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|The settings associated with the voice selected|
 |language|string|false|none|The language you want spoken. This parameter is ignored when a `Polly.*` voice is specified.|
 |command_id|string|false|none|Use this field to avoid execution of duplicate commands. Telnyx will ignore subsequent commands with the same `command_id` as one that has already been executed.|
 |region|[ConferenceRegion](#schemaconferenceregion)|false|none|Region where the conference data is located. Defaults to the region defined in user's data locality settings (Europe or US).|
@@ -215472,7 +225298,7 @@ Starts a Conversation Relay session automatically when the answered/dialed call 
 |dtmf_detection|boolean|false|none|Enable DTMF detection for the relay session.|
 |greeting|string|false|none|Text played when the relay session starts.|
 |voice|[VoiceConfig](#schemavoiceconfig)|false|none|The voice to be used by the voice assistant. Currently we support ElevenLabs, Telnyx and AWS voices.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-CA-LiamNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration secret under `"voice_settings": {"api_key_ref": "<secret_id>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br> - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.|
-|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|The settings associated with the voice selected|
+|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|The settings associated with the voice selected|
 |tts_provider|string|false|none|Text-to-speech provider. If omitted, Telnyx derives it from `voice` or `provider`.|
 |provider|string|false|none|Structured voice provider. Must be supplied together with `structured_provider`.|
 |structured_provider|[ConversationRelayStructuredProvider](#schemaconversationrelaystructuredprovider)|false|none|Provider-specific structured voice settings. Must be supplied together with `provider`; Telnyx sends the value as the nested provider configuration for Conversation Relay.|
@@ -215601,7 +225427,7 @@ Language-specific TTS and transcription settings for Conversation Relay.
 |language|string|true|none|BCP 47 language tag for this language configuration.|
 |tts_provider|string|false|none|Text-to-speech provider for this language. If omitted and `voice` is provided, Telnyx derives the provider from the voice identifier.|
 |voice|string|false|none|Voice identifier for this language.|
-|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|The settings associated with the voice selected|
+|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|The settings associated with the voice selected|
 |transcription_engine|string|false|none|Engine to use for speech recognition. Legacy values `A` - `Google`, `B` - `Telnyx` are supported for backward compatibility. When provided in a Conversation Relay language entry, Telnyx derives `transcription_provider` and `speech_model` for that language.|
 |transcription_engine_config|[ConversationRelayTranscriptionEngineConfig](#schemaconversationrelaytranscriptionengineconfig)|false|none|Engine-specific transcription settings for Conversation Relay. This accepts the same provider-specific options used by the Call Transcription Start command, such as `transcription_model`, without requiring the engine discriminator to be repeated inside this object. With Deepgram Flux (`deepgram/flux`), `interim_results`, `eot_threshold` and `eager_eot_threshold` control the interim prompts and the `eagerEndOfTurn` and `turnResumed` frames sent to your WebSocket server.|
 |transcription_provider|string|false|none|Conversation Relay transcription provider name. Prefer `transcription_engine` when configuring speech-to-text.|
@@ -215723,7 +225549,7 @@ Start a Conversation Relay session. A WebSocket URL is required: provide it as `
 |conversation_relay_url|string|false|none|WebSocket URL for your Conversation Relay server. Must start with `ws://` or `wss://`.|
 |conversation_relay_dtmf_detection|boolean|false|none|Enable DTMF detection for the relay session.|
 |voice|[VoiceConfig](#schemavoiceconfig)|false|none|The voice to be used by the voice assistant. Currently we support ElevenLabs, Telnyx and AWS voices.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-CA-LiamNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration secret under `"voice_settings": {"api_key_ref": "<secret_id>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br> - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.|
-|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|The settings associated with the voice selected|
+|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|The settings associated with the voice selected|
 |greeting|string|false|none|Text played when the relay session starts.|
 |language|string|false|none|Default language for the relay session. This value is used for both text-to-speech and speech recognition.|
 |languages|[[ConversationRelayLanguage](#schemaconversationrelaylanguage)]|false|none|Per-language TTS and transcription settings.|
@@ -216648,6 +226474,32 @@ evaluation criteria, and scheduling options.
 |businessContactEmail|string|false|none|Business contact email.<br><br>Required if `entityType` is `PUBLIC_PROFIT`. Otherwise, it is recommended to either omit this field or set it to `null`.|
 |webhookURL|string|false|none|Webhook URL for brand status updates.|
 |webhookFailoverURL|string|false|none|Webhook failover URL for brand status updates.|
+
+<h2 id="tocS_CreateCalendarConnectionRequest">CreateCalendarConnectionRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatecalendarconnectionrequest"></a>
+<a id="schema_CreateCalendarConnectionRequest"></a>
+<a id="tocScreatecalendarconnectionrequest"></a>
+<a id="tocscreatecalendarconnectionrequest"></a>
+
+```json
+{
+  "platform": "google_calendar"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|platform|string|true|none|Calendar provider: Google Calendar or Microsoft Outlook.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|platform|google_calendar|
+|platform|microsoft_outlook|
 
 <h2 id="tocS_CreateCallControlApplicationRequest">CreateCallControlApplicationRequest</h2>
 <!-- backwards compatibility -->
@@ -217719,33 +227571,6 @@ Recipient email addresses must be unique across `to`, `cc`, and `bcc` after case
 |anchorsite_override|Vancouver, Canada|
 |anchorsite_override|Frankfurt, Germany|
 
-<h2 id="tocS_CreateFineTuningJobRequest">CreateFineTuningJobRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemacreatefinetuningjobrequest"></a>
-<a id="schema_CreateFineTuningJobRequest"></a>
-<a id="tocScreatefinetuningjobrequest"></a>
-<a id="tocscreatefinetuningjobrequest"></a>
-
-```json
-{
-  "model": "string",
-  "training_file": "string",
-  "suffix": "string",
-  "hyperparameters": {
-    "n_epochs": 3
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|model|string|true|none|The base model that is being fine-tuned.|
-|training_file|string|true|none|The storage bucket or object used for training.|
-|suffix|string|false|none|Optional suffix to append to the fine tuned model's name.|
-|hyperparameters|object|false|none|The hyperparameters used for the fine-tuning job.|
-
 <h2 id="tocS_CreateFqdnConnectionRequest">CreateFqdnConnectionRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemacreatefqdnconnectionrequest"></a>
@@ -218507,8 +228332,9 @@ Cross-field rules:
 - `assistant` cannot be combined with `barge_in: true`.
 - `assistant.avatar: true` cannot be combined with `speak_on_enter`; the assistant greets through its avatar.
 - The `assistant` options, including `avatar`, take effect at session creation and cannot be modified later.
-- A digital avatar or Assistant webpage output takes precedence over `camera_image`; the static image is ignored and a URL source is not fetched.
-- The former top-level `avatar` object (bring-your-own-key avatar) has been removed and is rejected with 400 `invalid_request`; use `assistant.avatar` instead.
+- An avatar takes precedence over `camera_image`; ordinary assistant sessions can use a static camera image.
+
+Google Meet and Teams recording requires a recording_export destination. Use join_at to schedule a meeting, or omit it to join now. Zoom recordings are enabled automatically; Zoom does not support recording, recording_view or recording_export, and ignores leave_policy. Digital avatars require avatar support.
 
 ### Properties
 
@@ -218516,17 +228342,29 @@ Cross-field rules:
 |---|---|---|---|---|
 |meeting_url|string(uri)|true|none|The meeting URL the bot should join.|
 |bot_name|string|false|none|Display name for the bot in the meeting. Defaults to "Meeting Bot".|
-|join_at|string(date-time)|false|none|ISO-8601 timestamp in the future at which the bot should join. If omitted, the bot joins immediately.|
-|voice|string|false|none|Session-default voice identifier used for `speak_on_enter` and ordinary speak actions. A voice supplied on an individual speak action overrides this default for that utterance.|
-|speak_on_enter|string|false|none|Text the bot speaks when it enters the meeting. **Not spoken when an `assistant` is attached**: the value is accepted and echoed back on the session, but the assistant owns the voice and the line is never delivered, with no event reporting the omission. Use `chat_on_enter` to announce an assistant-backed bot. Rejected with 400 `invalid_request` when `assistant.avatar` is `true`.|
-|chat_on_enter|string|false|none|A message the bot posts to the meeting's chat as soon as it becomes active — typically a recording disclosure. Delivered at most once. Independent of `speak_on_enter`: both may be set, and the chat message posts first because it does not wait for text-to-speech or avatar startup. Rejected with 422 `unsupported_capability` on platforms without meeting chat.|
+|join_at|string(date-time)|false|none|Future ISO-8601 join timestamp including timezone. Google Meet and Teams accept dates at most three years ahead. Omit for an immediate join. Assistant sessions created through this endpoint must join immediately.|
+|voice|string|false|none|Session-default voice identifier used for `speak_on_enter` and ordinary speak actions. A voice supplied on an individual speak action overrides this default for that utterance. With an assistant attached, its conversational voice remains configured on the assistant.|
+|speak_on_enter|string|false|none|Text the bot speaks after joining. Available for sessions without a digital avatar. With an AI Assistant, the greeting waits until the assistant is connected. Rejected with 400 invalid_request when assistant.avatar is true.|
+|chat_on_enter|string|false|none|A message the bot posts to the meeting's chat as soon as it becomes active — typically a recording disclosure. Delivered at most once. Independent of `speak_on_enter`: both may be set, and the chat message posts first because it does not wait for text-to-speech or avatar startup. Rejected with 422 `unsupported_capability` on platforms without meeting chat. For Google Meet and Teams, text must be nonblank, at most 4096 UTF-8 bytes, with no control characters except tabs and line breaks. Counts toward the 1000-chat-request session limit.|
 |barge_in|boolean|false|none|When enabled, a human participant `speech_on` event interrupts and stops the current bot audio; it does not bypass admission or initiate speech. Assistant sessions reject `barge_in: true`.|
 |summarize_on_end|boolean|false|none|If true, generate a summary artifact when the session ends.|
-|camera_image|[MeetingSessionCameraImage](#schemameetingsessioncameraimage)|false|write-only|Write-only static camera-tile image for this session, not a native account or participant profile photo. Supply exactly one JPEG source. When effective, the image is used as the bot's static camera/video output; presentation varies by meeting platform and recording configuration and is not guaranteed in recordings. An effective Avatar or Assistant webpage output takes precedence, so this input is ignored and a URL source is not fetched.|
+|camera_image|[MeetingSessionCameraImage](#schemameetingsessioncameraimage)|false|write-only|Not supported for Google Meet and Teams joins (422 unsupported_capability). Write-only static camera-tile image for this session, not an account or participant profile photo. Supply exactly one JPEG source. When effective, the image is used as the bot's static camera/video output; presentation varies by meeting platform and recording configuration and is not guaranteed in recordings. An attached assistant or avatar takes precedence, so this input is ignored and a URL source is not fetched.|
 |webhook_url|string(uri)|false|none|HTTPS endpoint to receive session lifecycle callbacks. Static validation requires HTTPS, rejects embedded credentials and blocked hosts, and enforces egress policy. Validation makes no network request to the endpoint.|
 |metadata|object|false|none|Arbitrary key-value metadata attached to the session. The serialized JSON representation must not exceed 16384 characters at runtime.|
-|idempotency_key|string|false|none|Client-supplied idempotency key to safely retry creation requests without duplicating sessions. Lookup is scoped to the authenticated account and compares the key only; the request payload is not fingerprinted or compared.|
-|assistant|[MeetingSessionAssistantRequest](#schemameetingsessionassistantrequest)|false|none|Attach a Telnyx AI Assistant to the session. Supply the Assistant's ID; the Meeting service connects it to the meeting directly. The Call Control connection, caller ID and loopback SIP URI previously required here have been removed and are now rejected as unknown fields.|
+|idempotency_key|string|false|none|Use a unique key per intended join and reuse the same key and request on retries. Reusing a key with a different join configuration or meeting URL can return 409 invalid_state. Always retry with the original request.|
+|assistant|[MeetingSessionAssistantRequest](#schemameetingsessionassistantrequest)|false|none|Attach a Telnyx AI Assistant owned by the authenticated account. Supply its ID and optional conversation settings. Unknown fields are rejected.|
+|leave_policy|[MeetingSessionLeavePolicy](#schemameetingsessionleavepolicy)|false|none|Automatic departure settings for Google Meet and Teams. Omitted fields use the default behavior. Set at creation; cannot be changed later. Zoom ignores this policy.|
+|recording|boolean|false|none|Google Meet and Teams only. Defaults to true when recording_export is supplied and false otherwise. True requires recording_export.bucket; false cannot be combined with recording_export. Fixed at creation, with no pause/resume action. Zoom rejects recording, recording_view, and recording_export with 422 unsupported_capability; omit these fields for Zoom.|
+|recording_view|string|false|none|Recording layout for Google Meet and Teams. Defaults to speaker_view. Accepted at creation only; does not enable recording by itself.|
+|recording_export|[MeetingSessionRecordingDestination](#schemameetingsessionrecordingdestination)|false|none|Customer-owned Telnyx Storage destination for recording exports. Uses the authenticated organization and user; do not supply credentials, region, organization ID or object key.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|recording_view|speaker_view|
+|recording_view|gallery_view|
+|recording_view|speaker_view_no_sidebar|
 
 <h2 id="tocS_CreateMeetingSessionResponse">CreateMeetingSessionResponse</h2>
 <!-- backwards compatibility -->
@@ -218552,7 +228390,11 @@ Cross-field rules:
       "speak_on_enter": null,
       "barge_in": false,
       "summarize_on_end": false,
-      "chat_on_enter": null
+      "chat_on_enter": null,
+      "deepfake_detection": {
+        "audio": false,
+        "video": false
+      }
     },
     "avatar": null,
     "avatar_state": null,
@@ -232077,88 +241919,6 @@ Server-to-client frame indicating synthesis is complete for the current text.
 |isFinal|boolean|false|none|Always `true`.|
 |timeToFirstAudioFrameMs|integer|false|none|Present if this was the first response frame.|
 
-<h2 id="tocS_FineTuningJob">FineTuningJob</h2>
-<!-- backwards compatibility -->
-<a id="schemafinetuningjob"></a>
-<a id="schema_FineTuningJob"></a>
-<a id="tocSfinetuningjob"></a>
-<a id="tocsfinetuningjob"></a>
-
-```json
-{
-  "id": "string",
-  "created_at": 0,
-  "finished_at": 0,
-  "hyperparameters": {
-    "n_epochs": 3
-  },
-  "model": "string",
-  "organization_id": "string",
-  "status": "queued",
-  "trained_tokens": 0,
-  "training_file": "string"
-}
-```
-
-The `fine_tuning.job` object represents a fine-tuning job that has been created through the API.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|The name of the fine-tuned model that is being created.|
-|created_at|integer|true|none|The Unix timestamp (in seconds) for when the fine-tuning job was created.|
-|finished_at|integer \| null|true|none|The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.|
-|hyperparameters|object|true|none|The hyperparameters used for the fine-tuning job.|
-|model|string|true|none|The base model that is being fine-tuned.|
-|organization_id|string|true|none|The organization that owns the fine-tuning job.|
-|status|string|true|none|The current status of the fine-tuning job.|
-|trained_tokens|integer \| null|true|none|The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.|
-|training_file|string|true|none|The storage bucket or object used for training.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|queued|
-|status|running|
-|status|succeeded|
-|status|failed|
-|status|cancelled|
-
-<h2 id="tocS_FineTuningJobsListData">FineTuningJobsListData</h2>
-<!-- backwards compatibility -->
-<a id="schemafinetuningjobslistdata"></a>
-<a id="schema_FineTuningJobsListData"></a>
-<a id="tocSfinetuningjobslistdata"></a>
-<a id="tocsfinetuningjobslistdata"></a>
-
-```json
-{
-  "data": [
-    {
-      "id": "string",
-      "created_at": 0,
-      "finished_at": 0,
-      "hyperparameters": {
-        "n_epochs": 3
-      },
-      "model": "string",
-      "organization_id": "string",
-      "status": "queued",
-      "trained_tokens": 0,
-      "training_file": "string"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[[FineTuningJob](#schemafinetuningjob)]|true|none|none|
-
 <h2 id="tocS_FirstCommandTimeout">FirstCommandTimeout</h2>
 <!-- backwards compatibility -->
 <a id="schemafirstcommandtimeout"></a>
@@ -233498,7 +243258,7 @@ Full-replace configuration body. All fields are required on every call: the API 
 |transcription|[TranscriptionConfig](#schematranscriptionconfig)|false|none|The settings associated with speech to text for the voice assistant. This is only relevant if the assistant uses a text-to-text language model. Any assistant using a model with native audio support (e.g. `fixie-ai/ultravox-v0_4`) will ignore this field.|
 |language|[GoogleTranscriptionLanguage](#schemagoogletranscriptionlanguage)|false|none|none|
 |voice|[VoiceConfig](#schemavoiceconfig)|false|none|The voice to be used by the voice assistant. Currently we support ElevenLabs, Telnyx and AWS voices.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-CA-LiamNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration secret under `"voice_settings": {"api_key_ref": "<secret_id>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br> - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.|
-|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|The settings associated with the voice selected|
+|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|The settings associated with the voice selected|
 |greeting|string|false|none|Text that will be played when the gathering starts, if none then nothing will be played when the gathering starts. The greeting can be text for any voice or SSML for `AWS.Polly.<voice_id>` voices. There is a 3,000 character limit.|
 |send_partial_results|boolean|false|none|Default is `false`. If set to `true`, the voice assistant will send partial results via the `call.ai_gather.partial_results` callback in real time as individual fields are gathered. If set to `false`, the voice assistant will only send the final result via the `call.ai_gather.ended` callback.|
 |send_message_history_updates|boolean|false|none|Default is `false`. If set to `true`, the voice assistant will send updates to the message history via the `call.ai_gather.message_history_updated` callback in real time as the message history is updated.|
@@ -233583,7 +243343,7 @@ Full-replace configuration body. All fields are required on every call: the API 
 |payload_type|string|false|none|The type of the provided payload. The payload can either be plain text, or Speech Synthesis Markup Language (SSML).|
 |service_level|string|false|none|This parameter impacts speech quality, language options and payload types. When using `basic`, only the `en-US` language and payload type `text` are allowed.|
 |voice|string|true|none|Specifies the voice used in speech synthesis.<br><br>- Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only the provider will give default values for voice_id and model_id.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery). Use `voice_settings` to configure custom deployments, regions, or API keys.<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration identifier secret in `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br>- **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`). Use `voice_settings` to configure voice_speed and other synthesis parameters. `Bayan` provides Arabic (multiple dialects) and English voices (e.g., `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.<br>- **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g., `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`, `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings` to configure speed, volume, pitch, and language_boost.<br>- **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g., `Resemble.Turbo.Aaron_en-US`). Supported models: `Pro`, `Turbo`, `Urdu`. `<VoiceId>` is a stock voice name or the ID of a Resemble voice clone. Use `voice_settings` to configure precision, sample_rate, and format.<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`, `BALANCED`, `CREATIVE`), supported by `TTS2` only.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.<br><br>For service_level basic, you may define the gender of the speaker (male or female).|
-|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|The settings associated with the voice selected|
+|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|The settings associated with the voice selected|
 |language|string|false|none|The language you want spoken. This parameter is ignored when a `Polly.*` voice is specified.|
 |minimum_digits|integer(int32)|false|none|The minimum number of digits to fetch. This parameter has a minimum value of 1.|
 |maximum_digits|integer(int32)|false|none|The maximum number of digits to fetch. This parameter has a maximum value of 128.|
@@ -233818,13 +243578,6 @@ Full-replace configuration body. All fields are required on every call: the API 
     "reduce_silence": false,
     "audio_format": "mp3",
     "sample_rate": 8000
-  },
-  "assemblyai": {
-    "voice_id": "string",
-    "model_id": "assemblyai-tts-1",
-    "language": "en",
-    "audio_format": "mp3",
-    "sample_rate": 8000
   }
 }
 ```
@@ -233852,7 +243605,6 @@ Request body for generating speech from text.
 |xai|[XAIProviderParams](#schemaxaiproviderparams)|false|none|xAI provider-specific parameters.|
 |humain|[HumainProviderParams](#schemahumainproviderparams)|false|none|Humain provider-specific parameters. Unlike other providers, Humain has no format/sample-rate negotiation (output is always PCM16 24kHz mono) and no language parameter — language is fixed per voice.|
 |soniox|[SonioxProviderParams](#schemasonioxproviderparams)|false|none|Soniox provider-specific parameters. Every voice speaks all supported languages; set `language` to the language of the text.|
-|assemblyai|[AssemblyAIProviderParams](#schemaassemblyaiproviderparams)|false|none|AssemblyAI provider-specific parameters. Every voice speaks all six supported languages; set `language` to the language of the text.|
 
 #### Enumerated Values
 
@@ -233867,7 +243619,6 @@ Request body for generating speech from text.
 |provider|xai|
 |provider|humain|
 |provider|soniox|
-|provider|assemblyai|
 |text_type|text|
 |text_type|ssml|
 |output_type|binary_output|
@@ -237069,6 +246820,14 @@ The session's messages, in whatever shape your framework produces. Any JSON valu
 |MediaEncryption|string|false|none|Defines whether media should be encrypted on the call. When set to `SRTP`, the call will use Secure Real-time Transport Protocol for media encryption. When set to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP destinations.|
 |SuperviseCallSid|string|false|none|The call control ID of the existing call to supervise. When provided, the created leg will be added to the specified call in supervising mode. Status callbacks and action callbacks will NOT be sent for the supervising leg.|
 |SupervisingRole|string|false|none|The supervising role for the new leg. Determines the audio behavior: barge (hear both sides), whisper (only hear supervisor), monitor (hear both sides but supervisor muted). Default: barge|
+|StreamUrl|string|false|none|The destination WebSocket address where the call's media stream is delivered, for example `wss://www.example.com/websocket`. When set, a media stream is started on the outbound call. Required when any other `Stream*` parameter is set. Can't be combined with `SuperviseCallSid`.|
+|StreamTrack|string|false|none|Specifies which track should be streamed. Requires `StreamUrl`.|
+|StreamCodec|string|false|none|Specifies the codec to be used for the streamed audio. When set to `default` or when transcoding is not possible, the codec from the call will be used. Requires `StreamUrl`.|
+|StreamBidirectionalMode|string|false|none|Configures the method of bidirectional streaming: `mp3` or `rtp`. Requires `StreamUrl`.|
+|StreamBidirectionalCodec|string|false|none|Indicates the codec for bidirectional streaming RTP payloads. Used only with `StreamBidirectionalMode=rtp`. Case sensitive. Requires `StreamUrl`.|
+|StreamBidirectionalSamplingRate|integer|false|none|Audio sampling rate for bidirectional streaming, in Hz. Requires `StreamUrl`.|
+|StreamAuthToken|string|false|none|An authentication token for the WebSocket server. It is sent as the `x-telnyx-streaming-auth-token` header of the WebSocket handshake and repeated as `connected.x-telnyx-streaming-auth-token` in the `connected` event. Maximum length is 4000 characters. Requires `StreamUrl`.|
+|StreamEstablishBeforeCallOriginate|boolean|false|none|Establishes the WebSocket connection before the destination is dialed, so no audio is missed while the connection is set up. If the WebSocket connection can't be established, the call is not placed and the request fails with a `422` error. `StreamUrl` is required when this is `true`.|
 |Timeout|integer|false|none|The number of seconds to wait for the called party to answer the call before the call is canceled. The minimum value is 5 and the maximum value is 120. Default is 30 seconds.|
 |TimeLimit|integer|false|none|The maximum duration of the call in seconds. The minimum value is 30 and the maximum value is 14400 (4 hours). Default is 14400 seconds.|
 |Texml|string|false|none|TeXML to be used as instructions for the call. If provided, the call will execute these instructions instead of fetching from the Url.|
@@ -237121,6 +246880,29 @@ The session's messages, in whatever shape your framework produces. Any JSON valu
 |SupervisingRole|barge|
 |SupervisingRole|whisper|
 |SupervisingRole|monitor|
+|StreamTrack|inbound_track|
+|StreamTrack|outbound_track|
+|StreamTrack|both_tracks|
+|StreamCodec|PCMU|
+|StreamCodec|PCMA|
+|StreamCodec|G722|
+|StreamCodec|OPUS|
+|StreamCodec|AMR-WB|
+|StreamCodec|L16|
+|StreamCodec|default|
+|StreamBidirectionalMode|mp3|
+|StreamBidirectionalMode|rtp|
+|StreamBidirectionalCodec|PCMU|
+|StreamBidirectionalCodec|PCMA|
+|StreamBidirectionalCodec|G722|
+|StreamBidirectionalCodec|OPUS|
+|StreamBidirectionalCodec|AMR-WB|
+|StreamBidirectionalCodec|L16|
+|StreamBidirectionalSamplingRate|8000|
+|StreamBidirectionalSamplingRate|16000|
+|StreamBidirectionalSamplingRate|22050|
+|StreamBidirectionalSamplingRate|24000|
+|StreamBidirectionalSamplingRate|48000|
 
 <h2 id="tocS_InitiateCallResult">InitiateCallResult</h2>
 <!-- backwards compatibility -->
@@ -241196,7 +250978,7 @@ The URL (or list of URLs) to the fax document. Supported formats: PDF, TIFF, JPE
 {
   "id": "string",
   "account_id": "string",
-  "provider": "string",
+  "provider": "telnyx",
   "status": "scheduled",
   "status_detail": "string",
   "recording": true,
@@ -241208,7 +250990,22 @@ The URL (or list of URLs) to the fax document. Supported formats: PDF, TIFF, JPE
     "speak_on_enter": "string",
     "chat_on_enter": "string",
     "barge_in": true,
-    "summarize_on_end": true
+    "summarize_on_end": true,
+    "leave_policy": {
+      "silence_seconds": 600,
+      "silence_grace_seconds": 1200,
+      "alone_seconds": 60,
+      "host_wait_seconds": 600,
+      "lobby_wait_seconds": 900,
+      "max_duration_seconds": null,
+      "bot_name_keywords": null
+    },
+    "recording": true,
+    "recording_view": "gallery_view",
+    "deepfake_detection": {
+      "audio": true,
+      "video": true
+    }
   },
   "avatar": {
     "provider": "telnyx",
@@ -241236,11 +251033,21 @@ The URL (or list of URLs) to the fax document. Supported formats: PDF, TIFF, JPE
   "join_at": "1970-01-01T00:00:00Z",
   "joined_at": "1970-01-01T00:00:00Z",
   "ended_at": "1970-01-01T00:00:00Z",
-  "updated_at": "1970-01-01T00:00:00Z"
+  "updated_at": "1970-01-01T00:00:00Z",
+  "recording_export": {
+    "type": "video",
+    "bucket": "string",
+    "region": "string",
+    "key": "string",
+    "bytes": 0,
+    "status": "pending",
+    "exported_at": "1970-01-01T00:00:00Z"
+  },
+  "remote_state_observed_at": "1970-01-01T00:00:00Z"
 }
 ```
 
-Represents a meeting session. All serializer fields are present and required; nullable fields use null when absent. No actor, provider-bot, idempotency, routing, key, or internal fields are exposed.
+Represents a meeting session. Core serializer fields are required; platform-specific fields are optional. Nullable fields use null when absent. No actor, provider-bot, idempotency, routing, key, or internal fields are exposed.
 
 ### Properties
 
@@ -241248,9 +251055,9 @@ Represents a meeting session. All serializer fields are present and required; nu
 |---|---|---|---|---|
 |id|string|true|none|Unique identifier for the meeting session.|
 |account_id|string|true|none|Identifier of the owning account.|
-|provider|string|true|none|Provider handling the meeting session.|
+|provider|string|true|none|Always telnyx.|
 |status|string|true|none|Lifecycle status. `waiting_for_admission` means the bot reached the meeting lobby and may require host approval. `active` means the bot entered the meeting/media path. `ended` alone does not prove attendance; use non-null `joined_at` as positive evidence that the session became active. `admission_denied` is reserved for an explicit provider denial, while cancellation or another termination can end a never-admitted session as `ended`.|
-|status_detail|string \| null|true|none|Additional human-readable detail about the status, or null.|
+|status_detail|string \| null|true|none|A machine-readable lifecycle reason, or null. Values include left_on_request, meeting_ended, everyone_left, no_one_joined, silence_timeout, max_duration_reached, admission_timeout, admission_denied, removed_from_meeting, recording_permission_denied, meeting_not_found, meeting_not_started, meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected, cancelled_calendar_event_deleted, cancelled_calendar_superseded, cancelled_policy, internal_error, and other. Treat this vocabulary as extensible.|
 |recording|boolean|true|none|Whether the session is being recorded.|
 |meeting_url|string(uri)|true|none|The meeting URL the bot joins.|
 |platform|string|true|none|Detected meeting platform.|
@@ -241264,12 +251071,14 @@ Represents a meeting session. All serializer fields are present and required; nu
 |assistant_state_changed_at|string \| null(date-time)|true|none|Timestamp of the last assistant state change, or null.|
 |webhook_url|string \| null(uri)|true|none|Webhook endpoint for session lifecycle callbacks, or null if not configured.|
 |metadata|object|true|none|Arbitrary key-value metadata attached to the session.|
-|failure_reason|string \| null|true|none|Human-readable failure reason if the session failed, or null.|
+|failure_reason|string \| null|true|none|A machine-readable lifecycle reason, or null. Values include left_on_request, meeting_ended, everyone_left, no_one_joined, silence_timeout, max_duration_reached, admission_timeout, admission_denied, removed_from_meeting, recording_permission_denied, meeting_not_found, meeting_not_started, meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected, cancelled_calendar_event_deleted, cancelled_calendar_superseded, cancelled_policy, internal_error, and other. Treat this vocabulary as extensible.|
 |created_at|string(date-time)|true|none|Timestamp when the session was created.|
 |join_at|string \| null(date-time)|true|none|Scheduled join time, or null for immediate join.|
 |joined_at|string \| null(date-time)|true|none|Timestamp when the session first became `active`, or null if it never became active. This remains positive admission evidence after terminal transitions.|
 |ended_at|string \| null(date-time)|true|none|Timestamp when the session ended, or null if ongoing.|
 |updated_at|string(date-time)|true|none|Timestamp of the last update to the session.|
+|recording_export|[MeetingSessionRecordingExport](#schemameetingsessionrecordingexport) \| null|false|none|Included on Google Meet and Teams create/retrieve responses, omitted from lists and update/leave responses. Null when disabled or no export reference is available.|
+|remote_state_observed_at|string(date-time)|false|none|Optional observation time on session list items. Retrieve the individual session when current state is required.|
 
 #### Enumerated Values
 
@@ -241437,7 +251246,7 @@ Represents a meeting session. All serializer fields are present and required; nu
 |---|---|---|---|---|
 |id|string|true|none|Identifier of the assistant.|
 |audio_gate|string|true|none|Audio gating strategy in force for the assistant call leg.|
-|dynamic_variables|object \| null|true|none|The dynamic variables in force for this session, or null when none were supplied.|
+|dynamic_variables|object \| null|false|none|Dynamic variables in individual-session responses; null when none were supplied. Omitted from session list items.|
 |leave_on_end|boolean|true|none|Whether the bot leaves when the Assistant's conversation ends or fails.|
 
 #### Enumerated Values
@@ -241467,17 +251276,17 @@ Represents a meeting session. All serializer fields are present and required; nu
 }
 ```
 
-Attach a Telnyx AI Assistant to the session. Supply the Assistant's ID; the Meeting service connects it to the meeting directly. The Call Control connection, caller ID and loopback SIP URI previously required here have been removed and are now rejected as unknown fields.
+Attach a Telnyx AI Assistant owned by the authenticated account. Supply its ID and optional conversation settings. Unknown fields are rejected.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|Identifier of the assistant to attach.|
-|audio_gate|string|false|none|Audio gating strategy for the assistant call leg. `half_duplex` (default) sends the assistant a single mixed meeting stream and mutes it while the assistant speaks, so the assistant cannot hear itself and cannot be interrupted. `full_duplex` sends a separate stream per participant, which allows barge-in and removes self-hearing, and COSTS SIGNIFICANTLY MORE: per-participant streams multiply the per-minute cost by the number of participants.|
-|dynamic_variables|object|false|none|Per-conversation values for the [dynamic variables](/docs/inference/ai-assistants/dynamic-variables) used in the Assistant's instructions, greeting, or tools. Delivered before the Assistant's first utterance, so they resolve for the opening line as well as the rest of the conversation. At most 63 entries; keys 1-128 characters; values must be strings. The map is budgeted in aggregate at 1,047,552 bytes (1023 KiB) rather than capped per value. `streaming_audio`, `ai_assistant_streaming_audio` and `meeting_session_id` are reserved and rejected with `400 invalid_request` -- they toggle provider infrastructure or are set by the service rather than fill a prompt template.|
-|leave_on_end|boolean|false|none|Leave the meeting when the Assistant's conversation reaches a terminal state -- `ended` **or** `failed`. Off by default, which leaves the bot in the meeting after the Assistant stops. Fires once: a second terminal transition does not leave twice, and a leave the provider refuses is logged without changing how the session settles.|
-|avatar|boolean|false|none|Beta. Show the avatar configured on the assistant (its `avatar_settings`; see [AI Assistant avatars](/docs/inference/ai-assistants/avatars)) as the bot's camera, lip-synced to the assistant's own speech. The request carries no avatar ID or key: the assistant is read at creation and the request is rejected with 400 `invalid_request` if it has no Telnyx avatar configured. Supported on Google Meet, Zoom, Microsoft Teams and Webex; other platforms return 422 `unsupported_capability`. REST-only. Not echoed back on `assistant`; the session's top-level `avatar` and `avatar_state` fields report it instead. If the avatar fails, the session continues voice-only and `avatar_state` becomes `degraded`.|
+|audio_gate|string|false|none|Use half_duplex (default) to pause listening while the assistant speaks, or full_duplex to allow participants to interrupt. Full-duplex pricing depends on participant audio usage; see the Meeting pricing guide.|
+|dynamic_variables|object|false|none|Per-conversation values for the [dynamic variables](/docs/inference/ai-assistants/dynamic-variables) used in the Assistant's instructions, greeting, or tools. Delivered before the Assistant's first utterance, so they resolve for the opening line as well as the rest of the conversation. At most 63 entries; keys 1-128 characters; values must be strings. The map is budgeted in aggregate at 1,047,552 bytes (1023 KiB) rather than capped per value. `streaming_audio`, `ai_assistant_streaming_audio` and `meeting_session_id` are reserved and rejected with `400 invalid_request`.|
+|leave_on_end|boolean|false|none|Leave when the assistant conversation ends or fails. Defaults to false. Other leave-policy rules and explicit leave requests still apply.|
+|avatar|boolean|false|none|Beta. Show the avatar configured on the assistant (its `avatar_settings`; see [AI Assistant avatars](/docs/inference/ai-assistants/avatars)) as the bot's camera, lip-synced to the assistant's own speech. The request carries no avatar ID or key: the assistant is read at creation and the request is rejected with 400 `invalid_request` if it has no Telnyx avatar configured. Available for Google Meet, Zoom, and Teams sessions. REST-only. Not echoed back on `assistant`; the session's top-level `avatar` and `avatar_state` fields report it instead. If the avatar fails, the session continues voice-only and `avatar_state` becomes `degraded`.|
 
 #### Enumerated Values
 
@@ -241527,7 +251336,7 @@ The assistant's avatar, captured from its `avatar_settings` when the session was
 }
 ```
 
-Write-only static camera-tile image for this session, not a native account or participant profile photo. Supply exactly one JPEG source. When effective, the image is used as the bot's static camera/video output; presentation varies by meeting platform and recording configuration and is not guaranteed in recordings. An effective Avatar or Assistant webpage output takes precedence, so this input is ignored and a URL source is not fetched.
+Not supported for Google Meet and Teams joins (422 unsupported_capability). Write-only static camera-tile image for this session, not an account or participant profile photo. Supply exactly one JPEG source. When effective, the image is used as the bot's static camera/video output; presentation varies by meeting platform and recording configuration and is not guaranteed in recordings. An attached assistant or avatar takes precedence, so this input is ignored and a URL source is not fetched.
 
 ### Properties
 
@@ -241555,7 +251364,7 @@ Write-only static camera-tile image for this session, not a native account or pa
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |format|string|true|none|Only JPEG images are accepted.|
-|base64_data|string|true|none|Canonical plain RFC 4648 Base64 for a valid decoded JPEG. Data URIs, whitespace, and the URL-safe alphabet are rejected. The encoded value is limited to 1,835,008 characters and the decoded JPEG to 1,363,148 bytes. The JPEG is limited to 4,096 pixels per dimension, 4 megapixels, and 128 MB of decoder memory. The image bytes are not persisted, returned, or logged.|
+|base64_data|string|true|none|Canonical plain RFC 4648 Base64 for a valid decoded JPEG. Data URIs, whitespace, and the URL-safe alphabet are rejected. The encoded value is limited to 1,835,008 characters and the decoded JPEG to 1,363,148 bytes. The JPEG is limited to 4,096 pixels per dimension, 4 megapixels, and 128 MB of decoder memory. The image bytes are not returned in the session response.|
 
 <h2 id="tocS_MeetingSessionCameraImageUrlSource">MeetingSessionCameraImageUrlSource</h2>
 <!-- backwards compatibility -->
@@ -241576,7 +251385,7 @@ Write-only static camera-tile image for this session, not a native account or pa
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |format|string|true|none|Only JPEG images are accepted.|
-|url|string(uri)|true|none|Public HTTPS JPEG URL with at most 2,048 characters and no credentials, fragment, surrounding whitespace, raw control characters, or explicit non-default port. Signed queries are allowed but must be treated as credentials. Fetching is limited to public network destinations, a five-second timeout, no redirects, a 2xx image/jpeg response with identity or no content encoding, and a 1,363,148-byte limit enforced against both declared and streamed content. The service resolves the URL before bot creation and does not persist, return, or log the URL or image bytes.|
+|url|string(uri)|true|none|Public HTTPS JPEG URL with at most 2,048 characters and no credentials, fragment, surrounding whitespace, raw control characters, or explicit non-default port. Signed queries are allowed but must be treated as credentials. Fetching is limited to public network destinations, a five-second timeout, no redirects, a 2xx image/jpeg response with identity or no content encoding, and a 1,363,148-byte limit enforced against both declared and streamed content. The service resolves the URL before bot creation and does not return the URL or image bytes in the session response.|
 
 <h2 id="tocS_MeetingSessionConfig">MeetingSessionConfig</h2>
 <!-- backwards compatibility -->
@@ -241591,7 +251400,22 @@ Write-only static camera-tile image for this session, not a native account or pa
   "speak_on_enter": "string",
   "chat_on_enter": "string",
   "barge_in": true,
-  "summarize_on_end": true
+  "summarize_on_end": true,
+  "leave_policy": {
+    "silence_seconds": 600,
+    "silence_grace_seconds": 1200,
+    "alone_seconds": 60,
+    "host_wait_seconds": 600,
+    "lobby_wait_seconds": 900,
+    "max_duration_seconds": null,
+    "bot_name_keywords": null
+  },
+  "recording": true,
+  "recording_view": "gallery_view",
+  "deepfake_detection": {
+    "audio": true,
+    "video": true
+  }
 }
 ```
 
@@ -241604,6 +251428,17 @@ Write-only static camera-tile image for this session, not a native account or pa
 |chat_on_enter|string \| null|true|none|The message posted to chat on join, or null when unset.|
 |barge_in|boolean|true|none|When enabled, a human participant `speech_on` event interrupts and stops the current bot audio; it does not bypass admission or initiate speech. Assistant sessions reject `barge_in: true`.|
 |summarize_on_end|boolean|true|none|Whether a summary artifact is generated on session end.|
+|leave_policy|[MeetingSessionLeavePolicy](#schemameetingsessionleavepolicy)|false|none|Automatic departure settings for Google Meet and Teams. Omitted fields use the default behavior. Set at creation; cannot be changed later. Zoom ignores this policy.|
+|recording|boolean|false|none|Recording intent set at creation for Google Meet and Teams. Distinct from the top-level recording field, which reports current activity.|
+|recording_view|string|false|none|Non-default recording layout. Omitted for the default speaker_view layout.|
+|deepfake_detection|object|true|none|Detection settings. Enabling audio or video detection is currently unsupported.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|recording_view|gallery_view|
+|recording_view|speaker_view_no_sidebar|
 
 <h2 id="tocS_MeetingSessionCreated">MeetingSessionCreated</h2>
 <!-- backwards compatibility -->
@@ -241628,7 +251463,11 @@ Write-only static camera-tile image for this session, not a native account or pa
     "speak_on_enter": null,
     "barge_in": false,
     "summarize_on_end": false,
-    "chat_on_enter": null
+    "chat_on_enter": null,
+    "deepfake_detection": {
+      "audio": false,
+      "video": false
+    }
   },
   "avatar": null,
   "avatar_state": null,
@@ -241655,9 +251494,9 @@ Response returned when a meeting session is first created. It is a full session 
 |---|---|---|---|---|
 |id|string|true|none|Unique identifier for the meeting session.|
 |account_id|string|true|none|Identifier of the owning account.|
-|provider|string|true|none|Provider handling the meeting session.|
+|provider|string|true|none|Always telnyx.|
 |status|string|true|none|Lifecycle status. `waiting_for_admission` means the bot reached the meeting lobby and may require host approval. `active` means the bot entered the meeting/media path. `ended` alone does not prove attendance; use non-null `joined_at` as positive evidence that the session became active. `admission_denied` is reserved for an explicit provider denial, while cancellation or another termination can end a never-admitted session as `ended`.|
-|status_detail|string \| null|true|none|Additional human-readable detail about the status, or null.|
+|status_detail|string \| null|true|none|A machine-readable lifecycle reason, or null. Values include left_on_request, meeting_ended, everyone_left, no_one_joined, silence_timeout, max_duration_reached, admission_timeout, admission_denied, removed_from_meeting, recording_permission_denied, meeting_not_found, meeting_not_started, meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected, cancelled_calendar_event_deleted, cancelled_calendar_superseded, cancelled_policy, internal_error, and other. Treat this vocabulary as extensible.|
 |recording|boolean|true|none|Whether the session is being recorded.|
 |meeting_url|string(uri)|true|none|The meeting URL the bot joins.|
 |platform|string|true|none|Detected meeting platform.|
@@ -241671,13 +251510,15 @@ Response returned when a meeting session is first created. It is a full session 
 |assistant_state_changed_at|string \| null(date-time)|true|none|Timestamp of the last assistant state change, or null.|
 |webhook_url|string \| null(uri)|true|none|Webhook endpoint for session lifecycle callbacks, or null if not configured.|
 |metadata|object|true|none|Arbitrary key-value metadata attached to the session.|
-|failure_reason|string \| null|true|none|Human-readable failure reason if the session failed, or null.|
+|failure_reason|string \| null|true|none|A machine-readable lifecycle reason, or null. Values include left_on_request, meeting_ended, everyone_left, no_one_joined, silence_timeout, max_duration_reached, admission_timeout, admission_denied, removed_from_meeting, recording_permission_denied, meeting_not_found, meeting_not_started, meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected, cancelled_calendar_event_deleted, cancelled_calendar_superseded, cancelled_policy, internal_error, and other. Treat this vocabulary as extensible.|
 |created_at|string(date-time)|true|none|Timestamp when the session was created.|
 |join_at|string \| null(date-time)|true|none|Scheduled join time, or null for immediate join.|
 |joined_at|string \| null(date-time)|true|none|Timestamp when the session first became `active`, or null if it never became active. This remains positive admission evidence after terminal transitions.|
 |ended_at|string \| null(date-time)|true|none|Timestamp when the session ended, or null if ongoing.|
 |updated_at|string(date-time)|true|none|Timestamp of the last update to the session.|
 |webhook_secret|string|false|read-only|Secret for validating webhook signatures. Returned only on the first successful create when `webhook_url` is configured. Never replayed, listed, or retrievable on subsequent requests.|
+|recording_export|[MeetingSessionRecordingExport](#schemameetingsessionrecordingexport) \| null|false|none|Included on Google Meet and Teams create/retrieve responses, omitted from lists and update/leave responses. Null when disabled or no export reference is available.|
+|remote_state_observed_at|string(date-time)|false|none|Optional observation time on session list items. Retrieve the individual session when current state is required.|
 
 #### Enumerated Values
 
@@ -241758,6 +251599,39 @@ Response returned when a meeting session is first created. It is a full session 
 |---|---|---|---|---|
 |data|[[MeetingSessionEvent](#schemameetingsessionevent)]|true|none|none|
 
+<h2 id="tocS_MeetingSessionLeavePolicy">MeetingSessionLeavePolicy</h2>
+<!-- backwards compatibility -->
+<a id="schemameetingsessionleavepolicy"></a>
+<a id="schema_MeetingSessionLeavePolicy"></a>
+<a id="tocSmeetingsessionleavepolicy"></a>
+<a id="tocsmeetingsessionleavepolicy"></a>
+
+```json
+{
+  "silence_seconds": 600,
+  "silence_grace_seconds": 1200,
+  "alone_seconds": 60,
+  "host_wait_seconds": 600,
+  "lobby_wait_seconds": 900,
+  "max_duration_seconds": null,
+  "bot_name_keywords": null
+}
+```
+
+Automatic departure settings for Google Meet and Teams. Omitted fields use the default behavior. Set at creation; cannot be changed later. Zoom ignores this policy.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|silence_seconds|integer|false|none|Continuous audio inactivity before departure after the silence grace period.|
+|silence_grace_seconds|integer|false|none|Seconds after joining before silence detection starts a fresh inactivity timer.|
+|alone_seconds|integer|false|none|Seconds alone after another participant has attended and left. Does not start just because the bot arrives first.|
+|host_wait_seconds|integer|false|none|Seconds to wait for the host to start the meeting.|
+|lobby_wait_seconds|integer|false|none|Seconds to wait for lobby admission.|
+|max_duration_seconds|integer \| null|false|none|Maximum seconds after joining. Null means no per-join duration limit; service safety limits still apply.|
+|bot_name_keywords|[string]|false|none|Case-insensitive names or phrases identifying other bots to exclude when deciding whether this bot is alone. Matching splits names on spaces, hyphens and underscores. Null or an empty array disables filtering.|
+
 <h2 id="tocS_MeetingSessionListResponse">MeetingSessionListResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemameetingsessionlistresponse"></a>
@@ -241771,7 +251645,7 @@ Response returned when a meeting session is first created. It is a full session 
     {
       "id": "string",
       "account_id": "string",
-      "provider": "string",
+      "provider": "telnyx",
       "status": "scheduled",
       "status_detail": "string",
       "recording": true,
@@ -241783,7 +251657,22 @@ Response returned when a meeting session is first created. It is a full session 
         "speak_on_enter": "string",
         "chat_on_enter": "string",
         "barge_in": true,
-        "summarize_on_end": true
+        "summarize_on_end": true,
+        "leave_policy": {
+          "silence_seconds": 600,
+          "silence_grace_seconds": 1200,
+          "alone_seconds": 60,
+          "host_wait_seconds": 600,
+          "lobby_wait_seconds": 900,
+          "max_duration_seconds": null,
+          "bot_name_keywords": null
+        },
+        "recording": true,
+        "recording_view": "gallery_view",
+        "deepfake_detection": {
+          "audio": true,
+          "video": true
+        }
       },
       "avatar": {
         "provider": "telnyx",
@@ -241811,7 +251700,17 @@ Response returned when a meeting session is first created. It is a full session 
       "join_at": "1970-01-01T00:00:00Z",
       "joined_at": "1970-01-01T00:00:00Z",
       "ended_at": "1970-01-01T00:00:00Z",
-      "updated_at": "1970-01-01T00:00:00Z"
+      "updated_at": "1970-01-01T00:00:00Z",
+      "recording_export": {
+        "type": "video",
+        "bucket": "string",
+        "region": "string",
+        "key": "string",
+        "bytes": 0,
+        "status": "pending",
+        "exported_at": "1970-01-01T00:00:00Z"
+      },
+      "remote_state_observed_at": "1970-01-01T00:00:00Z"
     }
   ]
 }
@@ -241822,6 +251721,70 @@ Response returned when a meeting session is first created. It is a full session 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[MeetingSession](#schemameetingsession)]|true|none|none|
+
+<h2 id="tocS_MeetingSessionRecordingDestination">MeetingSessionRecordingDestination</h2>
+<!-- backwards compatibility -->
+<a id="schemameetingsessionrecordingdestination"></a>
+<a id="schema_MeetingSessionRecordingDestination"></a>
+<a id="tocSmeetingsessionrecordingdestination"></a>
+<a id="tocsmeetingsessionrecordingdestination"></a>
+
+```json
+{
+  "bucket": "string",
+  "prefix": "string"
+}
+```
+
+Customer-owned Telnyx Storage destination for recording exports. Uses the authenticated organization and user; do not supply credentials, region, organization ID or object key.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bucket|string|true|none|Existing accessible bucket. Consecutive dots and IPv4-address names are rejected.|
+|prefix|string|false|none|Optional object-key prefix. One trailing slash is normalized. Empty path segments, . and .. segments are rejected.|
+
+<h2 id="tocS_MeetingSessionRecordingExport">MeetingSessionRecordingExport</h2>
+<!-- backwards compatibility -->
+<a id="schemameetingsessionrecordingexport"></a>
+<a id="schema_MeetingSessionRecordingExport"></a>
+<a id="tocSmeetingsessionrecordingexport"></a>
+<a id="tocsmeetingsessionrecordingexport"></a>
+
+```json
+{
+  "type": "video",
+  "bucket": "string",
+  "region": "string",
+  "key": "string",
+  "bytes": 0,
+  "status": "pending",
+  "exported_at": "1970-01-01T00:00:00Z"
+}
+```
+
+Customer Storage recording reference. Pending is not downloadable; exported means upload was verified; failed is terminal. Download with ordinary Storage authorization. No presigned URL is returned.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|bucket|string|true|none|none|
+|region|string|true|none|none|
+|key|string|true|none|none|
+|bytes|integer \| null|true|none|none|
+|status|string|true|none|none|
+|exported_at|string \| null(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|pending|
+|status|exported|
+|status|failed|
 
 <h2 id="tocS_MeetingSessionRecordingMediaDeletionResponse">MeetingSessionRecordingMediaDeletionResponse</h2>
 <!-- backwards compatibility -->
@@ -241847,6 +251810,41 @@ Response returned when a meeting session is first created. It is a full session 
 |---|---|---|---|---|
 |data|object|true|none|none|
 
+<h2 id="tocS_MeetingSessionRecordingsResponse">MeetingSessionRecordingsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemameetingsessionrecordingsresponse"></a>
+<a id="schema_MeetingSessionRecordingsResponse"></a>
+<a id="tocSmeetingsessionrecordingsresponse"></a>
+<a id="tocsmeetingsessionrecordingsresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "type": "string",
+      "url": "http://example.com",
+      "expires_at": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "recording_export": {
+    "type": "video",
+    "bucket": "string",
+    "region": "string",
+    "key": "string",
+    "bytes": 0,
+    "status": "pending",
+    "exported_at": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[object]|true|none|Temporary download URLs for recordings held by the Meeting service, including Zoom and existing Google Meet and Teams recordings. Empty for customer Storage exports; use recording_export instead. Choose the download method from these fields rather than the platform alone.|
+|recording_export|[MeetingSessionRecordingExport](#schemameetingsessionrecordingexport) \| null|false|none|Customer Storage export, or null while unavailable/disabled. Omitted for sessions without Storage export support.|
+
 <h2 id="tocS_MeetingSessionResponse">MeetingSessionResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemameetingsessionresponse"></a>
@@ -241859,7 +251857,7 @@ Response returned when a meeting session is first created. It is a full session 
   "data": {
     "id": "string",
     "account_id": "string",
-    "provider": "string",
+    "provider": "telnyx",
     "status": "scheduled",
     "status_detail": "string",
     "recording": true,
@@ -241871,7 +251869,22 @@ Response returned when a meeting session is first created. It is a full session 
       "speak_on_enter": "string",
       "chat_on_enter": "string",
       "barge_in": true,
-      "summarize_on_end": true
+      "summarize_on_end": true,
+      "leave_policy": {
+        "silence_seconds": 600,
+        "silence_grace_seconds": 1200,
+        "alone_seconds": 60,
+        "host_wait_seconds": 600,
+        "lobby_wait_seconds": 900,
+        "max_duration_seconds": null,
+        "bot_name_keywords": null
+      },
+      "recording": true,
+      "recording_view": "gallery_view",
+      "deepfake_detection": {
+        "audio": true,
+        "video": true
+      }
     },
     "avatar": {
       "provider": "telnyx",
@@ -241899,7 +251912,17 @@ Response returned when a meeting session is first created. It is a full session 
     "join_at": "1970-01-01T00:00:00Z",
     "joined_at": "1970-01-01T00:00:00Z",
     "ended_at": "1970-01-01T00:00:00Z",
-    "updated_at": "1970-01-01T00:00:00Z"
+    "updated_at": "1970-01-01T00:00:00Z",
+    "recording_export": {
+      "type": "video",
+      "bucket": "string",
+      "region": "string",
+      "key": "string",
+      "bytes": 0,
+      "status": "pending",
+      "exported_at": "1970-01-01T00:00:00Z"
+    },
+    "remote_state_observed_at": "1970-01-01T00:00:00Z"
   }
 }
 ```
@@ -241908,7 +251931,7 @@ Response returned when a meeting session is first created. It is a full session 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|data|[MeetingSession](#schemameetingsession)|true|none|Represents a meeting session. All serializer fields are present and required; nullable fields use null when absent. No actor, provider-bot, idempotency, routing, key, or internal fields are exposed.|
+|data|[MeetingSession](#schemameetingsession)|true|none|Represents a meeting session. Core serializer fields are required; platform-specific fields are optional. Nullable fields use null when absent. No actor, provider-bot, idempotency, routing, key, or internal fields are exposed.|
 
 <h2 id="tocS_MemoryListResponse">MemoryListResponse</h2>
 <!-- backwards compatibility -->
@@ -241941,7 +251964,7 @@ Response returned when a meeting session is first created. It is a full session 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[ListedMemory](#schemalistedmemory)]|true|none|none|
-|meta|[PageMeta](#schemapagemeta)|true|none|Where a listing's page sits in the whole.<br><br>A page is a snapshot: the counts it reports and the order it is drawn in<br>both move as writes land, so paging through a busy namespace can repeat or<br>miss an entry at a page boundary.|
+|meta|[agent-memory_PageMeta](#schemaagent-memory_pagemeta)|true|none|Where a listing's page sits in the whole.<br><br>A page is a snapshot: the counts it reports and the order it is drawn in<br>both move as writes land, so paging through a busy namespace can repeat or<br>miss an entry at a page boundary.|
 
 <h2 id="tocS_MemoryResponse">MemoryResponse</h2>
 <!-- backwards compatibility -->
@@ -244332,7 +254355,7 @@ Metadata for a model available on Telnyx Inference. Returned by `GET /v2/ai/open
 |parameters_str|string \| null|false|none|Human-readable parameter count, e.g. `1.0T`, `753.9B`, `8B`.|
 |tier|string|true|none|Billing tier the model belongs to. Used together with `pricing` to determine cost per 1M tokens.|
 |license|string|true|none|License the model is distributed under, e.g. `Apache 2.0`, `MIT`, `Llama 3 Community License`.|
-|is_fine_tunable|boolean|false|none|Whether the model can be used as a base for a fine-tuning job via `POST /v2/ai/fine_tuning/jobs`.|
+|is_fine_tunable|boolean|false|none|Whether the model can be used as a base for fine-tuning. Fine-tuning jobs are no longer served by the Telnyx API.|
 |recommended_for_assistants|boolean|false|none|Whether Telnyx currently recommends this model as the LLM powering a Telnyx AI Assistant.|
 |is_vision_supported|boolean|false|none|Whether the model accepts image inputs in chat completions (multimodal vision support).|
 |beta|boolean|false|none|Whether the model is in beta. New Telnyx-hosted models launch with `beta: true`; the label is removed once the model is established.|
@@ -245018,7 +255041,7 @@ Navigate to a URL.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |network_id|string(uuid)|true|none|The id of the Network to add the route to.|
-|cidr|string|true|none|The IPv4 subnet to route, such as a subnet behind the tunnel. It must be a canonical CIDR. Default, loopback, link-local, multicast, and shared address space (`100.64.0.0/10`) ranges are rejected. So are ranges that overlap the Tailscale Subnet Router ranges, `172.27.254.0/24` and `198.18.0.0/20`, or a subnet already on the Network.|
+|cidr|string|true|none|The IPv4 subnet to route, such as a subnet behind a tunnel or a WireGuard peer. It must be a canonical CIDR. Default, loopback, link-local, multicast, and shared address space (`100.64.0.0/10`) ranges are rejected. So are ranges that overlap the Tailscale Subnet Router ranges, `172.27.254.0/24` and `198.18.0.0/20`, or a subnet already on the Network.|
 |next_hop|object|true|none|Where the Network sends traffic for `cidr`.|
 
 <h2 id="tocS_NetworkRouteNextHop">NetworkRouteNextHop</h2>
@@ -248250,27 +258273,21 @@ The summary of the resource that have been assigned to the Private Wireless Gate
 
 ```json
 {
+  "total_results": 0,
   "page_number": 0,
   "page_size": 0,
-  "total_pages": 0,
-  "total_results": 0
+  "total_pages": 0
 }
 ```
-
-Where a listing's page sits in the whole.
-
-A page is a snapshot: the counts it reports and the order it is drawn in
-both move as writes land, so paging through a busy namespace can repeat or
-miss an entry at a page boundary.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|total_results|integer|true|none|Results across every page.|
 |page_number|integer|true|none|The page returned, counting from 1.|
-|page_size|integer|true|none|How many results a page holds.|
-|total_pages|integer|true|none|Pages that can be requested; 0 when nothing matched. Page until `page_number` reaches it rather than until a page comes back short: a page can hold fewer than `page_size` results without being the last. Capped at the deepest page served, so on a very large listing it covers fewer results than `total_results`.|
-|total_results|integer|true|none|Results the request matched, including any past the deepest page.|
+|page_size|integer|true|none|Results per page.|
+|total_pages|integer|true|none|Pages that can be requested; 0 when nothing matched.|
 
 <h2 id="tocS_PaginatedAssistantTestList">PaginatedAssistantTestList</h2>
 <!-- backwards compatibility -->
@@ -252056,7 +262073,15 @@ Specifies whether Telnyx is able to confirm portability this number in the Unite
       "details": [
         {
           "code": "ENTITY_NAME_MISMATCH",
-          "description": "Entity name does not match that on the CSR"
+          "description": "Entity name does not match that on the CSR",
+          "remediation": {
+            "action": "update_order_fields",
+            "fields": [
+              "end_user.location.postal_code"
+            ],
+            "required_document": "loa",
+            "retryable": true
+          }
         }
       ],
       "value": "ported"
@@ -252213,7 +262238,15 @@ Specifies whether Telnyx is able to confirm portability this number in the Unite
     "details": [
       {
         "code": "ENTITY_NAME_MISMATCH",
-        "description": "Entity name does not match that on the CSR"
+        "description": "Entity name does not match that on the CSR",
+        "remediation": {
+          "action": "update_order_fields",
+          "fields": [
+            "end_user.location.postal_code"
+          ],
+          "required_document": "loa",
+          "retryable": true
+        }
       }
     ],
     "value": "ported"
@@ -252744,7 +262777,15 @@ Information about messaging porting process.
   "details": [
     {
       "code": "ENTITY_NAME_MISMATCH",
-      "description": "Entity name does not match that on the CSR"
+      "description": "Entity name does not match that on the CSR",
+      "remediation": {
+        "action": "update_order_fields",
+        "fields": [
+          "end_user.location.postal_code"
+        ],
+        "required_document": "loa",
+        "retryable": true
+      }
     }
   ],
   "value": "ported"
@@ -252757,7 +262798,7 @@ Porting order status
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|details|[[PortingOrdersExceptionType](#schemaportingordersexceptiontype)]|false|none|A list of 0 or more details about this porting order's status|
+|details|[[PortingOrderStatusDetails](#schemaportingorderstatusdetails)]|false|none|A list of 0 or more details about this porting order's status|
 |value|string|false|none|The current status of the porting order|
 
 #### Enumerated Values
@@ -252772,6 +262813,85 @@ Porting order status
 |value|ported|
 |value|cancelled|
 |value|cancel-pending|
+
+<h2 id="tocS_PortingOrderStatusDetails">PortingOrderStatusDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaportingorderstatusdetails"></a>
+<a id="schema_PortingOrderStatusDetails"></a>
+<a id="tocSportingorderstatusdetails"></a>
+<a id="tocsportingorderstatusdetails"></a>
+
+```json
+{
+  "code": "ENTITY_NAME_MISMATCH",
+  "description": "Entity name does not match that on the CSR",
+  "remediation": {
+    "action": "update_order_fields",
+    "fields": [
+      "end_user.location.postal_code"
+    ],
+    "required_document": "loa",
+    "retryable": true
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|Identifier of the exception. Includes legacy codes persisted on older orders|
+|description|string|true|none|Description of the exception|
+|remediation|object|true|none|Structured remediation steps so an agent can map the exception to a fix via the API alone|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|code|ACCOUNT_NUMBER_MISMATCH|
+|code|ACCOUNT_NUMBER_MISMATCH_OR_MISSING|
+|code|ACCOUNT_NUMBER_REQUIRED|
+|code|ALL_DATA_MISMATCH|
+|code|AUTH_PERSON_MISMATCH|
+|code|BTN_ATN_MISMATCH|
+|code|DOCUMENT_BLOCKED|
+|code|ENTITY_NAME_MISMATCH|
+|code|FOC_EXPIRED|
+|code|FOC_REJECTED|
+|code|INCORRECT_LOA_TEMPLATE|
+|code|INCORRECT_LOSING_COMMUNICATION_PROVIDER|
+|code|INCORRECT_PORT_TYPE|
+|code|INVALID_OR_MISSING_INVOICE|
+|code|INVALID_OR_MISSING_LOA|
+|code|INVALID_SIGNATURE_ON_THE_LOA|
+|code|J2_PASSCODE_PIN_INVALID|
+|code|LOA_ILLEGIBLE|
+|code|LOCATION_MISMATCH|
+|code|LOSING_CARRIER_OUTAGE|
+|code|LSR_PENDING|
+|code|MAIN_BTN_PORTING|
+|code|MISSING_MANDATORY_REQUIREMENT|
+|code|MISSING_NUMBER_DETAILS|
+|code|NUMBER_HAS_ASSOCIATED_SERVICES|
+|code|ORDER_REFLOW|
+|code|OSP_IRRESPONSIVE|
+|code|OTHER|
+|code|PASSCODE_PIN_INVALID|
+|code|PHONE_NUMBER_HAS_SPECIAL_FEATURE|
+|code|PHONE_NUMBER_MISMATCH|
+|code|PHONE_NUMBER_NOT_PORTABLE|
+|code|PORTING_ORDER_SPLIT_REQUIRED|
+|code|PORT_TYPE_INCORRECT|
+|code|POSTAL_CODE_MISMATCH|
+|code|RATE_CENTER_NOT_PORTABLE|
+|code|RESELLER_INVALID|
+|code|STRANDED_SERVICES_NEED_NEW_BTN|
+|code|SV_CONFLICT|
+|code|SV_UNKNOWN_FAILURE|
+|code|TNS_ON_MULTIPLE_ACCOUNTS|
+|code|TN_BUILD_CONFLICT|
+|code|TN_DISCONNECTED|
+|code|UNAUTHORIZED_PERSON_SIGNATURE|
 
 <h2 id="tocS_PortingOrderType">PortingOrderType</h2>
 <!-- backwards compatibility -->
@@ -252926,7 +263046,15 @@ A port can be either 'full' or 'partial'. When type is 'full' the other attribut
 ```json
 {
   "code": "ENTITY_NAME_MISMATCH",
-  "description": "Entity name does not match that on the CSR"
+  "description": "Entity name does not match that on the CSR",
+  "remediation": {
+    "action": "update_order_fields",
+    "fields": [
+      "end_user.location.postal_code"
+    ],
+    "required_document": "loa",
+    "retryable": true
+  }
 }
 ```
 
@@ -252934,34 +263062,53 @@ A port can be either 'full' or 'partial'. When type is 'full' the other attribut
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|code|string|false|none|Identifier of an exception type|
-|description|string|false|none|Description of an exception type|
+|code|string|true|none|Identifier of an exception type|
+|description|string|true|none|Description of an exception type|
+|remediation|object|true|none|Structured remediation steps so an agent can map the exception to a fix via the API alone|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |code|ACCOUNT_NUMBER_MISMATCH|
+|code|ACCOUNT_NUMBER_MISMATCH_OR_MISSING|
+|code|ACCOUNT_NUMBER_REQUIRED|
+|code|ALL_DATA_MISMATCH|
 |code|AUTH_PERSON_MISMATCH|
 |code|BTN_ATN_MISMATCH|
+|code|DOCUMENT_BLOCKED|
 |code|ENTITY_NAME_MISMATCH|
 |code|FOC_EXPIRED|
 |code|FOC_REJECTED|
+|code|INCORRECT_LOA_TEMPLATE|
+|code|INCORRECT_LOSING_COMMUNICATION_PROVIDER|
+|code|INCORRECT_PORT_TYPE|
+|code|INVALID_OR_MISSING_INVOICE|
+|code|INVALID_OR_MISSING_LOA|
+|code|INVALID_SIGNATURE_ON_THE_LOA|
+|code|J2_PASSCODE_PIN_INVALID|
 |code|LOCATION_MISMATCH|
 |code|LSR_PENDING|
 |code|MAIN_BTN_PORTING|
+|code|MISSING_MANDATORY_REQUIREMENT|
+|code|MISSING_NUMBER_DETAILS|
+|code|NUMBER_HAS_ASSOCIATED_SERVICES|
+|code|ORDER_REFLOW|
 |code|OSP_IRRESPONSIVE|
 |code|OTHER|
 |code|PASSCODE_PIN_INVALID|
-|code|PHONE_NUMBER_HAS_SPECIAL_FEATURE|
 |code|PHONE_NUMBER_MISMATCH|
 |code|PHONE_NUMBER_NOT_PORTABLE|
-|code|PORT_TYPE_INCORRECT|
-|code|PORTING_ORDER_SPLIT_REQUIRED|
 |code|POSTAL_CODE_MISMATCH|
 |code|RATE_CENTER_NOT_PORTABLE|
+|code|RESELLER_INVALID|
+|code|STRANDED_SERVICES_NEED_NEW_BTN|
 |code|SV_CONFLICT|
 |code|SV_UNKNOWN_FAILURE|
+|code|TNS_ON_MULTIPLE_ACCOUNTS|
+|code|TN_BUILD_CONFLICT|
+|code|TN_DISCONNECTED|
+|code|UNAUTHORIZED_PERSON_SIGNATURE|
 
 <h2 id="tocS_PortingPhoneNumber">PortingPhoneNumber</h2>
 <!-- backwards compatibility -->
@@ -253954,7 +264101,7 @@ A single pricing entry. Standard products include rate, unit, currency, type, co
 |---|---|---|---|---|
 |data_retention|boolean|false|none|If true, conversation history and insights will be stored. If false, they will not be stored. This in‑tool toggle governs solely the retention of conversation history and insights via the AI assistant. It has no effect on any separate recording, transcription, or storage configuration that you have set at the account, number, or application level. All such external settings remain in force regardless of your selection here.|
 |pii_redaction|string|false|none|Controls redaction of personally identifiable information (PII) from the conversation history that is stored for this assistant. `disabled` (default) stores content as-is. `redact` replaces detected PII with `<PII:type/>` placeholders (e.g. `<PII:name/>`, `<PII:phone/>`) as the stored copies are written: message content (user, assistant, and tool-result messages) and tool-call arguments are redacted when written to conversation history, so the stored transcript, its read-back via the history API, and any insights generated from the stored messages contain the placeholders instead of the PII; response bodies returned by webhook tools are redacted too, as stored in the webhook logs — a per-conversation record separate from the transcript. In the Mission Control Portal this field appears as a "PII Redaction" on/off toggle, where Enabled corresponds to `redact`. Redaction runs when the stored copy is written, after the LLM has generated its reply: the live conversation is not redacted, the assistant's tools keep receiving the full (unredacted) values during the call, and the LLM still sees full content in its context window. Call recordings (including any recording layout configured under telephony settings) and the payloads of messages/webhooks delivered during the call are never redacted by this setting. The set of detected PII types (names, street addresses, phone numbers, email addresses, government identifiers like SSN and driver's license numbers, credit card and bank account numbers, IP addresses, dates of birth, and other identifiers unique to a person) is fixed by Telnyx and cannot be configured or extended per assistant. Assistants with `redact` cannot be used for SMS/WhatsApp messaging (that combination is rejected with a 400 error); voice and web chat are unaffected.|
-|in_transit_data_locality|boolean|false|none|Requires this assistant's conversations to be processed inside your organization's data-locality region, rather than only stored there, on every channel: for web chat, every model call of a turn; for voice, the call's model calls and the Telnyx-hosted speech services it uses; for SMS and WhatsApp, the model calls of each turn (how messages travel through carriers is not covered). Covered processing that cannot be handled in region fails rather than being served elsewhere. Enabling it requires a data-locality region with in-region inference (USA, EU, AUS, UAE; see [Inference regions](https://developers.telnyx.com/docs/inference/models/regions)), Telnyx-hosted models for the assistant, its fallback, and any conversation-flow node that overrides the model, and, when `insight_settings.model` is set, an insight model available in that region; the request is rejected otherwise. A voice call fails when it starts if its STT model or TTS voice is not self-hosted by Telnyx, if the assistant uses a speech-to-speech model, or if the call's media is anchored outside the region. Once enabled, send web chat requests and WebSocket or WebRTC conversations to your region's API hostname: one entering the platform in another region is refused rather than forwarded, because forwarding it would already have moved the content across the border. See [Data residency](https://developers.telnyx.com/docs/inference/data-residency#in-region-processing-for-ai-assistants). Defaults to false.|
+|in_transit_data_locality|boolean|false|none|Requires this assistant's conversations to be processed inside your organization's data-locality region, rather than only stored there, on every channel: for web chat, every model call of a turn; for voice, the call's model calls and the Telnyx-hosted speech services it uses; for SMS and WhatsApp, the model calls of each turn (how messages travel through carriers is not covered). Covered processing that cannot be handled in region fails rather than being served elsewhere. Enabling it requires a data-locality region with in-region inference (USA, EU, AUS, UAE; see [Inference regions](https://developers.telnyx.com/docs/inference/models/regions)), models for the assistant, its fallback, and any conversation-flow node that overrides the model that are either Telnyx-hosted or a customer-provided `external_llm` endpoint (third-party model providers are refused), and, when `insight_settings.model` is set, an insight model available in that region; the request is rejected otherwise. A voice call fails when it starts if its STT model or TTS voice is not self-hosted by Telnyx, if the assistant uses a speech-to-speech model, or if the call's media is anchored outside the region. URLs Telnyx is configured to call — an `external_llm` endpoint, webhook tools, Voice API callbacks, or a recording storage destination — are followed as-is: Telnyx cannot verify where a customer-supplied URL processes requests, and keeping those steps in your region is your responsibility. Once enabled, send web chat requests and WebSocket or WebRTC conversations to your region's API hostname: one entering the platform in another region is refused rather than forwarded, because forwarding it would already have moved the content across the border. See [Data residency](https://developers.telnyx.com/docs/inference/data-residency#in-region-processing-for-ai-assistants). Defaults to false.|
 
 #### Enumerated Values
 
@@ -254116,7 +264263,7 @@ The current status or failure details of the Private Wireless Gateway.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Profile](#schemaprofile)]|true|none|none|
-|meta|[PageMeta](#schemapagemeta)|true|none|Where a listing's page sits in the whole.<br><br>A page is a snapshot: the counts it reports and the order it is drawn in<br>both move as writes land, so paging through a busy namespace can repeat or<br>miss an entry at a page boundary.|
+|meta|[agent-memory_PageMeta](#schemaagent-memory_pagemeta)|true|none|Where a listing's page sits in the whole.<br><br>A page is a snapshot: the counts it reports and the order it is drawn in<br>both move as writes land, so paging through a busy namespace can repeat or<br>miss an entry at a page boundary.|
 
 <h2 id="tocS_ProfileMetrics">ProfileMetrics</h2>
 <!-- backwards compatibility -->
@@ -257954,11 +268101,11 @@ Per-category buckets of phone numbers, populated once results are available. Emp
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|remediated|[string]|false|none|none|
-|not_flagged|[string]|false|none|none|
-|requires_review|[string]|false|none|none|
-|ineligible|[string]|false|none|none|
-|refused|[string]|false|none|none|
+|remediated|[string]|false|none|The reputation partner approved redress (redress approved) or reported that the number had already been redressed recently (already recently redressed). This does not guarantee removal from every spam list.|
+|not_flagged|[string]|false|none|The reputation partner reported no prior spam label for the number (no prior spam label).|
+|requires_review|[string]|false|none|The number needs further review, or the partner response did not match a recognized outcome.|
+|ineligible|[string]|false|none|Numbers the reputation partner did not re-review because it had already reviewed them within the previous 60 days (already reviewed). The cooldown is measured from the partner's most recent review, not the API submission date. This array identifies the numbers but does not include their last-review or re-eligibility dates.|
+|refused|[string]|false|none|The reputation partner reviewed the number and declined the redress request (redress declined); the number remains flagged.|
 
 <h2 id="tocS_RemediationRequest">RemediationRequest</h2>
 <!-- backwards compatibility -->
@@ -258011,7 +268158,7 @@ Full detail of a remediation request, returned on submit and GET by id.
 |status|[RemediationStatus](#schemaremediationstatus)|true|none|Customer-facing status of a remediation request.|
 |phone_numbers_count|integer|true|none|Total phone numbers in this batch, including any later cancelled. May exceed the sum of the per-category result buckets, which omit cancelled numbers.|
 |phone_numbers_submitted|integer|true|none|Numbers accepted for remediation, i.e. not rejected as ineligible. Counts numbers still queued (pending) as well as processed ones.|
-|phone_numbers_ineligible|integer|true|none|Numbers rejected before submission (e.g. cooldown).|
+|phone_numbers_ineligible|integer|true|none|Number of phone numbers the reputation partner did not re-review because it had reviewed them within the previous 60 days.|
 |call_purpose|string|true|none|none|
 |contact_email|string \| null(email)|false|none|none|
 |webhook_url|string \| null(uri)|false|none|none|
@@ -261960,7 +272107,7 @@ Select an option on the element identified by observation_id + ref.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|text|string|true|none|Chat message text to send in the meeting.|
+|text|string|true|none|Message text, 1–4000 characters. On Google Meet and Teams, also at most 4096 UTF-8 bytes and nonblank; control characters other than tab and line breaks are rejected. CRLF is normalized to LF.|
 
 <h2 id="tocS_SendDTMFRequest">SendDTMFRequest</h2>
 <!-- backwards compatibility -->
@@ -263530,7 +273677,7 @@ Envelope containing a single collection source.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Source](#schemasource)]|true|none|none|
-|meta|[PageMeta](#schemapagemeta)|true|none|Where a listing's page sits in the whole.<br><br>A page is a snapshot: the counts it reports and the order it is drawn in<br>both move as writes land, so paging through a busy namespace can repeat or<br>miss an entry at a page boundary.|
+|meta|[agent-memory_PageMeta](#schemaagent-memory_pagemeta)|true|none|Where a listing's page sits in the whole.<br><br>A page is a snapshot: the counts it reports and the order it is drawn in<br>both move as writes land, so paging through a busy namespace can repeat or<br>miss an entry at a page boundary.|
 
 <h2 id="tocS_SourceReconcileEnvelope">SourceReconcileEnvelope</h2>
 <!-- backwards compatibility -->
@@ -263822,7 +273969,7 @@ an LLM turn. Reaching it delivers `message` to the user verbatim (with
 |service_level|string|false|none|This parameter impacts speech quality, language options and payload types. When using `basic`, only the `en-US` language and payload type `text` are allowed.|
 |stop|string|false|none|When specified, it stops the current audio being played. Specify `current` to stop the current audio being played, and to play the next file in the queue. Specify `all` to stop the current audio file being played and to also clear all audio files from the queue.|
 |voice|string|true|none|Specifies the voice used in speech synthesis.<br><br>- Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only the provider will give default values for voice_id and model_id.<br><br> **Supported Providers:**<br>- **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural voices, which provide more realistic, human-like speech, append `-Neural` to the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html) for compatibility.<br>- **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`, `Azure.en-US-BrianMultilingualNeural`, `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery). Use `voice_settings` to configure custom deployments, regions, or API keys.<br>- **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g., `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an integration identifier secret in `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret) for details. Check [available voices](https://elevenlabs.io/docs/api-reference/get-voices).<br>- **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`). Use `voice_settings` to configure voice_speed and other synthesis parameters. `Bayan` provides Arabic (multiple dialects) and English voices (e.g., `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.<br>- **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g., `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`, `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings` to configure speed, volume, pitch, and language_boost.<br>- **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g., `Resemble.Turbo.Aaron_en-US`). Supported models: `Pro`, `Turbo`, `Urdu`. `<VoiceId>` is a stock voice name or the ID of a Resemble voice clone. Use `voice_settings` to configure precision, sample_rate, and format.<br>- **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`, `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`, `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`, `BALANCED`, `CREATIVE`), supported by `TTS2` only.<br>- **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g., `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`, `s1`. `VoiceId` is a Fish Voice-Library reference ID.<br>- **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`). Supported model: `tts-rt-v2`. Browse the catalog via the [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices). Every voice speaks all supported languages; set `language` to the two-letter ISO 639-1 code of the text, for example `it`. SSML is not supported. Use `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.<br>- **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`, `ara`, `rex`, `sal`, `leo`.<br>- **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices: `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`, `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no `ModelId` segment.<br><br>For service_level basic, you may define the gender of the speaker (male or female).|
-|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings) \| [AssemblyAIVoiceSettings](#schemaassemblyaivoicesettings)|false|none|The settings associated with the voice selected|
+|voice_settings|[ElevenLabsVoiceSettings](#schemaelevenlabsvoicesettings) \| [TelnyxVoiceSettings](#schematelnyxvoicesettings) \| [AWSVoiceSettings](#schemaawsvoicesettings) \| [MinimaxVoiceSettings](#schemaminimaxvoicesettings) \| [AzureVoiceSettings](#schemaazurevoicesettings) \| [ResembleVoiceSettings](#schemaresemblevoicesettings) \| [InworldVoiceSettings](#schemainworldvoicesettings) \| [XAIVoiceSettings](#schemaxaivoicesettings) \| [SonioxVoiceSettings](#schemasonioxvoicesettings)|false|none|The settings associated with the voice selected|
 |language|string|false|none|The language you want spoken. This parameter is ignored when a `Polly.*` voice is specified.|
 |client_state|string|false|none|Use this field to add state to every subsequent webhook. It must be a valid Base-64 encoded string.|
 |command_id|string|false|none|Use this field to avoid duplicate commands. Telnyx will ignore any command with the same `command_id` for the same `call_control_id`.|
@@ -268301,7 +278448,8 @@ Campaign is generated by the 10DLC registry once the corresponding campaign requ
   "title": "string",
   "detail": "string",
   "source": {
-    "pointer": "string"
+    "pointer": "string",
+    "parameter": "string"
   },
   "meta": {
     "url": "string"
@@ -268334,7 +278482,8 @@ Campaign is generated by the 10DLC registry once the corresponding campaign requ
       "title": "string",
       "detail": "string",
       "source": {
-        "pointer": "string"
+        "pointer": "string",
+        "parameter": "string"
       },
       "meta": {
         "url": "string"
@@ -272961,10 +283110,10 @@ Server-to-client frame containing a transcription result.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|seq|integer|true|none|none|
+|seq|integer|true|none|Monotonic transcript append cursor. This is separate from the event-history cursor and does not establish conversational turn order.|
 |text|string|true|none|none|
 |confidence|number \| null|true|none|none|
-|speaker_label|string \| null|true|none|none|
+|speaker_label|string \| null|true|none|Recorded participant or bot label, or null when unavailable. Labels are attribution, not verified identity. Segments from concurrent speakers can finalize in a different order from the conversation.|
 |relative_ts|number \| null|true|none|none|
 |occurred_at|string(date-time)|true|none|none|
 
@@ -273065,7 +283214,7 @@ A second speech-to-text model that transcribes alongside `transcription.model`, 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|model|string|true|none|The language booster's model. It must be the same kind of model as `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`, `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`, `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`, `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as `transcription.model` on a different `language`.|
+|model|string|true|none|The language booster's model. It must be the same kind of model as `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`, `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `soniox/stt-rt-v6`, `humain/realtime`, `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`, `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as `transcription.model` on a different `language`.|
 |language|string \| null|false|none|The language this model transcribes. Omit it or set it to `null` to use the language of `transcription.model`. The request is rejected when this model doesn't support the language it would run. It is also rejected when it would run the same model on the same language as `transcription.model`.|
 |settings|[TranscriptionSettingsConfig](#schematranscriptionsettingsconfig) \| null|false|none|Settings for the language booster, with the same fields and limits as `transcription.settings`. Fields that don't apply to this model's provider are dropped, and the provider's defaults fill in the rest. Omit it or set it to `null` to use the settings of `transcription.model` where they apply to this model.|
 |rule|string|false|none|How the assistant picks the transcript it uses. The models are compared on how complete and confident their transcripts are, not on language, so the rules work best when both models understand the callers' language.<br><br>- `best_turn` (default): both models transcribe the whole call. Each turn uses the language booster's transcript only when it scores higher than the transcript of `transcription.model` (clearly higher with non-streaming models). With streaming models, `transcription.model` also decides when each turn ends. Available for every pair.<br>- `best_engine`: both models transcribe the first turns, then the call continues alone on the model whose transcripts scored higher. If neither clearly leads, `transcription.model` continues. Streaming models only.<br>- `merge_words`: both models transcribe each utterance and their words are merged, keeping Arabic and English spoken in the same sentence. Available only for `telnyx/basira` with `cohere/ar-stt`, in either order. The pair runs on the language that applies to `telnyx/basira` (its own, or that of `transcription.model`), which must be Arabic (`ar` or an `ar-` locale), `multi`, or `auto`.|
@@ -273084,6 +283233,7 @@ A second speech-to-text model that transcribes alongside `transcription.model`, 
 |model|xai/grok-stt|
 |model|soniox/stt-rt-v4|
 |model|soniox/stt-rt-v5|
+|model|soniox/stt-rt-v6|
 |model|nvidia/parakeet-v3|
 |model|omi-health/omi-med-stt-v1|
 |model|humain/realtime|
@@ -273116,8 +283266,8 @@ The settings associated with speech to text for the voice assistant. This is onl
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|model|string|false|none|The speech to text model to be used by the voice assistant. Supported models include:<br><br>- `deepgram/flux` (or `flux`) for live streaming turn-taking.<br>- `deepgram/nova-3` and `deepgram/nova-2` for live streaming transcription.<br>- `speechmatics/standard` and `speechmatics/enhanced` for live streaming transcription.<br>- `speechmatics/linden-1` (preview, vendor-hosted) for live streaming transcription; no auto-detect, so set `language` from Speechmatics' Realtime language list (defaults to `en`).<br>- `assemblyai/universal-3-6-pro` (AssemblyAI Universal-3.6 Pro) for live streaming transcription. The legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming` are still accepted and run the same Universal-3.6 Pro model.<br>- `xai/grok-stt` for live streaming transcription.<br>- `soniox/stt-rt-v4` for live streaming multilingual transcription with automatic language detection.<br>- `nvidia/parakeet-v3` for multilingual transcription with automatic language detection.<br>- `omi-health/omi-med-stt-v1` for English-only medical transcription (Parakeet-based).<br>- `humain/realtime` for live streaming transcription with native Arabic and Arabic/English code-switching support.<br>- `reson8/turns` for live streaming turn-based transcription of 10 European languages with automatic language detection.<br>- `cohere/ar-stt` for non-streaming Arabic and English transcription.<br>- `azure/fast` and `azure/realtime`; Azure models require `region`, and unsupported regions require `api_key_ref`.<br>- `google/latest_long` for non-streaming multilingual transcription.<br>- `distil-whisper/distil-large-v2` for lower-latency English-only non-streaming transcription.<br>- `openai/whisper-large-v3-turbo` for multilingual non-streaming transcription with automatic language detection.|
-|language|string|false|none|The language of the audio to be transcribed. If not set, or if set to `auto`, supported models will automatically detect the language. Supported and meaningful values depend on the selected transcription `model`. For `deepgram/flux`, supported values are: `auto` (Telnyx language detection controls the language hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`, `auto` omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language. For `assemblyai/universal-3-6-pro` (and its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `auto` (or unset) enables native multilingual code-switching; language codes (`en`, `es`, `de`, `fr`, `pt`, `it`, `tr`, `nl`, `sv`, `no`, `da`, `fi`, `hi`, `vi`, `ar`, `he`, `ja`, `zh`, `ur`, `ru`, `ko`, `ca`, `gl`, `ro`, `et`, `fa`, `yue`, `af`, `mr`, `zu`, `xh`, `nn`) bias the session to that language. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side to code-switching). Unlike other models, `humain/realtime` does not fall back to `auto` when `language` is omitted — omitting it applies `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this model does not auto-detect and defaults to `ar` when `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics' Realtime language list (see `SpeechmaticsTranscriptionLanguage`); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected (unlike `speechmatics/standard`, which defaults to `en`).|
+|model|string|false|none|The speech to text model to be used by the voice assistant. Supported models include:<br><br>- `deepgram/flux` (or `flux`) for live streaming turn-taking.<br>- `deepgram/nova-3` and `deepgram/nova-2` for live streaming transcription.<br>- `speechmatics/standard` and `speechmatics/enhanced` for live streaming transcription.<br>- `speechmatics/linden-1` (preview, vendor-hosted) for live streaming transcription; no auto-detect, so set `language` from Speechmatics' Realtime language list (defaults to `en`).<br>- `assemblyai/universal-3-6-pro` (AssemblyAI Universal-3.6 Pro) for live streaming transcription. The legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming` are still accepted and run the same Universal-3.6 Pro model.<br>- `xai/grok-stt` for live streaming transcription.<br>- `soniox/stt-rt-v4` and `soniox/stt-rt-v6` for live streaming multilingual transcription with automatic language detection.<br>- `nvidia/parakeet-v3` for multilingual transcription with automatic language detection.<br>- `omi-health/omi-med-stt-v1` for English-only medical transcription (Parakeet-based).<br>- `humain/realtime` for live streaming transcription with native Arabic and Arabic/English code-switching support.<br>- `reson8/turns` for live streaming turn-based transcription of 10 European languages with automatic language detection.<br>- `cohere/ar-stt` for non-streaming Arabic and English transcription.<br>- `azure/fast` and `azure/realtime`; Azure models require `region`, and unsupported regions require `api_key_ref`.<br>- `google/latest_long` for non-streaming multilingual transcription.<br>- `distil-whisper/distil-large-v2` for lower-latency English-only non-streaming transcription.<br>- `openai/whisper-large-v3-turbo` for multilingual non-streaming transcription with automatic language detection.|
+|language|string|false|none|The language of the audio to be transcribed. If not set, or if set to `auto`, supported models will automatically detect the language. Supported and meaningful values depend on the selected transcription `model`. For `deepgram/flux`, supported values are: `auto` (Telnyx language detection controls the language hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4` and `soniox/stt-rt-v6`, `auto` omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language. For `assemblyai/universal-3-6-pro` (and its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `auto` (or unset) enables native multilingual code-switching; language codes (`en`, `es`, `de`, `fr`, `pt`, `it`, `tr`, `nl`, `sv`, `no`, `da`, `fi`, `hi`, `vi`, `ar`, `he`, `ja`, `zh`, `ur`, `ru`, `ko`, `ca`, `gl`, `ro`, `et`, `fa`, `yue`, `af`, `mr`, `zu`, `xh`, `nn`) bias the session to that language. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side to code-switching). Unlike other models, `humain/realtime` does not fall back to `auto` when `language` is omitted — omitting it applies `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this model does not auto-detect and defaults to `ar` when `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics' Realtime language list (see `SpeechmaticsTranscriptionLanguage`); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected (unlike `speechmatics/standard`, which defaults to `en`).|
 
 #### Enumerated Values
 
@@ -273135,6 +283285,7 @@ The settings associated with speech to text for the voice assistant. This is onl
 |model|assemblyai/universal-streaming|
 |model|xai/grok-stt|
 |model|soniox/stt-rt-v4|
+|model|soniox/stt-rt-v6|
 |model|nvidia/parakeet-v3|
 |model|omi-health/omi-med-stt-v1|
 |model|humain/realtime|
@@ -273936,6 +284087,7 @@ Endpointing thresholds used to decide when the user has finished speaking. Appli
 |---|---|
 |transcription_engine|Soniox|
 |transcription_model|soniox/stt-rt-v4|
+|transcription_model|soniox/stt-rt-v6|
 
 <h2 id="tocS_TranscriptionEngineSpeechmaticsConfig">TranscriptionEngineSpeechmaticsConfig</h2>
 <!-- backwards compatibility -->
@@ -274283,7 +284435,7 @@ A streaming speech-to-text model that takes over transcription when the model in
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|model|string|true|none|The fallback model. It must be a streaming model other than `transcription.model` and the other fallbacks: `deepgram/flux`, `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.|
+|model|string|true|none|The fallback model. It must be a streaming model other than `transcription.model` and the other fallbacks: `deepgram/flux`, `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `soniox/stt-rt-v6`, `humain/realtime`, or `reson8/turns`.|
 |language|string \| null|false|none|The language the fallback transcribes. Omit it or set it to `null` to use the language of `transcription.model`. The request is rejected when the fallback model doesn't support the language it would run.|
 |settings|[TranscriptionSettingsConfig](#schematranscriptionsettingsconfig) \| null|false|none|Settings for the fallback, with the same fields and limits as `transcription.settings`. Fields that don't apply to this model's provider are dropped, and the provider's defaults fill in the rest. Omit it or set it to `null` to use the settings of `transcription.model` where they apply to this model.|
 
@@ -274300,6 +284452,7 @@ A streaming speech-to-text model that takes over transcription when the model in
 |model|xai/grok-stt|
 |model|soniox/stt-rt-v4|
 |model|soniox/stt-rt-v5|
+|model|soniox/stt-rt-v6|
 |model|humain/realtime|
 |model|reson8/turns|
 
@@ -274373,8 +284526,8 @@ Language code for transcription. Note: Not all languages are supported by all tr
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|model|string|false|none|The speech to text model to be used by the voice assistant. All Deepgram models are run on-premise.<br><br>- `deepgram/flux` is optimized for turn-taking with multilingual language hints.<br>- `deepgram/nova-3` is multilingual with automatic language detection.<br>- `deepgram/nova-2` is Deepgram's previous-generation multilingual model.<br>- `speechmatics/standard` is a Speechmatics model self-hosted by Telnyx; it supports a fixed set of language packs (including bilingual packs such as `ar_en`) and defaults to `en`.<br>- `speechmatics/linden-1` (preview) is a vendor-hosted streaming model with no auto-detect; set `language` from Speechmatics' Realtime language list (defaults to `en`).<br>- `azure/fast` is a multilingual Azure transcription model.<br>- `assemblyai/universal-3-6-pro` (AssemblyAI Universal-3.6 Pro) is a multilingual streaming model with configurable turn detection. The legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming` are still accepted and run the same model.<br>- `xai/grok-stt` is a multilingual Grok STT model.<br>- `soniox/stt-rt-v4` and `soniox/stt-rt-v5` are multilingual streaming models with automatic language detection, configurable endpointing, term biasing (`context`), and `language_hints`.<br>- `nvidia/parakeet-v3` is a multilingual transcription model with automatic language detection.<br>- `omi-health/omi-med-stt-v1` is an English-only medical transcription model (Parakeet-based).<br>- `humain/realtime` is a streaming model with native Arabic and Arabic/English code-switching support.<br>- `reson8/turns` is a turn-based streaming model covering 10 European languages with automatic language detection.<br>- `cohere/ar-stt` is a non-streaming Arabic and English transcription model.<br>- `telnyx/basira` is a non-streaming Arabic transcription model.|
-|language|string|false|none|The language of the audio to be transcribed. If not set, or if set to `auto`, supported models will automatically detect the language. For `deepgram/flux`, supported values are: `auto` (Telnyx language detection controls the language hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4` and `soniox/stt-rt-v5`, `auto` omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language; `settings.language_hints` can pin multiple languages at once instead. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side to code-switching). Unlike other models, `humain/realtime` does not fall back to `auto` when `language` is omitted — omitting it applies `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this model does not auto-detect and defaults to `ar` when `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics' Realtime language list (67 language codes, including `es-bilingual-en` for Spanish and English bilingual, and the spelling and script variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses the default spelling); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected with a 400.|
+|model|string|false|none|The speech to text model to be used by the voice assistant. All Deepgram models are run on-premise.<br><br>- `deepgram/flux` is optimized for turn-taking with multilingual language hints.<br>- `deepgram/nova-3` is multilingual with automatic language detection.<br>- `deepgram/nova-2` is Deepgram's previous-generation multilingual model.<br>- `speechmatics/standard` is a Speechmatics model self-hosted by Telnyx; it supports a fixed set of language packs (including bilingual packs such as `ar_en`) and defaults to `en`.<br>- `speechmatics/linden-1` (preview) is a vendor-hosted streaming model with no auto-detect; set `language` from Speechmatics' Realtime language list (defaults to `en`).<br>- `azure/fast` is a multilingual Azure transcription model.<br>- `assemblyai/universal-3-6-pro` (AssemblyAI Universal-3.6 Pro) is a multilingual streaming model with configurable turn detection. The legacy aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming` are still accepted and run the same model.<br>- `xai/grok-stt` is a multilingual Grok STT model.<br>- `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, and `soniox/stt-rt-v6` are multilingual streaming models with automatic language detection, configurable endpointing, term biasing (`context`), and `language_hints`.<br>- `nvidia/parakeet-v3` is a multilingual transcription model with automatic language detection.<br>- `omi-health/omi-med-stt-v1` is an English-only medical transcription model (Parakeet-based).<br>- `humain/realtime` is a streaming model with native Arabic and Arabic/English code-switching support.<br>- `reson8/turns` is a turn-based streaming model covering 10 European languages with automatic language detection.<br>- `cohere/ar-stt` is a non-streaming Arabic and English transcription model.<br>- `telnyx/basira` is a non-streaming Arabic transcription model.|
+|language|string|false|none|The language of the audio to be transcribed. If not set, or if set to `auto`, supported models will automatically detect the language. For `deepgram/flux`, supported values are: `auto` (Telnyx language detection controls the language hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, and `soniox/stt-rt-v6`, `auto` omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language; `settings.language_hints` can pin multiple languages at once instead. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side to code-switching). Unlike other models, `humain/realtime` does not fall back to `auto` when `language` is omitted — omitting it applies `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this model does not auto-detect and defaults to `ar` when `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics' Realtime language list (67 language codes, including `es-bilingual-en` for Spanish and English bilingual, and the spelling and script variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses the default spelling); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected with a 400.|
 |api_key_ref|string|false|none|Integration secret identifier for the transcription provider API key. Currently used for Azure transcription regions that require a customer-provided API key.|
 |region|string|false|none|Region on third party cloud providers (currently Azure) if using one of their models. Some regions require `api_key_ref`.|
 |settings|[TranscriptionSettingsConfig](#schematranscriptionsettingsconfig)|false|none|none|
@@ -274397,6 +284550,7 @@ Language code for transcription. Note: Not all languages are supported by all tr
 |model|xai/grok-stt|
 |model|soniox/stt-rt-v4|
 |model|soniox/stt-rt-v5|
+|model|soniox/stt-rt-v6|
 |model|nvidia/parakeet-v3|
 |model|omi-health/omi-med-stt-v1|
 |model|humain/realtime|
@@ -274451,11 +284605,11 @@ Language code for transcription. Note: Not all languages are supported by all tr
 |prompt|string|false|none|Available only for assemblyai/universal-3-6-pro (and its legacy aliases assemblyai/universal-3-5-pro and assemblyai/universal-streaming). Context about the conversation (domain, names, terms) to improve transcription; describe the content, do not give instructions. Leave empty unless needed. At most 1750 characters.|
 |min_turn_silence|integer|false|none|Available only for assemblyai/universal-3-6-pro (and its legacy aliases assemblyai/universal-3-5-pro and assemblyai/universal-streaming). Minimum duration of silence in milliseconds before a turn can end. Must be less than or equal to max_turn_silence.|
 |max_turn_silence|integer|false|none|Available only for assemblyai/universal-3-6-pro (and its legacy aliases assemblyai/universal-3-5-pro and assemblyai/universal-streaming). Maximum duration of silence in milliseconds before forcing an end of turn.|
-|interim_results|boolean|false|none|Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox streams interim (non-final) results in addition to finalized transcripts.|
-|enable_endpoint_detection|boolean|false|none|Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox emits end-of-utterance events at the cadence configured by `max_endpoint_delay_ms`.|
-|max_endpoint_delay_ms|integer|false|none|Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. Maximum silence (in milliseconds) before Soniox emits an end-of-utterance event. Only honored when `enable_endpoint_detection` is true.|
-|context|string|false|none|Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A comma-separated list of terms to boost for recognition during transcription, for staff names, building names, or other domain-specific vocabulary. This field may be templated with [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables) using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are resolved at call time before the value is sent to Soniox.|
-|language_hints|[string]|false|none|Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A list of ISO 639-1 language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at once, overriding the single hint derived from `language`.|
+|interim_results|boolean|false|none|Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. When true, Soniox streams interim (non-final) results in addition to finalized transcripts.|
+|enable_endpoint_detection|boolean|false|none|Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. When true, Soniox emits end-of-utterance events at the cadence configured by `max_endpoint_delay_ms`.|
+|max_endpoint_delay_ms|integer|false|none|Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. Maximum silence (in milliseconds) before Soniox emits an end-of-utterance event. Only honored when `enable_endpoint_detection` is true.|
+|context|string|false|none|Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. A comma-separated list of terms to boost for recognition during transcription, for staff names, building names, or other domain-specific vocabulary. This field may be templated with [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables) using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are resolved at call time before the value is sent to Soniox.|
+|language_hints|[string]|false|none|Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. A list of ISO 639-1 language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at once, overriding the single hint derived from `language`.|
 
 <h2 id="tocS_TranscriptionStartRequest">TranscriptionStartRequest</h2>
 <!-- backwards compatibility -->
@@ -276735,6 +286889,79 @@ Only provided fields will be updated, others remain unchanged.
 |identityStatus|UNVERIFIED|
 |identityStatus|SELF_DECLARED|
 |identityStatus|VETTED_VERIFIED|
+
+<h2 id="tocS_UpdateCalendarConnectionRequest">UpdateCalendarConnectionRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatecalendarconnectionrequest"></a>
+<a id="schema_UpdateCalendarConnectionRequest"></a>
+<a id="tocSupdatecalendarconnectionrequest"></a>
+<a id="tocsupdatecalendarconnectionrequest"></a>
+
+```json
+{
+  "auto_join_policy": "all_meetings",
+  "bot_name": "string",
+  "default_barge_in": true,
+  "default_summarize_on_end": true,
+  "default_voice": "string",
+  "default_assistant": {
+    "id": "string",
+    "audio_gate": "full_duplex",
+    "dynamic_variables": {
+      "property1": "string",
+      "property2": "string"
+    },
+    "leave_on_end": false
+  },
+  "default_recording": true,
+  "default_recording_export": {
+    "bucket": "string",
+    "prefix": "string"
+  },
+  "default_webhook_url": "http://example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|auto_join_policy|string|false|none|all_meetings joins eligible events; external_organizer_excluded requires the connected user to be the organizer; per_meeting requires an explicit opt-in.|
+|bot_name|string \| null|false|none|none|
+|default_barge_in|boolean \| null|false|none|none|
+|default_summarize_on_end|boolean \| null|false|none|none|
+|default_voice|string \| null|false|none|none|
+|default_assistant|[CalendarAssistantDefaults](#schemacalendarassistantdefaults) \| null|false|none|none|
+|default_recording|boolean \| null|false|none|none|
+|default_recording_export|[MeetingSessionRecordingDestination](#schemameetingsessionrecordingdestination) \| null|false|none|none|
+|default_webhook_url|string(uri) \| null|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|auto_join_policy|all_meetings|
+|auto_join_policy|external_organizer_excluded|
+|auto_join_policy|per_meeting|
+
+<h2 id="tocS_UpdateCalendarMeetingRequest">UpdateCalendarMeetingRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatecalendarmeetingrequest"></a>
+<a id="schema_UpdateCalendarMeetingRequest"></a>
+<a id="tocSupdatecalendarmeetingrequest"></a>
+<a id="tocsupdatecalendarmeetingrequest"></a>
+
+```json
+{
+  "bot_will_join": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bot_will_join|boolean \| null|true|none|none|
 
 <h2 id="tocS_UpdateCallControlApplicationRequest">UpdateCallControlApplicationRequest</h2>
 <!-- backwards compatibility -->
@@ -287520,6 +297747,68 @@ Indicates whether or not the address should be considered part of your list of a
 
 The locality of the address. For US addresses, this corresponds to the state of the address.
 
+<h2 id="tocS_agent-memory_PageMeta">agent-memory_PageMeta</h2>
+<!-- backwards compatibility -->
+<a id="schemaagent-memory_pagemeta"></a>
+<a id="schema_agent-memory_PageMeta"></a>
+<a id="tocSagent-memory_pagemeta"></a>
+<a id="tocsagent-memory_pagemeta"></a>
+
+```json
+{
+  "page_number": 0,
+  "page_size": 0,
+  "total_pages": 0,
+  "total_results": 0
+}
+```
+
+Where a listing's page sits in the whole.
+
+A page is a snapshot: the counts it reports and the order it is drawn in
+both move as writes land, so paging through a busy namespace can repeat or
+miss an entry at a page boundary.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|page_number|integer|true|none|The page returned, counting from 1.|
+|page_size|integer|true|none|How many results a page holds.|
+|total_pages|integer|true|none|Pages that can be requested; 0 when nothing matched. Page until `page_number` reaches it rather than until a page comes back short: a page can hold fewer than `page_size` results without being the last. Capped at the deepest page served, so on a very large listing it covers fewer results than `total_results`.|
+|total_results|integer|true|none|Results the request matched, including any past the deepest page.|
+
+<h2 id="tocS_agent-memory_TelnyxError">agent-memory_TelnyxError</h2>
+<!-- backwards compatibility -->
+<a id="schemaagent-memory_telnyxerror"></a>
+<a id="schema_agent-memory_TelnyxError"></a>
+<a id="tocSagent-memory_telnyxerror"></a>
+<a id="tocsagent-memory_telnyxerror"></a>
+
+```json
+{
+  "code": "string",
+  "title": "string",
+  "detail": "string",
+  "source": {
+    "pointer": "string"
+  },
+  "meta": {
+    "url": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|title|string|false|none|none|
+|detail|string|false|none|none|
+|source|object|false|none|none|
+|meta|object|false|none|none|
+
 <h2 id="tocS_ai-gateway-resources_Error">ai-gateway-resources_Error</h2>
 <!-- backwards compatibility -->
 <a id="schemaai-gateway-resources_error"></a>
@@ -291570,7 +301859,7 @@ Settings for interruptions and how the assistant decides the user has finished s
 |use_speaker_boost|boolean|false|none|Amplifies similarity to the original speaker voice. Increases computational load and latency slightly. Only applicable when using ElevenLabs.|
 |style|number|false|none|Determines the style exaggeration of the voice. Amplifies speaker style but consumes additional resources when set above 0. Only applicable when using ElevenLabs.|
 |speed|number|false|none|Adjusts speech velocity. 1.0 is default speed; values less than 1.0 slow speech; values greater than 1.0 accelerate it. Only applicable when using ElevenLabs.|
-|language|string \| null|false|none|Two-letter ISO 639-1 code of the language the voice speaks, for example `es`. Only applicable to Soniox and AssemblyAI voices, which speak every language of their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`. When unset, the voice speaks English.|
+|language|string \| null|false|none|Two-letter ISO 639-1 code of the language the voice speaks, for example `es`. Only applicable to Soniox voices, which speak every language of their model. When unset, the voice speaks English.|
 |language_boost|string \| null|false|none|Enhances recognition for specific languages and dialects during MiniMax TTS synthesis. Default is null (no boost). Set to 'auto' for automatic language detection. Only applicable when using MiniMax voices.|
 |expressive_mode|boolean|false|none|Enables emotionally expressive speech using SSML emotion tags. When enabled, the assistant uses audio tags like angry, excited, content, and sad to add emotional nuance. Only supported for Telnyx Ultra voices.|
 |background_audio|object|false|none|Optional background audio to play on the call. Use a predefined media bed, or supply a looped MP3 URL. If a media URL is chosen in the portal, customers can preview it before saving.|

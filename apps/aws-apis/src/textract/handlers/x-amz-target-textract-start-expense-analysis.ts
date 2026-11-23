@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetTextractStartExpenseAnalysisRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetTextractStartExpenseAnalysisHandler = app.openapi(
+  postXAmzTargetTextractStartExpenseAnalysisRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

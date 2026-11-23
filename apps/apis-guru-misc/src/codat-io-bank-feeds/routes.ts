@@ -156,6 +156,32 @@ const BankTransactionsSchema = z
           .openapi({ required: [] })
           .and(
             z
+              .looseObject({})
+              .openapi({
+                required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
+              }),
+          )
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'amount')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'balance')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'date')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'reconciled')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'transactionType')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+            }
+          })
+          .and(
+            z
               .object({
                 modifiedDate: DateTimeSchema.exactOptional().openapi({
                   description: 'The date on which this record was last modified in Codat.',

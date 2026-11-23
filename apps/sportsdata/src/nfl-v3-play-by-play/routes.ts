@@ -103,60 +103,32 @@ const ScoringPlaySchema = z
   .openapi({ required: [] })
   .openapi('ScoringPlay')
 
-type PlayType = {
-  Created?: string | null
-  Description?: string | null
-  Distance?: number | null
-  Down?: number | null
-  IsScoringPlay?: boolean | null
-  Opponent?: string | null
-  PlayID?: number
-  PlayStats?: z.infer<typeof PlayStatSchema>[]
-  PlayTime?: string | null
-  QuarterID?: number
-  QuarterName?: string | null
-  ScoringPlay?: z.infer<typeof ScoringPlaySchema>
-  Sequence?: number | null
-  Team?: string | null
-  TimeRemainingMinutes?: number | null
-  TimeRemainingSeconds?: number | null
-  Type?: string | null
-  Updated?: string | null
-  YardLine?: number | null
-  YardLineTerritory?: string | null
-  YardsGained?: number | null
-  YardsToEndZone?: number | null
-}
-
-const PlaySchema: z.ZodType<PlayType> = z
-  .lazy(() =>
-    z
-      .object({
-        Created: z.string().nullable().exactOptional(),
-        Description: z.string().nullable().exactOptional(),
-        Distance: z.int().nullable().exactOptional(),
-        Down: z.int().nullable().exactOptional(),
-        IsScoringPlay: z.boolean().nullable().exactOptional(),
-        Opponent: z.string().nullable().exactOptional(),
-        PlayID: z.int().exactOptional(),
-        PlayStats: z.array(PlayStatSchema).exactOptional(),
-        PlayTime: z.string().nullable().exactOptional(),
-        QuarterID: z.int().exactOptional(),
-        QuarterName: z.string().nullable().exactOptional(),
-        ScoringPlay: ScoringPlaySchema.exactOptional(),
-        Sequence: z.int().nullable().exactOptional(),
-        Team: z.string().nullable().exactOptional(),
-        TimeRemainingMinutes: z.int().nullable().exactOptional(),
-        TimeRemainingSeconds: z.int().nullable().exactOptional(),
-        Type: z.string().nullable().exactOptional(),
-        Updated: z.string().nullable().exactOptional(),
-        YardLine: z.int().nullable().exactOptional(),
-        YardLineTerritory: z.string().nullable().exactOptional(),
-        YardsGained: z.int().nullable().exactOptional(),
-        YardsToEndZone: z.int().nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const PlaySchema = z
+  .object({
+    Created: z.string().nullable().exactOptional(),
+    Description: z.string().nullable().exactOptional(),
+    Distance: z.int().nullable().exactOptional(),
+    Down: z.int().nullable().exactOptional(),
+    IsScoringPlay: z.boolean().nullable().exactOptional(),
+    Opponent: z.string().nullable().exactOptional(),
+    PlayID: z.int().exactOptional(),
+    PlayStats: z.array(PlayStatSchema).exactOptional(),
+    PlayTime: z.string().nullable().exactOptional(),
+    QuarterID: z.int().exactOptional(),
+    QuarterName: z.string().nullable().exactOptional(),
+    ScoringPlay: ScoringPlaySchema.exactOptional(),
+    Sequence: z.int().nullable().exactOptional(),
+    Team: z.string().nullable().exactOptional(),
+    TimeRemainingMinutes: z.int().nullable().exactOptional(),
+    TimeRemainingSeconds: z.int().nullable().exactOptional(),
+    Type: z.string().nullable().exactOptional(),
+    Updated: z.string().nullable().exactOptional(),
+    YardLine: z.int().nullable().exactOptional(),
+    YardLineTerritory: z.string().nullable().exactOptional(),
+    YardsGained: z.int().nullable().exactOptional(),
+    YardsToEndZone: z.int().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('Play')
 
 const QuarterSchema = z

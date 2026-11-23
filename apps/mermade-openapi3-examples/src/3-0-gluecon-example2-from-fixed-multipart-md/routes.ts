@@ -10,9 +10,9 @@ export const postSubmitRoute = createRoute({
           schema: z
             .object({
               id: z.uuid().exactOptional(),
-              address: z.object({}).exactOptional(),
+              address: z.looseObject({}).exactOptional(),
               historyMetadata: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'metadata in XML format' }),
               profileImage: z.file().exactOptional().openapi({ type: 'string', format: 'binary' }),

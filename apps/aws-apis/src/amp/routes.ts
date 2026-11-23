@@ -9,21 +9,21 @@ const StringSchema = z.string().openapi('String')
 
 const AlertManagerDefinitionStatusSchema = z
   .object({
-    statusCode: AlertManagerDefinitionStatusCodeSchema.and(
-      z.any().openapi({ description: 'Status code of this definition.' }),
-    ),
-    statusReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason for failure if any.' }),
-    ).exactOptional(),
+    statusCode: AlertManagerDefinitionStatusCodeSchema.openapi({
+      description: 'Status code of this definition.',
+    }),
+    statusReason: StringSchema.exactOptional().openapi({
+      description: 'The reason for failure if any.',
+    }),
   })
   .openapi({ required: ['statusCode'], description: 'Represents the status of a definition.' })
   .openapi('AlertManagerDefinitionStatus')
 
 const CreateAlertManagerDefinitionResponseSchema = z
   .object({
-    status: AlertManagerDefinitionStatusSchema.and(
-      z.any().openapi({ description: 'The status of alert manager definition.' }),
-    ),
+    status: AlertManagerDefinitionStatusSchema.openapi({
+      description: 'The status of alert manager definition.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -52,12 +52,12 @@ const LoggingConfigurationStatusCodeSchema = z
 
 const LoggingConfigurationStatusSchema = z
   .object({
-    statusCode: LoggingConfigurationStatusCodeSchema.and(
-      z.any().openapi({ description: 'Status code of the logging configuration.' }),
-    ),
-    statusReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason for failure if any.' }),
-    ).exactOptional(),
+    statusCode: LoggingConfigurationStatusCodeSchema.openapi({
+      description: 'Status code of the logging configuration.',
+    }),
+    statusReason: StringSchema.exactOptional().openapi({
+      description: 'The reason for failure if any.',
+    }),
   })
   .openapi({
     required: ['statusCode'],
@@ -67,9 +67,9 @@ const LoggingConfigurationStatusSchema = z
 
 const CreateLoggingConfigurationResponseSchema = z
   .object({
-    status: LoggingConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the logging configuration.' }),
-    ),
+    status: LoggingConfigurationStatusSchema.openapi({
+      description: 'The status of the logging configuration.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -97,12 +97,12 @@ const RuleGroupsNamespaceStatusCodeSchema = z
 
 const RuleGroupsNamespaceStatusSchema = z
   .object({
-    statusCode: RuleGroupsNamespaceStatusCodeSchema.and(
-      z.any().openapi({ description: 'Status code of this namespace.' }),
-    ),
-    statusReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason for failure if any.' }),
-    ).exactOptional(),
+    statusCode: RuleGroupsNamespaceStatusCodeSchema.openapi({
+      description: 'Status code of this namespace.',
+    }),
+    statusReason: StringSchema.exactOptional().openapi({
+      description: 'The reason for failure if any.',
+    }),
   })
   .openapi({ required: ['statusCode'], description: 'Represents the status of a namespace.' })
   .openapi('RuleGroupsNamespaceStatus')
@@ -123,20 +123,16 @@ const TagMapSchema = z
 
 const CreateRuleGroupsNamespaceResponseSchema = z
   .object({
-    arn: RuleGroupsNamespaceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of this rule groups namespace.' }),
-    ),
-    name: RuleGroupsNamespaceNameSchema.and(
-      z.any().openapi({ description: 'The rule groups namespace name.' }),
-    ),
-    status: RuleGroupsNamespaceStatusSchema.and(
-      z.any().openapi({ description: 'The status of rule groups namespace.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of this rule groups namespace.' }),
-    ).exactOptional(),
+    arn: RuleGroupsNamespaceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of this rule groups namespace.',
+    }),
+    name: RuleGroupsNamespaceNameSchema.openapi({ description: 'The rule groups namespace name.' }),
+    status: RuleGroupsNamespaceStatusSchema.openapi({
+      description: 'The status of rule groups namespace.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags of this rule groups namespace.',
+    }),
   })
   .openapi({
     required: ['arn', 'name', 'status'],
@@ -156,9 +152,9 @@ const WorkspaceStatusCodeSchema = z
 
 const WorkspaceStatusSchema = z
   .object({
-    statusCode: WorkspaceStatusCodeSchema.and(
-      z.any().openapi({ description: 'Status code of this workspace.' }),
-    ),
+    statusCode: WorkspaceStatusCodeSchema.openapi({
+      description: 'Status code of this workspace.',
+    }),
   })
   .openapi({ required: ['statusCode'], description: 'Represents the status of a workspace.' })
   .openapi('WorkspaceStatus')
@@ -173,22 +169,16 @@ const WorkspaceIdSchema = z
 
 const CreateWorkspaceResponseSchema = z
   .object({
-    arn: WorkspaceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the workspace that was just created.' }),
-    ),
-    status: WorkspaceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the workspace that was just created (usually CREATING).',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of this workspace.' }),
-    ).exactOptional(),
-    workspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The generated ID of the workspace that was just created.' }),
-    ),
+    arn: WorkspaceArnSchema.openapi({
+      description: 'The ARN of the workspace that was just created.',
+    }),
+    status: WorkspaceStatusSchema.openapi({
+      description: 'The status of the workspace that was just created (usually CREATING).',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags of this workspace.' }),
+    workspaceId: WorkspaceIdSchema.openapi({
+      description: 'The generated ID of the workspace that was just created.',
+    }),
   })
   .openapi({
     required: ['arn', 'status', 'workspaceId'],
@@ -205,18 +195,18 @@ const AlertManagerDefinitionDataSchema = z
 
 const AlertManagerDefinitionDescriptionSchema = z
   .object({
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the alert manager definition was created.' }),
-    ),
-    data: AlertManagerDefinitionDataSchema.and(
-      z.any().openapi({ description: 'The alert manager definition.' }),
-    ),
-    modifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the alert manager definition was modified.' }),
-    ),
-    status: AlertManagerDefinitionStatusSchema.and(
-      z.any().openapi({ description: 'The status of alert manager definition.' }),
-    ),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the alert manager definition was created.',
+    }),
+    data: AlertManagerDefinitionDataSchema.openapi({
+      description: 'The alert manager definition.',
+    }),
+    modifiedAt: TimestampSchema.openapi({
+      description: 'The time when the alert manager definition was modified.',
+    }),
+    status: AlertManagerDefinitionStatusSchema.openapi({
+      description: 'The status of alert manager definition.',
+    }),
   })
   .openapi({
     required: ['createdAt', 'data', 'modifiedAt', 'status'],
@@ -226,13 +216,9 @@ const AlertManagerDefinitionDescriptionSchema = z
 
 const DescribeAlertManagerDefinitionResponseSchema = z
   .object({
-    alertManagerDefinition: AlertManagerDefinitionDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The properties of the selected workspace's alert manager definition.",
-        }),
-    ),
+    alertManagerDefinition: AlertManagerDefinitionDescriptionSchema.openapi({
+      description: "The properties of the selected workspace's alert manager definition.",
+    }),
   })
   .openapi({
     required: ['alertManagerDefinition'],
@@ -247,26 +233,21 @@ const LogGroupArnSchema = z
 
 const LoggingConfigurationMetadataSchema = z
   .object({
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the logging configuration was created.' }),
-    ),
-    logGroupArn: LogGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the CW log group to which the vended log data will be published.',
-        }),
-    ),
-    modifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the logging configuration was modified.' }),
-    ),
-    status: LoggingConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the logging configuration.' }),
-    ),
-    workspace: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The workspace where the logging configuration exists.' }),
-    ),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the logging configuration was created.',
+    }),
+    logGroupArn: LogGroupArnSchema.openapi({
+      description: 'The ARN of the CW log group to which the vended log data will be published.',
+    }),
+    modifiedAt: TimestampSchema.openapi({
+      description: 'The time when the logging configuration was modified.',
+    }),
+    status: LoggingConfigurationStatusSchema.openapi({
+      description: 'The status of the logging configuration.',
+    }),
+    workspace: WorkspaceIdSchema.openapi({
+      description: 'The workspace where the logging configuration exists.',
+    }),
   })
   .openapi({
     required: ['createdAt', 'logGroupArn', 'modifiedAt', 'status', 'workspace'],
@@ -276,14 +257,10 @@ const LoggingConfigurationMetadataSchema = z
 
 const DescribeLoggingConfigurationResponseSchema = z
   .object({
-    loggingConfiguration: LoggingConfigurationMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata object containing information about the logging configuration of a workspace.',
-        }),
-    ),
+    loggingConfiguration: LoggingConfigurationMetadataSchema.openapi({
+      description:
+        'Metadata object containing information about the logging configuration of a workspace.',
+    }),
   })
   .openapi({
     required: ['loggingConfiguration'],
@@ -298,29 +275,23 @@ const RuleGroupsNamespaceDataSchema = z
 
 const RuleGroupsNamespaceDescriptionSchema = z
   .object({
-    arn: RuleGroupsNamespaceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of this rule groups namespace.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the rule groups namespace was created.' }),
-    ),
-    data: RuleGroupsNamespaceDataSchema.and(
-      z.any().openapi({ description: 'The rule groups namespace data.' }),
-    ),
-    modifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the rule groups namespace was modified.' }),
-    ),
-    name: RuleGroupsNamespaceNameSchema.and(
-      z.any().openapi({ description: 'The rule groups namespace name.' }),
-    ),
-    status: RuleGroupsNamespaceStatusSchema.and(
-      z.any().openapi({ description: 'The status of rule groups namespace.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of this rule groups namespace.' }),
-    ).exactOptional(),
+    arn: RuleGroupsNamespaceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of this rule groups namespace.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the rule groups namespace was created.',
+    }),
+    data: RuleGroupsNamespaceDataSchema.openapi({ description: 'The rule groups namespace data.' }),
+    modifiedAt: TimestampSchema.openapi({
+      description: 'The time when the rule groups namespace was modified.',
+    }),
+    name: RuleGroupsNamespaceNameSchema.openapi({ description: 'The rule groups namespace name.' }),
+    status: RuleGroupsNamespaceStatusSchema.openapi({
+      description: 'The status of rule groups namespace.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags of this rule groups namespace.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'data', 'modifiedAt', 'name', 'status'],
@@ -330,9 +301,9 @@ const RuleGroupsNamespaceDescriptionSchema = z
 
 const DescribeRuleGroupsNamespaceResponseSchema = z
   .object({
-    ruleGroupsNamespace: RuleGroupsNamespaceDescriptionSchema.and(
-      z.any().openapi({ description: 'The selected rule groups namespace.' }),
-    ),
+    ruleGroupsNamespace: RuleGroupsNamespaceDescriptionSchema.openapi({
+      description: 'The selected rule groups namespace.',
+    }),
   })
   .openapi({
     required: ['ruleGroupsNamespace'],
@@ -351,27 +322,21 @@ const UriSchema = z.string().min(1).max(1024).openapi('Uri')
 
 const WorkspaceDescriptionSchema = z
   .object({
-    alias: WorkspaceAliasSchema.and(
-      z.any().openapi({ description: 'Alias of this workspace.' }),
-    ).exactOptional(),
-    arn: WorkspaceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of this workspace.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the workspace was created.' }),
-    ),
-    prometheusEndpoint: UriSchema.and(
-      z.any().openapi({ description: 'Prometheus endpoint URI.' }),
-    ).exactOptional(),
-    status: WorkspaceStatusSchema.and(
-      z.any().openapi({ description: 'The status of this workspace.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of this workspace.' }),
-    ).exactOptional(),
-    workspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'Unique string identifying this workspace.' }),
-    ),
+    alias: WorkspaceAliasSchema.exactOptional().openapi({
+      description: 'Alias of this workspace.',
+    }),
+    arn: WorkspaceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of this workspace.',
+    }),
+    createdAt: TimestampSchema.openapi({ description: 'The time when the workspace was created.' }),
+    prometheusEndpoint: UriSchema.exactOptional().openapi({
+      description: 'Prometheus endpoint URI.',
+    }),
+    status: WorkspaceStatusSchema.openapi({ description: 'The status of this workspace.' }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags of this workspace.' }),
+    workspaceId: WorkspaceIdSchema.openapi({
+      description: 'Unique string identifying this workspace.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'status', 'workspaceId'],
@@ -381,9 +346,9 @@ const WorkspaceDescriptionSchema = z
 
 const DescribeWorkspaceResponseSchema = z
   .object({
-    workspace: WorkspaceDescriptionSchema.and(
-      z.any().openapi({ description: 'The properties of the selected workspace.' }),
-    ),
+    workspace: WorkspaceDescriptionSchema.openapi({
+      description: 'The properties of the selected workspace.',
+    }),
   })
   .openapi({
     required: ['workspace'],
@@ -398,26 +363,22 @@ const PaginationTokenSchema = z
 
 const RuleGroupsNamespaceSummarySchema = z
   .object({
-    arn: RuleGroupsNamespaceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of this rule groups namespace.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the rule groups namespace was created.' }),
-    ),
-    modifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the rule groups namespace was modified.' }),
-    ),
-    name: RuleGroupsNamespaceNameSchema.and(
-      z.any().openapi({ description: 'The rule groups namespace name.' }),
-    ),
-    status: RuleGroupsNamespaceStatusSchema.and(
-      z.any().openapi({ description: 'The status of rule groups namespace.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of this rule groups namespace.' }),
-    ).exactOptional(),
+    arn: RuleGroupsNamespaceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of this rule groups namespace.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time when the rule groups namespace was created.',
+    }),
+    modifiedAt: TimestampSchema.openapi({
+      description: 'The time when the rule groups namespace was modified.',
+    }),
+    name: RuleGroupsNamespaceNameSchema.openapi({ description: 'The rule groups namespace name.' }),
+    status: RuleGroupsNamespaceStatusSchema.openapi({
+      description: 'The status of rule groups namespace.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags of this rule groups namespace.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'modifiedAt', 'name', 'status'],
@@ -432,16 +393,12 @@ const RuleGroupsNamespaceSummaryListSchema = z
 
 const ListRuleGroupsNamespacesResponseSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Pagination token to use when requesting the next page in this list.',
-        }),
-    ).exactOptional(),
-    ruleGroupsNamespaces: RuleGroupsNamespaceSummaryListSchema.and(
-      z.any().openapi({ description: 'The list of the selected rule groups namespaces.' }),
-    ),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'Pagination token to use when requesting the next page in this list.',
+    }),
+    ruleGroupsNamespaces: RuleGroupsNamespaceSummaryListSchema.openapi({
+      description: 'The list of the selected rule groups namespaces.',
+    }),
   })
   .openapi({
     required: ['ruleGroupsNamespaces'],
@@ -456,24 +413,16 @@ const ListTagsForResourceResponseSchema = z
 
 const WorkspaceSummarySchema = z
   .object({
-    alias: WorkspaceAliasSchema.and(
-      z.any().openapi({ description: 'Alias of this workspace.' }),
-    ).exactOptional(),
-    arn: WorkspaceArnSchema.and(
-      z.any().openapi({ description: 'The AmazonResourceName of this workspace.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the workspace was created.' }),
-    ),
-    status: WorkspaceStatusSchema.and(
-      z.any().openapi({ description: 'The status of this workspace.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of this workspace.' }),
-    ).exactOptional(),
-    workspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'Unique string identifying this workspace.' }),
-    ),
+    alias: WorkspaceAliasSchema.exactOptional().openapi({
+      description: 'Alias of this workspace.',
+    }),
+    arn: WorkspaceArnSchema.openapi({ description: 'The AmazonResourceName of this workspace.' }),
+    createdAt: TimestampSchema.openapi({ description: 'The time when the workspace was created.' }),
+    status: WorkspaceStatusSchema.openapi({ description: 'The status of this workspace.' }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags of this workspace.' }),
+    workspaceId: WorkspaceIdSchema.openapi({
+      description: 'Unique string identifying this workspace.',
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'status', 'workspaceId'],
@@ -488,21 +437,13 @@ const WorkspaceSummaryListSchema = z
 
 const ListWorkspacesResponseSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Pagination token to use when requesting the next page in this list.',
-        }),
-    ).exactOptional(),
-    workspaces: WorkspaceSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of existing workspaces, including those undergoing creation or deletion.',
-        }),
-    ),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'Pagination token to use when requesting the next page in this list.',
+    }),
+    workspaces: WorkspaceSummaryListSchema.openapi({
+      description:
+        'The list of existing workspaces, including those undergoing creation or deletion.',
+    }),
   })
   .openapi({
     required: ['workspaces'],
@@ -512,9 +453,9 @@ const ListWorkspacesResponseSchema = z
 
 const PutAlertManagerDefinitionResponseSchema = z
   .object({
-    status: AlertManagerDefinitionStatusSchema.and(
-      z.any().openapi({ description: 'The status of alert manager definition.' }),
-    ),
+    status: AlertManagerDefinitionStatusSchema.openapi({
+      description: 'The status of alert manager definition.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -524,20 +465,16 @@ const PutAlertManagerDefinitionResponseSchema = z
 
 const PutRuleGroupsNamespaceResponseSchema = z
   .object({
-    arn: RuleGroupsNamespaceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of this rule groups namespace.' }),
-    ),
-    name: RuleGroupsNamespaceNameSchema.and(
-      z.any().openapi({ description: 'The rule groups namespace name.' }),
-    ),
-    status: RuleGroupsNamespaceStatusSchema.and(
-      z.any().openapi({ description: 'The status of rule groups namespace.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of this rule groups namespace.' }),
-    ).exactOptional(),
+    arn: RuleGroupsNamespaceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of this rule groups namespace.',
+    }),
+    name: RuleGroupsNamespaceNameSchema.openapi({ description: 'The rule groups namespace name.' }),
+    status: RuleGroupsNamespaceStatusSchema.openapi({
+      description: 'The status of rule groups namespace.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags of this rule groups namespace.',
+    }),
   })
   .openapi({
     required: ['arn', 'name', 'status'],
@@ -545,9 +482,9 @@ const PutRuleGroupsNamespaceResponseSchema = z
   })
   .openapi('PutRuleGroupsNamespaceResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -558,9 +495,9 @@ const TagKeySchema = z
 
 const UpdateLoggingConfigurationResponseSchema = z
   .object({
-    status: LoggingConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the logging configuration.' }),
-    ),
+    status: LoggingConfigurationStatusSchema.openapi({
+      description: 'The status of the logging configuration.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -578,17 +515,13 @@ const IdempotencyTokenSchema = z
 
 const CreateAlertManagerDefinitionRequestSchema = z
   .object({
-    clientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
-    data: AlertManagerDefinitionDataSchema.and(
-      z.any().openapi({ description: 'The alert manager definition data.' }),
-    ),
+    clientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
+    }),
+    data: AlertManagerDefinitionDataSchema.openapi({
+      description: 'The alert manager definition data.',
+    }),
   })
   .openapi({
     required: ['data'],
@@ -599,22 +532,13 @@ const CreateAlertManagerDefinitionRequestSchema = z
 
 const CreateLoggingConfigurationRequestSchema = z
   .object({
-    clientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
-    logGroupArn: LogGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the CW log group to which the vended log data will be published.',
-        }),
-    ),
+    clientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
+    }),
+    logGroupArn: LogGroupArnSchema.openapi({
+      description: 'The ARN of the CW log group to which the vended log data will be published.',
+    }),
   })
   .openapi({
     required: ['logGroupArn'],
@@ -625,25 +549,17 @@ const CreateLoggingConfigurationRequestSchema = z
 
 const CreateRuleGroupsNamespaceRequestSchema = z
   .object({
-    clientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
-    data: RuleGroupsNamespaceDataSchema.and(
-      z.any().openapi({ description: 'The namespace data that define the rule groups.' }),
-    ),
-    name: RuleGroupsNamespaceNameSchema.and(
-      z.any().openapi({ description: 'The rule groups namespace name.' }),
-    ),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Optional, user-provided tags for this rule groups namespace.' }),
-    ).exactOptional(),
+    clientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
+    }),
+    data: RuleGroupsNamespaceDataSchema.openapi({
+      description: 'The namespace data that define the rule groups.',
+    }),
+    name: RuleGroupsNamespaceNameSchema.openapi({ description: 'The rule groups namespace name.' }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'Optional, user-provided tags for this rule groups namespace.',
+    }),
   })
   .openapi({
     required: ['data', 'name'],
@@ -654,25 +570,17 @@ const CreateRuleGroupsNamespaceRequestSchema = z
 
 const CreateWorkspaceRequestSchema = z
   .object({
-    alias: WorkspaceAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional user-assigned alias for this workspace. This alias is for user reference and does not need to be unique.',
-        }),
-    ).exactOptional(),
-    clientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Optional, user-provided tags for this workspace.' }),
-    ).exactOptional(),
+    alias: WorkspaceAliasSchema.exactOptional().openapi({
+      description:
+        'An optional user-assigned alias for this workspace. This alias is for user reference and does not need to be unique.',
+    }),
+    clientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'Optional, user-provided tags for this workspace.',
+    }),
   })
   .openapi({
     title: 'CreateWorkspaceRequest',
@@ -682,7 +590,7 @@ const CreateWorkspaceRequestSchema = z
   .openapi('CreateWorkspaceRequest')
 
 const DeleteAlertManagerDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteAlertManagerDefinitionRequest',
     description: 'Represents the input of a DeleteAlertManagerDefinition operation.',
@@ -690,7 +598,7 @@ const DeleteAlertManagerDefinitionRequestSchema = z
   .openapi('DeleteAlertManagerDefinitionRequest')
 
 const DeleteLoggingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteLoggingConfigurationRequest',
     description: 'Represents the input of a DeleteLoggingConfiguration operation.',
@@ -698,7 +606,7 @@ const DeleteLoggingConfigurationRequestSchema = z
   .openapi('DeleteLoggingConfigurationRequest')
 
 const DeleteRuleGroupsNamespaceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteRuleGroupsNamespaceRequest',
     description: 'Represents the input of a DeleteRuleGroupsNamespace operation.',
@@ -706,7 +614,7 @@ const DeleteRuleGroupsNamespaceRequestSchema = z
   .openapi('DeleteRuleGroupsNamespaceRequest')
 
 const DeleteWorkspaceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteWorkspaceRequest',
     description: 'Represents the input of a DeleteWorkspace operation.',
@@ -714,7 +622,7 @@ const DeleteWorkspaceRequestSchema = z
   .openapi('DeleteWorkspaceRequest')
 
 const DescribeAlertManagerDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeAlertManagerDefinitionRequest',
     description: 'Represents the input of a DescribeAlertManagerDefinition operation.',
@@ -722,7 +630,7 @@ const DescribeAlertManagerDefinitionRequestSchema = z
   .openapi('DescribeAlertManagerDefinitionRequest')
 
 const DescribeLoggingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeLoggingConfigurationRequest',
     description: 'Represents the input of a DescribeLoggingConfiguration operation.',
@@ -730,7 +638,7 @@ const DescribeLoggingConfigurationRequestSchema = z
   .openapi('DescribeLoggingConfigurationRequest')
 
 const DescribeRuleGroupsNamespaceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeRuleGroupsNamespaceRequest',
     description: 'Represents the input of a DescribeRuleGroupsNamespace operation.',
@@ -738,7 +646,7 @@ const DescribeRuleGroupsNamespaceRequestSchema = z
   .openapi('DescribeRuleGroupsNamespaceRequest')
 
 const DescribeWorkspaceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeWorkspaceRequest',
     description: 'Represents the input of a DescribeWorkspace operation.',
@@ -752,7 +660,7 @@ const ListRuleGroupsNamespacesRequestMaxResultsIntegerSchema = z
   .openapi('ListRuleGroupsNamespacesRequestMaxResultsInteger')
 
 const ListRuleGroupsNamespacesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListRuleGroupsNamespacesRequest',
     description: 'Represents the input of a ListRuleGroupsNamespaces operation.',
@@ -760,7 +668,7 @@ const ListRuleGroupsNamespacesRequestSchema = z
   .openapi('ListRuleGroupsNamespacesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -771,7 +679,7 @@ const ListWorkspacesRequestMaxResultsIntegerSchema = z
   .openapi('ListWorkspacesRequestMaxResultsInteger')
 
 const ListWorkspacesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListWorkspacesRequest',
     description: 'Represents the input of a ListWorkspaces operation.',
@@ -780,17 +688,13 @@ const ListWorkspacesRequestSchema = z
 
 const PutAlertManagerDefinitionRequestSchema = z
   .object({
-    clientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
-    data: AlertManagerDefinitionDataSchema.and(
-      z.any().openapi({ description: 'The alert manager definition data.' }),
-    ),
+    clientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
+    }),
+    data: AlertManagerDefinitionDataSchema.openapi({
+      description: 'The alert manager definition data.',
+    }),
   })
   .openapi({
     required: ['data'],
@@ -801,17 +705,13 @@ const PutAlertManagerDefinitionRequestSchema = z
 
 const PutRuleGroupsNamespaceRequestSchema = z
   .object({
-    clientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
-    data: RuleGroupsNamespaceDataSchema.and(
-      z.any().openapi({ description: 'The namespace data that define the rule groups.' }),
-    ),
+    clientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
+    }),
+    data: RuleGroupsNamespaceDataSchema.openapi({
+      description: 'The namespace data that define the rule groups.',
+    }),
   })
   .openapi({
     required: ['data'],
@@ -828,28 +728,19 @@ const TagResourceRequestSchema = z
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateLoggingConfigurationRequestSchema = z
   .object({
-    clientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
-    logGroupArn: LogGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the CW log group to which the vended log data will be published.',
-        }),
-    ),
+    clientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
+    }),
+    logGroupArn: LogGroupArnSchema.openapi({
+      description: 'The ARN of the CW log group to which the vended log data will be published.',
+    }),
   })
   .openapi({
     required: ['logGroupArn'],
@@ -860,17 +751,13 @@ const UpdateLoggingConfigurationRequestSchema = z
 
 const UpdateWorkspaceAliasRequestSchema = z
   .object({
-    alias: WorkspaceAliasSchema.and(
-      z.any().openapi({ description: 'The new alias of the workspace.' }),
-    ).exactOptional(),
-    clientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
+    alias: WorkspaceAliasSchema.exactOptional().openapi({
+      description: 'The new alias of the workspace.',
+    }),
+    clientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'Optional, unique, case-sensitive, user-provided identifier to ensure the idempotency of the request.',
+    }),
   })
   .openapi({
     title: 'UpdateWorkspaceAliasRequest',

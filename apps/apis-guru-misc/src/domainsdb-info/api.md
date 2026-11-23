@@ -6,7 +6,7 @@ Domains-Index database powered API
 
 Base URLs:
 
-* <a href="https://api.apis.guru/v1">https://api.apis.guru/v1</a>
+* <a href="/v1">/v1</a>
 
 <h1 id="domains-index-api-info">info/</h1>
 

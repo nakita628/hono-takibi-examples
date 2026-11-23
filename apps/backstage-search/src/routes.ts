@@ -272,7 +272,7 @@ export const getQueryRoute = createRoute({
                         required: [],
                       }),
                     highlight: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:

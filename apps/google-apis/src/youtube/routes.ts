@@ -1,753 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AbuseTypeSchema = z
-  .object({ id: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AbuseType')
-
-const EntitySchema = z
-  .object({
-    id: z.string().exactOptional(),
-    typeId: z.string().exactOptional(),
-    url: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Entity')
-
-const RelatedEntitySchema = z
-  .object({ entity: EntitySchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('RelatedEntity')
-
-const AbuseReportSchema = z
-  .object({
-    abuseTypes: z.array(AbuseTypeSchema).exactOptional(),
-    description: z.string().exactOptional(),
-    relatedEntities: z.array(RelatedEntitySchema).exactOptional(),
-    subject: EntitySchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AbuseReport')
-
-const AccessPolicySchema = z
-  .object({
-    allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of allowed indicates whether the access to the policy is allowed or denied by default.',
-      }),
-    exception: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of region codes that identify countries where the default policy do not apply.',
-      }),
-  })
-  .openapi({ description: 'Rights management policy for YouTube resources.', required: [] })
-  .openapi('AccessPolicy')
-
-const ResourceIdSchema = z
-  .object({
-    channelId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID that YouTube uses to uniquely identify the referred resource, if that resource is a channel. This property is only present if the resourceId.kind value is youtube#channel.',
-      }),
-    kind: z.string().exactOptional().openapi({ description: 'The type of the API resource.' }),
-    playlistId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID that YouTube uses to uniquely identify the referred resource, if that resource is a playlist. This property is only present if the resourceId.kind value is youtube#playlist.',
-      }),
-    videoId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID that YouTube uses to uniquely identify the referred resource, if that resource is a video. This property is only present if the resourceId.kind value is youtube#video.',
-      }),
-  })
-  .openapi({
-    description: 'A resource id is a generic reference that points to another YouTube resource.',
-    required: [],
-  })
-  .openapi('ResourceId')
-
-const ActivityContentDetailsBulletinSchema = z
-  .object({
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The resourceId object contains information that identifies the resource associated with a bulletin post. @mutable youtube.activities.insert',
-    }),
-  })
-  .openapi({ description: 'Details about a channel bulletin post.', required: [] })
-  .openapi('ActivityContentDetailsBulletin')
-
-const ActivityContentDetailsChannelItemSchema = z
-  .object({
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The resourceId object contains information that identifies the resource that was added to the channel.',
-    }),
-  })
-  .openapi({ description: 'Details about a resource which was added to a channel.', required: [] })
-  .openapi('ActivityContentDetailsChannelItem')
-
-const ActivityContentDetailsCommentSchema = z
-  .object({
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The resourceId object contains information that identifies the resource associated with the comment.',
-    }),
-  })
-  .openapi({ description: 'Information about a resource that received a comment.', required: [] })
-  .openapi('ActivityContentDetailsComment')
-
-const ActivityContentDetailsFavoriteSchema = z
-  .object({
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The resourceId object contains information that identifies the resource that was marked as a favorite.',
-    }),
-  })
-  .openapi({
-    description: 'Information about a video that was marked as a favorite video.',
-    required: [],
-  })
-  .openapi('ActivityContentDetailsFavorite')
-
-const ActivityContentDetailsLikeSchema = z
-  .object({
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description: 'The resourceId object contains information that identifies the rated resource.',
-    }),
-  })
-  .openapi({
-    description: 'Information about a resource that received a positive (like) rating.',
-    required: [],
-  })
-  .openapi('ActivityContentDetailsLike')
-
-const ActivityContentDetailsPlaylistItemSchema = z
-  .object({
-    playlistId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value that YouTube uses to uniquely identify the playlist.' }),
-    playlistItemId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the item within the playlist.' }),
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The resourceId object contains information about the resource that was added to the playlist.',
-    }),
-  })
-  .openapi({ description: 'Information about a new playlist item.', required: [] })
-  .openapi('ActivityContentDetailsPlaylistItem')
-
-const ActivityContentDetailsPromotedItemSchema = z
-  .object({
-    adTag: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL the client should fetch to request a promoted item.' }),
-    clickTrackingUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL the client should ping to indicate that the user clicked through on this promoted item.',
-      }),
-    creativeViewUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL the client should ping to indicate that the user was shown this promoted item.',
-      }),
-    ctaType: z
-      .enum(['ctaTypeUnspecified', 'visitAdvertiserSite'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of call-to-action, a message to the user indicating action that can be taken.',
-      }),
-    customCtaButtonText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The custom call-to-action button text. If specified, it will override the default button text for the cta_type.',
-      }),
-    descriptionText: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The text description to accompany the promoted item.' }),
-    destinationUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL the client should direct the user to, if the user chooses to visit the advertiser's website.",
-      }),
-    forecastingUrl: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of forecasting URLs. The client should ping all of these URLs when a promoted item is not available, to indicate that a promoted item could have been shown.',
-      }),
-    impressionUrl: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of impression URLs. The client should ping all of these URLs to indicate that the user was shown this promoted item.',
-      }),
-    videoId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID that YouTube uses to uniquely identify the promoted video.',
-      }),
-  })
-  .openapi({ description: 'Details about a resource which is being promoted.', required: [] })
-  .openapi('ActivityContentDetailsPromotedItem')
-
-const ActivityContentDetailsRecommendationSchema = z
-  .object({
-    reason: z
-      .enum(['reasonUnspecified', 'videoFavorited', 'videoLiked', 'videoWatched'])
-      .exactOptional()
-      .openapi({ description: 'The reason that the resource is recommended to the user.' }),
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The resourceId object contains information that identifies the recommended resource.',
-    }),
-    seedResourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The seedResourceId object contains information about the resource that caused the recommendation.',
-    }),
-  })
-  .openapi({ description: 'Information that identifies the recommended resource.', required: [] })
-  .openapi('ActivityContentDetailsRecommendation')
-
-const ActivityContentDetailsSocialSchema = z
-  .object({
-    author: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The author of the social network post.' }),
-    imageUrl: z.string().exactOptional().openapi({ description: "An image of the post's author." }),
-    referenceUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the social network post.' }),
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The resourceId object encapsulates information that identifies the resource associated with a social network post.',
-    }),
-    type: z
-      .enum(['unspecified', 'googlePlus', 'facebook', 'twitter'])
-      .exactOptional()
-      .openapi({ description: 'The name of the social network.' }),
-  })
-  .openapi({ description: 'Details about a social network post.', required: [] })
-  .openapi('ActivityContentDetailsSocial')
-
-const ActivityContentDetailsSubscriptionSchema = z
-  .object({
-    resourceId: ResourceIdSchema.exactOptional().openapi({
-      description:
-        'The resourceId object contains information that identifies the resource that the user subscribed to.',
-    }),
-  })
-  .openapi({ description: 'Information about a channel that a user subscribed to.', required: [] })
-  .openapi('ActivityContentDetailsSubscription')
-
-const ActivityContentDetailsUploadSchema = z
-  .object({
-    videoId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID that YouTube uses to uniquely identify the uploaded video.',
-      }),
-  })
-  .openapi({ description: 'Information about the uploaded video.', required: [] })
-  .openapi('ActivityContentDetailsUpload')
-
-const ActivityContentDetailsSchema = z
-  .object({
-    bulletin: ActivityContentDetailsBulletinSchema.exactOptional().openapi({
-      description:
-        'The bulletin object contains details about a channel bulletin post. This object is only present if the snippet.type is bulletin.',
-    }),
-    channelItem: ActivityContentDetailsChannelItemSchema.exactOptional().openapi({
-      description:
-        'The channelItem object contains details about a resource which was added to a channel. This property is only present if the snippet.type is channelItem.',
-    }),
-    comment: ActivityContentDetailsCommentSchema.exactOptional().openapi({
-      description:
-        'The comment object contains information about a resource that received a comment. This property is only present if the snippet.type is comment.',
-    }),
-    favorite: ActivityContentDetailsFavoriteSchema.exactOptional().openapi({
-      description:
-        'The favorite object contains information about a video that was marked as a favorite video. This property is only present if the snippet.type is favorite.',
-    }),
-    like: ActivityContentDetailsLikeSchema.exactOptional().openapi({
-      description:
-        'The like object contains information about a resource that received a positive (like) rating. This property is only present if the snippet.type is like.',
-    }),
-    playlistItem: ActivityContentDetailsPlaylistItemSchema.exactOptional().openapi({
-      description:
-        'The playlistItem object contains information about a new playlist item. This property is only present if the snippet.type is playlistItem.',
-    }),
-    promotedItem: ActivityContentDetailsPromotedItemSchema.exactOptional().openapi({
-      description:
-        'The promotedItem object contains details about a resource which is being promoted. This property is only present if the snippet.type is promotedItem.',
-    }),
-    recommendation: ActivityContentDetailsRecommendationSchema.exactOptional().openapi({
-      description:
-        'The recommendation object contains information about a recommended resource. This property is only present if the snippet.type is recommendation.',
-    }),
-    social: ActivityContentDetailsSocialSchema.exactOptional().openapi({
-      description:
-        'The social object contains details about a social network post. This property is only present if the snippet.type is social.',
-    }),
-    subscription: ActivityContentDetailsSubscriptionSchema.exactOptional().openapi({
-      description:
-        'The subscription object contains information about a channel that a user subscribed to. This property is only present if the snippet.type is subscription.',
-    }),
-    upload: ActivityContentDetailsUploadSchema.exactOptional().openapi({
-      description:
-        'The upload object contains information about the uploaded video. This property is only present if the snippet.type is upload.',
-    }),
-  })
-  .openapi({
-    description:
-      'Details about the content of an activity: the video that was shared, the channel that was subscribed to, etc.',
-    required: [],
-  })
-  .openapi('ActivityContentDetails')
-
-const ThumbnailSchema = z
-  .object({
-    height: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: '(Optional) Height of the thumbnail image.' }),
-    url: z.string().exactOptional().openapi({ description: "The thumbnail image's URL." }),
-    width: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: '(Optional) Width of the thumbnail image.' }),
-  })
-  .openapi({
-    description: 'A thumbnail is an image representing a YouTube resource.',
-    required: [],
-  })
-  .openapi('Thumbnail')
-
-const ThumbnailDetailsSchema = z
-  .object({
-    high: ThumbnailSchema.exactOptional().openapi({
-      description: 'The high quality image for this resource.',
-    }),
-    maxres: ThumbnailSchema.exactOptional().openapi({
-      description: 'The maximum resolution quality image for this resource.',
-    }),
-    medium: ThumbnailSchema.exactOptional().openapi({
-      description: 'The medium quality image for this resource.',
-    }),
-    standard: ThumbnailSchema.exactOptional().openapi({
-      description: 'The standard quality image for this resource.',
-    }),
-  })
-  .openapi({
-    description: 'Internal representation of thumbnails for a YouTube resource.',
-    required: [],
-  })
-  .openapi('ThumbnailDetails')
-
-const ActivitySnippetSchema = z
-  .object({
-    channelId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID that YouTube uses to uniquely identify the channel associated with the activity.',
-      }),
-    channelTitle: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Channel title for the channel responsible for this activity' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The description of the resource primarily associated with the activity. @mutable youtube.activities.insert',
-      }),
-    groupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The group ID associated with the activity. A group ID identifies user events that are associated with the same user and resource. For example, if a user rates a video and marks the same video as a favorite, the entries for those events would have the same group ID in the user's activity feed. In your user interface, you can avoid repetition by grouping events with the same groupId value.",
-      }),
-    publishedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date and time that the video was uploaded.' }),
-    thumbnails: ThumbnailDetailsSchema.exactOptional().openapi({
-      description:
-        'A map of thumbnail images associated with the resource that is primarily associated with the activity. For each object in the map, the key is the name of the thumbnail image, and the value is an object that contains other information about the thumbnail.',
-    }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The title of the resource primarily associated with the activity.',
-      }),
-    type: z
-      .enum([
-        'typeUnspecified',
-        'upload',
-        'like',
-        'favorite',
-        'comment',
-        'subscription',
-        'playlistItem',
-        'recommendation',
-        'bulletin',
-        'social',
-        'channelItem',
-        'promotedItem',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of activity that the resource describes.' }),
-  })
-  .openapi({
-    description:
-      'Basic details about an activity, including title, description, thumbnails, activity type and group. Next ID: 12',
-    required: [],
-  })
-  .openapi('ActivitySnippet')
-
-const ActivitySchema = z
-  .object({
-    contentDetails: ActivityContentDetailsSchema.exactOptional().openapi({
-      description:
-        "The contentDetails object contains information about the content associated with the activity. For example, if the snippet.type value is videoRated, then the contentDetails object's content identifies the rated video.",
-    }),
-    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID that YouTube uses to uniquely identify the activity.' }),
-    kind: z
-      .string()
-      .default('youtube#activity')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "youtube#activity".',
-      }),
-    snippet: ActivitySnippetSchema.exactOptional().openapi({
-      description:
-        "The snippet object contains basic details about the activity, including the activity's type and group ID.",
-    }),
-  })
-  .openapi({
-    description:
-      'An *activity* resource contains information about an action that a particular channel, or user, has taken on YouTube.The actions reported in activity feeds include rating a video, sharing a video, marking a video as a favorite, commenting on a video, uploading a video, and so forth. Each activity resource identifies the type of action, the channel associated with the action, and the resource(s) associated with the action, such as the video that was rated or uploaded.',
-    required: [],
-  })
-  .openapi('Activity')
-
-const PageInfoSchema = z
-  .object({
-    resultsPerPage: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of results included in the API response.' }),
-    totalResults: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The total number of results in the result set.' }),
-  })
-  .openapi({
-    description:
-      'Paging details for lists of resources, including total number of items available and number of resources returned in a single page.',
-    required: [],
-  })
-  .openapi('PageInfo')
-
-const TokenPaginationSchema = z
-  .object({})
-  .openapi({ description: 'Stub token pagination template to suppress results.' })
-  .openapi('TokenPagination')
-
-const ActivityListResponseSchema = z
-  .object({
-    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
-    eventId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Serialized EventId of the request which produced this response.' }),
-    items: z.array(ActivitySchema).exactOptional(),
-    kind: z
-      .string()
-      .default('youtube#activityListResponse')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "youtube#activityListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The token that can be used as the value of the pageToken parameter to retrieve the next page in the result set.',
-      }),
-    pageInfo: PageInfoSchema.exactOptional().openapi({
-      description: 'General pagination information.',
-    }),
-    prevPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The token that can be used as the value of the pageToken parameter to retrieve the previous page in the result set.',
-      }),
-    tokenPagination: TokenPaginationSchema.exactOptional(),
-    visitorId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The visitorId identifies the visitor.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActivityListResponse')
-
-const CaptionSnippetSchema = z
-  .object({
-    audioTrackType: z
-      .enum(['unknown', 'primary', 'commentary', 'descriptive'])
-      .exactOptional()
-      .openapi({ description: 'The type of audio track associated with the caption track.' }),
-    failureReason: z
-      .enum(['unknownFormat', 'unsupportedFormat', 'processingFailed'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The reason that YouTube failed to process the caption track. This property is only present if the state property's value is failed.",
-      }),
-    isAutoSynced: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether YouTube synchronized the caption track to the audio track in the video. The value will be true if a sync was explicitly requested when the caption track was uploaded. For example, when calling the captions.insert or captions.update methods, you can set the sync parameter to true to instruct YouTube to sync the uploaded track to the video. If the value is false, YouTube uses the time codes in the uploaded caption track to determine when to display captions.',
-      }),
-    isCC: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the track contains closed captions for the deaf and hard of hearing. The default value is false.',
-      }),
-    isDraft: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the caption track is a draft. If the value is true, then the track is not publicly visible. The default value is false. @mutable youtube.captions.insert youtube.captions.update',
-      }),
-    isEasyReader: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether caption track is formatted for "easy reader," meaning it is at a third-grade level for language learners. The default value is false.',
-      }),
-    isLarge: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the caption track uses large text for the vision-impaired. The default value is false.',
-      }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The language of the caption track. The property value is a BCP-47 language tag.',
-      }),
-    lastUpdated: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date and time when the caption track was last updated.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the caption track. The name is intended to be visible to the user as an option during playback.',
-      }),
-    status: z
-      .enum(['serving', 'syncing', 'failed'])
-      .exactOptional()
-      .openapi({ description: "The caption track's status." }),
-    trackKind: z
-      .enum(['standard', 'ASR', 'forced'])
-      .exactOptional()
-      .openapi({ description: "The caption track's type." }),
-    videoId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID that YouTube uses to uniquely identify the video associated with the caption track. @mutable youtube.captions.insert',
-      }),
-  })
-  .openapi({
-    description: 'Basic details about a caption track, such as its language and name.',
-    required: [],
-  })
-  .openapi('CaptionSnippet')
-
-const CaptionSchema = z
-  .object({
-    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID that YouTube uses to uniquely identify the caption track.' }),
-    kind: z
-      .string()
-      .default('youtube#caption')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "youtube#caption".',
-      }),
-    snippet: CaptionSnippetSchema.exactOptional().openapi({
-      description: 'The snippet object contains basic details about the caption.',
-    }),
-  })
-  .openapi({
-    description:
-      'A *caption* resource represents a YouTube caption track. A caption track is associated with exactly one YouTube video.',
-    required: [],
-  })
-  .openapi('Caption')
-
-const CaptionListResponseSchema = z
-  .object({
-    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
-    eventId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Serialized EventId of the request which produced this response.' }),
-    items: z
-      .array(CaptionSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of captions that match the request criteria.' }),
-    kind: z
-      .string()
-      .default('youtube#captionListResponse')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "youtube#captionListResponse".',
-      }),
-    visitorId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The visitorId identifies the visitor.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CaptionListResponse')
-
-const IngestionInfoSchema = z
-  .object({
-    backupIngestionAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The backup ingestion URL that you should use to stream video to YouTube. You have the option of simultaneously streaming the content that you are sending to the ingestionAddress to this URL.',
-      }),
-    ingestionAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The primary ingestion URL that you should use to stream video to YouTube. You must stream video to this URL. Depending on which application or tool you use to encode your video stream, you may need to enter the stream URL and stream name separately or you may need to concatenate them in the following format: *STREAM_URL/STREAM_NAME* ',
-      }),
-    rtmpsBackupIngestionAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This ingestion url may be used instead of backupIngestionAddress in order to stream via RTMPS. Not applicable to non-RTMP streams.',
-      }),
-    rtmpsIngestionAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This ingestion url may be used instead of ingestionAddress in order to stream via RTMPS. Not applicable to non-RTMP streams.',
-      }),
-    streamName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The stream name that YouTube assigns to the video stream.' }),
-  })
-  .openapi({
-    description: 'Describes information necessary for ingesting an RTMP, HTTP, or SRT stream.',
-    required: [],
-  })
-  .openapi('IngestionInfo')
-
-const CdnSettingsSchema = z
-  .object({
-    format: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The format of the video stream that you are sending to Youtube. ' }),
-    frameRate: z
-      .enum(['30fps', '60fps', 'variable'])
-      .exactOptional()
-      .openapi({ description: 'The frame rate of the inbound video data.' }),
-    ingestionInfo: IngestionInfoSchema.exactOptional().openapi({
-      description:
-        'The ingestionInfo object contains information that YouTube provides that you need to transmit your RTMP or HTTP stream to YouTube.',
-    }),
-    ingestionType: z
-      .enum(['rtmp', 'dash', 'webrtc', 'hls'])
-      .exactOptional()
-      .openapi({ description: ' The method or protocol used to transmit the video stream.' }),
-    resolution: z
-      .enum(['240p', '360p', '480p', '720p', '1080p', '1440p', '2160p', 'variable'])
-      .exactOptional()
-      .openapi({ description: 'The resolution of the inbound video data.' }),
-  })
-  .openapi({ description: 'Brief description of the live stream cdn settings.', required: [] })
-  .openapi('CdnSettings')
-
 const ChannelAuditDetailsSchema = z
   .object({
     communityGuidelinesGoodStanding: z
@@ -1113,6 +365,45 @@ const ChannelLocalizationSchema = z
   .openapi({ description: 'Channel localization setting', required: [] })
   .openapi('ChannelLocalization')
 
+const ThumbnailSchema = z
+  .object({
+    height: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: '(Optional) Height of the thumbnail image.' }),
+    url: z.string().exactOptional().openapi({ description: "The thumbnail image's URL." }),
+    width: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: '(Optional) Width of the thumbnail image.' }),
+  })
+  .openapi({
+    description: 'A thumbnail is an image representing a YouTube resource.',
+    required: [],
+  })
+  .openapi('Thumbnail')
+
+const ThumbnailDetailsSchema = z
+  .object({
+    high: ThumbnailSchema.exactOptional().openapi({
+      description: 'The high quality image for this resource.',
+    }),
+    maxres: ThumbnailSchema.exactOptional().openapi({
+      description: 'The maximum resolution quality image for this resource.',
+    }),
+    medium: ThumbnailSchema.exactOptional().openapi({
+      description: 'The medium quality image for this resource.',
+    }),
+    standard: ThumbnailSchema.exactOptional().openapi({
+      description: 'The standard quality image for this resource.',
+    }),
+  })
+  .openapi({
+    description: 'Internal representation of thumbnails for a YouTube resource.',
+    required: [],
+  })
+  .openapi('ThumbnailDetails')
+
 const ChannelSnippetSchema = z
   .object({
     country: z.string().exactOptional().openapi({ description: 'The country of the channel.' }),
@@ -1281,6 +572,938 @@ const ChannelSchema = z
   })
   .openapi('Channel')
 
+const PageInfoSchema = z
+  .object({
+    resultsPerPage: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of results included in the API response.' }),
+    totalResults: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The total number of results in the result set.' }),
+  })
+  .openapi({
+    description:
+      'Paging details for lists of resources, including total number of items available and number of resources returned in a single page.',
+    required: [],
+  })
+  .openapi('PageInfo')
+
+const TokenPaginationSchema = z
+  .looseObject({})
+  .openapi({ description: 'Stub token pagination template to suppress results.' })
+  .openapi('TokenPagination')
+
+type ChannelListResponseType = {
+  etag?: string
+  eventId?: string
+  items?: z.infer<typeof ChannelSchema>[]
+  kind?: string
+  nextPageToken?: string
+  pageInfo?: z.infer<typeof PageInfoSchema>
+  prevPageToken?: string
+  tokenPagination?: z.infer<typeof TokenPaginationSchema>
+  visitorId?: string
+}
+
+const CommentSnippetAuthorChannelIdSchema = z
+  .object({ value: z.string().exactOptional() })
+  .openapi({ description: "The id of the author's YouTube channel, if any.", required: [] })
+  .openapi('CommentSnippetAuthorChannelId')
+
+const CommentSnippetSchema = z
+  .object({
+    authorChannelId: CommentSnippetAuthorChannelIdSchema.exactOptional(),
+    authorChannelUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Link to the author's YouTube channel, if any." }),
+    authorDisplayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the user who posted the comment.' }),
+    authorProfileImageUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL for the avatar of the user who posted the comment.' }),
+    canRate: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the current viewer can rate this comment.' }),
+    channelId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The id of the corresponding YouTube channel. In case of a channel comment this is the channel the comment refers to. In case of a video comment it's the video's channel.",
+      }),
+    likeCount: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The total number of likes this comment has received.' }),
+    moderationStatus: z
+      .enum(['published', 'heldForReview', 'likelySpam', 'rejected'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The comment's moderation status. Will not be set if the comments were requested through the id filter.",
+      }),
+    parentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique id of the parent comment, only set for replies.' }),
+    publishedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date and time when the comment was originally published.' }),
+    textDisplay: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The comment's text. The format is either plain text or HTML dependent on what has been requested. Even the plain text representation may differ from the text originally posted in that it may replace video links with video titles etc.",
+      }),
+    textOriginal: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The comment's original raw text as initially posted or last updated. The original text will only be returned if it is accessible to the viewer, which is only guaranteed if the viewer is the comment's author.",
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date and time when the comment was last updated.' }),
+    videoId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the video the comment refers to, if any.' }),
+    viewerRating: z
+      .enum(['none', 'like', 'dislike'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The rating the viewer has given to this comment. For the time being this will never return RATE_TYPE_DISLIKE and instead return RATE_TYPE_NONE. This may change in the future.',
+      }),
+  })
+  .openapi({
+    description: 'Basic details about a comment, such as its author and text.',
+    required: [],
+  })
+  .openapi('CommentSnippet')
+
+const CommentSchema = z
+  .object({
+    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID that YouTube uses to uniquely identify the comment.' }),
+    kind: z
+      .string()
+      .default('youtube#comment')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "youtube#comment".',
+      }),
+    snippet: CommentSnippetSchema.exactOptional().openapi({
+      description: 'The snippet object contains basic details about the comment.',
+    }),
+  })
+  .openapi({ description: 'A *comment* represents a single YouTube comment.', required: [] })
+  .openapi('Comment')
+
+const CommentThreadRepliesSchema = z
+  .object({
+    comments: z
+      .array(CommentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A limited number of replies. Unless the number of replies returned equals total_reply_count in the snippet the returned replies are only a subset of the total number of replies.',
+      }),
+  })
+  .openapi({
+    description: 'Comments written in (direct or indirect) reply to the top level comment.',
+    required: [],
+  })
+  .openapi('CommentThreadReplies')
+
+const CommentThreadSnippetSchema = z
+  .object({
+    canReply: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the current viewer of the thread can reply to it. This is viewer specific - other viewers may see a different value for this field.',
+      }),
+    channelId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The YouTube channel the comments in the thread refer to or the channel with the video the comments refer to. If video_id isn't set the comments refer to the channel itself.",
+      }),
+    isPublic: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the thread (and therefore all its comments) is visible to all YouTube users.',
+      }),
+    topLevelComment: CommentSchema.exactOptional().openapi({
+      description: 'The top level comment of this thread.',
+    }),
+    totalReplyCount: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description: 'The total number of replies (not including the top level comment).',
+      }),
+    videoId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the video the comments refer to, if any. No video_id implies a channel discussion comment.',
+      }),
+  })
+  .openapi({ description: 'Basic details about a comment thread.', required: [] })
+  .openapi('CommentThreadSnippet')
+
+const CommentThreadSchema = z
+  .object({
+    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID that YouTube uses to uniquely identify the comment thread.',
+      }),
+    kind: z
+      .string()
+      .default('youtube#commentThread')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "youtube#commentThread".',
+      }),
+    replies: CommentThreadRepliesSchema.exactOptional().openapi({
+      description:
+        'The replies object contains a limited number of replies (if any) to the top level comment found in the snippet.',
+    }),
+    snippet: CommentThreadSnippetSchema.exactOptional().openapi({
+      description:
+        'The snippet object contains basic details about the comment thread and also the top level comment.',
+    }),
+  })
+  .openapi({
+    description:
+      'A *comment thread* represents information that applies to a top level comment and all its replies. It can also include the top level comment itself and some of the replies.',
+    required: [],
+  })
+  .openapi('CommentThread')
+
+type CommentThreadListResponseType = {
+  etag?: string
+  eventId?: string
+  items?: z.infer<typeof CommentThreadSchema>[]
+  kind?: string
+  nextPageToken?: string
+  pageInfo?: z.infer<typeof PageInfoSchema>
+  tokenPagination?: z.infer<typeof TokenPaginationSchema>
+  visitorId?: string
+}
+
+const AbuseTypeSchema = z
+  .object({ id: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AbuseType')
+
+const EntitySchema = z
+  .object({
+    id: z.string().exactOptional(),
+    typeId: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Entity')
+
+const RelatedEntitySchema = z
+  .object({ entity: EntitySchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('RelatedEntity')
+
+const AbuseReportSchema = z
+  .object({
+    abuseTypes: z.array(AbuseTypeSchema).exactOptional(),
+    description: z.string().exactOptional(),
+    relatedEntities: z.array(RelatedEntitySchema).exactOptional(),
+    subject: EntitySchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AbuseReport')
+
+const AccessPolicySchema = z
+  .object({
+    allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value of allowed indicates whether the access to the policy is allowed or denied by default.',
+      }),
+    exception: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of region codes that identify countries where the default policy do not apply.',
+      }),
+  })
+  .openapi({ description: 'Rights management policy for YouTube resources.', required: [] })
+  .openapi('AccessPolicy')
+
+const ResourceIdSchema = z
+  .object({
+    channelId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID that YouTube uses to uniquely identify the referred resource, if that resource is a channel. This property is only present if the resourceId.kind value is youtube#channel.',
+      }),
+    kind: z.string().exactOptional().openapi({ description: 'The type of the API resource.' }),
+    playlistId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID that YouTube uses to uniquely identify the referred resource, if that resource is a playlist. This property is only present if the resourceId.kind value is youtube#playlist.',
+      }),
+    videoId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID that YouTube uses to uniquely identify the referred resource, if that resource is a video. This property is only present if the resourceId.kind value is youtube#video.',
+      }),
+  })
+  .openapi({
+    description: 'A resource id is a generic reference that points to another YouTube resource.',
+    required: [],
+  })
+  .openapi('ResourceId')
+
+const ActivityContentDetailsBulletinSchema = z
+  .object({
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The resourceId object contains information that identifies the resource associated with a bulletin post. @mutable youtube.activities.insert',
+    }),
+  })
+  .openapi({ description: 'Details about a channel bulletin post.', required: [] })
+  .openapi('ActivityContentDetailsBulletin')
+
+const ActivityContentDetailsChannelItemSchema = z
+  .object({
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The resourceId object contains information that identifies the resource that was added to the channel.',
+    }),
+  })
+  .openapi({ description: 'Details about a resource which was added to a channel.', required: [] })
+  .openapi('ActivityContentDetailsChannelItem')
+
+const ActivityContentDetailsCommentSchema = z
+  .object({
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The resourceId object contains information that identifies the resource associated with the comment.',
+    }),
+  })
+  .openapi({ description: 'Information about a resource that received a comment.', required: [] })
+  .openapi('ActivityContentDetailsComment')
+
+const ActivityContentDetailsFavoriteSchema = z
+  .object({
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The resourceId object contains information that identifies the resource that was marked as a favorite.',
+    }),
+  })
+  .openapi({
+    description: 'Information about a video that was marked as a favorite video.',
+    required: [],
+  })
+  .openapi('ActivityContentDetailsFavorite')
+
+const ActivityContentDetailsLikeSchema = z
+  .object({
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The resourceId object contains information that identifies the rated resource.',
+    }),
+  })
+  .openapi({
+    description: 'Information about a resource that received a positive (like) rating.',
+    required: [],
+  })
+  .openapi('ActivityContentDetailsLike')
+
+const ActivityContentDetailsPlaylistItemSchema = z
+  .object({
+    playlistId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value that YouTube uses to uniquely identify the playlist.' }),
+    playlistItemId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the item within the playlist.' }),
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The resourceId object contains information about the resource that was added to the playlist.',
+    }),
+  })
+  .openapi({ description: 'Information about a new playlist item.', required: [] })
+  .openapi('ActivityContentDetailsPlaylistItem')
+
+const ActivityContentDetailsPromotedItemSchema = z
+  .object({
+    adTag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL the client should fetch to request a promoted item.' }),
+    clickTrackingUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL the client should ping to indicate that the user clicked through on this promoted item.',
+      }),
+    creativeViewUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL the client should ping to indicate that the user was shown this promoted item.',
+      }),
+    ctaType: z
+      .enum(['ctaTypeUnspecified', 'visitAdvertiserSite'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of call-to-action, a message to the user indicating action that can be taken.',
+      }),
+    customCtaButtonText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The custom call-to-action button text. If specified, it will override the default button text for the cta_type.',
+      }),
+    descriptionText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text description to accompany the promoted item.' }),
+    destinationUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL the client should direct the user to, if the user chooses to visit the advertiser's website.",
+      }),
+    forecastingUrl: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of forecasting URLs. The client should ping all of these URLs when a promoted item is not available, to indicate that a promoted item could have been shown.',
+      }),
+    impressionUrl: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of impression URLs. The client should ping all of these URLs to indicate that the user was shown this promoted item.',
+      }),
+    videoId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID that YouTube uses to uniquely identify the promoted video.',
+      }),
+  })
+  .openapi({ description: 'Details about a resource which is being promoted.', required: [] })
+  .openapi('ActivityContentDetailsPromotedItem')
+
+const ActivityContentDetailsRecommendationSchema = z
+  .object({
+    reason: z
+      .enum(['reasonUnspecified', 'videoFavorited', 'videoLiked', 'videoWatched'])
+      .exactOptional()
+      .openapi({ description: 'The reason that the resource is recommended to the user.' }),
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The resourceId object contains information that identifies the recommended resource.',
+    }),
+    seedResourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The seedResourceId object contains information about the resource that caused the recommendation.',
+    }),
+  })
+  .openapi({ description: 'Information that identifies the recommended resource.', required: [] })
+  .openapi('ActivityContentDetailsRecommendation')
+
+const ActivityContentDetailsSocialSchema = z
+  .object({
+    author: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The author of the social network post.' }),
+    imageUrl: z.string().exactOptional().openapi({ description: "An image of the post's author." }),
+    referenceUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the social network post.' }),
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The resourceId object encapsulates information that identifies the resource associated with a social network post.',
+    }),
+    type: z
+      .enum(['unspecified', 'googlePlus', 'facebook', 'twitter'])
+      .exactOptional()
+      .openapi({ description: 'The name of the social network.' }),
+  })
+  .openapi({ description: 'Details about a social network post.', required: [] })
+  .openapi('ActivityContentDetailsSocial')
+
+const ActivityContentDetailsSubscriptionSchema = z
+  .object({
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The resourceId object contains information that identifies the resource that the user subscribed to.',
+    }),
+  })
+  .openapi({ description: 'Information about a channel that a user subscribed to.', required: [] })
+  .openapi('ActivityContentDetailsSubscription')
+
+const ActivityContentDetailsUploadSchema = z
+  .object({
+    videoId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID that YouTube uses to uniquely identify the uploaded video.',
+      }),
+  })
+  .openapi({ description: 'Information about the uploaded video.', required: [] })
+  .openapi('ActivityContentDetailsUpload')
+
+const ActivityContentDetailsSchema = z
+  .object({
+    bulletin: ActivityContentDetailsBulletinSchema.exactOptional().openapi({
+      description:
+        'The bulletin object contains details about a channel bulletin post. This object is only present if the snippet.type is bulletin.',
+    }),
+    channelItem: ActivityContentDetailsChannelItemSchema.exactOptional().openapi({
+      description:
+        'The channelItem object contains details about a resource which was added to a channel. This property is only present if the snippet.type is channelItem.',
+    }),
+    comment: ActivityContentDetailsCommentSchema.exactOptional().openapi({
+      description:
+        'The comment object contains information about a resource that received a comment. This property is only present if the snippet.type is comment.',
+    }),
+    favorite: ActivityContentDetailsFavoriteSchema.exactOptional().openapi({
+      description:
+        'The favorite object contains information about a video that was marked as a favorite video. This property is only present if the snippet.type is favorite.',
+    }),
+    like: ActivityContentDetailsLikeSchema.exactOptional().openapi({
+      description:
+        'The like object contains information about a resource that received a positive (like) rating. This property is only present if the snippet.type is like.',
+    }),
+    playlistItem: ActivityContentDetailsPlaylistItemSchema.exactOptional().openapi({
+      description:
+        'The playlistItem object contains information about a new playlist item. This property is only present if the snippet.type is playlistItem.',
+    }),
+    promotedItem: ActivityContentDetailsPromotedItemSchema.exactOptional().openapi({
+      description:
+        'The promotedItem object contains details about a resource which is being promoted. This property is only present if the snippet.type is promotedItem.',
+    }),
+    recommendation: ActivityContentDetailsRecommendationSchema.exactOptional().openapi({
+      description:
+        'The recommendation object contains information about a recommended resource. This property is only present if the snippet.type is recommendation.',
+    }),
+    social: ActivityContentDetailsSocialSchema.exactOptional().openapi({
+      description:
+        'The social object contains details about a social network post. This property is only present if the snippet.type is social.',
+    }),
+    subscription: ActivityContentDetailsSubscriptionSchema.exactOptional().openapi({
+      description:
+        'The subscription object contains information about a channel that a user subscribed to. This property is only present if the snippet.type is subscription.',
+    }),
+    upload: ActivityContentDetailsUploadSchema.exactOptional().openapi({
+      description:
+        'The upload object contains information about the uploaded video. This property is only present if the snippet.type is upload.',
+    }),
+  })
+  .openapi({
+    description:
+      'Details about the content of an activity: the video that was shared, the channel that was subscribed to, etc.',
+    required: [],
+  })
+  .openapi('ActivityContentDetails')
+
+const ActivitySnippetSchema = z
+  .object({
+    channelId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID that YouTube uses to uniquely identify the channel associated with the activity.',
+      }),
+    channelTitle: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Channel title for the channel responsible for this activity' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The description of the resource primarily associated with the activity. @mutable youtube.activities.insert',
+      }),
+    groupId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The group ID associated with the activity. A group ID identifies user events that are associated with the same user and resource. For example, if a user rates a video and marks the same video as a favorite, the entries for those events would have the same group ID in the user's activity feed. In your user interface, you can avoid repetition by grouping events with the same groupId value.",
+      }),
+    publishedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date and time that the video was uploaded.' }),
+    thumbnails: ThumbnailDetailsSchema.exactOptional().openapi({
+      description:
+        'A map of thumbnail images associated with the resource that is primarily associated with the activity. For each object in the map, the key is the name of the thumbnail image, and the value is an object that contains other information about the thumbnail.',
+    }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The title of the resource primarily associated with the activity.',
+      }),
+    type: z
+      .enum([
+        'typeUnspecified',
+        'upload',
+        'like',
+        'favorite',
+        'comment',
+        'subscription',
+        'playlistItem',
+        'recommendation',
+        'bulletin',
+        'social',
+        'channelItem',
+        'promotedItem',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of activity that the resource describes.' }),
+  })
+  .openapi({
+    description:
+      'Basic details about an activity, including title, description, thumbnails, activity type and group. Next ID: 12',
+    required: [],
+  })
+  .openapi('ActivitySnippet')
+
+const ActivitySchema = z
+  .object({
+    contentDetails: ActivityContentDetailsSchema.exactOptional().openapi({
+      description:
+        "The contentDetails object contains information about the content associated with the activity. For example, if the snippet.type value is videoRated, then the contentDetails object's content identifies the rated video.",
+    }),
+    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID that YouTube uses to uniquely identify the activity.' }),
+    kind: z
+      .string()
+      .default('youtube#activity')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "youtube#activity".',
+      }),
+    snippet: ActivitySnippetSchema.exactOptional().openapi({
+      description:
+        "The snippet object contains basic details about the activity, including the activity's type and group ID.",
+    }),
+  })
+  .openapi({
+    description:
+      'An *activity* resource contains information about an action that a particular channel, or user, has taken on YouTube.The actions reported in activity feeds include rating a video, sharing a video, marking a video as a favorite, commenting on a video, uploading a video, and so forth. Each activity resource identifies the type of action, the channel associated with the action, and the resource(s) associated with the action, such as the video that was rated or uploaded.',
+    required: [],
+  })
+  .openapi('Activity')
+
+const ActivityListResponseSchema = z
+  .object({
+    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
+    eventId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Serialized EventId of the request which produced this response.' }),
+    items: z.array(ActivitySchema).exactOptional(),
+    kind: z
+      .string()
+      .default('youtube#activityListResponse')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "youtube#activityListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The token that can be used as the value of the pageToken parameter to retrieve the next page in the result set.',
+      }),
+    pageInfo: PageInfoSchema.exactOptional().openapi({
+      description: 'General pagination information.',
+    }),
+    prevPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The token that can be used as the value of the pageToken parameter to retrieve the previous page in the result set.',
+      }),
+    tokenPagination: TokenPaginationSchema.exactOptional(),
+    visitorId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The visitorId identifies the visitor.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActivityListResponse')
+
+const CaptionSnippetSchema = z
+  .object({
+    audioTrackType: z
+      .enum(['unknown', 'primary', 'commentary', 'descriptive'])
+      .exactOptional()
+      .openapi({ description: 'The type of audio track associated with the caption track.' }),
+    failureReason: z
+      .enum(['unknownFormat', 'unsupportedFormat', 'processingFailed'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason that YouTube failed to process the caption track. This property is only present if the state property's value is failed.",
+      }),
+    isAutoSynced: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether YouTube synchronized the caption track to the audio track in the video. The value will be true if a sync was explicitly requested when the caption track was uploaded. For example, when calling the captions.insert or captions.update methods, you can set the sync parameter to true to instruct YouTube to sync the uploaded track to the video. If the value is false, YouTube uses the time codes in the uploaded caption track to determine when to display captions.',
+      }),
+    isCC: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the track contains closed captions for the deaf and hard of hearing. The default value is false.',
+      }),
+    isDraft: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the caption track is a draft. If the value is true, then the track is not publicly visible. The default value is false. @mutable youtube.captions.insert youtube.captions.update',
+      }),
+    isEasyReader: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether caption track is formatted for "easy reader," meaning it is at a third-grade level for language learners. The default value is false.',
+      }),
+    isLarge: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the caption track uses large text for the vision-impaired. The default value is false.',
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language of the caption track. The property value is a BCP-47 language tag.',
+      }),
+    lastUpdated: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date and time when the caption track was last updated.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the caption track. The name is intended to be visible to the user as an option during playback.',
+      }),
+    status: z
+      .enum(['serving', 'syncing', 'failed'])
+      .exactOptional()
+      .openapi({ description: "The caption track's status." }),
+    trackKind: z
+      .enum(['standard', 'ASR', 'forced'])
+      .exactOptional()
+      .openapi({ description: "The caption track's type." }),
+    videoId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID that YouTube uses to uniquely identify the video associated with the caption track. @mutable youtube.captions.insert',
+      }),
+  })
+  .openapi({
+    description: 'Basic details about a caption track, such as its language and name.',
+    required: [],
+  })
+  .openapi('CaptionSnippet')
+
+const CaptionSchema = z
+  .object({
+    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID that YouTube uses to uniquely identify the caption track.' }),
+    kind: z
+      .string()
+      .default('youtube#caption')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "youtube#caption".',
+      }),
+    snippet: CaptionSnippetSchema.exactOptional().openapi({
+      description: 'The snippet object contains basic details about the caption.',
+    }),
+  })
+  .openapi({
+    description:
+      'A *caption* resource represents a YouTube caption track. A caption track is associated with exactly one YouTube video.',
+    required: [],
+  })
+  .openapi('Caption')
+
+const CaptionListResponseSchema = z
+  .object({
+    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
+    eventId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Serialized EventId of the request which produced this response.' }),
+    items: z
+      .array(CaptionSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of captions that match the request criteria.' }),
+    kind: z
+      .string()
+      .default('youtube#captionListResponse')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "youtube#captionListResponse".',
+      }),
+    visitorId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The visitorId identifies the visitor.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CaptionListResponse')
+
+const IngestionInfoSchema = z
+  .object({
+    backupIngestionAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The backup ingestion URL that you should use to stream video to YouTube. You have the option of simultaneously streaming the content that you are sending to the ingestionAddress to this URL.',
+      }),
+    ingestionAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The primary ingestion URL that you should use to stream video to YouTube. You must stream video to this URL. Depending on which application or tool you use to encode your video stream, you may need to enter the stream URL and stream name separately or you may need to concatenate them in the following format: *STREAM_URL/STREAM_NAME* ',
+      }),
+    rtmpsBackupIngestionAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This ingestion url may be used instead of backupIngestionAddress in order to stream via RTMPS. Not applicable to non-RTMP streams.',
+      }),
+    rtmpsIngestionAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This ingestion url may be used instead of ingestionAddress in order to stream via RTMPS. Not applicable to non-RTMP streams.',
+      }),
+    streamName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The stream name that YouTube assigns to the video stream.' }),
+  })
+  .openapi({
+    description: 'Describes information necessary for ingesting an RTMP, HTTP, or SRT stream.',
+    required: [],
+  })
+  .openapi('IngestionInfo')
+
+const CdnSettingsSchema = z
+  .object({
+    format: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The format of the video stream that you are sending to Youtube. ' }),
+    frameRate: z
+      .enum(['30fps', '60fps', 'variable'])
+      .exactOptional()
+      .openapi({ description: 'The frame rate of the inbound video data.' }),
+    ingestionInfo: IngestionInfoSchema.exactOptional().openapi({
+      description:
+        'The ingestionInfo object contains information that YouTube provides that you need to transmit your RTMP or HTTP stream to YouTube.',
+    }),
+    ingestionType: z
+      .enum(['rtmp', 'dash', 'webrtc', 'hls'])
+      .exactOptional()
+      .openapi({ description: ' The method or protocol used to transmit the video stream.' }),
+    resolution: z
+      .enum(['240p', '360p', '480p', '720p', '1080p', '1440p', '2160p', 'variable'])
+      .exactOptional()
+      .openapi({ description: 'The resolution of the inbound video data.' }),
+  })
+  .openapi({ description: 'Brief description of the live stream cdn settings.', required: [] })
+  .openapi('CdnSettings')
+
 const ChannelBannerResourceSchema = z
   .object({
     etag: z.string().exactOptional(),
@@ -1300,7 +1523,7 @@ const ChannelBannerResourceSchema = z
   })
   .openapi('ChannelBannerResource')
 
-const ChannelListResponseSchema = z
+const ChannelListResponseSchema: z.ZodType<ChannelListResponseType> = z
   .object({
     etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
     eventId: z
@@ -1544,114 +1767,6 @@ const ChannelToStoreLinkDetailsSchema = z
   })
   .openapi('ChannelToStoreLinkDetails')
 
-const CommentSnippetAuthorChannelIdSchema = z
-  .object({ value: z.string().exactOptional() })
-  .openapi({ description: "The id of the author's YouTube channel, if any.", required: [] })
-  .openapi('CommentSnippetAuthorChannelId')
-
-const CommentSnippetSchema = z
-  .object({
-    authorChannelId: CommentSnippetAuthorChannelIdSchema.exactOptional(),
-    authorChannelUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Link to the author's YouTube channel, if any." }),
-    authorDisplayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the user who posted the comment.' }),
-    authorProfileImageUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL for the avatar of the user who posted the comment.' }),
-    canRate: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the current viewer can rate this comment.' }),
-    channelId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The id of the corresponding YouTube channel. In case of a channel comment this is the channel the comment refers to. In case of a video comment it's the video's channel.",
-      }),
-    likeCount: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The total number of likes this comment has received.' }),
-    moderationStatus: z
-      .enum(['published', 'heldForReview', 'likelySpam', 'rejected'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The comment's moderation status. Will not be set if the comments were requested through the id filter.",
-      }),
-    parentId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique id of the parent comment, only set for replies.' }),
-    publishedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date and time when the comment was originally published.' }),
-    textDisplay: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The comment's text. The format is either plain text or HTML dependent on what has been requested. Even the plain text representation may differ from the text originally posted in that it may replace video links with video titles etc.",
-      }),
-    textOriginal: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The comment's original raw text as initially posted or last updated. The original text will only be returned if it is accessible to the viewer, which is only guaranteed if the viewer is the comment's author.",
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date and time when the comment was last updated.' }),
-    videoId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the video the comment refers to, if any.' }),
-    viewerRating: z
-      .enum(['none', 'like', 'dislike'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The rating the viewer has given to this comment. For the time being this will never return RATE_TYPE_DISLIKE and instead return RATE_TYPE_NONE. This may change in the future.',
-      }),
-  })
-  .openapi({
-    description: 'Basic details about a comment, such as its author and text.',
-    required: [],
-  })
-  .openapi('CommentSnippet')
-
-const CommentSchema = z
-  .object({
-    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID that YouTube uses to uniquely identify the comment.' }),
-    kind: z
-      .string()
-      .default('youtube#comment')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "youtube#comment".',
-      }),
-    snippet: CommentSnippetSchema.exactOptional().openapi({
-      description: 'The snippet object contains basic details about the comment.',
-    }),
-  })
-  .openapi({ description: 'A *comment* represents a single YouTube comment.', required: [] })
-  .openapi('Comment')
-
 const CommentListResponseSchema = z
   .object({
     etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
@@ -1690,99 +1805,7 @@ const CommentListResponseSchema = z
   .openapi({ required: [] })
   .openapi('CommentListResponse')
 
-const CommentThreadRepliesSchema = z
-  .object({
-    comments: z
-      .array(CommentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A limited number of replies. Unless the number of replies returned equals total_reply_count in the snippet the returned replies are only a subset of the total number of replies.',
-      }),
-  })
-  .openapi({
-    description: 'Comments written in (direct or indirect) reply to the top level comment.',
-    required: [],
-  })
-  .openapi('CommentThreadReplies')
-
-const CommentThreadSnippetSchema = z
-  .object({
-    canReply: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the current viewer of the thread can reply to it. This is viewer specific - other viewers may see a different value for this field.',
-      }),
-    channelId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The YouTube channel the comments in the thread refer to or the channel with the video the comments refer to. If video_id isn't set the comments refer to the channel itself.",
-      }),
-    isPublic: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the thread (and therefore all its comments) is visible to all YouTube users.',
-      }),
-    topLevelComment: CommentSchema.exactOptional().openapi({
-      description: 'The top level comment of this thread.',
-    }),
-    totalReplyCount: z
-      .uint32()
-      .exactOptional()
-      .openapi({
-        description: 'The total number of replies (not including the top level comment).',
-      }),
-    videoId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the video the comments refer to, if any. No video_id implies a channel discussion comment.',
-      }),
-  })
-  .openapi({ description: 'Basic details about a comment thread.', required: [] })
-  .openapi('CommentThreadSnippet')
-
-const CommentThreadSchema = z
-  .object({
-    etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID that YouTube uses to uniquely identify the comment thread.',
-      }),
-    kind: z
-      .string()
-      .default('youtube#commentThread')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "youtube#commentThread".',
-      }),
-    replies: CommentThreadRepliesSchema.exactOptional().openapi({
-      description:
-        'The replies object contains a limited number of replies (if any) to the top level comment found in the snippet.',
-    }),
-    snippet: CommentThreadSnippetSchema.exactOptional().openapi({
-      description:
-        'The snippet object contains basic details about the comment thread and also the top level comment.',
-    }),
-  })
-  .openapi({
-    description:
-      'A *comment thread* represents information that applies to a top level comment and all its replies. It can also include the top level comment itself and some of the replies.',
-    required: [],
-  })
-  .openapi('CommentThread')
-
-const CommentThreadListResponseSchema = z
+const CommentThreadListResponseSchema: z.ZodType<CommentThreadListResponseType> = z
   .object({
     etag: z.string().exactOptional().openapi({ description: 'Etag of this resource.' }),
     eventId: z
@@ -5153,7 +5176,7 @@ const SuperChatEventListResponseSchema = z
   .openapi({ required: [] })
   .openapi('SuperChatEventListResponse')
 
-const TestItemTestItemSnippetSchema = z.object({}).openapi('TestItemTestItemSnippet')
+const TestItemTestItemSnippetSchema = z.looseObject({}).openapi('TestItemTestItemSnippet')
 
 const TestItemSchema = z
   .object({
@@ -5689,7 +5712,7 @@ const VideoProcessingDetailsSchema = z
   .openapi('VideoProcessingDetails')
 
 const VideoProjectDetailsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'DEPRECATED. b/157517979: This part was never populated after it was added. However, it sees non-zero traffic because there is generated client code in the wild that refers to it [1]. We keep this field and do NOT remove it because otherwise V3 would return an error when this part gets requested [2]. [1] https://developers.google.com/resources/api-libraries/documentation/youtube/v3/csharp/latest/classGoogle_1_1Apis_1_1YouTube_1_1v3_1_1Data_1_1VideoProjectDetails.html [2] http://google3/video/youtube/src/python/servers/data_api/common.py?l=1565-1569&rcl=344141677',

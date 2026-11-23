@@ -157,7 +157,7 @@ const MultiPartSchema: z.ZodType<MultiPartType> = z
           }),
         contentDisposition: ContentDispositionSchema,
         entity: z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'An object that holds the main content or payload of the multipart entity.',
@@ -175,7 +175,7 @@ const MultiPartSchema: z.ZodType<MultiPartType> = z
           }),
         mediaType: MediaTypeSchema,
         messageBodyWorkers: z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'An object that may contain workers for processing the message body, though its specific properties are not detailed.',
@@ -190,7 +190,7 @@ const MultiPartSchema: z.ZodType<MultiPartType> = z
           }),
         parent: MultiPartSchema,
         providers: z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'An object that may contain providers related to the multipart entity, though its specific properties are not detailed.',
@@ -231,7 +231,7 @@ const BodyPartSchema: z.ZodType<BodyPartType> = z
       .object({
         contentDisposition: ContentDispositionSchema,
         entity: z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'An object representing the actual content or payload of the body part.',
             example: null,
@@ -248,7 +248,7 @@ const BodyPartSchema: z.ZodType<BodyPartType> = z
           }),
         mediaType: MediaTypeSchema,
         messageBodyWorkers: z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'An object representing workers that handle the processing of the message body.',
@@ -263,7 +263,7 @@ const BodyPartSchema: z.ZodType<BodyPartType> = z
           }),
         parent: MultiPartSchema,
         providers: z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'An object representing providers that supply additional handling or processing for the body part.',
@@ -295,6 +295,168 @@ type MultiPartType = {
   messageBodyWorkers: { [key: string]: unknown }
   parameterizedHeaders: { [key: string]: z.infer<typeof ParameterizedHeaderSchema>[] }
   parent: MultiPartType
+  providers: { [key: string]: unknown }
+}
+
+const FormDataContentDispositionSchema = z
+  .object({
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the file was created, in ISO 8601 format.',
+        example: null,
+      }),
+    fileName: z
+      .string()
+      .openapi({
+        description:
+          'A string indicating the name of the file associated with this content disposition.',
+        example: null,
+      }),
+    modificationDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the file was last modified, in ISO 8601 format.',
+        example: null,
+      }),
+    name: z
+      .string()
+      .openapi({
+        description: 'A string representing the name associated with this content disposition.',
+        example: null,
+      }),
+    parameters: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An object containing additional parameters for the content disposition, with each parameter represented as a string.',
+        example: null,
+      }),
+    readDate: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the file was last read, in ISO 8601 format.',
+        example: null,
+      }),
+    size: z
+      .int32()
+      .openapi({
+        description: 'An integer representing the size of the file in bytes.',
+        example: null,
+      }),
+    type: z
+      .string()
+      .openapi({
+        description: 'A string representing the type of content disposition.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'creationDate',
+      'fileName',
+      'modificationDate',
+      'name',
+      'parameters',
+      'readDate',
+      'size',
+      'type',
+    ],
+    example: null,
+  })
+  .openapi('FormDataContentDisposition')
+
+const FormDataBodyPartSchema = z
+  .object({
+    contentDisposition: ContentDispositionSchema,
+    entity: z
+      .looseObject({})
+      .openapi({
+        description:
+          'An object representing the entity of the form data part, which contains the actual data being submitted.',
+        example: null,
+      }),
+    formDataContentDisposition: FormDataContentDispositionSchema,
+    headers: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .openapi({
+        description:
+          'An object containing the headers associated with this form data part, where each header can have multiple string values.',
+        example: null,
+      }),
+    mediaType: MediaTypeSchema,
+    messageBodyWorkers: z
+      .looseObject({})
+      .openapi({
+        description:
+          'An object representing the message body workers, which are responsible for processing the body of the message.',
+        example: null,
+      }),
+    name: z
+      .string()
+      .openapi({
+        description:
+          'The name of the form data part, typically used to identify the part within the multipart request.',
+        example: null,
+      }),
+    parameterizedHeaders: z
+      .record(z.string(), z.array(ParameterizedHeaderSchema).openapi({ example: null }))
+      .openapi({
+        description:
+          'An object containing parameterized headers, where each header can have multiple values represented as ParameterizedHeader objects.',
+        example: null,
+      }),
+    parent: MultiPartSchema,
+    providers: z
+      .looseObject({})
+      .openapi({
+        description: 'An object representing the providers associated with this form data part.',
+        example: null,
+      }),
+    simple: z
+      .boolean()
+      .openapi({
+        description:
+          'A boolean indicating whether the form data part is simple, typically meaning it does not contain complex nested structures.',
+        example: null,
+      }),
+    value: z
+      .string()
+      .openapi({
+        description:
+          'The string value of the form data part, representing the actual data being submitted as a string.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'contentDisposition',
+      'entity',
+      'formDataContentDisposition',
+      'headers',
+      'mediaType',
+      'messageBodyWorkers',
+      'name',
+      'parameterizedHeaders',
+      'parent',
+      'providers',
+      'simple',
+      'value',
+    ],
+    example: null,
+  })
+  .openapi('FormDataBodyPart')
+
+type FormDataMultiPartType = {
+  bodyParts: z.infer<typeof BodyPartSchema>[]
+  contentDisposition: z.infer<typeof ContentDispositionSchema>
+  entity: { [key: string]: unknown }
+  fields: { [key: string]: z.infer<typeof FormDataBodyPartSchema>[] }
+  headers: { [key: string]: string[] }
+  mediaType: z.infer<typeof MediaTypeSchema>
+  messageBodyWorkers: { [key: string]: unknown }
+  parameterizedHeaders: { [key: string]: z.infer<typeof ParameterizedHeaderSchema>[] }
+  parent: z.infer<typeof MultiPartSchema>
   providers: { [key: string]: unknown }
 }
 
@@ -438,156 +600,7 @@ const DataSourceUpdateResponseSchema = z
   .openapi({ required: ['datasourceId', 'datasourceName', 'previewLink'], example: null })
   .openapi('DataSourceUpdateResponse')
 
-const FormDataContentDispositionSchema = z
-  .object({
-    creationDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the file was created, in ISO 8601 format.',
-        example: null,
-      }),
-    fileName: z
-      .string()
-      .openapi({
-        description:
-          'A string indicating the name of the file associated with this content disposition.',
-        example: null,
-      }),
-    modificationDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the file was last modified, in ISO 8601 format.',
-        example: null,
-      }),
-    name: z
-      .string()
-      .openapi({
-        description: 'A string representing the name associated with this content disposition.',
-        example: null,
-      }),
-    parameters: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An object containing additional parameters for the content disposition, with each parameter represented as a string.',
-        example: null,
-      }),
-    readDate: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the file was last read, in ISO 8601 format.',
-        example: null,
-      }),
-    size: z
-      .int32()
-      .openapi({
-        description: 'An integer representing the size of the file in bytes.',
-        example: null,
-      }),
-    type: z
-      .string()
-      .openapi({
-        description: 'A string representing the type of content disposition.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'creationDate',
-      'fileName',
-      'modificationDate',
-      'name',
-      'parameters',
-      'readDate',
-      'size',
-      'type',
-    ],
-    example: null,
-  })
-  .openapi('FormDataContentDisposition')
-
-const FormDataBodyPartSchema = z
-  .object({
-    contentDisposition: ContentDispositionSchema,
-    entity: z
-      .object({})
-      .openapi({
-        description:
-          'An object representing the entity of the form data part, which contains the actual data being submitted.',
-        example: null,
-      }),
-    formDataContentDisposition: FormDataContentDispositionSchema,
-    headers: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .openapi({
-        description:
-          'An object containing the headers associated with this form data part, where each header can have multiple string values.',
-        example: null,
-      }),
-    mediaType: MediaTypeSchema,
-    messageBodyWorkers: z
-      .object({})
-      .openapi({
-        description:
-          'An object representing the message body workers, which are responsible for processing the body of the message.',
-        example: null,
-      }),
-    name: z
-      .string()
-      .openapi({
-        description:
-          'The name of the form data part, typically used to identify the part within the multipart request.',
-        example: null,
-      }),
-    parameterizedHeaders: z
-      .record(z.string(), z.array(ParameterizedHeaderSchema).openapi({ example: null }))
-      .openapi({
-        description:
-          'An object containing parameterized headers, where each header can have multiple values represented as ParameterizedHeader objects.',
-        example: null,
-      }),
-    parent: MultiPartSchema,
-    providers: z
-      .object({})
-      .openapi({
-        description: 'An object representing the providers associated with this form data part.',
-        example: null,
-      }),
-    simple: z
-      .boolean()
-      .openapi({
-        description:
-          'A boolean indicating whether the form data part is simple, typically meaning it does not contain complex nested structures.',
-        example: null,
-      }),
-    value: z
-      .string()
-      .openapi({
-        description:
-          'The string value of the form data part, representing the actual data being submitted as a string.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'contentDisposition',
-      'entity',
-      'formDataContentDisposition',
-      'headers',
-      'mediaType',
-      'messageBodyWorkers',
-      'name',
-      'parameterizedHeaders',
-      'parent',
-      'providers',
-      'simple',
-      'value',
-    ],
-    example: null,
-  })
-  .openapi('FormDataBodyPart')
-
-const FormDataMultiPartSchema = z
+const FormDataMultiPartSchema: z.ZodType<FormDataMultiPartType> = z
   .object({
     bodyParts: z
       .array(BodyPartSchema)
@@ -598,7 +611,7 @@ const FormDataMultiPartSchema = z
       }),
     contentDisposition: ContentDispositionSchema,
     entity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the entity of the multipart form data, containing the actual data to be processed.',
@@ -620,7 +633,7 @@ const FormDataMultiPartSchema = z
       }),
     mediaType: MediaTypeSchema,
     messageBodyWorkers: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing workers that process the message body of the multipart form data.',
@@ -635,7 +648,7 @@ const FormDataMultiPartSchema = z
       }),
     parent: MultiPartSchema,
     providers: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing providers associated with the multipart form data.',
         example: null,
@@ -834,7 +847,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                             example: null,
                           }),
                         entity: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description:
                               'An object representing the actual content or payload of the body part.',
@@ -916,7 +929,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                             example: null,
                           }),
                         messageBodyWorkers: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description:
                               'An object representing workers that handle the processing of the message body.',
@@ -1022,7 +1035,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                 example: null,
                               }),
                             entity: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object that holds the main content or payload of the multipart entity.',
@@ -1105,7 +1118,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                 example: null,
                               }),
                             messageBodyWorkers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object that may contain workers for processing the message body, though its specific properties are not detailed.',
@@ -1129,7 +1142,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                               }),
                             parent: MultiPartSchema,
                             providers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object that may contain providers related to the multipart entity, though its specific properties are not detailed.',
@@ -1151,7 +1164,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                             example: null,
                           }),
                         providers: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description:
                               'An object representing providers that supply additional handling or processing for the body part.',
@@ -1251,7 +1264,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                   example: null,
                 }),
               entity: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'An object representing the entity of the multipart form data, containing the actual data to be processed.',
@@ -1339,7 +1352,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                 example: null,
                               }),
                             entity: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing the entity of the form data part, which contains the actual data being submitted.',
@@ -1502,7 +1515,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                 example: null,
                               }),
                             messageBodyWorkers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing the message body workers, which are responsible for processing the body of the message.',
@@ -1619,7 +1632,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                               example: null,
                                             }),
                                           entity: z
-                                            .object({})
+                                            .looseObject({})
                                             .openapi({
                                               description:
                                                 'An object representing the actual content or payload of the body part.',
@@ -1707,7 +1720,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                               example: null,
                                             }),
                                           messageBodyWorkers: z
-                                            .object({})
+                                            .looseObject({})
                                             .openapi({
                                               description:
                                                 'An object representing workers that handle the processing of the message body.',
@@ -1733,7 +1746,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                             }),
                                           parent: MultiPartSchema,
                                           providers: z
-                                            .object({})
+                                            .looseObject({})
                                             .openapi({
                                               description:
                                                 'An object representing providers that supply additional handling or processing for the body part.',
@@ -1834,7 +1847,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                     example: null,
                                   }),
                                 entity: z
-                                  .object({})
+                                  .looseObject({})
                                   .openapi({
                                     description:
                                       'An object that holds the main content or payload of the multipart entity.',
@@ -1917,7 +1930,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                     example: null,
                                   }),
                                 messageBodyWorkers: z
-                                  .object({})
+                                  .looseObject({})
                                   .openapi({
                                     description:
                                       'An object that may contain workers for processing the message body, though its specific properties are not detailed.',
@@ -1941,7 +1954,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                   }),
                                 parent: MultiPartSchema,
                                 providers: z
-                                  .object({})
+                                  .looseObject({})
                                   .openapi({
                                     description:
                                       'An object that may contain providers related to the multipart entity, though its specific properties are not detailed.',
@@ -1963,7 +1976,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                 example: null,
                               }),
                             providers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing the providers associated with this form data part.',
@@ -2082,7 +2095,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                   example: null,
                 }),
               messageBodyWorkers: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'An object representing workers that process the message body of the multipart form data.',
@@ -2184,7 +2197,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                 example: null,
                               }),
                             entity: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing the actual content or payload of the body part.',
@@ -2267,7 +2280,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                                 example: null,
                               }),
                             messageBodyWorkers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing workers that handle the processing of the message body.',
@@ -2291,7 +2304,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                               }),
                             parent: MultiPartSchema,
                             providers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing providers that supply additional handling or processing for the body part.',
@@ -2391,7 +2404,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                       example: null,
                     }),
                   entity: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description:
                         'An object that holds the main content or payload of the multipart entity.',
@@ -2471,7 +2484,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                       example: null,
                     }),
                   messageBodyWorkers: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description:
                         'An object that may contain workers for processing the message body, though its specific properties are not detailed.',
@@ -2494,7 +2507,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                     }),
                   parent: MultiPartSchema,
                   providers: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description:
                         'An object that may contain providers related to the multipart entity, though its specific properties are not detailed.',
@@ -2516,7 +2529,7 @@ export const postDataStudioDataSource202609Route = createRoute({
                   example: null,
                 }),
               providers: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'An object representing providers associated with the multipart form data.',
@@ -2707,7 +2720,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                             example: null,
                           }),
                         entity: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description:
                               'An object representing the actual content or payload of the body part.',
@@ -2789,7 +2802,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                             example: null,
                           }),
                         messageBodyWorkers: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description:
                               'An object representing workers that handle the processing of the message body.',
@@ -2895,7 +2908,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                 example: null,
                               }),
                             entity: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object that holds the main content or payload of the multipart entity.',
@@ -2978,7 +2991,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                 example: null,
                               }),
                             messageBodyWorkers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object that may contain workers for processing the message body, though its specific properties are not detailed.',
@@ -3002,7 +3015,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                               }),
                             parent: MultiPartSchema,
                             providers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object that may contain providers related to the multipart entity, though its specific properties are not detailed.',
@@ -3024,7 +3037,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                             example: null,
                           }),
                         providers: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description:
                               'An object representing providers that supply additional handling or processing for the body part.',
@@ -3124,7 +3137,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                   example: null,
                 }),
               entity: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'An object representing the entity of the multipart form data, containing the actual data to be processed.',
@@ -3212,7 +3225,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                 example: null,
                               }),
                             entity: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing the entity of the form data part, which contains the actual data being submitted.',
@@ -3375,7 +3388,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                 example: null,
                               }),
                             messageBodyWorkers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing the message body workers, which are responsible for processing the body of the message.',
@@ -3492,7 +3505,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                               example: null,
                                             }),
                                           entity: z
-                                            .object({})
+                                            .looseObject({})
                                             .openapi({
                                               description:
                                                 'An object representing the actual content or payload of the body part.',
@@ -3580,7 +3593,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                               example: null,
                                             }),
                                           messageBodyWorkers: z
-                                            .object({})
+                                            .looseObject({})
                                             .openapi({
                                               description:
                                                 'An object representing workers that handle the processing of the message body.',
@@ -3606,7 +3619,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                             }),
                                           parent: MultiPartSchema,
                                           providers: z
-                                            .object({})
+                                            .looseObject({})
                                             .openapi({
                                               description:
                                                 'An object representing providers that supply additional handling or processing for the body part.',
@@ -3707,7 +3720,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                     example: null,
                                   }),
                                 entity: z
-                                  .object({})
+                                  .looseObject({})
                                   .openapi({
                                     description:
                                       'An object that holds the main content or payload of the multipart entity.',
@@ -3790,7 +3803,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                     example: null,
                                   }),
                                 messageBodyWorkers: z
-                                  .object({})
+                                  .looseObject({})
                                   .openapi({
                                     description:
                                       'An object that may contain workers for processing the message body, though its specific properties are not detailed.',
@@ -3814,7 +3827,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                   }),
                                 parent: MultiPartSchema,
                                 providers: z
-                                  .object({})
+                                  .looseObject({})
                                   .openapi({
                                     description:
                                       'An object that may contain providers related to the multipart entity, though its specific properties are not detailed.',
@@ -3836,7 +3849,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                 example: null,
                               }),
                             providers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing the providers associated with this form data part.',
@@ -3955,7 +3968,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                   example: null,
                 }),
               messageBodyWorkers: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'An object representing workers that process the message body of the multipart form data.',
@@ -4057,7 +4070,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                 example: null,
                               }),
                             entity: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing the actual content or payload of the body part.',
@@ -4140,7 +4153,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                                 example: null,
                               }),
                             messageBodyWorkers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing workers that handle the processing of the message body.',
@@ -4164,7 +4177,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                               }),
                             parent: MultiPartSchema,
                             providers: z
-                              .object({})
+                              .looseObject({})
                               .openapi({
                                 description:
                                   'An object representing providers that supply additional handling or processing for the body part.',
@@ -4264,7 +4277,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                       example: null,
                     }),
                   entity: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description:
                         'An object that holds the main content or payload of the multipart entity.',
@@ -4344,7 +4357,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                       example: null,
                     }),
                   messageBodyWorkers: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description:
                         'An object that may contain workers for processing the message body, though its specific properties are not detailed.',
@@ -4367,7 +4380,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                     }),
                   parent: MultiPartSchema,
                   providers: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description:
                         'An object that may contain providers related to the multipart entity, though its specific properties are not detailed.',
@@ -4389,7 +4402,7 @@ export const putDataStudioDataSource202609DatasourceIdRoute = createRoute({
                   example: null,
                 }),
               providers: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'An object representing providers associated with the multipart form data.',

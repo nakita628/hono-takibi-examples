@@ -8482,7 +8482,7 @@ const OriginatorCustomerPartySchema = z
 const OriginatorPartySchema = z
   .object({
     party: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: '',
         title: 'Party',

@@ -8,7 +8,7 @@ Base URLs:
 
 * <a href="https://openbanking.org.uk">https://openbanking.org.uk</a>
 
-* <a href="https://api.apis.guru/open-banking/v3.1">https://api.apis.guru/open-banking/v3.1</a>
+* <a href="/open-banking/v3.1">/open-banking/v3.1</a>
 
 <a href="https://www.openbanking.org.uk/terms">Terms of service</a>
 Email: <a href="mailto:ServiceDesk@openbanking.org.uk">Service Desk</a> 

@@ -1,0 +1,6448 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getApisKey() {
+  return ['apis'] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1IndexQueryKey() {
+  return ['apis', '/apis/admissionregistration.k8s.io/v1/'] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1IndexQueryOptions(
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: getApisAdmissionregistrationK8sIoV1IndexQueryKey(),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.index.$get(undefined, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1Index<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.apis)['admissionregistration.k8s.io']['v1']['index']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['index']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['index']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getApisAdmissionregistrationK8sIoV1IndexQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.apis)['admissionregistration.k8s.io']['v1']['index']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1IndexQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: getApisAdmissionregistrationK8sIoV1IndexQueryKey(),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.index.$get(undefined, {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicies',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1Mutatingadmissionpolicies<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicies',
+    'POST',
+  ] as const
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostApisAdmissionregistrationK8sIoV1Mutatingadmissionpolicies<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicies',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies.$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1Mutatingadmissionpolicies<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicies/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies[':name'].$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies[':name'].$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicies/:name',
+    'PUT',
+  ] as const
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies[':name'].$put(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePutApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicies/:name',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies[':name'].$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicies/:name',
+    'PATCH',
+  ] as const
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicies[':name'].$patch(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePatchApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicies'][':name']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPatchApisAdmissionregistrationK8sIoV1MutatingadmissionpoliciesNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicybindings',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1Mutatingadmissionpolicybindings<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicybindings',
+    'POST',
+  ] as const
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPostApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostApisAdmissionregistrationK8sIoV1Mutatingadmissionpolicybindings<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicybindings',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings.$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1Mutatingadmissionpolicybindings<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicybindings/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicybindings/:name',
+    'PUT',
+  ] as const
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPutApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings[
+          ':name'
+        ].$put(args, options),
+      )
+    },
+  })
+}
+
+export function usePutApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicybindings/:name',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings[
+          ':name'
+        ].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingadmissionpolicybindings/:name',
+    'PATCH',
+  ] as const
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPatchApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingadmissionpolicybindings[
+          ':name'
+        ].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function usePatchApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingadmissionpolicybindings'][':name']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPatchApisAdmissionregistrationK8sIoV1MutatingadmissionpolicybindingsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1Mutatingwebhookconfigurations<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations',
+    'POST',
+  ] as const
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostApisAdmissionregistrationK8sIoV1Mutatingwebhookconfigurations<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations.$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1Mutatingwebhookconfigurations<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations[':name'].$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations/:name',
+    'PUT',
+  ] as const
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPutApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations[':name'].$put(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePutApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations/:name',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations[
+          ':name'
+        ].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations/:name',
+    'PATCH',
+  ] as const
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPatchApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.mutatingwebhookconfigurations[
+          ':name'
+        ].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function usePatchApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['mutatingwebhookconfigurations'][':name']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPatchApisAdmissionregistrationK8sIoV1MutatingwebhookconfigurationsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1Validatingadmissionpolicies<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies',
+    'POST',
+  ] as const
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostApisAdmissionregistrationK8sIoV1Validatingadmissionpolicies<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies.$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1Validatingadmissionpolicies<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[':name'].$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[':name'].$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies/:name',
+    'PUT',
+  ] as const
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[':name'].$put(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies/:name',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[':name'].$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies/:name',
+    'PATCH',
+  ] as const
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[':name'].$patch(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies/:name/status',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[
+          ':name'
+        ].status.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatus<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[
+            ':name'
+          ].status.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies/:name/status',
+    'PUT',
+  ] as const
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[
+          ':name'
+        ].status.$put(args, options),
+      )
+    },
+  })
+}
+
+export function usePutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatus<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicies/:name/status',
+    'PATCH',
+  ] as const
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicies[
+          ':name'
+        ].status.$patch(args, options),
+      )
+    },
+  })
+}
+
+export function usePatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatus<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicies'][':name']['status']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpoliciesNameStatusMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicybindings',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1Validatingadmissionpolicybindings<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicybindings',
+    'POST',
+  ] as const
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPostApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostApisAdmissionregistrationK8sIoV1Validatingadmissionpolicybindings<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicybindings',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings.$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1Validatingadmissionpolicybindings<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicybindings/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicybindings/:name',
+    'PUT',
+  ] as const
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings[
+          ':name'
+        ].$put(args, options),
+      )
+    },
+  })
+}
+
+export function usePutApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicybindings/:name',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings[
+          ':name'
+        ].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingadmissionpolicybindings/:name',
+    'PATCH',
+  ] as const
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingadmissionpolicybindings[
+          ':name'
+        ].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function usePatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingadmissionpolicybindings'][':name']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPatchApisAdmissionregistrationK8sIoV1ValidatingadmissionpolicybindingsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingwebhookconfigurations',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1Validatingwebhookconfigurations<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingwebhookconfigurations',
+    'POST',
+  ] as const
+}
+
+export function getPostApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPostApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostApisAdmissionregistrationK8sIoV1Validatingwebhookconfigurations<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingwebhookconfigurations',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations.$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1Validatingwebhookconfigurations<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingwebhookconfigurations/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingwebhookconfigurations/:name',
+    'PUT',
+  ] as const
+}
+
+export function getPutApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPutApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations[
+          ':name'
+        ].$put(args, options),
+      )
+    },
+  })
+}
+
+export function usePutApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingwebhookconfigurations/:name',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations[
+          ':name'
+        ].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function useDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationKey() {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/validatingwebhookconfigurations/:name',
+    'PATCH',
+  ] as const
+}
+
+export function getPatchApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPatchApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.validatingwebhookconfigurations[
+          ':name'
+        ].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function usePatchApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['validatingwebhookconfigurations'][':name']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPatchApisAdmissionregistrationK8sIoV1ValidatingwebhookconfigurationsNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/mutatingadmissionpolicies',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.mutatingadmissionpolicies.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicies<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.mutatingadmissionpolicies.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/mutatingadmissionpolicies/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.mutatingadmissionpolicies[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicies'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpoliciesNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.mutatingadmissionpolicies[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/mutatingadmissionpolicybindings',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.mutatingadmissionpolicybindings.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindings<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.mutatingadmissionpolicybindings.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/mutatingadmissionpolicybindings/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.mutatingadmissionpolicybindings[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingadmissionpolicybindings'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchMutatingadmissionpolicybindingsNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.mutatingadmissionpolicybindings[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/mutatingwebhookconfigurations',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.mutatingwebhookconfigurations.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurations<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.mutatingwebhookconfigurations.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/mutatingwebhookconfigurations/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.mutatingwebhookconfigurations[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['mutatingwebhookconfigurations'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchMutatingwebhookconfigurationsNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.mutatingwebhookconfigurations[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/validatingadmissionpolicies',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.validatingadmissionpolicies.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicies<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.validatingadmissionpolicies.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/validatingadmissionpolicies/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.validatingadmissionpolicies[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicies'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpoliciesNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.validatingadmissionpolicies[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/validatingadmissionpolicybindings',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.validatingadmissionpolicybindings.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindings<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis[
+            'admissionregistration.k8s.io'
+          ].v1.watch.validatingadmissionpolicybindings.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/validatingadmissionpolicybindings/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.validatingadmissionpolicybindings[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingadmissionpolicybindings'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchValidatingadmissionpolicybindingsNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.validatingadmissionpolicybindings[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/validatingwebhookconfigurations',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.validatingwebhookconfigurations.$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurations<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.validatingwebhookconfigurations.$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+) {
+  return [
+    'apis',
+    '/apis/admissionregistration.k8s.io/v1/watch/validatingwebhookconfigurations/:name',
+    toValue(args),
+  ] as const
+}
+
+export function getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.apis['admissionregistration.k8s.io'].v1.watch.validatingwebhookconfigurations[
+          ':name'
+        ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations'][':name']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations'][':name']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations'][':name']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<
+            typeof getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameQueryKey
+          >
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.apis)['admissionregistration.k8s.io']['v1']['watch']['validatingwebhookconfigurations'][':name']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<
+      typeof getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameQueryKey
+    >
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApisAdmissionregistrationK8sIoV1WatchValidatingwebhookconfigurationsNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.apis['admissionregistration.k8s.io'].v1.watch.validatingwebhookconfigurations[
+            ':name'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
+        )
+      },
+    },
+    queryClient,
+  )
+}

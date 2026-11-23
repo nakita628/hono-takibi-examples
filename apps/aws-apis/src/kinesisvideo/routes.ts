@@ -9,9 +9,9 @@ const ResourceARNSchema = z
 
 const CreateSignalingChannelOutputSchema = z
   .object({
-    ChannelARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the created channel.' }),
-    ).exactOptional(),
+    ChannelARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the created channel.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSignalingChannelOutput')
@@ -34,22 +34,12 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key of the tag that is associated with the specified signaling channel.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the tag that is associated with the specified signaling channel.',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description: 'The key of the tag that is associated with the specified signaling channel.',
+    }),
+    Value: TagValueSchema.openapi({
+      description: 'The value of the tag that is associated with the specified signaling channel.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -75,9 +65,9 @@ const TagsPerResourceExceededLimitExceptionSchema = z
 
 const CreateStreamOutputSchema = z
   .object({
-    StreamARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the stream.' }),
-    ).exactOptional(),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStreamOutput')
@@ -92,13 +82,13 @@ const DeviceStreamLimitExceededExceptionSchema = z
 
 const InvalidDeviceExceptionSchema = z.any().openapi('InvalidDeviceException')
 
-const DeleteSignalingChannelOutputSchema = z.object({}).openapi('DeleteSignalingChannelOutput')
+const DeleteSignalingChannelOutputSchema = z.looseObject({}).openapi('DeleteSignalingChannelOutput')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
 const VersionMismatchExceptionSchema = z.any().openapi('VersionMismatchException')
 
-const DeleteStreamOutputSchema = z.object({}).openapi('DeleteStreamOutput')
+const DeleteStreamOutputSchema = z.looseObject({}).openapi('DeleteStreamOutput')
 
 const NotAuthorizedExceptionSchema = z.any().openapi('NotAuthorizedException')
 
@@ -135,22 +125,14 @@ const MediaUriTypeSchema = z.enum(['RTSP_URI', 'FILE_URI']).openapi('MediaUriTyp
 
 const MediaSourceConfigSchema = z
   .object({
-    MediaUriSecretArn: MediaUriSecretArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Secrets Manager ARN for the username and password of the camera, or a local media file location.',
-        }),
-    ),
-    MediaUriType: MediaUriTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Uniform Resource Identifier (URI) type. The <code>FILE_URI</code> value can be used to stream local media files.</p> <note> <p>Preview only supports the <code>RTSP_URI</code> media source URI format .</p> </note>',
-        }),
-    ),
+    MediaUriSecretArn: MediaUriSecretArnSchema.openapi({
+      description:
+        'The AWS Secrets Manager ARN for the username and password of the camera, or a local media file location.',
+    }),
+    MediaUriType: MediaUriTypeSchema.openapi({
+      description:
+        '<p>The Uniform Resource Identifier (URI) type. The <code>FILE_URI</code> value can be used to stream local media files.</p> <note> <p>Preview only supports the <code>RTSP_URI</code> media source URI format .</p> </note>',
+    }),
   })
   .openapi({
     required: ['MediaUriSecretArn', 'MediaUriType'],
@@ -170,22 +152,14 @@ const DurationInSecondsSchema = z.int().min(60).max(3600).openapi('DurationInSec
 
 const ScheduleConfigSchema = z
   .object({
-    ScheduleExpression: ScheduleExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Quartz cron expression that takes care of scheduling jobs to record from the camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided for the <code>RecorderConfig</code>, then the Edge Agent will always be set to recording mode.</p> <p>For more information about Quartz, refer to the <a href="http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"> <i>Cron Trigger Tutorial</i> </a> page to understand the valid expressions and its use.</p>',
-        }),
-    ),
-    DurationInSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total duration to record the media. If the <code>ScheduleExpression</code> attribute is provided, then the <code>DurationInSeconds</code> attribute should also be specified.',
-        }),
-    ),
+    ScheduleExpression: ScheduleExpressionSchema.openapi({
+      description:
+        '<p>The Quartz cron expression that takes care of scheduling jobs to record from the camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided for the <code>RecorderConfig</code>, then the Edge Agent will always be set to recording mode.</p> <p>For more information about Quartz, refer to the <a href="http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"> <i>Cron Trigger Tutorial</i> </a> page to understand the valid expressions and its use.</p>',
+    }),
+    DurationInSeconds: DurationInSecondsSchema.openapi({
+      description:
+        'The total duration to record the media. If the <code>ScheduleExpression</code> attribute is provided, then the <code>DurationInSeconds</code> attribute should also be specified.',
+    }),
   })
   .openapi({
     required: ['ScheduleExpression', 'DurationInSeconds'],
@@ -196,22 +170,14 @@ const ScheduleConfigSchema = z
 
 const RecorderConfigSchema = z
   .object({
-    MediaSourceConfig: MediaSourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration details that consist of the credentials required (<code>MediaUriSecretArn</code> and <code>MediaUriType</code>) to access the media files streamed to the camera. ',
-        }),
-    ),
-    ScheduleConfig: ScheduleConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code> details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> attribute is not provided, then the Edge Agent will always be set to recording mode.',
-        }),
-    ).exactOptional(),
+    MediaSourceConfig: MediaSourceConfigSchema.openapi({
+      description:
+        'The configuration details that consist of the credentials required (<code>MediaUriSecretArn</code> and <code>MediaUriType</code>) to access the media files streamed to the camera. ',
+    }),
+    ScheduleConfig: ScheduleConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code> details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> attribute is not provided, then the Edge Agent will always be set to recording mode.',
+    }),
   })
   .openapi({
     required: ['MediaSourceConfig'],
@@ -222,14 +188,10 @@ const RecorderConfigSchema = z
 
 const UploaderConfigSchema = z
   .object({
-    ScheduleConfig: ScheduleConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code>details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided, then the Edge Agent will always be in recording mode.',
-        }),
-    ),
+    ScheduleConfig: ScheduleConfigSchema.openapi({
+      description:
+        'The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code>details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided, then the Edge Agent will always be in recording mode.',
+    }),
   })
   .openapi({
     required: ['ScheduleConfig'],
@@ -248,22 +210,14 @@ const StrategyOnFullSizeSchema = z
 
 const LocalSizeConfigSchema = z
   .object({
-    MaxLocalMediaSizeInMB: MaxLocalMediaSizeInMBSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The overall maximum size of the media that you want to store for a stream on the Edge Agent. ',
-        }),
-    ).exactOptional(),
-    StrategyOnFullSize: StrategyOnFullSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The strategy to perform when a stream’s <code>MaxLocalMediaSizeInMB</code> limit is reached.',
-        }),
-    ).exactOptional(),
+    MaxLocalMediaSizeInMB: MaxLocalMediaSizeInMBSchema.exactOptional().openapi({
+      description:
+        'The overall maximum size of the media that you want to store for a stream on the Edge Agent. ',
+    }),
+    StrategyOnFullSize: StrategyOnFullSizeSchema.exactOptional().openapi({
+      description:
+        'The strategy to perform when a stream’s <code>MaxLocalMediaSizeInMB</code> limit is reached.',
+    }),
   })
   .openapi({
     description:
@@ -276,30 +230,18 @@ const DeleteAfterUploadSchema = z.boolean().openapi('DeleteAfterUpload')
 
 const DeletionConfigSchema = z
   .object({
-    EdgeRetentionInHours: EdgeRetentionInHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of hours that you want to retain the data in the stream on the Edge Agent. The default value of the retention time is 720 hours, which translates to 30 days.',
-        }),
-    ).exactOptional(),
-    LocalSizeConfig: LocalSizeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the local size required in order to delete the edge configuration.',
-        }),
-    ).exactOptional(),
-    DeleteAfterUpload: DeleteAfterUploadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>boolean</code> value used to indicate whether or not you want to mark the media for deletion, once it has been uploaded to the Kinesis Video Stream cloud. The media files can be deleted if any of the deletion configuration values are set to <code>true</code>, such as when the limit for the <code>EdgeRetentionInHours</code>, or the <code>MaxLocalMediaSizeInMB</code>, has been reached. </p> <p>Since the default value is set to <code>true</code>, configure the uploader schedule such that the media files are not being deleted before they are initially uploaded to AWS cloud.</p>',
-        }),
-    ).exactOptional(),
+    EdgeRetentionInHours: EdgeRetentionInHoursSchema.exactOptional().openapi({
+      description:
+        'The number of hours that you want to retain the data in the stream on the Edge Agent. The default value of the retention time is 720 hours, which translates to 30 days.',
+    }),
+    LocalSizeConfig: LocalSizeConfigSchema.exactOptional().openapi({
+      description:
+        'The value of the local size required in order to delete the edge configuration.',
+    }),
+    DeleteAfterUpload: DeleteAfterUploadSchema.exactOptional().openapi({
+      description:
+        '<p>The <code>boolean</code> value used to indicate whether or not you want to mark the media for deletion, once it has been uploaded to the Kinesis Video Stream cloud. The media files can be deleted if any of the deletion configuration values are set to <code>true</code>, such as when the limit for the <code>EdgeRetentionInHours</code>, or the <code>MaxLocalMediaSizeInMB</code>, has been reached. </p> <p>Since the default value is set to <code>true</code>, configure the uploader schedule such that the media files are not being deleted before they are initially uploaded to AWS cloud.</p>',
+    }),
   })
   .openapi({
     description:
@@ -310,35 +252,21 @@ const DeletionConfigSchema = z
 
 const EdgeConfigSchema = z
   .object({
-    HubDeviceArn: HubDeviceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The "<b>Internet of Things (IoT) Thing</b>" Arn of the stream.' }),
-    ),
-    RecorderConfig: RecorderConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recorder configuration consists of the local <code>MediaSourceConfig</code> details, that are used as credentials to access the local media files streamed on the camera. ',
-        }),
-    ),
-    UploaderConfig: UploaderConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The uploader configuration contains the <code>ScheduleExpression</code> details that are used to schedule upload jobs for the recorded media files from the Edge Agent to a Kinesis Video Stream.',
-        }),
-    ).exactOptional(),
-    DeletionConfig: DeletionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deletion configuration is made up of the retention time (<code>EdgeRetentionInHours</code>) and local size configuration (<code>LocalSizeConfig</code>) details that are used to make the deletion.',
-        }),
-    ).exactOptional(),
+    HubDeviceArn: HubDeviceArnSchema.openapi({
+      description: 'The "<b>Internet of Things (IoT) Thing</b>" Arn of the stream.',
+    }),
+    RecorderConfig: RecorderConfigSchema.openapi({
+      description:
+        'The recorder configuration consists of the local <code>MediaSourceConfig</code> details, that are used as credentials to access the local media files streamed on the camera. ',
+    }),
+    UploaderConfig: UploaderConfigSchema.exactOptional().openapi({
+      description:
+        'The uploader configuration contains the <code>ScheduleExpression</code> details that are used to schedule upload jobs for the recorded media files from the Edge Agent to a Kinesis Video Stream.',
+    }),
+    DeletionConfig: DeletionConfigSchema.exactOptional().openapi({
+      description:
+        'The deletion configuration is made up of the retention time (<code>EdgeRetentionInHours</code>) and local size configuration (<code>LocalSizeConfig</code>) details that are used to make the deletion.',
+    }),
   })
   .openapi({
     required: ['HubDeviceArn', 'RecorderConfig'],
@@ -349,44 +277,28 @@ const EdgeConfigSchema = z
 
 const DescribeEdgeConfigurationOutputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stream from which the edge configuration was updated.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the stream.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp at which a stream’s edge configuration was first created.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp at which a stream’s edge configuration was last updated.',
-        }),
-    ).exactOptional(),
-    SyncStatus: SyncStatusSchema.and(
-      z.any().openapi({ description: 'The latest status of the edge configuration update.' }),
-    ).exactOptional(),
-    FailedStatusDetails: FailedStatusDetailsSchema.and(
-      z.any().openapi({ description: 'A description of the generated failure status.' }),
-    ).exactOptional(),
-    EdgeConfig: EdgeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the stream's edge configuration that will be used to sync with the Edge Agent IoT Greengrass component. The Edge Agent component will run on an IoT Hub Device setup at your premise.",
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream from which the edge configuration was updated.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp at which a stream’s edge configuration was first created.',
+    }),
+    LastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp at which a stream’s edge configuration was last updated.',
+    }),
+    SyncStatus: SyncStatusSchema.exactOptional().openapi({
+      description: 'The latest status of the edge configuration update.',
+    }),
+    FailedStatusDetails: FailedStatusDetailsSchema.exactOptional().openapi({
+      description: 'A description of the generated failure status.',
+    }),
+    EdgeConfig: EdgeConfigSchema.exactOptional().openapi({
+      description:
+        "A description of the stream's edge configuration that will be used to sync with the Edge Agent IoT Greengrass component. The Edge Agent component will run on an IoT Hub Device setup at your premise.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEdgeConfigurationOutput')
@@ -417,22 +329,14 @@ const DestinationRegionSchema = z
 
 const ImageGenerationDestinationConfigSchema = z
   .object({
-    Uri: DestinationUriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Uniform Resource Identifier (URI) that identifies where the images will be delivered.',
-        }),
-    ),
-    DestinationRegion: DestinationRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Region of the S3 bucket where images will be delivered. This <code>DestinationRegion</code> must match the Region where the stream is located.',
-        }),
-    ),
+    Uri: DestinationUriSchema.openapi({
+      description:
+        'The Uniform Resource Identifier (URI) that identifies where the images will be delivered.',
+    }),
+    DestinationRegion: DestinationRegionSchema.openapi({
+      description:
+        'The AWS Region of the S3 bucket where images will be delivered. This <code>DestinationRegion</code> must match the Region where the stream is located.',
+    }),
   })
   .openapi({
     required: ['Uri', 'DestinationRegion'],
@@ -464,63 +368,34 @@ const HeightPixelsSchema = z.int().min(1).max(2160).openapi('HeightPixels')
 
 const ImageGenerationConfigurationSchema = z
   .object({
-    Status: ConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the <code>ContinuousImageGenerationConfigurations</code> API is enabled or disabled.',
-        }),
-    ),
-    ImageSelectorType: ImageSelectorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The origin of the Server or Producer timestamps to use to generate the images.',
-        }),
-    ),
-    DestinationConfig: ImageGenerationDestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The structure that contains the information required to deliver images to a customer.',
-        }),
-    ),
-    SamplingInterval: SamplingIntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time interval in milliseconds (ms) at which the images need to be generated from the stream. The minimum value that can be provided is 33 ms, because a camera that generates content at 30 FPS would create a frame every 33.3 ms. If the timestamp range is less than the sampling interval, the Image from the <code>StartTimestamp</code> will be returned if available. ',
-        }),
-    ),
-    Format: FormatSchema.and(z.any().openapi({ description: 'The accepted image format.' })),
-    FormatConfig: FormatConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of a key-value pair structure that contains extra parameters that can be applied when the image is generated. The <code>FormatConfig</code> key is the <code>JPEGQuality</code>, which indicates the JPEG quality key to be used to generate the image. The <code>FormatConfig</code> value accepts ints from 1 to 100. If the value is 1, the image will be generated with less quality and the best compression. If the value is 100, the image will be generated with the best quality and less compression. If no value is provided, the default value of the <code>JPEGQuality</code> key will be set to 80.',
-        }),
-    ).exactOptional(),
-    WidthPixels: WidthPixelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The width of the output image that is used in conjunction with the <code>HeightPixels</code> parameter. When both <code>WidthPixels</code> and <code>HeightPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>WidthPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>HeightPixels</code> ratio. If neither parameter is provided, the original image size will be returned.',
-        }),
-    ).exactOptional(),
-    HeightPixels: HeightPixelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The height of the output image that is used in conjunction with the <code>WidthPixels</code> parameter. When both <code>HeightPixels</code> and <code>WidthPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>HeightPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>WidthPixels</code> ratio. If neither parameter is provided, the original image size will be returned.',
-        }),
-    ).exactOptional(),
+    Status: ConfigurationStatusSchema.openapi({
+      description:
+        'Indicates whether the <code>ContinuousImageGenerationConfigurations</code> API is enabled or disabled.',
+    }),
+    ImageSelectorType: ImageSelectorTypeSchema.openapi({
+      description: 'The origin of the Server or Producer timestamps to use to generate the images.',
+    }),
+    DestinationConfig: ImageGenerationDestinationConfigSchema.openapi({
+      description:
+        'The structure that contains the information required to deliver images to a customer.',
+    }),
+    SamplingInterval: SamplingIntervalSchema.openapi({
+      description:
+        'The time interval in milliseconds (ms) at which the images need to be generated from the stream. The minimum value that can be provided is 33 ms, because a camera that generates content at 30 FPS would create a frame every 33.3 ms. If the timestamp range is less than the sampling interval, the Image from the <code>StartTimestamp</code> will be returned if available. ',
+    }),
+    Format: FormatSchema.openapi({ description: 'The accepted image format.' }),
+    FormatConfig: FormatConfigSchema.exactOptional().openapi({
+      description:
+        'The list of a key-value pair structure that contains extra parameters that can be applied when the image is generated. The <code>FormatConfig</code> key is the <code>JPEGQuality</code>, which indicates the JPEG quality key to be used to generate the image. The <code>FormatConfig</code> value accepts ints from 1 to 100. If the value is 1, the image will be generated with less quality and the best compression. If the value is 100, the image will be generated with the best quality and less compression. If no value is provided, the default value of the <code>JPEGQuality</code> key will be set to 80.',
+    }),
+    WidthPixels: WidthPixelsSchema.exactOptional().openapi({
+      description:
+        'The width of the output image that is used in conjunction with the <code>HeightPixels</code> parameter. When both <code>WidthPixels</code> and <code>HeightPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>WidthPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>HeightPixels</code> ratio. If neither parameter is provided, the original image size will be returned.',
+    }),
+    HeightPixels: HeightPixelsSchema.exactOptional().openapi({
+      description:
+        'The height of the output image that is used in conjunction with the <code>WidthPixels</code> parameter. When both <code>HeightPixels</code> and <code>WidthPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>HeightPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>WidthPixels</code> ratio. If neither parameter is provided, the original image size will be returned.',
+    }),
   })
   .openapi({
     required: ['Status', 'ImageSelectorType', 'DestinationConfig', 'SamplingInterval', 'Format'],
@@ -531,14 +406,10 @@ const ImageGenerationConfigurationSchema = z
 
 const DescribeImageGenerationConfigurationOutputSchema = z
   .object({
-    ImageGenerationConfiguration: ImageGenerationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The structure that contains the information required for the Kinesis video stream (KVS) images delivery. If this structure is null, the configuration will be deleted from the stream.',
-        }),
-    ).exactOptional(),
+    ImageGenerationConfiguration: ImageGenerationConfigurationSchema.exactOptional().openapi({
+      description:
+        'The structure that contains the information required for the Kinesis video stream (KVS) images delivery. If this structure is null, the configuration will be deleted from the stream.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeImageGenerationConfigurationOutput')
@@ -547,21 +418,13 @@ const TypeSchema = z.string().openapi('Type')
 
 const MappedResourceConfigurationListItemSchema = z
   .object({
-    Type: TypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the associated resource for the kinesis video stream.',
-        }),
-    ).exactOptional(),
-    ARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Kinesis Video Stream resource, associated with the stream.',
-        }),
-    ).exactOptional(),
+    Type: TypeSchema.exactOptional().openapi({
+      description: 'The type of the associated resource for the kinesis video stream.',
+    }),
+    ARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Kinesis Video Stream resource, associated with the stream.',
+    }),
   })
   .openapi({
     description:
@@ -585,22 +448,14 @@ const NextTokenSchema = z
 
 const DescribeMappedResourceConfigurationOutputSchema = z
   .object({
-    MappedResourceConfigurationList: MappedResourceConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that encapsulates, or contains, the media storage configuration properties.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that was used in the <code>NextToken</code>request to fetch the next set of results. ',
-        }),
-    ).exactOptional(),
+    MappedResourceConfigurationList: MappedResourceConfigurationListSchema.exactOptional().openapi({
+      description:
+        'A structure that encapsulates, or contains, the media storage configuration properties.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that was used in the <code>NextToken</code>request to fetch the next set of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMappedResourceConfigurationOutput')
@@ -611,12 +466,12 @@ const MediaStorageConfigurationStatusSchema = z
 
 const MediaStorageConfigurationSchema = z
   .object({
-    StreamARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the stream ' }),
-    ).exactOptional(),
-    Status: MediaStorageConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the media storage configuration.' }),
-    ),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream ',
+    }),
+    Status: MediaStorageConfigurationStatusSchema.openapi({
+      description: 'The status of the media storage configuration.',
+    }),
   })
   .openapi({
     required: ['Status'],
@@ -627,28 +482,20 @@ const MediaStorageConfigurationSchema = z
 
 const DescribeMediaStorageConfigurationOutputSchema = z
   .object({
-    MediaStorageConfiguration: MediaStorageConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that encapsulates, or contains, the media storage configuration properties.',
-        }),
-    ).exactOptional(),
+    MediaStorageConfiguration: MediaStorageConfigurationSchema.exactOptional().openapi({
+      description:
+        'A structure that encapsulates, or contains, the media storage configuration properties.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMediaStorageConfigurationOutput')
 
 const NotificationDestinationConfigSchema = z
   .object({
-    Uri: DestinationUriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Uniform Resource Identifier (URI) that identifies where the images will be delivered.',
-        }),
-    ),
+    Uri: DestinationUriSchema.openapi({
+      description:
+        'The Uniform Resource Identifier (URI) that identifies where the images will be delivered.',
+    }),
   })
   .openapi({
     required: ['Uri'],
@@ -659,21 +506,12 @@ const NotificationDestinationConfigSchema = z
 
 const NotificationConfigurationSchema = z
   .object({
-    Status: ConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates if a notification configuration is enabled or disabled.',
-        }),
-    ),
-    DestinationConfig: NotificationDestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination information required to deliver a notification to a customer.',
-        }),
-    ),
+    Status: ConfigurationStatusSchema.openapi({
+      description: 'Indicates if a notification configuration is enabled or disabled.',
+    }),
+    DestinationConfig: NotificationDestinationConfigSchema.openapi({
+      description: 'The destination information required to deliver a notification to a customer.',
+    }),
   })
   .openapi({
     required: ['Status', 'DestinationConfig'],
@@ -684,14 +522,10 @@ const NotificationConfigurationSchema = z
 
 const DescribeNotificationConfigurationOutputSchema = z
   .object({
-    NotificationConfiguration: NotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The structure that contains the information required for notifications. If the structure is null, the configuration will be deleted from the stream.',
-        }),
-    ).exactOptional(),
+    NotificationConfiguration: NotificationConfigurationSchema.exactOptional().openapi({
+      description:
+        'The structure that contains the information required for notifications. If the structure is null, the configuration will be deleted from the stream.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeNotificationConfigurationOutput')
@@ -709,14 +543,10 @@ const StatusSchema = z.enum(['CREATING', 'ACTIVE', 'UPDATING', 'DELETING']).open
 
 const SingleMasterConfigurationSchema = z
   .object({
-    MessageTtlSeconds: MessageTtlSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The period of time a signaling channel retains undelivered messages before they are discarded.',
-        }),
-    ).exactOptional(),
+    MessageTtlSeconds: MessageTtlSecondsSchema.exactOptional().openapi({
+      description:
+        'The period of time a signaling channel retains undelivered messages before they are discarded.',
+    }),
   })
   .openapi({
     description:
@@ -734,32 +564,28 @@ const VersionSchema = z
 
 const ChannelInfoSchema = z
   .object({
-    ChannelName: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the signaling channel.' }),
-    ).exactOptional(),
-    ChannelARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the signaling channel.' }),
-    ).exactOptional(),
-    ChannelType: ChannelTypeSchema.and(
-      z.any().openapi({ description: 'The type of the signaling channel.' }),
-    ).exactOptional(),
-    ChannelStatus: StatusSchema.and(
-      z.any().openapi({ description: 'Current status of the signaling channel.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the signaling channel was created.' }),
-    ).exactOptional(),
-    SingleMasterConfiguration: SingleMasterConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the configuration for the <code>SINGLE_MASTER</code> channel type.',
-        }),
-    ).exactOptional(),
-    Version: VersionSchema.and(
-      z.any().openapi({ description: 'The current version of the signaling channel.' }),
-    ).exactOptional(),
+    ChannelName: ChannelNameSchema.exactOptional().openapi({
+      description: 'The name of the signaling channel.',
+    }),
+    ChannelARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the signaling channel.',
+    }),
+    ChannelType: ChannelTypeSchema.exactOptional().openapi({
+      description: 'The type of the signaling channel.',
+    }),
+    ChannelStatus: StatusSchema.exactOptional().openapi({
+      description: 'Current status of the signaling channel.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the signaling channel was created.',
+    }),
+    SingleMasterConfiguration: SingleMasterConfigurationSchema.exactOptional().openapi({
+      description:
+        'A structure that contains the configuration for the <code>SINGLE_MASTER</code> channel type.',
+    }),
+    Version: VersionSchema.exactOptional().openapi({
+      description: 'The current version of the signaling channel.',
+    }),
   })
   .openapi({
     description: "A structure that encapsulates a signaling channel's metadata and properties.",
@@ -769,14 +595,10 @@ const ChannelInfoSchema = z
 
 const DescribeSignalingChannelOutputSchema = z
   .object({
-    ChannelInfo: ChannelInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A structure that encapsulates the specified signaling channel's metadata and properties.",
-        }),
-    ).exactOptional(),
+    ChannelInfo: ChannelInfoSchema.exactOptional().openapi({
+      description:
+        "A structure that encapsulates the specified signaling channel's metadata and properties.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSignalingChannelOutput')
@@ -801,49 +623,39 @@ const DataRetentionInHoursSchema = z.int().min(0).openapi('DataRetentionInHours'
 
 const StreamInfoSchema = z
   .object({
-    DeviceName: DeviceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the device that is associated with the stream.' }),
-    ).exactOptional(),
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream.' }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the stream.' }),
-    ).exactOptional(),
-    MediaType: MediaTypeSchema.and(
-      z.any().openapi({ description: 'The <code>MediaType</code> of the stream. ' }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Key Management Service (KMS) key that Kinesis Video Streams uses to encrypt data on the stream.',
-        }),
-    ).exactOptional(),
-    Version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the stream.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the stream.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'A time stamp that indicates when the stream was created.' }),
-    ).exactOptional(),
-    DataRetentionInHours: DataRetentionInHoursSchema.and(
-      z.any().openapi({ description: 'How long the stream retains data, in hours.' }),
-    ).exactOptional(),
+    DeviceName: DeviceNameSchema.exactOptional().openapi({
+      description: 'The name of the device that is associated with the stream.',
+    }),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream.',
+    }),
+    MediaType: MediaTypeSchema.exactOptional().openapi({
+      description: 'The <code>MediaType</code> of the stream. ',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the Key Management Service (KMS) key that Kinesis Video Streams uses to encrypt data on the stream.',
+    }),
+    Version: VersionSchema.exactOptional().openapi({ description: 'The version of the stream.' }),
+    Status: StatusSchema.exactOptional().openapi({ description: 'The status of the stream.' }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp that indicates when the stream was created.',
+    }),
+    DataRetentionInHours: DataRetentionInHoursSchema.exactOptional().openapi({
+      description: 'How long the stream retains data, in hours.',
+    }),
   })
   .openapi({ description: 'An object describing a Kinesis video stream.', required: [] })
   .openapi('StreamInfo')
 
 const DescribeStreamOutputSchema = z
   .object({
-    StreamInfo: StreamInfoSchema.and(
-      z.any().openapi({ description: 'An object that describes the stream.' }),
-    ).exactOptional(),
+    StreamInfo: StreamInfoSchema.exactOptional().openapi({
+      description: 'An object that describes the stream.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStreamOutput')
@@ -852,14 +664,10 @@ const DataEndpointSchema = z.string().openapi('DataEndpoint')
 
 const GetDataEndpointOutputSchema = z
   .object({
-    DataEndpoint: DataEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint value. To read data from the stream or to write data to it, specify this endpoint in your application.',
-        }),
-    ).exactOptional(),
+    DataEndpoint: DataEndpointSchema.exactOptional().openapi({
+      description:
+        'The endpoint value. To read data from the stream or to write data to it, specify this endpoint in your application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDataEndpointOutput')
@@ -870,22 +678,14 @@ const ResourceEndpointSchema = z.string().openapi('ResourceEndpoint')
 
 const ResourceEndpointListItemSchema = z
   .object({
-    Protocol: ChannelProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol of the signaling channel returned by the <code>GetSignalingChannelEndpoint</code> API.',
-        }),
-    ).exactOptional(),
-    ResourceEndpoint: ResourceEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint of the signaling channel returned by the <code>GetSignalingChannelEndpoint</code> API.',
-        }),
-    ).exactOptional(),
+    Protocol: ChannelProtocolSchema.exactOptional().openapi({
+      description:
+        'The protocol of the signaling channel returned by the <code>GetSignalingChannelEndpoint</code> API.',
+    }),
+    ResourceEndpoint: ResourceEndpointSchema.exactOptional().openapi({
+      description:
+        'The endpoint of the signaling channel returned by the <code>GetSignalingChannelEndpoint</code> API.',
+    }),
   })
   .openapi({
     description:
@@ -900,9 +700,9 @@ const ResourceEndpointListSchema = z
 
 const GetSignalingChannelEndpointOutputSchema = z
   .object({
-    ResourceEndpointList: ResourceEndpointListSchema.and(
-      z.any().openapi({ description: 'A list of endpoints for the specified signaling channel.' }),
-    ).exactOptional(),
+    ResourceEndpointList: ResourceEndpointListSchema.exactOptional().openapi({
+      description: 'A list of endpoints for the specified signaling channel.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSignalingChannelEndpointOutput')
@@ -919,17 +719,13 @@ const ChannelInfoListSchema = z.array(ChannelInfoSchema).openapi('ChannelInfoLis
 
 const ListSignalingChannelsOutputSchema = z
   .object({
-    ChannelInfoList: ChannelInfoListSchema.and(
-      z.any().openapi({ description: 'An array of <code>ChannelInfo</code> objects.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, the call returns this element with a token. To get the next batch of streams, use this token in your next request.',
-        }),
-    ).exactOptional(),
+    ChannelInfoList: ChannelInfoListSchema.exactOptional().openapi({
+      description: 'An array of <code>ChannelInfo</code> objects.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, the call returns this element with a token. To get the next batch of streams, use this token in your next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSignalingChannelsOutput')
@@ -940,17 +736,13 @@ const StreamInfoListSchema = z.array(StreamInfoSchema).openapi('StreamInfoList')
 
 const ListStreamsOutputSchema = z
   .object({
-    StreamInfoList: StreamInfoListSchema.and(
-      z.any().openapi({ description: 'An array of <code>StreamInfo</code> objects.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, the call returns this element with a token. To get the next batch of streams, use this token in your next request. ',
-        }),
-    ).exactOptional(),
+    StreamInfoList: StreamInfoListSchema.exactOptional().openapi({
+      description: 'An array of <code>StreamInfo</code> objects.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, the call returns this element with a token. To get the next batch of streams, use this token in your next request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStreamsOutput')
@@ -963,43 +755,26 @@ const ResourceTagsSchema = z
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify this parameter and the result of a <code>ListTagsForResource</code> call is truncated, the response includes a token that you can use in the next request to fetch the next set of tags. ',
-        }),
-    ).exactOptional(),
-    Tags: ResourceTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of tag keys and values associated with the specified signaling channel.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify this parameter and the result of a <code>ListTagsForResource</code> call is truncated, the response includes a token that you can use in the next request to fetch the next set of tags. ',
+    }),
+    Tags: ResourceTagsSchema.exactOptional().openapi({
+      description: 'A map of tag keys and values associated with the specified signaling channel.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
 
 const ListTagsForStreamOutputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify this parameter and the result of a <code>ListTags</code> call is truncated, the response includes a token that you can use in the next request to fetch the next set of tags.',
-        }),
-    ).exactOptional(),
-    Tags: ResourceTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A map of tag keys and values associated with the specified stream.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify this parameter and the result of a <code>ListTags</code> call is truncated, the response includes a token that you can use in the next request to fetch the next set of tags.',
+    }),
+    Tags: ResourceTagsSchema.exactOptional().openapi({
+      description: 'A map of tag keys and values associated with the specified stream.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForStreamOutput')
@@ -1008,80 +783,60 @@ const InvalidResourceFormatExceptionSchema = z.any().openapi('InvalidResourceFor
 
 const StartEdgeConfigurationUpdateOutputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stream from which the edge configuration was updated.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the stream.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp at which a stream’s edge configuration was first created.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp at which a stream’s edge configuration was last updated.',
-        }),
-    ).exactOptional(),
-    SyncStatus: SyncStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The current sync status of the stream's edge configuration. When you invoke this API, the sync status will be set to the <code>SYNCING</code> state. Use the <code>DescribeEdgeConfiguration</code> API to get the latest status of the edge configuration.",
-        }),
-    ).exactOptional(),
-    FailedStatusDetails: FailedStatusDetailsSchema.and(
-      z.any().openapi({ description: 'A description of the generated failure status.' }),
-    ).exactOptional(),
-    EdgeConfig: EdgeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the stream's edge configuration that will be used to sync with the Edge Agent IoT Greengrass component. The Edge Agent component will run on an IoT Hub Device setup at your premise.",
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream from which the edge configuration was updated.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp at which a stream’s edge configuration was first created.',
+    }),
+    LastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp at which a stream’s edge configuration was last updated.',
+    }),
+    SyncStatus: SyncStatusSchema.exactOptional().openapi({
+      description:
+        " The current sync status of the stream's edge configuration. When you invoke this API, the sync status will be set to the <code>SYNCING</code> state. Use the <code>DescribeEdgeConfiguration</code> API to get the latest status of the edge configuration.",
+    }),
+    FailedStatusDetails: FailedStatusDetailsSchema.exactOptional().openapi({
+      description: 'A description of the generated failure status.',
+    }),
+    EdgeConfig: EdgeConfigSchema.exactOptional().openapi({
+      description:
+        "A description of the stream's edge configuration that will be used to sync with the Edge Agent IoT Greengrass component. The Edge Agent component will run on an IoT Hub Device setup at your premise.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartEdgeConfigurationUpdateOutput')
 
 const NoDataRetentionExceptionSchema = z.any().openapi('NoDataRetentionException')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
-const TagStreamOutputSchema = z.object({}).openapi('TagStreamOutput')
+const TagStreamOutputSchema = z.looseObject({}).openapi('TagStreamOutput')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
-const UntagStreamOutputSchema = z.object({}).openapi('UntagStreamOutput')
+const UntagStreamOutputSchema = z.looseObject({}).openapi('UntagStreamOutput')
 
-const UpdateDataRetentionOutputSchema = z.object({}).openapi('UpdateDataRetentionOutput')
+const UpdateDataRetentionOutputSchema = z.looseObject({}).openapi('UpdateDataRetentionOutput')
 
 const UpdateImageGenerationConfigurationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateImageGenerationConfigurationOutput')
 
 const UpdateMediaStorageConfigurationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateMediaStorageConfigurationOutput')
 
 const UpdateNotificationConfigurationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateNotificationConfigurationOutput')
 
-const UpdateSignalingChannelOutputSchema = z.object({}).openapi('UpdateSignalingChannelOutput')
+const UpdateSignalingChannelOutputSchema = z.looseObject({}).openapi('UpdateSignalingChannelOutput')
 
-const UpdateStreamOutputSchema = z.object({}).openapi('UpdateStreamOutput')
+const UpdateStreamOutputSchema = z.looseObject({}).openapi('UpdateStreamOutput')
 
 const APINameSchema = z
   .enum([
@@ -1098,17 +853,13 @@ const APINameSchema = z
 
 const ChannelNameConditionSchema = z
   .object({
-    ComparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A comparison operator. Currently, you can only specify the <code>BEGINS_WITH</code> operator, which finds signaling channels whose names begin with a given prefix.',
-        }),
-    ).exactOptional(),
-    ComparisonValue: ChannelNameSchema.and(
-      z.any().openapi({ description: 'A value to compare.' }),
-    ).exactOptional(),
+    ComparisonOperator: ComparisonOperatorSchema.exactOptional().openapi({
+      description:
+        'A comparison operator. Currently, you can only specify the <code>BEGINS_WITH</code> operator, which finds signaling channels whose names begin with a given prefix.',
+    }),
+    ComparisonValue: ChannelNameSchema.exactOptional().openapi({
+      description: 'A value to compare.',
+    }),
   })
   .openapi({
     description:
@@ -1121,92 +872,51 @@ const TagOnCreateListSchema = z.array(TagSchema).min(0).max(50).openapi('TagOnCr
 
 const CreateSignalingChannelInputSchema = z
   .object({
-    ChannelName: ChannelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the signaling channel that you are creating. It must be unique for each Amazon Web Services account and Amazon Web Services Region.',
-        }),
-    ),
-    ChannelType: ChannelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A type of the signaling channel that you are creating. Currently, <code>SINGLE_MASTER</code> is the only supported channel type. ',
-        }),
-    ).exactOptional(),
-    SingleMasterConfiguration: SingleMasterConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure containing the configuration for the <code>SINGLE_MASTER</code> channel type. ',
-        }),
-    ).exactOptional(),
-    Tags: TagOnCreateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of tags (key-value pairs) that you want to associate with this channel.',
-        }),
-    ).exactOptional(),
+    ChannelName: ChannelNameSchema.openapi({
+      description:
+        'A name for the signaling channel that you are creating. It must be unique for each Amazon Web Services account and Amazon Web Services Region.',
+    }),
+    ChannelType: ChannelTypeSchema.exactOptional().openapi({
+      description:
+        'A type of the signaling channel that you are creating. Currently, <code>SINGLE_MASTER</code> is the only supported channel type. ',
+    }),
+    SingleMasterConfiguration: SingleMasterConfigurationSchema.exactOptional().openapi({
+      description:
+        'A structure containing the configuration for the <code>SINGLE_MASTER</code> channel type. ',
+    }),
+    Tags: TagOnCreateListSchema.exactOptional().openapi({
+      description: 'A set of tags (key-value pairs) that you want to associate with this channel.',
+    }),
   })
   .openapi({ required: ['ChannelName'], title: 'CreateSignalingChannelInput' })
   .openapi('CreateSignalingChannelInput')
 
 const CreateStreamInputSchema = z
   .object({
-    DeviceName: DeviceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the device that is writing to the stream. </p> <note> <p>In the current implementation, Kinesis Video Streams does not use this name.</p> </note>',
-        }),
-    ).exactOptional(),
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A name for the stream that you are creating.</p> <p>The stream name is an identifier for the stream, and must be unique for each account and region.</p>',
-        }),
-    ),
-    MediaType: MediaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The media type of the stream. Consumers of the stream can use this information when processing the stream. For more information about media types, see <a href="http://www.iana.org/assignments/media-types/media-types.xhtml">Media Types</a>. If you choose to specify the <code>MediaType</code>, see <a href="https://tools.ietf.org/html/rfc6838#section-4.2">Naming Requirements</a> for guidelines.</p> <p>Example valid values include "video/h264" and "video/h264,audio/aac".</p> <p>This parameter is optional; the default value is <code>null</code> (or empty in JSON).</p>',
-        }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the Key Management Service (KMS) key that you want Kinesis Video Streams to use to encrypt stream data.</p> <p>If no key ID is specified, the default, Kinesis Video-managed key (<code>aws/kinesisvideo</code>) is used.</p> <p> For more information, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">DescribeKey</a>. </p>',
-        }),
-    ).exactOptional(),
-    DataRetentionInHours: DataRetentionInHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of hours that you want to retain the data in the stream. Kinesis Video Streams retains the data in a data store that is associated with the stream.</p> <p>The default value is 0, indicating that the stream does not persist data.</p> <p>When the <code>DataRetentionInHours</code> value is 0, consumers can still consume the fragments that remain in the service host buffer, which has a retention time limit of 5 minutes and a retention memory limit of 200 MB. Fragments are removed from the buffer when either limit is reached.</p>',
-        }),
-    ).exactOptional(),
-    Tags: ResourceTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to associate with the specified stream. Each tag is a key-value pair (the value is optional).',
-        }),
-    ).exactOptional(),
+    DeviceName: DeviceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the device that is writing to the stream. </p> <note> <p>In the current implementation, Kinesis Video Streams does not use this name.</p> </note>',
+    }),
+    StreamName: StreamNameSchema.openapi({
+      description:
+        '<p>A name for the stream that you are creating.</p> <p>The stream name is an identifier for the stream, and must be unique for each account and region.</p>',
+    }),
+    MediaType: MediaTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The media type of the stream. Consumers of the stream can use this information when processing the stream. For more information about media types, see <a href="http://www.iana.org/assignments/media-types/media-types.xhtml">Media Types</a>. If you choose to specify the <code>MediaType</code>, see <a href="https://tools.ietf.org/html/rfc6838#section-4.2">Naming Requirements</a> for guidelines.</p> <p>Example valid values include "video/h264" and "video/h264,audio/aac".</p> <p>This parameter is optional; the default value is <code>null</code> (or empty in JSON).</p>',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the Key Management Service (KMS) key that you want Kinesis Video Streams to use to encrypt stream data.</p> <p>If no key ID is specified, the default, Kinesis Video-managed key (<code>aws/kinesisvideo</code>) is used.</p> <p> For more information, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">DescribeKey</a>. </p>',
+    }),
+    DataRetentionInHours: DataRetentionInHoursSchema.exactOptional().openapi({
+      description:
+        '<p>The number of hours that you want to retain the data in the stream. Kinesis Video Streams retains the data in a data store that is associated with the stream.</p> <p>The default value is 0, indicating that the stream does not persist data.</p> <p>When the <code>DataRetentionInHours</code> value is 0, consumers can still consume the fragments that remain in the service host buffer, which has a retention time limit of 5 minutes and a retention memory limit of 200 MB. Fragments are removed from the buffer when either limit is reached.</p>',
+    }),
+    Tags: ResourceTagsSchema.exactOptional().openapi({
+      description:
+        'A list of tags to associate with the specified stream. Each tag is a key-value pair (the value is optional).',
+    }),
   })
   .openapi({ required: ['StreamName'], title: 'CreateStreamInput' })
   .openapi('CreateStreamInput')
@@ -1215,87 +925,55 @@ const DataRetentionChangeInHoursSchema = z.int().min(1).openapi('DataRetentionCh
 
 const DeleteSignalingChannelInputSchema = z
   .object({
-    ChannelARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the signaling channel that you want to delete.',
-        }),
-    ),
-    CurrentVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current version of the signaling channel that you want to delete. You can obtain the current version by invoking the <code>DescribeSignalingChannel</code> or <code>ListSignalingChannels</code> API operations.',
-        }),
-    ).exactOptional(),
+    ChannelARN: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the signaling channel that you want to delete.',
+    }),
+    CurrentVersion: VersionSchema.exactOptional().openapi({
+      description:
+        'The current version of the signaling channel that you want to delete. You can obtain the current version by invoking the <code>DescribeSignalingChannel</code> or <code>ListSignalingChannels</code> API operations.',
+    }),
   })
   .openapi({ required: ['ChannelARN'], title: 'DeleteSignalingChannelInput' })
   .openapi('DeleteSignalingChannelInput')
 
 const DeleteStreamInputSchema = z
   .object({
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the stream that you want to delete. ',
-        }),
-    ),
-    CurrentVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional: The version of the stream that you want to delete. </p> <p>Specify the version as a safeguard to ensure that your are deleting the correct stream. To get the stream version, use the <code>DescribeStream</code> API.</p> <p>If not specified, only the <code>CreationTime</code> is checked before deleting the stream.</p>',
-        }),
-    ).exactOptional(),
+    StreamARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream that you want to delete. ',
+    }),
+    CurrentVersion: VersionSchema.exactOptional().openapi({
+      description:
+        '<p>Optional: The version of the stream that you want to delete. </p> <p>Specify the version as a safeguard to ensure that your are deleting the correct stream. To get the stream version, use the <code>DescribeStream</code> API.</p> <p>If not specified, only the <code>CreationTime</code> is checked before deleting the stream.</p>',
+    }),
   })
   .openapi({ required: ['StreamARN'], title: 'DeleteStreamInput' })
   .openapi('DeleteStreamInput')
 
 const DescribeEdgeConfigurationInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stream whose edge configuration you want to update. Specify either the <code>StreamName</code> or the <code>StreamARN</code>. ',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the stream. Specify either the <code>StreamName</code>or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        'The name of the stream whose edge configuration you want to update. Specify either the <code>StreamName</code> or the <code>StreamARN</code>. ',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the stream. Specify either the <code>StreamName</code>or the <code>StreamARN</code>.',
+    }),
   })
   .openapi({ title: 'DescribeEdgeConfigurationInput', required: [] })
   .openapi('DescribeEdgeConfigurationInput')
 
 const DescribeImageGenerationConfigurationInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stream from which to retrieve the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>. ',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Kinesis video stream from which to retrieve the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        'The name of the stream from which to retrieve the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>. ',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Kinesis video stream from which to retrieve the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
+    }),
   })
   .openapi({ title: 'DescribeImageGenerationConfigurationInput', required: [] })
   .openapi('DescribeImageGenerationConfigurationInput')
@@ -1308,85 +986,68 @@ const MappedResourceConfigurationListLimitSchema = z
 
 const DescribeMappedResourceConfigurationInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream.' }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the stream.' }),
-    ).exactOptional(),
-    MaxResults: MappedResourceConfigurationListLimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to provide in your next request, to get another batch of results.',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream.',
+    }),
+    MaxResults: MappedResourceConfigurationListLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to provide in your next request, to get another batch of results.',
+    }),
   })
   .openapi({ title: 'DescribeMappedResourceConfigurationInput', required: [] })
   .openapi('DescribeMappedResourceConfigurationInput')
 
 const DescribeMediaStorageConfigurationInputSchema = z
   .object({
-    ChannelName: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    ChannelARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the channel.' }),
-    ).exactOptional(),
+    ChannelName: ChannelNameSchema.exactOptional().openapi({
+      description: 'The name of the channel.',
+    }),
+    ChannelARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the channel.',
+    }),
   })
   .openapi({ title: 'DescribeMediaStorageConfigurationInput', required: [] })
   .openapi('DescribeMediaStorageConfigurationInput')
 
 const DescribeNotificationConfigurationInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stream from which to retrieve the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to retrieve the notification configuration. You must specify either the <code>StreamName</code> or the StreamARN.',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        'The name of the stream from which to retrieve the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to retrieve the notification configuration. You must specify either the <code>StreamName</code> or the StreamARN.',
+    }),
   })
   .openapi({ title: 'DescribeNotificationConfigurationInput', required: [] })
   .openapi('DescribeNotificationConfigurationInput')
 
 const DescribeSignalingChannelInputSchema = z
   .object({
-    ChannelName: ChannelNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the signaling channel that you want to describe.' }),
-    ).exactOptional(),
-    ChannelARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the signaling channel that you want to describe.' }),
-    ).exactOptional(),
+    ChannelName: ChannelNameSchema.exactOptional().openapi({
+      description: 'The name of the signaling channel that you want to describe.',
+    }),
+    ChannelARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The ARN of the signaling channel that you want to describe.',
+    }),
   })
   .openapi({ title: 'DescribeSignalingChannelInput', required: [] })
   .openapi('DescribeSignalingChannelInput')
 
 const DescribeStreamInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream.' }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the stream.' }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream.',
+    }),
   })
   .openapi({ title: 'DescribeStreamInput', required: [] })
   .openapi('DescribeStreamInput')
@@ -1395,47 +1056,31 @@ const FormatConfigKeySchema = z.literal('JPEGQuality').openapi('FormatConfigKey'
 
 const GetDataEndpointInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stream that you want to get the endpoint for. You must specify either this parameter or a <code>StreamARN</code> in the request.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the stream that you want to get the endpoint for. You must specify either this parameter or a <code>StreamName</code> in the request. ',
-        }),
-    ).exactOptional(),
-    APIName: APINameSchema.and(
-      z.any().openapi({ description: 'The name of the API action for which to get an endpoint.' }),
-    ),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        'The name of the stream that you want to get the endpoint for. You must specify either this parameter or a <code>StreamARN</code> in the request.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the stream that you want to get the endpoint for. You must specify either this parameter or a <code>StreamName</code> in the request. ',
+    }),
+    APIName: APINameSchema.openapi({
+      description: 'The name of the API action for which to get an endpoint.',
+    }),
   })
   .openapi({ required: ['APIName'], title: 'GetDataEndpointInput' })
   .openapi('GetDataEndpointInput')
 
 const SingleMasterChannelEndpointConfigurationSchema = z
   .object({
-    Protocols: ListOfProtocolsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This property is used to determine the nature of communication over this <code>SINGLE_MASTER</code> signaling channel. If <code>WSS</code> is specified, this API returns a websocket endpoint. If <code>HTTPS</code> is specified, this API returns an <code>HTTPS</code> endpoint.',
-        }),
-    ).exactOptional(),
-    Role: ChannelRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This property is used to determine messaging permissions in this <code>SINGLE_MASTER</code> signaling channel. If <code>MASTER</code> is specified, this API returns an endpoint that a client can use to receive offers from and send answers to any of the viewers on this signaling channel. If <code>VIEWER</code> is specified, this API returns an endpoint that a client can use only to send offers to another <code>MASTER</code> client on this signaling channel. ',
-        }),
-    ).exactOptional(),
+    Protocols: ListOfProtocolsSchema.exactOptional().openapi({
+      description:
+        'This property is used to determine the nature of communication over this <code>SINGLE_MASTER</code> signaling channel. If <code>WSS</code> is specified, this API returns a websocket endpoint. If <code>HTTPS</code> is specified, this API returns an <code>HTTPS</code> endpoint.',
+    }),
+    Role: ChannelRoleSchema.exactOptional().openapi({
+      description:
+        'This property is used to determine messaging permissions in this <code>SINGLE_MASTER</code> signaling channel. If <code>MASTER</code> is specified, this API returns an endpoint that a client can use to receive offers from and send answers to any of the viewers on this signaling channel. If <code>VIEWER</code> is specified, this API returns an endpoint that a client can use only to send offers to another <code>MASTER</code> client on this signaling channel. ',
+    }),
   })
   .openapi({
     description:
@@ -1446,22 +1091,15 @@ const SingleMasterChannelEndpointConfigurationSchema = z
 
 const GetSignalingChannelEndpointInputSchema = z
   .object({
-    ChannelARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the signalling channel for which you want to get an endpoint.',
-        }),
-    ),
-    SingleMasterChannelEndpointConfiguration: SingleMasterChannelEndpointConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure containing the endpoint configuration for the <code>SINGLE_MASTER</code> channel type.',
-        }),
-    ).exactOptional(),
+    ChannelARN: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the signalling channel for which you want to get an endpoint.',
+    }),
+    SingleMasterChannelEndpointConfiguration:
+      SingleMasterChannelEndpointConfigurationSchema.exactOptional().openapi({
+        description:
+          'A structure containing the endpoint configuration for the <code>SINGLE_MASTER</code> channel type.',
+      }),
   })
   .openapi({ required: ['ChannelARN'], title: 'GetSignalingChannelEndpointInput' })
   .openapi('GetSignalingChannelEndpointInput')
@@ -1470,46 +1108,29 @@ const ListStreamsInputLimitSchema = z.int().min(1).max(10000).openapi('ListStrea
 
 const ListSignalingChannelsInputSchema = z
   .object({
-    MaxResults: ListStreamsInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of channels to return in the response. The default is 500.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify this parameter, when the result of a <code>ListSignalingChannels</code> operation is truncated, the call returns the <code>NextToken</code> in the response. To get another batch of channels, provide this token in your next request.',
-        }),
-    ).exactOptional(),
-    ChannelNameCondition: ChannelNameConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Optional: Returns only the channels that satisfy a specific condition.',
-        }),
-    ).exactOptional(),
+    MaxResults: ListStreamsInputLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of channels to return in the response. The default is 500.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify this parameter, when the result of a <code>ListSignalingChannels</code> operation is truncated, the call returns the <code>NextToken</code> in the response. To get another batch of channels, provide this token in your next request.',
+    }),
+    ChannelNameCondition: ChannelNameConditionSchema.exactOptional().openapi({
+      description: 'Optional: Returns only the channels that satisfy a specific condition.',
+    }),
   })
   .openapi({ title: 'ListSignalingChannelsInput', required: [] })
   .openapi('ListSignalingChannelsInput')
 
 const StreamNameConditionSchema = z
   .object({
-    ComparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A comparison operator. Currently, you can specify only the <code>BEGINS_WITH</code> operator, which finds streams whose names start with a given prefix.',
-        }),
-    ).exactOptional(),
-    ComparisonValue: StreamNameSchema.and(
-      z.any().openapi({ description: 'A value to compare.' }),
-    ).exactOptional(),
+    ComparisonOperator: ComparisonOperatorSchema.exactOptional().openapi({
+      description:
+        'A comparison operator. Currently, you can specify only the <code>BEGINS_WITH</code> operator, which finds streams whose names start with a given prefix.',
+    }),
+    ComparisonValue: StreamNameSchema.exactOptional().openapi({
+      description: 'A value to compare.',
+    }),
   })
   .openapi({
     description:
@@ -1520,106 +1141,65 @@ const StreamNameConditionSchema = z
 
 const ListStreamsInputSchema = z
   .object({
-    MaxResults: ListStreamsInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of streams to return in the response. The default is 10,000.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify this parameter, when the result of a <code>ListStreams</code> operation is truncated, the call returns the <code>NextToken</code> in the response. To get another batch of streams, provide this token in your next request.',
-        }),
-    ).exactOptional(),
-    StreamNameCondition: StreamNameConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional: Returns only streams that satisfy a specific condition. Currently, you can specify only the prefix of a stream name as a condition. ',
-        }),
-    ).exactOptional(),
+    MaxResults: ListStreamsInputLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of streams to return in the response. The default is 10,000.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify this parameter, when the result of a <code>ListStreams</code> operation is truncated, the call returns the <code>NextToken</code> in the response. To get another batch of streams, provide this token in your next request.',
+    }),
+    StreamNameCondition: StreamNameConditionSchema.exactOptional().openapi({
+      description:
+        'Optional: Returns only streams that satisfy a specific condition. Currently, you can specify only the prefix of a stream name as a condition. ',
+    }),
   })
   .openapi({ title: 'ListStreamsInput', required: [] })
   .openapi('ListStreamsInput')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify this parameter and the result of a <code>ListTagsForResource</code> call is truncated, the response includes a token that you can use in the next request to fetch the next batch of tags. ',
-        }),
-    ).exactOptional(),
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the signaling channel for which you want to list tags.',
-        }),
-    ),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify this parameter and the result of a <code>ListTagsForResource</code> call is truncated, the response includes a token that you can use in the next request to fetch the next batch of tags. ',
+    }),
+    ResourceARN: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the signaling channel for which you want to list tags.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
 
 const ListTagsForStreamInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify this parameter and the result of a <code>ListTagsForStream</code> call is truncated, the response includes a token that you can use in the next request to fetch the next batch of tags.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the stream that you want to list tags for.',
-        }),
-    ).exactOptional(),
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream that you want to list tags for.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If you specify this parameter and the result of a <code>ListTagsForStream</code> call is truncated, the response includes a token that you can use in the next request to fetch the next batch of tags.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stream that you want to list tags for.',
+    }),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream that you want to list tags for.',
+    }),
   })
   .openapi({ title: 'ListTagsForStreamInput', required: [] })
   .openapi('ListTagsForStreamInput')
 
 const StartEdgeConfigurationUpdateInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stream whose edge configuration you want to update. Specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the stream. Specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
-    EdgeConfig: EdgeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The edge configuration details required to invoke the update process.',
-        }),
-    ),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        'The name of the stream whose edge configuration you want to update. Specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of the stream. Specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
+    }),
+    EdgeConfig: EdgeConfigSchema.openapi({
+      description: 'The edge configuration details required to invoke the update process.',
+    }),
   })
   .openapi({ required: ['EdgeConfig'], title: 'StartEdgeConfigurationUpdateInput' })
   .openapi('StartEdgeConfigurationUpdateInput')
@@ -1630,88 +1210,60 @@ const TagListSchema = z.array(TagSchema).min(1).max(50).openapi('TagList')
 
 const TagResourceInputSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the signaling channel to which you want to add tags.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to associate with the specified signaling channel. Each tag is a key-value pair.',
-        }),
-    ),
+    ResourceARN: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the signaling channel to which you want to add tags.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'A list of tags to associate with the specified signaling channel. Each tag is a key-value pair.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
 const TagStreamInputSchema = z
   .object({
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that you want to add the tag or tags to.',
-        }),
-    ).exactOptional(),
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stream that you want to add the tag or tags to.',
-        }),
-    ).exactOptional(),
-    Tags: ResourceTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to associate with the specified stream. Each tag is a key-value pair (the value is optional).',
-        }),
-    ),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that you want to add the tag or tags to.',
+    }),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream that you want to add the tag or tags to.',
+    }),
+    Tags: ResourceTagsSchema.openapi({
+      description:
+        'A list of tags to associate with the specified stream. Each tag is a key-value pair (the value is optional).',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagStreamInput' })
   .openapi('TagStreamInput')
 
 const UntagResourceInputSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the signaling channel from which you want to remove tags.',
-        }),
-    ),
-    TagKeyList: TagKeyListSchema.and(
-      z.any().openapi({ description: 'A list of the keys of the tags that you want to remove.' }),
-    ),
+    ResourceARN: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the signaling channel from which you want to remove tags.',
+    }),
+    TagKeyList: TagKeyListSchema.openapi({
+      description: 'A list of the keys of the tags that you want to remove.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeyList'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
 
 const UntagStreamInputSchema = z
   .object({
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the stream that you want to remove tags from.',
-        }),
-    ).exactOptional(),
-    StreamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream that you want to remove tags from.' }),
-    ).exactOptional(),
-    TagKeyList: TagKeyListSchema.and(
-      z.any().openapi({ description: 'A list of the keys of the tags that you want to remove.' }),
-    ),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the stream that you want to remove tags from.',
+    }),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream that you want to remove tags from.',
+    }),
+    TagKeyList: TagKeyListSchema.openapi({
+      description: 'A list of the keys of the tags that you want to remove.',
+    }),
   })
   .openapi({ required: ['TagKeyList'], title: 'UntagStreamInput' })
   .openapi('UntagStreamInput')
@@ -1722,44 +1274,24 @@ const UpdateDataRetentionOperationSchema = z
 
 const UpdateDataRetentionInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the stream whose retention period you want to change.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the stream whose retention period you want to change.',
-        }),
-    ).exactOptional(),
-    CurrentVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the stream whose retention period you want to change. To get the version, call either the <code>DescribeStream</code> or the <code>ListStreams</code> API.',
-        }),
-    ),
-    Operation: UpdateDataRetentionOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether you want to increase or decrease the retention period.',
-        }),
-    ),
-    DataRetentionChangeInHours: DataRetentionChangeInHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The retention period, in hours. The value you specify replaces the current value. The maximum value for this parameter is 87600 (ten years).',
-        }),
-    ),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description: 'The name of the stream whose retention period you want to change.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the stream whose retention period you want to change.',
+    }),
+    CurrentVersion: VersionSchema.openapi({
+      description:
+        'The version of the stream whose retention period you want to change. To get the version, call either the <code>DescribeStream</code> or the <code>ListStreams</code> API.',
+    }),
+    Operation: UpdateDataRetentionOperationSchema.openapi({
+      description: 'Indicates whether you want to increase or decrease the retention period.',
+    }),
+    DataRetentionChangeInHours: DataRetentionChangeInHoursSchema.openapi({
+      description:
+        'The retention period, in hours. The value you specify replaces the current value. The maximum value for this parameter is 87600 (ten years).',
+    }),
   })
   .openapi({
     required: ['CurrentVersion', 'Operation', 'DataRetentionChangeInHours'],
@@ -1769,47 +1301,31 @@ const UpdateDataRetentionInputSchema = z
 
 const UpdateImageGenerationConfigurationInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stream from which to update the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to update the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
-    ImageGenerationConfiguration: ImageGenerationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The structure that contains the information required for the KVS images delivery. If the structure is null, the configuration will be deleted from the stream.',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        'The name of the stream from which to update the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to update the image generation configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
+    }),
+    ImageGenerationConfiguration: ImageGenerationConfigurationSchema.exactOptional().openapi({
+      description:
+        'The structure that contains the information required for the KVS images delivery. If the structure is null, the configuration will be deleted from the stream.',
+    }),
   })
   .openapi({ title: 'UpdateImageGenerationConfigurationInput', required: [] })
   .openapi('UpdateImageGenerationConfigurationInput')
 
 const UpdateMediaStorageConfigurationInputSchema = z
   .object({
-    ChannelARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the channel.' }),
-    ),
-    MediaStorageConfiguration: MediaStorageConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that encapsulates, or contains, the media storage configuration properties.',
-        }),
-    ),
+    ChannelARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the channel.',
+    }),
+    MediaStorageConfiguration: MediaStorageConfigurationSchema.openapi({
+      description:
+        'A structure that encapsulates, or contains, the media storage configuration properties.',
+    }),
   })
   .openapi({
     required: ['ChannelARN', 'MediaStorageConfiguration'],
@@ -1819,97 +1335,59 @@ const UpdateMediaStorageConfigurationInputSchema = z
 
 const UpdateNotificationConfigurationInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stream from which to update the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to update the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
-        }),
-    ).exactOptional(),
-    NotificationConfiguration: NotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The structure containing the information required for notifications. If the structure is null, the configuration will be deleted from the stream.',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        'The name of the stream from which to update the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Kinesis video stream from where you want to update the notification configuration. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>.',
+    }),
+    NotificationConfiguration: NotificationConfigurationSchema.exactOptional().openapi({
+      description:
+        'The structure containing the information required for notifications. If the structure is null, the configuration will be deleted from the stream.',
+    }),
   })
   .openapi({ title: 'UpdateNotificationConfigurationInput', required: [] })
   .openapi('UpdateNotificationConfigurationInput')
 
 const UpdateSignalingChannelInputSchema = z
   .object({
-    ChannelARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the signaling channel that you want to update.',
-        }),
-    ),
-    CurrentVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current version of the signaling channel that you want to update.',
-        }),
-    ),
-    SingleMasterConfiguration: SingleMasterConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The structure containing the configuration for the <code>SINGLE_MASTER</code> type of the signaling channel that you want to update. ',
-        }),
-    ).exactOptional(),
+    ChannelARN: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the signaling channel that you want to update.',
+    }),
+    CurrentVersion: VersionSchema.openapi({
+      description: 'The current version of the signaling channel that you want to update.',
+    }),
+    SingleMasterConfiguration: SingleMasterConfigurationSchema.exactOptional().openapi({
+      description:
+        'The structure containing the configuration for the <code>SINGLE_MASTER</code> type of the signaling channel that you want to update. ',
+    }),
   })
   .openapi({ required: ['ChannelARN', 'CurrentVersion'], title: 'UpdateSignalingChannelInput' })
   .openapi('UpdateSignalingChannelInput')
 
 const UpdateStreamInputSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the stream whose metadata you want to update.</p> <p>The stream name is an identifier for the stream, and must be unique for each account and region.</p>',
-        }),
-    ).exactOptional(),
-    StreamARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the stream whose metadata you want to update.' }),
-    ).exactOptional(),
-    CurrentVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the stream whose metadata you want to update.' }),
-    ),
-    DeviceName: DeviceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the device that is writing to the stream. </p> <note> <p> In the current implementation, Kinesis Video Streams does not use this name. </p> </note>',
-        }),
-    ).exactOptional(),
-    MediaType: MediaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stream\'s media type. Use <code>MediaType</code> to specify the type of content that the stream contains to the consumers of the stream. For more information about media types, see <a href="http://www.iana.org/assignments/media-types/media-types.xhtml">Media Types</a>. If you choose to specify the <code>MediaType</code>, see <a href="https://tools.ietf.org/html/rfc6838#section-4.2">Naming Requirements</a>.</p> <p>To play video on the console, you must specify the correct video type. For example, if the video in the stream is H.264, specify <code>video/h264</code> as the <code>MediaType</code>.</p>',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the stream whose metadata you want to update.</p> <p>The stream name is an identifier for the stream, and must be unique for each account and region.</p>',
+    }),
+    StreamARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The ARN of the stream whose metadata you want to update.',
+    }),
+    CurrentVersion: VersionSchema.openapi({
+      description: 'The version of the stream whose metadata you want to update.',
+    }),
+    DeviceName: DeviceNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the device that is writing to the stream. </p> <note> <p> In the current implementation, Kinesis Video Streams does not use this name. </p> </note>',
+    }),
+    MediaType: MediaTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The stream\'s media type. Use <code>MediaType</code> to specify the type of content that the stream contains to the consumers of the stream. For more information about media types, see <a href="http://www.iana.org/assignments/media-types/media-types.xhtml">Media Types</a>. If you choose to specify the <code>MediaType</code>, see <a href="https://tools.ietf.org/html/rfc6838#section-4.2">Naming Requirements</a>.</p> <p>To play video on the console, you must specify the correct video type. For example, if the video in the stream is H.264, specify <code>video/h264</code> as the <code>MediaType</code>.</p>',
+    }),
   })
   .openapi({ required: ['CurrentVersion'], title: 'UpdateStreamInput' })
   .openapi('UpdateStreamInput')
@@ -2025,14 +1503,10 @@ export const postCreateSignalingChannelRoute = createRoute({
                 }),
               SingleMasterConfiguration: z
                 .object({
-                  MessageTtlSeconds: MessageTtlSecondsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The period of time a signaling channel retains undelivered messages before they are discarded.',
-                      }),
-                  ).exactOptional(),
+                  MessageTtlSeconds: MessageTtlSecondsSchema.exactOptional().openapi({
+                    description:
+                      'The period of time a signaling channel retains undelivered messages before they are discarded.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3037,22 +2511,14 @@ export const postGetSignalingChannelEndpointRoute = createRoute({
                 }),
               SingleMasterChannelEndpointConfiguration: z
                 .object({
-                  Protocols: ListOfProtocolsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'This property is used to determine the nature of communication over this <code>SINGLE_MASTER</code> signaling channel. If <code>WSS</code> is specified, this API returns a websocket endpoint. If <code>HTTPS</code> is specified, this API returns an <code>HTTPS</code> endpoint.',
-                      }),
-                  ).exactOptional(),
-                  Role: ChannelRoleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'This property is used to determine messaging permissions in this <code>SINGLE_MASTER</code> signaling channel. If <code>MASTER</code> is specified, this API returns an endpoint that a client can use to receive offers from and send answers to any of the viewers on this signaling channel. If <code>VIEWER</code> is specified, this API returns an endpoint that a client can use only to send offers to another <code>MASTER</code> client on this signaling channel. ',
-                      }),
-                  ).exactOptional(),
+                  Protocols: ListOfProtocolsSchema.exactOptional().openapi({
+                    description:
+                      'This property is used to determine the nature of communication over this <code>SINGLE_MASTER</code> signaling channel. If <code>WSS</code> is specified, this API returns a websocket endpoint. If <code>HTTPS</code> is specified, this API returns an <code>HTTPS</code> endpoint.',
+                  }),
+                  Role: ChannelRoleSchema.exactOptional().openapi({
+                    description:
+                      'This property is used to determine messaging permissions in this <code>SINGLE_MASTER</code> signaling channel. If <code>MASTER</code> is specified, this API returns an endpoint that a client can use to receive offers from and send answers to any of the viewers on this signaling channel. If <code>VIEWER</code> is specified, this API returns an endpoint that a client can use only to send offers to another <code>MASTER</code> client on this signaling channel. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3163,17 +2629,13 @@ export const postListSignalingChannelsRoute = createRoute({
                 }),
               ChannelNameCondition: z
                 .object({
-                  ComparisonOperator: ComparisonOperatorSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A comparison operator. Currently, you can only specify the <code>BEGINS_WITH</code> operator, which finds signaling channels whose names begin with a given prefix.',
-                      }),
-                  ).exactOptional(),
-                  ComparisonValue: ChannelNameSchema.and(
-                    z.any().openapi({ description: 'A value to compare.' }),
-                  ).exactOptional(),
+                  ComparisonOperator: ComparisonOperatorSchema.exactOptional().openapi({
+                    description:
+                      'A comparison operator. Currently, you can only specify the <code>BEGINS_WITH</code> operator, which finds signaling channels whose names begin with a given prefix.',
+                  }),
+                  ComparisonValue: ChannelNameSchema.exactOptional().openapi({
+                    description: 'A value to compare.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3276,17 +2738,13 @@ export const postListStreamsRoute = createRoute({
                 }),
               StreamNameCondition: z
                 .object({
-                  ComparisonOperator: ComparisonOperatorSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A comparison operator. Currently, you can specify only the <code>BEGINS_WITH</code> operator, which finds streams whose names start with a given prefix.',
-                      }),
-                  ).exactOptional(),
-                  ComparisonValue: StreamNameSchema.and(
-                    z.any().openapi({ description: 'A value to compare.' }),
-                  ).exactOptional(),
+                  ComparisonOperator: ComparisonOperatorSchema.exactOptional().openapi({
+                    description:
+                      'A comparison operator. Currently, you can specify only the <code>BEGINS_WITH</code> operator, which finds streams whose names start with a given prefix.',
+                  }),
+                  ComparisonValue: StreamNameSchema.exactOptional().openapi({
+                    description: 'A value to compare.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3519,38 +2977,21 @@ export const postStartEdgeConfigurationUpdateRoute = createRoute({
                 }),
               EdgeConfig: z
                 .object({
-                  HubDeviceArn: HubDeviceArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The "<b>Internet of Things (IoT) Thing</b>" Arn of the stream.',
-                      }),
-                  ).exactOptional(),
-                  RecorderConfig: RecorderConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The recorder configuration consists of the local <code>MediaSourceConfig</code> details, that are used as credentials to access the local media files streamed on the camera. ',
-                      }),
-                  ).exactOptional(),
-                  UploaderConfig: UploaderConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The uploader configuration contains the <code>ScheduleExpression</code> details that are used to schedule upload jobs for the recorded media files from the Edge Agent to a Kinesis Video Stream.',
-                      }),
-                  ).exactOptional(),
-                  DeletionConfig: DeletionConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The deletion configuration is made up of the retention time (<code>EdgeRetentionInHours</code>) and local size configuration (<code>LocalSizeConfig</code>) details that are used to make the deletion.',
-                      }),
-                  ).exactOptional(),
+                  HubDeviceArn: HubDeviceArnSchema.exactOptional().openapi({
+                    description: 'The "<b>Internet of Things (IoT) Thing</b>" Arn of the stream.',
+                  }),
+                  RecorderConfig: RecorderConfigSchema.exactOptional().openapi({
+                    description:
+                      'The recorder configuration consists of the local <code>MediaSourceConfig</code> details, that are used as credentials to access the local media files streamed on the camera. ',
+                  }),
+                  UploaderConfig: UploaderConfigSchema.exactOptional().openapi({
+                    description:
+                      'The uploader configuration contains the <code>ScheduleExpression</code> details that are used to schedule upload jobs for the recorded media files from the Edge Agent to a Kinesis Video Stream.',
+                  }),
+                  DeletionConfig: DeletionConfigSchema.exactOptional().openapi({
+                    description:
+                      'The deletion configuration is made up of the retention time (<code>EdgeRetentionInHours</code>) and local size configuration (<code>LocalSizeConfig</code>) details that are used to make the deletion.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4062,65 +3503,39 @@ export const postUpdateImageGenerationConfigurationRoute = createRoute({
                 }),
               ImageGenerationConfiguration: z
                 .object({
-                  Status: ConfigurationStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Indicates whether the <code>ContinuousImageGenerationConfigurations</code> API is enabled or disabled.',
-                      }),
-                  ).exactOptional(),
-                  ImageSelectorType: ImageSelectorTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The origin of the Server or Producer timestamps to use to generate the images.',
-                      }),
-                  ).exactOptional(),
-                  DestinationConfig: ImageGenerationDestinationConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The structure that contains the information required to deliver images to a customer.',
-                      }),
-                  ).exactOptional(),
-                  SamplingInterval: SamplingIntervalSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The time interval in milliseconds (ms) at which the images need to be generated from the stream. The minimum value that can be provided is 33 ms, because a camera that generates content at 30 FPS would create a frame every 33.3 ms. If the timestamp range is less than the sampling interval, the Image from the <code>StartTimestamp</code> will be returned if available. ',
-                      }),
-                  ).exactOptional(),
-                  Format: FormatSchema.and(
-                    z.any().openapi({ description: 'The accepted image format.' }),
-                  ).exactOptional(),
-                  FormatConfig: FormatConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of a key-value pair structure that contains extra parameters that can be applied when the image is generated. The <code>FormatConfig</code> key is the <code>JPEGQuality</code>, which indicates the JPEG quality key to be used to generate the image. The <code>FormatConfig</code> value accepts ints from 1 to 100. If the value is 1, the image will be generated with less quality and the best compression. If the value is 100, the image will be generated with the best quality and less compression. If no value is provided, the default value of the <code>JPEGQuality</code> key will be set to 80.',
-                      }),
-                  ).exactOptional(),
-                  WidthPixels: WidthPixelsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The width of the output image that is used in conjunction with the <code>HeightPixels</code> parameter. When both <code>WidthPixels</code> and <code>HeightPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>WidthPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>HeightPixels</code> ratio. If neither parameter is provided, the original image size will be returned.',
-                      }),
-                  ).exactOptional(),
-                  HeightPixels: HeightPixelsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The height of the output image that is used in conjunction with the <code>WidthPixels</code> parameter. When both <code>HeightPixels</code> and <code>WidthPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>HeightPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>WidthPixels</code> ratio. If neither parameter is provided, the original image size will be returned.',
-                      }),
-                  ).exactOptional(),
+                  Status: ConfigurationStatusSchema.exactOptional().openapi({
+                    description:
+                      'Indicates whether the <code>ContinuousImageGenerationConfigurations</code> API is enabled or disabled.',
+                  }),
+                  ImageSelectorType: ImageSelectorTypeSchema.exactOptional().openapi({
+                    description:
+                      'The origin of the Server or Producer timestamps to use to generate the images.',
+                  }),
+                  DestinationConfig: ImageGenerationDestinationConfigSchema.exactOptional().openapi(
+                    {
+                      description:
+                        'The structure that contains the information required to deliver images to a customer.',
+                    },
+                  ),
+                  SamplingInterval: SamplingIntervalSchema.exactOptional().openapi({
+                    description:
+                      'The time interval in milliseconds (ms) at which the images need to be generated from the stream. The minimum value that can be provided is 33 ms, because a camera that generates content at 30 FPS would create a frame every 33.3 ms. If the timestamp range is less than the sampling interval, the Image from the <code>StartTimestamp</code> will be returned if available. ',
+                  }),
+                  Format: FormatSchema.exactOptional().openapi({
+                    description: 'The accepted image format.',
+                  }),
+                  FormatConfig: FormatConfigSchema.exactOptional().openapi({
+                    description:
+                      'The list of a key-value pair structure that contains extra parameters that can be applied when the image is generated. The <code>FormatConfig</code> key is the <code>JPEGQuality</code>, which indicates the JPEG quality key to be used to generate the image. The <code>FormatConfig</code> value accepts ints from 1 to 100. If the value is 1, the image will be generated with less quality and the best compression. If the value is 100, the image will be generated with the best quality and less compression. If no value is provided, the default value of the <code>JPEGQuality</code> key will be set to 80.',
+                  }),
+                  WidthPixels: WidthPixelsSchema.exactOptional().openapi({
+                    description:
+                      'The width of the output image that is used in conjunction with the <code>HeightPixels</code> parameter. When both <code>WidthPixels</code> and <code>HeightPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>WidthPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>HeightPixels</code> ratio. If neither parameter is provided, the original image size will be returned.',
+                  }),
+                  HeightPixels: HeightPixelsSchema.exactOptional().openapi({
+                    description:
+                      'The height of the output image that is used in conjunction with the <code>WidthPixels</code> parameter. When both <code>HeightPixels</code> and <code>WidthPixels</code> parameters are provided, the image will be stretched to fit the specified aspect ratio. If only the <code>HeightPixels</code> parameter is provided, its original aspect ratio will be used to calculate the <code>WidthPixels</code> ratio. If neither parameter is provided, the original image size will be returned.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4198,16 +3613,12 @@ export const postUpdateMediaStorageConfigurationRoute = createRoute({
                 .openapi({ description: 'The Amazon Resource Name (ARN) of the channel.' }),
               MediaStorageConfiguration: z
                 .object({
-                  StreamARN: ResourceARNSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The Amazon Resource Name (ARN) of the stream ' }),
-                  ).exactOptional(),
-                  Status: MediaStorageConfigurationStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The status of the media storage configuration.' }),
-                  ).exactOptional(),
+                  StreamARN: ResourceARNSchema.exactOptional().openapi({
+                    description: 'The Amazon Resource Name (ARN) of the stream ',
+                  }),
+                  Status: MediaStorageConfigurationStatusSchema.exactOptional().openapi({
+                    description: 'The status of the media storage configuration.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4297,22 +3708,14 @@ export const postUpdateNotificationConfigurationRoute = createRoute({
                 }),
               NotificationConfiguration: z
                 .object({
-                  Status: ConfigurationStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Indicates if a notification configuration is enabled or disabled.',
-                      }),
-                  ).exactOptional(),
-                  DestinationConfig: NotificationDestinationConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The destination information required to deliver a notification to a customer.',
-                      }),
-                  ).exactOptional(),
+                  Status: ConfigurationStatusSchema.exactOptional().openapi({
+                    description:
+                      'Indicates if a notification configuration is enabled or disabled.',
+                  }),
+                  DestinationConfig: NotificationDestinationConfigSchema.exactOptional().openapi({
+                    description:
+                      'The destination information required to deliver a notification to a customer.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4402,14 +3805,10 @@ export const postUpdateSignalingChannelRoute = createRoute({
                 }),
               SingleMasterConfiguration: z
                 .object({
-                  MessageTtlSeconds: MessageTtlSecondsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The period of time a signaling channel retains undelivered messages before they are discarded.',
-                      }),
-                  ).exactOptional(),
+                  MessageTtlSeconds: MessageTtlSecondsSchema.exactOptional().openapi({
+                    description:
+                      'The period of time a signaling channel retains undelivered messages before they are discarded.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

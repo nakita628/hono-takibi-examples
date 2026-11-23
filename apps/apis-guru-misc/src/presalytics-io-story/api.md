@@ -6,7 +6,7 @@ This API is the main entry point for creating, editing and publishing analytics 
 
 Base URLs:
 
-* <a href="https://api.apis.guru/story">https://api.apis.guru/story</a>
+* <a href="/story">/story</a>
 
 # Authentication
 

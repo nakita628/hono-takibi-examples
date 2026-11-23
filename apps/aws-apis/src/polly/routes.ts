@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const DeleteLexiconOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('DeleteLexiconOutput')
 
@@ -164,47 +164,29 @@ const EngineListSchema = z.array(EngineSchema).openapi('EngineList')
 
 const VoiceSchema = z
   .object({
-    Gender: GenderSchema.and(
-      z.any().openapi({ description: 'Gender of the voice.' }),
-    ).exactOptional(),
-    Id: VoiceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Polly assigned voice ID. This is the ID that you specify when calling the <code>SynthesizeSpeech</code> operation.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z.any().openapi({ description: 'Language code of the voice.' }),
-    ).exactOptional(),
-    LanguageName: LanguageNameSchema.and(
-      z.any().openapi({ description: 'Human readable name of the language in English.' }),
-    ).exactOptional(),
-    Name: VoiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the voice (for example, Salli, Kendra, etc.). This provides a human readable voice name that you might display in your application.',
-        }),
-    ).exactOptional(),
-    AdditionalLanguageCodes: LanguageCodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Additional codes for languages available for the specified voice in addition to its default language. </p> <p>For example, the default language for Aditi is Indian English (en-IN) because it was first used for that language. Since Aditi is bilingual and fluent in both Indian English and Hindi, this parameter would show the code <code>hi-IN</code>.</p>',
-        }),
-    ).exactOptional(),
-    SupportedEngines: EngineListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which engines (<code>standard</code> or <code>neural</code>) that are supported by a given voice.',
-        }),
-    ).exactOptional(),
+    Gender: GenderSchema.exactOptional().openapi({ description: 'Gender of the voice.' }),
+    Id: VoiceIdSchema.exactOptional().openapi({
+      description:
+        'Amazon Polly assigned voice ID. This is the ID that you specify when calling the <code>SynthesizeSpeech</code> operation.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description: 'Language code of the voice.',
+    }),
+    LanguageName: LanguageNameSchema.exactOptional().openapi({
+      description: 'Human readable name of the language in English.',
+    }),
+    Name: VoiceNameSchema.exactOptional().openapi({
+      description:
+        'Name of the voice (for example, Salli, Kendra, etc.). This provides a human readable voice name that you might display in your application.',
+    }),
+    AdditionalLanguageCodes: LanguageCodeListSchema.exactOptional().openapi({
+      description:
+        '<p>Additional codes for languages available for the specified voice in addition to its default language. </p> <p>For example, the default language for Aditi is Indian English (en-IN) because it was first used for that language. Since Aditi is bilingual and fluent in both Indian English and Hindi, this parameter would show the code <code>hi-IN</code>.</p>',
+    }),
+    SupportedEngines: EngineListSchema.exactOptional().openapi({
+      description:
+        'Specifies which engines (<code>standard</code> or <code>neural</code>) that are supported by a given voice.',
+    }),
   })
   .openapi({ description: 'Description of the voice.', required: [] })
   .openapi('Voice')
@@ -215,17 +197,13 @@ const NextTokenSchema = z.string().min(0).max(4096).openapi('NextToken')
 
 const DescribeVoicesOutputSchema = z
   .object({
-    Voices: VoiceListSchema.and(
-      z.any().openapi({ description: 'A list of voices with their properties.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use in the next request to continue the listing of voices. <code>NextToken</code> is returned only if the response is truncated.',
-        }),
-    ).exactOptional(),
+    Voices: VoiceListSchema.exactOptional().openapi({
+      description: 'A list of voices with their properties.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use in the next request to continue the listing of voices. <code>NextToken</code> is returned only if the response is truncated.',
+    }),
   })
   .openapi({
     example: {
@@ -268,17 +246,11 @@ const LexiconNameSchema = z
 
 const LexiconSchema = z
   .object({
-    Content: LexiconContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lexicon content in string format. The content of a lexicon must be in PLS format.',
-        }),
-    ).exactOptional(),
-    Name: LexiconNameSchema.and(
-      z.any().openapi({ description: 'Name of the lexicon.' }),
-    ).exactOptional(),
+    Content: LexiconContentSchema.exactOptional().openapi({
+      description:
+        'Lexicon content in string format. The content of a lexicon must be in PLS format.',
+    }),
+    Name: LexiconNameSchema.exactOptional().openapi({ description: 'Name of the lexicon.' }),
   })
   .openapi({
     description:
@@ -299,34 +271,26 @@ const SizeSchema = z.int().openapi('Size')
 
 const LexiconAttributesSchema = z
   .object({
-    Alphabet: AlphabetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Phonetic alphabet used in the lexicon. Valid values are <code>ipa</code> and <code>x-sampa</code>.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Language code that the lexicon applies to. A lexicon with a language code such as "en" would be applied to all English languages (en-GB, en-US, en-AUS, en-WLS, and so on.',
-        }),
-    ).exactOptional(),
-    LastModified: LastModifiedSchema.and(
-      z.any().openapi({ description: 'Date lexicon was last modified (a timestamp value).' }),
-    ).exactOptional(),
-    LexiconArn: LexiconArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the lexicon.' }),
-    ).exactOptional(),
-    LexemesCount: LexemesCountSchema.and(
-      z.any().openapi({ description: 'Number of lexemes in the lexicon.' }),
-    ).exactOptional(),
-    Size: SizeSchema.and(
-      z.any().openapi({ description: 'Total size of the lexicon, in characters.' }),
-    ).exactOptional(),
+    Alphabet: AlphabetSchema.exactOptional().openapi({
+      description:
+        'Phonetic alphabet used in the lexicon. Valid values are <code>ipa</code> and <code>x-sampa</code>.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        'Language code that the lexicon applies to. A lexicon with a language code such as "en" would be applied to all English languages (en-GB, en-US, en-AUS, en-WLS, and so on.',
+    }),
+    LastModified: LastModifiedSchema.exactOptional().openapi({
+      description: 'Date lexicon was last modified (a timestamp value).',
+    }),
+    LexiconArn: LexiconArnSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the lexicon.',
+    }),
+    LexemesCount: LexemesCountSchema.exactOptional().openapi({
+      description: 'Number of lexemes in the lexicon.',
+    }),
+    Size: SizeSchema.exactOptional().openapi({
+      description: 'Total size of the lexicon, in characters.',
+    }),
   })
   .openapi({
     description:
@@ -337,21 +301,13 @@ const LexiconAttributesSchema = z
 
 const GetLexiconOutputSchema = z
   .object({
-    Lexicon: LexiconSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Lexicon object that provides name and the string content of the lexicon. ',
-        }),
-    ).exactOptional(),
-    LexiconAttributes: LexiconAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata of the lexicon, including phonetic alphabetic used, language code, lexicon ARN, number of lexemes defined in the lexicon, and size of lexicon in bytes.',
-        }),
-    ).exactOptional(),
+    Lexicon: LexiconSchema.exactOptional().openapi({
+      description: 'Lexicon object that provides name and the string content of the lexicon. ',
+    }),
+    LexiconAttributes: LexiconAttributesSchema.exactOptional().openapi({
+      description:
+        'Metadata of the lexicon, including phonetic alphabetic used, language code, lexicon ARN, number of lexemes defined in the lexicon, and size of lexicon in bytes.',
+    }),
   })
   .openapi({
     example: {
@@ -411,95 +367,59 @@ const TextTypeSchema = z.enum(['ssml', 'text']).openapi('TextType')
 
 const SynthesisTaskSchema = z
   .object({
-    Engine: EngineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the engine (<code>standard</code> or <code>neural</code>) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.',
-        }),
-    ).exactOptional(),
-    TaskId: TaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Polly generated identifier for a speech synthesis task.',
-        }),
-    ).exactOptional(),
-    TaskStatus: TaskStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the individual speech synthesis task.' }),
-    ).exactOptional(),
-    TaskStatusReason: TaskStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reason for the current status of a specific speech synthesis task, including errors if the task has failed.',
-        }),
-    ).exactOptional(),
-    OutputUri: OutputUriSchema.and(
-      z.any().openapi({ description: 'Pathway for the output speech file.' }),
-    ).exactOptional(),
-    CreationTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'Timestamp for the time the synthesis task was started.' }),
-    ).exactOptional(),
-    RequestCharacters: RequestCharactersSchema.and(
-      z.any().openapi({ description: 'Number of billable characters synthesized.' }),
-    ).exactOptional(),
-    SnsTopicArn: SnsTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ARN for the SNS topic optionally used for providing status notification for a speech synthesis task.',
-        }),
-    ).exactOptional(),
-    LexiconNames: LexiconNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of one or more pronunciation lexicon names you want the service to apply during synthesis. Lexicons are applied only if the language of the lexicon is the same as the language of the voice. ',
-        }),
-    ).exactOptional(),
-    OutputFormat: OutputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. ',
-        }),
-    ).exactOptional(),
-    SampleRate: SampleRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are "8000", "16000", "22050", and "24000". The default value for standard voices is "22050". The default value for neural voices is "24000".</p> <p>Valid values for pcm are "8000" and "16000" The default value is "16000". </p>',
-        }),
-    ).exactOptional(),
-    SpeechMarkTypes: SpeechMarkTypeListSchema.and(
-      z.any().openapi({ description: 'The type of speech marks returned for the input text.' }),
-    ).exactOptional(),
-    TextType: TextTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the input text is plain text or SSML. The default value is plain text. ',
-        }),
-    ).exactOptional(),
-    VoiceId: VoiceIdSchema.and(
-      z.any().openapi({ description: 'Voice ID to use for the synthesis. ' }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional language code for a synthesis task. This is only necessary if using a bilingual voice, such as Aditi, which can be used for either Indian English (en-IN) or Hindi (hi-IN). </p> <p>If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice. The default language for any voice is the one returned by the <a href="https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html">DescribeVoices</a> operation for the <code>LanguageCode</code> parameter. For example, if no language code is specified, Aditi will use Indian English rather than Hindi.</p>',
-        }),
-    ).exactOptional(),
+    Engine: EngineSchema.exactOptional().openapi({
+      description:
+        'Specifies the engine (<code>standard</code> or <code>neural</code>) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.',
+    }),
+    TaskId: TaskIdSchema.exactOptional().openapi({
+      description: 'The Amazon Polly generated identifier for a speech synthesis task.',
+    }),
+    TaskStatus: TaskStatusSchema.exactOptional().openapi({
+      description: 'Current status of the individual speech synthesis task.',
+    }),
+    TaskStatusReason: TaskStatusReasonSchema.exactOptional().openapi({
+      description:
+        'Reason for the current status of a specific speech synthesis task, including errors if the task has failed.',
+    }),
+    OutputUri: OutputUriSchema.exactOptional().openapi({
+      description: 'Pathway for the output speech file.',
+    }),
+    CreationTime: DateTimeSchema.exactOptional().openapi({
+      description: 'Timestamp for the time the synthesis task was started.',
+    }),
+    RequestCharacters: RequestCharactersSchema.exactOptional().openapi({
+      description: 'Number of billable characters synthesized.',
+    }),
+    SnsTopicArn: SnsTopicArnSchema.exactOptional().openapi({
+      description:
+        'ARN for the SNS topic optionally used for providing status notification for a speech synthesis task.',
+    }),
+    LexiconNames: LexiconNameListSchema.exactOptional().openapi({
+      description:
+        'List of one or more pronunciation lexicon names you want the service to apply during synthesis. Lexicons are applied only if the language of the lexicon is the same as the language of the voice. ',
+    }),
+    OutputFormat: OutputFormatSchema.exactOptional().openapi({
+      description:
+        'The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. ',
+    }),
+    SampleRate: SampleRateSchema.exactOptional().openapi({
+      description:
+        '<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are "8000", "16000", "22050", and "24000". The default value for standard voices is "22050". The default value for neural voices is "24000".</p> <p>Valid values for pcm are "8000" and "16000" The default value is "16000". </p>',
+    }),
+    SpeechMarkTypes: SpeechMarkTypeListSchema.exactOptional().openapi({
+      description: 'The type of speech marks returned for the input text.',
+    }),
+    TextType: TextTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the input text is plain text or SSML. The default value is plain text. ',
+    }),
+    VoiceId: VoiceIdSchema.exactOptional().openapi({
+      description: 'Voice ID to use for the synthesis. ',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>Optional language code for a synthesis task. This is only necessary if using a bilingual voice, such as Aditi, which can be used for either Indian English (en-IN) or Hindi (hi-IN). </p> <p>If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice. The default language for any voice is the one returned by the <a href="https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html">DescribeVoices</a> operation for the <code>LanguageCode</code> parameter. For example, if no language code is specified, Aditi will use Indian English rather than Hindi.</p>',
+    }),
   })
   .openapi({
     description: 'SynthesisTask object that provides information about a speech synthesis task.',
@@ -509,14 +429,10 @@ const SynthesisTaskSchema = z
 
 const GetSpeechSynthesisTaskOutputSchema = z
   .object({
-    SynthesisTask: SynthesisTaskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'SynthesisTask object that provides information from the requested task, including output format, creation time, task status, and so on.',
-        }),
-    ).exactOptional(),
+    SynthesisTask: SynthesisTaskSchema.exactOptional().openapi({
+      description:
+        'SynthesisTask object that provides information from the requested task, including output format, creation time, task status, and so on.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSpeechSynthesisTaskOutput')
@@ -527,12 +443,10 @@ const SynthesisTaskNotFoundExceptionSchema = z.any().openapi('SynthesisTaskNotFo
 
 const LexiconDescriptionSchema = z
   .object({
-    Name: LexiconNameSchema.and(
-      z.any().openapi({ description: 'Name of the lexicon.' }),
-    ).exactOptional(),
-    Attributes: LexiconAttributesSchema.and(
-      z.any().openapi({ description: 'Provides lexicon metadata.' }),
-    ).exactOptional(),
+    Name: LexiconNameSchema.exactOptional().openapi({ description: 'Name of the lexicon.' }),
+    Attributes: LexiconAttributesSchema.exactOptional().openapi({
+      description: 'Provides lexicon metadata.',
+    }),
   })
   .openapi({ description: 'Describes the content of the lexicon.', required: [] })
   .openapi('LexiconDescription')
@@ -543,17 +457,13 @@ const LexiconDescriptionListSchema = z
 
 const ListLexiconsOutputSchema = z
   .object({
-    Lexicons: LexiconDescriptionListSchema.and(
-      z.any().openapi({ description: 'A list of lexicon names and attributes.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use in the next request to continue the listing of lexicons. <code>NextToken</code> is returned only if the response is truncated.',
-        }),
-    ).exactOptional(),
+    Lexicons: LexiconDescriptionListSchema.exactOptional().openapi({
+      description: 'A list of lexicon names and attributes.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use in the next request to continue the listing of lexicons. <code>NextToken</code> is returned only if the response is truncated.',
+    }),
   })
   .openapi({
     example: {
@@ -579,27 +489,22 @@ const SynthesisTasksSchema = z.array(SynthesisTaskSchema).openapi('SynthesisTask
 
 const ListSpeechSynthesisTasksOutputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque pagination token returned from the previous List operation in this request. If present, this indicates where to continue the listing.',
-        }),
-    ).exactOptional(),
-    SynthesisTasks: SynthesisTasksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of SynthesisTask objects that provides information from the specified task in the list request, including output format, creation time, task status, and so on.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An opaque pagination token returned from the previous List operation in this request. If present, this indicates where to continue the listing.',
+    }),
+    SynthesisTasks: SynthesisTasksSchema.exactOptional().openapi({
+      description:
+        'List of SynthesisTask objects that provides information from the specified task in the list request, including output format, creation time, task status, and so on.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSpeechSynthesisTasksOutput')
 
-const PutLexiconOutputSchema = z.object({}).openapi({ example: {} }).openapi('PutLexiconOutput')
+const PutLexiconOutputSchema = z
+  .looseObject({})
+  .openapi({ example: {} })
+  .openapi('PutLexiconOutput')
 
 const InvalidLexiconExceptionSchema = z.any().openapi('InvalidLexiconException')
 
@@ -617,14 +522,10 @@ const MaxLexiconsNumberExceededExceptionSchema = z
 
 const StartSpeechSynthesisTaskOutputSchema = z
   .object({
-    SynthesisTask: SynthesisTaskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'SynthesisTask object that provides information and attributes about a newly submitted speech synthesis task.',
-        }),
-    ).exactOptional(),
+    SynthesisTask: SynthesisTaskSchema.exactOptional().openapi({
+      description:
+        'SynthesisTask object that provides information and attributes about a newly submitted speech synthesis task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSpeechSynthesisTaskOutput')
@@ -657,9 +558,9 @@ const AudioStreamSchema = z.string().openapi('AudioStream')
 
 const SynthesizeSpeechOutputSchema = z
   .object({
-    AudioStream: AudioStreamSchema.and(
-      z.any().openapi({ description: ' Stream containing the synthesized speech. ' }),
-    ).exactOptional(),
+    AudioStream: AudioStreamSchema.exactOptional().openapi({
+      description: ' Stream containing the synthesized speech. ',
+    }),
   })
   .openapi({
     example: { AudioStream: 'TEXT', ContentType: 'audio/mpeg', RequestCharacters: 37 },
@@ -670,36 +571,36 @@ const SynthesizeSpeechOutputSchema = z
 const ContentTypeSchema = z.string().openapi('ContentType')
 
 const DeleteLexiconInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLexiconInput' })
   .openapi('DeleteLexiconInput')
 
 const IncludeAdditionalLanguageCodesSchema = z.boolean().openapi('IncludeAdditionalLanguageCodes')
 
 const DescribeVoicesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeVoicesInput' })
   .openapi('DescribeVoicesInput')
 
 const GetLexiconInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLexiconInput' })
   .openapi('GetLexiconInput')
 
 const GetSpeechSynthesisTaskInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSpeechSynthesisTaskInput' })
   .openapi('GetSpeechSynthesisTaskInput')
 
 const ListLexiconsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLexiconsInput' })
   .openapi('ListLexiconsInput')
 
 const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListSpeechSynthesisTasksInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSpeechSynthesisTasksInput' })
   .openapi('ListSpeechSynthesisTasksInput')
 
@@ -715,9 +616,9 @@ const OutputS3KeyPrefixSchema = z
 
 const PutLexiconInputSchema = z
   .object({
-    Content: LexiconContentSchema.and(
-      z.any().openapi({ description: 'Content of the PLS lexicon as string data.' }),
-    ),
+    Content: LexiconContentSchema.openapi({
+      description: 'Content of the PLS lexicon as string data.',
+    }),
   })
   .openapi({ required: ['Content'], title: 'PutLexiconInput' })
   .openapi('PutLexiconInput')
@@ -726,84 +627,48 @@ const TextSchema = z.string().openapi('Text')
 
 const StartSpeechSynthesisTaskInputSchema = z
   .object({
-    Engine: EngineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the engine (<code>standard</code> or <code>neural</code>) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional language code for the Speech Synthesis request. This is only necessary if using a bilingual voice, such as Aditi, which can be used for either Indian English (en-IN) or Hindi (hi-IN). </p> <p>If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice. The default language for any voice is the one returned by the <a href="https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html">DescribeVoices</a> operation for the <code>LanguageCode</code> parameter. For example, if no language code is specified, Aditi will use Indian English rather than Hindi.</p>',
-        }),
-    ).exactOptional(),
-    LexiconNames: LexiconNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of one or more pronunciation lexicon names you want the service to apply during synthesis. Lexicons are applied only if the language of the lexicon is the same as the language of the voice. ',
-        }),
-    ).exactOptional(),
-    OutputFormat: OutputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. ',
-        }),
-    ),
-    OutputS3BucketName: OutputS3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Amazon S3 bucket name to which the output file will be saved.' }),
-    ),
-    OutputS3KeyPrefix: OutputS3KeyPrefixSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 key prefix for the output speech file.' }),
-    ).exactOptional(),
-    SampleRate: SampleRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are "8000", "16000", "22050", and "24000". The default value for standard voices is "22050". The default value for neural voices is "24000".</p> <p>Valid values for pcm are "8000" and "16000" The default value is "16000". </p>',
-        }),
-    ).exactOptional(),
-    SnsTopicArn: SnsTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ARN for the SNS topic optionally used for providing status notification for a speech synthesis task.',
-        }),
-    ).exactOptional(),
-    SpeechMarkTypes: SpeechMarkTypeListSchema.and(
-      z.any().openapi({ description: 'The type of speech marks returned for the input text.' }),
-    ).exactOptional(),
-    Text: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input text to synthesize. If you specify ssml as the TextType, follow the SSML format for the input text. ',
-        }),
-    ),
-    TextType: TextTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the input text is plain text or SSML. The default value is plain text. ',
-        }),
-    ).exactOptional(),
-    VoiceId: VoiceIdSchema.and(
-      z.any().openapi({ description: 'Voice ID to use for the synthesis. ' }),
-    ),
+    Engine: EngineSchema.exactOptional().openapi({
+      description:
+        'Specifies the engine (<code>standard</code> or <code>neural</code>) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>Optional language code for the Speech Synthesis request. This is only necessary if using a bilingual voice, such as Aditi, which can be used for either Indian English (en-IN) or Hindi (hi-IN). </p> <p>If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice. The default language for any voice is the one returned by the <a href="https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html">DescribeVoices</a> operation for the <code>LanguageCode</code> parameter. For example, if no language code is specified, Aditi will use Indian English rather than Hindi.</p>',
+    }),
+    LexiconNames: LexiconNameListSchema.exactOptional().openapi({
+      description:
+        'List of one or more pronunciation lexicon names you want the service to apply during synthesis. Lexicons are applied only if the language of the lexicon is the same as the language of the voice. ',
+    }),
+    OutputFormat: OutputFormatSchema.openapi({
+      description:
+        'The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. ',
+    }),
+    OutputS3BucketName: OutputS3BucketNameSchema.openapi({
+      description: 'Amazon S3 bucket name to which the output file will be saved.',
+    }),
+    OutputS3KeyPrefix: OutputS3KeyPrefixSchema.exactOptional().openapi({
+      description: 'The Amazon S3 key prefix for the output speech file.',
+    }),
+    SampleRate: SampleRateSchema.exactOptional().openapi({
+      description:
+        '<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are "8000", "16000", "22050", and "24000". The default value for standard voices is "22050". The default value for neural voices is "24000".</p> <p>Valid values for pcm are "8000" and "16000" The default value is "16000". </p>',
+    }),
+    SnsTopicArn: SnsTopicArnSchema.exactOptional().openapi({
+      description:
+        'ARN for the SNS topic optionally used for providing status notification for a speech synthesis task.',
+    }),
+    SpeechMarkTypes: SpeechMarkTypeListSchema.exactOptional().openapi({
+      description: 'The type of speech marks returned for the input text.',
+    }),
+    Text: TextSchema.openapi({
+      description:
+        'The input text to synthesize. If you specify ssml as the TextType, follow the SSML format for the input text. ',
+    }),
+    TextType: TextTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the input text is plain text or SSML. The default value is plain text. ',
+    }),
+    VoiceId: VoiceIdSchema.openapi({ description: 'Voice ID to use for the synthesis. ' }),
   })
   .openapi({
     required: ['OutputFormat', 'OutputS3BucketName', 'Text', 'VoiceId'],
@@ -813,73 +678,41 @@ const StartSpeechSynthesisTaskInputSchema = z
 
 const SynthesizeSpeechInputSchema = z
   .object({
-    Engine: EngineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the engine (<code>standard</code> or <code>neural</code>) for Amazon Polly to use when processing input text for speech synthesis. For information on Amazon Polly voices and which voices are available in standard-only, NTTS-only, and both standard and NTTS formats, see <a href="https://docs.aws.amazon.com/polly/latest/dg/voicelist.html">Available Voices</a>.</p> <p> <b>NTTS-only voices</b> </p> <p>When using NTTS-only voices such as Kevin (en-US), this parameter is required and must be set to <code>neural</code>. If the engine is not specified, or is set to <code>standard</code>, this will result in an error. </p> <p>Type: String</p> <p>Valid Values: <code>standard</code> | <code>neural</code> </p> <p>Required: Yes</p> <p> <b>Standard voices</b> </p> <p>For standard voices, this is not required; the engine parameter defaults to <code>standard</code>. If the engine is not specified, or is set to <code>standard</code> and an NTTS-only voice is selected, this will result in an error. </p>',
-        }),
-    ).exactOptional(),
-    LanguageCode: LanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional language code for the Synthesize Speech request. This is only necessary if using a bilingual voice, such as Aditi, which can be used for either Indian English (en-IN) or Hindi (hi-IN). </p> <p>If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice. The default language for any voice is the one returned by the <a href="https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html">DescribeVoices</a> operation for the <code>LanguageCode</code> parameter. For example, if no language code is specified, Aditi will use Indian English rather than Hindi.</p>',
-        }),
-    ).exactOptional(),
-    LexiconNames: LexiconNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of one or more pronunciation lexicon names you want the service to apply during synthesis. Lexicons are applied only if the language of the lexicon is the same as the language of the voice. For information about storing lexicons, see <a href="https://docs.aws.amazon.com/polly/latest/dg/API_PutLexicon.html">PutLexicon</a>.',
-        }),
-    ).exactOptional(),
-    OutputFormat: OutputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. </p> <p>When pcm is used, the content returned is audio/pcm in a signed 16-bit, 1 channel (mono), little-endian format. </p>',
-        }),
-    ),
-    SampleRate: SampleRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are "8000", "16000", "22050", and "24000". The default value for standard voices is "22050". The default value for neural voices is "24000".</p> <p>Valid values for pcm are "8000" and "16000" The default value is "16000". </p>',
-        }),
-    ).exactOptional(),
-    SpeechMarkTypes: SpeechMarkTypeListSchema.and(
-      z.any().openapi({ description: 'The type of speech marks returned for the input text.' }),
-    ).exactOptional(),
-    Text: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Input text to synthesize. If you specify <code>ssml</code> as the <code>TextType</code>, follow the SSML format for the input text. ',
-        }),
-    ),
-    TextType: TextTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether the input text is plain text or SSML. The default value is plain text. For more information, see <a href="https://docs.aws.amazon.com/polly/latest/dg/ssml.html">Using SSML</a>.',
-        }),
-    ).exactOptional(),
-    VoiceId: VoiceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Voice ID to use for the synthesis. You can get a list of available voice IDs by calling the <a href="https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html">DescribeVoices</a> operation. ',
-        }),
-    ),
+    Engine: EngineSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the engine (<code>standard</code> or <code>neural</code>) for Amazon Polly to use when processing input text for speech synthesis. For information on Amazon Polly voices and which voices are available in standard-only, NTTS-only, and both standard and NTTS formats, see <a href="https://docs.aws.amazon.com/polly/latest/dg/voicelist.html">Available Voices</a>.</p> <p> <b>NTTS-only voices</b> </p> <p>When using NTTS-only voices such as Kevin (en-US), this parameter is required and must be set to <code>neural</code>. If the engine is not specified, or is set to <code>standard</code>, this will result in an error. </p> <p>Type: String</p> <p>Valid Values: <code>standard</code> | <code>neural</code> </p> <p>Required: Yes</p> <p> <b>Standard voices</b> </p> <p>For standard voices, this is not required; the engine parameter defaults to <code>standard</code>. If the engine is not specified, or is set to <code>standard</code> and an NTTS-only voice is selected, this will result in an error. </p>',
+    }),
+    LanguageCode: LanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>Optional language code for the Synthesize Speech request. This is only necessary if using a bilingual voice, such as Aditi, which can be used for either Indian English (en-IN) or Hindi (hi-IN). </p> <p>If a bilingual voice is used and no language code is specified, Amazon Polly uses the default language of the bilingual voice. The default language for any voice is the one returned by the <a href="https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html">DescribeVoices</a> operation for the <code>LanguageCode</code> parameter. For example, if no language code is specified, Aditi will use Indian English rather than Hindi.</p>',
+    }),
+    LexiconNames: LexiconNameListSchema.exactOptional().openapi({
+      description:
+        'List of one or more pronunciation lexicon names you want the service to apply during synthesis. Lexicons are applied only if the language of the lexicon is the same as the language of the voice. For information about storing lexicons, see <a href="https://docs.aws.amazon.com/polly/latest/dg/API_PutLexicon.html">PutLexicon</a>.',
+    }),
+    OutputFormat: OutputFormatSchema.openapi({
+      description:
+        '<p> The format in which the returned output will be encoded. For audio stream, this will be mp3, ogg_vorbis, or pcm. For speech marks, this will be json. </p> <p>When pcm is used, the content returned is audio/pcm in a signed 16-bit, 1 channel (mono), little-endian format. </p>',
+    }),
+    SampleRate: SampleRateSchema.exactOptional().openapi({
+      description:
+        '<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are "8000", "16000", "22050", and "24000". The default value for standard voices is "22050". The default value for neural voices is "24000".</p> <p>Valid values for pcm are "8000" and "16000" The default value is "16000". </p>',
+    }),
+    SpeechMarkTypes: SpeechMarkTypeListSchema.exactOptional().openapi({
+      description: 'The type of speech marks returned for the input text.',
+    }),
+    Text: TextSchema.openapi({
+      description:
+        ' Input text to synthesize. If you specify <code>ssml</code> as the <code>TextType</code>, follow the SSML format for the input text. ',
+    }),
+    TextType: TextTypeSchema.exactOptional().openapi({
+      description:
+        ' Specifies whether the input text is plain text or SSML. The default value is plain text. For more information, see <a href="https://docs.aws.amazon.com/polly/latest/dg/ssml.html">Using SSML</a>.',
+    }),
+    VoiceId: VoiceIdSchema.openapi({
+      description:
+        ' Voice ID to use for the synthesis. You can get a list of available voice IDs by calling the <a href="https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html">DescribeVoices</a> operation. ',
+    }),
   })
   .openapi({ required: ['OutputFormat', 'Text', 'VoiceId'], title: 'SynthesizeSpeechInput' })
   .openapi('SynthesizeSpeechInput')

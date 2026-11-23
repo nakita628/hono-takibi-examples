@@ -12,7 +12,7 @@ Base URLs:
 
 * <a href="http://meshery.local">http://meshery.local</a>
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 License: <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache-2.0</a>
 

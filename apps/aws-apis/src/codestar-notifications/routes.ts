@@ -7,9 +7,9 @@ const NotificationRuleArnSchema = z
 
 const CreateNotificationRuleResultSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the notification rule.' }),
-    ).exactOptional(),
+    Arn: NotificationRuleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the notification rule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateNotificationRuleResult')
@@ -25,21 +25,13 @@ const TargetAddressSchema = z.string().min(1).max(320).openapi('TargetAddress')
 
 const TargetSchema = z
   .object({
-    TargetType: TargetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target type. Can be an Chatbot topic or Chatbot client.</p> <ul> <li> <p>Chatbot topics are specified as <code>SNS</code>.</p> </li> <li> <p>Chatbot clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TargetAddress: TargetAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client.',
-        }),
-    ).exactOptional(),
+    TargetType: TargetTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The target type. Can be an Chatbot topic or Chatbot client.</p> <ul> <li> <p>Chatbot topics are specified as <code>SNS</code>.</p> </li> <li> <p>Chatbot clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>',
+    }),
+    TargetAddress: TargetAddressSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client.',
+    }),
   })
   .openapi({
     description:
@@ -68,18 +60,14 @@ const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
 
 const DeleteNotificationRuleResultSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the deleted notification rule.',
-        }),
-    ).exactOptional(),
+    Arn: NotificationRuleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the deleted notification rule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteNotificationRuleResult')
 
-const DeleteTargetResultSchema = z.object({}).openapi('DeleteTargetResult')
+const DeleteTargetResultSchema = z.looseObject({}).openapi('DeleteTargetResult')
 
 const NotificationRuleNameSchema = z
   .string()
@@ -100,23 +88,19 @@ const ResourceTypeSchema = z
 
 const EventTypeSummarySchema = z
   .object({
-    EventTypeId: EventTypeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the event. For a complete list of event types and IDs, see <a href="https://docs.aws.amazon.com/codestar-notifications/latest/userguide/concepts.html#concepts-api">Notification concepts</a> in the <i>Developer Tools Console User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service for which the event applies.' }),
-    ).exactOptional(),
-    EventTypeName: EventTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the event.' }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type of the event.' }),
-    ).exactOptional(),
+    EventTypeId: EventTypeIdSchema.exactOptional().openapi({
+      description:
+        'The system-generated ID of the event. For a complete list of event types and IDs, see <a href="https://docs.aws.amazon.com/codestar-notifications/latest/userguide/concepts.html#concepts-api">Notification concepts</a> in the <i>Developer Tools Console User Guide</i>.',
+    }),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({
+      description: 'The name of the service for which the event applies.',
+    }),
+    EventTypeName: EventTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the event.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type of the event.',
+    }),
   })
   .openapi({
     description: 'Returns information about an event that has triggered a notification rule.',
@@ -137,24 +121,16 @@ const TargetStatusSchema = z
 
 const TargetSummarySchema = z
   .object({
-    TargetAddress: TargetAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client.',
-        }),
-    ).exactOptional(),
-    TargetType: TargetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the target (for example, <code>SNS</code>).</p> <ul> <li> <p>Chatbot topics are specified as <code>SNS</code>.</p> </li> <li> <p>Chatbot clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TargetStatus: TargetStatusSchema.and(
-      z.any().openapi({ description: 'The status of the target.' }),
-    ).exactOptional(),
+    TargetAddress: TargetAddressSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client.',
+    }),
+    TargetType: TargetTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the target (for example, <code>SNS</code>).</p> <ul> <li> <p>Chatbot topics are specified as <code>SNS</code>.</p> </li> <li> <p>Chatbot clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>',
+    }),
+    TargetStatus: TargetStatusSchema.exactOptional().openapi({
+      description: 'The status of the target.',
+    }),
   })
   .openapi({
     description: 'Information about the targets specified for a notification rule.',
@@ -182,76 +158,44 @@ const TagsSchema = z.record(z.string(), TagValueSchema).openapi('Tags')
 
 const DescribeNotificationRuleResultSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the notification rule.' }),
-    ),
-    Name: NotificationRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the notification rule.' }),
-    ).exactOptional(),
-    EventTypes: EventTypeBatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the event types associated with the notification rule.',
-        }),
-    ).exactOptional(),
-    Resource: NotificationRuleResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource associated with the notification rule.',
-        }),
-    ).exactOptional(),
-    Targets: TargetsBatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the Chatbot topics and Chatbot clients associated with the notification rule.',
-        }),
-    ).exactOptional(),
-    DetailType: DetailTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of detail included in the notifications for this resource. BASIC will include only the contents of the event as it would appear in Amazon CloudWatch. FULL will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.',
-        }),
-    ).exactOptional(),
-    CreatedBy: NotificationRuleCreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or email alias of the person who created the notification rule.',
-        }),
-    ).exactOptional(),
-    Status: NotificationRuleStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the notification rule. Valid statuses are on (sending notifications) or off (not sending notifications).',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: CreatedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the notification rule was created, in timestamp format.',
-        }),
-    ).exactOptional(),
-    LastModifiedTimestamp: LastModifiedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time the notification rule was most recently updated, in timestamp format.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags associated with the notification rule.' }),
-    ).exactOptional(),
+    Arn: NotificationRuleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the notification rule.',
+    }),
+    Name: NotificationRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the notification rule.',
+    }),
+    EventTypes: EventTypeBatchSchema.exactOptional().openapi({
+      description: 'A list of the event types associated with the notification rule.',
+    }),
+    Resource: NotificationRuleResourceSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource associated with the notification rule.',
+    }),
+    Targets: TargetsBatchSchema.exactOptional().openapi({
+      description:
+        'A list of the Chatbot topics and Chatbot clients associated with the notification rule.',
+    }),
+    DetailType: DetailTypeSchema.exactOptional().openapi({
+      description:
+        'The level of detail included in the notifications for this resource. BASIC will include only the contents of the event as it would appear in Amazon CloudWatch. FULL will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.',
+    }),
+    CreatedBy: NotificationRuleCreatedBySchema.exactOptional().openapi({
+      description: 'The name or email alias of the person who created the notification rule.',
+    }),
+    Status: NotificationRuleStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the notification rule. Valid statuses are on (sending notifications) or off (not sending notifications).',
+    }),
+    CreatedTimestamp: CreatedTimestampSchema.exactOptional().openapi({
+      description: 'The date and time the notification rule was created, in timestamp format.',
+    }),
+    LastModifiedTimestamp: LastModifiedTimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time the notification rule was most recently updated, in timestamp format.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags associated with the notification rule.',
+    }),
   })
   .openapi({ required: ['Arn'] })
   .openapi('DescribeNotificationRuleResult')
@@ -265,22 +209,14 @@ const NextTokenSchema = z
 
 const ListEventTypesResultSchema = z
   .object({
-    EventTypes: EventTypeBatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about each event, including service name, resource type, event ID, and event name.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
+    EventTypes: EventTypeBatchSchema.exactOptional().openapi({
+      description:
+        'Information about each event, including service name, resource type, event ID, and event name.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventTypesResult')
@@ -293,21 +229,13 @@ const ListEventTypesFilterValueSchema = z.string().openapi('ListEventTypesFilter
 
 const ListEventTypesFilterSchema = z
   .object({
-    Name: ListEventTypesFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The system-generated name of the filter type you want to filter by.',
-        }),
-    ),
-    Value: ListEventTypesFilterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the resource type (for example, pipeline) or service name (for example, CodePipeline) that you want to filter by.',
-        }),
-    ),
+    Name: ListEventTypesFilterNameSchema.openapi({
+      description: 'The system-generated name of the filter type you want to filter by.',
+    }),
+    Value: ListEventTypesFilterValueSchema.openapi({
+      description:
+        'The name of the resource type (for example, pipeline) or service name (for example, CodePipeline) that you want to filter by.',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -322,12 +250,12 @@ const NotificationRuleIdSchema = z.string().min(1).max(40).openapi('Notification
 
 const NotificationRuleSummarySchema = z
   .object({
-    Id: NotificationRuleIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the notification rule.' }),
-    ).exactOptional(),
-    Arn: NotificationRuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the notification rule.' }),
-    ).exactOptional(),
+    Id: NotificationRuleIdSchema.exactOptional().openapi({
+      description: 'The unique ID of the notification rule.',
+    }),
+    Arn: NotificationRuleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the notification rule.',
+    }),
   })
   .openapi({ description: 'Information about a specified notification rule.', required: [] })
   .openapi('NotificationRuleSummary')
@@ -338,22 +266,14 @@ const NotificationRuleBatchSchema = z
 
 const ListNotificationRulesResultSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
-    NotificationRules: NotificationRuleBatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of notification rules for the Amazon Web Services account, by Amazon Resource Name (ARN) and ID. ',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
+    NotificationRules: NotificationRuleBatchSchema.exactOptional().openapi({
+      description:
+        'The list of notification rules for the Amazon Web Services account, by Amazon Resource Name (ARN) and ID. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListNotificationRulesResult')
@@ -369,22 +289,14 @@ const ListNotificationRulesFilterValueSchema = z
 
 const ListNotificationRulesFilterSchema = z
   .object({
-    Name: ListNotificationRulesFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the attribute you want to use to filter the returned notification rules.',
-        }),
-    ),
-    Value: ListNotificationRulesFilterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the attribute you want to use to filter the returned notification rules. For example, if you specify filtering by <i>RESOURCE</i> in Name, you might specify the ARN of a pipeline in CodePipeline for the value.',
-        }),
-    ),
+    Name: ListNotificationRulesFilterNameSchema.openapi({
+      description:
+        'The name of the attribute you want to use to filter the returned notification rules.',
+    }),
+    Value: ListNotificationRulesFilterValueSchema.openapi({
+      description:
+        'The value of the attribute you want to use to filter the returned notification rules. For example, if you specify filtering by <i>RESOURCE</i> in Name, you might specify the ARN of a pipeline in CodePipeline for the value.',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -395,26 +307,22 @@ const ListNotificationRulesFilterSchema = z
 
 const ListTagsForResourceResultSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags associated with the notification rule.' }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags associated with the notification rule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResult')
 
 const ListTargetsResultSchema = z
   .object({
-    Targets: TargetsBatchSchema.and(
-      z.any().openapi({ description: 'The list of notification rule targets. ' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of results.',
-        }),
-    ).exactOptional(),
+    Targets: TargetsBatchSchema.exactOptional().openapi({
+      description: 'The list of notification rule targets. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTargetsResult')
@@ -427,21 +335,13 @@ const ListTargetsFilterValueSchema = z.string().max(2048).openapi('ListTargetsFi
 
 const ListTargetsFilterSchema = z
   .object({
-    Name: ListTargetsFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the attribute you want to use to filter the returned targets.',
-        }),
-    ),
-    Value: ListTargetsFilterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the attribute you want to use to filter the returned targets. For example, if you specify <code>SNS</code> for the Target type, you could specify an Amazon Resource Name (ARN) for a topic as the value.',
-        }),
-    ),
+    Name: ListTargetsFilterNameSchema.openapi({
+      description: 'The name of the attribute you want to use to filter the returned targets.',
+    }),
+    Value: ListTargetsFilterValueSchema.openapi({
+      description:
+        'The value of the attribute you want to use to filter the returned targets. For example, if you specify <code>SNS</code> for the Target type, you could specify an Amazon Resource Name (ARN) for a topic as the value.',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -452,42 +352,34 @@ const ListTargetsFilterSchema = z
 
 const SubscribeResultSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the notification rule for which you have created assocations.',
-        }),
-    ).exactOptional(),
+    Arn: NotificationRuleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the notification rule for which you have created assocations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SubscribeResult')
 
 const TagResourceResultSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The list of tags associated with the resource.' }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The list of tags associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TagResourceResult')
 
 const UnsubscribeResultSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the the notification rule from which you have removed a subscription.',
-        }),
-    ),
+    Arn: NotificationRuleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the the notification rule from which you have removed a subscription.',
+    }),
   })
   .openapi({ required: ['Arn'] })
   .openapi('UnsubscribeResult')
 
-const UntagResourceResultSchema = z.object({}).openapi('UntagResourceResult')
+const UntagResourceResultSchema = z.looseObject({}).openapi('UntagResourceResult')
 
 const TagKeySchema = z
   .string()
@@ -496,7 +388,7 @@ const TagKeySchema = z
   .max(128)
   .openapi('TagKey')
 
-const UpdateNotificationRuleResultSchema = z.object({}).openapi('UpdateNotificationRuleResult')
+const UpdateNotificationRuleResultSchema = z.looseObject({}).openapi('UpdateNotificationRuleResult')
 
 const ClientRequestTokenSchema = z
   .string()
@@ -511,70 +403,38 @@ const TargetsSchema = z.array(TargetSchema).max(10).openapi('Targets')
 
 const CreateNotificationRuleRequestSchema = z
   .object({
-    Name: NotificationRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the notification rule. Notification rule names must be unique in your Amazon Web Services account.',
-        }),
-    ),
-    EventTypeIds: EventTypeIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of event types associated with this notification rule. For a list of allowed events, see <a>EventTypeSummary</a>.',
-        }),
-    ),
-    Resource: NotificationRuleResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to associate with the notification rule. Supported resources include pipelines in CodePipeline, repositories in CodeCommit, and build projects in CodeBuild.',
-        }),
-    ),
-    Targets: TargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Amazon Resource Names (ARNs) of Amazon Simple Notification Service topics and Chatbot clients to associate with the notification rule.',
-        }),
-    ),
-    DetailType: DetailTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of detail to include in the notifications for this resource. <code>BASIC</code> will include only the contents of the event as it would appear in Amazon CloudWatch. <code>FULL</code> will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request with the same parameters is received and a token is included, the request returns information about the initial request that used that token.</p> <note> <p>The Amazon Web Services SDKs prepopulate client request tokens. If you are using an Amazon Web Services SDK, an idempotency token is created for you.</p> </note>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to apply to this notification rule. Key names cannot start with "<code>aws</code>". ',
-        }),
-    ).exactOptional(),
-    Status: NotificationRuleStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the notification rule. The default value is <code>ENABLED</code>. If the status is set to <code>DISABLED</code>, notifications aren't sent for the notification rule.",
-        }),
-    ).exactOptional(),
+    Name: NotificationRuleNameSchema.openapi({
+      description:
+        'The name for the notification rule. Notification rule names must be unique in your Amazon Web Services account.',
+    }),
+    EventTypeIds: EventTypeIdsSchema.openapi({
+      description:
+        'A list of event types associated with this notification rule. For a list of allowed events, see <a>EventTypeSummary</a>.',
+    }),
+    Resource: NotificationRuleResourceSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource to associate with the notification rule. Supported resources include pipelines in CodePipeline, repositories in CodeCommit, and build projects in CodeBuild.',
+    }),
+    Targets: TargetsSchema.openapi({
+      description:
+        'A list of Amazon Resource Names (ARNs) of Amazon Simple Notification Service topics and Chatbot clients to associate with the notification rule.',
+    }),
+    DetailType: DetailTypeSchema.openapi({
+      description:
+        'The level of detail to include in the notifications for this resource. <code>BASIC</code> will include only the contents of the event as it would appear in Amazon CloudWatch. <code>FULL</code> will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request with the same parameters is received and a token is included, the request returns information about the initial request that used that token.</p> <note> <p>The Amazon Web Services SDKs prepopulate client request tokens. If you are using an Amazon Web Services SDK, an idempotency token is created for you.</p> </note>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of tags to apply to this notification rule. Key names cannot start with "<code>aws</code>". ',
+    }),
+    Status: NotificationRuleStatusSchema.exactOptional().openapi({
+      description:
+        "The status of the notification rule. The default value is <code>ENABLED</code>. If the status is set to <code>DISABLED</code>, notifications aren't sent for the notification rule.",
+    }),
   })
   .openapi({
     required: ['Name', 'EventTypeIds', 'Resource', 'Targets', 'DetailType'],
@@ -584,14 +444,9 @@ const CreateNotificationRuleRequestSchema = z
 
 const DeleteNotificationRuleRequestSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the notification rule you want to delete.',
-        }),
-    ),
+    Arn: NotificationRuleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the notification rule you want to delete.',
+    }),
   })
   .openapi({ required: ['Arn'], title: 'DeleteNotificationRuleRequest' })
   .openapi('DeleteNotificationRuleRequest')
@@ -600,31 +455,23 @@ const ForceUnsubscribeAllSchema = z.boolean().openapi('ForceUnsubscribeAll')
 
 const DeleteTargetRequestSchema = z
   .object({
-    TargetAddress: TargetAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client to delete.',
-        }),
-    ),
-    ForceUnsubscribeAll: ForceUnsubscribeAllSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that can be used to delete all associations with this Chatbot topic. The default value is FALSE. If set to TRUE, all associations between that target and every notification rule in your Amazon Web Services account are deleted.',
-        }),
-    ).exactOptional(),
+    TargetAddress: TargetAddressSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client to delete.',
+    }),
+    ForceUnsubscribeAll: ForceUnsubscribeAllSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that can be used to delete all associations with this Chatbot topic. The default value is FALSE. If set to TRUE, all associations between that target and every notification rule in your Amazon Web Services account are deleted.',
+    }),
   })
   .openapi({ required: ['TargetAddress'], title: 'DeleteTargetRequest' })
   .openapi('DeleteTargetRequest')
 
 const DescribeNotificationRuleRequestSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the notification rule.' }),
-    ),
+    Arn: NotificationRuleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the notification rule.',
+    }),
   })
   .openapi({ required: ['Arn'], title: 'DescribeNotificationRuleRequest' })
   .openapi('DescribeNotificationRuleRequest')
@@ -637,29 +484,17 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListEventTypesRequestSchema = z
   .object({
-    Filters: ListEventTypesFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The filters to use to return information by service or resource type.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-negative integer used to limit the number of returned results. The default number is 50. The maximum number of results that can be returned is 100.',
-        }),
-    ).exactOptional(),
+    Filters: ListEventTypesFiltersSchema.exactOptional().openapi({
+      description: 'The filters to use to return information by service or resource type.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'A non-negative integer used to limit the number of returned results. The default number is 50. The maximum number of results that can be returned is 100.',
+    }),
   })
   .openapi({ title: 'ListEventTypesRequest', required: [] })
   .openapi('ListEventTypesRequest')
@@ -670,39 +505,27 @@ const ListNotificationRulesFiltersSchema = z
 
 const ListNotificationRulesRequestSchema = z
   .object({
-    Filters: ListNotificationRulesFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filters to use to return information by service or resource type. For valid values, see <a>ListNotificationRulesFilter</a>.</p> <note> <p>A filter with the same name can appear more than once when used with OR statements. Filters with different names should be applied with AND statements.</p> </note>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-negative integer used to limit the number of returned results. The maximum number of results that can be returned is 100.',
-        }),
-    ).exactOptional(),
+    Filters: ListNotificationRulesFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>The filters to use to return information by service or resource type. For valid values, see <a>ListNotificationRulesFilter</a>.</p> <note> <p>A filter with the same name can appear more than once when used with OR statements. Filters with different names should be applied with AND statements.</p> </note>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'A non-negative integer used to limit the number of returned results. The maximum number of results that can be returned is 100.',
+    }),
   })
   .openapi({ title: 'ListNotificationRulesRequest', required: [] })
   .openapi('ListNotificationRulesRequest')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the notification rule.' }),
-    ),
+    Arn: NotificationRuleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the notification rule.',
+    }),
   })
   .openapi({ required: ['Arn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -711,53 +534,33 @@ const ListTargetsFiltersSchema = z.array(ListTargetsFilterSchema).openapi('ListT
 
 const ListTargetsRequestSchema = z
   .object({
-    Filters: ListTargetsFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filters to use to return information by service or resource type. Valid filters include target type, target address, and target status.</p> <note> <p>A filter with the same name can appear more than once when used with OR statements. Filters with different names should be applied with AND statements.</p> </note>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-negative integer used to limit the number of returned results. The maximum number of results that can be returned is 100.',
-        }),
-    ).exactOptional(),
+    Filters: ListTargetsFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>The filters to use to return information by service or resource type. Valid filters include target type, target address, and target status.</p> <note> <p>A filter with the same name can appear more than once when used with OR statements. Filters with different names should be applied with AND statements.</p> </note>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'A non-negative integer used to limit the number of returned results. The maximum number of results that can be returned is 100.',
+    }),
   })
   .openapi({ title: 'ListTargetsRequest', required: [] })
   .openapi('ListTargetsRequest')
 
 const SubscribeRequestSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the notification rule for which you want to create the association.',
-        }),
-    ),
+    Arn: NotificationRuleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the notification rule for which you want to create the association.',
+    }),
     Target: TargetSchema,
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
   })
   .openapi({ required: ['Arn', 'Target'], title: 'SubscribeRequest' })
   .openapi('SubscribeRequest')
@@ -766,86 +569,58 @@ const TagKeysSchema = z.array(TagKeySchema).openapi('TagKeys')
 
 const TagResourceRequestSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the notification rule to tag.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags to associate with the resource. Tag key names cannot start with "<code>aws</code>".',
-        }),
-    ),
+    Arn: NotificationRuleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the notification rule to tag.',
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        'The list of tags to associate with the resource. Tag key names cannot start with "<code>aws</code>".',
+    }),
   })
   .openapi({ required: ['Arn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UnsubscribeRequestSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the notification rule.' }),
-    ),
-    TargetAddress: TargetAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the Chatbot topic to unsubscribe from the notification rule.',
-        }),
-    ),
+    Arn: NotificationRuleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the notification rule.',
+    }),
+    TargetAddress: TargetAddressSchema.openapi({
+      description: 'The ARN of the Chatbot topic to unsubscribe from the notification rule.',
+    }),
   })
   .openapi({ required: ['Arn', 'TargetAddress'], title: 'UnsubscribeRequest' })
   .openapi('UnsubscribeRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateNotificationRuleRequestSchema = z
   .object({
-    Arn: NotificationRuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the notification rule.' }),
-    ),
-    Name: NotificationRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the notification rule.' }),
-    ).exactOptional(),
-    Status: NotificationRuleStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the notification rule. Valid statuses include enabled (sending notifications) or disabled (not sending notifications).',
-        }),
-    ).exactOptional(),
-    EventTypeIds: EventTypeIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of event types associated with this notification rule. For a complete list of event types and IDs, see <a href="https://docs.aws.amazon.com/codestar-notifications/latest/userguide/concepts.html#concepts-api">Notification concepts</a> in the <i>Developer Tools Console User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Targets: TargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address and type of the targets to receive notifications from this notification rule.',
-        }),
-    ).exactOptional(),
-    DetailType: DetailTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of detail to include in the notifications for this resource. BASIC will include only the contents of the event as it would appear in Amazon CloudWatch. FULL will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.',
-        }),
-    ).exactOptional(),
+    Arn: NotificationRuleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the notification rule.',
+    }),
+    Name: NotificationRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the notification rule.',
+    }),
+    Status: NotificationRuleStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the notification rule. Valid statuses include enabled (sending notifications) or disabled (not sending notifications).',
+    }),
+    EventTypeIds: EventTypeIdsSchema.exactOptional().openapi({
+      description:
+        'A list of event types associated with this notification rule. For a complete list of event types and IDs, see <a href="https://docs.aws.amazon.com/codestar-notifications/latest/userguide/concepts.html#concepts-api">Notification concepts</a> in the <i>Developer Tools Console User Guide</i>.',
+    }),
+    Targets: TargetsSchema.exactOptional().openapi({
+      description:
+        'The address and type of the targets to receive notifications from this notification rule.',
+    }),
+    DetailType: DetailTypeSchema.exactOptional().openapi({
+      description:
+        'The level of detail to include in the notifications for this resource. BASIC will include only the contents of the event as it would appear in Amazon CloudWatch. FULL will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.',
+    }),
   })
   .openapi({ required: ['Arn'], title: 'UpdateNotificationRuleRequest' })
   .openapi('UpdateNotificationRuleRequest')
@@ -1565,22 +1340,14 @@ export const postSubscribeRoute = createRoute({
                 }),
               Target: z
                 .object({
-                  TargetType: TargetTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The target type. Can be an Chatbot topic or Chatbot client.</p> <ul> <li> <p>Chatbot topics are specified as <code>SNS</code>.</p> </li> <li> <p>Chatbot clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  TargetAddress: TargetAddressSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client.',
-                      }),
-                  ).exactOptional(),
+                  TargetType: TargetTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The target type. Can be an Chatbot topic or Chatbot client.</p> <ul> <li> <p>Chatbot topics are specified as <code>SNS</code>.</p> </li> <li> <p>Chatbot clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>',
+                  }),
+                  TargetAddress: TargetAddressSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client.',
+                  }),
                 })
                 .openapi({
                   description:

@@ -362,7 +362,7 @@ const ErrorSchema = z
   .object({
     message: z.string().exactOptional().openapi({ description: 'Exception message' }),
     modelState: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Array of Elements of validation Errors' }),
   })

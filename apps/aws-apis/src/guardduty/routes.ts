@@ -2,30 +2,1005 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const StringSchema = z.string().openapi('String')
 
+const DoubleSchema = z.float64().openapi('Double')
+
+const AccessKeyDetailsSchema = z
+  .object({
+    AccessKeyId: StringSchema.exactOptional().openapi({
+      xml: { name: 'accessKeyId' },
+      description: 'The access key ID of the user.',
+    }),
+    PrincipalId: StringSchema.exactOptional().openapi({
+      xml: { name: 'principalId' },
+      description: 'The principal ID of the user.',
+    }),
+    UserName: StringSchema.exactOptional().openapi({
+      xml: { name: 'userName' },
+      description: 'The name of the user.',
+    }),
+    UserType: StringSchema.exactOptional().openapi({
+      xml: { name: 'userType' },
+      description: 'The type of the user.',
+    }),
+  })
+  .openapi({ description: 'Contains information about the access keys.', required: [] })
+  .openapi('AccessKeyDetails')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const OwnerSchema = z
+  .object({
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description:
+        'The canonical user ID of the bucket owner. For information about locating your canonical user ID see <a href="https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html#FindingCanonicalId">Finding Your Account Canonical User ID.</a> ',
+    }),
+  })
+  .openapi({ description: 'Contains information on the owner of the bucket.', required: [] })
+  .openapi('Owner')
+
+const TagSchema = z
+  .object({
+    Key: StringSchema.exactOptional().openapi({
+      xml: { name: 'key' },
+      description: 'The EC2 instance tag key.',
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      xml: { name: 'value' },
+      description: 'The EC2 instance tag value.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about a tag associated with the EC2 instance.',
+    required: [],
+  })
+  .openapi('Tag')
+
+const TagsSchema = z.array(TagSchema).openapi('Tags')
+
+const DefaultServerSideEncryptionSchema = z
+  .object({
+    EncryptionType: StringSchema.exactOptional().openapi({
+      xml: { name: 'encryptionType' },
+      description: 'The type of encryption used for objects within the S3 bucket.',
+    }),
+    KmsMasterKeyArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'kmsMasterKeyArn' },
+      description:
+        'The Amazon Resource Name (ARN) of the KMS encryption key. Only available if the bucket <code>EncryptionType</code> is <code>aws:kms</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information on the server side encryption method used in the S3 bucket. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html">S3 Server-Side Encryption</a> for more information.',
+    required: [],
+  })
+  .openapi('DefaultServerSideEncryption')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const AccessControlListSchema = z
+  .object({
+    AllowsPublicReadAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'allowsPublicReadAccess' },
+      description:
+        'A value that indicates whether public read access for the bucket is enabled through an Access Control List (ACL).',
+    }),
+    AllowsPublicWriteAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'allowsPublicWriteAccess' },
+      description:
+        'A value that indicates whether public write access for the bucket is enabled through an Access Control List (ACL).',
+    }),
+  })
+  .openapi({
+    description: 'Contains information on the current access control policies for the bucket.',
+    required: [],
+  })
+  .openapi('AccessControlList')
+
+const BucketPolicySchema = z
+  .object({
+    AllowsPublicReadAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'allowsPublicReadAccess' },
+      description:
+        'A value that indicates whether public read access for the bucket is enabled through a bucket policy.',
+    }),
+    AllowsPublicWriteAccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'allowsPublicWriteAccess' },
+      description:
+        'A value that indicates whether public write access for the bucket is enabled through a bucket policy.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information on the current bucket policies for the S3 bucket.',
+    required: [],
+  })
+  .openapi('BucketPolicy')
+
+const BlockPublicAccessSchema = z
+  .object({
+    IgnorePublicAcls: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'ignorePublicAcls' },
+      description: 'Indicates if S3 Block Public Access is set to <code>IgnorePublicAcls</code>.',
+    }),
+    RestrictPublicBuckets: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'restrictPublicBuckets' },
+      description:
+        'Indicates if S3 Block Public Access is set to <code>RestrictPublicBuckets</code>.',
+    }),
+    BlockPublicAcls: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'blockPublicAcls' },
+      description: 'Indicates if S3 Block Public Access is set to <code>BlockPublicAcls</code>.',
+    }),
+    BlockPublicPolicy: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'blockPublicPolicy' },
+      description: 'Indicates if S3 Block Public Access is set to <code>BlockPublicPolicy</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information on how the bucker owner\'s S3 Block Public Access settings are being applied to the S3 bucket. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html">S3 Block Public Access</a> for more information. ',
+    required: [],
+  })
+  .openapi('BlockPublicAccess')
+
+const BucketLevelPermissionsSchema = z
+  .object({
+    AccessControlList: AccessControlListSchema.exactOptional().openapi({
+      xml: { name: 'accessControlList' },
+      description: 'Contains information on how Access Control Policies are applied to the bucket.',
+    }),
+    BucketPolicy: BucketPolicySchema.exactOptional().openapi({
+      xml: { name: 'bucketPolicy' },
+      description: 'Contains information on the bucket policies for the S3 bucket.',
+    }),
+    BlockPublicAccess: BlockPublicAccessSchema.exactOptional().openapi({
+      xml: { name: 'blockPublicAccess' },
+      description:
+        'Contains information on which account level S3 Block Public Access settings are applied to the S3 bucket.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about the bucket level permissions for the S3 bucket.',
+    required: [],
+  })
+  .openapi('BucketLevelPermissions')
+
+const AccountLevelPermissionsSchema = z
+  .object({
+    BlockPublicAccess: BlockPublicAccessSchema.exactOptional().openapi({
+      xml: { name: 'blockPublicAccess' },
+      description: "Describes the S3 Block Public Access settings of the bucket's parent account.",
+    }),
+  })
+  .openapi({
+    description: 'Contains information about the account level permissions on the S3 bucket.',
+    required: [],
+  })
+  .openapi('AccountLevelPermissions')
+
+const PermissionConfigurationSchema = z
+  .object({
+    BucketLevelPermissions: BucketLevelPermissionsSchema.exactOptional().openapi({
+      xml: { name: 'bucketLevelPermissions' },
+      description: 'Contains information about the bucket level permissions for the S3 bucket.',
+    }),
+    AccountLevelPermissions: AccountLevelPermissionsSchema.exactOptional().openapi({
+      xml: { name: 'accountLevelPermissions' },
+      description: 'Contains information about the account level permissions on the S3 bucket.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about how permissions are configured for the S3 bucket.',
+    required: [],
+  })
+  .openapi('PermissionConfiguration')
+
+const PublicAccessSchema = z
+  .object({
+    PermissionConfiguration: PermissionConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'permissionConfiguration' },
+      description: 'Contains information about how permissions are configured for the S3 bucket.',
+    }),
+    EffectivePermission: StringSchema.exactOptional().openapi({
+      xml: { name: 'effectivePermission' },
+      description:
+        'Describes the effective permission on this bucket after factoring all attached policies.',
+    }),
+  })
+  .openapi({
+    description: 'Describes the public access policies that apply to the S3 bucket.',
+    required: [],
+  })
+  .openapi('PublicAccess')
+
+const S3BucketDetailSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) of the S3 bucket.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the S3 bucket.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      xml: { name: 'type' },
+      description: 'Describes whether the bucket is a source or destination bucket.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the bucket was created at.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      xml: { name: 'owner' },
+      description: 'The owner of the S3 bucket.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'All tags attached to the S3 bucket',
+    }),
+    DefaultServerSideEncryption: DefaultServerSideEncryptionSchema.exactOptional().openapi({
+      xml: { name: 'defaultServerSideEncryption' },
+      description: 'Describes the server side encryption method used in the S3 bucket.',
+    }),
+    PublicAccess: PublicAccessSchema.exactOptional().openapi({
+      xml: { name: 'publicAccess' },
+      description: 'Describes the public access policies that apply to the S3 bucket.',
+    }),
+  })
+  .openapi({ description: 'Contains information on the S3 bucket.', required: [] })
+  .openapi('S3BucketDetail')
+
+const S3BucketDetailsSchema = z.array(S3BucketDetailSchema).openapi('S3BucketDetails')
+
+const IamInstanceProfileSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The profile ARN of the EC2 instance.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The profile ID of the EC2 instance.',
+    }),
+  })
+  .openapi({ description: 'Contains information about the EC2 instance profile.', required: [] })
+  .openapi('IamInstanceProfile')
+
+const Ipv6AddressesSchema = z.array(StringSchema).openapi('Ipv6Addresses')
+
+const PrivateIpAddressDetailsSchema = z
+  .object({
+    PrivateDnsName: StringSchema.exactOptional().openapi({
+      xml: { name: 'privateDnsName' },
+      description: 'The private DNS name of the EC2 instance.',
+    }),
+    PrivateIpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'privateIpAddress' },
+      description: 'The private IP address of the EC2 instance.',
+    }),
+  })
+  .openapi({
+    description: 'Contains other private IP address information of the EC2 instance.',
+    required: [],
+  })
+  .openapi('PrivateIpAddressDetails')
+
+const PrivateIpAddressesSchema = z
+  .array(PrivateIpAddressDetailsSchema)
+  .openapi('PrivateIpAddresses')
+
+const SecurityGroupSchema = z
+  .object({
+    GroupId: StringSchema.exactOptional().openapi({
+      xml: { name: 'groupId' },
+      description: 'The security group ID of the EC2 instance.',
+    }),
+    GroupName: StringSchema.exactOptional().openapi({
+      xml: { name: 'groupName' },
+      description: 'The security group name of the EC2 instance.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about the security groups associated with the EC2 instance.',
+    required: [],
+  })
+  .openapi('SecurityGroup')
+
+const SecurityGroupsSchema = z.array(SecurityGroupSchema).openapi('SecurityGroups')
+
+const NetworkInterfaceSchema = z
+  .object({
+    Ipv6Addresses: Ipv6AddressesSchema.exactOptional().openapi({
+      xml: { name: 'ipv6Addresses' },
+      description: 'A list of IPv6 addresses for the EC2 instance.',
+    }),
+    NetworkInterfaceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'networkInterfaceId' },
+      description: 'The ID of the network interface.',
+    }),
+    PrivateDnsName: StringSchema.exactOptional().openapi({
+      xml: { name: 'privateDnsName' },
+      description: 'The private DNS name of the EC2 instance.',
+    }),
+    PrivateIpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'privateIpAddress' },
+      description: 'The private IP address of the EC2 instance.',
+    }),
+    PrivateIpAddresses: PrivateIpAddressesSchema.exactOptional().openapi({
+      xml: { name: 'privateIpAddresses' },
+      description: 'Other private IP address information of the EC2 instance.',
+    }),
+    PublicDnsName: StringSchema.exactOptional().openapi({
+      xml: { name: 'publicDnsName' },
+      description: 'The public DNS name of the EC2 instance.',
+    }),
+    PublicIp: StringSchema.exactOptional().openapi({
+      xml: { name: 'publicIp' },
+      description: 'The public IP address of the EC2 instance.',
+    }),
+    SecurityGroups: SecurityGroupsSchema.exactOptional().openapi({
+      xml: { name: 'securityGroups' },
+      description: 'The security groups associated with the EC2 instance.',
+    }),
+    SubnetId: StringSchema.exactOptional().openapi({
+      xml: { name: 'subnetId' },
+      description: 'The subnet ID of the EC2 instance.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      xml: { name: 'vpcId' },
+      description: 'The VPC ID of the EC2 instance.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about the elastic network interface of the EC2 instance.',
+    required: [],
+  })
+  .openapi('NetworkInterface')
+
+const NetworkInterfacesSchema = z.array(NetworkInterfaceSchema).openapi('NetworkInterfaces')
+
+const ProductCodeSchema = z
+  .object({
+    Code: StringSchema.exactOptional().openapi({
+      xml: { name: 'productCodeId' },
+      description: 'The product code information.',
+    }),
+    ProductType: StringSchema.exactOptional().openapi({
+      xml: { name: 'productCodeType' },
+      description: 'The product code type.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about the product code for the EC2 instance.',
+    required: [],
+  })
+  .openapi('ProductCode')
+
+const ProductCodesSchema = z.array(ProductCodeSchema).openapi('ProductCodes')
+
+const InstanceDetailsSchema = z
+  .object({
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      xml: { name: 'availabilityZone' },
+      description: 'The Availability Zone of the EC2 instance.',
+    }),
+    IamInstanceProfile: IamInstanceProfileSchema.exactOptional().openapi({
+      xml: { name: 'iamInstanceProfile' },
+      description: 'The profile information of the EC2 instance.',
+    }),
+    ImageDescription: StringSchema.exactOptional().openapi({
+      xml: { name: 'imageDescription' },
+      description: 'The image description of the EC2 instance.',
+    }),
+    ImageId: StringSchema.exactOptional().openapi({
+      xml: { name: 'imageId' },
+      description: 'The image ID of the EC2 instance.',
+    }),
+    InstanceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'instanceId' },
+      description: 'The ID of the EC2 instance.',
+    }),
+    InstanceState: StringSchema.exactOptional().openapi({
+      xml: { name: 'instanceState' },
+      description: 'The state of the EC2 instance.',
+    }),
+    InstanceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'instanceType' },
+      description: 'The type of the EC2 instance.',
+    }),
+    OutpostArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'outpostArn' },
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon Web Services Outpost. Only applicable to Amazon Web Services Outposts instances.',
+    }),
+    LaunchTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'launchTime' },
+      description: 'The launch time of the EC2 instance.',
+    }),
+    NetworkInterfaces: NetworkInterfacesSchema.exactOptional().openapi({
+      xml: { name: 'networkInterfaces' },
+      description: 'The elastic network interface information of the EC2 instance.',
+    }),
+    Platform: StringSchema.exactOptional().openapi({
+      xml: { name: 'platform' },
+      description: 'The platform of the EC2 instance.',
+    }),
+    ProductCodes: ProductCodesSchema.exactOptional().openapi({
+      xml: { name: 'productCodes' },
+      description: 'The product code of the EC2 instance.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags of the EC2 instance.',
+    }),
+  })
+  .openapi({ description: 'Contains information about the details of an instance.', required: [] })
+  .openapi('InstanceDetails')
+
+const EksClusterDetailsSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'EKS cluster name.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'EKS cluster ARN.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      xml: { name: 'vpcId' },
+      description: 'The VPC ID to which the EKS cluster is attached.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The EKS cluster status.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The EKS cluster tags.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The timestamp when the EKS cluster was created.',
+    }),
+  })
+  .openapi({
+    description: 'Details about the EKS cluster involved in a Kubernetes finding.',
+    required: [],
+  })
+  .openapi('EksClusterDetails')
+
+const GroupsSchema = z.array(StringSchema).openapi('Groups')
+
+const KubernetesUserDetailsSchema = z
+  .object({
+    Username: StringSchema.exactOptional().openapi({
+      xml: { name: 'username' },
+      description: 'The username of the user who called the Kubernetes API.',
+    }),
+    Uid: StringSchema.exactOptional().openapi({
+      xml: { name: 'uid' },
+      description: 'The user ID of the user who called the Kubernetes API.',
+    }),
+    Groups: GroupsSchema.exactOptional().openapi({
+      xml: { name: 'groups' },
+      description: 'The groups that include the user who called the Kubernetes API.',
+    }),
+  })
+  .openapi({
+    description: 'Details about the Kubernetes user involved in a Kubernetes finding.',
+    required: [],
+  })
+  .openapi('KubernetesUserDetails')
+
+const VolumeMountSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Volume mount name.',
+    }),
+    MountPath: StringSchema.exactOptional().openapi({
+      xml: { name: 'mountPath' },
+      description: 'Volume mount path.',
+    }),
+  })
+  .openapi({ description: 'Container volume mount.', required: [] })
+  .openapi('VolumeMount')
+
+const VolumeMountsSchema = z.array(VolumeMountSchema).openapi('VolumeMounts')
+
+const SecurityContextSchema = z
+  .object({
+    Privileged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'privileged' },
+      description: 'Whether the container is privileged.',
+    }),
+  })
+  .openapi({ description: 'Container security context.', required: [] })
+  .openapi('SecurityContext')
+
+const ContainerSchema = z
+  .object({
+    ContainerRuntime: StringSchema.exactOptional().openapi({
+      xml: { name: 'containerRuntime' },
+      description:
+        'The container runtime (such as, Docker or containerd) used to run the container.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ xml: { name: 'id' }, description: 'Container ID.' }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Container name.',
+    }),
+    Image: StringSchema.exactOptional().openapi({
+      xml: { name: 'image' },
+      description: 'Container image.',
+    }),
+    ImagePrefix: StringSchema.exactOptional().openapi({
+      xml: { name: 'imagePrefix' },
+      description:
+        'Part of the image name before the last slash. For example, imagePrefix for public.ecr.aws/amazonlinux/amazonlinux:latest would be public.ecr.aws/amazonlinux. If the image name is relative and does not have a slash, this field is empty.',
+    }),
+    VolumeMounts: VolumeMountsSchema.exactOptional().openapi({
+      xml: { name: 'volumeMounts' },
+      description: 'Container volume mounts.',
+    }),
+    SecurityContext: SecurityContextSchema.exactOptional().openapi({
+      xml: { name: 'securityContext' },
+      description: 'Container security context.',
+    }),
+  })
+  .openapi({ description: 'Details of a container.', required: [] })
+  .openapi('Container')
+
+const ContainersSchema = z.array(ContainerSchema).openapi('Containers')
+
+const HostPathSchema = z
+  .object({
+    Path: StringSchema.exactOptional().openapi({
+      xml: { name: 'path' },
+      description: 'Path of the file or directory on the host that the volume maps to.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a pre-existing file or directory on the host machine that the volume maps to.',
+    required: [],
+  })
+  .openapi('HostPath')
+
+const VolumeSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Volume name.',
+    }),
+    HostPath: HostPathSchema.exactOptional().openapi({
+      xml: { name: 'hostPath' },
+      description:
+        'Represents a pre-existing file or directory on the host machine that the volume maps to.',
+    }),
+  })
+  .openapi({ description: 'Volume used by the Kubernetes workload.', required: [] })
+  .openapi('Volume')
+
+const VolumesSchema = z.array(VolumeSchema).openapi('Volumes')
+
+const KubernetesWorkloadDetailsSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Kubernetes workload name.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      xml: { name: 'type' },
+      description: 'Kubernetes workload type (e.g. Pod, Deployment, etc.).',
+    }),
+    Uid: StringSchema.exactOptional().openapi({
+      xml: { name: 'uid' },
+      description: 'Kubernetes workload ID.',
+    }),
+    Namespace: StringSchema.exactOptional().openapi({
+      xml: { name: 'namespace' },
+      description: 'Kubernetes namespace that the workload is part of.',
+    }),
+    HostNetwork: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'hostNetwork' },
+      description: 'Whether the hostNetwork flag is enabled for the pods included in the workload.',
+    }),
+    Containers: ContainersSchema.exactOptional().openapi({
+      xml: { name: 'containers' },
+      description: 'Containers running as part of the Kubernetes workload.',
+    }),
+    Volumes: VolumesSchema.exactOptional().openapi({
+      xml: { name: 'volumes' },
+      description: 'Volumes used by the Kubernetes workload.',
+    }),
+  })
+  .openapi({
+    description: 'Details about the Kubernetes workload involved in a Kubernetes finding.',
+    required: [],
+  })
+  .openapi('KubernetesWorkloadDetails')
+
+const KubernetesDetailsSchema = z
+  .object({
+    KubernetesUserDetails: KubernetesUserDetailsSchema.exactOptional().openapi({
+      xml: { name: 'kubernetesUserDetails' },
+      description: 'Details about the Kubernetes user involved in a Kubernetes finding.',
+    }),
+    KubernetesWorkloadDetails: KubernetesWorkloadDetailsSchema.exactOptional().openapi({
+      xml: { name: 'kubernetesWorkloadDetails' },
+      description: 'Details about the Kubernetes workload involved in a Kubernetes finding.',
+    }),
+  })
+  .openapi({
+    description:
+      'Details about Kubernetes resources such as a Kubernetes user or workload resource involved in a Kubernetes finding.',
+    required: [],
+  })
+  .openapi('KubernetesDetails')
+
+const IntegerSchema = z.int().openapi('Integer')
+
+const VolumeDetailSchema = z
+  .object({
+    VolumeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'volumeArn' },
+      description: 'EBS volume Arn information.',
+    }),
+    VolumeType: StringSchema.exactOptional().openapi({
+      xml: { name: 'volumeType' },
+      description: 'The EBS volume type.',
+    }),
+    DeviceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'deviceName' },
+      description: 'The device name for the EBS volume.',
+    }),
+    VolumeSizeInGB: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'volumeSizeInGB' },
+      description: 'EBS volume size in GB.',
+    }),
+    EncryptionType: StringSchema.exactOptional().openapi({
+      xml: { name: 'encryptionType' },
+      description: 'EBS volume encryption type.',
+    }),
+    SnapshotArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'snapshotArn' },
+      description: 'Snapshot Arn of the EBS volume.',
+    }),
+    KmsKeyArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'kmsKeyArn' },
+      description: 'KMS key Arn used to encrypt the EBS volume.',
+    }),
+  })
+  .openapi({ description: 'Contains EBS volume details.', required: [] })
+  .openapi('VolumeDetail')
+
+const VolumeDetailsSchema = z.array(VolumeDetailSchema).openapi('VolumeDetails')
+
+const EbsVolumeDetailsSchema = z
+  .object({
+    ScannedVolumeDetails: VolumeDetailsSchema.exactOptional().openapi({
+      xml: { name: 'scannedVolumeDetails' },
+      description: 'List of EBS volumes that were scanned.',
+    }),
+    SkippedVolumeDetails: VolumeDetailsSchema.exactOptional().openapi({
+      xml: { name: 'skippedVolumeDetails' },
+      description: 'List of EBS volumes that were skipped from the malware scan.',
+    }),
+  })
+  .openapi({
+    description: 'Contains list of scanned and skipped EBS volumes with details.',
+    required: [],
+  })
+  .openapi('EbsVolumeDetails')
+
+const EcsTaskDetailsSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) of the task.',
+    }),
+    DefinitionArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'definitionArn' },
+      description: 'The ARN of the task definition that creates the task.',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'The version counter for the task.',
+    }),
+    TaskCreatedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The Unix timestamp for the time when the task was created.',
+    }),
+    StartedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'startedAt' },
+      description: 'The Unix timestamp for the time when the task started.',
+    }),
+    StartedBy: StringSchema.exactOptional().openapi({
+      xml: { name: 'startedBy' },
+      description: 'Contains the tag specified when a task is started.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags of the ECS Task.',
+    }),
+    Volumes: VolumesSchema.exactOptional().openapi({
+      xml: { name: 'volumes' },
+      description: 'The list of data volume definitions for the task.',
+    }),
+    Containers: ContainersSchema.exactOptional().openapi({
+      xml: { name: 'containers' },
+      description: "The containers that's associated with the task.",
+    }),
+    Group: StringSchema.exactOptional().openapi({
+      xml: { name: 'group' },
+      description: "The name of the task group that's associated with the task.",
+    }),
+  })
+  .openapi({ description: 'Contains information about the task in an ECS cluster.', required: [] })
+  .openapi('EcsTaskDetails')
+
+const EcsClusterDetailsSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the ECS Cluster.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) that identifies the cluster.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The status of the ECS cluster.',
+    }),
+    ActiveServicesCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'activeServicesCount' },
+      description: 'The number of services that are running on the cluster in an ACTIVE state.',
+    }),
+    RegisteredContainerInstancesCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'registeredContainerInstancesCount' },
+      description: 'The number of container instances registered into the cluster.',
+    }),
+    RunningTasksCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'runningTasksCount' },
+      description: 'The number of tasks in the cluster that are in the RUNNING state.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags of the ECS Cluster.',
+    }),
+    TaskDetails: EcsTaskDetailsSchema.exactOptional().openapi({
+      xml: { name: 'taskDetails' },
+      description: 'Contains information about the details of the ECS Task.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about the details of the ECS Cluster.',
+    required: [],
+  })
+  .openapi('EcsClusterDetails')
+
+const RdsDbInstanceDetailsSchema = z
+  .object({
+    DbInstanceIdentifier: StringSchema.exactOptional().openapi({
+      xml: { name: 'dbInstanceIdentifier' },
+      description:
+        'The identifier associated to the database instance that was involved in the finding.',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      xml: { name: 'engine' },
+      description: 'The database engine of the database instance involved in the finding.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'engineVersion' },
+      description: 'The version of the database engine that was involved in the finding.',
+    }),
+    DbClusterIdentifier: StringSchema.exactOptional().openapi({
+      xml: { name: 'dbClusterIdentifier' },
+      description:
+        'The identifier of the database cluster that contains the database instance ID involved in the finding.',
+    }),
+    DbInstanceArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'dbInstanceArn' },
+      description:
+        'The Amazon Resource Name (ARN) that identifies the database instance involved in the finding.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Instance tag key-value pairs associated with the database instance ID.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information about the resource type <code>RDSDBInstance</code> involved in a GuardDuty finding.',
+    required: [],
+  })
+  .openapi('RdsDbInstanceDetails')
+
+const RdsDbUserDetailsSchema = z
+  .object({
+    User: StringSchema.exactOptional().openapi({
+      xml: { name: 'user' },
+      description: 'The user name used in the anomalous login attempt.',
+    }),
+    Application: StringSchema.exactOptional().openapi({
+      xml: { name: 'application' },
+      description: 'The application name used in the anomalous login attempt.',
+    }),
+    Database: StringSchema.exactOptional().openapi({
+      xml: { name: 'database' },
+      description: 'The name of the database instance involved in the anomalous login attempt.',
+    }),
+    Ssl: StringSchema.exactOptional().openapi({
+      xml: { name: 'ssl' },
+      description: 'The version of the Secure Socket Layer (SSL) used for the network.',
+    }),
+    AuthMethod: StringSchema.exactOptional().openapi({
+      xml: { name: 'authMethod' },
+      description: 'The authentication method used by the user involved in the finding.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information about the user and authentication details for a database instance involved in the finding.',
+    required: [],
+  })
+  .openapi('RdsDbUserDetails')
+
+const SubnetIdsSchema = z.array(StringSchema).openapi('SubnetIds')
+
+const VpcConfigSchema = z
+  .object({
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      xml: { name: 'subnetIds' },
+      description: 'The identifiers of the subnets that are associated with your Lambda function.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      xml: { name: 'vpcId' },
+      description: 'The identifier of the Amazon Virtual Private Cloud.',
+    }),
+    SecurityGroups: SecurityGroupsSchema.exactOptional().openapi({
+      xml: { name: 'securityGroups' },
+      description: 'The identifier of the security group attached to the Lambda function.',
+    }),
+  })
+  .openapi({
+    description:
+      'Amazon Virtual Private Cloud configuration details associated with your Lambda function.',
+    required: [],
+  })
+  .openapi('VpcConfig')
+
+const LambdaDetailsSchema = z
+  .object({
+    FunctionArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'functionArn' },
+      description: 'Amazon Resource Name (ARN) of the Lambda function.',
+    }),
+    FunctionName: StringSchema.exactOptional().openapi({
+      xml: { name: 'functionName' },
+      description: 'Name of the Lambda function.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'Description of the Lambda function.',
+    }),
+    LastModifiedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'lastModifiedAt' },
+      description:
+        'The timestamp when the Lambda function was last modified. This field is in the UTC date string format <code>(2023-03-22T19:37:20.168Z)</code>.',
+    }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      xml: { name: 'revisionId' },
+      description: 'The revision ID of the Lambda function version.',
+    }),
+    FunctionVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'functionVersion' },
+      description: 'The version of the Lambda function.',
+    }),
+    Role: StringSchema.exactOptional().openapi({
+      xml: { name: 'role' },
+      description: 'The execution role of the Lambda function.',
+    }),
+    VpcConfig: VpcConfigSchema.exactOptional().openapi({
+      xml: { name: 'vpcConfig' },
+      description:
+        'Amazon Virtual Private Cloud configuration details associated with your Lambda function.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'A list of tags attached to this resource, listed in the format of <code>key</code>:<code>value</code> pair.',
+    }),
+  })
+  .openapi({
+    description: 'Information about the Lambda function involved in the finding.',
+    required: [],
+  })
+  .openapi('LambdaDetails')
+
+const ResourceSchema = z
+  .object({
+    AccessKeyDetails: AccessKeyDetailsSchema.exactOptional().openapi({
+      xml: { name: 'accessKeyDetails' },
+      description:
+        'The IAM access key details (user information) of a user that engaged in the activity that prompted GuardDuty to generate a finding.',
+    }),
+    S3BucketDetails: S3BucketDetailsSchema.exactOptional().openapi({
+      xml: { name: 's3BucketDetails' },
+      description: 'Contains information on the S3 bucket.',
+    }),
+    InstanceDetails: InstanceDetailsSchema.exactOptional().openapi({
+      xml: { name: 'instanceDetails' },
+      description:
+        'The information about the EC2 instance associated with the activity that prompted GuardDuty to generate a finding.',
+    }),
+    EksClusterDetails: EksClusterDetailsSchema.exactOptional().openapi({
+      xml: { name: 'eksClusterDetails' },
+      description: 'Details about the EKS cluster involved in a Kubernetes finding.',
+    }),
+    KubernetesDetails: KubernetesDetailsSchema.exactOptional().openapi({
+      xml: { name: 'kubernetesDetails' },
+      description:
+        'Details about the Kubernetes user and workload involved in a Kubernetes finding.',
+    }),
+    ResourceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceType' },
+      description: 'The type of Amazon Web Services resource.',
+    }),
+    EbsVolumeDetails: EbsVolumeDetailsSchema.exactOptional().openapi({
+      xml: { name: 'ebsVolumeDetails' },
+      description: 'Contains list of scanned and skipped EBS volumes with details.',
+    }),
+    EcsClusterDetails: EcsClusterDetailsSchema.exactOptional().openapi({
+      xml: { name: 'ecsClusterDetails' },
+      description: 'Contains information about the details of the ECS Cluster.',
+    }),
+    ContainerDetails: ContainerSchema.exactOptional().openapi({
+      xml: { name: 'containerDetails' },
+    }),
+    RdsDbInstanceDetails: RdsDbInstanceDetailsSchema.exactOptional().openapi({
+      xml: { name: 'rdsDbInstanceDetails' },
+      description:
+        'Contains information about the database instance to which an anomalous login attempt was made.',
+    }),
+    RdsDbUserDetails: RdsDbUserDetailsSchema.exactOptional().openapi({
+      xml: { name: 'rdsDbUserDetails' },
+      description:
+        'Contains information about the user details through which anomalous login attempt was made.',
+    }),
+    LambdaDetails: LambdaDetailsSchema.exactOptional().openapi({
+      xml: { name: 'lambdaDetails' },
+      description: 'Contains information about the Lambda function that was involved in a finding.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.',
+    required: [],
+  })
+  .openapi('Resource')
+
 const DomainDetailsSchema = z
   .object({
-    Domain: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domain' },
-          description: 'The domain information for the Amazon Web Services API call.',
-        }),
-    ).exactOptional(),
+    Domain: StringSchema.exactOptional().openapi({
+      xml: { name: 'domain' },
+      description: 'The domain information for the Amazon Web Services API call.',
+    }),
   })
   .openapi({ description: 'Contains information about the domain.', required: [] })
   .openapi('DomainDetails')
 
 const CitySchema = z
   .object({
-    CityName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cityName' },
-          description: 'The city name of the remote IP address.',
-        }),
-    ).exactOptional(),
+    CityName: StringSchema.exactOptional().openapi({
+      xml: { name: 'cityName' },
+      description: 'The city name of the remote IP address.',
+    }),
   })
   .openapi({
     description: 'Contains information about the city associated with the IP address.',
@@ -35,22 +1010,14 @@ const CitySchema = z
 
 const CountrySchema = z
   .object({
-    CountryCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'countryCode' },
-          description: 'The country code of the remote IP address.',
-        }),
-    ).exactOptional(),
-    CountryName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'countryName' },
-          description: 'The country name of the remote IP address.',
-        }),
-    ).exactOptional(),
+    CountryCode: StringSchema.exactOptional().openapi({
+      xml: { name: 'countryCode' },
+      description: 'The country code of the remote IP address.',
+    }),
+    CountryName: StringSchema.exactOptional().openapi({
+      xml: { name: 'countryName' },
+      description: 'The country name of the remote IP address.',
+    }),
   })
   .openapi({
     description: 'Contains information about the country where the remote IP address is located.',
@@ -58,26 +1025,16 @@ const CountrySchema = z
   })
   .openapi('Country')
 
-const DoubleSchema = z.float64().openapi('Double')
-
 const GeoLocationSchema = z
   .object({
-    Lat: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lat' },
-          description: 'The latitude information of the remote IP address.',
-        }),
-    ).exactOptional(),
-    Lon: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lon' },
-          description: 'The longitude information of the remote IP address.',
-        }),
-    ).exactOptional(),
+    Lat: DoubleSchema.exactOptional().openapi({
+      xml: { name: 'lat' },
+      description: 'The latitude information of the remote IP address.',
+    }),
+    Lon: DoubleSchema.exactOptional().openapi({
+      xml: { name: 'lon' },
+      description: 'The longitude information of the remote IP address.',
+    }),
   })
   .openapi({
     description: 'Contains information about the location of the remote IP address.',
@@ -87,34 +1044,23 @@ const GeoLocationSchema = z
 
 const OrganizationSchema = z
   .object({
-    Asn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'asn' },
-          description:
-            'The Autonomous System Number (ASN) of the internet provider of the remote IP address.',
-        }),
-    ).exactOptional(),
-    AsnOrg: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'asnOrg' },
-          description: 'The organization that registered this ASN.',
-        }),
-    ).exactOptional(),
-    Isp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'isp' },
-          description: 'The ISP information for the internet provider.',
-        }),
-    ).exactOptional(),
-    Org: StringSchema.and(
-      z.any().openapi({ xml: { name: 'org' }, description: 'The name of the internet provider.' }),
-    ).exactOptional(),
+    Asn: StringSchema.exactOptional().openapi({
+      xml: { name: 'asn' },
+      description:
+        'The Autonomous System Number (ASN) of the internet provider of the remote IP address.',
+    }),
+    AsnOrg: StringSchema.exactOptional().openapi({
+      xml: { name: 'asnOrg' },
+      description: 'The organization that registered this ASN.',
+    }),
+    Isp: StringSchema.exactOptional().openapi({
+      xml: { name: 'isp' },
+      description: 'The ISP information for the internet provider.',
+    }),
+    Org: StringSchema.exactOptional().openapi({
+      xml: { name: 'org' },
+      description: 'The name of the internet provider.',
+    }),
   })
   .openapi({
     description: 'Contains information about the ISP organization of the remote IP address.',
@@ -124,46 +1070,26 @@ const OrganizationSchema = z
 
 const RemoteIpDetailsSchema = z
   .object({
-    City: CitySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'city' },
-          description: 'The city information of the remote IP address.',
-        }),
-    ).exactOptional(),
-    Country: CountrySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'country' },
-          description: 'The country code of the remote IP address.',
-        }),
-    ).exactOptional(),
-    GeoLocation: GeoLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'geoLocation' },
-          description: 'The location information of the remote IP address.',
-        }),
-    ).exactOptional(),
-    IpAddressV4: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ipAddressV4' },
-          description: 'The IPv4 remote address of the connection.',
-        }),
-    ).exactOptional(),
-    Organization: OrganizationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'organization' },
-          description: 'The ISP organization information of the remote IP address.',
-        }),
-    ).exactOptional(),
+    City: CitySchema.exactOptional().openapi({
+      xml: { name: 'city' },
+      description: 'The city information of the remote IP address.',
+    }),
+    Country: CountrySchema.exactOptional().openapi({
+      xml: { name: 'country' },
+      description: 'The country code of the remote IP address.',
+    }),
+    GeoLocation: GeoLocationSchema.exactOptional().openapi({
+      xml: { name: 'geoLocation' },
+      description: 'The location information of the remote IP address.',
+    }),
+    IpAddressV4: StringSchema.exactOptional().openapi({
+      xml: { name: 'ipAddressV4' },
+      description: 'The IPv4 remote address of the connection.',
+    }),
+    Organization: OrganizationSchema.exactOptional().openapi({
+      xml: { name: 'organization' },
+      description: 'The ISP organization information of the remote IP address.',
+    }),
   })
   .openapi({
     description: 'Contains information about the remote IP address of the connection.',
@@ -171,27 +1097,17 @@ const RemoteIpDetailsSchema = z
   })
   .openapi('RemoteIpDetails')
 
-const BooleanSchema = z.boolean().openapi('Boolean')
-
 const RemoteAccountDetailsSchema = z
   .object({
-    AccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The Amazon Web Services account ID of the remote API caller.',
-        }),
-    ).exactOptional(),
-    Affiliated: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'affiliated' },
-          description:
-            'Details on whether the Amazon Web Services account of the remote API caller is related to your GuardDuty environment. If this value is <code>True</code> the API caller is affiliated to your account in some way. If it is <code>False</code> the API caller is from outside your environment.',
-        }),
-    ).exactOptional(),
+    AccountId: StringSchema.exactOptional().openapi({
+      xml: { name: 'accountId' },
+      description: 'The Amazon Web Services account ID of the remote API caller.',
+    }),
+    Affiliated: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'affiliated' },
+      description:
+        'Details on whether the Amazon Web Services account of the remote API caller is related to your GuardDuty environment. If this value is <code>True</code> the API caller is affiliated to your account in some way. If it is <code>False</code> the API caller is from outside your environment.',
+    }),
   })
   .openapi({
     description:
@@ -204,107 +1120,64 @@ const AffectedResourcesSchema = z.record(z.string(), StringSchema).openapi('Affe
 
 const AwsApiCallActionSchema = z
   .object({
-    Api: StringSchema.and(
-      z.any().openapi({ xml: { name: 'api' }, description: 'The Amazon Web Services API name.' }),
-    ).exactOptional(),
-    CallerType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'callerType' },
-          description: 'The Amazon Web Services API caller type.',
-        }),
-    ).exactOptional(),
-    DomainDetails: DomainDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainDetails' },
-          description: 'The domain information for the Amazon Web Services API call.',
-        }),
-    ).exactOptional(),
-    ErrorCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'errorCode' },
-          description: 'The error code of the failed Amazon Web Services API action.',
-        }),
-    ).exactOptional(),
-    UserAgent: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userAgent' },
-          description: 'The agent through which the API request was made.',
-        }),
-    ).exactOptional(),
-    RemoteIpDetails: RemoteIpDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remoteIpDetails' },
-          description:
-            'The remote IP information of the connection that initiated the Amazon Web Services API call.',
-        }),
-    ).exactOptional(),
-    ServiceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'serviceName' },
-          description: 'The Amazon Web Services service name whose API was invoked.',
-        }),
-    ).exactOptional(),
-    RemoteAccountDetails: RemoteAccountDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remoteAccountDetails' },
-          description:
-            'The details of the Amazon Web Services account that made the API call. This field appears if the call was made from outside your account.',
-        }),
-    ).exactOptional(),
-    AffectedResources: AffectedResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'affectedResources' },
-          description:
-            'The details of the Amazon Web Services account that made the API call. This field identifies the resources that were affected by this API call.',
-        }),
-    ).exactOptional(),
+    Api: StringSchema.exactOptional().openapi({
+      xml: { name: 'api' },
+      description: 'The Amazon Web Services API name.',
+    }),
+    CallerType: StringSchema.exactOptional().openapi({
+      xml: { name: 'callerType' },
+      description: 'The Amazon Web Services API caller type.',
+    }),
+    DomainDetails: DomainDetailsSchema.exactOptional().openapi({
+      xml: { name: 'domainDetails' },
+      description: 'The domain information for the Amazon Web Services API call.',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      xml: { name: 'errorCode' },
+      description: 'The error code of the failed Amazon Web Services API action.',
+    }),
+    UserAgent: StringSchema.exactOptional().openapi({
+      xml: { name: 'userAgent' },
+      description: 'The agent through which the API request was made.',
+    }),
+    RemoteIpDetails: RemoteIpDetailsSchema.exactOptional().openapi({
+      xml: { name: 'remoteIpDetails' },
+      description:
+        'The remote IP information of the connection that initiated the Amazon Web Services API call.',
+    }),
+    ServiceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'serviceName' },
+      description: 'The Amazon Web Services service name whose API was invoked.',
+    }),
+    RemoteAccountDetails: RemoteAccountDetailsSchema.exactOptional().openapi({
+      xml: { name: 'remoteAccountDetails' },
+      description:
+        'The details of the Amazon Web Services account that made the API call. This field appears if the call was made from outside your account.',
+    }),
+    AffectedResources: AffectedResourcesSchema.exactOptional().openapi({
+      xml: { name: 'affectedResources' },
+      description:
+        'The details of the Amazon Web Services account that made the API call. This field identifies the resources that were affected by this API call.',
+    }),
   })
   .openapi({ description: 'Contains information about the API action.', required: [] })
   .openapi('AwsApiCallAction')
 
 const DnsRequestActionSchema = z
   .object({
-    Domain: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domain' },
-          description: 'The domain information for the API request.',
-        }),
-    ).exactOptional(),
-    Protocol: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'protocol' },
-          description:
-            'The network connection protocol observed in the activity that prompted GuardDuty to generate the finding.',
-        }),
-    ).exactOptional(),
-    Blocked: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'blocked' },
-          description: 'Indicates whether the targeted port is blocked.',
-        }),
-    ).exactOptional(),
+    Domain: StringSchema.exactOptional().openapi({
+      xml: { name: 'domain' },
+      description: 'The domain information for the API request.',
+    }),
+    Protocol: StringSchema.exactOptional().openapi({
+      xml: { name: 'protocol' },
+      description:
+        'The network connection protocol observed in the activity that prompted GuardDuty to generate the finding.',
+    }),
+    Blocked: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'blocked' },
+      description: 'Indicates whether the targeted port is blocked.',
+    }),
   })
   .openapi({
     description: 'Contains information about the DNS_REQUEST action described in this finding.',
@@ -312,26 +1185,16 @@ const DnsRequestActionSchema = z
   })
   .openapi('DnsRequestAction')
 
-const IntegerSchema = z.int().openapi('Integer')
-
 const LocalPortDetailsSchema = z
   .object({
-    Port: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'port' },
-          description: 'The port number of the local connection.',
-        }),
-    ).exactOptional(),
-    PortName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'portName' },
-          description: 'The port name of the local connection.',
-        }),
-    ).exactOptional(),
+    Port: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'port' },
+      description: 'The port number of the local connection.',
+    }),
+    PortName: StringSchema.exactOptional().openapi({
+      xml: { name: 'portName' },
+      description: 'The port name of the local connection.',
+    }),
   })
   .openapi({
     description: 'Contains information about the port for the local connection.',
@@ -341,14 +1204,10 @@ const LocalPortDetailsSchema = z
 
 const LocalIpDetailsSchema = z
   .object({
-    IpAddressV4: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ipAddressV4' },
-          description: 'The IPv4 local address of the connection.',
-        }),
-    ).exactOptional(),
+    IpAddressV4: StringSchema.exactOptional().openapi({
+      xml: { name: 'ipAddressV4' },
+      description: 'The IPv4 local address of the connection.',
+    }),
   })
   .openapi({
     description: 'Contains information about the local IP address of the connection.',
@@ -358,81 +1217,48 @@ const LocalIpDetailsSchema = z
 
 const RemotePortDetailsSchema = z
   .object({
-    Port: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'port' },
-          description: 'The port number of the remote connection.',
-        }),
-    ).exactOptional(),
-    PortName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'portName' },
-          description: 'The port name of the remote connection.',
-        }),
-    ).exactOptional(),
+    Port: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'port' },
+      description: 'The port number of the remote connection.',
+    }),
+    PortName: StringSchema.exactOptional().openapi({
+      xml: { name: 'portName' },
+      description: 'The port name of the remote connection.',
+    }),
   })
   .openapi({ description: 'Contains information about the remote port.', required: [] })
   .openapi('RemotePortDetails')
 
 const NetworkConnectionActionSchema = z
   .object({
-    Blocked: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'blocked' },
-          description: 'Indicates whether EC2 blocked the network connection to your instance.',
-        }),
-    ).exactOptional(),
-    ConnectionDirection: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionDirection' },
-          description: 'The network connection direction.',
-        }),
-    ).exactOptional(),
-    LocalPortDetails: LocalPortDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'localPortDetails' },
-          description: 'The local port information of the connection.',
-        }),
-    ).exactOptional(),
-    Protocol: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'protocol' }, description: 'The network connection protocol.' }),
-    ).exactOptional(),
-    LocalIpDetails: LocalIpDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'localIpDetails' },
-          description: 'The local IP information of the connection.',
-        }),
-    ).exactOptional(),
-    RemoteIpDetails: RemoteIpDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remoteIpDetails' },
-          description: 'The remote IP information of the connection.',
-        }),
-    ).exactOptional(),
-    RemotePortDetails: RemotePortDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remotePortDetails' },
-          description: 'The remote port information of the connection.',
-        }),
-    ).exactOptional(),
+    Blocked: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'blocked' },
+      description: 'Indicates whether EC2 blocked the network connection to your instance.',
+    }),
+    ConnectionDirection: StringSchema.exactOptional().openapi({
+      xml: { name: 'connectionDirection' },
+      description: 'The network connection direction.',
+    }),
+    LocalPortDetails: LocalPortDetailsSchema.exactOptional().openapi({
+      xml: { name: 'localPortDetails' },
+      description: 'The local port information of the connection.',
+    }),
+    Protocol: StringSchema.exactOptional().openapi({
+      xml: { name: 'protocol' },
+      description: 'The network connection protocol.',
+    }),
+    LocalIpDetails: LocalIpDetailsSchema.exactOptional().openapi({
+      xml: { name: 'localIpDetails' },
+      description: 'The local IP information of the connection.',
+    }),
+    RemoteIpDetails: RemoteIpDetailsSchema.exactOptional().openapi({
+      xml: { name: 'remoteIpDetails' },
+      description: 'The remote IP information of the connection.',
+    }),
+    RemotePortDetails: RemotePortDetailsSchema.exactOptional().openapi({
+      xml: { name: 'remotePortDetails' },
+      description: 'The remote port information of the connection.',
+    }),
   })
   .openapi({
     description:
@@ -443,30 +1269,18 @@ const NetworkConnectionActionSchema = z
 
 const PortProbeDetailSchema = z
   .object({
-    LocalPortDetails: LocalPortDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'localPortDetails' },
-          description: 'The local port information of the connection.',
-        }),
-    ).exactOptional(),
-    LocalIpDetails: LocalIpDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'localIpDetails' },
-          description: 'The local IP information of the connection.',
-        }),
-    ).exactOptional(),
-    RemoteIpDetails: RemoteIpDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remoteIpDetails' },
-          description: 'The remote IP information of the connection.',
-        }),
-    ).exactOptional(),
+    LocalPortDetails: LocalPortDetailsSchema.exactOptional().openapi({
+      xml: { name: 'localPortDetails' },
+      description: 'The local port information of the connection.',
+    }),
+    LocalIpDetails: LocalIpDetailsSchema.exactOptional().openapi({
+      xml: { name: 'localIpDetails' },
+      description: 'The local IP information of the connection.',
+    }),
+    RemoteIpDetails: RemoteIpDetailsSchema.exactOptional().openapi({
+      xml: { name: 'remoteIpDetails' },
+      description: 'The remote IP information of the connection.',
+    }),
   })
   .openapi({ description: 'Contains information about the port probe details.', required: [] })
   .openapi('PortProbeDetail')
@@ -475,23 +1289,15 @@ const PortProbeDetailsSchema = z.array(PortProbeDetailSchema).openapi('PortProbe
 
 const PortProbeActionSchema = z
   .object({
-    Blocked: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'blocked' },
-          description:
-            'Indicates whether EC2 blocked the port probe to the instance, such as with an ACL.',
-        }),
-    ).exactOptional(),
-    PortProbeDetails: PortProbeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'portProbeDetails' },
-          description: 'A list of objects related to port probe details.',
-        }),
-    ).exactOptional(),
+    Blocked: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'blocked' },
+      description:
+        'Indicates whether EC2 blocked the port probe to the instance, such as with an ACL.',
+    }),
+    PortProbeDetails: PortProbeDetailsSchema.exactOptional().openapi({
+      xml: { name: 'portProbeDetails' },
+      description: 'A list of objects related to port probe details.',
+    }),
   })
   .openapi({
     description: 'Contains information about the PORT_PROBE action described in the finding.',
@@ -503,52 +1309,34 @@ const SourceIpsSchema = z.array(StringSchema).openapi('SourceIps')
 
 const KubernetesApiCallActionSchema = z
   .object({
-    RequestUri: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'requestUri' }, description: 'The Kubernetes API request URI.' }),
-    ).exactOptional(),
-    Verb: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'verb' }, description: 'The Kubernetes API request HTTP verb.' }),
-    ).exactOptional(),
-    SourceIps: SourceIpsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceIps' },
-          description:
-            'The IP of the Kubernetes API caller and the IPs of any proxies or load balancers between the caller and the API endpoint.',
-        }),
-    ).exactOptional(),
-    UserAgent: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userAgent' },
-          description: 'The user agent of the caller of the Kubernetes API.',
-        }),
-    ).exactOptional(),
-    RemoteIpDetails: RemoteIpDetailsSchema.and(
-      z.any().openapi({ xml: { name: 'remoteIpDetails' } }),
-    ).exactOptional(),
-    StatusCode: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'statusCode' },
-          description: 'The resulting HTTP response code of the Kubernetes API call action.',
-        }),
-    ).exactOptional(),
-    Parameters: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'parameters' },
-          description: 'Parameters related to the Kubernetes API call action.',
-        }),
-    ).exactOptional(),
+    RequestUri: StringSchema.exactOptional().openapi({
+      xml: { name: 'requestUri' },
+      description: 'The Kubernetes API request URI.',
+    }),
+    Verb: StringSchema.exactOptional().openapi({
+      xml: { name: 'verb' },
+      description: 'The Kubernetes API request HTTP verb.',
+    }),
+    SourceIps: SourceIpsSchema.exactOptional().openapi({
+      xml: { name: 'sourceIps' },
+      description:
+        'The IP of the Kubernetes API caller and the IPs of any proxies or load balancers between the caller and the API endpoint.',
+    }),
+    UserAgent: StringSchema.exactOptional().openapi({
+      xml: { name: 'userAgent' },
+      description: 'The user agent of the caller of the Kubernetes API.',
+    }),
+    RemoteIpDetails: RemoteIpDetailsSchema.exactOptional().openapi({
+      xml: { name: 'remoteIpDetails' },
+    }),
+    StatusCode: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'statusCode' },
+      description: 'The resulting HTTP response code of the Kubernetes API call action.',
+    }),
+    Parameters: StringSchema.exactOptional().openapi({
+      xml: { name: 'parameters' },
+      description: 'Parameters related to the Kubernetes API call action.',
+    }),
   })
   .openapi({
     description: 'Information about the Kubernetes API call action described in this finding.',
@@ -558,40 +1346,24 @@ const KubernetesApiCallActionSchema = z
 
 const LoginAttributeSchema = z
   .object({
-    User: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'user' },
-          description: 'Indicates the user name which attempted to log in.',
-        }),
-    ).exactOptional(),
-    Application: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'application' },
-          description: 'Indicates the application name used to attempt log in.',
-        }),
-    ).exactOptional(),
-    FailedLoginAttempts: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'failedLoginAttempts' },
-          description:
-            'Represents the sum of failed (unsuccessful) login attempts made to establish a connection to the database instance.',
-        }),
-    ).exactOptional(),
-    SuccessfulLoginAttempts: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'successfulLoginAttempts' },
-          description:
-            'Represents the sum of successful connections (a correct combination of login attributes) made to the database instance by the actor.',
-        }),
-    ).exactOptional(),
+    User: StringSchema.exactOptional().openapi({
+      xml: { name: 'user' },
+      description: 'Indicates the user name which attempted to log in.',
+    }),
+    Application: StringSchema.exactOptional().openapi({
+      xml: { name: 'application' },
+      description: 'Indicates the application name used to attempt log in.',
+    }),
+    FailedLoginAttempts: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'failedLoginAttempts' },
+      description:
+        'Represents the sum of failed (unsuccessful) login attempts made to establish a connection to the database instance.',
+    }),
+    SuccessfulLoginAttempts: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'successfulLoginAttempts' },
+      description:
+        'Represents the sum of successful connections (a correct combination of login attributes) made to the database instance by the actor.',
+    }),
   })
   .openapi({ description: 'Information about the login attempts.', required: [] })
   .openapi('LoginAttribute')
@@ -600,12 +1372,12 @@ const LoginAttributesSchema = z.array(LoginAttributeSchema).openapi('LoginAttrib
 
 const RdsLoginAttemptActionSchema = z
   .object({
-    RemoteIpDetails: RemoteIpDetailsSchema.and(
-      z.any().openapi({ xml: { name: 'remoteIpDetails' } }),
-    ).exactOptional(),
-    LoginAttributes: LoginAttributesSchema.and(
-      z.any().openapi({ description: 'Indicates the login attributes used in the login attempt.' }),
-    ).exactOptional(),
+    RemoteIpDetails: RemoteIpDetailsSchema.exactOptional().openapi({
+      xml: { name: 'remoteIpDetails' },
+    }),
+    LoginAttributes: LoginAttributesSchema.exactOptional().openapi({
+      description: 'Indicates the login attributes used in the login attempt.',
+    }),
   })
   .openapi({
     description:
@@ -614,22 +1386,691 @@ const RdsLoginAttemptActionSchema = z
   })
   .openapi('RdsLoginAttemptAction')
 
-type ActionType = {
-  ActionType?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  AwsApiCallAction?: z.infer<typeof AwsApiCallActionSchema> & { [key: string]: unknown }
-  DnsRequestAction?: z.infer<typeof DnsRequestActionSchema> & { [key: string]: unknown }
-  NetworkConnectionAction?: z.infer<typeof NetworkConnectionActionSchema> & {
-    [key: string]: unknown
-  }
-  PortProbeAction?: z.infer<typeof PortProbeActionSchema> & { [key: string]: unknown }
-  KubernetesApiCallAction?: z.infer<typeof KubernetesApiCallActionSchema> & {
-    [key: string]: unknown
-  }
-  RdsLoginAttemptAction?: z.infer<typeof RdsLoginAttemptActionSchema> & { [key: string]: unknown }
+const ActionSchema = z
+  .object({
+    ActionType: StringSchema.exactOptional().openapi({
+      xml: { name: 'actionType' },
+      description: 'The GuardDuty finding activity type.',
+    }),
+    AwsApiCallAction: AwsApiCallActionSchema.exactOptional().openapi({
+      xml: { name: 'awsApiCallAction' },
+      description: 'Information about the AWS_API_CALL action described in this finding.',
+    }),
+    DnsRequestAction: DnsRequestActionSchema.exactOptional().openapi({
+      xml: { name: 'dnsRequestAction' },
+      description: 'Information about the DNS_REQUEST action described in this finding.',
+    }),
+    NetworkConnectionAction: NetworkConnectionActionSchema.exactOptional().openapi({
+      xml: { name: 'networkConnectionAction' },
+      description: 'Information about the NETWORK_CONNECTION action described in this finding.',
+    }),
+    PortProbeAction: PortProbeActionSchema.exactOptional().openapi({
+      xml: { name: 'portProbeAction' },
+      description: 'Information about the PORT_PROBE action described in this finding.',
+    }),
+    KubernetesApiCallAction: KubernetesApiCallActionSchema.exactOptional().openapi({
+      xml: { name: 'kubernetesApiCallAction' },
+      description: 'Information about the Kubernetes API call action described in this finding.',
+    }),
+    RdsLoginAttemptAction: RdsLoginAttemptActionSchema.exactOptional().openapi({
+      xml: { name: 'rdsLoginAttemptAction' },
+      description:
+        'Information about <code>RDS_LOGIN_ATTEMPT</code> action described in this finding.',
+    }),
+  })
+  .openapi({ description: 'Contains information about actions.', required: [] })
+  .openapi('Action')
+
+const ThreatNamesSchema = z.array(StringSchema).openapi('ThreatNames')
+
+const ThreatIntelligenceDetailSchema = z
+  .object({
+    ThreatListName: StringSchema.exactOptional().openapi({
+      xml: { name: 'threatListName' },
+      description: 'The name of the threat intelligence list that triggered the finding.',
+    }),
+    ThreatNames: ThreatNamesSchema.exactOptional().openapi({
+      xml: { name: 'threatNames' },
+      description:
+        'A list of names of the threats in the threat intelligence list that triggered the finding.',
+    }),
+  })
+  .openapi({
+    description:
+      'An instance of a threat intelligence detail that constitutes evidence for the finding.',
+    required: [],
+  })
+  .openapi('ThreatIntelligenceDetail')
+
+const ThreatIntelligenceDetailsSchema = z
+  .array(ThreatIntelligenceDetailSchema)
+  .openapi('ThreatIntelligenceDetails')
+
+const EvidenceSchema = z
+  .object({
+    ThreatIntelligenceDetails: ThreatIntelligenceDetailsSchema.exactOptional().openapi({
+      xml: { name: 'threatIntelligenceDetails' },
+      description: 'A list of threat intelligence details related to the evidence.',
+    }),
+  })
+  .openapi({
+    description: 'Contains information about the reason that the finding was generated.',
+    required: [],
+  })
+  .openapi('Evidence')
+
+const DetectorIdSchema = z.string().min(1).max(300).openapi('DetectorId')
+
+const ServiceAdditionalInfoSchema = z
+  .object({
+    Value: StringSchema.exactOptional().openapi({
+      xml: { name: 'value' },
+      description: 'This field specifies the value of the additional information.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      xml: { name: 'type' },
+      description: 'Describes the type of the additional information.',
+    }),
+  })
+  .openapi({ description: 'Additional information about the generated finding.', required: [] })
+  .openapi('ServiceAdditionalInfo')
+
+const SourcesSchema = z.array(StringSchema).openapi('Sources')
+
+const ScannedItemCountSchema = z
+  .object({
+    TotalGb: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'totalGb' },
+      description: 'Total GB of files scanned for malware.',
+    }),
+    Files: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'files' },
+      description: 'Number of files scanned.',
+    }),
+    Volumes: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'volumes' },
+      description: 'Total number of scanned volumes.',
+    }),
+  })
+  .openapi({ description: 'Total number of scanned files.', required: [] })
+  .openapi('ScannedItemCount')
+
+const ThreatsDetectedItemCountSchema = z
+  .object({
+    Files: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'files' },
+      description: 'Total number of infected files.',
+    }),
+  })
+  .openapi({ description: 'Contains total number of infected files.', required: [] })
+  .openapi('ThreatsDetectedItemCount')
+
+const HighestSeverityThreatDetailsSchema = z
+  .object({
+    Severity: StringSchema.exactOptional().openapi({
+      xml: { name: 'severity' },
+      description: 'Severity level of the highest severity threat detected.',
+    }),
+    ThreatName: StringSchema.exactOptional().openapi({
+      xml: { name: 'threatName' },
+      description:
+        'Threat name of the highest severity threat detected as part of the malware scan.',
+    }),
+    Count: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'count' },
+      description: 'Total number of infected files with the highest severity threat detected.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains details of the highest severity threat detected during scan and number of infected files.',
+    required: [],
+  })
+  .openapi('HighestSeverityThreatDetails')
+
+const ScanFilePathSchema = z
+  .object({
+    FilePath: StringSchema.exactOptional().openapi({
+      xml: { name: 'filePath' },
+      description: 'The file path of the infected file.',
+    }),
+    VolumeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'volumeArn' },
+      description: 'EBS volume Arn details of the infected file.',
+    }),
+    Hash: StringSchema.exactOptional().openapi({
+      xml: { name: 'hash' },
+      description: 'The hash value of the infected file.',
+    }),
+    FileName: StringSchema.exactOptional().openapi({
+      xml: { name: 'fileName' },
+      description: 'File name of the infected file.',
+    }),
+  })
+  .openapi({
+    description: 'Contains details of infected file including name, file path and hash.',
+    required: [],
+  })
+  .openapi('ScanFilePath')
+
+const FilePathsSchema = z.array(ScanFilePathSchema).openapi('FilePaths')
+
+const ScanThreatNameSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the identified threat.',
+    }),
+    Severity: StringSchema.exactOptional().openapi({
+      xml: { name: 'severity' },
+      description: 'Severity of threat identified as part of the malware scan.',
+    }),
+    ItemCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'itemCount' },
+      description: 'Total number of files infected with given threat.',
+    }),
+    FilePaths: FilePathsSchema.exactOptional().openapi({
+      xml: { name: 'filePaths' },
+      description: 'List of infected files in EBS volume with details.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains files infected with the given threat providing details of malware name and severity.',
+    required: [],
+  })
+  .openapi('ScanThreatName')
+
+const ScanThreatNamesSchema = z.array(ScanThreatNameSchema).openapi('ScanThreatNames')
+
+const ThreatDetectedByNameSchema = z
+  .object({
+    ItemCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'itemCount' },
+      description: 'Total number of infected files identified.',
+    }),
+    UniqueThreatNameCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'uniqueThreatNameCount' },
+      description:
+        'Total number of unique threats by name identified, as part of the malware scan.',
+    }),
+    Shortened: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'shortened' },
+      description:
+        'Flag to determine if the finding contains every single infected file-path and/or every threat.',
+    }),
+    ThreatNames: ScanThreatNamesSchema.exactOptional().openapi({
+      xml: { name: 'threatNames' },
+      description: 'List of identified threats with details, organized by threat name.',
+    }),
+  })
+  .openapi({
+    description: 'Contains details about identified threats organized by threat name.',
+    required: [],
+  })
+  .openapi('ThreatDetectedByName')
+
+const ScanDetectionsSchema = z
+  .object({
+    ScannedItemCount: ScannedItemCountSchema.exactOptional().openapi({
+      xml: { name: 'scannedItemCount' },
+      description: 'Total number of scanned files.',
+    }),
+    ThreatsDetectedItemCount: ThreatsDetectedItemCountSchema.exactOptional().openapi({
+      xml: { name: 'threatsDetectedItemCount' },
+      description: 'Total number of infected files.',
+    }),
+    HighestSeverityThreatDetails: HighestSeverityThreatDetailsSchema.exactOptional().openapi({
+      xml: { name: 'highestSeverityThreatDetails' },
+      description:
+        'Details of the highest severity threat detected during malware scan and number of infected files.',
+    }),
+    ThreatDetectedByName: ThreatDetectedByNameSchema.exactOptional().openapi({
+      xml: { name: 'threatDetectedByName' },
+      description: 'Contains details about identified threats organized by threat name.',
+    }),
+  })
+  .openapi({
+    description: 'Contains a complete view providing malware scan result details.',
+    required: [],
+  })
+  .openapi('ScanDetections')
+
+const EbsVolumeScanDetailsSchema = z
+  .object({
+    ScanId: StringSchema.exactOptional().openapi({
+      xml: { name: 'scanId' },
+      description: 'Unique Id of the malware scan that generated the finding.',
+    }),
+    ScanStartedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'scanStartedAt' },
+      description: 'Returns the start date and time of the malware scan.',
+    }),
+    ScanCompletedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'scanCompletedAt' },
+      description: 'Returns the completion date and time of the malware scan.',
+    }),
+    TriggerFindingId: StringSchema.exactOptional().openapi({
+      xml: { name: 'triggerFindingId' },
+      description: 'GuardDuty finding ID that triggered a malware scan.',
+    }),
+    Sources: SourcesSchema.exactOptional().openapi({
+      xml: { name: 'sources' },
+      description: 'Contains list of threat intelligence sources used to detect threats.',
+    }),
+    ScanDetections: ScanDetectionsSchema.exactOptional().openapi({
+      xml: { name: 'scanDetections' },
+      description: 'Contains a complete view providing malware scan result details.',
+    }),
+  })
+  .openapi({
+    description: 'Contains details from the malware scan that created a finding.',
+    required: [],
+  })
+  .openapi('EbsVolumeScanDetails')
+
+const LineageObjectSchema = z
+  .object({
+    StartTime: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'startTime' },
+      description: 'The time when the process started. This is in UTC format.',
+    }),
+    NamespacePid: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'namespacePid' },
+      description: 'The process ID of the child process.',
+    }),
+    UserId: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'userId' },
+      description: 'The user ID of the user that executed the process.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the process.',
+    }),
+    Pid: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'pid' },
+      description: 'The ID of the process.',
+    }),
+    Uuid: StringSchema.exactOptional().openapi({
+      xml: { name: 'uuid' },
+      description: 'The unique ID assigned to the process by GuardDuty.',
+    }),
+    ExecutablePath: StringSchema.exactOptional().openapi({
+      xml: { name: 'executablePath' },
+      description: 'The absolute path of the process executable file.',
+    }),
+    Euid: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'euid' },
+      description: 'The effective user ID that was used to execute the process.',
+    }),
+    ParentUuid: StringSchema.exactOptional().openapi({
+      xml: { name: 'parentUuid' },
+      description:
+        'The unique ID of the parent process. This ID is assigned to the parent process by GuardDuty.',
+    }),
+  })
+  .openapi({ description: 'Information about the runtime process details.', required: [] })
+  .openapi('LineageObject')
+
+const LineageSchema = z.array(LineageObjectSchema).openapi('Lineage')
+
+const ProcessDetailsSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the process.',
+    }),
+    ExecutablePath: StringSchema.exactOptional().openapi({
+      xml: { name: 'executablePath' },
+      description: 'The absolute path of the process executable file.',
+    }),
+    ExecutableSha256: StringSchema.exactOptional().openapi({
+      xml: { name: 'executableSha256' },
+      description: 'The <code>SHA256</code> hash of the process executable.',
+    }),
+    NamespacePid: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'namespacePid' },
+      description: 'The ID of the child process.',
+    }),
+    Pwd: StringSchema.exactOptional().openapi({
+      xml: { name: 'pwd' },
+      description: 'The present working directory of the process.',
+    }),
+    Pid: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'pid' },
+      description: 'The ID of the process.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'startTime' },
+      description: 'The time when the process started. This is in UTC format.',
+    }),
+    Uuid: StringSchema.exactOptional().openapi({
+      xml: { name: 'uuid' },
+      description: 'The unique ID assigned to the process by GuardDuty.',
+    }),
+    ParentUuid: StringSchema.exactOptional().openapi({
+      xml: { name: 'parentUuid' },
+      description:
+        'The unique ID of the parent process. This ID is assigned to the parent process by GuardDuty.',
+    }),
+    User: StringSchema.exactOptional().openapi({
+      xml: { name: 'user' },
+      description: 'The user that executed the process.',
+    }),
+    UserId: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'userId' },
+      description: 'The unique ID of the user that executed the process.',
+    }),
+    Euid: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'euid' },
+      description: 'The effective user ID of the user that executed the process.',
+    }),
+    Lineage: LineageSchema.exactOptional().openapi({
+      xml: { name: 'lineage' },
+      description: "Information about the process's lineage.",
+    }),
+  })
+  .openapi({ description: 'Information about the observed process.', required: [] })
+  .openapi('ProcessDetails')
+
+const FlagsListSchema = z.array(StringSchema).openapi('FlagsList')
+
+const MemoryRegionsListSchema = z.array(StringSchema).openapi('MemoryRegionsList')
+
+const RuntimeContextSchema = z
+  .object({
+    ModifyingProcess: ProcessDetailsSchema.exactOptional().openapi({
+      xml: { name: 'modifyingProcess' },
+      description:
+        'Information about the process that modified the current process. This is available for multiple finding types.',
+    }),
+    ModifiedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'modifiedAt' },
+      description:
+        'The timestamp at which the process modified the current process. The timestamp is in UTC date string format.',
+    }),
+    ScriptPath: StringSchema.exactOptional().openapi({
+      xml: { name: 'scriptPath' },
+      description: 'The path to the script that was executed.',
+    }),
+    LibraryPath: StringSchema.exactOptional().openapi({
+      xml: { name: 'libraryPath' },
+      description: 'The path to the new library that was loaded.',
+    }),
+    LdPreloadValue: StringSchema.exactOptional().openapi({
+      xml: { name: 'ldPreloadValue' },
+      description: 'The value of the LD_PRELOAD environment variable.',
+    }),
+    SocketPath: StringSchema.exactOptional().openapi({
+      xml: { name: 'socketPath' },
+      description: 'The path to the docket socket that was accessed.',
+    }),
+    RuncBinaryPath: StringSchema.exactOptional().openapi({
+      xml: { name: 'runcBinaryPath' },
+      description: 'The path to the leveraged <code>runc</code> implementation.',
+    }),
+    ReleaseAgentPath: StringSchema.exactOptional().openapi({
+      xml: { name: 'releaseAgentPath' },
+      description: 'The path in the container that modified the release agent file.',
+    }),
+    MountSource: StringSchema.exactOptional().openapi({
+      xml: { name: 'mountSource' },
+      description: 'The path on the host that is mounted by the container.',
+    }),
+    MountTarget: StringSchema.exactOptional().openapi({
+      xml: { name: 'mountTarget' },
+      description: 'The path in the container that is mapped to the host directory.',
+    }),
+    FileSystemType: StringSchema.exactOptional().openapi({
+      xml: { name: 'fileSystemType' },
+      description: 'Represents the type of mounted fileSystem.',
+    }),
+    Flags: FlagsListSchema.exactOptional().openapi({
+      xml: { name: 'flags' },
+      description:
+        'Represents options that control the behavior of a runtime operation or action. For example, a filesystem mount operation may contain a read-only flag.',
+    }),
+    ModuleName: StringSchema.exactOptional().openapi({
+      xml: { name: 'moduleName' },
+      description: 'The name of the module loaded into the kernel.',
+    }),
+    ModuleFilePath: StringSchema.exactOptional().openapi({
+      xml: { name: 'moduleFilePath' },
+      description: 'The path to the module loaded into the kernel.',
+    }),
+    ModuleSha256: StringSchema.exactOptional().openapi({
+      xml: { name: 'moduleSha256' },
+      description: 'The <code>SHA256</code> hash of the module.',
+    }),
+    ShellHistoryFilePath: StringSchema.exactOptional().openapi({
+      xml: { name: 'shellHistoryFilePath' },
+      description: 'The path to the modified shell history file.',
+    }),
+    TargetProcess: ProcessDetailsSchema.exactOptional().openapi({
+      xml: { name: 'targetProcess' },
+      description:
+        'Information about the process that had its memory overwritten by the current process.',
+    }),
+    AddressFamily: StringSchema.exactOptional().openapi({
+      xml: { name: 'addressFamily' },
+      description:
+        'Represents the communication protocol associated with the address. For example, the address family <code>AF_INET</code> is used for IP version of 4 protocol.',
+    }),
+    IanaProtocolNumber: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'ianaProtocolNumber' },
+      description:
+        'Specifies a particular protocol within the address family. Usually there is a single protocol in address families. For example, the address family <code>AF_INET</code> only has the IP protocol.',
+    }),
+    MemoryRegions: MemoryRegionsListSchema.exactOptional().openapi({
+      xml: { name: 'memoryRegions' },
+      description: "Specifies the Region of a process's address space such as stack and heap.",
+    }),
+  })
+  .openapi({ description: 'Additional information about the suspicious activity.', required: [] })
+  .openapi('RuntimeContext')
+
+const RuntimeDetailsSchema = z
+  .object({
+    Process: ProcessDetailsSchema.exactOptional().openapi({
+      xml: { name: 'process' },
+      description: 'Information about the observed process.',
+    }),
+    Context: RuntimeContextSchema.exactOptional().openapi({
+      xml: { name: 'context' },
+      description: 'Additional information about the suspicious activity.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about the process and any required context values for a specific finding.',
+    required: [],
+  })
+  .openapi('RuntimeDetails')
+
+type ServiceType = {
+  Action?: z.infer<typeof ActionSchema> & unknown
+  Evidence?: z.infer<typeof EvidenceSchema> & unknown
+  Archived?: z.infer<typeof BooleanSchema> & unknown
+  Count?: z.infer<typeof IntegerSchema> & unknown
+  DetectorId?: z.infer<typeof DetectorIdSchema> & unknown
+  EventFirstSeen?: z.infer<typeof StringSchema> & unknown
+  EventLastSeen?: z.infer<typeof StringSchema> & unknown
+  ResourceRole?: z.infer<typeof StringSchema> & unknown
+  ServiceName?: z.infer<typeof StringSchema> & unknown
+  UserFeedback?: z.infer<typeof StringSchema> & unknown
+  AdditionalInfo?: z.infer<typeof ServiceAdditionalInfoSchema> & unknown
+  FeatureName?: z.infer<typeof StringSchema> & unknown
+  EbsVolumeScanDetails?: z.infer<typeof EbsVolumeScanDetailsSchema> & unknown
+  RuntimeDetails?: z.infer<typeof RuntimeDetailsSchema> & unknown
 }
 
+const ServiceSchema: z.ZodType<ServiceType> = z
+  .object({
+    Action: ActionSchema.exactOptional().openapi({
+      xml: { name: 'action' },
+      description: 'Information about the activity that is described in a finding.',
+    }),
+    Evidence: EvidenceSchema.exactOptional().openapi({
+      xml: { name: 'evidence' },
+      description: 'An evidence object associated with the service.',
+    }),
+    Archived: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'archived' },
+      description: 'Indicates whether this finding is archived.',
+    }),
+    Count: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'count' },
+      description: 'The total count of the occurrences of this finding type.',
+    }),
+    DetectorId: DetectorIdSchema.exactOptional().openapi({
+      xml: { name: 'detectorId' },
+      description: 'The detector ID for the GuardDuty service.',
+    }),
+    EventFirstSeen: StringSchema.exactOptional().openapi({
+      xml: { name: 'eventFirstSeen' },
+      description:
+        'The first-seen timestamp of the activity that prompted GuardDuty to generate this finding.',
+    }),
+    EventLastSeen: StringSchema.exactOptional().openapi({
+      xml: { name: 'eventLastSeen' },
+      description:
+        'The last-seen timestamp of the activity that prompted GuardDuty to generate this finding.',
+    }),
+    ResourceRole: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceRole' },
+      description: 'The resource role information for this finding.',
+    }),
+    ServiceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'serviceName' },
+      description:
+        'The name of the Amazon Web Services service (GuardDuty) that generated a finding.',
+    }),
+    UserFeedback: StringSchema.exactOptional().openapi({
+      xml: { name: 'userFeedback' },
+      description: 'Feedback that was submitted about the finding.',
+    }),
+    AdditionalInfo: ServiceAdditionalInfoSchema.exactOptional().openapi({
+      xml: { name: 'additionalInfo' },
+      description: 'Contains additional information about the generated finding.',
+    }),
+    FeatureName: StringSchema.exactOptional().openapi({
+      xml: { name: 'featureName' },
+      description: 'The name of the feature that generated a finding.',
+    }),
+    EbsVolumeScanDetails: EbsVolumeScanDetailsSchema.exactOptional().openapi({
+      xml: { name: 'ebsVolumeScanDetails' },
+      description: 'Returns details from the malware scan that created a finding.',
+    }),
+    RuntimeDetails: RuntimeDetailsSchema.exactOptional().openapi({
+      xml: { name: 'runtimeDetails' },
+      description:
+        'Information about the process and any required context values for a specific finding',
+    }),
+  })
+  .openapi({
+    description: 'Contains additional information about the generated finding.',
+    required: [],
+  })
+  .openapi('Service')
+
+const FindingTypeSchema = z.string().min(1).max(50).openapi('FindingType')
+
+type FindingType = {
+  AccountId: z.infer<typeof StringSchema> & unknown
+  Arn: z.infer<typeof StringSchema> & unknown
+  Confidence?: z.infer<typeof DoubleSchema> & unknown
+  CreatedAt: z.infer<typeof StringSchema> & unknown
+  Description?: z.infer<typeof StringSchema> & unknown
+  Id: z.infer<typeof StringSchema> & unknown
+  Partition?: z.infer<typeof StringSchema> & unknown
+  Region: z.infer<typeof StringSchema> & unknown
+  Resource: z.infer<typeof ResourceSchema> & unknown
+  SchemaVersion: z.infer<typeof StringSchema> & unknown
+  Service?: z.infer<typeof ServiceSchema> & unknown
+  Severity: z.infer<typeof DoubleSchema> & unknown
+  Title?: z.infer<typeof StringSchema> & unknown
+  Type: z.infer<typeof FindingTypeSchema> & unknown
+  UpdatedAt: z.infer<typeof StringSchema> & unknown
+}
+
+const FindingSchema: z.ZodType<FindingType> = z
+  .object({
+    AccountId: StringSchema.openapi({
+      xml: { name: 'accountId' },
+      description: 'The ID of the account in which the finding was generated.',
+    }),
+    Arn: StringSchema.openapi({ xml: { name: 'arn' }, description: 'The ARN of the finding.' }),
+    Confidence: DoubleSchema.exactOptional().openapi({
+      xml: { name: 'confidence' },
+      description: 'The confidence score for the finding.',
+    }),
+    CreatedAt: StringSchema.openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time and date when the finding was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the finding.',
+    }),
+    Id: StringSchema.openapi({ xml: { name: 'id' }, description: 'The ID of the finding.' }),
+    Partition: StringSchema.exactOptional().openapi({
+      xml: { name: 'partition' },
+      description: 'The partition associated with the finding.',
+    }),
+    Region: StringSchema.openapi({
+      xml: { name: 'region' },
+      description: 'The Region where the finding was generated.',
+    }),
+    Resource: ResourceSchema.openapi({ xml: { name: 'resource' } }),
+    SchemaVersion: StringSchema.openapi({
+      xml: { name: 'schemaVersion' },
+      description: 'The version of the schema used for the finding.',
+    }),
+    Service: ServiceSchema.exactOptional().openapi({ xml: { name: 'service' } }),
+    Severity: DoubleSchema.openapi({
+      xml: { name: 'severity' },
+      description: 'The severity of the finding.',
+    }),
+    Title: StringSchema.exactOptional().openapi({
+      xml: { name: 'title' },
+      description: 'The title of the finding.',
+    }),
+    Type: FindingTypeSchema.openapi({ xml: { name: 'type' }, description: 'The type of finding.' }),
+    UpdatedAt: StringSchema.openapi({
+      xml: { name: 'updatedAt' },
+      description: 'The time and date when the finding was last updated.',
+    }),
+  })
+  .openapi({
+    required: [
+      'AccountId',
+      'Arn',
+      'CreatedAt',
+      'Id',
+      'Region',
+      'Resource',
+      'SchemaVersion',
+      'Severity',
+      'Type',
+      'UpdatedAt',
+    ],
+    description:
+      'Contains information about the finding, which is generated when abnormal or suspicious activity is detected.',
+  })
+  .openapi('Finding')
+
+type FindingsType = z.infer<typeof FindingSchema>[]
+
+const FindingsSchema: z.ZodType<FindingsType> = z
+  .array(FindingSchema)
+  .min(0)
+  .max(50)
+  .openapi('Findings')
+
+type GetFindingsResponseType = { Findings: z.infer<typeof FindingsSchema> & unknown }
+
 const AcceptAdministratorInvitationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AcceptAdministratorInvitationResponse')
 
 const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
@@ -637,40 +2078,30 @@ const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
 const InternalServerErrorExceptionSchema = z.any().openapi('InternalServerErrorException')
 
 const AcceptInvitationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     deprecated: true,
     description: 'This output is deprecated, use AcceptAdministratorInvitationResponse instead',
   })
   .openapi('AcceptInvitationResponse')
 
-const ArchiveFindingsResponseSchema = z.object({}).openapi('ArchiveFindingsResponse')
+const ArchiveFindingsResponseSchema = z.looseObject({}).openapi('ArchiveFindingsResponse')
 
 const FindingIdSchema = z.string().min(1).max(300).openapi('FindingId')
-
-const DetectorIdSchema = z.string().min(1).max(300).openapi('DetectorId')
 
 const DataSourceStatusSchema = z.enum(['ENABLED', 'DISABLED']).openapi('DataSourceStatus')
 
 const EbsVolumesResultSchema = z
   .object({
-    Status: DataSourceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Describes whether scanning EBS volumes is enabled as a data source.',
-        }),
-    ).exactOptional(),
-    Reason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'reason' },
-          description:
-            'Specifies the reason why scanning EBS volumes (Malware Protection) was not enabled as a data source.',
-        }),
-    ).exactOptional(),
+    Status: DataSourceStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'Describes whether scanning EBS volumes is enabled as a data source.',
+    }),
+    Reason: StringSchema.exactOptional().openapi({
+      xml: { name: 'reason' },
+      description:
+        'Specifies the reason why scanning EBS volumes (Malware Protection) was not enabled as a data source.',
+    }),
   })
   .openapi({
     description: 'Describes the configuration of scanning EBS volumes as a data source.',
@@ -680,14 +2111,10 @@ const EbsVolumesResultSchema = z
 
 const ScanEc2InstanceWithFindingsResultSchema = z
   .object({
-    EbsVolumes: EbsVolumesResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ebsVolumes' },
-          description: 'Describes the configuration of scanning EBS volumes as a data source.',
-        }),
-    ).exactOptional(),
+    EbsVolumes: EbsVolumesResultSchema.exactOptional().openapi({
+      xml: { name: 'ebsVolumes' },
+      description: 'Describes the configuration of scanning EBS volumes as a data source.',
+    }),
   })
   .openapi({
     description:
@@ -698,23 +2125,15 @@ const ScanEc2InstanceWithFindingsResultSchema = z
 
 const MalwareProtectionConfigurationResultSchema = z
   .object({
-    ScanEc2InstanceWithFindings: ScanEc2InstanceWithFindingsResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanEc2InstanceWithFindings' },
-          description:
-            'Describes the configuration of Malware Protection for EC2 instances with findings.',
-        }),
-    ).exactOptional(),
-    ServiceRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'serviceRole' },
-          description: 'The GuardDuty Malware Protection service role.',
-        }),
-    ).exactOptional(),
+    ScanEc2InstanceWithFindings: ScanEc2InstanceWithFindingsResultSchema.exactOptional().openapi({
+      xml: { name: 'scanEc2InstanceWithFindings' },
+      description:
+        'Describes the configuration of Malware Protection for EC2 instances with findings.',
+    }),
+    ServiceRole: StringSchema.exactOptional().openapi({
+      xml: { name: 'serviceRole' },
+      description: 'The GuardDuty Malware Protection service role.',
+    }),
   })
   .openapi({
     description:
@@ -725,9 +2144,9 @@ const MalwareProtectionConfigurationResultSchema = z
 
 const UnprocessedDataSourcesResultSchema = z
   .object({
-    MalwareProtection: MalwareProtectionConfigurationResultSchema.and(
-      z.any().openapi({ xml: { name: 'malwareProtection' } }),
-    ).exactOptional(),
+    MalwareProtection: MalwareProtectionConfigurationResultSchema.exactOptional().openapi({
+      xml: { name: 'malwareProtection' },
+    }),
   })
   .openapi({
     description: "Specifies the names of the data sources that couldn't be enabled.",
@@ -737,37 +2156,25 @@ const UnprocessedDataSourcesResultSchema = z
 
 const CreateDetectorResponseSchema = z
   .object({
-    DetectorId: DetectorIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'detectorId' },
-          description: 'The unique ID of the created detector.',
-        }),
-    ).exactOptional(),
-    UnprocessedDataSources: UnprocessedDataSourcesResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedDataSources' },
-          description:
-            "Specifies the data sources that couldn't be enabled when GuardDuty was enabled for the first time.",
-        }),
-    ).exactOptional(),
+    DetectorId: DetectorIdSchema.exactOptional().openapi({
+      xml: { name: 'detectorId' },
+      description: 'The unique ID of the created detector.',
+    }),
+    UnprocessedDataSources: UnprocessedDataSourcesResultSchema.exactOptional().openapi({
+      xml: { name: 'unprocessedDataSources' },
+      description:
+        "Specifies the data sources that couldn't be enabled when GuardDuty was enabled for the first time.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDetectorResponse')
 
 const S3LogsConfigurationSchema = z
   .object({
-    Enable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enable' },
-          description: ' The status of S3 data event logs as a data source.',
-        }),
-    ),
+    Enable: BooleanSchema.openapi({
+      xml: { name: 'enable' },
+      description: ' The status of S3 data event logs as a data source.',
+    }),
   })
   .openapi({
     required: ['Enable'],
@@ -777,14 +2184,10 @@ const S3LogsConfigurationSchema = z
 
 const KubernetesAuditLogsConfigurationSchema = z
   .object({
-    Enable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enable' },
-          description: 'The status of Kubernetes audit logs as a data source.',
-        }),
-    ),
+    Enable: BooleanSchema.openapi({
+      xml: { name: 'enable' },
+      description: 'The status of Kubernetes audit logs as a data source.',
+    }),
   })
   .openapi({
     required: ['Enable'],
@@ -794,14 +2197,10 @@ const KubernetesAuditLogsConfigurationSchema = z
 
 const KubernetesConfigurationSchema = z
   .object({
-    AuditLogs: KubernetesAuditLogsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'auditLogs' },
-          description: 'The status of Kubernetes audit logs as a data source.',
-        }),
-    ),
+    AuditLogs: KubernetesAuditLogsConfigurationSchema.openapi({
+      xml: { name: 'auditLogs' },
+      description: 'The status of Kubernetes audit logs as a data source.',
+    }),
   })
   .openapi({
     required: ['AuditLogs'],
@@ -811,14 +2210,10 @@ const KubernetesConfigurationSchema = z
 
 const ScanEc2InstanceWithFindingsSchema = z
   .object({
-    EbsVolumes: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ebsVolumes' },
-          description: 'Describes the configuration for scanning EBS volumes as data source.',
-        }),
-    ).exactOptional(),
+    EbsVolumes: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'ebsVolumes' },
+      description: 'Describes the configuration for scanning EBS volumes as data source.',
+    }),
   })
   .openapi({
     description:
@@ -829,15 +2224,11 @@ const ScanEc2InstanceWithFindingsSchema = z
 
 const MalwareProtectionConfigurationSchema = z
   .object({
-    ScanEc2InstanceWithFindings: ScanEc2InstanceWithFindingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanEc2InstanceWithFindings' },
-          description:
-            'Describes the configuration of Malware Protection for EC2 instances with findings.',
-        }),
-    ).exactOptional(),
+    ScanEc2InstanceWithFindings: ScanEc2InstanceWithFindingsSchema.exactOptional().openapi({
+      xml: { name: 'scanEc2InstanceWithFindings' },
+      description:
+        'Describes the configuration of Malware Protection for EC2 instances with findings.',
+    }),
   })
   .openapi({
     description: 'Describes whether Malware Protection will be enabled as a data source.',
@@ -866,19 +2257,14 @@ const FeatureAdditionalConfigurationSchema = z
 
 const DetectorAdditionalConfigurationSchema = z
   .object({
-    Name: FeatureAdditionalConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'name' }, description: 'Name of the additional configuration.' }),
-    ).exactOptional(),
-    Status: FeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Status of the additional configuration.',
-        }),
-    ).exactOptional(),
+    Name: FeatureAdditionalConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Name of the additional configuration.',
+    }),
+    Status: FeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'Status of the additional configuration.',
+    }),
   })
   .openapi({
     description:
@@ -893,20 +2279,18 @@ const DetectorAdditionalConfigurationsSchema = z
 
 const DetectorFeatureConfigurationSchema = z
   .object({
-    Name: DetectorFeatureSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the feature.' }),
-    ).exactOptional(),
-    Status: FeatureStatusSchema.and(
-      z.any().openapi({ xml: { name: 'status' }, description: 'The status of the feature.' }),
-    ).exactOptional(),
-    AdditionalConfiguration: DetectorAdditionalConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalConfiguration' },
-          description: 'Additional configuration for a resource.',
-        }),
-    ).exactOptional(),
+    Name: DetectorFeatureSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the feature.',
+    }),
+    Status: FeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The status of the feature.',
+    }),
+    AdditionalConfiguration: DetectorAdditionalConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'additionalConfiguration' },
+      description: 'Additional configuration for a resource.',
+    }),
   })
   .openapi({ description: 'Contains information about a GuardDuty feature.', required: [] })
   .openapi('DetectorFeatureConfiguration')
@@ -915,14 +2299,10 @@ const FilterNameSchema = z.string().min(3).max(64).openapi('FilterName')
 
 const CreateFilterResponseSchema = z
   .object({
-    Name: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the successfully created filter.',
-        }),
-    ),
+    Name: FilterNameSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the successfully created filter.',
+    }),
   })
   .openapi({ required: ['Name'] })
   .openapi('CreateFilterResponse')
@@ -939,120 +2319,72 @@ const LongSchema = z.int().openapi('Long')
 
 const ConditionSchema = z
   .object({
-    Eq: EqSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'eq' },
-          description:
-            'Represents the <i>equal</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    Neq: NeqSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'neq' },
-          description:
-            'Represents the <i>not equal</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    Gt: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'gt' },
-          description:
-            'Represents a <i>greater than</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    Gte: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'gte' },
-          description:
-            'Represents a <i>greater than or equal</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    Lt: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'lt' },
-          description:
-            'Represents a <i>less than</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    Lte: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'lte' },
-          description:
-            'Represents a <i>less than or equal</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    Equals: EqualsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'equals' },
-          description:
-            'Represents an <i>equal</i> <b/> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    NotEquals: NotEqualsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'notEquals' },
-          description:
-            'Represents a <i>not equal</i> <b/> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    GreaterThan: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'greaterThan' },
-          description:
-            'Represents a <i>greater than</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    GreaterThanOrEqual: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'greaterThanOrEqual' },
-          description:
-            'Represents a <i>greater than or equal</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    LessThan: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lessThan' },
-          description:
-            'Represents a <i>less than</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
-    LessThanOrEqual: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lessThanOrEqual' },
-          description:
-            'Represents a <i>less than or equal</i> condition to be applied to a single field when querying for findings.',
-        }),
-    ).exactOptional(),
+    Eq: EqSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'eq' },
+      description:
+        'Represents the <i>equal</i> condition to be applied to a single field when querying for findings.',
+    }),
+    Neq: NeqSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'neq' },
+      description:
+        'Represents the <i>not equal</i> condition to be applied to a single field when querying for findings.',
+    }),
+    Gt: IntegerSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'gt' },
+      description:
+        'Represents a <i>greater than</i> condition to be applied to a single field when querying for findings.',
+    }),
+    Gte: IntegerSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'gte' },
+      description:
+        'Represents a <i>greater than or equal</i> condition to be applied to a single field when querying for findings.',
+    }),
+    Lt: IntegerSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'lt' },
+      description:
+        'Represents a <i>less than</i> condition to be applied to a single field when querying for findings.',
+    }),
+    Lte: IntegerSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'lte' },
+      description:
+        'Represents a <i>less than or equal</i> condition to be applied to a single field when querying for findings.',
+    }),
+    Equals: EqualsSchema.exactOptional().openapi({
+      xml: { name: 'equals' },
+      description:
+        'Represents an <i>equal</i> <b/> condition to be applied to a single field when querying for findings.',
+    }),
+    NotEquals: NotEqualsSchema.exactOptional().openapi({
+      xml: { name: 'notEquals' },
+      description:
+        'Represents a <i>not equal</i> <b/> condition to be applied to a single field when querying for findings.',
+    }),
+    GreaterThan: LongSchema.exactOptional().openapi({
+      xml: { name: 'greaterThan' },
+      description:
+        'Represents a <i>greater than</i> condition to be applied to a single field when querying for findings.',
+    }),
+    GreaterThanOrEqual: LongSchema.exactOptional().openapi({
+      xml: { name: 'greaterThanOrEqual' },
+      description:
+        'Represents a <i>greater than or equal</i> condition to be applied to a single field when querying for findings.',
+    }),
+    LessThan: LongSchema.exactOptional().openapi({
+      xml: { name: 'lessThan' },
+      description:
+        'Represents a <i>less than</i> condition to be applied to a single field when querying for findings.',
+    }),
+    LessThanOrEqual: LongSchema.exactOptional().openapi({
+      xml: { name: 'lessThanOrEqual' },
+      description:
+        'Represents a <i>less than or equal</i> condition to be applied to a single field when querying for findings.',
+    }),
   })
   .openapi({ description: 'Contains information about the condition.', required: [] })
   .openapi('Condition')
@@ -1061,9 +2393,10 @@ const CriterionSchema = z.record(z.string(), ConditionSchema).openapi('Criterion
 
 const CreateIPSetResponseSchema = z
   .object({
-    IpSetId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'ipSetId' }, description: 'The ID of the IPSet resource.' }),
-    ),
+    IpSetId: StringSchema.openapi({
+      xml: { name: 'ipSetId' },
+      description: 'The ID of the IPSet resource.',
+    }),
   })
   .openapi({ required: ['IpSetId'] })
   .openapi('CreateIPSetResponse')
@@ -1072,22 +2405,14 @@ const AccountIdSchema = z.string().length(12).openapi('AccountId')
 
 const UnprocessedAccountSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The Amazon Web Services account ID.',
-        }),
-    ),
-    Result: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'result' },
-          description: "A reason why the account hasn't been processed.",
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      xml: { name: 'accountId' },
+      description: 'The Amazon Web Services account ID.',
+    }),
+    Result: StringSchema.openapi({
+      xml: { name: 'result' },
+      description: "A reason why the account hasn't been processed.",
+    }),
   })
   .openapi({
     required: ['AccountId', 'Result'],
@@ -1103,15 +2428,11 @@ const UnprocessedAccountsSchema = z
 
 const CreateMembersResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of objects that include the <code>accountIds</code> of the unprocessed accounts and a result string that explains why each was unprocessed.',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of objects that include the <code>accountIds</code> of the unprocessed accounts and a result string that explains why each was unprocessed.',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('CreateMembersResponse')
@@ -1120,17 +2441,14 @@ const EmailSchema = z.string().min(1).max(64).openapi('Email')
 
 const AccountDetailSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ xml: { name: 'accountId' }, description: 'The member account ID.' }),
-    ),
-    Email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'email' },
-          description: 'The email address of the member account.',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      xml: { name: 'accountId' },
+      description: 'The member account ID.',
+    }),
+    Email: EmailSchema.openapi({
+      xml: { name: 'email' },
+      description: 'The email address of the member account.',
+    }),
   })
   .openapi({
     required: ['AccountId', 'Email'],
@@ -1140,116 +2458,84 @@ const AccountDetailSchema = z
 
 const CreatePublishingDestinationResponseSchema = z
   .object({
-    DestinationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationId' },
-          description: 'The ID of the publishing destination that is created.',
-        }),
-    ),
+    DestinationId: StringSchema.openapi({
+      xml: { name: 'destinationId' },
+      description: 'The ID of the publishing destination that is created.',
+    }),
   })
   .openapi({ required: ['DestinationId'] })
   .openapi('CreatePublishingDestinationResponse')
 
-const CreateSampleFindingsResponseSchema = z.object({}).openapi('CreateSampleFindingsResponse')
-
-const FindingTypeSchema = z.string().min(1).max(50).openapi('FindingType')
+const CreateSampleFindingsResponseSchema = z.looseObject({}).openapi('CreateSampleFindingsResponse')
 
 const CreateThreatIntelSetResponseSchema = z
   .object({
-    ThreatIntelSetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatIntelSetId' },
-          description: 'The ID of the ThreatIntelSet resource.',
-        }),
-    ),
+    ThreatIntelSetId: StringSchema.openapi({
+      xml: { name: 'threatIntelSetId' },
+      description: 'The ID of the ThreatIntelSet resource.',
+    }),
   })
   .openapi({ required: ['ThreatIntelSetId'] })
   .openapi('CreateThreatIntelSetResponse')
 
 const DeclineInvitationsResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('DeclineInvitationsResponse')
 
-const DeleteDetectorResponseSchema = z.object({}).openapi('DeleteDetectorResponse')
+const DeleteDetectorResponseSchema = z.looseObject({}).openapi('DeleteDetectorResponse')
 
-const DeleteFilterResponseSchema = z.object({}).openapi('DeleteFilterResponse')
+const DeleteFilterResponseSchema = z.looseObject({}).openapi('DeleteFilterResponse')
 
-const DeleteIPSetResponseSchema = z.object({}).openapi('DeleteIPSetResponse')
+const DeleteIPSetResponseSchema = z.looseObject({}).openapi('DeleteIPSetResponse')
 
 const DeleteInvitationsResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('DeleteInvitationsResponse')
 
 const DeleteMembersResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description: 'The accounts that could not be processed.',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description: 'The accounts that could not be processed.',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('DeleteMembersResponse')
 
 const DeletePublishingDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeletePublishingDestinationResponse')
 
-const DeleteThreatIntelSetResponseSchema = z.object({}).openapi('DeleteThreatIntelSetResponse')
+const DeleteThreatIntelSetResponseSchema = z.looseObject({}).openapi('DeleteThreatIntelSetResponse')
 
 const NonEmptyStringSchema = z.string().min(1).max(200).openapi('NonEmptyString')
 
 const ScanStatusSchema = z.enum(['RUNNING', 'COMPLETED', 'FAILED']).openapi('ScanStatus')
 
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
 const TriggerDetailsSchema = z
   .object({
-    GuardDutyFindingId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'guardDutyFindingId' },
-          description: 'The ID of the GuardDuty finding that triggered the malware scan.',
-        }),
-    ).exactOptional(),
-    Description: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description of the scan trigger.',
-        }),
-    ).exactOptional(),
+    GuardDutyFindingId: NonEmptyStringSchema.exactOptional().openapi({
+      xml: { name: 'guardDutyFindingId' },
+      description: 'The ID of the GuardDuty finding that triggered the malware scan.',
+    }),
+    Description: NonEmptyStringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the scan trigger.',
+    }),
   })
   .openapi({ description: 'Represents the reason the scan was triggered.', required: [] })
   .openapi('TriggerDetails')
@@ -1263,14 +2549,10 @@ const InstanceArnSchema = z
 
 const ResourceDetailsSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'instanceArn' },
-          description: 'InstanceArn that was scanned in the scan entry.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.exactOptional().openapi({
+      xml: { name: 'instanceArn' },
+      description: 'InstanceArn that was scanned in the scan entry.',
+    }),
   })
   .openapi({
     description: 'Represents the resources that were scanned in the scan entry.',
@@ -1282,178 +2564,75 @@ const ScanResultSchema = z.enum(['CLEAN', 'INFECTED']).openapi('ScanResult')
 
 const ScanResultDetailsSchema = z
   .object({
-    ScanResult: ScanResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanResult' },
-          description: 'An enum value representing possible scan results.',
-        }),
-    ).exactOptional(),
+    ScanResult: ScanResultSchema.exactOptional().openapi({
+      xml: { name: 'scanResult' },
+      description: 'An enum value representing possible scan results.',
+    }),
   })
   .openapi({ description: 'Represents the result of the scan.', required: [] })
   .openapi('ScanResultDetails')
 
 const PositiveLongSchema = z.int().min(0).openapi('PositiveLong')
 
-const VolumeDetailSchema = z
-  .object({
-    VolumeArn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'volumeArn' }, description: 'EBS volume Arn information.' }),
-    ).exactOptional(),
-    VolumeType: StringSchema.and(
-      z.any().openapi({ xml: { name: 'volumeType' }, description: 'The EBS volume type.' }),
-    ).exactOptional(),
-    DeviceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deviceName' },
-          description: 'The device name for the EBS volume.',
-        }),
-    ).exactOptional(),
-    VolumeSizeInGB: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'volumeSizeInGB' }, description: 'EBS volume size in GB.' }),
-    ).exactOptional(),
-    EncryptionType: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'encryptionType' }, description: 'EBS volume encryption type.' }),
-    ).exactOptional(),
-    SnapshotArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'snapshotArn' }, description: 'Snapshot Arn of the EBS volume.' }),
-    ).exactOptional(),
-    KmsKeyArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kmsKeyArn' },
-          description: 'KMS key Arn used to encrypt the EBS volume.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains EBS volume details.', required: [] })
-  .openapi('VolumeDetail')
-
-const VolumeDetailsSchema = z.array(VolumeDetailSchema).openapi('VolumeDetails')
-
 const ScanSchema = z
   .object({
-    DetectorId: DetectorIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'detectorId' },
-          description: 'The unique ID of the detector that the request is associated with.',
-        }),
-    ).exactOptional(),
-    AdminDetectorId: DetectorIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adminDetectorId' },
-          description:
-            'The unique detector ID of the administrator account that the request is associated with. Note that this value will be the same as the one used for <code>DetectorId</code> if the account is an administrator.',
-        }),
-    ).exactOptional(),
-    ScanId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanId' },
-          description: 'The unique scan ID associated with a scan entry.',
-        }),
-    ).exactOptional(),
-    ScanStatus: ScanStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanStatus' },
-          description: 'An enum value representing possible scan statuses.',
-        }),
-    ).exactOptional(),
-    FailureReason: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'failureReason' },
-          description: 'Represents the reason for FAILED scan status.',
-        }),
-    ).exactOptional(),
-    ScanStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanStartTime' },
-          description: 'The timestamp of when the scan was triggered.',
-        }),
-    ).exactOptional(),
-    ScanEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanEndTime' },
-          description: 'The timestamp of when the scan was finished.',
-        }),
-    ).exactOptional(),
-    TriggerDetails: TriggerDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'triggerDetails' },
-          description: 'Specifies the reason why the scan was initiated.',
-        }),
-    ).exactOptional(),
-    ResourceDetails: ResourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceDetails' },
-          description: 'Represents the resources that were scanned in the scan entry.',
-        }),
-    ).exactOptional(),
-    ScanResultDetails: ScanResultDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanResultDetails' },
-          description: 'Represents the result of the scan.',
-        }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The ID for the account that belongs to the scan.',
-        }),
-    ).exactOptional(),
-    TotalBytes: PositiveLongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'totalBytes' },
-          description: 'Represents total bytes that were scanned.',
-        }),
-    ).exactOptional(),
-    FileCount: PositiveLongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'fileCount' },
-          description: 'Represents the number of files that were scanned.',
-        }),
-    ).exactOptional(),
-    AttachedVolumes: VolumeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attachedVolumes' },
-          description: 'List of volumes that were attached to the original instance to be scanned.',
-        }),
-    ).exactOptional(),
+    DetectorId: DetectorIdSchema.exactOptional().openapi({
+      xml: { name: 'detectorId' },
+      description: 'The unique ID of the detector that the request is associated with.',
+    }),
+    AdminDetectorId: DetectorIdSchema.exactOptional().openapi({
+      xml: { name: 'adminDetectorId' },
+      description:
+        'The unique detector ID of the administrator account that the request is associated with. Note that this value will be the same as the one used for <code>DetectorId</code> if the account is an administrator.',
+    }),
+    ScanId: NonEmptyStringSchema.exactOptional().openapi({
+      xml: { name: 'scanId' },
+      description: 'The unique scan ID associated with a scan entry.',
+    }),
+    ScanStatus: ScanStatusSchema.exactOptional().openapi({
+      xml: { name: 'scanStatus' },
+      description: 'An enum value representing possible scan statuses.',
+    }),
+    FailureReason: NonEmptyStringSchema.exactOptional().openapi({
+      xml: { name: 'failureReason' },
+      description: 'Represents the reason for FAILED scan status.',
+    }),
+    ScanStartTime: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'scanStartTime' },
+      description: 'The timestamp of when the scan was triggered.',
+    }),
+    ScanEndTime: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'scanEndTime' },
+      description: 'The timestamp of when the scan was finished.',
+    }),
+    TriggerDetails: TriggerDetailsSchema.exactOptional().openapi({
+      xml: { name: 'triggerDetails' },
+      description: 'Specifies the reason why the scan was initiated.',
+    }),
+    ResourceDetails: ResourceDetailsSchema.exactOptional().openapi({
+      xml: { name: 'resourceDetails' },
+      description: 'Represents the resources that were scanned in the scan entry.',
+    }),
+    ScanResultDetails: ScanResultDetailsSchema.exactOptional().openapi({
+      xml: { name: 'scanResultDetails' },
+      description: 'Represents the result of the scan.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      xml: { name: 'accountId' },
+      description: 'The ID for the account that belongs to the scan.',
+    }),
+    TotalBytes: PositiveLongSchema.exactOptional().openapi({
+      xml: { name: 'totalBytes' },
+      description: 'Represents total bytes that were scanned.',
+    }),
+    FileCount: PositiveLongSchema.exactOptional().openapi({
+      xml: { name: 'fileCount' },
+      description: 'Represents the number of files that were scanned.',
+    }),
+    AttachedVolumes: VolumeDetailsSchema.exactOptional().openapi({
+      xml: { name: 'attachedVolumes' },
+      description: 'List of volumes that were attached to the original instance to be scanned.',
+    }),
   })
   .openapi({ description: 'Contains information about a malware scan.', required: [] })
   .openapi('Scan')
@@ -1462,23 +2641,15 @@ const ScansSchema = z.array(ScanSchema).openapi('Scans')
 
 const DescribeMalwareScansResponseSchema = z
   .object({
-    Scans: ScansSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scans' },
-          description: 'Contains information about malware scans.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    Scans: ScansSchema.openapi({
+      xml: { name: 'scans' },
+      description: 'Contains information about malware scans.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: ['Scans'] })
   .openapi('DescribeMalwareScansResponse')
@@ -1498,56 +2669,36 @@ const LongValueSchema = z.int().openapi('LongValue')
 
 const FilterConditionSchema = z
   .object({
-    EqualsValue: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'equalsValue' },
-          description:
-            'Represents an <i>equal</i> <b/> condition to be applied to a single field when querying for scan entries.',
-        }),
-    ).exactOptional(),
-    GreaterThan: LongValueSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'greaterThan' },
-          description:
-            'Represents a <i>greater than</i> condition to be applied to a single field when querying for scan entries.',
-        }),
-    ).exactOptional(),
-    LessThan: LongValueSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lessThan' },
-          description:
-            'Represents a <i>less than</i> condition to be applied to a single field when querying for scan entries.',
-        }),
-    ).exactOptional(),
+    EqualsValue: NonEmptyStringSchema.exactOptional().openapi({
+      xml: { name: 'equalsValue' },
+      description:
+        'Represents an <i>equal</i> <b/> condition to be applied to a single field when querying for scan entries.',
+    }),
+    GreaterThan: LongValueSchema.exactOptional().openapi({
+      xml: { name: 'greaterThan' },
+      description:
+        'Represents a <i>greater than</i> condition to be applied to a single field when querying for scan entries.',
+    }),
+    LessThan: LongValueSchema.exactOptional().openapi({
+      xml: { name: 'lessThan' },
+      description:
+        'Represents a <i>less than</i> condition to be applied to a single field when querying for scan entries.',
+    }),
   })
   .openapi({ description: 'Contains information about the condition.', required: [] })
   .openapi('FilterCondition')
 
 const FilterCriterionSchema = z
   .object({
-    CriterionKey: CriterionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'criterionKey' },
-          description:
-            'An enum value representing possible scan properties to match with given scan entries.',
-        }),
-    ).exactOptional(),
-    FilterCondition: FilterConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'filterCondition' },
-          description: 'Contains information about the condition.',
-        }),
-    ).exactOptional(),
+    CriterionKey: CriterionKeySchema.exactOptional().openapi({
+      xml: { name: 'criterionKey' },
+      description:
+        'An enum value representing possible scan properties to match with given scan entries.',
+    }),
+    FilterCondition: FilterConditionSchema.exactOptional().openapi({
+      xml: { name: 'filterCondition' },
+      description: 'Contains information about the condition.',
+    }),
   })
   .openapi({
     description:
@@ -1566,15 +2717,11 @@ const OrderBySchema = z.enum(['ASC', 'DESC']).openapi('OrderBy')
 
 const OrganizationS3LogsConfigurationResultSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            'A value that describes whether S3 data event logs are automatically enabled for new members of the organization.',
-        }),
-    ),
+    AutoEnable: BooleanSchema.openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        'A value that describes whether S3 data event logs are automatically enabled for new members of the organization.',
+    }),
   })
   .openapi({
     required: ['AutoEnable'],
@@ -1585,15 +2732,11 @@ const OrganizationS3LogsConfigurationResultSchema = z
 
 const OrganizationKubernetesAuditLogsConfigurationResultSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            'Whether Kubernetes audit logs data source should be auto-enabled for new members joining the organization.',
-        }),
-    ),
+    AutoEnable: BooleanSchema.openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        'Whether Kubernetes audit logs data source should be auto-enabled for new members joining the organization.',
+    }),
   })
   .openapi({
     required: ['AutoEnable'],
@@ -1604,15 +2747,11 @@ const OrganizationKubernetesAuditLogsConfigurationResultSchema = z
 
 const OrganizationKubernetesConfigurationResultSchema = z
   .object({
-    AuditLogs: OrganizationKubernetesAuditLogsConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'auditLogs' },
-          description:
-            'The current configuration of Kubernetes audit logs as a data source for the organization.',
-        }),
-    ),
+    AuditLogs: OrganizationKubernetesAuditLogsConfigurationResultSchema.openapi({
+      xml: { name: 'auditLogs' },
+      description:
+        'The current configuration of Kubernetes audit logs as a data source for the organization.',
+    }),
   })
   .openapi({
     required: ['AuditLogs'],
@@ -1622,15 +2761,11 @@ const OrganizationKubernetesConfigurationResultSchema = z
 
 const OrganizationEbsVolumesResultSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            'An object that contains the status of whether scanning EBS volumes should be auto-enabled for new members joining the organization.',
-        }),
-    ).exactOptional(),
+    AutoEnable: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        'An object that contains the status of whether scanning EBS volumes should be auto-enabled for new members joining the organization.',
+    }),
   })
   .openapi({
     description:
@@ -1641,14 +2776,10 @@ const OrganizationEbsVolumesResultSchema = z
 
 const OrganizationScanEc2InstanceWithFindingsResultSchema = z
   .object({
-    EbsVolumes: OrganizationEbsVolumesResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ebsVolumes' },
-          description: 'Describes the configuration for scanning EBS volumes for an organization.',
-        }),
-    ).exactOptional(),
+    EbsVolumes: OrganizationEbsVolumesResultSchema.exactOptional().openapi({
+      xml: { name: 'ebsVolumes' },
+      description: 'Describes the configuration for scanning EBS volumes for an organization.',
+    }),
   })
   .openapi({
     description:
@@ -1659,15 +2790,12 @@ const OrganizationScanEc2InstanceWithFindingsResultSchema = z
 
 const OrganizationMalwareProtectionConfigurationResultSchema = z
   .object({
-    ScanEc2InstanceWithFindings: OrganizationScanEc2InstanceWithFindingsResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanEc2InstanceWithFindings' },
-          description:
-            'Describes the configuration for scanning EC2 instances with findings for an organization.',
-        }),
-    ).exactOptional(),
+    ScanEc2InstanceWithFindings:
+      OrganizationScanEc2InstanceWithFindingsResultSchema.exactOptional().openapi({
+        xml: { name: 'scanEc2InstanceWithFindings' },
+        description:
+          'Describes the configuration for scanning EC2 instances with findings for an organization.',
+      }),
   })
   .openapi({
     description:
@@ -1678,31 +2806,20 @@ const OrganizationMalwareProtectionConfigurationResultSchema = z
 
 const OrganizationDataSourceConfigurationsResultSchema = z
   .object({
-    S3Logs: OrganizationS3LogsConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 's3Logs' },
-          description: 'Describes whether S3 data event logs are enabled as a data source.',
-        }),
-    ),
-    Kubernetes: OrganizationKubernetesConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kubernetes' },
-          description: 'Describes the configuration of Kubernetes data sources.',
-        }),
-    ).exactOptional(),
-    MalwareProtection: OrganizationMalwareProtectionConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'malwareProtection' },
-          description:
-            'Describes the configuration of Malware Protection data source for an organization.',
-        }),
-    ).exactOptional(),
+    S3Logs: OrganizationS3LogsConfigurationResultSchema.openapi({
+      xml: { name: 's3Logs' },
+      description: 'Describes whether S3 data event logs are enabled as a data source.',
+    }),
+    Kubernetes: OrganizationKubernetesConfigurationResultSchema.exactOptional().openapi({
+      xml: { name: 'kubernetes' },
+      description: 'Describes the configuration of Kubernetes data sources.',
+    }),
+    MalwareProtection:
+      OrganizationMalwareProtectionConfigurationResultSchema.exactOptional().openapi({
+        xml: { name: 'malwareProtection' },
+        description:
+          'Describes the configuration of Malware Protection data source for an organization.',
+      }),
   })
   .openapi({
     required: ['S3Logs'],
@@ -1730,24 +2847,16 @@ const OrgFeatureAdditionalConfigurationSchema = z
 
 const OrganizationAdditionalConfigurationResultSchema = z
   .object({
-    Name: OrgFeatureAdditionalConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the additional configuration that is configured for the member accounts within the organization.',
-        }),
-    ).exactOptional(),
-    AutoEnable: OrgFeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            '<p>Describes how The status of the additional configuration that are configured for the member accounts within the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NEW</code>, a feature will be configured for only the new accounts when they join the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NONE</code>, no feature will be configured for the accounts when they join the organization.</p>',
-        }),
-    ).exactOptional(),
+    Name: OrgFeatureAdditionalConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the additional configuration that is configured for the member accounts within the organization.',
+    }),
+    AutoEnable: OrgFeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        '<p>Describes how The status of the additional configuration that are configured for the member accounts within the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NEW</code>, a feature will be configured for only the new accounts when they join the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NONE</code>, no feature will be configured for the accounts when they join the organization.</p>',
+    }),
   })
   .openapi({
     description:
@@ -1762,33 +2871,22 @@ const OrganizationAdditionalConfigurationResultsSchema = z
 
 const OrganizationFeatureConfigurationResultSchema = z
   .object({
-    Name: OrgFeatureSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the feature that is configured for the member accounts within the organization.',
-        }),
-    ).exactOptional(),
-    AutoEnable: OrgFeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            '<p>Describes how The status of the feature that are configured for the member accounts within the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NEW</code>, a feature will be configured for only the new accounts when they join the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NONE</code>, no feature will be configured for the accounts when they join the organization.</p>',
-        }),
-    ).exactOptional(),
-    AdditionalConfiguration: OrganizationAdditionalConfigurationResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalConfiguration' },
-          description:
-            'The additional configuration that is configured for the member accounts within the organization.',
-        }),
-    ).exactOptional(),
+    Name: OrgFeatureSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the feature that is configured for the member accounts within the organization.',
+    }),
+    AutoEnable: OrgFeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        '<p>Describes how The status of the feature that are configured for the member accounts within the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NEW</code>, a feature will be configured for only the new accounts when they join the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NONE</code>, no feature will be configured for the accounts when they join the organization.</p>',
+    }),
+    AdditionalConfiguration:
+      OrganizationAdditionalConfigurationResultsSchema.exactOptional().openapi({
+        xml: { name: 'additionalConfiguration' },
+        description:
+          'The additional configuration that is configured for the member accounts within the organization.',
+      }),
   })
   .openapi({
     description: 'A list of features which will be configured for the organization.',
@@ -1804,61 +2902,37 @@ const AutoEnableMembersSchema = z.enum(['NEW', 'ALL', 'NONE']).openapi('AutoEnab
 
 const DescribeOrganizationConfigurationResponseSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'autoEnable' },
-          description:
-            '<p>Indicates whether GuardDuty is automatically enabled for accounts added to the organization.</p> <p>Even though this is still supported, we recommend using <code>AutoEnableOrganizationMembers</code> to achieve the similar results.</p>This field is deprecated, use AutoEnableOrganizationMembers instead',
-        }),
-    ).exactOptional(),
-    MemberAccountLimitReached: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'memberAccountLimitReached' },
-          description:
-            'Indicates whether the maximum number of allowed member accounts are already associated with the delegated administrator account for your organization.',
-        }),
-    ),
-    DataSources: OrganizationDataSourceConfigurationsResultSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            'Describes which data sources are enabled automatically for member accounts.This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Features: OrganizationFeaturesConfigurationsResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description: 'A list of features that are configured for this organization.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
-    AutoEnableOrganizationMembers: AutoEnableMembersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnableOrganizationMembers' },
-          description:
-            '<p>Indicates the auto-enablement configuration of GuardDuty for the member accounts in the organization.</p> <ul> <li> <p> <code>NEW</code>: Indicates that when a new account joins the organization, they will have GuardDuty enabled automatically. </p> </li> <li> <p> <code>ALL</code>: Indicates that all accounts in the Amazon Web Services Organization have GuardDuty enabled automatically. This includes <code>NEW</code> accounts that join the organization and accounts that may have been suspended or removed from the organization in GuardDuty.</p> </li> <li> <p> <code>NONE</code>: Indicates that GuardDuty will not be automatically enabled for any accounts in the organization. GuardDuty must be managed for each account individually by the administrator.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AutoEnable: BooleanSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'autoEnable' },
+      description:
+        '<p>Indicates whether GuardDuty is automatically enabled for accounts added to the organization.</p> <p>Even though this is still supported, we recommend using <code>AutoEnableOrganizationMembers</code> to achieve the similar results.</p>This field is deprecated, use AutoEnableOrganizationMembers instead',
+    }),
+    MemberAccountLimitReached: BooleanSchema.openapi({
+      xml: { name: 'memberAccountLimitReached' },
+      description:
+        'Indicates whether the maximum number of allowed member accounts are already associated with the delegated administrator account for your organization.',
+    }),
+    DataSources: OrganizationDataSourceConfigurationsResultSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        'Describes which data sources are enabled automatically for member accounts.This parameter is deprecated, use Features instead',
+    }),
+    Features: OrganizationFeaturesConfigurationsResultsSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'A list of features that are configured for this organization.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
+    AutoEnableOrganizationMembers: AutoEnableMembersSchema.exactOptional().openapi({
+      xml: { name: 'autoEnableOrganizationMembers' },
+      description:
+        '<p>Indicates the auto-enablement configuration of GuardDuty for the member accounts in the organization.</p> <ul> <li> <p> <code>NEW</code>: Indicates that when a new account joins the organization, they will have GuardDuty enabled automatically. </p> </li> <li> <p> <code>ALL</code>: Indicates that all accounts in the Amazon Web Services Organization have GuardDuty enabled automatically. This includes <code>NEW</code> accounts that join the organization and accounts that may have been suspended or removed from the organization in GuardDuty.</p> </li> <li> <p> <code>NONE</code>: Indicates that GuardDuty will not be automatically enabled for any accounts in the organization. GuardDuty must be managed for each account individually by the administrator.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['MemberAccountLimitReached'] })
   .openapi('DescribeOrganizationConfigurationResponse')
@@ -1876,23 +2950,15 @@ const PublishingStatusSchema = z
 
 const DestinationPropertiesSchema = z
   .object({
-    DestinationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationArn' },
-          description:
-            '<p>The ARN of the resource to publish to.</p> <p>To specify an S3 bucket folder use the following format: <code>arn:aws:s3:::DOC-EXAMPLE-BUCKET/myFolder/</code> </p>',
-        }),
-    ).exactOptional(),
-    KmsKeyArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kmsKeyArn' },
-          description: 'The ARN of the KMS key to use for encryption.',
-        }),
-    ).exactOptional(),
+    DestinationArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'destinationArn' },
+      description:
+        '<p>The ARN of the resource to publish to.</p> <p>To specify an S3 bucket folder use the following format: <code>arn:aws:s3:::DOC-EXAMPLE-BUCKET/myFolder/</code> </p>',
+    }),
+    KmsKeyArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'kmsKeyArn' },
+      description: 'The ARN of the KMS key to use for encryption.',
+    }),
   })
   .openapi({
     description:
@@ -1903,49 +2969,29 @@ const DestinationPropertiesSchema = z
 
 const DescribePublishingDestinationResponseSchema = z
   .object({
-    DestinationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationId' },
-          description: 'The ID of the publishing destination.',
-        }),
-    ),
-    DestinationType: DestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationType' },
-          description:
-            'The type of publishing destination. Currently, only Amazon S3 buckets are supported.',
-        }),
-    ),
-    Status: PublishingStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'The status of the publishing destination.',
-        }),
-    ),
-    PublishingFailureStartTimestamp: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'publishingFailureStartTimestamp' },
-          description:
-            'The time, in epoch millisecond format, at which GuardDuty was first unable to publish findings to the destination.',
-        }),
-    ),
-    DestinationProperties: DestinationPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationProperties' },
-          description:
-            'A <code>DestinationProperties</code> object that includes the <code>DestinationArn</code> and <code>KmsKeyArn</code> of the publishing destination.',
-        }),
-    ),
+    DestinationId: StringSchema.openapi({
+      xml: { name: 'destinationId' },
+      description: 'The ID of the publishing destination.',
+    }),
+    DestinationType: DestinationTypeSchema.openapi({
+      xml: { name: 'destinationType' },
+      description:
+        'The type of publishing destination. Currently, only Amazon S3 buckets are supported.',
+    }),
+    Status: PublishingStatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'The status of the publishing destination.',
+    }),
+    PublishingFailureStartTimestamp: LongSchema.openapi({
+      xml: { name: 'publishingFailureStartTimestamp' },
+      description:
+        'The time, in epoch millisecond format, at which GuardDuty was first unable to publish findings to the destination.',
+    }),
+    DestinationProperties: DestinationPropertiesSchema.openapi({
+      xml: { name: 'destinationProperties' },
+      description:
+        'A <code>DestinationProperties</code> object that includes the <code>DestinationArn</code> and <code>KmsKeyArn</code> of the publishing destination.',
+    }),
   })
   .openapi({
     required: [
@@ -1959,15 +3005,15 @@ const DescribePublishingDestinationResponseSchema = z
   .openapi('DescribePublishingDestinationResponse')
 
 const DisableOrganizationAdminAccountResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisableOrganizationAdminAccountResponse')
 
 const DisassociateFromAdministratorAccountResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateFromAdministratorAccountResponse')
 
 const DisassociateFromMasterAccountResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     deprecated: true,
     description:
@@ -1977,59 +3023,38 @@ const DisassociateFromMasterAccountResponseSchema = z
 
 const DisassociateMembersResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('DisassociateMembersResponse')
 
 const EnableOrganizationAdminAccountResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('EnableOrganizationAdminAccountResponse')
 
 const AdministratorSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The ID of the account used as the administrator account.',
-        }),
-    ).exactOptional(),
-    InvitationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitationId' },
-          description:
-            'The value that is used to validate the administrator account to the member account.',
-        }),
-    ).exactOptional(),
-    RelationshipStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'relationshipStatus' },
-          description:
-            'The status of the relationship between the administrator and member accounts.',
-        }),
-    ).exactOptional(),
-    InvitedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitedAt' },
-          description: 'The timestamp when the invitation was sent.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      xml: { name: 'accountId' },
+      description: 'The ID of the account used as the administrator account.',
+    }),
+    InvitationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'invitationId' },
+      description:
+        'The value that is used to validate the administrator account to the member account.',
+    }),
+    RelationshipStatus: StringSchema.exactOptional().openapi({
+      xml: { name: 'relationshipStatus' },
+      description: 'The status of the relationship between the administrator and member accounts.',
+    }),
+    InvitedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'invitedAt' },
+      description: 'The timestamp when the invitation was sent.',
+    }),
   })
   .openapi({
     description: 'Contains information about the administrator account and invitation.',
@@ -2039,14 +3064,10 @@ const AdministratorSchema = z
 
 const GetAdministratorAccountResponseSchema = z
   .object({
-    Administrator: AdministratorSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'administrator' },
-          description: 'The administrator account details.',
-        }),
-    ),
+    Administrator: AdministratorSchema.openapi({
+      xml: { name: 'administrator' },
+      description: 'The administrator account details.',
+    }),
   })
   .openapi({ required: ['Administrator'] })
   .openapi('GetAdministratorAccountResponse')
@@ -2059,24 +3080,14 @@ const CountByCoverageStatusSchema = z
 
 const CoverageStatisticsSchema = z
   .object({
-    CountByResourceType: CountByResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'countByResourceType' },
-          description:
-            'Represents coverage statistics for EKS clusters aggregated by resource type.',
-        }),
-    ).exactOptional(),
-    CountByCoverageStatus: CountByCoverageStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'countByCoverageStatus' },
-          description:
-            'Represents coverage statistics for EKS clusters aggregated by coverage status.',
-        }),
-    ).exactOptional(),
+    CountByResourceType: CountByResourceTypeSchema.exactOptional().openapi({
+      xml: { name: 'countByResourceType' },
+      description: 'Represents coverage statistics for EKS clusters aggregated by resource type.',
+    }),
+    CountByCoverageStatus: CountByCoverageStatusSchema.exactOptional().openapi({
+      xml: { name: 'countByCoverageStatus' },
+      description: 'Represents coverage statistics for EKS clusters aggregated by coverage status.',
+    }),
   })
   .openapi({
     description: 'Information about the coverage statistics for a resource.',
@@ -2086,15 +3097,11 @@ const CoverageStatisticsSchema = z
 
 const GetCoverageStatisticsResponseSchema = z
   .object({
-    CoverageStatistics: CoverageStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'coverageStatistics' },
-          description:
-            'Represents the count aggregated by the <code>statusCode</code> and <code>resourceType</code>.',
-        }),
-    ).exactOptional(),
+    CoverageStatistics: CoverageStatisticsSchema.exactOptional().openapi({
+      xml: { name: 'coverageStatistics' },
+      description:
+        'Represents the count aggregated by the <code>statusCode</code> and <code>resourceType</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCoverageStatisticsResponse')
@@ -2105,24 +3112,16 @@ const CoverageFilterCriterionKeySchema = z
 
 const CoverageFilterConditionSchema = z
   .object({
-    Equals: EqualsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'equals' },
-          description:
-            'Represents an equal condition that is applied to a single field while retrieving the coverage details.',
-        }),
-    ).exactOptional(),
-    NotEquals: NotEqualsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'notEquals' },
-          description:
-            'Represents a not equal condition that is applied to a single field while retrieving the coverage details.',
-        }),
-    ).exactOptional(),
+    Equals: EqualsSchema.exactOptional().openapi({
+      xml: { name: 'equals' },
+      description:
+        'Represents an equal condition that is applied to a single field while retrieving the coverage details.',
+    }),
+    NotEquals: NotEqualsSchema.exactOptional().openapi({
+      xml: { name: 'notEquals' },
+      description:
+        'Represents a not equal condition that is applied to a single field while retrieving the coverage details.',
+    }),
   })
   .openapi({
     description:
@@ -2133,22 +3132,14 @@ const CoverageFilterConditionSchema = z
 
 const CoverageFilterCriterionSchema = z
   .object({
-    CriterionKey: CoverageFilterCriterionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'criterionKey' },
-          description: 'An enum value representing possible filter fields.',
-        }),
-    ).exactOptional(),
-    FilterCondition: CoverageFilterConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'filterCondition' },
-          description: 'Contains information about the condition.',
-        }),
-    ).exactOptional(),
+    CriterionKey: CoverageFilterCriterionKeySchema.exactOptional().openapi({
+      xml: { name: 'criterionKey' },
+      description: 'An enum value representing possible filter fields.',
+    }),
+    FilterCondition: CoverageFilterConditionSchema.exactOptional().openapi({
+      xml: { name: 'filterCondition' },
+      description: 'Contains information about the condition.',
+    }),
   })
   .openapi({
     description:
@@ -2175,14 +3166,10 @@ const DetectorStatusSchema = z.enum(['ENABLED', 'DISABLED']).openapi('DetectorSt
 
 const CloudTrailConfigurationResultSchema = z
   .object({
-    Status: DataSourceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Describes whether CloudTrail is enabled as a data source for the detector.',
-        }),
-    ),
+    Status: DataSourceStatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'Describes whether CloudTrail is enabled as a data source for the detector.',
+    }),
   })
   .openapi({
     required: ['Status'],
@@ -2193,14 +3180,10 @@ const CloudTrailConfigurationResultSchema = z
 
 const DNSLogsConfigurationResultSchema = z
   .object({
-    Status: DataSourceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Denotes whether DNS logs is enabled as a data source.',
-        }),
-    ),
+    Status: DataSourceStatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'Denotes whether DNS logs is enabled as a data source.',
+    }),
   })
   .openapi({
     required: ['Status'],
@@ -2210,14 +3193,10 @@ const DNSLogsConfigurationResultSchema = z
 
 const FlowLogsConfigurationResultSchema = z
   .object({
-    Status: DataSourceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Denotes whether VPC flow logs is enabled as a data source.',
-        }),
-    ),
+    Status: DataSourceStatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'Denotes whether VPC flow logs is enabled as a data source.',
+    }),
   })
   .openapi({
     required: ['Status'],
@@ -2227,15 +3206,11 @@ const FlowLogsConfigurationResultSchema = z
 
 const S3LogsConfigurationResultSchema = z
   .object({
-    Status: DataSourceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            'A value that describes whether S3 data event logs are automatically enabled for new members of the organization.',
-        }),
-    ),
+    Status: DataSourceStatusSchema.openapi({
+      xml: { name: 'status' },
+      description:
+        'A value that describes whether S3 data event logs are automatically enabled for new members of the organization.',
+    }),
   })
   .openapi({
     required: ['Status'],
@@ -2245,15 +3220,11 @@ const S3LogsConfigurationResultSchema = z
 
 const KubernetesAuditLogsConfigurationResultSchema = z
   .object({
-    Status: DataSourceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            'A value that describes whether Kubernetes audit logs are enabled as a data source.',
-        }),
-    ),
+    Status: DataSourceStatusSchema.openapi({
+      xml: { name: 'status' },
+      description:
+        'A value that describes whether Kubernetes audit logs are enabled as a data source.',
+    }),
   })
   .openapi({
     required: ['Status'],
@@ -2263,14 +3234,10 @@ const KubernetesAuditLogsConfigurationResultSchema = z
 
 const KubernetesConfigurationResultSchema = z
   .object({
-    AuditLogs: KubernetesAuditLogsConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'auditLogs' },
-          description: 'Describes whether Kubernetes audit logs are enabled as a data source.',
-        }),
-    ),
+    AuditLogs: KubernetesAuditLogsConfigurationResultSchema.openapi({
+      xml: { name: 'auditLogs' },
+      description: 'Describes whether Kubernetes audit logs are enabled as a data source.',
+    }),
   })
   .openapi({
     required: ['AuditLogs'],
@@ -2280,59 +3247,35 @@ const KubernetesConfigurationResultSchema = z
 
 const DataSourceConfigurationsResultSchema = z
   .object({
-    CloudTrail: CloudTrailConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cloudTrail' },
-          description:
-            'An object that contains information on the status of CloudTrail as a data source.',
-        }),
-    ),
-    DNSLogs: DNSLogsConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dnsLogs' },
-          description:
-            'An object that contains information on the status of DNS logs as a data source.',
-        }),
-    ),
-    FlowLogs: FlowLogsConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowLogs' },
-          description:
-            'An object that contains information on the status of VPC flow logs as a data source.',
-        }),
-    ),
-    S3Logs: S3LogsConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 's3Logs' },
-          description:
-            'An object that contains information on the status of S3 Data event logs as a data source.',
-        }),
-    ),
-    Kubernetes: KubernetesConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kubernetes' },
-          description:
-            'An object that contains information on the status of all Kubernetes data sources.',
-        }),
-    ).exactOptional(),
-    MalwareProtection: MalwareProtectionConfigurationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'malwareProtection' },
-          description: 'Describes the configuration of Malware Protection data sources.',
-        }),
-    ).exactOptional(),
+    CloudTrail: CloudTrailConfigurationResultSchema.openapi({
+      xml: { name: 'cloudTrail' },
+      description:
+        'An object that contains information on the status of CloudTrail as a data source.',
+    }),
+    DNSLogs: DNSLogsConfigurationResultSchema.openapi({
+      xml: { name: 'dnsLogs' },
+      description:
+        'An object that contains information on the status of DNS logs as a data source.',
+    }),
+    FlowLogs: FlowLogsConfigurationResultSchema.openapi({
+      xml: { name: 'flowLogs' },
+      description:
+        'An object that contains information on the status of VPC flow logs as a data source.',
+    }),
+    S3Logs: S3LogsConfigurationResultSchema.openapi({
+      xml: { name: 's3Logs' },
+      description:
+        'An object that contains information on the status of S3 Data event logs as a data source.',
+    }),
+    Kubernetes: KubernetesConfigurationResultSchema.exactOptional().openapi({
+      xml: { name: 'kubernetes' },
+      description:
+        'An object that contains information on the status of all Kubernetes data sources.',
+    }),
+    MalwareProtection: MalwareProtectionConfigurationResultSchema.exactOptional().openapi({
+      xml: { name: 'malwareProtection' },
+      description: 'Describes the configuration of Malware Protection data sources.',
+    }),
   })
   .openapi({
     required: ['CloudTrail', 'DNSLogs', 'FlowLogs', 'S3Logs'],
@@ -2362,28 +3305,19 @@ const DetectorFeatureResultSchema = z
 
 const DetectorAdditionalConfigurationResultSchema = z
   .object({
-    Name: FeatureAdditionalConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'name' }, description: 'Name of the additional configuration.' }),
-    ).exactOptional(),
-    Status: FeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Status of the additional configuration.',
-        }),
-    ).exactOptional(),
-    UpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updatedAt' },
-          description:
-            'The timestamp at which the additional configuration was last updated. This is in UTC format.',
-        }),
-    ).exactOptional(),
+    Name: FeatureAdditionalConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Name of the additional configuration.',
+    }),
+    Status: FeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'Status of the additional configuration.',
+    }),
+    UpdatedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'updatedAt' },
+      description:
+        'The timestamp at which the additional configuration was last updated. This is in UTC format.',
+    }),
   })
   .openapi({ description: 'Information about the additional configuration.', required: [] })
   .openapi('DetectorAdditionalConfigurationResult')
@@ -2394,38 +3328,22 @@ const DetectorAdditionalConfigurationResultsSchema = z
 
 const DetectorFeatureConfigurationResultSchema = z
   .object({
-    Name: DetectorFeatureResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'Indicates the name of the feature that can be enabled for the detector.',
-        }),
-    ).exactOptional(),
-    Status: FeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Indicates the status of the feature that is enabled for the detector.',
-        }),
-    ).exactOptional(),
-    UpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updatedAt' },
-          description: 'The timestamp at which the feature object was updated.',
-        }),
-    ).exactOptional(),
-    AdditionalConfiguration: DetectorAdditionalConfigurationResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalConfiguration' },
-          description: 'Additional configuration for a resource.',
-        }),
-    ).exactOptional(),
+    Name: DetectorFeatureResultSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Indicates the name of the feature that can be enabled for the detector.',
+    }),
+    Status: FeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'Indicates the status of the feature that is enabled for the detector.',
+    }),
+    UpdatedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'updatedAt' },
+      description: 'The timestamp at which the feature object was updated.',
+    }),
+    AdditionalConfiguration: DetectorAdditionalConfigurationResultsSchema.exactOptional().openapi({
+      xml: { name: 'additionalConfiguration' },
+      description: 'Additional configuration for a resource.',
+    }),
   })
   .openapi({ description: 'Contains information about a GuardDuty feature.', required: [] })
   .openapi('DetectorFeatureConfigurationResult')
@@ -2436,57 +3354,40 @@ const DetectorFeatureConfigurationsResultsSchema = z
 
 const GetDetectorResponseSchema = z
   .object({
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The timestamp of when the detector was created.',
-        }),
-    ).exactOptional(),
-    FindingPublishingFrequency: FindingPublishingFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingPublishingFrequency' },
-          description: 'The publishing frequency of the finding.',
-        }),
-    ).exactOptional(),
-    ServiceRole: StringSchema.and(
-      z.any().openapi({ xml: { name: 'serviceRole' }, description: 'The GuardDuty service role.' }),
-    ),
-    Status: DetectorStatusSchema.and(
-      z.any().openapi({ xml: { name: 'status' }, description: 'The detector status.' }),
-    ),
-    UpdatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updatedAt' },
-          description: 'The last-updated timestamp for the detector.',
-        }),
-    ).exactOptional(),
-    DataSources: DataSourceConfigurationsResultSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            'Describes which data sources are enabled for the detector.This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'The tags of the detector resource.' }),
-    ).exactOptional(),
-    Features: DetectorFeatureConfigurationsResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description: 'Describes the features that have been enabled for the detector.',
-        }),
-    ).exactOptional(),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The timestamp of when the detector was created.',
+    }),
+    FindingPublishingFrequency: FindingPublishingFrequencySchema.exactOptional().openapi({
+      xml: { name: 'findingPublishingFrequency' },
+      description: 'The publishing frequency of the finding.',
+    }),
+    ServiceRole: StringSchema.openapi({
+      xml: { name: 'serviceRole' },
+      description: 'The GuardDuty service role.',
+    }),
+    Status: DetectorStatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'The detector status.',
+    }),
+    UpdatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'updatedAt' },
+      description: 'The last-updated timestamp for the detector.',
+    }),
+    DataSources: DataSourceConfigurationsResultSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        'Describes which data sources are enabled for the detector.This parameter is deprecated, use Features instead',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags of the detector resource.',
+    }),
+    Features: DetectorFeatureConfigurationsResultsSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'Describes the features that have been enabled for the detector.',
+    }),
   })
   .openapi({ required: ['ServiceRole', 'Status'] })
   .openapi('GetDetectorResponse')
@@ -2499,15 +3400,11 @@ const FilterRankSchema = z.int().min(1).max(100).openapi('FilterRank')
 
 const FindingCriteriaSchema = z
   .object({
-    Criterion: CriterionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'criterion' },
-          description:
-            'Represents a map of finding properties that match specified conditions and values when querying findings.',
-        }),
-    ).exactOptional(),
+    Criterion: CriterionSchema.exactOptional().openapi({
+      xml: { name: 'criterion' },
+      description:
+        'Represents a map of finding properties that match specified conditions and values when querying findings.',
+    }),
   })
   .openapi({
     description: 'Contains information about the criteria used for querying findings.',
@@ -2517,2435 +3414,42 @@ const FindingCriteriaSchema = z
 
 const GetFilterResponseSchema = z
   .object({
-    Name: FilterNameSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the filter.' }),
-    ),
-    Description: FilterDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the filter.' }),
-    ).exactOptional(),
-    Action: FilterActionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'action' },
-          description:
-            'Specifies the action that is to be applied to the findings that match the filter.',
-        }),
-    ),
-    Rank: FilterRankSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'rank' },
-          description:
-            'Specifies the position of the filter in the list of current filters. Also specifies the order in which this filter is applied to the findings.',
-        }),
-    ).exactOptional(),
-    FindingCriteria: FindingCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingCriteria' },
-          description: 'Represents the criteria to be used in the filter for querying findings.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'The tags of the filter resource.' }),
-    ).exactOptional(),
+    Name: FilterNameSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the filter.',
+    }),
+    Description: FilterDescriptionSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the filter.',
+    }),
+    Action: FilterActionSchema.openapi({
+      xml: { name: 'action' },
+      description:
+        'Specifies the action that is to be applied to the findings that match the filter.',
+    }),
+    Rank: FilterRankSchema.exactOptional().openapi({
+      xml: { name: 'rank' },
+      description:
+        'Specifies the position of the filter in the list of current filters. Also specifies the order in which this filter is applied to the findings.',
+    }),
+    FindingCriteria: FindingCriteriaSchema.openapi({
+      xml: { name: 'findingCriteria' },
+      description: 'Represents the criteria to be used in the filter for querying findings.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags of the filter resource.',
+    }),
   })
   .openapi({ required: ['Name', 'Action', 'FindingCriteria'] })
   .openapi('GetFilterResponse')
 
-const AccessKeyDetailsSchema = z
+const GetFindingsResponseSchema: z.ZodType<GetFindingsResponseType> = z
   .object({
-    AccessKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'accessKeyId' }, description: 'The access key ID of the user.' }),
-    ).exactOptional(),
-    PrincipalId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'principalId' }, description: 'The principal ID of the user.' }),
-    ).exactOptional(),
-    UserName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'userName' }, description: 'The name of the user.' }),
-    ).exactOptional(),
-    UserType: StringSchema.and(
-      z.any().openapi({ xml: { name: 'userType' }, description: 'The type of the user.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about the access keys.', required: [] })
-  .openapi('AccessKeyDetails')
-
-const OwnerSchema = z
-  .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The canonical user ID of the bucket owner. For information about locating your canonical user ID see <a href="https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html#FindingCanonicalId">Finding Your Account Canonical User ID.</a> ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information on the owner of the bucket.', required: [] })
-  .openapi('Owner')
-
-const TagSchema = z
-  .object({
-    Key: StringSchema.and(
-      z.any().openapi({ xml: { name: 'key' }, description: 'The EC2 instance tag key.' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z.any().openapi({ xml: { name: 'value' }, description: 'The EC2 instance tag value.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about a tag associated with the EC2 instance.',
-    required: [],
-  })
-  .openapi('Tag')
-
-const TagsSchema = z.array(TagSchema).openapi('Tags')
-
-const DefaultServerSideEncryptionSchema = z
-  .object({
-    EncryptionType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryptionType' },
-          description: 'The type of encryption used for objects within the S3 bucket.',
-        }),
-    ).exactOptional(),
-    KmsMasterKeyArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kmsMasterKeyArn' },
-          description:
-            'The Amazon Resource Name (ARN) of the KMS encryption key. Only available if the bucket <code>EncryptionType</code> is <code>aws:kms</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information on the server side encryption method used in the S3 bucket. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html">S3 Server-Side Encryption</a> for more information.',
-    required: [],
-  })
-  .openapi('DefaultServerSideEncryption')
-
-const AccessControlListSchema = z
-  .object({
-    AllowsPublicReadAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowsPublicReadAccess' },
-          description:
-            'A value that indicates whether public read access for the bucket is enabled through an Access Control List (ACL).',
-        }),
-    ).exactOptional(),
-    AllowsPublicWriteAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowsPublicWriteAccess' },
-          description:
-            'A value that indicates whether public write access for the bucket is enabled through an Access Control List (ACL).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information on the current access control policies for the bucket.',
-    required: [],
-  })
-  .openapi('AccessControlList')
-
-const BucketPolicySchema = z
-  .object({
-    AllowsPublicReadAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowsPublicReadAccess' },
-          description:
-            'A value that indicates whether public read access for the bucket is enabled through a bucket policy.',
-        }),
-    ).exactOptional(),
-    AllowsPublicWriteAccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowsPublicWriteAccess' },
-          description:
-            'A value that indicates whether public write access for the bucket is enabled through a bucket policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information on the current bucket policies for the S3 bucket.',
-    required: [],
-  })
-  .openapi('BucketPolicy')
-
-const BlockPublicAccessSchema = z
-  .object({
-    IgnorePublicAcls: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ignorePublicAcls' },
-          description:
-            'Indicates if S3 Block Public Access is set to <code>IgnorePublicAcls</code>.',
-        }),
-    ).exactOptional(),
-    RestrictPublicBuckets: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'restrictPublicBuckets' },
-          description:
-            'Indicates if S3 Block Public Access is set to <code>RestrictPublicBuckets</code>.',
-        }),
-    ).exactOptional(),
-    BlockPublicAcls: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'blockPublicAcls' },
-          description:
-            'Indicates if S3 Block Public Access is set to <code>BlockPublicAcls</code>.',
-        }),
-    ).exactOptional(),
-    BlockPublicPolicy: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'blockPublicPolicy' },
-          description:
-            'Indicates if S3 Block Public Access is set to <code>BlockPublicPolicy</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information on how the bucker owner\'s S3 Block Public Access settings are being applied to the S3 bucket. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html">S3 Block Public Access</a> for more information. ',
-    required: [],
-  })
-  .openapi('BlockPublicAccess')
-
-const BucketLevelPermissionsSchema = z
-  .object({
-    AccessControlList: AccessControlListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accessControlList' },
-          description:
-            'Contains information on how Access Control Policies are applied to the bucket.',
-        }),
-    ).exactOptional(),
-    BucketPolicy: BucketPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bucketPolicy' },
-          description: 'Contains information on the bucket policies for the S3 bucket.',
-        }),
-    ).exactOptional(),
-    BlockPublicAccess: BlockPublicAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'blockPublicAccess' },
-          description:
-            'Contains information on which account level S3 Block Public Access settings are applied to the S3 bucket.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about the bucket level permissions for the S3 bucket.',
-    required: [],
-  })
-  .openapi('BucketLevelPermissions')
-
-const AccountLevelPermissionsSchema = z
-  .object({
-    BlockPublicAccess: BlockPublicAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'blockPublicAccess' },
-          description:
-            "Describes the S3 Block Public Access settings of the bucket's parent account.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about the account level permissions on the S3 bucket.',
-    required: [],
-  })
-  .openapi('AccountLevelPermissions')
-
-const PermissionConfigurationSchema = z
-  .object({
-    BucketLevelPermissions: BucketLevelPermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bucketLevelPermissions' },
-          description: 'Contains information about the bucket level permissions for the S3 bucket.',
-        }),
-    ).exactOptional(),
-    AccountLevelPermissions: AccountLevelPermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountLevelPermissions' },
-          description: 'Contains information about the account level permissions on the S3 bucket.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about how permissions are configured for the S3 bucket.',
-    required: [],
-  })
-  .openapi('PermissionConfiguration')
-
-const PublicAccessSchema = z
-  .object({
-    PermissionConfiguration: PermissionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'permissionConfiguration' },
-          description:
-            'Contains information about how permissions are configured for the S3 bucket.',
-        }),
-    ).exactOptional(),
-    EffectivePermission: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'effectivePermission' },
-          description:
-            'Describes the effective permission on this bucket after factoring all attached policies.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the public access policies that apply to the S3 bucket.',
-    required: [],
-  })
-  .openapi('PublicAccess')
-
-const S3BucketDetailSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) of the S3 bucket.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the S3 bucket.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'type' },
-          description: 'Describes whether the bucket is a source or destination bucket.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the bucket was created at.',
-        }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z.any().openapi({ xml: { name: 'owner' }, description: 'The owner of the S3 bucket.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'All tags attached to the S3 bucket' }),
-    ).exactOptional(),
-    DefaultServerSideEncryption: DefaultServerSideEncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultServerSideEncryption' },
-          description: 'Describes the server side encryption method used in the S3 bucket.',
-        }),
-    ).exactOptional(),
-    PublicAccess: PublicAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'publicAccess' },
-          description: 'Describes the public access policies that apply to the S3 bucket.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information on the S3 bucket.', required: [] })
-  .openapi('S3BucketDetail')
-
-const S3BucketDetailsSchema = z.array(S3BucketDetailSchema).openapi('S3BucketDetails')
-
-const IamInstanceProfileSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'arn' }, description: 'The profile ARN of the EC2 instance.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The profile ID of the EC2 instance.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about the EC2 instance profile.', required: [] })
-  .openapi('IamInstanceProfile')
-
-const Ipv6AddressesSchema = z.array(StringSchema).openapi('Ipv6Addresses')
-
-const PrivateIpAddressDetailsSchema = z
-  .object({
-    PrivateDnsName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'privateDnsName' },
-          description: 'The private DNS name of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    PrivateIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'privateIpAddress' },
-          description: 'The private IP address of the EC2 instance.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains other private IP address information of the EC2 instance.',
-    required: [],
-  })
-  .openapi('PrivateIpAddressDetails')
-
-const PrivateIpAddressesSchema = z
-  .array(PrivateIpAddressDetailsSchema)
-  .openapi('PrivateIpAddresses')
-
-const SecurityGroupSchema = z
-  .object({
-    GroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'groupId' },
-          description: 'The security group ID of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    GroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'groupName' },
-          description: 'The security group name of the EC2 instance.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about the security groups associated with the EC2 instance.',
-    required: [],
-  })
-  .openapi('SecurityGroup')
-
-const SecurityGroupsSchema = z.array(SecurityGroupSchema).openapi('SecurityGroups')
-
-const NetworkInterfaceSchema = z
-  .object({
-    Ipv6Addresses: Ipv6AddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ipv6Addresses' },
-          description: 'A list of IPv6 addresses for the EC2 instance.',
-        }),
-    ).exactOptional(),
-    NetworkInterfaceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkInterfaceId' },
-          description: 'The ID of the network interface.',
-        }),
-    ).exactOptional(),
-    PrivateDnsName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'privateDnsName' },
-          description: 'The private DNS name of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    PrivateIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'privateIpAddress' },
-          description: 'The private IP address of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    PrivateIpAddresses: PrivateIpAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'privateIpAddresses' },
-          description: 'Other private IP address information of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    PublicDnsName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'publicDnsName' },
-          description: 'The public DNS name of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    PublicIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'publicIp' },
-          description: 'The public IP address of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    SecurityGroups: SecurityGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroups' },
-          description: 'The security groups associated with the EC2 instance.',
-        }),
-    ).exactOptional(),
-    SubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'subnetId' }, description: 'The subnet ID of the EC2 instance.' }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'vpcId' }, description: 'The VPC ID of the EC2 instance.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about the elastic network interface of the EC2 instance.',
-    required: [],
-  })
-  .openapi('NetworkInterface')
-
-const NetworkInterfacesSchema = z.array(NetworkInterfaceSchema).openapi('NetworkInterfaces')
-
-const ProductCodeSchema = z
-  .object({
-    Code: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'productCodeId' }, description: 'The product code information.' }),
-    ).exactOptional(),
-    ProductType: StringSchema.and(
-      z.any().openapi({ xml: { name: 'productCodeType' }, description: 'The product code type.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about the product code for the EC2 instance.',
-    required: [],
-  })
-  .openapi('ProductCode')
-
-const ProductCodesSchema = z.array(ProductCodeSchema).openapi('ProductCodes')
-
-const InstanceDetailsSchema = z
-  .object({
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'availabilityZone' },
-          description: 'The Availability Zone of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    IamInstanceProfile: IamInstanceProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'iamInstanceProfile' },
-          description: 'The profile information of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    ImageDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'imageDescription' },
-          description: 'The image description of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    ImageId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'imageId' }, description: 'The image ID of the EC2 instance.' }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'instanceId' }, description: 'The ID of the EC2 instance.' }),
-    ).exactOptional(),
-    InstanceState: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'instanceState' }, description: 'The state of the EC2 instance.' }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'instanceType' }, description: 'The type of the EC2 instance.' }),
-    ).exactOptional(),
-    OutpostArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outpostArn' },
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon Web Services Outpost. Only applicable to Amazon Web Services Outposts instances.',
-        }),
-    ).exactOptional(),
-    LaunchTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'launchTime' },
-          description: 'The launch time of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    NetworkInterfaces: NetworkInterfacesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkInterfaces' },
-          description: 'The elastic network interface information of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    Platform: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'platform' }, description: 'The platform of the EC2 instance.' }),
-    ).exactOptional(),
-    ProductCodes: ProductCodesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'productCodes' },
-          description: 'The product code of the EC2 instance.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'The tags of the EC2 instance.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about the details of an instance.', required: [] })
-  .openapi('InstanceDetails')
-
-const EksClusterDetailsSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'EKS cluster name.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'EKS cluster ARN.' }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcId' },
-          description: 'The VPC ID to which the EKS cluster is attached.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ xml: { name: 'status' }, description: 'The EKS cluster status.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'The EKS cluster tags.' }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The timestamp when the EKS cluster was created.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Details about the EKS cluster involved in a Kubernetes finding.',
-    required: [],
-  })
-  .openapi('EksClusterDetails')
-
-const GroupsSchema = z.array(StringSchema).openapi('Groups')
-
-const KubernetesUserDetailsSchema = z
-  .object({
-    Username: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'username' },
-          description: 'The username of the user who called the Kubernetes API.',
-        }),
-    ).exactOptional(),
-    Uid: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'uid' },
-          description: 'The user ID of the user who called the Kubernetes API.',
-        }),
-    ).exactOptional(),
-    Groups: GroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'groups' },
-          description: 'The groups that include the user who called the Kubernetes API.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Details about the Kubernetes user involved in a Kubernetes finding.',
-    required: [],
-  })
-  .openapi('KubernetesUserDetails')
-
-const VolumeMountSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'Volume mount name.' }),
-    ).exactOptional(),
-    MountPath: StringSchema.and(
-      z.any().openapi({ xml: { name: 'mountPath' }, description: 'Volume mount path.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Container volume mount.', required: [] })
-  .openapi('VolumeMount')
-
-const VolumeMountsSchema = z.array(VolumeMountSchema).openapi('VolumeMounts')
-
-const SecurityContextSchema = z
-  .object({
-    Privileged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'privileged' },
-          description: 'Whether the container is privileged.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Container security context.', required: [] })
-  .openapi('SecurityContext')
-
-const ContainerSchema = z
-  .object({
-    ContainerRuntime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'containerRuntime' },
-          description:
-            'The container runtime (such as, Docker or containerd) used to run the container.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'Container ID.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'Container name.' }),
-    ).exactOptional(),
-    Image: StringSchema.and(
-      z.any().openapi({ xml: { name: 'image' }, description: 'Container image.' }),
-    ).exactOptional(),
-    ImagePrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'imagePrefix' },
-          description:
-            'Part of the image name before the last slash. For example, imagePrefix for public.ecr.aws/amazonlinux/amazonlinux:latest would be public.ecr.aws/amazonlinux. If the image name is relative and does not have a slash, this field is empty.',
-        }),
-    ).exactOptional(),
-    VolumeMounts: VolumeMountsSchema.and(
-      z.any().openapi({ xml: { name: 'volumeMounts' }, description: 'Container volume mounts.' }),
-    ).exactOptional(),
-    SecurityContext: SecurityContextSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'securityContext' }, description: 'Container security context.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Details of a container.', required: [] })
-  .openapi('Container')
-
-const ContainersSchema = z.array(ContainerSchema).openapi('Containers')
-
-const HostPathSchema = z
-  .object({
-    Path: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'path' },
-          description: 'Path of the file or directory on the host that the volume maps to.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents a pre-existing file or directory on the host machine that the volume maps to.',
-    required: [],
-  })
-  .openapi('HostPath')
-
-const VolumeSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'Volume name.' }),
-    ).exactOptional(),
-    HostPath: HostPathSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hostPath' },
-          description:
-            'Represents a pre-existing file or directory on the host machine that the volume maps to.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Volume used by the Kubernetes workload.', required: [] })
-  .openapi('Volume')
-
-const VolumesSchema = z.array(VolumeSchema).openapi('Volumes')
-
-const KubernetesWorkloadDetailsSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'Kubernetes workload name.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'type' },
-          description: 'Kubernetes workload type (e.g. Pod, Deployment, etc.).',
-        }),
-    ).exactOptional(),
-    Uid: StringSchema.and(
-      z.any().openapi({ xml: { name: 'uid' }, description: 'Kubernetes workload ID.' }),
-    ).exactOptional(),
-    Namespace: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'namespace' },
-          description: 'Kubernetes namespace that the workload is part of.',
-        }),
-    ).exactOptional(),
-    HostNetwork: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hostNetwork' },
-          description:
-            'Whether the hostNetwork flag is enabled for the pods included in the workload.',
-        }),
-    ).exactOptional(),
-    Containers: ContainersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'containers' },
-          description: 'Containers running as part of the Kubernetes workload.',
-        }),
-    ).exactOptional(),
-    Volumes: VolumesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'volumes' },
-          description: 'Volumes used by the Kubernetes workload.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Details about the Kubernetes workload involved in a Kubernetes finding.',
-    required: [],
-  })
-  .openapi('KubernetesWorkloadDetails')
-
-const KubernetesDetailsSchema = z
-  .object({
-    KubernetesUserDetails: KubernetesUserDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kubernetesUserDetails' },
-          description: 'Details about the Kubernetes user involved in a Kubernetes finding.',
-        }),
-    ).exactOptional(),
-    KubernetesWorkloadDetails: KubernetesWorkloadDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kubernetesWorkloadDetails' },
-          description: 'Details about the Kubernetes workload involved in a Kubernetes finding.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Details about Kubernetes resources such as a Kubernetes user or workload resource involved in a Kubernetes finding.',
-    required: [],
-  })
-  .openapi('KubernetesDetails')
-
-const EbsVolumeDetailsSchema = z
-  .object({
-    ScannedVolumeDetails: VolumeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scannedVolumeDetails' },
-          description: 'List of EBS volumes that were scanned.',
-        }),
-    ).exactOptional(),
-    SkippedVolumeDetails: VolumeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'skippedVolumeDetails' },
-          description: 'List of EBS volumes that were skipped from the malware scan.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains list of scanned and skipped EBS volumes with details.',
-    required: [],
-  })
-  .openapi('EbsVolumeDetails')
-
-const EcsTaskDetailsSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) of the task.',
-        }),
-    ).exactOptional(),
-    DefinitionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'definitionArn' },
-          description: 'The ARN of the task definition that creates the task.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'The version counter for the task.' }),
-    ).exactOptional(),
-    TaskCreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The Unix timestamp for the time when the task was created.',
-        }),
-    ).exactOptional(),
-    StartedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startedAt' },
-          description: 'The Unix timestamp for the time when the task started.',
-        }),
-    ).exactOptional(),
-    StartedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startedBy' },
-          description: 'Contains the tag specified when a task is started.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'The tags of the ECS Task.' }),
-    ).exactOptional(),
-    Volumes: VolumesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'volumes' },
-          description: 'The list of data volume definitions for the task.',
-        }),
-    ).exactOptional(),
-    Containers: ContainersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'containers' },
-          description: "The containers that's associated with the task.",
-        }),
-    ).exactOptional(),
-    Group: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'group' },
-          description: "The name of the task group that's associated with the task.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains information about the task in an ECS cluster.', required: [] })
-  .openapi('EcsTaskDetails')
-
-const EcsClusterDetailsSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the ECS Cluster.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) that identifies the cluster.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ xml: { name: 'status' }, description: 'The status of the ECS cluster.' }),
-    ).exactOptional(),
-    ActiveServicesCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'activeServicesCount' },
-          description: 'The number of services that are running on the cluster in an ACTIVE state.',
-        }),
-    ).exactOptional(),
-    RegisteredContainerInstancesCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'registeredContainerInstancesCount' },
-          description: 'The number of container instances registered into the cluster.',
-        }),
-    ).exactOptional(),
-    RunningTasksCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'runningTasksCount' },
-          description: 'The number of tasks in the cluster that are in the RUNNING state.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'The tags of the ECS Cluster.' }),
-    ).exactOptional(),
-    TaskDetails: EcsTaskDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'taskDetails' },
-          description: 'Contains information about the details of the ECS Task.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about the details of the ECS Cluster.',
-    required: [],
-  })
-  .openapi('EcsClusterDetails')
-
-const RdsDbInstanceDetailsSchema = z
-  .object({
-    DbInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dbInstanceIdentifier' },
-          description:
-            'The identifier associated to the database instance that was involved in the finding.',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engine' },
-          description: 'The database engine of the database instance involved in the finding.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'engineVersion' },
-          description: 'The version of the database engine that was involved in the finding.',
-        }),
-    ).exactOptional(),
-    DbClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dbClusterIdentifier' },
-          description:
-            'The identifier of the database cluster that contains the database instance ID involved in the finding.',
-        }),
-    ).exactOptional(),
-    DbInstanceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dbInstanceArn' },
-          description:
-            'The Amazon Resource Name (ARN) that identifies the database instance involved in the finding.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'Instance tag key-value pairs associated with the database instance ID.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information about the resource type <code>RDSDBInstance</code> involved in a GuardDuty finding.',
-    required: [],
-  })
-  .openapi('RdsDbInstanceDetails')
-
-const RdsDbUserDetailsSchema = z
-  .object({
-    User: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'user' },
-          description: 'The user name used in the anomalous login attempt.',
-        }),
-    ).exactOptional(),
-    Application: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'application' },
-          description: 'The application name used in the anomalous login attempt.',
-        }),
-    ).exactOptional(),
-    Database: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'database' },
-          description: 'The name of the database instance involved in the anomalous login attempt.',
-        }),
-    ).exactOptional(),
-    Ssl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ssl' },
-          description: 'The version of the Secure Socket Layer (SSL) used for the network.',
-        }),
-    ).exactOptional(),
-    AuthMethod: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authMethod' },
-          description: 'The authentication method used by the user involved in the finding.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information about the user and authentication details for a database instance involved in the finding.',
-    required: [],
-  })
-  .openapi('RdsDbUserDetails')
-
-const SubnetIdsSchema = z.array(StringSchema).openapi('SubnetIds')
-
-const VpcConfigSchema = z
-  .object({
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetIds' },
-          description:
-            'The identifiers of the subnets that are associated with your Lambda function.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcId' },
-          description: 'The identifier of the Amazon Virtual Private Cloud.',
-        }),
-    ).exactOptional(),
-    SecurityGroups: SecurityGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroups' },
-          description: 'The identifier of the security group attached to the Lambda function.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Amazon Virtual Private Cloud configuration details associated with your Lambda function.',
-    required: [],
-  })
-  .openapi('VpcConfig')
-
-const LambdaDetailsSchema = z
-  .object({
-    FunctionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'functionArn' },
-          description: 'Amazon Resource Name (ARN) of the Lambda function.',
-        }),
-    ).exactOptional(),
-    FunctionName: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'functionName' }, description: 'Name of the Lambda function.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'Description of the Lambda function.',
-        }),
-    ).exactOptional(),
-    LastModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastModifiedAt' },
-          description:
-            'The timestamp when the Lambda function was last modified. This field is in the UTC date string format <code>(2023-03-22T19:37:20.168Z)</code>.',
-        }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'revisionId' },
-          description: 'The revision ID of the Lambda function version.',
-        }),
-    ).exactOptional(),
-    FunctionVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'functionVersion' },
-          description: 'The version of the Lambda function.',
-        }),
-    ).exactOptional(),
-    Role: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'role' },
-          description: 'The execution role of the Lambda function.',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcConfig' },
-          description:
-            'Amazon Virtual Private Cloud configuration details associated with your Lambda function.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'A list of tags attached to this resource, listed in the format of <code>key</code>:<code>value</code> pair.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about the Lambda function involved in the finding.',
-    required: [],
-  })
-  .openapi('LambdaDetails')
-
-const ResourceSchema = z
-  .object({
-    AccessKeyDetails: AccessKeyDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accessKeyDetails' },
-          description:
-            'The IAM access key details (user information) of a user that engaged in the activity that prompted GuardDuty to generate a finding.',
-        }),
-    ).exactOptional(),
-    S3BucketDetails: S3BucketDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 's3BucketDetails' },
-          description: 'Contains information on the S3 bucket.',
-        }),
-    ).exactOptional(),
-    InstanceDetails: InstanceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'instanceDetails' },
-          description:
-            'The information about the EC2 instance associated with the activity that prompted GuardDuty to generate a finding.',
-        }),
-    ).exactOptional(),
-    EksClusterDetails: EksClusterDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'eksClusterDetails' },
-          description: 'Details about the EKS cluster involved in a Kubernetes finding.',
-        }),
-    ).exactOptional(),
-    KubernetesDetails: KubernetesDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kubernetesDetails' },
-          description:
-            'Details about the Kubernetes user and workload involved in a Kubernetes finding.',
-        }),
-    ).exactOptional(),
-    ResourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceType' },
-          description: 'The type of Amazon Web Services resource.',
-        }),
-    ).exactOptional(),
-    EbsVolumeDetails: EbsVolumeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ebsVolumeDetails' },
-          description: 'Contains list of scanned and skipped EBS volumes with details.',
-        }),
-    ).exactOptional(),
-    EcsClusterDetails: EcsClusterDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ecsClusterDetails' },
-          description: 'Contains information about the details of the ECS Cluster.',
-        }),
-    ).exactOptional(),
-    ContainerDetails: ContainerSchema.and(
-      z.any().openapi({ xml: { name: 'containerDetails' } }),
-    ).exactOptional(),
-    RdsDbInstanceDetails: RdsDbInstanceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'rdsDbInstanceDetails' },
-          description:
-            'Contains information about the database instance to which an anomalous login attempt was made.',
-        }),
-    ).exactOptional(),
-    RdsDbUserDetails: RdsDbUserDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'rdsDbUserDetails' },
-          description:
-            'Contains information about the user details through which anomalous login attempt was made.',
-        }),
-    ).exactOptional(),
-    LambdaDetails: LambdaDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lambdaDetails' },
-          description:
-            'Contains information about the Lambda function that was involved in a finding.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.',
-    required: [],
-  })
-  .openapi('Resource')
-
-const ActionSchema: z.ZodType<ActionType> = z
-  .lazy(() =>
-    z
-      .object({
-        ActionType: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'actionType' },
-              description: 'The GuardDuty finding activity type.',
-            }),
-        ).exactOptional(),
-        AwsApiCallAction: AwsApiCallActionSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'awsApiCallAction' },
-              description: 'Information about the AWS_API_CALL action described in this finding.',
-            }),
-        ).exactOptional(),
-        DnsRequestAction: DnsRequestActionSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'dnsRequestAction' },
-              description: 'Information about the DNS_REQUEST action described in this finding.',
-            }),
-        ).exactOptional(),
-        NetworkConnectionAction: NetworkConnectionActionSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'networkConnectionAction' },
-              description:
-                'Information about the NETWORK_CONNECTION action described in this finding.',
-            }),
-        ).exactOptional(),
-        PortProbeAction: PortProbeActionSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'portProbeAction' },
-              description: 'Information about the PORT_PROBE action described in this finding.',
-            }),
-        ).exactOptional(),
-        KubernetesApiCallAction: KubernetesApiCallActionSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'kubernetesApiCallAction' },
-              description:
-                'Information about the Kubernetes API call action described in this finding.',
-            }),
-        ).exactOptional(),
-        RdsLoginAttemptAction: RdsLoginAttemptActionSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'rdsLoginAttemptAction' },
-              description:
-                'Information about <code>RDS_LOGIN_ATTEMPT</code> action described in this finding.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Contains information about actions.', required: [] }),
-  )
-  .openapi('Action')
-
-const ThreatNamesSchema = z.array(StringSchema).openapi('ThreatNames')
-
-const ThreatIntelligenceDetailSchema = z
-  .object({
-    ThreatListName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatListName' },
-          description: 'The name of the threat intelligence list that triggered the finding.',
-        }),
-    ).exactOptional(),
-    ThreatNames: ThreatNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatNames' },
-          description:
-            'A list of names of the threats in the threat intelligence list that triggered the finding.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An instance of a threat intelligence detail that constitutes evidence for the finding.',
-    required: [],
-  })
-  .openapi('ThreatIntelligenceDetail')
-
-const ThreatIntelligenceDetailsSchema = z
-  .array(ThreatIntelligenceDetailSchema)
-  .openapi('ThreatIntelligenceDetails')
-
-const EvidenceSchema = z
-  .object({
-    ThreatIntelligenceDetails: ThreatIntelligenceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatIntelligenceDetails' },
-          description: 'A list of threat intelligence details related to the evidence.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains information about the reason that the finding was generated.',
-    required: [],
-  })
-  .openapi('Evidence')
-
-const ServiceAdditionalInfoSchema = z
-  .object({
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'value' },
-          description: 'This field specifies the value of the additional information.',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'type' },
-          description: 'Describes the type of the additional information.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Additional information about the generated finding.', required: [] })
-  .openapi('ServiceAdditionalInfo')
-
-const SourcesSchema = z.array(StringSchema).openapi('Sources')
-
-const ScannedItemCountSchema = z
-  .object({
-    TotalGb: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'totalGb' },
-          description: 'Total GB of files scanned for malware.',
-        }),
-    ).exactOptional(),
-    Files: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'files' }, description: 'Number of files scanned.' }),
-    ).exactOptional(),
-    Volumes: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'volumes' }, description: 'Total number of scanned volumes.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Total number of scanned files.', required: [] })
-  .openapi('ScannedItemCount')
-
-const ThreatsDetectedItemCountSchema = z
-  .object({
-    Files: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'files' }, description: 'Total number of infected files.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains total number of infected files.', required: [] })
-  .openapi('ThreatsDetectedItemCount')
-
-const HighestSeverityThreatDetailsSchema = z
-  .object({
-    Severity: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'severity' },
-          description: 'Severity level of the highest severity threat detected.',
-        }),
-    ).exactOptional(),
-    ThreatName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatName' },
-          description:
-            'Threat name of the highest severity threat detected as part of the malware scan.',
-        }),
-    ).exactOptional(),
-    Count: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'count' },
-          description: 'Total number of infected files with the highest severity threat detected.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains details of the highest severity threat detected during scan and number of infected files.',
-    required: [],
-  })
-  .openapi('HighestSeverityThreatDetails')
-
-const ScanFilePathSchema = z
-  .object({
-    FilePath: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'filePath' }, description: 'The file path of the infected file.' }),
-    ).exactOptional(),
-    VolumeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'volumeArn' },
-          description: 'EBS volume Arn details of the infected file.',
-        }),
-    ).exactOptional(),
-    Hash: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'hash' }, description: 'The hash value of the infected file.' }),
-    ).exactOptional(),
-    FileName: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'fileName' }, description: 'File name of the infected file.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains details of infected file including name, file path and hash.',
-    required: [],
-  })
-  .openapi('ScanFilePath')
-
-const FilePathsSchema = z.array(ScanFilePathSchema).openapi('FilePaths')
-
-const ScanThreatNameSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the identified threat.' }),
-    ).exactOptional(),
-    Severity: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'severity' },
-          description: 'Severity of threat identified as part of the malware scan.',
-        }),
-    ).exactOptional(),
-    ItemCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'itemCount' },
-          description: 'Total number of files infected with given threat.',
-        }),
-    ).exactOptional(),
-    FilePaths: FilePathsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'filePaths' },
-          description: 'List of infected files in EBS volume with details.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains files infected with the given threat providing details of malware name and severity.',
-    required: [],
-  })
-  .openapi('ScanThreatName')
-
-const ScanThreatNamesSchema = z.array(ScanThreatNameSchema).openapi('ScanThreatNames')
-
-const ThreatDetectedByNameSchema = z
-  .object({
-    ItemCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'itemCount' },
-          description: 'Total number of infected files identified.',
-        }),
-    ).exactOptional(),
-    UniqueThreatNameCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'uniqueThreatNameCount' },
-          description:
-            'Total number of unique threats by name identified, as part of the malware scan.',
-        }),
-    ).exactOptional(),
-    Shortened: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'shortened' },
-          description:
-            'Flag to determine if the finding contains every single infected file-path and/or every threat.',
-        }),
-    ).exactOptional(),
-    ThreatNames: ScanThreatNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatNames' },
-          description: 'List of identified threats with details, organized by threat name.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains details about identified threats organized by threat name.',
-    required: [],
-  })
-  .openapi('ThreatDetectedByName')
-
-const ScanDetectionsSchema = z
-  .object({
-    ScannedItemCount: ScannedItemCountSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scannedItemCount' },
-          description: 'Total number of scanned files.',
-        }),
-    ).exactOptional(),
-    ThreatsDetectedItemCount: ThreatsDetectedItemCountSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatsDetectedItemCount' },
-          description: 'Total number of infected files.',
-        }),
-    ).exactOptional(),
-    HighestSeverityThreatDetails: HighestSeverityThreatDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'highestSeverityThreatDetails' },
-          description:
-            'Details of the highest severity threat detected during malware scan and number of infected files.',
-        }),
-    ).exactOptional(),
-    ThreatDetectedByName: ThreatDetectedByNameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatDetectedByName' },
-          description: 'Contains details about identified threats organized by threat name.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains a complete view providing malware scan result details.',
-    required: [],
-  })
-  .openapi('ScanDetections')
-
-const EbsVolumeScanDetailsSchema = z
-  .object({
-    ScanId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanId' },
-          description: 'Unique Id of the malware scan that generated the finding.',
-        }),
-    ).exactOptional(),
-    ScanStartedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanStartedAt' },
-          description: 'Returns the start date and time of the malware scan.',
-        }),
-    ).exactOptional(),
-    ScanCompletedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanCompletedAt' },
-          description: 'Returns the completion date and time of the malware scan.',
-        }),
-    ).exactOptional(),
-    TriggerFindingId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'triggerFindingId' },
-          description: 'GuardDuty finding ID that triggered a malware scan.',
-        }),
-    ).exactOptional(),
-    Sources: SourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sources' },
-          description: 'Contains list of threat intelligence sources used to detect threats.',
-        }),
-    ).exactOptional(),
-    ScanDetections: ScanDetectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanDetections' },
-          description: 'Contains a complete view providing malware scan result details.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains details from the malware scan that created a finding.',
-    required: [],
-  })
-  .openapi('EbsVolumeScanDetails')
-
-const LineageObjectSchema = z
-  .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startTime' },
-          description: 'The time when the process started. This is in UTC format.',
-        }),
-    ).exactOptional(),
-    NamespacePid: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'namespacePid' },
-          description: 'The process ID of the child process.',
-        }),
-    ).exactOptional(),
-    UserId: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userId' },
-          description: 'The user ID of the user that executed the process.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the process.' }),
-    ).exactOptional(),
-    Pid: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'pid' }, description: 'The ID of the process.' }),
-    ).exactOptional(),
-    Uuid: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'uuid' },
-          description: 'The unique ID assigned to the process by GuardDuty.',
-        }),
-    ).exactOptional(),
-    ExecutablePath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'executablePath' },
-          description: 'The absolute path of the process executable file.',
-        }),
-    ).exactOptional(),
-    Euid: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'euid' },
-          description: 'The effective user ID that was used to execute the process.',
-        }),
-    ).exactOptional(),
-    ParentUuid: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'parentUuid' },
-          description:
-            'The unique ID of the parent process. This ID is assigned to the parent process by GuardDuty.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about the runtime process details.', required: [] })
-  .openapi('LineageObject')
-
-const LineageSchema = z.array(LineageObjectSchema).openapi('Lineage')
-
-const ProcessDetailsSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the process.' }),
-    ).exactOptional(),
-    ExecutablePath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'executablePath' },
-          description: 'The absolute path of the process executable file.',
-        }),
-    ).exactOptional(),
-    ExecutableSha256: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'executableSha256' },
-          description: 'The <code>SHA256</code> hash of the process executable.',
-        }),
-    ).exactOptional(),
-    NamespacePid: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'namespacePid' }, description: 'The ID of the child process.' }),
-    ).exactOptional(),
-    Pwd: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pwd' },
-          description: 'The present working directory of the process.',
-        }),
-    ).exactOptional(),
-    Pid: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'pid' }, description: 'The ID of the process.' }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startTime' },
-          description: 'The time when the process started. This is in UTC format.',
-        }),
-    ).exactOptional(),
-    Uuid: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'uuid' },
-          description: 'The unique ID assigned to the process by GuardDuty.',
-        }),
-    ).exactOptional(),
-    ParentUuid: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'parentUuid' },
-          description:
-            'The unique ID of the parent process. This ID is assigned to the parent process by GuardDuty.',
-        }),
-    ).exactOptional(),
-    User: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'user' }, description: 'The user that executed the process.' }),
-    ).exactOptional(),
-    UserId: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userId' },
-          description: 'The unique ID of the user that executed the process.',
-        }),
-    ).exactOptional(),
-    Euid: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'euid' },
-          description: 'The effective user ID of the user that executed the process.',
-        }),
-    ).exactOptional(),
-    Lineage: LineageSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lineage' },
-          description: "Information about the process's lineage.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about the observed process.', required: [] })
-  .openapi('ProcessDetails')
-
-const FlagsListSchema = z.array(StringSchema).openapi('FlagsList')
-
-const MemoryRegionsListSchema = z.array(StringSchema).openapi('MemoryRegionsList')
-
-const RuntimeContextSchema = z
-  .object({
-    ModifyingProcess: ProcessDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modifyingProcess' },
-          description:
-            'Information about the process that modified the current process. This is available for multiple finding types.',
-        }),
-    ).exactOptional(),
-    ModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modifiedAt' },
-          description:
-            'The timestamp at which the process modified the current process. The timestamp is in UTC date string format.',
-        }),
-    ).exactOptional(),
-    ScriptPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scriptPath' },
-          description: 'The path to the script that was executed.',
-        }),
-    ).exactOptional(),
-    LibraryPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'libraryPath' },
-          description: 'The path to the new library that was loaded.',
-        }),
-    ).exactOptional(),
-    LdPreloadValue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ldPreloadValue' },
-          description: 'The value of the LD_PRELOAD environment variable.',
-        }),
-    ).exactOptional(),
-    SocketPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'socketPath' },
-          description: 'The path to the docket socket that was accessed.',
-        }),
-    ).exactOptional(),
-    RuncBinaryPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'runcBinaryPath' },
-          description: 'The path to the leveraged <code>runc</code> implementation.',
-        }),
-    ).exactOptional(),
-    ReleaseAgentPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'releaseAgentPath' },
-          description: 'The path in the container that modified the release agent file.',
-        }),
-    ).exactOptional(),
-    MountSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mountSource' },
-          description: 'The path on the host that is mounted by the container.',
-        }),
-    ).exactOptional(),
-    MountTarget: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mountTarget' },
-          description: 'The path in the container that is mapped to the host directory.',
-        }),
-    ).exactOptional(),
-    FileSystemType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'fileSystemType' },
-          description: 'Represents the type of mounted fileSystem.',
-        }),
-    ).exactOptional(),
-    Flags: FlagsListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flags' },
-          description:
-            'Represents options that control the behavior of a runtime operation or action. For example, a filesystem mount operation may contain a read-only flag.',
-        }),
-    ).exactOptional(),
-    ModuleName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'moduleName' },
-          description: 'The name of the module loaded into the kernel.',
-        }),
-    ).exactOptional(),
-    ModuleFilePath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'moduleFilePath' },
-          description: 'The path to the module loaded into the kernel.',
-        }),
-    ).exactOptional(),
-    ModuleSha256: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'moduleSha256' },
-          description: 'The <code>SHA256</code> hash of the module.',
-        }),
-    ).exactOptional(),
-    ShellHistoryFilePath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'shellHistoryFilePath' },
-          description: 'The path to the modified shell history file.',
-        }),
-    ).exactOptional(),
-    TargetProcess: ProcessDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'targetProcess' },
-          description:
-            'Information about the process that had its memory overwritten by the current process.',
-        }),
-    ).exactOptional(),
-    AddressFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'addressFamily' },
-          description:
-            'Represents the communication protocol associated with the address. For example, the address family <code>AF_INET</code> is used for IP version of 4 protocol.',
-        }),
-    ).exactOptional(),
-    IanaProtocolNumber: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ianaProtocolNumber' },
-          description:
-            'Specifies a particular protocol within the address family. Usually there is a single protocol in address families. For example, the address family <code>AF_INET</code> only has the IP protocol.',
-        }),
-    ).exactOptional(),
-    MemoryRegions: MemoryRegionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'memoryRegions' },
-          description: "Specifies the Region of a process's address space such as stack and heap.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Additional information about the suspicious activity.', required: [] })
-  .openapi('RuntimeContext')
-
-const RuntimeDetailsSchema = z
-  .object({
-    Process: ProcessDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'process' },
-          description: 'Information about the observed process.',
-        }),
-    ).exactOptional(),
-    Context: RuntimeContextSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'context' },
-          description: 'Additional information about the suspicious activity.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about the process and any required context values for a specific finding.',
-    required: [],
-  })
-  .openapi('RuntimeDetails')
-
-const ServiceSchema = z
-  .object({
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'action' },
-          description: 'Information about the activity that is described in a finding.',
-        }),
-    ).exactOptional(),
-    Evidence: EvidenceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'evidence' },
-          description: 'An evidence object associated with the service.',
-        }),
-    ).exactOptional(),
-    Archived: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'archived' },
-          description: 'Indicates whether this finding is archived.',
-        }),
-    ).exactOptional(),
-    Count: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'count' },
-          description: 'The total count of the occurrences of this finding type.',
-        }),
-    ).exactOptional(),
-    DetectorId: DetectorIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'detectorId' },
-          description: 'The detector ID for the GuardDuty service.',
-        }),
-    ).exactOptional(),
-    EventFirstSeen: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'eventFirstSeen' },
-          description:
-            'The first-seen timestamp of the activity that prompted GuardDuty to generate this finding.',
-        }),
-    ).exactOptional(),
-    EventLastSeen: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'eventLastSeen' },
-          description:
-            'The last-seen timestamp of the activity that prompted GuardDuty to generate this finding.',
-        }),
-    ).exactOptional(),
-    ResourceRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceRole' },
-          description: 'The resource role information for this finding.',
-        }),
-    ).exactOptional(),
-    ServiceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'serviceName' },
-          description:
-            'The name of the Amazon Web Services service (GuardDuty) that generated a finding.',
-        }),
-    ).exactOptional(),
-    UserFeedback: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userFeedback' },
-          description: 'Feedback that was submitted about the finding.',
-        }),
-    ).exactOptional(),
-    AdditionalInfo: ServiceAdditionalInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalInfo' },
-          description: 'Contains additional information about the generated finding.',
-        }),
-    ).exactOptional(),
-    FeatureName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'featureName' },
-          description: 'The name of the feature that generated a finding.',
-        }),
-    ).exactOptional(),
-    EbsVolumeScanDetails: EbsVolumeScanDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ebsVolumeScanDetails' },
-          description: 'Returns details from the malware scan that created a finding.',
-        }),
-    ).exactOptional(),
-    RuntimeDetails: RuntimeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'runtimeDetails' },
-          description:
-            'Information about the process and any required context values for a specific finding',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains additional information about the generated finding.',
-    required: [],
-  })
-  .openapi('Service')
-
-const FindingSchema = z
-  .object({
-    AccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The ID of the account in which the finding was generated.',
-        }),
-    ),
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the finding.' }),
-    ),
-    Confidence: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'confidence' },
-          description: 'The confidence score for the finding.',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time and date when the finding was created.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the finding.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the finding.' }),
-    ),
-    Partition: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'partition' },
-          description: 'The partition associated with the finding.',
-        }),
-    ).exactOptional(),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'region' },
-          description: 'The Region where the finding was generated.',
-        }),
-    ),
-    Resource: ResourceSchema.and(z.any().openapi({ xml: { name: 'resource' } })),
-    SchemaVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'schemaVersion' },
-          description: 'The version of the schema used for the finding.',
-        }),
-    ),
-    Service: ServiceSchema.and(z.any().openapi({ xml: { name: 'service' } })).exactOptional(),
-    Severity: DoubleSchema.and(
-      z.any().openapi({ xml: { name: 'severity' }, description: 'The severity of the finding.' }),
-    ),
-    Title: StringSchema.and(
-      z.any().openapi({ xml: { name: 'title' }, description: 'The title of the finding.' }),
-    ).exactOptional(),
-    Type: FindingTypeSchema.and(
-      z.any().openapi({ xml: { name: 'type' }, description: 'The type of finding.' }),
-    ),
-    UpdatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updatedAt' },
-          description: 'The time and date when the finding was last updated.',
-        }),
-    ),
-  })
-  .openapi({
-    required: [
-      'AccountId',
-      'Arn',
-      'CreatedAt',
-      'Id',
-      'Region',
-      'Resource',
-      'SchemaVersion',
-      'Severity',
-      'Type',
-      'UpdatedAt',
-    ],
-    description:
-      'Contains information about the finding, which is generated when abnormal or suspicious activity is detected.',
-  })
-  .openapi('Finding')
-
-const FindingsSchema = z.array(FindingSchema).min(0).max(50).openapi('Findings')
-
-const GetFindingsResponseSchema = z
-  .object({
-    Findings: FindingsSchema.and(
-      z.any().openapi({ xml: { name: 'findings' }, description: 'A list of findings.' }),
-    ),
+    Findings: FindingsSchema.openapi({
+      xml: { name: 'findings' },
+      description: 'A list of findings.',
+    }),
   })
   .openapi({ required: ['Findings'] })
   .openapi('GetFindingsResponse')
@@ -4954,28 +3458,20 @@ const CountBySeveritySchema = z.record(z.string(), IntegerSchema).openapi('Count
 
 const FindingStatisticsSchema = z
   .object({
-    CountBySeverity: CountBySeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'countBySeverity' },
-          description: 'Represents a map of severity to count statistics for a set of findings.',
-        }),
-    ).exactOptional(),
+    CountBySeverity: CountBySeveritySchema.exactOptional().openapi({
+      xml: { name: 'countBySeverity' },
+      description: 'Represents a map of severity to count statistics for a set of findings.',
+    }),
   })
   .openapi({ description: 'Contains information about finding statistics.', required: [] })
   .openapi('FindingStatistics')
 
 const GetFindingsStatisticsResponseSchema = z
   .object({
-    FindingStatistics: FindingStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingStatistics' },
-          description: 'The finding statistics object.',
-        }),
-    ),
+    FindingStatistics: FindingStatisticsSchema.openapi({
+      xml: { name: 'findingStatistics' },
+      description: 'The finding statistics object.',
+    }),
   })
   .openapi({ required: ['FindingStatistics'] })
   .openapi('GetFindingsStatisticsResponse')
@@ -4996,52 +3492,36 @@ const IpSetStatusSchema = z
 
 const GetIPSetResponseSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'name' }, description: 'The user-friendly name for the IPSet.' }),
-    ),
-    Format: IpSetFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'format' },
-          description: 'The format of the file that contains the IPSet.',
-        }),
-    ),
-    Location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'location' },
-          description: 'The URI of the file that contains the IPSet.',
-        }),
-    ),
-    Status: IpSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'The status of IPSet file that was uploaded.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'The tags of the IPSet resource.' }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The user-friendly name for the IPSet.',
+    }),
+    Format: IpSetFormatSchema.openapi({
+      xml: { name: 'format' },
+      description: 'The format of the file that contains the IPSet.',
+    }),
+    Location: LocationSchema.openapi({
+      xml: { name: 'location' },
+      description: 'The URI of the file that contains the IPSet.',
+    }),
+    Status: IpSetStatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'The status of IPSet file that was uploaded.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags of the IPSet resource.',
+    }),
   })
   .openapi({ required: ['Name', 'Format', 'Location', 'Status'] })
   .openapi('GetIPSetResponse')
 
 const GetInvitationsCountResponseSchema = z
   .object({
-    InvitationsCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitationsCount' },
-          description: 'The number of received invitations.',
-        }),
-    ).exactOptional(),
+    InvitationsCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'invitationsCount' },
+      description: 'The number of received invitations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInvitationsCountResponse')
@@ -5055,23 +3535,15 @@ const TagKeySchema = z
 
 const ScanConditionPairSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'key' },
-          description: 'Represents <i>key</i> <b/> in the map condition.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'value' },
-          description:
-            'Represents optional <i>value</i> <b/> in the map condition. If not specified, only <i>key</i> <b/> will be matched.',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.openapi({
+      xml: { name: 'key' },
+      description: 'Represents <i>key</i> <b/> in the map condition.',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      xml: { name: 'value' },
+      description:
+        'Represents optional <i>value</i> <b/> in the map condition. If not specified, only <i>key</i> <b/> will be matched.',
+    }),
   })
   .openapi({
     required: ['Key'],
@@ -5083,15 +3555,11 @@ const MapEqualsSchema = z.array(ScanConditionPairSchema).openapi('MapEquals')
 
 const ScanConditionSchema = z
   .object({
-    MapEquals: MapEqualsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mapEquals' },
-          description:
-            'Represents an <i>mapEqual</i> <b/> condition to be applied to a single field when triggering for malware scan.',
-        }),
-    ),
+    MapEquals: MapEqualsSchema.openapi({
+      xml: { name: 'mapEquals' },
+      description:
+        'Represents an <i>mapEqual</i> <b/> condition to be applied to a single field when triggering for malware scan.',
+    }),
   })
   .openapi({ required: ['MapEquals'], description: 'Contains information about the condition.' })
   .openapi('ScanCondition')
@@ -5106,24 +3574,16 @@ const ScanCriterionSchema = z
 
 const ScanResourceCriteriaSchema = z
   .object({
-    Include: ScanCriterionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'include' },
-          description:
-            'Represents condition that when matched will allow a malware scan for a certain resource.',
-        }),
-    ).exactOptional(),
-    Exclude: ScanCriterionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'exclude' },
-          description:
-            'Represents condition that when matched will prevent a malware scan for a certain resource.',
-        }),
-    ).exactOptional(),
+    Include: ScanCriterionSchema.exactOptional().openapi({
+      xml: { name: 'include' },
+      description:
+        'Represents condition that when matched will allow a malware scan for a certain resource.',
+    }),
+    Exclude: ScanCriterionSchema.exactOptional().openapi({
+      xml: { name: 'exclude' },
+      description:
+        'Represents condition that when matched will prevent a malware scan for a certain resource.',
+    }),
   })
   .openapi({
     description:
@@ -5138,62 +3598,36 @@ const EbsSnapshotPreservationSchema = z
 
 const GetMalwareScanSettingsResponseSchema = z
   .object({
-    ScanResourceCriteria: ScanResourceCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanResourceCriteria' },
-          description: 'Represents the criteria to be used in the filter for scanning resources.',
-        }),
-    ).exactOptional(),
-    EbsSnapshotPreservation: EbsSnapshotPreservationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ebsSnapshotPreservation' },
-          description: 'An enum value representing possible snapshot preservation settings.',
-        }),
-    ).exactOptional(),
+    ScanResourceCriteria: ScanResourceCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'scanResourceCriteria' },
+      description: 'Represents the criteria to be used in the filter for scanning resources.',
+    }),
+    EbsSnapshotPreservation: EbsSnapshotPreservationSchema.exactOptional().openapi({
+      xml: { name: 'ebsSnapshotPreservation' },
+      description: 'An enum value representing possible snapshot preservation settings.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMalwareScanSettingsResponse')
 
 const MasterSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The ID of the account used as the administrator account.',
-        }),
-    ).exactOptional(),
-    InvitationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitationId' },
-          description:
-            'The value used to validate the administrator account to the member account.',
-        }),
-    ).exactOptional(),
-    RelationshipStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'relationshipStatus' },
-          description:
-            'The status of the relationship between the administrator and member accounts.',
-        }),
-    ).exactOptional(),
-    InvitedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitedAt' },
-          description: 'The timestamp when the invitation was sent.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      xml: { name: 'accountId' },
+      description: 'The ID of the account used as the administrator account.',
+    }),
+    InvitationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'invitationId' },
+      description: 'The value used to validate the administrator account to the member account.',
+    }),
+    RelationshipStatus: StringSchema.exactOptional().openapi({
+      xml: { name: 'relationshipStatus' },
+      description: 'The status of the relationship between the administrator and member accounts.',
+    }),
+    InvitedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'invitedAt' },
+      description: 'The timestamp when the invitation was sent.',
+    }),
   })
   .openapi({
     description: 'Contains information about the administrator account and invitation.',
@@ -5203,11 +3637,10 @@ const MasterSchema = z
 
 const GetMasterAccountResponseSchema = z
   .object({
-    Master: MasterSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'master' }, description: 'The administrator account details.' }),
-    ),
+    Master: MasterSchema.openapi({
+      xml: { name: 'master' },
+      description: 'The administrator account details.',
+    }),
   })
   .openapi({
     required: ['Master'],
@@ -5218,33 +3651,21 @@ const GetMasterAccountResponseSchema = z
 
 const MemberAdditionalConfigurationResultSchema = z
   .object({
-    Name: OrgFeatureAdditionalConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'Indicates the name of the additional configuration that is set for the member account.',
-        }),
-    ).exactOptional(),
-    Status: FeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            'Indicates the status of the additional configuration that is set for the member account.',
-        }),
-    ).exactOptional(),
-    UpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updatedAt' },
-          description:
-            'The timestamp at which the additional configuration was set for the member account. This is in UTC format.',
-        }),
-    ).exactOptional(),
+    Name: OrgFeatureAdditionalConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        'Indicates the name of the additional configuration that is set for the member account.',
+    }),
+    Status: FeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        'Indicates the status of the additional configuration that is set for the member account.',
+    }),
+    UpdatedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'updatedAt' },
+      description:
+        'The timestamp at which the additional configuration was set for the member account. This is in UTC format.',
+    }),
   })
   .openapi({
     description: 'Information about the additional configuration for the member account.',
@@ -5258,39 +3679,23 @@ const MemberAdditionalConfigurationResultsSchema = z
 
 const MemberFeaturesConfigurationResultSchema = z
   .object({
-    Name: OrgFeatureSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'Indicates the name of the feature that is enabled for the detector.',
-        }),
-    ).exactOptional(),
-    Status: FeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Indicates the status of the feature that is enabled for the detector.',
-        }),
-    ).exactOptional(),
-    UpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updatedAt' },
-          description: 'The timestamp at which the feature object was updated.',
-        }),
-    ).exactOptional(),
-    AdditionalConfiguration: MemberAdditionalConfigurationResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalConfiguration' },
-          description:
-            'Indicates the additional configuration of the feature that is configured for the member account.',
-        }),
-    ).exactOptional(),
+    Name: OrgFeatureSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Indicates the name of the feature that is enabled for the detector.',
+    }),
+    Status: FeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'Indicates the status of the feature that is enabled for the detector.',
+    }),
+    UpdatedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'updatedAt' },
+      description: 'The timestamp at which the feature object was updated.',
+    }),
+    AdditionalConfiguration: MemberAdditionalConfigurationResultsSchema.exactOptional().openapi({
+      xml: { name: 'additionalConfiguration' },
+      description:
+        'Indicates the additional configuration of the feature that is configured for the member account.',
+    }),
   })
   .openapi({
     description: 'Contains information about the features for the member account.',
@@ -5304,33 +3709,20 @@ const MemberFeaturesConfigurationsResultsSchema = z
 
 const MemberDataSourceConfigurationSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The account ID for the member account.',
-        }),
-    ),
-    DataSources: DataSourceConfigurationsResultSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            'Contains information on the status of data sources for the account.This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Features: MemberFeaturesConfigurationsResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description:
-            'Contains information about the status of the features for the member account.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.openapi({
+      xml: { name: 'accountId' },
+      description: 'The account ID for the member account.',
+    }),
+    DataSources: DataSourceConfigurationsResultSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        'Contains information on the status of data sources for the account.This parameter is deprecated, use Features instead',
+    }),
+    Features: MemberFeaturesConfigurationsResultsSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'Contains information about the status of the features for the member account.',
+    }),
   })
   .openapi({
     required: ['AccountId'],
@@ -5346,84 +3738,53 @@ const MemberDataSourceConfigurationsSchema = z
 
 const GetMemberDetectorsResponseSchema = z
   .object({
-    MemberDataSourceConfigurations: MemberDataSourceConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'members' },
-          description:
-            'An object that describes which data sources are enabled for a member account.',
-        }),
-    ),
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of member account IDs that were unable to be processed along with an explanation for why they were not processed.',
-        }),
-    ),
+    MemberDataSourceConfigurations: MemberDataSourceConfigurationsSchema.openapi({
+      xml: { name: 'members' },
+      description: 'An object that describes which data sources are enabled for a member account.',
+    }),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of member account IDs that were unable to be processed along with an explanation for why they were not processed.',
+    }),
   })
   .openapi({ required: ['MemberDataSourceConfigurations', 'UnprocessedAccounts'] })
   .openapi('GetMemberDetectorsResponse')
 
 const MemberSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ xml: { name: 'accountId' }, description: 'The ID of the member account.' }),
-    ),
-    DetectorId: DetectorIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'detectorId' },
-          description: 'The detector ID of the member account.',
-        }),
-    ).exactOptional(),
-    MasterId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'masterId' }, description: 'The administrator account ID.' }),
-    ),
-    Email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'email' },
-          description: 'The email address of the member account.',
-        }),
-    ),
-    RelationshipStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'relationshipStatus' },
-          description: 'The status of the relationship between the member and the administrator.',
-        }),
-    ),
-    InvitedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitedAt' },
-          description: 'The timestamp when the invitation was sent.',
-        }),
-    ).exactOptional(),
-    UpdatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updatedAt' },
-          description: 'The last-updated timestamp of the member.',
-        }),
-    ),
-    AdministratorId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'administratorId' },
-          description: 'The administrator account ID.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.openapi({
+      xml: { name: 'accountId' },
+      description: 'The ID of the member account.',
+    }),
+    DetectorId: DetectorIdSchema.exactOptional().openapi({
+      xml: { name: 'detectorId' },
+      description: 'The detector ID of the member account.',
+    }),
+    MasterId: StringSchema.openapi({
+      xml: { name: 'masterId' },
+      description: 'The administrator account ID.',
+    }),
+    Email: EmailSchema.openapi({
+      xml: { name: 'email' },
+      description: 'The email address of the member account.',
+    }),
+    RelationshipStatus: StringSchema.openapi({
+      xml: { name: 'relationshipStatus' },
+      description: 'The status of the relationship between the member and the administrator.',
+    }),
+    InvitedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'invitedAt' },
+      description: 'The timestamp when the invitation was sent.',
+    }),
+    UpdatedAt: StringSchema.openapi({
+      xml: { name: 'updatedAt' },
+      description: 'The last-updated timestamp of the member.',
+    }),
+    AdministratorId: StringSchema.exactOptional().openapi({
+      xml: { name: 'administratorId' },
+      description: 'The administrator account ID.',
+    }),
   })
   .openapi({
     required: ['AccountId', 'MasterId', 'Email', 'RelationshipStatus', 'UpdatedAt'],
@@ -5435,33 +3796,23 @@ const MembersSchema = z.array(MemberSchema).min(0).max(50).openapi('Members')
 
 const GetMembersResponseSchema = z
   .object({
-    Members: MembersSchema.and(
-      z.any().openapi({ xml: { name: 'members' }, description: 'A list of members.' }),
-    ),
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
-        }),
-    ),
+    Members: MembersSchema.openapi({ xml: { name: 'members' }, description: 'A list of members.' }),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
+    }),
   })
   .openapi({ required: ['Members', 'UnprocessedAccounts'] })
   .openapi('GetMembersResponse')
 
 const DataSourceFreeTrialSchema = z
   .object({
-    FreeTrialDaysRemaining: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'freeTrialDaysRemaining' },
-          description:
-            'A value that specifies the number of days left to use each enabled data source.',
-        }),
-    ).exactOptional(),
+    FreeTrialDaysRemaining: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'freeTrialDaysRemaining' },
+      description:
+        'A value that specifies the number of days left to use each enabled data source.',
+    }),
   })
   .openapi({
     description:
@@ -5472,14 +3823,10 @@ const DataSourceFreeTrialSchema = z
 
 const KubernetesDataSourceFreeTrialSchema = z
   .object({
-    AuditLogs: DataSourceFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'auditLogs' },
-          description: 'Describes whether Kubernetes audit logs are enabled as a data source.',
-        }),
-    ).exactOptional(),
+    AuditLogs: DataSourceFreeTrialSchema.exactOptional().openapi({
+      xml: { name: 'auditLogs' },
+      description: 'Describes whether Kubernetes audit logs are enabled as a data source.',
+    }),
   })
   .openapi({
     description:
@@ -5490,15 +3837,11 @@ const KubernetesDataSourceFreeTrialSchema = z
 
 const MalwareProtectionDataSourceFreeTrialSchema = z
   .object({
-    ScanEc2InstanceWithFindings: DataSourceFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanEc2InstanceWithFindings' },
-          description:
-            'Describes whether Malware Protection for EC2 instances with findings is enabled as a data source.',
-        }),
-    ).exactOptional(),
+    ScanEc2InstanceWithFindings: DataSourceFreeTrialSchema.exactOptional().openapi({
+      xml: { name: 'scanEc2InstanceWithFindings' },
+      description:
+        'Describes whether Malware Protection for EC2 instances with findings is enabled as a data source.',
+    }),
   })
   .openapi({
     description: 'Provides details about Malware Protection when it is enabled as a data source.',
@@ -5508,55 +3851,31 @@ const MalwareProtectionDataSourceFreeTrialSchema = z
 
 const DataSourcesFreeTrialSchema = z
   .object({
-    CloudTrail: DataSourceFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cloudTrail' },
-          description:
-            'Describes whether any Amazon Web Services CloudTrail management event logs are enabled as data sources.',
-        }),
-    ).exactOptional(),
-    DnsLogs: DataSourceFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dnsLogs' },
-          description: 'Describes whether any DNS logs are enabled as data sources.',
-        }),
-    ).exactOptional(),
-    FlowLogs: DataSourceFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowLogs' },
-          description: 'Describes whether any VPC Flow logs are enabled as data sources.',
-        }),
-    ).exactOptional(),
-    S3Logs: DataSourceFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 's3Logs' },
-          description: 'Describes whether any S3 data event logs are enabled as data sources.',
-        }),
-    ).exactOptional(),
-    Kubernetes: KubernetesDataSourceFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kubernetes' },
-          description: 'Describes whether any Kubernetes logs are enabled as data sources.',
-        }),
-    ).exactOptional(),
-    MalwareProtection: MalwareProtectionDataSourceFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'malwareProtection' },
-          description: 'Describes whether Malware Protection is enabled as a data source.',
-        }),
-    ).exactOptional(),
+    CloudTrail: DataSourceFreeTrialSchema.exactOptional().openapi({
+      xml: { name: 'cloudTrail' },
+      description:
+        'Describes whether any Amazon Web Services CloudTrail management event logs are enabled as data sources.',
+    }),
+    DnsLogs: DataSourceFreeTrialSchema.exactOptional().openapi({
+      xml: { name: 'dnsLogs' },
+      description: 'Describes whether any DNS logs are enabled as data sources.',
+    }),
+    FlowLogs: DataSourceFreeTrialSchema.exactOptional().openapi({
+      xml: { name: 'flowLogs' },
+      description: 'Describes whether any VPC Flow logs are enabled as data sources.',
+    }),
+    S3Logs: DataSourceFreeTrialSchema.exactOptional().openapi({
+      xml: { name: 's3Logs' },
+      description: 'Describes whether any S3 data event logs are enabled as data sources.',
+    }),
+    Kubernetes: KubernetesDataSourceFreeTrialSchema.exactOptional().openapi({
+      xml: { name: 'kubernetes' },
+      description: 'Describes whether any Kubernetes logs are enabled as data sources.',
+    }),
+    MalwareProtection: MalwareProtectionDataSourceFreeTrialSchema.exactOptional().openapi({
+      xml: { name: 'malwareProtection' },
+      description: 'Describes whether Malware Protection is enabled as a data source.',
+    }),
   })
   .openapi({
     description:
@@ -5581,22 +3900,14 @@ const FreeTrialFeatureResultSchema = z
 
 const FreeTrialFeatureConfigurationResultSchema = z
   .object({
-    Name: FreeTrialFeatureResultSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the feature for which the free trial is configured.',
-        }),
-    ).exactOptional(),
-    FreeTrialDaysRemaining: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'freeTrialDaysRemaining' },
-          description: 'The number of the remaining free trial days for the feature.',
-        }),
-    ).exactOptional(),
+    Name: FreeTrialFeatureResultSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the feature for which the free trial is configured.',
+    }),
+    FreeTrialDaysRemaining: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'freeTrialDaysRemaining' },
+      description: 'The number of the remaining free trial days for the feature.',
+    }),
   })
   .openapi({
     description: 'Contains information about the free trial period for a feature.',
@@ -5610,32 +3921,20 @@ const FreeTrialFeatureConfigurationsResultsSchema = z
 
 const AccountFreeTrialInfoSchema = z
   .object({
-    AccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The account identifier of the GuardDuty member account.',
-        }),
-    ).exactOptional(),
-    DataSources: DataSourcesFreeTrialSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            'Describes the data source enabled for the GuardDuty member account.This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Features: FreeTrialFeatureConfigurationsResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description: 'A list of features enabled for the GuardDuty account.',
-        }),
-    ).exactOptional(),
+    AccountId: StringSchema.exactOptional().openapi({
+      xml: { name: 'accountId' },
+      description: 'The account identifier of the GuardDuty member account.',
+    }),
+    DataSources: DataSourcesFreeTrialSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        'Describes the data source enabled for the GuardDuty member account.This parameter is deprecated, use Features instead',
+    }),
+    Features: FreeTrialFeatureConfigurationsResultsSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'A list of features enabled for the GuardDuty account.',
+    }),
   })
   .openapi({
     description: 'Provides details of the GuardDuty member account that uses a free trial service.',
@@ -5649,24 +3948,16 @@ const AccountFreeTrialInfosSchema = z
 
 const GetRemainingFreeTrialDaysResponseSchema = z
   .object({
-    Accounts: AccountFreeTrialInfosSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accounts' },
-          description:
-            'The member accounts which were included in a request and were processed successfully.',
-        }),
-    ).exactOptional(),
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'The member account that was included in a request but for which the request could not be processed.',
-        }),
-    ).exactOptional(),
+    Accounts: AccountFreeTrialInfosSchema.exactOptional().openapi({
+      xml: { name: 'accounts' },
+      description:
+        'The member accounts which were included in a request and were processed successfully.',
+    }),
+    UnprocessedAccounts: UnprocessedAccountsSchema.exactOptional().openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'The member account that was included in a request but for which the request could not be processed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRemainingFreeTrialDaysResponse')
@@ -5681,58 +3972,41 @@ const ThreatIntelSetStatusSchema = z
 
 const GetThreatIntelSetResponseSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'A user-friendly ThreatIntelSet name displayed in all findings that are generated by activity that involves IP addresses included in this ThreatIntelSet.',
-        }),
-    ),
-    Format: ThreatIntelSetFormatSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'format' }, description: 'The format of the threatIntelSet.' }),
-    ),
-    Location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'location' },
-          description: 'The URI of the file that contains the ThreatIntelSet. ',
-        }),
-    ),
-    Status: ThreatIntelSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'The status of threatIntelSet file uploaded.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'tags' }, description: 'The tags of the threat list resource.' }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'A user-friendly ThreatIntelSet name displayed in all findings that are generated by activity that involves IP addresses included in this ThreatIntelSet.',
+    }),
+    Format: ThreatIntelSetFormatSchema.openapi({
+      xml: { name: 'format' },
+      description: 'The format of the threatIntelSet.',
+    }),
+    Location: LocationSchema.openapi({
+      xml: { name: 'location' },
+      description: 'The URI of the file that contains the ThreatIntelSet. ',
+    }),
+    Status: ThreatIntelSetStatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'The status of threatIntelSet file uploaded.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags of the threat list resource.',
+    }),
   })
   .openapi({ required: ['Name', 'Format', 'Location', 'Status'] })
   .openapi('GetThreatIntelSetResponse')
 
 const TotalSchema = z
   .object({
-    Amount: StringSchema.and(
-      z.any().openapi({ xml: { name: 'amount' }, description: 'The total usage.' }),
-    ).exactOptional(),
-    Unit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unit' },
-          description: 'The currency unit that the amount is given in.',
-        }),
-    ).exactOptional(),
+    Amount: StringSchema.exactOptional().openapi({
+      xml: { name: 'amount' },
+      description: 'The total usage.',
+    }),
+    Unit: StringSchema.exactOptional().openapi({
+      xml: { name: 'unit' },
+      description: 'The currency unit that the amount is given in.',
+    }),
   })
   .openapi({
     description: 'Contains the total usage with the corresponding currency unit for that value.',
@@ -5742,22 +4016,14 @@ const TotalSchema = z
 
 const UsageAccountResultSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The Account ID that generated usage.',
-        }),
-    ).exactOptional(),
-    Total: TotalSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'total' },
-          description: 'Represents the total of usage for the Account ID.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      xml: { name: 'accountId' },
+      description: 'The Account ID that generated usage.',
+    }),
+    Total: TotalSchema.exactOptional().openapi({
+      xml: { name: 'total' },
+      description: 'Represents the total of usage for the Account ID.',
+    }),
   })
   .openapi({
     description: 'Contains information on the total of usage based on account IDs.',
@@ -5782,22 +4048,14 @@ const DataSourceSchema = z
 
 const UsageDataSourceResultSchema = z
   .object({
-    DataSource: DataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataSource' },
-          description: 'The data source type that generated usage.',
-        }),
-    ).exactOptional(),
-    Total: TotalSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'total' },
-          description: 'Represents the total of usage for the specified data source.',
-        }),
-    ).exactOptional(),
+    DataSource: DataSourceSchema.exactOptional().openapi({
+      xml: { name: 'dataSource' },
+      description: 'The data source type that generated usage.',
+    }),
+    Total: TotalSchema.exactOptional().openapi({
+      xml: { name: 'total' },
+      description: 'Represents the total of usage for the specified data source.',
+    }),
   })
   .openapi({
     description: 'Contains information on the result of usage based on data source type.',
@@ -5811,22 +4069,14 @@ const UsageDataSourceResultListSchema = z
 
 const UsageResourceResultSchema = z
   .object({
-    Resource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resource' },
-          description: 'The Amazon Web Services resource that generated usage.',
-        }),
-    ).exactOptional(),
-    Total: TotalSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'total' },
-          description: 'Represents the sum total of usage for the specified resource type.',
-        }),
-    ).exactOptional(),
+    Resource: StringSchema.exactOptional().openapi({
+      xml: { name: 'resource' },
+      description: 'The Amazon Web Services resource that generated usage.',
+    }),
+    Total: TotalSchema.exactOptional().openapi({
+      xml: { name: 'total' },
+      description: 'Represents the sum total of usage for the specified resource type.',
+    }),
   })
   .openapi({
     description:
@@ -5855,15 +4105,11 @@ const UsageFeatureSchema = z
 
 const UsageFeatureResultSchema = z
   .object({
-    Feature: UsageFeatureSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'feature' },
-          description: 'The feature that generated the usage cost.',
-        }),
-    ).exactOptional(),
-    Total: TotalSchema.and(z.any().openapi({ xml: { name: 'total' } })).exactOptional(),
+    Feature: UsageFeatureSchema.exactOptional().openapi({
+      xml: { name: 'feature' },
+      description: 'The feature that generated the usage cost.',
+    }),
+    Total: TotalSchema.exactOptional().openapi({ xml: { name: 'total' } }),
   })
   .openapi({
     description: 'Contains information about the result of the total usage based on the feature.',
@@ -5877,47 +4123,27 @@ const UsageFeatureResultListSchema = z
 
 const UsageStatisticsSchema = z
   .object({
-    SumByAccount: UsageAccountResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sumByAccount' },
-          description: 'The usage statistic sum organized by account ID.',
-        }),
-    ).exactOptional(),
-    SumByDataSource: UsageDataSourceResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sumByDataSource' },
-          description: 'The usage statistic sum organized by on data source.',
-        }),
-    ).exactOptional(),
-    SumByResource: UsageResourceResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sumByResource' },
-          description: 'The usage statistic sum organized by resource.',
-        }),
-    ).exactOptional(),
-    TopResources: UsageResourceResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'topResources' },
-          description:
-            'Lists the top 50 resources that have generated the most GuardDuty usage, in order from most to least expensive.',
-        }),
-    ).exactOptional(),
-    SumByFeature: UsageFeatureResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sumByFeature' },
-          description: 'The usage statistic sum organized by feature.',
-        }),
-    ).exactOptional(),
+    SumByAccount: UsageAccountResultListSchema.exactOptional().openapi({
+      xml: { name: 'sumByAccount' },
+      description: 'The usage statistic sum organized by account ID.',
+    }),
+    SumByDataSource: UsageDataSourceResultListSchema.exactOptional().openapi({
+      xml: { name: 'sumByDataSource' },
+      description: 'The usage statistic sum organized by on data source.',
+    }),
+    SumByResource: UsageResourceResultListSchema.exactOptional().openapi({
+      xml: { name: 'sumByResource' },
+      description: 'The usage statistic sum organized by resource.',
+    }),
+    TopResources: UsageResourceResultListSchema.exactOptional().openapi({
+      xml: { name: 'topResources' },
+      description:
+        'Lists the top 50 resources that have generated the most GuardDuty usage, in order from most to least expensive.',
+    }),
+    SumByFeature: UsageFeatureResultListSchema.exactOptional().openapi({
+      xml: { name: 'sumByFeature' },
+      description: 'The usage statistic sum organized by feature.',
+    }),
   })
   .openapi({
     description:
@@ -5928,24 +4154,16 @@ const UsageStatisticsSchema = z
 
 const GetUsageStatisticsResponseSchema = z
   .object({
-    UsageStatistics: UsageStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'usageStatistics' },
-          description:
-            'The usage statistics object. If a UsageStatisticType was provided, the objects representing other types will be null.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    UsageStatistics: UsageStatisticsSchema.exactOptional().openapi({
+      xml: { name: 'usageStatistics' },
+      description:
+        'The usage statistics object. If a UsageStatisticType was provided, the objects representing other types will be null.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetUsageStatisticsResponse')
@@ -5960,37 +4178,25 @@ const UsageFeatureListSchema = z.array(UsageFeatureSchema).openapi('UsageFeature
 
 const InviteMembersResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('InviteMembersResponse')
 
 const AddonDetailsSchema = z
   .object({
-    AddonVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'addonVersion' },
-          description: 'Version of the installed EKS add-on.',
-        }),
-    ).exactOptional(),
-    AddonStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'addonStatus' },
-          description: 'Status of the installed EKS add-on.',
-        }),
-    ).exactOptional(),
+    AddonVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'addonVersion' },
+      description: 'Version of the installed EKS add-on.',
+    }),
+    AddonStatus: StringSchema.exactOptional().openapi({
+      xml: { name: 'addonStatus' },
+      description: 'Status of the installed EKS add-on.',
+    }),
   })
   .openapi({
     description: 'Information about the installed EKS add-on (GuardDuty security agent).',
@@ -6000,34 +4206,23 @@ const AddonDetailsSchema = z
 
 const CoverageEksClusterDetailsSchema = z
   .object({
-    ClusterName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'clusterName' }, description: 'Name of the EKS cluster.' }),
-    ).exactOptional(),
-    CoveredNodes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'coveredNodes' },
-          description:
-            'Represents the nodes within the EKS cluster that have a <code>HEALTHY</code> coverage status.',
-        }),
-    ).exactOptional(),
-    CompatibleNodes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'compatibleNodes' },
-          description: 'Represents all the nodes within the EKS cluster in your account.',
-        }),
-    ).exactOptional(),
-    AddonDetails: AddonDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'addonDetails' },
-          description: 'Information about the installed EKS add-on.',
-        }),
-    ).exactOptional(),
+    ClusterName: StringSchema.exactOptional().openapi({
+      xml: { name: 'clusterName' },
+      description: 'Name of the EKS cluster.',
+    }),
+    CoveredNodes: LongSchema.exactOptional().openapi({
+      xml: { name: 'coveredNodes' },
+      description:
+        'Represents the nodes within the EKS cluster that have a <code>HEALTHY</code> coverage status.',
+    }),
+    CompatibleNodes: LongSchema.exactOptional().openapi({
+      xml: { name: 'compatibleNodes' },
+      description: 'Represents all the nodes within the EKS cluster in your account.',
+    }),
+    AddonDetails: AddonDetailsSchema.exactOptional().openapi({
+      xml: { name: 'addonDetails' },
+      description: 'Information about the installed EKS add-on.',
+    }),
   })
   .openapi({
     description: 'Information about the EKS cluster that has a coverage status.',
@@ -6039,22 +4234,14 @@ const ResourceTypeSchema = z.literal('EKS').openapi('ResourceType')
 
 const CoverageResourceDetailsSchema = z
   .object({
-    EksClusterDetails: CoverageEksClusterDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'eksClusterDetails' },
-          description: 'EKS cluster details involved in the coverage statistics.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceType' },
-          description: 'The type of Amazon Web Services resource.',
-        }),
-    ).exactOptional(),
+    EksClusterDetails: CoverageEksClusterDetailsSchema.exactOptional().openapi({
+      xml: { name: 'eksClusterDetails' },
+      description: 'EKS cluster details involved in the coverage statistics.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      xml: { name: 'resourceType' },
+      description: 'The type of Amazon Web Services resource.',
+    }),
   })
   .openapi({
     description: 'Information about the resource for each individual EKS cluster.',
@@ -6066,62 +4253,37 @@ const CoverageStatusSchema = z.enum(['HEALTHY', 'UNHEALTHY']).openapi('CoverageS
 
 const CoverageResourceSchema = z
   .object({
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'resourceId' }, description: 'The unique ID of the resource.' }),
-    ).exactOptional(),
-    DetectorId: DetectorIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'detectorId' },
-          description: 'The unique ID of the GuardDuty detector associated with the resource.',
-        }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The unique ID of the Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    ResourceDetails: CoverageResourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceDetails' },
-          description:
-            'Information about the resource for which the coverage statistics are retrieved.',
-        }),
-    ).exactOptional(),
-    CoverageStatus: CoverageStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'coverageStatus' },
-          description: 'Represents the status of the EKS cluster coverage.',
-        }),
-    ).exactOptional(),
-    Issue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'issue' },
-          description:
-            'Represents the reason why a coverage status was <code>UNHEALTHY</code> for the EKS cluster.',
-        }),
-    ).exactOptional(),
-    UpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updatedAt' },
-          description:
-            'The timestamp at which the coverage details for the resource were last updated. This is in UTC format.',
-        }),
-    ).exactOptional(),
+    ResourceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceId' },
+      description: 'The unique ID of the resource.',
+    }),
+    DetectorId: DetectorIdSchema.exactOptional().openapi({
+      xml: { name: 'detectorId' },
+      description: 'The unique ID of the GuardDuty detector associated with the resource.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      xml: { name: 'accountId' },
+      description: 'The unique ID of the Amazon Web Services account.',
+    }),
+    ResourceDetails: CoverageResourceDetailsSchema.exactOptional().openapi({
+      xml: { name: 'resourceDetails' },
+      description:
+        'Information about the resource for which the coverage statistics are retrieved.',
+    }),
+    CoverageStatus: CoverageStatusSchema.exactOptional().openapi({
+      xml: { name: 'coverageStatus' },
+      description: 'Represents the status of the EKS cluster coverage.',
+    }),
+    Issue: StringSchema.exactOptional().openapi({
+      xml: { name: 'issue' },
+      description:
+        'Represents the reason why a coverage status was <code>UNHEALTHY</code> for the EKS cluster.',
+    }),
+    UpdatedAt: TimestampSchema.exactOptional().openapi({
+      xml: { name: 'updatedAt' },
+      description:
+        'The timestamp at which the coverage details for the resource were last updated. This is in UTC format.',
+    }),
   })
   .openapi({
     description: 'Information about the resource of the GuardDuty account.',
@@ -6133,23 +4295,15 @@ const CoverageResourcesSchema = z.array(CoverageResourceSchema).openapi('Coverag
 
 const ListCoverageResponseSchema = z
   .object({
-    Resources: CoverageResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resources' },
-          description: 'A list of resources and their attributes providing cluster details.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    Resources: CoverageResourcesSchema.openapi({
+      xml: { name: 'resources' },
+      description: 'A list of resources and their attributes providing cluster details.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: ['Resources'] })
   .openapi('ListCoverageResponse')
@@ -6162,18 +4316,15 @@ const DetectorIdsSchema = z.array(DetectorIdSchema).min(0).max(50).openapi('Dete
 
 const ListDetectorsResponseSchema = z
   .object({
-    DetectorIds: DetectorIdsSchema.and(
-      z.any().openapi({ xml: { name: 'detectorIds' }, description: 'A list of detector IDs.' }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    DetectorIds: DetectorIdsSchema.openapi({
+      xml: { name: 'detectorIds' },
+      description: 'A list of detector IDs.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: ['DetectorIds'] })
   .openapi('ListDetectorsResponse')
@@ -6182,18 +4333,15 @@ const FilterNamesSchema = z.array(FilterNameSchema).min(0).max(50).openapi('Filt
 
 const ListFiltersResponseSchema = z
   .object({
-    FilterNames: FilterNamesSchema.and(
-      z.any().openapi({ xml: { name: 'filterNames' }, description: 'A list of filter names.' }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    FilterNames: FilterNamesSchema.openapi({
+      xml: { name: 'filterNames' },
+      description: 'A list of filter names.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: ['FilterNames'] })
   .openapi('ListFiltersResponse')
@@ -6202,23 +4350,15 @@ const FindingIdsSchema = z.array(FindingIdSchema).min(0).max(50).openapi('Findin
 
 const ListFindingsResponseSchema = z
   .object({
-    FindingIds: FindingIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingIds' },
-          description: "The IDs of the findings that you're listing.",
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    FindingIds: FindingIdsSchema.openapi({
+      xml: { name: 'findingIds' },
+      description: "The IDs of the findings that you're listing.",
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: ['FindingIds'] })
   .openapi('ListFindingsResponse')
@@ -6227,59 +4367,38 @@ const IpSetIdsSchema = z.array(StringSchema).min(0).max(50).openapi('IpSetIds')
 
 const ListIPSetsResponseSchema = z
   .object({
-    IpSetIds: IpSetIdsSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'ipSetIds' }, description: 'The IDs of the IPSet resources.' }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    IpSetIds: IpSetIdsSchema.openapi({
+      xml: { name: 'ipSetIds' },
+      description: 'The IDs of the IPSet resources.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: ['IpSetIds'] })
   .openapi('ListIPSetsResponse')
 
 const InvitationSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountId' },
-          description: 'The ID of the account that the invitation was sent from.',
-        }),
-    ).exactOptional(),
-    InvitationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitationId' },
-          description:
-            'The ID of the invitation. This value is used to validate the inviter account to the member account.',
-        }),
-    ).exactOptional(),
-    RelationshipStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'relationshipStatus' },
-          description: 'The status of the relationship between the inviter and invitee accounts.',
-        }),
-    ).exactOptional(),
-    InvitedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitedAt' },
-          description: 'The timestamp when the invitation was sent.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      xml: { name: 'accountId' },
+      description: 'The ID of the account that the invitation was sent from.',
+    }),
+    InvitationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'invitationId' },
+      description:
+        'The ID of the invitation. This value is used to validate the inviter account to the member account.',
+    }),
+    RelationshipStatus: StringSchema.exactOptional().openapi({
+      xml: { name: 'relationshipStatus' },
+      description: 'The status of the relationship between the inviter and invitee accounts.',
+    }),
+    InvitedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'invitedAt' },
+      description: 'The timestamp when the invitation was sent.',
+    }),
   })
   .openapi({
     description: 'Contains information about the invitation to become a member account.',
@@ -6291,41 +4410,30 @@ const InvitationsSchema = z.array(InvitationSchema).min(0).max(50).openapi('Invi
 
 const ListInvitationsResponseSchema = z
   .object({
-    Invitations: InvitationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitations' },
-          description: 'A list of invitation descriptions.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    Invitations: InvitationsSchema.exactOptional().openapi({
+      xml: { name: 'invitations' },
+      description: 'A list of invitation descriptions.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInvitationsResponse')
 
 const ListMembersResponseSchema = z
   .object({
-    Members: MembersSchema.and(
-      z.any().openapi({ xml: { name: 'members' }, description: 'A list of members.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    Members: MembersSchema.exactOptional().openapi({
+      xml: { name: 'members' },
+      description: 'A list of members.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMembersResponse')
@@ -6334,22 +4442,14 @@ const AdminStatusSchema = z.enum(['ENABLED', 'DISABLE_IN_PROGRESS']).openapi('Ad
 
 const AdminAccountSchema = z
   .object({
-    AdminAccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adminAccountId' },
-          description: 'The Amazon Web Services account ID for the account.',
-        }),
-    ).exactOptional(),
-    AdminStatus: AdminStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adminStatus' },
-          description: 'Indicates whether the account is enabled as the delegated administrator.',
-        }),
-    ).exactOptional(),
+    AdminAccountId: StringSchema.exactOptional().openapi({
+      xml: { name: 'adminAccountId' },
+      description: 'The Amazon Web Services account ID for the account.',
+    }),
+    AdminStatus: AdminStatusSchema.exactOptional().openapi({
+      xml: { name: 'adminStatus' },
+      description: 'Indicates whether the account is enabled as the delegated administrator.',
+    }),
   })
   .openapi({
     description:
@@ -6362,54 +4462,34 @@ const AdminAccountsSchema = z.array(AdminAccountSchema).min(0).max(1).openapi('A
 
 const ListOrganizationAdminAccountsResponseSchema = z
   .object({
-    AdminAccounts: AdminAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adminAccounts' },
-          description: 'A list of accounts configured as GuardDuty delegated administrators.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    AdminAccounts: AdminAccountsSchema.exactOptional().openapi({
+      xml: { name: 'adminAccounts' },
+      description: 'A list of accounts configured as GuardDuty delegated administrators.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOrganizationAdminAccountsResponse')
 
 const DestinationSchema = z
   .object({
-    DestinationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationId' },
-          description: 'The unique ID of the publishing destination.',
-        }),
-    ),
-    DestinationType: DestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationType' },
-          description:
-            'The type of resource used for the publishing destination. Currently, only Amazon S3 buckets are supported.',
-        }),
-    ),
-    Status: PublishingStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'The status of the publishing destination.',
-        }),
-    ),
+    DestinationId: StringSchema.openapi({
+      xml: { name: 'destinationId' },
+      description: 'The unique ID of the publishing destination.',
+    }),
+    DestinationType: DestinationTypeSchema.openapi({
+      xml: { name: 'destinationType' },
+      description:
+        'The type of resource used for the publishing destination. Currently, only Amazon S3 buckets are supported.',
+    }),
+    Status: PublishingStatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'The status of the publishing destination.',
+    }),
   })
   .openapi({
     required: ['DestinationId', 'DestinationType', 'Status'],
@@ -6422,35 +4502,26 @@ const DestinationsSchema = z.array(DestinationSchema).openapi('Destinations')
 
 const ListPublishingDestinationsResponseSchema = z
   .object({
-    Destinations: DestinationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinations' },
-          description:
-            'A <code>Destinations</code> object that includes information about each publishing destination returned.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the <code>NextToken</code> value returned from the previous request to continue listing results after the first page.',
-        }),
-    ).exactOptional(),
+    Destinations: DestinationsSchema.openapi({
+      xml: { name: 'destinations' },
+      description:
+        'A <code>Destinations</code> object that includes information about each publishing destination returned.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the <code>NextToken</code> value returned from the previous request to continue listing results after the first page.',
+    }),
   })
   .openapi({ required: ['Destinations'] })
   .openapi('ListPublishingDestinationsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'tags' }, description: 'The tags associated with the resource.' }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -6459,112 +4530,90 @@ const ThreatIntelSetIdsSchema = z.array(StringSchema).min(0).max(50).openapi('Th
 
 const ListThreatIntelSetsResponseSchema = z
   .object({
-    ThreatIntelSetIds: ThreatIntelSetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'threatIntelSetIds' },
-          description: 'The IDs of the ThreatIntelSet resources.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The pagination parameter to be used on the next list operation to retrieve more items.',
-        }),
-    ).exactOptional(),
+    ThreatIntelSetIds: ThreatIntelSetIdsSchema.openapi({
+      xml: { name: 'threatIntelSetIds' },
+      description: 'The IDs of the ThreatIntelSet resources.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The pagination parameter to be used on the next list operation to retrieve more items.',
+    }),
   })
   .openapi({ required: ['ThreatIntelSetIds'] })
   .openapi('ListThreatIntelSetsResponse')
 
 const StartMonitoringMembersResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('StartMonitoringMembersResponse')
 
 const StopMonitoringMembersResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of objects that contain an accountId for each account that could not be processed, and a result string that indicates why the account was not processed. ',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of objects that contain an accountId for each account that could not be processed, and a result string that indicates why the account was not processed. ',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('StopMonitoringMembersResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UnarchiveFindingsResponseSchema = z.object({}).openapi('UnarchiveFindingsResponse')
+const UnarchiveFindingsResponseSchema = z.looseObject({}).openapi('UnarchiveFindingsResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
-const UpdateDetectorResponseSchema = z.object({}).openapi('UpdateDetectorResponse')
+const UpdateDetectorResponseSchema = z.looseObject({}).openapi('UpdateDetectorResponse')
 
 const UpdateFilterResponseSchema = z
   .object({
-    Name: FilterNameSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the filter.' }),
-    ),
+    Name: FilterNameSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the filter.',
+    }),
   })
   .openapi({ required: ['Name'] })
   .openapi('UpdateFilterResponse')
 
-const UpdateFindingsFeedbackResponseSchema = z.object({}).openapi('UpdateFindingsFeedbackResponse')
+const UpdateFindingsFeedbackResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateFindingsFeedbackResponse')
 
-const UpdateIPSetResponseSchema = z.object({}).openapi('UpdateIPSetResponse')
+const UpdateIPSetResponseSchema = z.looseObject({}).openapi('UpdateIPSetResponse')
 
 const UpdateMalwareScanSettingsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateMalwareScanSettingsResponse')
 
 const UpdateMemberDetectorsResponseSchema = z
   .object({
-    UnprocessedAccounts: UnprocessedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unprocessedAccounts' },
-          description:
-            'A list of member account IDs that were unable to be processed along with an explanation for why they were not processed.',
-        }),
-    ),
+    UnprocessedAccounts: UnprocessedAccountsSchema.openapi({
+      xml: { name: 'unprocessedAccounts' },
+      description:
+        'A list of member account IDs that were unable to be processed along with an explanation for why they were not processed.',
+    }),
   })
   .openapi({ required: ['UnprocessedAccounts'] })
   .openapi('UpdateMemberDetectorsResponse')
 
 const MemberAdditionalConfigurationSchema = z
   .object({
-    Name: OrgFeatureAdditionalConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'name' }, description: 'Name of the additional configuration.' }),
-    ).exactOptional(),
-    Status: FeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'Status of the additional configuration.',
-        }),
-    ).exactOptional(),
+    Name: OrgFeatureAdditionalConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'Name of the additional configuration.',
+    }),
+    Status: FeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'Status of the additional configuration.',
+    }),
   })
   .openapi({
     description: 'Information about the additional configuration for the member account.',
@@ -6578,20 +4627,18 @@ const MemberAdditionalConfigurationsSchema = z
 
 const MemberFeaturesConfigurationSchema = z
   .object({
-    Name: OrgFeatureSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the feature.' }),
-    ).exactOptional(),
-    Status: FeatureStatusSchema.and(
-      z.any().openapi({ xml: { name: 'status' }, description: 'The status of the feature.' }),
-    ).exactOptional(),
-    AdditionalConfiguration: MemberAdditionalConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalConfiguration' },
-          description: 'Additional configuration of the feature for the member account.',
-        }),
-    ).exactOptional(),
+    Name: OrgFeatureSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the feature.',
+    }),
+    Status: FeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The status of the feature.',
+    }),
+    AdditionalConfiguration: MemberAdditionalConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'additionalConfiguration' },
+      description: 'Additional configuration of the feature for the member account.',
+    }),
   })
   .openapi({
     description: 'Contains information about the features for the member account.',
@@ -6600,20 +4647,16 @@ const MemberFeaturesConfigurationSchema = z
   .openapi('MemberFeaturesConfiguration')
 
 const UpdateOrganizationConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateOrganizationConfigurationResponse')
 
 const OrganizationS3LogsConfigurationSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            'A value that contains information on whether S3 data event logs will be enabled automatically as a data source for the organization.',
-        }),
-    ),
+    AutoEnable: BooleanSchema.openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        'A value that contains information on whether S3 data event logs will be enabled automatically as a data source for the organization.',
+    }),
   })
   .openapi({
     required: ['AutoEnable'],
@@ -6624,15 +4667,11 @@ const OrganizationS3LogsConfigurationSchema = z
 
 const OrganizationKubernetesAuditLogsConfigurationSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            'A value that contains information on whether Kubernetes audit logs should be enabled automatically as a data source for the organization.',
-        }),
-    ),
+    AutoEnable: BooleanSchema.openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        'A value that contains information on whether Kubernetes audit logs should be enabled automatically as a data source for the organization.',
+    }),
   })
   .openapi({
     required: ['AutoEnable'],
@@ -6642,15 +4681,11 @@ const OrganizationKubernetesAuditLogsConfigurationSchema = z
 
 const OrganizationKubernetesConfigurationSchema = z
   .object({
-    AuditLogs: OrganizationKubernetesAuditLogsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'auditLogs' },
-          description:
-            'Whether Kubernetes audit logs data source should be auto-enabled for new members joining the organization.',
-        }),
-    ),
+    AuditLogs: OrganizationKubernetesAuditLogsConfigurationSchema.openapi({
+      xml: { name: 'auditLogs' },
+      description:
+        'Whether Kubernetes audit logs data source should be auto-enabled for new members joining the organization.',
+    }),
   })
   .openapi({
     required: ['AuditLogs'],
@@ -6660,30 +4695,22 @@ const OrganizationKubernetesConfigurationSchema = z
 
 const OrganizationEbsVolumesSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            'Whether scanning EBS volumes should be auto-enabled for new members joining the organization.',
-        }),
-    ).exactOptional(),
+    AutoEnable: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        'Whether scanning EBS volumes should be auto-enabled for new members joining the organization.',
+    }),
   })
   .openapi({ description: 'Organization-wide EBS volumes scan configuration.', required: [] })
   .openapi('OrganizationEbsVolumes')
 
 const OrganizationScanEc2InstanceWithFindingsSchema = z
   .object({
-    EbsVolumes: OrganizationEbsVolumesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ebsVolumes' },
-          description:
-            'Whether scanning EBS volumes should be auto-enabled for new members joining the organization.',
-        }),
-    ).exactOptional(),
+    EbsVolumes: OrganizationEbsVolumesSchema.exactOptional().openapi({
+      xml: { name: 'ebsVolumes' },
+      description:
+        'Whether scanning EBS volumes should be auto-enabled for new members joining the organization.',
+    }),
   })
   .openapi({
     description: 'Organization-wide EC2 instances with findings scan configuration.',
@@ -6693,39 +4720,28 @@ const OrganizationScanEc2InstanceWithFindingsSchema = z
 
 const OrganizationMalwareProtectionConfigurationSchema = z
   .object({
-    ScanEc2InstanceWithFindings: OrganizationScanEc2InstanceWithFindingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanEc2InstanceWithFindings' },
-          description:
-            'Whether Malware Protection for EC2 instances with findings should be auto-enabled for new members joining the organization.',
-        }),
-    ).exactOptional(),
+    ScanEc2InstanceWithFindings:
+      OrganizationScanEc2InstanceWithFindingsSchema.exactOptional().openapi({
+        xml: { name: 'scanEc2InstanceWithFindings' },
+        description:
+          'Whether Malware Protection for EC2 instances with findings should be auto-enabled for new members joining the organization.',
+      }),
   })
   .openapi({ description: 'Organization-wide Malware Protection configurations.', required: [] })
   .openapi('OrganizationMalwareProtectionConfiguration')
 
 const OrganizationAdditionalConfigurationSchema = z
   .object({
-    Name: OrgFeatureAdditionalConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the additional configuration that will be configured for the organization.',
-        }),
-    ).exactOptional(),
-    AutoEnable: OrgFeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description:
-            'The status of the additional configuration that will be configured for the organization.',
-        }),
-    ).exactOptional(),
+    Name: OrgFeatureAdditionalConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the additional configuration that will be configured for the organization.',
+    }),
+    AutoEnable: OrgFeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'autoEnable' },
+      description:
+        'The status of the additional configuration that will be configured for the organization.',
+    }),
   })
   .openapi({
     description:
@@ -6740,30 +4756,18 @@ const OrganizationAdditionalConfigurationsSchema = z
 
 const OrganizationFeatureConfigurationSchema = z
   .object({
-    Name: OrgFeatureSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the feature that will be configured for the organization.',
-        }),
-    ).exactOptional(),
-    AutoEnable: OrgFeatureStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnable' },
-          description: 'The status of the feature that will be configured for the organization.',
-        }),
-    ).exactOptional(),
-    AdditionalConfiguration: OrganizationAdditionalConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalConfiguration' },
-          description: 'The additional information that will be configured for the organization.',
-        }),
-    ).exactOptional(),
+    Name: OrgFeatureSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the feature that will be configured for the organization.',
+    }),
+    AutoEnable: OrgFeatureStatusSchema.exactOptional().openapi({
+      xml: { name: 'autoEnable' },
+      description: 'The status of the feature that will be configured for the organization.',
+    }),
+    AdditionalConfiguration: OrganizationAdditionalConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'additionalConfiguration' },
+      description: 'The additional information that will be configured for the organization.',
+    }),
   })
   .openapi({
     description: 'A list of features which will be configured for the organization.',
@@ -6772,31 +4776,23 @@ const OrganizationFeatureConfigurationSchema = z
   .openapi('OrganizationFeatureConfiguration')
 
 const UpdatePublishingDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdatePublishingDestinationResponse')
 
-const UpdateThreatIntelSetResponseSchema = z.object({}).openapi('UpdateThreatIntelSetResponse')
+const UpdateThreatIntelSetResponseSchema = z.looseObject({}).openapi('UpdateThreatIntelSetResponse')
 
 const AcceptAdministratorInvitationRequestSchema = z
   .object({
-    AdministratorId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'administratorId' },
-          description:
-            "The account ID of the GuardDuty administrator account whose invitation you're accepting.",
-        }),
-    ),
-    InvitationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitationId' },
-          description:
-            'The value that is used to validate the administrator account to the member account.',
-        }),
-    ),
+    AdministratorId: StringSchema.openapi({
+      xml: { name: 'administratorId' },
+      description:
+        "The account ID of the GuardDuty administrator account whose invitation you're accepting.",
+    }),
+    InvitationId: StringSchema.openapi({
+      xml: { name: 'invitationId' },
+      description:
+        'The value that is used to validate the administrator account to the member account.',
+    }),
   })
   .openapi({
     required: ['AdministratorId', 'InvitationId'],
@@ -6806,24 +4802,16 @@ const AcceptAdministratorInvitationRequestSchema = z
 
 const AcceptInvitationRequestSchema = z
   .object({
-    MasterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'masterId' },
-          description:
-            "The account ID of the GuardDuty administrator account whose invitation you're accepting.",
-        }),
-    ),
-    InvitationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'invitationId' },
-          description:
-            'The value that is used to validate the administrator account to the member account.',
-        }),
-    ),
+    MasterId: StringSchema.openapi({
+      xml: { name: 'masterId' },
+      description:
+        "The account ID of the GuardDuty administrator account whose invitation you're accepting.",
+    }),
+    InvitationId: StringSchema.openapi({
+      xml: { name: 'invitationId' },
+      description:
+        'The value that is used to validate the administrator account to the member account.',
+    }),
   })
   .openapi({
     required: ['MasterId', 'InvitationId'],
@@ -6837,14 +4825,10 @@ const AccountDetailsSchema = z.array(AccountDetailSchema).min(1).max(50).openapi
 
 const ArchiveFindingsRequestSchema = z
   .object({
-    FindingIds: FindingIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingIds' },
-          description: 'The IDs of the findings that you want to archive.',
-        }),
-    ),
+    FindingIds: FindingIdsSchema.openapi({
+      xml: { name: 'findingIds' },
+      description: 'The IDs of the findings that you want to archive.',
+    }),
   })
   .openapi({ required: ['FindingIds'], title: 'ArchiveFindingsRequest' })
   .openapi('ArchiveFindingsRequest')
@@ -6853,37 +4837,25 @@ const ClientTokenSchema = z.string().min(0).max(64).openapi('ClientToken')
 
 const CoverageFilterCriteriaSchema = z
   .object({
-    FilterCriterion: CoverageFilterCriterionListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'filterCriterion' },
-          description:
-            'Represents a condition that when matched will be added to the response of the operation.',
-        }),
-    ).exactOptional(),
+    FilterCriterion: CoverageFilterCriterionListSchema.exactOptional().openapi({
+      xml: { name: 'filterCriterion' },
+      description:
+        'Represents a condition that when matched will be added to the response of the operation.',
+    }),
   })
   .openapi({ description: 'Represents the criteria used in the filter.', required: [] })
   .openapi('CoverageFilterCriteria')
 
 const CoverageSortCriteriaSchema = z
   .object({
-    AttributeName: CoverageSortKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attributeName' },
-          description: 'Represents the field name used to sort the coverage details.',
-        }),
-    ).exactOptional(),
-    OrderBy: OrderBySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'orderBy' },
-          description: 'The order in which the sorted findings are to be displayed.',
-        }),
-    ).exactOptional(),
+    AttributeName: CoverageSortKeySchema.exactOptional().openapi({
+      xml: { name: 'attributeName' },
+      description: 'Represents the field name used to sort the coverage details.',
+    }),
+    OrderBy: OrderBySchema.exactOptional().openapi({
+      xml: { name: 'orderBy' },
+      description: 'The order in which the sorted findings are to be displayed.',
+    }),
   })
   .openapi({
     description: 'Information about the sorting criteria used in the coverage statistics.',
@@ -6897,30 +4869,18 @@ const CoverageStatisticsTypeListSchema = z
 
 const DataSourceConfigurationsSchema = z
   .object({
-    S3Logs: S3LogsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 's3Logs' },
-          description: 'Describes whether S3 data event logs are enabled as a data source.',
-        }),
-    ).exactOptional(),
-    Kubernetes: KubernetesConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kubernetes' },
-          description: 'Describes whether any Kubernetes logs are enabled as data sources.',
-        }),
-    ).exactOptional(),
-    MalwareProtection: MalwareProtectionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'malwareProtection' },
-          description: 'Describes whether Malware Protection is enabled as a data source.',
-        }),
-    ).exactOptional(),
+    S3Logs: S3LogsConfigurationSchema.exactOptional().openapi({
+      xml: { name: 's3Logs' },
+      description: 'Describes whether S3 data event logs are enabled as a data source.',
+    }),
+    Kubernetes: KubernetesConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'kubernetes' },
+      description: 'Describes whether any Kubernetes logs are enabled as data sources.',
+    }),
+    MalwareProtection: MalwareProtectionConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'malwareProtection' },
+      description: 'Describes whether Malware Protection is enabled as a data source.',
+    }),
   })
   .openapi({
     description: 'Contains information about which data sources are enabled.',
@@ -6934,226 +4894,134 @@ const DetectorFeatureConfigurationsSchema = z
 
 const CreateDetectorRequestSchema = z
   .object({
-    Enable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enable' },
-          description: 'A Boolean value that specifies whether the detector is to be enabled.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientToken' },
-          description: 'The idempotency token for the create request.',
-        }),
-    ).exactOptional(),
-    FindingPublishingFrequency: FindingPublishingFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingPublishingFrequency' },
-          description: 'A value that specifies how frequently updated findings are exported.',
-        }),
-    ).exactOptional(),
-    DataSources: DataSourceConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            '<p>Describes which data sources will be enabled for the detector.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href="https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html">Regions and endpoints</a>.</p>This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The tags to be added to a new detector resource.',
-        }),
-    ).exactOptional(),
-    Features: DetectorFeatureConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description: 'A list of features that will be configured for the detector.',
-        }),
-    ).exactOptional(),
+    Enable: BooleanSchema.openapi({
+      xml: { name: 'enable' },
+      description: 'A Boolean value that specifies whether the detector is to be enabled.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      xml: { name: 'clientToken' },
+      description: 'The idempotency token for the create request.',
+    }),
+    FindingPublishingFrequency: FindingPublishingFrequencySchema.exactOptional().openapi({
+      xml: { name: 'findingPublishingFrequency' },
+      description: 'A value that specifies how frequently updated findings are exported.',
+    }),
+    DataSources: DataSourceConfigurationsSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        '<p>Describes which data sources will be enabled for the detector.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href="https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html">Regions and endpoints</a>.</p>This parameter is deprecated, use Features instead',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags to be added to a new detector resource.',
+    }),
+    Features: DetectorFeatureConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'A list of features that will be configured for the detector.',
+    }),
   })
   .openapi({ required: ['Enable'], title: 'CreateDetectorRequest' })
   .openapi('CreateDetectorRequest')
 
 const CreateFilterRequestSchema = z
   .object({
-    Name: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the filter. Valid characters include period (.), underscore (_), dash (-), and alphanumeric characters. A whitespace is considered to be an invalid character.',
-        }),
-    ),
-    Description: FilterDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'The description of the filter. Valid characters include alphanumeric characters, and special characters such as hyphen, period, colon, underscore, parentheses (<code>{ }</code>, <code>[ ]</code>, and <code>( )</code>), forward slash, horizontal tab, vertical tab, newline, form feed, return, and whitespace.',
-        }),
-    ).exactOptional(),
-    Action: FilterActionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'action' },
-          description:
-            'Specifies the action that is to be applied to the findings that match the filter.',
-        }),
-    ).exactOptional(),
-    Rank: FilterRankSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'rank' },
-          description:
-            'Specifies the position of the filter in the list of current filters. Also specifies the order in which this filter is applied to the findings.',
-        }),
-    ).exactOptional(),
-    FindingCriteria: FindingCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingCriteria' },
-          description:
-            '<p>Represents the criteria to be used in the filter for querying findings.</p> <p>You can only use the following attributes to query findings:</p> <ul> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.outpostArn</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.errorCode</p> </li> <li> <p>service.action.awsApiCallAction.userAgent</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>resource.s3BucketDetails.publicAccess.effectivePermissions</p> </li> <li> <p>resource.s3BucketDetails.name</p> </li> <li> <p>resource.s3BucketDetails.tags.key</p> </li> <li> <p>resource.s3BucketDetails.tags.value</p> </li> <li> <p>resource.s3BucketDetails.type</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: ISO 8601 string format: YYYY-MM-DDTHH:MM:SS.SSSZ or YYYY-MM-DDTHH:MM:SSZ depending on whether the value contains milliseconds.</p> </li> </ul>',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientToken' },
-          description: 'The idempotency token for the create request.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The tags to be added to a new filter resource.',
-        }),
-    ).exactOptional(),
+    Name: FilterNameSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the filter. Valid characters include period (.), underscore (_), dash (-), and alphanumeric characters. A whitespace is considered to be an invalid character.',
+    }),
+    Description: FilterDescriptionSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'The description of the filter. Valid characters include alphanumeric characters, and special characters such as hyphen, period, colon, underscore, parentheses (<code>{ }</code>, <code>[ ]</code>, and <code>( )</code>), forward slash, horizontal tab, vertical tab, newline, form feed, return, and whitespace.',
+    }),
+    Action: FilterActionSchema.exactOptional().openapi({
+      xml: { name: 'action' },
+      description:
+        'Specifies the action that is to be applied to the findings that match the filter.',
+    }),
+    Rank: FilterRankSchema.exactOptional().openapi({
+      xml: { name: 'rank' },
+      description:
+        'Specifies the position of the filter in the list of current filters. Also specifies the order in which this filter is applied to the findings.',
+    }),
+    FindingCriteria: FindingCriteriaSchema.openapi({
+      xml: { name: 'findingCriteria' },
+      description:
+        '<p>Represents the criteria to be used in the filter for querying findings.</p> <p>You can only use the following attributes to query findings:</p> <ul> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.outpostArn</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.errorCode</p> </li> <li> <p>service.action.awsApiCallAction.userAgent</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>resource.s3BucketDetails.publicAccess.effectivePermissions</p> </li> <li> <p>resource.s3BucketDetails.name</p> </li> <li> <p>resource.s3BucketDetails.tags.key</p> </li> <li> <p>resource.s3BucketDetails.tags.value</p> </li> <li> <p>resource.s3BucketDetails.type</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: ISO 8601 string format: YYYY-MM-DDTHH:MM:SS.SSSZ or YYYY-MM-DDTHH:MM:SSZ depending on whether the value contains milliseconds.</p> </li> </ul>',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      xml: { name: 'clientToken' },
+      description: 'The idempotency token for the create request.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags to be added to a new filter resource.',
+    }),
   })
   .openapi({ required: ['Name', 'FindingCriteria'], title: 'CreateFilterRequest' })
   .openapi('CreateFilterRequest')
 
 const CreateIPSetRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            '<p>The user-friendly name to identify the IPSet.</p> <p> Allowed characters are alphanumeric, whitespace, dash (-), and underscores (_).</p>',
-        }),
-    ),
-    Format: IpSetFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'format' },
-          description: 'The format of the file that contains the IPSet.',
-        }),
-    ),
-    Location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'location' },
-          description: 'The URI of the file that contains the IPSet. ',
-        }),
-    ),
-    Activate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'activate' },
-          description:
-            'A Boolean value that indicates whether GuardDuty is to start using the uploaded IPSet.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientToken' },
-          description: 'The idempotency token for the create request.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The tags to be added to a new IP set resource.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        '<p>The user-friendly name to identify the IPSet.</p> <p> Allowed characters are alphanumeric, whitespace, dash (-), and underscores (_).</p>',
+    }),
+    Format: IpSetFormatSchema.openapi({
+      xml: { name: 'format' },
+      description: 'The format of the file that contains the IPSet.',
+    }),
+    Location: LocationSchema.openapi({
+      xml: { name: 'location' },
+      description: 'The URI of the file that contains the IPSet. ',
+    }),
+    Activate: BooleanSchema.openapi({
+      xml: { name: 'activate' },
+      description:
+        'A Boolean value that indicates whether GuardDuty is to start using the uploaded IPSet.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      xml: { name: 'clientToken' },
+      description: 'The idempotency token for the create request.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags to be added to a new IP set resource.',
+    }),
   })
   .openapi({ required: ['Name', 'Format', 'Location', 'Activate'], title: 'CreateIPSetRequest' })
   .openapi('CreateIPSetRequest')
 
 const CreateMembersRequestSchema = z
   .object({
-    AccountDetails: AccountDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountDetails' },
-          description:
-            'A list of account ID and email address pairs of the accounts that you want to associate with the GuardDuty administrator account.',
-        }),
-    ),
+    AccountDetails: AccountDetailsSchema.openapi({
+      xml: { name: 'accountDetails' },
+      description:
+        'A list of account ID and email address pairs of the accounts that you want to associate with the GuardDuty administrator account.',
+    }),
   })
   .openapi({ required: ['AccountDetails'], title: 'CreateMembersRequest' })
   .openapi('CreateMembersRequest')
 
 const CreatePublishingDestinationRequestSchema = z
   .object({
-    DestinationType: DestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationType' },
-          description:
-            'The type of resource for the publishing destination. Currently only Amazon S3 buckets are supported.',
-        }),
-    ),
-    DestinationProperties: DestinationPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationProperties' },
-          description:
-            'The properties of the publishing destination, including the ARNs for the destination and the KMS key used for encryption.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientToken' },
-          description: 'The idempotency token for the request.',
-        }),
-    ).exactOptional(),
+    DestinationType: DestinationTypeSchema.openapi({
+      xml: { name: 'destinationType' },
+      description:
+        'The type of resource for the publishing destination. Currently only Amazon S3 buckets are supported.',
+    }),
+    DestinationProperties: DestinationPropertiesSchema.openapi({
+      xml: { name: 'destinationProperties' },
+      description:
+        'The properties of the publishing destination, including the ARNs for the destination and the KMS key used for encryption.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      xml: { name: 'clientToken' },
+      description: 'The idempotency token for the request.',
+    }),
   })
   .openapi({
     required: ['DestinationType', 'DestinationProperties'],
@@ -7165,70 +5033,42 @@ const FindingTypesSchema = z.array(FindingTypeSchema).min(0).max(50).openapi('Fi
 
 const CreateSampleFindingsRequestSchema = z
   .object({
-    FindingTypes: FindingTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingTypes' },
-          description: 'The types of sample findings to generate.',
-        }),
-    ).exactOptional(),
+    FindingTypes: FindingTypesSchema.exactOptional().openapi({
+      xml: { name: 'findingTypes' },
+      description: 'The types of sample findings to generate.',
+    }),
   })
   .openapi({ title: 'CreateSampleFindingsRequest', required: [] })
   .openapi('CreateSampleFindingsRequest')
 
 const CreateThreatIntelSetRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'A user-friendly ThreatIntelSet name displayed in all findings that are generated by activity that involves IP addresses included in this ThreatIntelSet.',
-        }),
-    ),
-    Format: ThreatIntelSetFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'format' },
-          description: 'The format of the file that contains the ThreatIntelSet.',
-        }),
-    ),
-    Location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'location' },
-          description: 'The URI of the file that contains the ThreatIntelSet. ',
-        }),
-    ),
-    Activate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'activate' },
-          description:
-            'A Boolean value that indicates whether GuardDuty is to start using the uploaded ThreatIntelSet.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientToken' },
-          description: 'The idempotency token for the create request.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The tags to be added to a new threat list resource.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'A user-friendly ThreatIntelSet name displayed in all findings that are generated by activity that involves IP addresses included in this ThreatIntelSet.',
+    }),
+    Format: ThreatIntelSetFormatSchema.openapi({
+      xml: { name: 'format' },
+      description: 'The format of the file that contains the ThreatIntelSet.',
+    }),
+    Location: LocationSchema.openapi({
+      xml: { name: 'location' },
+      description: 'The URI of the file that contains the ThreatIntelSet. ',
+    }),
+    Activate: BooleanSchema.openapi({
+      xml: { name: 'activate' },
+      description:
+        'A Boolean value that indicates whether GuardDuty is to start using the uploaded ThreatIntelSet.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      xml: { name: 'clientToken' },
+      description: 'The idempotency token for the create request.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags to be added to a new threat list resource.',
+    }),
   })
   .openapi({
     required: ['Name', 'Format', 'Location', 'Activate'],
@@ -7238,71 +5078,59 @@ const CreateThreatIntelSetRequestSchema = z
 
 const DeclineInvitationsRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description:
-            'A list of account IDs of the Amazon Web Services accounts that sent invitations to the current member account that you want to decline invitations from.',
-        }),
-    ),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description:
+        'A list of account IDs of the Amazon Web Services accounts that sent invitations to the current member account that you want to decline invitations from.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'DeclineInvitationsRequest' })
   .openapi('DeclineInvitationsRequest')
 
 const DeleteDetectorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDetectorRequest' })
   .openapi('DeleteDetectorRequest')
 
 const DeleteFilterRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFilterRequest' })
   .openapi('DeleteFilterRequest')
 
 const DeleteIPSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteIPSetRequest' })
   .openapi('DeleteIPSetRequest')
 
 const DeleteInvitationsRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description:
-            'A list of account IDs of the Amazon Web Services accounts that sent invitations to the current member account that you want to delete invitations from.',
-        }),
-    ),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description:
+        'A list of account IDs of the Amazon Web Services accounts that sent invitations to the current member account that you want to delete invitations from.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'DeleteInvitationsRequest' })
   .openapi('DeleteInvitationsRequest')
 
 const DeleteMembersRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description:
-            'A list of account IDs of the GuardDuty member accounts that you want to delete.',
-        }),
-    ),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description:
+        'A list of account IDs of the GuardDuty member accounts that you want to delete.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'DeleteMembersRequest' })
   .openapi('DeleteMembersRequest')
 
 const DeletePublishingDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePublishingDestinationRequest' })
   .openapi('DeletePublishingDestinationRequest')
 
 const DeleteThreatIntelSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteThreatIntelSetRequest' })
   .openapi('DeleteThreatIntelSetRequest')
 
@@ -7310,15 +5138,11 @@ const IntegerValueWithMaxSchema = z.int().min(1).max(50).openapi('IntegerValueWi
 
 const FilterCriteriaSchema = z
   .object({
-    FilterCriterion: FilterCriterionListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'filterCriterion' },
-          description:
-            'Represents a condition that when matched will be added to the response of the operation.',
-        }),
-    ).exactOptional(),
+    FilterCriterion: FilterCriterionListSchema.exactOptional().openapi({
+      xml: { name: 'filterCriterion' },
+      description:
+        'Represents a condition that when matched will be added to the response of the operation.',
+    }),
   })
   .openapi({
     description: 'Represents the criteria to be used in the filter for describing scan entries.',
@@ -7328,23 +5152,15 @@ const FilterCriteriaSchema = z
 
 const SortCriteriaSchema = z
   .object({
-    AttributeName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attributeName' },
-          description:
-            'Represents the finding attribute, such as <code>accountId</code>, that sorts the findings.',
-        }),
-    ).exactOptional(),
-    OrderBy: OrderBySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'orderBy' },
-          description: 'The order by which the sorted findings are to be displayed.',
-        }),
-    ).exactOptional(),
+    AttributeName: StringSchema.exactOptional().openapi({
+      xml: { name: 'attributeName' },
+      description:
+        'Represents the finding attribute, such as <code>accountId</code>, that sorts the findings.',
+    }),
+    OrderBy: OrderBySchema.exactOptional().openapi({
+      xml: { name: 'orderBy' },
+      description: 'The order by which the sorted findings are to be displayed.',
+    }),
   })
   .openapi({
     description: 'Contains information about the criteria used for sorting findings.',
@@ -7354,42 +5170,25 @@ const SortCriteriaSchema = z
 
 const DescribeMalwareScansRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerValueWithMaxSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description:
-            'You can use this parameter to indicate the maximum number of items that you want in the response. The default value is 50. The maximum value is 50.',
-        }),
-    ).exactOptional(),
-    FilterCriteria: FilterCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'filterCriteria' },
-          description:
-            'Represents the criteria to be used in the filter for describing scan entries.',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sortCriteria' },
-          description:
-            'Represents the criteria used for sorting scan entries. The <a href="https://docs.aws.amazon.com/guardduty/latest/APIReference/API_SortCriteria.html#guardduty-Type-SortCriteria-attributeName"> <code>attributeName</code> </a> is required and it must be <code>scanStartTime</code>.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data.',
+    }),
+    MaxResults: IntegerValueWithMaxSchema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description:
+        'You can use this parameter to indicate the maximum number of items that you want in the response. The default value is 50. The maximum value is 50.',
+    }),
+    FilterCriteria: FilterCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'filterCriteria' },
+      description: 'Represents the criteria to be used in the filter for describing scan entries.',
+    }),
+    SortCriteria: SortCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'sortCriteria' },
+      description:
+        'Represents the criteria used for sorting scan entries. The <a href="https://docs.aws.amazon.com/guardduty/latest/APIReference/API_SortCriteria.html#guardduty-Type-SortCriteria-attributeName"> <code>attributeName</code> </a> is required and it must be <code>scanStartTime</code>.',
+    }),
   })
   .openapi({ title: 'DescribeMalwareScansRequest', required: [] })
   .openapi('DescribeMalwareScansRequest')
@@ -7397,37 +5196,33 @@ const DescribeMalwareScansRequestSchema = z
 const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 const DescribeOrganizationConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeOrganizationConfigurationRequest' })
   .openapi('DescribeOrganizationConfigurationRequest')
 
 const DescribePublishingDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePublishingDestinationRequest' })
   .openapi('DescribePublishingDestinationRequest')
 
 const DisableOrganizationAdminAccountRequestSchema = z
   .object({
-    AdminAccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adminAccountId' },
-          description:
-            'The Amazon Web Services Account ID for the organizations account to be disabled as a GuardDuty delegated administrator.',
-        }),
-    ),
+    AdminAccountId: StringSchema.openapi({
+      xml: { name: 'adminAccountId' },
+      description:
+        'The Amazon Web Services Account ID for the organizations account to be disabled as a GuardDuty delegated administrator.',
+    }),
   })
   .openapi({ required: ['AdminAccountId'], title: 'DisableOrganizationAdminAccountRequest' })
   .openapi('DisableOrganizationAdminAccountRequest')
 
 const DisassociateFromAdministratorAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateFromAdministratorAccountRequest' })
   .openapi('DisassociateFromAdministratorAccountRequest')
 
 const DisassociateFromMasterAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     deprecated: true,
     title: 'DisassociateFromMasterAccountRequest',
@@ -7438,30 +5233,22 @@ const DisassociateFromMasterAccountRequestSchema = z
 
 const DisassociateMembersRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description:
-            'A list of account IDs of the GuardDuty member accounts that you want to disassociate from the administrator account.',
-        }),
-    ),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description:
+        'A list of account IDs of the GuardDuty member accounts that you want to disassociate from the administrator account.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'DisassociateMembersRequest' })
   .openapi('DisassociateMembersRequest')
 
 const EnableOrganizationAdminAccountRequestSchema = z
   .object({
-    AdminAccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adminAccountId' },
-          description:
-            'The Amazon Web Services Account ID for the organization account to be enabled as a GuardDuty delegated administrator.',
-        }),
-    ),
+    AdminAccountId: StringSchema.openapi({
+      xml: { name: 'adminAccountId' },
+      description:
+        'The Amazon Web Services Account ID for the organization account to be enabled as a GuardDuty delegated administrator.',
+    }),
   })
   .openapi({ required: ['AdminAccountId'], title: 'EnableOrganizationAdminAccountRequest' })
   .openapi('EnableOrganizationAdminAccountRequest')
@@ -7475,103 +5262,79 @@ const FindingStatisticTypesSchema = z
   .openapi('FindingStatisticTypes')
 
 const GetAdministratorAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAdministratorAccountRequest' })
   .openapi('GetAdministratorAccountRequest')
 
 const GetCoverageStatisticsRequestSchema = z
   .object({
-    FilterCriteria: CoverageFilterCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'filterCriteria' },
-          description: 'Represents the criteria used to filter the coverage statistics',
-        }),
-    ).exactOptional(),
-    StatisticsType: CoverageStatisticsTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'statisticsType' },
-          description: 'Represents the statistics type used to aggregate the coverage details.',
-        }),
-    ),
+    FilterCriteria: CoverageFilterCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'filterCriteria' },
+      description: 'Represents the criteria used to filter the coverage statistics',
+    }),
+    StatisticsType: CoverageStatisticsTypeListSchema.openapi({
+      xml: { name: 'statisticsType' },
+      description: 'Represents the statistics type used to aggregate the coverage details.',
+    }),
   })
   .openapi({ required: ['StatisticsType'], title: 'GetCoverageStatisticsRequest' })
   .openapi('GetCoverageStatisticsRequest')
 
 const GetDetectorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDetectorRequest' })
   .openapi('GetDetectorRequest')
 
 const GetFilterRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFilterRequest' })
   .openapi('GetFilterRequest')
 
 const GetFindingsRequestSchema = z
   .object({
-    FindingIds: FindingIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingIds' },
-          description: 'The IDs of the findings that you want to retrieve.',
-        }),
-    ),
-    SortCriteria: SortCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sortCriteria' },
-          description: 'Represents the criteria used for sorting findings.',
-        }),
-    ).exactOptional(),
+    FindingIds: FindingIdsSchema.openapi({
+      xml: { name: 'findingIds' },
+      description: 'The IDs of the findings that you want to retrieve.',
+    }),
+    SortCriteria: SortCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'sortCriteria' },
+      description: 'Represents the criteria used for sorting findings.',
+    }),
   })
   .openapi({ required: ['FindingIds'], title: 'GetFindingsRequest' })
   .openapi('GetFindingsRequest')
 
 const GetFindingsStatisticsRequestSchema = z
   .object({
-    FindingStatisticTypes: FindingStatisticTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingStatisticTypes' },
-          description: 'The types of finding statistics to retrieve.',
-        }),
-    ),
-    FindingCriteria: FindingCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingCriteria' },
-          description: 'Represents the criteria that is used for querying findings.',
-        }),
-    ).exactOptional(),
+    FindingStatisticTypes: FindingStatisticTypesSchema.openapi({
+      xml: { name: 'findingStatisticTypes' },
+      description: 'The types of finding statistics to retrieve.',
+    }),
+    FindingCriteria: FindingCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'findingCriteria' },
+      description: 'Represents the criteria that is used for querying findings.',
+    }),
   })
   .openapi({ required: ['FindingStatisticTypes'], title: 'GetFindingsStatisticsRequest' })
   .openapi('GetFindingsStatisticsRequest')
 
 const GetIPSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetIPSetRequest' })
   .openapi('GetIPSetRequest')
 
 const GetInvitationsCountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetInvitationsCountRequest' })
   .openapi('GetInvitationsCountRequest')
 
 const GetMalwareScanSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMalwareScanSettingsRequest' })
   .openapi('GetMalwareScanSettingsRequest')
 
 const GetMasterAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     deprecated: true,
     title: 'GetMasterAccountRequest',
@@ -7581,49 +5344,37 @@ const GetMasterAccountRequestSchema = z
 
 const GetMemberDetectorsRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description: 'The account ID of the member account.',
-        }),
-    ),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description: 'The account ID of the member account.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'GetMemberDetectorsRequest' })
   .openapi('GetMemberDetectorsRequest')
 
 const GetMembersRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description:
-            'A list of account IDs of the GuardDuty member accounts that you want to describe.',
-        }),
-    ),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description:
+        'A list of account IDs of the GuardDuty member accounts that you want to describe.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'GetMembersRequest' })
   .openapi('GetMembersRequest')
 
 const GetRemainingFreeTrialDaysRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description: 'A list of account identifiers of the GuardDuty member account.',
-        }),
-    ).exactOptional(),
+    AccountIds: AccountIdsSchema.exactOptional().openapi({
+      xml: { name: 'accountIds' },
+      description: 'A list of account identifiers of the GuardDuty member account.',
+    }),
   })
   .openapi({ title: 'GetRemainingFreeTrialDaysRequest', required: [] })
   .openapi('GetRemainingFreeTrialDaysRequest')
 
 const GetThreatIntelSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetThreatIntelSetRequest' })
   .openapi('GetThreatIntelSetRequest')
 
@@ -7639,41 +5390,25 @@ const UsageStatisticTypeSchema = z
 
 const UsageCriteriaSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description: 'The account IDs to aggregate usage statistics from.',
-        }),
-    ).exactOptional(),
-    DataSources: DataSourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            'The data sources to aggregate usage statistics from.This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Resources: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resources' },
-          description:
-            'The resources to aggregate usage statistics from. Only accepts exact resource names.',
-        }),
-    ).exactOptional(),
-    Features: UsageFeatureListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description: 'The features to aggregate usage statistics from.',
-        }),
-    ).exactOptional(),
+    AccountIds: AccountIdsSchema.exactOptional().openapi({
+      xml: { name: 'accountIds' },
+      description: 'The account IDs to aggregate usage statistics from.',
+    }),
+    DataSources: DataSourceListSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        'The data sources to aggregate usage statistics from.This parameter is deprecated, use Features instead',
+    }),
+    Resources: ResourceListSchema.exactOptional().openapi({
+      xml: { name: 'resources' },
+      description:
+        'The resources to aggregate usage statistics from. Only accepts exact resource names.',
+    }),
+    Features: UsageFeatureListSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'The features to aggregate usage statistics from.',
+    }),
   })
   .openapi({
     description: 'Contains information about the criteria used to query usage statistics.',
@@ -7683,48 +5418,28 @@ const UsageCriteriaSchema = z
 
 const GetUsageStatisticsRequestSchema = z
   .object({
-    UsageStatisticType: UsageStatisticTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'usageStatisticsType' },
-          description: 'The type of usage statistics to retrieve.',
-        }),
-    ),
-    UsageCriteria: UsageCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'usageCriteria' },
-          description: 'Represents the criteria used for querying usage.',
-        }),
-    ),
-    Unit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unit' },
-          description:
-            'The currency unit you would like to view your usage statistics in. Current valid values are USD.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description: 'The maximum number of results to return in the response.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.',
-        }),
-    ).exactOptional(),
+    UsageStatisticType: UsageStatisticTypeSchema.openapi({
+      xml: { name: 'usageStatisticsType' },
+      description: 'The type of usage statistics to retrieve.',
+    }),
+    UsageCriteria: UsageCriteriaSchema.openapi({
+      xml: { name: 'usageCriteria' },
+      description: 'Represents the criteria used for querying usage.',
+    }),
+    Unit: StringSchema.exactOptional().openapi({
+      xml: { name: 'unit' },
+      description:
+        'The currency unit you would like to view your usage statistics in. Current valid values are USD.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description: 'The maximum number of results to return in the response.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.',
+    }),
   })
   .openapi({
     required: ['UsageStatisticType', 'UsageCriteria'],
@@ -7741,159 +5456,115 @@ const GuardDutyArnSchema = z
 
 const InviteMembersRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description:
-            'A list of account IDs of the accounts that you want to invite to GuardDuty as members.',
-        }),
-    ),
-    DisableEmailNotification: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableEmailNotification' },
-          description:
-            'A Boolean value that specifies whether you want to disable email notification to the accounts that you are inviting to GuardDuty as members.',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'message' },
-          description:
-            "The invitation message that you want to send to the accounts that you're inviting to GuardDuty as members.",
-        }),
-    ).exactOptional(),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description:
+        'A list of account IDs of the accounts that you want to invite to GuardDuty as members.',
+    }),
+    DisableEmailNotification: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableEmailNotification' },
+      description:
+        'A Boolean value that specifies whether you want to disable email notification to the accounts that you are inviting to GuardDuty as members.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      xml: { name: 'message' },
+      description:
+        "The invitation message that you want to send to the accounts that you're inviting to GuardDuty as members.",
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'InviteMembersRequest' })
   .openapi('InviteMembersRequest')
 
 const ListCoverageRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description: 'The maximum number of results to return in the response.',
-        }),
-    ).exactOptional(),
-    FilterCriteria: CoverageFilterCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'filterCriteria' },
-          description: 'Represents the criteria used to filter the coverage details.',
-        }),
-    ).exactOptional(),
-    SortCriteria: CoverageSortCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sortCriteria' },
-          description: 'Represents the criteria used to sort the coverage details.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description: 'The maximum number of results to return in the response.',
+    }),
+    FilterCriteria: CoverageFilterCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'filterCriteria' },
+      description: 'Represents the criteria used to filter the coverage details.',
+    }),
+    SortCriteria: CoverageSortCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'sortCriteria' },
+      description: 'Represents the criteria used to sort the coverage details.',
+    }),
   })
   .openapi({ title: 'ListCoverageRequest', required: [] })
   .openapi('ListCoverageRequest')
 
 const ListDetectorsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDetectorsRequest' })
   .openapi('ListDetectorsRequest')
 
 const ListFiltersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFiltersRequest' })
   .openapi('ListFiltersRequest')
 
 const ListFindingsRequestSchema = z
   .object({
-    FindingCriteria: FindingCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingCriteria' },
-          description:
-            "<p>Represents the criteria used for querying findings. Valid values include:</p> <ul> <li> <p>JSON field name</p> </li> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>confidence</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.archived</p> <p>When this attribute is set to 'true', only archived findings are listed. When it's set to 'false', only unarchived findings are listed. When this attribute is not set, all existing findings are listed.</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: Timestamp in Unix Epoch millisecond format: 1486685375000</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    SortCriteria: SortCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sortCriteria' },
-          description: 'Represents the criteria used for sorting findings.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description:
-            'You can use this parameter to indicate the maximum number of items you want in the response. The default value is 50. The maximum value is 50.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data.',
-        }),
-    ).exactOptional(),
+    FindingCriteria: FindingCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'findingCriteria' },
+      description:
+        "<p>Represents the criteria used for querying findings. Valid values include:</p> <ul> <li> <p>JSON field name</p> </li> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>confidence</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.archived</p> <p>When this attribute is set to 'true', only archived findings are listed. When it's set to 'false', only unarchived findings are listed. When this attribute is not set, all existing findings are listed.</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: Timestamp in Unix Epoch millisecond format: 1486685375000</p> </li> </ul>",
+    }),
+    SortCriteria: SortCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'sortCriteria' },
+      description: 'Represents the criteria used for sorting findings.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description:
+        'You can use this parameter to indicate the maximum number of items you want in the response. The default value is 50. The maximum value is 50.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data.',
+    }),
   })
   .openapi({ title: 'ListFindingsRequest', required: [] })
   .openapi('ListFindingsRequest')
 
 const ListIPSetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListIPSetsRequest' })
   .openapi('ListIPSetsRequest')
 
 const ListInvitationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListInvitationsRequest' })
   .openapi('ListInvitationsRequest')
 
 const ListMembersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMembersRequest' })
   .openapi('ListMembersRequest')
 
 const ListOrganizationAdminAccountsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOrganizationAdminAccountsRequest' })
   .openapi('ListOrganizationAdminAccountsRequest')
 
 const ListPublishingDestinationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPublishingDestinationsRequest' })
   .openapi('ListPublishingDestinationsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListThreatIntelSetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListThreatIntelSetsRequest' })
   .openapi('ListThreatIntelSetsRequest')
 
@@ -7903,33 +5574,21 @@ const MemberFeaturesConfigurationsSchema = z
 
 const OrganizationDataSourceConfigurationsSchema = z
   .object({
-    S3Logs: OrganizationS3LogsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 's3Logs' },
-          description:
-            'Describes whether S3 data event logs are enabled for new members of the organization.',
-        }),
-    ).exactOptional(),
-    Kubernetes: OrganizationKubernetesConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'kubernetes' },
-          description:
-            'Describes the configuration of Kubernetes data sources for new members of the organization.',
-        }),
-    ).exactOptional(),
-    MalwareProtection: OrganizationMalwareProtectionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'malwareProtection' },
-          description:
-            'Describes the configuration of Malware Protection for new members of the organization.',
-        }),
-    ).exactOptional(),
+    S3Logs: OrganizationS3LogsConfigurationSchema.exactOptional().openapi({
+      xml: { name: 's3Logs' },
+      description:
+        'Describes whether S3 data event logs are enabled for new members of the organization.',
+    }),
+    Kubernetes: OrganizationKubernetesConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'kubernetes' },
+      description:
+        'Describes the configuration of Kubernetes data sources for new members of the organization.',
+    }),
+    MalwareProtection: OrganizationMalwareProtectionConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'malwareProtection' },
+      description:
+        'Describes the configuration of Malware Protection for new members of the organization.',
+    }),
   })
   .openapi({
     description:
@@ -7952,29 +5611,20 @@ const ScanCriterionKeySchema = z
 
 const StartMonitoringMembersRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description:
-            'A list of account IDs of the GuardDuty member accounts to start monitoring.',
-        }),
-    ),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description: 'A list of account IDs of the GuardDuty member accounts to start monitoring.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'StartMonitoringMembersRequest' })
   .openapi('StartMonitoringMembersRequest')
 
 const StopMonitoringMembersRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description: 'A list of account IDs for the member accounts to stop monitoring.',
-        }),
-    ),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description: 'A list of account IDs for the member accounts to stop monitoring.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'StopMonitoringMembersRequest' })
   .openapi('StopMonitoringMembersRequest')
@@ -7983,312 +5633,203 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'tags' }, description: 'The tags to be added to a resource.' }),
-    ),
+    Tags: TagMapSchema.openapi({
+      xml: { name: 'tags' },
+      description: 'The tags to be added to a resource.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UnarchiveFindingsRequestSchema = z
   .object({
-    FindingIds: FindingIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingIds' },
-          description: 'The IDs of the findings to unarchive.',
-        }),
-    ),
+    FindingIds: FindingIdsSchema.openapi({
+      xml: { name: 'findingIds' },
+      description: 'The IDs of the findings to unarchive.',
+    }),
   })
   .openapi({ required: ['FindingIds'], title: 'UnarchiveFindingsRequest' })
   .openapi('UnarchiveFindingsRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDetectorRequestSchema = z
   .object({
-    Enable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enable' },
-          description: 'Specifies whether the detector is enabled or not enabled.',
-        }),
-    ).exactOptional(),
-    FindingPublishingFrequency: FindingPublishingFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingPublishingFrequency' },
-          description:
-            'An enum value that specifies how frequently findings are exported, such as to CloudWatch Events.',
-        }),
-    ).exactOptional(),
-    DataSources: DataSourceConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            '<p>Describes which data sources will be updated.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href="https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html">Regions and endpoints</a>.</p>This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Features: DetectorFeatureConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description: 'Provides the features that will be updated for the detector.',
-        }),
-    ).exactOptional(),
+    Enable: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enable' },
+      description: 'Specifies whether the detector is enabled or not enabled.',
+    }),
+    FindingPublishingFrequency: FindingPublishingFrequencySchema.exactOptional().openapi({
+      xml: { name: 'findingPublishingFrequency' },
+      description:
+        'An enum value that specifies how frequently findings are exported, such as to CloudWatch Events.',
+    }),
+    DataSources: DataSourceConfigurationsSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        '<p>Describes which data sources will be updated.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href="https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html">Regions and endpoints</a>.</p>This parameter is deprecated, use Features instead',
+    }),
+    Features: DetectorFeatureConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'Provides the features that will be updated for the detector.',
+    }),
   })
   .openapi({ title: 'UpdateDetectorRequest', required: [] })
   .openapi('UpdateDetectorRequest')
 
 const UpdateFilterRequestSchema = z
   .object({
-    Description: FilterDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'The description of the filter. Valid characters include alphanumeric characters, and special characters such as hyphen, period, colon, underscore, parentheses (<code>{ }</code>, <code>[ ]</code>, and <code>( )</code>), forward slash, horizontal tab, vertical tab, newline, form feed, return, and whitespace.',
-        }),
-    ).exactOptional(),
-    Action: FilterActionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'action' },
-          description:
-            'Specifies the action that is to be applied to the findings that match the filter.',
-        }),
-    ).exactOptional(),
-    Rank: FilterRankSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'rank' },
-          description:
-            'Specifies the position of the filter in the list of current filters. Also specifies the order in which this filter is applied to the findings.',
-        }),
-    ).exactOptional(),
-    FindingCriteria: FindingCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingCriteria' },
-          description: 'Represents the criteria to be used in the filter for querying findings.',
-        }),
-    ).exactOptional(),
+    Description: FilterDescriptionSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'The description of the filter. Valid characters include alphanumeric characters, and special characters such as hyphen, period, colon, underscore, parentheses (<code>{ }</code>, <code>[ ]</code>, and <code>( )</code>), forward slash, horizontal tab, vertical tab, newline, form feed, return, and whitespace.',
+    }),
+    Action: FilterActionSchema.exactOptional().openapi({
+      xml: { name: 'action' },
+      description:
+        'Specifies the action that is to be applied to the findings that match the filter.',
+    }),
+    Rank: FilterRankSchema.exactOptional().openapi({
+      xml: { name: 'rank' },
+      description:
+        'Specifies the position of the filter in the list of current filters. Also specifies the order in which this filter is applied to the findings.',
+    }),
+    FindingCriteria: FindingCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'findingCriteria' },
+      description: 'Represents the criteria to be used in the filter for querying findings.',
+    }),
   })
   .openapi({ title: 'UpdateFilterRequest', required: [] })
   .openapi('UpdateFilterRequest')
 
 const UpdateFindingsFeedbackRequestSchema = z
   .object({
-    FindingIds: FindingIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'findingIds' },
-          description: 'The IDs of the findings that you want to mark as useful or not useful.',
-        }),
-    ),
-    Feedback: FeedbackSchema.and(
-      z.any().openapi({ xml: { name: 'feedback' }, description: 'The feedback for the finding.' }),
-    ),
-    Comments: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'comments' },
-          description: 'Additional feedback about the GuardDuty findings.',
-        }),
-    ).exactOptional(),
+    FindingIds: FindingIdsSchema.openapi({
+      xml: { name: 'findingIds' },
+      description: 'The IDs of the findings that you want to mark as useful or not useful.',
+    }),
+    Feedback: FeedbackSchema.openapi({
+      xml: { name: 'feedback' },
+      description: 'The feedback for the finding.',
+    }),
+    Comments: StringSchema.exactOptional().openapi({
+      xml: { name: 'comments' },
+      description: 'Additional feedback about the GuardDuty findings.',
+    }),
   })
   .openapi({ required: ['FindingIds', 'Feedback'], title: 'UpdateFindingsFeedbackRequest' })
   .openapi('UpdateFindingsFeedbackRequest')
 
 const UpdateIPSetRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The unique ID that specifies the IPSet that you want to update.',
-        }),
-    ).exactOptional(),
-    Location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'location' },
-          description: 'The updated URI of the file that contains the IPSet. ',
-        }),
-    ).exactOptional(),
-    Activate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'activate' },
-          description:
-            'The updated Boolean value that specifies whether the IPSet is active or not.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The unique ID that specifies the IPSet that you want to update.',
+    }),
+    Location: LocationSchema.exactOptional().openapi({
+      xml: { name: 'location' },
+      description: 'The updated URI of the file that contains the IPSet. ',
+    }),
+    Activate: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'activate' },
+      description: 'The updated Boolean value that specifies whether the IPSet is active or not.',
+    }),
   })
   .openapi({ title: 'UpdateIPSetRequest', required: [] })
   .openapi('UpdateIPSetRequest')
 
 const UpdateMalwareScanSettingsRequestSchema = z
   .object({
-    ScanResourceCriteria: ScanResourceCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanResourceCriteria' },
-          description:
-            'Represents the criteria to be used in the filter for selecting resources to scan.',
-        }),
-    ).exactOptional(),
-    EbsSnapshotPreservation: EbsSnapshotPreservationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ebsSnapshotPreservation' },
-          description: 'An enum value representing possible snapshot preservation settings.',
-        }),
-    ).exactOptional(),
+    ScanResourceCriteria: ScanResourceCriteriaSchema.exactOptional().openapi({
+      xml: { name: 'scanResourceCriteria' },
+      description:
+        'Represents the criteria to be used in the filter for selecting resources to scan.',
+    }),
+    EbsSnapshotPreservation: EbsSnapshotPreservationSchema.exactOptional().openapi({
+      xml: { name: 'ebsSnapshotPreservation' },
+      description: 'An enum value representing possible snapshot preservation settings.',
+    }),
   })
   .openapi({ title: 'UpdateMalwareScanSettingsRequest', required: [] })
   .openapi('UpdateMalwareScanSettingsRequest')
 
 const UpdateMemberDetectorsRequestSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accountIds' },
-          description: 'A list of member account IDs to be updated.',
-        }),
-    ),
-    DataSources: DataSourceConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            'Describes which data sources will be updated.This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Features: MemberFeaturesConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description: 'A list of features that will be updated for the specified member accounts.',
-        }),
-    ).exactOptional(),
+    AccountIds: AccountIdsSchema.openapi({
+      xml: { name: 'accountIds' },
+      description: 'A list of member account IDs to be updated.',
+    }),
+    DataSources: DataSourceConfigurationsSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        'Describes which data sources will be updated.This parameter is deprecated, use Features instead',
+    }),
+    Features: MemberFeaturesConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'A list of features that will be updated for the specified member accounts.',
+    }),
   })
   .openapi({ required: ['AccountIds'], title: 'UpdateMemberDetectorsRequest' })
   .openapi('UpdateMemberDetectorsRequest')
 
 const UpdateOrganizationConfigurationRequestSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'autoEnable' },
-          description:
-            '<p>Indicates whether to automatically enable member accounts in the organization.</p> <p>Even though this is still supported, we recommend using <code>AutoEnableOrganizationMembers</code> to achieve the similar results.</p>This field is deprecated, use AutoEnableOrganizationMembers instead',
-        }),
-    ).exactOptional(),
-    DataSources: OrganizationDataSourceConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          xml: { name: 'dataSources' },
-          description:
-            'Describes which data sources will be updated.This parameter is deprecated, use Features instead',
-        }),
-    ).exactOptional(),
-    Features: OrganizationFeaturesConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'features' },
-          description: 'A list of features that will be configured for the organization.',
-        }),
-    ).exactOptional(),
-    AutoEnableOrganizationMembers: AutoEnableMembersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoEnableOrganizationMembers' },
-          description:
-            '<p>Indicates the auto-enablement configuration of GuardDuty for the member accounts in the organization. </p> <ul> <li> <p> <code>NEW</code>: Indicates that when a new account joins the organization, they will have GuardDuty enabled automatically. </p> </li> <li> <p> <code>ALL</code>: Indicates that all accounts in the Amazon Web Services Organization have GuardDuty enabled automatically. This includes <code>NEW</code> accounts that join the organization and accounts that may have been suspended or removed from the organization in GuardDuty.</p> </li> <li> <p> <code>NONE</code>: Indicates that GuardDuty will not be automatically enabled for any accounts in the organization. GuardDuty must be managed for each account individually by the administrator.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AutoEnable: BooleanSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'autoEnable' },
+      description:
+        '<p>Indicates whether to automatically enable member accounts in the organization.</p> <p>Even though this is still supported, we recommend using <code>AutoEnableOrganizationMembers</code> to achieve the similar results.</p>This field is deprecated, use AutoEnableOrganizationMembers instead',
+    }),
+    DataSources: OrganizationDataSourceConfigurationsSchema.exactOptional().openapi({
+      deprecated: true,
+      xml: { name: 'dataSources' },
+      description:
+        'Describes which data sources will be updated.This parameter is deprecated, use Features instead',
+    }),
+    Features: OrganizationFeaturesConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'features' },
+      description: 'A list of features that will be configured for the organization.',
+    }),
+    AutoEnableOrganizationMembers: AutoEnableMembersSchema.exactOptional().openapi({
+      xml: { name: 'autoEnableOrganizationMembers' },
+      description:
+        '<p>Indicates the auto-enablement configuration of GuardDuty for the member accounts in the organization. </p> <ul> <li> <p> <code>NEW</code>: Indicates that when a new account joins the organization, they will have GuardDuty enabled automatically. </p> </li> <li> <p> <code>ALL</code>: Indicates that all accounts in the Amazon Web Services Organization have GuardDuty enabled automatically. This includes <code>NEW</code> accounts that join the organization and accounts that may have been suspended or removed from the organization in GuardDuty.</p> </li> <li> <p> <code>NONE</code>: Indicates that GuardDuty will not be automatically enabled for any accounts in the organization. GuardDuty must be managed for each account individually by the administrator.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'UpdateOrganizationConfigurationRequest', required: [] })
   .openapi('UpdateOrganizationConfigurationRequest')
 
 const UpdatePublishingDestinationRequestSchema = z
   .object({
-    DestinationProperties: DestinationPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationProperties' },
-          description:
-            'A <code>DestinationProperties</code> object that includes the <code>DestinationArn</code> and <code>KmsKeyArn</code> of the publishing destination.',
-        }),
-    ).exactOptional(),
+    DestinationProperties: DestinationPropertiesSchema.exactOptional().openapi({
+      xml: { name: 'destinationProperties' },
+      description:
+        'A <code>DestinationProperties</code> object that includes the <code>DestinationArn</code> and <code>KmsKeyArn</code> of the publishing destination.',
+    }),
   })
   .openapi({ title: 'UpdatePublishingDestinationRequest', required: [] })
   .openapi('UpdatePublishingDestinationRequest')
 
 const UpdateThreatIntelSetRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The unique ID that specifies the ThreatIntelSet that you want to update.',
-        }),
-    ).exactOptional(),
-    Location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'location' },
-          description: 'The updated URI of the file that contains the ThreateIntelSet.',
-        }),
-    ).exactOptional(),
-    Activate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'activate' },
-          description:
-            'The updated Boolean value that specifies whether the ThreateIntelSet is active or not.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The unique ID that specifies the ThreatIntelSet that you want to update.',
+    }),
+    Location: LocationSchema.exactOptional().openapi({
+      xml: { name: 'location' },
+      description: 'The updated URI of the file that contains the ThreateIntelSet.',
+    }),
+    Activate: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'activate' },
+      description:
+        'The updated Boolean value that specifies whether the ThreateIntelSet is active or not.',
+    }),
   })
   .openapi({ title: 'UpdateThreatIntelSetRequest', required: [] })
   .openapi('UpdateThreatIntelSetRequest')
@@ -8803,33 +6344,21 @@ export const postDetectorRoute = createRoute({
                 }),
               dataSources: z
                 .object({
-                  S3Logs: S3LogsConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 's3Logs' },
-                        description:
-                          'Describes whether S3 data event logs are enabled as a data source.',
-                      }),
-                  ).exactOptional(),
-                  Kubernetes: KubernetesConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'kubernetes' },
-                        description:
-                          'Describes whether any Kubernetes logs are enabled as data sources.',
-                      }),
-                  ).exactOptional(),
-                  MalwareProtection: MalwareProtectionConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'malwareProtection' },
-                        description:
-                          'Describes whether Malware Protection is enabled as a data source.',
-                      }),
-                  ).exactOptional(),
+                  S3Logs: S3LogsConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 's3Logs' },
+                    description:
+                      'Describes whether S3 data event logs are enabled as a data source.',
+                  }),
+                  Kubernetes: KubernetesConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 'kubernetes' },
+                    description:
+                      'Describes whether any Kubernetes logs are enabled as data sources.',
+                  }),
+                  MalwareProtection: MalwareProtectionConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 'malwareProtection' },
+                    description:
+                      'Describes whether Malware Protection is enabled as a data source.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9050,15 +6579,11 @@ export const postDetectorDetectorIdFilterRoute = createRoute({
                 }),
               findingCriteria: z
                 .object({
-                  Criterion: CriterionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'criterion' },
-                        description:
-                          'Represents a map of finding properties that match specified conditions and values when querying findings.',
-                      }),
-                  ).exactOptional(),
+                  Criterion: CriterionSchema.exactOptional().openapi({
+                    xml: { name: 'criterion' },
+                    description:
+                      'Represents a map of finding properties that match specified conditions and values when querying findings.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -9643,23 +7168,15 @@ export const postDetectorDetectorIdPublishingDestinationRoute = createRoute({
                 }),
               destinationProperties: z
                 .object({
-                  DestinationArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'destinationArn' },
-                        description:
-                          '<p>The ARN of the resource to publish to.</p> <p>To specify an S3 bucket folder use the following format: <code>arn:aws:s3:::DOC-EXAMPLE-BUCKET/myFolder/</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  KmsKeyArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'kmsKeyArn' },
-                        description: 'The ARN of the KMS key to use for encryption.',
-                      }),
-                  ).exactOptional(),
+                  DestinationArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'destinationArn' },
+                    description:
+                      '<p>The ARN of the resource to publish to.</p> <p>To specify an S3 bucket folder use the following format: <code>arn:aws:s3:::DOC-EXAMPLE-BUCKET/myFolder/</code> </p>',
+                  }),
+                  KmsKeyArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'kmsKeyArn' },
+                    description: 'The ARN of the KMS key to use for encryption.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -10116,33 +7633,21 @@ export const postDetectorDetectorIdRoute = createRoute({
                 }),
               dataSources: z
                 .object({
-                  S3Logs: S3LogsConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 's3Logs' },
-                        description:
-                          'Describes whether S3 data event logs are enabled as a data source.',
-                      }),
-                  ).exactOptional(),
-                  Kubernetes: KubernetesConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'kubernetes' },
-                        description:
-                          'Describes whether any Kubernetes logs are enabled as data sources.',
-                      }),
-                  ).exactOptional(),
-                  MalwareProtection: MalwareProtectionConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'malwareProtection' },
-                        description:
-                          'Describes whether Malware Protection is enabled as a data source.',
-                      }),
-                  ).exactOptional(),
+                  S3Logs: S3LogsConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 's3Logs' },
+                    description:
+                      'Describes whether S3 data event logs are enabled as a data source.',
+                  }),
+                  Kubernetes: KubernetesConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 'kubernetes' },
+                    description:
+                      'Describes whether any Kubernetes logs are enabled as data sources.',
+                  }),
+                  MalwareProtection: MalwareProtectionConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 'malwareProtection' },
+                    description:
+                      'Describes whether Malware Protection is enabled as a data source.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10357,15 +7862,11 @@ export const postDetectorDetectorIdFilterFilterNameRoute = createRoute({
                 }),
               findingCriteria: z
                 .object({
-                  Criterion: CriterionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'criterion' },
-                        description:
-                          'Represents a map of finding properties that match specified conditions and values when querying findings.',
-                      }),
-                  ).exactOptional(),
+                  Criterion: CriterionSchema.exactOptional().openapi({
+                    xml: { name: 'criterion' },
+                    description:
+                      'Represents a map of finding properties that match specified conditions and values when querying findings.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10892,23 +8393,15 @@ export const postDetectorDetectorIdPublishingDestinationDestinationIdRoute = cre
             .object({
               destinationProperties: z
                 .object({
-                  DestinationArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'destinationArn' },
-                        description:
-                          '<p>The ARN of the resource to publish to.</p> <p>To specify an S3 bucket folder use the following format: <code>arn:aws:s3:::DOC-EXAMPLE-BUCKET/myFolder/</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  KmsKeyArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'kmsKeyArn' },
-                        description: 'The ARN of the KMS key to use for encryption.',
-                      }),
-                  ).exactOptional(),
+                  DestinationArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'destinationArn' },
+                    description:
+                      '<p>The ARN of the resource to publish to.</p> <p>To specify an S3 bucket folder use the following format: <code>arn:aws:s3:::DOC-EXAMPLE-BUCKET/myFolder/</code> </p>',
+                  }),
+                  KmsKeyArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'kmsKeyArn' },
+                    description: 'The ARN of the KMS key to use for encryption.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11290,15 +8783,11 @@ export const postDetectorDetectorIdMalwareScansRoute = createRoute({
                 }),
               filterCriteria: z
                 .object({
-                  FilterCriterion: FilterCriterionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'filterCriterion' },
-                        description:
-                          'Represents a condition that when matched will be added to the response of the operation.',
-                      }),
-                  ).exactOptional(),
+                  FilterCriterion: FilterCriterionListSchema.exactOptional().openapi({
+                    xml: { name: 'filterCriterion' },
+                    description:
+                      'Represents a condition that when matched will be added to the response of the operation.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11308,23 +8797,15 @@ export const postDetectorDetectorIdMalwareScansRoute = createRoute({
                 }),
               sortCriteria: z
                 .object({
-                  AttributeName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'attributeName' },
-                        description:
-                          'Represents the finding attribute, such as <code>accountId</code>, that sorts the findings.',
-                      }),
-                  ).exactOptional(),
-                  OrderBy: OrderBySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'orderBy' },
-                        description: 'The order by which the sorted findings are to be displayed.',
-                      }),
-                  ).exactOptional(),
+                  AttributeName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'attributeName' },
+                    description:
+                      'Represents the finding attribute, such as <code>accountId</code>, that sorts the findings.',
+                  }),
+                  OrderBy: OrderBySchema.exactOptional().openapi({
+                    xml: { name: 'orderBy' },
+                    description: 'The order by which the sorted findings are to be displayed.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11508,33 +8989,22 @@ export const postDetectorDetectorIdAdminRoute = createRoute({
                 }),
               dataSources: z
                 .object({
-                  S3Logs: OrganizationS3LogsConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 's3Logs' },
-                        description:
-                          'Describes whether S3 data event logs are enabled for new members of the organization.',
-                      }),
-                  ).exactOptional(),
-                  Kubernetes: OrganizationKubernetesConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'kubernetes' },
-                        description:
-                          'Describes the configuration of Kubernetes data sources for new members of the organization.',
-                      }),
-                  ).exactOptional(),
-                  MalwareProtection: OrganizationMalwareProtectionConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'malwareProtection' },
-                        description:
-                          'Describes the configuration of Malware Protection for new members of the organization.',
-                      }),
-                  ).exactOptional(),
+                  S3Logs: OrganizationS3LogsConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 's3Logs' },
+                    description:
+                      'Describes whether S3 data event logs are enabled for new members of the organization.',
+                  }),
+                  Kubernetes: OrganizationKubernetesConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 'kubernetes' },
+                    description:
+                      'Describes the configuration of Kubernetes data sources for new members of the organization.',
+                  }),
+                  MalwareProtection:
+                    OrganizationMalwareProtectionConfigurationSchema.exactOptional().openapi({
+                      xml: { name: 'malwareProtection' },
+                      description:
+                        'Describes the configuration of Malware Protection for new members of the organization.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11883,15 +9353,11 @@ export const postDetectorDetectorIdCoverageStatisticsRoute = createRoute({
             .object({
               filterCriteria: z
                 .object({
-                  FilterCriterion: CoverageFilterCriterionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'filterCriterion' },
-                        description:
-                          'Represents a condition that when matched will be added to the response of the operation.',
-                      }),
-                  ).exactOptional(),
+                  FilterCriterion: CoverageFilterCriterionListSchema.exactOptional().openapi({
+                    xml: { name: 'filterCriterion' },
+                    description:
+                      'Represents a condition that when matched will be added to the response of the operation.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11970,23 +9436,15 @@ export const postDetectorDetectorIdFindingsGetRoute = createRoute({
                 .openapi({ description: 'The IDs of the findings that you want to retrieve.' }),
               sortCriteria: z
                 .object({
-                  AttributeName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'attributeName' },
-                        description:
-                          'Represents the finding attribute, such as <code>accountId</code>, that sorts the findings.',
-                      }),
-                  ).exactOptional(),
-                  OrderBy: OrderBySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'orderBy' },
-                        description: 'The order by which the sorted findings are to be displayed.',
-                      }),
-                  ).exactOptional(),
+                  AttributeName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'attributeName' },
+                    description:
+                      'Represents the finding attribute, such as <code>accountId</code>, that sorts the findings.',
+                  }),
+                  OrderBy: OrderBySchema.exactOptional().openapi({
+                    xml: { name: 'orderBy' },
+                    description: 'The order by which the sorted findings are to be displayed.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12059,15 +9517,11 @@ export const postDetectorDetectorIdFindingsStatisticsRoute = createRoute({
                 .openapi({ description: 'The types of finding statistics to retrieve.' }),
               findingCriteria: z
                 .object({
-                  Criterion: CriterionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'criterion' },
-                        description:
-                          'Represents a map of finding properties that match specified conditions and values when querying findings.',
-                      }),
-                  ).exactOptional(),
+                  Criterion: CriterionSchema.exactOptional().openapi({
+                    xml: { name: 'criterion' },
+                    description:
+                      'Represents a map of finding properties that match specified conditions and values when querying findings.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12218,24 +9672,16 @@ export const postDetectorDetectorIdMalwareScanSettingsRoute = createRoute({
             .object({
               scanResourceCriteria: z
                 .object({
-                  Include: ScanCriterionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'include' },
-                        description:
-                          'Represents condition that when matched will allow a malware scan for a certain resource.',
-                      }),
-                  ).exactOptional(),
-                  Exclude: ScanCriterionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'exclude' },
-                        description:
-                          'Represents condition that when matched will prevent a malware scan for a certain resource.',
-                      }),
-                  ).exactOptional(),
+                  Include: ScanCriterionSchema.exactOptional().openapi({
+                    xml: { name: 'include' },
+                    description:
+                      'Represents condition that when matched will allow a malware scan for a certain resource.',
+                  }),
+                  Exclude: ScanCriterionSchema.exactOptional().openapi({
+                    xml: { name: 'exclude' },
+                    description:
+                      'Represents condition that when matched will prevent a malware scan for a certain resource.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12546,41 +9992,25 @@ export const postDetectorDetectorIdUsageStatisticsRoute = createRoute({
                 .openapi({ description: 'The type of usage statistics to retrieve.' }),
               usageCriteria: z
                 .object({
-                  AccountIds: AccountIdsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'accountIds' },
-                        description: 'The account IDs to aggregate usage statistics from.',
-                      }),
-                  ).exactOptional(),
-                  DataSources: DataSourceListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        deprecated: true,
-                        xml: { name: 'dataSources' },
-                        description:
-                          'The data sources to aggregate usage statistics from.This parameter is deprecated, use Features instead',
-                      }),
-                  ).exactOptional(),
-                  Resources: ResourceListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'resources' },
-                        description:
-                          'The resources to aggregate usage statistics from. Only accepts exact resource names.',
-                      }),
-                  ).exactOptional(),
-                  Features: UsageFeatureListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'features' },
-                        description: 'The features to aggregate usage statistics from.',
-                      }),
-                  ).exactOptional(),
+                  AccountIds: AccountIdsSchema.exactOptional().openapi({
+                    xml: { name: 'accountIds' },
+                    description: 'The account IDs to aggregate usage statistics from.',
+                  }),
+                  DataSources: DataSourceListSchema.exactOptional().openapi({
+                    deprecated: true,
+                    xml: { name: 'dataSources' },
+                    description:
+                      'The data sources to aggregate usage statistics from.This parameter is deprecated, use Features instead',
+                  }),
+                  Resources: ResourceListSchema.exactOptional().openapi({
+                    xml: { name: 'resources' },
+                    description:
+                      'The resources to aggregate usage statistics from. Only accepts exact resource names.',
+                  }),
+                  Features: UsageFeatureListSchema.exactOptional().openapi({
+                    xml: { name: 'features' },
+                    description: 'The features to aggregate usage statistics from.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -12794,15 +10224,11 @@ export const postDetectorDetectorIdCoverageRoute = createRoute({
                 }),
               filterCriteria: z
                 .object({
-                  FilterCriterion: CoverageFilterCriterionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'filterCriterion' },
-                        description:
-                          'Represents a condition that when matched will be added to the response of the operation.',
-                      }),
-                  ).exactOptional(),
+                  FilterCriterion: CoverageFilterCriterionListSchema.exactOptional().openapi({
+                    xml: { name: 'filterCriterion' },
+                    description:
+                      'Represents a condition that when matched will be added to the response of the operation.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12811,22 +10237,14 @@ export const postDetectorDetectorIdCoverageRoute = createRoute({
                 }),
               sortCriteria: z
                 .object({
-                  AttributeName: CoverageSortKeySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'attributeName' },
-                        description: 'Represents the field name used to sort the coverage details.',
-                      }),
-                  ).exactOptional(),
-                  OrderBy: OrderBySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'orderBy' },
-                        description: 'The order in which the sorted findings are to be displayed.',
-                      }),
-                  ).exactOptional(),
+                  AttributeName: CoverageSortKeySchema.exactOptional().openapi({
+                    xml: { name: 'attributeName' },
+                    description: 'Represents the field name used to sort the coverage details.',
+                  }),
+                  OrderBy: OrderBySchema.exactOptional().openapi({
+                    xml: { name: 'orderBy' },
+                    description: 'The order in which the sorted findings are to be displayed.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12921,15 +10339,11 @@ export const postDetectorDetectorIdFindingsRoute = createRoute({
             .object({
               findingCriteria: z
                 .object({
-                  Criterion: CriterionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'criterion' },
-                        description:
-                          'Represents a map of finding properties that match specified conditions and values when querying findings.',
-                      }),
-                  ).exactOptional(),
+                  Criterion: CriterionSchema.exactOptional().openapi({
+                    xml: { name: 'criterion' },
+                    description:
+                      'Represents a map of finding properties that match specified conditions and values when querying findings.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12939,23 +10353,15 @@ export const postDetectorDetectorIdFindingsRoute = createRoute({
                 }),
               sortCriteria: z
                 .object({
-                  AttributeName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'attributeName' },
-                        description:
-                          'Represents the finding attribute, such as <code>accountId</code>, that sorts the findings.',
-                      }),
-                  ).exactOptional(),
-                  OrderBy: OrderBySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'orderBy' },
-                        description: 'The order by which the sorted findings are to be displayed.',
-                      }),
-                  ).exactOptional(),
+                  AttributeName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'attributeName' },
+                    description:
+                      'Represents the finding attribute, such as <code>accountId</code>, that sorts the findings.',
+                  }),
+                  OrderBy: OrderBySchema.exactOptional().openapi({
+                    xml: { name: 'orderBy' },
+                    description: 'The order by which the sorted findings are to be displayed.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13695,33 +11101,21 @@ export const postDetectorDetectorIdMemberDetectorUpdateRoute = createRoute({
                 .openapi({ description: 'A list of member account IDs to be updated.' }),
               dataSources: z
                 .object({
-                  S3Logs: S3LogsConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 's3Logs' },
-                        description:
-                          'Describes whether S3 data event logs are enabled as a data source.',
-                      }),
-                  ).exactOptional(),
-                  Kubernetes: KubernetesConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'kubernetes' },
-                        description:
-                          'Describes whether any Kubernetes logs are enabled as data sources.',
-                      }),
-                  ).exactOptional(),
-                  MalwareProtection: MalwareProtectionConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'malwareProtection' },
-                        description:
-                          'Describes whether Malware Protection is enabled as a data source.',
-                      }),
-                  ).exactOptional(),
+                  S3Logs: S3LogsConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 's3Logs' },
+                    description:
+                      'Describes whether S3 data event logs are enabled as a data source.',
+                  }),
+                  Kubernetes: KubernetesConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 'kubernetes' },
+                    description:
+                      'Describes whether any Kubernetes logs are enabled as data sources.',
+                  }),
+                  MalwareProtection: MalwareProtectionConfigurationSchema.exactOptional().openapi({
+                    xml: { name: 'malwareProtection' },
+                    description:
+                      'Describes whether Malware Protection is enabled as a data source.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

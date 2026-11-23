@@ -1534,6 +1534,29 @@ const ApiV1ApprovalFlowLogsParamsSchema = z
   .openapi({ required: [] })
   .openapi('ApiV1ApprovalFlowLogsParams')
 
+const ApiV1ApprovalFlowCommentsParamsSchema = z
+  .object({
+    comment: z.string().openapi({ description: 'コメント本文', example: '確認しました。' }),
+    user_id: z
+      .int32()
+      .min(1)
+      .max(2147483647)
+      .nullable()
+      .openapi({
+        description:
+          'コメントを書いたユーザーのユーザーID<br>\n次の場合、nullになります。\n- 従業員に紐付かない管理者が書いた\n- 書いた従業員が削除されている\n- 書いた従業員がユーザーアカウントに紐付いていない（招待の解除など）',
+        example: 1,
+      }),
+    posted_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'コメントを書いた日付時間',
+        example: '2022-06-08T09:46:46.000+09:00',
+      }),
+  })
+  .openapi({ required: ['comment', 'user_id', 'posted_at'] })
+  .openapi('ApiV1ApprovalFlowCommentsParams')
+
 const ApiV1MonthlyAttendanceResponseParamsSchema = z
   .object({
     id: z.int32().min(1).max(2147483647).openapi({ description: '申請ID', example: 1 }),
@@ -1596,6 +1619,12 @@ const ApiV1MonthlyAttendanceResponseParamsSchema = z
     approval_flow_logs: z
       .array(ApiV1ApprovalFlowLogsParamsSchema)
       .openapi({ description: '承認履歴' }),
+    comments: z
+      .array(ApiV1ApprovalFlowCommentsParamsSchema)
+      .openapi({
+        description:
+          '申請についたコメント（投稿順）<br>\n申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。',
+      }),
     current_step_id: z
       .int32()
       .min(1)
@@ -1629,6 +1658,7 @@ const ApiV1MonthlyAttendanceResponseParamsSchema = z
       'approval_flow_route_id',
       'approval_flow_route_name',
       'approval_flow_logs',
+      'comments',
       'current_round',
     ],
   })
@@ -1944,6 +1974,12 @@ const ApiV1PaidHolidayResponseParamsSchema = z
     approval_flow_logs: z
       .array(ApiV1ApprovalFlowLogsParamsSchema)
       .openapi({ description: '承認履歴' }),
+    comments: z
+      .array(ApiV1ApprovalFlowCommentsParamsSchema)
+      .openapi({
+        description:
+          '申請についたコメント（投稿順）<br>\n申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。',
+      }),
     current_step_id: z
       .int32()
       .min(1)
@@ -1985,6 +2021,7 @@ const ApiV1PaidHolidayResponseParamsSchema = z
       'approval_flow_route_id',
       'approval_flow_route_name',
       'approval_flow_logs',
+      'comments',
       'current_round',
       'values',
     ],
@@ -2087,6 +2124,12 @@ const LegacyApiV1PaidHolidayResponseParamsSchema = z
     approval_flow_logs: z
       .array(ApiV1ApprovalFlowLogsParamsSchema)
       .openapi({ description: '承認履歴' }),
+    comments: z
+      .array(ApiV1ApprovalFlowCommentsParamsSchema)
+      .openapi({
+        description:
+          '申請についたコメント（投稿順）<br>\n申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。',
+      }),
     current_step_id: z
       .int32()
       .min(1)
@@ -2129,6 +2172,7 @@ const LegacyApiV1PaidHolidayResponseParamsSchema = z
       'approval_flow_route_id',
       'approval_flow_route_name',
       'approval_flow_logs',
+      'comments',
       'current_round',
     ],
   })
@@ -2311,6 +2355,12 @@ const ApiV1OvertimeWorkResponseParamsSchema = z
     approval_flow_logs: z
       .array(ApiV1ApprovalFlowLogsParamsSchema)
       .openapi({ description: '承認履歴' }),
+    comments: z
+      .array(ApiV1ApprovalFlowCommentsParamsSchema)
+      .openapi({
+        description:
+          '申請についたコメント（投稿順）<br>\n申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。',
+      }),
     current_step_id: z
       .int32()
       .min(1)
@@ -2345,6 +2395,7 @@ const ApiV1OvertimeWorkResponseParamsSchema = z
       'approval_flow_route_id',
       'approval_flow_route_name',
       'approval_flow_logs',
+      'comments',
       'current_round',
     ],
   })
@@ -3502,12 +3553,28 @@ const ApiV1EmployeesWorkRecordSerializerSchema = z
       .int32()
       .exactOptional()
       .openapi({ description: '早退分の時間（分単位）' }),
+    half_paid_holiday_mins: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 有給休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
     half_special_holiday_mins: z
       .int32()
       .exactOptional()
       .openapi({
         description:
           '[deprecated] 特別休暇の半休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
+    hourly_paid_holiday_mins: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] 有給休暇の時間休を利用した時間（分単位） ※ 削除予定のため holidays を参照してください',
         deprecated: true,
       }),
     hourly_special_holiday_mins: z
@@ -3539,6 +3606,14 @@ const ApiV1EmployeesWorkRecordSerializerSchema = z
       .openapi({ description: '所定労働終了時刻' }),
     normal_work_mins: z.int32().exactOptional().openapi({ description: '所定労働時間' }),
     note: z.string().max(255).exactOptional().openapi({ description: '勤怠メモ' }),
+    paid_holiday: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          '[deprecated] この日に対する有給取得日数。半休の場合は0.5が入ります。時間休の場合はhourly_paid_holiday_minsを所定労働時間で割った値が入るため、実際の時間を確認するにはhourly_paid_holiday_minsを参照してください。 ※ 削除予定のため holidays を参照してください',
+        deprecated: true,
+      }),
     paid_holidays: z
       .array(
         z
@@ -5460,6 +5535,12 @@ const ApiV1WorkTimeResponseParamsSchema = z
     approval_flow_logs: z
       .array(ApiV1ApprovalFlowLogsParamsSchema)
       .openapi({ description: '承認履歴' }),
+    comments: z
+      .array(ApiV1ApprovalFlowCommentsParamsSchema)
+      .openapi({
+        description:
+          '申請についたコメント（投稿順）<br>\n申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。',
+      }),
     current_step_id: z
       .int32()
       .min(1)
@@ -5503,6 +5584,7 @@ const ApiV1WorkTimeResponseParamsSchema = z
       'approval_flow_route_id',
       'approval_flow_route_name',
       'approval_flow_logs',
+      'comments',
       'current_round',
     ],
   })
@@ -5879,6 +5961,12 @@ const ApiV1specialHolidayResponseSchema = z
         approval_flow_logs: z
           .array(ApiV1ApprovalFlowLogsParamsSchema)
           .openapi({ description: '承認履歴' }),
+        comments: z
+          .array(ApiV1ApprovalFlowCommentsParamsSchema)
+          .openapi({
+            description:
+              '申請についたコメント（投稿順）<br>\n申請者・代理申請者・承認者・管理者が書いたコメントだけを返します。自動で付くコメントは含みません。',
+          }),
         current_step_id: z
           .int32()
           .min(1)
@@ -5923,6 +6011,7 @@ const ApiV1specialHolidayResponseSchema = z
           'approval_flow_route_id',
           'approval_flow_route_name',
           'approval_flow_logs',
+          'comments',
           'current_round',
         ],
       }),
@@ -7210,6 +7299,7 @@ const ApiV1EmployeeYearendAdjustmentPreviousJobSerializerSchema = z
       .openapi({ description: '前職の事業所住所', example: '品川区大崎1-2-2' }),
     retire_date: z.iso
       .date()
+      .nullable()
       .exactOptional()
       .openapi({
         description: '前職の退職日 現在年-10年1月1日から現在年+5年12月31日まで登録可能',
@@ -8014,6 +8104,66 @@ const ApiV1EmployeesAssignedAttendanceTagSerializerSchema = z
   .openapi({ required: ['attendance_tag', 'amount'] })
   .openapi('ApiV1EmployeesAssignedAttendanceTagSerializer')
 
+const ApiV1EmployeesAttendanceMinsTagSerializerSchema = z
+  .object({
+    id: z.int32().min(1).max(2147483647).openapi({ description: '勤怠タグID', example: 1 }),
+    company_id: z.int32().min(1).max(2147483647).openapi({ description: '事業所ID', example: 1 }),
+    name: z.string().openapi({ description: '勤怠タグ名称', example: '勤怠タグの名称' }),
+    description: z.string().openapi({ description: '勤怠タグ備考', example: '勤怠タグの備考' }),
+    input_unit_mins: z
+      .union([
+        z.literal(1),
+        z.literal(5),
+        z.literal(10),
+        z.literal(15),
+        z.literal(30),
+        z.literal(60),
+      ])
+      .openapi({ description: '勤怠タグ時間数入力単位（分）', example: 15 }),
+    max_mins: z
+      .int32()
+      .min(1)
+      .max(5999)
+      .openapi({ description: '勤怠タグ時間数上限（分）', example: 480 }),
+    published: z.boolean().openapi({ description: '勤怠タグ公開ステータス', example: true }),
+    is_employee_usable: z
+      .boolean()
+      .openapi({ description: '対象従業員が利用可能かどうか', example: true }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'company_id',
+      'name',
+      'description',
+      'input_unit_mins',
+      'max_mins',
+      'published',
+      'is_employee_usable',
+    ],
+  })
+  .openapi('ApiV1EmployeesAttendanceMinsTagSerializer')
+
+const ApiV1EmployeesAssignedAttendanceMinsTagSerializerSchema = z
+  .object({
+    attendance_mins_tag: ApiV1EmployeesAttendanceMinsTagSerializerSchema,
+    mins: z.int32().min(1).max(5999).openapi({ description: '勤怠タグ時間数（分）', example: 60 }),
+  })
+  .openapi({ required: ['attendance_mins_tag', 'mins'] })
+  .openapi('ApiV1EmployeesAssignedAttendanceMinsTagSerializer')
+
+const ApiV1EmployeesAttendanceMinsTagUpdateRequestSerializerSchema = z
+  .object({
+    attendance_tag_id: z
+      .int32()
+      .min(1)
+      .max(2147483647)
+      .openapi({ description: '勤怠タグID', example: 1 }),
+    mins: z.int32().min(1).max(5999).openapi({ description: '勤怠タグ時間数（分）', example: 60 }),
+  })
+  .openapi({ required: ['attendance_tag_id', 'mins'] })
+  .openapi('ApiV1EmployeesAttendanceMinsTagUpdateRequestSerializer')
+
 const ApiV1EmployeesAttendanceTagSerializerSchema = z
   .object({
     id: z.int32().min(1).max(2147483647).openapi({ description: '勤怠タグID', example: 1 }),
@@ -8042,6 +8192,9 @@ const ApiV1EmployeesAttendanceTagSerializerSchema = z
 const ApiV1EmployeesAttendanceTagsControllerIndexResponseSchema = z
   .object({
     employee_attendance_tags: z.array(ApiV1EmployeesAttendanceTagSerializerSchema).exactOptional(),
+    employee_attendance_mins_tags: z
+      .array(ApiV1EmployeesAttendanceMinsTagSerializerSchema)
+      .exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ApiV1EmployeesAttendanceTagsControllerIndexResponse')
@@ -8050,6 +8203,9 @@ const ApiV1EmployeesAttendanceTagsControllerShowResponseSchema = z
   .object({
     employee_attendance_tags: z
       .array(ApiV1EmployeesAssignedAttendanceTagSerializerSchema)
+      .exactOptional(),
+    employee_attendance_mins_tags: z
+      .array(ApiV1EmployeesAssignedAttendanceMinsTagSerializerSchema)
       .exactOptional(),
   })
   .openapi({ required: [] })
@@ -8072,10 +8228,27 @@ const ApiV1EmployeesAttendanceTagsControllerUpdateBodySchema = z
     company_id: z.int32().min(1).max(2147483647).openapi({ description: '事業所ID', example: 1 }),
     employee_attendance_tags: z
       .array(ApiV1EmployeesAttendanceTagUpdateRequestSerializerSchema)
+      .exactOptional()
       .openapi({ description: '更新対象の勤怠タグのリスト' }),
+    employee_attendance_mins_tags: z
+      .array(ApiV1EmployeesAttendanceMinsTagUpdateRequestSerializerSchema)
+      .exactOptional()
+      .openapi({ description: '更新対象の勤怠時間数タグのリスト' }),
   })
-  .openapi({ required: ['company_id', 'employee_attendance_tags'] })
+  .openapi({ required: ['company_id'] })
   .openapi('ApiV1EmployeesAttendanceTagsControllerUpdateBody')
+
+const ApiV1EmployeesAttendanceTagsControllerUpdateResponseSchema = z
+  .object({
+    employee_attendance_tags: z
+      .array(ApiV1EmployeesAssignedAttendanceTagSerializerSchema)
+      .exactOptional(),
+    employee_attendance_mins_tags: z
+      .array(ApiV1EmployeesAssignedAttendanceMinsTagSerializerSchema)
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiV1EmployeesAttendanceTagsControllerUpdateResponse')
 
 const ApiV1EmployeesAttendanceTagSummarySchema = z
   .object({
@@ -8115,10 +8288,62 @@ const ApiV1EmployeesAttendanceTagSummarySchema = z
   .openapi({ required: ['attendance_tag', 'amount'] })
   .openapi('ApiV1EmployeesAttendanceTagSummary')
 
+const ApiV1EmployeesAttendanceMinsTagSummarySchema = z
+  .object({
+    attendance_mins_tag: z
+      .object({
+        id: z.int32().min(1).max(2147483647).openapi({ description: '勤怠タグID', example: 1 }),
+        company_id: z
+          .int32()
+          .min(1)
+          .max(2147483647)
+          .openapi({ description: '事業所ID', example: 1 }),
+        name: z.string().openapi({ description: '勤怠タグ名称', example: '勤怠タグの名称' }),
+        description: z.string().openapi({ description: '勤怠タグ備考', example: '勤怠タグの備考' }),
+        input_unit_mins: z
+          .union([
+            z.literal(1),
+            z.literal(5),
+            z.literal(10),
+            z.literal(15),
+            z.literal(30),
+            z.literal(60),
+          ])
+          .openapi({ description: '時間数入力単位（分）', example: 15 }),
+        max_mins: z
+          .int32()
+          .min(1)
+          .max(5999)
+          .openapi({ description: '時間数上限（分）', example: 180 }),
+        published: z.boolean().openapi({ description: '勤怠タグ公開ステータス', example: true }),
+        is_employee_usable: z
+          .boolean()
+          .openapi({ description: '対象従業員が利用可能かどうか', example: true }),
+      })
+      .openapi({
+        required: [
+          'id',
+          'company_id',
+          'name',
+          'description',
+          'input_unit_mins',
+          'max_mins',
+          'published',
+          'is_employee_usable',
+        ],
+      }),
+    mins: z.int32().min(0).max(44640).openapi({ description: '勤怠タグ時間数（分）', example: 60 }),
+  })
+  .openapi({ required: ['attendance_mins_tag', 'mins'] })
+  .openapi('ApiV1EmployeesAttendanceMinsTagSummary')
+
 const ApiV1EmployeesAttendanceTagSummariesControllerShowResponseSchema = z
   .object({
     employee_attendance_tag_summaries: z
       .array(ApiV1EmployeesAttendanceTagSummarySchema)
+      .exactOptional(),
+    employee_attendance_mins_tag_summaries: z
+      .array(ApiV1EmployeesAttendanceMinsTagSummarySchema)
       .exactOptional(),
   })
   .openapi({ required: [] })
@@ -8136,20 +8361,40 @@ const ApiV1EmployeesAttendanceTagSummaryUpdateRequestSerializerSchema = z
   .openapi({ required: ['attendance_tag_id', 'amount'] })
   .openapi('ApiV1EmployeesAttendanceTagSummaryUpdateRequestSerializer')
 
+const ApiV1EmployeesAttendanceMinsTagSummaryUpdateRequestSerializerSchema = z
+  .object({
+    attendance_tag_id: z
+      .int32()
+      .min(1)
+      .max(2147483647)
+      .openapi({ description: '勤怠タグID', example: 1 }),
+    mins: z.int32().min(0).max(44640).openapi({ description: '勤怠タグ時間数（分）', example: 60 }),
+  })
+  .openapi({ required: ['attendance_tag_id', 'mins'] })
+  .openapi('ApiV1EmployeesAttendanceMinsTagSummaryUpdateRequestSerializer')
+
 const ApiV1EmployeesAttendanceTagSummariesControllerUpdateBodySchema = z
   .object({
     company_id: z.int32().min(1).max(2147483647).openapi({ description: '事業所ID', example: 1 }),
     employee_attendance_tag_summaries: z
       .array(ApiV1EmployeesAttendanceTagSummaryUpdateRequestSerializerSchema)
+      .exactOptional()
       .openapi({ description: '更新対象の勤怠タグサマリのリスト' }),
+    employee_attendance_mins_tag_summaries: z
+      .array(ApiV1EmployeesAttendanceMinsTagSummaryUpdateRequestSerializerSchema)
+      .exactOptional()
+      .openapi({ description: '更新対象の時間数タグサマリのリスト' }),
   })
-  .openapi({ required: ['company_id', 'employee_attendance_tag_summaries'] })
+  .openapi({ required: ['company_id'] })
   .openapi('ApiV1EmployeesAttendanceTagSummariesControllerUpdateBody')
 
 const ApiV1EmployeesAttendanceTagSummariesControllerUpdateResponseSchema = z
   .object({
     employee_attendance_tag_summaries: z
       .array(ApiV1EmployeesAttendanceTagSummarySchema)
+      .exactOptional(),
+    employee_attendance_mins_tag_summaries: z
+      .array(ApiV1EmployeesAttendanceMinsTagSummarySchema)
       .exactOptional(),
   })
   .openapi({ required: [] })
@@ -12892,15 +13137,7 @@ export const putApiV1EmployeesEmployeeIdAttendanceTagsDateRoute = createRoute({
     200: {
       description: 'successful operation',
       content: {
-        'application/json': {
-          schema: z
-            .object({
-              employee_attendance_tags: z
-                .array(ApiV1EmployeesAssignedAttendanceTagSerializerSchema)
-                .exactOptional(),
-            })
-            .openapi({ required: [] }),
-        },
+        'application/json': { schema: ApiV1EmployeesAttendanceTagsControllerUpdateResponseSchema },
       },
     },
     400: { description: '', content: { 'application/problem+json': { schema: ErrorSchema } } },

@@ -1,5 +1,699 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const GoogleTypeDecimalSchema = z
+  .object({
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The decimal value, as a string. The string representation consists of an optional sign, `+` (`U+002B`) or `-` (`U+002D`), followed by a sequence of zero or more decimal digits (\"the integer\"), optionally followed by a fraction, optionally followed by an exponent. An empty string **should** be interpreted as `0`. The fraction consists of a decimal point followed by zero or more decimal digits. The string must contain at least one digit in either the integer or the fraction. The number formed by the sign, the integer and the fraction is referred to as the significand. The exponent consists of the character `e` (`U+0065`) or `E` (`U+0045`) followed by one or more decimal digits. Services **should** normalize decimal values before storing them by: - Removing an explicitly-provided `+` sign (`+2.5` -> `2.5`). - Replacing a zero-length integer value with `0` (`.5` -> `0.5`). - Coercing the exponent character to upper-case, with explicit sign (`2.5e8` -> `2.5E+8`). - Removing an explicitly-provided zero exponent (`2.5E0` -> `2.5`). Services **may** perform additional normalization based on its own needs and the internal decimal implementation selected, such as shifting the decimal point and exponent value together (example: `2.5E-1` <-> `0.25`). Additionally, services **may** preserve trailing zeroes in the fraction to indicate increased precision, but are not required to do so. Note that only the `.` character is supported to divide the integer and the fraction; `,` **should not** be supported regardless of locale. Additionally, thousand separators **should not** be supported. If a service does support them, values **must** be normalized. The ENBF grammar is: DecimalString = '' | [Sign] Significand [Exponent]; Sign = '+' | '-'; Significand = Digits '.' | [Digits] '.' Digits; Exponent = ('e' | 'E') [Sign] Digits; Digits = { '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' }; Services **should** clearly document the range of supported values, the maximum supported precision (total number of digits), and, if applicable, the scale (number of digits after the decimal point), as well as how it behaves when receiving out-of-bounds values. Services **may** choose to accept values passed as input even when the value has a higher precision or scale than the service supports, and **should** round the value to fit the supported scale. Alternatively, the service **may** error with `400 Bad Request` (`INVALID_ARGUMENT` in gRPC) if precision would be lost. Services **should** error with `400 Bad Request` (`INVALID_ARGUMENT` in gRPC) if the service receives a value outside of the supported range.",
+      }),
+  })
+  .openapi({
+    description:
+      "A representation of a decimal value, such as 2.5. Clients may convert values into language-native decimal formats, such as Java's BigDecimal or Python's decimal.Decimal. [BigDecimal]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html [decimal.Decimal]: https://docs.python.org/3/library/decimal.html",
+    required: [],
+  })
+  .openapi('GoogleTypeDecimal')
+
+const GoogleCloudChannelV1PercentageAdjustmentSchema = z
+  .object({
+    percentage: GoogleTypeDecimalSchema.exactOptional().openapi({
+      description:
+        'The percentage of the bill to adjust. For example: Mark down by 1% => "-1.00" Mark up by 1% => "1.00" Pass-Through => "0.00"',
+    }),
+  })
+  .openapi({
+    description: 'An adjustment that applies a flat markup or markdown to an entire bill.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1PercentageAdjustment')
+
+const GoogleCloudChannelV1RepricingAdjustmentSchema = z
+  .object({
+    percentageAdjustment: GoogleCloudChannelV1PercentageAdjustmentSchema.exactOptional().openapi({
+      description: 'Flat markup or markdown on an entire bill.',
+    }),
+  })
+  .openapi({
+    description: 'A type that represents the various adjustments you can apply to a bill.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1RepricingAdjustment')
+
+const GoogleCloudChannelV1RepricingConfigChannelPartnerGranularitySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Applies the repricing configuration at the channel partner level. The channel partner value is derived from the resource name. Takes an empty json object.',
+  })
+  .openapi('GoogleCloudChannelV1RepricingConfigChannelPartnerGranularity')
+
+const GoogleCloudChannelV1SkuGroupConditionSchema = z
+  .object({
+    skuGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a SKU group (https://cloud.google.com/skus/sku-groups). Resource name of SKU group. Format: accounts/{account}/skuGroups/{sku_group}. Example: "accounts/C01234/skuGroups/3d50fd57-3157-4577-a5a9-a219b8490041".',
+      }),
+  })
+  .openapi({
+    description:
+      'A condition that applies the override if a line item SKU is found in the SKU group.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1SkuGroupCondition')
+
+const GoogleCloudChannelV1RepricingConditionSchema = z
+  .object({
+    skuGroupCondition: GoogleCloudChannelV1SkuGroupConditionSchema.exactOptional().openapi({
+      description: 'SKU Group condition for override.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents the various repricing conditions you can use for a conditional override.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1RepricingCondition')
+
+const GoogleCloudChannelV1ConditionalOverrideSchema = z
+  .object({
+    adjustment: GoogleCloudChannelV1RepricingAdjustmentSchema.exactOptional().openapi({
+      description: "Required. Information about the applied override's adjustment.",
+    }),
+    rebillingBasis: z
+      .enum(['REBILLING_BASIS_UNSPECIFIED', 'COST_AT_LIST', 'DIRECT_CUSTOMER_COST'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The RebillingBasis to use for the applied override. Shows the relative cost based on your repricing costs.',
+      }),
+    repricingCondition: GoogleCloudChannelV1RepricingConditionSchema.exactOptional().openapi({
+      description: 'Required. Specifies the condition which, if met, will apply the override.',
+    }),
+  })
+  .openapi({ description: 'Specifies the override to conditionally apply.', required: [] })
+  .openapi('GoogleCloudChannelV1ConditionalOverride')
+
+const GoogleTypeDateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('GoogleTypeDate')
+
+const GoogleCloudChannelV1RepricingConfigEntitlementGranularitySchema = z
+  .object({
+    entitlement: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of the entitlement. Format: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id}',
+      }),
+  })
+  .openapi({
+    description: 'Applies the repricing configuration at the entitlement level.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1RepricingConfigEntitlementGranularity')
+
+const GoogleCloudChannelV1RepricingConfigSchema = z
+  .object({
+    adjustment: GoogleCloudChannelV1RepricingAdjustmentSchema.exactOptional().openapi({
+      description: 'Required. Information about the adjustment.',
+    }),
+    channelPartnerGranularity:
+      GoogleCloudChannelV1RepricingConfigChannelPartnerGranularitySchema.exactOptional().openapi({
+        description:
+          'Applies the repricing configuration at the channel partner level. This is the only supported value for ChannelPartnerRepricingConfig.',
+      }),
+    conditionalOverrides: z
+      .array(GoogleCloudChannelV1ConditionalOverrideSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The conditional overrides to apply for this configuration. If you list multiple overrides, only the first valid override is used. If you don't list any overrides, the API uses the normal adjustment and rebilling basis.",
+      }),
+    effectiveInvoiceMonth: GoogleTypeDateSchema.exactOptional().openapi({
+      description:
+        'Required. The YearMonth when these adjustments activate. The Day field needs to be "0" since we only accept YearMonth repricing boundaries.',
+    }),
+    entitlementGranularity:
+      GoogleCloudChannelV1RepricingConfigEntitlementGranularitySchema.exactOptional().openapi({
+        description:
+          'Applies the repricing configuration at the entitlement level. This is the only supported value for CustomerRepricingConfig.',
+      }),
+    rebillingBasis: z
+      .enum(['REBILLING_BASIS_UNSPECIFIED', 'COST_AT_LIST', 'DIRECT_CUSTOMER_COST'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The RebillingBasis to use for this bill. Specifies the relative cost based on repricing costs you will apply.',
+      }),
+  })
+  .openapi({
+    description: 'Configuration for repricing a Google bill over a period of time.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1RepricingConfig')
+
+const GoogleCloudChannelV1ChannelPartnerRepricingConfigSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Resource name of the ChannelPartnerRepricingConfig. Format: accounts/{account_id}/channelPartnerLinks/{channel_partner_id}/channelPartnerRepricingConfigs/{id}.',
+        readOnly: true,
+      }),
+    repricingConfig: GoogleCloudChannelV1RepricingConfigSchema.exactOptional().openapi({
+      description:
+        'Required. The configuration for bill modifications made by a reseller before sending it to ChannelPartner.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Timestamp of an update to the repricing rule. If `update_time` is after RepricingConfig.effective_invoice_month then it indicates this was set mid-month.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration for how a distributor will rebill a channel partner (also known as a distributor-authorized reseller).',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1ChannelPartnerRepricingConfig')
+
+type GoogleCloudChannelV1ListChannelPartnerRepricingConfigsResponseType = {
+  channelPartnerRepricingConfigs?: z.infer<
+    typeof GoogleCloudChannelV1ChannelPartnerRepricingConfigSchema
+  >[]
+  nextPageToken?: string
+}
+
+const GoogleCloudChannelV1CustomerRepricingConfigSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Resource name of the CustomerRepricingConfig. Format: accounts/{account_id}/customers/{customer_id}/customerRepricingConfigs/{id}.',
+        readOnly: true,
+      }),
+    repricingConfig: GoogleCloudChannelV1RepricingConfigSchema.exactOptional().openapi({
+      description:
+        'Required. The configuration for bill modifications made by a reseller before sending it to customers.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Timestamp of an update to the repricing rule. If `update_time` is after RepricingConfig.effective_invoice_month then it indicates this was set mid-month.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Configuration for how a reseller will reprice a Customer.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1CustomerRepricingConfig')
+
+type GoogleCloudChannelV1ListCustomerRepricingConfigsResponseType = {
+  customerRepricingConfigs?: z.infer<typeof GoogleCloudChannelV1CustomerRepricingConfigSchema>[]
+  nextPageToken?: string
+}
+
+const GoogleCloudChannelV1CustomerConstraintsSchema = z
+  .object({
+    allowedCustomerTypes: z
+      .array(z.enum(['CUSTOMER_TYPE_UNSPECIFIED', 'DOMAIN', 'TEAM']))
+      .exactOptional()
+      .openapi({ description: 'Allowed Customer Type.' }),
+    allowedRegions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Allowed geographical regions of the customer.' }),
+    promotionalOrderTypes: z
+      .array(
+        z.enum(['PROMOTIONAL_TYPE_UNSPECIFIED', 'NEW_UPGRADE', 'TRANSFER', 'PROMOTION_SWITCH']),
+      )
+      .exactOptional()
+      .openapi({ description: 'Allowed Promotional Order Type. Present for Promotional offers.' }),
+  })
+  .openapi({
+    description: 'Represents constraints required to purchase the Offer for a customer.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1CustomerConstraints')
+
+const GoogleCloudChannelV1ConstraintsSchema = z
+  .object({
+    customerConstraints: GoogleCloudChannelV1CustomerConstraintsSchema.exactOptional().openapi({
+      description: 'Represents constraints required to purchase the Offer for a customer.',
+    }),
+  })
+  .openapi({ description: 'Represents the constraints for buying the Offer.', required: [] })
+  .openapi('GoogleCloudChannelV1Constraints')
+
+const GoogleCloudChannelV1MediaSchema = z
+  .object({
+    content: z.string().exactOptional().openapi({ description: 'URL of the media.' }),
+    title: z.string().exactOptional().openapi({ description: 'Title of the media.' }),
+    type: z
+      .enum(['MEDIA_TYPE_UNSPECIFIED', 'MEDIA_TYPE_IMAGE'])
+      .exactOptional()
+      .openapi({ description: 'Type of the media.' }),
+  })
+  .openapi({ description: 'Represents media information.', required: [] })
+  .openapi('GoogleCloudChannelV1Media')
+
+const GoogleCloudChannelV1MarketingInfoSchema = z
+  .object({
+    defaultLogo: GoogleCloudChannelV1MediaSchema.exactOptional().openapi({
+      description: 'Default logo.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Human readable description. Description can contain HTML.' }),
+    displayName: z.string().exactOptional().openapi({ description: 'Human readable name.' }),
+  })
+  .openapi({
+    description: 'Represents the marketing information for a Product, SKU or Offer.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1MarketingInfo')
+
+const GoogleCloudChannelV1ValueSchema = z
+  .object({
+    boolValue: z.boolean().exactOptional().openapi({ description: 'Represents a boolean value.' }),
+    doubleValue: z.float64().exactOptional().openapi({ description: 'Represents a double value.' }),
+    int64Value: z.string().exactOptional().openapi({ description: 'Represents an int64 value.' }),
+    protoValue: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: "Represents an 'Any' proto value." }),
+    stringValue: z.string().exactOptional().openapi({ description: 'Represents a string value.' }),
+  })
+  .openapi({ description: 'Data type and value of a parameter.', required: [] })
+  .openapi('GoogleCloudChannelV1Value')
+
+const GoogleCloudChannelV1ParameterDefinitionSchema = z
+  .object({
+    allowedValues: z
+      .array(GoogleCloudChannelV1ValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'If not empty, parameter values must be drawn from this list. For example, [us-west1, us-west2, ...] Applicable to STRING parameter type.',
+      }),
+    maxValue: GoogleCloudChannelV1ValueSchema.exactOptional().openapi({
+      description:
+        'Maximum value of the parameter, if applicable. Inclusive. For example, maximum seats when purchasing Google Workspace Business Standard. Applicable to INT64 and DOUBLE parameter types.',
+    }),
+    minValue: GoogleCloudChannelV1ValueSchema.exactOptional().openapi({
+      description:
+        'Minimal value of the parameter, if applicable. Inclusive. For example, minimal commitment when purchasing Anthos is 0.01. Applicable to INT64 and DOUBLE parameter types.',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the parameter.' }),
+    optional: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If set to true, parameter is optional to purchase this Offer.' }),
+    parameterType: z
+      .enum(['PARAMETER_TYPE_UNSPECIFIED', 'INT64', 'STRING', 'DOUBLE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Data type of the parameter. Minimal value, Maximum value and allowed values will use specified data type here.',
+      }),
+  })
+  .openapi({
+    description:
+      "Parameter's definition. Specifies what parameter is required to use the current Offer to purchase.",
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1ParameterDefinition')
+
+const GoogleCloudChannelV1PeriodSchema = z
+  .object({
+    duration: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Total duration of Period Type defined.' }),
+    periodType: z
+      .enum(['PERIOD_TYPE_UNSPECIFIED', 'DAY', 'MONTH', 'YEAR'])
+      .exactOptional()
+      .openapi({ description: 'Period Type.' }),
+  })
+  .openapi({ description: 'Represents period in days/months/years.', required: [] })
+  .openapi('GoogleCloudChannelV1Period')
+
+const GoogleCloudChannelV1PlanSchema = z
+  .object({
+    billingAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Reseller Billing account to charge after an offer transaction. Only present for Google Cloud Platform offers.',
+      }),
+    paymentCycle: GoogleCloudChannelV1PeriodSchema.exactOptional().openapi({
+      description: 'Describes how frequently the reseller will be billed, such as once per month.',
+    }),
+    paymentPlan: z
+      .enum(['PAYMENT_PLAN_UNSPECIFIED', 'COMMITMENT', 'FLEXIBLE', 'FREE', 'TRIAL', 'OFFLINE'])
+      .exactOptional()
+      .openapi({ description: 'Describes how a reseller will be billed.' }),
+    paymentType: z
+      .enum(['PAYMENT_TYPE_UNSPECIFIED', 'PREPAY', 'POSTPAY'])
+      .exactOptional()
+      .openapi({ description: 'Specifies when the payment needs to happen.' }),
+    trialPeriod: GoogleCloudChannelV1PeriodSchema.exactOptional().openapi({
+      description:
+        'Present for Offers with a trial period. For trial-only Offers, a paid service needs to start before the trial period ends for continued service. For Regular Offers with a trial period, the regular pricing goes into effect when trial period ends, or if paid service is started before the end of the trial period.',
+    }),
+  })
+  .openapi({
+    description: 'The payment plan for the Offer. Describes how to make a payment.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1Plan')
+
+const GoogleTypeMoneySchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
+      }),
+    units: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
+      }),
+  })
+  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
+  .openapi('GoogleTypeMoney')
+
+const GoogleCloudChannelV1PriceSchema = z
+  .object({
+    basePrice: GoogleTypeMoneySchema.exactOptional().openapi({ description: 'Base price.' }),
+    discount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Discount percentage, represented as decimal. For example, a 20% discount will be represent as 0.2.',
+      }),
+    effectivePrice: GoogleTypeMoneySchema.exactOptional().openapi({
+      description: 'Effective Price after applying the discounts.',
+    }),
+    externalPriceUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to external price list, such as link to Google Voice rate card.',
+      }),
+  })
+  .openapi({ description: 'Represents the price of the Offer.', required: [] })
+  .openapi('GoogleCloudChannelV1Price')
+
+const GoogleCloudChannelV1PriceTierSchema = z
+  .object({
+    firstResource: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'First resource for which the tier price applies.' }),
+    lastResource: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Last resource for which the tier price applies.' }),
+    price: GoogleCloudChannelV1PriceSchema.exactOptional().openapi({
+      description: 'Price of the tier.',
+    }),
+  })
+  .openapi({
+    description:
+      'Defines price at resource tier level. For example, an offer with following definition : * Tier 1: Provide 25% discount for all seats between 1 and 25. * Tier 2: Provide 10% discount for all seats between 26 and 100. * Tier 3: Provide flat 15% discount for all seats above 100. Each of these tiers is represented as a PriceTier.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1PriceTier')
+
+const GoogleCloudChannelV1PricePhaseSchema = z
+  .object({
+    firstPeriod: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Defines first period for the phase.' }),
+    lastPeriod: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Defines first period for the phase.' }),
+    periodType: z
+      .enum(['PERIOD_TYPE_UNSPECIFIED', 'DAY', 'MONTH', 'YEAR'])
+      .exactOptional()
+      .openapi({ description: 'Defines the phase period type.' }),
+    price: GoogleCloudChannelV1PriceSchema.exactOptional().openapi({
+      description: 'Price of the phase. Present if there are no price tiers.',
+    }),
+    priceTiers: z
+      .array(GoogleCloudChannelV1PriceTierSchema)
+      .exactOptional()
+      .openapi({ description: 'Price by the resource tiers.' }),
+  })
+  .openapi({
+    description:
+      'Specifies the price by the duration of months. For example, a 20% discount for the first six months, then a 10% discount starting on the seventh month.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1PricePhase')
+
+const GoogleCloudChannelV1PriceByResourceSchema = z
+  .object({
+    price: GoogleCloudChannelV1PriceSchema.exactOptional().openapi({
+      description: 'Price of the Offer. Present if there are no price phases.',
+    }),
+    pricePhases: z
+      .array(GoogleCloudChannelV1PricePhaseSchema)
+      .exactOptional()
+      .openapi({ description: 'Specifies the price by time range.' }),
+    resourceType: z
+      .enum([
+        'RESOURCE_TYPE_UNSPECIFIED',
+        'SEAT',
+        'MAU',
+        'GB',
+        'LICENSED_USER',
+        'MINUTES',
+        'IAAS_USAGE',
+        'SUBSCRIPTION',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Resource Type. Example: SEAT' }),
+  })
+  .openapi({ description: 'Represents price by resource type.', required: [] })
+  .openapi('GoogleCloudChannelV1PriceByResource')
+
+const GoogleCloudChannelV1ProductSchema = z
+  .object({
+    marketingInfo: GoogleCloudChannelV1MarketingInfoSchema.exactOptional().openapi({
+      description: 'Marketing information for the product.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Resource Name of the Product. Format: products/{product_id}' }),
+  })
+  .openapi({
+    description:
+      'A Product is the entity a customer uses when placing an order. For example, Google Workspace, Google Voice, etc.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1Product')
+
+const GoogleCloudChannelV1SkuSchema = z
+  .object({
+    marketingInfo: GoogleCloudChannelV1MarketingInfoSchema.exactOptional().openapi({
+      description: 'Marketing information for the SKU.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Resource Name of the SKU. Format: products/{product_id}/skus/{sku_id}',
+      }),
+    product: GoogleCloudChannelV1ProductSchema.exactOptional().openapi({
+      description: 'Product the SKU is associated with.',
+    }),
+  })
+  .openapi({
+    description:
+      "Represents a product's purchasable Stock Keeping Unit (SKU). SKUs represent the different variations of the product. For example, Google Workspace Business Standard and Google Workspace Business Plus are Google Workspace product SKUs.",
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1Sku')
+
+type GoogleCloudChannelV1OfferType = {
+  constraints?: z.infer<typeof GoogleCloudChannelV1ConstraintsSchema>
+  dealCode?: string
+  endTime?: string
+  marketingInfo?: z.infer<typeof GoogleCloudChannelV1MarketingInfoSchema>
+  name?: string
+  parameterDefinitions?: z.infer<typeof GoogleCloudChannelV1ParameterDefinitionSchema>[]
+  plan?: z.infer<typeof GoogleCloudChannelV1PlanSchema>
+  priceByResources?: z.infer<typeof GoogleCloudChannelV1PriceByResourceSchema>[]
+  sku?: z.infer<typeof GoogleCloudChannelV1SkuSchema>
+  startTime?: string
+}
+
+const GoogleCloudChannelV1OfferSchema: z.ZodType<GoogleCloudChannelV1OfferType> = z
+  .object({
+    constraints: GoogleCloudChannelV1ConstraintsSchema.exactOptional().openapi({
+      description: 'Constraints on transacting the Offer.',
+    }),
+    dealCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The deal code of the offer to get a special promotion or discount.',
+      }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. End of the Offer validity time.', readOnly: true }),
+    marketingInfo: GoogleCloudChannelV1MarketingInfoSchema.exactOptional().openapi({
+      description: 'Marketing information for the Offer.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Resource Name of the Offer. Format: accounts/{account_id}/offers/{offer_id}',
+      }),
+    parameterDefinitions: z
+      .array(GoogleCloudChannelV1ParameterDefinitionSchema)
+      .exactOptional()
+      .openapi({ description: 'Parameters required to use current Offer to purchase.' }),
+    plan: GoogleCloudChannelV1PlanSchema.exactOptional().openapi({
+      description: 'Describes the payment plan for the Offer.',
+    }),
+    priceByResources: z
+      .array(GoogleCloudChannelV1PriceByResourceSchema)
+      .exactOptional()
+      .openapi({ description: 'Price for each monetizable resource type.' }),
+    sku: GoogleCloudChannelV1SkuSchema.exactOptional().openapi({
+      description: 'SKU the offer is associated with.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start of the Offer validity time.' }),
+  })
+  .openapi({
+    description:
+      'Represents an offer made to resellers for purchase. An offer is associated with a Sku, has a plan for payment, a price, and defines the constraints for buying.',
+    required: [],
+  })
+  .openapi('GoogleCloudChannelV1Offer')
+
+type GoogleCloudChannelV1ListOffersResponseType = {
+  nextPageToken?: string
+  offers?: z.infer<typeof GoogleCloudChannelV1OfferSchema>[]
+}
+
+type GoogleCloudChannelV1PurchasableOfferType = {
+  offer?: z.infer<typeof GoogleCloudChannelV1OfferSchema>
+}
+
+const GoogleCloudChannelV1PurchasableOfferSchema: z.ZodType<GoogleCloudChannelV1PurchasableOfferType> =
+  z
+    .object({
+      offer: GoogleCloudChannelV1OfferSchema.exactOptional().openapi({ description: 'Offer.' }),
+    })
+    .openapi({
+      description:
+        'Offer that you can purchase for a customer. This is used in the ListPurchasableOffer API response.',
+      required: [],
+    })
+    .openapi('GoogleCloudChannelV1PurchasableOffer')
+
+type GoogleCloudChannelV1ListPurchasableOffersResponseType = {
+  nextPageToken?: string
+  purchasableOffers?: z.infer<typeof GoogleCloudChannelV1PurchasableOfferSchema>[]
+}
+
+type GoogleCloudChannelV1TransferableOfferType = {
+  offer?: z.infer<typeof GoogleCloudChannelV1OfferSchema>
+}
+
+const GoogleCloudChannelV1TransferableOfferSchema: z.ZodType<GoogleCloudChannelV1TransferableOfferType> =
+  z
+    .object({
+      offer: GoogleCloudChannelV1OfferSchema.exactOptional().openapi({
+        description: 'Offer with parameter constraints updated to allow the Transfer.',
+      }),
+    })
+    .openapi({
+      description: 'TransferableOffer represents an Offer that can be used in Transfer. Read-only.',
+      required: [],
+    })
+    .openapi('GoogleCloudChannelV1TransferableOffer')
+
+type GoogleCloudChannelV1ListTransferableOffersResponseType = {
+  nextPageToken?: string
+  transferableOffers?: z.infer<typeof GoogleCloudChannelV1TransferableOfferSchema>[]
+}
+
 const GoogleCloudChannelV1ActivateEntitlementRequestSchema = z
   .object({
     requestId: z
@@ -61,27 +755,6 @@ const GoogleCloudChannelV1CancelEntitlementRequestSchema = z
     required: [],
   })
   .openapi('GoogleCloudChannelV1CancelEntitlementRequest')
-
-const GoogleCloudChannelV1ValueSchema = z
-  .object({
-    boolValue: z.boolean().exactOptional().openapi({ description: 'Represents a boolean value.' }),
-    doubleValue: z.float64().exactOptional().openapi({ description: 'Represents a double value.' }),
-    int64Value: z.string().exactOptional().openapi({ description: 'Represents an int64 value.' }),
-    protoValue: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({ description: "Represents an 'Any' proto value." }),
-    stringValue: z.string().exactOptional().openapi({ description: 'Represents a string value.' }),
-  })
-  .openapi({ description: 'Data type and value of a parameter.', required: [] })
-  .openapi('GoogleCloudChannelV1Value')
 
 const GoogleCloudChannelV1ParameterSchema = z
   .object({
@@ -157,20 +830,6 @@ const GoogleCloudChannelV1ChangeParametersRequestSchema = z
     required: [],
   })
   .openapi('GoogleCloudChannelV1ChangeParametersRequest')
-
-const GoogleCloudChannelV1PeriodSchema = z
-  .object({
-    duration: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Total duration of Period Type defined.' }),
-    periodType: z
-      .enum(['PERIOD_TYPE_UNSPECIFIED', 'DAY', 'MONTH', 'YEAR'])
-      .exactOptional()
-      .openapi({ description: 'Period Type.' }),
-  })
-  .openapi({ description: 'Represents period in days/months/years.', required: [] })
-  .openapi('GoogleCloudChannelV1Period')
 
 const GoogleCloudChannelV1RenewalSettingsSchema = z
   .object({
@@ -345,222 +1004,6 @@ const GoogleCloudChannelV1ChannelPartnerLinkSchema = z
   })
   .openapi('GoogleCloudChannelV1ChannelPartnerLink')
 
-const GoogleTypeDecimalSchema = z
-  .object({
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The decimal value, as a string. The string representation consists of an optional sign, `+` (`U+002B`) or `-` (`U+002D`), followed by a sequence of zero or more decimal digits (\"the integer\"), optionally followed by a fraction, optionally followed by an exponent. An empty string **should** be interpreted as `0`. The fraction consists of a decimal point followed by zero or more decimal digits. The string must contain at least one digit in either the integer or the fraction. The number formed by the sign, the integer and the fraction is referred to as the significand. The exponent consists of the character `e` (`U+0065`) or `E` (`U+0045`) followed by one or more decimal digits. Services **should** normalize decimal values before storing them by: - Removing an explicitly-provided `+` sign (`+2.5` -> `2.5`). - Replacing a zero-length integer value with `0` (`.5` -> `0.5`). - Coercing the exponent character to upper-case, with explicit sign (`2.5e8` -> `2.5E+8`). - Removing an explicitly-provided zero exponent (`2.5E0` -> `2.5`). Services **may** perform additional normalization based on its own needs and the internal decimal implementation selected, such as shifting the decimal point and exponent value together (example: `2.5E-1` <-> `0.25`). Additionally, services **may** preserve trailing zeroes in the fraction to indicate increased precision, but are not required to do so. Note that only the `.` character is supported to divide the integer and the fraction; `,` **should not** be supported regardless of locale. Additionally, thousand separators **should not** be supported. If a service does support them, values **must** be normalized. The ENBF grammar is: DecimalString = '' | [Sign] Significand [Exponent]; Sign = '+' | '-'; Significand = Digits '.' | [Digits] '.' Digits; Exponent = ('e' | 'E') [Sign] Digits; Digits = { '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' }; Services **should** clearly document the range of supported values, the maximum supported precision (total number of digits), and, if applicable, the scale (number of digits after the decimal point), as well as how it behaves when receiving out-of-bounds values. Services **may** choose to accept values passed as input even when the value has a higher precision or scale than the service supports, and **should** round the value to fit the supported scale. Alternatively, the service **may** error with `400 Bad Request` (`INVALID_ARGUMENT` in gRPC) if precision would be lost. Services **should** error with `400 Bad Request` (`INVALID_ARGUMENT` in gRPC) if the service receives a value outside of the supported range.",
-      }),
-  })
-  .openapi({
-    description:
-      "A representation of a decimal value, such as 2.5. Clients may convert values into language-native decimal formats, such as Java's BigDecimal or Python's decimal.Decimal. [BigDecimal]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html [decimal.Decimal]: https://docs.python.org/3/library/decimal.html",
-    required: [],
-  })
-  .openapi('GoogleTypeDecimal')
-
-const GoogleCloudChannelV1PercentageAdjustmentSchema = z
-  .object({
-    percentage: GoogleTypeDecimalSchema.exactOptional().openapi({
-      description:
-        'The percentage of the bill to adjust. For example: Mark down by 1% => "-1.00" Mark up by 1% => "1.00" Pass-Through => "0.00"',
-    }),
-  })
-  .openapi({
-    description: 'An adjustment that applies a flat markup or markdown to an entire bill.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1PercentageAdjustment')
-
-const GoogleCloudChannelV1RepricingAdjustmentSchema = z
-  .object({
-    percentageAdjustment: GoogleCloudChannelV1PercentageAdjustmentSchema.exactOptional().openapi({
-      description: 'Flat markup or markdown on an entire bill.',
-    }),
-  })
-  .openapi({
-    description: 'A type that represents the various adjustments you can apply to a bill.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1RepricingAdjustment')
-
-const GoogleCloudChannelV1RepricingConfigChannelPartnerGranularitySchema = z
-  .object({})
-  .openapi({
-    description:
-      'Applies the repricing configuration at the channel partner level. The channel partner value is derived from the resource name. Takes an empty json object.',
-  })
-  .openapi('GoogleCloudChannelV1RepricingConfigChannelPartnerGranularity')
-
-const GoogleCloudChannelV1SkuGroupConditionSchema = z
-  .object({
-    skuGroup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a SKU group (https://cloud.google.com/skus/sku-groups). Resource name of SKU group. Format: accounts/{account}/skuGroups/{sku_group}. Example: "accounts/C01234/skuGroups/3d50fd57-3157-4577-a5a9-a219b8490041".',
-      }),
-  })
-  .openapi({
-    description:
-      'A condition that applies the override if a line item SKU is found in the SKU group.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1SkuGroupCondition')
-
-const GoogleCloudChannelV1RepricingConditionSchema = z
-  .object({
-    skuGroupCondition: GoogleCloudChannelV1SkuGroupConditionSchema.exactOptional().openapi({
-      description: 'SKU Group condition for override.',
-    }),
-  })
-  .openapi({
-    description:
-      'Represents the various repricing conditions you can use for a conditional override.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1RepricingCondition')
-
-const GoogleCloudChannelV1ConditionalOverrideSchema = z
-  .object({
-    adjustment: GoogleCloudChannelV1RepricingAdjustmentSchema.exactOptional().openapi({
-      description: "Required. Information about the applied override's adjustment.",
-    }),
-    rebillingBasis: z
-      .enum(['REBILLING_BASIS_UNSPECIFIED', 'COST_AT_LIST', 'DIRECT_CUSTOMER_COST'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The RebillingBasis to use for the applied override. Shows the relative cost based on your repricing costs.',
-      }),
-    repricingCondition: GoogleCloudChannelV1RepricingConditionSchema.exactOptional().openapi({
-      description: 'Required. Specifies the condition which, if met, will apply the override.',
-    }),
-  })
-  .openapi({ description: 'Specifies the override to conditionally apply.', required: [] })
-  .openapi('GoogleCloudChannelV1ConditionalOverride')
-
-const GoogleTypeDateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('GoogleTypeDate')
-
-const GoogleCloudChannelV1RepricingConfigEntitlementGranularitySchema = z
-  .object({
-    entitlement: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of the entitlement. Format: accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id}',
-      }),
-  })
-  .openapi({
-    description: 'Applies the repricing configuration at the entitlement level.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1RepricingConfigEntitlementGranularity')
-
-const GoogleCloudChannelV1RepricingConfigSchema = z
-  .object({
-    adjustment: GoogleCloudChannelV1RepricingAdjustmentSchema.exactOptional().openapi({
-      description: 'Required. Information about the adjustment.',
-    }),
-    channelPartnerGranularity:
-      GoogleCloudChannelV1RepricingConfigChannelPartnerGranularitySchema.exactOptional().openapi({
-        description:
-          'Applies the repricing configuration at the channel partner level. This is the only supported value for ChannelPartnerRepricingConfig.',
-      }),
-    conditionalOverrides: z
-      .array(GoogleCloudChannelV1ConditionalOverrideSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The conditional overrides to apply for this configuration. If you list multiple overrides, only the first valid override is used. If you don't list any overrides, the API uses the normal adjustment and rebilling basis.",
-      }),
-    effectiveInvoiceMonth: GoogleTypeDateSchema.exactOptional().openapi({
-      description:
-        'Required. The YearMonth when these adjustments activate. The Day field needs to be "0" since we only accept YearMonth repricing boundaries.',
-    }),
-    entitlementGranularity:
-      GoogleCloudChannelV1RepricingConfigEntitlementGranularitySchema.exactOptional().openapi({
-        description:
-          'Applies the repricing configuration at the entitlement level. This is the only supported value for CustomerRepricingConfig.',
-      }),
-    rebillingBasis: z
-      .enum(['REBILLING_BASIS_UNSPECIFIED', 'COST_AT_LIST', 'DIRECT_CUSTOMER_COST'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The RebillingBasis to use for this bill. Specifies the relative cost based on repricing costs you will apply.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for repricing a Google bill over a period of time.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1RepricingConfig')
-
-const GoogleCloudChannelV1ChannelPartnerRepricingConfigSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Resource name of the ChannelPartnerRepricingConfig. Format: accounts/{account_id}/channelPartnerLinks/{channel_partner_id}/channelPartnerRepricingConfigs/{id}.',
-        readOnly: true,
-      }),
-    repricingConfig: GoogleCloudChannelV1RepricingConfigSchema.exactOptional().openapi({
-      description:
-        'Required. The configuration for bill modifications made by a reseller before sending it to ChannelPartner.',
-    }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Timestamp of an update to the repricing rule. If `update_time` is after RepricingConfig.effective_invoice_month then it indicates this was set mid-month.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration for how a distributor will rebill a channel partner (also known as a distributor-authorized reseller).',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1ChannelPartnerRepricingConfig')
-
 const GoogleCloudChannelV1CheckCloudIdentityAccountsExistRequestSchema = z
   .object({
     domain: z
@@ -659,38 +1102,6 @@ const GoogleCloudChannelV1CommitmentSettingsSchema = z
   })
   .openapi({ description: 'Commitment settings for commitment-based offers.', required: [] })
   .openapi('GoogleCloudChannelV1CommitmentSettings')
-
-const GoogleCloudChannelV1CustomerConstraintsSchema = z
-  .object({
-    allowedCustomerTypes: z
-      .array(z.enum(['CUSTOMER_TYPE_UNSPECIFIED', 'DOMAIN', 'TEAM']))
-      .exactOptional()
-      .openapi({ description: 'Allowed Customer Type.' }),
-    allowedRegions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Allowed geographical regions of the customer.' }),
-    promotionalOrderTypes: z
-      .array(
-        z.enum(['PROMOTIONAL_TYPE_UNSPECIFIED', 'NEW_UPGRADE', 'TRANSFER', 'PROMOTION_SWITCH']),
-      )
-      .exactOptional()
-      .openapi({ description: 'Allowed Promotional Order Type. Present for Promotional offers.' }),
-  })
-  .openapi({
-    description: 'Represents constraints required to purchase the Offer for a customer.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1CustomerConstraints')
-
-const GoogleCloudChannelV1ConstraintsSchema = z
-  .object({
-    customerConstraints: GoogleCloudChannelV1CustomerConstraintsSchema.exactOptional().openapi({
-      description: 'Represents constraints required to purchase the Offer for a customer.',
-    }),
-  })
-  .openapi({ description: 'Represents the constraints for buying the Offer.', required: [] })
-  .openapi('GoogleCloudChannelV1Constraints')
 
 const GoogleCloudChannelV1ContactInfoSchema = z
   .object({
@@ -1083,35 +1494,6 @@ const GoogleCloudChannelV1CustomerEventSchema = z
   })
   .openapi('GoogleCloudChannelV1CustomerEvent')
 
-const GoogleCloudChannelV1CustomerRepricingConfigSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Resource name of the CustomerRepricingConfig. Format: accounts/{account_id}/customers/{customer_id}/customerRepricingConfigs/{id}.',
-        readOnly: true,
-      }),
-    repricingConfig: GoogleCloudChannelV1RepricingConfigSchema.exactOptional().openapi({
-      description:
-        'Required. The configuration for bill modifications made by a reseller before sending it to customers.',
-    }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Timestamp of an update to the repricing rule. If `update_time` is after RepricingConfig.effective_invoice_month then it indicates this was set mid-month.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Configuration for how a reseller will reprice a Customer.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1CustomerRepricingConfig')
-
 const GoogleTypeTimeZoneSchema = z
   .object({
     id: z
@@ -1439,30 +1821,6 @@ const GoogleCloudChannelV1ReportResultsMetadataSchema = z
   })
   .openapi('GoogleCloudChannelV1ReportResultsMetadata')
 
-const GoogleTypeMoneySchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
-      }),
-    units: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-      }),
-  })
-  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
-  .openapi('GoogleTypeMoney')
-
 const GoogleCloudChannelV1ReportValueSchema = z
   .object({
     dateTimeValue: GoogleTypeDateTimeSchema.exactOptional().openapi({
@@ -1583,45 +1941,47 @@ const GoogleCloudChannelV1ListChannelPartnerLinksResponseSchema = z
   })
   .openapi('GoogleCloudChannelV1ListChannelPartnerLinksResponse')
 
-const GoogleCloudChannelV1ListChannelPartnerRepricingConfigsResponseSchema = z
-  .object({
-    channelPartnerRepricingConfigs: z
-      .array(GoogleCloudChannelV1ChannelPartnerRepricingConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The repricing configs for this channel partner.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token to retrieve the next page of results. Pass to ListChannelPartnerRepricingConfigsRequest.page_token to obtain that page.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for CloudChannelService.ListChannelPartnerRepricingConfigs.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1ListChannelPartnerRepricingConfigsResponse')
+const GoogleCloudChannelV1ListChannelPartnerRepricingConfigsResponseSchema: z.ZodType<GoogleCloudChannelV1ListChannelPartnerRepricingConfigsResponseType> =
+  z
+    .object({
+      channelPartnerRepricingConfigs: z
+        .array(GoogleCloudChannelV1ChannelPartnerRepricingConfigSchema)
+        .exactOptional()
+        .openapi({ description: 'The repricing configs for this channel partner.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token to retrieve the next page of results. Pass to ListChannelPartnerRepricingConfigsRequest.page_token to obtain that page.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for CloudChannelService.ListChannelPartnerRepricingConfigs.',
+      required: [],
+    })
+    .openapi('GoogleCloudChannelV1ListChannelPartnerRepricingConfigsResponse')
 
-const GoogleCloudChannelV1ListCustomerRepricingConfigsResponseSchema = z
-  .object({
-    customerRepricingConfigs: z
-      .array(GoogleCloudChannelV1CustomerRepricingConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The repricing configs for this channel partner.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token to retrieve the next page of results. Pass to ListCustomerRepricingConfigsRequest.page_token to obtain that page.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for CloudChannelService.ListCustomerRepricingConfigs.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1ListCustomerRepricingConfigsResponse')
+const GoogleCloudChannelV1ListCustomerRepricingConfigsResponseSchema: z.ZodType<GoogleCloudChannelV1ListCustomerRepricingConfigsResponseType> =
+  z
+    .object({
+      customerRepricingConfigs: z
+        .array(GoogleCloudChannelV1CustomerRepricingConfigSchema)
+        .exactOptional()
+        .openapi({ description: 'The repricing configs for this channel partner.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token to retrieve the next page of results. Pass to ListCustomerRepricingConfigsRequest.page_token to obtain that page.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for CloudChannelService.ListCustomerRepricingConfigs.',
+      required: [],
+    })
+    .openapi('GoogleCloudChannelV1ListCustomerRepricingConfigsResponse')
 
 const GoogleCloudChannelV1ListCustomersResponseSchema = z
   .object({
@@ -1677,304 +2037,20 @@ const GoogleCloudChannelV1ListEntitlementsResponseSchema = z
   })
   .openapi('GoogleCloudChannelV1ListEntitlementsResponse')
 
-const GoogleCloudChannelV1MediaSchema = z
-  .object({
-    content: z.string().exactOptional().openapi({ description: 'URL of the media.' }),
-    title: z.string().exactOptional().openapi({ description: 'Title of the media.' }),
-    type: z
-      .enum(['MEDIA_TYPE_UNSPECIFIED', 'MEDIA_TYPE_IMAGE'])
-      .exactOptional()
-      .openapi({ description: 'Type of the media.' }),
-  })
-  .openapi({ description: 'Represents media information.', required: [] })
-  .openapi('GoogleCloudChannelV1Media')
-
-const GoogleCloudChannelV1MarketingInfoSchema = z
-  .object({
-    defaultLogo: GoogleCloudChannelV1MediaSchema.exactOptional().openapi({
-      description: 'Default logo.',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Human readable description. Description can contain HTML.' }),
-    displayName: z.string().exactOptional().openapi({ description: 'Human readable name.' }),
-  })
-  .openapi({
-    description: 'Represents the marketing information for a Product, SKU or Offer.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1MarketingInfo')
-
-const GoogleCloudChannelV1ParameterDefinitionSchema = z
-  .object({
-    allowedValues: z
-      .array(GoogleCloudChannelV1ValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If not empty, parameter values must be drawn from this list. For example, [us-west1, us-west2, ...] Applicable to STRING parameter type.',
-      }),
-    maxValue: GoogleCloudChannelV1ValueSchema.exactOptional().openapi({
-      description:
-        'Maximum value of the parameter, if applicable. Inclusive. For example, maximum seats when purchasing Google Workspace Business Standard. Applicable to INT64 and DOUBLE parameter types.',
-    }),
-    minValue: GoogleCloudChannelV1ValueSchema.exactOptional().openapi({
-      description:
-        'Minimal value of the parameter, if applicable. Inclusive. For example, minimal commitment when purchasing Anthos is 0.01. Applicable to INT64 and DOUBLE parameter types.',
-    }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the parameter.' }),
-    optional: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If set to true, parameter is optional to purchase this Offer.' }),
-    parameterType: z
-      .enum(['PARAMETER_TYPE_UNSPECIFIED', 'INT64', 'STRING', 'DOUBLE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Data type of the parameter. Minimal value, Maximum value and allowed values will use specified data type here.',
-      }),
-  })
-  .openapi({
-    description:
-      "Parameter's definition. Specifies what parameter is required to use the current Offer to purchase.",
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1ParameterDefinition')
-
-const GoogleCloudChannelV1PlanSchema = z
-  .object({
-    billingAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Reseller Billing account to charge after an offer transaction. Only present for Google Cloud Platform offers.',
-      }),
-    paymentCycle: GoogleCloudChannelV1PeriodSchema.exactOptional().openapi({
-      description: 'Describes how frequently the reseller will be billed, such as once per month.',
-    }),
-    paymentPlan: z
-      .enum(['PAYMENT_PLAN_UNSPECIFIED', 'COMMITMENT', 'FLEXIBLE', 'FREE', 'TRIAL', 'OFFLINE'])
-      .exactOptional()
-      .openapi({ description: 'Describes how a reseller will be billed.' }),
-    paymentType: z
-      .enum(['PAYMENT_TYPE_UNSPECIFIED', 'PREPAY', 'POSTPAY'])
-      .exactOptional()
-      .openapi({ description: 'Specifies when the payment needs to happen.' }),
-    trialPeriod: GoogleCloudChannelV1PeriodSchema.exactOptional().openapi({
-      description:
-        'Present for Offers with a trial period. For trial-only Offers, a paid service needs to start before the trial period ends for continued service. For Regular Offers with a trial period, the regular pricing goes into effect when trial period ends, or if paid service is started before the end of the trial period.',
-    }),
-  })
-  .openapi({
-    description: 'The payment plan for the Offer. Describes how to make a payment.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1Plan')
-
-const GoogleCloudChannelV1PriceSchema = z
-  .object({
-    basePrice: GoogleTypeMoneySchema.exactOptional().openapi({ description: 'Base price.' }),
-    discount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Discount percentage, represented as decimal. For example, a 20% discount will be represent as 0.2.',
-      }),
-    effectivePrice: GoogleTypeMoneySchema.exactOptional().openapi({
-      description: 'Effective Price after applying the discounts.',
-    }),
-    externalPriceUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to external price list, such as link to Google Voice rate card.',
-      }),
-  })
-  .openapi({ description: 'Represents the price of the Offer.', required: [] })
-  .openapi('GoogleCloudChannelV1Price')
-
-const GoogleCloudChannelV1PriceTierSchema = z
-  .object({
-    firstResource: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'First resource for which the tier price applies.' }),
-    lastResource: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Last resource for which the tier price applies.' }),
-    price: GoogleCloudChannelV1PriceSchema.exactOptional().openapi({
-      description: 'Price of the tier.',
-    }),
-  })
-  .openapi({
-    description:
-      'Defines price at resource tier level. For example, an offer with following definition : * Tier 1: Provide 25% discount for all seats between 1 and 25. * Tier 2: Provide 10% discount for all seats between 26 and 100. * Tier 3: Provide flat 15% discount for all seats above 100. Each of these tiers is represented as a PriceTier.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1PriceTier')
-
-const GoogleCloudChannelV1PricePhaseSchema = z
-  .object({
-    firstPeriod: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Defines first period for the phase.' }),
-    lastPeriod: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Defines first period for the phase.' }),
-    periodType: z
-      .enum(['PERIOD_TYPE_UNSPECIFIED', 'DAY', 'MONTH', 'YEAR'])
-      .exactOptional()
-      .openapi({ description: 'Defines the phase period type.' }),
-    price: GoogleCloudChannelV1PriceSchema.exactOptional().openapi({
-      description: 'Price of the phase. Present if there are no price tiers.',
-    }),
-    priceTiers: z
-      .array(GoogleCloudChannelV1PriceTierSchema)
-      .exactOptional()
-      .openapi({ description: 'Price by the resource tiers.' }),
-  })
-  .openapi({
-    description:
-      'Specifies the price by the duration of months. For example, a 20% discount for the first six months, then a 10% discount starting on the seventh month.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1PricePhase')
-
-const GoogleCloudChannelV1PriceByResourceSchema = z
-  .object({
-    price: GoogleCloudChannelV1PriceSchema.exactOptional().openapi({
-      description: 'Price of the Offer. Present if there are no price phases.',
-    }),
-    pricePhases: z
-      .array(GoogleCloudChannelV1PricePhaseSchema)
-      .exactOptional()
-      .openapi({ description: 'Specifies the price by time range.' }),
-    resourceType: z
-      .enum([
-        'RESOURCE_TYPE_UNSPECIFIED',
-        'SEAT',
-        'MAU',
-        'GB',
-        'LICENSED_USER',
-        'MINUTES',
-        'IAAS_USAGE',
-        'SUBSCRIPTION',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Resource Type. Example: SEAT' }),
-  })
-  .openapi({ description: 'Represents price by resource type.', required: [] })
-  .openapi('GoogleCloudChannelV1PriceByResource')
-
-const GoogleCloudChannelV1ProductSchema = z
-  .object({
-    marketingInfo: GoogleCloudChannelV1MarketingInfoSchema.exactOptional().openapi({
-      description: 'Marketing information for the product.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Resource Name of the Product. Format: products/{product_id}' }),
-  })
-  .openapi({
-    description:
-      'A Product is the entity a customer uses when placing an order. For example, Google Workspace, Google Voice, etc.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1Product')
-
-const GoogleCloudChannelV1SkuSchema = z
-  .object({
-    marketingInfo: GoogleCloudChannelV1MarketingInfoSchema.exactOptional().openapi({
-      description: 'Marketing information for the SKU.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Resource Name of the SKU. Format: products/{product_id}/skus/{sku_id}',
-      }),
-    product: GoogleCloudChannelV1ProductSchema.exactOptional().openapi({
-      description: 'Product the SKU is associated with.',
-    }),
-  })
-  .openapi({
-    description:
-      "Represents a product's purchasable Stock Keeping Unit (SKU). SKUs represent the different variations of the product. For example, Google Workspace Business Standard and Google Workspace Business Plus are Google Workspace product SKUs.",
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1Sku')
-
-const GoogleCloudChannelV1OfferSchema = z
-  .object({
-    constraints: GoogleCloudChannelV1ConstraintsSchema.exactOptional().openapi({
-      description: 'Constraints on transacting the Offer.',
-    }),
-    dealCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The deal code of the offer to get a special promotion or discount.',
-      }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. End of the Offer validity time.', readOnly: true }),
-    marketingInfo: GoogleCloudChannelV1MarketingInfoSchema.exactOptional().openapi({
-      description: 'Marketing information for the Offer.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Resource Name of the Offer. Format: accounts/{account_id}/offers/{offer_id}',
-      }),
-    parameterDefinitions: z
-      .array(GoogleCloudChannelV1ParameterDefinitionSchema)
-      .exactOptional()
-      .openapi({ description: 'Parameters required to use current Offer to purchase.' }),
-    plan: GoogleCloudChannelV1PlanSchema.exactOptional().openapi({
-      description: 'Describes the payment plan for the Offer.',
-    }),
-    priceByResources: z
-      .array(GoogleCloudChannelV1PriceByResourceSchema)
-      .exactOptional()
-      .openapi({ description: 'Price for each monetizable resource type.' }),
-    sku: GoogleCloudChannelV1SkuSchema.exactOptional().openapi({
-      description: 'SKU the offer is associated with.',
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Start of the Offer validity time.' }),
-  })
-  .openapi({
-    description:
-      'Represents an offer made to resellers for purchase. An offer is associated with a Sku, has a plan for payment, a price, and defines the constraints for buying.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1Offer')
-
-const GoogleCloudChannelV1ListOffersResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token to retrieve the next page of results.' }),
-    offers: z
-      .array(GoogleCloudChannelV1OfferSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of Offers requested.' }),
-  })
-  .openapi({ description: 'Response message for ListOffers.', required: [] })
-  .openapi('GoogleCloudChannelV1ListOffersResponse')
+const GoogleCloudChannelV1ListOffersResponseSchema: z.ZodType<GoogleCloudChannelV1ListOffersResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A token to retrieve the next page of results.' }),
+      offers: z
+        .array(GoogleCloudChannelV1OfferSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of Offers requested.' }),
+    })
+    .openapi({ description: 'Response message for ListOffers.', required: [] })
+    .openapi('GoogleCloudChannelV1ListOffersResponse')
 
 const GoogleCloudChannelV1ListProductsResponseSchema = z
   .object({
@@ -1990,30 +2066,20 @@ const GoogleCloudChannelV1ListProductsResponseSchema = z
   .openapi({ description: 'Response message for ListProducts.', required: [] })
   .openapi('GoogleCloudChannelV1ListProductsResponse')
 
-const GoogleCloudChannelV1PurchasableOfferSchema = z
-  .object({
-    offer: GoogleCloudChannelV1OfferSchema.exactOptional().openapi({ description: 'Offer.' }),
-  })
-  .openapi({
-    description:
-      'Offer that you can purchase for a customer. This is used in the ListPurchasableOffer API response.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1PurchasableOffer')
-
-const GoogleCloudChannelV1ListPurchasableOffersResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token to retrieve the next page of results.' }),
-    purchasableOffers: z
-      .array(GoogleCloudChannelV1PurchasableOfferSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of Offers requested.' }),
-  })
-  .openapi({ description: 'Response message for ListPurchasableOffers.', required: [] })
-  .openapi('GoogleCloudChannelV1ListPurchasableOffersResponse')
+const GoogleCloudChannelV1ListPurchasableOffersResponseSchema: z.ZodType<GoogleCloudChannelV1ListPurchasableOffersResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A token to retrieve the next page of results.' }),
+      purchasableOffers: z
+        .array(GoogleCloudChannelV1PurchasableOfferSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of Offers requested.' }),
+    })
+    .openapi({ description: 'Response message for ListPurchasableOffers.', required: [] })
+    .openapi('GoogleCloudChannelV1ListPurchasableOffersResponse')
 
 const GoogleCloudChannelV1PurchasableSkuSchema = z
   .object({ sku: GoogleCloudChannelV1SkuSchema.exactOptional().openapi({ description: 'SKU' }) })
@@ -2139,39 +2205,28 @@ const GoogleCloudChannelV1ListTransferableOffersRequestSchema = z
   })
   .openapi('GoogleCloudChannelV1ListTransferableOffersRequest')
 
-const GoogleCloudChannelV1TransferableOfferSchema = z
-  .object({
-    offer: GoogleCloudChannelV1OfferSchema.exactOptional().openapi({
-      description: 'Offer with parameter constraints updated to allow the Transfer.',
-    }),
-  })
-  .openapi({
-    description: 'TransferableOffer represents an Offer that can be used in Transfer. Read-only.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1TransferableOffer')
-
-const GoogleCloudChannelV1ListTransferableOffersResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token to retrieve the next page of results. Pass to ListTransferableOffersRequest.page_token to obtain that page.',
-      }),
-    transferableOffers: z
-      .array(GoogleCloudChannelV1TransferableOfferSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Information about Offers for a customer that can be used for transfer.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for CloudChannelService.ListTransferableOffers.',
-    required: [],
-  })
-  .openapi('GoogleCloudChannelV1ListTransferableOffersResponse')
+const GoogleCloudChannelV1ListTransferableOffersResponseSchema: z.ZodType<GoogleCloudChannelV1ListTransferableOffersResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token to retrieve the next page of results. Pass to ListTransferableOffersRequest.page_token to obtain that page.',
+        }),
+      transferableOffers: z
+        .array(GoogleCloudChannelV1TransferableOfferSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Information about Offers for a customer that can be used for transfer.',
+        }),
+    })
+    .openapi({
+      description: 'Response message for CloudChannelService.ListTransferableOffers.',
+      required: [],
+    })
+    .openapi('GoogleCloudChannelV1ListTransferableOffersResponse')
 
 const GoogleCloudChannelV1ListTransferableSkusRequestSchema = z
   .object({
@@ -3188,7 +3243,7 @@ const GoogleCloudChannelV1alpha1TransferEntitlementsResponseSchema = z
   .openapi('GoogleCloudChannelV1alpha1TransferEntitlementsResponse')
 
 const GoogleLongrunningCancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('GoogleLongrunningCancelOperationRequest')
 
@@ -3303,7 +3358,7 @@ const GoogleLongrunningListOperationsResponseSchema = z
   .openapi('GoogleLongrunningListOperationsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

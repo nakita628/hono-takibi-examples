@@ -596,7 +596,7 @@ curl '<local-terminal-IP-address>/payment' \
         },
         "ReuseCardDataFlag": true,
         "ApprovalCode": "string",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "AmountValue": 0,
         "HostTransactionID": {
           "TransactionID": "string",
@@ -608,7 +608,7 @@ curl '<local-terminal-IP-address>/payment' \
           "string"
         ],
         "AcquirerID": [
-          0
+          "string"
         ],
         "DebitPreferredFlag": true,
         "AllowedLoyaltyBrand": [
@@ -653,12 +653,12 @@ curl '<local-terminal-IP-address>/payment' \
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -687,9 +687,9 @@ curl '<local-terminal-IP-address>/payment' \
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -703,16 +703,16 @@ curl '<local-terminal-IP-address>/payment' \
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -793,7 +793,7 @@ Content of the `PaymentRequest` message.
       },
       "ReuseCardDataFlag": true,
       "ApprovalCode": "string",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "AmountValue": 0,
       "HostTransactionID": {
         "TransactionID": "string",
@@ -805,7 +805,7 @@ Content of the `PaymentRequest` message.
         "string"
       ],
       "AcquirerID": [
-        0
+        "string"
       ],
       "DebitPreferredFlag": true,
       "AllowedLoyaltyBrand": [
@@ -850,12 +850,12 @@ Content of the `PaymentRequest` message.
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -884,9 +884,9 @@ Content of the `PaymentRequest` message.
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -900,16 +900,16 @@ Content of the `PaymentRequest` message.
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -986,7 +986,7 @@ Content of the `PaymentRequest` message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "PaymentResult": {
     "PaymentType": "Normal",
@@ -1000,12 +1000,12 @@ Content of the `PaymentRequest` message.
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -1034,9 +1034,9 @@ Content of the `PaymentRequest` message.
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -1050,16 +1050,16 @@ Content of the `PaymentRequest` message.
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -1121,7 +1121,7 @@ Content of the `PaymentRequest` message.
     ],
     "ValidityDate": "1970-01-01",
     "PaymentAcquirerData": {
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "MerchantID": "string",
       "AcquirerPOIID": "string",
       "AcquirerTransactionID": {
@@ -1355,7 +1355,7 @@ Content of the Card Acquisition Request message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "PaymentBrand": [
     "string"
@@ -1370,12 +1370,12 @@ Content of the Card Acquisition Request message.
       "EntryMode": [
         "RFID"
       ],
-      "CardCountryCode": 3,
+      "CardCountryCode": "string",
       "ProtectedCardData": "string",
       "SensitiveCardData": {
-        "PAN": 8,
-        "CardSeqNumb": 2,
-        "ExpiryDate": 4,
+        "PAN": "string",
+        "CardSeqNumb": "string",
+        "ExpiryDate": "string",
         "TrackData": [
           {
             "TrackNumb": 2,
@@ -1404,9 +1404,9 @@ Content of the Card Acquisition Request message.
       "Country": "string"
     },
     "MobileData": {
-      "MobileCountryCode": 3,
-      "MobileNetworkCode": 2,
-      "MaskedMSISDN": 0,
+      "MobileCountryCode": "string",
+      "MobileNetworkCode": "string",
+      "MaskedMSISDN": "string",
       "Geolocation": {
         "GeographicCoordinates": {
           "Latitude": "string",
@@ -1420,16 +1420,16 @@ Content of the Card Acquisition Request message.
       },
       "ProtectedMobileData": "string",
       "SensitiveMobileData": {
-        "MSISDN": 0,
-        "IMSI": 0,
-        "IMEI": 0
+        "MSISDN": "string",
+        "IMSI": "string",
+        "IMEI": "string"
       }
     },
     "StoredValueAccountID": {
       "StoredValueAccountType": "GiftCard",
       "StoredValueProvider": "string",
       "OwnerName": "string",
-      "ExpiryDate": 4,
+      "ExpiryDate": "string",
       "EntryMode": [
         "RFID"
       ],
@@ -1506,7 +1506,7 @@ curl '<local-terminal-IP-address>/storedvalue' \
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -1522,15 +1522,15 @@ curl '<local-terminal-IP-address>/storedvalue' \
           },
           "ReuseCardDataFlag": true,
           "ApprovalCode": "string",
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "AmountValue": 0,
           "HostTransactionID": {
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           }
         },
-        "ProductCode": 1,
-        "EanUpc": 0,
+        "ProductCode": "string",
+        "EanUpc": "string",
         "ItemAmount": 0,
         "Currency": "string"
       }
@@ -1578,7 +1578,7 @@ Content of the Stored Value Request message.
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -1594,15 +1594,15 @@ Content of the Stored Value Request message.
         },
         "ReuseCardDataFlag": true,
         "ApprovalCode": "string",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "AmountValue": 0,
         "HostTransactionID": {
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         }
       },
-      "ProductCode": 1,
-      "EanUpc": 0,
+      "ProductCode": "string",
+      "EanUpc": "string",
       "ItemAmount": 0,
       "Currency": "string"
     }
@@ -1657,13 +1657,13 @@ Content of the Stored Value Request message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "StoredValueResult": [
     {
       "StoredValueTransactionType": "Reserve",
-      "ProductCode": 1,
-      "EanUpc": 0,
+      "ProductCode": "string",
+      "EanUpc": "string",
       "ItemAmount": 0,
       "Currency": "string",
       "StoredValueAccountStatus": {
@@ -1671,7 +1671,7 @@ Content of the Stored Value Request message.
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -1774,7 +1774,7 @@ curl '<local-terminal-IP-address>/reversal' \
       },
       "ReuseCardDataFlag": true,
       "ApprovalCode": "string",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "AmountValue": 0,
       "HostTransactionID": {
         "TransactionID": "string",
@@ -1827,7 +1827,7 @@ Content of the Reversal Request message.
     },
     "ReuseCardDataFlag": true,
     "ApprovalCode": "string",
-    "AcquirerID": 0,
+    "AcquirerID": "string",
     "AmountValue": 0,
     "HostTransactionID": {
       "TransactionID": "string",
@@ -1846,7 +1846,7 @@ Content of the Reversal Request message.
 |body|body|[ReversalRequest](#schemareversalrequest)|false|none|
 |» SaleData|body|[SaleData](#schemasaledata)|false|Data associated with the Sale System, with a particular value during the processing of the payment by the POI, including the cards acquisition.|
 |» OriginalPOITransaction|body|[OriginalPOITransaction](#schemaoriginalpoitransaction)|true|Identification of a previous POI transaction.|
-|» ReversedAmount|body|number|false|Amount of the payment or loyalty to reverse.<br>ReversedAmount is implicitly equal to the AuthorizedAmount if absent.|
+|» ReversedAmount|body|number(double)|false|Amount of the payment or loyalty to reverse.<br>ReversedAmount is implicitly equal to the AuthorizedAmount if absent.|
 |» ReversalReason|body|[ReversalReason](#schemareversalreason)|true|Reason of the payment or loyalty reversal.<br>Possible values:<br>* **CustCancel**<br>* **Malfunction**<br>* **MerchantCancel**<br>* **Unable2Compl**|
 
 #### Enumerated Values
@@ -1874,7 +1874,7 @@ Content of the Reversal Request message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "OriginalPOITransaction": {
     "SaleID": "string",
@@ -1885,7 +1885,7 @@ Content of the Reversal Request message.
     },
     "ReuseCardDataFlag": true,
     "ApprovalCode": "string",
-    "AcquirerID": 0,
+    "AcquirerID": "string",
     "AmountValue": 0,
     "HostTransactionID": {
       "TransactionID": "string",
@@ -1951,9 +1951,9 @@ curl '<local-terminal-IP-address>/reconciliation' \
   -d '{
     "ReconciliationType": "SaleReconciliation",
     "AcquirerID": [
-      0
+      "string"
     ],
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   }'
 ```
 
@@ -1968,9 +1968,9 @@ It conveys Information related to the Reconciliation requested by the Sale Syste
 {
   "ReconciliationType": "SaleReconciliation",
   "AcquirerID": [
-    0
+    "string"
   ],
-  "POIReconciliationID": 0
+  "POIReconciliationID": "string"
 }
 ```
 
@@ -1980,8 +1980,8 @@ It conveys Information related to the Reconciliation requested by the Sale Syste
 |---|---|---|---|---|
 |body|body|[ReconciliationRequest](#schemareconciliationrequest)|false|none|
 |» ReconciliationType|body|[ReconciliationType](#schemareconciliationtype)|true|Type of Reconciliation requested by the Sale to the POI.<br>Possible values:<br>* **AcquirerReconciliation**<br>* **AcquirerSynchronisation**<br>* **PreviousReconciliation**<br>* **SaleReconciliation**|
-|» AcquirerID|body|[integer]|false|Identification of the Acquirer.<br>Could be present only if ReconciliationType is AcquirerReconciliation or AcquirerSynchronisation.|
-|» POIReconciliationID|body|integer|false|Identification of the reconciliation period between Sale and POI.<br>Absent if ReconciliationType is not PreviousReconciliation.|
+|» AcquirerID|body|[string]|false|Identification of the Acquirer.<br>Could be present only if ReconciliationType is AcquirerReconciliation or AcquirerSynchronisation.|
+|» POIReconciliationID|body|string|false|Identification of the reconciliation period between Sale and POI.<br>Absent if ReconciliationType is not PreviousReconciliation.|
 
 #### Enumerated Values
 
@@ -2004,11 +2004,11 @@ It conveys Information related to the Reconciliation requested by the Sale Syste
     "AdditionalResponse": "string"
   },
   "ReconciliationType": "SaleReconciliation",
-  "POIReconciliationID": 0,
+  "POIReconciliationID": "string",
   "TransactionTotals": [
     {
       "PaymentInstrumentType": "Card",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "HostReconciliationID": "string",
       "CardBrand": "string",
       "POIID": "string",
@@ -2115,11 +2115,11 @@ Content of the Get Totals Request message.
     "ErrorCondition": "Aborted",
     "AdditionalResponse": "string"
   },
-  "POIReconciliationID": 0,
+  "POIReconciliationID": "string",
   "TransactionTotals": [
     {
       "PaymentInstrumentType": "Card",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "HostReconciliationID": "string",
       "CardBrand": "string",
       "POIID": "string",
@@ -2178,12 +2178,12 @@ curl '<local-terminal-IP-address>/balanceinquiry' \
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -2212,9 +2212,9 @@ curl '<local-terminal-IP-address>/balanceinquiry' \
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -2228,16 +2228,16 @@ curl '<local-terminal-IP-address>/balanceinquiry' \
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -2288,12 +2288,12 @@ Content of the Balance Inquiry Request message.
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -2322,9 +2322,9 @@ Content of the Balance Inquiry Request message.
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -2338,16 +2338,16 @@ Content of the Balance Inquiry Request message.
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -2403,12 +2403,12 @@ Content of the Balance Inquiry Request message.
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -2437,9 +2437,9 @@ Content of the Balance Inquiry Request message.
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -2453,16 +2453,16 @@ Content of the Balance Inquiry Request message.
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -2473,7 +2473,7 @@ Content of the Balance Inquiry Request message.
     "CurrentBalance": 0,
     "Currency": "string",
     "PaymentAcquirerData": {
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "MerchantID": "string",
       "AcquirerPOIID": "string",
       "AcquirerTransactionID": {
@@ -2661,7 +2661,7 @@ It conveys Information requested for status of the last or current Payment, Loya
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "LoyaltyResult": [
           {
@@ -2754,7 +2754,7 @@ It conveys Information requested for status of the last or current Payment, Loya
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "PaymentResult": {
           "PaymentType": "Normal",
@@ -2768,12 +2768,12 @@ It conveys Information requested for status of the last or current Payment, Loya
               "EntryMode": [
                 "RFID"
               ],
-              "CardCountryCode": 3,
+              "CardCountryCode": "string",
               "ProtectedCardData": "string",
               "SensitiveCardData": {
-                "PAN": 8,
-                "CardSeqNumb": 2,
-                "ExpiryDate": 4,
+                "PAN": "string",
+                "CardSeqNumb": "string",
+                "ExpiryDate": "string",
                 "TrackData": [
                   {
                     "TrackNumb": 2,
@@ -2802,9 +2802,9 @@ It conveys Information requested for status of the last or current Payment, Loya
               "Country": "string"
             },
             "MobileData": {
-              "MobileCountryCode": 3,
-              "MobileNetworkCode": 2,
-              "MaskedMSISDN": 0,
+              "MobileCountryCode": "string",
+              "MobileNetworkCode": "string",
+              "MaskedMSISDN": "string",
               "Geolocation": {
                 "GeographicCoordinates": {
                   "Latitude": "string",
@@ -2818,16 +2818,16 @@ It conveys Information requested for status of the last or current Payment, Loya
               },
               "ProtectedMobileData": "string",
               "SensitiveMobileData": {
-                "MSISDN": 0,
-                "IMSI": 0,
-                "IMEI": 0
+                "MSISDN": "string",
+                "IMSI": "string",
+                "IMEI": "string"
               }
             },
             "StoredValueAccountID": {
               "StoredValueAccountType": "GiftCard",
               "StoredValueProvider": "string",
               "OwnerName": "string",
-              "ExpiryDate": 4,
+              "ExpiryDate": "string",
               "EntryMode": [
                 "RFID"
               ],
@@ -2889,7 +2889,7 @@ It conveys Information requested for status of the last or current Payment, Loya
           ],
           "ValidityDate": "1970-01-01",
           "PaymentAcquirerData": {
-            "AcquirerID": 0,
+            "AcquirerID": "string",
             "MerchantID": "string",
             "AcquirerPOIID": "string",
             "AcquirerTransactionID": {
@@ -2968,7 +2968,7 @@ It conveys Information requested for status of the last or current Payment, Loya
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "OriginalPOITransaction": {
           "SaleID": "string",
@@ -2979,7 +2979,7 @@ It conveys Information requested for status of the last or current Payment, Loya
           },
           "ReuseCardDataFlag": true,
           "ApprovalCode": "string",
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "AmountValue": 0,
           "HostTransactionID": {
             "TransactionID": "string",
@@ -3053,13 +3053,13 @@ It conveys Information requested for status of the last or current Payment, Loya
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "StoredValueResult": [
           {
             "StoredValueTransactionType": "Reserve",
-            "ProductCode": 1,
-            "EanUpc": 0,
+            "ProductCode": "string",
+            "EanUpc": "string",
             "ItemAmount": 0,
             "Currency": "string",
             "StoredValueAccountStatus": {
@@ -3067,7 +3067,7 @@ It conveys Information requested for status of the last or current Payment, Loya
                 "StoredValueAccountType": "GiftCard",
                 "StoredValueProvider": "string",
                 "OwnerName": "string",
-                "ExpiryDate": 4,
+                "ExpiryDate": "string",
                 "EntryMode": [
                   "RFID"
                 ],
@@ -3148,7 +3148,7 @@ It conveys Information requested for status of the last or current Payment, Loya
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "PaymentBrand": [
           "string"
@@ -3163,12 +3163,12 @@ It conveys Information requested for status of the last or current Payment, Loya
             "EntryMode": [
               "RFID"
             ],
-            "CardCountryCode": 3,
+            "CardCountryCode": "string",
             "ProtectedCardData": "string",
             "SensitiveCardData": {
-              "PAN": 8,
-              "CardSeqNumb": 2,
-              "ExpiryDate": 4,
+              "PAN": "string",
+              "CardSeqNumb": "string",
+              "ExpiryDate": "string",
               "TrackData": [
                 {
                   "TrackNumb": 2,
@@ -3197,9 +3197,9 @@ It conveys Information requested for status of the last or current Payment, Loya
             "Country": "string"
           },
           "MobileData": {
-            "MobileCountryCode": 3,
-            "MobileNetworkCode": 2,
-            "MaskedMSISDN": 0,
+            "MobileCountryCode": "string",
+            "MobileNetworkCode": "string",
+            "MaskedMSISDN": "string",
             "Geolocation": {
               "GeographicCoordinates": {
                 "Latitude": "string",
@@ -3213,16 +3213,16 @@ It conveys Information requested for status of the last or current Payment, Loya
             },
             "ProtectedMobileData": "string",
             "SensitiveMobileData": {
-              "MSISDN": 0,
-              "IMSI": 0,
-              "IMEI": 0
+              "MSISDN": "string",
+              "IMSI": "string",
+              "IMEI": "string"
             }
           },
           "StoredValueAccountID": {
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -3465,7 +3465,7 @@ curl '<local-terminal-IP-address>/diagnosis' \
     "POIID": "string",
     "HostDiagnosisFlag": false,
     "AcquirerID": [
-      0
+      "string"
     ]
   }'
 ```
@@ -3482,7 +3482,7 @@ Content of the Diagnosis Request message.
   "POIID": "string",
   "HostDiagnosisFlag": false,
   "AcquirerID": [
-    0
+    "string"
   ]
 }
 ```
@@ -3494,7 +3494,7 @@ Content of the Diagnosis Request message.
 |body|body|[DiagnosisRequest](#schemadiagnosisrequest)|false|none|
 |» POIID|body|string|false|Identification of a POI System or a POI Terminal for the Sale to POI protocol.<br>MessageHeader.POIID.|
 |» HostDiagnosisFlag|body|boolean|false|Indicates if Host Diagnosis are required.|
-|» AcquirerID|body|[integer]|false|Identification of the Acquirer.<br>Present if requesting the diagnosis of these hosts only.|
+|» AcquirerID|body|[string]|false|Identification of the Acquirer.<br>Present if requesting the diagnosis of these hosts only.|
 
 > Example responses
 
@@ -3518,7 +3518,7 @@ Content of the Diagnosis Request message.
   },
   "HostStatus": [
     {
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "IsReachableFlag": true
     }
   ]
@@ -3933,9 +3933,9 @@ Content of the `InputRequest` message. It conveys the data to display and how to
     "Input": {
       "InputCommand": "GetAnyKey",
       "ConfirmedFlag": true,
-      "FunctionKey": 0,
+      "FunctionKey": "string",
       "TextInput": "string",
-      "DigitInput": 0,
+      "DigitInput": "string",
       "Password": "string",
       "MenuEntryNumber": [
         0
@@ -4075,115 +4075,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth, ApiKeyAuth
 </aside>
 
-## CardReaderAPDU Request
-
-> Code samples
-
-```bash
-curl '<local-terminal-IP-address>/cardreaderapdu' \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
-  -d '{
-    "APDUClass": "string",
-    "APDUInstruction": "string",
-    "APDUPar1": "string",
-    "APDUPar2": "string",
-    "APDUData": "string",
-    "APDUExpectedLength": "string"
-  }'
-```
-
-`POST /cardreaderapdu`
-
-It contains the APDU request to send to the chip of the card, and a possible invitation message to display on the CashierInterface or the CustomerInterface.
-Content of the Card Reader APDU Request message.
-
-> Body parameter
-
-```json
-{
-  "APDUClass": "string",
-  "APDUInstruction": "string",
-  "APDUPar1": "string",
-  "APDUPar2": "string",
-  "APDUData": "string",
-  "APDUExpectedLength": "string"
-}
-```
-
-<h3 id="cardreaderapdu-request-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[CardReaderAPDURequest](#schemacardreaderapdurequest)|false|none|
-|» APDUClass|body|string(byte)|true|Class field of the APDU command (CLA). APDU request for Card Reader device request. For specific card like synchronous card, a private value should be used in accordance to ISO 7816- 4 (private range D0-FE).|
-|» APDUInstruction|body|string(byte)|true|Instruction field of the APDU command (INS).|
-|» APDUPar1|body|string(byte)|true|Parameter 1 field of the APDU command (P1).|
-|» APDUPar2|body|string(byte)|true|Parameter 2 field of the APDU command(P2).|
-|» APDUData|body|string(byte)|false|Data field of the APDU command (Lc + Data).|
-|» APDUExpectedLength|body|string(byte)|false|Expected length of the data field of the APDU response to the command (Le).|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "Response": {
-    "Result": "Success",
-    "ErrorCondition": "Aborted",
-    "AdditionalResponse": "string"
-  },
-  "APDUData": "string",
-  "CardStatusWords": "string"
-}
-```
-
-<h3 id="cardreaderapdu-request-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Content of the Card Reader APDU Response message.<br>It contains the result of the requested service, APDU response sent by the chip of the card in response to the APDU request.|[CardReaderAPDUResponse](#schemacardreaderapduresponse)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-BasicAuth, ApiKeyAuth
-</aside>
-
 # Schemas
-
-<h2 id="tocS_SaleCapabilities">SaleCapabilities</h2>
-<!-- backwards compatibility -->
-<a id="schemasalecapabilities"></a>
-<a id="schema_SaleCapabilities"></a>
-<a id="tocSsalecapabilities"></a>
-<a id="tocssalecapabilities"></a>
-
-```json
-[
-  "CashierStatus"
-]
-```
-
-place holder!
-Possible values:
-* **CashierDisplay**
-* **CashierError**
-* **CashierInput**
-* **CashierStatus**
-* **CustomerAssistance**
-* **CustomerDisplay**
-* **CustomerError**
-* **CustomerInput**
-* **EMVContactless**
-* **ICC**
-* **MagStripe**
-* **POIReplication**
-* **PrinterDocument**
-* **PrinterReceipt**
-* **PrinterVoucher**
 
 <h2 id="tocS_TokenRequestedType">TokenRequestedType</h2>
 <!-- backwards compatibility -->
@@ -5027,68 +4919,6 @@ Possible values:
 * **PrintEnd**
 * **SoundEnd**
 
-<h2 id="tocS_SoundFormat">SoundFormat</h2>
-<!-- backwards compatibility -->
-<a id="schemasoundformat"></a>
-<a id="schema_SoundFormat"></a>
-<a id="tocSsoundformat"></a>
-<a id="tocssoundformat"></a>
-
-```json
-"SoundRef"
-```
-
-
-Possible values:
-* **SoundRef**
-* **MessageRef**
-* **Text**
-
-<h2 id="tocS_SoundAction">SoundAction</h2>
-<!-- backwards compatibility -->
-<a id="schemasoundaction"></a>
-<a id="schema_SoundAction"></a>
-<a id="tocSsoundaction"></a>
-<a id="tocssoundaction"></a>
-
-```json
-"StartSound"
-```
-
-
-Possible values:
-* **StartSound**
-* **StopSound**
-* **SetDefaultVolume**
-
-<h2 id="tocS_PINFormat">PINFormat</h2>
-<!-- backwards compatibility -->
-<a id="schemapinformat"></a>
-<a id="schema_PINFormat"></a>
-<a id="tocSpinformat"></a>
-<a id="tocspinformat"></a>
-
-```json
-"ISO0"
-```
-
-<h2 id="tocS_PINRequestType">PINRequestType</h2>
-<!-- backwards compatibility -->
-<a id="schemapinrequesttype"></a>
-<a id="schema_PINRequestType"></a>
-<a id="tocSpinrequesttype"></a>
-<a id="tocspinrequesttype"></a>
-
-```json
-"PINVerify"
-```
-
-Type of PIN Service.
-Possible values:
-* **PINVerify**
-* **PINVerifyOnly**
-* **PINEnter**
-
 <h2 id="tocS_SaleToIssuerData">SaleToIssuerData</h2>
 <!-- backwards compatibility -->
 <a id="schemasaletoissuerdata"></a>
@@ -5135,7 +4965,7 @@ Generic data structure for a card track, used when the magstripe card reader is 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |TrackNumb|integer|false|none|Card track number.|
-|TrackFormat|[TrackFormat](#schematrackformat)|false|none|Card track format.<br>Possible values:<br>* **AAMVA**<br>* **ISO**|
+|TrackFormat|[TrackFormat](#schematrackformat)|false|none|Card track format.<br>Possible values:<br>* **AAMVA**<br>* **CMC-7**<br>* **E-13B**<br>* **ISO**<br>* **JIS-I**<br>* **JIS-II**|
 |TrackValue|string|true|none|Card track content.|
 
 #### Enumerated Values
@@ -5158,9 +4988,9 @@ Generic data structure for a card track, used when the magstripe card reader is 
 
 ```json
 {
-  "PAN": 8,
-  "CardSeqNumb": 2,
-  "ExpiryDate": 4,
+  "PAN": "string",
+  "CardSeqNumb": "string",
+  "ExpiryDate": "string",
   "TrackData": [
     {
       "TrackNumb": 2,
@@ -5182,9 +5012,9 @@ by the Sale System.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|PAN|integer|false|none|Primary Account Number.|
-|CardSeqNumb|integer|false|none|Card Sequence Number.<br>If EntryMode is File, Keyed, or Manual.|
-|ExpiryDate|integer|false|none|Date after which the card cannot be used.<br>If EntryMode is File.|
+|PAN|string|false|none|Primary Account Number.|
+|CardSeqNumb|string|false|none|Card Sequence Number.<br>If EntryMode is File, Keyed, or Manual.|
+|ExpiryDate|string|false|none|Date after which the card cannot be used.<br>If EntryMode is File.|
 |TrackData|[[TrackData](#schematrackdata)]|false|none|Magnetic track or magnetic ink characters line.<br>If EntryMode is MagStripe or RFID .|
 
 <h2 id="tocS_PaymentToken">PaymentToken</h2>
@@ -5236,12 +5066,12 @@ Surrogate of the PAN (Primary Account Number) of the payment card to
   "EntryMode": [
     "RFID"
   ],
-  "CardCountryCode": 3,
+  "CardCountryCode": "string",
   "ProtectedCardData": "string",
   "SensitiveCardData": {
-    "PAN": 8,
-    "CardSeqNumb": 2,
-    "ExpiryDate": 4,
+    "PAN": "string",
+    "CardSeqNumb": "string",
+    "ExpiryDate": "string",
     "TrackData": [
       {
         "TrackNumb": 2,
@@ -5269,8 +5099,8 @@ Allows acquisition of the card data by the Sale System before the Payment, CardA
 |MaskedPan|string|false|none|Masked Primary Account Number<br>Part of the PAN is replaced by a string of * characters, to identify a customer account or relationship. Presence of this data element, which replace the PAN when SensitiveCardData is protected and replaced by ProtectedCardData. Alternatively the MaskedPAN can be used as a token to identify a customer.|
 |PaymentAccountRef|string|false|none|Reference of the PAN, which identifies the PAN or the card uniquely, named also PAR (Payment Account Reference). This reference may be defined by the card issuer or by a token service provider under the control of the card issuer, and cannot be used for a payment transaction.|
 |EntryMode|[EntryMode](#schemaentrymode)|false|none|Entry mode of the payment instrument information. In the Payment, Loyalty or StoredValue Request messages, it informs the POI System the entry mode of the payment instrument information when read by the Sale Terminal. In the Payment, Loyalty or StoredValue Response messages, it informs the Sale System the entry mode of the payment instrument.<br>Possible values:<br>* **Contactless**<br>* **File**<br>* **ICC**<br>* **Keyed**<br>* **MagStripe**<br>* **Manual**<br>* **Mobile**<br>* **RFID**<br>* **Scanned**<br>* **SynchronousICC**<br>* **Tapped**|
-|CardCountryCode|integer|false|none|Country Code attached to the card (3 numerics).<br>If available in the card.|
-|ProtectedCardData|string|false|none|Sensitive information related to the payment card, protected by CMS.<br>SensitiveCardData protected by CMS EnvelopedData.|
+|CardCountryCode|string|false|none|Country Code attached to the card (3 numerics).<br>If available in the card.|
+|ProtectedCardData|string(byte)|false|none|Sensitive information related to the payment card, protected by CMS.<br>SensitiveCardData protected by CMS EnvelopedData.|
 |SensitiveCardData|[SensitiveCardData](#schemasensitivecarddata)|false|none|Sensitive information related to the payment card, entered or read by the Sale System.<br>If structure non empty and unprotected.|
 |PaymentToken|[PaymentToken](#schemapaymenttoken)|false|none|Surrogate of the PAN (Primary Account Number) of the payment card to identify the payment mean of the customer. It allows, for a merchant, to identify the customer.<br>Restriction of product payable by a card.|
 
@@ -5410,7 +5240,7 @@ Data associated with the Sale System, with a particular value during the process
     "TransactionID": "string",
     "TimeStamp": "1970-01-01T00:00:00Z"
   },
-  "POIReconciliationID": 0
+  "POIReconciliationID": "string"
 }
 ```
 
@@ -5422,7 +5252,7 @@ In the Message Response, identification of the POI transaction.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |POITransactionID|[TransactionIDType](#schematransactionidtype)|true|none|Unique identification of a POI transaction for a POI.|
-|POIReconciliationID|integer|false|none|Identification of the reconciliation period between Sale and POI.<br>If Result is Success.|
+|POIReconciliationID|string|false|none|Identification of the reconciliation period between Sale and POI.<br>If Result is Success.|
 
 <h2 id="tocS_SaleSoftware">SaleSoftware</h2>
 <!-- backwards compatibility -->
@@ -6071,9 +5901,9 @@ Allows the check information to be provided by the Sale System before requesting
 
 ```json
 {
-  "MSISDN": 0,
-  "IMSI": 0,
-  "IMEI": 0
+  "MSISDN": "string",
+  "IMSI": "string",
+  "IMEI": "string"
 }
 ```
 
@@ -6081,9 +5911,9 @@ Allows the check information to be provided by the Sale System before requesting
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|MSISDN|integer|true|none|Mobile Subscriber Integrated Service Digital Network (i.e. mobile phone number of the SIM card). Country, National Destination Code, and Subscriber Number.|
-|IMSI|integer|false|none|International Mobile Subscriber Identity. Unique number associated with the mobile phone user, containing the Mobile Country Code (MCC), the Mobile Network Code (MNC), and the Mobile Identification Number (MSIN)|
-|IMEI|integer|false|none|International Mobile Equipment Identity. Unique number associated with the mobile phone device.|
+|MSISDN|string|true|none|Mobile Subscriber Integrated Service Digital Network (i.e. mobile phone number of the SIM card). Country, National Destination Code, and Subscriber Number.|
+|IMSI|string|false|none|International Mobile Subscriber Identity. Unique number associated with the mobile phone user, containing the Mobile Country Code (MCC), the Mobile Network Code (MNC), and the Mobile Identification Number (MSIN)|
+|IMEI|string|false|none|International Mobile Equipment Identity. Unique number associated with the mobile phone device.|
 
 <h2 id="tocS_UTMCoordinates">UTMCoordinates</h2>
 <!-- backwards compatibility -->
@@ -6166,9 +5996,9 @@ Allows the check information to be provided by the Sale System before requesting
 
 ```json
 {
-  "MobileCountryCode": 3,
-  "MobileNetworkCode": 2,
-  "MaskedMSISDN": 0,
+  "MobileCountryCode": "string",
+  "MobileNetworkCode": "string",
+  "MaskedMSISDN": "string",
   "Geolocation": {
     "GeographicCoordinates": {
       "Latitude": "string",
@@ -6182,9 +6012,9 @@ Allows the check information to be provided by the Sale System before requesting
   },
   "ProtectedMobileData": "string",
   "SensitiveMobileData": {
-    "MSISDN": 0,
-    "IMSI": 0,
-    "IMEI": 0
+    "MSISDN": "string",
+    "IMSI": "string",
+    "IMEI": "string"
   }
 }
 ```
@@ -6196,11 +6026,11 @@ Information related to the mobile for the payment transaction.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|MobileCountryCode|integer|false|none|Identifies the country of a mobile phone operator.<br>If data available.|
-|MobileNetworkCode|integer|false|none|Identifies the mobile phone operator inside a country.<br>If data available.|
-|MaskedMSISDN|integer|false|none|Masked Mobile Subscriber Integrated Service Digital Network.<br>If data available.|
+|MobileCountryCode|string|false|none|Identifies the country of a mobile phone operator.<br>If data available.|
+|MobileNetworkCode|string|false|none|Identifies the mobile phone operator inside a country.<br>If data available.|
+|MaskedMSISDN|string|false|none|Masked Mobile Subscriber Integrated Service Digital Network.<br>If data available.|
 |Geolocation|[Geolocation](#schemageolocation)|false|none|Geographic location specified by geographic or UTM coordinates.<br>If data available.|
-|ProtectedMobileData|string|false|none|Sensitive information related to the mobile phone, protected by CMS.<br>SensitiveMobileData.|
+|ProtectedMobileData|string(byte)|false|none|Sensitive information related to the mobile phone, protected by CMS.<br>SensitiveMobileData.|
 |SensitiveMobileData|[SensitiveMobileData](#schemasensitivemobiledata)|false|none|Sensitive information related to the mobile phone.<br>If unprotected mobile data.|
 
 <h2 id="tocS_Instalment">Instalment</h2>
@@ -6236,9 +6066,9 @@ Information related to the mobile for the payment transaction.
 |PeriodUnit|[PeriodUnit](#schemaperiodunit)|false|none|Type of instalment transaction.<br>Possible values:<br>* **Annual**<br>* **Daily**<br>* **Monthly**<br>* **Weekly**|
 |FirstPaymentDate|string(date)|false|none|First date of a payment. For instalment, the date of the first payments, if not immediate.|
 |TotalNbOfPayments|integer|false|none|Total number of payments. For instalment, the number of payments, including the first one.|
-|CumulativeAmount|number|false|none|Sum of a collection of amounts. Total amount of the payment instalments.|
-|FirstAmount|number|false|none|First amount of the payment instalments.|
-|Charges|number|false|none|Charges related to a transaction. Charge related to the payment instalments.|
+|CumulativeAmount|number(double)|false|none|Sum of a collection of amounts. Total amount of the payment instalments.|
+|FirstAmount|number(double)|false|none|First amount of the payment instalments.|
+|Charges|number(double)|false|none|Charges related to a transaction. Charge related to the payment instalments.|
 
 #### Enumerated Values
 
@@ -6264,7 +6094,7 @@ Information related to the mobile for the payment transaction.
   "StoredValueAccountType": "GiftCard",
   "StoredValueProvider": "string",
   "OwnerName": "string",
-  "ExpiryDate": 4,
+  "ExpiryDate": "string",
   "EntryMode": [
     "RFID"
   ],
@@ -6282,7 +6112,7 @@ Identification of the stored value account or the stored value card and the asso
 |StoredValueAccountType|[StoredValueAccountType](#schemastoredvalueaccounttype)|true|none|Type of stored value account. Allows the distinction of the stored value instrument to access the stored value account.<br>Possible values:<br>* **GiftCard**<br>* **Other**<br>* **PhoneCard**|
 |StoredValueProvider|string|false|none|Identification of the provider of the stored value account load/reload. When the ProductCode is not sufficient to identify the provider host which delivers the load or reload of the stored value account (for example if it contains the identification of the application.)|
 |OwnerName|string|false|none|Name of the owner of a stored value account.|
-|ExpiryDate|integer|false|none|Date after which the card cannot be used. If EMV expiry date is present, it overrides Track2 information. Format is MMYY.|
+|ExpiryDate|string|false|none|Date after which the card cannot be used. If EMV expiry date is present, it overrides Track2 information. Format is MMYY.|
 |EntryMode|[EntryMode](#schemaentrymode)|true|none|Entry mode of the payment instrument information. In the Payment, Loyalty, or StoredValue Request messages, it informs the POI System the entry mode of the payment instrument information when read by the Sale Terminal. (e.g. because the payment instrument information are a barcode read by the Cashier on a scanner device).<br>Possible values:<br>* **Contactless**<br>* **File**<br>* **ICC**<br>* **Keyed**<br>* **MagStripe**<br>* **Manual**<br>* **Mobile**<br>* **RFID**<br>* **Scanned**<br>* **SynchronousICC**<br>* **Tapped**|
 |IdentificationType|[IdentificationType](#schemaidentificationtype)|true|none|Type of account identification. In a request message, it informs the POI System the type of the account or card identification, when provided by the Sale Terminal. (e.g. because the card information is a barcode read by the Cashier on a scanner device). In a response message, it informs the Sale System the type of the account or card identification.<br>Possible values:<br>* **AccountNumber**<br>* **BarCode**<br>* **ISOTrack2**<br>* **PAN**<br>* **PhoneNumber**|
 |StoredValueID|string|true|none|Stored value account identification. The identification of the stored value account conforming to the IdentificationType.|
@@ -6329,12 +6159,12 @@ Identification of the stored value account or the stored value card and the asso
     "EntryMode": [
       "RFID"
     ],
-    "CardCountryCode": 3,
+    "CardCountryCode": "string",
     "ProtectedCardData": "string",
     "SensitiveCardData": {
-      "PAN": 8,
-      "CardSeqNumb": 2,
-      "ExpiryDate": 4,
+      "PAN": "string",
+      "CardSeqNumb": "string",
+      "ExpiryDate": "string",
       "TrackData": [
         {
           "TrackNumb": 2,
@@ -6363,9 +6193,9 @@ Identification of the stored value account or the stored value card and the asso
     "Country": "string"
   },
   "MobileData": {
-    "MobileCountryCode": 3,
-    "MobileNetworkCode": 2,
-    "MaskedMSISDN": 0,
+    "MobileCountryCode": "string",
+    "MobileNetworkCode": "string",
+    "MaskedMSISDN": "string",
     "Geolocation": {
       "GeographicCoordinates": {
         "Latitude": "string",
@@ -6379,16 +6209,16 @@ Identification of the stored value account or the stored value card and the asso
     },
     "ProtectedMobileData": "string",
     "SensitiveMobileData": {
-      "MSISDN": 0,
-      "IMSI": 0,
-      "IMEI": 0
+      "MSISDN": "string",
+      "IMSI": "string",
+      "IMEI": "string"
     }
   },
   "StoredValueAccountID": {
     "StoredValueAccountType": "GiftCard",
     "StoredValueProvider": "string",
     "OwnerName": "string",
-    "ExpiryDate": 4,
+    "ExpiryDate": "string",
     "EntryMode": [
       "RFID"
     ],
@@ -6406,7 +6236,7 @@ Sent in the result of the payment transaction. For a card, it could also be sent
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |PaymentInstrumentType|[PaymentInstrumentType](#schemapaymentinstrumenttype)|true|none|Type of payment instrument.<br>Possible values:<br>* **Card**<br>* **Cash**<br>* **Check**<br>* **Mobile**<br>* **StoredValue**|
-|ProtectedCardData|string|false|none|Sensitive information related to the payment card, protected by CMS.<br>SensitiveCardData protected by CMS EnvelopedData.|
+|ProtectedCardData|string(byte)|false|none|Sensitive information related to the payment card, protected by CMS.<br>SensitiveCardData protected by CMS EnvelopedData.|
 |CardData|[CardData](#schemacarddata)|false|none|Information related to the payment card used for the transaction.<br>If PaymentInstrumentType is Card.|
 |CheckData|[CheckData](#schemacheckdata)|false|none|Information related to the paper check used for the transaction.<br>If PaymentInstrumentType is Check.|
 |MobileData|[MobileData](#schemamobiledata)|false|none|Information related to the mobile for the payment transaction.<br>If PaymentInstrumentType is Mobile.|
@@ -6439,7 +6269,7 @@ Sent in the result of the payment transaction. For a card, it could also be sent
   },
   "ReuseCardDataFlag": true,
   "ApprovalCode": "string",
-  "AcquirerID": 0,
+  "AcquirerID": "string",
   "AmountValue": 0,
   "HostTransactionID": {
     "TransactionID": "string",
@@ -6460,8 +6290,8 @@ In the Payment Request message, it allows using the card of a previous CardAcqui
 |POITransactionID|[TransactionIDType](#schematransactionidtype)|false|none|Unique identification of a POI transaction for a POI.<br>Absent if SaleReferenceID is sufficient to identify the transaction.|
 |ReuseCardDataFlag|boolean|false|none|Indicates if the card data has to be retrieved from a previous transaction.|
 |ApprovalCode|string|false|none|Code assigned to a transaction approval by the Acquirer.<br>If referral.|
-|AcquirerID|integer|false|none|Identification of the Acquirer.<br>Restrict to the Acquirer if present.|
-|AmountValue|number|false|none|Value of an amount.|
+|AcquirerID|string|false|none|Identification of the Acquirer.<br>Restrict to the Acquirer if present.|
+|AmountValue|number(double)|false|none|Value of an amount.|
 |HostTransactionID|[TransactionIDType](#schematransactionidtype)|false|none|Identification of the transaction by the host in charge of the stored value transaction.<br>If POITransactionID not present.|
 
 <h2 id="tocS_TransactionConditions">TransactionConditions</h2>
@@ -6477,7 +6307,7 @@ In the Payment Request message, it allows using the card of a previous CardAcqui
     "string"
   ],
   "AcquirerID": [
-    0
+    "string"
   ],
   "DebitPreferredFlag": true,
   "AllowedLoyaltyBrand": [
@@ -6500,7 +6330,7 @@ Conditions on which the transaction must be processed.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |AllowedPaymentBrand|[string]|false|none|Payment brands accepted for this transaction.<br>Card payment brands allowed by the Sale System for the payment transaction.<br>Restrict brand if data sent.|
-|AcquirerID|[integer]|false|none|Identification of the Acquirer.<br>Restrict to these Acquirer if present.|
+|AcquirerID|[string]|false|none|Identification of the Acquirer.<br>Restrict to these Acquirer if present.|
 |DebitPreferredFlag|boolean|false|none|The preferred type of payment is a debit transaction rather than a credit transaction.|
 |AllowedLoyaltyBrand|[string]|false|none|Loyalty brands or programs allowed by the Sale System for the loyalty transaction.<br>Restrict brand if data sent.|
 |LoyaltyHandling|[LoyaltyHandling](#schemaloyaltyhandling)|false|none|Type of Loyalty processing requested by the Sale System.<br>Possible values:<br>* **Allowed**<br>* **Forbidden**<br>* **Processed**<br>* **Proposed**<br>* **Required**|
@@ -6568,12 +6398,12 @@ Conditions on which the transaction must be processed.
       "EntryMode": [
         "RFID"
       ],
-      "CardCountryCode": 3,
+      "CardCountryCode": "string",
       "ProtectedCardData": "string",
       "SensitiveCardData": {
-        "PAN": 8,
-        "CardSeqNumb": 2,
-        "ExpiryDate": 4,
+        "PAN": "string",
+        "CardSeqNumb": "string",
+        "ExpiryDate": "string",
         "TrackData": [
           {
             "TrackNumb": 2,
@@ -6602,9 +6432,9 @@ Conditions on which the transaction must be processed.
       "Country": "string"
     },
     "MobileData": {
-      "MobileCountryCode": 3,
-      "MobileNetworkCode": 2,
-      "MaskedMSISDN": 0,
+      "MobileCountryCode": "string",
+      "MobileNetworkCode": "string",
+      "MaskedMSISDN": "string",
       "Geolocation": {
         "GeographicCoordinates": {
           "Latitude": "string",
@@ -6618,16 +6448,16 @@ Conditions on which the transaction must be processed.
       },
       "ProtectedMobileData": "string",
       "SensitiveMobileData": {
-        "MSISDN": 0,
-        "IMSI": 0,
-        "IMEI": 0
+        "MSISDN": "string",
+        "IMSI": "string",
+        "IMEI": "string"
       }
     },
     "StoredValueAccountID": {
       "StoredValueAccountType": "GiftCard",
       "StoredValueProvider": "string",
       "OwnerName": "string",
-      "ExpiryDate": 4,
+      "ExpiryDate": "string",
       "EntryMode": [
         "RFID"
       ],
@@ -6693,13 +6523,13 @@ Various amounts related to the payment request from the Sale System.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |Currency|string|true|none|Currency of a monetary amount.|
-|RequestedAmount|number|true|none|Amount requested by the Sale for the payment.|
-|CashBackAmount|number|false|none|The cash-back part of the amount requested by the Sale for the payment.|
-|TipAmount|number|false|none|Amount paid for a tip. Allow the printing of the tip on the receipt, and to qualify the tip part of the amount.|
-|PaidAmount|number|false|none|Amount already paid in case of split payment. Depending on the context, a split payment is either a split amount, or a split basket (required by some payment means as fleet cards). The PaidAmount is present when the split payment is a split<br>     of the amount. Split of the basket involves two Sale Transactions, and does not have to be recognised by<br>     the POI.|
-|MinimumAmountToDeliver|number|false|none|Minimum amount the Sale System is allowed to deliver for this payment. For the OneTimeReservation, when the maximum amount is unknown, the Sale System indicates the minimum amount it allows.|
-|MaximumCashBackAmount|number|false|none|Maximum amount which could be requested for cash-back to the Sale System. Allows the Cashier<br>   to limit the amount value of cash-back to deliver to the Customer.|
-|MinimumSplitAmount|number|false|none|Minimum amount of a split, which could be requested by a Customer.Allows the Merchant to limit the number of split requested by the Customer.|
+|RequestedAmount|number(double)|true|none|Amount requested by the Sale for the payment.|
+|CashBackAmount|number(double)|false|none|The cash-back part of the amount requested by the Sale for the payment.|
+|TipAmount|number(double)|false|none|Amount paid for a tip. Allow the printing of the tip on the receipt, and to qualify the tip part of the amount.|
+|PaidAmount|number(double)|false|none|Amount already paid in case of split payment. Depending on the context, a split payment is either a split amount, or a split basket (required by some payment means as fleet cards). The PaidAmount is present when the split payment is a split<br>     of the amount. Split of the basket involves two Sale Transactions, and does not have to be recognised by<br>     the POI.|
+|MinimumAmountToDeliver|number(double)|false|none|Minimum amount the Sale System is allowed to deliver for this payment. For the OneTimeReservation, when the maximum amount is unknown, the Sale System indicates the minimum amount it allows.|
+|MaximumCashBackAmount|number(double)|false|none|Maximum amount which could be requested for cash-back to the Sale System. Allows the Cashier<br>   to limit the amount value of cash-back to deliver to the Customer.|
+|MinimumSplitAmount|number(double)|false|none|Minimum amount of a split, which could be requested by a Customer.Allows the Merchant to limit the number of split requested by the Customer.|
 
 <h2 id="tocS_PaymentTransaction">PaymentTransaction</h2>
 <!-- backwards compatibility -->
@@ -6729,7 +6559,7 @@ Various amounts related to the payment request from the Sale System.
     },
     "ReuseCardDataFlag": true,
     "ApprovalCode": "string",
-    "AcquirerID": 0,
+    "AcquirerID": "string",
     "AmountValue": 0,
     "HostTransactionID": {
       "TransactionID": "string",
@@ -6741,7 +6571,7 @@ Various amounts related to the payment request from the Sale System.
       "string"
     ],
     "AcquirerID": [
-      0
+      "string"
     ],
     "DebitPreferredFlag": true,
     "AllowedLoyaltyBrand": [
@@ -6784,7 +6614,7 @@ Various amounts related to the payment request from the Sale System.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|AmountValue|number|true|none|Value of an amount.|
+|AmountValue|number(double)|true|none|Value of an amount.|
 |Currency|string|true|none|Currency of a monetary amount.|
 
 <h2 id="tocS_CurrencyConversion">CurrencyConversion</h2>
@@ -6817,9 +6647,9 @@ A currency conversion occurred in the payment, and the merchant needs to know in
 |---|---|---|---|---|
 |CustomerApprovedFlag|boolean|false|none|Notify if the customer has approved something. Indicates if the customer has accepted a currency conversion.|
 |ConvertedAmount|[ConvertedAmount](#schemaconvertedamount)|true|none|Amount after a currency conversion.|
-|Rate|number|false|none|Rate of currency conversion.|
-|Markup|number|false|none|Markup of a currency conversion amount as a percentage.|
-|Commission|number|false|none|Commission for a currency conversion.|
+|Rate|number(double)|false|none|Rate of currency conversion.|
+|Markup|number(double)|false|none|Markup of a currency conversion amount as a percentage.|
+|Commission|number(double)|false|none|Commission for a currency conversion.|
 |Declaration|string|false|none|Declaration to present to the customer or the cashier for validation.<br>If a declaration has to be presented to the customer.|
 
 <h2 id="tocS_Point">Point</h2>
@@ -6943,7 +6773,7 @@ In the Message Response, the result of each loyalty brand transaction.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |LoyaltyAccount|[LoyaltyAccount](#schemaloyaltyaccount)|true|none|Data related to a loyalty account processed in the transaction.|
-|CurrentBalance|number|false|none|Balance of an account.<br>If known (provided by the card or an external host).|
+|CurrentBalance|number(double)|false|none|Balance of an account.<br>If known (provided by the card or an external host).|
 |LoyaltyAcquirerData|[LoyaltyAcquirerData](#schemaloyaltyacquirerdata)|false|none|Data related to the loyalty Acquirer during a loyalty transaction.<br>If content not empty.|
 
 <h2 id="tocS_PaymentReceipt">PaymentReceipt</h2>
@@ -7017,7 +6847,7 @@ If the payment receipts are printed by the Sale system and the POI or the Sale d
 
 ```json
 {
-  "AcquirerID": 0,
+  "AcquirerID": "string",
   "MerchantID": "string",
   "AcquirerPOIID": "string",
   "AcquirerTransactionID": {
@@ -7035,7 +6865,7 @@ Data related to the response from the payment Acquirer.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|AcquirerID|integer|false|none|Identification of the Acquirer.<br>Identification of the Acquirer when the POI System is multi-acquirer.|
+|AcquirerID|string|false|none|Identification of the Acquirer.<br>Identification of the Acquirer when the POI System is multi-acquirer.|
 |MerchantID|string|true|none|Identification of the Merchant for the Acquirer.|
 |AcquirerPOIID|string|true|none|Identification of the POI for the payment Acquirer.|
 |AcquirerTransactionID|[TransactionIDType](#schematransactionidtype)|false|none|Identification of the Transaction for the Acquirer.<br>If provided by the Acquirer.|
@@ -7115,11 +6945,11 @@ Data related to the response from the payment Acquirer.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |Currency|string|false|none|Currency of a monetary amount.|
-|AuthorizedAmount|number|true|none|Amount requested by the Sale for the payment.|
-|TotalRebatesAmount|number|false|none|Sum of rebates in amount (total amount or line item amount) for all the loyalty programs.|
-|TotalFeesAmount|number|false|none|Total amount of financial fees.|
-|CashBackAmount|number|false|none|The cash-back part of the amount requested by the Sale for the payment.|
-|TipAmount|number|false|none|Amount paid for a tip. Allow the printing of the tip on the receipt, and to qualify the tip part of the amount.|
+|AuthorizedAmount|number(double)|true|none|Amount requested by the Sale for the payment.|
+|TotalRebatesAmount|number(double)|false|none|Sum of rebates in amount (total amount or line item amount) for all the loyalty programs.|
+|TotalFeesAmount|number(double)|false|none|Total amount of financial fees.|
+|CashBackAmount|number(double)|false|none|The cash-back part of the amount requested by the Sale for the payment.|
+|TipAmount|number(double)|false|none|Amount paid for a tip. Allow the printing of the tip on the receipt, and to qualify the tip part of the amount.|
 
 <h2 id="tocS_PaymentResult">PaymentResult</h2>
 <!-- backwards compatibility -->
@@ -7141,12 +6971,12 @@ Data related to the response from the payment Acquirer.
       "EntryMode": [
         "RFID"
       ],
-      "CardCountryCode": 3,
+      "CardCountryCode": "string",
       "ProtectedCardData": "string",
       "SensitiveCardData": {
-        "PAN": 8,
-        "CardSeqNumb": 2,
-        "ExpiryDate": 4,
+        "PAN": "string",
+        "CardSeqNumb": "string",
+        "ExpiryDate": "string",
         "TrackData": [
           {
             "TrackNumb": 2,
@@ -7175,9 +7005,9 @@ Data related to the response from the payment Acquirer.
       "Country": "string"
     },
     "MobileData": {
-      "MobileCountryCode": 3,
-      "MobileNetworkCode": 2,
-      "MaskedMSISDN": 0,
+      "MobileCountryCode": "string",
+      "MobileNetworkCode": "string",
+      "MaskedMSISDN": "string",
       "Geolocation": {
         "GeographicCoordinates": {
           "Latitude": "string",
@@ -7191,16 +7021,16 @@ Data related to the response from the payment Acquirer.
       },
       "ProtectedMobileData": "string",
       "SensitiveMobileData": {
-        "MSISDN": 0,
-        "IMSI": 0,
-        "IMEI": 0
+        "MSISDN": "string",
+        "IMSI": "string",
+        "IMEI": "string"
       }
     },
     "StoredValueAccountID": {
       "StoredValueAccountType": "GiftCard",
       "StoredValueProvider": "string",
       "OwnerName": "string",
-      "ExpiryDate": 4,
+      "ExpiryDate": "string",
       "EntryMode": [
         "RFID"
       ],
@@ -7262,7 +7092,7 @@ Data related to the response from the payment Acquirer.
   ],
   "ValidityDate": "1970-01-01",
   "PaymentAcquirerData": {
-    "AcquirerID": 0,
+    "AcquirerID": "string",
     "MerchantID": "string",
     "AcquirerPOIID": "string",
     "AcquirerTransactionID": {
@@ -7286,7 +7116,7 @@ Data related to the response from the payment Acquirer.
 |CurrencyConversion|[[CurrencyConversion](#schemacurrencyconversion)]|false|none|Information related to a currency conversion. A currency conversion occurred in the payment, and the merchant needs to know information related to this conversion (e.g. to print on the sale receipt).|
 |MerchantOverrideFlag|boolean|false|none|Indicates that the Merchant forced the result of the payment to successful. Allows the Sale System to be sure that the payment has been forced.|
 |CapturedSignature|[CapturedSignature](#schemacapturedsignature)|false|none|Numeric value of a handwritten signature. Contains the value of a handwritten signature, e.g. the signature of a cardholder on the merchant payment receipt. Only one format of the signature is allowed:<br>  * The size of the pad area where the signature is written, given with the maximum abscissa and ordinate values.<br>  * The sequence of coordinates where the pen changes direction or lift.|
-|ProtectedSignature|string|false|none|Numeric value of a handwritten signature. Contains the value of a handwritten signature, e.g. the signature of a cardholder on the merchant payment receipt. The format before encryption is the encoded data structure CapturedSignature. The data structure before encryption includes the start and end tags for an XML encoding, the identifier and length bytes for an ASN.1 encoding, and the complete member ProtectedSignature for a JSON encoding.|
+|ProtectedSignature|string(byte)|false|none|Numeric value of a handwritten signature. Contains the value of a handwritten signature, e.g. the signature of a cardholder on the merchant payment receipt. The format before encryption is the encoded data structure CapturedSignature. The data structure before encryption includes the start and end tags for an XML encoding, the identifier and length bytes for an ASN.1 encoding, and the complete member ProtectedSignature for a JSON encoding.|
 |CustomerLanguage|string|false|none|The language of the customer that was used on the terminal screen or in text printed by the terminal. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.|
 |OnlineFlag|boolean|false|none|Indicate that the payment transaction processing has required the approval of a host. Allows the Sale System to know if the payment was online or offline.|
 |AuthenticationMethod|[AuthenticationMethod](#schemaauthenticationmethod)|false|none|Method for customer authentication. Allows the Sale System informed about customer authentication for the payment transaction.<br>Possible values:<br>* **Bypass**<br>* **ManualVerification**<br>* **MerchantAuthentication**<br>* **OfflinePIN**<br>* **OnlinePIN**<br>* **PaperSignature**<br>* **SecureCertificate**<br>* **SecureNoCertificate**<br>* **SecuredChannel**<br>* **SignatureCapture**<br>* **UnknownMethod**|
@@ -7358,7 +7188,7 @@ Data related to the response from the payment Acquirer.
 |CustomerLanguage|string|false|none|The language used on the terminal screen or in text printed by the terminal.<br>  Typical use case is setting the language on unattended terminals. Format: two-character [ISO 639:2023](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) format.|
 |ForceEntryMode|[ForceEntryMode](#schemaforceentrymode)|false|none|Payment instrument entry mode requested by the Sale System. Avoid retry on an out of order card reading device, when the sale system knows that some card entry modes on the POI do not work.<br>Possible values:<br>* **CheckReader**<br>* **Contactless**<br>* **File**<br>* **ICC**<br>* **Keyed**<br>* **MagStripe**<br>* **Manual**<br>* **RFID**<br>* **Scanned**<br>* **SynchronousICC**<br>* **Tapped**|
 |ForceCustomerSelectionFlag|boolean|false|none|Indicates if the Customer realises the selection of the card application.|
-|TotalAmount|number|false|none|Amount of a transaction. In the Card Acquisition Request message, it allows the processing of a contactless card.|
+|TotalAmount|number(double)|false|none|Amount of a transaction. In the Card Acquisition Request message, it allows the processing of a contactless card.|
 |PaymentType|[PaymentType](#schemapaymenttype)|false|none|Type of payment transaction. Elements requested by the Sale System that are related to the payment only.<br>Possible values:<br>* **CashAdvance**<br>* **CashDeposit**<br>* **Completion**<br>* **FirstReservation**<br>* **Instalment**<br>* **IssuerInstalment**<br>* **Normal**<br>* **OneTimeReservation**<br>* **PaidOut**<br>* **Recurring**<br>* **Refund**<br>* **UpdateReservation**|
 |CashBackFlag|boolean|false|none|Cash back has been requested with the payment transaction. Allows choice of the Customer language when the POI displays messages or print text to Merchant interface.|
 
@@ -7410,7 +7240,7 @@ Data related to the response from the payment Acquirer.
     "StoredValueAccountType": "GiftCard",
     "StoredValueProvider": "string",
     "OwnerName": "string",
-    "ExpiryDate": 4,
+    "ExpiryDate": "string",
     "EntryMode": [
       "RFID"
     ],
@@ -7426,15 +7256,15 @@ Data related to the response from the payment Acquirer.
     },
     "ReuseCardDataFlag": true,
     "ApprovalCode": "string",
-    "AcquirerID": 0,
+    "AcquirerID": "string",
     "AmountValue": 0,
     "HostTransactionID": {
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     }
   },
-  "ProductCode": 1,
-  "EanUpc": 0,
+  "ProductCode": "string",
+  "EanUpc": "string",
   "ItemAmount": 0,
   "Currency": "string"
 }
@@ -7451,9 +7281,9 @@ Data related to the stored value card.
 |StoredValueTransactionType|[StoredValueTransactionType](#schemastoredvaluetransactiontype)|true|none|Identification of operation to proceed on the stored value account or the stored value card.<br>Possible values:<br>* **Activate**<br>* **Duplicate**<br>* **Load**<br>* **Reserve**<br>* **Reverse**<br>* **Unload**|
 |StoredValueAccountID|[StoredValueAccountID](#schemastoredvalueaccountid)|false|none|Identification of the stored value account or the stored value card.<br>If the identification of the Stored Value account or card has been made by the Sale System before the request.|
 |OriginalPOITransaction|[OriginalPOITransaction](#schemaoriginalpoitransaction)|false|none|Identification of a previous POI transaction.<br>If StoredValueTransactionType is Reverse or Duplicate.|
-|ProductCode|integer|false|none|Product code of item purchased with the transaction.|
-|EanUpc|integer|false|none|Standard product code of item purchased with the transaction.|
-|ItemAmount|number|false|none|Total amount of the item line.|
+|ProductCode|string|false|none|Product code of item purchased with the transaction.|
+|EanUpc|string|false|none|Standard product code of item purchased with the transaction.|
+|ItemAmount|number(double)|false|none|Total amount of the item line.|
 |Currency|string|false|none|Currency of a monetary amount.|
 
 #### Enumerated Values
@@ -7480,7 +7310,7 @@ Data related to the stored value card.
     "StoredValueAccountType": "GiftCard",
     "StoredValueProvider": "string",
     "OwnerName": "string",
-    "ExpiryDate": 4,
+    "ExpiryDate": "string",
     "EntryMode": [
       "RFID"
     ],
@@ -7496,7 +7326,7 @@ Data related to the stored value card.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |StoredValueAccountID|[StoredValueAccountID](#schemastoredvalueaccountid)|true|none|Identification of the stored value account or the stored value card and the associated product sold by the Sale System for stored value requests.|
-|CurrentBalance|number|false|none|If relevant and known.|
+|CurrentBalance|number(double)|false|none|If relevant and known.|
 
 <h2 id="tocS_StoredValueResult">StoredValueResult</h2>
 <!-- backwards compatibility -->
@@ -7508,8 +7338,8 @@ Data related to the stored value card.
 ```json
 {
   "StoredValueTransactionType": "Reserve",
-  "ProductCode": 1,
-  "EanUpc": 0,
+  "ProductCode": "string",
+  "EanUpc": "string",
   "ItemAmount": 0,
   "Currency": "string",
   "StoredValueAccountStatus": {
@@ -7517,7 +7347,7 @@ Data related to the stored value card.
       "StoredValueAccountType": "GiftCard",
       "StoredValueProvider": "string",
       "OwnerName": "string",
-      "ExpiryDate": 4,
+      "ExpiryDate": "string",
       "EntryMode": [
         "RFID"
       ],
@@ -7541,9 +7371,9 @@ Result of loading/reloading a stored value card.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |StoredValueTransactionType|[StoredValueTransactionType](#schemastoredvaluetransactiontype)|true|none|Identification of operation to proceed on the stored value account or the stored value card.<br>Copy.<br>Possible values:<br>* **Activate**<br>* **Duplicate**<br>* **Load**<br>* **Reserve**<br>* **Reverse**<br>* **Unload**|
-|ProductCode|integer|false|none|Product code of item purchased with the transaction.<br>Copy.|
-|EanUpc|integer|false|none|Standard product code of item purchased with the transaction.<br>Copy.|
-|ItemAmount|number|false|none|Total amount of the item line.|
+|ProductCode|string|false|none|Product code of item purchased with the transaction.<br>Copy.|
+|EanUpc|string|false|none|Standard product code of item purchased with the transaction.<br>Copy.|
+|ItemAmount|number(double)|false|none|Total amount of the item line.|
 |Currency|string|false|none|Currency of a monetary amount.<br>Copy.|
 |StoredValueAccountStatus|[StoredValueAccountStatus](#schemastoredvalueaccountstatus)|false|none|Data related to the result of the stored value card transaction.|
 |HostTransactionID|[TransactionIDType](#schematransactionidtype)|false|none|Identification of the transaction by the host in charge of the stored value transaction.<br>If provided by the Host.|
@@ -7662,12 +7492,12 @@ Result of loading/reloading a stored value card.
             "EntryMode": [
               "RFID"
             ],
-            "CardCountryCode": 3,
+            "CardCountryCode": "string",
             "ProtectedCardData": "string",
             "SensitiveCardData": {
-              "PAN": 8,
-              "CardSeqNumb": 2,
-              "ExpiryDate": 4,
+              "PAN": "string",
+              "CardSeqNumb": "string",
+              "ExpiryDate": "string",
               "TrackData": [
                 {
                   "TrackNumb": 2,
@@ -7696,9 +7526,9 @@ Result of loading/reloading a stored value card.
             "Country": "string"
           },
           "MobileData": {
-            "MobileCountryCode": 3,
-            "MobileNetworkCode": 2,
-            "MaskedMSISDN": 0,
+            "MobileCountryCode": "string",
+            "MobileNetworkCode": "string",
+            "MaskedMSISDN": "string",
             "Geolocation": {
               "GeographicCoordinates": {
                 "Latitude": "string",
@@ -7712,16 +7542,16 @@ Result of loading/reloading a stored value card.
             },
             "ProtectedMobileData": "string",
             "SensitiveMobileData": {
-              "MSISDN": 0,
-              "IMSI": 0,
-              "IMEI": 0
+              "MSISDN": "string",
+              "IMSI": "string",
+              "IMEI": "string"
             }
           },
           "StoredValueAccountID": {
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -7794,7 +7624,7 @@ Result of loading/reloading a stored value card.
       "POIID": "string",
       "HostDiagnosisFlag": false,
       "AcquirerID": [
-        0
+        "string"
       ]
     },
     "DisplayRequest": {
@@ -8207,7 +8037,7 @@ Result of loading/reloading a stored value card.
           },
           "ReuseCardDataFlag": true,
           "ApprovalCode": "string",
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "AmountValue": 0,
           "HostTransactionID": {
             "TransactionID": "string",
@@ -8219,7 +8049,7 @@ Result of loading/reloading a stored value card.
             "string"
           ],
           "AcquirerID": [
-            0
+            "string"
           ],
           "DebitPreferredFlag": true,
           "AllowedLoyaltyBrand": [
@@ -8264,12 +8094,12 @@ Result of loading/reloading a stored value card.
             "EntryMode": [
               "RFID"
             ],
-            "CardCountryCode": 3,
+            "CardCountryCode": "string",
             "ProtectedCardData": "string",
             "SensitiveCardData": {
-              "PAN": 8,
-              "CardSeqNumb": 2,
-              "ExpiryDate": 4,
+              "PAN": "string",
+              "CardSeqNumb": "string",
+              "ExpiryDate": "string",
               "TrackData": [
                 {
                   "TrackNumb": 2,
@@ -8298,9 +8128,9 @@ Result of loading/reloading a stored value card.
             "Country": "string"
           },
           "MobileData": {
-            "MobileCountryCode": 3,
-            "MobileNetworkCode": 2,
-            "MaskedMSISDN": 0,
+            "MobileCountryCode": "string",
+            "MobileNetworkCode": "string",
+            "MaskedMSISDN": "string",
             "Geolocation": {
               "GeographicCoordinates": {
                 "Latitude": "string",
@@ -8314,16 +8144,16 @@ Result of loading/reloading a stored value card.
             },
             "ProtectedMobileData": "string",
             "SensitiveMobileData": {
-              "MSISDN": 0,
-              "IMSI": 0,
-              "IMEI": 0
+              "MSISDN": "string",
+              "IMSI": "string",
+              "IMEI": "string"
             }
           },
           "StoredValueAccountID": {
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -8392,9 +8222,9 @@ Result of loading/reloading a stored value card.
     "ReconciliationRequest": {
       "ReconciliationType": "SaleReconciliation",
       "AcquirerID": [
-        0
+        "string"
       ],
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "ReversalRequest": {
       "SaleData": {
@@ -8429,7 +8259,7 @@ Result of loading/reloading a stored value card.
         },
         "ReuseCardDataFlag": true,
         "ApprovalCode": "string",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "AmountValue": 0,
         "HostTransactionID": {
           "TransactionID": "string",
@@ -8471,7 +8301,7 @@ Result of loading/reloading a stored value card.
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -8487,15 +8317,15 @@ Result of loading/reloading a stored value card.
             },
             "ReuseCardDataFlag": true,
             "ApprovalCode": "string",
-            "AcquirerID": 0,
+            "AcquirerID": "string",
             "AmountValue": 0,
             "HostTransactionID": {
               "TransactionID": "string",
               "TimeStamp": "1970-01-01T00:00:00Z"
             }
           },
-          "ProductCode": 1,
-          "EanUpc": 0,
+          "ProductCode": "string",
+          "EanUpc": "string",
           "ItemAmount": 0,
           "Currency": "string"
         }
@@ -8563,12 +8393,12 @@ The request payload of the Adyen Terminal API.
             "EntryMode": [
               "RFID"
             ],
-            "CardCountryCode": 3,
+            "CardCountryCode": "string",
             "ProtectedCardData": "string",
             "SensitiveCardData": {
-              "PAN": 8,
-              "CardSeqNumb": 2,
-              "ExpiryDate": 4,
+              "PAN": "string",
+              "CardSeqNumb": "string",
+              "ExpiryDate": "string",
               "TrackData": [
                 {
                   "TrackNumb": 2,
@@ -8597,9 +8427,9 @@ The request payload of the Adyen Terminal API.
             "Country": "string"
           },
           "MobileData": {
-            "MobileCountryCode": 3,
-            "MobileNetworkCode": 2,
-            "MaskedMSISDN": 0,
+            "MobileCountryCode": "string",
+            "MobileNetworkCode": "string",
+            "MaskedMSISDN": "string",
             "Geolocation": {
               "GeographicCoordinates": {
                 "Latitude": "string",
@@ -8613,16 +8443,16 @@ The request payload of the Adyen Terminal API.
             },
             "ProtectedMobileData": "string",
             "SensitiveMobileData": {
-              "MSISDN": 0,
-              "IMSI": 0,
-              "IMEI": 0
+              "MSISDN": "string",
+              "IMSI": "string",
+              "IMEI": "string"
             }
           },
           "StoredValueAccountID": {
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -8633,7 +8463,7 @@ The request payload of the Adyen Terminal API.
         "CurrentBalance": 0,
         "Currency": "string",
         "PaymentAcquirerData": {
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "MerchantID": "string",
           "AcquirerPOIID": "string",
           "AcquirerTransactionID": {
@@ -8710,7 +8540,7 @@ The request payload of the Adyen Terminal API.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "PaymentBrand": [
         "string"
@@ -8725,12 +8555,12 @@ The request payload of the Adyen Terminal API.
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -8759,9 +8589,9 @@ The request payload of the Adyen Terminal API.
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -8775,16 +8605,16 @@ The request payload of the Adyen Terminal API.
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -8830,7 +8660,7 @@ The request payload of the Adyen Terminal API.
       },
       "HostStatus": [
         {
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "IsReachableFlag": true
         }
       ]
@@ -8861,11 +8691,11 @@ The request payload of the Adyen Terminal API.
         "ErrorCondition": "Aborted",
         "AdditionalResponse": "string"
       },
-      "POIReconciliationID": 0,
+      "POIReconciliationID": "string",
       "TransactionTotals": [
         {
           "PaymentInstrumentType": "Card",
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "HostReconciliationID": "string",
           "CardBrand": "string",
           "POIID": "string",
@@ -8905,9 +8735,9 @@ The request payload of the Adyen Terminal API.
         "Input": {
           "InputCommand": "GetAnyKey",
           "ConfirmedFlag": true,
-          "FunctionKey": 0,
+          "FunctionKey": "string",
           "TextInput": "string",
-          "DigitInput": 0,
+          "DigitInput": "string",
           "Password": "string",
           "MenuEntryNumber": [
             0
@@ -8982,7 +8812,7 @@ The request payload of the Adyen Terminal API.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "LoyaltyResult": [
         {
@@ -9075,7 +8905,7 @@ The request payload of the Adyen Terminal API.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "PaymentResult": {
         "PaymentType": "Normal",
@@ -9089,12 +8919,12 @@ The request payload of the Adyen Terminal API.
             "EntryMode": [
               "RFID"
             ],
-            "CardCountryCode": 3,
+            "CardCountryCode": "string",
             "ProtectedCardData": "string",
             "SensitiveCardData": {
-              "PAN": 8,
-              "CardSeqNumb": 2,
-              "ExpiryDate": 4,
+              "PAN": "string",
+              "CardSeqNumb": "string",
+              "ExpiryDate": "string",
               "TrackData": [
                 {
                   "TrackNumb": 2,
@@ -9123,9 +8953,9 @@ The request payload of the Adyen Terminal API.
             "Country": "string"
           },
           "MobileData": {
-            "MobileCountryCode": 3,
-            "MobileNetworkCode": 2,
-            "MaskedMSISDN": 0,
+            "MobileCountryCode": "string",
+            "MobileNetworkCode": "string",
+            "MaskedMSISDN": "string",
             "Geolocation": {
               "GeographicCoordinates": {
                 "Latitude": "string",
@@ -9139,16 +8969,16 @@ The request payload of the Adyen Terminal API.
             },
             "ProtectedMobileData": "string",
             "SensitiveMobileData": {
-              "MSISDN": 0,
-              "IMSI": 0,
-              "IMEI": 0
+              "MSISDN": "string",
+              "IMSI": "string",
+              "IMEI": "string"
             }
           },
           "StoredValueAccountID": {
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -9210,7 +9040,7 @@ The request payload of the Adyen Terminal API.
         ],
         "ValidityDate": "1970-01-01",
         "PaymentAcquirerData": {
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "MerchantID": "string",
           "AcquirerPOIID": "string",
           "AcquirerTransactionID": {
@@ -9302,11 +9132,11 @@ The request payload of the Adyen Terminal API.
         "AdditionalResponse": "string"
       },
       "ReconciliationType": "SaleReconciliation",
-      "POIReconciliationID": 0,
+      "POIReconciliationID": "string",
       "TransactionTotals": [
         {
           "PaymentInstrumentType": "Card",
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "HostReconciliationID": "string",
           "CardBrand": "string",
           "POIID": "string",
@@ -9336,7 +9166,7 @@ The request payload of the Adyen Terminal API.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "OriginalPOITransaction": {
         "SaleID": "string",
@@ -9347,7 +9177,7 @@ The request payload of the Adyen Terminal API.
         },
         "ReuseCardDataFlag": true,
         "ApprovalCode": "string",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "AmountValue": 0,
         "HostTransactionID": {
           "TransactionID": "string",
@@ -9421,13 +9251,13 @@ The request payload of the Adyen Terminal API.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "StoredValueResult": [
         {
           "StoredValueTransactionType": "Reserve",
-          "ProductCode": 1,
-          "EanUpc": 0,
+          "ProductCode": "string",
+          "EanUpc": "string",
           "ItemAmount": 0,
           "Currency": "string",
           "StoredValueAccountStatus": {
@@ -9435,7 +9265,7 @@ The request payload of the Adyen Terminal API.
               "StoredValueAccountType": "GiftCard",
               "StoredValueProvider": "string",
               "OwnerName": "string",
-              "ExpiryDate": 4,
+              "ExpiryDate": "string",
               "EntryMode": [
                 "RFID"
               ],
@@ -9541,7 +9371,7 @@ The request payload of the Adyen Terminal API.
                 "TransactionID": "string",
                 "TimeStamp": "1970-01-01T00:00:00Z"
               },
-              "POIReconciliationID": 0
+              "POIReconciliationID": "string"
             },
             "LoyaltyResult": [
               {
@@ -9634,7 +9464,7 @@ The request payload of the Adyen Terminal API.
                 "TransactionID": "string",
                 "TimeStamp": "1970-01-01T00:00:00Z"
               },
-              "POIReconciliationID": 0
+              "POIReconciliationID": "string"
             },
             "PaymentResult": {
               "PaymentType": "Normal",
@@ -9648,12 +9478,12 @@ The request payload of the Adyen Terminal API.
                   "EntryMode": [
                     "RFID"
                   ],
-                  "CardCountryCode": 3,
+                  "CardCountryCode": "string",
                   "ProtectedCardData": "string",
                   "SensitiveCardData": {
-                    "PAN": 8,
-                    "CardSeqNumb": 2,
-                    "ExpiryDate": 4,
+                    "PAN": "string",
+                    "CardSeqNumb": "string",
+                    "ExpiryDate": "string",
                     "TrackData": [
                       {
                         "TrackNumb": 2,
@@ -9682,9 +9512,9 @@ The request payload of the Adyen Terminal API.
                   "Country": "string"
                 },
                 "MobileData": {
-                  "MobileCountryCode": 3,
-                  "MobileNetworkCode": 2,
-                  "MaskedMSISDN": 0,
+                  "MobileCountryCode": "string",
+                  "MobileNetworkCode": "string",
+                  "MaskedMSISDN": "string",
                   "Geolocation": {
                     "GeographicCoordinates": {
                       "Latitude": "string",
@@ -9698,16 +9528,16 @@ The request payload of the Adyen Terminal API.
                   },
                   "ProtectedMobileData": "string",
                   "SensitiveMobileData": {
-                    "MSISDN": 0,
-                    "IMSI": 0,
-                    "IMEI": 0
+                    "MSISDN": "string",
+                    "IMSI": "string",
+                    "IMEI": "string"
                   }
                 },
                 "StoredValueAccountID": {
                   "StoredValueAccountType": "GiftCard",
                   "StoredValueProvider": "string",
                   "OwnerName": "string",
-                  "ExpiryDate": 4,
+                  "ExpiryDate": "string",
                   "EntryMode": [
                     "RFID"
                   ],
@@ -9769,7 +9599,7 @@ The request payload of the Adyen Terminal API.
               ],
               "ValidityDate": "1970-01-01",
               "PaymentAcquirerData": {
-                "AcquirerID": 0,
+                "AcquirerID": "string",
                 "MerchantID": "string",
                 "AcquirerPOIID": "string",
                 "AcquirerTransactionID": {
@@ -9848,7 +9678,7 @@ The request payload of the Adyen Terminal API.
                 "TransactionID": "string",
                 "TimeStamp": "1970-01-01T00:00:00Z"
               },
-              "POIReconciliationID": 0
+              "POIReconciliationID": "string"
             },
             "OriginalPOITransaction": {
               "SaleID": "string",
@@ -9859,7 +9689,7 @@ The request payload of the Adyen Terminal API.
               },
               "ReuseCardDataFlag": true,
               "ApprovalCode": "string",
-              "AcquirerID": 0,
+              "AcquirerID": "string",
               "AmountValue": 0,
               "HostTransactionID": {
                 "TransactionID": "string",
@@ -9933,13 +9763,13 @@ The request payload of the Adyen Terminal API.
                 "TransactionID": "string",
                 "TimeStamp": "1970-01-01T00:00:00Z"
               },
-              "POIReconciliationID": 0
+              "POIReconciliationID": "string"
             },
             "StoredValueResult": [
               {
                 "StoredValueTransactionType": "Reserve",
-                "ProductCode": 1,
-                "EanUpc": 0,
+                "ProductCode": "string",
+                "EanUpc": "string",
                 "ItemAmount": 0,
                 "Currency": "string",
                 "StoredValueAccountStatus": {
@@ -9947,7 +9777,7 @@ The request payload of the Adyen Terminal API.
                     "StoredValueAccountType": "GiftCard",
                     "StoredValueProvider": "string",
                     "OwnerName": "string",
-                    "ExpiryDate": 4,
+                    "ExpiryDate": "string",
                     "EntryMode": [
                       "RFID"
                     ],
@@ -10028,7 +9858,7 @@ The request payload of the Adyen Terminal API.
                 "TransactionID": "string",
                 "TimeStamp": "1970-01-01T00:00:00Z"
               },
-              "POIReconciliationID": 0
+              "POIReconciliationID": "string"
             },
             "PaymentBrand": [
               "string"
@@ -10043,12 +9873,12 @@ The request payload of the Adyen Terminal API.
                 "EntryMode": [
                   "RFID"
                 ],
-                "CardCountryCode": 3,
+                "CardCountryCode": "string",
                 "ProtectedCardData": "string",
                 "SensitiveCardData": {
-                  "PAN": 8,
-                  "CardSeqNumb": 2,
-                  "ExpiryDate": 4,
+                  "PAN": "string",
+                  "CardSeqNumb": "string",
+                  "ExpiryDate": "string",
                   "TrackData": [
                     {
                       "TrackNumb": 2,
@@ -10077,9 +9907,9 @@ The request payload of the Adyen Terminal API.
                 "Country": "string"
               },
               "MobileData": {
-                "MobileCountryCode": 3,
-                "MobileNetworkCode": 2,
-                "MaskedMSISDN": 0,
+                "MobileCountryCode": "string",
+                "MobileNetworkCode": "string",
+                "MaskedMSISDN": "string",
                 "Geolocation": {
                   "GeographicCoordinates": {
                     "Latitude": "string",
@@ -10093,16 +9923,16 @@ The request payload of the Adyen Terminal API.
                 },
                 "ProtectedMobileData": "string",
                 "SensitiveMobileData": {
-                  "MSISDN": 0,
-                  "IMSI": 0,
-                  "IMEI": 0
+                  "MSISDN": "string",
+                  "IMSI": "string",
+                  "IMEI": "string"
                 }
               },
               "StoredValueAccountID": {
                 "StoredValueAccountType": "GiftCard",
                 "StoredValueProvider": "string",
                 "OwnerName": "string",
-                "ExpiryDate": 4,
+                "ExpiryDate": "string",
                 "EntryMode": [
                   "RFID"
                 ],
@@ -10250,12 +10080,12 @@ The response payload of the Adyen Terminal API.
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -10284,9 +10114,9 @@ The response payload of the Adyen Terminal API.
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -10300,16 +10130,16 @@ The response payload of the Adyen Terminal API.
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -10382,7 +10212,7 @@ The response payload of the Adyen Terminal API.
     "POIID": "string",
     "HostDiagnosisFlag": false,
     "AcquirerID": [
-      0
+      "string"
     ]
   },
   "DisplayRequest": {
@@ -10795,7 +10625,7 @@ The response payload of the Adyen Terminal API.
         },
         "ReuseCardDataFlag": true,
         "ApprovalCode": "string",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "AmountValue": 0,
         "HostTransactionID": {
           "TransactionID": "string",
@@ -10807,7 +10637,7 @@ The response payload of the Adyen Terminal API.
           "string"
         ],
         "AcquirerID": [
-          0
+          "string"
         ],
         "DebitPreferredFlag": true,
         "AllowedLoyaltyBrand": [
@@ -10852,12 +10682,12 @@ The response payload of the Adyen Terminal API.
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -10886,9 +10716,9 @@ The response payload of the Adyen Terminal API.
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -10902,16 +10732,16 @@ The response payload of the Adyen Terminal API.
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -10980,9 +10810,9 @@ The response payload of the Adyen Terminal API.
   "ReconciliationRequest": {
     "ReconciliationType": "SaleReconciliation",
     "AcquirerID": [
-      0
+      "string"
     ],
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "ReversalRequest": {
     "SaleData": {
@@ -11017,7 +10847,7 @@ The response payload of the Adyen Terminal API.
       },
       "ReuseCardDataFlag": true,
       "ApprovalCode": "string",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "AmountValue": 0,
       "HostTransactionID": {
         "TransactionID": "string",
@@ -11059,7 +10889,7 @@ The response payload of the Adyen Terminal API.
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -11075,15 +10905,15 @@ The response payload of the Adyen Terminal API.
           },
           "ReuseCardDataFlag": true,
           "ApprovalCode": "string",
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "AmountValue": 0,
           "HostTransactionID": {
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           }
         },
-        "ProductCode": 1,
-        "EanUpc": 0,
+        "ProductCode": "string",
+        "EanUpc": "string",
         "ItemAmount": 0,
         "Currency": "string"
       }
@@ -11169,12 +10999,12 @@ The SaleToPOIRequest message pair is a container for the request message content
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -11203,9 +11033,9 @@ The SaleToPOIRequest message pair is a container for the request message content
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -11219,16 +11049,16 @@ The SaleToPOIRequest message pair is a container for the request message content
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -11239,7 +11069,7 @@ The SaleToPOIRequest message pair is a container for the request message content
       "CurrentBalance": 0,
       "Currency": "string",
       "PaymentAcquirerData": {
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "MerchantID": "string",
         "AcquirerPOIID": "string",
         "AcquirerTransactionID": {
@@ -11316,7 +11146,7 @@ The SaleToPOIRequest message pair is a container for the request message content
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "PaymentBrand": [
       "string"
@@ -11331,12 +11161,12 @@ The SaleToPOIRequest message pair is a container for the request message content
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -11365,9 +11195,9 @@ The SaleToPOIRequest message pair is a container for the request message content
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -11381,16 +11211,16 @@ The SaleToPOIRequest message pair is a container for the request message content
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -11436,7 +11266,7 @@ The SaleToPOIRequest message pair is a container for the request message content
     },
     "HostStatus": [
       {
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "IsReachableFlag": true
       }
     ]
@@ -11467,11 +11297,11 @@ The SaleToPOIRequest message pair is a container for the request message content
       "ErrorCondition": "Aborted",
       "AdditionalResponse": "string"
     },
-    "POIReconciliationID": 0,
+    "POIReconciliationID": "string",
     "TransactionTotals": [
       {
         "PaymentInstrumentType": "Card",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "HostReconciliationID": "string",
         "CardBrand": "string",
         "POIID": "string",
@@ -11511,9 +11341,9 @@ The SaleToPOIRequest message pair is a container for the request message content
       "Input": {
         "InputCommand": "GetAnyKey",
         "ConfirmedFlag": true,
-        "FunctionKey": 0,
+        "FunctionKey": "string",
         "TextInput": "string",
-        "DigitInput": 0,
+        "DigitInput": "string",
         "Password": "string",
         "MenuEntryNumber": [
           0
@@ -11588,7 +11418,7 @@ The SaleToPOIRequest message pair is a container for the request message content
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "LoyaltyResult": [
       {
@@ -11681,7 +11511,7 @@ The SaleToPOIRequest message pair is a container for the request message content
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "PaymentResult": {
       "PaymentType": "Normal",
@@ -11695,12 +11525,12 @@ The SaleToPOIRequest message pair is a container for the request message content
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -11729,9 +11559,9 @@ The SaleToPOIRequest message pair is a container for the request message content
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -11745,16 +11575,16 @@ The SaleToPOIRequest message pair is a container for the request message content
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -11816,7 +11646,7 @@ The SaleToPOIRequest message pair is a container for the request message content
       ],
       "ValidityDate": "1970-01-01",
       "PaymentAcquirerData": {
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "MerchantID": "string",
         "AcquirerPOIID": "string",
         "AcquirerTransactionID": {
@@ -11908,11 +11738,11 @@ The SaleToPOIRequest message pair is a container for the request message content
       "AdditionalResponse": "string"
     },
     "ReconciliationType": "SaleReconciliation",
-    "POIReconciliationID": 0,
+    "POIReconciliationID": "string",
     "TransactionTotals": [
       {
         "PaymentInstrumentType": "Card",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "HostReconciliationID": "string",
         "CardBrand": "string",
         "POIID": "string",
@@ -11942,7 +11772,7 @@ The SaleToPOIRequest message pair is a container for the request message content
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "OriginalPOITransaction": {
       "SaleID": "string",
@@ -11953,7 +11783,7 @@ The SaleToPOIRequest message pair is a container for the request message content
       },
       "ReuseCardDataFlag": true,
       "ApprovalCode": "string",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "AmountValue": 0,
       "HostTransactionID": {
         "TransactionID": "string",
@@ -12027,13 +11857,13 @@ The SaleToPOIRequest message pair is a container for the request message content
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "StoredValueResult": [
       {
         "StoredValueTransactionType": "Reserve",
-        "ProductCode": 1,
-        "EanUpc": 0,
+        "ProductCode": "string",
+        "EanUpc": "string",
         "ItemAmount": 0,
         "Currency": "string",
         "StoredValueAccountStatus": {
@@ -12041,7 +11871,7 @@ The SaleToPOIRequest message pair is a container for the request message content
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -12147,7 +11977,7 @@ The SaleToPOIRequest message pair is a container for the request message content
               "TransactionID": "string",
               "TimeStamp": "1970-01-01T00:00:00Z"
             },
-            "POIReconciliationID": 0
+            "POIReconciliationID": "string"
           },
           "LoyaltyResult": [
             {
@@ -12240,7 +12070,7 @@ The SaleToPOIRequest message pair is a container for the request message content
               "TransactionID": "string",
               "TimeStamp": "1970-01-01T00:00:00Z"
             },
-            "POIReconciliationID": 0
+            "POIReconciliationID": "string"
           },
           "PaymentResult": {
             "PaymentType": "Normal",
@@ -12254,12 +12084,12 @@ The SaleToPOIRequest message pair is a container for the request message content
                 "EntryMode": [
                   "RFID"
                 ],
-                "CardCountryCode": 3,
+                "CardCountryCode": "string",
                 "ProtectedCardData": "string",
                 "SensitiveCardData": {
-                  "PAN": 8,
-                  "CardSeqNumb": 2,
-                  "ExpiryDate": 4,
+                  "PAN": "string",
+                  "CardSeqNumb": "string",
+                  "ExpiryDate": "string",
                   "TrackData": [
                     {
                       "TrackNumb": 2,
@@ -12288,9 +12118,9 @@ The SaleToPOIRequest message pair is a container for the request message content
                 "Country": "string"
               },
               "MobileData": {
-                "MobileCountryCode": 3,
-                "MobileNetworkCode": 2,
-                "MaskedMSISDN": 0,
+                "MobileCountryCode": "string",
+                "MobileNetworkCode": "string",
+                "MaskedMSISDN": "string",
                 "Geolocation": {
                   "GeographicCoordinates": {
                     "Latitude": "string",
@@ -12304,16 +12134,16 @@ The SaleToPOIRequest message pair is a container for the request message content
                 },
                 "ProtectedMobileData": "string",
                 "SensitiveMobileData": {
-                  "MSISDN": 0,
-                  "IMSI": 0,
-                  "IMEI": 0
+                  "MSISDN": "string",
+                  "IMSI": "string",
+                  "IMEI": "string"
                 }
               },
               "StoredValueAccountID": {
                 "StoredValueAccountType": "GiftCard",
                 "StoredValueProvider": "string",
                 "OwnerName": "string",
-                "ExpiryDate": 4,
+                "ExpiryDate": "string",
                 "EntryMode": [
                   "RFID"
                 ],
@@ -12375,7 +12205,7 @@ The SaleToPOIRequest message pair is a container for the request message content
             ],
             "ValidityDate": "1970-01-01",
             "PaymentAcquirerData": {
-              "AcquirerID": 0,
+              "AcquirerID": "string",
               "MerchantID": "string",
               "AcquirerPOIID": "string",
               "AcquirerTransactionID": {
@@ -12454,7 +12284,7 @@ The SaleToPOIRequest message pair is a container for the request message content
               "TransactionID": "string",
               "TimeStamp": "1970-01-01T00:00:00Z"
             },
-            "POIReconciliationID": 0
+            "POIReconciliationID": "string"
           },
           "OriginalPOITransaction": {
             "SaleID": "string",
@@ -12465,7 +12295,7 @@ The SaleToPOIRequest message pair is a container for the request message content
             },
             "ReuseCardDataFlag": true,
             "ApprovalCode": "string",
-            "AcquirerID": 0,
+            "AcquirerID": "string",
             "AmountValue": 0,
             "HostTransactionID": {
               "TransactionID": "string",
@@ -12539,13 +12369,13 @@ The SaleToPOIRequest message pair is a container for the request message content
               "TransactionID": "string",
               "TimeStamp": "1970-01-01T00:00:00Z"
             },
-            "POIReconciliationID": 0
+            "POIReconciliationID": "string"
           },
           "StoredValueResult": [
             {
               "StoredValueTransactionType": "Reserve",
-              "ProductCode": 1,
-              "EanUpc": 0,
+              "ProductCode": "string",
+              "EanUpc": "string",
               "ItemAmount": 0,
               "Currency": "string",
               "StoredValueAccountStatus": {
@@ -12553,7 +12383,7 @@ The SaleToPOIRequest message pair is a container for the request message content
                   "StoredValueAccountType": "GiftCard",
                   "StoredValueProvider": "string",
                   "OwnerName": "string",
-                  "ExpiryDate": 4,
+                  "ExpiryDate": "string",
                   "EntryMode": [
                     "RFID"
                   ],
@@ -12634,7 +12464,7 @@ The SaleToPOIRequest message pair is a container for the request message content
               "TransactionID": "string",
               "TimeStamp": "1970-01-01T00:00:00Z"
             },
-            "POIReconciliationID": 0
+            "POIReconciliationID": "string"
           },
           "PaymentBrand": [
             "string"
@@ -12649,12 +12479,12 @@ The SaleToPOIRequest message pair is a container for the request message content
               "EntryMode": [
                 "RFID"
               ],
-              "CardCountryCode": 3,
+              "CardCountryCode": "string",
               "ProtectedCardData": "string",
               "SensitiveCardData": {
-                "PAN": 8,
-                "CardSeqNumb": 2,
-                "ExpiryDate": 4,
+                "PAN": "string",
+                "CardSeqNumb": "string",
+                "ExpiryDate": "string",
                 "TrackData": [
                   {
                     "TrackNumb": 2,
@@ -12683,9 +12513,9 @@ The SaleToPOIRequest message pair is a container for the request message content
               "Country": "string"
             },
             "MobileData": {
-              "MobileCountryCode": 3,
-              "MobileNetworkCode": 2,
-              "MaskedMSISDN": 0,
+              "MobileCountryCode": "string",
+              "MobileNetworkCode": "string",
+              "MaskedMSISDN": "string",
               "Geolocation": {
                 "GeographicCoordinates": {
                   "Latitude": "string",
@@ -12699,16 +12529,16 @@ The SaleToPOIRequest message pair is a container for the request message content
               },
               "ProtectedMobileData": "string",
               "SensitiveMobileData": {
-                "MSISDN": 0,
-                "IMSI": 0,
-                "IMEI": 0
+                "MSISDN": "string",
+                "IMSI": "string",
+                "IMEI": "string"
               }
             },
             "StoredValueAccountID": {
               "StoredValueAccountType": "GiftCard",
               "StoredValueProvider": "string",
               "OwnerName": "string",
-              "ExpiryDate": 4,
+              "ExpiryDate": "string",
               "EntryMode": [
                 "RFID"
               ],
@@ -12771,234 +12601,6 @@ The SaleToPOIResponse message pair is a container for the response message conte
 |StoredValueResponse|[StoredValueResponse](#schemastoredvalueresponse)|false|none|Content of the Stored Value Response message.|
 |TransactionStatusResponse|[TransactionStatusResponse](#schematransactionstatusresponse)|false|none|Content of the TransactionStatus Response message.|
 
-<h2 id="tocS_PerformedTransaction">PerformedTransaction</h2>
-<!-- backwards compatibility -->
-<a id="schemaperformedtransaction"></a>
-<a id="schema_PerformedTransaction"></a>
-<a id="tocSperformedtransaction"></a>
-<a id="tocsperformedtransaction"></a>
-
-```json
-{
-  "Response": {
-    "Result": "Success",
-    "ErrorCondition": "Aborted",
-    "AdditionalResponse": "string"
-  },
-  "SaleData": {
-    "OperatorID": "string",
-    "OperatorLanguage": "string",
-    "ShiftNumber": "string",
-    "SaleTransactionID": {
-      "TransactionID": "string",
-      "TimeStamp": "1970-01-01T00:00:00Z"
-    },
-    "SaleReferenceID": "string",
-    "SaleTerminalData": {
-      "TotalsGroupID": "string"
-    },
-    "TokenRequestedType": "Transaction",
-    "CustomerOrderID": "string",
-    "CustomerOrderReq": [
-      "Open"
-    ],
-    "SaleToPOIData": "string",
-    "SaleToAcquirerData": "string",
-    "SaleToIssuerData": {
-      "StatementReference": "string"
-    }
-  },
-  "POIData": {
-    "POITransactionID": {
-      "TransactionID": "string",
-      "TimeStamp": "1970-01-01T00:00:00Z"
-    },
-    "POIReconciliationID": 0
-  },
-  "PaymentResult": {
-    "PaymentType": "Normal",
-    "PaymentInstrumentData": {
-      "PaymentInstrumentType": "Card",
-      "ProtectedCardData": "string",
-      "CardData": {
-        "PaymentBrand": "string",
-        "MaskedPan": "string",
-        "PaymentAccountRef": "string",
-        "EntryMode": [
-          "RFID"
-        ],
-        "CardCountryCode": 3,
-        "ProtectedCardData": "string",
-        "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
-          "TrackData": [
-            {
-              "TrackNumb": 2,
-              "TrackFormat": "ISO",
-              "TrackValue": "string"
-            }
-          ]
-        },
-        "PaymentToken": {
-          "TokenRequestedType": "Transaction",
-          "TokenValue": "string",
-          "ExpiryDateTime": "1970-01-01T00:00:00Z"
-        }
-      },
-      "CheckData": {
-        "BankID": "string",
-        "AccountNumber": "string",
-        "CheckNumber": "string",
-        "TrackData": {
-          "TrackNumb": 2,
-          "TrackFormat": "ISO",
-          "TrackValue": "string"
-        },
-        "CheckCardNumber": "string",
-        "TypeCode": "Personal",
-        "Country": "string"
-      },
-      "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
-        "Geolocation": {
-          "GeographicCoordinates": {
-            "Latitude": "string",
-            "Longitude": "string"
-          },
-          "UTMCoordinates": {
-            "UTMZone": "string",
-            "UTMEastward": "string",
-            "UTMNorthward": "string"
-          }
-        },
-        "ProtectedMobileData": "string",
-        "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
-        }
-      },
-      "StoredValueAccountID": {
-        "StoredValueAccountType": "GiftCard",
-        "StoredValueProvider": "string",
-        "OwnerName": "string",
-        "ExpiryDate": 4,
-        "EntryMode": [
-          "RFID"
-        ],
-        "IdentificationType": "PAN",
-        "StoredValueID": "string"
-      }
-    },
-    "AmountsResp": {
-      "Currency": "string",
-      "AuthorizedAmount": 0,
-      "TotalRebatesAmount": 0,
-      "TotalFeesAmount": 0,
-      "CashBackAmount": 0,
-      "TipAmount": 0
-    },
-    "Instalment": {
-      "InstalmentType": "DeferredInstalments",
-      "SequenceNumber": 0,
-      "PlanID": "string",
-      "Period": 0,
-      "PeriodUnit": "Daily",
-      "FirstPaymentDate": "1970-01-01",
-      "TotalNbOfPayments": 0,
-      "CumulativeAmount": 0,
-      "FirstAmount": 0,
-      "Charges": 0
-    },
-    "CurrencyConversion": [
-      {
-        "CustomerApprovedFlag": true,
-        "ConvertedAmount": {
-          "AmountValue": 0,
-          "Currency": "string"
-        },
-        "Rate": 0,
-        "Markup": 0,
-        "Commission": 0,
-        "Declaration": "string"
-      }
-    ],
-    "MerchantOverrideFlag": false,
-    "CapturedSignature": {
-      "AreaSize": {
-        "X": "string",
-        "Y": "string"
-      },
-      "SignaturePoint": [
-        {
-          "X": "string",
-          "Y": "string"
-        }
-      ]
-    },
-    "ProtectedSignature": "string",
-    "CustomerLanguage": "string",
-    "OnlineFlag": true,
-    "AuthenticationMethod": [
-      "Bypass"
-    ],
-    "ValidityDate": "1970-01-01",
-    "PaymentAcquirerData": {
-      "AcquirerID": 0,
-      "MerchantID": "string",
-      "AcquirerPOIID": "string",
-      "AcquirerTransactionID": {
-        "TransactionID": "string",
-        "TimeStamp": "1970-01-01T00:00:00Z"
-      },
-      "ApprovalCode": "string",
-      "HostReconciliationID": "string"
-    }
-  },
-  "LoyaltyResult": [
-    {
-      "LoyaltyAccount": {
-        "LoyaltyAccountID": {
-          "EntryMode": [
-            "RFID"
-          ],
-          "IdentificationType": "PAN",
-          "IdentificationSupport": "NoCard",
-          "LoyaltyID": "string"
-        },
-        "LoyaltyBrand": "string"
-      },
-      "CurrentBalance": 0,
-      "LoyaltyAcquirerData": {
-        "LoyaltyAcquirerID": "string",
-        "ApprovalCode": "string",
-        "LoyaltyTransactionID": {
-          "TransactionID": "string",
-          "TimeStamp": "1970-01-01T00:00:00Z"
-        },
-        "HostReconciliationID": "string"
-      }
-    }
-  ],
-  "ReversedAmount": 0
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|Response|[Response](#schemaresponse)|true|none|Result of a message request processing.<br>If Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present and can refine the processing of the message response. `AdditionalResponse` gives more information about the success or the failure of the message request processing, for logging without real time involvements.|
-|SaleData|[SaleData](#schemasaledata)|false|none|Data associated with the Sale System, with a particular value during the processing of the payment by the POI, including the cards acquisition.|
-|POIData|[POIData](#schemapoidata)|false|none|Data related to the POI System.<br>In the Message Response, identification of the POI transaction.|
-|PaymentResult|[PaymentResult](#schemapaymentresult)|false|none|none|
-|LoyaltyResult|[[LoyaltyResult](#schemaloyaltyresult)]|false|none|none|
-|ReversedAmount|number|false|none|none|
-
 <h2 id="tocS_PaymentTotals">PaymentTotals</h2>
 <!-- backwards compatibility -->
 <a id="schemapaymenttotals"></a>
@@ -13022,7 +12624,7 @@ Totals of the payment transaction during the reconciliation period.
 |---|---|---|---|---|
 |TransactionType|[TransactionType](#schematransactiontype)|true|none|Type of transaction for which totals are grouped.<br>Debit, Credit, ReverseDebit, ReverseCredit, OneTimeReservation, CompletedDeffered, FirstReservation, UpdateReservation, CompletedReservation, CashAdvance.<br>Possible values:<br>* **Award**<br>* **CashAdvance**<br>* **CompletedDeffered**<br>* **CompletedReservation**<br>* **Credit**<br>* **Debit**<br>* **Declined**<br>* **Failed**<br>* **FirstReservation**<br>* **IssuerInstalment**<br>* **OneTimeReservation**<br>* **Rebate**<br>* **Redemption**<br>* **ReverseAward**<br>* **ReverseCredit**<br>* **ReverseDebit**<br>* **ReverseRebate**<br>* **ReverseRedemption**<br>* **UpdateReservation**|
 |TransactionCount|integer|true|none|Number of processed transaction during the period.|
-|TransactionAmount|number|true|none|Sum of amount of processed transaction during the period.|
+|TransactionAmount|number(double)|true|none|Sum of amount of processed transaction during the period.|
 
 #### Enumerated Values
 
@@ -13058,7 +12660,7 @@ Totals of the payment transaction during the reconciliation period.
 ```json
 {
   "PaymentInstrumentType": "Card",
-  "AcquirerID": 0,
+  "AcquirerID": "string",
   "HostReconciliationID": "string",
   "CardBrand": "string",
   "POIID": "string",
@@ -13085,7 +12687,7 @@ Result of the Sale to POI Reconciliation processing.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |PaymentInstrumentType|[PaymentInstrumentType](#schemapaymentinstrumenttype)|true|none|Type of payment instrument.<br>Possible values:<br>* **Card**<br>* **Cash**<br>* **Check**<br>* **Mobile**<br>* **StoredValue**|
-|AcquirerID|integer|false|none|Identification of the Acquirer.|
+|AcquirerID|string|false|none|Identification of the Acquirer.|
 |HostReconciliationID|string|false|none|Identifier of a reconciliation period with a payment or loyalty host.|
 |CardBrand|string|false|none|Type of payment or loyalty card.<br>If configured to present totals per card brand, and Response.Result is Success.|
 |POIID|string|false|none|Identification of a POI System or a POI Terminal for the Sale to POI protocol.<br>Sent if requested in the message request.|
@@ -13157,12 +12759,12 @@ Result of the Sale to POI Reconciliation processing.
       "EntryMode": [
         "RFID"
       ],
-      "CardCountryCode": 3,
+      "CardCountryCode": "string",
       "ProtectedCardData": "string",
       "SensitiveCardData": {
-        "PAN": 8,
-        "CardSeqNumb": 2,
-        "ExpiryDate": 4,
+        "PAN": "string",
+        "CardSeqNumb": "string",
+        "ExpiryDate": "string",
         "TrackData": [
           {
             "TrackNumb": 2,
@@ -13191,9 +12793,9 @@ Result of the Sale to POI Reconciliation processing.
       "Country": "string"
     },
     "MobileData": {
-      "MobileCountryCode": 3,
-      "MobileNetworkCode": 2,
-      "MaskedMSISDN": 0,
+      "MobileCountryCode": "string",
+      "MobileNetworkCode": "string",
+      "MaskedMSISDN": "string",
       "Geolocation": {
         "GeographicCoordinates": {
           "Latitude": "string",
@@ -13207,16 +12809,16 @@ Result of the Sale to POI Reconciliation processing.
       },
       "ProtectedMobileData": "string",
       "SensitiveMobileData": {
-        "MSISDN": 0,
-        "IMSI": 0,
-        "IMEI": 0
+        "MSISDN": "string",
+        "IMSI": "string",
+        "IMEI": "string"
       }
     },
     "StoredValueAccountID": {
       "StoredValueAccountType": "GiftCard",
       "StoredValueProvider": "string",
       "OwnerName": "string",
-      "ExpiryDate": 4,
+      "ExpiryDate": "string",
       "EntryMode": [
         "RFID"
       ],
@@ -13298,12 +12900,12 @@ Result of the Sale to POI Reconciliation processing.
       "EntryMode": [
         "RFID"
       ],
-      "CardCountryCode": 3,
+      "CardCountryCode": "string",
       "ProtectedCardData": "string",
       "SensitiveCardData": {
-        "PAN": 8,
-        "CardSeqNumb": 2,
-        "ExpiryDate": 4,
+        "PAN": "string",
+        "CardSeqNumb": "string",
+        "ExpiryDate": "string",
         "TrackData": [
           {
             "TrackNumb": 2,
@@ -13332,9 +12934,9 @@ Result of the Sale to POI Reconciliation processing.
       "Country": "string"
     },
     "MobileData": {
-      "MobileCountryCode": 3,
-      "MobileNetworkCode": 2,
-      "MaskedMSISDN": 0,
+      "MobileCountryCode": "string",
+      "MobileNetworkCode": "string",
+      "MaskedMSISDN": "string",
       "Geolocation": {
         "GeographicCoordinates": {
           "Latitude": "string",
@@ -13348,16 +12950,16 @@ Result of the Sale to POI Reconciliation processing.
       },
       "ProtectedMobileData": "string",
       "SensitiveMobileData": {
-        "MSISDN": 0,
-        "IMSI": 0,
-        "IMEI": 0
+        "MSISDN": "string",
+        "IMSI": "string",
+        "IMEI": "string"
       }
     },
     "StoredValueAccountID": {
       "StoredValueAccountType": "GiftCard",
       "StoredValueProvider": "string",
       "OwnerName": "string",
-      "ExpiryDate": 4,
+      "ExpiryDate": "string",
       "EntryMode": [
         "RFID"
       ],
@@ -13368,7 +12970,7 @@ Result of the Sale to POI Reconciliation processing.
   "CurrentBalance": 0,
   "Currency": "string",
   "PaymentAcquirerData": {
-    "AcquirerID": 0,
+    "AcquirerID": "string",
     "MerchantID": "string",
     "AcquirerPOIID": "string",
     "AcquirerTransactionID": {
@@ -13386,7 +12988,7 @@ Result of the Sale to POI Reconciliation processing.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |PaymentInstrumentData|[PaymentInstrumentData](#schemapaymentinstrumentdata)|false|none|Data related to the instrument of payment for the transaction.<br>Sent in the result of the payment transaction. For a card, it could also be sent in the `CardAcquisition` response, to be processed by the Sale System.|
-|CurrentBalance|number|false|none|Balance of an account after processing of the transaction.|
+|CurrentBalance|number(double)|false|none|Balance of an account after processing of the transaction.|
 |Currency|string|false|none|Currency of a monetary amount.|
 |PaymentAcquirerData|[PaymentAcquirerData](#schemapaymentacquirerdata)|false|none|Data related to the response from the payment Acquirer.|
 
@@ -13557,7 +13159,7 @@ It conveys Information related to the Sale to POI protocol management.
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "LoyaltyResult": [
       {
@@ -13650,7 +13252,7 @@ It conveys Information related to the Sale to POI protocol management.
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "PaymentResult": {
       "PaymentType": "Normal",
@@ -13664,12 +13266,12 @@ It conveys Information related to the Sale to POI protocol management.
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -13698,9 +13300,9 @@ It conveys Information related to the Sale to POI protocol management.
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -13714,16 +13316,16 @@ It conveys Information related to the Sale to POI protocol management.
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -13785,7 +13387,7 @@ It conveys Information related to the Sale to POI protocol management.
       ],
       "ValidityDate": "1970-01-01",
       "PaymentAcquirerData": {
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "MerchantID": "string",
         "AcquirerPOIID": "string",
         "AcquirerTransactionID": {
@@ -13864,7 +13466,7 @@ It conveys Information related to the Sale to POI protocol management.
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "OriginalPOITransaction": {
       "SaleID": "string",
@@ -13875,7 +13477,7 @@ It conveys Information related to the Sale to POI protocol management.
       },
       "ReuseCardDataFlag": true,
       "ApprovalCode": "string",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "AmountValue": 0,
       "HostTransactionID": {
         "TransactionID": "string",
@@ -13949,13 +13551,13 @@ It conveys Information related to the Sale to POI protocol management.
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "StoredValueResult": [
       {
         "StoredValueTransactionType": "Reserve",
-        "ProductCode": 1,
-        "EanUpc": 0,
+        "ProductCode": "string",
+        "EanUpc": "string",
         "ItemAmount": 0,
         "Currency": "string",
         "StoredValueAccountStatus": {
@@ -13963,7 +13565,7 @@ It conveys Information related to the Sale to POI protocol management.
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -14044,7 +13646,7 @@ It conveys Information related to the Sale to POI protocol management.
         "TransactionID": "string",
         "TimeStamp": "1970-01-01T00:00:00Z"
       },
-      "POIReconciliationID": 0
+      "POIReconciliationID": "string"
     },
     "PaymentBrand": [
       "string"
@@ -14059,12 +13661,12 @@ It conveys Information related to the Sale to POI protocol management.
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -14093,9 +13695,9 @@ It conveys Information related to the Sale to POI protocol management.
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -14109,16 +13711,16 @@ It conveys Information related to the Sale to POI protocol management.
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -14217,7 +13819,7 @@ It conveys Information related to the Sale to POI protocol management.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "LoyaltyResult": [
         {
@@ -14310,7 +13912,7 @@ It conveys Information related to the Sale to POI protocol management.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "PaymentResult": {
         "PaymentType": "Normal",
@@ -14324,12 +13926,12 @@ It conveys Information related to the Sale to POI protocol management.
             "EntryMode": [
               "RFID"
             ],
-            "CardCountryCode": 3,
+            "CardCountryCode": "string",
             "ProtectedCardData": "string",
             "SensitiveCardData": {
-              "PAN": 8,
-              "CardSeqNumb": 2,
-              "ExpiryDate": 4,
+              "PAN": "string",
+              "CardSeqNumb": "string",
+              "ExpiryDate": "string",
               "TrackData": [
                 {
                   "TrackNumb": 2,
@@ -14358,9 +13960,9 @@ It conveys Information related to the Sale to POI protocol management.
             "Country": "string"
           },
           "MobileData": {
-            "MobileCountryCode": 3,
-            "MobileNetworkCode": 2,
-            "MaskedMSISDN": 0,
+            "MobileCountryCode": "string",
+            "MobileNetworkCode": "string",
+            "MaskedMSISDN": "string",
             "Geolocation": {
               "GeographicCoordinates": {
                 "Latitude": "string",
@@ -14374,16 +13976,16 @@ It conveys Information related to the Sale to POI protocol management.
             },
             "ProtectedMobileData": "string",
             "SensitiveMobileData": {
-              "MSISDN": 0,
-              "IMSI": 0,
-              "IMEI": 0
+              "MSISDN": "string",
+              "IMSI": "string",
+              "IMEI": "string"
             }
           },
           "StoredValueAccountID": {
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -14445,7 +14047,7 @@ It conveys Information related to the Sale to POI protocol management.
         ],
         "ValidityDate": "1970-01-01",
         "PaymentAcquirerData": {
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "MerchantID": "string",
           "AcquirerPOIID": "string",
           "AcquirerTransactionID": {
@@ -14524,7 +14126,7 @@ It conveys Information related to the Sale to POI protocol management.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "OriginalPOITransaction": {
         "SaleID": "string",
@@ -14535,7 +14137,7 @@ It conveys Information related to the Sale to POI protocol management.
         },
         "ReuseCardDataFlag": true,
         "ApprovalCode": "string",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "AmountValue": 0,
         "HostTransactionID": {
           "TransactionID": "string",
@@ -14609,13 +14211,13 @@ It conveys Information related to the Sale to POI protocol management.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "StoredValueResult": [
         {
           "StoredValueTransactionType": "Reserve",
-          "ProductCode": 1,
-          "EanUpc": 0,
+          "ProductCode": "string",
+          "EanUpc": "string",
           "ItemAmount": 0,
           "Currency": "string",
           "StoredValueAccountStatus": {
@@ -14623,7 +14225,7 @@ It conveys Information related to the Sale to POI protocol management.
               "StoredValueAccountType": "GiftCard",
               "StoredValueProvider": "string",
               "OwnerName": "string",
-              "ExpiryDate": 4,
+              "ExpiryDate": "string",
               "EntryMode": [
                 "RFID"
               ],
@@ -14704,7 +14306,7 @@ It conveys Information related to the Sale to POI protocol management.
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         },
-        "POIReconciliationID": 0
+        "POIReconciliationID": "string"
       },
       "PaymentBrand": [
         "string"
@@ -14719,12 +14321,12 @@ It conveys Information related to the Sale to POI protocol management.
           "EntryMode": [
             "RFID"
           ],
-          "CardCountryCode": 3,
+          "CardCountryCode": "string",
           "ProtectedCardData": "string",
           "SensitiveCardData": {
-            "PAN": 8,
-            "CardSeqNumb": 2,
-            "ExpiryDate": 4,
+            "PAN": "string",
+            "CardSeqNumb": "string",
+            "ExpiryDate": "string",
             "TrackData": [
               {
                 "TrackNumb": 2,
@@ -14753,9 +14355,9 @@ It conveys Information related to the Sale to POI protocol management.
           "Country": "string"
         },
         "MobileData": {
-          "MobileCountryCode": 3,
-          "MobileNetworkCode": 2,
-          "MaskedMSISDN": 0,
+          "MobileCountryCode": "string",
+          "MobileNetworkCode": "string",
+          "MaskedMSISDN": "string",
           "Geolocation": {
             "GeographicCoordinates": {
               "Latitude": "string",
@@ -14769,16 +14371,16 @@ It conveys Information related to the Sale to POI protocol management.
           },
           "ProtectedMobileData": "string",
           "SensitiveMobileData": {
-            "MSISDN": 0,
-            "IMSI": 0,
-            "IMEI": 0
+            "MSISDN": "string",
+            "IMSI": "string",
+            "IMEI": "string"
           }
         },
         "StoredValueAccountID": {
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -14829,7 +14431,7 @@ It conveys Information related to the Sale to POI protocol management.
 
 ```json
 {
-  "AcquirerID": 0,
+  "AcquirerID": "string",
   "IsReachableFlag": true
 }
 ```
@@ -14841,7 +14443,7 @@ State of a Host.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|AcquirerID|integer|true|none|Identification of the Acquirer.|
+|AcquirerID|string|true|none|Identification of the Acquirer.|
 |IsReachableFlag|boolean|false|none|Indicate if a Host is reachable.|
 
 <h2 id="tocS_OutputResult">OutputResult</h2>
@@ -14991,9 +14593,9 @@ Information related to the result the output (display, print, input).
 {
   "InputCommand": "GetAnyKey",
   "ConfirmedFlag": true,
-  "FunctionKey": 0,
+  "FunctionKey": "string",
   "TextInput": "string",
-  "DigitInput": 0,
+  "DigitInput": "string",
   "Password": "string",
   "MenuEntryNumber": [
     0
@@ -15007,10 +14609,10 @@ Information related to the result the output (display, print, input).
 |---|---|---|---|---|
 |InputCommand|[InputCommand](#schemainputcommand)|true|none|Type of requested input. Can be: **GetConfirmation**, **TextString**, **DigitString**, **DecimalString** or **GetMenuEntry**.<br>Possible values:<br>* **DecimalString**<br>* **DigitString**<br>* **GetAnyKey**<br>* **GetConfirmation**<br>* **GetFunctionKey**<br>* **GetMenuEntry**<br>* **Password**<br>* **SiteManager**<br>* **TextString**|
 |ConfirmedFlag|boolean|false|none|Indicates te response of the user from the `GetConfirmation` input command.|
-|FunctionKey|integer|false|none|The number of the function key which is typed by the Customer on the POI or the Cashier on the Sale Terminal.|
+|FunctionKey|string|false|none|The number of the function key which is typed by the Customer on the POI or the Cashier on the Sale Terminal.|
 |TextInput|string|false|none|The text typed by the Customer on the POI or by the Cashier on the Sale Terminal.|
-|DigitInput|integer|false|none|The digits typed by the Customer on the POI or by the Cashier on the Sale Terminal.|
-|Password|string|false|none|The text password typed by the Customer on the POI or by the Cashier on the Sale Terminal.|
+|DigitInput|string|false|none|The digits typed by the Customer on the POI or by the Cashier on the Sale Terminal.|
+|Password|string(byte)|false|none|The text password typed by the Customer on the POI or by the Cashier on the Sale Terminal.|
 |MenuEntryNumber|[integer]|false|none|The index of the menu item (from 1 to n) which is selected by the Cashier on the Sale Terminal. The value -1 indicates that the immediate upper level of the menu is requested. The value 0 indicates that the root of the menu is requested.|
 
 #### Enumerated Values
@@ -15046,9 +14648,9 @@ Information related to the result the output (display, print, input).
   "Input": {
     "InputCommand": "GetAnyKey",
     "ConfirmedFlag": true,
-    "FunctionKey": 0,
+    "FunctionKey": "string",
     "TextInput": "string",
-    "DigitInput": 0,
+    "DigitInput": "string",
     "Password": "string",
     "MenuEntryNumber": [
       0
@@ -15149,92 +14751,6 @@ Information related to the result the output (display, print, input).
 |ResponseMode|Immediate|
 |ResponseMode|PrintEnd|
 |ResponseMode|SoundEnd|
-
-<h2 id="tocS_SoundContent">SoundContent</h2>
-<!-- backwards compatibility -->
-<a id="schemasoundcontent"></a>
-<a id="schema_SoundContent"></a>
-<a id="tocSsoundcontent"></a>
-<a id="tocssoundcontent"></a>
-
-```json
-{
-  "SoundFormat": "SoundRef",
-  "Language": "string",
-  "ReferenceID": "string",
-  "Text": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|SoundFormat|[SoundFormat](#schemasoundformat)|true|none|Possible values:<br>* **MessageRef**<br>* **SoundRef**<br>* **Text**|
-|Language|string|false|none|none|
-|ReferenceID|string|false|none|none|
-|Text|string|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|SoundFormat|SoundRef|
-|SoundFormat|MessageRef|
-|SoundFormat|Text|
-
-<h2 id="tocS_CardHolderPIN">CardHolderPIN</h2>
-<!-- backwards compatibility -->
-<a id="schemacardholderpin"></a>
-<a id="schema_CardHolderPIN"></a>
-<a id="tocScardholderpin"></a>
-<a id="tocscardholderpin"></a>
-
-```json
-{
-  "EncrPINBlock": "string",
-  "PINFormat": "ISO0",
-  "AdditionalInput": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|EncrPINBlock|string|true|none|none|
-|PINFormat|[PINFormat](#schemapinformat)|true|none|Possible values:<br>* **ISO0**<br>* **ISO1**<br>* **ISO2**<br>* **ISO3**|
-|AdditionalInput|string|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|PINFormat|ISO0|
-|PINFormat|ISO1|
-|PINFormat|ISO2|
-|PINFormat|ISO3|
-
-<h2 id="tocS_ICCResetData">ICCResetData</h2>
-<!-- backwards compatibility -->
-<a id="schemaiccresetdata"></a>
-<a id="schema_ICCResetData"></a>
-<a id="tocSiccresetdata"></a>
-<a id="tocsiccresetdata"></a>
-
-```json
-{
-  "ATRValue": "string",
-  "CardStatusWords": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ATRValue|string(byte)|false|none|none|
-|CardStatusWords|string(byte)|false|none|none|
 
 <h2 id="tocS_SecurityTrailer">SecurityTrailer</h2>
 <!-- backwards compatibility -->
@@ -15514,7 +15030,7 @@ Content of the Custom Admin Request message.
       },
       "ReuseCardDataFlag": true,
       "ApprovalCode": "string",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "AmountValue": 0,
       "HostTransactionID": {
         "TransactionID": "string",
@@ -15526,7 +15042,7 @@ Content of the Custom Admin Request message.
         "string"
       ],
       "AcquirerID": [
-        0
+        "string"
       ],
       "DebitPreferredFlag": true,
       "AllowedLoyaltyBrand": [
@@ -15571,12 +15087,12 @@ Content of the Custom Admin Request message.
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -15605,9 +15121,9 @@ Content of the Custom Admin Request message.
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -15621,16 +15137,16 @@ Content of the Custom Admin Request message.
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -15773,7 +15289,7 @@ Content of the Card Acquisition Request message.
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -15789,15 +15305,15 @@ Content of the Card Acquisition Request message.
         },
         "ReuseCardDataFlag": true,
         "ApprovalCode": "string",
-        "AcquirerID": 0,
+        "AcquirerID": "string",
         "AmountValue": 0,
         "HostTransactionID": {
           "TransactionID": "string",
           "TimeStamp": "1970-01-01T00:00:00Z"
         }
       },
-      "ProductCode": 1,
-      "EanUpc": 0,
+      "ProductCode": "string",
+      "EanUpc": "string",
       "ItemAmount": 0,
       "Currency": "string"
     }
@@ -15856,7 +15372,7 @@ Content of the Stored Value Request message.
     },
     "ReuseCardDataFlag": true,
     "ApprovalCode": "string",
-    "AcquirerID": 0,
+    "AcquirerID": "string",
     "AmountValue": 0,
     "HostTransactionID": {
       "TransactionID": "string",
@@ -15877,7 +15393,7 @@ Content of the Reversal Request message.
 |---|---|---|---|---|
 |SaleData|[SaleData](#schemasaledata)|false|none|Data associated with the Sale System, with a particular value during the processing of the payment by the POI, including the cards acquisition.|
 |OriginalPOITransaction|[OriginalPOITransaction](#schemaoriginalpoitransaction)|true|none|Identification of a previous POI transaction.|
-|ReversedAmount|number|false|none|Amount of the payment or loyalty to reverse.<br>ReversedAmount is implicitly equal to the AuthorizedAmount if absent.|
+|ReversedAmount|number(double)|false|none|Amount of the payment or loyalty to reverse.<br>ReversedAmount is implicitly equal to the AuthorizedAmount if absent.|
 |ReversalReason|[ReversalReason](#schemareversalreason)|true|none|Reason of the payment or loyalty reversal.<br>Possible values:<br>* **CustCancel**<br>* **Malfunction**<br>* **MerchantCancel**<br>* **Unable2Compl**|
 
 #### Enumerated Values
@@ -15900,9 +15416,9 @@ Content of the Reversal Request message.
 {
   "ReconciliationType": "SaleReconciliation",
   "AcquirerID": [
-    0
+    "string"
   ],
-  "POIReconciliationID": 0
+  "POIReconciliationID": "string"
 }
 ```
 
@@ -15914,8 +15430,8 @@ It conveys Information related to the Reconciliation requested by the Sale Syste
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |ReconciliationType|[ReconciliationType](#schemareconciliationtype)|true|none|Type of Reconciliation requested by the Sale to the POI.<br>Possible values:<br>* **AcquirerReconciliation**<br>* **AcquirerSynchronisation**<br>* **PreviousReconciliation**<br>* **SaleReconciliation**|
-|AcquirerID|[integer]|false|none|Identification of the Acquirer.<br>Could be present only if ReconciliationType is AcquirerReconciliation or AcquirerSynchronisation.|
-|POIReconciliationID|integer|false|none|Identification of the reconciliation period between Sale and POI.<br>Absent if ReconciliationType is not PreviousReconciliation.|
+|AcquirerID|[string]|false|none|Identification of the Acquirer.<br>Could be present only if ReconciliationType is AcquirerReconciliation or AcquirerSynchronisation.|
+|POIReconciliationID|string|false|none|Identification of the reconciliation period between Sale and POI.<br>Absent if ReconciliationType is not PreviousReconciliation.|
 
 #### Enumerated Values
 
@@ -15993,12 +15509,12 @@ Content of the Get Totals Request message.
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -16027,9 +15543,9 @@ Content of the Get Totals Request message.
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -16043,16 +15559,16 @@ Content of the Get Totals Request message.
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -16344,7 +15860,7 @@ It conveys Information related to the event, and possible action (maintenance, m
   "POIID": "string",
   "HostDiagnosisFlag": false,
   "AcquirerID": [
-    0
+    "string"
   ]
 }
 ```
@@ -16358,7 +15874,7 @@ Content of the Diagnosis Request message.
 |---|---|---|---|---|
 |POIID|string|false|none|Identification of a POI System or a POI Terminal for the Sale to POI protocol.<br>MessageHeader.POIID.|
 |HostDiagnosisFlag|boolean|false|none|Indicates if Host Diagnosis are required.|
-|AcquirerID|[integer]|false|none|Identification of the Acquirer.<br>Present if requesting the diagnosis of these hosts only.|
+|AcquirerID|[string]|false|none|Identification of the Acquirer.<br>Present if requesting the diagnosis of these hosts only.|
 
 <h2 id="tocS_DisplayRequest">DisplayRequest</h2>
 <!-- backwards compatibility -->
@@ -16876,7 +16392,7 @@ Content of the Custom Admin Response message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "PaymentResult": {
     "PaymentType": "Normal",
@@ -16890,12 +16406,12 @@ Content of the Custom Admin Response message.
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -16924,9 +16440,9 @@ Content of the Custom Admin Response message.
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -16940,16 +16456,16 @@ Content of the Custom Admin Response message.
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -17011,7 +16527,7 @@ Content of the Custom Admin Response message.
     ],
     "ValidityDate": "1970-01-01",
     "PaymentAcquirerData": {
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "MerchantID": "string",
       "AcquirerPOIID": "string",
       "AcquirerTransactionID": {
@@ -17137,7 +16653,7 @@ Content of the Payment Response message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "PaymentBrand": [
     "string"
@@ -17152,12 +16668,12 @@ Content of the Payment Response message.
       "EntryMode": [
         "RFID"
       ],
-      "CardCountryCode": 3,
+      "CardCountryCode": "string",
       "ProtectedCardData": "string",
       "SensitiveCardData": {
-        "PAN": 8,
-        "CardSeqNumb": 2,
-        "ExpiryDate": 4,
+        "PAN": "string",
+        "CardSeqNumb": "string",
+        "ExpiryDate": "string",
         "TrackData": [
           {
             "TrackNumb": 2,
@@ -17186,9 +16702,9 @@ Content of the Payment Response message.
       "Country": "string"
     },
     "MobileData": {
-      "MobileCountryCode": 3,
-      "MobileNetworkCode": 2,
-      "MaskedMSISDN": 0,
+      "MobileCountryCode": "string",
+      "MobileNetworkCode": "string",
+      "MaskedMSISDN": "string",
       "Geolocation": {
         "GeographicCoordinates": {
           "Latitude": "string",
@@ -17202,16 +16718,16 @@ Content of the Payment Response message.
       },
       "ProtectedMobileData": "string",
       "SensitiveMobileData": {
-        "MSISDN": 0,
-        "IMSI": 0,
-        "IMEI": 0
+        "MSISDN": "string",
+        "IMSI": "string",
+        "IMEI": "string"
       }
     },
     "StoredValueAccountID": {
       "StoredValueAccountType": "GiftCard",
       "StoredValueProvider": "string",
       "OwnerName": "string",
-      "ExpiryDate": 4,
+      "ExpiryDate": "string",
       "EntryMode": [
         "RFID"
       ],
@@ -17291,7 +16807,7 @@ Content of the Card Acquisition Response message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "LoyaltyResult": [
     {
@@ -17407,13 +16923,13 @@ Content of the Loyalty Response message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "StoredValueResult": [
     {
       "StoredValueTransactionType": "Reserve",
-      "ProductCode": 1,
-      "EanUpc": 0,
+      "ProductCode": "string",
+      "EanUpc": "string",
       "ItemAmount": 0,
       "Currency": "string",
       "StoredValueAccountStatus": {
@@ -17421,7 +16937,7 @@ Content of the Loyalty Response message.
           "StoredValueAccountType": "GiftCard",
           "StoredValueProvider": "string",
           "OwnerName": "string",
-          "ExpiryDate": 4,
+          "ExpiryDate": "string",
           "EntryMode": [
             "RFID"
           ],
@@ -17502,7 +17018,7 @@ Content of the Stored Value Response message.
       "TransactionID": "string",
       "TimeStamp": "1970-01-01T00:00:00Z"
     },
-    "POIReconciliationID": 0
+    "POIReconciliationID": "string"
   },
   "OriginalPOITransaction": {
     "SaleID": "string",
@@ -17513,7 +17029,7 @@ Content of the Stored Value Response message.
     },
     "ReuseCardDataFlag": true,
     "ApprovalCode": "string",
-    "AcquirerID": 0,
+    "AcquirerID": "string",
     "AmountValue": 0,
     "HostTransactionID": {
       "TransactionID": "string",
@@ -17565,7 +17081,7 @@ Content of the Reversal Response message.
 |Response|[Response](#schemaresponse)|true|none|Result of a message request processing.|
 |POIData|[POIData](#schemapoidata)|false|none|Data related to the POI System.<br>If Result is Success.|
 |OriginalPOITransaction|[OriginalPOITransaction](#schemaoriginalpoitransaction)|false|none|Identification of a previous POI transaction.<br>In the Payment Request message, it allows using the card of a previous CardAcquisition or Payment request.|
-|ReversedAmount|number|false|none|Amount of the payment or loyalty to reverse.<br>Copy.|
+|ReversedAmount|number(double)|false|none|Amount of the payment or loyalty to reverse.<br>Copy.|
 |PaymentReceipt|[[PaymentReceipt](#schemapaymentreceipt)]|false|none|none|
 
 <h2 id="tocS_ReconciliationResponse">ReconciliationResponse</h2>
@@ -17583,11 +17099,11 @@ Content of the Reversal Response message.
     "AdditionalResponse": "string"
   },
   "ReconciliationType": "SaleReconciliation",
-  "POIReconciliationID": 0,
+  "POIReconciliationID": "string",
   "TransactionTotals": [
     {
       "PaymentInstrumentType": "Card",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "HostReconciliationID": "string",
       "CardBrand": "string",
       "POIID": "string",
@@ -17617,7 +17133,7 @@ Content of the Reconciliation Response message.
 |---|---|---|---|---|
 |Response|[Response](#schemaresponse)|true|none|Result of a message request processing.|
 |ReconciliationType|[ReconciliationType](#schemareconciliationtype)|true|none|Type of Reconciliation requested by the Sale to the POI.<br>Possible values:<br>* **AcquirerReconciliation**<br>* **AcquirerSynchronisation**<br>* **PreviousReconciliation**<br>* **SaleReconciliation**|
-|POIReconciliationID|integer|false|none|Identification of the reconciliation period between Sale and POI.<br>Absent if ReconciliationType is `AcquirerReconciliation`.|
+|POIReconciliationID|string|false|none|Identification of the reconciliation period between Sale and POI.<br>Absent if ReconciliationType is `AcquirerReconciliation`.|
 |TransactionTotals|[[TransactionTotals](#schematransactiontotals)]|false|none|Result of the Sale to POI Reconciliation processing.<br>If `Response.Result` is Success.|
 
 #### Enumerated Values
@@ -17643,11 +17159,11 @@ Content of the Reconciliation Response message.
     "ErrorCondition": "Aborted",
     "AdditionalResponse": "string"
   },
-  "POIReconciliationID": 0,
+  "POIReconciliationID": "string",
   "TransactionTotals": [
     {
       "PaymentInstrumentType": "Card",
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "HostReconciliationID": "string",
       "CardBrand": "string",
       "POIID": "string",
@@ -17676,7 +17192,7 @@ It conveys Information related to the Reconciliation transaction processed by th
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |Response|[Response](#schemaresponse)|true|none|Result of a message request processing.|
-|POIReconciliationID|integer|true|none|Identification of the reconciliation period between Sale and POI.|
+|POIReconciliationID|string|true|none|Identification of the reconciliation period between Sale and POI.|
 |TransactionTotals|[[TransactionTotals](#schematransactiontotals)]|false|none|Result of the Sale to POI Reconciliation processing.<br>If `Response.Result` is Success.|
 
 <h2 id="tocS_BalanceInquiryResponse">BalanceInquiryResponse</h2>
@@ -17704,12 +17220,12 @@ It conveys Information related to the Reconciliation transaction processed by th
         "EntryMode": [
           "RFID"
         ],
-        "CardCountryCode": 3,
+        "CardCountryCode": "string",
         "ProtectedCardData": "string",
         "SensitiveCardData": {
-          "PAN": 8,
-          "CardSeqNumb": 2,
-          "ExpiryDate": 4,
+          "PAN": "string",
+          "CardSeqNumb": "string",
+          "ExpiryDate": "string",
           "TrackData": [
             {
               "TrackNumb": 2,
@@ -17738,9 +17254,9 @@ It conveys Information related to the Reconciliation transaction processed by th
         "Country": "string"
       },
       "MobileData": {
-        "MobileCountryCode": 3,
-        "MobileNetworkCode": 2,
-        "MaskedMSISDN": 0,
+        "MobileCountryCode": "string",
+        "MobileNetworkCode": "string",
+        "MaskedMSISDN": "string",
         "Geolocation": {
           "GeographicCoordinates": {
             "Latitude": "string",
@@ -17754,16 +17270,16 @@ It conveys Information related to the Reconciliation transaction processed by th
         },
         "ProtectedMobileData": "string",
         "SensitiveMobileData": {
-          "MSISDN": 0,
-          "IMSI": 0,
-          "IMEI": 0
+          "MSISDN": "string",
+          "IMSI": "string",
+          "IMEI": "string"
         }
       },
       "StoredValueAccountID": {
         "StoredValueAccountType": "GiftCard",
         "StoredValueProvider": "string",
         "OwnerName": "string",
-        "ExpiryDate": 4,
+        "ExpiryDate": "string",
         "EntryMode": [
           "RFID"
         ],
@@ -17774,7 +17290,7 @@ It conveys Information related to the Reconciliation transaction processed by th
     "CurrentBalance": 0,
     "Currency": "string",
     "PaymentAcquirerData": {
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "MerchantID": "string",
       "AcquirerPOIID": "string",
       "AcquirerTransactionID": {
@@ -17927,7 +17443,7 @@ It contains the result of the requested service, APDU response sent by the chip 
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "LoyaltyResult": [
           {
@@ -18020,7 +17536,7 @@ It contains the result of the requested service, APDU response sent by the chip 
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "PaymentResult": {
           "PaymentType": "Normal",
@@ -18034,12 +17550,12 @@ It contains the result of the requested service, APDU response sent by the chip 
               "EntryMode": [
                 "RFID"
               ],
-              "CardCountryCode": 3,
+              "CardCountryCode": "string",
               "ProtectedCardData": "string",
               "SensitiveCardData": {
-                "PAN": 8,
-                "CardSeqNumb": 2,
-                "ExpiryDate": 4,
+                "PAN": "string",
+                "CardSeqNumb": "string",
+                "ExpiryDate": "string",
                 "TrackData": [
                   {
                     "TrackNumb": 2,
@@ -18068,9 +17584,9 @@ It contains the result of the requested service, APDU response sent by the chip 
               "Country": "string"
             },
             "MobileData": {
-              "MobileCountryCode": 3,
-              "MobileNetworkCode": 2,
-              "MaskedMSISDN": 0,
+              "MobileCountryCode": "string",
+              "MobileNetworkCode": "string",
+              "MaskedMSISDN": "string",
               "Geolocation": {
                 "GeographicCoordinates": {
                   "Latitude": "string",
@@ -18084,16 +17600,16 @@ It contains the result of the requested service, APDU response sent by the chip 
               },
               "ProtectedMobileData": "string",
               "SensitiveMobileData": {
-                "MSISDN": 0,
-                "IMSI": 0,
-                "IMEI": 0
+                "MSISDN": "string",
+                "IMSI": "string",
+                "IMEI": "string"
               }
             },
             "StoredValueAccountID": {
               "StoredValueAccountType": "GiftCard",
               "StoredValueProvider": "string",
               "OwnerName": "string",
-              "ExpiryDate": 4,
+              "ExpiryDate": "string",
               "EntryMode": [
                 "RFID"
               ],
@@ -18155,7 +17671,7 @@ It contains the result of the requested service, APDU response sent by the chip 
           ],
           "ValidityDate": "1970-01-01",
           "PaymentAcquirerData": {
-            "AcquirerID": 0,
+            "AcquirerID": "string",
             "MerchantID": "string",
             "AcquirerPOIID": "string",
             "AcquirerTransactionID": {
@@ -18234,7 +17750,7 @@ It contains the result of the requested service, APDU response sent by the chip 
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "OriginalPOITransaction": {
           "SaleID": "string",
@@ -18245,7 +17761,7 @@ It contains the result of the requested service, APDU response sent by the chip 
           },
           "ReuseCardDataFlag": true,
           "ApprovalCode": "string",
-          "AcquirerID": 0,
+          "AcquirerID": "string",
           "AmountValue": 0,
           "HostTransactionID": {
             "TransactionID": "string",
@@ -18319,13 +17835,13 @@ It contains the result of the requested service, APDU response sent by the chip 
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "StoredValueResult": [
           {
             "StoredValueTransactionType": "Reserve",
-            "ProductCode": 1,
-            "EanUpc": 0,
+            "ProductCode": "string",
+            "EanUpc": "string",
             "ItemAmount": 0,
             "Currency": "string",
             "StoredValueAccountStatus": {
@@ -18333,7 +17849,7 @@ It contains the result of the requested service, APDU response sent by the chip 
                 "StoredValueAccountType": "GiftCard",
                 "StoredValueProvider": "string",
                 "OwnerName": "string",
-                "ExpiryDate": 4,
+                "ExpiryDate": "string",
                 "EntryMode": [
                   "RFID"
                 ],
@@ -18414,7 +17930,7 @@ It contains the result of the requested service, APDU response sent by the chip 
             "TransactionID": "string",
             "TimeStamp": "1970-01-01T00:00:00Z"
           },
-          "POIReconciliationID": 0
+          "POIReconciliationID": "string"
         },
         "PaymentBrand": [
           "string"
@@ -18429,12 +17945,12 @@ It contains the result of the requested service, APDU response sent by the chip 
             "EntryMode": [
               "RFID"
             ],
-            "CardCountryCode": 3,
+            "CardCountryCode": "string",
             "ProtectedCardData": "string",
             "SensitiveCardData": {
-              "PAN": 8,
-              "CardSeqNumb": 2,
-              "ExpiryDate": 4,
+              "PAN": "string",
+              "CardSeqNumb": "string",
+              "ExpiryDate": "string",
               "TrackData": [
                 {
                   "TrackNumb": 2,
@@ -18463,9 +17979,9 @@ It contains the result of the requested service, APDU response sent by the chip 
             "Country": "string"
           },
           "MobileData": {
-            "MobileCountryCode": 3,
-            "MobileNetworkCode": 2,
-            "MaskedMSISDN": 0,
+            "MobileCountryCode": "string",
+            "MobileNetworkCode": "string",
+            "MaskedMSISDN": "string",
             "Geolocation": {
               "GeographicCoordinates": {
                 "Latitude": "string",
@@ -18479,16 +17995,16 @@ It contains the result of the requested service, APDU response sent by the chip 
             },
             "ProtectedMobileData": "string",
             "SensitiveMobileData": {
-              "MSISDN": 0,
-              "IMSI": 0,
-              "IMEI": 0
+              "MSISDN": "string",
+              "IMSI": "string",
+              "IMEI": "string"
             }
           },
           "StoredValueAccountID": {
             "StoredValueAccountType": "GiftCard",
             "StoredValueProvider": "string",
             "OwnerName": "string",
-            "ExpiryDate": 4,
+            "ExpiryDate": "string",
             "EntryMode": [
               "RFID"
             ],
@@ -18573,7 +18089,7 @@ A successful `AbortRequest` returns a response with a **200 OK** HTTP status cod
   },
   "HostStatus": [
     {
-      "AcquirerID": 0,
+      "AcquirerID": "string",
       "IsReachableFlag": true
     }
   ]
@@ -18652,9 +18168,9 @@ Content of the Display Response message.
     "Input": {
       "InputCommand": "GetAnyKey",
       "ConfirmedFlag": true,
-      "FunctionKey": 0,
+      "FunctionKey": "string",
       "TextInput": "string",
-      "DigitInput": 0,
+      "DigitInput": "string",
       "Password": "string",
       "MenuEntryNumber": [
         0

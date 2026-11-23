@@ -238,11 +238,7 @@ type AlbumResourceType = {
   remoteCover?: string | null
 }
 
-type ArtistStatusTypeType = 'continuing' | 'ended' | 'deleted'
-
-const ArtistStatusTypeSchema: z.ZodType<ArtistStatusTypeType> = z
-  .enum(['continuing', 'ended', 'deleted'])
-  .openapi('ArtistStatusType')
+const SortDirectionSchema = z.enum(['default', 'ascending', 'descending']).openapi('SortDirection')
 
 const AlbumResourceSchema: z.ZodType<AlbumResourceType> = z
   .lazy(() =>
@@ -278,6 +274,57 @@ const AlbumResourceSchema: z.ZodType<AlbumResourceType> = z
   )
   .openapi('AlbumResource')
 
+type AlbumResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof AlbumResourceSchema>[] | null
+}
+
+type AlbumStudioArtistResourceType = {
+  id?: number
+  monitored?: boolean | null
+  albums?: z.infer<typeof AlbumResourceSchema>[] | null
+}
+
+const AlbumStudioArtistResourceSchema: z.ZodType<AlbumStudioArtistResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    monitored: z.boolean().nullable().exactOptional(),
+    albums: z.array(AlbumResourceSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AlbumStudioArtistResource')
+
+const MonitoringOptionsSchema = z
+  .strictObject({
+    monitor: MonitorTypesSchema.exactOptional(),
+    albumsToMonitor: z.array(z.string()).nullable().exactOptional(),
+    monitored: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MonitoringOptions')
+
+type NewItemMonitorTypesType = 'all' | 'none' | 'new'
+
+const NewItemMonitorTypesSchema: z.ZodType<NewItemMonitorTypesType> = z
+  .enum(['all', 'none', 'new'])
+  .openapi('NewItemMonitorTypes')
+
+type AlbumStudioResourceType = {
+  artist?: z.infer<typeof AlbumStudioArtistResourceSchema>[] | null
+  monitoringOptions?: z.infer<typeof MonitoringOptionsSchema>
+  monitorNewItems?: z.infer<typeof NewItemMonitorTypesSchema>
+}
+
+type ArtistStatusTypeType = 'continuing' | 'ended' | 'deleted'
+
+const ArtistStatusTypeSchema: z.ZodType<ArtistStatusTypeType> = z
+  .enum(['continuing', 'ended', 'deleted'])
+  .openapi('ArtistStatusType')
+
 type MemberType = {
   name?: string | null
   instrument?: string | null
@@ -292,12 +339,6 @@ const MemberSchema: z.ZodType<MemberType> = z
   })
   .openapi({ required: [] })
   .openapi('Member')
-
-type NewItemMonitorTypesType = 'all' | 'none' | 'new'
-
-const NewItemMonitorTypesSchema: z.ZodType<NewItemMonitorTypesType> = z
-  .enum(['all', 'none', 'new'])
-  .openapi('NewItemMonitorTypes')
 
 const AddArtistOptionsSchema: z.ZodType<AddArtistOptionsType> = z
   .strictObject({
@@ -377,6 +418,98 @@ type ArtistResourceType = {
   statistics?: z.infer<typeof ArtistStatisticsResourceSchema>
 }
 
+const QualitySchema = z
+  .strictObject({ id: z.int32().exactOptional(), name: z.string().nullable().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Quality')
+
+const RevisionSchema = z
+  .strictObject({
+    version: z.int32().exactOptional(),
+    real: z.int32().exactOptional(),
+    isRepack: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Revision')
+
+const QualityModelSchema = z
+  .strictObject({
+    quality: QualitySchema.exactOptional(),
+    revision: RevisionSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('QualityModel')
+
+const CustomFormatSpecificationSchemaSchema: z.ZodType<CustomFormatSpecificationSchemaType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        id: z.int32().exactOptional(),
+        name: z.string().nullable().exactOptional(),
+        implementation: z.string().nullable().exactOptional(),
+        implementationName: z.string().nullable().exactOptional(),
+        infoLink: z.string().nullable().exactOptional(),
+        negate: z.boolean().exactOptional(),
+        required: z.boolean().exactOptional(),
+        fields: z.array(FieldSchema).nullable().exactOptional(),
+        presets: z.array(CustomFormatSpecificationSchemaSchema).nullable().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('CustomFormatSpecificationSchema')
+
+const CustomFormatResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    includeCustomFormatWhenRenaming: z.boolean().nullable().exactOptional(),
+    specifications: z.array(CustomFormatSpecificationSchemaSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomFormatResource')
+
+const DownloadProtocolSchema = z.enum(['unknown', 'usenet', 'torrent']).openapi('DownloadProtocol')
+
+type BlocklistResourceType = {
+  id?: number
+  artistId?: number
+  albumIds?: number[] | null
+  sourceTitle?: string | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  date?: string
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  indexer?: string | null
+  message?: string | null
+  artist?: z.infer<typeof ArtistResourceSchema>
+}
+
+const BlocklistResourceSchema: z.ZodType<BlocklistResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    artistId: z.int32().exactOptional(),
+    albumIds: z.array(z.int32()).nullable().exactOptional(),
+    sourceTitle: z.string().nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    date: z.iso.datetime({ offset: true }).exactOptional(),
+    protocol: DownloadProtocolSchema.exactOptional(),
+    indexer: z.string().nullable().exactOptional(),
+    message: z.string().nullable().exactOptional(),
+    artist: ArtistResourceSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BlocklistResource')
+
+type BlocklistResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof BlocklistResourceSchema>[] | null
+}
+
 const SelectOptionSchema = z
   .strictObject({
     value: z.int32().exactOptional(),
@@ -438,8 +571,6 @@ const ProviderMessageSchema = z
   .openapi({ required: [] })
   .openapi('ProviderMessage')
 
-const DownloadProtocolSchema = z.enum(['unknown', 'usenet', 'torrent']).openapi('DownloadProtocol')
-
 type DownloadClientResourceType = {
   id?: number
   name?: string | null
@@ -456,6 +587,234 @@ type DownloadClientResourceType = {
   priority?: number
   removeCompletedDownloads?: boolean
   removeFailedDownloads?: boolean
+}
+
+const EntityHistoryEventTypeSchema = z
+  .enum([
+    'unknown',
+    'grabbed',
+    'artistFolderImported',
+    'trackFileImported',
+    'downloadFailed',
+    'trackFileDeleted',
+    'trackFileRenamed',
+    'albumImportIncomplete',
+    'downloadImported',
+    'trackFileRetagged',
+    'downloadIgnored',
+  ])
+  .openapi('EntityHistoryEventType')
+
+const MediaInfoResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    audioChannels: z.float64().exactOptional(),
+    audioBitRate: z.string().nullable().exactOptional(),
+    audioCodec: z.string().nullable().exactOptional(),
+    audioBits: z.string().nullable().exactOptional(),
+    audioSampleRate: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaInfoResource')
+
+const ArtistTitleInfoSchema = z
+  .strictObject({
+    title: z.string().nullable().exactOptional(),
+    titleWithoutYear: z.string().nullable().exactOptional(),
+    year: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ArtistTitleInfo')
+
+const IsoCountrySchema = z
+  .strictObject({
+    twoLetterCode: z.string().nullable().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IsoCountry')
+
+const MediaInfoModelSchema = z
+  .strictObject({
+    audioFormat: z.string().nullable().exactOptional(),
+    audioBitrate: z.int32().exactOptional(),
+    audioChannels: z.int32().exactOptional(),
+    audioBits: z.int32().exactOptional(),
+    audioSampleRate: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaInfoModel')
+
+const ParsedTrackInfoSchema = z
+  .strictObject({
+    title: z.string().nullable().exactOptional(),
+    cleanTitle: z.string().nullable().exactOptional(),
+    artistTitle: z.string().nullable().exactOptional(),
+    albumTitle: z.string().nullable().exactOptional(),
+    artistTitleInfo: ArtistTitleInfoSchema.exactOptional(),
+    artistMBId: z.string().nullable().exactOptional(),
+    albumMBId: z.string().nullable().exactOptional(),
+    releaseMBId: z.string().nullable().exactOptional(),
+    recordingMBId: z.string().nullable().exactOptional(),
+    trackMBId: z.string().nullable().exactOptional(),
+    discNumber: z.int32().exactOptional(),
+    discCount: z.int32().exactOptional(),
+    country: IsoCountrySchema.exactOptional(),
+    year: z.int32().exactOptional(),
+    label: z.string().nullable().exactOptional(),
+    catalogNumber: z.string().nullable().exactOptional(),
+    disambiguation: z.string().nullable().exactOptional(),
+    duration: z.string().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    mediaInfo: MediaInfoModelSchema.exactOptional(),
+    trackNumbers: z.array(z.int32()).nullable().exactOptional(),
+    releaseGroup: z.string().nullable().exactOptional(),
+    releaseHash: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ParsedTrackInfo')
+
+type TrackFileResourceType = {
+  id?: number
+  artistId?: number
+  albumId?: number
+  path?: string | null
+  size?: bigint
+  dateAdded?: string
+  sceneName?: string | null
+  releaseGroup?: string | null
+  quality?: z.infer<typeof QualityModelSchema>
+  qualityWeight?: number
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  indexerFlags?: number | null
+  mediaInfo?: z.infer<typeof MediaInfoResourceSchema>
+  qualityCutoffNotMet?: boolean
+  audioTags?: z.infer<typeof ParsedTrackInfoSchema>
+}
+
+const TrackFileResourceSchema: z.ZodType<TrackFileResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    artistId: z.int32().exactOptional(),
+    albumId: z.int32().exactOptional(),
+    path: z.string().nullable().exactOptional(),
+    size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    dateAdded: z.iso.datetime({ offset: true }).exactOptional(),
+    sceneName: z.string().nullable().exactOptional(),
+    releaseGroup: z.string().nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    qualityWeight: z.int32().exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().exactOptional(),
+    indexerFlags: z.int32().nullable().exactOptional(),
+    mediaInfo: MediaInfoResourceSchema.exactOptional(),
+    qualityCutoffNotMet: z.boolean().exactOptional(),
+    audioTags: ParsedTrackInfoSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TrackFileResource')
+
+type TrackResourceType = {
+  id?: number
+  artistId?: number
+  foreignTrackId?: string | null
+  foreignRecordingId?: string | null
+  trackFileId?: number
+  albumId?: number
+  explicit?: boolean
+  absoluteTrackNumber?: number
+  trackNumber?: string | null
+  title?: string | null
+  duration?: number
+  trackFile?: z.infer<typeof TrackFileResourceSchema>
+  mediumNumber?: number
+  hasFile?: boolean
+  artist?: z.infer<typeof ArtistResourceSchema>
+  ratings?: z.infer<typeof RatingsSchema>
+}
+
+const TrackResourceSchema: z.ZodType<TrackResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    artistId: z.int32().exactOptional(),
+    foreignTrackId: z.string().nullable().exactOptional(),
+    foreignRecordingId: z.string().nullable().exactOptional(),
+    trackFileId: z.int32().exactOptional(),
+    albumId: z.int32().exactOptional(),
+    explicit: z.boolean().exactOptional(),
+    absoluteTrackNumber: z.int32().exactOptional(),
+    trackNumber: z.string().nullable().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    duration: z.int32().exactOptional(),
+    trackFile: TrackFileResourceSchema.exactOptional(),
+    mediumNumber: z.int32().exactOptional(),
+    hasFile: z.boolean().exactOptional(),
+    artist: ArtistResourceSchema.exactOptional(),
+    ratings: RatingsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TrackResource')
+
+type HistoryResourceType = {
+  id?: number
+  albumId?: number
+  artistId?: number
+  trackId?: number
+  sourceTitle?: string | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  qualityCutoffNotMet?: boolean
+  date?: string
+  downloadId?: string | null
+  eventType?: z.infer<typeof EntityHistoryEventTypeSchema>
+  data?: { [key: string]: string | null } | null
+  album?: z.infer<typeof AlbumResourceSchema>
+  artist?: z.infer<typeof ArtistResourceSchema>
+  track?: z.infer<typeof TrackResourceSchema>
+}
+
+const HistoryResourceSchema: z.ZodType<HistoryResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    albumId: z.int32().exactOptional(),
+    artistId: z.int32().exactOptional(),
+    trackId: z.int32().exactOptional(),
+    sourceTitle: z.string().nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().exactOptional(),
+    qualityCutoffNotMet: z.boolean().exactOptional(),
+    date: z.iso.datetime({ offset: true }).exactOptional(),
+    downloadId: z.string().nullable().exactOptional(),
+    eventType: EntityHistoryEventTypeSchema.exactOptional(),
+    data: z.record(z.string(), z.string().nullable()).nullable().exactOptional(),
+    album: AlbumResourceSchema.exactOptional(),
+    artist: ArtistResourceSchema.exactOptional(),
+    track: TrackResourceSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('HistoryResource')
+
+type HistoryResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof HistoryResourceSchema>[] | null
 }
 
 const ImportListMonitorTypeSchema = z
@@ -509,6 +868,56 @@ type IndexerResourceType = {
   protocol?: z.infer<typeof DownloadProtocolSchema>
   priority?: number
   downloadClientId?: number
+}
+
+const RejectionTypeSchema = z.enum(['permanent', 'temporary']).openapi('RejectionType')
+
+const RejectionSchema = z
+  .strictObject({
+    reason: z.string().nullable().exactOptional(),
+    type: RejectionTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Rejection')
+
+type ManualImportResourceType = {
+  id?: number
+  path?: string | null
+  name?: string | null
+  size?: bigint
+  artist?: z.infer<typeof ArtistResourceSchema>
+  album?: z.infer<typeof AlbumResourceSchema>
+  albumReleaseId?: number
+  tracks?: z.infer<typeof TrackResourceSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  releaseGroup?: string | null
+  qualityWeight?: number
+  downloadId?: string | null
+  indexerFlags?: number
+  rejections?: z.infer<typeof RejectionSchema>[] | null
+  audioTags?: z.infer<typeof ParsedTrackInfoSchema>
+  additionalFile?: boolean
+  replaceExistingFiles?: boolean
+  disableReleaseSwitching?: boolean
+}
+
+type ManualImportUpdateResourceType = {
+  id?: number
+  path?: string | null
+  name?: string | null
+  artistId?: number | null
+  albumId?: number | null
+  albumReleaseId?: number | null
+  tracks?: z.infer<typeof TrackResourceSchema>[] | null
+  trackIds?: number[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  releaseGroup?: string | null
+  indexerFlags?: number
+  downloadId?: string | null
+  additionalFile?: boolean
+  replaceExistingFiles?: boolean
+  disableReleaseSwitching?: boolean
+  rejections?: z.infer<typeof RejectionSchema>[] | null
 }
 
 type MetadataResourceType = {
@@ -567,10 +976,34 @@ type NotificationResourceType = {
   testCommand?: string | null
 }
 
-const QualitySchema = z
-  .strictObject({ id: z.int32().exactOptional(), name: z.string().nullable().exactOptional() })
+const ParsedAlbumInfoSchema = z
+  .strictObject({
+    releaseTitle: z.string().nullable().exactOptional(),
+    albumTitle: z.string().nullable().exactOptional(),
+    artistName: z.string().nullable().exactOptional(),
+    albumType: z.string().nullable().exactOptional(),
+    artistTitleInfo: ArtistTitleInfoSchema.exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    releaseDate: z.string().nullable().exactOptional(),
+    discography: z.boolean().exactOptional(),
+    discographyStart: z.int32().exactOptional(),
+    discographyEnd: z.int32().exactOptional(),
+    releaseGroup: z.string().nullable().exactOptional(),
+    releaseHash: z.string().nullable().exactOptional(),
+    releaseVersion: z.string().nullable().exactOptional(),
+  })
   .openapi({ required: [] })
-  .openapi('Quality')
+  .openapi('ParsedAlbumInfo')
+
+type ParseResourceType = {
+  id?: number
+  title?: string | null
+  parsedAlbumInfo?: z.infer<typeof ParsedAlbumInfoSchema>
+  artist?: z.infer<typeof ArtistResourceSchema>
+  albums?: z.infer<typeof AlbumResourceSchema>[] | null
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+}
 
 type QualityProfileQualityItemResourceType = {
   id?: number
@@ -580,9 +1013,151 @@ type QualityProfileQualityItemResourceType = {
   allowed?: boolean
 }
 
-const SortDirectionSchema = z.enum(['default', 'ascending', 'descending']).openapi('SortDirection')
+const TrackedDownloadStatusSchema = z
+  .enum(['ok', 'warning', 'error'])
+  .openapi('TrackedDownloadStatus')
 
-const AlbumResourcePagingResourceSchema = z
+const TrackedDownloadStateSchema = z
+  .enum([
+    'downloading',
+    'downloadFailed',
+    'downloadFailedPending',
+    'importBlocked',
+    'importPending',
+    'importing',
+    'importFailed',
+    'imported',
+    'ignored',
+  ])
+  .openapi('TrackedDownloadState')
+
+const TrackedDownloadStatusMessageSchema = z
+  .strictObject({
+    title: z.string().nullable().exactOptional(),
+    messages: z.array(z.string()).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TrackedDownloadStatusMessage')
+
+type QueueResourceType = {
+  id?: number
+  artistId?: number | null
+  albumId?: number | null
+  artist?: z.infer<typeof ArtistResourceSchema>
+  album?: z.infer<typeof AlbumResourceSchema>
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  size?: number
+  title?: string | null
+  sizeleft?: number
+  timeleft?: string | null
+  estimatedCompletionTime?: string | null
+  added?: string | null
+  status?: string | null
+  trackedDownloadStatus?: z.infer<typeof TrackedDownloadStatusSchema>
+  trackedDownloadState?: z.infer<typeof TrackedDownloadStateSchema>
+  statusMessages?: z.infer<typeof TrackedDownloadStatusMessageSchema>[] | null
+  errorMessage?: string | null
+  downloadId?: string | null
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  downloadClient?: string | null
+  downloadClientHasPostImportCategory?: boolean
+  indexer?: string | null
+  outputPath?: string | null
+  trackFileCount?: number
+  trackHasFileCount?: number
+  downloadForced?: boolean
+}
+
+const QueueResourceSchema: z.ZodType<QueueResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    artistId: z.int32().nullable().exactOptional(),
+    albumId: z.int32().nullable().exactOptional(),
+    artist: ArtistResourceSchema.exactOptional(),
+    album: AlbumResourceSchema.exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().exactOptional(),
+    size: z.float64().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    sizeleft: z.float64().exactOptional(),
+    timeleft: z.string().nullable().exactOptional(),
+    estimatedCompletionTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    added: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    status: z.string().nullable().exactOptional(),
+    trackedDownloadStatus: TrackedDownloadStatusSchema.exactOptional(),
+    trackedDownloadState: TrackedDownloadStateSchema.exactOptional(),
+    statusMessages: z.array(TrackedDownloadStatusMessageSchema).nullable().exactOptional(),
+    errorMessage: z.string().nullable().exactOptional(),
+    downloadId: z.string().nullable().exactOptional(),
+    protocol: DownloadProtocolSchema.exactOptional(),
+    downloadClient: z.string().nullable().exactOptional(),
+    downloadClientHasPostImportCategory: z.boolean().exactOptional(),
+    indexer: z.string().nullable().exactOptional(),
+    outputPath: z.string().nullable().exactOptional(),
+    trackFileCount: z.int32().exactOptional(),
+    trackHasFileCount: z.int32().exactOptional(),
+    downloadForced: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('QueueResource')
+
+type QueueResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof QueueResourceSchema>[] | null
+}
+
+type ReleaseResourceType = {
+  id?: number
+  guid?: string | null
+  quality?: z.infer<typeof QualityModelSchema>
+  qualityWeight?: number
+  age?: number
+  ageHours?: number
+  ageMinutes?: number
+  size?: bigint
+  indexerId?: number
+  indexer?: string | null
+  releaseGroup?: string | null
+  subGroup?: string | null
+  releaseHash?: string | null
+  title?: string | null
+  discography?: boolean
+  sceneSource?: boolean
+  airDate?: string | null
+  artistName?: string | null
+  albumTitle?: string | null
+  approved?: boolean
+  temporarilyRejected?: boolean
+  rejected?: boolean
+  rejections?: string[] | null
+  publishDate?: string
+  commentUrl?: string | null
+  downloadUrl?: string | null
+  infoUrl?: string | null
+  downloadAllowed?: boolean
+  releaseWeight?: number
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  magnetUrl?: string | null
+  infoHash?: string | null
+  seeders?: number | null
+  leechers?: number | null
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  indexerFlags?: number
+  artistId?: number | null
+  albumId?: number | null
+  downloadClientId?: number | null
+  downloadClient?: string | null
+}
+
+const AlbumResourcePagingResourceSchema: z.ZodType<AlbumResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -594,25 +1169,7 @@ const AlbumResourcePagingResourceSchema = z
   .openapi({ required: [] })
   .openapi('AlbumResourcePagingResource')
 
-const AlbumStudioArtistResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    monitored: z.boolean().nullable().exactOptional(),
-    albums: z.array(AlbumResourceSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AlbumStudioArtistResource')
-
-const MonitoringOptionsSchema = z
-  .strictObject({
-    monitor: MonitorTypesSchema.exactOptional(),
-    albumsToMonitor: z.array(z.string()).nullable().exactOptional(),
-    monitored: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MonitoringOptions')
-
-const AlbumStudioResourceSchema = z
+const AlbumStudioResourceSchema: z.ZodType<AlbumStudioResourceType> = z
   .strictObject({
     artist: z.array(AlbumStudioArtistResourceSchema).nullable().exactOptional(),
     monitoringOptions: MonitoringOptionsSchema.exactOptional(),
@@ -651,15 +1208,6 @@ const ArtistEditorResourceSchema = z
   })
   .openapi({ required: [] })
   .openapi('ArtistEditorResource')
-
-const ArtistTitleInfoSchema = z
-  .strictObject({
-    title: z.string().nullable().exactOptional(),
-    titleWithoutYear: z.string().nullable().exactOptional(),
-    year: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ArtistTitleInfo')
 
 const AuthenticationRequiredTypeSchema = z
   .enum(['enabled', 'disabledForLocalAddresses'])
@@ -734,69 +1282,7 @@ const BlocklistBulkResourceSchema = z
   .openapi({ required: [] })
   .openapi('BlocklistBulkResource')
 
-const RevisionSchema = z
-  .strictObject({
-    version: z.int32().exactOptional(),
-    real: z.int32().exactOptional(),
-    isRepack: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Revision')
-
-const QualityModelSchema = z
-  .strictObject({
-    quality: QualitySchema.exactOptional(),
-    revision: RevisionSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('QualityModel')
-
-const CustomFormatSpecificationSchemaSchema: z.ZodType<CustomFormatSpecificationSchemaType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        id: z.int32().exactOptional(),
-        name: z.string().nullable().exactOptional(),
-        implementation: z.string().nullable().exactOptional(),
-        implementationName: z.string().nullable().exactOptional(),
-        infoLink: z.string().nullable().exactOptional(),
-        negate: z.boolean().exactOptional(),
-        required: z.boolean().exactOptional(),
-        fields: z.array(FieldSchema).nullable().exactOptional(),
-        presets: z.array(CustomFormatSpecificationSchemaSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('CustomFormatSpecificationSchema')
-
-const CustomFormatResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    includeCustomFormatWhenRenaming: z.boolean().nullable().exactOptional(),
-    specifications: z.array(CustomFormatSpecificationSchemaSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomFormatResource')
-
-const BlocklistResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    artistId: z.int32().exactOptional(),
-    albumIds: z.array(z.int32()).nullable().exactOptional(),
-    sourceTitle: z.string().nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    date: z.iso.datetime({ offset: true }).exactOptional(),
-    protocol: DownloadProtocolSchema.exactOptional(),
-    indexer: z.string().nullable().exactOptional(),
-    message: z.string().nullable().exactOptional(),
-    artist: ArtistResourceSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BlocklistResource')
-
-const BlocklistResourcePagingResourceSchema = z
+const BlocklistResourcePagingResourceSchema: z.ZodType<BlocklistResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -1021,22 +1507,6 @@ const DownloadClientResourceSchema: z.ZodType<DownloadClientResourceType> = z
   )
   .openapi('DownloadClientResource')
 
-const EntityHistoryEventTypeSchema = z
-  .enum([
-    'unknown',
-    'grabbed',
-    'artistFolderImported',
-    'trackFileImported',
-    'downloadFailed',
-    'trackFileDeleted',
-    'trackFileRenamed',
-    'albumImportIncomplete',
-    'downloadImported',
-    'trackFileRetagged',
-    'downloadIgnored',
-  ])
-  .openapi('EntityHistoryEventType')
-
 const FileDateTypeSchema = z.enum(['none', 'albumReleaseDate']).openapi('FileDateType')
 
 const HealthCheckResultSchema = z
@@ -1054,144 +1524,7 @@ const HealthResourceSchema = z
   .openapi({ required: [] })
   .openapi('HealthResource')
 
-const MediaInfoResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    audioChannels: z.float64().exactOptional(),
-    audioBitRate: z.string().nullable().exactOptional(),
-    audioCodec: z.string().nullable().exactOptional(),
-    audioBits: z.string().nullable().exactOptional(),
-    audioSampleRate: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaInfoResource')
-
-const IsoCountrySchema = z
-  .strictObject({
-    twoLetterCode: z.string().nullable().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IsoCountry')
-
-const MediaInfoModelSchema = z
-  .strictObject({
-    audioFormat: z.string().nullable().exactOptional(),
-    audioBitrate: z.int32().exactOptional(),
-    audioChannels: z.int32().exactOptional(),
-    audioBits: z.int32().exactOptional(),
-    audioSampleRate: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaInfoModel')
-
-const ParsedTrackInfoSchema = z
-  .strictObject({
-    title: z.string().nullable().exactOptional(),
-    cleanTitle: z.string().nullable().exactOptional(),
-    artistTitle: z.string().nullable().exactOptional(),
-    albumTitle: z.string().nullable().exactOptional(),
-    artistTitleInfo: ArtistTitleInfoSchema.exactOptional(),
-    artistMBId: z.string().nullable().exactOptional(),
-    albumMBId: z.string().nullable().exactOptional(),
-    releaseMBId: z.string().nullable().exactOptional(),
-    recordingMBId: z.string().nullable().exactOptional(),
-    trackMBId: z.string().nullable().exactOptional(),
-    discNumber: z.int32().exactOptional(),
-    discCount: z.int32().exactOptional(),
-    country: IsoCountrySchema.exactOptional(),
-    year: z.int32().exactOptional(),
-    label: z.string().nullable().exactOptional(),
-    catalogNumber: z.string().nullable().exactOptional(),
-    disambiguation: z.string().nullable().exactOptional(),
-    duration: z.string().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    mediaInfo: MediaInfoModelSchema.exactOptional(),
-    trackNumbers: z.array(z.int32()).nullable().exactOptional(),
-    releaseGroup: z.string().nullable().exactOptional(),
-    releaseHash: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ParsedTrackInfo')
-
-const TrackFileResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    artistId: z.int32().exactOptional(),
-    albumId: z.int32().exactOptional(),
-    path: z.string().nullable().exactOptional(),
-    size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    dateAdded: z.iso.datetime({ offset: true }).exactOptional(),
-    sceneName: z.string().nullable().exactOptional(),
-    releaseGroup: z.string().nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    qualityWeight: z.int32().exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().exactOptional(),
-    indexerFlags: z.int32().nullable().exactOptional(),
-    mediaInfo: MediaInfoResourceSchema.exactOptional(),
-    qualityCutoffNotMet: z.boolean().exactOptional(),
-    audioTags: ParsedTrackInfoSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TrackFileResource')
-
-const TrackResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    artistId: z.int32().exactOptional(),
-    foreignTrackId: z.string().nullable().exactOptional(),
-    foreignRecordingId: z.string().nullable().exactOptional(),
-    trackFileId: z.int32().exactOptional(),
-    albumId: z.int32().exactOptional(),
-    explicit: z.boolean().exactOptional(),
-    absoluteTrackNumber: z.int32().exactOptional(),
-    trackNumber: z.string().nullable().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    duration: z.int32().exactOptional(),
-    trackFile: TrackFileResourceSchema.exactOptional(),
-    mediumNumber: z.int32().exactOptional(),
-    hasFile: z.boolean().exactOptional(),
-    artist: ArtistResourceSchema.exactOptional(),
-    ratings: RatingsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TrackResource')
-
-const HistoryResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    albumId: z.int32().exactOptional(),
-    artistId: z.int32().exactOptional(),
-    trackId: z.int32().exactOptional(),
-    sourceTitle: z.string().nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().exactOptional(),
-    qualityCutoffNotMet: z.boolean().exactOptional(),
-    date: z.iso.datetime({ offset: true }).exactOptional(),
-    downloadId: z.string().nullable().exactOptional(),
-    eventType: EntityHistoryEventTypeSchema.exactOptional(),
-    data: z.record(z.string(), z.string().nullable()).nullable().exactOptional(),
-    album: AlbumResourceSchema.exactOptional(),
-    artist: ArtistResourceSchema.exactOptional(),
-    track: TrackResourceSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('HistoryResource')
-
-const HistoryResourcePagingResourceSchema = z
+const HistoryResourcePagingResourceSchema: z.ZodType<HistoryResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -1440,17 +1773,7 @@ const LogResourcePagingResourceSchema = z
   .openapi({ required: [] })
   .openapi('LogResourcePagingResource')
 
-const RejectionTypeSchema = z.enum(['permanent', 'temporary']).openapi('RejectionType')
-
-const RejectionSchema = z
-  .strictObject({
-    reason: z.string().nullable().exactOptional(),
-    type: RejectionTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Rejection')
-
-const ManualImportResourceSchema = z
+const ManualImportResourceSchema: z.ZodType<ManualImportResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     path: z.string().nullable().exactOptional(),
@@ -1485,7 +1808,7 @@ const ManualImportResourceSchema = z
   .openapi({ required: [] })
   .openapi('ManualImportResource')
 
-const ManualImportUpdateResourceSchema = z
+const ManualImportUpdateResourceSchema: z.ZodType<ManualImportUpdateResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     path: z.string().nullable().exactOptional(),
@@ -1726,26 +2049,7 @@ const NotificationResourceSchema: z.ZodType<NotificationResourceType> = z
   )
   .openapi('NotificationResource')
 
-const ParsedAlbumInfoSchema = z
-  .strictObject({
-    releaseTitle: z.string().nullable().exactOptional(),
-    albumTitle: z.string().nullable().exactOptional(),
-    artistName: z.string().nullable().exactOptional(),
-    albumType: z.string().nullable().exactOptional(),
-    artistTitleInfo: ArtistTitleInfoSchema.exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    releaseDate: z.string().nullable().exactOptional(),
-    discography: z.boolean().exactOptional(),
-    discographyStart: z.int32().exactOptional(),
-    discographyEnd: z.int32().exactOptional(),
-    releaseGroup: z.string().nullable().exactOptional(),
-    releaseHash: z.string().nullable().exactOptional(),
-    releaseVersion: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ParsedAlbumInfo')
-
-const ParseResourceSchema = z
+const ParseResourceSchema: z.ZodType<ParseResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     title: z.string().nullable().exactOptional(),
@@ -1819,67 +2123,7 @@ const QueueBulkResourceSchema = z
   .openapi({ required: [] })
   .openapi('QueueBulkResource')
 
-const TrackedDownloadStatusSchema = z
-  .enum(['ok', 'warning', 'error'])
-  .openapi('TrackedDownloadStatus')
-
-const TrackedDownloadStateSchema = z
-  .enum([
-    'downloading',
-    'downloadFailed',
-    'downloadFailedPending',
-    'importBlocked',
-    'importPending',
-    'importing',
-    'importFailed',
-    'imported',
-    'ignored',
-  ])
-  .openapi('TrackedDownloadState')
-
-const TrackedDownloadStatusMessageSchema = z
-  .strictObject({
-    title: z.string().nullable().exactOptional(),
-    messages: z.array(z.string()).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TrackedDownloadStatusMessage')
-
-const QueueResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    artistId: z.int32().nullable().exactOptional(),
-    albumId: z.int32().nullable().exactOptional(),
-    artist: ArtistResourceSchema.exactOptional(),
-    album: AlbumResourceSchema.exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().exactOptional(),
-    size: z.float64().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    sizeleft: z.float64().exactOptional(),
-    timeleft: z.string().nullable().exactOptional(),
-    estimatedCompletionTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    added: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    status: z.string().nullable().exactOptional(),
-    trackedDownloadStatus: TrackedDownloadStatusSchema.exactOptional(),
-    trackedDownloadState: TrackedDownloadStateSchema.exactOptional(),
-    statusMessages: z.array(TrackedDownloadStatusMessageSchema).nullable().exactOptional(),
-    errorMessage: z.string().nullable().exactOptional(),
-    downloadId: z.string().nullable().exactOptional(),
-    protocol: DownloadProtocolSchema.exactOptional(),
-    downloadClient: z.string().nullable().exactOptional(),
-    downloadClientHasPostImportCategory: z.boolean().exactOptional(),
-    indexer: z.string().nullable().exactOptional(),
-    outputPath: z.string().nullable().exactOptional(),
-    trackFileCount: z.int32().exactOptional(),
-    trackHasFileCount: z.int32().exactOptional(),
-    downloadForced: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('QueueResource')
-
-const QueueResourcePagingResourceSchema = z
+const QueueResourcePagingResourceSchema: z.ZodType<QueueResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -1928,7 +2172,7 @@ const ReleaseProfileResourceSchema = z
   .openapi({ required: [] })
   .openapi('ReleaseProfileResource')
 
-const ReleaseResourceSchema = z
+const ReleaseResourceSchema: z.ZodType<ReleaseResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     guid: z.string().nullable().exactOptional(),

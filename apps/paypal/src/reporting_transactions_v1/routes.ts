@@ -1,14 +1,381 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AccountIdSchema = z
+const DateTimeSchema = z
   .string()
-  .regex(/^[2-9A-HJ-NP-Z]{13}$/)
-  .length(13)
+  .regex(
+    /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])[T,t]([0-1][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)([.][0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})$/,
+  )
+  .min(20)
+  .max(64)
   .openapi({
     description:
-      'The PayPal payer ID, which is a masked version of the PayPal account number intended for use with third parties. The account number is reversibly encrypted and a proprietary variant of Base32 is used to encode the result.',
+      'The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional.<blockquote><strong>Note:</strong> The regular expression provides guidance but does not reject all invalid dates.</blockquote>',
   })
-  .openapi('AccountId')
+  .openapi('DateTime')
+
+const CurrencyCodeSchema = z
+  .string()
+  .length(3)
+  .openapi({
+    description:
+      'The [three-character ISO-4217 currency code](/docs/integration/direct/rest/currency-codes/) that identifies the currency.',
+  })
+  .openapi('CurrencyCode')
+
+const MoneySchema = z
+  .object({
+    currency_code: CurrencyCodeSchema,
+    value: z
+      .string()
+      .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
+      .max(32)
+      .openapi({
+        description:
+          'The value, which might be:<ul><li>An integer for currencies like `JPY` that are not typically fractional.</li><li>A decimal fraction for currencies like `TND` that are subdivided into thousandths.</li></ul>For the required number of decimal places for a currency code, see [Currency Codes](/docs/integration/direct/rest/currency-codes/).',
+      }),
+  })
+  .openapi({
+    title: 'Money',
+    description:
+      'The currency and amount for a financial transaction, such as a balance or payment due.',
+    required: ['currency_code', 'value'],
+  })
+  .openapi('Money')
+
+const PercentageSchema = z
+  .string()
+  .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
+  .openapi({
+    description:
+      'The percentage, as a fixed-point, signed decimal number. For example, define a 19.99% interest rate as `19.99`.',
+  })
+  .openapi('Percentage')
+
+const TransactionInfoSchema = z
+  .object({
+    paypal_account_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(24)
+      .exactOptional()
+      .openapi({ description: 'The ID of the PayPal account of the counterparty.' }),
+    transaction_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(24)
+      .exactOptional()
+      .openapi({ description: 'The PayPal-generated transaction ID.', readOnly: true }),
+    paypal_reference_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(24)
+      .exactOptional()
+      .openapi({
+        description:
+          'The PayPal-generated base ID. PayPal exclusive. Cannot be altered. Defined as a related, pre-existing transaction or event.',
+      }),
+    paypal_reference_id_type: z
+      .enum(['ODR', 'TXN', 'SUB', 'PAP'])
+      .exactOptional()
+      .openapi({
+        description: 'The PayPal reference ID type.',
+        'x-enumDescriptions': [
+          { value: 'ODR', description: 'An order ID.' },
+          { value: 'TXN', description: 'A transaction ID.' },
+          { value: 'SUB', description: 'A subscription ID.' },
+          { value: 'PAP', description: 'A pre-approved payment ID.' },
+        ],
+      }),
+    transaction_event_code: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(5)
+      .exactOptional()
+      .openapi({
+        description:
+          'A five-digit transaction event code that classifies the transaction type based on money movement and debit or credit. For example, <code>T0001</code>. See [Transaction event codes](/docs/integration/direct/transaction-search/transaction-event-codes/).',
+      }),
+    transaction_initiation_date: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when work on a transaction began in the PayPal system, as expressed in the time zone of the account on this side of the payment. Specify the value in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    transaction_updated_date: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the transaction was last changed, as expressed in the time zone of the account on this side of the payment. Specify the value in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    transaction_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'The all-inclusive gross transaction amount that was transferred between the sender and receiver through PayPal.',
+    }),
+    fee_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'The PayPal fee amount. All transaction fees are included in this amount, which is the record of fee associated with the transaction.<blockquote><strong>Note:</strong> This field contains a value only when a transaction fee is applied and processed for this transaction.</blockquote>',
+    }),
+    discount_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'The reduction in price offered for goods or services purchased.<blockquote><strong>Note:</strong> This discount is for a price reduction that is offered for other than that at a individual item level.</blockquote>',
+    }),
+    insurance_amount: MoneySchema.exactOptional().openapi({
+      description: 'An insurance charge. Guarantees the quality or delivery of a product.',
+    }),
+    sales_tax_amount: MoneySchema.exactOptional().openapi({
+      description: 'The PayPal- or merchant-reported sales tax amount for the transaction.',
+    }),
+    shipping_amount: MoneySchema.exactOptional().openapi({
+      description: 'The PayPal- or merchant-reported shipping amount for the transaction.',
+    }),
+    shipping_discount_amount: MoneySchema.exactOptional().openapi({
+      description: 'The discount on the shipping amount.',
+    }),
+    shipping_tax_amount: MoneySchema.exactOptional().openapi({
+      description: 'The tax on the shipping service.',
+    }),
+    other_amount: MoneySchema.exactOptional().openapi({
+      description: 'The special amount that is added to the transaction.',
+    }),
+    tip_amount: MoneySchema.exactOptional().openapi({ description: 'The tip.' }),
+    transaction_status: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .length(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'A code that indicates the transaction status. Value is:<table><thead><tr><th>Status&nbsp;code</th><th>Description</th></tr></thead><tbody><tr><td><code>D</code></td><td>PayPal or merchant rules denied the transaction.</td></tr><tr><td><code>P</code></td><td>The transaction is pending. The transaction was created but waits for another payment process to complete, such as an ACH transaction, before the status changes to <code>S</code>.</td></tr><tr><td><code>S</code></td><td>The transaction successfully completed without a denial and after any pending statuses.</td></tr><tr><td><code>V</code></td><td>A successful transaction was fully reversed and funds were refunded to the original sender.</td></tr></tbody></table>',
+      }),
+    transaction_subject: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'The subject of payment. The payer passes this value to the payee. The payer controls this data through the interface through which he or she sends the data.',
+      }),
+    transaction_note: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(4000)
+      .exactOptional()
+      .openapi({
+        description:
+          'A special note that the payer passes to the payee. Might contain special customer requests, such as shipping instructions.',
+      }),
+    payment_tracking_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          'The payment tracking ID, which is a unique ID that partners specify to either get information about a payment or request a refund.',
+      }),
+    bank_reference_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description: 'The bank reference ID. The bank provides this value for an ACH transaction.',
+      }),
+    ending_balance: MoneySchema.exactOptional().openapi({
+      description:
+        'The ending balance.<blockquote><strong>Note:</strong> If you specify one or more optional query parameters, the <code>ending_balance</code> response field is empty.</blockquote>',
+    }),
+    available_balance: MoneySchema.exactOptional().openapi({
+      description:
+        'The available amount of transaction currency during the completion of this transaction.',
+    }),
+    invoice_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          'The invoice ID that is sent by the merchant with the transaction.<blockquote><strong>Note:</strong> If an invoice ID was sent with the capture request, the value is reported. Otherwise, the invoice ID of the authorizing transaction is reported.</blockquote>',
+      }),
+    custom_field: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          'The merchant-provided custom text.<blockquote><strong>Note:</strong> Usually, this field includes the unique ID for payments made with MassPay type transaction.</blockquote>',
+      }),
+    protection_eligibility: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(2)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the transaction is eligible for protection. Value is:<ul><li><code>01</code>. Eligible.</li><li><code>02</code>. Not eligible</li><li><code>03</code>. Partially eligible.</li></ul>',
+      }),
+    credit_term: z
+      .string()
+      .regex(/^[a-zA-Z0-9.]*$/)
+      .min(1)
+      .max(25)
+      .exactOptional()
+      .openapi({
+        description:
+          'The credit term. The time span covered by the installment payments as expressed in the term length plus the length time unit code.',
+      }),
+    credit_transactional_fee: MoneySchema.exactOptional().openapi({
+      description: 'The overall amount of the credit transaction fee.',
+    }),
+    credit_promotional_fee: MoneySchema.exactOptional().openapi({
+      description: 'The overall amount of the credit promotional fee.',
+    }),
+    annual_percentage_rate: PercentageSchema.exactOptional().openapi({
+      description:
+        'The annual percentage rate (APR). Determines the amount of interest a consumer pays to finance a purchase at a merchant.',
+    }),
+    payment_method_type: z
+      .string()
+      .regex(/^[a-zA-Z0-9-]*$/)
+      .min(1)
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description:
+          'The payment method that was used for a transaction. Value is <code>PUI</code>, <code>installment</code>, or <code>mEFT</code>.<blockquote><strong>Note:</strong> Appears only for pay upon invoice (PUI), installment, and mEFT transactions. Merchants and partners in the EMEA region can use this attribute to note transactions that attract turn-over tax.</blockquote>',
+      }),
+    instrument_type: z
+      .string()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'A high-level classification of the type of financial instrument that was used to fund a payment. The pattern is not provided because the value is defined by an external party. E.g. PAYPAL, CREDIT_CARD, DEBIT_CARD, APPLE_PAY, BANK , VENMO ,Pay Upon Invoice, Pay Later  or <a href="https://developer.paypal.com/docs/checkout/integration-features/alternative-payment-methods/" title="Link to available APM list">Alternative Payment Methods (APM)</a>.',
+      }),
+    instrument_sub_type: z
+      .string()
+      .min(1)
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description:
+          'A finer-grained classification of the financial instrument that was used to fund a payment. For example, `Visa card` or a `Mastercard` for a credit card, BANKCARD ,DISCOVER etc. The pattern is not provided because the value is defined by an external party.',
+      }),
+  })
+  .openapi({
+    title: 'Transaction Information',
+    description: 'The transaction information.',
+    required: [],
+  })
+  .openapi('TransactionInfo')
+
+const EmailAddressSchema = z
+  .string()
+  .regex(/^.+@[^"\-].+$/)
+  .min(3)
+  .max(254)
+  .openapi({
+    description:
+      'The internationalized email address.<blockquote><strong>Note:</strong> Up to 64 characters are allowed before and 255 characters are allowed after the <code>@</code> sign. However, the generally accepted maximum length for an email address is 254 characters. The pattern verifies that an unquoted <code>@</code> sign exists.</blockquote>',
+  })
+  .openapi('EmailAddress')
+
+const PhoneSchema = z
+  .object({
+    country_code: z
+      .string()
+      .regex(/^[0-9]{1,3}?$/)
+      .min(1)
+      .max(3)
+      .openapi({
+        description:
+          'The country calling code (CC), in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). The combined length of the CC and the national number must not be greater than 15 digits. The national number consists of a national destination code (NDC) and subscriber number (SN).',
+      }),
+    national_number: z
+      .string()
+      .regex(/^[0-9]{1,14}?$/)
+      .min(1)
+      .max(14)
+      .openapi({
+        description:
+          'The national number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). The combined length of the country calling code (CC) and the national number must not be greater than 15 digits. The national number consists of a national destination code (NDC) and subscriber number (SN).',
+      }),
+    extension_number: z
+      .string()
+      .regex(/^[0-9]{1,15}?$/)
+      .min(1)
+      .max(15)
+      .exactOptional()
+      .openapi({ description: 'The extension number.' }),
+  })
+  .openapi({
+    title: 'Phone',
+    description:
+      'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en).',
+    required: ['country_code', 'national_number'],
+  })
+  .openapi('Phone')
+
+const NameSchema = z
+  .object({
+    prefix: z
+      .string()
+      .max(140)
+      .exactOptional()
+      .openapi({ description: "The prefix, or title, to the party's name." }),
+    given_name: z
+      .string()
+      .max(140)
+      .exactOptional()
+      .openapi({ description: "When the party is a person, the party's given, or first, name." }),
+    surname: z
+      .string()
+      .max(140)
+      .exactOptional()
+      .openapi({
+        description:
+          "When the party is a person, the party's surname or family name. Also known as the last name. Required when the party is a person. Use also to store multiple surnames including the matronymic, or mother's, surname.",
+      }),
+    middle_name: z
+      .string()
+      .max(140)
+      .exactOptional()
+      .openapi({
+        description:
+          "When the party is a person, the party's middle name. Use also to store multiple middle names including the patronymic, or father's, middle name.",
+      }),
+    suffix: z
+      .string()
+      .max(140)
+      .exactOptional()
+      .openapi({ description: "The suffix for the party's name." }),
+    alternate_full_name: z
+      .string()
+      .max(300)
+      .exactOptional()
+      .openapi({
+        description:
+          "DEPRECATED. The party's alternate name. Can be a business name, nickname, or any other name that cannot be split into first, last name. Required when the party is a business.",
+      }),
+    full_name: z
+      .string()
+      .max(300)
+      .exactOptional()
+      .openapi({ description: "When the party is a person, the party's full name." }),
+  })
+  .openapi({ title: 'Name', description: 'The name of the party.', required: [] })
+  .openapi('Name')
 
 const CountryCodeSchema = z
   .string()
@@ -56,145 +423,75 @@ const AddressSchema = z
   })
   .openapi('Address')
 
-const DateTimeSchema = z
-  .string()
-  .regex(
-    /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])[T,t]([0-1][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)([.][0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})$/,
-  )
-  .min(20)
-  .max(64)
-  .openapi({
-    description:
-      'The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional.<blockquote><strong>Note:</strong> The regular expression provides guidance but does not reject all invalid dates.</blockquote>',
-  })
-  .openapi('DateTime')
-
-const AuctionInfoSchema = z
+const PayerInfoSchema = z
   .object({
-    auction_site: z
+    account_id: z
       .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .regex(/^[a-zA-Z0-9]*$/)
       .min(1)
-      .max(200)
+      .max(13)
       .exactOptional()
-      .openapi({ description: 'The name of the auction site.' }),
-    auction_item_site: z
+      .openapi({ description: 'The PayPal` customer account ID.' }),
+    email_address: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the payer.',
+    }),
+    phone_number: PhoneSchema.exactOptional().openapi({
+      description: 'The primary phone number of the payer.',
+    }),
+    address_status: z
       .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(4000)
+      .regex(/^[N|Y]$/)
+      .length(1)
       .exactOptional()
-      .openapi({ description: 'The auction site URL.' }),
-    auction_buyer_id: z
+      .openapi({
+        description:
+          'The address status of the payer. Value is either:<ul><li><code>Y</code>. Verified.</li><li><code>N</code>. Not verified.</li></ul>',
+      }),
+    payer_status: z
+      .string()
+      .regex(/^[N|Y]$/)
+      .length(1)
+      .exactOptional()
+      .openapi({ description: 'The status of the payer. Value is `Y` or `N`.' }),
+    payer_name: NameSchema.exactOptional().openapi({ description: 'The payer name.' }),
+    country_code: CountryCodeSchema.exactOptional().openapi({
+      description:
+        'The [two-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region of the payer.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
+    }),
+    address: AddressSchema.exactOptional().openapi({ description: 'The payer address.' }),
+  })
+  .openapi({ title: 'Payer Information', description: 'The payer information.', required: [] })
+  .openapi('PayerInfo')
+
+const ShippingInfoSchema = z
+  .object({
+    name: z
       .string()
       .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
       .min(1)
       .max(500)
       .exactOptional()
-      .openapi({
-        description:
-          'The ID of the buyer who makes the purchase in the auction. This ID might be different from the payer ID provided for the payment.',
-      }),
-    auction_closing_date: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the auction closes, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-  })
-  .openapi({ title: 'Auction Information', description: 'The auction information.', required: [] })
-  .openapi('AuctionInfo')
-
-const CurrencyCodeSchema = z
-  .string()
-  .length(3)
-  .openapi({
-    description:
-      'The [three-character ISO-4217 currency code](/docs/integration/direct/rest/currency-codes/) that identifies the currency.',
-  })
-  .openapi('CurrencyCode')
-
-const MoneySchema = z
-  .object({
-    currency_code: CurrencyCodeSchema,
-    value: z
+      .openapi({ description: "The recipient's name." }),
+    method: z
       .string()
-      .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
-      .max(32)
-      .openapi({
-        description:
-          'The value, which might be:<ul><li>An integer for currencies like `JPY` that are not typically fractional.</li><li>A decimal fraction for currencies like `TND` that are subdivided into thousandths.</li></ul>For the required number of decimal places for a currency code, see [Currency Codes](/docs/integration/direct/rest/currency-codes/).',
-      }),
-  })
-  .openapi({
-    title: 'Money',
-    description:
-      'The currency and amount for a financial transaction, such as a balance or payment due.',
-    required: ['currency_code', 'value'],
-  })
-  .openapi('Money')
-
-const BalanceDetailSchema = z
-  .object({
-    currency: CurrencyCodeSchema.openapi({ description: 'Currency Code of the balances listed.' }),
-    primary: z
-      .boolean()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(500)
       .exactOptional()
-      .openapi({
-        description: 'Optional field representing if the currency is primary currency or not.',
-      }),
-    total_balance: MoneySchema.openapi({
-      description: 'The total amount in PayPal account. It is the sum of all the other balances.',
+      .openapi({ description: 'The shipping method that is associated with this order.' }),
+    address: AddressSchema.exactOptional().openapi({
+      description: 'The shipping address that is associated with this order.',
     }),
-    available_balance: MoneySchema.exactOptional().openapi({
-      description:
-        "The amount of cash in an Account which is at the customer's disposal. This amount is captured at settlement cutoff time in the user's time zone as defined for the user.",
-    }),
-    withheld_balance: MoneySchema.exactOptional().openapi({
-      description:
-        "Balance withheld in the account. The portion of funds that PayPal holds for the customer that is not currently at the customer's disposal.",
+    secondary_shipping_address: AddressSchema.exactOptional().openapi({
+      description: 'The secondary shipping address that is associated with this order.',
     }),
   })
   .openapi({
-    title: 'Balance Information',
-    description: 'The Balance information.',
-    required: ['currency', 'total_balance'],
-  })
-  .openapi('BalanceDetail')
-
-const BalanceDetailListSchema = z
-  .array(BalanceDetailSchema)
-  .min(0)
-  .max(200)
-  .openapi({ description: 'An array of balance detail objects.' })
-  .openapi('BalanceDetailList')
-
-const BalancesResponseSchema = z
-  .object({
-    balances: BalanceDetailListSchema.exactOptional(),
-    account_id: AccountIdSchema.exactOptional(),
-    as_of_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The requested date and time or the last date and time when the balances can be served, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-    last_refresh_time: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the balances was last refreshed, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-  })
-  .openapi({
-    title: 'Balances Response',
-    description: 'The balances response information.',
+    title: 'Shipping Information',
+    description: 'The shipping information.',
     required: [],
   })
-  .openapi('BalancesResponse')
-
-const PercentageSchema = z
-  .string()
-  .regex(/^((-?[0-9]+)|(-?([0-9]+)?[.][0-9]+))$/)
-  .openapi({
-    description:
-      'The percentage, as a fixed-point, signed decimal number. For example, define a 19.99% interest rate as `19.99`.',
-  })
-  .openapi('Percentage')
+  .openapi('ShippingInfo')
 
 const ItemDetailTaxAmountSchema = z
   .object({
@@ -375,16 +672,246 @@ const CartInfoSchema = z
   .openapi({ title: 'Cart Information', description: 'The cart information.', required: [] })
   .openapi('CartInfo')
 
-const EmailAddressSchema = z
+const StoreInfoSchema = z
+  .object({
+    store_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(100)
+      .exactOptional()
+      .openapi({ description: 'The ID of a store for a merchant in the system of record.' }),
+    terminal_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9]*$/)
+      .min(1)
+      .max(60)
+      .exactOptional()
+      .openapi({ description: 'The terminal ID for the checkout stand in a merchant store.' }),
+  })
+  .openapi({ title: 'Store Information', description: 'The store information.', required: [] })
+  .openapi('StoreInfo')
+
+const AuctionInfoSchema = z
+  .object({
+    auction_site: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(200)
+      .exactOptional()
+      .openapi({ description: 'The name of the auction site.' }),
+    auction_item_site: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(4000)
+      .exactOptional()
+      .openapi({ description: 'The auction site URL.' }),
+    auction_buyer_id: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(500)
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the buyer who makes the purchase in the auction. This ID might be different from the payer ID provided for the payment.',
+      }),
+    auction_closing_date: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the auction closes, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+  })
+  .openapi({ title: 'Auction Information', description: 'The auction information.', required: [] })
+  .openapi('AuctionInfo')
+
+const IncentiveDetailSchema = z
+  .object({
+    incentive_type: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(500)
+      .exactOptional()
+      .openapi({ description: 'The type of incentive, such as a special offer or coupon.' }),
+    incentive_code: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(200)
+      .exactOptional()
+      .openapi({ description: 'The code that identifies an incentive, such as a coupon.' }),
+    incentive_amount: MoneySchema.exactOptional().openapi({ description: 'The incentive amount.' }),
+    incentive_program_code: z
+      .string()
+      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
+      .min(1)
+      .max(100)
+      .exactOptional()
+      .openapi({
+        description:
+          'The incentive program code that identifies a merchant loyalty or incentive program.',
+      }),
+  })
+  .openapi({ title: 'Incentive Details', description: 'The incentive details.', required: [] })
+  .openapi('IncentiveDetail')
+
+const IncentiveDetailListSchema = z
+  .array(IncentiveDetailSchema)
+  .min(1)
+  .max(32767)
+  .openapi({ description: 'An array of incentive details.' })
+  .openapi('IncentiveDetailList')
+
+const IncentiveInfoSchema = z
+  .object({ incentive_details: IncentiveDetailListSchema.exactOptional() })
+  .openapi({ title: 'Incentive Information', description: 'The incentive details.', required: [] })
+  .openapi('IncentiveInfo')
+
+const TransactionDetailSchema = z
+  .object({
+    transaction_info: TransactionInfoSchema.exactOptional().openapi({
+      description: 'The transaction information.',
+    }),
+    payer_info: PayerInfoSchema.exactOptional().openapi({ description: 'The payer information.' }),
+    shipping_info: ShippingInfoSchema.exactOptional().openapi({
+      description: 'The shipping information.',
+    }),
+    cart_info: CartInfoSchema.exactOptional().openapi({ description: 'The cart information.' }),
+    store_info: StoreInfoSchema.exactOptional().openapi({ description: 'The store information.' }),
+    auction_info: AuctionInfoSchema.exactOptional().openapi({
+      description: 'The auction information.',
+    }),
+    incentive_info: IncentiveInfoSchema.exactOptional().openapi({
+      description: 'The incentive information.',
+    }),
+  })
+  .openapi({ title: 'Transaction Details', description: 'The transaction details.', required: [] })
+  .openapi('TransactionDetail')
+
+type TransactionDetailListType = z.infer<typeof TransactionDetailSchema>[]
+
+const TransactionDetailListSchema: z.ZodType<TransactionDetailListType> = z
+  .array(TransactionDetailSchema)
+  .min(1)
+  .max(2147483647)
+  .openapi({ description: 'An array of transaction detail objects.' })
+  .openapi('TransactionDetailList')
+
+const LinkDescriptionSchema = z
+  .object({
+    href: z
+      .string()
+      .openapi({
+        description:
+          'The complete target URL. To make the related call, combine the method with this [URI Template-formatted](https://tools.ietf.org/html/rfc6570) link. For pre-processing, include the `$`, `(`, and `)` characters. The `href` is the key HATEOAS component that links a completed call with a subsequent call.',
+      }),
+    rel: z
+      .string()
+      .openapi({
+        description:
+          'The [link relation type](https://tools.ietf.org/html/rfc5988#section-4), which serves as an ID for a link that unambiguously describes the semantics of the link. See [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xhtml).',
+      }),
+    method: z
+      .enum(['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'PATCH'])
+      .exactOptional()
+      .openapi({ description: 'The HTTP method required to make the related call.' }),
+  })
+  .openapi({
+    title: 'Link Description',
+    description:
+      'The request-related [HATEOAS link](/docs/api/reference/api-responses/#hateoas-links) information.',
+    required: ['href', 'rel'],
+  })
+  .openapi('LinkDescription')
+
+const LinkDescriptionListSchema = z
+  .array(LinkDescriptionSchema)
+  .min(1)
+  .max(32767)
+  .openapi({
+    description: 'An array of request-related [HATEOAS links](/api/rest/responses/#hateoas-links).',
+    readOnly: true,
+  })
+  .openapi('LinkDescriptionList')
+
+type SearchResponseType = {
+  transaction_details?: z.infer<typeof TransactionDetailListSchema>
+  account_number?: string
+  start_date?: z.infer<typeof DateTimeSchema>
+  end_date?: z.infer<typeof DateTimeSchema>
+  last_refreshed_datetime?: z.infer<typeof DateTimeSchema>
+  page?: number
+  total_items?: number
+  total_pages?: number
+  links?: z.infer<typeof LinkDescriptionListSchema>
+}
+
+const AccountIdSchema = z
   .string()
-  .regex(/^.+@[^"\-].+$/)
-  .min(3)
-  .max(254)
+  .regex(/^[2-9A-HJ-NP-Z]{13}$/)
+  .length(13)
   .openapi({
     description:
-      'The internationalized email address.<blockquote><strong>Note:</strong> Up to 64 characters are allowed before and 255 characters are allowed after the <code>@</code> sign. However, the generally accepted maximum length for an email address is 254 characters. The pattern verifies that an unquoted <code>@</code> sign exists.</blockquote>',
+      'The PayPal payer ID, which is a masked version of the PayPal account number intended for use with third parties. The account number is reversibly encrypted and a proprietary variant of Base32 is used to encode the result.',
   })
-  .openapi('EmailAddress')
+  .openapi('AccountId')
+
+const BalanceDetailSchema = z
+  .object({
+    currency: CurrencyCodeSchema.openapi({ description: 'Currency Code of the balances listed.' }),
+    primary: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Optional field representing if the currency is primary currency or not.',
+      }),
+    total_balance: MoneySchema.openapi({
+      description: 'The total amount in PayPal account. It is the sum of all the other balances.',
+    }),
+    available_balance: MoneySchema.exactOptional().openapi({
+      description:
+        "The amount of cash in an Account which is at the customer's disposal. This amount is captured at settlement cutoff time in the user's time zone as defined for the user.",
+    }),
+    withheld_balance: MoneySchema.exactOptional().openapi({
+      description:
+        "Balance withheld in the account. The portion of funds that PayPal holds for the customer that is not currently at the customer's disposal.",
+    }),
+  })
+  .openapi({
+    title: 'Balance Information',
+    description: 'The Balance information.',
+    required: ['currency', 'total_balance'],
+  })
+  .openapi('BalanceDetail')
+
+const BalanceDetailListSchema = z
+  .array(BalanceDetailSchema)
+  .min(0)
+  .max(200)
+  .openapi({ description: 'An array of balance detail objects.' })
+  .openapi('BalanceDetailList')
+
+const BalancesResponseSchema = z
+  .object({
+    balances: BalanceDetailListSchema.exactOptional(),
+    account_id: AccountIdSchema.exactOptional(),
+    as_of_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The requested date and time or the last date and time when the balances can be served, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    last_refresh_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the balances was last refreshed, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+  })
+  .openapi({
+    title: 'Balances Response',
+    description: 'The balances response information.',
+    required: [],
+  })
+  .openapi('BalancesResponse')
 
 const ErrorLocationSchema = z
   .enum(['body', 'path', 'query'])
@@ -745,520 +1272,7 @@ const ErrorDefaultSchema = z
   .openapi({ description: 'The default error response.' })
   .openapi('ErrorDefault')
 
-const IncentiveDetailSchema = z
-  .object({
-    incentive_type: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(500)
-      .exactOptional()
-      .openapi({ description: 'The type of incentive, such as a special offer or coupon.' }),
-    incentive_code: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(200)
-      .exactOptional()
-      .openapi({ description: 'The code that identifies an incentive, such as a coupon.' }),
-    incentive_amount: MoneySchema.exactOptional().openapi({ description: 'The incentive amount.' }),
-    incentive_program_code: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(100)
-      .exactOptional()
-      .openapi({
-        description:
-          'The incentive program code that identifies a merchant loyalty or incentive program.',
-      }),
-  })
-  .openapi({ title: 'Incentive Details', description: 'The incentive details.', required: [] })
-  .openapi('IncentiveDetail')
-
-const IncentiveDetailListSchema = z
-  .array(IncentiveDetailSchema)
-  .min(1)
-  .max(32767)
-  .openapi({ description: 'An array of incentive details.' })
-  .openapi('IncentiveDetailList')
-
-const IncentiveInfoSchema = z
-  .object({ incentive_details: IncentiveDetailListSchema.exactOptional() })
-  .openapi({ title: 'Incentive Information', description: 'The incentive details.', required: [] })
-  .openapi('IncentiveInfo')
-
-const LinkDescriptionSchema = z
-  .object({
-    href: z
-      .string()
-      .openapi({
-        description:
-          'The complete target URL. To make the related call, combine the method with this [URI Template-formatted](https://tools.ietf.org/html/rfc6570) link. For pre-processing, include the `$`, `(`, and `)` characters. The `href` is the key HATEOAS component that links a completed call with a subsequent call.',
-      }),
-    rel: z
-      .string()
-      .openapi({
-        description:
-          'The [link relation type](https://tools.ietf.org/html/rfc5988#section-4), which serves as an ID for a link that unambiguously describes the semantics of the link. See [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xhtml).',
-      }),
-    method: z
-      .enum(['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'PATCH'])
-      .exactOptional()
-      .openapi({ description: 'The HTTP method required to make the related call.' }),
-  })
-  .openapi({
-    title: 'Link Description',
-    description:
-      'The request-related [HATEOAS link](/docs/api/reference/api-responses/#hateoas-links) information.',
-    required: ['href', 'rel'],
-  })
-  .openapi('LinkDescription')
-
-const LinkDescriptionListSchema = z
-  .array(LinkDescriptionSchema)
-  .min(1)
-  .max(32767)
-  .openapi({
-    description: 'An array of request-related [HATEOAS links](/api/rest/responses/#hateoas-links).',
-    readOnly: true,
-  })
-  .openapi('LinkDescriptionList')
-
-const NameSchema = z
-  .object({
-    prefix: z
-      .string()
-      .max(140)
-      .exactOptional()
-      .openapi({ description: "The prefix, or title, to the party's name." }),
-    given_name: z
-      .string()
-      .max(140)
-      .exactOptional()
-      .openapi({ description: "When the party is a person, the party's given, or first, name." }),
-    surname: z
-      .string()
-      .max(140)
-      .exactOptional()
-      .openapi({
-        description:
-          "When the party is a person, the party's surname or family name. Also known as the last name. Required when the party is a person. Use also to store multiple surnames including the matronymic, or mother's, surname.",
-      }),
-    middle_name: z
-      .string()
-      .max(140)
-      .exactOptional()
-      .openapi({
-        description:
-          "When the party is a person, the party's middle name. Use also to store multiple middle names including the patronymic, or father's, middle name.",
-      }),
-    suffix: z
-      .string()
-      .max(140)
-      .exactOptional()
-      .openapi({ description: "The suffix for the party's name." }),
-    alternate_full_name: z
-      .string()
-      .max(300)
-      .exactOptional()
-      .openapi({
-        description:
-          "DEPRECATED. The party's alternate name. Can be a business name, nickname, or any other name that cannot be split into first, last name. Required when the party is a business.",
-      }),
-    full_name: z
-      .string()
-      .max(300)
-      .exactOptional()
-      .openapi({ description: "When the party is a person, the party's full name." }),
-  })
-  .openapi({ title: 'Name', description: 'The name of the party.', required: [] })
-  .openapi('Name')
-
-const PhoneSchema = z
-  .object({
-    country_code: z
-      .string()
-      .regex(/^[0-9]{1,3}?$/)
-      .min(1)
-      .max(3)
-      .openapi({
-        description:
-          'The country calling code (CC), in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). The combined length of the CC and the national number must not be greater than 15 digits. The national number consists of a national destination code (NDC) and subscriber number (SN).',
-      }),
-    national_number: z
-      .string()
-      .regex(/^[0-9]{1,14}?$/)
-      .min(1)
-      .max(14)
-      .openapi({
-        description:
-          'The national number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). The combined length of the country calling code (CC) and the national number must not be greater than 15 digits. The national number consists of a national destination code (NDC) and subscriber number (SN).',
-      }),
-    extension_number: z
-      .string()
-      .regex(/^[0-9]{1,15}?$/)
-      .min(1)
-      .max(15)
-      .exactOptional()
-      .openapi({ description: 'The extension number.' }),
-  })
-  .openapi({
-    title: 'Phone',
-    description:
-      'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en).',
-    required: ['country_code', 'national_number'],
-  })
-  .openapi('Phone')
-
-const PayerInfoSchema = z
-  .object({
-    account_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(13)
-      .exactOptional()
-      .openapi({ description: 'The PayPal` customer account ID.' }),
-    email_address: EmailAddressSchema.exactOptional().openapi({
-      description: 'The email address of the payer.',
-    }),
-    phone_number: PhoneSchema.exactOptional().openapi({
-      description: 'The primary phone number of the payer.',
-    }),
-    address_status: z
-      .string()
-      .regex(/^[N|Y]$/)
-      .length(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The address status of the payer. Value is either:<ul><li><code>Y</code>. Verified.</li><li><code>N</code>. Not verified.</li></ul>',
-      }),
-    payer_status: z
-      .string()
-      .regex(/^[N|Y]$/)
-      .length(1)
-      .exactOptional()
-      .openapi({ description: 'The status of the payer. Value is `Y` or `N`.' }),
-    payer_name: NameSchema.exactOptional().openapi({ description: 'The payer name.' }),
-    country_code: CountryCodeSchema.exactOptional().openapi({
-      description:
-        'The [two-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region of the payer.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
-    }),
-    address: AddressSchema.exactOptional().openapi({ description: 'The payer address.' }),
-  })
-  .openapi({ title: 'Payer Information', description: 'The payer information.', required: [] })
-  .openapi('PayerInfo')
-
-const TransactionInfoSchema = z
-  .object({
-    paypal_account_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(24)
-      .exactOptional()
-      .openapi({ description: 'The ID of the PayPal account of the counterparty.' }),
-    transaction_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(24)
-      .exactOptional()
-      .openapi({ description: 'The PayPal-generated transaction ID.', readOnly: true }),
-    paypal_reference_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(24)
-      .exactOptional()
-      .openapi({
-        description:
-          'The PayPal-generated base ID. PayPal exclusive. Cannot be altered. Defined as a related, pre-existing transaction or event.',
-      }),
-    paypal_reference_id_type: z
-      .enum(['ODR', 'TXN', 'SUB', 'PAP'])
-      .exactOptional()
-      .openapi({
-        description: 'The PayPal reference ID type.',
-        'x-enumDescriptions': [
-          { value: 'ODR', description: 'An order ID.' },
-          { value: 'TXN', description: 'A transaction ID.' },
-          { value: 'SUB', description: 'A subscription ID.' },
-          { value: 'PAP', description: 'A pre-approved payment ID.' },
-        ],
-      }),
-    transaction_event_code: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(5)
-      .exactOptional()
-      .openapi({
-        description:
-          'A five-digit transaction event code that classifies the transaction type based on money movement and debit or credit. For example, <code>T0001</code>. See [Transaction event codes](/docs/integration/direct/transaction-search/transaction-event-codes/).',
-      }),
-    transaction_initiation_date: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when work on a transaction began in the PayPal system, as expressed in the time zone of the account on this side of the payment. Specify the value in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-    transaction_updated_date: DateTimeSchema.exactOptional().openapi({
-      description:
-        'The date and time when the transaction was last changed, as expressed in the time zone of the account on this side of the payment. Specify the value in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-    }),
-    transaction_amount: MoneySchema.exactOptional().openapi({
-      description:
-        'The all-inclusive gross transaction amount that was transferred between the sender and receiver through PayPal.',
-    }),
-    fee_amount: MoneySchema.exactOptional().openapi({
-      description:
-        'The PayPal fee amount. All transaction fees are included in this amount, which is the record of fee associated with the transaction.<blockquote><strong>Note:</strong> This field contains a value only when a transaction fee is applied and processed for this transaction.</blockquote>',
-    }),
-    discount_amount: MoneySchema.exactOptional().openapi({
-      description:
-        'The reduction in price offered for goods or services purchased.<blockquote><strong>Note:</strong> This discount is for a price reduction that is offered for other than that at a individual item level.</blockquote>',
-    }),
-    insurance_amount: MoneySchema.exactOptional().openapi({
-      description: 'An insurance charge. Guarantees the quality or delivery of a product.',
-    }),
-    sales_tax_amount: MoneySchema.exactOptional().openapi({
-      description: 'The PayPal- or merchant-reported sales tax amount for the transaction.',
-    }),
-    shipping_amount: MoneySchema.exactOptional().openapi({
-      description: 'The PayPal- or merchant-reported shipping amount for the transaction.',
-    }),
-    shipping_discount_amount: MoneySchema.exactOptional().openapi({
-      description: 'The discount on the shipping amount.',
-    }),
-    shipping_tax_amount: MoneySchema.exactOptional().openapi({
-      description: 'The tax on the shipping service.',
-    }),
-    other_amount: MoneySchema.exactOptional().openapi({
-      description: 'The special amount that is added to the transaction.',
-    }),
-    tip_amount: MoneySchema.exactOptional().openapi({ description: 'The tip.' }),
-    transaction_status: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .length(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'A code that indicates the transaction status. Value is:<table><thead><tr><th>Status&nbsp;code</th><th>Description</th></tr></thead><tbody><tr><td><code>D</code></td><td>PayPal or merchant rules denied the transaction.</td></tr><tr><td><code>P</code></td><td>The transaction is pending. The transaction was created but waits for another payment process to complete, such as an ACH transaction, before the status changes to <code>S</code>.</td></tr><tr><td><code>S</code></td><td>The transaction successfully completed without a denial and after any pending statuses.</td></tr><tr><td><code>V</code></td><td>A successful transaction was fully reversed and funds were refunded to the original sender.</td></tr></tbody></table>',
-      }),
-    transaction_subject: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(256)
-      .exactOptional()
-      .openapi({
-        description:
-          'The subject of payment. The payer passes this value to the payee. The payer controls this data through the interface through which he or she sends the data.',
-      }),
-    transaction_note: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(4000)
-      .exactOptional()
-      .openapi({
-        description:
-          'A special note that the payer passes to the payee. Might contain special customer requests, such as shipping instructions.',
-      }),
-    payment_tracking_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          'The payment tracking ID, which is a unique ID that partners specify to either get information about a payment or request a refund.',
-      }),
-    bank_reference_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description: 'The bank reference ID. The bank provides this value for an ACH transaction.',
-      }),
-    ending_balance: MoneySchema.exactOptional().openapi({
-      description:
-        'The ending balance.<blockquote><strong>Note:</strong> If you specify one or more optional query parameters, the <code>ending_balance</code> response field is empty.</blockquote>',
-    }),
-    available_balance: MoneySchema.exactOptional().openapi({
-      description:
-        'The available amount of transaction currency during the completion of this transaction.',
-    }),
-    invoice_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          'The invoice ID that is sent by the merchant with the transaction.<blockquote><strong>Note:</strong> If an invoice ID was sent with the capture request, the value is reported. Otherwise, the invoice ID of the authorizing transaction is reported.</blockquote>',
-      }),
-    custom_field: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          'The merchant-provided custom text.<blockquote><strong>Note:</strong> Usually, this field includes the unique ID for payments made with MassPay type transaction.</blockquote>',
-      }),
-    protection_eligibility: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(2)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the transaction is eligible for protection. Value is:<ul><li><code>01</code>. Eligible.</li><li><code>02</code>. Not eligible</li><li><code>03</code>. Partially eligible.</li></ul>',
-      }),
-    credit_term: z
-      .string()
-      .regex(/^[a-zA-Z0-9.]*$/)
-      .min(1)
-      .max(25)
-      .exactOptional()
-      .openapi({
-        description:
-          'The credit term. The time span covered by the installment payments as expressed in the term length plus the length time unit code.',
-      }),
-    credit_transactional_fee: MoneySchema.exactOptional().openapi({
-      description: 'The overall amount of the credit transaction fee.',
-    }),
-    credit_promotional_fee: MoneySchema.exactOptional().openapi({
-      description: 'The overall amount of the credit promotional fee.',
-    }),
-    annual_percentage_rate: PercentageSchema.exactOptional().openapi({
-      description:
-        'The annual percentage rate (APR). Determines the amount of interest a consumer pays to finance a purchase at a merchant.',
-    }),
-    payment_method_type: z
-      .string()
-      .regex(/^[a-zA-Z0-9-]*$/)
-      .min(1)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        description:
-          'The payment method that was used for a transaction. Value is <code>PUI</code>, <code>installment</code>, or <code>mEFT</code>.<blockquote><strong>Note:</strong> Appears only for pay upon invoice (PUI), installment, and mEFT transactions. Merchants and partners in the EMEA region can use this attribute to note transactions that attract turn-over tax.</blockquote>',
-      }),
-    instrument_type: z
-      .string()
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description:
-          'A high-level classification of the type of financial instrument that was used to fund a payment. The pattern is not provided because the value is defined by an external party. E.g. PAYPAL, CREDIT_CARD, DEBIT_CARD, APPLE_PAY, BANK , VENMO ,Pay Upon Invoice, Pay Later  or <a href="https://developer.paypal.com/docs/checkout/integration-features/alternative-payment-methods/" title="Link to available APM list">Alternative Payment Methods (APM)</a>.',
-      }),
-    instrument_sub_type: z
-      .string()
-      .min(1)
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description:
-          'A finer-grained classification of the financial instrument that was used to fund a payment. For example, `Visa card` or a `Mastercard` for a credit card, BANKCARD ,DISCOVER etc. The pattern is not provided because the value is defined by an external party.',
-      }),
-  })
-  .openapi({
-    title: 'Transaction Information',
-    description: 'The transaction information.',
-    required: [],
-  })
-  .openapi('TransactionInfo')
-
-const ShippingInfoSchema = z
-  .object({
-    name: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(500)
-      .exactOptional()
-      .openapi({ description: "The recipient's name." }),
-    method: z
-      .string()
-      .regex(/^[a-zA-Z0-9_'\-., ":;\!?]*$/)
-      .min(1)
-      .max(500)
-      .exactOptional()
-      .openapi({ description: 'The shipping method that is associated with this order.' }),
-    address: AddressSchema.exactOptional().openapi({
-      description: 'The shipping address that is associated with this order.',
-    }),
-    secondary_shipping_address: AddressSchema.exactOptional().openapi({
-      description: 'The secondary shipping address that is associated with this order.',
-    }),
-  })
-  .openapi({
-    title: 'Shipping Information',
-    description: 'The shipping information.',
-    required: [],
-  })
-  .openapi('ShippingInfo')
-
-const StoreInfoSchema = z
-  .object({
-    store_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(100)
-      .exactOptional()
-      .openapi({ description: 'The ID of a store for a merchant in the system of record.' }),
-    terminal_id: z
-      .string()
-      .regex(/^[a-zA-Z0-9]*$/)
-      .min(1)
-      .max(60)
-      .exactOptional()
-      .openapi({ description: 'The terminal ID for the checkout stand in a merchant store.' }),
-  })
-  .openapi({ title: 'Store Information', description: 'The store information.', required: [] })
-  .openapi('StoreInfo')
-
-const TransactionDetailSchema = z
-  .object({
-    transaction_info: TransactionInfoSchema.exactOptional().openapi({
-      description: 'The transaction information.',
-    }),
-    payer_info: PayerInfoSchema.exactOptional().openapi({ description: 'The payer information.' }),
-    shipping_info: ShippingInfoSchema.exactOptional().openapi({
-      description: 'The shipping information.',
-    }),
-    cart_info: CartInfoSchema.exactOptional().openapi({ description: 'The cart information.' }),
-    store_info: StoreInfoSchema.exactOptional().openapi({ description: 'The store information.' }),
-    auction_info: AuctionInfoSchema.exactOptional().openapi({
-      description: 'The auction information.',
-    }),
-    incentive_info: IncentiveInfoSchema.exactOptional().openapi({
-      description: 'The incentive information.',
-    }),
-  })
-  .openapi({ title: 'Transaction Details', description: 'The transaction details.', required: [] })
-  .openapi('TransactionDetail')
-
-const TransactionDetailListSchema = z
-  .array(TransactionDetailSchema)
-  .min(1)
-  .max(2147483647)
-  .openapi({ description: 'An array of transaction detail objects.' })
-  .openapi('TransactionDetailList')
-
-const SearchResponseSchema = z
+const SearchResponseSchema: z.ZodType<SearchResponseType> = z
   .object({
     transaction_details: TransactionDetailListSchema.exactOptional(),
     account_number: z

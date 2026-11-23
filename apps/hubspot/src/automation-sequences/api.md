@@ -21,15 +21,12 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|automation.sequences.create||
+|automation.sequences.delete||
+|automation.sequences.edit||
 |automation.sequences.enrollments.write||
 |automation.sequences.read||
 |automation.sequences.write||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
 
 <h1 id="automation-sequences-basic">Basic</h1>
 

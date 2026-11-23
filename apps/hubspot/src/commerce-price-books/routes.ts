@@ -42,7 +42,7 @@ const PriceUpdateEntrySchema = z
         example: null,
       }),
     price: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the price details for the entry. The specific structure of this object is not detailed in the specification.',
@@ -75,14 +75,14 @@ const PriceBookItemUpdateRequestSchema = z
         example: null,
       }),
     billingFrequency: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object specifying the frequency at which billing occurs for the price book item.',
         example: null,
       }),
     billingPeriod: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object specifying the period over which billing occurs for the price book item.',
@@ -97,7 +97,7 @@ const PriceBookItemUpdateRequestSchema = z
       }),
     pricing: PricingUpdateRequestSchema.exactOptional(),
     status: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object indicating the current status of the price book item.',
         example: null,
@@ -494,7 +494,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'A string indicating the status of the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object providing more specific details about the error category.',
@@ -571,6 +571,23 @@ const BatchResponsePriceBookItemResponseWithErrorsSchema = z
   })
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
   .openapi('BatchResponsePriceBookItemResponseWithErrors')
+
+const BatchResponseSimplePublicObjectIdWithErrorsSchema = z
+  .object({
+    completedAt: z.iso.datetime({ offset: true }).openapi({ example: null }),
+    errors: z.array(StandardErrorSchema).exactOptional().openapi({ example: null }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({ example: null }),
+    numErrors: z.int32().exactOptional().openapi({ example: null }),
+    requestedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ example: null }),
+    results: z.array(SimplePublicObjectIdSchema).openapi({ example: null }),
+    startedAt: z.iso.datetime({ offset: true }).openapi({ example: null }),
+    status: z.enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING']).openapi({ example: null }),
+  })
+  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
+  .openapi('BatchResponseSimplePublicObjectIdWithErrors')
 
 const NextPageSchema = z
   .object({
@@ -830,13 +847,13 @@ const PriceBookUpdateRequestSchema = z
         example: null,
       }),
     description: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the description of the price book to be updated.',
         example: null,
       }),
     name: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the name of the price book to be updated.',
         example: null,
@@ -884,14 +901,29 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { 'crm.objects.products.read': '', 'e-commerce': '' },
+      scopes: {
+        'cpq.price_books.read': '',
+        'cpq.price_books.write': '',
+        'crm.objects.products.read': '',
+        'e-commerce': '',
+      },
     },
   },
+  'x-hubspot-app-availability': {
+    'cpq.price_books.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'cpq.price_books.write': { portal: ['public', 'private'], developer: false },
+    'crm.objects.products.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'e-commerce': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCommercePriceBooks202609PriceBooksRoute = createRoute({
   method: 'get',
@@ -972,7 +1004,7 @@ export const getCommercePriceBooks202609PriceBooksRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.read'] }],
 })
 
 export const postCommercePriceBooks202609PriceBooksRoute = createRoute({
@@ -994,23 +1026,19 @@ export const postCommercePriceBooks202609PriceBooksRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PriceBookResponseSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const getCommercePriceBooks202609PriceBooksPriceBookIdRoute = createRoute({
@@ -1069,7 +1097,7 @@ export const getCommercePriceBooks202609PriceBooksPriceBookIdRoute = createRoute
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.read'] }],
 })
 
 export const deleteCommercePriceBooks202609PriceBooksPriceBookIdRoute = createRoute({
@@ -1105,7 +1133,7 @@ export const deleteCommercePriceBooks202609PriceBooksPriceBookIdRoute = createRo
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const patchCommercePriceBooks202609PriceBooksPriceBookIdRoute = createRoute({
@@ -1151,7 +1179,7 @@ export const patchCommercePriceBooks202609PriceBooksPriceBookIdRoute = createRou
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const postCommercePriceBooks202609PriceBooksPriceBookIdActivateRoute = createRoute({
@@ -1193,7 +1221,7 @@ export const postCommercePriceBooks202609PriceBooksPriceBookIdActivateRoute = cr
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const postCommercePriceBooks202609PriceBooksPriceBookIdDeactivateRoute = createRoute({
@@ -1235,7 +1263,7 @@ export const postCommercePriceBooks202609PriceBooksPriceBookIdDeactivateRoute = 
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const getCommercePriceBooks202609PriceBooksPriceBookIdItemsRoute = createRoute({
@@ -1342,7 +1370,7 @@ export const getCommercePriceBooks202609PriceBooksPriceBookIdItemsRoute = create
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.read'] }],
 })
 
 export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsRoute = createRoute({
@@ -1387,23 +1415,19 @@ export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsRoute = creat
       description: 'successful operation',
       content: { 'application/json': { schema: PriceBookItemResponseSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsBatchArchiveRoute = createRoute({
@@ -1446,8 +1470,20 @@ export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsBatchArchiveR
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [],
+  responses: {
+    204: { description: 'No content', content: {} },
+    207: {
+      description: 'multiple statuses',
+      content: {
+        'application/json': {
+          schema: BatchResponseSimplePublicObjectIdWithErrorsSchema,
+          example: null,
+        },
+      },
+    },
+    default: ErrorResponse,
+  },
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsBatchCreateRoute = createRoute({
@@ -1508,7 +1544,7 @@ export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsBatchCreateRo
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsBatchUpdateRoute = createRoute({
@@ -1571,7 +1607,7 @@ export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsBatchUpdateRo
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
 export const getCommercePriceBooks202609PriceBooksPriceBookIdItemsPriceBookItemIdRoute =
@@ -1670,7 +1706,7 @@ export const getCommercePriceBooks202609PriceBooksPriceBookIdItemsPriceBookItemI
       },
       default: ErrorResponse,
     },
-    security: [],
+    security: [{ oauth2: ['cpq.price_books.read'] }],
   })
 
 export const deleteCommercePriceBooks202609PriceBooksPriceBookIdItemsPriceBookItemIdRoute =
@@ -1729,7 +1765,7 @@ export const deleteCommercePriceBooks202609PriceBooksPriceBookIdItemsPriceBookIt
       }),
     },
     responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-    security: [],
+    security: [{ oauth2: ['cpq.price_books.write'] }],
   })
 
 export const patchCommercePriceBooks202609PriceBooksPriceBookIdItemsPriceBookItemIdRoute =
@@ -1816,7 +1852,7 @@ export const patchCommercePriceBooks202609PriceBooksPriceBookIdItemsPriceBookIte
       },
       default: ErrorResponse,
     },
-    security: [],
+    security: [{ oauth2: ['cpq.price_books.write'] }],
   })
 
 export const postCommercePriceBooks202609PriceBooksPriceBookIdValidateRoute = createRoute({
@@ -1858,5 +1894,5 @@ export const postCommercePriceBooks202609PriceBooksPriceBookIdValidateRoute = cr
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['cpq.price_books.read'] }],
 })

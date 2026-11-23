@@ -24,12 +24,6 @@ Base URLs:
 |conversations.custom_channels.read||
 |conversations.custom_channels.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="conversations-custom-channels-basic">Basic</h1>
 
 ## List Channels
@@ -1479,6 +1473,7 @@ null
 |contactPropertiesLeadingToMatch|hs_first_outreach_date|
 |contactPropertiesLeadingToMatch|hs_first_subscription_create_date|
 |contactPropertiesLeadingToMatch|hs_full_name_or_email|
+|contactPropertiesLeadingToMatch|hs_geocode_mapping_id|
 |contactPropertiesLeadingToMatch|hs_geohash_1|
 |contactPropertiesLeadingToMatch|hs_geohash_2|
 |contactPropertiesLeadingToMatch|hs_geohash_3|
@@ -1498,6 +1493,7 @@ null
 |contactPropertiesLeadingToMatch|hs_inferred_language_codes|
 |contactPropertiesLeadingToMatch|hs_intent_paid_up_to_date|
 |contactPropertiesLeadingToMatch|hs_intent_signals_enabled|
+|contactPropertiesLeadingToMatch|hs_internal_normalized_email|
 |contactPropertiesLeadingToMatch|hs_ip_timezone|
 |contactPropertiesLeadingToMatch|hs_is_contact|
 |contactPropertiesLeadingToMatch|hs_is_enriched|
@@ -1599,6 +1595,10 @@ null
 |contactPropertiesLeadingToMatch|hs_sequences_actively_enrolled_count|
 |contactPropertiesLeadingToMatch|hs_sequences_enrolled_count|
 |contactPropertiesLeadingToMatch|hs_sequences_is_enrolled|
+|contactPropertiesLeadingToMatch|hs_sms_mobilephone_communication_subscriptions_opted_in|
+|contactPropertiesLeadingToMatch|hs_sms_mobilephone_communication_subscriptions_opted_out|
+|contactPropertiesLeadingToMatch|hs_sms_phone_communication_subscriptions_opted_in|
+|contactPropertiesLeadingToMatch|hs_sms_phone_communication_subscriptions_opted_out|
 |contactPropertiesLeadingToMatch|hs_social_facebook_clicks|
 |contactPropertiesLeadingToMatch|hs_social_google_plus_clicks|
 |contactPropertiesLeadingToMatch|hs_social_last_engagement|

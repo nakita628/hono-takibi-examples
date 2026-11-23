@@ -1,1132 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type PublicAbsoluteComparativeTimestampRefineByType = {
-  comparison: string
-  timestamp: bigint
-  type: 'ABSOLUTE_COMPARATIVE'
-}
-
-type PublicAbsoluteRangedTimestampRefineByType = {
-  lowerTimestamp: bigint
-  rangeType: string
-  type: 'ABSOLUTE_RANGED'
-  upperTimestamp: bigint
-}
-
-type PublicAdsSearchFilterType = {
-  adNetwork: string
-  entityType: string
-  filterType: 'ADS_SEARCH'
-  operator: string
-  searchTermType: string
-  searchTerms: string[]
-}
-
-type PublicNumOccurrencesRefineByType = {
-  maxOccurrences?: number
-  minOccurrences?: number
-  type: 'NUM_OCCURRENCES'
-}
-
-const PublicNumOccurrencesRefineBySchema: z.ZodType<PublicNumOccurrencesRefineByType> = z
-  .object({
-    maxOccurrences: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer specifying the maximum number of occurrences allowed.',
-        example: null,
-      }),
-    minOccurrences: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer specifying the minimum number of occurrences required.',
-        example: null,
-      }),
-    type: z
-      .literal('NUM_OCCURRENCES')
-      .default('NUM_OCCURRENCES')
-      .openapi({
-        description:
-          "A string indicating the type of refinement, which is 'NUM_OCCURRENCES' by default.",
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'NUM_OCCURRENCES',
-    required: ['type'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicNumOccurrencesRefineBy')
-
-type PublicSetOccurrencesRefineByType = { setType: string; type: 'SET_OCCURRENCES' }
-
-const PublicSetOccurrencesRefineBySchema: z.ZodType<PublicSetOccurrencesRefineByType> = z
-  .object({
-    setType: z
-      .string()
-      .openapi({
-        description: 'A string specifying the set type used for the refinement.',
-        example: null,
-      }),
-    type: z
-      .literal('SET_OCCURRENCES')
-      .default('SET_OCCURRENCES')
-      .openapi({
-        description: "A string indicating the type of refinement, which is 'SET_OCCURRENCES'.",
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'SET_OCCURRENCES',
-    required: ['setType', 'type'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicSetOccurrencesRefineBy')
-
-const PublicTimeOffsetSchema = z
-  .object({
-    amount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'An integer specifying the amount of time units to offset.',
-        example: null,
-      }),
-    offsetDirection: z
-      .string()
-      .openapi({
-        description:
-          "A string indicating the direction of the time offset. Valid values are 'BEFORE' and 'AFTER'.",
-        example: null,
-      }),
-    timeUnit: z
-      .string()
-      .openapi({
-        description:
-          "A string representing the unit of time for the offset. Valid values include 'MINUTE', 'HOUR', 'DAY', 'WEEK', 'MONTH', 'QUARTER', and 'YEAR'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['amount', 'offsetDirection', 'timeUnit'], example: null })
-  .openapi('PublicTimeOffset')
-
-type PublicRelativeComparativeTimestampRefineByType = {
-  comparison: string
-  timeOffset: z.infer<typeof PublicTimeOffsetSchema>
-  type: 'RELATIVE_COMPARATIVE'
-}
-
-const PublicRelativeComparativeTimestampRefineBySchema: z.ZodType<PublicRelativeComparativeTimestampRefineByType> =
-  z
-    .object({
-      comparison: z
-        .string()
-        .openapi({
-          description:
-            'A string that defines the comparison operation to be used in the refinement.',
-          example: null,
-        }),
-      timeOffset: PublicTimeOffsetSchema,
-      type: z
-        .literal('RELATIVE_COMPARATIVE')
-        .default('RELATIVE_COMPARATIVE')
-        .openapi({
-          description:
-            "A string that specifies the type of refinement, with the default value 'RELATIVE_COMPARATIVE'.",
-          example: null,
-        }),
-    })
-    .openapi({
-      title: 'RELATIVE_COMPARATIVE',
-      required: ['comparison', 'timeOffset', 'type'],
-      example: null,
-      'x-hubspot-sub-type-impl': true,
-    })
-    .openapi('PublicRelativeComparativeTimestampRefineBy')
-
-type PublicRelativeRangedTimestampRefineByType = {
-  lowerBoundOffset: z.infer<typeof PublicTimeOffsetSchema>
-  rangeType: string
-  type: 'RELATIVE_RANGED'
-  upperBoundOffset: z.infer<typeof PublicTimeOffsetSchema>
-}
-
-const PublicRelativeRangedTimestampRefineBySchema: z.ZodType<PublicRelativeRangedTimestampRefineByType> =
-  z
-    .object({
-      lowerBoundOffset: PublicTimeOffsetSchema,
-      rangeType: z
-        .string()
-        .openapi({
-          description: 'A string that specifies the type of range being applied.',
-          example: null,
-        }),
-      type: z
-        .literal('RELATIVE_RANGED')
-        .default('RELATIVE_RANGED')
-        .openapi({
-          description:
-            "A string indicating the type of refinement, with a default value of 'RELATIVE_RANGED'.",
-          example: null,
-        }),
-      upperBoundOffset: PublicTimeOffsetSchema,
-    })
-    .openapi({
-      title: 'RELATIVE_RANGED',
-      required: ['lowerBoundOffset', 'rangeType', 'type', 'upperBoundOffset'],
-      example: null,
-      'x-hubspot-sub-type-impl': true,
-    })
-    .openapi('PublicRelativeRangedTimestampRefineBy')
-
-const PublicAbsoluteComparativeTimestampRefineBySchema: z.ZodType<PublicAbsoluteComparativeTimestampRefineByType> =
-  z
-    .object({
-      comparison: z
-        .string()
-        .openapi({
-          description:
-            'A string representing the comparison operation to be performed with the timestamp.',
-          example: null,
-        }),
-      timestamp: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description:
-            'An integer representing the specific timestamp to be used in the comparison, typically expressed as a Unix timestamp in milliseconds.',
-          example: null,
-        }),
-      type: z
-        .literal('ABSOLUTE_COMPARATIVE')
-        .default('ABSOLUTE_COMPARATIVE')
-        .openapi({
-          description:
-            "A string representing the type of refinement, which is 'ABSOLUTE_COMPARATIVE' by default.",
-          example: null,
-        }),
-    })
-    .openapi({
-      title: 'ABSOLUTE_COMPARATIVE',
-      required: ['comparison', 'timestamp', 'type'],
-      example: null,
-      'x-hubspot-sub-type-impl': true,
-    })
-    .openapi('PublicAbsoluteComparativeTimestampRefineBy')
-
-const PublicAbsoluteRangedTimestampRefineBySchema: z.ZodType<PublicAbsoluteRangedTimestampRefineByType> =
-  z
-    .object({
-      lowerTimestamp: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description:
-            'An integer representing the lower bound of the timestamp range, in Unix time format (milliseconds).',
-          example: null,
-        }),
-      rangeType: z
-        .string()
-        .openapi({
-          description: 'A string that specifies the type of range being used in the filter.',
-          example: null,
-        }),
-      type: z
-        .literal('ABSOLUTE_RANGED')
-        .default('ABSOLUTE_RANGED')
-        .openapi({
-          description:
-            "A string that indicates the type of refine by operation, which is 'ABSOLUTE_RANGED'.",
-          example: null,
-        }),
-      upperTimestamp: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .openapi({
-          type: 'integer',
-          format: 'int64',
-          description:
-            'An integer representing the upper bound of the timestamp range, in Unix time format (milliseconds).',
-          example: null,
-        }),
-    })
-    .openapi({
-      title: 'ABSOLUTE_RANGED',
-      required: ['lowerTimestamp', 'rangeType', 'type', 'upperTimestamp'],
-      example: null,
-      'x-hubspot-sub-type-impl': true,
-    })
-    .openapi('PublicAbsoluteRangedTimestampRefineBy')
-
-type PublicAllHistoryRefineByType = { type: 'ALL_HISTORY' }
-
-const PublicAllHistoryRefineBySchema: z.ZodType<PublicAllHistoryRefineByType> = z
-  .object({
-    type: z
-      .literal('ALL_HISTORY')
-      .default('ALL_HISTORY')
-      .openapi({
-        description:
-          "A string that specifies the type of refinement, with a default value of 'ALL_HISTORY'.",
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'ALL_HISTORY',
-    required: ['type'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicAllHistoryRefineBy')
-
-const PublicDatePointSchema = z
-  .object({
-    day: z
-      .int32()
-      .openapi({
-        description: 'An integer representing the day component of the date.',
-        example: null,
-      }),
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the hour component of the time.',
-        example: null,
-      }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond component of the time.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the minute component of the time.',
-        example: null,
-      }),
-    month: z
-      .int32()
-      .openapi({
-        description: 'An integer representing the month component of the date.',
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the second component of the time.',
-        example: null,
-      }),
-    timeType: z
-      .literal('DATE')
-      .default('DATE')
-      .openapi({
-        description: "A string indicating the type of time reference, typically set to 'DATE'.",
-        example: null,
-      }),
-    timezoneSource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing the source of the timezone information.',
-        example: null,
-      }),
-    year: z
-      .int32()
-      .openapi({
-        description: 'An integer representing the year component of the date.',
-        example: null,
-      }),
-    zoneId: z
-      .string()
-      .openapi({
-        description: 'A string specifying the identifier for the timezone.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'DATE',
-    required: ['day', 'month', 'timeType', 'year', 'zoneId'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicDatePoint')
-
-const PublicNowReferenceSchema = z
-  .object({
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the hour part of the current time.',
-        example: null,
-      }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond part of the current time.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the minute part of the current time.',
-        example: null,
-      }),
-    referenceType: z
-      .literal('NOW')
-      .default('NOW')
-      .openapi({
-        description:
-          "A string that indicates the type of reference. The default value is 'NOW', and it is used to specify that the reference is to the current time.",
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the second part of the current time.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'NOW',
-    required: ['referenceType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicNowReference')
-
-const PublicTodayReferenceSchema = z
-  .object({
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond within the second.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the minute within the hour.',
-        example: null,
-      }),
-    referenceType: z
-      .literal('TODAY')
-      .default('TODAY')
-      .openapi({
-        description: "A string indicating the type of reference, which is 'TODAY' by default.",
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the second within the minute.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'TODAY',
-    required: ['referenceType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicTodayReference')
-
-const PublicWeekReferenceSchema = z
-  .object({
-    dayOfWeek: z
-      .enum(['FRIDAY', 'MONDAY', 'SATURDAY', 'SUNDAY', 'THURSDAY', 'TUESDAY', 'WEDNESDAY'])
-      .openapi({ description: 'An integer representing the day of the week.', example: null }),
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond of the second.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the minute of the hour.', example: null }),
-    referenceType: z
-      .literal('WEEK')
-      .default('WEEK')
-      .openapi({
-        description:
-          "A string indicating the type of reference, which is 'WEEK' for this component.",
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the second of the minute.', example: null }),
-  })
-  .openapi({
-    title: 'WEEK',
-    required: ['dayOfWeek', 'referenceType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicWeekReference')
-
-const PublicFiscalQuarterReferenceSchema = z
-  .object({
-    day: z
-      .int32()
-      .openapi({ description: 'An integer representing the day of the month.', example: null }),
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond within the second.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the minute within the hour.',
-        example: null,
-      }),
-    month: z
-      .int32()
-      .openapi({ description: 'An integer representing the month of the year.', example: null }),
-    referenceType: z
-      .literal('FISCAL_QUARTER')
-      .default('FISCAL_QUARTER')
-      .openapi({
-        description: "A string indicating the type of reference, which is 'FISCAL_QUARTER'.",
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the second within the minute.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'FISCAL_QUARTER',
-    required: ['day', 'month', 'referenceType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicFiscalQuarterReference')
-
-const PublicFiscalYearReferenceSchema = z
-  .object({
-    day: z
-      .int32()
-      .openapi({ description: 'An integer representing the day of the month.', example: null }),
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond within the second.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the minute within the hour.',
-        example: null,
-      }),
-    month: z
-      .int32()
-      .openapi({
-        description: 'An integer representing the month of the fiscal year.',
-        example: null,
-      }),
-    referenceType: z
-      .literal('FISCAL_YEAR')
-      .default('FISCAL_YEAR')
-      .openapi({
-        description: "A string that indicates the type of reference, which is 'FISCAL_YEAR'.",
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the second within the minute.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'FISCAL_YEAR',
-    required: ['day', 'month', 'referenceType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicFiscalYearReference')
-
-const PublicYearReferenceSchema = z
-  .object({
-    day: z
-      .int32()
-      .openapi({ description: 'An integer representing the day of the month.', example: null }),
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond within the second.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the minute within the hour.',
-        example: null,
-      }),
-    month: z
-      .int32()
-      .openapi({ description: 'An integer representing the month of the year.', example: null }),
-    referenceType: z
-      .literal('YEAR')
-      .default('YEAR')
-      .openapi({
-        description: "A string that specifies the type of reference, which is 'YEAR' by default.",
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the second within the minute.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'YEAR',
-    required: ['day', 'month', 'referenceType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicYearReference')
-
-const PublicQuarterReferenceSchema = z
-  .object({
-    day: z
-      .int32()
-      .openapi({ description: 'An integer representing the day of the month.', example: null }),
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond within the second.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the minute within the hour.',
-        example: null,
-      }),
-    month: z
-      .int32()
-      .openapi({ description: 'An integer representing the month of the year.', example: null }),
-    referenceType: z
-      .literal('QUARTER')
-      .default('QUARTER')
-      .openapi({
-        description:
-          "A string indicating the type of reference, which is 'QUARTER' for this component.",
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the second within the minute.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'QUARTER',
-    required: ['day', 'month', 'referenceType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicQuarterReference')
-
-const PublicMonthReferenceSchema = z
-  .object({
-    day: z
-      .int32()
-      .openapi({ description: 'An integer representing the day of the month.', example: null }),
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
-    millisecond: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the millisecond within the second.',
-        example: null,
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the minute within the hour.',
-        example: null,
-      }),
-    referenceType: z
-      .literal('MONTH')
-      .default('MONTH')
-      .openapi({
-        description: "A string indicating the type of reference, with a default value of 'MONTH'.",
-        example: null,
-      }),
-    second: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the second within the minute.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'MONTH',
-    required: ['day', 'referenceType'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicMonthReference')
-
-const PublicIndexOffsetSchema = z
-  .object({
-    days: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of days to offset.',
-        example: null,
-      }),
-    hours: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of hours to offset.',
-        example: null,
-      }),
-    milliseconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of milliseconds to offset.',
-        example: null,
-      }),
-    minutes: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of minutes to offset.',
-        example: null,
-      }),
-    months: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of months to offset.',
-        example: null,
-      }),
-    quarters: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of quarters to offset.',
-        example: null,
-      }),
-    seconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of seconds to offset.',
-        example: null,
-      }),
-    weeks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of weeks to offset.',
-        example: null,
-      }),
-    years: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the number of years to offset.',
-        example: null,
-      }),
-  })
-  .openapi({ example: null, required: [] })
-  .openapi('PublicIndexOffset')
-
-const PublicIndexedTimePointSchema = z
-  .object({
-    indexReference: z
-      .xor([
-        PublicNowReferenceSchema,
-        PublicTodayReferenceSchema,
-        PublicWeekReferenceSchema,
-        PublicFiscalQuarterReferenceSchema,
-        PublicFiscalYearReferenceSchema,
-        PublicYearReferenceSchema,
-        PublicQuarterReferenceSchema,
-        PublicMonthReferenceSchema,
-      ])
-      .openapi({
-        description:
-          "An object that defines the reference point for the indexed time, which can be one of several predefined references like 'now', 'today', or a specific fiscal period.",
-        example: null,
-      }),
-    offset: PublicIndexOffsetSchema.exactOptional(),
-    timeType: z
-      .literal('INDEXED')
-      .default('INDEXED')
-      .openapi({
-        description:
-          "A string indicating the type of time point, with a default value of 'INDEXED'.",
-        example: null,
-      }),
-    timezoneSource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing the source of the timezone information.',
-        example: null,
-      }),
-    zoneId: z
-      .string()
-      .openapi({ description: 'A string specifying the ID of the timezone.', example: null }),
-  })
-  .openapi({
-    title: 'INDEXED',
-    required: ['indexReference', 'timeType', 'zoneId'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicIndexedTimePoint')
-
-const PublicPropertyReferencedTimeSchema = z
-  .object({
-    property: z
-      .string()
-      .openapi({
-        description: 'A string representing the property that is used to reference the time.',
-        example: null,
-      }),
-    referenceType: z
-      .string()
-      .openapi({
-        description:
-          "A string indicating the type of reference, with a default value of 'PROPERTY_REFERENCE'.",
-        example: null,
-      }),
-    timeType: z
-      .literal('PROPERTY_REFERENCED')
-      .default('PROPERTY_REFERENCED')
-      .openapi({
-        description:
-          "A string indicating the type of time reference. It defaults to 'PROPERTY_REFERENCE'.",
-        example: null,
-      }),
-    timezoneSource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing the source of the timezone information.',
-        example: null,
-      }),
-    zoneId: z
-      .string()
-      .openapi({ description: 'A string specifying the ID of the timezone.', example: null }),
-  })
-  .openapi({
-    title: 'PROPERTY_REFERENCED',
-    required: ['property', 'referenceType', 'timeType', 'zoneId'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicPropertyReferencedTime')
-
-type PublicTimePointOperationType = {
-  endpointBehavior?: string
-  includeObjectsWithNoValueSet: boolean
-  operationType: 'TIME_POINT'
-  operator: string
-  propertyParser?: string
-  timePoint:
-    | z.infer<typeof PublicDatePointSchema>
-    | z.infer<typeof PublicIndexedTimePointSchema>
-    | z.infer<typeof PublicPropertyReferencedTimeSchema>
-  type: string
-}
-
-const PublicTimePointOperationSchema: z.ZodType<PublicTimePointOperationType> = z
-  .object({
-    endpointBehavior: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string describing the behavior of the endpoint in the context of the time point operation.',
-        example: null,
-      }),
-    includeObjectsWithNoValueSet: z
-      .boolean()
-      .openapi({
-        description:
-          'A boolean indicating whether to include objects that have no value set for the time point.',
-        example: null,
-      }),
-    operationType: z
-      .literal('TIME_POINT')
-      .default('TIME_POINT')
-      .openapi({
-        description: "A string indicating the type of operation, which is 'TIME_POINT' by default.",
-        example: null,
-      }),
-    operator: z
-      .string()
-      .openapi({
-        description: 'A string representing the operator used in the time point operation.',
-        example: null,
-      }),
-    propertyParser: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string representing the parser used for the property in the time point operation.',
-        example: null,
-      }),
-    timePoint: z
-      .xor([
-        PublicDatePointSchema,
-        PublicIndexedTimePointSchema,
-        PublicPropertyReferencedTimeSchema,
-      ])
-      .openapi({
-        description:
-          'An object representing the specific time point used in the operation. It can be one of several types, such as a date point, indexed time point, or property-referenced time.',
-        example: null,
-      }),
-    type: z
-      .string()
-      .openapi({
-        description: 'A string indicating the specific type of the time point operation.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'TIME_POINT',
-    required: ['includeObjectsWithNoValueSet', 'operationType', 'operator', 'timePoint', 'type'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicTimePointOperation')
-
-type PublicRangedTimeOperationType = {
-  includeObjectsWithNoValueSet: boolean
-  lowerBoundEndpointBehavior?: string
-  lowerBoundTimePoint:
-    | z.infer<typeof PublicDatePointSchema>
-    | z.infer<typeof PublicIndexedTimePointSchema>
-    | z.infer<typeof PublicPropertyReferencedTimeSchema>
-  operationType: string
-  operator: string
-  propertyParser?: string
-  type: 'TIME_RANGED'
-  upperBoundEndpointBehavior?: string
-  upperBoundTimePoint:
-    | z.infer<typeof PublicDatePointSchema>
-    | z.infer<typeof PublicIndexedTimePointSchema>
-    | z.infer<typeof PublicPropertyReferencedTimeSchema>
-}
-
-const PublicRangedTimeOperationSchema: z.ZodType<PublicRangedTimeOperationType> = z
-  .object({
-    includeObjectsWithNoValueSet: z
-      .boolean()
-      .openapi({
-        description:
-          'A boolean indicating whether objects with no value set should be included in the operation.',
-        example: null,
-      }),
-    lowerBoundEndpointBehavior: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string specifying the behavior of the lower bound endpoint in the time range.',
-        example: null,
-      }),
-    lowerBoundTimePoint: z
-      .xor([
-        PublicDatePointSchema,
-        PublicIndexedTimePointSchema,
-        PublicPropertyReferencedTimeSchema,
-      ])
-      .openapi({
-        description:
-          'An object representing the lower bound time point of the range, which can be a date point, indexed time point, or property-referenced time.',
-        example: null,
-      }),
-    operationType: z
-      .string()
-      .openapi({
-        description:
-          'A string indicating the operation type, which is related to time range operations.',
-        example: null,
-      }),
-    operator: z
-      .string()
-      .openapi({
-        description: 'A string representing the operator used in the time range operation.',
-        example: null,
-      }),
-    propertyParser: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string that defines the property parser used in the operation.',
-        example: null,
-      }),
-    type: z
-      .literal('TIME_RANGED')
-      .default('TIME_RANGED')
-      .openapi({
-        description: "A string indicating the type of operation, which is 'TIME_RANGED'.",
-        example: null,
-      }),
-    upperBoundEndpointBehavior: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string specifying the behavior of the upper bound endpoint in the time range.',
-        example: null,
-      }),
-    upperBoundTimePoint: z
-      .xor([
-        PublicDatePointSchema,
-        PublicIndexedTimePointSchema,
-        PublicPropertyReferencedTimeSchema,
-      ])
-      .openapi({
-        description:
-          'An object representing the upper bound time point of the range, which can be a date point, indexed time point, or property-referenced time.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'TIME_RANGED',
-    required: [
-      'includeObjectsWithNoValueSet',
-      'lowerBoundTimePoint',
-      'operationType',
-      'operator',
-      'type',
-      'upperBoundTimePoint',
-    ],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('PublicRangedTimeOperation')
-
-type PublicAdsTimeFilterType = {
-  filterType: 'ADS_TIME'
-  pruningRefineBy:
-    | z.infer<typeof PublicNumOccurrencesRefineBySchema>
-    | z.infer<typeof PublicSetOccurrencesRefineBySchema>
-    | z.infer<typeof PublicRelativeComparativeTimestampRefineBySchema>
-    | z.infer<typeof PublicRelativeRangedTimestampRefineBySchema>
-    | z.infer<typeof PublicAbsoluteComparativeTimestampRefineBySchema>
-    | z.infer<typeof PublicAbsoluteRangedTimestampRefineBySchema>
-    | z.infer<typeof PublicAllHistoryRefineBySchema>
-    | z.infer<typeof PublicTimePointOperationSchema>
-    | z.infer<typeof PublicRangedTimeOperationSchema>
-}
-
 const PublicOrFilterBranchSchema: z.ZodType<PublicOrFilterBranchType> = z
   .lazy(() =>
     z
@@ -1201,11 +74,93 @@ const PublicOrFilterBranchSchema: z.ZodType<PublicOrFilterBranchType> = z
       .openapi({
         title: 'OR',
         required: ['filterBranchOperator', 'filterBranchType', 'filterBranches', 'filters'],
+        description:
+          "The PublicOrFilterBranch component represents a logical 'OR' filter branch used in constructing complex filter criteria within the ListAppService API. It is used to group multiple filters or filter branches, where any of the conditions can be true for the branch to be satisfied.",
         example: null,
         'x-hubspot-sub-type-impl': true,
       }),
   )
   .openapi('PublicOrFilterBranch')
+
+const PublicAndFilterBranchSchema: z.ZodType<PublicAndFilterBranchType> = z
+  .lazy(() =>
+    z
+      .object({
+        filterBranchOperator: z
+          .string()
+          .openapi({
+            description: 'A string representing the operator used within this filter branch.',
+            example: null,
+          }),
+        filterBranchType: z
+          .literal('AND')
+          .default('AND')
+          .openapi({
+            description: "A string indicating the type of filter branch. Defaults to 'AND'.",
+            example: null,
+          }),
+        filterBranches: z
+          .array(
+            z
+              .xor([
+                PublicOrFilterBranchSchema,
+                PublicAndFilterBranchSchema,
+                PublicNotAllFilterBranchSchema,
+                PublicNotAnyFilterBranchSchema,
+                PublicRestrictedFilterBranchSchema,
+                PublicUnifiedEventsFilterBranchSchema,
+                PublicAssociationFilterBranchSchema,
+              ])
+              .openapi({ example: null }),
+          )
+          .openapi({
+            description:
+              "An array of nested filter branches. Each item can be a branch of various types, such as 'OR', 'AND', 'NOT_ALL', etc.",
+            example: null,
+          }),
+        filters: z
+          .array(
+            z
+              .xor([
+                PublicPropertyFilterSchema,
+                PublicAssociationInListFilterSchema,
+                PublicPageViewAnalyticsFilterSchema,
+                PublicCtaAnalyticsFilterSchema,
+                PublicEventAnalyticsFilterSchema,
+                PublicFormSubmissionFilterSchema,
+                PublicFormSubmissionOnPageFilterSchema,
+                PublicIntegrationEventFilterSchema,
+                PublicEmailSubscriptionFilterSchema,
+                PublicCommunicationSubscriptionFilterSchema,
+                PublicSurveyMonkeyFilterSchema,
+                PublicSurveyMonkeyValueFilterSchema,
+                PublicWebinarFilterSchema,
+                PublicEmailEventFilterSchema,
+                PublicPrivacyAnalyticsFilterSchema,
+                PublicAdsSearchFilterSchema,
+                PublicAdsTimeFilterSchema,
+                PublicInListFilterSchema,
+                PublicUnifiedEventsFilterSchema,
+                PublicConstantFilterSchema,
+              ])
+              .openapi({ example: null }),
+          )
+          .openapi({
+            description:
+              'An array of filters that apply to this branch. Each filter can be of various types, such as property filters, event filters, or subscription filters.',
+            example: null,
+          }),
+      })
+      .openapi({
+        title: 'AND',
+        required: ['filterBranchOperator', 'filterBranchType', 'filterBranches', 'filters'],
+        description:
+          "Represents a logical 'AND' filter branch used in constructing complex filter criteria for lists in the HubSpot ListAppService API. This component is utilized to group multiple filters and sub-branches that must all be true for the branch to be considered true.",
+        example: null,
+        'x-hubspot-sub-type-impl': true,
+      }),
+  )
+  .openapi('PublicAndFilterBranch')
 
 const PublicNotAllFilterBranchSchema: z.ZodType<PublicNotAllFilterBranchType> = z
   .lazy(() =>
@@ -1280,6 +235,8 @@ const PublicNotAllFilterBranchSchema: z.ZodType<PublicNotAllFilterBranchType> = 
       .openapi({
         title: 'NOT_ALL',
         required: ['filterBranchOperator', 'filterBranchType', 'filterBranches', 'filters'],
+        description:
+          "The PublicNotAllFilterBranch component represents a filter branch used in HubSpot's ListAppService API to define complex filtering logic where not all conditions need to be met. It is typically used in scenarios where a combination of filters and filter branches are applied to refine data retrieval.",
         example: null,
         'x-hubspot-sub-type-impl': true,
       }),
@@ -1359,6 +316,8 @@ const PublicNotAnyFilterBranchSchema: z.ZodType<PublicNotAnyFilterBranchType> = 
       .openapi({
         title: 'NOT_ANY',
         required: ['filterBranchOperator', 'filterBranchType', 'filterBranches', 'filters'],
+        description:
+          'Represents a filter branch in a list operation that excludes any filters or branches that match the specified criteria. It is used within the context of defining complex filter logic for lists in the ListAppService API.',
         example: null,
         'x-hubspot-sub-type-impl': true,
       }),
@@ -1438,6 +397,8 @@ const PublicRestrictedFilterBranchSchema: z.ZodType<PublicRestrictedFilterBranch
       .openapi({
         title: 'RESTRICTED',
         required: ['filterBranchOperator', 'filterBranchType', 'filterBranches', 'filters'],
+        description:
+          'The PublicRestrictedFilterBranch component represents a specific type of filter branch used within the ListAppService API. It is utilized to apply restrictions on filter branches and filters, allowing for complex query operations within lists.',
         example: null,
         'x-hubspot-sub-type-impl': true,
       }),
@@ -1574,6 +535,8 @@ const PublicUnifiedEventsFilterBranchSchema: z.ZodType<PublicUnifiedEventsFilter
           'filters',
           'operator',
         ],
+        description:
+          "The PublicUnifiedEventsFilterBranch component represents a filter branch specifically for unified events within HubSpot's API. It is used to define criteria for filtering events based on specific conditions and is typically utilized in constructing complex filter logic for event data.",
         example: null,
         'x-hubspot-sub-type-impl': true,
       }),
@@ -1688,11 +651,1422 @@ const PublicAssociationFilterBranchSchema: z.ZodType<PublicAssociationFilterBran
           'objectTypeId',
           'operator',
         ],
+        description:
+          'Represents a branch of filters specifically for associations in the HubSpot API. This component is used to define complex filtering logic involving associations between objects, typically in the context of search or list operations.',
         example: null,
         'x-hubspot-sub-type-impl': true,
       }),
   )
   .openapi('PublicAssociationFilterBranch')
+
+const PublicListPermissionsSchema = z
+  .object({
+    teamsWithEditAccess: z
+      .array(z.int32().openapi({ example: null }))
+      .openapi({
+        description:
+          'An array of integers representing the IDs of teams that have edit access to the list.',
+        example: null,
+      }),
+    usersWithEditAccess: z
+      .array(z.int32().openapi({ example: null }))
+      .openapi({
+        description:
+          'An array of integers representing the IDs of users that have edit access to the list.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['teamsWithEditAccess', 'usersWithEditAccess'], example: null })
+  .openapi('PublicListPermissions')
+
+const PublicMembershipSettingsSchema = z
+  .object({
+    includeUnassigned: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'A boolean indicating whether to include unassigned records in the membership settings.',
+        example: null,
+      }),
+    membershipTeamId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string representing the unique identifier of the team associated with the membership settings.',
+        example: null,
+      }),
+  })
+  .openapi({ example: null, required: [] })
+  .openapi('PublicMembershipSettings')
+
+type ListCreateRequestType = {
+  customProperties?: { [key: string]: string }
+  filterBranch?:
+    | z.infer<typeof PublicOrFilterBranchSchema>
+    | z.infer<typeof PublicAndFilterBranchSchema>
+    | z.infer<typeof PublicNotAllFilterBranchSchema>
+    | z.infer<typeof PublicNotAnyFilterBranchSchema>
+    | z.infer<typeof PublicRestrictedFilterBranchSchema>
+    | z.infer<typeof PublicUnifiedEventsFilterBranchSchema>
+    | z.infer<typeof PublicAssociationFilterBranchSchema>
+  listFolderId?: number
+  listPermissions?: z.infer<typeof PublicListPermissionsSchema>
+  membershipSettings?: z.infer<typeof PublicMembershipSettingsSchema>
+  name: string
+  objectTypeId: string
+  processingType: string
+}
+
+type PublicObjectListType = {
+  createdAt?: string
+  createdById?: string
+  deletedAt?: string
+  filterBranch?:
+    | z.infer<typeof PublicOrFilterBranchSchema>
+    | z.infer<typeof PublicAndFilterBranchSchema>
+    | z.infer<typeof PublicNotAllFilterBranchSchema>
+    | z.infer<typeof PublicNotAnyFilterBranchSchema>
+    | z.infer<typeof PublicRestrictedFilterBranchSchema>
+    | z.infer<typeof PublicUnifiedEventsFilterBranchSchema>
+    | z.infer<typeof PublicAssociationFilterBranchSchema>
+  filtersUpdatedAt?: string
+  listId: string
+  listPermissions?: z.infer<typeof PublicListPermissionsSchema>
+  listVersion: number
+  membershipSettings?: z.infer<typeof PublicMembershipSettingsSchema>
+  name: string
+  objectTypeId: string
+  processingStatus: string
+  processingType: string
+  size?: bigint
+  updatedAt?: string
+  updatedById?: string
+}
+
+const PublicObjectListSchema: z.ZodType<PublicObjectListType> = z
+  .object({
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when the list was created, in ISO 8601 format.',
+        example: null,
+      }),
+    createdById: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the user who created the list, represented as a string.',
+        example: null,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when the list was deleted, in ISO 8601 format.',
+        example: null,
+      }),
+    filterBranch: z
+      .xor([
+        PublicOrFilterBranchSchema,
+        PublicAndFilterBranchSchema,
+        PublicNotAllFilterBranchSchema,
+        PublicNotAnyFilterBranchSchema,
+        PublicRestrictedFilterBranchSchema,
+        PublicUnifiedEventsFilterBranchSchema,
+        PublicAssociationFilterBranchSchema,
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'An object representing the filter branch applied to the list, which can be one of several types of filter branches.',
+        example: null,
+      }),
+    filtersUpdatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "The date and time when the list's filters were last updated, in ISO 8601 format.",
+        example: null,
+      }),
+    listId: z
+      .string()
+      .openapi({
+        description: 'The unique identifier for the list, represented as a string.',
+        example: null,
+      }),
+    listPermissions: PublicListPermissionsSchema.exactOptional(),
+    listVersion: z
+      .int32()
+      .openapi({ description: 'An integer indicating the version of the list.', example: null }),
+    membershipSettings: PublicMembershipSettingsSchema.exactOptional(),
+    name: z
+      .string()
+      .openapi({ description: 'The name of the list, represented as a string.', example: null }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'The unique identifier for the type of object associated with the list, represented as a string.',
+        example: null,
+      }),
+    processingStatus: z
+      .string()
+      .openapi({
+        description: 'A string representing the current processing status of the list.',
+        example: null,
+      }),
+    processingType: z
+      .string()
+      .openapi({
+        description: 'A string indicating the type of processing applied to the list.',
+        example: null,
+      }),
+    size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'An integer representing the size of the list.',
+        example: null,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when the list was last updated, in ISO 8601 format.',
+        example: null,
+      }),
+    updatedById: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the user who last updated the list, represented as a string.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'listId',
+      'listVersion',
+      'name',
+      'objectTypeId',
+      'processingStatus',
+      'processingType',
+    ],
+    example: null,
+  })
+  .openapi('PublicObjectList')
+
+type ListCreateResponseType = { list: z.infer<typeof PublicObjectListSchema> }
+
+type ListFetchResponseType = { list: z.infer<typeof PublicObjectListSchema> }
+
+type ListFilterUpdateRequestType = {
+  filterBranch:
+    | z.infer<typeof PublicOrFilterBranchSchema>
+    | z.infer<typeof PublicAndFilterBranchSchema>
+    | z.infer<typeof PublicNotAllFilterBranchSchema>
+    | z.infer<typeof PublicNotAnyFilterBranchSchema>
+    | z.infer<typeof PublicRestrictedFilterBranchSchema>
+    | z.infer<typeof PublicUnifiedEventsFilterBranchSchema>
+    | z.infer<typeof PublicAssociationFilterBranchSchema>
+}
+
+type ListUpdateResponseType = { updatedList?: z.infer<typeof PublicObjectListSchema> }
+
+type ListsByIdResponseType = { lists: z.infer<typeof PublicObjectListSchema>[] }
+
+type PublicAbsoluteComparativeTimestampRefineByType = {
+  comparison: string
+  timestamp: bigint
+  type: 'ABSOLUTE_COMPARATIVE'
+}
+
+type PublicAbsoluteRangedTimestampRefineByType = {
+  lowerTimestamp: bigint
+  rangeType: string
+  type: 'ABSOLUTE_RANGED'
+  upperTimestamp: bigint
+}
+
+type PublicAdsSearchFilterType = {
+  adNetwork: string
+  entityType: string
+  filterType: 'ADS_SEARCH'
+  operator: string
+  searchTermType: string
+  searchTerms: string[]
+}
+
+type PublicNumOccurrencesRefineByType = {
+  maxOccurrences?: number
+  minOccurrences?: number
+  type: 'NUM_OCCURRENCES'
+}
+
+const PublicNumOccurrencesRefineBySchema: z.ZodType<PublicNumOccurrencesRefineByType> = z
+  .object({
+    maxOccurrences: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer specifying the maximum number of occurrences allowed.',
+        example: null,
+      }),
+    minOccurrences: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer specifying the minimum number of occurrences required.',
+        example: null,
+      }),
+    type: z
+      .literal('NUM_OCCURRENCES')
+      .default('NUM_OCCURRENCES')
+      .openapi({
+        description:
+          "A string indicating the type of refinement, which is 'NUM_OCCURRENCES' by default.",
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'NUM_OCCURRENCES',
+    required: ['type'],
+    description:
+      'Represents a refinement criterion based on the number of occurrences, used in filtering operations within the ListAppService API. This component is typically used to specify the minimum and maximum number of times an event or condition should occur.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicNumOccurrencesRefineBy')
+
+type PublicSetOccurrencesRefineByType = { setType: string; type: 'SET_OCCURRENCES' }
+
+const PublicSetOccurrencesRefineBySchema: z.ZodType<PublicSetOccurrencesRefineByType> = z
+  .object({
+    setType: z
+      .string()
+      .openapi({
+        description: 'A string specifying the set type used for the refinement.',
+        example: null,
+      }),
+    type: z
+      .literal('SET_OCCURRENCES')
+      .default('SET_OCCURRENCES')
+      .openapi({
+        description: "A string indicating the type of refinement, which is 'SET_OCCURRENCES'.",
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'SET_OCCURRENCES',
+    required: ['setType', 'type'],
+    description:
+      'Represents a refinement criterion for filtering based on a set number of occurrences. This component is used within filter operations to specify how occurrences should be refined.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicSetOccurrencesRefineBy')
+
+const PublicTimeOffsetSchema = z
+  .object({
+    amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'An integer specifying the amount of time units to offset.',
+        example: null,
+      }),
+    offsetDirection: z
+      .string()
+      .openapi({
+        description:
+          "A string indicating the direction of the time offset. Valid values are 'BEFORE' and 'AFTER'.",
+        example: null,
+      }),
+    timeUnit: z
+      .string()
+      .openapi({
+        description:
+          "A string representing the unit of time for the offset. Valid values include 'MINUTE', 'HOUR', 'DAY', 'WEEK', 'MONTH', 'QUARTER', and 'YEAR'.",
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['amount', 'offsetDirection', 'timeUnit'],
+    description:
+      'The PublicTimeOffset component represents a time offset used in various operations within the API. It is used to specify a direction, unit, and amount of time to offset, typically in contexts where relative time calculations are needed.',
+    example: null,
+  })
+  .openapi('PublicTimeOffset')
+
+type PublicRelativeComparativeTimestampRefineByType = {
+  comparison: string
+  timeOffset: z.infer<typeof PublicTimeOffsetSchema>
+  type: 'RELATIVE_COMPARATIVE'
+}
+
+const PublicRelativeComparativeTimestampRefineBySchema: z.ZodType<PublicRelativeComparativeTimestampRefineByType> =
+  z
+    .object({
+      comparison: z
+        .string()
+        .openapi({
+          description:
+            'A string that defines the comparison operation to be used in the refinement.',
+          example: null,
+        }),
+      timeOffset: PublicTimeOffsetSchema,
+      type: z
+        .literal('RELATIVE_COMPARATIVE')
+        .default('RELATIVE_COMPARATIVE')
+        .openapi({
+          description:
+            "A string that specifies the type of refinement, with the default value 'RELATIVE_COMPARATIVE'.",
+          example: null,
+        }),
+    })
+    .openapi({
+      title: 'RELATIVE_COMPARATIVE',
+      required: ['comparison', 'timeOffset', 'type'],
+      description:
+        'Represents a refinement criterion for timestamp-based filters in a relative comparative manner. This component is used to specify conditions for filtering data based on relative time comparisons.',
+      example: null,
+      'x-hubspot-sub-type-impl': true,
+    })
+    .openapi('PublicRelativeComparativeTimestampRefineBy')
+
+type PublicRelativeRangedTimestampRefineByType = {
+  lowerBoundOffset: z.infer<typeof PublicTimeOffsetSchema>
+  rangeType: string
+  type: 'RELATIVE_RANGED'
+  upperBoundOffset: z.infer<typeof PublicTimeOffsetSchema>
+}
+
+const PublicRelativeRangedTimestampRefineBySchema: z.ZodType<PublicRelativeRangedTimestampRefineByType> =
+  z
+    .object({
+      lowerBoundOffset: PublicTimeOffsetSchema,
+      rangeType: z
+        .string()
+        .openapi({
+          description: 'A string that specifies the type of range being applied.',
+          example: null,
+        }),
+      type: z
+        .literal('RELATIVE_RANGED')
+        .default('RELATIVE_RANGED')
+        .openapi({
+          description:
+            "A string indicating the type of refinement, with a default value of 'RELATIVE_RANGED'.",
+          example: null,
+        }),
+      upperBoundOffset: PublicTimeOffsetSchema,
+    })
+    .openapi({
+      title: 'RELATIVE_RANGED',
+      required: ['lowerBoundOffset', 'rangeType', 'type', 'upperBoundOffset'],
+      description:
+        'Represents a refinement filter for timestamp-based criteria within a relative range. It is used in scenarios where filtering by a time range relative to the current time is necessary.',
+      example: null,
+      'x-hubspot-sub-type-impl': true,
+    })
+    .openapi('PublicRelativeRangedTimestampRefineBy')
+
+const PublicAbsoluteComparativeTimestampRefineBySchema: z.ZodType<PublicAbsoluteComparativeTimestampRefineByType> =
+  z
+    .object({
+      comparison: z
+        .string()
+        .openapi({
+          description:
+            'A string representing the comparison operation to be performed with the timestamp.',
+          example: null,
+        }),
+      timestamp: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'An integer representing the specific timestamp to be used in the comparison, typically expressed as a Unix timestamp in milliseconds.',
+          example: null,
+        }),
+      type: z
+        .literal('ABSOLUTE_COMPARATIVE')
+        .default('ABSOLUTE_COMPARATIVE')
+        .openapi({
+          description:
+            "A string representing the type of refinement, which is 'ABSOLUTE_COMPARATIVE' by default.",
+          example: null,
+        }),
+    })
+    .openapi({
+      title: 'ABSOLUTE_COMPARATIVE',
+      required: ['comparison', 'timestamp', 'type'],
+      description:
+        "The PublicAbsoluteComparativeTimestampRefineBy component is used to refine timestamp-based filters in HubSpot's ListAppService API. It specifies an absolute timestamp and a comparison type to filter data based on specific time criteria.",
+      example: null,
+      'x-hubspot-sub-type-impl': true,
+    })
+    .openapi('PublicAbsoluteComparativeTimestampRefineBy')
+
+const PublicAbsoluteRangedTimestampRefineBySchema: z.ZodType<PublicAbsoluteRangedTimestampRefineByType> =
+  z
+    .object({
+      lowerTimestamp: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'An integer representing the lower bound of the timestamp range, in Unix time format (milliseconds).',
+          example: null,
+        }),
+      rangeType: z
+        .string()
+        .openapi({
+          description: 'A string that specifies the type of range being used in the filter.',
+          example: null,
+        }),
+      type: z
+        .literal('ABSOLUTE_RANGED')
+        .default('ABSOLUTE_RANGED')
+        .openapi({
+          description:
+            "A string that indicates the type of refine by operation, which is 'ABSOLUTE_RANGED'.",
+          example: null,
+        }),
+      upperTimestamp: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .openapi({
+          type: 'integer',
+          format: 'int64',
+          description:
+            'An integer representing the upper bound of the timestamp range, in Unix time format (milliseconds).',
+          example: null,
+        }),
+    })
+    .openapi({
+      title: 'ABSOLUTE_RANGED',
+      required: ['lowerTimestamp', 'rangeType', 'type', 'upperTimestamp'],
+      description:
+        'The PublicAbsoluteRangedTimestampRefineBy component is used to define a filter based on an absolute time range. It specifies a fixed lower and upper timestamp to refine results in API requests, particularly for filtering data within a specific time period.',
+      example: null,
+      'x-hubspot-sub-type-impl': true,
+    })
+    .openapi('PublicAbsoluteRangedTimestampRefineBy')
+
+type PublicAllHistoryRefineByType = { type: 'ALL_HISTORY' }
+
+const PublicAllHistoryRefineBySchema: z.ZodType<PublicAllHistoryRefineByType> = z
+  .object({
+    type: z
+      .literal('ALL_HISTORY')
+      .default('ALL_HISTORY')
+      .openapi({
+        description:
+          "A string that specifies the type of refinement, with a default value of 'ALL_HISTORY'.",
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'ALL_HISTORY',
+    required: ['type'],
+    description:
+      'The PublicAllHistoryRefineBy component is used to specify a refinement criterion that considers all historical data. It is typically used within filter operations to ensure that all past occurrences are taken into account.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicAllHistoryRefineBy')
+
+const PublicDatePointSchema = z
+  .object({
+    day: z
+      .int32()
+      .openapi({
+        description: 'An integer representing the day component of the date.',
+        example: null,
+      }),
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the hour component of the time.',
+        example: null,
+      }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond component of the time.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the minute component of the time.',
+        example: null,
+      }),
+    month: z
+      .int32()
+      .openapi({
+        description: 'An integer representing the month component of the date.',
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the second component of the time.',
+        example: null,
+      }),
+    timeType: z
+      .literal('DATE')
+      .default('DATE')
+      .openapi({
+        description: "A string indicating the type of time reference, typically set to 'DATE'.",
+        example: null,
+      }),
+    timezoneSource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representing the source of the timezone information.',
+        example: null,
+      }),
+    year: z
+      .int32()
+      .openapi({
+        description: 'An integer representing the year component of the date.',
+        example: null,
+      }),
+    zoneId: z
+      .string()
+      .openapi({
+        description: 'A string specifying the identifier for the timezone.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'DATE',
+    required: ['day', 'month', 'timeType', 'year', 'zoneId'],
+    description:
+      'The PublicDatePoint component represents a specific point in time, defined by various time-related properties. It is used within the API to specify or reference exact dates and times, potentially for operations that require precise time points.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicDatePoint')
+
+const PublicNowReferenceSchema = z
+  .object({
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the hour part of the current time.',
+        example: null,
+      }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond part of the current time.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the minute part of the current time.',
+        example: null,
+      }),
+    referenceType: z
+      .literal('NOW')
+      .default('NOW')
+      .openapi({
+        description:
+          "A string that indicates the type of reference. The default value is 'NOW', and it is used to specify that the reference is to the current time.",
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the second part of the current time.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'NOW',
+    required: ['referenceType'],
+    description:
+      'The PublicNowReference component represents a reference to the current time, used within the API to specify or manipulate time-related data. It is utilized in scenarios where the current time is needed as a reference point, such as in time-based operations or calculations.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicNowReference')
+
+const PublicTodayReferenceSchema = z
+  .object({
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond within the second.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the minute within the hour.',
+        example: null,
+      }),
+    referenceType: z
+      .literal('TODAY')
+      .default('TODAY')
+      .openapi({
+        description: "A string indicating the type of reference, which is 'TODAY' by default.",
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the second within the minute.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'TODAY',
+    required: ['referenceType'],
+    description:
+      "Represents a reference to the current day, used in time-related operations within the API. This component is typically utilized when specifying or manipulating time points relative to today's date.",
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicTodayReference')
+
+const PublicWeekReferenceSchema = z
+  .object({
+    dayOfWeek: z
+      .enum(['FRIDAY', 'MONDAY', 'SATURDAY', 'SUNDAY', 'THURSDAY', 'TUESDAY', 'WEDNESDAY'])
+      .openapi({ description: 'An integer representing the day of the week.', example: null }),
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond of the second.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the minute of the hour.', example: null }),
+    referenceType: z
+      .literal('WEEK')
+      .default('WEEK')
+      .openapi({
+        description:
+          "A string indicating the type of reference, which is 'WEEK' for this component.",
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the second of the minute.', example: null }),
+  })
+  .openapi({
+    title: 'WEEK',
+    required: ['dayOfWeek', 'referenceType'],
+    description:
+      'Represents a reference to a specific week, including detailed time components. This component is used to specify a particular week and time within that week in various API operations.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicWeekReference')
+
+const PublicFiscalQuarterReferenceSchema = z
+  .object({
+    day: z
+      .int32()
+      .openapi({ description: 'An integer representing the day of the month.', example: null }),
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond within the second.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the minute within the hour.',
+        example: null,
+      }),
+    month: z
+      .int32()
+      .openapi({ description: 'An integer representing the month of the year.', example: null }),
+    referenceType: z
+      .literal('FISCAL_QUARTER')
+      .default('FISCAL_QUARTER')
+      .openapi({
+        description: "A string indicating the type of reference, which is 'FISCAL_QUARTER'.",
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the second within the minute.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'FISCAL_QUARTER',
+    required: ['day', 'month', 'referenceType'],
+    description:
+      'Represents a reference to a specific fiscal quarter, including details such as the time and date components. This component is used to specify or interpret a point in time within a fiscal quarter context.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicFiscalQuarterReference')
+
+const PublicFiscalYearReferenceSchema = z
+  .object({
+    day: z
+      .int32()
+      .openapi({ description: 'An integer representing the day of the month.', example: null }),
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond within the second.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the minute within the hour.',
+        example: null,
+      }),
+    month: z
+      .int32()
+      .openapi({
+        description: 'An integer representing the month of the fiscal year.',
+        example: null,
+      }),
+    referenceType: z
+      .literal('FISCAL_YEAR')
+      .default('FISCAL_YEAR')
+      .openapi({
+        description: "A string that indicates the type of reference, which is 'FISCAL_YEAR'.",
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the second within the minute.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'FISCAL_YEAR',
+    required: ['day', 'month', 'referenceType'],
+    description:
+      'Represents a reference to a fiscal year in the context of the ListAppService API. It is used to specify a particular time point within a fiscal year, including details such as the month, day, and time components.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicFiscalYearReference')
+
+const PublicYearReferenceSchema = z
+  .object({
+    day: z
+      .int32()
+      .openapi({ description: 'An integer representing the day of the month.', example: null }),
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond within the second.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the minute within the hour.',
+        example: null,
+      }),
+    month: z
+      .int32()
+      .openapi({ description: 'An integer representing the month of the year.', example: null }),
+    referenceType: z
+      .literal('YEAR')
+      .default('YEAR')
+      .openapi({
+        description: "A string that specifies the type of reference, which is 'YEAR' by default.",
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the second within the minute.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'YEAR',
+    required: ['day', 'month', 'referenceType'],
+    description:
+      'The PublicYearReference component represents a reference to a specific year within the API. It is used to define a point in time with detailed granularity, including the year, month, day, and optional time components such as hour, minute, second, and millisecond.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicYearReference')
+
+const PublicQuarterReferenceSchema = z
+  .object({
+    day: z
+      .int32()
+      .openapi({ description: 'An integer representing the day of the month.', example: null }),
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond within the second.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the minute within the hour.',
+        example: null,
+      }),
+    month: z
+      .int32()
+      .openapi({ description: 'An integer representing the month of the year.', example: null }),
+    referenceType: z
+      .literal('QUARTER')
+      .default('QUARTER')
+      .openapi({
+        description:
+          "A string indicating the type of reference, which is 'QUARTER' for this component.",
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the second within the minute.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'QUARTER',
+    required: ['day', 'month', 'referenceType'],
+    description:
+      'Represents a reference to a specific quarter, including details such as the day, month, and time components. This component is used in the API to specify or retrieve information related to a particular quarter.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicQuarterReference')
+
+const PublicMonthReferenceSchema = z
+  .object({
+    day: z
+      .int32()
+      .openapi({ description: 'An integer representing the day of the month.', example: null }),
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'An integer representing the hour of the day.', example: null }),
+    millisecond: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the millisecond within the second.',
+        example: null,
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the minute within the hour.',
+        example: null,
+      }),
+    referenceType: z
+      .literal('MONTH')
+      .default('MONTH')
+      .openapi({
+        description: "A string indicating the type of reference, with a default value of 'MONTH'.",
+        example: null,
+      }),
+    second: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the second within the minute.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'MONTH',
+    required: ['day', 'referenceType'],
+    description:
+      'Represents a reference to a specific month, including detailed time components. This component is used within the API to specify or manipulate date and time information at the month level.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicMonthReference')
+
+const PublicIndexOffsetSchema = z
+  .object({
+    days: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of days to offset.',
+        example: null,
+      }),
+    hours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of hours to offset.',
+        example: null,
+      }),
+    milliseconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of milliseconds to offset.',
+        example: null,
+      }),
+    minutes: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of minutes to offset.',
+        example: null,
+      }),
+    months: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of months to offset.',
+        example: null,
+      }),
+    quarters: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of quarters to offset.',
+        example: null,
+      }),
+    seconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of seconds to offset.',
+        example: null,
+      }),
+    weeks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of weeks to offset.',
+        example: null,
+      }),
+    years: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'An integer representing the number of years to offset.',
+        example: null,
+      }),
+  })
+  .openapi({
+    description:
+      'The PublicIndexOffset component represents a set of time offsets used in various time-related operations within the API. It is utilized to specify adjustments in time units such as years, months, days, etc., and can be used in contexts where time manipulation is required.',
+    example: null,
+    required: [],
+  })
+  .openapi('PublicIndexOffset')
+
+const PublicIndexedTimePointSchema = z
+  .object({
+    indexReference: z
+      .xor([
+        PublicNowReferenceSchema,
+        PublicTodayReferenceSchema,
+        PublicWeekReferenceSchema,
+        PublicFiscalQuarterReferenceSchema,
+        PublicFiscalYearReferenceSchema,
+        PublicYearReferenceSchema,
+        PublicQuarterReferenceSchema,
+        PublicMonthReferenceSchema,
+      ])
+      .openapi({
+        description:
+          "An object that defines the reference point for the indexed time, which can be one of several predefined references like 'now', 'today', or a specific fiscal period.",
+        example: null,
+      }),
+    offset: PublicIndexOffsetSchema.exactOptional(),
+    timeType: z
+      .literal('INDEXED')
+      .default('INDEXED')
+      .openapi({
+        description:
+          "A string indicating the type of time point, with a default value of 'INDEXED'.",
+        example: null,
+      }),
+    timezoneSource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representing the source of the timezone information.',
+        example: null,
+      }),
+    zoneId: z
+      .string()
+      .openapi({ description: 'A string specifying the ID of the timezone.', example: null }),
+  })
+  .openapi({
+    title: 'INDEXED',
+    required: ['indexReference', 'timeType', 'zoneId'],
+    description:
+      "Represents a specific point in time indexed by a reference, used within the API to define time-related operations or filters. It is utilized in contexts where a time point needs to be specified relative to a known index, such as 'now' or 'today'.",
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicIndexedTimePoint')
+
+const PublicPropertyReferencedTimeSchema = z
+  .object({
+    property: z
+      .string()
+      .openapi({
+        description: 'A string representing the property that is used to reference the time.',
+        example: null,
+      }),
+    referenceType: z
+      .string()
+      .openapi({
+        description:
+          "A string indicating the type of reference, with a default value of 'PROPERTY_REFERENCE'.",
+        example: null,
+      }),
+    timeType: z
+      .literal('PROPERTY_REFERENCED')
+      .default('PROPERTY_REFERENCED')
+      .openapi({
+        description:
+          "A string indicating the type of time reference. It defaults to 'PROPERTY_REFERENCE'.",
+        example: null,
+      }),
+    timezoneSource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representing the source of the timezone information.',
+        example: null,
+      }),
+    zoneId: z
+      .string()
+      .openapi({ description: 'A string specifying the ID of the timezone.', example: null }),
+  })
+  .openapi({
+    title: 'PROPERTY_REFERENCED',
+    required: ['property', 'referenceType', 'timeType', 'zoneId'],
+    description:
+      'The PublicPropertyReferencedTime component represents a specific point in time that is determined by a property value. It is used within the API to specify time-related operations or filters that are based on property values.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicPropertyReferencedTime')
+
+type PublicTimePointOperationType = {
+  endpointBehavior?: string
+  includeObjectsWithNoValueSet: boolean
+  operationType: 'TIME_POINT'
+  operator: string
+  propertyParser?: string
+  timePoint:
+    | z.infer<typeof PublicDatePointSchema>
+    | z.infer<typeof PublicIndexedTimePointSchema>
+    | z.infer<typeof PublicPropertyReferencedTimeSchema>
+  type: string
+}
+
+const PublicTimePointOperationSchema: z.ZodType<PublicTimePointOperationType> = z
+  .object({
+    endpointBehavior: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string describing the behavior of the endpoint in the context of the time point operation.',
+        example: null,
+      }),
+    includeObjectsWithNoValueSet: z
+      .boolean()
+      .openapi({
+        description:
+          'A boolean indicating whether to include objects that have no value set for the time point.',
+        example: null,
+      }),
+    operationType: z
+      .literal('TIME_POINT')
+      .default('TIME_POINT')
+      .openapi({
+        description: "A string indicating the type of operation, which is 'TIME_POINT' by default.",
+        example: null,
+      }),
+    operator: z
+      .string()
+      .openapi({
+        description: 'A string representing the operator used in the time point operation.',
+        example: null,
+      }),
+    propertyParser: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string representing the parser used for the property in the time point operation.',
+        example: null,
+      }),
+    timePoint: z
+      .xor([
+        PublicDatePointSchema,
+        PublicIndexedTimePointSchema,
+        PublicPropertyReferencedTimeSchema,
+      ])
+      .openapi({
+        description:
+          'An object representing the specific time point used in the operation. It can be one of several types, such as a date point, indexed time point, or property-referenced time.',
+        example: null,
+      }),
+    type: z
+      .string()
+      .openapi({
+        description: 'A string indicating the specific type of the time point operation.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'TIME_POINT',
+    required: ['includeObjectsWithNoValueSet', 'operationType', 'operator', 'timePoint', 'type'],
+    description:
+      'Represents a time point operation used in filtering or querying data based on specific time-related criteria. This component is typically used in scenarios where time-based operations are required, such as filtering records by a specific date or time point.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicTimePointOperation')
+
+type PublicRangedTimeOperationType = {
+  includeObjectsWithNoValueSet: boolean
+  lowerBoundEndpointBehavior?: string
+  lowerBoundTimePoint:
+    | z.infer<typeof PublicDatePointSchema>
+    | z.infer<typeof PublicIndexedTimePointSchema>
+    | z.infer<typeof PublicPropertyReferencedTimeSchema>
+  operationType: string
+  operator: string
+  propertyParser?: string
+  type: 'TIME_RANGED'
+  upperBoundEndpointBehavior?: string
+  upperBoundTimePoint:
+    | z.infer<typeof PublicDatePointSchema>
+    | z.infer<typeof PublicIndexedTimePointSchema>
+    | z.infer<typeof PublicPropertyReferencedTimeSchema>
+}
+
+const PublicRangedTimeOperationSchema: z.ZodType<PublicRangedTimeOperationType> = z
+  .object({
+    includeObjectsWithNoValueSet: z
+      .boolean()
+      .openapi({
+        description:
+          'A boolean indicating whether objects with no value set should be included in the operation.',
+        example: null,
+      }),
+    lowerBoundEndpointBehavior: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string specifying the behavior of the lower bound endpoint in the time range.',
+        example: null,
+      }),
+    lowerBoundTimePoint: z
+      .xor([
+        PublicDatePointSchema,
+        PublicIndexedTimePointSchema,
+        PublicPropertyReferencedTimeSchema,
+      ])
+      .openapi({
+        description:
+          'An object representing the lower bound time point of the range, which can be a date point, indexed time point, or property-referenced time.',
+        example: null,
+      }),
+    operationType: z
+      .string()
+      .openapi({
+        description:
+          'A string indicating the operation type, which is related to time range operations.',
+        example: null,
+      }),
+    operator: z
+      .string()
+      .openapi({
+        description: 'A string representing the operator used in the time range operation.',
+        example: null,
+      }),
+    propertyParser: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string that defines the property parser used in the operation.',
+        example: null,
+      }),
+    type: z
+      .literal('TIME_RANGED')
+      .default('TIME_RANGED')
+      .openapi({
+        description: "A string indicating the type of operation, which is 'TIME_RANGED'.",
+        example: null,
+      }),
+    upperBoundEndpointBehavior: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string specifying the behavior of the upper bound endpoint in the time range.',
+        example: null,
+      }),
+    upperBoundTimePoint: z
+      .xor([
+        PublicDatePointSchema,
+        PublicIndexedTimePointSchema,
+        PublicPropertyReferencedTimeSchema,
+      ])
+      .openapi({
+        description:
+          'An object representing the upper bound time point of the range, which can be a date point, indexed time point, or property-referenced time.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'TIME_RANGED',
+    required: [
+      'includeObjectsWithNoValueSet',
+      'lowerBoundTimePoint',
+      'operationType',
+      'operator',
+      'type',
+      'upperBoundTimePoint',
+    ],
+    description:
+      'Represents a time-based range operation used within the ListAppService API to filter or manipulate data based on time constraints. This component is utilized in scenarios where operations need to consider a range of time points, such as filtering records within a specific time frame.',
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('PublicRangedTimeOperation')
+
+type PublicAdsTimeFilterType = {
+  filterType: 'ADS_TIME'
+  pruningRefineBy:
+    | z.infer<typeof PublicNumOccurrencesRefineBySchema>
+    | z.infer<typeof PublicSetOccurrencesRefineBySchema>
+    | z.infer<typeof PublicRelativeComparativeTimestampRefineBySchema>
+    | z.infer<typeof PublicRelativeRangedTimestampRefineBySchema>
+    | z.infer<typeof PublicAbsoluteComparativeTimestampRefineBySchema>
+    | z.infer<typeof PublicAbsoluteRangedTimestampRefineBySchema>
+    | z.infer<typeof PublicAllHistoryRefineBySchema>
+    | z.infer<typeof PublicTimePointOperationSchema>
+    | z.infer<typeof PublicRangedTimeOperationSchema>
+}
 
 const PublicBoolPropertyOperationSchema = z
   .object({
@@ -1726,6 +2100,8 @@ const PublicBoolPropertyOperationSchema = z
   .openapi({
     title: 'BOOL',
     required: ['includeObjectsWithNoValueSet', 'operationType', 'operator', 'value'],
+    description:
+      'Represents an operation for boolean properties in a HubSpot account. This component is used to define how boolean properties should be evaluated in various operations, such as filtering or searching.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -1763,6 +2139,8 @@ const PublicNumberPropertyOperationSchema = z
   .openapi({
     title: 'NUMBER',
     required: ['includeObjectsWithNoValueSet', 'operationType', 'operator', 'value'],
+    description:
+      'Represents an operation for handling number properties in a list within the HubSpot ListAppService API. This component is used to define operations that involve number-based criteria, such as filtering or evaluating list items based on numerical values.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -1800,6 +2178,8 @@ const PublicStringPropertyOperationSchema = z
   .openapi({
     title: 'STRING',
     required: ['includeObjectsWithNoValueSet', 'operationType', 'operator', 'value'],
+    description:
+      "Represents an operation for handling string properties in the context of HubSpot's ListAppService API. This component is used to define operations on string properties, including specifying the type of operation, the operator to use, and any values involved.",
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -1862,6 +2242,8 @@ const PublicDateTimePropertyOperationSchema = z
       'requiresTimeZoneConversion',
       'timestamp',
     ],
+    description:
+      'Represents an operation on a date-time property within the HubSpot ListAppService API. This component is used to define operations involving date-time properties, such as filtering or querying data based on specific date-time criteria.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -1941,6 +2323,8 @@ const PublicRangedDatePropertyOperationSchema = z
       'requiresTimeZoneConversion',
       'upperBound',
     ],
+    description:
+      'Represents an operation for filtering objects based on a date range property, used in contexts where date-based filtering is required. This component is typically used in request bodies to specify criteria for ranged date operations.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -1991,6 +2375,8 @@ const PublicComparativePropertyUpdatedOperationSchema = z
       'operationType',
       'operator',
     ],
+    description:
+      'Represents an operation for updating comparative properties in a list within the HubSpot ListAppService API. This component is used to define the criteria for comparing and updating properties based on specified conditions.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2042,6 +2428,8 @@ const PublicComparativeDatePropertyOperationSchema = z
       'operationType',
       'operator',
     ],
+    description:
+      'The PublicComparativeDatePropertyOperation component represents an operation used to compare date properties within a HubSpot account. It is typically used in contexts where date-based comparisons are necessary, such as filtering or querying records based on specific date criteria.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2092,6 +2480,8 @@ const PublicRollingDateRangePropertyOperationSchema = z
       'operator',
       'requiresTimeZoneConversion',
     ],
+    description:
+      "The PublicRollingDateRangePropertyOperation component represents a filter operation for properties that involve a rolling date range. It is used in scenarios where you need to filter data based on a dynamic date range, such as the last 'n' days. This component is typically used in request bodies for filtering operations within the API.",
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2131,6 +2521,8 @@ const PublicRollingPropertyUpdatedOperationSchema = z
   .openapi({
     title: 'ROLLING_PROPERTY_UPDATED',
     required: ['includeObjectsWithNoValueSet', 'numberOfDays', 'operationType', 'operator'],
+    description:
+      'Represents an operation that updates a property based on a rolling time window. It is used in scenarios where properties need to be updated dynamically over a specified number of days.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2170,6 +2562,8 @@ const PublicEnumerationPropertyOperationSchema = z
   .openapi({
     title: 'ENUMERATION',
     required: ['includeObjectsWithNoValueSet', 'operationType', 'operator', 'values'],
+    description:
+      'Represents an operation for handling enumeration properties within the API. This component is used to define operations that involve enumeration types, specifying how they should be processed or filtered.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2203,6 +2597,8 @@ const PublicAllPropertyTypesOperationSchema = z
   .openapi({
     title: 'ALL_PROPERTY',
     required: ['includeObjectsWithNoValueSet', 'operationType', 'operator'],
+    description:
+      'The PublicAllPropertyTypesOperation component represents a filter operation that can handle various property types within the HubSpot API. It is used to specify conditions for filtering objects based on their properties, and it is typically utilized in search or filter operations.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2273,6 +2669,8 @@ const PublicRangedNumberPropertyOperationSchema = z
       'operator',
       'upperBound',
     ],
+    description:
+      'Represents a ranged number property operation used in the ListAppService API. This component is utilized to define operations that involve numerical properties with specified upper and lower bounds.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2311,6 +2709,8 @@ const PublicMultiStringPropertyOperationSchema = z
   .openapi({
     title: 'MULTISTRING',
     required: ['includeObjectsWithNoValueSet', 'operationType', 'operator', 'values'],
+    description:
+      'The PublicMultiStringPropertyOperation component represents an operation that involves multiple string properties. It is used in the context of filtering or processing data where multiple string values need to be considered. This component is typically used as part of a request or response in APIs that handle complex data operations.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2360,6 +2760,8 @@ const PublicDatePropertyOperationSchema = z
   .openapi({
     title: 'DATE',
     required: ['day', 'includeObjectsWithNoValueSet', 'month', 'operationType', 'operator', 'year'],
+    description:
+      'The PublicDatePropertyOperation component represents a date-based operation used within the ListAppService API. It is utilized to specify date-related criteria for filtering or processing data, often as part of a request or response object.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2435,6 +2837,8 @@ const PublicCalendarDatePropertyOperationSchema = z
   .openapi({
     title: 'CALENDAR_DATE',
     required: ['includeObjectsWithNoValueSet', 'operationType', 'operator', 'timeUnit'],
+    description:
+      'The PublicCalendarDatePropertyOperation component represents an operation that can be performed on calendar date properties within the HubSpot API. It is used to define operations that involve calendar dates, such as filtering or manipulating date-based data.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2485,6 +2889,8 @@ const PublicComparativeStringPropertyOperationSchema = z
       'operationType',
       'operator',
     ],
+    description:
+      'Represents a comparative string property operation used in filtering or querying within the HubSpot API. This component is typically used to compare string properties of objects, allowing for operations based on the comparison results.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2492,14 +2898,42 @@ const PublicComparativeStringPropertyOperationSchema = z
 
 const PublicComparativeNumberPropertyOperationSchema = z
   .object({
-    comparisonPropertyName: z.string().openapi({ example: null }),
-    defaultComparisonValue: z.string().exactOptional().openapi({ example: null }),
-    includeObjectsWithNoValueSet: z.boolean().openapi({ example: null }),
+    comparisonPropertyName: z
+      .string()
+      .openapi({
+        description:
+          'The name of the property to be compared, represented as a string. This property is required.',
+        example: null,
+      }),
+    defaultComparisonValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The default value used for comparison if no specific value is provided. This is an optional string value.',
+        example: null,
+      }),
+    includeObjectsWithNoValueSet: z
+      .boolean()
+      .openapi({
+        description:
+          'A required boolean that determines whether objects without a set value for the comparison property should be included in the operation.',
+        example: null,
+      }),
     operationType: z
       .literal('COMPARATIVE_NUMBER')
       .default('COMPARATIVE_NUMBER')
-      .openapi({ example: null }),
-    operator: z.string().openapi({ example: null }),
+      .openapi({
+        description: 'A required string that defines the type of operation being performed.',
+        example: null,
+      }),
+    operator: z
+      .string()
+      .openapi({
+        description:
+          "A required string that specifies the comparison operator to be used, such as 'greater than' or 'less than'.",
+        example: null,
+      }),
   })
   .openapi({
     title: 'COMPARATIVE_NUMBER',
@@ -2509,6 +2943,8 @@ const PublicComparativeNumberPropertyOperationSchema = z
       'operationType',
       'operator',
     ],
+    description:
+      'The PublicComparativeNumberPropertyOperation component is used to define operations that compare numerical properties within HubSpot. It is typically used in scenarios where numerical comparisons are needed to filter or evaluate data.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2587,6 +3023,8 @@ const PublicPropertyFilterSchema: z.ZodType<PublicPropertyFilterType> = z
   .openapi({
     title: 'PROPERTY',
     required: ['filterType', 'operation', 'property'],
+    description:
+      'Represents a filter applied to a property within a list in the HubSpot ListAppService API. This component is used to define criteria for filtering list items based on property values.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2694,6 +3132,8 @@ const PublicAssociationInListFilterSchema: z.ZodType<PublicAssociationInListFilt
       'listId',
       'operator',
     ],
+    description:
+      'The PublicAssociationInListFilter component is used to define a filter that applies to associations within a list. It specifies the criteria for filtering associations based on their type, category, and related object types. This component is typically used as part of a request to filter results in list-related operations.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2798,6 +3238,8 @@ const PublicPageViewAnalyticsFilterSchema: z.ZodType<PublicPageViewAnalyticsFilt
   .openapi({
     title: 'PAGE_VIEW',
     required: ['filterType', 'operator', 'pageUrl'],
+    description:
+      'The PublicPageViewAnalyticsFilter component is used to define filters for page view analytics within the HubSpot API. It specifies the criteria for tracking and analyzing page views, including the type of filter, operator, and specific page URL. This component is typically used in contexts where page view data needs to be filtered or refined for analytics purposes.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2890,6 +3332,8 @@ const PublicCtaAnalyticsFilterSchema: z.ZodType<PublicCtaAnalyticsFilterType> = 
   .openapi({
     title: 'CTA',
     required: ['ctaName', 'filterType', 'operator'],
+    description:
+      'Represents a filter for analyzing Call-To-Action (CTA) interactions in HubSpot. This component is used to specify criteria for filtering CTA analytics data, such as the type of filter, operator, and specific CTA name.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -2985,6 +3429,8 @@ const PublicEventAnalyticsFilterSchema: z.ZodType<PublicEventAnalyticsFilterType
   .openapi({
     title: 'EVENT',
     required: ['eventId', 'filterType', 'operator'],
+    description:
+      'The PublicEventAnalyticsFilter is a schema used to define filters for event analytics within the HubSpot API. It is used to specify criteria for filtering event data based on various parameters and is typically utilized in analytics and reporting contexts.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3081,6 +3527,8 @@ const PublicFormSubmissionFilterSchema: z.ZodType<PublicFormSubmissionFilterType
   .openapi({
     title: 'FORM_SUBMISSION',
     required: ['filterType', 'operator'],
+    description:
+      'The PublicFormSubmissionFilter component is used to define criteria for filtering form submissions in HubSpot. It specifies the conditions under which a form submission is considered relevant, such as whether a form was filled out or not. This component is typically used in list filtering operations within the API.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3183,6 +3631,8 @@ const PublicFormSubmissionOnPageFilterSchema: z.ZodType<PublicFormSubmissionOnPa
   .openapi({
     title: 'FORM_SUBMISSION_ON_PAGE',
     required: ['filterType', 'operator', 'pageId'],
+    description:
+      'Represents a filter used to determine form submissions on specific pages in the HubSpot ListAppService API. This component is utilized to filter form submissions based on specific criteria such as form ID and page ID, and is typically used in search or filtering operations.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3225,7 +3675,12 @@ const PublicEventFilterMetadataSchema = z
         example: null,
       }),
   })
-  .openapi({ required: ['operation', 'property'], example: null })
+  .openapi({
+    required: ['operation', 'property'],
+    description:
+      'PublicEventFilterMetadata is a schema used within the ListAppService API to define metadata for event filters. It is utilized to specify the criteria for filtering events based on certain properties and operations.',
+    example: null,
+  })
   .openapi('PublicEventFilterMetadata')
 
 type PublicIntegrationEventFilterType = {
@@ -3262,6 +3717,8 @@ const PublicIntegrationEventFilterSchema: z.ZodType<PublicIntegrationEventFilter
   .openapi({
     title: 'INTEGRATION_EVENT',
     required: ['eventTypeId', 'filterLines', 'filterType'],
+    description:
+      'The PublicIntegrationEventFilter component is used to define filters for integration events within the HubSpot API. It specifies the criteria for filtering events based on their type and associated filter lines. This component is typically used in contexts where integration event filtering is required, such as in list operations or event processing.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3308,6 +3765,8 @@ const PublicEmailSubscriptionFilterSchema: z.ZodType<PublicEmailSubscriptionFilt
   .openapi({
     title: 'EMAIL_SUBSCRIPTION',
     required: ['acceptedStatuses', 'filterType', 'subscriptionIds'],
+    description:
+      'Represents a filter for email subscriptions in a HubSpot account, used to specify criteria for filtering email subscription data. This component is typically used within filter branches to refine search or list operations based on email subscription status and type.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3377,6 +3836,8 @@ const PublicCommunicationSubscriptionFilterSchema: z.ZodType<PublicCommunication
         'subscriptionIds',
         'subscriptionType',
       ],
+      description:
+        'Represents a filter for communication subscriptions in the HubSpot API, used to specify criteria for filtering communication subscriptions based on various parameters.',
       example: null,
       'x-hubspot-sub-type-impl': true,
     })
@@ -3415,6 +3876,8 @@ const PublicSurveyMonkeyFilterSchema: z.ZodType<PublicSurveyMonkeyFilterType> = 
   .openapi({
     title: 'SURVEY_MONKEY',
     required: ['filterType', 'operator', 'surveyId'],
+    description:
+      'Represents a filter used in the ListAppService API to apply conditions based on SurveyMonkey data. This component is utilized when filtering lists by specific survey responses.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3526,6 +3989,8 @@ const PublicSurveyMonkeyValueFilterSchema: z.ZodType<PublicSurveyMonkeyValueFilt
   .openapi({
     title: 'SURVEY_MONKEY_VALUE',
     required: ['filterType', 'operator', 'surveyId', 'surveyQuestion', 'valueComparison'],
+    description:
+      'Represents a filter used to evaluate SurveyMonkey responses within the HubSpot ListAppService API. This component is used to specify criteria for filtering SurveyMonkey survey data based on specific questions and answers.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3561,6 +4026,8 @@ const PublicWebinarFilterSchema: z.ZodType<PublicWebinarFilterType> = z
   .openapi({
     title: 'WEBINAR',
     required: ['filterType', 'operator'],
+    description:
+      'Represents a filter used in the context of webinars, specifying the type of filter and its criteria. This component is used to filter webinar-related data based on specific conditions.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3676,6 +4143,8 @@ const PublicEmailEventFilterSchema: z.ZodType<PublicEmailEventFilterType> = z
   .openapi({
     title: 'EMAIL_EVENT',
     required: ['appId', 'emailId', 'filterType', 'level', 'operator'],
+    description:
+      'The PublicEmailEventFilter component is used to define filters for email events within the HubSpot API. It specifies criteria for filtering email events based on various properties such as filter type, level, email ID, and more. This component is typically used in scenarios where email event data needs to be filtered or refined according to specific conditions.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3713,6 +4182,8 @@ const PublicPrivacyAnalyticsFilterSchema: z.ZodType<PublicPrivacyAnalyticsFilter
   .openapi({
     title: 'PRIVACY',
     required: ['filterType', 'operator', 'privacyName'],
+    description:
+      'The PublicPrivacyAnalyticsFilter is a schema used to define filters related to privacy analytics in the HubSpot API. It is typically used within filter branches to specify conditions based on privacy-related data.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3773,6 +4244,8 @@ const PublicAdsSearchFilterSchema: z.ZodType<PublicAdsSearchFilterType> = z
       'searchTermType',
       'searchTerms',
     ],
+    description:
+      'The PublicAdsSearchFilter component is used to define filters for searching advertisements within the HubSpot API. It specifies the criteria for filtering ads based on various parameters such as filter type, entity type, search term type, and more.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3809,6 +4282,8 @@ const PublicAdsTimeFilterSchema: z.ZodType<PublicAdsTimeFilterType> = z
   .openapi({
     title: 'ADS_TIME',
     required: ['filterType', 'pruningRefineBy'],
+    description:
+      'The PublicAdsTimeFilter component is used to define a filter for advertisements based on time-related criteria. It is typically utilized in scenarios where time-based filtering of ad data is required.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3829,7 +4304,12 @@ const PublicInListFilterMetadataSchema = z
         example: null,
       }),
   })
-  .openapi({ required: ['id', 'inListType'], example: null })
+  .openapi({
+    required: ['id', 'inListType'],
+    description:
+      'The PublicInListFilterMetadata component represents metadata information for a filter that checks if an item is part of a list. This component is used within the context of filtering operations in the ListAppService API.',
+    example: null,
+  })
   .openapi('PublicInListFilterMetadata')
 
 type PublicInListFilterType = {
@@ -3866,6 +4346,8 @@ const PublicInListFilterSchema: z.ZodType<PublicInListFilterType> = z
   .openapi({
     title: 'IN_LIST',
     required: ['filterType', 'listId', 'operator'],
+    description:
+      'Represents a filter used to determine if an item is part of a specified list in HubSpot. This component is used in filtering operations where inclusion in a list is a criterion.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3961,6 +4443,8 @@ const PublicUnifiedEventsFilterSchema: z.ZodType<PublicUnifiedEventsFilterType> 
   .openapi({
     title: 'UNIFIED_EVENTS',
     required: ['filterLines', 'filterType'],
+    description:
+      'The PublicUnifiedEventsFilter component is used to define a filter for unified events in the HubSpot API. It specifies the criteria for filtering events based on their type and other refining conditions. This component is typically used within filter branches to refine event data based on specific conditions.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -3996,6 +4480,8 @@ const PublicConstantFilterSchema: z.ZodType<PublicConstantFilterType> = z
   .openapi({
     title: 'CONSTANT',
     required: ['filterType', 'shouldAccept'],
+    description:
+      'The PublicConstantFilter component represents a filter used in the HubSpot ListAppService API to apply constant conditions to lists. It is typically used as part of filter branches to define static criteria that do not change over time.',
     example: null,
     'x-hubspot-sub-type-impl': true,
   })
@@ -4036,84 +4522,6 @@ type PublicAndFilterBranchType = {
     | z.infer<typeof PublicConstantFilterSchema>
   )[]
 }
-
-const PublicAndFilterBranchSchema: z.ZodType<PublicAndFilterBranchType> = z
-  .lazy(() =>
-    z
-      .object({
-        filterBranchOperator: z
-          .string()
-          .openapi({
-            description: 'A string representing the operator used within this filter branch.',
-            example: null,
-          }),
-        filterBranchType: z
-          .literal('AND')
-          .default('AND')
-          .openapi({
-            description: "A string indicating the type of filter branch. Defaults to 'AND'.",
-            example: null,
-          }),
-        filterBranches: z
-          .array(
-            z
-              .xor([
-                PublicOrFilterBranchSchema,
-                PublicAndFilterBranchSchema,
-                PublicNotAllFilterBranchSchema,
-                PublicNotAnyFilterBranchSchema,
-                PublicRestrictedFilterBranchSchema,
-                PublicUnifiedEventsFilterBranchSchema,
-                PublicAssociationFilterBranchSchema,
-              ])
-              .openapi({ example: null }),
-          )
-          .openapi({
-            description:
-              "An array of nested filter branches. Each item can be a branch of various types, such as 'OR', 'AND', 'NOT_ALL', etc.",
-            example: null,
-          }),
-        filters: z
-          .array(
-            z
-              .xor([
-                PublicPropertyFilterSchema,
-                PublicAssociationInListFilterSchema,
-                PublicPageViewAnalyticsFilterSchema,
-                PublicCtaAnalyticsFilterSchema,
-                PublicEventAnalyticsFilterSchema,
-                PublicFormSubmissionFilterSchema,
-                PublicFormSubmissionOnPageFilterSchema,
-                PublicIntegrationEventFilterSchema,
-                PublicEmailSubscriptionFilterSchema,
-                PublicCommunicationSubscriptionFilterSchema,
-                PublicSurveyMonkeyFilterSchema,
-                PublicSurveyMonkeyValueFilterSchema,
-                PublicWebinarFilterSchema,
-                PublicEmailEventFilterSchema,
-                PublicPrivacyAnalyticsFilterSchema,
-                PublicAdsSearchFilterSchema,
-                PublicAdsTimeFilterSchema,
-                PublicInListFilterSchema,
-                PublicUnifiedEventsFilterSchema,
-                PublicConstantFilterSchema,
-              ])
-              .openapi({ example: null }),
-          )
-          .openapi({
-            description:
-              'An array of filters that apply to this branch. Each filter can be of various types, such as property filters, event filters, or subscription filters.',
-            example: null,
-          }),
-      })
-      .openapi({
-        title: 'AND',
-        required: ['filterBranchOperator', 'filterBranchType', 'filterBranches', 'filters'],
-        example: null,
-        'x-hubspot-sub-type-impl': true,
-      }),
-  )
-  .openapi('PublicAndFilterBranch')
 
 type PublicAssociationFilterBranchType = {
   associationCategory: string
@@ -4479,138 +4887,6 @@ const ApiCollectionResponseJoinTimeAndRecordIdSchema = z
   .openapi({ required: ['results'], example: null })
   .openapi('ApiCollectionResponseJoinTimeAndRecordId')
 
-const PublicObjectListSearchResultSchema = z
-  .object({
-    additionalProperties: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An object containing additional properties of the list, with each property represented as a string.',
-        example: null,
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when the list was created, in ISO 8601 format.',
-        example: null,
-      }),
-    createdById: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the user who created the list, represented as a string.',
-        example: null,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when the list was deleted, in ISO 8601 format.',
-        example: null,
-      }),
-    filtersUpdatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          "The date and time when the list's filters were last updated, in ISO 8601 format.",
-        example: null,
-      }),
-    listId: z
-      .string()
-      .openapi({
-        description: 'The unique identifier for the list, represented as a string.',
-        example: null,
-      }),
-    listVersion: z
-      .int32()
-      .openapi({ description: 'An integer indicating the version of the list.', example: null }),
-    name: z
-      .string()
-      .openapi({ description: 'The name of the list, represented as a string.', example: null }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description:
-          'The unique identifier for the type of object associated with the list, represented as a string.',
-        example: null,
-      }),
-    processingStatus: z
-      .string()
-      .openapi({
-        description: 'A string representing the current processing status of the list.',
-        example: null,
-      }),
-    processingType: z
-      .string()
-      .openapi({
-        description: 'A string indicating the type of processing applied to the list.',
-        example: null,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when the list was last updated, in ISO 8601 format.',
-        example: null,
-      }),
-    updatedById: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the user who last updated the list, represented as a string.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'additionalProperties',
-      'listId',
-      'listVersion',
-      'name',
-      'objectTypeId',
-      'processingStatus',
-      'processingType',
-    ],
-    example: null,
-  })
-  .openapi('PublicObjectListSearchResult')
-
-const ApiCollectionResponsePublicObjectListSearchResultSchema = z
-  .object({
-    paging: PagingSchema.exactOptional(),
-    results: z
-      .array(PublicObjectListSearchResultSchema)
-      .openapi({
-        description:
-          'An array of PublicObjectListSearchResult objects representing the individual search results.',
-        example: null,
-      }),
-    total: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'An integer representing the total number of results available in the search, formatted as a 64-bit integer.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results'], example: null })
-  .openapi('ApiCollectionResponsePublicObjectListSearchResult')
-
 const RecordListMembershipSchema = z
   .object({
     firstAddedTimestamp: z.iso
@@ -4886,7 +5162,7 @@ const StandardErrorSchema = z
         example: null,
       }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object providing additional categorization of the error.',
@@ -5026,91 +5302,7 @@ const ErrorSchema = z
   })
   .openapi('Error')
 
-const ListAllRequestSchema = z
-  .object({
-    additionalProperties: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of strings representing additional properties to include in the list retrieval.',
-        example: null,
-      }),
-    after: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string used as a paging cursor token to retrieve the next set of results.',
-        example: null,
-      }),
-    count: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer specifying the number of results to retrieve.',
-        example: null,
-      }),
-    objectTypeId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string representing the unique identifier for the object type of the lists.',
-        example: null,
-      }),
-    processingTypes: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of strings specifying the types of processing to apply to the request.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['additionalProperties', 'processingTypes'], example: null })
-  .openapi('ListAllRequest')
-
-const PublicListPermissionsSchema = z
-  .object({
-    teamsWithEditAccess: z
-      .array(z.int32().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of integers representing the IDs of teams that have edit access to the list.',
-        example: null,
-      }),
-    usersWithEditAccess: z
-      .array(z.int32().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of integers representing the IDs of users that have edit access to the list.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['teamsWithEditAccess', 'usersWithEditAccess'], example: null })
-  .openapi('PublicListPermissions')
-
-const PublicMembershipSettingsSchema = z
-  .object({
-    includeUnassigned: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'A boolean indicating whether to include unassigned records in the membership settings.',
-        example: null,
-      }),
-    membershipTeamId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string representing the unique identifier of the team associated with the membership settings.',
-        example: null,
-      }),
-  })
-  .openapi({ example: null, required: [] })
-  .openapi('PublicMembershipSettings')
-
-const ListCreateRequestSchema = z
+const ListCreateRequestSchema: z.ZodType<ListCreateRequestType> = z
   .object({
     customProperties: z
       .record(z.string(), z.string().openapi({ example: null }))
@@ -5171,144 +5363,17 @@ const ListCreateRequestSchema = z
   .openapi({ required: ['name', 'objectTypeId', 'processingType'], example: null })
   .openapi('ListCreateRequest')
 
-const PublicObjectListSchema = z
-  .object({
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when the list was created, in ISO 8601 format.',
-        example: null,
-      }),
-    createdById: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the user who created the list, represented as a string.',
-        example: null,
-      }),
-    deletedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when the list was deleted, in ISO 8601 format.',
-        example: null,
-      }),
-    filterBranch: z
-      .xor([
-        PublicOrFilterBranchSchema,
-        PublicAndFilterBranchSchema,
-        PublicNotAllFilterBranchSchema,
-        PublicNotAnyFilterBranchSchema,
-        PublicRestrictedFilterBranchSchema,
-        PublicUnifiedEventsFilterBranchSchema,
-        PublicAssociationFilterBranchSchema,
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'An object representing the filter branch applied to the list, which can be one of several types of filter branches.',
-        example: null,
-      }),
-    filtersUpdatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          "The date and time when the list's filters were last updated, in ISO 8601 format.",
-        example: null,
-      }),
-    listId: z
-      .string()
-      .openapi({
-        description: 'The unique identifier for the list, represented as a string.',
-        example: null,
-      }),
-    listPermissions: PublicListPermissionsSchema.exactOptional(),
-    listVersion: z
-      .int32()
-      .openapi({ description: 'An integer indicating the version of the list.', example: null }),
-    membershipSettings: PublicMembershipSettingsSchema.exactOptional(),
-    name: z
-      .string()
-      .openapi({ description: 'The name of the list, represented as a string.', example: null }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description:
-          'The unique identifier for the type of object associated with the list, represented as a string.',
-        example: null,
-      }),
-    processingStatus: z
-      .string()
-      .openapi({
-        description: 'A string representing the current processing status of the list.',
-        example: null,
-      }),
-    processingType: z
-      .string()
-      .openapi({
-        description: 'A string indicating the type of processing applied to the list.',
-        example: null,
-      }),
-    size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'An integer representing the size of the list.',
-        example: null,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when the list was last updated, in ISO 8601 format.',
-        example: null,
-      }),
-    updatedById: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the user who last updated the list, represented as a string.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'listId',
-      'listVersion',
-      'name',
-      'objectTypeId',
-      'processingStatus',
-      'processingType',
-    ],
-    example: null,
-  })
-  .openapi('PublicObjectList')
-
-const ListCreateResponseSchema = z
+const ListCreateResponseSchema: z.ZodType<ListCreateResponseType> = z
   .object({ list: PublicObjectListSchema })
   .openapi({ required: ['list'], example: null })
   .openapi('ListCreateResponse')
 
-const ListFetchResponseSchema = z
+const ListFetchResponseSchema: z.ZodType<ListFetchResponseType> = z
   .object({ list: PublicObjectListSchema })
   .openapi({ required: ['list'], example: null })
   .openapi('ListFetchResponse')
 
-const ListFilterUpdateRequestSchema = z
+const ListFilterUpdateRequestSchema: z.ZodType<ListFilterUpdateRequestType> = z
   .object({
     filterBranch: z
       .xor([
@@ -5515,6 +5580,106 @@ const ListSearchRequestSchema = z
   })
   .openapi('ListSearchRequest')
 
+const PublicObjectListSearchResultSchema = z
+  .object({
+    additionalProperties: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An object containing additional properties of the list, with each property represented as a string.',
+        example: null,
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when the list was created, in ISO 8601 format.',
+        example: null,
+      }),
+    createdById: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the user who created the list, represented as a string.',
+        example: null,
+      }),
+    deletedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when the list was deleted, in ISO 8601 format.',
+        example: null,
+      }),
+    filtersUpdatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "The date and time when the list's filters were last updated, in ISO 8601 format.",
+        example: null,
+      }),
+    listId: z
+      .string()
+      .openapi({
+        description: 'The unique identifier for the list, represented as a string.',
+        example: null,
+      }),
+    listVersion: z
+      .int32()
+      .openapi({ description: 'An integer indicating the version of the list.', example: null }),
+    name: z
+      .string()
+      .openapi({ description: 'The name of the list, represented as a string.', example: null }),
+    objectTypeId: z
+      .string()
+      .openapi({
+        description:
+          'The unique identifier for the type of object associated with the list, represented as a string.',
+        example: null,
+      }),
+    processingStatus: z
+      .string()
+      .openapi({
+        description: 'A string representing the current processing status of the list.',
+        example: null,
+      }),
+    processingType: z
+      .string()
+      .openapi({
+        description: 'A string indicating the type of processing applied to the list.',
+        example: null,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when the list was last updated, in ISO 8601 format.',
+        example: null,
+      }),
+    updatedById: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the user who last updated the list, represented as a string.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'additionalProperties',
+      'listId',
+      'listVersion',
+      'name',
+      'objectTypeId',
+      'processingStatus',
+      'processingType',
+    ],
+    example: null,
+  })
+  .openapi('PublicObjectListSearchResult')
+
 const ListSearchResponseSchema = z
   .object({
     hasMore: z
@@ -5597,12 +5762,12 @@ const ListSizeAndEditHistoryResponseSchema = z
   .openapi({ required: ['editHistory', 'sizeHistory'], example: null })
   .openapi('ListSizeAndEditHistoryResponse')
 
-const ListUpdateResponseSchema = z
+const ListUpdateResponseSchema: z.ZodType<ListUpdateResponseType> = z
   .object({ updatedList: PublicObjectListSchema.exactOptional() })
   .openapi({ example: null, required: [] })
   .openapi('ListUpdateResponse')
 
-const ListsByIdResponseSchema = z
+const ListsByIdResponseSchema: z.ZodType<ListsByIdResponseType> = z
   .object({
     lists: z
       .array(PublicObjectListSchema)
@@ -5826,11 +5991,18 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'cms.membership.access_groups.write': { portal: ['public', 'private'], developer: false },
+    'crm.lists.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.lists.write': { portal: ['public', 'private'], developer: false },
+    'crm.segments.read': { user: ['public', 'private'], developer: false },
+    'crm.segments.write': { user: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCrmLists202609Route = createRoute({
   method: 'get',
@@ -5916,35 +6088,6 @@ export const postCrmLists202609Route = createRoute({
     { oauth2: ['cms.membership.access_groups.write'] },
     { oauth2: ['crm.segments.write'] },
   ],
-})
-
-export const postCrmLists202609AllRoute = createRoute({
-  method: 'post',
-  path: '/crm/lists/2026-09/all',
-  tags: ['Basic'],
-  summary: 'List all',
-  description:
-    'Retrieve all lists in the CRM system. This endpoint allows you to fetch a comprehensive list of all available lists, which can be useful for managing and organizing your CRM data effectively.',
-  operationId: 'post-/crm/lists/2026-09/all_/crm/lists/2026-09-beta/all',
-  request: {
-    body: {
-      content: { 'application/json': { schema: ListAllRequestSchema, example: null } },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'successful operation',
-      content: {
-        'application/json': {
-          schema: ApiCollectionResponsePublicObjectListSearchResultSchema,
-          example: null,
-        },
-      },
-    },
-    default: ErrorResponse,
-  },
-  security: [{ oauth2: ['crm.segments.read'] }, { oauth2: ['crm.lists.read'] }],
 })
 
 export const getCrmLists202609FoldersRoute = createRoute({

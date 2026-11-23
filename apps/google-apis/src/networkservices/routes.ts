@@ -1,670 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AuditLogConfigSchema = z
-  .object({
-    exemptedMembers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
-  })
-  .openapi({
-    description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
-    required: [],
-  })
-  .openapi('AuditLogConfig')
-
-const AuditConfigSchema = z
-  .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
-    required: [],
-  })
-  .openapi('AuditConfig')
-
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-    }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const MetadataLabelsSchema = z
-  .object({
-    labelName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Label name presented as key in xDS Node Metadata.' }),
-    labelValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Label value presented as value corresponding to the above key, in xDS Node Metadata.',
-      }),
-  })
-  .openapi({ description: 'Defines a name-pair value for a single label.', required: [] })
-  .openapi('MetadataLabels')
-
-const MetadataLabelMatcherSchema = z
-  .object({
-    metadataLabelMatchCriteria: z
-      .enum(['METADATA_LABEL_MATCH_CRITERIA_UNSPECIFIED', 'MATCH_ANY', 'MATCH_ALL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies how matching should be done. Supported values are: MATCH_ANY: At least one of the Labels specified in the matcher should match the metadata presented by xDS client. MATCH_ALL: The metadata presented by the xDS client should contain all of the labels specified here. The selection is determined based on the best match. For example, suppose there are three EndpointPolicy resources P1, P2 and P3 and if P1 has a the matcher as MATCH_ANY , P2 has MATCH_ALL , and P3 has MATCH_ALL . If a client with label connects, the config from P1 will be selected. If a client with label connects, the config from P2 will be selected. If a client with label connects, the config from P3 will be selected. If there is more than one best match, (for example, if a config P4 with selector exists and if a client with label connects), an error will be thrown.',
-      }),
-    metadataLabels: z
-      .array(MetadataLabelsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of label value pairs that must match labels in the provided metadata based on filterMatchCriteria This list can have at most 64 entries. The list can be empty if the match criteria is MATCH_ANY, to specify a wildcard match (i.e this matches any client).',
-      }),
-  })
-  .openapi({
-    description: 'The matcher that is based on node metadata presented by xDS clients.',
-    required: [],
-  })
-  .openapi('MetadataLabelMatcher')
-
-const EndpointMatcherSchema = z
-  .object({
-    metadataLabelMatcher: MetadataLabelMatcherSchema.exactOptional().openapi({
-      description: 'The matcher is based on node metadata presented by xDS clients.',
-    }),
-  })
-  .openapi({
-    description:
-      'A definition of a matcher that selects endpoints to which the policies should be applied.',
-    required: [],
-  })
-  .openapi('EndpointMatcher')
-
-const TrafficPortSelectorSchema = z
-  .object({
-    ports: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A list of ports. Can be port numbers or port range (example, [80-90] specifies all ports from 80 to 90, including 80 and 90) or named ports or * to specify all ports. If the list is empty, all ports are selected.',
-      }),
-  })
-  .openapi({ description: 'Specification of a port-based selector.', required: [] })
-  .openapi('TrafficPortSelector')
-
-const EndpointPolicySchema = z
-  .object({
-    authorizationPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. This field specifies the URL of AuthorizationPolicy resource that applies authorization policies to the inbound traffic at the matched endpoints. Refer to Authorization. If this field is not specified, authorization is disabled(no authz checks) for this endpoint.',
-      }),
-    clientTlsPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A URL referring to a ClientTlsPolicy resource. ClientTlsPolicy can be set to specify the authentication for traffic from the proxy to the actual endpoints. More specifically, it is applied to the outgoing traffic from the proxy to the endpoint. This is typically used for sidecar model where the proxy identifies itself as endpoint to the control plane, with the connection between sidecar and endpoint requiring authentication. If this field is not set, authentication is disabled(open). Applicable only when EndpointPolicyType is SIDECAR_PROXY.',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A free-text description of the resource. Max length 1024 characters.',
-      }),
-    endpointMatcher: EndpointMatcherSchema.exactOptional().openapi({
-      description:
-        'Required. A matcher that selects endpoints to which the policies should be applied.',
-    }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Set of label tags associated with the EndpointPolicy resource.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the EndpointPolicy resource. It matches pattern `projects/{project}/locations/global/endpointPolicies/{endpoint_policy}`.',
-      }),
-    serverTlsPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A URL referring to ServerTlsPolicy resource. ServerTlsPolicy is used to determine the authentication policy to be applied to terminate the inbound traffic at the identified backends. If this field is not set, authentication is disabled(open) for this endpoint.',
-      }),
-    trafficPortSelector: TrafficPortSelectorSchema.exactOptional().openapi({
-      description:
-        'Optional. Port selector for the (matched) endpoints. If no port selector is provided, the matched config is applied to all ports.',
-    }),
-    type: z
-      .enum(['ENDPOINT_POLICY_TYPE_UNSPECIFIED', 'SIDECAR_PROXY', 'GRPC_SERVER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The type of endpoint policy. This is primarily used to validate the configuration.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'EndpointPolicy is a resource that helps apply desired configuration on the endpoints that match specific criteria. For example, this resource can be used to apply "authentication config" an all endpoints that serve on port 8080.',
-    required: [],
-  })
-  .openapi('EndpointPolicy')
-
-const GatewaySchema = z
-  .object({
-    addresses: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Zero or one IPv4-address on which the Gateway will receive the traffic. When no address is provided, an IP from the subnetwork is allocated This field only applies to gateways of type 'SECURE_WEB_GATEWAY'. Gateways of type 'OPEN_MESH' listen on 0.0.0.0.",
-      }),
-    certificateUrls: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. A fully-qualified Certificates URL reference. The proxy presents a Certificate (selected based on SNI) when establishing a TLS connection. This feature only applies to gateways of type 'SECURE_WEB_GATEWAY'.",
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A free-text description of the resource. Max length 1024 characters.',
-      }),
-    gatewaySecurityPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. A fully-qualified GatewaySecurityPolicy URL reference. Defines how a server should apply security policy to inbound (VM to Proxy) initiated connections. For example: `projects/*/locations/*/gatewaySecurityPolicies/swg-policy`. This policy is specific to gateways of type 'SECURE_WEB_GATEWAY'.",
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Set of label tags associated with the Gateway resource.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the Gateway resource. It matches pattern `projects/*/locations/*/gateways/`.',
-      }),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The relative resource name identifying the VPC network that is using this configuration. For example: `projects/*/global/networks/network-1`. Currently, this field is specific to gateways of type 'SECURE_WEB_GATEWAY'.",
-      }),
-    ports: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. One or more port numbers (1-65535), on which the Gateway will receive traffic. The proxy binds to the specified ports. Gateways of type 'SECURE_WEB_GATEWAY' are limited to 1 port. Gateways of type 'OPEN_MESH' listen on 0.0.0.0 and support multiple ports.",
-      }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Scope determines how configuration across multiple Gateway instances are merged. The configuration for multiple Gateway instances with the same scope will be merged as presented as a single coniguration to the proxy/load balancer. Max length 64 characters. Scope should start with a letter and can only have letters, numbers, hyphens.',
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Server-defined URL of this resource', readOnly: true }),
-    serverTlsPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A fully-qualified ServerTLSPolicy URL reference. Specifies how TLS traffic is terminated. If empty, TLS termination is disabled.',
-      }),
-    subnetwork: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The relative resource name identifying the subnetwork in which this SWG is allocated. For example: `projects/*/regions/us-central1/subnetworks/network-1` Currently, this field is specific to gateways of type \'SECURE_WEB_GATEWAY".',
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'OPEN_MESH', 'SECURE_WEB_GATEWAY'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The type of the customer managed gateway. This field is required. If unspecified, an error is returned.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Gateway represents the configuration for a proxy, typically a load balancer. It captures the ip:port over which the services are exposed by the proxy, along with any policy configurations. Routes have reference to to Gateways to dictate how requests should be routed by this Gateway.',
-    required: [],
-  })
-  .openapi('Gateway')
-
-const GrpcRouteDestinationSchema = z
-  .object({
-    serviceName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The URL of a destination service to which to route traffic. Must refer to either a BackendService or ServiceDirectoryService.',
-      }),
-    weight: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.',
-      }),
-  })
-  .openapi({ description: 'The destination to which traffic will be routed.', required: [] })
-  .openapi('GrpcRouteDestination')
-
-const GrpcRouteFaultInjectionPolicyAbortSchema = z
-  .object({
-    httpStatus: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The HTTP status code used to abort the request. The value must be between 200 and 599 inclusive.',
-      }),
-    percentage: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of traffic which will be aborted. The value must be between [0, 100]',
-      }),
-  })
-  .openapi({
-    description:
-      'Specification of how client requests are aborted as part of fault injection before being sent to a destination.',
-    required: [],
-  })
-  .openapi('GrpcRouteFaultInjectionPolicyAbort')
-
-const GrpcRouteFaultInjectionPolicyDelaySchema = z
-  .object({
-    fixedDelay: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Specify a fixed delay before forwarding the request.' }),
-    percentage: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The percentage of traffic on which delay will be injected. The value must be between [0, 100]',
-      }),
-  })
-  .openapi({
-    description:
-      'Specification of how client requests are delayed as part of fault injection before being sent to a destination.',
-    required: [],
-  })
-  .openapi('GrpcRouteFaultInjectionPolicyDelay')
-
-const GrpcRouteFaultInjectionPolicySchema = z
-  .object({
-    abort: GrpcRouteFaultInjectionPolicyAbortSchema.exactOptional().openapi({
-      description: 'The specification for aborting to client requests.',
-    }),
-    delay: GrpcRouteFaultInjectionPolicyDelaySchema.exactOptional().openapi({
-      description: 'The specification for injecting delay to client requests.',
-    }),
-  })
-  .openapi({
-    description:
-      'The specification for fault injection introduced into traffic to test the resiliency of clients to destination service failure. As part of fault injection, when clients send requests to a destination, delays can be introduced on a percentage of requests before sending those requests to the destination service. Similarly requests from clients can be aborted by for a percentage of requests.',
-    required: [],
-  })
-  .openapi('GrpcRouteFaultInjectionPolicy')
-
-const GrpcRouteRetryPolicySchema = z
-  .object({
-    numRetries: z
-      .uint32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the allowed number of retries. This number must be > 0. If not specified, default to 1.',
-      }),
-    retryConditions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          '- connect-failure: Router will retry on failures connecting to Backend Services, for example due to connection timeouts. - refused-stream: Router will retry if the backend service resets the stream with a REFUSED_STREAM error code. This reset type indicates that it is safe to retry. - cancelled: Router will retry if the gRPC status code in the response header is set to cancelled - deadline-exceeded: Router will retry if the gRPC status code in the response header is set to deadline-exceeded - resource-exhausted: Router will retry if the gRPC status code in the response header is set to resource-exhausted - unavailable: Router will retry if the gRPC status code in the response header is set to unavailable',
-      }),
-  })
-  .openapi({ description: 'The specifications for retries.', required: [] })
-  .openapi('GrpcRouteRetryPolicy')
-
-const GrpcRouteRouteActionSchema = z
-  .object({
-    destinations: z
-      .array(GrpcRouteDestinationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The destination services to which traffic should be forwarded. If multiple destinations are specified, traffic will be split between Backend Service(s) according to the weight field of these destinations.',
-      }),
-    faultInjectionPolicy: GrpcRouteFaultInjectionPolicySchema.exactOptional().openapi({
-      description:
-        'Optional. The specification for fault injection introduced into traffic to test the resiliency of clients to destination service failure. As part of fault injection, when clients send requests to a destination, delays can be introduced on a percentage of requests before sending those requests to the destination service. Similarly requests from clients can be aborted by for a percentage of requests. timeout and retry_policy will be ignored by clients that are configured with a fault_injection_policy',
-    }),
-    retryPolicy: GrpcRouteRetryPolicySchema.exactOptional().openapi({
-      description: 'Optional. Specifies the retry policy associated with this route.',
-    }),
-    timeout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies the timeout for selected route. Timeout is computed from the time the request has been fully processed (i.e. end of stream) up until the response has been completely processed. Timeout includes all retries.',
-      }),
-  })
-  .openapi({ description: 'Specifies how to route matched traffic.', required: [] })
-  .openapi('GrpcRouteRouteAction')
-
-const GrpcRouteHeaderMatchSchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'Required. The key of the header.' }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'EXACT', 'REGULAR_EXPRESSION'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies how to match against the value of the header. If not specified, a default value of EXACT is used.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The value of the header.' }),
-  })
-  .openapi({ description: 'A match against a collection of headers.', required: [] })
-  .openapi('GrpcRouteHeaderMatch')
-
-const GrpcRouteMethodMatchSchema = z
-  .object({
-    caseSensitive: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies that matches are case sensitive. The default value is true. case_sensitive must not be used with a type of REGULAR_EXPRESSION.',
-      }),
-    grpcMethod: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the method to match against. If unspecified, will match all methods.',
-      }),
-    grpcService: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the service to match against. If unspecified, will match all services.',
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'EXACT', 'REGULAR_EXPRESSION'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies how to match against the name. If not specified, a default value of "EXACT" is used.',
-      }),
-  })
-  .openapi({ description: 'Specifies a match against a method.', required: [] })
-  .openapi('GrpcRouteMethodMatch')
-
-const GrpcRouteRouteMatchSchema = z
-  .object({
-    headers: z
-      .array(GrpcRouteHeaderMatchSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Specifies a collection of headers to match.' }),
-    method: GrpcRouteMethodMatchSchema.exactOptional().openapi({
-      description:
-        'Optional. A gRPC method to match against. If this field is empty or omitted, will match all methods.',
-    }),
-  })
-  .openapi({
-    description:
-      'Criteria for matching traffic. A RouteMatch will be considered to match when all supplied fields match.',
-    required: [],
-  })
-  .openapi('GrpcRouteRouteMatch')
-
-const GrpcRouteRouteRuleSchema = z
-  .object({
-    action: GrpcRouteRouteActionSchema.exactOptional().openapi({
-      description:
-        'Required. A detailed rule defining how to route traffic. This field is required.',
-    }),
-    matches: z
-      .array(GrpcRouteRouteMatchSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Matches define conditions used for matching the rule against incoming gRPC requests. Each match is independent, i.e. this rule will be matched if ANY one of the matches is satisfied. If no matches field is specified, this rule will unconditionally match traffic.',
-      }),
-  })
-  .openapi({ description: 'Describes how to route traffic.', required: [] })
-  .openapi('GrpcRouteRouteRule')
-
-const GrpcRouteSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A free-text description of the resource. Max length 1024 characters.',
-      }),
-    gateways: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Gateways defines a list of gateways this GrpcRoute is attached to, as one of the routing rules to route the requests served by the gateway. Each gateway reference should match the pattern: `projects/*/locations/global/gateways/`',
-      }),
-    hostnames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Service hostnames with an optional port for which this route describes traffic. Format: [:] Hostname is the fully qualified domain name of a network host. This matches the RFC 1123 definition of a hostname with 2 notable exceptions: - IPs are not allowed. - A hostname may be prefixed with a wildcard label (*.). The wildcard label must appear by itself as the first label. Hostname can be "precise" which is a domain name without the terminating dot of a network host (e.g. "foo.example.com") or "wildcard", which is a domain name prefixed with a single wildcard label (e.g. *.example.com). Note that as per RFC1035 and RFC1123, a label must consist of lower case alphanumeric characters or \'-\', and must start and end with an alphanumeric character. No other punctuation is allowed. The routes associated with a Mesh or Gateway must have unique hostnames. If you attempt to attach multiple routes with conflicting hostnames, the configuration will be rejected. For example, while it is acceptable for routes for the hostnames "*.foo.bar.com" and "*.bar.com" to be associated with the same route, it is not possible to associate two routes both with "*.bar.com" or both with "bar.com". If a port is specified, then gRPC clients must use the channel URI with the port to match this rule (i.e. "xds:///service:123"), otherwise they must supply the URI without a port (i.e. "xds:///service").',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Set of label tags associated with the GrpcRoute resource.',
-      }),
-    meshes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Meshes defines a list of meshes this GrpcRoute is attached to, as one of the routing rules to route the requests served by the mesh. Each mesh reference should match the pattern: `projects/*/locations/global/meshes/`',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the GrpcRoute resource. It matches pattern `projects/*/locations/global/grpcRoutes/`',
-      }),
-    rules: z
-      .array(GrpcRouteRouteRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A list of detailed rules defining how to route traffic. Within a single GrpcRoute, the GrpcRoute.RouteAction associated with the first matching GrpcRoute.RouteRule will be executed. At least one rule must be supplied.',
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Server-defined URL of this resource', readOnly: true }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'GrpcRoute is the resource defining how gRPC traffic routed by a Mesh or Gateway resource is routed.',
-    required: [],
-  })
-  .openapi('GrpcRoute')
-
 const HttpRouteCorsPolicySchema = z
   .object({
     allowCredentials: z
@@ -1168,7 +503,316 @@ const HttpRouteRouteRuleSchema = z
   })
   .openapi('HttpRouteRouteRule')
 
-const HttpRouteSchema = z
+type HttpRouteType = {
+  createTime?: string
+  description?: string
+  gateways?: string[]
+  hostnames?: string[]
+  labels?: { [key: string]: string }
+  meshes?: string[]
+  name?: string
+  rules?: z.infer<typeof HttpRouteRouteRuleSchema>[]
+  selfLink?: string
+  updateTime?: string
+}
+
+const GrpcRouteDestinationSchema = z
+  .object({
+    serviceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The URL of a destination service to which to route traffic. Must refer to either a BackendService or ServiceDirectoryService.',
+      }),
+    weight: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.',
+      }),
+  })
+  .openapi({ description: 'The destination to which traffic will be routed.', required: [] })
+  .openapi('GrpcRouteDestination')
+
+const GrpcRouteFaultInjectionPolicyAbortSchema = z
+  .object({
+    httpStatus: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The HTTP status code used to abort the request. The value must be between 200 and 599 inclusive.',
+      }),
+    percentage: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of traffic which will be aborted. The value must be between [0, 100]',
+      }),
+  })
+  .openapi({
+    description:
+      'Specification of how client requests are aborted as part of fault injection before being sent to a destination.',
+    required: [],
+  })
+  .openapi('GrpcRouteFaultInjectionPolicyAbort')
+
+const GrpcRouteFaultInjectionPolicyDelaySchema = z
+  .object({
+    fixedDelay: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specify a fixed delay before forwarding the request.' }),
+    percentage: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The percentage of traffic on which delay will be injected. The value must be between [0, 100]',
+      }),
+  })
+  .openapi({
+    description:
+      'Specification of how client requests are delayed as part of fault injection before being sent to a destination.',
+    required: [],
+  })
+  .openapi('GrpcRouteFaultInjectionPolicyDelay')
+
+const GrpcRouteFaultInjectionPolicySchema = z
+  .object({
+    abort: GrpcRouteFaultInjectionPolicyAbortSchema.exactOptional().openapi({
+      description: 'The specification for aborting to client requests.',
+    }),
+    delay: GrpcRouteFaultInjectionPolicyDelaySchema.exactOptional().openapi({
+      description: 'The specification for injecting delay to client requests.',
+    }),
+  })
+  .openapi({
+    description:
+      'The specification for fault injection introduced into traffic to test the resiliency of clients to destination service failure. As part of fault injection, when clients send requests to a destination, delays can be introduced on a percentage of requests before sending those requests to the destination service. Similarly requests from clients can be aborted by for a percentage of requests.',
+    required: [],
+  })
+  .openapi('GrpcRouteFaultInjectionPolicy')
+
+const GrpcRouteRetryPolicySchema = z
+  .object({
+    numRetries: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the allowed number of retries. This number must be > 0. If not specified, default to 1.',
+      }),
+    retryConditions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          '- connect-failure: Router will retry on failures connecting to Backend Services, for example due to connection timeouts. - refused-stream: Router will retry if the backend service resets the stream with a REFUSED_STREAM error code. This reset type indicates that it is safe to retry. - cancelled: Router will retry if the gRPC status code in the response header is set to cancelled - deadline-exceeded: Router will retry if the gRPC status code in the response header is set to deadline-exceeded - resource-exhausted: Router will retry if the gRPC status code in the response header is set to resource-exhausted - unavailable: Router will retry if the gRPC status code in the response header is set to unavailable',
+      }),
+  })
+  .openapi({ description: 'The specifications for retries.', required: [] })
+  .openapi('GrpcRouteRetryPolicy')
+
+const GrpcRouteRouteActionSchema = z
+  .object({
+    destinations: z
+      .array(GrpcRouteDestinationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The destination services to which traffic should be forwarded. If multiple destinations are specified, traffic will be split between Backend Service(s) according to the weight field of these destinations.',
+      }),
+    faultInjectionPolicy: GrpcRouteFaultInjectionPolicySchema.exactOptional().openapi({
+      description:
+        'Optional. The specification for fault injection introduced into traffic to test the resiliency of clients to destination service failure. As part of fault injection, when clients send requests to a destination, delays can be introduced on a percentage of requests before sending those requests to the destination service. Similarly requests from clients can be aborted by for a percentage of requests. timeout and retry_policy will be ignored by clients that are configured with a fault_injection_policy',
+    }),
+    retryPolicy: GrpcRouteRetryPolicySchema.exactOptional().openapi({
+      description: 'Optional. Specifies the retry policy associated with this route.',
+    }),
+    timeout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies the timeout for selected route. Timeout is computed from the time the request has been fully processed (i.e. end of stream) up until the response has been completely processed. Timeout includes all retries.',
+      }),
+  })
+  .openapi({ description: 'Specifies how to route matched traffic.', required: [] })
+  .openapi('GrpcRouteRouteAction')
+
+const GrpcRouteHeaderMatchSchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'Required. The key of the header.' }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'EXACT', 'REGULAR_EXPRESSION'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies how to match against the value of the header. If not specified, a default value of EXACT is used.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The value of the header.' }),
+  })
+  .openapi({ description: 'A match against a collection of headers.', required: [] })
+  .openapi('GrpcRouteHeaderMatch')
+
+const GrpcRouteMethodMatchSchema = z
+  .object({
+    caseSensitive: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies that matches are case sensitive. The default value is true. case_sensitive must not be used with a type of REGULAR_EXPRESSION.',
+      }),
+    grpcMethod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the method to match against. If unspecified, will match all methods.',
+      }),
+    grpcService: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the service to match against. If unspecified, will match all services.',
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'EXACT', 'REGULAR_EXPRESSION'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies how to match against the name. If not specified, a default value of "EXACT" is used.',
+      }),
+  })
+  .openapi({ description: 'Specifies a match against a method.', required: [] })
+  .openapi('GrpcRouteMethodMatch')
+
+const GrpcRouteRouteMatchSchema = z
+  .object({
+    headers: z
+      .array(GrpcRouteHeaderMatchSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional. Specifies a collection of headers to match.' }),
+    method: GrpcRouteMethodMatchSchema.exactOptional().openapi({
+      description:
+        'Optional. A gRPC method to match against. If this field is empty or omitted, will match all methods.',
+    }),
+  })
+  .openapi({
+    description:
+      'Criteria for matching traffic. A RouteMatch will be considered to match when all supplied fields match.',
+    required: [],
+  })
+  .openapi('GrpcRouteRouteMatch')
+
+const GrpcRouteRouteRuleSchema = z
+  .object({
+    action: GrpcRouteRouteActionSchema.exactOptional().openapi({
+      description:
+        'Required. A detailed rule defining how to route traffic. This field is required.',
+    }),
+    matches: z
+      .array(GrpcRouteRouteMatchSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Matches define conditions used for matching the rule against incoming gRPC requests. Each match is independent, i.e. this rule will be matched if ANY one of the matches is satisfied. If no matches field is specified, this rule will unconditionally match traffic.',
+      }),
+  })
+  .openapi({ description: 'Describes how to route traffic.', required: [] })
+  .openapi('GrpcRouteRouteRule')
+
+const GrpcRouteSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A free-text description of the resource. Max length 1024 characters.',
+      }),
+    gateways: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Gateways defines a list of gateways this GrpcRoute is attached to, as one of the routing rules to route the requests served by the gateway. Each gateway reference should match the pattern: `projects/*/locations/global/gateways/`',
+      }),
+    hostnames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Service hostnames with an optional port for which this route describes traffic. Format: [:] Hostname is the fully qualified domain name of a network host. This matches the RFC 1123 definition of a hostname with 2 notable exceptions: - IPs are not allowed. - A hostname may be prefixed with a wildcard label (*.). The wildcard label must appear by itself as the first label. Hostname can be "precise" which is a domain name without the terminating dot of a network host (e.g. "foo.example.com") or "wildcard", which is a domain name prefixed with a single wildcard label (e.g. *.example.com). Note that as per RFC1035 and RFC1123, a label must consist of lower case alphanumeric characters or \'-\', and must start and end with an alphanumeric character. No other punctuation is allowed. The routes associated with a Mesh or Gateway must have unique hostnames. If you attempt to attach multiple routes with conflicting hostnames, the configuration will be rejected. For example, while it is acceptable for routes for the hostnames "*.foo.bar.com" and "*.bar.com" to be associated with the same route, it is not possible to associate two routes both with "*.bar.com" or both with "bar.com". If a port is specified, then gRPC clients must use the channel URI with the port to match this rule (i.e. "xds:///service:123"), otherwise they must supply the URI without a port (i.e. "xds:///service").',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Set of label tags associated with the GrpcRoute resource.',
+      }),
+    meshes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Meshes defines a list of meshes this GrpcRoute is attached to, as one of the routing rules to route the requests served by the mesh. Each mesh reference should match the pattern: `projects/*/locations/global/meshes/`',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the GrpcRoute resource. It matches pattern `projects/*/locations/global/grpcRoutes/`',
+      }),
+    rules: z
+      .array(GrpcRouteRouteRuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A list of detailed rules defining how to route traffic. Within a single GrpcRoute, the GrpcRoute.RouteAction associated with the first matching GrpcRoute.RouteRule will be executed. At least one rule must be supplied.',
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Server-defined URL of this resource', readOnly: true }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'GrpcRoute is the resource defining how gRPC traffic routed by a Mesh or Gateway resource is routed.',
+    required: [],
+  })
+  .openapi('GrpcRoute')
+
+type ListGrpcRoutesResponseType = {
+  grpcRoutes?: z.infer<typeof GrpcRouteSchema>[]
+  nextPageToken?: string
+}
+
+const HttpRouteSchema: z.ZodType<HttpRouteType> = z
   .object({
     createTime: z
       .string()
@@ -1244,6 +888,683 @@ const HttpRouteSchema = z
   })
   .openapi('HttpRoute')
 
+type ListHttpRoutesResponseType = {
+  httpRoutes?: z.infer<typeof HttpRouteSchema>[]
+  nextPageToken?: string
+}
+
+const TcpRouteRouteDestinationSchema = z
+  .object({
+    serviceName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The URL of a BackendService to route traffic to.' }),
+    weight: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.',
+      }),
+  })
+  .openapi({ description: 'Describe the destination for traffic to be routed to.', required: [] })
+  .openapi('TcpRouteRouteDestination')
+
+const TcpRouteRouteActionSchema = z
+  .object({
+    destinations: z
+      .array(TcpRouteRouteDestinationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The destination services to which traffic should be forwarded. At least one destination service is required.',
+      }),
+    originalDestination: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If true, Router will use the destination IP and port of the original connection as the destination of the request. Default is false.',
+      }),
+  })
+  .openapi({
+    description: 'The specifications for routing traffic and applying associated policies.',
+    required: [],
+  })
+  .openapi('TcpRouteRouteAction')
+
+const TcpRouteRouteMatchSchema = z
+  .object({
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Must be specified in the CIDR range format. A CIDR range consists of an IP Address and a prefix length to construct the subnet mask. By default, the prefix length is 32 (i.e. matches a single IP address). Only IPV4 addresses are supported. Examples: "10.0.0.1" - matches against this exact IP address. "10.0.0.0/8" - matches against any IP address within the 10.0.0.0 subnet and 255.255.255.0 mask. "0.0.0.0/0" - matches against any IP address\'.',
+      }),
+    port: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Specifies the destination port to match against.' }),
+  })
+  .openapi({
+    description:
+      'RouteMatch defines the predicate used to match requests to a given action. Multiple match types are "OR"ed for evaluation. If no routeMatch field is specified, this rule will unconditionally match traffic.',
+    required: [],
+  })
+  .openapi('TcpRouteRouteMatch')
+
+const TcpRouteRouteRuleSchema = z
+  .object({
+    action: TcpRouteRouteActionSchema.exactOptional().openapi({
+      description: 'Required. The detailed rule defining how to route matched traffic.',
+    }),
+    matches: z
+      .array(TcpRouteRouteMatchSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. RouteMatch defines the predicate used to match requests to a given action. Multiple match types are "OR"ed for evaluation. If no routeMatch field is specified, this rule will unconditionally match traffic.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies how to match traffic and how to route traffic when traffic is matched.',
+    required: [],
+  })
+  .openapi('TcpRouteRouteRule')
+
+const TcpRouteSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A free-text description of the resource. Max length 1024 characters.',
+      }),
+    gateways: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Gateways defines a list of gateways this TcpRoute is attached to, as one of the routing rules to route the requests served by the gateway. Each gateway reference should match the pattern: `projects/*/locations/global/gateways/`',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Set of label tags associated with the TcpRoute resource.',
+      }),
+    meshes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Meshes defines a list of meshes this TcpRoute is attached to, as one of the routing rules to route the requests served by the mesh. Each mesh reference should match the pattern: `projects/*/locations/global/meshes/` The attached Mesh should be of a type SIDECAR',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the TcpRoute resource. It matches pattern `projects/*/locations/global/tcpRoutes/tcp_route_name>`.',
+      }),
+    rules: z
+      .array(TcpRouteRouteRuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Rules that define how traffic is routed and handled. At least one RouteRule must be supplied. If there are multiple rules then the action taken will be the first rule to match.',
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Server-defined URL of this resource', readOnly: true }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'TcpRoute is the resource defining how TCP traffic should be routed by a Mesh/Gateway resource.',
+    required: [],
+  })
+  .openapi('TcpRoute')
+
+type ListTcpRoutesResponseType = {
+  nextPageToken?: string
+  tcpRoutes?: z.infer<typeof TcpRouteSchema>[]
+}
+
+const TlsRouteRouteDestinationSchema = z
+  .object({
+    serviceName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The URL of a BackendService to route traffic to.' }),
+    weight: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies the proportion of requests forwareded to the backend referenced by the service_name field. This is computed as: weight/Sum(weights in destinations) Weights in all destinations does not need to sum up to 100.',
+      }),
+  })
+  .openapi({ description: 'Describe the destination for traffic to be routed to.', required: [] })
+  .openapi('TlsRouteRouteDestination')
+
+const TlsRouteRouteActionSchema = z
+  .object({
+    destinations: z
+      .array(TlsRouteRouteDestinationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The destination services to which traffic should be forwarded. At least one destination service is required.',
+      }),
+  })
+  .openapi({
+    description: 'The specifications for routing traffic and applying associated policies.',
+    required: [],
+  })
+  .openapi('TlsRouteRouteAction')
+
+const TlsRouteRouteMatchSchema = z
+  .object({
+    alpn: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. ALPN (Application-Layer Protocol Negotiation) to match against. Examples: "http/1.1", "h2". At least one of sni_host and alpn is required. Up to 5 alpns across all matches can be set.',
+      }),
+    sniHost: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. SNI (server name indicator) to match against. SNI will be matched against all wildcard domains, i.e. www.example.com will be first matched against www.example.com, then *.example.com, then *.com. Partial wildcards are not supported, and values like *w.example.com are invalid. At least one of sni_host and alpn is required. Up to 5 sni hosts across all matches can be set.',
+      }),
+  })
+  .openapi({
+    description:
+      'RouteMatch defines the predicate used to match requests to a given action. Multiple match types are "AND"ed for evaluation. If no routeMatch field is specified, this rule will unconditionally match traffic.',
+    required: [],
+  })
+  .openapi('TlsRouteRouteMatch')
+
+const TlsRouteRouteRuleSchema = z
+  .object({
+    action: TlsRouteRouteActionSchema.exactOptional().openapi({
+      description: 'Required. The detailed rule defining how to route matched traffic.',
+    }),
+    matches: z
+      .array(TlsRouteRouteMatchSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. RouteMatch defines the predicate used to match requests to a given action. Multiple match types are "OR"ed for evaluation.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies how to match traffic and how to route traffic when traffic is matched.',
+    required: [],
+  })
+  .openapi('TlsRouteRouteRule')
+
+const TlsRouteSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A free-text description of the resource. Max length 1024 characters.',
+      }),
+    gateways: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Gateways defines a list of gateways this TlsRoute is attached to, as one of the routing rules to route the requests served by the gateway. Each gateway reference should match the pattern: `projects/*/locations/global/gateways/`',
+      }),
+    meshes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Meshes defines a list of meshes this TlsRoute is attached to, as one of the routing rules to route the requests served by the mesh. Each mesh reference should match the pattern: `projects/*/locations/global/meshes/` The attached Mesh should be of a type SIDECAR',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the TlsRoute resource. It matches pattern `projects/*/locations/global/tlsRoutes/tls_route_name>`.',
+      }),
+    rules: z
+      .array(TlsRouteRouteRuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Rules that define how traffic is routed and handled. At least one RouteRule must be supplied. If there are multiple rules then the action taken will be the first rule to match.',
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Server-defined URL of this resource', readOnly: true }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'TlsRoute defines how traffic should be routed based on SNI and other matching L3 attributes.',
+    required: [],
+  })
+  .openapi('TlsRoute')
+
+type ListTlsRoutesResponseType = {
+  nextPageToken?: string
+  tlsRoutes?: z.infer<typeof TlsRouteSchema>[]
+}
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const MetadataLabelsSchema = z
+  .object({
+    labelName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Label name presented as key in xDS Node Metadata.' }),
+    labelValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Label value presented as value corresponding to the above key, in xDS Node Metadata.',
+      }),
+  })
+  .openapi({ description: 'Defines a name-pair value for a single label.', required: [] })
+  .openapi('MetadataLabels')
+
+const MetadataLabelMatcherSchema = z
+  .object({
+    metadataLabelMatchCriteria: z
+      .enum(['METADATA_LABEL_MATCH_CRITERIA_UNSPECIFIED', 'MATCH_ANY', 'MATCH_ALL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies how matching should be done. Supported values are: MATCH_ANY: At least one of the Labels specified in the matcher should match the metadata presented by xDS client. MATCH_ALL: The metadata presented by the xDS client should contain all of the labels specified here. The selection is determined based on the best match. For example, suppose there are three EndpointPolicy resources P1, P2 and P3 and if P1 has a the matcher as MATCH_ANY , P2 has MATCH_ALL , and P3 has MATCH_ALL . If a client with label connects, the config from P1 will be selected. If a client with label connects, the config from P2 will be selected. If a client with label connects, the config from P3 will be selected. If there is more than one best match, (for example, if a config P4 with selector exists and if a client with label connects), an error will be thrown.',
+      }),
+    metadataLabels: z
+      .array(MetadataLabelsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of label value pairs that must match labels in the provided metadata based on filterMatchCriteria This list can have at most 64 entries. The list can be empty if the match criteria is MATCH_ANY, to specify a wildcard match (i.e this matches any client).',
+      }),
+  })
+  .openapi({
+    description: 'The matcher that is based on node metadata presented by xDS clients.',
+    required: [],
+  })
+  .openapi('MetadataLabelMatcher')
+
+const EndpointMatcherSchema = z
+  .object({
+    metadataLabelMatcher: MetadataLabelMatcherSchema.exactOptional().openapi({
+      description: 'The matcher is based on node metadata presented by xDS clients.',
+    }),
+  })
+  .openapi({
+    description:
+      'A definition of a matcher that selects endpoints to which the policies should be applied.',
+    required: [],
+  })
+  .openapi('EndpointMatcher')
+
+const TrafficPortSelectorSchema = z
+  .object({
+    ports: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A list of ports. Can be port numbers or port range (example, [80-90] specifies all ports from 80 to 90, including 80 and 90) or named ports or * to specify all ports. If the list is empty, all ports are selected.',
+      }),
+  })
+  .openapi({ description: 'Specification of a port-based selector.', required: [] })
+  .openapi('TrafficPortSelector')
+
+const EndpointPolicySchema = z
+  .object({
+    authorizationPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. This field specifies the URL of AuthorizationPolicy resource that applies authorization policies to the inbound traffic at the matched endpoints. Refer to Authorization. If this field is not specified, authorization is disabled(no authz checks) for this endpoint.',
+      }),
+    clientTlsPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A URL referring to a ClientTlsPolicy resource. ClientTlsPolicy can be set to specify the authentication for traffic from the proxy to the actual endpoints. More specifically, it is applied to the outgoing traffic from the proxy to the endpoint. This is typically used for sidecar model where the proxy identifies itself as endpoint to the control plane, with the connection between sidecar and endpoint requiring authentication. If this field is not set, authentication is disabled(open). Applicable only when EndpointPolicyType is SIDECAR_PROXY.',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A free-text description of the resource. Max length 1024 characters.',
+      }),
+    endpointMatcher: EndpointMatcherSchema.exactOptional().openapi({
+      description:
+        'Required. A matcher that selects endpoints to which the policies should be applied.',
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Set of label tags associated with the EndpointPolicy resource.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the EndpointPolicy resource. It matches pattern `projects/{project}/locations/global/endpointPolicies/{endpoint_policy}`.',
+      }),
+    serverTlsPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A URL referring to ServerTlsPolicy resource. ServerTlsPolicy is used to determine the authentication policy to be applied to terminate the inbound traffic at the identified backends. If this field is not set, authentication is disabled(open) for this endpoint.',
+      }),
+    trafficPortSelector: TrafficPortSelectorSchema.exactOptional().openapi({
+      description:
+        'Optional. Port selector for the (matched) endpoints. If no port selector is provided, the matched config is applied to all ports.',
+    }),
+    type: z
+      .enum(['ENDPOINT_POLICY_TYPE_UNSPECIFIED', 'SIDECAR_PROXY', 'GRPC_SERVER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The type of endpoint policy. This is primarily used to validate the configuration.',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'EndpointPolicy is a resource that helps apply desired configuration on the endpoints that match specific criteria. For example, this resource can be used to apply "authentication config" an all endpoints that serve on port 8080.',
+    required: [],
+  })
+  .openapi('EndpointPolicy')
+
+const GatewaySchema = z
+  .object({
+    addresses: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Zero or one IPv4-address on which the Gateway will receive the traffic. When no address is provided, an IP from the subnetwork is allocated This field only applies to gateways of type 'SECURE_WEB_GATEWAY'. Gateways of type 'OPEN_MESH' listen on 0.0.0.0.",
+      }),
+    certificateUrls: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. A fully-qualified Certificates URL reference. The proxy presents a Certificate (selected based on SNI) when establishing a TLS connection. This feature only applies to gateways of type 'SECURE_WEB_GATEWAY'.",
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A free-text description of the resource. Max length 1024 characters.',
+      }),
+    gatewaySecurityPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. A fully-qualified GatewaySecurityPolicy URL reference. Defines how a server should apply security policy to inbound (VM to Proxy) initiated connections. For example: `projects/*/locations/*/gatewaySecurityPolicies/swg-policy`. This policy is specific to gateways of type 'SECURE_WEB_GATEWAY'.",
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Set of label tags associated with the Gateway resource.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the Gateway resource. It matches pattern `projects/*/locations/*/gateways/`.',
+      }),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The relative resource name identifying the VPC network that is using this configuration. For example: `projects/*/global/networks/network-1`. Currently, this field is specific to gateways of type 'SECURE_WEB_GATEWAY'.",
+      }),
+    ports: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. One or more port numbers (1-65535), on which the Gateway will receive traffic. The proxy binds to the specified ports. Gateways of type 'SECURE_WEB_GATEWAY' are limited to 1 port. Gateways of type 'OPEN_MESH' listen on 0.0.0.0 and support multiple ports.",
+      }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Scope determines how configuration across multiple Gateway instances are merged. The configuration for multiple Gateway instances with the same scope will be merged as presented as a single coniguration to the proxy/load balancer. Max length 64 characters. Scope should start with a letter and can only have letters, numbers, hyphens.',
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Server-defined URL of this resource', readOnly: true }),
+    serverTlsPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A fully-qualified ServerTLSPolicy URL reference. Specifies how TLS traffic is terminated. If empty, TLS termination is disabled.',
+      }),
+    subnetwork: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The relative resource name identifying the subnetwork in which this SWG is allocated. For example: `projects/*/regions/us-central1/subnetworks/network-1` Currently, this field is specific to gateways of type \'SECURE_WEB_GATEWAY".',
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'OPEN_MESH', 'SECURE_WEB_GATEWAY'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The type of the customer managed gateway. This field is required. If unspecified, an error is returned.',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Gateway represents the configuration for a proxy, typically a load balancer. It captures the ip:port over which the services are exposed by the proxy, along with any policy configurations. Routes have reference to to Gateways to dictate how requests should be routed by this Gateway.',
+    required: [],
+  })
+  .openapi('Gateway')
+
 const ListEndpointPoliciesResponseSchema = z
   .object({
     endpointPolicies: z
@@ -1278,7 +1599,7 @@ const ListGatewaysResponseSchema = z
   .openapi({ description: 'Response returned by the ListGateways method.', required: [] })
   .openapi('ListGatewaysResponse')
 
-const ListGrpcRoutesResponseSchema = z
+const ListGrpcRoutesResponseSchema: z.ZodType<ListGrpcRoutesResponseType> = z
   .object({
     grpcRoutes: z
       .array(GrpcRouteSchema)
@@ -1295,7 +1616,7 @@ const ListGrpcRoutesResponseSchema = z
   .openapi({ description: 'Response returned by the ListGrpcRoutes method.', required: [] })
   .openapi('ListGrpcRoutesResponse')
 
-const ListHttpRoutesResponseSchema = z
+const ListHttpRoutesResponseSchema: z.ZodType<ListHttpRoutesResponseType> = z
   .object({
     httpRoutes: z
       .array(HttpRouteSchema)
@@ -1621,156 +1942,7 @@ const ListServiceBindingsResponseSchema = z
   .openapi({ description: 'Response returned by the ListServiceBindings method.', required: [] })
   .openapi('ListServiceBindingsResponse')
 
-const TcpRouteRouteDestinationSchema = z
-  .object({
-    serviceName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The URL of a BackendService to route traffic to.' }),
-    weight: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.',
-      }),
-  })
-  .openapi({ description: 'Describe the destination for traffic to be routed to.', required: [] })
-  .openapi('TcpRouteRouteDestination')
-
-const TcpRouteRouteActionSchema = z
-  .object({
-    destinations: z
-      .array(TcpRouteRouteDestinationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The destination services to which traffic should be forwarded. At least one destination service is required.',
-      }),
-    originalDestination: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If true, Router will use the destination IP and port of the original connection as the destination of the request. Default is false.',
-      }),
-  })
-  .openapi({
-    description: 'The specifications for routing traffic and applying associated policies.',
-    required: [],
-  })
-  .openapi('TcpRouteRouteAction')
-
-const TcpRouteRouteMatchSchema = z
-  .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Must be specified in the CIDR range format. A CIDR range consists of an IP Address and a prefix length to construct the subnet mask. By default, the prefix length is 32 (i.e. matches a single IP address). Only IPV4 addresses are supported. Examples: "10.0.0.1" - matches against this exact IP address. "10.0.0.0/8" - matches against any IP address within the 10.0.0.0 subnet and 255.255.255.0 mask. "0.0.0.0/0" - matches against any IP address\'.',
-      }),
-    port: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Specifies the destination port to match against.' }),
-  })
-  .openapi({
-    description:
-      'RouteMatch defines the predicate used to match requests to a given action. Multiple match types are "OR"ed for evaluation. If no routeMatch field is specified, this rule will unconditionally match traffic.',
-    required: [],
-  })
-  .openapi('TcpRouteRouteMatch')
-
-const TcpRouteRouteRuleSchema = z
-  .object({
-    action: TcpRouteRouteActionSchema.exactOptional().openapi({
-      description: 'Required. The detailed rule defining how to route matched traffic.',
-    }),
-    matches: z
-      .array(TcpRouteRouteMatchSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. RouteMatch defines the predicate used to match requests to a given action. Multiple match types are "OR"ed for evaluation. If no routeMatch field is specified, this rule will unconditionally match traffic.',
-      }),
-  })
-  .openapi({
-    description: 'Specifies how to match traffic and how to route traffic when traffic is matched.',
-    required: [],
-  })
-  .openapi('TcpRouteRouteRule')
-
-const TcpRouteSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A free-text description of the resource. Max length 1024 characters.',
-      }),
-    gateways: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Gateways defines a list of gateways this TcpRoute is attached to, as one of the routing rules to route the requests served by the gateway. Each gateway reference should match the pattern: `projects/*/locations/global/gateways/`',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Set of label tags associated with the TcpRoute resource.',
-      }),
-    meshes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Meshes defines a list of meshes this TcpRoute is attached to, as one of the routing rules to route the requests served by the mesh. Each mesh reference should match the pattern: `projects/*/locations/global/meshes/` The attached Mesh should be of a type SIDECAR',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the TcpRoute resource. It matches pattern `projects/*/locations/global/tcpRoutes/tcp_route_name>`.',
-      }),
-    rules: z
-      .array(TcpRouteRouteRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Rules that define how traffic is routed and handled. At least one RouteRule must be supplied. If there are multiple rules then the action taken will be the first rule to match.',
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Server-defined URL of this resource', readOnly: true }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'TcpRoute is the resource defining how TCP traffic should be routed by a Mesh/Gateway resource.',
-    required: [],
-  })
-  .openapi('TcpRoute')
-
-const ListTcpRoutesResponseSchema = z
+const ListTcpRoutesResponseSchema: z.ZodType<ListTcpRoutesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1787,146 +1959,7 @@ const ListTcpRoutesResponseSchema = z
   .openapi({ description: 'Response returned by the ListTcpRoutes method.', required: [] })
   .openapi('ListTcpRoutesResponse')
 
-const TlsRouteRouteDestinationSchema = z
-  .object({
-    serviceName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The URL of a BackendService to route traffic to.' }),
-    weight: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies the proportion of requests forwareded to the backend referenced by the service_name field. This is computed as: weight/Sum(weights in destinations) Weights in all destinations does not need to sum up to 100.',
-      }),
-  })
-  .openapi({ description: 'Describe the destination for traffic to be routed to.', required: [] })
-  .openapi('TlsRouteRouteDestination')
-
-const TlsRouteRouteActionSchema = z
-  .object({
-    destinations: z
-      .array(TlsRouteRouteDestinationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The destination services to which traffic should be forwarded. At least one destination service is required.',
-      }),
-  })
-  .openapi({
-    description: 'The specifications for routing traffic and applying associated policies.',
-    required: [],
-  })
-  .openapi('TlsRouteRouteAction')
-
-const TlsRouteRouteMatchSchema = z
-  .object({
-    alpn: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. ALPN (Application-Layer Protocol Negotiation) to match against. Examples: "http/1.1", "h2". At least one of sni_host and alpn is required. Up to 5 alpns across all matches can be set.',
-      }),
-    sniHost: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. SNI (server name indicator) to match against. SNI will be matched against all wildcard domains, i.e. www.example.com will be first matched against www.example.com, then *.example.com, then *.com. Partial wildcards are not supported, and values like *w.example.com are invalid. At least one of sni_host and alpn is required. Up to 5 sni hosts across all matches can be set.',
-      }),
-  })
-  .openapi({
-    description:
-      'RouteMatch defines the predicate used to match requests to a given action. Multiple match types are "AND"ed for evaluation. If no routeMatch field is specified, this rule will unconditionally match traffic.',
-    required: [],
-  })
-  .openapi('TlsRouteRouteMatch')
-
-const TlsRouteRouteRuleSchema = z
-  .object({
-    action: TlsRouteRouteActionSchema.exactOptional().openapi({
-      description: 'Required. The detailed rule defining how to route matched traffic.',
-    }),
-    matches: z
-      .array(TlsRouteRouteMatchSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. RouteMatch defines the predicate used to match requests to a given action. Multiple match types are "OR"ed for evaluation.',
-      }),
-  })
-  .openapi({
-    description: 'Specifies how to match traffic and how to route traffic when traffic is matched.',
-    required: [],
-  })
-  .openapi('TlsRouteRouteRule')
-
-const TlsRouteSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A free-text description of the resource. Max length 1024 characters.',
-      }),
-    gateways: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Gateways defines a list of gateways this TlsRoute is attached to, as one of the routing rules to route the requests served by the gateway. Each gateway reference should match the pattern: `projects/*/locations/global/gateways/`',
-      }),
-    meshes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Meshes defines a list of meshes this TlsRoute is attached to, as one of the routing rules to route the requests served by the mesh. Each mesh reference should match the pattern: `projects/*/locations/global/meshes/` The attached Mesh should be of a type SIDECAR',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the TlsRoute resource. It matches pattern `projects/*/locations/global/tlsRoutes/tls_route_name>`.',
-      }),
-    rules: z
-      .array(TlsRouteRouteRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Rules that define how traffic is routed and handled. At least one RouteRule must be supplied. If there are multiple rules then the action taken will be the first rule to match.',
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Server-defined URL of this resource', readOnly: true }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'TlsRoute defines how traffic should be routed based on SNI and other matching L3 attributes.',
-    required: [],
-  })
-  .openapi('TlsRoute')
-
-const ListTlsRoutesResponseSchema = z
+const ListTlsRoutesResponseSchema: z.ZodType<ListTlsRoutesResponseType> = z
   .object({
     nextPageToken: z
       .string()

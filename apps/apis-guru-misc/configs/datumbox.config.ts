@@ -3,6 +3,19 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/datumbox.com/1.0/openapi.yaml',
   output: './src/datumbox/routes.ts',
+  // template: { routeHandler: true }: the default template exports each handler file under its first path
+  // segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
+  template: { routeHandler: true },
+  type: { output: './src/datumbox/types.ts' },
+  client: { output: './src/datumbox/client.ts', baseUrl: '/' },
+  rpc: { output: './src/datumbox/rpc.ts', parseResponse: true },
+  swr: { output: './src/datumbox/hooks/swr.ts' },
+  'tanstack-query': { output: './src/datumbox/hooks/tanstack-query.ts' },
+  'preact-query': { output: './src/datumbox/hooks/preact-query.ts' },
+  'solid-query': { output: './src/datumbox/hooks/solid-query.ts' },
+  'vue-query': { output: './src/datumbox/hooks/vue-query.ts' },
+  'svelte-query': { output: './src/datumbox/hooks/svelte-query.ts' },
+  'angular-query': { output: './src/datumbox/hooks/angular-query.ts' },
   docs: {
     output: './src/datumbox/api.md',
     curl: true,

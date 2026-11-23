@@ -1,5 +1,44 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ApiHealthStatusSchema = z
+  .object({
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Health status of API', example: 'OK' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiHealthStatus')
+
+const ApiVersionSchema = z
+  .object({
+    apiVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of API', example: '2.0.3' }),
+    serviceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the Service', example: '2.0.20' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiVersion')
+
+const AuthErrorSchema = z
+  .object({
+    error: z.string().exactOptional().openapi({ description: 'Error message' }),
+    error_description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Detailed information about the error' }),
+  })
+  .openapi({
+    description: 'Error object reported in case of authentication or authorization errors.',
+    example: { error: 'Unauthorized', error_description: 'ApiKey invalid. ApiKey not found.' },
+    required: [],
+  })
+  .openapi('AuthError')
+
 const BaseLatSchema = z
   .number()
   .min(-90)
@@ -13,6 +52,27 @@ const BaseLngSchema = z
   .max(180)
   .openapi({ description: 'Base station longitude', example: -74.0445 })
   .openapi('BaseLng')
+
+const BcchSchema = z
+  .int()
+  .min(0)
+  .max(1023)
+  .openapi({
+    description:
+      'Broadcast Control Channel (BCCH, synonymous to ARFCN = Absolute Radio Frequency Channel)',
+    example: 82,
+  })
+  .openapi('Bcch')
+
+const BsicSchema = z
+  .int()
+  .min(0)
+  .max(63)
+  .openapi({
+    description: 'Base Station Identity Code (BSIC, for instance, color code)',
+    example: 6,
+  })
+  .openapi('Bsic')
 
 const BsidSchema = z
   .int()
@@ -135,6 +195,13 @@ const CdmaSchema = z
   })
   .openapi('Cdma')
 
+const CellParamsSchema = z
+  .int()
+  .min(0)
+  .max(127)
+  .openapi({ description: 'Cell Parameters ID (CDMA Spreading Code ID)', example: 86 })
+  .openapi('CellParams')
+
 const ClientInfoSchema = z
   .strictObject({
     firmware: z
@@ -188,6 +255,105 @@ const ClientInfoSchema = z
   })
   .openapi('ClientInfo')
 
+const EarfcnSchema = z
+  .int()
+  .min(0)
+  .max(262143)
+  .openapi({ description: 'Evolved Absolute Radio Frequency Channel (E-ARFCN)', example: 6300 })
+  .openapi('Earfcn')
+
+const ErrorDetailSchema = z
+  .object({
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Localize message', example: 'Size must be between 3 and 64' }),
+    messagePlaceholders: z.any().exactOptional(),
+    messageTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'validation.constraint.between' }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Source of the error, using JSONPath',
+        example: '$.data.attributes[0].size',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Title for the detail', example: 'Invalid size value' }),
+  })
+  .openapi({ description: 'Detail about an error', required: [] })
+  .openapi('ErrorDetail')
+
+const ErrorSchema = z
+  .object({
+    action: z.string().openapi({ description: 'Actionable instructions for the user' }),
+    cause: z
+      .string()
+      .openapi({
+        description: 'Reason for the error',
+        example: 'The input data in question does not meet validation rules',
+      }),
+    code: z.string().openapi({ description: 'Error code', example: 'E606101' }),
+    correlationId: z
+      .uuid()
+      .openapi({
+        description: 'Copy from X-Correlation-ID header for logging',
+        example: '4199533b-6290-41db-8d79-edf4f4019a74',
+      }),
+    details: z.array(ErrorDetailSchema).exactOptional(),
+    status: z.number().openapi({ description: 'Equals HTTP status code', example: 400 }),
+    title: z
+      .string()
+      .openapi({ description: 'Localized error string', example: 'Input data failed validation' }),
+  })
+  .openapi({
+    description: 'Object wrapper for the error response to a request.',
+    example: {
+      action: 'Actionable instructions for the user',
+      cause: 'The input data in question does not meet validation rules',
+      code: 'E606101',
+      correlationId: '4199533b-6290-41db-8d79-edf4f4019a74',
+      details: [
+        {
+          message: 'Size must be between 3 and 64',
+          messagePlaceholders: { field: 'size', max: 64, min: 3 },
+          messageTemplate: 'validation.constraint.between',
+          source: '$.data.attributes[0].size',
+          title: 'Invalid size value',
+        },
+      ],
+      status: 400,
+      title: 'Input data failed validation',
+    },
+    required: ['title', 'status', 'code', 'cause', 'action', 'correlationId'],
+  })
+  .openapi('Error')
+
+const EutranCidSchema = z
+  .int()
+  .min(0)
+  .max(268435455)
+  .openapi({
+    description:
+      'E-UTRA Cell Identifier (UC-Id), 28 bits (20 bits eNodeB and 8 bits Cell ID). MCC + MNC + CID uniquely identifies the LTE cell, TAC is optional.\n',
+    example: 2898945,
+  })
+  .openapi('EutranCid')
+
+const EutranCidNmrSchema = z
+  .int()
+  .min(0)
+  .max(268435455)
+  .openapi({
+    description: 'E-UTRA Cell Identifier (UC-Id), 28 bits (20 bits eNodeB and 8 bits Cell ID).',
+    example: 2898945,
+  })
+  .openapi('EutranCidNmr')
+
 const GeranCidSchema = z
   .int()
   .min(0)
@@ -218,29 +384,9 @@ const LacSchema = z
   .openapi({
     description: 'Location Area Code (LAC). Note, value 65534 is invalid.',
     example: 5126,
+    not: { maximum: 65534, minimum: 65534 },
   })
   .openapi('Lac')
-
-const BcchSchema = z
-  .int()
-  .min(0)
-  .max(1023)
-  .openapi({
-    description:
-      'Broadcast Control Channel (BCCH, synonymous to ARFCN = Absolute Radio Frequency Channel)',
-    example: 82,
-  })
-  .openapi('Bcch')
-
-const BsicSchema = z
-  .int()
-  .min(0)
-  .max(63)
-  .openapi({
-    description: 'Base Station Identity Code (BSIC, for instance, color code)',
-    example: 6,
-  })
-  .openapi('Bsic')
 
 const GsmLocalIdSchema = z
   .strictObject({ bcch: BcchSchema, bsic: BsicSchema })
@@ -275,6 +421,7 @@ const MccSchema = z
     description:
       'Mobile Country Code (MCC). Note: 0xx is for test networks, 1xx and 8xx are not used\n',
     example: 262,
+    not: { maximum: 899, minimum: 800 },
   })
   .openapi('Mcc')
 
@@ -368,23 +515,15 @@ const GsmSchema = z
   })
   .openapi('Gsm')
 
-const EutranCidSchema = z
-  .int()
-  .min(0)
-  .max(268435455)
+const LatitudeSchema = z
+  .number()
+  .min(-90)
+  .max(90)
   .openapi({
-    description:
-      'E-UTRA Cell Identifier (UC-Id), 28 bits (20 bits eNodeB and 8 bits Cell ID). MCC + MNC + CID uniquely identifies the LTE cell, TAC is optional.\n',
-    example: 2898945,
+    description: 'Latitude in WGS-84 format, decimal representation ranging from -90 to 90.',
+    example: 61.4706194,
   })
-  .openapi('EutranCid')
-
-const EarfcnSchema = z
-  .int()
-  .min(0)
-  .max(262143)
-  .openapi({ description: 'Evolved Absolute Radio Frequency Channel (E-ARFCN)', example: 6300 })
-  .openapi('Earfcn')
+  .openapi('Latitude')
 
 const PciSchema = z
   .int()
@@ -508,13 +647,6 @@ const UtranCidSchema = z
     example: 14674663,
   })
   .openapi('UtranCid')
-
-const CellParamsSchema = z
-  .int()
-  .min(0)
-  .max(127)
-  .openapi({ description: 'Cell Parameters ID (CDMA Spreading Code ID)', example: 86 })
-  .openapi('CellParams')
 
 const UarfcnSchema = z
   .int()
@@ -724,208 +856,60 @@ const WlanLocateSchema = z
   })
   .openapi('WlanLocate')
 
-type LocateType = {
-  cdma?: z.infer<typeof CdmaSchema>[]
-  client?: z.infer<typeof ClientInfoSchema>
-  gsm?: z.infer<typeof GsmSchema>[]
-  lte?: z.infer<typeof LteSchema>[]
-  tdscdma?: z.infer<typeof TdscdmaSchema>[]
-  wcdma?: z.infer<typeof WcdmaSchema>[]
-  wlan?: z.infer<typeof WlanLocateSchema>[]
-}
-
-const ApiHealthStatusSchema = z
-  .object({
-    status: z
-      .string()
+const LocateSchema = z
+  .strictObject({
+    cdma: z
+      .array(CdmaSchema)
+      .min(1)
+      .max(16)
       .exactOptional()
-      .openapi({ description: 'Health status of API', example: 'OK' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApiHealthStatus')
-
-const ApiVersionSchema = z
-  .object({
-    apiVersion: z
-      .string()
+      .openapi({ description: 'CDMA cells (CDMA2000)' }),
+    client: ClientInfoSchema.exactOptional(),
+    gsm: z
+      .array(GsmSchema)
+      .min(1)
+      .max(16)
       .exactOptional()
-      .openapi({ description: 'Version of API', example: '2.0.3' }),
-    serviceVersion: z
-      .string()
+      .openapi({ description: 'GSM cells (GERAN)' }),
+    lte: z
+      .array(LteSchema)
+      .min(1)
+      .max(16)
       .exactOptional()
-      .openapi({ description: 'Version of the Service', example: '2.0.20' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApiVersion')
-
-const AuthErrorSchema = z
-  .object({
-    error: z.string().exactOptional().openapi({ description: 'Error message' }),
-    error_description: z
-      .string()
+      .openapi({ description: 'LTE cells (E-UTRA, 4G)' }),
+    tdscdma: z
+      .array(TdscdmaSchema)
+      .min(1)
+      .max(16)
       .exactOptional()
-      .openapi({ description: 'Detailed information about the error' }),
-  })
-  .openapi({
-    description: 'Error object reported in case of authentication or authorization errors.',
-    example: { error: 'Unauthorized', error_description: 'ApiKey invalid. ApiKey not found.' },
-    required: [],
-  })
-  .openapi('AuthError')
-
-const ErrorDetailSchema = z
-  .object({
-    message: z
-      .string()
+      .openapi({ description: 'TD-SCDMA cells (UTRA-TDD, 3G UMTS TDD)' }),
+    wcdma: z
+      .array(WcdmaSchema)
+      .min(1)
+      .max(16)
       .exactOptional()
-      .openapi({ description: 'Localize message', example: 'Size must be between 3 and 64' }),
-    messagePlaceholders: z.any().exactOptional(),
-    messageTemplate: z
-      .string()
+      .openapi({ description: 'WCDMA cells (UTRA-FDD, 3G UMTS)' }),
+    wlan: z
+      .array(WlanLocateSchema)
+      .min(1)
+      .max(256)
       .exactOptional()
-      .openapi({ example: 'validation.constraint.between' }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Source of the error, using JSONPath',
-        example: '$.data.attributes[0].size',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Title for the detail', example: 'Invalid size value' }),
-  })
-  .openapi({ description: 'Detail about an error', required: [] })
-  .openapi('ErrorDetail')
-
-const ErrorSchema = z
-  .object({
-    action: z.string().openapi({ description: 'Actionable instructions for the user' }),
-    cause: z
-      .string()
-      .openapi({
-        description: 'Reason for the error',
-        example: 'The input data in question does not meet validation rules',
-      }),
-    code: z.string().openapi({ description: 'Error code', example: 'E606101' }),
-    correlationId: z
-      .uuid()
-      .openapi({
-        description: 'Copy from X-Correlation-ID header for logging',
-        example: '4199533b-6290-41db-8d79-edf4f4019a74',
-      }),
-    details: z.array(ErrorDetailSchema).exactOptional(),
-    status: z.number().openapi({ description: 'Equals HTTP status code', example: 400 }),
-    title: z
-      .string()
-      .openapi({ description: 'Localized error string', example: 'Input data failed validation' }),
-  })
-  .openapi({
-    description: 'Object wrapper for the error response to a request.',
-    example: {
-      action: 'Actionable instructions for the user',
-      cause: 'The input data in question does not meet validation rules',
-      code: 'E606101',
-      correlationId: '4199533b-6290-41db-8d79-edf4f4019a74',
-      details: [
-        {
-          message: 'Size must be between 3 and 64',
-          messagePlaceholders: { field: 'size', max: 64, min: 3 },
-          messageTemplate: 'validation.constraint.between',
-          source: '$.data.attributes[0].size',
-          title: 'Invalid size value',
-        },
-      ],
-      status: 400,
-      title: 'Input data failed validation',
-    },
-    required: ['title', 'status', 'code', 'cause', 'action', 'correlationId'],
-  })
-  .openapi('Error')
-
-const EutranCidNmrSchema = z
-  .int()
-  .min(0)
-  .max(268435455)
-  .openapi({
-    description: 'E-UTRA Cell Identifier (UC-Id), 28 bits (20 bits eNodeB and 8 bits Cell ID).',
-    example: 2898945,
-  })
-  .openapi('EutranCidNmr')
-
-const LatitudeSchema = z
-  .number()
-  .min(-90)
-  .max(90)
-  .openapi({
-    description: 'Latitude in WGS-84 format, decimal representation ranging from -90 to 90.',
-    example: 61.4706194,
-  })
-  .openapi('Latitude')
-
-const LocateSchema: z.ZodType<LocateType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        cdma: z
-          .array(CdmaSchema)
-          .min(1)
-          .max(16)
-          .exactOptional()
-          .openapi({ description: 'CDMA cells (CDMA2000)' }),
-        client: ClientInfoSchema.exactOptional(),
-        gsm: z
-          .array(GsmSchema)
-          .min(1)
-          .max(16)
-          .exactOptional()
-          .openapi({ description: 'GSM cells (GERAN)' }),
-        lte: z
-          .array(LteSchema)
-          .min(1)
-          .max(16)
-          .exactOptional()
-          .openapi({ description: 'LTE cells (E-UTRA, 4G)' }),
-        tdscdma: z
-          .array(TdscdmaSchema)
-          .min(1)
-          .max(16)
-          .exactOptional()
-          .openapi({ description: 'TD-SCDMA cells (UTRA-TDD, 3G UMTS TDD)' }),
-        wcdma: z
-          .array(WcdmaSchema)
-          .min(1)
-          .max(16)
-          .exactOptional()
-          .openapi({ description: 'WCDMA cells (UTRA-FDD, 3G UMTS)' }),
-        wlan: z
-          .array(WlanLocateSchema)
-          .min(1)
-          .max(256)
-          .exactOptional()
-          .openapi({
-            description:
-              'WLAN access positions. For privacy reasons positioning based on a single WLAN AP is not possible; there has to be at least one other matching wlan or cell. Alternatively, you can allow fallbacks to less accurate single WLAN AP location estimates by using the setting `fallback=singleWifi`.\n',
-          }),
-      })
       .openapi({
         description:
-          'Object wrapping the location data submitted in a request for a position. At least one of `gsm`, `wcdma`, `tdscdma`, `lte`, `cdma`, or `wlan` elements is required. Array elements should be unique within the request.\n',
-        example: {
-          client: {
-            manufacturer: 'Lemon',
-            model: 'Flagship X1',
-            name: 'FinderApp',
-            version: '2.0.31',
-          },
-          lte: [{ cid: 2898945, mcc: 262, mnc: 2 }],
-          wlan: [{ mac: 'F4-55-95-11-2C-C1' }],
-        },
-        'x-anyRequired': ['gsm', 'wcdma', 'tdscdma', 'lte', 'cdma', 'wlan'],
-        required: [],
+          'WLAN access positions. For privacy reasons positioning based on a single WLAN AP is not possible; there has to be at least one other matching wlan or cell. Alternatively, you can allow fallbacks to less accurate single WLAN AP location estimates by using the setting `fallback=singleWifi`.\n',
       }),
-  )
+  })
+  .openapi({
+    description:
+      'Object wrapping the location data submitted in a request for a position. At least one of `gsm`, `wcdma`, `tdscdma`, `lte`, `cdma`, or `wlan` elements is required. Array elements should be unique within the request.\n',
+    example: {
+      client: { manufacturer: 'Lemon', model: 'Flagship X1', name: 'FinderApp', version: '2.0.31' },
+      lte: [{ cid: 2898945, mcc: 262, mnc: 2 }],
+      wlan: [{ mac: 'F4-55-95-11-2C-C1' }],
+    },
+    'x-anyRequired': ['gsm', 'wcdma', 'tdscdma', 'lte', 'cdma', 'wlan'],
+    required: [],
+  })
   .openapi('Locate')
 
 const LongitudeSchema = z

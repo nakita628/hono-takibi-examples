@@ -1787,154 +1787,123 @@ export const getOauth21AuthorizeRoute = createRoute({
     "Call to this API starts authorization flow using OAuth 2.0 protocol. This isn't an API call—it's a DigiLocker web page that lets the user sign in to DigiLocker and authorize your application to access user’s data. After the user decides whether or not to authorize your app, they will be redirected to the redirect link provided by your application.",
   operationId: 'Get Authorization Code id',
   request: {
-    query: z
-      .looseObject({})
-      .transform((val) => {
-        const rest: [string, unknown][] = []
-        const groups = new Map<string, Record<string, unknown>>()
-        const group = (name: string) => {
-          const found = groups.get(name)
-          if (found !== undefined) return found
-          const made: Record<string, unknown> = Object.create(null)
-          groups.set(name, made)
-          return made
-        }
-        const spread = new Map<string, string[]>([
-          ['parameter', ['Code_challenge', 'Code_challenge_method']],
-        ])
-        for (const [key, item] of Object.entries(val)) {
-          const owners = spread.get(key)
-          if (owners !== undefined) {
-            for (const owner of owners) {
-              group(owner)[key] = item
-            }
-            continue
-          }
-          rest.push([key, item])
-        }
-        return Object.fromEntries([...rest, ...groups])
-      })
-      .pipe(
-        z.object({
-          client_id: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: {
-                description:
-                  'Provide the client id that was created during the application registration process on Partners Portal.',
-                in: 'query',
-                name: 'client_id',
-                schema: { type: 'string' },
-                required: false,
-              },
-            }),
-          response_type: z
-            .string()
-            .openapi({
-              param: {
-                description: 'Provide the grant type requested, either token or code.',
-                in: 'query',
-                name: 'response_type',
-                required: true,
-                schema: { type: 'string' },
-              },
-            }),
-          redirect_uri: z
-            .string()
-            .openapi({
-              param: {
-                description: 'The URI to redirect the user after authorization has completed.',
-                in: 'query',
-                name: 'redirect_uri',
-                required: true,
-                schema: { type: 'string' },
-              },
-            }),
-          state: z
-            .string()
-            .openapi({
-              param: {
-                description:
-                  'This is your application specific data that will be passed back to your application through redirect_uri.',
-                in: 'query',
-                name: 'state',
-                required: true,
-                schema: { type: 'string' },
-              },
-            }),
-          Code_challenge: z
-            .object({ parameter: z.enum(['Base64URL', 'SHA256']).exactOptional() })
-            .exactOptional()
-            .openapi({
-              param: {
-                description:
-                  'A unique random string called code verifier (code_verifier) is\ncreated by the client application for every authorization request.\nThe code_challenge sent as this parameter is the Base64URL (with no\npadding) encoded SHA256 hash of the code verifier.\n        Code block:\n\n       ```\n       string base64_url_encode_without_padding(string arg)\n       { \n          string s = base64encode(arg); //Regular base64encoder with padding\n          s = s.replace(’=’,’’); //Remove any trailing ’=’\n          s = s.replace(’+’, ’-’); //Replace ’+’ with ’-’\n          s = s.replace(’/’, ’_’); //Replace ’/’ with ’_’ return s;\n        }\n        ```\n',
-                in: 'query',
-                name: 'Code_challenge',
-                required: false,
-                schema: {
-                  example: 'base64_url_encode_without_padding(sha256(code_verifier))',
-                  properties: { parameter: { enum: ['Base64URL', 'SHA256'], type: 'string' } },
-                  type: 'string',
-                },
-              },
-              example: 'base64_url_encode_without_padding(sha256(code_verifier))',
-              required: [],
-            }),
-          Code_challenge_method: z
-            .object({ parameter: z.literal('S256').exactOptional() })
-            .exactOptional()
-            .openapi({
-              param: {
-                description:
-                  'Specifies what method was used to encode a code_verifier to generate code_challenge parameter above. This parameter must be used with the code_challenge parameter. The only supported values for this parameter is S256.',
-                in: 'query',
-                name: 'Code_challenge_method',
-                required: false,
-                schema: {
-                  properties: { parameter: { enum: ['S256'], type: 'string' } },
-                  type: 'string',
-                },
-              },
-              required: [],
-            }),
-          dl_flow: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: {
-                description:
-                  'If this parameter is provided its value will always be signup. This parameter indicates that the user does not have a DigiLocker account and will be directed to the signup flow directly. After the account is created, the user will be directed to the authorization flow. If this parameter is not sent, the user will be redirected to the sign in flow.',
-                in: 'query',
-                name: 'dl_flow',
-                required: false,
-                schema: { type: 'string' },
-              },
-            }),
-          Verified_mobile: z
-            .preprocess(
-              (val) =>
-                typeof val === 'string' &&
-                /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                  ? Number(val)
-                  : val,
-              z.int(),
-            )
-            .exactOptional()
-            .openapi({
-              param: {
-                description:
-                  'Verified mobile number of the user. If this parameter is passed, DigiLocker will skip the mobile OTP verification step during sign up. DigiLocker will treat the mobile number passed in this parameter as a verified mobile number by the trusted client application. This parameter will be used only if dl_flow parameter mentioned above is set to signup and will be ignored otherwise.',
-                in: 'query',
-                name: 'Verified_mobile',
-                required: false,
-                schema: { type: 'integer' },
-              },
-            }),
+    query: z.object({
+      client_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Provide the client id that was created during the application registration process on Partners Portal.',
+            in: 'query',
+            name: 'client_id',
+            schema: { type: 'string' },
+            required: false,
+          },
         }),
-      ),
+      response_type: z
+        .string()
+        .openapi({
+          param: {
+            description: 'Provide the grant type requested, either token or code.',
+            in: 'query',
+            name: 'response_type',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      redirect_uri: z
+        .string()
+        .openapi({
+          param: {
+            description: 'The URI to redirect the user after authorization has completed.',
+            in: 'query',
+            name: 'redirect_uri',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      state: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'This is your application specific data that will be passed back to your application through redirect_uri.',
+            in: 'query',
+            name: 'state',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      Code_challenge: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'A unique random string called code verifier (code_verifier) is\ncreated by the client application for every authorization request.\nThe code_challenge sent as this parameter is the Base64URL (with no\npadding) encoded SHA256 hash of the code verifier.\n        Code block:\n\n       ```\n       string base64_url_encode_without_padding(string arg)\n       { \n          string s = base64encode(arg); //Regular base64encoder with padding\n          s = s.replace(’=’,’’); //Remove any trailing ’=’\n          s = s.replace(’+’, ’-’); //Replace ’+’ with ’-’\n          s = s.replace(’/’, ’_’); //Replace ’/’ with ’_’ return s;\n        }\n        ```\n',
+            in: 'query',
+            name: 'Code_challenge',
+            required: false,
+            schema: {
+              example: 'base64_url_encode_without_padding(sha256(code_verifier))',
+              properties: { parameter: { enum: ['Base64URL', 'SHA256'], type: 'string' } },
+              type: 'string',
+            },
+          },
+          example: 'base64_url_encode_without_padding(sha256(code_verifier))',
+        }),
+      Code_challenge_method: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Specifies what method was used to encode a code_verifier to generate code_challenge parameter above. This parameter must be used with the code_challenge parameter. The only supported values for this parameter is S256.',
+            in: 'query',
+            name: 'Code_challenge_method',
+            required: false,
+            schema: {
+              properties: { parameter: { enum: ['S256'], type: 'string' } },
+              type: 'string',
+            },
+          },
+        }),
+      dl_flow: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'If this parameter is provided its value will always be signup. This parameter indicates that the user does not have a DigiLocker account and will be directed to the signup flow directly. After the account is created, the user will be directed to the authorization flow. If this parameter is not sent, the user will be redirected to the sign in flow.',
+            in: 'query',
+            name: 'dl_flow',
+            required: false,
+            schema: { type: 'string' },
+          },
+        }),
+      Verified_mobile: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Verified mobile number of the user. If this parameter is passed, DigiLocker will skip the mobile OTP verification step during sign up. DigiLocker will treat the mobile number passed in this parameter as a verified mobile number by the trusted client application. This parameter will be used only if dl_flow parameter mentioned above is set to signup and will be ignored otherwise.',
+            in: 'query',
+            name: 'Verified_mobile',
+            required: false,
+            schema: { type: 'integer' },
+          },
+        }),
+    }),
   },
   responses: {
     200: {

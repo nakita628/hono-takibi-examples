@@ -1,10 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AccessContextManagerOperationMetadataSchema = z
-  .object({})
-  .openapi({ description: "Metadata of Access Context Manager's Long Running Operations." })
-  .openapi('AccessContextManagerOperationMetadata')
-
 const OsConstraintSchema = z
   .object({
     minimumVersion: z
@@ -239,6 +234,16 @@ const AccessLevelSchema = z
   })
   .openapi('AccessLevel')
 
+type ListAccessLevelsResponseType = {
+  accessLevels?: z.infer<typeof AccessLevelSchema>[]
+  nextPageToken?: string
+}
+
+const AccessContextManagerOperationMetadataSchema = z
+  .looseObject({})
+  .openapi({ description: "Metadata of Access Context Manager's Long Running Operations." })
+  .openapi('AccessContextManagerOperationMetadata')
+
 const AccessPolicySchema = z
   .object({
     name: z
@@ -267,7 +272,7 @@ const AccessPolicySchema = z
   })
   .openapi('AccessPolicy')
 
-const ListAccessLevelsResponseSchema = z
+const ListAccessLevelsResponseSchema: z.ZodType<ListAccessLevelsResponseType> = z
   .object({
     accessLevels: z
       .array(AccessLevelSchema)

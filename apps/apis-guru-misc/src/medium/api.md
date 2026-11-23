@@ -1578,7 +1578,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/search/articles?query={query}?query=startup' \
+curl 'https://example.com/search/articles?query=string?query=startup' \
   -H 'Accept: application/json'
 ```
 
@@ -1592,6 +1592,7 @@ Returns the list of `articles_ids` for the given search query results. (Max Leng
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |query|query|string|true|Search query|
+|query|path|string|true|none|
 
 > Example responses
 
@@ -1630,7 +1631,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/search/lists?query={query}?query=artificial%20intelligence' \
+curl 'https://example.com/search/lists?query=string?query=artificial%20intelligence' \
   -H 'Accept: application/json'
 ```
 
@@ -1644,6 +1645,7 @@ Returns an array of `list_ids` for the given search query results. (Max Length =
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |query|query|string|true|Search query|
+|query|path|string|true|none|
 
 > Example responses
 
@@ -1682,7 +1684,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/search/publications?query={query}?query=mental%20health' \
+curl 'https://example.com/search/publications?query=string?query=mental%20health' \
   -H 'Accept: application/json'
 ```
 
@@ -1696,6 +1698,7 @@ Returns the list of `publication_ids` for the given search query results. (Max L
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |query|query|string|true|Search query|
+|query|path|string|true|none|
 
 > Example responses
 
@@ -1734,7 +1737,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/search/tags?query={query}?query=blockchain' \
+curl 'https://example.com/search/tags?query=string?query=blockchain' \
   -H 'Accept: application/json'
 ```
 
@@ -1748,6 +1751,7 @@ Returns a list of `tags` for the given search query results. (Max Length = 1000)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |query|query|string|true|Search query|
+|query|path|string|true|none|
 
 > Example responses
 
@@ -1786,7 +1790,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/search/users?query={query}?query=data%20engineer' \
+curl 'https://example.com/search/users?query=string?query=data%20engineer' \
   -H 'Accept: application/json'
 ```
 
@@ -1800,6 +1804,7 @@ Returns a list of `user_ids` for the given search query results. (Max Length = 1
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |query|query|string|true|Search query|
+|query|path|string|true|none|
 
 > Example responses
 

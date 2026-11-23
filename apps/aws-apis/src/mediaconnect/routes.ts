@@ -2,127 +2,167 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const StringSchema = z.string().openapi('String')
 
-const MessageDetailSchema = z
-  .object({
-    Code: StringSchema.and(
-      z.any().openapi({ xml: { name: 'code' }, description: 'The error code.' }),
-    ),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'message' },
-          description:
-            'The specific error message that MediaConnect returns to help you understand the reason that the request did not succeed.',
-        }),
-    ),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of the resource.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['Message', 'Code'] })
-  .openapi('MessageDetail')
-
-const ListOfMessageDetailSchema = z.array(MessageDetailSchema).openapi('ListOfMessageDetail')
-
-const BridgeStateSchema = z
-  .enum([
-    'CREATING',
-    'STANDBY',
-    'STARTING',
-    'DEPLOYING',
-    'ACTIVE',
-    'STOPPING',
-    'DELETING',
-    'DELETED',
-    'START_FAILED',
-    'START_PENDING',
-    'STOP_FAILED',
-    'UPDATING',
-  ])
-  .openapi('BridgeState')
-
 const IntegerSchema = z.int().openapi('Integer')
 
-const EgressGatewayBridgeSchema = z
-  .object({
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'instanceId' },
-          description: 'The ID of the instance running this bridge.',
-        }),
-    ).exactOptional(),
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'The maximum expected bitrate (in bps) of the egress bridge.',
-        }),
-    ),
-  })
-  .openapi({ required: ['MaxBitrate'] })
-  .openapi('EgressGatewayBridge')
+const AlgorithmSchema = z.enum(['aes128', 'aes192', 'aes256']).openapi('Algorithm')
 
-const IngressGatewayBridgeSchema = z
-  .object({
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'instanceId' },
-          description: 'The ID of the instance running this bridge.',
-        }),
-    ).exactOptional(),
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'The maximum expected bitrate (in bps) of the ingress bridge.',
-        }),
-    ),
-    MaxOutputs: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxOutputs' },
-          description: 'The maximum number of outputs on the ingress bridge.',
-        }),
-    ),
-  })
-  .openapi({ required: ['MaxOutputs', 'MaxBitrate'] })
-  .openapi('IngressGatewayBridge')
+const KeyTypeSchema = z.enum(['speke', 'static-key', 'srt-password']).openapi('KeyType')
 
-const BridgeFlowOutputSchema = z
+const EncryptionSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The Amazon Resource Number (ARN) of the cloud flow.',
-        }),
-    ),
-    FlowSourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowSourceArn' },
-          description: 'The Amazon Resource Number (ARN) of the flow source.',
-        }),
-    ),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: "The name of the bridge's output." }),
-    ),
+    Algorithm: AlgorithmSchema.exactOptional().openapi({
+      xml: { name: 'algorithm' },
+      description:
+        'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
+    }),
+    ConstantInitializationVector: StringSchema.exactOptional().openapi({
+      xml: { name: 'constantInitializationVector' },
+      description:
+        'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
+    }),
+    DeviceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'deviceId' },
+      description:
+        'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+    }),
+    KeyType: KeyTypeSchema.exactOptional().openapi({
+      xml: { name: 'keyType' },
+      description:
+        'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
+    }),
+    Region: StringSchema.exactOptional().openapi({
+      xml: { name: 'region' },
+      description:
+        'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+    }),
+    ResourceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceId' },
+      description:
+        'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+    }),
+    RoleArn: StringSchema.openapi({
+      xml: { name: 'roleArn' },
+      description:
+        'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
+    }),
+    SecretArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'secretArn' },
+      description:
+        'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description:
+        'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+    }),
+  })
+  .openapi({ required: ['RoleArn'], description: 'Information about the encryption of the flow.' })
+  .openapi('Encryption')
+
+const InterfaceSchema = z
+  .object({
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the VPC interface.',
+    }),
   })
   .openapi({
-    required: ['FlowSourceArn', 'FlowArn', 'Name'],
-    description: 'The output of the bridge. A flow output is delivered to the AWS cloud.',
+    required: ['Name'],
+    description:
+      'The VPC interface that is used for the media stream associated with the source or output.',
   })
-  .openapi('BridgeFlowOutput')
+  .openapi('Interface')
+
+const DestinationConfigurationSchema = z
+  .object({
+    DestinationIp: StringSchema.openapi({
+      xml: { name: 'destinationIp' },
+      description: 'The IP address where contents of the media stream will be sent.',
+    }),
+    DestinationPort: IntegerSchema.openapi({
+      xml: { name: 'destinationPort' },
+      description:
+        'The port to use when the content of the media stream is distributed to the output.',
+    }),
+    Interface: InterfaceSchema.openapi({
+      xml: { name: 'interface' },
+      description:
+        'The VPC interface that is used for the media stream associated with the output.',
+    }),
+    OutboundIp: StringSchema.openapi({
+      xml: { name: 'outboundIp' },
+      description:
+        'The IP address that the receiver requires in order to establish a connection with the flow. This value is represented by the elastic network interface IP address of the VPC. This field applies only to outputs that use the CDI or ST 2110 JPEG XS protocol.',
+    }),
+  })
+  .openapi({
+    required: ['DestinationIp', 'DestinationPort', 'Interface', 'OutboundIp'],
+    description: 'The transport parameters that are associated with an outbound media stream.',
+  })
+  .openapi('DestinationConfiguration')
+
+const ListOfDestinationConfigurationSchema = z
+  .array(DestinationConfigurationSchema)
+  .openapi('ListOfDestinationConfiguration')
+
+const EncodingNameSchema = z.enum(['jxsv', 'raw', 'smpte291', 'pcm']).openapi('EncodingName')
+
+const DoubleSchema = z.float64().openapi('Double')
+
+const EncoderProfileSchema = z.enum(['main', 'high']).openapi('EncoderProfile')
+
+const EncodingParametersSchema = z
+  .object({
+    CompressionFactor: DoubleSchema.openapi({
+      xml: { name: 'compressionFactor' },
+      description:
+        'A value that is used to calculate compression for an output. The bitrate of the output is calculated as follows: Output bitrate = (1 / compressionFactor) * (source bitrate) This property only applies to outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol. Valid values are floating point numbers in the range of 3.0 to 10.0, inclusive.',
+    }),
+    EncoderProfile: EncoderProfileSchema.openapi({
+      xml: { name: 'encoderProfile' },
+      description:
+        'A setting on the encoder that drives compression settings. This property only applies to video media streams associated with outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol.',
+    }),
+  })
+  .openapi({
+    required: ['EncoderProfile', 'CompressionFactor'],
+    description:
+      'A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source.',
+  })
+  .openapi('EncodingParameters')
+
+const MediaStreamOutputConfigurationSchema = z
+  .object({
+    DestinationConfigurations: ListOfDestinationConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'destinationConfigurations' },
+      description: 'The transport parameters that are associated with each outbound media stream.',
+    }),
+    EncodingName: EncodingNameSchema.openapi({
+      xml: { name: 'encodingName' },
+      description:
+        'The format that was used to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video, 2110 streams, set the encoding name to raw. For video, JPEG XS streams, set the encoding name to jxsv.',
+    }),
+    EncodingParameters: EncodingParametersSchema.exactOptional().openapi({
+      xml: { name: 'encodingParameters' },
+      description: 'Encoding parameters',
+    }),
+    MediaStreamName: StringSchema.openapi({
+      xml: { name: 'mediaStreamName' },
+      description: 'The name of the media stream.',
+    }),
+  })
+  .openapi({
+    required: ['MediaStreamName', 'EncodingName'],
+    description:
+      'The media stream that is associated with the output, and the parameters for that association.',
+  })
+  .openapi('MediaStreamOutputConfiguration')
+
+const ListOfMediaStreamOutputConfigurationSchema = z
+  .array(MediaStreamOutputConfigurationSchema)
+  .openapi('ListOfMediaStreamOutputConfiguration')
+
+const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
 
 const ProtocolSchema = z
   .enum([
@@ -140,119 +180,79 @@ const ProtocolSchema = z
   ])
   .openapi('Protocol')
 
-const BridgeNetworkOutputSchema = z
+const TransportSchema = z
   .object({
-    IpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'ipAddress' }, description: 'The network output IP Address.' }),
-    ),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The network output name.' }),
-    ),
-    NetworkName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkName' },
-          description: "The network output's gateway network name.",
-        }),
-    ),
-    Port: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'port' }, description: 'The network output port.' }),
-    ),
-    Protocol: ProtocolSchema.and(
-      z.any().openapi({ xml: { name: 'protocol' }, description: 'The network output protocol.' }),
-    ),
-    Ttl: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'ttl' }, description: 'The network output TTL.' }),
-    ),
+    CidrAllowList: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'cidrAllowList' },
+      description:
+        'The range of IP addresses that should be allowed to initiate output requests to this flow. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    MaxBitrate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.',
+    }),
+    MaxLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxLatency' },
+      description:
+        'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
+    }),
+    MaxSyncBuffer: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxSyncBuffer' },
+      description: 'The size of the buffer (in milliseconds) to use to sync incoming source data.',
+    }),
+    MinLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minLatency' },
+      description:
+        'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
+    }),
+    Protocol: ProtocolSchema.openapi({
+      xml: { name: 'protocol' },
+      description: 'The protocol that is used by the source or output.',
+    }),
+    RemoteId: StringSchema.exactOptional().openapi({
+      xml: { name: 'remoteId' },
+      description: 'The remote ID for the Zixi-pull stream.',
+    }),
+    SenderControlPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'senderControlPort' },
+      description:
+        'The port that the flow uses to send outbound requests to initiate connection with the sender.',
+    }),
+    SenderIpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'senderIpAddress' },
+      description:
+        'The IP address that the flow communicates with to initiate connection with the sender.',
+    }),
+    SmoothingLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'smoothingLatency' },
+      description: 'The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams.',
+    }),
+    SourceListenerAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceListenerAddress' },
+      description: 'Source IP or domain name for SRT-caller protocol.',
+    }),
+    SourceListenerPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'sourceListenerPort' },
+      description: 'Source port for SRT-caller protocol.',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      xml: { name: 'streamId' },
+      description:
+        'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
+    }),
   })
   .openapi({
-    required: ['NetworkName', 'Port', 'IpAddress', 'Protocol', 'Ttl', 'Name'],
-    description: 'The output of the bridge. A network output is delivered to your premises.',
+    required: ['Protocol'],
+    description: 'Attributes related to the transport stream that are used in a source or output.',
   })
-  .openapi('BridgeNetworkOutput')
-
-const BridgeOutputSchema = z
-  .object({
-    FlowOutput: BridgeFlowOutputSchema.and(
-      z.any().openapi({ xml: { name: 'flowOutput' } }),
-    ).exactOptional(),
-    NetworkOutput: BridgeNetworkOutputSchema.and(
-      z.any().openapi({ xml: { name: 'networkOutput' } }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The output of the bridge.', required: [] })
-  .openapi('BridgeOutput')
-
-const ListOfBridgeOutputSchema = z.array(BridgeOutputSchema).openapi('ListOfBridgeOutput')
-
-const FailoverModeSchema = z.enum(['MERGE', 'FAILOVER']).openapi('FailoverMode')
-
-const SourcePrioritySchema = z
-  .object({
-    PrimarySource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'primarySource' },
-          description: 'The name of the source you choose as the primary source for this flow.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
-    required: [],
-  })
-  .openapi('SourcePriority')
-
-const StateSchema = z.enum(['ENABLED', 'DISABLED']).openapi('State')
-
-const FailoverConfigSchema = z
-  .object({
-    FailoverMode: FailoverModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'failoverMode' },
-          description:
-            'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
-        }),
-    ).exactOptional(),
-    RecoveryWindow: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'recoveryWindow' },
-          description: 'Search window time to look for dash-7 packets',
-        }),
-    ).exactOptional(),
-    SourcePriority: SourcePrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourcePriority' },
-          description:
-            'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
-        }),
-    ).exactOptional(),
-    State: StateSchema.and(z.any().openapi({ xml: { name: 'state' } })).exactOptional(),
-  })
-  .openapi({ description: 'The settings for source failover.', required: [] })
-  .openapi('FailoverConfig')
+  .openapi('Transport')
 
 const VpcInterfaceAttachmentSchema = z
   .object({
-    VpcInterfaceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceName' },
-          description: 'The name of the VPC interface to use for this resource.',
-        }),
-    ).exactOptional(),
+    VpcInterfaceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceName' },
+      description: 'The name of the VPC interface to use for this resource.',
+    }),
   })
   .openapi({
     description: 'The settings for attaching a VPC interface to an resource.',
@@ -260,234 +260,102 @@ const VpcInterfaceAttachmentSchema = z
   })
   .openapi('VpcInterfaceAttachment')
 
-const BridgeFlowSourceSchema = z
+const ListOfIntegerSchema = z.array(IntegerSchema).openapi('ListOfInteger')
+
+const OutputSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the cloud flow used as a source of this bridge.',
-        }),
-    ),
-    FlowVpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowVpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this source.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the flow source.' }),
-    ),
-    OutputArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outputArn' },
-          description: 'The Amazon Resource Number (ARN) of the output.',
-        }),
-    ).exactOptional(),
+    DataTransferSubscriberFeePercent: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'dataTransferSubscriberFeePercent' },
+      description:
+        'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A description of the output.',
+    }),
+    Destination: StringSchema.exactOptional().openapi({
+      xml: { name: 'destination' },
+      description: 'The address where you want to send the output.',
+    }),
+    Encryption: EncryptionSchema.exactOptional().openapi({
+      xml: { name: 'encryption' },
+      description:
+        'The type of key used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
+    }),
+    EntitlementArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'entitlementArn' },
+      description:
+        "The ARN of the entitlement on the originator''s flow. This value is relevant only on entitled flows.",
+    }),
+    ListenerAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'listenerAddress' },
+      description:
+        'The IP address that the receiver requires in order to establish a connection with the flow. For public networking, the ListenerAddress is represented by the elastic IP address of the flow. For private networking, the ListenerAddress is represented by the elastic network interface IP address of the VPC. This field applies only to outputs that use the Zixi pull or SRT listener protocol.',
+    }),
+    MediaLiveInputArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'mediaLiveInputArn' },
+      description:
+        'The input ARN of the AWS Elemental MediaLive channel. This parameter is relevant only for outputs that were added by creating a MediaLive input.',
+    }),
+    MediaStreamOutputConfigurations:
+      ListOfMediaStreamOutputConfigurationSchema.exactOptional().openapi({
+        xml: { name: 'mediaStreamOutputConfigurations' },
+        description: 'The configuration for each media stream that is associated with the output.',
+      }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the output. This value must be unique within the current flow.',
+    }),
+    OutputArn: StringSchema.openapi({
+      xml: { name: 'outputArn' },
+      description: 'The ARN of the output.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'port' },
+      description: 'The port to use when content is distributed to this output.',
+    }),
+    Transport: TransportSchema.exactOptional().openapi({
+      xml: { name: 'transport' },
+      description: 'Attributes related to the transport stream that are used in the output.',
+    }),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this output.',
+    }),
+    BridgeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The ARN of the bridge that added this output.',
+    }),
+    BridgePorts: ListOfIntegerSchema.exactOptional().openapi({
+      xml: { name: 'bridgePorts' },
+      description: 'The bridge output ports currently in use.',
+    }),
   })
-  .openapi({
-    required: ['FlowArn', 'Name'],
-    description:
-      'The source of the bridge. A flow source originates in MediaConnect as an existing cloud flow.',
-  })
-  .openapi('BridgeFlowSource')
+  .openapi({ required: ['OutputArn', 'Name'], description: 'The settings for an output.' })
+  .openapi('Output')
 
-const BridgeNetworkSourceSchema = z
-  .object({
-    MulticastIp: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'multicastIp' }, description: 'The network source multicast IP.' }),
-    ),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the network source.' }),
-    ),
-    NetworkName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkName' },
-          description: "The network source's gateway network name.",
-        }),
-    ),
-    Port: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'port' }, description: 'The network source port.' }),
-    ),
-    Protocol: ProtocolSchema.and(
-      z.any().openapi({ xml: { name: 'protocol' }, description: 'The network source protocol.' }),
-    ),
-  })
-  .openapi({
-    required: ['NetworkName', 'MulticastIp', 'Port', 'Protocol', 'Name'],
-    description: 'The source of the bridge. A network source originates at your premises.',
-  })
-  .openapi('BridgeNetworkSource')
+const ListOfOutputSchema = z.array(OutputSchema).openapi('ListOfOutput')
 
-const BridgeSourceSchema = z
-  .object({
-    FlowSource: BridgeFlowSourceSchema.and(
-      z.any().openapi({ xml: { name: 'flowSource' } }),
-    ).exactOptional(),
-    NetworkSource: BridgeNetworkSourceSchema.and(
-      z.any().openapi({ xml: { name: 'networkSource' } }),
-    ).exactOptional(),
-  })
-  .openapi({ description: "The bridge's source.", required: [] })
-  .openapi('BridgeSource')
-
-const ListOfBridgeSourceSchema = z.array(BridgeSourceSchema).openapi('ListOfBridgeSource')
-
-type BridgeType = {
-  BridgeArn: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  BridgeMessages?: z.infer<typeof ListOfMessageDetailSchema> & { [key: string]: unknown }
-  BridgeState: z.infer<typeof BridgeStateSchema> & { [key: string]: unknown }
-  EgressGatewayBridge?: z.infer<typeof EgressGatewayBridgeSchema> & { [key: string]: unknown }
-  IngressGatewayBridge?: z.infer<typeof IngressGatewayBridgeSchema> & { [key: string]: unknown }
-  Name: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  Outputs?: z.infer<typeof ListOfBridgeOutputSchema> & { [key: string]: unknown }
-  PlacementArn: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  SourceFailoverConfig?: z.infer<typeof FailoverConfigSchema> & { [key: string]: unknown }
-  Sources?: z.infer<typeof ListOfBridgeSourceSchema> & { [key: string]: unknown }
+type AddFlowOutputsResponseType = {
+  FlowArn?: z.infer<typeof StringSchema> & unknown
+  Outputs?: z.infer<typeof ListOfOutputSchema> & unknown
 }
-
-const AlgorithmSchema = z.enum(['aes128', 'aes192', 'aes256']).openapi('Algorithm')
-
-const KeyTypeSchema = z.enum(['speke', 'static-key', 'srt-password']).openapi('KeyType')
-
-const EncryptionSchema = z
-  .object({
-    Algorithm: AlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'algorithm' },
-          description:
-            'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
-        }),
-    ).exactOptional(),
-    ConstantInitializationVector: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'constantInitializationVector' },
-          description:
-            'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-    DeviceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deviceId' },
-          description:
-            'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-    KeyType: KeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'keyType' },
-          description:
-            'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
-        }),
-    ).exactOptional(),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'region' },
-          description:
-            'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceId' },
-          description:
-            'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleArn' },
-          description:
-            'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
-        }),
-    ),
-    SecretArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'secretArn' },
-          description:
-            'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description:
-            'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['RoleArn'], description: 'Information about the encryption of the flow.' })
-  .openapi('Encryption')
-
-const EncodingNameSchema = z.enum(['jxsv', 'raw', 'smpte291', 'pcm']).openapi('EncodingName')
-
-const InterfaceSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the VPC interface.' }),
-    ),
-  })
-  .openapi({
-    required: ['Name'],
-    description:
-      'The VPC interface that is used for the media stream associated with the source or output.',
-  })
-  .openapi('Interface')
 
 const InputConfigurationSchema = z
   .object({
-    InputIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'inputIp' },
-          description:
-            'The IP address that the flow listens on for incoming content for a media stream.',
-        }),
-    ),
-    InputPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'inputPort' },
-          description: 'The port that the flow listens on for an incoming media stream.',
-        }),
-    ),
-    Interface: InterfaceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'interface' },
-          description: 'The VPC interface where the media stream comes in from.',
-        }),
-    ),
+    InputIp: StringSchema.openapi({
+      xml: { name: 'inputIp' },
+      description:
+        'The IP address that the flow listens on for incoming content for a media stream.',
+    }),
+    InputPort: IntegerSchema.openapi({
+      xml: { name: 'inputPort' },
+      description: 'The port that the flow listens on for an incoming media stream.',
+    }),
+    Interface: InterfaceSchema.openapi({
+      xml: { name: 'interface' },
+      description: 'The VPC interface where the media stream comes in from.',
+    }),
   })
   .openapi({
     required: ['InputPort', 'InputIp', 'Interface'],
@@ -501,32 +369,19 @@ const ListOfInputConfigurationSchema = z
 
 const MediaStreamSourceConfigurationSchema = z
   .object({
-    EncodingName: EncodingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encodingName' },
-          description:
-            'The format that was used to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video, 2110 streams, set the encoding name to raw. For video, JPEG XS streams, set the encoding name to jxsv.',
-        }),
-    ),
-    InputConfigurations: ListOfInputConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'inputConfigurations' },
-          description:
-            'The transport parameters that are associated with an incoming media stream.',
-        }),
-    ).exactOptional(),
-    MediaStreamName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamName' },
-          description: 'The name of the media stream.',
-        }),
-    ),
+    EncodingName: EncodingNameSchema.openapi({
+      xml: { name: 'encodingName' },
+      description:
+        'The format that was used to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video, 2110 streams, set the encoding name to raw. For video, JPEG XS streams, set the encoding name to jxsv.',
+    }),
+    InputConfigurations: ListOfInputConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'inputConfigurations' },
+      description: 'The transport parameters that are associated with an incoming media stream.',
+    }),
+    MediaStreamName: StringSchema.openapi({
+      xml: { name: 'mediaStreamName' },
+      description: 'The name of the media stream.',
+    }),
   })
   .openapi({
     required: ['MediaStreamName', 'EncodingName'],
@@ -539,146 +394,16 @@ const ListOfMediaStreamSourceConfigurationSchema = z
   .array(MediaStreamSourceConfigurationSchema)
   .openapi('ListOfMediaStreamSourceConfiguration')
 
-const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
-
-const TransportSchema = z
-  .object({
-    CidrAllowList: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cidrAllowList' },
-          description:
-            'The range of IP addresses that should be allowed to initiate output requests to this flow. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-        }),
-    ).exactOptional(),
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.',
-        }),
-    ).exactOptional(),
-    MaxLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxLatency' },
-          description:
-            'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
-        }),
-    ).exactOptional(),
-    MaxSyncBuffer: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxSyncBuffer' },
-          description:
-            'The size of the buffer (in milliseconds) to use to sync incoming source data.',
-        }),
-    ).exactOptional(),
-    MinLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minLatency' },
-          description:
-            'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
-        }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'protocol' },
-          description: 'The protocol that is used by the source or output.',
-        }),
-    ),
-    RemoteId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remoteId' },
-          description: 'The remote ID for the Zixi-pull stream.',
-        }),
-    ).exactOptional(),
-    SenderControlPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderControlPort' },
-          description:
-            'The port that the flow uses to send outbound requests to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SenderIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderIpAddress' },
-          description:
-            'The IP address that the flow communicates with to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SmoothingLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'smoothingLatency' },
-          description: 'The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams.',
-        }),
-    ).exactOptional(),
-    SourceListenerAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceListenerAddress' },
-          description: 'Source IP or domain name for SRT-caller protocol.',
-        }),
-    ).exactOptional(),
-    SourceListenerPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceListenerPort' },
-          description: 'Source port for SRT-caller protocol.',
-        }),
-    ).exactOptional(),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'streamId' },
-          description:
-            'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Protocol'],
-    description: 'Attributes related to the transport stream that are used in a source or output.',
-  })
-  .openapi('Transport')
-
 const GatewayBridgeSourceSchema = z
   .object({
-    BridgeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgeArn' },
-          description: 'The ARN of the bridge feeding this flow.',
-        }),
-    ),
-    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this bridge source.',
-        }),
-    ).exactOptional(),
+    BridgeArn: StringSchema.openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The ARN of the bridge feeding this flow.',
+    }),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this bridge source.',
+    }),
   })
   .openapi({
     required: ['BridgeArn'],
@@ -686,223 +411,130 @@ const GatewayBridgeSourceSchema = z
   })
   .openapi('GatewayBridgeSource')
 
-type SourceType = {
-  DataTransferSubscriberFeePercent?: z.infer<typeof IntegerSchema> & { [key: string]: unknown }
-  Decryption?: z.infer<typeof EncryptionSchema> & { [key: string]: unknown }
-  Description?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  EntitlementArn?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  IngestIp?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  IngestPort?: z.infer<typeof IntegerSchema> & { [key: string]: unknown }
-  MediaStreamSourceConfigurations?: z.infer<typeof ListOfMediaStreamSourceConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  Name: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  SenderControlPort?: z.infer<typeof IntegerSchema> & { [key: string]: unknown }
-  SenderIpAddress?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  SourceArn: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  Transport?: z.infer<typeof TransportSchema> & { [key: string]: unknown }
-  VpcInterfaceName?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  WhitelistCidr?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  GatewayBridgeSource?: z.infer<typeof GatewayBridgeSourceSchema> & { [key: string]: unknown }
+const SourceSchema = z
+  .object({
+    DataTransferSubscriberFeePercent: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'dataTransferSubscriberFeePercent' },
+      description:
+        'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
+    }),
+    Decryption: EncryptionSchema.exactOptional().openapi({
+      xml: { name: 'decryption' },
+      description: 'The type of encryption that is used on the content ingested from this source.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
+    }),
+    EntitlementArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'entitlementArn' },
+      description:
+        "The ARN of the entitlement that allows you to subscribe to content that comes from another AWS account. The entitlement is set by the content originator and the ARN is generated as part of the originator's flow.",
+    }),
+    IngestIp: StringSchema.exactOptional().openapi({
+      xml: { name: 'ingestIp' },
+      description: 'The IP address that the flow will be listening on for incoming content.',
+    }),
+    IngestPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'ingestPort' },
+      description: 'The port that the flow will be listening on for incoming content.',
+    }),
+    MediaStreamSourceConfigurations:
+      ListOfMediaStreamSourceConfigurationSchema.exactOptional().openapi({
+        xml: { name: 'mediaStreamSourceConfigurations' },
+        description:
+          'The media streams that are associated with the source, and the parameters for those associations.',
+      }),
+    Name: StringSchema.openapi({ xml: { name: 'name' }, description: 'The name of the source.' }),
+    SenderControlPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'senderControlPort' },
+      description:
+        'The port that the flow uses to send outbound requests to initiate connection with the sender.',
+    }),
+    SenderIpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'senderIpAddress' },
+      description:
+        'The IP address that the flow communicates with to initiate connection with the sender.',
+    }),
+    SourceArn: StringSchema.openapi({
+      xml: { name: 'sourceArn' },
+      description: 'The ARN of the source.',
+    }),
+    Transport: TransportSchema.exactOptional().openapi({
+      xml: { name: 'transport' },
+      description: 'Attributes related to the transport stream that are used in the source.',
+    }),
+    VpcInterfaceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceName' },
+      description: 'The name of the VPC interface that is used for this source.',
+    }),
+    WhitelistCidr: StringSchema.exactOptional().openapi({
+      xml: { name: 'whitelistCidr' },
+      description:
+        'The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    GatewayBridgeSource: GatewayBridgeSourceSchema.exactOptional().openapi({
+      xml: { name: 'gatewayBridgeSource' },
+      description: 'The source configuration for cloud flows receiving a stream from a bridge.',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'SourceArn'],
+    description: 'The settings for the source of the flow.',
+  })
+  .openapi('Source')
+
+const ListOfSourceSchema = z.array(SourceSchema).openapi('ListOfSource')
+
+type AddFlowSourcesResponseType = {
+  FlowArn?: z.infer<typeof StringSchema> & unknown
+  Sources?: z.infer<typeof ListOfSourceSchema> & unknown
 }
 
-const AddBridgeOutputsResponseSchema = z
-  .object({
-    BridgeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgeArn' },
-          description: 'The Amazon Resource Number (ARN) of the bridge.',
-        }),
-    ).exactOptional(),
-    Outputs: ListOfBridgeOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outputs' },
-          description: 'The outputs that you added to this bridge.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddBridgeOutputsResponse')
+const EntitlementStatusSchema = z.enum(['ENABLED', 'DISABLED']).openapi('EntitlementStatus')
 
-const AddBridgeNetworkOutputRequestSchema = z
+const EntitlementSchema = z
   .object({
-    IpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'ipAddress' }, description: 'The network output IP Address.' }),
-    ),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The network output name. This name is used to reference the output and must be unique among outputs in this bridge.',
-        }),
-    ),
-    NetworkName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkName' },
-          description: "The network output's gateway network name.",
-        }),
-    ),
-    Port: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'port' }, description: 'The network output port.' }),
-    ),
-    Protocol: ProtocolSchema.and(
-      z.any().openapi({ xml: { name: 'protocol' }, description: 'The network output protocol.' }),
-    ),
-    Ttl: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'ttl' }, description: 'The network output TTL.' }),
-    ),
+    DataTransferSubscriberFeePercent: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'dataTransferSubscriberFeePercent' },
+      description:
+        'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A description of the entitlement.',
+    }),
+    Encryption: EncryptionSchema.exactOptional().openapi({
+      xml: { name: 'encryption' },
+      description:
+        'The type of encryption that will be used on the output that is associated with this entitlement.',
+    }),
+    EntitlementArn: StringSchema.openapi({
+      xml: { name: 'entitlementArn' },
+      description: 'The ARN of the entitlement.',
+    }),
+    EntitlementStatus: EntitlementStatusSchema.exactOptional().openapi({
+      xml: { name: 'entitlementStatus' },
+      description: 'An indication of whether the entitlement is enabled.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the entitlement.',
+    }),
+    Subscribers: ListOfStringSchema.openapi({
+      xml: { name: 'subscribers' },
+      description:
+        'The AWS account IDs that you want to share your content with. The receiving accounts (subscribers) will be allowed to create their own flow using your content as the source.',
+    }),
   })
   .openapi({
-    required: ['NetworkName', 'Port', 'IpAddress', 'Protocol', 'Ttl', 'Name'],
-    description: 'Add a network output to an existing bridge.',
+    required: ['EntitlementArn', 'Subscribers', 'Name'],
+    description: 'The settings for a flow entitlement.',
   })
-  .openapi('AddBridgeNetworkOutputRequest')
+  .openapi('Entitlement')
 
-const AddBridgeOutputRequestSchema = z
-  .object({
-    NetworkOutput: AddBridgeNetworkOutputRequestSchema.and(
-      z.any().openapi({ xml: { name: 'networkOutput' } }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Add an output to a bridge.', required: [] })
-  .openapi('AddBridgeOutputRequest')
-
-const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
-
-const InternalServerErrorExceptionSchema = z.any().openapi('InternalServerErrorException')
-
-const ForbiddenExceptionSchema = z.any().openapi('ForbiddenException')
-
-const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
-
-const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
-
-const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException')
-
-const ConflictExceptionSchema = z.any().openapi('ConflictException')
-
-const AddBridgeSourcesResponseSchema = z
-  .object({
-    BridgeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgeArn' },
-          description: 'The Amazon Resource Number (ARN) of the bridge.',
-        }),
-    ).exactOptional(),
-    Sources: ListOfBridgeSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sources' },
-          description: 'The sources that you added to this bridge.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddBridgeSourcesResponse')
-
-const AddBridgeFlowSourceRequestSchema = z
-  .object({
-    FlowArn: StringSchema.and(
-      z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'string') {
-            if (!new RegExp('^arn:.+:mediaconnect.+:flow:.+$').test(val)) {
-              ctx.addIssue({ code: 'custom' })
-            }
-          }
-        })
-        .openapi({
-          xml: { name: 'flowArn' },
-          description:
-            'The Amazon Resource Number (ARN) of the cloud flow to use as a source of this bridge.',
-        }),
-    ),
-    FlowVpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowVpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this source.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the flow source. This name is used to reference the source and must be unique among sources in this bridge.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['FlowArn', 'Name'],
-    description: 'Add a flow source to an existing bridge.',
-  })
-  .openapi('AddBridgeFlowSourceRequest')
-
-const AddBridgeNetworkSourceRequestSchema = z
-  .object({
-    MulticastIp: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'multicastIp' }, description: 'The network source multicast IP.' }),
-    ),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the network source. This name is used to reference the source and must be unique among sources in this bridge.',
-        }),
-    ),
-    NetworkName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkName' },
-          description: "The network source's gateway network name.",
-        }),
-    ),
-    Port: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'port' }, description: 'The network source port.' }),
-    ),
-    Protocol: ProtocolSchema.and(
-      z.any().openapi({ xml: { name: 'protocol' }, description: 'The network source protocol.' }),
-    ),
-  })
-  .openapi({
-    required: ['NetworkName', 'MulticastIp', 'Port', 'Protocol', 'Name'],
-    description: 'Add a network source to an existing bridge.',
-  })
-  .openapi('AddBridgeNetworkSourceRequest')
-
-const AddBridgeSourceRequestSchema = z
-  .object({
-    FlowSource: AddBridgeFlowSourceRequestSchema.and(
-      z.any().openapi({ xml: { name: 'flowSource' } }),
-    ).exactOptional(),
-    NetworkSource: AddBridgeNetworkSourceRequestSchema.and(
-      z.any().openapi({ xml: { name: 'networkSource' } }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Add a source to an existing bridge.', required: [] })
-  .openapi('AddBridgeSourceRequest')
+const ListOfEntitlementSchema = z.array(EntitlementSchema).openapi('ListOfEntitlement')
 
 const ColorimetrySchema = z
   .enum(['BT601', 'BT709', 'BT2020', 'BT2100', 'ST2065-1', 'ST2065-3', 'XYZ'])
@@ -930,80 +562,49 @@ const TcsSchema = z
 
 const FmtpSchema = z
   .object({
-    ChannelOrder: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelOrder' },
-          description: 'The format of the audio channel.',
-        }),
-    ).exactOptional(),
-    Colorimetry: ColorimetrySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'colorimetry' },
-          description: 'The format that is used for the representation of color.',
-        }),
-    ).exactOptional(),
-    ExactFramerate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'exactFramerate' },
-          description:
-            'The frame rate for the video stream, in frames/second. For example: 60000/1001. If you specify a whole number, MediaConnect uses a ratio of N/1. For example, if you specify 60, MediaConnect uses 60/1 as the exactFramerate.',
-        }),
-    ).exactOptional(),
-    Par: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'par' },
-          description: 'The pixel aspect ratio (PAR) of the video.',
-        }),
-    ).exactOptional(),
-    Range: RangeSchema.and(
-      z.any().openapi({ xml: { name: 'range' }, description: 'The encoding range of the video.' }),
-    ).exactOptional(),
-    ScanMode: ScanModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanMode' },
-          description: 'The type of compression that was used to smooth the video’s appearance',
-        }),
-    ).exactOptional(),
-    Tcs: TcsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tcs' },
-          description: 'The transfer characteristic system (TCS) that is used in the video.',
-        }),
-    ).exactOptional(),
+    ChannelOrder: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelOrder' },
+      description: 'The format of the audio channel.',
+    }),
+    Colorimetry: ColorimetrySchema.exactOptional().openapi({
+      xml: { name: 'colorimetry' },
+      description: 'The format that is used for the representation of color.',
+    }),
+    ExactFramerate: StringSchema.exactOptional().openapi({
+      xml: { name: 'exactFramerate' },
+      description:
+        'The frame rate for the video stream, in frames/second. For example: 60000/1001. If you specify a whole number, MediaConnect uses a ratio of N/1. For example, if you specify 60, MediaConnect uses 60/1 as the exactFramerate.',
+    }),
+    Par: StringSchema.exactOptional().openapi({
+      xml: { name: 'par' },
+      description: 'The pixel aspect ratio (PAR) of the video.',
+    }),
+    Range: RangeSchema.exactOptional().openapi({
+      xml: { name: 'range' },
+      description: 'The encoding range of the video.',
+    }),
+    ScanMode: ScanModeSchema.exactOptional().openapi({
+      xml: { name: 'scanMode' },
+      description: 'The type of compression that was used to smooth the video’s appearance',
+    }),
+    Tcs: TcsSchema.exactOptional().openapi({
+      xml: { name: 'tcs' },
+      description: 'The transfer characteristic system (TCS) that is used in the video.',
+    }),
   })
   .openapi({ description: 'FMTP', required: [] })
   .openapi('Fmtp')
 
 const MediaStreamAttributesSchema = z
   .object({
-    Fmtp: FmtpSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'fmtp' },
-          description: 'A set of parameters that define the media stream.',
-        }),
-    ),
-    Lang: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lang' },
-          description: 'The audio language, in a format that is recognized by the receiver.',
-        }),
-    ).exactOptional(),
+    Fmtp: FmtpSchema.openapi({
+      xml: { name: 'fmtp' },
+      description: 'A set of parameters that define the media stream.',
+    }),
+    Lang: StringSchema.exactOptional().openapi({
+      xml: { name: 'lang' },
+      description: 'The audio language, in a format that is recognized by the receiver.',
+    }),
   })
   .openapi({ required: ['Fmtp'], description: 'Attributes that are related to the media stream.' })
   .openapi('MediaStreamAttributes')
@@ -1014,66 +615,40 @@ const MediaStreamTypeSchema = z
 
 const MediaStreamSchema = z
   .object({
-    Attributes: MediaStreamAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attributes' },
-          description: 'Attributes that are related to the media stream.',
-        }),
-    ).exactOptional(),
-    ClockRate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clockRate' },
-          description: 'The sample rate for the stream. This value is measured in Hz.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description that can help you quickly identify what your media stream is used for.',
-        }),
-    ).exactOptional(),
-    Fmt: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'fmt' },
-          description:
-            'The format type number (sometimes referred to as RTP payload type) of the media stream. MediaConnect assigns this value to the media stream. For ST 2110 JPEG XS outputs, you need to provide this value to the receiver.',
-        }),
-    ),
-    MediaStreamId: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamId' },
-          description: 'A unique identifier for the media stream.',
-        }),
-    ),
-    MediaStreamName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamName' },
-          description: 'A name that helps you distinguish one media stream from another.',
-        }),
-    ),
-    MediaStreamType: MediaStreamTypeSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'mediaStreamType' }, description: 'The type of media stream.' }),
-    ),
-    VideoFormat: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'videoFormat' }, description: 'The resolution of the video.' }),
-    ).exactOptional(),
+    Attributes: MediaStreamAttributesSchema.exactOptional().openapi({
+      xml: { name: 'attributes' },
+      description: 'Attributes that are related to the media stream.',
+    }),
+    ClockRate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'clockRate' },
+      description: 'The sample rate for the stream. This value is measured in Hz.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description that can help you quickly identify what your media stream is used for.',
+    }),
+    Fmt: IntegerSchema.openapi({
+      xml: { name: 'fmt' },
+      description:
+        'The format type number (sometimes referred to as RTP payload type) of the media stream. MediaConnect assigns this value to the media stream. For ST 2110 JPEG XS outputs, you need to provide this value to the receiver.',
+    }),
+    MediaStreamId: IntegerSchema.openapi({
+      xml: { name: 'mediaStreamId' },
+      description: 'A unique identifier for the media stream.',
+    }),
+    MediaStreamName: StringSchema.openapi({
+      xml: { name: 'mediaStreamName' },
+      description: 'A name that helps you distinguish one media stream from another.',
+    }),
+    MediaStreamType: MediaStreamTypeSchema.openapi({
+      xml: { name: 'mediaStreamType' },
+      description: 'The type of media stream.',
+    }),
+    VideoFormat: StringSchema.exactOptional().openapi({
+      xml: { name: 'videoFormat' },
+      description: 'The resolution of the video.',
+    }),
   })
   .openapi({
     required: ['MediaStreamType', 'MediaStreamId', 'MediaStreamName', 'Fmt'],
@@ -1084,450 +659,228 @@ const MediaStreamSchema = z
 
 const ListOfMediaStreamSchema = z.array(MediaStreamSchema).openapi('ListOfMediaStream')
 
-const AddFlowMediaStreamsResponseSchema = z
-  .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that you added media streams to.',
-        }),
-    ).exactOptional(),
-    MediaStreams: ListOfMediaStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreams' },
-          description: 'The media streams that you added to the flow.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddFlowMediaStreamsResponse')
+const FailoverModeSchema = z.enum(['MERGE', 'FAILOVER']).openapi('FailoverMode')
 
-const FmtpRequestSchema = z
+const SourcePrioritySchema = z
   .object({
-    ChannelOrder: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelOrder' },
-          description: 'The format of the audio channel.',
-        }),
-    ).exactOptional(),
-    Colorimetry: ColorimetrySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'colorimetry' },
-          description: 'The format that is used for the representation of color.',
-        }),
-    ).exactOptional(),
-    ExactFramerate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'exactFramerate' },
-          description:
-            'The frame rate for the video stream, in frames/second. For example: 60000/1001. If you specify a whole number, MediaConnect uses a ratio of N/1. For example, if you specify 60, MediaConnect uses 60/1 as the exactFramerate.',
-        }),
-    ).exactOptional(),
-    Par: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'par' },
-          description: 'The pixel aspect ratio (PAR) of the video.',
-        }),
-    ).exactOptional(),
-    Range: RangeSchema.and(
-      z.any().openapi({ xml: { name: 'range' }, description: 'The encoding range of the video.' }),
-    ).exactOptional(),
-    ScanMode: ScanModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scanMode' },
-          description: 'The type of compression that was used to smooth the video’s appearance.',
-        }),
-    ).exactOptional(),
-    Tcs: TcsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tcs' },
-          description: 'The transfer characteristic system (TCS) that is used in the video.',
-        }),
-    ).exactOptional(),
+    PrimarySource: StringSchema.exactOptional().openapi({
+      xml: { name: 'primarySource' },
+      description: 'The name of the source you choose as the primary source for this flow.',
+    }),
   })
   .openapi({
-    description: 'The settings that you want to use to define the media stream.',
+    description:
+      'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
     required: [],
   })
-  .openapi('FmtpRequest')
+  .openapi('SourcePriority')
 
-const MediaStreamAttributesRequestSchema = z
+const StateSchema = z.enum(['ENABLED', 'DISABLED']).openapi('State')
+
+const FailoverConfigSchema = z
   .object({
-    Fmtp: FmtpRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'fmtp' },
-          description: 'The settings that you want to use to define the media stream.',
-        }),
-    ).exactOptional(),
-    Lang: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lang' },
-          description: 'The audio language, in a format that is recognized by the receiver.',
-        }),
-    ).exactOptional(),
+    FailoverMode: FailoverModeSchema.exactOptional().openapi({
+      xml: { name: 'failoverMode' },
+      description:
+        'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
+    }),
+    RecoveryWindow: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'recoveryWindow' },
+      description: 'Search window time to look for dash-7 packets',
+    }),
+    SourcePriority: SourcePrioritySchema.exactOptional().openapi({
+      xml: { name: 'sourcePriority' },
+      description:
+        'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
+    }),
+    State: StateSchema.exactOptional().openapi({ xml: { name: 'state' } }),
   })
-  .openapi({ description: 'Attributes that are related to the media stream.', required: [] })
-  .openapi('MediaStreamAttributesRequest')
+  .openapi({ description: 'The settings for source failover.', required: [] })
+  .openapi('FailoverConfig')
 
-const AddMediaStreamRequestSchema = z
+const StatusSchema = z
+  .enum(['STANDBY', 'ACTIVE', 'UPDATING', 'DELETING', 'STARTING', 'STOPPING', 'ERROR'])
+  .openapi('Status')
+
+const NetworkInterfaceTypeSchema = z.enum(['ena', 'efa']).openapi('NetworkInterfaceType')
+
+const VpcInterfaceSchema = z
   .object({
-    Attributes: MediaStreamAttributesRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attributes' },
-          description: 'The attributes that you want to assign to the new media stream.',
-        }),
-    ).exactOptional(),
-    ClockRate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clockRate' },
-          description:
-            'The sample rate (in Hz) for the stream. If the media stream type is video or ancillary data, set this value to 90000. If the media stream type is audio, set this value to either 48000 or 96000.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description that can help you quickly identify what your media stream is used for.',
-        }),
-    ).exactOptional(),
-    MediaStreamId: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamId' },
-          description: 'A unique identifier for the media stream.',
-        }),
-    ),
-    MediaStreamName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamName' },
-          description: 'A name that helps you distinguish one media stream from another.',
-        }),
-    ),
-    MediaStreamType: MediaStreamTypeSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'mediaStreamType' }, description: 'The type of media stream.' }),
-    ),
-    VideoFormat: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'videoFormat' }, description: 'The resolution of the video.' }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: 'Immutable and has to be a unique against other VpcInterfaces in this Flow.',
+    }),
+    NetworkInterfaceIds: ListOfStringSchema.openapi({
+      xml: { name: 'networkInterfaceIds' },
+      description: "IDs of the network interfaces created in customer's account by MediaConnect.",
+    }),
+    NetworkInterfaceType: NetworkInterfaceTypeSchema.openapi({
+      xml: { name: 'networkInterfaceType' },
+      description: 'The type of network interface.',
+    }),
+    RoleArn: StringSchema.openapi({
+      xml: { name: 'roleArn' },
+      description: "Role Arn MediaConnect can assumes to create ENIs in customer's account",
+    }),
+    SecurityGroupIds: ListOfStringSchema.openapi({
+      xml: { name: 'securityGroupIds' },
+      description: 'Security Group IDs to be used on ENI.',
+    }),
+    SubnetId: StringSchema.openapi({
+      xml: { name: 'subnetId' },
+      description: 'Subnet must be in the AZ of the Flow',
+    }),
   })
   .openapi({
-    required: ['MediaStreamType', 'MediaStreamId', 'MediaStreamName'],
-    description: 'The media stream that you want to add to the flow.',
+    required: [
+      'NetworkInterfaceType',
+      'NetworkInterfaceIds',
+      'SubnetId',
+      'SecurityGroupIds',
+      'RoleArn',
+      'Name',
+    ],
+    description: 'The settings for a VPC Source.',
   })
-  .openapi('AddMediaStreamRequest')
+  .openapi('VpcInterface')
 
-const DestinationConfigurationSchema = z
+const ListOfVpcInterfaceSchema = z.array(VpcInterfaceSchema).openapi('ListOfVpcInterface')
+
+const MaintenanceDaySchema = z
+  .enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
+  .openapi('MaintenanceDay')
+
+const MaintenanceSchema = z
   .object({
-    DestinationIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationIp' },
-          description: 'The IP address where contents of the media stream will be sent.',
-        }),
-    ),
-    DestinationPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationPort' },
-          description:
-            'The port to use when the content of the media stream is distributed to the output.',
-        }),
-    ),
-    Interface: InterfaceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'interface' },
-          description:
-            'The VPC interface that is used for the media stream associated with the output.',
-        }),
-    ),
-    OutboundIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outboundIp' },
-          description:
-            'The IP address that the receiver requires in order to establish a connection with the flow. This value is represented by the elastic network interface IP address of the VPC. This field applies only to outputs that use the CDI or ST 2110 JPEG XS protocol.',
-        }),
-    ),
+    MaintenanceDay: MaintenanceDaySchema.exactOptional().openapi({
+      xml: { name: 'maintenanceDay' },
+      description:
+        'A day of a week when the maintenance will happen. Use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
+    }),
+    MaintenanceDeadline: StringSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceDeadline' },
+      description:
+        'The Maintenance has to be performed before this deadline in ISO UTC format. Example: 2021-01-30T08:30:00Z.',
+    }),
+    MaintenanceScheduledDate: StringSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceScheduledDate' },
+      description:
+        'A scheduled date in ISO UTC format when the maintenance will happen. Use YYYY-MM-DD format. Example: 2021-01-30.',
+    }),
+    MaintenanceStartHour: StringSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceStartHour' },
+      description:
+        'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
+    }),
+  })
+  .openapi({ description: 'The maintenance setting of a flow', required: [] })
+  .openapi('Maintenance')
+
+type FlowType = {
+  AvailabilityZone: z.infer<typeof StringSchema> & unknown
+  Description?: z.infer<typeof StringSchema> & unknown
+  EgressIp?: z.infer<typeof StringSchema> & unknown
+  Entitlements: z.infer<typeof ListOfEntitlementSchema> & unknown
+  FlowArn: z.infer<typeof StringSchema> & unknown
+  MediaStreams?: z.infer<typeof ListOfMediaStreamSchema> & unknown
+  Name: z.infer<typeof StringSchema> & unknown
+  Outputs: z.infer<typeof ListOfOutputSchema> & unknown
+  Source: z.infer<typeof SourceSchema> & unknown
+  SourceFailoverConfig?: z.infer<typeof FailoverConfigSchema> & unknown
+  Sources?: z.infer<typeof ListOfSourceSchema> & unknown
+  Status: z.infer<typeof StatusSchema> & unknown
+  VpcInterfaces?: z.infer<typeof ListOfVpcInterfaceSchema> & unknown
+  Maintenance?: z.infer<typeof MaintenanceSchema> & unknown
+}
+
+const FlowSchema: z.ZodType<FlowType> = z
+  .object({
+    AvailabilityZone: StringSchema.openapi({
+      xml: { name: 'availabilityZone' },
+      description:
+        'The Availability Zone that you want to create the flow in. These options are limited to the Availability Zones within the current AWS.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description of the flow. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
+    }),
+    EgressIp: StringSchema.exactOptional().openapi({
+      xml: { name: 'egressIp' },
+      description: 'The IP address from which video will be sent to output destinations.',
+    }),
+    Entitlements: ListOfEntitlementSchema.openapi({
+      xml: { name: 'entitlements' },
+      description: 'The entitlements in this flow.',
+    }),
+    FlowArn: StringSchema.openapi({
+      xml: { name: 'flowArn' },
+      description: 'The Amazon Resource Name (ARN) of the flow.',
+    }),
+    MediaStreams: ListOfMediaStreamSchema.exactOptional().openapi({
+      xml: { name: 'mediaStreams' },
+      description:
+        'The media streams that are associated with the flow. After you associate a media stream with a source, you can also associate it with outputs on the flow.',
+    }),
+    Name: StringSchema.openapi({ xml: { name: 'name' }, description: 'The name of the flow.' }),
+    Outputs: ListOfOutputSchema.openapi({
+      xml: { name: 'outputs' },
+      description: 'The outputs in this flow.',
+    }),
+    Source: SourceSchema.openapi({ xml: { name: 'source' } }),
+    SourceFailoverConfig: FailoverConfigSchema.exactOptional().openapi({
+      xml: { name: 'sourceFailoverConfig' },
+    }),
+    Sources: ListOfSourceSchema.exactOptional().openapi({ xml: { name: 'sources' } }),
+    Status: StatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the flow.',
+    }),
+    VpcInterfaces: ListOfVpcInterfaceSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaces' },
+      description: 'The VPC Interfaces for this flow.',
+    }),
+    Maintenance: MaintenanceSchema.exactOptional().openapi({ xml: { name: 'maintenance' } }),
   })
   .openapi({
-    required: ['DestinationIp', 'DestinationPort', 'Interface', 'OutboundIp'],
-    description: 'The transport parameters that are associated with an outbound media stream.',
+    required: [
+      'Status',
+      'AvailabilityZone',
+      'Source',
+      'Name',
+      'Entitlements',
+      'Outputs',
+      'FlowArn',
+    ],
+    description: 'The settings for a flow, including its source, outputs, and entitlements.',
   })
-  .openapi('DestinationConfiguration')
+  .openapi('Flow')
 
-const ListOfDestinationConfigurationSchema = z
-  .array(DestinationConfigurationSchema)
-  .openapi('ListOfDestinationConfiguration')
+type CreateFlowResponseType = { Flow?: z.infer<typeof FlowSchema> & unknown }
 
-const DoubleSchema = z.float64().openapi('Double')
-
-const EncoderProfileSchema = z.enum(['main', 'high']).openapi('EncoderProfile')
-
-const EncodingParametersSchema = z
+const MessagesSchema = z
   .object({
-    CompressionFactor: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'compressionFactor' },
-          description:
-            'A value that is used to calculate compression for an output. The bitrate of the output is calculated as follows: Output bitrate = (1 / compressionFactor) * (source bitrate) This property only applies to outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol. Valid values are floating point numbers in the range of 3.0 to 10.0, inclusive.',
-        }),
-    ),
-    EncoderProfile: EncoderProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encoderProfile' },
-          description:
-            'A setting on the encoder that drives compression settings. This property only applies to video media streams associated with outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol.',
-        }),
-    ),
+    Errors: ListOfStringSchema.openapi({
+      xml: { name: 'errors' },
+      description: 'A list of errors that might have been generated from processes on this flow.',
+    }),
   })
-  .openapi({
-    required: ['EncoderProfile', 'CompressionFactor'],
-    description:
-      'A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source.',
-  })
-  .openapi('EncodingParameters')
+  .openapi({ required: ['Errors'], description: 'Messages that provide the state of the flow.' })
+  .openapi('Messages')
 
-const MediaStreamOutputConfigurationSchema = z
-  .object({
-    DestinationConfigurations: ListOfDestinationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationConfigurations' },
-          description:
-            'The transport parameters that are associated with each outbound media stream.',
-        }),
-    ).exactOptional(),
-    EncodingName: EncodingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encodingName' },
-          description:
-            'The format that was used to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video, 2110 streams, set the encoding name to raw. For video, JPEG XS streams, set the encoding name to jxsv.',
-        }),
-    ),
-    EncodingParameters: EncodingParametersSchema.and(
-      z.any().openapi({ xml: { name: 'encodingParameters' }, description: 'Encoding parameters' }),
-    ).exactOptional(),
-    MediaStreamName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamName' },
-          description: 'The name of the media stream.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['MediaStreamName', 'EncodingName'],
-    description:
-      'The media stream that is associated with the output, and the parameters for that association.',
-  })
-  .openapi('MediaStreamOutputConfiguration')
+type DescribeFlowResponseType = {
+  Flow?: z.infer<typeof FlowSchema> & unknown
+  Messages?: z.infer<typeof MessagesSchema> & unknown
+}
 
-const ListOfMediaStreamOutputConfigurationSchema = z
-  .array(MediaStreamOutputConfigurationSchema)
-  .openapi('ListOfMediaStreamOutputConfiguration')
-
-const ListOfIntegerSchema = z.array(IntegerSchema).openapi('ListOfInteger')
-
-const OutputSchema = z
-  .object({
-    DataTransferSubscriberFeePercent: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataTransferSubscriberFeePercent' },
-          description:
-            'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'A description of the output.' }),
-    ).exactOptional(),
-    Destination: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destination' },
-          description: 'The address where you want to send the output.',
-        }),
-    ).exactOptional(),
-    Encryption: EncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryption' },
-          description:
-            'The type of key used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
-        }),
-    ).exactOptional(),
-    EntitlementArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlementArn' },
-          description:
-            "The ARN of the entitlement on the originator''s flow. This value is relevant only on entitled flows.",
-        }),
-    ).exactOptional(),
-    ListenerAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'listenerAddress' },
-          description:
-            'The IP address that the receiver requires in order to establish a connection with the flow. For public networking, the ListenerAddress is represented by the elastic IP address of the flow. For private networking, the ListenerAddress is represented by the elastic network interface IP address of the VPC. This field applies only to outputs that use the Zixi pull or SRT listener protocol.',
-        }),
-    ).exactOptional(),
-    MediaLiveInputArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaLiveInputArn' },
-          description:
-            'The input ARN of the AWS Elemental MediaLive channel. This parameter is relevant only for outputs that were added by creating a MediaLive input.',
-        }),
-    ).exactOptional(),
-    MediaStreamOutputConfigurations: ListOfMediaStreamOutputConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamOutputConfigurations' },
-          description:
-            'The configuration for each media stream that is associated with the output.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the output. This value must be unique within the current flow.',
-        }),
-    ),
-    OutputArn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'outputArn' }, description: 'The ARN of the output.' }),
-    ),
-    Port: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'port' },
-          description: 'The port to use when content is distributed to this output.',
-        }),
-    ).exactOptional(),
-    Transport: TransportSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'transport' },
-          description: 'Attributes related to the transport stream that are used in the output.',
-        }),
-    ).exactOptional(),
-    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this output.',
-        }),
-    ).exactOptional(),
-    BridgeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgeArn' },
-          description: 'The ARN of the bridge that added this output.',
-        }),
-    ).exactOptional(),
-    BridgePorts: ListOfIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgePorts' },
-          description: 'The bridge output ports currently in use.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['OutputArn', 'Name'], description: 'The settings for an output.' })
-  .openapi('Output')
-
-const ListOfOutputSchema = z.array(OutputSchema).openapi('ListOfOutput')
-
-const AddFlowOutputsResponseSchema = z
-  .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that these outputs were added to.',
-        }),
-    ).exactOptional(),
-    Outputs: ListOfOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outputs' },
-          description: 'The details of the newly added outputs.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddFlowOutputsResponse')
+type UpdateFlowResponseType = { Flow?: z.infer<typeof FlowSchema> & unknown }
 
 const InterfaceRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the VPC interface.' }),
-    ),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the VPC interface.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -1538,33 +891,21 @@ const InterfaceRequestSchema = z
 
 const DestinationConfigurationRequestSchema = z
   .object({
-    DestinationIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationIp' },
-          description:
-            'The IP address where you want MediaConnect to send contents of the media stream.',
-        }),
-    ),
-    DestinationPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationPort' },
-          description:
-            'The port that you want MediaConnect to use when it distributes the media stream to the output.',
-        }),
-    ),
-    Interface: InterfaceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'interface' },
-          description:
-            'The VPC interface that you want to use for the media stream associated with the output.',
-        }),
-    ),
+    DestinationIp: StringSchema.openapi({
+      xml: { name: 'destinationIp' },
+      description:
+        'The IP address where you want MediaConnect to send contents of the media stream.',
+    }),
+    DestinationPort: IntegerSchema.openapi({
+      xml: { name: 'destinationPort' },
+      description:
+        'The port that you want MediaConnect to use when it distributes the media stream to the output.',
+    }),
+    Interface: InterfaceRequestSchema.openapi({
+      xml: { name: 'interface' },
+      description:
+        'The VPC interface that you want to use for the media stream associated with the output.',
+    }),
   })
   .openapi({
     required: ['DestinationIp', 'DestinationPort', 'Interface'],
@@ -1579,24 +920,16 @@ const ListOfDestinationConfigurationRequestSchema = z
 
 const EncodingParametersRequestSchema = z
   .object({
-    CompressionFactor: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'compressionFactor' },
-          description:
-            'A value that is used to calculate compression for an output. The bitrate of the output is calculated as follows: Output bitrate = (1 / compressionFactor) * (source bitrate) This property only applies to outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol. Valid values are floating point numbers in the range of 3.0 to 10.0, inclusive.',
-        }),
-    ),
-    EncoderProfile: EncoderProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encoderProfile' },
-          description:
-            'A setting on the encoder that drives compression settings. This property only applies to video media streams associated with outputs that use the ST 2110 JPEG XS protocol, if at least one source on the flow uses the CDI protocol.',
-        }),
-    ),
+    CompressionFactor: DoubleSchema.openapi({
+      xml: { name: 'compressionFactor' },
+      description:
+        'A value that is used to calculate compression for an output. The bitrate of the output is calculated as follows: Output bitrate = (1 / compressionFactor) * (source bitrate) This property only applies to outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol. Valid values are floating point numbers in the range of 3.0 to 10.0, inclusive.',
+    }),
+    EncoderProfile: EncoderProfileSchema.openapi({
+      xml: { name: 'encoderProfile' },
+      description:
+        'A setting on the encoder that drives compression settings. This property only applies to video media streams associated with outputs that use the ST 2110 JPEG XS protocol, if at least one source on the flow uses the CDI protocol.',
+    }),
   })
   .openapi({
     required: ['EncoderProfile', 'CompressionFactor'],
@@ -1607,40 +940,24 @@ const EncodingParametersRequestSchema = z
 
 const MediaStreamOutputConfigurationRequestSchema = z
   .object({
-    DestinationConfigurations: ListOfDestinationConfigurationRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationConfigurations' },
-          description: 'The transport parameters that you want to associate with the media stream.',
-        }),
-    ).exactOptional(),
-    EncodingName: EncodingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encodingName' },
-          description:
-            'The format that will be used to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video, 2110 streams, set the encoding name to raw. For video, JPEG XS streams, set the encoding name to jxsv.',
-        }),
-    ),
-    EncodingParameters: EncodingParametersRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encodingParameters' },
-          description:
-            'A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source.',
-        }),
-    ).exactOptional(),
-    MediaStreamName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamName' },
-          description: 'The name of the media stream that is associated with the output.',
-        }),
-    ),
+    DestinationConfigurations: ListOfDestinationConfigurationRequestSchema.exactOptional().openapi({
+      xml: { name: 'destinationConfigurations' },
+      description: 'The transport parameters that you want to associate with the media stream.',
+    }),
+    EncodingName: EncodingNameSchema.openapi({
+      xml: { name: 'encodingName' },
+      description:
+        'The format that will be used to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video, 2110 streams, set the encoding name to raw. For video, JPEG XS streams, set the encoding name to jxsv.',
+    }),
+    EncodingParameters: EncodingParametersRequestSchema.exactOptional().openapi({
+      xml: { name: 'encodingParameters' },
+      description:
+        'A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source.',
+    }),
+    MediaStreamName: StringSchema.openapi({
+      xml: { name: 'mediaStreamName' },
+      description: 'The name of the media stream that is associated with the output.',
+    }),
   })
   .openapi({
     required: ['MediaStreamName', 'EncodingName'],
@@ -1655,312 +972,95 @@ const ListOfMediaStreamOutputConfigurationRequestSchema = z
 
 const AddOutputRequestSchema = z
   .object({
-    CidrAllowList: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cidrAllowList' },
-          description:
-            'The range of IP addresses that should be allowed to initiate output requests to this flow. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description of the output. This description appears only on the AWS Elemental MediaConnect console and will not be seen by the end user.',
-        }),
-    ).exactOptional(),
-    Destination: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destination' },
-          description: 'The IP address from which video will be sent to output destinations.',
-        }),
-    ).exactOptional(),
-    Encryption: EncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryption' },
-          description:
-            'The type of key used for the encryption. If no keyType is provided, the service will use the default setting (static-key). Allowable encryption types: static-key.',
-        }),
-    ).exactOptional(),
-    MaxLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxLatency' },
-          description:
-            'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
-        }),
-    ).exactOptional(),
-    MediaStreamOutputConfigurations: ListOfMediaStreamOutputConfigurationRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamOutputConfigurations' },
-          description:
-            'The media streams that are associated with the output, and the parameters for those associations.',
-        }),
-    ).exactOptional(),
-    MinLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minLatency' },
-          description:
-            'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the output. This value must be unique within the current flow.',
-        }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'port' },
-          description: 'The port to use when content is distributed to this output.',
-        }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'protocol' }, description: 'The protocol to use for the output.' }),
-    ),
-    RemoteId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remoteId' },
-          description: 'The remote ID for the Zixi-pull output stream.',
-        }),
-    ).exactOptional(),
-    SenderControlPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderControlPort' },
-          description:
-            'The port that the flow uses to send outbound requests to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SmoothingLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'smoothingLatency' },
-          description: 'The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams.',
-        }),
-    ).exactOptional(),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'streamId' },
-          description:
-            'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
-        }),
-    ).exactOptional(),
-    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this output.',
-        }),
-    ).exactOptional(),
+    CidrAllowList: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'cidrAllowList' },
+      description:
+        'The range of IP addresses that should be allowed to initiate output requests to this flow. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description of the output. This description appears only on the AWS Elemental MediaConnect console and will not be seen by the end user.',
+    }),
+    Destination: StringSchema.exactOptional().openapi({
+      xml: { name: 'destination' },
+      description: 'The IP address from which video will be sent to output destinations.',
+    }),
+    Encryption: EncryptionSchema.exactOptional().openapi({
+      xml: { name: 'encryption' },
+      description:
+        'The type of key used for the encryption. If no keyType is provided, the service will use the default setting (static-key). Allowable encryption types: static-key.',
+    }),
+    MaxLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxLatency' },
+      description:
+        'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
+    }),
+    MediaStreamOutputConfigurations:
+      ListOfMediaStreamOutputConfigurationRequestSchema.exactOptional().openapi({
+        xml: { name: 'mediaStreamOutputConfigurations' },
+        description:
+          'The media streams that are associated with the output, and the parameters for those associations.',
+      }),
+    MinLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minLatency' },
+      description:
+        'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the output. This value must be unique within the current flow.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'port' },
+      description: 'The port to use when content is distributed to this output.',
+    }),
+    Protocol: ProtocolSchema.openapi({
+      xml: { name: 'protocol' },
+      description: 'The protocol to use for the output.',
+    }),
+    RemoteId: StringSchema.exactOptional().openapi({
+      xml: { name: 'remoteId' },
+      description: 'The remote ID for the Zixi-pull output stream.',
+    }),
+    SenderControlPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'senderControlPort' },
+      description:
+        'The port that the flow uses to send outbound requests to initiate connection with the sender.',
+    }),
+    SmoothingLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'smoothingLatency' },
+      description: 'The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams.',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      xml: { name: 'streamId' },
+      description:
+        'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
+    }),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this output.',
+    }),
   })
   .openapi({ required: ['Protocol'], description: 'The output that you want to add to this flow.' })
   .openapi('AddOutputRequest')
 
-const AddFlowOutputs420ExceptionSchema = z.any().openapi('AddFlowOutputs420Exception')
+const ListOfAddOutputRequestSchema = z
+  .array(AddOutputRequestSchema)
+  .openapi('ListOfAddOutputRequest')
 
-const SourceSchema: z.ZodType<SourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        DataTransferSubscriberFeePercent: IntegerSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'dataTransferSubscriberFeePercent' },
-              description:
-                'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
-            }),
-        ).exactOptional(),
-        Decryption: EncryptionSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'decryption' },
-              description:
-                'The type of encryption that is used on the content ingested from this source.',
-            }),
-        ).exactOptional(),
-        Description: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'description' },
-              description:
-                'A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
-            }),
-        ).exactOptional(),
-        EntitlementArn: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'entitlementArn' },
-              description:
-                "The ARN of the entitlement that allows you to subscribe to content that comes from another AWS account. The entitlement is set by the content originator and the ARN is generated as part of the originator's flow.",
-            }),
-        ).exactOptional(),
-        IngestIp: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'ingestIp' },
-              description:
-                'The IP address that the flow will be listening on for incoming content.',
-            }),
-        ).exactOptional(),
-        IngestPort: IntegerSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'ingestPort' },
-              description: 'The port that the flow will be listening on for incoming content.',
-            }),
-        ).exactOptional(),
-        MediaStreamSourceConfigurations: ListOfMediaStreamSourceConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'mediaStreamSourceConfigurations' },
-              description:
-                'The media streams that are associated with the source, and the parameters for those associations.',
-            }),
-        ).exactOptional(),
-        Name: StringSchema.and(
-          z.any().openapi({ xml: { name: 'name' }, description: 'The name of the source.' }),
-        ),
-        SenderControlPort: IntegerSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'senderControlPort' },
-              description:
-                'The port that the flow uses to send outbound requests to initiate connection with the sender.',
-            }),
-        ).exactOptional(),
-        SenderIpAddress: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'senderIpAddress' },
-              description:
-                'The IP address that the flow communicates with to initiate connection with the sender.',
-            }),
-        ).exactOptional(),
-        SourceArn: StringSchema.and(
-          z.any().openapi({ xml: { name: 'sourceArn' }, description: 'The ARN of the source.' }),
-        ),
-        Transport: TransportSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'transport' },
-              description:
-                'Attributes related to the transport stream that are used in the source.',
-            }),
-        ).exactOptional(),
-        VpcInterfaceName: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'vpcInterfaceName' },
-              description: 'The name of the VPC interface that is used for this source.',
-            }),
-        ).exactOptional(),
-        WhitelistCidr: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'whitelistCidr' },
-              description:
-                'The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-            }),
-        ).exactOptional(),
-        GatewayBridgeSource: GatewayBridgeSourceSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'gatewayBridgeSource' },
-              description:
-                'The source configuration for cloud flows receiving a stream from a bridge.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['Name', 'SourceArn'],
-        description: 'The settings for the source of the flow.',
-      }),
-  )
-  .openapi('Source')
-
-const ListOfSourceSchema = z.array(SourceSchema).openapi('ListOfSource')
-
-const AddFlowSourcesResponseSchema = z
-  .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that these sources were added to.',
-        }),
-    ).exactOptional(),
-    Sources: ListOfSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sources' },
-          description: 'The details of the newly added sources.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddFlowSourcesResponse')
+type AddFlowOutputsRequestType = { Outputs: z.infer<typeof ListOfAddOutputRequestSchema> & unknown }
 
 const InputConfigurationRequestSchema = z
   .object({
-    InputPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'inputPort' },
-          description: 'The port that you want the flow to listen on for an incoming media stream.',
-        }),
-    ),
-    Interface: InterfaceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'interface' },
-          description: 'The VPC interface that you want to use for the incoming media stream.',
-        }),
-    ),
+    InputPort: IntegerSchema.openapi({
+      xml: { name: 'inputPort' },
+      description: 'The port that you want the flow to listen on for an incoming media stream.',
+    }),
+    Interface: InterfaceRequestSchema.openapi({
+      xml: { name: 'interface' },
+      description: 'The VPC interface that you want to use for the incoming media stream.',
+    }),
   })
   .openapi({
     required: ['InputPort', 'Interface'],
@@ -1975,31 +1075,19 @@ const ListOfInputConfigurationRequestSchema = z
 
 const MediaStreamSourceConfigurationRequestSchema = z
   .object({
-    EncodingName: EncodingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encodingName' },
-          description:
-            'The format you want to use to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video, 2110 streams, set the encoding name to raw. For video, JPEG XS streams, set the encoding name to jxsv.',
-        }),
-    ),
-    InputConfigurations: ListOfInputConfigurationRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'inputConfigurations' },
-          description: 'The transport parameters that you want to associate with the media stream.',
-        }),
-    ).exactOptional(),
-    MediaStreamName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamName' },
-          description: 'The name of the media stream.',
-        }),
-    ),
+    EncodingName: EncodingNameSchema.openapi({
+      xml: { name: 'encodingName' },
+      description:
+        'The format you want to use to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video, 2110 streams, set the encoding name to raw. For video, JPEG XS streams, set the encoding name to jxsv.',
+    }),
+    InputConfigurations: ListOfInputConfigurationRequestSchema.exactOptional().openapi({
+      xml: { name: 'inputConfigurations' },
+      description: 'The transport parameters that you want to associate with the media stream.',
+    }),
+    MediaStreamName: StringSchema.openapi({
+      xml: { name: 'mediaStreamName' },
+      description: 'The name of the media stream.',
+    }),
   })
   .openapi({
     required: ['MediaStreamName', 'EncodingName'],
@@ -2028,14 +1116,10 @@ const SetGatewayBridgeSourceRequestSchema = z
           description: 'The ARN of the bridge feeding this flow.',
         }),
     ),
-    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this bridge source.',
-        }),
-    ).exactOptional(),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this bridge source.',
+    }),
   })
   .openapi({
     required: ['BridgeArn'],
@@ -2045,24 +1129,16 @@ const SetGatewayBridgeSourceRequestSchema = z
 
 const SetSourceRequestSchema = z
   .object({
-    Decryption: EncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'decryption' },
-          description:
-            'The type of encryption that is used on the content ingested from this source. Allowable encryption types: static-key.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
-        }),
-    ).exactOptional(),
+    Decryption: EncryptionSchema.exactOptional().openapi({
+      xml: { name: 'decryption' },
+      description:
+        'The type of encryption that is used on the content ingested from this source. Allowable encryption types: static-key.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
+    }),
     EntitlementArn: StringSchema.and(
       z
         .unknown()
@@ -2079,276 +1155,250 @@ const SetSourceRequestSchema = z
             "The ARN of the entitlement that allows you to subscribe to this flow. The entitlement is set by the flow originator, and the ARN is generated as part of the originator's flow.",
         }),
     ).exactOptional(),
-    IngestPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ingestPort' },
-          description: 'The port that the flow will be listening on for incoming content.',
-        }),
-    ).exactOptional(),
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.',
-        }),
-    ).exactOptional(),
-    MaxLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxLatency' },
-          description:
-            'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
-        }),
-    ).exactOptional(),
-    MaxSyncBuffer: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxSyncBuffer' },
-          description:
-            'The size of the buffer (in milliseconds) to use to sync incoming source data.',
-        }),
-    ).exactOptional(),
-    MediaStreamSourceConfigurations: ListOfMediaStreamSourceConfigurationRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamSourceConfigurations' },
-          description:
-            'The media streams that are associated with the source, and the parameters for those associations.',
-        }),
-    ).exactOptional(),
-    MinLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minLatency' },
-          description:
-            'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the source.' }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'protocol' },
-          description: 'The protocol that is used by the source.',
-        }),
-    ).exactOptional(),
-    SenderControlPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderControlPort' },
-          description:
-            'The port that the flow uses to send outbound requests to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SenderIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderIpAddress' },
-          description:
-            'The IP address that the flow communicates with to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SourceListenerAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceListenerAddress' },
-          description: 'Source IP or domain name for SRT-caller protocol.',
-        }),
-    ).exactOptional(),
-    SourceListenerPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceListenerPort' },
-          description: 'Source port for SRT-caller protocol.',
-        }),
-    ).exactOptional(),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'streamId' },
-          description:
-            'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
-        }),
-    ).exactOptional(),
-    VpcInterfaceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceName' },
-          description: 'The name of the VPC interface to use for this source.',
-        }),
-    ).exactOptional(),
-    WhitelistCidr: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'whitelistCidr' },
-          description:
-            'The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-        }),
-    ).exactOptional(),
-    GatewayBridgeSource: SetGatewayBridgeSourceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayBridgeSource' },
-          description: 'The source configuration for cloud flows receiving a stream from a bridge.',
-        }),
-    ).exactOptional(),
+    IngestPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'ingestPort' },
+      description: 'The port that the flow will be listening on for incoming content.',
+    }),
+    MaxBitrate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.',
+    }),
+    MaxLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxLatency' },
+      description:
+        'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
+    }),
+    MaxSyncBuffer: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxSyncBuffer' },
+      description: 'The size of the buffer (in milliseconds) to use to sync incoming source data.',
+    }),
+    MediaStreamSourceConfigurations:
+      ListOfMediaStreamSourceConfigurationRequestSchema.exactOptional().openapi({
+        xml: { name: 'mediaStreamSourceConfigurations' },
+        description:
+          'The media streams that are associated with the source, and the parameters for those associations.',
+      }),
+    MinLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minLatency' },
+      description:
+        'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the source.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      xml: { name: 'protocol' },
+      description: 'The protocol that is used by the source.',
+    }),
+    SenderControlPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'senderControlPort' },
+      description:
+        'The port that the flow uses to send outbound requests to initiate connection with the sender.',
+    }),
+    SenderIpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'senderIpAddress' },
+      description:
+        'The IP address that the flow communicates with to initiate connection with the sender.',
+    }),
+    SourceListenerAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceListenerAddress' },
+      description: 'Source IP or domain name for SRT-caller protocol.',
+    }),
+    SourceListenerPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'sourceListenerPort' },
+      description: 'Source port for SRT-caller protocol.',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      xml: { name: 'streamId' },
+      description:
+        'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
+    }),
+    VpcInterfaceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceName' },
+      description: 'The name of the VPC interface to use for this source.',
+    }),
+    WhitelistCidr: StringSchema.exactOptional().openapi({
+      xml: { name: 'whitelistCidr' },
+      description:
+        'The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    GatewayBridgeSource: SetGatewayBridgeSourceRequestSchema.exactOptional().openapi({
+      xml: { name: 'gatewayBridgeSource' },
+      description: 'The source configuration for cloud flows receiving a stream from a bridge.',
+    }),
   })
   .openapi({ description: 'The settings for the source of the flow.', required: [] })
   .openapi('SetSourceRequest')
 
-const NetworkInterfaceTypeSchema = z.enum(['ena', 'efa']).openapi('NetworkInterfaceType')
+const ListOfSetSourceRequestSchema = z
+  .array(SetSourceRequestSchema)
+  .openapi('ListOfSetSourceRequest')
 
-const VpcInterfaceSchema = z
+type AddFlowSourcesRequestType = { Sources: z.infer<typeof ListOfSetSourceRequestSchema> & unknown }
+
+const GrantEntitlementRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'Immutable and has to be a unique against other VpcInterfaces in this Flow.',
-        }),
-    ),
-    NetworkInterfaceIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkInterfaceIds' },
-          description:
-            "IDs of the network interfaces created in customer's account by MediaConnect.",
-        }),
-    ),
-    NetworkInterfaceType: NetworkInterfaceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkInterfaceType' },
-          description: 'The type of network interface.',
-        }),
-    ),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleArn' },
-          description: "Role Arn MediaConnect can assumes to create ENIs in customer's account",
-        }),
-    ),
-    SecurityGroupIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroupIds' },
-          description: 'Security Group IDs to be used on ENI.',
-        }),
-    ),
-    SubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetId' },
-          description: 'Subnet must be in the AZ of the Flow',
-        }),
-    ),
+    DataTransferSubscriberFeePercent: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'dataTransferSubscriberFeePercent' },
+      description:
+        'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description of the entitlement. This description appears only on the AWS Elemental MediaConnect console and will not be seen by the subscriber or end user.',
+    }),
+    Encryption: EncryptionSchema.exactOptional().openapi({
+      xml: { name: 'encryption' },
+      description:
+        'The type of encryption that will be used on the output that is associated with this entitlement. Allowable encryption types: static-key, speke.',
+    }),
+    EntitlementStatus: EntitlementStatusSchema.exactOptional().openapi({
+      xml: { name: 'entitlementStatus' },
+      description:
+        'An indication of whether the new entitlement should be enabled or disabled as soon as it is created. If you don’t specify the entitlementStatus field in your request, MediaConnect sets it to ENABLED.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the entitlement. This value must be unique within the current flow.',
+    }),
+    Subscribers: ListOfStringSchema.openapi({
+      xml: { name: 'subscribers' },
+      description:
+        'The AWS account IDs that you want to share your content with. The receiving accounts (subscribers) will be allowed to create their own flows using your content as the source.',
+    }),
   })
   .openapi({
-    required: [
-      'NetworkInterfaceType',
-      'NetworkInterfaceIds',
-      'SubnetId',
-      'SecurityGroupIds',
-      'RoleArn',
-      'Name',
-    ],
-    description: 'The settings for a VPC Source.',
+    required: ['Subscribers'],
+    description: 'The entitlements that you want to grant on a flow.',
   })
-  .openapi('VpcInterface')
+  .openapi('GrantEntitlementRequest')
 
-const ListOfVpcInterfaceSchema = z.array(VpcInterfaceSchema).openapi('ListOfVpcInterface')
+const ListOfGrantEntitlementRequestSchema = z
+  .array(GrantEntitlementRequestSchema)
+  .openapi('ListOfGrantEntitlementRequest')
 
-const AddFlowVpcInterfacesResponseSchema = z
+const FmtpRequestSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that these VPC interfaces were added to.',
-        }),
-    ).exactOptional(),
-    VpcInterfaces: ListOfVpcInterfaceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaces' },
-          description: 'The details of the newly added VPC interfaces.',
-        }),
-    ).exactOptional(),
+    ChannelOrder: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelOrder' },
+      description: 'The format of the audio channel.',
+    }),
+    Colorimetry: ColorimetrySchema.exactOptional().openapi({
+      xml: { name: 'colorimetry' },
+      description: 'The format that is used for the representation of color.',
+    }),
+    ExactFramerate: StringSchema.exactOptional().openapi({
+      xml: { name: 'exactFramerate' },
+      description:
+        'The frame rate for the video stream, in frames/second. For example: 60000/1001. If you specify a whole number, MediaConnect uses a ratio of N/1. For example, if you specify 60, MediaConnect uses 60/1 as the exactFramerate.',
+    }),
+    Par: StringSchema.exactOptional().openapi({
+      xml: { name: 'par' },
+      description: 'The pixel aspect ratio (PAR) of the video.',
+    }),
+    Range: RangeSchema.exactOptional().openapi({
+      xml: { name: 'range' },
+      description: 'The encoding range of the video.',
+    }),
+    ScanMode: ScanModeSchema.exactOptional().openapi({
+      xml: { name: 'scanMode' },
+      description: 'The type of compression that was used to smooth the video’s appearance.',
+    }),
+    Tcs: TcsSchema.exactOptional().openapi({
+      xml: { name: 'tcs' },
+      description: 'The transfer characteristic system (TCS) that is used in the video.',
+    }),
   })
-  .openapi({ required: [] })
-  .openapi('AddFlowVpcInterfacesResponse')
+  .openapi({
+    description: 'The settings that you want to use to define the media stream.',
+    required: [],
+  })
+  .openapi('FmtpRequest')
+
+const MediaStreamAttributesRequestSchema = z
+  .object({
+    Fmtp: FmtpRequestSchema.exactOptional().openapi({
+      xml: { name: 'fmtp' },
+      description: 'The settings that you want to use to define the media stream.',
+    }),
+    Lang: StringSchema.exactOptional().openapi({
+      xml: { name: 'lang' },
+      description: 'The audio language, in a format that is recognized by the receiver.',
+    }),
+  })
+  .openapi({ description: 'Attributes that are related to the media stream.', required: [] })
+  .openapi('MediaStreamAttributesRequest')
+
+const AddMediaStreamRequestSchema = z
+  .object({
+    Attributes: MediaStreamAttributesRequestSchema.exactOptional().openapi({
+      xml: { name: 'attributes' },
+      description: 'The attributes that you want to assign to the new media stream.',
+    }),
+    ClockRate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'clockRate' },
+      description:
+        'The sample rate (in Hz) for the stream. If the media stream type is video or ancillary data, set this value to 90000. If the media stream type is audio, set this value to either 48000 or 96000.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description that can help you quickly identify what your media stream is used for.',
+    }),
+    MediaStreamId: IntegerSchema.openapi({
+      xml: { name: 'mediaStreamId' },
+      description: 'A unique identifier for the media stream.',
+    }),
+    MediaStreamName: StringSchema.openapi({
+      xml: { name: 'mediaStreamName' },
+      description: 'A name that helps you distinguish one media stream from another.',
+    }),
+    MediaStreamType: MediaStreamTypeSchema.openapi({
+      xml: { name: 'mediaStreamType' },
+      description: 'The type of media stream.',
+    }),
+    VideoFormat: StringSchema.exactOptional().openapi({
+      xml: { name: 'videoFormat' },
+      description: 'The resolution of the video.',
+    }),
+  })
+  .openapi({
+    required: ['MediaStreamType', 'MediaStreamId', 'MediaStreamName'],
+    description: 'The media stream that you want to add to the flow.',
+  })
+  .openapi('AddMediaStreamRequest')
+
+const ListOfAddMediaStreamRequestSchema = z
+  .array(AddMediaStreamRequestSchema)
+  .openapi('ListOfAddMediaStreamRequest')
 
 const VpcInterfaceRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the VPC Interface. This value must be unique within the current flow.',
-        }),
-    ),
-    NetworkInterfaceType: NetworkInterfaceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkInterfaceType' },
-          description:
-            'The type of network interface. If this value is not included in the request, MediaConnect uses ENA as the networkInterfaceType.',
-        }),
-    ).exactOptional(),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleArn' },
-          description: "Role Arn MediaConnect can assumes to create ENIs in customer's account",
-        }),
-    ),
-    SecurityGroupIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroupIds' },
-          description: 'Security Group IDs to be used on ENI.',
-        }),
-    ),
-    SubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetId' },
-          description: 'Subnet must be in the AZ of the Flow',
-        }),
-    ),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the VPC Interface. This value must be unique within the current flow.',
+    }),
+    NetworkInterfaceType: NetworkInterfaceTypeSchema.exactOptional().openapi({
+      xml: { name: 'networkInterfaceType' },
+      description:
+        'The type of network interface. If this value is not included in the request, MediaConnect uses ENA as the networkInterfaceType.',
+    }),
+    RoleArn: StringSchema.openapi({
+      xml: { name: 'roleArn' },
+      description: "Role Arn MediaConnect can assumes to create ENIs in customer's account",
+    }),
+    SecurityGroupIds: ListOfStringSchema.openapi({
+      xml: { name: 'securityGroupIds' },
+      description: 'Security Group IDs to be used on ENI.',
+    }),
+    SubnetId: StringSchema.openapi({
+      xml: { name: 'subnetId' },
+      description: 'Subnet must be in the AZ of the Flow',
+    }),
   })
   .openapi({
     required: ['SubnetId', 'SecurityGroupIds', 'RoleArn', 'Name'],
@@ -2356,337 +1406,491 @@ const VpcInterfaceRequestSchema = z
   })
   .openapi('VpcInterfaceRequest')
 
-const BridgeSchema: z.ZodType<BridgeType> = z
-  .lazy(() =>
-    z
-      .object({
-        BridgeArn: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'bridgeArn' },
-              description: 'The Amazon Resource Number (ARN) of the bridge.',
-            }),
-        ),
-        BridgeMessages: ListOfMessageDetailSchema.and(
-          z.any().openapi({ xml: { name: 'bridgeMessages' } }),
-        ).exactOptional(),
-        BridgeState: BridgeStateSchema.and(z.any().openapi({ xml: { name: 'bridgeState' } })),
-        EgressGatewayBridge: EgressGatewayBridgeSchema.and(
-          z.any().openapi({ xml: { name: 'egressGatewayBridge' } }),
-        ).exactOptional(),
-        IngressGatewayBridge: IngressGatewayBridgeSchema.and(
-          z.any().openapi({ xml: { name: 'ingressGatewayBridge' } }),
-        ).exactOptional(),
-        Name: StringSchema.and(
-          z.any().openapi({ xml: { name: 'name' }, description: 'The name of the bridge.' }),
-        ),
-        Outputs: ListOfBridgeOutputSchema.and(
-          z.any().openapi({ xml: { name: 'outputs' }, description: 'The outputs on this bridge.' }),
-        ).exactOptional(),
-        PlacementArn: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'placementArn' },
-              description: 'The placement Amazon Resource Number (ARN) of the bridge.',
-            }),
-        ),
-        SourceFailoverConfig: FailoverConfigSchema.and(
-          z.any().openapi({ xml: { name: 'sourceFailoverConfig' } }),
-        ).exactOptional(),
-        Sources: ListOfBridgeSourceSchema.and(
-          z.any().openapi({ xml: { name: 'sources' }, description: 'The sources on this bridge.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['BridgeArn', 'BridgeState', 'PlacementArn', 'Name'],
-        description:
-          "A Bridge is the connection between your datacenter's Instances and the AWS cloud. A bridge can be used to send video from the AWS cloud to your datacenter or from your datacenter to the AWS cloud.",
-      }),
-  )
+const ListOfVpcInterfaceRequestSchema = z
+  .array(VpcInterfaceRequestSchema)
+  .openapi('ListOfVpcInterfaceRequest')
+
+const AddMaintenanceSchema = z
+  .object({
+    MaintenanceDay: MaintenanceDaySchema.openapi({
+      xml: { name: 'maintenanceDay' },
+      description:
+        'A day of a week when the maintenance will happen. Use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
+    }),
+    MaintenanceStartHour: StringSchema.openapi({
+      xml: { name: 'maintenanceStartHour' },
+      description:
+        'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
+    }),
+  })
+  .openapi({
+    required: ['MaintenanceDay', 'MaintenanceStartHour'],
+    description: 'Create maintenance setting for a flow',
+  })
+  .openapi('AddMaintenance')
+
+type CreateFlowRequestType = {
+  AvailabilityZone?: z.infer<typeof StringSchema> & unknown
+  Entitlements?: z.infer<typeof ListOfGrantEntitlementRequestSchema> & unknown
+  MediaStreams?: z.infer<typeof ListOfAddMediaStreamRequestSchema> & unknown
+  Name: z.infer<typeof StringSchema> & unknown
+  Outputs?: z.infer<typeof ListOfAddOutputRequestSchema> & unknown
+  Source?: z.infer<typeof SetSourceRequestSchema> & unknown
+  SourceFailoverConfig?: z.infer<typeof FailoverConfigSchema> & unknown
+  Sources?: z.infer<typeof ListOfSetSourceRequestSchema> & unknown
+  VpcInterfaces?: z.infer<typeof ListOfVpcInterfaceRequestSchema> & unknown
+  Maintenance?: z.infer<typeof AddMaintenanceSchema> & unknown
+}
+
+const BridgeFlowOutputSchema = z
+  .object({
+    FlowArn: StringSchema.openapi({
+      xml: { name: 'flowArn' },
+      description: 'The Amazon Resource Number (ARN) of the cloud flow.',
+    }),
+    FlowSourceArn: StringSchema.openapi({
+      xml: { name: 'flowSourceArn' },
+      description: 'The Amazon Resource Number (ARN) of the flow source.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: "The name of the bridge's output.",
+    }),
+  })
+  .openapi({
+    required: ['FlowSourceArn', 'FlowArn', 'Name'],
+    description: 'The output of the bridge. A flow output is delivered to the AWS cloud.',
+  })
+  .openapi('BridgeFlowOutput')
+
+const BridgeNetworkOutputSchema = z
+  .object({
+    IpAddress: StringSchema.openapi({
+      xml: { name: 'ipAddress' },
+      description: 'The network output IP Address.',
+    }),
+    Name: StringSchema.openapi({ xml: { name: 'name' }, description: 'The network output name.' }),
+    NetworkName: StringSchema.openapi({
+      xml: { name: 'networkName' },
+      description: "The network output's gateway network name.",
+    }),
+    Port: IntegerSchema.openapi({ xml: { name: 'port' }, description: 'The network output port.' }),
+    Protocol: ProtocolSchema.openapi({
+      xml: { name: 'protocol' },
+      description: 'The network output protocol.',
+    }),
+    Ttl: IntegerSchema.openapi({ xml: { name: 'ttl' }, description: 'The network output TTL.' }),
+  })
+  .openapi({
+    required: ['NetworkName', 'Port', 'IpAddress', 'Protocol', 'Ttl', 'Name'],
+    description: 'The output of the bridge. A network output is delivered to your premises.',
+  })
+  .openapi('BridgeNetworkOutput')
+
+const BridgeOutputSchema = z
+  .object({
+    FlowOutput: BridgeFlowOutputSchema.exactOptional().openapi({ xml: { name: 'flowOutput' } }),
+    NetworkOutput: BridgeNetworkOutputSchema.exactOptional().openapi({
+      xml: { name: 'networkOutput' },
+    }),
+  })
+  .openapi({ description: 'The output of the bridge.', required: [] })
+  .openapi('BridgeOutput')
+
+const ListOfBridgeOutputSchema = z.array(BridgeOutputSchema).openapi('ListOfBridgeOutput')
+
+const AddBridgeOutputsResponseSchema = z
+  .object({
+    BridgeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The Amazon Resource Number (ARN) of the bridge.',
+    }),
+    Outputs: ListOfBridgeOutputSchema.exactOptional().openapi({
+      xml: { name: 'outputs' },
+      description: 'The outputs that you added to this bridge.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddBridgeOutputsResponse')
+
+const AddBridgeNetworkOutputRequestSchema = z
+  .object({
+    IpAddress: StringSchema.openapi({
+      xml: { name: 'ipAddress' },
+      description: 'The network output IP Address.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The network output name. This name is used to reference the output and must be unique among outputs in this bridge.',
+    }),
+    NetworkName: StringSchema.openapi({
+      xml: { name: 'networkName' },
+      description: "The network output's gateway network name.",
+    }),
+    Port: IntegerSchema.openapi({ xml: { name: 'port' }, description: 'The network output port.' }),
+    Protocol: ProtocolSchema.openapi({
+      xml: { name: 'protocol' },
+      description: 'The network output protocol.',
+    }),
+    Ttl: IntegerSchema.openapi({ xml: { name: 'ttl' }, description: 'The network output TTL.' }),
+  })
+  .openapi({
+    required: ['NetworkName', 'Port', 'IpAddress', 'Protocol', 'Ttl', 'Name'],
+    description: 'Add a network output to an existing bridge.',
+  })
+  .openapi('AddBridgeNetworkOutputRequest')
+
+const AddBridgeOutputRequestSchema = z
+  .object({
+    NetworkOutput: AddBridgeNetworkOutputRequestSchema.exactOptional().openapi({
+      xml: { name: 'networkOutput' },
+    }),
+  })
+  .openapi({ description: 'Add an output to a bridge.', required: [] })
+  .openapi('AddBridgeOutputRequest')
+
+const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
+
+const InternalServerErrorExceptionSchema = z.any().openapi('InternalServerErrorException')
+
+const ForbiddenExceptionSchema = z.any().openapi('ForbiddenException')
+
+const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
+
+const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
+
+const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException')
+
+const ConflictExceptionSchema = z.any().openapi('ConflictException')
+
+const BridgeFlowSourceSchema = z
+  .object({
+    FlowArn: StringSchema.openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the cloud flow used as a source of this bridge.',
+    }),
+    FlowVpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'flowVpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this source.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the flow source.',
+    }),
+    OutputArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'outputArn' },
+      description: 'The Amazon Resource Number (ARN) of the output.',
+    }),
+  })
+  .openapi({
+    required: ['FlowArn', 'Name'],
+    description:
+      'The source of the bridge. A flow source originates in MediaConnect as an existing cloud flow.',
+  })
+  .openapi('BridgeFlowSource')
+
+const BridgeNetworkSourceSchema = z
+  .object({
+    MulticastIp: StringSchema.openapi({
+      xml: { name: 'multicastIp' },
+      description: 'The network source multicast IP.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the network source.',
+    }),
+    NetworkName: StringSchema.openapi({
+      xml: { name: 'networkName' },
+      description: "The network source's gateway network name.",
+    }),
+    Port: IntegerSchema.openapi({ xml: { name: 'port' }, description: 'The network source port.' }),
+    Protocol: ProtocolSchema.openapi({
+      xml: { name: 'protocol' },
+      description: 'The network source protocol.',
+    }),
+  })
+  .openapi({
+    required: ['NetworkName', 'MulticastIp', 'Port', 'Protocol', 'Name'],
+    description: 'The source of the bridge. A network source originates at your premises.',
+  })
+  .openapi('BridgeNetworkSource')
+
+const BridgeSourceSchema = z
+  .object({
+    FlowSource: BridgeFlowSourceSchema.exactOptional().openapi({ xml: { name: 'flowSource' } }),
+    NetworkSource: BridgeNetworkSourceSchema.exactOptional().openapi({
+      xml: { name: 'networkSource' },
+    }),
+  })
+  .openapi({ description: "The bridge's source.", required: [] })
+  .openapi('BridgeSource')
+
+const ListOfBridgeSourceSchema = z.array(BridgeSourceSchema).openapi('ListOfBridgeSource')
+
+const AddBridgeSourcesResponseSchema = z
+  .object({
+    BridgeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The Amazon Resource Number (ARN) of the bridge.',
+    }),
+    Sources: ListOfBridgeSourceSchema.exactOptional().openapi({
+      xml: { name: 'sources' },
+      description: 'The sources that you added to this bridge.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddBridgeSourcesResponse')
+
+const AddBridgeFlowSourceRequestSchema = z
+  .object({
+    FlowArn: StringSchema.and(
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'string') {
+            if (!new RegExp('^arn:.+:mediaconnect.+:flow:.+$').test(val)) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({
+          xml: { name: 'flowArn' },
+          description:
+            'The Amazon Resource Number (ARN) of the cloud flow to use as a source of this bridge.',
+        }),
+    ),
+    FlowVpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'flowVpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this source.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the flow source. This name is used to reference the source and must be unique among sources in this bridge.',
+    }),
+  })
+  .openapi({
+    required: ['FlowArn', 'Name'],
+    description: 'Add a flow source to an existing bridge.',
+  })
+  .openapi('AddBridgeFlowSourceRequest')
+
+const AddBridgeNetworkSourceRequestSchema = z
+  .object({
+    MulticastIp: StringSchema.openapi({
+      xml: { name: 'multicastIp' },
+      description: 'The network source multicast IP.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the network source. This name is used to reference the source and must be unique among sources in this bridge.',
+    }),
+    NetworkName: StringSchema.openapi({
+      xml: { name: 'networkName' },
+      description: "The network source's gateway network name.",
+    }),
+    Port: IntegerSchema.openapi({ xml: { name: 'port' }, description: 'The network source port.' }),
+    Protocol: ProtocolSchema.openapi({
+      xml: { name: 'protocol' },
+      description: 'The network source protocol.',
+    }),
+  })
+  .openapi({
+    required: ['NetworkName', 'MulticastIp', 'Port', 'Protocol', 'Name'],
+    description: 'Add a network source to an existing bridge.',
+  })
+  .openapi('AddBridgeNetworkSourceRequest')
+
+const AddBridgeSourceRequestSchema = z
+  .object({
+    FlowSource: AddBridgeFlowSourceRequestSchema.exactOptional().openapi({
+      xml: { name: 'flowSource' },
+    }),
+    NetworkSource: AddBridgeNetworkSourceRequestSchema.exactOptional().openapi({
+      xml: { name: 'networkSource' },
+    }),
+  })
+  .openapi({ description: 'Add a source to an existing bridge.', required: [] })
+  .openapi('AddBridgeSourceRequest')
+
+const AddFlowMediaStreamsResponseSchema = z
+  .object({
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that you added media streams to.',
+    }),
+    MediaStreams: ListOfMediaStreamSchema.exactOptional().openapi({
+      xml: { name: 'mediaStreams' },
+      description: 'The media streams that you added to the flow.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddFlowMediaStreamsResponse')
+
+const AddFlowOutputsResponseSchema: z.ZodType<AddFlowOutputsResponseType> = z
+  .object({
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that these outputs were added to.',
+    }),
+    Outputs: ListOfOutputSchema.exactOptional().openapi({
+      xml: { name: 'outputs' },
+      description: 'The details of the newly added outputs.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddFlowOutputsResponse')
+
+const AddFlowOutputs420ExceptionSchema = z.any().openapi('AddFlowOutputs420Exception')
+
+const AddFlowSourcesResponseSchema: z.ZodType<AddFlowSourcesResponseType> = z
+  .object({
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that these sources were added to.',
+    }),
+    Sources: ListOfSourceSchema.exactOptional().openapi({
+      xml: { name: 'sources' },
+      description: 'The details of the newly added sources.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddFlowSourcesResponse')
+
+const AddFlowVpcInterfacesResponseSchema = z
+  .object({
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that these VPC interfaces were added to.',
+    }),
+    VpcInterfaces: ListOfVpcInterfaceSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaces' },
+      description: 'The details of the newly added VPC interfaces.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddFlowVpcInterfacesResponse')
+
+const MessageDetailSchema = z
+  .object({
+    Code: StringSchema.openapi({ xml: { name: 'code' }, description: 'The error code.' }),
+    Message: StringSchema.openapi({
+      xml: { name: 'message' },
+      description:
+        'The specific error message that MediaConnect returns to help you understand the reason that the request did not succeed.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of the resource.',
+    }),
+  })
+  .openapi({ required: ['Message', 'Code'] })
+  .openapi('MessageDetail')
+
+const ListOfMessageDetailSchema = z.array(MessageDetailSchema).openapi('ListOfMessageDetail')
+
+const BridgeStateSchema = z
+  .enum([
+    'CREATING',
+    'STANDBY',
+    'STARTING',
+    'DEPLOYING',
+    'ACTIVE',
+    'STOPPING',
+    'DELETING',
+    'DELETED',
+    'START_FAILED',
+    'START_PENDING',
+    'STOP_FAILED',
+    'UPDATING',
+  ])
+  .openapi('BridgeState')
+
+const EgressGatewayBridgeSchema = z
+  .object({
+    InstanceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'instanceId' },
+      description: 'The ID of the instance running this bridge.',
+    }),
+    MaxBitrate: IntegerSchema.openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'The maximum expected bitrate (in bps) of the egress bridge.',
+    }),
+  })
+  .openapi({ required: ['MaxBitrate'] })
+  .openapi('EgressGatewayBridge')
+
+const IngressGatewayBridgeSchema = z
+  .object({
+    InstanceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'instanceId' },
+      description: 'The ID of the instance running this bridge.',
+    }),
+    MaxBitrate: IntegerSchema.openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'The maximum expected bitrate (in bps) of the ingress bridge.',
+    }),
+    MaxOutputs: IntegerSchema.openapi({
+      xml: { name: 'maxOutputs' },
+      description: 'The maximum number of outputs on the ingress bridge.',
+    }),
+  })
+  .openapi({ required: ['MaxOutputs', 'MaxBitrate'] })
+  .openapi('IngressGatewayBridge')
+
+const BridgeSchema = z
+  .object({
+    BridgeArn: StringSchema.openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The Amazon Resource Number (ARN) of the bridge.',
+    }),
+    BridgeMessages: ListOfMessageDetailSchema.exactOptional().openapi({
+      xml: { name: 'bridgeMessages' },
+    }),
+    BridgeState: BridgeStateSchema.openapi({ xml: { name: 'bridgeState' } }),
+    EgressGatewayBridge: EgressGatewayBridgeSchema.exactOptional().openapi({
+      xml: { name: 'egressGatewayBridge' },
+    }),
+    IngressGatewayBridge: IngressGatewayBridgeSchema.exactOptional().openapi({
+      xml: { name: 'ingressGatewayBridge' },
+    }),
+    Name: StringSchema.openapi({ xml: { name: 'name' }, description: 'The name of the bridge.' }),
+    Outputs: ListOfBridgeOutputSchema.exactOptional().openapi({
+      xml: { name: 'outputs' },
+      description: 'The outputs on this bridge.',
+    }),
+    PlacementArn: StringSchema.openapi({
+      xml: { name: 'placementArn' },
+      description: 'The placement Amazon Resource Number (ARN) of the bridge.',
+    }),
+    SourceFailoverConfig: FailoverConfigSchema.exactOptional().openapi({
+      xml: { name: 'sourceFailoverConfig' },
+    }),
+    Sources: ListOfBridgeSourceSchema.exactOptional().openapi({
+      xml: { name: 'sources' },
+      description: 'The sources on this bridge.',
+    }),
+  })
+  .openapi({
+    required: ['BridgeArn', 'BridgeState', 'PlacementArn', 'Name'],
+    description:
+      "A Bridge is the connection between your datacenter's Instances and the AWS cloud. A bridge can be used to send video from the AWS cloud to your datacenter or from your datacenter to the AWS cloud.",
+  })
   .openapi('Bridge')
 
 const CreateBridgeResponseSchema = z
-  .object({
-    Bridge: BridgeSchema.and(z.any().openapi({ xml: { name: 'bridge' } })).exactOptional(),
-  })
+  .object({ Bridge: BridgeSchema.exactOptional().openapi({ xml: { name: 'bridge' } }) })
   .openapi({ required: [] })
   .openapi('CreateBridgeResponse')
 
 const CreateBridge420ExceptionSchema = z.any().openapi('CreateBridge420Exception')
 
-const EntitlementStatusSchema = z.enum(['ENABLED', 'DISABLED']).openapi('EntitlementStatus')
-
-const EntitlementSchema = z
-  .object({
-    DataTransferSubscriberFeePercent: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataTransferSubscriberFeePercent' },
-          description:
-            'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A description of the entitlement.',
-        }),
-    ).exactOptional(),
-    Encryption: EncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryption' },
-          description:
-            'The type of encryption that will be used on the output that is associated with this entitlement.',
-        }),
-    ).exactOptional(),
-    EntitlementArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'entitlementArn' }, description: 'The ARN of the entitlement.' }),
-    ),
-    EntitlementStatus: EntitlementStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlementStatus' },
-          description: 'An indication of whether the entitlement is enabled.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the entitlement.' }),
-    ),
-    Subscribers: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subscribers' },
-          description:
-            'The AWS account IDs that you want to share your content with. The receiving accounts (subscribers) will be allowed to create their own flow using your content as the source.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['EntitlementArn', 'Subscribers', 'Name'],
-    description: 'The settings for a flow entitlement.',
-  })
-  .openapi('Entitlement')
-
-const ListOfEntitlementSchema = z.array(EntitlementSchema).openapi('ListOfEntitlement')
-
-const StatusSchema = z
-  .enum(['STANDBY', 'ACTIVE', 'UPDATING', 'DELETING', 'STARTING', 'STOPPING', 'ERROR'])
-  .openapi('Status')
-
-const MaintenanceDaySchema = z
-  .enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-  .openapi('MaintenanceDay')
-
-const MaintenanceSchema = z
-  .object({
-    MaintenanceDay: MaintenanceDaySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceDay' },
-          description:
-            'A day of a week when the maintenance will happen. Use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
-        }),
-    ).exactOptional(),
-    MaintenanceDeadline: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceDeadline' },
-          description:
-            'The Maintenance has to be performed before this deadline in ISO UTC format. Example: 2021-01-30T08:30:00Z.',
-        }),
-    ).exactOptional(),
-    MaintenanceScheduledDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceScheduledDate' },
-          description:
-            'A scheduled date in ISO UTC format when the maintenance will happen. Use YYYY-MM-DD format. Example: 2021-01-30.',
-        }),
-    ).exactOptional(),
-    MaintenanceStartHour: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceStartHour' },
-          description:
-            'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The maintenance setting of a flow', required: [] })
-  .openapi('Maintenance')
-
-const FlowSchema = z
-  .object({
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'availabilityZone' },
-          description:
-            'The Availability Zone that you want to create the flow in. These options are limited to the Availability Zones within the current AWS.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description of the flow. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
-        }),
-    ).exactOptional(),
-    EgressIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'egressIp' },
-          description: 'The IP address from which video will be sent to output destinations.',
-        }),
-    ).exactOptional(),
-    Entitlements: ListOfEntitlementSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'entitlements' }, description: 'The entitlements in this flow.' }),
-    ),
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The Amazon Resource Name (ARN) of the flow.',
-        }),
-    ),
-    MediaStreams: ListOfMediaStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreams' },
-          description:
-            'The media streams that are associated with the flow. After you associate a media stream with a source, you can also associate it with outputs on the flow.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the flow.' }),
-    ),
-    Outputs: ListOfOutputSchema.and(
-      z.any().openapi({ xml: { name: 'outputs' }, description: 'The outputs in this flow.' }),
-    ),
-    Source: SourceSchema.and(z.any().openapi({ xml: { name: 'source' } })),
-    SourceFailoverConfig: FailoverConfigSchema.and(
-      z.any().openapi({ xml: { name: 'sourceFailoverConfig' } }),
-    ).exactOptional(),
-    Sources: ListOfSourceSchema.and(z.any().openapi({ xml: { name: 'sources' } })).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ xml: { name: 'status' }, description: 'The current status of the flow.' }),
-    ),
-    VpcInterfaces: ListOfVpcInterfaceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaces' },
-          description: 'The VPC Interfaces for this flow.',
-        }),
-    ).exactOptional(),
-    Maintenance: MaintenanceSchema.and(
-      z.any().openapi({ xml: { name: 'maintenance' } }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: [
-      'Status',
-      'AvailabilityZone',
-      'Source',
-      'Name',
-      'Entitlements',
-      'Outputs',
-      'FlowArn',
-    ],
-    description: 'The settings for a flow, including its source, outputs, and entitlements.',
-  })
-  .openapi('Flow')
-
-const CreateFlowResponseSchema = z
-  .object({ Flow: FlowSchema.and(z.any().openapi({ xml: { name: 'flow' } })).exactOptional() })
+const CreateFlowResponseSchema: z.ZodType<CreateFlowResponseType> = z
+  .object({ Flow: FlowSchema.exactOptional().openapi({ xml: { name: 'flow' } }) })
   .openapi({ required: [] })
   .openapi('CreateFlowResponse')
-
-const GrantEntitlementRequestSchema = z
-  .object({
-    DataTransferSubscriberFeePercent: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataTransferSubscriberFeePercent' },
-          description:
-            'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description of the entitlement. This description appears only on the AWS Elemental MediaConnect console and will not be seen by the subscriber or end user.',
-        }),
-    ).exactOptional(),
-    Encryption: EncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryption' },
-          description:
-            'The type of encryption that will be used on the output that is associated with this entitlement. Allowable encryption types: static-key, speke.',
-        }),
-    ).exactOptional(),
-    EntitlementStatus: EntitlementStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlementStatus' },
-          description:
-            'An indication of whether the new entitlement should be enabled or disabled as soon as it is created. If you don’t specify the entitlementStatus field in your request, MediaConnect sets it to ENABLED.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the entitlement. This value must be unique within the current flow.',
-        }),
-    ).exactOptional(),
-    Subscribers: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subscribers' },
-          description:
-            'The AWS account IDs that you want to share your content with. The receiving accounts (subscribers) will be allowed to create their own flows using your content as the source.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Subscribers'],
-    description: 'The entitlements that you want to grant on a flow.',
-  })
-  .openapi('GrantEntitlementRequest')
 
 const CreateFlow420ExceptionSchema = z.any().openapi('CreateFlow420Exception')
 
@@ -2696,24 +1900,16 @@ const GatewayStateSchema = z
 
 const GatewayNetworkSchema = z
   .object({
-    CidrBlock: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cidrBlock' },
-          description:
-            'A unique IP address range to use for this network. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-        }),
-    ),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the network. This name is used to reference the network and must be unique among networks in this gateway.',
-        }),
-    ),
+    CidrBlock: StringSchema.openapi({
+      xml: { name: 'cidrBlock' },
+      description:
+        'A unique IP address range to use for this network. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the network. This name is used to reference the network and must be unique among networks in this gateway.',
+    }),
   })
   .openapi({ required: ['CidrBlock', 'Name'], description: 'The network settings for a gateway.' })
   .openapi('GatewayNetwork')
@@ -2722,51 +1918,31 @@ const ListOfGatewayNetworkSchema = z.array(GatewayNetworkSchema).openapi('ListOf
 
 const GatewaySchema = z
   .object({
-    EgressCidrBlocks: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'egressCidrBlocks' },
-          description:
-            'The range of IP addresses that contribute content or initiate output requests for flows communicating with this gateway. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-        }),
-    ),
-    GatewayArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayArn' },
-          description: 'The Amazon Resource Name (ARN) of the gateway.',
-        }),
-    ),
-    GatewayMessages: ListOfMessageDetailSchema.and(
-      z.any().openapi({ xml: { name: 'gatewayMessages' } }),
-    ).exactOptional(),
-    GatewayState: GatewayStateSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayState' },
-          description: 'The current status of the gateway.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the gateway. This name can not be modified after the gateway is created.',
-        }),
-    ),
-    Networks: ListOfGatewayNetworkSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networks' },
-          description: 'The list of networks in the gateway.',
-        }),
-    ),
+    EgressCidrBlocks: ListOfStringSchema.openapi({
+      xml: { name: 'egressCidrBlocks' },
+      description:
+        'The range of IP addresses that contribute content or initiate output requests for flows communicating with this gateway. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    GatewayArn: StringSchema.openapi({
+      xml: { name: 'gatewayArn' },
+      description: 'The Amazon Resource Name (ARN) of the gateway.',
+    }),
+    GatewayMessages: ListOfMessageDetailSchema.exactOptional().openapi({
+      xml: { name: 'gatewayMessages' },
+    }),
+    GatewayState: GatewayStateSchema.exactOptional().openapi({
+      xml: { name: 'gatewayState' },
+      description: 'The current status of the gateway.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the gateway. This name can not be modified after the gateway is created.',
+    }),
+    Networks: ListOfGatewayNetworkSchema.openapi({
+      xml: { name: 'networks' },
+      description: 'The list of networks in the gateway.',
+    }),
   })
   .openapi({
     required: ['GatewayArn', 'Networks', 'EgressCidrBlocks', 'Name'],
@@ -2775,9 +1951,7 @@ const GatewaySchema = z
   .openapi('Gateway')
 
 const CreateGatewayResponseSchema = z
-  .object({
-    Gateway: GatewaySchema.and(z.any().openapi({ xml: { name: 'gateway' } })).exactOptional(),
-  })
+  .object({ Gateway: GatewaySchema.exactOptional().openapi({ xml: { name: 'gateway' } }) })
   .openapi({ required: [] })
   .openapi('CreateGatewayResponse')
 
@@ -2785,50 +1959,34 @@ const CreateGateway420ExceptionSchema = z.any().openapi('CreateGateway420Excepti
 
 const DeleteBridgeResponseSchema = z
   .object({
-    BridgeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgeArn' },
-          description: 'The Amazon Resource Number (ARN) of the deleted bridge.',
-        }),
-    ).exactOptional(),
+    BridgeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The Amazon Resource Number (ARN) of the deleted bridge.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBridgeResponse')
 
 const DeleteFlowResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that was deleted.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'The status of the flow when the DeleteFlow process begins.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that was deleted.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The status of the flow when the DeleteFlow process begins.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteFlowResponse')
 
 const DeleteGatewayResponseSchema = z
   .object({
-    GatewayArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayArn' },
-          description: 'The Amazon Resource Name (ARN) of the gateway that was deleted.',
-        }),
-    ).exactOptional(),
+    GatewayArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'gatewayArn' },
+      description: 'The Amazon Resource Name (ARN) of the gateway that was deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteGatewayResponse')
@@ -2846,57 +2004,33 @@ const InstanceStateSchema = z
 
 const DeregisterGatewayInstanceResponseSchema = z
   .object({
-    GatewayInstanceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayInstanceArn' },
-          description: 'The Amazon Resource Name (ARN) of the instance.',
-        }),
-    ).exactOptional(),
-    InstanceState: InstanceStateSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'instanceState' }, description: 'The status of the instance.' }),
-    ).exactOptional(),
+    GatewayInstanceArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'gatewayInstanceArn' },
+      description: 'The Amazon Resource Name (ARN) of the instance.',
+    }),
+    InstanceState: InstanceStateSchema.exactOptional().openapi({
+      xml: { name: 'instanceState' },
+      description: 'The status of the instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeregisterGatewayInstanceResponse')
 
 const DescribeBridgeResponseSchema = z
-  .object({
-    Bridge: BridgeSchema.and(z.any().openapi({ xml: { name: 'bridge' } })).exactOptional(),
-  })
+  .object({ Bridge: BridgeSchema.exactOptional().openapi({ xml: { name: 'bridge' } }) })
   .openapi({ required: [] })
   .openapi('DescribeBridgeResponse')
 
-const MessagesSchema = z
+const DescribeFlowResponseSchema: z.ZodType<DescribeFlowResponseType> = z
   .object({
-    Errors: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'errors' },
-          description:
-            'A list of errors that might have been generated from processes on this flow.',
-        }),
-    ),
-  })
-  .openapi({ required: ['Errors'], description: 'Messages that provide the state of the flow.' })
-  .openapi('Messages')
-
-const DescribeFlowResponseSchema = z
-  .object({
-    Flow: FlowSchema.and(z.any().openapi({ xml: { name: 'flow' } })).exactOptional(),
-    Messages: MessagesSchema.and(z.any().openapi({ xml: { name: 'messages' } })).exactOptional(),
+    Flow: FlowSchema.exactOptional().openapi({ xml: { name: 'flow' } }),
+    Messages: MessagesSchema.exactOptional().openapi({ xml: { name: 'messages' } }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFlowResponse')
 
 const DescribeGatewayResponseSchema = z
-  .object({
-    Gateway: GatewaySchema.and(z.any().openapi({ xml: { name: 'gateway' } })).exactOptional(),
-  })
+  .object({ Gateway: GatewaySchema.exactOptional().openapi({ xml: { name: 'gateway' } }) })
   .openapi({ required: [] })
   .openapi('DescribeGatewayResponse')
 
@@ -2906,61 +2040,39 @@ const ConnectionStatusSchema = z.enum(['CONNECTED', 'DISCONNECTED']).openapi('Co
 
 const GatewayInstanceSchema = z
   .object({
-    BridgePlacement: BridgePlacementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgePlacement' },
-          description:
-            'The availability of the instance to host new bridges. The bridgePlacement property can be LOCKED or AVAILABLE. If it is LOCKED, no new bridges can be deployed to this instance. If it is AVAILABLE, new bridges can be added to this instance.',
-        }),
-    ),
-    ConnectionStatus: ConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionStatus' },
-          description: 'The connection state of the instance.',
-        }),
-    ),
-    GatewayArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayArn' },
-          description: 'The Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    GatewayInstanceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayInstanceArn' },
-          description: 'The Amazon Resource Name (ARN) of the gateway.',
-        }),
-    ),
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'instanceId' },
-          description:
-            'The managed instance ID generated by the SSM install. This will begin with "mi-".',
-        }),
-    ),
-    InstanceMessages: ListOfMessageDetailSchema.and(
-      z.any().openapi({ xml: { name: 'instanceMessages' } }),
-    ).exactOptional(),
-    InstanceState: InstanceStateSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'instanceState' }, description: 'The status of the instance.' }),
-    ),
-    RunningBridgeCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'runningBridgeCount' }, description: 'The running bridge count.' }),
-    ),
+    BridgePlacement: BridgePlacementSchema.openapi({
+      xml: { name: 'bridgePlacement' },
+      description:
+        'The availability of the instance to host new bridges. The bridgePlacement property can be LOCKED or AVAILABLE. If it is LOCKED, no new bridges can be deployed to this instance. If it is AVAILABLE, new bridges can be added to this instance.',
+    }),
+    ConnectionStatus: ConnectionStatusSchema.openapi({
+      xml: { name: 'connectionStatus' },
+      description: 'The connection state of the instance.',
+    }),
+    GatewayArn: StringSchema.openapi({
+      xml: { name: 'gatewayArn' },
+      description: 'The Amazon Resource Name (ARN) of the instance.',
+    }),
+    GatewayInstanceArn: StringSchema.openapi({
+      xml: { name: 'gatewayInstanceArn' },
+      description: 'The Amazon Resource Name (ARN) of the gateway.',
+    }),
+    InstanceId: StringSchema.openapi({
+      xml: { name: 'instanceId' },
+      description:
+        'The managed instance ID generated by the SSM install. This will begin with "mi-".',
+    }),
+    InstanceMessages: ListOfMessageDetailSchema.exactOptional().openapi({
+      xml: { name: 'instanceMessages' },
+    }),
+    InstanceState: InstanceStateSchema.openapi({
+      xml: { name: 'instanceState' },
+      description: 'The status of the instance.',
+    }),
+    RunningBridgeCount: IntegerSchema.openapi({
+      xml: { name: 'runningBridgeCount' },
+      description: 'The running bridge count.',
+    }),
   })
   .openapi({
     required: [
@@ -2978,9 +2090,9 @@ const GatewayInstanceSchema = z
 
 const DescribeGatewayInstanceResponseSchema = z
   .object({
-    GatewayInstance: GatewayInstanceSchema.and(
-      z.any().openapi({ xml: { name: 'gatewayInstance' } }),
-    ).exactOptional(),
+    GatewayInstance: GatewayInstanceSchema.exactOptional().openapi({
+      xml: { name: 'gatewayInstance' },
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGatewayInstanceResponse')
@@ -2993,22 +2105,14 @@ const ResourceTypeSchema = z.literal('Mbps_Outbound_Bandwidth').openapi('Resourc
 
 const ResourceSpecificationSchema = z
   .object({
-    ReservedBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'reservedBitrate' },
-          description: 'The amount of outbound bandwidth that is discounted in the offering.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceType' },
-          description: 'The type of resource and the unit that is being billed for.',
-        }),
-    ),
+    ReservedBitrate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'reservedBitrate' },
+      description: 'The amount of outbound bandwidth that is discounted in the offering.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      xml: { name: 'resourceType' },
+      description: 'The type of resource and the unit that is being billed for.',
+    }),
   })
   .openapi({
     required: ['ResourceType'],
@@ -3018,74 +2122,42 @@ const ResourceSpecificationSchema = z
 
 const OfferingSchema = z
   .object({
-    CurrencyCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'currencyCode' },
-          description:
-            'The type of currency that is used for billing. The currencyCode used for all reservations is US dollars.',
-        }),
-    ),
-    Duration: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'duration' },
-          description: 'The length of time that your reservation would be active.',
-        }),
-    ),
-    DurationUnits: DurationUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'durationUnits' },
-          description: 'The unit of measurement for the duration of the offering.',
-        }),
-    ),
-    OfferingArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'offeringArn' },
-          description: 'The Amazon Resource Name (ARN) that MediaConnect assigns to the offering.',
-        }),
-    ),
-    OfferingDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'offeringDescription' },
-          description: 'A description of the offering.',
-        }),
-    ),
-    PricePerUnit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pricePerUnit' },
-          description:
-            'The cost of a single unit. This value, in combination with priceUnits, makes up the rate.',
-        }),
-    ),
-    PriceUnits: PriceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'priceUnits' },
-          description:
-            'The unit of measurement that is used for billing. This value, in combination with pricePerUnit, makes up the rate.',
-        }),
-    ),
-    ResourceSpecification: ResourceSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceSpecification' },
-          description:
-            'A definition of the amount of outbound bandwidth that you would be reserving if you purchase the offering.',
-        }),
-    ),
+    CurrencyCode: StringSchema.openapi({
+      xml: { name: 'currencyCode' },
+      description:
+        'The type of currency that is used for billing. The currencyCode used for all reservations is US dollars.',
+    }),
+    Duration: IntegerSchema.openapi({
+      xml: { name: 'duration' },
+      description: 'The length of time that your reservation would be active.',
+    }),
+    DurationUnits: DurationUnitsSchema.openapi({
+      xml: { name: 'durationUnits' },
+      description: 'The unit of measurement for the duration of the offering.',
+    }),
+    OfferingArn: StringSchema.openapi({
+      xml: { name: 'offeringArn' },
+      description: 'The Amazon Resource Name (ARN) that MediaConnect assigns to the offering.',
+    }),
+    OfferingDescription: StringSchema.openapi({
+      xml: { name: 'offeringDescription' },
+      description: 'A description of the offering.',
+    }),
+    PricePerUnit: StringSchema.openapi({
+      xml: { name: 'pricePerUnit' },
+      description:
+        'The cost of a single unit. This value, in combination with priceUnits, makes up the rate.',
+    }),
+    PriceUnits: PriceUnitsSchema.openapi({
+      xml: { name: 'priceUnits' },
+      description:
+        'The unit of measurement that is used for billing. This value, in combination with pricePerUnit, makes up the rate.',
+    }),
+    ResourceSpecification: ResourceSpecificationSchema.openapi({
+      xml: { name: 'resourceSpecification' },
+      description:
+        'A definition of the amount of outbound bandwidth that you would be reserving if you purchase the offering.',
+    }),
   })
   .openapi({
     required: [
@@ -3104,9 +2176,7 @@ const OfferingSchema = z
   .openapi('Offering')
 
 const DescribeOfferingResponseSchema = z
-  .object({
-    Offering: OfferingSchema.and(z.any().openapi({ xml: { name: 'offering' } })).exactOptional(),
-  })
+  .object({ Offering: OfferingSchema.exactOptional().openapi({ xml: { name: 'offering' } }) })
   .openapi({ required: [] })
   .openapi('DescribeOfferingResponse')
 
@@ -3116,121 +2186,68 @@ const ReservationStateSchema = z
 
 const ReservationSchema = z
   .object({
-    CurrencyCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'currencyCode' },
-          description:
-            'The type of currency that is used for billing. The currencyCode used for your reservation is US dollars.',
-        }),
-    ),
-    Duration: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'duration' },
-          description:
-            'The length of time that this reservation is active. MediaConnect defines this value in the offering.',
-        }),
-    ),
-    DurationUnits: DurationUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'durationUnits' },
-          description:
-            'The unit of measurement for the duration of the reservation. MediaConnect defines this value in the offering.',
-        }),
-    ),
-    End: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'end' },
-          description:
-            "The day and time that this reservation expires. This value is calculated based on the start date and time that you set and the offering's duration.",
-        }),
-    ),
-    OfferingArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'offeringArn' },
-          description: 'The Amazon Resource Name (ARN) that MediaConnect assigns to the offering.',
-        }),
-    ),
-    OfferingDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'offeringDescription' },
-          description:
-            'A description of the offering. MediaConnect defines this value in the offering.',
-        }),
-    ),
-    PricePerUnit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'pricePerUnit' },
-          description:
-            'The cost of a single unit. This value, in combination with priceUnits, makes up the rate. MediaConnect defines this value in the offering.',
-        }),
-    ),
-    PriceUnits: PriceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'priceUnits' },
-          description:
-            'The unit of measurement that is used for billing. This value, in combination with pricePerUnit, makes up the rate. MediaConnect defines this value in the offering.',
-        }),
-    ),
-    ReservationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'reservationArn' },
-          description:
-            'The Amazon Resource Name (ARN) that MediaConnect assigns to the reservation when you purchase an offering.',
-        }),
-    ),
-    ReservationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'reservationName' },
-          description:
-            'The name that you assigned to the reservation when you purchased the offering.',
-        }),
-    ),
-    ReservationState: ReservationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'reservationState' },
-          description: 'The status of your reservation.',
-        }),
-    ),
-    ResourceSpecification: ResourceSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceSpecification' },
-          description:
-            'A definition of the amount of outbound bandwidth that you would be reserving if you purchase the offering. MediaConnect defines the values that make up the resourceSpecification in the offering.',
-        }),
-    ),
-    Start: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'start' },
-          description:
-            'The day and time that the reservation becomes active. You set this value when you purchase the offering.',
-        }),
-    ),
+    CurrencyCode: StringSchema.openapi({
+      xml: { name: 'currencyCode' },
+      description:
+        'The type of currency that is used for billing. The currencyCode used for your reservation is US dollars.',
+    }),
+    Duration: IntegerSchema.openapi({
+      xml: { name: 'duration' },
+      description:
+        'The length of time that this reservation is active. MediaConnect defines this value in the offering.',
+    }),
+    DurationUnits: DurationUnitsSchema.openapi({
+      xml: { name: 'durationUnits' },
+      description:
+        'The unit of measurement for the duration of the reservation. MediaConnect defines this value in the offering.',
+    }),
+    End: StringSchema.openapi({
+      xml: { name: 'end' },
+      description:
+        "The day and time that this reservation expires. This value is calculated based on the start date and time that you set and the offering's duration.",
+    }),
+    OfferingArn: StringSchema.openapi({
+      xml: { name: 'offeringArn' },
+      description: 'The Amazon Resource Name (ARN) that MediaConnect assigns to the offering.',
+    }),
+    OfferingDescription: StringSchema.openapi({
+      xml: { name: 'offeringDescription' },
+      description:
+        'A description of the offering. MediaConnect defines this value in the offering.',
+    }),
+    PricePerUnit: StringSchema.openapi({
+      xml: { name: 'pricePerUnit' },
+      description:
+        'The cost of a single unit. This value, in combination with priceUnits, makes up the rate. MediaConnect defines this value in the offering.',
+    }),
+    PriceUnits: PriceUnitsSchema.openapi({
+      xml: { name: 'priceUnits' },
+      description:
+        'The unit of measurement that is used for billing. This value, in combination with pricePerUnit, makes up the rate. MediaConnect defines this value in the offering.',
+    }),
+    ReservationArn: StringSchema.openapi({
+      xml: { name: 'reservationArn' },
+      description:
+        'The Amazon Resource Name (ARN) that MediaConnect assigns to the reservation when you purchase an offering.',
+    }),
+    ReservationName: StringSchema.openapi({
+      xml: { name: 'reservationName' },
+      description: 'The name that you assigned to the reservation when you purchased the offering.',
+    }),
+    ReservationState: ReservationStateSchema.openapi({
+      xml: { name: 'reservationState' },
+      description: 'The status of your reservation.',
+    }),
+    ResourceSpecification: ResourceSpecificationSchema.openapi({
+      xml: { name: 'resourceSpecification' },
+      description:
+        'A definition of the amount of outbound bandwidth that you would be reserving if you purchase the offering. MediaConnect defines the values that make up the resourceSpecification in the offering.',
+    }),
+    Start: StringSchema.openapi({
+      xml: { name: 'start' },
+      description:
+        'The day and time that the reservation becomes active. You set this value when you purchase the offering.',
+    }),
   })
   .openapi({
     required: [
@@ -3255,31 +2272,21 @@ const ReservationSchema = z
 
 const DescribeReservationResponseSchema = z
   .object({
-    Reservation: ReservationSchema.and(
-      z.any().openapi({ xml: { name: 'reservation' } }),
-    ).exactOptional(),
+    Reservation: ReservationSchema.exactOptional().openapi({ xml: { name: 'reservation' } }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReservationResponse')
 
 const GrantFlowEntitlementsResponseSchema = z
   .object({
-    Entitlements: ListOfEntitlementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlements' },
-          description: 'The entitlements that were just granted.',
-        }),
-    ).exactOptional(),
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that these entitlements were granted to.',
-        }),
-    ).exactOptional(),
+    Entitlements: ListOfEntitlementSchema.exactOptional().openapi({
+      xml: { name: 'entitlements' },
+      description: 'The entitlements that were just granted.',
+    }),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that these entitlements were granted to.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GrantFlowEntitlementsResponse')
@@ -3288,24 +2295,20 @@ const GrantFlowEntitlements420ExceptionSchema = z.any().openapi('GrantFlowEntitl
 
 const ListedBridgeSchema = z
   .object({
-    BridgeArn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'bridgeArn' }, description: 'The ARN of the bridge.' }),
-    ),
-    BridgeState: BridgeStateSchema.and(z.any().openapi({ xml: { name: 'bridgeState' } })),
-    BridgeType: StringSchema.and(
-      z.any().openapi({ xml: { name: 'bridgeType' }, description: 'The type of the bridge.' }),
-    ),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the bridge.' }),
-    ),
-    PlacementArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'placementArn' },
-          description: 'The ARN of the gateway associated with the bridge.',
-        }),
-    ),
+    BridgeArn: StringSchema.openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The ARN of the bridge.',
+    }),
+    BridgeState: BridgeStateSchema.openapi({ xml: { name: 'bridgeState' } }),
+    BridgeType: StringSchema.openapi({
+      xml: { name: 'bridgeType' },
+      description: 'The type of the bridge.',
+    }),
+    Name: StringSchema.openapi({ xml: { name: 'name' }, description: 'The name of the bridge.' }),
+    PlacementArn: StringSchema.openapi({
+      xml: { name: 'placementArn' },
+      description: 'The ARN of the gateway associated with the bridge.',
+    }),
   })
   .openapi({
     required: ['BridgeArn', 'BridgeState', 'PlacementArn', 'BridgeType', 'Name'],
@@ -3317,43 +2320,34 @@ const ListOfListedBridgeSchema = z.array(ListedBridgeSchema).openapi('ListOfList
 
 const ListBridgesResponseSchema = z
   .object({
-    Bridges: ListOfListedBridgeSchema.and(
-      z.any().openapi({ xml: { name: 'bridges' }, description: 'A list of bridge summaries.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that identifies which batch of results that you want to see. For example, you submit a ListBridges request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListBridges request a second time and specify the NextToken value.',
-        }),
-    ).exactOptional(),
+    Bridges: ListOfListedBridgeSchema.exactOptional().openapi({
+      xml: { name: 'bridges' },
+      description: 'A list of bridge summaries.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that identifies which batch of results that you want to see. For example, you submit a ListBridges request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListBridges request a second time and specify the NextToken value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBridgesResponse')
 
 const ListedEntitlementSchema = z
   .object({
-    DataTransferSubscriberFeePercent: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataTransferSubscriberFeePercent' },
-          description:
-            'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
-        }),
-    ).exactOptional(),
-    EntitlementArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'entitlementArn' }, description: 'The ARN of the entitlement.' }),
-    ),
-    EntitlementName: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'entitlementName' }, description: 'The name of the entitlement.' }),
-    ),
+    DataTransferSubscriberFeePercent: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'dataTransferSubscriberFeePercent' },
+      description:
+        'Percentage from 0-100 of the data transfer cost to be billed to the subscriber.',
+    }),
+    EntitlementArn: StringSchema.openapi({
+      xml: { name: 'entitlementArn' },
+      description: 'The ARN of the entitlement.',
+    }),
+    EntitlementName: StringSchema.openapi({
+      xml: { name: 'entitlementName' },
+      description: 'The name of the entitlement.',
+    }),
   })
   .openapi({
     required: ['EntitlementArn', 'EntitlementName'],
@@ -3367,24 +2361,15 @@ const ListOfListedEntitlementSchema = z
 
 const ListEntitlementsResponseSchema = z
   .object({
-    Entitlements: ListOfListedEntitlementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlements' },
-          description:
-            'A list of entitlements that have been granted to you from other AWS accounts.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that identifies which batch of results that you want to see. For example, you submit a ListEntitlements request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListEntitlements request a second time and specify the NextToken value.',
-        }),
-    ).exactOptional(),
+    Entitlements: ListOfListedEntitlementSchema.exactOptional().openapi({
+      xml: { name: 'entitlements' },
+      description: 'A list of entitlements that have been granted to you from other AWS accounts.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that identifies which batch of results that you want to see. For example, you submit a ListEntitlements request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListEntitlements request a second time and specify the NextToken value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEntitlementsResponse')
@@ -3393,38 +2378,29 @@ const SourceTypeSchema = z.enum(['OWNED', 'ENTITLED']).openapi('SourceType')
 
 const ListedFlowSchema = z
   .object({
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'availabilityZone' },
-          description: 'The Availability Zone that the flow was created in.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'A description of the flow.' }),
-    ),
-    FlowArn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'flowArn' }, description: 'The ARN of the flow.' }),
-    ),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the flow.' }),
-    ),
-    SourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceType' },
-          description:
-            'The type of source. This value is either owned (originated somewhere other than an AWS Elemental MediaConnect flow owned by another AWS account) or entitled (originated at an AWS Elemental MediaConnect flow owned by another AWS account).',
-        }),
-    ),
-    Status: StatusSchema.and(
-      z.any().openapi({ xml: { name: 'status' }, description: 'The current status of the flow.' }),
-    ),
-    Maintenance: MaintenanceSchema.and(
-      z.any().openapi({ xml: { name: 'maintenance' } }),
-    ).exactOptional(),
+    AvailabilityZone: StringSchema.openapi({
+      xml: { name: 'availabilityZone' },
+      description: 'The Availability Zone that the flow was created in.',
+    }),
+    Description: StringSchema.openapi({
+      xml: { name: 'description' },
+      description: 'A description of the flow.',
+    }),
+    FlowArn: StringSchema.openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow.',
+    }),
+    Name: StringSchema.openapi({ xml: { name: 'name' }, description: 'The name of the flow.' }),
+    SourceType: SourceTypeSchema.openapi({
+      xml: { name: 'sourceType' },
+      description:
+        'The type of source. This value is either owned (originated somewhere other than an AWS Elemental MediaConnect flow owned by another AWS account) or entitled (originated at an AWS Elemental MediaConnect flow owned by another AWS account).',
+    }),
+    Status: StatusSchema.openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the flow.',
+    }),
+    Maintenance: MaintenanceSchema.exactOptional().openapi({ xml: { name: 'maintenance' } }),
   })
   .openapi({
     required: ['Status', 'Description', 'SourceType', 'AvailabilityZone', 'FlowArn', 'Name'],
@@ -3437,54 +2413,38 @@ const ListOfListedFlowSchema = z.array(ListedFlowSchema).openapi('ListOfListedFl
 
 const ListFlowsResponseSchema = z
   .object({
-    Flows: ListOfListedFlowSchema.and(
-      z.any().openapi({ xml: { name: 'flows' }, description: 'A list of flow summaries.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that identifies which batch of results that you want to see. For example, you submit a ListFlows request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListFlows request a second time and specify the NextToken value.',
-        }),
-    ).exactOptional(),
+    Flows: ListOfListedFlowSchema.exactOptional().openapi({
+      xml: { name: 'flows' },
+      description: 'A list of flow summaries.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that identifies which batch of results that you want to see. For example, you submit a ListFlows request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListFlows request a second time and specify the NextToken value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFlowsResponse')
 
 const ListedGatewayInstanceSchema = z
   .object({
-    GatewayArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayArn' },
-          description: 'The Amazon Resource Name (ARN) of the gateway.',
-        }),
-    ),
-    GatewayInstanceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayInstanceArn' },
-          description: 'The Amazon Resource Name (ARN) of the instance.',
-        }),
-    ),
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'instanceId' },
-          description:
-            'The managed instance ID generated by the SSM install. This will begin with "mi-".',
-        }),
-    ),
-    InstanceState: InstanceStateSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'instanceState' }, description: 'The status of the instance.' }),
-    ).exactOptional(),
+    GatewayArn: StringSchema.openapi({
+      xml: { name: 'gatewayArn' },
+      description: 'The Amazon Resource Name (ARN) of the gateway.',
+    }),
+    GatewayInstanceArn: StringSchema.openapi({
+      xml: { name: 'gatewayInstanceArn' },
+      description: 'The Amazon Resource Name (ARN) of the instance.',
+    }),
+    InstanceId: StringSchema.openapi({
+      xml: { name: 'instanceId' },
+      description:
+        'The managed instance ID generated by the SSM install. This will begin with "mi-".',
+    }),
+    InstanceState: InstanceStateSchema.exactOptional().openapi({
+      xml: { name: 'instanceState' },
+      description: 'The status of the instance.',
+    }),
   })
   .openapi({
     required: ['GatewayArn', 'GatewayInstanceArn', 'InstanceId'],
@@ -3498,36 +2458,27 @@ const ListOfListedGatewayInstanceSchema = z
 
 const ListGatewayInstancesResponseSchema = z
   .object({
-    Instances: ListOfListedGatewayInstanceSchema.and(
-      z.any().openapi({ xml: { name: 'instances' }, description: 'A list of instance summaries.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that identifies which batch of results that you want to see. For example, you submit a ListInstances request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListInstances request a second time and specify the NextToken value.',
-        }),
-    ).exactOptional(),
+    Instances: ListOfListedGatewayInstanceSchema.exactOptional().openapi({
+      xml: { name: 'instances' },
+      description: 'A list of instance summaries.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that identifies which batch of results that you want to see. For example, you submit a ListInstances request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListInstances request a second time and specify the NextToken value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGatewayInstancesResponse')
 
 const ListedGatewaySchema = z
   .object({
-    GatewayArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayArn' },
-          description: 'The Amazon Resource Name (ARN) of the gateway.',
-        }),
-    ),
-    GatewayState: GatewayStateSchema.and(z.any().openapi({ xml: { name: 'gatewayState' } })),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the gateway.' }),
-    ),
+    GatewayArn: StringSchema.openapi({
+      xml: { name: 'gatewayArn' },
+      description: 'The Amazon Resource Name (ARN) of the gateway.',
+    }),
+    GatewayState: GatewayStateSchema.openapi({ xml: { name: 'gatewayState' } }),
+    Name: StringSchema.openapi({ xml: { name: 'name' }, description: 'The name of the gateway.' }),
   })
   .openapi({
     required: ['GatewayArn', 'GatewayState', 'Name'],
@@ -3539,18 +2490,15 @@ const ListOfListedGatewaySchema = z.array(ListedGatewaySchema).openapi('ListOfLi
 
 const ListGatewaysResponseSchema = z
   .object({
-    Gateways: ListOfListedGatewaySchema.and(
-      z.any().openapi({ xml: { name: 'gateways' }, description: 'A list of gateway summaries.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that identifies which batch of results that you want to see. For example, you submit a ListGateways request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListGateways request a second time and specify the NextToken value.',
-        }),
-    ).exactOptional(),
+    Gateways: ListOfListedGatewaySchema.exactOptional().openapi({
+      xml: { name: 'gateways' },
+      description: 'A list of gateway summaries.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that identifies which batch of results that you want to see. For example, you submit a ListGateways request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListGateways request a second time and specify the NextToken value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGatewaysResponse')
@@ -3559,24 +2507,16 @@ const ListOfOfferingSchema = z.array(OfferingSchema).openapi('ListOfOffering')
 
 const ListOfferingsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that identifies which batch of results that you want to see. For example, you submit a ListOfferings request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListOfferings request a second time and specify the NextToken value.',
-        }),
-    ).exactOptional(),
-    Offerings: ListOfOfferingSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'offerings' },
-          description:
-            'A list of offerings that are available to this account in the current AWS Region.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that identifies which batch of results that you want to see. For example, you submit a ListOfferings request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListOfferings request a second time and specify the NextToken value.',
+    }),
+    Offerings: ListOfOfferingSchema.exactOptional().openapi({
+      xml: { name: 'offerings' },
+      description:
+        'A list of offerings that are available to this account in the current AWS Region.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOfferingsResponse')
@@ -3585,24 +2525,16 @@ const ListOfReservationSchema = z.array(ReservationSchema).openapi('ListOfReserv
 
 const ListReservationsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The token that identifies which batch of results that you want to see. For example, you submit a ListReservations request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListReservations request a second time and specify the NextToken value.',
-        }),
-    ).exactOptional(),
-    Reservations: ListOfReservationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'reservations' },
-          description:
-            'A list of all reservations that have been purchased by this account in the current AWS Region.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The token that identifies which batch of results that you want to see. For example, you submit a ListReservations request with MaxResults set at 5. The service returns the first batch of results (up to 5) and a NextToken value. To see the next batch of results, you can submit the ListReservations request a second time and specify the NextToken value.',
+    }),
+    Reservations: ListOfReservationSchema.exactOptional().openapi({
+      xml: { name: 'reservations' },
+      description:
+        'A list of all reservations that have been purchased by this account in the current AWS Region.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReservationsResponse')
@@ -3611,242 +2543,167 @@ const MapOfStringSchema = z.record(z.string(), StringSchema).openapi('MapOfStrin
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'A map from tag keys to values. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'A map from tag keys to values. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const PurchaseOfferingResponseSchema = z
   .object({
-    Reservation: ReservationSchema.and(
-      z.any().openapi({ xml: { name: 'reservation' } }),
-    ).exactOptional(),
+    Reservation: ReservationSchema.exactOptional().openapi({ xml: { name: 'reservation' } }),
   })
   .openapi({ required: [] })
   .openapi('PurchaseOfferingResponse')
 
 const RemoveBridgeOutputResponseSchema = z
   .object({
-    BridgeArn: StringSchema.and(z.any().openapi({ xml: { name: 'bridgeArn' } })).exactOptional(),
-    OutputName: StringSchema.and(z.any().openapi({ xml: { name: 'outputName' } })).exactOptional(),
+    BridgeArn: StringSchema.exactOptional().openapi({ xml: { name: 'bridgeArn' } }),
+    OutputName: StringSchema.exactOptional().openapi({ xml: { name: 'outputName' } }),
   })
   .openapi({ required: [] })
   .openapi('RemoveBridgeOutputResponse')
 
 const RemoveBridgeSourceResponseSchema = z
   .object({
-    BridgeArn: StringSchema.and(z.any().openapi({ xml: { name: 'bridgeArn' } })).exactOptional(),
-    SourceName: StringSchema.and(z.any().openapi({ xml: { name: 'sourceName' } })).exactOptional(),
+    BridgeArn: StringSchema.exactOptional().openapi({ xml: { name: 'bridgeArn' } }),
+    SourceName: StringSchema.exactOptional().openapi({ xml: { name: 'sourceName' } }),
   })
   .openapi({ required: [] })
   .openapi('RemoveBridgeSourceResponse')
 
 const RemoveFlowMediaStreamResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The Amazon Resource Name (ARN) of the flow.',
-        }),
-    ).exactOptional(),
-    MediaStreamName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamName' },
-          description: 'The name of the media stream that was removed.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The Amazon Resource Name (ARN) of the flow.',
+    }),
+    MediaStreamName: StringSchema.exactOptional().openapi({
+      xml: { name: 'mediaStreamName' },
+      description: 'The name of the media stream that was removed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveFlowMediaStreamResponse')
 
 const RemoveFlowOutputResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that is associated with the output you removed.',
-        }),
-    ).exactOptional(),
-    OutputArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outputArn' },
-          description: 'The ARN of the output that was removed.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that is associated with the output you removed.',
+    }),
+    OutputArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'outputArn' },
+      description: 'The ARN of the output that was removed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveFlowOutputResponse')
 
 const RemoveFlowSourceResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that is associated with the source you removed.',
-        }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceArn' },
-          description: 'The ARN of the source that was removed.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that is associated with the source you removed.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceArn' },
+      description: 'The ARN of the source that was removed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveFlowSourceResponse')
 
 const RemoveFlowVpcInterfaceResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that is associated with the VPC interface you removed.',
-        }),
-    ).exactOptional(),
-    NonDeletedNetworkInterfaceIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nonDeletedNetworkInterfaceIds' },
-          description:
-            'IDs of network interfaces associated with the removed VPC interface that Media Connect was unable to remove.',
-        }),
-    ).exactOptional(),
-    VpcInterfaceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceName' },
-          description: 'The name of the VPC interface that was removed.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that is associated with the VPC interface you removed.',
+    }),
+    NonDeletedNetworkInterfaceIds: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'nonDeletedNetworkInterfaceIds' },
+      description:
+        'IDs of network interfaces associated with the removed VPC interface that Media Connect was unable to remove.',
+    }),
+    VpcInterfaceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceName' },
+      description: 'The name of the VPC interface that was removed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveFlowVpcInterfaceResponse')
 
 const RevokeFlowEntitlementResponseSchema = z
   .object({
-    EntitlementArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlementArn' },
-          description: 'The ARN of the entitlement that was revoked.',
-        }),
-    ).exactOptional(),
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that the entitlement was revoked from.',
-        }),
-    ).exactOptional(),
+    EntitlementArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'entitlementArn' },
+      description: 'The ARN of the entitlement that was revoked.',
+    }),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that the entitlement was revoked from.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RevokeFlowEntitlementResponse')
 
 const StartFlowResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that you started.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'The status of the flow when the StartFlow process begins.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that you started.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The status of the flow when the StartFlow process begins.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartFlowResponse')
 
 const StopFlowResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that you stopped.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description: 'The status of the flow when the StopFlow process begins.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that you stopped.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The status of the flow when the StopFlow process begins.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopFlowResponse')
 
 const UpdateBridgeResponseSchema = z
-  .object({
-    Bridge: BridgeSchema.and(z.any().openapi({ xml: { name: 'bridge' } })).exactOptional(),
-  })
+  .object({ Bridge: BridgeSchema.exactOptional().openapi({ xml: { name: 'bridge' } }) })
   .openapi({ required: [] })
   .openapi('UpdateBridgeResponse')
 
 const UpdateBridgeOutputResponseSchema = z
   .object({
-    BridgeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgeArn' },
-          description: 'The Amazon Resource Number (ARN) of the bridge.',
-        }),
-    ).exactOptional(),
-    Output: BridgeOutputSchema.and(
-      z.any().openapi({ xml: { name: 'output' }, description: 'The output that you updated.' }),
-    ).exactOptional(),
+    BridgeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The Amazon Resource Number (ARN) of the bridge.',
+    }),
+    Output: BridgeOutputSchema.exactOptional().openapi({
+      xml: { name: 'output' },
+      description: 'The output that you updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBridgeOutputResponse')
 
 const UpdateBridgeSourceResponseSchema = z
   .object({
-    BridgeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgeArn' },
-          description: 'The Amazon Resource Number (ARN) of the bridge.',
-        }),
-    ).exactOptional(),
-    Source: BridgeSourceSchema.and(z.any().openapi({ xml: { name: 'source' } })).exactOptional(),
+    BridgeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The Amazon Resource Number (ARN) of the bridge.',
+    }),
+    Source: BridgeSourceSchema.exactOptional().openapi({ xml: { name: 'source' } }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBridgeSourceResponse')
@@ -3855,139 +2712,90 @@ const DesiredStateSchema = z.enum(['ACTIVE', 'STANDBY', 'DELETED']).openapi('Des
 
 const UpdateBridgeStateResponseSchema = z
   .object({
-    BridgeArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgeArn' },
-          description: 'The Amazon Resource Number (ARN) of the bridge.',
-        }),
-    ).exactOptional(),
-    DesiredState: DesiredStateSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'desiredState' },
-          description: 'The state of the bridge. ACTIVE or STANDBY.',
-        }),
-    ).exactOptional(),
+    BridgeArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'bridgeArn' },
+      description: 'The Amazon Resource Number (ARN) of the bridge.',
+    }),
+    DesiredState: DesiredStateSchema.exactOptional().openapi({
+      xml: { name: 'desiredState' },
+      description: 'The state of the bridge. ACTIVE or STANDBY.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBridgeStateResponse')
 
-const UpdateFlowResponseSchema = z
-  .object({ Flow: FlowSchema.and(z.any().openapi({ xml: { name: 'flow' } })).exactOptional() })
+const UpdateFlowResponseSchema: z.ZodType<UpdateFlowResponseType> = z
+  .object({ Flow: FlowSchema.exactOptional().openapi({ xml: { name: 'flow' } }) })
   .openapi({ required: [] })
   .openapi('UpdateFlowResponse')
 
 const UpdateFlowEntitlementResponseSchema = z
   .object({
-    Entitlement: EntitlementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlement' },
-          description: 'The new configuration of the entitlement that you updated.',
-        }),
-    ).exactOptional(),
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that this entitlement was granted on.',
-        }),
-    ).exactOptional(),
+    Entitlement: EntitlementSchema.exactOptional().openapi({
+      xml: { name: 'entitlement' },
+      description: 'The new configuration of the entitlement that you updated.',
+    }),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that this entitlement was granted on.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFlowEntitlementResponse')
 
 const UpdateFlowMediaStreamResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description:
-            'The ARN of the flow that is associated with the media stream that you updated.',
-        }),
-    ).exactOptional(),
-    MediaStream: MediaStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStream' },
-          description: 'The media stream that you updated.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that is associated with the media stream that you updated.',
+    }),
+    MediaStream: MediaStreamSchema.exactOptional().openapi({
+      xml: { name: 'mediaStream' },
+      description: 'The media stream that you updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFlowMediaStreamResponse')
 
 const UpdateFlowOutputResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that is associated with the updated output.',
-        }),
-    ).exactOptional(),
-    Output: OutputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'output' },
-          description: 'The new settings of the output that you updated.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that is associated with the updated output.',
+    }),
+    Output: OutputSchema.exactOptional().openapi({
+      xml: { name: 'output' },
+      description: 'The new settings of the output that you updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFlowOutputResponse')
 
 const UpdateFlowSourceResponseSchema = z
   .object({
-    FlowArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowArn' },
-          description: 'The ARN of the flow that you want to update.',
-        }),
-    ).exactOptional(),
-    Source: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'source' },
-          description: 'The settings for the source of the flow.',
-        }),
-    ).exactOptional(),
+    FlowArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'flowArn' },
+      description: 'The ARN of the flow that you want to update.',
+    }),
+    Source: SourceSchema.exactOptional().openapi({
+      xml: { name: 'source' },
+      description: 'The settings for the source of the flow.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFlowSourceResponse')
 
 const UpdateGatewayInstanceResponseSchema = z
   .object({
-    BridgePlacement: BridgePlacementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgePlacement' },
-          description:
-            'The availability of the instance to host new bridges. The bridgePlacement property can be LOCKED or AVAILABLE. If it is LOCKED, no new bridges can be deployed to this instance. If it is AVAILABLE, new bridges can be added to this instance.',
-        }),
-    ).exactOptional(),
-    GatewayInstanceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayInstanceArn' },
-          description: 'The Amazon Resource Name (ARN) of the instance.',
-        }),
-    ).exactOptional(),
+    BridgePlacement: BridgePlacementSchema.exactOptional().openapi({
+      xml: { name: 'bridgePlacement' },
+      description:
+        'The availability of the instance to host new bridges. The bridgePlacement property can be LOCKED or AVAILABLE. If it is LOCKED, no new bridges can be deployed to this instance. If it is AVAILABLE, new bridges can be added to this instance.',
+    }),
+    GatewayInstanceArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'gatewayInstanceArn' },
+      description: 'The Amazon Resource Name (ARN) of the instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGatewayInstanceResponse')
@@ -3998,14 +2806,10 @@ const ListOfAddBridgeOutputRequestSchema = z
 
 const AddBridgeOutputsRequestSchema = z
   .object({
-    Outputs: ListOfAddBridgeOutputRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outputs' },
-          description: 'The outputs that you want to add to this bridge.',
-        }),
-    ),
+    Outputs: ListOfAddBridgeOutputRequestSchema.openapi({
+      xml: { name: 'outputs' },
+      description: 'The outputs that you want to add to this bridge.',
+    }),
   })
   .openapi({
     required: ['Outputs'],
@@ -4020,14 +2824,10 @@ const ListOfAddBridgeSourceRequestSchema = z
 
 const AddBridgeSourcesRequestSchema = z
   .object({
-    Sources: ListOfAddBridgeSourceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sources' },
-          description: 'The sources that you want to add to this bridge.',
-        }),
-    ),
+    Sources: ListOfAddBridgeSourceRequestSchema.openapi({
+      xml: { name: 'sources' },
+      description: 'The sources that you want to add to this bridge.',
+    }),
   })
   .openapi({
     required: ['Sources'],
@@ -4038,32 +2838,20 @@ const AddBridgeSourcesRequestSchema = z
 
 const AddEgressGatewayBridgeRequestSchema = z
   .object({
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'The maximum expected bitrate (in bps).',
-        }),
-    ),
+    MaxBitrate: IntegerSchema.openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'The maximum expected bitrate (in bps).',
+    }),
   })
   .openapi({ required: ['MaxBitrate'] })
   .openapi('AddEgressGatewayBridgeRequest')
 
-const ListOfAddMediaStreamRequestSchema = z
-  .array(AddMediaStreamRequestSchema)
-  .openapi('ListOfAddMediaStreamRequest')
-
 const AddFlowMediaStreamsRequestSchema = z
   .object({
-    MediaStreams: ListOfAddMediaStreamRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreams' },
-          description: 'The media streams that you want to add to the flow.',
-        }),
-    ),
+    MediaStreams: ListOfAddMediaStreamRequestSchema.openapi({
+      xml: { name: 'mediaStreams' },
+      description: 'The media streams that you want to add to the flow.',
+    }),
   })
   .openapi({
     required: ['MediaStreams'],
@@ -4072,20 +2860,12 @@ const AddFlowMediaStreamsRequestSchema = z
   })
   .openapi('AddFlowMediaStreamsRequest')
 
-const ListOfAddOutputRequestSchema = z
-  .array(AddOutputRequestSchema)
-  .openapi('ListOfAddOutputRequest')
-
-const AddFlowOutputsRequestSchema = z
+const AddFlowOutputsRequestSchema: z.ZodType<AddFlowOutputsRequestType> = z
   .object({
-    Outputs: ListOfAddOutputRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outputs' },
-          description: 'A list of outputs that you want to add.',
-        }),
-    ),
+    Outputs: ListOfAddOutputRequestSchema.openapi({
+      xml: { name: 'outputs' },
+      description: 'A list of outputs that you want to add.',
+    }),
   })
   .openapi({
     required: ['Outputs'],
@@ -4094,20 +2874,12 @@ const AddFlowOutputsRequestSchema = z
   })
   .openapi('AddFlowOutputsRequest')
 
-const ListOfSetSourceRequestSchema = z
-  .array(SetSourceRequestSchema)
-  .openapi('ListOfSetSourceRequest')
-
-const AddFlowSourcesRequestSchema = z
+const AddFlowSourcesRequestSchema: z.ZodType<AddFlowSourcesRequestType> = z
   .object({
-    Sources: ListOfSetSourceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sources' },
-          description: 'A list of sources that you want to add.',
-        }),
-    ),
+    Sources: ListOfSetSourceRequestSchema.openapi({
+      xml: { name: 'sources' },
+      description: 'A list of sources that you want to add.',
+    }),
   })
   .openapi({
     required: ['Sources'],
@@ -4116,20 +2888,12 @@ const AddFlowSourcesRequestSchema = z
   })
   .openapi('AddFlowSourcesRequest')
 
-const ListOfVpcInterfaceRequestSchema = z
-  .array(VpcInterfaceRequestSchema)
-  .openapi('ListOfVpcInterfaceRequest')
-
 const AddFlowVpcInterfacesRequestSchema = z
   .object({
-    VpcInterfaces: ListOfVpcInterfaceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaces' },
-          description: 'A list of VPC interfaces that you want to add.',
-        }),
-    ),
+    VpcInterfaces: ListOfVpcInterfaceRequestSchema.openapi({
+      xml: { name: 'vpcInterfaces' },
+      description: 'A list of VPC interfaces that you want to add.',
+    }),
   })
   .openapi({
     required: ['VpcInterfaces'],
@@ -4140,114 +2904,51 @@ const AddFlowVpcInterfacesRequestSchema = z
 
 const AddIngressGatewayBridgeRequestSchema = z
   .object({
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'The maximum expected bitrate (in bps).',
-        }),
-    ),
-    MaxOutputs: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxOutputs' },
-          description: 'The maximum number of expected outputs.',
-        }),
-    ),
+    MaxBitrate: IntegerSchema.openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'The maximum expected bitrate (in bps).',
+    }),
+    MaxOutputs: IntegerSchema.openapi({
+      xml: { name: 'maxOutputs' },
+      description: 'The maximum number of expected outputs.',
+    }),
   })
   .openapi({ required: ['MaxOutputs', 'MaxBitrate'] })
   .openapi('AddIngressGatewayBridgeRequest')
 
-const AddMaintenanceSchema = z
-  .object({
-    MaintenanceDay: MaintenanceDaySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceDay' },
-          description:
-            'A day of a week when the maintenance will happen. Use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
-        }),
-    ),
-    MaintenanceStartHour: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceStartHour' },
-          description:
-            'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['MaintenanceDay', 'MaintenanceStartHour'],
-    description: 'Create maintenance setting for a flow',
-  })
-  .openapi('AddMaintenance')
-
 const CreateBridgeRequestSchema = z
   .object({
-    EgressGatewayBridge: AddEgressGatewayBridgeRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'egressGatewayBridge' },
-          description:
-            'Create a bridge with the egress bridge type. An egress bridge is a cloud-to-ground bridge. The content comes from an existing MediaConnect flow and is delivered to your premises.',
-        }),
-    ).exactOptional(),
-    IngressGatewayBridge: AddIngressGatewayBridgeRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ingressGatewayBridge' },
-          description:
-            'Create a bridge with the ingress bridge type. An ingress bridge is a ground-to-cloud bridge. The content originates at your premises and is delivered to the cloud.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the bridge. This name can not be modified after the bridge is created.',
-        }),
-    ),
-    Outputs: ListOfAddBridgeOutputRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outputs' },
-          description: 'The outputs that you want to add to this bridge.',
-        }),
-    ).exactOptional(),
-    PlacementArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'placementArn' },
-          description: 'The bridge placement Amazon Resource Number (ARN).',
-        }),
-    ),
-    SourceFailoverConfig: FailoverConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceFailoverConfig' },
-          description: 'The settings for source failover.',
-        }),
-    ).exactOptional(),
-    Sources: ListOfAddBridgeSourceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sources' },
-          description: 'The sources that you want to add to this bridge.',
-        }),
-    ),
+    EgressGatewayBridge: AddEgressGatewayBridgeRequestSchema.exactOptional().openapi({
+      xml: { name: 'egressGatewayBridge' },
+      description:
+        'Create a bridge with the egress bridge type. An egress bridge is a cloud-to-ground bridge. The content comes from an existing MediaConnect flow and is delivered to your premises.',
+    }),
+    IngressGatewayBridge: AddIngressGatewayBridgeRequestSchema.exactOptional().openapi({
+      xml: { name: 'ingressGatewayBridge' },
+      description:
+        'Create a bridge with the ingress bridge type. An ingress bridge is a ground-to-cloud bridge. The content originates at your premises and is delivered to the cloud.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the bridge. This name can not be modified after the bridge is created.',
+    }),
+    Outputs: ListOfAddBridgeOutputRequestSchema.exactOptional().openapi({
+      xml: { name: 'outputs' },
+      description: 'The outputs that you want to add to this bridge.',
+    }),
+    PlacementArn: StringSchema.openapi({
+      xml: { name: 'placementArn' },
+      description: 'The bridge placement Amazon Resource Number (ARN).',
+    }),
+    SourceFailoverConfig: FailoverConfigSchema.exactOptional().openapi({
+      xml: { name: 'sourceFailoverConfig' },
+      description: 'The settings for source failover.',
+    }),
+    Sources: ListOfAddBridgeSourceRequestSchema.openapi({
+      xml: { name: 'sources' },
+      description: 'The sources that you want to add to this bridge.',
+    }),
   })
   .openapi({
     required: ['Sources', 'PlacementArn', 'Name'],
@@ -4256,69 +2957,37 @@ const CreateBridgeRequestSchema = z
   })
   .openapi('CreateBridgeRequest')
 
-const ListOfGrantEntitlementRequestSchema = z
-  .array(GrantEntitlementRequestSchema)
-  .openapi('ListOfGrantEntitlementRequest')
-
-const CreateFlowRequestSchema = z
+const CreateFlowRequestSchema: z.ZodType<CreateFlowRequestType> = z
   .object({
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'availabilityZone' },
-          description:
-            'The Availability Zone that you want to create the flow in. These options are limited to the Availability Zones within the current AWS Region.',
-        }),
-    ).exactOptional(),
-    Entitlements: ListOfGrantEntitlementRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlements' },
-          description: 'The entitlements that you want to grant on a flow.',
-        }),
-    ).exactOptional(),
-    MediaStreams: ListOfAddMediaStreamRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreams' },
-          description:
-            'The media streams that you want to add to the flow. You can associate these media streams with sources and outputs on the flow.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the flow.' }),
-    ),
-    Outputs: ListOfAddOutputRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'outputs' },
-          description: 'The outputs that you want to add to this flow.',
-        }),
-    ).exactOptional(),
-    Source: SetSourceRequestSchema.and(
-      z.any().openapi({ xml: { name: 'source' } }),
-    ).exactOptional(),
-    SourceFailoverConfig: FailoverConfigSchema.and(
-      z.any().openapi({ xml: { name: 'sourceFailoverConfig' } }),
-    ).exactOptional(),
-    Sources: ListOfSetSourceRequestSchema.and(
-      z.any().openapi({ xml: { name: 'sources' } }),
-    ).exactOptional(),
-    VpcInterfaces: ListOfVpcInterfaceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaces' },
-          description: 'The VPC interfaces you want on the flow.',
-        }),
-    ).exactOptional(),
-    Maintenance: AddMaintenanceSchema.and(
-      z.any().openapi({ xml: { name: 'maintenance' } }),
-    ).exactOptional(),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      xml: { name: 'availabilityZone' },
+      description:
+        'The Availability Zone that you want to create the flow in. These options are limited to the Availability Zones within the current AWS Region.',
+    }),
+    Entitlements: ListOfGrantEntitlementRequestSchema.exactOptional().openapi({
+      xml: { name: 'entitlements' },
+      description: 'The entitlements that you want to grant on a flow.',
+    }),
+    MediaStreams: ListOfAddMediaStreamRequestSchema.exactOptional().openapi({
+      xml: { name: 'mediaStreams' },
+      description:
+        'The media streams that you want to add to the flow. You can associate these media streams with sources and outputs on the flow.',
+    }),
+    Name: StringSchema.openapi({ xml: { name: 'name' }, description: 'The name of the flow.' }),
+    Outputs: ListOfAddOutputRequestSchema.exactOptional().openapi({
+      xml: { name: 'outputs' },
+      description: 'The outputs that you want to add to this flow.',
+    }),
+    Source: SetSourceRequestSchema.exactOptional().openapi({ xml: { name: 'source' } }),
+    SourceFailoverConfig: FailoverConfigSchema.exactOptional().openapi({
+      xml: { name: 'sourceFailoverConfig' },
+    }),
+    Sources: ListOfSetSourceRequestSchema.exactOptional().openapi({ xml: { name: 'sources' } }),
+    VpcInterfaces: ListOfVpcInterfaceRequestSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaces' },
+      description: 'The VPC interfaces you want on the flow.',
+    }),
+    Maintenance: AddMaintenanceSchema.exactOptional().openapi({ xml: { name: 'maintenance' } }),
   })
   .openapi({
     required: ['Name'],
@@ -4330,32 +2999,20 @@ const CreateFlowRequestSchema = z
 
 const CreateGatewayRequestSchema = z
   .object({
-    EgressCidrBlocks: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'egressCidrBlocks' },
-          description:
-            'The range of IP addresses that are allowed to contribute content or initiate output requests for flows communicating with this gateway. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-        }),
-    ),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            'The name of the gateway. This name can not be modified after the gateway is created.',
-        }),
-    ),
-    Networks: ListOfGatewayNetworkSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networks' },
-          description: 'The list of networks that you want to add.',
-        }),
-    ),
+    EgressCidrBlocks: ListOfStringSchema.openapi({
+      xml: { name: 'egressCidrBlocks' },
+      description:
+        'The range of IP addresses that are allowed to contribute content or initiate output requests for flows communicating with this gateway. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        'The name of the gateway. This name can not be modified after the gateway is created.',
+    }),
+    Networks: ListOfGatewayNetworkSchema.openapi({
+      xml: { name: 'networks' },
+      description: 'The list of networks that you want to add.',
+    }),
   })
   .openapi({
     required: ['Networks', 'EgressCidrBlocks', 'Name'],
@@ -4365,67 +3022,63 @@ const CreateGatewayRequestSchema = z
   .openapi('CreateGatewayRequest')
 
 const DeleteBridgeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBridgeRequest' })
   .openapi('DeleteBridgeRequest')
 
 const DeleteFlowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFlowRequest' })
   .openapi('DeleteFlowRequest')
 
 const DeleteGatewayRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteGatewayRequest' })
   .openapi('DeleteGatewayRequest')
 
 const BooleanSchema = z.boolean().openapi('Boolean')
 
 const DeregisterGatewayInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeregisterGatewayInstanceRequest' })
   .openapi('DeregisterGatewayInstanceRequest')
 
 const DescribeBridgeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBridgeRequest' })
   .openapi('DescribeBridgeRequest')
 
 const DescribeFlowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeFlowRequest' })
   .openapi('DescribeFlowRequest')
 
 const DescribeGatewayInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGatewayInstanceRequest' })
   .openapi('DescribeGatewayInstanceRequest')
 
 const DescribeGatewayRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGatewayRequest' })
   .openapi('DescribeGatewayRequest')
 
 const DescribeOfferingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeOfferingRequest' })
   .openapi('DescribeOfferingRequest')
 
 const DescribeReservationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeReservationRequest' })
   .openapi('DescribeReservationRequest')
 
 const GrantFlowEntitlementsRequestSchema = z
   .object({
-    Entitlements: ListOfGrantEntitlementRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlements' },
-          description: 'The list of entitlements that you want to grant.',
-        }),
-    ),
+    Entitlements: ListOfGrantEntitlementRequestSchema.openapi({
+      xml: { name: 'entitlements' },
+      description: 'The list of entitlements that you want to grant.',
+    }),
   })
   .openapi({
     required: ['Entitlements'],
@@ -4437,64 +3090,56 @@ const GrantFlowEntitlementsRequestSchema = z
 const MaxResultsSchema = z.int().min(1).max(1000).openapi('MaxResults')
 
 const ListBridgesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBridgesRequest' })
   .openapi('ListBridgesRequest')
 
 const ListEntitlementsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEntitlementsRequest' })
   .openapi('ListEntitlementsRequest')
 
 const ListFlowsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFlowsRequest' })
   .openapi('ListFlowsRequest')
 
 const ListGatewayInstancesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListGatewayInstancesRequest' })
   .openapi('ListGatewayInstancesRequest')
 
 const ListGatewaysRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListGatewaysRequest' })
   .openapi('ListGatewaysRequest')
 
 const ListOfferingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOfferingsRequest' })
   .openapi('ListOfferingsRequest')
 
 const ListReservationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListReservationsRequest' })
   .openapi('ListReservationsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PurchaseOfferingRequestSchema = z
   .object({
-    ReservationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'reservationName' },
-          description: 'The name that you want to use for the reservation.',
-        }),
-    ),
-    Start: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'start' },
-          description:
-            "The date and time that you want the reservation to begin, in Coordinated Universal Time (UTC). You can specify any date and time between 12:00am on the first day of the current month to the current time on today's date, inclusive. Specify the start in a 24-hour notation. Use the following format: YYYY-MM-DDTHH:mm:SSZ, where T and Z are literal characters. For example, to specify 11:30pm on March 5, 2020, enter 2020-03-05T23:30:00Z.",
-        }),
-    ),
+    ReservationName: StringSchema.openapi({
+      xml: { name: 'reservationName' },
+      description: 'The name that you want to use for the reservation.',
+    }),
+    Start: StringSchema.openapi({
+      xml: { name: 'start' },
+      description:
+        "The date and time that you want the reservation to begin, in Coordinated Universal Time (UTC). You can specify any date and time between 12:00am on the first day of the current month to the current time on today's date, inclusive. Specify the start in a 24-hour notation. Use the following format: YYYY-MM-DDTHH:mm:SSZ, where T and Z are literal characters. For example, to specify 11:30pm on March 5, 2020, enter 2020-03-05T23:30:00Z.",
+    }),
   })
   .openapi({
     required: ['Start', 'ReservationName'],
@@ -4504,61 +3149,57 @@ const PurchaseOfferingRequestSchema = z
   .openapi('PurchaseOfferingRequest')
 
 const RemoveBridgeOutputRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveBridgeOutputRequest' })
   .openapi('RemoveBridgeOutputRequest')
 
 const RemoveBridgeSourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveBridgeSourceRequest' })
   .openapi('RemoveBridgeSourceRequest')
 
 const RemoveFlowMediaStreamRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveFlowMediaStreamRequest' })
   .openapi('RemoveFlowMediaStreamRequest')
 
 const RemoveFlowOutputRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveFlowOutputRequest' })
   .openapi('RemoveFlowOutputRequest')
 
 const RemoveFlowSourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveFlowSourceRequest' })
   .openapi('RemoveFlowSourceRequest')
 
 const RemoveFlowVpcInterfaceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveFlowVpcInterfaceRequest' })
   .openapi('RemoveFlowVpcInterfaceRequest')
 
 const RevokeFlowEntitlementRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RevokeFlowEntitlementRequest' })
   .openapi('RevokeFlowEntitlementRequest')
 
 const StartFlowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StartFlowRequest' })
   .openapi('StartFlowRequest')
 
 const StopFlowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopFlowRequest' })
   .openapi('StopFlowRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'A map from tag keys to values. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ),
+    Tags: MapOfStringSchema.openapi({
+      xml: { name: 'tags' },
+      description:
+        'A map from tag keys to values. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({
     required: ['Tags'],
@@ -4569,7 +3210,7 @@ const TagResourceRequestSchema = z
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -4590,76 +3231,67 @@ const UpdateBridgeFlowSourceRequestSchema = z
           description: 'The ARN of the cloud flow to use as a source of this bridge.',
         }),
     ).exactOptional(),
-    FlowVpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'flowVpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this source.',
-        }),
-    ).exactOptional(),
+    FlowVpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'flowVpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this source.',
+    }),
   })
   .openapi({ description: 'Update the flow source of the bridge.', required: [] })
   .openapi('UpdateBridgeFlowSourceRequest')
 
 const UpdateBridgeNetworkOutputRequestSchema = z
   .object({
-    IpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'ipAddress' }, description: 'The network output IP Address.' }),
-    ).exactOptional(),
-    NetworkName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkName' },
-          description: "The network output's gateway network name.",
-        }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'port' }, description: 'The network output port.' }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z.any().openapi({ xml: { name: 'protocol' }, description: 'The network output protocol.' }),
-    ).exactOptional(),
-    Ttl: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'ttl' }, description: 'The network output TTL.' }),
-    ).exactOptional(),
+    IpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'ipAddress' },
+      description: 'The network output IP Address.',
+    }),
+    NetworkName: StringSchema.exactOptional().openapi({
+      xml: { name: 'networkName' },
+      description: "The network output's gateway network name.",
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'port' },
+      description: 'The network output port.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      xml: { name: 'protocol' },
+      description: 'The network output protocol.',
+    }),
+    Ttl: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'ttl' },
+      description: 'The network output TTL.',
+    }),
   })
   .openapi({ description: 'Update an existing network output.', required: [] })
   .openapi('UpdateBridgeNetworkOutputRequest')
 
 const UpdateBridgeNetworkSourceRequestSchema = z
   .object({
-    MulticastIp: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'multicastIp' }, description: 'The network source multicast IP.' }),
-    ).exactOptional(),
-    NetworkName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'networkName' },
-          description: "The network source's gateway network name.",
-        }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z.any().openapi({ xml: { name: 'port' }, description: 'The network source port.' }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z.any().openapi({ xml: { name: 'protocol' }, description: 'The network source protocol.' }),
-    ).exactOptional(),
+    MulticastIp: StringSchema.exactOptional().openapi({
+      xml: { name: 'multicastIp' },
+      description: 'The network source multicast IP.',
+    }),
+    NetworkName: StringSchema.exactOptional().openapi({
+      xml: { name: 'networkName' },
+      description: "The network source's gateway network name.",
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'port' },
+      description: 'The network source port.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      xml: { name: 'protocol' },
+      description: 'The network source protocol.',
+    }),
   })
   .openapi({ description: 'Update the network source of the bridge.', required: [] })
   .openapi('UpdateBridgeNetworkSourceRequest')
 
 const UpdateBridgeOutputRequestSchema = z
   .object({
-    NetworkOutput: UpdateBridgeNetworkOutputRequestSchema.and(
-      z.any().openapi({ xml: { name: 'networkOutput' } }),
-    ).exactOptional(),
+    NetworkOutput: UpdateBridgeNetworkOutputRequestSchema.exactOptional().openapi({
+      xml: { name: 'networkOutput' },
+    }),
   })
   .openapi({
     title: 'UpdateBridgeOutputRequest',
@@ -4670,84 +3302,60 @@ const UpdateBridgeOutputRequestSchema = z
 
 const UpdateEgressGatewayBridgeRequestSchema = z
   .object({
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'Update an existing egress-type bridge.',
-        }),
-    ).exactOptional(),
+    MaxBitrate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'Update an existing egress-type bridge.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateEgressGatewayBridgeRequest')
 
 const UpdateIngressGatewayBridgeRequestSchema = z
   .object({
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'The maximum expected bitrate (in bps).',
-        }),
-    ).exactOptional(),
-    MaxOutputs: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxOutputs' },
-          description: 'The maximum number of expected outputs.',
-        }),
-    ).exactOptional(),
+    MaxBitrate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'The maximum expected bitrate (in bps).',
+    }),
+    MaxOutputs: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxOutputs' },
+      description: 'The maximum number of expected outputs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateIngressGatewayBridgeRequest')
 
 const UpdateFailoverConfigSchema = z
   .object({
-    FailoverMode: FailoverModeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'failoverMode' },
-          description:
-            'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
-        }),
-    ).exactOptional(),
-    RecoveryWindow: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'recoveryWindow' },
-          description: 'Recovery window time to look for dash-7 packets',
-        }),
-    ).exactOptional(),
-    SourcePriority: SourcePrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourcePriority' },
-          description:
-            'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
-        }),
-    ).exactOptional(),
-    State: StateSchema.and(z.any().openapi({ xml: { name: 'state' } })).exactOptional(),
+    FailoverMode: FailoverModeSchema.exactOptional().openapi({
+      xml: { name: 'failoverMode' },
+      description:
+        'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
+    }),
+    RecoveryWindow: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'recoveryWindow' },
+      description: 'Recovery window time to look for dash-7 packets',
+    }),
+    SourcePriority: SourcePrioritySchema.exactOptional().openapi({
+      xml: { name: 'sourcePriority' },
+      description:
+        'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
+    }),
+    State: StateSchema.exactOptional().openapi({ xml: { name: 'state' } }),
   })
   .openapi({ description: 'The settings for source failover.', required: [] })
   .openapi('UpdateFailoverConfig')
 
 const UpdateBridgeRequestSchema = z
   .object({
-    EgressGatewayBridge: UpdateEgressGatewayBridgeRequestSchema.and(
-      z.any().openapi({ xml: { name: 'egressGatewayBridge' } }),
-    ).exactOptional(),
-    IngressGatewayBridge: UpdateIngressGatewayBridgeRequestSchema.and(
-      z.any().openapi({ xml: { name: 'ingressGatewayBridge' } }),
-    ).exactOptional(),
-    SourceFailoverConfig: UpdateFailoverConfigSchema.and(
-      z.any().openapi({ xml: { name: 'sourceFailoverConfig' } }),
-    ).exactOptional(),
+    EgressGatewayBridge: UpdateEgressGatewayBridgeRequestSchema.exactOptional().openapi({
+      xml: { name: 'egressGatewayBridge' },
+    }),
+    IngressGatewayBridge: UpdateIngressGatewayBridgeRequestSchema.exactOptional().openapi({
+      xml: { name: 'ingressGatewayBridge' },
+    }),
+    SourceFailoverConfig: UpdateFailoverConfigSchema.exactOptional().openapi({
+      xml: { name: 'sourceFailoverConfig' },
+    }),
   })
   .openapi({
     title: 'UpdateBridgeRequest',
@@ -4758,12 +3366,12 @@ const UpdateBridgeRequestSchema = z
 
 const UpdateBridgeSourceRequestSchema = z
   .object({
-    FlowSource: UpdateBridgeFlowSourceRequestSchema.and(
-      z.any().openapi({ xml: { name: 'flowSource' } }),
-    ).exactOptional(),
-    NetworkSource: UpdateBridgeNetworkSourceRequestSchema.and(
-      z.any().openapi({ xml: { name: 'networkSource' } }),
-    ).exactOptional(),
+    FlowSource: UpdateBridgeFlowSourceRequestSchema.exactOptional().openapi({
+      xml: { name: 'flowSource' },
+    }),
+    NetworkSource: UpdateBridgeNetworkSourceRequestSchema.exactOptional().openapi({
+      xml: { name: 'networkSource' },
+    }),
   })
   .openapi({
     title: 'UpdateBridgeSourceRequest',
@@ -4773,9 +3381,7 @@ const UpdateBridgeSourceRequestSchema = z
   .openapi('UpdateBridgeSourceRequest')
 
 const UpdateBridgeStateRequestSchema = z
-  .object({
-    DesiredState: DesiredStateSchema.and(z.any().openapi({ xml: { name: 'desiredState' } })),
-  })
+  .object({ DesiredState: DesiredStateSchema.openapi({ xml: { name: 'desiredState' } }) })
   .openapi({
     required: ['DesiredState'],
     title: 'UpdateBridgeStateRequest',
@@ -4785,129 +3391,77 @@ const UpdateBridgeStateRequestSchema = z
 
 const UpdateEncryptionSchema = z
   .object({
-    Algorithm: AlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'algorithm' },
-          description:
-            'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
-        }),
-    ).exactOptional(),
-    ConstantInitializationVector: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'constantInitializationVector' },
-          description:
-            'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-    DeviceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deviceId' },
-          description:
-            'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-    KeyType: KeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'keyType' },
-          description:
-            'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
-        }),
-    ).exactOptional(),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'region' },
-          description:
-            'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceId' },
-          description:
-            'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleArn' },
-          description:
-            'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
-        }),
-    ).exactOptional(),
-    SecretArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'secretArn' },
-          description:
-            'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description:
-            'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-        }),
-    ).exactOptional(),
+    Algorithm: AlgorithmSchema.exactOptional().openapi({
+      xml: { name: 'algorithm' },
+      description:
+        'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
+    }),
+    ConstantInitializationVector: StringSchema.exactOptional().openapi({
+      xml: { name: 'constantInitializationVector' },
+      description:
+        'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
+    }),
+    DeviceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'deviceId' },
+      description:
+        'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+    }),
+    KeyType: KeyTypeSchema.exactOptional().openapi({
+      xml: { name: 'keyType' },
+      description:
+        'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
+    }),
+    Region: StringSchema.exactOptional().openapi({
+      xml: { name: 'region' },
+      description:
+        'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+    }),
+    ResourceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceId' },
+      description:
+        'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+    }),
+    RoleArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'roleArn' },
+      description:
+        'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
+    }),
+    SecretArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'secretArn' },
+      description:
+        'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description:
+        'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+    }),
   })
   .openapi({ description: 'Information about the encryption of the flow.', required: [] })
   .openapi('UpdateEncryption')
 
 const UpdateFlowEntitlementRequestSchema = z
   .object({
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description of the entitlement. This description appears only on the AWS Elemental MediaConnect console and will not be seen by the subscriber or end user.',
-        }),
-    ).exactOptional(),
-    Encryption: UpdateEncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryption' },
-          description:
-            'The type of encryption that will be used on the output associated with this entitlement. Allowable encryption types: static-key, speke.',
-        }),
-    ).exactOptional(),
-    EntitlementStatus: EntitlementStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'entitlementStatus' },
-          description:
-            'An indication of whether you want to enable the entitlement to allow access, or disable it to stop streaming content to the subscriber’s flow temporarily. If you don’t specify the entitlementStatus field in your request, MediaConnect leaves the value unchanged.',
-        }),
-    ).exactOptional(),
-    Subscribers: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subscribers' },
-          description:
-            'The AWS account IDs that you want to share your content with. The receiving accounts (subscribers) will be allowed to create their own flow using your content as the source.',
-        }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description of the entitlement. This description appears only on the AWS Elemental MediaConnect console and will not be seen by the subscriber or end user.',
+    }),
+    Encryption: UpdateEncryptionSchema.exactOptional().openapi({
+      xml: { name: 'encryption' },
+      description:
+        'The type of encryption that will be used on the output associated with this entitlement. Allowable encryption types: static-key, speke.',
+    }),
+    EntitlementStatus: EntitlementStatusSchema.exactOptional().openapi({
+      xml: { name: 'entitlementStatus' },
+      description:
+        'An indication of whether you want to enable the entitlement to allow access, or disable it to stop streaming content to the subscriber’s flow temporarily. If you don’t specify the entitlementStatus field in your request, MediaConnect leaves the value unchanged.',
+    }),
+    Subscribers: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'subscribers' },
+      description:
+        'The AWS account IDs that you want to share your content with. The receiving accounts (subscribers) will be allowed to create their own flow using your content as the source.',
+    }),
   })
   .openapi({
     title: 'UpdateFlowEntitlementRequest',
@@ -4918,36 +3472,27 @@ const UpdateFlowEntitlementRequestSchema = z
 
 const UpdateFlowMediaStreamRequestSchema = z
   .object({
-    Attributes: MediaStreamAttributesRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attributes' },
-          description: 'The attributes that you want to assign to the media stream.',
-        }),
-    ).exactOptional(),
-    ClockRate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clockRate' },
-          description:
-            'The sample rate (in Hz) for the stream. If the media stream type is video or ancillary data, set this value to 90000. If the media stream type is audio, set this value to either 48000 or 96000.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'Description' }),
-    ).exactOptional(),
-    MediaStreamType: MediaStreamTypeSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'mediaStreamType' }, description: 'The type of media stream.' }),
-    ).exactOptional(),
-    VideoFormat: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'videoFormat' }, description: 'The resolution of the video.' }),
-    ).exactOptional(),
+    Attributes: MediaStreamAttributesRequestSchema.exactOptional().openapi({
+      xml: { name: 'attributes' },
+      description: 'The attributes that you want to assign to the media stream.',
+    }),
+    ClockRate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'clockRate' },
+      description:
+        'The sample rate (in Hz) for the stream. If the media stream type is video or ancillary data, set this value to 90000. If the media stream type is audio, set this value to either 48000 or 96000.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'Description',
+    }),
+    MediaStreamType: MediaStreamTypeSchema.exactOptional().openapi({
+      xml: { name: 'mediaStreamType' },
+      description: 'The type of media stream.',
+    }),
+    VideoFormat: StringSchema.exactOptional().openapi({
+      xml: { name: 'videoFormat' },
+      description: 'The resolution of the video.',
+    }),
   })
   .openapi({
     title: 'UpdateFlowMediaStreamRequest',
@@ -4958,132 +3503,76 @@ const UpdateFlowMediaStreamRequestSchema = z
 
 const UpdateFlowOutputRequestSchema = z
   .object({
-    CidrAllowList: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cidrAllowList' },
-          description:
-            'The range of IP addresses that should be allowed to initiate output requests to this flow. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description of the output. This description appears only on the AWS Elemental MediaConnect console and will not be seen by the end user.',
-        }),
-    ).exactOptional(),
-    Destination: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destination' },
-          description: 'The IP address where you want to send the output.',
-        }),
-    ).exactOptional(),
-    Encryption: UpdateEncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryption' },
-          description:
-            'The type of key used for the encryption. If no keyType is provided, the service will use the default setting (static-key). Allowable encryption types: static-key.',
-        }),
-    ).exactOptional(),
-    MaxLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxLatency' },
-          description:
-            'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
-        }),
-    ).exactOptional(),
-    MediaStreamOutputConfigurations: ListOfMediaStreamOutputConfigurationRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamOutputConfigurations' },
-          description:
-            'The media streams that are associated with the output, and the parameters for those associations.',
-        }),
-    ).exactOptional(),
-    MinLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minLatency' },
-          description:
-            'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
-        }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'port' },
-          description: 'The port to use when content is distributed to this output.',
-        }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'protocol' }, description: 'The protocol to use for the output.' }),
-    ).exactOptional(),
-    RemoteId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remoteId' },
-          description: 'The remote ID for the Zixi-pull stream.',
-        }),
-    ).exactOptional(),
-    SenderControlPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderControlPort' },
-          description:
-            'The port that the flow uses to send outbound requests to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SenderIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderIpAddress' },
-          description:
-            'The IP address that the flow communicates with to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SmoothingLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'smoothingLatency' },
-          description: 'The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams.',
-        }),
-    ).exactOptional(),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'streamId' },
-          description:
-            'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
-        }),
-    ).exactOptional(),
-    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this output.',
-        }),
-    ).exactOptional(),
+    CidrAllowList: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'cidrAllowList' },
+      description:
+        'The range of IP addresses that should be allowed to initiate output requests to this flow. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description of the output. This description appears only on the AWS Elemental MediaConnect console and will not be seen by the end user.',
+    }),
+    Destination: StringSchema.exactOptional().openapi({
+      xml: { name: 'destination' },
+      description: 'The IP address where you want to send the output.',
+    }),
+    Encryption: UpdateEncryptionSchema.exactOptional().openapi({
+      xml: { name: 'encryption' },
+      description:
+        'The type of key used for the encryption. If no keyType is provided, the service will use the default setting (static-key). Allowable encryption types: static-key.',
+    }),
+    MaxLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxLatency' },
+      description:
+        'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
+    }),
+    MediaStreamOutputConfigurations:
+      ListOfMediaStreamOutputConfigurationRequestSchema.exactOptional().openapi({
+        xml: { name: 'mediaStreamOutputConfigurations' },
+        description:
+          'The media streams that are associated with the output, and the parameters for those associations.',
+      }),
+    MinLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minLatency' },
+      description:
+        'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'port' },
+      description: 'The port to use when content is distributed to this output.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      xml: { name: 'protocol' },
+      description: 'The protocol to use for the output.',
+    }),
+    RemoteId: StringSchema.exactOptional().openapi({
+      xml: { name: 'remoteId' },
+      description: 'The remote ID for the Zixi-pull stream.',
+    }),
+    SenderControlPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'senderControlPort' },
+      description:
+        'The port that the flow uses to send outbound requests to initiate connection with the sender.',
+    }),
+    SenderIpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'senderIpAddress' },
+      description:
+        'The IP address that the flow communicates with to initiate connection with the sender.',
+    }),
+    SmoothingLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'smoothingLatency' },
+      description: 'The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams.',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      xml: { name: 'streamId' },
+      description:
+        'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
+    }),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this output.',
+    }),
   })
   .openapi({
     title: 'UpdateFlowOutputRequest',
@@ -5094,45 +3583,31 @@ const UpdateFlowOutputRequestSchema = z
 
 const UpdateMaintenanceSchema = z
   .object({
-    MaintenanceDay: MaintenanceDaySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceDay' },
-          description:
-            'A day of a week when the maintenance will happen. use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
-        }),
-    ).exactOptional(),
-    MaintenanceScheduledDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceScheduledDate' },
-          description:
-            'A scheduled date in ISO UTC format when the maintenance will happen. Use YYYY-MM-DD format. Example: 2021-01-30.',
-        }),
-    ).exactOptional(),
-    MaintenanceStartHour: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maintenanceStartHour' },
-          description:
-            'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
-        }),
-    ).exactOptional(),
+    MaintenanceDay: MaintenanceDaySchema.exactOptional().openapi({
+      xml: { name: 'maintenanceDay' },
+      description:
+        'A day of a week when the maintenance will happen. use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
+    }),
+    MaintenanceScheduledDate: StringSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceScheduledDate' },
+      description:
+        'A scheduled date in ISO UTC format when the maintenance will happen. Use YYYY-MM-DD format. Example: 2021-01-30.',
+    }),
+    MaintenanceStartHour: StringSchema.exactOptional().openapi({
+      xml: { name: 'maintenanceStartHour' },
+      description:
+        'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
+    }),
   })
   .openapi({ description: 'Update maintenance setting for a flow', required: [] })
   .openapi('UpdateMaintenance')
 
 const UpdateFlowRequestSchema = z
   .object({
-    SourceFailoverConfig: UpdateFailoverConfigSchema.and(
-      z.any().openapi({ xml: { name: 'sourceFailoverConfig' } }),
-    ).exactOptional(),
-    Maintenance: UpdateMaintenanceSchema.and(
-      z.any().openapi({ xml: { name: 'maintenance' } }),
-    ).exactOptional(),
+    SourceFailoverConfig: UpdateFailoverConfigSchema.exactOptional().openapi({
+      xml: { name: 'sourceFailoverConfig' },
+    }),
+    Maintenance: UpdateMaintenanceSchema.exactOptional().openapi({ xml: { name: 'maintenance' } }),
   })
   .openapi({ title: 'UpdateFlowRequest', description: 'A request to update flow.', required: [] })
   .openapi('UpdateFlowRequest')
@@ -5154,14 +3629,10 @@ const UpdateGatewayBridgeSourceRequestSchema = z
           description: 'The ARN of the bridge feeding this flow.',
         }),
     ).exactOptional(),
-    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceAttachment' },
-          description: 'The name of the VPC interface attachment to use for this bridge source.',
-        }),
-    ).exactOptional(),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceAttachment' },
+      description: 'The name of the VPC interface attachment to use for this bridge source.',
+    }),
   })
   .openapi({
     description: 'The source configuration for cloud flows receiving a stream from a bridge.',
@@ -5171,24 +3642,16 @@ const UpdateGatewayBridgeSourceRequestSchema = z
 
 const UpdateFlowSourceRequestSchema = z
   .object({
-    Decryption: UpdateEncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'decryption' },
-          description:
-            'The type of encryption used on the content ingested from this source. Allowable encryption types: static-key.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
-        }),
-    ).exactOptional(),
+    Decryption: UpdateEncryptionSchema.exactOptional().openapi({
+      xml: { name: 'decryption' },
+      description:
+        'The type of encryption used on the content ingested from this source. Allowable encryption types: static-key.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
+    }),
     EntitlementArn: StringSchema.and(
       z
         .unknown()
@@ -5205,134 +3668,74 @@ const UpdateFlowSourceRequestSchema = z
             "The ARN of the entitlement that allows you to subscribe to this flow. The entitlement is set by the flow originator, and the ARN is generated as part of the originator's flow.",
         }),
     ).exactOptional(),
-    IngestPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ingestPort' },
-          description: 'The port that the flow will be listening on for incoming content.',
-        }),
-    ).exactOptional(),
-    MaxBitrate: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxBitrate' },
-          description: 'The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.',
-        }),
-    ).exactOptional(),
-    MaxLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxLatency' },
-          description:
-            'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
-        }),
-    ).exactOptional(),
-    MaxSyncBuffer: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxSyncBuffer' },
-          description:
-            'The size of the buffer (in milliseconds) to use to sync incoming source data.',
-        }),
-    ).exactOptional(),
-    MediaStreamSourceConfigurations: ListOfMediaStreamSourceConfigurationRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mediaStreamSourceConfigurations' },
-          description:
-            'The media streams that are associated with the source, and the parameters for those associations.',
-        }),
-    ).exactOptional(),
-    MinLatency: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minLatency' },
-          description:
-            'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
-        }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'protocol' },
-          description: 'The protocol that is used by the source.',
-        }),
-    ).exactOptional(),
-    SenderControlPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderControlPort' },
-          description:
-            'The port that the flow uses to send outbound requests to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SenderIpAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'senderIpAddress' },
-          description:
-            'The IP address that the flow communicates with to initiate connection with the sender.',
-        }),
-    ).exactOptional(),
-    SourceListenerAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceListenerAddress' },
-          description: 'Source IP or domain name for SRT-caller protocol.',
-        }),
-    ).exactOptional(),
-    SourceListenerPort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceListenerPort' },
-          description: 'Source port for SRT-caller protocol.',
-        }),
-    ).exactOptional(),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'streamId' },
-          description:
-            'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
-        }),
-    ).exactOptional(),
-    VpcInterfaceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcInterfaceName' },
-          description: 'The name of the VPC interface to use for this source.',
-        }),
-    ).exactOptional(),
-    WhitelistCidr: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'whitelistCidr' },
-          description:
-            'The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-        }),
-    ).exactOptional(),
-    GatewayBridgeSource: UpdateGatewayBridgeSourceRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'gatewayBridgeSource' },
-          description: 'The source configuration for cloud flows receiving a stream from a bridge.',
-        }),
-    ).exactOptional(),
+    IngestPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'ingestPort' },
+      description: 'The port that the flow will be listening on for incoming content.',
+    }),
+    MaxBitrate: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxBitrate' },
+      description: 'The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.',
+    }),
+    MaxLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxLatency' },
+      description:
+        'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
+    }),
+    MaxSyncBuffer: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxSyncBuffer' },
+      description: 'The size of the buffer (in milliseconds) to use to sync incoming source data.',
+    }),
+    MediaStreamSourceConfigurations:
+      ListOfMediaStreamSourceConfigurationRequestSchema.exactOptional().openapi({
+        xml: { name: 'mediaStreamSourceConfigurations' },
+        description:
+          'The media streams that are associated with the source, and the parameters for those associations.',
+      }),
+    MinLatency: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minLatency' },
+      description:
+        'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      xml: { name: 'protocol' },
+      description: 'The protocol that is used by the source.',
+    }),
+    SenderControlPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'senderControlPort' },
+      description:
+        'The port that the flow uses to send outbound requests to initiate connection with the sender.',
+    }),
+    SenderIpAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'senderIpAddress' },
+      description:
+        'The IP address that the flow communicates with to initiate connection with the sender.',
+    }),
+    SourceListenerAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceListenerAddress' },
+      description: 'Source IP or domain name for SRT-caller protocol.',
+    }),
+    SourceListenerPort: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'sourceListenerPort' },
+      description: 'Source port for SRT-caller protocol.',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      xml: { name: 'streamId' },
+      description:
+        'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
+    }),
+    VpcInterfaceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'vpcInterfaceName' },
+      description: 'The name of the VPC interface to use for this source.',
+    }),
+    WhitelistCidr: StringSchema.exactOptional().openapi({
+      xml: { name: 'whitelistCidr' },
+      description:
+        'The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+    }),
+    GatewayBridgeSource: UpdateGatewayBridgeSourceRequestSchema.exactOptional().openapi({
+      xml: { name: 'gatewayBridgeSource' },
+      description: 'The source configuration for cloud flows receiving a stream from a bridge.',
+    }),
   })
   .openapi({
     title: 'UpdateFlowSourceRequest',
@@ -5343,15 +3746,11 @@ const UpdateFlowSourceRequestSchema = z
 
 const UpdateGatewayInstanceRequestSchema = z
   .object({
-    BridgePlacement: BridgePlacementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bridgePlacement' },
-          description:
-            'The availability of the instance to host new bridges. The bridgePlacement property can be LOCKED or AVAILABLE. If it is LOCKED, no new bridges can be deployed to this instance. If it is AVAILABLE, new bridges can be added to this instance.',
-        }),
-    ).exactOptional(),
+    BridgePlacement: BridgePlacementSchema.exactOptional().openapi({
+      xml: { name: 'bridgePlacement' },
+      description:
+        'The availability of the instance to host new bridges. The bridgePlacement property can be LOCKED or AVAILABLE. If it is LOCKED, no new bridges can be deployed to this instance. If it is AVAILABLE, new bridges can be added to this instance.',
+    }),
   })
   .openapi({
     title: 'UpdateGatewayInstanceRequest',
@@ -6035,14 +4434,10 @@ export const postV1BridgesRoute = createRoute({
             .object({
               egressGatewayBridge: z
                 .object({
-                  MaxBitrate: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxBitrate' },
-                        description: 'The maximum expected bitrate (in bps).',
-                      }),
-                  ).exactOptional(),
+                  MaxBitrate: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxBitrate' },
+                    description: 'The maximum expected bitrate (in bps).',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6052,22 +4447,14 @@ export const postV1BridgesRoute = createRoute({
                 }),
               ingressGatewayBridge: z
                 .object({
-                  MaxBitrate: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxBitrate' },
-                        description: 'The maximum expected bitrate (in bps).',
-                      }),
-                  ).exactOptional(),
-                  MaxOutputs: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxOutputs' },
-                        description: 'The maximum number of expected outputs.',
-                      }),
-                  ).exactOptional(),
+                  MaxBitrate: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxBitrate' },
+                    description: 'The maximum expected bitrate (in bps).',
+                  }),
+                  MaxOutputs: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxOutputs' },
+                    description: 'The maximum number of expected outputs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6090,35 +4477,21 @@ export const postV1BridgesRoute = createRoute({
                 .openapi({ description: 'The bridge placement Amazon Resource Number (ARN).' }),
               sourceFailoverConfig: z
                 .object({
-                  FailoverMode: FailoverModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'failoverMode' },
-                        description:
-                          'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
-                      }),
-                  ).exactOptional(),
-                  RecoveryWindow: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'recoveryWindow' },
-                        description: 'Search window time to look for dash-7 packets',
-                      }),
-                  ).exactOptional(),
-                  SourcePriority: SourcePrioritySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'sourcePriority' },
-                        description:
-                          'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
-                      }),
-                  ).exactOptional(),
-                  State: StateSchema.and(
-                    z.any().openapi({ xml: { name: 'state' } }),
-                  ).exactOptional(),
+                  FailoverMode: FailoverModeSchema.exactOptional().openapi({
+                    xml: { name: 'failoverMode' },
+                    description:
+                      'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
+                  }),
+                  RecoveryWindow: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'recoveryWindow' },
+                    description: 'Search window time to look for dash-7 packets',
+                  }),
+                  SourcePriority: SourcePrioritySchema.exactOptional().openapi({
+                    xml: { name: 'sourcePriority' },
+                    description:
+                      'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
+                  }),
+                  State: StateSchema.exactOptional().openapi({ xml: { name: 'state' } }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The settings for source failover.', required: [] }),
@@ -6315,24 +4688,16 @@ export const postV1FlowsRoute = createRoute({
                 .openapi({ description: 'The outputs that you want to add to this flow.' }),
               source: z
                 .object({
-                  Decryption: EncryptionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'decryption' },
-                        description:
-                          'The type of encryption that is used on the content ingested from this source. Allowable encryption types: static-key.',
-                      }),
-                  ).exactOptional(),
-                  Description: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'description' },
-                        description:
-                          'A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
-                      }),
-                  ).exactOptional(),
+                  Decryption: EncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'decryption' },
+                    description:
+                      'The type of encryption that is used on the content ingested from this source. Allowable encryption types: static-key.',
+                  }),
+                  Description: StringSchema.exactOptional().openapi({
+                    xml: { name: 'description' },
+                    description:
+                      'A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.',
+                  }),
                   EntitlementArn: StringSchema.and(
                     z
                       .unknown()
@@ -6349,177 +4714,102 @@ export const postV1FlowsRoute = createRoute({
                           "The ARN of the entitlement that allows you to subscribe to this flow. The entitlement is set by the flow originator, and the ARN is generated as part of the originator's flow.",
                       }),
                   ).exactOptional(),
-                  IngestPort: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'ingestPort' },
-                        description:
-                          'The port that the flow will be listening on for incoming content.',
-                      }),
-                  ).exactOptional(),
-                  MaxBitrate: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxBitrate' },
-                        description:
-                          'The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.',
-                      }),
-                  ).exactOptional(),
-                  MaxLatency: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxLatency' },
-                        description:
-                          'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
-                      }),
-                  ).exactOptional(),
-                  MaxSyncBuffer: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxSyncBuffer' },
-                        description:
-                          'The size of the buffer (in milliseconds) to use to sync incoming source data.',
-                      }),
-                  ).exactOptional(),
+                  IngestPort: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'ingestPort' },
+                    description:
+                      'The port that the flow will be listening on for incoming content.',
+                  }),
+                  MaxBitrate: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxBitrate' },
+                    description:
+                      'The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.',
+                  }),
+                  MaxLatency: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxLatency' },
+                    description:
+                      'The maximum latency in milliseconds. This parameter applies only to RIST-based, Zixi-based, and Fujitsu-based streams.',
+                  }),
+                  MaxSyncBuffer: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxSyncBuffer' },
+                    description:
+                      'The size of the buffer (in milliseconds) to use to sync incoming source data.',
+                  }),
                   MediaStreamSourceConfigurations:
-                    ListOfMediaStreamSourceConfigurationRequestSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          xml: { name: 'mediaStreamSourceConfigurations' },
-                          description:
-                            'The media streams that are associated with the source, and the parameters for those associations.',
-                        }),
-                    ).exactOptional(),
-                  MinLatency: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'minLatency' },
-                        description:
-                          'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
-                      }),
-                  ).exactOptional(),
-                  Name: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({ xml: { name: 'name' }, description: 'The name of the source.' }),
-                  ).exactOptional(),
-                  Protocol: ProtocolSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'protocol' },
-                        description: 'The protocol that is used by the source.',
-                      }),
-                  ).exactOptional(),
-                  SenderControlPort: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'senderControlPort' },
-                        description:
-                          'The port that the flow uses to send outbound requests to initiate connection with the sender.',
-                      }),
-                  ).exactOptional(),
-                  SenderIpAddress: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'senderIpAddress' },
-                        description:
-                          'The IP address that the flow communicates with to initiate connection with the sender.',
-                      }),
-                  ).exactOptional(),
-                  SourceListenerAddress: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'sourceListenerAddress' },
-                        description: 'Source IP or domain name for SRT-caller protocol.',
-                      }),
-                  ).exactOptional(),
-                  SourceListenerPort: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'sourceListenerPort' },
-                        description: 'Source port for SRT-caller protocol.',
-                      }),
-                  ).exactOptional(),
-                  StreamId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'streamId' },
-                        description:
-                          'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
-                      }),
-                  ).exactOptional(),
-                  VpcInterfaceName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'vpcInterfaceName' },
-                        description: 'The name of the VPC interface to use for this source.',
-                      }),
-                  ).exactOptional(),
-                  WhitelistCidr: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'whitelistCidr' },
-                        description:
-                          'The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
-                      }),
-                  ).exactOptional(),
-                  GatewayBridgeSource: SetGatewayBridgeSourceRequestSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'gatewayBridgeSource' },
-                        description:
-                          'The source configuration for cloud flows receiving a stream from a bridge.',
-                      }),
-                  ).exactOptional(),
+                    ListOfMediaStreamSourceConfigurationRequestSchema.exactOptional().openapi({
+                      xml: { name: 'mediaStreamSourceConfigurations' },
+                      description:
+                        'The media streams that are associated with the source, and the parameters for those associations.',
+                    }),
+                  MinLatency: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'minLatency' },
+                    description:
+                      'The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency.',
+                  }),
+                  Name: StringSchema.exactOptional().openapi({
+                    xml: { name: 'name' },
+                    description: 'The name of the source.',
+                  }),
+                  Protocol: ProtocolSchema.exactOptional().openapi({
+                    xml: { name: 'protocol' },
+                    description: 'The protocol that is used by the source.',
+                  }),
+                  SenderControlPort: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'senderControlPort' },
+                    description:
+                      'The port that the flow uses to send outbound requests to initiate connection with the sender.',
+                  }),
+                  SenderIpAddress: StringSchema.exactOptional().openapi({
+                    xml: { name: 'senderIpAddress' },
+                    description:
+                      'The IP address that the flow communicates with to initiate connection with the sender.',
+                  }),
+                  SourceListenerAddress: StringSchema.exactOptional().openapi({
+                    xml: { name: 'sourceListenerAddress' },
+                    description: 'Source IP or domain name for SRT-caller protocol.',
+                  }),
+                  SourceListenerPort: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'sourceListenerPort' },
+                    description: 'Source port for SRT-caller protocol.',
+                  }),
+                  StreamId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'streamId' },
+                    description:
+                      'The stream ID that you want to use for this transport. This parameter applies only to Zixi and SRT caller-based streams.',
+                  }),
+                  VpcInterfaceName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'vpcInterfaceName' },
+                    description: 'The name of the VPC interface to use for this source.',
+                  }),
+                  WhitelistCidr: StringSchema.exactOptional().openapi({
+                    xml: { name: 'whitelistCidr' },
+                    description:
+                      'The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.',
+                  }),
+                  GatewayBridgeSource: SetGatewayBridgeSourceRequestSchema.exactOptional().openapi({
+                    xml: { name: 'gatewayBridgeSource' },
+                    description:
+                      'The source configuration for cloud flows receiving a stream from a bridge.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The settings for the source of the flow.', required: [] }),
               sourceFailoverConfig: z
                 .object({
-                  FailoverMode: FailoverModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'failoverMode' },
-                        description:
-                          'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
-                      }),
-                  ).exactOptional(),
-                  RecoveryWindow: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'recoveryWindow' },
-                        description: 'Search window time to look for dash-7 packets',
-                      }),
-                  ).exactOptional(),
-                  SourcePriority: SourcePrioritySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'sourcePriority' },
-                        description:
-                          'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
-                      }),
-                  ).exactOptional(),
-                  State: StateSchema.and(
-                    z.any().openapi({ xml: { name: 'state' } }),
-                  ).exactOptional(),
+                  FailoverMode: FailoverModeSchema.exactOptional().openapi({
+                    xml: { name: 'failoverMode' },
+                    description:
+                      'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
+                  }),
+                  RecoveryWindow: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'recoveryWindow' },
+                    description: 'Search window time to look for dash-7 packets',
+                  }),
+                  SourcePriority: SourcePrioritySchema.exactOptional().openapi({
+                    xml: { name: 'sourcePriority' },
+                    description:
+                      'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
+                  }),
+                  State: StateSchema.exactOptional().openapi({ xml: { name: 'state' } }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The settings for source failover.', required: [] }),
@@ -6530,24 +4820,16 @@ export const postV1FlowsRoute = createRoute({
                 .openapi({ description: 'The VPC interfaces you want on the flow.' }),
               maintenance: z
                 .object({
-                  MaintenanceDay: MaintenanceDaySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maintenanceDay' },
-                        description:
-                          'A day of a week when the maintenance will happen. Use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
-                      }),
-                  ).exactOptional(),
-                  MaintenanceStartHour: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maintenanceStartHour' },
-                        description:
-                          'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
-                      }),
-                  ).exactOptional(),
+                  MaintenanceDay: MaintenanceDaySchema.exactOptional().openapi({
+                    xml: { name: 'maintenanceDay' },
+                    description:
+                      'A day of a week when the maintenance will happen. Use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
+                  }),
+                  MaintenanceStartHour: StringSchema.exactOptional().openapi({
+                    xml: { name: 'maintenanceStartHour' },
+                    description:
+                      'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Create maintenance setting for a flow', required: [] }),
@@ -6873,69 +5155,43 @@ export const putV1BridgesBridgeArnRoute = createRoute({
             .object({
               egressGatewayBridge: z
                 .object({
-                  MaxBitrate: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxBitrate' },
-                        description: 'Update an existing egress-type bridge.',
-                      }),
-                  ).exactOptional(),
+                  MaxBitrate: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxBitrate' },
+                    description: 'Update an existing egress-type bridge.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: '', required: [] }),
               ingressGatewayBridge: z
                 .object({
-                  MaxBitrate: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxBitrate' },
-                        description: 'The maximum expected bitrate (in bps).',
-                      }),
-                  ).exactOptional(),
-                  MaxOutputs: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxOutputs' },
-                        description: 'The maximum number of expected outputs.',
-                      }),
-                  ).exactOptional(),
+                  MaxBitrate: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxBitrate' },
+                    description: 'The maximum expected bitrate (in bps).',
+                  }),
+                  MaxOutputs: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'maxOutputs' },
+                    description: 'The maximum number of expected outputs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: '', required: [] }),
               sourceFailoverConfig: z
                 .object({
-                  FailoverMode: FailoverModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'failoverMode' },
-                        description:
-                          'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
-                      }),
-                  ).exactOptional(),
-                  RecoveryWindow: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'recoveryWindow' },
-                        description: 'Recovery window time to look for dash-7 packets',
-                      }),
-                  ).exactOptional(),
-                  SourcePriority: SourcePrioritySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'sourcePriority' },
-                        description:
-                          'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
-                      }),
-                  ).exactOptional(),
-                  State: StateSchema.and(
-                    z.any().openapi({ xml: { name: 'state' } }),
-                  ).exactOptional(),
+                  FailoverMode: FailoverModeSchema.exactOptional().openapi({
+                    xml: { name: 'failoverMode' },
+                    description:
+                      'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
+                  }),
+                  RecoveryWindow: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'recoveryWindow' },
+                    description: 'Recovery window time to look for dash-7 packets',
+                  }),
+                  SourcePriority: SourcePrioritySchema.exactOptional().openapi({
+                    xml: { name: 'sourcePriority' },
+                    description:
+                      'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
+                  }),
+                  State: StateSchema.exactOptional().openapi({ xml: { name: 'state' } }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The settings for source failover.', required: [] }),
@@ -7144,67 +5400,41 @@ export const putV1FlowsFlowArnRoute = createRoute({
             .object({
               sourceFailoverConfig: z
                 .object({
-                  FailoverMode: FailoverModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'failoverMode' },
-                        description:
-                          'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
-                      }),
-                  ).exactOptional(),
-                  RecoveryWindow: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'recoveryWindow' },
-                        description: 'Recovery window time to look for dash-7 packets',
-                      }),
-                  ).exactOptional(),
-                  SourcePriority: SourcePrioritySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'sourcePriority' },
-                        description:
-                          'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
-                      }),
-                  ).exactOptional(),
-                  State: StateSchema.and(
-                    z.any().openapi({ xml: { name: 'state' } }),
-                  ).exactOptional(),
+                  FailoverMode: FailoverModeSchema.exactOptional().openapi({
+                    xml: { name: 'failoverMode' },
+                    description:
+                      'The type of failover you choose for this flow. MERGE combines the source streams into a single stream, allowing graceful recovery from any single-source loss. FAILOVER allows switching between different streams.',
+                  }),
+                  RecoveryWindow: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'recoveryWindow' },
+                    description: 'Recovery window time to look for dash-7 packets',
+                  }),
+                  SourcePriority: SourcePrioritySchema.exactOptional().openapi({
+                    xml: { name: 'sourcePriority' },
+                    description:
+                      'The priority you want to assign to a source. You can have a primary stream and a backup stream or two equally prioritized streams.',
+                  }),
+                  State: StateSchema.exactOptional().openapi({ xml: { name: 'state' } }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The settings for source failover.', required: [] }),
               maintenance: z
                 .object({
-                  MaintenanceDay: MaintenanceDaySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maintenanceDay' },
-                        description:
-                          'A day of a week when the maintenance will happen. use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
-                      }),
-                  ).exactOptional(),
-                  MaintenanceScheduledDate: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maintenanceScheduledDate' },
-                        description:
-                          'A scheduled date in ISO UTC format when the maintenance will happen. Use YYYY-MM-DD format. Example: 2021-01-30.',
-                      }),
-                  ).exactOptional(),
-                  MaintenanceStartHour: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maintenanceStartHour' },
-                        description:
-                          'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
-                      }),
-                  ).exactOptional(),
+                  MaintenanceDay: MaintenanceDaySchema.exactOptional().openapi({
+                    xml: { name: 'maintenanceDay' },
+                    description:
+                      'A day of a week when the maintenance will happen. use Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday.',
+                  }),
+                  MaintenanceScheduledDate: StringSchema.exactOptional().openapi({
+                    xml: { name: 'maintenanceScheduledDate' },
+                    description:
+                      'A scheduled date in ISO UTC format when the maintenance will happen. Use YYYY-MM-DD format. Example: 2021-01-30.',
+                  }),
+                  MaintenanceStartHour: StringSchema.exactOptional().openapi({
+                    xml: { name: 'maintenanceStartHour' },
+                    description:
+                      'UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes must be 00. Example: 13:00. The default value is 02:00.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Update maintenance setting for a flow', required: [] }),
@@ -8530,40 +6760,26 @@ export const putV1BridgesBridgeArnOutputsOutputNameRoute = createRoute({
             .object({
               networkOutput: z
                 .object({
-                  IpAddress: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'ipAddress' },
-                        description: 'The network output IP Address.',
-                      }),
-                  ).exactOptional(),
-                  NetworkName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'networkName' },
-                        description: "The network output's gateway network name.",
-                      }),
-                  ).exactOptional(),
-                  Port: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({ xml: { name: 'port' }, description: 'The network output port.' }),
-                  ).exactOptional(),
-                  Protocol: ProtocolSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'protocol' },
-                        description: 'The network output protocol.',
-                      }),
-                  ).exactOptional(),
-                  Ttl: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({ xml: { name: 'ttl' }, description: 'The network output TTL.' }),
-                  ).exactOptional(),
+                  IpAddress: StringSchema.exactOptional().openapi({
+                    xml: { name: 'ipAddress' },
+                    description: 'The network output IP Address.',
+                  }),
+                  NetworkName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'networkName' },
+                    description: "The network output's gateway network name.",
+                  }),
+                  Port: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'port' },
+                    description: 'The network output port.',
+                  }),
+                  Protocol: ProtocolSchema.exactOptional().openapi({
+                    xml: { name: 'protocol' },
+                    description: 'The network output protocol.',
+                  }),
+                  Ttl: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'ttl' },
+                    description: 'The network output TTL.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Update an existing network output.', required: [] }),
@@ -8747,49 +6963,31 @@ export const putV1BridgesBridgeArnSourcesSourceNameRoute = createRoute({
                         description: 'The ARN of the cloud flow to use as a source of this bridge.',
                       }),
                   ).exactOptional(),
-                  FlowVpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'flowVpcInterfaceAttachment' },
-                        description:
-                          'The name of the VPC interface attachment to use for this source.',
-                      }),
-                  ).exactOptional(),
+                  FlowVpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+                    xml: { name: 'flowVpcInterfaceAttachment' },
+                    description: 'The name of the VPC interface attachment to use for this source.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Update the flow source of the bridge.', required: [] }),
               networkSource: z
                 .object({
-                  MulticastIp: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'multicastIp' },
-                        description: 'The network source multicast IP.',
-                      }),
-                  ).exactOptional(),
-                  NetworkName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'networkName' },
-                        description: "The network source's gateway network name.",
-                      }),
-                  ).exactOptional(),
-                  Port: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({ xml: { name: 'port' }, description: 'The network source port.' }),
-                  ).exactOptional(),
-                  Protocol: ProtocolSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'protocol' },
-                        description: 'The network source protocol.',
-                      }),
-                  ).exactOptional(),
+                  MulticastIp: StringSchema.exactOptional().openapi({
+                    xml: { name: 'multicastIp' },
+                    description: 'The network source multicast IP.',
+                  }),
+                  NetworkName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'networkName' },
+                    description: "The network source's gateway network name.",
+                  }),
+                  Port: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'port' },
+                    description: 'The network source port.',
+                  }),
+                  Protocol: ProtocolSchema.exactOptional().openapi({
+                    xml: { name: 'protocol' },
+                    description: 'The network source protocol.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Update the network source of the bridge.', required: [] }),
@@ -8958,24 +7156,15 @@ export const putV1FlowsFlowArnMediaStreamsMediaStreamNameRoute = createRoute({
             .object({
               attributes: z
                 .object({
-                  Fmtp: FmtpRequestSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'fmtp' },
-                        description:
-                          'The settings that you want to use to define the media stream.',
-                      }),
-                  ).exactOptional(),
-                  Lang: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'lang' },
-                        description:
-                          'The audio language, in a format that is recognized by the receiver.',
-                      }),
-                  ).exactOptional(),
+                  Fmtp: FmtpRequestSchema.exactOptional().openapi({
+                    xml: { name: 'fmtp' },
+                    description: 'The settings that you want to use to define the media stream.',
+                  }),
+                  Lang: StringSchema.exactOptional().openapi({
+                    xml: { name: 'lang' },
+                    description:
+                      'The audio language, in a format that is recognized by the receiver.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9174,87 +7363,51 @@ export const putV1FlowsFlowArnOutputsOutputArnRoute = createRoute({
                 .openapi({ description: 'The IP address where you want to send the output.' }),
               encryption: z
                 .object({
-                  Algorithm: AlgorithmSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'algorithm' },
-                        description:
-                          'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
-                      }),
-                  ).exactOptional(),
-                  ConstantInitializationVector: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'constantInitializationVector' },
-                        description:
-                          'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  DeviceId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'deviceId' },
-                        description:
-                          'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  KeyType: KeyTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'keyType' },
-                        description:
-                          'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
-                      }),
-                  ).exactOptional(),
-                  Region: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'region' },
-                        description:
-                          'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  ResourceId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'resourceId' },
-                        description:
-                          'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  RoleArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleArn' },
-                        description:
-                          'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
-                      }),
-                  ).exactOptional(),
-                  SecretArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'secretArn' },
-                        description:
-                          'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
-                      }),
-                  ).exactOptional(),
-                  Url: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'url' },
-                        description:
-                          'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
+                  Algorithm: AlgorithmSchema.exactOptional().openapi({
+                    xml: { name: 'algorithm' },
+                    description:
+                      'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
+                  }),
+                  ConstantInitializationVector: StringSchema.exactOptional().openapi({
+                    xml: { name: 'constantInitializationVector' },
+                    description:
+                      'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
+                  }),
+                  DeviceId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'deviceId' },
+                    description:
+                      'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  KeyType: KeyTypeSchema.exactOptional().openapi({
+                    xml: { name: 'keyType' },
+                    description:
+                      'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
+                  }),
+                  Region: StringSchema.exactOptional().openapi({
+                    xml: { name: 'region' },
+                    description:
+                      'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  ResourceId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'resourceId' },
+                    description:
+                      'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  RoleArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleArn' },
+                    description:
+                      'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
+                  }),
+                  SecretArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'secretArn' },
+                    description:
+                      'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
+                  }),
+                  Url: StringSchema.exactOptional().openapi({
+                    xml: { name: 'url' },
+                    description:
+                      'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9338,14 +7491,10 @@ export const putV1FlowsFlowArnOutputsOutputArnRoute = createRoute({
                 }),
               vpcInterfaceAttachment: z
                 .object({
-                  VpcInterfaceName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'vpcInterfaceName' },
-                        description: 'The name of the VPC interface to use for this resource.',
-                      }),
-                  ).exactOptional(),
+                  VpcInterfaceName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'vpcInterfaceName' },
+                    description: 'The name of the VPC interface to use for this resource.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9510,87 +7659,51 @@ export const putV1FlowsFlowArnSourceSourceArnRoute = createRoute({
             .object({
               decryption: z
                 .object({
-                  Algorithm: AlgorithmSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'algorithm' },
-                        description:
-                          'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
-                      }),
-                  ).exactOptional(),
-                  ConstantInitializationVector: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'constantInitializationVector' },
-                        description:
-                          'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  DeviceId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'deviceId' },
-                        description:
-                          'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  KeyType: KeyTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'keyType' },
-                        description:
-                          'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
-                      }),
-                  ).exactOptional(),
-                  Region: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'region' },
-                        description:
-                          'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  ResourceId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'resourceId' },
-                        description:
-                          'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  RoleArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleArn' },
-                        description:
-                          'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
-                      }),
-                  ).exactOptional(),
-                  SecretArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'secretArn' },
-                        description:
-                          'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
-                      }),
-                  ).exactOptional(),
-                  Url: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'url' },
-                        description:
-                          'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
+                  Algorithm: AlgorithmSchema.exactOptional().openapi({
+                    xml: { name: 'algorithm' },
+                    description:
+                      'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
+                  }),
+                  ConstantInitializationVector: StringSchema.exactOptional().openapi({
+                    xml: { name: 'constantInitializationVector' },
+                    description:
+                      'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
+                  }),
+                  DeviceId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'deviceId' },
+                    description:
+                      'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  KeyType: KeyTypeSchema.exactOptional().openapi({
+                    xml: { name: 'keyType' },
+                    description:
+                      'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
+                  }),
+                  Region: StringSchema.exactOptional().openapi({
+                    xml: { name: 'region' },
+                    description:
+                      'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  ResourceId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'resourceId' },
+                    description:
+                      'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  RoleArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleArn' },
+                    description:
+                      'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
+                  }),
+                  SecretArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'secretArn' },
+                    description:
+                      'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
+                  }),
+                  Url: StringSchema.exactOptional().openapi({
+                    xml: { name: 'url' },
+                    description:
+                      'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9725,15 +7838,11 @@ export const putV1FlowsFlowArnSourceSourceArnRoute = createRoute({
                         description: 'The ARN of the bridge feeding this flow.',
                       }),
                   ).exactOptional(),
-                  VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'vpcInterfaceAttachment' },
-                        description:
-                          'The name of the VPC interface attachment to use for this bridge source.',
-                      }),
-                  ).exactOptional(),
+                  VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.exactOptional().openapi({
+                    xml: { name: 'vpcInterfaceAttachment' },
+                    description:
+                      'The name of the VPC interface attachment to use for this bridge source.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9981,87 +8090,51 @@ export const putV1FlowsFlowArnEntitlementsEntitlementArnRoute = createRoute({
                 }),
               encryption: z
                 .object({
-                  Algorithm: AlgorithmSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'algorithm' },
-                        description:
-                          'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
-                      }),
-                  ).exactOptional(),
-                  ConstantInitializationVector: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'constantInitializationVector' },
-                        description:
-                          'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  DeviceId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'deviceId' },
-                        description:
-                          'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  KeyType: KeyTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'keyType' },
-                        description:
-                          'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
-                      }),
-                  ).exactOptional(),
-                  Region: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'region' },
-                        description:
-                          'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  ResourceId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'resourceId' },
-                        description:
-                          'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
-                  RoleArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleArn' },
-                        description:
-                          'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
-                      }),
-                  ).exactOptional(),
-                  SecretArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'secretArn' },
-                        description:
-                          'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
-                      }),
-                  ).exactOptional(),
-                  Url: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'url' },
-                        description:
-                          'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
-                      }),
-                  ).exactOptional(),
+                  Algorithm: AlgorithmSchema.exactOptional().openapi({
+                    xml: { name: 'algorithm' },
+                    description:
+                      'The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).',
+                  }),
+                  ConstantInitializationVector: StringSchema.exactOptional().openapi({
+                    xml: { name: 'constantInitializationVector' },
+                    description:
+                      'A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.',
+                  }),
+                  DeviceId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'deviceId' },
+                    description:
+                      'The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  KeyType: KeyTypeSchema.exactOptional().openapi({
+                    xml: { name: 'keyType' },
+                    description:
+                      'The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).',
+                  }),
+                  Region: StringSchema.exactOptional().openapi({
+                    xml: { name: 'region' },
+                    description:
+                      'The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  ResourceId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'resourceId' },
+                    description:
+                      'An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
+                  RoleArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleArn' },
+                    description:
+                      'The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).',
+                  }),
+                  SecretArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'secretArn' },
+                    description:
+                      'The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.',
+                  }),
+                  Url: StringSchema.exactOptional().openapi({
+                    xml: { name: 'url' },
+                    description:
+                      'The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

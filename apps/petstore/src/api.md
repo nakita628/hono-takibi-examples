@@ -1,4 +1,4 @@
-<h1 id="swagger-petstore---openapi-30">Swagger Petstore - OpenAPI 3.0 v1.0.28</h1>
+<h1 id="swagger-petstore---openapi-30">Swagger Petstore - OpenAPI 3.0 v1.0.27</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -13,7 +13,7 @@ Some useful links:
 
 Base URLs:
 
-* <a href="https://petstore3.swagger.io/api/v3">https://petstore3.swagger.io/api/v3</a>
+* <a href="/api/v3">/api/v3</a>
 
 <a href="https://swagger.io/terms/">Terms of service</a>
 Email: <a href="mailto:apiteam@swagger.io">apiteam@swagger.io</a> 

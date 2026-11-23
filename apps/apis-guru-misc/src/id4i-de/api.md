@@ -6,7 +6,7 @@ ID4i HTTP API
 
 Base URLs:
 
-* <a href="https://api.apis.guru//backend.id4i.de">https://api.apis.guru//backend.id4i.de</a>
+* <a href="//backend.id4i.de">//backend.id4i.de</a>
 
 <a href="http://id4i.de">Terms of service</a>
 Email: <a href="mailto:info@bluerain.de">BlueRain Software GmbH &amp; Co. KG</a> 

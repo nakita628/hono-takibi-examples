@@ -39,7 +39,7 @@ const GoogleCloudBillingBudgetsV1beta1AllUpdatesRuleSchema = z
   .openapi('GoogleCloudBillingBudgetsV1beta1AllUpdatesRule')
 
 const GoogleCloudBillingBudgetsV1beta1LastPeriodAmountSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "Describes a budget amount targeted to the last Filter.calendar_period spend. At this time, the amount is automatically 100% of the last calendar period's spend; that is, there are no other options yet. Future configuration options will be described here (for example, configuring a percentage of last period's spend). LastPeriodAmount cannot be set for a budget configured with a Filter.custom_period.",
@@ -311,7 +311,7 @@ const GoogleCloudBillingBudgetsV1beta1UpdateBudgetRequestSchema = z
   .openapi('GoogleCloudBillingBudgetsV1beta1UpdateBudgetRequest')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

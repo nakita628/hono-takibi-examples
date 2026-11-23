@@ -1,4 +1,4 @@
-<h1 id="portainerce-api">PortainerCE API v2.45.3</h1>
+<h1 id="portainerce-api">PortainerCE API v2.45.4</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -6545,7 +6545,7 @@ force update a docker service
 |200|OK|Success|[swarm.ServiceUpdateResponse](#schemaswarm.serviceupdateresponse)|
 |400|Bad Request|Invalid request|None|
 |403|Forbidden|Permission denied|None|
-|404|Not Found|endpoint not found|None|
+|404|Not Found|endpoint not found, or service not found or not accessible|None|
 |500|Internal Server Error|Server error|None|
 
 <aside class="warning">
@@ -48868,7 +48868,7 @@ ApiKeyAuth, jwt
 > Code samples
 
 ```bash
-curl 'https://localhost:9443/api/stacks/0?endpointId=0' \
+curl https://localhost:9443/api/stacks/0 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -48914,7 +48914,7 @@ Update a stack, only for file based stacks.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|integer|true|Stack identifier|
-|endpointId|query|integer|true|Environment identifier|
+|endpointId|query|integer|false|Environment(endpoint) identifier the stack belongs to. It can only be used by an administrator to bind a legacy stack that has no environment recorded.|
 |body|body|[stacks.updateSwarmStackPayload](#schemastacks.updateswarmstackpayload)|true|Stack details|
 |» Env|body|[[portainer.Pair](#schemaportainer.pair)]|false|A list of environment(endpoint) variables used during stack deployment|
 |» Prune|body|boolean|false|Prune services that are no longer referenced|
@@ -49357,7 +49357,7 @@ Update the Git settings in a stack, e.g., RepositoryReferenceName and AutoUpdate
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|integer|true|Stack identifier|
-|endpointId|query|integer|false|Stacks created before version 1.18.0 might not have an associated environment(endpoint) identifier. Use this optional parameter to set the environment(endpoint) identifier used by the stack.|
+|endpointId|query|integer|false|Environment(Endpoint) identifier the stack belongs to. It can only be used by an administrator to bind a legacy stack that has no environment recorded.|
 |body|body|[stacks.stackGitUpdatePayload](#schemastacks.stackgitupdatepayload)|true|Git configs for pull and redeploy a stack|
 |» AdditionalFiles|body|[string]|false|none|
 |» AutoUpdate|body|[portainer.AutoUpdateSettings](#schemaportainer.autoupdatesettings)|false|none|
@@ -49552,7 +49552,7 @@ Pull and redeploy a stack via Git
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|integer|true|Stack identifier|
-|endpointId|query|integer|false|Stacks created before version 1.18.0 might not have an associated environment(endpoint) identifier. Use this optional parameter to set the environment(endpoint) identifier used by the stack.|
+|endpointId|query|integer|false|Environment(Endpoint) identifier the stack belongs to. It can only be used by an administrator to bind a legacy stack that has no environment recorded.|
 |body|body|[stacks.stackGitRedeployPayload](#schemastacks.stackgitredeploypayload)|true|Git configs for pull and redeploy of a stack. **StackName** may only be populated for Kuberenetes stacks, and if specified with a blank string, it will be set to blank|
 |» Env|body|[[portainer.Pair](#schemaportainer.pair)]|false|none|
 |» Prune|body|boolean|false|none|
@@ -49869,7 +49869,7 @@ Starts a stopped Stack.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|integer|true|Stack identifier|
-|endpointId|query|integer|true|Environment identifier|
+|endpointId|query|integer|true|Environment(Endpoint) identifier the stack belongs to|
 
 <h3 id="starts-a-stopped-stack-responses">Responses</h3>
 
@@ -49909,7 +49909,7 @@ Stop a running Stack.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|integer|true|Stack identifier|
-|endpointId|query|integer|true|Environment identifier|
+|endpointId|query|integer|true|Environment(Endpoint) identifier the stack belongs to|
 
 <h3 id="stop-a-running-stack-responses">Responses</h3>
 
@@ -53801,6 +53801,8 @@ an ExecStart operation HTTP request will be created and hijacked.
 |---|---|---|---|
 |200|OK|OK|None|
 |400|Bad Request|Bad Request|None|
+|403|Forbidden|Forbidden|None|
+|404|Not Found|Not Found|None|
 |409|Conflict|Conflict|None|
 |500|Internal Server Error|Internal Server Error|None|
 

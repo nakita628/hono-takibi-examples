@@ -4,23 +4,29 @@ const AnnunciatorMessageTypeSchema = z
   .enum(['CommonsMain', 'LordsMain'])
   .openapi('AnnunciatorMessageType')
 
-const ScrollingMessageAlertTypeSchema = z
-  .enum(['Standard', 'SecondaryChamber', 'Alert', 'SecurityNormal', 'SecurityHigh'])
-  .openapi('ScrollingMessageAlertType')
-
-const VerticalAlignmentSchema = z.enum(['Top', 'Middle', 'Bottom']).openapi('VerticalAlignment')
-
-const ScrollingMessageViewModelSchema = z
-  .strictObject({
-    alertType: ScrollingMessageAlertTypeSchema.exactOptional(),
-    content: z.string().nullable().exactOptional(),
-    displayFrom: z.iso.datetime({ offset: true }).exactOptional(),
-    displayTo: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    id: z.int32().exactOptional(),
-    verticalAlignment: VerticalAlignmentSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ScrollingMessageViewModel')
+const ContentStyleSchema = z
+  .enum([
+    'DividerSolid',
+    'EmptyLine',
+    'Member',
+    'Footer',
+    'AnsweringBody',
+    'WestminsterHallInfo',
+    'GrandCommitteeInfo',
+    'DividerDotted',
+    'DividerDashed',
+    'Division',
+    'Text150',
+    'Text140',
+    'Text130',
+    'Text120',
+    'Text110',
+    'Text100',
+    'Text90',
+    'Text80',
+    'Text70',
+  ])
+  .openapi('ContentStyle')
 
 const ContentTypeSchema = z
   .enum(['Generic', 'Member', 'OralQuestionTime', 'AnsweringBody', 'Bill'])
@@ -56,29 +62,7 @@ const MemberViewModelSchema = z
   .openapi({ required: [] })
   .openapi('MemberViewModel')
 
-const ContentStyleSchema = z
-  .enum([
-    'DividerSolid',
-    'EmptyLine',
-    'Member',
-    'Footer',
-    'AnsweringBody',
-    'WestminsterHallInfo',
-    'GrandCommitteeInfo',
-    'DividerDotted',
-    'DividerDashed',
-    'Division',
-    'Text150',
-    'Text140',
-    'Text130',
-    'Text120',
-    'Text110',
-    'Text100',
-    'Text90',
-    'Text80',
-    'Text70',
-  ])
-  .openapi('ContentStyle')
+const VerticalAlignmentSchema = z.enum(['Top', 'Middle', 'Bottom']).openapi('VerticalAlignment')
 
 const LineViewModelSchema = z
   .strictObject({
@@ -95,6 +79,22 @@ const LineViewModelSchema = z
   })
   .openapi({ required: [] })
   .openapi('LineViewModel')
+
+const ScrollingMessageAlertTypeSchema = z
+  .enum(['Standard', 'SecondaryChamber', 'Alert', 'SecurityNormal', 'SecurityHigh'])
+  .openapi('ScrollingMessageAlertType')
+
+const ScrollingMessageViewModelSchema = z
+  .strictObject({
+    alertType: ScrollingMessageAlertTypeSchema.exactOptional(),
+    content: z.string().nullable().exactOptional(),
+    displayFrom: z.iso.datetime({ offset: true }).exactOptional(),
+    displayTo: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    id: z.int32().exactOptional(),
+    verticalAlignment: VerticalAlignmentSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ScrollingMessageViewModel')
 
 const SoundsSchema = z.enum(['NewSlide', 'DivisionBell', 'Alert', 'GenericBeep']).openapi('Sounds')
 
@@ -129,34 +129,19 @@ const SlideViewModelSchema = z
   .openapi({ required: [] })
   .openapi('SlideViewModel')
 
-type MessageViewModelType = {
-  annunciatorDisabled?: boolean
-  annunciatorType?: z.infer<typeof AnnunciatorMessageTypeSchema>
-  id?: number
-  isSecurityOverride?: boolean
-  publishTime?: string
-  scrollingMessages?: z.infer<typeof ScrollingMessageViewModelSchema>[] | null
-  showCommonsBell?: boolean
-  showLordsBell?: boolean
-  slides?: z.infer<typeof SlideViewModelSchema>[] | null
-}
-
-const MessageViewModelSchema: z.ZodType<MessageViewModelType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        annunciatorDisabled: z.boolean().exactOptional(),
-        annunciatorType: AnnunciatorMessageTypeSchema.exactOptional(),
-        id: z.int32().exactOptional(),
-        isSecurityOverride: z.boolean().exactOptional(),
-        publishTime: z.iso.datetime({ offset: true }).exactOptional(),
-        scrollingMessages: z.array(ScrollingMessageViewModelSchema).nullable().exactOptional(),
-        showCommonsBell: z.boolean().exactOptional(),
-        showLordsBell: z.boolean().exactOptional(),
-        slides: z.array(SlideViewModelSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const MessageViewModelSchema = z
+  .strictObject({
+    annunciatorDisabled: z.boolean().exactOptional(),
+    annunciatorType: AnnunciatorMessageTypeSchema.exactOptional(),
+    id: z.int32().exactOptional(),
+    isSecurityOverride: z.boolean().exactOptional(),
+    publishTime: z.iso.datetime({ offset: true }).exactOptional(),
+    scrollingMessages: z.array(ScrollingMessageViewModelSchema).nullable().exactOptional(),
+    showCommonsBell: z.boolean().exactOptional(),
+    showLordsBell: z.boolean().exactOptional(),
+    slides: z.array(SlideViewModelSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('MessageViewModel')
 
 export const getApiMessageMessageAnnunciatorCurrentRoute = createRoute({

@@ -182,7 +182,7 @@ Retrieve audit logs for a specific workspace with optional filtering and paginat
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -200,7 +200,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -369,7 +369,7 @@ Retrieve audit logs for a specific organization with optional filtering and pagi
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -387,7 +387,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -435,6 +435,7 @@ List Blueprints for the specified workspaces. If no workspaces are provided, ret
   {
     "blueprint": {
       "id": "exs-cph1rs3idesc73a2b2mg",
+      "ownerId": "string",
       "name": "string",
       "status": "created",
       "autoSync": true,
@@ -536,7 +537,7 @@ List Blueprints for the specified workspaces. If no workspaces are provided, ret
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -554,7 +555,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -702,7 +703,7 @@ file: string
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |413|Payload Too Large|The request body exceeded the maximum allowed size.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="validate-blueprint-responseschema">Response Schema</h3>
@@ -731,7 +732,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -769,6 +770,7 @@ Retrieve the Blueprint with the provided ID.
 ```json
 {
   "id": "exs-cph1rs3idesc73a2b2mg",
+  "ownerId": "string",
   "name": "string",
   "status": "created",
   "autoSync": true,
@@ -874,7 +876,7 @@ Retrieve the Blueprint with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -885,6 +887,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
+|ownerId|string|true|none|ID of the workspace that owns this Blueprint.|
 |name|string|true|none|none|
 |status|string|true|none|A Blueprint has status `created` until its first Sync is approved.|
 |autoSync|boolean|true|none|Configuration value that controls whether or not this blueprint will be re-synced on each git push to the configured branch.<br>Even when true, autoSync will not apply when the blueprint has the Created status, which indicates its first sync has not yet been approved.<br>Other conditions, such as a locked workspace, can also prevent automatic syncing even when this is true.<br>|
@@ -924,7 +927,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -1048,7 +1051,7 @@ Disconnecting a Blueprint stops automatic resource syncing via the associated `r
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -1058,7 +1061,7 @@ Disconnecting a Blueprint stops automatic resource syncing via the associated `r
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -1120,6 +1123,7 @@ Update the Blueprint with the provided ID.
 ```json
 {
   "id": "exs-cph1rs3idesc73a2b2mg",
+  "ownerId": "string",
   "name": "string",
   "status": "created",
   "autoSync": true,
@@ -1229,7 +1233,7 @@ Update the Blueprint with the provided ID.
 |404|Not Found|The Blueprint was not found, or the Blueprint file could not be found<br>at the requested path when the branch is unchanged.<br>|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -1240,6 +1244,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
+|ownerId|string|true|none|ID of the workspace that owns this Blueprint.|
 |name|string|true|none|none|
 |status|string|true|none|A Blueprint has status `created` until its first Sync is approved.|
 |autoSync|boolean|true|none|Configuration value that controls whether or not this blueprint will be re-synced on each git push to the configured branch.<br>Even when true, autoSync will not apply when the blueprint has the Created status, which indicates its first sync has not yet been approved.<br>Other conditions, such as a locked workspace, can also prevent automatic syncing even when this is true.<br>|
@@ -1264,7 +1269,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -1407,7 +1412,7 @@ Syncs that are planned but not yet approved (in the `created` state) are not inc
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -1425,7 +1430,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -1601,7 +1606,7 @@ List a particular service's custom domains that match the provided filters. If n
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -1619,7 +1624,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -1808,7 +1813,7 @@ Add a custom domain to the service with the provided ID.
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -1826,7 +1831,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -1977,7 +1982,7 @@ Retrieve a particular custom domain for a particular service.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -1987,7 +1992,7 @@ Retrieve a particular custom domain for a particular service.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -2121,7 +2126,7 @@ Delete a custom domain for a service given the service id and custom domain id o
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -2131,7 +2136,7 @@ Delete a custom domain for a service given the service id and custom domain id o
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -2265,7 +2270,7 @@ Verify the DNS configuration for a custom domain.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -2275,7 +2280,7 @@ Verify the DNS configuration for a custom domain.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -2414,7 +2419,7 @@ List dedicated IP sets for a workspace.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -2432,7 +2437,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -2627,7 +2632,7 @@ If `environmentIds` is omitted or empty, this IP set applies to all services in 
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -2637,7 +2642,7 @@ If `environmentIds` is omitted or empty, this IP set applies to all services in 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -2778,7 +2783,7 @@ Retrieve the dedicated IP set with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -2788,7 +2793,7 @@ Retrieve the dedicated IP set with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -2910,7 +2915,7 @@ Delete the dedicated IP set with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -2920,7 +2925,7 @@ Delete the dedicated IP set with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -3109,7 +3114,7 @@ Update the dedicated IP set with the provided ID. All fields are optional. Omitt
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -3119,7 +3124,7 @@ Update the dedicated IP set with the provided ID. All fields are optional. Omitt
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -3305,7 +3310,7 @@ List deploys matching the provided filters. If no filters are provided, all depl
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -3315,7 +3320,7 @@ List deploys matching the provided filters. If no filters are provided, all depl
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -3509,7 +3514,7 @@ Trigger a deploy for the service with the provided ID.
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -3519,7 +3524,7 @@ Trigger a deploy for the service with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -3666,7 +3671,7 @@ Retrieve the details of a particular deploy for a particular service.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -3676,7 +3681,7 @@ Retrieve the details of a particular deploy for a particular service.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -3815,7 +3820,7 @@ Not supported for cron jobs.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -3825,7 +3830,7 @@ Not supported for cron jobs.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -3979,7 +3984,7 @@ You can toggle autodeploys for your service with the [Update service](https://ap
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -3989,7 +3994,7 @@ You can toggle autodeploys for your service with the [Update service](https://ap
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -4143,7 +4148,7 @@ List persistent disks matching the provided filters. If no filters are provided,
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -4161,7 +4166,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -4332,7 +4337,7 @@ The service must be redeployed for the disk to be attached.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -4356,7 +4361,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -4491,7 +4496,7 @@ Retrieve the persistent disk with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -4515,7 +4520,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -4639,7 +4644,7 @@ Delete a persistent disk attached to a service.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -4649,7 +4654,7 @@ Delete a persistent disk attached to a service.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -4820,7 +4825,7 @@ When resizing a disk, the new size must be greater than the current size.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -4844,7 +4849,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -4988,7 +4993,7 @@ List snapshots for the persistent disk with the provided ID. Each snapshot is a 
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -5006,7 +5011,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -5174,7 +5179,7 @@ Snapshot keys returned from the [List snapshots](https://api-docs.render.com/ref
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -5198,7 +5203,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -5331,7 +5336,7 @@ List environment groups matching the provided filters. If no filters are provide
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -5349,7 +5354,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -5541,7 +5546,7 @@ Create a new environment group.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -5551,7 +5556,7 @@ Create a new environment group.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -5682,7 +5687,7 @@ Retrieve an environment group by ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -5692,7 +5697,7 @@ Retrieve an environment group by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -5791,7 +5796,7 @@ Delete the environment group with the provided ID, including all environment var
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -5801,7 +5806,7 @@ Delete the environment group with the provided ID, including all environment var
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -5946,7 +5951,7 @@ Update the attributes of an environment group.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -5956,7 +5961,7 @@ Update the attributes of an environment group.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -6091,7 +6096,7 @@ The linked service will have access to the environment variables and secret file
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -6101,7 +6106,7 @@ The linked service will have access to the environment variables and secret file
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -6204,7 +6209,7 @@ The service will lose access to the environment variables and secret files in th
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -6214,7 +6219,7 @@ The service will lose access to the environment variables and secret files in th
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -6323,7 +6328,7 @@ Retrieve a particular environment variable in a particular environment group.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -6333,7 +6338,7 @@ Retrieve a particular environment variable in a particular environment group.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -6481,7 +6486,7 @@ Add or update a particular environment variable in a particular environment grou
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -6491,7 +6496,7 @@ Add or update a particular environment variable in a particular environment grou
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -6592,7 +6597,7 @@ Remove a particular environment variable from a particular environment group.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -6602,7 +6607,7 @@ Remove a particular environment variable from a particular environment group.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -6711,7 +6716,7 @@ Retrieve a particular secret file in a particular environment group.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -6721,7 +6726,7 @@ Retrieve a particular secret file in a particular environment group.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -6868,7 +6873,7 @@ Add or update a particular secret file in an particular environment group.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -6878,7 +6883,7 @@ Add or update a particular secret file in an particular environment group.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -6979,7 +6984,7 @@ Remove a particular secret file from a particular environment group.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -6989,7 +6994,7 @@ Remove a particular secret file from a particular environment group.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -7140,7 +7145,7 @@ Retrieve the details of a particular event
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -7620,7 +7625,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -7799,7 +7804,7 @@ List Key Value instances matching the provided filters. If no filters are provid
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -7817,7 +7822,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -8040,7 +8045,7 @@ Create a new Key Value instance.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -8050,7 +8055,7 @@ Create a new Key Value instance.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -8195,7 +8200,7 @@ Retrieve a Key Value instance by ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -8205,7 +8210,7 @@ Retrieve a Key Value instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -8305,7 +8310,7 @@ Delete a Key Value instance by ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -8315,7 +8320,7 @@ Delete a Key Value instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -8536,7 +8541,7 @@ Update a Key Value instance by ID. Note that changing your plan, max memory poli
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -8546,7 +8551,7 @@ Update a Key Value instance by ID. Note that changing your plan, max memory poli
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -8655,7 +8660,7 @@ Retrieve connection info for a Key Value instance by ID. Connection info include
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -8665,7 +8670,7 @@ Retrieve connection info for a Key Value instance by ID. Connection info include
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -8798,7 +8803,7 @@ Suspend a Key Value instance by ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -8808,7 +8813,7 @@ Suspend a Key Value instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -8941,7 +8946,7 @@ Resume a Key Value instance by ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -8951,7 +8956,7 @@ Resume a Key Value instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -8972,7 +8977,7 @@ You can query for logs or subscribe to logs in real-time via a websocket.
 > Code samples
 
 ```bash
-curl 'https://api.render.com/v1/logs?ownerId=string&resource=string' \
+curl 'https://api.render.com/v1/logs?ownerId=string' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -8994,7 +8999,10 @@ You can query for logs across multiple resources, but all resources must be in t
 |startTime|query|string(date-time)|false|Epoch/Unix timestamp of start of time range to return. Defaults to `now() - 1 hour`.|
 |endTime|query|string(date-time)|false|Epoch/Unix timestamp of end of time range to return. Defaults to `now()`.|
 |direction|query|string|false|The direction to query logs for. Backward will return most recent logs first.<br>Forward will start with the oldest logs in the time range.<br>|
-|resource|query|[string]|true|Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group.|
+|resource|query|[string]|false|Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group. Required unless `project` is provided.|
+|project|query|string|false|The ID of a project to return logs for. The query covers the project's services, cron jobs, Postgres databases, and Key Value instances. Combine with `resource` to narrow the query to specific resources in the project.|
+|environment|query|string|false|The ID of an environment in the project to return logs for. Requires `project`.|
+|region|query|string|false|The region to return logs for, such as `oregon`. Requires `project`. Required when the project's or environment's resources are in more than one region.|
 |instance|query|[string]|false|Filter logs by the instance they were emitted from. An instance is the id of a specific running server.|
 |host|query|[string]|false|Filter request logs by their host. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
 |statusCode|query|[string]|false|Filter request logs by their status code. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
@@ -9002,6 +9010,7 @@ You can query for logs across multiple resources, but all resources must be in t
 |task|query|[string]|false|Filter logs by their task(s)|
 |taskRun|query|[string]|false|Filter logs by their task run id(s)|
 |sandbox|query|[string]|false|Filter logs by sandbox ID.|
+|build|query|[string]|false|Filter logs by build ID, such as a service build or a sandbox image build.|
 |level|query|[string]|false|Filter logs by their severity level. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
 |type|query|[string]|false|Filter logs by their type. Types include `app` for application logs, `request` for request logs, and `build` for build logs. You can find the full set of types available for a query by using the `GET /logs/values` endpoint.|
 |text|query|[string]|false|Filter by the text of the logs. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
@@ -9133,13 +9142,13 @@ You can query for logs across multiple resources, but all resources must be in t
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A collection of logs with pagination metadata|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|Bad request. The error body's optional `code` field identifies<br>specific failures that clients can handle machine-readably.<br><br>Error codes:<br>- `multiple_regions`: the project's or environment's resources<br>  are in more than one region; provide `region` to query one<br>- `too_many_resources`: the project or environment has more<br>  resources than a single query supports; provide `resource`<br>  to narrow the query<br>|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -9175,6 +9184,7 @@ Status Code **200**
 |» » name|task|
 |» » name|taskRun|
 |» » name|sandbox|
+|» » name|build|
 |» » name|type|
 |» » name|text|
 |» » name|path|
@@ -9186,7 +9196,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -9201,7 +9211,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.render.com/v1/logs/subscribe?ownerId=string&resource=string' \
+curl 'https://api.render.com/v1/logs/subscribe?ownerId=string' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -9221,7 +9231,10 @@ You can query for logs across multiple resources, but all resources must be in t
 |startTime|query|string(date-time)|false|Epoch/Unix timestamp of start of time range to return. Defaults to `now() - 1 hour`.|
 |endTime|query|string(date-time)|false|Epoch/Unix timestamp of end of time range to return. Defaults to `now()`.|
 |direction|query|string|false|The direction to query logs for. Backward will return most recent logs first.<br>Forward will start with the oldest logs in the time range.<br>|
-|resource|query|[string]|true|Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group.|
+|resource|query|[string]|false|Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group. Required unless `project` is provided.|
+|project|query|string|false|The ID of a project to return logs for. The query covers the project's services, cron jobs, Postgres databases, and Key Value instances. Combine with `resource` to narrow the query to specific resources in the project.|
+|environment|query|string|false|The ID of an environment in the project to return logs for. Requires `project`.|
+|region|query|string|false|The region to return logs for, such as `oregon`. Requires `project`. Required when the project's or environment's resources are in more than one region.|
 |instance|query|[string]|false|Filter logs by the instance they were emitted from. An instance is the id of a specific running server.|
 |host|query|[string]|false|Filter request logs by their host. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
 |statusCode|query|[string]|false|Filter request logs by their status code. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
@@ -9229,6 +9242,7 @@ You can query for logs across multiple resources, but all resources must be in t
 |task|query|[string]|false|Filter logs by their task(s)|
 |taskRun|query|[string]|false|Filter logs by their task run id(s)|
 |sandbox|query|[string]|false|Filter logs by sandbox ID.|
+|build|query|[string]|false|Filter logs by build ID, such as a service build or a sandbox image build.|
 |level|query|[string]|false|Filter logs by their severity level. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
 |type|query|[string]|false|Filter logs by their type. Types include `app` for application logs, `request` for request logs, and `build` for build logs. You can find the full set of types available for a query by using the `GET /logs/values` endpoint.|
 |text|query|[string]|false|Filter by the text of the logs. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
@@ -9353,13 +9367,13 @@ You can query for logs across multiple resources, but all resources must be in t
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |101|Switching Protocols|The connection has been upgraded to a websocket. The server will send log messages as they are generated in the format defined below.|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|Bad request. The error body's optional `code` field identifies<br>specific failures that clients can handle machine-readably.<br><br>Error codes:<br>- `multiple_regions`: the project's or environment's resources<br>  are in more than one region; provide `region` to query one<br>- `too_many_resources`: the project or environment has more<br>  resources than a single query supports; provide `resource`<br>  to narrow the query<br>|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -9391,6 +9405,7 @@ Status Code **101**
 |» name|task|
 |» name|taskRun|
 |» name|sandbox|
+|» name|build|
 |» name|type|
 |» name|text|
 |» name|path|
@@ -9402,7 +9417,7 @@ Status Code **101**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -9417,7 +9432,7 @@ BearerAuth
 > Code samples
 
 ```bash
-curl 'https://api.render.com/v1/logs/values?ownerId=string&label=instance&resource=string' \
+curl 'https://api.render.com/v1/logs/values?ownerId=string&label=instance' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -9435,7 +9450,10 @@ List all values for a given log label in the logs matching the provided filters.
 |startTime|query|string(date-time)|false|Epoch/Unix timestamp of start of time range to return. Defaults to `now() - 1 hour`.|
 |endTime|query|string(date-time)|false|Epoch/Unix timestamp of end of time range to return. Defaults to `now()`.|
 |direction|query|string|false|The direction to query logs for. Backward will return most recent logs first.<br>Forward will start with the oldest logs in the time range.<br>|
-|resource|query|[string]|true|Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group.|
+|resource|query|[string]|false|Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group. Required unless `project` is provided.|
+|project|query|string|false|The ID of a project to return logs for. The query covers the project's services, cron jobs, Postgres databases, and Key Value instances. Combine with `resource` to narrow the query to specific resources in the project.|
+|environment|query|string|false|The ID of an environment in the project to return logs for. Requires `project`.|
+|region|query|string|false|The region to return logs for, such as `oregon`. Requires `project`. Required when the project's or environment's resources are in more than one region.|
 |instance|query|[string]|false|Filter logs by the instance they were emitted from. An instance is the id of a specific running server.|
 |host|query|[string]|false|Filter request logs by their host. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
 |statusCode|query|[string]|false|Filter request logs by their status code. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
@@ -9443,6 +9461,7 @@ List all values for a given log label in the logs matching the provided filters.
 |task|query|[string]|false|Filter logs by their task(s)|
 |taskRun|query|[string]|false|Filter logs by their task run id(s)|
 |sandbox|query|[string]|false|Filter logs by sandbox ID.|
+|build|query|[string]|false|Filter logs by build ID, such as a service build or a sandbox image build.|
 |level|query|[string]|false|Filter logs by their severity level. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
 |type|query|[string]|false|Filter logs by their type. Types include `app` for application logs, `request` for request logs, and `build` for build logs. You can find the full set of types available for a query by using the `GET /logs/values` endpoint.|
 |text|query|[string]|false|Filter by the text of the logs. [Wildcards and regex](https://render.com/docs/logging#wildcards-and-regular-expressions) are supported.|
@@ -9565,13 +9584,13 @@ List all values for a given log label in the logs matching the provided filters.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|An array of possible values for a log label|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|Bad request. The error body's optional `code` field identifies<br>specific failures that clients can handle machine-readably.<br><br>Error codes:<br>- `multiple_regions`: the project's or environment's resources<br>  are in more than one region; provide `region` to query one<br>- `too_many_resources`: the project or environment has more<br>  resources than a single query supports; provide `resource`<br>  to narrow the query<br>|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -9589,7 +9608,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -9730,7 +9749,7 @@ Returns log stream information for the specified workspace.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -9757,7 +9776,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -9926,7 +9945,7 @@ Updates log stream information for the specified workspace. All logs for resourc
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -9953,7 +9972,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -10052,7 +10071,7 @@ Removes the log stream for the specified workspace.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -10062,7 +10081,7 @@ Removes the log stream for the specified workspace.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -10217,7 +10236,7 @@ Lists log stream overrides for the provided workspace that match the provided fi
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -10245,7 +10264,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -10386,7 +10405,7 @@ Returns log stream override information for the specified resource. A log stream
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -10413,7 +10432,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -10582,7 +10601,7 @@ Updates log stream override information for the specified resource. A log stream
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -10609,7 +10628,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -10708,7 +10727,7 @@ Removes the log stream override for the specified resource. After deletion, the 
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -10718,7 +10737,7 @@ Removes the log stream override for the specified resource. After deletion, the 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -10849,7 +10868,7 @@ List scheduled and/or recent maintenance runs for specified resources.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -10884,7 +10903,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -10995,7 +11014,7 @@ Retrieve the maintenance run with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -11029,7 +11048,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -11145,7 +11164,7 @@ Updates from this endpoint are asynchronous. To check your update's status, use 
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -11155,7 +11174,7 @@ Updates from this endpoint are asynchronous. To check your update's status, use 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -11259,7 +11278,7 @@ As maintenance progresses, the run's `state` will change from `scheduled` to oth
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -11269,7 +11288,7 @@ As maintenance progresses, the run's `state` will change from `scheduled` to oth
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -11584,8 +11603,11 @@ Get CPU usage for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |instance|query|string|false|Instance ID to query. When multiple instance ID query params are provided, they are ORed together|
 |aggregationMethod|query|string|false|The aggregation method to apply to multiple time series|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 #### Enumerated Values
 
@@ -11629,6 +11651,16 @@ Get CPU usage for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -11644,7 +11676,8 @@ Get CPU usage for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-cpu-usage-responseschema">Response Schema</h3>
@@ -11693,7 +11726,10 @@ Get the CPU limit for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |instance|query|string|false|Instance ID to query. When multiple instance ID query params are provided, they are ORed together|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -11729,6 +11765,16 @@ Get the CPU limit for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -11744,7 +11790,8 @@ Get the CPU limit for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-cpu-limit-responseschema">Response Schema</h3>
@@ -11793,7 +11840,10 @@ Get CPU target for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |instance|query|string|false|Instance ID to query. When multiple instance ID query params are provided, they are ORed together|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -11829,6 +11879,16 @@ Get CPU target for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -11844,7 +11904,8 @@ Get CPU target for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-cpu-target-responseschema">Response Schema</h3>
@@ -11893,7 +11954,10 @@ Get memory usage for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |instance|query|string|false|Instance ID to query. When multiple instance ID query params are provided, they are ORed together|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -11929,6 +11993,16 @@ Get memory usage for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -11944,7 +12018,8 @@ Get memory usage for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-memory-usage-responseschema">Response Schema</h3>
@@ -11993,7 +12068,10 @@ Get the memory limit for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |instance|query|string|false|Instance ID to query. When multiple instance ID query params are provided, they are ORed together|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12029,6 +12107,16 @@ Get the memory limit for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12044,7 +12132,8 @@ Get the memory limit for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-memory-limit-responseschema">Response Schema</h3>
@@ -12093,7 +12182,10 @@ Get memory target for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |instance|query|string|false|Instance ID to query. When multiple instance ID query params are provided, they are ORed together|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12129,6 +12221,16 @@ Get memory target for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12144,7 +12246,8 @@ Get memory target for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-memory-target-responseschema">Response Schema</h3>
@@ -12193,9 +12296,12 @@ Get the HTTP request count for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Service ID to query. When multiple service ids are provided, they are ORed together|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |host|query|string|false|The hosts of HTTP requests to filter to. When multiple host query params are provided, they are ORed together|
 |path|query|string|false|The paths of HTTP requests to filter to. When multiple path query params are provided, they are ORed together|
 |aggregateBy|query|string|false|The field to aggregate by|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 #### Enumerated Values
 
@@ -12238,6 +12344,16 @@ Get the HTTP request count for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12253,7 +12369,8 @@ Get the HTTP request count for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-http-request-count-responseschema">Response Schema</h3>
@@ -12302,9 +12419,12 @@ Get HTTP latency metrics for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Service ID to query. When multiple service ids are provided, they are ORed together|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |host|query|string|false|The hosts of HTTP requests to filter to. When multiple host query params are provided, they are ORed together|
 |path|query|string|false|The paths of HTTP requests to filter to. When multiple path query params are provided, they are ORed together|
 |quantile|query|number(float)|false|The quantile of latencies to fetch. When multiple quantile query params are provided, they are ORed together|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12340,6 +12460,16 @@ Get HTTP latency metrics for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12355,7 +12485,8 @@ Get HTTP latency metrics for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-http-latency-responseschema">Response Schema</h3>
@@ -12403,6 +12534,9 @@ Get bandwidth usage for one or more resources.
 |endTime|query|string(date-time)|false|Epoch/Unix timestamp of end of time range to return. Defaults to `now()`.|
 |resource|query|string|false|Service ID to query. When multiple service ids are provided, they are ORed together|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12438,6 +12572,16 @@ Get bandwidth usage for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12453,7 +12597,8 @@ Get bandwidth usage for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-bandwidth-usage-responseschema">Response Schema</h3>
@@ -12504,6 +12649,9 @@ Queries for earlier dates will return a 400 Bad Request error.
 |endTime|query|string(date-time)|false|Epoch/Unix timestamp of end of time range to return. Defaults to `now()`.|
 |resource|query|string|false|Service ID to query. When multiple service ids are provided, they are ORed together|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12572,6 +12720,16 @@ Queries for earlier dates will return a 400 Bad Request error.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12587,7 +12745,8 @@ Queries for earlier dates will return a 400 Bad Request error.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response with traffic source breakdown|Inline|
-|400|Bad Request|Bad request, such as a time range that predates traffic source<br>data availability. The error body's optional `code` field<br>identifies specific failures that clients can handle<br>machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the query requests more resources than<br>  the breakdown supports (maximum 30)<br>|[error](#schemaerror)|
+|400|Bad Request|Bad request, such as a time range that predates traffic source<br>data availability. The error body's optional `code` field<br>identifies specific failures that clients can handle<br>machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the query requests more resources than<br>  the breakdown supports (maximum 30), whether they are named<br>  with `resource` or come from a `project` or `environment`<br>  filter<br>- `multiple_regions`: the queried resources span more than one<br>  region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-bandwidth-usage-breakdown-by-traffic-source-responseschema">Response Schema</h3>
@@ -12645,6 +12804,9 @@ Get persistent disk usage for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12680,6 +12842,16 @@ Get persistent disk usage for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12695,7 +12867,8 @@ Get persistent disk usage for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-disk-usage-responseschema">Response Schema</h3>
@@ -12744,6 +12917,9 @@ Get persistent disk capacity for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12779,6 +12955,16 @@ Get persistent disk capacity for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12794,7 +12980,8 @@ Get persistent disk capacity for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-disk-capacity-responseschema">Response Schema</h3>
@@ -12843,6 +13030,9 @@ Get the instance count for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources can be service ids, Postgres ids, or Redis ids|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12878,6 +13068,16 @@ Get the instance count for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12893,7 +13093,8 @@ Get the instance count for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-instance-count-responseschema">Response Schema</h3>
@@ -12941,6 +13142,9 @@ Get the number of active connections for one or more Postgres databases or Redis
 |endTime|query|string(date-time)|false|Epoch/Unix timestamp of end of time range to return. Defaults to `now()`.|
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Resource ID to query. When multiple resource query params are provided, they are ORed together. Resources Postgres ids or Redis ids|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -12976,6 +13180,16 @@ Get the number of active connections for one or more Postgres databases or Redis
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -12991,7 +13205,8 @@ Get the number of active connections for one or more Postgres databases or Redis
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-active-connection-count-responseschema">Response Schema</h3>
@@ -13039,6 +13254,9 @@ Get seconds of replica lag of a Postgres replica.
 |endTime|query|string(date-time)|false|Epoch/Unix timestamp of end of time range to return. Defaults to `now()`.|
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Postgres ID to query. When multiple resource query params are provided, they are ORed together|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -13074,6 +13292,16 @@ Get seconds of replica lag of a Postgres replica.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -13089,7 +13317,8 @@ Get seconds of replica lag of a Postgres replica.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="get-replica-lag-responseschema">Response Schema</h3>
@@ -13138,6 +13367,9 @@ List instance values to filter by for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Service ID to query. When multiple service ids are provided, they are ORed together|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -13164,6 +13396,16 @@ List instance values to filter by for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -13179,7 +13421,8 @@ List instance values to filter by for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="list-queryable-instance-values-responseschema">Response Schema</h3>
@@ -13229,8 +13472,11 @@ List status codes and host values to filter by for one or more resources.
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Service ID to query. When multiple service ids are provided, they are ORed together|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |host|query|string|false|The hosts of HTTP requests to filter to. When multiple host query params are provided, they are ORed together|
 |statusCode|query|string|false|The status codes of HTTP requests to filter to. When multiple status code query params are provided, they are ORed together|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -13257,6 +13503,16 @@ List status codes and host values to filter by for one or more resources.
 }
 ```
 
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
 > 500 Response
 
 ```json
@@ -13272,7 +13528,8 @@ List status codes and host values to filter by for one or more resources.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="list-queryable-status-codes-and-host-values-responseschema">Response Schema</h3>
@@ -13322,9 +13579,12 @@ The path suggestions are based on the most recent 5000 log lines as filtered by 
 |resolutionSeconds|query|number|false|The resolution of the returned data|
 |resource|query|string|false|Service ID to query. When multiple service ids are provided, they are ORed together|
 |service|query|string|false|**Deprecated.** This parameter is deprecated. Please use `resource` instead|
+|project|query|string|false|The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.|
+|environment|query|string|false|The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.|
 |host|query|string|false|The hosts of HTTP requests to filter to. When multiple host query params are provided, they are ORed together|
 |statusCode|query|string|false|The status codes of HTTP requests to filter to. When multiple status code query params are provided, they are ORed together|
 |path|query|string|false|The paths of HTTP requests to filter to. When multiple path query params are provided, they are ORed together|
+|region|query|string|false|The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region|
 
 > Example responses
 
@@ -13337,6 +13597,16 @@ The path suggestions are based on the most recent 5000 log lines as filtered by 
 ```
 
 > 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
 
 ```json
 {
@@ -13361,7 +13631,8 @@ The path suggestions are based on the most recent 5000 log lines as filtered by 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|A successful response|Inline|
-|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|400|Bad Request|The request could not be understood by the server. The error body's<br>optional `code` field identifies specific failures that clients can<br>handle machine-readably.<br><br>Error codes:<br>- `too_many_resources`: the project or environment named by the<br>  `project` or `environment` filter contains more resources than a<br>  single query supports (maximum 50)<br>- `multiple_regions`: the queried resources span more than one region<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="list-queryable-paths-responseschema">Response Schema</h3>
@@ -13683,7 +13954,7 @@ Note that you provide an owner ID to this endpoint, not the ID for a particular 
 |200|OK|OK|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -13713,7 +13984,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -13842,7 +14113,7 @@ Update notification settings for the owner with the provided ID.
 |200|OK|OK|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -13872,7 +14143,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -13978,7 +14249,7 @@ List notification overrides matching the provided filters. If no filters are pro
 |200|OK|OK|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -13996,7 +14267,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -14096,7 +14367,7 @@ Note that you provide a service ID to this endpoint, not the ID for a particular
 |200|OK|OK|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -14128,7 +14399,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -14256,7 +14527,7 @@ Update the notification override for the service with the provided ID.
 |200|OK|OK|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -14288,7 +14559,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -14431,7 +14702,7 @@ List jobs for the provided service that match the provided filters. If no filter
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -14449,7 +14720,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -14581,7 +14852,7 @@ Create a one-off job using the provided service. For details, see [One-Off Jobs]
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -14616,7 +14887,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -14731,7 +15002,7 @@ Retrieve the details of a particular one-off job for a particular service.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -14766,7 +15037,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -14882,7 +15153,7 @@ Cancel a particular one-off job for a particular service.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -14917,7 +15188,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -15116,7 +15387,7 @@ List Postgres instances matching the provided filters. If no filters are provide
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -15134,7 +15405,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -15441,7 +15712,7 @@ Create a new Postgres instance.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -15451,7 +15722,7 @@ Create a new Postgres instance.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -15612,7 +15883,7 @@ Retrieve a Postgres instance by ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -15622,7 +15893,7 @@ Retrieve a Postgres instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -15723,7 +15994,7 @@ all data will be lost.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -15733,7 +16004,7 @@ all data will be lost.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -16021,7 +16292,7 @@ Update a Postgres instance by ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -16031,7 +16302,7 @@ Update a Postgres instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -16143,7 +16414,7 @@ Retrieve connection info for a Postgres instance by ID. Connection info includes
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -16153,7 +16424,7 @@ Retrieve connection info for a Postgres instance by ID. Connection info includes
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -16261,7 +16532,7 @@ Retrieve information on the availability of Postgres point-in-time recovery for 
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -16288,7 +16559,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -16512,7 +16783,7 @@ Trigger [point-in-time recovery](https://render.com/docs/postgresql-backups) on 
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -16522,7 +16793,7 @@ Trigger [point-in-time recovery](https://render.com/docs/postgresql-backups) on 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -16655,7 +16926,7 @@ Suspend a Postgres instance by ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -16665,7 +16936,7 @@ Suspend a Postgres instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -16798,7 +17069,7 @@ Resume a Postgres instance by ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -16808,7 +17079,7 @@ Resume a Postgres instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -16941,7 +17212,7 @@ Restart a Postgres instance by ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -16951,7 +17222,7 @@ Restart a Postgres instance by ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -17084,7 +17355,7 @@ Failover a [highly available Postgres](https://render.com/docs/postgresql-high-a
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -17094,7 +17365,7 @@ Failover a [highly available Postgres](https://render.com/docs/postgresql-high-a
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -17205,7 +17476,7 @@ List [exports](https://render.com/docs/postgresql-backups#logical-backups) for a
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -17226,7 +17497,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -17359,7 +17630,7 @@ Create an [export](https://render.com/docs/postgresql-backups#logical-backups) o
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -17369,7 +17640,7 @@ Create an [export](https://render.com/docs/postgresql-backups#logical-backups) o
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -17481,7 +17752,7 @@ List PostgreSQL users for the Render Postgres instance with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -17503,7 +17774,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -17650,7 +17921,7 @@ Create a new PostgreSQL user for the Render Postgres instance with the provided 
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -17660,7 +17931,7 @@ Create a new PostgreSQL user for the Render Postgres instance with the provided 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -17761,7 +18032,7 @@ Delete a PostgreSQL user from the Render Postgres instance with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -17771,7 +18042,7 @@ Delete a PostgreSQL user from the Render Postgres instance with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -17894,7 +18165,7 @@ List currently running queries (from `pg_stat_activity`) on a Postgres instance 
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -17925,7 +18196,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -18054,7 +18325,7 @@ List the top 50 queries by total execution time (from `pg_stat_statements`) on a
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -18091,7 +18362,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -18206,7 +18477,7 @@ List the sizes of databases, tables, and indexes on a Postgres instance by ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -18229,7 +18500,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -18343,7 +18614,7 @@ List the number of sequential scans performed against each table on a Postgres i
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -18365,7 +18636,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -18507,7 +18778,7 @@ List projects matching the provided filters. If no filters are provided, all pro
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -18525,7 +18796,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -18695,7 +18966,7 @@ Create a new project.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -18705,7 +18976,7 @@ Create a new project.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -18831,7 +19102,7 @@ Retrieve the project with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -18841,7 +19112,7 @@ Retrieve the project with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -18947,7 +19218,7 @@ To delete a non-empty project, do one of the following:
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -18957,7 +19228,7 @@ To delete a non-empty project, do one of the following:
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -19100,7 +19371,7 @@ To update the details of a particular _environment_ in the project, instead use 
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -19110,7 +19381,7 @@ To update the details of a particular _environment_ in the project, instead use 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -19253,7 +19524,7 @@ List a particular project's environments matching the provided filters. If no fi
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -19271,7 +19542,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -19443,7 +19714,7 @@ Create a new environment belonging to the project with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -19453,7 +19724,7 @@ Create a new environment belonging to the project with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -19581,7 +19852,7 @@ Retrieve the environment with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -19591,7 +19862,7 @@ Retrieve the environment with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -19697,7 +19968,7 @@ To delete a non-empty environment, do one of the following:
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -19707,7 +19978,7 @@ To delete a non-empty environment, do one of the following:
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -19876,7 +20147,7 @@ Update the details of the environment with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -19886,7 +20157,7 @@ Update the details of the environment with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -19938,7 +20209,7 @@ Add resources to the environment with the provided ID.
 
 > Example responses
 
-> 200 Response
+> 201 Response
 
 ```json
 {
@@ -20030,11 +20301,11 @@ Add resources to the environment with the provided ID.
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|[environment](#schemaenvironment)|
+|201|Created|Created|[environment](#schemaenvironment)|
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -20044,7 +20315,7 @@ Add resources to the environment with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -20145,7 +20416,7 @@ Remove resources from the environment with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -20155,7 +20426,7 @@ Remove resources from the environment with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -20281,7 +20552,7 @@ List registry credentials matching the provided filters. If no filters are provi
 |200|OK|OK|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -20299,7 +20570,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -20467,7 +20738,7 @@ Create a new registry credential.
 |402|Payment Required|You must enter payment information to perform this request.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -20477,7 +20748,7 @@ Create a new registry credential.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -20609,7 +20880,7 @@ Retrieve the registry credential with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -20619,7 +20890,7 @@ Retrieve the registry credential with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -20740,7 +21011,7 @@ Delete the registry credential with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -20750,7 +21021,7 @@ Delete the registry credential with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -20949,7 +21220,7 @@ Update the registry credential with the provided ID. Services that use this cred
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -20959,7 +21230,4917 @@ Update the registry credential with the provided ID. Services that use this cred
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+<h1 id="render-public-api-sandboxes">Sandboxes</h1>
+
+Sandboxes are ephemeral, isolated compute environments for running code, executing commands, and transferring files. Sandboxes are in public beta.
+
+
+## List sandboxes
+
+<a id="opIdlist-sandboxes"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.render.com/v1/sandboxes?ownerId=string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandboxes`
+
+List sandboxes in a workspace. Each request must specify one workspace. Sandboxes run in the region of their sandbox group.
+
+
+<h3 id="list-sandboxes-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|true|The ID of the workspace whose sandboxes to return.|
+|sandboxGroupId|query|string|false|Filter for sandboxes in this group. The group must belong to the workspace specified by `ownerId`.|
+|name|query|string|false|Filter for sandboxes with exactly this name. Names are not unique, so multiple sandboxes can match.|
+|cursor|query|string|false|The position in the result list to start from when fetching paginated results. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|limit|query|integer|false|The maximum number of items to return. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|status|query|[string]|false|Filter for sandboxes with the specified statuses. By default, returns all statuses except `terminated`. Include `terminated` explicitly to return terminated sandboxes.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|creating|
+|status|running|
+|status|suspending|
+|status|suspended|
+|status|resuming|
+|status|errored|
+|status|terminated|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "sandbox": {
+      "id": "sbx-1cd4gcph1rs3idesc73a2b2mg",
+      "name": "string",
+      "sandboxGroupId": {},
+      "status": "creating",
+      "plan": "starter",
+      "networkPolicy": {
+        "type": {},
+        "default": {},
+        "rules": [
+          {
+            "domain": "*.bar.local",
+            "protocol": "https"
+          }
+        ]
+      },
+      "region": "oregon",
+      "timeoutSeconds": 86400,
+      "idleTimeoutSeconds": 900,
+      "createdAt": "2026-04-01T18:30:00Z",
+      "terminatedAt": "1970-01-01T00:00:00Z"
+    },
+    "cursor": "string"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-sandboxes-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-sandboxes-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[sandboxWithCursor](#schemasandboxwithcursor)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Create sandbox
+
+<a id="opIdcreate-sandbox"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandboxes \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "ownerId": "tea-cph1rs3idesc73a2b2mg",
+    "networkPolicy": {
+      "type": "deny-all"
+    },
+    "plan": "standard",
+    "timeoutSeconds": 7200,
+    "idleTimeoutSeconds": 900
+  }'
+```
+
+`POST /sandboxes`
+
+Create a sandbox and return its initial state. The sandbox might still be starting when the response is returned. To use a saved snapshot or custom image, provide `snapshotId`, `snapshotName`, `buildId`, or `buildName`.
+
+
+> Body parameter
+
+```json
+{
+  "ownerId": "tea-cph1rs3idesc73a2b2mg",
+  "networkPolicy": {
+    "type": "deny-all"
+  },
+  "plan": "standard",
+  "timeoutSeconds": 7200,
+  "idleTimeoutSeconds": 900
+}
+```
+
+<h3 id="create-sandbox-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» ownerId|body|string|true|The ID of the workspace the sandbox belongs to.|
+|» sandboxGroupId|body|object|false|The ID of the sandbox group to create the sandbox in. Defaults to the workspace's default group.|
+|» name|body|string|false|A label for the sandbox, such as `my-agent`, up to 64 characters. Names do not have to be unique; use the sandbox ID to identify a specific sandbox. Must not start with `sbx-`.<br>|
+|» networkPolicy|body|object|false|The outbound traffic policy to apply to the sandbox. Provide `type` or its deprecated alias `default`. If both are provided, they must match.<br>|
+|» » type|body|object|false|How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`. Required unless `default` is provided. If `networkPolicy` is omitted, defaults to `allow-all`, or to the source sandbox's policy when creating a sandbox from a snapshot.<br>|
+|» » default|body|object|false|**Deprecated.** A deprecated alias for `type`. Use `type` instead.|
+|» » rules|body|[object]|false|Destinations the sandbox may reach, required when the policy is `allow-list` and rejected otherwise. Each domain may be listed once.<br>|
+|» » » domain|body|string|true|The hostname this rule allows, up to 253 characters. Matching is exact: `foo.local` does not match `api.foo.local`. Use a separate rule or `*.foo.local` for subdomains. A wildcard is allowed only as the leftmost label.<br>|
+|» » » protocol|body|string|false|The protocol allowed for this destination. Defaults to `https`. The `allow-list` policy blocks outbound traffic that uses other protocols.|
+|» plan|body|string|false|The compute plan for the sandbox. See `sandboxPlan` for known values.|
+|» » *anyOf*|body|string|false|The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.|
+|» » *anyOf*|body|string|false|none|
+|» timeoutSeconds|body|integer|false|The maximum time the sandbox can run continuously, in seconds. The sandbox terminates when this time elapses. If the sandbox is suspended and later resumed, this timeout restarts.<br><br>Use 0 to disable the runtime timeout. Positive values must be between 60 and 2592000 (30 days). Defaults to 86400, or to the source sandbox's runtime timeout when creating a sandbox from a snapshot.<br>|
+|» idleTimeoutSeconds|body|integer|false|The number of seconds of inactivity before Render suspends the sandbox. Use 0 to disable automatic idle suspension. Positive values must be between 300 and 86400. Defaults to 900, or to the source sandbox's idle timeout when creating a sandbox from a snapshot.<br>|
+|» env|body|object|false|The environment variables to set when creating the sandbox.|
+|» » **additionalProperties**|body|string|false|none|
+|» snapshotId|body|object|false|The ID of the snapshot to create the sandbox from instead of the base image. The snapshot must be `available` and belong to the same sandbox group. For a `runtime` snapshot, `plan` must match the snapshot's plan. The new sandbox inherits the source sandbox's network policy, timeout, and idle timeout. Provide `networkPolicy`, `timeoutSeconds`, or `idleTimeoutSeconds` to override these settings.<br>|
+|» snapshotName|body|object|false|The name of the snapshot to create the sandbox from. Uses the most recently created snapshot with this name in the sandbox group that is `available` and unexpired. Cannot be combined with `snapshotId`. The same restore requirements as `snapshotId` apply.<br>|
+|» buildId|body|object|false|The ID of the build to create the sandbox from instead of the base image. The build must have succeeded and belong to the same sandbox group. Cannot be combined with `buildName`, `snapshotId`, or `snapshotName`.<br>|
+|» buildName|body|string|false|The name of the build to create the sandbox from instead of the base image. Uses the newest successful build with this name in the sandbox group. Cannot be combined with `buildId`, `snapshotId`, or `snapshotName`.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » » protocol|https|
+|» » *anyOf*|starter|
+|» » *anyOf*|standard|
+|» » *anyOf*|pro|
+|» » *anyOf*|1c-2g|
+|» » *anyOf*|2c-4g|
+|» » *anyOf*|4c-8g|
+|» » *anyOf*|8c-16g|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "sbx-1cd4gcph1rs3idesc73a2b2mg",
+  "status": "creating",
+  "plan": "standard",
+  "networkPolicy": {
+    "type": "deny-all",
+    "default": "deny-all"
+  },
+  "region": "oregon",
+  "timeoutSeconds": 7200,
+  "idleTimeoutSeconds": 900,
+  "createdAt": "2026-04-01T18:30:00Z",
+  "terminatedAt": null
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="create-sandbox-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The sandbox was created. Returns its initial state.|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_snapshot_name`: `snapshotName` is malformed.<br>- Both `snapshotId` and `snapshotName` are provided. No error code is returned.<br>- `invalid_sandbox_name`: `name` exceeds 64 characters or starts with `sbx-`.<br>- `sandbox_group_limit_reached`: The workspace has no default sandbox group and has reached its sandbox group limit.<br>- `invalid_sandbox_plan`: The plan is not supported. The error message lists accepted plans.<br>- `invalid_timeout_seconds`: A nonzero `timeoutSeconds` is outside the range of 60 to the workspace's maximum, which defaults to 2592000 (30 days).<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|The requested resource was not found.<br><br>- `snapshot_not_found`: The snapshot ID does not exist or no available snapshot in the group has the specified name.<br>- `build_not_found`: The specified build does not belong to the sandbox group, or no build in the group has the specified name.<br>|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- `snapshot_not_available`: The snapshot is not `available`. This also applies to snapshots selected by name.<br>- `snapshot_plan_mismatch`: A runtime snapshot requires a different compute plan. This also applies to snapshots selected by name.<br>- `sandbox_group_suspended`: The sandbox group is suspended.<br>- `build_not_succeeded`: The specified build has not succeeded, or no build with the specified name has succeeded.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="create-sandbox-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox.|
+|name|string \| null|false|none|The label set when the sandbox was created.|
+|sandboxGroupId|object|false|none|The ID of the sandbox group this sandbox belongs to.|
+|status|string|true|none|The sandbox's current status.|
+|plan|string|true|none|The sandbox's compute plan. See `sandboxPlan` for known values.|
+|» *anyOf*|string|false|none|The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.|
+|» *anyOf*|string|false|none|none|
+|networkPolicy|object|true|none|The policy that controls outbound traffic from the sandbox.|
+|» type|object|true|none|How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.|
+|» default|object|false|none|**Deprecated.** A deprecated alias for `type`, returned with the same value. Read `type` instead.|
+|» rules|[object]|false|none|Destinations the sandbox may reach, present when `type` is `allow-list` and absent otherwise. Each domain may be listed once.<br>|
+|» » domain|string|true|none|The hostname this rule allows, up to 253 characters. Matching is exact: `foo.local` does not match `api.foo.local`. Use a separate rule or `*.foo.local` for subdomains. A wildcard is allowed only as the leftmost label.<br>|
+|» » protocol|string|false|none|The protocol allowed for this destination. Defaults to `https`. The `allow-list` policy blocks outbound traffic that uses other protocols.|
+|region|string|true|none|The Render region where the sandbox runs.|
+|timeoutSeconds|integer|true|none|The maximum time the sandbox can run continuously, in seconds. The sandbox terminates when this time elapses. If the sandbox is suspended and later resumed, this timeout restarts. A value of 0 disables the runtime timeout.<br>|
+|idleTimeoutSeconds|integer|true|none|The number of seconds of inactivity before Render suspends the sandbox. A value of 0 disables automatic idle suspension.|
+|createdAt|string(date-time)|true|none|The timestamp when the sandbox was created, in ISO 8601 format.|
+|terminatedAt|string(date-time) \| null|false|none|The timestamp when the sandbox was terminated, in ISO 8601 format. Null if the sandbox has not been terminated.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|creating|
+|status|running|
+|status|suspending|
+|status|suspended|
+|status|resuming|
+|status|errored|
+|status|terminated|
+|» *anyOf*|starter|
+|» *anyOf*|standard|
+|» *anyOf*|pro|
+|» *anyOf*|1c-2g|
+|» *anyOf*|2c-4g|
+|» *anyOf*|4c-8g|
+|» *anyOf*|8c-16g|
+|» » protocol|https|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## List sandbox groups
+
+<a id="opIdlist-sandbox-groups"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.render.com/v1/sandbox-groups?ownerId=string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups`
+
+List sandbox groups in a workspace, newest first. Returns up to 20 groups by default, with a maximum of 100. To fetch the next page, pass the last result's cursor as `cursor`. Continue until the response is empty.
+
+
+<h3 id="list-sandbox-groups-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|true|The ID of the workspace whose sandbox groups to return.|
+|cursor|query|string|false|The position in the result list to start from when fetching paginated results. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|limit|query|integer|false|The maximum number of sandbox groups to return, between 1 and 100. Defaults to 20.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "sandboxGroup": {
+      "id": "sbg-cph1rs3idesc73a2b2mg",
+      "ownerId": "tea-cph1rs3idesc73a2b2mg",
+      "name": "Default",
+      "region": "oregon",
+      "isDefault": true,
+      "environmentId": "string",
+      "concurrencyLimit": 1,
+      "createdAt": "2026-07-02T18:30:00Z",
+      "updatedAt": "2026-07-02T18:30:00Z"
+    },
+    "cursor": "string"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-sandbox-groups-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-sandbox-groups-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[sandboxGroupWithCursor](#schemasandboxgroupwithcursor)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Create sandbox group
+
+<a id="opIdcreate-sandbox-group"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "ownerId": "tea-cph1rs3idesc73a2b2mg",
+    "name": "CI agents"
+  }'
+```
+
+`POST /sandbox-groups`
+
+Create a sandbox group. The first group in a workspace becomes its default.
+
+> Body parameter
+
+```json
+{
+  "ownerId": "tea-cph1rs3idesc73a2b2mg",
+  "name": "CI agents"
+}
+```
+
+<h3 id="create-sandbox-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» ownerId|body|string|true|The ID of the workspace to create the sandbox group in.|
+|» name|body|string|true|The sandbox group's name. Must be unique within the workspace.|
+|» region|body|string|false|The Render region where the group's sandboxes run. Defaults to `oregon`.|
+|» environmentId|body|string|false|The ID of an environment in the workspace to create the group in. If you omit it, the group isn't in a project. Creating a group in a protected environment requires an admin.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "sbg-cph1rs3idesc73a2b2mg",
+  "ownerId": "tea-cph1rs3idesc73a2b2mg",
+  "name": "CI agents",
+  "region": "oregon",
+  "isDefault": false,
+  "environmentId": null,
+  "concurrencyLimit": 10,
+  "createdAt": "2026-07-02T18:30:00Z",
+  "updatedAt": "2026-07-02T18:30:00Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="create-sandbox-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Sandbox group created.|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- Another group in the workspace has the specified name.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="create-sandbox-group-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox group.|
+|ownerId|string|true|none|The ID of the workspace this group belongs to.|
+|name|string|true|none|The sandbox group's name.|
+|region|string|true|none|The Render region where the group's sandboxes run.|
+|isDefault|boolean|true|none|Whether this is the workspace's default sandbox group. Create requests that omit `sandboxGroupId` use this group.|
+|environmentId|string \| null|false|none|The ID of the environment that contains this group. Null if the group isn't in a project. To move a group, add it to or remove it from an environment with `/environments/{environmentId}/resources`.|
+|concurrencyLimit|integer|true|none|The maximum number of active sandboxes allowed in this group, capped by Render's limit for the workspace.|
+|createdAt|string(date-time)|true|none|The timestamp when the sandbox group was created, in ISO 8601 format.|
+|updatedAt|string(date-time)|true|none|The timestamp when the sandbox group was last updated, in ISO 8601 format.|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve sandbox
+
+<a id="opIdretrieve-sandbox"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandboxes/sbx-1cd4gcph1rs3idesc73a2b2mg \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandboxes/{sandboxId}`
+
+Retrieve the sandbox with the provided ID.
+
+<h3 id="retrieve-sandbox-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.|
+|sandboxId|path|string|true|The ID of the sandbox.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "sbx-1cd4gcph1rs3idesc73a2b2mg",
+  "name": "string",
+  "sandboxGroupId": {},
+  "status": "creating",
+  "plan": "starter",
+  "networkPolicy": {
+    "type": {},
+    "default": {},
+    "rules": [
+      {
+        "domain": "*.bar.local",
+        "protocol": "https"
+      }
+    ]
+  },
+  "region": "oregon",
+  "timeoutSeconds": 86400,
+  "idleTimeoutSeconds": 900,
+  "createdAt": "2026-04-01T18:30:00Z",
+  "terminatedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-sandbox-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-sandbox-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox.|
+|name|string \| null|false|none|The label set when the sandbox was created.|
+|sandboxGroupId|object|false|none|The ID of the sandbox group this sandbox belongs to.|
+|status|string|true|none|The sandbox's current status.|
+|plan|string|true|none|The sandbox's compute plan. See `sandboxPlan` for known values.|
+|» *anyOf*|string|false|none|The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.|
+|» *anyOf*|string|false|none|none|
+|networkPolicy|object|true|none|The policy that controls outbound traffic from the sandbox.|
+|» type|object|true|none|How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.|
+|» default|object|false|none|**Deprecated.** A deprecated alias for `type`, returned with the same value. Read `type` instead.|
+|» rules|[object]|false|none|Destinations the sandbox may reach, present when `type` is `allow-list` and absent otherwise. Each domain may be listed once.<br>|
+|» » domain|string|true|none|The hostname this rule allows, up to 253 characters. Matching is exact: `foo.local` does not match `api.foo.local`. Use a separate rule or `*.foo.local` for subdomains. A wildcard is allowed only as the leftmost label.<br>|
+|» » protocol|string|false|none|The protocol allowed for this destination. Defaults to `https`. The `allow-list` policy blocks outbound traffic that uses other protocols.|
+|region|string|true|none|The Render region where the sandbox runs.|
+|timeoutSeconds|integer|true|none|The maximum time the sandbox can run continuously, in seconds. The sandbox terminates when this time elapses. If the sandbox is suspended and later resumed, this timeout restarts. A value of 0 disables the runtime timeout.<br>|
+|idleTimeoutSeconds|integer|true|none|The number of seconds of inactivity before Render suspends the sandbox. A value of 0 disables automatic idle suspension.|
+|createdAt|string(date-time)|true|none|The timestamp when the sandbox was created, in ISO 8601 format.|
+|terminatedAt|string(date-time) \| null|false|none|The timestamp when the sandbox was terminated, in ISO 8601 format. Null if the sandbox has not been terminated.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|creating|
+|status|running|
+|status|suspending|
+|status|suspended|
+|status|resuming|
+|status|errored|
+|status|terminated|
+|» *anyOf*|starter|
+|» *anyOf*|standard|
+|» *anyOf*|pro|
+|» *anyOf*|1c-2g|
+|» *anyOf*|2c-4g|
+|» *anyOf*|4c-8g|
+|» *anyOf*|8c-16g|
+|» » protocol|https|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## List executions
+
+<a id="opIdlist-sandbox-executions"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandboxes/sbx-1cd4gcph1rs3idesc73a2b2mg/execs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandboxes/{sandboxId}/execs`
+
+List execution records for the sandbox, ordered by start time, newest first.
+
+<h3 id="list-executions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.|
+|cursor|query|string|false|The position in the result list to start from when fetching paginated results. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|limit|query|integer|false|The maximum number of items to return. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|sandboxId|path|string|true|The ID of the sandbox.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "execution": {
+      "id": "exe-cph1rs3idesc73a2b2mg",
+      "sandboxId": "sbx-1cd4gcph1rs3idesc73a2b2mg",
+      "type": "runs",
+      "operation": "sync",
+      "command": "string",
+      "userId": "usr-cph1rs3idesc73a2b2mg",
+      "startedAt": "2026-08-01T10:00:00Z",
+      "stoppedAt": "2026-08-01T10:05:00Z",
+      "exitCode": 0
+    },
+    "cursor": "string"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-executions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-executions-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[executionWithCursor](#schemaexecutionwithcursor)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve execution
+
+<a id="opIdretrieve-sandbox-execution"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandboxes/sbx-1cd4gcph1rs3idesc73a2b2mg/execs/exe-cph1rs3idesc73a2b2mg \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandboxes/{sandboxId}/execs/{execId}`
+
+Retrieve one execution record for the sandbox.
+
+<h3 id="retrieve-execution-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.|
+|sandboxId|path|string|true|The ID of the sandbox.|
+|execId|path|string|true|The ID of the sandbox execution.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "exe-cph1rs3idesc73a2b2mg",
+  "sandboxId": "sbx-1cd4gcph1rs3idesc73a2b2mg",
+  "type": "runs",
+  "operation": "sync",
+  "command": "string",
+  "userId": "usr-cph1rs3idesc73a2b2mg",
+  "startedAt": "2026-08-01T10:00:00Z",
+  "stoppedAt": "2026-08-01T10:05:00Z",
+  "exitCode": 0
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-execution-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-execution-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox execution.|
+|sandboxId|string|true|none|The ID of the sandbox.|
+|type|string|true|none|Whether the execution is a command run or a file transfer.|
+|operation|string|true|none|The command run or file transfer operation authorized by the connect token.|
+|command|string|false|none|The command run in the sandbox, or the target path for a file transfer. Command text may be redacted or truncated. Omitted if you do not have permission to view execution commands.<br>|
+|userId|string|true|none|The ID of the user the execution token was created for.|
+|startedAt|string(date-time)|true|none|The timestamp when the execution token was created, in ISO 8601 format.|
+|stoppedAt|string(date-time)|false|none|The timestamp when the execution stopped, in ISO 8601 format. Omitted until a result is available.|
+|exitCode|integer|false|none|The execution exit code. Omitted until a result is available.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|runs|
+|type|files|
+|operation|sync|
+|operation|stream|
+|operation|upload|
+|operation|download|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Terminate sandbox
+
+<a id="opIdterminate-sandbox"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandboxes/sbx-1cd4gcph1rs3idesc73a2b2mg/terminate \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /sandboxes/{sandboxId}/terminate`
+
+Terminate the sandbox with the provided ID. Returns HTTP 204 even if the sandbox is already terminated. You can also terminate a sandbox while it is starting (`creating`).
+
+
+<h3 id="terminate-sandbox-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.|
+|sandboxId|path|string|true|The ID of the sandbox.|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="terminate-sandbox-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The sandbox was terminated or was already terminated.|None|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Suspend sandbox
+
+<a id="opIdsuspend-sandbox"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandboxes/sbx-1cd4gcph1rs3idesc73a2b2mg/suspend \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /sandboxes/{sandboxId}/suspend`
+
+Suspend the running sandbox with the provided ID. Returns HTTP 202 after the sandbox starts suspending, or if it is already `suspending` or `suspended`. Retrieve the sandbox until its status is `suspended`. Open commands and connections end. The next connection resumes the sandbox.
+
+
+<h3 id="suspend-sandbox-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.|
+|sandboxId|path|string|true|The ID of the sandbox.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="suspend-sandbox-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The sandbox is suspending or is already suspended.|None|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- `sandbox_not_running`: The sandbox is not `running`, `suspending`, or `suspended`.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Create sandbox snapshot
+
+<a id="opIdcreate-sandbox-snapshot"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandboxes/sbx-1cd4gcph1rs3idesc73a2b2mg/snapshots \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "kind": "runtime",
+    "name": "gold",
+    "ttlSeconds": 0,
+    "expiresAt": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`POST /sandboxes/{sandboxId}/snapshots`
+
+Capture a snapshot of a running sandbox. Returns HTTP 202 with the snapshot in `creating` status. Retrieve the snapshot until its status is `available` or `failed`. The sandbox continues running, with a brief pause when capturing a runtime snapshot.
+
+
+> Body parameter
+
+```json
+{
+  "kind": "runtime",
+  "name": "gold",
+  "ttlSeconds": 0,
+  "expiresAt": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="create-sandbox-snapshot-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.|
+|sandboxId|path|string|true|The ID of the sandbox.|
+|body|body|object|false|none|
+|» kind|body|object|false|The state to capture in the snapshot. Defaults to `runtime`.|
+|» name|body|string|false|A case-sensitive name for snapshots in a sandbox group, up to 64 characters. Must not start with `snp-`. Multiple snapshots can share a name. When creating a sandbox by snapshot name, Render uses the most recently created snapshot with that name that is `available` and unexpired.<br>|
+|» ttlSeconds|body|integer|false|The snapshot's lifetime after its last use, in seconds. Creating a sandbox from this snapshot resets its remaining lifetime to this duration. Use 0 to keep the snapshot until you delete it. Defaults to Render's snapshot lifetime. Cannot be combined with `expiresAt`.<br>|
+|» expiresAt|body|string(date-time)|false|**Deprecated.** The expiration timestamp, in ISO 8601 format. Deprecated; use `ttlSeconds` instead. Must be in the future. Render sets the snapshot lifetime to the duration between the request and this timestamp.<br>|
+
+> Example responses
+
+> 202 Response
+
+```json
+{
+  "id": "snp-cph1rs3idesc73a2b2mg",
+  "sandboxGroupId": "sbg-cph1rs3idesc73a2b2mg",
+  "sourceSandboxId": {},
+  "name": {},
+  "kind": "filesystem",
+  "status": "creating",
+  "plan": "starter",
+  "requestedAt": "1970-01-01T00:00:00Z",
+  "capturedAt": "1970-01-01T00:00:00Z",
+  "expiresAt": "1970-01-01T00:00:00Z",
+  "ttlSeconds": 0,
+  "sizeBytes": 0,
+  "error": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="create-sandbox-snapshot-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The snapshot capture was accepted. Returns the snapshot in `creating` status.|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_snapshot_name`: `name` is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- `sandbox_not_running`: The sandbox is not `running`.<br>- `sandbox_group_suspended`: The sandbox group is suspended.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="create-sandbox-snapshot-responseschema">Response Schema</h3>
+
+Status Code **202**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox snapshot.|
+|sandboxGroupId|string|true|none|The ID of the sandbox group.|
+|sourceSandboxId|object|true|none|The ID of the sandbox this snapshot was captured from, recorded for reference.|
+|name|object \| null|false|none|The name assigned when the snapshot was created. Cannot be changed. Null if no name was provided.|
+|kind|string|true|none|The state to capture. A `filesystem` snapshot captures the writable filesystem and can be restored to any plan. A `runtime` snapshot also captures memory and CPU state and must be restored to the source sandbox plan.<br>|
+|status|string|true|none|The snapshot's current status.|
+|plan|string|true|none|The source sandbox's compute plan when the snapshot was captured. See `sandboxPlan` for known values.|
+|» *anyOf*|string|false|none|The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.|
+|» *anyOf*|string|false|none|none|
+|requestedAt|string(date-time)|true|none|The timestamp when the snapshot was requested, in ISO 8601 format.|
+|capturedAt|string(date-time) \| null|false|none|The timestamp when capture completed, in ISO 8601 format. Null until the snapshot is `available`.|
+|expiresAt|string(date-time)|true|none|The timestamp after which the snapshot can no longer be retrieved or restored, in ISO 8601 format. Each time you create a sandbox from this snapshot, Render resets its expiration to `ttlSeconds` seconds after that use. For snapshots with no expiration (`ttlSeconds: 0`), this is `9999-12-31T23:59:59Z`.<br>|
+|ttlSeconds|integer|false|none|The snapshot's lifetime after its last use, in seconds. A value of 0 means the snapshot does not expire. If omitted, Render's default snapshot lifetime applies.<br>|
+|sizeBytes|integer(int64) \| null|false|none|The size of the snapshot, in bytes. Null until the snapshot is `available`.|
+|error|string \| null|false|none|The reason the snapshot failed. Null unless its status is `failed`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|filesystem|
+|kind|runtime|
+|status|creating|
+|status|available|
+|status|failed|
+|» *anyOf*|starter|
+|» *anyOf*|standard|
+|» *anyOf*|pro|
+|» *anyOf*|1c-2g|
+|» *anyOf*|2c-4g|
+|» *anyOf*|4c-8g|
+|» *anyOf*|8c-16g|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve sandbox group
+
+<a id="opIdretrieve-sandbox-group"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups/{sandboxGroupId}`
+
+Retrieve a sandbox group by ID.
+
+<h3 id="retrieve-sandbox-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "sbg-cph1rs3idesc73a2b2mg",
+  "ownerId": "tea-cph1rs3idesc73a2b2mg",
+  "name": "Default",
+  "region": "oregon",
+  "isDefault": true,
+  "environmentId": "string",
+  "concurrencyLimit": 1,
+  "createdAt": "2026-07-02T18:30:00Z",
+  "updatedAt": "2026-07-02T18:30:00Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-sandbox-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-sandbox-group-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox group.|
+|ownerId|string|true|none|The ID of the workspace this group belongs to.|
+|name|string|true|none|The sandbox group's name.|
+|region|string|true|none|The Render region where the group's sandboxes run.|
+|isDefault|boolean|true|none|Whether this is the workspace's default sandbox group. Create requests that omit `sandboxGroupId` use this group.|
+|environmentId|string \| null|false|none|The ID of the environment that contains this group. Null if the group isn't in a project. To move a group, add it to or remove it from an environment with `/environments/{environmentId}/resources`.|
+|concurrencyLimit|integer|true|none|The maximum number of active sandboxes allowed in this group, capped by Render's limit for the workspace.|
+|createdAt|string(date-time)|true|none|The timestamp when the sandbox group was created, in ISO 8601 format.|
+|updatedAt|string(date-time)|true|none|The timestamp when the sandbox group was last updated, in ISO 8601 format.|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Update sandbox group
+
+<a id="opIdupdate-sandbox-group"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "concurrencyLimit": 10
+  }'
+```
+
+`PATCH /sandbox-groups/{sandboxGroupId}`
+
+Update a sandbox group's concurrency limit. The response contains the effective limit after applying Render's limit for the workspace.
+
+
+> Body parameter
+
+```json
+{
+  "concurrencyLimit": 10
+}
+```
+
+<h3 id="update-sandbox-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|body|body|object|true|none|
+|» concurrencyLimit|body|integer|true|The maximum number of active sandboxes allowed in this group. Must be at least 1. Render caps this value at the workspace's limit and returns the effective limit. Lowering the limit does not stop existing sandboxes.<br>|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "sbg-cph1rs3idesc73a2b2mg",
+  "ownerId": "tea-cph1rs3idesc73a2b2mg",
+  "name": "Default",
+  "region": "oregon",
+  "isDefault": true,
+  "environmentId": "string",
+  "concurrencyLimit": 1,
+  "createdAt": "2026-07-02T18:30:00Z",
+  "updatedAt": "2026-07-02T18:30:00Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="update-sandbox-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Sandbox group updated.|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>- `concurrencyLimit` is omitted or below 1.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="update-sandbox-group-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox group.|
+|ownerId|string|true|none|The ID of the workspace this group belongs to.|
+|name|string|true|none|The sandbox group's name.|
+|region|string|true|none|The Render region where the group's sandboxes run.|
+|isDefault|boolean|true|none|Whether this is the workspace's default sandbox group. Create requests that omit `sandboxGroupId` use this group.|
+|environmentId|string \| null|false|none|The ID of the environment that contains this group. Null if the group isn't in a project. To move a group, add it to or remove it from an environment with `/environments/{environmentId}/resources`.|
+|concurrencyLimit|integer|true|none|The maximum number of active sandboxes allowed in this group, capped by Render's limit for the workspace.|
+|createdAt|string(date-time)|true|none|The timestamp when the sandbox group was created, in ISO 8601 format.|
+|updatedAt|string(date-time)|true|none|The timestamp when the sandbox group was last updated, in ISO 8601 format.|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## List sandbox group credentials
+
+<a id="opIdlist-sandbox-group-credentials"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/credentials \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups/{sandboxGroupId}/credentials`
+
+List credentials in the sandbox group, sorted by credential ID. Returns credential settings and metadata. These endpoints do not return secret values, including to admins.
+
+
+<h3 id="list-sandbox-group-credentials-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": "my-inference-key",
+    "domain": "api.render.com",
+    "version": {
+      "id": 1,
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "updatedBy": "string",
+      "fingerprint": "string",
+      "restoredFromVersionId": 1
+    },
+    "enabled": true,
+    "methods": [
+      "string"
+    ],
+    "paths": [
+      "string"
+    ],
+    "injection": {
+      "type": "header",
+      "name": "string",
+      "template": "Bearer ${SECRET}"
+    }
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-sandbox-group-credentials-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-sandbox-group-credentials-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[object]|false|none|none|
+|» id|string|true|none|The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.<br>|
+|» domain|string|true|none|The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.<br>|
+|» version|object|false|none|Metadata for a credential version. These endpoints do not return secret values.|
+|» » id|integer(int64)|true|none|The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.|
+|» » updatedAt|string(date-time)|true|none|The timestamp when this credential version was created, in ISO 8601 format.|
+|» » updatedBy|string|true|none|The ID of the authenticated identity that created this credential version.|
+|» » fingerprint|string|true|none|A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.<br>|
+|» » restoredFromVersionId|integer(int64)|false|none|The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.|
+|» enabled|boolean|true|none|Whether this credential is enabled for injection.|
+|» methods|[string]|true|none|The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.<br>|
+|» paths|[string]|true|none|The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.<br>|
+|» injection|object|true|none|Settings for injecting the secret value into matching outbound HTTPS requests.|
+|» » type|string|true|none|How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.<br>|
+|» » name|string|false|none|The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.<br>|
+|» » template|string|false|none|A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » type|header|
+|» » type|basic|
+|» » type|cookie|
+|» » type|query|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Create sandbox group credential
+
+<a id="opIdcreate-sandbox-group-credential"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/credentials \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "id": "my-inference-key",
+    "domain": "string",
+    "value": "string",
+    "enabled": true,
+    "methods": [
+      "string"
+    ],
+    "paths": [
+      "string"
+    ],
+    "injection": {
+      "type": "header",
+      "name": "string",
+      "template": "Bearer ${SECRET}"
+    }
+  }'
+```
+
+`POST /sandbox-groups/{sandboxGroupId}/credentials`
+
+Configure a credential for injection into matching outbound HTTPS requests from sandboxes in this group. Requires an admin. You assign the credential ID.
+
+Each group supports up to 25 credentials. Current credential settings and secret values have a combined serialized size limit of 200 KiB (204800 bytes). Render retains the current configuration and three distinct prior configurations per credential, with a total storage limit of 1 MiB including version metadata.
+
+The response confirms the configuration was saved. It does not confirm that credential injection is active for a particular sandbox.
+
+
+> Body parameter
+
+```json
+{
+  "id": "my-inference-key",
+  "domain": "string",
+  "value": "string",
+  "enabled": true,
+  "methods": [
+    "string"
+  ],
+  "paths": [
+    "string"
+  ],
+  "injection": {
+    "type": "header",
+    "name": "string",
+    "template": "Bearer ${SECRET}"
+  }
+}
+```
+
+<h3 id="create-sandbox-group-credential-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|body|body|object|true|none|
+|» id|body|string|true|The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.<br>|
+|» domain|body|string|true|The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.<br>|
+|» value|body|string|true|The secret value to store, up to 5 KiB (5120 UTF-8 bytes).|
+|» enabled|body|boolean|false|Whether this credential is enabled for injection. Defaults to `true`.|
+|» methods|body|[string]|false|The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. Omit or provide an empty list to match any method.<br>|
+|» paths|body|[string]|false|The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. Omit or provide an empty list to match any path.<br>|
+|» injection|body|object|true|Settings for injecting the secret value into matching outbound HTTPS requests.|
+|» » type|body|string|true|How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.<br>|
+|» » name|body|string|false|The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.<br>|
+|» » template|body|string|false|A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » type|header|
+|» » type|basic|
+|» » type|cookie|
+|» » type|query|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "my-inference-key",
+  "domain": "api.render.com",
+  "version": {
+    "id": 1,
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "updatedBy": "string",
+    "fingerprint": "string",
+    "restoredFromVersionId": 1
+  },
+  "enabled": true,
+  "methods": [
+    "string"
+  ],
+  "paths": [
+    "string"
+  ],
+  "injection": {
+    "type": "header",
+    "name": "string",
+    "template": "Bearer ${SECRET}"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="create-sandbox-group-credential-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The credential configuration was saved.|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br><br>Temporary conflicts while applying credential changes can also cause this response.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="create-sandbox-group-credential-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.<br>|
+|domain|string|true|none|The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.<br>|
+|version|object|false|none|Metadata for a credential version. These endpoints do not return secret values.|
+|» id|integer(int64)|true|none|The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.|
+|» updatedAt|string(date-time)|true|none|The timestamp when this credential version was created, in ISO 8601 format.|
+|» updatedBy|string|true|none|The ID of the authenticated identity that created this credential version.|
+|» fingerprint|string|true|none|A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.<br>|
+|» restoredFromVersionId|integer(int64)|false|none|The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.|
+|enabled|boolean|true|none|Whether this credential is enabled for injection.|
+|methods|[string]|true|none|The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.<br>|
+|paths|[string]|true|none|The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.<br>|
+|injection|object|true|none|Settings for injecting the secret value into matching outbound HTTPS requests.|
+|» type|string|true|none|How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.<br>|
+|» name|string|false|none|The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.<br>|
+|» template|string|false|none|A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» type|header|
+|» type|basic|
+|» type|cookie|
+|» type|query|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve sandbox group credential
+
+<a id="opIdretrieve-sandbox-group-credential"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/credentials/my-inference-key \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups/{sandboxGroupId}/credentials/{credentialId}`
+
+Retrieve the settings and metadata for a credential in this sandbox group. These endpoints do not return secret values, including to admins.
+
+
+<h3 id="retrieve-sandbox-group-credential-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|credentialId|path|string|true|The ID of the credential. Must be unique within this sandbox group.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "my-inference-key",
+  "domain": "api.render.com",
+  "version": {
+    "id": 1,
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "updatedBy": "string",
+    "fingerprint": "string",
+    "restoredFromVersionId": 1
+  },
+  "enabled": true,
+  "methods": [
+    "string"
+  ],
+  "paths": [
+    "string"
+  ],
+  "injection": {
+    "type": "header",
+    "name": "string",
+    "template": "Bearer ${SECRET}"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-sandbox-group-credential-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-sandbox-group-credential-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.<br>|
+|domain|string|true|none|The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.<br>|
+|version|object|false|none|Metadata for a credential version. These endpoints do not return secret values.|
+|» id|integer(int64)|true|none|The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.|
+|» updatedAt|string(date-time)|true|none|The timestamp when this credential version was created, in ISO 8601 format.|
+|» updatedBy|string|true|none|The ID of the authenticated identity that created this credential version.|
+|» fingerprint|string|true|none|A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.<br>|
+|» restoredFromVersionId|integer(int64)|false|none|The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.|
+|enabled|boolean|true|none|Whether this credential is enabled for injection.|
+|methods|[string]|true|none|The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.<br>|
+|paths|[string]|true|none|The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.<br>|
+|injection|object|true|none|Settings for injecting the secret value into matching outbound HTTPS requests.|
+|» type|string|true|none|How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.<br>|
+|» name|string|false|none|The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.<br>|
+|» template|string|false|none|A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» type|header|
+|» type|basic|
+|» type|cookie|
+|» type|query|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Delete sandbox group credential
+
+<a id="opIddelete-sandbox-group-credential"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/credentials/my-inference-key \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /sandbox-groups/{sandboxGroupId}/credentials/{credentialId}`
+
+Delete a credential from the sandbox group. Requires an admin. Repeated delete requests are accepted, including if the credential is already absent.
+
+
+<h3 id="delete-sandbox-group-credential-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|credentialId|path|string|true|The ID of the credential. Must be unique within this sandbox group.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="delete-sandbox-group-credential-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|The credential deletion was accepted.|None|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br><br>Temporary conflicts while applying credential changes can also cause this response.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Update sandbox group credential
+
+<a id="opIdupdate-sandbox-group-credential"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/credentials/my-inference-key \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "value": "string",
+    "domain": "string",
+    "enabled": true,
+    "methods": [
+      "string"
+    ],
+    "paths": [
+      "string"
+    ],
+    "injection": {
+      "type": "header",
+      "name": "string",
+      "template": "Bearer ${SECRET}"
+    }
+  }'
+```
+
+`PATCH /sandbox-groups/{sandboxGroupId}/credentials/{credentialId}`
+
+Update a credential. Developers can change `injection`, `methods`, `paths`, and `enabled`. Changing `domain` or `value` requires an admin.
+
+Omitted top-level fields keep their current values. Providing `injection` replaces the entire object. Its `template` defaults to `${SECRET}` when omitted. An empty `methods` or `paths` list removes that filter. Providing `value` creates a new version. The combined serialized size of current credential settings and secret values in the group must remain within 200 KiB (204800 bytes).
+
+The response confirms the configuration was saved. It does not confirm that credential injection is active for a particular sandbox.
+
+
+> Body parameter
+
+```json
+{
+  "value": "string",
+  "domain": "string",
+  "enabled": true,
+  "methods": [
+    "string"
+  ],
+  "paths": [
+    "string"
+  ],
+  "injection": {
+    "type": "header",
+    "name": "string",
+    "template": "Bearer ${SECRET}"
+  }
+}
+```
+
+<h3 id="update-sandbox-group-credential-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|credentialId|path|string|true|The ID of the credential. Must be unique within this sandbox group.|
+|body|body|object|true|none|
+|» value|body|string|false|The replacement secret value, up to 5 KiB (5120 UTF-8 bytes). Requires an admin. Omit to preserve the current value.|
+|» domain|body|string|false|The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported. Omit to preserve the current hostname.<br>|
+|» enabled|body|boolean|false|Whether this credential is enabled for injection. Omit to preserve the current setting.|
+|» methods|body|[string]|false|The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method. Omit to preserve the current filter.<br>|
+|» paths|body|[string]|false|The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path. Omit to preserve the current filter.<br>|
+|» injection|body|object|false|Settings for injecting the secret value into matching outbound HTTPS requests.|
+|» » type|body|string|true|How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.<br>|
+|» » name|body|string|false|The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.<br>|
+|» » template|body|string|false|A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » type|header|
+|» » type|basic|
+|» » type|cookie|
+|» » type|query|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "my-inference-key",
+  "domain": "api.render.com",
+  "version": {
+    "id": 1,
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "updatedBy": "string",
+    "fingerprint": "string",
+    "restoredFromVersionId": 1
+  },
+  "enabled": true,
+  "methods": [
+    "string"
+  ],
+  "paths": [
+    "string"
+  ],
+  "injection": {
+    "type": "header",
+    "name": "string",
+    "template": "Bearer ${SECRET}"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="update-sandbox-group-credential-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The credential configuration was saved.|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.<br><br>Changing `domain` or `value` requires an admin.<br>|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br><br>Temporary conflicts while applying credential changes can also cause this response.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="update-sandbox-group-credential-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.<br>|
+|domain|string|true|none|The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.<br>|
+|version|object|false|none|Metadata for a credential version. These endpoints do not return secret values.|
+|» id|integer(int64)|true|none|The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.|
+|» updatedAt|string(date-time)|true|none|The timestamp when this credential version was created, in ISO 8601 format.|
+|» updatedBy|string|true|none|The ID of the authenticated identity that created this credential version.|
+|» fingerprint|string|true|none|A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.<br>|
+|» restoredFromVersionId|integer(int64)|false|none|The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.|
+|enabled|boolean|true|none|Whether this credential is enabled for injection.|
+|methods|[string]|true|none|The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.<br>|
+|paths|[string]|true|none|The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.<br>|
+|injection|object|true|none|Settings for injecting the secret value into matching outbound HTTPS requests.|
+|» type|string|true|none|How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.<br>|
+|» name|string|false|none|The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.<br>|
+|» template|string|false|none|A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» type|header|
+|» type|basic|
+|» type|cookie|
+|» type|query|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## List sandbox credential versions
+
+<a id="opIdlist-sandbox-group-credential-versions"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/credentials/my-inference-key/versions \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups/{sandboxGroupId}/credentials/{credentialId}/versions`
+
+List retained credential versions, newest version ID first. Versions with identical settings and secret values share a fingerprint.
+
+Render retains the current configuration and the three distinct prior configurations most recently active. When an older configuration is removed, all versions that refer to it are also removed. These endpoints do not return secret values.
+
+
+<h3 id="list-sandbox-credential-versions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|credentialId|path|string|true|The ID of the credential. Must be unique within this sandbox group.|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": 1,
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "updatedBy": "string",
+    "fingerprint": "string",
+    "restoredFromVersionId": 1
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-sandbox-credential-versions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-sandbox-credential-versions-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[object]|false|none|none|
+|» id|integer(int64)|true|none|The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.|
+|» updatedAt|string(date-time)|true|none|The timestamp when this credential version was created, in ISO 8601 format.|
+|» updatedBy|string|true|none|The ID of the authenticated identity that created this credential version.|
+|» fingerprint|string|true|none|A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.<br>|
+|» restoredFromVersionId|integer(int64)|false|none|The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Restore sandbox credential configuration
+
+<a id="opIdrestore-sandbox-group-credential"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/credentials/my-inference-key/restore \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "versionId": 1
+  }'
+```
+
+`POST /sandbox-groups/{sandboxGroupId}/credentials/{credentialId}/restore`
+
+Restore a retained credential version, including its routing settings, injection settings, and secret value, as a new current version. Requires an admin.
+
+The new version has a higher ID, records who restored it and when, and identifies the source in `restoredFromVersionId`. Its fingerprint matches the source version. Render retains the current configuration and the three distinct prior configurations most recently active. Removing an older configuration also removes all versions that refer to it.
+
+The response confirms the configuration was saved. It does not confirm that credential injection is active for a particular sandbox.
+
+These endpoints do not return secret values.
+
+
+> Body parameter
+
+```json
+{
+  "versionId": 1
+}
+```
+
+<h3 id="restore-sandbox-credential-configuration-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|credentialId|path|string|true|The ID of the credential. Must be unique within this sandbox group.|
+|body|body|object|true|none|
+|» versionId|body|integer(int64)|true|The ID of a retained credential version to restore as a new current version.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "my-inference-key",
+  "domain": "api.render.com",
+  "version": {
+    "id": 1,
+    "updatedAt": "1970-01-01T00:00:00Z",
+    "updatedBy": "string",
+    "fingerprint": "string",
+    "restoredFromVersionId": 1
+  },
+  "enabled": true,
+  "methods": [
+    "string"
+  ],
+  "paths": [
+    "string"
+  ],
+  "injection": {
+    "type": "header",
+    "name": "string",
+    "template": "Bearer ${SECRET}"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="restore-sandbox-credential-configuration-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The credential configuration was saved.|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br><br>Temporary conflicts while applying credential changes can also cause this response.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="restore-sandbox-credential-configuration-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.<br>|
+|domain|string|true|none|The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.<br>|
+|version|object|false|none|Metadata for a credential version. These endpoints do not return secret values.|
+|» id|integer(int64)|true|none|The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.|
+|» updatedAt|string(date-time)|true|none|The timestamp when this credential version was created, in ISO 8601 format.|
+|» updatedBy|string|true|none|The ID of the authenticated identity that created this credential version.|
+|» fingerprint|string|true|none|A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.<br>|
+|» restoredFromVersionId|integer(int64)|false|none|The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.|
+|enabled|boolean|true|none|Whether this credential is enabled for injection.|
+|methods|[string]|true|none|The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.<br>|
+|paths|[string]|true|none|The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.<br>|
+|injection|object|true|none|Settings for injecting the secret value into matching outbound HTTPS requests.|
+|» type|string|true|none|How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.<br>|
+|» name|string|false|none|The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.<br>|
+|» template|string|false|none|A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» type|header|
+|» type|basic|
+|» type|cookie|
+|» type|query|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## List sandbox builds
+
+<a id="opIdlist-sandbox-builds"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/builds \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups/{sandboxGroupId}/builds`
+
+List builds in a sandbox group, newest first.
+
+<h3 id="list-sandbox-builds-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|cursor|query|string|false|The position in the result list to start from when fetching paginated results. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|limit|query|integer|false|The maximum number of items to return. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|name|query|string|false|Filter for builds with exactly this image name.|
+|status|query|[string]|false|Filter for builds with the specified statuses.|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|pending|
+|status|running|
+|status|succeeded|
+|status|failed|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "build": {
+      "id": "sbb-cph1rs3idesc73a2b2mg",
+      "sandboxGroupId": "sbg-cph1rs3idesc73a2b2mg",
+      "name": "string",
+      "source": {
+        "repository": "docker.io/library",
+        "image": "python",
+        "reference": "3.13"
+      },
+      "sourceDigest": "sha256:c19d4a1...",
+      "status": "pending",
+      "failureReason": "string",
+      "failureCode": "image_pull_failed",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "finishedAt": "1970-01-01T00:00:00Z"
+    },
+    "cursor": "string"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-sandbox-builds-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>- `invalid_status`: A requested build status is not supported.<br>- `invalid_cursor`: The cursor is malformed.<br>- `invalid_limit`: The limit is outside the range 1–100.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-sandbox-builds-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[sandboxBuildWithCursor](#schemasandboxbuildwithcursor)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Create sandbox build
+
+<a id="opIdcreate-sandbox-build"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/builds \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "string",
+    "sourceImage": "python:3.13",
+    "registryCredential": {
+      "username": "string",
+      "password": "password"
+    }
+  }'
+```
+
+`POST /sandbox-groups/{sandboxGroupId}/builds`
+
+Start converting an OCI container image into an image that sandboxes can use. New builds run asynchronously. Retrieve the build until its status is `succeeded` or `failed`. After it succeeds, provide its ID as `buildId` when creating a sandbox.
+
+If the group already has a pending, running, or succeeded build for the same name and image digest, Render returns that build. Retrying a failed build starts a new build.
+
+
+> Body parameter
+
+```json
+{
+  "name": "string",
+  "sourceImage": "python:3.13",
+  "registryCredential": {
+    "username": "string",
+    "password": "password"
+  }
+}
+```
+
+<h3 id="create-sandbox-build-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|body|body|object|true|none|
+|» name|body|string|true|The name used to select this image when creating a sandbox, between 1 and 255 characters. Can't start with `sbb-`, the prefix reserved for build IDs. Multiple builds can share a name.|
+|» sourceImage|body|string|true|The container image to convert, specified by tag or digest.|
+|» registryCredential|body|object|false|Credentials used to pull `sourceImage` from a private registry for this build.|
+|» » username|body|string|true|The username used to authenticate with the image registry.|
+|» » password|body|string(password)|true|The password used to authenticate with the image registry.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "id": "sbb-cph1rs3idesc73a2b2mg",
+  "sandboxGroupId": "sbg-cph1rs3idesc73a2b2mg",
+  "name": "string",
+  "source": {
+    "repository": "docker.io/library",
+    "image": "python",
+    "reference": "3.13"
+  },
+  "sourceDigest": "sha256:c19d4a1...",
+  "status": "pending",
+  "failureReason": "string",
+  "failureCode": "image_pull_failed",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "finishedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="create-sandbox-build-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The build was created, or a matching build was returned. Conversion may still be in progress.|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>- The image is invalid or the image registry cannot serve it. The error message explains the problem.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- `sandbox_group_suspended`: The group is suspended.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br><br>The group has reached its limit for pending and running builds. The error message includes the limit.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="create-sandbox-build-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox build.|
+|sandboxGroupId|string|true|none|The ID of the sandbox group.|
+|name|string|true|none|The name used to select this image when creating a sandbox. Multiple builds can share a name.|
+|source|object|true|none|The source container image used for this build.|
+|» repository|string|true|none|The registry and repository path containing the source image.|
+|» image|string|true|none|The name of the source image.|
+|» reference|string|true|none|The tag or digest identifying the source image version.|
+|sourceDigest|string|true|none|The digest of the source image converted by this build.|
+|status|string|true|none|The sandbox build's current status.|
+|failureReason|string \| null|false|none|A description of why the build failed. Null unless the status is `failed`. May include error text from the image registry. When displaying errors, use `failureCode` to select the main message and show this value as additional detail.<br>|
+|failureCode|string \| null|false|none|A machine-readable reason the build failed. Null unless the status is `failed`. See `sandboxBuildFailureCode` for known codes. Treat unrecognized codes as `internal_error`.<br>|
+|createdAt|string(date-time)|true|none|The timestamp when the sandbox build was created, in ISO 8601 format.|
+|finishedAt|string(date-time) \| null|false|none|The timestamp when the build succeeded or failed, in ISO 8601 format. Null while the build is pending or running.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|pending|
+|status|running|
+|status|succeeded|
+|status|failed|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve sandbox build
+
+<a id="opIdretrieve-sandbox-build"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/builds/sbb-cph1rs3idesc73a2b2mg \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups/{sandboxGroupId}/builds/{buildId}`
+
+Retrieve a build by ID.
+
+<h3 id="retrieve-sandbox-build-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|buildId|path|string|true|The ID of the sandbox build.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "sbb-cph1rs3idesc73a2b2mg",
+  "sandboxGroupId": "sbg-cph1rs3idesc73a2b2mg",
+  "name": "string",
+  "source": {
+    "repository": "docker.io/library",
+    "image": "python",
+    "reference": "3.13"
+  },
+  "sourceDigest": "sha256:c19d4a1...",
+  "status": "pending",
+  "failureReason": "string",
+  "failureCode": "image_pull_failed",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "finishedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-sandbox-build-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>- The build ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|The requested resource was not found.<br><br>- `build_not_found`: The build does not exist or belongs to another sandbox group.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-sandbox-build-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox build.|
+|sandboxGroupId|string|true|none|The ID of the sandbox group.|
+|name|string|true|none|The name used to select this image when creating a sandbox. Multiple builds can share a name.|
+|source|object|true|none|The source container image used for this build.|
+|» repository|string|true|none|The registry and repository path containing the source image.|
+|» image|string|true|none|The name of the source image.|
+|» reference|string|true|none|The tag or digest identifying the source image version.|
+|sourceDigest|string|true|none|The digest of the source image converted by this build.|
+|status|string|true|none|The sandbox build's current status.|
+|failureReason|string \| null|false|none|A description of why the build failed. Null unless the status is `failed`. May include error text from the image registry. When displaying errors, use `failureCode` to select the main message and show this value as additional detail.<br>|
+|failureCode|string \| null|false|none|A machine-readable reason the build failed. Null unless the status is `failed`. See `sandboxBuildFailureCode` for known codes. Treat unrecognized codes as `internal_error`.<br>|
+|createdAt|string(date-time)|true|none|The timestamp when the sandbox build was created, in ISO 8601 format.|
+|finishedAt|string(date-time) \| null|false|none|The timestamp when the build succeeded or failed, in ISO 8601 format. Null while the build is pending or running.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|pending|
+|status|running|
+|status|succeeded|
+|status|failed|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Delete sandbox build
+
+<a id="opIddelete-sandbox-build"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/builds/sbb-cph1rs3idesc73a2b2mg \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /sandbox-groups/{sandboxGroupId}/builds/{buildId}`
+
+Delete a build of a sandbox image. The build no longer appears in lists and cannot be retrieved or used to create sandboxes, including by image name. Repeated requests to delete the build return HTTP 204.
+
+
+<h3 id="delete-sandbox-build-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|buildId|path|string|true|The ID of the sandbox build.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="delete-sandbox-build-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The build was deleted or was already deleted.|None|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>- The build ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|The requested resource was not found.<br><br>- `build_not_found`: The build does not exist or belongs to another sandbox group.<br>|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- `image_in_use`: Sandboxes that have not terminated or errored, or unexpired snapshots that have not failed, still depend on this build. This includes suspended sandboxes and snapshots of sandboxes restored from earlier snapshots of the build. The error message lists up to 10 dependencies. Terminate the sandboxes and delete the snapshots, or wait for them to expire, before retrying.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## List sandbox snapshots
+
+<a id="opIdlist-sandbox-snapshots"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/snapshots?ownerId=string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups/{sandboxGroupId}/snapshots`
+
+List snapshots in a sandbox group, newest first. Excludes expired and deleted snapshots.
+
+
+<h3 id="list-sandbox-snapshots-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|true|The ID of the workspace whose snapshots to return.|
+|name|query|string|false|Filter for snapshots with exactly this name. Multiple snapshots can share a name; results include each version, newest first. When creating a sandbox with `snapshotName`, Render uses the most recently created snapshot with that name that is `available` and unexpired.<br>|
+|cursor|query|string|false|The position in the result list to start from when fetching paginated results. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|limit|query|integer|false|The maximum number of items to return. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|status|query|[string]|false|Filter for snapshots with the specified statuses.|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|creating|
+|status|available|
+|status|failed|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "snapshot": {
+      "id": "snp-cph1rs3idesc73a2b2mg",
+      "sandboxGroupId": "sbg-cph1rs3idesc73a2b2mg",
+      "sourceSandboxId": {},
+      "name": {},
+      "kind": "filesystem",
+      "status": "creating",
+      "plan": "starter",
+      "requestedAt": "1970-01-01T00:00:00Z",
+      "capturedAt": "1970-01-01T00:00:00Z",
+      "expiresAt": "1970-01-01T00:00:00Z",
+      "ttlSeconds": 0,
+      "sizeBytes": 0,
+      "error": "string"
+    },
+    "cursor": "string"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-sandbox-snapshots-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>- `invalid_owner_id`: The workspace ID is missing or repeated.<br>- `invalid_status`: A requested snapshot status is not supported.<br>- `invalid_cursor`: The cursor is malformed or unknown.<br>- `invalid_limit`: The limit is outside the range 1–100.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-sandbox-snapshots-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[sandboxSnapshotWithCursor](#schemasandboxsnapshotwithcursor)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve sandbox snapshot
+
+<a id="opIdretrieve-sandbox-snapshot"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/snapshots/snp-cph1rs3idesc73a2b2mg \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sandbox-groups/{sandboxGroupId}/snapshots/{snapshotId}`
+
+Retrieve a snapshot by ID.
+
+<h3 id="retrieve-sandbox-snapshot-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox group belongs to.|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|snapshotId|path|string|true|The ID of the sandbox snapshot.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "snp-cph1rs3idesc73a2b2mg",
+  "sandboxGroupId": "sbg-cph1rs3idesc73a2b2mg",
+  "sourceSandboxId": {},
+  "name": {},
+  "kind": "filesystem",
+  "status": "creating",
+  "plan": "starter",
+  "requestedAt": "1970-01-01T00:00:00Z",
+  "capturedAt": "1970-01-01T00:00:00Z",
+  "expiresAt": "1970-01-01T00:00:00Z",
+  "ttlSeconds": 0,
+  "sizeBytes": 0,
+  "error": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-sandbox-snapshot-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>- `invalid_snapshot_id`: The snapshot ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|The requested resource was not found.<br><br>- The snapshot is deleted, expired, or belongs to another sandbox group.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-sandbox-snapshot-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the sandbox snapshot.|
+|sandboxGroupId|string|true|none|The ID of the sandbox group.|
+|sourceSandboxId|object|true|none|The ID of the sandbox this snapshot was captured from, recorded for reference.|
+|name|object \| null|false|none|The name assigned when the snapshot was created. Cannot be changed. Null if no name was provided.|
+|kind|string|true|none|The state to capture. A `filesystem` snapshot captures the writable filesystem and can be restored to any plan. A `runtime` snapshot also captures memory and CPU state and must be restored to the source sandbox plan.<br>|
+|status|string|true|none|The snapshot's current status.|
+|plan|string|true|none|The source sandbox's compute plan when the snapshot was captured. See `sandboxPlan` for known values.|
+|» *anyOf*|string|false|none|The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.|
+|» *anyOf*|string|false|none|none|
+|requestedAt|string(date-time)|true|none|The timestamp when the snapshot was requested, in ISO 8601 format.|
+|capturedAt|string(date-time) \| null|false|none|The timestamp when capture completed, in ISO 8601 format. Null until the snapshot is `available`.|
+|expiresAt|string(date-time)|true|none|The timestamp after which the snapshot can no longer be retrieved or restored, in ISO 8601 format. Each time you create a sandbox from this snapshot, Render resets its expiration to `ttlSeconds` seconds after that use. For snapshots with no expiration (`ttlSeconds: 0`), this is `9999-12-31T23:59:59Z`.<br>|
+|ttlSeconds|integer|false|none|The snapshot's lifetime after its last use, in seconds. A value of 0 means the snapshot does not expire. If omitted, Render's default snapshot lifetime applies.<br>|
+|sizeBytes|integer(int64) \| null|false|none|The size of the snapshot, in bytes. Null until the snapshot is `available`.|
+|error|string \| null|false|none|The reason the snapshot failed. Null unless its status is `failed`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|kind|filesystem|
+|kind|runtime|
+|status|creating|
+|status|available|
+|status|failed|
+|» *anyOf*|starter|
+|» *anyOf*|standard|
+|» *anyOf*|pro|
+|» *anyOf*|1c-2g|
+|» *anyOf*|2c-4g|
+|» *anyOf*|4c-8g|
+|» *anyOf*|8c-16g|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Delete sandbox snapshot
+
+<a id="opIddelete-sandbox-snapshot"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandbox-groups/sbg-cph1rs3idesc73a2b2mg/snapshots/snp-cph1rs3idesc73a2b2mg \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /sandbox-groups/{sandboxGroupId}/snapshots/{snapshotId}`
+
+Delete a snapshot. Sandboxes created from it are not affected. Returns HTTP 204 if the snapshot is already deleted or expired.
+
+
+<h3 id="delete-sandbox-snapshot-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox group belongs to.|
+|sandboxGroupId|path|string|true|The ID of the sandbox group.|
+|snapshotId|path|string|true|The ID of the sandbox snapshot.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="delete-sandbox-snapshot-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|The snapshot was deleted, was already deleted, or has expired.|None|
+|400|Bad Request|The request is invalid.<br><br>- `invalid_sandbox_group_id`: The group ID is malformed.<br>- `invalid_snapshot_id`: The snapshot ID is malformed.<br>|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|The requested resource was not found.<br><br>- The snapshot belongs to another sandbox group.<br>|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- `snapshot_creating`: Capture is still in progress.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Create a connect token for a sandbox run
+
+<a id="opIdconnect-sandbox-run"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/sandboxes/sbx-1cd4gcph1rs3idesc73a2b2mg/runs/sync/token \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /sandboxes/{sandboxId}/runs/{operation}/token`
+
+Create a short-lived connect token for a command run in this sandbox. Send the command to the URL in the response, using the token as the bearer token. The token authorizes only the requested operation.
+
+
+<h3 id="create-a-connect-token-for-a-sandbox-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.|
+|sandboxId|path|string|true|The ID of the sandbox.|
+|operation|path|string|true|The command run operation to authorize. Use `sync` for a buffered response or `stream` for server-sent events.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|operation|sync|
+|operation|stream|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "executionId": "exe-cph1rs3idesc73a2b2mg",
+  "token": "string",
+  "uri": "https://sbx-abc123.oregon.sandbox.onrender.com/runs/stream",
+  "method": "POST",
+  "expiresAt": "2026-07-10T12:00:00Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="create-a-connect-token-for-a-sandbox-run-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The connect token was created.|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- `sandbox_not_running`: The sandbox is terminated or errored.<br>- `sandbox_group_suspended`: The sandbox group is suspended.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="create-a-connect-token-for-a-sandbox-run-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|executionId|string|true|none|The ID of the sandbox execution.|
+|token|string|true|none|A short-lived bearer token that authorizes only the requested operation on this sandbox.|
+|uri|string(uri)|true|none|The URL to send the authorized command run or file transfer request to.|
+|method|string|true|none|The HTTP method to use when sending the request to `uri`.|
+|expiresAt|string(date-time)|true|none|The timestamp when the token expires, in ISO 8601 format. Start the authorized operation before this time.|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Mint a connect token for a sandbox file transfer
+
+<a id="opIdconnect-sandbox-files"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.render.com/v1/sandboxes/sbx-1cd4gcph1rs3idesc73a2b2mg/files/upload/token?path=string' \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /sandboxes/{sandboxId}/files/{operation}/token`
+
+Create a short-lived connect token for a file upload or download. Transfer the file directly to or from the URL in the response, using the token as the bearer token. The token authorizes only the specified sandbox, operation, and path. Its expiration time is returned in `expiresAt`.
+
+Use `application/octet-stream` for a single file or `application/x-tar` for a directory archive. For gzip compression, also set `Content-Encoding: gzip`. Directory downloads return `application/x-tar` with `Content-Encoding: gzip`.
+
+
+<h3 id="mint-a-connect-token-for-a-sandbox-file-transfer-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ownerId|query|string|false|The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.|
+|path|query|string|true|The file or directory path the token authorizes. For archive uploads, this is the directory to extract into. For downloads, it is the file or directory to retrieve.<br><br>Relative paths are resolved from the image's `WORKDIR`, or the home directory if no `WORKDIR` is set. Use `.` for that working directory. Absolute paths are resolved from the sandbox filesystem root.<br>|
+|sandboxId|path|string|true|The ID of the sandbox.|
+|operation|path|string|true|The file transfer operation to authorize. Use `upload` to send a file or tar archive with HTTP PUT, or `download` to retrieve a file or directory archive with HTTP GET.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|operation|upload|
+|operation|download|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "executionId": "exe-cph1rs3idesc73a2b2mg",
+  "token": "string",
+  "uri": "https://sbx-abc123.oregon.sandbox.onrender.com/runs/stream",
+  "method": "POST",
+  "expiresAt": "2026-07-10T12:00:00Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="mint-a-connect-token-for-a-sandbox-file-transfer-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The connect token was created.|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|409|Conflict|The current state of the resource conflicts with this request.<br><br>- `sandbox_not_running`: The sandbox is terminated or errored.<br>- `sandbox_group_suspended`: The sandbox group is suspended.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="mint-a-connect-token-for-a-sandbox-file-transfer-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|executionId|string|true|none|The ID of the sandbox execution.|
+|token|string|true|none|A short-lived bearer token that authorizes only the requested operation on this sandbox.|
+|uri|string(uri)|true|none|The URL to send the authorized command run or file transfer request to.|
+|method|string|true|none|The HTTP method to use when sending the request to `uri`.|
+|expiresAt|string(date-time)|true|none|The timestamp when the token expires, in ISO 8601 format. Start the authorized operation before this time.|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -21156,7 +26337,7 @@ List services matching the provided filters. If no filters are provided, returns
 |200|OK|OK|[serviceList](#schemaservicelist)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -21166,7 +26347,7 @@ List services matching the provided filters. If no filters are provided, returns
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -21546,7 +26727,7 @@ Build Source in a different region than the service.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -21556,7 +26737,7 @@ Build Source in a different region than the service.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -21738,7 +26919,7 @@ Retrieve the service with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -21748,7 +26929,7 @@ Retrieve the service with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -21870,7 +27051,7 @@ Delete the service with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -21880,7 +27061,7 @@ Delete the service with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -22205,7 +27386,7 @@ Build Source in a different region than the service.
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -22215,7 +27396,7 @@ Build Source in a different region than the service.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -22348,7 +27529,7 @@ Trigger cache purge for the web service if caching is enabled.
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -22358,7 +27539,7 @@ Trigger cache purge for the web service if caching is enabled.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -22495,7 +27676,7 @@ List all environment variables for the service with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -22513,7 +27694,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -22684,7 +27865,7 @@ Replace all environment variables for a service with the provided list of enviro
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -22702,7 +27883,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -22835,7 +28016,7 @@ This only applies to environment variables set directly on the service, not to e
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -22845,7 +28026,7 @@ This only applies to environment variables set directly on the service, not to e
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -23005,7 +28186,7 @@ This only applies to environment variables set directly on the service, not to e
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -23015,7 +28196,7 @@ This only applies to environment variables set directly on the service, not to e
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -23140,7 +28321,7 @@ This only applies to environment variables set directly on the service, not to e
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -23150,7 +28331,7 @@ This only applies to environment variables set directly on the service, not to e
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -23287,7 +28468,7 @@ List all secret files for the service with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -23305,7 +28486,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -23477,7 +28658,7 @@ This only applies to secret files set directly on the service, not to secret fil
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -23495,7 +28676,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -23628,7 +28809,7 @@ This only applies to secret files set directly on the service, not to secret fil
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -23638,7 +28819,7 @@ This only applies to secret files set directly on the service, not to secret fil
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -23797,7 +28978,7 @@ This only applies to secret files set directly on the service, not to secret fil
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -23807,7 +28988,7 @@ This only applies to secret files set directly on the service, not to secret fil
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -23932,7 +29113,7 @@ This only applies to secret files set directly on the service, not to secret fil
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -23942,7 +29123,7 @@ This only applies to secret files set directly on the service, not to secret fil
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -24065,7 +29246,7 @@ List recent events that occurred for the service with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -24083,7 +29264,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -24216,7 +29397,7 @@ Suspend the service with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -24226,7 +29407,7 @@ Suspend the service with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -24359,7 +29540,7 @@ Resume the service with the provided ID (if it's currently suspended).
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -24369,7 +29550,7 @@ Resume the service with the provided ID (if it's currently suspended).
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -24504,7 +29685,7 @@ Not supported for cron jobs.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -24514,7 +29695,7 @@ Not supported for cron jobs.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -24663,7 +29844,7 @@ Render ignores this value as long as autoscaling is enabled for the service.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -24673,7 +29854,7 @@ Render ignores this value as long as autoscaling is enabled for the service.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -24873,7 +30054,7 @@ Update the [autoscaling](https://render.com/docs/scaling#autoscaling) config for
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -24900,7 +30081,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -25022,7 +30203,7 @@ Delete the autoscaling config for a service given the service id.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -25032,7 +30213,7 @@ Delete the autoscaling config for a service given the service id.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -25265,7 +30446,7 @@ Note that you can't create previews for Git-backed services using the Render API
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -25275,7 +30456,7 @@ Note that you can't create previews for Git-backed services using the Render API
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -25373,7 +30554,7 @@ List instances for the provided service.
 |200|OK|OK|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -25391,7 +30572,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -25515,7 +30696,7 @@ A service uses either a dedicated IP set that applies to it, or the shared Rende
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -25525,7 +30706,7 @@ A service uses either a dedicated IP set that applies to it, or the shared Rende
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -25631,7 +30812,7 @@ Trigger a run for a cron job and cancel any active runs.
 |200|OK|OK|[cronJobRun](#schemacronjobrun)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -25641,7 +30822,7 @@ Trigger a run for a cron job and cancel any active runs.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -25729,7 +30910,7 @@ Cancel a currently running cron job.
 |204|No Content|Canceled|None|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -25739,7 +30920,7 @@ Cancel a currently running cron job.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -25885,7 +31066,7 @@ List a particular service's response header rules that match the provided filter
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -25903,7 +31084,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -26072,7 +31253,7 @@ Replace all header rules for a particular service with the provided list.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -26090,7 +31271,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -26245,7 +31426,7 @@ Add a response header rule to the service with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -26263,7 +31444,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -26386,7 +31567,7 @@ Delete a particular response header rule for a particular service.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -26396,7 +31577,7 @@ Delete a particular response header rule for a particular service.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -26550,7 +31731,7 @@ List a particular service's redirect/rewrite rules that match the provided filte
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -26568,7 +31749,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -26740,7 +31921,7 @@ Rule priority is assigned according to list order (the first rule in the list ha
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -26758,7 +31939,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -26933,7 +32114,7 @@ Add redirect/rewrite rules to the service with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -26943,7 +32124,7 @@ Add redirect/rewrite rules to the service with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -27066,7 +32247,7 @@ Delete a particular redirect/rewrite rule for a particular service.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -27076,7 +32257,7 @@ Delete a particular redirect/rewrite rule for a particular service.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -27231,7 +32412,7 @@ Render increments the priority of other rules by `1` as necessary to make space 
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -27249,7 +32430,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -27346,7 +32527,7 @@ Retrieve the user associated with the provided API key.
 |200|OK|OK|[user](#schemauser)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -27356,7 +32537,7 @@ Retrieve the user associated with the provided API key.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -27472,7 +32653,7 @@ Remove a user from the specified workspace.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -27482,7 +32663,7 @@ Remove a user from the specified workspace.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -27642,7 +32823,7 @@ Update the role of an existing workspace member.
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -27652,7 +32833,7 @@ Update the role of an existing workspace member.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -27766,7 +32947,7 @@ List the workspaces that your API key has access to, optionally filtered by name
 |200|OK|OK|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -27784,7 +32965,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -27914,7 +33095,7 @@ Workspace IDs start with `tea-`. If you provide a user ID (starts with `own-`), 
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -27924,7 +33105,7 @@ Workspace IDs start with `tea-`. If you provide a user ID (starts with `own-`), 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -28049,7 +33230,7 @@ Retrieves the list of users belonging to the workspace with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -28059,7 +33240,7 @@ Retrieves the list of users belonging to the workspace with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -28199,7 +33380,7 @@ omitted, returns build sources across every workspace you can view.
 |200|OK|Success|Inline|
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="list-build-sources-responseschema">Response Schema</h3>
@@ -28261,7 +33442,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -28565,7 +33746,7 @@ if any are provided with `image`.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="create-a-build-source-responseschema">Response Schema</h3>
@@ -28624,7 +33805,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -28756,7 +33937,7 @@ Retrieve a shared build source by ID
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="retrieve-a-build-source-responseschema">Response Schema</h3>
@@ -28815,7 +33996,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -28916,7 +34097,7 @@ Delete the build source with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 ### Response Headers
@@ -28925,7 +34106,7 @@ Delete the build source with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -29170,7 +34351,7 @@ underlying identity:
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 
 <h3 id="update-a-build-source-responseschema">Response Schema</h3>
@@ -29229,7 +34410,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -29386,7 +34567,7 @@ List builds in a build source, newest first. Pass the last item's
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -29443,7 +34624,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -29460,8 +34641,12 @@ BearerAuth
 ```bash
 curl https://api.render.com/v1/build-sources/string/builds \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "clearCache": "do_not_clear"
+  }'
 ```
 
 `POST /build-sources/{buildSourceId}/builds`
@@ -29477,11 +34662,28 @@ this endpoint after those changes to build them.
 Only `git` build sources can be built.
 
 
+> Body parameter
+
+```json
+{
+  "clearCache": "do_not_clear"
+}
+```
+
 <h3 id="trigger-a-build-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |buildSourceId|path|string|true|none|
+|body|body|object|false|none|
+|» clearCache|body|string|false|If `clear`, Render clears the build source's build cache before building. This can be useful if you're experiencing issues with your build.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» clearCache|clear|
+|» clearCache|do_not_clear|
 
 > Example responses
 
@@ -29590,7 +34792,7 @@ Only `git` build sources can be built.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -29644,7 +34846,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -29794,7 +34996,7 @@ Retrieve a build of a build source, including its status.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -29848,7 +35050,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -29985,7 +35187,7 @@ List all environment variables for the build source with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -30003,7 +35205,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -30174,7 +35376,7 @@ Replace all environment variables for a build source with the provided list of e
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -30192,7 +35394,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -30325,7 +35527,7 @@ This only applies to environment variables set directly on the build source, not
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -30335,7 +35537,7 @@ This only applies to environment variables set directly on the build source, not
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -30495,7 +35697,7 @@ This only applies to environment variables set directly on the build source, not
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -30505,7 +35707,7 @@ This only applies to environment variables set directly on the build source, not
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -30630,7 +35832,7 @@ This only applies to environment variables set directly on the build source, not
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -30640,7 +35842,7 @@ This only applies to environment variables set directly on the build source, not
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -30777,7 +35979,7 @@ List all secret files for the build source with the provided ID.
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -30795,7 +35997,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -30967,7 +36169,7 @@ This only applies to secret files set directly on the build source, not to secre
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -30985,7 +36187,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -31118,7 +36320,7 @@ This only applies to secret files set directly on the build source, not to secre
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -31128,7 +36330,7 @@ This only applies to secret files set directly on the build source, not to secre
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -31287,7 +36489,7 @@ This only applies to secret files set directly on the build source, not to secre
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -31297,7 +36499,7 @@ This only applies to secret files set directly on the build source, not to secre
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -31422,7 +36624,7 @@ This only applies to secret files set directly on the build source, not to secre
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -31432,7 +36634,7 @@ This only applies to secret files set directly on the build source, not to secre
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -31567,7 +36769,7 @@ The build source will have access to the environment variables and secret files 
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -31577,7 +36779,7 @@ The build source will have access to the environment variables and secret files 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -31680,7 +36882,7 @@ The build source will lose access to the environment variables and secret files 
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -31690,7 +36892,7 @@ The build source will lose access to the environment variables and secret files 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -31815,7 +37017,7 @@ List webhooks
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -31833,7 +37035,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -32050,7 +37252,7 @@ Create a new webhook.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -32146,7 +37348,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -32248,7 +37450,7 @@ Retrieve the webhook with the provided ID
 |200|OK|Success|Inline|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -32344,7 +37546,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -32433,7 +37635,7 @@ Delete the webhook with the provided ID.
 |204|No Content|Webhook deleted|None|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -32443,7 +37645,7 @@ Delete the webhook with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -32658,7 +37860,7 @@ Update the webhook with the provided ID.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -32754,7 +37956,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -32876,7 +38078,7 @@ Retrieve a list of events that have been sent to this webhook, with optional fil
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -32894,7 +38096,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -32958,7 +38160,8 @@ List workflows that match the provided filters. If no filters are provided, all 
       "region": "oregon",
       "environmentId": "string",
       "slug": "string",
-      "autoDeployTrigger": "commit"
+      "autoDeployTrigger": "commit",
+      "defaultVersionId": "string"
     },
     "cursor": "string"
   }
@@ -33031,7 +38234,7 @@ List workflows that match the provided filters. If no filters are provided, all 
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -33049,7 +38252,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -33184,7 +38387,8 @@ Create a new workflow service with the specified configuration.
   "region": "oregon",
   "environmentId": "string",
   "slug": "string",
-  "autoDeployTrigger": "commit"
+  "autoDeployTrigger": "commit",
+  "defaultVersionId": "string"
 }
 ```
 
@@ -33254,7 +38458,7 @@ Create a new workflow service with the specified configuration.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -33280,6 +38484,7 @@ Status Code **201**
 |environmentId|string|false|none|none|
 |slug|string|false|none|none|
 |autoDeployTrigger|string|false|none|Controls autodeploy behavior. "commit" deploys when a commit is pushed to the branch. "checksPass" waits for CI checks to pass before deploying. "off" disables autodeploy.|
+|defaultVersionId|string|false|none|ID of the workflow version that new task runs use by default. Omitted until a version has been registered.|
 
 #### Enumerated Values
 
@@ -33305,7 +38510,7 @@ Status Code **201**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -33357,7 +38562,8 @@ Retrieve the workflow service with the provided ID.
   "region": "oregon",
   "environmentId": "string",
   "slug": "string",
-  "autoDeployTrigger": "commit"
+  "autoDeployTrigger": "commit",
+  "defaultVersionId": "string"
 }
 ```
 
@@ -33427,7 +38633,7 @@ Retrieve the workflow service with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -33453,6 +38659,7 @@ Status Code **200**
 |environmentId|string|false|none|none|
 |slug|string|false|none|none|
 |autoDeployTrigger|string|false|none|Controls autodeploy behavior. "commit" deploys when a commit is pushed to the branch. "checksPass" waits for CI checks to pass before deploying. "off" disables autodeploy.|
+|defaultVersionId|string|false|none|ID of the workflow version that new task runs use by default. Omitted until a version has been registered.|
 
 #### Enumerated Values
 
@@ -33478,7 +38685,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -33577,7 +38784,7 @@ Delete the workflow service with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -33587,7 +38794,7 @@ Delete the workflow service with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -33693,7 +38900,8 @@ Update the workflow service with the provided ID.
   "region": "oregon",
   "environmentId": "string",
   "slug": "string",
-  "autoDeployTrigger": "commit"
+  "autoDeployTrigger": "commit",
+  "defaultVersionId": "string"
 }
 ```
 
@@ -33763,7 +38971,7 @@ Update the workflow service with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -33789,6 +38997,7 @@ Status Code **200**
 |environmentId|string|false|none|none|
 |slug|string|false|none|none|
 |autoDeployTrigger|string|false|none|Controls autodeploy behavior. "commit" deploys when a commit is pushed to the branch. "checksPass" waits for CI checks to pass before deploying. "off" disables autodeploy.|
+|defaultVersionId|string|false|none|ID of the workflow version that new task runs use by default. Omitted until a version has been registered.|
 
 #### Enumerated Values
 
@@ -33814,7 +39023,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -33933,7 +39142,7 @@ List known versions of the workflow service with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -33951,7 +39160,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -34066,7 +39275,7 @@ Creates and deploys a new version of a workflow.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -34076,7 +39285,7 @@ Creates and deploys a new version of a workflow.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -34186,7 +39395,7 @@ Retrieve the specific workflow service version with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -34219,7 +39428,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -34344,7 +39553,7 @@ List workflow tasks that match the provided filters. If no filters are provided,
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -34362,7 +39571,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -34472,7 +39681,7 @@ Retrieve the workflow task with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -34494,7 +39703,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -34640,7 +39849,7 @@ List task runs that match the provided filters. If no filters are provided, all 
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -34658,7 +39867,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -34820,7 +40029,7 @@ Kicks off a run of the workflow task with the provided ID, passing the provided 
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -34858,6 +40067,8 @@ Status Code **202**
 |status|failed|
 |status|canceled|
 |status|paused|
+|status|suspended|
+|status|sleeping|
 |» status|pending|
 |» status|running|
 |» status|completed|
@@ -34865,6 +40076,8 @@ Status Code **202**
 |» status|failed|
 |» status|canceled|
 |» status|paused|
+|» status|suspended|
+|» status|sleeping|
 
 ### Response Headers
 
@@ -34872,7 +40085,7 @@ Status Code **202**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -35022,7 +40235,7 @@ data: {
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -35035,7 +40248,7 @@ data: {
 |200|Connection|string||Keep-alive for streaming.|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -35181,7 +40394,7 @@ Retrieve the workflow task run with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -35228,6 +40441,8 @@ Status Code **200**
 |status|failed|
 |status|canceled|
 |status|paused|
+|status|suspended|
+|status|sleeping|
 |» status|pending|
 |» status|running|
 |» status|completed|
@@ -35235,6 +40450,8 @@ Status Code **200**
 |» status|failed|
 |» status|canceled|
 |» status|paused|
+|» status|suspended|
+|» status|sleeping|
 
 ### Response Headers
 
@@ -35242,7 +40459,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -35352,7 +40569,7 @@ Cancel a running task run with the provided ID.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -35362,7 +40579,1488 @@ Cancel a running task run with the provided ID.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+<h1 id="render-public-api-workflow-flows">Workflow Flows</h1>
+
+Run and inspect durable flows as part of [Render Workflows](https://render.com/docs/workflows).
+
+
+## List flows
+
+<a id="opIdlistFlows"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flows \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /flows`
+
+List workflow flows that match the provided filters. If no filters are provided, all flow definitions accessible by the authenticated user are returned.
+
+<h3 id="list-flows-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|cursor|query|string|false|The position in the result list to start from when fetching paginated results. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|limit|query|integer|false|The maximum number of items to return. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|ownerId|query|[string]|false|The ID of the workspaces to return resources for|
+|flowSlug|query|[string]|false|An array of flow slugs in the format workflow-slug/flow-name. An optional version can be appended (workflow-slug/flow-name:version). If no version is provided, the latest version is used.|
+|workflowVersionId|query|[string]|false|An array of workflow version IDs|
+|workflowId|query|[string]|false|An array of workflow IDs|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "flow": {
+      "id": "flw-d0hp8fs9c44c73a6f1qg",
+      "name": "string",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "workflowId": "string",
+      "workflowVersionId": "string"
+    },
+    "cursor": "string"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-flows-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|List of flows|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-flows-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[flowWithCursor](#schemaflowwithcursor)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve flow
+
+<a id="opIdgetFlow"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flows/flw-d0hp8fs9c44c73a6f1qg \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /flows/{flowId}`
+
+Retrieve the workflow flow with the provided ID.
+
+<h3 id="retrieve-flow-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|flowId|path|string|true|The ID of the flow|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "flw-d0hp8fs9c44c73a6f1qg",
+  "name": "string",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "workflowId": "string",
+  "workflowVersionId": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-flow-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Flow details|Inline|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-flow-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|name|string|true|none|none|
+|createdAt|string(date-time)|true|none|none|
+|workflowId|string|false|none|none|
+|workflowVersionId|string|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## List flow runs
+
+<a id="opIdlistFlowRuns"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flow-runs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /flow-runs`
+
+List flow runs that match the provided filters. If no filters are provided, all flow runs accessible by the authenticated user are returned.
+
+<h3 id="list-flow-runs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|cursor|query|string|false|The position in the result list to start from when fetching paginated results. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|limit|query|integer|false|The maximum number of items to return. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|flowSlug|query|[string]|false|An array of flow slugs in the format workflow-slug/flow-name. An optional version can be appended (workflow-slug/flow-name:version). If no version is provided, the latest version is used.|
+|flowId|query|[string]|false|An array of flow IDs|
+|status|query|[string]|false|An array of flow run statuses to filter on|
+|ownerId|query|[string]|false|The ID of the workspaces to return resources for|
+|workflowVersionId|query|[string]|false|An array of workflow version IDs|
+|workflowId|query|[string]|false|An array of workflow IDs|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|pending|
+|status|running|
+|status|succeeded|
+|status|failed|
+|status|canceled|
+|status|paused|
+|status|suspended|
+|status|sleeping|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "flowRun": {
+      "id": "frn-d0hp8fs9c44c73a6f1qg",
+      "flowId": "flw-d0hp8fs9c44c73a6f1qg",
+      "status": "pending",
+      "startedAt": "1970-01-01T00:00:00Z",
+      "completedAt": "1970-01-01T00:00:00Z"
+    },
+    "cursor": "string"
+  }
+]
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-flow-runs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|List of flow runs|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-flow-runs-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[flowRunWithCursor](#schemaflowrunwithcursor)]|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Start flow run
+
+<a id="opIdstartFlowRun"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flow-runs \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "flow": "my-workflow-slug/my-flow",
+    "input": [
+      null
+    ],
+    "idempotencyKey": "6b2f1f7a-6a0e-4f6f-9d1a-2b1d0d5f6c11"
+  }'
+```
+
+`POST /flow-runs`
+
+Starts a run of the workflow flow with the provided slug, passing the provided input data.
+
+> Body parameter
+
+```json
+{
+  "flow": "my-workflow-slug/my-flow",
+  "input": [
+    null
+  ],
+  "idempotencyKey": "6b2f1f7a-6a0e-4f6f-9d1a-2b1d0d5f6c11"
+}
+```
+
+<h3 id="start-flow-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» flow|body|string|true|A flow slug in the format workflow-slug/flow-name. An optional version can be appended (workflow-slug/flow-name:version). If no version is provided, the latest version is used. Cannot be blank.|
+|» input|body|[object] \| object|true|Input data for a flow. Can be either an array (for positional arguments) or an object (for named parameters).|
+|» » *oneOf*|body|[object]|false|Positional arguments passed to the flow function|
+|» » *oneOf*|body|object|false|Named parameters passed to the flow function as keyword arguments|
+|» » **additionalProperties**|body|object|false|none|
+|» idempotencyKey|body|string|false|A client-generated key that makes starting a task run safe to retry. Repeating a request with the same key within 24 hours returns the task run that the first request started instead of starting another one; the repeated request's input is ignored. Keys are scoped to a workflow. Omit the key to always start a new run.|
+
+> Example responses
+
+> 202 Response
+
+```json
+{
+  "id": "frn-d0hp8fs9c44c73a6f1qg",
+  "flowId": "flw-d0hp8fs9c44c73a6f1qg",
+  "status": "pending",
+  "startedAt": "1970-01-01T00:00:00Z",
+  "completedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="start-flow-run-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|Flow run started|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="start-flow-run-responseschema">Response Schema</h3>
+
+Status Code **202**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|flowId|string|true|none|none|
+|status|string|true|none|The status of a flow run.|
+|startedAt|string(date-time)|false|none|none|
+|completedAt|string(date-time)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|pending|
+|status|running|
+|status|succeeded|
+|status|failed|
+|status|canceled|
+|status|paused|
+|status|suspended|
+|status|sleeping|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve flow run
+
+<a id="opIdgetFlowRun"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flow-runs/frn-d0hp8fs9c44c73a6f1qg \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /flow-runs/{flowRunId}`
+
+Retrieve the flow run with the provided ID, including its input and results.
+
+<h3 id="retrieve-flow-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|flowRunId|path|string|true|The ID of the flow run|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "frn-d0hp8fs9c44c73a6f1qg",
+  "flowId": "flw-d0hp8fs9c44c73a6f1qg",
+  "status": "pending",
+  "startedAt": "1970-01-01T00:00:00Z",
+  "completedAt": "1970-01-01T00:00:00Z",
+  "input": [
+    null
+  ],
+  "results": [
+    null
+  ],
+  "error": "string",
+  "errorDetails": {
+    "code": "flow_determinism_error",
+    "message": "string",
+    "seq": 0,
+    "subKey": "string",
+    "flowAttempt": 0,
+    "kind": "input_hash",
+    "expected": "string",
+    "actual": "string",
+    "limit": 0,
+    "value": 0
+  },
+  "attempts": [
+    {
+      "attempt": 0,
+      "status": "pending",
+      "startedAt": "1970-01-01T00:00:00Z",
+      "completedAt": "1970-01-01T00:00:00Z",
+      "error": "string"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-flow-run-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Flow run details|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-flow-run-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|flowId|string|true|none|none|
+|status|string|true|none|The status of a flow run.|
+|startedAt|string(date-time)|false|none|none|
+|completedAt|string(date-time)|false|none|none|
+|input|[object] \| object|true|none|Input data for a flow. Can be either an array (for positional arguments) or an object (for named parameters).|
+|» *oneOf*|[object]|false|none|Positional arguments passed to the flow function|
+|*anonymous*|[object]|false|none|none|
+|» *oneOf*|object|false|none|Named parameters passed to the flow function as keyword arguments|
+|» **additionalProperties**|object|false|none|none|
+|results|[object]|true|none|none|
+|error|string|false|none|Error message if the flow run failed.|
+|errorDetails|object|false|none|none|
+|» code|string|true|none|none|
+|» message|string|true|none|none|
+|» seq|integer|false|none|none|
+|» subKey|string|false|none|none|
+|» flowAttempt|integer|false|none|none|
+|» kind|string|false|none|none|
+|» expected|string|false|none|none|
+|» actual|string|false|none|none|
+|» limit|integer(int64)|false|none|none|
+|» value|integer(int64)|false|none|none|
+|attempts|[object]|true|none|The flow run's attempts. A flow run gets a new attempt when it resumes after its process is interrupted; it replays completed steps instead of rerunning them.|
+|» attempt|integer|true|none|The 0-indexed attempt number.|
+|» status|string|true|none|The status of a flow run.|
+|» startedAt|string(date-time)|false|none|none|
+|» completedAt|string(date-time)|false|none|none|
+|» error|string|false|none|Error message if the attempt failed.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|pending|
+|status|running|
+|status|succeeded|
+|status|failed|
+|status|canceled|
+|status|paused|
+|status|suspended|
+|status|sleeping|
+|» code|flow_determinism_error|
+|» code|flow_step_limit_exceeded|
+|» code|flow_payload_too_large|
+|» code|flow_history_too_large|
+|» kind|input_hash|
+|» kind|type|
+|» kind|unknown_type|
+|» status|pending|
+|» status|running|
+|» status|succeeded|
+|» status|failed|
+|» status|canceled|
+|» status|paused|
+|» status|suspended|
+|» status|sleeping|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Cancel flow run
+
+<a id="opIdcancelFlowRun"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flow-runs/frn-d0hp8fs9c44c73a6f1qg \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /flow-runs/{flowRunId}`
+
+Cancel a running flow run with the provided ID.
+
+<h3 id="cancel-flow-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|flowRunId|path|string|true|The ID of the flow run|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="cancel-flow-run-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Flow run canceled|None|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## List flow run steps
+
+<a id="opIdlistFlowRunSteps"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flow-runs/frn-d0hp8fs9c44c73a6f1qg/steps \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /flow-runs/{flowRunId}/steps`
+
+List the steps a flow run has recorded, in the order the flow started them. A page can hold fewer than `limit` steps and still have more after it, so page until `hasMore` is false.
+
+<h3 id="list-flow-run-steps-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|cursor|query|string|false|The position in the result list to start from when fetching paginated results. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|limit|query|integer|false|The maximum number of items to return. For details, see [Pagination](https://api-docs.render.com/reference/pagination).|
+|flowRunId|path|string|true|The ID of the flow run|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "steps": [
+    {
+      "seq": 0,
+      "stepKey": "string",
+      "name": "string",
+      "type": "inline",
+      "status": "running",
+      "startedAt": "1970-01-01T00:00:00Z",
+      "completedAt": "1970-01-01T00:00:00Z",
+      "wakeAt": "1970-01-01T00:00:00Z",
+      "childTaskRunId": "trn-d0hp8fs9c44c73a6f1qg"
+    }
+  ],
+  "cursor": "string",
+  "hasMore": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="list-flow-run-steps-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Page of flow run steps|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="list-flow-run-steps-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|steps|[object]|true|none|none|
+|» seq|integer|true|none|The step's position in the flow run. Steps are numbered densely in the order the flow started them.|
+|» stepKey|string|true|none|The SDK's key for the step.|
+|» name|string|false|none|For inline steps, the function's name. For detached steps, the task's registered name. Omitted for sleep steps.|
+|» type|string|true|none|The kind of step. `inline` runs a function inside the flow's process and retries in place. `detached` runs a registered task as its own task run. `sleep` is a durable sleep.|
+|» status|string|true|none|`running` until the step records an outcome, then `succeeded` or `failed`.|
+|» startedAt|string(date-time)|true|none|none|
+|» completedAt|string(date-time)|false|none|none|
+|» wakeAt|string(date-time)|false|none|For sleep steps, when the sleep ends.|
+|» childTaskRunId|string|false|none|For detached steps, the ID of the task run the step started.|
+|cursor|string|false|none|Pass as the `cursor` query parameter to fetch the next page. Absent on the last page.|
+|hasMore|boolean|true|none|Whether another page of steps follows this one.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» type|inline|
+|» type|detached|
+|» type|sleep|
+|» status|running|
+|» status|succeeded|
+|» status|failed|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve flow run step
+
+<a id="opIdgetFlowRunStep"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flow-runs/frn-d0hp8fs9c44c73a6f1qg/steps/0 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /flow-runs/{flowRunId}/steps/{stepSeq}`
+
+Retrieve a single step of a flow run, including its input, result and error. A sequence number can cover more than one step, so pass the `stepKey` the step listing reported to address one of those.
+
+<h3 id="retrieve-flow-run-step-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|stepKey|query|string|false|The SDK's key for the step, as `stepKey` reports it in the step listing. Steps that share a sequence number are told apart by it. Omit it for a step the SDK recorded without one.|
+|includeAttempts|query|boolean|false|none|
+|flowRunId|path|string|true|The ID of the flow run|
+|stepSeq|path|integer|true|The sequence number of the step within its flow run|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "failedAttempts": [
+    {
+      "attempt": 0,
+      "flowAttempt": 0,
+      "startedAt": "1970-01-01T00:00:00Z",
+      "completedAt": "1970-01-01T00:00:00Z",
+      "retryAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "seq": 0,
+  "stepKey": "string",
+  "name": "string",
+  "type": "inline",
+  "status": "running",
+  "startedAt": "1970-01-01T00:00:00Z",
+  "completedAt": "1970-01-01T00:00:00Z",
+  "wakeAt": "1970-01-01T00:00:00Z",
+  "childTaskRunId": "trn-d0hp8fs9c44c73a6f1qg",
+  "input": null,
+  "result": null,
+  "error": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-flow-run-step-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Flow run step details|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-flow-run-step-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|failedAttempts|[object]|false|none|none|
+|» attempt|integer(int64)|true|none|none|
+|» flowAttempt|integer(int64)|true|none|none|
+|» startedAt|string(date-time)|true|none|none|
+|» completedAt|string(date-time)|true|none|none|
+|» retryAt|string(date-time)|false|none|none|
+|seq|integer|true|none|The step's position in the flow run. Steps are numbered densely in the order the flow started them.|
+|stepKey|string|true|none|The SDK's key for the step.|
+|name|string|false|none|For inline steps, the function's name. For detached steps, the task's registered name. Omitted for sleep steps.|
+|type|string|true|none|The kind of step. `inline` runs a function inside the flow's process and retries in place. `detached` runs a registered task as its own task run. `sleep` is a durable sleep.|
+|status|string|true|none|`running` until the step records an outcome, then `succeeded` or `failed`.|
+|startedAt|string(date-time)|true|none|none|
+|completedAt|string(date-time)|false|none|none|
+|wakeAt|string(date-time)|false|none|For sleep steps, when the sleep ends.|
+|childTaskRunId|string|false|none|For detached steps, the ID of the task run the step started.|
+|input|object|false|none|The step's input. For detached steps, the input of the child task run.|
+|result|object \| null|false|none|The step's result. Present only when the step succeeded; null when the step returned no value.|
+|error|string|false|none|Error message if the step failed.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|inline|
+|type|detached|
+|type|sleep|
+|status|running|
+|status|succeeded|
+|status|failed|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
+|429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuth
+</aside>
+
+## Retrieve recorded failed step attempt
+
+<a id="opIdgetFlowRunStepAttempt"></a>
+
+> Code samples
+
+```bash
+curl https://api.render.com/v1/flow-runs/frn-d0hp8fs9c44c73a6f1qg/steps/0/attempts/0 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /flow-runs/{flowRunId}/steps/{stepSeq}/attempts/{attempt}`
+
+<h3 id="retrieve-recorded-failed-step-attempt-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|stepKey|query|string|false|The SDK's key for the step, as `stepKey` reports it in the step listing. Steps that share a sequence number are told apart by it. Omit it for a step the SDK recorded without one.|
+|flowRunId|path|string|true|The ID of the flow run|
+|stepSeq|path|integer|true|The sequence number of the step within its flow run|
+|attempt|path|integer(int64)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "attempt": 0,
+  "flowAttempt": 0,
+  "startedAt": "1970-01-01T00:00:00Z",
+  "completedAt": "1970-01-01T00:00:00Z",
+  "retryAt": "1970-01-01T00:00:00Z",
+  "error": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "message": "rate limit exceeded"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+> 503 Response
+
+```json
+{
+  "id": "string",
+  "message": "string",
+  "code": "string"
+}
+```
+
+<h3 id="retrieve-recorded-failed-step-attempt-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Flow run step details|Inline|
+|400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
+|401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
+|403|Forbidden|You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.|[error](#schemaerror)|
+|404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
+|503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
+
+<h3 id="retrieve-recorded-failed-step-attempt-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attempt|integer(int64)|true|none|none|
+|flowAttempt|integer(int64)|true|none|none|
+|startedAt|string(date-time)|true|none|none|
+|completedAt|string(date-time)|true|none|none|
+|retryAt|string(date-time)|false|none|none|
+|error|string|true|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|429|Retry-After|integer||Seconds to wait before retrying the request.|
+|429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -35546,7 +42244,7 @@ This API is deprecated in favor of the Key Value API.
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -35564,7 +42262,7 @@ Status Code **200**
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -35791,7 +42489,7 @@ Create a new Redis instance. This API is deprecated in favor of the Key Value AP
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -35801,7 +42499,7 @@ Create a new Redis instance. This API is deprecated in favor of the Key Value AP
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -35950,7 +42648,7 @@ Retrieve a Redis instance by ID. This API is deprecated in favor of the Key Valu
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -35960,7 +42658,7 @@ Retrieve a Redis instance by ID. This API is deprecated in favor of the Key Valu
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -36064,7 +42762,7 @@ Delete a Redis instance by ID. This API is deprecated in favor of the Key Value 
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -36074,7 +42772,7 @@ Delete a Redis instance by ID. This API is deprecated in favor of the Key Value 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -36299,7 +42997,7 @@ Update a Redis instance by ID. This API is deprecated in favor of the Key Value 
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |409|Conflict|The current state of the resource conflicts with this request.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -36309,7 +43007,7 @@ Update a Redis instance by ID. This API is deprecated in favor of the Key Value 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -36423,7 +43121,7 @@ This API is deprecated in favor of the Key Value API.
 |400|Bad Request|The request could not be understood by the server.|[error](#schemaerror)|
 |401|Unauthorized|Authorization information is missing or invalid.|[error](#schemaerror)|
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -36433,7 +43131,7 @@ This API is deprecated in favor of the Key Value API.
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -36570,7 +43268,7 @@ Suspend a Redis instance by ID. This API is deprecated in favor of the Key Value
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -36580,7 +43278,7 @@ Suspend a Redis instance by ID. This API is deprecated in favor of the Key Value
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -36717,7 +43415,7 @@ Resume a Redis instance by ID. This API is deprecated in favor of the Key Value 
 |404|Not Found|Unable to find the requested resource.|[error](#schemaerror)|
 |406|Not Acceptable|Unable to generate preferred media types as specified by Accept request header.|[error](#schemaerror)|
 |410|Gone|The requested resource is no longer available.|[error](#schemaerror)|
-|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and<br>`RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
+|429|Too Many Requests|Rate limit has been surpassed.<br><br>Rate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.<br>|[error](#schemaerror)|
 |500|Internal Server Error|An unexpected server error has occurred.|[error](#schemaerror)|
 |503|Service Unavailable|Server currently unavailable.|[error](#schemaerror)|
 
@@ -36727,7 +43425,7 @@ Resume a Redis instance by ID. This API is deprecated in favor of the Key Value 
 |---|---|---|---|---|
 |429|Retry-After|integer||Seconds to wait before retrying the request.|
 |429|RateLimit-Limit|integer||Maximum number of requests allowed in the current window.|
-|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. Always `0` for this response.|
+|429|RateLimit-Remaining|integer||Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.|
 |429|RateLimit-Reset|integer||Seconds until the current rate limit window resets.|
 
 <aside class="warning">
@@ -36839,6 +43537,7 @@ BearerAuth
 |event|ChangeWorkspacePrivacyEvent|
 |event|CreateBuildSourceEvent|
 |event|DeleteBuildSourceEvent|
+|event|UpdateBuildSourceEvent|
 |event|CreateCronJobEvent|
 |event|CreateEnvVarsEvent|
 |event|CreateEnvironmentEvent|
@@ -36900,6 +43599,7 @@ BearerAuth
 |event|UpdateOrgPaymentMethodEvent|
 |event|UpdateOtelIntegrationEvent|
 |event|UpdateSSOConnectionEvent|
+|event|UpdateServiceBuildSourceEvent|
 |event|UpdateServiceNameEvent|
 |event|UpdateWebhookEvent|
 |event|UpdateWorkspacePaymentMethodEvent|
@@ -37150,7 +43850,8 @@ BearerAuth
     "region": "oregon",
     "environmentId": "string",
     "slug": "string",
-    "autoDeployTrigger": "commit"
+    "autoDeployTrigger": "commit",
+    "defaultVersionId": "string"
   },
   "cursor": "string"
 }
@@ -42295,8 +48996,8 @@ Indicates whether network connections across environments are allowed.
 |updatedAt|string(date-time)|true|none|none|
 |serviceLinks|[[envGroupLink](#schemaenvgrouplink)]|true|none|List of serviceIds linked to the envGroup|
 |environmentId|string|false|none|none|
-|envVars|[[envVar](#schemaenvvar)]|true|none|none|
-|secretFiles|[[secretFile](#schemasecretfile)]|true|none|none|
+|envVars|[[envVar](#schemaenvvar)]|false|none|Omitted if the caller doesn't have the permission to read the environment group's secret values.|
+|secretFiles|[[secretFile](#schemasecretfile)]|false|none|Omitted if the caller doesn't have the permission to read the environment group's secret values.|
 
 <h2 id="tocS_envGroupMeta">envGroupMeta</h2>
 <!-- backwards compatibility -->
@@ -43259,6 +49960,191 @@ A run of a cron job
 |status|unsuccessful|
 |status|canceled|
 
+<h2 id="tocS_sandboxWithCursor">sandboxWithCursor</h2>
+<!-- backwards compatibility -->
+<a id="schemasandboxwithcursor"></a>
+<a id="schema_sandboxWithCursor"></a>
+<a id="tocSsandboxwithcursor"></a>
+<a id="tocssandboxwithcursor"></a>
+
+```json
+{
+  "sandbox": {
+    "id": "sbx-1cd4gcph1rs3idesc73a2b2mg",
+    "name": "string",
+    "sandboxGroupId": {},
+    "status": "creating",
+    "plan": "starter",
+    "networkPolicy": {
+      "type": {},
+      "default": {},
+      "rules": [
+        {
+          "domain": "*.bar.local",
+          "protocol": "https"
+        }
+      ]
+    },
+    "region": "oregon",
+    "timeoutSeconds": 86400,
+    "idleTimeoutSeconds": 900,
+    "createdAt": "2026-04-01T18:30:00Z",
+    "terminatedAt": "1970-01-01T00:00:00Z"
+  },
+  "cursor": "string"
+}
+```
+
+A sandbox with a cursor for fetching the next page of results.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sandbox|object|true|none|An isolated compute environment for running code, executing commands, and transferring files.|
+|cursor|[cursor](#schemacursor)|true|none|none|
+
+<h2 id="tocS_executionWithCursor">executionWithCursor</h2>
+<!-- backwards compatibility -->
+<a id="schemaexecutionwithcursor"></a>
+<a id="schema_executionWithCursor"></a>
+<a id="tocSexecutionwithcursor"></a>
+<a id="tocsexecutionwithcursor"></a>
+
+```json
+{
+  "execution": {
+    "id": "exe-cph1rs3idesc73a2b2mg",
+    "sandboxId": "sbx-1cd4gcph1rs3idesc73a2b2mg",
+    "type": "runs",
+    "operation": "sync",
+    "command": "string",
+    "userId": "usr-cph1rs3idesc73a2b2mg",
+    "startedAt": "2026-08-01T10:00:00Z",
+    "stoppedAt": "2026-08-01T10:05:00Z",
+    "exitCode": 0
+  },
+  "cursor": "string"
+}
+```
+
+A sandbox execution with a cursor for fetching the next page of results.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|execution|object|true|none|A record of a command run or file transfer in a sandbox. `startedAt` records when the connect token was created. The command can appear while the execution is running. `stoppedAt` and `exitCode` are omitted until Render receives the result or finalizes the execution when the sandbox stops.<br>|
+|cursor|[cursor](#schemacursor)|true|none|none|
+
+<h2 id="tocS_sandboxSnapshotWithCursor">sandboxSnapshotWithCursor</h2>
+<!-- backwards compatibility -->
+<a id="schemasandboxsnapshotwithcursor"></a>
+<a id="schema_sandboxSnapshotWithCursor"></a>
+<a id="tocSsandboxsnapshotwithcursor"></a>
+<a id="tocssandboxsnapshotwithcursor"></a>
+
+```json
+{
+  "snapshot": {
+    "id": "snp-cph1rs3idesc73a2b2mg",
+    "sandboxGroupId": "sbg-cph1rs3idesc73a2b2mg",
+    "sourceSandboxId": {},
+    "name": {},
+    "kind": "filesystem",
+    "status": "creating",
+    "plan": "starter",
+    "requestedAt": "1970-01-01T00:00:00Z",
+    "capturedAt": "1970-01-01T00:00:00Z",
+    "expiresAt": "1970-01-01T00:00:00Z",
+    "ttlSeconds": 0,
+    "sizeBytes": 0,
+    "error": "string"
+  },
+  "cursor": "string"
+}
+```
+
+A sandbox snapshot with a cursor for fetching the next page of results.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|snapshot|object|true|none|A saved filesystem or runtime state that can be used to create another sandbox.|
+|cursor|[cursor](#schemacursor)|true|none|none|
+
+<h2 id="tocS_sandboxBuildWithCursor">sandboxBuildWithCursor</h2>
+<!-- backwards compatibility -->
+<a id="schemasandboxbuildwithcursor"></a>
+<a id="schema_sandboxBuildWithCursor"></a>
+<a id="tocSsandboxbuildwithcursor"></a>
+<a id="tocssandboxbuildwithcursor"></a>
+
+```json
+{
+  "build": {
+    "id": "sbb-cph1rs3idesc73a2b2mg",
+    "sandboxGroupId": "sbg-cph1rs3idesc73a2b2mg",
+    "name": "string",
+    "source": {
+      "repository": "docker.io/library",
+      "image": "python",
+      "reference": "3.13"
+    },
+    "sourceDigest": "sha256:c19d4a1...",
+    "status": "pending",
+    "failureReason": "string",
+    "failureCode": "image_pull_failed",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "finishedAt": "1970-01-01T00:00:00Z"
+  },
+  "cursor": "string"
+}
+```
+
+A sandbox build with a cursor for fetching the next page of results.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|build|object|true|none|A build that converts a container image into an image that sandboxes can use.|
+|cursor|[cursor](#schemacursor)|true|none|none|
+
+<h2 id="tocS_sandboxGroupWithCursor">sandboxGroupWithCursor</h2>
+<!-- backwards compatibility -->
+<a id="schemasandboxgroupwithcursor"></a>
+<a id="schema_sandboxGroupWithCursor"></a>
+<a id="tocSsandboxgroupwithcursor"></a>
+<a id="tocssandboxgroupwithcursor"></a>
+
+```json
+{
+  "sandboxGroup": {
+    "id": "sbg-cph1rs3idesc73a2b2mg",
+    "ownerId": "tea-cph1rs3idesc73a2b2mg",
+    "name": "Default",
+    "region": "oregon",
+    "isDefault": true,
+    "environmentId": "string",
+    "concurrencyLimit": 1,
+    "createdAt": "2026-07-02T18:30:00Z",
+    "updatedAt": "2026-07-02T18:30:00Z"
+  },
+  "cursor": "string"
+}
+```
+
+A sandbox group with a cursor for fetching the next page of results.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sandboxGroup|object|true|none|A group of sandboxes in a workspace that share a region, concurrency limit, and credentials.|
+|cursor|[cursor](#schemacursor)|true|none|none|
+
 <h2 id="tocS_blueprintWithCursor">blueprintWithCursor</h2>
 <!-- backwards compatibility -->
 <a id="schemablueprintwithcursor"></a>
@@ -43270,6 +50156,7 @@ A run of a cron job
 {
   "blueprint": {
     "id": "exs-cph1rs3idesc73a2b2mg",
+    "ownerId": "string",
     "name": "string",
     "status": "created",
     "autoSync": true,
@@ -43558,4 +50445,58 @@ A service event with a cursor
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |taskRun|object|true|none|none|
+|cursor|[cursor](#schemacursor)|true|none|none|
+
+<h2 id="tocS_flowWithCursor">flowWithCursor</h2>
+<!-- backwards compatibility -->
+<a id="schemaflowwithcursor"></a>
+<a id="schema_flowWithCursor"></a>
+<a id="tocSflowwithcursor"></a>
+<a id="tocsflowwithcursor"></a>
+
+```json
+{
+  "flow": {
+    "id": "flw-d0hp8fs9c44c73a6f1qg",
+    "name": "string",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "workflowId": "string",
+    "workflowVersionId": "string"
+  },
+  "cursor": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|flow|object|true|none|none|
+|cursor|[cursor](#schemacursor)|true|none|none|
+
+<h2 id="tocS_flowRunWithCursor">flowRunWithCursor</h2>
+<!-- backwards compatibility -->
+<a id="schemaflowrunwithcursor"></a>
+<a id="schema_flowRunWithCursor"></a>
+<a id="tocSflowrunwithcursor"></a>
+<a id="tocsflowrunwithcursor"></a>
+
+```json
+{
+  "flowRun": {
+    "id": "frn-d0hp8fs9c44c73a6f1qg",
+    "flowId": "flw-d0hp8fs9c44c73a6f1qg",
+    "status": "pending",
+    "startedAt": "1970-01-01T00:00:00Z",
+    "completedAt": "1970-01-01T00:00:00Z"
+  },
+  "cursor": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|flowRun|object|true|none|none|
 |cursor|[cursor](#schemacursor)|true|none|none|

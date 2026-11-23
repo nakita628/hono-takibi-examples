@@ -341,51 +341,45 @@ const CompanyInfoSchema = z
   .openapi({ required: ['company', 'address', 'postalCode', 'city', 'countryIsoCodeAlpha3'] })
   .openapi('CompanyInfo')
 
-const LinksActivateUserAccountLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/account/activate', method: 'POST' } }),
-).openapi('LinksActivateUserAccountLink')
+const LinksActivateUserAccountLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/activate', method: 'POST' },
+}).openapi('LinksActivateUserAccountLink')
 
-const LinksChangeEmailLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/account/changeEmail', method: 'POST' } }),
-).openapi('LinksChangeEmailLink')
+const LinksChangeEmailLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/changeEmail', method: 'POST' },
+}).openapi('LinksChangeEmailLink')
 
-const LinksChangePasswordLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({ example: { href: '/v2/user/customer/account/changePassword', method: 'POST' } }),
-).openapi('LinksChangePasswordLink')
+const LinksChangePasswordLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/changePassword', method: 'POST' },
+}).openapi('LinksChangePasswordLink')
 
-const LinksGetCreditCardInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/account/creditCardInfo', method: 'GET' } }),
-).openapi('LinksGetCreditCardInfoLink')
+const LinksGetCreditCardInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/creditCardInfo', method: 'GET' },
+}).openapi('LinksGetCreditCardInfoLink')
 
-const LinksGetProfilePictureInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({ example: { href: '/v2/user/customer/account/profilePictureInfo', method: 'GET' } }),
-).openapi('LinksGetProfilePictureInfoLink')
+const LinksGetProfilePictureInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/profilePictureInfo', method: 'GET' },
+}).openapi('LinksGetProfilePictureInfoLink')
 
-const LinksSaveCompanyInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/account/companyInfo', method: 'PUT' } }),
-).openapi('LinksSaveCompanyInfoLink')
+const LinksSaveCompanyInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/companyInfo', method: 'PUT' },
+}).openapi('LinksSaveCompanyInfoLink')
 
-const LinksSaveCreditCardInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/account/creditCardInfo', method: 'PUT' } }),
-).openapi('LinksSaveCreditCardInfoLink')
+const LinksSaveCreditCardInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/creditCardInfo', method: 'PUT' },
+}).openapi('LinksSaveCreditCardInfoLink')
 
-const LinksSavePersonalInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/account/personalInfo', method: 'PUT' } }),
-).openapi('LinksSavePersonalInfoLink')
+const LinksSavePersonalInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/personalInfo', method: 'PUT' },
+}).openapi('LinksSavePersonalInfoLink')
 
-const LinksSaveProfilePictureInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({ example: { href: '/v2/user/customer/account/profilePictureInfo', method: 'PUT' } }),
-).openapi('LinksSaveProfilePictureInfoLink')
+const LinksSaveProfilePictureInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account/profilePictureInfo', method: 'PUT' },
+}).openapi('LinksSaveProfilePictureInfoLink')
 
-const LinksGetUserAccountInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/account', method: 'GET' } }),
-).openapi('LinksGetUserAccountInfoLink')
+const LinksGetUserAccountInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/account', method: 'GET' },
+}).openapi('LinksGetUserAccountInfoLink')
 
 const AccountInfoLinksSchema = z
   .object({
@@ -492,13 +486,9 @@ type AccountInfoType = {
   userId: z.infer<typeof BeezUPCommonUserIdSchema>
 }
 
-const LinksGetPublicationsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/marketplaces/channelcatalogs/publications/Amazon/123/history' },
-    }),
-).openapi('LinksGetPublicationsLink')
+const LinksGetPublicationsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/channelcatalogs/publications/Amazon/123/history' },
+}).openapi('LinksGetPublicationsLink')
 
 const AccountPublicationsLinksSchema = z
   .object({ self: LinksGetPublicationsLinkSchema })
@@ -644,13 +634,13 @@ type AccountPublicationsType = {
   publications: z.infer<typeof PublicationReportingSchema>[]
 }
 
-const LinksAnalyticsIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/analytics', method: 'GET' } }),
-).openapi('LinksAnalyticsIndexLink')
+const LinksAnalyticsIndexLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/analytics', method: 'GET' },
+}).openapi('LinksAnalyticsIndexLink')
 
-const LinksGetTrackingStatusLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/analytics/tracking/status', method: 'GET' } }),
-).openapi('LinksGetTrackingStatusLink')
+const LinksGetTrackingStatusLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/analytics/tracking/status', method: 'GET' },
+}).openapi('LinksGetTrackingStatusLink')
 
 const AnalyticsIndexLinksSchema = z
   .object({
@@ -678,266 +668,203 @@ const AnalyticsIndexLovLinksSchema = z
   .openapi({ required: [] })
   .openapi('AnalyticsIndexLovLinks')
 
-const LinksOptimiseLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/enable',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            schema: 'optimiseRequest',
-            type: 'object',
-            value: {
-              advancedFilters: {
-                globalmarginPercent: '10',
-                linkClickToOrderMaxDay: '5',
-                linkClickToOrderType: 'OnClickDate',
-                marginType: 'Global',
-                onlyDirectSales: 'true',
-                onlyPaymentValidatedOrders: 'true',
-                performanceIndicatorFormula: {
-                  firstParameter: 'Cost',
-                  operatorName: 'Multiply',
-                  secondParamter: 'ROI',
-                  thirdParameter: '100',
-                },
-              },
-              analyticsProductColumnFilters: {
-                additionalAnalyticsProductColumnFilters: [
-                  {
-                    columnId: '672644c7-5bd0-4e25-88c1-1f732bda5e4c',
-                    operatorName: 'NumericalGreaterThan',
-                    values: ['100'],
-                  },
-                ],
-                sku: 'M1234',
-                title: 'Refrigérateur',
-              },
-              beginPeriodUtcDate: '2006-11-20T00:00:00Z',
-              categoryFilter: { categoryPath: ['Home', 'Bedroom'] },
-              channelId: '2dc136a7-0d3d-4cc9-a825-a28a42c53e28',
-              endPeriodUtcDate: '2006-12-20T00:00:00Z',
-              pageNumber: '1',
-              pageSize: '100',
-              performanceIndicatorFilters: [
-                { operatorName: 'Equals', performanceIndicator: 'Cost', value: '10' },
-              ],
-              productState: 'All',
+const LinksOptimiseLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/enable',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        schema: 'optimiseRequest',
+        type: 'object',
+        value: {
+          advancedFilters: {
+            globalmarginPercent: '10',
+            linkClickToOrderMaxDay: '5',
+            linkClickToOrderType: 'OnClickDate',
+            marginType: 'Global',
+            onlyDirectSales: 'true',
+            onlyPaymentValidatedOrders: 'true',
+            performanceIndicatorFormula: {
+              firstParameter: 'Cost',
+              operatorName: 'Multiply',
+              secondParamter: 'ROI',
+              thirdParameter: '100',
             },
           },
+          analyticsProductColumnFilters: {
+            additionalAnalyticsProductColumnFilters: [
+              {
+                columnId: '672644c7-5bd0-4e25-88c1-1f732bda5e4c',
+                operatorName: 'NumericalGreaterThan',
+                values: ['100'],
+              },
+            ],
+            sku: 'M1234',
+            title: 'Refrigérateur',
+          },
+          beginPeriodUtcDate: '2006-11-20T00:00:00Z',
+          categoryFilter: { categoryPath: ['Home', 'Bedroom'] },
+          channelId: '2dc136a7-0d3d-4cc9-a825-a28a42c53e28',
+          endPeriodUtcDate: '2006-12-20T00:00:00Z',
+          pageNumber: '1',
+          pageSize: '100',
+          performanceIndicatorFilters: [
+            { operatorName: 'Equals', performanceIndicator: 'Cost', value: '10' },
+          ],
+          productState: 'All',
         },
       },
-    }),
-).openapi('LinksOptimiseLink')
+    },
+  },
+}).openapi('LinksOptimiseLink')
 
-const LinksOptimiseAllLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/all/enable',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            schema: 'optimiseAllRequest',
-            type: 'object',
-            value: {
-              advancedFilters: {
-                globalmarginPercent: '10',
-                linkClickToOrderMaxDay: '5',
-                linkClickToOrderType: 'OnClickDate',
-                marginType: 'Global',
-                onlyDirectSales: 'true',
-                onlyPaymentValidatedOrders: 'true',
-                performanceIndicatorFormula: {
-                  firstParameter: 'Cost',
-                  operatorName: 'Multiply',
-                  secondParamter: 'ROI',
-                  thirdParameter: '100',
-                },
-              },
-              analyticsProductColumnFilters: {
-                additionalAnalyticsProductColumnFilters: [
-                  {
-                    columnId: '672644c7-5bd0-4e25-88c1-1f732bda5e4c',
-                    operatorName: 'NumericalGreaterThan',
-                    values: ['100'],
-                  },
-                ],
-                sku: 'M1234',
-                title: 'Refrigérateur',
-              },
-              beginPeriodUtcDate: '2006-11-20T00:00:00Z',
-              categoryFilter: { categoryPath: ['Home', 'Bedroom'] },
-              channelId: '2dc136a7-0d3d-4cc9-a825-a28a42c53e28',
-              endPeriodUtcDate: '2006-12-20T00:00:00Z',
-              performanceIndicatorFilters: [
-                { operatorName: 'Equals', performanceIndicator: 'Cost', value: '10' },
-              ],
-              productState: 'All',
+const LinksOptimiseAllLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/all/enable',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        schema: 'optimiseAllRequest',
+        type: 'object',
+        value: {
+          advancedFilters: {
+            globalmarginPercent: '10',
+            linkClickToOrderMaxDay: '5',
+            linkClickToOrderType: 'OnClickDate',
+            marginType: 'Global',
+            onlyDirectSales: 'true',
+            onlyPaymentValidatedOrders: 'true',
+            performanceIndicatorFormula: {
+              firstParameter: 'Cost',
+              operatorName: 'Multiply',
+              secondParamter: 'ROI',
+              thirdParameter: '100',
             },
           },
+          analyticsProductColumnFilters: {
+            additionalAnalyticsProductColumnFilters: [
+              {
+                columnId: '672644c7-5bd0-4e25-88c1-1f732bda5e4c',
+                operatorName: 'NumericalGreaterThan',
+                values: ['100'],
+              },
+            ],
+            sku: 'M1234',
+            title: 'Refrigérateur',
+          },
+          beginPeriodUtcDate: '2006-11-20T00:00:00Z',
+          categoryFilter: { categoryPath: ['Home', 'Bedroom'] },
+          channelId: '2dc136a7-0d3d-4cc9-a825-a28a42c53e28',
+          endPeriodUtcDate: '2006-12-20T00:00:00Z',
+          performanceIndicatorFilters: [
+            { operatorName: 'Equals', performanceIndicator: 'Cost', value: '10' },
+          ],
+          productState: 'All',
         },
       },
-    }),
-).openapi('LinksOptimiseAllLink')
+    },
+  },
+}).openapi('LinksOptimiseAllLink')
 
-const LinksOptimiseByCategoryLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/byCategory/4c376178-25b4-4656-a86e-e3bd3a25b139/enable',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', type: '​array', value: ['a2d38563-50f0-43f1-be2b-b16e7ec4f007'] },
-        },
-      },
-    }),
-).openapi('LinksOptimiseByCategoryLink')
+const LinksOptimiseByCategoryLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/byCategory/4c376178-25b4-4656-a86e-e3bd3a25b139/enable',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', type: '​array', value: ['a2d38563-50f0-43f1-be2b-b16e7ec4f007'] },
+    },
+  },
+}).openapi('LinksOptimiseByCategoryLink')
 
-const LinksOptimiseByChannelLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/byChannel/a2d38563-50f0-43f1-be2b-b16e7ec4f007/enable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksOptimiseByChannelLink')
+const LinksOptimiseByChannelLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/byChannel/a2d38563-50f0-43f1-be2b-b16e7ec4f007/enable',
+    method: 'POST',
+  },
+}).openapi('LinksOptimiseByChannelLink')
 
-const LinksOptimiseByProductLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/byProduct/6d469a54-8426-4855-abc2-9e062e2056b9/enable',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', type: '​array', value: ['a2d38563-50f0-43f1-be2b-b16e7ec4f007'] },
-        },
-      },
-    }),
-).openapi('LinksOptimiseByProductLink')
+const LinksOptimiseByProductLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/optimisations/byProduct/6d469a54-8426-4855-abc2-9e062e2056b9/enable',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', type: '​array', value: ['a2d38563-50f0-43f1-be2b-b16e7ec4f007'] },
+    },
+  },
+}).openapi('LinksOptimiseByProductLink')
 
-const LinksGetStoreReportByCategoryLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/bycategory',
-        method: 'POST',
-        parameters: { request: { in: 'body', schema: 'reportByCategoryRequest', type: 'object' } },
-      },
-    }),
-).openapi('LinksGetStoreReportByCategoryLink')
+const LinksGetStoreReportByCategoryLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/bycategory',
+    method: 'POST',
+    parameters: { request: { in: 'body', schema: 'reportByCategoryRequest', type: 'object' } },
+  },
+}).openapi('LinksGetStoreReportByCategoryLink')
 
-const LinksGetStoreReportByChannelLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/bychannel',
-        method: 'POST',
-        parameters: { request: { in: 'body', schema: 'reportByChannelRequest', type: 'object' } },
-      },
-    }),
-).openapi('LinksGetStoreReportByChannelLink')
+const LinksGetStoreReportByChannelLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/bychannel',
+    method: 'POST',
+    parameters: { request: { in: 'body', schema: 'reportByChannelRequest', type: 'object' } },
+  },
+}).openapi('LinksGetStoreReportByChannelLink')
 
-const LinksGetStoreReportByDayLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/byday',
-        method: 'POST',
-        parameters: { request: { in: 'body', schema: 'reportByDayRequest', type: 'object' } },
-      },
-    }),
-).openapi('LinksGetStoreReportByDayLink')
+const LinksGetStoreReportByDayLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/byday',
+    method: 'POST',
+    parameters: { request: { in: 'body', schema: 'reportByDayRequest', type: 'object' } },
+  },
+}).openapi('LinksGetStoreReportByDayLink')
 
-const LinksGetStoreReportByProductLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/byproduct',
-        method: 'POST',
-        parameters: { request: { in: 'body', schema: 'reportByProductRequest', type: 'object' } },
-      },
-    }),
-).openapi('LinksGetStoreReportByProductLink')
+const LinksGetStoreReportByProductLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/byproduct',
+    method: 'POST',
+    parameters: { request: { in: 'body', schema: 'reportByProductRequest', type: 'object' } },
+  },
+}).openapi('LinksGetStoreReportByProductLink')
 
-const LinksGetReportFiltersLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetReportFiltersLink')
+const LinksGetReportFiltersLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters',
+    method: 'GET',
+  },
+}).openapi('LinksGetReportFiltersLink')
 
-const LinksGetRulesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetRulesLink')
+const LinksGetRulesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules', method: 'GET' },
+}).openapi('LinksGetRulesLink')
 
-const LinksGetStoreTrackedClicksLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/tracking/clicks',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetStoreTrackedClicksLink')
+const LinksGetStoreTrackedClicksLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/tracking/clicks',
+    method: 'GET',
+  },
+}).openapi('LinksGetStoreTrackedClicksLink')
 
-const LinksGetStoreTrackedExternalOrdersLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/tracking/externalorders',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetStoreTrackedExternalOrdersLink')
+const LinksGetStoreTrackedExternalOrdersLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/tracking/externalorders',
+    method: 'GET',
+  },
+}).openapi('LinksGetStoreTrackedExternalOrdersLink')
 
-const LinksGetStoreTrackedOrdersLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/tracking/orders',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetStoreTrackedOrdersLink')
+const LinksGetStoreTrackedOrdersLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/tracking/orders',
+    method: 'GET',
+  },
+}).openapi('LinksGetStoreTrackedOrdersLink')
 
-const LinksGetStoreTrackingStatusLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/tracking/status',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetStoreTrackingStatusLink')
+const LinksGetStoreTrackingStatusLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/tracking/status',
+    method: 'GET',
+  },
+}).openapi('LinksGetStoreTrackingStatusLink')
 
 const AnalyticsStoreIndexLinksSchema = z
   .object({
@@ -1020,19 +947,15 @@ const BusinessOperationTypeSchema = z
   .openapi({ example: 'ShipOrder', 'x-lov': 'OrderChangeBusinessOperationType' })
   .openapi('BusinessOperationType')
 
-const LinksConfigureAutomaticTransitionsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/autoTransitions',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', request: 'true', schema: 'configureAutomaticTransitionRequest' },
-        },
-      },
-    }),
-).openapi('LinksConfigureAutomaticTransitionsLink')
+const LinksConfigureAutomaticTransitionsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/autoTransitions',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', request: 'true', schema: 'configureAutomaticTransitionRequest' },
+    },
+  },
+}).openapi('LinksConfigureAutomaticTransitionsLink')
 
 const AutomaticTransitionInfoLinksSchema = z
   .object({ configure: LinksConfigureAutomaticTransitionsLinkSchema })
@@ -1078,11 +1001,9 @@ const AutomaticTransitionInfoSchema: z.ZodType<AutomaticTransitionInfoType> =
       }),
   ).openapi('AutomaticTransitionInfo')
 
-const LinksGetAutomaticTransitionsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({ example: { href: '/v2/user/marketplaces/orders/autoTransitions', method: 'GET' } }),
-).openapi('LinksGetAutomaticTransitionsLink')
+const LinksGetAutomaticTransitionsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/orders/autoTransitions', method: 'GET' },
+}).openapi('LinksGetAutomaticTransitionsLink')
 
 const AutomaticTransitionInfoListLinksSchema = z
   .object({
@@ -1112,9 +1033,9 @@ const BillingPeriodSchema = z
   .openapi({ required: ['billingPeriodInMonth', 'discountPercentage'] })
   .openapi('BillingPeriod')
 
-const LinksGetBillingPeriodsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/billingPeriods', method: 'GET' } }),
-).openapi('LinksGetBillingPeriodsLink')
+const LinksGetBillingPeriodsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/billingPeriods', method: 'GET' },
+}).openapi('LinksGetBillingPeriodsLink')
 
 const BillingPeriodListLinksSchema = z
   .object({ self: LinksGetBillingPeriodsLinkSchema.exactOptional() })
@@ -1262,24 +1183,20 @@ const ColumnIdSchema = z
   })
   .openapi('ColumnId')
 
-const LinksCatalogChangeCatalogColumnUserNameLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/rename',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'changeUserColumnNameRequest',
-            type: 'object',
-          },
-        },
+const LinksCatalogChangeCatalogColumnUserNameLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/rename',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        required: true,
+        schema: 'changeUserColumnNameRequest',
+        type: 'object',
       },
-    }),
-).openapi('LinksCatalogChangeCatalogColumnUserNameLink')
+    },
+  },
+}).openapi('LinksCatalogChangeCatalogColumnUserNameLink')
 
 const CatalogColumnLinksSchema = z
   .object({ rename: LinksCatalogChangeCatalogColumnUserNameLinkSchema.exactOptional() })
@@ -1345,13 +1262,13 @@ const CatalogColumnSchema: z.ZodType<CatalogColumnType> = z
 
 type CatalogColumnListType = { catalogColumns: z.infer<typeof CatalogColumnSchema>[] }
 
-const LinksCatalogGetBeezUPColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/catalogs/beezupColumns', method: 'GET' } }),
-).openapi('LinksCatalogGetBeezUPColumnsLink')
+const LinksCatalogGetBeezUPColumnsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/catalogs/beezupColumns', method: 'GET' },
+}).openapi('LinksCatalogGetBeezUPColumnsLink')
 
-const LinksCatalogIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/catalogs', method: 'GET' } }),
-).openapi('LinksCatalogIndexLink')
+const LinksCatalogIndexLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/catalogs', method: 'GET' },
+}).openapi('LinksCatalogIndexLink')
 
 const CatalogIndexLinksSchema = z
   .object({
@@ -1382,142 +1299,88 @@ const CatalogIndexLOVLinksSchema = z
   })
   .openapi('CatalogIndexLOVLinks')
 
-const LinksAutoGetAutoImportConfigurationLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksAutoGetAutoImportConfigurationLink')
+const LinksAutoGetAutoImportConfigurationLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport',
+    method: 'GET',
+  },
+}).openapi('LinksAutoGetAutoImportConfigurationLink')
 
-const LinksCatalogGetCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/catalogColumns',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksCatalogGetCatalogColumnsLink')
+const LinksCatalogGetCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/catalogColumns',
+    method: 'GET',
+  },
+}).openapi('LinksCatalogGetCatalogColumnsLink')
 
-const LinksCatalogGetCategoriesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/categories',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksCatalogGetCategoriesLink')
+const LinksCatalogGetCategoriesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/categories',
+    method: 'GET',
+  },
+}).openapi('LinksCatalogGetCategoriesLink')
 
-const LinksCatalogComputeExpressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/computeExpression',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'computeExpressionRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksCatalogComputeExpressionLink')
+const LinksCatalogComputeExpressionLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/computeExpression',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', required: true, schema: 'computeExpressionRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksCatalogComputeExpressionLink')
 
-const LinksCatalogGetCustomColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksCatalogGetCustomColumnsLink')
+const LinksCatalogGetCustomColumnsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns',
+    method: 'GET',
+  },
+}).openapi('LinksCatalogGetCustomColumnsLink')
 
-const LinksImportationGetReportingsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetReportingsLink')
+const LinksImportationGetReportingsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations',
+    method: 'GET',
+  },
+}).openapi('LinksImportationGetReportingsLink')
 
-const LinksImportationGetManualUpdateLastInputConfigLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/inputConfiguration',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetManualUpdateLastInputConfigLink')
+const LinksImportationGetManualUpdateLastInputConfigLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/inputConfiguration',
+    method: 'GET',
+  },
+}).openapi('LinksImportationGetManualUpdateLastInputConfigLink')
 
-const LinksCatalogGetProductsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/products/list',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', required: true, schema: 'getProductsRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksCatalogGetProductsLink')
+const LinksCatalogGetProductsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/products/list',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', required: true, schema: 'getProductsRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksCatalogGetProductsLink')
 
-const LinksCatalogGetRandomProductsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/products/random',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksCatalogGetRandomProductsLink')
+const LinksCatalogGetRandomProductsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/products/random',
+    method: 'GET',
+  },
+}).openapi('LinksCatalogGetRandomProductsLink')
 
-const LinksCatalogStoreIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3', method: 'GET' },
-    }),
-).openapi('LinksCatalogStoreIndexLink')
+const LinksCatalogStoreIndexLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3', method: 'GET' },
+}).openapi('LinksCatalogStoreIndexLink')
 
-const LinksImportationStartManualUpdateLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/start',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'startManualImportRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksImportationStartManualUpdateLink')
+const LinksImportationStartManualUpdateLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/start',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', required: true, schema: 'startManualImportRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksImportationStartManualUpdateLink')
 
 const CatalogStoreIndexLinksSchema = z
   .object({
@@ -1859,175 +1722,107 @@ const GeneralSettingsSchema = z
   })
   .openapi('GeneralSettings')
 
-const LinksGetChannelCatalogCategoriesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      description: 'If you did not configure the cost settings this link will not be displayed.',
-    }),
-)
-  .and(
-    z
-      .any()
-      .openapi({
-        example: {
-          href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/categories',
-          method: 'GET',
-        },
-      }),
-  )
-  .openapi('LinksGetChannelCatalogCategoriesLink')
+const LinksGetChannelCatalogCategoriesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  description: 'If you did not configure the cost settings this link will not be displayed.',
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/categories',
+    method: 'GET',
+  },
+}).openapi('LinksGetChannelCatalogCategoriesLink')
 
-const ExternalLinksGetChannelInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/channels/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0', method: 'GET' },
-    }),
-).openapi('ExternalLinksGetChannelInfoLink')
+const ExternalLinksGetChannelInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/channels/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0', method: 'GET' },
+}).openapi('ExternalLinksGetChannelInfoLink')
 
-const LinksConfigureChannelCatalogColumnMappingsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/columnMappings',
-        method: 'PUT',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogColumnMappingsLink')
+const LinksConfigureChannelCatalogColumnMappingsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/columnMappings',
+    method: 'PUT',
+  },
+}).openapi('LinksConfigureChannelCatalogColumnMappingsLink')
 
-const LinksConfigureChannelCatalogCostSettingsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/settings/cost',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogCostSettingsLink')
+const LinksConfigureChannelCatalogCostSettingsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/settings/cost',
+    method: 'POST',
+  },
+}).openapi('LinksConfigureChannelCatalogCostSettingsLink')
 
-const LinksConfigureChannelCatalogGeneralSettingsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/settings/general',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogGeneralSettingsLink')
+const LinksConfigureChannelCatalogGeneralSettingsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/settings/general',
+    method: 'POST',
+  },
+}).openapi('LinksConfigureChannelCatalogGeneralSettingsLink')
 
-const LinksDeleteChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteChannelCatalogLink')
+const LinksDeleteChannelCatalogLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
+    method: 'DELETE',
+  },
+}).openapi('LinksDeleteChannelCatalogLink')
 
-const LinksDisableChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/disable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksDisableChannelCatalogLink')
+const LinksDisableChannelCatalogLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/disable',
+    method: 'POST',
+  },
+}).openapi('LinksDisableChannelCatalogLink')
 
-const LinksDisableChannelCatalogCategoryMappingLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/categories/disableMapping',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksDisableChannelCatalogCategoryMappingLink')
+const LinksDisableChannelCatalogCategoryMappingLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/categories/disableMapping',
+    method: 'POST',
+  },
+}).openapi('LinksDisableChannelCatalogCategoryMappingLink')
 
-const LinksEnableChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/enable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksEnableChannelCatalogLink')
+const LinksEnableChannelCatalogLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/enable',
+    method: 'POST',
+  },
+}).openapi('LinksEnableChannelCatalogLink')
 
-const LinksGetChannelCatalogExclusionFiltersLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogExclusionFiltersLink')
+const LinksGetChannelCatalogExclusionFiltersLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters',
+    method: 'GET',
+  },
+}).openapi('LinksGetChannelCatalogExclusionFiltersLink')
 
-const LinksGetChannelCatalogExportationCacheInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exportations/cache',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogExportationCacheInfoLink')
+const LinksGetChannelCatalogExportationCacheInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exportations/cache',
+    method: 'GET',
+  },
+}).openapi('LinksGetChannelCatalogExportationCacheInfoLink')
 
-const ExternalLinksGetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/channelcatatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/settings',
-        method: 'GET',
-      },
-    }),
+const ExternalLinksGetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.openapi(
+  {
+    example: {
+      href: '/v2/user/marketplaces/channelcatatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/settings',
+      method: 'GET',
+    },
+  },
 ).openapi('ExternalLinksGetChannelCatalogMarketplaceSettingsLink')
 
-const LinksGetChannelCatalogProductInfoListLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksGetChannelCatalogProductInfoListLink')
+const LinksGetChannelCatalogProductInfoListLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products',
+    method: 'POST',
+  },
+}).openapi('LinksGetChannelCatalogProductInfoListLink')
 
-const LinksReenableChannelCatalogCategoryMappingLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/categories/reenableMapping',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksReenableChannelCatalogCategoryMappingLink')
+const LinksReenableChannelCatalogCategoryMappingLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/categories/reenableMapping',
+    method: 'POST',
+  },
+}).openapi('LinksReenableChannelCatalogCategoryMappingLink')
 
-const LinksGetChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogLink')
+const LinksGetChannelCatalogLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0', method: 'GET' },
+}).openapi('LinksGetChannelCatalogLink')
 
 const ChannelCatalogLinksSchema = z
   .object({
@@ -2140,16 +1935,12 @@ const ChannelCatalogCategoryCostValueSchema = z
   })
   .openapi('ChannelCatalogCategoryCostValue')
 
-const LinksConfigureChannelCatalogCategoryLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/category/configure',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogCategoryLink')
+const LinksConfigureChannelCatalogCategoryLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/category/configure',
+    method: 'POST',
+  },
+}).openapi('LinksConfigureChannelCatalogCategoryLink')
 
 const ChannelCatalogCategoryMappingInfoLinksSchema = z
   .object({ configureCategories: LinksConfigureChannelCatalogCategoryLinkSchema.exactOptional() })
@@ -2243,16 +2034,12 @@ const ChannelCatalogExportCacheInfoSchema = z
   .openapi({ required: ['cacheStatus'] })
   .openapi('ChannelCatalogExportCacheInfo')
 
-const LinksClearChannelCatalogExportationCacheLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exportations/cache/clear',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksClearChannelCatalogExportationCacheLink')
+const LinksClearChannelCatalogExportationCacheLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exportations/cache/clear',
+    method: 'POST',
+  },
+}).openapi('LinksClearChannelCatalogExportationCacheLink')
 
 const ChannelCatalogExportCacheInfoResponseLinksSchema = z
   .object({
@@ -2313,16 +2100,12 @@ const ChannelCatalogExportationReportingSchema = z
   .openapi({ required: ['exportationUtcDate', 'clientIpAddress', 'clientUserAgent'] })
   .openapi('ChannelCatalogExportationReporting')
 
-const LinksGetChannelCatalogExportationHistoryLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exportations/history',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogExportationHistoryLink')
+const LinksGetChannelCatalogExportationHistoryLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exportations/history',
+    method: 'GET',
+  },
+}).openapi('LinksGetChannelCatalogExportationHistoryLink')
 
 const ChannelCatalogExportationHistoryLinksSchema = z
   .object({ self: LinksGetChannelCatalogExportationHistoryLinkSchema.exactOptional() })
@@ -2465,21 +2248,21 @@ const ChannelCatalogSchema: z.ZodType<ChannelCatalogType> = BeezUPCommonChannelB
     }),
 ).openapi('ChannelCatalog')
 
-const LinksAddChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/channelCatalogs', method: 'POST' } }),
-).openapi('LinksAddChannelCatalogLink')
+const LinksAddChannelCatalogLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/channelCatalogs', method: 'POST' },
+}).openapi('LinksAddChannelCatalogLink')
 
-const ExternalLinksCatalogGetBeezUPColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/catalogs/beezUPColumns', method: 'GET' } }),
-).openapi('ExternalLinksCatalogGetBeezUPColumnsLink')
+const ExternalLinksCatalogGetBeezUPColumnsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/catalogs/beezUPColumns', method: 'GET' },
+}).openapi('ExternalLinksCatalogGetBeezUPColumnsLink')
 
-const LinksGetChannelCatalogFilterOperatorsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/channelCatalogs/filterOperators', method: 'GET' } }),
-).openapi('LinksGetChannelCatalogFilterOperatorsLink')
+const LinksGetChannelCatalogFilterOperatorsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/channelCatalogs/filterOperators', method: 'GET' },
+}).openapi('LinksGetChannelCatalogFilterOperatorsLink')
 
-const LinksGetChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/channelCatalogs', method: 'GET' } }),
-).openapi('LinksGetChannelCatalogsLink')
+const LinksGetChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/channelCatalogs', method: 'GET' },
+}).openapi('LinksGetChannelCatalogsLink')
 
 const ChannelCatalogListLinksSchema = z
   .object({
@@ -2513,25 +2296,17 @@ const ExternalLinksGetExternalConfigurationPageLinkSchema = BeezUPCommonLink3Sch
   'ExternalLinksGetExternalConfigurationPageLink',
 )
 
-const LinksGetChannelCatalogMarketplacePropertiesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/properties',
-      },
-    }),
-).openapi('LinksGetChannelCatalogMarketplacePropertiesLink')
+const LinksGetChannelCatalogMarketplacePropertiesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/properties',
+  },
+}).openapi('LinksGetChannelCatalogMarketplacePropertiesLink')
 
-const LinksGetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/settings',
-      },
-    }),
-).openapi('LinksGetChannelCatalogMarketplaceSettingsLink')
+const LinksGetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/settings',
+  },
+}).openapi('LinksGetChannelCatalogMarketplaceSettingsLink')
 
 const ChannelCatalogMarketplacePropertiesLinksSchema = z
   .object({
@@ -2711,23 +2486,19 @@ type ChannelCatalogMarketplacePropertiesType = {
   propertyGroups: z.infer<typeof ChannelCatalogMarketplacePropertyGroupSchema>[]
 }
 
-const LinksSetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/settings',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            schema: 'setChannelCatalogMarketplaceSettingsRequest',
-            type: 'object',
-          },
-        },
+const LinksSetChannelCatalogMarketplaceSettingsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/channelcatatalogs/6a90fcfd-24c7-422e-a65f-aadb1725bbfe/settings',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        schema: 'setChannelCatalogMarketplaceSettingsRequest',
+        type: 'object',
       },
-    }),
-).openapi('LinksSetChannelCatalogMarketplaceSettingsLink')
+    },
+  },
+}).openapi('LinksSetChannelCatalogMarketplaceSettingsLink')
 
 const ChannelCatalogMarketplaceSettingsLinksSchema = z
   .object({
@@ -2797,49 +2568,33 @@ const BeezUPCommonProductBasicInfoSchema = z
   })
   .openapi('BeezUPCommonProductBasicInfo')
 
-const LinksDisableChannelCatalogProductLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/disable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksDisableChannelCatalogProductLink')
+const LinksDisableChannelCatalogProductLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/disable',
+    method: 'POST',
+  },
+}).openapi('LinksDisableChannelCatalogProductLink')
 
-const LinksOverrideChannelCatalogProductValuesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksOverrideChannelCatalogProductValuesLink')
+const LinksOverrideChannelCatalogProductValuesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides',
+    method: 'POST',
+  },
+}).openapi('LinksOverrideChannelCatalogProductValuesLink')
 
-const LinksReenableChannelCatalogProductLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/reenable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksReenableChannelCatalogProductLink')
+const LinksReenableChannelCatalogProductLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/reenable',
+    method: 'POST',
+  },
+}).openapi('LinksReenableChannelCatalogProductLink')
 
-const LinksGetChannelCatalogProductInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogProductInfoLink')
+const LinksGetChannelCatalogProductInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67',
+    method: 'GET',
+  },
+}).openapi('LinksGetChannelCatalogProductInfoLink')
 
 const ChannelCatalogProductInfoLinksSchema = z
   .object({
@@ -2953,17 +2708,13 @@ type ChannelCatalogProductByChannelCatalogResponseType = {
   channelCatalogs?: { [key: string]: z.infer<typeof ChannelCatalogProductInfoSchema> }
 }
 
-const LinksExportChannelCatalogProductInfoListLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/export',
-        method: 'POST',
-        parameters: { format: { in: 'query', required: true, type: 'string', value: 'csv' } },
-      },
-    }),
-).openapi('LinksExportChannelCatalogProductInfoListLink')
+const LinksExportChannelCatalogProductInfoListLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/export',
+    method: 'POST',
+    parameters: { format: { in: 'query', required: true, type: 'string', value: 'csv' } },
+  },
+}).openapi('LinksExportChannelCatalogProductInfoListLink')
 
 const ChannelCatalogProductInfoListLinksSchema = z
   .object({
@@ -2979,13 +2730,9 @@ type ChannelCatalogProductInfoListType = {
   productInfos: z.infer<typeof ChannelCatalogProductInfoSchema>[]
 }
 
-const LinksGetChannelInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/channels/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0', method: 'GET' },
-    }),
-).openapi('LinksGetChannelInfoLink')
+const LinksGetChannelInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/channels/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0', method: 'GET' },
+}).openapi('LinksGetChannelInfoLink')
 
 const ChannelHeaderLinksSchema = z
   .object({ self: LinksGetChannelInfoLinkSchema.exactOptional() })
@@ -3273,21 +3020,13 @@ const ContractInfoSchema = z
   .openapi({ description: 'Describe the conditions of a contract', required: [] })
   .openapi('ContractInfo')
 
-const LinksTerminateCurrentContractLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/customer/contracts/current/disableAutoRenewal', method: 'POST' },
-    }),
-).openapi('LinksTerminateCurrentContractLink')
+const LinksTerminateCurrentContractLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/contracts/current/disableAutoRenewal', method: 'POST' },
+}).openapi('LinksTerminateCurrentContractLink')
 
-const LinksReactivateCurrentContractLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/customer/contracts/current/reenableAutoRenewal', method: 'POST' },
-    }),
-).openapi('LinksReactivateCurrentContractLink')
+const LinksReactivateCurrentContractLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/contracts/current/reenableAutoRenewal', method: 'POST' },
+}).openapi('LinksReactivateCurrentContractLink')
 
 const CurrentContractInfoLinksSchema = z
   .object({
@@ -3307,33 +3046,29 @@ const CurrentContractInfoSchema: z.ZodType<CurrentContractInfoType> = ContractIn
     .openapi({ description: 'Get the conditions of your current contract', required: ['links'] }),
 ).openapi('CurrentContractInfo')
 
-const LinksCreateContractLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/contracts',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            type: 'object',
-            value: {
-              billingPeriodInMonth: '12',
-              couponDiscountCode: 'I-LOVE-BEEZUP',
-              couponOfferCode: '04efc310-bc25-4710-a83a-faf200284fe5',
-              offerId: '1',
-              storeCount: '1',
-            },
-          },
+const LinksCreateContractLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/customer/contracts',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        type: 'object',
+        value: {
+          billingPeriodInMonth: '12',
+          couponDiscountCode: 'I-LOVE-BEEZUP',
+          couponOfferCode: '04efc310-bc25-4710-a83a-faf200284fe5',
+          offerId: '1',
+          storeCount: '1',
         },
       },
-    }),
-).openapi('LinksCreateContractLink')
+    },
+  },
+}).openapi('LinksCreateContractLink')
 
-const LinksGetContractsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/contracts', method: 'GET' } }),
-).openapi('LinksGetContractsLink')
+const LinksGetContractsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/contracts', method: 'GET' },
+}).openapi('LinksGetContractsLink')
 
 const ContractsLinksSchema = z
   .object({
@@ -3343,9 +3078,9 @@ const ContractsLinksSchema = z
   .openapi({ required: [] })
   .openapi('ContractsLinks')
 
-const LinksDeleteNextContractLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/contracts/next', method: 'DELETE' } }),
-).openapi('LinksDeleteNextContractLink')
+const LinksDeleteNextContractLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/contracts/next', method: 'DELETE' },
+}).openapi('LinksDeleteNextContractLink')
 
 const NextContractInfoLinksSchema = z
   .object({ delete: LinksDeleteNextContractLinkSchema.exactOptional() })
@@ -3439,85 +3174,60 @@ type CreditCardInfoResponseType = {
   links: z.infer<typeof CreditCardInfoResponseLinksSchema>
 }
 
-const LinksCatalogDeleteCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksCatalogDeleteCustomColumnLink')
+const LinksCatalogDeleteCustomColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
+    method: 'DELETE',
+  },
+}).openapi('LinksCatalogDeleteCustomColumnLink')
 
-const LinksCatalogGetCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksCatalogGetCustomColumnExpressionLink')
+const LinksCatalogGetCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
+    method: 'GET',
+  },
+}).openapi('LinksCatalogGetCustomColumnExpressionLink')
 
-const LinksCatalogChangeCustomColumnUserNameLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/rename',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'changeUserColumnNameRequest',
-            type: 'object',
-          },
-        },
+const LinksCatalogChangeCustomColumnUserNameLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/rename',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        required: true,
+        schema: 'changeUserColumnNameRequest',
+        type: 'object',
       },
-    }),
-).openapi('LinksCatalogChangeCustomColumnUserNameLink')
+    },
+  },
+}).openapi('LinksCatalogChangeCustomColumnUserNameLink')
 
-const LinksCatalogSaveCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/{columnId}',
-        method: 'POST',
-        parameters: {
-          columnId: { in: 'path', required: true, type: 'string' },
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'createCustomColumnRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksCatalogSaveCustomColumnLink')
+const LinksCatalogSaveCustomColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/{columnId}',
+    method: 'POST',
+    parameters: {
+      columnId: { in: 'path', required: true, type: 'string' },
+      request: { in: 'body', required: true, schema: 'createCustomColumnRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksCatalogSaveCustomColumnLink')
 
-const LinksCatalogChangeCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
-        method: 'PUT',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'changeCustomColumnExpressionRequest',
-            type: 'object',
-          },
-        },
+const LinksCatalogChangeCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
+    method: 'PUT',
+    parameters: {
+      request: {
+        in: 'body',
+        required: true,
+        schema: 'changeCustomColumnExpressionRequest',
+        type: 'object',
       },
-    }),
-).openapi('LinksCatalogChangeCustomColumnExpressionLink')
+    },
+  },
+}).openapi('LinksCatalogChangeCustomColumnExpressionLink')
 
 const CustomColumnLinksSchema = z
   .object({
@@ -3565,51 +3275,41 @@ type CustomColumnListType = {
   links: z.infer<typeof CustomColumnListLinksSchema>
 }
 
-const LinksGetFriendInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/friends/{userId}',
-        method: 'GET',
-        parameters: { userId: { in: 'path', required: true, type: 'string' } },
-      },
-    }),
-).openapi('LinksGetFriendInfoLink')
+const LinksGetFriendInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/customer/friends/{userId}',
+    method: 'GET',
+    parameters: { userId: { in: 'path', required: true, type: 'string' } },
+  },
+}).openapi('LinksGetFriendInfoLink')
 
-const LinksGetOfferLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/offers',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', required: true, schema: 'offerRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOfferLink')
+const LinksGetOfferLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/customer/offers',
+    method: 'POST',
+    parameters: { request: { in: 'body', required: true, schema: 'offerRequest', type: 'object' } },
+  },
+}).openapi('LinksGetOfferLink')
 
-const LinksGetInvoicesLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/invoices', method: 'GET' } }),
-).openapi('LinksGetInvoicesLink')
+const LinksGetInvoicesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/invoices', method: 'GET' },
+}).openapi('LinksGetInvoicesLink')
 
-const LinksLogoutLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/security/logout', method: 'POST' } }),
-).openapi('LinksLogoutLink')
+const LinksLogoutLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/security/logout', method: 'POST' },
+}).openapi('LinksLogoutLink')
 
-const LinksGetCustomerIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer', method: 'GET' } }),
-).openapi('LinksGetCustomerIndexLink')
+const LinksGetCustomerIndexLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer', method: 'GET' },
+}).openapi('LinksGetCustomerIndexLink')
 
-const LinksGetStandardOffersLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/offers', method: 'GET' } }),
-).openapi('LinksGetStandardOffersLink')
+const LinksGetStandardOffersLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/offers', method: 'GET' },
+}).openapi('LinksGetStandardOffersLink')
 
-const LinksGetStoresLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/stores', method: 'GET' } }),
-).openapi('LinksGetStoresLink')
+const LinksGetStoresLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/stores', method: 'GET' },
+}).openapi('LinksGetStoresLink')
 
 const CustomerIndexLinksSchema = z
   .object({
@@ -3650,71 +3350,51 @@ type CustomerIndexType = {
   lovLinks: z.infer<typeof CustomerIndexLovLinksSchema>
 }
 
-const LinksImportationConfigureCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'configureCatalogColumnCatalogRequest',
-            type: 'object',
-          },
-        },
+const LinksImportationConfigureCatalogColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        required: true,
+        schema: 'configureCatalogColumnCatalogRequest',
+        type: 'object',
       },
-    }),
-).openapi('LinksImportationConfigureCatalogColumnLink')
+    },
+  },
+}).openapi('LinksImportationConfigureCatalogColumnLink')
 
-const LinksImportationIgnoreColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/ignore',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationIgnoreColumnLink')
+const LinksImportationIgnoreColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/ignore',
+    method: 'POST',
+  },
+}).openapi('LinksImportationIgnoreColumnLink')
 
-const LinksImportationMapCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/map',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', required: true, schema: 'mapBeezUPColumnRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksImportationMapCatalogColumnLink')
+const LinksImportationMapCatalogColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/map',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', required: true, schema: 'mapBeezUPColumnRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksImportationMapCatalogColumnLink')
 
-const LinksImportationReattendColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/reattend',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationReattendColumnLink')
+const LinksImportationReattendColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/reattend',
+    method: 'POST',
+  },
+}).openapi('LinksImportationReattendColumnLink')
 
-const LinksImportationUnmapCatalogColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/map',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationUnmapCatalogColumnLink')
+const LinksImportationUnmapCatalogColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns/b45c1999-e089-4bb1-a219-80a7a50a6f53/map',
+    method: 'POST',
+  },
+}).openapi('LinksImportationUnmapCatalogColumnLink')
 
 const DetectedCatalogColumnLinksSchema = z
   .object({
@@ -3740,16 +3420,12 @@ const DetectedCatalogColumnSchema: z.ZodType<DetectedCatalogColumnType> = Catalo
     }),
 ).openapi('DetectedCatalogColumn')
 
-const LinksImportationGetDetectedCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetDetectedCatalogColumnsLink')
+const LinksImportationGetDetectedCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/catalogColumns',
+    method: 'GET',
+  },
+}).openapi('LinksImportationGetDetectedCatalogColumnsLink')
 
 const DetectedCatalogColumnListLinksSchema = z
   .object({ self: LinksImportationGetDetectedCatalogColumnsLinkSchema })
@@ -3822,16 +3498,12 @@ type ErrorResponseMessagePaymentRequiredType = z.infer<
   typeof BeezUPCommonErrorResponseMessageSchema
 > & { links: z.infer<typeof ErrorResponseMessagePaymentRequiredLinksSchema> }
 
-const LinksConfigureChannelCatalogExclusionFiltersLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters',
-        method: 'PUT',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogExclusionFiltersLink')
+const LinksConfigureChannelCatalogExclusionFiltersLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters',
+    method: 'PUT',
+  },
+}).openapi('LinksConfigureChannelCatalogExclusionFiltersLink')
 
 const ExclusionFiltersResponseLinksSchema = z
   .object({
@@ -3891,27 +3563,19 @@ type GetImportationProductsReportResponseType = {
   productErrors?: z.infer<typeof ProductErrorsSchema>
 }
 
-const LinksImportationCancelLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/cancel',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationCancelLink')
+const LinksImportationCancelLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/cancel',
+    method: 'POST',
+  },
+}).openapi('LinksImportationCancelLink')
 
-const LinksImportationGetImportationMonitoringLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetImportationMonitoringLink')
+const LinksImportationGetImportationMonitoringLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c',
+    method: 'GET',
+  },
+}).openapi('LinksImportationGetImportationMonitoringLink')
 
 const ImportAlreadyInProgressResponseLinksSchema = z
   .object({
@@ -3929,62 +3593,43 @@ type ImportAlreadyInProgressResponseType = {
   links: z.infer<typeof ImportAlreadyInProgressResponseLinksSchema>
 }
 
-const LinksImportationMapCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/map',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', required: true, schema: 'mapBeezUPColumnRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksImportationMapCustomColumnLink')
+const LinksImportationMapCustomColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/map',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', required: true, schema: 'mapBeezUPColumnRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksImportationMapCustomColumnLink')
 
-const LinksImportationGetProductSampleCustomColumnValueLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/productSamples/{productSampleIndex}/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
-        method: 'GET',
-        parameters: { productSampleIndex: { in: 'path', required: true, type: 'integer' } },
-      },
-    }),
+const LinksImportationGetProductSampleCustomColumnValueLinkSchema = BeezUPCommonLink3Schema.openapi(
+  {
+    example: {
+      href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/productSamples/{productSampleIndex}/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
+      method: 'GET',
+      parameters: { productSampleIndex: { in: 'path', required: true, type: 'integer' } },
+    },
+  },
 ).openapi('LinksImportationGetProductSampleCustomColumnValueLink')
 
-const LinksImportationSaveCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/{columnId}',
-        method: 'POST',
-        parameters: {
-          columnId: { in: 'path', required: true, type: 'string' },
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'createCustomColumnRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksImportationSaveCustomColumnLink')
+const LinksImportationSaveCustomColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/{columnId}',
+    method: 'POST',
+    parameters: {
+      columnId: { in: 'path', required: true, type: 'string' },
+      request: { in: 'body', required: true, schema: 'createCustomColumnRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksImportationSaveCustomColumnLink')
 
-const LinksImportationUnmapCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/map',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationUnmapCustomColumnLink')
+const LinksImportationUnmapCustomColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/map',
+    method: 'POST',
+  },
+}).openapi('LinksImportationUnmapCustomColumnLink')
 
 const ImportationCustomColumnLinksSchema = z
   .object({
@@ -4031,83 +3676,55 @@ const ExecutionIdSchema = z
   })
   .openapi('ExecutionId')
 
-const LinksImportationActivateAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/activate',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationActivateAutoImportLink')
+const LinksImportationActivateAutoImportLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/activate',
+    method: 'POST',
+  },
+}).openapi('LinksImportationActivateAutoImportLink')
 
-const LinksImportationCommitLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/commit',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationCommitLink')
+const LinksImportationCommitLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/commit',
+    method: 'POST',
+  },
+}).openapi('LinksImportationCommitLink')
 
-const LinksImportationCommitColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/commitColumns',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationCommitColumnsLink')
+const LinksImportationCommitColumnsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/commitColumns',
+    method: 'POST',
+  },
+}).openapi('LinksImportationCommitColumnsLink')
 
-const LinksImportationConfigureRemainingCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/configureRemainingCatalogColumns',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksImportationConfigureRemainingCatalogColumnsLink')
+const LinksImportationConfigureRemainingCatalogColumnsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/configureRemainingCatalogColumns',
+    method: 'POST',
+  },
+}).openapi('LinksImportationConfigureRemainingCatalogColumnsLink')
 
-const LinksImportationGetCustomColumnsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetCustomColumnsLink')
+const LinksImportationGetCustomColumnsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns',
+    method: 'GET',
+  },
+}).openapi('LinksImportationGetCustomColumnsLink')
 
-const LinksImportationGetProductSampleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/productSamples/{productSampleIndex}',
-        method: 'GET',
-        parameters: { productSampleIndex: { in: 'path', required: true, type: 'integer' } },
-      },
-    }),
-).openapi('LinksImportationGetProductSampleLink')
+const LinksImportationGetProductSampleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/productSamples/{productSampleIndex}',
+    method: 'GET',
+    parameters: { productSampleIndex: { in: 'path', required: true, type: 'integer' } },
+  },
+}).openapi('LinksImportationGetProductSampleLink')
 
-const LinksImportationTechnicalProgressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/technicalProgression',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationTechnicalProgressionLink')
+const LinksImportationTechnicalProgressionLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/technicalProgression',
+    method: 'GET',
+  },
+}).openapi('LinksImportationTechnicalProgressionLink')
 
 const ImportationMonitoringLinksSchema = z
   .object({
@@ -4140,16 +3757,12 @@ type ImportationMonitoringType = {
   userId?: z.infer<typeof BeezUPCommonUserIdSchema>
 }
 
-const LinksImportationGetReportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e911432/report',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetReportLink')
+const LinksImportationGetReportLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e911432/report',
+    method: 'GET',
+  },
+}).openapi('LinksImportationGetReportLink')
 
 const ImportationReportingLinksSchema = z
   .object({ report: LinksImportationGetReportLinkSchema.exactOptional() })
@@ -4349,27 +3962,19 @@ type InvoiceListType = {
   links: z.infer<typeof InvoiceListLinksSchema>
 }
 
-const LinksMigrateLegacyTrackingChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/legacyTracking/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/migrate',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksMigrateLegacyTrackingChannelCatalogLink')
+const LinksMigrateLegacyTrackingChannelCatalogLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/legacyTracking/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/migrate',
+    method: 'POST',
+  },
+}).openapi('LinksMigrateLegacyTrackingChannelCatalogLink')
 
-const LinksGetLegacyTrackingChannelCatalogLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/legacyTracking/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetLegacyTrackingChannelCatalogLink')
+const LinksGetLegacyTrackingChannelCatalogLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/legacyTracking/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0',
+    method: 'GET',
+  },
+}).openapi('LinksGetLegacyTrackingChannelCatalogLink')
 
 const LegacyTrackingChannelCatalogLinksSchema = z
   .object({
@@ -4391,9 +3996,9 @@ const LegacyTrackingChannelCatalogSchema: z.ZodType<LegacyTrackingChannelCatalog
   .openapi({ description: 'The channel catalog', required: ['links'] })
   .openapi('LegacyTrackingChannelCatalog')
 
-const LinksGetLegacyTrackingChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/legacyTracking/channelCatalogs', method: 'GET' } }),
-).openapi('LinksGetLegacyTrackingChannelCatalogsLink')
+const LinksGetLegacyTrackingChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/legacyTracking/channelCatalogs', method: 'GET' },
+}).openapi('LinksGetLegacyTrackingChannelCatalogsLink')
 
 const LegacyTrackingChannelCatalogListLinksSchema = z
   .object({ self: LinksGetLegacyTrackingChannelCatalogsLinkSchema.exactOptional() })
@@ -4418,13 +4023,9 @@ const PublicationStrategyKindSchema = z
   })
   .openapi('PublicationStrategyKind')
 
-const LinksPublishCatalogToMarketplaceLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/marketplaces/channelcatalogs/publications/Cdiscount/123/publish' },
-    }),
-).openapi('LinksPublishCatalogToMarketplaceLink')
+const LinksPublishCatalogToMarketplaceLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/channelcatalogs/publications/Cdiscount/123/publish' },
+}).openapi('LinksPublishCatalogToMarketplaceLink')
 
 const PublicationStrategySchema = z
   .string()
@@ -4502,9 +4103,9 @@ type MarketplaceChannelCatalogType = {
   marketplaceTechnicalCode: z.infer<typeof BeezUPCommonMarketplaceTechnicalCodeSchema>
 }
 
-const LinksGetMarketplaceChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/marketplaces/channelcatalogs' } }),
-).openapi('LinksGetMarketplaceChannelCatalogsLink')
+const LinksGetMarketplaceChannelCatalogsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/channelcatalogs' },
+}).openapi('LinksGetMarketplaceChannelCatalogsLink')
 
 const MarketplaceChannelCatalogListLinksSchema = z
   .object({ self: LinksGetMarketplaceChannelCatalogsLinkSchema })
@@ -5010,16 +4611,12 @@ const EtagSchema = z
   })
   .openapi('Etag')
 
-const LinksGetOrderLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetOrderLink')
+const LinksGetOrderLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000',
+    method: 'GET',
+  },
+}).openapi('LinksGetOrderLink')
 
 const OrderHeaderLinksSchema = z
   .object({ self: LinksGetOrderLinkSchema })
@@ -5160,52 +4757,34 @@ const OrderHeaderSchema: z.ZodType<OrderHeaderType> = z
   })
   .openapi('OrderHeader')
 
-const LinksClearMerchantOrderInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/clearMerchantOrderInfo',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksClearMerchantOrderInfoLink')
+const LinksClearMerchantOrderInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/clearMerchantOrderInfo',
+    method: 'POST',
+  },
+}).openapi('LinksClearMerchantOrderInfoLink')
 
-const LinksHarvestOrderLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/harvest',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksHarvestOrderLink')
+const LinksHarvestOrderLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/harvest',
+    method: 'POST',
+  },
+}).openapi('LinksHarvestOrderLink')
 
-const LinksGetOrderHistoryLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/history',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetOrderHistoryLink')
+const LinksGetOrderHistoryLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/history',
+    method: 'GET',
+  },
+}).openapi('LinksGetOrderHistoryLink')
 
-const LinksSetMerchantOrderInfoLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/setMerchantOrderInfo',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', schema: 'setMerchantOrderInfoRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksSetMerchantOrderInfoLink')
+const LinksSetMerchantOrderInfoLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/setMerchantOrderInfo',
+    method: 'POST',
+    parameters: { request: { in: 'body', schema: 'setMerchantOrderInfoRequest', type: 'object' } },
+  },
+}).openapi('LinksSetMerchantOrderInfoLink')
 
 const OrderLinksSchema = OrderHeaderLinksSchema.and(
   z
@@ -5357,49 +4936,45 @@ const LinksChangeOrderLinkSchema = BeezUPCommonLink3Schema.and(
     })
     .openapi({ required: [] }),
 )
-  .and(
-    z
-      .any()
-      .openapi({
-        example: {
-          href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/ShipOrder',
-          method: 'POST',
-          parameters: {
-            'If-Match': {
-              in: 'header',
+  .openapi({
+    example: {
+      href: '/v2/user/marketplaces/orders/Amazon/1001/00000000000000000000000000000000000000000000000/ShipOrder',
+      method: 'POST',
+      parameters: {
+        'If-Match': {
+          in: 'header',
+          required: true,
+          type: 'string',
+          value: '"ca071a4580129f932a03971968ffef69"',
+        },
+        request: {
+          in: 'body',
+          properties: {
+            order_Shipping_CarrierName: {
+              lovLink: { href: '/v2/user/PriceMinisterCarrierName' },
+              lovRequired: 'true',
               required: true,
               type: 'string',
-              value: '"ca071a4580129f932a03971968ffef69"',
             },
-            request: {
-              in: 'body',
-              properties: {
-                order_Shipping_CarrierName: {
-                  lovLink: { href: '/v2/user/PriceMinisterCarrierName' },
-                  lovRequired: 'true',
-                  required: true,
-                  type: 'string',
-                },
-                order_Shipping_FulfillmentDate: { required: true, type: 'date-time' },
-                order_Shipping_Method: {
-                  lovLink: { href: '/v2/user/ShippingMethod_PriceMinister' },
-                  lovRequired: 'false',
-                  required: true,
-                  type: 'string',
-                },
-                order_Shipping_ShipperTrackingNumber: { required: true, type: 'string' },
-              },
-              schema: 'changeOrderRequest',
-              type: 'object',
+            order_Shipping_FulfillmentDate: { required: true, type: 'date-time' },
+            order_Shipping_Method: {
+              lovLink: { href: '/v2/user/ShippingMethod_PriceMinister' },
+              lovRequired: 'false',
+              required: true,
+              type: 'string',
             },
-            testMode: { in: 'query', required: false, type: 'boolean', value: 'false' },
-            userName: { in: 'query', required: true, type: 'string' },
+            order_Shipping_ShipperTrackingNumber: { required: true, type: 'string' },
           },
-          rel: 'ShipOrder',
-          templated: 'true',
+          schema: 'changeOrderRequest',
+          type: 'object',
         },
-      }),
-  )
+        testMode: { in: 'query', required: false, type: 'boolean', value: 'false' },
+        userName: { in: 'query', required: true, type: 'string' },
+      },
+      rel: 'ShipOrder',
+      templated: 'true',
+    },
+  })
   .openapi('LinksChangeOrderLink')
 
 const OrderTransitionLinksSchema = z
@@ -5606,11 +5181,9 @@ const OrderExportationReportingSchema = z
   })
   .openapi('OrderExportationReporting')
 
-const LinksGetOrderExportationsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({ example: { href: '/v2/user/marketplaces/orders/exportations', method: 'GET' } }),
-).openapi('LinksGetOrderExportationsLink')
+const LinksGetOrderExportationsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/orders/exportations', method: 'GET' },
+}).openapi('LinksGetOrderExportationsLink')
 
 const OrderExportationsLinksSchema = z
   .object({ self: LinksGetOrderExportationsLinkSchema })
@@ -5627,87 +5200,67 @@ type OrderHeaderWithLinksType = z.infer<typeof OrderHeaderSchema> & {
   links: z.infer<typeof OrderHeaderLinksSchema>
 }
 
-const LinksClearMerchantOrderInfoListLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: { href: '/v2/user/marketplaces/orders/clearMerchantOrderInfos', method: 'POST' },
-    }),
-).openapi('LinksClearMerchantOrderInfoListLink')
+const LinksClearMerchantOrderInfoListLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/orders/clearMerchantOrderInfos', method: 'POST' },
+}).openapi('LinksClearMerchantOrderInfoListLink')
 
-const LinksExportOrdersLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/exportations',
-        method: 'POST',
-        properties: {
-          request: { in: 'body', required: true, schema: 'exportOrderListRequest', type: 'object' },
-        },
+const LinksExportOrdersLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/exportations',
+    method: 'POST',
+    properties: {
+      request: { in: 'body', required: true, schema: 'exportOrderListRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksExportOrdersLink')
+
+const LinksHarvestAllLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/orders/harvest', method: 'POST' },
+}).openapi('LinksHarvestAllLink')
+
+const LinksGetOrderListLightLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/list/light',
+    method: 'POST',
+    properties: {
+      request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksGetOrderListLightLink')
+
+const LinksGetOrderListFullLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/list/full',
+    method: 'POST',
+    properties: {
+      'Accept-Encoding': { in: 'header', required: true, schema: 'string', type: '​array' },
+      request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksGetOrderListFullLink')
+
+const LinksGetOrderIndexLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/orders', method: 'GET' },
+}).openapi('LinksGetOrderIndexLink')
+
+const LinksSetMerchantOrderInfoListLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/marketplaces/orders/setMerchantOrderInfos',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        required: true,
+        schema: 'setMerchantOrderInfoRequest',
+        type: 'object',
       },
-    }),
-).openapi('LinksExportOrdersLink')
+    },
+  },
+}).openapi('LinksSetMerchantOrderInfoListLink')
 
-const LinksHarvestAllLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders/harvest', method: 'POST' } }),
-).openapi('LinksHarvestAllLink')
-
-const LinksGetOrderListLightLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/list/light',
-        method: 'POST',
-        properties: {
-          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOrderListLightLink')
-
-const LinksGetOrderListFullLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/list/full',
-        method: 'POST',
-        properties: {
-          'Accept-Encoding': { in: 'header', required: true, schema: 'string', type: '​array' },
-          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOrderListFullLink')
-
-const LinksGetOrderIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders', method: 'GET' } }),
-).openapi('LinksGetOrderIndexLink')
-
-const LinksSetMerchantOrderInfoListLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/marketplaces/orders/setMerchantOrderInfos',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'setMerchantOrderInfoRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksSetMerchantOrderInfoListLink')
-
-const LinksGetMarketplaceAccountsSynchronizationLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/marketplaces/orders/status', method: 'GET' } }),
-).openapi('LinksGetMarketplaceAccountsSynchronizationLink')
+const LinksGetMarketplaceAccountsSynchronizationLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/marketplaces/orders/status', method: 'GET' },
+}).openapi('LinksGetMarketplaceAccountsSynchronizationLink')
 
 const OrderIndexLinksSchema = z
   .object({
@@ -6624,17 +6177,17 @@ type ProfilePictureInfoResponseType = {
   profilePictureInfo: z.infer<typeof ProfilePictureInfoWithDefaultSchema>
 }
 
-const LinksGetChannelsLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/public/channels/FRA', method: 'GET' } }),
-).openapi('LinksGetChannelsLink')
+const LinksGetChannelsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/public/channels/FRA', method: 'GET' },
+}).openapi('LinksGetChannelsLink')
 
-const LinksGetPublicListOfValuesLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/public/lov/ChannelType', method: 'GET' } }),
-).openapi('LinksGetPublicListOfValuesLink')
+const LinksGetPublicListOfValuesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/public/lov/ChannelType', method: 'GET' },
+}).openapi('LinksGetPublicListOfValuesLink')
 
-const LinksGetChannelsIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/public/channels', method: 'GET' } }),
-).openapi('LinksGetChannelsIndexLink')
+const LinksGetChannelsIndexLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/public/channels', method: 'GET' },
+}).openapi('LinksGetChannelsIndexLink')
 
 type PublicChannelIndexType = {
   channels?: { [key: string]: z.infer<typeof LinksGetChannelsLinkSchema> }
@@ -6705,9 +6258,9 @@ const PublicLovLinksSchema = z
   .openapi({ description: 'List of lov link. The key is the list name.' })
   .openapi('PublicLovLinks')
 
-const LinksGetPublicLovIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/public/lov', method: 'GET' } }),
-).openapi('LinksGetPublicLovIndexLink')
+const LinksGetPublicLovIndexLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/public/lov', method: 'GET' },
+}).openapi('LinksGetPublicLovIndexLink')
 
 type PublicLovIndexLinksType = {
   lists?: z.infer<typeof PublicLovLinksSchema>
@@ -7043,40 +6596,28 @@ type ReportByProductResponseType = {
   products: z.infer<typeof ReportByProductSchema>[]
 }
 
-const LinksDeleteReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters/fb19c53c-2f63-4262-9d94-2d7faa500acd',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteReportFilterLink')
+const LinksDeleteReportFilterLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters/fb19c53c-2f63-4262-9d94-2d7faa500acd',
+    method: 'DELETE',
+  },
+}).openapi('LinksDeleteReportFilterLink')
 
-const LinksSaveReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters/{reportFilterId}',
-        method: 'PUT',
-        parameters: [{ in: 'path', name: 'reportFilterId', type: 'string' }],
-        templated: 'true',
-      },
-    }),
-).openapi('LinksSaveReportFilterLink')
+const LinksSaveReportFilterLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/8f95eb1a-3691-4750-950d-a13c4a8a9bcc/reports/filters/{reportFilterId}',
+    method: 'PUT',
+    parameters: [{ in: 'path', name: 'reportFilterId', type: 'string' }],
+    templated: 'true',
+  },
+}).openapi('LinksSaveReportFilterLink')
 
-const LinksGetReportFilterLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/reports/filters/fb19c53c-2f63-4262-9d94-2d7faa500acd',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetReportFilterLink')
+const LinksGetReportFilterLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/reports/filters/fb19c53c-2f63-4262-9d94-2d7faa500acd',
+    method: 'GET',
+  },
+}).openapi('LinksGetReportFilterLink')
 
 const ReportFilterLinksSchema = z
   .object({
@@ -7448,105 +6989,73 @@ const RuleLastExecutionStatusSchema = z
   .openapi({ description: 'The status of the last execution', example: 'Succeeded' })
   .openapi('RuleLastExecutionStatus')
 
-const LinksDeleteRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteRuleLink')
+const LinksDeleteRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
+    method: 'DELETE',
+  },
+}).openapi('LinksDeleteRuleLink')
 
-const LinksDisableRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/disable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksDisableRuleLink')
+const LinksDisableRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/disable',
+    method: 'POST',
+  },
+}).openapi('LinksDisableRuleLink')
 
-const LinksEnableRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/enable',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksEnableRuleLink')
+const LinksEnableRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/enable',
+    method: 'POST',
+  },
+}).openapi('LinksEnableRuleLink')
 
-const LinksMoveDownRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/movedown',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksMoveDownRuleLink')
+const LinksMoveDownRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/movedown',
+    method: 'POST',
+  },
+}).openapi('LinksMoveDownRuleLink')
 
-const LinksMoveUpRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/moveup',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksMoveUpRuleLink')
+const LinksMoveUpRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/moveup',
+    method: 'POST',
+  },
+}).openapi('LinksMoveUpRuleLink')
 
-const LinksRunRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/run',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksRunRuleLink')
+const LinksRunRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8/run',
+    method: 'POST',
+  },
+}).openapi('LinksRunRuleLink')
 
-const LinksGetRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetRuleLink')
+const LinksGetRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
+    method: 'GET',
+  },
+}).openapi('LinksGetRuleLink')
 
-const LinksUpdateRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
-        method: 'PATCH',
-        parameters: {
-          request: {
-            in: 'body',
-            schema: 'updateRuleRequest',
-            type: 'object',
-            value: {
-              'endUtcDate"': '2016-08-29T09:12:33.001Z',
-              ruleName: 'My Rule Renamed',
-              startUtcDate: '2016-08-29T09:12:33.001Z',
-            },
-          },
+const LinksUpdateRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/c38006b4-29d0-4b8a-978b-701a0b12d5a8',
+    method: 'PATCH',
+    parameters: {
+      request: {
+        in: 'body',
+        schema: 'updateRuleRequest',
+        type: 'object',
+        value: {
+          'endUtcDate"': '2016-08-29T09:12:33.001Z',
+          ruleName: 'My Rule Renamed',
+          startUtcDate: '2016-08-29T09:12:33.001Z',
         },
       },
-    }),
-).openapi('LinksUpdateRuleLink')
+    },
+  },
+}).openapi('LinksUpdateRuleLink')
 
 const RuleLinksSchema = z
   .object({
@@ -7680,52 +7189,40 @@ type RuleExecutionReportingsType = {
   paginationResult?: z.infer<typeof BeezUPCommonPaginationResultSchema>
 }
 
-const LinksCreateRuleLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            schema: 'createRuleRequest',
-            type: 'object',
-            value: {
-              endUtcDate: '2017-09-30T10:42:40.001Z',
-              optimisationActionName: 'reenable',
-              reportFilterId: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
-              ruleName: 'My rule',
-              startUtcDate: '2016-08-29T09:12:33.001Z',
-            },
-          },
+const LinksCreateRuleLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        schema: 'createRuleRequest',
+        type: 'object',
+        value: {
+          endUtcDate: '2017-09-30T10:42:40.001Z',
+          optimisationActionName: 'reenable',
+          reportFilterId: 'fb19c53c-2f63-4262-9d94-2d7faa500acd',
+          ruleName: 'My rule',
+          startUtcDate: '2016-08-29T09:12:33.001Z',
         },
       },
-    }),
-).openapi('LinksCreateRuleLink')
+    },
+  },
+}).openapi('LinksCreateRuleLink')
 
-const LinksGetRulesExecutionsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/executions',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetRulesExecutionsLink')
+const LinksGetRulesExecutionsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/executions',
+    method: 'GET',
+  },
+}).openapi('LinksGetRulesExecutionsLink')
 
-const LinksRunRulesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/run',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksRunRulesLink')
+const LinksRunRulesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/analytics/10af9486-e28e-47ab-b045-e13e4acd55c3/rules/run',
+    method: 'POST',
+  },
+}).openapi('LinksRunRulesLink')
 
 const RuleListLinksSchema = z
   .object({
@@ -7922,61 +7419,38 @@ const StoreCountryIsoCodeAlpha3Schema = z
   })
   .openapi('StoreCountryIsoCodeAlpha3')
 
-const LinksDeleteStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteStoreLink')
+const LinksDeleteStoreLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
+    method: 'DELETE',
+  },
+}).openapi('LinksDeleteStoreLink')
 
-const LinksGetStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetStoreLink')
+const LinksGetStoreLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6', method: 'GET' },
+}).openapi('LinksGetStoreLink')
 
-const LinksShareStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares',
-        method: 'POST',
-        parameters: { email: { in: 'body', required: true, type: 'string' } },
-      },
-    }),
-).openapi('LinksShareStoreLink')
+const LinksShareStoreLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares',
+    method: 'POST',
+    parameters: { email: { in: 'body', required: true, type: 'string' } },
+  },
+}).openapi('LinksShareStoreLink')
 
-const LinksGetStoreSharesLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetStoreSharesLink')
+const LinksGetStoreSharesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares',
+    method: 'GET',
+  },
+}).openapi('LinksGetStoreSharesLink')
 
-const LinksUpdateStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
-        method: 'PATCH',
-      },
-    }),
-).openapi('LinksUpdateStoreLink')
+const LinksUpdateStoreLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6',
+    method: 'PATCH',
+  },
+}).openapi('LinksUpdateStoreLink')
 
 const StoreLinksSchema = z
   .object({
@@ -8069,16 +7543,12 @@ const AlertEnabledSchema = z
   .openapi({ description: 'Is the alert enable ?', example: 'true' })
   .openapi('AlertEnabled')
 
-const LinksSaveStoreAlertsLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/alerts',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksSaveStoreAlertsLink')
+const LinksSaveStoreAlertsLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/customer/stores/51afae05-277e-4902-8b17-5a811a23a2c6/alerts',
+    method: 'POST',
+  },
+}).openapi('LinksSaveStoreAlertsLink')
 
 const StoreAlertLinksSchema = z
   .object({ save: LinksSaveStoreAlertsLinkSchema.exactOptional() })
@@ -8150,9 +7620,9 @@ const StoreAlertSchema: z.ZodType<StoreAlertType> = z
 
 type StoreAlertsType = { alerts?: z.infer<typeof StoreAlertSchema>[] }
 
-const LinksCreateStoreLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/customer/stores', method: 'POST' } }),
-).openapi('LinksCreateStoreLink')
+const LinksCreateStoreLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/customer/stores', method: 'POST' },
+}).openapi('LinksCreateStoreLink')
 
 const StoreListLinksSchema = z
   .object({
@@ -8217,16 +7687,12 @@ type StoreListType = {
   stores: z.infer<typeof StoreSchema>[]
 }
 
-const LinksDeleteStoreShareLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares/277596c1-a5a9-4cce-9f34-b5906451a98f',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksDeleteStoreShareLink')
+const LinksDeleteStoreShareLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/stores/51afae05-277e-4902-8b17-5a811a23a2c6/shares/277596c1-a5a9-4cce-9f34-b5906451a98f',
+    method: 'DELETE',
+  },
+}).openapi('LinksDeleteStoreShareLink')
 
 const StoreShareLinksSchema = z
   .object({ deleteShare: LinksDeleteStoreShareLinkSchema.exactOptional() })
@@ -8449,9 +7915,9 @@ type SubscriptionIndexType = z.infer<typeof SubscriptionSchema> & {
   links?: z.infer<typeof SubscriptionLinksSchema>
 }
 
-const LinksGetUserListOfValuesLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/lov/Go2CultureName', method: 'GET' } }),
-).openapi('LinksGetUserListOfValuesLink')
+const LinksGetUserListOfValuesLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/lov/Go2CultureName', method: 'GET' },
+}).openapi('LinksGetUserListOfValuesLink')
 
 const UserListOfValuesResponseLinksSchema = z
   .object({ self: LinksGetUserListOfValuesLinkSchema.exactOptional() })
@@ -8468,9 +7934,9 @@ const UserLovLinksSchema = z
   .openapi({ description: 'List of lov link. The key is the list name.' })
   .openapi('UserLovLinks')
 
-const LinksGetUserLovIndexLinkSchema = BeezUPCommonLink3Schema.and(
-  z.any().openapi({ example: { href: '/v2/user/lov', method: 'GET' } }),
-).openapi('LinksGetUserLovIndexLink')
+const LinksGetUserLovIndexLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: { href: '/v2/user/lov', method: 'GET' },
+}).openapi('LinksGetUserLovIndexLink')
 
 type UserLovIndexLinksType = {
   lists?: z.infer<typeof UserLovLinksSchema>
@@ -9010,76 +8476,51 @@ const AutoImportConfigurationSchema = z
   })
   .openapi('AutoImportConfiguration')
 
-const LinksAutoPauseAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/pause',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksAutoPauseAutoImportLink')
+const LinksAutoPauseAutoImportLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/pause',
+    method: 'POST',
+  },
+}).openapi('LinksAutoPauseAutoImportLink')
 
-const LinksAutoResumeAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/resume',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksAutoResumeAutoImportLink')
+const LinksAutoResumeAutoImportLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/resume',
+    method: 'POST',
+  },
+}).openapi('LinksAutoResumeAutoImportLink')
 
-const LinksAutoScheduleAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/scheduling/schedules',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'scheduleAutoImportRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksAutoScheduleAutoImportLink')
+const LinksAutoScheduleAutoImportLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/scheduling/schedules',
+    method: 'POST',
+    parameters: {
+      request: { in: 'body', required: true, schema: 'scheduleAutoImportRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksAutoScheduleAutoImportLink')
 
-const LinksAutoConfigureAutoImportIntervalLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/scheduling/interval',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'configureAutoImportIntervalRequest',
-            type: 'object',
-          },
-        },
+const LinksAutoConfigureAutoImportIntervalLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/scheduling/interval',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        required: true,
+        schema: 'configureAutoImportIntervalRequest',
+        type: 'object',
       },
-    }),
-).openapi('LinksAutoConfigureAutoImportIntervalLink')
+    },
+  },
+}).openapi('LinksAutoConfigureAutoImportIntervalLink')
 
-const LinksAutoStartAutoImportLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/start',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksAutoStartAutoImportLink')
+const LinksAutoStartAutoImportLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/autoImport/start',
+    method: 'POST',
+  },
+}).openapi('LinksAutoStartAutoImportLink')
 
 const AutoImportConfigurationLinksSchema = z
   .object({
@@ -11146,234 +10587,173 @@ const LinksChangeOrderV3LinkSchema = Link3Schema.and(
     })
     .openapi({ required: [] }),
 )
-  .and(
-    z
-      .any()
-      .openapi({
-        example: {
-          href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/ShipOrder',
-          method: 'POST',
-          parameters: {
-            'If-Match': {
-              in: 'header',
+  .openapi({
+    example: {
+      href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/ShipOrder',
+      method: 'POST',
+      parameters: {
+        'If-Match': {
+          in: 'header',
+          required: true,
+          type: 'string',
+          value: '"ca071a4580129f932a03971968ffef69"',
+        },
+        request: {
+          in: 'body',
+          properties: {
+            order_Shipping_CarrierName: {
+              lovLink: { href: '/v2/user/PriceMinisterCarrierName' },
+              lovRequired: 'true',
               required: true,
               type: 'string',
-              value: '"ca071a4580129f932a03971968ffef69"',
             },
-            request: {
-              in: 'body',
-              properties: {
-                order_Shipping_CarrierName: {
-                  lovLink: { href: '/v2/user/PriceMinisterCarrierName' },
-                  lovRequired: 'true',
-                  required: true,
-                  type: 'string',
-                },
-                order_Shipping_FulfillmentDate: { required: true, type: 'date-time' },
-                order_Shipping_Method: {
-                  lovLink: { href: '/v2/user/ShippingMethod_PriceMinister' },
-                  lovRequired: 'false',
-                  required: true,
-                  type: 'string',
-                },
-                order_Shipping_ShipperTrackingNumber: { required: true, type: 'string' },
-              },
-              schema: 'changeOrderRequest',
-              type: 'object',
+            order_Shipping_FulfillmentDate: { required: true, type: 'date-time' },
+            order_Shipping_Method: {
+              lovLink: { href: '/v2/user/ShippingMethod_PriceMinister' },
+              lovRequired: 'false',
+              required: true,
+              type: 'string',
             },
-            testMode: { in: 'query', required: false, type: 'boolean', value: 'false' },
-            userName: { in: 'query', required: true, type: 'string' },
+            order_Shipping_ShipperTrackingNumber: { required: true, type: 'string' },
           },
-          rel: 'ShipOrder',
-          templated: 'true',
+          schema: 'changeOrderRequest',
+          type: 'object',
         },
-      }),
-  )
+        testMode: { in: 'query', required: false, type: 'boolean', value: 'false' },
+        userName: { in: 'query', required: true, type: 'string' },
+      },
+      rel: 'ShipOrder',
+      templated: 'true',
+    },
+  })
   .openapi('LinksChangeOrderV3Link')
 
-const LinksClearMerchantOrderInfoListV3LinkSchema = Link3Schema.and(
-  z.any().openapi({ example: { href: '/orders/v3/clearMerchantOrderInfos', method: 'POST' } }),
-).openapi('LinksClearMerchantOrderInfoListV3Link')
+const LinksClearMerchantOrderInfoListV3LinkSchema = Link3Schema.openapi({
+  example: { href: '/orders/v3/clearMerchantOrderInfos', method: 'POST' },
+}).openapi('LinksClearMerchantOrderInfoListV3Link')
 
-const LinksClearMerchantOrderInfoV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/clearMerchantOrderInfo',
-        method: 'POST',
+const LinksClearMerchantOrderInfoV3LinkSchema = Link3Schema.openapi({
+  example: {
+    href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/clearMerchantOrderInfo',
+    method: 'POST',
+  },
+}).openapi('LinksClearMerchantOrderInfoV3Link')
+
+const LinksConfigureChannelCatalogExclusionFiltersCopyLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/copy',
+    method: 'POST',
+  },
+}).openapi('LinksConfigureChannelCatalogExclusionFiltersCopyLink')
+
+const LinksConfigureChannelCatalogProductValueOverrideCopyLinkSchema =
+  BeezUPCommonLink3Schema.openapi({
+    example: {
+      href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides/copy',
+      method: 'POST',
+    },
+  }).openapi('LinksConfigureChannelCatalogProductValueOverrideCopyLink')
+
+const LinksGetChannelCatalogExclusionFiltersCopyLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/copy',
+    method: 'GET',
+  },
+}).openapi('LinksGetChannelCatalogExclusionFiltersCopyLink')
+
+const LinksGetChannelCatalogProductValueOverrideCopyLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides/copy',
+    method: 'GET',
+  },
+}).openapi('LinksGetChannelCatalogProductValueOverrideCopyLink')
+
+const LinksGetMarketplaceAccountsSynchronizationV3LinkSchema = Link3Schema.openapi({
+  example: { href: '/orders/v3/status', method: 'GET' },
+}).openapi('LinksGetMarketplaceAccountsSynchronizationV3Link')
+
+const LinksGetOrderHistoryV3LinkSchema = Link3Schema.openapi({
+  example: {
+    href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/history',
+    method: 'GET',
+  },
+}).openapi('LinksGetOrderHistoryV3Link')
+
+const LinksGetOrderListFullV3LinkSchema = Link3Schema.openapi({
+  example: {
+    href: '/orders/v3/list/full',
+    method: 'POST',
+    properties: {
+      'Accept-Encoding': { in: 'header', required: true, type: 'string' },
+      request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksGetOrderListFullV3Link')
+
+const LinksGetOrderListLightV3LinkSchema = Link3Schema.openapi({
+  example: {
+    href: '/orders/v3/list/light',
+    method: 'POST',
+    properties: {
+      request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
+    },
+  },
+}).openapi('LinksGetOrderListLightV3Link')
+
+const LinksGetOrderV3LinkSchema = Link3Schema.openapi({
+  example: {
+    href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000',
+    method: 'GET',
+  },
+}).openapi('LinksGetOrderV3Link')
+
+const LinksHarvestAllV3LinkSchema = Link3Schema.openapi({
+  example: { href: '/orders/v3/harvest', method: 'POST' },
+}).openapi('LinksHarvestAllV3Link')
+
+const LinksHarvestOrderV3LinkSchema = Link3Schema.openapi({
+  example: {
+    href: '/orders/v3/Amazon/1001#/00000000000000000000000000000000000000000000000/harvest',
+    method: 'POST',
+  },
+}).openapi('LinksHarvestOrderV3Link')
+
+const LinksImportationDeleteCustomColumnLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
+    method: 'DELETE',
+  },
+}).openapi('LinksImportationDeleteCustomColumnLink')
+
+const LinksImportationGetCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.openapi({
+  example: {
+    href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
+    method: 'GET',
+  },
+}).openapi('LinksImportationGetCustomColumnExpressionLink')
+
+const LinksSetMerchantOrderInfoListV3LinkSchema = Link3Schema.openapi({
+  example: {
+    href: '/orders/v3/setMerchantOrderInfos',
+    method: 'POST',
+    parameters: {
+      request: {
+        in: 'body',
+        required: true,
+        schema: 'setMerchantOrderInfoRequest',
+        type: 'object',
       },
-    }),
-).openapi('LinksClearMerchantOrderInfoV3Link')
+    },
+  },
+}).openapi('LinksSetMerchantOrderInfoListV3Link')
 
-const LinksConfigureChannelCatalogExclusionFiltersCopyLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/copy',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogExclusionFiltersCopyLink')
-
-const LinksConfigureChannelCatalogProductValueOverrideCopyLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides/copy',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksConfigureChannelCatalogProductValueOverrideCopyLink')
-
-const LinksGetChannelCatalogExclusionFiltersCopyLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/exclusionFilters/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/copy',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogExclusionFiltersCopyLink')
-
-const LinksGetChannelCatalogProductValueOverrideCopyLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/channelCatalogs/6d6b04de-406b-4539-8e7e-bf3e8da5dfb0/products/578419df-1bbf-41a6-96fa-862e42182b67/overrides/copy',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetChannelCatalogProductValueOverrideCopyLink')
-
-const LinksGetMarketplaceAccountsSynchronizationV3LinkSchema = Link3Schema.and(
-  z.any().openapi({ example: { href: '/orders/v3/status', method: 'GET' } }),
-).openapi('LinksGetMarketplaceAccountsSynchronizationV3Link')
-
-const LinksGetOrderHistoryV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/history',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetOrderHistoryV3Link')
-
-const LinksGetOrderListFullV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/list/full',
-        method: 'POST',
-        properties: {
-          'Accept-Encoding': { in: 'header', required: true, type: 'string' },
-          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOrderListFullV3Link')
-
-const LinksGetOrderListLightV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/list/light',
-        method: 'POST',
-        properties: {
-          request: { in: 'body', required: false, schema: 'orderListRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksGetOrderListLightV3Link')
-
-const LinksGetOrderV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksGetOrderV3Link')
-
-const LinksHarvestAllV3LinkSchema = Link3Schema.and(
-  z.any().openapi({ example: { href: '/orders/v3/harvest', method: 'POST' } }),
-).openapi('LinksHarvestAllV3Link')
-
-const LinksHarvestOrderV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001#/00000000000000000000000000000000000000000000000/harvest',
-        method: 'POST',
-      },
-    }),
-).openapi('LinksHarvestOrderV3Link')
-
-const LinksImportationDeleteCustomColumnLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb',
-        method: 'DELETE',
-      },
-    }),
-).openapi('LinksImportationDeleteCustomColumnLink')
-
-const LinksImportationGetCustomColumnExpressionLinkSchema = BeezUPCommonLink3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/v2/user/catalogs/a42b780d-4585-4566-800e-4d77a4d6f8a3/importations/222ef571-bdb7-436d-a01a-e5a0e9161c0c/customColumns/5b56bb78-bc0b-485e-abd8-8db7eed995cb/expression',
-        method: 'GET',
-      },
-    }),
-).openapi('LinksImportationGetCustomColumnExpressionLink')
-
-const LinksSetMerchantOrderInfoListV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/setMerchantOrderInfos',
-        method: 'POST',
-        parameters: {
-          request: {
-            in: 'body',
-            required: true,
-            schema: 'setMerchantOrderInfoRequest',
-            type: 'object',
-          },
-        },
-      },
-    }),
-).openapi('LinksSetMerchantOrderInfoListV3Link')
-
-const LinksSetMerchantOrderInfoV3LinkSchema = Link3Schema.and(
-  z
-    .any()
-    .openapi({
-      example: {
-        href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/setMerchantOrderInfo',
-        method: 'POST',
-        parameters: {
-          request: { in: 'body', schema: 'setMerchantOrderInfoRequest', type: 'object' },
-        },
-      },
-    }),
-).openapi('LinksSetMerchantOrderInfoV3Link')
+const LinksSetMerchantOrderInfoV3LinkSchema = Link3Schema.openapi({
+  example: {
+    href: '/orders/v3/Amazon/1001/00000000000000000000000000000000000000000000000/setMerchantOrderInfo',
+    method: 'POST',
+    parameters: { request: { in: 'body', schema: 'setMerchantOrderInfoRequest', type: 'object' } },
+  },
+}).openapi('LinksSetMerchantOrderInfoV3Link')
 
 const ListOfValueItemSchema = z
   .object({

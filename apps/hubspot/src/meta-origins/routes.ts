@@ -268,11 +268,11 @@ const Oauth2SecurityScheme = {
       scopes: { 'origins.ip_ranges.webhook.read': '', 'origins.ip_ranges.webhook.write': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'origins.ip_ranges.webhook.read': { portal: ['private'], developer: false },
+    'origins.ip_ranges.webhook.write': { portal: ['private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getMetaNetworkOrigins202609IpRangesRoute = createRoute({
   method: 'get',
@@ -505,18 +505,14 @@ export const postMetaNetworkOrigins202609IpRangesWebhookSubscriptionsAppIdRoute 
       description: 'successful operation',
       content: { 'application/json': { schema: WebhookSubscriptionSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

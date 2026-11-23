@@ -1,480 +1,8 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AwsCloudMapInstanceAttributeKeySchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9!-~]+$/)
-  .min(1)
-  .max(255)
-  .openapi('AwsCloudMapInstanceAttributeKey')
-
-const AwsCloudMapInstanceAttributeValueSchema = z
-  .string()
-  .regex(/^([a-zA-Z0-9!-~][  a-zA-Z0-9!-~]*){0,1}[a-zA-Z0-9!-~]{0,1}$/)
-  .min(1)
-  .max(1024)
-  .openapi('AwsCloudMapInstanceAttributeValue')
-
-const AwsCloudMapInstanceAttributeSchema = z
-  .object({
-    key: AwsCloudMapInstanceAttributeKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Cloud Map service instance attribute key. Any Cloud Map service instance that contains the specified key and value is returned.',
-        }),
-    ),
-    value: AwsCloudMapInstanceAttributeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of an Cloud Map service instance attribute key. Any Cloud Map service instance that contains the specified key and value is returned.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['key', 'value'],
-    description:
-      '<p>An object that represents the Cloud Map attribute information for your virtual node.</p> <note> <p>Cloud Map is not available in the eu-south-1 Region.</p> </note>',
-  })
-  .openapi('AwsCloudMapInstanceAttribute')
-
-const AwsCloudMapInstanceAttributesSchema = z
-  .array(AwsCloudMapInstanceAttributeSchema)
-  .openapi('AwsCloudMapInstanceAttributes')
-
-const IpPreferenceSchema = z
-  .enum(['IPv6_PREFERRED', 'IPv4_PREFERRED', 'IPv4_ONLY', 'IPv6_ONLY'])
-  .openapi('IpPreference')
-
-const AwsCloudMapNameSchema = z.string().min(1).max(1024).openapi('AwsCloudMapName')
-
-const AwsCloudMapServiceDiscoverySchema = z
-  .object({
-    attributes: AwsCloudMapInstanceAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string map that contains attributes with values that you can use to filter instances by any custom attribute that you specified when you registered the instance. Only instances that match all of the specified key/value pairs will be returned.',
-        }),
-    ).exactOptional(),
-    ipPreference: IpPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preferred IP version that this virtual node uses. Setting the IP preference on the virtual node only overrides the IP preference set for the mesh on this specific node.',
-        }),
-    ).exactOptional(),
-    namespaceName: AwsCloudMapNameSchema.and(
-      z.any().openapi({ description: 'The name of the Cloud Map namespace to use.' }),
-    ),
-    serviceName: AwsCloudMapNameSchema.and(
-      z.any().openapi({ description: 'The name of the Cloud Map service to use.' }),
-    ),
-  })
-  .openapi({
-    required: ['namespaceName', 'serviceName'],
-    description:
-      '<p>An object that represents the Cloud Map service discovery information for your virtual node.</p> <note> <p>Cloud Map is not available in the eu-south-1 Region.</p> </note>',
-  })
-  .openapi('AwsCloudMapServiceDiscovery')
-
-const HostnameSchema = z.string().openapi('Hostname')
-
-const DnsResponseTypeSchema = z.enum(['LOADBALANCER', 'ENDPOINTS']).openapi('DnsResponseType')
-
-const DnsServiceDiscoverySchema = z
-  .object({
-    hostname: HostnameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the DNS service discovery hostname for the virtual node. ',
-        }),
-    ),
-    ipPreference: IpPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preferred IP version that this virtual node uses. Setting the IP preference on the virtual node only overrides the IP preference set for the mesh on this specific node.',
-        }),
-    ).exactOptional(),
-    responseType: DnsResponseTypeSchema.and(
-      z.any().openapi({ description: 'Specifies the DNS response type for the virtual node.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['hostname'],
-    description:
-      'An object that represents the DNS service discovery information for your virtual node.',
-  })
-  .openapi('DnsServiceDiscovery')
-
-type ServiceDiscoveryType = {
-  awsCloudMap?: z.infer<typeof AwsCloudMapServiceDiscoverySchema> & { [key: string]: unknown }
-  dns?: z.infer<typeof DnsServiceDiscoverySchema> & { [key: string]: unknown }
-}
-
-const JsonKeySchema = z.string().min(1).max(100).openapi('JsonKey')
-
-const JsonValueSchema = z.string().min(1).max(100).openapi('JsonValue')
-
-const JsonFormatRefSchema = z
-  .object({
-    key: JsonKeySchema.and(z.any().openapi({ description: 'The specified key for the JSON.' })),
-    value: JsonValueSchema.and(
-      z.any().openapi({ description: 'The specified value for the JSON.' }),
-    ),
-  })
-  .openapi({
-    required: ['key', 'value'],
-    description: 'An object that represents the key value pairs for the JSON.',
-  })
-  .openapi('JsonFormatRef')
-
-const JsonFormatSchema = z.array(JsonFormatRefSchema).openapi('JsonFormat')
-
-const TextFormatSchema = z.string().min(1).max(1000).openapi('TextFormat')
-
-const LoggingFormatSchema = z
-  .object({
-    json: JsonFormatSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    text: TextFormatSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-  })
-  .openapi({ description: 'An object that represents the format for the logs.', required: [] })
-  .openapi('LoggingFormat')
-
-const FilePathSchema = z.string().min(1).max(255).openapi('FilePath')
-
-const FileAccessLogSchema = z
-  .object({
-    format: LoggingFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specified format for the logs. The format is either <code>json_format</code> or <code>text_format</code>.',
-        }),
-    ).exactOptional(),
-    path: FilePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The file path to write access logs to. You can use <code>/dev/stdout</code> to send access logs to standard out and configure your Envoy container to use a log driver, such as <code>awslogs</code>, to export the access logs to a log storage service such as Amazon CloudWatch Logs. You can also specify a path in the Envoy container's file system to write the files to disk.</p> <pre><code> &lt;note&gt; &lt;p&gt;The Envoy process must have write permissions to the path that you specify here. Otherwise, Envoy fails to bootstrap properly.&lt;/p&gt; &lt;/note&gt; </code></pre>",
-        }),
-    ),
-  })
-  .openapi({ required: ['path'], description: 'An object that represents an access log file.' })
-  .openapi('FileAccessLog')
-
-type AccessLogType = { file?: z.infer<typeof FileAccessLogSchema> & { [key: string]: unknown } }
-
-const ListenerTlsFileCertificateSchema = z
-  .object({
-    certificateChain: FilePathSchema.and(
-      z.any().openapi({ description: 'The certificate chain for the certificate.' }),
-    ),
-    privateKey: FilePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The private key for a certificate stored on the file system of the virtual node that the proxy is running on.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['certificateChain', 'privateKey'],
-    description:
-      'An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites">Transport Layer Security (TLS)</a>.',
-  })
-  .openapi('ListenerTlsFileCertificate')
-
-const SdsSecretNameSchema = z.string().openapi('SdsSecretName')
-
-const ListenerTlsSdsCertificateSchema = z
-  .object({
-    secretName: SdsSecretNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents the name of the secret requested from the Secret Discovery Service provider representing Transport Layer Security (TLS) materials like a certificate or certificate chain.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['secretName'],
-    description:
-      'An object that represents the listener\'s Secret Discovery Service certificate. The proxy must be configured with a local SDS provider via a Unix Domain Socket. See App Mesh <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html">TLS documentation</a> for more info.',
-  })
-  .openapi('ListenerTlsSdsCertificate')
-
-const ClientTlsCertificateSchema = z
-  .object({
-    file: ListenerTlsFileCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html">Transport Layer Security (TLS)</a>.',
-        }),
-    ).exactOptional(),
-    sds: ListenerTlsSdsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a client's TLS Secret Discovery Service certificate.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: "An object that represents the client's certificate.", required: [] })
-  .openapi('ClientTlsCertificate')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const PortNumberSchema = z.int().min(1).max(65535).openapi('PortNumber')
-
-const PortSetSchema = z.array(PortNumberSchema).openapi('PortSet')
-
-const SubjectAlternativeNameSchema = z.string().min(1).max(254).openapi('SubjectAlternativeName')
-
-const SubjectAlternativeNameListSchema = z
-  .array(SubjectAlternativeNameSchema)
-  .openapi('SubjectAlternativeNameList')
-
-const SubjectAlternativeNameMatchersSchema = z
-  .object({
-    exact: SubjectAlternativeNameListSchema.and(
-      z.any().openapi({ description: 'The values sent must match the specified values exactly.' }),
-    ),
-  })
-  .openapi({
-    required: ['exact'],
-    description:
-      'An object that represents the methods by which a subject alternative name on a peer Transport Layer Security (TLS) certificate can be matched.',
-  })
-  .openapi('SubjectAlternativeNameMatchers')
-
-const SubjectAlternativeNamesSchema = z
-  .object({
-    match: SubjectAlternativeNameMatchersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the criteria for determining a SANs match.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['match'],
-    description:
-      'An object that represents the subject alternative names secured by the certificate.',
-  })
-  .openapi('SubjectAlternativeNames')
+const ResourceNameSchema = z.string().min(1).max(255).openapi('ResourceName')
 
 const ArnSchema = z.string().openapi('Arn')
-
-const CertificateAuthorityArnsSchema = z
-  .array(ArnSchema)
-  .min(1)
-  .max(3)
-  .openapi('CertificateAuthorityArns')
-
-const TlsValidationContextAcmTrustSchema = z
-  .object({
-    certificateAuthorityArns: CertificateAuthorityArnsSchema.and(
-      z.any().openapi({ description: 'One or more ACM Amazon Resource Name (ARN)s.' }),
-    ),
-  })
-  .openapi({
-    required: ['certificateAuthorityArns'],
-    description:
-      'An object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.',
-  })
-  .openapi('TlsValidationContextAcmTrust')
-
-const TlsValidationContextFileTrustSchema = z
-  .object({
-    certificateChain: FilePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate trust chain for a certificate stored on the file system of the virtual node that the proxy is running on.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['certificateChain'],
-    description:
-      'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
-  })
-  .openapi('TlsValidationContextFileTrust')
-
-const TlsValidationContextSdsTrustSchema = z
-  .object({
-    secretName: SdsSecretNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents the name of the secret for a Transport Layer Security (TLS) Secret Discovery Service validation context trust.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['secretName'],
-    description:
-      'An object that represents a Transport Layer Security (TLS) Secret Discovery Service validation context trust. The proxy must be configured with a local SDS provider via a Unix Domain Socket. See App Mesh <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html">TLS documentation</a> for more info.',
-  })
-  .openapi('TlsValidationContextSdsTrust')
-
-const TlsValidationContextTrustSchema = z
-  .object({
-    acm: TlsValidationContextAcmTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.',
-        }),
-    ).exactOptional(),
-    file: TlsValidationContextFileTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
-        }),
-    ).exactOptional(),
-    sds: TlsValidationContextSdsTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents a Transport Layer Security (TLS) Secret Discovery Service validation context trust.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object that represents a Transport Layer Security (TLS) validation context trust.',
-    required: [],
-  })
-  .openapi('TlsValidationContextTrust')
-
-const TlsValidationContextSchema = z
-  .object({
-    subjectAlternativeNames: SubjectAlternativeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents the SANs for a Transport Layer Security (TLS) validation context. If you don't specify SANs on the <i>terminating</i> mesh endpoint, the Envoy proxy for that node doesn't verify the SAN on a peer client certificate. If you don't specify SANs on the <i>originating</i> mesh endpoint, the SAN on the certificate provided by the terminating endpoint must match the mesh endpoint service discovery configuration. Since SPIRE vended certificates have a SPIFFE ID as a name, you must set the SAN since the name doesn't match the service discovery name.",
-        }),
-    ).exactOptional(),
-    trust: TlsValidationContextTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['trust'],
-    description:
-      'An object that represents how the proxy will validate its peer during Transport Layer Security (TLS) negotiation.',
-  })
-  .openapi('TlsValidationContext')
-
-const ClientPolicyTlsSchema = z
-  .object({
-    certificate: ClientTlsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A reference to an object that represents a client's TLS certificate.",
-        }),
-    ).exactOptional(),
-    enforce: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Whether the policy is enforced. The default is <code>True</code>, if a value isn't specified.",
-        }),
-    ).exactOptional(),
-    ports: PortSetSchema.and(
-      z.any().openapi({ description: 'One or more ports that the policy is enforced for.' }),
-    ).exactOptional(),
-    validation: TlsValidationContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A reference to an object that represents a TLS validation context.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['validation'],
-    description:
-      'A reference to an object that represents a Transport Layer Security (TLS) client policy.',
-  })
-  .openapi('ClientPolicyTls')
-
-const ClientPolicySchema = z
-  .object({
-    tls: ClientPolicyTlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents a Transport Layer Security (TLS) client policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'An object that represents a client policy.', required: [] })
-  .openapi('ClientPolicy')
-
-const ServiceNameSchema = z.string().openapi('ServiceName')
-
-const VirtualServiceBackendSchema = z
-  .object({
-    clientPolicy: ClientPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A reference to an object that represents the client policy for a backend.',
-        }),
-    ).exactOptional(),
-    virtualServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the virtual service that is acting as a virtual node backend.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['virtualServiceName'],
-    description: 'An object that represents a virtual service backend for a virtual node.',
-  })
-  .openapi('VirtualServiceBackend')
-
-type BackendType = {
-  virtualService?: z.infer<typeof VirtualServiceBackendSchema> & { [key: string]: unknown }
-}
-
-const ResourceNameSchema = z.string().min(1).max(255).openapi('ResourceName')
 
 const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
@@ -486,51 +14,28 @@ const LongSchema = z.int().openapi('Long')
 
 const ResourceMetadataSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The full Amazon Resource Name (ARN) for the resource.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix epoch timestamp in seconds for when the resource was created.',
-        }),
-    ),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp in seconds for when the resource was last updated.',
-        }),
-    ),
-    meshOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    resourceOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    uid: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the resource.' }),
-    ),
-    version: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
-        }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The full Amazon Resource Name (ARN) for the resource.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was last updated.',
+    }),
+    meshOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    resourceOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    uid: StringSchema.openapi({ description: 'The unique identifier for the resource.' }),
+    version: LongSchema.openapi({
+      description:
+        "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
+    }),
   })
   .openapi({
     required: ['arn', 'createdAt', 'lastUpdatedAt', 'meshOwner', 'resourceOwner', 'uid', 'version'],
@@ -544,9 +49,9 @@ const DefaultGatewayRouteRewriteSchema = z
 
 const GatewayRouteHostnameRewriteSchema = z
   .object({
-    defaultTargetHostname: DefaultGatewayRouteRewriteSchema.and(
-      z.any().openapi({ description: 'The default target host name to write to.' }),
-    ).exactOptional(),
+    defaultTargetHostname: DefaultGatewayRouteRewriteSchema.exactOptional().openapi({
+      description: 'The default target host name to write to.',
+    }),
   })
   .openapi({
     description: 'An object representing the gateway route host name to rewrite.',
@@ -556,9 +61,9 @@ const GatewayRouteHostnameRewriteSchema = z
 
 const GrpcGatewayRouteRewriteSchema = z
   .object({
-    hostname: GatewayRouteHostnameRewriteSchema.and(
-      z.any().openapi({ description: 'The host name of the gateway route to rewrite.' }),
-    ).exactOptional(),
+    hostname: GatewayRouteHostnameRewriteSchema.exactOptional().openapi({
+      description: 'The host name of the gateway route to rewrite.',
+    }),
   })
   .openapi({ description: 'An object that represents the gateway route to rewrite.', required: [] })
   .openapi('GrpcGatewayRouteRewrite')
@@ -567,11 +72,9 @@ const ListenerPortSchema = z.int().min(1).max(65535).openapi('ListenerPort')
 
 const GatewayRouteVirtualServiceSchema = z
   .object({
-    virtualServiceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the virtual service that traffic is routed to.' }),
-    ),
+    virtualServiceName: ResourceNameSchema.openapi({
+      description: 'The name of the virtual service that traffic is routed to.',
+    }),
   })
   .openapi({
     required: ['virtualServiceName'],
@@ -581,16 +84,12 @@ const GatewayRouteVirtualServiceSchema = z
 
 const GatewayRouteTargetSchema = z
   .object({
-    port: ListenerPortSchema.and(
-      z.any().openapi({ description: 'The port number of the gateway route target.' }),
-    ).exactOptional(),
-    virtualService: GatewayRouteVirtualServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents a virtual service gateway route target.',
-        }),
-    ),
+    port: ListenerPortSchema.exactOptional().openapi({
+      description: 'The port number of the gateway route target.',
+    }),
+    virtualService: GatewayRouteVirtualServiceSchema.openapi({
+      description: 'An object that represents a virtual service gateway route target.',
+    }),
   })
   .openapi({
     required: ['virtualService'],
@@ -600,17 +99,13 @@ const GatewayRouteTargetSchema = z
 
 const GrpcGatewayRouteActionSchema = z
   .object({
-    rewrite: GrpcGatewayRouteRewriteSchema.and(
-      z.any().openapi({ description: 'The gateway route action to rewrite.' }),
-    ).exactOptional(),
-    target: GatewayRouteTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the target that traffic is routed to when a request matches the gateway route.',
-        }),
-    ),
+    rewrite: GrpcGatewayRouteRewriteSchema.exactOptional().openapi({
+      description: 'The gateway route action to rewrite.',
+    }),
+    target: GatewayRouteTargetSchema.openapi({
+      description:
+        'An object that represents the target that traffic is routed to when a request matches the gateway route.',
+    }),
   })
   .openapi({
     required: ['target'],
@@ -624,14 +119,12 @@ const SuffixHostnameSchema = z.string().min(1).max(253).openapi('SuffixHostname'
 
 const GatewayRouteHostnameMatchSchema = z
   .object({
-    exact: ExactHostNameSchema.and(
-      z.any().openapi({ description: 'The exact host name to match on.' }),
-    ).exactOptional(),
-    suffix: SuffixHostnameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The specified ending characters of the host name to match on.' }),
-    ).exactOptional(),
+    exact: ExactHostNameSchema.exactOptional().openapi({
+      description: 'The exact host name to match on.',
+    }),
+    suffix: SuffixHostnameSchema.exactOptional().openapi({
+      description: 'The specified ending characters of the host name to match on.',
+    }),
   })
   .openapi({
     description: 'An object representing the gateway route host name to match.',
@@ -639,12 +132,14 @@ const GatewayRouteHostnameMatchSchema = z
   })
   .openapi('GatewayRouteHostnameMatch')
 
+const BooleanSchema = z.boolean().openapi('Boolean')
+
 const HeaderMatchSchema = z.string().min(1).max(255).openapi('HeaderMatch')
 
 const MatchRangeSchema = z
   .object({
-    end: LongSchema.and(z.any().openapi({ description: 'The end of the range.' })),
-    start: LongSchema.and(z.any().openapi({ description: 'The start of the range.' })),
+    end: LongSchema.openapi({ description: 'The end of the range.' }),
+    start: LongSchema.openapi({ description: 'The start of the range.' }),
   })
   .openapi({
     required: ['end', 'start'],
@@ -655,27 +150,19 @@ const MatchRangeSchema = z
 
 const GrpcMetadataMatchMethodSchema = z
   .object({
-    exact: HeaderMatchSchema.and(
-      z.any().openapi({ description: 'The exact method header to be matched on.' }),
-    ).exactOptional(),
-    prefix: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specified beginning characters of the method header to be matched on.',
-        }),
-    ).exactOptional(),
+    exact: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The exact method header to be matched on.',
+    }),
+    prefix: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The specified beginning characters of the method header to be matched on.',
+    }),
     range: MatchRangeSchema.exactOptional(),
-    regex: HeaderMatchSchema.and(
-      z.any().openapi({ description: 'The regex used to match the method header.' }),
-    ).exactOptional(),
-    suffix: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specified ending characters of the method header to match on.',
-        }),
-    ).exactOptional(),
+    regex: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The regex used to match the method header.',
+    }),
+    suffix: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The specified ending characters of the method header to match on.',
+    }),
   })
   .openapi({ description: 'An object representing the method header to be matched.', required: [] })
   .openapi('GrpcMetadataMatchMethod')
@@ -684,20 +171,14 @@ const HeaderNameSchema = z.string().min(1).max(50).openapi('HeaderName')
 
 const GrpcGatewayRouteMetadataSchema = z
   .object({
-    invert: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>True</code> to match anything except the match criteria. The default value is <code>False</code>.',
-        }),
-    ).exactOptional(),
-    match: GrpcMetadataMatchMethodSchema.and(
-      z.any().openapi({ description: 'The criteria for determining a metadata match.' }),
-    ).exactOptional(),
-    name: HeaderNameSchema.and(
-      z.any().openapi({ description: 'A name for the gateway route metadata.' }),
-    ),
+    invert: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specify <code>True</code> to match anything except the match criteria. The default value is <code>False</code>.',
+    }),
+    match: GrpcMetadataMatchMethodSchema.exactOptional().openapi({
+      description: 'The criteria for determining a metadata match.',
+    }),
+    name: HeaderNameSchema.openapi({ description: 'A name for the gateway route metadata.' }),
   })
   .openapi({
     required: ['name'],
@@ -711,24 +192,22 @@ const GrpcGatewayRouteMetadataListSchema = z
   .max(10)
   .openapi('GrpcGatewayRouteMetadataList')
 
+const ServiceNameSchema = z.string().openapi('ServiceName')
+
 const GrpcGatewayRouteMatchSchema = z
   .object({
-    hostname: GatewayRouteHostnameMatchSchema.and(
-      z.any().openapi({ description: 'The gateway route host name to be matched on.' }),
-    ).exactOptional(),
-    metadata: GrpcGatewayRouteMetadataListSchema.and(
-      z.any().openapi({ description: 'The gateway route metadata to be matched on.' }),
-    ).exactOptional(),
-    port: ListenerPortSchema.and(
-      z.any().openapi({ description: 'The port number to match from the request.' }),
-    ).exactOptional(),
-    serviceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fully qualified domain name for the service to match from the request.',
-        }),
-    ).exactOptional(),
+    hostname: GatewayRouteHostnameMatchSchema.exactOptional().openapi({
+      description: 'The gateway route host name to be matched on.',
+    }),
+    metadata: GrpcGatewayRouteMetadataListSchema.exactOptional().openapi({
+      description: 'The gateway route metadata to be matched on.',
+    }),
+    port: ListenerPortSchema.exactOptional().openapi({
+      description: 'The port number to match from the request.',
+    }),
+    serviceName: ServiceNameSchema.exactOptional().openapi({
+      description: 'The fully qualified domain name for the service to match from the request.',
+    }),
   })
   .openapi({
     description: 'An object that represents the criteria for determining a request match.',
@@ -738,20 +217,12 @@ const GrpcGatewayRouteMatchSchema = z
 
 const GrpcGatewayRouteSchema = z
   .object({
-    action: GrpcGatewayRouteActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the action to take if a match is determined.',
-        }),
-    ),
-    match: GrpcGatewayRouteMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the criteria for determining a request match.',
-        }),
-    ),
+    action: GrpcGatewayRouteActionSchema.openapi({
+      description: 'An object that represents the action to take if a match is determined.',
+    }),
+    match: GrpcGatewayRouteMatchSchema.openapi({
+      description: 'An object that represents the criteria for determining a request match.',
+    }),
   })
   .openapi({
     required: ['action', 'match'],
@@ -763,9 +234,9 @@ const HttpPathExactSchema = z.string().min(1).max(255).openapi('HttpPathExact')
 
 const HttpGatewayRoutePathRewriteSchema = z
   .object({
-    exact: HttpPathExactSchema.and(
-      z.any().openapi({ description: 'The exact path to rewrite.' }),
-    ).exactOptional(),
+    exact: HttpPathExactSchema.exactOptional().openapi({
+      description: 'The exact path to rewrite.',
+    }),
   })
   .openapi({ description: 'An object that represents the path to rewrite.', required: [] })
   .openapi('HttpGatewayRoutePathRewrite')
@@ -774,21 +245,12 @@ const HttpGatewayRoutePrefixSchema = z.string().min(1).max(255).openapi('HttpGat
 
 const HttpGatewayRoutePrefixRewriteSchema = z
   .object({
-    defaultPrefix: DefaultGatewayRouteRewriteSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default prefix used to replace the incoming route prefix when rewritten.',
-        }),
-    ).exactOptional(),
-    value: HttpGatewayRoutePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value used to replace the incoming route prefix when rewritten.',
-        }),
-    ).exactOptional(),
+    defaultPrefix: DefaultGatewayRouteRewriteSchema.exactOptional().openapi({
+      description: 'The default prefix used to replace the incoming route prefix when rewritten.',
+    }),
+    value: HttpGatewayRoutePrefixSchema.exactOptional().openapi({
+      description: 'The value used to replace the incoming route prefix when rewritten.',
+    }),
   })
   .openapi({
     description: 'An object representing the beginning characters of the route to rewrite.',
@@ -798,32 +260,28 @@ const HttpGatewayRoutePrefixRewriteSchema = z
 
 const HttpGatewayRouteRewriteSchema = z
   .object({
-    hostname: GatewayRouteHostnameRewriteSchema.and(
-      z.any().openapi({ description: 'The host name to rewrite.' }),
-    ).exactOptional(),
-    path: HttpGatewayRoutePathRewriteSchema.and(
-      z.any().openapi({ description: 'The path to rewrite.' }),
-    ).exactOptional(),
-    prefix: HttpGatewayRoutePrefixRewriteSchema.and(
-      z.any().openapi({ description: 'The specified beginning characters to rewrite.' }),
-    ).exactOptional(),
+    hostname: GatewayRouteHostnameRewriteSchema.exactOptional().openapi({
+      description: 'The host name to rewrite.',
+    }),
+    path: HttpGatewayRoutePathRewriteSchema.exactOptional().openapi({
+      description: 'The path to rewrite.',
+    }),
+    prefix: HttpGatewayRoutePrefixRewriteSchema.exactOptional().openapi({
+      description: 'The specified beginning characters to rewrite.',
+    }),
   })
   .openapi({ description: 'An object representing the gateway route to rewrite.', required: [] })
   .openapi('HttpGatewayRouteRewrite')
 
 const HttpGatewayRouteActionSchema = z
   .object({
-    rewrite: HttpGatewayRouteRewriteSchema.and(
-      z.any().openapi({ description: 'The gateway route action to rewrite.' }),
-    ).exactOptional(),
-    target: GatewayRouteTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the target that traffic is routed to when a request matches the gateway route.',
-        }),
-    ),
+    rewrite: HttpGatewayRouteRewriteSchema.exactOptional().openapi({
+      description: 'The gateway route action to rewrite.',
+    }),
+    target: GatewayRouteTargetSchema.openapi({
+      description:
+        'An object that represents the target that traffic is routed to when a request matches the gateway route.',
+    }),
   })
   .openapi({
     required: ['target'],
@@ -833,39 +291,21 @@ const HttpGatewayRouteActionSchema = z
 
 const HeaderMatchMethodSchema = z
   .object({
-    exact: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value sent by the client must match the specified value exactly.',
-        }),
-    ).exactOptional(),
-    prefix: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value sent by the client must begin with the specified characters.',
-        }),
-    ).exactOptional(),
-    range: MatchRangeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that represents the range of values to match on.' }),
-    ).exactOptional(),
-    regex: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value sent by the client must include the specified characters.',
-        }),
-    ).exactOptional(),
-    suffix: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value sent by the client must end with the specified characters.',
-        }),
-    ).exactOptional(),
+    exact: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The value sent by the client must match the specified value exactly.',
+    }),
+    prefix: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The value sent by the client must begin with the specified characters.',
+    }),
+    range: MatchRangeSchema.exactOptional().openapi({
+      description: 'An object that represents the range of values to match on.',
+    }),
+    regex: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The value sent by the client must include the specified characters.',
+    }),
+    suffix: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The value sent by the client must end with the specified characters.',
+    }),
   })
   .openapi({
     description:
@@ -876,29 +316,17 @@ const HeaderMatchMethodSchema = z
 
 const HttpGatewayRouteHeaderSchema = z
   .object({
-    invert: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>True</code> to match anything except the match criteria. The default value is <code>False</code>.',
-        }),
-    ).exactOptional(),
-    match: HeaderMatchMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the method and value to match with the header value sent in a request. Specify one match method.',
-        }),
-    ).exactOptional(),
-    name: HeaderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name for the HTTP header in the gateway route that will be matched on.',
-        }),
-    ),
+    invert: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specify <code>True</code> to match anything except the match criteria. The default value is <code>False</code>.',
+    }),
+    match: HeaderMatchMethodSchema.exactOptional().openapi({
+      description:
+        'An object that represents the method and value to match with the header value sent in a request. Specify one match method.',
+    }),
+    name: HeaderNameSchema.openapi({
+      description: 'A name for the HTTP header in the gateway route that will be matched on.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -920,12 +348,12 @@ const HttpPathRegexSchema = z.string().min(1).max(255).openapi('HttpPathRegex')
 
 const HttpPathMatchSchema = z
   .object({
-    exact: HttpPathExactSchema.and(
-      z.any().openapi({ description: 'The exact path to match on.' }),
-    ).exactOptional(),
-    regex: HttpPathRegexSchema.and(
-      z.any().openapi({ description: 'The regex used to match the path.' }),
-    ).exactOptional(),
+    exact: HttpPathExactSchema.exactOptional().openapi({
+      description: 'The exact path to match on.',
+    }),
+    regex: HttpPathRegexSchema.exactOptional().openapi({
+      description: 'The regex used to match the path.',
+    }),
   })
   .openapi({
     description: 'An object representing the path to match in the request.',
@@ -935,9 +363,9 @@ const HttpPathMatchSchema = z
 
 const QueryParameterMatchSchema = z
   .object({
-    exact: StringSchema.and(
-      z.any().openapi({ description: 'The exact query parameter to match on.' }),
-    ).exactOptional(),
+    exact: StringSchema.exactOptional().openapi({
+      description: 'The exact query parameter to match on.',
+    }),
   })
   .openapi({ description: 'An object representing the query parameter to match.', required: [] })
   .openapi('QueryParameterMatch')
@@ -946,12 +374,12 @@ const QueryParameterNameSchema = z.string().openapi('QueryParameterName')
 
 const HttpQueryParameterSchema = z
   .object({
-    match: QueryParameterMatchSchema.and(
-      z.any().openapi({ description: 'The query parameter to match on.' }),
-    ).exactOptional(),
-    name: QueryParameterNameSchema.and(
-      z.any().openapi({ description: 'A name for the query parameter that will be matched on.' }),
-    ),
+    match: QueryParameterMatchSchema.exactOptional().openapi({
+      description: 'The query parameter to match on.',
+    }),
+    name: QueryParameterNameSchema.openapi({
+      description: 'A name for the query parameter that will be matched on.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -967,32 +395,24 @@ const HttpQueryParametersSchema = z
 
 const HttpGatewayRouteMatchSchema = z
   .object({
-    headers: HttpGatewayRouteHeadersSchema.and(
-      z.any().openapi({ description: 'The client request headers to match on.' }),
-    ).exactOptional(),
-    hostname: GatewayRouteHostnameMatchSchema.and(
-      z.any().openapi({ description: 'The host name to match on.' }),
-    ).exactOptional(),
-    method: HttpMethodSchema.and(
-      z.any().openapi({ description: 'The method to match on.' }),
-    ).exactOptional(),
-    path: HttpPathMatchSchema.and(
-      z.any().openapi({ description: 'The path to match on.' }),
-    ).exactOptional(),
-    port: ListenerPortSchema.and(
-      z.any().openapi({ description: 'The port number to match on.' }),
-    ).exactOptional(),
-    prefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the path to match requests with. This parameter must always start with <code>/</code>, which by itself matches all requests to the virtual service name. You can also match for path-based routing of requests. For example, if your virtual service name is <code>my-service.local</code> and you want the route to match requests to <code>my-service.local/metrics</code>, your prefix should be <code>/metrics</code>.',
-        }),
-    ).exactOptional(),
-    queryParameters: HttpQueryParametersSchema.and(
-      z.any().openapi({ description: 'The query parameter to match on.' }),
-    ).exactOptional(),
+    headers: HttpGatewayRouteHeadersSchema.exactOptional().openapi({
+      description: 'The client request headers to match on.',
+    }),
+    hostname: GatewayRouteHostnameMatchSchema.exactOptional().openapi({
+      description: 'The host name to match on.',
+    }),
+    method: HttpMethodSchema.exactOptional().openapi({ description: 'The method to match on.' }),
+    path: HttpPathMatchSchema.exactOptional().openapi({ description: 'The path to match on.' }),
+    port: ListenerPortSchema.exactOptional().openapi({
+      description: 'The port number to match on.',
+    }),
+    prefix: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the path to match requests with. This parameter must always start with <code>/</code>, which by itself matches all requests to the virtual service name. You can also match for path-based routing of requests. For example, if your virtual service name is <code>my-service.local</code> and you want the route to match requests to <code>my-service.local/metrics</code>, your prefix should be <code>/metrics</code>.',
+    }),
+    queryParameters: HttpQueryParametersSchema.exactOptional().openapi({
+      description: 'The query parameter to match on.',
+    }),
   })
   .openapi({
     description: 'An object that represents the criteria for determining a request match.',
@@ -1002,20 +422,12 @@ const HttpGatewayRouteMatchSchema = z
 
 const HttpGatewayRouteSchema = z
   .object({
-    action: HttpGatewayRouteActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the action to take if a match is determined.',
-        }),
-    ),
-    match: HttpGatewayRouteMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the criteria for determining a request match.',
-        }),
-    ),
+    action: HttpGatewayRouteActionSchema.openapi({
+      description: 'An object that represents the action to take if a match is determined.',
+    }),
+    match: HttpGatewayRouteMatchSchema.openapi({
+      description: 'An object that represents the criteria for determining a request match.',
+    }),
   })
   .openapi({
     required: ['action', 'match'],
@@ -1027,30 +439,18 @@ const GatewayRoutePrioritySchema = z.int().min(0).max(1000).openapi('GatewayRout
 
 const GatewayRouteSpecSchema = z
   .object({
-    grpcRoute: GrpcGatewayRouteSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the specification of a gRPC gateway route.',
-        }),
-    ).exactOptional(),
-    http2Route: HttpGatewayRouteSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the specification of an HTTP/2 gateway route.',
-        }),
-    ).exactOptional(),
-    httpRoute: HttpGatewayRouteSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the specification of an HTTP gateway route.',
-        }),
-    ).exactOptional(),
-    priority: GatewayRoutePrioritySchema.and(
-      z.any().openapi({ description: 'The ordering of the gateway routes spec.' }),
-    ).exactOptional(),
+    grpcRoute: GrpcGatewayRouteSchema.exactOptional().openapi({
+      description: 'An object that represents the specification of a gRPC gateway route.',
+    }),
+    http2Route: HttpGatewayRouteSchema.exactOptional().openapi({
+      description: 'An object that represents the specification of an HTTP/2 gateway route.',
+    }),
+    httpRoute: HttpGatewayRouteSchema.exactOptional().openapi({
+      description: 'An object that represents the specification of an HTTP gateway route.',
+    }),
+    priority: GatewayRoutePrioritySchema.exactOptional().openapi({
+      description: 'The ordering of the gateway routes spec.',
+    }),
   })
   .openapi({
     description:
@@ -1065,9 +465,9 @@ const GatewayRouteStatusCodeSchema = z
 
 const GatewayRouteStatusSchema = z
   .object({
-    status: GatewayRouteStatusCodeSchema.and(
-      z.any().openapi({ description: 'The current status for the gateway route.' }),
-    ),
+    status: GatewayRouteStatusCodeSchema.openapi({
+      description: 'The current status for the gateway route.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -1075,28 +475,29 @@ const GatewayRouteStatusSchema = z
   })
   .openapi('GatewayRouteStatus')
 
-const GatewayRouteDataSchema = z
+type GatewayRouteDataType = {
+  gatewayRouteName: z.infer<typeof ResourceNameSchema> & unknown
+  meshName: z.infer<typeof ResourceNameSchema> & unknown
+  metadata: z.infer<typeof ResourceMetadataSchema>
+  spec: z.infer<typeof GatewayRouteSpecSchema> & unknown
+  status: z.infer<typeof GatewayRouteStatusSchema> & unknown
+  virtualGatewayName: z.infer<typeof ResourceNameSchema> & unknown
+}
+
+const GatewayRouteDataSchema: z.ZodType<GatewayRouteDataType> = z
   .object({
-    gatewayRouteName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the gateway route.' }),
-    ),
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service mesh that the resource resides in. ' }),
-    ),
+    gatewayRouteName: ResourceNameSchema.openapi({ description: 'The name of the gateway route.' }),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the resource resides in. ',
+    }),
     metadata: ResourceMetadataSchema,
-    spec: GatewayRouteSpecSchema.and(
-      z.any().openapi({ description: 'The specifications of the gateway route.' }),
-    ),
-    status: GatewayRouteStatusSchema.and(
-      z.any().openapi({ description: 'The status of the gateway route.' }),
-    ),
-    virtualGatewayName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The virtual gateway that the gateway route is associated with.' }),
-    ),
+    spec: GatewayRouteSpecSchema.openapi({
+      description: 'The specifications of the gateway route.',
+    }),
+    status: GatewayRouteStatusSchema.openapi({ description: 'The status of the gateway route.' }),
+    virtualGatewayName: ResourceNameSchema.openapi({
+      description: 'The virtual gateway that the gateway route is associated with.',
+    }),
   })
   .openapi({
     required: ['gatewayRouteName', 'meshName', 'metadata', 'spec', 'status', 'virtualGatewayName'],
@@ -1104,167 +505,23 @@ const GatewayRouteDataSchema = z
   })
   .openapi('GatewayRouteData')
 
-const CreateGatewayRouteOutputSchema = z
-  .object({
-    gatewayRoute: GatewayRouteDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The full description of your gateway route following the create call.',
-        }),
-    ),
-  })
-  .openapi({ required: ['gatewayRoute'] })
-  .openapi('CreateGatewayRouteOutput')
-
-const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
-
-const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
-
-const TagRefSchema = z
-  .object({
-    key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A <code>key</code> is a general label that acts like a category for more specific tag values.',
-        }),
-    ),
-    value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that make up a tag. A <code>value</code> acts as a descriptor within a tag category (key).',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['key', 'value'],
-    description:
-      'Optional metadata that you apply to a resource to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-  })
-  .openapi('TagRef')
-
-const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
-
-const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
-
-const ConflictExceptionSchema = z.any().openapi('ConflictException')
-
-const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException')
-
-const ForbiddenExceptionSchema = z.any().openapi('ForbiddenException')
-
-const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
-
-const InternalServerErrorExceptionSchema = z.any().openapi('InternalServerErrorException')
-
-const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
-
-const EgressFilterTypeSchema = z.enum(['ALLOW_ALL', 'DROP_ALL']).openapi('EgressFilterType')
-
-const EgressFilterSchema = z
-  .object({
-    type: EgressFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The egress filter type. By default, the type is <code>DROP_ALL</code>, which allows egress only from virtual nodes to other defined resources in the service mesh (and any traffic to <code>*.amazonaws.com</code> for Amazon Web Services API calls). You can set the egress filter type to <code>ALLOW_ALL</code> to allow egress to any endpoint inside or outside of the service mesh.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['type'],
-    description: 'An object that represents the egress filter rules for a service mesh.',
-  })
-  .openapi('EgressFilter')
-
-const MeshServiceDiscoverySchema = z
-  .object({
-    ipPreference: IpPreferenceSchema.and(
-      z.any().openapi({ description: 'The IP version to use to control traffic within the mesh.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'An object that represents the service discovery information for a service mesh.',
-    required: [],
-  })
-  .openapi('MeshServiceDiscovery')
-
-const MeshSpecSchema = z
-  .object({
-    egressFilter: EgressFilterSchema.and(
-      z.any().openapi({ description: 'The egress filter rules for the service mesh.' }),
-    ).exactOptional(),
-    serviceDiscovery: MeshServiceDiscoverySchema.exactOptional(),
-  })
-  .openapi({
-    description: 'An object that represents the specification of a service mesh.',
-    required: [],
-  })
-  .openapi('MeshSpec')
-
-const MeshStatusCodeSchema = z.enum(['ACTIVE', 'INACTIVE', 'DELETED']).openapi('MeshStatusCode')
-
-const MeshStatusSchema = z
-  .object({
-    status: MeshStatusCodeSchema.and(
-      z.any().openapi({ description: 'The current mesh status.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'An object that represents the status of a service mesh.', required: [] })
-  .openapi('MeshStatus')
-
-const MeshDataSchema = z
-  .object({
-    meshName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service mesh.' }),
-    ),
-    metadata: ResourceMetadataSchema.and(
-      z.any().openapi({ description: 'The associated metadata for the service mesh.' }),
-    ),
-    spec: MeshSpecSchema.and(
-      z.any().openapi({ description: 'The associated specification for the service mesh.' }),
-    ),
-    status: MeshStatusSchema.and(
-      z.any().openapi({ description: 'The status of the service mesh.' }),
-    ),
-  })
-  .openapi({
-    required: ['meshName', 'metadata', 'spec', 'status'],
-    description: 'An object that represents a service mesh returned by a describe operation.',
-  })
-  .openapi('MeshData')
-
-const CreateMeshOutputSchema = z
-  .object({
-    mesh: MeshDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The full description of your service mesh following the create call.',
-        }),
-    ),
-  })
-  .openapi({ required: ['mesh'], description: '<zonbook></zonbook><xhtml></xhtml>' })
-  .openapi('CreateMeshOutput')
+type CreateGatewayRouteOutputType = {
+  gatewayRoute: z.infer<typeof GatewayRouteDataSchema> & unknown
+}
 
 const PercentIntSchema = z.int().min(0).max(100).openapi('PercentInt')
 
 const WeightedTargetSchema = z
   .object({
-    port: ListenerPortSchema.and(
-      z.any().openapi({ description: 'The targeted port of the weighted object.' }),
-    ).exactOptional(),
-    virtualNode: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The virtual node to associate with the weighted target.' }),
-    ),
-    weight: PercentIntSchema.and(
-      z.any().openapi({ description: 'The relative weight of the weighted target.' }),
-    ),
+    port: ListenerPortSchema.exactOptional().openapi({
+      description: 'The targeted port of the weighted object.',
+    }),
+    virtualNode: ResourceNameSchema.openapi({
+      description: 'The virtual node to associate with the weighted target.',
+    }),
+    weight: PercentIntSchema.openapi({
+      description: 'The relative weight of the weighted target.',
+    }),
   })
   .openapi({
     required: ['virtualNode', 'weight'],
@@ -1281,14 +538,10 @@ const WeightedTargetsSchema = z
 
 const GrpcRouteActionSchema = z
   .object({
-    weightedTargets: WeightedTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the targets that traffic is routed to when a request matches the route.',
-        }),
-    ),
+    weightedTargets: WeightedTargetsSchema.openapi({
+      description:
+        'An object that represents the targets that traffic is routed to when a request matches the route.',
+    }),
   })
   .openapi({
     required: ['weightedTargets'],
@@ -1298,39 +551,21 @@ const GrpcRouteActionSchema = z
 
 const GrpcRouteMetadataMatchMethodSchema = z
   .object({
-    exact: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value sent by the client must match the specified value exactly.',
-        }),
-    ).exactOptional(),
-    prefix: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value sent by the client must begin with the specified characters.',
-        }),
-    ).exactOptional(),
-    range: MatchRangeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that represents the range of values to match on.' }),
-    ).exactOptional(),
-    regex: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value sent by the client must include the specified characters.',
-        }),
-    ).exactOptional(),
-    suffix: HeaderMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value sent by the client must end with the specified characters.',
-        }),
-    ).exactOptional(),
+    exact: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The value sent by the client must match the specified value exactly.',
+    }),
+    prefix: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The value sent by the client must begin with the specified characters.',
+    }),
+    range: MatchRangeSchema.exactOptional().openapi({
+      description: 'An object that represents the range of values to match on.',
+    }),
+    regex: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The value sent by the client must include the specified characters.',
+    }),
+    suffix: HeaderMatchSchema.exactOptional().openapi({
+      description: 'The value sent by the client must end with the specified characters.',
+    }),
   })
   .openapi({
     description: 'An object that represents the match method. Specify one of the match values.',
@@ -1340,20 +575,14 @@ const GrpcRouteMetadataMatchMethodSchema = z
 
 const GrpcRouteMetadataSchema = z
   .object({
-    invert: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>True</code> to match anything except the match criteria. The default value is <code>False</code>.',
-        }),
-    ).exactOptional(),
-    match: GrpcRouteMetadataMatchMethodSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that represents the data to match from the request.' }),
-    ).exactOptional(),
-    name: HeaderNameSchema.and(z.any().openapi({ description: 'The name of the route.' })),
+    invert: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specify <code>True</code> to match anything except the match criteria. The default value is <code>False</code>.',
+    }),
+    match: GrpcRouteMetadataMatchMethodSchema.exactOptional().openapi({
+      description: 'An object that represents the data to match from the request.',
+    }),
+    name: HeaderNameSchema.openapi({ description: 'The name of the route.' }),
   })
   .openapi({
     required: ['name'],
@@ -1371,29 +600,19 @@ const MethodNameSchema = z.string().min(1).max(50).openapi('MethodName')
 
 const GrpcRouteMatchSchema = z
   .object({
-    metadata: GrpcRouteMetadataListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that represents the data to match from the request.' }),
-    ).exactOptional(),
-    methodName: MethodNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The method name to match from the request. If you specify a name, you must also specify a <code>serviceName</code>.',
-        }),
-    ).exactOptional(),
-    port: ListenerPortSchema.and(
-      z.any().openapi({ description: 'The port number to match on.' }),
-    ).exactOptional(),
-    serviceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fully qualified domain name for the service to match from the request.',
-        }),
-    ).exactOptional(),
+    metadata: GrpcRouteMetadataListSchema.exactOptional().openapi({
+      description: 'An object that represents the data to match from the request.',
+    }),
+    methodName: MethodNameSchema.exactOptional().openapi({
+      description:
+        'The method name to match from the request. If you specify a name, you must also specify a <code>serviceName</code>.',
+    }),
+    port: ListenerPortSchema.exactOptional().openapi({
+      description: 'The port number to match on.',
+    }),
+    serviceName: ServiceNameSchema.exactOptional().openapi({
+      description: 'The fully qualified domain name for the service to match from the request.',
+    }),
   })
   .openapi({
     description: 'An object that represents the criteria for determining a request match.',
@@ -1427,12 +646,8 @@ const DurationValueSchema = z.int().min(0).openapi('DurationValue')
 
 const DurationSchema = z
   .object({
-    unit: DurationUnitSchema.and(
-      z.any().openapi({ description: 'A unit of time.' }),
-    ).exactOptional(),
-    value: DurationValueSchema.and(
-      z.any().openapi({ description: 'A number of time units.' }),
-    ).exactOptional(),
+    unit: DurationUnitSchema.exactOptional().openapi({ description: 'A unit of time.' }),
+    value: DurationValueSchema.exactOptional().openapi({ description: 'A number of time units.' }),
   })
   .openapi({ description: 'An object that represents a duration of time.', required: [] })
   .openapi('Duration')
@@ -1446,31 +661,19 @@ const TcpRetryPolicyEventsSchema = z
 
 const GrpcRetryPolicySchema = z
   .object({
-    grpcRetryEvents: GrpcRetryPolicyEventsSchema.and(
-      z.any().openapi({ description: 'Specify at least one of the valid values.' }),
-    ).exactOptional(),
-    httpRetryEvents: HttpRetryPolicyEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify at least one of the following values.</p> <ul> <li> <p> <b>server-error</b> – HTTP status codes 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, and 511</p> </li> <li> <p> <b>gateway-error</b> – HTTP status codes 502, 503, and 504</p> </li> <li> <p> <b>client-error</b> – HTTP status code 409</p> </li> <li> <p> <b>stream-error</b> – Retry on refused stream</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    maxRetries: MaxRetriesSchema.and(
-      z.any().openapi({ description: 'The maximum number of retry attempts.' }),
-    ),
-    perRetryTimeout: DurationSchema.and(
-      z.any().openapi({ description: 'The timeout for each retry attempt.' }),
-    ),
-    tcpRetryEvents: TcpRetryPolicyEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify a valid value. The event occurs before any processing of a request has started and is encountered when the upstream is temporarily or permanently unavailable.',
-        }),
-    ).exactOptional(),
+    grpcRetryEvents: GrpcRetryPolicyEventsSchema.exactOptional().openapi({
+      description: 'Specify at least one of the valid values.',
+    }),
+    httpRetryEvents: HttpRetryPolicyEventsSchema.exactOptional().openapi({
+      description:
+        '<p>Specify at least one of the following values.</p> <ul> <li> <p> <b>server-error</b> – HTTP status codes 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, and 511</p> </li> <li> <p> <b>gateway-error</b> – HTTP status codes 502, 503, and 504</p> </li> <li> <p> <b>client-error</b> – HTTP status code 409</p> </li> <li> <p> <b>stream-error</b> – Retry on refused stream</p> </li> </ul>',
+    }),
+    maxRetries: MaxRetriesSchema.openapi({ description: 'The maximum number of retry attempts.' }),
+    perRetryTimeout: DurationSchema.openapi({ description: 'The timeout for each retry attempt.' }),
+    tcpRetryEvents: TcpRetryPolicyEventsSchema.exactOptional().openapi({
+      description:
+        'Specify a valid value. The event occurs before any processing of a request has started and is encountered when the upstream is temporarily or permanently unavailable.',
+    }),
   })
   .openapi({
     required: ['maxRetries', 'perRetryTimeout'],
@@ -1481,48 +684,32 @@ const GrpcRetryPolicySchema = z
 
 const GrpcTimeoutSchema = z
   .object({
-    idle: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.',
-        }),
-    ).exactOptional(),
-    perRequest: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a per request timeout. The default value is 15 seconds. If you set a higher timeout, then make sure that the higher value is set for each App Mesh resource in a conversation. For example, if a virtual node backend uses a virtual router provider to route to another virtual node, then the timeout should be greater than 15 seconds for the source and destination virtual node and the route.',
-        }),
-    ).exactOptional(),
+    idle: DurationSchema.exactOptional().openapi({
+      description:
+        'An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.',
+    }),
+    perRequest: DurationSchema.exactOptional().openapi({
+      description:
+        'An object that represents a per request timeout. The default value is 15 seconds. If you set a higher timeout, then make sure that the higher value is set for each App Mesh resource in a conversation. For example, if a virtual node backend uses a virtual router provider to route to another virtual node, then the timeout should be greater than 15 seconds for the source and destination virtual node and the route.',
+    }),
   })
   .openapi({ description: 'An object that represents types of timeouts. ', required: [] })
   .openapi('GrpcTimeout')
 
 const GrpcRouteSchema = z
   .object({
-    action: GrpcRouteActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the action to take if a match is determined.',
-        }),
-    ),
-    match: GrpcRouteMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the criteria for determining a request match.',
-        }),
-    ),
-    retryPolicy: GrpcRetryPolicySchema.and(
-      z.any().openapi({ description: 'An object that represents a retry policy.' }),
-    ).exactOptional(),
-    timeout: GrpcTimeoutSchema.and(
-      z.any().openapi({ description: 'An object that represents types of timeouts. ' }),
-    ).exactOptional(),
+    action: GrpcRouteActionSchema.openapi({
+      description: 'An object that represents the action to take if a match is determined.',
+    }),
+    match: GrpcRouteMatchSchema.openapi({
+      description: 'An object that represents the criteria for determining a request match.',
+    }),
+    retryPolicy: GrpcRetryPolicySchema.exactOptional().openapi({
+      description: 'An object that represents a retry policy.',
+    }),
+    timeout: GrpcTimeoutSchema.exactOptional().openapi({
+      description: 'An object that represents types of timeouts. ',
+    }),
   })
   .openapi({
     required: ['action', 'match'],
@@ -1532,14 +719,10 @@ const GrpcRouteSchema = z
 
 const HttpRouteActionSchema = z
   .object({
-    weightedTargets: WeightedTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the targets that traffic is routed to when a request matches the route.',
-        }),
-    ),
+    weightedTargets: WeightedTargetsSchema.openapi({
+      description:
+        'An object that represents the targets that traffic is routed to when a request matches the route.',
+    }),
   })
   .openapi({
     required: ['weightedTargets'],
@@ -1549,24 +732,16 @@ const HttpRouteActionSchema = z
 
 const HttpRouteHeaderSchema = z
   .object({
-    invert: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>True</code> to match anything except the match criteria. The default value is <code>False</code>.',
-        }),
-    ).exactOptional(),
-    match: HeaderMatchMethodSchema.and(
-      z.any().openapi({ description: 'The <code>HeaderMatchMethod</code> object.' }),
-    ).exactOptional(),
-    name: HeaderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name for the HTTP header in the client request that will be matched on.',
-        }),
-    ),
+    invert: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specify <code>True</code> to match anything except the match criteria. The default value is <code>False</code>.',
+    }),
+    match: HeaderMatchMethodSchema.exactOptional().openapi({
+      description: 'The <code>HeaderMatchMethod</code> object.',
+    }),
+    name: HeaderNameSchema.openapi({
+      description: 'A name for the HTTP header in the client request that will be matched on.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -1584,37 +759,29 @@ const HttpSchemeSchema = z.enum(['http', 'https']).openapi('HttpScheme')
 
 const HttpRouteMatchSchema = z
   .object({
-    headers: HttpRouteHeadersSchema.and(
-      z.any().openapi({ description: 'The client request headers to match on.' }),
-    ).exactOptional(),
-    method: HttpMethodSchema.and(
-      z.any().openapi({ description: 'The client request method to match on. Specify only one.' }),
-    ).exactOptional(),
-    path: HttpPathMatchSchema.and(
-      z.any().openapi({ description: 'The client request path to match on.' }),
-    ).exactOptional(),
-    port: ListenerPortSchema.and(
-      z.any().openapi({ description: 'The port number to match on.' }),
-    ).exactOptional(),
-    prefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the path to match requests with. This parameter must always start with <code>/</code>, which by itself matches all requests to the virtual service name. You can also match for path-based routing of requests. For example, if your virtual service name is <code>my-service.local</code> and you want the route to match requests to <code>my-service.local/metrics</code>, your prefix should be <code>/metrics</code>.',
-        }),
-    ).exactOptional(),
-    queryParameters: HttpQueryParametersSchema.and(
-      z.any().openapi({ description: 'The client request query parameters to match on.' }),
-    ).exactOptional(),
-    scheme: HttpSchemeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The client request scheme to match on. Specify only one. Applicable only for HTTP2 routes.',
-        }),
-    ).exactOptional(),
+    headers: HttpRouteHeadersSchema.exactOptional().openapi({
+      description: 'The client request headers to match on.',
+    }),
+    method: HttpMethodSchema.exactOptional().openapi({
+      description: 'The client request method to match on. Specify only one.',
+    }),
+    path: HttpPathMatchSchema.exactOptional().openapi({
+      description: 'The client request path to match on.',
+    }),
+    port: ListenerPortSchema.exactOptional().openapi({
+      description: 'The port number to match on.',
+    }),
+    prefix: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the path to match requests with. This parameter must always start with <code>/</code>, which by itself matches all requests to the virtual service name. You can also match for path-based routing of requests. For example, if your virtual service name is <code>my-service.local</code> and you want the route to match requests to <code>my-service.local/metrics</code>, your prefix should be <code>/metrics</code>.',
+    }),
+    queryParameters: HttpQueryParametersSchema.exactOptional().openapi({
+      description: 'The client request query parameters to match on.',
+    }),
+    scheme: HttpSchemeSchema.exactOptional().openapi({
+      description:
+        'The client request scheme to match on. Specify only one. Applicable only for HTTP2 routes.',
+    }),
   })
   .openapi({
     description:
@@ -1625,28 +792,16 @@ const HttpRouteMatchSchema = z
 
 const HttpRetryPolicySchema = z
   .object({
-    httpRetryEvents: HttpRetryPolicyEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify at least one of the following values.</p> <ul> <li> <p> <b>server-error</b> – HTTP status codes 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, and 511</p> </li> <li> <p> <b>gateway-error</b> – HTTP status codes 502, 503, and 504</p> </li> <li> <p> <b>client-error</b> – HTTP status code 409</p> </li> <li> <p> <b>stream-error</b> – Retry on refused stream</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    maxRetries: MaxRetriesSchema.and(
-      z.any().openapi({ description: 'The maximum number of retry attempts.' }),
-    ),
-    perRetryTimeout: DurationSchema.and(
-      z.any().openapi({ description: 'The timeout for each retry attempt.' }),
-    ),
-    tcpRetryEvents: TcpRetryPolicyEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify a valid value. The event occurs before any processing of a request has started and is encountered when the upstream is temporarily or permanently unavailable.',
-        }),
-    ).exactOptional(),
+    httpRetryEvents: HttpRetryPolicyEventsSchema.exactOptional().openapi({
+      description:
+        '<p>Specify at least one of the following values.</p> <ul> <li> <p> <b>server-error</b> – HTTP status codes 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, and 511</p> </li> <li> <p> <b>gateway-error</b> – HTTP status codes 502, 503, and 504</p> </li> <li> <p> <b>client-error</b> – HTTP status code 409</p> </li> <li> <p> <b>stream-error</b> – Retry on refused stream</p> </li> </ul>',
+    }),
+    maxRetries: MaxRetriesSchema.openapi({ description: 'The maximum number of retry attempts.' }),
+    perRetryTimeout: DurationSchema.openapi({ description: 'The timeout for each retry attempt.' }),
+    tcpRetryEvents: TcpRetryPolicyEventsSchema.exactOptional().openapi({
+      description:
+        'Specify a valid value. The event occurs before any processing of a request has started and is encountered when the upstream is temporarily or permanently unavailable.',
+    }),
   })
   .openapi({
     required: ['maxRetries', 'perRetryTimeout'],
@@ -1657,48 +812,32 @@ const HttpRetryPolicySchema = z
 
 const HttpTimeoutSchema = z
   .object({
-    idle: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.',
-        }),
-    ).exactOptional(),
-    perRequest: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a per request timeout. The default value is 15 seconds. If you set a higher timeout, then make sure that the higher value is set for each App Mesh resource in a conversation. For example, if a virtual node backend uses a virtual router provider to route to another virtual node, then the timeout should be greater than 15 seconds for the source and destination virtual node and the route.',
-        }),
-    ).exactOptional(),
+    idle: DurationSchema.exactOptional().openapi({
+      description:
+        'An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.',
+    }),
+    perRequest: DurationSchema.exactOptional().openapi({
+      description:
+        'An object that represents a per request timeout. The default value is 15 seconds. If you set a higher timeout, then make sure that the higher value is set for each App Mesh resource in a conversation. For example, if a virtual node backend uses a virtual router provider to route to another virtual node, then the timeout should be greater than 15 seconds for the source and destination virtual node and the route.',
+    }),
   })
   .openapi({ description: 'An object that represents types of timeouts. ', required: [] })
   .openapi('HttpTimeout')
 
 const HttpRouteSchema = z
   .object({
-    action: HttpRouteActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the action to take if a match is determined.',
-        }),
-    ),
-    match: HttpRouteMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the criteria for determining a request match.',
-        }),
-    ),
-    retryPolicy: HttpRetryPolicySchema.and(
-      z.any().openapi({ description: 'An object that represents a retry policy.' }),
-    ).exactOptional(),
-    timeout: HttpTimeoutSchema.and(
-      z.any().openapi({ description: 'An object that represents types of timeouts. ' }),
-    ).exactOptional(),
+    action: HttpRouteActionSchema.openapi({
+      description: 'An object that represents the action to take if a match is determined.',
+    }),
+    match: HttpRouteMatchSchema.openapi({
+      description: 'An object that represents the criteria for determining a request match.',
+    }),
+    retryPolicy: HttpRetryPolicySchema.exactOptional().openapi({
+      description: 'An object that represents a retry policy.',
+    }),
+    timeout: HttpTimeoutSchema.exactOptional().openapi({
+      description: 'An object that represents types of timeouts. ',
+    }),
   })
   .openapi({
     required: ['action', 'match'],
@@ -1710,14 +849,10 @@ const RoutePrioritySchema = z.int().min(0).max(1000).openapi('RoutePriority')
 
 const TcpRouteActionSchema = z
   .object({
-    weightedTargets: WeightedTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the targets that traffic is routed to when a request matches the route.',
-        }),
-    ),
+    weightedTargets: WeightedTargetsSchema.openapi({
+      description:
+        'An object that represents the targets that traffic is routed to when a request matches the route.',
+    }),
   })
   .openapi({
     required: ['weightedTargets'],
@@ -1727,78 +862,56 @@ const TcpRouteActionSchema = z
 
 const TcpRouteMatchSchema = z
   .object({
-    port: ListenerPortSchema.and(
-      z.any().openapi({ description: 'The port number to match on.' }),
-    ).exactOptional(),
+    port: ListenerPortSchema.exactOptional().openapi({
+      description: 'The port number to match on.',
+    }),
   })
   .openapi({ description: 'An object representing the TCP route to match.', required: [] })
   .openapi('TcpRouteMatch')
 
 const TcpTimeoutSchema = z
   .object({
-    idle: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.',
-        }),
-    ).exactOptional(),
+    idle: DurationSchema.exactOptional().openapi({
+      description:
+        'An object that represents an idle timeout. An idle timeout bounds the amount of time that a connection may be idle. The default value is none.',
+    }),
   })
   .openapi({ description: 'An object that represents types of timeouts. ', required: [] })
   .openapi('TcpTimeout')
 
 const TcpRouteSchema = z
   .object({
-    action: TcpRouteActionSchema.and(
-      z.any().openapi({ description: 'The action to take if a match is determined.' }),
-    ),
-    match: TcpRouteMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the criteria for determining a request match.',
-        }),
-    ).exactOptional(),
-    timeout: TcpTimeoutSchema.and(
-      z.any().openapi({ description: 'An object that represents types of timeouts. ' }),
-    ).exactOptional(),
+    action: TcpRouteActionSchema.openapi({
+      description: 'The action to take if a match is determined.',
+    }),
+    match: TcpRouteMatchSchema.exactOptional().openapi({
+      description: 'An object that represents the criteria for determining a request match.',
+    }),
+    timeout: TcpTimeoutSchema.exactOptional().openapi({
+      description: 'An object that represents types of timeouts. ',
+    }),
   })
   .openapi({ required: ['action'], description: 'An object that represents a TCP route type.' })
   .openapi('TcpRoute')
 
 const RouteSpecSchema = z
   .object({
-    grpcRoute: GrpcRouteSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that represents the specification of a gRPC route.' }),
-    ).exactOptional(),
-    http2Route: HttpRouteSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents the specification of an HTTP/2 route.',
-        }),
-    ).exactOptional(),
-    httpRoute: HttpRouteSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that represents the specification of an HTTP route.' }),
-    ).exactOptional(),
-    priority: RoutePrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The priority for the route. Routes are matched based on the specified value, where 0 is the highest priority.',
-        }),
-    ).exactOptional(),
-    tcpRoute: TcpRouteSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that represents the specification of a TCP route.' }),
-    ).exactOptional(),
+    grpcRoute: GrpcRouteSchema.exactOptional().openapi({
+      description: 'An object that represents the specification of a gRPC route.',
+    }),
+    http2Route: HttpRouteSchema.exactOptional().openapi({
+      description: 'An object that represents the specification of an HTTP/2 route.',
+    }),
+    httpRoute: HttpRouteSchema.exactOptional().openapi({
+      description: 'An object that represents the specification of an HTTP route.',
+    }),
+    priority: RoutePrioritySchema.exactOptional().openapi({
+      description:
+        'The priority for the route. Routes are matched based on the specified value, where 0 is the highest priority.',
+    }),
+    tcpRoute: TcpRouteSchema.exactOptional().openapi({
+      description: 'An object that represents the specification of a TCP route.',
+    }),
   })
   .openapi({
     description: 'An object that represents a route specification. Specify one route type.',
@@ -1810,9 +923,7 @@ const RouteStatusCodeSchema = z.enum(['ACTIVE', 'INACTIVE', 'DELETED']).openapi(
 
 const RouteStatusSchema = z
   .object({
-    status: RouteStatusCodeSchema.and(
-      z.any().openapi({ description: 'The current status for the route.' }),
-    ),
+    status: RouteStatusCodeSchema.openapi({ description: 'The current status for the route.' }),
   })
   .openapi({
     required: ['status'],
@@ -1820,20 +931,29 @@ const RouteStatusSchema = z
   })
   .openapi('RouteStatus')
 
-const RouteDataSchema = z
+type RouteDataType = {
+  meshName: z.infer<typeof ResourceNameSchema> & unknown
+  metadata: z.infer<typeof ResourceMetadataSchema> & unknown
+  routeName: z.infer<typeof ResourceNameSchema> & unknown
+  spec: z.infer<typeof RouteSpecSchema> & unknown
+  status: z.infer<typeof RouteStatusSchema> & unknown
+  virtualRouterName: z.infer<typeof ResourceNameSchema> & unknown
+}
+
+const RouteDataSchema: z.ZodType<RouteDataType> = z
   .object({
-    meshName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service mesh that the route resides in.' }),
-    ),
-    metadata: ResourceMetadataSchema.and(
-      z.any().openapi({ description: 'The associated metadata for the route.' }),
-    ),
-    routeName: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the route.' })),
-    spec: RouteSpecSchema.and(z.any().openapi({ description: 'The specifications of the route.' })),
-    status: RouteStatusSchema.and(z.any().openapi({ description: 'The status of the route.' })),
-    virtualRouterName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The virtual router that the route is associated with.' }),
-    ),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the route resides in.',
+    }),
+    metadata: ResourceMetadataSchema.openapi({
+      description: 'The associated metadata for the route.',
+    }),
+    routeName: ResourceNameSchema.openapi({ description: 'The name of the route.' }),
+    spec: RouteSpecSchema.openapi({ description: 'The specifications of the route.' }),
+    status: RouteStatusSchema.openapi({ description: 'The status of the route.' }),
+    virtualRouterName: ResourceNameSchema.openapi({
+      description: 'The virtual router that the route is associated with.',
+    }),
   })
   .openapi({
     required: ['meshName', 'metadata', 'routeName', 'spec', 'status', 'virtualRouterName'],
@@ -1841,30 +961,19 @@ const RouteDataSchema = z
   })
   .openapi('RouteData')
 
-const CreateRouteOutputSchema = z
-  .object({
-    route: RouteDataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The full description of your mesh following the create call.' }),
-    ),
-  })
-  .openapi({ required: ['route'], description: '<zonbook></zonbook><xhtml></xhtml>' })
-  .openapi('CreateRouteOutput')
+type CreateRouteOutputType = { route: z.infer<typeof RouteDataSchema> & unknown }
+
+const FilePathSchema = z.string().min(1).max(255).openapi('FilePath')
 
 const VirtualGatewayListenerTlsFileCertificateSchema = z
   .object({
-    certificateChain: FilePathSchema.and(
-      z.any().openapi({ description: 'The certificate chain for the certificate.' }),
-    ),
-    privateKey: FilePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The private key for a certificate stored on the file system of the mesh endpoint that the proxy is running on.',
-        }),
-    ),
+    certificateChain: FilePathSchema.openapi({
+      description: 'The certificate chain for the certificate.',
+    }),
+    privateKey: FilePathSchema.openapi({
+      description:
+        'The private key for a certificate stored on the file system of the mesh endpoint that the proxy is running on.',
+    }),
   })
   .openapi({
     required: ['certificateChain', 'privateKey'],
@@ -1877,14 +986,10 @@ const VirtualGatewaySdsSecretNameSchema = z.string().openapi('VirtualGatewaySdsS
 
 const VirtualGatewayListenerTlsSdsCertificateSchema = z
   .object({
-    secretName: VirtualGatewaySdsSecretNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents the name of the secret secret requested from the Secret Discovery Service provider representing Transport Layer Security (TLS) materials like a certificate or certificate chain.',
-        }),
-    ),
+    secretName: VirtualGatewaySdsSecretNameSchema.openapi({
+      description:
+        'A reference to an object that represents the name of the secret secret requested from the Secret Discovery Service provider representing Transport Layer Security (TLS) materials like a certificate or certificate chain.',
+    }),
   })
   .openapi({
     required: ['secretName'],
@@ -1895,22 +1000,14 @@ const VirtualGatewayListenerTlsSdsCertificateSchema = z
 
 const VirtualGatewayClientTlsCertificateSchema = z
   .object({
-    file: VirtualGatewayListenerTlsFileCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html"> Transport Layer Security (TLS) </a>.',
-        }),
-    ).exactOptional(),
-    sds: VirtualGatewayListenerTlsSdsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a virtual gateway's client's Secret Discovery Service certificate.",
-        }),
-    ).exactOptional(),
+    file: VirtualGatewayListenerTlsFileCertificateSchema.exactOptional().openapi({
+      description:
+        'An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html"> Transport Layer Security (TLS) </a>.',
+    }),
+    sds: VirtualGatewayListenerTlsSdsCertificateSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a virtual gateway's client's Secret Discovery Service certificate.",
+    }),
   })
   .openapi({
     description:
@@ -1918,6 +1015,42 @@ const VirtualGatewayClientTlsCertificateSchema = z
     required: [],
   })
   .openapi('VirtualGatewayClientTlsCertificate')
+
+const PortNumberSchema = z.int().min(1).max(65535).openapi('PortNumber')
+
+const PortSetSchema = z.array(PortNumberSchema).openapi('PortSet')
+
+const SubjectAlternativeNameSchema = z.string().min(1).max(254).openapi('SubjectAlternativeName')
+
+const SubjectAlternativeNameListSchema = z
+  .array(SubjectAlternativeNameSchema)
+  .openapi('SubjectAlternativeNameList')
+
+const SubjectAlternativeNameMatchersSchema = z
+  .object({
+    exact: SubjectAlternativeNameListSchema.openapi({
+      description: 'The values sent must match the specified values exactly.',
+    }),
+  })
+  .openapi({
+    required: ['exact'],
+    description:
+      'An object that represents the methods by which a subject alternative name on a peer Transport Layer Security (TLS) certificate can be matched.',
+  })
+  .openapi('SubjectAlternativeNameMatchers')
+
+const SubjectAlternativeNamesSchema = z
+  .object({
+    match: SubjectAlternativeNameMatchersSchema.openapi({
+      description: 'An object that represents the criteria for determining a SANs match.',
+    }),
+  })
+  .openapi({
+    required: ['match'],
+    description:
+      'An object that represents the subject alternative names secured by the certificate.',
+  })
+  .openapi('SubjectAlternativeNames')
 
 const VirtualGatewayCertificateAuthorityArnsSchema = z
   .array(ArnSchema)
@@ -1927,9 +1060,9 @@ const VirtualGatewayCertificateAuthorityArnsSchema = z
 
 const VirtualGatewayTlsValidationContextAcmTrustSchema = z
   .object({
-    certificateAuthorityArns: VirtualGatewayCertificateAuthorityArnsSchema.and(
-      z.any().openapi({ description: 'One or more ACM Amazon Resource Name (ARN)s.' }),
-    ),
+    certificateAuthorityArns: VirtualGatewayCertificateAuthorityArnsSchema.openapi({
+      description: 'One or more ACM Amazon Resource Name (ARN)s.',
+    }),
   })
   .openapi({
     required: ['certificateAuthorityArns'],
@@ -1940,14 +1073,10 @@ const VirtualGatewayTlsValidationContextAcmTrustSchema = z
 
 const VirtualGatewayTlsValidationContextFileTrustSchema = z
   .object({
-    certificateChain: FilePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate trust chain for a certificate stored on the file system of the virtual node that the proxy is running on.',
-        }),
-    ),
+    certificateChain: FilePathSchema.openapi({
+      description:
+        'The certificate trust chain for a certificate stored on the file system of the virtual node that the proxy is running on.',
+    }),
   })
   .openapi({
     required: ['certificateChain'],
@@ -1958,14 +1087,10 @@ const VirtualGatewayTlsValidationContextFileTrustSchema = z
 
 const VirtualGatewayTlsValidationContextSdsTrustSchema = z
   .object({
-    secretName: VirtualGatewaySdsSecretNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents the name of the secret for a virtual gateway's Transport Layer Security (TLS) Secret Discovery Service validation context trust.",
-        }),
-    ),
+    secretName: VirtualGatewaySdsSecretNameSchema.openapi({
+      description:
+        "A reference to an object that represents the name of the secret for a virtual gateway's Transport Layer Security (TLS) Secret Discovery Service validation context trust.",
+    }),
   })
   .openapi({
     required: ['secretName'],
@@ -1976,30 +1101,18 @@ const VirtualGatewayTlsValidationContextSdsTrustSchema = z
 
 const VirtualGatewayTlsValidationContextTrustSchema = z
   .object({
-    acm: VirtualGatewayTlsValidationContextAcmTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.',
-        }),
-    ).exactOptional(),
-    file: VirtualGatewayTlsValidationContextFileTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
-        }),
-    ).exactOptional(),
-    sds: VirtualGatewayTlsValidationContextSdsTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a virtual gateway's Transport Layer Security (TLS) Secret Discovery Service validation context trust.",
-        }),
-    ).exactOptional(),
+    acm: VirtualGatewayTlsValidationContextAcmTrustSchema.exactOptional().openapi({
+      description:
+        'A reference to an object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.',
+    }),
+    file: VirtualGatewayTlsValidationContextFileTrustSchema.exactOptional().openapi({
+      description:
+        'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
+    }),
+    sds: VirtualGatewayTlsValidationContextSdsTrustSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a virtual gateway's Transport Layer Security (TLS) Secret Discovery Service validation context trust.",
+    }),
   })
   .openapi({
     description:
@@ -2010,22 +1123,14 @@ const VirtualGatewayTlsValidationContextTrustSchema = z
 
 const VirtualGatewayTlsValidationContextSchema = z
   .object({
-    subjectAlternativeNames: SubjectAlternativeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents the SANs for a virtual gateway's listener's Transport Layer Security (TLS) validation context.",
-        }),
-    ).exactOptional(),
-    trust: VirtualGatewayTlsValidationContextTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.',
-        }),
-    ),
+    subjectAlternativeNames: SubjectAlternativeNamesSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents the SANs for a virtual gateway's listener's Transport Layer Security (TLS) validation context.",
+    }),
+    trust: VirtualGatewayTlsValidationContextTrustSchema.openapi({
+      description:
+        'A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.',
+    }),
   })
   .openapi({
     required: ['trust'],
@@ -2035,33 +1140,21 @@ const VirtualGatewayTlsValidationContextSchema = z
 
 const VirtualGatewayClientPolicyTlsSchema = z
   .object({
-    certificate: VirtualGatewayClientTlsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a virtual gateway's client's Transport Layer Security (TLS) certificate.",
-        }),
-    ).exactOptional(),
-    enforce: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Whether the policy is enforced. The default is <code>True</code>, if a value isn't specified.",
-        }),
-    ).exactOptional(),
-    ports: PortSetSchema.and(
-      z.any().openapi({ description: 'One or more ports that the policy is enforced for.' }),
-    ).exactOptional(),
-    validation: VirtualGatewayTlsValidationContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents a Transport Layer Security (TLS) validation context.',
-        }),
-    ),
+    certificate: VirtualGatewayClientTlsCertificateSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a virtual gateway's client's Transport Layer Security (TLS) certificate.",
+    }),
+    enforce: BooleanSchema.exactOptional().openapi({
+      description:
+        "Whether the policy is enforced. The default is <code>True</code>, if a value isn't specified.",
+    }),
+    ports: PortSetSchema.exactOptional().openapi({
+      description: 'One or more ports that the policy is enforced for.',
+    }),
+    validation: VirtualGatewayTlsValidationContextSchema.openapi({
+      description:
+        'A reference to an object that represents a Transport Layer Security (TLS) validation context.',
+    }),
   })
   .openapi({
     required: ['validation'],
@@ -2071,23 +1164,19 @@ const VirtualGatewayClientPolicyTlsSchema = z
 
 const VirtualGatewayClientPolicySchema = z
   .object({
-    tls: VirtualGatewayClientPolicyTlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents a Transport Layer Security (TLS) client policy.',
-        }),
-    ).exactOptional(),
+    tls: VirtualGatewayClientPolicyTlsSchema.exactOptional().openapi({
+      description:
+        'A reference to an object that represents a Transport Layer Security (TLS) client policy.',
+    }),
   })
   .openapi({ description: 'An object that represents a client policy.', required: [] })
   .openapi('VirtualGatewayClientPolicy')
 
 const VirtualGatewayBackendDefaultsSchema = z
   .object({
-    clientPolicy: VirtualGatewayClientPolicySchema.and(
-      z.any().openapi({ description: 'A reference to an object that represents a client policy.' }),
-    ).exactOptional(),
+    clientPolicy: VirtualGatewayClientPolicySchema.exactOptional().openapi({
+      description: 'A reference to an object that represents a client policy.',
+    }),
   })
   .openapi({
     description: 'An object that represents the default properties for a backend.',
@@ -2099,14 +1188,10 @@ const MaxRequestsSchema = z.int().min(1).openapi('MaxRequests')
 
 const VirtualGatewayGrpcConnectionPoolSchema = z
   .object({
-    maxRequests: MaxRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.',
-        }),
-    ),
+    maxRequests: MaxRequestsSchema.openapi({
+      description:
+        'Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.',
+    }),
   })
   .openapi({
     required: ['maxRequests'],
@@ -2120,22 +1205,14 @@ const MaxPendingRequestsSchema = z.int().min(1).openapi('MaxPendingRequests')
 
 const VirtualGatewayHttpConnectionPoolSchema = z
   .object({
-    maxConnections: MaxConnectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.',
-        }),
-    ),
-    maxPendingRequests: MaxPendingRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Number of overflowing requests after <code>max_connections</code> Envoy will queue to upstream cluster.',
-        }),
-    ).exactOptional(),
+    maxConnections: MaxConnectionsSchema.openapi({
+      description:
+        'Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.',
+    }),
+    maxPendingRequests: MaxPendingRequestsSchema.exactOptional().openapi({
+      description:
+        'Number of overflowing requests after <code>max_connections</code> Envoy will queue to upstream cluster.',
+    }),
   })
   .openapi({
     required: ['maxConnections'],
@@ -2145,14 +1222,10 @@ const VirtualGatewayHttpConnectionPoolSchema = z
 
 const VirtualGatewayHttp2ConnectionPoolSchema = z
   .object({
-    maxRequests: MaxRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.',
-        }),
-    ),
+    maxRequests: MaxRequestsSchema.openapi({
+      description:
+        'Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.',
+    }),
   })
   .openapi({
     required: ['maxRequests'],
@@ -2162,15 +1235,15 @@ const VirtualGatewayHttp2ConnectionPoolSchema = z
 
 const VirtualGatewayConnectionPoolSchema = z
   .object({
-    grpc: VirtualGatewayGrpcConnectionPoolSchema.and(
-      z.any().openapi({ description: 'An object that represents a type of connection pool. ' }),
-    ).exactOptional(),
-    http: VirtualGatewayHttpConnectionPoolSchema.and(
-      z.any().openapi({ description: 'An object that represents a type of connection pool.' }),
-    ).exactOptional(),
-    http2: VirtualGatewayHttp2ConnectionPoolSchema.and(
-      z.any().openapi({ description: 'An object that represents a type of connection pool.' }),
-    ).exactOptional(),
+    grpc: VirtualGatewayGrpcConnectionPoolSchema.exactOptional().openapi({
+      description: 'An object that represents a type of connection pool. ',
+    }),
+    http: VirtualGatewayHttpConnectionPoolSchema.exactOptional().openapi({
+      description: 'An object that represents a type of connection pool.',
+    }),
+    http2: VirtualGatewayHttp2ConnectionPoolSchema.exactOptional().openapi({
+      description: 'An object that represents a type of connection pool.',
+    }),
   })
   .openapi({
     description:
@@ -2203,61 +1276,33 @@ const VirtualGatewayHealthCheckTimeoutMillisSchema = z
 
 const VirtualGatewayHealthCheckPolicySchema = z
   .object({
-    healthyThreshold: VirtualGatewayHealthCheckThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive successful health checks that must occur before declaring the listener healthy.',
-        }),
-    ),
-    intervalMillis: VirtualGatewayHealthCheckIntervalMillisSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time period in milliseconds between each health check execution.',
-        }),
-    ),
-    path: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination path for the health check request. This value is only used if the specified protocol is HTTP or HTTP/2. For any other protocol, this value is ignored.',
-        }),
-    ).exactOptional(),
-    port: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination port for the health check request. This port must match the port defined in the <a>PortMapping</a> for the listener.',
-        }),
-    ).exactOptional(),
-    protocol: VirtualGatewayPortProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol for the health check request. If you specify <code>grpc</code>, then your service must conform to the <a href="https://github.com/grpc/grpc/blob/master/doc/health-checking.md">GRPC Health Checking Protocol</a>.',
-        }),
-    ),
-    timeoutMillis: VirtualGatewayHealthCheckTimeoutMillisSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time to wait when receiving a response from the health check, in milliseconds.',
-        }),
-    ),
-    unhealthyThreshold: VirtualGatewayHealthCheckThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive failed health checks that must occur before declaring a virtual gateway unhealthy.',
-        }),
-    ),
+    healthyThreshold: VirtualGatewayHealthCheckThresholdSchema.openapi({
+      description:
+        'The number of consecutive successful health checks that must occur before declaring the listener healthy.',
+    }),
+    intervalMillis: VirtualGatewayHealthCheckIntervalMillisSchema.openapi({
+      description: 'The time period in milliseconds between each health check execution.',
+    }),
+    path: StringSchema.exactOptional().openapi({
+      description:
+        'The destination path for the health check request. This value is only used if the specified protocol is HTTP or HTTP/2. For any other protocol, this value is ignored.',
+    }),
+    port: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The destination port for the health check request. This port must match the port defined in the <a>PortMapping</a> for the listener.',
+    }),
+    protocol: VirtualGatewayPortProtocolSchema.openapi({
+      description:
+        'The protocol for the health check request. If you specify <code>grpc</code>, then your service must conform to the <a href="https://github.com/grpc/grpc/blob/master/doc/health-checking.md">GRPC Health Checking Protocol</a>.',
+    }),
+    timeoutMillis: VirtualGatewayHealthCheckTimeoutMillisSchema.openapi({
+      description:
+        'The amount of time to wait when receiving a response from the health check, in milliseconds.',
+    }),
+    unhealthyThreshold: VirtualGatewayHealthCheckThresholdSchema.openapi({
+      description:
+        'The number of consecutive failed health checks that must occur before declaring a virtual gateway unhealthy.',
+    }),
   })
   .openapi({
     required: [
@@ -2274,12 +1319,12 @@ const VirtualGatewayHealthCheckPolicySchema = z
 
 const VirtualGatewayPortMappingSchema = z
   .object({
-    port: PortNumberSchema.and(
-      z.any().openapi({ description: 'The port used for the port mapping. Specify one protocol.' }),
-    ),
-    protocol: VirtualGatewayPortProtocolSchema.and(
-      z.any().openapi({ description: 'The protocol used for the port mapping.' }),
-    ),
+    port: PortNumberSchema.openapi({
+      description: 'The port used for the port mapping. Specify one protocol.',
+    }),
+    protocol: VirtualGatewayPortProtocolSchema.openapi({
+      description: 'The protocol used for the port mapping.',
+    }),
   })
   .openapi({
     required: ['port', 'protocol'],
@@ -2289,14 +1334,10 @@ const VirtualGatewayPortMappingSchema = z
 
 const VirtualGatewayListenerTlsAcmCertificateSchema = z
   .object({
-    certificateArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites">Transport Layer Security (TLS)</a>.',
-        }),
-    ),
+    certificateArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites">Transport Layer Security (TLS)</a>.',
+    }),
   })
   .openapi({
     required: ['certificateArn'],
@@ -2306,29 +1347,16 @@ const VirtualGatewayListenerTlsAcmCertificateSchema = z
 
 const VirtualGatewayListenerTlsCertificateSchema = z
   .object({
-    acm: VirtualGatewayListenerTlsAcmCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents an Certificate Manager certificate.',
-        }),
-    ).exactOptional(),
-    file: VirtualGatewayListenerTlsFileCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A reference to an object that represents a local file certificate.',
-        }),
-    ).exactOptional(),
-    sds: VirtualGatewayListenerTlsSdsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a virtual gateway's listener's Secret Discovery Service certificate.",
-        }),
-    ).exactOptional(),
+    acm: VirtualGatewayListenerTlsAcmCertificateSchema.exactOptional().openapi({
+      description: 'A reference to an object that represents an Certificate Manager certificate.',
+    }),
+    file: VirtualGatewayListenerTlsFileCertificateSchema.exactOptional().openapi({
+      description: 'A reference to an object that represents a local file certificate.',
+    }),
+    sds: VirtualGatewayListenerTlsSdsCertificateSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a virtual gateway's listener's Secret Discovery Service certificate.",
+    }),
   })
   .openapi({
     description:
@@ -2343,22 +1371,14 @@ const VirtualGatewayListenerTlsModeSchema = z
 
 const VirtualGatewayListenerTlsValidationContextTrustSchema = z
   .object({
-    file: VirtualGatewayTlsValidationContextFileTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
-        }),
-    ).exactOptional(),
-    sds: VirtualGatewayTlsValidationContextSdsTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a virtual gateway's listener's Transport Layer Security (TLS) Secret Discovery Service validation context trust.",
-        }),
-    ).exactOptional(),
+    file: VirtualGatewayTlsValidationContextFileTrustSchema.exactOptional().openapi({
+      description:
+        'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
+    }),
+    sds: VirtualGatewayTlsValidationContextSdsTrustSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a virtual gateway's listener's Transport Layer Security (TLS) Secret Discovery Service validation context trust.",
+    }),
   })
   .openapi({
     description:
@@ -2369,22 +1389,14 @@ const VirtualGatewayListenerTlsValidationContextTrustSchema = z
 
 const VirtualGatewayListenerTlsValidationContextSchema = z
   .object({
-    subjectAlternativeNames: SubjectAlternativeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents the SANs for a virtual gateway listener's Transport Layer Security (TLS) validation context.",
-        }),
-    ).exactOptional(),
-    trust: VirtualGatewayListenerTlsValidationContextTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.',
-        }),
-    ),
+    subjectAlternativeNames: SubjectAlternativeNamesSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents the SANs for a virtual gateway listener's Transport Layer Security (TLS) validation context.",
+    }),
+    trust: VirtualGatewayListenerTlsValidationContextTrustSchema.openapi({
+      description:
+        'A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.',
+    }),
   })
   .openapi({
     required: ['trust'],
@@ -2395,29 +1407,17 @@ const VirtualGatewayListenerTlsValidationContextSchema = z
 
 const VirtualGatewayListenerTlsSchema = z
   .object({
-    certificate: VirtualGatewayListenerTlsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that represents a Transport Layer Security (TLS) certificate.',
-        }),
-    ),
-    mode: VirtualGatewayListenerTlsModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify one of the following modes.</p> <ul> <li> <p> <b/>STRICT – Listener only accepts connections with TLS enabled. </p> </li> <li> <p> <b/>PERMISSIVE – Listener accepts connections with or without TLS enabled.</p> </li> <li> <p> <b/>DISABLED – Listener only accepts connections without TLS. </p> </li> </ul>',
-        }),
-    ),
-    validation: VirtualGatewayListenerTlsValidationContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a virtual gateway's listener's Transport Layer Security (TLS) validation context.",
-        }),
-    ).exactOptional(),
+    certificate: VirtualGatewayListenerTlsCertificateSchema.openapi({
+      description: 'An object that represents a Transport Layer Security (TLS) certificate.',
+    }),
+    mode: VirtualGatewayListenerTlsModeSchema.openapi({
+      description:
+        '<p>Specify one of the following modes.</p> <ul> <li> <p> <b/>STRICT – Listener only accepts connections with TLS enabled. </p> </li> <li> <p> <b/>PERMISSIVE – Listener accepts connections with or without TLS enabled.</p> </li> <li> <p> <b/>DISABLED – Listener only accepts connections without TLS. </p> </li> </ul>',
+    }),
+    validation: VirtualGatewayListenerTlsValidationContextSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a virtual gateway's listener's Transport Layer Security (TLS) validation context.",
+    }),
   })
   .openapi({
     required: ['certificate', 'mode'],
@@ -2428,27 +1428,19 @@ const VirtualGatewayListenerTlsSchema = z
 
 const VirtualGatewayListenerSchema = z
   .object({
-    connectionPool: VirtualGatewayConnectionPoolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The connection pool information for the virtual gateway listener.',
-        }),
-    ).exactOptional(),
-    healthCheck: VirtualGatewayHealthCheckPolicySchema.and(
-      z.any().openapi({ description: 'The health check information for the listener.' }),
-    ).exactOptional(),
-    portMapping: VirtualGatewayPortMappingSchema.and(
-      z.any().openapi({ description: 'The port mapping information for the listener.' }),
-    ),
-    tls: VirtualGatewayListenerTlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents the Transport Layer Security (TLS) properties for the listener.',
-        }),
-    ).exactOptional(),
+    connectionPool: VirtualGatewayConnectionPoolSchema.exactOptional().openapi({
+      description: 'The connection pool information for the virtual gateway listener.',
+    }),
+    healthCheck: VirtualGatewayHealthCheckPolicySchema.exactOptional().openapi({
+      description: 'The health check information for the listener.',
+    }),
+    portMapping: VirtualGatewayPortMappingSchema.openapi({
+      description: 'The port mapping information for the listener.',
+    }),
+    tls: VirtualGatewayListenerTlsSchema.exactOptional().openapi({
+      description:
+        'A reference to an object that represents the Transport Layer Security (TLS) properties for the listener.',
+    }),
   })
   .openapi({
     required: ['portMapping'],
@@ -2460,63 +1452,80 @@ const VirtualGatewayListenersSchema = z
   .array(VirtualGatewayListenerSchema)
   .openapi('VirtualGatewayListeners')
 
+const JsonKeySchema = z.string().min(1).max(100).openapi('JsonKey')
+
+const JsonValueSchema = z.string().min(1).max(100).openapi('JsonValue')
+
+const JsonFormatRefSchema = z
+  .object({
+    key: JsonKeySchema.openapi({ description: 'The specified key for the JSON.' }),
+    value: JsonValueSchema.openapi({ description: 'The specified value for the JSON.' }),
+  })
+  .openapi({
+    required: ['key', 'value'],
+    description: 'An object that represents the key value pairs for the JSON.',
+  })
+  .openapi('JsonFormatRef')
+
+const JsonFormatSchema = z.array(JsonFormatRefSchema).openapi('JsonFormat')
+
+const TextFormatSchema = z.string().min(1).max(1000).openapi('TextFormat')
+
+const LoggingFormatSchema = z
+  .object({
+    json: JsonFormatSchema.exactOptional().openapi({ description: '<p/>' }),
+    text: TextFormatSchema.exactOptional().openapi({ description: '<p/>' }),
+  })
+  .openapi({ description: 'An object that represents the format for the logs.', required: [] })
+  .openapi('LoggingFormat')
+
 const VirtualGatewayFileAccessLogSchema = z
   .object({
-    format: LoggingFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specified format for the virtual gateway access logs. It can be either <code>json_format</code> or <code>text_format</code>.',
-        }),
-    ).exactOptional(),
-    path: FilePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The file path to write access logs to. You can use <code>/dev/stdout</code> to send access logs to standard out and configure your Envoy container to use a log driver, such as <code>awslogs</code>, to export the access logs to a log storage service such as Amazon CloudWatch Logs. You can also specify a path in the Envoy container's file system to write the files to disk.",
-        }),
-    ),
+    format: LoggingFormatSchema.exactOptional().openapi({
+      description:
+        'The specified format for the virtual gateway access logs. It can be either <code>json_format</code> or <code>text_format</code>.',
+    }),
+    path: FilePathSchema.openapi({
+      description:
+        "The file path to write access logs to. You can use <code>/dev/stdout</code> to send access logs to standard out and configure your Envoy container to use a log driver, such as <code>awslogs</code>, to export the access logs to a log storage service such as Amazon CloudWatch Logs. You can also specify a path in the Envoy container's file system to write the files to disk.",
+    }),
   })
   .openapi({ required: ['path'], description: 'An object that represents an access log file.' })
   .openapi('VirtualGatewayFileAccessLog')
 
 const VirtualGatewayAccessLogSchema = z
   .object({
-    file: VirtualGatewayFileAccessLogSchema.and(
-      z.any().openapi({ description: 'The file object to send virtual gateway access logs to.' }),
-    ).exactOptional(),
+    file: VirtualGatewayFileAccessLogSchema.exactOptional().openapi({
+      description: 'The file object to send virtual gateway access logs to.',
+    }),
   })
   .openapi({ description: 'The access log configuration for a virtual gateway.', required: [] })
   .openapi('VirtualGatewayAccessLog')
 
 const VirtualGatewayLoggingSchema = z
   .object({
-    accessLog: VirtualGatewayAccessLogSchema.and(
-      z.any().openapi({ description: 'The access log configuration.' }),
-    ).exactOptional(),
+    accessLog: VirtualGatewayAccessLogSchema.exactOptional().openapi({
+      description: 'The access log configuration.',
+    }),
   })
   .openapi({ description: 'An object that represents logging information.', required: [] })
   .openapi('VirtualGatewayLogging')
 
-const VirtualGatewaySpecSchema = z
+type VirtualGatewaySpecType = {
+  backendDefaults?: z.infer<typeof VirtualGatewayBackendDefaultsSchema> & unknown
+  listeners: z.infer<typeof VirtualGatewayListenersSchema> & unknown
+  logging?: z.infer<typeof VirtualGatewayLoggingSchema>
+}
+
+const VirtualGatewaySpecSchema: z.ZodType<VirtualGatewaySpecType> = z
   .object({
-    backendDefaults: VirtualGatewayBackendDefaultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A reference to an object that represents the defaults for backends.',
-        }),
-    ).exactOptional(),
-    listeners: VirtualGatewayListenersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The listeners that the mesh endpoint is expected to receive inbound traffic from. You can specify one listener.',
-        }),
-    ),
+    backendDefaults: VirtualGatewayBackendDefaultsSchema.exactOptional().openapi({
+      description: 'A reference to an object that represents the defaults for backends.',
+    }),
+    listeners: VirtualGatewayListenersSchema.openapi({
+      description:
+        'The listeners that the mesh endpoint is expected to receive inbound traffic from. You can specify one listener.',
+    }),
     logging: VirtualGatewayLoggingSchema.exactOptional(),
   })
   .openapi({
@@ -2531,9 +1540,7 @@ const VirtualGatewayStatusCodeSchema = z
 
 const VirtualGatewayStatusSchema = z
   .object({
-    status: VirtualGatewayStatusCodeSchema.and(
-      z.any().openapi({ description: 'The current status.' }),
-    ),
+    status: VirtualGatewayStatusCodeSchema.openapi({ description: 'The current status.' }),
   })
   .openapi({
     required: ['status'],
@@ -2541,25 +1548,29 @@ const VirtualGatewayStatusSchema = z
   })
   .openapi('VirtualGatewayStatus')
 
-const VirtualGatewayDataSchema = z
+type VirtualGatewayDataType = {
+  meshName: z.infer<typeof ResourceNameSchema> & unknown
+  metadata: z.infer<typeof ResourceMetadataSchema>
+  spec: z.infer<typeof VirtualGatewaySpecSchema> & unknown
+  status: z.infer<typeof VirtualGatewayStatusSchema> & unknown
+  virtualGatewayName: z.infer<typeof ResourceNameSchema> & unknown
+}
+
+const VirtualGatewayDataSchema: z.ZodType<VirtualGatewayDataType> = z
   .object({
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service mesh that the virtual gateway resides in.',
-        }),
-    ),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the virtual gateway resides in.',
+    }),
     metadata: ResourceMetadataSchema,
-    spec: VirtualGatewaySpecSchema.and(
-      z.any().openapi({ description: 'The specifications of the virtual gateway.' }),
-    ),
-    status: VirtualGatewayStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the virtual gateway.' }),
-    ),
-    virtualGatewayName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the virtual gateway.' }),
-    ),
+    spec: VirtualGatewaySpecSchema.openapi({
+      description: 'The specifications of the virtual gateway.',
+    }),
+    status: VirtualGatewayStatusSchema.openapi({
+      description: 'The current status of the virtual gateway.',
+    }),
+    virtualGatewayName: ResourceNameSchema.openapi({
+      description: 'The name of the virtual gateway.',
+    }),
   })
   .openapi({
     required: ['meshName', 'metadata', 'spec', 'status', 'virtualGatewayName'],
@@ -2567,24 +1578,182 @@ const VirtualGatewayDataSchema = z
   })
   .openapi('VirtualGatewayData')
 
-const CreateVirtualGatewayOutputSchema = z
+type CreateVirtualGatewayOutputType = {
+  virtualGateway: z.infer<typeof VirtualGatewayDataSchema> & unknown
+}
+
+const ListenerTlsFileCertificateSchema = z
   .object({
-    virtualGateway: VirtualGatewayDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The full description of your virtual gateway following the create call.',
-        }),
-    ),
+    certificateChain: FilePathSchema.openapi({
+      description: 'The certificate chain for the certificate.',
+    }),
+    privateKey: FilePathSchema.openapi({
+      description:
+        'The private key for a certificate stored on the file system of the virtual node that the proxy is running on.',
+    }),
   })
-  .openapi({ required: ['virtualGateway'] })
-  .openapi('CreateVirtualGatewayOutput')
+  .openapi({
+    required: ['certificateChain', 'privateKey'],
+    description:
+      'An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites">Transport Layer Security (TLS)</a>.',
+  })
+  .openapi('ListenerTlsFileCertificate')
+
+const SdsSecretNameSchema = z.string().openapi('SdsSecretName')
+
+const ListenerTlsSdsCertificateSchema = z
+  .object({
+    secretName: SdsSecretNameSchema.openapi({
+      description:
+        'A reference to an object that represents the name of the secret requested from the Secret Discovery Service provider representing Transport Layer Security (TLS) materials like a certificate or certificate chain.',
+    }),
+  })
+  .openapi({
+    required: ['secretName'],
+    description:
+      'An object that represents the listener\'s Secret Discovery Service certificate. The proxy must be configured with a local SDS provider via a Unix Domain Socket. See App Mesh <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html">TLS documentation</a> for more info.',
+  })
+  .openapi('ListenerTlsSdsCertificate')
+
+const ClientTlsCertificateSchema = z
+  .object({
+    file: ListenerTlsFileCertificateSchema.exactOptional().openapi({
+      description:
+        'An object that represents a local file certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html">Transport Layer Security (TLS)</a>.',
+    }),
+    sds: ListenerTlsSdsCertificateSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a client's TLS Secret Discovery Service certificate.",
+    }),
+  })
+  .openapi({ description: "An object that represents the client's certificate.", required: [] })
+  .openapi('ClientTlsCertificate')
+
+const CertificateAuthorityArnsSchema = z
+  .array(ArnSchema)
+  .min(1)
+  .max(3)
+  .openapi('CertificateAuthorityArns')
+
+const TlsValidationContextAcmTrustSchema = z
+  .object({
+    certificateAuthorityArns: CertificateAuthorityArnsSchema.openapi({
+      description: 'One or more ACM Amazon Resource Name (ARN)s.',
+    }),
+  })
+  .openapi({
+    required: ['certificateAuthorityArns'],
+    description:
+      'An object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.',
+  })
+  .openapi('TlsValidationContextAcmTrust')
+
+const TlsValidationContextFileTrustSchema = z
+  .object({
+    certificateChain: FilePathSchema.openapi({
+      description:
+        'The certificate trust chain for a certificate stored on the file system of the virtual node that the proxy is running on.',
+    }),
+  })
+  .openapi({
+    required: ['certificateChain'],
+    description:
+      'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
+  })
+  .openapi('TlsValidationContextFileTrust')
+
+const TlsValidationContextSdsTrustSchema = z
+  .object({
+    secretName: SdsSecretNameSchema.openapi({
+      description:
+        'A reference to an object that represents the name of the secret for a Transport Layer Security (TLS) Secret Discovery Service validation context trust.',
+    }),
+  })
+  .openapi({
+    required: ['secretName'],
+    description:
+      'An object that represents a Transport Layer Security (TLS) Secret Discovery Service validation context trust. The proxy must be configured with a local SDS provider via a Unix Domain Socket. See App Mesh <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html">TLS documentation</a> for more info.',
+  })
+  .openapi('TlsValidationContextSdsTrust')
+
+const TlsValidationContextTrustSchema = z
+  .object({
+    acm: TlsValidationContextAcmTrustSchema.exactOptional().openapi({
+      description:
+        'A reference to an object that represents a Transport Layer Security (TLS) validation context trust for an Certificate Manager certificate.',
+    }),
+    file: TlsValidationContextFileTrustSchema.exactOptional().openapi({
+      description:
+        'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
+    }),
+    sds: TlsValidationContextSdsTrustSchema.exactOptional().openapi({
+      description:
+        'A reference to an object that represents a Transport Layer Security (TLS) Secret Discovery Service validation context trust.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that represents a Transport Layer Security (TLS) validation context trust.',
+    required: [],
+  })
+  .openapi('TlsValidationContextTrust')
+
+const TlsValidationContextSchema = z
+  .object({
+    subjectAlternativeNames: SubjectAlternativeNamesSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents the SANs for a Transport Layer Security (TLS) validation context. If you don't specify SANs on the <i>terminating</i> mesh endpoint, the Envoy proxy for that node doesn't verify the SAN on a peer client certificate. If you don't specify SANs on the <i>originating</i> mesh endpoint, the SAN on the certificate provided by the terminating endpoint must match the mesh endpoint service discovery configuration. Since SPIRE vended certificates have a SPIFFE ID as a name, you must set the SAN since the name doesn't match the service discovery name.",
+    }),
+    trust: TlsValidationContextTrustSchema.openapi({
+      description:
+        'A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.',
+    }),
+  })
+  .openapi({
+    required: ['trust'],
+    description:
+      'An object that represents how the proxy will validate its peer during Transport Layer Security (TLS) negotiation.',
+  })
+  .openapi('TlsValidationContext')
+
+const ClientPolicyTlsSchema = z
+  .object({
+    certificate: ClientTlsCertificateSchema.exactOptional().openapi({
+      description: "A reference to an object that represents a client's TLS certificate.",
+    }),
+    enforce: BooleanSchema.exactOptional().openapi({
+      description:
+        "Whether the policy is enforced. The default is <code>True</code>, if a value isn't specified.",
+    }),
+    ports: PortSetSchema.exactOptional().openapi({
+      description: 'One or more ports that the policy is enforced for.',
+    }),
+    validation: TlsValidationContextSchema.openapi({
+      description: 'A reference to an object that represents a TLS validation context.',
+    }),
+  })
+  .openapi({
+    required: ['validation'],
+    description:
+      'A reference to an object that represents a Transport Layer Security (TLS) client policy.',
+  })
+  .openapi('ClientPolicyTls')
+
+const ClientPolicySchema = z
+  .object({
+    tls: ClientPolicyTlsSchema.exactOptional().openapi({
+      description:
+        'A reference to an object that represents a Transport Layer Security (TLS) client policy.',
+    }),
+  })
+  .openapi({ description: 'An object that represents a client policy.', required: [] })
+  .openapi('ClientPolicy')
 
 const BackendDefaultsSchema = z
   .object({
-    clientPolicy: ClientPolicySchema.and(
-      z.any().openapi({ description: 'A reference to an object that represents a client policy.' }),
-    ).exactOptional(),
+    clientPolicy: ClientPolicySchema.exactOptional().openapi({
+      description: 'A reference to an object that represents a client policy.',
+    }),
   })
   .openapi({
     description: 'An object that represents the default properties for a backend.',
@@ -2592,34 +1761,46 @@ const BackendDefaultsSchema = z
   })
   .openapi('BackendDefaults')
 
+const VirtualServiceBackendSchema = z
+  .object({
+    clientPolicy: ClientPolicySchema.exactOptional().openapi({
+      description: 'A reference to an object that represents the client policy for a backend.',
+    }),
+    virtualServiceName: ServiceNameSchema.openapi({
+      description: 'The name of the virtual service that is acting as a virtual node backend.',
+    }),
+  })
+  .openapi({
+    required: ['virtualServiceName'],
+    description: 'An object that represents a virtual service backend for a virtual node.',
+  })
+  .openapi('VirtualServiceBackend')
+
+type BackendType = { virtualService?: z.infer<typeof VirtualServiceBackendSchema> & unknown }
+
 const BackendSchema: z.ZodType<BackendType> = z
-  .lazy(() =>
-    z
-      .object({
-        virtualService: VirtualServiceBackendSchema.and(
-          z.any().openapi({ description: 'Specifies a virtual service to use as a backend. ' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'An object that represents the backends that a virtual node is expected to send outbound traffic to.',
-        required: [],
-      }),
-  )
+  .object({
+    virtualService: VirtualServiceBackendSchema.exactOptional().openapi({
+      description: 'Specifies a virtual service to use as a backend. ',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that represents the backends that a virtual node is expected to send outbound traffic to.',
+    required: [],
+  })
   .openapi('Backend')
 
-const BackendsSchema = z.array(BackendSchema).openapi('Backends')
+type BackendsType = z.infer<typeof BackendSchema>[]
+
+const BackendsSchema: z.ZodType<BackendsType> = z.array(BackendSchema).openapi('Backends')
 
 const VirtualNodeGrpcConnectionPoolSchema = z
   .object({
-    maxRequests: MaxRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.',
-        }),
-    ),
+    maxRequests: MaxRequestsSchema.openapi({
+      description:
+        'Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.',
+    }),
   })
   .openapi({
     required: ['maxRequests'],
@@ -2629,22 +1810,14 @@ const VirtualNodeGrpcConnectionPoolSchema = z
 
 const VirtualNodeHttpConnectionPoolSchema = z
   .object({
-    maxConnections: MaxConnectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.',
-        }),
-    ),
-    maxPendingRequests: MaxPendingRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Number of overflowing requests after <code>max_connections</code> Envoy will queue to upstream cluster.',
-        }),
-    ).exactOptional(),
+    maxConnections: MaxConnectionsSchema.openapi({
+      description:
+        'Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.',
+    }),
+    maxPendingRequests: MaxPendingRequestsSchema.exactOptional().openapi({
+      description:
+        'Number of overflowing requests after <code>max_connections</code> Envoy will queue to upstream cluster.',
+    }),
   })
   .openapi({
     required: ['maxConnections'],
@@ -2654,14 +1827,10 @@ const VirtualNodeHttpConnectionPoolSchema = z
 
 const VirtualNodeHttp2ConnectionPoolSchema = z
   .object({
-    maxRequests: MaxRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.',
-        }),
-    ),
+    maxRequests: MaxRequestsSchema.openapi({
+      description:
+        'Maximum number of inflight requests Envoy can concurrently support across hosts in upstream cluster.',
+    }),
   })
   .openapi({
     required: ['maxRequests'],
@@ -2671,14 +1840,10 @@ const VirtualNodeHttp2ConnectionPoolSchema = z
 
 const VirtualNodeTcpConnectionPoolSchema = z
   .object({
-    maxConnections: MaxConnectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.',
-        }),
-    ),
+    maxConnections: MaxConnectionsSchema.openapi({
+      description:
+        'Maximum number of outbound TCP connections Envoy can establish concurrently with all hosts in upstream cluster.',
+    }),
   })
   .openapi({
     required: ['maxConnections'],
@@ -2688,18 +1853,18 @@ const VirtualNodeTcpConnectionPoolSchema = z
 
 const VirtualNodeConnectionPoolSchema = z
   .object({
-    grpc: VirtualNodeGrpcConnectionPoolSchema.and(
-      z.any().openapi({ description: 'An object that represents a type of connection pool.' }),
-    ).exactOptional(),
-    http: VirtualNodeHttpConnectionPoolSchema.and(
-      z.any().openapi({ description: 'An object that represents a type of connection pool.' }),
-    ).exactOptional(),
-    http2: VirtualNodeHttp2ConnectionPoolSchema.and(
-      z.any().openapi({ description: 'An object that represents a type of connection pool.' }),
-    ).exactOptional(),
-    tcp: VirtualNodeTcpConnectionPoolSchema.and(
-      z.any().openapi({ description: 'An object that represents a type of connection pool.' }),
-    ).exactOptional(),
+    grpc: VirtualNodeGrpcConnectionPoolSchema.exactOptional().openapi({
+      description: 'An object that represents a type of connection pool.',
+    }),
+    http: VirtualNodeHttpConnectionPoolSchema.exactOptional().openapi({
+      description: 'An object that represents a type of connection pool.',
+    }),
+    http2: VirtualNodeHttp2ConnectionPoolSchema.exactOptional().openapi({
+      description: 'An object that represents a type of connection pool.',
+    }),
+    tcp: VirtualNodeTcpConnectionPoolSchema.exactOptional().openapi({
+      description: 'An object that represents a type of connection pool.',
+    }),
   })
   .openapi({
     description:
@@ -2726,61 +1891,33 @@ const HealthCheckTimeoutMillisSchema = z
 
 const HealthCheckPolicySchema = z
   .object({
-    healthyThreshold: HealthCheckThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive successful health checks that must occur before declaring listener healthy.',
-        }),
-    ),
-    intervalMillis: HealthCheckIntervalMillisSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time period in milliseconds between each health check execution.',
-        }),
-    ),
-    path: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination path for the health check request. This value is only used if the specified protocol is HTTP or HTTP/2. For any other protocol, this value is ignored.',
-        }),
-    ).exactOptional(),
-    port: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination port for the health check request. This port must match the port defined in the <a>PortMapping</a> for the listener.',
-        }),
-    ).exactOptional(),
-    protocol: PortProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol for the health check request. If you specify <code>grpc</code>, then your service must conform to the <a href="https://github.com/grpc/grpc/blob/master/doc/health-checking.md">GRPC Health Checking Protocol</a>.',
-        }),
-    ),
-    timeoutMillis: HealthCheckTimeoutMillisSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time to wait when receiving a response from the health check, in milliseconds.',
-        }),
-    ),
-    unhealthyThreshold: HealthCheckThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive failed health checks that must occur before declaring a virtual node unhealthy. ',
-        }),
-    ),
+    healthyThreshold: HealthCheckThresholdSchema.openapi({
+      description:
+        'The number of consecutive successful health checks that must occur before declaring listener healthy.',
+    }),
+    intervalMillis: HealthCheckIntervalMillisSchema.openapi({
+      description: 'The time period in milliseconds between each health check execution.',
+    }),
+    path: StringSchema.exactOptional().openapi({
+      description:
+        'The destination path for the health check request. This value is only used if the specified protocol is HTTP or HTTP/2. For any other protocol, this value is ignored.',
+    }),
+    port: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The destination port for the health check request. This port must match the port defined in the <a>PortMapping</a> for the listener.',
+    }),
+    protocol: PortProtocolSchema.openapi({
+      description:
+        'The protocol for the health check request. If you specify <code>grpc</code>, then your service must conform to the <a href="https://github.com/grpc/grpc/blob/master/doc/health-checking.md">GRPC Health Checking Protocol</a>.',
+    }),
+    timeoutMillis: HealthCheckTimeoutMillisSchema.openapi({
+      description:
+        'The amount of time to wait when receiving a response from the health check, in milliseconds.',
+    }),
+    unhealthyThreshold: HealthCheckThresholdSchema.openapi({
+      description:
+        'The number of consecutive failed health checks that must occur before declaring a virtual node unhealthy. ',
+    }),
   })
   .openapi({
     required: [
@@ -2807,27 +1944,19 @@ const OutlierDetectionMaxServerErrorsSchema = z
 
 const OutlierDetectionSchema = z
   .object({
-    baseEjectionDuration: DurationSchema.and(
-      z.any().openapi({ description: 'The base amount of time for which a host is ejected.' }),
-    ),
-    interval: DurationSchema.and(
-      z.any().openapi({ description: 'The time interval between ejection sweep analysis.' }),
-    ),
-    maxEjectionPercent: OutlierDetectionMaxEjectionPercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum percentage of hosts in load balancing pool for upstream service that can be ejected. Will eject at least one host regardless of the value.',
-        }),
-    ),
-    maxServerErrors: OutlierDetectionMaxServerErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Number of consecutive <code>5xx</code> errors required for ejection. ',
-        }),
-    ),
+    baseEjectionDuration: DurationSchema.openapi({
+      description: 'The base amount of time for which a host is ejected.',
+    }),
+    interval: DurationSchema.openapi({
+      description: 'The time interval between ejection sweep analysis.',
+    }),
+    maxEjectionPercent: OutlierDetectionMaxEjectionPercentSchema.openapi({
+      description:
+        'Maximum percentage of hosts in load balancing pool for upstream service that can be ejected. Will eject at least one host regardless of the value.',
+    }),
+    maxServerErrors: OutlierDetectionMaxServerErrorsSchema.openapi({
+      description: 'Number of consecutive <code>5xx</code> errors required for ejection. ',
+    }),
   })
   .openapi({
     required: ['baseEjectionDuration', 'interval', 'maxEjectionPercent', 'maxServerErrors'],
@@ -2837,14 +1966,10 @@ const OutlierDetectionSchema = z
 
 const PortMappingSchema = z
   .object({
-    port: PortNumberSchema.and(
-      z.any().openapi({ description: 'The port used for the port mapping.' }),
-    ),
-    protocol: PortProtocolSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The protocol used for the port mapping. Specify one protocol.' }),
-    ),
+    port: PortNumberSchema.openapi({ description: 'The port used for the port mapping.' }),
+    protocol: PortProtocolSchema.openapi({
+      description: 'The protocol used for the port mapping. Specify one protocol.',
+    }),
   })
   .openapi({
     required: ['port', 'protocol'],
@@ -2854,18 +1979,18 @@ const PortMappingSchema = z
 
 const ListenerTimeoutSchema = z
   .object({
-    grpc: GrpcTimeoutSchema.and(
-      z.any().openapi({ description: 'An object that represents types of timeouts. ' }),
-    ).exactOptional(),
-    http: HttpTimeoutSchema.and(
-      z.any().openapi({ description: 'An object that represents types of timeouts. ' }),
-    ).exactOptional(),
-    http2: HttpTimeoutSchema.and(
-      z.any().openapi({ description: 'An object that represents types of timeouts. ' }),
-    ).exactOptional(),
-    tcp: TcpTimeoutSchema.and(
-      z.any().openapi({ description: 'An object that represents types of timeouts. ' }),
-    ).exactOptional(),
+    grpc: GrpcTimeoutSchema.exactOptional().openapi({
+      description: 'An object that represents types of timeouts. ',
+    }),
+    http: HttpTimeoutSchema.exactOptional().openapi({
+      description: 'An object that represents types of timeouts. ',
+    }),
+    http2: HttpTimeoutSchema.exactOptional().openapi({
+      description: 'An object that represents types of timeouts. ',
+    }),
+    tcp: TcpTimeoutSchema.exactOptional().openapi({
+      description: 'An object that represents types of timeouts. ',
+    }),
   })
   .openapi({
     description: 'An object that represents timeouts for different protocols.',
@@ -2875,14 +2000,10 @@ const ListenerTimeoutSchema = z
 
 const ListenerTlsAcmCertificateSchema = z
   .object({
-    certificateArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites">Transport Layer Security (TLS)</a>.',
-        }),
-    ),
+    certificateArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the certificate. The certificate must meet specific requirements and you must have proxy authorization enabled. For more information, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites">Transport Layer Security (TLS)</a>.',
+    }),
   })
   .openapi({
     required: ['certificateArn'],
@@ -2892,29 +2013,16 @@ const ListenerTlsAcmCertificateSchema = z
 
 const ListenerTlsCertificateSchema = z
   .object({
-    acm: ListenerTlsAcmCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents an Certificate Manager certificate.',
-        }),
-    ).exactOptional(),
-    file: ListenerTlsFileCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A reference to an object that represents a local file certificate.',
-        }),
-    ).exactOptional(),
-    sds: ListenerTlsSdsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a listener's Secret Discovery Service certificate.",
-        }),
-    ).exactOptional(),
+    acm: ListenerTlsAcmCertificateSchema.exactOptional().openapi({
+      description: 'A reference to an object that represents an Certificate Manager certificate.',
+    }),
+    file: ListenerTlsFileCertificateSchema.exactOptional().openapi({
+      description: 'A reference to an object that represents a local file certificate.',
+    }),
+    sds: ListenerTlsSdsCertificateSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a listener's Secret Discovery Service certificate.",
+    }),
   })
   .openapi({
     description:
@@ -2929,22 +2037,14 @@ const ListenerTlsModeSchema = z
 
 const ListenerTlsValidationContextTrustSchema = z
   .object({
-    file: TlsValidationContextFileTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
-        }),
-    ).exactOptional(),
-    sds: TlsValidationContextSdsTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a listener's Transport Layer Security (TLS) Secret Discovery Service validation context trust.",
-        }),
-    ).exactOptional(),
+    file: TlsValidationContextFileTrustSchema.exactOptional().openapi({
+      description:
+        'An object that represents a Transport Layer Security (TLS) validation context trust for a local file.',
+    }),
+    sds: TlsValidationContextSdsTrustSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a listener's Transport Layer Security (TLS) Secret Discovery Service validation context trust.",
+    }),
   })
   .openapi({
     description:
@@ -2955,22 +2055,14 @@ const ListenerTlsValidationContextTrustSchema = z
 
 const ListenerTlsValidationContextSchema = z
   .object({
-    subjectAlternativeNames: SubjectAlternativeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents the SANs for a listener's Transport Layer Security (TLS) validation context.",
-        }),
-    ).exactOptional(),
-    trust: ListenerTlsValidationContextTrustSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.',
-        }),
-    ),
+    subjectAlternativeNames: SubjectAlternativeNamesSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents the SANs for a listener's Transport Layer Security (TLS) validation context.",
+    }),
+    trust: ListenerTlsValidationContextTrustSchema.openapi({
+      description:
+        'A reference to where to retrieve the trust chain when validating a peer’s Transport Layer Security (TLS) certificate.',
+    }),
   })
   .openapi({
     required: ['trust'],
@@ -2981,30 +2073,18 @@ const ListenerTlsValidationContextSchema = z
 
 const ListenerTlsSchema = z
   .object({
-    certificate: ListenerTlsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a listener's Transport Layer Security (TLS) certificate.",
-        }),
-    ),
-    mode: ListenerTlsModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify one of the following modes.</p> <ul> <li> <p> <b/>STRICT – Listener only accepts connections with TLS enabled. </p> </li> <li> <p> <b/>PERMISSIVE – Listener accepts connections with or without TLS enabled.</p> </li> <li> <p> <b/>DISABLED – Listener only accepts connections without TLS. </p> </li> </ul>',
-        }),
-    ),
-    validation: ListenerTlsValidationContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A reference to an object that represents a listener's Transport Layer Security (TLS) validation context.",
-        }),
-    ).exactOptional(),
+    certificate: ListenerTlsCertificateSchema.openapi({
+      description:
+        "A reference to an object that represents a listener's Transport Layer Security (TLS) certificate.",
+    }),
+    mode: ListenerTlsModeSchema.openapi({
+      description:
+        '<p>Specify one of the following modes.</p> <ul> <li> <p> <b/>STRICT – Listener only accepts connections with TLS enabled. </p> </li> <li> <p> <b/>PERMISSIVE – Listener accepts connections with or without TLS enabled.</p> </li> <li> <p> <b/>DISABLED – Listener only accepts connections without TLS. </p> </li> </ul>',
+    }),
+    validation: ListenerTlsValidationContextSchema.exactOptional().openapi({
+      description:
+        "A reference to an object that represents a listener's Transport Layer Security (TLS) validation context.",
+    }),
   })
   .openapi({
     required: ['certificate', 'mode'],
@@ -3015,31 +2095,25 @@ const ListenerTlsSchema = z
 
 const ListenerSchema = z
   .object({
-    connectionPool: VirtualNodeConnectionPoolSchema.and(
-      z.any().openapi({ description: 'The connection pool information for the listener.' }),
-    ).exactOptional(),
-    healthCheck: HealthCheckPolicySchema.and(
-      z.any().openapi({ description: 'The health check information for the listener.' }),
-    ).exactOptional(),
-    outlierDetection: OutlierDetectionSchema.and(
-      z.any().openapi({ description: 'The outlier detection information for the listener.' }),
-    ).exactOptional(),
-    portMapping: PortMappingSchema.and(
-      z.any().openapi({ description: 'The port mapping information for the listener.' }),
-    ),
-    timeout: ListenerTimeoutSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that represents timeouts for different protocols.' }),
-    ).exactOptional(),
-    tls: ListenerTlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to an object that represents the Transport Layer Security (TLS) properties for a listener.',
-        }),
-    ).exactOptional(),
+    connectionPool: VirtualNodeConnectionPoolSchema.exactOptional().openapi({
+      description: 'The connection pool information for the listener.',
+    }),
+    healthCheck: HealthCheckPolicySchema.exactOptional().openapi({
+      description: 'The health check information for the listener.',
+    }),
+    outlierDetection: OutlierDetectionSchema.exactOptional().openapi({
+      description: 'The outlier detection information for the listener.',
+    }),
+    portMapping: PortMappingSchema.openapi({
+      description: 'The port mapping information for the listener.',
+    }),
+    timeout: ListenerTimeoutSchema.exactOptional().openapi({
+      description: 'An object that represents timeouts for different protocols.',
+    }),
+    tls: ListenerTlsSchema.exactOptional().openapi({
+      description:
+        'A reference to an object that represents the Transport Layer Security (TLS) properties for a listener.',
+    }),
   })
   .openapi({
     required: ['portMapping'],
@@ -3049,26 +2123,37 @@ const ListenerSchema = z
 
 const ListenersSchema = z.array(ListenerSchema).openapi('Listeners')
 
-const AccessLogSchema: z.ZodType<AccessLogType> = z
-  .lazy(() =>
-    z
-      .object({
-        file: FileAccessLogSchema.and(
-          z.any().openapi({ description: 'The file object to send virtual node access logs to.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'An object that represents the access logging information for a virtual node.',
-        required: [],
-      }),
-  )
+const FileAccessLogSchema = z
+  .object({
+    format: LoggingFormatSchema.exactOptional().openapi({
+      description:
+        'The specified format for the logs. The format is either <code>json_format</code> or <code>text_format</code>.',
+    }),
+    path: FilePathSchema.openapi({
+      description:
+        "<p>The file path to write access logs to. You can use <code>/dev/stdout</code> to send access logs to standard out and configure your Envoy container to use a log driver, such as <code>awslogs</code>, to export the access logs to a log storage service such as Amazon CloudWatch Logs. You can also specify a path in the Envoy container's file system to write the files to disk.</p> <pre><code> &lt;note&gt; &lt;p&gt;The Envoy process must have write permissions to the path that you specify here. Otherwise, Envoy fails to bootstrap properly.&lt;/p&gt; &lt;/note&gt; </code></pre>",
+    }),
+  })
+  .openapi({ required: ['path'], description: 'An object that represents an access log file.' })
+  .openapi('FileAccessLog')
+
+const AccessLogSchema = z
+  .object({
+    file: FileAccessLogSchema.exactOptional().openapi({
+      description: 'The file object to send virtual node access logs to.',
+    }),
+  })
+  .openapi({
+    description: 'An object that represents the access logging information for a virtual node.',
+    required: [],
+  })
   .openapi('AccessLog')
 
 const LoggingSchema = z
   .object({
-    accessLog: AccessLogSchema.and(
-      z.any().openapi({ description: 'The access log configuration for a virtual node.' }),
-    ).exactOptional(),
+    accessLog: AccessLogSchema.exactOptional().openapi({
+      description: 'The access log configuration for a virtual node.',
+    }),
   })
   .openapi({
     description: 'An object that represents the logging information for a virtual node.',
@@ -3076,67 +2161,138 @@ const LoggingSchema = z
   })
   .openapi('Logging')
 
-const ServiceDiscoverySchema: z.ZodType<ServiceDiscoveryType> = z
-  .lazy(() =>
-    z
-      .object({
-        awsCloudMap: AwsCloudMapServiceDiscoverySchema.and(
-          z
-            .any()
-            .openapi({ description: 'Specifies any Cloud Map information for the virtual node.' }),
-        ).exactOptional(),
-        dns: DnsServiceDiscoverySchema.and(
-          z.any().openapi({ description: 'Specifies the DNS information for the virtual node.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'An object that represents the service discovery information for a virtual node.',
-        required: [],
-      }),
-  )
+const AwsCloudMapInstanceAttributeKeySchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9!-~]+$/)
+  .min(1)
+  .max(255)
+  .openapi('AwsCloudMapInstanceAttributeKey')
+
+const AwsCloudMapInstanceAttributeValueSchema = z
+  .string()
+  .regex(/^([a-zA-Z0-9!-~][  a-zA-Z0-9!-~]*){0,1}[a-zA-Z0-9!-~]{0,1}$/)
+  .min(1)
+  .max(1024)
+  .openapi('AwsCloudMapInstanceAttributeValue')
+
+const AwsCloudMapInstanceAttributeSchema = z
+  .object({
+    key: AwsCloudMapInstanceAttributeKeySchema.openapi({
+      description:
+        'The name of an Cloud Map service instance attribute key. Any Cloud Map service instance that contains the specified key and value is returned.',
+    }),
+    value: AwsCloudMapInstanceAttributeValueSchema.openapi({
+      description:
+        'The value of an Cloud Map service instance attribute key. Any Cloud Map service instance that contains the specified key and value is returned.',
+    }),
+  })
+  .openapi({
+    required: ['key', 'value'],
+    description:
+      '<p>An object that represents the Cloud Map attribute information for your virtual node.</p> <note> <p>Cloud Map is not available in the eu-south-1 Region.</p> </note>',
+  })
+  .openapi('AwsCloudMapInstanceAttribute')
+
+const AwsCloudMapInstanceAttributesSchema = z
+  .array(AwsCloudMapInstanceAttributeSchema)
+  .openapi('AwsCloudMapInstanceAttributes')
+
+const IpPreferenceSchema = z
+  .enum(['IPv6_PREFERRED', 'IPv4_PREFERRED', 'IPv4_ONLY', 'IPv6_ONLY'])
+  .openapi('IpPreference')
+
+const AwsCloudMapNameSchema = z.string().min(1).max(1024).openapi('AwsCloudMapName')
+
+const AwsCloudMapServiceDiscoverySchema = z
+  .object({
+    attributes: AwsCloudMapInstanceAttributesSchema.exactOptional().openapi({
+      description:
+        'A string map that contains attributes with values that you can use to filter instances by any custom attribute that you specified when you registered the instance. Only instances that match all of the specified key/value pairs will be returned.',
+    }),
+    ipPreference: IpPreferenceSchema.exactOptional().openapi({
+      description:
+        'The preferred IP version that this virtual node uses. Setting the IP preference on the virtual node only overrides the IP preference set for the mesh on this specific node.',
+    }),
+    namespaceName: AwsCloudMapNameSchema.openapi({
+      description: 'The name of the Cloud Map namespace to use.',
+    }),
+    serviceName: AwsCloudMapNameSchema.openapi({
+      description: 'The name of the Cloud Map service to use.',
+    }),
+  })
+  .openapi({
+    required: ['namespaceName', 'serviceName'],
+    description:
+      '<p>An object that represents the Cloud Map service discovery information for your virtual node.</p> <note> <p>Cloud Map is not available in the eu-south-1 Region.</p> </note>',
+  })
+  .openapi('AwsCloudMapServiceDiscovery')
+
+const HostnameSchema = z.string().openapi('Hostname')
+
+const DnsResponseTypeSchema = z.enum(['LOADBALANCER', 'ENDPOINTS']).openapi('DnsResponseType')
+
+const DnsServiceDiscoverySchema = z
+  .object({
+    hostname: HostnameSchema.openapi({
+      description: 'Specifies the DNS service discovery hostname for the virtual node. ',
+    }),
+    ipPreference: IpPreferenceSchema.exactOptional().openapi({
+      description:
+        'The preferred IP version that this virtual node uses. Setting the IP preference on the virtual node only overrides the IP preference set for the mesh on this specific node.',
+    }),
+    responseType: DnsResponseTypeSchema.exactOptional().openapi({
+      description: 'Specifies the DNS response type for the virtual node.',
+    }),
+  })
+  .openapi({
+    required: ['hostname'],
+    description:
+      'An object that represents the DNS service discovery information for your virtual node.',
+  })
+  .openapi('DnsServiceDiscovery')
+
+const ServiceDiscoverySchema = z
+  .object({
+    awsCloudMap: AwsCloudMapServiceDiscoverySchema.exactOptional().openapi({
+      description: 'Specifies any Cloud Map information for the virtual node.',
+    }),
+    dns: DnsServiceDiscoverySchema.exactOptional().openapi({
+      description: 'Specifies the DNS information for the virtual node.',
+    }),
+  })
+  .openapi({
+    description: 'An object that represents the service discovery information for a virtual node.',
+    required: [],
+  })
   .openapi('ServiceDiscovery')
 
-const VirtualNodeSpecSchema = z
+type VirtualNodeSpecType = {
+  backendDefaults?: z.infer<typeof BackendDefaultsSchema> & unknown
+  backends?: z.infer<typeof BackendsSchema> & unknown
+  listeners?: z.infer<typeof ListenersSchema> & unknown
+  logging?: z.infer<typeof LoggingSchema> & unknown
+  serviceDiscovery?: z.infer<typeof ServiceDiscoverySchema> & unknown
+}
+
+const VirtualNodeSpecSchema: z.ZodType<VirtualNodeSpecType> = z
   .object({
-    backendDefaults: BackendDefaultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A reference to an object that represents the defaults for backends.',
-        }),
-    ).exactOptional(),
-    backends: BackendsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The backends that the virtual node is expected to send outbound traffic to.',
-        }),
-    ).exactOptional(),
-    listeners: ListenersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The listener that the virtual node is expected to receive inbound traffic from. You can specify one listener.',
-        }),
-    ).exactOptional(),
-    logging: LoggingSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The inbound and outbound access logging information for the virtual node.',
-        }),
-    ).exactOptional(),
-    serviceDiscovery: ServiceDiscoverySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service discovery information for the virtual node. If your virtual node does not expect ingress traffic, you can omit this parameter. If you specify a <code>listener</code>, then you must specify service discovery information.',
-        }),
-    ).exactOptional(),
+    backendDefaults: BackendDefaultsSchema.exactOptional().openapi({
+      description: 'A reference to an object that represents the defaults for backends.',
+    }),
+    backends: BackendsSchema.exactOptional().openapi({
+      description: 'The backends that the virtual node is expected to send outbound traffic to.',
+    }),
+    listeners: ListenersSchema.exactOptional().openapi({
+      description:
+        'The listener that the virtual node is expected to receive inbound traffic from. You can specify one listener.',
+    }),
+    logging: LoggingSchema.exactOptional().openapi({
+      description: 'The inbound and outbound access logging information for the virtual node.',
+    }),
+    serviceDiscovery: ServiceDiscoverySchema.exactOptional().openapi({
+      description:
+        'The service discovery information for the virtual node. If your virtual node does not expect ingress traffic, you can omit this parameter. If you specify a <code>listener</code>, then you must specify service discovery information.',
+    }),
   })
   .openapi({
     description: 'An object that represents the specification of a virtual node.',
@@ -3150,9 +2306,9 @@ const VirtualNodeStatusCodeSchema = z
 
 const VirtualNodeStatusSchema = z
   .object({
-    status: VirtualNodeStatusCodeSchema.and(
-      z.any().openapi({ description: 'The current status of the virtual node.' }),
-    ),
+    status: VirtualNodeStatusCodeSchema.openapi({
+      description: 'The current status of the virtual node.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -3160,25 +2316,27 @@ const VirtualNodeStatusSchema = z
   })
   .openapi('VirtualNodeStatus')
 
-const VirtualNodeDataSchema = z
+type VirtualNodeDataType = {
+  meshName: z.infer<typeof ResourceNameSchema> & unknown
+  metadata: z.infer<typeof ResourceMetadataSchema> & unknown
+  spec: z.infer<typeof VirtualNodeSpecSchema> & unknown
+  status: z.infer<typeof VirtualNodeStatusSchema> & unknown
+  virtualNodeName: z.infer<typeof ResourceNameSchema> & unknown
+}
+
+const VirtualNodeDataSchema: z.ZodType<VirtualNodeDataType> = z
   .object({
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service mesh that the virtual node resides in.' }),
-    ),
-    metadata: ResourceMetadataSchema.and(
-      z.any().openapi({ description: 'The associated metadata for the virtual node.' }),
-    ),
-    spec: VirtualNodeSpecSchema.and(
-      z.any().openapi({ description: 'The specifications of the virtual node.' }),
-    ),
-    status: VirtualNodeStatusSchema.and(
-      z.any().openapi({ description: 'The current status for the virtual node.' }),
-    ),
-    virtualNodeName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the virtual node.' }),
-    ),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the virtual node resides in.',
+    }),
+    metadata: ResourceMetadataSchema.openapi({
+      description: 'The associated metadata for the virtual node.',
+    }),
+    spec: VirtualNodeSpecSchema.openapi({ description: 'The specifications of the virtual node.' }),
+    status: VirtualNodeStatusSchema.openapi({
+      description: 'The current status for the virtual node.',
+    }),
+    virtualNodeName: ResourceNameSchema.openapi({ description: 'The name of the virtual node.' }),
   })
   .openapi({
     required: ['meshName', 'metadata', 'spec', 'status', 'virtualNodeName'],
@@ -3186,15 +2344,243 @@ const VirtualNodeDataSchema = z
   })
   .openapi('VirtualNodeData')
 
-const CreateVirtualNodeOutputSchema = z
+type CreateVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> & unknown }
+
+type DeleteGatewayRouteOutputType = {
+  gatewayRoute: z.infer<typeof GatewayRouteDataSchema> & unknown
+}
+
+type DeleteRouteOutputType = { route: z.infer<typeof RouteDataSchema> & unknown }
+
+type DeleteVirtualGatewayOutputType = {
+  virtualGateway: z.infer<typeof VirtualGatewayDataSchema> & unknown
+}
+
+type DeleteVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> & unknown }
+
+type DescribeGatewayRouteOutputType = {
+  gatewayRoute: z.infer<typeof GatewayRouteDataSchema> & unknown
+}
+
+type DescribeRouteOutputType = { route: z.infer<typeof RouteDataSchema> & unknown }
+
+type DescribeVirtualGatewayOutputType = {
+  virtualGateway: z.infer<typeof VirtualGatewayDataSchema> & unknown
+}
+
+type DescribeVirtualNodeOutputType = {
+  virtualNode: z.infer<typeof VirtualNodeDataSchema> & unknown
+}
+
+type UpdateGatewayRouteOutputType = {
+  gatewayRoute: z.infer<typeof GatewayRouteDataSchema> & unknown
+}
+
+type UpdateRouteOutputType = { route: z.infer<typeof RouteDataSchema> & unknown }
+
+type UpdateVirtualGatewayOutputType = {
+  virtualGateway: z.infer<typeof VirtualGatewayDataSchema> & unknown
+}
+
+type UpdateVirtualNodeOutputType = { virtualNode: z.infer<typeof VirtualNodeDataSchema> & unknown }
+
+const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
+
+const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
+
+const TagRefSchema = z
   .object({
-    virtualNode: VirtualNodeDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The full description of your virtual node following the create call.',
-        }),
-    ),
+    key: TagKeySchema.openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A <code>key</code> is a general label that acts like a category for more specific tag values.',
+    }),
+    value: TagValueSchema.openapi({
+      description:
+        'The optional part of a key-value pair that make up a tag. A <code>value</code> acts as a descriptor within a tag category (key).',
+    }),
+  })
+  .openapi({
+    required: ['key', 'value'],
+    description:
+      'Optional metadata that you apply to a resource to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+  })
+  .openapi('TagRef')
+
+const TagListSchema = z.array(TagRefSchema).min(0).max(50).openapi('TagList')
+
+type CreateGatewayRouteInputType = {
+  clientToken?: z.infer<typeof StringSchema> & unknown
+  gatewayRouteName: z.infer<typeof ResourceNameSchema> & unknown
+  spec: z.infer<typeof GatewayRouteSpecSchema> & unknown
+  tags?: z.infer<typeof TagListSchema> & unknown
+}
+
+type CreateRouteInputType = {
+  clientToken?: z.infer<typeof StringSchema> & unknown
+  routeName: z.infer<typeof ResourceNameSchema> & unknown
+  spec: z.infer<typeof RouteSpecSchema> & unknown
+  tags?: z.infer<typeof TagListSchema> & unknown
+}
+
+type CreateVirtualGatewayInputType = {
+  clientToken?: z.infer<typeof StringSchema> & unknown
+  spec: z.infer<typeof VirtualGatewaySpecSchema> & unknown
+  tags?: z.infer<typeof TagListSchema> & unknown
+  virtualGatewayName: z.infer<typeof ResourceNameSchema> & unknown
+}
+
+type CreateVirtualNodeInputType = {
+  clientToken?: z.infer<typeof StringSchema> & unknown
+  spec: z.infer<typeof VirtualNodeSpecSchema> & unknown
+  tags?: z.infer<typeof TagListSchema> & unknown
+  virtualNodeName: z.infer<typeof ResourceNameSchema> & unknown
+}
+
+type UpdateGatewayRouteInputType = {
+  clientToken?: z.infer<typeof StringSchema> & unknown
+  spec: z.infer<typeof GatewayRouteSpecSchema> & unknown
+}
+
+type UpdateRouteInputType = {
+  clientToken?: z.infer<typeof StringSchema> & unknown
+  spec: z.infer<typeof RouteSpecSchema> & unknown
+}
+
+type UpdateVirtualGatewayInputType = {
+  clientToken?: z.infer<typeof StringSchema> & unknown
+  spec: z.infer<typeof VirtualGatewaySpecSchema> & unknown
+}
+
+type UpdateVirtualNodeInputType = {
+  clientToken?: z.infer<typeof StringSchema> & unknown
+  spec: z.infer<typeof VirtualNodeSpecSchema> & unknown
+}
+
+const CreateGatewayRouteOutputSchema: z.ZodType<CreateGatewayRouteOutputType> = z
+  .object({
+    gatewayRoute: GatewayRouteDataSchema.openapi({
+      description: 'The full description of your gateway route following the create call.',
+    }),
+  })
+  .openapi({ required: ['gatewayRoute'] })
+  .openapi('CreateGatewayRouteOutput')
+
+const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
+
+const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
+
+const ConflictExceptionSchema = z.any().openapi('ConflictException')
+
+const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException')
+
+const ForbiddenExceptionSchema = z.any().openapi('ForbiddenException')
+
+const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
+
+const InternalServerErrorExceptionSchema = z.any().openapi('InternalServerErrorException')
+
+const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
+
+const EgressFilterTypeSchema = z.enum(['ALLOW_ALL', 'DROP_ALL']).openapi('EgressFilterType')
+
+const EgressFilterSchema = z
+  .object({
+    type: EgressFilterTypeSchema.openapi({
+      description:
+        'The egress filter type. By default, the type is <code>DROP_ALL</code>, which allows egress only from virtual nodes to other defined resources in the service mesh (and any traffic to <code>*.amazonaws.com</code> for Amazon Web Services API calls). You can set the egress filter type to <code>ALLOW_ALL</code> to allow egress to any endpoint inside or outside of the service mesh.',
+    }),
+  })
+  .openapi({
+    required: ['type'],
+    description: 'An object that represents the egress filter rules for a service mesh.',
+  })
+  .openapi('EgressFilter')
+
+const MeshServiceDiscoverySchema = z
+  .object({
+    ipPreference: IpPreferenceSchema.exactOptional().openapi({
+      description: 'The IP version to use to control traffic within the mesh.',
+    }),
+  })
+  .openapi({
+    description: 'An object that represents the service discovery information for a service mesh.',
+    required: [],
+  })
+  .openapi('MeshServiceDiscovery')
+
+const MeshSpecSchema = z
+  .object({
+    egressFilter: EgressFilterSchema.exactOptional().openapi({
+      description: 'The egress filter rules for the service mesh.',
+    }),
+    serviceDiscovery: MeshServiceDiscoverySchema.exactOptional(),
+  })
+  .openapi({
+    description: 'An object that represents the specification of a service mesh.',
+    required: [],
+  })
+  .openapi('MeshSpec')
+
+const MeshStatusCodeSchema = z.enum(['ACTIVE', 'INACTIVE', 'DELETED']).openapi('MeshStatusCode')
+
+const MeshStatusSchema = z
+  .object({
+    status: MeshStatusCodeSchema.exactOptional().openapi({
+      description: 'The current mesh status.',
+    }),
+  })
+  .openapi({ description: 'An object that represents the status of a service mesh.', required: [] })
+  .openapi('MeshStatus')
+
+const MeshDataSchema = z
+  .object({
+    meshName: ResourceNameSchema.openapi({ description: 'The name of the service mesh.' }),
+    metadata: ResourceMetadataSchema.openapi({
+      description: 'The associated metadata for the service mesh.',
+    }),
+    spec: MeshSpecSchema.openapi({
+      description: 'The associated specification for the service mesh.',
+    }),
+    status: MeshStatusSchema.openapi({ description: 'The status of the service mesh.' }),
+  })
+  .openapi({
+    required: ['meshName', 'metadata', 'spec', 'status'],
+    description: 'An object that represents a service mesh returned by a describe operation.',
+  })
+  .openapi('MeshData')
+
+const CreateMeshOutputSchema = z
+  .object({
+    mesh: MeshDataSchema.openapi({
+      description: 'The full description of your service mesh following the create call.',
+    }),
+  })
+  .openapi({ required: ['mesh'], description: '<zonbook></zonbook><xhtml></xhtml>' })
+  .openapi('CreateMeshOutput')
+
+const CreateRouteOutputSchema: z.ZodType<CreateRouteOutputType> = z
+  .object({
+    route: RouteDataSchema.openapi({
+      description: 'The full description of your mesh following the create call.',
+    }),
+  })
+  .openapi({ required: ['route'], description: '<zonbook></zonbook><xhtml></xhtml>' })
+  .openapi('CreateRouteOutput')
+
+const CreateVirtualGatewayOutputSchema: z.ZodType<CreateVirtualGatewayOutputType> = z
+  .object({
+    virtualGateway: VirtualGatewayDataSchema.openapi({
+      description: 'The full description of your virtual gateway following the create call.',
+    }),
+  })
+  .openapi({ required: ['virtualGateway'] })
+  .openapi('CreateVirtualGatewayOutput')
+
+const CreateVirtualNodeOutputSchema: z.ZodType<CreateVirtualNodeOutputType> = z
+  .object({
+    virtualNode: VirtualNodeDataSchema.openapi({
+      description: 'The full description of your virtual node following the create call.',
+    }),
   })
   .openapi({ required: ['virtualNode'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('CreateVirtualNodeOutput')
@@ -3213,14 +2599,10 @@ const VirtualRouterListenersSchema = z
 
 const VirtualRouterSpecSchema = z
   .object({
-    listeners: VirtualRouterListenersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The listeners that the virtual router is expected to receive inbound traffic from. You can specify one listener.',
-        }),
-    ).exactOptional(),
+    listeners: VirtualRouterListenersSchema.exactOptional().openapi({
+      description:
+        'The listeners that the virtual router is expected to receive inbound traffic from. You can specify one listener.',
+    }),
   })
   .openapi({
     description: 'An object that represents the specification of a virtual router.',
@@ -3234,9 +2616,9 @@ const VirtualRouterStatusCodeSchema = z
 
 const VirtualRouterStatusSchema = z
   .object({
-    status: VirtualRouterStatusCodeSchema.and(
-      z.any().openapi({ description: 'The current status of the virtual router.' }),
-    ),
+    status: VirtualRouterStatusCodeSchema.openapi({
+      description: 'The current status of the virtual router.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -3246,25 +2628,21 @@ const VirtualRouterStatusSchema = z
 
 const VirtualRouterDataSchema = z
   .object({
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service mesh that the virtual router resides in.',
-        }),
-    ),
-    metadata: ResourceMetadataSchema.and(
-      z.any().openapi({ description: 'The associated metadata for the virtual router.' }),
-    ),
-    spec: VirtualRouterSpecSchema.and(
-      z.any().openapi({ description: 'The specifications of the virtual router.' }),
-    ),
-    status: VirtualRouterStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the virtual router.' }),
-    ),
-    virtualRouterName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the virtual router.' }),
-    ),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the virtual router resides in.',
+    }),
+    metadata: ResourceMetadataSchema.openapi({
+      description: 'The associated metadata for the virtual router.',
+    }),
+    spec: VirtualRouterSpecSchema.openapi({
+      description: 'The specifications of the virtual router.',
+    }),
+    status: VirtualRouterStatusSchema.openapi({
+      description: 'The current status of the virtual router.',
+    }),
+    virtualRouterName: ResourceNameSchema.openapi({
+      description: 'The name of the virtual router.',
+    }),
   })
   .openapi({
     required: ['meshName', 'metadata', 'spec', 'status', 'virtualRouterName'],
@@ -3274,26 +2652,18 @@ const VirtualRouterDataSchema = z
 
 const CreateVirtualRouterOutputSchema = z
   .object({
-    virtualRouter: VirtualRouterDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The full description of your virtual router following the create call.',
-        }),
-    ),
+    virtualRouter: VirtualRouterDataSchema.openapi({
+      description: 'The full description of your virtual router following the create call.',
+    }),
   })
   .openapi({ required: ['virtualRouter'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('CreateVirtualRouterOutput')
 
 const VirtualNodeServiceProviderSchema = z
   .object({
-    virtualNodeName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the virtual node that is acting as a service provider.',
-        }),
-    ),
+    virtualNodeName: ResourceNameSchema.openapi({
+      description: 'The name of the virtual node that is acting as a service provider.',
+    }),
   })
   .openapi({
     required: ['virtualNodeName'],
@@ -3303,13 +2673,9 @@ const VirtualNodeServiceProviderSchema = z
 
 const VirtualRouterServiceProviderSchema = z
   .object({
-    virtualRouterName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the virtual router that is acting as a service provider.',
-        }),
-    ),
+    virtualRouterName: ResourceNameSchema.openapi({
+      description: 'The name of the virtual router that is acting as a service provider.',
+    }),
   })
   .openapi({
     required: ['virtualRouterName'],
@@ -3319,12 +2685,12 @@ const VirtualRouterServiceProviderSchema = z
 
 const VirtualServiceProviderSchema = z
   .object({
-    virtualNode: VirtualNodeServiceProviderSchema.and(
-      z.any().openapi({ description: 'The virtual node associated with a virtual service.' }),
-    ).exactOptional(),
-    virtualRouter: VirtualRouterServiceProviderSchema.and(
-      z.any().openapi({ description: 'The virtual router associated with a virtual service.' }),
-    ).exactOptional(),
+    virtualNode: VirtualNodeServiceProviderSchema.exactOptional().openapi({
+      description: 'The virtual node associated with a virtual service.',
+    }),
+    virtualRouter: VirtualRouterServiceProviderSchema.exactOptional().openapi({
+      description: 'The virtual router associated with a virtual service.',
+    }),
   })
   .openapi({
     description: 'An object that represents the provider for a virtual service.',
@@ -3334,14 +2700,10 @@ const VirtualServiceProviderSchema = z
 
 const VirtualServiceSpecSchema = z
   .object({
-    provider: VirtualServiceProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The App Mesh object that is acting as the provider for a virtual service. You can specify a single virtual node or virtual router.',
-        }),
-    ).exactOptional(),
+    provider: VirtualServiceProviderSchema.exactOptional().openapi({
+      description:
+        'The App Mesh object that is acting as the provider for a virtual service. You can specify a single virtual node or virtual router.',
+    }),
   })
   .openapi({
     description: 'An object that represents the specification of a virtual service.',
@@ -3355,9 +2717,9 @@ const VirtualServiceStatusCodeSchema = z
 
 const VirtualServiceStatusSchema = z
   .object({
-    status: VirtualServiceStatusCodeSchema.and(
-      z.any().openapi({ description: 'The current status of the virtual service.' }),
-    ),
+    status: VirtualServiceStatusCodeSchema.openapi({
+      description: 'The current status of the virtual service.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -3367,23 +2729,19 @@ const VirtualServiceStatusSchema = z
 
 const VirtualServiceDataSchema = z
   .object({
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service mesh that the virtual service resides in.',
-        }),
-    ),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the virtual service resides in.',
+    }),
     metadata: ResourceMetadataSchema,
-    spec: VirtualServiceSpecSchema.and(
-      z.any().openapi({ description: 'The specifications of the virtual service.' }),
-    ),
-    status: VirtualServiceStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the virtual service.' }),
-    ),
-    virtualServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the virtual service.' }),
-    ),
+    spec: VirtualServiceSpecSchema.openapi({
+      description: 'The specifications of the virtual service.',
+    }),
+    status: VirtualServiceStatusSchema.openapi({
+      description: 'The current status of the virtual service.',
+    }),
+    virtualServiceName: ServiceNameSchema.openapi({
+      description: 'The name of the virtual service.',
+    }),
   })
   .openapi({
     required: ['meshName', 'metadata', 'spec', 'status', 'virtualServiceName'],
@@ -3393,22 +2751,18 @@ const VirtualServiceDataSchema = z
 
 const CreateVirtualServiceOutputSchema = z
   .object({
-    virtualService: VirtualServiceDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The full description of your virtual service following the create call.',
-        }),
-    ),
+    virtualService: VirtualServiceDataSchema.openapi({
+      description: 'The full description of your virtual service following the create call.',
+    }),
   })
   .openapi({ required: ['virtualService'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('CreateVirtualServiceOutput')
 
-const DeleteGatewayRouteOutputSchema = z
+const DeleteGatewayRouteOutputSchema: z.ZodType<DeleteGatewayRouteOutputType> = z
   .object({
-    gatewayRoute: GatewayRouteDataSchema.and(
-      z.any().openapi({ description: 'The gateway route that was deleted.' }),
-    ),
+    gatewayRoute: GatewayRouteDataSchema.openapi({
+      description: 'The gateway route that was deleted.',
+    }),
   })
   .openapi({ required: ['gatewayRoute'] })
   .openapi('DeleteGatewayRouteOutput')
@@ -3416,179 +2770,140 @@ const DeleteGatewayRouteOutputSchema = z
 const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
 const DeleteMeshOutputSchema = z
-  .object({
-    mesh: MeshDataSchema.and(
-      z.any().openapi({ description: 'The service mesh that was deleted.' }),
-    ),
-  })
+  .object({ mesh: MeshDataSchema.openapi({ description: 'The service mesh that was deleted.' }) })
   .openapi({ required: ['mesh'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DeleteMeshOutput')
 
-const DeleteRouteOutputSchema = z
-  .object({
-    route: RouteDataSchema.and(z.any().openapi({ description: 'The route that was deleted.' })),
-  })
+const DeleteRouteOutputSchema: z.ZodType<DeleteRouteOutputType> = z
+  .object({ route: RouteDataSchema.openapi({ description: 'The route that was deleted.' }) })
   .openapi({ required: ['route'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DeleteRouteOutput')
 
-const DeleteVirtualGatewayOutputSchema = z
+const DeleteVirtualGatewayOutputSchema: z.ZodType<DeleteVirtualGatewayOutputType> = z
   .object({
-    virtualGateway: VirtualGatewayDataSchema.and(
-      z.any().openapi({ description: 'The virtual gateway that was deleted.' }),
-    ),
+    virtualGateway: VirtualGatewayDataSchema.openapi({
+      description: 'The virtual gateway that was deleted.',
+    }),
   })
   .openapi({ required: ['virtualGateway'] })
   .openapi('DeleteVirtualGatewayOutput')
 
-const DeleteVirtualNodeOutputSchema = z
+const DeleteVirtualNodeOutputSchema: z.ZodType<DeleteVirtualNodeOutputType> = z
   .object({
-    virtualNode: VirtualNodeDataSchema.and(
-      z.any().openapi({ description: 'The virtual node that was deleted.' }),
-    ),
+    virtualNode: VirtualNodeDataSchema.openapi({
+      description: 'The virtual node that was deleted.',
+    }),
   })
   .openapi({ required: ['virtualNode'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DeleteVirtualNodeOutput')
 
 const DeleteVirtualRouterOutputSchema = z
   .object({
-    virtualRouter: VirtualRouterDataSchema.and(
-      z.any().openapi({ description: 'The virtual router that was deleted.' }),
-    ),
+    virtualRouter: VirtualRouterDataSchema.openapi({
+      description: 'The virtual router that was deleted.',
+    }),
   })
   .openapi({ required: ['virtualRouter'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DeleteVirtualRouterOutput')
 
 const DeleteVirtualServiceOutputSchema = z
   .object({
-    virtualService: VirtualServiceDataSchema.and(
-      z.any().openapi({ description: 'The virtual service that was deleted.' }),
-    ),
+    virtualService: VirtualServiceDataSchema.openapi({
+      description: 'The virtual service that was deleted.',
+    }),
   })
   .openapi({ required: ['virtualService'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DeleteVirtualServiceOutput')
 
-const DescribeGatewayRouteOutputSchema = z
+const DescribeGatewayRouteOutputSchema: z.ZodType<DescribeGatewayRouteOutputType> = z
   .object({
-    gatewayRoute: GatewayRouteDataSchema.and(
-      z.any().openapi({ description: 'The full description of your gateway route.' }),
-    ),
+    gatewayRoute: GatewayRouteDataSchema.openapi({
+      description: 'The full description of your gateway route.',
+    }),
   })
   .openapi({ required: ['gatewayRoute'] })
   .openapi('DescribeGatewayRouteOutput')
 
 const DescribeMeshOutputSchema = z
   .object({
-    mesh: MeshDataSchema.and(
-      z.any().openapi({ description: 'The full description of your service mesh.' }),
-    ),
+    mesh: MeshDataSchema.openapi({ description: 'The full description of your service mesh.' }),
   })
   .openapi({ required: ['mesh'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DescribeMeshOutput')
 
-const DescribeRouteOutputSchema = z
+const DescribeRouteOutputSchema: z.ZodType<DescribeRouteOutputType> = z
   .object({
-    route: RouteDataSchema.and(
-      z.any().openapi({ description: 'The full description of your route.' }),
-    ),
+    route: RouteDataSchema.openapi({ description: 'The full description of your route.' }),
   })
   .openapi({ required: ['route'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DescribeRouteOutput')
 
-const DescribeVirtualGatewayOutputSchema = z
+const DescribeVirtualGatewayOutputSchema: z.ZodType<DescribeVirtualGatewayOutputType> = z
   .object({
-    virtualGateway: VirtualGatewayDataSchema.and(
-      z.any().openapi({ description: 'The full description of your virtual gateway.' }),
-    ),
+    virtualGateway: VirtualGatewayDataSchema.openapi({
+      description: 'The full description of your virtual gateway.',
+    }),
   })
   .openapi({ required: ['virtualGateway'] })
   .openapi('DescribeVirtualGatewayOutput')
 
-const DescribeVirtualNodeOutputSchema = z
+const DescribeVirtualNodeOutputSchema: z.ZodType<DescribeVirtualNodeOutputType> = z
   .object({
-    virtualNode: VirtualNodeDataSchema.and(
-      z.any().openapi({ description: 'The full description of your virtual node.' }),
-    ),
+    virtualNode: VirtualNodeDataSchema.openapi({
+      description: 'The full description of your virtual node.',
+    }),
   })
   .openapi({ required: ['virtualNode'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DescribeVirtualNodeOutput')
 
 const DescribeVirtualRouterOutputSchema = z
   .object({
-    virtualRouter: VirtualRouterDataSchema.and(
-      z.any().openapi({ description: 'The full description of your virtual router.' }),
-    ),
+    virtualRouter: VirtualRouterDataSchema.openapi({
+      description: 'The full description of your virtual router.',
+    }),
   })
   .openapi({ required: ['virtualRouter'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DescribeVirtualRouterOutput')
 
 const DescribeVirtualServiceOutputSchema = z
   .object({
-    virtualService: VirtualServiceDataSchema.and(
-      z.any().openapi({ description: 'The full description of your virtual service.' }),
-    ),
+    virtualService: VirtualServiceDataSchema.openapi({
+      description: 'The full description of your virtual service.',
+    }),
   })
   .openapi({ required: ['virtualService'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DescribeVirtualServiceOutput')
 
 const GatewayRouteRefSchema = z
   .object({
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The full Amazon Resource Name (ARN) for the gateway route.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix epoch timestamp in seconds for when the resource was created.',
-        }),
-    ),
-    gatewayRouteName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the gateway route.' }),
-    ),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp in seconds for when the resource was last updated.',
-        }),
-    ),
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service mesh that the resource resides in. ' }),
-    ),
-    meshOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    resourceOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    version: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
-        }),
-    ),
-    virtualGatewayName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The virtual gateway that the gateway route is associated with.' }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The full Amazon Resource Name (ARN) for the gateway route.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was created.',
+    }),
+    gatewayRouteName: ResourceNameSchema.openapi({ description: 'The name of the gateway route.' }),
+    lastUpdatedAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was last updated.',
+    }),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the resource resides in. ',
+    }),
+    meshOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    resourceOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    version: LongSchema.openapi({
+      description:
+        "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
+    }),
+    virtualGatewayName: ResourceNameSchema.openapi({
+      description: 'The virtual gateway that the gateway route is associated with.',
+    }),
   })
   .openapi({
     required: [
@@ -3610,73 +2925,42 @@ const GatewayRouteListSchema = z.array(GatewayRouteRefSchema).openapi('GatewayRo
 
 const ListGatewayRoutesOutputSchema = z
   .object({
-    gatewayRoutes: GatewayRouteListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of existing gateway routes for the specified service mesh and virtual gateway.',
-        }),
-    ),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListGatewayRoutes</code> request. When the results of a <code>ListGatewayRoutes</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    gatewayRoutes: GatewayRouteListSchema.openapi({
+      description:
+        'The list of existing gateway routes for the specified service mesh and virtual gateway.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListGatewayRoutes</code> request. When the results of a <code>ListGatewayRoutes</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: ['gatewayRoutes'] })
   .openapi('ListGatewayRoutesOutput')
 
 const MeshRefSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The full Amazon Resource Name (ARN) of the service mesh.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix epoch timestamp in seconds for when the resource was created.',
-        }),
-    ),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp in seconds for when the resource was last updated.',
-        }),
-    ),
-    meshName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service mesh.' }),
-    ),
-    meshOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    resourceOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    version: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
-        }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The full Amazon Resource Name (ARN) of the service mesh.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was last updated.',
+    }),
+    meshName: ResourceNameSchema.openapi({ description: 'The name of the service mesh.' }),
+    meshOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    resourceOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    version: LongSchema.openapi({
+      description:
+        "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
+    }),
   })
   .openapi({
     required: [
@@ -3696,72 +2980,43 @@ const MeshListSchema = z.array(MeshRefSchema).openapi('MeshList')
 
 const ListMeshesOutputSchema = z
   .object({
-    meshes: MeshListSchema.and(
-      z.any().openapi({ description: 'The list of existing service meshes.' }),
-    ),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListMeshes</code> request. When the results of a <code>ListMeshes</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    meshes: MeshListSchema.openapi({ description: 'The list of existing service meshes.' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListMeshes</code> request. When the results of a <code>ListMeshes</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: ['meshes'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListMeshesOutput')
 
 const RouteRefSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The full Amazon Resource Name (ARN) for the route.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix epoch timestamp in seconds for when the resource was created.',
-        }),
-    ),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp in seconds for when the resource was last updated.',
-        }),
-    ),
-    meshName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service mesh that the route resides in.' }),
-    ),
-    meshOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    resourceOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    routeName: ResourceNameSchema.and(z.any().openapi({ description: 'The name of the route.' })),
-    version: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
-        }),
-    ),
-    virtualRouterName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The virtual router that the route is associated with.' }),
-    ),
+    arn: ArnSchema.openapi({ description: 'The full Amazon Resource Name (ARN) for the route.' }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was last updated.',
+    }),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the route resides in.',
+    }),
+    meshOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    resourceOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    routeName: ResourceNameSchema.openapi({ description: 'The name of the route.' }),
+    version: LongSchema.openapi({
+      description:
+        "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
+    }),
+    virtualRouterName: ResourceNameSchema.openapi({
+      description: 'The virtual router that the route is associated with.',
+    }),
   })
   .openapi({
     required: [
@@ -3783,95 +3038,55 @@ const RouteListSchema = z.array(RouteRefSchema).openapi('RouteList')
 
 const ListRoutesOutputSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListRoutes</code> request. When the results of a <code>ListRoutes</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    routes: RouteListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of existing routes for the specified service mesh and virtual router.',
-        }),
-    ),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListRoutes</code> request. When the results of a <code>ListRoutes</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
+    routes: RouteListSchema.openapi({
+      description: 'The list of existing routes for the specified service mesh and virtual router.',
+    }),
   })
   .openapi({ required: ['routes'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListRoutesOutput')
 
-const TagListSchema = z.array(TagRefSchema).min(0).max(50).openapi('TagList')
-
 const ListTagsForResourceOutputSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListTagsForResource</code> request. When the results of a <code>ListTagsForResource</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(z.any().openapi({ description: 'The tags for the resource.' })),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListTagsForResource</code> request. When the results of a <code>ListTagsForResource</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
+    tags: TagListSchema.openapi({ description: 'The tags for the resource.' }),
   })
   .openapi({ required: ['tags'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListTagsForResourceOutput')
 
 const VirtualGatewayRefSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The full Amazon Resource Name (ARN) for the resource.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix epoch timestamp in seconds for when the resource was created.',
-        }),
-    ),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp in seconds for when the resource was last updated.',
-        }),
-    ),
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service mesh that the resource resides in.' }),
-    ),
-    meshOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    resourceOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    version: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
-        }),
-    ),
-    virtualGatewayName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The full Amazon Resource Name (ARN) for the resource.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was last updated.',
+    }),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the resource resides in.',
+    }),
+    meshOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    resourceOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    version: LongSchema.openapi({
+      description:
+        "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
+    }),
+    virtualGatewayName: ResourceNameSchema.openapi({ description: 'The name of the resource.' }),
   })
   .openapi({
     required: [
@@ -3892,77 +3107,44 @@ const VirtualGatewayListSchema = z.array(VirtualGatewayRefSchema).openapi('Virtu
 
 const ListVirtualGatewaysOutputSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListVirtualGateways</code> request. When the results of a <code>ListVirtualGateways</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    virtualGateways: VirtualGatewayListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of existing virtual gateways for the specified service mesh.',
-        }),
-    ),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListVirtualGateways</code> request. When the results of a <code>ListVirtualGateways</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
+    virtualGateways: VirtualGatewayListSchema.openapi({
+      description: 'The list of existing virtual gateways for the specified service mesh.',
+    }),
   })
   .openapi({ required: ['virtualGateways'] })
   .openapi('ListVirtualGatewaysOutput')
 
 const VirtualNodeRefSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The full Amazon Resource Name (ARN) for the virtual node.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix epoch timestamp in seconds for when the resource was created.',
-        }),
-    ),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp in seconds for when the resource was last updated.',
-        }),
-    ),
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the service mesh that the virtual node resides in.' }),
-    ),
-    meshOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    resourceOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    version: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
-        }),
-    ),
-    virtualNodeName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the virtual node.' }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The full Amazon Resource Name (ARN) for the virtual node.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was last updated.',
+    }),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the virtual node resides in.',
+    }),
+    meshOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    resourceOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    version: LongSchema.openapi({
+      description:
+        "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
+    }),
+    virtualNodeName: ResourceNameSchema.openapi({ description: 'The name of the virtual node.' }),
   })
   .openapi({
     required: [
@@ -3983,81 +3165,46 @@ const VirtualNodeListSchema = z.array(VirtualNodeRefSchema).openapi('VirtualNode
 
 const ListVirtualNodesOutputSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListVirtualNodes</code> request. When the results of a <code>ListVirtualNodes</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    virtualNodes: VirtualNodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of existing virtual nodes for the specified service mesh.',
-        }),
-    ),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListVirtualNodes</code> request. When the results of a <code>ListVirtualNodes</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
+    virtualNodes: VirtualNodeListSchema.openapi({
+      description: 'The list of existing virtual nodes for the specified service mesh.',
+    }),
   })
   .openapi({ required: ['virtualNodes'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListVirtualNodesOutput')
 
 const VirtualRouterRefSchema = z
   .object({
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The full Amazon Resource Name (ARN) for the virtual router.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix epoch timestamp in seconds for when the resource was created.',
-        }),
-    ),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp in seconds for when the resource was last updated.',
-        }),
-    ),
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service mesh that the virtual router resides in.',
-        }),
-    ),
-    meshOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    resourceOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    version: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
-        }),
-    ),
-    virtualRouterName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the virtual router.' }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The full Amazon Resource Name (ARN) for the virtual router.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was last updated.',
+    }),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the virtual router resides in.',
+    }),
+    meshOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    resourceOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    version: LongSchema.openapi({
+      description:
+        "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
+    }),
+    virtualRouterName: ResourceNameSchema.openapi({
+      description: 'The name of the virtual router.',
+    }),
   })
   .openapi({
     required: [
@@ -4078,81 +3225,46 @@ const VirtualRouterListSchema = z.array(VirtualRouterRefSchema).openapi('Virtual
 
 const ListVirtualRoutersOutputSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListVirtualRouters</code> request. When the results of a <code>ListVirtualRouters</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    virtualRouters: VirtualRouterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of existing virtual routers for the specified service mesh.',
-        }),
-    ),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListVirtualRouters</code> request. When the results of a <code>ListVirtualRouters</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
+    virtualRouters: VirtualRouterListSchema.openapi({
+      description: 'The list of existing virtual routers for the specified service mesh.',
+    }),
   })
   .openapi({ required: ['virtualRouters'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListVirtualRoutersOutput')
 
 const VirtualServiceRefSchema = z
   .object({
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The full Amazon Resource Name (ARN) for the virtual service.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix epoch timestamp in seconds for when the resource was created.',
-        }),
-    ),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp in seconds for when the resource was last updated.',
-        }),
-    ),
-    meshName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service mesh that the virtual service resides in.',
-        }),
-    ),
-    meshOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    resourceOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
-        }),
-    ),
-    version: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
-        }),
-    ),
-    virtualServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the virtual service.' }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The full Amazon Resource Name (ARN) for the virtual service.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.openapi({
+      description: 'The Unix epoch timestamp in seconds for when the resource was last updated.',
+    }),
+    meshName: ResourceNameSchema.openapi({
+      description: 'The name of the service mesh that the virtual service resides in.',
+    }),
+    meshOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the service mesh owner. If the account ID is not your own, then it\'s the ID of the account that shared the mesh with your account. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    resourceOwner: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services IAM account ID of the resource owner. If the account ID is not your own, then it\'s the ID of the mesh owner or of another account that the mesh is shared with. For more information about mesh sharing, see <a href="https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html">Working with shared meshes</a>.',
+    }),
+    version: LongSchema.openapi({
+      description:
+        "The version of the resource. Resources are created at version 1, and this version is incremented each time that they're updated.",
+    }),
+    virtualServiceName: ServiceNameSchema.openapi({
+      description: 'The name of the virtual service.',
+    }),
   })
   .openapi({
     required: [
@@ -4173,42 +3285,34 @@ const VirtualServiceListSchema = z.array(VirtualServiceRefSchema).openapi('Virtu
 
 const ListVirtualServicesOutputSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListVirtualServices</code> request. When the results of a <code>ListVirtualServices</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    virtualServices: VirtualServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of existing virtual services for the specified service mesh.',
-        }),
-    ),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListVirtualServices</code> request. When the results of a <code>ListVirtualServices</code> request exceed <code>limit</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
+    virtualServices: VirtualServiceListSchema.openapi({
+      description: 'The list of existing virtual services for the specified service mesh.',
+    }),
   })
   .openapi({ required: ['virtualServices'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListVirtualServicesOutput')
 
 const TagResourceOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('TagResourceOutput')
 
 const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
 const UntagResourceOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('UntagResourceOutput')
 
-const UpdateGatewayRouteOutputSchema = z
+const UpdateGatewayRouteOutputSchema: z.ZodType<UpdateGatewayRouteOutputType> = z
   .object({
-    gatewayRoute: GatewayRouteDataSchema.and(
-      z.any().openapi({ description: 'A full description of the gateway route that was updated.' }),
-    ),
+    gatewayRoute: GatewayRouteDataSchema.openapi({
+      description: 'A full description of the gateway route that was updated.',
+    }),
   })
   .openapi({ required: ['gatewayRoute'] })
   .openapi('UpdateGatewayRouteOutput')
@@ -4218,109 +3322,85 @@ const UpdateMeshOutputSchema = z
   .openapi({ required: ['mesh'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('UpdateMeshOutput')
 
-const UpdateRouteOutputSchema = z
+const UpdateRouteOutputSchema: z.ZodType<UpdateRouteOutputType> = z
   .object({
-    route: RouteDataSchema.and(
-      z.any().openapi({ description: 'A full description of the route that was updated.' }),
-    ),
+    route: RouteDataSchema.openapi({
+      description: 'A full description of the route that was updated.',
+    }),
   })
   .openapi({ required: ['route'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('UpdateRouteOutput')
 
-const UpdateVirtualGatewayOutputSchema = z
+const UpdateVirtualGatewayOutputSchema: z.ZodType<UpdateVirtualGatewayOutputType> = z
   .object({
-    virtualGateway: VirtualGatewayDataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A full description of the virtual gateway that was updated.' }),
-    ),
+    virtualGateway: VirtualGatewayDataSchema.openapi({
+      description: 'A full description of the virtual gateway that was updated.',
+    }),
   })
   .openapi({ required: ['virtualGateway'] })
   .openapi('UpdateVirtualGatewayOutput')
 
-const UpdateVirtualNodeOutputSchema = z
+const UpdateVirtualNodeOutputSchema: z.ZodType<UpdateVirtualNodeOutputType> = z
   .object({
-    virtualNode: VirtualNodeDataSchema.and(
-      z.any().openapi({ description: 'A full description of the virtual node that was updated.' }),
-    ),
+    virtualNode: VirtualNodeDataSchema.openapi({
+      description: 'A full description of the virtual node that was updated.',
+    }),
   })
   .openapi({ required: ['virtualNode'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('UpdateVirtualNodeOutput')
 
 const UpdateVirtualRouterOutputSchema = z
   .object({
-    virtualRouter: VirtualRouterDataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A full description of the virtual router that was updated.' }),
-    ),
+    virtualRouter: VirtualRouterDataSchema.openapi({
+      description: 'A full description of the virtual router that was updated.',
+    }),
   })
   .openapi({ required: ['virtualRouter'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('UpdateVirtualRouterOutput')
 
 const UpdateVirtualServiceOutputSchema = z
   .object({
-    virtualService: VirtualServiceDataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A full description of the virtual service that was updated.' }),
-    ),
+    virtualService: VirtualServiceDataSchema.openapi({
+      description: 'A full description of the virtual service that was updated.',
+    }),
   })
   .openapi({ required: ['virtualService'], description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('UpdateVirtualServiceOutput')
 
-const CreateGatewayRouteInputSchema = z
+const CreateGatewayRouteInputSchema: z.ZodType<CreateGatewayRouteInputType> = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    gatewayRouteName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name to use for the gateway route.' }),
-    ),
-    spec: GatewayRouteSpecSchema.and(
-      z.any().openapi({ description: 'The gateway route specification to apply.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional metadata that you can apply to the gateway route to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    gatewayRouteName: ResourceNameSchema.openapi({
+      description: 'The name to use for the gateway route.',
+    }),
+    spec: GatewayRouteSpecSchema.openapi({
+      description: 'The gateway route specification to apply.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Optional metadata that you can apply to the gateway route to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({ required: ['gatewayRouteName', 'spec'], title: 'CreateGatewayRouteInput' })
   .openapi('CreateGatewayRouteInput')
 
 const CreateMeshInputSchema = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    meshName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name to use for the service mesh.' }),
-    ),
-    spec: MeshSpecSchema.and(
-      z.any().openapi({ description: 'The service mesh specification to apply.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional metadata that you can apply to the service mesh to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    meshName: ResourceNameSchema.openapi({ description: 'The name to use for the service mesh.' }),
+    spec: MeshSpecSchema.exactOptional().openapi({
+      description: 'The service mesh specification to apply.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Optional metadata that you can apply to the service mesh to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({
     required: ['meshName'],
@@ -4329,30 +3409,18 @@ const CreateMeshInputSchema = z
   })
   .openapi('CreateMeshInput')
 
-const CreateRouteInputSchema = z
+const CreateRouteInputSchema: z.ZodType<CreateRouteInputType> = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    routeName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name to use for the route.' }),
-    ),
-    spec: RouteSpecSchema.and(
-      z.any().openapi({ description: 'The route specification to apply.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional metadata that you can apply to the route to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    routeName: ResourceNameSchema.openapi({ description: 'The name to use for the route.' }),
+    spec: RouteSpecSchema.openapi({ description: 'The route specification to apply.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Optional metadata that you can apply to the route to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({
     required: ['routeName', 'spec'],
@@ -4361,58 +3429,42 @@ const CreateRouteInputSchema = z
   })
   .openapi('CreateRouteInput')
 
-const CreateVirtualGatewayInputSchema = z
+const CreateVirtualGatewayInputSchema: z.ZodType<CreateVirtualGatewayInputType> = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: VirtualGatewaySpecSchema.and(
-      z.any().openapi({ description: 'The virtual gateway specification to apply.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional metadata that you can apply to the virtual gateway to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
-    virtualGatewayName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name to use for the virtual gateway.' }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: VirtualGatewaySpecSchema.openapi({
+      description: 'The virtual gateway specification to apply.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Optional metadata that you can apply to the virtual gateway to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
+    virtualGatewayName: ResourceNameSchema.openapi({
+      description: 'The name to use for the virtual gateway.',
+    }),
   })
   .openapi({ required: ['spec', 'virtualGatewayName'], title: 'CreateVirtualGatewayInput' })
   .openapi('CreateVirtualGatewayInput')
 
-const CreateVirtualNodeInputSchema = z
+const CreateVirtualNodeInputSchema: z.ZodType<CreateVirtualNodeInputType> = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: VirtualNodeSpecSchema.and(
-      z.any().openapi({ description: 'The virtual node specification to apply.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional metadata that you can apply to the virtual node to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
-    virtualNodeName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name to use for the virtual node.' }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: VirtualNodeSpecSchema.openapi({
+      description: 'The virtual node specification to apply.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Optional metadata that you can apply to the virtual node to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
+    virtualNodeName: ResourceNameSchema.openapi({
+      description: 'The name to use for the virtual node.',
+    }),
   })
   .openapi({
     required: ['spec', 'virtualNodeName'],
@@ -4423,28 +3475,20 @@ const CreateVirtualNodeInputSchema = z
 
 const CreateVirtualRouterInputSchema = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: VirtualRouterSpecSchema.and(
-      z.any().openapi({ description: 'The virtual router specification to apply.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional metadata that you can apply to the virtual router to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
-    virtualRouterName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name to use for the virtual router.' }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: VirtualRouterSpecSchema.openapi({
+      description: 'The virtual router specification to apply.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Optional metadata that you can apply to the virtual router to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
+    virtualRouterName: ResourceNameSchema.openapi({
+      description: 'The name to use for the virtual router.',
+    }),
   })
   .openapi({
     required: ['spec', 'virtualRouterName'],
@@ -4455,28 +3499,20 @@ const CreateVirtualRouterInputSchema = z
 
 const CreateVirtualServiceInputSchema = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: VirtualServiceSpecSchema.and(
-      z.any().openapi({ description: 'The virtual service specification to apply.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional metadata that you can apply to the virtual service to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
-    virtualServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The name to use for the virtual service.' }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: VirtualServiceSpecSchema.openapi({
+      description: 'The virtual service specification to apply.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Optional metadata that you can apply to the virtual service to assist with categorization and organization. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
+    virtualServiceName: ServiceNameSchema.openapi({
+      description: 'The name to use for the virtual service.',
+    }),
   })
   .openapi({
     required: ['spec', 'virtualServiceName'],
@@ -4486,37 +3522,37 @@ const CreateVirtualServiceInputSchema = z
   .openapi('CreateVirtualServiceInput')
 
 const DeleteGatewayRouteInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteGatewayRouteInput' })
   .openapi('DeleteGatewayRouteInput')
 
 const DeleteMeshInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteMeshInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DeleteMeshInput')
 
 const DeleteRouteInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRouteInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DeleteRouteInput')
 
 const DeleteVirtualGatewayInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVirtualGatewayInput' })
   .openapi('DeleteVirtualGatewayInput')
 
 const DeleteVirtualNodeInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVirtualNodeInput', description: 'Deletes a virtual node input.' })
   .openapi('DeleteVirtualNodeInput')
 
 const DeleteVirtualRouterInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVirtualRouterInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DeleteVirtualRouterInput')
 
 const DeleteVirtualServiceInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteVirtualServiceInput',
     description: '<zonbook></zonbook><xhtml></xhtml>',
@@ -4524,32 +3560,32 @@ const DeleteVirtualServiceInputSchema = z
   .openapi('DeleteVirtualServiceInput')
 
 const DescribeGatewayRouteInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGatewayRouteInput' })
   .openapi('DescribeGatewayRouteInput')
 
 const DescribeMeshInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeMeshInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DescribeMeshInput')
 
 const DescribeRouteInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRouteInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DescribeRouteInput')
 
 const DescribeVirtualGatewayInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeVirtualGatewayInput' })
   .openapi('DescribeVirtualGatewayInput')
 
 const DescribeVirtualNodeInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeVirtualNodeInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('DescribeVirtualNodeInput')
 
 const DescribeVirtualRouterInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeVirtualRouterInput',
     description: '<zonbook></zonbook><xhtml></xhtml>',
@@ -4557,7 +3593,7 @@ const DescribeVirtualRouterInputSchema = z
   .openapi('DescribeVirtualRouterInput')
 
 const DescribeVirtualServiceInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeVirtualServiceInput',
     description: '<zonbook></zonbook><xhtml></xhtml>',
@@ -4567,56 +3603,56 @@ const DescribeVirtualServiceInputSchema = z
 const ListGatewayRoutesLimitSchema = z.int().min(1).max(100).openapi('ListGatewayRoutesLimit')
 
 const ListGatewayRoutesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListGatewayRoutesInput' })
   .openapi('ListGatewayRoutesInput')
 
 const ListMeshesLimitSchema = z.int().min(1).max(100).openapi('ListMeshesLimit')
 
 const ListMeshesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMeshesInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListMeshesInput')
 
 const ListRoutesLimitSchema = z.int().min(1).max(100).openapi('ListRoutesLimit')
 
 const ListRoutesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRoutesInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListRoutesInput')
 
 const TagsLimitSchema = z.int().min(1).max(50).openapi('TagsLimit')
 
 const ListTagsForResourceInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListTagsForResourceInput')
 
 const ListVirtualGatewaysLimitSchema = z.int().min(1).max(100).openapi('ListVirtualGatewaysLimit')
 
 const ListVirtualGatewaysInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVirtualGatewaysInput' })
   .openapi('ListVirtualGatewaysInput')
 
 const ListVirtualNodesLimitSchema = z.int().min(1).max(100).openapi('ListVirtualNodesLimit')
 
 const ListVirtualNodesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVirtualNodesInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListVirtualNodesInput')
 
 const ListVirtualRoutersLimitSchema = z.int().min(1).max(100).openapi('ListVirtualRoutersLimit')
 
 const ListVirtualRoutersInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVirtualRoutersInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListVirtualRoutersInput')
 
 const ListVirtualServicesLimitSchema = z.int().min(1).max(100).openapi('ListVirtualServicesLimit')
 
 const ListVirtualServicesInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVirtualServicesInput', description: '<zonbook></zonbook><xhtml></xhtml>' })
   .openapi('ListVirtualServicesInput')
 
@@ -4624,14 +3660,10 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(50).openapi('TagKeyLis
 
 const TagResourceInputSchema = z
   .object({
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ),
+    tags: TagListSchema.openapi({
+      description:
+        'The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({
     required: ['tags'],
@@ -4642,9 +3674,7 @@ const TagResourceInputSchema = z
 
 const UntagResourceInputSchema = z
   .object({
-    tagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to be removed.' }),
-    ),
+    tagKeys: TagKeyListSchema.openapi({ description: 'The keys of the tags to be removed.' }),
   })
   .openapi({
     required: ['tagKeys'],
@@ -4653,41 +3683,29 @@ const UntagResourceInputSchema = z
   })
   .openapi('UntagResourceInput')
 
-const UpdateGatewayRouteInputSchema = z
+const UpdateGatewayRouteInputSchema: z.ZodType<UpdateGatewayRouteInputType> = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: GatewayRouteSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new gateway route specification to apply. This overwrites the existing data.',
-        }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: GatewayRouteSpecSchema.openapi({
+      description:
+        'The new gateway route specification to apply. This overwrites the existing data.',
+    }),
   })
   .openapi({ required: ['spec'], title: 'UpdateGatewayRouteInput' })
   .openapi('UpdateGatewayRouteInput')
 
 const UpdateMeshInputSchema = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: MeshSpecSchema.and(
-      z.any().openapi({ description: 'The service mesh specification to apply.' }),
-    ).exactOptional(),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: MeshSpecSchema.exactOptional().openapi({
+      description: 'The service mesh specification to apply.',
+    }),
   })
   .openapi({
     title: 'UpdateMeshInput',
@@ -4696,23 +3714,15 @@ const UpdateMeshInputSchema = z
   })
   .openapi('UpdateMeshInput')
 
-const UpdateRouteInputSchema = z
+const UpdateRouteInputSchema: z.ZodType<UpdateRouteInputType> = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: RouteSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The new route specification to apply. This overwrites the existing data.',
-        }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: RouteSpecSchema.openapi({
+      description: 'The new route specification to apply. This overwrites the existing data.',
+    }),
   })
   .openapi({
     required: ['spec'],
@@ -4721,46 +3731,30 @@ const UpdateRouteInputSchema = z
   })
   .openapi('UpdateRouteInput')
 
-const UpdateVirtualGatewayInputSchema = z
+const UpdateVirtualGatewayInputSchema: z.ZodType<UpdateVirtualGatewayInputType> = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: VirtualGatewaySpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new virtual gateway specification to apply. This overwrites the existing data.',
-        }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: VirtualGatewaySpecSchema.openapi({
+      description:
+        'The new virtual gateway specification to apply. This overwrites the existing data.',
+    }),
   })
   .openapi({ required: ['spec'], title: 'UpdateVirtualGatewayInput' })
   .openapi('UpdateVirtualGatewayInput')
 
-const UpdateVirtualNodeInputSchema = z
+const UpdateVirtualNodeInputSchema: z.ZodType<UpdateVirtualNodeInputType> = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: VirtualNodeSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new virtual node specification to apply. This overwrites the existing data.',
-        }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: VirtualNodeSpecSchema.openapi({
+      description:
+        'The new virtual node specification to apply. This overwrites the existing data.',
+    }),
   })
   .openapi({
     required: ['spec'],
@@ -4771,22 +3765,14 @@ const UpdateVirtualNodeInputSchema = z
 
 const UpdateVirtualRouterInputSchema = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: VirtualRouterSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new virtual router specification to apply. This overwrites the existing data.',
-        }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: VirtualRouterSpecSchema.openapi({
+      description:
+        'The new virtual router specification to apply. This overwrites the existing data.',
+    }),
   })
   .openapi({
     required: ['spec'],
@@ -4797,22 +3783,14 @@ const UpdateVirtualRouterInputSchema = z
 
 const UpdateVirtualServiceInputSchema = z
   .object({
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
-        }),
-    ).exactOptional(),
-    spec: VirtualServiceSpecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new virtual service specification to apply. This overwrites the existing data.',
-        }),
-    ),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Up to 36 letters, numbers, hyphens, and underscores are allowed.',
+    }),
+    spec: VirtualServiceSpecSchema.openapi({
+      description:
+        'The new virtual service specification to apply. This overwrites the existing data.',
+    }),
   })
   .openapi({
     required: ['spec'],
@@ -5102,33 +4080,21 @@ export const putV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRo
                   .openapi({ description: 'The name to use for the gateway route.' }),
                 spec: z
                   .object({
-                    grpcRoute: GrpcGatewayRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of a gRPC gateway route.',
-                        }),
-                    ).exactOptional(),
-                    http2Route: HttpGatewayRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of an HTTP/2 gateway route.',
-                        }),
-                    ).exactOptional(),
-                    httpRoute: HttpGatewayRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of an HTTP gateway route.',
-                        }),
-                    ).exactOptional(),
-                    priority: GatewayRoutePrioritySchema.and(
-                      z.any().openapi({ description: 'The ordering of the gateway routes spec.' }),
-                    ).exactOptional(),
+                    grpcRoute: GrpcGatewayRouteSchema.exactOptional().openapi({
+                      description:
+                        'An object that represents the specification of a gRPC gateway route.',
+                    }),
+                    http2Route: HttpGatewayRouteSchema.exactOptional().openapi({
+                      description:
+                        'An object that represents the specification of an HTTP/2 gateway route.',
+                    }),
+                    httpRoute: HttpGatewayRouteSchema.exactOptional().openapi({
+                      description:
+                        'An object that represents the specification of an HTTP gateway route.',
+                    }),
+                    priority: GatewayRoutePrioritySchema.exactOptional().openapi({
+                      description: 'The ordering of the gateway routes spec.',
+                    }),
                   })
                   .openapi({
                     description:
@@ -5310,11 +4276,9 @@ export const putV20190125MeshesRoute = createRoute({
                 .openapi({ description: 'The name to use for the service mesh.' }),
               spec: z
                 .object({
-                  egressFilter: EgressFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The egress filter rules for the service mesh.' }),
-                  ).exactOptional(),
+                  egressFilter: EgressFilterSchema.exactOptional().openapi({
+                    description: 'The egress filter rules for the service mesh.',
+                  }),
                   serviceDiscovery: MeshServiceDiscoverySchema.exactOptional(),
                 })
                 .exactOptional()
@@ -5584,44 +4548,22 @@ export const putV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRoute
                 .openapi({ description: 'The name to use for the route.' }),
               spec: z
                 .object({
-                  grpcRoute: GrpcRouteSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'An object that represents the specification of a gRPC route.',
-                      }),
-                  ).exactOptional(),
-                  http2Route: HttpRouteSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An object that represents the specification of an HTTP/2 route.',
-                      }),
-                  ).exactOptional(),
-                  httpRoute: HttpRouteSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An object that represents the specification of an HTTP route.',
-                      }),
-                  ).exactOptional(),
-                  priority: RoutePrioritySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The priority for the route. Routes are matched based on the specified value, where 0 is the highest priority.',
-                      }),
-                  ).exactOptional(),
-                  tcpRoute: TcpRouteSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'An object that represents the specification of a TCP route.',
-                      }),
-                  ).exactOptional(),
+                  grpcRoute: GrpcRouteSchema.exactOptional().openapi({
+                    description: 'An object that represents the specification of a gRPC route.',
+                  }),
+                  http2Route: HttpRouteSchema.exactOptional().openapi({
+                    description: 'An object that represents the specification of an HTTP/2 route.',
+                  }),
+                  httpRoute: HttpRouteSchema.exactOptional().openapi({
+                    description: 'An object that represents the specification of an HTTP route.',
+                  }),
+                  priority: RoutePrioritySchema.exactOptional().openapi({
+                    description:
+                      'The priority for the route. Routes are matched based on the specified value, where 0 is the highest priority.',
+                  }),
+                  tcpRoute: TcpRouteSchema.exactOptional().openapi({
+                    description: 'An object that represents the specification of a TCP route.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -5858,22 +4800,14 @@ export const putV20190125MeshesMeshNameVirtualGatewaysRoute = createRoute({
                 }),
               spec: z
                 .object({
-                  backendDefaults: VirtualGatewayBackendDefaultsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A reference to an object that represents the defaults for backends.',
-                      }),
-                  ).exactOptional(),
-                  listeners: VirtualGatewayListenersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The listeners that the mesh endpoint is expected to receive inbound traffic from. You can specify one listener.',
-                      }),
-                  ).exactOptional(),
+                  backendDefaults: VirtualGatewayBackendDefaultsSchema.exactOptional().openapi({
+                    description:
+                      'A reference to an object that represents the defaults for backends.',
+                  }),
+                  listeners: VirtualGatewayListenersSchema.exactOptional().openapi({
+                    description:
+                      'The listeners that the mesh endpoint is expected to receive inbound traffic from. You can specify one listener.',
+                  }),
                   logging: VirtualGatewayLoggingSchema.exactOptional(),
                 })
                 .openapi({
@@ -6116,46 +5050,26 @@ export const putV20190125MeshesMeshNameVirtualNodesRoute = createRoute({
                 }),
               spec: z
                 .object({
-                  backendDefaults: BackendDefaultsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A reference to an object that represents the defaults for backends.',
-                      }),
-                  ).exactOptional(),
-                  backends: BackendsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The backends that the virtual node is expected to send outbound traffic to.',
-                      }),
-                  ).exactOptional(),
-                  listeners: ListenersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The listener that the virtual node is expected to receive inbound traffic from. You can specify one listener.',
-                      }),
-                  ).exactOptional(),
-                  logging: LoggingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The inbound and outbound access logging information for the virtual node.',
-                      }),
-                  ).exactOptional(),
-                  serviceDiscovery: ServiceDiscoverySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The service discovery information for the virtual node. If your virtual node does not expect ingress traffic, you can omit this parameter. If you specify a <code>listener</code>, then you must specify service discovery information.',
-                      }),
-                  ).exactOptional(),
+                  backendDefaults: BackendDefaultsSchema.exactOptional().openapi({
+                    description:
+                      'A reference to an object that represents the defaults for backends.',
+                  }),
+                  backends: BackendsSchema.exactOptional().openapi({
+                    description:
+                      'The backends that the virtual node is expected to send outbound traffic to.',
+                  }),
+                  listeners: ListenersSchema.exactOptional().openapi({
+                    description:
+                      'The listener that the virtual node is expected to receive inbound traffic from. You can specify one listener.',
+                  }),
+                  logging: LoggingSchema.exactOptional().openapi({
+                    description:
+                      'The inbound and outbound access logging information for the virtual node.',
+                  }),
+                  serviceDiscovery: ServiceDiscoverySchema.exactOptional().openapi({
+                    description:
+                      'The service discovery information for the virtual node. If your virtual node does not expect ingress traffic, you can omit this parameter. If you specify a <code>listener</code>, then you must specify service discovery information.',
+                  }),
                 })
                 .openapi({
                   description: 'An object that represents the specification of a virtual node.',
@@ -6396,14 +5310,10 @@ export const putV20190125MeshesMeshNameVirtualRoutersRoute = createRoute({
                 }),
               spec: z
                 .object({
-                  listeners: VirtualRouterListenersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The listeners that the virtual router is expected to receive inbound traffic from. You can specify one listener.',
-                      }),
-                  ).exactOptional(),
+                  listeners: VirtualRouterListenersSchema.exactOptional().openapi({
+                    description:
+                      'The listeners that the virtual router is expected to receive inbound traffic from. You can specify one listener.',
+                  }),
                 })
                 .openapi({
                   description: 'An object that represents the specification of a virtual router.',
@@ -6644,14 +5554,10 @@ export const putV20190125MeshesMeshNameVirtualServicesRoute = createRoute({
                 }),
               spec: z
                 .object({
-                  provider: VirtualServiceProviderSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The App Mesh object that is acting as the provider for a virtual service. You can specify a single virtual node or virtual router.',
-                      }),
-                  ).exactOptional(),
+                  provider: VirtualServiceProviderSchema.exactOptional().openapi({
+                    description:
+                      'The App Mesh object that is acting as the provider for a virtual service. You can specify a single virtual node or virtual router.',
+                  }),
                 })
                 .openapi({
                   description: 'An object that represents the specification of a virtual service.',
@@ -6912,33 +5818,21 @@ export const putV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRo
                   }),
                 spec: z
                   .object({
-                    grpcRoute: GrpcGatewayRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of a gRPC gateway route.',
-                        }),
-                    ).exactOptional(),
-                    http2Route: HttpGatewayRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of an HTTP/2 gateway route.',
-                        }),
-                    ).exactOptional(),
-                    httpRoute: HttpGatewayRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of an HTTP gateway route.',
-                        }),
-                    ).exactOptional(),
-                    priority: GatewayRoutePrioritySchema.and(
-                      z.any().openapi({ description: 'The ordering of the gateway routes spec.' }),
-                    ).exactOptional(),
+                    grpcRoute: GrpcGatewayRouteSchema.exactOptional().openapi({
+                      description:
+                        'An object that represents the specification of a gRPC gateway route.',
+                    }),
+                    http2Route: HttpGatewayRouteSchema.exactOptional().openapi({
+                      description:
+                        'An object that represents the specification of an HTTP/2 gateway route.',
+                    }),
+                    httpRoute: HttpGatewayRouteSchema.exactOptional().openapi({
+                      description:
+                        'An object that represents the specification of an HTTP gateway route.',
+                    }),
+                    priority: GatewayRoutePrioritySchema.exactOptional().openapi({
+                      description: 'The ordering of the gateway routes spec.',
+                    }),
                   })
                   .openapi({
                     description:
@@ -7225,11 +6119,9 @@ export const putV20190125MeshesMeshNameRoute = createRoute({
                 }),
               spec: z
                 .object({
-                  egressFilter: EgressFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The egress filter rules for the service mesh.' }),
-                  ).exactOptional(),
+                  egressFilter: EgressFilterSchema.exactOptional().openapi({
+                    description: 'The egress filter rules for the service mesh.',
+                  }),
                   serviceDiscovery: MeshServiceDiscoverySchema.exactOptional(),
                 })
                 .exactOptional()
@@ -7541,46 +6433,23 @@ export const putV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRoute
                   }),
                 spec: z
                   .object({
-                    grpcRoute: GrpcRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of a gRPC route.',
-                        }),
-                    ).exactOptional(),
-                    http2Route: HttpRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of an HTTP/2 route.',
-                        }),
-                    ).exactOptional(),
-                    httpRoute: HttpRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of an HTTP route.',
-                        }),
-                    ).exactOptional(),
-                    priority: RoutePrioritySchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The priority for the route. Routes are matched based on the specified value, where 0 is the highest priority.',
-                        }),
-                    ).exactOptional(),
-                    tcpRoute: TcpRouteSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that represents the specification of a TCP route.',
-                        }),
-                    ).exactOptional(),
+                    grpcRoute: GrpcRouteSchema.exactOptional().openapi({
+                      description: 'An object that represents the specification of a gRPC route.',
+                    }),
+                    http2Route: HttpRouteSchema.exactOptional().openapi({
+                      description:
+                        'An object that represents the specification of an HTTP/2 route.',
+                    }),
+                    httpRoute: HttpRouteSchema.exactOptional().openapi({
+                      description: 'An object that represents the specification of an HTTP route.',
+                    }),
+                    priority: RoutePrioritySchema.exactOptional().openapi({
+                      description:
+                        'The priority for the route. Routes are matched based on the specified value, where 0 is the highest priority.',
+                    }),
+                    tcpRoute: TcpRouteSchema.exactOptional().openapi({
+                      description: 'An object that represents the specification of a TCP route.',
+                    }),
                   })
                   .openapi({
                     description:
@@ -7909,22 +6778,14 @@ export const putV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRoute = 
                 }),
               spec: z
                 .object({
-                  backendDefaults: VirtualGatewayBackendDefaultsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A reference to an object that represents the defaults for backends.',
-                      }),
-                  ).exactOptional(),
-                  listeners: VirtualGatewayListenersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The listeners that the mesh endpoint is expected to receive inbound traffic from. You can specify one listener.',
-                      }),
-                  ).exactOptional(),
+                  backendDefaults: VirtualGatewayBackendDefaultsSchema.exactOptional().openapi({
+                    description:
+                      'A reference to an object that represents the defaults for backends.',
+                  }),
+                  listeners: VirtualGatewayListenersSchema.exactOptional().openapi({
+                    description:
+                      'The listeners that the mesh endpoint is expected to receive inbound traffic from. You can specify one listener.',
+                  }),
                   logging: VirtualGatewayLoggingSchema.exactOptional(),
                 })
                 .openapi({
@@ -8241,46 +7102,26 @@ export const putV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRoute = create
                 }),
               spec: z
                 .object({
-                  backendDefaults: BackendDefaultsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A reference to an object that represents the defaults for backends.',
-                      }),
-                  ).exactOptional(),
-                  backends: BackendsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The backends that the virtual node is expected to send outbound traffic to.',
-                      }),
-                  ).exactOptional(),
-                  listeners: ListenersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The listener that the virtual node is expected to receive inbound traffic from. You can specify one listener.',
-                      }),
-                  ).exactOptional(),
-                  logging: LoggingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The inbound and outbound access logging information for the virtual node.',
-                      }),
-                  ).exactOptional(),
-                  serviceDiscovery: ServiceDiscoverySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The service discovery information for the virtual node. If your virtual node does not expect ingress traffic, you can omit this parameter. If you specify a <code>listener</code>, then you must specify service discovery information.',
-                      }),
-                  ).exactOptional(),
+                  backendDefaults: BackendDefaultsSchema.exactOptional().openapi({
+                    description:
+                      'A reference to an object that represents the defaults for backends.',
+                  }),
+                  backends: BackendsSchema.exactOptional().openapi({
+                    description:
+                      'The backends that the virtual node is expected to send outbound traffic to.',
+                  }),
+                  listeners: ListenersSchema.exactOptional().openapi({
+                    description:
+                      'The listener that the virtual node is expected to receive inbound traffic from. You can specify one listener.',
+                  }),
+                  logging: LoggingSchema.exactOptional().openapi({
+                    description:
+                      'The inbound and outbound access logging information for the virtual node.',
+                  }),
+                  serviceDiscovery: ServiceDiscoverySchema.exactOptional().openapi({
+                    description:
+                      'The service discovery information for the virtual node. If your virtual node does not expect ingress traffic, you can omit this parameter. If you specify a <code>listener</code>, then you must specify service discovery information.',
+                  }),
                 })
                 .openapi({
                   description: 'An object that represents the specification of a virtual node.',
@@ -8595,14 +7436,10 @@ export const putV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRoute = cr
                 }),
               spec: z
                 .object({
-                  listeners: VirtualRouterListenersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The listeners that the virtual router is expected to receive inbound traffic from. You can specify one listener.',
-                      }),
-                  ).exactOptional(),
+                  listeners: VirtualRouterListenersSchema.exactOptional().openapi({
+                    description:
+                      'The listeners that the virtual router is expected to receive inbound traffic from. You can specify one listener.',
+                  }),
                 })
                 .openapi({
                   description: 'An object that represents the specification of a virtual router.',
@@ -8913,14 +7750,10 @@ export const putV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRoute = 
                 }),
               spec: z
                 .object({
-                  provider: VirtualServiceProviderSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The App Mesh object that is acting as the provider for a virtual service. You can specify a single virtual node or virtual router.',
-                      }),
-                  ).exactOptional(),
+                  provider: VirtualServiceProviderSchema.exactOptional().openapi({
+                    description:
+                      'The App Mesh object that is acting as the provider for a virtual service. You can specify a single virtual node or virtual router.',
+                  }),
                 })
                 .openapi({
                   description: 'An object that represents the specification of a virtual service.',

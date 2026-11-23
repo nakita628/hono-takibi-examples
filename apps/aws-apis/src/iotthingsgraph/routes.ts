@@ -1,6 +1,8 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AssociateEntityToThingResponseSchema = z.object({}).openapi('AssociateEntityToThingResponse')
+const AssociateEntityToThingResponseSchema = z
+  .looseObject({})
+  .openapi('AssociateEntityToThingResponse')
 
 const ThingNameSchema = z
   .string()
@@ -22,27 +24,17 @@ const VersionSchema = z.int().openapi('Version')
 
 const AssociateEntityToThingRequestSchema = z
   .object({
-    thingName: ThingNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the thing to which the entity is to be associated.' }),
-    ),
-    entityId: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the device to be associated with the thing.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME</code> </p>',
-        }),
-    ),
-    namespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
-        }),
-    ).exactOptional(),
+    thingName: ThingNameSchema.openapi({
+      description: 'The name of the thing to which the entity is to be associated.',
+    }),
+    entityId: UrnSchema.openapi({
+      description:
+        '<p>The ID of the device to be associated with the thing.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME</code> </p>',
+    }),
+    namespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
+    }),
   })
   .openapi({ required: ['thingName', 'entityId'], title: 'AssociateEntityToThingRequest' })
   .openapi('AssociateEntityToThingRequest')
@@ -61,16 +53,14 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const FlowTemplateSummarySchema = z
   .object({
-    id: UrnSchema.and(z.any().openapi({ description: 'The ID of the workflow.' })).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the workflow.' }),
-    ).exactOptional(),
-    revisionNumber: VersionSchema.and(
-      z.any().openapi({ description: 'The revision number of the workflow.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the workflow was created.' }),
-    ).exactOptional(),
+    id: UrnSchema.exactOptional().openapi({ description: 'The ID of the workflow.' }),
+    arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the workflow.' }),
+    revisionNumber: VersionSchema.exactOptional().openapi({
+      description: 'The revision number of the workflow.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the workflow was created.',
+    }),
   })
   .openapi({
     description: 'An object that contains summary information about a workflow.',
@@ -80,9 +70,9 @@ const FlowTemplateSummarySchema = z
 
 const CreateFlowTemplateResponseSchema = z
   .object({
-    summary: FlowTemplateSummarySchema.and(
-      z.any().openapi({ description: 'The summary object that describes the created workflow.' }),
-    ).exactOptional(),
+    summary: FlowTemplateSummarySchema.exactOptional().openapi({
+      description: 'The summary object that describes the created workflow.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFlowTemplateResponse')
@@ -93,34 +83,26 @@ const DefinitionTextSchema = z.string().max(1048576).openapi('DefinitionText')
 
 const DefinitionDocumentSchema = z
   .object({
-    language: DefinitionLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language used to define the entity. <code>GRAPHQL</code> is the only valid value.',
-        }),
-    ),
-    text: DefinitionTextSchema.and(
-      z.any().openapi({ description: 'The GraphQL text that defines the entity.' }),
-    ),
+    language: DefinitionLanguageSchema.openapi({
+      description:
+        'The language used to define the entity. <code>GRAPHQL</code> is the only valid value.',
+    }),
+    text: DefinitionTextSchema.openapi({
+      description: 'The GraphQL text that defines the entity.',
+    }),
   })
   .openapi({ required: ['language', 'text'], description: 'A document that defines an entity. ' })
   .openapi('DefinitionDocument')
 
 const CreateFlowTemplateRequestSchema = z
   .object({
-    definition: DefinitionDocumentSchema.and(
-      z.any().openapi({ description: 'The workflow <code>DefinitionDocument</code>.' }),
-    ),
-    compatibleNamespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace version in which the workflow is to be created.</p> <p>If no value is specified, the latest version is used by default.</p>',
-        }),
-    ).exactOptional(),
+    definition: DefinitionDocumentSchema.openapi({
+      description: 'The workflow <code>DefinitionDocument</code>.',
+    }),
+    compatibleNamespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace version in which the workflow is to be created.</p> <p>If no value is specified, the latest version is used by default.</p>',
+    }),
   })
   .openapi({ required: ['definition'], title: 'CreateFlowTemplateRequest' })
   .openapi('CreateFlowTemplateRequest')
@@ -152,47 +134,29 @@ const GreengrassGroupVersionIdSchema = z.string().openapi('GreengrassGroupVersio
 
 const SystemInstanceSummarySchema = z
   .object({
-    id: UrnSchema.and(
-      z.any().openapi({ description: 'The ID of the system instance.' }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the system instance.' }),
-    ).exactOptional(),
-    status: SystemInstanceDeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The status of the system instance.' }),
-    ).exactOptional(),
-    target: DeploymentTargetSchema.and(
-      z.any().openapi({ description: 'The target of the system instance.' }),
-    ).exactOptional(),
-    greengrassGroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Greengrass group where the system instance is deployed.',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the system instance was created.' }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The date and time when the system instance was last updated.' }),
-    ).exactOptional(),
-    greengrassGroupId: GreengrassGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Greengrass group where the system instance is deployed.',
-        }),
-    ).exactOptional(),
-    greengrassGroupVersionId: GreengrassGroupVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the Greengrass group where the system instance is deployed.',
-        }),
-    ).exactOptional(),
+    id: UrnSchema.exactOptional().openapi({ description: 'The ID of the system instance.' }),
+    arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the system instance.' }),
+    status: SystemInstanceDeploymentStatusSchema.exactOptional().openapi({
+      description: 'The status of the system instance.',
+    }),
+    target: DeploymentTargetSchema.exactOptional().openapi({
+      description: 'The target of the system instance.',
+    }),
+    greengrassGroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The ID of the Greengrass group where the system instance is deployed.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the system instance was created.',
+    }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description: ' The date and time when the system instance was last updated.',
+    }),
+    greengrassGroupId: GreengrassGroupIdSchema.exactOptional().openapi({
+      description: 'The ID of the Greengrass group where the system instance is deployed.',
+    }),
+    greengrassGroupVersionId: GreengrassGroupVersionIdSchema.exactOptional().openapi({
+      description: 'The version of the Greengrass group where the system instance is deployed.',
+    }),
   })
   .openapi({
     description: 'An object that contains summary information about a system instance.',
@@ -202,11 +166,9 @@ const SystemInstanceSummarySchema = z
 
 const CreateSystemInstanceResponseSchema = z
   .object({
-    summary: SystemInstanceSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The summary object that describes the new system instance.' }),
-    ).exactOptional(),
+    summary: SystemInstanceSummarySchema.exactOptional().openapi({
+      description: 'The summary object that describes the new system instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSystemInstanceResponse')
@@ -222,22 +184,14 @@ const TagValueSchema = z.string().min(1).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The required name of the tag. The string value can be from 1 to 128 Unicode characters in length.',
-        }),
-    ),
-    value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional value of the tag. The string value can be from 1 to 256 Unicode characters in length.',
-        }),
-    ),
+    key: TagKeySchema.openapi({
+      description:
+        'The required name of the tag. The string value can be from 1 to 128 Unicode characters in length.',
+    }),
+    value: TagValueSchema.openapi({
+      description:
+        'The optional value of the tag. The string value can be from 1 to 256 Unicode characters in length.',
+    }),
   })
   .openapi({
     required: ['key', 'value'],
@@ -256,16 +210,12 @@ const RoleArnSchema = z.string().min(20).max(2048).openapi('RoleArn')
 
 const MetricsConfigurationSchema = z
   .object({
-    cloudMetricEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A Boolean that specifies whether cloud metrics are collected.' }),
-    ).exactOptional(),
-    metricRuleRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the role that is used to collect cloud metrics.' }),
-    ).exactOptional(),
+    cloudMetricEnabled: EnabledSchema.exactOptional().openapi({
+      description: 'A Boolean that specifies whether cloud metrics are collected.',
+    }),
+    metricRuleRoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role that is used to collect cloud metrics.',
+    }),
   })
   .openapi({
     description:
@@ -276,106 +226,76 @@ const MetricsConfigurationSchema = z
 
 const CreateSystemInstanceRequestSchema = z
   .object({
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata, consisting of key-value pairs, that can be used to categorize your system instances.',
-        }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'Metadata, consisting of key-value pairs, that can be used to categorize your system instances.',
+    }),
     definition: DefinitionDocumentSchema,
-    target: DeploymentTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target type of the deployment. Valid values are <code>GREENGRASS</code> and <code>CLOUD</code>.',
-        }),
-    ),
-    greengrassGroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Greengrass group where the system instance will be deployed. This value is required if the value of the <code>target</code> parameter is <code>GREENGRASS</code>.',
-        }),
-    ).exactOptional(),
-    s3BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the Amazon Simple Storage Service bucket that will be used to store and deploy the system instance's resource file. This value is required if the value of the <code>target</code> parameter is <code>GREENGRASS</code>.",
-        }),
-    ).exactOptional(),
+    target: DeploymentTargetSchema.openapi({
+      description:
+        'The target type of the deployment. Valid values are <code>GREENGRASS</code> and <code>CLOUD</code>.',
+    }),
+    greengrassGroupName: GroupNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Greengrass group where the system instance will be deployed. This value is required if the value of the <code>target</code> parameter is <code>GREENGRASS</code>.',
+    }),
+    s3BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description:
+        "The name of the Amazon Simple Storage Service bucket that will be used to store and deploy the system instance's resource file. This value is required if the value of the <code>target</code> parameter is <code>GREENGRASS</code>.",
+    }),
     metricsConfiguration: MetricsConfigurationSchema.exactOptional(),
-    flowActionsRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role that AWS IoT Things Graph will assume when it executes the flow. This role must have read and write access to AWS Lambda and AWS IoT and any other AWS services that the flow uses when it executes. This value is required if the value of the <code>target</code> parameter is <code>CLOUD</code>.',
-        }),
-    ).exactOptional(),
+    flowActionsRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the IAM role that AWS IoT Things Graph will assume when it executes the flow. This role must have read and write access to AWS Lambda and AWS IoT and any other AWS services that the flow uses when it executes. This value is required if the value of the <code>target</code> parameter is <code>CLOUD</code>.',
+    }),
   })
   .openapi({ required: ['definition', 'target'], title: 'CreateSystemInstanceRequest' })
   .openapi('CreateSystemInstanceRequest')
 
 const SystemTemplateSummarySchema = z
   .object({
-    id: UrnSchema.and(z.any().openapi({ description: 'The ID of the system.' })).exactOptional(),
-    arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the system.' })).exactOptional(),
-    revisionNumber: VersionSchema.and(
-      z.any().openapi({ description: 'The revision number of the system.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the system was created.' }),
-    ).exactOptional(),
+    id: UrnSchema.exactOptional().openapi({ description: 'The ID of the system.' }),
+    arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the system.' }),
+    revisionNumber: VersionSchema.exactOptional().openapi({
+      description: 'The revision number of the system.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the system was created.',
+    }),
   })
   .openapi({ description: 'An object that contains information about a system.', required: [] })
   .openapi('SystemTemplateSummary')
 
 const CreateSystemTemplateResponseSchema = z
   .object({
-    summary: SystemTemplateSummarySchema.and(
-      z.any().openapi({ description: 'The summary object that describes the created system.' }),
-    ).exactOptional(),
+    summary: SystemTemplateSummarySchema.exactOptional().openapi({
+      description: 'The summary object that describes the created system.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSystemTemplateResponse')
 
 const CreateSystemTemplateRequestSchema = z
   .object({
-    definition: DefinitionDocumentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <code>DefinitionDocument</code> used to create the system.' }),
-    ),
-    compatibleNamespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace version in which the system is to be created.</p> <p>If no value is specified, the latest version is used by default.</p>',
-        }),
-    ).exactOptional(),
+    definition: DefinitionDocumentSchema.openapi({
+      description: 'The <code>DefinitionDocument</code> used to create the system.',
+    }),
+    compatibleNamespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace version in which the system is to be created.</p> <p>If no value is specified, the latest version is used by default.</p>',
+    }),
   })
   .openapi({ required: ['definition'], title: 'CreateSystemTemplateRequest' })
   .openapi('CreateSystemTemplateRequest')
 
-const DeleteFlowTemplateResponseSchema = z.object({}).openapi('DeleteFlowTemplateResponse')
+const DeleteFlowTemplateResponseSchema = z.looseObject({}).openapi('DeleteFlowTemplateResponse')
 
 const DeleteFlowTemplateRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the workflow to be deleted.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
-        }),
-    ),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the workflow to be deleted.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
+    }),
   })
   .openapi({ required: ['id'], title: 'DeleteFlowTemplateRequest' })
   .openapi('DeleteFlowTemplateRequest')
@@ -386,44 +306,40 @@ const NamespaceNameSchema = z.string().max(128).openapi('NamespaceName')
 
 const DeleteNamespaceResponseSchema = z
   .object({
-    namespaceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the namespace to be deleted.' }),
-    ).exactOptional(),
-    namespaceName: NamespaceNameSchema.and(
-      z.any().openapi({ description: 'The name of the namespace to be deleted.' }),
-    ).exactOptional(),
+    namespaceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the namespace to be deleted.',
+    }),
+    namespaceName: NamespaceNameSchema.exactOptional().openapi({
+      description: 'The name of the namespace to be deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteNamespaceResponse')
 
 const DeleteNamespaceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteNamespaceRequest' })
   .openapi('DeleteNamespaceRequest')
 
-const DeleteSystemInstanceResponseSchema = z.object({}).openapi('DeleteSystemInstanceResponse')
+const DeleteSystemInstanceResponseSchema = z.looseObject({}).openapi('DeleteSystemInstanceResponse')
 
 const DeleteSystemInstanceRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z.any().openapi({ description: 'The ID of the system instance to be deleted.' }),
-    ).exactOptional(),
+    id: UrnSchema.exactOptional().openapi({
+      description: 'The ID of the system instance to be deleted.',
+    }),
   })
   .openapi({ title: 'DeleteSystemInstanceRequest', required: [] })
   .openapi('DeleteSystemInstanceRequest')
 
-const DeleteSystemTemplateResponseSchema = z.object({}).openapi('DeleteSystemTemplateResponse')
+const DeleteSystemTemplateResponseSchema = z.looseObject({}).openapi('DeleteSystemTemplateResponse')
 
 const DeleteSystemTemplateRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the system to be deleted.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>',
-        }),
-    ),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the system to be deleted.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>',
+    }),
   })
   .openapi({ required: ['id'], title: 'DeleteSystemTemplateRequest' })
   .openapi('DeleteSystemTemplateRequest')
@@ -432,119 +348,87 @@ const GreengrassDeploymentIdSchema = z.string().openapi('GreengrassDeploymentId'
 
 const DeploySystemInstanceResponseSchema = z
   .object({
-    summary: SystemInstanceSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains summary information about a system instance that was deployed. ',
-        }),
-    ),
-    greengrassDeploymentId: GreengrassDeploymentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Greengrass deployment used to deploy the system instance.',
-        }),
-    ).exactOptional(),
+    summary: SystemInstanceSummarySchema.openapi({
+      description:
+        'An object that contains summary information about a system instance that was deployed. ',
+    }),
+    greengrassDeploymentId: GreengrassDeploymentIdSchema.exactOptional().openapi({
+      description: 'The ID of the Greengrass deployment used to deploy the system instance.',
+    }),
   })
   .openapi({ required: ['summary'] })
   .openapi('DeploySystemInstanceResponse')
 
 const DeploySystemInstanceRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the system instance. This value is returned by the <code>CreateSystemInstance</code> action.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:deployment:DEPLOYMENTNAME</code> </p>',
-        }),
-    ).exactOptional(),
+    id: UrnSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the system instance. This value is returned by the <code>CreateSystemInstance</code> action.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:deployment:DEPLOYMENTNAME</code> </p>',
+    }),
   })
   .openapi({ title: 'DeploySystemInstanceRequest', required: [] })
   .openapi('DeploySystemInstanceRequest')
 
-const DeprecateFlowTemplateResponseSchema = z.object({}).openapi('DeprecateFlowTemplateResponse')
+const DeprecateFlowTemplateResponseSchema = z
+  .looseObject({})
+  .openapi('DeprecateFlowTemplateResponse')
 
 const DeprecateFlowTemplateRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the workflow to be deleted.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
-        }),
-    ),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the workflow to be deleted.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
+    }),
   })
   .openapi({ required: ['id'], title: 'DeprecateFlowTemplateRequest' })
   .openapi('DeprecateFlowTemplateRequest')
 
 const DeprecateSystemTemplateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeprecateSystemTemplateResponse')
 
 const DeprecateSystemTemplateRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the system to delete.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>',
-        }),
-    ),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the system to delete.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>',
+    }),
   })
   .openapi({ required: ['id'], title: 'DeprecateSystemTemplateRequest' })
   .openapi('DeprecateSystemTemplateRequest')
 
 const DescribeNamespaceResponseSchema = z
   .object({
-    namespaceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the namespace.' }),
-    ).exactOptional(),
-    namespaceName: NamespaceNameSchema.and(
-      z.any().openapi({ description: 'The name of the namespace.' }),
-    ).exactOptional(),
-    trackingNamespaceName: NamespaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the public namespace that the latest namespace version is tracking.',
-        }),
-    ).exactOptional(),
-    trackingNamespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the public namespace that the latest version is tracking.',
-        }),
-    ).exactOptional(),
-    namespaceVersion: VersionSchema.and(
-      z.any().openapi({ description: "The version of the user's namespace to describe." }),
-    ).exactOptional(),
+    namespaceArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the namespace.' }),
+    namespaceName: NamespaceNameSchema.exactOptional().openapi({
+      description: 'The name of the namespace.',
+    }),
+    trackingNamespaceName: NamespaceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the public namespace that the latest namespace version is tracking.',
+    }),
+    trackingNamespaceVersion: VersionSchema.exactOptional().openapi({
+      description: 'The version of the public namespace that the latest version is tracking.',
+    }),
+    namespaceVersion: VersionSchema.exactOptional().openapi({
+      description: "The version of the user's namespace to describe.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeNamespaceResponse')
 
 const DescribeNamespaceRequestSchema = z
   .object({
-    namespaceName: NamespaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the user's namespace. Set this to <code>aws</code> to get the public namespace.",
-        }),
-    ).exactOptional(),
+    namespaceName: NamespaceNameSchema.exactOptional().openapi({
+      description:
+        "The name of the user's namespace. Set this to <code>aws</code> to get the public namespace.",
+    }),
   })
   .openapi({ title: 'DescribeNamespaceRequest', required: [] })
   .openapi('DescribeNamespaceRequest')
 
 const DissociateEntityFromThingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DissociateEntityFromThingResponse')
 
 const EntityTypeSchema = z
@@ -564,29 +448,25 @@ const EntityTypeSchema = z
 
 const DissociateEntityFromThingRequestSchema = z
   .object({
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing to disassociate.' }),
-    ),
-    entityType: EntityTypeSchema.and(
-      z.any().openapi({ description: 'The entity type from which to disassociate the thing.' }),
-    ),
+    thingName: ThingNameSchema.openapi({ description: 'The name of the thing to disassociate.' }),
+    entityType: EntityTypeSchema.openapi({
+      description: 'The entity type from which to disassociate the thing.',
+    }),
   })
   .openapi({ required: ['thingName', 'entityType'], title: 'DissociateEntityFromThingRequest' })
   .openapi('DissociateEntityFromThingRequest')
 
 const EntityDescriptionSchema = z
   .object({
-    id: UrnSchema.and(z.any().openapi({ description: 'The entity ID.' })).exactOptional(),
-    arn: ArnSchema.and(z.any().openapi({ description: 'The entity ARN.' })).exactOptional(),
-    type: EntityTypeSchema.and(
-      z.any().openapi({ description: 'The entity type.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the entity was created.' }),
-    ).exactOptional(),
-    definition: DefinitionDocumentSchema.and(
-      z.any().openapi({ description: 'The definition document of the entity.' }),
-    ).exactOptional(),
+    id: UrnSchema.exactOptional().openapi({ description: 'The entity ID.' }),
+    arn: ArnSchema.exactOptional().openapi({ description: 'The entity ARN.' }),
+    type: EntityTypeSchema.exactOptional().openapi({ description: 'The entity type.' }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the entity was created.',
+    }),
+    definition: DefinitionDocumentSchema.exactOptional().openapi({
+      description: 'The definition document of the entity.',
+    }),
   })
   .openapi({ description: 'Describes the properties of an entity.', required: [] })
   .openapi('EntityDescription')
@@ -595,9 +475,9 @@ const EntityDescriptionsSchema = z.array(EntityDescriptionSchema).openapi('Entit
 
 const GetEntitiesResponseSchema = z
   .object({
-    descriptions: EntityDescriptionsSchema.and(
-      z.any().openapi({ description: 'An array of descriptions for the specified entities.' }),
-    ).exactOptional(),
+    descriptions: EntityDescriptionsSchema.exactOptional().openapi({
+      description: 'An array of descriptions for the specified entities.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEntitiesResponse')
@@ -606,44 +486,30 @@ const UrnsSchema = z.array(UrnSchema).min(0).max(25).openapi('Urns')
 
 const GetEntitiesRequestSchema = z
   .object({
-    ids: UrnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of entity IDs.</p> <p>The IDs should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME</code> </p>',
-        }),
-    ),
-    namespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
-        }),
-    ).exactOptional(),
+    ids: UrnsSchema.openapi({
+      description:
+        '<p>An array of entity IDs.</p> <p>The IDs should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME</code> </p>',
+    }),
+    namespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
+    }),
   })
   .openapi({ required: ['ids'], title: 'GetEntitiesRequest' })
   .openapi('GetEntitiesRequest')
 
 const FlowTemplateDescriptionSchema = z
   .object({
-    summary: FlowTemplateSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that contains summary information about a workflow.' }),
-    ).exactOptional(),
-    definition: DefinitionDocumentSchema.and(
-      z.any().openapi({ description: "A workflow's definition document." }),
-    ).exactOptional(),
-    validatedNamespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the user's namespace against which the workflow was validated. Use this value in your system instance.",
-        }),
-    ).exactOptional(),
+    summary: FlowTemplateSummarySchema.exactOptional().openapi({
+      description: 'An object that contains summary information about a workflow.',
+    }),
+    definition: DefinitionDocumentSchema.exactOptional().openapi({
+      description: "A workflow's definition document.",
+    }),
+    validatedNamespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "The version of the user's namespace against which the workflow was validated. Use this value in your system instance.",
+    }),
   })
   .openapi({
     description: "An object that contains a workflow's definition and summary information.",
@@ -653,26 +519,22 @@ const FlowTemplateDescriptionSchema = z
 
 const GetFlowTemplateResponseSchema = z
   .object({
-    description: FlowTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The object that describes the specified workflow.' }),
-    ).exactOptional(),
+    description: FlowTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The object that describes the specified workflow.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFlowTemplateResponse')
 
 const GetFlowTemplateRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the workflow.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
-        }),
-    ),
-    revisionNumber: VersionSchema.and(
-      z.any().openapi({ description: 'The number of the workflow revision to retrieve.' }),
-    ).exactOptional(),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the workflow.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
+    }),
+    revisionNumber: VersionSchema.exactOptional().openapi({
+      description: 'The number of the workflow revision to retrieve.',
+    }),
   })
   .openapi({ required: ['id'], title: 'GetFlowTemplateRequest' })
   .openapi('GetFlowTemplateRequest')
@@ -685,21 +547,13 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const GetFlowTemplateRevisionsResponseSchema = z
   .object({
-    summaries: FlowTemplateSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that provide summary data about each revision.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results.',
-        }),
-    ).exactOptional(),
+    summaries: FlowTemplateSummariesSchema.exactOptional().openapi({
+      description: 'An array of objects that provide summary data about each revision.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFlowTemplateRevisionsResponse')
@@ -708,25 +562,17 @@ const MaxResultsSchema = z.int().min(1).max(250).openapi('MaxResults')
 
 const GetFlowTemplateRevisionsRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the workflow.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the workflow.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ required: ['id'], title: 'GetFlowTemplateRevisionsRequest' })
   .openapi('GetFlowTemplateRevisionsRequest')
@@ -743,38 +589,36 @@ const StringSchema = z.string().openapi('String')
 
 const GetNamespaceDeletionStatusResponseSchema = z
   .object({
-    namespaceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the namespace that is being deleted.' }),
-    ).exactOptional(),
-    namespaceName: NamespaceNameSchema.and(
-      z.any().openapi({ description: 'The name of the namespace that is being deleted.' }),
-    ).exactOptional(),
-    status: NamespaceDeletionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the deletion request.' }),
-    ).exactOptional(),
-    errorCode: NamespaceDeletionStatusErrorCodesSchema.and(
-      z.any().openapi({ description: 'An error code returned by the namespace deletion task.' }),
-    ).exactOptional(),
-    errorMessage: StringSchema.and(
-      z.any().openapi({ description: 'An error code returned by the namespace deletion task.' }),
-    ).exactOptional(),
+    namespaceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the namespace that is being deleted.',
+    }),
+    namespaceName: NamespaceNameSchema.exactOptional().openapi({
+      description: 'The name of the namespace that is being deleted.',
+    }),
+    status: NamespaceDeletionStatusSchema.exactOptional().openapi({
+      description: 'The status of the deletion request.',
+    }),
+    errorCode: NamespaceDeletionStatusErrorCodesSchema.exactOptional().openapi({
+      description: 'An error code returned by the namespace deletion task.',
+    }),
+    errorMessage: StringSchema.exactOptional().openapi({
+      description: 'An error code returned by the namespace deletion task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNamespaceDeletionStatusResponse')
 
 const GetNamespaceDeletionStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetNamespaceDeletionStatusRequest' })
   .openapi('GetNamespaceDeletionStatusRequest')
 
 const DependencyRevisionSchema = z
   .object({
-    id: UrnSchema.and(
-      z.any().openapi({ description: 'The ID of the workflow or system.' }),
-    ).exactOptional(),
-    revisionNumber: VersionSchema.and(
-      z.any().openapi({ description: 'The revision number of the workflow or system.' }),
-    ).exactOptional(),
+    id: UrnSchema.exactOptional().openapi({ description: 'The ID of the workflow or system.' }),
+    revisionNumber: VersionSchema.exactOptional().openapi({
+      description: 'The revision number of the workflow or system.',
+    }),
   })
   .openapi({
     description:
@@ -787,47 +631,27 @@ const DependencyRevisionsSchema = z.array(DependencyRevisionSchema).openapi('Dep
 
 const SystemInstanceDescriptionSchema = z
   .object({
-    summary: SystemInstanceSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains summary information about a system instance.',
-        }),
-    ).exactOptional(),
+    summary: SystemInstanceSummarySchema.exactOptional().openapi({
+      description: 'An object that contains summary information about a system instance.',
+    }),
     definition: DefinitionDocumentSchema.exactOptional(),
-    s3BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Simple Storage Service bucket where information about a system instance is stored.',
-        }),
-    ).exactOptional(),
+    s3BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Simple Storage Service bucket where information about a system instance is stored.',
+    }),
     metricsConfiguration: MetricsConfigurationSchema.exactOptional(),
-    validatedNamespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the user's namespace against which the system instance was validated.",
-        }),
-    ).exactOptional(),
-    validatedDependencyRevisions: DependencyRevisionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects that contain all of the IDs and revision numbers of workflows and systems that are used in a system instance.',
-        }),
-    ).exactOptional(),
-    flowActionsRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Identity and Access Management (IAM) role that AWS IoT Things Graph assumes during flow execution in a cloud deployment. This role must have read and write permissionss to AWS Lambda and AWS IoT and to any other AWS services that the flow uses.',
-        }),
-    ).exactOptional(),
+    validatedNamespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "The version of the user's namespace against which the system instance was validated.",
+    }),
+    validatedDependencyRevisions: DependencyRevisionsSchema.exactOptional().openapi({
+      description:
+        'A list of objects that contain all of the IDs and revision numbers of workflows and systems that are used in a system instance.',
+    }),
+    flowActionsRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The AWS Identity and Access Management (IAM) role that AWS IoT Things Graph assumes during flow execution in a cloud deployment. This role must have read and write permissionss to AWS Lambda and AWS IoT and to any other AWS services that the flow uses.',
+    }),
   })
   .openapi({
     description: 'An object that contains a system instance definition and summary information.',
@@ -837,45 +661,35 @@ const SystemInstanceDescriptionSchema = z
 
 const GetSystemInstanceResponseSchema = z
   .object({
-    description: SystemInstanceDescriptionSchema.and(
-      z.any().openapi({ description: 'An object that describes the system instance.' }),
-    ).exactOptional(),
+    description: SystemInstanceDescriptionSchema.exactOptional().openapi({
+      description: 'An object that describes the system instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSystemInstanceResponse')
 
 const GetSystemInstanceRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the system deployment instance. This value is returned by <code>CreateSystemInstance</code>.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:deployment:DEPLOYMENTNAME</code> </p>',
-        }),
-    ),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the system deployment instance. This value is returned by <code>CreateSystemInstance</code>.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:deployment:DEPLOYMENTNAME</code> </p>',
+    }),
   })
   .openapi({ required: ['id'], title: 'GetSystemInstanceRequest' })
   .openapi('GetSystemInstanceRequest')
 
 const SystemTemplateDescriptionSchema = z
   .object({
-    summary: SystemTemplateSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that contains summary information about a system.' }),
-    ).exactOptional(),
-    definition: DefinitionDocumentSchema.and(
-      z.any().openapi({ description: 'The definition document of a system.' }),
-    ).exactOptional(),
-    validatedNamespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The namespace version against which the system was validated. Use this value in your system instance.',
-        }),
-    ).exactOptional(),
+    summary: SystemTemplateSummarySchema.exactOptional().openapi({
+      description: 'An object that contains summary information about a system.',
+    }),
+    definition: DefinitionDocumentSchema.exactOptional().openapi({
+      description: 'The definition document of a system.',
+    }),
+    validatedNamespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        'The namespace version against which the system was validated. Use this value in your system instance.',
+    }),
   })
   .openapi({
     description: "An object that contains a system's definition document and summary information.",
@@ -885,28 +699,22 @@ const SystemTemplateDescriptionSchema = z
 
 const GetSystemTemplateResponseSchema = z
   .object({
-    description: SystemTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'An object that contains summary data about the system.' }),
-    ).exactOptional(),
+    description: SystemTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'An object that contains summary data about the system.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSystemTemplateResponse')
 
 const GetSystemTemplateRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the system to get. This ID must be in the user's namespace.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>",
-        }),
-    ),
-    revisionNumber: VersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number that specifies the revision of the system to get.' }),
-    ).exactOptional(),
+    id: UrnSchema.openapi({
+      description:
+        "<p>The ID of the system to get. This ID must be in the user's namespace.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>",
+    }),
+    revisionNumber: VersionSchema.exactOptional().openapi({
+      description: 'The number that specifies the revision of the system to get.',
+    }),
   })
   .openapi({ required: ['id'], title: 'GetSystemTemplateRequest' })
   .openapi('GetSystemTemplateRequest')
@@ -917,47 +725,31 @@ const SystemTemplateSummariesSchema = z
 
 const GetSystemTemplateRevisionsResponseSchema = z
   .object({
-    summaries: SystemTemplateSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that contain summary data about the system template revisions.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results. ',
-        }),
-    ).exactOptional(),
+    summaries: SystemTemplateSummariesSchema.exactOptional().openapi({
+      description:
+        'An array of objects that contain summary data about the system template revisions.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSystemTemplateRevisionsResponse')
 
 const GetSystemTemplateRevisionsRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the system template.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the system template.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ required: ['id'], title: 'GetSystemTemplateRevisionsRequest' })
   .openapi('GetSystemTemplateRevisionsRequest')
@@ -970,49 +762,35 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const GetUploadStatusResponseSchema = z
   .object({
-    uploadId: UploadIdSchema.and(z.any().openapi({ description: 'The ID of the upload.' })),
-    uploadStatus: UploadStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the upload. The initial status is <code>IN_PROGRESS</code>. The response show all validation failures if the upload fails.',
-        }),
-    ),
-    namespaceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the upload.' }),
-    ).exactOptional(),
-    namespaceName: NamespaceNameSchema.and(
-      z.any().openapi({ description: "The name of the upload's namespace." }),
-    ).exactOptional(),
-    namespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
-        }),
-    ).exactOptional(),
-    failureReason: StringListSchema.and(
-      z.any().openapi({ description: 'The reason for an upload failure.' }),
-    ).exactOptional(),
-    createdDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date at which the upload was created.' }),
-    ),
+    uploadId: UploadIdSchema.openapi({ description: 'The ID of the upload.' }),
+    uploadStatus: UploadStatusSchema.openapi({
+      description:
+        'The status of the upload. The initial status is <code>IN_PROGRESS</code>. The response show all validation failures if the upload fails.',
+    }),
+    namespaceArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the upload.' }),
+    namespaceName: NamespaceNameSchema.exactOptional().openapi({
+      description: "The name of the upload's namespace.",
+    }),
+    namespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
+    }),
+    failureReason: StringListSchema.exactOptional().openapi({
+      description: 'The reason for an upload failure.',
+    }),
+    createdDate: TimestampSchema.openapi({
+      description: 'The date at which the upload was created.',
+    }),
   })
   .openapi({ required: ['uploadId', 'uploadStatus', 'createdDate'] })
   .openapi('GetUploadStatusResponse')
 
 const GetUploadStatusRequestSchema = z
   .object({
-    uploadId: UploadIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the upload. This value is returned by the <code>UploadEntityDefinitions</code> action.',
-        }),
-    ),
+    uploadId: UploadIdSchema.openapi({
+      description:
+        'The ID of the upload. This value is returned by the <code>UploadEntityDefinitions</code> action.',
+    }),
   })
   .openapi({ required: ['uploadId'], title: 'GetUploadStatusRequest' })
   .openapi('GetUploadStatusRequest')
@@ -1045,18 +823,18 @@ const FlowExecutionMessagePayloadSchema = z.string().openapi('FlowExecutionMessa
 
 const FlowExecutionMessageSchema = z
   .object({
-    messageId: FlowExecutionMessageIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the message.' }),
-    ).exactOptional(),
-    eventType: FlowExecutionEventTypeSchema.and(
-      z.any().openapi({ description: 'The type of flow event .' }),
-    ).exactOptional(),
-    timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the message was last updated.' }),
-    ).exactOptional(),
-    payload: FlowExecutionMessagePayloadSchema.and(
-      z.any().openapi({ description: 'A string containing information about the flow event.' }),
-    ).exactOptional(),
+    messageId: FlowExecutionMessageIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the message.',
+    }),
+    eventType: FlowExecutionEventTypeSchema.exactOptional().openapi({
+      description: 'The type of flow event .',
+    }),
+    timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the message was last updated.',
+    }),
+    payload: FlowExecutionMessagePayloadSchema.exactOptional().openapi({
+      description: 'A string containing information about the flow event.',
+    }),
   })
   .openapi({ description: 'An object that contains information about a flow event.', required: [] })
   .openapi('FlowExecutionMessage')
@@ -1067,22 +845,14 @@ const FlowExecutionMessagesSchema = z
 
 const ListFlowExecutionMessagesResponseSchema = z
   .object({
-    messages: FlowExecutionMessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects that contain information about events in the specified flow execution.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results. ',
-        }),
-    ).exactOptional(),
+    messages: FlowExecutionMessagesSchema.exactOptional().openapi({
+      description:
+        'A list of objects that contain information about events in the specified flow execution.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFlowExecutionMessagesResponse')
@@ -1091,38 +861,28 @@ const FlowExecutionIdSchema = z.string().openapi('FlowExecutionId')
 
 const ListFlowExecutionMessagesRequestSchema = z
   .object({
-    flowExecutionId: FlowExecutionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the flow execution.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    flowExecutionId: FlowExecutionIdSchema.openapi({
+      description: 'The ID of the flow execution.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ required: ['flowExecutionId'], title: 'ListFlowExecutionMessagesRequest' })
   .openapi('ListFlowExecutionMessagesRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of tags returned by the <code>ListTagsForResource</code> operation.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The token that specifies the next page of results to return.' }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'List of tags returned by the <code>ListTagsForResource</code> operation.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token that specifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1131,43 +891,28 @@ const ResourceArnSchema = z.string().min(1).max(2048).openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of tags to return.' }),
-    ).exactOptional(),
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource whose tags are to be returned.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The token that specifies the next page of results to return.' }),
-    ).exactOptional(),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of tags to return.',
+    }),
+    resourceArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource whose tags are to be returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token that specifies the next page of results to return.',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const SearchEntitiesResponseSchema = z
   .object({
-    descriptions: EntityDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of descriptions for each entity returned in the search result.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results.',
-        }),
-    ).exactOptional(),
+    descriptions: EntityDescriptionsSchema.exactOptional().openapi({
+      description: 'An array of descriptions for each entity returned in the search result.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchEntitiesResponse')
@@ -1184,22 +929,14 @@ const EntityFilterValuesSchema = z.array(EntityFilterValueSchema).openapi('Entit
 
 const EntityFilterSchema = z
   .object({
-    name: EntityFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the entity search filter field. <code>REFERENCED_ENTITY_ID</code> filters on entities that are used by the entity in the result set. For example, you can filter on the ID of a property that is used in a state.',
-        }),
-    ).exactOptional(),
-    value: EntityFilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of string values for the search filter field. Multiple values function as AND criteria in the search.',
-        }),
-    ).exactOptional(),
+    name: EntityFilterNameSchema.exactOptional().openapi({
+      description:
+        'The name of the entity search filter field. <code>REFERENCED_ENTITY_ID</code> filters on entities that are used by the entity in the result set. For example, you can filter on the ID of a property that is used in a state.',
+    }),
+    value: EntityFilterValuesSchema.exactOptional().openapi({
+      description:
+        'An array of string values for the search filter field. Multiple values function as AND criteria in the search.',
+    }),
   })
   .openapi({
     description:
@@ -1212,36 +949,24 @@ const EntityFiltersSchema = z.array(EntityFilterSchema).openapi('EntityFilters')
 
 const SearchEntitiesRequestSchema = z
   .object({
-    entityTypes: EntityTypesSchema.and(
-      z.any().openapi({ description: 'The entity types for which to search.' }),
-    ),
-    filters: EntityFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional filter to apply to the search. Valid filters are <code>NAME</code> <code>NAMESPACE</code>, <code>SEMANTIC_TYPE_PATH</code> and <code>REFERENCED_ENTITY_ID</code>. <code>REFERENCED_ENTITY_ID</code> filters on entities that are used by the entity in the result set. For example, you can filter on the ID of a property that is used in a state.</p> <p>Multiple filters function as OR criteria in the query. Multiple values passed inside the filter function as AND criteria.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
-    namespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
-        }),
-    ).exactOptional(),
+    entityTypes: EntityTypesSchema.openapi({
+      description: 'The entity types for which to search.',
+    }),
+    filters: EntityFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>Optional filter to apply to the search. Valid filters are <code>NAME</code> <code>NAMESPACE</code>, <code>SEMANTIC_TYPE_PATH</code> and <code>REFERENCED_ENTITY_ID</code>. <code>REFERENCED_ENTITY_ID</code> filters on entities that are used by the entity in the result set. For example, you can filter on the ID of a property that is used in a state.</p> <p>Multiple filters function as OR criteria in the query. Multiple values passed inside the filter function as AND criteria.</p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
+    namespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
+    }),
   })
   .openapi({ required: ['entityTypes'], title: 'SearchEntitiesRequest' })
   .openapi('SearchEntitiesRequest')
@@ -1252,30 +977,22 @@ const FlowExecutionStatusSchema = z
 
 const FlowExecutionSummarySchema = z
   .object({
-    flowExecutionId: FlowExecutionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the flow execution.' }),
-    ).exactOptional(),
-    status: FlowExecutionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the flow execution.' }),
-    ).exactOptional(),
-    systemInstanceId: UrnSchema.and(
-      z.any().openapi({ description: 'The ID of the system instance that contains the flow.' }),
-    ).exactOptional(),
-    flowTemplateId: UrnSchema.and(
-      z.any().openapi({ description: 'The ID of the flow.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the flow execution summary was created.' }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the flow execution summary was last updated.',
-        }),
-    ).exactOptional(),
+    flowExecutionId: FlowExecutionIdSchema.exactOptional().openapi({
+      description: 'The ID of the flow execution.',
+    }),
+    status: FlowExecutionStatusSchema.exactOptional().openapi({
+      description: 'The current status of the flow execution.',
+    }),
+    systemInstanceId: UrnSchema.exactOptional().openapi({
+      description: 'The ID of the system instance that contains the flow.',
+    }),
+    flowTemplateId: UrnSchema.exactOptional().openapi({ description: 'The ID of the flow.' }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the flow execution summary was created.',
+    }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the flow execution summary was last updated.',
+    }),
   })
   .openapi({
     description: 'An object that contains summary information about a flow execution.',
@@ -1289,75 +1006,53 @@ const FlowExecutionSummariesSchema = z
 
 const SearchFlowExecutionsResponseSchema = z
   .object({
-    summaries: FlowExecutionSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that contain summary information about each workflow execution in the result set.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results.',
-        }),
-    ).exactOptional(),
+    summaries: FlowExecutionSummariesSchema.exactOptional().openapi({
+      description:
+        'An array of objects that contain summary information about each workflow execution in the result set.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchFlowExecutionsResponse')
 
 const SearchFlowExecutionsRequestSchema = z
   .object({
-    systemInstanceId: UrnSchema.and(
-      z.any().openapi({ description: 'The ID of the system instance that contains the flow.' }),
-    ),
-    flowExecutionId: FlowExecutionIdSchema.and(
-      z.any().openapi({ description: 'The ID of a flow execution.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time of the earliest flow execution to return.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time of the latest flow execution to return.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    systemInstanceId: UrnSchema.openapi({
+      description: 'The ID of the system instance that contains the flow.',
+    }),
+    flowExecutionId: FlowExecutionIdSchema.exactOptional().openapi({
+      description: 'The ID of a flow execution.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time of the earliest flow execution to return.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time of the latest flow execution to return.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ required: ['systemInstanceId'], title: 'SearchFlowExecutionsRequest' })
   .openapi('SearchFlowExecutionsRequest')
 
 const SearchFlowTemplatesResponseSchema = z
   .object({
-    summaries: FlowTemplateSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that contain summary information about each workflow in the result set.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results.',
-        }),
-    ).exactOptional(),
+    summaries: FlowTemplateSummariesSchema.exactOptional().openapi({
+      description:
+        'An array of objects that contain summary information about each workflow in the result set.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchFlowTemplatesResponse')
@@ -1378,17 +1073,13 @@ const FlowTemplateFilterValuesSchema = z
 
 const FlowTemplateFilterSchema = z
   .object({
-    name: FlowTemplateFilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the search filter field.' }),
-    ),
-    value: FlowTemplateFilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of string values for the search filter field. Multiple values function as AND criteria in the search.',
-        }),
-    ),
+    name: FlowTemplateFilterNameSchema.openapi({
+      description: 'The name of the search filter field.',
+    }),
+    value: FlowTemplateFilterValuesSchema.openapi({
+      description:
+        'An array of string values for the search filter field. Multiple values function as AND criteria in the search.',
+    }),
   })
   .openapi({
     required: ['name', 'value'],
@@ -1400,25 +1091,17 @@ const FlowTemplateFiltersSchema = z.array(FlowTemplateFilterSchema).openapi('Flo
 
 const SearchFlowTemplatesRequestSchema = z
   .object({
-    filters: FlowTemplateFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that limit the result set. The only valid filter is <code>DEVICE_MODEL_ID</code>.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    filters: FlowTemplateFiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects that limit the result set. The only valid filter is <code>DEVICE_MODEL_ID</code>.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ title: 'SearchFlowTemplatesRequest', required: [] })
   .openapi('SearchFlowTemplatesRequest')
@@ -1429,22 +1112,14 @@ const SystemInstanceSummariesSchema = z
 
 const SearchSystemInstancesResponseSchema = z
   .object({
-    summaries: SystemInstanceSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that contain summary data abour the system instances in the result set.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results. ',
-        }),
-    ).exactOptional(),
+    summaries: SystemInstanceSummariesSchema.exactOptional().openapi({
+      description:
+        'An array of objects that contain summary data abour the system instances in the result set.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchSystemInstancesResponse')
@@ -1461,17 +1136,13 @@ const SystemInstanceFilterValuesSchema = z
 
 const SystemInstanceFilterSchema = z
   .object({
-    name: SystemInstanceFilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the search filter field.' }),
-    ).exactOptional(),
-    value: SystemInstanceFilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of string values for the search filter field. Multiple values function as AND criteria in the search. ',
-        }),
-    ).exactOptional(),
+    name: SystemInstanceFilterNameSchema.exactOptional().openapi({
+      description: 'The name of the search filter field.',
+    }),
+    value: SystemInstanceFilterValuesSchema.exactOptional().openapi({
+      description:
+        'An array of string values for the search filter field. Multiple values function as AND criteria in the search. ',
+    }),
   })
   .openapi({
     description:
@@ -1486,47 +1157,31 @@ const SystemInstanceFiltersSchema = z
 
 const SearchSystemInstancesRequestSchema = z
   .object({
-    filters: SystemInstanceFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional filter to apply to the search. Valid filters are <code>SYSTEM_TEMPLATE_ID</code>, <code>STATUS</code>, and <code>GREENGRASS_GROUP_NAME</code>.</p> <p>Multiple filters function as OR criteria in the query. Multiple values passed inside the filter function as AND criteria.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    filters: SystemInstanceFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>Optional filter to apply to the search. Valid filters are <code>SYSTEM_TEMPLATE_ID</code>, <code>STATUS</code>, and <code>GREENGRASS_GROUP_NAME</code>.</p> <p>Multiple filters function as OR criteria in the query. Multiple values passed inside the filter function as AND criteria.</p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ title: 'SearchSystemInstancesRequest', required: [] })
   .openapi('SearchSystemInstancesRequest')
 
 const SearchSystemTemplatesResponseSchema = z
   .object({
-    summaries: SystemTemplateSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that contain summary information about each system deployment in the result set.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results.',
-        }),
-    ).exactOptional(),
+    summaries: SystemTemplateSummariesSchema.exactOptional().openapi({
+      description:
+        'An array of objects that contain summary information about each system deployment in the result set.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchSystemTemplatesResponse')
@@ -1549,17 +1204,13 @@ const SystemTemplateFilterValuesSchema = z
 
 const SystemTemplateFilterSchema = z
   .object({
-    name: SystemTemplateFilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the system search filter field.' }),
-    ),
-    value: SystemTemplateFilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of string values for the search filter field. Multiple values function as AND criteria in the search.',
-        }),
-    ),
+    name: SystemTemplateFilterNameSchema.openapi({
+      description: 'The name of the system search filter field.',
+    }),
+    value: SystemTemplateFilterValuesSchema.openapi({
+      description:
+        'An array of string values for the search filter field. Multiple values function as AND criteria in the search.',
+    }),
   })
   .openapi({ required: ['name', 'value'], description: 'An object that filters a system search.' })
   .openapi('SystemTemplateFilter')
@@ -1570,25 +1221,17 @@ const SystemTemplateFiltersSchema = z
 
 const SearchSystemTemplatesRequestSchema = z
   .object({
-    filters: SystemTemplateFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of filters that limit the result set. The only valid filter is <code>FLOW_TEMPLATE_ID</code>.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    filters: SystemTemplateFiltersSchema.exactOptional().openapi({
+      description:
+        'An array of filters that limit the result set. The only valid filter is <code>FLOW_TEMPLATE_ID</code>.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ title: 'SearchSystemTemplatesRequest', required: [] })
   .openapi('SearchSystemTemplatesRequest')
@@ -1597,12 +1240,8 @@ const ThingArnSchema = z.string().openapi('ThingArn')
 
 const ThingSchema = z
   .object({
-    thingArn: ThingArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the thing.' }),
-    ).exactOptional(),
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing.' }),
-    ).exactOptional(),
+    thingArn: ThingArnSchema.exactOptional().openapi({ description: 'The ARN of the thing.' }),
+    thingName: ThingNameSchema.exactOptional().openapi({ description: 'The name of the thing.' }),
   })
   .openapi({ description: 'An AWS IoT thing.', required: [] })
   .openapi('Thing')
@@ -1611,217 +1250,146 @@ const ThingsSchema = z.array(ThingSchema).openapi('Things')
 
 const SearchThingsResponseSchema = z
   .object({
-    things: ThingsSchema.and(
-      z.any().openapi({ description: 'An array of things in the result set.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string to specify as <code>nextToken</code> when you request the next page of results.',
-        }),
-    ).exactOptional(),
+    things: ThingsSchema.exactOptional().openapi({
+      description: 'An array of things in the result set.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string to specify as <code>nextToken</code> when you request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchThingsResponse')
 
 const SearchThingsRequestSchema = z
   .object({
-    entityId: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the entity to which the things are associated.</p> <p>The IDs should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME</code> </p>',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string that specifies the next page of results. Use this when you're paginating results.",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
-    namespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
-        }),
-    ).exactOptional(),
+    entityId: UrnSchema.openapi({
+      description:
+        '<p>The ID of the entity to which the things are associated.</p> <p>The IDs should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:device:DEVICENAME</code> </p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The string that specifies the next page of results. Use this when you're paginating results.",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
+    namespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "The version of the user's namespace. Defaults to the latest version of the user's namespace.",
+    }),
   })
   .openapi({ required: ['entityId'], title: 'SearchThingsRequest' })
   .openapi('SearchThingsRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the resource whose tags are returned.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tags to add to the resource.&gt;' }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource whose tags are returned.',
+    }),
+    tags: TagListSchema.openapi({ description: 'A list of tags to add to the resource.&gt;' }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UndeploySystemInstanceResponseSchema = z
   .object({
-    summary: SystemInstanceSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains summary information about the system instance that was removed from its target.',
-        }),
-    ).exactOptional(),
+    summary: SystemInstanceSummarySchema.exactOptional().openapi({
+      description:
+        'An object that contains summary information about the system instance that was removed from its target.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UndeploySystemInstanceResponse')
 
 const UndeploySystemInstanceRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z.any().openapi({ description: 'The ID of the system instance to remove from its target.' }),
-    ).exactOptional(),
+    id: UrnSchema.exactOptional().openapi({
+      description: 'The ID of the system instance to remove from its target.',
+    }),
   })
   .openapi({ title: 'UndeploySystemInstanceRequest', required: [] })
   .openapi('UndeploySystemInstanceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource whose tags are to be removed.',
-        }),
-    ),
-    tagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tag key names to remove from the resource. You don\'t specify the value. Both the key and its associated value are removed. </p> <p>This parameter to the API requires a JSON text string argument. For information on how to format a JSON parameter for the various command line tool environments, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html#cli-using-param-json">Using JSON for Parameters</a> in the <i>AWS CLI User Guide</i>. </p>',
-        }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource whose tags are to be removed.',
+    }),
+    tagKeys: TagKeyListSchema.openapi({
+      description:
+        '<p>A list of tag key names to remove from the resource. You don\'t specify the value. Both the key and its associated value are removed. </p> <p>This parameter to the API requires a JSON text string argument. For information on how to format a JSON parameter for the various command line tool environments, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html#cli-using-param-json">Using JSON for Parameters</a> in the <i>AWS CLI User Guide</i>. </p>',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateFlowTemplateResponseSchema = z
   .object({
-    summary: FlowTemplateSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object containing summary information about the updated workflow.',
-        }),
-    ).exactOptional(),
+    summary: FlowTemplateSummarySchema.exactOptional().openapi({
+      description: 'An object containing summary information about the updated workflow.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFlowTemplateResponse')
 
 const UpdateFlowTemplateRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the workflow to be updated.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
-        }),
-    ),
-    definition: DefinitionDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DefinitionDocument</code> that contains the updated workflow definition.',
-        }),
-    ),
-    compatibleNamespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The version of the user's namespace.</p> <p>If no value is specified, the latest version is used by default. Use the <code>GetFlowTemplateRevisions</code> if you want to find earlier revisions of the flow to update.</p>",
-        }),
-    ).exactOptional(),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the workflow to be updated.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:workflow:WORKFLOWNAME</code> </p>',
+    }),
+    definition: DefinitionDocumentSchema.openapi({
+      description:
+        'The <code>DefinitionDocument</code> that contains the updated workflow definition.',
+    }),
+    compatibleNamespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "<p>The version of the user's namespace.</p> <p>If no value is specified, the latest version is used by default. Use the <code>GetFlowTemplateRevisions</code> if you want to find earlier revisions of the flow to update.</p>",
+    }),
   })
   .openapi({ required: ['id', 'definition'], title: 'UpdateFlowTemplateRequest' })
   .openapi('UpdateFlowTemplateRequest')
 
 const UpdateSystemTemplateResponseSchema = z
   .object({
-    summary: SystemTemplateSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object containing summary information about the updated system.',
-        }),
-    ).exactOptional(),
+    summary: SystemTemplateSummarySchema.exactOptional().openapi({
+      description: 'An object containing summary information about the updated system.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSystemTemplateResponse')
 
 const UpdateSystemTemplateRequestSchema = z
   .object({
-    id: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the system to be updated.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>',
-        }),
-    ),
-    definition: DefinitionDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DefinitionDocument</code> that contains the updated system definition.',
-        }),
-    ),
-    compatibleNamespaceVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The version of the user's namespace. Defaults to the latest version of the user's namespace.</p> <p>If no value is specified, the latest version is used by default.</p>",
-        }),
-    ).exactOptional(),
+    id: UrnSchema.openapi({
+      description:
+        '<p>The ID of the system to be updated.</p> <p>The ID should be in the following format.</p> <p> <code>urn:tdm:REGION/ACCOUNT ID/default:system:SYSTEMNAME</code> </p>',
+    }),
+    definition: DefinitionDocumentSchema.openapi({
+      description:
+        'The <code>DefinitionDocument</code> that contains the updated system definition.',
+    }),
+    compatibleNamespaceVersion: VersionSchema.exactOptional().openapi({
+      description:
+        "<p>The version of the user's namespace. Defaults to the latest version of the user's namespace.</p> <p>If no value is specified, the latest version is used by default.</p>",
+    }),
   })
   .openapi({ required: ['id', 'definition'], title: 'UpdateSystemTemplateRequest' })
   .openapi('UpdateSystemTemplateRequest')
 
 const UploadEntityDefinitionsResponseSchema = z
   .object({
-    uploadId: UploadIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID that specifies the upload action. You can use this to track the status of the upload.',
-        }),
-    ),
+    uploadId: UploadIdSchema.openapi({
+      description:
+        'The ID that specifies the upload action. You can use this to track the status of the upload.',
+    }),
   })
   .openapi({ required: ['uploadId'] })
   .openapi('UploadEntityDefinitionsResponse')
@@ -1832,29 +1400,17 @@ const DeprecateExistingEntitiesSchema = z.boolean().openapi('DeprecateExistingEn
 
 const UploadEntityDefinitionsRequestSchema = z
   .object({
-    document: DefinitionDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>DefinitionDocument</code> that defines the updated entities.',
-        }),
-    ).exactOptional(),
-    syncWithPublicNamespace: SyncWithPublicNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean that specifies whether to synchronize with the latest version of the public namespace. If set to <code>true</code>, the upload will create a new namespace version.',
-        }),
-    ).exactOptional(),
-    deprecateExistingEntities: DeprecateExistingEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean that specifies whether to deprecate all entities in the latest version before uploading the new <code>DefinitionDocument</code>. If set to <code>true</code>, the upload will create a new namespace version.',
-        }),
-    ).exactOptional(),
+    document: DefinitionDocumentSchema.exactOptional().openapi({
+      description: 'The <code>DefinitionDocument</code> that defines the updated entities.',
+    }),
+    syncWithPublicNamespace: SyncWithPublicNamespaceSchema.exactOptional().openapi({
+      description:
+        'A Boolean that specifies whether to synchronize with the latest version of the public namespace. If set to <code>true</code>, the upload will create a new namespace version.',
+    }),
+    deprecateExistingEntities: DeprecateExistingEntitiesSchema.exactOptional().openapi({
+      description:
+        'A Boolean that specifies whether to deprecate all entities in the latest version before uploading the new <code>DefinitionDocument</code>. If set to <code>true</code>, the upload will create a new namespace version.',
+    }),
   })
   .openapi({ title: 'UploadEntityDefinitionsRequest', required: [] })
   .openapi('UploadEntityDefinitionsRequest')

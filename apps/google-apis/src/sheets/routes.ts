@@ -60,6 +60,87 @@ const ColorStyleSchema = z
   .openapi({ description: 'A color value.', required: [] })
   .openapi('ColorStyle')
 
+const EmbeddedObjectBorderSchema = z
+  .object({
+    color: ColorSchema.exactOptional().openapi({
+      description: 'The color of the border. Deprecated: Use color_style.',
+    }),
+    colorStyle: ColorStyleSchema.exactOptional().openapi({
+      description: 'The color of the border. If color is also set, this field takes precedence.',
+    }),
+  })
+  .openapi({ description: 'A border along an embedded object.', required: [] })
+  .openapi('EmbeddedObjectBorder')
+
+const GridCoordinateSchema = z
+  .object({
+    columnIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The column index of the coordinate.' }),
+    rowIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The row index of the coordinate.' }),
+    sheetId: z.int32().exactOptional().openapi({ description: 'The sheet this coordinate is on.' }),
+  })
+  .openapi({ description: 'A coordinate in a sheet. All indexes are zero-based.', required: [] })
+  .openapi('GridCoordinate')
+
+const OverlayPositionSchema = z
+  .object({
+    anchorCell: GridCoordinateSchema.exactOptional().openapi({
+      description: 'The cell the object is anchored to.',
+    }),
+    heightPixels: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The height of the object, in pixels. Defaults to 371.' }),
+    offsetXPixels: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The horizontal offset, in pixels, that the object is offset from the anchor cell.',
+      }),
+    offsetYPixels: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The vertical offset, in pixels, that the object is offset from the anchor cell.',
+      }),
+    widthPixels: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The width of the object, in pixels. Defaults to 600.' }),
+  })
+  .openapi({ description: 'The location an object is overlaid on top of a grid.', required: [] })
+  .openapi('OverlayPosition')
+
+const EmbeddedObjectPositionSchema = z
+  .object({
+    newSheet: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the embedded object is put on a new sheet whose ID is chosen for you. Used only when writing.',
+      }),
+    overlayPosition: OverlayPositionSchema.exactOptional().openapi({
+      description: 'The position at which the object is overlaid on top of a grid.',
+    }),
+    sheetId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The sheet this is on. Set only if the embedded object is on its own sheet. Must be non-negative.',
+      }),
+  })
+  .openapi({ description: 'The position of an embedded object such as a chart.', required: [] })
+  .openapi('EmbeddedObjectPosition')
+
 const LinkSchema = z
   .object({ uri: z.string().exactOptional().openapi({ description: 'The link identifier.' }) })
   .openapi({ description: 'An external or local reference.', required: [] })
@@ -506,7 +587,40 @@ const BasicChartSeriesSchema = z
   })
   .openapi('BasicChartSeries')
 
-const BasicChartSpecSchema = z
+type BasicChartSpecType = {
+  axis?: z.infer<typeof BasicChartAxisSchema>[]
+  chartType?:
+    | 'BASIC_CHART_TYPE_UNSPECIFIED'
+    | 'BAR'
+    | 'LINE'
+    | 'AREA'
+    | 'COLUMN'
+    | 'SCATTER'
+    | 'COMBO'
+    | 'STEPPED_AREA'
+  compareMode?: 'BASIC_CHART_COMPARE_MODE_UNSPECIFIED' | 'DATUM' | 'CATEGORY'
+  domains?: z.infer<typeof BasicChartDomainSchema>[]
+  headerCount?: number
+  interpolateNulls?: boolean
+  legendPosition?:
+    | 'BASIC_CHART_LEGEND_POSITION_UNSPECIFIED'
+    | 'BOTTOM_LEGEND'
+    | 'LEFT_LEGEND'
+    | 'RIGHT_LEGEND'
+    | 'TOP_LEGEND'
+    | 'NO_LEGEND'
+  lineSmoothing?: boolean
+  series?: z.infer<typeof BasicChartSeriesSchema>[]
+  stackedType?:
+    | 'BASIC_CHART_STACKED_TYPE_UNSPECIFIED'
+    | 'NOT_STACKED'
+    | 'STACKED'
+    | 'PERCENT_STACKED'
+  threeDimensional?: boolean
+  totalDataLabel?: z.infer<typeof DataLabelSchema>
+}
+
+const BasicChartSpecSchema: z.ZodType<BasicChartSpecType> = z
   .object({
     axis: z
       .array(BasicChartAxisSchema)
@@ -716,7 +830,12 @@ const CandlestickDomainSchema = z
   .openapi({ description: 'The domain of a CandlestickChart.', required: [] })
   .openapi('CandlestickDomain')
 
-const CandlestickChartSpecSchema = z
+type CandlestickChartSpecType = {
+  data?: z.infer<typeof CandlestickDataSchema>[]
+  domain?: z.infer<typeof CandlestickDomainSchema>
+}
+
+const CandlestickChartSpecSchema: z.ZodType<CandlestickChartSpecType> = z
   .object({
     data: z
       .array(CandlestickDataSchema)
@@ -1401,7 +1520,17 @@ const WaterfallChartSeriesSchema = z
   .openapi({ description: 'A single series of data for a waterfall chart.', required: [] })
   .openapi('WaterfallChartSeries')
 
-const WaterfallChartSpecSchema = z
+type WaterfallChartSpecType = {
+  connectorLineStyle?: z.infer<typeof LineStyleSchema>
+  domain?: z.infer<typeof WaterfallChartDomainSchema>
+  firstValueIsTotal?: boolean
+  hideConnectorLines?: boolean
+  series?: z.infer<typeof WaterfallChartSeriesSchema>[]
+  stackedType?: 'WATERFALL_STACKED_TYPE_UNSPECIFIED' | 'STACKED' | 'SEQUENTIAL'
+  totalDataLabel?: z.infer<typeof DataLabelSchema>
+}
+
+const WaterfallChartSpecSchema: z.ZodType<WaterfallChartSpecType> = z
   .object({
     connectorLineStyle: LineStyleSchema.exactOptional().openapi({
       description: 'The line style for the connector lines.',
@@ -1465,347 +1594,119 @@ type ChartSpecType = {
   waterfallChart?: z.infer<typeof WaterfallChartSpecSchema>
 }
 
-const BigQueryQuerySpecSchema = z
+const ChartSpecSchema: z.ZodType<ChartSpecType> = z
   .object({
-    rawQuery: z.string().exactOptional().openapi({ description: 'The raw query string.' }),
-  })
-  .openapi({ description: 'Specifies a custom BigQuery query.', required: [] })
-  .openapi('BigQueryQuerySpec')
-
-const BigQueryTableSpecSchema = z
-  .object({
-    datasetId: z.string().exactOptional().openapi({ description: 'The BigQuery dataset id.' }),
-    tableId: z.string().exactOptional().openapi({ description: 'The BigQuery table id.' }),
-    tableProjectId: z
+    altText: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The ID of a BigQuery project the table belongs to. If not specified, the project_id is assumed.',
+          'The alternative text that describes the chart. This is often used for accessibility.',
       }),
-  })
-  .openapi({
-    description:
-      'Specifies a BigQuery table definition. Only [native tables](https://cloud.google.com/bigquery/docs/tables-intro) is allowed.',
-    required: [],
-  })
-  .openapi('BigQueryTableSpec')
-
-const BigQueryDataSourceSpecSchema = z
-  .object({
-    projectId: z
+    backgroundColor: ColorSchema.exactOptional().openapi({
+      description:
+        'The background color of the entire chart. Not applicable to Org charts. Deprecated: Use background_color_style.',
+    }),
+    backgroundColorStyle: ColorStyleSchema.exactOptional().openapi({
+      description:
+        'The background color of the entire chart. Not applicable to Org charts. If background_color is also set, this field takes precedence.',
+    }),
+    basicChart: BasicChartSpecSchema.exactOptional().openapi({
+      description:
+        'A basic chart specification, can be one of many kinds of charts. See BasicChartType for the list of all charts this supports.',
+    }),
+    bubbleChart: BubbleChartSpecSchema.exactOptional().openapi({
+      description: 'A bubble chart specification.',
+    }),
+    candlestickChart: CandlestickChartSpecSchema.exactOptional().openapi({
+      description: 'A candlestick chart specification.',
+    }),
+    dataSourceChartProperties: DataSourceChartPropertiesSchema.exactOptional().openapi({
+      description: 'If present, the field contains data source chart specific properties.',
+    }),
+    filterSpecs: z
+      .array(FilterSpecSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The filters applied to the source data of the chart. Only supported for data source charts.',
+      }),
+    fontName: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The ID of a BigQuery enabled GCP project with a billing account attached. For any queries executed against the data source, the project is charged.',
+          'The name of the font to use by default for all chart text (e.g. title, axis labels, legend). If a font is specified for a specific part of the chart it will override this font name.',
       }),
-    querySpec: BigQueryQuerySpecSchema.exactOptional().openapi({
-      description: 'A BigQueryQuerySpec.',
-    }),
-    tableSpec: BigQueryTableSpecSchema.exactOptional().openapi({
-      description: 'A BigQueryTableSpec.',
-    }),
-  })
-  .openapi({
-    description: "The specification of a BigQuery data source that's connected to a sheet.",
-    required: [],
-  })
-  .openapi('BigQueryDataSourceSpec')
-
-const DataSourceParameterSchema = z
-  .object({
-    name: z
-      .string()
+    hiddenDimensionStrategy: z
+      .enum([
+        'CHART_HIDDEN_DIMENSION_STRATEGY_UNSPECIFIED',
+        'SKIP_HIDDEN_ROWS_AND_COLUMNS',
+        'SKIP_HIDDEN_ROWS',
+        'SKIP_HIDDEN_COLUMNS',
+        'SHOW_ALL',
+      ])
       .exactOptional()
-      .openapi({
-        description:
-          'Named parameter. Must be a legitimate identifier for the DataSource that supports it. For example, [BigQuery identifier](https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical#identifiers).',
-      }),
-    namedRangeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of a NamedRange. Its size must be 1x1.' }),
-    range: GridRangeSchema.exactOptional().openapi({
-      description: 'A range that contains the value of the parameter. Its size must be 1x1.',
+      .openapi({ description: 'Determines how the charts will use hidden rows or columns.' }),
+    histogramChart: HistogramChartSpecSchema.exactOptional().openapi({
+      description: 'A histogram chart specification.',
     }),
-  })
-  .openapi({
-    description:
-      "A parameter in a data source's query. The parameter allows the user to pass in values from the spreadsheet into a query.",
-    required: [],
-  })
-  .openapi('DataSourceParameter')
-
-type DataSourceSpecType = {
-  bigQuery?: z.infer<typeof BigQueryDataSourceSpecSchema>
-  parameters?: z.infer<typeof DataSourceParameterSchema>[]
-}
-
-const BandingPropertiesSchema = z
-  .object({
-    firstBandColor: ColorSchema.exactOptional().openapi({
-      description:
-        'The first color that is alternating. (Required) Deprecated: Use first_band_color_style.',
-    }),
-    firstBandColorStyle: ColorStyleSchema.exactOptional().openapi({
-      description:
-        'The first color that is alternating. (Required) If first_band_color is also set, this field takes precedence.',
-    }),
-    footerColor: ColorSchema.exactOptional().openapi({
-      description:
-        'The color of the last row or column. If this field is not set, the last row or column is filled with either first_band_color or second_band_color, depending on the color of the previous row or column. Deprecated: Use footer_color_style.',
-    }),
-    footerColorStyle: ColorStyleSchema.exactOptional().openapi({
-      description:
-        'The color of the last row or column. If this field is not set, the last row or column is filled with either first_band_color or second_band_color, depending on the color of the previous row or column. If footer_color is also set, this field takes precedence.',
-    }),
-    headerColor: ColorSchema.exactOptional().openapi({
-      description:
-        'The color of the first row or column. If this field is set, the first row or column is filled with this color and the colors alternate between first_band_color and second_band_color starting from the second row or column. Otherwise, the first row or column is filled with first_band_color and the colors proceed to alternate as they normally would. Deprecated: Use header_color_style.',
-    }),
-    headerColorStyle: ColorStyleSchema.exactOptional().openapi({
-      description:
-        'The color of the first row or column. If this field is set, the first row or column is filled with this color and the colors alternate between first_band_color and second_band_color starting from the second row or column. Otherwise, the first row or column is filled with first_band_color and the colors proceed to alternate as they normally would. If header_color is also set, this field takes precedence.',
-    }),
-    secondBandColor: ColorSchema.exactOptional().openapi({
-      description:
-        'The second color that is alternating. (Required) Deprecated: Use second_band_color_style.',
-    }),
-    secondBandColorStyle: ColorStyleSchema.exactOptional().openapi({
-      description:
-        'The second color that is alternating. (Required) If second_band_color is also set, this field takes precedence.',
-    }),
-  })
-  .openapi({
-    description:
-      'Properties referring a single dimension (either row or column). If both BandedRange.row_properties and BandedRange.column_properties are set, the fill colors are applied to cells according to the following rules: * header_color and footer_color take priority over band colors. * first_band_color takes priority over second_band_color. * row_properties takes priority over column_properties. For example, the first row color takes priority over the first column color, but the first column color takes priority over the second row color. Similarly, the row header takes priority over the column header in the top left cell, but the column header takes priority over the first row color if the row header is not set.',
-    required: [],
-  })
-  .openapi('BandingProperties')
-
-const BandedRangeSchema = z
-  .object({
-    bandedRangeId: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The id of the banded range.' }),
-    columnProperties: BandingPropertiesSchema.exactOptional().openapi({
-      description:
-        'Properties for column bands. These properties are applied on a column- by-column basis throughout all the columns in the range. At least one of row_properties or column_properties must be specified.',
-    }),
-    range: GridRangeSchema.exactOptional().openapi({
-      description: 'The range over which these properties are applied.',
-    }),
-    rowProperties: BandingPropertiesSchema.exactOptional().openapi({
-      description:
-        'Properties for row bands. These properties are applied on a row-by-row basis throughout all the rows in the range. At least one of row_properties or column_properties must be specified.',
-    }),
-  })
-  .openapi({ description: 'A banded (alternating colors) range in a sheet.', required: [] })
-  .openapi('BandedRange')
-
-const AddBandingRequestSchema = z
-  .object({
-    bandedRange: BandedRangeSchema.exactOptional().openapi({
-      description:
-        'The banded range to add. The bandedRangeId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a range that already exists.)',
-    }),
-  })
-  .openapi({ description: 'Adds a new banded range to the spreadsheet.', required: [] })
-  .openapi('AddBandingRequest')
-
-const EmbeddedObjectBorderSchema = z
-  .object({
-    color: ColorSchema.exactOptional().openapi({
-      description: 'The color of the border. Deprecated: Use color_style.',
-    }),
-    colorStyle: ColorStyleSchema.exactOptional().openapi({
-      description: 'The color of the border. If color is also set, this field takes precedence.',
-    }),
-  })
-  .openapi({ description: 'A border along an embedded object.', required: [] })
-  .openapi('EmbeddedObjectBorder')
-
-const GridCoordinateSchema = z
-  .object({
-    columnIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The column index of the coordinate.' }),
-    rowIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The row index of the coordinate.' }),
-    sheetId: z.int32().exactOptional().openapi({ description: 'The sheet this coordinate is on.' }),
-  })
-  .openapi({ description: 'A coordinate in a sheet. All indexes are zero-based.', required: [] })
-  .openapi('GridCoordinate')
-
-const OverlayPositionSchema = z
-  .object({
-    anchorCell: GridCoordinateSchema.exactOptional().openapi({
-      description: 'The cell the object is anchored to.',
-    }),
-    heightPixels: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The height of the object, in pixels. Defaults to 371.' }),
-    offsetXPixels: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The horizontal offset, in pixels, that the object is offset from the anchor cell.',
-      }),
-    offsetYPixels: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The vertical offset, in pixels, that the object is offset from the anchor cell.',
-      }),
-    widthPixels: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The width of the object, in pixels. Defaults to 600.' }),
-  })
-  .openapi({ description: 'The location an object is overlaid on top of a grid.', required: [] })
-  .openapi('OverlayPosition')
-
-const EmbeddedObjectPositionSchema = z
-  .object({
-    newSheet: z
+    maximized: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'If true, the embedded object is put on a new sheet whose ID is chosen for you. Used only when writing.',
+          "True to make a chart fill the entire space in which it's rendered with minimum padding. False to use the default padding. (Not applicable to Geo and Org charts.)",
       }),
-    overlayPosition: OverlayPositionSchema.exactOptional().openapi({
-      description: 'The position at which the object is overlaid on top of a grid.',
+    orgChart: OrgChartSpecSchema.exactOptional().openapi({
+      description: 'An org chart specification.',
     }),
-    sheetId: z
-      .int32()
+    pieChart: PieChartSpecSchema.exactOptional().openapi({
+      description: 'A pie chart specification.',
+    }),
+    scorecardChart: ScorecardChartSpecSchema.exactOptional().openapi({
+      description: 'A scorecard chart specification.',
+    }),
+    sortSpecs: z
+      .array(SortSpecSchema)
       .exactOptional()
       .openapi({
         description:
-          'The sheet this is on. Set only if the embedded object is on its own sheet. Must be non-negative.',
+          'The order to sort the chart data by. Only a single sort spec is supported. Only supported for data source charts.',
       }),
+    subtitle: z.string().exactOptional().openapi({ description: 'The subtitle of the chart.' }),
+    subtitleTextFormat: TextFormatSchema.exactOptional().openapi({
+      description:
+        'The subtitle text format. Strikethrough, underline, and link are not supported.',
+    }),
+    subtitleTextPosition: TextPositionSchema.exactOptional().openapi({
+      description: 'The subtitle text position. This field is optional.',
+    }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the chart.' }),
+    titleTextFormat: TextFormatSchema.exactOptional().openapi({
+      description: 'The title text format. Strikethrough, underline, and link are not supported.',
+    }),
+    titleTextPosition: TextPositionSchema.exactOptional().openapi({
+      description: 'The title text position. This field is optional.',
+    }),
+    treemapChart: TreemapChartSpecSchema.exactOptional().openapi({
+      description: 'A treemap chart specification.',
+    }),
+    waterfallChart: WaterfallChartSpecSchema.exactOptional().openapi({
+      description: 'A waterfall chart specification.',
+    }),
   })
-  .openapi({ description: 'The position of an embedded object such as a chart.', required: [] })
-  .openapi('EmbeddedObjectPosition')
-
-const ChartSpecSchema: z.ZodType<ChartSpecType> = z
-  .lazy(() =>
-    z
-      .object({
-        altText: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The alternative text that describes the chart. This is often used for accessibility.',
-          }),
-        backgroundColor: ColorSchema.exactOptional().openapi({
-          description:
-            'The background color of the entire chart. Not applicable to Org charts. Deprecated: Use background_color_style.',
-        }),
-        backgroundColorStyle: ColorStyleSchema.exactOptional().openapi({
-          description:
-            'The background color of the entire chart. Not applicable to Org charts. If background_color is also set, this field takes precedence.',
-        }),
-        basicChart: BasicChartSpecSchema.exactOptional().openapi({
-          description:
-            'A basic chart specification, can be one of many kinds of charts. See BasicChartType for the list of all charts this supports.',
-        }),
-        bubbleChart: BubbleChartSpecSchema.exactOptional().openapi({
-          description: 'A bubble chart specification.',
-        }),
-        candlestickChart: CandlestickChartSpecSchema.exactOptional().openapi({
-          description: 'A candlestick chart specification.',
-        }),
-        dataSourceChartProperties: DataSourceChartPropertiesSchema.exactOptional().openapi({
-          description: 'If present, the field contains data source chart specific properties.',
-        }),
-        filterSpecs: z
-          .array(FilterSpecSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The filters applied to the source data of the chart. Only supported for data source charts.',
-          }),
-        fontName: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the font to use by default for all chart text (e.g. title, axis labels, legend). If a font is specified for a specific part of the chart it will override this font name.',
-          }),
-        hiddenDimensionStrategy: z
-          .enum([
-            'CHART_HIDDEN_DIMENSION_STRATEGY_UNSPECIFIED',
-            'SKIP_HIDDEN_ROWS_AND_COLUMNS',
-            'SKIP_HIDDEN_ROWS',
-            'SKIP_HIDDEN_COLUMNS',
-            'SHOW_ALL',
-          ])
-          .exactOptional()
-          .openapi({ description: 'Determines how the charts will use hidden rows or columns.' }),
-        histogramChart: HistogramChartSpecSchema.exactOptional().openapi({
-          description: 'A histogram chart specification.',
-        }),
-        maximized: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              "True to make a chart fill the entire space in which it's rendered with minimum padding. False to use the default padding. (Not applicable to Geo and Org charts.)",
-          }),
-        orgChart: OrgChartSpecSchema.exactOptional().openapi({
-          description: 'An org chart specification.',
-        }),
-        pieChart: PieChartSpecSchema.exactOptional().openapi({
-          description: 'A pie chart specification.',
-        }),
-        scorecardChart: ScorecardChartSpecSchema.exactOptional().openapi({
-          description: 'A scorecard chart specification.',
-        }),
-        sortSpecs: z
-          .array(SortSpecSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The order to sort the chart data by. Only a single sort spec is supported. Only supported for data source charts.',
-          }),
-        subtitle: z.string().exactOptional().openapi({ description: 'The subtitle of the chart.' }),
-        subtitleTextFormat: TextFormatSchema.exactOptional().openapi({
-          description:
-            'The subtitle text format. Strikethrough, underline, and link are not supported.',
-        }),
-        subtitleTextPosition: TextPositionSchema.exactOptional().openapi({
-          description: 'The subtitle text position. This field is optional.',
-        }),
-        title: z.string().exactOptional().openapi({ description: 'The title of the chart.' }),
-        titleTextFormat: TextFormatSchema.exactOptional().openapi({
-          description:
-            'The title text format. Strikethrough, underline, and link are not supported.',
-        }),
-        titleTextPosition: TextPositionSchema.exactOptional().openapi({
-          description: 'The title text position. This field is optional.',
-        }),
-        treemapChart: TreemapChartSpecSchema.exactOptional().openapi({
-          description: 'A treemap chart specification.',
-        }),
-        waterfallChart: WaterfallChartSpecSchema.exactOptional().openapi({
-          description: 'A waterfall chart specification.',
-        }),
-      })
-      .openapi({ description: 'The specifications of a chart.', required: [] }),
-  )
+  .openapi({ description: 'The specifications of a chart.', required: [] })
   .openapi('ChartSpec')
 
-const EmbeddedChartSchema = z
+type EmbeddedChartType = {
+  border?: z.infer<typeof EmbeddedObjectBorderSchema>
+  chartId?: number
+  position?: z.infer<typeof EmbeddedObjectPositionSchema>
+  spec?: z.infer<typeof ChartSpecSchema>
+}
+
+const EmbeddedChartSchema: z.ZodType<EmbeddedChartType> = z
   .object({
     border: EmbeddedObjectBorderSchema.exactOptional().openapi({
       description: 'The border of the chart.',
@@ -1821,15 +1722,9 @@ const EmbeddedChartSchema = z
   .openapi({ description: 'A chart embedded in a sheet.', required: [] })
   .openapi('EmbeddedChart')
 
-const AddChartRequestSchema = z
-  .object({
-    chart: EmbeddedChartSchema.exactOptional().openapi({
-      description:
-        'The chart that should be added to the spreadsheet, including the position where it should be placed. The chartId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of an embedded object that already exists.)',
-    }),
-  })
-  .openapi({ description: 'Adds a chart to a sheet in the spreadsheet.', required: [] })
-  .openapi('AddChartRequest')
+type AddChartRequestType = { chart?: z.infer<typeof EmbeddedChartSchema> }
+
+type AddChartResponseType = { chart?: z.infer<typeof EmbeddedChartSchema> }
 
 const BorderSchema = z
   .object({
@@ -2071,134 +1966,10 @@ const ConditionalFormatRuleSchema = z
   .openapi({ description: 'A rule describing a conditional format.', required: [] })
   .openapi('ConditionalFormatRule')
 
-const AddConditionalFormatRuleRequestSchema = z
-  .object({
-    index: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The zero-based index where the rule should be inserted.' }),
-    rule: ConditionalFormatRuleSchema.exactOptional().openapi({ description: 'The rule to add.' }),
-  })
-  .openapi({
-    description:
-      "Adds a new conditional format rule at the given index. All subsequent rules' indexes are incremented.",
-    required: [],
-  })
-  .openapi('AddConditionalFormatRuleRequest')
-
-const DataSourceColumnSchema = z
-  .object({
-    formula: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The formula of the calculated column.' }),
-    reference: DataSourceColumnReferenceSchema.exactOptional().openapi({
-      description: 'The column reference.',
-    }),
-  })
-  .openapi({ description: 'A column in a data source.', required: [] })
-  .openapi('DataSourceColumn')
-
-const DataSourceSpecSchema: z.ZodType<DataSourceSpecType> = z
-  .lazy(() =>
-    z
-      .object({
-        bigQuery: BigQueryDataSourceSpecSchema.exactOptional().openapi({
-          description: 'A BigQueryDataSourceSpec.',
-        }),
-        parameters: z
-          .array(DataSourceParameterSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The parameters of the data source, used when querying the data source.',
-          }),
-      })
-      .openapi({
-        description:
-          'This specifies the details of the data source. For example, for BigQuery, this specifies information about the BigQuery source.',
-        required: [],
-      }),
-  )
-  .openapi('DataSourceSpec')
-
-const DataSourceSchema = z
-  .object({
-    calculatedColumns: z
-      .array(DataSourceColumnSchema)
-      .exactOptional()
-      .openapi({ description: 'All calculated columns in the data source.' }),
-    dataSourceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The spreadsheet-scoped unique ID that identifies the data source. Example: 1080547365.',
-      }),
-    sheetId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Sheet connected with the data source. The field cannot be changed once set. When creating a data source, an associated DATA_SOURCE sheet is also created, if the field is not specified, the ID of the created sheet will be randomly generated.',
-      }),
-    spec: DataSourceSpecSchema.exactOptional().openapi({
-      description: 'The DataSourceSpec for the data source connected with this spreadsheet.',
-    }),
-  })
-  .openapi({
-    description: 'Information about an external data source in the spreadsheet.',
-    required: [],
-  })
-  .openapi('DataSource')
-
-const AddDataSourceRequestSchema = z
-  .object({
-    dataSource: DataSourceSchema.exactOptional().openapi({
-      description: 'The data source to add.',
-    }),
-  })
-  .openapi({
-    description:
-      'Adds a data source. After the data source is added successfully, an associated DATA_SOURCE sheet is created and an execution is triggered to refresh the sheet to read data from the data source. The request requires an additional `bigquery.readonly` OAuth scope.',
-    required: [],
-  })
-  .openapi('AddDataSourceRequest')
-
-const DimensionRangeSchema = z
-  .object({
-    dimension: z
-      .enum(['DIMENSION_UNSPECIFIED', 'ROWS', 'COLUMNS'])
-      .exactOptional()
-      .openapi({ description: 'The dimension of the span.' }),
-    endIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The end (exclusive) of the span, or not set if unbounded.' }),
-    sheetId: z.int32().exactOptional().openapi({ description: 'The sheet this span is on.' }),
-    startIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The start (inclusive) of the span, or not set if unbounded.' }),
-  })
-  .openapi({
-    description:
-      'A range along a single dimension on a sheet. All indexes are zero-based. Indexes are half open: the start index is inclusive and the end index is exclusive. Missing indexes indicate the range is unbounded on that side.',
-    required: [],
-  })
-  .openapi('DimensionRange')
-
-const AddDimensionGroupRequestSchema = z
-  .object({
-    range: DimensionRangeSchema.exactOptional().openapi({
-      description: 'The range over which to create a group.',
-    }),
-  })
-  .openapi({
-    description:
-      "Creates a group over the specified range. If the requested range is a superset of the range of an existing group G, then the depth of G is incremented and this new group G' has the depth of that group. For example, a group [C:D, depth 1] + [B:E] results in groups [B:E, depth 1] and [C:D, depth 2]. If the requested range is a subset of the range of an existing group G, then the depth of the new group G' becomes one greater than the depth of G. For example, a group [B:E, depth 1] + [C:D] results in groups [B:E, depth 1] and [C:D, depth 2]. If the requested range starts before and ends within, or starts within and ends after, the range of an existing group G, then the range of the existing group G becomes the union of the ranges, and the new group G' has depth one greater than the depth of G and range as the intersection of the ranges. For example, a group [B:D, depth 1] + [C:E] results in groups [B:E, depth 1] and [C:D, depth 2].",
-    required: [],
-  })
-  .openapi('AddDimensionGroupRequest')
+type AddConditionalFormatRuleRequestType = {
+  index?: number
+  rule?: z.infer<typeof ConditionalFormatRuleSchema>
+}
 
 const FilterViewSchema = z
   .object({
@@ -2240,257 +2011,9 @@ const FilterViewSchema = z
   .openapi({ description: 'A filter view.', required: [] })
   .openapi('FilterView')
 
-const AddFilterViewRequestSchema = z
-  .object({
-    filter: FilterViewSchema.exactOptional().openapi({
-      description:
-        'The filter to add. The filterViewId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a filter that already exists.)',
-    }),
-  })
-  .openapi({ description: 'Adds a filter view.', required: [] })
-  .openapi('AddFilterViewRequest')
+type AddFilterViewRequestType = { filter?: z.infer<typeof FilterViewSchema> }
 
-const NamedRangeSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the named range.' }),
-    namedRangeId: z.string().exactOptional().openapi({ description: 'The ID of the named range.' }),
-    range: GridRangeSchema.exactOptional().openapi({ description: 'The range this represents.' }),
-  })
-  .openapi({ description: 'A named range.', required: [] })
-  .openapi('NamedRange')
-
-const AddNamedRangeRequestSchema = z
-  .object({
-    namedRange: NamedRangeSchema.exactOptional().openapi({
-      description:
-        'The named range to add. The namedRangeId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a range that already exists.)',
-    }),
-  })
-  .openapi({ description: 'Adds a named range to the spreadsheet.', required: [] })
-  .openapi('AddNamedRangeRequest')
-
-const EditorsSchema = z
-  .object({
-    domainUsersCanEdit: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "True if anyone in the document's domain has edit access to the protected range. Domain protection is only supported on documents within a domain.",
-      }),
-    groups: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'The email addresses of groups with edit access to the protected range.',
-      }),
-    users: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'The email addresses of users with edit access to the protected range.',
-      }),
-  })
-  .openapi({ description: 'The editors of a protected range.', required: [] })
-  .openapi('Editors')
-
-const ProtectedRangeSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of this protected range.' }),
-    editors: EditorsSchema.exactOptional().openapi({
-      description:
-        'The users and groups with edit access to the protected range. This field is only visible to users with edit access to the protected range and the document. Editors are not supported with warning_only protection.',
-    }),
-    namedRangeId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The named range this protected range is backed by, if any. When writing, only one of range or named_range_id may be set.',
-      }),
-    protectedRangeId: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The ID of the protected range. This field is read-only.' }),
-    range: GridRangeSchema.exactOptional().openapi({
-      description:
-        'The range that is being protected. The range may be fully unbounded, in which case this is considered a protected sheet. When writing, only one of range or named_range_id may be set.',
-    }),
-    requestingUserCanEdit: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the user who requested this protected range can edit the protected area. This field is read-only.',
-      }),
-    unprotectedRanges: z
-      .array(GridRangeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of unprotected ranges within a protected sheet. Unprotected ranges are only supported on protected sheets.',
-      }),
-    warningOnly: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if this protected range will show a warning when editing. Warning-based protection means that every user can edit data in the protected range, except editing will prompt a warning asking the user to confirm the edit. When writing: if this field is true, then editors is ignored. Additionally, if this field is changed from true to false and the `editors` field is not set (nor included in the field mask), then the editors will be set to all the editors in the document.',
-      }),
-  })
-  .openapi({ description: 'A protected range.', required: [] })
-  .openapi('ProtectedRange')
-
-const AddProtectedRangeRequestSchema = z
-  .object({
-    protectedRange: ProtectedRangeSchema.exactOptional().openapi({
-      description:
-        'The protected range to be added. The protectedRangeId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a range that already exists.)',
-    }),
-  })
-  .openapi({ description: 'Adds a new protected range.', required: [] })
-  .openapi('AddProtectedRangeRequest')
-
-const SheetPropertiesSchema: z.ZodType<SheetPropertiesType> = z
-  .lazy(() =>
-    z
-      .object({
-        dataSourceSheetProperties: DataSourceSheetPropertiesSchema.exactOptional().openapi({
-          description:
-            'Output only. If present, the field contains DATA_SOURCE sheet specific properties.',
-          readOnly: true,
-        }),
-        gridProperties: GridPropertiesSchema.exactOptional().openapi({
-          description:
-            'Additional properties of the sheet if this sheet is a grid. (If the sheet is an object sheet, containing a chart or image, then this field will be absent.) When writing it is an error to set any grid properties on non-grid sheets. If this sheet is a DATA_SOURCE sheet, this field is output only but contains the properties that reflect how a data source sheet is rendered in the UI, e.g. row_count.',
-        }),
-        hidden: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: "True if the sheet is hidden in the UI, false if it's visible.",
-          }),
-        index: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The index of the sheet within the spreadsheet. When adding or updating sheet properties, if this field is excluded then the sheet is added or moved to the end of the sheet list. When updating sheet indices or inserting sheets, movement is considered in "before the move" indexes. For example, if there were 3 sheets (S1, S2, S3) in order to move S1 ahead of S2 the index would have to be set to 2. A sheet index update request is ignored if the requested index is identical to the sheets current index or if the requested new index is equal to the current sheet index + 1.',
-          }),
-        rightToLeft: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'True if the sheet is an RTL sheet instead of an LTR sheet.' }),
-        sheetId: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The ID of the sheet. Must be non-negative. This field cannot be changed once set.',
-          }),
-        sheetType: z
-          .enum(['SHEET_TYPE_UNSPECIFIED', 'GRID', 'OBJECT', 'DATA_SOURCE'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of sheet. Defaults to GRID. This field cannot be changed once set.',
-          }),
-        tabColor: ColorSchema.exactOptional().openapi({
-          description: 'The color of the tab in the UI. Deprecated: Use tab_color_style.',
-        }),
-        tabColorStyle: ColorStyleSchema.exactOptional().openapi({
-          description:
-            'The color of the tab in the UI. If tab_color is also set, this field takes precedence.',
-        }),
-        title: z.string().exactOptional().openapi({ description: 'The name of the sheet.' }),
-      })
-      .openapi({ description: 'Properties of a sheet.', required: [] }),
-  )
-  .openapi('SheetProperties')
-
-const AddSheetRequestSchema = z
-  .object({
-    properties: SheetPropertiesSchema.exactOptional().openapi({
-      description:
-        'The properties the new sheet should have. All properties are optional. The sheetId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a sheet that already exists.)',
-    }),
-  })
-  .openapi({
-    description:
-      "Adds a new sheet. When a sheet is added at a given index, all subsequent sheets' indexes are incremented. To add an object sheet, use AddChartRequest instead and specify EmbeddedObjectPosition.sheetId or EmbeddedObjectPosition.newSheet.",
-    required: [],
-  })
-  .openapi('AddSheetRequest')
-
-const SlicerSpecSchema = z
-  .object({
-    applyToPivotTables: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the filter should apply to pivot tables. If not set, default to `True`.',
-      }),
-    backgroundColor: ColorSchema.exactOptional().openapi({
-      description: 'The background color of the slicer. Deprecated: Use background_color_style.',
-    }),
-    backgroundColorStyle: ColorStyleSchema.exactOptional().openapi({
-      description:
-        'The background color of the slicer. If background_color is also set, this field takes precedence.',
-    }),
-    columnIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The column index in the data table on which the filter is applied to.',
-      }),
-    dataRange: GridRangeSchema.exactOptional().openapi({
-      description: 'The data range of the slicer.',
-    }),
-    filterCriteria: FilterCriteriaSchema.exactOptional().openapi({
-      description: 'The filtering criteria of the slicer.',
-    }),
-    horizontalAlignment: z
-      .enum(['HORIZONTAL_ALIGN_UNSPECIFIED', 'LEFT', 'CENTER', 'RIGHT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The horizontal alignment of title in the slicer. If unspecified, defaults to `LEFT`',
-      }),
-    textFormat: TextFormatSchema.exactOptional().openapi({
-      description: 'The text format of title in the slicer. The link field is not supported.',
-    }),
-    title: z.string().exactOptional().openapi({ description: 'The title of the slicer.' }),
-  })
-  .openapi({ description: 'The specifications of a slicer.', required: [] })
-  .openapi('SlicerSpec')
-
-const SlicerSchema = z
-  .object({
-    position: EmbeddedObjectPositionSchema.exactOptional().openapi({
-      description:
-        'The position of the slicer. Note that slicer can be positioned only on existing sheet. Also, width and height of slicer can be automatically adjusted to keep it within permitted limits.',
-    }),
-    slicerId: z.int32().exactOptional().openapi({ description: 'The ID of the slicer.' }),
-    spec: SlicerSpecSchema.exactOptional().openapi({
-      description: 'The specification of the slicer.',
-    }),
-  })
-  .openapi({ description: 'A slicer in a sheet.', required: [] })
-  .openapi('Slicer')
-
-const AddSlicerRequestSchema = z
-  .object({
-    slicer: SlicerSchema.exactOptional().openapi({
-      description:
-        'The slicer that should be added to the spreadsheet, including the position where it should be placed. The slicerId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a slicer that already exists.)',
-    }),
-  })
-  .openapi({ description: 'Adds a slicer to a sheet in the spreadsheet.', required: [] })
-  .openapi('AddSlicerRequest')
+type AddFilterViewResponseType = { filter?: z.infer<typeof FilterViewSchema> }
 
 const DataSourceFormulaSchema = z
   .object({
@@ -2798,7 +2321,20 @@ const PivotGroupValueMetadataSchema = z
   .openapi({ description: 'Metadata about a value in a pivot grouping.', required: [] })
   .openapi('PivotGroupValueMetadata')
 
-const PivotGroupSchema = z
+type PivotGroupType = {
+  dataSourceColumnReference?: z.infer<typeof DataSourceColumnReferenceSchema>
+  groupLimit?: z.infer<typeof PivotGroupLimitSchema>
+  groupRule?: z.infer<typeof PivotGroupRuleSchema>
+  label?: string
+  repeatHeadings?: boolean
+  showTotals?: boolean
+  sortOrder?: 'SORT_ORDER_UNSPECIFIED' | 'ASCENDING' | 'DESCENDING'
+  sourceColumnOffset?: number
+  valueBucket?: z.infer<typeof PivotGroupSortValueBucketSchema>
+  valueMetadata?: z.infer<typeof PivotGroupValueMetadataSchema>[]
+}
+
+const PivotGroupSchema: z.ZodType<PivotGroupType> = z
   .object({
     dataSourceColumnReference: DataSourceColumnReferenceSchema.exactOptional().openapi({
       description: 'The reference to the data source column this grouping is based on.',
@@ -2959,7 +2495,19 @@ const PivotValueSchema = z
   })
   .openapi('PivotValue')
 
-const PivotTableSchema = z
+type PivotTableType = {
+  columns?: z.infer<typeof PivotGroupSchema>[]
+  criteria?: { [key: string]: z.infer<typeof PivotFilterCriteriaSchema> }
+  dataExecutionStatus?: z.infer<typeof DataExecutionStatusSchema>
+  dataSourceId?: string
+  filterSpecs?: z.infer<typeof PivotFilterSpecSchema>[]
+  rows?: z.infer<typeof PivotGroupSchema>[]
+  source?: z.infer<typeof GridRangeSchema>
+  valueLayout?: 'HORIZONTAL' | 'VERTICAL'
+  values?: z.infer<typeof PivotValueSchema>[]
+}
+
+const PivotTableSchema: z.ZodType<PivotTableType> = z
   .object({
     columns: z
       .array(PivotGroupSchema)
@@ -3026,7 +2574,22 @@ const TextFormatRunSchema = z
   })
   .openapi('TextFormatRun')
 
-const CellDataSchema = z
+type CellDataType = {
+  dataSourceFormula?: z.infer<typeof DataSourceFormulaSchema>
+  dataSourceTable?: z.infer<typeof DataSourceTableSchema>
+  dataValidation?: z.infer<typeof DataValidationRuleSchema>
+  effectiveFormat?: z.infer<typeof CellFormatSchema>
+  effectiveValue?: z.infer<typeof ExtendedValueSchema>
+  formattedValue?: string
+  hyperlink?: string
+  note?: string
+  pivotTable?: z.infer<typeof PivotTableSchema>
+  textFormatRuns?: z.infer<typeof TextFormatRunSchema>[]
+  userEnteredFormat?: z.infer<typeof CellFormatSchema>
+  userEnteredValue?: z.infer<typeof ExtendedValueSchema>
+}
+
+const CellDataSchema: z.ZodType<CellDataType> = z
   .object({
     dataSourceFormula: DataSourceFormulaSchema.exactOptional().openapi({
       description:
@@ -3087,7 +2650,9 @@ const CellDataSchema = z
   .openapi({ description: 'Data about a specific cell.', required: [] })
   .openapi('CellData')
 
-const RowDataSchema = z
+type RowDataType = { values?: z.infer<typeof CellDataSchema>[] }
+
+const RowDataSchema: z.ZodType<RowDataType> = z
   .object({
     values: z
       .array(CellDataSchema)
@@ -3097,7 +2662,765 @@ const RowDataSchema = z
   .openapi({ description: 'Data about each cell in a row.', required: [] })
   .openapi('RowData')
 
-const AppendCellsRequestSchema = z
+type AppendCellsRequestType = {
+  fields?: string
+  rows?: z.infer<typeof RowDataSchema>[]
+  sheetId?: number
+}
+
+const DimensionRangeSchema = z
+  .object({
+    dimension: z
+      .enum(['DIMENSION_UNSPECIFIED', 'ROWS', 'COLUMNS'])
+      .exactOptional()
+      .openapi({ description: 'The dimension of the span.' }),
+    endIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The end (exclusive) of the span, or not set if unbounded.' }),
+    sheetId: z.int32().exactOptional().openapi({ description: 'The sheet this span is on.' }),
+    startIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The start (inclusive) of the span, or not set if unbounded.' }),
+  })
+  .openapi({
+    description:
+      'A range along a single dimension on a sheet. All indexes are zero-based. Indexes are half open: the start index is inclusive and the end index is exclusive. Missing indexes indicate the range is unbounded on that side.',
+    required: [],
+  })
+  .openapi('DimensionRange')
+
+const DeveloperMetadataLocationSchema = z
+  .object({
+    dimensionRange: DimensionRangeSchema.exactOptional().openapi({
+      description:
+        'Represents the row or column when metadata is associated with a dimension. The specified DimensionRange must represent a single row or column; it cannot be unbounded or span multiple rows or columns.',
+    }),
+    locationType: z
+      .enum([
+        'DEVELOPER_METADATA_LOCATION_TYPE_UNSPECIFIED',
+        'ROW',
+        'COLUMN',
+        'SHEET',
+        'SPREADSHEET',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The type of location this object represents. This field is read-only.',
+      }),
+    sheetId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the sheet when metadata is associated with an entire sheet.',
+      }),
+    spreadsheet: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True when metadata is associated with an entire spreadsheet.' }),
+  })
+  .openapi({
+    description: 'A location where metadata may be associated in a spreadsheet.',
+    required: [],
+  })
+  .openapi('DeveloperMetadataLocation')
+
+const DeveloperMetadataLookupSchema = z
+  .object({
+    locationMatchingStrategy: z
+      .enum([
+        'DEVELOPER_METADATA_LOCATION_MATCHING_STRATEGY_UNSPECIFIED',
+        'EXACT_LOCATION',
+        'INTERSECTING_LOCATION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines how this lookup matches the location. If this field is specified as EXACT, only developer metadata associated on the exact location specified is matched. If this field is specified to INTERSECTING, developer metadata associated on intersecting locations is also matched. If left unspecified, this field assumes a default value of INTERSECTING. If this field is specified, a metadataLocation must also be specified.',
+      }),
+    locationType: z
+      .enum([
+        'DEVELOPER_METADATA_LOCATION_TYPE_UNSPECIFIED',
+        'ROW',
+        'COLUMN',
+        'SHEET',
+        'SPREADSHEET',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Limits the selected developer metadata to those entries which are associated with locations of the specified type. For example, when this field is specified as ROW this lookup only considers developer metadata associated on rows. If the field is left unspecified, all location types are considered. This field cannot be specified as SPREADSHEET when the locationMatchingStrategy is specified as INTERSECTING or when the metadataLocation is specified as a non-spreadsheet location: spreadsheet metadata cannot intersect any other developer metadata location. This field also must be left unspecified when the locationMatchingStrategy is specified as EXACT.',
+      }),
+    metadataId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Limits the selected developer metadata to that which has a matching DeveloperMetadata.metadata_id.',
+      }),
+    metadataKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Limits the selected developer metadata to that which has a matching DeveloperMetadata.metadata_key.',
+      }),
+    metadataLocation: DeveloperMetadataLocationSchema.exactOptional().openapi({
+      description:
+        'Limits the selected developer metadata to those entries associated with the specified location. This field either matches exact locations or all intersecting locations according the specified locationMatchingStrategy.',
+    }),
+    metadataValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Limits the selected developer metadata to that which has a matching DeveloperMetadata.metadata_value.',
+      }),
+    visibility: z
+      .enum(['DEVELOPER_METADATA_VISIBILITY_UNSPECIFIED', 'DOCUMENT', 'PROJECT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Limits the selected developer metadata to that which has a matching DeveloperMetadata.visibility. If left unspecified, all developer metadata visibile to the requesting project is considered.',
+      }),
+  })
+  .openapi({
+    description:
+      'Selects DeveloperMetadata that matches all of the specified fields. For example, if only a metadata ID is specified this considers the DeveloperMetadata with that particular unique ID. If a metadata key is specified, this considers all developer metadata with that key. If a key, visibility, and location type are all specified, this considers all developer metadata with that key and visibility that are associated with a location of that type. In general, this selects all DeveloperMetadata that matches the intersection of all the specified fields; any field or combination of fields may be specified.',
+    required: [],
+  })
+  .openapi('DeveloperMetadataLookup')
+
+const DataFilterSchema = z
+  .object({
+    a1Range: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Selects data that matches the specified A1 range.' }),
+    developerMetadataLookup: DeveloperMetadataLookupSchema.exactOptional().openapi({
+      description:
+        'Selects data associated with the developer metadata matching the criteria described by this DeveloperMetadataLookup.',
+    }),
+    gridRange: GridRangeSchema.exactOptional().openapi({
+      description: 'Selects data that matches the range described by the GridRange.',
+    }),
+  })
+  .openapi({
+    description: 'Filter that describes what data should be selected or returned from a request.',
+    required: [],
+  })
+  .openapi('DataFilter')
+
+const ValueRangeSchema = z
+  .object({
+    majorDimension: z
+      .enum(['DIMENSION_UNSPECIFIED', 'ROWS', 'COLUMNS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The major dimension of the values. For output, if the spreadsheet data is: `A1=1,B1=2,A2=3,B2=4`, then requesting `range=A1:B2,majorDimension=ROWS` will return `[[1,2],[3,4]]`, whereas requesting `range=A1:B2,majorDimension=COLUMNS` will return `[[1,3],[2,4]]`. For input, with `range=A1:B2,majorDimension=ROWS` then `[[1,2],[3,4]]` will set `A1=1,B1=2,A2=3,B2=4`. With `range=A1:B2,majorDimension=COLUMNS` then `[[1,2],[3,4]]` will set `A1=1,B1=3,A2=2,B2=4`. When writing, if this field is not set, it defaults to ROWS.',
+      }),
+    range: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The range the values cover, in [A1 notation](/sheets/api/guides/concepts#cell). For output, this range indicates the entire requested range, even though the values will exclude trailing rows and columns. When appending values, this field represents the range to search for a table, after which values will be appended.',
+      }),
+    values: z
+      .array(z.array(z.any()))
+      .exactOptional()
+      .openapi({
+        description:
+          'The data that was read or to be written. This is an array of arrays, the outer array representing all the data and each inner array representing a major dimension. Each item in the inner array corresponds with one cell. For output, empty trailing rows and columns will not be included. For input, supported value types are: bool, string, and double. Null values will be skipped. To set a cell to an empty value, set the string value to an empty string.',
+      }),
+  })
+  .openapi({ description: 'Data within a range of the spreadsheet.', required: [] })
+  .openapi('ValueRange')
+
+const MatchedValueRangeSchema = z
+  .object({
+    dataFilters: z
+      .array(DataFilterSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The DataFilters from the request that matched the range of values.',
+      }),
+    valueRange: ValueRangeSchema.exactOptional().openapi({
+      description: 'The values matched by the DataFilter.',
+    }),
+  })
+  .openapi({
+    description: 'A value range that was matched by one or more data filers.',
+    required: [],
+  })
+  .openapi('MatchedValueRange')
+
+type BatchGetValuesByDataFilterResponseType = {
+  spreadsheetId?: string
+  valueRanges?: z.infer<typeof MatchedValueRangeSchema>[]
+}
+
+const BandingPropertiesSchema = z
+  .object({
+    firstBandColor: ColorSchema.exactOptional().openapi({
+      description:
+        'The first color that is alternating. (Required) Deprecated: Use first_band_color_style.',
+    }),
+    firstBandColorStyle: ColorStyleSchema.exactOptional().openapi({
+      description:
+        'The first color that is alternating. (Required) If first_band_color is also set, this field takes precedence.',
+    }),
+    footerColor: ColorSchema.exactOptional().openapi({
+      description:
+        'The color of the last row or column. If this field is not set, the last row or column is filled with either first_band_color or second_band_color, depending on the color of the previous row or column. Deprecated: Use footer_color_style.',
+    }),
+    footerColorStyle: ColorStyleSchema.exactOptional().openapi({
+      description:
+        'The color of the last row or column. If this field is not set, the last row or column is filled with either first_band_color or second_band_color, depending on the color of the previous row or column. If footer_color is also set, this field takes precedence.',
+    }),
+    headerColor: ColorSchema.exactOptional().openapi({
+      description:
+        'The color of the first row or column. If this field is set, the first row or column is filled with this color and the colors alternate between first_band_color and second_band_color starting from the second row or column. Otherwise, the first row or column is filled with first_band_color and the colors proceed to alternate as they normally would. Deprecated: Use header_color_style.',
+    }),
+    headerColorStyle: ColorStyleSchema.exactOptional().openapi({
+      description:
+        'The color of the first row or column. If this field is set, the first row or column is filled with this color and the colors alternate between first_band_color and second_band_color starting from the second row or column. Otherwise, the first row or column is filled with first_band_color and the colors proceed to alternate as they normally would. If header_color is also set, this field takes precedence.',
+    }),
+    secondBandColor: ColorSchema.exactOptional().openapi({
+      description:
+        'The second color that is alternating. (Required) Deprecated: Use second_band_color_style.',
+    }),
+    secondBandColorStyle: ColorStyleSchema.exactOptional().openapi({
+      description:
+        'The second color that is alternating. (Required) If second_band_color is also set, this field takes precedence.',
+    }),
+  })
+  .openapi({
+    description:
+      'Properties referring a single dimension (either row or column). If both BandedRange.row_properties and BandedRange.column_properties are set, the fill colors are applied to cells according to the following rules: * header_color and footer_color take priority over band colors. * first_band_color takes priority over second_band_color. * row_properties takes priority over column_properties. For example, the first row color takes priority over the first column color, but the first column color takes priority over the second row color. Similarly, the row header takes priority over the column header in the top left cell, but the column header takes priority over the first row color if the row header is not set.',
+    required: [],
+  })
+  .openapi('BandingProperties')
+
+const BandedRangeSchema = z
+  .object({
+    bandedRangeId: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The id of the banded range.' }),
+    columnProperties: BandingPropertiesSchema.exactOptional().openapi({
+      description:
+        'Properties for column bands. These properties are applied on a column- by-column basis throughout all the columns in the range. At least one of row_properties or column_properties must be specified.',
+    }),
+    range: GridRangeSchema.exactOptional().openapi({
+      description: 'The range over which these properties are applied.',
+    }),
+    rowProperties: BandingPropertiesSchema.exactOptional().openapi({
+      description:
+        'Properties for row bands. These properties are applied on a row-by-row basis throughout all the rows in the range. At least one of row_properties or column_properties must be specified.',
+    }),
+  })
+  .openapi({ description: 'A banded (alternating colors) range in a sheet.', required: [] })
+  .openapi('BandedRange')
+
+const AddBandingRequestSchema = z
+  .object({
+    bandedRange: BandedRangeSchema.exactOptional().openapi({
+      description:
+        'The banded range to add. The bandedRangeId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a range that already exists.)',
+    }),
+  })
+  .openapi({ description: 'Adds a new banded range to the spreadsheet.', required: [] })
+  .openapi('AddBandingRequest')
+
+const AddChartRequestSchema: z.ZodType<AddChartRequestType> = z
+  .object({
+    chart: EmbeddedChartSchema.exactOptional().openapi({
+      description:
+        'The chart that should be added to the spreadsheet, including the position where it should be placed. The chartId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of an embedded object that already exists.)',
+    }),
+  })
+  .openapi({ description: 'Adds a chart to a sheet in the spreadsheet.', required: [] })
+  .openapi('AddChartRequest')
+
+const AddConditionalFormatRuleRequestSchema: z.ZodType<AddConditionalFormatRuleRequestType> = z
+  .object({
+    index: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The zero-based index where the rule should be inserted.' }),
+    rule: ConditionalFormatRuleSchema.exactOptional().openapi({ description: 'The rule to add.' }),
+  })
+  .openapi({
+    description:
+      "Adds a new conditional format rule at the given index. All subsequent rules' indexes are incremented.",
+    required: [],
+  })
+  .openapi('AddConditionalFormatRuleRequest')
+
+const DataSourceColumnSchema = z
+  .object({
+    formula: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The formula of the calculated column.' }),
+    reference: DataSourceColumnReferenceSchema.exactOptional().openapi({
+      description: 'The column reference.',
+    }),
+  })
+  .openapi({ description: 'A column in a data source.', required: [] })
+  .openapi('DataSourceColumn')
+
+const BigQueryQuerySpecSchema = z
+  .object({
+    rawQuery: z.string().exactOptional().openapi({ description: 'The raw query string.' }),
+  })
+  .openapi({ description: 'Specifies a custom BigQuery query.', required: [] })
+  .openapi('BigQueryQuerySpec')
+
+const BigQueryTableSpecSchema = z
+  .object({
+    datasetId: z.string().exactOptional().openapi({ description: 'The BigQuery dataset id.' }),
+    tableId: z.string().exactOptional().openapi({ description: 'The BigQuery table id.' }),
+    tableProjectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of a BigQuery project the table belongs to. If not specified, the project_id is assumed.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies a BigQuery table definition. Only [native tables](https://cloud.google.com/bigquery/docs/tables-intro) is allowed.',
+    required: [],
+  })
+  .openapi('BigQueryTableSpec')
+
+const BigQueryDataSourceSpecSchema = z
+  .object({
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of a BigQuery enabled GCP project with a billing account attached. For any queries executed against the data source, the project is charged.',
+      }),
+    querySpec: BigQueryQuerySpecSchema.exactOptional().openapi({
+      description: 'A BigQueryQuerySpec.',
+    }),
+    tableSpec: BigQueryTableSpecSchema.exactOptional().openapi({
+      description: 'A BigQueryTableSpec.',
+    }),
+  })
+  .openapi({
+    description: "The specification of a BigQuery data source that's connected to a sheet.",
+    required: [],
+  })
+  .openapi('BigQueryDataSourceSpec')
+
+const DataSourceParameterSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Named parameter. Must be a legitimate identifier for the DataSource that supports it. For example, [BigQuery identifier](https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical#identifiers).',
+      }),
+    namedRangeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of a NamedRange. Its size must be 1x1.' }),
+    range: GridRangeSchema.exactOptional().openapi({
+      description: 'A range that contains the value of the parameter. Its size must be 1x1.',
+    }),
+  })
+  .openapi({
+    description:
+      "A parameter in a data source's query. The parameter allows the user to pass in values from the spreadsheet into a query.",
+    required: [],
+  })
+  .openapi('DataSourceParameter')
+
+const DataSourceSpecSchema = z
+  .object({
+    bigQuery: BigQueryDataSourceSpecSchema.exactOptional().openapi({
+      description: 'A BigQueryDataSourceSpec.',
+    }),
+    parameters: z
+      .array(DataSourceParameterSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The parameters of the data source, used when querying the data source.',
+      }),
+  })
+  .openapi({
+    description:
+      'This specifies the details of the data source. For example, for BigQuery, this specifies information about the BigQuery source.',
+    required: [],
+  })
+  .openapi('DataSourceSpec')
+
+const DataSourceSchema = z
+  .object({
+    calculatedColumns: z
+      .array(DataSourceColumnSchema)
+      .exactOptional()
+      .openapi({ description: 'All calculated columns in the data source.' }),
+    dataSourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The spreadsheet-scoped unique ID that identifies the data source. Example: 1080547365.',
+      }),
+    sheetId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Sheet connected with the data source. The field cannot be changed once set. When creating a data source, an associated DATA_SOURCE sheet is also created, if the field is not specified, the ID of the created sheet will be randomly generated.',
+      }),
+    spec: DataSourceSpecSchema.exactOptional().openapi({
+      description: 'The DataSourceSpec for the data source connected with this spreadsheet.',
+    }),
+  })
+  .openapi({
+    description: 'Information about an external data source in the spreadsheet.',
+    required: [],
+  })
+  .openapi('DataSource')
+
+const AddDataSourceRequestSchema = z
+  .object({
+    dataSource: DataSourceSchema.exactOptional().openapi({
+      description: 'The data source to add.',
+    }),
+  })
+  .openapi({
+    description:
+      'Adds a data source. After the data source is added successfully, an associated DATA_SOURCE sheet is created and an execution is triggered to refresh the sheet to read data from the data source. The request requires an additional `bigquery.readonly` OAuth scope.',
+    required: [],
+  })
+  .openapi('AddDataSourceRequest')
+
+const AddDimensionGroupRequestSchema = z
+  .object({
+    range: DimensionRangeSchema.exactOptional().openapi({
+      description: 'The range over which to create a group.',
+    }),
+  })
+  .openapi({
+    description:
+      "Creates a group over the specified range. If the requested range is a superset of the range of an existing group G, then the depth of G is incremented and this new group G' has the depth of that group. For example, a group [C:D, depth 1] + [B:E] results in groups [B:E, depth 1] and [C:D, depth 2]. If the requested range is a subset of the range of an existing group G, then the depth of the new group G' becomes one greater than the depth of G. For example, a group [B:E, depth 1] + [C:D] results in groups [B:E, depth 1] and [C:D, depth 2]. If the requested range starts before and ends within, or starts within and ends after, the range of an existing group G, then the range of the existing group G becomes the union of the ranges, and the new group G' has depth one greater than the depth of G and range as the intersection of the ranges. For example, a group [B:D, depth 1] + [C:E] results in groups [B:E, depth 1] and [C:D, depth 2].",
+    required: [],
+  })
+  .openapi('AddDimensionGroupRequest')
+
+const AddFilterViewRequestSchema: z.ZodType<AddFilterViewRequestType> = z
+  .object({
+    filter: FilterViewSchema.exactOptional().openapi({
+      description:
+        'The filter to add. The filterViewId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a filter that already exists.)',
+    }),
+  })
+  .openapi({ description: 'Adds a filter view.', required: [] })
+  .openapi('AddFilterViewRequest')
+
+const NamedRangeSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the named range.' }),
+    namedRangeId: z.string().exactOptional().openapi({ description: 'The ID of the named range.' }),
+    range: GridRangeSchema.exactOptional().openapi({ description: 'The range this represents.' }),
+  })
+  .openapi({ description: 'A named range.', required: [] })
+  .openapi('NamedRange')
+
+const AddNamedRangeRequestSchema = z
+  .object({
+    namedRange: NamedRangeSchema.exactOptional().openapi({
+      description:
+        'The named range to add. The namedRangeId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a range that already exists.)',
+    }),
+  })
+  .openapi({ description: 'Adds a named range to the spreadsheet.', required: [] })
+  .openapi('AddNamedRangeRequest')
+
+const EditorsSchema = z
+  .object({
+    domainUsersCanEdit: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "True if anyone in the document's domain has edit access to the protected range. Domain protection is only supported on documents within a domain.",
+      }),
+    groups: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The email addresses of groups with edit access to the protected range.',
+      }),
+    users: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The email addresses of users with edit access to the protected range.',
+      }),
+  })
+  .openapi({ description: 'The editors of a protected range.', required: [] })
+  .openapi('Editors')
+
+const ProtectedRangeSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of this protected range.' }),
+    editors: EditorsSchema.exactOptional().openapi({
+      description:
+        'The users and groups with edit access to the protected range. This field is only visible to users with edit access to the protected range and the document. Editors are not supported with warning_only protection.',
+    }),
+    namedRangeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The named range this protected range is backed by, if any. When writing, only one of range or named_range_id may be set.',
+      }),
+    protectedRangeId: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The ID of the protected range. This field is read-only.' }),
+    range: GridRangeSchema.exactOptional().openapi({
+      description:
+        'The range that is being protected. The range may be fully unbounded, in which case this is considered a protected sheet. When writing, only one of range or named_range_id may be set.',
+    }),
+    requestingUserCanEdit: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the user who requested this protected range can edit the protected area. This field is read-only.',
+      }),
+    unprotectedRanges: z
+      .array(GridRangeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of unprotected ranges within a protected sheet. Unprotected ranges are only supported on protected sheets.',
+      }),
+    warningOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if this protected range will show a warning when editing. Warning-based protection means that every user can edit data in the protected range, except editing will prompt a warning asking the user to confirm the edit. When writing: if this field is true, then editors is ignored. Additionally, if this field is changed from true to false and the `editors` field is not set (nor included in the field mask), then the editors will be set to all the editors in the document.',
+      }),
+  })
+  .openapi({ description: 'A protected range.', required: [] })
+  .openapi('ProtectedRange')
+
+const AddProtectedRangeRequestSchema = z
+  .object({
+    protectedRange: ProtectedRangeSchema.exactOptional().openapi({
+      description:
+        'The protected range to be added. The protectedRangeId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a range that already exists.)',
+    }),
+  })
+  .openapi({ description: 'Adds a new protected range.', required: [] })
+  .openapi('AddProtectedRangeRequest')
+
+const DataSourceSheetPropertiesSchema = z
+  .object({
+    columns: z
+      .array(DataSourceColumnSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The columns displayed on the sheet, corresponding to the values in RowData.',
+      }),
+    dataExecutionStatus: DataExecutionStatusSchema.exactOptional().openapi({
+      description: 'The data execution status.',
+    }),
+    dataSourceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the DataSource the sheet is connected to.' }),
+  })
+  .openapi({ description: 'Additional properties of a DATA_SOURCE sheet.', required: [] })
+  .openapi('DataSourceSheetProperties')
+
+const GridPropertiesSchema = z
+  .object({
+    columnCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of columns in the grid.' }),
+    columnGroupControlAfter: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if the column grouping control toggle is shown after the group.',
+      }),
+    frozenColumnCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of columns that are frozen in the grid.' }),
+    frozenRowCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of rows that are frozen in the grid.' }),
+    hideGridlines: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "True if the grid isn't showing gridlines in the UI." }),
+    rowCount: z.int32().exactOptional().openapi({ description: 'The number of rows in the grid.' }),
+    rowGroupControlAfter: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if the row grouping control toggle is shown after the group.',
+      }),
+  })
+  .openapi({ description: 'Properties of a grid.', required: [] })
+  .openapi('GridProperties')
+
+const SheetPropertiesSchema = z
+  .object({
+    dataSourceSheetProperties: DataSourceSheetPropertiesSchema.exactOptional().openapi({
+      description:
+        'Output only. If present, the field contains DATA_SOURCE sheet specific properties.',
+      readOnly: true,
+    }),
+    gridProperties: GridPropertiesSchema.exactOptional().openapi({
+      description:
+        'Additional properties of the sheet if this sheet is a grid. (If the sheet is an object sheet, containing a chart or image, then this field will be absent.) When writing it is an error to set any grid properties on non-grid sheets. If this sheet is a DATA_SOURCE sheet, this field is output only but contains the properties that reflect how a data source sheet is rendered in the UI, e.g. row_count.',
+    }),
+    hidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "True if the sheet is hidden in the UI, false if it's visible." }),
+    index: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The index of the sheet within the spreadsheet. When adding or updating sheet properties, if this field is excluded then the sheet is added or moved to the end of the sheet list. When updating sheet indices or inserting sheets, movement is considered in "before the move" indexes. For example, if there were 3 sheets (S1, S2, S3) in order to move S1 ahead of S2 the index would have to be set to 2. A sheet index update request is ignored if the requested index is identical to the sheets current index or if the requested new index is equal to the current sheet index + 1.',
+      }),
+    rightToLeft: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the sheet is an RTL sheet instead of an LTR sheet.' }),
+    sheetId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the sheet. Must be non-negative. This field cannot be changed once set.',
+      }),
+    sheetType: z
+      .enum(['SHEET_TYPE_UNSPECIFIED', 'GRID', 'OBJECT', 'DATA_SOURCE'])
+      .exactOptional()
+      .openapi({
+        description: 'The type of sheet. Defaults to GRID. This field cannot be changed once set.',
+      }),
+    tabColor: ColorSchema.exactOptional().openapi({
+      description: 'The color of the tab in the UI. Deprecated: Use tab_color_style.',
+    }),
+    tabColorStyle: ColorStyleSchema.exactOptional().openapi({
+      description:
+        'The color of the tab in the UI. If tab_color is also set, this field takes precedence.',
+    }),
+    title: z.string().exactOptional().openapi({ description: 'The name of the sheet.' }),
+  })
+  .openapi({ description: 'Properties of a sheet.', required: [] })
+  .openapi('SheetProperties')
+
+const AddSheetRequestSchema = z
+  .object({
+    properties: SheetPropertiesSchema.exactOptional().openapi({
+      description:
+        'The properties the new sheet should have. All properties are optional. The sheetId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a sheet that already exists.)',
+    }),
+  })
+  .openapi({
+    description:
+      "Adds a new sheet. When a sheet is added at a given index, all subsequent sheets' indexes are incremented. To add an object sheet, use AddChartRequest instead and specify EmbeddedObjectPosition.sheetId or EmbeddedObjectPosition.newSheet.",
+    required: [],
+  })
+  .openapi('AddSheetRequest')
+
+const SlicerSpecSchema = z
+  .object({
+    applyToPivotTables: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the filter should apply to pivot tables. If not set, default to `True`.',
+      }),
+    backgroundColor: ColorSchema.exactOptional().openapi({
+      description: 'The background color of the slicer. Deprecated: Use background_color_style.',
+    }),
+    backgroundColorStyle: ColorStyleSchema.exactOptional().openapi({
+      description:
+        'The background color of the slicer. If background_color is also set, this field takes precedence.',
+    }),
+    columnIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The column index in the data table on which the filter is applied to.',
+      }),
+    dataRange: GridRangeSchema.exactOptional().openapi({
+      description: 'The data range of the slicer.',
+    }),
+    filterCriteria: FilterCriteriaSchema.exactOptional().openapi({
+      description: 'The filtering criteria of the slicer.',
+    }),
+    horizontalAlignment: z
+      .enum(['HORIZONTAL_ALIGN_UNSPECIFIED', 'LEFT', 'CENTER', 'RIGHT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The horizontal alignment of title in the slicer. If unspecified, defaults to `LEFT`',
+      }),
+    textFormat: TextFormatSchema.exactOptional().openapi({
+      description: 'The text format of title in the slicer. The link field is not supported.',
+    }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the slicer.' }),
+  })
+  .openapi({ description: 'The specifications of a slicer.', required: [] })
+  .openapi('SlicerSpec')
+
+const SlicerSchema = z
+  .object({
+    position: EmbeddedObjectPositionSchema.exactOptional().openapi({
+      description:
+        'The position of the slicer. Note that slicer can be positioned only on existing sheet. Also, width and height of slicer can be automatically adjusted to keep it within permitted limits.',
+    }),
+    slicerId: z.int32().exactOptional().openapi({ description: 'The ID of the slicer.' }),
+    spec: SlicerSpecSchema.exactOptional().openapi({
+      description: 'The specification of the slicer.',
+    }),
+  })
+  .openapi({ description: 'A slicer in a sheet.', required: [] })
+  .openapi('Slicer')
+
+const AddSlicerRequestSchema = z
+  .object({
+    slicer: SlicerSchema.exactOptional().openapi({
+      description:
+        'The slicer that should be added to the spreadsheet, including the position where it should be placed. The slicerId field is optional; if one is not set, an id will be randomly generated. (It is an error to specify the ID of a slicer that already exists.)',
+    }),
+  })
+  .openapi({ description: 'Adds a slicer to a sheet in the spreadsheet.', required: [] })
+  .openapi('AddSlicerRequest')
+
+const AppendCellsRequestSchema: z.ZodType<AppendCellsRequestType> = z
   .object({
     fields: z
       .string()
@@ -3251,41 +3574,6 @@ const CopyPasteRequestSchema = z
   .openapi({ description: 'Copies data from the source to the destination.', required: [] })
   .openapi('CopyPasteRequest')
 
-const DeveloperMetadataLocationSchema = z
-  .object({
-    dimensionRange: DimensionRangeSchema.exactOptional().openapi({
-      description:
-        'Represents the row or column when metadata is associated with a dimension. The specified DimensionRange must represent a single row or column; it cannot be unbounded or span multiple rows or columns.',
-    }),
-    locationType: z
-      .enum([
-        'DEVELOPER_METADATA_LOCATION_TYPE_UNSPECIFIED',
-        'ROW',
-        'COLUMN',
-        'SHEET',
-        'SPREADSHEET',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The type of location this object represents. This field is read-only.',
-      }),
-    sheetId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the sheet when metadata is associated with an entire sheet.',
-      }),
-    spreadsheet: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True when metadata is associated with an entire spreadsheet.' }),
-  })
-  .openapi({
-    description: 'A location where metadata may be associated in a spreadsheet.',
-    required: [],
-  })
-  .openapi('DeveloperMetadataLocation')
-
 const DeveloperMetadataSchema = z
   .object({
     location: DeveloperMetadataLocationSchema.exactOptional().openapi({
@@ -3402,92 +3690,6 @@ const DeleteDataSourceRequestSchema = z
     required: [],
   })
   .openapi('DeleteDataSourceRequest')
-
-const DeveloperMetadataLookupSchema = z
-  .object({
-    locationMatchingStrategy: z
-      .enum([
-        'DEVELOPER_METADATA_LOCATION_MATCHING_STRATEGY_UNSPECIFIED',
-        'EXACT_LOCATION',
-        'INTERSECTING_LOCATION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines how this lookup matches the location. If this field is specified as EXACT, only developer metadata associated on the exact location specified is matched. If this field is specified to INTERSECTING, developer metadata associated on intersecting locations is also matched. If left unspecified, this field assumes a default value of INTERSECTING. If this field is specified, a metadataLocation must also be specified.',
-      }),
-    locationType: z
-      .enum([
-        'DEVELOPER_METADATA_LOCATION_TYPE_UNSPECIFIED',
-        'ROW',
-        'COLUMN',
-        'SHEET',
-        'SPREADSHEET',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Limits the selected developer metadata to those entries which are associated with locations of the specified type. For example, when this field is specified as ROW this lookup only considers developer metadata associated on rows. If the field is left unspecified, all location types are considered. This field cannot be specified as SPREADSHEET when the locationMatchingStrategy is specified as INTERSECTING or when the metadataLocation is specified as a non-spreadsheet location: spreadsheet metadata cannot intersect any other developer metadata location. This field also must be left unspecified when the locationMatchingStrategy is specified as EXACT.',
-      }),
-    metadataId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Limits the selected developer metadata to that which has a matching DeveloperMetadata.metadata_id.',
-      }),
-    metadataKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Limits the selected developer metadata to that which has a matching DeveloperMetadata.metadata_key.',
-      }),
-    metadataLocation: DeveloperMetadataLocationSchema.exactOptional().openapi({
-      description:
-        'Limits the selected developer metadata to those entries associated with the specified location. This field either matches exact locations or all intersecting locations according the specified locationMatchingStrategy.',
-    }),
-    metadataValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Limits the selected developer metadata to that which has a matching DeveloperMetadata.metadata_value.',
-      }),
-    visibility: z
-      .enum(['DEVELOPER_METADATA_VISIBILITY_UNSPECIFIED', 'DOCUMENT', 'PROJECT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Limits the selected developer metadata to that which has a matching DeveloperMetadata.visibility. If left unspecified, all developer metadata visibile to the requesting project is considered.',
-      }),
-  })
-  .openapi({
-    description:
-      'Selects DeveloperMetadata that matches all of the specified fields. For example, if only a metadata ID is specified this considers the DeveloperMetadata with that particular unique ID. If a metadata key is specified, this considers all developer metadata with that key. If a key, visibility, and location type are all specified, this considers all developer metadata with that key and visibility that are associated with a location of that type. In general, this selects all DeveloperMetadata that matches the intersection of all the specified fields; any field or combination of fields may be specified.',
-    required: [],
-  })
-  .openapi('DeveloperMetadataLookup')
-
-const DataFilterSchema = z
-  .object({
-    a1Range: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Selects data that matches the specified A1 range.' }),
-    developerMetadataLookup: DeveloperMetadataLookupSchema.exactOptional().openapi({
-      description:
-        'Selects data associated with the developer metadata matching the criteria described by this DeveloperMetadataLookup.',
-    }),
-    gridRange: GridRangeSchema.exactOptional().openapi({
-      description: 'Selects data that matches the range described by the GridRange.',
-    }),
-  })
-  .openapi({
-    description: 'Filter that describes what data should be selected or returned from a request.',
-    required: [],
-  })
-  .openapi('DataFilter')
 
 const DeleteDeveloperMetadataRequestSchema = z
   .object({
@@ -3863,7 +4065,13 @@ const RefreshDataSourceRequestSchema = z
   })
   .openapi('RefreshDataSourceRequest')
 
-const RepeatCellRequestSchema = z
+type RepeatCellRequestType = {
+  cell?: z.infer<typeof CellDataSchema>
+  fields?: string
+  range?: z.infer<typeof GridRangeSchema>
+}
+
+const RepeatCellRequestSchema: z.ZodType<RepeatCellRequestType> = z
   .object({
     cell: CellDataSchema.exactOptional().openapi({ description: 'The data to write.' }),
     fields: z
@@ -3912,7 +4120,9 @@ const BasicFilterSchema = z
   .openapi({ description: 'The default filter associated with a sheet.', required: [] })
   .openapi('BasicFilter')
 
-const SetBasicFilterRequestSchema = z
+type SetBasicFilterRequestType = { filter?: z.infer<typeof BasicFilterSchema> }
+
+const SetBasicFilterRequestSchema: z.ZodType<SetBasicFilterRequestType> = z
   .object({
     filter: BasicFilterSchema.exactOptional().openapi({ description: 'The filter to set.' }),
   })
@@ -4049,7 +4259,14 @@ const UpdateBordersRequestSchema = z
   })
   .openapi('UpdateBordersRequest')
 
-const UpdateCellsRequestSchema = z
+type UpdateCellsRequestType = {
+  fields?: string
+  range?: z.infer<typeof GridRangeSchema>
+  rows?: z.infer<typeof RowDataSchema>[]
+  start?: z.infer<typeof GridCoordinateSchema>
+}
+
+const UpdateCellsRequestSchema: z.ZodType<UpdateCellsRequestType> = z
   .object({
     fields: z
       .string()
@@ -4071,7 +4288,9 @@ const UpdateCellsRequestSchema = z
   .openapi({ description: 'Updates all cells in a range with new data.', required: [] })
   .openapi('UpdateCellsRequest')
 
-const UpdateChartSpecRequestSchema = z
+type UpdateChartSpecRequestType = { chartId?: number; spec?: z.infer<typeof ChartSpecSchema> }
+
+const UpdateChartSpecRequestSchema: z.ZodType<UpdateChartSpecRequestType> = z
   .object({
     chartId: z.int32().exactOptional().openapi({ description: 'The ID of the chart to update.' }),
     spec: ChartSpecSchema.exactOptional().openapi({
@@ -4085,35 +4304,43 @@ const UpdateChartSpecRequestSchema = z
   })
   .openapi('UpdateChartSpecRequest')
 
-const UpdateConditionalFormatRuleRequestSchema = z
-  .object({
-    index: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The zero-based index of the rule that should be replaced or moved.',
+type UpdateConditionalFormatRuleRequestType = {
+  index?: number
+  newIndex?: number
+  rule?: z.infer<typeof ConditionalFormatRuleSchema>
+  sheetId?: number
+}
+
+const UpdateConditionalFormatRuleRequestSchema: z.ZodType<UpdateConditionalFormatRuleRequestType> =
+  z
+    .object({
+      index: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description: 'The zero-based index of the rule that should be replaced or moved.',
+        }),
+      newIndex: z
+        .int32()
+        .exactOptional()
+        .openapi({ description: 'The zero-based new index the rule should end up at.' }),
+      rule: ConditionalFormatRuleSchema.exactOptional().openapi({
+        description: 'The rule that should replace the rule at the given index.',
       }),
-    newIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The zero-based new index the rule should end up at.' }),
-    rule: ConditionalFormatRuleSchema.exactOptional().openapi({
-      description: 'The rule that should replace the rule at the given index.',
-    }),
-    sheetId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The sheet of the rule to move. Required if new_index is set, unused otherwise.',
-      }),
-  })
-  .openapi({
-    description:
-      'Updates a conditional format rule at the given index, or moves a conditional format rule to another index.',
-    required: [],
-  })
-  .openapi('UpdateConditionalFormatRuleRequest')
+      sheetId: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The sheet of the rule to move. Required if new_index is set, unused otherwise.',
+        }),
+    })
+    .openapi({
+      description:
+        'Updates a conditional format rule at the given index, or moves a conditional format rule to another index.',
+      required: [],
+    })
+    .openapi('UpdateConditionalFormatRuleRequest')
 
 const UpdateDataSourceRequestSchema = z
   .object({
@@ -4300,7 +4527,9 @@ const UpdateEmbeddedObjectPositionRequestSchema = z
   })
   .openapi('UpdateEmbeddedObjectPositionRequest')
 
-const UpdateFilterViewRequestSchema = z
+type UpdateFilterViewRequestType = { fields?: string; filter?: z.infer<typeof FilterViewSchema> }
+
+const UpdateFilterViewRequestSchema: z.ZodType<UpdateFilterViewRequestType> = z
   .object({
     fields: z
       .string()
@@ -4585,6 +4814,209 @@ type RequestType = {
   updateSpreadsheetProperties?: z.infer<typeof UpdateSpreadsheetPropertiesRequestSchema>
 }
 
+const RequestSchema: z.ZodType<RequestType> = z
+  .object({
+    addBanding: AddBandingRequestSchema.exactOptional().openapi({
+      description: 'Adds a new banded range',
+    }),
+    addChart: AddChartRequestSchema.exactOptional().openapi({ description: 'Adds a chart.' }),
+    addConditionalFormatRule: AddConditionalFormatRuleRequestSchema.exactOptional().openapi({
+      description: 'Adds a new conditional format rule.',
+    }),
+    addDataSource: AddDataSourceRequestSchema.exactOptional().openapi({
+      description: 'Adds a data source.',
+    }),
+    addDimensionGroup: AddDimensionGroupRequestSchema.exactOptional().openapi({
+      description: 'Creates a group over the specified range.',
+    }),
+    addFilterView: AddFilterViewRequestSchema.exactOptional().openapi({
+      description: 'Adds a filter view.',
+    }),
+    addNamedRange: AddNamedRangeRequestSchema.exactOptional().openapi({
+      description: 'Adds a named range.',
+    }),
+    addProtectedRange: AddProtectedRangeRequestSchema.exactOptional().openapi({
+      description: 'Adds a protected range.',
+    }),
+    addSheet: AddSheetRequestSchema.exactOptional().openapi({ description: 'Adds a sheet.' }),
+    addSlicer: AddSlicerRequestSchema.exactOptional().openapi({ description: 'Adds a slicer.' }),
+    appendCells: AppendCellsRequestSchema.exactOptional().openapi({
+      description: 'Appends cells after the last row with data in a sheet.',
+    }),
+    appendDimension: AppendDimensionRequestSchema.exactOptional().openapi({
+      description: 'Appends dimensions to the end of a sheet.',
+    }),
+    autoFill: AutoFillRequestSchema.exactOptional().openapi({
+      description: 'Automatically fills in more data based on existing data.',
+    }),
+    autoResizeDimensions: AutoResizeDimensionsRequestSchema.exactOptional().openapi({
+      description:
+        'Automatically resizes one or more dimensions based on the contents of the cells in that dimension.',
+    }),
+    clearBasicFilter: ClearBasicFilterRequestSchema.exactOptional().openapi({
+      description: 'Clears the basic filter on a sheet.',
+    }),
+    copyPaste: CopyPasteRequestSchema.exactOptional().openapi({
+      description: 'Copies data from one area and pastes it to another.',
+    }),
+    createDeveloperMetadata: CreateDeveloperMetadataRequestSchema.exactOptional().openapi({
+      description: 'Creates new developer metadata',
+    }),
+    cutPaste: CutPasteRequestSchema.exactOptional().openapi({
+      description: 'Cuts data from one area and pastes it to another.',
+    }),
+    deleteBanding: DeleteBandingRequestSchema.exactOptional().openapi({
+      description: 'Removes a banded range',
+    }),
+    deleteConditionalFormatRule: DeleteConditionalFormatRuleRequestSchema.exactOptional().openapi({
+      description: 'Deletes an existing conditional format rule.',
+    }),
+    deleteDataSource: DeleteDataSourceRequestSchema.exactOptional().openapi({
+      description: 'Deletes a data source.',
+    }),
+    deleteDeveloperMetadata: DeleteDeveloperMetadataRequestSchema.exactOptional().openapi({
+      description: 'Deletes developer metadata',
+    }),
+    deleteDimension: DeleteDimensionRequestSchema.exactOptional().openapi({
+      description: 'Deletes rows or columns in a sheet.',
+    }),
+    deleteDimensionGroup: DeleteDimensionGroupRequestSchema.exactOptional().openapi({
+      description: 'Deletes a group over the specified range.',
+    }),
+    deleteDuplicates: DeleteDuplicatesRequestSchema.exactOptional().openapi({
+      description: 'Removes rows containing duplicate values in specified columns of a cell range.',
+    }),
+    deleteEmbeddedObject: DeleteEmbeddedObjectRequestSchema.exactOptional().openapi({
+      description: 'Deletes an embedded object (e.g, chart, image) in a sheet.',
+    }),
+    deleteFilterView: DeleteFilterViewRequestSchema.exactOptional().openapi({
+      description: 'Deletes a filter view from a sheet.',
+    }),
+    deleteNamedRange: DeleteNamedRangeRequestSchema.exactOptional().openapi({
+      description: 'Deletes a named range.',
+    }),
+    deleteProtectedRange: DeleteProtectedRangeRequestSchema.exactOptional().openapi({
+      description: 'Deletes a protected range.',
+    }),
+    deleteRange: DeleteRangeRequestSchema.exactOptional().openapi({
+      description: 'Deletes a range of cells from a sheet, shifting the remaining cells.',
+    }),
+    deleteSheet: DeleteSheetRequestSchema.exactOptional().openapi({
+      description: 'Deletes a sheet.',
+    }),
+    duplicateFilterView: DuplicateFilterViewRequestSchema.exactOptional().openapi({
+      description: 'Duplicates a filter view.',
+    }),
+    duplicateSheet: DuplicateSheetRequestSchema.exactOptional().openapi({
+      description: 'Duplicates a sheet.',
+    }),
+    findReplace: FindReplaceRequestSchema.exactOptional().openapi({
+      description: 'Finds and replaces occurrences of some text with other text.',
+    }),
+    insertDimension: InsertDimensionRequestSchema.exactOptional().openapi({
+      description: 'Inserts new rows or columns in a sheet.',
+    }),
+    insertRange: InsertRangeRequestSchema.exactOptional().openapi({
+      description: 'Inserts new cells in a sheet, shifting the existing cells.',
+    }),
+    mergeCells: MergeCellsRequestSchema.exactOptional().openapi({
+      description: 'Merges cells together.',
+    }),
+    moveDimension: MoveDimensionRequestSchema.exactOptional().openapi({
+      description: 'Moves rows or columns to another location in a sheet.',
+    }),
+    pasteData: PasteDataRequestSchema.exactOptional().openapi({
+      description: 'Pastes data (HTML or delimited) into a sheet.',
+    }),
+    randomizeRange: RandomizeRangeRequestSchema.exactOptional().openapi({
+      description: 'Randomizes the order of the rows in a range.',
+    }),
+    refreshDataSource: RefreshDataSourceRequestSchema.exactOptional().openapi({
+      description: 'Refreshs one or multiple data sources and associated dbobjects.',
+    }),
+    repeatCell: RepeatCellRequestSchema.exactOptional().openapi({
+      description: 'Repeats a single cell across a range.',
+    }),
+    setBasicFilter: SetBasicFilterRequestSchema.exactOptional().openapi({
+      description: 'Sets the basic filter on a sheet.',
+    }),
+    setDataValidation: SetDataValidationRequestSchema.exactOptional().openapi({
+      description: 'Sets data validation for one or more cells.',
+    }),
+    sortRange: SortRangeRequestSchema.exactOptional().openapi({
+      description: 'Sorts data in a range.',
+    }),
+    textToColumns: TextToColumnsRequestSchema.exactOptional().openapi({
+      description: 'Converts a column of text into many columns of text.',
+    }),
+    trimWhitespace: TrimWhitespaceRequestSchema.exactOptional().openapi({
+      description: 'Trims cells of whitespace (such as spaces, tabs, or new lines).',
+    }),
+    unmergeCells: UnmergeCellsRequestSchema.exactOptional().openapi({
+      description: 'Unmerges merged cells.',
+    }),
+    updateBanding: UpdateBandingRequestSchema.exactOptional().openapi({
+      description: 'Updates a banded range',
+    }),
+    updateBorders: UpdateBordersRequestSchema.exactOptional().openapi({
+      description: 'Updates the borders in a range of cells.',
+    }),
+    updateCells: UpdateCellsRequestSchema.exactOptional().openapi({
+      description: 'Updates many cells at once.',
+    }),
+    updateChartSpec: UpdateChartSpecRequestSchema.exactOptional().openapi({
+      description: "Updates a chart's specifications.",
+    }),
+    updateConditionalFormatRule: UpdateConditionalFormatRuleRequestSchema.exactOptional().openapi({
+      description: 'Updates an existing conditional format rule.',
+    }),
+    updateDataSource: UpdateDataSourceRequestSchema.exactOptional().openapi({
+      description: 'Updates a data source.',
+    }),
+    updateDeveloperMetadata: UpdateDeveloperMetadataRequestSchema.exactOptional().openapi({
+      description: 'Updates an existing developer metadata entry',
+    }),
+    updateDimensionGroup: UpdateDimensionGroupRequestSchema.exactOptional().openapi({
+      description: 'Updates the state of the specified group.',
+    }),
+    updateDimensionProperties: UpdateDimensionPropertiesRequestSchema.exactOptional().openapi({
+      description: "Updates dimensions' properties.",
+    }),
+    updateEmbeddedObjectBorder: UpdateEmbeddedObjectBorderRequestSchema.exactOptional().openapi({
+      description: "Updates an embedded object's border.",
+    }),
+    updateEmbeddedObjectPosition: UpdateEmbeddedObjectPositionRequestSchema.exactOptional().openapi(
+      { description: "Updates an embedded object's (e.g. chart, image) position." },
+    ),
+    updateFilterView: UpdateFilterViewRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a filter view.',
+    }),
+    updateNamedRange: UpdateNamedRangeRequestSchema.exactOptional().openapi({
+      description: 'Updates a named range.',
+    }),
+    updateProtectedRange: UpdateProtectedRangeRequestSchema.exactOptional().openapi({
+      description: 'Updates a protected range.',
+    }),
+    updateSheetProperties: UpdateSheetPropertiesRequestSchema.exactOptional().openapi({
+      description: "Updates a sheet's properties.",
+    }),
+    updateSlicerSpec: UpdateSlicerSpecRequestSchema.exactOptional().openapi({
+      description: "Updates a slicer's specifications.",
+    }),
+    updateSpreadsheetProperties: UpdateSpreadsheetPropertiesRequestSchema.exactOptional().openapi({
+      description: "Updates the spreadsheet's properties.",
+    }),
+  })
+  .openapi({ description: 'A single kind of update to apply to a spreadsheet.', required: [] })
+  .openapi('Request')
+
+type BatchUpdateSpreadsheetRequestType = {
+  includeSpreadsheetInResponse?: boolean
+  requests?: z.infer<typeof RequestSchema>[]
+  responseIncludeGridData?: boolean
+  responseRanges?: string[]
+}
+
 const AddBandingResponseSchema = z
   .object({
     bandedRange: BandedRangeSchema.exactOptional().openapi({
@@ -4594,7 +5026,7 @@ const AddBandingResponseSchema = z
   .openapi({ description: 'The result of adding a banded range.', required: [] })
   .openapi('AddBandingResponse')
 
-const AddChartResponseSchema = z
+const AddChartResponseSchema: z.ZodType<AddChartResponseType> = z
   .object({
     chart: EmbeddedChartSchema.exactOptional().openapi({ description: 'The newly added chart.' }),
   })
@@ -4625,7 +5057,7 @@ const AddDimensionGroupResponseSchema = z
   .openapi({ description: 'The result of adding a group.', required: [] })
   .openapi('AddDimensionGroupResponse')
 
-const AddFilterViewResponseSchema = z
+const AddFilterViewResponseSchema: z.ZodType<AddFilterViewResponseType> = z
   .object({
     filter: FilterViewSchema.exactOptional().openapi({
       description: 'The newly added filter view.',
@@ -4677,14 +5109,19 @@ const CreateDeveloperMetadataResponseSchema = z
   .openapi({ description: 'The response from creating developer metadata.', required: [] })
   .openapi('CreateDeveloperMetadataResponse')
 
-const DeleteConditionalFormatRuleResponseSchema = z
-  .object({
-    rule: ConditionalFormatRuleSchema.exactOptional().openapi({
-      description: 'The rule that was deleted.',
-    }),
-  })
-  .openapi({ description: 'The result of deleting a conditional format rule.', required: [] })
-  .openapi('DeleteConditionalFormatRuleResponse')
+type DeleteConditionalFormatRuleResponseType = {
+  rule?: z.infer<typeof ConditionalFormatRuleSchema>
+}
+
+const DeleteConditionalFormatRuleResponseSchema: z.ZodType<DeleteConditionalFormatRuleResponseType> =
+  z
+    .object({
+      rule: ConditionalFormatRuleSchema.exactOptional().openapi({
+        description: 'The rule that was deleted.',
+      }),
+    })
+    .openapi({ description: 'The result of deleting a conditional format rule.', required: [] })
+    .openapi('DeleteConditionalFormatRuleResponse')
 
 const DeleteDeveloperMetadataResponseSchema = z
   .object({
@@ -4718,7 +5155,9 @@ const DeleteDuplicatesResponseSchema = z
   .openapi({ description: 'The result of removing duplicates in a range.', required: [] })
   .openapi('DeleteDuplicatesResponse')
 
-const DuplicateFilterViewResponseSchema = z
+type DuplicateFilterViewResponseType = { filter?: z.infer<typeof FilterViewSchema> }
+
+const DuplicateFilterViewResponseSchema: z.ZodType<DuplicateFilterViewResponseType> = z
   .object({
     filter: FilterViewSchema.exactOptional().openapi({ description: 'The newly created filter.' }),
   })
@@ -4801,27 +5240,35 @@ const TrimWhitespaceResponseSchema = z
   .openapi({ description: 'The result of trimming whitespace in cells.', required: [] })
   .openapi('TrimWhitespaceResponse')
 
-const UpdateConditionalFormatRuleResponseSchema = z
-  .object({
-    newIndex: z.int32().exactOptional().openapi({ description: 'The index of the new rule.' }),
-    newRule: ConditionalFormatRuleSchema.exactOptional().openapi({
-      description:
-        'The new rule that replaced the old rule (if replacing), or the rule that was moved (if moved)',
-    }),
-    oldIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
+type UpdateConditionalFormatRuleResponseType = {
+  newIndex?: number
+  newRule?: z.infer<typeof ConditionalFormatRuleSchema>
+  oldIndex?: number
+  oldRule?: z.infer<typeof ConditionalFormatRuleSchema>
+}
+
+const UpdateConditionalFormatRuleResponseSchema: z.ZodType<UpdateConditionalFormatRuleResponseType> =
+  z
+    .object({
+      newIndex: z.int32().exactOptional().openapi({ description: 'The index of the new rule.' }),
+      newRule: ConditionalFormatRuleSchema.exactOptional().openapi({
         description:
-          'The old index of the rule. Not set if a rule was replaced (because it is the same as new_index).',
+          'The new rule that replaced the old rule (if replacing), or the rule that was moved (if moved)',
       }),
-    oldRule: ConditionalFormatRuleSchema.exactOptional().openapi({
-      description:
-        'The old (deleted) rule. Not set if a rule was moved (because it is the same as new_rule).',
-    }),
-  })
-  .openapi({ description: 'The result of updating a conditional format rule.', required: [] })
-  .openapi('UpdateConditionalFormatRuleResponse')
+      oldIndex: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The old index of the rule. Not set if a rule was replaced (because it is the same as new_index).',
+        }),
+      oldRule: ConditionalFormatRuleSchema.exactOptional().openapi({
+        description:
+          'The old (deleted) rule. Not set if a rule was moved (because it is the same as new_rule).',
+      }),
+    })
+    .openapi({ description: 'The result of updating a conditional format rule.', required: [] })
+    .openapi('UpdateConditionalFormatRuleResponse')
 
 const UpdateDataSourceResponseSchema = z
   .object({
@@ -4880,99 +5327,437 @@ type ResponseType = {
   updateEmbeddedObjectPosition?: z.infer<typeof UpdateEmbeddedObjectPositionResponseSchema>
 }
 
-const DataSourceSheetPropertiesSchema = z
+const ResponseSchema: z.ZodType<ResponseType> = z
   .object({
-    columns: z
-      .array(DataSourceColumnSchema)
+    addBanding: AddBandingResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a banded range.',
+    }),
+    addChart: AddChartResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a chart.',
+    }),
+    addDataSource: AddDataSourceResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a data source.',
+    }),
+    addDimensionGroup: AddDimensionGroupResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a dimension group.',
+    }),
+    addFilterView: AddFilterViewResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a filter view.',
+    }),
+    addNamedRange: AddNamedRangeResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a named range.',
+    }),
+    addProtectedRange: AddProtectedRangeResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a protected range.',
+    }),
+    addSheet: AddSheetResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a sheet.',
+    }),
+    addSlicer: AddSlicerResponseSchema.exactOptional().openapi({
+      description: 'A reply from adding a slicer.',
+    }),
+    createDeveloperMetadata: CreateDeveloperMetadataResponseSchema.exactOptional().openapi({
+      description: 'A reply from creating a developer metadata entry.',
+    }),
+    deleteConditionalFormatRule: DeleteConditionalFormatRuleResponseSchema.exactOptional().openapi({
+      description: 'A reply from deleting a conditional format rule.',
+    }),
+    deleteDeveloperMetadata: DeleteDeveloperMetadataResponseSchema.exactOptional().openapi({
+      description: 'A reply from deleting a developer metadata entry.',
+    }),
+    deleteDimensionGroup: DeleteDimensionGroupResponseSchema.exactOptional().openapi({
+      description: 'A reply from deleting a dimension group.',
+    }),
+    deleteDuplicates: DeleteDuplicatesResponseSchema.exactOptional().openapi({
+      description: 'A reply from removing rows containing duplicate values.',
+    }),
+    duplicateFilterView: DuplicateFilterViewResponseSchema.exactOptional().openapi({
+      description: 'A reply from duplicating a filter view.',
+    }),
+    duplicateSheet: DuplicateSheetResponseSchema.exactOptional().openapi({
+      description: 'A reply from duplicating a sheet.',
+    }),
+    findReplace: FindReplaceResponseSchema.exactOptional().openapi({
+      description: 'A reply from doing a find/replace.',
+    }),
+    refreshDataSource: RefreshDataSourceResponseSchema.exactOptional().openapi({
+      description: 'A reply from refreshing data source objects.',
+    }),
+    trimWhitespace: TrimWhitespaceResponseSchema.exactOptional().openapi({
+      description: 'A reply from trimming whitespace.',
+    }),
+    updateConditionalFormatRule: UpdateConditionalFormatRuleResponseSchema.exactOptional().openapi({
+      description: 'A reply from updating a conditional format rule.',
+    }),
+    updateDataSource: UpdateDataSourceResponseSchema.exactOptional().openapi({
+      description: 'A reply from updating a data source.',
+    }),
+    updateDeveloperMetadata: UpdateDeveloperMetadataResponseSchema.exactOptional().openapi({
+      description: 'A reply from updating a developer metadata entry.',
+    }),
+    updateEmbeddedObjectPosition:
+      UpdateEmbeddedObjectPositionResponseSchema.exactOptional().openapi({
+        description: "A reply from updating an embedded object's position.",
+      }),
+  })
+  .openapi({ description: 'A single response from an update.', required: [] })
+  .openapi('Response')
+
+const TimeOfDaySchema = z
+  .object({
+    hours: z
+      .int32()
       .exactOptional()
       .openapi({
-        description: 'The columns displayed on the sheet, corresponding to the values in RowData.',
+        description:
+          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
       }),
-    dataExecutionStatus: DataExecutionStatusSchema.exactOptional().openapi({
-      description: 'The data execution status.',
+    minutes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
+      }),
+    seconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
+    required: [],
+  })
+  .openapi('TimeOfDay')
+
+const DataSourceRefreshDailyScheduleSchema = z
+  .object({
+    startTime: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'The start time of a time interval in which a data source refresh is scheduled. Only `hours` part is used. The time interval size defaults to that in the Sheets editor.',
     }),
-    dataSourceId: z
+  })
+  .openapi({
+    description: 'A schedule for data to refresh every day in a given time interval.',
+    required: [],
+  })
+  .openapi('DataSourceRefreshDailySchedule')
+
+const DataSourceRefreshMonthlyScheduleSchema = z
+  .object({
+    daysOfMonth: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'Days of the month to refresh. Only 1-28 are supported, mapping to the 1st to the 28th day. At lesat one day must be specified.',
+      }),
+    startTime: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'The start time of a time interval in which a data source refresh is scheduled. Only `hours` part is used. The time interval size defaults to that in the Sheets editor.',
+    }),
+  })
+  .openapi({
+    description:
+      'A monthly schedule for data to refresh on specific days in the month in a given time interval.',
+    required: [],
+  })
+  .openapi('DataSourceRefreshMonthlySchedule')
+
+const IntervalSchema = z
+  .object({
+    endTime: z
       .string()
       .exactOptional()
-      .openapi({ description: 'ID of the DataSource the sheet is connected to.' }),
+      .openapi({
+        description:
+          'Optional. Exclusive end of the interval. If specified, a Timestamp matching this interval will have to be before the end.',
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Inclusive start of the interval. If specified, a Timestamp matching this interval will have to be the same or after the start.',
+      }),
   })
-  .openapi({ description: 'Additional properties of a DATA_SOURCE sheet.', required: [] })
-  .openapi('DataSourceSheetProperties')
+  .openapi({
+    description:
+      'Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive). The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time.',
+    required: [],
+  })
+  .openapi('Interval')
 
-const GridPropertiesSchema = z
+const DataSourceRefreshWeeklyScheduleSchema = z
   .object({
-    columnCount: z
-      .int32()
+    daysOfWeek: z
+      .array(
+        z.enum([
+          'DAY_OF_WEEK_UNSPECIFIED',
+          'MONDAY',
+          'TUESDAY',
+          'WEDNESDAY',
+          'THURSDAY',
+          'FRIDAY',
+          'SATURDAY',
+          'SUNDAY',
+        ]),
+      )
       .exactOptional()
-      .openapi({ description: 'The number of columns in the grid.' }),
-    columnGroupControlAfter: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if the column grouping control toggle is shown after the group.',
-      }),
-    frozenColumnCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of columns that are frozen in the grid.' }),
-    frozenRowCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of rows that are frozen in the grid.' }),
-    hideGridlines: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "True if the grid isn't showing gridlines in the UI." }),
-    rowCount: z.int32().exactOptional().openapi({ description: 'The number of rows in the grid.' }),
-    rowGroupControlAfter: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if the row grouping control toggle is shown after the group.',
-      }),
+      .openapi({ description: 'Days of the week to refresh. At least one day must be specified.' }),
+    startTime: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'The start time of a time interval in which a data source refresh is scheduled. Only `hours` part is used. The time interval size defaults to that in the Sheets editor.',
+    }),
   })
-  .openapi({ description: 'Properties of a grid.', required: [] })
-  .openapi('GridProperties')
+  .openapi({
+    description: 'A weekly schedule for data to refresh on specific days in a given time interval.',
+    required: [],
+  })
+  .openapi('DataSourceRefreshWeeklySchedule')
 
-type SheetPropertiesType = {
-  dataSourceSheetProperties?: z.infer<typeof DataSourceSheetPropertiesSchema>
-  gridProperties?: z.infer<typeof GridPropertiesSchema>
-  hidden?: boolean
-  index?: number
-  rightToLeft?: boolean
-  sheetId?: number
-  sheetType?: 'SHEET_TYPE_UNSPECIFIED' | 'GRID' | 'OBJECT' | 'DATA_SOURCE'
-  tabColor?: z.infer<typeof ColorSchema>
-  tabColorStyle?: z.infer<typeof ColorStyleSchema>
-  title?: string
+const DataSourceRefreshScheduleSchema = z
+  .object({
+    dailySchedule: DataSourceRefreshDailyScheduleSchema.exactOptional().openapi({
+      description: 'Daily refresh schedule.',
+    }),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the refresh schedule is enabled, or false otherwise.' }),
+    monthlySchedule: DataSourceRefreshMonthlyScheduleSchema.exactOptional().openapi({
+      description: 'Monthly refresh schedule.',
+    }),
+    nextRun: IntervalSchema.exactOptional().openapi({
+      description: 'Output only. The time interval of the next run.',
+      readOnly: true,
+    }),
+    refreshScope: z
+      .enum(['DATA_SOURCE_REFRESH_SCOPE_UNSPECIFIED', 'ALL_DATA_SOURCES'])
+      .exactOptional()
+      .openapi({ description: 'The scope of the refresh. Must be ALL_DATA_SOURCES.' }),
+    weeklySchedule: DataSourceRefreshWeeklyScheduleSchema.exactOptional().openapi({
+      description: 'Weekly refresh schedule.',
+    }),
+  })
+  .openapi({
+    description:
+      'Schedule for refreshing the data source. Data sources in the spreadsheet are refreshed within a time interval. You can specify the start time by clicking the Scheduled Refresh button in the Sheets editor, but the interval is fixed at 4 hours. For example, if you specify a start time of 8am , the refresh will take place between 8am and 12pm every day.',
+    required: [],
+  })
+  .openapi('DataSourceRefreshSchedule')
+
+type GridDataType = {
+  columnMetadata?: z.infer<typeof DimensionPropertiesSchema>[]
+  rowData?: z.infer<typeof RowDataSchema>[]
+  rowMetadata?: z.infer<typeof DimensionPropertiesSchema>[]
+  startColumn?: number
+  startRow?: number
 }
 
-const ValueRangeSchema = z
+const GridDataSchema: z.ZodType<GridDataType> = z
   .object({
-    majorDimension: z
-      .enum(['DIMENSION_UNSPECIFIED', 'ROWS', 'COLUMNS'])
+    columnMetadata: z
+      .array(DimensionPropertiesSchema)
       .exactOptional()
       .openapi({
         description:
-          'The major dimension of the values. For output, if the spreadsheet data is: `A1=1,B1=2,A2=3,B2=4`, then requesting `range=A1:B2,majorDimension=ROWS` will return `[[1,2],[3,4]]`, whereas requesting `range=A1:B2,majorDimension=COLUMNS` will return `[[1,3],[2,4]]`. For input, with `range=A1:B2,majorDimension=ROWS` then `[[1,2],[3,4]]` will set `A1=1,B1=2,A2=3,B2=4`. With `range=A1:B2,majorDimension=COLUMNS` then `[[1,2],[3,4]]` will set `A1=1,B1=3,A2=2,B2=4`. When writing, if this field is not set, it defaults to ROWS.',
+          'Metadata about the requested columns in the grid, starting with the column in start_column.',
       }),
-    range: z
+    rowData: z
+      .array(RowDataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The data in the grid, one entry per row, starting with the row in startRow. The values in RowData will correspond to columns starting at start_column.',
+      }),
+    rowMetadata: z
+      .array(DimensionPropertiesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metadata about the requested rows in the grid, starting with the row in start_row.',
+      }),
+    startColumn: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The first column this GridData refers to, zero-based.' }),
+    startRow: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The first row this GridData refers to, zero-based.' }),
+  })
+  .openapi({
+    description: 'Data in the grid, as well as metadata about the dimensions.',
+    required: [],
+  })
+  .openapi('GridData')
+
+type SheetType = {
+  bandedRanges?: z.infer<typeof BandedRangeSchema>[]
+  basicFilter?: z.infer<typeof BasicFilterSchema>
+  charts?: z.infer<typeof EmbeddedChartSchema>[]
+  columnGroups?: z.infer<typeof DimensionGroupSchema>[]
+  conditionalFormats?: z.infer<typeof ConditionalFormatRuleSchema>[]
+  data?: z.infer<typeof GridDataSchema>[]
+  developerMetadata?: z.infer<typeof DeveloperMetadataSchema>[]
+  filterViews?: z.infer<typeof FilterViewSchema>[]
+  merges?: z.infer<typeof GridRangeSchema>[]
+  properties?: z.infer<typeof SheetPropertiesSchema>
+  protectedRanges?: z.infer<typeof ProtectedRangeSchema>[]
+  rowGroups?: z.infer<typeof DimensionGroupSchema>[]
+  slicers?: z.infer<typeof SlicerSchema>[]
+}
+
+const SheetSchema: z.ZodType<SheetType> = z
+  .object({
+    bandedRanges: z
+      .array(BandedRangeSchema)
+      .exactOptional()
+      .openapi({ description: 'The banded (alternating colors) ranges on this sheet.' }),
+    basicFilter: BasicFilterSchema.exactOptional().openapi({
+      description: 'The filter on this sheet, if any.',
+    }),
+    charts: z
+      .array(EmbeddedChartSchema)
+      .exactOptional()
+      .openapi({ description: 'The specifications of every chart on this sheet.' }),
+    columnGroups: z
+      .array(DimensionGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'All column groups on this sheet, ordered by increasing range start index, then by group depth.',
+      }),
+    conditionalFormats: z
+      .array(ConditionalFormatRuleSchema)
+      .exactOptional()
+      .openapi({ description: 'The conditional format rules in this sheet.' }),
+    data: z
+      .array(GridDataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Data in the grid, if this is a grid sheet. The number of GridData objects returned is dependent on the number of ranges requested on this sheet. For example, if this is representing `Sheet1`, and the spreadsheet was requested with ranges `Sheet1!A1:C10` and `Sheet1!D15:E20`, then the first GridData will have a startRow/startColumn of `0`, while the second one will have `startRow 14` (zero-based row 15), and `startColumn 3` (zero-based column D). For a DATA_SOURCE sheet, you can not request a specific range, the GridData contains all the values.',
+      }),
+    developerMetadata: z
+      .array(DeveloperMetadataSchema)
+      .exactOptional()
+      .openapi({ description: 'The developer metadata associated with a sheet.' }),
+    filterViews: z
+      .array(FilterViewSchema)
+      .exactOptional()
+      .openapi({ description: 'The filter views in this sheet.' }),
+    merges: z
+      .array(GridRangeSchema)
+      .exactOptional()
+      .openapi({ description: 'The ranges that are merged together.' }),
+    properties: SheetPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the sheet.',
+    }),
+    protectedRanges: z
+      .array(ProtectedRangeSchema)
+      .exactOptional()
+      .openapi({ description: 'The protected ranges in this sheet.' }),
+    rowGroups: z
+      .array(DimensionGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'All row groups on this sheet, ordered by increasing range start index, then by group depth.',
+      }),
+    slicers: z
+      .array(SlicerSchema)
+      .exactOptional()
+      .openapi({ description: 'The slicers on this sheet.' }),
+  })
+  .openapi({ description: 'A sheet in a spreadsheet.', required: [] })
+  .openapi('Sheet')
+
+type SpreadsheetType = {
+  dataSourceSchedules?: z.infer<typeof DataSourceRefreshScheduleSchema>[]
+  dataSources?: z.infer<typeof DataSourceSchema>[]
+  developerMetadata?: z.infer<typeof DeveloperMetadataSchema>[]
+  namedRanges?: z.infer<typeof NamedRangeSchema>[]
+  properties?: z.infer<typeof SpreadsheetPropertiesSchema>
+  sheets?: z.infer<typeof SheetSchema>[]
+  spreadsheetId?: string
+  spreadsheetUrl?: string
+}
+
+const SpreadsheetSchema: z.ZodType<SpreadsheetType> = z
+  .object({
+    dataSourceSchedules: z
+      .array(DataSourceRefreshScheduleSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. A list of data source refresh schedules.',
+        readOnly: true,
+      }),
+    dataSources: z
+      .array(DataSourceSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of external data sources connected with the spreadsheet.' }),
+    developerMetadata: z
+      .array(DeveloperMetadataSchema)
+      .exactOptional()
+      .openapi({ description: 'The developer metadata associated with a spreadsheet.' }),
+    namedRanges: z
+      .array(NamedRangeSchema)
+      .exactOptional()
+      .openapi({ description: 'The named ranges defined in a spreadsheet.' }),
+    properties: SpreadsheetPropertiesSchema.exactOptional().openapi({
+      description: 'Overall properties of a spreadsheet.',
+    }),
+    sheets: z
+      .array(SheetSchema)
+      .exactOptional()
+      .openapi({ description: 'The sheets that are part of a spreadsheet.' }),
+    spreadsheetId: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'The range the values cover, in [A1 notation](/sheets/api/guides/concepts#cell). For output, this range indicates the entire requested range, even though the values will exclude trailing rows and columns. When appending values, this field represents the range to search for a table, after which values will be appended.',
-      }),
-    values: z
-      .array(z.array(z.any()))
+      .openapi({ description: 'The ID of the spreadsheet. This field is read-only.' }),
+    spreadsheetUrl: z
+      .string()
       .exactOptional()
-      .openapi({
-        description:
-          'The data that was read or to be written. This is an array of arrays, the outer array representing all the data and each inner array representing a major dimension. Each item in the inner array corresponds with one cell. For output, empty trailing rows and columns will not be included. For input, supported value types are: bool, string, and double. Null values will be skipped. To set a cell to an empty value, set the string value to an empty string.',
-      }),
+      .openapi({ description: 'The url of the spreadsheet. This field is read-only.' }),
   })
-  .openapi({ description: 'Data within a range of the spreadsheet.', required: [] })
-  .openapi('ValueRange')
+  .openapi({ description: 'Resource that represents a spreadsheet.', required: [] })
+  .openapi('Spreadsheet')
+
+type BatchUpdateSpreadsheetResponseType = {
+  replies?: z.infer<typeof ResponseSchema>[]
+  spreadsheetId?: string
+  updatedSpreadsheet?: z.infer<typeof SpreadsheetSchema>
+}
+
+const MatchedDeveloperMetadataSchema = z
+  .object({
+    dataFilters: z
+      .array(DataFilterSchema)
+      .exactOptional()
+      .openapi({ description: 'All filters matching the returned developer metadata.' }),
+    developerMetadata: DeveloperMetadataSchema.exactOptional().openapi({
+      description: 'The developer metadata matching the specified filters.',
+    }),
+  })
+  .openapi({
+    description:
+      'A developer metadata entry and the data filters specified in the original request that matched it.',
+    required: [],
+  })
+  .openapi('MatchedDeveloperMetadata')
+
+type SearchDeveloperMetadataResponseType = {
+  matchedDeveloperMetadata?: z.infer<typeof MatchedDeveloperMetadataSchema>[]
+}
 
 const UpdateValuesResponseSchema = z
   .object({
@@ -5143,43 +5928,26 @@ const BatchGetValuesByDataFilterRequestSchema = z
   })
   .openapi('BatchGetValuesByDataFilterRequest')
 
-const MatchedValueRangeSchema = z
-  .object({
-    dataFilters: z
-      .array(DataFilterSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The DataFilters from the request that matched the range of values.',
-      }),
-    valueRange: ValueRangeSchema.exactOptional().openapi({
-      description: 'The values matched by the DataFilter.',
-    }),
-  })
-  .openapi({
-    description: 'A value range that was matched by one or more data filers.',
-    required: [],
-  })
-  .openapi('MatchedValueRange')
-
-const BatchGetValuesByDataFilterResponseSchema = z
-  .object({
-    spreadsheetId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the spreadsheet the data was retrieved from.' }),
-    valueRanges: z
-      .array(MatchedValueRangeSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The requested values with the list of data filters that matched them.',
-      }),
-  })
-  .openapi({
-    description:
-      'The response when retrieving more than one range of values in a spreadsheet selected by DataFilters.',
-    required: [],
-  })
-  .openapi('BatchGetValuesByDataFilterResponse')
+const BatchGetValuesByDataFilterResponseSchema: z.ZodType<BatchGetValuesByDataFilterResponseType> =
+  z
+    .object({
+      spreadsheetId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The ID of the spreadsheet the data was retrieved from.' }),
+      valueRanges: z
+        .array(MatchedValueRangeSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The requested values with the list of data filters that matched them.',
+        }),
+    })
+    .openapi({
+      description:
+        'The response when retrieving more than one range of values in a spreadsheet selected by DataFilters.',
+      required: [],
+    })
+    .openapi('BatchGetValuesByDataFilterResponse')
 
 const BatchGetValuesResponseSchema = z
   .object({
@@ -5201,213 +5969,7 @@ const BatchGetValuesResponseSchema = z
   })
   .openapi('BatchGetValuesResponse')
 
-const RequestSchema: z.ZodType<RequestType> = z
-  .lazy(() =>
-    z
-      .object({
-        addBanding: AddBandingRequestSchema.exactOptional().openapi({
-          description: 'Adds a new banded range',
-        }),
-        addChart: AddChartRequestSchema.exactOptional().openapi({ description: 'Adds a chart.' }),
-        addConditionalFormatRule: AddConditionalFormatRuleRequestSchema.exactOptional().openapi({
-          description: 'Adds a new conditional format rule.',
-        }),
-        addDataSource: AddDataSourceRequestSchema.exactOptional().openapi({
-          description: 'Adds a data source.',
-        }),
-        addDimensionGroup: AddDimensionGroupRequestSchema.exactOptional().openapi({
-          description: 'Creates a group over the specified range.',
-        }),
-        addFilterView: AddFilterViewRequestSchema.exactOptional().openapi({
-          description: 'Adds a filter view.',
-        }),
-        addNamedRange: AddNamedRangeRequestSchema.exactOptional().openapi({
-          description: 'Adds a named range.',
-        }),
-        addProtectedRange: AddProtectedRangeRequestSchema.exactOptional().openapi({
-          description: 'Adds a protected range.',
-        }),
-        addSheet: AddSheetRequestSchema.exactOptional().openapi({ description: 'Adds a sheet.' }),
-        addSlicer: AddSlicerRequestSchema.exactOptional().openapi({
-          description: 'Adds a slicer.',
-        }),
-        appendCells: AppendCellsRequestSchema.exactOptional().openapi({
-          description: 'Appends cells after the last row with data in a sheet.',
-        }),
-        appendDimension: AppendDimensionRequestSchema.exactOptional().openapi({
-          description: 'Appends dimensions to the end of a sheet.',
-        }),
-        autoFill: AutoFillRequestSchema.exactOptional().openapi({
-          description: 'Automatically fills in more data based on existing data.',
-        }),
-        autoResizeDimensions: AutoResizeDimensionsRequestSchema.exactOptional().openapi({
-          description:
-            'Automatically resizes one or more dimensions based on the contents of the cells in that dimension.',
-        }),
-        clearBasicFilter: ClearBasicFilterRequestSchema.exactOptional().openapi({
-          description: 'Clears the basic filter on a sheet.',
-        }),
-        copyPaste: CopyPasteRequestSchema.exactOptional().openapi({
-          description: 'Copies data from one area and pastes it to another.',
-        }),
-        createDeveloperMetadata: CreateDeveloperMetadataRequestSchema.exactOptional().openapi({
-          description: 'Creates new developer metadata',
-        }),
-        cutPaste: CutPasteRequestSchema.exactOptional().openapi({
-          description: 'Cuts data from one area and pastes it to another.',
-        }),
-        deleteBanding: DeleteBandingRequestSchema.exactOptional().openapi({
-          description: 'Removes a banded range',
-        }),
-        deleteConditionalFormatRule:
-          DeleteConditionalFormatRuleRequestSchema.exactOptional().openapi({
-            description: 'Deletes an existing conditional format rule.',
-          }),
-        deleteDataSource: DeleteDataSourceRequestSchema.exactOptional().openapi({
-          description: 'Deletes a data source.',
-        }),
-        deleteDeveloperMetadata: DeleteDeveloperMetadataRequestSchema.exactOptional().openapi({
-          description: 'Deletes developer metadata',
-        }),
-        deleteDimension: DeleteDimensionRequestSchema.exactOptional().openapi({
-          description: 'Deletes rows or columns in a sheet.',
-        }),
-        deleteDimensionGroup: DeleteDimensionGroupRequestSchema.exactOptional().openapi({
-          description: 'Deletes a group over the specified range.',
-        }),
-        deleteDuplicates: DeleteDuplicatesRequestSchema.exactOptional().openapi({
-          description:
-            'Removes rows containing duplicate values in specified columns of a cell range.',
-        }),
-        deleteEmbeddedObject: DeleteEmbeddedObjectRequestSchema.exactOptional().openapi({
-          description: 'Deletes an embedded object (e.g, chart, image) in a sheet.',
-        }),
-        deleteFilterView: DeleteFilterViewRequestSchema.exactOptional().openapi({
-          description: 'Deletes a filter view from a sheet.',
-        }),
-        deleteNamedRange: DeleteNamedRangeRequestSchema.exactOptional().openapi({
-          description: 'Deletes a named range.',
-        }),
-        deleteProtectedRange: DeleteProtectedRangeRequestSchema.exactOptional().openapi({
-          description: 'Deletes a protected range.',
-        }),
-        deleteRange: DeleteRangeRequestSchema.exactOptional().openapi({
-          description: 'Deletes a range of cells from a sheet, shifting the remaining cells.',
-        }),
-        deleteSheet: DeleteSheetRequestSchema.exactOptional().openapi({
-          description: 'Deletes a sheet.',
-        }),
-        duplicateFilterView: DuplicateFilterViewRequestSchema.exactOptional().openapi({
-          description: 'Duplicates a filter view.',
-        }),
-        duplicateSheet: DuplicateSheetRequestSchema.exactOptional().openapi({
-          description: 'Duplicates a sheet.',
-        }),
-        findReplace: FindReplaceRequestSchema.exactOptional().openapi({
-          description: 'Finds and replaces occurrences of some text with other text.',
-        }),
-        insertDimension: InsertDimensionRequestSchema.exactOptional().openapi({
-          description: 'Inserts new rows or columns in a sheet.',
-        }),
-        insertRange: InsertRangeRequestSchema.exactOptional().openapi({
-          description: 'Inserts new cells in a sheet, shifting the existing cells.',
-        }),
-        mergeCells: MergeCellsRequestSchema.exactOptional().openapi({
-          description: 'Merges cells together.',
-        }),
-        moveDimension: MoveDimensionRequestSchema.exactOptional().openapi({
-          description: 'Moves rows or columns to another location in a sheet.',
-        }),
-        pasteData: PasteDataRequestSchema.exactOptional().openapi({
-          description: 'Pastes data (HTML or delimited) into a sheet.',
-        }),
-        randomizeRange: RandomizeRangeRequestSchema.exactOptional().openapi({
-          description: 'Randomizes the order of the rows in a range.',
-        }),
-        refreshDataSource: RefreshDataSourceRequestSchema.exactOptional().openapi({
-          description: 'Refreshs one or multiple data sources and associated dbobjects.',
-        }),
-        repeatCell: RepeatCellRequestSchema.exactOptional().openapi({
-          description: 'Repeats a single cell across a range.',
-        }),
-        setBasicFilter: SetBasicFilterRequestSchema.exactOptional().openapi({
-          description: 'Sets the basic filter on a sheet.',
-        }),
-        setDataValidation: SetDataValidationRequestSchema.exactOptional().openapi({
-          description: 'Sets data validation for one or more cells.',
-        }),
-        sortRange: SortRangeRequestSchema.exactOptional().openapi({
-          description: 'Sorts data in a range.',
-        }),
-        textToColumns: TextToColumnsRequestSchema.exactOptional().openapi({
-          description: 'Converts a column of text into many columns of text.',
-        }),
-        trimWhitespace: TrimWhitespaceRequestSchema.exactOptional().openapi({
-          description: 'Trims cells of whitespace (such as spaces, tabs, or new lines).',
-        }),
-        unmergeCells: UnmergeCellsRequestSchema.exactOptional().openapi({
-          description: 'Unmerges merged cells.',
-        }),
-        updateBanding: UpdateBandingRequestSchema.exactOptional().openapi({
-          description: 'Updates a banded range',
-        }),
-        updateBorders: UpdateBordersRequestSchema.exactOptional().openapi({
-          description: 'Updates the borders in a range of cells.',
-        }),
-        updateCells: UpdateCellsRequestSchema.exactOptional().openapi({
-          description: 'Updates many cells at once.',
-        }),
-        updateChartSpec: UpdateChartSpecRequestSchema.exactOptional().openapi({
-          description: "Updates a chart's specifications.",
-        }),
-        updateConditionalFormatRule:
-          UpdateConditionalFormatRuleRequestSchema.exactOptional().openapi({
-            description: 'Updates an existing conditional format rule.',
-          }),
-        updateDataSource: UpdateDataSourceRequestSchema.exactOptional().openapi({
-          description: 'Updates a data source.',
-        }),
-        updateDeveloperMetadata: UpdateDeveloperMetadataRequestSchema.exactOptional().openapi({
-          description: 'Updates an existing developer metadata entry',
-        }),
-        updateDimensionGroup: UpdateDimensionGroupRequestSchema.exactOptional().openapi({
-          description: 'Updates the state of the specified group.',
-        }),
-        updateDimensionProperties: UpdateDimensionPropertiesRequestSchema.exactOptional().openapi({
-          description: "Updates dimensions' properties.",
-        }),
-        updateEmbeddedObjectBorder: UpdateEmbeddedObjectBorderRequestSchema.exactOptional().openapi(
-          { description: "Updates an embedded object's border." },
-        ),
-        updateEmbeddedObjectPosition:
-          UpdateEmbeddedObjectPositionRequestSchema.exactOptional().openapi({
-            description: "Updates an embedded object's (e.g. chart, image) position.",
-          }),
-        updateFilterView: UpdateFilterViewRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of a filter view.',
-        }),
-        updateNamedRange: UpdateNamedRangeRequestSchema.exactOptional().openapi({
-          description: 'Updates a named range.',
-        }),
-        updateProtectedRange: UpdateProtectedRangeRequestSchema.exactOptional().openapi({
-          description: 'Updates a protected range.',
-        }),
-        updateSheetProperties: UpdateSheetPropertiesRequestSchema.exactOptional().openapi({
-          description: "Updates a sheet's properties.",
-        }),
-        updateSlicerSpec: UpdateSlicerSpecRequestSchema.exactOptional().openapi({
-          description: "Updates a slicer's specifications.",
-        }),
-        updateSpreadsheetProperties:
-          UpdateSpreadsheetPropertiesRequestSchema.exactOptional().openapi({
-            description: "Updates the spreadsheet's properties.",
-          }),
-      })
-      .openapi({ description: 'A single kind of update to apply to a spreadsheet.', required: [] }),
-  )
-  .openapi('Request')
-
-const BatchUpdateSpreadsheetRequestSchema = z
+const BatchUpdateSpreadsheetRequestSchema: z.ZodType<BatchUpdateSpreadsheetRequestType> = z
   .object({
     includeSpreadsheetInResponse: z
       .boolean()
@@ -5440,382 +6002,7 @@ const BatchUpdateSpreadsheetRequestSchema = z
   .openapi({ description: 'The request for updating any aspect of a spreadsheet.', required: [] })
   .openapi('BatchUpdateSpreadsheetRequest')
 
-const ResponseSchema: z.ZodType<ResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        addBanding: AddBandingResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a banded range.',
-        }),
-        addChart: AddChartResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a chart.',
-        }),
-        addDataSource: AddDataSourceResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a data source.',
-        }),
-        addDimensionGroup: AddDimensionGroupResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a dimension group.',
-        }),
-        addFilterView: AddFilterViewResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a filter view.',
-        }),
-        addNamedRange: AddNamedRangeResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a named range.',
-        }),
-        addProtectedRange: AddProtectedRangeResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a protected range.',
-        }),
-        addSheet: AddSheetResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a sheet.',
-        }),
-        addSlicer: AddSlicerResponseSchema.exactOptional().openapi({
-          description: 'A reply from adding a slicer.',
-        }),
-        createDeveloperMetadata: CreateDeveloperMetadataResponseSchema.exactOptional().openapi({
-          description: 'A reply from creating a developer metadata entry.',
-        }),
-        deleteConditionalFormatRule:
-          DeleteConditionalFormatRuleResponseSchema.exactOptional().openapi({
-            description: 'A reply from deleting a conditional format rule.',
-          }),
-        deleteDeveloperMetadata: DeleteDeveloperMetadataResponseSchema.exactOptional().openapi({
-          description: 'A reply from deleting a developer metadata entry.',
-        }),
-        deleteDimensionGroup: DeleteDimensionGroupResponseSchema.exactOptional().openapi({
-          description: 'A reply from deleting a dimension group.',
-        }),
-        deleteDuplicates: DeleteDuplicatesResponseSchema.exactOptional().openapi({
-          description: 'A reply from removing rows containing duplicate values.',
-        }),
-        duplicateFilterView: DuplicateFilterViewResponseSchema.exactOptional().openapi({
-          description: 'A reply from duplicating a filter view.',
-        }),
-        duplicateSheet: DuplicateSheetResponseSchema.exactOptional().openapi({
-          description: 'A reply from duplicating a sheet.',
-        }),
-        findReplace: FindReplaceResponseSchema.exactOptional().openapi({
-          description: 'A reply from doing a find/replace.',
-        }),
-        refreshDataSource: RefreshDataSourceResponseSchema.exactOptional().openapi({
-          description: 'A reply from refreshing data source objects.',
-        }),
-        trimWhitespace: TrimWhitespaceResponseSchema.exactOptional().openapi({
-          description: 'A reply from trimming whitespace.',
-        }),
-        updateConditionalFormatRule:
-          UpdateConditionalFormatRuleResponseSchema.exactOptional().openapi({
-            description: 'A reply from updating a conditional format rule.',
-          }),
-        updateDataSource: UpdateDataSourceResponseSchema.exactOptional().openapi({
-          description: 'A reply from updating a data source.',
-        }),
-        updateDeveloperMetadata: UpdateDeveloperMetadataResponseSchema.exactOptional().openapi({
-          description: 'A reply from updating a developer metadata entry.',
-        }),
-        updateEmbeddedObjectPosition:
-          UpdateEmbeddedObjectPositionResponseSchema.exactOptional().openapi({
-            description: "A reply from updating an embedded object's position.",
-          }),
-      })
-      .openapi({ description: 'A single response from an update.', required: [] }),
-  )
-  .openapi('Response')
-
-const TimeOfDaySchema = z
-  .object({
-    hours: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-      }),
-    minutes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
-      }),
-    seconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
-    required: [],
-  })
-  .openapi('TimeOfDay')
-
-const DataSourceRefreshDailyScheduleSchema = z
-  .object({
-    startTime: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'The start time of a time interval in which a data source refresh is scheduled. Only `hours` part is used. The time interval size defaults to that in the Sheets editor.',
-    }),
-  })
-  .openapi({
-    description: 'A schedule for data to refresh every day in a given time interval.',
-    required: [],
-  })
-  .openapi('DataSourceRefreshDailySchedule')
-
-const DataSourceRefreshMonthlyScheduleSchema = z
-  .object({
-    daysOfMonth: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          'Days of the month to refresh. Only 1-28 are supported, mapping to the 1st to the 28th day. At lesat one day must be specified.',
-      }),
-    startTime: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'The start time of a time interval in which a data source refresh is scheduled. Only `hours` part is used. The time interval size defaults to that in the Sheets editor.',
-    }),
-  })
-  .openapi({
-    description:
-      'A monthly schedule for data to refresh on specific days in the month in a given time interval.',
-    required: [],
-  })
-  .openapi('DataSourceRefreshMonthlySchedule')
-
-const IntervalSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Exclusive end of the interval. If specified, a Timestamp matching this interval will have to be before the end.',
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Inclusive start of the interval. If specified, a Timestamp matching this interval will have to be the same or after the start.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive). The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time.',
-    required: [],
-  })
-  .openapi('Interval')
-
-const DataSourceRefreshWeeklyScheduleSchema = z
-  .object({
-    daysOfWeek: z
-      .array(
-        z.enum([
-          'DAY_OF_WEEK_UNSPECIFIED',
-          'MONDAY',
-          'TUESDAY',
-          'WEDNESDAY',
-          'THURSDAY',
-          'FRIDAY',
-          'SATURDAY',
-          'SUNDAY',
-        ]),
-      )
-      .exactOptional()
-      .openapi({ description: 'Days of the week to refresh. At least one day must be specified.' }),
-    startTime: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'The start time of a time interval in which a data source refresh is scheduled. Only `hours` part is used. The time interval size defaults to that in the Sheets editor.',
-    }),
-  })
-  .openapi({
-    description: 'A weekly schedule for data to refresh on specific days in a given time interval.',
-    required: [],
-  })
-  .openapi('DataSourceRefreshWeeklySchedule')
-
-const DataSourceRefreshScheduleSchema = z
-  .object({
-    dailySchedule: DataSourceRefreshDailyScheduleSchema.exactOptional().openapi({
-      description: 'Daily refresh schedule.',
-    }),
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the refresh schedule is enabled, or false otherwise.' }),
-    monthlySchedule: DataSourceRefreshMonthlyScheduleSchema.exactOptional().openapi({
-      description: 'Monthly refresh schedule.',
-    }),
-    nextRun: IntervalSchema.exactOptional().openapi({
-      description: 'Output only. The time interval of the next run.',
-      readOnly: true,
-    }),
-    refreshScope: z
-      .enum(['DATA_SOURCE_REFRESH_SCOPE_UNSPECIFIED', 'ALL_DATA_SOURCES'])
-      .exactOptional()
-      .openapi({ description: 'The scope of the refresh. Must be ALL_DATA_SOURCES.' }),
-    weeklySchedule: DataSourceRefreshWeeklyScheduleSchema.exactOptional().openapi({
-      description: 'Weekly refresh schedule.',
-    }),
-  })
-  .openapi({
-    description:
-      'Schedule for refreshing the data source. Data sources in the spreadsheet are refreshed within a time interval. You can specify the start time by clicking the Scheduled Refresh button in the Sheets editor, but the interval is fixed at 4 hours. For example, if you specify a start time of 8am , the refresh will take place between 8am and 12pm every day.',
-    required: [],
-  })
-  .openapi('DataSourceRefreshSchedule')
-
-const GridDataSchema = z
-  .object({
-    columnMetadata: z
-      .array(DimensionPropertiesSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metadata about the requested columns in the grid, starting with the column in start_column.',
-      }),
-    rowData: z
-      .array(RowDataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The data in the grid, one entry per row, starting with the row in startRow. The values in RowData will correspond to columns starting at start_column.',
-      }),
-    rowMetadata: z
-      .array(DimensionPropertiesSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metadata about the requested rows in the grid, starting with the row in start_row.',
-      }),
-    startColumn: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The first column this GridData refers to, zero-based.' }),
-    startRow: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The first row this GridData refers to, zero-based.' }),
-  })
-  .openapi({
-    description: 'Data in the grid, as well as metadata about the dimensions.',
-    required: [],
-  })
-  .openapi('GridData')
-
-const SheetSchema = z
-  .object({
-    bandedRanges: z
-      .array(BandedRangeSchema)
-      .exactOptional()
-      .openapi({ description: 'The banded (alternating colors) ranges on this sheet.' }),
-    basicFilter: BasicFilterSchema.exactOptional().openapi({
-      description: 'The filter on this sheet, if any.',
-    }),
-    charts: z
-      .array(EmbeddedChartSchema)
-      .exactOptional()
-      .openapi({ description: 'The specifications of every chart on this sheet.' }),
-    columnGroups: z
-      .array(DimensionGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All column groups on this sheet, ordered by increasing range start index, then by group depth.',
-      }),
-    conditionalFormats: z
-      .array(ConditionalFormatRuleSchema)
-      .exactOptional()
-      .openapi({ description: 'The conditional format rules in this sheet.' }),
-    data: z
-      .array(GridDataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Data in the grid, if this is a grid sheet. The number of GridData objects returned is dependent on the number of ranges requested on this sheet. For example, if this is representing `Sheet1`, and the spreadsheet was requested with ranges `Sheet1!A1:C10` and `Sheet1!D15:E20`, then the first GridData will have a startRow/startColumn of `0`, while the second one will have `startRow 14` (zero-based row 15), and `startColumn 3` (zero-based column D). For a DATA_SOURCE sheet, you can not request a specific range, the GridData contains all the values.',
-      }),
-    developerMetadata: z
-      .array(DeveloperMetadataSchema)
-      .exactOptional()
-      .openapi({ description: 'The developer metadata associated with a sheet.' }),
-    filterViews: z
-      .array(FilterViewSchema)
-      .exactOptional()
-      .openapi({ description: 'The filter views in this sheet.' }),
-    merges: z
-      .array(GridRangeSchema)
-      .exactOptional()
-      .openapi({ description: 'The ranges that are merged together.' }),
-    properties: SheetPropertiesSchema.exactOptional().openapi({
-      description: 'The properties of the sheet.',
-    }),
-    protectedRanges: z
-      .array(ProtectedRangeSchema)
-      .exactOptional()
-      .openapi({ description: 'The protected ranges in this sheet.' }),
-    rowGroups: z
-      .array(DimensionGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All row groups on this sheet, ordered by increasing range start index, then by group depth.',
-      }),
-    slicers: z
-      .array(SlicerSchema)
-      .exactOptional()
-      .openapi({ description: 'The slicers on this sheet.' }),
-  })
-  .openapi({ description: 'A sheet in a spreadsheet.', required: [] })
-  .openapi('Sheet')
-
-const SpreadsheetSchema = z
-  .object({
-    dataSourceSchedules: z
-      .array(DataSourceRefreshScheduleSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. A list of data source refresh schedules.',
-        readOnly: true,
-      }),
-    dataSources: z
-      .array(DataSourceSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of external data sources connected with the spreadsheet.' }),
-    developerMetadata: z
-      .array(DeveloperMetadataSchema)
-      .exactOptional()
-      .openapi({ description: 'The developer metadata associated with a spreadsheet.' }),
-    namedRanges: z
-      .array(NamedRangeSchema)
-      .exactOptional()
-      .openapi({ description: 'The named ranges defined in a spreadsheet.' }),
-    properties: SpreadsheetPropertiesSchema.exactOptional().openapi({
-      description: 'Overall properties of a spreadsheet.',
-    }),
-    sheets: z
-      .array(SheetSchema)
-      .exactOptional()
-      .openapi({ description: 'The sheets that are part of a spreadsheet.' }),
-    spreadsheetId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the spreadsheet. This field is read-only.' }),
-    spreadsheetUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The url of the spreadsheet. This field is read-only.' }),
-  })
-  .openapi({ description: 'Resource that represents a spreadsheet.', required: [] })
-  .openapi('Spreadsheet')
-
-const BatchUpdateSpreadsheetResponseSchema = z
+const BatchUpdateSpreadsheetResponseSchema: z.ZodType<BatchUpdateSpreadsheetResponseType> = z
   .object({
     replies: z
       .array(ResponseSchema)
@@ -6061,7 +6248,7 @@ const BatchUpdateValuesResponseSchema = z
   .openapi('BatchUpdateValuesResponse')
 
 const ClearValuesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request for clearing a range of values in a spreadsheet.' })
   .openapi('ClearValuesRequest')
 
@@ -6115,23 +6302,6 @@ const GetSpreadsheetByDataFilterRequestSchema = z
   .openapi({ description: 'The request for retrieving a Spreadsheet.', required: [] })
   .openapi('GetSpreadsheetByDataFilterRequest')
 
-const MatchedDeveloperMetadataSchema = z
-  .object({
-    dataFilters: z
-      .array(DataFilterSchema)
-      .exactOptional()
-      .openapi({ description: 'All filters matching the returned developer metadata.' }),
-    developerMetadata: DeveloperMetadataSchema.exactOptional().openapi({
-      description: 'The developer metadata matching the specified filters.',
-    }),
-  })
-  .openapi({
-    description:
-      'A developer metadata entry and the data filters specified in the original request that matched it.',
-    required: [],
-  })
-  .openapi('MatchedDeveloperMetadata')
-
 const SearchDeveloperMetadataRequestSchema = z
   .object({
     dataFilters: z
@@ -6149,7 +6319,7 @@ const SearchDeveloperMetadataRequestSchema = z
   })
   .openapi('SearchDeveloperMetadataRequest')
 
-const SearchDeveloperMetadataResponseSchema = z
+const SearchDeveloperMetadataResponseSchema: z.ZodType<SearchDeveloperMetadataResponseType> = z
   .object({
     matchedDeveloperMetadata: z
       .array(MatchedDeveloperMetadataSchema)

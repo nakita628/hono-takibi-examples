@@ -1,16 +1,792 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ModelIdentifierSchema = z
+  .string()
+  .regex(/^[0-9a-z_]+$/)
+  .min(1)
+  .max(64)
+  .openapi('ModelIdentifier')
+
+const ModelTypeEnumSchema = z
+  .enum(['ONLINE_FRAUD_INSIGHTS', 'TRANSACTION_FRAUD_INSIGHTS', 'ACCOUNT_TAKEOVER_INSIGHTS'])
+  .openapi('ModelTypeEnum')
+
+const FloatVersionStringSchema = z
+  .string()
+  .regex(/^[1-9][0-9]{0,3}\.[0-9]{1,2}$/)
+  .min(3)
+  .max(7)
+  .openapi('FloatVersionString')
+
 const StringSchema = z.string().openapi('String')
+
+const TrainingDataSourceEnumSchema = z
+  .enum(['EXTERNAL_EVENTS', 'INGESTED_EVENTS'])
+  .openapi('TrainingDataSourceEnum')
+
+const ListOfStringsSchema = z.array(StringSchema).openapi('ListOfStrings')
+
+const LabelMapperSchema = z.record(z.string(), ListOfStringsSchema).openapi('LabelMapper')
+
+const UnlabeledEventsTreatmentSchema = z
+  .enum(['IGNORE', 'FRAUD', 'LEGIT', 'AUTO'])
+  .openapi('UnlabeledEventsTreatment')
+
+const LabelSchemaSchema = z
+  .object({
+    labelMapper: LabelMapperSchema.exactOptional().openapi({
+      description:
+        'The label mapper maps the Amazon Fraud Detector supported model classification labels (<code>FRAUD</code>, <code>LEGIT</code>) to the appropriate event type labels. For example, if "<code>FRAUD</code>" and "<code>LEGIT</code>" are Amazon Fraud Detector supported labels, this mapper could be: <code>{"FRAUD" =&gt; ["0"]</code>, <code>"LEGIT" =&gt; ["1"]}</code> or <code>{"FRAUD" =&gt; ["false"]</code>, <code>"LEGIT" =&gt; ["true"]}</code> or <code>{"FRAUD" =&gt; ["fraud", "abuse"]</code>, <code>"LEGIT" =&gt; ["legit", "safe"]}</code>. The value part of the mapper is a list, because you may have multiple label variants from your event type for a single Amazon Fraud Detector label. ',
+    }),
+    unlabeledEventsTreatment: UnlabeledEventsTreatmentSchema.exactOptional().openapi({
+      description:
+        '<p>The action to take for unlabeled events.</p> <ul> <li> <p>Use <code>IGNORE</code> if you want the unlabeled events to be ignored. This is recommended when the majority of the events in the dataset are labeled.</p> </li> <li> <p>Use <code>FRAUD</code> if you want to categorize all unlabeled events as “Fraud”. This is recommended when most of the events in your dataset are fraudulent.</p> </li> <li> <p>Use <code>LEGIT</code> f you want to categorize all unlabeled events as “Legit”. This is recommended when most of the events in your dataset are legitimate.</p> </li> <li> <p>Use <code>AUTO</code> if you want Amazon Fraud Detector to decide how to use the unlabeled data. This is recommended when there is significant unlabeled events in the dataset.</p> </li> </ul> <p>By default, Amazon Fraud Detector ignores the unlabeled data.</p>',
+    }),
+  })
+  .openapi({ description: 'The label schema.', required: [] })
+  .openapi('LabelSchema')
+
+const TrainingDataSchemaSchema = z
+  .object({
+    modelVariables: ListOfStringsSchema.openapi({
+      description: 'The training data schema variables.',
+    }),
+    labelSchema: LabelSchemaSchema.exactOptional(),
+  })
+  .openapi({ required: ['modelVariables'], description: 'The training data schema.' })
+  .openapi('TrainingDataSchema')
+
+const S3BucketLocationSchema = z
+  .string()
+  .regex(/^s3:\/\/(.+)$/)
+  .min(1)
+  .max(512)
+  .openapi('S3BucketLocation')
+
+const IamRoleArnSchema = z
+  .string()
+  .regex(/^arn\:aws[a-z-]{0,15}\:iam\:\:[0-9]{12}\:role\/[^\s]{2,64}$/)
+  .min(1)
+  .max(256)
+  .openapi('IamRoleArn')
+
+const ExternalEventsDetailSchema = z
+  .object({
+    dataLocation: S3BucketLocationSchema.openapi({
+      description: 'The Amazon S3 bucket location for the data.',
+    }),
+    dataAccessRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The ARN of the role that provides Amazon Fraud Detector access to the data location.',
+    }),
+  })
+  .openapi({
+    required: ['dataLocation', 'dataAccessRoleArn'],
+    description: 'Details for the external events data used for model version training.',
+  })
+  .openapi('ExternalEventsDetail')
+
+const TimeSchema = z.string().min(11).max(30).openapi('Time')
+
+const IngestedEventsTimeWindowSchema = z
+  .object({
+    startTime: TimeSchema.openapi({ description: 'Timestamp of the first ingensted event.' }),
+    endTime: TimeSchema.openapi({ description: 'Timestamp of the final ingested event.' }),
+  })
+  .openapi({
+    required: ['startTime', 'endTime'],
+    description: 'The start and stop time of the ingested events.',
+  })
+  .openapi('IngestedEventsTimeWindow')
+
+const IngestedEventsDetailSchema = z
+  .object({
+    ingestedEventsTimeWindow: IngestedEventsTimeWindowSchema.openapi({
+      description: 'The start and stop time of the ingested events.',
+    }),
+  })
+  .openapi({
+    required: ['ingestedEventsTimeWindow'],
+    description: 'The details of the ingested event.',
+  })
+  .openapi('IngestedEventsDetail')
+
+const FileValidationMessageSchema = z
+  .object({
+    title: StringSchema.exactOptional().openapi({ description: 'The message title.' }),
+    content: StringSchema.exactOptional().openapi({ description: 'The message content.' }),
+    type: StringSchema.exactOptional().openapi({ description: 'The message type.' }),
+  })
+  .openapi({ description: 'The message details.', required: [] })
+  .openapi('FileValidationMessage')
+
+const FileValidationMessageListSchema = z
+  .array(FileValidationMessageSchema)
+  .openapi('FileValidationMessageList')
+
+const FieldValidationMessageSchema = z
+  .object({
+    fieldName: StringSchema.exactOptional().openapi({ description: 'The field name.' }),
+    identifier: StringSchema.exactOptional().openapi({ description: 'The message ID.' }),
+    title: StringSchema.exactOptional().openapi({ description: 'The message title.' }),
+    content: StringSchema.exactOptional().openapi({ description: 'The message content.' }),
+    type: StringSchema.exactOptional().openapi({ description: 'The message type.' }),
+  })
+  .openapi({ description: 'The message details.', required: [] })
+  .openapi('FieldValidationMessage')
+
+const FieldValidationMessageListSchema = z
+  .array(FieldValidationMessageSchema)
+  .openapi('FieldValidationMessageList')
+
+const DataValidationMetricsSchema = z
+  .object({
+    fileLevelMessages: FileValidationMessageListSchema.exactOptional().openapi({
+      description: 'The file-specific model training data validation messages.',
+    }),
+    fieldLevelMessages: FieldValidationMessageListSchema.exactOptional().openapi({
+      description: 'The field-specific model training validation messages.',
+    }),
+  })
+  .openapi({ description: 'The model training data validation metrics.', required: [] })
+  .openapi('DataValidationMetrics')
+
+const FloatSchema = z.float32().openapi('Float')
+
+const MetricDataPointSchema = z
+  .object({
+    fpr: FloatSchema.exactOptional().openapi({
+      description:
+        'The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud.',
+    }),
+    precision: FloatSchema.exactOptional().openapi({
+      description:
+        'The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent.',
+    }),
+    tpr: FloatSchema.exactOptional().openapi({
+      description:
+        'The true positive rate. This is the percentage of total fraud the model detects. Also known as capture rate.',
+    }),
+    threshold: FloatSchema.exactOptional().openapi({
+      description:
+        'The model threshold that specifies an acceptable fraud capture rate. For example, a threshold of 500 means any model score 500 or above is labeled as fraud.',
+    }),
+  })
+  .openapi({ description: 'Model performance metrics data points.', required: [] })
+  .openapi('MetricDataPoint')
+
+const MetricDataPointsListSchema = z.array(MetricDataPointSchema).openapi('MetricDataPointsList')
+
+const TrainingMetricsSchema = z
+  .object({
+    auc: FloatSchema.exactOptional().openapi({
+      description:
+        'The area under the curve. This summarizes true positive rate (TPR) and false positive rate (FPR) across all possible model score thresholds. A model with no predictive power has an AUC of 0.5, whereas a perfect model has a score of 1.0.',
+    }),
+    metricDataPoints: MetricDataPointsListSchema.exactOptional().openapi({
+      description: 'The data points details.',
+    }),
+  })
+  .openapi({ description: 'The training metric details.', required: [] })
+  .openapi('TrainingMetrics')
+
+const LogOddsMetricSchema = z
+  .object({
+    variableName: StringSchema.openapi({ description: 'The name of the variable.' }),
+    variableType: StringSchema.openapi({ description: 'The type of variable.' }),
+    variableImportance: FloatSchema.openapi({
+      description:
+        'The relative importance of the variable. For more information, see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/model-variable-importance.html">Model variable importance</a>.',
+    }),
+  })
+  .openapi({
+    required: ['variableName', 'variableType', 'variableImportance'],
+    description: 'The log odds metric details.',
+  })
+  .openapi('LogOddsMetric')
+
+const ListOfLogOddsMetricsSchema = z.array(LogOddsMetricSchema).openapi('ListOfLogOddsMetrics')
+
+const VariableImportanceMetricsSchema = z
+  .object({
+    logOddsMetrics: ListOfLogOddsMetricsSchema.exactOptional().openapi({
+      description: 'List of variable metrics.',
+    }),
+  })
+  .openapi({ description: 'The variable importance metrics details.', required: [] })
+  .openapi('VariableImportanceMetrics')
+
+const TrainingResultSchema = z
+  .object({
+    dataValidationMetrics: DataValidationMetricsSchema.exactOptional().openapi({
+      description: 'The validation metrics.',
+    }),
+    trainingMetrics: TrainingMetricsSchema.exactOptional().openapi({
+      description: 'The training metric details.',
+    }),
+    variableImportanceMetrics: VariableImportanceMetricsSchema.exactOptional().openapi({
+      description: 'The variable importance metrics.',
+    }),
+  })
+  .openapi({ description: 'The training result details.', required: [] })
+  .openapi('TrainingResult')
+
+const FraudDetectorArnSchema = z
+  .string()
+  .regex(/^arn\:aws[a-z-]{0,15}\:frauddetector\:[a-z0-9-]{3,20}\:[0-9]{12}\:[^\s]{2,128}$/)
+  .min(1)
+  .max(256)
+  .openapi('FraudDetectorArn')
+
+const OFIMetricDataPointSchema = z
+  .object({
+    fpr: FloatSchema.exactOptional().openapi({
+      description:
+        ' The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud. ',
+    }),
+    precision: FloatSchema.exactOptional().openapi({
+      description:
+        ' The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent. ',
+    }),
+    tpr: FloatSchema.exactOptional().openapi({
+      description:
+        ' The true positive rate. This is the percentage of total fraud the model detects. Also known as capture rate. ',
+    }),
+    threshold: FloatSchema.exactOptional().openapi({
+      description:
+        ' The model threshold that specifies an acceptable fraud capture rate. For example, a threshold of 500 means any model score 500 or above is labeled as fraud. ',
+    }),
+  })
+  .openapi({
+    description: ' The Online Fraud Insights (OFI) model performance metrics data points. ',
+    required: [],
+  })
+  .openapi('OFIMetricDataPoint')
+
+const OFIMetricDataPointsListSchema = z
+  .array(OFIMetricDataPointSchema)
+  .openapi('OFIMetricDataPointsList')
+
+const UncertaintyRangeSchema = z
+  .object({
+    lowerBoundValue: FloatSchema.openapi({
+      description: ' The lower bound value of the area under curve (auc). ',
+    }),
+    upperBoundValue: FloatSchema.openapi({
+      description: ' The lower bound value of the area under curve (auc). ',
+    }),
+  })
+  .openapi({
+    required: ['lowerBoundValue', 'upperBoundValue'],
+    description:
+      ' Range of area under curve (auc) expected from the model. A range greater than 0.1 indicates higher model uncertainity. A range is the difference between upper and lower bound of auc. ',
+  })
+  .openapi('UncertaintyRange')
+
+const OFIModelPerformanceSchema = z
+  .object({
+    auc: FloatSchema.exactOptional().openapi({
+      description:
+        ' The area under the curve (auc). This summarizes the total positive rate (tpr) and false positive rate (FPR) across all possible model score thresholds. ',
+    }),
+    uncertaintyRange: UncertaintyRangeSchema.exactOptional().openapi({
+      description:
+        ' Indicates the range of area under curve (auc) expected from the OFI model. A range greater than 0.1 indicates higher model uncertainity. ',
+    }),
+  })
+  .openapi({
+    description: ' The Online Fraud Insights (OFI) model performance score. ',
+    required: [],
+  })
+  .openapi('OFIModelPerformance')
+
+const OFITrainingMetricsValueSchema = z
+  .object({
+    metricDataPoints: OFIMetricDataPointsListSchema.exactOptional().openapi({
+      description: " The model's performance metrics data points. ",
+    }),
+    modelPerformance: OFIModelPerformanceSchema.exactOptional().openapi({
+      description: " The model's overall performance score. ",
+    }),
+  })
+  .openapi({
+    description: ' The Online Fraud Insights (OFI) model training metric details. ',
+    required: [],
+  })
+  .openapi('OFITrainingMetricsValue')
+
+const TFIMetricDataPointSchema = z
+  .object({
+    fpr: FloatSchema.exactOptional().openapi({
+      description:
+        ' The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud. ',
+    }),
+    precision: FloatSchema.exactOptional().openapi({
+      description:
+        ' The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent. ',
+    }),
+    tpr: FloatSchema.exactOptional().openapi({
+      description:
+        ' The true positive rate. This is the percentage of total fraud the model detects. Also known as capture rate. ',
+    }),
+    threshold: FloatSchema.exactOptional().openapi({
+      description:
+        ' The model threshold that specifies an acceptable fraud capture rate. For example, a threshold of 500 means any model score 500 or above is labeled as fraud. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' The performance metrics data points for Transaction Fraud Insights (TFI) model. ',
+    required: [],
+  })
+  .openapi('TFIMetricDataPoint')
+
+const TFIMetricDataPointsListSchema = z
+  .array(TFIMetricDataPointSchema)
+  .openapi('TFIMetricDataPointsList')
+
+const TFIModelPerformanceSchema = z
+  .object({
+    auc: FloatSchema.exactOptional().openapi({
+      description:
+        ' The area under the curve (auc). This summarizes the total positive rate (tpr) and false positive rate (FPR) across all possible model score thresholds. ',
+    }),
+    uncertaintyRange: UncertaintyRangeSchema.exactOptional().openapi({
+      description:
+        ' Indicates the range of area under curve (auc) expected from the TFI model. A range greater than 0.1 indicates higher model uncertainity. ',
+    }),
+  })
+  .openapi({
+    description: ' The Transaction Fraud Insights (TFI) model performance score. ',
+    required: [],
+  })
+  .openapi('TFIModelPerformance')
+
+const TFITrainingMetricsValueSchema = z
+  .object({
+    metricDataPoints: TFIMetricDataPointsListSchema.exactOptional().openapi({
+      description: " The model's performance metrics data points. ",
+    }),
+    modelPerformance: TFIModelPerformanceSchema.exactOptional().openapi({
+      description: ' The model performance score. ',
+    }),
+  })
+  .openapi({
+    description: ' The Transaction Fraud Insights (TFI) model training metric details. ',
+    required: [],
+  })
+  .openapi('TFITrainingMetricsValue')
+
+const ATIMetricDataPointSchema = z
+  .object({
+    cr: FloatSchema.exactOptional().openapi({
+      description:
+        ' The challenge rate. This indicates the percentage of login events that the model recommends to challenge such as one-time password, multi-factor authentication, and investigations. ',
+    }),
+    adr: FloatSchema.exactOptional().openapi({
+      description:
+        ' The anomaly discovery rate. This metric quantifies the percentage of anomalies that can be detected by the model at the selected score threshold. A lower score threshold increases the percentage of anomalies captured by the model, but would also require challenging a larger percentage of login events, leading to a higher customer friction. ',
+    }),
+    threshold: FloatSchema.exactOptional().openapi({
+      description:
+        " The model's threshold that specifies an acceptable fraud capture rate. For example, a threshold of 500 means any model score 500 or above is labeled as fraud. ",
+    }),
+    atodr: FloatSchema.exactOptional().openapi({
+      description:
+        ' The account takeover discovery rate. This metric quantifies the percentage of account compromise events that can be detected by the model at the selected score threshold. This metric is only available if 50 or more entities with at-least one labeled account takeover event is present in the ingested dataset. ',
+    }),
+  })
+  .openapi({
+    description: ' The Account Takeover Insights (ATI) model performance metrics data points. ',
+    required: [],
+  })
+  .openapi('ATIMetricDataPoint')
+
+const ATIMetricDataPointsListSchema = z
+  .array(ATIMetricDataPointSchema)
+  .openapi('ATIMetricDataPointsList')
+
+const ATIModelPerformanceSchema = z
+  .object({
+    asi: FloatSchema.exactOptional().openapi({
+      description:
+        ' The anomaly separation index (ASI) score. This metric summarizes the overall ability of the model to separate anomalous activities from the normal behavior. Depending on the business, a large fraction of these anomalous activities can be malicious and correspond to the account takeover attacks. A model with no separability power will have the lowest possible ASI score of 0.5, whereas the a model with a high separability power will have the highest possible ASI score of 1.0 ',
+    }),
+  })
+  .openapi({
+    description: ' The Account Takeover Insights (ATI) model performance score. ',
+    required: [],
+  })
+  .openapi('ATIModelPerformance')
+
+const ATITrainingMetricsValueSchema = z
+  .object({
+    metricDataPoints: ATIMetricDataPointsListSchema.exactOptional().openapi({
+      description: " The model's performance metrics data points. ",
+    }),
+    modelPerformance: ATIModelPerformanceSchema.exactOptional().openapi({
+      description: " The model's overall performance scores. ",
+    }),
+  })
+  .openapi({
+    description: ' The Account Takeover Insights (ATI) model training metric details. ',
+    required: [],
+  })
+  .openapi('ATITrainingMetricsValue')
+
+const TrainingMetricsV2Schema = z
+  .object({
+    ofi: OFITrainingMetricsValueSchema.exactOptional().openapi({
+      description: ' The Online Fraud Insights (OFI) model training metric details. ',
+    }),
+    tfi: TFITrainingMetricsValueSchema.exactOptional().openapi({
+      description: ' The Transaction Fraud Insights (TFI) model training metric details. ',
+    }),
+    ati: ATITrainingMetricsValueSchema.exactOptional().openapi({
+      description: ' The Account Takeover Insights (ATI) model training metric details. ',
+    }),
+  })
+  .openapi({ description: ' The training metrics details. ', required: [] })
+  .openapi('TrainingMetricsV2')
+
+const AggregatedLogOddsMetricSchema = z
+  .object({
+    variableNames: ListOfStringsSchema.openapi({
+      description: ' The names of all the variables. ',
+    }),
+    aggregatedVariablesImportance: FloatSchema.openapi({
+      description:
+        ' The relative importance of the variables in the list to the other event variable. ',
+    }),
+  })
+  .openapi({
+    required: ['variableNames', 'aggregatedVariablesImportance'],
+    description:
+      '<p>The log odds metric details.</p> <p>Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
+  })
+  .openapi('AggregatedLogOddsMetric')
+
+const ListOfAggregatedLogOddsMetricsSchema = z
+  .array(AggregatedLogOddsMetricSchema)
+  .openapi('ListOfAggregatedLogOddsMetrics')
+
+const AggregatedVariablesImportanceMetricsSchema = z
+  .object({
+    logOddsMetrics: ListOfAggregatedLogOddsMetricsSchema.exactOptional().openapi({
+      description: " List of variables' metrics. ",
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The details of the relative importance of the aggregated variables.</p> <p>Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
+    required: [],
+  })
+  .openapi('AggregatedVariablesImportanceMetrics')
+
+const TrainingResultV2Schema = z
+  .object({
+    dataValidationMetrics: DataValidationMetricsSchema.exactOptional(),
+    trainingMetricsV2: TrainingMetricsV2Schema.exactOptional().openapi({
+      description: ' The training metric details. ',
+    }),
+    variableImportanceMetrics: VariableImportanceMetricsSchema.exactOptional(),
+    aggregatedVariablesImportanceMetrics:
+      AggregatedVariablesImportanceMetricsSchema.exactOptional().openapi({
+        description:
+          '<p> The variable importance metrics of the aggregated variables. </p> <p>Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
+      }),
+  })
+  .openapi({ description: ' The training result details. ', required: [] })
+  .openapi('TrainingResultV2')
+
+const ModelVersionDetailSchema = z
+  .object({
+    modelId: ModelIdentifierSchema.exactOptional().openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.exactOptional().openapi({ description: 'The model type.' }),
+    modelVersionNumber: FloatVersionStringSchema.exactOptional().openapi({
+      description: 'The model version number.',
+    }),
+    status: StringSchema.exactOptional().openapi({
+      description: 'The status of the model version.',
+    }),
+    trainingDataSource: TrainingDataSourceEnumSchema.exactOptional().openapi({
+      description: 'The model version training data source.',
+    }),
+    trainingDataSchema: TrainingDataSchemaSchema.exactOptional().openapi({
+      description: 'The training data schema.',
+    }),
+    externalEventsDetail: ExternalEventsDetailSchema.exactOptional().openapi({
+      description:
+        'The external events data details. This will be populated if the <code>trainingDataSource</code> for the model version is specified as <code>EXTERNAL_EVENTS</code>.',
+    }),
+    ingestedEventsDetail: IngestedEventsDetailSchema.exactOptional().openapi({
+      description:
+        'The ingested events data details. This will be populated if the <code>trainingDataSource</code> for the model version is specified as <code>INGESTED_EVENTS</code>.',
+    }),
+    trainingResult: TrainingResultSchema.exactOptional().openapi({
+      description: 'The training results.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the model was last updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the model was created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The model version ARN.' }),
+    trainingResultV2: TrainingResultV2Schema.exactOptional().openapi({
+      description:
+        ' The training result details. The details include the relative importance of the variables. ',
+    }),
+  })
+  .openapi({ description: 'The details of the model version.', required: [] })
+  .openapi('ModelVersionDetail')
+
+const ModelVersionDetailListSchema = z
+  .array(ModelVersionDetailSchema)
+  .openapi('ModelVersionDetailList')
+
+type DescribeModelVersionsResultType = {
+  modelVersionDetails?: z.infer<typeof ModelVersionDetailListSchema> & unknown
+  nextToken?: z.infer<typeof StringSchema> & unknown
+}
+
+const IdentifierSchema = z
+  .string()
+  .regex(/^[0-9a-z_-]+$/)
+  .min(1)
+  .max(64)
+  .openapi('Identifier')
+
+const WholeNumberVersionStringSchema = z
+  .string()
+  .regex(/^([1-9][0-9]*)$/)
+  .min(1)
+  .max(5)
+  .openapi('WholeNumberVersionString')
+
+const SensitiveStringSchema = z.string().openapi('SensitiveString')
+
+const EventVariableSummarySchema = z
+  .object({
+    name: SensitiveStringSchema.exactOptional().openapi({
+      description: ' The event variable name. ',
+    }),
+    value: SensitiveStringSchema.exactOptional().openapi({
+      description: ' The value of the event variable. ',
+    }),
+    source: SensitiveStringSchema.exactOptional().openapi({
+      description: ' The event variable source. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' Information about the summary of an event variable that was evaluated for generating prediction. ',
+    required: [],
+  })
+  .openapi('EventVariableSummary')
+
+const ListOfEventVariableSummariesSchema = z
+  .array(EventVariableSummarySchema)
+  .openapi('ListOfEventVariableSummaries')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const EvaluatedRuleSchema = z
+  .object({
+    ruleId: IdentifierSchema.exactOptional().openapi({ description: ' The rule ID. ' }),
+    ruleVersion: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: ' The rule version. ',
+    }),
+    expression: SensitiveStringSchema.exactOptional().openapi({
+      description: ' The rule expression. ',
+    }),
+    expressionWithValues: SensitiveStringSchema.exactOptional().openapi({
+      description: ' The rule expression value. ',
+    }),
+    outcomes: ListOfStringsSchema.exactOptional().openapi({ description: ' The rule outcome. ' }),
+    evaluated: BooleanSchema.exactOptional().openapi({
+      description: ' Indicates whether the rule was evaluated. ',
+    }),
+    matched: BooleanSchema.exactOptional().openapi({
+      description: ' Indicates whether the rule matched. ',
+    }),
+  })
+  .openapi({
+    description: ' The details of the rule used for evaluating variable values. ',
+    required: [],
+  })
+  .openapi('EvaluatedRule')
+
+const EvaluatedRuleListSchema = z.array(EvaluatedRuleSchema).openapi('EvaluatedRuleList')
+
+const RuleExecutionModeSchema = z
+  .enum(['ALL_MATCHED', 'FIRST_MATCHED'])
+  .openapi('RuleExecutionMode')
+
+const VariableImpactExplanationSchema = z
+  .object({
+    eventVariableName: StringSchema.exactOptional().openapi({
+      description: ' The event variable name. ',
+    }),
+    relativeImpact: StringSchema.exactOptional().openapi({
+      description:
+        " The event variable's relative impact in terms of magnitude on the prediction scores. The relative impact values consist of a numerical rating (0-5, 5 being the highest) and direction (increased/decreased) impact of the fraud risk. ",
+    }),
+    logOddsImpact: FloatSchema.exactOptional().openapi({
+      description:
+        '<p> The raw, uninterpreted value represented as log-odds of the fraud. These values are usually between -10 to +10, but range from - infinity to + infinity.</p> <ul> <li> <p>A positive value indicates that the variable drove the risk score up.</p> </li> <li> <p>A negative value indicates that the variable drove the risk score down.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    description: " The details of the event variable's impact on the prediction score. ",
+    required: [],
+  })
+  .openapi('VariableImpactExplanation')
+
+const ListOfVariableImpactExplanationsSchema = z
+  .array(VariableImpactExplanationSchema)
+  .openapi('ListOfVariableImpactExplanations')
+
+const AggregatedVariablesImpactExplanationSchema = z
+  .object({
+    eventVariableNames: ListOfStringsSchema.exactOptional().openapi({
+      description:
+        ' The names of all the event variables that were used to derive the aggregated variables. ',
+    }),
+    relativeImpact: StringSchema.exactOptional().openapi({
+      description:
+        ' The relative impact of the aggregated variables in terms of magnitude on the prediction scores. ',
+    }),
+    logOddsImpact: FloatSchema.exactOptional().openapi({
+      description:
+        '<p> The raw, uninterpreted value represented as log-odds of the fraud. These values are usually between -10 to +10, but range from -infinity to +infinity.</p> <ul> <li> <p>A positive value indicates that the variables drove the risk score up.</p> </li> <li> <p>A negative value indicates that the variables drove the risk score down.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p> The details of the impact of aggregated variables on the prediction score. </p> <p>Account Takeover Insights (ATI) model uses the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, the model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
+    required: [],
+  })
+  .openapi('AggregatedVariablesImpactExplanation')
+
+const ListOfAggregatedVariablesImpactExplanationsSchema = z
+  .array(AggregatedVariablesImpactExplanationSchema)
+  .openapi('ListOfAggregatedVariablesImpactExplanations')
+
+const PredictionExplanationsSchema = z
+  .object({
+    variableImpactExplanations: ListOfVariableImpactExplanationsSchema.exactOptional().openapi({
+      description: " The details of the event variable's impact on the prediction score. ",
+    }),
+    aggregatedVariablesImpactExplanations:
+      ListOfAggregatedVariablesImpactExplanationsSchema.exactOptional().openapi({
+        description:
+          '<p> The details of the aggregated variables impact on the prediction score. </p> <p>Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
+      }),
+  })
+  .openapi({
+    description:
+      " The prediction explanations that provide insight into how each event variable impacted the model version's fraud prediction score. ",
+    required: [],
+  })
+  .openapi('PredictionExplanations')
+
+const ModelVersionEvaluationSchema = z
+  .object({
+    outputVariableName: StringSchema.exactOptional().openapi({
+      description: ' The output variable name. ',
+    }),
+    evaluationScore: StringSchema.exactOptional().openapi({
+      description: ' The evaluation score generated for the model version. ',
+    }),
+    predictionExplanations: PredictionExplanationsSchema.exactOptional().openapi({
+      description: ' The prediction explanations generated for the model version. ',
+    }),
+  })
+  .openapi({ description: ' The model version evalutions. ', required: [] })
+  .openapi('ModelVersionEvaluation')
+
+const ListOfModelVersionEvaluationsSchema = z
+  .array(ModelVersionEvaluationSchema)
+  .openapi('ListOfModelVersionEvaluations')
+
+const EvaluatedModelVersionSchema = z
+  .object({
+    modelId: StringSchema.exactOptional().openapi({ description: ' The model ID. ' }),
+    modelVersion: StringSchema.exactOptional().openapi({ description: ' The model version. ' }),
+    modelType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The model type. </p> <p>Valid values: <code>ONLINE_FRAUD_INSIGHTS</code> | <code>TRANSACTION_FRAUD_INSIGHTS</code> </p>',
+    }),
+    evaluations: ListOfModelVersionEvaluationsSchema.exactOptional().openapi({
+      description: ' Evaluations generated for the model version. ',
+    }),
+  })
+  .openapi({
+    description: ' The model version evaluated for generating prediction. ',
+    required: [],
+  })
+  .openapi('EvaluatedModelVersion')
+
+type ListOfEvaluatedModelVersionsType = z.infer<typeof EvaluatedModelVersionSchema>[]
+
+const ListOfEvaluatedModelVersionsSchema: z.ZodType<ListOfEvaluatedModelVersionsType> = z
+  .array(EvaluatedModelVersionSchema)
+  .openapi('ListOfEvaluatedModelVersions')
+
+const MapOfStringsSchema = z.record(z.string(), StringSchema).openapi('MapOfStrings')
+
+const EvaluatedExternalModelSchema = z
+  .object({
+    modelEndpoint: StringSchema.exactOptional().openapi({
+      description: ' The endpoint of the external (Amazon Sagemaker) model. ',
+    }),
+    useEventVariables: BooleanSchema.exactOptional().openapi({
+      description: ' Indicates whether event variables were used to generate predictions. ',
+    }),
+    inputVariables: MapOfStringsSchema.exactOptional().openapi({
+      description: ' Input variables use for generating predictions. ',
+    }),
+    outputVariables: MapOfStringsSchema.exactOptional().openapi({
+      description: ' Output variables. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' The details of the external (Amazon Sagemaker) model evaluated for generating predictions. ',
+    required: [],
+  })
+  .openapi('EvaluatedExternalModel')
+
+const ListOfEvaluatedExternalModelsSchema = z
+  .array(EvaluatedExternalModelSchema)
+  .openapi('ListOfEvaluatedExternalModels')
+
+type GetEventPredictionMetadataResultType = {
+  eventId?: z.infer<typeof IdentifierSchema> & unknown
+  eventTypeName?: z.infer<typeof IdentifierSchema> & unknown
+  entityId?: z.infer<typeof StringSchema> & unknown
+  entityType?: z.infer<typeof StringSchema> & unknown
+  eventTimestamp?: z.infer<typeof TimeSchema> & unknown
+  detectorId?: z.infer<typeof IdentifierSchema> & unknown
+  detectorVersionId?: z.infer<typeof WholeNumberVersionStringSchema> & unknown
+  detectorVersionStatus?: z.infer<typeof StringSchema> & unknown
+  eventVariables?: z.infer<typeof ListOfEventVariableSummariesSchema> & unknown
+  rules?: z.infer<typeof EvaluatedRuleListSchema> & unknown
+  ruleExecutionMode?: z.infer<typeof RuleExecutionModeSchema> & unknown
+  outcomes?: z.infer<typeof ListOfStringsSchema> & unknown
+  evaluatedModelVersions?: z.infer<typeof ListOfEvaluatedModelVersionsSchema> & unknown
+  evaluatedExternalModels?: z.infer<typeof ListOfEvaluatedExternalModelsSchema> & unknown
+  predictionTimestamp?: z.infer<typeof TimeSchema> & unknown
+}
 
 const IntegerSchema = z.int().openapi('Integer')
 
 const BatchCreateVariableErrorSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The name.' })).exactOptional(),
-    code: IntegerSchema.and(z.any().openapi({ description: 'The error code. ' })).exactOptional(),
-    message: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The name.' }),
+    code: IntegerSchema.exactOptional().openapi({ description: 'The error code. ' }),
+    message: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({ description: 'Provides the error of the batch create variable API.', required: [] })
   .openapi('BatchCreateVariableError')
@@ -21,42 +797,32 @@ const BatchCreateVariableErrorListSchema = z
 
 const BatchCreateVariableResultSchema = z
   .object({
-    errors: BatchCreateVariableErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the errors for the <code>BatchCreateVariable</code> request.',
-        }),
-    ).exactOptional(),
+    errors: BatchCreateVariableErrorListSchema.exactOptional().openapi({
+      description: 'Provides the errors for the <code>BatchCreateVariable</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchCreateVariableResult')
 
 const VariableEntrySchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the variable.' }),
-    ).exactOptional(),
-    dataType: StringSchema.and(
-      z.any().openapi({ description: 'The data type of the variable.' }),
-    ).exactOptional(),
-    dataSource: StringSchema.and(
-      z.any().openapi({ description: 'The data source of the variable.' }),
-    ).exactOptional(),
-    defaultValue: StringSchema.and(
-      z.any().openapi({ description: 'The default value of the variable.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the variable.' }),
-    ).exactOptional(),
-    variableType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the variable. For more information see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>.</p> <p>Valid Values: <code>AUTH_CODE | AVS | BILLING_ADDRESS_L1 | BILLING_ADDRESS_L2 | BILLING_CITY | BILLING_COUNTRY | BILLING_NAME | BILLING_PHONE | BILLING_STATE | BILLING_ZIP | CARD_BIN | CATEGORICAL | CURRENCY_CODE | EMAIL_ADDRESS | FINGERPRINT | FRAUD_LABEL | FREE_FORM_TEXT | IP_ADDRESS | NUMERIC | ORDER_ID | PAYMENT_TYPE | PHONE_NUMBER | PRICE | PRODUCT_CATEGORY | SHIPPING_ADDRESS_L1 | SHIPPING_ADDRESS_L2 | SHIPPING_CITY | SHIPPING_COUNTRY | SHIPPING_NAME | SHIPPING_PHONE | SHIPPING_STATE | SHIPPING_ZIP | USERAGENT </code> </p>',
-        }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the variable.' }),
+    dataType: StringSchema.exactOptional().openapi({
+      description: 'The data type of the variable.',
+    }),
+    dataSource: StringSchema.exactOptional().openapi({
+      description: 'The data source of the variable.',
+    }),
+    defaultValue: StringSchema.exactOptional().openapi({
+      description: 'The default value of the variable.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the variable.',
+    }),
+    variableType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the variable. For more information see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>.</p> <p>Valid Values: <code>AUTH_CODE | AVS | BILLING_ADDRESS_L1 | BILLING_ADDRESS_L2 | BILLING_CITY | BILLING_COUNTRY | BILLING_NAME | BILLING_PHONE | BILLING_STATE | BILLING_ZIP | CARD_BIN | CATEGORICAL | CURRENCY_CODE | EMAIL_ADDRESS | FINGERPRINT | FRAUD_LABEL | FREE_FORM_TEXT | IP_ADDRESS | NUMERIC | ORDER_ID | PAYMENT_TYPE | PHONE_NUMBER | PRICE | PRODUCT_CATEGORY | SHIPPING_ADDRESS_L1 | SHIPPING_ADDRESS_L2 | SHIPPING_CITY | SHIPPING_COUNTRY | SHIPPING_NAME | SHIPPING_PHONE | SHIPPING_STATE | SHIPPING_ZIP | USERAGENT </code> </p>',
+    }),
   })
   .openapi({
     description: 'A variable in the list of variables for the batch create variable request.',
@@ -81,8 +847,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(z.any().openapi({ description: 'A tag key.' })),
-    value: TagValueSchema.and(z.any().openapi({ description: 'A value assigned to a tag key.' })),
+    key: TagKeySchema.openapi({ description: 'A tag key.' }),
+    value: TagValueSchema.openapi({ description: 'A value assigned to a tag key.' }),
   })
   .openapi({ required: ['key', 'value'], description: 'A key and value pair. ' })
   .openapi('Tag')
@@ -91,14 +857,12 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const BatchCreateVariableRequestSchema = z
   .object({
-    variableEntries: VariableEntryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of variables for the batch create variable request.' }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    variableEntries: VariableEntryListSchema.openapi({
+      description: 'The list of variables for the batch create variable request.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({ required: ['variableEntries'], title: 'BatchCreateVariableRequest' })
   .openapi('BatchCreateVariableRequest')
@@ -117,54 +881,35 @@ const DataSourceSchema = z
   .enum(['EVENT', 'MODEL_SCORE', 'EXTERNAL_MODEL_SCORE'])
   .openapi('DataSource')
 
-const TimeSchema = z.string().min(11).max(30).openapi('Time')
-
-const FraudDetectorArnSchema = z
-  .string()
-  .regex(/^arn\:aws[a-z-]{0,15}\:frauddetector\:[a-z0-9-]{3,20}\:[0-9]{12}\:[^\s]{2,128}$/)
-  .min(1)
-  .max(256)
-  .openapi('FraudDetectorArn')
-
 const VariableSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the variable.' }),
-    ).exactOptional(),
-    dataType: DataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data type of the variable. For more information see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>.',
-        }),
-    ).exactOptional(),
-    dataSource: DataSourceSchema.and(
-      z.any().openapi({ description: 'The data source of the variable.' }),
-    ).exactOptional(),
-    defaultValue: StringSchema.and(
-      z.any().openapi({ description: 'The default value of the variable.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the variable. ' }),
-    ).exactOptional(),
-    variableType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The variable type of the variable.</p> <p>Valid Values: <code>AUTH_CODE | AVS | BILLING_ADDRESS_L1 | BILLING_ADDRESS_L2 | BILLING_CITY | BILLING_COUNTRY | BILLING_NAME | BILLING_PHONE | BILLING_STATE | BILLING_ZIP | CARD_BIN | CATEGORICAL | CURRENCY_CODE | EMAIL_ADDRESS | FINGERPRINT | FRAUD_LABEL | FREE_FORM_TEXT | IP_ADDRESS | NUMERIC | ORDER_ID | PAYMENT_TYPE | PHONE_NUMBER | PRICE | PRODUCT_CATEGORY | SHIPPING_ADDRESS_L1 | SHIPPING_ADDRESS_L2 | SHIPPING_CITY | SHIPPING_COUNTRY | SHIPPING_NAME | SHIPPING_PHONE | SHIPPING_STATE | SHIPPING_ZIP | USERAGENT </code> </p>',
-        }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'The time when variable was last updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'The time when the variable was created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the variable.' }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the variable.' }),
+    dataType: DataTypeSchema.exactOptional().openapi({
+      description:
+        'The data type of the variable. For more information see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>.',
+    }),
+    dataSource: DataSourceSchema.exactOptional().openapi({
+      description: 'The data source of the variable.',
+    }),
+    defaultValue: StringSchema.exactOptional().openapi({
+      description: 'The default value of the variable.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description of the variable. ',
+    }),
+    variableType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The variable type of the variable.</p> <p>Valid Values: <code>AUTH_CODE | AVS | BILLING_ADDRESS_L1 | BILLING_ADDRESS_L2 | BILLING_CITY | BILLING_COUNTRY | BILLING_NAME | BILLING_PHONE | BILLING_STATE | BILLING_ZIP | CARD_BIN | CATEGORICAL | CURRENCY_CODE | EMAIL_ADDRESS | FINGERPRINT | FRAUD_LABEL | FREE_FORM_TEXT | IP_ADDRESS | NUMERIC | ORDER_ID | PAYMENT_TYPE | PHONE_NUMBER | PRICE | PRODUCT_CATEGORY | SHIPPING_ADDRESS_L1 | SHIPPING_ADDRESS_L2 | SHIPPING_CITY | SHIPPING_COUNTRY | SHIPPING_NAME | SHIPPING_PHONE | SHIPPING_STATE | SHIPPING_ZIP | USERAGENT </code> </p>',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'The time when variable was last updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'The time when the variable was created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({
+      description: 'The ARN of the variable.',
+    }),
   })
   .openapi({ description: 'The variable.', required: [] })
   .openapi('Variable')
@@ -173,11 +918,9 @@ const VariableListSchema = z.array(VariableSchema).openapi('VariableList')
 
 const BatchGetVariableErrorSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The error name. ' })).exactOptional(),
-    code: IntegerSchema.and(z.any().openapi({ description: 'The error code. ' })).exactOptional(),
-    message: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The error name. ' }),
+    code: IntegerSchema.exactOptional().openapi({ description: 'The error code. ' }),
+    message: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({ description: 'Provides the error of the batch get variable API.', required: [] })
   .openapi('BatchGetVariableError')
@@ -188,12 +931,12 @@ const BatchGetVariableErrorListSchema = z
 
 const BatchGetVariableResultSchema = z
   .object({
-    variables: VariableListSchema.and(
-      z.any().openapi({ description: 'The returned variables.' }),
-    ).exactOptional(),
-    errors: BatchGetVariableErrorListSchema.and(
-      z.any().openapi({ description: 'The errors from the request.' }),
-    ).exactOptional(),
+    variables: VariableListSchema.exactOptional().openapi({
+      description: 'The returned variables.',
+    }),
+    errors: BatchGetVariableErrorListSchema.exactOptional().openapi({
+      description: 'The errors from the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetVariableResult')
@@ -201,106 +944,59 @@ const BatchGetVariableResultSchema = z
 const NameListSchema = z.array(StringSchema).min(1).max(100).openapi('NameList')
 
 const BatchGetVariableRequestSchema = z
-  .object({
-    names: NameListSchema.and(
-      z.any().openapi({ description: 'The list of variable names to get.' }),
-    ),
-  })
+  .object({ names: NameListSchema.openapi({ description: 'The list of variable names to get.' }) })
   .openapi({ required: ['names'], title: 'BatchGetVariableRequest' })
   .openapi('BatchGetVariableRequest')
 
-const CancelBatchImportJobResultSchema = z.object({}).openapi('CancelBatchImportJobResult')
-
-const IdentifierSchema = z
-  .string()
-  .regex(/^[0-9a-z_-]+$/)
-  .min(1)
-  .max(64)
-  .openapi('Identifier')
+const CancelBatchImportJobResultSchema = z.looseObject({}).openapi('CancelBatchImportJobResult')
 
 const CancelBatchImportJobRequestSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The ID of an in-progress batch import job to cancel. </p> <p>Amazon Fraud Detector will throw an error if the batch import job is in <code>FAILED</code>, <code>CANCELED</code>, or <code>COMPLETED</code> state.</p>',
-        }),
-    ),
+    jobId: IdentifierSchema.openapi({
+      description:
+        '<p> The ID of an in-progress batch import job to cancel. </p> <p>Amazon Fraud Detector will throw an error if the batch import job is in <code>FAILED</code>, <code>CANCELED</code>, or <code>COMPLETED</code> state.</p>',
+    }),
   })
   .openapi({ required: ['jobId'], title: 'CancelBatchImportJobRequest' })
   .openapi('CancelBatchImportJobRequest')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const CancelBatchPredictionJobResultSchema = z.object({}).openapi('CancelBatchPredictionJobResult')
+const CancelBatchPredictionJobResultSchema = z
+  .looseObject({})
+  .openapi('CancelBatchPredictionJobResult')
 
 const CancelBatchPredictionJobRequestSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the batch prediction job to cancel.' }),
-    ),
+    jobId: IdentifierSchema.openapi({
+      description: 'The ID of the batch prediction job to cancel.',
+    }),
   })
   .openapi({ required: ['jobId'], title: 'CancelBatchPredictionJobRequest' })
   .openapi('CancelBatchPredictionJobRequest')
 
-const CreateBatchImportJobResultSchema = z.object({}).openapi('CreateBatchImportJobResult')
-
-const S3BucketLocationSchema = z
-  .string()
-  .regex(/^s3:\/\/(.+)$/)
-  .min(1)
-  .max(512)
-  .openapi('S3BucketLocation')
-
-const IamRoleArnSchema = z
-  .string()
-  .regex(/^arn\:aws[a-z-]{0,15}\:iam\:\:[0-9]{12}\:role\/[^\s]{2,64}$/)
-  .min(1)
-  .max(256)
-  .openapi('IamRoleArn')
+const CreateBatchImportJobResultSchema = z.looseObject({}).openapi('CreateBatchImportJobResult')
 
 const CreateBatchImportJobRequestSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the batch import job. The ID cannot be of a past job, unless the job exists in <code>CREATE_FAILED</code> state.',
-        }),
-    ),
-    inputPath: S3BucketLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URI that points to the Amazon S3 location of your data file.',
-        }),
-    ),
-    outputPath: S3BucketLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URI that points to the Amazon S3 location for storing your results. ',
-        }),
-    ),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ),
-    iamRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role created for Amazon S3 bucket that holds your data file.</p> <p>The IAM role must have read permissions to your input S3 bucket and write permissions to your output S3 bucket. For more information about bucket permissions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-policies-s3.html">User policy examples</a> in the <i>Amazon S3 User Guide</i>.</p>',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A collection of key-value pairs associated with this request. ' }),
-    ).exactOptional(),
+    jobId: IdentifierSchema.openapi({
+      description:
+        'The ID of the batch import job. The ID cannot be of a past job, unless the job exists in <code>CREATE_FAILED</code> state.',
+    }),
+    inputPath: S3BucketLocationSchema.openapi({
+      description: 'The URI that points to the Amazon S3 location of your data file.',
+    }),
+    outputPath: S3BucketLocationSchema.openapi({
+      description: 'The URI that points to the Amazon S3 location for storing your results. ',
+    }),
+    eventTypeName: IdentifierSchema.openapi({ description: 'The name of the event type.' }),
+    iamRoleArn: IamRoleArnSchema.openapi({
+      description:
+        '<p>The ARN of the IAM role created for Amazon S3 bucket that holds your data file.</p> <p>The IAM role must have read permissions to your input S3 bucket and write permissions to your output S3 bucket. For more information about bucket permissions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-policies-s3.html">User policy examples</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key-value pairs associated with this request. ',
+    }),
   })
   .openapi({
     required: ['jobId', 'inputPath', 'outputPath', 'eventTypeName', 'iamRoleArn'],
@@ -308,46 +1004,31 @@ const CreateBatchImportJobRequestSchema = z
   })
   .openapi('CreateBatchImportJobRequest')
 
-const CreateBatchPredictionJobResultSchema = z.object({}).openapi('CreateBatchPredictionJobResult')
-
-const WholeNumberVersionStringSchema = z
-  .string()
-  .regex(/^([1-9][0-9]*)$/)
-  .min(1)
-  .max(5)
-  .openapi('WholeNumberVersionString')
+const CreateBatchPredictionJobResultSchema = z
+  .looseObject({})
+  .openapi('CreateBatchPredictionJobResult')
 
 const CreateBatchPredictionJobRequestSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the batch prediction job.' }),
-    ),
-    inputPath: S3BucketLocationSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of your training file.' }),
-    ),
-    outputPath: S3BucketLocationSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of your output file.' }),
-    ),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ),
-    detectorName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the detector.' }),
-    ),
-    detectorVersion: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version.' }),
-    ).exactOptional(),
-    iamRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role to use for this job request.</p> <p>The IAM Role must have read permissions to your input S3 bucket and write permissions to your output S3 bucket. For more information about bucket permissions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-policies-s3.html">User policy examples</a> in the <i>Amazon S3 User Guide</i>.</p>',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    jobId: IdentifierSchema.openapi({ description: 'The ID of the batch prediction job.' }),
+    inputPath: S3BucketLocationSchema.openapi({
+      description: 'The Amazon S3 location of your training file.',
+    }),
+    outputPath: S3BucketLocationSchema.openapi({
+      description: 'The Amazon S3 location of your output file.',
+    }),
+    eventTypeName: IdentifierSchema.openapi({ description: 'The name of the event type.' }),
+    detectorName: IdentifierSchema.openapi({ description: 'The name of the detector.' }),
+    detectorVersion: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: 'The detector version.',
+    }),
+    iamRoleArn: IamRoleArnSchema.openapi({
+      description:
+        '<p>The ARN of the IAM role to use for this job request.</p> <p>The IAM Role must have read permissions to your input S3 bucket and write permissions to your output S3 bucket. For more information about bucket permissions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-policies-s3.html">User policy examples</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({
     required: ['jobId', 'inputPath', 'outputPath', 'eventTypeName', 'detectorName', 'iamRoleArn'],
@@ -361,66 +1042,42 @@ const DetectorVersionStatusSchema = z
 
 const CreateDetectorVersionResultSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: "The ID for the created version's parent detector." }),
-    ).exactOptional(),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The ID for the created detector. ' }),
-    ).exactOptional(),
-    status: DetectorVersionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the detector version.' }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.exactOptional().openapi({
+      description: "The ID for the created version's parent detector.",
+    }),
+    detectorVersionId: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: 'The ID for the created detector. ',
+    }),
+    status: DetectorVersionStatusSchema.exactOptional().openapi({
+      description: 'The status of the detector version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDetectorVersionResult')
 
 const DescriptionSchema = z.string().min(1).max(128).openapi('Description')
 
-const ListOfStringsSchema = z.array(StringSchema).openapi('ListOfStrings')
-
 const RuleSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The detector for which the rule is associated.' }),
-    ),
-    ruleId: IdentifierSchema.and(z.any().openapi({ description: 'The rule ID.' })),
-    ruleVersion: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The rule version.' }),
-    ),
+    detectorId: IdentifierSchema.openapi({
+      description: 'The detector for which the rule is associated.',
+    }),
+    ruleId: IdentifierSchema.openapi({ description: 'The rule ID.' }),
+    ruleVersion: WholeNumberVersionStringSchema.openapi({ description: 'The rule version.' }),
   })
   .openapi({ required: ['detectorId', 'ruleId', 'ruleVersion'], description: 'A rule.' })
   .openapi('Rule')
 
 const RuleListSchema = z.array(RuleSchema).openapi('RuleList')
 
-const ModelIdentifierSchema = z
-  .string()
-  .regex(/^[0-9a-z_]+$/)
-  .min(1)
-  .max(64)
-  .openapi('ModelIdentifier')
-
-const ModelTypeEnumSchema = z
-  .enum(['ONLINE_FRAUD_INSIGHTS', 'TRANSACTION_FRAUD_INSIGHTS', 'ACCOUNT_TAKEOVER_INSIGHTS'])
-  .openapi('ModelTypeEnum')
-
-const FloatVersionStringSchema = z
-  .string()
-  .regex(/^[1-9][0-9]{0,3}\.[0-9]{1,2}$/)
-  .min(3)
-  .max(7)
-  .openapi('FloatVersionString')
-
 const ModelVersionSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(z.any().openapi({ description: 'The model ID.' })),
-    modelType: ModelTypeEnumSchema.and(z.any().openapi({ description: 'The model type.' })),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number.' }),
-    ),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The model version ARN.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.openapi({ description: 'The model type.' }),
+    modelVersionNumber: FloatVersionStringSchema.openapi({
+      description: 'The model version number.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The model version ARN.' }),
   })
   .openapi({
     required: ['modelId', 'modelType', 'modelVersionNumber'],
@@ -430,51 +1087,33 @@ const ModelVersionSchema = z
 
 const ListOfModelVersionsSchema = z.array(ModelVersionSchema).openapi('ListOfModelVersions')
 
-const RuleExecutionModeSchema = z
-  .enum(['ALL_MATCHED', 'FIRST_MATCHED'])
-  .openapi('RuleExecutionMode')
-
 const CreateDetectorVersionRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the detector under which you want to create a new version.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the detector version.' }),
-    ).exactOptional(),
-    externalModelEndpoints: ListOfStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Sagemaker model endpoints to include in the detector version.',
-        }),
-    ).exactOptional(),
-    rules: RuleListSchema.and(
-      z.any().openapi({ description: 'The rules to include in the detector version.' }),
-    ),
-    modelVersions: ListOfModelVersionsSchema.and(
-      z.any().openapi({ description: 'The model versions to include in the detector version.' }),
-    ).exactOptional(),
-    ruleExecutionMode: RuleExecutionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rule execution mode for the rules included in the detector version.</p> <p>You can define and edit the rule mode at the detector version level, when it is in draft status.</p> <p>If you specify <code>FIRST_MATCHED</code>, Amazon Fraud Detector evaluates rules sequentially, first to last, stopping at the first matched rule. Amazon Fraud dectector then provides the outcomes for that single rule.</p> <p>If you specifiy <code>ALL_MATCHED</code>, Amazon Fraud Detector evaluates all rules and returns the outcomes for all matched rules. </p> <p>The default behavior is <code>FIRST_MATCHED</code>.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.openapi({
+      description: 'The ID of the detector under which you want to create a new version.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the detector version.',
+    }),
+    externalModelEndpoints: ListOfStringsSchema.exactOptional().openapi({
+      description: 'The Amazon Sagemaker model endpoints to include in the detector version.',
+    }),
+    rules: RuleListSchema.openapi({ description: 'The rules to include in the detector version.' }),
+    modelVersions: ListOfModelVersionsSchema.exactOptional().openapi({
+      description: 'The model versions to include in the detector version.',
+    }),
+    ruleExecutionMode: RuleExecutionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The rule execution mode for the rules included in the detector version.</p> <p>You can define and edit the rule mode at the detector version level, when it is in draft status.</p> <p>If you specify <code>FIRST_MATCHED</code>, Amazon Fraud Detector evaluates rules sequentially, first to last, stopping at the first matched rule. Amazon Fraud dectector then provides the outcomes for that single rule.</p> <p>If you specifiy <code>ALL_MATCHED</code>, Amazon Fraud Detector evaluates all rules and returns the outcomes for all matched rules. </p> <p>The default behavior is <code>FIRST_MATCHED</code>.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({ required: ['detectorId', 'rules'], title: 'CreateDetectorVersionRequest' })
   .openapi('CreateDetectorVersionRequest')
 
-const CreateListResultSchema = z.object({}).openapi('CreateListResult')
+const CreateListResultSchema = z.looseObject({}).openapi('CreateListResult')
 
 const NoDashIdentifierSchema = z
   .string()
@@ -501,188 +1140,75 @@ const VariableTypeSchema = z
 
 const CreateListRequestSchema = z
   .object({
-    name: NoDashIdentifierSchema.and(z.any().openapi({ description: ' The name of the list. ' })),
-    elements: ElementsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The names of the elements, if providing. You can also create an empty list and add elements later using the <a href="https://docs.aws.amazon.com/frauddetector/latest/api/API_Updatelist.html">UpdateList</a> API. ',
-        }),
-    ).exactOptional(),
-    variableType: VariableTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The variable type of the list. You can only assign the variable type with String data type. For more information, see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>. ',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the list. ' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: ' A collection of the key and value pairs. ' }),
-    ).exactOptional(),
+    name: NoDashIdentifierSchema.openapi({ description: ' The name of the list. ' }),
+    elements: ElementsListSchema.exactOptional().openapi({
+      description:
+        ' The names of the elements, if providing. You can also create an empty list and add elements later using the <a href="https://docs.aws.amazon.com/frauddetector/latest/api/API_Updatelist.html">UpdateList</a> API. ',
+    }),
+    variableType: VariableTypeSchema.exactOptional().openapi({
+      description:
+        ' The variable type of the list. You can only assign the variable type with String data type. For more information, see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>. ',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description of the list. ',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: ' A collection of the key and value pairs. ',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateListRequest' })
   .openapi('CreateListRequest')
 
-const CreateModelResultSchema = z.object({}).openapi('CreateModelResult')
+const CreateModelResultSchema = z.looseObject({}).openapi('CreateModelResult')
 
 const CreateModelRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(z.any().openapi({ description: 'The model ID.' })),
-    modelType: ModelTypeEnumSchema.and(z.any().openapi({ description: 'The model type. ' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The model description. ' }),
-    ).exactOptional(),
-    eventTypeName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.openapi({ description: 'The model type. ' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The model description. ',
+    }),
+    eventTypeName: StringSchema.openapi({ description: 'The name of the event type.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({ required: ['modelId', 'modelType', 'eventTypeName'], title: 'CreateModelRequest' })
   .openapi('CreateModelRequest')
 
 const CreateModelVersionResultSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID.' }),
-    ).exactOptional(),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type.' }),
-    ).exactOptional(),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number of the model version created.' }),
-    ).exactOptional(),
-    status: StringSchema.and(
-      z.any().openapi({ description: 'The model version status. ' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.exactOptional().openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.exactOptional().openapi({ description: 'The model type.' }),
+    modelVersionNumber: FloatVersionStringSchema.exactOptional().openapi({
+      description: 'The model version number of the model version created.',
+    }),
+    status: StringSchema.exactOptional().openapi({ description: 'The model version status. ' }),
   })
   .openapi({ required: [] })
   .openapi('CreateModelVersionResult')
 
-const TrainingDataSourceEnumSchema = z
-  .enum(['EXTERNAL_EVENTS', 'INGESTED_EVENTS'])
-  .openapi('TrainingDataSourceEnum')
-
-const LabelMapperSchema = z.record(z.string(), ListOfStringsSchema).openapi('LabelMapper')
-
-const UnlabeledEventsTreatmentSchema = z
-  .enum(['IGNORE', 'FRAUD', 'LEGIT', 'AUTO'])
-  .openapi('UnlabeledEventsTreatment')
-
-const LabelSchemaSchema = z
-  .object({
-    labelMapper: LabelMapperSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The label mapper maps the Amazon Fraud Detector supported model classification labels (<code>FRAUD</code>, <code>LEGIT</code>) to the appropriate event type labels. For example, if "<code>FRAUD</code>" and "<code>LEGIT</code>" are Amazon Fraud Detector supported labels, this mapper could be: <code>{"FRAUD" =&gt; ["0"]</code>, <code>"LEGIT" =&gt; ["1"]}</code> or <code>{"FRAUD" =&gt; ["false"]</code>, <code>"LEGIT" =&gt; ["true"]}</code> or <code>{"FRAUD" =&gt; ["fraud", "abuse"]</code>, <code>"LEGIT" =&gt; ["legit", "safe"]}</code>. The value part of the mapper is a list, because you may have multiple label variants from your event type for a single Amazon Fraud Detector label. ',
-        }),
-    ).exactOptional(),
-    unlabeledEventsTreatment: UnlabeledEventsTreatmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action to take for unlabeled events.</p> <ul> <li> <p>Use <code>IGNORE</code> if you want the unlabeled events to be ignored. This is recommended when the majority of the events in the dataset are labeled.</p> </li> <li> <p>Use <code>FRAUD</code> if you want to categorize all unlabeled events as “Fraud”. This is recommended when most of the events in your dataset are fraudulent.</p> </li> <li> <p>Use <code>LEGIT</code> f you want to categorize all unlabeled events as “Legit”. This is recommended when most of the events in your dataset are legitimate.</p> </li> <li> <p>Use <code>AUTO</code> if you want Amazon Fraud Detector to decide how to use the unlabeled data. This is recommended when there is significant unlabeled events in the dataset.</p> </li> </ul> <p>By default, Amazon Fraud Detector ignores the unlabeled data.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The label schema.', required: [] })
-  .openapi('LabelSchema')
-
-const TrainingDataSchemaSchema = z
-  .object({
-    modelVariables: ListOfStringsSchema.and(
-      z.any().openapi({ description: 'The training data schema variables.' }),
-    ),
-    labelSchema: LabelSchemaSchema.exactOptional(),
-  })
-  .openapi({ required: ['modelVariables'], description: 'The training data schema.' })
-  .openapi('TrainingDataSchema')
-
-const ExternalEventsDetailSchema = z
-  .object({
-    dataLocation: S3BucketLocationSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket location for the data.' }),
-    ),
-    dataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that provides Amazon Fraud Detector access to the data location.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['dataLocation', 'dataAccessRoleArn'],
-    description: 'Details for the external events data used for model version training.',
-  })
-  .openapi('ExternalEventsDetail')
-
-const IngestedEventsTimeWindowSchema = z
-  .object({
-    startTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of the first ingensted event.' }),
-    ),
-    endTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of the final ingested event.' }),
-    ),
-  })
-  .openapi({
-    required: ['startTime', 'endTime'],
-    description: 'The start and stop time of the ingested events.',
-  })
-  .openapi('IngestedEventsTimeWindow')
-
-const IngestedEventsDetailSchema = z
-  .object({
-    ingestedEventsTimeWindow: IngestedEventsTimeWindowSchema.and(
-      z.any().openapi({ description: 'The start and stop time of the ingested events.' }),
-    ),
-  })
-  .openapi({
-    required: ['ingestedEventsTimeWindow'],
-    description: 'The details of the ingested event.',
-  })
-  .openapi('IngestedEventsDetail')
-
 const CreateModelVersionRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(z.any().openapi({ description: 'The model ID. ' })),
-    modelType: ModelTypeEnumSchema.and(z.any().openapi({ description: 'The model type.' })),
-    trainingDataSource: TrainingDataSourceEnumSchema.and(
-      z.any().openapi({ description: 'The training data source location in Amazon S3. ' }),
-    ),
-    trainingDataSchema: TrainingDataSchemaSchema.and(
-      z.any().openapi({ description: 'The training data schema.' }),
-    ),
-    externalEventsDetail: ExternalEventsDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details of the external events data used for model version training. Required if <code>trainingDataSource</code> is <code>EXTERNAL_EVENTS</code>.',
-        }),
-    ).exactOptional(),
-    ingestedEventsDetail: IngestedEventsDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details of the ingested events data used for model version training. Required if <code>trainingDataSource</code> is <code>INGESTED_EVENTS</code>.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.openapi({ description: 'The model ID. ' }),
+    modelType: ModelTypeEnumSchema.openapi({ description: 'The model type.' }),
+    trainingDataSource: TrainingDataSourceEnumSchema.openapi({
+      description: 'The training data source location in Amazon S3. ',
+    }),
+    trainingDataSchema: TrainingDataSchemaSchema.openapi({
+      description: 'The training data schema.',
+    }),
+    externalEventsDetail: ExternalEventsDetailSchema.exactOptional().openapi({
+      description:
+        'Details of the external events data used for model version training. Required if <code>trainingDataSource</code> is <code>EXTERNAL_EVENTS</code>.',
+    }),
+    ingestedEventsDetail: IngestedEventsDetailSchema.exactOptional().openapi({
+      description:
+        'Details of the ingested events data used for model version training. Required if <code>trainingDataSource</code> is <code>INGESTED_EVENTS</code>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({
     required: ['modelId', 'modelType', 'trainingDataSource', 'trainingDataSchema'],
@@ -691,9 +1217,7 @@ const CreateModelVersionRequestSchema = z
   .openapi('CreateModelVersionRequest')
 
 const CreateRuleResultSchema = z
-  .object({
-    rule: RuleSchema.and(z.any().openapi({ description: 'The created rule.' })).exactOptional(),
-  })
+  .object({ rule: RuleSchema.exactOptional().openapi({ description: 'The created rule.' }) })
   .openapi({ required: [] })
   .openapi('CreateRuleResult')
 
@@ -705,25 +1229,21 @@ const NonEmptyListOfStringsSchema = z.array(StringSchema).min(1).openapi('NonEmp
 
 const CreateRuleRequestSchema = z
   .object({
-    ruleId: IdentifierSchema.and(z.any().openapi({ description: 'The rule ID.' })),
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: "The detector ID for the rule's parent detector." }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The rule description.' }),
-    ).exactOptional(),
-    expression: RuleExpressionSchema.and(z.any().openapi({ description: 'The rule expression.' })),
-    language: LanguageSchema.and(z.any().openapi({ description: 'The language of the rule.' })),
-    outcomes: NonEmptyListOfStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The outcome or outcomes returned when the rule expression matches.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    ruleId: IdentifierSchema.openapi({ description: 'The rule ID.' }),
+    detectorId: IdentifierSchema.openapi({
+      description: "The detector ID for the rule's parent detector.",
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The rule description.',
+    }),
+    expression: RuleExpressionSchema.openapi({ description: 'The rule expression.' }),
+    language: LanguageSchema.openapi({ description: 'The language of the rule.' }),
+    outcomes: NonEmptyListOfStringsSchema.openapi({
+      description: 'The outcome or outcomes returned when the rule expression matches.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({
     required: ['ruleId', 'detectorId', 'expression', 'language', 'outcomes'],
@@ -731,32 +1251,24 @@ const CreateRuleRequestSchema = z
   })
   .openapi('CreateRuleRequest')
 
-const CreateVariableResultSchema = z.object({}).openapi('CreateVariableResult')
+const CreateVariableResultSchema = z.looseObject({}).openapi('CreateVariableResult')
 
 const CreateVariableRequestSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The name of the variable.' })),
-    dataType: DataTypeSchema.and(z.any().openapi({ description: 'The data type.' })),
-    dataSource: DataSourceSchema.and(z.any().openapi({ description: 'The source of the data.' })),
-    defaultValue: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The default value for the variable when no value is received.' }),
-    ),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    variableType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The variable type. For more information see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>. </p> <p>Valid Values: <code>AUTH_CODE | AVS | BILLING_ADDRESS_L1 | BILLING_ADDRESS_L2 | BILLING_CITY | BILLING_COUNTRY | BILLING_NAME | BILLING_PHONE | BILLING_STATE | BILLING_ZIP | CARD_BIN | CATEGORICAL | CURRENCY_CODE | EMAIL_ADDRESS | FINGERPRINT | FRAUD_LABEL | FREE_FORM_TEXT | IP_ADDRESS | NUMERIC | ORDER_ID | PAYMENT_TYPE | PHONE_NUMBER | PRICE | PRODUCT_CATEGORY | SHIPPING_ADDRESS_L1 | SHIPPING_ADDRESS_L2 | SHIPPING_CITY | SHIPPING_COUNTRY | SHIPPING_NAME | SHIPPING_PHONE | SHIPPING_STATE | SHIPPING_ZIP | USERAGENT</code> </p>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    name: StringSchema.openapi({ description: 'The name of the variable.' }),
+    dataType: DataTypeSchema.openapi({ description: 'The data type.' }),
+    dataSource: DataSourceSchema.openapi({ description: 'The source of the data.' }),
+    defaultValue: StringSchema.openapi({
+      description: 'The default value for the variable when no value is received.',
+    }),
+    description: StringSchema.exactOptional().openapi({ description: 'The description.' }),
+    variableType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The variable type. For more information see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>. </p> <p>Valid Values: <code>AUTH_CODE | AVS | BILLING_ADDRESS_L1 | BILLING_ADDRESS_L2 | BILLING_CITY | BILLING_COUNTRY | BILLING_NAME | BILLING_PHONE | BILLING_STATE | BILLING_ZIP | CARD_BIN | CATEGORICAL | CURRENCY_CODE | EMAIL_ADDRESS | FINGERPRINT | FRAUD_LABEL | FREE_FORM_TEXT | IP_ADDRESS | NUMERIC | ORDER_ID | PAYMENT_TYPE | PHONE_NUMBER | PRICE | PRODUCT_CATEGORY | SHIPPING_ADDRESS_L1 | SHIPPING_ADDRESS_L2 | SHIPPING_CITY | SHIPPING_COUNTRY | SHIPPING_NAME | SHIPPING_PHONE | SHIPPING_STATE | SHIPPING_ZIP | USERAGENT</code> </p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({
     required: ['name', 'dataType', 'dataSource', 'defaultValue'],
@@ -764,127 +1276,106 @@ const CreateVariableRequestSchema = z
   })
   .openapi('CreateVariableRequest')
 
-const DeleteBatchImportJobResultSchema = z.object({}).openapi('DeleteBatchImportJobResult')
+const DeleteBatchImportJobResultSchema = z.looseObject({}).openapi('DeleteBatchImportJobResult')
 
 const DeleteBatchImportJobRequestSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the batch import job to delete. ' }),
-    ),
+    jobId: IdentifierSchema.openapi({ description: 'The ID of the batch import job to delete. ' }),
   })
   .openapi({ required: ['jobId'], title: 'DeleteBatchImportJobRequest' })
   .openapi('DeleteBatchImportJobRequest')
 
-const DeleteBatchPredictionJobResultSchema = z.object({}).openapi('DeleteBatchPredictionJobResult')
+const DeleteBatchPredictionJobResultSchema = z
+  .looseObject({})
+  .openapi('DeleteBatchPredictionJobResult')
 
 const DeleteBatchPredictionJobRequestSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the batch prediction job to delete.' }),
-    ),
+    jobId: IdentifierSchema.openapi({
+      description: 'The ID of the batch prediction job to delete.',
+    }),
   })
   .openapi({ required: ['jobId'], title: 'DeleteBatchPredictionJobRequest' })
   .openapi('DeleteBatchPredictionJobRequest')
 
-const DeleteDetectorResultSchema = z.object({}).openapi('DeleteDetectorResult')
+const DeleteDetectorResultSchema = z.looseObject({}).openapi('DeleteDetectorResult')
 
 const DeleteDetectorRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the detector to delete.' }),
-    ),
+    detectorId: IdentifierSchema.openapi({ description: 'The ID of the detector to delete.' }),
   })
   .openapi({ required: ['detectorId'], title: 'DeleteDetectorRequest' })
   .openapi('DeleteDetectorRequest')
 
 const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
-const DeleteDetectorVersionResultSchema = z.object({}).openapi('DeleteDetectorVersionResult')
+const DeleteDetectorVersionResultSchema = z.looseObject({}).openapi('DeleteDetectorVersionResult')
 
 const DeleteDetectorVersionRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent detector for the detector version to delete.',
-        }),
-    ),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The ID of the detector version to delete.' }),
-    ),
+    detectorId: IdentifierSchema.openapi({
+      description: 'The ID of the parent detector for the detector version to delete.',
+    }),
+    detectorVersionId: WholeNumberVersionStringSchema.openapi({
+      description: 'The ID of the detector version to delete.',
+    }),
   })
   .openapi({ required: ['detectorId', 'detectorVersionId'], title: 'DeleteDetectorVersionRequest' })
   .openapi('DeleteDetectorVersionRequest')
 
-const DeleteEntityTypeResultSchema = z.object({}).openapi('DeleteEntityTypeResult')
+const DeleteEntityTypeResultSchema = z.looseObject({}).openapi('DeleteEntityTypeResult')
 
 const DeleteEntityTypeRequestSchema = z
   .object({
-    name: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the entity type to delete.' }),
-    ),
+    name: IdentifierSchema.openapi({ description: 'The name of the entity type to delete.' }),
   })
   .openapi({ required: ['name'], title: 'DeleteEntityTypeRequest' })
   .openapi('DeleteEntityTypeRequest')
 
-const DeleteEventResultSchema = z.object({}).openapi('DeleteEventResult')
+const DeleteEventResultSchema = z.looseObject({}).openapi('DeleteEventResult')
 
 const DeleteAuditHistorySchema = z.boolean().openapi('DeleteAuditHistory')
 
 const DeleteEventRequestSchema = z
   .object({
-    eventId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the event to delete.' }),
-    ),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ),
-    deleteAuditHistory: DeleteAuditHistorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether or not to delete any predictions associated with the event.',
-        }),
-    ).exactOptional(),
+    eventId: IdentifierSchema.openapi({ description: 'The ID of the event to delete.' }),
+    eventTypeName: IdentifierSchema.openapi({ description: 'The name of the event type.' }),
+    deleteAuditHistory: DeleteAuditHistorySchema.exactOptional().openapi({
+      description: 'Specifies whether or not to delete any predictions associated with the event.',
+    }),
   })
   .openapi({ required: ['eventId', 'eventTypeName'], title: 'DeleteEventRequest' })
   .openapi('DeleteEventRequest')
 
-const DeleteEventTypeResultSchema = z.object({}).openapi('DeleteEventTypeResult')
+const DeleteEventTypeResultSchema = z.looseObject({}).openapi('DeleteEventTypeResult')
 
 const DeleteEventTypeRequestSchema = z
   .object({
-    name: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type to delete.' }),
-    ),
+    name: IdentifierSchema.openapi({ description: 'The name of the event type to delete.' }),
   })
   .openapi({ required: ['name'], title: 'DeleteEventTypeRequest' })
   .openapi('DeleteEventTypeRequest')
 
 const DeleteEventsByEventTypeResultSchema = z
   .object({
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'Name of event type for which to delete the events.' }),
-    ).exactOptional(),
-    eventsDeletionStatus: StringSchema.and(
-      z.any().openapi({ description: 'The status of the delete request.' }),
-    ).exactOptional(),
+    eventTypeName: IdentifierSchema.exactOptional().openapi({
+      description: 'Name of event type for which to delete the events.',
+    }),
+    eventsDeletionStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of the delete request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteEventsByEventTypeResult')
 
 const DeleteEventsByEventTypeRequestSchema = z
   .object({
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ),
+    eventTypeName: IdentifierSchema.openapi({ description: 'The name of the event type.' }),
   })
   .openapi({ required: ['eventTypeName'], title: 'DeleteEventsByEventTypeRequest' })
   .openapi('DeleteEventsByEventTypeRequest')
 
-const DeleteExternalModelResultSchema = z.object({}).openapi('DeleteExternalModelResult')
+const DeleteExternalModelResultSchema = z.looseObject({}).openapi('DeleteExternalModelResult')
 
 const SageMakerEndpointIdentifierSchema = z
   .string()
@@ -895,62 +1386,54 @@ const SageMakerEndpointIdentifierSchema = z
 
 const DeleteExternalModelRequestSchema = z
   .object({
-    modelEndpoint: SageMakerEndpointIdentifierSchema.and(
-      z.any().openapi({ description: 'The endpoint of the Amazon Sagemaker model to delete.' }),
-    ),
+    modelEndpoint: SageMakerEndpointIdentifierSchema.openapi({
+      description: 'The endpoint of the Amazon Sagemaker model to delete.',
+    }),
   })
   .openapi({ required: ['modelEndpoint'], title: 'DeleteExternalModelRequest' })
   .openapi('DeleteExternalModelRequest')
 
-const DeleteLabelResultSchema = z.object({}).openapi('DeleteLabelResult')
+const DeleteLabelResultSchema = z.looseObject({}).openapi('DeleteLabelResult')
 
 const DeleteLabelRequestSchema = z
-  .object({
-    name: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the label to delete.' }),
-    ),
-  })
+  .object({ name: IdentifierSchema.openapi({ description: 'The name of the label to delete.' }) })
   .openapi({ required: ['name'], title: 'DeleteLabelRequest' })
   .openapi('DeleteLabelRequest')
 
-const DeleteListResultSchema = z.object({}).openapi('DeleteListResult')
+const DeleteListResultSchema = z.looseObject({}).openapi('DeleteListResult')
 
 const DeleteListRequestSchema = z
   .object({
-    name: NoDashIdentifierSchema.and(
-      z.any().openapi({ description: ' The name of the list to delete. ' }),
-    ),
+    name: NoDashIdentifierSchema.openapi({ description: ' The name of the list to delete. ' }),
   })
   .openapi({ required: ['name'], title: 'DeleteListRequest' })
   .openapi('DeleteListRequest')
 
-const DeleteModelResultSchema = z.object({}).openapi('DeleteModelResult')
+const DeleteModelResultSchema = z.looseObject({}).openapi('DeleteModelResult')
 
 const DeleteModelRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID of the model to delete.' }),
-    ),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type of the model to delete.' }),
-    ),
+    modelId: ModelIdentifierSchema.openapi({ description: 'The model ID of the model to delete.' }),
+    modelType: ModelTypeEnumSchema.openapi({
+      description: 'The model type of the model to delete.',
+    }),
   })
   .openapi({ required: ['modelId', 'modelType'], title: 'DeleteModelRequest' })
   .openapi('DeleteModelRequest')
 
-const DeleteModelVersionResultSchema = z.object({}).openapi('DeleteModelVersionResult')
+const DeleteModelVersionResultSchema = z.looseObject({}).openapi('DeleteModelVersionResult')
 
 const DeleteModelVersionRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID of the model version to delete.' }),
-    ),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type of the model version to delete.' }),
-    ),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number of the model version to delete.' }),
-    ),
+    modelId: ModelIdentifierSchema.openapi({
+      description: 'The model ID of the model version to delete.',
+    }),
+    modelType: ModelTypeEnumSchema.openapi({
+      description: 'The model type of the model version to delete.',
+    }),
+    modelVersionNumber: FloatVersionStringSchema.openapi({
+      description: 'The model version number of the model version to delete.',
+    }),
   })
   .openapi({
     required: ['modelId', 'modelType', 'modelVersionNumber'],
@@ -958,47 +1441,41 @@ const DeleteModelVersionRequestSchema = z
   })
   .openapi('DeleteModelVersionRequest')
 
-const DeleteOutcomeResultSchema = z.object({}).openapi('DeleteOutcomeResult')
+const DeleteOutcomeResultSchema = z.looseObject({}).openapi('DeleteOutcomeResult')
 
 const DeleteOutcomeRequestSchema = z
-  .object({
-    name: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the outcome to delete.' }),
-    ),
-  })
+  .object({ name: IdentifierSchema.openapi({ description: 'The name of the outcome to delete.' }) })
   .openapi({ required: ['name'], title: 'DeleteOutcomeRequest' })
   .openapi('DeleteOutcomeRequest')
 
-const DeleteRuleResultSchema = z.object({}).openapi('DeleteRuleResult')
+const DeleteRuleResultSchema = z.looseObject({}).openapi('DeleteRuleResult')
 
 const DeleteRuleRequestSchema = z
   .object({ rule: RuleSchema })
   .openapi({ required: ['rule'], title: 'DeleteRuleRequest' })
   .openapi('DeleteRuleRequest')
 
-const DeleteVariableResultSchema = z.object({}).openapi('DeleteVariableResult')
+const DeleteVariableResultSchema = z.looseObject({}).openapi('DeleteVariableResult')
 
 const DeleteVariableRequestSchema = z
-  .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The name of the variable to delete.' })),
-  })
+  .object({ name: StringSchema.openapi({ description: 'The name of the variable to delete.' }) })
   .openapi({ required: ['name'], title: 'DeleteVariableRequest' })
   .openapi('DeleteVariableRequest')
 
 const DetectorVersionSummarySchema = z
   .object({
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version ID. ' }),
-    ).exactOptional(),
-    status: DetectorVersionStatusSchema.and(
-      z.any().openapi({ description: 'The detector version status. ' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The detector version description. ' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the detector version was last updated.' }),
-    ).exactOptional(),
+    detectorVersionId: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: 'The detector version ID. ',
+    }),
+    status: DetectorVersionStatusSchema.exactOptional().openapi({
+      description: 'The detector version status. ',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The detector version description. ',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the detector version was last updated.',
+    }),
   })
   .openapi({ description: 'The summary of the detector version.', required: [] })
   .openapi('DetectorVersionSummary')
@@ -1009,18 +1486,14 @@ const DetectorVersionSummaryListSchema = z
 
 const DescribeDetectorResultSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The detector ID.' }),
-    ).exactOptional(),
-    detectorVersionSummaries: DetectorVersionSummaryListSchema.and(
-      z.any().openapi({ description: 'The status and description for each detector version.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token to be used for subsequent requests.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The detector ARN.' }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.exactOptional().openapi({ description: 'The detector ID.' }),
+    detectorVersionSummaries: DetectorVersionSummaryListSchema.exactOptional().openapi({
+      description: 'The status and description for each detector version.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token to be used for subsequent requests.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The detector ARN.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDetectorResult')
@@ -1033,591 +1506,23 @@ const DetectorVersionMaxResultsSchema = z
 
 const DescribeDetectorRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(z.any().openapi({ description: 'The detector ID.' })),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token from the previous response.' }),
-    ).exactOptional(),
-    maxResults: DetectorVersionMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return for the request.' }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.openapi({ description: 'The detector ID.' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token from the previous response.',
+    }),
+    maxResults: DetectorVersionMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return for the request.',
+    }),
   })
   .openapi({ required: ['detectorId'], title: 'DescribeDetectorRequest' })
   .openapi('DescribeDetectorRequest')
 
-const FileValidationMessageSchema = z
+const DescribeModelVersionsResultSchema: z.ZodType<DescribeModelVersionsResultType> = z
   .object({
-    title: StringSchema.and(z.any().openapi({ description: 'The message title.' })).exactOptional(),
-    content: StringSchema.and(
-      z.any().openapi({ description: 'The message content.' }),
-    ).exactOptional(),
-    type: StringSchema.and(z.any().openapi({ description: 'The message type.' })).exactOptional(),
-  })
-  .openapi({ description: 'The message details.', required: [] })
-  .openapi('FileValidationMessage')
-
-const FileValidationMessageListSchema = z
-  .array(FileValidationMessageSchema)
-  .openapi('FileValidationMessageList')
-
-const FieldValidationMessageSchema = z
-  .object({
-    fieldName: StringSchema.and(
-      z.any().openapi({ description: 'The field name.' }),
-    ).exactOptional(),
-    identifier: StringSchema.and(
-      z.any().openapi({ description: 'The message ID.' }),
-    ).exactOptional(),
-    title: StringSchema.and(z.any().openapi({ description: 'The message title.' })).exactOptional(),
-    content: StringSchema.and(
-      z.any().openapi({ description: 'The message content.' }),
-    ).exactOptional(),
-    type: StringSchema.and(z.any().openapi({ description: 'The message type.' })).exactOptional(),
-  })
-  .openapi({ description: 'The message details.', required: [] })
-  .openapi('FieldValidationMessage')
-
-const FieldValidationMessageListSchema = z
-  .array(FieldValidationMessageSchema)
-  .openapi('FieldValidationMessageList')
-
-const DataValidationMetricsSchema = z
-  .object({
-    fileLevelMessages: FileValidationMessageListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The file-specific model training data validation messages.' }),
-    ).exactOptional(),
-    fieldLevelMessages: FieldValidationMessageListSchema.and(
-      z.any().openapi({ description: 'The field-specific model training validation messages.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The model training data validation metrics.', required: [] })
-  .openapi('DataValidationMetrics')
-
-const FloatSchema = z.float32().openapi('Float')
-
-const MetricDataPointSchema = z
-  .object({
-    fpr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud.',
-        }),
-    ).exactOptional(),
-    precision: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent.',
-        }),
-    ).exactOptional(),
-    tpr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The true positive rate. This is the percentage of total fraud the model detects. Also known as capture rate.',
-        }),
-    ).exactOptional(),
-    threshold: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The model threshold that specifies an acceptable fraud capture rate. For example, a threshold of 500 means any model score 500 or above is labeled as fraud.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Model performance metrics data points.', required: [] })
-  .openapi('MetricDataPoint')
-
-const MetricDataPointsListSchema = z.array(MetricDataPointSchema).openapi('MetricDataPointsList')
-
-const TrainingMetricsSchema = z
-  .object({
-    auc: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The area under the curve. This summarizes true positive rate (TPR) and false positive rate (FPR) across all possible model score thresholds. A model with no predictive power has an AUC of 0.5, whereas a perfect model has a score of 1.0.',
-        }),
-    ).exactOptional(),
-    metricDataPoints: MetricDataPointsListSchema.and(
-      z.any().openapi({ description: 'The data points details.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The training metric details.', required: [] })
-  .openapi('TrainingMetrics')
-
-const LogOddsMetricSchema = z
-  .object({
-    variableName: StringSchema.and(z.any().openapi({ description: 'The name of the variable.' })),
-    variableType: StringSchema.and(z.any().openapi({ description: 'The type of variable.' })),
-    variableImportance: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The relative importance of the variable. For more information, see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/model-variable-importance.html">Model variable importance</a>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['variableName', 'variableType', 'variableImportance'],
-    description: 'The log odds metric details.',
-  })
-  .openapi('LogOddsMetric')
-
-const ListOfLogOddsMetricsSchema = z.array(LogOddsMetricSchema).openapi('ListOfLogOddsMetrics')
-
-const VariableImportanceMetricsSchema = z
-  .object({
-    logOddsMetrics: ListOfLogOddsMetricsSchema.and(
-      z.any().openapi({ description: 'List of variable metrics.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The variable importance metrics details.', required: [] })
-  .openapi('VariableImportanceMetrics')
-
-const TrainingResultSchema = z
-  .object({
-    dataValidationMetrics: DataValidationMetricsSchema.and(
-      z.any().openapi({ description: 'The validation metrics.' }),
-    ).exactOptional(),
-    trainingMetrics: TrainingMetricsSchema.and(
-      z.any().openapi({ description: 'The training metric details.' }),
-    ).exactOptional(),
-    variableImportanceMetrics: VariableImportanceMetricsSchema.and(
-      z.any().openapi({ description: 'The variable importance metrics.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The training result details.', required: [] })
-  .openapi('TrainingResult')
-
-const OFIMetricDataPointSchema = z
-  .object({
-    fpr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud. ',
-        }),
-    ).exactOptional(),
-    precision: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent. ',
-        }),
-    ).exactOptional(),
-    tpr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The true positive rate. This is the percentage of total fraud the model detects. Also known as capture rate. ',
-        }),
-    ).exactOptional(),
-    threshold: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The model threshold that specifies an acceptable fraud capture rate. For example, a threshold of 500 means any model score 500 or above is labeled as fraud. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Online Fraud Insights (OFI) model performance metrics data points. ',
-    required: [],
-  })
-  .openapi('OFIMetricDataPoint')
-
-const OFIMetricDataPointsListSchema = z
-  .array(OFIMetricDataPointSchema)
-  .openapi('OFIMetricDataPointsList')
-
-const UncertaintyRangeSchema = z
-  .object({
-    lowerBoundValue: FloatSchema.and(
-      z.any().openapi({ description: ' The lower bound value of the area under curve (auc). ' }),
-    ),
-    upperBoundValue: FloatSchema.and(
-      z.any().openapi({ description: ' The lower bound value of the area under curve (auc). ' }),
-    ),
-  })
-  .openapi({
-    required: ['lowerBoundValue', 'upperBoundValue'],
-    description:
-      ' Range of area under curve (auc) expected from the model. A range greater than 0.1 indicates higher model uncertainity. A range is the difference between upper and lower bound of auc. ',
-  })
-  .openapi('UncertaintyRange')
-
-const OFIModelPerformanceSchema = z
-  .object({
-    auc: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The area under the curve (auc). This summarizes the total positive rate (tpr) and false positive rate (FPR) across all possible model score thresholds. ',
-        }),
-    ).exactOptional(),
-    uncertaintyRange: UncertaintyRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the range of area under curve (auc) expected from the OFI model. A range greater than 0.1 indicates higher model uncertainity. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Online Fraud Insights (OFI) model performance score. ',
-    required: [],
-  })
-  .openapi('OFIModelPerformance')
-
-const OFITrainingMetricsValueSchema = z
-  .object({
-    metricDataPoints: OFIMetricDataPointsListSchema.and(
-      z.any().openapi({ description: " The model's performance metrics data points. " }),
-    ).exactOptional(),
-    modelPerformance: OFIModelPerformanceSchema.and(
-      z.any().openapi({ description: " The model's overall performance score. " }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Online Fraud Insights (OFI) model training metric details. ',
-    required: [],
-  })
-  .openapi('OFITrainingMetricsValue')
-
-const TFIMetricDataPointSchema = z
-  .object({
-    fpr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The false positive rate. This is the percentage of total legitimate events that are incorrectly predicted as fraud. ',
-        }),
-    ).exactOptional(),
-    precision: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The percentage of fraud events correctly predicted as fraudulent as compared to all events predicted as fraudulent. ',
-        }),
-    ).exactOptional(),
-    tpr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The true positive rate. This is the percentage of total fraud the model detects. Also known as capture rate. ',
-        }),
-    ).exactOptional(),
-    threshold: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The model threshold that specifies an acceptable fraud capture rate. For example, a threshold of 500 means any model score 500 or above is labeled as fraud. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' The performance metrics data points for Transaction Fraud Insights (TFI) model. ',
-    required: [],
-  })
-  .openapi('TFIMetricDataPoint')
-
-const TFIMetricDataPointsListSchema = z
-  .array(TFIMetricDataPointSchema)
-  .openapi('TFIMetricDataPointsList')
-
-const TFIModelPerformanceSchema = z
-  .object({
-    auc: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The area under the curve (auc). This summarizes the total positive rate (tpr) and false positive rate (FPR) across all possible model score thresholds. ',
-        }),
-    ).exactOptional(),
-    uncertaintyRange: UncertaintyRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the range of area under curve (auc) expected from the TFI model. A range greater than 0.1 indicates higher model uncertainity. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Transaction Fraud Insights (TFI) model performance score. ',
-    required: [],
-  })
-  .openapi('TFIModelPerformance')
-
-const TFITrainingMetricsValueSchema = z
-  .object({
-    metricDataPoints: TFIMetricDataPointsListSchema.and(
-      z.any().openapi({ description: " The model's performance metrics data points. " }),
-    ).exactOptional(),
-    modelPerformance: TFIModelPerformanceSchema.and(
-      z.any().openapi({ description: ' The model performance score. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Transaction Fraud Insights (TFI) model training metric details. ',
-    required: [],
-  })
-  .openapi('TFITrainingMetricsValue')
-
-const ATIMetricDataPointSchema = z
-  .object({
-    cr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The challenge rate. This indicates the percentage of login events that the model recommends to challenge such as one-time password, multi-factor authentication, and investigations. ',
-        }),
-    ).exactOptional(),
-    adr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The anomaly discovery rate. This metric quantifies the percentage of anomalies that can be detected by the model at the selected score threshold. A lower score threshold increases the percentage of anomalies captured by the model, but would also require challenging a larger percentage of login events, leading to a higher customer friction. ',
-        }),
-    ).exactOptional(),
-    threshold: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The model's threshold that specifies an acceptable fraud capture rate. For example, a threshold of 500 means any model score 500 or above is labeled as fraud. ",
-        }),
-    ).exactOptional(),
-    atodr: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The account takeover discovery rate. This metric quantifies the percentage of account compromise events that can be detected by the model at the selected score threshold. This metric is only available if 50 or more entities with at-least one labeled account takeover event is present in the ingested dataset. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Account Takeover Insights (ATI) model performance metrics data points. ',
-    required: [],
-  })
-  .openapi('ATIMetricDataPoint')
-
-const ATIMetricDataPointsListSchema = z
-  .array(ATIMetricDataPointSchema)
-  .openapi('ATIMetricDataPointsList')
-
-const ATIModelPerformanceSchema = z
-  .object({
-    asi: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The anomaly separation index (ASI) score. This metric summarizes the overall ability of the model to separate anomalous activities from the normal behavior. Depending on the business, a large fraction of these anomalous activities can be malicious and correspond to the account takeover attacks. A model with no separability power will have the lowest possible ASI score of 0.5, whereas the a model with a high separability power will have the highest possible ASI score of 1.0 ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Account Takeover Insights (ATI) model performance score. ',
-    required: [],
-  })
-  .openapi('ATIModelPerformance')
-
-const ATITrainingMetricsValueSchema = z
-  .object({
-    metricDataPoints: ATIMetricDataPointsListSchema.and(
-      z.any().openapi({ description: " The model's performance metrics data points. " }),
-    ).exactOptional(),
-    modelPerformance: ATIModelPerformanceSchema.and(
-      z.any().openapi({ description: " The model's overall performance scores. " }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Account Takeover Insights (ATI) model training metric details. ',
-    required: [],
-  })
-  .openapi('ATITrainingMetricsValue')
-
-const TrainingMetricsV2Schema = z
-  .object({
-    ofi: OFITrainingMetricsValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Online Fraud Insights (OFI) model training metric details. ',
-        }),
-    ).exactOptional(),
-    tfi: TFITrainingMetricsValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Transaction Fraud Insights (TFI) model training metric details. ',
-        }),
-    ).exactOptional(),
-    ati: ATITrainingMetricsValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Account Takeover Insights (ATI) model training metric details. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The training metrics details. ', required: [] })
-  .openapi('TrainingMetricsV2')
-
-const AggregatedLogOddsMetricSchema = z
-  .object({
-    variableNames: ListOfStringsSchema.and(
-      z.any().openapi({ description: ' The names of all the variables. ' }),
-    ),
-    aggregatedVariablesImportance: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The relative importance of the variables in the list to the other event variable. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['variableNames', 'aggregatedVariablesImportance'],
-    description:
-      '<p>The log odds metric details.</p> <p>Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
-  })
-  .openapi('AggregatedLogOddsMetric')
-
-const ListOfAggregatedLogOddsMetricsSchema = z
-  .array(AggregatedLogOddsMetricSchema)
-  .openapi('ListOfAggregatedLogOddsMetrics')
-
-const AggregatedVariablesImportanceMetricsSchema = z
-  .object({
-    logOddsMetrics: ListOfAggregatedLogOddsMetricsSchema.and(
-      z.any().openapi({ description: " List of variables' metrics. " }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The details of the relative importance of the aggregated variables.</p> <p>Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
-    required: [],
-  })
-  .openapi('AggregatedVariablesImportanceMetrics')
-
-const TrainingResultV2Schema = z
-  .object({
-    dataValidationMetrics: DataValidationMetricsSchema.exactOptional(),
-    trainingMetricsV2: TrainingMetricsV2Schema.and(
-      z.any().openapi({ description: ' The training metric details. ' }),
-    ).exactOptional(),
-    variableImportanceMetrics: VariableImportanceMetricsSchema.exactOptional(),
-    aggregatedVariablesImportanceMetrics: AggregatedVariablesImportanceMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The variable importance metrics of the aggregated variables. </p> <p>Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The training result details. ', required: [] })
-  .openapi('TrainingResultV2')
-
-const ModelVersionDetailSchema = z
-  .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID.' }),
-    ).exactOptional(),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type.' }),
-    ).exactOptional(),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number.' }),
-    ).exactOptional(),
-    status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the model version.' }),
-    ).exactOptional(),
-    trainingDataSource: TrainingDataSourceEnumSchema.and(
-      z.any().openapi({ description: 'The model version training data source.' }),
-    ).exactOptional(),
-    trainingDataSchema: TrainingDataSchemaSchema.and(
-      z.any().openapi({ description: 'The training data schema.' }),
-    ).exactOptional(),
-    externalEventsDetail: ExternalEventsDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The external events data details. This will be populated if the <code>trainingDataSource</code> for the model version is specified as <code>EXTERNAL_EVENTS</code>.',
-        }),
-    ).exactOptional(),
-    ingestedEventsDetail: IngestedEventsDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ingested events data details. This will be populated if the <code>trainingDataSource</code> for the model version is specified as <code>INGESTED_EVENTS</code>.',
-        }),
-    ).exactOptional(),
-    trainingResult: TrainingResultSchema.and(
-      z.any().openapi({ description: 'The training results.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the model was last updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the model was created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The model version ARN.' }),
-    ).exactOptional(),
-    trainingResultV2: TrainingResultV2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The training result details. The details include the relative importance of the variables. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The details of the model version.', required: [] })
-  .openapi('ModelVersionDetail')
-
-const ModelVersionDetailListSchema = z
-  .array(ModelVersionDetailSchema)
-  .openapi('ModelVersionDetailList')
-
-const DescribeModelVersionsResultSchema = z
-  .object({
-    modelVersionDetails: ModelVersionDetailListSchema.and(
-      z.any().openapi({ description: 'The model version details.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token.' }),
-    ).exactOptional(),
+    modelVersionDetails: ModelVersionDetailListSchema.exactOptional().openapi({
+      description: 'The model version details.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({ description: 'The next token.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeModelVersionsResult')
@@ -1626,21 +1531,17 @@ const ModelsMaxPageSizeSchema = z.int().min(1).max(10).openapi('ModelsMaxPageSiz
 
 const DescribeModelVersionsRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID.' }),
-    ).exactOptional(),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number.' }),
-    ).exactOptional(),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token from the previous results.' }),
-    ).exactOptional(),
-    maxResults: ModelsMaxPageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.exactOptional().openapi({ description: 'The model ID.' }),
+    modelVersionNumber: FloatVersionStringSchema.exactOptional().openapi({
+      description: 'The model version number.',
+    }),
+    modelType: ModelTypeEnumSchema.exactOptional().openapi({ description: 'The model type.' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token from the previous results.',
+    }),
+    maxResults: ModelsMaxPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ title: 'DescribeModelVersionsRequest', required: [] })
   .openapi('DescribeModelVersionsRequest')
@@ -1660,47 +1561,45 @@ const Integer2Schema = z.int().openapi('Integer2')
 
 const BatchImportSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the batch import job. ' }),
-    ).exactOptional(),
-    status: AsyncJobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the batch import job.' }),
-    ).exactOptional(),
-    failureReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason batch import job failed.' }),
-    ).exactOptional(),
-    startTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the batch import job started.' }),
-    ).exactOptional(),
-    completionTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when batch import job completed.' }),
-    ).exactOptional(),
-    inputPath: S3BucketLocationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon S3 location of your data file for batch import.' }),
-    ).exactOptional(),
-    outputPath: S3BucketLocationSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of your output file.' }),
-    ).exactOptional(),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ).exactOptional(),
-    iamRoleArn: IamRoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role to use for this job request.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the batch import job.' }),
-    ).exactOptional(),
-    processedRecordsCount: Integer2Schema.and(
-      z.any().openapi({ description: 'The number of records processed by batch import job.' }),
-    ).exactOptional(),
-    failedRecordsCount: Integer2Schema.and(
-      z.any().openapi({ description: 'The number of records that failed to import. ' }),
-    ).exactOptional(),
-    totalRecordsCount: Integer2Schema.and(
-      z.any().openapi({ description: 'The total number of records in the batch import job.' }),
-    ).exactOptional(),
+    jobId: IdentifierSchema.exactOptional().openapi({
+      description: 'The ID of the batch import job. ',
+    }),
+    status: AsyncJobStatusSchema.exactOptional().openapi({
+      description: 'The status of the batch import job.',
+    }),
+    failureReason: StringSchema.exactOptional().openapi({
+      description: 'The reason batch import job failed.',
+    }),
+    startTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the batch import job started.',
+    }),
+    completionTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when batch import job completed.',
+    }),
+    inputPath: S3BucketLocationSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of your data file for batch import.',
+    }),
+    outputPath: S3BucketLocationSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of your output file.',
+    }),
+    eventTypeName: IdentifierSchema.exactOptional().openapi({
+      description: 'The name of the event type.',
+    }),
+    iamRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role to use for this job request.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({
+      description: 'The ARN of the batch import job.',
+    }),
+    processedRecordsCount: Integer2Schema.exactOptional().openapi({
+      description: 'The number of records processed by batch import job.',
+    }),
+    failedRecordsCount: Integer2Schema.exactOptional().openapi({
+      description: 'The number of records that failed to import. ',
+    }),
+    totalRecordsCount: Integer2Schema.exactOptional().openapi({
+      description: 'The total number of records in the batch import job.',
+    }),
   })
   .openapi({ description: 'The batch import job details.', required: [] })
   .openapi('BatchImport')
@@ -1709,12 +1608,12 @@ const BatchImportListSchema = z.array(BatchImportSchema).openapi('BatchImportLis
 
 const GetBatchImportJobsResultSchema = z
   .object({
-    batchImports: BatchImportListSchema.and(
-      z.any().openapi({ description: 'An array containing the details of each batch import job.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token for the subsequent resquest.' }),
-    ).exactOptional(),
+    batchImports: BatchImportListSchema.exactOptional().openapi({
+      description: 'An array containing the details of each batch import job.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token for the subsequent resquest.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBatchImportJobsResult')
@@ -1723,73 +1622,67 @@ const BatchImportsMaxPageSizeSchema = z.int().min(1).max(50).openapi('BatchImpor
 
 const GetBatchImportJobsRequestSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the batch import job to get.' }),
-    ).exactOptional(),
-    maxResults: BatchImportsMaxPageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for request.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token from the previous request.' }),
-    ).exactOptional(),
+    jobId: IdentifierSchema.exactOptional().openapi({
+      description: 'The ID of the batch import job to get.',
+    }),
+    maxResults: BatchImportsMaxPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for request.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token from the previous request.',
+    }),
   })
   .openapi({ title: 'GetBatchImportJobsRequest', required: [] })
   .openapi('GetBatchImportJobsRequest')
 
 const BatchPredictionSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The job ID for the batch prediction.' }),
-    ).exactOptional(),
-    status: AsyncJobStatusSchema.and(
-      z.any().openapi({ description: 'The batch prediction status.' }),
-    ).exactOptional(),
-    failureReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason a batch prediction job failed.' }),
-    ).exactOptional(),
-    startTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the batch prediction job started.' }),
-    ).exactOptional(),
-    completionTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the batch prediction job completed.' }),
-    ).exactOptional(),
-    lastHeartbeatTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp of most recent heartbeat indicating the batch prediction job was making progress.',
-        }),
-    ).exactOptional(),
-    inputPath: S3BucketLocationSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of your training file.' }),
-    ).exactOptional(),
-    outputPath: S3BucketLocationSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of your output file.' }),
-    ).exactOptional(),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ).exactOptional(),
-    detectorName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the detector.' }),
-    ).exactOptional(),
-    detectorVersion: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version. ' }),
-    ).exactOptional(),
-    iamRoleArn: IamRoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role to use for this job request.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The ARN of batch prediction job.' }),
-    ).exactOptional(),
-    processedRecordsCount: Integer2Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of records processed by the batch prediction job.' }),
-    ).exactOptional(),
-    totalRecordsCount: Integer2Schema.and(
-      z.any().openapi({ description: 'The total number of records in the batch prediction job.' }),
-    ).exactOptional(),
+    jobId: IdentifierSchema.exactOptional().openapi({
+      description: 'The job ID for the batch prediction.',
+    }),
+    status: AsyncJobStatusSchema.exactOptional().openapi({
+      description: 'The batch prediction status.',
+    }),
+    failureReason: StringSchema.exactOptional().openapi({
+      description: 'The reason a batch prediction job failed.',
+    }),
+    startTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the batch prediction job started.',
+    }),
+    completionTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the batch prediction job completed.',
+    }),
+    lastHeartbeatTime: TimeSchema.exactOptional().openapi({
+      description:
+        'Timestamp of most recent heartbeat indicating the batch prediction job was making progress.',
+    }),
+    inputPath: S3BucketLocationSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of your training file.',
+    }),
+    outputPath: S3BucketLocationSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of your output file.',
+    }),
+    eventTypeName: IdentifierSchema.exactOptional().openapi({
+      description: 'The name of the event type.',
+    }),
+    detectorName: IdentifierSchema.exactOptional().openapi({
+      description: 'The name of the detector.',
+    }),
+    detectorVersion: FloatVersionStringSchema.exactOptional().openapi({
+      description: 'The detector version. ',
+    }),
+    iamRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role to use for this job request.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({
+      description: 'The ARN of batch prediction job.',
+    }),
+    processedRecordsCount: Integer2Schema.exactOptional().openapi({
+      description: 'The number of records processed by the batch prediction job.',
+    }),
+    totalRecordsCount: Integer2Schema.exactOptional().openapi({
+      description: 'The total number of records in the batch prediction job.',
+    }),
   })
   .openapi({ description: 'The batch prediction details.', required: [] })
   .openapi('BatchPrediction')
@@ -1798,14 +1691,12 @@ const BatchPredictionListSchema = z.array(BatchPredictionSchema).openapi('BatchP
 
 const GetBatchPredictionJobsResultSchema = z
   .object({
-    batchPredictions: BatchPredictionListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array containing the details of each batch prediction job.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token for the subsequent request.' }),
-    ).exactOptional(),
+    batchPredictions: BatchPredictionListSchema.exactOptional().openapi({
+      description: 'An array containing the details of each batch prediction job.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token for the subsequent request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBatchPredictionJobsResult')
@@ -1818,120 +1709,104 @@ const BatchPredictionsMaxPageSizeSchema = z
 
 const GetBatchPredictionJobsRequestSchema = z
   .object({
-    jobId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The batch prediction job for which to get the details.' }),
-    ).exactOptional(),
-    maxResults: BatchPredictionsMaxPageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token from the previous request.' }),
-    ).exactOptional(),
+    jobId: IdentifierSchema.exactOptional().openapi({
+      description: 'The batch prediction job for which to get the details.',
+    }),
+    maxResults: BatchPredictionsMaxPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token from the previous request.',
+    }),
   })
   .openapi({ title: 'GetBatchPredictionJobsRequest', required: [] })
   .openapi('GetBatchPredictionJobsRequest')
 
 const GetDeleteEventsByEventTypeStatusResultSchema = z
   .object({
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The event type name.' }),
-    ).exactOptional(),
-    eventsDeletionStatus: AsyncJobStatusSchema.and(
-      z.any().openapi({ description: 'The deletion status.' }),
-    ).exactOptional(),
+    eventTypeName: IdentifierSchema.exactOptional().openapi({
+      description: 'The event type name.',
+    }),
+    eventsDeletionStatus: AsyncJobStatusSchema.exactOptional().openapi({
+      description: 'The deletion status.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeleteEventsByEventTypeStatusResult')
 
 const GetDeleteEventsByEventTypeStatusRequestSchema = z
   .object({
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'Name of event type for which to get the deletion status.' }),
-    ),
+    eventTypeName: IdentifierSchema.openapi({
+      description: 'Name of event type for which to get the deletion status.',
+    }),
   })
   .openapi({ required: ['eventTypeName'], title: 'GetDeleteEventsByEventTypeStatusRequest' })
   .openapi('GetDeleteEventsByEventTypeStatusRequest')
 
 const GetDetectorVersionResultSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The detector ID.' }),
-    ).exactOptional(),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version ID.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The detector version description.' }),
-    ).exactOptional(),
-    externalModelEndpoints: ListOfStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon SageMaker model endpoints included in the detector version.',
-        }),
-    ).exactOptional(),
-    modelVersions: ListOfModelVersionsSchema.and(
-      z.any().openapi({ description: 'The model versions included in the detector version. ' }),
-    ).exactOptional(),
-    rules: RuleListSchema.and(
-      z.any().openapi({ description: 'The rules included in the detector version.' }),
-    ).exactOptional(),
-    status: DetectorVersionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the detector version.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the detector version was last updated. ' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the detector version was created. ' }),
-    ).exactOptional(),
-    ruleExecutionMode: RuleExecutionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The execution mode of the rule in the dectector</p> <p> <code>FIRST_MATCHED</code> indicates that Amazon Fraud Detector evaluates rules sequentially, first to last, stopping at the first matched rule. Amazon Fraud dectector then provides the outcomes for that single rule.</p> <p> <code>ALL_MATCHED</code> indicates that Amazon Fraud Detector evaluates all rules and returns the outcomes for all matched rules. You can define and edit the rule mode at the detector version level, when it is in draft status.</p>',
-        }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The detector version ARN.' }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.exactOptional().openapi({ description: 'The detector ID.' }),
+    detectorVersionId: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: 'The detector version ID.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The detector version description.',
+    }),
+    externalModelEndpoints: ListOfStringsSchema.exactOptional().openapi({
+      description: 'The Amazon SageMaker model endpoints included in the detector version.',
+    }),
+    modelVersions: ListOfModelVersionsSchema.exactOptional().openapi({
+      description: 'The model versions included in the detector version. ',
+    }),
+    rules: RuleListSchema.exactOptional().openapi({
+      description: 'The rules included in the detector version.',
+    }),
+    status: DetectorVersionStatusSchema.exactOptional().openapi({
+      description: 'The status of the detector version.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the detector version was last updated. ',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the detector version was created. ',
+    }),
+    ruleExecutionMode: RuleExecutionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The execution mode of the rule in the dectector</p> <p> <code>FIRST_MATCHED</code> indicates that Amazon Fraud Detector evaluates rules sequentially, first to last, stopping at the first matched rule. Amazon Fraud dectector then provides the outcomes for that single rule.</p> <p> <code>ALL_MATCHED</code> indicates that Amazon Fraud Detector evaluates all rules and returns the outcomes for all matched rules. You can define and edit the rule mode at the detector version level, when it is in draft status.</p>',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({
+      description: 'The detector version ARN.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDetectorVersionResult')
 
 const GetDetectorVersionRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(z.any().openapi({ description: 'The detector ID.' })),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version ID.' }),
-    ),
+    detectorId: IdentifierSchema.openapi({ description: 'The detector ID.' }),
+    detectorVersionId: WholeNumberVersionStringSchema.openapi({
+      description: 'The detector version ID.',
+    }),
   })
   .openapi({ required: ['detectorId', 'detectorVersionId'], title: 'GetDetectorVersionRequest' })
   .openapi('GetDetectorVersionRequest')
 
 const DetectorSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The detector ID.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The detector description.' }),
-    ).exactOptional(),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the detector was last updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the detector was created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The detector ARN.' }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.exactOptional().openapi({ description: 'The detector ID.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The detector description.',
+    }),
+    eventTypeName: IdentifierSchema.exactOptional().openapi({
+      description: 'The name of the event type.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the detector was last updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the detector was created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The detector ARN.' }),
   })
   .openapi({ description: 'The detector.', required: [] })
   .openapi('Detector')
@@ -1940,12 +1815,8 @@ const DetectorListSchema = z.array(DetectorSchema).openapi('DetectorList')
 
 const GetDetectorsResultSchema = z
   .object({
-    detectors: DetectorListSchema.and(
-      z.any().openapi({ description: 'The detectors.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token.' }),
-    ).exactOptional(),
+    detectors: DetectorListSchema.exactOptional().openapi({ description: 'The detectors.' }),
+    nextToken: StringSchema.exactOptional().openapi({ description: 'The next page token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetDetectorsResult')
@@ -1954,36 +1825,30 @@ const DetectorsMaxResultsSchema = z.int().min(5).max(10).openapi('DetectorsMaxRe
 
 const GetDetectorsRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The detector ID.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token for the subsequent request.' }),
-    ).exactOptional(),
-    maxResults: DetectorsMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request.' }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.exactOptional().openapi({ description: 'The detector ID.' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token for the subsequent request.',
+    }),
+    maxResults: DetectorsMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request.',
+    }),
   })
   .openapi({ title: 'GetDetectorsRequest', required: [] })
   .openapi('GetDetectorsRequest')
 
 const EntityTypeSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The entity type name.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The entity type description.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the entity type was last updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the entity type was created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The entity type ARN.' }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The entity type name.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The entity type description.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the entity type was last updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the entity type was created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The entity type ARN.' }),
   })
   .openapi({ description: 'The entity type details.', required: [] })
   .openapi('EntityType')
@@ -1992,12 +1857,10 @@ const EntityTypeListSchema = z.array(EntityTypeSchema).openapi('EntityTypeList')
 
 const GetEntityTypesResultSchema = z
   .object({
-    entityTypes: EntityTypeListSchema.and(
-      z.any().openapi({ description: 'An array of entity types.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token.' }),
-    ).exactOptional(),
+    entityTypes: EntityTypeListSchema.exactOptional().openapi({
+      description: 'An array of entity types.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({ description: 'The next page token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetEntityTypesResult')
@@ -2006,13 +1869,13 @@ const EntityTypesMaxResultsSchema = z.int().min(5).max(10).openapi('EntityTypesM
 
 const GetEntityTypesRequestSchema = z
   .object({
-    name: IdentifierSchema.and(z.any().openapi({ description: 'The name.' })).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token for the subsequent request.' }),
-    ).exactOptional(),
-    maxResults: EntityTypesMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request.' }),
-    ).exactOptional(),
+    name: IdentifierSchema.exactOptional().openapi({ description: 'The name.' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token for the subsequent request.',
+    }),
+    maxResults: EntityTypesMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request.',
+    }),
   })
   .openapi({ title: 'GetEntityTypesRequest', required: [] })
   .openapi('GetEntityTypesRequest')
@@ -2032,15 +1895,11 @@ const EntityRestrictedStringSchema = z
 
 const EntitySchema = z
   .object({
-    entityType: StringSchema.and(z.any().openapi({ description: 'The entity type.' })),
-    entityId: EntityRestrictedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The entity ID. If you do not know the <code>entityId</code>, you can pass <code>unknown</code>, which is areserved string literal.',
-        }),
-    ),
+    entityType: StringSchema.openapi({ description: 'The entity type.' }),
+    entityId: EntityRestrictedStringSchema.openapi({
+      description:
+        'The entity ID. If you do not know the <code>entityId</code>, you can pass <code>unknown</code>, which is areserved string literal.',
+    }),
   })
   .openapi({ required: ['entityType', 'entityId'], description: 'The entity details. ' })
   .openapi('Entity')
@@ -2049,59 +1908,41 @@ const ListOfEntitiesSchema = z.array(EntitySchema).openapi('ListOfEntities')
 
 const EventSchema = z
   .object({
-    eventId: StringSchema.and(z.any().openapi({ description: 'The event ID.' })).exactOptional(),
-    eventTypeName: StringSchema.and(
-      z.any().openapi({ description: 'The event type.' }),
-    ).exactOptional(),
-    eventTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp that defines when the event under evaluation occurred. The timestamp must be specified using ISO 8601 standard in UTC.',
-        }),
-    ).exactOptional(),
-    eventVariables: EventAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Names of the event type's variables you defined in Amazon Fraud Detector to represent data elements and their corresponding values for the event you are sending for evaluation.",
-        }),
-    ).exactOptional(),
-    currentLabel: StringSchema.and(
-      z.any().openapi({ description: 'The label associated with the event.' }),
-    ).exactOptional(),
-    labelTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp associated with the label to update. The timestamp must be specified using ISO 8601 standard in UTC.',
-        }),
-    ).exactOptional(),
-    entities: ListOfEntitiesSchema.and(
-      z.any().openapi({ description: 'The event entities.' }),
-    ).exactOptional(),
+    eventId: StringSchema.exactOptional().openapi({ description: 'The event ID.' }),
+    eventTypeName: StringSchema.exactOptional().openapi({ description: 'The event type.' }),
+    eventTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The timestamp that defines when the event under evaluation occurred. The timestamp must be specified using ISO 8601 standard in UTC.',
+    }),
+    eventVariables: EventAttributeMapSchema.exactOptional().openapi({
+      description:
+        "Names of the event type's variables you defined in Amazon Fraud Detector to represent data elements and their corresponding values for the event you are sending for evaluation.",
+    }),
+    currentLabel: StringSchema.exactOptional().openapi({
+      description: 'The label associated with the event.',
+    }),
+    labelTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The timestamp associated with the label to update. The timestamp must be specified using ISO 8601 standard in UTC.',
+    }),
+    entities: ListOfEntitiesSchema.exactOptional().openapi({ description: 'The event entities.' }),
   })
   .openapi({ description: 'The event details.', required: [] })
   .openapi('Event')
 
 const GetEventResultSchema = z
   .object({
-    event: EventSchema.and(
-      z.any().openapi({ description: 'The details of the event.' }),
-    ).exactOptional(),
+    event: EventSchema.exactOptional().openapi({ description: 'The details of the event.' }),
   })
   .openapi({ required: [] })
   .openapi('GetEventResult')
 
 const GetEventRequestSchema = z
   .object({
-    eventId: StringSchema.and(z.any().openapi({ description: 'The ID of the event to retrieve.' })),
-    eventTypeName: StringSchema.and(
-      z.any().openapi({ description: 'The event type of the event to retrieve.' }),
-    ),
+    eventId: StringSchema.openapi({ description: 'The ID of the event to retrieve.' }),
+    eventTypeName: StringSchema.openapi({
+      description: 'The event type of the event to retrieve.',
+    }),
   })
   .openapi({ required: ['eventId', 'eventTypeName'], title: 'GetEventRequest' })
   .openapi('GetEventRequest')
@@ -2110,12 +1951,10 @@ const ModelPredictionMapSchema = z.record(z.string(), FloatSchema).openapi('Mode
 
 const ModelScoresSchema = z
   .object({
-    modelVersion: ModelVersionSchema.and(
-      z.any().openapi({ description: 'The model version.' }),
-    ).exactOptional(),
-    scores: ModelPredictionMapSchema.and(
-      z.any().openapi({ description: "The model's fraud prediction scores." }),
-    ).exactOptional(),
+    modelVersion: ModelVersionSchema.exactOptional().openapi({ description: 'The model version.' }),
+    scores: ModelPredictionMapSchema.exactOptional().openapi({
+      description: "The model's fraud prediction scores.",
+    }),
   })
   .openapi({ description: 'The fraud prediction scores.', required: [] })
   .openapi('ModelScores')
@@ -2124,20 +1963,12 @@ const ListOfModelScoresSchema = z.array(ModelScoresSchema).openapi('ListOfModelS
 
 const RuleResultSchema = z
   .object({
-    ruleId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The rule ID that was matched, based on the rule execution mode.',
-        }),
-    ).exactOptional(),
-    outcomes: ListOfStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The outcomes of the matched rule, based on the rule execution mode.',
-        }),
-    ).exactOptional(),
+    ruleId: StringSchema.exactOptional().openapi({
+      description: 'The rule ID that was matched, based on the rule execution mode.',
+    }),
+    outcomes: ListOfStringsSchema.exactOptional().openapi({
+      description: 'The outcomes of the matched rule, based on the rule execution mode.',
+    }),
   })
   .openapi({ description: 'The rule results.', required: [] })
   .openapi('RuleResult')
@@ -2148,12 +1979,12 @@ const ModelSourceSchema = z.literal('SAGEMAKER').openapi('ModelSource')
 
 const ExternalModelSummarySchema = z
   .object({
-    modelEndpoint: StringSchema.and(
-      z.any().openapi({ description: 'The endpoint of the Amazon SageMaker model.' }),
-    ).exactOptional(),
-    modelSource: ModelSourceSchema.and(
-      z.any().openapi({ description: 'The source of the model.' }),
-    ).exactOptional(),
+    modelEndpoint: StringSchema.exactOptional().openapi({
+      description: 'The endpoint of the Amazon SageMaker model.',
+    }),
+    modelSource: ModelSourceSchema.exactOptional().openapi({
+      description: 'The source of the model.',
+    }),
   })
   .openapi({ description: 'The Amazon SageMaker model.', required: [] })
   .openapi('ExternalModelSummary')
@@ -2164,12 +1995,12 @@ const ExternalModelPredictionMapSchema = z
 
 const ExternalModelOutputsSchema = z
   .object({
-    externalModel: ExternalModelSummarySchema.and(
-      z.any().openapi({ description: 'The Amazon SageMaker model.' }),
-    ).exactOptional(),
-    outputs: ExternalModelPredictionMapSchema.and(
-      z.any().openapi({ description: 'The fraud prediction scores from Amazon SageMaker model.' }),
-    ).exactOptional(),
+    externalModel: ExternalModelSummarySchema.exactOptional().openapi({
+      description: 'The Amazon SageMaker model.',
+    }),
+    outputs: ExternalModelPredictionMapSchema.exactOptional().openapi({
+      description: 'The fraud prediction scores from Amazon SageMaker model.',
+    }),
   })
   .openapi({
     description: 'The fraud prediction scores from Amazon SageMaker model.',
@@ -2183,20 +2014,16 @@ const ListOfExternalModelOutputsSchema = z
 
 const GetEventPredictionResultSchema = z
   .object({
-    modelScores: ListOfModelScoresSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The model scores. Amazon Fraud Detector generates model scores between 0 and 1000, where 0 is low fraud risk and 1000 is high fraud risk. Model scores are directly related to the false positive rate (FPR). For example, a score of 600 corresponds to an estimated 10% false positive rate whereas a score of 900 corresponds to an estimated 2% false positive rate.',
-        }),
-    ).exactOptional(),
-    ruleResults: ListOfRuleResultsSchema.and(
-      z.any().openapi({ description: 'The results from the rules.' }),
-    ).exactOptional(),
-    externalModelOutputs: ListOfExternalModelOutputsSchema.and(
-      z.any().openapi({ description: 'The model scores for Amazon SageMaker models.' }),
-    ).exactOptional(),
+    modelScores: ListOfModelScoresSchema.exactOptional().openapi({
+      description:
+        'The model scores. Amazon Fraud Detector generates model scores between 0 and 1000, where 0 is low fraud risk and 1000 is high fraud risk. Model scores are directly related to the false positive rate (FPR). For example, a score of 600 corresponds to an estimated 10% false positive rate whereas a score of 900 corresponds to an estimated 2% false positive rate.',
+    }),
+    ruleResults: ListOfRuleResultsSchema.exactOptional().openapi({
+      description: 'The results from the rules.',
+    }),
+    externalModelOutputs: ListOfExternalModelOutputsSchema.exactOptional().openapi({
+      description: 'The model scores for Amazon SageMaker models.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEventPredictionResult')
@@ -2216,20 +2043,12 @@ const ContentTypeSchema = z.string().min(1).max(1024).openapi('ContentType')
 
 const ModelEndpointDataBlobSchema = z
   .object({
-    byteBuffer: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The byte buffer of the Amazon SageMaker model endpoint input data blob.',
-        }),
-    ).exactOptional(),
-    contentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The content type of the Amazon SageMaker model endpoint input data blob. ',
-        }),
-    ).exactOptional(),
+    byteBuffer: BlobSchema.exactOptional().openapi({
+      description: 'The byte buffer of the Amazon SageMaker model endpoint input data blob.',
+    }),
+    contentType: ContentTypeSchema.exactOptional().openapi({
+      description: 'The content type of the Amazon SageMaker model endpoint input data blob. ',
+    }),
   })
   .openapi({
     description:
@@ -2244,47 +2063,29 @@ const ExternalModelEndpointDataBlobMapSchema = z
 
 const GetEventPredictionRequestSchema = z
   .object({
-    detectorId: StringSchema.and(z.any().openapi({ description: 'The detector ID.' })),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version ID.' }),
-    ).exactOptional(),
-    eventId: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID used to identify the event.' }),
-    ),
-    eventTypeName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The event type associated with the detector specified for the prediction.',
-        }),
-    ),
-    entities: ListOfEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The entity type (associated with the detector\'s event type) and specific entity ID representing who performed the event. If an entity id is not available, use "UNKNOWN."',
-        }),
-    ),
-    eventTimestamp: UtcTimestampISO8601Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp that defines when the event under evaluation occurred. The timestamp must be specified using ISO 8601 standard in UTC.',
-        }),
-    ),
-    eventVariables: EventVariableMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Names of the event type's variables you defined in Amazon Fraud Detector to represent data elements and their corresponding values for the event you are sending for evaluation.</p> <important> <p>You must provide at least one eventVariable</p> </important> <p>To ensure most accurate fraud prediction and to simplify your data preparation, Amazon Fraud Detector will replace all missing variables or values as follows:</p> <p> <b>For Amazon Fraud Detector trained models:</b> </p> <p>If a null value is provided explicitly for a variable or if a variable is missing, model will replace the null value or the missing variable (no variable name in the eventVariables map) with calculated default mean/medians for numeric variables and with special values for categorical variables.</p> <p> <b>For imported SageMaker models:</b> </p> <p>If a null value is provided explicitly for a variable, the model and rules will use “null” as the value. If a variable is not provided (no variable name in the eventVariables map), model and rules will use the default value that is provided for the variable. </p>",
-        }),
-    ),
-    externalModelEndpointDataBlobs: ExternalModelEndpointDataBlobMapSchema.and(
-      z.any().openapi({ description: 'The Amazon SageMaker model endpoint input data blobs.' }),
-    ).exactOptional(),
+    detectorId: StringSchema.openapi({ description: 'The detector ID.' }),
+    detectorVersionId: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: 'The detector version ID.',
+    }),
+    eventId: StringSchema.openapi({ description: 'The unique ID used to identify the event.' }),
+    eventTypeName: StringSchema.openapi({
+      description: 'The event type associated with the detector specified for the prediction.',
+    }),
+    entities: ListOfEntitiesSchema.openapi({
+      description:
+        'The entity type (associated with the detector\'s event type) and specific entity ID representing who performed the event. If an entity id is not available, use "UNKNOWN."',
+    }),
+    eventTimestamp: UtcTimestampISO8601Schema.openapi({
+      description:
+        'Timestamp that defines when the event under evaluation occurred. The timestamp must be specified using ISO 8601 standard in UTC.',
+    }),
+    eventVariables: EventVariableMapSchema.openapi({
+      description:
+        "<p>Names of the event type's variables you defined in Amazon Fraud Detector to represent data elements and their corresponding values for the event you are sending for evaluation.</p> <important> <p>You must provide at least one eventVariable</p> </important> <p>To ensure most accurate fraud prediction and to simplify your data preparation, Amazon Fraud Detector will replace all missing variables or values as follows:</p> <p> <b>For Amazon Fraud Detector trained models:</b> </p> <p>If a null value is provided explicitly for a variable or if a variable is missing, model will replace the null value or the missing variable (no variable name in the eventVariables map) with calculated default mean/medians for numeric variables and with special values for categorical variables.</p> <p> <b>For imported SageMaker models:</b> </p> <p>If a null value is provided explicitly for a variable, the model and rules will use “null” as the value. If a variable is not provided (no variable name in the eventVariables map), model and rules will use the default value that is provided for the variable. </p>",
+    }),
+    externalModelEndpointDataBlobs: ExternalModelEndpointDataBlobMapSchema.exactOptional().openapi({
+      description: 'The Amazon SageMaker model endpoint input data blobs.',
+    }),
   })
   .openapi({
     required: [
@@ -2301,353 +2102,66 @@ const GetEventPredictionRequestSchema = z
 
 const ResourceUnavailableExceptionSchema = z.any().openapi('ResourceUnavailableException')
 
-const SensitiveStringSchema = z.string().openapi('SensitiveString')
-
-const EventVariableSummarySchema = z
+const GetEventPredictionMetadataResultSchema: z.ZodType<GetEventPredictionMetadataResultType> = z
   .object({
-    name: SensitiveStringSchema.and(
-      z.any().openapi({ description: ' The event variable name. ' }),
-    ).exactOptional(),
-    value: SensitiveStringSchema.and(
-      z.any().openapi({ description: ' The value of the event variable. ' }),
-    ).exactOptional(),
-    source: SensitiveStringSchema.and(
-      z.any().openapi({ description: ' The event variable source. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' Information about the summary of an event variable that was evaluated for generating prediction. ',
-    required: [],
-  })
-  .openapi('EventVariableSummary')
-
-const ListOfEventVariableSummariesSchema = z
-  .array(EventVariableSummarySchema)
-  .openapi('ListOfEventVariableSummaries')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const EvaluatedRuleSchema = z
-  .object({
-    ruleId: IdentifierSchema.and(
-      z.any().openapi({ description: ' The rule ID. ' }),
-    ).exactOptional(),
-    ruleVersion: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: ' The rule version. ' }),
-    ).exactOptional(),
-    expression: SensitiveStringSchema.and(
-      z.any().openapi({ description: ' The rule expression. ' }),
-    ).exactOptional(),
-    expressionWithValues: SensitiveStringSchema.and(
-      z.any().openapi({ description: ' The rule expression value. ' }),
-    ).exactOptional(),
-    outcomes: ListOfStringsSchema.and(
-      z.any().openapi({ description: ' The rule outcome. ' }),
-    ).exactOptional(),
-    evaluated: BooleanSchema.and(
-      z.any().openapi({ description: ' Indicates whether the rule was evaluated. ' }),
-    ).exactOptional(),
-    matched: BooleanSchema.and(
-      z.any().openapi({ description: ' Indicates whether the rule matched. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The details of the rule used for evaluating variable values. ',
-    required: [],
-  })
-  .openapi('EvaluatedRule')
-
-const EvaluatedRuleListSchema = z.array(EvaluatedRuleSchema).openapi('EvaluatedRuleList')
-
-const VariableImpactExplanationSchema = z
-  .object({
-    eventVariableName: StringSchema.and(
-      z.any().openapi({ description: ' The event variable name. ' }),
-    ).exactOptional(),
-    relativeImpact: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The event variable's relative impact in terms of magnitude on the prediction scores. The relative impact values consist of a numerical rating (0-5, 5 being the highest) and direction (increased/decreased) impact of the fraud risk. ",
-        }),
-    ).exactOptional(),
-    logOddsImpact: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The raw, uninterpreted value represented as log-odds of the fraud. These values are usually between -10 to +10, but range from - infinity to + infinity.</p> <ul> <li> <p>A positive value indicates that the variable drove the risk score up.</p> </li> <li> <p>A negative value indicates that the variable drove the risk score down.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: " The details of the event variable's impact on the prediction score. ",
-    required: [],
-  })
-  .openapi('VariableImpactExplanation')
-
-const ListOfVariableImpactExplanationsSchema = z
-  .array(VariableImpactExplanationSchema)
-  .openapi('ListOfVariableImpactExplanations')
-
-const AggregatedVariablesImpactExplanationSchema = z
-  .object({
-    eventVariableNames: ListOfStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The names of all the event variables that were used to derive the aggregated variables. ',
-        }),
-    ).exactOptional(),
-    relativeImpact: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The relative impact of the aggregated variables in terms of magnitude on the prediction scores. ',
-        }),
-    ).exactOptional(),
-    logOddsImpact: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The raw, uninterpreted value represented as log-odds of the fraud. These values are usually between -10 to +10, but range from -infinity to +infinity.</p> <ul> <li> <p>A positive value indicates that the variables drove the risk score up.</p> </li> <li> <p>A negative value indicates that the variables drove the risk score down.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p> The details of the impact of aggregated variables on the prediction score. </p> <p>Account Takeover Insights (ATI) model uses the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, the model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
-    required: [],
-  })
-  .openapi('AggregatedVariablesImpactExplanation')
-
-const ListOfAggregatedVariablesImpactExplanationsSchema = z
-  .array(AggregatedVariablesImpactExplanationSchema)
-  .openapi('ListOfAggregatedVariablesImpactExplanations')
-
-const PredictionExplanationsSchema = z
-  .object({
-    variableImpactExplanations: ListOfVariableImpactExplanationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The details of the event variable's impact on the prediction score. ",
-        }),
-    ).exactOptional(),
-    aggregatedVariablesImpactExplanations: ListOfAggregatedVariablesImpactExplanationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The details of the aggregated variables impact on the prediction score. </p> <p>Account Takeover Insights (ATI) model uses event variables from the login data you provide to continuously calculate a set of variables (aggregated variables) based on historical events. For example, your ATI model might calculate the number of times an user has logged in using the same IP address. In this case, event variables used to derive the aggregated variables are <code>IP address</code> and <code>user</code>.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      " The prediction explanations that provide insight into how each event variable impacted the model version's fraud prediction score. ",
-    required: [],
-  })
-  .openapi('PredictionExplanations')
-
-const ModelVersionEvaluationSchema = z
-  .object({
-    outputVariableName: StringSchema.and(
-      z.any().openapi({ description: ' The output variable name. ' }),
-    ).exactOptional(),
-    evaluationScore: StringSchema.and(
-      z.any().openapi({ description: ' The evaluation score generated for the model version. ' }),
-    ).exactOptional(),
-    predictionExplanations: PredictionExplanationsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The prediction explanations generated for the model version. ' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The model version evalutions. ', required: [] })
-  .openapi('ModelVersionEvaluation')
-
-const ListOfModelVersionEvaluationsSchema = z
-  .array(ModelVersionEvaluationSchema)
-  .openapi('ListOfModelVersionEvaluations')
-
-const EvaluatedModelVersionSchema = z
-  .object({
-    modelId: StringSchema.and(z.any().openapi({ description: ' The model ID. ' })).exactOptional(),
-    modelVersion: StringSchema.and(
-      z.any().openapi({ description: ' The model version. ' }),
-    ).exactOptional(),
-    modelType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The model type. </p> <p>Valid values: <code>ONLINE_FRAUD_INSIGHTS</code> | <code>TRANSACTION_FRAUD_INSIGHTS</code> </p>',
-        }),
-    ).exactOptional(),
-    evaluations: ListOfModelVersionEvaluationsSchema.and(
-      z.any().openapi({ description: ' Evaluations generated for the model version. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The model version evaluated for generating prediction. ',
-    required: [],
-  })
-  .openapi('EvaluatedModelVersion')
-
-const ListOfEvaluatedModelVersionsSchema = z
-  .array(EvaluatedModelVersionSchema)
-  .openapi('ListOfEvaluatedModelVersions')
-
-const MapOfStringsSchema = z.record(z.string(), StringSchema).openapi('MapOfStrings')
-
-const EvaluatedExternalModelSchema = z
-  .object({
-    modelEndpoint: StringSchema.and(
-      z.any().openapi({ description: ' The endpoint of the external (Amazon Sagemaker) model. ' }),
-    ).exactOptional(),
-    useEventVariables: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Indicates whether event variables were used to generate predictions. ',
-        }),
-    ).exactOptional(),
-    inputVariables: MapOfStringsSchema.and(
-      z.any().openapi({ description: ' Input variables use for generating predictions. ' }),
-    ).exactOptional(),
-    outputVariables: MapOfStringsSchema.and(
-      z.any().openapi({ description: ' Output variables. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' The details of the external (Amazon Sagemaker) model evaluated for generating predictions. ',
-    required: [],
-  })
-  .openapi('EvaluatedExternalModel')
-
-const ListOfEvaluatedExternalModelsSchema = z
-  .array(EvaluatedExternalModelSchema)
-  .openapi('ListOfEvaluatedExternalModels')
-
-const GetEventPredictionMetadataResultSchema = z
-  .object({
-    eventId: IdentifierSchema.and(
-      z.any().openapi({ description: ' The event ID. ' }),
-    ).exactOptional(),
-    eventTypeName: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The event type associated with the detector specified for this prediction. ',
-        }),
-    ).exactOptional(),
-    entityId: StringSchema.and(
-      z.any().openapi({ description: ' The entity ID. ' }),
-    ).exactOptional(),
-    entityType: StringSchema.and(
-      z.any().openapi({ description: ' The entity type. ' }),
-    ).exactOptional(),
-    eventTimestamp: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The timestamp for when the prediction was generated for the associated event ID. ',
-        }),
-    ).exactOptional(),
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: ' The detector ID. ' }),
-    ).exactOptional(),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: ' The detector version ID. ' }),
-    ).exactOptional(),
-    detectorVersionStatus: StringSchema.and(
-      z.any().openapi({ description: ' The status of the detector version. ' }),
-    ).exactOptional(),
-    eventVariables: ListOfEventVariableSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A list of event variables that influenced the prediction scores. ',
-        }),
-    ).exactOptional(),
-    rules: EvaluatedRuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' List of rules associated with the detector version that were used for evaluating variable values. ',
-        }),
-    ).exactOptional(),
-    ruleExecutionMode: RuleExecutionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The execution mode of the rule used for evaluating variable values. ',
-        }),
-    ).exactOptional(),
-    outcomes: ListOfStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The outcomes of the matched rule, based on the rule execution mode. ',
-        }),
-    ).exactOptional(),
-    evaluatedModelVersions: ListOfEvaluatedModelVersionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Model versions that were evaluated for generating predictions. ',
-        }),
-    ).exactOptional(),
-    evaluatedExternalModels: ListOfEvaluatedExternalModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' External (Amazon SageMaker) models that were evaluated for generating predictions. ',
-        }),
-    ).exactOptional(),
-    predictionTimestamp: TimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp that defines when the prediction was generated. ' }),
-    ).exactOptional(),
+    eventId: IdentifierSchema.exactOptional().openapi({ description: ' The event ID. ' }),
+    eventTypeName: IdentifierSchema.exactOptional().openapi({
+      description: ' The event type associated with the detector specified for this prediction. ',
+    }),
+    entityId: StringSchema.exactOptional().openapi({ description: ' The entity ID. ' }),
+    entityType: StringSchema.exactOptional().openapi({ description: ' The entity type. ' }),
+    eventTimestamp: TimeSchema.exactOptional().openapi({
+      description:
+        ' The timestamp for when the prediction was generated for the associated event ID. ',
+    }),
+    detectorId: IdentifierSchema.exactOptional().openapi({ description: ' The detector ID. ' }),
+    detectorVersionId: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: ' The detector version ID. ',
+    }),
+    detectorVersionStatus: StringSchema.exactOptional().openapi({
+      description: ' The status of the detector version. ',
+    }),
+    eventVariables: ListOfEventVariableSummariesSchema.exactOptional().openapi({
+      description: ' A list of event variables that influenced the prediction scores. ',
+    }),
+    rules: EvaluatedRuleListSchema.exactOptional().openapi({
+      description:
+        ' List of rules associated with the detector version that were used for evaluating variable values. ',
+    }),
+    ruleExecutionMode: RuleExecutionModeSchema.exactOptional().openapi({
+      description: ' The execution mode of the rule used for evaluating variable values. ',
+    }),
+    outcomes: ListOfStringsSchema.exactOptional().openapi({
+      description: ' The outcomes of the matched rule, based on the rule execution mode. ',
+    }),
+    evaluatedModelVersions: ListOfEvaluatedModelVersionsSchema.exactOptional().openapi({
+      description: ' Model versions that were evaluated for generating predictions. ',
+    }),
+    evaluatedExternalModels: ListOfEvaluatedExternalModelsSchema.exactOptional().openapi({
+      description:
+        ' External (Amazon SageMaker) models that were evaluated for generating predictions. ',
+    }),
+    predictionTimestamp: TimeSchema.exactOptional().openapi({
+      description: 'The timestamp that defines when the prediction was generated. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEventPredictionMetadataResult')
 
 const GetEventPredictionMetadataRequestSchema = z
   .object({
-    eventId: IdentifierSchema.and(z.any().openapi({ description: ' The event ID. ' })),
-    eventTypeName: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The event type associated with the detector specified for the prediction. ',
-        }),
-    ),
-    detectorId: IdentifierSchema.and(z.any().openapi({ description: ' The detector ID. ' })),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: ' The detector version ID. ' }),
-    ),
-    predictionTimestamp: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The timestamp that defines when the prediction was generated. The timestamp must be specified using ISO 8601 standard in UTC.</p> <p>We recommend calling <a href="https://docs.aws.amazon.com/frauddetector/latest/api/API_ListEventPredictions.html">ListEventPredictions</a> first, and using the <code>predictionTimestamp</code> value in the response to provide an accurate prediction timestamp value.</p>',
-        }),
-    ),
+    eventId: IdentifierSchema.openapi({ description: ' The event ID. ' }),
+    eventTypeName: IdentifierSchema.openapi({
+      description: ' The event type associated with the detector specified for the prediction. ',
+    }),
+    detectorId: IdentifierSchema.openapi({ description: ' The detector ID. ' }),
+    detectorVersionId: WholeNumberVersionStringSchema.openapi({
+      description: ' The detector version ID. ',
+    }),
+    predictionTimestamp: TimeSchema.openapi({
+      description:
+        '<p> The timestamp that defines when the prediction was generated. The timestamp must be specified using ISO 8601 standard in UTC.</p> <p>We recommend calling <a href="https://docs.aws.amazon.com/frauddetector/latest/api/API_ListEventPredictions.html">ListEventPredictions</a> first, and using the <code>predictionTimestamp</code> value in the response to provide an accurate prediction timestamp value.</p>',
+    }),
   })
   .openapi({
     required: [
@@ -2667,62 +2181,52 @@ const LongSchema = z.int().openapi('Long')
 
 const IngestedEventStatisticsSchema = z
   .object({
-    numberOfEvents: LongSchema.and(
-      z.any().openapi({ description: 'The number of stored events.' }),
-    ).exactOptional(),
-    eventDataSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The total size of the stored events.' }),
-    ).exactOptional(),
-    leastRecentEvent: TimeSchema.and(
-      z.any().openapi({ description: 'The oldest stored event.' }),
-    ).exactOptional(),
-    mostRecentEvent: TimeSchema.and(
-      z.any().openapi({ description: 'The newest stored event.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the stored event was last updated. ' }),
-    ).exactOptional(),
+    numberOfEvents: LongSchema.exactOptional().openapi({
+      description: 'The number of stored events.',
+    }),
+    eventDataSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The total size of the stored events.',
+    }),
+    leastRecentEvent: TimeSchema.exactOptional().openapi({
+      description: 'The oldest stored event.',
+    }),
+    mostRecentEvent: TimeSchema.exactOptional().openapi({
+      description: 'The newest stored event.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the stored event was last updated. ',
+    }),
   })
   .openapi({ description: 'Data about the stored events.', required: [] })
   .openapi('IngestedEventStatistics')
 
 const EventTypeSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The event type name.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The event type description.' }),
-    ).exactOptional(),
-    eventVariables: ListOfStringsSchema.and(
-      z.any().openapi({ description: 'The event type event variables.' }),
-    ).exactOptional(),
-    labels: ListOfStringsSchema.and(
-      z.any().openapi({ description: 'The event type labels.' }),
-    ).exactOptional(),
-    entityTypes: NonEmptyListOfStringsSchema.and(
-      z.any().openapi({ description: 'The event type entity types.' }),
-    ).exactOptional(),
-    eventIngestion: EventIngestionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>Enabled</code>, Amazon Fraud Detector stores event data when you generate a prediction and uses that data to update calculated variables in near real-time. Amazon Fraud Detector uses this data, known as <code>INGESTED_EVENTS</code>, to train your model and improve fraud predictions.',
-        }),
-    ).exactOptional(),
-    ingestedEventStatistics: IngestedEventStatisticsSchema.and(
-      z.any().openapi({ description: 'Data about the stored events.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the event type was last updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the event type was created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The entity type ARN.' }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The event type name.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The event type description.',
+    }),
+    eventVariables: ListOfStringsSchema.exactOptional().openapi({
+      description: 'The event type event variables.',
+    }),
+    labels: ListOfStringsSchema.exactOptional().openapi({ description: 'The event type labels.' }),
+    entityTypes: NonEmptyListOfStringsSchema.exactOptional().openapi({
+      description: 'The event type entity types.',
+    }),
+    eventIngestion: EventIngestionSchema.exactOptional().openapi({
+      description:
+        'If <code>Enabled</code>, Amazon Fraud Detector stores event data when you generate a prediction and uses that data to update calculated variables in near real-time. Amazon Fraud Detector uses this data, known as <code>INGESTED_EVENTS</code>, to train your model and improve fraud predictions.',
+    }),
+    ingestedEventStatistics: IngestedEventStatisticsSchema.exactOptional().openapi({
+      description: 'Data about the stored events.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the event type was last updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the event type was created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The entity type ARN.' }),
   })
   .openapi({ description: 'The event type details.', required: [] })
   .openapi('EventType')
@@ -2731,12 +2235,10 @@ const EventTypeListSchema = z.array(EventTypeSchema).openapi('EventTypeList')
 
 const GetEventTypesResultSchema = z
   .object({
-    eventTypes: EventTypeListSchema.and(
-      z.any().openapi({ description: 'An array of event types.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token.' }),
-    ).exactOptional(),
+    eventTypes: EventTypeListSchema.exactOptional().openapi({
+      description: 'An array of event types.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({ description: 'The next page token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetEventTypesResult')
@@ -2745,13 +2247,13 @@ const EventTypesMaxResultsSchema = z.int().min(5).max(10).openapi('EventTypesMax
 
 const GetEventTypesRequestSchema = z
   .object({
-    name: IdentifierSchema.and(z.any().openapi({ description: 'The name.' })).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token for the subsequent request.' }),
-    ).exactOptional(),
-    maxResults: EventTypesMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request.' }),
-    ).exactOptional(),
+    name: IdentifierSchema.exactOptional().openapi({ description: 'The name.' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token for the subsequent request.',
+    }),
+    maxResults: EventTypesMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request.',
+    }),
   })
   .openapi({ title: 'GetEventTypesRequest', required: [] })
   .openapi('GetEventTypesRequest')
@@ -2766,36 +2268,22 @@ const ModelInputTemplateSchema = z.string().min(1).max(2000).openapi('ModelInput
 
 const ModelInputConfigurationSchema = z
   .object({
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The event type name.' }),
-    ).exactOptional(),
-    format: ModelInputDataFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The format of the model input configuration. The format differs depending on if it is passed through to SageMaker or constructed by Amazon Fraud Detector.',
-        }),
-    ).exactOptional(),
-    useEventVariables: UseEventVariablesSchema.and(
-      z.any().openapi({ description: 'The event variables.' }),
-    ),
-    jsonInputTemplate: ModelInputTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Template for constructing the JSON input-data sent to SageMaker. At event-evaluation, the placeholders for variable names in the template will be replaced with the variable values before being sent to SageMaker. ',
-        }),
-    ).exactOptional(),
-    csvInputTemplate: ModelInputTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Template for constructing the CSV input-data sent to SageMaker. At event-evaluation, the placeholders for variable-names in the template will be replaced with the variable values before being sent to SageMaker. ',
-        }),
-    ).exactOptional(),
+    eventTypeName: IdentifierSchema.exactOptional().openapi({
+      description: 'The event type name.',
+    }),
+    format: ModelInputDataFormatSchema.exactOptional().openapi({
+      description:
+        ' The format of the model input configuration. The format differs depending on if it is passed through to SageMaker or constructed by Amazon Fraud Detector.',
+    }),
+    useEventVariables: UseEventVariablesSchema.openapi({ description: 'The event variables.' }),
+    jsonInputTemplate: ModelInputTemplateSchema.exactOptional().openapi({
+      description:
+        ' Template for constructing the JSON input-data sent to SageMaker. At event-evaluation, the placeholders for variable names in the template will be replaced with the variable values before being sent to SageMaker. ',
+    }),
+    csvInputTemplate: ModelInputTemplateSchema.exactOptional().openapi({
+      description:
+        ' Template for constructing the CSV input-data sent to SageMaker. At event-evaluation, the placeholders for variable-names in the template will be replaced with the variable values before being sent to SageMaker. ',
+    }),
   })
   .openapi({
     required: ['useEventVariables'],
@@ -2817,25 +2305,17 @@ const CsvIndexToVariableMapSchema = z
 
 const ModelOutputConfigurationSchema = z
   .object({
-    format: ModelOutputDataFormatSchema.and(
-      z.any().openapi({ description: 'The format of the model output configuration.' }),
-    ),
-    jsonKeyToVariableMap: JsonKeyToVariableMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of JSON keys in response from SageMaker to the Amazon Fraud Detector variables. ',
-        }),
-    ).exactOptional(),
-    csvIndexToVariableMap: CsvIndexToVariableMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of CSV index values in the SageMaker response to the Amazon Fraud Detector variables. ',
-        }),
-    ).exactOptional(),
+    format: ModelOutputDataFormatSchema.openapi({
+      description: 'The format of the model output configuration.',
+    }),
+    jsonKeyToVariableMap: JsonKeyToVariableMapSchema.exactOptional().openapi({
+      description:
+        'A map of JSON keys in response from SageMaker to the Amazon Fraud Detector variables. ',
+    }),
+    csvIndexToVariableMap: CsvIndexToVariableMapSchema.exactOptional().openapi({
+      description:
+        'A map of CSV index values in the SageMaker response to the Amazon Fraud Detector variables. ',
+    }),
   })
   .openapi({
     required: ['format'],
@@ -2849,37 +2329,31 @@ const ModelEndpointStatusSchema = z
 
 const ExternalModelSchema = z
   .object({
-    modelEndpoint: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon SageMaker model endpoints.' }),
-    ).exactOptional(),
-    modelSource: ModelSourceSchema.and(
-      z.any().openapi({ description: 'The source of the model.' }),
-    ).exactOptional(),
-    invokeModelEndpointRoleArn: StringSchema.and(
-      z.any().openapi({ description: 'The role used to invoke the model. ' }),
-    ).exactOptional(),
-    inputConfiguration: ModelInputConfigurationSchema.and(
-      z.any().openapi({ description: 'The input configuration.' }),
-    ).exactOptional(),
-    outputConfiguration: ModelOutputConfigurationSchema.and(
-      z.any().openapi({ description: 'The output configuration.' }),
-    ).exactOptional(),
-    modelEndpointStatus: ModelEndpointStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Fraud Detector status for the external model endpoint',
-        }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the model was last updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the model was last created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The model ARN.' }),
-    ).exactOptional(),
+    modelEndpoint: StringSchema.exactOptional().openapi({
+      description: 'The Amazon SageMaker model endpoints.',
+    }),
+    modelSource: ModelSourceSchema.exactOptional().openapi({
+      description: 'The source of the model.',
+    }),
+    invokeModelEndpointRoleArn: StringSchema.exactOptional().openapi({
+      description: 'The role used to invoke the model. ',
+    }),
+    inputConfiguration: ModelInputConfigurationSchema.exactOptional().openapi({
+      description: 'The input configuration.',
+    }),
+    outputConfiguration: ModelOutputConfigurationSchema.exactOptional().openapi({
+      description: 'The output configuration.',
+    }),
+    modelEndpointStatus: ModelEndpointStatusSchema.exactOptional().openapi({
+      description: 'The Amazon Fraud Detector status for the external model endpoint',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the model was last updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the model was last created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The model ARN.' }),
   })
   .openapi({ description: 'The Amazon SageMaker model.', required: [] })
   .openapi('ExternalModel')
@@ -2888,12 +2362,12 @@ const ExternalModelListSchema = z.array(ExternalModelSchema).openapi('ExternalMo
 
 const GetExternalModelsResultSchema = z
   .object({
-    externalModels: ExternalModelListSchema.and(
-      z.any().openapi({ description: 'Gets the Amazon SageMaker models.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token to be used in subsequent requests.' }),
-    ).exactOptional(),
+    externalModels: ExternalModelListSchema.exactOptional().openapi({
+      description: 'Gets the Amazon SageMaker models.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next page token to be used in subsequent requests.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetExternalModelsResult')
@@ -2902,15 +2376,15 @@ const ExternalModelsMaxResultsSchema = z.int().min(5).max(10).openapi('ExternalM
 
 const GetExternalModelsRequestSchema = z
   .object({
-    modelEndpoint: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon SageMaker model endpoint.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token for the request.' }),
-    ).exactOptional(),
-    maxResults: ExternalModelsMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request.' }),
-    ).exactOptional(),
+    modelEndpoint: StringSchema.exactOptional().openapi({
+      description: 'The Amazon SageMaker model endpoint.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next page token for the request.',
+    }),
+    maxResults: ExternalModelsMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request.',
+    }),
   })
   .openapi({ title: 'GetExternalModelsRequest', required: [] })
   .openapi('GetExternalModelsRequest')
@@ -2924,37 +2398,33 @@ const KmsEncryptionKeyArnSchema = z
 
 const KMSKeySchema = z
   .object({
-    kmsEncryptionKeyArn: KmsEncryptionKeyArnSchema.and(
-      z.any().openapi({ description: 'The encryption key ARN.' }),
-    ).exactOptional(),
+    kmsEncryptionKeyArn: KmsEncryptionKeyArnSchema.exactOptional().openapi({
+      description: 'The encryption key ARN.',
+    }),
   })
   .openapi({ description: 'The KMS key details.', required: [] })
   .openapi('KMSKey')
 
 const GetKMSEncryptionKeyResultSchema = z
   .object({
-    kmsKey: KMSKeySchema.and(
-      z.any().openapi({ description: 'The KMS encryption key.' }),
-    ).exactOptional(),
+    kmsKey: KMSKeySchema.exactOptional().openapi({ description: 'The KMS encryption key.' }),
   })
   .openapi({ required: [] })
   .openapi('GetKMSEncryptionKeyResult')
 
 const LabelSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The label name.' })).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The label description.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the label was last updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the event type was created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The label ARN.' }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The label name.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The label description.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the label was last updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the event type was created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The label ARN.' }),
   })
   .openapi({ description: 'The label details.', required: [] })
   .openapi('Label')
@@ -2963,12 +2433,8 @@ const LabelListSchema = z.array(LabelSchema).openapi('LabelList')
 
 const GetLabelsResultSchema = z
   .object({
-    labels: LabelListSchema.and(
-      z.any().openapi({ description: 'An array of labels.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token.' }),
-    ).exactOptional(),
+    labels: LabelListSchema.exactOptional().openapi({ description: 'An array of labels.' }),
+    nextToken: StringSchema.exactOptional().openapi({ description: 'The next page token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetLabelsResult')
@@ -2977,15 +2443,15 @@ const LabelsMaxResultsSchema = z.int().min(10).max(50).openapi('LabelsMaxResults
 
 const GetLabelsRequestSchema = z
   .object({
-    name: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the label or labels to get.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token for the subsequent request.' }),
-    ).exactOptional(),
-    maxResults: LabelsMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request.' }),
-    ).exactOptional(),
+    name: IdentifierSchema.exactOptional().openapi({
+      description: 'The name of the label or labels to get.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token for the subsequent request.',
+    }),
+    maxResults: LabelsMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request.',
+    }),
   })
   .openapi({ title: 'GetLabelsRequest', required: [] })
   .openapi('GetLabelsRequest')
@@ -2994,12 +2460,8 @@ const NextTokenSchema = z.string().regex(/.*/).min(0).max(8192).openapi('NextTok
 
 const GetListElementsResultSchema = z
   .object({
-    elements: ElementsListSchema.and(
-      z.any().openapi({ description: ' The list elements. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: ' The next page token. ' }),
-    ).exactOptional(),
+    elements: ElementsListSchema.exactOptional().openapi({ description: ' The list elements. ' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({ description: ' The next page token. ' }),
   })
   .openapi({ required: [] })
   .openapi('GetListElementsResult')
@@ -3008,37 +2470,33 @@ const ListsElementsMaxResultsSchema = z.int().min(500).max(5000).openapi('ListsE
 
 const GetListElementsRequestSchema = z
   .object({
-    name: NoDashIdentifierSchema.and(z.any().openapi({ description: ' The name of the list. ' })),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: ' The next token for the subsequent request. ' }),
-    ).exactOptional(),
-    maxResults: ListsElementsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The maximum number of objects to return for the request. ' }),
-    ).exactOptional(),
+    name: NoDashIdentifierSchema.openapi({ description: ' The name of the list. ' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: ' The next token for the subsequent request. ',
+    }),
+    maxResults: ListsElementsMaxResultsSchema.exactOptional().openapi({
+      description: ' The maximum number of objects to return for the request. ',
+    }),
   })
   .openapi({ required: ['name'], title: 'GetListElementsRequest' })
   .openapi('GetListElementsRequest')
 
 const AllowDenyListSchema = z
   .object({
-    name: NoDashIdentifierSchema.and(z.any().openapi({ description: ' The name of the list. ' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the list. ' }),
-    ).exactOptional(),
-    variableType: VariableTypeSchema.and(
-      z.any().openapi({ description: ' The variable type of the list. ' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: ' The time the list was created. ' }),
-    ).exactOptional(),
-    updatedTime: TimeSchema.and(
-      z.any().openapi({ description: ' The time the list was last updated. ' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: ' The ARN of the list. ' }),
-    ).exactOptional(),
+    name: NoDashIdentifierSchema.openapi({ description: ' The name of the list. ' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description of the list. ',
+    }),
+    variableType: VariableTypeSchema.exactOptional().openapi({
+      description: ' The variable type of the list. ',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: ' The time the list was created. ',
+    }),
+    updatedTime: TimeSchema.exactOptional().openapi({
+      description: ' The time the list was last updated. ',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: ' The ARN of the list. ' }),
   })
   .openapi({ required: ['name'], description: ' The metadata of a list. ' })
   .openapi('AllowDenyList')
@@ -3047,16 +2505,10 @@ const AllowDenyListsSchema = z.array(AllowDenyListSchema).openapi('AllowDenyList
 
 const GetListsMetadataResultSchema = z
   .object({
-    lists: AllowDenyListsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The metadata of the specified list or all lists under the account. ',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: ' The next page token. ' }),
-    ).exactOptional(),
+    lists: AllowDenyListsSchema.exactOptional().openapi({
+      description: ' The metadata of the specified list or all lists under the account. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({ description: ' The next page token. ' }),
   })
   .openapi({ required: [] })
   .openapi('GetListsMetadataResult')
@@ -3065,76 +2517,56 @@ const ListsMetadataMaxResultsSchema = z.int().min(5).max(50).openapi('ListsMetad
 
 const GetListsMetadataRequestSchema = z
   .object({
-    name: NoDashIdentifierSchema.and(
-      z.any().openapi({ description: ' The name of the list. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: ' The next token for the subsequent request. ' }),
-    ).exactOptional(),
-    maxResults: ListsMetadataMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The maximum number of objects to return for the request. ' }),
-    ).exactOptional(),
+    name: NoDashIdentifierSchema.exactOptional().openapi({
+      description: ' The name of the list. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: ' The next token for the subsequent request. ',
+    }),
+    maxResults: ListsMetadataMaxResultsSchema.exactOptional().openapi({
+      description: ' The maximum number of objects to return for the request. ',
+    }),
   })
   .openapi({ title: 'GetListsMetadataRequest', required: [] })
   .openapi('GetListsMetadataRequest')
 
 const GetModelVersionResultSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID.' }),
-    ).exactOptional(),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type.' }),
-    ).exactOptional(),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number.' }),
-    ).exactOptional(),
-    trainingDataSource: TrainingDataSourceEnumSchema.and(
-      z.any().openapi({ description: 'The training data source.' }),
-    ).exactOptional(),
-    trainingDataSchema: TrainingDataSchemaSchema.and(
-      z.any().openapi({ description: 'The training data schema.' }),
-    ).exactOptional(),
-    externalEventsDetail: ExternalEventsDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details of the external events data used for training the model version. This will be populated if the <code>trainingDataSource</code> is <code>EXTERNAL_EVENTS</code> ',
-        }),
-    ).exactOptional(),
-    ingestedEventsDetail: IngestedEventsDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details of the ingested events data used for training the model version. This will be populated if the <code>trainingDataSource</code> is <code>INGESTED_EVENTS</code>.',
-        }),
-    ).exactOptional(),
-    status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The model version status.</p> <p>Possible values are:</p> <ul> <li> <p> <code>TRAINING_IN_PROGRESS</code> </p> </li> <li> <p> <code>TRAINING_COMPLETE</code> </p> </li> <li> <p> <code>ACTIVATE_REQUESTED</code> </p> </li> <li> <p> <code>ACTIVATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>INACTIVATE_REQUESTED</code> </p> </li> <li> <p> <code>INACTIVATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>INACTIVE</code> </p> </li> <li> <p> <code>ERROR</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The model version ARN.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.exactOptional().openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.exactOptional().openapi({ description: 'The model type.' }),
+    modelVersionNumber: FloatVersionStringSchema.exactOptional().openapi({
+      description: 'The model version number.',
+    }),
+    trainingDataSource: TrainingDataSourceEnumSchema.exactOptional().openapi({
+      description: 'The training data source.',
+    }),
+    trainingDataSchema: TrainingDataSchemaSchema.exactOptional().openapi({
+      description: 'The training data schema.',
+    }),
+    externalEventsDetail: ExternalEventsDetailSchema.exactOptional().openapi({
+      description:
+        'The details of the external events data used for training the model version. This will be populated if the <code>trainingDataSource</code> is <code>EXTERNAL_EVENTS</code> ',
+    }),
+    ingestedEventsDetail: IngestedEventsDetailSchema.exactOptional().openapi({
+      description:
+        'The details of the ingested events data used for training the model version. This will be populated if the <code>trainingDataSource</code> is <code>INGESTED_EVENTS</code>.',
+    }),
+    status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The model version status.</p> <p>Possible values are:</p> <ul> <li> <p> <code>TRAINING_IN_PROGRESS</code> </p> </li> <li> <p> <code>TRAINING_COMPLETE</code> </p> </li> <li> <p> <code>ACTIVATE_REQUESTED</code> </p> </li> <li> <p> <code>ACTIVATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>INACTIVATE_REQUESTED</code> </p> </li> <li> <p> <code>INACTIVATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>INACTIVE</code> </p> </li> <li> <p> <code>ERROR</code> </p> </li> </ul>',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The model version ARN.' }),
   })
   .openapi({ required: [] })
   .openapi('GetModelVersionResult')
 
 const GetModelVersionRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(z.any().openapi({ description: 'The model ID.' })),
-    modelType: ModelTypeEnumSchema.and(z.any().openapi({ description: 'The model type.' })),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number.' }),
-    ),
+    modelId: ModelIdentifierSchema.openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.openapi({ description: 'The model type.' }),
+    modelVersionNumber: FloatVersionStringSchema.openapi({
+      description: 'The model version number.',
+    }),
   })
   .openapi({
     required: ['modelId', 'modelType', 'modelVersionNumber'],
@@ -3144,27 +2576,21 @@ const GetModelVersionRequestSchema = z
 
 const ModelSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID.' }),
-    ).exactOptional(),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The model description.' }),
-    ).exactOptional(),
-    eventTypeName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the model was created.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of last time the model was updated.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the model.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.exactOptional().openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.exactOptional().openapi({ description: 'The model type.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The model description.',
+    }),
+    eventTypeName: StringSchema.exactOptional().openapi({
+      description: 'The name of the event type.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of when the model was created.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of last time the model was updated.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The ARN of the model.' }),
   })
   .openapi({ description: 'The model.', required: [] })
   .openapi('Model')
@@ -3173,51 +2599,41 @@ const ModelListSchema = z.array(ModelSchema).openapi('ModelList')
 
 const GetModelsResultSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token to be used in subsequent requests.' }),
-    ).exactOptional(),
-    models: ModelListSchema.and(
-      z.any().openapi({ description: 'The array of models.' }),
-    ).exactOptional(),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next page token to be used in subsequent requests.',
+    }),
+    models: ModelListSchema.exactOptional().openapi({ description: 'The array of models.' }),
   })
   .openapi({ required: [] })
   .openapi('GetModelsResult')
 
 const GetModelsRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID.' }),
-    ).exactOptional(),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token for the subsequent request.' }),
-    ).exactOptional(),
-    maxResults: ModelsMaxPageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request. ' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.exactOptional().openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.exactOptional().openapi({ description: 'The model type.' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token for the subsequent request.',
+    }),
+    maxResults: ModelsMaxPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request. ',
+    }),
   })
   .openapi({ title: 'GetModelsRequest', required: [] })
   .openapi('GetModelsRequest')
 
 const OutcomeSchema = z
   .object({
-    name: IdentifierSchema.and(
-      z.any().openapi({ description: 'The outcome name.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The outcome description.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the outcome was last updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the outcome was created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The outcome ARN.' }),
-    ).exactOptional(),
+    name: IdentifierSchema.exactOptional().openapi({ description: 'The outcome name.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The outcome description.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the outcome was last updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the outcome was created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The outcome ARN.' }),
   })
   .openapi({ description: 'The outcome.', required: [] })
   .openapi('Outcome')
@@ -3226,12 +2642,10 @@ const OutcomeListSchema = z.array(OutcomeSchema).openapi('OutcomeList')
 
 const GetOutcomesResultSchema = z
   .object({
-    outcomes: OutcomeListSchema.and(
-      z.any().openapi({ description: 'The outcomes. ' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token for subsequent requests.' }),
-    ).exactOptional(),
+    outcomes: OutcomeListSchema.exactOptional().openapi({ description: 'The outcomes. ' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next page token for subsequent requests.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOutcomesResult')
@@ -3240,49 +2654,45 @@ const OutcomesMaxResultsSchema = z.int().min(50).max(100).openapi('OutcomesMaxRe
 
 const GetOutcomesRequestSchema = z
   .object({
-    name: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the outcome or outcomes to get.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token for the request. ' }),
-    ).exactOptional(),
-    maxResults: OutcomesMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request. ' }),
-    ).exactOptional(),
+    name: IdentifierSchema.exactOptional().openapi({
+      description: 'The name of the outcome or outcomes to get.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next page token for the request. ',
+    }),
+    maxResults: OutcomesMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request. ',
+    }),
   })
   .openapi({ title: 'GetOutcomesRequest', required: [] })
   .openapi('GetOutcomesRequest')
 
 const RuleDetailSchema = z
   .object({
-    ruleId: IdentifierSchema.and(z.any().openapi({ description: 'The rule ID.' })).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The rule description.' }),
-    ).exactOptional(),
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The detector for which the rule is associated.' }),
-    ).exactOptional(),
-    ruleVersion: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The rule version.' }),
-    ).exactOptional(),
-    expression: RuleExpressionSchema.and(
-      z.any().openapi({ description: 'The rule expression.' }),
-    ).exactOptional(),
-    language: LanguageSchema.and(
-      z.any().openapi({ description: 'The rule language.' }),
-    ).exactOptional(),
-    outcomes: NonEmptyListOfStringsSchema.and(
-      z.any().openapi({ description: 'The rule outcomes.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimeSchema.and(
-      z.any().openapi({ description: 'Timestamp of the last time the rule was updated.' }),
-    ).exactOptional(),
-    createdTime: TimeSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the rule was created.' }),
-    ).exactOptional(),
-    arn: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The rule ARN.' }),
-    ).exactOptional(),
+    ruleId: IdentifierSchema.exactOptional().openapi({ description: 'The rule ID.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The rule description.',
+    }),
+    detectorId: IdentifierSchema.exactOptional().openapi({
+      description: 'The detector for which the rule is associated.',
+    }),
+    ruleVersion: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: 'The rule version.',
+    }),
+    expression: RuleExpressionSchema.exactOptional().openapi({
+      description: 'The rule expression.',
+    }),
+    language: LanguageSchema.exactOptional().openapi({ description: 'The rule language.' }),
+    outcomes: NonEmptyListOfStringsSchema.exactOptional().openapi({
+      description: 'The rule outcomes.',
+    }),
+    lastUpdatedTime: TimeSchema.exactOptional().openapi({
+      description: 'Timestamp of the last time the rule was updated.',
+    }),
+    createdTime: TimeSchema.exactOptional().openapi({
+      description: 'The timestamp of when the rule was created.',
+    }),
+    arn: FraudDetectorArnSchema.exactOptional().openapi({ description: 'The rule ARN.' }),
   })
   .openapi({ description: 'The details of the rule.', required: [] })
   .openapi('RuleDetail')
@@ -3291,12 +2701,12 @@ const RuleDetailListSchema = z.array(RuleDetailSchema).openapi('RuleDetailList')
 
 const GetRulesResultSchema = z
   .object({
-    ruleDetails: RuleDetailListSchema.and(
-      z.any().openapi({ description: 'The details of the requested rule.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token to be used in subsequent requests.' }),
-    ).exactOptional(),
+    ruleDetails: RuleDetailListSchema.exactOptional().openapi({
+      description: 'The details of the requested rule.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next page token to be used in subsequent requests.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRulesResult')
@@ -3305,29 +2715,27 @@ const RulesMaxResultsSchema = z.int().min(50).max(100).openapi('RulesMaxResults'
 
 const GetRulesRequestSchema = z
   .object({
-    ruleId: IdentifierSchema.and(z.any().openapi({ description: 'The rule ID.' })).exactOptional(),
-    detectorId: IdentifierSchema.and(z.any().openapi({ description: 'The detector ID.' })),
-    ruleVersion: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The rule version.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token.' }),
-    ).exactOptional(),
-    maxResults: RulesMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of rules to return for the request.' }),
-    ).exactOptional(),
+    ruleId: IdentifierSchema.exactOptional().openapi({ description: 'The rule ID.' }),
+    detectorId: IdentifierSchema.openapi({ description: 'The detector ID.' }),
+    ruleVersion: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: 'The rule version.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({ description: 'The next page token.' }),
+    maxResults: RulesMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of rules to return for the request.',
+    }),
   })
   .openapi({ required: ['detectorId'], title: 'GetRulesRequest' })
   .openapi('GetRulesRequest')
 
 const GetVariablesResultSchema = z
   .object({
-    variables: VariableListSchema.and(
-      z.any().openapi({ description: 'The names of the variables returned. ' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token to be used in subsequent requests. ' }),
-    ).exactOptional(),
+    variables: VariableListSchema.exactOptional().openapi({
+      description: 'The names of the variables returned. ',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next page token to be used in subsequent requests. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVariablesResult')
@@ -3336,43 +2744,31 @@ const VariablesMaxResultsSchema = z.int().min(50).max(100).openapi('VariablesMax
 
 const GetVariablesRequestSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the variable. ' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next page token of the get variable request. ' }),
-    ).exactOptional(),
-    maxResults: VariablesMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The max size per page determined for the get variable request. ',
-        }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: 'The name of the variable. ' }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next page token of the get variable request. ',
+    }),
+    maxResults: VariablesMaxResultsSchema.exactOptional().openapi({
+      description: 'The max size per page determined for the get variable request. ',
+    }),
   })
   .openapi({ title: 'GetVariablesRequest', required: [] })
   .openapi('GetVariablesRequest')
 
 const EventPredictionSummarySchema = z
   .object({
-    eventId: IdentifierSchema.and(
-      z.any().openapi({ description: ' The event ID. ' }),
-    ).exactOptional(),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: ' The event type. ' }),
-    ).exactOptional(),
-    eventTimestamp: TimeSchema.and(
-      z.any().openapi({ description: ' The timestamp of the event. ' }),
-    ).exactOptional(),
-    predictionTimestamp: TimeSchema.and(
-      z.any().openapi({ description: ' The timestamp when the prediction was generated. ' }),
-    ).exactOptional(),
-    detectorId: IdentifierSchema.and(
-      z.any().openapi({ description: ' The detector ID. ' }),
-    ).exactOptional(),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: ' The detector version ID. ' }),
-    ).exactOptional(),
+    eventId: IdentifierSchema.exactOptional().openapi({ description: ' The event ID. ' }),
+    eventTypeName: IdentifierSchema.exactOptional().openapi({ description: ' The event type. ' }),
+    eventTimestamp: TimeSchema.exactOptional().openapi({
+      description: ' The timestamp of the event. ',
+    }),
+    predictionTimestamp: TimeSchema.exactOptional().openapi({
+      description: ' The timestamp when the prediction was generated. ',
+    }),
+    detectorId: IdentifierSchema.exactOptional().openapi({ description: ' The detector ID. ' }),
+    detectorVersionId: WholeNumberVersionStringSchema.exactOptional().openapi({
+      description: ' The detector version ID. ',
+    }),
   })
   .openapi({ description: ' Information about the summary of an event prediction. ', required: [] })
   .openapi('EventPredictionSummary')
@@ -3383,17 +2779,13 @@ const ListOfEventPredictionSummariesSchema = z
 
 const ListEventPredictionsResultSchema = z
   .object({
-    eventPredictionSummaries: ListOfEventPredictionSummariesSchema.and(
-      z.any().openapi({ description: ' The summary of the past predictions. ' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Identifies the next page of results to return. Use the token to make the call again to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. ',
-        }),
-    ).exactOptional(),
+    eventPredictionSummaries: ListOfEventPredictionSummariesSchema.exactOptional().openapi({
+      description: ' The summary of the past predictions. ',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        ' Identifies the next page of results to return. Use the token to make the call again to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventPredictionsResult')
@@ -3407,14 +2799,10 @@ const FilterStringSchema = z
 
 const FilterConditionSchema = z
   .object({
-    value: FilterStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A statement containing a resource property and a value to specify filter condition. ',
-        }),
-    ).exactOptional(),
+    value: FilterStringSchema.exactOptional().openapi({
+      description:
+        ' A statement containing a resource property and a value to specify filter condition. ',
+    }),
   })
   .openapi({
     description: ' A conditional statement for filtering a list of past predictions. ',
@@ -3424,21 +2812,12 @@ const FilterConditionSchema = z
 
 const PredictionTimeRangeSchema = z
   .object({
-    startTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start time of the time period for when the predictions were generated. ',
-        }),
-    ),
-    endTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The end time of the time period for when the predictions were generated. ',
-        }),
-    ),
+    startTime: TimeSchema.openapi({
+      description: ' The start time of the time period for when the predictions were generated. ',
+    }),
+    endTime: TimeSchema.openapi({
+      description: ' The end time of the time period for when the predictions were generated. ',
+    }),
   })
   .openapi({
     required: ['startTime', 'endTime'],
@@ -3454,48 +2833,38 @@ const EventPredictionsMaxResultsSchema = z
 
 const ListEventPredictionsRequestSchema = z
   .object({
-    eventId: FilterConditionSchema.and(
-      z.any().openapi({ description: ' The event ID. ' }),
-    ).exactOptional(),
-    eventType: FilterConditionSchema.and(
-      z.any().openapi({ description: ' The event type associated with the detector. ' }),
-    ).exactOptional(),
-    detectorId: FilterConditionSchema.and(
-      z.any().openapi({ description: ' The detector ID. ' }),
-    ).exactOptional(),
-    detectorVersionId: FilterConditionSchema.and(
-      z.any().openapi({ description: ' The detector version ID. ' }),
-    ).exactOptional(),
-    predictionTimeRange: PredictionTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The time period for when the predictions were generated. ' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Identifies the next page of results to return. Use the token to make the call again to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. ',
-        }),
-    ).exactOptional(),
-    maxResults: EventPredictionsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The maximum number of predictions to return for the request. ' }),
-    ).exactOptional(),
+    eventId: FilterConditionSchema.exactOptional().openapi({ description: ' The event ID. ' }),
+    eventType: FilterConditionSchema.exactOptional().openapi({
+      description: ' The event type associated with the detector. ',
+    }),
+    detectorId: FilterConditionSchema.exactOptional().openapi({
+      description: ' The detector ID. ',
+    }),
+    detectorVersionId: FilterConditionSchema.exactOptional().openapi({
+      description: ' The detector version ID. ',
+    }),
+    predictionTimeRange: PredictionTimeRangeSchema.exactOptional().openapi({
+      description: ' The time period for when the predictions were generated. ',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        ' Identifies the next page of results to return. Use the token to make the call again to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. ',
+    }),
+    maxResults: EventPredictionsMaxResultsSchema.exactOptional().openapi({
+      description: ' The maximum number of predictions to return for the request. ',
+    }),
   })
   .openapi({ title: 'ListEventPredictionsRequest', required: [] })
   .openapi('ListEventPredictionsRequest')
 
 const ListTagsForResourceResultSchema = z
   .object({
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token for subsequent requests. ' }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token for subsequent requests. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResult')
@@ -3504,113 +2873,97 @@ const TagsMaxResultsSchema = z.int().min(50).max(50).openapi('TagsMaxResults')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    resourceARN: FraudDetectorArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN that specifies the resource whose tags you want to list.',
-        }),
-    ),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'The next token from the previous results.' }),
-    ).exactOptional(),
-    maxResults: TagsMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of objects to return for the request. ' }),
-    ).exactOptional(),
+    resourceARN: FraudDetectorArnSchema.openapi({
+      description: 'The ARN that specifies the resource whose tags you want to list.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The next token from the previous results.',
+    }),
+    maxResults: TagsMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of objects to return for the request. ',
+    }),
   })
   .openapi({ required: ['resourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
-const PutDetectorResultSchema = z.object({}).openapi('PutDetectorResult')
+const PutDetectorResultSchema = z.looseObject({}).openapi('PutDetectorResult')
 
 const PutDetectorRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(z.any().openapi({ description: 'The detector ID. ' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the detector.' }),
-    ).exactOptional(),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The name of the event type.' }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.openapi({ description: 'The detector ID. ' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the detector.',
+    }),
+    eventTypeName: IdentifierSchema.openapi({ description: 'The name of the event type.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({ required: ['detectorId', 'eventTypeName'], title: 'PutDetectorRequest' })
   .openapi('PutDetectorRequest')
 
-const PutEntityTypeResultSchema = z.object({}).openapi('PutEntityTypeResult')
+const PutEntityTypeResultSchema = z.looseObject({}).openapi('PutEntityTypeResult')
 
 const PutEntityTypeRequestSchema = z
   .object({
-    name: IdentifierSchema.and(z.any().openapi({ description: 'The name of the entity type.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    name: IdentifierSchema.openapi({ description: 'The name of the entity type.' }),
+    description: DescriptionSchema.exactOptional().openapi({ description: 'The description.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({ required: ['name'], title: 'PutEntityTypeRequest' })
   .openapi('PutEntityTypeRequest')
 
-const PutEventTypeResultSchema = z.object({}).openapi('PutEventTypeResult')
+const PutEventTypeResultSchema = z.looseObject({}).openapi('PutEventTypeResult')
 
 const PutEventTypeRequestSchema = z
   .object({
-    name: IdentifierSchema.and(z.any().openapi({ description: 'The name.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the event type.' }),
-    ).exactOptional(),
-    eventVariables: NonEmptyListOfStringsSchema.and(
-      z.any().openapi({ description: 'The event type variables.' }),
-    ),
-    labels: ListOfStringsSchema.and(
-      z.any().openapi({ description: 'The event type labels.' }),
-    ).exactOptional(),
-    entityTypes: NonEmptyListOfStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The entity type for the event type. Example entity types: customer, merchant, account.',
-        }),
-    ),
-    eventIngestion: EventIngestionSchema.and(
-      z.any().openapi({ description: 'Specifies if ingenstion is enabled or disabled.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    name: IdentifierSchema.openapi({ description: 'The name.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the event type.',
+    }),
+    eventVariables: NonEmptyListOfStringsSchema.openapi({
+      description: 'The event type variables.',
+    }),
+    labels: ListOfStringsSchema.exactOptional().openapi({ description: 'The event type labels.' }),
+    entityTypes: NonEmptyListOfStringsSchema.openapi({
+      description:
+        'The entity type for the event type. Example entity types: customer, merchant, account.',
+    }),
+    eventIngestion: EventIngestionSchema.exactOptional().openapi({
+      description: 'Specifies if ingenstion is enabled or disabled.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({ required: ['name', 'eventVariables', 'entityTypes'], title: 'PutEventTypeRequest' })
   .openapi('PutEventTypeRequest')
 
-const PutExternalModelResultSchema = z.object({}).openapi('PutExternalModelResult')
+const PutExternalModelResultSchema = z.looseObject({}).openapi('PutExternalModelResult')
 
 const PutExternalModelRequestSchema = z
   .object({
-    modelEndpoint: SageMakerEndpointIdentifierSchema.and(
-      z.any().openapi({ description: 'The model endpoints name.' }),
-    ),
-    modelSource: ModelSourceSchema.and(
-      z.any().openapi({ description: 'The source of the model.' }),
-    ),
-    invokeModelEndpointRoleArn: StringSchema.and(
-      z.any().openapi({ description: 'The IAM role used to invoke the model endpoint.' }),
-    ),
-    inputConfiguration: ModelInputConfigurationSchema.and(
-      z.any().openapi({ description: 'The model endpoint input configuration.' }),
-    ),
-    outputConfiguration: ModelOutputConfigurationSchema.and(
-      z.any().openapi({ description: 'The model endpoint output configuration.' }),
-    ),
-    modelEndpointStatus: ModelEndpointStatusSchema.and(
-      z.any().openapi({ description: 'The model endpoint’s status in Amazon Fraud Detector.' }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    modelEndpoint: SageMakerEndpointIdentifierSchema.openapi({
+      description: 'The model endpoints name.',
+    }),
+    modelSource: ModelSourceSchema.openapi({ description: 'The source of the model.' }),
+    invokeModelEndpointRoleArn: StringSchema.openapi({
+      description: 'The IAM role used to invoke the model endpoint.',
+    }),
+    inputConfiguration: ModelInputConfigurationSchema.openapi({
+      description: 'The model endpoint input configuration.',
+    }),
+    outputConfiguration: ModelOutputConfigurationSchema.openapi({
+      description: 'The model endpoint output configuration.',
+    }),
+    modelEndpointStatus: ModelEndpointStatusSchema.openapi({
+      description: 'The model endpoint’s status in Amazon Fraud Detector.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({
     required: [
@@ -3625,91 +2978,69 @@ const PutExternalModelRequestSchema = z
   })
   .openapi('PutExternalModelRequest')
 
-const PutKMSEncryptionKeyResultSchema = z.object({}).openapi('PutKMSEncryptionKeyResult')
+const PutKMSEncryptionKeyResultSchema = z.looseObject({}).openapi('PutKMSEncryptionKeyResult')
 
 const PutKMSEncryptionKeyRequestSchema = z
   .object({
-    kmsEncryptionKeyArn: KmsEncryptionKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The KMS encryption key ARN.</p> <p>The KMS key must be single-Region key. Amazon Fraud Detector does not support multi-Region KMS key.</p>',
-        }),
-    ),
+    kmsEncryptionKeyArn: KmsEncryptionKeyArnSchema.openapi({
+      description:
+        '<p>The KMS encryption key ARN.</p> <p>The KMS key must be single-Region key. Amazon Fraud Detector does not support multi-Region KMS key.</p>',
+    }),
   })
   .openapi({ required: ['kmsEncryptionKeyArn'], title: 'PutKMSEncryptionKeyRequest' })
   .openapi('PutKMSEncryptionKeyRequest')
 
-const PutLabelResultSchema = z.object({}).openapi('PutLabelResult')
+const PutLabelResultSchema = z.looseObject({}).openapi('PutLabelResult')
 
 const PutLabelRequestSchema = z
   .object({
-    name: IdentifierSchema.and(z.any().openapi({ description: 'The label name.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The label description.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    name: IdentifierSchema.openapi({ description: 'The label name.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The label description.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: ['name'], title: 'PutLabelRequest' })
   .openapi('PutLabelRequest')
 
-const PutOutcomeResultSchema = z.object({}).openapi('PutOutcomeResult')
+const PutOutcomeResultSchema = z.looseObject({}).openapi('PutOutcomeResult')
 
 const PutOutcomeRequestSchema = z
   .object({
-    name: IdentifierSchema.and(z.any().openapi({ description: 'The name of the outcome.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The outcome description.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    name: IdentifierSchema.openapi({ description: 'The name of the outcome.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The outcome description.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({ required: ['name'], title: 'PutOutcomeRequest' })
   .openapi('PutOutcomeRequest')
 
-const SendEventResultSchema = z.object({}).openapi('SendEventResult')
+const SendEventResultSchema = z.looseObject({}).openapi('SendEventResult')
 
 const SendEventRequestSchema = z
   .object({
-    eventId: IdentifierSchema.and(z.any().openapi({ description: 'The event ID to upload.' })),
-    eventTypeName: IdentifierSchema.and(
-      z.any().openapi({ description: 'The event type name of the event.' }),
-    ),
-    eventTimestamp: UtcTimestampISO8601Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp that defines when the event under evaluation occurred. The timestamp must be specified using ISO 8601 standard in UTC.',
-        }),
-    ),
-    eventVariables: EventVariableMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Names of the event type's variables you defined in Amazon Fraud Detector to represent data elements and their corresponding values for the event you are sending for evaluation.",
-        }),
-    ),
-    assignedLabel: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The label to associate with the event. Required if specifying <code>labelTimestamp</code>.',
-        }),
-    ).exactOptional(),
-    labelTimestamp: UtcTimestampISO8601Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp associated with the label. Required if specifying <code>assignedLabel</code>.',
-        }),
-    ).exactOptional(),
-    entities: ListOfEntitiesSchema.and(z.any().openapi({ description: 'An array of entities.' })),
+    eventId: IdentifierSchema.openapi({ description: 'The event ID to upload.' }),
+    eventTypeName: IdentifierSchema.openapi({ description: 'The event type name of the event.' }),
+    eventTimestamp: UtcTimestampISO8601Schema.openapi({
+      description:
+        'The timestamp that defines when the event under evaluation occurred. The timestamp must be specified using ISO 8601 standard in UTC.',
+    }),
+    eventVariables: EventVariableMapSchema.openapi({
+      description:
+        "Names of the event type's variables you defined in Amazon Fraud Detector to represent data elements and their corresponding values for the event you are sending for evaluation.",
+    }),
+    assignedLabel: IdentifierSchema.exactOptional().openapi({
+      description:
+        'The label to associate with the event. Required if specifying <code>labelTimestamp</code>.',
+    }),
+    labelTimestamp: UtcTimestampISO8601Schema.exactOptional().openapi({
+      description:
+        'The timestamp associated with the label. Required if specifying <code>assignedLabel</code>.',
+    }),
+    entities: ListOfEntitiesSchema.openapi({ description: 'An array of entities.' }),
   })
   .openapi({
     required: ['eventId', 'eventTypeName', 'eventTimestamp', 'eventVariables', 'entities'],
@@ -3717,70 +3048,54 @@ const SendEventRequestSchema = z
   })
   .openapi('SendEventRequest')
 
-const TagResourceResultSchema = z.object({}).openapi('TagResourceResult')
+const TagResourceResultSchema = z.looseObject({}).openapi('TagResourceResult')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceARN: FraudDetectorArnSchema.and(z.any().openapi({ description: 'The resource ARN.' })),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to assign to the resource.' }),
-    ),
+    resourceARN: FraudDetectorArnSchema.openapi({ description: 'The resource ARN.' }),
+    tags: TagListSchema.openapi({ description: 'The tags to assign to the resource.' }),
   })
   .openapi({ required: ['resourceARN', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResultSchema = z.object({}).openapi('UntagResourceResult')
+const UntagResourceResultSchema = z.looseObject({}).openapi('UntagResourceResult')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(50).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceARN: FraudDetectorArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource from which to remove the tag.' }),
-    ),
-    tagKeys: TagKeyListSchema.and(z.any().openapi({ description: 'The resource ARN.' })),
+    resourceARN: FraudDetectorArnSchema.openapi({
+      description: 'The ARN of the resource from which to remove the tag.',
+    }),
+    tagKeys: TagKeyListSchema.openapi({ description: 'The resource ARN.' }),
   })
   .openapi({ required: ['resourceARN', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
-const UpdateDetectorVersionResultSchema = z.object({}).openapi('UpdateDetectorVersionResult')
+const UpdateDetectorVersionResultSchema = z.looseObject({}).openapi('UpdateDetectorVersionResult')
 
 const UpdateDetectorVersionRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The parent detector ID for the detector version you want to update.',
-        }),
-    ),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version ID. ' }),
-    ),
-    externalModelEndpoints: ListOfStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon SageMaker model endpoints to include in the detector version.',
-        }),
-    ),
-    rules: RuleListSchema.and(
-      z.any().openapi({ description: 'The rules to include in the detector version.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The detector version description. ' }),
-    ).exactOptional(),
-    modelVersions: ListOfModelVersionsSchema.and(
-      z.any().openapi({ description: 'The model versions to include in the detector version.' }),
-    ).exactOptional(),
-    ruleExecutionMode: RuleExecutionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rule execution mode to add to the detector.</p> <p>If you specify <code>FIRST_MATCHED</code>, Amazon Fraud Detector evaluates rules sequentially, first to last, stopping at the first matched rule. Amazon Fraud dectector then provides the outcomes for that single rule.</p> <p>If you specifiy <code>ALL_MATCHED</code>, Amazon Fraud Detector evaluates all rules and returns the outcomes for all matched rules. You can define and edit the rule mode at the detector version level, when it is in draft status.</p> <p>The default behavior is <code>FIRST_MATCHED</code>.</p>',
-        }),
-    ).exactOptional(),
+    detectorId: IdentifierSchema.openapi({
+      description: 'The parent detector ID for the detector version you want to update.',
+    }),
+    detectorVersionId: WholeNumberVersionStringSchema.openapi({
+      description: 'The detector version ID. ',
+    }),
+    externalModelEndpoints: ListOfStringsSchema.openapi({
+      description: 'The Amazon SageMaker model endpoints to include in the detector version.',
+    }),
+    rules: RuleListSchema.openapi({ description: 'The rules to include in the detector version.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The detector version description. ',
+    }),
+    modelVersions: ListOfModelVersionsSchema.exactOptional().openapi({
+      description: 'The model versions to include in the detector version.',
+    }),
+    ruleExecutionMode: RuleExecutionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The rule execution mode to add to the detector.</p> <p>If you specify <code>FIRST_MATCHED</code>, Amazon Fraud Detector evaluates rules sequentially, first to last, stopping at the first matched rule. Amazon Fraud dectector then provides the outcomes for that single rule.</p> <p>If you specifiy <code>ALL_MATCHED</code>, Amazon Fraud Detector evaluates all rules and returns the outcomes for all matched rules. You can define and edit the rule mode at the detector version level, when it is in draft status.</p> <p>The default behavior is <code>FIRST_MATCHED</code>.</p>',
+    }),
   })
   .openapi({
     required: ['detectorId', 'detectorVersionId', 'externalModelEndpoints', 'rules'],
@@ -3789,16 +3104,16 @@ const UpdateDetectorVersionRequestSchema = z
   .openapi('UpdateDetectorVersionRequest')
 
 const UpdateDetectorVersionMetadataResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateDetectorVersionMetadataResult')
 
 const UpdateDetectorVersionMetadataRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(z.any().openapi({ description: 'The detector ID.' })),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version ID. ' }),
-    ),
-    description: DescriptionSchema.and(z.any().openapi({ description: 'The description.' })),
+    detectorId: IdentifierSchema.openapi({ description: 'The detector ID.' }),
+    detectorVersionId: WholeNumberVersionStringSchema.openapi({
+      description: 'The detector version ID. ',
+    }),
+    description: DescriptionSchema.openapi({ description: 'The description.' }),
   })
   .openapi({
     required: ['detectorId', 'detectorVersionId', 'description'],
@@ -3807,23 +3122,19 @@ const UpdateDetectorVersionMetadataRequestSchema = z
   .openapi('UpdateDetectorVersionMetadataRequest')
 
 const UpdateDetectorVersionStatusResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateDetectorVersionStatusResult')
 
 const UpdateDetectorVersionStatusRequestSchema = z
   .object({
-    detectorId: IdentifierSchema.and(z.any().openapi({ description: 'The detector ID. ' })),
-    detectorVersionId: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The detector version ID. ' }),
-    ),
-    status: DetectorVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new status.</p> <p>The only supported values are <code>ACTIVE</code> and <code>INACTIVE</code> </p>',
-        }),
-    ),
+    detectorId: IdentifierSchema.openapi({ description: 'The detector ID. ' }),
+    detectorVersionId: WholeNumberVersionStringSchema.openapi({
+      description: 'The detector version ID. ',
+    }),
+    status: DetectorVersionStatusSchema.openapi({
+      description:
+        '<p>The new status.</p> <p>The only supported values are <code>ACTIVE</code> and <code>INACTIVE</code> </p>',
+    }),
   })
   .openapi({
     required: ['detectorId', 'detectorVersionId', 'status'],
@@ -3831,31 +3142,23 @@ const UpdateDetectorVersionStatusRequestSchema = z
   })
   .openapi('UpdateDetectorVersionStatusRequest')
 
-const UpdateEventLabelResultSchema = z.object({}).openapi('UpdateEventLabelResult')
+const UpdateEventLabelResultSchema = z.looseObject({}).openapi('UpdateEventLabelResult')
 
 const UpdateEventLabelRequestSchema = z
   .object({
-    eventId: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the event associated with the label to update.' }),
-    ),
-    eventTypeName: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The event type of the event associated with the label to update.',
-        }),
-    ),
-    assignedLabel: IdentifierSchema.and(
-      z.any().openapi({ description: 'The new label to assign to the event.' }),
-    ),
-    labelTimestamp: UtcTimestampISO8601Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp associated with the label. The timestamp must be specified using ISO 8601 standard in UTC. ',
-        }),
-    ),
+    eventId: IdentifierSchema.openapi({
+      description: 'The ID of the event associated with the label to update.',
+    }),
+    eventTypeName: IdentifierSchema.openapi({
+      description: 'The event type of the event associated with the label to update.',
+    }),
+    assignedLabel: IdentifierSchema.openapi({
+      description: 'The new label to assign to the event.',
+    }),
+    labelTimestamp: UtcTimestampISO8601Schema.openapi({
+      description:
+        'The timestamp associated with the label. The timestamp must be specified using ISO 8601 standard in UTC. ',
+    }),
   })
   .openapi({
     required: ['eventId', 'eventTypeName', 'assignedLabel', 'labelTimestamp'],
@@ -3863,103 +3166,77 @@ const UpdateEventLabelRequestSchema = z
   })
   .openapi('UpdateEventLabelRequest')
 
-const UpdateListResultSchema = z.object({}).openapi('UpdateListResult')
+const UpdateListResultSchema = z.looseObject({}).openapi('UpdateListResult')
 
 const ListUpdateModeSchema = z.enum(['REPLACE', 'APPEND', 'REMOVE']).openapi('ListUpdateMode')
 
 const UpdateListRequestSchema = z
   .object({
-    name: NoDashIdentifierSchema.and(
-      z.any().openapi({ description: ' The name of the list to update. ' }),
-    ),
-    elements: ElementsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> One or more list elements to add or replace. If you are providing the elements, make sure to specify the <code>updateMode</code> to use. </p> <p>If you are deleting all elements from the list, use <code>REPLACE</code> for the <code>updateMode</code> and provide an empty list (0 elements).</p>',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The new description. ' }),
-    ).exactOptional(),
-    updateMode: ListUpdateModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The update mode (type). </p> <ul> <li> <p>Use <code>APPEND</code> if you are adding elements to the list.</p> </li> <li> <p>Use <code>REPLACE</code> if you replacing existing elements in the list.</p> </li> <li> <p>Use <code>REMOVE</code> if you are removing elements from the list.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    variableType: VariableTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The variable type you want to assign to the list. </p> <note> <p>You cannot update a variable type of a list that already has a variable type assigned to it. You can assign a variable type to a list only if the list does not already have a variable type.</p> </note>',
-        }),
-    ).exactOptional(),
+    name: NoDashIdentifierSchema.openapi({ description: ' The name of the list to update. ' }),
+    elements: ElementsListSchema.exactOptional().openapi({
+      description:
+        '<p> One or more list elements to add or replace. If you are providing the elements, make sure to specify the <code>updateMode</code> to use. </p> <p>If you are deleting all elements from the list, use <code>REPLACE</code> for the <code>updateMode</code> and provide an empty list (0 elements).</p>',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The new description. ',
+    }),
+    updateMode: ListUpdateModeSchema.exactOptional().openapi({
+      description:
+        '<p> The update mode (type). </p> <ul> <li> <p>Use <code>APPEND</code> if you are adding elements to the list.</p> </li> <li> <p>Use <code>REPLACE</code> if you replacing existing elements in the list.</p> </li> <li> <p>Use <code>REMOVE</code> if you are removing elements from the list.</p> </li> </ul>',
+    }),
+    variableType: VariableTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The variable type you want to assign to the list. </p> <note> <p>You cannot update a variable type of a list that already has a variable type assigned to it. You can assign a variable type to a list only if the list does not already have a variable type.</p> </note>',
+    }),
   })
   .openapi({ required: ['name'], title: 'UpdateListRequest' })
   .openapi('UpdateListRequest')
 
-const UpdateModelResultSchema = z.object({}).openapi('UpdateModelResult')
+const UpdateModelResultSchema = z.looseObject({}).openapi('UpdateModelResult')
 
 const UpdateModelRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(z.any().openapi({ description: 'The model ID.' })),
-    modelType: ModelTypeEnumSchema.and(z.any().openapi({ description: 'The model type.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The new model description.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.openapi({ description: 'The model type.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The new model description.',
+    }),
   })
   .openapi({ required: ['modelId', 'modelType'], title: 'UpdateModelRequest' })
   .openapi('UpdateModelRequest')
 
 const UpdateModelVersionResultSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID.' }),
-    ).exactOptional(),
-    modelType: ModelTypeEnumSchema.and(
-      z.any().openapi({ description: 'The model type.' }),
-    ).exactOptional(),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number of the model version updated.' }),
-    ).exactOptional(),
-    status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the updated model version.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.exactOptional().openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.exactOptional().openapi({ description: 'The model type.' }),
+    modelVersionNumber: FloatVersionStringSchema.exactOptional().openapi({
+      description: 'The model version number of the model version updated.',
+    }),
+    status: StringSchema.exactOptional().openapi({
+      description: 'The status of the updated model version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateModelVersionResult')
 
 const UpdateModelVersionRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(z.any().openapi({ description: 'The model ID.' })),
-    modelType: ModelTypeEnumSchema.and(z.any().openapi({ description: 'The model type.' })),
-    majorVersionNumber: WholeNumberVersionStringSchema.and(
-      z.any().openapi({ description: 'The major version number.' }),
-    ),
-    externalEventsDetail: ExternalEventsDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details of the external events data used for training the model version. Required if <code>trainingDataSource</code> is <code>EXTERNAL_EVENTS</code>.',
-        }),
-    ).exactOptional(),
-    ingestedEventsDetail: IngestedEventsDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details of the ingested event used for training the model version. Required if your <code>trainingDataSource</code> is <code>INGESTED_EVENTS</code>.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of key and value pairs.' }),
-    ).exactOptional(),
+    modelId: ModelIdentifierSchema.openapi({ description: 'The model ID.' }),
+    modelType: ModelTypeEnumSchema.openapi({ description: 'The model type.' }),
+    majorVersionNumber: WholeNumberVersionStringSchema.openapi({
+      description: 'The major version number.',
+    }),
+    externalEventsDetail: ExternalEventsDetailSchema.exactOptional().openapi({
+      description:
+        'The details of the external events data used for training the model version. Required if <code>trainingDataSource</code> is <code>EXTERNAL_EVENTS</code>.',
+    }),
+    ingestedEventsDetail: IngestedEventsDetailSchema.exactOptional().openapi({
+      description:
+        'The details of the ingested event used for training the model version. Required if your <code>trainingDataSource</code> is <code>INGESTED_EVENTS</code>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A collection of key and value pairs.',
+    }),
   })
   .openapi({
     required: ['modelId', 'modelType', 'majorVersionNumber'],
@@ -3967,7 +3244,9 @@ const UpdateModelVersionRequestSchema = z
   })
   .openapi('UpdateModelVersionRequest')
 
-const UpdateModelVersionStatusResultSchema = z.object({}).openapi('UpdateModelVersionStatusResult')
+const UpdateModelVersionStatusResultSchema = z
+  .looseObject({})
+  .openapi('UpdateModelVersionStatusResult')
 
 const ModelVersionStatusSchema = z
   .enum(['ACTIVE', 'INACTIVE', 'TRAINING_CANCELLED'])
@@ -3975,16 +3254,14 @@ const ModelVersionStatusSchema = z
 
 const UpdateModelVersionStatusRequestSchema = z
   .object({
-    modelId: ModelIdentifierSchema.and(
-      z.any().openapi({ description: 'The model ID of the model version to update.' }),
-    ),
-    modelType: ModelTypeEnumSchema.and(z.any().openapi({ description: 'The model type.' })),
-    modelVersionNumber: FloatVersionStringSchema.and(
-      z.any().openapi({ description: 'The model version number.' }),
-    ),
-    status: ModelVersionStatusSchema.and(
-      z.any().openapi({ description: 'The model version status.' }),
-    ),
+    modelId: ModelIdentifierSchema.openapi({
+      description: 'The model ID of the model version to update.',
+    }),
+    modelType: ModelTypeEnumSchema.openapi({ description: 'The model type.' }),
+    modelVersionNumber: FloatVersionStringSchema.openapi({
+      description: 'The model version number.',
+    }),
+    status: ModelVersionStatusSchema.openapi({ description: 'The model version status.' }),
   })
   .openapi({
     required: ['modelId', 'modelType', 'modelVersionNumber', 'status'],
@@ -3992,37 +3269,35 @@ const UpdateModelVersionStatusRequestSchema = z
   })
   .openapi('UpdateModelVersionStatusRequest')
 
-const UpdateRuleMetadataResultSchema = z.object({}).openapi('UpdateRuleMetadataResult')
+const UpdateRuleMetadataResultSchema = z.looseObject({}).openapi('UpdateRuleMetadataResult')
 
 const UpdateRuleMetadataRequestSchema = z
   .object({
-    rule: RuleSchema.and(z.any().openapi({ description: 'The rule to update.' })),
-    description: DescriptionSchema.and(z.any().openapi({ description: 'The rule description.' })),
+    rule: RuleSchema.openapi({ description: 'The rule to update.' }),
+    description: DescriptionSchema.openapi({ description: 'The rule description.' }),
   })
   .openapi({ required: ['rule', 'description'], title: 'UpdateRuleMetadataRequest' })
   .openapi('UpdateRuleMetadataRequest')
 
 const UpdateRuleVersionResultSchema = z
   .object({
-    rule: RuleSchema.and(
-      z.any().openapi({ description: 'The new rule version that was created.' }),
-    ).exactOptional(),
+    rule: RuleSchema.exactOptional().openapi({
+      description: 'The new rule version that was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRuleVersionResult')
 
 const UpdateRuleVersionRequestSchema = z
   .object({
-    rule: RuleSchema.and(z.any().openapi({ description: 'The rule to update.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    expression: RuleExpressionSchema.and(z.any().openapi({ description: 'The rule expression.' })),
-    language: LanguageSchema.and(z.any().openapi({ description: 'The language.' })),
-    outcomes: NonEmptyListOfStringsSchema.and(z.any().openapi({ description: 'The outcomes.' })),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to assign to the rule version.' }),
-    ).exactOptional(),
+    rule: RuleSchema.openapi({ description: 'The rule to update.' }),
+    description: DescriptionSchema.exactOptional().openapi({ description: 'The description.' }),
+    expression: RuleExpressionSchema.openapi({ description: 'The rule expression.' }),
+    language: LanguageSchema.openapi({ description: 'The language.' }),
+    outcomes: NonEmptyListOfStringsSchema.openapi({ description: 'The outcomes.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to assign to the rule version.',
+    }),
   })
   .openapi({
     required: ['rule', 'expression', 'language', 'outcomes'],
@@ -4030,25 +3305,19 @@ const UpdateRuleVersionRequestSchema = z
   })
   .openapi('UpdateRuleVersionRequest')
 
-const UpdateVariableResultSchema = z.object({}).openapi('UpdateVariableResult')
+const UpdateVariableResultSchema = z.looseObject({}).openapi('UpdateVariableResult')
 
 const UpdateVariableRequestSchema = z
   .object({
-    name: StringSchema.and(z.any().openapi({ description: 'The name of the variable.' })),
-    defaultValue: StringSchema.and(
-      z.any().openapi({ description: 'The new default value of the variable.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The new description.' }),
-    ).exactOptional(),
-    variableType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The variable type. For more information see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>.',
-        }),
-    ).exactOptional(),
+    name: StringSchema.openapi({ description: 'The name of the variable.' }),
+    defaultValue: StringSchema.exactOptional().openapi({
+      description: 'The new default value of the variable.',
+    }),
+    description: StringSchema.exactOptional().openapi({ description: 'The new description.' }),
+    variableType: StringSchema.exactOptional().openapi({
+      description:
+        'The variable type. For more information see <a href="https://docs.aws.amazon.com/frauddetector/latest/ug/create-a-variable.html#variable-types">Variable types</a>.',
+    }),
   })
   .openapi({ required: ['name'], title: 'UpdateVariableRequest' })
   .openapi('UpdateVariableRequest')

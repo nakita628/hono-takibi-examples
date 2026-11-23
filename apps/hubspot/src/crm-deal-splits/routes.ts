@@ -1,23 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const PublicObjectIdSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'The unique identifier for the public object.', example: null }),
-  })
-  .openapi({ required: ['id'], description: 'Contains the Id of a Public Object', example: null })
-  .openapi('PublicObjectId')
-
-const BatchInputPublicObjectIdSchema = z
-  .object({
-    inputs: z
-      .array(PublicObjectIdSchema)
-      .openapi({ description: 'An array of deal split inputs', example: null }),
-  })
-  .openapi({ required: ['inputs'], example: null })
-  .openapi('BatchInputPublicObjectId')
-
 const ValueWithTimestampSchema = z
   .object({
     sourceId: z
@@ -155,55 +137,14 @@ const DealToDealSplitsSchema = z
   .openapi({ required: ['id', 'splits'], example: null })
   .openapi('DealToDealSplits')
 
-const BatchResponseDealToDealSplitsSchema = z
-  .object({
-    completedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The timestamp indicating when the batch operation was completed, in date-time format.',
-        example: null,
-      }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of link names to associated URIs for additional resources or documentation.',
-        example: null,
-      }),
-    requestedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp indicating when the batch operation was requested, in date-time format.',
-        example: null,
-      }),
-    results: z
-      .array(DealToDealSplitsSchema)
-      .openapi({
-        description:
-          'An array of deal-to-deal split objects representing the results of the batch operation.',
-        example: null,
-      }),
-    startedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The timestamp indicating when the batch operation started, in date-time format.',
-        example: null,
-      }),
-    status: z
-      .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
-      .openapi({
-        description:
-          'The current status of the batch operation, with possible values: CANCELED, COMPLETE, PENDING, PROCESSING.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
-  .openapi('BatchResponseDealToDealSplits')
+type BatchResponseDealToDealSplitsType = {
+  completedAt: string
+  links?: { [key: string]: string }
+  requestedAt?: string
+  results: z.infer<typeof DealToDealSplitsSchema>[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
 
 const ErrorDetailSchema = z
   .object({
@@ -278,7 +219,7 @@ const StandardErrorSchema = z
         example: null,
       }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A specific category that contains more specific detail about the error',
@@ -292,7 +233,36 @@ const StandardErrorSchema = z
   })
   .openapi('StandardError')
 
-const BatchResponseDealToDealSplitsWithErrorsSchema = z
+type BatchResponseDealToDealSplitsWithErrorsType = {
+  completedAt: string
+  errors?: z.infer<typeof StandardErrorSchema>[]
+  links?: { [key: string]: string }
+  numErrors?: number
+  requestedAt?: string
+  results: z.infer<typeof DealToDealSplitsSchema>[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+
+const PublicObjectIdSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'The unique identifier for the public object.', example: null }),
+  })
+  .openapi({ required: ['id'], description: 'Contains the Id of a Public Object', example: null })
+  .openapi('PublicObjectId')
+
+const BatchInputPublicObjectIdSchema = z
+  .object({
+    inputs: z
+      .array(PublicObjectIdSchema)
+      .openapi({ description: 'An array of deal split inputs', example: null }),
+  })
+  .openapi({ required: ['inputs'], example: null })
+  .openapi('BatchInputPublicObjectId')
+
+const BatchResponseDealToDealSplitsSchema: z.ZodType<BatchResponseDealToDealSplitsType> = z
   .object({
     completedAt: z.iso
       .datetime({ offset: true })
@@ -301,27 +271,12 @@ const BatchResponseDealToDealSplitsWithErrorsSchema = z
           'The timestamp indicating when the batch operation was completed, in date-time format.',
         example: null,
       }),
-    errors: z
-      .array(StandardErrorSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of error objects detailing the errors that occurred during the batch operation.',
-        example: null,
-      }),
     links: z
       .record(z.string(), z.string().openapi({ example: null }))
       .exactOptional()
       .openapi({
         description:
           'A map of link names to associated URIs for additional resources or documentation.',
-        example: null,
-      }),
-    numErrors: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The total number of errors encountered during the batch operation.',
         example: null,
       }),
     requestedAt: z.iso
@@ -355,7 +310,73 @@ const BatchResponseDealToDealSplitsWithErrorsSchema = z
       }),
   })
   .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
-  .openapi('BatchResponseDealToDealSplitsWithErrors')
+  .openapi('BatchResponseDealToDealSplits')
+
+const BatchResponseDealToDealSplitsWithErrorsSchema: z.ZodType<BatchResponseDealToDealSplitsWithErrorsType> =
+  z
+    .object({
+      completedAt: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description:
+            'The timestamp indicating when the batch operation was completed, in date-time format.',
+          example: null,
+        }),
+      errors: z
+        .array(StandardErrorSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'An array of error objects detailing the errors that occurred during the batch operation.',
+          example: null,
+        }),
+      links: z
+        .record(z.string(), z.string().openapi({ example: null }))
+        .exactOptional()
+        .openapi({
+          description:
+            'A map of link names to associated URIs for additional resources or documentation.',
+          example: null,
+        }),
+      numErrors: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description: 'The total number of errors encountered during the batch operation.',
+          example: null,
+        }),
+      requestedAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'The timestamp indicating when the batch operation was requested, in date-time format.',
+          example: null,
+        }),
+      results: z
+        .array(DealToDealSplitsSchema)
+        .openapi({
+          description:
+            'An array of deal-to-deal split objects representing the results of the batch operation.',
+          example: null,
+        }),
+      startedAt: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description:
+            'The timestamp indicating when the batch operation started, in date-time format.',
+          example: null,
+        }),
+      status: z
+        .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
+        .openapi({
+          description:
+            'The current status of the batch operation, with possible values: CANCELED, COMPLETE, PENDING, PROCESSING.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
+    .openapi('BatchResponseDealToDealSplitsWithErrors')
 
 const ErrorSchema = z
   .object({
@@ -487,11 +508,10 @@ const Oauth2SecurityScheme = {
       scopes: { 'crm.dealsplits.read_write': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.dealsplits.read_write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postDealSplits202609BatchReadRoute = createRoute({
   method: 'post',

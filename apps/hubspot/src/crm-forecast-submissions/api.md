@@ -19,11 +19,10 @@ Base URLs:
     - Authorization URL = [https://app.hubspot.com/oauth/authorize](https://app.hubspot.com/oauth/authorize)
     - Token URL = [https://api.hubapi.com/oauth/v1/token](https://api.hubapi.com/oauth/v1/token)
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|Scope|Scope Description|
+|---|---|
+|crm.objects.forecasts.read||
+|crm.schemas.forecasts.read||
 
 <h1 id="crm-forecast-submissions-basic">Basic</h1>
 
@@ -35,7 +34,8 @@ Base URLs:
 
 ```bash
 curl https://api.hubapi.com/forecast-submissions/2026-09/events \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /forecast-submissions/2026-09/events`
@@ -72,8 +72,9 @@ null
 |200|OK|successful operation|[CollectionResponseForecastSubmissionEventForwardPaging](#schemacollectionresponseforecastsubmissioneventforwardpaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: crm.schemas.forecasts.read ), oauth2 ( Scopes: crm.objects.forecasts.read )
 </aside>
 
 # Schemas

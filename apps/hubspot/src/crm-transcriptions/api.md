@@ -32,12 +32,6 @@ Base URLs:
 |crm.schemas.contacts.read||
 |crm.schemas.contacts.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="transcriptions-advanced">Advanced</h1>
 
 ## Handle Inbound Call

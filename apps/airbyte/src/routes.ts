@@ -2656,6 +2656,7 @@ type ConnectionCreateRequestType = {
   namespaceFormat?: string | null
   prefix?: string
   nonBreakingSchemaUpdatesBehavior?: z.infer<typeof NonBreakingSchemaUpdatesBehaviorEnumSchema>
+  notifySchemaChanges?: boolean
   status?: z.infer<typeof ConnectionStatusEnumSchema>
   tags?: z.infer<typeof TagSchema>[]
 }
@@ -2688,6 +2689,7 @@ type ConnectionPatchRequestType = {
   nonBreakingSchemaUpdatesBehavior?: z.infer<
     typeof NonBreakingSchemaUpdatesBehaviorEnumNoDefaultSchema
   >
+  notifySchemaChanges?: boolean
   status?: z.infer<typeof ConnectionStatusEnumSchema>
   tags?: z.infer<typeof TagSchema>[]
 }
@@ -3040,6 +3042,7 @@ type ConnectionResponseType = {
   status: z.infer<typeof ConnectionStatusEnumSchema>
   schedule: z.infer<typeof ConnectionScheduleResponseSchema>
   nonBreakingSchemaUpdatesBehavior?: z.infer<typeof NonBreakingSchemaUpdatesBehaviorEnumSchema>
+  notifySchemaChanges?: boolean
   namespaceDefinition?: z.infer<typeof NamespaceDefinitionEnumSchema>
   namespaceFormat?: string
   prefix?: string
@@ -3059,6 +3062,13 @@ const ConnectionResponseSchema: z.ZodType<ConnectionResponseType> = z
     status: ConnectionStatusEnumSchema,
     schedule: ConnectionScheduleResponseSchema,
     nonBreakingSchemaUpdatesBehavior: NonBreakingSchemaUpdatesBehaviorEnumSchema.exactOptional(),
+    notifySchemaChanges: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Turns schema change notifications on or off for this connection. The workspace's notification settings decide where they are sent. Breaking changes use `connectionUpdateActionRequired`. Other schema changes use `connectionUpdate`.",
+      }),
     namespaceDefinition: NamespaceDefinitionEnumSchema.exactOptional(),
     namespaceFormat: z.string().exactOptional(),
     prefix: z.string().exactOptional(),
@@ -4085,8 +4095,41 @@ const DomainVerificationListResponseSchema = z
   .openapi({ required: ['domainVerifications'] })
   .openapi('DomainVerificationListResponse')
 
+const AirbyteReleaseCreateRequestBodySchema = z
+  .object({
+    version: z.string().openapi({ description: 'Published application version, such as 2.1.0.' }),
+    sourceCommit: z
+      .string()
+      .openapi({ description: 'Full commit SHA the release was built from.' }),
+    publishedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When chart publication completed.' }),
+  })
+  .openapi({ required: ['version', 'sourceCommit', 'publishedAt'] })
+  .openapi('AirbyteReleaseCreateRequestBody')
+
+const AirbyteReleaseReadSchema = z
+  .object({
+    version: z.string().openapi({ description: 'Published application version, such as 2.1.0.' }),
+    sourceCommit: z
+      .string()
+      .openapi({ description: 'Full commit SHA the release was built from.' }),
+    publishedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When chart publication completed.' }),
+  })
+  .openapi({ required: ['version', 'sourceCommit', 'publishedAt'] })
+  .openapi('AirbyteReleaseRead')
+
 const WebhookConfigWriteSchema = z
   .object({
+    id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of an existing webhook configuration in this workspace. Omit when creating a configuration.',
+      }),
     name: z
       .string()
       .exactOptional()
@@ -4095,7 +4138,8 @@ const WebhookConfigWriteSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'an auth token, to be passed as the value for an HTTP Authorization header.',
+        description:
+          'an auth token, to be passed as the value for an HTTP Authorization header. Omit when updating to preserve the existing token.',
       }),
     validationUrl: z
       .string()
@@ -4330,7 +4374,14 @@ const WorkspaceUpdateSchema = z
     notificationSettings: NotificationSettingsSchema.exactOptional(),
     notificationsConfig: NotificationsConfigSchema.exactOptional(),
     dataplaneGroupId: z.uuid().exactOptional(),
-    webhookConfigs: z.array(WebhookConfigWriteSchema).exactOptional(),
+    webhookConfigs: z
+      .array(WebhookConfigWriteSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Omit or set to null to preserve current webhook configurations. An empty list removes all configurations.',
+      }),
   })
   .openapi({
     description:
@@ -7431,6 +7482,41 @@ const OrganizationSemanticSearchEnablementReadSchema = z
   .openapi({ required: ['organizationId', 'semanticSearchEnabled'] })
   .openapi('OrganizationSemanticSearchEnablementRead')
 
+const OrganizationOnboardingStatusSchema = z
+  .enum([
+    'survey',
+    'choose_method',
+    'create_source',
+    'create_destination',
+    'create_connection',
+    'run_first_sync',
+    'completed',
+    'skipped',
+  ])
+  .openapi({
+    description:
+      'The step of the Cloud onboarding flow that the organization is on, or how the organization left the flow.',
+  })
+  .openapi('OrganizationOnboardingStatus')
+
+const OrganizationOnboardingStatusReadSchema = z
+  .object({ status: OrganizationOnboardingStatusSchema })
+  .openapi({ required: ['status'] })
+  .openapi('OrganizationOnboardingStatusRead')
+
+const OrganizationOnboardingStatusUpdateRequestBodySchema = z
+  .object({ organizationId: z.uuid(), status: OrganizationOnboardingStatusSchema })
+  .openapi({ required: ['organizationId', 'status'] })
+  .openapi('OrganizationOnboardingStatusUpdateRequestBody')
+
+const OrganizationOnboardingMobileHandoffEmailRequestBodySchema = z
+  .object({
+    organizationId: z.uuid(),
+    workspaceId: z.uuid().openapi({ description: 'The workspace that the email link opens.' }),
+  })
+  .openapi({ required: ['organizationId', 'workspaceId'] })
+  .openapi('OrganizationOnboardingMobileHandoffEmailRequestBody')
+
 const OrganizationUpdateRequestBodySchema = z
   .object({
     organizationId: z.uuid(),
@@ -7449,10 +7535,10 @@ const OrganizationCreateRequestBodySchema = z
   .object({
     userId: z.uuid(),
     organizationName: z.string(),
-    email: z.string().exactOptional(),
+    email: z.string(),
     isAgentic: z.boolean().default(false).exactOptional(),
   })
-  .openapi({ required: ['userId', 'organizationName'] })
+  .openapi({ required: ['userId', 'organizationName', 'email'] })
   .openapi('OrganizationCreateRequestBody')
 
 const OrganizationInfoReadSchema = z
@@ -7495,10 +7581,11 @@ const OrganizationInfoReadSchema = z
       .exactOptional()
       .openapi({ required: ['paymentStatus'] }),
     organizationPlanId: z.string().exactOptional(),
+    onboardingStatus: OrganizationOnboardingStatusSchema.exactOptional(),
   })
   .openapi({
     description:
-      'Limited info about an organization that is safe to expose to organization members.',
+      'Limited info about an organization that is safe to expose to organization members. /v1/organizations/get_organization_info sets onboardingStatus, and /v1/workspaces/get_organization_info does not. onboardingStatus is absent when the organization is not enrolled in the onboarding flow.',
     required: ['organizationId', 'organizationName', 'sso', 'scim'],
   })
   .openapi('OrganizationInfoRead')
@@ -9336,6 +9423,7 @@ const MigrateSecretStorageRequestBodySchema = z
 const SecretStorageReadSchema = z
   .object({
     id: SecretStorageIdSchema,
+    descriptor: z.string().exactOptional(),
     secretStorageType: SecretStorageTypeSchema,
     isConfiguredFromEnvironment: z.boolean(),
     scopeType: ScopeTypeSchema,
@@ -9722,6 +9810,13 @@ const ConnectionCreateRequestSchema: z.ZodType<ConnectionCreateRequestType> = z
           'Prefix that will be prepended to the name of each stream when it is written to the destination (ex. “airbyte_” causes “projects” => “airbyte_projects”).',
       }),
     nonBreakingSchemaUpdatesBehavior: NonBreakingSchemaUpdatesBehaviorEnumSchema.exactOptional(),
+    notifySchemaChanges: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Turns schema change notifications on or off for this connection. The workspace's notification settings decide where they are sent. Breaking changes use `connectionUpdateActionRequired`. Other schema changes use `connectionUpdate`. If omitted, it is true when the workspace's `connectionUpdate` settings have email or webhook enabled. Otherwise it is false.",
+      }),
     status: ConnectionStatusEnumSchema.exactOptional(),
     tags: z.array(TagSchema).exactOptional(),
   })
@@ -9766,6 +9861,13 @@ const ConnectionPatchRequestSchema: z.ZodType<ConnectionPatchRequestType> = z
       }),
     nonBreakingSchemaUpdatesBehavior:
       NonBreakingSchemaUpdatesBehaviorEnumNoDefaultSchema.exactOptional(),
+    notifySchemaChanges: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Turns schema change notifications on or off for this connection. The workspace's notification settings decide where they are sent. Breaking changes use `connectionUpdateActionRequired`. Other schema changes use `connectionUpdate`.",
+      }),
     status: ConnectionStatusEnumSchema.exactOptional(),
     tags: z.array(TagSchema).exactOptional(),
   })
@@ -11464,8 +11566,98 @@ const DataplaneTokenRequestBodySchema = z
   .openapi({ required: ['client_id', 'client_secret'] })
   .openapi('DataplaneTokenRequestBody')
 
-const DataplaneHeartbeatRequestBodySchema = z
+const DataplaneSecretStoragesRequestBodySchema = z
   .object({ client_id: z.string() })
+  .openapi({ required: ['client_id'] })
+  .openapi('DataplaneSecretStoragesRequestBody')
+
+const DataplaneSecretStorageSchema = z
+  .object({ secret_storage_id: z.uuid(), scope_type: ScopeTypeSchema, scope_id: z.uuid() })
+  .openapi({
+    description: 'A secret storage, and the workspace or organization it is configured for.',
+    required: ['secret_storage_id', 'scope_type', 'scope_id'],
+  })
+  .openapi('DataplaneSecretStorage')
+
+const DataplaneSecretStoragesResponseSchema = z
+  .object({ secret_storages: z.array(DataplaneSecretStorageSchema) })
+  .openapi({ required: ['secret_storages'] })
+  .openapi('DataplaneSecretStoragesResponse')
+
+const DataplaneDiagnosticStatusSchema = z
+  .enum(['PASSED', 'FAILED', 'UNABLE_TO_COMPLETE', 'NOT_CONFIGURED'])
+  .openapi({
+    description:
+      'Outcome of one check. UNABLE_TO_COMPLETE means the result is unknown; NOT_CONFIGURED means there was nothing to check.',
+  })
+  .openapi('DataplaneDiagnosticStatus')
+
+const DataplaneDiagnosticResultSchema = z
+  .object({
+    kind: z
+      .string()
+      .openapi({
+        description:
+          'A DataplaneDiagnosticKind value. It is a plain string so that a server that does not know a newer kind skips that result and still records the rest of the heartbeat.',
+      }),
+    target_id: z
+      .uuid()
+      .openapi({
+        description:
+          'What was checked, such as a secret store ID. The data plane ID for checks on the whole data plane.',
+      }),
+    status: DataplaneDiagnosticStatusSchema,
+    checked_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'When the check finished, in epoch milliseconds.',
+      }),
+    error_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Short failure code. Required unless status is PASSED.' }),
+    error_message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Failure explanation that is safe to show the customer. Required unless status is PASSED.',
+      }),
+    observation: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Details specific to the kind of check. SECRET_STORAGE sends scope_type and scope_id. WORKLOAD_SCHEDULING sends blocked_count, longest_blocked_since, longest_blocked_workload_type, last_scheduled {scheduled_at, workload_type} and last_problem {observed_at, reason, message}, with the data plane ID as target_id. Its times are epoch milliseconds, and its workload types are SYNC, CHECK or DISCOVER. A field left out reads as null: longest_blocked_since and longest_blocked_workload_type, which describe the pod that has waited longest, are left out when nothing is blocked, and last_scheduled and last_problem until observed. An UNABLE_TO_COMPLETE result leaves out blocked_count, longest_blocked_since and longest_blocked_workload_type, because the scan measured nothing; its last_scheduled and last_problem come from earlier scans.',
+      }),
+  })
+  .openapi({
+    description: 'One completed check, as reported by the data plane.',
+    required: ['kind', 'target_id', 'status', 'checked_at'],
+  })
+  .openapi('DataplaneDiagnosticResult')
+
+const DataplaneHeartbeatRequestBodySchema = z
+  .object({
+    client_id: z.string(),
+    diagnostics: z
+      .array(DataplaneDiagnosticResultSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Latest completed result of each diagnostic check. A check left out keeps its saved result.',
+      }),
+  })
   .openapi({ required: ['client_id'] })
   .openapi('DataplaneHeartbeatRequestBody')
 
@@ -11506,6 +11698,145 @@ const HeartbeatRecordSchema = z
   .openapi({ required: ['timestamp'] })
   .openapi('HeartbeatRecord')
 
+const DataplaneVersionSupportSchema = z
+  .object({
+    status: z
+      .enum(['SUPPORTED', 'SUPPORT_ENDED', 'UNKNOWN'])
+      .openapi({
+        description:
+          'UNKNOWN when the data plane reported no version, or reported one that is not a published release, such as a custom build.',
+      }),
+    published_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'When the release was published, in epoch milliseconds. Absent when status is UNKNOWN.',
+      }),
+    supported_until: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'First moment the release is no longer supported, in epoch milliseconds. Absent when status is UNKNOWN.',
+      }),
+  })
+  .openapi({
+    description:
+      'Whether the release in dataplane_version is still inside its support period, evaluated on every request. This is the age of the release, not its compatibility. Present only when the data plane health UI is enabled for the organization.',
+    required: ['status'],
+  })
+  .openapi('DataplaneVersionSupport')
+
+const DataplaneHealthHistoryBucketSchema = z
+  .object({
+    bucket_start: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Start of the period in epoch milliseconds.',
+      }),
+    status: z
+      .enum(['HEALTHY', 'DEGRADED', 'UNHEALTHY', 'UNKNOWN'])
+      .openapi({
+        description:
+          'Worst check-in state reached inside the period. UNKNOWN when the period ends before the first known check-in.',
+      }),
+  })
+  .openapi({ required: ['bucket_start', 'status'] })
+  .openapi('DataplaneHealthHistoryBucket')
+
+const DataplaneDiagnosticKindSchema = z
+  .enum(['SECRET_STORAGE', 'STORAGE_REACHABILITY', 'WORKLOAD_SCHEDULING', 'AUTHENTICATION'])
+  .openapi({ description: 'Which diagnostic check produced the result.' })
+  .openapi('DataplaneDiagnosticKind')
+
+const DataplaneDiagnosticReadSchema = z
+  .object({
+    kind: DataplaneDiagnosticKindSchema,
+    target_id: z.uuid(),
+    target_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Name of the target when Airbyte knows it, such as a secret store's name.",
+      }),
+    status: DataplaneDiagnosticStatusSchema,
+    checked_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'When the check finished, in epoch milliseconds.',
+      }),
+    updated_at: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'When Airbyte last received this result, in epoch milliseconds.',
+      }),
+    error_code: z.string().exactOptional(),
+    error_message: z.string().exactOptional(),
+    observation: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Details specific to the kind of check, as saved. AUTHENTICATION has association: REGISTERED_CLIENT_ID when the rejected client ID belongs to the data plane, or CLAIMED_DIAGNOSTIC_ID when the client ID matched no data plane and the unauthenticated X-Airbyte-Diagnostics-Dataplane-Id header named this one.',
+      }),
+  })
+  .openapi({
+    description: 'The saved result of one check.',
+    required: ['kind', 'target_id', 'status', 'checked_at', 'updated_at'],
+  })
+  .openapi('DataplaneDiagnosticRead')
+
 const DataplaneHealthReadSchema = z
   .object({
     dataplane_id: z.uuid(),
@@ -11528,6 +11859,33 @@ const DataplaneHealthReadSchema = z
     recent_heartbeats: z.array(HeartbeatRecordSchema).exactOptional(),
     control_plane_version: z.string().exactOptional(),
     dataplane_version: z.string().exactOptional(),
+    dataplane_version_support: DataplaneVersionSupportSchema.exactOptional(),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True when both the dataplane and its dataplane group are enabled.',
+      }),
+    health_history: z
+      .array(DataplaneHealthHistoryBucketSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          '48 periods of 15 minutes aligned to the clock (:00, :15, :30, :45 UTC), oldest first. The last period is the current one, graded on the check-ins so far. Present only when the data plane health UI is enabled for the organization.',
+      }),
+    diagnostics: z
+      .array(DataplaneDiagnosticReadSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Saved result of each diagnostic check the data plane has reported.',
+      }),
+    unsupported_diagnostic_kinds: z
+      .array(DataplaneDiagnosticKindSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Checks this data plane's version is too old to run. A check with a saved result is never listed.",
+      }),
   })
   .openapi({
     required: ['dataplane_id', 'dataplane_name', 'dataplane_group_id', 'organization_id', 'status'],
@@ -11874,6 +12232,20 @@ const AirbyteVersionHeaderParamsSchema = z
       in: 'header',
       required: false,
       description: 'Airbyte application version',
+      schema: { type: 'string' },
+    },
+  })
+
+const DiagnosticsDataplaneIdHeaderParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'X-Airbyte-Diagnostics-Dataplane-Id',
+      in: 'header',
+      required: false,
+      description:
+        'The data plane ID the installation was configured with. It is used only to attribute a rejected exchange and never authenticates the caller. A plain string, so a malformed value cannot change the response.',
       schema: { type: 'string' },
     },
   })
@@ -16469,7 +16841,7 @@ export const postV1JobsCreateRoute = createRoute({
   path: '/v1/jobs/create',
   tags: ['jobs', 'internal'],
   summary:
-    'Creates a new job for a given connection. If a job is already running for the connection, it will be stopped and a new job will be created.',
+    'Creates a new job for a given connection. If the connection already has a non-terminal job, that job is returned and no new job is created.',
   operationId: 'createJob',
   request: {
     body: { content: { 'application/json': { schema: JobCreateSchema } }, required: true },
@@ -18196,6 +18568,61 @@ export const postV1OrganizationsUpdateSemanticSearchEnablementRoute = createRout
     401: { description: 'Authentication required.' },
     403: { description: 'Organization admin permission required.' },
     404: { description: 'The organization does not exist or has been deleted.' },
+  },
+})
+
+export const postV1OrganizationsOnboardingUpdateRoute = createRoute({
+  method: 'post',
+  path: '/v1/organizations/onboarding/update',
+  tags: ['organization', 'cloud-only'],
+  summary: 'Update the onboarding status of an organization',
+  description: 'Requires the organization editor role.',
+  operationId: 'updateOrganizationOnboardingStatus',
+  request: {
+    body: {
+      content: {
+        'application/json': { schema: OrganizationOnboardingStatusUpdateRequestBodySchema },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The updated onboarding status.',
+      content: { 'application/json': { schema: OrganizationOnboardingStatusReadSchema } },
+    },
+    400: {
+      description:
+        'Required request fields are missing or null, organizationId is invalid, or status is not a known value.',
+    },
+    401: { description: 'Authentication required.' },
+    403: { description: 'The caller does not have the organization editor role.' },
+    404: { description: 'The organization does not exist or has been deleted.' },
+  },
+})
+
+export const postV1OrganizationsOnboardingSendMobileHandoffEmailRoute = createRoute({
+  method: 'post',
+  path: '/v1/organizations/onboarding/send_mobile_handoff_email',
+  tags: ['organization', 'cloud-only'],
+  summary: 'Email the current user a link to continue onboarding on a computer',
+  description: 'Requires the organization editor role. Sends on every call.',
+  operationId: 'sendOnboardingMobileHandoffEmail',
+  request: {
+    body: {
+      content: {
+        'application/json': { schema: OrganizationOnboardingMobileHandoffEmailRequestBodySchema },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    204: { description: 'The email was accepted by the email provider.' },
+    400: { description: 'Required request fields are missing or null, or an id is invalid.' },
+    401: { description: 'Authentication required.' },
+    403: { description: 'The caller does not have the organization editor role.' },
+    404: { description: 'The organization does not exist or has been deleted.' },
+    500: { description: 'The email provider rejected the email or could not be reached.' },
   },
 })
 
@@ -20355,6 +20782,9 @@ export const postV1DataplanesTokenRoute = createRoute({
   summary: 'Get a token for dataplane requests',
   operationId: 'getDataplaneToken',
   request: {
+    headers: z.object({
+      'X-Airbyte-Diagnostics-Dataplane-Id': DiagnosticsDataplaneIdHeaderParamsSchema,
+    }),
     body: {
       content: {
         'application/json': { schema: DataplaneTokenRequestBodySchema },
@@ -20389,6 +20819,27 @@ export const postV1DataplanesHeartbeatRoute = createRoute({
     200: {
       description: 'Successfully retrieved dataplane heartbeat information',
       content: { 'application/json': { schema: DataplaneHeartbeatResponseSchema } },
+    },
+    422: InvalidInputResponseResponse,
+  },
+})
+
+export const postV1DataplanesSecretStoragesListRoute = createRoute({
+  method: 'post',
+  path: '/v1/dataplanes/secret_storages/list',
+  tags: ['dataplane'],
+  summary: 'For a dataplane to get the secret storages its workloads use',
+  operationId: 'listDataplaneSecretStorages',
+  request: {
+    body: {
+      content: { 'application/json': { schema: DataplaneSecretStoragesRequestBodySchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: "The distinct secret storages used by the workspaces in the dataplane's region",
+      content: { 'application/json': { schema: DataplaneSecretStoragesResponseSchema } },
     },
     422: InvalidInputResponseResponse,
   },
@@ -24743,6 +25194,32 @@ export const postV1DomainVerificationsResetRoute = createRoute({
     },
     404: NotFoundResponseResponse,
     422: InvalidInputResponseResponse,
+  },
+})
+
+export const postV1AirbyteReleasesCreateRoute = createRoute({
+  method: 'post',
+  path: '/v1/airbyte_releases/create',
+  tags: ['airbyte_releases', 'cloud-only'],
+  summary: 'Create a published Airbyte release',
+  description:
+    'Instance admin endpoint called after both Helm charts publish. Only Airbyte Cloud stores releases; other editions return 501. Each version is created once and never changes. Creating the same version and source commit again is safe to retry and returns the stored release with its original publication time; a different source commit for a stored version is a conflict.',
+  operationId: 'createAirbyteRelease',
+  request: {
+    body: {
+      content: { 'application/json': { schema: AirbyteReleaseCreateRequestBodySchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The stored release.',
+      content: { 'application/json': { schema: AirbyteReleaseReadSchema } },
+    },
+    400: { description: 'Invalid version or source commit' },
+    403: ForbiddenResponseResponse,
+    409: { description: 'The version is already recorded with a different source commit' },
+    501: { description: 'Not implemented outside Airbyte Cloud' },
   },
 })
 

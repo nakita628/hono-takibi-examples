@@ -22,12 +22,7 @@ Base URLs:
 |Scope|Scope Description|
 |---|---|
 |crm.import||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|crm.objects.contacts.import||
 
 <h1 id="crm-imports-advanced">Advanced</h1>
 
@@ -185,7 +180,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: crm.import )
+oauth2 ( Scopes: crm.objects.contacts.import ), oauth2 ( Scopes: crm.import )
 </aside>
 
 ## Get the information on any import
@@ -233,7 +228,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: crm.import )
+oauth2 ( Scopes: crm.objects.contacts.import ), oauth2 ( Scopes: crm.import )
 </aside>
 
 ## Retrieve errors for a specific import
@@ -285,7 +280,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: crm.import )
+oauth2 ( Scopes: crm.objects.contacts.import ), oauth2 ( Scopes: crm.import )
 </aside>
 
 # Schemas
@@ -780,6 +775,7 @@ null
 |errorType|INVALID_SPREADSHEET|
 |errorType|LIMIT_EXCEEDED|
 |errorType|LINE_ITEM_MULTIPLE_PARENTS_IN_ROW|
+|errorType|MANY_DUPLICATE_ERRORS|
 |errorType|MANY_ERRORS_IN_ROW|
 |errorType|MISSING_EVENT_DEFINITION|
 |errorType|MISSING_EVENT_TIMESTAMP|

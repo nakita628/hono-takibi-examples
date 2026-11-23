@@ -1,609 +1,89 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AdvanceChildRolloutJobSchema = z
-  .object({})
-  .openapi({ description: 'An advanceChildRollout Job.' })
-  .openapi('AdvanceChildRolloutJob')
-
-const CreateChildRolloutJobSchema = z
-  .object({})
-  .openapi({ description: 'A createChildRollout Job.' })
-  .openapi('CreateChildRolloutJob')
-
-const DeployJobSchema = z.object({}).openapi({ description: 'A deploy Job.' }).openapi('DeployJob')
-
-const VerifyJobSchema = z.object({}).openapi({ description: 'A verify Job.' }).openapi('VerifyJob')
-
-type JobType = {
-  advanceChildRolloutJob?: z.infer<typeof AdvanceChildRolloutJobSchema>
-  createChildRolloutJob?: z.infer<typeof CreateChildRolloutJobSchema>
-  deployJob?: z.infer<typeof DeployJobSchema>
-  id?: string
-  jobRun?: string
-  skipMessage?: string
-  state?:
-    | 'STATE_UNSPECIFIED'
-    | 'PENDING'
-    | 'DISABLED'
-    | 'IN_PROGRESS'
-    | 'SUCCEEDED'
-    | 'FAILED'
-    | 'ABORTED'
-    | 'SKIPPED'
-    | 'IGNORED'
-  verifyJob?: z.infer<typeof VerifyJobSchema>
-}
-
-const AdvanceChildRolloutJobRunSchema = z
+const PipelineReadyConditionSchema = z
   .object({
-    rollout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Name of the `ChildRollout`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/{release}/rollouts/a-z{0,62}.',
-        readOnly: true,
-      }),
-    rolloutPhaseId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. the ID of the ChildRollout's Phase.", readOnly: true }),
-  })
-  .openapi({
-    description:
-      'AdvanceChildRolloutJobRun contains information specific to a advanceChildRollout `JobRun`.',
-    required: [],
-  })
-  .openapi('AdvanceChildRolloutJobRun')
-
-const CreateChildRolloutJobRunSchema = z
-  .object({
-    rollout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Name of the `ChildRollout`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/{release}/rollouts/a-z{0,62}.',
-        readOnly: true,
-      }),
-    rolloutPhaseId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The ID of the childRollout Phase initiated by this JobRun.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'CreateChildRolloutJobRun contains information specific to a createChildRollout `JobRun`.',
-    required: [],
-  })
-  .openapi('CreateChildRolloutJobRun')
-
-const CloudRunMetadataSchema = z
-  .object({
-    revision: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The Cloud Run Revision id associated with a `Rollout`.',
-        readOnly: true,
-      }),
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The name of the Cloud Run Service that is associated with a `Rollout`. Format is projects/{project}/locations/{location}/services/{service}.',
-        readOnly: true,
-      }),
-    serviceUrls: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The Cloud Run Service urls that are associated with a `Rollout`.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'CloudRunMetadata contains information from a Cloud Run deployment.',
-    required: [],
-  })
-  .openapi('CloudRunMetadata')
-
-const DeployJobRunMetadataSchema = z
-  .object({
-    cloudRun: CloudRunMetadataSchema.exactOptional().openapi({
-      description:
-        'Output only. The name of the Cloud Run Service that is associated with a `DeployJobRun`.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description:
-      'DeployJobRunMetadata surfaces information associated with a `DeployJobRun` to the user.',
-    required: [],
-  })
-  .openapi('DeployJobRunMetadata')
-
-const DeployJobRunSchema = z
-  .object({
-    build: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource name of the Cloud Build `Build` object that is used to deploy. Format is projects/{project}/locations/{location}/builds/{build}.',
-        readOnly: true,
-      }),
-    failureCause: z
-      .enum([
-        'FAILURE_CAUSE_UNSPECIFIED',
-        'CLOUD_BUILD_UNAVAILABLE',
-        'EXECUTION_FAILED',
-        'DEADLINE_EXCEEDED',
-        'MISSING_RESOURCES_FOR_CANARY',
-        'CLOUD_BUILD_REQUEST_FAILED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The reason the deploy failed. This will always be unspecified while the deploy is in progress or if it succeeded.',
-        readOnly: true,
-      }),
-    failureMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Additional information about the deploy failure, if available.',
-        readOnly: true,
-      }),
-    metadata: DeployJobRunMetadataSchema.exactOptional().openapi({
-      description: 'Output only. Metadata containing information about the deploy job run.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description: 'DeployJobRun contains information specific to a deploy `JobRun`.',
-    required: [],
-  })
-  .openapi('DeployJobRun')
-
-const VerifyJobRunSchema = z
-  .object({
-    artifactUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. URI of a directory containing the verify artifacts. This contains the Skaffold event log.',
-        readOnly: true,
-      }),
-    build: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource name of the Cloud Build `Build` object that is used to verify. Format is projects/{project}/locations/{location}/builds/{build}.',
-        readOnly: true,
-      }),
-    eventLogPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. File path of the Skaffold event log relative to the artifact URI.',
-        readOnly: true,
-      }),
-    failureCause: z
-      .enum([
-        'FAILURE_CAUSE_UNSPECIFIED',
-        'CLOUD_BUILD_UNAVAILABLE',
-        'EXECUTION_FAILED',
-        'DEADLINE_EXCEEDED',
-        'VERIFICATION_CONFIG_NOT_FOUND',
-        'CLOUD_BUILD_REQUEST_FAILED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The reason the verify failed. This will always be unspecified while the verify is in progress or if it succeeded.',
-        readOnly: true,
-      }),
-    failureMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Additional information about the verify failure, if available.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'VerifyJobRun contains information specific to a verify `JobRun`.',
-    required: [],
-  })
-  .openapi('VerifyJobRun')
-
-type JobRunType = {
-  advanceChildRolloutJobRun?: z.infer<typeof AdvanceChildRolloutJobRunSchema>
-  createChildRolloutJobRun?: z.infer<typeof CreateChildRolloutJobRunSchema>
-  createTime?: string
-  deployJobRun?: z.infer<typeof DeployJobRunSchema>
-  endTime?: string
-  etag?: string
-  jobId?: string
-  name?: string
-  phaseId?: string
-  startTime?: string
-  state?:
-    | 'STATE_UNSPECIFIED'
-    | 'IN_PROGRESS'
-    | 'SUCCEEDED'
-    | 'FAILED'
-    | 'TERMINATING'
-    | 'TERMINATED'
-  uid?: string
-  verifyJobRun?: z.infer<typeof VerifyJobRunSchema>
-}
-
-type MetadataType = { cloudRun?: z.infer<typeof CloudRunMetadataSchema> }
-
-const CloudRunRenderMetadataSchema = z
-  .object({
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The name of the Cloud Run Service in the rendered manifest. Format is projects/{project}/locations/{location}/services/{service}.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'CloudRunRenderMetadata contains Cloud Run information associated with a `Release` render.',
-    required: [],
-  })
-  .openapi('CloudRunRenderMetadata')
-
-type RenderMetadataType = { cloudRun?: z.infer<typeof CloudRunRenderMetadataSchema> }
-
-const AnthosClusterSchema = z
-  .object({
-    membership: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Membership of the GKE Hub-registered cluster to which to apply the Skaffold configuration. Format is `projects/{project}/locations/{location}/memberships/{membership_name}`.',
-      }),
-  })
-  .openapi({ description: 'Information specifying an Anthos Cluster.', required: [] })
-  .openapi('AnthosCluster')
-
-const DefaultPoolSchema = z
-  .object({
-    artifactStorage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Cloud Storage location where execution outputs should be stored. This can either be a bucket ("gs://my-bucket") or a path within a bucket ("gs://my-bucket/my-dir"). If unspecified, a default bucket located in the same region will be used.',
-      }),
-    serviceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) will be used.',
-      }),
-  })
-  .openapi({ description: 'Execution using the default Cloud Build pool.', required: [] })
-  .openapi('DefaultPool')
-
-const PrivatePoolSchema = z
-  .object({
-    artifactStorage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Cloud Storage location where execution outputs should be stored. This can either be a bucket ("gs://my-bucket") or a path within a bucket ("gs://my-bucket/my-dir"). If unspecified, a default bucket located in the same region will be used.',
-      }),
-    serviceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) will be used.',
-      }),
-    workerPool: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Resource name of the Cloud Build worker pool to use. The format is `projects/{project}/locations/{location}/workerPools/{pool}`.',
-      }),
-  })
-  .openapi({ description: 'Execution using a private Cloud Build pool.', required: [] })
-  .openapi('PrivatePool')
-
-const ExecutionConfigSchema = z
-  .object({
-    artifactStorage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Cloud Storage location in which to store execution outputs. This can either be a bucket ("gs://my-bucket") or a path within a bucket ("gs://my-bucket/my-dir"). If unspecified, a default bucket located in the same region will be used.',
-      }),
-    defaultPool: DefaultPoolSchema.exactOptional().openapi({
-      description: 'Optional. Use default Cloud Build pool.',
-    }),
-    executionTimeout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Execution timeout for a Cloud Build Execution. This must be between 10m and 24h in seconds format. If unspecified, a default timeout of 1h is used.',
-      }),
-    privatePool: PrivatePoolSchema.exactOptional().openapi({
-      description: 'Optional. Use private Cloud Build pool.',
-    }),
-    serviceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) is used.',
-      }),
-    usages: z
-      .array(z.enum(['EXECUTION_ENVIRONMENT_USAGE_UNSPECIFIED', 'RENDER', 'DEPLOY', 'VERIFY']))
-      .exactOptional()
-      .openapi({ description: 'Required. Usages when this configuration should be applied.' }),
-    workerPool: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The resource name of the `WorkerPool`, with the format `projects/{project}/locations/{location}/workerPools/{worker_pool}`. If this optional field is unspecified, the default Cloud Build pool will be used.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration of the environment to use when calling Skaffold.',
-    required: [],
-  })
-  .openapi('ExecutionConfig')
-
-const GkeClusterSchema = z
-  .object({
-    cluster: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Information specifying a GKE Cluster. Format is `projects/{project_id}/locations/{location_id}/clusters/{cluster_id}.',
-      }),
-    internalIp: z
+    status: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Optional. If true, `cluster` is accessed using the private IP address of the control plane endpoint. Otherwise, the default IP address of the control plane endpoint is used. The default IP address is the private IP address for clusters with private control-plane endpoints and the public IP address otherwise. Only specify this option when `cluster` is a [private GKE cluster](https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept).',
+          'True if the Pipeline is in a valid state. Otherwise at least one condition in `PipelineCondition` is in an invalid state. Iterate over those conditions and see which condition(s) has status = false to find out what is wrong with the Pipeline.',
       }),
-  })
-  .openapi({ description: 'Information specifying a GKE Cluster.', required: [] })
-  .openapi('GkeCluster')
-
-const MultiTargetSchema = z
-  .object({
-    targetIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Required. The target_ids of this multiTarget.' }),
-  })
-  .openapi({ description: 'Information specifying a multiTarget.', required: [] })
-  .openapi('MultiTarget')
-
-const CloudRunLocationSchema = z
-  .object({
-    location: z
+    updateTime: z
       .string()
+      .exactOptional()
+      .openapi({ description: 'Last time the condition was updated.' }),
+  })
+  .openapi({
+    description: 'PipelineReadyCondition contains information around the status of the Pipeline.',
+    required: [],
+  })
+  .openapi('PipelineReadyCondition')
+
+const TargetsPresentConditionSchema = z
+  .object({
+    missingTargets: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'Required. The location for the Cloud Run Service. Format must be `projects/{project}/locations/{location}`.',
+          'The list of Target names that do not exist. For example, projects/{project_id}/locations/{location_name}/targets/{target_name}.',
       }),
-  })
-  .openapi({
-    description: 'Information specifying where to deploy a Cloud Run Service.',
-    required: [],
-  })
-  .openapi('CloudRunLocation')
-
-type TargetType = {
-  annotations?: { [key: string]: string }
-  anthosCluster?: z.infer<typeof AnthosClusterSchema>
-  createTime?: string
-  description?: string
-  etag?: string
-  executionConfigs?: z.infer<typeof ExecutionConfigSchema>[]
-  gke?: z.infer<typeof GkeClusterSchema>
-  labels?: { [key: string]: string }
-  multiTarget?: z.infer<typeof MultiTargetSchema>
-  name?: string
-  requireApproval?: boolean
-  run?: z.infer<typeof CloudRunLocationSchema>
-  targetId?: string
-  uid?: string
-  updateTime?: string
-}
-
-const AbandonReleaseRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request object used by `AbandonRelease`.' })
-  .openapi('AbandonReleaseRequest')
-
-const AbandonReleaseResponseSchema = z
-  .object({})
-  .openapi({ description: 'The response object for `AbandonRelease`.' })
-  .openapi('AbandonReleaseResponse')
-
-const AdvanceRolloutRequestSchema = z
-  .object({
-    phaseId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The phase ID to advance the `Rollout` to.' }),
-  })
-  .openapi({ description: 'The request object used by `AdvanceRollout`.', required: [] })
-  .openapi('AdvanceRolloutRequest')
-
-const AdvanceRolloutResponseSchema = z
-  .object({})
-  .openapi({ description: 'The response object from `AdvanceRollout`.' })
-  .openapi('AdvanceRolloutResponse')
-
-const ApproveRolloutRequestSchema = z
-  .object({
-    approved: z
+    status: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Required. True = approve; false = reject' }),
-  })
-  .openapi({ description: 'The request object used by `ApproveRollout`.', required: [] })
-  .openapi('ApproveRolloutRequest')
-
-const ApproveRolloutResponseSchema = z
-  .object({})
-  .openapi({ description: 'The response object from `ApproveRollout`.' })
-  .openapi('ApproveRolloutResponse')
-
-const AuditLogConfigSchema = z
-  .object({
-    exemptedMembers: z
-      .array(z.string())
+      .openapi({ description: "True if there aren't any missing Targets." }),
+    updateTime: z
+      .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
+      .openapi({ description: 'Last time the condition was updated.' }),
   })
   .openapi({
     description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+      'TargetsPresentCondition contains information on any Targets defined in the Delivery Pipeline that do not actually exist.',
     required: [],
   })
-  .openapi('AuditLogConfig')
+  .openapi('TargetsPresentCondition')
 
-const AuditConfigSchema = z
+const TargetsTypeConditionSchema = z
   .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
+    errorDetails: z
       .string()
+      .exactOptional()
+      .openapi({ description: 'Human readable error message.' }),
+    status: z
+      .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+          'True if the targets are all a comparable type. For example this is true if all targets are GKE clusters. This is false if some targets are Cloud Run targets and others are GKE clusters.',
       }),
   })
   .openapi({
     description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+      'TargetsTypeCondition contains information on whether the Targets defined in the Delivery Pipeline are of the same type.',
     required: [],
   })
-  .openapi('AuditConfig')
+  .openapi('TargetsTypeCondition')
 
-const ExprSchema = z
+const PipelineConditionSchema = z
   .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    pipelineReadyCondition: PipelineReadyConditionSchema.exactOptional().openapi({
+      description: "Details around the Pipeline's overall status.",
     }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const BuildArtifactSchema = z
-  .object({
-    image: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Image name in Skaffold configuration.' }),
-    tag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Image tag to use. This will generally be the full path to an image, such as "gcr.io/my-project/busybox:1.2.3" or "gcr.io/my-project/busybox@sha256:abc123".',
-      }),
+    targetsPresentCondition: TargetsPresentConditionSchema.exactOptional().openapi({
+      description: 'Details around targets enumerated in the pipeline.',
+    }),
+    targetsTypeCondition: TargetsTypeConditionSchema.exactOptional().openapi({
+      description:
+        'Details on the whether the targets enumerated in the pipeline are of the same type.',
+    }),
   })
   .openapi({
-    description: 'Description of an a image to use during Skaffold rendering.',
+    description: 'PipelineCondition contains all conditions relevant to a Delivery Pipeline.',
     required: [],
   })
-  .openapi('BuildArtifact')
+  .openapi('PipelineCondition')
 
 const CanaryDeploymentSchema = z
   .object({
@@ -781,253 +261,6 @@ const CanarySchema = z
   .openapi({ description: 'Canary represents the canary deployment strategy.', required: [] })
   .openapi('Canary')
 
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const CancelRolloutRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request object used by `CancelRollout`.' })
-  .openapi('CancelRolloutRequest')
-
-const CancelRolloutResponseSchema = z
-  .object({})
-  .openapi({ description: 'The response object from `CancelRollout`.' })
-  .openapi('CancelRolloutResponse')
-
-const JobSchema: z.ZodType<JobType> = z
-  .lazy(() =>
-    z
-      .object({
-        advanceChildRolloutJob: AdvanceChildRolloutJobSchema.exactOptional().openapi({
-          description: 'Output only. An advanceChildRollout Job.',
-          readOnly: true,
-        }),
-        createChildRolloutJob: CreateChildRolloutJobSchema.exactOptional().openapi({
-          description: 'Output only. A createChildRollout Job.',
-          readOnly: true,
-        }),
-        deployJob: DeployJobSchema.exactOptional().openapi({
-          description: 'Output only. A deploy Job.',
-          readOnly: true,
-        }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. The ID of the Job.', readOnly: true }),
-        jobRun: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The name of the `JobRun` responsible for the most recent invocation of this Job.',
-            readOnly: true,
-          }),
-        skipMessage: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Additional information on why the Job was skipped, if available.',
-            readOnly: true,
-          }),
-        state: z
-          .enum([
-            'STATE_UNSPECIFIED',
-            'PENDING',
-            'DISABLED',
-            'IN_PROGRESS',
-            'SUCCEEDED',
-            'FAILED',
-            'ABORTED',
-            'SKIPPED',
-            'IGNORED',
-          ])
-          .exactOptional()
-          .openapi({ description: 'Output only. The current state of the Job.', readOnly: true }),
-        verifyJob: VerifyJobSchema.exactOptional().openapi({
-          description: 'Output only. A verify Job.',
-          readOnly: true,
-        }),
-      })
-      .openapi({ description: 'Job represents an operation for a `Rollout`.', required: [] }),
-  )
-  .openapi('Job')
-
-const ChildRolloutJobsSchema = z
-  .object({
-    advanceRolloutJobs: z
-      .array(JobSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. List of AdvanceChildRolloutJobs', readOnly: true }),
-    createRolloutJobs: z
-      .array(JobSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. List of CreateChildRolloutJobs', readOnly: true }),
-  })
-  .openapi({ description: 'ChildRollouts job composition', required: [] })
-  .openapi('ChildRolloutJobs')
-
-const DateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('Date')
-
-const SkaffoldVersionSchema = z
-  .object({
-    maintenanceModeTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time at which this version of skaffold will enter maintenance mode.',
-      }),
-    supportEndDate: DateSchema.exactOptional().openapi({
-      description: 'Date when this version is expected to no longer be supported.',
-    }),
-    supportExpirationTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time at which this version of skaffold will no longer be supported.',
-      }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Release version number. For example, "1.20.3".' }),
-  })
-  .openapi({ description: 'Details of a supported Skaffold version.', required: [] })
-  .openapi('SkaffoldVersion')
-
-const ConfigSchema = z
-  .object({
-    defaultSkaffoldVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Default Skaffold version that is assigned when a Release is created without specifying a Skaffold version.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the configuration.' }),
-    supportedVersions: z
-      .array(SkaffoldVersionSchema)
-      .exactOptional()
-      .openapi({ description: 'All supported versions of Skaffold.' }),
-  })
-  .openapi({ description: 'Service-wide configuration.', required: [] })
-  .openapi('Config')
-
-const PipelineReadyConditionSchema = z
-  .object({
-    status: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the Pipeline is in a valid state. Otherwise at least one condition in `PipelineCondition` is in an invalid state. Iterate over those conditions and see which condition(s) has status = false to find out what is wrong with the Pipeline.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Last time the condition was updated.' }),
-  })
-  .openapi({
-    description: 'PipelineReadyCondition contains information around the status of the Pipeline.',
-    required: [],
-  })
-  .openapi('PipelineReadyCondition')
-
-const TargetsPresentConditionSchema = z
-  .object({
-    missingTargets: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of Target names that do not exist. For example, projects/{project_id}/locations/{location_name}/targets/{target_name}.',
-      }),
-    status: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "True if there aren't any missing Targets." }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Last time the condition was updated.' }),
-  })
-  .openapi({
-    description:
-      'TargetsPresentCondition contains information on any Targets defined in the Delivery Pipeline that do not actually exist.',
-    required: [],
-  })
-  .openapi('TargetsPresentCondition')
-
-const TargetsTypeConditionSchema = z
-  .object({
-    errorDetails: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Human readable error message.' }),
-    status: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the targets are all a comparable type. For example this is true if all targets are GKE clusters. This is false if some targets are Cloud Run targets and others are GKE clusters.',
-      }),
-  })
-  .openapi({
-    description:
-      'TargetsTypeCondition contains information on whether the Targets defined in the Delivery Pipeline are of the same type.',
-    required: [],
-  })
-  .openapi('TargetsTypeCondition')
-
-const PipelineConditionSchema = z
-  .object({
-    pipelineReadyCondition: PipelineReadyConditionSchema.exactOptional().openapi({
-      description: "Details around the Pipeline's overall status.",
-    }),
-    targetsPresentCondition: TargetsPresentConditionSchema.exactOptional().openapi({
-      description: 'Details around targets enumerated in the pipeline.',
-    }),
-    targetsTypeCondition: TargetsTypeConditionSchema.exactOptional().openapi({
-      description:
-        'Details on the whether the targets enumerated in the pipeline are of the same type.',
-    }),
-  })
-  .openapi({
-    description: 'PipelineCondition contains all conditions relevant to a Delivery Pipeline.',
-    required: [],
-  })
-  .openapi('PipelineCondition')
-
 const StandardSchema = z
   .object({
     verify: z.boolean().exactOptional().openapi({ description: 'Whether to verify a deployment.' }),
@@ -1072,7 +305,9 @@ const StageSchema = z
   .openapi({ description: 'Stage specifies a location to which to deploy.', required: [] })
   .openapi('Stage')
 
-const SerialPipelineSchema = z
+type SerialPipelineType = { stages?: z.infer<typeof StageSchema>[] }
+
+const SerialPipelineSchema: z.ZodType<SerialPipelineType> = z
   .object({
     stages: z
       .array(StageSchema)
@@ -1088,7 +323,21 @@ const SerialPipelineSchema = z
   })
   .openapi('SerialPipeline')
 
-const DeliveryPipelineSchema = z
+type DeliveryPipelineType = {
+  annotations?: { [key: string]: string }
+  condition?: z.infer<typeof PipelineConditionSchema>
+  createTime?: string
+  description?: string
+  etag?: string
+  labels?: { [key: string]: string }
+  name?: string
+  serialPipeline?: z.infer<typeof SerialPipelineSchema>
+  suspended?: boolean
+  uid?: string
+  updateTime?: string
+}
+
+const DeliveryPipelineSchema: z.ZodType<DeliveryPipelineType> = z
   .object({
     annotations: z
       .record(z.string(), z.string())
@@ -1167,6 +416,1282 @@ const DeliveryPipelineSchema = z
   })
   .openapi('DeliveryPipeline')
 
+type ListDeliveryPipelinesResponseType = {
+  deliveryPipelines?: z.infer<typeof DeliveryPipelineSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const BuildArtifactSchema = z
+  .object({
+    image: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Image name in Skaffold configuration.' }),
+    tag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Image tag to use. This will generally be the full path to an image, such as "gcr.io/my-project/busybox:1.2.3" or "gcr.io/my-project/busybox@sha256:abc123".',
+      }),
+  })
+  .openapi({
+    description: 'Description of an a image to use during Skaffold rendering.',
+    required: [],
+  })
+  .openapi('BuildArtifact')
+
+const ReleaseReadyConditionSchema = z
+  .object({
+    status: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the Release is in a valid state. Otherwise at least one condition in `ReleaseCondition` is in an invalid state. Iterate over those conditions and see which condition(s) has status = false to find out what is wrong with the Release.',
+      }),
+  })
+  .openapi({
+    description:
+      'ReleaseReadyCondition contains information around the status of the Release. If a release is not ready, you cannot create a rollout with the release.',
+    required: [],
+  })
+  .openapi('ReleaseReadyCondition')
+
+const SkaffoldSupportedConditionSchema = z
+  .object({
+    maintenanceModeTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time at which this release's version of skaffold will enter maintenance mode.",
+      }),
+    skaffoldSupportState: z
+      .enum([
+        'SKAFFOLD_SUPPORT_STATE_UNSPECIFIED',
+        'SKAFFOLD_SUPPORT_STATE_SUPPORTED',
+        'SKAFFOLD_SUPPORT_STATE_MAINTENANCE_MODE',
+        'SKAFFOLD_SUPPORT_STATE_UNSUPPORTED',
+      ])
+      .exactOptional()
+      .openapi({
+        description: "The skaffold support state for this release's version of skaffold.",
+      }),
+    status: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if the version of skaffold used by this release is supported.',
+      }),
+    supportExpirationTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time at which this release's version of skaffold will no longer be supported.",
+      }),
+  })
+  .openapi({
+    description:
+      "SkaffoldSupportedCondition contains information about when support for the release's version of skaffold ends.",
+    required: [],
+  })
+  .openapi('SkaffoldSupportedCondition')
+
+const ReleaseConditionSchema = z
+  .object({
+    releaseReadyCondition: ReleaseReadyConditionSchema.exactOptional().openapi({
+      description: "Details around the Releases's overall status.",
+    }),
+    skaffoldSupportedCondition: SkaffoldSupportedConditionSchema.exactOptional().openapi({
+      description: "Details around the support state of the release's skaffold version.",
+    }),
+  })
+  .openapi({
+    description: 'ReleaseCondition contains all conditions relevant to a Release.',
+    required: [],
+  })
+  .openapi('ReleaseCondition')
+
+const PhaseArtifactSchema = z
+  .object({
+    manifestPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. File path of the rendered manifest relative to the URI.',
+        readOnly: true,
+      }),
+    skaffoldConfigPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. File path of the resolved Skaffold configuration relative to the URI.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Contains the paths to the artifacts, relative to the URI, for a phase.',
+    required: [],
+  })
+  .openapi('PhaseArtifact')
+
+const TargetArtifactSchema = z
+  .object({
+    artifactUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. URI of a directory containing the artifacts. This contains deployment configuration used by Skaffold during a rollout, and all paths are relative to this location.',
+        readOnly: true,
+      }),
+    manifestPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. File path of the rendered manifest relative to the URI.',
+        readOnly: true,
+      }),
+    phaseArtifacts: z
+      .record(z.string(), PhaseArtifactSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Map from the phase ID to the phase artifacts for the `Target`.',
+        readOnly: true,
+      }),
+    skaffoldConfigPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. File path of the resolved Skaffold configuration relative to the URI.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'The artifacts produced by a target render operation.', required: [] })
+  .openapi('TargetArtifact')
+
+const CloudRunRenderMetadataSchema = z
+  .object({
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The name of the Cloud Run Service in the rendered manifest. Format is projects/{project}/locations/{location}/services/{service}.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'CloudRunRenderMetadata contains Cloud Run information associated with a `Release` render.',
+    required: [],
+  })
+  .openapi('CloudRunRenderMetadata')
+
+const RenderMetadataSchema = z
+  .object({
+    cloudRun: CloudRunRenderMetadataSchema.exactOptional().openapi({
+      description: 'Output only. Metadata associated with rendering for Cloud Run.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description: 'RenderMetadata includes information associated with a `Release` render.',
+    required: [],
+  })
+  .openapi('RenderMetadata')
+
+const TargetRenderSchema = z
+  .object({
+    failureCause: z
+      .enum([
+        'FAILURE_CAUSE_UNSPECIFIED',
+        'CLOUD_BUILD_UNAVAILABLE',
+        'EXECUTION_FAILED',
+        'CLOUD_BUILD_REQUEST_FAILED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Reason this render failed. This will always be unspecified while the render in progress.',
+        readOnly: true,
+      }),
+    failureMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Additional information about the render failure, if available.',
+        readOnly: true,
+      }),
+    metadata: RenderMetadataSchema.exactOptional().openapi({
+      description: 'Output only. Metadata related to the `Release` render for this Target.',
+      readOnly: true,
+    }),
+    renderingBuild: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The resource name of the Cloud Build `Build` object that is used to render the manifest for this target. Format is `projects/{project}/locations/{location}/builds/{build}`.',
+        readOnly: true,
+      }),
+    renderingState: z
+      .enum(['TARGET_RENDER_STATE_UNSPECIFIED', 'SUCCEEDED', 'FAILED', 'IN_PROGRESS'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Current state of the render operation for this Target.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Details of rendering for a single target.', required: [] })
+  .openapi('TargetRender')
+
+const AnthosClusterSchema = z
+  .object({
+    membership: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Membership of the GKE Hub-registered cluster to which to apply the Skaffold configuration. Format is `projects/{project}/locations/{location}/memberships/{membership_name}`.',
+      }),
+  })
+  .openapi({ description: 'Information specifying an Anthos Cluster.', required: [] })
+  .openapi('AnthosCluster')
+
+const DefaultPoolSchema = z
+  .object({
+    artifactStorage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Cloud Storage location where execution outputs should be stored. This can either be a bucket ("gs://my-bucket") or a path within a bucket ("gs://my-bucket/my-dir"). If unspecified, a default bucket located in the same region will be used.',
+      }),
+    serviceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) will be used.',
+      }),
+  })
+  .openapi({ description: 'Execution using the default Cloud Build pool.', required: [] })
+  .openapi('DefaultPool')
+
+const PrivatePoolSchema = z
+  .object({
+    artifactStorage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Cloud Storage location where execution outputs should be stored. This can either be a bucket ("gs://my-bucket") or a path within a bucket ("gs://my-bucket/my-dir"). If unspecified, a default bucket located in the same region will be used.',
+      }),
+    serviceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) will be used.',
+      }),
+    workerPool: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Resource name of the Cloud Build worker pool to use. The format is `projects/{project}/locations/{location}/workerPools/{pool}`.',
+      }),
+  })
+  .openapi({ description: 'Execution using a private Cloud Build pool.', required: [] })
+  .openapi('PrivatePool')
+
+const ExecutionConfigSchema = z
+  .object({
+    artifactStorage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Cloud Storage location in which to store execution outputs. This can either be a bucket ("gs://my-bucket") or a path within a bucket ("gs://my-bucket/my-dir"). If unspecified, a default bucket located in the same region will be used.',
+      }),
+    defaultPool: DefaultPoolSchema.exactOptional().openapi({
+      description: 'Optional. Use default Cloud Build pool.',
+    }),
+    executionTimeout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Execution timeout for a Cloud Build Execution. This must be between 10m and 24h in seconds format. If unspecified, a default timeout of 1h is used.',
+      }),
+    privatePool: PrivatePoolSchema.exactOptional().openapi({
+      description: 'Optional. Use private Cloud Build pool.',
+    }),
+    serviceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Google service account to use for execution. If unspecified, the project execution service account (-compute@developer.gserviceaccount.com) is used.',
+      }),
+    usages: z
+      .array(z.enum(['EXECUTION_ENVIRONMENT_USAGE_UNSPECIFIED', 'RENDER', 'DEPLOY', 'VERIFY']))
+      .exactOptional()
+      .openapi({ description: 'Required. Usages when this configuration should be applied.' }),
+    workerPool: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The resource name of the `WorkerPool`, with the format `projects/{project}/locations/{location}/workerPools/{worker_pool}`. If this optional field is unspecified, the default Cloud Build pool will be used.',
+      }),
+  })
+  .openapi({
+    description: 'Configuration of the environment to use when calling Skaffold.',
+    required: [],
+  })
+  .openapi('ExecutionConfig')
+
+const GkeClusterSchema = z
+  .object({
+    cluster: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Information specifying a GKE Cluster. Format is `projects/{project_id}/locations/{location_id}/clusters/{cluster_id}.',
+      }),
+    internalIp: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If true, `cluster` is accessed using the private IP address of the control plane endpoint. Otherwise, the default IP address of the control plane endpoint is used. The default IP address is the private IP address for clusters with private control-plane endpoints and the public IP address otherwise. Only specify this option when `cluster` is a [private GKE cluster](https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept).',
+      }),
+  })
+  .openapi({ description: 'Information specifying a GKE Cluster.', required: [] })
+  .openapi('GkeCluster')
+
+const MultiTargetSchema = z
+  .object({
+    targetIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Required. The target_ids of this multiTarget.' }),
+  })
+  .openapi({ description: 'Information specifying a multiTarget.', required: [] })
+  .openapi('MultiTarget')
+
+const CloudRunLocationSchema = z
+  .object({
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The location for the Cloud Run Service. Format must be `projects/{project}/locations/{location}`.',
+      }),
+  })
+  .openapi({
+    description: 'Information specifying where to deploy a Cloud Run Service.',
+    required: [],
+  })
+  .openapi('CloudRunLocation')
+
+const TargetSchema = z
+  .object({
+    annotations: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.',
+      }),
+    anthosCluster: AnthosClusterSchema.exactOptional().openapi({
+      description: 'Information specifying an Anthos Cluster.',
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `Target` was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Description of the `Target`. Max length is 255 characters.',
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
+      }),
+    executionConfigs: z
+      .array(ExecutionConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Configurations for all execution that relates to this `Target`. Each `ExecutionEnvironmentUsage` value may only be used in a single configuration; using the same value multiple times is an error. When one or more configurations are specified, they must include the `RENDER` and `DEPLOY` `ExecutionEnvironmentUsage` values. When no configurations are specified, execution will use the default specified in `DefaultPool`.',
+      }),
+    gke: GkeClusterSchema.exactOptional().openapi({
+      description: 'Information specifying a GKE Cluster.',
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be <= 128 bytes.',
+      }),
+    multiTarget: MultiTargetSchema.exactOptional().openapi({
+      description: 'Information specifying a multiTarget.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Name of the `Target`. Format is projects/{project}/locations/{location}/targets/a-z{0,62}.',
+      }),
+    requireApproval: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Optional. Whether or not the `Target` requires approval.' }),
+    run: CloudRunLocationSchema.exactOptional().openapi({
+      description: 'Information specifying a Cloud Run deployment target.',
+    }),
+    targetId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Resource id of the `Target`.', readOnly: true }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Unique identifier of the `Target`.', readOnly: true }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Most recent time at which the `Target` was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A `Target` resource in the Google Cloud Deploy API. A `Target` defines a location to which a Skaffold configuration can be deployed.',
+    required: [],
+  })
+  .openapi('Target')
+
+type ReleaseType = {
+  abandoned?: boolean
+  annotations?: { [key: string]: string }
+  buildArtifacts?: z.infer<typeof BuildArtifactSchema>[]
+  condition?: z.infer<typeof ReleaseConditionSchema>
+  createTime?: string
+  deliveryPipelineSnapshot?: z.infer<typeof DeliveryPipelineSchema>
+  description?: string
+  etag?: string
+  labels?: { [key: string]: string }
+  name?: string
+  renderEndTime?: string
+  renderStartTime?: string
+  renderState?: 'RENDER_STATE_UNSPECIFIED' | 'SUCCEEDED' | 'FAILED' | 'IN_PROGRESS'
+  skaffoldConfigPath?: string
+  skaffoldConfigUri?: string
+  skaffoldVersion?: string
+  targetArtifacts?: { [key: string]: z.infer<typeof TargetArtifactSchema> }
+  targetRenders?: { [key: string]: z.infer<typeof TargetRenderSchema> }
+  targetSnapshots?: z.infer<typeof TargetSchema>[]
+  uid?: string
+}
+
+const ReleaseSchema: z.ZodType<ReleaseType> = z
+  .object({
+    abandoned: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Indicates whether this is an abandoned release.',
+        readOnly: true,
+      }),
+    annotations: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.',
+      }),
+    buildArtifacts: z
+      .array(BuildArtifactSchema)
+      .exactOptional()
+      .openapi({ description: 'List of artifacts to pass through to Skaffold command.' }),
+    condition: ReleaseConditionSchema.exactOptional().openapi({
+      description: 'Output only. Information around the state of the Release.',
+      readOnly: true,
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `Release` was created.',
+        readOnly: true,
+      }),
+    deliveryPipelineSnapshot: DeliveryPipelineSchema.exactOptional().openapi({
+      description: 'Output only. Snapshot of the parent pipeline taken at release creation time.',
+      readOnly: true,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the `Release`. Max length is 255 characters.' }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be <= 128 bytes.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Name of the `Release`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/a-z{0,62}.',
+      }),
+    renderEndTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Time at which the render completed.', readOnly: true }),
+    renderStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Time at which the render began.', readOnly: true }),
+    renderState: z
+      .enum(['RENDER_STATE_UNSPECIFIED', 'SUCCEEDED', 'FAILED', 'IN_PROGRESS'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Current state of the render operation.',
+        readOnly: true,
+      }),
+    skaffoldConfigPath: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Filepath of the Skaffold config inside of the config URI.' }),
+    skaffoldConfigUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Cloud Storage URI of tar.gz archive containing Skaffold configuration.',
+      }),
+    skaffoldVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Skaffold version to use when operating on this release, such as "1.20.0". Not all versions are valid; Google Cloud Deploy supports a specific set of versions. If unset, the most recent supported Skaffold version will be used.',
+      }),
+    targetArtifacts: z
+      .record(z.string(), TargetArtifactSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Map from target ID to the target artifacts created during the render operation.',
+        readOnly: true,
+      }),
+    targetRenders: z
+      .record(z.string(), TargetRenderSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Map from target ID to details of the render operation for that target.',
+        readOnly: true,
+      }),
+    targetSnapshots: z
+      .array(TargetSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Snapshot of the targets taken at release creation time.',
+        readOnly: true,
+      }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Unique identifier of the `Release`.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'A `Release` resource in the Google Cloud Deploy API. A `Release` defines a specific Skaffold configuration instance that can be deployed.',
+    required: [],
+  })
+  .openapi('Release')
+
+type ListReleasesResponseType = {
+  nextPageToken?: string
+  releases?: z.infer<typeof ReleaseSchema>[]
+  unreachable?: string[]
+}
+
+const CloudRunMetadataSchema = z
+  .object({
+    revision: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The Cloud Run Revision id associated with a `Rollout`.',
+        readOnly: true,
+      }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The name of the Cloud Run Service that is associated with a `Rollout`. Format is projects/{project}/locations/{location}/services/{service}.',
+        readOnly: true,
+      }),
+    serviceUrls: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The Cloud Run Service urls that are associated with a `Rollout`.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'CloudRunMetadata contains information from a Cloud Run deployment.',
+    required: [],
+  })
+  .openapi('CloudRunMetadata')
+
+const MetadataSchema = z
+  .object({
+    cloudRun: CloudRunMetadataSchema.exactOptional().openapi({
+      description:
+        'Output only. The name of the Cloud Run Service that is associated with a `Rollout`.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description: 'Metadata includes information associated with a `Rollout`.',
+    required: [],
+  })
+  .openapi('Metadata')
+
+const AdvanceChildRolloutJobSchema = z
+  .looseObject({})
+  .openapi({ description: 'An advanceChildRollout Job.' })
+  .openapi('AdvanceChildRolloutJob')
+
+const CreateChildRolloutJobSchema = z
+  .looseObject({})
+  .openapi({ description: 'A createChildRollout Job.' })
+  .openapi('CreateChildRolloutJob')
+
+const DeployJobSchema = z
+  .looseObject({})
+  .openapi({ description: 'A deploy Job.' })
+  .openapi('DeployJob')
+
+const VerifyJobSchema = z
+  .looseObject({})
+  .openapi({ description: 'A verify Job.' })
+  .openapi('VerifyJob')
+
+const JobSchema = z
+  .object({
+    advanceChildRolloutJob: AdvanceChildRolloutJobSchema.exactOptional().openapi({
+      description: 'Output only. An advanceChildRollout Job.',
+      readOnly: true,
+    }),
+    createChildRolloutJob: CreateChildRolloutJobSchema.exactOptional().openapi({
+      description: 'Output only. A createChildRollout Job.',
+      readOnly: true,
+    }),
+    deployJob: DeployJobSchema.exactOptional().openapi({
+      description: 'Output only. A deploy Job.',
+      readOnly: true,
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The ID of the Job.', readOnly: true }),
+    jobRun: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The name of the `JobRun` responsible for the most recent invocation of this Job.',
+        readOnly: true,
+      }),
+    skipMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Additional information on why the Job was skipped, if available.',
+        readOnly: true,
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'DISABLED',
+        'IN_PROGRESS',
+        'SUCCEEDED',
+        'FAILED',
+        'ABORTED',
+        'SKIPPED',
+        'IGNORED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. The current state of the Job.', readOnly: true }),
+    verifyJob: VerifyJobSchema.exactOptional().openapi({
+      description: 'Output only. A verify Job.',
+      readOnly: true,
+    }),
+  })
+  .openapi({ description: 'Job represents an operation for a `Rollout`.', required: [] })
+  .openapi('Job')
+
+const ChildRolloutJobsSchema = z
+  .object({
+    advanceRolloutJobs: z
+      .array(JobSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. List of AdvanceChildRolloutJobs', readOnly: true }),
+    createRolloutJobs: z
+      .array(JobSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. List of CreateChildRolloutJobs', readOnly: true }),
+  })
+  .openapi({ description: 'ChildRollouts job composition', required: [] })
+  .openapi('ChildRolloutJobs')
+
+const DeploymentJobsSchema = z
+  .object({
+    deployJob: JobSchema.exactOptional().openapi({
+      description: 'Output only. The deploy Job. This is the first job run in the phase.',
+      readOnly: true,
+    }),
+    verifyJob: JobSchema.exactOptional().openapi({
+      description: 'Output only. The verify Job. Runs after a deploy if the deploy succeeds.',
+      readOnly: true,
+    }),
+  })
+  .openapi({ description: 'Deployment job composition.', required: [] })
+  .openapi('DeploymentJobs')
+
+const PhaseSchema = z
+  .object({
+    childRolloutJobs: ChildRolloutJobsSchema.exactOptional().openapi({
+      description: 'Output only. ChildRollout job composition.',
+      readOnly: true,
+    }),
+    deploymentJobs: DeploymentJobsSchema.exactOptional().openapi({
+      description: 'Output only. Deployment job composition.',
+      readOnly: true,
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The ID of the Phase.', readOnly: true }),
+    skipMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Additional information on why the Phase was skipped, if available.',
+        readOnly: true,
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'IN_PROGRESS',
+        'SUCCEEDED',
+        'FAILED',
+        'ABORTED',
+        'SKIPPED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. Current state of the Phase.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Phase represents a collection of jobs that are logically grouped together for a `Rollout`.',
+    required: [],
+  })
+  .openapi('Phase')
+
+const RolloutSchema = z
+  .object({
+    annotations: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.',
+      }),
+    approvalState: z
+      .enum([
+        'APPROVAL_STATE_UNSPECIFIED',
+        'NEEDS_APPROVAL',
+        'DOES_NOT_NEED_APPROVAL',
+        'APPROVED',
+        'REJECTED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. Approval state of the `Rollout`.', readOnly: true }),
+    approveTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `Rollout` was approved.',
+        readOnly: true,
+      }),
+    controllerRollout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Name of the `ControllerRollout`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/{release}/rollouts/a-z{0,62}.',
+        readOnly: true,
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `Rollout` was created.',
+        readOnly: true,
+      }),
+    deployEndTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `Rollout` finished deploying.',
+        readOnly: true,
+      }),
+    deployFailureCause: z
+      .enum([
+        'FAILURE_CAUSE_UNSPECIFIED',
+        'CLOUD_BUILD_UNAVAILABLE',
+        'EXECUTION_FAILED',
+        'DEADLINE_EXCEEDED',
+        'RELEASE_FAILED',
+        'RELEASE_ABANDONED',
+        'VERIFICATION_CONFIG_NOT_FOUND',
+        'CLOUD_BUILD_REQUEST_FAILED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The reason this rollout failed. This will always be unspecified while the rollout is in progress.',
+        readOnly: true,
+      }),
+    deployStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `Rollout` started deploying.',
+        readOnly: true,
+      }),
+    deployingBuild: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The resource name of the Cloud Build `Build` object that is used to deploy the Rollout. Format is `projects/{project}/locations/{location}/builds/{build}`.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Description of the `Rollout` for user purposes. Max length is 255 characters.',
+      }),
+    enqueueTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `Rollout` was enqueued.',
+        readOnly: true,
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
+      }),
+    failureReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Additional information about the rollout failure, if available.',
+        readOnly: true,
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be <= 128 bytes.',
+      }),
+    metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Output only. Metadata contains information about the rollout.',
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Name of the `Rollout`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/{release}/rollouts/a-z{0,62}.',
+      }),
+    phases: z
+      .array(PhaseSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The phases that represent the workflows of this `Rollout`.',
+        readOnly: true,
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'SUCCEEDED',
+        'FAILED',
+        'IN_PROGRESS',
+        'PENDING_APPROVAL',
+        'APPROVAL_REJECTED',
+        'PENDING',
+        'PENDING_RELEASE',
+        'CANCELLING',
+        'CANCELLED',
+        'HALTED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. Current state of the `Rollout`.', readOnly: true }),
+    targetId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The ID of Target to which this `Rollout` is deploying.' }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Unique identifier of the `Rollout`.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'A `Rollout` resource in the Google Cloud Deploy API. A `Rollout` contains information around a specific deployment to a `Target`.',
+    required: [],
+  })
+  .openapi('Rollout')
+
+type ListRolloutsResponseType = {
+  nextPageToken?: string
+  rollouts?: z.infer<typeof RolloutSchema>[]
+  unreachable?: string[]
+}
+
+const AbandonReleaseRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request object used by `AbandonRelease`.' })
+  .openapi('AbandonReleaseRequest')
+
+const AbandonReleaseResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'The response object for `AbandonRelease`.' })
+  .openapi('AbandonReleaseResponse')
+
+const AdvanceChildRolloutJobRunSchema = z
+  .object({
+    rollout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Name of the `ChildRollout`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/{release}/rollouts/a-z{0,62}.',
+        readOnly: true,
+      }),
+    rolloutPhaseId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. the ID of the ChildRollout's Phase.", readOnly: true }),
+  })
+  .openapi({
+    description:
+      'AdvanceChildRolloutJobRun contains information specific to a advanceChildRollout `JobRun`.',
+    required: [],
+  })
+  .openapi('AdvanceChildRolloutJobRun')
+
+const AdvanceRolloutRequestSchema = z
+  .object({
+    phaseId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The phase ID to advance the `Rollout` to.' }),
+  })
+  .openapi({ description: 'The request object used by `AdvanceRollout`.', required: [] })
+  .openapi('AdvanceRolloutRequest')
+
+const AdvanceRolloutResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'The response object from `AdvanceRollout`.' })
+  .openapi('AdvanceRolloutResponse')
+
+const ApproveRolloutRequestSchema = z
+  .object({
+    approved: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Required. True = approve; false = reject' }),
+  })
+  .openapi({ description: 'The request object used by `ApproveRollout`.', required: [] })
+  .openapi('ApproveRolloutRequest')
+
+const ApproveRolloutResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'The response object from `ApproveRollout`.' })
+  .openapi('ApproveRolloutResponse')
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
+const CancelRolloutRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request object used by `CancelRollout`.' })
+  .openapi('CancelRolloutRequest')
+
+const CancelRolloutResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'The response object from `CancelRollout`.' })
+  .openapi('CancelRolloutResponse')
+
+const DateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('Date')
+
+const SkaffoldVersionSchema = z
+  .object({
+    maintenanceModeTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time at which this version of skaffold will enter maintenance mode.',
+      }),
+    supportEndDate: DateSchema.exactOptional().openapi({
+      description: 'Date when this version is expected to no longer be supported.',
+    }),
+    supportExpirationTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time at which this version of skaffold will no longer be supported.',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Release version number. For example, "1.20.3".' }),
+  })
+  .openapi({ description: 'Details of a supported Skaffold version.', required: [] })
+  .openapi('SkaffoldVersion')
+
+const ConfigSchema = z
+  .object({
+    defaultSkaffoldVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Default Skaffold version that is assigned when a Release is created without specifying a Skaffold version.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the configuration.' }),
+    supportedVersions: z
+      .array(SkaffoldVersionSchema)
+      .exactOptional()
+      .openapi({ description: 'All supported versions of Skaffold.' }),
+  })
+  .openapi({ description: 'Service-wide configuration.', required: [] })
+  .openapi('Config')
+
+const CreateChildRolloutJobRunSchema = z
+  .object({
+    rollout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Name of the `ChildRollout`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/{release}/rollouts/a-z{0,62}.',
+        readOnly: true,
+      }),
+    rolloutPhaseId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The ID of the childRollout Phase initiated by this JobRun.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'CreateChildRolloutJobRun contains information specific to a createChildRollout `JobRun`.',
+    required: [],
+  })
+  .openapi('CreateChildRolloutJobRun')
+
 const DeliveryPipelineNotificationEventSchema = z
   .object({
     deliveryPipeline: z
@@ -1189,22 +1714,66 @@ const DeliveryPipelineNotificationEventSchema = z
   })
   .openapi('DeliveryPipelineNotificationEvent')
 
-const DeploymentJobsSchema = z
+const DeployJobRunMetadataSchema = z
   .object({
-    deployJob: JobSchema.exactOptional().openapi({
-      description: 'Output only. The deploy Job. This is the first job run in the phase.',
-      readOnly: true,
-    }),
-    verifyJob: JobSchema.exactOptional().openapi({
-      description: 'Output only. The verify Job. Runs after a deploy if the deploy succeeds.',
+    cloudRun: CloudRunMetadataSchema.exactOptional().openapi({
+      description:
+        'Output only. The name of the Cloud Run Service that is associated with a `DeployJobRun`.',
       readOnly: true,
     }),
   })
-  .openapi({ description: 'Deployment job composition.', required: [] })
-  .openapi('DeploymentJobs')
+  .openapi({
+    description:
+      'DeployJobRunMetadata surfaces information associated with a `DeployJobRun` to the user.',
+    required: [],
+  })
+  .openapi('DeployJobRunMetadata')
+
+const DeployJobRunSchema = z
+  .object({
+    build: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The resource name of the Cloud Build `Build` object that is used to deploy. Format is projects/{project}/locations/{location}/builds/{build}.',
+        readOnly: true,
+      }),
+    failureCause: z
+      .enum([
+        'FAILURE_CAUSE_UNSPECIFIED',
+        'CLOUD_BUILD_UNAVAILABLE',
+        'EXECUTION_FAILED',
+        'DEADLINE_EXCEEDED',
+        'MISSING_RESOURCES_FOR_CANARY',
+        'CLOUD_BUILD_REQUEST_FAILED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The reason the deploy failed. This will always be unspecified while the deploy is in progress or if it succeeded.',
+        readOnly: true,
+      }),
+    failureMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Additional information about the deploy failure, if available.',
+        readOnly: true,
+      }),
+    metadata: DeployJobRunMetadataSchema.exactOptional().openapi({
+      description: 'Output only. Metadata containing information about the deploy job run.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description: 'DeployJobRun contains information specific to a deploy `JobRun`.',
+    required: [],
+  })
+  .openapi('DeployJobRun')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -1226,108 +1795,151 @@ const IgnoreJobRequestSchema = z
   .openapi('IgnoreJobRequest')
 
 const IgnoreJobResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response object from `IgnoreJob`.' })
   .openapi('IgnoreJobResponse')
 
-const JobRunSchema: z.ZodType<JobRunType> = z
-  .lazy(() =>
-    z
-      .object({
-        advanceChildRolloutJobRun: AdvanceChildRolloutJobRunSchema.exactOptional().openapi({
-          description: 'Output only. Information specific to an advanceChildRollout `JobRun`',
-          readOnly: true,
-        }),
-        createChildRolloutJobRun: CreateChildRolloutJobRunSchema.exactOptional().openapi({
-          description: 'Output only. Information specific to a createChildRollout `JobRun`.',
-          readOnly: true,
-        }),
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Time at which the `JobRun` was created.',
-            readOnly: true,
-          }),
-        deployJobRun: DeployJobRunSchema.exactOptional().openapi({
-          description: 'Output only. Information specific to a deploy `JobRun`.',
-          readOnly: true,
-        }),
-        endTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Time at which the `JobRun` ended.',
-            readOnly: true,
-          }),
-        etag: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
-            readOnly: true,
-          }),
-        jobId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. ID of the `Rollout` job this `JobRun` corresponds to.',
-            readOnly: true,
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Name of the `JobRun`. Format is projects/{project}/locations/{location}/ deliveryPipelines/{deliveryPipeline}/releases/{releases}/rollouts/ {rollouts}/jobRuns/{uuid}.',
-          }),
-        phaseId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. ID of the `Rollout` phase this `JobRun` belongs in.',
-            readOnly: true,
-          }),
-        startTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Time at which the `JobRun` was started.',
-            readOnly: true,
-          }),
-        state: z
-          .enum([
-            'STATE_UNSPECIFIED',
-            'IN_PROGRESS',
-            'SUCCEEDED',
-            'FAILED',
-            'TERMINATING',
-            'TERMINATED',
-          ])
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The current state of the `JobRun`.',
-            readOnly: true,
-          }),
-        uid: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Unique identifier of the `JobRun`.',
-            readOnly: true,
-          }),
-        verifyJobRun: VerifyJobRunSchema.exactOptional().openapi({
-          description: 'Output only. Information specific to a verify `JobRun`.',
-          readOnly: true,
-        }),
-      })
+const VerifyJobRunSchema = z
+  .object({
+    artifactUri: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          'A `JobRun` resource in the Google Cloud Deploy API. A `JobRun` contains information of a single `Rollout` job evaluation.',
-        required: [],
+          'Output only. URI of a directory containing the verify artifacts. This contains the Skaffold event log.',
+        readOnly: true,
       }),
-  )
+    build: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The resource name of the Cloud Build `Build` object that is used to verify. Format is projects/{project}/locations/{location}/builds/{build}.',
+        readOnly: true,
+      }),
+    eventLogPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. File path of the Skaffold event log relative to the artifact URI.',
+        readOnly: true,
+      }),
+    failureCause: z
+      .enum([
+        'FAILURE_CAUSE_UNSPECIFIED',
+        'CLOUD_BUILD_UNAVAILABLE',
+        'EXECUTION_FAILED',
+        'DEADLINE_EXCEEDED',
+        'VERIFICATION_CONFIG_NOT_FOUND',
+        'CLOUD_BUILD_REQUEST_FAILED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The reason the verify failed. This will always be unspecified while the verify is in progress or if it succeeded.',
+        readOnly: true,
+      }),
+    failureMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Additional information about the verify failure, if available.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'VerifyJobRun contains information specific to a verify `JobRun`.',
+    required: [],
+  })
+  .openapi('VerifyJobRun')
+
+const JobRunSchema = z
+  .object({
+    advanceChildRolloutJobRun: AdvanceChildRolloutJobRunSchema.exactOptional().openapi({
+      description: 'Output only. Information specific to an advanceChildRollout `JobRun`',
+      readOnly: true,
+    }),
+    createChildRolloutJobRun: CreateChildRolloutJobRunSchema.exactOptional().openapi({
+      description: 'Output only. Information specific to a createChildRollout `JobRun`.',
+      readOnly: true,
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `JobRun` was created.',
+        readOnly: true,
+      }),
+    deployJobRun: DeployJobRunSchema.exactOptional().openapi({
+      description: 'Output only. Information specific to a deploy `JobRun`.',
+      readOnly: true,
+    }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Time at which the `JobRun` ended.', readOnly: true }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
+        readOnly: true,
+      }),
+    jobId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. ID of the `Rollout` job this `JobRun` corresponds to.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Name of the `JobRun`. Format is projects/{project}/locations/{location}/ deliveryPipelines/{deliveryPipeline}/releases/{releases}/rollouts/ {rollouts}/jobRuns/{uuid}.',
+      }),
+    phaseId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. ID of the `Rollout` phase this `JobRun` belongs in.',
+        readOnly: true,
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the `JobRun` was started.',
+        readOnly: true,
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'IN_PROGRESS',
+        'SUCCEEDED',
+        'FAILED',
+        'TERMINATING',
+        'TERMINATED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. The current state of the `JobRun`.', readOnly: true }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Unique identifier of the `JobRun`.', readOnly: true }),
+    verifyJobRun: VerifyJobRunSchema.exactOptional().openapi({
+      description: 'Output only. Information specific to a verify `JobRun`.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      'A `JobRun` resource in the Google Cloud Deploy API. A `JobRun` contains information of a single `Rollout` job evaluation.',
+    required: [],
+  })
   .openapi('JobRun')
 
 const JobRunNotificationEventSchema = z
@@ -1362,7 +1974,7 @@ const JobRunNotificationEventSchema = z
   })
   .openapi('JobRunNotificationEvent')
 
-const ListDeliveryPipelinesResponseSchema = z
+const ListDeliveryPipelinesResponseSchema: z.ZodType<ListDeliveryPipelinesResponseType> = z
   .object({
     deliveryPipelines: z
       .array(DeliveryPipelineSchema)
@@ -1581,423 +2193,7 @@ const ListOperationsResponseSchema = z
   .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
   .openapi('ListOperationsResponse')
 
-const ReleaseReadyConditionSchema = z
-  .object({
-    status: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the Release is in a valid state. Otherwise at least one condition in `ReleaseCondition` is in an invalid state. Iterate over those conditions and see which condition(s) has status = false to find out what is wrong with the Release.',
-      }),
-  })
-  .openapi({
-    description:
-      'ReleaseReadyCondition contains information around the status of the Release. If a release is not ready, you cannot create a rollout with the release.',
-    required: [],
-  })
-  .openapi('ReleaseReadyCondition')
-
-const SkaffoldSupportedConditionSchema = z
-  .object({
-    maintenanceModeTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time at which this release's version of skaffold will enter maintenance mode.",
-      }),
-    skaffoldSupportState: z
-      .enum([
-        'SKAFFOLD_SUPPORT_STATE_UNSPECIFIED',
-        'SKAFFOLD_SUPPORT_STATE_SUPPORTED',
-        'SKAFFOLD_SUPPORT_STATE_MAINTENANCE_MODE',
-        'SKAFFOLD_SUPPORT_STATE_UNSUPPORTED',
-      ])
-      .exactOptional()
-      .openapi({
-        description: "The skaffold support state for this release's version of skaffold.",
-      }),
-    status: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if the version of skaffold used by this release is supported.',
-      }),
-    supportExpirationTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time at which this release's version of skaffold will no longer be supported.",
-      }),
-  })
-  .openapi({
-    description:
-      "SkaffoldSupportedCondition contains information about when support for the release's version of skaffold ends.",
-    required: [],
-  })
-  .openapi('SkaffoldSupportedCondition')
-
-const ReleaseConditionSchema = z
-  .object({
-    releaseReadyCondition: ReleaseReadyConditionSchema.exactOptional().openapi({
-      description: "Details around the Releases's overall status.",
-    }),
-    skaffoldSupportedCondition: SkaffoldSupportedConditionSchema.exactOptional().openapi({
-      description: "Details around the support state of the release's skaffold version.",
-    }),
-  })
-  .openapi({
-    description: 'ReleaseCondition contains all conditions relevant to a Release.',
-    required: [],
-  })
-  .openapi('ReleaseCondition')
-
-const PhaseArtifactSchema = z
-  .object({
-    manifestPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. File path of the rendered manifest relative to the URI.',
-        readOnly: true,
-      }),
-    skaffoldConfigPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. File path of the resolved Skaffold configuration relative to the URI.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Contains the paths to the artifacts, relative to the URI, for a phase.',
-    required: [],
-  })
-  .openapi('PhaseArtifact')
-
-const TargetArtifactSchema = z
-  .object({
-    artifactUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. URI of a directory containing the artifacts. This contains deployment configuration used by Skaffold during a rollout, and all paths are relative to this location.',
-        readOnly: true,
-      }),
-    manifestPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. File path of the rendered manifest relative to the URI.',
-        readOnly: true,
-      }),
-    phaseArtifacts: z
-      .record(z.string(), PhaseArtifactSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Map from the phase ID to the phase artifacts for the `Target`.',
-        readOnly: true,
-      }),
-    skaffoldConfigPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. File path of the resolved Skaffold configuration relative to the URI.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'The artifacts produced by a target render operation.', required: [] })
-  .openapi('TargetArtifact')
-
-const RenderMetadataSchema: z.ZodType<RenderMetadataType> = z
-  .lazy(() =>
-    z
-      .object({
-        cloudRun: CloudRunRenderMetadataSchema.exactOptional().openapi({
-          description: 'Output only. Metadata associated with rendering for Cloud Run.',
-          readOnly: true,
-        }),
-      })
-      .openapi({
-        description: 'RenderMetadata includes information associated with a `Release` render.',
-        required: [],
-      }),
-  )
-  .openapi('RenderMetadata')
-
-const TargetRenderSchema = z
-  .object({
-    failureCause: z
-      .enum([
-        'FAILURE_CAUSE_UNSPECIFIED',
-        'CLOUD_BUILD_UNAVAILABLE',
-        'EXECUTION_FAILED',
-        'CLOUD_BUILD_REQUEST_FAILED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Reason this render failed. This will always be unspecified while the render in progress.',
-        readOnly: true,
-      }),
-    failureMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Additional information about the render failure, if available.',
-        readOnly: true,
-      }),
-    metadata: RenderMetadataSchema.exactOptional().openapi({
-      description: 'Output only. Metadata related to the `Release` render for this Target.',
-      readOnly: true,
-    }),
-    renderingBuild: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource name of the Cloud Build `Build` object that is used to render the manifest for this target. Format is `projects/{project}/locations/{location}/builds/{build}`.',
-        readOnly: true,
-      }),
-    renderingState: z
-      .enum(['TARGET_RENDER_STATE_UNSPECIFIED', 'SUCCEEDED', 'FAILED', 'IN_PROGRESS'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Current state of the render operation for this Target.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Details of rendering for a single target.', required: [] })
-  .openapi('TargetRender')
-
-const TargetSchema: z.ZodType<TargetType> = z
-  .lazy(() =>
-    z
-      .object({
-        annotations: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.',
-          }),
-        anthosCluster: AnthosClusterSchema.exactOptional().openapi({
-          description: 'Information specifying an Anthos Cluster.',
-        }),
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Time at which the `Target` was created.',
-            readOnly: true,
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Optional. Description of the `Target`. Max length is 255 characters.',
-          }),
-        etag: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
-          }),
-        executionConfigs: z
-          .array(ExecutionConfigSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Configurations for all execution that relates to this `Target`. Each `ExecutionEnvironmentUsage` value may only be used in a single configuration; using the same value multiple times is an error. When one or more configurations are specified, they must include the `RENDER` and `DEPLOY` `ExecutionEnvironmentUsage` values. When no configurations are specified, execution will use the default specified in `DefaultPool`.',
-          }),
-        gke: GkeClusterSchema.exactOptional().openapi({
-          description: 'Information specifying a GKE Cluster.',
-        }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be <= 128 bytes.',
-          }),
-        multiTarget: MultiTargetSchema.exactOptional().openapi({
-          description: 'Information specifying a multiTarget.',
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Name of the `Target`. Format is projects/{project}/locations/{location}/targets/a-z{0,62}.',
-          }),
-        requireApproval: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Optional. Whether or not the `Target` requires approval.' }),
-        run: CloudRunLocationSchema.exactOptional().openapi({
-          description: 'Information specifying a Cloud Run deployment target.',
-        }),
-        targetId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. Resource id of the `Target`.', readOnly: true }),
-        uid: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Unique identifier of the `Target`.',
-            readOnly: true,
-          }),
-        updateTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Most recent time at which the `Target` was updated.',
-            readOnly: true,
-          }),
-      })
-      .openapi({
-        description:
-          'A `Target` resource in the Google Cloud Deploy API. A `Target` defines a location to which a Skaffold configuration can be deployed.',
-        required: [],
-      }),
-  )
-  .openapi('Target')
-
-const ReleaseSchema = z
-  .object({
-    abandoned: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Indicates whether this is an abandoned release.',
-        readOnly: true,
-      }),
-    annotations: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.',
-      }),
-    buildArtifacts: z
-      .array(BuildArtifactSchema)
-      .exactOptional()
-      .openapi({ description: 'List of artifacts to pass through to Skaffold command.' }),
-    condition: ReleaseConditionSchema.exactOptional().openapi({
-      description: 'Output only. Information around the state of the Release.',
-      readOnly: true,
-    }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the `Release` was created.',
-        readOnly: true,
-      }),
-    deliveryPipelineSnapshot: DeliveryPipelineSchema.exactOptional().openapi({
-      description: 'Output only. Snapshot of the parent pipeline taken at release creation time.',
-      readOnly: true,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the `Release`. Max length is 255 characters.' }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be <= 128 bytes.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Name of the `Release`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/a-z{0,62}.',
-      }),
-    renderEndTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Time at which the render completed.', readOnly: true }),
-    renderStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Time at which the render began.', readOnly: true }),
-    renderState: z
-      .enum(['RENDER_STATE_UNSPECIFIED', 'SUCCEEDED', 'FAILED', 'IN_PROGRESS'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Current state of the render operation.',
-        readOnly: true,
-      }),
-    skaffoldConfigPath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Filepath of the Skaffold config inside of the config URI.' }),
-    skaffoldConfigUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Cloud Storage URI of tar.gz archive containing Skaffold configuration.',
-      }),
-    skaffoldVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Skaffold version to use when operating on this release, such as "1.20.0". Not all versions are valid; Google Cloud Deploy supports a specific set of versions. If unset, the most recent supported Skaffold version will be used.',
-      }),
-    targetArtifacts: z
-      .record(z.string(), TargetArtifactSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Map from target ID to the target artifacts created during the render operation.',
-        readOnly: true,
-      }),
-    targetRenders: z
-      .record(z.string(), TargetRenderSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Map from target ID to details of the render operation for that target.',
-        readOnly: true,
-      }),
-    targetSnapshots: z
-      .array(TargetSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Snapshot of the targets taken at release creation time.',
-        readOnly: true,
-      }),
-    uid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Unique identifier of the `Release`.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'A `Release` resource in the Google Cloud Deploy API. A `Release` defines a specific Skaffold configuration instance that can be deployed.',
-    required: [],
-  })
-  .openapi('Release')
-
-const ListReleasesResponseSchema = z
+const ListReleasesResponseSchema: z.ZodType<ListReleasesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2018,231 +2214,7 @@ const ListReleasesResponseSchema = z
   .openapi({ description: 'The response object from `ListReleases`.', required: [] })
   .openapi('ListReleasesResponse')
 
-const MetadataSchema: z.ZodType<MetadataType> = z
-  .lazy(() =>
-    z
-      .object({
-        cloudRun: CloudRunMetadataSchema.exactOptional().openapi({
-          description:
-            'Output only. The name of the Cloud Run Service that is associated with a `Rollout`.',
-          readOnly: true,
-        }),
-      })
-      .openapi({
-        description: 'Metadata includes information associated with a `Rollout`.',
-        required: [],
-      }),
-  )
-  .openapi('Metadata')
-
-const PhaseSchema = z
-  .object({
-    childRolloutJobs: ChildRolloutJobsSchema.exactOptional().openapi({
-      description: 'Output only. ChildRollout job composition.',
-      readOnly: true,
-    }),
-    deploymentJobs: DeploymentJobsSchema.exactOptional().openapi({
-      description: 'Output only. Deployment job composition.',
-      readOnly: true,
-    }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The ID of the Phase.', readOnly: true }),
-    skipMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Additional information on why the Phase was skipped, if available.',
-        readOnly: true,
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'IN_PROGRESS',
-        'SUCCEEDED',
-        'FAILED',
-        'ABORTED',
-        'SKIPPED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. Current state of the Phase.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Phase represents a collection of jobs that are logically grouped together for a `Rollout`.',
-    required: [],
-  })
-  .openapi('Phase')
-
-const RolloutSchema = z
-  .object({
-    annotations: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'User annotations. These attributes can only be set and used by the user, and not by Google Cloud Deploy. See https://google.aip.dev/128#annotations for more details such as format and size limitations.',
-      }),
-    approvalState: z
-      .enum([
-        'APPROVAL_STATE_UNSPECIFIED',
-        'NEEDS_APPROVAL',
-        'DOES_NOT_NEED_APPROVAL',
-        'APPROVED',
-        'REJECTED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. Approval state of the `Rollout`.', readOnly: true }),
-    approveTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the `Rollout` was approved.',
-        readOnly: true,
-      }),
-    controllerRollout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Name of the `ControllerRollout`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/{release}/rollouts/a-z{0,62}.',
-        readOnly: true,
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the `Rollout` was created.',
-        readOnly: true,
-      }),
-    deployEndTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the `Rollout` finished deploying.',
-        readOnly: true,
-      }),
-    deployFailureCause: z
-      .enum([
-        'FAILURE_CAUSE_UNSPECIFIED',
-        'CLOUD_BUILD_UNAVAILABLE',
-        'EXECUTION_FAILED',
-        'DEADLINE_EXCEEDED',
-        'RELEASE_FAILED',
-        'RELEASE_ABANDONED',
-        'VERIFICATION_CONFIG_NOT_FOUND',
-        'CLOUD_BUILD_REQUEST_FAILED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The reason this rollout failed. This will always be unspecified while the rollout is in progress.',
-        readOnly: true,
-      }),
-    deployStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the `Rollout` started deploying.',
-        readOnly: true,
-      }),
-    deployingBuild: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource name of the Cloud Build `Build` object that is used to deploy the Rollout. Format is `projects/{project}/locations/{location}/builds/{build}`.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Description of the `Rollout` for user purposes. Max length is 255 characters.',
-      }),
-    enqueueTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the `Rollout` was enqueued.',
-        readOnly: true,
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This checksum is computed by the server based on the value of other fields, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.',
-      }),
-    failureReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Additional information about the rollout failure, if available.',
-        readOnly: true,
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Labels are attributes that can be set and used by both the user and by Google Cloud Deploy. Labels must meet the following constraints: * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. * All characters must use UTF-8 encoding, and international characters are allowed. * Keys must start with a lowercase letter or international character. * Each resource is limited to a maximum of 64 labels. Both keys and values are additionally constrained to be <= 128 bytes.',
-      }),
-    metadata: MetadataSchema.exactOptional().openapi({
-      description: 'Output only. Metadata contains information about the rollout.',
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Name of the `Rollout`. Format is projects/{project}/ locations/{location}/deliveryPipelines/{deliveryPipeline}/ releases/{release}/rollouts/a-z{0,62}.',
-      }),
-    phases: z
-      .array(PhaseSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The phases that represent the workflows of this `Rollout`.',
-        readOnly: true,
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'SUCCEEDED',
-        'FAILED',
-        'IN_PROGRESS',
-        'PENDING_APPROVAL',
-        'APPROVAL_REJECTED',
-        'PENDING',
-        'PENDING_RELEASE',
-        'CANCELLING',
-        'CANCELLED',
-        'HALTED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. Current state of the `Rollout`.', readOnly: true }),
-    targetId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ID of Target to which this `Rollout` is deploying.' }),
-    uid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Unique identifier of the `Rollout`.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'A `Rollout` resource in the Google Cloud Deploy API. A `Rollout` contains information around a specific deployment to a `Target`.',
-    required: [],
-  })
-  .openapi('Rollout')
-
-const ListRolloutsResponseSchema = z
+const ListRolloutsResponseSchema: z.ZodType<ListRolloutsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2430,7 +2402,7 @@ const RetryJobRequestSchema = z
   .openapi('RetryJobRequest')
 
 const RetryJobResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "The response object from 'RetryJob'." })
   .openapi('RetryJobResponse')
 
@@ -2502,12 +2474,12 @@ const TargetNotificationEventSchema = z
   .openapi('TargetNotificationEvent')
 
 const TerminateJobRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request object used by `TerminateJobRun`.' })
   .openapi('TerminateJobRunRequest')
 
 const TerminateJobRunResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response object from `TerminateJobRun`.' })
   .openapi('TerminateJobRunResponse')
 

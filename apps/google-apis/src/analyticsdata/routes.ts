@@ -1,488 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const NumericValueSchema = z
-  .object({
-    doubleValue: z.float64().exactOptional().openapi({ description: 'Double value' }),
-    int64Value: z.string().exactOptional().openapi({ description: 'Integer value' }),
-  })
-  .openapi({ description: 'To represent a number.', required: [] })
-  .openapi('NumericValue')
-
-const BetweenFilterSchema = z
-  .object({
-    fromValue: NumericValueSchema.exactOptional().openapi({
-      description: 'Begins with this number.',
-    }),
-    toValue: NumericValueSchema.exactOptional().openapi({ description: 'Ends with this number.' }),
-  })
-  .openapi({
-    description: 'To express that the result needs to be between two numbers (inclusive).',
-    required: [],
-  })
-  .openapi('BetweenFilter')
-
-const InListFilterSchema = z
-  .object({
-    caseSensitive: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, the string value is case sensitive.' }),
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The list of string values. Must be non-empty.' }),
-  })
-  .openapi({ description: 'The result needs to be in a list of string values.', required: [] })
-  .openapi('InListFilter')
-
-const NumericFilterSchema = z
-  .object({
-    operation: z
-      .enum([
-        'OPERATION_UNSPECIFIED',
-        'EQUAL',
-        'LESS_THAN',
-        'LESS_THAN_OR_EQUAL',
-        'GREATER_THAN',
-        'GREATER_THAN_OR_EQUAL',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The operation type for this filter.' }),
-    value: NumericValueSchema.exactOptional().openapi({
-      description: 'A numeric value or a date value.',
-    }),
-  })
-  .openapi({ description: 'Filters for numeric or date values.', required: [] })
-  .openapi('NumericFilter')
-
-const StringFilterSchema = z
-  .object({
-    caseSensitive: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, the string value is case sensitive.' }),
-    matchType: z
-      .enum([
-        'MATCH_TYPE_UNSPECIFIED',
-        'EXACT',
-        'BEGINS_WITH',
-        'ENDS_WITH',
-        'CONTAINS',
-        'FULL_REGEXP',
-        'PARTIAL_REGEXP',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The match type for this filter.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The string value used for the matching.' }),
-  })
-  .openapi({ description: 'The filter for string', required: [] })
-  .openapi('StringFilter')
-
-type FilterType = {
-  betweenFilter?: z.infer<typeof BetweenFilterSchema>
-  fieldName?: string
-  inListFilter?: z.infer<typeof InListFilterSchema>
-  numericFilter?: z.infer<typeof NumericFilterSchema>
-  stringFilter?: z.infer<typeof StringFilterSchema>
-}
-
-const FilterExpressionListSchema: z.ZodType<FilterExpressionListType> = z
-  .lazy(() =>
-    z
-      .object({
-        expressions: z
-          .array(FilterExpressionSchema)
-          .exactOptional()
-          .openapi({ description: 'A list of filter expressions.' }),
-      })
-      .openapi({ description: 'A list of filter expressions.', required: [] }),
-  )
-  .openapi('FilterExpressionList')
-
-const FilterSchema: z.ZodType<FilterType> = z
-  .lazy(() =>
-    z
-      .object({
-        betweenFilter: BetweenFilterSchema.exactOptional().openapi({
-          description: 'A filter for two values.',
-        }),
-        fieldName: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The dimension name or metric name. In most methods, dimensions & metrics can be used for the first time in this field. However in a RunPivotReportRequest, this field must be additionally specified by name in the RunPivotReportRequest's dimensions or metrics.",
-          }),
-        inListFilter: InListFilterSchema.exactOptional().openapi({
-          description: 'A filter for in list values.',
-        }),
-        numericFilter: NumericFilterSchema.exactOptional().openapi({
-          description: 'A filter for numeric or date values.',
-        }),
-        stringFilter: StringFilterSchema.exactOptional().openapi({
-          description: 'Strings related filter.',
-        }),
-      })
-      .openapi({
-        description: 'An expression to filter dimension or metric values.',
-        required: [],
-      }),
-  )
-  .openapi('Filter')
-
-type FilterExpressionType = {
-  andGroup?: z.infer<typeof FilterExpressionListSchema>
-  filter?: z.infer<typeof FilterSchema>
-  notExpression?: FilterExpressionType
-  orGroup?: z.infer<typeof FilterExpressionListSchema>
-}
-
-const FilterExpressionSchema: z.ZodType<FilterExpressionType> = z
-  .lazy(() =>
-    z
-      .object({
-        andGroup: FilterExpressionListSchema.exactOptional().openapi({
-          description: 'The FilterExpressions in and_group have an AND relationship.',
-        }),
-        filter: FilterSchema.exactOptional().openapi({
-          description:
-            "A primitive filter. In the same FilterExpression, all of the filter's field names need to be either all dimensions or all metrics.",
-        }),
-        notExpression: FilterExpressionSchema.exactOptional().openapi({
-          description: 'The FilterExpression is NOT of not_expression.',
-        }),
-        orGroup: FilterExpressionListSchema.exactOptional().openapi({
-          description: 'The FilterExpressions in or_group have an OR relationship.',
-        }),
-      })
-      .openapi({
-        description:
-          'To express dimension or metric filters. The fields in the same FilterExpression need to be either all dimensions or all metrics.',
-        required: [],
-      }),
-  )
-  .openapi('FilterExpression')
-
-type FilterExpressionListType = { expressions?: z.infer<typeof FilterExpressionSchema>[] }
-
-const DimensionMetadataSchema = z
-  .object({
-    apiName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This dimension's name. Useable in [Dimension](#Dimension)'s `name`. For example, `eventName`.",
-      }),
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The display name of the category that this dimension belongs to. Similar dimensions and metrics are categorized together.',
-      }),
-    customDefinition: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the dimension is custom to this property. This includes user, event, & item scoped custom dimensions; to learn more about custom dimensions, see https://support.google.com/analytics/answer/14240153. This also include custom channel groups; to learn more about custom channel groups, see https://support.google.com/analytics/answer/13051316.',
-      }),
-    deprecatedApiNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Still usable but deprecated names for this dimension. If populated, this dimension is available by either `apiName` or one of `deprecatedApiNames` for a period of time. After the deprecation period, the dimension will be available only by `apiName`.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of how this dimension is used and calculated.' }),
-    uiName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This dimension's name within the Google Analytics user interface. For example, `Event name`.",
-      }),
-  })
-  .openapi({ description: 'Explains a dimension.', required: [] })
-  .openapi('DimensionMetadata')
-
-const MetricMetadataSchema = z
-  .object({
-    apiName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A metric name. Useable in [Metric](#Metric)'s `name`. For example, `eventCount`.",
-      }),
-    blockedReasons: z
-      .array(z.enum(['BLOCKED_REASON_UNSPECIFIED', 'NO_REVENUE_METRICS', 'NO_COST_METRICS']))
-      .exactOptional()
-      .openapi({
-        description:
-          'If reasons are specified, your access is blocked to this metric for this property. API requests from you to this property for this metric will succeed; however, the report will contain only zeros for this metric. API requests with metric filters on blocked metrics will fail. If reasons are empty, you have access to this metric. To learn more, see [Access and data-restriction management](https://support.google.com/analytics/answer/10851388).',
-      }),
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The display name of the category that this metrics belongs to. Similar dimensions and metrics are categorized together.',
-      }),
-    customDefinition: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the metric is a custom metric for this property.' }),
-    deprecatedApiNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Still usable but deprecated names for this metric. If populated, this metric is available by either `apiName` or one of `deprecatedApiNames` for a period of time. After the deprecation period, the metric will be available only by `apiName`.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of how this metric is used and calculated.' }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The mathematical expression for this derived metric. Can be used in [Metric](#Metric)'s `expression` field for equivalent reports. Most metrics are not expressions, and for non-expressions, this field is empty.",
-      }),
-    type: z
-      .enum([
-        'METRIC_TYPE_UNSPECIFIED',
-        'TYPE_INTEGER',
-        'TYPE_FLOAT',
-        'TYPE_SECONDS',
-        'TYPE_MILLISECONDS',
-        'TYPE_MINUTES',
-        'TYPE_HOURS',
-        'TYPE_STANDARD',
-        'TYPE_CURRENCY',
-        'TYPE_FEET',
-        'TYPE_MILES',
-        'TYPE_METERS',
-        'TYPE_KILOMETERS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of this metric.' }),
-    uiName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This metric's name within the Google Analytics user interface. For example, `Event count`.",
-      }),
-  })
-  .openapi({ description: 'Explains a metric.', required: [] })
-  .openapi('MetricMetadata')
-
-type MetadataType = {
-  dimensions?: z.infer<typeof DimensionMetadataSchema>[]
-  metrics?: z.infer<typeof MetricMetadataSchema>[]
-  name?: string
-}
-
-const DimensionOrderBySchema = z
-  .object({
-    dimensionName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A dimension name in the request to order by.' }),
-    orderType: z
-      .enum(['ORDER_TYPE_UNSPECIFIED', 'ALPHANUMERIC', 'CASE_INSENSITIVE_ALPHANUMERIC', 'NUMERIC'])
-      .exactOptional()
-      .openapi({ description: 'Controls the rule for dimension value ordering.' }),
-  })
-  .openapi({ description: 'Sorts by dimension values.', required: [] })
-  .openapi('DimensionOrderBy')
-
-const MetricOrderBySchema = z
-  .object({
-    metricName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A metric name in the request to order by.' }),
-  })
-  .openapi({ description: 'Sorts by metric values.', required: [] })
-  .openapi('MetricOrderBy')
-
-const PivotSelectionSchema = z
-  .object({
-    dimensionName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Must be a dimension name from the request.' }),
-    dimensionValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Order by only when the named dimension is this value.' }),
-  })
-  .openapi({
-    description:
-      'A pair of dimension names and values. Rows with this dimension pivot pair are ordered by the metric\'s value. For example if pivots = {{"browser", "Chrome"}} and metric_name = "Sessions", then the rows will be sorted based on Sessions in Chrome. ---------|----------|----------------|----------|---------------- | Chrome | Chrome | Safari | Safari ---------|----------|----------------|----------|---------------- Country | Sessions | Pages/Sessions | Sessions | Pages/Sessions ---------|----------|----------------|----------|---------------- US | 2 | 2 | 3 | 1 ---------|----------|----------------|----------|---------------- Canada | 3 | 1 | 4 | 1 ---------|----------|----------------|----------|----------------',
-    required: [],
-  })
-  .openapi('PivotSelection')
-
-const PivotOrderBySchema = z
-  .object({
-    metricName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'In the response to order by, order rows by this column. Must be a metric name from the request.',
-      }),
-    pivotSelections: z
-      .array(PivotSelectionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Used to select a dimension name and value pivot. If multiple pivot selections are given, the sort occurs on rows where all pivot selection dimension name and value pairs match the row's dimension name and value pair.",
-      }),
-  })
-  .openapi({ description: 'Sorts by a pivot column group.', required: [] })
-  .openapi('PivotOrderBy')
-
-type OrderByType = {
-  desc?: boolean
-  dimension?: z.infer<typeof DimensionOrderBySchema>
-  metric?: z.infer<typeof MetricOrderBySchema>
-  pivot?: z.infer<typeof PivotOrderBySchema>
-}
-
-const ActiveMetricRestrictionSchema = z
-  .object({
-    metricName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the restricted metric.' }),
-    restrictedMetricTypes: z
-      .array(z.enum(['RESTRICTED_METRIC_TYPE_UNSPECIFIED', 'COST_DATA', 'REVENUE_DATA']))
-      .exactOptional()
-      .openapi({ description: "The reason for this metric's restriction." }),
-  })
-  .openapi({ description: 'A metric actively restricted in creating the report.', required: [] })
-  .openapi('ActiveMetricRestriction')
-
-const V1betaAudienceDimensionSchema = z
-  .object({
-    dimensionName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The API name of the dimension. See the [API Dimensions](https://developers.google.com/analytics/devguides/reporting/data/v1/audience-list-api-schema#dimensions) for the list of dimension names.',
-      }),
-  })
-  .openapi({
-    description:
-      'An audience dimension is a user attribute. Specific user attributed are requested and then later returned in the `QueryAudienceExportResponse`.',
-    required: [],
-  })
-  .openapi('V1betaAudienceDimension')
-
-const AudienceExportSchema = z
-  .object({
-    audience: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The audience resource name. This resource name identifies the audience being listed and is shared between the Analytics Data & Admin APIs. Format: `properties/{property}/audiences/{audience}`',
-      }),
-    audienceDisplayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The descriptive display name for this audience. For example, "Purchasers".',
-        readOnly: true,
-      }),
-    beginCreatingTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time when CreateAudienceExport was called and the AudienceExport began the `CREATING` state.',
-        readOnly: true,
-      }),
-    creationQuotaTokensCharged: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The total quota tokens charged during creation of the AudienceExport. Because this token count is based on activity from the `CREATING` state, this tokens charged will be fixed once an AudienceExport enters the `ACTIVE` or `FAILED` states.',
-        readOnly: true,
-      }),
-    dimensions: z
-      .array(V1betaAudienceDimensionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Required. The dimensions requested and displayed in the query response.',
-      }),
-    errorMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Error message is populated when an audience export fails during creation. A common reason for such a failure is quota exhaustion.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Identifier. The audience export resource name assigned during creation. This resource name identifies this `AudienceExport`. Format: `properties/{property}/audienceExports/{audience_export}`',
-        readOnly: true,
-      }),
-    percentageCompleted: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The percentage completed for this audience export ranging between 0 to 100.',
-        readOnly: true,
-      }),
-    rowCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The total number of rows in the AudienceExport result.',
-        readOnly: true,
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATING', 'ACTIVE', 'FAILED'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The current state for this AudienceExport.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      "An audience export is a list of users in an audience at the time of the list's creation. One audience may have multiple audience exports created for different days.",
-    required: [],
-  })
-  .openapi('AudienceExport')
-
-const AudienceListMetadataSchema = z
-  .object({})
-  .openapi({ description: 'This metadata is currently blank.' })
-  .openapi('AudienceListMetadata')
-
 const CohortReportSettingsSchema = z
   .object({
     accumulate: z
@@ -609,6 +126,32 @@ const CohortSpecSchema = z
   })
   .openapi('CohortSpec')
 
+const FilterExpressionSchema: z.ZodType<FilterExpressionType> = z
+  .lazy(() =>
+    z
+      .object({
+        andGroup: FilterExpressionListSchema.exactOptional().openapi({
+          description: 'The FilterExpressions in and_group have an AND relationship.',
+        }),
+        filter: FilterSchema.exactOptional().openapi({
+          description:
+            "A primitive filter. In the same FilterExpression, all of the filter's field names need to be either all dimensions or all metrics.",
+        }),
+        notExpression: FilterExpressionSchema.exactOptional().openapi({
+          description: 'The FilterExpression is NOT of not_expression.',
+        }),
+        orGroup: FilterExpressionListSchema.exactOptional().openapi({
+          description: 'The FilterExpressions in or_group have an OR relationship.',
+        }),
+      })
+      .openapi({
+        description:
+          'To express dimension or metric filters. The fields in the same FilterExpression need to be either all dimensions or all metrics.',
+        required: [],
+      }),
+  )
+  .openapi('FilterExpression')
+
 const ConcatenateExpressionSchema = z
   .object({
     delimiter: z
@@ -714,30 +257,89 @@ const MetricSchema = z
   })
   .openapi('Metric')
 
-const OrderBySchema: z.ZodType<OrderByType> = z
-  .lazy(() =>
-    z
-      .object({
-        desc: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'If true, sorts by descending order.' }),
-        dimension: DimensionOrderBySchema.exactOptional().openapi({
-          description: "Sorts results by a dimension's values.",
-        }),
-        metric: MetricOrderBySchema.exactOptional().openapi({
-          description: "Sorts results by a metric's values.",
-        }),
-        pivot: PivotOrderBySchema.exactOptional().openapi({
-          description: "Sorts results by a metric's values within a pivot column group.",
-        }),
-      })
+const DimensionOrderBySchema = z
+  .object({
+    dimensionName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A dimension name in the request to order by.' }),
+    orderType: z
+      .enum(['ORDER_TYPE_UNSPECIFIED', 'ALPHANUMERIC', 'CASE_INSENSITIVE_ALPHANUMERIC', 'NUMERIC'])
+      .exactOptional()
+      .openapi({ description: 'Controls the rule for dimension value ordering.' }),
+  })
+  .openapi({ description: 'Sorts by dimension values.', required: [] })
+  .openapi('DimensionOrderBy')
+
+const MetricOrderBySchema = z
+  .object({
+    metricName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A metric name in the request to order by.' }),
+  })
+  .openapi({ description: 'Sorts by metric values.', required: [] })
+  .openapi('MetricOrderBy')
+
+const PivotSelectionSchema = z
+  .object({
+    dimensionName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Must be a dimension name from the request.' }),
+    dimensionValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Order by only when the named dimension is this value.' }),
+  })
+  .openapi({
+    description:
+      'A pair of dimension names and values. Rows with this dimension pivot pair are ordered by the metric\'s value. For example if pivots = {{"browser", "Chrome"}} and metric_name = "Sessions", then the rows will be sorted based on Sessions in Chrome. ---------|----------|----------------|----------|---------------- | Chrome | Chrome | Safari | Safari ---------|----------|----------------|----------|---------------- Country | Sessions | Pages/Sessions | Sessions | Pages/Sessions ---------|----------|----------------|----------|---------------- US | 2 | 2 | 3 | 1 ---------|----------|----------------|----------|---------------- Canada | 3 | 1 | 4 | 1 ---------|----------|----------------|----------|----------------',
+    required: [],
+  })
+  .openapi('PivotSelection')
+
+const PivotOrderBySchema = z
+  .object({
+    metricName: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          'Order bys define how rows will be sorted in the response. For example, ordering rows by descending event count is one ordering, and ordering rows by the event name string is a different ordering.',
-        required: [],
+          'In the response to order by, order rows by this column. Must be a metric name from the request.',
       }),
-  )
+    pivotSelections: z
+      .array(PivotSelectionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Used to select a dimension name and value pivot. If multiple pivot selections are given, the sort occurs on rows where all pivot selection dimension name and value pairs match the row's dimension name and value pair.",
+      }),
+  })
+  .openapi({ description: 'Sorts by a pivot column group.', required: [] })
+  .openapi('PivotOrderBy')
+
+const OrderBySchema = z
+  .object({
+    desc: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, sorts by descending order.' }),
+    dimension: DimensionOrderBySchema.exactOptional().openapi({
+      description: "Sorts results by a dimension's values.",
+    }),
+    metric: MetricOrderBySchema.exactOptional().openapi({
+      description: "Sorts results by a metric's values.",
+    }),
+    pivot: PivotOrderBySchema.exactOptional().openapi({
+      description: "Sorts results by a metric's values within a pivot column group.",
+    }),
+  })
+  .openapi({
+    description:
+      'Order bys define how rows will be sorted in the response. For example, ordering rows by descending event count is one ordering, and ordering rows by the event name string is a different ordering.',
+    required: [],
+  })
   .openapi('OrderBy')
 
 const PivotSchema = z
@@ -783,7 +385,21 @@ const PivotSchema = z
   })
   .openapi('Pivot')
 
-const RunPivotReportRequestSchema = z
+type RunPivotReportRequestType = {
+  cohortSpec?: z.infer<typeof CohortSpecSchema>
+  currencyCode?: string
+  dateRanges?: z.infer<typeof DateRangeSchema>[]
+  dimensionFilter?: z.infer<typeof FilterExpressionSchema>
+  dimensions?: z.infer<typeof DimensionSchema>[]
+  keepEmptyRows?: boolean
+  metricFilter?: z.infer<typeof FilterExpressionSchema>
+  metrics?: z.infer<typeof MetricSchema>[]
+  pivots?: z.infer<typeof PivotSchema>[]
+  property?: string
+  returnPropertyQuota?: boolean
+}
+
+const RunPivotReportRequestSchema: z.ZodType<RunPivotReportRequestType> = z
   .object({
     cohortSpec: CohortSpecSchema.exactOptional().openapi({
       description:
@@ -857,21 +473,7 @@ const RunPivotReportRequestSchema = z
   .openapi({ description: 'The request to generate a pivot report.', required: [] })
   .openapi('RunPivotReportRequest')
 
-const BatchRunPivotReportsRequestSchema = z
-  .object({
-    requests: z
-      .array(RunPivotReportRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Individual requests. Each request has a separate pivot report response. Each batch request is allowed up to 5 requests.',
-      }),
-  })
-  .openapi({
-    description: 'The batch request containing multiple pivot report requests.',
-    required: [],
-  })
-  .openapi('BatchRunPivotReportsRequest')
+type BatchRunPivotReportsRequestType = { requests?: z.infer<typeof RunPivotReportRequestSchema>[] }
 
 const DimensionValueSchema = z
   .object({
@@ -946,6 +548,20 @@ const SamplingMetadataSchema = z
     required: [],
   })
   .openapi('SamplingMetadata')
+
+const ActiveMetricRestrictionSchema = z
+  .object({
+    metricName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the restricted metric.' }),
+    restrictedMetricTypes: z
+      .array(z.enum(['RESTRICTED_METRIC_TYPE_UNSPECIFIED', 'COST_DATA', 'REVENUE_DATA']))
+      .exactOptional()
+      .openapi({ description: "The reason for this metric's restriction." }),
+  })
+  .openapi({ description: 'A metric actively restricted in creating the report.', required: [] })
+  .openapi('ActiveMetricRestriction')
 
 const SchemaRestrictionResponseSchema = z
   .object({
@@ -1178,24 +794,10 @@ const RunPivotReportResponseSchema = z
   })
   .openapi('RunPivotReportResponse')
 
-const BatchRunPivotReportsResponseSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this message is. This `kind` is always the fixed string "analyticsData#batchRunPivotReports". Useful to distinguish between response types in JSON.',
-      }),
-    pivotReports: z
-      .array(RunPivotReportResponseSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Individual responses. Each response has a separate pivot report request.',
-      }),
-  })
-  .openapi({ description: 'The batch response containing multiple pivot reports.', required: [] })
-  .openapi('BatchRunPivotReportsResponse')
+type BatchRunPivotReportsResponseType = {
+  kind?: string
+  pivotReports?: z.infer<typeof RunPivotReportResponseSchema>[]
+}
 
 const RunReportRequestSchema = z
   .object({
@@ -1283,18 +885,7 @@ const RunReportRequestSchema = z
   .openapi({ description: 'The request to generate a report.', required: [] })
   .openapi('RunReportRequest')
 
-const BatchRunReportsRequestSchema = z
-  .object({
-    requests: z
-      .array(RunReportRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Individual requests. Each request has a separate report response. Each batch request is allowed up to 5 requests.',
-      }),
-  })
-  .openapi({ description: 'The batch request containing multiple report requests.', required: [] })
-  .openapi('BatchRunReportsRequest')
+type BatchRunReportsRequestType = { requests?: z.infer<typeof RunReportRequestSchema>[] }
 
 const RunReportResponseSchema = z
   .object({
@@ -1354,7 +945,303 @@ const RunReportResponseSchema = z
   .openapi({ description: 'The response report table corresponding to a request.', required: [] })
   .openapi('RunReportResponse')
 
-const BatchRunReportsResponseSchema = z
+type BatchRunReportsResponseType = {
+  kind?: string
+  reports?: z.infer<typeof RunReportResponseSchema>[]
+}
+
+const NumericValueSchema = z
+  .object({
+    doubleValue: z.float64().exactOptional().openapi({ description: 'Double value' }),
+    int64Value: z.string().exactOptional().openapi({ description: 'Integer value' }),
+  })
+  .openapi({ description: 'To represent a number.', required: [] })
+  .openapi('NumericValue')
+
+const BetweenFilterSchema = z
+  .object({
+    fromValue: NumericValueSchema.exactOptional().openapi({
+      description: 'Begins with this number.',
+    }),
+    toValue: NumericValueSchema.exactOptional().openapi({ description: 'Ends with this number.' }),
+  })
+  .openapi({
+    description: 'To express that the result needs to be between two numbers (inclusive).',
+    required: [],
+  })
+  .openapi('BetweenFilter')
+
+const InListFilterSchema = z
+  .object({
+    caseSensitive: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, the string value is case sensitive.' }),
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The list of string values. Must be non-empty.' }),
+  })
+  .openapi({ description: 'The result needs to be in a list of string values.', required: [] })
+  .openapi('InListFilter')
+
+const NumericFilterSchema = z
+  .object({
+    operation: z
+      .enum([
+        'OPERATION_UNSPECIFIED',
+        'EQUAL',
+        'LESS_THAN',
+        'LESS_THAN_OR_EQUAL',
+        'GREATER_THAN',
+        'GREATER_THAN_OR_EQUAL',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The operation type for this filter.' }),
+    value: NumericValueSchema.exactOptional().openapi({
+      description: 'A numeric value or a date value.',
+    }),
+  })
+  .openapi({ description: 'Filters for numeric or date values.', required: [] })
+  .openapi('NumericFilter')
+
+const StringFilterSchema = z
+  .object({
+    caseSensitive: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, the string value is case sensitive.' }),
+    matchType: z
+      .enum([
+        'MATCH_TYPE_UNSPECIFIED',
+        'EXACT',
+        'BEGINS_WITH',
+        'ENDS_WITH',
+        'CONTAINS',
+        'FULL_REGEXP',
+        'PARTIAL_REGEXP',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The match type for this filter.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The string value used for the matching.' }),
+  })
+  .openapi({ description: 'The filter for string', required: [] })
+  .openapi('StringFilter')
+
+type FilterType = {
+  betweenFilter?: z.infer<typeof BetweenFilterSchema>
+  fieldName?: string
+  inListFilter?: z.infer<typeof InListFilterSchema>
+  numericFilter?: z.infer<typeof NumericFilterSchema>
+  stringFilter?: z.infer<typeof StringFilterSchema>
+}
+
+const FilterExpressionListSchema: z.ZodType<FilterExpressionListType> = z
+  .lazy(() =>
+    z
+      .object({
+        expressions: z
+          .array(FilterExpressionSchema)
+          .exactOptional()
+          .openapi({ description: 'A list of filter expressions.' }),
+      })
+      .openapi({ description: 'A list of filter expressions.', required: [] }),
+  )
+  .openapi('FilterExpressionList')
+
+const FilterSchema: z.ZodType<FilterType> = z
+  .object({
+    betweenFilter: BetweenFilterSchema.exactOptional().openapi({
+      description: 'A filter for two values.',
+    }),
+    fieldName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The dimension name or metric name. In most methods, dimensions & metrics can be used for the first time in this field. However in a RunPivotReportRequest, this field must be additionally specified by name in the RunPivotReportRequest's dimensions or metrics.",
+      }),
+    inListFilter: InListFilterSchema.exactOptional().openapi({
+      description: 'A filter for in list values.',
+    }),
+    numericFilter: NumericFilterSchema.exactOptional().openapi({
+      description: 'A filter for numeric or date values.',
+    }),
+    stringFilter: StringFilterSchema.exactOptional().openapi({
+      description: 'Strings related filter.',
+    }),
+  })
+  .openapi({ description: 'An expression to filter dimension or metric values.', required: [] })
+  .openapi('Filter')
+
+type FilterExpressionType = {
+  andGroup?: z.infer<typeof FilterExpressionListSchema>
+  filter?: z.infer<typeof FilterSchema>
+  notExpression?: FilterExpressionType
+  orGroup?: z.infer<typeof FilterExpressionListSchema>
+}
+
+type FilterExpressionListType = { expressions?: z.infer<typeof FilterExpressionSchema>[] }
+
+const V1betaAudienceDimensionSchema = z
+  .object({
+    dimensionName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The API name of the dimension. See the [API Dimensions](https://developers.google.com/analytics/devguides/reporting/data/v1/audience-list-api-schema#dimensions) for the list of dimension names.',
+      }),
+  })
+  .openapi({
+    description:
+      'An audience dimension is a user attribute. Specific user attributed are requested and then later returned in the `QueryAudienceExportResponse`.',
+    required: [],
+  })
+  .openapi('V1betaAudienceDimension')
+
+const AudienceExportSchema = z
+  .object({
+    audience: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The audience resource name. This resource name identifies the audience being listed and is shared between the Analytics Data & Admin APIs. Format: `properties/{property}/audiences/{audience}`',
+      }),
+    audienceDisplayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The descriptive display name for this audience. For example, "Purchasers".',
+        readOnly: true,
+      }),
+    beginCreatingTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time when CreateAudienceExport was called and the AudienceExport began the `CREATING` state.',
+        readOnly: true,
+      }),
+    creationQuotaTokensCharged: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The total quota tokens charged during creation of the AudienceExport. Because this token count is based on activity from the `CREATING` state, this tokens charged will be fixed once an AudienceExport enters the `ACTIVE` or `FAILED` states.',
+        readOnly: true,
+      }),
+    dimensions: z
+      .array(V1betaAudienceDimensionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Required. The dimensions requested and displayed in the query response.',
+      }),
+    errorMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Error message is populated when an audience export fails during creation. A common reason for such a failure is quota exhaustion.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Identifier. The audience export resource name assigned during creation. This resource name identifies this `AudienceExport`. Format: `properties/{property}/audienceExports/{audience_export}`',
+        readOnly: true,
+      }),
+    percentageCompleted: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The percentage completed for this audience export ranging between 0 to 100.',
+        readOnly: true,
+      }),
+    rowCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The total number of rows in the AudienceExport result.',
+        readOnly: true,
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATING', 'ACTIVE', 'FAILED'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The current state for this AudienceExport.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      "An audience export is a list of users in an audience at the time of the list's creation. One audience may have multiple audience exports created for different days.",
+    required: [],
+  })
+  .openapi('AudienceExport')
+
+const AudienceListMetadataSchema = z
+  .looseObject({})
+  .openapi({ description: 'This metadata is currently blank.' })
+  .openapi('AudienceListMetadata')
+
+const BatchRunPivotReportsRequestSchema: z.ZodType<BatchRunPivotReportsRequestType> = z
+  .object({
+    requests: z
+      .array(RunPivotReportRequestSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Individual requests. Each request has a separate pivot report response. Each batch request is allowed up to 5 requests.',
+      }),
+  })
+  .openapi({
+    description: 'The batch request containing multiple pivot report requests.',
+    required: [],
+  })
+  .openapi('BatchRunPivotReportsRequest')
+
+const BatchRunPivotReportsResponseSchema: z.ZodType<BatchRunPivotReportsResponseType> = z
+  .object({
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this message is. This `kind` is always the fixed string "analyticsData#batchRunPivotReports". Useful to distinguish between response types in JSON.',
+      }),
+    pivotReports: z
+      .array(RunPivotReportResponseSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Individual responses. Each response has a separate pivot report request.',
+      }),
+  })
+  .openapi({ description: 'The batch response containing multiple pivot reports.', required: [] })
+  .openapi('BatchRunPivotReportsResponse')
+
+const BatchRunReportsRequestSchema: z.ZodType<BatchRunReportsRequestType> = z
+  .object({
+    requests: z
+      .array(RunReportRequestSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Individual requests. Each request has a separate report response. Each batch request is allowed up to 5 requests.',
+      }),
+  })
+  .openapi({ description: 'The batch request containing multiple report requests.', required: [] })
+  .openapi('BatchRunReportsRequest')
+
+const BatchRunReportsResponseSchema: z.ZodType<BatchRunReportsResponseType> = z
   .object({
     kind: z
       .string()
@@ -1412,6 +1299,51 @@ const CheckCompatibilityRequestSchema = z
   })
   .openapi('CheckCompatibilityRequest')
 
+const DimensionMetadataSchema = z
+  .object({
+    apiName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This dimension's name. Useable in [Dimension](#Dimension)'s `name`. For example, `eventName`.",
+      }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The display name of the category that this dimension belongs to. Similar dimensions and metrics are categorized together.',
+      }),
+    customDefinition: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the dimension is custom to this property. This includes user, event, & item scoped custom dimensions; to learn more about custom dimensions, see https://support.google.com/analytics/answer/14240153. This also include custom channel groups; to learn more about custom channel groups, see https://support.google.com/analytics/answer/13051316.',
+      }),
+    deprecatedApiNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Still usable but deprecated names for this dimension. If populated, this dimension is available by either `apiName` or one of `deprecatedApiNames` for a period of time. After the deprecation period, the dimension will be available only by `apiName`.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of how this dimension is used and calculated.' }),
+    uiName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This dimension's name within the Google Analytics user interface. For example, `Event name`.",
+      }),
+  })
+  .openapi({ description: 'Explains a dimension.', required: [] })
+  .openapi('DimensionMetadata')
+
 const DimensionCompatibilitySchema = z
   .object({
     compatibility: z
@@ -1428,6 +1360,80 @@ const DimensionCompatibilitySchema = z
   })
   .openapi({ description: 'The compatibility for a single dimension.', required: [] })
   .openapi('DimensionCompatibility')
+
+const MetricMetadataSchema = z
+  .object({
+    apiName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A metric name. Useable in [Metric](#Metric)'s `name`. For example, `eventCount`.",
+      }),
+    blockedReasons: z
+      .array(z.enum(['BLOCKED_REASON_UNSPECIFIED', 'NO_REVENUE_METRICS', 'NO_COST_METRICS']))
+      .exactOptional()
+      .openapi({
+        description:
+          'If reasons are specified, your access is blocked to this metric for this property. API requests from you to this property for this metric will succeed; however, the report will contain only zeros for this metric. API requests with metric filters on blocked metrics will fail. If reasons are empty, you have access to this metric. To learn more, see [Access and data-restriction management](https://support.google.com/analytics/answer/10851388).',
+      }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The display name of the category that this metrics belongs to. Similar dimensions and metrics are categorized together.',
+      }),
+    customDefinition: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the metric is a custom metric for this property.' }),
+    deprecatedApiNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Still usable but deprecated names for this metric. If populated, this metric is available by either `apiName` or one of `deprecatedApiNames` for a period of time. After the deprecation period, the metric will be available only by `apiName`.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of how this metric is used and calculated.' }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The mathematical expression for this derived metric. Can be used in [Metric](#Metric)'s `expression` field for equivalent reports. Most metrics are not expressions, and for non-expressions, this field is empty.",
+      }),
+    type: z
+      .enum([
+        'METRIC_TYPE_UNSPECIFIED',
+        'TYPE_INTEGER',
+        'TYPE_FLOAT',
+        'TYPE_SECONDS',
+        'TYPE_MILLISECONDS',
+        'TYPE_MINUTES',
+        'TYPE_HOURS',
+        'TYPE_STANDARD',
+        'TYPE_CURRENCY',
+        'TYPE_FEET',
+        'TYPE_MILES',
+        'TYPE_METERS',
+        'TYPE_KILOMETERS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of this metric.' }),
+    uiName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This metric's name within the Google Analytics user interface. For example, `Event count`.",
+      }),
+  })
+  .openapi({ description: 'Explains a metric.', required: [] })
+  .openapi('MetricMetadata')
 
 const MetricCompatibilitySchema = z
   .object({
@@ -1480,29 +1486,22 @@ const ListAudienceExportsResponseSchema = z
   .openapi({ description: 'A list of all audience exports for a property.', required: [] })
   .openapi('ListAudienceExportsResponse')
 
-const MetadataSchema: z.ZodType<MetadataType> = z
-  .lazy(() =>
-    z
-      .object({
-        dimensions: z
-          .array(DimensionMetadataSchema)
-          .exactOptional()
-          .openapi({ description: 'The dimension descriptions.' }),
-        metrics: z
-          .array(MetricMetadataSchema)
-          .exactOptional()
-          .openapi({ description: 'The metric descriptions.' }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Resource name of this metadata.' }),
-      })
-      .openapi({
-        description:
-          'The dimensions, metrics and comparisons currently accepted in reporting methods.',
-        required: [],
-      }),
-  )
+const MetadataSchema = z
+  .object({
+    dimensions: z
+      .array(DimensionMetadataSchema)
+      .exactOptional()
+      .openapi({ description: 'The dimension descriptions.' }),
+    metrics: z
+      .array(MetricMetadataSchema)
+      .exactOptional()
+      .openapi({ description: 'The metric descriptions.' }),
+    name: z.string().exactOptional().openapi({ description: 'Resource name of this metadata.' }),
+  })
+  .openapi({
+    description: 'The dimensions, metrics and comparisons currently accepted in reporting methods.',
+    required: [],
+  })
   .openapi('Metadata')
 
 const MinuteRangeSchema = z

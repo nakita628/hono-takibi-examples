@@ -25,19 +25,29 @@ const ResourceSchema = z
   .openapi('Resource')
 
 const AccountHolderResourceSchema = ResourceSchema.and(
-  z
-    .object({
-      accountHolderId: z
-        .string()
-        .min(1)
-        .exactOptional()
-        .openapi({
-          description:
-            'The unique identifier of the resource connected to the component. For [Platform Experience components](https://docs.adyen.com/platforms/build-user-dashboards), this is the account holder linked to the balance account shown in the component.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountHolderId'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountHolderId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountHolderId: z
+          .string()
+          .min(1)
+          .exactOptional()
+          .openapi({
+            description:
+              'The unique identifier of the resource connected to the component. For [Platform Experience components](https://docs.adyen.com/platforms/build-user-dashboards), this is the account holder linked to the balance account shown in the component.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountHolderId'] })
   .openapi('AccountHolderResource')
 
@@ -161,25 +171,45 @@ const DefaultErrorResponseEntitySchema = z
   .openapi('DefaultErrorResponseEntity')
 
 const LegalEntityResourceSchema = ResourceSchema.and(
-  z
-    .object({
-      legalEntityId: z
-        .string()
-        .min(1)
-        .exactOptional()
-        .openapi({
-          description:
-            'The unique identifier of the resource connected to the component.\nFor [Onboarding components](https://docs.adyen.com/platforms/onboard-users/components), this is the legal entity that has a contractual relationship with your platform and owns the [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments). For sole proprietorships, this is the legal entity of the individual owner.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['legalEntityId'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'legalEntityId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        legalEntityId: z
+          .string()
+          .min(1)
+          .exactOptional()
+          .openapi({
+            description:
+              'The unique identifier of the resource connected to the component.\nFor [Onboarding components](https://docs.adyen.com/platforms/onboard-users/components), this is the legal entity that has a contractual relationship with your platform and owns the [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments). For sole proprietorships, this is the legal entity of the individual owner.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['legalEntityId'] })
   .openapi('LegalEntityResource')
 
 const PaymentInstrumentResourceSchema = ResourceSchema.and(
-  z.object({ paymentInstrumentId: z.string().min(1).exactOptional() }).openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['paymentInstrumentId'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'paymentInstrumentId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z.object({ paymentInstrumentId: z.string().min(1).exactOptional() }).openapi({ required: [] }),
+  )
   .openapi({ required: ['paymentInstrumentId'] })
   .openapi('PaymentInstrumentResource')
 

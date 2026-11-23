@@ -221,7 +221,7 @@ Retrieves the list of available payment methods for the transaction, based on th
 |» allowedPaymentMethods|body|[string]|false|List of payment methods to be presented to the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).<br><br>Example: `"allowedPaymentMethods":["ideal","applepay"]`|
 |» amount|body|[Amount](#schemaamount)|false|The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero).|
 |» blockedPaymentMethods|body|[string]|false|List of payment methods to be hidden from the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).<br><br>Example: `"blockedPaymentMethods":["ideal","applepay"]`|
-|» browserInfo|body|[BrowserInfo](#schemabrowserinfo)|false|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.|
+|» browserInfo|body|[BrowserInfo](#schemabrowserinfo)|false|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.<br>><br>> If you proceed with a 3D Secure 2 payment, the following requirements apply to `browserInfo` in the `/payments` request. For browser-based 3D Secure 2 payments, include complete `browserInfo`. For mobile app integrations that can be routed to a 3D Secure 2 redirect, include the `userAgent` and `acceptHeader` fields. Native app 3D Secure 2 authentication does not require `browserInfo`. If the `/payments` request of a browser-based payment has missing or incomplete `browserInfo`, the transaction is treated as ineligible for 3D Secure 2 and can be authorized without liability shift. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |» channel|body|string|false|The platform where a payment transaction takes place. This field can be used for filtering out payment methods that are only available on specific platforms. Possible values:<br>* iOS<br>* Android<br>* Web|
 |» countryCode|body|string|false|The shopper country code.<br><br>Format: [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)<br>Example: NL or DE|
 |» merchantAccount|body|string|true|The merchant account identifier, with which you want to process the transaction.|
@@ -1454,7 +1454,7 @@ The response depends on the [payment flow](https://docs.adyen.com/payment-method
 |» authenticationData|body|[AuthenticationData](#schemaauthenticationdata)|false|Data for 3DS authentication.|
 |» bankAccount|body|[CheckoutBankAccount](#schemacheckoutbankaccount)|false|The details of the bank account, from which the payment should be made.<br>> Either `bankAccount` or `card` field must be provided in a payment request.|
 |» billingAddress|body|[BillingAddress](#schemabillingaddress)|false|The address where to send the invoice.<br>> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.<br>>* For 3D Secure 2 transactions in all browser-based and mobile implementations.<br>>* For cross-border payouts to and from Canada.|
-|» browserInfo|body|[BrowserInfo](#schemabrowserinfo)|false|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.|
+|» browserInfo|body|[BrowserInfo](#schemabrowserinfo)|false|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.<br>><br>> For browser-based payments, missing or incomplete `browserInfo` means 3D Secure 2 cannot be initiated. The transaction is then treated as ineligible for 3D Secure 2 and can be authorized without liability shift. Native app 3D Secure 2 authentication does not require `browserInfo`. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |» captureDelayHours|body|integer(int32)|false|The [delay between the authorization and automatic capture](https://docs.adyen.com/online-payments/capture?tab=delayed-individual_2#delayed-automatic-capture) of the payment, specified in hours.<br><br>Maximum value: **672** (28 days).|
 |» channel|body|string|false|The platform where a payment transaction takes place. This field is optional for filtering out payment methods that are only available on specific platforms. If this value is not set, then we will try to infer it from the `sdkVersion` or `token`.<br><br>Possible values:<br>* iOS<br>* Android<br>* Web|
 |» checkoutAttemptId|body|string|false|Checkout attempt ID that corresponds to the Id generated by the client SDK for tracking user payment journey.|
@@ -1490,7 +1490,7 @@ The response depends on the [payment flow](https://docs.adyen.com/payment-method
 |» opi|body|[OpiRequest](#schemaopirequest)|false|Configuration for Oracle Payment Interface (OPI) integrations.|
 |» order|body|[EncryptedOrderData](#schemaencryptedorderdata)|false|The order information required for partial payments.|
 |» orderReference|body|string|false|When you are doing multiple partial (gift card) payments, this is the `pspReference` of the first payment. We use this to link the multiple payments to each other. As your own reference for linking multiple payments, use the `merchantOrderReference`instead.|
-|» origin|body|string|false|> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.|
+|» origin|body|string|false|> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.<br><br>Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.<br><br>> If `origin` is missing or incorrect, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift. Set this value on your server. If you receive it from the client, validate it first. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |» paymentMethod|body|[AchDetails](#schemaachdetails) \| [AffirmDetails](#schemaaffirmdetails) \| [AfterpayDetails](#schemaafterpaydetails) \| [AlmaDetails](#schemaalmadetails) \| [AmazonPayDetails](#schemaamazonpaydetails) \| [AncvDetails](#schemaancvdetails) \| [AndroidPayDetails](#schemaandroidpaydetails) \| [ApplePayDetails](#schemaapplepaydetails) \| [AuPayDetails](#schemaaupaydetails) \| [BacsDirectDebitDetails](#schemabacsdirectdebitdetails) \| [BillDeskDetails](#schemabilldeskdetails) \| [BlikDetails](#schemablikdetails) \| [CardDetails](#schemacarddetails) \| [CashAppDetails](#schemacashappdetails) \| [CellulantDetails](#schemacellulantdetails) \| [DBaraiDetails](#schemadbaraidetails) \| [DirectDebitAuDetails](#schemadirectdebitaudetails) \| [DokuDetails](#schemadokudetails) \| [DragonpayDetails](#schemadragonpaydetails) \| [EBankingFinlandDetails](#schemaebankingfinlanddetails) \| [EcontextVoucherDetails](#schemaecontextvoucherdetails) \| [EftDetails](#schemaeftdetails) \| [ExternalTokenDetails](#schemaexternaltokendetails) \| [FastlaneDetails](#schemafastlanedetails) \| [GenericIssuerPaymentMethodDetails](#schemagenericissuerpaymentmethoddetails) \| [GooglePayDetails](#schemagooglepaydetails) \| [IdealDetails](#schemaidealdetails) \| [KlarnaDetails](#schemaklarnadetails) \| [KlarnaNetworkDetails](#schemaklarnanetworkdetails) \| [MasterpassDetails](#schemamasterpassdetails) \| [MbwayDetails](#schemambwaydetails) \| [MobilePayDetails](#schemamobilepaydetails) \| [MolPayDetails](#schemamolpaydetails) \| [OpenInvoiceDetails](#schemaopeninvoicedetails) \| [PayByBankAISDirectDebitDetails](#schemapaybybankaisdirectdebitdetails) \| [PayByBankCADirectDebitDetails](#schemapaybybankcadirectdebitdetails) \| [PayByBankDetails](#schemapaybybankdetails) \| [PayPalDetails](#schemapaypaldetails) \| [PayPayDetails](#schemapaypaydetails) \| [PayToDetails](#schemapaytodetails) \| [PayUUpiDetails](#schemapayuupidetails) \| [PayWithGoogleDetails](#schemapaywithgoogledetails) \| [PaymentDetails](#schemapaymentdetails) \| [PixDetails](#schemapixdetails) \| [PixPayByBankDetails](#schemapixpaybybankdetails) \| [PseDetails](#schemapsedetails) \| [RakutenPayDetails](#schemarakutenpaydetails) \| [RatepayDetails](#schemaratepaydetails) \| [RivertyDetails](#schemarivertydetails) \| [SamsungPayDetails](#schemasamsungpaydetails) \| [SepaDirectDebitDetails](#schemasepadirectdebitdetails) \| [StoredPaymentMethodDetails](#schemastoredpaymentmethoddetails) \| [TwintDetails](#schematwintdetails) \| [UpiCollectDetails](#schemaupicollectdetails) \| [UpiIntentDetails](#schemaupiintentdetails) \| [UpiQrDetails](#schemaupiqrdetails) \| [VippsDetails](#schemavippsdetails) \| [VisaCheckoutDetails](#schemavisacheckoutdetails) \| [WeChatPayDetails](#schemawechatpaydetails) \| [WeChatPayMiniProgramDetails](#schemawechatpayminiprogramdetails) \| [ZipDetails](#schemazipdetails)|true|The type and required details of a payment method to use.|
 |» » *oneOf*|body|[AchDetails](#schemaachdetails)|false|none|
 |» » *oneOf*|body|[AffirmDetails](#schemaaffirmdetails)|false|none|
@@ -1572,6 +1572,7 @@ The response depends on the [payment flow](https://docs.adyen.com/payment-method
 |» shopperName|body|[ShopperName](#schemashoppername)|false|The shopper's full name.|
 |» shopperReference|body|string|false|Required for recurring payments. <br>Your reference to uniquely identify this shopper, for example user ID or account ID. Minimum length: 3 characters.<br>> Your reference must not include personally identifiable information (PII), for example name or email address.|
 |» shopperStatement|body|string|false|The text to be shown on the shopper's bank statement.<br> We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.<br> Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.|
+|» shopperTaxIdentification|body|[TokenizedShopperTaxIdentification](#schematokenizedshoppertaxidentification)|false|The shopper's tax identification, verified by Adyen. Contains the token returned by `/verifyShopperTaxIdentification`.|
 |» shopperTaxInfo|body|[ShopperTaxInfo](#schemashoppertaxinfo)|false|**Deprecated.** The tax info of the shopper|
 |» socialSecurityNumber|body|string|false|The shopper's social security number.|
 |» splits|body|[[Split](#schemasplit)]|false|An array of objects specifying how to split a payment when using [Adyen for Platforms](https://docs.adyen.com/platforms/process-payments#providing-split-information), [Classic Platforms integration](https://docs.adyen.com/classic-platforms/processing-payments#providing-split-information), or [Issuing](https://docs.adyen.com/issuing/manage-funds#split).|
@@ -1579,10 +1580,11 @@ The response depends on the [payment flow](https://docs.adyen.com/payment-method
 |» storePaymentMethod|body|boolean|false|When true and `shopperReference` is provided, the payment details will be stored for future [recurring payments](https://docs.adyen.com/online-payments/tokenization/#recurring-payment-types).|
 |» subMerchants|body|[[SubMerchantInfo](#schemasubmerchantinfo)]|false|This field contains additional information on the submerchant, who is onboarded to an acquirer through a payment facilitator or aggregator|
 |» surcharge|body|[Surcharge](#schemasurcharge)|false|The [surcharge](https://docs.adyen.com/online-payments/surcharge/) amount to apply to the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). When you apply surcharge, include the surcharge in the `amount.value` field.<br><br>Review our [Surcharge compliance guide](https://docs.adyen.com/development-resources/surcharge-compliance/) to learn about how to comply with regulatory requirements when applying surcharge.|
+|» taxCalculation|body|[TokenizedTaxCalculation](#schematokenizedtaxcalculation)|false|The tax calculated by Adyen for this payment. Contains the token returned by `/calculateTax`.|
 |» telephoneNumber|body|string|false|The shopper's telephone number.<br> The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.<br>> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.|
 |» thirdPartyTokenRedundancyInfo|body|[ThirdPartyTokenRedundancyInfo](#schemathirdpartytokenredundancyinfo)|false|Configuration for creating redundant payment tokens with third-party token vaults using the Adyen Forward API. This feature requires Forward API webhook integration and pre-configured templates in your Adyen account. Contact your Adyen account manager for setup and availability.|
 |» threeDS2RequestData|body|[ThreeDS2RequestFields](#schemathreeds2requestfields)|false|Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments) or [Classic integration](https://docs.adyen.com/classic-integration) documentation.|
-|» threeDSAuthenticationOnly|body|boolean|false|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorisation.Default: **false**.|
+|» threeDSAuthenticationOnly|body|boolean|false|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br><br>Default: **false**.|
 |» trustedShopper|body|boolean|false|Set to true if the payment should be routed to a trusted MID.|
 
 #### Enumerated Values
@@ -1961,7 +1963,7 @@ You get the payment outcome asynchronously, in an [AUTHORISATION](https://docs.a
 |» themeId|body|string|false|Sets a custom theme for [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/?platform=Web&integration=Hosted+Checkout). The value can be any of the **Theme ID** values from your Customer Area.|
 |» thirdPartyTokenRedundancyInfo|body|[ThirdPartyTokenRedundancyInfo](#schemathirdpartytokenredundancyinfo)|false|Configuration for creating redundant payment tokens with third-party token vaults using the Adyen Forward API. This feature requires Forward API webhook integration and pre-configured templates in your Adyen account. Contact your Adyen account manager for setup and availability.|
 |» threeDS2RequestData|body|[CheckoutSessionThreeDS2RequestData](#schemacheckoutsessionthreeds2requestdata)|false|Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments).|
-|» threeDSAuthenticationOnly|body|boolean|false|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.|
+|» threeDSAuthenticationOnly|body|boolean|false|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br><br>Default: **false**.|
 |» trustedShopper|body|boolean|false|Set to true if the payment should be routed to a trusted MID.|
 
 #### Enumerated Values
@@ -2380,7 +2382,7 @@ For more information, see [Donations](https://docs.adyen.com/online-payments/don
 |» applicationInfo|body|[ApplicationInfo](#schemaapplicationinfo)|false|Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).|
 |» authenticationData|body|[AuthenticationData](#schemaauthenticationdata)|false|Data for 3DS authentication.|
 |» billingAddress|body|[BillingAddress](#schemabillingaddress)|false|The address where to send the invoice.<br>> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.<br>>* For 3D Secure 2 transactions in all browser-based and mobile implementations.<br>>* For cross-border payouts to and from Canada.|
-|» browserInfo|body|[BrowserInfo](#schemabrowserinfo)|false|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.|
+|» browserInfo|body|[BrowserInfo](#schemabrowserinfo)|false|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.<br>><br>> For browser-based payments, missing or incomplete `browserInfo` means 3D Secure 2 cannot be initiated. The transaction is then treated as ineligible for 3D Secure 2 and can be authorized without liability shift. Native app 3D Secure 2 authentication does not require `browserInfo`. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |» channel|body|string|false|The platform where a payment transaction takes place. This field is optional for filtering out payment methods that are only available on specific platforms. If this value is not set, then we will try to infer it from the `sdkVersion` or `token`.<br><br>Possible values:<br>* iOS<br>* Android<br>* Web|
 |» checkoutAttemptId|body|string|false|Checkout attempt ID that corresponds to the Id generated by the client SDK for tracking user payment journey.|
 |» countryCode|body|string|false|The shopper country code.<br><br>Format: [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)<br>Example: NL or DE|
@@ -2397,7 +2399,7 @@ For more information, see [Donations](https://docs.adyen.com/online-payments/don
 |» metadata|body|object|false|Metadata consists of entries, each of which includes a key and a value.<br>Limits:<br>* Maximum 20 key-value pairs per request. When exceeding, the "177" error occurs: "Metadata size exceeds limit".<br>* Maximum 20 characters per key.<br>* Maximum 80 characters per value. |
 |» » **additionalProperties**|body|string|false|none|
 |» mpiData|body|[ThreeDSecureData](#schemathreedsecuredata)|false|Authentication data produced by an MPI (Mastercard SecureCode, Visa Secure, or Cartes Bancaires).|
-|» origin|body|string|false|> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.|
+|» origin|body|string|false|> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.<br><br>Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.<br><br>> If `origin` is missing or incorrect, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift. Set this value on your server. If you receive it from the client, validate it first. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |» paymentMethod|body|[ApplePayDonations](#schemaapplepaydonations) \| [CardDonations](#schemacarddonations) \| [GooglePayDonations](#schemagooglepaydonations) \| [IdealDonations](#schemaidealdonations) \| [PayWithGoogleDonations](#schemapaywithgoogledonations) \| [SepaDirectDebitDonations](#schemasepadirectdebitdonations)|false|The type and required details of a payment method to use.<br><br>When `donationToken` is provided, the payment method is derived from the token and this field becomes optional.<br><br>If you are [PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide), and make donations using raw card details, you must explicitly provide the payment method details.|
 |» » *oneOf*|body|[ApplePayDonations](#schemaapplepaydonations)|false|none|
 |» » *oneOf*|body|[CardDonations](#schemacarddonations)|false|none|
@@ -4079,7 +4081,7 @@ Forwards the payment details you stored with Adyen to a third-party that you spe
 |» options|body|[CheckoutForwardRequestOptions](#schemacheckoutforwardrequestoptions)|false|The customizations that can be applied when making a forward request.|
 |» paymentMethod|body|[CheckoutForwardRequestCard](#schemacheckoutforwardrequestcard)|false|The card details.|
 |» request|body|[CheckoutOutgoingForwardRequest](#schemacheckoutoutgoingforwardrequest)|true|The [details of the request](https://docs.adyen.com/online-payments/tokenization/forward-payment-details#request-to-adyen-card) that you want to forward to the third-party.|
-|» shopperReference|body|string|true|Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.<br>> Your reference must not include personally identifiable information (PII) such as name or email address.|
+|» shopperReference|body|string|false|Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.<br>This parameter is required unless the request is for PAN forwarding and `options.tokenize` is false (the default).<br>> Your reference must not include personally identifiable information (PII) such as name or email address.|
 |» storedPaymentMethodId|body|string|false|The unique identifier of the token that you want to forward to the third party. This is the `storedPaymentMethodId` you received in the webhook after you created the token.|
 
 > Example responses
@@ -4690,7 +4692,7 @@ Retrieves the balance remaining on a shopper's gift card. To check a gift card's
 |» amount|body|[Amount](#schemaamount)|true|The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero).|
 |» applicationInfo|body|[ApplicationInfo](#schemaapplicationinfo)|false|Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).|
 |» billingAddress|body|[Address](#schemaaddress)|false|The address where to send the invoice.<br>> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.<br>>* For 3D Secure 2 transactions in all browser-based and mobile implementations.<br>>* For cross-border payouts to and from Canada.|
-|» browserInfo|body|[BrowserInfo](#schemabrowserinfo)|false|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.|
+|» browserInfo|body|[BrowserInfo](#schemabrowserinfo)|false|The shopper's browser information.<br>> The 3D Secure 2 guidance for `browserInfo` applies to the later `/payments` request, not to this balance check. For browser-based 3D Secure 2 payments, include complete `browserInfo`. For mobile app integrations that can be routed to a 3D Secure 2 redirect, include the `userAgent` and `acceptHeader` fields. Native app 3D Secure 2 authentication does not require `browserInfo`.<br>><br>> This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment.|
 |» captureDelayHours|body|integer(int32)|false|The delay between the authorisation and scheduled auto-capture, specified in hours.|
 |» dateOfBirth|body|string(date)|false|The shopper's date of birth.<br><br>Format [ISO-8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DD|
 |» dccQuote|body|[ForexQuote](#schemaforexquote)|false|The forex quote as returned in the response of the forex service.|
@@ -4728,7 +4730,7 @@ Retrieves the balance remaining on a shopper's gift card. To check a gift card's
 |» store|body|string|false|Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.|
 |» telephoneNumber|body|string|false|The shopper's telephone number.<br> The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.<br>> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.|
 |» threeDS2RequestData|body|[ThreeDS2RequestData](#schemathreeds2requestdata)|false|Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments) or [Classic integration](https://docs.adyen.com/classic-integration) documentation.|
-|» threeDSAuthenticationOnly|body|boolean|false|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.|
+|» threeDSAuthenticationOnly|body|boolean|false|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br><br>Default: **false**.|
 |» totalsGroup|body|string|false|The reference value to aggregate sales totals in reporting. When not specified, the store field is used (if available).|
 |» trustedShopper|body|boolean|false|Set to true if the payment should be routed to a trusted MID.|
 
@@ -5269,11 +5271,11 @@ curl https://checkout-test.adyen.com/v72/calculateTax \
         "remittancePurpose": "TOUR_PROGRAMME",
         "sublimitStatus": "EXCEEDED"
       },
-      "taxCountryCode": "string"
+      "taxCountryCode": "st"
     },
     "taxableAmount": {
-      "currency": "string",
-      "value": 0
+      "currency": "str",
+      "value": 1
     }
   }'
 ```
@@ -5293,11 +5295,11 @@ Calculates the applicable tax, for example the India Liberalised Remittance Sche
       "remittancePurpose": "TOUR_PROGRAMME",
       "sublimitStatus": "EXCEEDED"
     },
-    "taxCountryCode": "string"
+    "taxCountryCode": "st"
   },
   "taxableAmount": {
-    "currency": "string",
-    "value": 0
+    "currency": "str",
+    "value": 1
   }
 }
 ```
@@ -5307,9 +5309,9 @@ Calculates the applicable tax, for example the India Liberalised Remittance Sche
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CalculateTaxRequest](#schemacalculatetaxrequest)|true|none|
-|» merchantAccount|body|string|true|The merchant account identifier requesting the tax calculation.|
+|» merchantAccount|body|string|true|The merchant account identifier, with which you want to process the transaction.|
 |» taxCalculationContext|body|[TaxCalculationContext](#schemataxcalculationcontext)|true|The context used to calculate the tax.|
-|» taxableAmount|body|[TaxableAmount](#schemataxableamount)|true|The amount on which Adyen calculates the tax.|
+|» taxableAmount|body|[TaxableAmount](#schemataxableamount)|true|The amount on which Adyen calculates the tax. The value must be greater than zero.|
 
 > Example responses
 
@@ -5325,31 +5327,31 @@ Calculates the applicable tax, for example the India Liberalised Remittance Sche
         "remittancePurpose": "TOUR_PROGRAMME",
         "sublimitStatus": "EXCEEDED"
       },
-      "taxCountryCode": "string"
+      "taxCountryCode": "st"
     },
     "taxCalculations": [
       {
         "taxAmount": {
-          "currency": "string",
+          "currency": "str",
           "value": 0
         },
         "type": "LRS_TCS"
       }
     ],
     "taxableAmount": {
-      "currency": "string",
+      "currency": "str",
       "value": 0
     },
     "totalAmount": {
-      "currency": "string",
+      "currency": "str",
       "value": 0
     },
     "totalTaxAmount": {
-      "currency": "string",
+      "currency": "str",
       "value": 0
     }
   },
-  "taxCalculationReference": "string",
+  "taxCalculationReference": "stringst",
   "taxCalculationToken": "string"
 }
 ```
@@ -5612,9 +5614,9 @@ In some countries, collecting and verifying tax information is required for regu
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[VerifyShopperTaxIdentificationRequest](#schemaverifyshoppertaxidentificationrequest)|true|none|
-|» merchantAccount|body|string|true|The merchant account identifier requesting the tax verification.|
-|» shopperReference|body|string|true|Your reference to uniquely identify this shopper, for example user ID or account ID. Used to bind the verification to the shopper context.<br><br>> Your reference must not include personally identifiable information (PII), for example name or email address.|
-|» shopperTaxIdentification|body|[ShopperTaxIdentification](#schemashoppertaxidentification)|true|The shopper tax identification to verify.|
+|» merchantAccount|body|string|true|The merchant account identifier, with which you want to process the transaction.|
+|» shopperReference|body|string|true|Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters. Use the same `shopperReference` in `/payments`.<br><br>> Your reference must not include personally identifiable information (PII), for example name or email address.|
+|» shopperTaxIdentification|body|[ShopperTaxIdentification](#schemashoppertaxidentification)|true|The shopper's tax identification to verify.|
 
 > Example responses
 
@@ -5625,10 +5627,10 @@ In some countries, collecting and verifying tax information is required for regu
   "reason": "string",
   "reasonCode": "string",
   "result": "VALID",
-  "taxVerificationReference": "string",
+  "taxVerificationReference": "stringst",
   "verifiedShopperTaxIdentification": {
     "maskedName": "string",
-    "taxCountryCode": "string",
+    "taxCountryCode": "st",
     "taxIdentificationType": "PAN"
   },
   "verifiedShopperTaxIdentificationToken": "string"
@@ -5962,7 +5964,7 @@ This operation does not require authentication
 |---|---|---|---|---|
 |allow3DS2|string|false|none|**Deprecated.** Indicates if you are able to process 3D Secure 2 transactions natively on your payment page. Send this parameter when you are using `/payments` endpoint with any of our [native 3D Secure 2 solutions](https://docs.adyen.com/online-payments/3d-secure/native-3ds2).<br><br> > This parameter only indicates readiness to support native 3D Secure 2 authentication. To specify if you _want_ to perform 3D Secure, use [Dynamic 3D Secure](/risk-management/dynamic-3d-secure) or send the `executeThreeD` parameter.<br><br>Possible values:<br>* **true** - Ready to support native 3D Secure 2 authentication. Setting this to true does not mean always applying 3D Secure 2. Adyen selects redirect or native authentication based on your configuration to optimize authorization rates and improve the shopper's experience.<br>* **false** – Not ready to support native 3D Secure 2 authentication. Adyen offers redirect 3D Secure 2 authentication instead, based on your configuration.<br>|
 |challengeWindowSize|string|false|none|Dimensions of the 3DS2 challenge window to be displayed to the cardholder.<br><br>Possible values:<br><br>* **01** - size of 250x400 <br>* **02** - size of 390x400<br>* **03** - size of 500x600<br>* **04** - size of 600x400<br>* **05** - Fullscreen|
-|executeThreeD|string|false|none|**Deprecated.** Indicates if you want to perform 3D Secure authentication on a transaction.<br><br> > Alternatively, you can use [Dynamic 3D Secure](/risk-management/dynamic-3d-secure) to configure rules for applying 3D Secure.<br><br>Possible values:<br>* **true** – Perform 3D Secure authentication.<br>* **false** – Don't perform 3D Secure authentication. Note that this setting results in refusals if the issuer mandates 3D Secure because of the PSD2 directive  or other, national regulations. <br>|
+|executeThreeD|string|false|none|**Deprecated.** Indicates if you want to perform 3D Secure authentication on a transaction.<br><br> > Alternatively, you can use [Dynamic 3D Secure](/risk-management/dynamic-3d-secure) to configure rules for applying 3D Secure.<br><br>Possible values:<br>* **true** – Perform 3D Secure authentication. For browser-based payments, make sure the payment request also contains complete `browserInfo` and, for the Checkout API, `origin`. Without them, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift.<br>* **false** – Don't perform 3D Secure authentication. Note that this setting results in refusals if the issuer mandates 3D Secure because of the PSD2 directive  or other, national regulations. <br>|
 |mpiImplementationType|string|false|none|In case of Secure+, this field must be set to **CUPSecurePlus**.|
 |scaExemption|string|false|none|Indicates the [exemption type](https://docs.adyen.com/payments-fundamentals/psd2-sca-compliance-and-implementation-guide#specifypreferenceinyourapirequest) that you want to request for the transaction.<br><br> Possible values:<br>* **lowValue** <br>* **secureCorporate** <br>* **trustedBeneficiary** <br>* **transactionRiskAnalysis** |
 |threeDSVersion|string|false|none|Indicates your preference for the 3D Secure version. <br>> If you use this parameter, you override the checks from Adyen's Authentication Engine. We recommend to use this field only if you have an extensive knowledge of 3D Secure.<br><br>Possible values:<br>* **2.1.0**: Apply 3D Secure version 2.1.0. <br>* **2.2.0**: Apply 3D Secure version 2.2.0. If the issuer does not support version 2.2.0, we will fall back to 2.1.0.<br><br>The following rules apply:<br>* If you prefer 2.1.0 or 2.2.0 but we receive a negative `transStatus` in the `ARes`, we will apply the fallback policy configured in your account.<br>* If you the BIN is not enrolled, you will receive an error.<br><br>|
@@ -7245,7 +7247,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attemptAuthentication|string|false|none|Indicates when 3D Secure authentication should be attempted. This overrides all other rules, including [Dynamic 3D Secure settings](https://docs.adyen.com/risk-management/dynamic-3d-secure).<br><br>Possible values:<br><br>* **always**: Perform 3D Secure authentication.<br>* **never**: Don't perform 3D Secure authentication. If PSD2 SCA or other national regulations require authentication, the transaction gets declined.|
+|attemptAuthentication|string|false|none|Indicates when 3D Secure authentication should be attempted. This overrides all other rules, including [Dynamic 3D Secure settings](https://docs.adyen.com/risk-management/dynamic-3d-secure).<br><br>Possible values:<br><br>* **always**: Perform 3D Secure authentication. For browser-based payments, make sure the payment request also contains complete `browserInfo` and `origin`. Without them, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift.<br>* **never**: Don't perform 3D Secure authentication. If PSD2 SCA or other national regulations require authentication, the transaction gets declined.|
 |authenticationOnly|boolean|false|none|Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br>Default: **false**.|
 |threeDSRequestData|[ThreeDSRequestData](#schemathreedsrequestdata)|false|none|Object with additional parameters for the 3D Secure authentication flow.|
 
@@ -7605,7 +7607,7 @@ This operation does not require authentication
 |amount|[Amount](#schemaamount)|true|none|The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero).|
 |applicationInfo|[ApplicationInfo](#schemaapplicationinfo)|false|none|Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).|
 |billingAddress|[Address](#schemaaddress)|false|none|The address where to send the invoice.<br>> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.<br>>* For 3D Secure 2 transactions in all browser-based and mobile implementations.<br>>* For cross-border payouts to and from Canada.|
-|browserInfo|[BrowserInfo](#schemabrowserinfo)|false|none|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.|
+|browserInfo|[BrowserInfo](#schemabrowserinfo)|false|none|The shopper's browser information.<br>> The 3D Secure 2 guidance for `browserInfo` applies to the later `/payments` request, not to this balance check. For browser-based 3D Secure 2 payments, include complete `browserInfo`. For mobile app integrations that can be routed to a 3D Secure 2 redirect, include the `userAgent` and `acceptHeader` fields. Native app 3D Secure 2 authentication does not require `browserInfo`.<br>><br>> This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment.|
 |captureDelayHours|integer(int32)|false|none|The delay between the authorisation and scheduled auto-capture, specified in hours.|
 |dateOfBirth|string(date)|false|none|The shopper's date of birth.<br><br>Format [ISO-8601](https://www.w3.org/TR/NOTE-datetime): YYYY-MM-DD|
 |dccQuote|[ForexQuote](#schemaforexquote)|false|none|The forex quote as returned in the response of the forex service.|
@@ -7640,7 +7642,7 @@ This operation does not require authentication
 |store|string|false|none|Required for Adyen for Platforms integrations if you are a platform model. This is your [reference](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/stores#request-reference) (on [balance platform](https://docs.adyen.com/platforms)) or the [storeReference](https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder#request-accountHolderDetails-storeDetails-storeReference) (in the [classic integration](https://docs.adyen.com/classic-platforms/processing-payments/route-payment-to-store/#route-a-payment-to-a-store)) for the ecommerce or point-of-sale store that is processing the payment.|
 |telephoneNumber|string|false|none|The shopper's telephone number.<br> The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.<br>> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.|
 |threeDS2RequestData|[ThreeDS2RequestData](#schemathreeds2requestdata)|false|none|Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments) or [Classic integration](https://docs.adyen.com/classic-integration) documentation.|
-|threeDSAuthenticationOnly|boolean|false|none|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.|
+|threeDSAuthenticationOnly|boolean|false|none|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br><br>Default: **false**.|
 |totalsGroup|string|false|none|The reference value to aggregate sales totals in reporting. When not specified, the store field is used (if available).|
 |trustedShopper|boolean|false|none|Set to true if the payment should be routed to a trusted MID.|
 
@@ -8015,6 +8017,7 @@ This operation does not require authentication
   "srcDigitalCardId": "string",
   "srcScheme": "string",
   "srcTokenReference": "string",
+  "storeClickToPayProfile": true,
   "storedPaymentMethodId": "string",
   "threeDS2SdkVersion": "string",
   "type": "scheme"
@@ -8050,6 +8053,7 @@ This operation does not require authentication
 |srcDigitalCardId|string|false|none|The SRC reference for the Click to Pay token.|
 |srcScheme|string|false|none|The scheme that is being used for Click to Pay.|
 |srcTokenReference|string|false|none|The reference for the Click to Pay token.|
+|storeClickToPayProfile|boolean|false|none|When enrolling a new user, this field determines whether to store the shopper's card in their Click to Pay profile. When this is set to **True**, the request must include `shopperEmail`, `shopperName`, and `telephoneNumber`.|
 |storedPaymentMethodId|string|false|none|This is the `recurringDetailReference` returned in the response when you created the token.|
 |threeDS2SdkVersion|string|false|none|Required for mobile integrations. Version of the 3D Secure 2 mobile SDK.|
 |type|string|false|none|Default payment method details. Common for scheme payment methods, and for simple payment method details.|
@@ -8162,6 +8166,7 @@ This operation does not require authentication
   "srcDigitalCardId": "string",
   "srcScheme": "string",
   "srcTokenReference": "string",
+  "storeClickToPayProfile": true,
   "storedPaymentMethodId": "string",
   "threeDS2SdkVersion": "string",
   "type": "scheme"
@@ -8197,6 +8202,7 @@ This operation does not require authentication
 |srcDigitalCardId|string|false|none|The SRC reference for the Click to Pay token.|
 |srcScheme|string|false|none|The scheme that is being used for Click to Pay.|
 |srcTokenReference|string|false|none|The reference for the Click to Pay token.|
+|storeClickToPayProfile|boolean|false|none|When enrolling a new user, this field determines whether to store the shopper's card in their Click to Pay profile. When this is set to **True**, the request must include `shopperEmail`, `shopperName`, and `telephoneNumber`.|
 |storedPaymentMethodId|string|false|none|This is the `recurringDetailReference` returned in the response when you created the token.|
 |threeDS2SdkVersion|string|false|none|Required for mobile integrations. Version of the 3D Secure 2 mobile SDK.|
 |type|string|false|none|Default payment method details. Common for scheme payment methods, and for simple payment method details.|
@@ -8580,7 +8586,7 @@ This operation does not require authentication
 |options|[CheckoutForwardRequestOptions](#schemacheckoutforwardrequestoptions)|false|none|The customizations that can be applied when making a forward request.|
 |paymentMethod|[CheckoutForwardRequestCard](#schemacheckoutforwardrequestcard)|false|none|The card details.|
 |request|[CheckoutOutgoingForwardRequest](#schemacheckoutoutgoingforwardrequest)|true|none|The [details of the request](https://docs.adyen.com/online-payments/tokenization/forward-payment-details#request-to-adyen-card) that you want to forward to the third-party.|
-|shopperReference|string|true|none|Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.<br>> Your reference must not include personally identifiable information (PII) such as name or email address.|
+|shopperReference|string|false|none|Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters.<br>This parameter is required unless the request is for PAN forwarding and `options.tokenize` is false (the default).<br>> Your reference must not include personally identifiable information (PII) such as name or email address.|
 |storedPaymentMethodId|string|false|none|The unique identifier of the token that you want to forward to the third party. This is the `storedPaymentMethodId` you received in the webhook after you created the token.|
 
 <h2 id="tocS_CheckoutForwardRequestCard">CheckoutForwardRequestCard</h2>
@@ -9555,6 +9561,7 @@ This operation does not require authentication
       "srcDigitalCardId": "string",
       "srcScheme": "string",
       "srcTokenReference": "string",
+      "storeClickToPayProfile": true,
       "storedPaymentMethodId": "string",
       "threeDS2SdkVersion": "string",
       "type": "scheme"
@@ -9810,7 +9817,7 @@ This operation does not require authentication
 |themeId|string|false|none|Sets a custom theme for [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/?platform=Web&integration=Hosted+Checkout). The value can be any of the **Theme ID** values from your Customer Area.|
 |thirdPartyTokenRedundancyInfo|[ThirdPartyTokenRedundancyInfo](#schemathirdpartytokenredundancyinfo)|false|none|Configuration for creating redundant payment tokens with third-party token vaults using the Adyen Forward API. This feature requires Forward API webhook integration and pre-configured templates in your Adyen account. Contact your Adyen account manager for setup and availability.|
 |threeDS2RequestData|[CheckoutSessionThreeDS2RequestData](#schemacheckoutsessionthreeds2requestdata)|false|none|Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments).|
-|threeDSAuthenticationOnly|boolean|false|none|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.|
+|threeDSAuthenticationOnly|boolean|false|none|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br><br>Default: **false**.|
 |trustedShopper|boolean|false|none|Set to true if the payment should be routed to a trusted MID.|
 
 #### Enumerated Values
@@ -10152,6 +10159,7 @@ This operation does not require authentication
       "srcDigitalCardId": "string",
       "srcScheme": "string",
       "srcTokenReference": "string",
+      "storeClickToPayProfile": true,
       "storedPaymentMethodId": "string",
       "threeDS2SdkVersion": "string",
       "type": "scheme"
@@ -10410,7 +10418,7 @@ This operation does not require authentication
 |themeId|string|false|none|Sets a custom theme for [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/?platform=Web&integration=Hosted+Checkout). The value can be any of the **Theme ID** values from your Customer Area.|
 |thirdPartyTokenRedundancyInfo|[ThirdPartyTokenRedundancyInfo](#schemathirdpartytokenredundancyinfo)|false|none|Configuration for creating redundant payment tokens with third-party token vaults using the Adyen Forward API. This feature requires Forward API webhook integration and pre-configured templates in your Adyen account. Contact your Adyen account manager for setup and availability.|
 |threeDS2RequestData|[CheckoutSessionThreeDS2RequestData](#schemacheckoutsessionthreeds2requestdata)|false|none|Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments).|
-|threeDSAuthenticationOnly|boolean|false|none|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.|
+|threeDSAuthenticationOnly|boolean|false|none|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br><br>Default: **false**.|
 |trustedShopper|boolean|false|none|Set to true if the payment should be routed to a trusted MID.|
 |url|string|false|none|The URL for the Hosted Checkout page. Redirect the shopper to this URL so they can make the payment.|
 
@@ -10668,7 +10676,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|authenticationOnly|boolean|false|none|Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.Default: **false**.|
+|authenticationOnly|boolean|false|none|Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br><br>Default: **false**.|
 
 <h2 id="tocS_DeviceRenderOptions">DeviceRenderOptions</h2>
 <!-- backwards compatibility -->
@@ -11246,7 +11254,7 @@ This operation does not require authentication
 |applicationInfo|[ApplicationInfo](#schemaapplicationinfo)|false|none|Information about your application. For more details, see [Building Adyen solutions](https://docs.adyen.com/development-resources/building-adyen-solutions).|
 |authenticationData|[AuthenticationData](#schemaauthenticationdata)|false|none|Data for 3DS authentication.|
 |billingAddress|[BillingAddress](#schemabillingaddress)|false|none|The address where to send the invoice.<br>> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.<br>>* For 3D Secure 2 transactions in all browser-based and mobile implementations.<br>>* For cross-border payouts to and from Canada.|
-|browserInfo|[BrowserInfo](#schemabrowserinfo)|false|none|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.|
+|browserInfo|[BrowserInfo](#schemabrowserinfo)|false|none|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.<br>><br>> For browser-based payments, missing or incomplete `browserInfo` means 3D Secure 2 cannot be initiated. The transaction is then treated as ineligible for 3D Secure 2 and can be authorized without liability shift. Native app 3D Secure 2 authentication does not require `browserInfo`. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |channel|string|false|none|The platform where a payment transaction takes place. This field is optional for filtering out payment methods that are only available on specific platforms. If this value is not set, then we will try to infer it from the `sdkVersion` or `token`.<br><br>Possible values:<br>* iOS<br>* Android<br>* Web|
 |checkoutAttemptId|string|false|none|Checkout attempt ID that corresponds to the Id generated by the client SDK for tracking user payment journey.|
 |countryCode|string|false|none|The shopper country code.<br><br>Format: [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)<br>Example: NL or DE|
@@ -11262,7 +11270,7 @@ This operation does not require authentication
 |merchantRiskIndicator|[MerchantRiskIndicator](#schemamerchantriskindicator)|false|none|Additional risk fields for 3D Secure 2.<br>> For 3D Secure 2 transactions, we recommend that you include this object to increase the chances of achieving a frictionless flow.|
 |metadata|object|false|none|Metadata consists of entries, each of which includes a key and a value.<br>Limits:<br>* Maximum 20 key-value pairs per request. When exceeding, the "177" error occurs: "Metadata size exceeds limit".<br>* Maximum 20 characters per key.<br>* Maximum 80 characters per value. |
 |mpiData|[ThreeDSecureData](#schemathreedsecuredata)|false|none|Authentication data produced by an MPI (Mastercard SecureCode, Visa Secure, or Cartes Bancaires).|
-|origin|string|false|none|> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.|
+|origin|string|false|none|> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.<br><br>Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.<br><br>> If `origin` is missing or incorrect, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift. Set this value on your server. If you receive it from the client, validate it first. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |paymentMethod|[ApplePayDonations](#schemaapplepaydonations) \| [CardDonations](#schemacarddonations) \| [GooglePayDonations](#schemagooglepaydonations) \| [IdealDonations](#schemaidealdonations) \| [PayWithGoogleDonations](#schemapaywithgoogledonations) \| [SepaDirectDebitDonations](#schemasepadirectdebitdonations)|false|none|The type and required details of a payment method to use.<br><br>When `donationToken` is provided, the payment method is derived from the token and this field becomes optional.<br><br>If you are [PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide), and make donations using raw card details, you must explicitly provide the payment method details.|
 |recurringProcessingModel|string|false|none|Defines a recurring payment type. Required when creating a token to store payment details or using stored payment details.<br>Allowed values:<br>* `Subscription` – A transaction for a fixed or variable amount, which follows a fixed schedule.<br>* `CardOnFile` – With a card-on-file (CoF) transaction, card details are stored to enable one-click or omnichannel journeys, or simply to streamline the checkout process. Any subscription not following a fixed schedule is also considered a card-on-file transaction.<br>* `UnscheduledCardOnFile` – An unscheduled card-on-file (UCoF) transaction is a transaction that occurs on a non-fixed schedule and/or have variable amounts. For example, automatic top-ups when a cardholder's balance drops below a certain amount.<br>|
 |redirectFromIssuerMethod|string|false|none|Specifies the redirect method (GET or POST) when redirecting back from the issuer.|
@@ -11816,6 +11824,7 @@ This operation does not require authentication
   "expiryYear": "string",
   "holderName": "string",
   "number": "string",
+  "storeClickToPayProfile": true,
   "storedPaymentMethodId": "string",
   "subtype": "hilton",
   "type": "externalToken"
@@ -11831,6 +11840,7 @@ This operation does not require authentication
 |expiryYear|string|false|none|The card expiry year. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).|
 |holderName|string|false|none|The name of the card holder.|
 |number|string|false|none|The card number. Only collect raw card data if you are [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide).|
+|storeClickToPayProfile|boolean|false|none|When enrolling a new user, this field determines whether to store the shopper's card in their Click to Pay profile. When this is set to **True**, the request must include `shopperEmail`, `shopperName`, and `telephoneNumber`.|
 |storedPaymentMethodId|string|true|none|Identifier used to fetch the token from the external service|
 |subtype|string|true|none|The external service from which to fetch the token. Supported only for specific companies. Contact Adyen if you want to use this feature.|
 |type|string|true|none|The type of token. Allowed value: **externalToken**.|
@@ -12082,6 +12092,7 @@ This operation does not require authentication
     "srcDigitalCardId": "string",
     "srcScheme": "string",
     "srcTokenReference": "string",
+    "storeClickToPayProfile": true,
     "storedPaymentMethodId": "string",
     "threeDS2SdkVersion": "string",
     "type": "scheme"
@@ -14934,6 +14945,7 @@ This operation does not require authentication
       "srcDigitalCardId": "string",
       "srcScheme": "string",
       "srcTokenReference": "string",
+      "storeClickToPayProfile": true,
       "storedPaymentMethodId": "string",
       "threeDS2SdkVersion": "string",
       "type": "scheme"
@@ -15269,6 +15281,7 @@ This operation does not require authentication
       "srcDigitalCardId": "string",
       "srcScheme": "string",
       "srcTokenReference": "string",
+      "storeClickToPayProfile": true,
       "storedPaymentMethodId": "string",
       "threeDS2SdkVersion": "string",
       "type": "scheme"
@@ -15793,7 +15806,7 @@ This operation does not require authentication
 |allowedPaymentMethods|[string]|false|none|List of payment methods to be presented to the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).<br><br>Example: `"allowedPaymentMethods":["ideal","applepay"]`|
 |amount|[Amount](#schemaamount)|false|none|The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero).|
 |blockedPaymentMethods|[string]|false|none|List of payment methods to be hidden from the shopper. To refer to payment methods, use their [payment method type](https://docs.adyen.com/payment-methods/payment-method-types).<br><br>Example: `"blockedPaymentMethods":["ideal","applepay"]`|
-|browserInfo|[BrowserInfo](#schemabrowserinfo)|false|none|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.|
+|browserInfo|[BrowserInfo](#schemabrowserinfo)|false|none|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.<br>><br>> If you proceed with a 3D Secure 2 payment, the following requirements apply to `browserInfo` in the `/payments` request. For browser-based 3D Secure 2 payments, include complete `browserInfo`. For mobile app integrations that can be routed to a 3D Secure 2 redirect, include the `userAgent` and `acceptHeader` fields. Native app 3D Secure 2 authentication does not require `browserInfo`. If the `/payments` request of a browser-based payment has missing or incomplete `browserInfo`, the transaction is treated as ineligible for 3D Secure 2 and can be authorized without liability shift. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |channel|string|false|none|The platform where a payment transaction takes place. This field can be used for filtering out payment methods that are only available on specific platforms. Possible values:<br>* iOS<br>* Android<br>* Web|
 |countryCode|string|false|none|The shopper country code.<br><br>Format: [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)<br>Example: NL or DE|
 |merchantAccount|string|true|none|The merchant account identifier, with which you want to process the transaction.|
@@ -16672,6 +16685,7 @@ This operation does not require authentication
       "srcDigitalCardId": "string",
       "srcScheme": "string",
       "srcTokenReference": "string",
+      "storeClickToPayProfile": true,
       "storedPaymentMethodId": "string",
       "threeDS2SdkVersion": "string",
       "type": "scheme"
@@ -16849,6 +16863,9 @@ This operation does not require authentication
   },
   "shopperReference": "string",
   "shopperStatement": "string",
+  "shopperTaxIdentification": {
+    "verifiedShopperTaxIdentificationToken": "string"
+  },
   "shopperTaxInfo": {
     "taxCountryCode": "st",
     "taxIdentificationNumber": "string"
@@ -16894,6 +16911,9 @@ This operation does not require authentication
   ],
   "surcharge": {
     "value": 0
+  },
+  "taxCalculation": {
+    "taxCalculationToken": "string"
   },
   "telephoneNumber": "string",
   "thirdPartyTokenRedundancyInfo": {
@@ -17003,7 +17023,7 @@ This operation does not require authentication
 |authenticationData|[AuthenticationData](#schemaauthenticationdata)|false|none|Data for 3DS authentication.|
 |bankAccount|[CheckoutBankAccount](#schemacheckoutbankaccount)|false|none|The details of the bank account, from which the payment should be made.<br>> Either `bankAccount` or `card` field must be provided in a payment request.|
 |billingAddress|[BillingAddress](#schemabillingaddress)|false|none|The address where to send the invoice.<br>> The `billingAddress` object is required in the following scenarios. Include all of the fields within this object.<br>>* For 3D Secure 2 transactions in all browser-based and mobile implementations.<br>>* For cross-border payouts to and from Canada.|
-|browserInfo|[BrowserInfo](#schemabrowserinfo)|false|none|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.|
+|browserInfo|[BrowserInfo](#schemabrowserinfo)|false|none|The shopper's browser information.<br>> For 3D Secure, the full object is required for web integrations. For mobile app integrations, include the `userAgent` and `acceptHeader` fields to indicate  that your integration can support a redirect in case a payment is routed to 3D Secure 2 redirect.<br>><br>> For browser-based payments, missing or incomplete `browserInfo` means 3D Secure 2 cannot be initiated. The transaction is then treated as ineligible for 3D Secure 2 and can be authorized without liability shift. Native app 3D Secure 2 authentication does not require `browserInfo`. This field is usually collected on the client, so validate its presence and completeness on your server before you submit the payment. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |captureDelayHours|integer(int32)|false|none|The [delay between the authorization and automatic capture](https://docs.adyen.com/online-payments/capture?tab=delayed-individual_2#delayed-automatic-capture) of the payment, specified in hours.<br><br>Maximum value: **672** (28 days).|
 |channel|string|false|none|The platform where a payment transaction takes place. This field is optional for filtering out payment methods that are only available on specific platforms. If this value is not set, then we will try to infer it from the `sdkVersion` or `token`.<br><br>Possible values:<br>* iOS<br>* Android<br>* Web|
 |checkoutAttemptId|string|false|none|Checkout attempt ID that corresponds to the Id generated by the client SDK for tracking user payment journey.|
@@ -17037,7 +17057,7 @@ This operation does not require authentication
 |opi|[OpiRequest](#schemaopirequest)|false|none|Configuration for Oracle Payment Interface (OPI) integrations.|
 |order|[EncryptedOrderData](#schemaencryptedorderdata)|false|none|The order information required for partial payments.|
 |orderReference|string|false|none|When you are doing multiple partial (gift card) payments, this is the `pspReference` of the first payment. We use this to link the multiple payments to each other. As your own reference for linking multiple payments, use the `merchantOrderReference`instead.|
-|origin|string|false|none|> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.|
+|origin|string|false|none|> Required for browser-based (`channel` **Web**) 3D Secure 2 transactions.<br><br>Set this to the origin URL of the page where you are rendering the Drop-in/Component. Do not include subdirectories and a trailing slash.<br><br>> If `origin` is missing or incorrect, 3D Secure 2 cannot be initiated and the transaction can be authorized without liability shift. Set this value on your server. If you receive it from the client, validate it first. For more information, see [3D Secure 2 authentication](https://docs.adyen.com/online-payments/3d-secure/).|
 |paymentMethod|[AchDetails](#schemaachdetails) \| [AffirmDetails](#schemaaffirmdetails) \| [AfterpayDetails](#schemaafterpaydetails) \| [AlmaDetails](#schemaalmadetails) \| [AmazonPayDetails](#schemaamazonpaydetails) \| [AncvDetails](#schemaancvdetails) \| [AndroidPayDetails](#schemaandroidpaydetails) \| [ApplePayDetails](#schemaapplepaydetails) \| [AuPayDetails](#schemaaupaydetails) \| [BacsDirectDebitDetails](#schemabacsdirectdebitdetails) \| [BillDeskDetails](#schemabilldeskdetails) \| [BlikDetails](#schemablikdetails) \| [CardDetails](#schemacarddetails) \| [CashAppDetails](#schemacashappdetails) \| [CellulantDetails](#schemacellulantdetails) \| [DBaraiDetails](#schemadbaraidetails) \| [DirectDebitAuDetails](#schemadirectdebitaudetails) \| [DokuDetails](#schemadokudetails) \| [DragonpayDetails](#schemadragonpaydetails) \| [EBankingFinlandDetails](#schemaebankingfinlanddetails) \| [EcontextVoucherDetails](#schemaecontextvoucherdetails) \| [EftDetails](#schemaeftdetails) \| [ExternalTokenDetails](#schemaexternaltokendetails) \| [FastlaneDetails](#schemafastlanedetails) \| [GenericIssuerPaymentMethodDetails](#schemagenericissuerpaymentmethoddetails) \| [GooglePayDetails](#schemagooglepaydetails) \| [IdealDetails](#schemaidealdetails) \| [KlarnaDetails](#schemaklarnadetails) \| [KlarnaNetworkDetails](#schemaklarnanetworkdetails) \| [MasterpassDetails](#schemamasterpassdetails) \| [MbwayDetails](#schemambwaydetails) \| [MobilePayDetails](#schemamobilepaydetails) \| [MolPayDetails](#schemamolpaydetails) \| [OpenInvoiceDetails](#schemaopeninvoicedetails) \| [PayByBankAISDirectDebitDetails](#schemapaybybankaisdirectdebitdetails) \| [PayByBankCADirectDebitDetails](#schemapaybybankcadirectdebitdetails) \| [PayByBankDetails](#schemapaybybankdetails) \| [PayPalDetails](#schemapaypaldetails) \| [PayPayDetails](#schemapaypaydetails) \| [PayToDetails](#schemapaytodetails) \| [PayUUpiDetails](#schemapayuupidetails) \| [PayWithGoogleDetails](#schemapaywithgoogledetails) \| [PaymentDetails](#schemapaymentdetails) \| [PixDetails](#schemapixdetails) \| [PixPayByBankDetails](#schemapixpaybybankdetails) \| [PseDetails](#schemapsedetails) \| [RakutenPayDetails](#schemarakutenpaydetails) \| [RatepayDetails](#schemaratepaydetails) \| [RivertyDetails](#schemarivertydetails) \| [SamsungPayDetails](#schemasamsungpaydetails) \| [SepaDirectDebitDetails](#schemasepadirectdebitdetails) \| [StoredPaymentMethodDetails](#schemastoredpaymentmethoddetails) \| [TwintDetails](#schematwintdetails) \| [UpiCollectDetails](#schemaupicollectdetails) \| [UpiIntentDetails](#schemaupiintentdetails) \| [UpiQrDetails](#schemaupiqrdetails) \| [VippsDetails](#schemavippsdetails) \| [VisaCheckoutDetails](#schemavisacheckoutdetails) \| [WeChatPayDetails](#schemawechatpaydetails) \| [WeChatPayMiniProgramDetails](#schemawechatpayminiprogramdetails) \| [ZipDetails](#schemazipdetails)|true|none|The type and required details of a payment method to use.|
 |paymentValidations|[PaymentValidations](#schemapaymentvalidations)|false|none|The object that you can use to enable payment validations for a transaction.|
 |platformChargebackLogic|[PlatformChargebackLogic](#schemaplatformchargebacklogic)|false|none|Defines how to book chargebacks when using [Adyen for Platforms](https://docs.adyen.com/adyen-for-platforms-model).|
@@ -17058,6 +17078,7 @@ This operation does not require authentication
 |shopperName|[ShopperName](#schemashoppername)|false|none|The shopper's full name.|
 |shopperReference|string|false|none|Required for recurring payments. <br>Your reference to uniquely identify this shopper, for example user ID or account ID. Minimum length: 3 characters.<br>> Your reference must not include personally identifiable information (PII), for example name or email address.|
 |shopperStatement|string|false|none|The text to be shown on the shopper's bank statement.<br> We recommend sending a maximum of 22 characters, otherwise banks might truncate the string.<br> Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**.|
+|shopperTaxIdentification|[TokenizedShopperTaxIdentification](#schematokenizedshoppertaxidentification)|false|none|The shopper's tax identification, verified by Adyen. Contains the token returned by `/verifyShopperTaxIdentification`.|
 |shopperTaxInfo|[ShopperTaxInfo](#schemashoppertaxinfo)|false|none|**Deprecated.** The tax info of the shopper|
 |socialSecurityNumber|string|false|none|The shopper's social security number.|
 |splits|[[Split](#schemasplit)]|false|none|An array of objects specifying how to split a payment when using [Adyen for Platforms](https://docs.adyen.com/platforms/process-payments#providing-split-information), [Classic Platforms integration](https://docs.adyen.com/classic-platforms/processing-payments#providing-split-information), or [Issuing](https://docs.adyen.com/issuing/manage-funds#split).|
@@ -17065,10 +17086,11 @@ This operation does not require authentication
 |storePaymentMethod|boolean|false|none|When true and `shopperReference` is provided, the payment details will be stored for future [recurring payments](https://docs.adyen.com/online-payments/tokenization/#recurring-payment-types).|
 |subMerchants|[[SubMerchantInfo](#schemasubmerchantinfo)]|false|none|This field contains additional information on the submerchant, who is onboarded to an acquirer through a payment facilitator or aggregator|
 |surcharge|[Surcharge](#schemasurcharge)|false|none|The [surcharge](https://docs.adyen.com/online-payments/surcharge/) amount to apply to the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). When you apply surcharge, include the surcharge in the `amount.value` field.<br><br>Review our [Surcharge compliance guide](https://docs.adyen.com/development-resources/surcharge-compliance/) to learn about how to comply with regulatory requirements when applying surcharge.|
+|taxCalculation|[TokenizedTaxCalculation](#schematokenizedtaxcalculation)|false|none|The tax calculated by Adyen for this payment. Contains the token returned by `/calculateTax`.|
 |telephoneNumber|string|false|none|The shopper's telephone number.<br> The phone number must include a plus sign (+) and a country code (1-3 digits), followed by the number (4-15 digits). If the value you provide does not follow the guidelines, we do not submit it for authentication.<br>> Required for Visa and JCB transactions that require 3D Secure 2 authentication, if you did not include the `shopperEmail`.|
 |thirdPartyTokenRedundancyInfo|[ThirdPartyTokenRedundancyInfo](#schemathirdpartytokenredundancyinfo)|false|none|Configuration for creating redundant payment tokens with third-party token vaults using the Adyen Forward API. This feature requires Forward API webhook integration and pre-configured templates in your Adyen account. Contact your Adyen account manager for setup and availability.|
 |threeDS2RequestData|[ThreeDS2RequestFields](#schemathreeds2requestfields)|false|none|Request fields for 3D Secure 2. To check if any of the following fields are required for your integration, refer to [Online payments](https://docs.adyen.com/online-payments) or [Classic integration](https://docs.adyen.com/classic-integration) documentation.|
-|threeDSAuthenticationOnly|boolean|false|none|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorisation.Default: **false**.|
+|threeDSAuthenticationOnly|boolean|false|none|**Deprecated.** Required to trigger the [authentication-only flow](https://docs.adyen.com/online-payments/3d-secure/authentication-only/). If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.<br><br>Default: **false**.|
 |trustedShopper|boolean|false|none|Set to true if the payment should be routed to a trusted MID.|
 
 #### Enumerated Values
@@ -20299,6 +20321,44 @@ This operation does not require authentication
 |retryPolicy|true|
 |retryPolicy|false|
 
+<h2 id="tocS_TokenizedShopperTaxIdentification">TokenizedShopperTaxIdentification</h2>
+<!-- backwards compatibility -->
+<a id="schematokenizedshoppertaxidentification"></a>
+<a id="schema_TokenizedShopperTaxIdentification"></a>
+<a id="tocStokenizedshoppertaxidentification"></a>
+<a id="tocstokenizedshoppertaxidentification"></a>
+
+```json
+{
+  "verifiedShopperTaxIdentificationToken": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|verifiedShopperTaxIdentificationToken|string|true|none|The `verifiedShopperTaxIdentificationToken` returned by `/verifyShopperTaxIdentification`. Treat the token as opaque: do not parse or modify it.|
+
+<h2 id="tocS_TokenizedTaxCalculation">TokenizedTaxCalculation</h2>
+<!-- backwards compatibility -->
+<a id="schematokenizedtaxcalculation"></a>
+<a id="schema_TokenizedTaxCalculation"></a>
+<a id="tocStokenizedtaxcalculation"></a>
+<a id="tocstokenizedtaxcalculation"></a>
+
+```json
+{
+  "taxCalculationToken": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|taxCalculationToken|string|true|none|The `taxCalculationToken` returned by `/calculateTax`. Treat the token as opaque: do not parse or modify it.|
+
 <h2 id="tocS_TravelAgency">TravelAgency</h2>
 <!-- backwards compatibility -->
 <a id="schematravelagency"></a>
@@ -20728,11 +20788,11 @@ This operation does not require authentication
       "remittancePurpose": "TOUR_PROGRAMME",
       "sublimitStatus": "EXCEEDED"
     },
-    "taxCountryCode": "string"
+    "taxCountryCode": "st"
   },
   "taxableAmount": {
-    "currency": "string",
-    "value": 0
+    "currency": "str",
+    "value": 1
   }
 }
 ```
@@ -20741,9 +20801,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|merchantAccount|string|true|none|The merchant account identifier requesting the tax calculation.|
+|merchantAccount|string|true|none|The merchant account identifier, with which you want to process the transaction.|
 |taxCalculationContext|[TaxCalculationContext](#schemataxcalculationcontext)|true|none|The context used to calculate the tax.|
-|taxableAmount|[TaxableAmount](#schemataxableamount)|true|none|The amount on which Adyen calculates the tax.|
+|taxableAmount|[TaxableAmount](#schemataxableamount)|true|none|The amount on which Adyen calculates the tax. The value must be greater than zero.|
 
 <h2 id="tocS_CalculateTaxResponse">CalculateTaxResponse</h2>
 <!-- backwards compatibility -->
@@ -20762,31 +20822,31 @@ This operation does not require authentication
         "remittancePurpose": "TOUR_PROGRAMME",
         "sublimitStatus": "EXCEEDED"
       },
-      "taxCountryCode": "string"
+      "taxCountryCode": "st"
     },
     "taxCalculations": [
       {
         "taxAmount": {
-          "currency": "string",
+          "currency": "str",
           "value": 0
         },
         "type": "LRS_TCS"
       }
     ],
     "taxableAmount": {
-      "currency": "string",
+      "currency": "str",
       "value": 0
     },
     "totalAmount": {
-      "currency": "string",
+      "currency": "str",
       "value": 0
     },
     "totalTaxAmount": {
-      "currency": "string",
+      "currency": "str",
       "value": 0
     }
   },
-  "taxCalculationReference": "string",
+  "taxCalculationReference": "stringst",
   "taxCalculationToken": "string"
 }
 ```
@@ -20795,9 +20855,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|taxCalculation|[TaxCalculation](#schemataxcalculation)|false|none|The canonical calculation accepted and produced by Adyen. Informational in the initial release.|
-|taxCalculationReference|string|false|none|The unique reference for this calculation attempt.|
-|taxCalculationToken|string|false|none|The opaque, encrypted, and signed token that represents the complete canonical calculation. Required in /payments.|
+|taxCalculation|[TaxCalculation](#schemataxcalculation)|false|none|The tax calculation results.|
+|taxCalculationReference|string|false|none|The unique reference for the tax calculation.|
+|taxCalculationToken|string|false|none|The encrypted and signed token representing the tax calculation. Submit this value as `taxCalculation.taxCalculationToken` in `/payments`.|
 
 <h2 id="tocS_CalculationType">CalculationType</h2>
 <!-- backwards compatibility -->
@@ -20900,8 +20960,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|remittancePurpose|[RemittancePurpose](#schemaremittancepurpose)|true|none|The remittance category, for example TOUR_PROGRAMME or EDUCATION.|
-|sublimitStatus|[SublimitStatus](#schemasublimitstatus)|true|none|The status of the INR 1 million LRS sublimit, for example EXCEEDED.|
+|remittancePurpose|[RemittancePurpose](#schemaremittancepurpose)|true|none|The purpose of the remittance under the Liberalised Remittance Scheme. Possible values:<br><br>* **TOUR_PROGRAMME**: a tour program.<br>* **TRAVEL_NON_TOUR**: travel that is not a tour program.<br>* **EDUCATION**: education.<br>* **DIGITAL**: digital services.<br>|
+|sublimitStatus|[SublimitStatus](#schemasublimitstatus)|true|none|The status of the INR 1 million Liberalised Remittance Scheme sublimit. Possible values:<br><br>* **EXCEEDED**: the sublimit is exceeded.<br>* **NOT_EXCEEDED**: the sublimit is not exceeded.<br>|
 
 #### Enumerated Values
 
@@ -21016,9 +21076,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|taxCountryCode|string|true|none|The country governing the shopper's tax processing. Initially only IN is supported.|
+|taxCountryCode|string|true|none|The two-letter country code governing the shopper's tax processing, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Supported value: **IN**.|
 |taxIdentificationNumber|string|true|none|The tax identification number submitted for verification.|
-|taxIdentificationType|[TaxIdentificationType](#schemataxidentificationtype)|true|none|The type of the tax identification. Initially only PAN is supported.|
+|taxIdentificationType|[TaxIdentificationType](#schemataxidentificationtype)|true|none|The type of tax identification. Supported value: **PAN**, an Indian Permanent Account Number.|
 
 #### Enumerated Values
 
@@ -21046,7 +21106,7 @@ This operation does not require authentication
 
 ```json
 {
-  "currency": "string",
+  "currency": "str",
   "value": 0
 }
 ```
@@ -21055,8 +21115,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|currency|string|true|none|The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).|
-|value|integer(int64)|true|none|The amount in [minor units](https://docs.adyen.com/development-resources/currency-codes).|
+|currency|string|true|none|The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount.|
+|value|integer(int64)|true|none|The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).|
 
 <h2 id="tocS_TaxCalculation">TaxCalculation</h2>
 <!-- backwards compatibility -->
@@ -21074,27 +21134,27 @@ This operation does not require authentication
       "remittancePurpose": "TOUR_PROGRAMME",
       "sublimitStatus": "EXCEEDED"
     },
-    "taxCountryCode": "string"
+    "taxCountryCode": "st"
   },
   "taxCalculations": [
     {
       "taxAmount": {
-        "currency": "string",
+        "currency": "str",
         "value": 0
       },
       "type": "LRS_TCS"
     }
   ],
   "taxableAmount": {
-    "currency": "string",
+    "currency": "str",
     "value": 0
   },
   "totalAmount": {
-    "currency": "string",
+    "currency": "str",
     "value": 0
   },
   "totalTaxAmount": {
-    "currency": "string",
+    "currency": "str",
     "value": 0
   }
 }
@@ -21104,12 +21164,12 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|merchantAccount|string|false|none|The merchant account for which the calculation was made.|
-|taxCalculationContext|[TaxCalculationContext](#schemataxcalculationcontext)|false|none|The tax country, calculation type, and LRS declarations accepted by Adyen.|
+|merchantAccount|string|false|none|The merchant account identifier, with which you want to process the transaction.|
+|taxCalculationContext|[TaxCalculationContext](#schemataxcalculationcontext)|false|none|The tax country, calculation type, and LRS declarations from the request.|
 |taxCalculations|[[TaxCalculationComponent](#schemataxcalculationcomponent)]|false|none|The individual tax components calculated by Adyen.|
-|taxableAmount|[TaxAmount](#schemataxamount)|false|none|The taxable amount accepted by Adyen.|
-|totalAmount|[TaxAmount](#schemataxamount)|false|none|The taxable amount plus the calculated tax. Use this amount in /payments.amount.|
-|totalTaxAmount|[TaxAmount](#schemataxamount)|false|none|The total tax amount calculated by Adyen.|
+|taxableAmount|[TaxAmount](#schemataxamount)|false|none|The taxable amount from the request, before tax.|
+|totalAmount|[TaxAmount](#schemataxamount)|false|none|The sum of `taxableAmount` and `totalTaxAmount`. Use this amount as `amount` in `/payments`.|
+|totalTaxAmount|[TaxAmount](#schemataxamount)|false|none|The sum of the individual tax amounts in `taxCalculations`.|
 
 <h2 id="tocS_TaxCalculationComponent">TaxCalculationComponent</h2>
 <!-- backwards compatibility -->
@@ -21121,7 +21181,7 @@ This operation does not require authentication
 ```json
 {
   "taxAmount": {
-    "currency": "string",
+    "currency": "str",
     "value": 0
   },
   "type": "LRS_TCS"
@@ -21133,7 +21193,7 @@ This operation does not require authentication
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |taxAmount|[TaxAmount](#schemataxamount)|false|none|The calculated tax amount of this component.|
-|type|[CalculationType](#schemacalculationtype)|false|none|The type of the calculated tax component, for example LRS_TCS.|
+|type|[CalculationType](#schemacalculationtype)|false|none|The type of tax calculated. Supported value: **LRS_TCS**, the Indian Liberalised Remittance Scheme Tax Collected at Source.|
 
 #### Enumerated Values
 
@@ -21155,7 +21215,7 @@ This operation does not require authentication
     "remittancePurpose": "TOUR_PROGRAMME",
     "sublimitStatus": "EXCEEDED"
   },
-  "taxCountryCode": "string"
+  "taxCountryCode": "st"
 }
 ```
 
@@ -21163,9 +21223,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|calculationType|[CalculationType](#schemacalculationtype)|true|none|The type of calculation requested. Initially only LRS_TCS is supported.|
-|lrs|[LrsContext](#schemalrscontext)|true|none|India-specific LRS declarations.|
-|taxCountryCode|string|true|none|The country governing tax processing. Initially only IN is supported.|
+|calculationType|[CalculationType](#schemacalculationtype)|true|none|The type of tax calculation. Supported value: **LRS_TCS**, the Indian Liberalised Remittance Scheme Tax Collected at Source.|
+|lrs|[LrsContext](#schemalrscontext)|true|none|The shopper's declarations for the Indian Liberalised Remittance Scheme (LRS).|
+|taxCountryCode|string|true|none|The two-letter country code governing tax processing, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Supported value: **IN**.|
 
 #### Enumerated Values
 
@@ -21193,8 +21253,8 @@ This operation does not require authentication
 
 ```json
 {
-  "currency": "string",
-  "value": 0
+  "currency": "str",
+  "value": 1
 }
 ```
 
@@ -21202,8 +21262,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|currency|string|true|none|The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes).|
-|value|integer(int64)|true|none|The amount in [minor units](https://docs.adyen.com/development-resources/currency-codes).|
+|currency|string|true|none|The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount.|
+|value|integer(int64)|true|none|The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units)|
 
 <h2 id="tocS_UPIPaymentMethod">UPIPaymentMethod</h2>
 <!-- backwards compatibility -->
@@ -21295,7 +21355,7 @@ This operation does not require authentication
 ```json
 {
   "maskedName": "string",
-  "taxCountryCode": "string",
+  "taxCountryCode": "st",
   "taxIdentificationType": "PAN"
 }
 ```
@@ -21304,9 +21364,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|maskedName|string|false|none|The masked name of the tax identification holder.|
-|taxCountryCode|string|false|none|The country governing the shopper's tax processing.|
-|taxIdentificationType|[TaxIdentificationType](#schemataxidentificationtype)|false|none|The type of the verified tax identification.|
+|maskedName|string|false|none|The masked name of the tax identification holder. The full name is not returned.|
+|taxCountryCode|string|false|none|The two-letter country code governing the shopper's tax processing, in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Supported value: **IN**.|
+|taxIdentificationType|[TaxIdentificationType](#schemataxidentificationtype)|false|none|The type of verified tax identification. Supported value: **PAN**, an Indian Permanent Account Number.|
 
 #### Enumerated Values
 
@@ -21337,9 +21397,9 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|merchantAccount|string|true|none|The merchant account identifier requesting the tax verification.|
-|shopperReference|string|true|none|Your reference to uniquely identify this shopper, for example user ID or account ID. Used to bind the verification to the shopper context.<br><br>> Your reference must not include personally identifiable information (PII), for example name or email address.|
-|shopperTaxIdentification|[ShopperTaxIdentification](#schemashoppertaxidentification)|true|none|The shopper tax identification to verify.|
+|merchantAccount|string|true|none|The merchant account identifier, with which you want to process the transaction.|
+|shopperReference|string|true|none|Your reference to uniquely identify this shopper, for example user ID or account ID. The value is case-sensitive and must be at least three characters. Use the same `shopperReference` in `/payments`.<br><br>> Your reference must not include personally identifiable information (PII), for example name or email address.|
+|shopperTaxIdentification|[ShopperTaxIdentification](#schemashoppertaxidentification)|true|none|The shopper's tax identification to verify.|
 
 <h2 id="tocS_VerifyShopperTaxIdentificationResponse">VerifyShopperTaxIdentificationResponse</h2>
 <!-- backwards compatibility -->
@@ -21353,10 +21413,10 @@ This operation does not require authentication
   "reason": "string",
   "reasonCode": "string",
   "result": "VALID",
-  "taxVerificationReference": "string",
+  "taxVerificationReference": "stringst",
   "verifiedShopperTaxIdentification": {
     "maskedName": "string",
-    "taxCountryCode": "string",
+    "taxCountryCode": "st",
     "taxIdentificationType": "PAN"
   },
   "verifiedShopperTaxIdentificationToken": "string"
@@ -21367,12 +21427,12 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|reason|string|false|none|The human-readable reason for the unsuccessful result.|
-|reasonCode|string|false|none|The reason code for the unsuccessful result, when available.|
-|result|[Result](#schemaresult)|false|none|The verification result, for example valid or invalid.|
-|taxVerificationReference|string|false|none|The unique reference for the verification attempt.|
-|verifiedShopperTaxIdentification|[VerifiedShopperTaxIdentification](#schemaverifiedshoppertaxidentification)|false|none|The masked representation of the verified tax identification.|
-|verifiedShopperTaxIdentificationToken|string|false|none|The opaque, encrypted, and signed token representing the successful verification. Required in /payments.|
+|reason|string|false|none|The human-readable reason for an **INVALID** or **UNKNOWN** verification result.|
+|reasonCode|string|false|none|The code for an unsuccessful verification, if available.|
+|result|[Result](#schemaresult)|false|none|The result of verifying the shopper's tax identification. Possible results for this endpoint:<br><br>* **VALID**: verification succeeded. The response includes a token and masked tax identification.<br>* **INVALID**: the tax identification is invalid or unsupported. The response includes a `reason` and no token.<br>* **UNKNOWN**: verification did not return the required details. The response includes a `reason` and no token.<br>|
+|taxVerificationReference|string|false|none|The unique reference for the verification. Returned only when `result` is **VALID**.|
+|verifiedShopperTaxIdentification|[VerifiedShopperTaxIdentification](#schemaverifiedshoppertaxidentification)|false|none|The masked representation of the verified tax identification. Returned only when `result` is **VALID**.|
+|verifiedShopperTaxIdentificationToken|string|false|none|The encrypted and signed token representing a successful verification. Returned only when `result` is **VALID**. Submit this value as `shopperTaxIdentification.verifiedShopperTaxIdentificationToken` in `/payments` with the same `shopperReference` used for verification.|
 
 #### Enumerated Values
 

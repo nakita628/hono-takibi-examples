@@ -22892,6 +22892,7 @@ const DestinyHistoricalStatsDestinyLeaderboardResultsSchema: z.ZodType<DestinyHi
         }),
     })
     .catchall(z.record(z.string(), DestinyHistoricalStatsDestinyLeaderboardSchema))
+    .openapi({ required: [] })
     .openapi('DestinyHistoricalStatsDestinyLeaderboardResults')
 
 const DestinyHistoricalStatsDestinyPostGameCarnageReportDataSchema: z.ZodType<DestinyHistoricalStatsDestinyPostGameCarnageReportDataType> =

@@ -128,7 +128,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'A string representing the status of the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object providing more specific details about the error category.',
@@ -463,11 +463,21 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.objects.contacts.highly_sensitive.read.v2': { portal: ['private'], developer: false },
+    'crm.objects.contacts.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: true,
+    },
+    'crm.objects.contacts.sensitive.read.v2': { portal: ['private'], developer: false },
+    'crm.schemas.contacts.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: true,
+    },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getNotetaker202609ConversationRecapObjectTypeIdObjectIdRoute = createRoute({
   method: 'get',
@@ -520,8 +530,8 @@ export const getNotetaker202609ConversationRecapObjectTypeIdObjectIdRoute = crea
   },
   security: [
     { oauth2: ['crm.objects.contacts.highly_sensitive.read.v2'] },
-    { oauth2: ['crm.schemas.contacts.read'] },
     { oauth2: ['crm.objects.contacts.sensitive.read.v2'] },
+    { oauth2: ['crm.schemas.contacts.read'] },
     { oauth2: ['crm.objects.contacts.read'] },
   ],
 })

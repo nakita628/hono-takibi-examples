@@ -469,7 +469,7 @@ export const postApiNotificationsSyncJsonRoute = createRoute({
   responses: {
     200: {
       description: 'Sync successful.',
-      content: { 'application/json': { schema: z.object({}).openapi({ example: {} }) } },
+      content: { 'application/json': { schema: z.looseObject({}).openapi({ example: {} }) } },
     },
     503: {
       description:
@@ -504,7 +504,7 @@ export const getApiNotificationsSyncingJsonRoute = createRoute({
     },
     423: {
       description: 'Octobox is currently syncing with GitHub.',
-      content: { 'application/json': { schema: z.object({}).openapi({ example: {} }) } },
+      content: { 'application/json': { schema: z.looseObject({}).openapi({ example: {} }) } },
     },
   },
 })

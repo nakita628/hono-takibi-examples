@@ -1,15 +1,26 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type GroupRepresentationType = {
-  access?: { [key: string]: unknown }
-  attributes?: { [key: string]: unknown }
-  clientRoles?: { [key: string]: unknown }
-  id?: string
-  name?: string
-  path?: string
-  realmRoles?: string[]
-  subGroups?: GroupRepresentationType[]
-}
+const PolicyRepresentationSchema: z.ZodType<PolicyRepresentationType> = z
+  .lazy(() =>
+    z
+      .object({
+        config: z.looseObject({}).exactOptional(),
+        decisionStrategy: z.enum(['AFFIRMATIVE', 'UNANIMOUS', 'CONSENSUS']).exactOptional(),
+        description: z.string().exactOptional(),
+        id: z.string().exactOptional(),
+        logic: z.enum(['POSITIVE', 'NEGATIVE']).exactOptional(),
+        name: z.string().exactOptional(),
+        owner: z.string().exactOptional(),
+        policies: z.array(z.string()).exactOptional(),
+        resources: z.array(z.string()).exactOptional(),
+        resourcesData: z.array(ResourceRepresentationSchema).exactOptional(),
+        scopes: z.array(z.string()).exactOptional(),
+        scopesData: z.array(ScopeRepresentationSchema).exactOptional(),
+        type: z.string().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('PolicyRepresentation')
 
 const ResourceRepresentationSchema: z.ZodType<ResourceRepresentationType> = z
   .lazy(() =>
@@ -44,6 +55,319 @@ const ScopeRepresentationSchema: z.ZodType<ScopeRepresentationType> = z
   )
   .openapi('ScopeRepresentation')
 
+type ResourceServerRepresentationType = {
+  allowRemoteResourceManagement?: boolean
+  clientId?: string
+  decisionStrategy?: 'AFFIRMATIVE' | 'UNANIMOUS' | 'CONSENSUS'
+  id?: string
+  name?: string
+  policies?: z.infer<typeof PolicyRepresentationSchema>[]
+  policyEnforcementMode?: 'ENFORCING' | 'PERMISSIVE' | 'DISABLED'
+  resources?: z.infer<typeof ResourceRepresentationSchema>[]
+  scopes?: z.infer<typeof ScopeRepresentationSchema>[]
+}
+
+const ResourceServerRepresentationSchema: z.ZodType<ResourceServerRepresentationType> = z
+  .object({
+    allowRemoteResourceManagement: z.boolean().exactOptional(),
+    clientId: z.string().exactOptional(),
+    decisionStrategy: z.enum(['AFFIRMATIVE', 'UNANIMOUS', 'CONSENSUS']).exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    policies: z.array(PolicyRepresentationSchema).exactOptional(),
+    policyEnforcementMode: z.enum(['ENFORCING', 'PERMISSIVE', 'DISABLED']).exactOptional(),
+    resources: z.array(ResourceRepresentationSchema).exactOptional(),
+    scopes: z.array(ScopeRepresentationSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ResourceServerRepresentation')
+
+const ProtocolMapperRepresentationSchema = z
+  .object({
+    config: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    protocol: z.string().exactOptional(),
+    protocolMapper: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProtocolMapperRepresentation')
+
+type ClientRepresentationType = {
+  access?: { [key: string]: unknown }
+  adminUrl?: string
+  alwaysDisplayInConsole?: boolean
+  attributes?: { [key: string]: unknown }
+  authenticationFlowBindingOverrides?: { [key: string]: unknown }
+  authorizationServicesEnabled?: boolean
+  authorizationSettings?: z.infer<typeof ResourceServerRepresentationSchema>
+  baseUrl?: string
+  bearerOnly?: boolean
+  clientAuthenticatorType?: string
+  clientId?: string
+  consentRequired?: boolean
+  defaultClientScopes?: string[]
+  defaultRoles?: string[]
+  description?: string
+  directAccessGrantsEnabled?: boolean
+  enabled?: boolean
+  frontchannelLogout?: boolean
+  fullScopeAllowed?: boolean
+  id?: string
+  implicitFlowEnabled?: boolean
+  name?: string
+  nodeReRegistrationTimeout?: number
+  notBefore?: number
+  optionalClientScopes?: string[]
+  origin?: string
+  protocol?: string
+  protocolMappers?: z.infer<typeof ProtocolMapperRepresentationSchema>[]
+  publicClient?: boolean
+  redirectUris?: string[]
+  registeredNodes?: { [key: string]: unknown }
+  registrationAccessToken?: string
+  rootUrl?: string
+  secret?: string
+  serviceAccountsEnabled?: boolean
+  standardFlowEnabled?: boolean
+  surrogateAuthRequired?: boolean
+  webOrigins?: string[]
+}
+
+type GroupRepresentationType = {
+  access?: { [key: string]: unknown }
+  attributes?: { [key: string]: unknown }
+  clientRoles?: { [key: string]: unknown }
+  id?: string
+  name?: string
+  path?: string
+  realmRoles?: string[]
+  subGroups?: GroupRepresentationType[]
+}
+
+const ClientRepresentationSchema: z.ZodType<ClientRepresentationType> = z
+  .object({
+    access: z.looseObject({}).exactOptional(),
+    adminUrl: z.string().exactOptional(),
+    alwaysDisplayInConsole: z.boolean().exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
+    authenticationFlowBindingOverrides: z.looseObject({}).exactOptional(),
+    authorizationServicesEnabled: z.boolean().exactOptional(),
+    authorizationSettings: ResourceServerRepresentationSchema.exactOptional(),
+    baseUrl: z.string().exactOptional(),
+    bearerOnly: z.boolean().exactOptional(),
+    clientAuthenticatorType: z.string().exactOptional(),
+    clientId: z.string().exactOptional(),
+    consentRequired: z.boolean().exactOptional(),
+    defaultClientScopes: z.array(z.string()).exactOptional(),
+    defaultRoles: z.array(z.string()).exactOptional(),
+    description: z.string().exactOptional(),
+    directAccessGrantsEnabled: z.boolean().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    frontchannelLogout: z.boolean().exactOptional(),
+    fullScopeAllowed: z.boolean().exactOptional(),
+    id: z.string().exactOptional(),
+    implicitFlowEnabled: z.boolean().exactOptional(),
+    name: z.string().exactOptional(),
+    nodeReRegistrationTimeout: z.int32().exactOptional(),
+    notBefore: z.int32().exactOptional(),
+    optionalClientScopes: z.array(z.string()).exactOptional(),
+    origin: z.string().exactOptional(),
+    protocol: z.string().exactOptional(),
+    protocolMappers: z.array(ProtocolMapperRepresentationSchema).exactOptional(),
+    publicClient: z.boolean().exactOptional(),
+    redirectUris: z.array(z.string()).exactOptional(),
+    registeredNodes: z.looseObject({}).exactOptional(),
+    registrationAccessToken: z.string().exactOptional(),
+    rootUrl: z.string().exactOptional(),
+    secret: z.string().exactOptional(),
+    serviceAccountsEnabled: z.boolean().exactOptional(),
+    standardFlowEnabled: z.boolean().exactOptional(),
+    surrogateAuthRequired: z.boolean().exactOptional(),
+    webOrigins: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ClientRepresentation')
+
+const GroupRepresentationSchema: z.ZodType<GroupRepresentationType> = z
+  .lazy(() =>
+    z
+      .object({
+        access: z.looseObject({}).exactOptional(),
+        attributes: z.looseObject({}).exactOptional(),
+        clientRoles: z.looseObject({}).exactOptional(),
+        id: z.string().exactOptional(),
+        name: z.string().exactOptional(),
+        path: z.string().exactOptional(),
+        realmRoles: z.array(z.string()).exactOptional(),
+        subGroups: z.array(GroupRepresentationSchema).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('GroupRepresentation')
+
+const IdentityProviderRepresentationSchema = z
+  .object({
+    addReadTokenRoleOnCreate: z.boolean().exactOptional(),
+    alias: z.string().exactOptional(),
+    config: z.looseObject({}).exactOptional(),
+    displayName: z.string().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    firstBrokerLoginFlowAlias: z.string().exactOptional(),
+    internalId: z.string().exactOptional(),
+    linkOnly: z.boolean().exactOptional(),
+    postBrokerLoginFlowAlias: z.string().exactOptional(),
+    providerId: z.string().exactOptional(),
+    storeToken: z.boolean().exactOptional(),
+    trustEmail: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IdentityProviderRepresentation')
+
+const RoleRepresentationCompositesSchema = z
+  .object({ client: z.looseObject({}).exactOptional(), realm: z.array(z.string()).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('RoleRepresentationComposites')
+
+const RoleRepresentationSchema = z
+  .object({
+    attributes: z.looseObject({}).exactOptional(),
+    clientRole: z.boolean().exactOptional(),
+    composite: z.boolean().exactOptional(),
+    composites: RoleRepresentationCompositesSchema.exactOptional(),
+    containerId: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RoleRepresentation')
+
+const RolesRepresentationSchema = z
+  .object({
+    client: z.looseObject({}).exactOptional(),
+    realm: z.array(RoleRepresentationSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RolesRepresentation')
+
+const UserConsentRepresentationSchema = z
+  .object({
+    clientId: z.string().exactOptional(),
+    createdDate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    grantedClientScopes: z.array(z.string()).exactOptional(),
+    lastUpdatedDate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UserConsentRepresentation')
+
+const CredentialRepresentationSchema = z
+  .object({
+    createdDate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    credentialData: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    priority: z.int32().exactOptional(),
+    secretData: z.string().exactOptional(),
+    temporary: z.boolean().exactOptional(),
+    type: z.string().exactOptional(),
+    userLabel: z.string().exactOptional(),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CredentialRepresentation')
+
+const FederatedIdentityRepresentationSchema = z
+  .object({
+    identityProvider: z.string().exactOptional(),
+    userId: z.string().exactOptional(),
+    userName: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FederatedIdentityRepresentation')
+
+const UserRepresentationSchema = z
+  .object({
+    access: z.looseObject({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
+    clientConsents: z.array(UserConsentRepresentationSchema).exactOptional(),
+    clientRoles: z.looseObject({}).exactOptional(),
+    createdTimestamp: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    credentials: z.array(CredentialRepresentationSchema).exactOptional(),
+    disableableCredentialTypes: z.array(z.string()).exactOptional(),
+    email: z.string().exactOptional(),
+    emailVerified: z.boolean().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    federatedIdentities: z.array(FederatedIdentityRepresentationSchema).exactOptional(),
+    federationLink: z.string().exactOptional(),
+    firstName: z.string().exactOptional(),
+    groups: z.array(z.string()).exactOptional(),
+    id: z.string().exactOptional(),
+    lastName: z.string().exactOptional(),
+    notBefore: z.int32().exactOptional(),
+    origin: z.string().exactOptional(),
+    realmRoles: z.array(z.string()).exactOptional(),
+    requiredActions: z.array(z.string()).exactOptional(),
+    self: z.string().exactOptional(),
+    serviceAccountClientId: z.string().exactOptional(),
+    username: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UserRepresentation')
+
+type PartialImportRepresentationType = {
+  clients?: z.infer<typeof ClientRepresentationSchema>[]
+  groups?: z.infer<typeof GroupRepresentationSchema>[]
+  identityProviders?: z.infer<typeof IdentityProviderRepresentationSchema>[]
+  ifResourceExists?: string
+  policy?: 'SKIP' | 'OVERWRITE' | 'FAIL'
+  roles?: z.infer<typeof RolesRepresentationSchema>
+  users?: z.infer<typeof UserRepresentationSchema>[]
+}
+
 type PolicyRepresentationType = {
   config?: { [key: string]: unknown }
   decisionStrategy?: 'AFFIRMATIVE' | 'UNANIMOUS' | 'CONSENSUS'
@@ -60,6 +384,242 @@ type PolicyRepresentationType = {
   type?: string
 }
 
+const AuthenticationExecutionExportRepresentationSchema = z
+  .object({
+    authenticator: z.string().exactOptional(),
+    authenticatorConfig: z.string().exactOptional(),
+    authenticatorFlow: z.boolean().exactOptional(),
+    autheticatorFlow: z.boolean().exactOptional(),
+    flowAlias: z.string().exactOptional(),
+    priority: z.int32().exactOptional(),
+    requirement: z.string().exactOptional(),
+    userSetupAllowed: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AuthenticationExecutionExportRepresentation')
+
+const AuthenticationFlowRepresentationSchema = z
+  .object({
+    alias: z.string().exactOptional(),
+    authenticationExecutions: z
+      .array(AuthenticationExecutionExportRepresentationSchema)
+      .exactOptional(),
+    builtIn: z.boolean().exactOptional(),
+    description: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    providerId: z.string().exactOptional(),
+    topLevel: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AuthenticationFlowRepresentation')
+
+const AuthenticatorConfigRepresentationSchema = z
+  .object({
+    alias: z.string().exactOptional(),
+    config: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AuthenticatorConfigRepresentation')
+
+const ClientScopeRepresentationSchema = z
+  .object({
+    attributes: z.looseObject({}).exactOptional(),
+    description: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    protocol: z.string().exactOptional(),
+    protocolMappers: z.array(ProtocolMapperRepresentationSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ClientScopeRepresentation')
+
+const MultivaluedHashMapSchema = z
+  .object({
+    empty: z.boolean().exactOptional(),
+    loadFactor: z.float32().exactOptional(),
+    threshold: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MultivaluedHashMap')
+
+const IdentityProviderMapperRepresentationSchema = z
+  .object({
+    config: z.looseObject({}).exactOptional(),
+    id: z.string().exactOptional(),
+    identityProviderAlias: z.string().exactOptional(),
+    identityProviderMapper: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IdentityProviderMapperRepresentation')
+
+const RequiredActionProviderRepresentationSchema = z
+  .object({
+    alias: z.string().exactOptional(),
+    config: z.looseObject({}).exactOptional(),
+    defaultAction: z.boolean().exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    name: z.string().exactOptional(),
+    priority: z.int32().exactOptional(),
+    providerId: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RequiredActionProviderRepresentation')
+
+const ScopeMappingRepresentationSchema = z
+  .object({
+    client: z.string().exactOptional(),
+    clientScope: z.string().exactOptional(),
+    roles: z.array(z.string()).exactOptional(),
+    self: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ScopeMappingRepresentation')
+
+const UserFederationMapperRepresentationSchema = z
+  .object({
+    config: z.looseObject({}).exactOptional(),
+    federationMapperType: z.string().exactOptional(),
+    federationProviderDisplayName: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UserFederationMapperRepresentation')
+
+const UserFederationProviderRepresentationSchema = z
+  .object({
+    changedSyncPeriod: z.int32().exactOptional(),
+    config: z.looseObject({}).exactOptional(),
+    displayName: z.string().exactOptional(),
+    fullSyncPeriod: z.int32().exactOptional(),
+    id: z.string().exactOptional(),
+    lastSync: z.int32().exactOptional(),
+    priority: z.int32().exactOptional(),
+    providerName: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UserFederationProviderRepresentation')
+
+type RealmRepresentationType = {
+  accessCodeLifespan?: number
+  accessCodeLifespanLogin?: number
+  accessCodeLifespanUserAction?: number
+  accessTokenLifespan?: number
+  accessTokenLifespanForImplicitFlow?: number
+  accountTheme?: string
+  actionTokenGeneratedByAdminLifespan?: number
+  actionTokenGeneratedByUserLifespan?: number
+  adminEventsDetailsEnabled?: boolean
+  adminEventsEnabled?: boolean
+  adminTheme?: string
+  attributes?: { [key: string]: unknown }
+  authenticationFlows?: z.infer<typeof AuthenticationFlowRepresentationSchema>[]
+  authenticatorConfig?: z.infer<typeof AuthenticatorConfigRepresentationSchema>[]
+  browserFlow?: string
+  browserSecurityHeaders?: { [key: string]: unknown }
+  bruteForceProtected?: boolean
+  clientAuthenticationFlow?: string
+  clientScopeMappings?: { [key: string]: unknown }
+  clientScopes?: z.infer<typeof ClientScopeRepresentationSchema>[]
+  clientSessionIdleTimeout?: number
+  clientSessionMaxLifespan?: number
+  clients?: z.infer<typeof ClientRepresentationSchema>[]
+  components?: z.infer<typeof MultivaluedHashMapSchema>
+  defaultDefaultClientScopes?: string[]
+  defaultGroups?: string[]
+  defaultLocale?: string
+  defaultOptionalClientScopes?: string[]
+  defaultRoles?: string[]
+  defaultSignatureAlgorithm?: string
+  directGrantFlow?: string
+  displayName?: string
+  displayNameHtml?: string
+  dockerAuthenticationFlow?: string
+  duplicateEmailsAllowed?: boolean
+  editUsernameAllowed?: boolean
+  emailTheme?: string
+  enabled?: boolean
+  enabledEventTypes?: string[]
+  eventsEnabled?: boolean
+  eventsExpiration?: bigint
+  eventsListeners?: string[]
+  failureFactor?: number
+  federatedUsers?: z.infer<typeof UserRepresentationSchema>[]
+  groups?: z.infer<typeof GroupRepresentationSchema>[]
+  id?: string
+  identityProviderMappers?: z.infer<typeof IdentityProviderMapperRepresentationSchema>[]
+  identityProviders?: z.infer<typeof IdentityProviderRepresentationSchema>[]
+  internationalizationEnabled?: boolean
+  keycloakVersion?: string
+  loginTheme?: string
+  loginWithEmailAllowed?: boolean
+  maxDeltaTimeSeconds?: number
+  maxFailureWaitSeconds?: number
+  minimumQuickLoginWaitSeconds?: number
+  notBefore?: number
+  offlineSessionIdleTimeout?: number
+  offlineSessionMaxLifespan?: number
+  offlineSessionMaxLifespanEnabled?: boolean
+  otpPolicyAlgorithm?: string
+  otpPolicyDigits?: number
+  otpPolicyInitialCounter?: number
+  otpPolicyLookAheadWindow?: number
+  otpPolicyPeriod?: number
+  otpPolicyType?: string
+  otpSupportedApplications?: string[]
+  passwordPolicy?: string
+  permanentLockout?: boolean
+  protocolMappers?: z.infer<typeof ProtocolMapperRepresentationSchema>[]
+  quickLoginCheckMilliSeconds?: bigint
+  realm?: string
+  refreshTokenMaxReuse?: number
+  registrationAllowed?: boolean
+  registrationEmailAsUsername?: boolean
+  registrationFlow?: string
+  rememberMe?: boolean
+  requiredActions?: z.infer<typeof RequiredActionProviderRepresentationSchema>[]
+  resetCredentialsFlow?: string
+  resetPasswordAllowed?: boolean
+  revokeRefreshToken?: boolean
+  roles?: z.infer<typeof RolesRepresentationSchema>
+  scopeMappings?: z.infer<typeof ScopeMappingRepresentationSchema>[]
+  smtpServer?: { [key: string]: unknown }
+  sslRequired?: string
+  ssoSessionIdleTimeout?: number
+  ssoSessionIdleTimeoutRememberMe?: number
+  ssoSessionMaxLifespan?: number
+  ssoSessionMaxLifespanRememberMe?: number
+  supportedLocales?: string[]
+  userFederationMappers?: z.infer<typeof UserFederationMapperRepresentationSchema>[]
+  userFederationProviders?: z.infer<typeof UserFederationProviderRepresentationSchema>[]
+  userManagedAccessAllowed?: boolean
+  users?: z.infer<typeof UserRepresentationSchema>[]
+  verifyEmail?: boolean
+  waitIncrementSeconds?: number
+  webAuthnPolicyAcceptableAaguids?: string[]
+  webAuthnPolicyAttestationConveyancePreference?: string
+  webAuthnPolicyAuthenticatorAttachment?: string
+  webAuthnPolicyAvoidSameAuthenticatorRegister?: boolean
+  webAuthnPolicyCreateTimeout?: number
+  webAuthnPolicyPasswordlessAcceptableAaguids?: string[]
+  webAuthnPolicyPasswordlessAttestationConveyancePreference?: string
+  webAuthnPolicyPasswordlessAuthenticatorAttachment?: string
+  webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister?: boolean
+  webAuthnPolicyPasswordlessCreateTimeout?: number
+  webAuthnPolicyPasswordlessRequireResidentKey?: string
+  webAuthnPolicyPasswordlessRpEntityName?: string
+  webAuthnPolicyPasswordlessRpId?: string
+  webAuthnPolicyPasswordlessSignatureAlgorithms?: string[]
+  webAuthnPolicyPasswordlessUserVerificationRequirement?: string
+  webAuthnPolicyRequireResidentKey?: string
+  webAuthnPolicyRpEntityName?: string
+  webAuthnPolicyRpId?: string
+  webAuthnPolicySignatureAlgorithms?: string[]
+  webAuthnPolicyUserVerificationRequirement?: string
+}
+
 type ResourceRepresentationType = {
   attributes?: { [key: string]: unknown }
   displayName?: string
@@ -71,28 +631,6 @@ type ResourceRepresentationType = {
   type?: string
   uris?: string[]
 }
-
-const PolicyRepresentationSchema: z.ZodType<PolicyRepresentationType> = z
-  .lazy(() =>
-    z
-      .object({
-        config: z.looseObject({}).exactOptional(),
-        decisionStrategy: z.enum(['AFFIRMATIVE', 'UNANIMOUS', 'CONSENSUS']).exactOptional(),
-        description: z.string().exactOptional(),
-        id: z.string().exactOptional(),
-        logic: z.enum(['POSITIVE', 'NEGATIVE']).exactOptional(),
-        name: z.string().exactOptional(),
-        owner: z.string().exactOptional(),
-        policies: z.array(z.string()).exactOptional(),
-        resources: z.array(z.string()).exactOptional(),
-        resourcesData: z.array(ResourceRepresentationSchema).exactOptional(),
-        scopes: z.array(z.string()).exactOptional(),
-        scopesData: z.array(ScopeRepresentationSchema).exactOptional(),
-        type: z.string().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('PolicyRepresentation')
 
 type ScopeRepresentationType = {
   displayName?: string
@@ -282,20 +820,6 @@ const AdminEventRepresentationSchema = z
   .openapi({ required: [] })
   .openapi('AdminEventRepresentation')
 
-const AuthenticationExecutionExportRepresentationSchema = z
-  .object({
-    authenticator: z.string().exactOptional(),
-    authenticatorConfig: z.string().exactOptional(),
-    authenticatorFlow: z.boolean().exactOptional(),
-    autheticatorFlow: z.boolean().exactOptional(),
-    flowAlias: z.string().exactOptional(),
-    priority: z.int32().exactOptional(),
-    requirement: z.string().exactOptional(),
-    userSetupAllowed: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AuthenticationExecutionExportRepresentation')
-
 const AuthenticationExecutionInfoRepresentationSchema = z
   .object({
     alias: z.string().exactOptional(),
@@ -329,24 +853,9 @@ const AuthenticationExecutionRepresentationSchema = z
   .openapi({ required: [] })
   .openapi('AuthenticationExecutionRepresentation')
 
-const AuthenticationFlowRepresentationSchema = z
-  .object({
-    alias: z.string().exactOptional(),
-    authenticationExecutions: z
-      .array(AuthenticationExecutionExportRepresentationSchema)
-      .exactOptional(),
-    builtIn: z.boolean().exactOptional(),
-    description: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    providerId: z.string().exactOptional(),
-    topLevel: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AuthenticationFlowRepresentation')
-
 const ConfigPropertyRepresentationSchema = z
   .object({
-    defaultValue: z.object({}).exactOptional(),
+    defaultValue: z.looseObject({}).exactOptional(),
     helpText: z.string().exactOptional(),
     label: z.string().exactOptional(),
     name: z.string().exactOptional(),
@@ -366,15 +875,6 @@ const AuthenticatorConfigInfoRepresentationSchema = z
   })
   .openapi({ required: [] })
   .openapi('AuthenticatorConfigInfoRepresentation')
-
-const AuthenticatorConfigRepresentationSchema = z
-  .object({
-    alias: z.string().exactOptional(),
-    config: z.looseObject({}).exactOptional(),
-    id: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AuthenticatorConfigRepresentation')
 
 const CertificateRepresentationSchema = z
   .object({
@@ -403,25 +903,6 @@ const ClientInitialAccessPresentationSchema = z
   .openapi({ required: [] })
   .openapi('ClientInitialAccessPresentation')
 
-const RoleRepresentationCompositesSchema = z
-  .object({ client: z.looseObject({}).exactOptional(), realm: z.array(z.string()).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('RoleRepresentationComposites')
-
-const RoleRepresentationSchema = z
-  .object({
-    attributes: z.looseObject({}).exactOptional(),
-    clientRole: z.boolean().exactOptional(),
-    composite: z.boolean().exactOptional(),
-    composites: RoleRepresentationCompositesSchema.exactOptional(),
-    containerId: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RoleRepresentation')
-
 const ClientMappingsRepresentationSchema = z
   .object({
     client: z.string().exactOptional(),
@@ -430,76 +911,6 @@ const ClientMappingsRepresentationSchema = z
   })
   .openapi({ required: [] })
   .openapi('ClientMappingsRepresentation')
-
-const ResourceServerRepresentationSchema = z
-  .object({
-    allowRemoteResourceManagement: z.boolean().exactOptional(),
-    clientId: z.string().exactOptional(),
-    decisionStrategy: z.enum(['AFFIRMATIVE', 'UNANIMOUS', 'CONSENSUS']).exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    policies: z.array(PolicyRepresentationSchema).exactOptional(),
-    policyEnforcementMode: z.enum(['ENFORCING', 'PERMISSIVE', 'DISABLED']).exactOptional(),
-    resources: z.array(ResourceRepresentationSchema).exactOptional(),
-    scopes: z.array(ScopeRepresentationSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ResourceServerRepresentation')
-
-const ProtocolMapperRepresentationSchema = z
-  .object({
-    config: z.looseObject({}).exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    protocol: z.string().exactOptional(),
-    protocolMapper: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProtocolMapperRepresentation')
-
-const ClientRepresentationSchema = z
-  .object({
-    access: z.looseObject({}).exactOptional(),
-    adminUrl: z.string().exactOptional(),
-    alwaysDisplayInConsole: z.boolean().exactOptional(),
-    attributes: z.looseObject({}).exactOptional(),
-    authenticationFlowBindingOverrides: z.looseObject({}).exactOptional(),
-    authorizationServicesEnabled: z.boolean().exactOptional(),
-    authorizationSettings: ResourceServerRepresentationSchema.exactOptional(),
-    baseUrl: z.string().exactOptional(),
-    bearerOnly: z.boolean().exactOptional(),
-    clientAuthenticatorType: z.string().exactOptional(),
-    clientId: z.string().exactOptional(),
-    consentRequired: z.boolean().exactOptional(),
-    defaultClientScopes: z.array(z.string()).exactOptional(),
-    defaultRoles: z.array(z.string()).exactOptional(),
-    description: z.string().exactOptional(),
-    directAccessGrantsEnabled: z.boolean().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    frontchannelLogout: z.boolean().exactOptional(),
-    fullScopeAllowed: z.boolean().exactOptional(),
-    id: z.string().exactOptional(),
-    implicitFlowEnabled: z.boolean().exactOptional(),
-    name: z.string().exactOptional(),
-    nodeReRegistrationTimeout: z.int32().exactOptional(),
-    notBefore: z.int32().exactOptional(),
-    optionalClientScopes: z.array(z.string()).exactOptional(),
-    origin: z.string().exactOptional(),
-    protocol: z.string().exactOptional(),
-    protocolMappers: z.array(ProtocolMapperRepresentationSchema).exactOptional(),
-    publicClient: z.boolean().exactOptional(),
-    redirectUris: z.array(z.string()).exactOptional(),
-    registeredNodes: z.looseObject({}).exactOptional(),
-    registrationAccessToken: z.string().exactOptional(),
-    rootUrl: z.string().exactOptional(),
-    secret: z.string().exactOptional(),
-    serviceAccountsEnabled: z.boolean().exactOptional(),
-    standardFlowEnabled: z.boolean().exactOptional(),
-    surrogateAuthRequired: z.boolean().exactOptional(),
-    webOrigins: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ClientRepresentation')
 
 const ClientScopeEvaluateResourceProtocolMapperEvaluationRepresentationSchema = z
   .object({
@@ -512,27 +923,6 @@ const ClientScopeEvaluateResourceProtocolMapperEvaluationRepresentationSchema = 
   })
   .openapi({ required: [] })
   .openapi('ClientScopeEvaluateResourceProtocolMapperEvaluationRepresentation')
-
-const ClientScopeRepresentationSchema = z
-  .object({
-    attributes: z.looseObject({}).exactOptional(),
-    description: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    protocol: z.string().exactOptional(),
-    protocolMappers: z.array(ProtocolMapperRepresentationSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ClientScopeRepresentation')
-
-const MultivaluedHashMapSchema = z
-  .object({
-    empty: z.boolean().exactOptional(),
-    loadFactor: z.float32().exactOptional(),
-    threshold: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MultivaluedHashMap')
 
 const ComponentExportRepresentationSchema = z
   .object({
@@ -569,32 +959,6 @@ const ComponentTypeRepresentationSchema = z
   .openapi({ required: [] })
   .openapi('ComponentTypeRepresentation')
 
-const CredentialRepresentationSchema = z
-  .object({
-    createdDate: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    credentialData: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    priority: z.int32().exactOptional(),
-    secretData: z.string().exactOptional(),
-    temporary: z.boolean().exactOptional(),
-    type: z.string().exactOptional(),
-    userLabel: z.string().exactOptional(),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CredentialRepresentation')
-
 const EventRepresentationSchema = z
   .object({
     clientId: z.string().exactOptional(),
@@ -621,15 +985,6 @@ const EventRepresentationSchema = z
   .openapi({ required: [] })
   .openapi('EventRepresentation')
 
-const FederatedIdentityRepresentationSchema = z
-  .object({
-    identityProvider: z.string().exactOptional(),
-    userId: z.string().exactOptional(),
-    userName: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('FederatedIdentityRepresentation')
-
 const GlobalRequestResultSchema = z
   .object({
     failedRequests: z.array(z.string()).exactOptional(),
@@ -637,52 +992,6 @@ const GlobalRequestResultSchema = z
   })
   .openapi({ required: [] })
   .openapi('GlobalRequestResult')
-
-const GroupRepresentationSchema: z.ZodType<GroupRepresentationType> = z
-  .lazy(() =>
-    z
-      .object({
-        access: z.looseObject({}).exactOptional(),
-        attributes: z.looseObject({}).exactOptional(),
-        clientRoles: z.looseObject({}).exactOptional(),
-        id: z.string().exactOptional(),
-        name: z.string().exactOptional(),
-        path: z.string().exactOptional(),
-        realmRoles: z.array(z.string()).exactOptional(),
-        subGroups: z.array(GroupRepresentationSchema).exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('GroupRepresentation')
-
-const IdentityProviderMapperRepresentationSchema = z
-  .object({
-    config: z.looseObject({}).exactOptional(),
-    id: z.string().exactOptional(),
-    identityProviderAlias: z.string().exactOptional(),
-    identityProviderMapper: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IdentityProviderMapperRepresentation')
-
-const IdentityProviderRepresentationSchema = z
-  .object({
-    addReadTokenRoleOnCreate: z.boolean().exactOptional(),
-    alias: z.string().exactOptional(),
-    config: z.looseObject({}).exactOptional(),
-    displayName: z.string().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    firstBrokerLoginFlowAlias: z.string().exactOptional(),
-    internalId: z.string().exactOptional(),
-    linkOnly: z.boolean().exactOptional(),
-    postBrokerLoginFlowAlias: z.string().exactOptional(),
-    providerId: z.string().exactOptional(),
-    storeToken: z.boolean().exactOptional(),
-    trustEmail: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IdentityProviderRepresentation')
 
 const KeyStoreConfigSchema = z
   .object({
@@ -803,87 +1112,7 @@ const MemoryInfoRepresentationSchema = z
   .openapi({ required: [] })
   .openapi('MemoryInfoRepresentation')
 
-const RolesRepresentationSchema = z
-  .object({
-    client: z.looseObject({}).exactOptional(),
-    realm: z.array(RoleRepresentationSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RolesRepresentation')
-
-const UserConsentRepresentationSchema = z
-  .object({
-    clientId: z.string().exactOptional(),
-    createdDate: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    grantedClientScopes: z.array(z.string()).exactOptional(),
-    lastUpdatedDate: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('UserConsentRepresentation')
-
-const UserRepresentationSchema = z
-  .object({
-    access: z.looseObject({}).exactOptional(),
-    attributes: z.looseObject({}).exactOptional(),
-    clientConsents: z.array(UserConsentRepresentationSchema).exactOptional(),
-    clientRoles: z.looseObject({}).exactOptional(),
-    createdTimestamp: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    credentials: z.array(CredentialRepresentationSchema).exactOptional(),
-    disableableCredentialTypes: z.array(z.string()).exactOptional(),
-    email: z.string().exactOptional(),
-    emailVerified: z.boolean().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    federatedIdentities: z.array(FederatedIdentityRepresentationSchema).exactOptional(),
-    federationLink: z.string().exactOptional(),
-    firstName: z.string().exactOptional(),
-    groups: z.array(z.string()).exactOptional(),
-    id: z.string().exactOptional(),
-    lastName: z.string().exactOptional(),
-    notBefore: z.int32().exactOptional(),
-    origin: z.string().exactOptional(),
-    realmRoles: z.array(z.string()).exactOptional(),
-    requiredActions: z.array(z.string()).exactOptional(),
-    self: z.string().exactOptional(),
-    serviceAccountClientId: z.string().exactOptional(),
-    username: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UserRepresentation')
-
-const PartialImportRepresentationSchema = z
+const PartialImportRepresentationSchema: z.ZodType<PartialImportRepresentationType> = z
   .object({
     clients: z.array(ClientRepresentationSchema).exactOptional(),
     groups: z.array(GroupRepresentationSchema).exactOptional(),
@@ -945,55 +1174,7 @@ const RealmEventsConfigRepresentationSchema = z
   .openapi({ required: [] })
   .openapi('RealmEventsConfigRepresentation')
 
-const RequiredActionProviderRepresentationSchema = z
-  .object({
-    alias: z.string().exactOptional(),
-    config: z.looseObject({}).exactOptional(),
-    defaultAction: z.boolean().exactOptional(),
-    enabled: z.boolean().exactOptional(),
-    name: z.string().exactOptional(),
-    priority: z.int32().exactOptional(),
-    providerId: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RequiredActionProviderRepresentation')
-
-const ScopeMappingRepresentationSchema = z
-  .object({
-    client: z.string().exactOptional(),
-    clientScope: z.string().exactOptional(),
-    roles: z.array(z.string()).exactOptional(),
-    self: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ScopeMappingRepresentation')
-
-const UserFederationMapperRepresentationSchema = z
-  .object({
-    config: z.looseObject({}).exactOptional(),
-    federationMapperType: z.string().exactOptional(),
-    federationProviderDisplayName: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UserFederationMapperRepresentation')
-
-const UserFederationProviderRepresentationSchema = z
-  .object({
-    changedSyncPeriod: z.int32().exactOptional(),
-    config: z.looseObject({}).exactOptional(),
-    displayName: z.string().exactOptional(),
-    fullSyncPeriod: z.int32().exactOptional(),
-    id: z.string().exactOptional(),
-    lastSync: z.int32().exactOptional(),
-    priority: z.int32().exactOptional(),
-    providerName: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UserFederationProviderRepresentation')
-
-const RealmRepresentationSchema = z
+const RealmRepresentationSchema: z.ZodType<RealmRepresentationType> = z
   .object({
     accessCodeLifespan: z.int32().exactOptional(),
     accessCodeLifespanLogin: z.int32().exactOptional(),

@@ -1,0 +1,7 @@
+export * from './communication'
+export * from './ekman-emotion'
+export * from './emotion'
+export * from './language-detection'
+export * from './personality'
+export * from './sentiment'
+export * from './topic-sentiment'

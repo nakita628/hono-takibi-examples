@@ -44,250 +44,342 @@ const PositionSchema: z.ZodType<PositionType> = z
 
 type ConcatPositionType = { index?: number; position?: z.infer<typeof PositionSchema> }
 
-const ConcatPositionSchema: z.ZodType<ConcatPositionType> = z
-  .lazy(() =>
-    z
-      .object({
-        index: z.int32().exactOptional().openapi({ description: 'Index of the inner source.' }),
-        position: PositionSchema.exactOptional().openapi({
-          description: 'Position within the inner source.',
-        }),
-      })
-      .openapi({
-        description:
-          'A position that encapsulates an inner position and an index for the inner position. A ConcatPosition can be used by a reader of a source that encapsulates a set of other sources.',
-        required: [],
-      }),
-  )
-  .openapi('ConcatPosition')
-
-type PositionType = {
-  byteOffset?: string
-  concatPosition?: z.infer<typeof ConcatPositionSchema>
-  end?: boolean
-  key?: string
-  recordIndex?: string
-  shufflePosition?: string
-}
-
-const CPUTimeSchema = z
+const MetricStructuredNameSchema = z
   .object({
-    rate: z
-      .float64()
+    context: z
+      .record(z.string(), z.string())
       .exactOptional()
       .openapi({
         description:
-          'Average CPU utilization rate (% non-idle cpu / second) since previous sample.',
+          "Zero or more labeled fields which identify the part of the job this metric is associated with, such as the name of a step or collection. For example, built-in counters associated with steps will have context['step'] = . Counters associated with PCollections in the SDK will have context['pcollection'] = .",
       }),
-    timestamp: z.string().exactOptional().openapi({ description: 'Timestamp of the measurement.' }),
-    totalMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total active CPU time across all cores (ie., non-idle) in milliseconds since start-up.',
-      }),
-  })
-  .openapi({ description: 'Modeled after information exposed by /proc/stat.', required: [] })
-  .openapi('CPUTime')
-
-const MemInfoSchema = z
-  .object({
-    currentLimitBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Instantenous memory limit in bytes.' }),
-    currentOoms: z
+    name: z.string().exactOptional().openapi({ description: 'Worker-defined metric name.' }),
+    origin: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Number of Out of Memory (OOM) events recorded since the previous measurement.',
+          'Origin (namespace) of metric name. May be blank for user-define metrics; will be "dataflow" for metrics defined by the Dataflow service or SDK.',
       }),
-    currentRssBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Instantenous memory (RSS) size in bytes.' }),
-    timestamp: z.string().exactOptional().openapi({ description: 'Timestamp of the measurement.' }),
-    totalGbMs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total memory (RSS) usage since start up in GB * ms.' }),
   })
   .openapi({
-    description: 'Information about the memory usage of a worker or a container within a worker.',
+    description: 'Identifies a metric, by describing the source which generated the metric.',
     required: [],
   })
-  .openapi('MemInfo')
+  .openapi('MetricStructuredName')
 
-type ResourceUtilizationReportType = {
-  containers?: { [key: string]: ResourceUtilizationReportType }
-  cpuTime?: z.infer<typeof CPUTimeSchema>[]
-  memoryInfo?: z.infer<typeof MemInfoSchema>[]
-}
-
-const ApproximateProgressSchema = z
+const MetricUpdateSchema = z
   .object({
-    percentComplete: z.float32().exactOptional().openapi({ description: 'Obsolete.' }),
-    position: PositionSchema.exactOptional().openapi({ description: 'Obsolete.' }),
-    remainingTime: z.string().exactOptional().openapi({ description: 'Obsolete.' }),
-  })
-  .openapi({
-    description: 'Obsolete in favor of ApproximateReportedProgress and ApproximateSplitRequest.',
-    required: [],
-  })
-  .openapi('ApproximateProgress')
-
-const ReportedParallelismSchema = z
-  .object({
-    isInfinite: z
+    cumulative: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Specifies whether the parallelism is infinite. If true, "value" is ignored. Infinite parallelism means the service will assume that the work item can always be split into more non-empty work items by dynamic splitting. This is a work-around for lack of support for infinity by the current JSON-based Java RPC stack.',
+          'True if this metric is reported as the total cumulative aggregate value accumulated since the worker started working on this WorkItem. By default this is false, indicating that this metric is reported as a delta that is not associated with any WorkItem.',
       }),
-    value: z
+    distribution: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description: 'A struct value describing properties of a distribution of numeric values.',
+      }),
+    gauge: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'A struct value describing properties of a Gauge. Metrics of gauge type show the value of a metric across time, and is aggregated based on the newest value.',
+      }),
+    internal: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description: 'Worker-computed aggregate value for internal use by the Dataflow service.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Metric aggregation kind. The possible metric aggregation kinds are "Sum", "Max", "Min", "Mean", "Set", "And", "Or", and "Distribution". The specified aggregation kind is case-insensitive. If omitted, this is not an aggregated value but instead a single metric sample value.',
+      }),
+    meanCount: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker-computed aggregate value for the "Mean" aggregation kind. This holds the count of the aggregated values and is used in combination with mean_sum above to obtain the actual mean aggregate value. The only possible value type is Long.',
+      }),
+    meanSum: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker-computed aggregate value for the "Mean" aggregation kind. This holds the sum of the aggregated values and is used in combination with mean_count below to obtain the actual mean aggregate value. The only possible value types are Long and Double.',
+      }),
+    name: MetricStructuredNameSchema.exactOptional().openapi({
+      description: 'Name of the metric.',
+    }),
+    scalar: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker-computed aggregate value for aggregation kinds "Sum", "Max", "Min", "And", and "Or". The possible value types are Long, Double, and Boolean.',
+      }),
+    set: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker-computed aggregate value for the "Set" aggregation kind. The only possible value type is a list of Values whose type can be Long, Double, or String, according to the metric\'s type. All Values in the list must be of the same type.',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp associated with the metric value. Optional when workers are reporting work progress; it will be filled in responses from the metrics API.',
+      }),
+  })
+  .openapi({ description: 'Describes the state of a metric.', required: [] })
+  .openapi('MetricUpdate')
+
+const PointSchema = z
+  .object({
+    time: z.string().exactOptional().openapi({ description: 'The timestamp of the point.' }),
+    value: z.float64().exactOptional().openapi({ description: 'The value of the point.' }),
+  })
+  .openapi({ description: 'A point in the timeseries.', required: [] })
+  .openapi('Point')
+
+const ProgressTimeseriesSchema = z
+  .object({
+    currentProgress: z
       .float64()
       .exactOptional()
-      .openapi({ description: 'Specifies the level of parallelism in case it is finite.' }),
+      .openapi({ description: 'The current progress of the component, in the range [0,1].' }),
+    dataPoints: z
+      .array(PointSchema)
+      .exactOptional()
+      .openapi({
+        description: 'History of progress for the component. Points are sorted by time.',
+      }),
+  })
+  .openapi({
+    description: 'Information about the progress of some component of job execution.',
+    required: [],
+  })
+  .openapi('ProgressTimeseries')
+
+const HotKeyInfoSchema = z
+  .object({
+    hotKeyAge: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The age of the hot key measured from when it was first detected.' }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A detected hot key that is causing limited parallelism. This field will be populated only if the following flag is set to true: "--enable_hot_key_logging".',
+      }),
+    keyTruncated: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, then the above key is truncated and cannot be deserialized. This occurs if the key above is populated and the key size is >5MB.',
+      }),
+  })
+  .openapi({ description: 'Information about a hot key.', required: [] })
+  .openapi('HotKeyInfo')
+
+const HotKeyDebuggingInfoSchema = z
+  .object({
+    detectedHotKeys: z
+      .record(z.string(), HotKeyInfoSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Debugging information for each detected hot key. Keyed by a hash of the key.',
+      }),
+  })
+  .openapi({ description: 'Information useful for debugging a hot key detection.', required: [] })
+  .openapi('HotKeyDebuggingInfo')
+
+const StragglerDebuggingInfoSchema = z
+  .object({
+    hotKey: HotKeyDebuggingInfoSchema.exactOptional().openapi({
+      description: 'Hot key debugging details.',
+    }),
   })
   .openapi({
     description:
-      "Represents the level of parallelism in a WorkItem's input, reported by the worker.",
+      'Information useful for debugging a straggler. Each type will provide specialized debugging information relevant for a particular cause. The StragglerDebuggingInfo will be 1:1 mapping to the StragglerCause enum.',
     required: [],
   })
-  .openapi('ReportedParallelism')
+  .openapi('StragglerDebuggingInfo')
 
-const ApproximateReportedProgressSchema = z
+const StragglerInfoSchema = z
   .object({
-    consumedParallelism: ReportedParallelismSchema.exactOptional().openapi({
-      description:
-        'Total amount of parallelism in the portion of input of this task that has already been consumed and is no longer active. In the first two examples above (see remaining_parallelism), the value should be 29 or 2 respectively. The sum of remaining_parallelism and consumed_parallelism should equal the total amount of parallelism in this work item. If specified, must be finite.',
-    }),
-    fractionConsumed: z
-      .float64()
+    causes: z
+      .record(z.string(), StragglerDebuggingInfoSchema)
       .exactOptional()
       .openapi({
         description:
-          'Completion as fraction of the input consumed, from 0.0 (beginning, nothing consumed), to 1.0 (end of the input, entire input consumed).',
+          'The straggler causes, keyed by the string representation of the StragglerCause enum and contains specialized debugging information for each straggler cause.',
       }),
-    position: PositionSchema.exactOptional().openapi({
-      description: 'A Position within the work to represent a progress.',
-    }),
-    remainingParallelism: ReportedParallelismSchema.exactOptional().openapi({
-      description:
-        'Total amount of parallelism in the input of this task that remains, (i.e. can be delegated to this task and any new tasks via dynamic splitting). Always at least 1 for non-finished work items and 0 for finished. "Amount of parallelism" refers to how many non-empty parts of the input can be read in parallel. This does not necessarily equal number of records. An input that can be read in parallel down to the individual records is called "perfectly splittable". An example of non-perfectly parallelizable input is a block-compressed file format where a block of records has to be read as a whole, but different blocks can be read in parallel. Examples: * If we are processing record #30 (starting at 1) out of 50 in a perfectly splittable 50-record input, this value should be 21 (20 remaining + 1 current). * If we are reading through block 3 in a block-compressed file consisting of 5 blocks, this value should be 3 (since blocks 4 and 5 can be processed in parallel by new tasks via dynamic splitting and the current task remains processing block 3). * If we are reading through the last block in a block-compressed file, or reading or processing the last record in a perfectly splittable input, this value should be 1, because apart from the current task, no additional remainder can be split off.',
-    }),
-  })
-  .openapi({ description: 'A progress measurement of a WorkItem by a worker.', required: [] })
-  .openapi('ApproximateReportedProgress')
-
-const ApproximateSplitRequestSchema = z
-  .object({
-    fractionConsumed: z
-      .float64()
+    startTime: z
+      .string()
       .exactOptional()
-      .openapi({
-        description:
-          'A fraction at which to split the work item, from 0.0 (beginning of the input) to 1.0 (end of the input).',
-      }),
-    fractionOfRemainder: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fraction of the remainder of work to split the work item at, from 0.0 (split at the current position) to 1.0 (end of the input).',
-      }),
-    position: PositionSchema.exactOptional().openapi({
-      description: 'A Position at which to split the work item.',
-    }),
+      .openapi({ description: 'The time when the work item attempt became a straggler.' }),
   })
   .openapi({
-    description: 'A suggestion by the service to the worker to dynamically split the WorkItem.',
+    description: 'Information useful for straggler identification and debugging.',
     required: [],
   })
-  .openapi('ApproximateSplitRequest')
+  .openapi('StragglerInfo')
 
-const ParameterSchema = z
+const StreamingStragglerInfoSchema = z
   .object({
-    key: z.string().exactOptional().openapi({ description: 'Key or name for this parameter.' }),
-    value: z.any().exactOptional().openapi({ description: 'Value for this parameter.' }),
+    dataWatermarkLag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The event-time watermark lag at the time of the straggler detection.',
+      }),
+    endTime: z.string().exactOptional().openapi({ description: 'End time of this straggler.' }),
+    startTime: z.string().exactOptional().openapi({ description: 'Start time of this straggler.' }),
+    systemWatermarkLag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The system watermark lag at the time of the straggler detection.' }),
+    workerName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the worker where the straggler was detected.' }),
   })
-  .openapi({ description: 'Structured data associated with this message.', required: [] })
-  .openapi('Parameter')
+  .openapi({
+    description: 'Information useful for streaming straggler identification and debugging.',
+    required: [],
+  })
+  .openapi('StreamingStragglerInfo')
 
-const StructuredMessageSchema = z
+const StragglerSchema = z
   .object({
-    messageKey: z
+    batchStraggler: StragglerInfoSchema.exactOptional().openapi({
+      description: 'Batch straggler identification and debugging information.',
+    }),
+    streamingStraggler: StreamingStragglerInfoSchema.exactOptional().openapi({
+      description: 'Streaming straggler identification and debugging information.',
+    }),
+  })
+  .openapi({ description: 'Information for a straggler.', required: [] })
+  .openapi('Straggler')
+
+type StragglerSummaryType = {
+  recentStragglers?: z.infer<typeof StragglerSchema>[]
+  stragglerCauseCount?: { [key: string]: string }
+  totalStragglerCount?: string
+}
+
+const StragglerSummarySchema: z.ZodType<StragglerSummaryType> = z
+  .object({
+    recentStragglers: z
+      .array(StragglerSchema)
+      .exactOptional()
+      .openapi({ description: 'The most recent stragglers.' }),
+    stragglerCauseCount: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Aggregated counts of straggler causes, keyed by the string representation of the StragglerCause enum.',
+      }),
+    totalStragglerCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The total count of stragglers.' }),
+  })
+  .openapi({ description: 'Summarized straggler identification details.', required: [] })
+  .openapi('StragglerSummary')
+
+type StageSummaryType = {
+  endTime?: string
+  metrics?: z.infer<typeof MetricUpdateSchema>[]
+  progress?: z.infer<typeof ProgressTimeseriesSchema>
+  stageId?: string
+  startTime?: string
+  state?:
+    | 'EXECUTION_STATE_UNKNOWN'
+    | 'EXECUTION_STATE_NOT_STARTED'
+    | 'EXECUTION_STATE_RUNNING'
+    | 'EXECUTION_STATE_SUCCEEDED'
+    | 'EXECUTION_STATE_FAILED'
+    | 'EXECUTION_STATE_CANCELLED'
+  stragglerSummary?: z.infer<typeof StragglerSummarySchema>
+}
+
+const StageSummarySchema: z.ZodType<StageSummaryType> = z
+  .object({
+    endTime: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Identifier for this message type. Used by external systems to internationalize or personalize message.',
+          'End time of this stage. If the work item is completed, this is the actual end time of the stage. Otherwise, it is the predicted end time.',
       }),
-    messageText: z
-      .string()
+    metrics: z
+      .array(MetricUpdateSchema)
       .exactOptional()
-      .openapi({ description: 'Human-readable version of message.' }),
-    parameters: z
-      .array(ParameterSchema)
-      .exactOptional()
-      .openapi({ description: 'The structured data associated with this message.' }),
-  })
-  .openapi({
-    description:
-      'A rich message format, including a human readable string, a key for identifying the message, and structured data associated with the message for programmatic consumption.',
-    required: [],
-  })
-  .openapi('StructuredMessage')
-
-const AutoscalingEventSchema = z
-  .object({
-    currentNumWorkers: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The current number of workers the job has.' }),
-    description: StructuredMessageSchema.exactOptional().openapi({
-      description:
-        'A message describing why the system decided to adjust the current number of workers, why it failed, or why the system decided to not make any changes to the number of workers.',
+      .openapi({ description: 'Metrics for this stage.' }),
+    progress: ProgressTimeseriesSchema.exactOptional().openapi({
+      description: 'Progress for this stage. Only applicable to Batch jobs.',
     }),
-    eventType: z
+    stageId: z.string().exactOptional().openapi({ description: 'ID of this stage' }),
+    startTime: z.string().exactOptional().openapi({ description: 'Start time of this stage.' }),
+    state: z
       .enum([
-        'TYPE_UNKNOWN',
-        'TARGET_NUM_WORKERS_CHANGED',
-        'CURRENT_NUM_WORKERS_CHANGED',
-        'ACTUATION_FAILURE',
-        'NO_CHANGE',
+        'EXECUTION_STATE_UNKNOWN',
+        'EXECUTION_STATE_NOT_STARTED',
+        'EXECUTION_STATE_RUNNING',
+        'EXECUTION_STATE_SUCCEEDED',
+        'EXECUTION_STATE_FAILED',
+        'EXECUTION_STATE_CANCELLED',
       ])
       .exactOptional()
-      .openapi({ description: 'The type of autoscaling event to report.' }),
-    targetNumWorkers: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The target number of workers the worker pool wants to resize to use.',
-      }),
-    time: z
-      .string()
+      .openapi({ description: 'State of this stage.' }),
+    stragglerSummary: StragglerSummarySchema.exactOptional().openapi({
+      description: 'Straggler summary for this stage.',
+    }),
+  })
+  .openapi({
+    description: 'Information about a particular execution stage of a job.',
+    required: [],
+  })
+  .openapi('StageSummary')
+
+type JobExecutionDetailsType = {
+  nextPageToken?: string
+  stages?: z.infer<typeof StageSummarySchema>[]
+}
+
+const DebugOptionsSchema = z
+  .object({
+    enableHotKeyLogging: z
+      .boolean()
       .exactOptional()
       .openapi({
         description:
-          'The time this event was emitted to indicate a new target or current num_workers value.',
-      }),
-    workerPool: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A short and friendly name for the worker pool this event refers to.',
+          "When true, enables the logging of the literal hot key to the user's Cloud Logging.",
       }),
   })
   .openapi({
-    description:
-      'A structured message reporting an autoscaling decision made by the Dataflow service.',
+    description: 'Describes any options that have an effect on the debugging of pipelines.',
     required: [],
   })
-  .openapi('AutoscalingEvent')
+  .openapi('DebugOptions')
 
 const AutoscalingSettingsSchema = z
   .object({
@@ -306,1223 +398,6 @@ const AutoscalingSettingsSchema = z
   })
   .openapi({ description: 'Settings for WorkerPool autoscaling.', required: [] })
   .openapi('AutoscalingSettings')
-
-const BigQueryIODetailsSchema = z
-  .object({
-    dataset: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Dataset accessed in the connection.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Project accessed in the connection.' }),
-    query: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Query used to access data in the connection.' }),
-    table: z.string().exactOptional().openapi({ description: 'Table accessed in the connection.' }),
-  })
-  .openapi({ description: 'Metadata for a BigQuery connector used by the job.', required: [] })
-  .openapi('BigQueryIODetails')
-
-const BigTableIODetailsSchema = z
-  .object({
-    instanceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'InstanceId accessed in the connection.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ProjectId accessed in the connection.' }),
-    tableId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'TableId accessed in the connection.' }),
-  })
-  .openapi({
-    description: 'Metadata for a Cloud Bigtable connector used by the job.',
-    required: [],
-  })
-  .openapi('BigTableIODetails')
-
-const ComponentSourceSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Dataflow service generated name for this source.' }),
-    originalTransformOrCollection: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User name for the original user transform or collection with which this source is most closely associated.',
-      }),
-    userName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Human-readable name for this transform; may be user or system generated.',
-      }),
-  })
-  .openapi({
-    description: 'Description of an interstitial value between transforms in an execution stage.',
-    required: [],
-  })
-  .openapi('ComponentSource')
-
-const ComponentTransformSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Dataflow service generated name for this source.' }),
-    originalTransform: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User name for the original user transform with which this transform is most closely associated.',
-      }),
-    userName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Human-readable name for this transform; may be user or system generated.',
-      }),
-  })
-  .openapi({
-    description: 'Description of a transform executed as part of an execution stage.',
-    required: [],
-  })
-  .openapi('ComponentTransform')
-
-const CustomSourceLocationSchema = z
-  .object({
-    stateful: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this source is stateful.' }),
-  })
-  .openapi({ description: 'Identifies the location of a custom souce.', required: [] })
-  .openapi('CustomSourceLocation')
-
-const PubsubLocationSchema = z
-  .object({
-    dropLateData: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the pipeline allows late-arriving data.' }),
-    idLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, contains a pubsub label from which to extract record ids. If left empty, record deduplication will be strictly best effort.',
-      }),
-    subscription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A pubsub subscription, in the form of "pubsub.googleapis.com/subscriptions//"',
-      }),
-    timestampLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, contains a pubsub label from which to extract record timestamps. If left empty, record timestamps will be generated upon arrival.',
-      }),
-    topic: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A pubsub topic, in the form of "pubsub.googleapis.com/topics//"' }),
-    trackingSubscription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, specifies the pubsub subscription that will be used for tracking custom time timestamps for watermark estimation.',
-      }),
-    withAttributes: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, then the client has requested to get pubsub attributes.' }),
-  })
-  .openapi({
-    description:
-      'Identifies a pubsub location to use for transferring data into or out of a streaming Dataflow job.',
-    required: [],
-  })
-  .openapi('PubsubLocation')
-
-const StreamingSideInputLocationSchema = z
-  .object({
-    stateFamily: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identifies the state family where this side input is stored.' }),
-    tag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Identifies the particular side input within the streaming Dataflow job.',
-      }),
-  })
-  .openapi({ description: 'Identifies the location of a streaming side input.', required: [] })
-  .openapi('StreamingSideInputLocation')
-
-const StreamingStageLocationSchema = z
-  .object({
-    streamId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Identifies the particular stream within the streaming Dataflow job.',
-      }),
-  })
-  .openapi({
-    description:
-      'Identifies the location of a streaming computation stage, for stage-to-stage communication.',
-    required: [],
-  })
-  .openapi('StreamingStageLocation')
-
-const StreamLocationSchema = z
-  .object({
-    customSourceLocation: CustomSourceLocationSchema.exactOptional().openapi({
-      description: 'The stream is a custom source.',
-    }),
-    pubsubLocation: PubsubLocationSchema.exactOptional().openapi({
-      description: 'The stream is a pubsub stream.',
-    }),
-    sideInputLocation: StreamingSideInputLocationSchema.exactOptional().openapi({
-      description: 'The stream is a streaming side input.',
-    }),
-    streamingStageLocation: StreamingStageLocationSchema.exactOptional().openapi({
-      description:
-        'The stream is part of another computation within the current streaming Dataflow job.',
-    }),
-  })
-  .openapi({
-    description:
-      'Describes a stream of data, either as input to be processed or as output of a streaming Dataflow job.',
-    required: [],
-  })
-  .openapi('StreamLocation')
-
-const KeyRangeLocationSchema = z
-  .object({
-    dataDisk: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the data disk where data for this range is stored. This name is local to the Google Cloud Platform project and uniquely identifies the disk within that project, for example "myproject-1014-104817-4c2-harness-0-disk-1".',
-      }),
-    deliveryEndpoint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The physical location of this range assignment to be used for streaming computation cross-worker message delivery.',
-      }),
-    deprecatedPersistentDirectory: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'DEPRECATED. The location of the persistent state for this range, as a persistent directory in the worker local filesystem.',
-      }),
-    end: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The end (exclusive) of the key range.' }),
-    start: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The start (inclusive) of the key range.' }),
-  })
-  .openapi({
-    description:
-      'Location information for a specific key-range of a sharded computation. Currently we only support UTF-8 character splits to simplify encoding into JSON.',
-    required: [],
-  })
-  .openapi('KeyRangeLocation')
-
-const StateFamilyConfigSchema = z
-  .object({
-    isRead: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, this family corresponds to a read operation.' }),
-    stateFamily: z.string().exactOptional().openapi({ description: 'The state family value.' }),
-  })
-  .openapi({ description: 'State family configuration.', required: [] })
-  .openapi('StateFamilyConfig')
-
-const ComputationTopologySchema = z
-  .object({
-    computationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the computation.' }),
-    inputs: z
-      .array(StreamLocationSchema)
-      .exactOptional()
-      .openapi({ description: 'The inputs to the computation.' }),
-    keyRanges: z
-      .array(KeyRangeLocationSchema)
-      .exactOptional()
-      .openapi({ description: 'The key ranges processed by the computation.' }),
-    outputs: z
-      .array(StreamLocationSchema)
-      .exactOptional()
-      .openapi({ description: 'The outputs from the computation.' }),
-    stateFamilies: z
-      .array(StateFamilyConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The state family values.' }),
-    systemStageName: z.string().exactOptional().openapi({ description: 'The system stage name.' }),
-  })
-  .openapi({ description: 'All configuration data for a particular Computation.', required: [] })
-  .openapi('ComputationTopology')
-
-const FlexTemplateRuntimeEnvironmentSchema = z
-  .object({
-    additionalExperiments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Additional experiment flags for the job.' }),
-    additionalUserLabels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional user labels to be specified for the job. Keys and values must follow the restrictions specified in the [labeling restrictions](https://cloud.google.com/compute/docs/labeling-resources#restrictions) page. An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1kg", "count": "3" }.',
-      }),
-    autoscalingAlgorithm: z
-      .enum([
-        'AUTOSCALING_ALGORITHM_UNKNOWN',
-        'AUTOSCALING_ALGORITHM_NONE',
-        'AUTOSCALING_ALGORITHM_BASIC',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The algorithm to use for autoscaling' }),
-    diskSizeGb: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Worker disk size, in gigabytes.' }),
-    dumpHeapOnOom: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, when processing time is spent almost entirely on garbage collection (GC), saves a heap dump before ending the thread or process. If false, ends the thread or process without saving a heap dump. Does not save a heap dump when the Java Virtual Machine (JVM) has an out of memory error during processing. The location of the heap file is either echoed back to the user, or the user is given the opportunity to download the heap file.',
-      }),
-    enableLauncherVmSerialPortLogging: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true serial port logging will be enabled for the launcher VM.' }),
-    enableStreamingEngine: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to enable Streaming Engine for the job.' }),
-    flexrsGoal: z
-      .enum(['FLEXRS_UNSPECIFIED', 'FLEXRS_SPEED_OPTIMIZED', 'FLEXRS_COST_OPTIMIZED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Set FlexRS goal for the job. https://cloud.google.com/dataflow/docs/guides/flexrs',
-      }),
-    ipConfiguration: z
-      .enum(['WORKER_IP_UNSPECIFIED', 'WORKER_IP_PUBLIC', 'WORKER_IP_PRIVATE'])
-      .exactOptional()
-      .openapi({ description: 'Configuration for VM IPs.' }),
-    kmsKeyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name for the Cloud KMS key for the job. Key format is: projects//locations//keyRings//cryptoKeys/',
-      }),
-    launcherMachineType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The machine type to use for launching the job. The default is n1-standard-1.',
-      }),
-    machineType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The machine type to use for the job. Defaults to the value from the template if not specified.',
-      }),
-    maxWorkers: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of Google Compute Engine instances to be made available to your pipeline during execution, from 1 to 1000.',
-      }),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Network to which VMs will be assigned. If empty or unspecified, the service will use the network "default".',
-      }),
-    numWorkers: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The initial number of Google Compute Engine instances for the job.',
-      }),
-    saveHeapDumpsToGcsPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Cloud Storage bucket (directory) to upload heap dumps to. Enabling this field implies that `dump_heap_on_oom` is set to true.',
-      }),
-    sdkContainerImage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Docker registry location of container image to use for the 'worker harness. Default is the container for the version of the SDK. Note this field is only valid for portable pipelines.",
-      }),
-    serviceAccountEmail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The email address of the service account to run the job as.' }),
-    stagingLocation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Cloud Storage path for staging local files. Must be a valid Cloud Storage URL, beginning with `gs://`.',
-      }),
-    subnetwork: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Subnetwork to which VMs will be assigned, if desired. You can specify a subnetwork using either a complete URL or an abbreviated path. Expected to be of the form "https://www.googleapis.com/compute/v1/projects/HOST_PROJECT_ID/regions/REGION/subnetworks/SUBNETWORK" or "regions/REGION/subnetworks/SUBNETWORK". If the subnetwork is located in a Shared VPC network, you must use the complete URL.',
-      }),
-    tempLocation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Cloud Storage path to use for temporary files. Must be a valid Cloud Storage URL, beginning with `gs://`.',
-      }),
-    workerRegion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Compute Engine region (https://cloud.google.com/compute/docs/regions-zones/regions-zones) in which worker processing should occur, e.g. "us-west1". Mutually exclusive with worker_zone. If neither worker_region nor worker_zone is specified, default to the control plane\'s region.',
-      }),
-    workerZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Compute Engine zone (https://cloud.google.com/compute/docs/regions-zones/regions-zones) in which worker processing should occur, e.g. "us-west1-a". Mutually exclusive with worker_region. If neither worker_region nor worker_zone is specified, a zone in the control plane\'s region is chosen based on available capacity. If both `worker_zone` and `zone` are set, `worker_zone` takes precedence.',
-      }),
-    zone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Compute Engine [availability zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) for launching worker instances to run your pipeline. In the future, worker_zone will take precedence.',
-      }),
-  })
-  .openapi({
-    description: 'The environment values to be set at runtime for flex template.',
-    required: [],
-  })
-  .openapi('FlexTemplateRuntimeEnvironment')
-
-const ParameterMetadataSchema = z
-  .object({
-    customMetadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Optional. Additional metadata for describing this parameter.' }),
-    groupName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies a group name for this parameter to be rendered under. Group header text will be rendered exactly as specified in this field. Only considered when parent_name is NOT provided.',
-      }),
-    helpText: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The help text to display for the parameter.' }),
-    isOptional: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Optional. Whether the parameter is optional. Defaults to false.' }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The label to display for the parameter.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the parameter.' }),
-    paramType: z
-      .enum([
-        'DEFAULT',
-        'TEXT',
-        'GCS_READ_BUCKET',
-        'GCS_WRITE_BUCKET',
-        'GCS_READ_FILE',
-        'GCS_WRITE_FILE',
-        'GCS_READ_FOLDER',
-        'GCS_WRITE_FOLDER',
-        'PUBSUB_TOPIC',
-        'PUBSUB_SUBSCRIPTION',
-        'BIGQUERY_TABLE',
-        'JAVASCRIPT_UDF_FILE',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The type of the parameter. Used for selecting input picker.',
-      }),
-    parentName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Specifies the name of the parent parameter. Used in conjunction with 'parent_trigger_values' to make this parameter conditional (will only be rendered conditionally). Should be mappable to a ParameterMetadata.name field.",
-      }),
-    parentTriggerValues: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The value(s) of the 'parent_name' parameter which will trigger this parameter to be shown. If left empty, ANY non-empty value in parent_name will trigger this parameter to be shown. Only considered when this parameter is conditional (when 'parent_name' has been provided).",
-      }),
-    regexes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Optional. Regexes that the parameter must match.' }),
-  })
-  .openapi({ description: 'Metadata for a specific parameter.', required: [] })
-  .openapi('ParameterMetadata')
-
-const TemplateMetadataSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. A description of the template.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the template.' }),
-    parameters: z
-      .array(ParameterMetadataSchema)
-      .exactOptional()
-      .openapi({ description: 'The parameters for the template.' }),
-  })
-  .openapi({ description: 'Metadata describing a template.', required: [] })
-  .openapi('TemplateMetadata')
-
-const SDKInfoSchema = z
-  .object({
-    language: z
-      .enum(['UNKNOWN', 'JAVA', 'PYTHON', 'GO'])
-      .exactOptional()
-      .openapi({ description: 'Required. The SDK Language.' }),
-    version: z.string().exactOptional().openapi({ description: 'Optional. The SDK version.' }),
-  })
-  .openapi({ description: 'SDK Information.', required: [] })
-  .openapi('SDKInfo')
-
-const ContainerSpecSchema = z
-  .object({
-    defaultEnvironment: FlexTemplateRuntimeEnvironmentSchema.exactOptional().openapi({
-      description: 'Default runtime environment for the job.',
-    }),
-    image: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name of the docker container image. E.g., gcr.io/project/some-image',
-      }),
-    imageRepositoryCertPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Cloud Storage path to self-signed certificate of private registry.',
-      }),
-    imageRepositoryPasswordSecretId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Secret Manager secret id for password to authenticate to private registry.',
-      }),
-    imageRepositoryUsernameSecretId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Secret Manager secret id for username to authenticate to private registry.',
-      }),
-    metadata: TemplateMetadataSchema.exactOptional().openapi({
-      description: 'Metadata describing a template including description and validation rules.',
-    }),
-    sdkInfo: SDKInfoSchema.exactOptional().openapi({
-      description: 'Required. SDK info of the Flex Template.',
-    }),
-  })
-  .openapi({ description: 'Container Spec.', required: [] })
-  .openapi('ContainerSpec')
-
-const CounterMetadataSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Human-readable description of the counter semantics.' }),
-    kind: z
-      .enum([
-        'INVALID',
-        'SUM',
-        'MAX',
-        'MIN',
-        'MEAN',
-        'OR',
-        'AND',
-        'SET',
-        'DISTRIBUTION',
-        'LATEST_VALUE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Counter aggregation kind.' }),
-    otherUnits: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A string referring to the unit type.' }),
-    standardUnits: z
-      .enum([
-        'BYTES',
-        'BYTES_PER_SEC',
-        'MILLISECONDS',
-        'MICROSECONDS',
-        'NANOSECONDS',
-        'TIMESTAMP_MSEC',
-        'TIMESTAMP_USEC',
-        'TIMESTAMP_NSEC',
-      ])
-      .exactOptional()
-      .openapi({ description: 'System defined Units, see above enum.' }),
-  })
-  .openapi({
-    description: 'CounterMetadata includes all static non-name non-value counter attributes.',
-    required: [],
-  })
-  .openapi('CounterMetadata')
-
-const CounterStructuredNameSchema = z
-  .object({
-    componentStepName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the optimized step being executed by the workers.' }),
-    executionStepName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name of the stage. An execution step contains multiple component steps.',
-      }),
-    inputIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Index of an input collection that's being read from/written to as a side input. The index identifies a step's side inputs starting by 1 (e.g. the first side input has input_index 1, the third has input_index 3). Side inputs are identified by a pair of (original_step_name, input_index). This field helps uniquely identify them.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Counter name. Not necessarily globally-unique, but unique within the context of the other fields. Required.',
-      }),
-    origin: z
-      .enum(['SYSTEM', 'USER'])
-      .exactOptional()
-      .openapi({ description: 'One of the standard Origins defined above.' }),
-    originNamespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "A string containing a more specific namespace of the counter's origin.",
-      }),
-    originalRequestingStepName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The step name requesting an operation, such as GBK. I.e. the ParDo causing a read/write from shuffle to occur, or a read from side inputs.',
-      }),
-    originalStepName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "System generated name of the original step in the user's graph, before optimization.",
-      }),
-    portion: z
-      .enum(['ALL', 'KEY', 'VALUE'])
-      .exactOptional()
-      .openapi({ description: 'Portion of this counter, either key or value.' }),
-    workerId: z.string().exactOptional().openapi({ description: 'ID of a particular worker.' }),
-  })
-  .openapi({
-    description:
-      'Identifies a counter within a per-job namespace. Counters whose structured names are the same get merged into a single value for the job.',
-    required: [],
-  })
-  .openapi('CounterStructuredName')
-
-const CounterStructuredNameAndMetadataSchema = z
-  .object({
-    metadata: CounterMetadataSchema.exactOptional().openapi({
-      description: 'Metadata associated with a counter',
-    }),
-    name: CounterStructuredNameSchema.exactOptional().openapi({
-      description: 'Structured name of the counter.',
-    }),
-  })
-  .openapi({
-    description:
-      'A single message which encapsulates structured name and metadata for a given counter.',
-    required: [],
-  })
-  .openapi('CounterStructuredNameAndMetadata')
-
-const SplitInt64Schema = z
-  .object({
-    highBits: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The high order bits, including the sign: n >> 32.' }),
-    lowBits: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The low order bits: n & 0xffffffff.' }),
-  })
-  .openapi({
-    description:
-      'A representation of an int64, n, that is immune to precision loss when encoded in JSON.',
-    required: [],
-  })
-  .openapi('SplitInt64')
-
-const HistogramSchema = z
-  .object({
-    bucketCounts: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Counts of values in each bucket. For efficiency, prefix and trailing buckets with count = 0 are elided. Buckets can store the full range of values of an unsigned long, with ULLONG_MAX falling into the 59th bucket with range [1e19, 2e19).',
-      }),
-    firstBucketOffset: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Starting index of first stored bucket. The non-inclusive upper-bound of the ith bucket is given by: pow(10,(i-first_bucket_offset)/3) * (1,2,5)[(i-first_bucket_offset)%3]',
-      }),
-  })
-  .openapi({
-    description:
-      'Histogram of value counts for a distribution. Buckets have an inclusive lower bound and exclusive upper bound and use "1,2,5 bucketing": The first bucket range is from [0,1) and all subsequent bucket boundaries are powers of ten multiplied by 1, 2, or 5. Thus, bucket boundaries are 0, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, ... Negative values are not supported.',
-    required: [],
-  })
-  .openapi('Histogram')
-
-const DistributionUpdateSchema = z
-  .object({
-    count: SplitInt64Schema.exactOptional().openapi({
-      description: 'The count of the number of elements present in the distribution.',
-    }),
-    histogram: HistogramSchema.exactOptional().openapi({
-      description: '(Optional) Histogram of value counts for the distribution.',
-    }),
-    max: SplitInt64Schema.exactOptional().openapi({
-      description: 'The maximum value present in the distribution.',
-    }),
-    min: SplitInt64Schema.exactOptional().openapi({
-      description: 'The minimum value present in the distribution.',
-    }),
-    sum: SplitInt64Schema.exactOptional().openapi({
-      description:
-        "Use an int64 since we'd prefer the added precision. If overflow is a common problem we can detect it and use an additional int64 or a double.",
-    }),
-    sumOfSquares: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Use a double since the sum of squares is likely to overflow int64.',
-      }),
-  })
-  .openapi({ description: 'A metric value representing a distribution.', required: [] })
-  .openapi('DistributionUpdate')
-
-const FloatingPointListSchema = z
-  .object({
-    elements: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({ description: 'Elements of the list.' }),
-  })
-  .openapi({
-    description: 'A metric value representing a list of floating point numbers.',
-    required: [],
-  })
-  .openapi('FloatingPointList')
-
-const FloatingPointMeanSchema = z
-  .object({
-    count: SplitInt64Schema.exactOptional().openapi({
-      description: 'The number of values being aggregated.',
-    }),
-    sum: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The sum of all values being aggregated.' }),
-  })
-  .openapi({
-    description: 'A representation of a floating point mean metric contribution.',
-    required: [],
-  })
-  .openapi('FloatingPointMean')
-
-const IntegerGaugeSchema = z
-  .object({
-    timestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time at which this value was measured. Measured as msecs from epoch.',
-      }),
-    value: SplitInt64Schema.exactOptional().openapi({
-      description: 'The value of the variable represented by this gauge.',
-    }),
-  })
-  .openapi({
-    description: 'A metric value representing temporal values of a variable.',
-    required: [],
-  })
-  .openapi('IntegerGauge')
-
-const IntegerListSchema = z
-  .object({
-    elements: z
-      .array(SplitInt64Schema)
-      .exactOptional()
-      .openapi({ description: 'Elements of the list.' }),
-  })
-  .openapi({ description: 'A metric value representing a list of integers.', required: [] })
-  .openapi('IntegerList')
-
-const IntegerMeanSchema = z
-  .object({
-    count: SplitInt64Schema.exactOptional().openapi({
-      description: 'The number of values being aggregated.',
-    }),
-    sum: SplitInt64Schema.exactOptional().openapi({
-      description: 'The sum of all values being aggregated.',
-    }),
-  })
-  .openapi({
-    description: 'A representation of an integer mean metric contribution.',
-    required: [],
-  })
-  .openapi('IntegerMean')
-
-const NameAndKindSchema = z
-  .object({
-    kind: z
-      .enum([
-        'INVALID',
-        'SUM',
-        'MAX',
-        'MIN',
-        'MEAN',
-        'OR',
-        'AND',
-        'SET',
-        'DISTRIBUTION',
-        'LATEST_VALUE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Counter aggregation kind.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the counter.' }),
-  })
-  .openapi({ description: 'Basic metadata about a counter.', required: [] })
-  .openapi('NameAndKind')
-
-const StringListSchema = z
-  .object({
-    elements: z.array(z.string()).exactOptional().openapi({ description: 'Elements of the list.' }),
-  })
-  .openapi({ description: 'A metric value representing a list of strings.', required: [] })
-  .openapi('StringList')
-
-const CounterUpdateSchema = z
-  .object({
-    boolean: z.boolean().exactOptional().openapi({ description: 'Boolean value for And, Or.' }),
-    cumulative: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if this counter is reported as the total cumulative aggregate value accumulated since the worker started working on this WorkItem. By default this is false, indicating that this counter is reported as a delta.',
-      }),
-    distribution: DistributionUpdateSchema.exactOptional().openapi({
-      description: 'Distribution data',
-    }),
-    floatingPoint: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Floating point value for Sum, Max, Min.' }),
-    floatingPointList: FloatingPointListSchema.exactOptional().openapi({
-      description: 'List of floating point numbers, for Set.',
-    }),
-    floatingPointMean: FloatingPointMeanSchema.exactOptional().openapi({
-      description: 'Floating point mean aggregation value for Mean.',
-    }),
-    integer: SplitInt64Schema.exactOptional().openapi({
-      description: 'Integer value for Sum, Max, Min.',
-    }),
-    integerGauge: IntegerGaugeSchema.exactOptional().openapi({ description: 'Gauge data' }),
-    integerList: IntegerListSchema.exactOptional().openapi({
-      description: 'List of integers, for Set.',
-    }),
-    integerMean: IntegerMeanSchema.exactOptional().openapi({
-      description: 'Integer mean aggregation value for Mean.',
-    }),
-    internal: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description: 'Value for internally-defined counters used by the Dataflow service.',
-      }),
-    nameAndKind: NameAndKindSchema.exactOptional().openapi({
-      description: 'Counter name and aggregation type.',
-    }),
-    shortId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The service-generated short identifier for this counter. The short_id -> (name, metadata) mapping is constant for the lifetime of a job.',
-      }),
-    stringList: StringListSchema.exactOptional().openapi({
-      description: 'List of strings, for Set.',
-    }),
-    structuredNameAndMetadata: CounterStructuredNameAndMetadataSchema.exactOptional().openapi({
-      description: 'Counter structured name and metadata.',
-    }),
-  })
-  .openapi({ description: 'An update to a Counter sent from a worker.', required: [] })
-  .openapi('CounterUpdate')
-
-const RuntimeEnvironmentSchema = z
-  .object({
-    additionalExperiments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Additional experiment flags for the job, specified with the `--experiments` option.',
-      }),
-    additionalUserLabels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Additional user labels to be specified for the job. Keys and values should follow the restrictions specified in the [labeling restrictions](https://cloud.google.com/compute/docs/labeling-resources#restrictions) page. An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1kg", "count": "3" }.',
-      }),
-    bypassTempDirValidation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Whether to bypass the safety checks for the job's temporary directory. Use with caution.",
-      }),
-    enableStreamingEngine: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Optional. Whether to enable Streaming Engine for the job.' }),
-    ipConfiguration: z
-      .enum(['WORKER_IP_UNSPECIFIED', 'WORKER_IP_PUBLIC', 'WORKER_IP_PRIVATE'])
-      .exactOptional()
-      .openapi({ description: 'Optional. Configuration for VM IPs.' }),
-    kmsKeyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Name for the Cloud KMS key for the job. Key format is: projects//locations//keyRings//cryptoKeys/',
-      }),
-    machineType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The machine type to use for the job. Defaults to the value from the template if not specified.',
-      }),
-    maxWorkers: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The maximum number of Google Compute Engine instances to be made available to your pipeline during execution, from 1 to 1000. The default value is 1.',
-      }),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Network to which VMs will be assigned. If empty or unspecified, the service will use the network "default".',
-      }),
-    numWorkers: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The initial number of Google Compute Engine instances for the job. The default value is 11.',
-      }),
-    serviceAccountEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The email address of the service account to run the job as.',
-      }),
-    subnetwork: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Subnetwork to which VMs will be assigned, if desired. You can specify a subnetwork using either a complete URL or an abbreviated path. Expected to be of the form "https://www.googleapis.com/compute/v1/projects/HOST_PROJECT_ID/regions/REGION/subnetworks/SUBNETWORK" or "regions/REGION/subnetworks/SUBNETWORK". If the subnetwork is located in a Shared VPC network, you must use the complete URL.',
-      }),
-    tempLocation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The Cloud Storage path to use for temporary files. Must be a valid Cloud Storage URL, beginning with `gs://`.',
-      }),
-    workerRegion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The Compute Engine region (https://cloud.google.com/compute/docs/regions-zones/regions-zones) in which worker processing should occur, e.g. "us-west1". Mutually exclusive with worker_zone. If neither worker_region nor worker_zone is specified, default to the control plane\'s region.',
-      }),
-    workerZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The Compute Engine zone (https://cloud.google.com/compute/docs/regions-zones/regions-zones) in which worker processing should occur, e.g. "us-west1-a". Mutually exclusive with worker_region. If neither worker_region nor worker_zone is specified, a zone in the control plane\'s region is chosen based on available capacity. If both `worker_zone` and `zone` are set, `worker_zone` takes precedence.',
-      }),
-    zone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The Compute Engine [availability zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) for launching worker instances to run your pipeline. In the future, worker_zone will take precedence.',
-      }),
-  })
-  .openapi({ description: 'The environment values to set at runtime.', required: [] })
-  .openapi('RuntimeEnvironment')
-
-const CreateJobFromTemplateRequestSchema = z
-  .object({
-    environment: RuntimeEnvironmentSchema.exactOptional().openapi({
-      description: 'The runtime environment for the job.',
-    }),
-    gcsPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A Cloud Storage path to the template from which to create the job. Must be a valid Cloud Storage URL, beginning with `gs://`.',
-      }),
-    jobName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The job name to use for the created job.' }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) to which to direct the request.',
-      }),
-    parameters: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The runtime parameters to pass to the job.' }),
-  })
-  .openapi({
-    description: 'A request to create a Cloud Dataflow job from a template.',
-    required: [],
-  })
-  .openapi('CreateJobFromTemplateRequest')
-
-const DataDiskAssignmentSchema = z
-  .object({
-    dataDisks: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Mounted data disks. The order is important a data disk\'s 0-based index in this list defines which persistent directory the disk is mounted to, for example the list of { "myproject-1014-104817-4c2-harness-0-disk-0" }, { "myproject-1014-104817-4c2-harness-0-disk-1" }.',
-      }),
-    vmInstance: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'VM instance name the data disks mounted to, for example "myproject-1014-104817-4c2-harness-0".',
-      }),
-  })
-  .openapi({ description: 'Data disk assignment for a given VM instance.', required: [] })
-  .openapi('DataDiskAssignment')
-
-const DatastoreIODetailsSchema = z
-  .object({
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Namespace used in the connection.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ProjectId accessed in the connection.' }),
-  })
-  .openapi({ description: 'Metadata for a Datastore connector used by the job.', required: [] })
-  .openapi('DatastoreIODetails')
-
-const DebugOptionsSchema = z
-  .object({
-    enableHotKeyLogging: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "When true, enables the logging of the literal hot key to the user's Cloud Logging.",
-      }),
-  })
-  .openapi({
-    description: 'Describes any options that have an effect on the debugging of pipelines.',
-    required: [],
-  })
-  .openapi('DebugOptions')
-
-const DeleteSnapshotResponseSchema = z
-  .object({})
-  .openapi({ description: 'Response from deleting a snapshot.' })
-  .openapi('DeleteSnapshotResponse')
-
-const SourceMetadataSchema = z
-  .object({
-    estimatedSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An estimate of the total size (in bytes) of the data that would be read from this source. This estimate is in terms of external storage size, before any decompression or other processing done by the reader.',
-      }),
-    infinite: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies that the size of this source is known to be infinite (this is a streaming source).',
-      }),
-    producesSortedKeys: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether this source is known to produce key/value pairs with the (encoded) keys in lexicographically sorted order.',
-      }),
-  })
-  .openapi({
-    description:
-      'Metadata about a Source useful for automatically optimizing and tuning the pipeline, etc.',
-    required: [],
-  })
-  .openapi('SourceMetadata')
-
-const SourceSchema = z
-  .object({
-    baseSpecs: z
-      .array(z.record(z.string(), z.any().openapi({ description: 'Properties of the object.' })))
-      .exactOptional()
-      .openapi({
-        description:
-          'While splitting, sources may specify the produced bundles as differences against another source, in order to save backend-side memory and allow bigger jobs. For details, see SourceSplitRequest. To support this use case, the full set of parameters of the source is logically obtained by taking the latest explicitly specified value of each parameter in the order: base_specs (later items win), spec (overrides anything in base_specs).',
-      }),
-    codec: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'The codec to use to decode data read from the source.' }),
-    doesNotNeedSplitting: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Setting this value to true hints to the framework that the source doesn't need splitting, and using SourceSplitRequest on it would yield SOURCE_SPLIT_OUTCOME_USE_CURRENT. E.g. a file splitter may set this to true when splitting a single file into a set of byte ranges of appropriate size, and set this to false when splitting a filepattern into individual files. However, for efficiency, a file splitter may decide to produce file subranges directly from the filepattern to avoid a splitting round-trip. See SourceSplitRequest for an overview of the splitting process. This field is meaningful only in the Source objects populated by the user (e.g. when filling in a DerivedSource). Source objects supplied by the framework to the user don't have this field populated.",
-      }),
-    metadata: SourceMetadataSchema.exactOptional().openapi({
-      description:
-        "Optionally, metadata for this source can be supplied right away, avoiding a SourceGetMetadataOperation roundtrip (see SourceOperationRequest). This field is meaningful only in the Source objects populated by the user (e.g. when filling in a DerivedSource). Source objects supplied by the framework to the user don't have this field populated.",
-    }),
-    spec: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'The source to read from, plus its parameters.' }),
-  })
-  .openapi({ description: 'A source that records can be read and decoded from.', required: [] })
-  .openapi('Source')
-
-const DerivedSourceSchema = z
-  .object({
-    derivationMode: z
-      .enum([
-        'SOURCE_DERIVATION_MODE_UNKNOWN',
-        'SOURCE_DERIVATION_MODE_INDEPENDENT',
-        'SOURCE_DERIVATION_MODE_CHILD_OF_CURRENT',
-        'SOURCE_DERIVATION_MODE_SIBLING_OF_CURRENT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'What source to base the produced source on (if any).' }),
-    source: SourceSchema.exactOptional().openapi({ description: 'Specification of the source.' }),
-  })
-  .openapi({
-    description:
-      'Specification of one of the bundles produced as a result of splitting a Source (e.g. when executing a SourceSplitRequest, or when splitting an active task using WorkItemStatus.dynamic_source_split), relative to the source being split.',
-    required: [],
-  })
-  .openapi('DerivedSource')
 
 const DiskSchema = z
   .object({
@@ -1547,87 +422,6 @@ const DiskSchema = z
   })
   .openapi({ description: 'Describes the data disk used by a workflow job.', required: [] })
   .openapi('Disk')
-
-const DisplayDataSchema = z
-  .object({
-    boolValue: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Contains value if the data is of a boolean type.' }),
-    durationValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Contains value if the data is of duration type.' }),
-    floatValue: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Contains value if the data is of float type.' }),
-    int64Value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Contains value if the data is of int64 type.' }),
-    javaClassValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Contains value if the data is of java class type.' }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The key identifying the display data. This is intended to be used as a label for the display data when viewed in a dax monitoring system.',
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'An optional label to display in a dax UI for the element.' }),
-    namespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The namespace for the key. This is usually a class name or programming language namespace (i.e. python module) which defines the display data. This allows a dax monitoring system to specially handle the data and perform custom rendering.',
-      }),
-    shortStrValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A possible additional shorter value to display. For example a java_class_name_value of com.mypackage.MyDoFn will be stored with MyDoFn as the short_str_value and com.mypackage.MyDoFn as the java_class_name value. short_str_value can be displayed and java_class_name_value will be displayed as a tooltip.',
-      }),
-    strValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Contains value if the data is of string type.' }),
-    timestampValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Contains value if the data is of timestamp type.' }),
-    url: z.string().exactOptional().openapi({ description: 'An optional full URL.' }),
-  })
-  .openapi({
-    description: 'Data provided with a pipeline or transform to provide descriptive info.',
-    required: [],
-  })
-  .openapi('DisplayData')
-
-const DynamicSourceSplitSchema = z
-  .object({
-    primary: DerivedSourceSchema.exactOptional().openapi({
-      description:
-        'Primary part (continued to be processed by worker). Specified relative to the previously-current source. Becomes current.',
-    }),
-    residual: DerivedSourceSchema.exactOptional().openapi({
-      description:
-        'Residual part (returned to the pool of work). Specified relative to the previously-current source.',
-    }),
-  })
-  .openapi({
-    description:
-      "When a task splits using WorkItemStatus.dynamic_source_split, this message describes the two parts of the split relative to the description of the current task's input.",
-    required: [],
-  })
-  .openapi('DynamicSourceSplit')
 
 const PackageSchema = z
   .object({
@@ -2090,393 +884,6 @@ const EnvironmentSchema = z
   .openapi({ description: 'Describes the environment in which a Dataflow Job runs.', required: [] })
   .openapi('Environment')
 
-const ExecutionStageStateSchema = z
-  .object({
-    currentStateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time at which the stage transitioned to this state.' }),
-    executionStageName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the execution stage.' }),
-    executionStageState: z
-      .enum([
-        'JOB_STATE_UNKNOWN',
-        'JOB_STATE_STOPPED',
-        'JOB_STATE_RUNNING',
-        'JOB_STATE_DONE',
-        'JOB_STATE_FAILED',
-        'JOB_STATE_CANCELLED',
-        'JOB_STATE_UPDATED',
-        'JOB_STATE_DRAINING',
-        'JOB_STATE_DRAINED',
-        'JOB_STATE_PENDING',
-        'JOB_STATE_CANCELLING',
-        'JOB_STATE_QUEUED',
-        'JOB_STATE_RESOURCE_CLEANING_UP',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Executions stage states allow the same set of values as JobState.',
-      }),
-  })
-  .openapi({
-    description: 'A message describing the state of a particular execution stage.',
-    required: [],
-  })
-  .openapi('ExecutionStageState')
-
-const StageSourceSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Dataflow service generated name for this source.' }),
-    originalTransformOrCollection: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User name for the original user transform or collection with which this source is most closely associated.',
-      }),
-    sizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Size of the source, if measurable.' }),
-    userName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Human-readable name for this source; may be user or system generated.',
-      }),
-  })
-  .openapi({
-    description: 'Description of an input or output of an execution stage.',
-    required: [],
-  })
-  .openapi('StageSource')
-
-const ExecutionStageSummarySchema = z
-  .object({
-    componentSource: z
-      .array(ComponentSourceSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Collections produced and consumed by component transforms of this stage.',
-      }),
-    componentTransform: z
-      .array(ComponentTransformSchema)
-      .exactOptional()
-      .openapi({ description: 'Transforms that comprise this execution stage.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Dataflow service generated id for this stage.' }),
-    inputSource: z
-      .array(StageSourceSchema)
-      .exactOptional()
-      .openapi({ description: 'Input sources for this stage.' }),
-    kind: z
-      .enum([
-        'UNKNOWN_KIND',
-        'PAR_DO_KIND',
-        'GROUP_BY_KEY_KIND',
-        'FLATTEN_KIND',
-        'READ_KIND',
-        'WRITE_KIND',
-        'CONSTANT_KIND',
-        'SINGLETON_KIND',
-        'SHUFFLE_KIND',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Type of transform this stage is executing.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Dataflow service generated name for this stage.' }),
-    outputSource: z
-      .array(StageSourceSchema)
-      .exactOptional()
-      .openapi({ description: 'Output sources for this stage.' }),
-    prerequisiteStage: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Other stages that must complete before this stage can run.' }),
-  })
-  .openapi({
-    description:
-      'Description of the composing transforms, names/ids, and input/outputs of a stage of execution. Some composing transforms and sources may have been generated by the Dataflow service during execution planning.',
-    required: [],
-  })
-  .openapi('ExecutionStageSummary')
-
-const FailedLocationSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) that failed to respond.',
-      }),
-  })
-  .openapi({
-    description:
-      'Indicates which [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) failed to respond to a request for data.',
-    required: [],
-  })
-  .openapi('FailedLocation')
-
-const FileIODetailsSchema = z
-  .object({
-    filePattern: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'File Pattern used to access files by the connector.' }),
-  })
-  .openapi({ description: 'Metadata for a File connector used by the job.', required: [] })
-  .openapi('FileIODetails')
-
-const InstructionInputSchema = z
-  .object({
-    outputNum: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The output index (origin zero) within the producer.' }),
-    producerInstructionIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The index (origin zero) of the parallel instruction that produces the output to be consumed by this input. This index is relative to the list of instructions in this input's instruction's containing MapTask.",
-      }),
-  })
-  .openapi({
-    description:
-      'An input of an instruction, as a reference to an output of a producer instruction.',
-    required: [],
-  })
-  .openapi('InstructionInput')
-
-const FlattenInstructionSchema = z
-  .object({
-    inputs: z
-      .array(InstructionInputSchema)
-      .exactOptional()
-      .openapi({ description: 'Describes the inputs to the flatten instruction.' }),
-  })
-  .openapi({
-    description: 'An instruction that copies its inputs (zero or more) to its (single) output.',
-    required: [],
-  })
-  .openapi('FlattenInstruction')
-
-const GetDebugConfigRequestSchema = z
-  .object({
-    componentId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The internal component id for which debug configuration is requested.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) that contains the job specified by job_id.',
-      }),
-    workerId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The worker id, i.e., VM hostname.' }),
-  })
-  .openapi({
-    description: 'Request to get updated debug configuration for component.',
-    required: [],
-  })
-  .openapi('GetDebugConfigRequest')
-
-const GetDebugConfigResponseSchema = z
-  .object({
-    config: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The encoded debug configuration for the requested component.' }),
-  })
-  .openapi({ description: 'Response to a get debug configuration request.', required: [] })
-  .openapi('GetDebugConfigResponse')
-
-const RuntimeMetadataSchema = z
-  .object({
-    parameters: z
-      .array(ParameterMetadataSchema)
-      .exactOptional()
-      .openapi({ description: 'The parameters for the template.' }),
-    sdkInfo: SDKInfoSchema.exactOptional().openapi({ description: 'SDK Info for the template.' }),
-  })
-  .openapi({ description: 'RuntimeMetadata describing a runtime environment.', required: [] })
-  .openapi('RuntimeMetadata')
-
-const StatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('Status')
-
-const GetTemplateResponseSchema = z
-  .object({
-    metadata: TemplateMetadataSchema.exactOptional().openapi({
-      description: 'The template metadata describing the template name, available parameters, etc.',
-    }),
-    runtimeMetadata: RuntimeMetadataSchema.exactOptional().openapi({
-      description: 'Describes the runtime metadata with SDKInfo and available parameters.',
-    }),
-    status: StatusSchema.exactOptional().openapi({
-      description:
-        'The status of the get template request. Any problems with the request will be indicated in the error_details.',
-    }),
-    templateType: z
-      .enum(['UNKNOWN', 'LEGACY', 'FLEX'])
-      .exactOptional()
-      .openapi({ description: 'Template Type.' }),
-  })
-  .openapi({ description: 'The response to a GetTemplate request.', required: [] })
-  .openapi('GetTemplateResponse')
-
-const HotKeyInfoSchema = z
-  .object({
-    hotKeyAge: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The age of the hot key measured from when it was first detected.' }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A detected hot key that is causing limited parallelism. This field will be populated only if the following flag is set to true: "--enable_hot_key_logging".',
-      }),
-    keyTruncated: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, then the above key is truncated and cannot be deserialized. This occurs if the key above is populated and the key size is >5MB.',
-      }),
-  })
-  .openapi({ description: 'Information about a hot key.', required: [] })
-  .openapi('HotKeyInfo')
-
-const HotKeyDebuggingInfoSchema = z
-  .object({
-    detectedHotKeys: z
-      .record(z.string(), HotKeyInfoSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Debugging information for each detected hot key. Keyed by a hash of the key.',
-      }),
-  })
-  .openapi({ description: 'Information useful for debugging a hot key detection.', required: [] })
-  .openapi('HotKeyDebuggingInfo')
-
-const HotKeyDetectionSchema = z
-  .object({
-    hotKeyAge: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The age of the hot key measured from when it was first detected.' }),
-    systemName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'System-defined name of the step containing this hot key. Unique across the workflow.',
-      }),
-    userStepName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User-provided name of the step that contains this hot key.' }),
-  })
-  .openapi({
-    description: 'Proto describing a hot key detected on a given WorkItem.',
-    required: [],
-  })
-  .openapi('HotKeyDetection')
-
-const InstructionOutputSchema = z
-  .object({
-    codec: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({ description: 'The codec to use to encode data being written via this output.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The user-provided name of this output.' }),
-    onlyCountKeyBytes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'For system-generated byte and mean byte metrics, certain instructions should only report the key size.',
-      }),
-    onlyCountValueBytes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'For system-generated byte and mean byte metrics, certain instructions should only report the value size.',
-      }),
-    originalName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'System-defined name for this output in the original workflow graph. Outputs that do not contribute to an original instruction do not set this.',
-      }),
-    systemName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'System-defined name of this output. Unique across the workflow.' }),
-  })
-  .openapi({ description: 'An output of an instruction.', required: [] })
-  .openapi('InstructionOutput')
-
 const JobExecutionStageInfoSchema = z
   .object({
     stepName: z
@@ -2507,6 +914,70 @@ const JobExecutionInfoSchema = z
     required: [],
   })
   .openapi('JobExecutionInfo')
+
+const BigTableIODetailsSchema = z
+  .object({
+    instanceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'InstanceId accessed in the connection.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ProjectId accessed in the connection.' }),
+    tableId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'TableId accessed in the connection.' }),
+  })
+  .openapi({
+    description: 'Metadata for a Cloud Bigtable connector used by the job.',
+    required: [],
+  })
+  .openapi('BigTableIODetails')
+
+const BigQueryIODetailsSchema = z
+  .object({
+    dataset: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Dataset accessed in the connection.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Project accessed in the connection.' }),
+    query: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Query used to access data in the connection.' }),
+    table: z.string().exactOptional().openapi({ description: 'Table accessed in the connection.' }),
+  })
+  .openapi({ description: 'Metadata for a BigQuery connector used by the job.', required: [] })
+  .openapi('BigQueryIODetails')
+
+const DatastoreIODetailsSchema = z
+  .object({
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Namespace used in the connection.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ProjectId accessed in the connection.' }),
+  })
+  .openapi({ description: 'Metadata for a Datastore connector used by the job.', required: [] })
+  .openapi('DatastoreIODetails')
+
+const FileIODetailsSchema = z
+  .object({
+    filePattern: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'File Pattern used to access files by the connector.' }),
+  })
+  .openapi({ description: 'Metadata for a File connector used by the job.', required: [] })
+  .openapi('FileIODetails')
 
 const PubSubIODetailsSchema = z
   .object({
@@ -2598,6 +1069,205 @@ const JobMetadataSchema = z
   })
   .openapi('JobMetadata')
 
+const DisplayDataSchema = z
+  .object({
+    boolValue: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Contains value if the data is of a boolean type.' }),
+    durationValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Contains value if the data is of duration type.' }),
+    floatValue: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Contains value if the data is of float type.' }),
+    int64Value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Contains value if the data is of int64 type.' }),
+    javaClassValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Contains value if the data is of java class type.' }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The key identifying the display data. This is intended to be used as a label for the display data when viewed in a dax monitoring system.',
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An optional label to display in a dax UI for the element.' }),
+    namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The namespace for the key. This is usually a class name or programming language namespace (i.e. python module) which defines the display data. This allows a dax monitoring system to specially handle the data and perform custom rendering.',
+      }),
+    shortStrValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A possible additional shorter value to display. For example a java_class_name_value of com.mypackage.MyDoFn will be stored with MyDoFn as the short_str_value and com.mypackage.MyDoFn as the java_class_name value. short_str_value can be displayed and java_class_name_value will be displayed as a tooltip.',
+      }),
+    strValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Contains value if the data is of string type.' }),
+    timestampValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Contains value if the data is of timestamp type.' }),
+    url: z.string().exactOptional().openapi({ description: 'An optional full URL.' }),
+  })
+  .openapi({
+    description: 'Data provided with a pipeline or transform to provide descriptive info.',
+    required: [],
+  })
+  .openapi('DisplayData')
+
+const ComponentSourceSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Dataflow service generated name for this source.' }),
+    originalTransformOrCollection: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User name for the original user transform or collection with which this source is most closely associated.',
+      }),
+    userName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Human-readable name for this transform; may be user or system generated.',
+      }),
+  })
+  .openapi({
+    description: 'Description of an interstitial value between transforms in an execution stage.',
+    required: [],
+  })
+  .openapi('ComponentSource')
+
+const ComponentTransformSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Dataflow service generated name for this source.' }),
+    originalTransform: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User name for the original user transform with which this transform is most closely associated.',
+      }),
+    userName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Human-readable name for this transform; may be user or system generated.',
+      }),
+  })
+  .openapi({
+    description: 'Description of a transform executed as part of an execution stage.',
+    required: [],
+  })
+  .openapi('ComponentTransform')
+
+const StageSourceSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Dataflow service generated name for this source.' }),
+    originalTransformOrCollection: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User name for the original user transform or collection with which this source is most closely associated.',
+      }),
+    sizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Size of the source, if measurable.' }),
+    userName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Human-readable name for this source; may be user or system generated.',
+      }),
+  })
+  .openapi({
+    description: 'Description of an input or output of an execution stage.',
+    required: [],
+  })
+  .openapi('StageSource')
+
+const ExecutionStageSummarySchema = z
+  .object({
+    componentSource: z
+      .array(ComponentSourceSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Collections produced and consumed by component transforms of this stage.',
+      }),
+    componentTransform: z
+      .array(ComponentTransformSchema)
+      .exactOptional()
+      .openapi({ description: 'Transforms that comprise this execution stage.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Dataflow service generated id for this stage.' }),
+    inputSource: z
+      .array(StageSourceSchema)
+      .exactOptional()
+      .openapi({ description: 'Input sources for this stage.' }),
+    kind: z
+      .enum([
+        'UNKNOWN_KIND',
+        'PAR_DO_KIND',
+        'GROUP_BY_KEY_KIND',
+        'FLATTEN_KIND',
+        'READ_KIND',
+        'WRITE_KIND',
+        'CONSTANT_KIND',
+        'SINGLETON_KIND',
+        'SHUFFLE_KIND',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Type of transform this stage is executing.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Dataflow service generated name for this stage.' }),
+    outputSource: z
+      .array(StageSourceSchema)
+      .exactOptional()
+      .openapi({ description: 'Output sources for this stage.' }),
+    prerequisiteStage: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Other stages that must complete before this stage can run.' }),
+  })
+  .openapi({
+    description:
+      'Description of the composing transforms, names/ids, and input/outputs of a stage of execution. Some composing transforms and sources may have been generated by the Dataflow service during execution planning.',
+    required: [],
+  })
+  .openapi('ExecutionStageSummary')
+
 const TransformSummarySchema = z
   .object({
     displayData: z
@@ -2670,6 +1340,43 @@ const PipelineDescriptionSchema = z
     required: [],
   })
   .openapi('PipelineDescription')
+
+const ExecutionStageStateSchema = z
+  .object({
+    currentStateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time at which the stage transitioned to this state.' }),
+    executionStageName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the execution stage.' }),
+    executionStageState: z
+      .enum([
+        'JOB_STATE_UNKNOWN',
+        'JOB_STATE_STOPPED',
+        'JOB_STATE_RUNNING',
+        'JOB_STATE_DONE',
+        'JOB_STATE_FAILED',
+        'JOB_STATE_CANCELLED',
+        'JOB_STATE_UPDATED',
+        'JOB_STATE_DRAINING',
+        'JOB_STATE_DRAINED',
+        'JOB_STATE_PENDING',
+        'JOB_STATE_CANCELLING',
+        'JOB_STATE_QUEUED',
+        'JOB_STATE_RESOURCE_CLEANING_UP',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Executions stage states allow the same set of values as JobState.',
+      }),
+  })
+  .openapi({
+    description: 'A message describing the state of a particular execution stage.',
+    required: [],
+  })
+  .openapi('ExecutionStageState')
 
 const StepSchema = z
   .object({
@@ -2884,523 +1591,82 @@ const JobSchema = z
   })
   .openapi('Job')
 
-const MetricStructuredNameSchema = z
-  .object({
-    context: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Zero or more labeled fields which identify the part of the job this metric is associated with, such as the name of a step or collection. For example, built-in counters associated with steps will have context['step'] = . Counters associated with PCollections in the SDK will have context['pcollection'] = .",
-      }),
-    name: z.string().exactOptional().openapi({ description: 'Worker-defined metric name.' }),
-    origin: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Origin (namespace) of metric name. May be blank for user-define metrics; will be "dataflow" for metrics defined by the Dataflow service or SDK.',
-      }),
-  })
-  .openapi({
-    description: 'Identifies a metric, by describing the source which generated the metric.',
-    required: [],
-  })
-  .openapi('MetricStructuredName')
+type LaunchFlexTemplateResponseType = { job?: z.infer<typeof JobSchema> }
 
-const MetricUpdateSchema = z
-  .object({
-    cumulative: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if this metric is reported as the total cumulative aggregate value accumulated since the worker started working on this WorkItem. By default this is false, indicating that this metric is reported as a delta that is not associated with any WorkItem.',
-      }),
-    distribution: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description: 'A struct value describing properties of a distribution of numeric values.',
-      }),
-    gauge: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'A struct value describing properties of a Gauge. Metrics of gauge type show the value of a metric across time, and is aggregated based on the newest value.',
-      }),
-    internal: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description: 'Worker-computed aggregate value for internal use by the Dataflow service.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Metric aggregation kind. The possible metric aggregation kinds are "Sum", "Max", "Min", "Mean", "Set", "And", "Or", and "Distribution". The specified aggregation kind is case-insensitive. If omitted, this is not an aggregated value but instead a single metric sample value.',
-      }),
-    meanCount: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker-computed aggregate value for the "Mean" aggregation kind. This holds the count of the aggregated values and is used in combination with mean_sum above to obtain the actual mean aggregate value. The only possible value type is Long.',
-      }),
-    meanSum: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker-computed aggregate value for the "Mean" aggregation kind. This holds the sum of the aggregated values and is used in combination with mean_count below to obtain the actual mean aggregate value. The only possible value types are Long and Double.',
-      }),
-    name: MetricStructuredNameSchema.exactOptional().openapi({
-      description: 'Name of the metric.',
-    }),
-    scalar: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker-computed aggregate value for aggregation kinds "Sum", "Max", "Min", "And", and "Or". The possible value types are Long, Double, and Boolean.',
-      }),
-    set: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker-computed aggregate value for the "Set" aggregation kind. The only possible value type is a list of Values whose type can be Long, Double, or String, according to the metric\'s type. All Values in the list must be of the same type.',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp associated with the metric value. Optional when workers are reporting work progress; it will be filled in responses from the metrics API.',
-      }),
-  })
-  .openapi({ description: 'Describes the state of a metric.', required: [] })
-  .openapi('MetricUpdate')
+type LaunchTemplateResponseType = { job?: z.infer<typeof JobSchema> }
 
-const PointSchema = z
+const InstructionInputSchema = z
   .object({
-    time: z.string().exactOptional().openapi({ description: 'The timestamp of the point.' }),
-    value: z.float64().exactOptional().openapi({ description: 'The value of the point.' }),
-  })
-  .openapi({ description: 'A point in the timeseries.', required: [] })
-  .openapi('Point')
-
-const ProgressTimeseriesSchema = z
-  .object({
-    currentProgress: z
-      .float64()
+    outputNum: z
+      .int32()
       .exactOptional()
-      .openapi({ description: 'The current progress of the component, in the range [0,1].' }),
-    dataPoints: z
-      .array(PointSchema)
-      .exactOptional()
-      .openapi({
-        description: 'History of progress for the component. Points are sorted by time.',
-      }),
-  })
-  .openapi({
-    description: 'Information about the progress of some component of job execution.',
-    required: [],
-  })
-  .openapi('ProgressTimeseries')
-
-const StragglerDebuggingInfoSchema = z
-  .object({
-    hotKey: HotKeyDebuggingInfoSchema.exactOptional().openapi({
-      description: 'Hot key debugging details.',
-    }),
-  })
-  .openapi({
-    description:
-      'Information useful for debugging a straggler. Each type will provide specialized debugging information relevant for a particular cause. The StragglerDebuggingInfo will be 1:1 mapping to the StragglerCause enum.',
-    required: [],
-  })
-  .openapi('StragglerDebuggingInfo')
-
-const StragglerInfoSchema = z
-  .object({
-    causes: z
-      .record(z.string(), StragglerDebuggingInfoSchema)
+      .openapi({ description: 'The output index (origin zero) within the producer.' }),
+    producerInstructionIndex: z
+      .int32()
       .exactOptional()
       .openapi({
         description:
-          'The straggler causes, keyed by the string representation of the StragglerCause enum and contains specialized debugging information for each straggler cause.',
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the work item attempt became a straggler.' }),
-  })
-  .openapi({
-    description: 'Information useful for straggler identification and debugging.',
-    required: [],
-  })
-  .openapi('StragglerInfo')
-
-const StreamingStragglerInfoSchema = z
-  .object({
-    dataWatermarkLag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The event-time watermark lag at the time of the straggler detection.',
-      }),
-    endTime: z.string().exactOptional().openapi({ description: 'End time of this straggler.' }),
-    startTime: z.string().exactOptional().openapi({ description: 'Start time of this straggler.' }),
-    systemWatermarkLag: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The system watermark lag at the time of the straggler detection.' }),
-    workerName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the worker where the straggler was detected.' }),
-  })
-  .openapi({
-    description: 'Information useful for streaming straggler identification and debugging.',
-    required: [],
-  })
-  .openapi('StreamingStragglerInfo')
-
-const StragglerSchema = z
-  .object({
-    batchStraggler: StragglerInfoSchema.exactOptional().openapi({
-      description: 'Batch straggler identification and debugging information.',
-    }),
-    streamingStraggler: StreamingStragglerInfoSchema.exactOptional().openapi({
-      description: 'Streaming straggler identification and debugging information.',
-    }),
-  })
-  .openapi({ description: 'Information for a straggler.', required: [] })
-  .openapi('Straggler')
-
-const StragglerSummarySchema = z
-  .object({
-    recentStragglers: z
-      .array(StragglerSchema)
-      .exactOptional()
-      .openapi({ description: 'The most recent stragglers.' }),
-    stragglerCauseCount: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Aggregated counts of straggler causes, keyed by the string representation of the StragglerCause enum.',
-      }),
-    totalStragglerCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The total count of stragglers.' }),
-  })
-  .openapi({ description: 'Summarized straggler identification details.', required: [] })
-  .openapi('StragglerSummary')
-
-const StageSummarySchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'End time of this stage. If the work item is completed, this is the actual end time of the stage. Otherwise, it is the predicted end time.',
-      }),
-    metrics: z
-      .array(MetricUpdateSchema)
-      .exactOptional()
-      .openapi({ description: 'Metrics for this stage.' }),
-    progress: ProgressTimeseriesSchema.exactOptional().openapi({
-      description: 'Progress for this stage. Only applicable to Batch jobs.',
-    }),
-    stageId: z.string().exactOptional().openapi({ description: 'ID of this stage' }),
-    startTime: z.string().exactOptional().openapi({ description: 'Start time of this stage.' }),
-    state: z
-      .enum([
-        'EXECUTION_STATE_UNKNOWN',
-        'EXECUTION_STATE_NOT_STARTED',
-        'EXECUTION_STATE_RUNNING',
-        'EXECUTION_STATE_SUCCEEDED',
-        'EXECUTION_STATE_FAILED',
-        'EXECUTION_STATE_CANCELLED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'State of this stage.' }),
-    stragglerSummary: StragglerSummarySchema.exactOptional().openapi({
-      description: 'Straggler summary for this stage.',
-    }),
-  })
-  .openapi({
-    description: 'Information about a particular execution stage of a job.',
-    required: [],
-  })
-  .openapi('StageSummary')
-
-const JobExecutionDetailsSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If present, this response does not contain all requested tasks. To obtain the next page of results, repeat the request with page_token set to this value.',
-      }),
-    stages: z
-      .array(StageSummarySchema)
-      .exactOptional()
-      .openapi({ description: 'The stages of the job execution.' }),
-  })
-  .openapi({ description: 'Information about the execution of a job.', required: [] })
-  .openapi('JobExecutionDetails')
-
-const JobMessageSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-    messageImportance: z
-      .enum([
-        'JOB_MESSAGE_IMPORTANCE_UNKNOWN',
-        'JOB_MESSAGE_DEBUG',
-        'JOB_MESSAGE_DETAILED',
-        'JOB_MESSAGE_BASIC',
-        'JOB_MESSAGE_WARNING',
-        'JOB_MESSAGE_ERROR',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Importance level of the message.' }),
-    messageText: z.string().exactOptional().openapi({ description: 'The text of the message.' }),
-    time: z.string().exactOptional().openapi({ description: 'The timestamp of the message.' }),
-  })
-  .openapi({ description: 'A particular message pertaining to a Dataflow job.', required: [] })
-  .openapi('JobMessage')
-
-const JobMetricsSchema = z
-  .object({
-    metricTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Timestamp as of which metric values are current.' }),
-    metrics: z
-      .array(MetricUpdateSchema)
-      .exactOptional()
-      .openapi({ description: 'All metrics for this job.' }),
-  })
-  .openapi({
-    description:
-      'JobMetrics contains a collection of metrics describing the detailed progress of a Dataflow job. Metrics correspond to user-defined and system-defined metrics in the job. For more information, see [Dataflow job metrics] (https://cloud.google.com/dataflow/docs/guides/using-monitoring-intf). This resource captures only the most recent values of each metric; time-series data can be queried for them (under the same metric names) from Cloud Monitoring.',
-    required: [],
-  })
-  .openapi('JobMetrics')
-
-const KeyRangeDataDiskAssignmentSchema = z
-  .object({
-    dataDisk: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the data disk where data for this range is stored. This name is local to the Google Cloud Platform project and uniquely identifies the disk within that project, for example "myproject-1014-104817-4c2-harness-0-disk-1".',
-      }),
-    end: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The end (exclusive) of the key range.' }),
-    start: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The start (inclusive) of the key range.' }),
-  })
-  .openapi({
-    description:
-      'Data disk assignment information for a specific key-range of a sharded computation. Currently we only support UTF-8 character splits to simplify encoding into JSON.',
-    required: [],
-  })
-  .openapi('KeyRangeDataDiskAssignment')
-
-const LaunchFlexTemplateParameterSchema = z
-  .object({
-    containerSpec: ContainerSpecSchema.exactOptional().openapi({
-      description: 'Spec about the container image to launch.',
-    }),
-    containerSpecGcsPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Cloud Storage path to a file with json serialized ContainerSpec as content.',
-      }),
-    environment: FlexTemplateRuntimeEnvironmentSchema.exactOptional().openapi({
-      description: 'The runtime environment for the FlexTemplate job',
-    }),
-    jobName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The job name to use for the created job. For update job request, job name should be same as the existing running job.',
-      }),
-    launchOptions: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Launch options for this flex template job. This is a common set of options across languages and templates. This should not be used to pass job parameters.',
-      }),
-    parameters: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The parameters for FlexTemplate. Ex. {"num_workers":"5"}' }),
-    transformNameMappings: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Use this to pass transform_name_mappings for streaming update jobs. Ex:{"oldTransformName":"newTransformName",...}\'',
-      }),
-    update: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set this to true if you are sending a request to update a running streaming job. When set, the job name should be the same as the running job.',
-      }),
-  })
-  .openapi({ description: 'Launch FlexTemplate Parameter.', required: [] })
-  .openapi('LaunchFlexTemplateParameter')
-
-const LaunchFlexTemplateRequestSchema = z
-  .object({
-    launchParameter: LaunchFlexTemplateParameterSchema.exactOptional().openapi({
-      description: 'Required. Parameter to launch a job form Flex Template.',
-    }),
-    validateOnly: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, the request is validated but not actually executed. Defaults to false.',
-      }),
-  })
-  .openapi({
-    description: 'A request to launch a Cloud Dataflow job from a FlexTemplate.',
-    required: [],
-  })
-  .openapi('LaunchFlexTemplateRequest')
-
-const LaunchFlexTemplateResponseSchema = z
-  .object({
-    job: JobSchema.exactOptional().openapi({
-      description:
-        'The job that was launched, if the request was not a dry run and the job was successfully launched.',
-    }),
-  })
-  .openapi({
-    description: 'Response to the request to launch a job from Flex Template.',
-    required: [],
-  })
-  .openapi('LaunchFlexTemplateResponse')
-
-const LaunchTemplateParametersSchema = z
-  .object({
-    environment: RuntimeEnvironmentSchema.exactOptional().openapi({
-      description: 'The runtime environment for the job.',
-    }),
-    jobName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The job name to use for the created job. The name must match the regular expression `[a-z]([-a-z0-9]{0,1022}[a-z0-9])?`',
-      }),
-    parameters: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The runtime parameters to pass to the job.' }),
-    transformNameMapping: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Only applicable when updating a pipeline. Map of transform name prefixes of the job to be replaced to the corresponding name prefixes of the new job.',
-      }),
-    update: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, replace the existing pipeline with the name specified by jobName with this pipeline, preserving state.',
+          "The index (origin zero) of the parallel instruction that produces the output to be consumed by this input. This index is relative to the list of instructions in this input's instruction's containing MapTask.",
       }),
   })
   .openapi({
     description:
-      'Parameters to provide to the template being launched. Note that the [metadata in the pipeline code] (https://cloud.google.com/dataflow/docs/guides/templates/creating-templates#metadata) determines which runtime parameters are valid.',
+      'An input of an instruction, as a reference to an output of a producer instruction.',
     required: [],
   })
-  .openapi('LaunchTemplateParameters')
+  .openapi('InstructionInput')
 
-const LaunchTemplateResponseSchema = z
+const FlattenInstructionSchema = z
   .object({
-    job: JobSchema.exactOptional().openapi({
-      description:
-        'The job that was launched, if the request was not a dry run and the job was successfully launched.',
-    }),
+    inputs: z
+      .array(InstructionInputSchema)
+      .exactOptional()
+      .openapi({ description: 'Describes the inputs to the flatten instruction.' }),
   })
-  .openapi({ description: 'Response to the request to launch a template.', required: [] })
-  .openapi('LaunchTemplateResponse')
+  .openapi({
+    description: 'An instruction that copies its inputs (zero or more) to its (single) output.',
+    required: [],
+  })
+  .openapi('FlattenInstruction')
 
-const LeaseWorkItemRequestSchema = z
+const InstructionOutputSchema = z
   .object({
-    currentWorkerTime: z
+    codec: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({ description: 'The codec to use to encode data being written via this output.' }),
+    name: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The current timestamp at the worker.' }),
-    location: z
+      .openapi({ description: 'The user-provided name of this output.' }),
+    onlyCountKeyBytes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'For system-generated byte and mean byte metrics, certain instructions should only report the key size.',
+      }),
+    onlyCountValueBytes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'For system-generated byte and mean byte metrics, certain instructions should only report the value size.',
+      }),
+    originalName: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          "The [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) that contains the WorkItem's job.",
+          'System-defined name for this output in the original workflow graph. Outputs that do not contribute to an original instruction do not set this.',
       }),
-    requestedLeaseDuration: z
+    systemName: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The initial lease period.' }),
-    unifiedWorkerRequest: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Untranslated bag-of-bytes WorkRequest from UnifiedWorker.' }),
-    workItemTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Filter for WorkItem type.' }),
-    workerCapabilities: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Worker capabilities. WorkItems might be limited to workers with specific capabilities.',
-      }),
-    workerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies the worker leasing work -- typically the ID of the virtual machine running the worker.',
-      }),
+      .openapi({ description: 'System-defined name of this output. Unique across the workflow.' }),
   })
-  .openapi({ description: 'Request to lease WorkItems.', required: [] })
-  .openapi('LeaseWorkItemRequest')
+  .openapi({ description: 'An output of an instruction.', required: [] })
+  .openapi('InstructionOutput')
 
 const MultiOutputInfoSchema = z
   .object({
@@ -3414,6 +1680,69 @@ const MultiOutputInfoSchema = z
   })
   .openapi({ description: 'Information about an output of a multi-output DoFn.', required: [] })
   .openapi('MultiOutputInfo')
+
+const SourceMetadataSchema = z
+  .object({
+    estimatedSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An estimate of the total size (in bytes) of the data that would be read from this source. This estimate is in terms of external storage size, before any decompression or other processing done by the reader.',
+      }),
+    infinite: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies that the size of this source is known to be infinite (this is a streaming source).',
+      }),
+    producesSortedKeys: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this source is known to produce key/value pairs with the (encoded) keys in lexicographically sorted order.',
+      }),
+  })
+  .openapi({
+    description:
+      'Metadata about a Source useful for automatically optimizing and tuning the pipeline, etc.',
+    required: [],
+  })
+  .openapi('SourceMetadata')
+
+const SourceSchema = z
+  .object({
+    baseSpecs: z
+      .array(z.record(z.string(), z.any().openapi({ description: 'Properties of the object.' })))
+      .exactOptional()
+      .openapi({
+        description:
+          'While splitting, sources may specify the produced bundles as differences against another source, in order to save backend-side memory and allow bigger jobs. For details, see SourceSplitRequest. To support this use case, the full set of parameters of the source is logically obtained by taking the latest explicitly specified value of each parameter in the order: base_specs (later items win), spec (overrides anything in base_specs).',
+      }),
+    codec: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({ description: 'The codec to use to decode data read from the source.' }),
+    doesNotNeedSplitting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Setting this value to true hints to the framework that the source doesn't need splitting, and using SourceSplitRequest on it would yield SOURCE_SPLIT_OUTCOME_USE_CURRENT. E.g. a file splitter may set this to true when splitting a single file into a set of byte ranges of appropriate size, and set this to false when splitting a filepattern into individual files. However, for efficiency, a file splitter may decide to produce file subranges directly from the filepattern to avoid a splitting round-trip. See SourceSplitRequest for an overview of the splitting process. This field is meaningful only in the Source objects populated by the user (e.g. when filling in a DerivedSource). Source objects supplied by the framework to the user don't have this field populated.",
+      }),
+    metadata: SourceMetadataSchema.exactOptional().openapi({
+      description:
+        "Optionally, metadata for this source can be supplied right away, avoiding a SourceGetMetadataOperation roundtrip (see SourceOperationRequest). This field is meaningful only in the Source objects populated by the user (e.g. when filling in a DerivedSource). Source objects supplied by the framework to the user don't have this field populated.",
+    }),
+    spec: z
+      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+      .exactOptional()
+      .openapi({ description: 'The source to read from, plus its parameters.' }),
+  })
+  .openapi({ description: 'A source that records can be read and decoded from.', required: [] })
+  .openapi('Source')
 
 const SideInputInfoSchema = z
   .object({
@@ -3543,7 +1872,19 @@ const WriteInstructionSchema = z
   })
   .openapi('WriteInstruction')
 
-const ParallelInstructionSchema = z
+type ParallelInstructionType = {
+  flatten?: z.infer<typeof FlattenInstructionSchema>
+  name?: string
+  originalName?: string
+  outputs?: z.infer<typeof InstructionOutputSchema>[]
+  parDo?: z.infer<typeof ParDoInstructionSchema>
+  partialGroupByKey?: z.infer<typeof PartialGroupByKeyInstructionSchema>
+  read?: z.infer<typeof ReadInstructionSchema>
+  systemName?: string
+  write?: z.infer<typeof WriteInstructionSchema>
+}
+
+const ParallelInstructionSchema: z.ZodType<ParallelInstructionType> = z
   .object({
     flatten: FlattenInstructionSchema.exactOptional().openapi({
       description: 'Additional information for Flatten instructions.',
@@ -3584,7 +1925,14 @@ const ParallelInstructionSchema = z
   .openapi({ description: 'Describes a particular operation comprising a MapTask.', required: [] })
   .openapi('ParallelInstruction')
 
-const MapTaskSchema = z
+type MapTaskType = {
+  counterPrefix?: string
+  instructions?: z.infer<typeof ParallelInstructionSchema>[]
+  stageName?: string
+  systemName?: string
+}
+
+const MapTaskSchema: z.ZodType<MapTaskType> = z
   .object({
     counterPrefix: z
       .string()
@@ -3764,6 +2112,31 @@ const SourceOperationRequestSchema = z
   })
   .openapi('SourceOperationRequest')
 
+const KeyRangeDataDiskAssignmentSchema = z
+  .object({
+    dataDisk: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the data disk where data for this range is stored. This name is local to the Google Cloud Platform project and uniquely identifies the disk within that project, for example "myproject-1014-104817-4c2-harness-0-disk-1".',
+      }),
+    end: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The end (exclusive) of the key range.' }),
+    start: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The start (inclusive) of the key range.' }),
+  })
+  .openapi({
+    description:
+      'Data disk assignment information for a specific key-range of a sharded computation. Currently we only support UTF-8 character splits to simplify encoding into JSON.',
+    required: [],
+  })
+  .openapi('KeyRangeDataDiskAssignment')
+
 const StreamingComputationRangesSchema = z
   .object({
     computationId: z
@@ -3823,7 +2196,15 @@ const StreamingComputationTaskSchema = z
   })
   .openapi('StreamingComputationTask')
 
-const StreamingComputationConfigSchema = z
+type StreamingComputationConfigType = {
+  computationId?: string
+  instructions?: z.infer<typeof ParallelInstructionSchema>[]
+  stageName?: string
+  systemName?: string
+  transformUserNameToStateFamily?: { [key: string]: string }
+}
+
+const StreamingComputationConfigSchema: z.ZodType<StreamingComputationConfigType> = z
   .object({
     computationId: z
       .string()
@@ -3855,7 +2236,17 @@ const StreamingComputationConfigSchema = z
   })
   .openapi('StreamingComputationConfig')
 
-const StreamingConfigTaskSchema = z
+type StreamingConfigTaskType = {
+  commitStreamChunkSizeBytes?: string
+  getDataStreamChunkSizeBytes?: string
+  maxWorkItemCommitBytes?: string
+  streamingComputationConfigs?: z.infer<typeof StreamingComputationConfigSchema>[]
+  userStepToStateFamilyNameMap?: { [key: string]: string }
+  windmillServiceEndpoint?: string
+  windmillServicePort?: string
+}
+
+const StreamingConfigTaskSchema: z.ZodType<StreamingConfigTaskType> = z
   .object({
     commitStreamChunkSizeBytes: z
       .string()
@@ -3915,6 +2306,218 @@ const StreamingApplianceSnapshotConfigSchema = z
   })
   .openapi({ description: 'Streaming appliance snapshot configuration.', required: [] })
   .openapi('StreamingApplianceSnapshotConfig')
+
+const CustomSourceLocationSchema = z
+  .object({
+    stateful: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this source is stateful.' }),
+  })
+  .openapi({ description: 'Identifies the location of a custom souce.', required: [] })
+  .openapi('CustomSourceLocation')
+
+const PubsubLocationSchema = z
+  .object({
+    dropLateData: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the pipeline allows late-arriving data.' }),
+    idLabel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, contains a pubsub label from which to extract record ids. If left empty, record deduplication will be strictly best effort.',
+      }),
+    subscription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A pubsub subscription, in the form of "pubsub.googleapis.com/subscriptions//"',
+      }),
+    timestampLabel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, contains a pubsub label from which to extract record timestamps. If left empty, record timestamps will be generated upon arrival.',
+      }),
+    topic: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A pubsub topic, in the form of "pubsub.googleapis.com/topics//"' }),
+    trackingSubscription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, specifies the pubsub subscription that will be used for tracking custom time timestamps for watermark estimation.',
+      }),
+    withAttributes: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, then the client has requested to get pubsub attributes.' }),
+  })
+  .openapi({
+    description:
+      'Identifies a pubsub location to use for transferring data into or out of a streaming Dataflow job.',
+    required: [],
+  })
+  .openapi('PubsubLocation')
+
+const StreamingSideInputLocationSchema = z
+  .object({
+    stateFamily: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifies the state family where this side input is stored.' }),
+    tag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Identifies the particular side input within the streaming Dataflow job.',
+      }),
+  })
+  .openapi({ description: 'Identifies the location of a streaming side input.', required: [] })
+  .openapi('StreamingSideInputLocation')
+
+const StreamingStageLocationSchema = z
+  .object({
+    streamId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Identifies the particular stream within the streaming Dataflow job.',
+      }),
+  })
+  .openapi({
+    description:
+      'Identifies the location of a streaming computation stage, for stage-to-stage communication.',
+    required: [],
+  })
+  .openapi('StreamingStageLocation')
+
+const StreamLocationSchema = z
+  .object({
+    customSourceLocation: CustomSourceLocationSchema.exactOptional().openapi({
+      description: 'The stream is a custom source.',
+    }),
+    pubsubLocation: PubsubLocationSchema.exactOptional().openapi({
+      description: 'The stream is a pubsub stream.',
+    }),
+    sideInputLocation: StreamingSideInputLocationSchema.exactOptional().openapi({
+      description: 'The stream is a streaming side input.',
+    }),
+    streamingStageLocation: StreamingStageLocationSchema.exactOptional().openapi({
+      description:
+        'The stream is part of another computation within the current streaming Dataflow job.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes a stream of data, either as input to be processed or as output of a streaming Dataflow job.',
+    required: [],
+  })
+  .openapi('StreamLocation')
+
+const KeyRangeLocationSchema = z
+  .object({
+    dataDisk: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the data disk where data for this range is stored. This name is local to the Google Cloud Platform project and uniquely identifies the disk within that project, for example "myproject-1014-104817-4c2-harness-0-disk-1".',
+      }),
+    deliveryEndpoint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The physical location of this range assignment to be used for streaming computation cross-worker message delivery.',
+      }),
+    deprecatedPersistentDirectory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'DEPRECATED. The location of the persistent state for this range, as a persistent directory in the worker local filesystem.',
+      }),
+    end: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The end (exclusive) of the key range.' }),
+    start: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The start (inclusive) of the key range.' }),
+  })
+  .openapi({
+    description:
+      'Location information for a specific key-range of a sharded computation. Currently we only support UTF-8 character splits to simplify encoding into JSON.',
+    required: [],
+  })
+  .openapi('KeyRangeLocation')
+
+const StateFamilyConfigSchema = z
+  .object({
+    isRead: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, this family corresponds to a read operation.' }),
+    stateFamily: z.string().exactOptional().openapi({ description: 'The state family value.' }),
+  })
+  .openapi({ description: 'State family configuration.', required: [] })
+  .openapi('StateFamilyConfig')
+
+const ComputationTopologySchema = z
+  .object({
+    computationId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the computation.' }),
+    inputs: z
+      .array(StreamLocationSchema)
+      .exactOptional()
+      .openapi({ description: 'The inputs to the computation.' }),
+    keyRanges: z
+      .array(KeyRangeLocationSchema)
+      .exactOptional()
+      .openapi({ description: 'The key ranges processed by the computation.' }),
+    outputs: z
+      .array(StreamLocationSchema)
+      .exactOptional()
+      .openapi({ description: 'The outputs from the computation.' }),
+    stateFamilies: z
+      .array(StateFamilyConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The state family values.' }),
+    systemStageName: z.string().exactOptional().openapi({ description: 'The system stage name.' }),
+  })
+  .openapi({ description: 'All configuration data for a particular Computation.', required: [] })
+  .openapi('ComputationTopology')
+
+const DataDiskAssignmentSchema = z
+  .object({
+    dataDisks: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Mounted data disks. The order is important a data disk\'s 0-based index in this list defines which persistent directory the disk is mounted to, for example the list of { "myproject-1014-104817-4c2-harness-0-disk-0" }, { "myproject-1014-104817-4c2-harness-0-disk-1" }.',
+      }),
+    vmInstance: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'VM instance name the data disks mounted to, for example "myproject-1014-104817-4c2-harness-0".',
+      }),
+  })
+  .openapi({ description: 'Data disk assignment for a given VM instance.', required: [] })
+  .openapi('DataDiskAssignment')
 
 const TopologyConfigSchema = z
   .object({
@@ -3978,7 +2581,25 @@ const StreamingSetupTaskSchema = z
   })
   .openapi('StreamingSetupTask')
 
-const WorkItemSchema = z
+type WorkItemType = {
+  configuration?: string
+  id?: string
+  initialReportIndex?: string
+  jobId?: string
+  leaseExpireTime?: string
+  mapTask?: z.infer<typeof MapTaskSchema>
+  packages?: z.infer<typeof PackageSchema>[]
+  projectId?: string
+  reportStatusInterval?: string
+  seqMapTask?: z.infer<typeof SeqMapTaskSchema>
+  shellTask?: z.infer<typeof ShellTaskSchema>
+  sourceOperationTask?: z.infer<typeof SourceOperationRequestSchema>
+  streamingComputationTask?: z.infer<typeof StreamingComputationTaskSchema>
+  streamingConfigTask?: z.infer<typeof StreamingConfigTaskSchema>
+  streamingSetupTask?: z.infer<typeof StreamingSetupTaskSchema>
+}
+
+const WorkItemSchema: z.ZodType<WorkItemType> = z
   .object({
     configuration: z
       .string()
@@ -4043,7 +2664,1714 @@ const WorkItemSchema = z
   })
   .openapi('WorkItem')
 
-const LeaseWorkItemResponseSchema = z
+type LeaseWorkItemResponseType = {
+  unifiedWorkerResponse?: { [key: string]: unknown }
+  workItems?: z.infer<typeof WorkItemSchema>[]
+}
+
+const FailedLocationSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) that failed to respond.',
+      }),
+  })
+  .openapi({
+    description:
+      'Indicates which [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) failed to respond to a request for data.',
+    required: [],
+  })
+  .openapi('FailedLocation')
+
+type ListJobsResponseType = {
+  failedLocation?: z.infer<typeof FailedLocationSchema>[]
+  jobs?: z.infer<typeof JobSchema>[]
+  nextPageToken?: string
+}
+
+const ConcatPositionSchema: z.ZodType<ConcatPositionType> = z
+  .lazy(() =>
+    z
+      .object({
+        index: z.int32().exactOptional().openapi({ description: 'Index of the inner source.' }),
+        position: PositionSchema.exactOptional().openapi({
+          description: 'Position within the inner source.',
+        }),
+      })
+      .openapi({
+        description:
+          'A position that encapsulates an inner position and an index for the inner position. A ConcatPosition can be used by a reader of a source that encapsulates a set of other sources.',
+        required: [],
+      }),
+  )
+  .openapi('ConcatPosition')
+
+type PositionType = {
+  byteOffset?: string
+  concatPosition?: z.infer<typeof ConcatPositionSchema>
+  end?: boolean
+  key?: string
+  recordIndex?: string
+  shufflePosition?: string
+}
+
+const SplitInt64Schema = z
+  .object({
+    highBits: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The high order bits, including the sign: n >> 32.' }),
+    lowBits: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The low order bits: n & 0xffffffff.' }),
+  })
+  .openapi({
+    description:
+      'A representation of an int64, n, that is immune to precision loss when encoded in JSON.',
+    required: [],
+  })
+  .openapi('SplitInt64')
+
+const HistogramSchema = z
+  .object({
+    bucketCounts: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Counts of values in each bucket. For efficiency, prefix and trailing buckets with count = 0 are elided. Buckets can store the full range of values of an unsigned long, with ULLONG_MAX falling into the 59th bucket with range [1e19, 2e19).',
+      }),
+    firstBucketOffset: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Starting index of first stored bucket. The non-inclusive upper-bound of the ith bucket is given by: pow(10,(i-first_bucket_offset)/3) * (1,2,5)[(i-first_bucket_offset)%3]',
+      }),
+  })
+  .openapi({
+    description:
+      'Histogram of value counts for a distribution. Buckets have an inclusive lower bound and exclusive upper bound and use "1,2,5 bucketing": The first bucket range is from [0,1) and all subsequent bucket boundaries are powers of ten multiplied by 1, 2, or 5. Thus, bucket boundaries are 0, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, ... Negative values are not supported.',
+    required: [],
+  })
+  .openapi('Histogram')
+
+const DistributionUpdateSchema = z
+  .object({
+    count: SplitInt64Schema.exactOptional().openapi({
+      description: 'The count of the number of elements present in the distribution.',
+    }),
+    histogram: HistogramSchema.exactOptional().openapi({
+      description: '(Optional) Histogram of value counts for the distribution.',
+    }),
+    max: SplitInt64Schema.exactOptional().openapi({
+      description: 'The maximum value present in the distribution.',
+    }),
+    min: SplitInt64Schema.exactOptional().openapi({
+      description: 'The minimum value present in the distribution.',
+    }),
+    sum: SplitInt64Schema.exactOptional().openapi({
+      description:
+        "Use an int64 since we'd prefer the added precision. If overflow is a common problem we can detect it and use an additional int64 or a double.",
+    }),
+    sumOfSquares: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Use a double since the sum of squares is likely to overflow int64.',
+      }),
+  })
+  .openapi({ description: 'A metric value representing a distribution.', required: [] })
+  .openapi('DistributionUpdate')
+
+const FloatingPointListSchema = z
+  .object({
+    elements: z
+      .array(z.float64())
+      .exactOptional()
+      .openapi({ description: 'Elements of the list.' }),
+  })
+  .openapi({
+    description: 'A metric value representing a list of floating point numbers.',
+    required: [],
+  })
+  .openapi('FloatingPointList')
+
+const FloatingPointMeanSchema = z
+  .object({
+    count: SplitInt64Schema.exactOptional().openapi({
+      description: 'The number of values being aggregated.',
+    }),
+    sum: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The sum of all values being aggregated.' }),
+  })
+  .openapi({
+    description: 'A representation of a floating point mean metric contribution.',
+    required: [],
+  })
+  .openapi('FloatingPointMean')
+
+const IntegerGaugeSchema = z
+  .object({
+    timestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time at which this value was measured. Measured as msecs from epoch.',
+      }),
+    value: SplitInt64Schema.exactOptional().openapi({
+      description: 'The value of the variable represented by this gauge.',
+    }),
+  })
+  .openapi({
+    description: 'A metric value representing temporal values of a variable.',
+    required: [],
+  })
+  .openapi('IntegerGauge')
+
+const IntegerListSchema = z
+  .object({
+    elements: z
+      .array(SplitInt64Schema)
+      .exactOptional()
+      .openapi({ description: 'Elements of the list.' }),
+  })
+  .openapi({ description: 'A metric value representing a list of integers.', required: [] })
+  .openapi('IntegerList')
+
+const IntegerMeanSchema = z
+  .object({
+    count: SplitInt64Schema.exactOptional().openapi({
+      description: 'The number of values being aggregated.',
+    }),
+    sum: SplitInt64Schema.exactOptional().openapi({
+      description: 'The sum of all values being aggregated.',
+    }),
+  })
+  .openapi({
+    description: 'A representation of an integer mean metric contribution.',
+    required: [],
+  })
+  .openapi('IntegerMean')
+
+const NameAndKindSchema = z
+  .object({
+    kind: z
+      .enum([
+        'INVALID',
+        'SUM',
+        'MAX',
+        'MIN',
+        'MEAN',
+        'OR',
+        'AND',
+        'SET',
+        'DISTRIBUTION',
+        'LATEST_VALUE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Counter aggregation kind.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the counter.' }),
+  })
+  .openapi({ description: 'Basic metadata about a counter.', required: [] })
+  .openapi('NameAndKind')
+
+const StringListSchema = z
+  .object({
+    elements: z.array(z.string()).exactOptional().openapi({ description: 'Elements of the list.' }),
+  })
+  .openapi({ description: 'A metric value representing a list of strings.', required: [] })
+  .openapi('StringList')
+
+const CounterMetadataSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Human-readable description of the counter semantics.' }),
+    kind: z
+      .enum([
+        'INVALID',
+        'SUM',
+        'MAX',
+        'MIN',
+        'MEAN',
+        'OR',
+        'AND',
+        'SET',
+        'DISTRIBUTION',
+        'LATEST_VALUE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Counter aggregation kind.' }),
+    otherUnits: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A string referring to the unit type.' }),
+    standardUnits: z
+      .enum([
+        'BYTES',
+        'BYTES_PER_SEC',
+        'MILLISECONDS',
+        'MICROSECONDS',
+        'NANOSECONDS',
+        'TIMESTAMP_MSEC',
+        'TIMESTAMP_USEC',
+        'TIMESTAMP_NSEC',
+      ])
+      .exactOptional()
+      .openapi({ description: 'System defined Units, see above enum.' }),
+  })
+  .openapi({
+    description: 'CounterMetadata includes all static non-name non-value counter attributes.',
+    required: [],
+  })
+  .openapi('CounterMetadata')
+
+const CounterStructuredNameSchema = z
+  .object({
+    componentStepName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the optimized step being executed by the workers.' }),
+    executionStepName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the stage. An execution step contains multiple component steps.',
+      }),
+    inputIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Index of an input collection that's being read from/written to as a side input. The index identifies a step's side inputs starting by 1 (e.g. the first side input has input_index 1, the third has input_index 3). Side inputs are identified by a pair of (original_step_name, input_index). This field helps uniquely identify them.",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Counter name. Not necessarily globally-unique, but unique within the context of the other fields. Required.',
+      }),
+    origin: z
+      .enum(['SYSTEM', 'USER'])
+      .exactOptional()
+      .openapi({ description: 'One of the standard Origins defined above.' }),
+    originNamespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "A string containing a more specific namespace of the counter's origin.",
+      }),
+    originalRequestingStepName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The step name requesting an operation, such as GBK. I.e. the ParDo causing a read/write from shuffle to occur, or a read from side inputs.',
+      }),
+    originalStepName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "System generated name of the original step in the user's graph, before optimization.",
+      }),
+    portion: z
+      .enum(['ALL', 'KEY', 'VALUE'])
+      .exactOptional()
+      .openapi({ description: 'Portion of this counter, either key or value.' }),
+    workerId: z.string().exactOptional().openapi({ description: 'ID of a particular worker.' }),
+  })
+  .openapi({
+    description:
+      'Identifies a counter within a per-job namespace. Counters whose structured names are the same get merged into a single value for the job.',
+    required: [],
+  })
+  .openapi('CounterStructuredName')
+
+const CounterStructuredNameAndMetadataSchema = z
+  .object({
+    metadata: CounterMetadataSchema.exactOptional().openapi({
+      description: 'Metadata associated with a counter',
+    }),
+    name: CounterStructuredNameSchema.exactOptional().openapi({
+      description: 'Structured name of the counter.',
+    }),
+  })
+  .openapi({
+    description:
+      'A single message which encapsulates structured name and metadata for a given counter.',
+    required: [],
+  })
+  .openapi('CounterStructuredNameAndMetadata')
+
+const CounterUpdateSchema = z
+  .object({
+    boolean: z.boolean().exactOptional().openapi({ description: 'Boolean value for And, Or.' }),
+    cumulative: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if this counter is reported as the total cumulative aggregate value accumulated since the worker started working on this WorkItem. By default this is false, indicating that this counter is reported as a delta.',
+      }),
+    distribution: DistributionUpdateSchema.exactOptional().openapi({
+      description: 'Distribution data',
+    }),
+    floatingPoint: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Floating point value for Sum, Max, Min.' }),
+    floatingPointList: FloatingPointListSchema.exactOptional().openapi({
+      description: 'List of floating point numbers, for Set.',
+    }),
+    floatingPointMean: FloatingPointMeanSchema.exactOptional().openapi({
+      description: 'Floating point mean aggregation value for Mean.',
+    }),
+    integer: SplitInt64Schema.exactOptional().openapi({
+      description: 'Integer value for Sum, Max, Min.',
+    }),
+    integerGauge: IntegerGaugeSchema.exactOptional().openapi({ description: 'Gauge data' }),
+    integerList: IntegerListSchema.exactOptional().openapi({
+      description: 'List of integers, for Set.',
+    }),
+    integerMean: IntegerMeanSchema.exactOptional().openapi({
+      description: 'Integer mean aggregation value for Mean.',
+    }),
+    internal: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description: 'Value for internally-defined counters used by the Dataflow service.',
+      }),
+    nameAndKind: NameAndKindSchema.exactOptional().openapi({
+      description: 'Counter name and aggregation type.',
+    }),
+    shortId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The service-generated short identifier for this counter. The short_id -> (name, metadata) mapping is constant for the lifetime of a job.',
+      }),
+    stringList: StringListSchema.exactOptional().openapi({
+      description: 'List of strings, for Set.',
+    }),
+    structuredNameAndMetadata: CounterStructuredNameAndMetadataSchema.exactOptional().openapi({
+      description: 'Counter structured name and metadata.',
+    }),
+  })
+  .openapi({ description: 'An update to a Counter sent from a worker.', required: [] })
+  .openapi('CounterUpdate')
+
+const DerivedSourceSchema = z
+  .object({
+    derivationMode: z
+      .enum([
+        'SOURCE_DERIVATION_MODE_UNKNOWN',
+        'SOURCE_DERIVATION_MODE_INDEPENDENT',
+        'SOURCE_DERIVATION_MODE_CHILD_OF_CURRENT',
+        'SOURCE_DERIVATION_MODE_SIBLING_OF_CURRENT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'What source to base the produced source on (if any).' }),
+    source: SourceSchema.exactOptional().openapi({ description: 'Specification of the source.' }),
+  })
+  .openapi({
+    description:
+      'Specification of one of the bundles produced as a result of splitting a Source (e.g. when executing a SourceSplitRequest, or when splitting an active task using WorkItemStatus.dynamic_source_split), relative to the source being split.',
+    required: [],
+  })
+  .openapi('DerivedSource')
+
+const DynamicSourceSplitSchema = z
+  .object({
+    primary: DerivedSourceSchema.exactOptional().openapi({
+      description:
+        'Primary part (continued to be processed by worker). Specified relative to the previously-current source. Becomes current.',
+    }),
+    residual: DerivedSourceSchema.exactOptional().openapi({
+      description:
+        'Residual part (returned to the pool of work). Specified relative to the previously-current source.',
+    }),
+  })
+  .openapi({
+    description:
+      "When a task splits using WorkItemStatus.dynamic_source_split, this message describes the two parts of the split relative to the description of the current task's input.",
+    required: [],
+  })
+  .openapi('DynamicSourceSplit')
+
+const StatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('Status')
+
+const ApproximateProgressSchema = z
+  .object({
+    percentComplete: z.float32().exactOptional().openapi({ description: 'Obsolete.' }),
+    position: PositionSchema.exactOptional().openapi({ description: 'Obsolete.' }),
+    remainingTime: z.string().exactOptional().openapi({ description: 'Obsolete.' }),
+  })
+  .openapi({
+    description: 'Obsolete in favor of ApproximateReportedProgress and ApproximateSplitRequest.',
+    required: [],
+  })
+  .openapi('ApproximateProgress')
+
+const ReportedParallelismSchema = z
+  .object({
+    isInfinite: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies whether the parallelism is infinite. If true, "value" is ignored. Infinite parallelism means the service will assume that the work item can always be split into more non-empty work items by dynamic splitting. This is a work-around for lack of support for infinity by the current JSON-based Java RPC stack.',
+      }),
+    value: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Specifies the level of parallelism in case it is finite.' }),
+  })
+  .openapi({
+    description:
+      "Represents the level of parallelism in a WorkItem's input, reported by the worker.",
+    required: [],
+  })
+  .openapi('ReportedParallelism')
+
+const ApproximateReportedProgressSchema = z
+  .object({
+    consumedParallelism: ReportedParallelismSchema.exactOptional().openapi({
+      description:
+        'Total amount of parallelism in the portion of input of this task that has already been consumed and is no longer active. In the first two examples above (see remaining_parallelism), the value should be 29 or 2 respectively. The sum of remaining_parallelism and consumed_parallelism should equal the total amount of parallelism in this work item. If specified, must be finite.',
+    }),
+    fractionConsumed: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Completion as fraction of the input consumed, from 0.0 (beginning, nothing consumed), to 1.0 (end of the input, entire input consumed).',
+      }),
+    position: PositionSchema.exactOptional().openapi({
+      description: 'A Position within the work to represent a progress.',
+    }),
+    remainingParallelism: ReportedParallelismSchema.exactOptional().openapi({
+      description:
+        'Total amount of parallelism in the input of this task that remains, (i.e. can be delegated to this task and any new tasks via dynamic splitting). Always at least 1 for non-finished work items and 0 for finished. "Amount of parallelism" refers to how many non-empty parts of the input can be read in parallel. This does not necessarily equal number of records. An input that can be read in parallel down to the individual records is called "perfectly splittable". An example of non-perfectly parallelizable input is a block-compressed file format where a block of records has to be read as a whole, but different blocks can be read in parallel. Examples: * If we are processing record #30 (starting at 1) out of 50 in a perfectly splittable 50-record input, this value should be 21 (20 remaining + 1 current). * If we are reading through block 3 in a block-compressed file consisting of 5 blocks, this value should be 3 (since blocks 4 and 5 can be processed in parallel by new tasks via dynamic splitting and the current task remains processing block 3). * If we are reading through the last block in a block-compressed file, or reading or processing the last record in a perfectly splittable input, this value should be 1, because apart from the current task, no additional remainder can be split off.',
+    }),
+  })
+  .openapi({ description: 'A progress measurement of a WorkItem by a worker.', required: [] })
+  .openapi('ApproximateReportedProgress')
+
+const SourceSplitShardSchema = z
+  .object({
+    derivationMode: z
+      .enum([
+        'SOURCE_DERIVATION_MODE_UNKNOWN',
+        'SOURCE_DERIVATION_MODE_INDEPENDENT',
+        'SOURCE_DERIVATION_MODE_CHILD_OF_CURRENT',
+        'SOURCE_DERIVATION_MODE_SIBLING_OF_CURRENT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED' }),
+    source: SourceSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
+  })
+  .openapi({ description: 'DEPRECATED in favor of DerivedSource.', required: [] })
+  .openapi('SourceSplitShard')
+
+const SourceForkSchema = z
+  .object({
+    primary: SourceSplitShardSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
+    primarySource: DerivedSourceSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
+    residual: SourceSplitShardSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
+    residualSource: DerivedSourceSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
+  })
+  .openapi({ description: 'DEPRECATED in favor of DynamicSourceSplit.', required: [] })
+  .openapi('SourceFork')
+
+const SourceGetMetadataResponseSchema = z
+  .object({
+    metadata: SourceMetadataSchema.exactOptional().openapi({
+      description: 'The computed metadata.',
+    }),
+  })
+  .openapi({ description: 'The result of a SourceGetMetadataOperation.', required: [] })
+  .openapi('SourceGetMetadataResponse')
+
+const SourceSplitResponseSchema = z
+  .object({
+    bundles: z
+      .array(DerivedSourceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'If outcome is SPLITTING_HAPPENED, then this is a list of bundles into which the source was split. Otherwise this field is ignored. This list can be empty, which means the source represents an empty input.',
+      }),
+    outcome: z
+      .enum([
+        'SOURCE_SPLIT_OUTCOME_UNKNOWN',
+        'SOURCE_SPLIT_OUTCOME_USE_CURRENT',
+        'SOURCE_SPLIT_OUTCOME_SPLITTING_HAPPENED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether splitting happened and produced a list of bundles. If this is USE_CURRENT_SOURCE_AS_IS, the current source should be processed "as is" without splitting. "bundles" is ignored in this case. If this is SPLITTING_HAPPENED, then "bundles" contains a list of bundles into which the source was split.',
+      }),
+    shards: z
+      .array(SourceSplitShardSchema)
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED in favor of bundles.' }),
+  })
+  .openapi({ description: 'The response to a SourceSplitRequest.', required: [] })
+  .openapi('SourceSplitResponse')
+
+const SourceOperationResponseSchema = z
+  .object({
+    getMetadata: SourceGetMetadataResponseSchema.exactOptional().openapi({
+      description: 'A response to a request to get metadata about a source.',
+    }),
+    split: SourceSplitResponseSchema.exactOptional().openapi({
+      description: 'A response to a request to split a source.',
+    }),
+  })
+  .openapi({
+    description:
+      'The result of a SourceOperationRequest, specified in ReportWorkItemStatusRequest.source_operation when the work item is completed.',
+    required: [],
+  })
+  .openapi('SourceOperationResponse')
+
+type WorkItemStatusType = {
+  completed?: boolean
+  counterUpdates?: z.infer<typeof CounterUpdateSchema>[]
+  dynamicSourceSplit?: z.infer<typeof DynamicSourceSplitSchema>
+  errors?: z.infer<typeof StatusSchema>[]
+  metricUpdates?: z.infer<typeof MetricUpdateSchema>[]
+  progress?: z.infer<typeof ApproximateProgressSchema>
+  reportIndex?: string
+  reportedProgress?: z.infer<typeof ApproximateReportedProgressSchema>
+  requestedLeaseDuration?: string
+  sourceFork?: z.infer<typeof SourceForkSchema>
+  sourceOperationResponse?: z.infer<typeof SourceOperationResponseSchema>
+  stopPosition?: z.infer<typeof PositionSchema>
+  totalThrottlerWaitTimeSeconds?: number
+  workItemId?: string
+}
+
+const WorkItemStatusSchema: z.ZodType<WorkItemStatusType> = z
+  .object({
+    completed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if the WorkItem was completed (successfully or unsuccessfully).',
+      }),
+    counterUpdates: z
+      .array(CounterUpdateSchema)
+      .exactOptional()
+      .openapi({ description: 'Worker output counters for this WorkItem.' }),
+    dynamicSourceSplit: DynamicSourceSplitSchema.exactOptional().openapi({
+      description: 'See documentation of stop_position.',
+    }),
+    errors: z
+      .array(StatusSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies errors which occurred during processing. If errors are provided, and completed = true, then the WorkItem is considered to have failed.',
+      }),
+    metricUpdates: z
+      .array(MetricUpdateSchema)
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED in favor of counter_updates.' }),
+    progress: ApproximateProgressSchema.exactOptional().openapi({
+      description: 'DEPRECATED in favor of reported_progress.',
+    }),
+    reportIndex: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The report index. When a WorkItem is leased, the lease will contain an initial report index. When a WorkItem's status is reported to the system, the report should be sent with that report index, and the response will contain the index the worker should use for the next report. Reports received with unexpected index values will be rejected by the service. In order to preserve idempotency, the worker should not alter the contents of a report, even if the worker must submit the same report multiple times before getting back a response. The worker should not submit a subsequent report until the response for the previous report had been received from the service.",
+      }),
+    reportedProgress: ApproximateReportedProgressSchema.exactOptional().openapi({
+      description: "The worker's progress through this WorkItem.",
+    }),
+    requestedLeaseDuration: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Amount of time the worker requests for its lease.' }),
+    sourceFork: SourceForkSchema.exactOptional().openapi({
+      description: 'DEPRECATED in favor of dynamic_source_split.',
+    }),
+    sourceOperationResponse: SourceOperationResponseSchema.exactOptional().openapi({
+      description:
+        'If the work item represented a SourceOperationRequest, and the work is completed, contains the result of the operation.',
+    }),
+    stopPosition: PositionSchema.exactOptional().openapi({
+      description:
+        'A worker may split an active map task in two parts, "primary" and "residual", continuing to process the primary part and returning the residual part into the pool of available work. This event is called a "dynamic split" and is critical to the dynamic work rebalancing feature. The two obtained sub-tasks are called "parts" of the split. The parts, if concatenated, must represent the same input as would be read by the current task if the split did not happen. The exact way in which the original task is decomposed into the two parts is specified either as a position demarcating them (stop_position), or explicitly as two DerivedSources, if this task consumes a user-defined source type (dynamic_source_split). The "current" task is adjusted as a result of the split: after a task with range [A, B) sends a stop_position update at C, its range is considered to be [A, C), e.g.: * Progress should be interpreted relative to the new range, e.g. "75% completed" means "75% of [A, C) completed" * The worker should interpret proposed_stop_position relative to the new range, e.g. "split at 68%" should be interpreted as "split at 68% of [A, C)". * If the worker chooses to split again using stop_position, only stop_positions in [A, C) will be accepted. * Etc. dynamic_source_split has similar semantics: e.g., if a task with source S splits using dynamic_source_split into {P, R} (where P and R must be together equivalent to S), then subsequent progress and proposed_stop_position should be interpreted relative to P, and in a potential subsequent dynamic_source_split into {P\', R\'}, P\' and R\' must be together equivalent to P, etc.',
+    }),
+    totalThrottlerWaitTimeSeconds: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Total time the worker spent being throttled by external systems.' }),
+    workItemId: z.string().exactOptional().openapi({ description: 'Identifies the WorkItem.' }),
+  })
+  .openapi({
+    description: "Conveys a worker's progress through the work described by a WorkItem.",
+    required: [],
+  })
+  .openapi('WorkItemStatus')
+
+type ReportWorkItemStatusRequestType = {
+  currentWorkerTime?: string
+  location?: string
+  unifiedWorkerRequest?: { [key: string]: unknown }
+  workItemStatuses?: z.infer<typeof WorkItemStatusSchema>[]
+  workerId?: string
+}
+
+const CPUTimeSchema = z
+  .object({
+    rate: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Average CPU utilization rate (% non-idle cpu / second) since previous sample.',
+      }),
+    timestamp: z.string().exactOptional().openapi({ description: 'Timestamp of the measurement.' }),
+    totalMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total active CPU time across all cores (ie., non-idle) in milliseconds since start-up.',
+      }),
+  })
+  .openapi({ description: 'Modeled after information exposed by /proc/stat.', required: [] })
+  .openapi('CPUTime')
+
+const MemInfoSchema = z
+  .object({
+    currentLimitBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Instantenous memory limit in bytes.' }),
+    currentOoms: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of Out of Memory (OOM) events recorded since the previous measurement.',
+      }),
+    currentRssBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Instantenous memory (RSS) size in bytes.' }),
+    timestamp: z.string().exactOptional().openapi({ description: 'Timestamp of the measurement.' }),
+    totalGbMs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total memory (RSS) usage since start up in GB * ms.' }),
+  })
+  .openapi({
+    description: 'Information about the memory usage of a worker or a container within a worker.',
+    required: [],
+  })
+  .openapi('MemInfo')
+
+type ResourceUtilizationReportType = {
+  containers?: { [key: string]: ResourceUtilizationReportType }
+  cpuTime?: z.infer<typeof CPUTimeSchema>[]
+  memoryInfo?: z.infer<typeof MemInfoSchema>[]
+}
+
+const WorkItemDetailsSchema = z
+  .object({
+    attemptId: z.string().exactOptional().openapi({ description: 'Attempt ID of this work item' }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'End time of this work item attempt. If the work item is completed, this is the actual end time of the work item. Otherwise, it is the predicted end time.',
+      }),
+    metrics: z
+      .array(MetricUpdateSchema)
+      .exactOptional()
+      .openapi({ description: 'Metrics for this work item.' }),
+    progress: ProgressTimeseriesSchema.exactOptional().openapi({
+      description: 'Progress of this work item.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Start time of this work item attempt.' }),
+    state: z
+      .enum([
+        'EXECUTION_STATE_UNKNOWN',
+        'EXECUTION_STATE_NOT_STARTED',
+        'EXECUTION_STATE_RUNNING',
+        'EXECUTION_STATE_SUCCEEDED',
+        'EXECUTION_STATE_FAILED',
+        'EXECUTION_STATE_CANCELLED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'State of this work item.' }),
+    stragglerInfo: StragglerInfoSchema.exactOptional().openapi({
+      description: 'Information about straggler detections for this work item.',
+    }),
+    taskId: z.string().exactOptional().openapi({ description: 'Name of this work item.' }),
+  })
+  .openapi({ description: 'Information about an individual work item execution.', required: [] })
+  .openapi('WorkItemDetails')
+
+type WorkerDetailsType = {
+  workItems?: z.infer<typeof WorkItemDetailsSchema>[]
+  workerName?: string
+}
+
+const WorkerDetailsSchema: z.ZodType<WorkerDetailsType> = z
+  .object({
+    workItems: z
+      .array(WorkItemDetailsSchema)
+      .exactOptional()
+      .openapi({ description: 'Work items processed by this worker, sorted by time.' }),
+    workerName: z.string().exactOptional().openapi({ description: 'Name of this worker' }),
+  })
+  .openapi({ description: 'Information about a worker', required: [] })
+  .openapi('WorkerDetails')
+
+type StageExecutionDetailsType = {
+  nextPageToken?: string
+  workers?: z.infer<typeof WorkerDetailsSchema>[]
+}
+
+const ApproximateSplitRequestSchema = z
+  .object({
+    fractionConsumed: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'A fraction at which to split the work item, from 0.0 (beginning of the input) to 1.0 (end of the input).',
+      }),
+    fractionOfRemainder: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fraction of the remainder of work to split the work item at, from 0.0 (split at the current position) to 1.0 (end of the input).',
+      }),
+    position: PositionSchema.exactOptional().openapi({
+      description: 'A Position at which to split the work item.',
+    }),
+  })
+  .openapi({
+    description: 'A suggestion by the service to the worker to dynamically split the WorkItem.',
+    required: [],
+  })
+  .openapi('ApproximateSplitRequest')
+
+const ParameterSchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'Key or name for this parameter.' }),
+    value: z.any().exactOptional().openapi({ description: 'Value for this parameter.' }),
+  })
+  .openapi({ description: 'Structured data associated with this message.', required: [] })
+  .openapi('Parameter')
+
+const StructuredMessageSchema = z
+  .object({
+    messageKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifier for this message type. Used by external systems to internationalize or personalize message.',
+      }),
+    messageText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Human-readable version of message.' }),
+    parameters: z
+      .array(ParameterSchema)
+      .exactOptional()
+      .openapi({ description: 'The structured data associated with this message.' }),
+  })
+  .openapi({
+    description:
+      'A rich message format, including a human readable string, a key for identifying the message, and structured data associated with the message for programmatic consumption.',
+    required: [],
+  })
+  .openapi('StructuredMessage')
+
+const AutoscalingEventSchema = z
+  .object({
+    currentNumWorkers: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The current number of workers the job has.' }),
+    description: StructuredMessageSchema.exactOptional().openapi({
+      description:
+        'A message describing why the system decided to adjust the current number of workers, why it failed, or why the system decided to not make any changes to the number of workers.',
+    }),
+    eventType: z
+      .enum([
+        'TYPE_UNKNOWN',
+        'TARGET_NUM_WORKERS_CHANGED',
+        'CURRENT_NUM_WORKERS_CHANGED',
+        'ACTUATION_FAILURE',
+        'NO_CHANGE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of autoscaling event to report.' }),
+    targetNumWorkers: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The target number of workers the worker pool wants to resize to use.',
+      }),
+    time: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time this event was emitted to indicate a new target or current num_workers value.',
+      }),
+    workerPool: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A short and friendly name for the worker pool this event refers to.',
+      }),
+  })
+  .openapi({
+    description:
+      'A structured message reporting an autoscaling decision made by the Dataflow service.',
+    required: [],
+  })
+  .openapi('AutoscalingEvent')
+
+const FlexTemplateRuntimeEnvironmentSchema = z
+  .object({
+    additionalExperiments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Additional experiment flags for the job.' }),
+    additionalUserLabels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional user labels to be specified for the job. Keys and values must follow the restrictions specified in the [labeling restrictions](https://cloud.google.com/compute/docs/labeling-resources#restrictions) page. An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1kg", "count": "3" }.',
+      }),
+    autoscalingAlgorithm: z
+      .enum([
+        'AUTOSCALING_ALGORITHM_UNKNOWN',
+        'AUTOSCALING_ALGORITHM_NONE',
+        'AUTOSCALING_ALGORITHM_BASIC',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The algorithm to use for autoscaling' }),
+    diskSizeGb: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Worker disk size, in gigabytes.' }),
+    dumpHeapOnOom: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, when processing time is spent almost entirely on garbage collection (GC), saves a heap dump before ending the thread or process. If false, ends the thread or process without saving a heap dump. Does not save a heap dump when the Java Virtual Machine (JVM) has an out of memory error during processing. The location of the heap file is either echoed back to the user, or the user is given the opportunity to download the heap file.',
+      }),
+    enableLauncherVmSerialPortLogging: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true serial port logging will be enabled for the launcher VM.' }),
+    enableStreamingEngine: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to enable Streaming Engine for the job.' }),
+    flexrsGoal: z
+      .enum(['FLEXRS_UNSPECIFIED', 'FLEXRS_SPEED_OPTIMIZED', 'FLEXRS_COST_OPTIMIZED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Set FlexRS goal for the job. https://cloud.google.com/dataflow/docs/guides/flexrs',
+      }),
+    ipConfiguration: z
+      .enum(['WORKER_IP_UNSPECIFIED', 'WORKER_IP_PUBLIC', 'WORKER_IP_PRIVATE'])
+      .exactOptional()
+      .openapi({ description: 'Configuration for VM IPs.' }),
+    kmsKeyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name for the Cloud KMS key for the job. Key format is: projects//locations//keyRings//cryptoKeys/',
+      }),
+    launcherMachineType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The machine type to use for launching the job. The default is n1-standard-1.',
+      }),
+    machineType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The machine type to use for the job. Defaults to the value from the template if not specified.',
+      }),
+    maxWorkers: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of Google Compute Engine instances to be made available to your pipeline during execution, from 1 to 1000.',
+      }),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Network to which VMs will be assigned. If empty or unspecified, the service will use the network "default".',
+      }),
+    numWorkers: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The initial number of Google Compute Engine instances for the job.',
+      }),
+    saveHeapDumpsToGcsPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cloud Storage bucket (directory) to upload heap dumps to. Enabling this field implies that `dump_heap_on_oom` is set to true.',
+      }),
+    sdkContainerImage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Docker registry location of container image to use for the 'worker harness. Default is the container for the version of the SDK. Note this field is only valid for portable pipelines.",
+      }),
+    serviceAccountEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address of the service account to run the job as.' }),
+    stagingLocation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Cloud Storage path for staging local files. Must be a valid Cloud Storage URL, beginning with `gs://`.',
+      }),
+    subnetwork: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subnetwork to which VMs will be assigned, if desired. You can specify a subnetwork using either a complete URL or an abbreviated path. Expected to be of the form "https://www.googleapis.com/compute/v1/projects/HOST_PROJECT_ID/regions/REGION/subnetworks/SUBNETWORK" or "regions/REGION/subnetworks/SUBNETWORK". If the subnetwork is located in a Shared VPC network, you must use the complete URL.',
+      }),
+    tempLocation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Cloud Storage path to use for temporary files. Must be a valid Cloud Storage URL, beginning with `gs://`.',
+      }),
+    workerRegion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Compute Engine region (https://cloud.google.com/compute/docs/regions-zones/regions-zones) in which worker processing should occur, e.g. "us-west1". Mutually exclusive with worker_zone. If neither worker_region nor worker_zone is specified, default to the control plane\'s region.',
+      }),
+    workerZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Compute Engine zone (https://cloud.google.com/compute/docs/regions-zones/regions-zones) in which worker processing should occur, e.g. "us-west1-a". Mutually exclusive with worker_region. If neither worker_region nor worker_zone is specified, a zone in the control plane\'s region is chosen based on available capacity. If both `worker_zone` and `zone` are set, `worker_zone` takes precedence.',
+      }),
+    zone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Compute Engine [availability zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) for launching worker instances to run your pipeline. In the future, worker_zone will take precedence.',
+      }),
+  })
+  .openapi({
+    description: 'The environment values to be set at runtime for flex template.',
+    required: [],
+  })
+  .openapi('FlexTemplateRuntimeEnvironment')
+
+const ParameterMetadataSchema = z
+  .object({
+    customMetadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Optional. Additional metadata for describing this parameter.' }),
+    groupName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies a group name for this parameter to be rendered under. Group header text will be rendered exactly as specified in this field. Only considered when parent_name is NOT provided.',
+      }),
+    helpText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The help text to display for the parameter.' }),
+    isOptional: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Optional. Whether the parameter is optional. Defaults to false.' }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The label to display for the parameter.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The name of the parameter.' }),
+    paramType: z
+      .enum([
+        'DEFAULT',
+        'TEXT',
+        'GCS_READ_BUCKET',
+        'GCS_WRITE_BUCKET',
+        'GCS_READ_FILE',
+        'GCS_WRITE_FILE',
+        'GCS_READ_FOLDER',
+        'GCS_WRITE_FOLDER',
+        'PUBSUB_TOPIC',
+        'PUBSUB_SUBSCRIPTION',
+        'BIGQUERY_TABLE',
+        'JAVASCRIPT_UDF_FILE',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The type of the parameter. Used for selecting input picker.',
+      }),
+    parentName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Specifies the name of the parent parameter. Used in conjunction with 'parent_trigger_values' to make this parameter conditional (will only be rendered conditionally). Should be mappable to a ParameterMetadata.name field.",
+      }),
+    parentTriggerValues: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The value(s) of the 'parent_name' parameter which will trigger this parameter to be shown. If left empty, ANY non-empty value in parent_name will trigger this parameter to be shown. Only considered when this parameter is conditional (when 'parent_name' has been provided).",
+      }),
+    regexes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Optional. Regexes that the parameter must match.' }),
+  })
+  .openapi({ description: 'Metadata for a specific parameter.', required: [] })
+  .openapi('ParameterMetadata')
+
+const TemplateMetadataSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. A description of the template.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The name of the template.' }),
+    parameters: z
+      .array(ParameterMetadataSchema)
+      .exactOptional()
+      .openapi({ description: 'The parameters for the template.' }),
+  })
+  .openapi({ description: 'Metadata describing a template.', required: [] })
+  .openapi('TemplateMetadata')
+
+const SDKInfoSchema = z
+  .object({
+    language: z
+      .enum(['UNKNOWN', 'JAVA', 'PYTHON', 'GO'])
+      .exactOptional()
+      .openapi({ description: 'Required. The SDK Language.' }),
+    version: z.string().exactOptional().openapi({ description: 'Optional. The SDK version.' }),
+  })
+  .openapi({ description: 'SDK Information.', required: [] })
+  .openapi('SDKInfo')
+
+const ContainerSpecSchema = z
+  .object({
+    defaultEnvironment: FlexTemplateRuntimeEnvironmentSchema.exactOptional().openapi({
+      description: 'Default runtime environment for the job.',
+    }),
+    image: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the docker container image. E.g., gcr.io/project/some-image',
+      }),
+    imageRepositoryCertPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Cloud Storage path to self-signed certificate of private registry.',
+      }),
+    imageRepositoryPasswordSecretId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Secret Manager secret id for password to authenticate to private registry.',
+      }),
+    imageRepositoryUsernameSecretId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Secret Manager secret id for username to authenticate to private registry.',
+      }),
+    metadata: TemplateMetadataSchema.exactOptional().openapi({
+      description: 'Metadata describing a template including description and validation rules.',
+    }),
+    sdkInfo: SDKInfoSchema.exactOptional().openapi({
+      description: 'Required. SDK info of the Flex Template.',
+    }),
+  })
+  .openapi({ description: 'Container Spec.', required: [] })
+  .openapi('ContainerSpec')
+
+const RuntimeEnvironmentSchema = z
+  .object({
+    additionalExperiments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Additional experiment flags for the job, specified with the `--experiments` option.',
+      }),
+    additionalUserLabels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Additional user labels to be specified for the job. Keys and values should follow the restrictions specified in the [labeling restrictions](https://cloud.google.com/compute/docs/labeling-resources#restrictions) page. An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1kg", "count": "3" }.',
+      }),
+    bypassTempDirValidation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Whether to bypass the safety checks for the job's temporary directory. Use with caution.",
+      }),
+    enableStreamingEngine: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Optional. Whether to enable Streaming Engine for the job.' }),
+    ipConfiguration: z
+      .enum(['WORKER_IP_UNSPECIFIED', 'WORKER_IP_PUBLIC', 'WORKER_IP_PRIVATE'])
+      .exactOptional()
+      .openapi({ description: 'Optional. Configuration for VM IPs.' }),
+    kmsKeyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Name for the Cloud KMS key for the job. Key format is: projects//locations//keyRings//cryptoKeys/',
+      }),
+    machineType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The machine type to use for the job. Defaults to the value from the template if not specified.',
+      }),
+    maxWorkers: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum number of Google Compute Engine instances to be made available to your pipeline during execution, from 1 to 1000. The default value is 1.',
+      }),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Network to which VMs will be assigned. If empty or unspecified, the service will use the network "default".',
+      }),
+    numWorkers: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The initial number of Google Compute Engine instances for the job. The default value is 11.',
+      }),
+    serviceAccountEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The email address of the service account to run the job as.',
+      }),
+    subnetwork: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Subnetwork to which VMs will be assigned, if desired. You can specify a subnetwork using either a complete URL or an abbreviated path. Expected to be of the form "https://www.googleapis.com/compute/v1/projects/HOST_PROJECT_ID/regions/REGION/subnetworks/SUBNETWORK" or "regions/REGION/subnetworks/SUBNETWORK". If the subnetwork is located in a Shared VPC network, you must use the complete URL.',
+      }),
+    tempLocation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The Cloud Storage path to use for temporary files. Must be a valid Cloud Storage URL, beginning with `gs://`.',
+      }),
+    workerRegion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The Compute Engine region (https://cloud.google.com/compute/docs/regions-zones/regions-zones) in which worker processing should occur, e.g. "us-west1". Mutually exclusive with worker_zone. If neither worker_region nor worker_zone is specified, default to the control plane\'s region.',
+      }),
+    workerZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The Compute Engine zone (https://cloud.google.com/compute/docs/regions-zones/regions-zones) in which worker processing should occur, e.g. "us-west1-a". Mutually exclusive with worker_region. If neither worker_region nor worker_zone is specified, a zone in the control plane\'s region is chosen based on available capacity. If both `worker_zone` and `zone` are set, `worker_zone` takes precedence.',
+      }),
+    zone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The Compute Engine [availability zone](https://cloud.google.com/compute/docs/regions-zones/regions-zones) for launching worker instances to run your pipeline. In the future, worker_zone will take precedence.',
+      }),
+  })
+  .openapi({ description: 'The environment values to set at runtime.', required: [] })
+  .openapi('RuntimeEnvironment')
+
+const CreateJobFromTemplateRequestSchema = z
+  .object({
+    environment: RuntimeEnvironmentSchema.exactOptional().openapi({
+      description: 'The runtime environment for the job.',
+    }),
+    gcsPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A Cloud Storage path to the template from which to create the job. Must be a valid Cloud Storage URL, beginning with `gs://`.',
+      }),
+    jobName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The job name to use for the created job.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) to which to direct the request.',
+      }),
+    parameters: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The runtime parameters to pass to the job.' }),
+  })
+  .openapi({
+    description: 'A request to create a Cloud Dataflow job from a template.',
+    required: [],
+  })
+  .openapi('CreateJobFromTemplateRequest')
+
+const DeleteSnapshotResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'Response from deleting a snapshot.' })
+  .openapi('DeleteSnapshotResponse')
+
+const GetDebugConfigRequestSchema = z
+  .object({
+    componentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The internal component id for which debug configuration is requested.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) that contains the job specified by job_id.',
+      }),
+    workerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The worker id, i.e., VM hostname.' }),
+  })
+  .openapi({
+    description: 'Request to get updated debug configuration for component.',
+    required: [],
+  })
+  .openapi('GetDebugConfigRequest')
+
+const GetDebugConfigResponseSchema = z
+  .object({
+    config: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The encoded debug configuration for the requested component.' }),
+  })
+  .openapi({ description: 'Response to a get debug configuration request.', required: [] })
+  .openapi('GetDebugConfigResponse')
+
+const RuntimeMetadataSchema = z
+  .object({
+    parameters: z
+      .array(ParameterMetadataSchema)
+      .exactOptional()
+      .openapi({ description: 'The parameters for the template.' }),
+    sdkInfo: SDKInfoSchema.exactOptional().openapi({ description: 'SDK Info for the template.' }),
+  })
+  .openapi({ description: 'RuntimeMetadata describing a runtime environment.', required: [] })
+  .openapi('RuntimeMetadata')
+
+const GetTemplateResponseSchema = z
+  .object({
+    metadata: TemplateMetadataSchema.exactOptional().openapi({
+      description: 'The template metadata describing the template name, available parameters, etc.',
+    }),
+    runtimeMetadata: RuntimeMetadataSchema.exactOptional().openapi({
+      description: 'Describes the runtime metadata with SDKInfo and available parameters.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        'The status of the get template request. Any problems with the request will be indicated in the error_details.',
+    }),
+    templateType: z
+      .enum(['UNKNOWN', 'LEGACY', 'FLEX'])
+      .exactOptional()
+      .openapi({ description: 'Template Type.' }),
+  })
+  .openapi({ description: 'The response to a GetTemplate request.', required: [] })
+  .openapi('GetTemplateResponse')
+
+const HotKeyDetectionSchema = z
+  .object({
+    hotKeyAge: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The age of the hot key measured from when it was first detected.' }),
+    systemName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'System-defined name of the step containing this hot key. Unique across the workflow.',
+      }),
+    userStepName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User-provided name of the step that contains this hot key.' }),
+  })
+  .openapi({
+    description: 'Proto describing a hot key detected on a given WorkItem.',
+    required: [],
+  })
+  .openapi('HotKeyDetection')
+
+const JobExecutionDetailsSchema: z.ZodType<JobExecutionDetailsType> = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If present, this response does not contain all requested tasks. To obtain the next page of results, repeat the request with page_token set to this value.',
+      }),
+    stages: z
+      .array(StageSummarySchema)
+      .exactOptional()
+      .openapi({ description: 'The stages of the job execution.' }),
+  })
+  .openapi({ description: 'Information about the execution of a job.', required: [] })
+  .openapi('JobExecutionDetails')
+
+const JobMessageSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+    messageImportance: z
+      .enum([
+        'JOB_MESSAGE_IMPORTANCE_UNKNOWN',
+        'JOB_MESSAGE_DEBUG',
+        'JOB_MESSAGE_DETAILED',
+        'JOB_MESSAGE_BASIC',
+        'JOB_MESSAGE_WARNING',
+        'JOB_MESSAGE_ERROR',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Importance level of the message.' }),
+    messageText: z.string().exactOptional().openapi({ description: 'The text of the message.' }),
+    time: z.string().exactOptional().openapi({ description: 'The timestamp of the message.' }),
+  })
+  .openapi({ description: 'A particular message pertaining to a Dataflow job.', required: [] })
+  .openapi('JobMessage')
+
+const JobMetricsSchema = z
+  .object({
+    metricTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Timestamp as of which metric values are current.' }),
+    metrics: z
+      .array(MetricUpdateSchema)
+      .exactOptional()
+      .openapi({ description: 'All metrics for this job.' }),
+  })
+  .openapi({
+    description:
+      'JobMetrics contains a collection of metrics describing the detailed progress of a Dataflow job. Metrics correspond to user-defined and system-defined metrics in the job. For more information, see [Dataflow job metrics] (https://cloud.google.com/dataflow/docs/guides/using-monitoring-intf). This resource captures only the most recent values of each metric; time-series data can be queried for them (under the same metric names) from Cloud Monitoring.',
+    required: [],
+  })
+  .openapi('JobMetrics')
+
+const LaunchFlexTemplateParameterSchema = z
+  .object({
+    containerSpec: ContainerSpecSchema.exactOptional().openapi({
+      description: 'Spec about the container image to launch.',
+    }),
+    containerSpecGcsPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Cloud Storage path to a file with json serialized ContainerSpec as content.',
+      }),
+    environment: FlexTemplateRuntimeEnvironmentSchema.exactOptional().openapi({
+      description: 'The runtime environment for the FlexTemplate job',
+    }),
+    jobName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The job name to use for the created job. For update job request, job name should be same as the existing running job.',
+      }),
+    launchOptions: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Launch options for this flex template job. This is a common set of options across languages and templates. This should not be used to pass job parameters.',
+      }),
+    parameters: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The parameters for FlexTemplate. Ex. {"num_workers":"5"}' }),
+    transformNameMappings: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Use this to pass transform_name_mappings for streaming update jobs. Ex:{"oldTransformName":"newTransformName",...}\'',
+      }),
+    update: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set this to true if you are sending a request to update a running streaming job. When set, the job name should be the same as the running job.',
+      }),
+  })
+  .openapi({ description: 'Launch FlexTemplate Parameter.', required: [] })
+  .openapi('LaunchFlexTemplateParameter')
+
+const LaunchFlexTemplateRequestSchema = z
+  .object({
+    launchParameter: LaunchFlexTemplateParameterSchema.exactOptional().openapi({
+      description: 'Required. Parameter to launch a job form Flex Template.',
+    }),
+    validateOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the request is validated but not actually executed. Defaults to false.',
+      }),
+  })
+  .openapi({
+    description: 'A request to launch a Cloud Dataflow job from a FlexTemplate.',
+    required: [],
+  })
+  .openapi('LaunchFlexTemplateRequest')
+
+const LaunchFlexTemplateResponseSchema: z.ZodType<LaunchFlexTemplateResponseType> = z
+  .object({
+    job: JobSchema.exactOptional().openapi({
+      description:
+        'The job that was launched, if the request was not a dry run and the job was successfully launched.',
+    }),
+  })
+  .openapi({
+    description: 'Response to the request to launch a job from Flex Template.',
+    required: [],
+  })
+  .openapi('LaunchFlexTemplateResponse')
+
+const LaunchTemplateParametersSchema = z
+  .object({
+    environment: RuntimeEnvironmentSchema.exactOptional().openapi({
+      description: 'The runtime environment for the job.',
+    }),
+    jobName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The job name to use for the created job. The name must match the regular expression `[a-z]([-a-z0-9]{0,1022}[a-z0-9])?`',
+      }),
+    parameters: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The runtime parameters to pass to the job.' }),
+    transformNameMapping: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Only applicable when updating a pipeline. Map of transform name prefixes of the job to be replaced to the corresponding name prefixes of the new job.',
+      }),
+    update: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, replace the existing pipeline with the name specified by jobName with this pipeline, preserving state.',
+      }),
+  })
+  .openapi({
+    description:
+      'Parameters to provide to the template being launched. Note that the [metadata in the pipeline code] (https://cloud.google.com/dataflow/docs/guides/templates/creating-templates#metadata) determines which runtime parameters are valid.',
+    required: [],
+  })
+  .openapi('LaunchTemplateParameters')
+
+const LaunchTemplateResponseSchema: z.ZodType<LaunchTemplateResponseType> = z
+  .object({
+    job: JobSchema.exactOptional().openapi({
+      description:
+        'The job that was launched, if the request was not a dry run and the job was successfully launched.',
+    }),
+  })
+  .openapi({ description: 'Response to the request to launch a template.', required: [] })
+  .openapi('LaunchTemplateResponse')
+
+const LeaseWorkItemRequestSchema = z
+  .object({
+    currentWorkerTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The current timestamp at the worker.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The [regional endpoint] (https://cloud.google.com/dataflow/docs/concepts/regional-endpoints) that contains the WorkItem's job.",
+      }),
+    requestedLeaseDuration: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The initial lease period.' }),
+    unifiedWorkerRequest: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Untranslated bag-of-bytes WorkRequest from UnifiedWorker.' }),
+    workItemTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Filter for WorkItem type.' }),
+    workerCapabilities: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Worker capabilities. WorkItems might be limited to workers with specific capabilities.',
+      }),
+    workerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies the worker leasing work -- typically the ID of the virtual machine running the worker.',
+      }),
+  })
+  .openapi({ description: 'Request to lease WorkItems.', required: [] })
+  .openapi('LeaseWorkItemRequest')
+
+const LeaseWorkItemResponseSchema: z.ZodType<LeaseWorkItemResponseType> = z
   .object({
     unifiedWorkerResponse: z
       .record(
@@ -4082,7 +4410,7 @@ const ListJobMessagesResponseSchema = z
   .openapi({ description: 'Response to a request to list job messages.', required: [] })
   .openapi('ListJobMessagesResponse')
 
-const ListJobsResponseSchema = z
+const ListJobsResponseSchema: z.ZodType<ListJobsResponseType> = z
   .object({
     failedLocation: z
       .array(FailedLocationSchema)
@@ -4201,152 +4529,7 @@ const MetricShortIdSchema = z
   })
   .openapi('MetricShortId')
 
-const SourceSplitShardSchema = z
-  .object({
-    derivationMode: z
-      .enum([
-        'SOURCE_DERIVATION_MODE_UNKNOWN',
-        'SOURCE_DERIVATION_MODE_INDEPENDENT',
-        'SOURCE_DERIVATION_MODE_CHILD_OF_CURRENT',
-        'SOURCE_DERIVATION_MODE_SIBLING_OF_CURRENT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED' }),
-    source: SourceSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
-  })
-  .openapi({ description: 'DEPRECATED in favor of DerivedSource.', required: [] })
-  .openapi('SourceSplitShard')
-
-const SourceForkSchema = z
-  .object({
-    primary: SourceSplitShardSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
-    primarySource: DerivedSourceSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
-    residual: SourceSplitShardSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
-    residualSource: DerivedSourceSchema.exactOptional().openapi({ description: 'DEPRECATED' }),
-  })
-  .openapi({ description: 'DEPRECATED in favor of DynamicSourceSplit.', required: [] })
-  .openapi('SourceFork')
-
-const SourceGetMetadataResponseSchema = z
-  .object({
-    metadata: SourceMetadataSchema.exactOptional().openapi({
-      description: 'The computed metadata.',
-    }),
-  })
-  .openapi({ description: 'The result of a SourceGetMetadataOperation.', required: [] })
-  .openapi('SourceGetMetadataResponse')
-
-const SourceSplitResponseSchema = z
-  .object({
-    bundles: z
-      .array(DerivedSourceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If outcome is SPLITTING_HAPPENED, then this is a list of bundles into which the source was split. Otherwise this field is ignored. This list can be empty, which means the source represents an empty input.',
-      }),
-    outcome: z
-      .enum([
-        'SOURCE_SPLIT_OUTCOME_UNKNOWN',
-        'SOURCE_SPLIT_OUTCOME_USE_CURRENT',
-        'SOURCE_SPLIT_OUTCOME_SPLITTING_HAPPENED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether splitting happened and produced a list of bundles. If this is USE_CURRENT_SOURCE_AS_IS, the current source should be processed "as is" without splitting. "bundles" is ignored in this case. If this is SPLITTING_HAPPENED, then "bundles" contains a list of bundles into which the source was split.',
-      }),
-    shards: z
-      .array(SourceSplitShardSchema)
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED in favor of bundles.' }),
-  })
-  .openapi({ description: 'The response to a SourceSplitRequest.', required: [] })
-  .openapi('SourceSplitResponse')
-
-const SourceOperationResponseSchema = z
-  .object({
-    getMetadata: SourceGetMetadataResponseSchema.exactOptional().openapi({
-      description: 'A response to a request to get metadata about a source.',
-    }),
-    split: SourceSplitResponseSchema.exactOptional().openapi({
-      description: 'A response to a request to split a source.',
-    }),
-  })
-  .openapi({
-    description:
-      'The result of a SourceOperationRequest, specified in ReportWorkItemStatusRequest.source_operation when the work item is completed.',
-    required: [],
-  })
-  .openapi('SourceOperationResponse')
-
-const WorkItemStatusSchema = z
-  .object({
-    completed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if the WorkItem was completed (successfully or unsuccessfully).',
-      }),
-    counterUpdates: z
-      .array(CounterUpdateSchema)
-      .exactOptional()
-      .openapi({ description: 'Worker output counters for this WorkItem.' }),
-    dynamicSourceSplit: DynamicSourceSplitSchema.exactOptional().openapi({
-      description: 'See documentation of stop_position.',
-    }),
-    errors: z
-      .array(StatusSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies errors which occurred during processing. If errors are provided, and completed = true, then the WorkItem is considered to have failed.',
-      }),
-    metricUpdates: z
-      .array(MetricUpdateSchema)
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED in favor of counter_updates.' }),
-    progress: ApproximateProgressSchema.exactOptional().openapi({
-      description: 'DEPRECATED in favor of reported_progress.',
-    }),
-    reportIndex: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The report index. When a WorkItem is leased, the lease will contain an initial report index. When a WorkItem's status is reported to the system, the report should be sent with that report index, and the response will contain the index the worker should use for the next report. Reports received with unexpected index values will be rejected by the service. In order to preserve idempotency, the worker should not alter the contents of a report, even if the worker must submit the same report multiple times before getting back a response. The worker should not submit a subsequent report until the response for the previous report had been received from the service.",
-      }),
-    reportedProgress: ApproximateReportedProgressSchema.exactOptional().openapi({
-      description: "The worker's progress through this WorkItem.",
-    }),
-    requestedLeaseDuration: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Amount of time the worker requests for its lease.' }),
-    sourceFork: SourceForkSchema.exactOptional().openapi({
-      description: 'DEPRECATED in favor of dynamic_source_split.',
-    }),
-    sourceOperationResponse: SourceOperationResponseSchema.exactOptional().openapi({
-      description:
-        'If the work item represented a SourceOperationRequest, and the work is completed, contains the result of the operation.',
-    }),
-    stopPosition: PositionSchema.exactOptional().openapi({
-      description:
-        'A worker may split an active map task in two parts, "primary" and "residual", continuing to process the primary part and returning the residual part into the pool of available work. This event is called a "dynamic split" and is critical to the dynamic work rebalancing feature. The two obtained sub-tasks are called "parts" of the split. The parts, if concatenated, must represent the same input as would be read by the current task if the split did not happen. The exact way in which the original task is decomposed into the two parts is specified either as a position demarcating them (stop_position), or explicitly as two DerivedSources, if this task consumes a user-defined source type (dynamic_source_split). The "current" task is adjusted as a result of the split: after a task with range [A, B) sends a stop_position update at C, its range is considered to be [A, C), e.g.: * Progress should be interpreted relative to the new range, e.g. "75% completed" means "75% of [A, C) completed" * The worker should interpret proposed_stop_position relative to the new range, e.g. "split at 68%" should be interpreted as "split at 68% of [A, C)". * If the worker chooses to split again using stop_position, only stop_positions in [A, C) will be accepted. * Etc. dynamic_source_split has similar semantics: e.g., if a task with source S splits using dynamic_source_split into {P, R} (where P and R must be together equivalent to S), then subsequent progress and proposed_stop_position should be interpreted relative to P, and in a potential subsequent dynamic_source_split into {P\', R\'}, P\' and R\' must be together equivalent to P, etc.',
-    }),
-    totalThrottlerWaitTimeSeconds: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Total time the worker spent being throttled by external systems.' }),
-    workItemId: z.string().exactOptional().openapi({ description: 'Identifies the WorkItem.' }),
-  })
-  .openapi({
-    description: "Conveys a worker's progress through the work described by a WorkItem.",
-    required: [],
-  })
-  .openapi('WorkItemStatus')
-
-const ReportWorkItemStatusRequestSchema = z
+const ReportWorkItemStatusRequestSchema: z.ZodType<ReportWorkItemStatusRequestType> = z
   .object({
     currentWorkerTime: z
       .string()
@@ -4502,7 +4685,7 @@ const ResourceUtilizationReportSchema: z.ZodType<ResourceUtilizationReportType> 
   .openapi('ResourceUtilizationReport')
 
 const ResourceUtilizationReportResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Service-side response to WorkerMessage reporting resource utilization.',
   })
@@ -4535,7 +4718,7 @@ const SendDebugCaptureRequestSchema = z
   .openapi('SendDebugCaptureRequest')
 
 const SendDebugCaptureResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response to a send capture request. nothing' })
   .openapi('SendDebugCaptureResponse')
 
@@ -4753,7 +4936,7 @@ const WorkerHealthReportResponseSchema = z
   .openapi('WorkerHealthReportResponse')
 
 const WorkerShutdownNoticeResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Service-side response to WorkerMessage issuing shutdown notice.' })
   .openapi('WorkerShutdownNoticeResponse')
 
@@ -4821,58 +5004,7 @@ const SnapshotJobRequestSchema = z
   .openapi({ description: 'Request to create a snapshot of a job.', required: [] })
   .openapi('SnapshotJobRequest')
 
-const WorkItemDetailsSchema = z
-  .object({
-    attemptId: z.string().exactOptional().openapi({ description: 'Attempt ID of this work item' }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'End time of this work item attempt. If the work item is completed, this is the actual end time of the work item. Otherwise, it is the predicted end time.',
-      }),
-    metrics: z
-      .array(MetricUpdateSchema)
-      .exactOptional()
-      .openapi({ description: 'Metrics for this work item.' }),
-    progress: ProgressTimeseriesSchema.exactOptional().openapi({
-      description: 'Progress of this work item.',
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Start time of this work item attempt.' }),
-    state: z
-      .enum([
-        'EXECUTION_STATE_UNKNOWN',
-        'EXECUTION_STATE_NOT_STARTED',
-        'EXECUTION_STATE_RUNNING',
-        'EXECUTION_STATE_SUCCEEDED',
-        'EXECUTION_STATE_FAILED',
-        'EXECUTION_STATE_CANCELLED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'State of this work item.' }),
-    stragglerInfo: StragglerInfoSchema.exactOptional().openapi({
-      description: 'Information about straggler detections for this work item.',
-    }),
-    taskId: z.string().exactOptional().openapi({ description: 'Name of this work item.' }),
-  })
-  .openapi({ description: 'Information about an individual work item execution.', required: [] })
-  .openapi('WorkItemDetails')
-
-const WorkerDetailsSchema = z
-  .object({
-    workItems: z
-      .array(WorkItemDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'Work items processed by this worker, sorted by time.' }),
-    workerName: z.string().exactOptional().openapi({ description: 'Name of this worker' }),
-  })
-  .openapi({ description: 'Information about a worker', required: [] })
-  .openapi('WorkerDetails')
-
-const StageExecutionDetailsSchema = z
+const StageExecutionDetailsSchema: z.ZodType<StageExecutionDetailsType> = z
   .object({
     nextPageToken: z
       .string()

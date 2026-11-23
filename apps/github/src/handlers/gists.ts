@@ -13,7 +13,6 @@ import {
   getGistsPublicRoute,
   getGistsRoute,
   getGistsStarredRoute,
-  getUsersUsernameGistsRoute,
   patchGistsGistIdCommentsCommentIdRoute,
   patchGistsGistIdRoute,
   postGistsGistIdCommentsRoute,
@@ -80,8 +79,5 @@ export const gistsHandler = app
     throw new Error('Not implemented')
   })
   .openapi(getGistsGistIdShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUsernameGistsRoute, (c) => {
     throw new Error('Not implemented')
   })

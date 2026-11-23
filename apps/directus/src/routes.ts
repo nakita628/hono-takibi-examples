@@ -195,7 +195,7 @@ const OperationsSchema: z.ZodType<OperationsType> = z
             example: 'log',
           }),
         options: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({
@@ -333,7 +333,7 @@ const FlowsSchema: z.ZodType<FlowsType> = z
             example: 'manual',
           }),
         options: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({ description: 'Options of the selected trigger for the flow.', example: null }),
@@ -538,7 +538,7 @@ const FilesSchema: z.ZodType<FilesType> = z
               'Tags for the file. Is automatically populated based on Exif data for images.',
           }),
         metadata: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({ description: 'IPTC, Exif, and ICC metadata extracted from file' }),
@@ -880,7 +880,7 @@ const DiffSchema = z
             z
               .object({
                 collection: z.string().exactOptional(),
-                diff: z.array(z.object({})).exactOptional(),
+                diff: z.array(z.looseObject({})).exactOptional(),
               })
               .openapi({ required: [] }),
           )
@@ -891,7 +891,7 @@ const DiffSchema = z
               .object({
                 collection: z.string().exactOptional(),
                 field: z.string().exactOptional(),
-                diff: z.array(z.object({})).exactOptional(),
+                diff: z.array(z.looseObject({})).exactOptional(),
               })
               .openapi({ required: [] }),
           )
@@ -903,7 +903,7 @@ const DiffSchema = z
                 collection: z.string().exactOptional(),
                 field: z.string().exactOptional(),
                 related_collection: z.string().exactOptional(),
-                diff: z.array(z.object({})).exactOptional(),
+                diff: z.array(z.looseObject({})).exactOptional(),
               })
               .openapi({ required: [] }),
           )
@@ -1107,7 +1107,7 @@ const FieldsSchema = z
             example: 'primary-key',
           }),
         options: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({
@@ -1125,7 +1125,7 @@ const FieldsSchema = z
             example: null,
           }),
         display_options: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({
@@ -1178,7 +1178,7 @@ const FieldsSchema = z
           .exactOptional()
           .openapi({ description: 'What field group this field is part of.', example: null }),
         translations: z
-          .object({})
+          .looseObject({})
           .nullable()
           .exactOptional()
           .openapi({
@@ -1203,7 +1203,7 @@ const FieldsSchema = z
   .openapi({ required: [] })
   .openapi('Fields')
 
-const ItemsSchema = z.object({}).openapi('Items')
+const ItemsSchema = z.looseObject({}).openapi('Items')
 
 const MetadataSchema = z
   .object({
@@ -1248,21 +1248,21 @@ const PermissionsSchema = z
       .exactOptional()
       .openapi({ description: 'What action this permission applies to.', example: 'create' }),
     permissions: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
         description: 'JSON structure containing the permissions checks for this permission.',
       }),
     validation: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
         description: 'JSON structure containing the validation checks for this permission.',
       }),
     presets: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1320,7 +1320,7 @@ const PresetsSchema = z
       }),
     search: z.string().nullable().exactOptional().openapi({ description: 'Search query.' }),
     filters: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .nullable()
       .exactOptional()
       .openapi({
@@ -1372,7 +1372,7 @@ const QuerySchema = z
         example: ['title', 'author.name', '*.*'],
       }),
     filter: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Select items in the collection that match the given filter conditions.',
@@ -1454,7 +1454,7 @@ const QuerySchema = z
         example: ['status'],
       }),
     deep: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1462,7 +1462,7 @@ const QuerySchema = z
         example: { related_articles: { _limit: 3 } },
       }),
     alias: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1620,7 +1620,7 @@ const VersionsSchema = z
         example: '63716273-0f29-4648-8a2a-2af2948f6f78',
       }),
     delta: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The current changes compared to the main version of the item.',
@@ -1649,7 +1649,7 @@ const RevisionsSchema = z
       .exactOptional()
       .openapi({ description: 'Primary key of updated item.', example: '168' }),
     data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1663,7 +1663,7 @@ const RevisionsSchema = z
         },
       }),
     delta: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Changes between the previous and the current revision.',
@@ -1869,13 +1869,10 @@ const NotFoundErrorResponse = {
 const RedirectResponseResponse = {
   description: 'Redirect to another location',
   headers: z.object({
-    Location: {
-      description: 'URL the client is redirected to.',
-      schema: z
-        .url()
-        .exactOptional()
-        .openapi({ description: 'URL the client is redirected to.', param: { required: false } }),
-    },
+    Location: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'URL the client is redirected to.', param: { required: false } }),
   }),
 }
 
@@ -2014,7 +2011,7 @@ const AliasParamsSchema = z
     } catch {
       return val
     }
-  }, z.object({}))
+  }, z.looseObject({}))
   .exactOptional()
   .openapi({
     param: {
@@ -2066,7 +2063,7 @@ const DeepParamsSchema = z
     } catch {
       return val
     }
-  }, z.object({}))
+  }, z.looseObject({}))
   .exactOptional()
   .openapi({
     param: {
@@ -2161,7 +2158,7 @@ const FilterParamsSchema = z
     } catch {
       return val
     }
-  }, z.object({}))
+  }, z.looseObject({}))
   .exactOptional()
   .openapi({
     param: {
@@ -2907,7 +2904,7 @@ export const getItemsCollectionRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              data: z.array(z.object({})).exactOptional(),
+              data: z.array(z.looseObject({})).exactOptional(),
               meta: MetadataSchema.exactOptional(),
             })
             .openapi({ required: [] }),
@@ -2933,7 +2930,7 @@ export const postItemsCollectionRoute = createRoute({
   responses: {
     200: {
       description: 'Successful request',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: UnauthorizedErrorResponse,
   },
@@ -2975,7 +2972,7 @@ export const patchItemsCollectionRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ data: z.array(z.object({})).exactOptional() })
+            .object({ data: z.array(z.looseObject({})).exactOptional() })
             .openapi({ required: [] }),
         },
       },
@@ -3046,7 +3043,7 @@ export const getItemsCollectionIdRoute = createRoute({
       description: 'Successful request',
       content: {
         'application/json': {
-          schema: z.object({ data: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ data: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -3166,14 +3163,14 @@ export const patchItemsCollectionIdRoute = createRoute({
       }),
     }),
     query: z.object({ fields: FieldsParamsSchema }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: {
     200: {
       description: 'Successful request',
       content: {
         'application/json': {
-          schema: z.object({ data: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ data: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -3545,7 +3542,7 @@ export const patchPresetsIdRoute = createRoute({
                     'Options of the views. The properties in here are controlled by the layout.',
                 }),
               translation: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3637,7 +3634,7 @@ export const postCollectionsRoute = createRoute({
                       example: 'my_collection',
                     }),
                   fields: z
-                    .array(z.object({}))
+                    .array(z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
@@ -4601,7 +4598,7 @@ export const postFieldsCollectionRoute = createRoute({
                       example: 'primary-key',
                     }),
                   options: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({
@@ -4619,7 +4616,7 @@ export const postFieldsCollectionRoute = createRoute({
                       example: null,
                     }),
                   display_options: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({
@@ -4678,7 +4675,7 @@ export const postFieldsCollectionRoute = createRoute({
                       example: null,
                     }),
                   translation: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({
@@ -4970,7 +4967,7 @@ export const patchFieldsCollectionIdRoute = createRoute({
                       example: 'primary-key',
                     }),
                   options: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({
@@ -4988,7 +4985,7 @@ export const patchFieldsCollectionIdRoute = createRoute({
                       example: null,
                     }),
                   display_options: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({
@@ -5047,7 +5044,7 @@ export const patchFieldsCollectionIdRoute = createRoute({
                       example: null,
                     }),
                   translation: z
-                    .object({})
+                    .looseObject({})
                     .nullable()
                     .exactOptional()
                     .openapi({
@@ -6313,7 +6310,7 @@ export const patchPermissionsIdRoute = createRoute({
           schema: z
             .object({
               collection: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'What collection this permission applies to.' }),
               comment: z
@@ -6340,21 +6337,21 @@ export const patchPermissionsIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'If the user can read items.' }),
               read_field_blacklist: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Explicitly denies read access for specific fields.' }),
               role: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Unique identifier of the role this permission applies to.',
                 }),
               status: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'What status this permission applies to.' }),
               status_blacklist: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Explicitly denies specific statuses to be used.' }),
               update: z
@@ -6362,7 +6359,7 @@ export const patchPermissionsIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'If the user can update items.' }),
               write_field_blacklist: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Explicitly denies write access for specific fields.' }),
             })
@@ -7109,7 +7106,7 @@ export const getServerInfoRoute = createRoute({
       description: 'Successful request',
       content: {
         'application/json': {
-          schema: z.object({ data: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ data: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -7164,7 +7161,7 @@ export const patchSettingsRoute = createRoute({
   summary: 'Update Settings',
   description: 'Update the settings',
   operationId: 'updateSetting',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: {
     200: {
       description: 'Successful request',
@@ -7357,7 +7354,7 @@ export const patchUsersIdRoute = createRoute({
       description: 'Successful request',
       content: {
         'application/json': {
-          schema: z.object({ data: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ data: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -7881,7 +7878,7 @@ export const postUtilsImportRoute = createRoute({
                                 'Primary keys of records that were deleted (only when `dangerouslyAllowDelete` is set).',
                             }),
                           mapped: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -8270,12 +8267,12 @@ export const postVersionsIdSaveRoute = createRoute({
   operationId: 'saveContentVersion',
   request: {
     params: z.object({ id: UUIdParamsSchema }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: {
     200: {
       description: 'Successful request',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: UnauthorizedErrorResponse,
     404: NotFoundErrorResponse,
@@ -8295,7 +8292,7 @@ export const getVersionsIdCompareRoute = createRoute({
       description: 'Successful request',
       content: {
         'application/json': {
-          schema: z.object({ data: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ data: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -8339,7 +8336,7 @@ export const postVersionsIdPromoteRoute = createRoute({
   responses: {
     200: {
       description: 'Successful request',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: UnauthorizedErrorResponse,
     404: NotFoundErrorResponse,

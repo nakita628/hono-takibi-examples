@@ -688,7 +688,7 @@ const ChartDataAdhocMetricSchemaSchema = z
 const ChartDataAggregateOptionsSchemaSchema = z
   .object({
     aggregates: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -953,7 +953,7 @@ const ChartDataGeohashEncodeOptionsSchemaSchema = z
 const ChartDataPivotOptionsSchemaSchema = z
   .object({
     aggregates: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1002,7 +1002,7 @@ const ChartDataPostProcessingOperationSchema = z
       .string()
       .openapi({ description: 'Post processing operation type', example: 'aggregate' }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1104,7 +1104,7 @@ const ChartDataQueryObjectSchema = z
       .exactOptional()
       .openapi({ description: 'Annotation layers to apply to chart' }),
     applied_time_extras: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1348,6 +1348,15 @@ const ChartDataQueryContextSchemaSchema = z
         description:
           'Opt this request into asynchronous execution on the Global Task Framework (requires the GLOBAL_ASYNC_QUERIES feature flag). When true the response is HTTP 202 with the query task ids to poll; when absent or false the query runs synchronously (HTTP 200). Default: `false`.',
       }),
+    client_id: z
+      .string()
+      .max(64)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Client-generated id identifying this chart query run. When the database supports query cancellation, it lets the client stop the running query via POST /api/v1/chart/data/stop. Scoped to the requesting user, so it can never address another user's query.",
+      }),
     custom_cache_timeout: z
       .int()
       .nullable()
@@ -1428,7 +1437,7 @@ const ChartDataResponseResultSchema = z
       .exactOptional()
       .openapi({ description: 'All requested annotation data' }),
     applied_filters: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'A list with applied filters' }),
     cache_key: z.string().nullable().openapi({ description: 'Unique cache key for query object' }),
@@ -1448,7 +1457,10 @@ const ChartDataResponseResultSchema = z
       .array(z.int())
       .exactOptional()
       .openapi({ description: 'A list of generic data types of each column' }),
-    data: z.array(z.object({})).exactOptional().openapi({ description: 'A list with results' }),
+    data: z
+      .array(z.looseObject({}))
+      .exactOptional()
+      .openapi({ description: 'A list with results' }),
     detected_currency: z
       .string()
       .nullable()
@@ -1477,7 +1489,7 @@ const ChartDataResponseResultSchema = z
         description: 'The executed query statement. May be absent when validation errors occur.',
       }),
     rejected_filters: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'A list with rejected filters' }),
     rowcount: z.int().exactOptional().openapi({ description: 'Amount of rows in result set' }),
@@ -1951,7 +1963,7 @@ const ChartDataRollingOptionsSchemaSchema = z
         example: false,
       }),
     columns: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "columns on which to perform rolling, mapping source column to target column. For instance, `{'y': 'y'}` will replace the column `y` with the rolling value in `y`, while `{'y': 'y2'}` will add a column `y2` based on rolling values calculated from `y`, leaving the original column `y` unchanged.",
@@ -1994,7 +2006,7 @@ const ChartDataRollingOptionsSchemaSchema = z
         example: 'percentile',
       }),
     rolling_type_options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2048,7 +2060,7 @@ const ChartDataSelectOptionsSchemaSchema = z
       .exactOptional()
       .openapi({ description: 'Columns to exclude from selection.', example: ['my_temp_column'] }),
     rename: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -2088,6 +2100,20 @@ const ChartDataSortOptionsSchemaSchema = z
   .openapi({ required: [] })
   .openapi('ChartDataSortOptionsSchema')
 
+const ChartDataStopSchemaSchema = z
+  .object({
+    client_id: z
+      .string()
+      .min(1)
+      .max(64)
+      .openapi({
+        description:
+          "The `client_id` sent with the chart-data request whose query should be cancelled. Resolved within the requesting user's own in-flight queries only.",
+      }),
+  })
+  .openapi({ required: ['client_id'] })
+  .openapi('ChartDataStopSchema')
+
 const ChartEntityResponseSchemaSchema = z
   .object({
     cache_timeout: z
@@ -2118,7 +2144,7 @@ const ChartEntityResponseSchemaSchema = z
       .exactOptional()
       .openapi({ description: 'Sanitized HTML version of the chart description.' }),
     form_data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: "Form data from the Explore controls used to form the chart's data query.",
@@ -2749,8 +2775,8 @@ const DashboardColorsConfigUpdateSchemaSchema = z
     color_namespace: z.string().nullable().exactOptional(),
     color_scheme: z.string().nullable().exactOptional(),
     color_scheme_domain: z.array(z.string()).exactOptional(),
-    label_colors: z.object({}).exactOptional(),
-    map_label_colors: z.object({}).exactOptional(),
+    label_colors: z.looseObject({}).exactOptional(),
+    map_label_colors: z.looseObject({}).exactOptional(),
     shared_label_colors: z.array(z.string()).exactOptional(),
   })
   .openapi({ required: [] })
@@ -2815,10 +2841,10 @@ const DashboardDatasetSchemaSchema = z
         description:
           'Display labels keyed by member chart ID, then by the raw column or metric ID that chart uses. Only charts the caller can access and labels configured for their saved dimensions and metrics are included; omitted for semantic views, when there are none, or when the caller has datasource access and already receives verbose_map.',
       }),
-    column_formats: z.object({}).exactOptional(),
+    column_formats: z.looseObject({}).exactOptional(),
     column_names: z.array(z.string()).exactOptional(),
     column_types: z.array(z.int()).exactOptional(),
-    columns: z.array(z.object({})).exactOptional(),
+    columns: z.array(z.looseObject({})).exactOptional(),
     currency_code_column: z.string().exactOptional(),
     database: DatabaseSchema.exactOptional(),
     datasource_name: z.string().exactOptional(),
@@ -2837,15 +2863,15 @@ const DashboardDatasetSchemaSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Validation error for this dataset only.' }),
-    metrics: z.array(z.object({})).exactOptional(),
+    metrics: z.array(z.looseObject({})).exactOptional(),
     name: z.string().exactOptional(),
     normalize_columns: z.boolean().exactOptional(),
     offset: z.int().exactOptional(),
     order_by_choices: z.array(z.array(z.string())).exactOptional(),
     params: z.string().exactOptional(),
-    parent: z.object({}).exactOptional(),
+    parent: z.looseObject({}).exactOptional(),
     partition_column: z.string().nullable().exactOptional(),
-    partition_filter_mapping: z.object({}).nullable().exactOptional(),
+    partition_filter_mapping: z.looseObject({}).nullable().exactOptional(),
     partition_mapped_column: z.string().nullable().exactOptional(),
     perm: z.string().exactOptional(),
     schema: z.string().exactOptional(),
@@ -2867,7 +2893,7 @@ const DashboardDatasetSchemaSchema = z
 const DashboardExportXlsxPostSchemaSchema = z
   .object({
     active_data_mask: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -3005,14 +3031,14 @@ const DashboardPermalinkStateSchemaSchema = z
       .exactOptional()
       .openapi({ description: 'Optional anchor link added to url hash' }),
     chartStates: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
         description: 'Chart-level state for stateful tables (column order, sorting, filtering)',
       }),
     dataMask: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Data mask used for native filter state' }),
@@ -3336,6 +3362,20 @@ const Database1Schema = z
   .openapi({ required: [] })
   .openapi('Database1')
 
+const EncryptedExtraExpirationSchema = z
+  .object({
+    expired: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the stored JWT has expired' }),
+    expires_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When the stored JWT expires, from its exp claim, in UTC' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EncryptedExtraExpiration')
+
 const IdentifierQuoteSchema = z
   .object({
     end: z
@@ -3363,6 +3403,20 @@ const EngineInformationSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'SSH tunnel is not available to the database' }),
+    encrypted_extra_expirations: z
+      .record(z.string(), EncryptedExtraExpirationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'On `/connection` only: JSONPath of each stored sensitive encrypted_extra field holding a JWT with an exp claim, and when it expires. The signature is not verified.',
+      }),
+    encrypted_extra_sensitive_fields: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "JSONPath of each sensitive encrypted_extra field and its label. On the database GET and on `available`: the engine's declared patterns. On `/connection`: the fields present in the stored encrypted_extra.",
+      }),
     identifier_quote: IdentifierQuoteSchema.exactOptional().openapi({
       description: 'Characters used to quote identifiers for this dialect',
     }),
@@ -3627,7 +3681,7 @@ const DatabaseRelatedChartsSchema = z
 const DatabaseRelatedDashboardSchema = z
   .object({
     id: z.int().exactOptional(),
-    json_metadata: z.object({}).exactOptional(),
+    json_metadata: z.looseObject({}).exactOptional(),
     slug: z.string().exactOptional(),
     title: z.string().exactOptional(),
   })
@@ -4025,7 +4079,7 @@ const DatabaseSchemaAccessForFileUploadResponseSchema = z
 const DatabaseTablesResponseSchema = z
   .object({
     extra: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Extra data used to specify column metadata' }),
     type: z.string().exactOptional().openapi({ description: 'table or view' }),
@@ -4213,10 +4267,13 @@ const DatasetSchema = z
       .int()
       .exactOptional()
       .openapi({ description: 'Duration (in seconds) of the caching timeout for this dataset.' }),
-    column_formats: z.object({}).exactOptional().openapi({ description: 'Column formats.' }),
-    columns: z.array(z.object({})).exactOptional().openapi({ description: 'Columns metadata.' }),
+    column_formats: z.looseObject({}).exactOptional().openapi({ description: 'Column formats.' }),
+    columns: z
+      .array(z.looseObject({}))
+      .exactOptional()
+      .openapi({ description: 'Columns metadata.' }),
     database: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Database associated with the dataset.' }),
     datasource_name: z.string().exactOptional().openapi({ description: 'Dataset name.' }),
@@ -4234,7 +4291,7 @@ const DatasetSchema = z
       .exactOptional()
       .openapi({ description: 'List of editors' }),
     extra: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'JSON string containing extra configuration elements.' }),
     fetch_values_predicate: z
@@ -4250,7 +4307,7 @@ const DatasetSchema = z
       .exactOptional()
       .openapi({ description: 'If the SELECT filter is enabled.' }),
     granularity_sqla: z
-      .array(z.array(z.object({})))
+      .array(z.array(z.looseObject({})))
       .exactOptional()
       .openapi({
         description:
@@ -4266,14 +4323,20 @@ const DatasetSchema = z
       .exactOptional()
       .openapi({ description: 'If the dataset is a SQL Lab view.' }),
     main_dttm_col: z.string().exactOptional().openapi({ description: 'The main temporal column.' }),
-    metrics: z.array(z.object({})).exactOptional().openapi({ description: 'Dataset metrics.' }),
+    metrics: z
+      .array(z.looseObject({}))
+      .exactOptional()
+      .openapi({ description: 'Dataset metrics.' }),
     name: z.string().exactOptional().openapi({ description: 'Dataset name.' }),
     offset: z.int().exactOptional().openapi({ description: 'Dataset offset.' }),
     order_by_choices: z
       .array(z.array(z.string()))
       .exactOptional()
       .openapi({ description: 'List of order by columns.' }),
-    params: z.object({}).exactOptional().openapi({ description: 'Extra params for the dataset.' }),
+    params: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Extra params for the dataset.' }),
     perm: z.string().exactOptional().openapi({ description: 'Permission expression.' }),
     rls_filters: z
       .array(RlsFilterSchema)
@@ -4291,7 +4354,7 @@ const DatasetSchema = z
       .exactOptional()
       .openapi({ description: 'The name of the table associated with the dataset.' }),
     template_params: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Table template params.' }),
     time_grain_sqla: z
@@ -4301,7 +4364,7 @@ const DatasetSchema = z
     type: z.string().exactOptional().openapi({ description: 'Dataset type.' }),
     uid: z.string().exactOptional().openapi({ description: 'Dataset unique identifier.' }),
     verbose_map: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Mapping from raw name to verbose name.' }),
   })
@@ -4519,7 +4582,7 @@ const DatasetRelatedChartsSchema = z
 const DatasetRelatedDashboardSchema = z
   .object({
     id: z.int().exactOptional(),
-    json_metadata: z.object({}).exactOptional(),
+    json_metadata: z.looseObject({}).exactOptional(),
     slug: z.string().exactOptional(),
     title: z.string().exactOptional(),
   })
@@ -4975,6 +5038,40 @@ const EmbeddedDashboardRestApiPutSchema = z
   .openapi({ required: [] })
   .openapi('EmbeddedDashboardRestApiPut')
 
+const EncryptedExtraHintSchemaSchema = z
+  .object({
+    expired: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether the stored JWT has expired; null when expires_at is null' }),
+    expires_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When the stored JWT expires, from its exp claim, in UTC; null when the value is not a JWT with an exp claim',
+      }),
+    label: z.string().openapi({ description: 'Human readable name of the masked field' }),
+    path: z.string().openapi({ description: 'JSONPath of the masked field' }),
+    suffix: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Last characters of the stored value (of the base64 body for a PEM key), null when the value is too short to reveal any',
+      }),
+  })
+  .openapi({ required: ['label', 'path'] })
+  .openapi('EncryptedExtraHintSchema')
+
+const EncryptedExtraHintsResponseSchemaSchema = z
+  .object({ result: z.array(EncryptedExtraHintSchemaSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('EncryptedExtraHintsResponseSchema')
+
 const EstimateQueryCostSchemaSchema = z
   .object({
     catalog: z.string().nullable().exactOptional().openapi({ description: 'The database catalog' }),
@@ -4982,7 +5079,7 @@ const EstimateQueryCostSchemaSchema = z
     schema: z.string().nullable().exactOptional().openapi({ description: 'The database schema' }),
     sql: z.string().openapi({ description: 'The SQL query to estimate' }),
     template_params: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The SQL query template params' }),
   })
@@ -5047,7 +5144,7 @@ const SliceSchema = z
       .exactOptional()
       .openapi({ description: 'List of editors' }),
     form_data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Form data associated with the slice.' }),
     is_managed_externally: z
@@ -5059,7 +5156,7 @@ const SliceSchema = z
       .exactOptional()
       .openapi({ description: 'Last modification in human readable form.' }),
     query_context: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The context associated with the query.' }),
     slice_id: z.int().exactOptional().openapi({ description: 'The slice ID.' }),
@@ -5073,7 +5170,7 @@ const ExploreContextSchemaSchema = z
   .object({
     dataset: DatasetSchema.exactOptional(),
     form_data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: "Form data from the Explore controls used to form the chart's data query.",
@@ -5090,14 +5187,14 @@ const ExploreContextSchemaSchema = z
 const ExplorePermalinkStateSchemaSchema = z
   .object({
     chartState: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
         description:
           'Chart-level state for stateful tables (column filters, sorting, column order)',
       }),
-    formData: z.object({}).openapi({ description: 'Chart form data' }),
+    formData: z.looseObject({}).openapi({ description: 'Chart form data' }),
     urlParams: z
       .array(z.any().nullable().openapi({ description: 'URL Parameter key-value pair' }))
       .nullable()
@@ -5372,6 +5469,16 @@ const PartitionMappingPreviewSchemaSchema = z
         description:
           'Values to evaluate the transform at. A comparison operator takes one; IN takes the whole list.',
       }),
+    validation_partition_values: z
+      .array(z.string().regex(/^-?[0-9]{1,19}$/))
+      .min(1)
+      .max(3)
+      .nullable()
+      .default(null)
+      .exactOptional()
+      .openapi({
+        description: 'One to three existing integer partition keys for explicit data validation',
+      }),
     value_transform: z
       .string()
       .min(1)
@@ -5421,7 +5528,7 @@ const QueryResultSchema = z
     endDttm: z.number().exactOptional(),
     errorMessage: z.string().nullable().exactOptional(),
     executedSql: z.string().exactOptional(),
-    extra: z.object({}).exactOptional(),
+    extra: z.looseObject({}).exactOptional(),
     id: z.string().exactOptional(),
     limit: z.int().exactOptional(),
     limitingFactor: z.string().exactOptional(),
@@ -5447,12 +5554,12 @@ const QueryResultSchema = z
 
 const QueryExecutionResponseSchemaSchema = z
   .object({
-    columns: z.array(z.object({})).exactOptional(),
-    data: z.array(z.object({})).exactOptional(),
-    expanded_columns: z.array(z.object({})).exactOptional(),
+    columns: z.array(z.looseObject({})).exactOptional(),
+    data: z.array(z.looseObject({})).exactOptional(),
+    expanded_columns: z.array(z.looseObject({})).exactOptional(),
     query: QueryResultSchema.exactOptional(),
     query_id: z.int().exactOptional(),
-    selected_columns: z.array(z.object({})).exactOptional(),
+    selected_columns: z.array(z.looseObject({})).exactOptional(),
     status: z.string().exactOptional(),
   })
   .openapi({ required: [] })
@@ -5689,7 +5796,7 @@ const RecentActivitySchemaSchema = z
 const RelatedResultResponseSchema = z
   .object({
     extra: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The extra metadata for related item' }),
     text: z
@@ -6080,7 +6187,7 @@ const ReportScheduleRestApiPostSchema = z
         description: 'The report schedule subject line',
         example: '[Report]  Report name: Dashboard or chart name',
       }),
-    extra: z.object({}).exactOptional(),
+    extra: z.looseObject({}).exactOptional(),
     force_screenshot: z.boolean().exactOptional(),
     grace_period: z
       .int()
@@ -6878,7 +6985,7 @@ const ReportScheduleRestApiPutSchema = z
         description: 'The report schedule subject line',
         example: '[Report]  Report name: Dashboard or chart name',
       }),
-    extra: z.object({}).exactOptional(),
+    extra: z.looseObject({}).exactOptional(),
     force_screenshot: z.boolean().exactOptional(),
     grace_period: z
       .int()
@@ -7697,13 +7804,13 @@ const TabStateSchema = z
     active: z.boolean().exactOptional(),
     autorun: z.boolean().exactOptional(),
     database_id: z.int().exactOptional(),
-    extra_json: z.object({}).exactOptional(),
+    extra_json: z.looseObject({}).exactOptional(),
     hide_left_bar: z.boolean().exactOptional(),
     id: z.string().exactOptional(),
     label: z.string().exactOptional(),
     latest_query: QueryResultSchema.exactOptional(),
     query_limit: z.int().exactOptional(),
-    saved_query: z.object({}).nullable().exactOptional(),
+    saved_query: z.looseObject({}).nullable().exactOptional(),
     schema: z.string().exactOptional(),
     sql: z.string().exactOptional(),
     table_schemas: z.array(TableSchema).exactOptional(),
@@ -8322,9 +8429,9 @@ const TabSchema: z.ZodType<TabType> = z
 
 const TableExtraMetadataResponseSchemaSchema = z
   .object({
-    clustering: z.object({}).exactOptional(),
-    metadata: z.object({}).exactOptional(),
-    partitions: z.object({}).exactOptional(),
+    clustering: z.looseObject({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
+    partitions: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('TableExtraMetadataResponseSchema')
@@ -8872,7 +8979,7 @@ const ValidateSQLRequestSchema = z
     catalog: z.string().nullable().exactOptional(),
     schema: z.string().nullable().exactOptional(),
     sql: z.string().openapi({ description: 'SQL statement to validate' }),
-    template_params: z.object({}).nullable().exactOptional(),
+    template_params: z.looseObject({}).nullable().exactOptional(),
   })
   .openapi({ required: ['sql'] })
   .openapi('ValidateSQLRequest')
@@ -9353,7 +9460,7 @@ const _410Response = {
                       'REPORT_NOTIFICATION_ERROR',
                     ])
                     .exactOptional(),
-                  extra: z.object({}).exactOptional(),
+                  extra: z.looseObject({}).exactOptional(),
                   level: z.enum(['info', 'warning', 'error']).exactOptional(),
                   message: z.string().exactOptional(),
                 })
@@ -9698,8 +9805,8 @@ export const getApiV1AnnotationLayerInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -10794,8 +10901,8 @@ export const getApiV1ChartInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -10861,6 +10968,51 @@ export const postApiV1ChartDataRoute = createRoute({
     202: {
       description: 'Async job details',
       content: { 'application/json': { schema: ChartDataAsyncResponseSchemaSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    500: _500Response,
+  },
+  security: [{ jwt: [] }, { api_key: [] }],
+})
+
+export const postApiV1ChartDataStopRoute = createRoute({
+  method: 'post',
+  path: '/api/v1/chart/data/stop',
+  tags: ['Charts'],
+  summary: 'Cancel a running chart-data query',
+  description:
+    "Cancels the warehouse query started by a chart-data request that carried the given `client_id`, for databases whose engine supports query cancellation. The `client_id` is resolved only within the requesting user's own in-flight queries, so it cannot be used to reach another user's query.",
+  request: {
+    body: {
+      content: { 'application/json': { schema: ChartDataStopSchemaSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Cancellation outcome',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              result: z
+                .object({
+                  stopped: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether the engine reported the query cancelled. False when there was no such in-flight query for this user, or the engine could not cancel it.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
     },
     400: _400Response,
     401: _401Response,
@@ -10975,6 +11127,13 @@ export const postApiV1ChartImportIndexRoute = createRoute({
         'multipart/form-data': {
           schema: z
             .object({
+              encrypted_extra_secrets: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'JSON map of sensitive values for masked_encrypted_extra fields of featured databases. Keys are file paths (e.g., "databases/db.yaml") and values are JSON objects mapping JSONPath expressions to secrets.',
+                }),
               formData: z
                 .file()
                 .exactOptional()
@@ -11564,7 +11723,7 @@ export const postApiV1ChartPkFavoritesIndexRoute = createRoute({
       description: 'Chart added to favorites',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -11602,7 +11761,7 @@ export const deleteApiV1ChartPkFavoritesIndexRoute = createRoute({
       description: 'Chart removed from favorites',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -12280,8 +12439,8 @@ export const getApiV1CssTemplateInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -12748,8 +12907,8 @@ export const getApiV1DashboardInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -12957,6 +13116,13 @@ export const postApiV1DashboardImportIndexRoute = createRoute({
         'multipart/form-data': {
           schema: z
             .object({
+              encrypted_extra_secrets: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'JSON map of sensitive values for masked_encrypted_extra fields of featured databases. Keys are file paths (e.g., "databases/db.yaml") and values are JSON objects mapping JSONPath expressions to secrets.',
+                }),
               formData: z
                 .file()
                 .exactOptional()
@@ -13058,7 +13224,7 @@ export const getApiV1DashboardPermalinkKeyRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              state: z.object({}).exactOptional().openapi({ description: 'The stored state' }),
+              state: z.looseObject({}).exactOptional().openapi({ description: 'The stored state' }),
             })
             .openapi({ required: [] }),
         },
@@ -13496,7 +13662,7 @@ export const getApiV1DashboardIdOrSlugTabsRoute = createRoute({
       description: 'Dashboard tabs',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -13962,7 +14128,7 @@ export const postApiV1DashboardPkFavoritesIndexRoute = createRoute({
       description: 'Dashboard added to favorites',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -14000,7 +14166,7 @@ export const deleteApiV1DashboardPkFavoritesIndexRoute = createRoute({
       description: 'Dashboard removed from favorites',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -14173,7 +14339,7 @@ export const getApiV1DashboardPkFilterStateKeyRoute = createRoute({
           schema: z
             .object({
               names: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -14803,6 +14969,21 @@ export const getApiV1DashboardUuidStrVersionsVersionUuidStrIndexRoute = createRo
           },
         }),
     }),
+    query: z.object({
+      include_restore_impact: z
+        .stringbool()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'Include the current count of charts a restore would detach',
+            in: 'query',
+            name: 'include_restore_impact',
+            schema: { default: false, type: 'boolean' },
+            required: false,
+          },
+        }),
+    }),
   },
   responses: {
     200: {
@@ -14812,7 +14993,16 @@ export const getApiV1DashboardUuidStrVersionsVersionUuidStrIndexRoute = createRo
           schema: z
             .object({
               result: z
-                .object({ _version: VersionListItemSchemaSchema.exactOptional() })
+                .object({
+                  _restore_impact: z
+                    .object({ removed_chart_count: z.int().min(0).exactOptional() })
+                    .exactOptional()
+                    .openapi({
+                      description: 'Current membership impact when requested',
+                      required: [],
+                    }),
+                  _version: VersionListItemSchemaSchema.exactOptional(),
+                })
                 .exactOptional()
                 .openapi({
                   description:
@@ -15147,8 +15337,8 @@ export const getApiV1DatabaseInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -15222,6 +15412,13 @@ export const getApiV1DatabaseAvailableIndexRoute = createRoute({
                       .boolean()
                       .exactOptional()
                       .openapi({ description: 'Whether the engine supports SSH Tunnels' }),
+                    encrypted_extra_sensitive_fields: z
+                      .record(z.string(), z.string())
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'JSONPath of each sensitive encrypted_extra field and its label',
+                      }),
                     supports_file_upload: z
                       .boolean()
                       .exactOptional()
@@ -15234,7 +15431,7 @@ export const getApiV1DatabaseAvailableIndexRoute = createRoute({
                   }),
                 name: z.string().exactOptional().openapi({ description: 'Name of the database' }),
                 parameters: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ description: 'JSON schema defining the needed parameters' }),
                 preferred: z
@@ -15645,7 +15842,10 @@ export const getApiV1DatabasePkRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Database', content: { 'application/json': { schema: z.object({}) } } },
+    200: {
+      description: 'Database',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     400: _400Response,
     401: _401Response,
     422: _422Response,
@@ -15848,6 +16048,49 @@ export const getApiV1DatabasePkConnectionRoute = createRoute({
     400: _400Response,
     401: _401Response,
     422: _422Response,
+    500: _500Response,
+  },
+  security: [{ jwt: [] }, { api_key: [] }],
+})
+
+export const getApiV1DatabasePkEncryptedExtraHintsIndexRoute = createRoute({
+  method: 'get',
+  path: '/api/v1/database/{pk}/encrypted_extra_hints/',
+  tags: ['Database'],
+  summary: "Get hints for the masked fields of a database's encrypted extra",
+  description:
+    "Returns the label and last characters of each sensitive field in the database's encrypted extra, so that a stored secret can be told apart from another one without revealing it. A JWT also gets the expiry its unverified exp claim states. The number of characters is set by `ENCRYPTED_EXTRA_HINT_CHARS`; the list is empty when it is 0 or less.",
+  request: {
+    params: z.object({
+      pk: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            description: 'The database id',
+            in: 'path',
+            name: 'pk',
+            required: true,
+            schema: { type: 'integer' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Hints for the masked fields',
+      content: { 'application/json': { schema: EncryptedExtraHintsResponseSchemaSchema } },
+    },
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
     500: _500Response,
   },
   security: [{ jwt: [] }, { api_key: [] }],
@@ -17223,8 +17466,8 @@ export const getApiV1DatasetInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -17443,6 +17686,13 @@ export const postApiV1DatasetImportIndexRoute = createRoute({
         'multipart/form-data': {
           schema: z
             .object({
+              encrypted_extra_secrets: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'JSON map of sensitive values for masked_encrypted_extra fields of featured databases. Keys are file paths (e.g., "databases/db.yaml") and values are JSON objects mapping JSONPath expressions to secrets.',
+                }),
               formData: z
                 .file()
                 .exactOptional()
@@ -17591,7 +17841,7 @@ export const getApiV1DatasetRelatedObjectsIndexRoute = createRoute({
   tags: ['Datasets'],
   summary: 'Get charts and dashboards associated to multiple datasets',
   description:
-    'Aggregates the charts built on any of the requested datasets and the dashboards those charts appear on. Each chart and dashboard is listed once even if it depends on several of the datasets. Requested datasets the user cannot see are ignored; the response is 404 only when none of them are visible.',
+    'Aggregates the charts built on any of the requested datasets and the dashboards that depend on them, through those charts or through a native filter or display control targeting a dataset. Each chart and dashboard is listed once even if it depends on several of the datasets. Requested datasets the user cannot see are ignored; the response is 404 only when none of them are visible.',
   request: {
     query: z.object({
       q: z
@@ -18050,7 +18300,7 @@ export const getApiV1DatasetPkDrillInfoIndexRoute = createRoute({
       description: 'Dataset drill info',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -18171,10 +18421,43 @@ export const postApiV1DatasetPkPartitionMappingPreviewIndexRoute = createRoute({
             .object({
               result: z
                 .object({
+                  data_validation: z
+                    .object({
+                      checked_rows: z.int().exactOptional(),
+                      examples: z
+                        .array(
+                          z
+                            .object({
+                              source_value: z.string().exactOptional(),
+                              stored_key: z.string().exactOptional(),
+                              transformed_value: z.string().nullable().exactOptional(),
+                            })
+                            .openapi({ required: [] }),
+                        )
+                        .exactOptional(),
+                      inconclusive_keys: z
+                        .array(z.string())
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Partition keys whose rows could not be read, present when the status is inconclusive.',
+                        }),
+                      message: z.string().exactOptional(),
+                      mismatch_count: z.int().exactOptional(),
+                      partitions_checked: z.int().exactOptional(),
+                      partitions_requested: z.int().exactOptional(),
+                      skipped_rows: z.int().exactOptional(),
+                      status: z
+                        .enum(['not_checked', 'matched', 'mismatch', 'inconclusive', 'refused'])
+                        .exactOptional(),
+                    })
+                    .exactOptional()
+                    .openapi({ required: [] }),
                   emitted_predicate: z.string().exactOptional(),
                   error: z.string().exactOptional(),
                   reason: z
                     .enum([
+                      'unbucketed_epoch',
                       'unconfigured',
                       'validation',
                       'parse',
@@ -18189,10 +18472,16 @@ export const postApiV1DatasetPkPartitionMappingPreviewIndexRoute = createRoute({
                     .exactOptional()
                     .openapi({
                       description:
-                        'Why the mapping is not valid. Absent when it is. The editor branches on this to decide how to present the failure.',
+                        'Why predicate evaluation was declined. Absent on evaluation success. The editor branches on this to decide how to present the failure.',
                     }),
                   sample_input: z.string().exactOptional(),
-                  valid: z.boolean().exactOptional(),
+                  valid: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Expression/predicate evaluation succeeded; not a guarantee of partition correspondence.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -18742,7 +19031,7 @@ export const getApiV1DatasourceDatasourceTypeDatasourceIdRoute = createRoute({
       description: 'Datasource metadata plus a capabilities block',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -18841,7 +19130,7 @@ export const getApiV1DatasourceDatasourceTypeDatasourceIdColumnColumnNameValuesI
             schema: z
               .object({
                 result: z
-                  .array(z.xor([z.string(), z.int(), z.number(), z.boolean(), z.object({})]))
+                  .array(z.xor([z.string(), z.int(), z.number(), z.boolean(), z.looseObject({})]))
                   .exactOptional(),
                 suggestions_status: z
                   .literal('unavailable_versioned_view')
@@ -18978,7 +19267,7 @@ export const postApiV1DatasourceDatasourceTypeDatasourceIdQueryRoute = createRou
       content: {
         'application/json': {
           schema: z
-            .object({ result: z.array(z.object({})).exactOptional() })
+            .object({ result: z.array(z.looseObject({})).exactOptional() })
             .openapi({ required: [] }),
         },
         'application/vnd.apache.arrow.stream': {
@@ -19551,7 +19840,7 @@ export const getApiV1ExplorePermalinkKeyRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              state: z.object({}).exactOptional().openapi({ description: 'The stored state' }),
+              state: z.looseObject({}).exactOptional().openapi({ description: 'The stored state' }),
             })
             .openapi({ required: [] }),
         },
@@ -19932,6 +20221,29 @@ export const putApiV1MeIndexRoute = createRoute({
   security: [{ jwt: [] }, { api_key: [] }],
 })
 
+export const getApiV1MeApiKeyScopesIndexRoute = createRoute({
+  method: 'get',
+  path: '/api/v1/me/api_key_scopes/',
+  tags: ['Current User'],
+  summary: 'Get the self-issuable API-key scopes',
+  description:
+    "Lists the ``superset:<resource>:<action>`` API-key scopes the current user is allowed to put on a new API key, i.e. the subset of the scope catalog that does not exceed the user's own permissions. Returns a 401 error if the user is unauthenticated.",
+  responses: {
+    200: {
+      description: 'The allowed scopes',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ result: z.array(z.string()).exactOptional() })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    401: _401Response,
+  },
+  security: [{ jwt: [] }, { api_key: [] }],
+})
+
 export const getApiV1MeRolesIndexRoute = createRoute({
   method: 'get',
   path: '/api/v1/me/roles/',
@@ -19972,7 +20284,7 @@ export const getApiV1MenuIndexRoute = createRoute({
                 .array(
                   z
                     .object({
-                      childs: z.array(z.object({})).exactOptional(),
+                      childs: z.array(z.looseObject({})).exactOptional(),
                       icon: z
                         .string()
                         .exactOptional()
@@ -20644,8 +20956,8 @@ export const getApiV1ReportInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -20701,7 +21013,16 @@ export const getApiV1ReportConfigurationIndexRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ result: ReportConfigurationSchemaSchema.exactOptional() })
+            .object({
+              default_executor: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description: 'Fixed default execution account, visible only to admins.',
+                }),
+              result: ReportConfigurationSchemaSchema.exactOptional(),
+            })
             .openapi({ required: [] }),
         },
       },
@@ -21584,8 +21905,8 @@ export const getApiV1RowlevelsecurityInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -22108,8 +22429,8 @@ export const getApiV1SavedQueryInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -22262,6 +22583,13 @@ export const postApiV1SavedQueryImportIndexRoute = createRoute({
         'multipart/form-data': {
           schema: z
             .object({
+              encrypted_extra_secrets: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'JSON map of sensitive values for masked_encrypted_extra fields of featured databases. Keys are file paths (e.g., "databases/db.yaml") and values are JSON objects mapping JSONPath expressions to secrets.',
+                }),
               formData: z
                 .file()
                 .exactOptional()
@@ -22746,8 +23074,8 @@ export const getApiV1SecurityGroupsInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -23106,7 +23434,9 @@ export const postApiV1SecurityPasswordRecoveryResetIndexRoute = createRoute({
         'The new password was rejected (``message.password``) or the token is invalid, expired or already used (``message.token``)',
       content: {
         'application/json': {
-          schema: z.object({ message: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z
+            .object({ message: z.looseObject({}).exactOptional() })
+            .openapi({ required: [] }),
         },
       },
     },
@@ -23292,8 +23622,8 @@ export const getApiV1SecurityPermissionsResourcesInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -23667,8 +23997,8 @@ export const getApiV1SecurityPermissionsInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -24019,8 +24349,8 @@ export const getApiV1SecurityResourcesInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -24427,8 +24757,8 @@ export const getApiV1SecurityRolesInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -25122,8 +25452,8 @@ export const getApiV1SecuritySubjectInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -25415,8 +25745,8 @@ export const getApiV1SecurityUserRegistrationsInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -25756,8 +26086,8 @@ export const getApiV1SecurityUsersInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -26018,7 +26348,7 @@ export const postApiV1SemanticLayerIndexRoute = createRoute({
           schema: z
             .object({
               cache_timeout: z.int().exactOptional(),
-              configuration: z.object({}).exactOptional(),
+              configuration: z.looseObject({}).exactOptional(),
               description: z.string().exactOptional(),
               name: z.string().exactOptional(),
               type: z.string().exactOptional(),
@@ -26089,7 +26419,7 @@ export const postApiV1SemanticLayerSchemaConfigurationRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              configuration: z.object({}).exactOptional(),
+              configuration: z.looseObject({}).exactOptional(),
               type: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
@@ -26157,7 +26487,7 @@ export const putApiV1SemanticLayerUuidRoute = createRoute({
           schema: z
             .object({
               cache_timeout: z.int().exactOptional(),
-              configuration: z.object({}).exactOptional(),
+              configuration: z.looseObject({}).exactOptional(),
               description: z.string().exactOptional(),
               name: z.string().exactOptional(),
             })
@@ -26279,7 +26609,7 @@ export const postApiV1SemanticLayerUuidSchemaRuntimeRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ runtime_data: z.object({}).exactOptional() })
+            .object({ runtime_data: z.looseObject({}).exactOptional() })
             .openapi({ required: [] }),
         },
       },
@@ -26311,7 +26641,7 @@ export const postApiV1SemanticLayerUuidViewsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ runtime_data: z.object({}).exactOptional() })
+            .object({ runtime_data: z.looseObject({}).exactOptional() })
             .openapi({ required: [] }),
         },
       },
@@ -26342,7 +26672,7 @@ export const postApiV1SemanticViewIndexRoute = createRoute({
                   z
                     .object({
                       cache_timeout: z.int().exactOptional(),
-                      configuration: z.object({}).exactOptional(),
+                      configuration: z.looseObject({}).exactOptional(),
                       description: z.string().exactOptional(),
                       name: z.string().exactOptional(),
                       semantic_layer_uuid: z.string().exactOptional(),
@@ -26426,6 +26756,48 @@ export const deleteApiV1SemanticViewIndexRoute = createRoute({
                 .openapi({
                   description:
                     'Archived dependents are named only to users who could restore them from Recently Archived; the others are included in inaccessible_count. The counts overlap and must not be added together.',
+                }),
+              blocked_view_ids: z
+                .array(z.int())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The selected views that have dependents. Nothing is deleted; the others can be deleted in a new request.',
+                }),
+              blocked_views: z
+                .array(
+                  z
+                    .object({
+                      archived_count: z.int(),
+                      dependents: z
+                        .array(
+                          z
+                            .object({
+                              archived: z.boolean(),
+                              id: z.int(),
+                              name: z.string(),
+                              type: z.enum(['chart', 'dashboard', 'alert', 'report']),
+                            })
+                            .openapi({ required: ['type', 'id', 'name', 'archived'] }),
+                        )
+                        .max(20),
+                      id: z.int(),
+                      inaccessible_count: z.int(),
+                      total: z.int(),
+                    })
+                    .openapi({
+                      required: [
+                        'id',
+                        'total',
+                        'dependents',
+                        'inaccessible_count',
+                        'archived_count',
+                      ],
+                    }),
+                )
+                .exactOptional()
+                .openapi({
+                  description: 'Caller-visible dependency details for each blocked view.',
                 }),
               dependents: z
                 .array(
@@ -26640,7 +27012,7 @@ export const postApiV1SqllabEstimateIndexRoute = createRoute({
       description: 'Query estimation result',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -26857,7 +27229,7 @@ export const getApiV1SqllabPermalinkKeyRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              state: z.object({}).exactOptional().openapi({ description: 'The stored state' }),
+              state: z.looseObject({}).exactOptional().openapi({ description: 'The stored state' }),
             })
             .openapi({ required: [] }),
         },
@@ -27151,8 +27523,8 @@ export const getApiV1TagInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -27745,7 +28117,7 @@ export const postApiV1TagPkFavoritesIndexRoute = createRoute({
       description: 'Tag added to favorites',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -27784,7 +28156,7 @@ export const deleteApiV1TagPkFavoritesIndexRoute = createRoute({
       description: 'Tag removed from favorites',
       content: {
         'application/json': {
-          schema: z.object({ result: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ result: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -28027,8 +28399,8 @@ export const getApiV1ThemeInfoRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              add_columns: z.object({}).exactOptional(),
-              edit_columns: z.object({}).exactOptional(),
+              add_columns: z.looseObject({}).exactOptional(),
+              edit_columns: z.looseObject({}).exactOptional(),
               filters: z
                 .object({
                   column_name: z
@@ -28225,8 +28597,8 @@ export const getApiV1ThemeSystemRoute = createRoute({
             .object({
               result: z
                 .object({
-                  dark: z.object({}).exactOptional(),
-                  default: z.object({}).exactOptional(),
+                  dark: z.looseObject({}).exactOptional(),
+                  default: z.looseObject({}).exactOptional(),
                   defaultMode: z.string().exactOptional(),
                   enableUiThemeAdministration: z.boolean().exactOptional(),
                 })

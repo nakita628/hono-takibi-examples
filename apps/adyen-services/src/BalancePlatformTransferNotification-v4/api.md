@@ -2381,7 +2381,7 @@ BasicAuth
 |balanceAccount|[ResourceReference](#schemaresourcereference)|false|none|Contains information about the balance account involved in the transfer.|
 |balancePlatform|string|false|none|The unique identifier of the balance platform.|
 |balances|[[BalanceMutation](#schemabalancemutation)]|false|none|The list of the latest balance statuses in the transfer.|
-|category|string|true|none|The category of the transfer.<br><br>Possible values:<br><br> - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.<br><br>- **card**: A transfer involving a third-party card.<br><br>- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.<br><br>- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.<br><br>- **issuedCard**: A transfer initiated by an Adyen-issued card.<br><br>- **platformPayment**: Funds movements related to payments that are acquired for your users.<br><br>- **topUp**: An incoming transfer initiated by your user to top up their balance account.|
+|category|string|true|none|The category of the transfer.<br><br>Possible values:<br><br> - **bank**: A transfer involving a [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) or a bank account.<br><br>- **card**: A transfer involving a third-party card.<br><br>- **grants**: A transfer related to a capital grant, such as a disbursement or a repayment.<br><br>- **interest**: A transfer that settles accrued [interest](https://docs.adyen.com/business-accounts/earn-returns) on a business account.<br><br>- **internal**: A transfer between [balance accounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts#responses-200-id) within your platform.<br><br>- **issuedCard**: A transfer initiated by an Adyen-issued card.<br><br>- **platformPayment**: Funds movements related to payments that are acquired for your users.<br><br>- **topUp**: An incoming transfer initiated by your user to top up their balance account.|
 |categoryData|[BankCategoryData](#schemabankcategorydata) \| [InternalCategoryData](#schemainternalcategorydata) \| [IssuedCard](#schemaissuedcard) \| [PlatformPayment](#schemaplatformpayment)|false|none|The relevant data according to the transfer category.|
 |counterparty|[TransferNotificationCounterParty](#schematransfernotificationcounterparty)|false|none|The other party in the transfer.|
 |createdAt|string(date-time)|false|none|The date and time when the transfer was created, in ISO 8601 extended format. For example, **2020-12-18T10:15:30+01:00**.|
@@ -2415,6 +2415,7 @@ BasicAuth
 |---|---|
 |category|bank|
 |category|card|
+|category|grants|
 |category|interest|
 |category|internal|
 |category|issuedCard|

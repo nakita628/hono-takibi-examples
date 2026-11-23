@@ -1,0 +1,4937 @@
+type NextPage = { after: string; link?: string | undefined }
+type ForwardPaging = { next?: NextPage | undefined }
+type RGBAColor = { a: number; b: number; g: number; r: number }
+type Angle = { units: 'DEGREES' | 'GRADIANS' | 'RADIANS' | 'TURNS'; value: number }
+type ColorStop = { color: RGBAColor }
+type SideOrCorner = {
+  horizontalSide: 'CENTER' | 'LEFT' | 'RIGHT'
+  verticalSide: 'BOTTOM' | 'MIDDLE' | 'TOP'
+}
+type Gradient = { angle: Angle; colors: ColorStop[]; sideOrCorner: SideOrCorner }
+type BackgroundImage = { backgroundPosition: string; backgroundSize: string; imageUrl: string }
+type Size = {
+  units:
+    | 'CH'
+    | 'CM'
+    | 'EM'
+    | 'EX'
+    | 'IN'
+    | 'LH'
+    | 'MM'
+    | 'PC'
+    | 'PERCENTAGE'
+    | 'PT'
+    | 'PX'
+    | 'Q'
+    | 'REM'
+    | 'VH'
+    | 'VMAX'
+    | 'VMIN'
+    | 'VW'
+  value: number
+}
+type Margin = { bottom: Size; top: Size }
+type Padding = { bottom: Size; left: Size; right: Size; top: Size }
+type BreakpointStyles = { hidden: boolean; margin: Margin; padding: Padding }
+type Styles = {
+  backgroundColor: RGBAColor
+  backgroundGradient: Gradient
+  backgroundImage: BackgroundImage
+  breakpointStyles?: { [x: string]: BreakpointStyles } | undefined
+  flexboxPositioning:
+    | 'BOTTOM_CENTER'
+    | 'BOTTOM_LEFT'
+    | 'BOTTOM_RIGHT'
+    | 'MIDDLE_CENTER'
+    | 'MIDDLE_LEFT'
+    | 'MIDDLE_RIGHT'
+    | 'TOP_CENTER'
+    | 'TOP_LEFT'
+    | 'TOP_RIGHT'
+  forceFullWidthSection: boolean
+  maxWidthSectionCentering: number
+  verticalAlignment: 'BOTTOM' | 'MIDDLE' | 'TOP'
+}
+type RowMetaData = { cssClass: string; styles: Styles }
+type LayoutSection = {
+  cells: LayoutSection[]
+  cssClass: string
+  cssId: string
+  cssStyle: string
+  label: string
+  name: string
+  params: { [x: string]: { [x: string]: unknown } }
+  rowMetaData: RowMetaData[]
+  rows: { [x: string]: LayoutSection }[]
+  styles: Styles
+  type: string
+  w: number
+  x: number
+}
+type PublicAccessRule = { [x: string]: unknown }
+type ContentLanguageVariation = {
+  archivedInDashboard: boolean
+  authorName: string
+  campaign: string
+  campaignName: string
+  created: string
+  id: bigint
+  name: string
+  password: string
+  publicAccessRules: PublicAccessRule[]
+  publicAccessRulesEnabled: boolean
+  publishDate: string
+  slug: string
+  state: string
+  tagIds?: bigint[] | undefined
+  updated: string
+}
+type Page = {
+  abStatus:
+    | 'automated_loser_variant'
+    | 'automated_master'
+    | 'automated_variant'
+    | 'loser_variant'
+    | 'mab_master'
+    | 'mab_variant'
+    | 'master'
+    | 'variant'
+  abTestId: string
+  archivedAt: string
+  archivedInDashboard: boolean
+  attachedStylesheets: { [x: string]: { [x: string]: unknown } }[]
+  authorName: string
+  campaign: string
+  categoryId: number
+  contentGroupId: string
+  contentTypeCategory:
+    | '0'
+    | '1'
+    | '10'
+    | '11'
+    | '12'
+    | '13'
+    | '14'
+    | '15'
+    | '16'
+    | '17'
+    | '18'
+    | '19'
+    | '2'
+    | '20'
+    | '21'
+    | '22'
+    | '3'
+    | '4'
+    | '5'
+    | '6'
+    | '7'
+    | '8'
+    | '9'
+  created: string
+  createdById: string
+  currentState:
+    | 'AGENT_GENERATED'
+    | 'AUTOMATED'
+    | 'AUTOMATED_AB'
+    | 'AUTOMATED_AB_VARIANT'
+    | 'AUTOMATED_DRAFT'
+    | 'AUTOMATED_DRAFT_AB'
+    | 'AUTOMATED_DRAFT_ABVARIANT'
+    | 'AUTOMATED_FOR_FORM'
+    | 'AUTOMATED_FOR_FORM_BUFFER'
+    | 'AUTOMATED_FOR_FORM_DRAFT'
+    | 'AUTOMATED_FOR_FORM_LEGACY'
+    | 'AUTOMATED_LOSER_ABVARIANT'
+    | 'AUTOMATED_SENDING'
+    | 'BLOG_EMAIL_DRAFT'
+    | 'BLOG_EMAIL_PUBLISHED'
+    | 'DRAFT'
+    | 'DRAFT_AB'
+    | 'DRAFT_AB_VARIANT'
+    | 'ERROR'
+    | 'LOSER_AB_VARIANT'
+    | 'PAGE_STUB'
+    | 'PRE_PROCESSING'
+    | 'PROCESSING'
+    | 'PUBLISHED'
+    | 'PUBLISHED_AB'
+    | 'PUBLISHED_AB_VARIANT'
+    | 'PUBLISHED_OR_SCHEDULED'
+    | 'RSS_TO_EMAIL_DRAFT'
+    | 'RSS_TO_EMAIL_PUBLISHED'
+    | 'SCHEDULED'
+    | 'SCHEDULED_AB'
+    | 'SCHEDULED_OR_PUBLISHED'
+  currentlyPublished: boolean
+  domain: string
+  dynamicPageDataSourceId: string
+  dynamicPageDataSourceType: number
+  dynamicPageHubDbTableId: string
+  enableDomainStylesheets: boolean
+  enableLayoutStylesheets: boolean
+  featuredImage: string
+  featuredImageAltText: string
+  folderId: string
+  footerHtml: string
+  headHtml: string
+  htmlTitle: string
+  id: string
+  includeDefaultCustomCss: boolean
+  language:
+    | 'aa'
+    | 'ab'
+    | 'ae'
+    | 'af'
+    | 'af-na'
+    | 'af-za'
+    | 'agq'
+    | 'agq-cm'
+    | 'ak'
+    | 'ak-gh'
+    | 'am'
+    | 'am-et'
+    | 'an'
+    | 'ann'
+    | 'ann-ng'
+    | 'ar'
+    | 'ar-001'
+    | 'ar-ae'
+    | 'ar-bh'
+    | 'ar-dj'
+    | 'ar-dz'
+    | 'ar-eg'
+    | 'ar-eh'
+    | 'ar-er'
+    | 'ar-il'
+    | 'ar-iq'
+    | 'ar-jo'
+    | 'ar-km'
+    | 'ar-kw'
+    | 'ar-lb'
+    | 'ar-ly'
+    | 'ar-ma'
+    | 'ar-mr'
+    | 'ar-om'
+    | 'ar-ps'
+    | 'ar-qa'
+    | 'ar-sa'
+    | 'ar-sd'
+    | 'ar-so'
+    | 'ar-ss'
+    | 'ar-sy'
+    | 'ar-td'
+    | 'ar-tn'
+    | 'ar-ye'
+    | 'as'
+    | 'as-in'
+    | 'asa'
+    | 'asa-tz'
+    | 'ast'
+    | 'ast-es'
+    | 'av'
+    | 'ay'
+    | 'az'
+    | 'az-az'
+    | 'ba'
+    | 'bal'
+    | 'bal-pk'
+    | 'bas'
+    | 'bas-cm'
+    | 'be'
+    | 'be-by'
+    | 'bem'
+    | 'bem-zm'
+    | 'bez'
+    | 'bez-tz'
+    | 'bg'
+    | 'bg-bg'
+    | 'bgc'
+    | 'bgc-in'
+    | 'bho'
+    | 'bho-in'
+    | 'bi'
+    | 'blo'
+    | 'blo-bj'
+    | 'bm'
+    | 'bm-ml'
+    | 'bn'
+    | 'bn-bd'
+    | 'bn-in'
+    | 'bo'
+    | 'bo-cn'
+    | 'bo-in'
+    | 'br'
+    | 'br-fr'
+    | 'brx'
+    | 'brx-in'
+    | 'bs'
+    | 'bs-ba'
+    | 'ca'
+    | 'ca-ad'
+    | 'ca-es'
+    | 'ca-fr'
+    | 'ca-it'
+    | 'ccp'
+    | 'ccp-bd'
+    | 'ccp-in'
+    | 'ce'
+    | 'ce-ru'
+    | 'ceb'
+    | 'ceb-ph'
+    | 'cgg'
+    | 'cgg-ug'
+    | 'ch'
+    | 'chr'
+    | 'chr-us'
+    | 'ckb'
+    | 'ckb-iq'
+    | 'ckb-ir'
+    | 'co'
+    | 'cr'
+    | 'cs'
+    | 'cs-cz'
+    | 'csw'
+    | 'csw-ca'
+    | 'cu'
+    | 'cu-ru'
+    | 'cv'
+    | 'cv-ru'
+    | 'cy'
+    | 'cy-gb'
+    | 'da'
+    | 'da-dk'
+    | 'da-gl'
+    | 'dav'
+    | 'dav-ke'
+    | 'de'
+    | 'de-at'
+    | 'de-be'
+    | 'de-ch'
+    | 'de-de'
+    | 'de-gr'
+    | 'de-it'
+    | 'de-li'
+    | 'de-lu'
+    | 'dje'
+    | 'dje-ne'
+    | 'doi'
+    | 'doi-in'
+    | 'dsb'
+    | 'dsb-de'
+    | 'dua'
+    | 'dua-cm'
+    | 'dv'
+    | 'dyo'
+    | 'dyo-sn'
+    | 'dz'
+    | 'dz-bt'
+    | 'ebu'
+    | 'ebu-ke'
+    | 'ee'
+    | 'ee-gh'
+    | 'ee-tg'
+    | 'el'
+    | 'el-cy'
+    | 'el-gr'
+    | 'en'
+    | 'en-001'
+    | 'en-150'
+    | 'en-ae'
+    | 'en-ag'
+    | 'en-ai'
+    | 'en-as'
+    | 'en-at'
+    | 'en-au'
+    | 'en-bb'
+    | 'en-be'
+    | 'en-bi'
+    | 'en-bm'
+    | 'en-bs'
+    | 'en-bw'
+    | 'en-bz'
+    | 'en-ca'
+    | 'en-cc'
+    | 'en-ch'
+    | 'en-ck'
+    | 'en-cm'
+    | 'en-cn'
+    | 'en-cx'
+    | 'en-cy'
+    | 'en-cz'
+    | 'en-de'
+    | 'en-dg'
+    | 'en-dk'
+    | 'en-dm'
+    | 'en-ee'
+    | 'en-eg'
+    | 'en-er'
+    | 'en-es'
+    | 'en-fi'
+    | 'en-fj'
+    | 'en-fk'
+    | 'en-fm'
+    | 'en-fr'
+    | 'en-gb'
+    | 'en-gd'
+    | 'en-gg'
+    | 'en-gh'
+    | 'en-gi'
+    | 'en-gm'
+    | 'en-gs'
+    | 'en-gu'
+    | 'en-gy'
+    | 'en-hk'
+    | 'en-hu'
+    | 'en-id'
+    | 'en-ie'
+    | 'en-il'
+    | 'en-im'
+    | 'en-in'
+    | 'en-io'
+    | 'en-it'
+    | 'en-je'
+    | 'en-jm'
+    | 'en-ke'
+    | 'en-ki'
+    | 'en-kn'
+    | 'en-ky'
+    | 'en-lc'
+    | 'en-lr'
+    | 'en-ls'
+    | 'en-lu'
+    | 'en-mg'
+    | 'en-mh'
+    | 'en-mo'
+    | 'en-mp'
+    | 'en-ms'
+    | 'en-mt'
+    | 'en-mu'
+    | 'en-mv'
+    | 'en-mw'
+    | 'en-mx'
+    | 'en-my'
+    | 'en-na'
+    | 'en-nf'
+    | 'en-ng'
+    | 'en-nl'
+    | 'en-no'
+    | 'en-nr'
+    | 'en-nu'
+    | 'en-nz'
+    | 'en-pg'
+    | 'en-ph'
+    | 'en-pk'
+    | 'en-pl'
+    | 'en-pn'
+    | 'en-pr'
+    | 'en-pt'
+    | 'en-pw'
+    | 'en-ro'
+    | 'en-rw'
+    | 'en-sb'
+    | 'en-sc'
+    | 'en-sd'
+    | 'en-se'
+    | 'en-sg'
+    | 'en-sh'
+    | 'en-si'
+    | 'en-sk'
+    | 'en-sl'
+    | 'en-ss'
+    | 'en-sx'
+    | 'en-sz'
+    | 'en-tc'
+    | 'en-th'
+    | 'en-tk'
+    | 'en-tn'
+    | 'en-to'
+    | 'en-tt'
+    | 'en-tv'
+    | 'en-tz'
+    | 'en-ug'
+    | 'en-um'
+    | 'en-us'
+    | 'en-vc'
+    | 'en-vg'
+    | 'en-vi'
+    | 'en-vn'
+    | 'en-vu'
+    | 'en-ws'
+    | 'en-za'
+    | 'en-zm'
+    | 'en-zw'
+    | 'eo'
+    | 'eo-001'
+    | 'es'
+    | 'es-419'
+    | 'es-ar'
+    | 'es-bo'
+    | 'es-br'
+    | 'es-bz'
+    | 'es-cl'
+    | 'es-co'
+    | 'es-cr'
+    | 'es-cu'
+    | 'es-do'
+    | 'es-ea'
+    | 'es-ec'
+    | 'es-es'
+    | 'es-gq'
+    | 'es-gt'
+    | 'es-hn'
+    | 'es-ic'
+    | 'es-mx'
+    | 'es-ni'
+    | 'es-pa'
+    | 'es-pe'
+    | 'es-ph'
+    | 'es-pr'
+    | 'es-py'
+    | 'es-sv'
+    | 'es-us'
+    | 'es-uy'
+    | 'es-ve'
+    | 'et'
+    | 'et-ee'
+    | 'eu'
+    | 'eu-es'
+    | 'ewo'
+    | 'ewo-cm'
+    | 'fa'
+    | 'fa-af'
+    | 'fa-ir'
+    | 'ff'
+    | 'ff-bf'
+    | 'ff-cm'
+    | 'ff-gh'
+    | 'ff-gm'
+    | 'ff-gn'
+    | 'ff-gw'
+    | 'ff-lr'
+    | 'ff-mr'
+    | 'ff-ne'
+    | 'ff-ng'
+    | 'ff-sl'
+    | 'ff-sn'
+    | 'fi'
+    | 'fi-fi'
+    | 'fil'
+    | 'fil-ph'
+    | 'fj'
+    | 'fo'
+    | 'fo-dk'
+    | 'fo-fo'
+    | 'fr'
+    | 'fr-be'
+    | 'fr-bf'
+    | 'fr-bi'
+    | 'fr-bj'
+    | 'fr-bl'
+    | 'fr-ca'
+    | 'fr-cd'
+    | 'fr-cf'
+    | 'fr-cg'
+    | 'fr-ch'
+    | 'fr-ci'
+    | 'fr-cm'
+    | 'fr-dj'
+    | 'fr-dz'
+    | 'fr-fr'
+    | 'fr-ga'
+    | 'fr-gf'
+    | 'fr-gn'
+    | 'fr-gp'
+    | 'fr-gq'
+    | 'fr-ht'
+    | 'fr-km'
+    | 'fr-lu'
+    | 'fr-ma'
+    | 'fr-mc'
+    | 'fr-mf'
+    | 'fr-mg'
+    | 'fr-ml'
+    | 'fr-mq'
+    | 'fr-mr'
+    | 'fr-mu'
+    | 'fr-nc'
+    | 'fr-ne'
+    | 'fr-pf'
+    | 'fr-pm'
+    | 'fr-re'
+    | 'fr-rw'
+    | 'fr-sc'
+    | 'fr-sn'
+    | 'fr-sy'
+    | 'fr-td'
+    | 'fr-tg'
+    | 'fr-tn'
+    | 'fr-vu'
+    | 'fr-wf'
+    | 'fr-yt'
+    | 'frr'
+    | 'frr-de'
+    | 'fur'
+    | 'fur-it'
+    | 'fy'
+    | 'fy-nl'
+    | 'ga'
+    | 'ga-gb'
+    | 'ga-ie'
+    | 'gaa'
+    | 'gaa-gh'
+    | 'gd'
+    | 'gd-gb'
+    | 'gl'
+    | 'gl-es'
+    | 'gn'
+    | 'gsw'
+    | 'gsw-ch'
+    | 'gsw-fr'
+    | 'gsw-li'
+    | 'gu'
+    | 'gu-in'
+    | 'guz'
+    | 'guz-ke'
+    | 'gv'
+    | 'gv-im'
+    | 'ha'
+    | 'ha-gh'
+    | 'ha-ne'
+    | 'ha-ng'
+    | 'haw'
+    | 'haw-us'
+    | 'he'
+    | 'he-il'
+    | 'hi'
+    | 'hi-in'
+    | 'hmn'
+    | 'ho'
+    | 'hr'
+    | 'hr-ba'
+    | 'hr-hr'
+    | 'hsb'
+    | 'hsb-de'
+    | 'ht'
+    | 'ht-ht'
+    | 'hu'
+    | 'hu-hu'
+    | 'hy'
+    | 'hy-am'
+    | 'hz'
+    | 'ia'
+    | 'ia-001'
+    | 'id'
+    | 'id-id'
+    | 'ie'
+    | 'ie-ee'
+    | 'ig'
+    | 'ig-ng'
+    | 'ii'
+    | 'ii-cn'
+    | 'ik'
+    | 'io'
+    | 'is'
+    | 'is-is'
+    | 'it'
+    | 'it-ch'
+    | 'it-it'
+    | 'it-sm'
+    | 'it-va'
+    | 'iu'
+    | 'ja'
+    | 'ja-jp'
+    | 'jgo'
+    | 'jgo-cm'
+    | 'jmc'
+    | 'jmc-tz'
+    | 'jv'
+    | 'jv-id'
+    | 'ka'
+    | 'ka-ge'
+    | 'kab'
+    | 'kab-dz'
+    | 'kam'
+    | 'kam-ke'
+    | 'kar'
+    | 'kde'
+    | 'kde-tz'
+    | 'kea'
+    | 'kea-cv'
+    | 'kg'
+    | 'kgp'
+    | 'kgp-br'
+    | 'kh'
+    | 'khq'
+    | 'khq-ml'
+    | 'ki'
+    | 'ki-ke'
+    | 'kj'
+    | 'kk'
+    | 'kk-kz'
+    | 'kkj'
+    | 'kkj-cm'
+    | 'kl'
+    | 'kl-gl'
+    | 'kln'
+    | 'kln-ke'
+    | 'km'
+    | 'km-kh'
+    | 'kn'
+    | 'kn-in'
+    | 'ko'
+    | 'ko-cn'
+    | 'ko-kp'
+    | 'ko-kr'
+    | 'kok'
+    | 'kok-in'
+    | 'kr'
+    | 'ks'
+    | 'ks-in'
+    | 'ksb'
+    | 'ksb-tz'
+    | 'ksf'
+    | 'ksf-cm'
+    | 'ksh'
+    | 'ksh-de'
+    | 'ku'
+    | 'ku-tr'
+    | 'kv'
+    | 'kw'
+    | 'kw-gb'
+    | 'kxv'
+    | 'kxv-in'
+    | 'ky'
+    | 'ky-kg'
+    | 'la'
+    | 'lag'
+    | 'lag-tz'
+    | 'lb'
+    | 'lb-lu'
+    | 'lg'
+    | 'lg-ug'
+    | 'li'
+    | 'lij'
+    | 'lij-it'
+    | 'lkt'
+    | 'lkt-us'
+    | 'lmo'
+    | 'lmo-it'
+    | 'ln'
+    | 'ln-ao'
+    | 'ln-cd'
+    | 'ln-cf'
+    | 'ln-cg'
+    | 'lo'
+    | 'lo-la'
+    | 'lrc'
+    | 'lrc-iq'
+    | 'lrc-ir'
+    | 'lt'
+    | 'lt-lt'
+    | 'lu'
+    | 'lu-cd'
+    | 'luo'
+    | 'luo-ke'
+    | 'luy'
+    | 'luy-ke'
+    | 'lv'
+    | 'lv-lv'
+    | 'mai'
+    | 'mai-in'
+    | 'mas'
+    | 'mas-ke'
+    | 'mas-tz'
+    | 'mdf'
+    | 'mdf-ru'
+    | 'mer'
+    | 'mer-ke'
+    | 'mfe'
+    | 'mfe-mu'
+    | 'mg'
+    | 'mg-mg'
+    | 'mgh'
+    | 'mgh-mz'
+    | 'mgo'
+    | 'mgo-cm'
+    | 'mh'
+    | 'mi'
+    | 'mi-nz'
+    | 'mk'
+    | 'mk-mk'
+    | 'ml'
+    | 'ml-in'
+    | 'mn'
+    | 'mn-mn'
+    | 'mni'
+    | 'mni-in'
+    | 'mr'
+    | 'mr-in'
+    | 'ms'
+    | 'ms-bn'
+    | 'ms-id'
+    | 'ms-my'
+    | 'ms-sg'
+    | 'mt'
+    | 'mt-mt'
+    | 'mua'
+    | 'mua-cm'
+    | 'my'
+    | 'my-mm'
+    | 'mzn'
+    | 'mzn-ir'
+    | 'na'
+    | 'naq'
+    | 'naq-na'
+    | 'nb'
+    | 'nb-no'
+    | 'nb-sj'
+    | 'nd'
+    | 'nd-zw'
+    | 'nds'
+    | 'nds-de'
+    | 'nds-nl'
+    | 'ne'
+    | 'ne-in'
+    | 'ne-np'
+    | 'ng'
+    | 'nl'
+    | 'nl-aw'
+    | 'nl-be'
+    | 'nl-bq'
+    | 'nl-ch'
+    | 'nl-cw'
+    | 'nl-lu'
+    | 'nl-nl'
+    | 'nl-sr'
+    | 'nl-sx'
+    | 'nmg'
+    | 'nmg-cm'
+    | 'nn'
+    | 'nn-no'
+    | 'nnh'
+    | 'nnh-cm'
+    | 'no'
+    | 'no-no'
+    | 'nqo'
+    | 'nqo-gn'
+    | 'nr'
+    | 'nso'
+    | 'nso-za'
+    | 'nus'
+    | 'nus-ss'
+    | 'nv'
+    | 'ny'
+    | 'nyn'
+    | 'nyn-ug'
+    | 'oc'
+    | 'oc-es'
+    | 'oc-fr'
+    | 'oj'
+    | 'om'
+    | 'om-et'
+    | 'om-ke'
+    | 'or'
+    | 'or-in'
+    | 'os'
+    | 'os-ge'
+    | 'os-ru'
+    | 'pa'
+    | 'pa-in'
+    | 'pa-pk'
+    | 'pcm'
+    | 'pcm-ng'
+    | 'pi'
+    | 'pis'
+    | 'pis-sb'
+    | 'pl'
+    | 'pl-pl'
+    | 'prg'
+    | 'prg-001'
+    | 'ps'
+    | 'ps-af'
+    | 'ps-pk'
+    | 'pt'
+    | 'pt-ao'
+    | 'pt-br'
+    | 'pt-ch'
+    | 'pt-cv'
+    | 'pt-gq'
+    | 'pt-gw'
+    | 'pt-lu'
+    | 'pt-mo'
+    | 'pt-mz'
+    | 'pt-pt'
+    | 'pt-st'
+    | 'pt-tl'
+    | 'qu'
+    | 'qu-bo'
+    | 'qu-ec'
+    | 'qu-pe'
+    | 'raj'
+    | 'raj-in'
+    | 'rm'
+    | 'rm-ch'
+    | 'rn'
+    | 'rn-bi'
+    | 'ro'
+    | 'ro-md'
+    | 'ro-ro'
+    | 'rof'
+    | 'rof-tz'
+    | 'ru'
+    | 'ru-by'
+    | 'ru-kg'
+    | 'ru-kz'
+    | 'ru-md'
+    | 'ru-ru'
+    | 'ru-ua'
+    | 'rw'
+    | 'rw-rw'
+    | 'rwk'
+    | 'rwk-tz'
+    | 'sa'
+    | 'sa-in'
+    | 'sah'
+    | 'sah-ru'
+    | 'saq'
+    | 'saq-ke'
+    | 'sat'
+    | 'sat-in'
+    | 'sbp'
+    | 'sbp-tz'
+    | 'sc'
+    | 'sc-it'
+    | 'sd'
+    | 'sd-in'
+    | 'sd-pk'
+    | 'se'
+    | 'se-fi'
+    | 'se-no'
+    | 'se-se'
+    | 'seh'
+    | 'seh-mz'
+    | 'ses'
+    | 'ses-ml'
+    | 'sg'
+    | 'sg-cf'
+    | 'shi'
+    | 'shi-ma'
+    | 'si'
+    | 'si-lk'
+    | 'sk'
+    | 'sk-sk'
+    | 'sl'
+    | 'sl-si'
+    | 'sm'
+    | 'smn'
+    | 'smn-fi'
+    | 'sms'
+    | 'sms-fi'
+    | 'sn'
+    | 'sn-zw'
+    | 'so'
+    | 'so-dj'
+    | 'so-et'
+    | 'so-ke'
+    | 'so-so'
+    | 'sq'
+    | 'sq-al'
+    | 'sq-mk'
+    | 'sq-xk'
+    | 'sr'
+    | 'sr-ba'
+    | 'sr-cs'
+    | 'sr-me'
+    | 'sr-rs'
+    | 'sr-xk'
+    | 'ss'
+    | 'st'
+    | 'st-ls'
+    | 'st-za'
+    | 'su'
+    | 'su-id'
+    | 'sv'
+    | 'sv-ax'
+    | 'sv-fi'
+    | 'sv-se'
+    | 'sw'
+    | 'sw-cd'
+    | 'sw-ke'
+    | 'sw-tz'
+    | 'sw-ug'
+    | 'sy'
+    | 'syr'
+    | 'syr-iq'
+    | 'syr-sy'
+    | 'szl'
+    | 'szl-pl'
+    | 'ta'
+    | 'ta-in'
+    | 'ta-lk'
+    | 'ta-my'
+    | 'ta-sg'
+    | 'te'
+    | 'te-in'
+    | 'teo'
+    | 'teo-ke'
+    | 'teo-ug'
+    | 'tg'
+    | 'tg-tj'
+    | 'th'
+    | 'th-th'
+    | 'ti'
+    | 'ti-er'
+    | 'ti-et'
+    | 'tk'
+    | 'tk-tm'
+    | 'tl'
+    | 'tn'
+    | 'tn-bw'
+    | 'tn-za'
+    | 'to'
+    | 'to-to'
+    | 'tok'
+    | 'tok-001'
+    | 'tr'
+    | 'tr-cy'
+    | 'tr-tr'
+    | 'ts'
+    | 'tt'
+    | 'tt-ru'
+    | 'tw'
+    | 'twq'
+    | 'twq-ne'
+    | 'ty'
+    | 'tzm'
+    | 'tzm-ma'
+    | 'ug'
+    | 'ug-cn'
+    | 'uk'
+    | 'uk-ua'
+    | 'ur'
+    | 'ur-in'
+    | 'ur-pk'
+    | 'uz'
+    | 'uz-af'
+    | 'uz-uz'
+    | 'vai'
+    | 'vai-lr'
+    | 've'
+    | 'vec'
+    | 'vec-it'
+    | 'vi'
+    | 'vi-vn'
+    | 'vmw'
+    | 'vmw-mz'
+    | 'vo'
+    | 'vo-001'
+    | 'vun'
+    | 'vun-tz'
+    | 'wa'
+    | 'wae'
+    | 'wae-ch'
+    | 'wo'
+    | 'wo-sn'
+    | 'xh'
+    | 'xh-za'
+    | 'xnr'
+    | 'xnr-in'
+    | 'xog'
+    | 'xog-ug'
+    | 'yav'
+    | 'yav-cm'
+    | 'yi'
+    | 'yi-001'
+    | 'yi-ua'
+    | 'yo'
+    | 'yo-bj'
+    | 'yo-ng'
+    | 'yrl'
+    | 'yrl-br'
+    | 'yrl-co'
+    | 'yrl-ve'
+    | 'yue'
+    | 'yue-cn'
+    | 'yue-hk'
+    | 'yue-mo'
+    | 'za'
+    | 'za-cn'
+    | 'zgh'
+    | 'zgh-ma'
+    | 'zh'
+    | 'zh-cn'
+    | 'zh-hans'
+    | 'zh-hant'
+    | 'zh-hk'
+    | 'zh-mo'
+    | 'zh-my'
+    | 'zh-sg'
+    | 'zh-tw'
+    | 'zu'
+    | 'zu-za'
+  layoutSections: { [x: string]: LayoutSection }
+  linkRelCanonicalUrl: string
+  mabExperimentId: string
+  metaDescription: string
+  name: string
+  pageExpiryDate: bigint
+  pageExpiryEnabled: boolean
+  pageExpiryRedirectId: bigint
+  pageExpiryRedirectUrl: string
+  pageRedirected: boolean
+  password: string
+  publicAccessRules: PublicAccessRule[]
+  publicAccessRulesEnabled: boolean
+  publishDate: string
+  publishImmediately: boolean
+  slug: string
+  state: string
+  subcategory: string
+  templatePath: string
+  themeSettingsValues: { [x: string]: { [x: string]: unknown } }
+  translatedFromId: string
+  translations: { [x: string]: ContentLanguageVariation }
+  updated: string
+  updatedById: string
+  url: string
+  useFeaturedImage: boolean
+  widgetContainers: { [x: string]: { [x: string]: unknown } }
+  widgets: { [x: string]: { [x: string]: unknown } }
+}
+type CollectionResponseWithTotalPageForwardPaging = {
+  paging?: ForwardPaging | undefined
+  results: Page[]
+  total: number
+}
+type ErrorDetail = {
+  code?: string | undefined
+  context?: { [x: string]: string[] } | undefined
+  in?: string | undefined
+  message: string
+  subCategory?: string | undefined
+}
+type Error = {
+  category: string
+  context?: { [x: string]: string[] } | undefined
+  correlationId: string
+  errors?: ErrorDetail[] | undefined
+  links?: { [x: string]: string } | undefined
+  message: string
+  subCategory?: string | undefined
+}
+type AbTestCreateRequestVNext = { contentId: string; variationName: string }
+type AbTestEndRequestVNext = { abTestId: string; winnerId: string }
+type AbTestRerunRequestVNext = { abTestId: string; variationId: string }
+type BatchInputString = { inputs: string[] }
+type StandardError = {
+  category: string
+  context: { [x: string]: string[] }
+  errors: ErrorDetail[]
+  id?: string | undefined
+  links: { [x: string]: string }
+  message: string
+  status: string
+  subCategory?: { [x: string]: unknown } | undefined
+}
+type BatchResponsePageWithErrors = {
+  completedAt: string
+  errors?: StandardError[] | undefined
+  links?: { [x: string]: string } | undefined
+  numErrors?: number | undefined
+  requestedAt?: string | undefined
+  results: Page[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+type BatchInputPage = { inputs: Page[] }
+type BatchResponsePage = {
+  completedAt: string
+  links?: { [x: string]: string } | undefined
+  requestedAt?: string | undefined
+  results: Page[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+type BatchInputJsonNode = { inputs: { [x: string]: unknown }[] }
+type ContentCloneRequestVNext = { cloneName?: string | undefined; id: string }
+type ContentFolder = {
+  category: number
+  created: string
+  deletedAt: string
+  id: string
+  name: string
+  parentFolderId: bigint
+  updated: string
+}
+type CollectionResponseWithTotalContentFolderForwardPaging = {
+  paging?: ForwardPaging | undefined
+  results: ContentFolder[]
+  total: number
+}
+type BatchResponseContentFolderWithErrors = {
+  completedAt: string
+  errors?: StandardError[] | undefined
+  links?: { [x: string]: string } | undefined
+  numErrors?: number | undefined
+  requestedAt?: string | undefined
+  results: ContentFolder[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+type BatchInputContentFolder = { inputs: ContentFolder[] }
+type BatchResponseContentFolder = {
+  completedAt: string
+  links?: { [x: string]: string } | undefined
+  requestedAt?: string | undefined
+  results: ContentFolder[]
+  startedAt: string
+  status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
+}
+type PreviousPage = { before: string; link?: string | undefined }
+type Paging = { next?: NextPage | undefined; prev?: PreviousPage | undefined }
+type VersionUser = { email: string; fullName: string; id: string }
+type ContentFolderVersion = {
+  id: string
+  object: ContentFolder
+  updatedAt: string
+  user: VersionUser
+}
+type CollectionResponseWithTotalContentFolderVersion = {
+  paging?: Paging | undefined
+  results: ContentFolderVersion[]
+  total: number
+}
+type AttachToLangPrimaryRequestVNext = {
+  id: string
+  language:
+    | 'aa'
+    | 'ab'
+    | 'ae'
+    | 'af'
+    | 'af-na'
+    | 'af-za'
+    | 'agq'
+    | 'agq-cm'
+    | 'ak'
+    | 'ak-gh'
+    | 'am'
+    | 'am-et'
+    | 'an'
+    | 'ann'
+    | 'ann-ng'
+    | 'ar'
+    | 'ar-001'
+    | 'ar-ae'
+    | 'ar-bh'
+    | 'ar-dj'
+    | 'ar-dz'
+    | 'ar-eg'
+    | 'ar-eh'
+    | 'ar-er'
+    | 'ar-il'
+    | 'ar-iq'
+    | 'ar-jo'
+    | 'ar-km'
+    | 'ar-kw'
+    | 'ar-lb'
+    | 'ar-ly'
+    | 'ar-ma'
+    | 'ar-mr'
+    | 'ar-om'
+    | 'ar-ps'
+    | 'ar-qa'
+    | 'ar-sa'
+    | 'ar-sd'
+    | 'ar-so'
+    | 'ar-ss'
+    | 'ar-sy'
+    | 'ar-td'
+    | 'ar-tn'
+    | 'ar-ye'
+    | 'as'
+    | 'as-in'
+    | 'asa'
+    | 'asa-tz'
+    | 'ast'
+    | 'ast-es'
+    | 'av'
+    | 'ay'
+    | 'az'
+    | 'az-az'
+    | 'ba'
+    | 'bal'
+    | 'bal-pk'
+    | 'bas'
+    | 'bas-cm'
+    | 'be'
+    | 'be-by'
+    | 'bem'
+    | 'bem-zm'
+    | 'bez'
+    | 'bez-tz'
+    | 'bg'
+    | 'bg-bg'
+    | 'bgc'
+    | 'bgc-in'
+    | 'bho'
+    | 'bho-in'
+    | 'bi'
+    | 'blo'
+    | 'blo-bj'
+    | 'bm'
+    | 'bm-ml'
+    | 'bn'
+    | 'bn-bd'
+    | 'bn-in'
+    | 'bo'
+    | 'bo-cn'
+    | 'bo-in'
+    | 'br'
+    | 'br-fr'
+    | 'brx'
+    | 'brx-in'
+    | 'bs'
+    | 'bs-ba'
+    | 'ca'
+    | 'ca-ad'
+    | 'ca-es'
+    | 'ca-fr'
+    | 'ca-it'
+    | 'ccp'
+    | 'ccp-bd'
+    | 'ccp-in'
+    | 'ce'
+    | 'ce-ru'
+    | 'ceb'
+    | 'ceb-ph'
+    | 'cgg'
+    | 'cgg-ug'
+    | 'ch'
+    | 'chr'
+    | 'chr-us'
+    | 'ckb'
+    | 'ckb-iq'
+    | 'ckb-ir'
+    | 'co'
+    | 'cr'
+    | 'cs'
+    | 'cs-cz'
+    | 'csw'
+    | 'csw-ca'
+    | 'cu'
+    | 'cu-ru'
+    | 'cv'
+    | 'cv-ru'
+    | 'cy'
+    | 'cy-gb'
+    | 'da'
+    | 'da-dk'
+    | 'da-gl'
+    | 'dav'
+    | 'dav-ke'
+    | 'de'
+    | 'de-at'
+    | 'de-be'
+    | 'de-ch'
+    | 'de-de'
+    | 'de-gr'
+    | 'de-it'
+    | 'de-li'
+    | 'de-lu'
+    | 'dje'
+    | 'dje-ne'
+    | 'doi'
+    | 'doi-in'
+    | 'dsb'
+    | 'dsb-de'
+    | 'dua'
+    | 'dua-cm'
+    | 'dv'
+    | 'dyo'
+    | 'dyo-sn'
+    | 'dz'
+    | 'dz-bt'
+    | 'ebu'
+    | 'ebu-ke'
+    | 'ee'
+    | 'ee-gh'
+    | 'ee-tg'
+    | 'el'
+    | 'el-cy'
+    | 'el-gr'
+    | 'en'
+    | 'en-001'
+    | 'en-150'
+    | 'en-ae'
+    | 'en-ag'
+    | 'en-ai'
+    | 'en-as'
+    | 'en-at'
+    | 'en-au'
+    | 'en-bb'
+    | 'en-be'
+    | 'en-bi'
+    | 'en-bm'
+    | 'en-bs'
+    | 'en-bw'
+    | 'en-bz'
+    | 'en-ca'
+    | 'en-cc'
+    | 'en-ch'
+    | 'en-ck'
+    | 'en-cm'
+    | 'en-cn'
+    | 'en-cx'
+    | 'en-cy'
+    | 'en-cz'
+    | 'en-de'
+    | 'en-dg'
+    | 'en-dk'
+    | 'en-dm'
+    | 'en-ee'
+    | 'en-eg'
+    | 'en-er'
+    | 'en-es'
+    | 'en-fi'
+    | 'en-fj'
+    | 'en-fk'
+    | 'en-fm'
+    | 'en-fr'
+    | 'en-gb'
+    | 'en-gd'
+    | 'en-gg'
+    | 'en-gh'
+    | 'en-gi'
+    | 'en-gm'
+    | 'en-gs'
+    | 'en-gu'
+    | 'en-gy'
+    | 'en-hk'
+    | 'en-hu'
+    | 'en-id'
+    | 'en-ie'
+    | 'en-il'
+    | 'en-im'
+    | 'en-in'
+    | 'en-io'
+    | 'en-it'
+    | 'en-je'
+    | 'en-jm'
+    | 'en-ke'
+    | 'en-ki'
+    | 'en-kn'
+    | 'en-ky'
+    | 'en-lc'
+    | 'en-lr'
+    | 'en-ls'
+    | 'en-lu'
+    | 'en-mg'
+    | 'en-mh'
+    | 'en-mo'
+    | 'en-mp'
+    | 'en-ms'
+    | 'en-mt'
+    | 'en-mu'
+    | 'en-mv'
+    | 'en-mw'
+    | 'en-mx'
+    | 'en-my'
+    | 'en-na'
+    | 'en-nf'
+    | 'en-ng'
+    | 'en-nl'
+    | 'en-no'
+    | 'en-nr'
+    | 'en-nu'
+    | 'en-nz'
+    | 'en-pg'
+    | 'en-ph'
+    | 'en-pk'
+    | 'en-pl'
+    | 'en-pn'
+    | 'en-pr'
+    | 'en-pt'
+    | 'en-pw'
+    | 'en-ro'
+    | 'en-rw'
+    | 'en-sb'
+    | 'en-sc'
+    | 'en-sd'
+    | 'en-se'
+    | 'en-sg'
+    | 'en-sh'
+    | 'en-si'
+    | 'en-sk'
+    | 'en-sl'
+    | 'en-ss'
+    | 'en-sx'
+    | 'en-sz'
+    | 'en-tc'
+    | 'en-th'
+    | 'en-tk'
+    | 'en-tn'
+    | 'en-to'
+    | 'en-tt'
+    | 'en-tv'
+    | 'en-tz'
+    | 'en-ug'
+    | 'en-um'
+    | 'en-us'
+    | 'en-vc'
+    | 'en-vg'
+    | 'en-vi'
+    | 'en-vn'
+    | 'en-vu'
+    | 'en-ws'
+    | 'en-za'
+    | 'en-zm'
+    | 'en-zw'
+    | 'eo'
+    | 'eo-001'
+    | 'es'
+    | 'es-419'
+    | 'es-ar'
+    | 'es-bo'
+    | 'es-br'
+    | 'es-bz'
+    | 'es-cl'
+    | 'es-co'
+    | 'es-cr'
+    | 'es-cu'
+    | 'es-do'
+    | 'es-ea'
+    | 'es-ec'
+    | 'es-es'
+    | 'es-gq'
+    | 'es-gt'
+    | 'es-hn'
+    | 'es-ic'
+    | 'es-mx'
+    | 'es-ni'
+    | 'es-pa'
+    | 'es-pe'
+    | 'es-ph'
+    | 'es-pr'
+    | 'es-py'
+    | 'es-sv'
+    | 'es-us'
+    | 'es-uy'
+    | 'es-ve'
+    | 'et'
+    | 'et-ee'
+    | 'eu'
+    | 'eu-es'
+    | 'ewo'
+    | 'ewo-cm'
+    | 'fa'
+    | 'fa-af'
+    | 'fa-ir'
+    | 'ff'
+    | 'ff-bf'
+    | 'ff-cm'
+    | 'ff-gh'
+    | 'ff-gm'
+    | 'ff-gn'
+    | 'ff-gw'
+    | 'ff-lr'
+    | 'ff-mr'
+    | 'ff-ne'
+    | 'ff-ng'
+    | 'ff-sl'
+    | 'ff-sn'
+    | 'fi'
+    | 'fi-fi'
+    | 'fil'
+    | 'fil-ph'
+    | 'fj'
+    | 'fo'
+    | 'fo-dk'
+    | 'fo-fo'
+    | 'fr'
+    | 'fr-be'
+    | 'fr-bf'
+    | 'fr-bi'
+    | 'fr-bj'
+    | 'fr-bl'
+    | 'fr-ca'
+    | 'fr-cd'
+    | 'fr-cf'
+    | 'fr-cg'
+    | 'fr-ch'
+    | 'fr-ci'
+    | 'fr-cm'
+    | 'fr-dj'
+    | 'fr-dz'
+    | 'fr-fr'
+    | 'fr-ga'
+    | 'fr-gf'
+    | 'fr-gn'
+    | 'fr-gp'
+    | 'fr-gq'
+    | 'fr-ht'
+    | 'fr-km'
+    | 'fr-lu'
+    | 'fr-ma'
+    | 'fr-mc'
+    | 'fr-mf'
+    | 'fr-mg'
+    | 'fr-ml'
+    | 'fr-mq'
+    | 'fr-mr'
+    | 'fr-mu'
+    | 'fr-nc'
+    | 'fr-ne'
+    | 'fr-pf'
+    | 'fr-pm'
+    | 'fr-re'
+    | 'fr-rw'
+    | 'fr-sc'
+    | 'fr-sn'
+    | 'fr-sy'
+    | 'fr-td'
+    | 'fr-tg'
+    | 'fr-tn'
+    | 'fr-vu'
+    | 'fr-wf'
+    | 'fr-yt'
+    | 'frr'
+    | 'frr-de'
+    | 'fur'
+    | 'fur-it'
+    | 'fy'
+    | 'fy-nl'
+    | 'ga'
+    | 'ga-gb'
+    | 'ga-ie'
+    | 'gaa'
+    | 'gaa-gh'
+    | 'gd'
+    | 'gd-gb'
+    | 'gl'
+    | 'gl-es'
+    | 'gn'
+    | 'gsw'
+    | 'gsw-ch'
+    | 'gsw-fr'
+    | 'gsw-li'
+    | 'gu'
+    | 'gu-in'
+    | 'guz'
+    | 'guz-ke'
+    | 'gv'
+    | 'gv-im'
+    | 'ha'
+    | 'ha-gh'
+    | 'ha-ne'
+    | 'ha-ng'
+    | 'haw'
+    | 'haw-us'
+    | 'he'
+    | 'he-il'
+    | 'he-il'
+    | 'hi'
+    | 'hi-in'
+    | 'hmn'
+    | 'ho'
+    | 'hr'
+    | 'hr-ba'
+    | 'hr-hr'
+    | 'hsb'
+    | 'hsb-de'
+    | 'ht'
+    | 'ht-ht'
+    | 'hu'
+    | 'hu-hu'
+    | 'hy'
+    | 'hy-am'
+    | 'hz'
+    | 'ia'
+    | 'ia-001'
+    | 'id'
+    | 'id-id'
+    | 'ie'
+    | 'ie-ee'
+    | 'ig'
+    | 'ig-ng'
+    | 'ii'
+    | 'ii-cn'
+    | 'ik'
+    | 'io'
+    | 'is'
+    | 'is-is'
+    | 'it'
+    | 'it-ch'
+    | 'it-it'
+    | 'it-sm'
+    | 'it-va'
+    | 'iu'
+    | 'ja'
+    | 'ja-jp'
+    | 'jgo'
+    | 'jgo-cm'
+    | 'jmc'
+    | 'jmc-tz'
+    | 'jv'
+    | 'jv-id'
+    | 'ka'
+    | 'ka-ge'
+    | 'kab'
+    | 'kab-dz'
+    | 'kam'
+    | 'kam-ke'
+    | 'kar'
+    | 'kde'
+    | 'kde-tz'
+    | 'kea'
+    | 'kea-cv'
+    | 'kg'
+    | 'kgp'
+    | 'kgp-br'
+    | 'kh'
+    | 'khq'
+    | 'khq-ml'
+    | 'ki'
+    | 'ki-ke'
+    | 'kj'
+    | 'kk'
+    | 'kk-kz'
+    | 'kkj'
+    | 'kkj-cm'
+    | 'kl'
+    | 'kl-gl'
+    | 'kln'
+    | 'kln-ke'
+    | 'km'
+    | 'km-kh'
+    | 'kn'
+    | 'kn-in'
+    | 'ko'
+    | 'ko-cn'
+    | 'ko-kp'
+    | 'ko-kr'
+    | 'kok'
+    | 'kok-in'
+    | 'kr'
+    | 'ks'
+    | 'ks-in'
+    | 'ksb'
+    | 'ksb-tz'
+    | 'ksf'
+    | 'ksf-cm'
+    | 'ksh'
+    | 'ksh-de'
+    | 'ku'
+    | 'ku-tr'
+    | 'kv'
+    | 'kw'
+    | 'kw-gb'
+    | 'kxv'
+    | 'kxv-in'
+    | 'ky'
+    | 'ky-kg'
+    | 'la'
+    | 'lag'
+    | 'lag-tz'
+    | 'lb'
+    | 'lb-lu'
+    | 'lg'
+    | 'lg-ug'
+    | 'li'
+    | 'lij'
+    | 'lij-it'
+    | 'lkt'
+    | 'lkt-us'
+    | 'lmo'
+    | 'lmo-it'
+    | 'ln'
+    | 'ln-ao'
+    | 'ln-cd'
+    | 'ln-cf'
+    | 'ln-cg'
+    | 'lo'
+    | 'lo-la'
+    | 'lrc'
+    | 'lrc-iq'
+    | 'lrc-ir'
+    | 'lt'
+    | 'lt-lt'
+    | 'lu'
+    | 'lu-cd'
+    | 'luo'
+    | 'luo-ke'
+    | 'luy'
+    | 'luy-ke'
+    | 'lv'
+    | 'lv-lv'
+    | 'mai'
+    | 'mai-in'
+    | 'mas'
+    | 'mas-ke'
+    | 'mas-tz'
+    | 'mdf'
+    | 'mdf-ru'
+    | 'mer'
+    | 'mer-ke'
+    | 'mfe'
+    | 'mfe-mu'
+    | 'mg'
+    | 'mg-mg'
+    | 'mgh'
+    | 'mgh-mz'
+    | 'mgo'
+    | 'mgo-cm'
+    | 'mh'
+    | 'mi'
+    | 'mi-nz'
+    | 'mk'
+    | 'mk-mk'
+    | 'ml'
+    | 'ml-in'
+    | 'mn'
+    | 'mn-mn'
+    | 'mni'
+    | 'mni-in'
+    | 'mr'
+    | 'mr-in'
+    | 'ms'
+    | 'ms-bn'
+    | 'ms-id'
+    | 'ms-my'
+    | 'ms-sg'
+    | 'mt'
+    | 'mt-mt'
+    | 'mua'
+    | 'mua-cm'
+    | 'my'
+    | 'my-mm'
+    | 'mzn'
+    | 'mzn-ir'
+    | 'na'
+    | 'naq'
+    | 'naq-na'
+    | 'nb'
+    | 'nb-no'
+    | 'nb-sj'
+    | 'nd'
+    | 'nd-zw'
+    | 'nds'
+    | 'nds-de'
+    | 'nds-nl'
+    | 'ne'
+    | 'ne-in'
+    | 'ne-np'
+    | 'ng'
+    | 'nl'
+    | 'nl-aw'
+    | 'nl-be'
+    | 'nl-bq'
+    | 'nl-ch'
+    | 'nl-cw'
+    | 'nl-lu'
+    | 'nl-nl'
+    | 'nl-sr'
+    | 'nl-sx'
+    | 'nmg'
+    | 'nmg-cm'
+    | 'nn'
+    | 'nn-no'
+    | 'nnh'
+    | 'nnh-cm'
+    | 'no'
+    | 'no-no'
+    | 'nqo'
+    | 'nqo-gn'
+    | 'nr'
+    | 'nso'
+    | 'nso-za'
+    | 'nus'
+    | 'nus-ss'
+    | 'nv'
+    | 'ny'
+    | 'nyn'
+    | 'nyn-ug'
+    | 'oc'
+    | 'oc-es'
+    | 'oc-fr'
+    | 'oj'
+    | 'om'
+    | 'om-et'
+    | 'om-ke'
+    | 'or'
+    | 'or-in'
+    | 'os'
+    | 'os-ge'
+    | 'os-ru'
+    | 'pa'
+    | 'pa-in'
+    | 'pa-pk'
+    | 'pcm'
+    | 'pcm-ng'
+    | 'pi'
+    | 'pis'
+    | 'pis-sb'
+    | 'pl'
+    | 'pl-pl'
+    | 'prg'
+    | 'prg-001'
+    | 'ps'
+    | 'ps-af'
+    | 'ps-pk'
+    | 'pt'
+    | 'pt-ao'
+    | 'pt-br'
+    | 'pt-ch'
+    | 'pt-cv'
+    | 'pt-gq'
+    | 'pt-gw'
+    | 'pt-lu'
+    | 'pt-mo'
+    | 'pt-mz'
+    | 'pt-pt'
+    | 'pt-st'
+    | 'pt-tl'
+    | 'qu'
+    | 'qu-bo'
+    | 'qu-ec'
+    | 'qu-pe'
+    | 'raj'
+    | 'raj-in'
+    | 'rm'
+    | 'rm-ch'
+    | 'rn'
+    | 'rn-bi'
+    | 'ro'
+    | 'ro-md'
+    | 'ro-ro'
+    | 'rof'
+    | 'rof-tz'
+    | 'ru'
+    | 'ru-by'
+    | 'ru-kg'
+    | 'ru-kz'
+    | 'ru-md'
+    | 'ru-ru'
+    | 'ru-ua'
+    | 'rw'
+    | 'rw-rw'
+    | 'rwk'
+    | 'rwk-tz'
+    | 'sa'
+    | 'sa-in'
+    | 'sah'
+    | 'sah-ru'
+    | 'saq'
+    | 'saq-ke'
+    | 'sat'
+    | 'sat-in'
+    | 'sbp'
+    | 'sbp-tz'
+    | 'sc'
+    | 'sc-it'
+    | 'sd'
+    | 'sd-in'
+    | 'sd-pk'
+    | 'se'
+    | 'se-fi'
+    | 'se-no'
+    | 'se-se'
+    | 'seh'
+    | 'seh-mz'
+    | 'ses'
+    | 'ses-ml'
+    | 'sg'
+    | 'sg-cf'
+    | 'shi'
+    | 'shi-ma'
+    | 'si'
+    | 'si-lk'
+    | 'sk'
+    | 'sk-sk'
+    | 'sl'
+    | 'sl-si'
+    | 'sm'
+    | 'smn'
+    | 'smn-fi'
+    | 'sms'
+    | 'sms-fi'
+    | 'sn'
+    | 'sn-zw'
+    | 'so'
+    | 'so-dj'
+    | 'so-et'
+    | 'so-ke'
+    | 'so-so'
+    | 'sq'
+    | 'sq-al'
+    | 'sq-mk'
+    | 'sq-xk'
+    | 'sr'
+    | 'sr-ba'
+    | 'sr-cs'
+    | 'sr-me'
+    | 'sr-rs'
+    | 'sr-xk'
+    | 'ss'
+    | 'st'
+    | 'st-ls'
+    | 'st-za'
+    | 'su'
+    | 'su-id'
+    | 'sv'
+    | 'sv-ax'
+    | 'sv-fi'
+    | 'sv-se'
+    | 'sw'
+    | 'sw-cd'
+    | 'sw-ke'
+    | 'sw-tz'
+    | 'sw-ug'
+    | 'sy'
+    | 'syr'
+    | 'syr-iq'
+    | 'syr-sy'
+    | 'szl'
+    | 'szl-pl'
+    | 'ta'
+    | 'ta-in'
+    | 'ta-lk'
+    | 'ta-my'
+    | 'ta-sg'
+    | 'te'
+    | 'te-in'
+    | 'teo'
+    | 'teo-ke'
+    | 'teo-ug'
+    | 'tg'
+    | 'tg-tj'
+    | 'th'
+    | 'th-th'
+    | 'ti'
+    | 'ti-er'
+    | 'ti-et'
+    | 'tk'
+    | 'tk-tm'
+    | 'tl'
+    | 'tn'
+    | 'tn-bw'
+    | 'tn-za'
+    | 'to'
+    | 'to-to'
+    | 'tok'
+    | 'tok-001'
+    | 'tr'
+    | 'tr-cy'
+    | 'tr-tr'
+    | 'ts'
+    | 'tt'
+    | 'tt-ru'
+    | 'tw'
+    | 'twq'
+    | 'twq-ne'
+    | 'ty'
+    | 'tzm'
+    | 'tzm-ma'
+    | 'ug'
+    | 'ug-cn'
+    | 'uk'
+    | 'uk-ua'
+    | 'ur'
+    | 'ur-in'
+    | 'ur-pk'
+    | 'uz'
+    | 'uz-af'
+    | 'uz-uz'
+    | 'vai'
+    | 'vai-lr'
+    | 've'
+    | 'vec'
+    | 'vec-it'
+    | 'vi'
+    | 'vi-vn'
+    | 'vmw'
+    | 'vmw-mz'
+    | 'vo'
+    | 'vo-001'
+    | 'vun'
+    | 'vun-tz'
+    | 'wa'
+    | 'wae'
+    | 'wae-ch'
+    | 'wo'
+    | 'wo-sn'
+    | 'xh'
+    | 'xh-za'
+    | 'xnr'
+    | 'xnr-in'
+    | 'xog'
+    | 'xog-ug'
+    | 'yav'
+    | 'yav-cm'
+    | 'yi'
+    | 'yi'
+    | 'yi-001'
+    | 'yi-ua'
+    | 'yo'
+    | 'yo-bj'
+    | 'yo-ng'
+    | 'yrl'
+    | 'yrl-br'
+    | 'yrl-co'
+    | 'yrl-ve'
+    | 'yue'
+    | 'yue-cn'
+    | 'yue-hk'
+    | 'yue-mo'
+    | 'za'
+    | 'za-cn'
+    | 'zgh'
+    | 'zgh-ma'
+    | 'zh'
+    | 'zh-cn'
+    | 'zh-hans'
+    | 'zh-hant'
+    | 'zh-hk'
+    | 'zh-mo'
+    | 'zh-my'
+    | 'zh-sg'
+    | 'zh-tw'
+    | 'zu'
+    | 'zu-za'
+  primaryId: string
+  primaryLanguage?:
+    | 'aa'
+    | 'ab'
+    | 'ae'
+    | 'af'
+    | 'af-na'
+    | 'af-za'
+    | 'agq'
+    | 'agq-cm'
+    | 'ak'
+    | 'ak-gh'
+    | 'am'
+    | 'am-et'
+    | 'an'
+    | 'ann'
+    | 'ann-ng'
+    | 'ar'
+    | 'ar-001'
+    | 'ar-ae'
+    | 'ar-bh'
+    | 'ar-dj'
+    | 'ar-dz'
+    | 'ar-eg'
+    | 'ar-eh'
+    | 'ar-er'
+    | 'ar-il'
+    | 'ar-iq'
+    | 'ar-jo'
+    | 'ar-km'
+    | 'ar-kw'
+    | 'ar-lb'
+    | 'ar-ly'
+    | 'ar-ma'
+    | 'ar-mr'
+    | 'ar-om'
+    | 'ar-ps'
+    | 'ar-qa'
+    | 'ar-sa'
+    | 'ar-sd'
+    | 'ar-so'
+    | 'ar-ss'
+    | 'ar-sy'
+    | 'ar-td'
+    | 'ar-tn'
+    | 'ar-ye'
+    | 'as'
+    | 'as-in'
+    | 'asa'
+    | 'asa-tz'
+    | 'ast'
+    | 'ast-es'
+    | 'av'
+    | 'ay'
+    | 'az'
+    | 'az-az'
+    | 'ba'
+    | 'bal'
+    | 'bal-pk'
+    | 'bas'
+    | 'bas-cm'
+    | 'be'
+    | 'be-by'
+    | 'bem'
+    | 'bem-zm'
+    | 'bez'
+    | 'bez-tz'
+    | 'bg'
+    | 'bg-bg'
+    | 'bgc'
+    | 'bgc-in'
+    | 'bho'
+    | 'bho-in'
+    | 'bi'
+    | 'blo'
+    | 'blo-bj'
+    | 'bm'
+    | 'bm-ml'
+    | 'bn'
+    | 'bn-bd'
+    | 'bn-in'
+    | 'bo'
+    | 'bo-cn'
+    | 'bo-in'
+    | 'br'
+    | 'br-fr'
+    | 'brx'
+    | 'brx-in'
+    | 'bs'
+    | 'bs-ba'
+    | 'ca'
+    | 'ca-ad'
+    | 'ca-es'
+    | 'ca-fr'
+    | 'ca-it'
+    | 'ccp'
+    | 'ccp-bd'
+    | 'ccp-in'
+    | 'ce'
+    | 'ce-ru'
+    | 'ceb'
+    | 'ceb-ph'
+    | 'cgg'
+    | 'cgg-ug'
+    | 'ch'
+    | 'chr'
+    | 'chr-us'
+    | 'ckb'
+    | 'ckb-iq'
+    | 'ckb-ir'
+    | 'co'
+    | 'cr'
+    | 'cs'
+    | 'cs-cz'
+    | 'csw'
+    | 'csw-ca'
+    | 'cu'
+    | 'cu-ru'
+    | 'cv'
+    | 'cv-ru'
+    | 'cy'
+    | 'cy-gb'
+    | 'da'
+    | 'da-dk'
+    | 'da-gl'
+    | 'dav'
+    | 'dav-ke'
+    | 'de'
+    | 'de-at'
+    | 'de-be'
+    | 'de-ch'
+    | 'de-de'
+    | 'de-gr'
+    | 'de-it'
+    | 'de-li'
+    | 'de-lu'
+    | 'dje'
+    | 'dje-ne'
+    | 'doi'
+    | 'doi-in'
+    | 'dsb'
+    | 'dsb-de'
+    | 'dua'
+    | 'dua-cm'
+    | 'dv'
+    | 'dyo'
+    | 'dyo-sn'
+    | 'dz'
+    | 'dz-bt'
+    | 'ebu'
+    | 'ebu-ke'
+    | 'ee'
+    | 'ee-gh'
+    | 'ee-tg'
+    | 'el'
+    | 'el-cy'
+    | 'el-gr'
+    | 'en'
+    | 'en-001'
+    | 'en-150'
+    | 'en-ae'
+    | 'en-ag'
+    | 'en-ai'
+    | 'en-as'
+    | 'en-at'
+    | 'en-au'
+    | 'en-bb'
+    | 'en-be'
+    | 'en-bi'
+    | 'en-bm'
+    | 'en-bs'
+    | 'en-bw'
+    | 'en-bz'
+    | 'en-ca'
+    | 'en-cc'
+    | 'en-ch'
+    | 'en-ck'
+    | 'en-cm'
+    | 'en-cn'
+    | 'en-cx'
+    | 'en-cy'
+    | 'en-cz'
+    | 'en-de'
+    | 'en-dg'
+    | 'en-dk'
+    | 'en-dm'
+    | 'en-ee'
+    | 'en-eg'
+    | 'en-er'
+    | 'en-es'
+    | 'en-fi'
+    | 'en-fj'
+    | 'en-fk'
+    | 'en-fm'
+    | 'en-fr'
+    | 'en-gb'
+    | 'en-gd'
+    | 'en-gg'
+    | 'en-gh'
+    | 'en-gi'
+    | 'en-gm'
+    | 'en-gs'
+    | 'en-gu'
+    | 'en-gy'
+    | 'en-hk'
+    | 'en-hu'
+    | 'en-id'
+    | 'en-ie'
+    | 'en-il'
+    | 'en-im'
+    | 'en-in'
+    | 'en-io'
+    | 'en-it'
+    | 'en-je'
+    | 'en-jm'
+    | 'en-ke'
+    | 'en-ki'
+    | 'en-kn'
+    | 'en-ky'
+    | 'en-lc'
+    | 'en-lr'
+    | 'en-ls'
+    | 'en-lu'
+    | 'en-mg'
+    | 'en-mh'
+    | 'en-mo'
+    | 'en-mp'
+    | 'en-ms'
+    | 'en-mt'
+    | 'en-mu'
+    | 'en-mv'
+    | 'en-mw'
+    | 'en-mx'
+    | 'en-my'
+    | 'en-na'
+    | 'en-nf'
+    | 'en-ng'
+    | 'en-nl'
+    | 'en-no'
+    | 'en-nr'
+    | 'en-nu'
+    | 'en-nz'
+    | 'en-pg'
+    | 'en-ph'
+    | 'en-pk'
+    | 'en-pl'
+    | 'en-pn'
+    | 'en-pr'
+    | 'en-pt'
+    | 'en-pw'
+    | 'en-ro'
+    | 'en-rw'
+    | 'en-sb'
+    | 'en-sc'
+    | 'en-sd'
+    | 'en-se'
+    | 'en-sg'
+    | 'en-sh'
+    | 'en-si'
+    | 'en-sk'
+    | 'en-sl'
+    | 'en-ss'
+    | 'en-sx'
+    | 'en-sz'
+    | 'en-tc'
+    | 'en-th'
+    | 'en-tk'
+    | 'en-tn'
+    | 'en-to'
+    | 'en-tt'
+    | 'en-tv'
+    | 'en-tz'
+    | 'en-ug'
+    | 'en-um'
+    | 'en-us'
+    | 'en-vc'
+    | 'en-vg'
+    | 'en-vi'
+    | 'en-vn'
+    | 'en-vu'
+    | 'en-ws'
+    | 'en-za'
+    | 'en-zm'
+    | 'en-zw'
+    | 'eo'
+    | 'eo-001'
+    | 'es'
+    | 'es-419'
+    | 'es-ar'
+    | 'es-bo'
+    | 'es-br'
+    | 'es-bz'
+    | 'es-cl'
+    | 'es-co'
+    | 'es-cr'
+    | 'es-cu'
+    | 'es-do'
+    | 'es-ea'
+    | 'es-ec'
+    | 'es-es'
+    | 'es-gq'
+    | 'es-gt'
+    | 'es-hn'
+    | 'es-ic'
+    | 'es-mx'
+    | 'es-ni'
+    | 'es-pa'
+    | 'es-pe'
+    | 'es-ph'
+    | 'es-pr'
+    | 'es-py'
+    | 'es-sv'
+    | 'es-us'
+    | 'es-uy'
+    | 'es-ve'
+    | 'et'
+    | 'et-ee'
+    | 'eu'
+    | 'eu-es'
+    | 'ewo'
+    | 'ewo-cm'
+    | 'fa'
+    | 'fa-af'
+    | 'fa-ir'
+    | 'ff'
+    | 'ff-bf'
+    | 'ff-cm'
+    | 'ff-gh'
+    | 'ff-gm'
+    | 'ff-gn'
+    | 'ff-gw'
+    | 'ff-lr'
+    | 'ff-mr'
+    | 'ff-ne'
+    | 'ff-ng'
+    | 'ff-sl'
+    | 'ff-sn'
+    | 'fi'
+    | 'fi-fi'
+    | 'fil'
+    | 'fil-ph'
+    | 'fj'
+    | 'fo'
+    | 'fo-dk'
+    | 'fo-fo'
+    | 'fr'
+    | 'fr-be'
+    | 'fr-bf'
+    | 'fr-bi'
+    | 'fr-bj'
+    | 'fr-bl'
+    | 'fr-ca'
+    | 'fr-cd'
+    | 'fr-cf'
+    | 'fr-cg'
+    | 'fr-ch'
+    | 'fr-ci'
+    | 'fr-cm'
+    | 'fr-dj'
+    | 'fr-dz'
+    | 'fr-fr'
+    | 'fr-ga'
+    | 'fr-gf'
+    | 'fr-gn'
+    | 'fr-gp'
+    | 'fr-gq'
+    | 'fr-ht'
+    | 'fr-km'
+    | 'fr-lu'
+    | 'fr-ma'
+    | 'fr-mc'
+    | 'fr-mf'
+    | 'fr-mg'
+    | 'fr-ml'
+    | 'fr-mq'
+    | 'fr-mr'
+    | 'fr-mu'
+    | 'fr-nc'
+    | 'fr-ne'
+    | 'fr-pf'
+    | 'fr-pm'
+    | 'fr-re'
+    | 'fr-rw'
+    | 'fr-sc'
+    | 'fr-sn'
+    | 'fr-sy'
+    | 'fr-td'
+    | 'fr-tg'
+    | 'fr-tn'
+    | 'fr-vu'
+    | 'fr-wf'
+    | 'fr-yt'
+    | 'frr'
+    | 'frr-de'
+    | 'fur'
+    | 'fur-it'
+    | 'fy'
+    | 'fy-nl'
+    | 'ga'
+    | 'ga-gb'
+    | 'ga-ie'
+    | 'gaa'
+    | 'gaa-gh'
+    | 'gd'
+    | 'gd-gb'
+    | 'gl'
+    | 'gl-es'
+    | 'gn'
+    | 'gsw'
+    | 'gsw-ch'
+    | 'gsw-fr'
+    | 'gsw-li'
+    | 'gu'
+    | 'gu-in'
+    | 'guz'
+    | 'guz-ke'
+    | 'gv'
+    | 'gv-im'
+    | 'ha'
+    | 'ha-gh'
+    | 'ha-ne'
+    | 'ha-ng'
+    | 'haw'
+    | 'haw-us'
+    | 'he'
+    | 'he-il'
+    | 'hi'
+    | 'hi-in'
+    | 'hmn'
+    | 'ho'
+    | 'hr'
+    | 'hr-ba'
+    | 'hr-hr'
+    | 'hsb'
+    | 'hsb-de'
+    | 'ht'
+    | 'ht-ht'
+    | 'hu'
+    | 'hu-hu'
+    | 'hy'
+    | 'hy-am'
+    | 'hz'
+    | 'ia'
+    | 'ia-001'
+    | 'id'
+    | 'id-id'
+    | 'ie'
+    | 'ie-ee'
+    | 'ig'
+    | 'ig-ng'
+    | 'ii'
+    | 'ii-cn'
+    | 'ik'
+    | 'io'
+    | 'is'
+    | 'is-is'
+    | 'it'
+    | 'it-ch'
+    | 'it-it'
+    | 'it-sm'
+    | 'it-va'
+    | 'iu'
+    | 'ja'
+    | 'ja-jp'
+    | 'jgo'
+    | 'jgo-cm'
+    | 'jmc'
+    | 'jmc-tz'
+    | 'jv'
+    | 'jv-id'
+    | 'ka'
+    | 'ka-ge'
+    | 'kab'
+    | 'kab-dz'
+    | 'kam'
+    | 'kam-ke'
+    | 'kar'
+    | 'kde'
+    | 'kde-tz'
+    | 'kea'
+    | 'kea-cv'
+    | 'kg'
+    | 'kgp'
+    | 'kgp-br'
+    | 'kh'
+    | 'khq'
+    | 'khq-ml'
+    | 'ki'
+    | 'ki-ke'
+    | 'kj'
+    | 'kk'
+    | 'kk-kz'
+    | 'kkj'
+    | 'kkj-cm'
+    | 'kl'
+    | 'kl-gl'
+    | 'kln'
+    | 'kln-ke'
+    | 'km'
+    | 'km-kh'
+    | 'kn'
+    | 'kn-in'
+    | 'ko'
+    | 'ko-cn'
+    | 'ko-kp'
+    | 'ko-kr'
+    | 'kok'
+    | 'kok-in'
+    | 'kr'
+    | 'ks'
+    | 'ks-in'
+    | 'ksb'
+    | 'ksb-tz'
+    | 'ksf'
+    | 'ksf-cm'
+    | 'ksh'
+    | 'ksh-de'
+    | 'ku'
+    | 'ku-tr'
+    | 'kv'
+    | 'kw'
+    | 'kw-gb'
+    | 'kxv'
+    | 'kxv-in'
+    | 'ky'
+    | 'ky-kg'
+    | 'la'
+    | 'lag'
+    | 'lag-tz'
+    | 'lb'
+    | 'lb-lu'
+    | 'lg'
+    | 'lg-ug'
+    | 'li'
+    | 'lij'
+    | 'lij-it'
+    | 'lkt'
+    | 'lkt-us'
+    | 'lmo'
+    | 'lmo-it'
+    | 'ln'
+    | 'ln-ao'
+    | 'ln-cd'
+    | 'ln-cf'
+    | 'ln-cg'
+    | 'lo'
+    | 'lo-la'
+    | 'lrc'
+    | 'lrc-iq'
+    | 'lrc-ir'
+    | 'lt'
+    | 'lt-lt'
+    | 'lu'
+    | 'lu-cd'
+    | 'luo'
+    | 'luo-ke'
+    | 'luy'
+    | 'luy-ke'
+    | 'lv'
+    | 'lv-lv'
+    | 'mai'
+    | 'mai-in'
+    | 'mas'
+    | 'mas-ke'
+    | 'mas-tz'
+    | 'mdf'
+    | 'mdf-ru'
+    | 'mer'
+    | 'mer-ke'
+    | 'mfe'
+    | 'mfe-mu'
+    | 'mg'
+    | 'mg-mg'
+    | 'mgh'
+    | 'mgh-mz'
+    | 'mgo'
+    | 'mgo-cm'
+    | 'mh'
+    | 'mi'
+    | 'mi-nz'
+    | 'mk'
+    | 'mk-mk'
+    | 'ml'
+    | 'ml-in'
+    | 'mn'
+    | 'mn-mn'
+    | 'mni'
+    | 'mni-in'
+    | 'mr'
+    | 'mr-in'
+    | 'ms'
+    | 'ms-bn'
+    | 'ms-id'
+    | 'ms-my'
+    | 'ms-sg'
+    | 'mt'
+    | 'mt-mt'
+    | 'mua'
+    | 'mua-cm'
+    | 'my'
+    | 'my-mm'
+    | 'mzn'
+    | 'mzn-ir'
+    | 'na'
+    | 'naq'
+    | 'naq-na'
+    | 'nb'
+    | 'nb-no'
+    | 'nb-sj'
+    | 'nd'
+    | 'nd-zw'
+    | 'nds'
+    | 'nds-de'
+    | 'nds-nl'
+    | 'ne'
+    | 'ne-in'
+    | 'ne-np'
+    | 'ng'
+    | 'nl'
+    | 'nl-aw'
+    | 'nl-be'
+    | 'nl-bq'
+    | 'nl-ch'
+    | 'nl-cw'
+    | 'nl-lu'
+    | 'nl-nl'
+    | 'nl-sr'
+    | 'nl-sx'
+    | 'nmg'
+    | 'nmg-cm'
+    | 'nn'
+    | 'nn-no'
+    | 'nnh'
+    | 'nnh-cm'
+    | 'no'
+    | 'no-no'
+    | 'nqo'
+    | 'nqo-gn'
+    | 'nr'
+    | 'nso'
+    | 'nso-za'
+    | 'nus'
+    | 'nus-ss'
+    | 'nv'
+    | 'ny'
+    | 'nyn'
+    | 'nyn-ug'
+    | 'oc'
+    | 'oc-es'
+    | 'oc-fr'
+    | 'oj'
+    | 'om'
+    | 'om-et'
+    | 'om-ke'
+    | 'or'
+    | 'or-in'
+    | 'os'
+    | 'os-ge'
+    | 'os-ru'
+    | 'pa'
+    | 'pa-in'
+    | 'pa-pk'
+    | 'pcm'
+    | 'pcm-ng'
+    | 'pi'
+    | 'pis'
+    | 'pis-sb'
+    | 'pl'
+    | 'pl-pl'
+    | 'prg'
+    | 'prg-001'
+    | 'ps'
+    | 'ps-af'
+    | 'ps-pk'
+    | 'pt'
+    | 'pt-ao'
+    | 'pt-br'
+    | 'pt-ch'
+    | 'pt-cv'
+    | 'pt-gq'
+    | 'pt-gw'
+    | 'pt-lu'
+    | 'pt-mo'
+    | 'pt-mz'
+    | 'pt-pt'
+    | 'pt-st'
+    | 'pt-tl'
+    | 'qu'
+    | 'qu-bo'
+    | 'qu-ec'
+    | 'qu-pe'
+    | 'raj'
+    | 'raj-in'
+    | 'rm'
+    | 'rm-ch'
+    | 'rn'
+    | 'rn-bi'
+    | 'ro'
+    | 'ro-md'
+    | 'ro-ro'
+    | 'rof'
+    | 'rof-tz'
+    | 'ru'
+    | 'ru-by'
+    | 'ru-kg'
+    | 'ru-kz'
+    | 'ru-md'
+    | 'ru-ru'
+    | 'ru-ua'
+    | 'rw'
+    | 'rw-rw'
+    | 'rwk'
+    | 'rwk-tz'
+    | 'sa'
+    | 'sa-in'
+    | 'sah'
+    | 'sah-ru'
+    | 'saq'
+    | 'saq-ke'
+    | 'sat'
+    | 'sat-in'
+    | 'sbp'
+    | 'sbp-tz'
+    | 'sc'
+    | 'sc-it'
+    | 'sd'
+    | 'sd-in'
+    | 'sd-pk'
+    | 'se'
+    | 'se-fi'
+    | 'se-no'
+    | 'se-se'
+    | 'seh'
+    | 'seh-mz'
+    | 'ses'
+    | 'ses-ml'
+    | 'sg'
+    | 'sg-cf'
+    | 'shi'
+    | 'shi-ma'
+    | 'si'
+    | 'si-lk'
+    | 'sk'
+    | 'sk-sk'
+    | 'sl'
+    | 'sl-si'
+    | 'sm'
+    | 'smn'
+    | 'smn-fi'
+    | 'sms'
+    | 'sms-fi'
+    | 'sn'
+    | 'sn-zw'
+    | 'so'
+    | 'so-dj'
+    | 'so-et'
+    | 'so-ke'
+    | 'so-so'
+    | 'sq'
+    | 'sq-al'
+    | 'sq-mk'
+    | 'sq-xk'
+    | 'sr'
+    | 'sr-ba'
+    | 'sr-cs'
+    | 'sr-me'
+    | 'sr-rs'
+    | 'sr-xk'
+    | 'ss'
+    | 'st'
+    | 'st-ls'
+    | 'st-za'
+    | 'su'
+    | 'su-id'
+    | 'sv'
+    | 'sv-ax'
+    | 'sv-fi'
+    | 'sv-se'
+    | 'sw'
+    | 'sw-cd'
+    | 'sw-ke'
+    | 'sw-tz'
+    | 'sw-ug'
+    | 'sy'
+    | 'syr'
+    | 'syr-iq'
+    | 'syr-sy'
+    | 'szl'
+    | 'szl-pl'
+    | 'ta'
+    | 'ta-in'
+    | 'ta-lk'
+    | 'ta-my'
+    | 'ta-sg'
+    | 'te'
+    | 'te-in'
+    | 'teo'
+    | 'teo-ke'
+    | 'teo-ug'
+    | 'tg'
+    | 'tg-tj'
+    | 'th'
+    | 'th-th'
+    | 'ti'
+    | 'ti-er'
+    | 'ti-et'
+    | 'tk'
+    | 'tk-tm'
+    | 'tl'
+    | 'tn'
+    | 'tn-bw'
+    | 'tn-za'
+    | 'to'
+    | 'to-to'
+    | 'tok'
+    | 'tok-001'
+    | 'tr'
+    | 'tr-cy'
+    | 'tr-tr'
+    | 'ts'
+    | 'tt'
+    | 'tt-ru'
+    | 'tw'
+    | 'twq'
+    | 'twq-ne'
+    | 'ty'
+    | 'tzm'
+    | 'tzm-ma'
+    | 'ug'
+    | 'ug-cn'
+    | 'uk'
+    | 'uk-ua'
+    | 'ur'
+    | 'ur-in'
+    | 'ur-pk'
+    | 'uz'
+    | 'uz-af'
+    | 'uz-uz'
+    | 'vai'
+    | 'vai-lr'
+    | 've'
+    | 'vec'
+    | 'vec-it'
+    | 'vi'
+    | 'vi-vn'
+    | 'vmw'
+    | 'vmw-mz'
+    | 'vo'
+    | 'vo-001'
+    | 'vun'
+    | 'vun-tz'
+    | 'wa'
+    | 'wae'
+    | 'wae-ch'
+    | 'wo'
+    | 'wo-sn'
+    | 'xh'
+    | 'xh-za'
+    | 'xnr'
+    | 'xnr-in'
+    | 'xog'
+    | 'xog-ug'
+    | 'yav'
+    | 'yav-cm'
+    | 'yi'
+    | 'yi-001'
+    | 'yi-ua'
+    | 'yo'
+    | 'yo-bj'
+    | 'yo-ng'
+    | 'yrl'
+    | 'yrl-br'
+    | 'yrl-co'
+    | 'yrl-ve'
+    | 'yue'
+    | 'yue-cn'
+    | 'yue-hk'
+    | 'yue-mo'
+    | 'za'
+    | 'za-cn'
+    | 'zgh'
+    | 'zgh-ma'
+    | 'zh'
+    | 'zh-cn'
+    | 'zh-hans'
+    | 'zh-hant'
+    | 'zh-hk'
+    | 'zh-mo'
+    | 'zh-my'
+    | 'zh-sg'
+    | 'zh-tw'
+    | 'zu'
+    | 'zu-za'
+    | undefined
+}
+type ContentLanguageCloneRequestVNext = {
+  id: string
+  language?: string | undefined
+  primaryLanguage?: string | undefined
+  usePublished?: boolean | undefined
+}
+type DetachFromLangGroupRequestVNext = { id: string }
+type SetNewLanguagePrimaryRequestVNext = { id: string }
+type UpdateLanguagesRequestVNext = {
+  languages: {
+    [x: string]:
+      | 'aa'
+      | 'ab'
+      | 'ae'
+      | 'af'
+      | 'af-na'
+      | 'af-za'
+      | 'agq'
+      | 'agq-cm'
+      | 'ak'
+      | 'ak-gh'
+      | 'am'
+      | 'am-et'
+      | 'an'
+      | 'ann'
+      | 'ann-ng'
+      | 'ar'
+      | 'ar-001'
+      | 'ar-ae'
+      | 'ar-bh'
+      | 'ar-dj'
+      | 'ar-dz'
+      | 'ar-eg'
+      | 'ar-eh'
+      | 'ar-er'
+      | 'ar-il'
+      | 'ar-iq'
+      | 'ar-jo'
+      | 'ar-km'
+      | 'ar-kw'
+      | 'ar-lb'
+      | 'ar-ly'
+      | 'ar-ma'
+      | 'ar-mr'
+      | 'ar-om'
+      | 'ar-ps'
+      | 'ar-qa'
+      | 'ar-sa'
+      | 'ar-sd'
+      | 'ar-so'
+      | 'ar-ss'
+      | 'ar-sy'
+      | 'ar-td'
+      | 'ar-tn'
+      | 'ar-ye'
+      | 'as'
+      | 'asa'
+      | 'asa-tz'
+      | 'ast'
+      | 'ast-es'
+      | 'as-in'
+      | 'av'
+      | 'ay'
+      | 'az'
+      | 'az-az'
+      | 'ba'
+      | 'bal'
+      | 'bal-pk'
+      | 'bas'
+      | 'bas-cm'
+      | 'be'
+      | 'bem'
+      | 'bem-zm'
+      | 'bez'
+      | 'bez-tz'
+      | 'be-by'
+      | 'bg'
+      | 'bgc'
+      | 'bgc-in'
+      | 'bg-bg'
+      | 'bi'
+      | 'bho'
+      | 'bho-in'
+      | 'blo'
+      | 'blo-bj'
+      | 'bm'
+      | 'bm-ml'
+      | 'bn'
+      | 'bn-bd'
+      | 'bn-in'
+      | 'bo'
+      | 'bo-cn'
+      | 'bo-in'
+      | 'br'
+      | 'brx'
+      | 'brx-in'
+      | 'br-fr'
+      | 'bs'
+      | 'bs-ba'
+      | 'ca'
+      | 'ca-ad'
+      | 'ca-es'
+      | 'ca-fr'
+      | 'ca-it'
+      | 'ccp'
+      | 'ccp-bd'
+      | 'ccp-in'
+      | 'ce'
+      | 'ceb'
+      | 'ceb-ph'
+      | 'ce-ru'
+      | 'ch'
+      | 'cgg'
+      | 'cgg-ug'
+      | 'chr'
+      | 'chr-us'
+      | 'ckb'
+      | 'ckb-iq'
+      | 'ckb-ir'
+      | 'co'
+      | 'cr'
+      | 'cs'
+      | 'cs-cz'
+      | 'csw'
+      | 'csw-ca'
+      | 'cu'
+      | 'cu-ru'
+      | 'cv'
+      | 'cv-ru'
+      | 'cy'
+      | 'cy-gb'
+      | 'da'
+      | 'dav'
+      | 'dav-ke'
+      | 'da-dk'
+      | 'da-gl'
+      | 'de'
+      | 'de-at'
+      | 'de-be'
+      | 'de-ch'
+      | 'de-de'
+      | 'de-gr'
+      | 'de-it'
+      | 'de-li'
+      | 'de-lu'
+      | 'dje'
+      | 'dje-ne'
+      | 'doi'
+      | 'doi-in'
+      | 'dsb'
+      | 'dsb-de'
+      | 'dua'
+      | 'dua-cm'
+      | 'dyo'
+      | 'dyo-sn'
+      | 'dv'
+      | 'dz'
+      | 'dz-bt'
+      | 'ebu'
+      | 'ebu-ke'
+      | 'ee'
+      | 'ee-gh'
+      | 'ee-tg'
+      | 'el'
+      | 'el-cy'
+      | 'el-gr'
+      | 'en'
+      | 'en-001'
+      | 'en-150'
+      | 'en-ae'
+      | 'en-ag'
+      | 'en-ai'
+      | 'en-as'
+      | 'en-at'
+      | 'en-au'
+      | 'en-bb'
+      | 'en-be'
+      | 'en-bi'
+      | 'en-bm'
+      | 'en-bs'
+      | 'en-bw'
+      | 'en-bz'
+      | 'en-ca'
+      | 'en-cc'
+      | 'en-ch'
+      | 'en-ck'
+      | 'en-cm'
+      | 'en-cn'
+      | 'en-cx'
+      | 'en-cy'
+      | 'en-cz'
+      | 'en-de'
+      | 'en-dg'
+      | 'en-dk'
+      | 'en-dm'
+      | 'en-ee'
+      | 'en-eg'
+      | 'en-er'
+      | 'en-es'
+      | 'en-fi'
+      | 'en-fj'
+      | 'en-fk'
+      | 'en-fm'
+      | 'en-fr'
+      | 'en-gb'
+      | 'en-gd'
+      | 'en-gg'
+      | 'en-gh'
+      | 'en-gi'
+      | 'en-gm'
+      | 'en-gs'
+      | 'en-gu'
+      | 'en-gy'
+      | 'en-hk'
+      | 'en-hu'
+      | 'en-id'
+      | 'en-ie'
+      | 'en-il'
+      | 'en-im'
+      | 'en-in'
+      | 'en-io'
+      | 'en-it'
+      | 'en-je'
+      | 'en-jm'
+      | 'en-ke'
+      | 'en-ki'
+      | 'en-kn'
+      | 'en-ky'
+      | 'en-lc'
+      | 'en-lr'
+      | 'en-ls'
+      | 'en-lu'
+      | 'en-mg'
+      | 'en-mh'
+      | 'en-mo'
+      | 'en-mp'
+      | 'en-ms'
+      | 'en-mt'
+      | 'en-mu'
+      | 'en-mv'
+      | 'en-mw'
+      | 'en-mx'
+      | 'en-my'
+      | 'en-na'
+      | 'en-nf'
+      | 'en-ng'
+      | 'en-nl'
+      | 'en-no'
+      | 'en-nr'
+      | 'en-nu'
+      | 'en-nz'
+      | 'en-pg'
+      | 'en-ph'
+      | 'en-pk'
+      | 'en-pl'
+      | 'en-pn'
+      | 'en-pr'
+      | 'en-pt'
+      | 'en-pw'
+      | 'en-ro'
+      | 'en-rw'
+      | 'en-sb'
+      | 'en-sc'
+      | 'en-sd'
+      | 'en-se'
+      | 'en-sg'
+      | 'en-sh'
+      | 'en-si'
+      | 'en-sk'
+      | 'en-sl'
+      | 'en-ss'
+      | 'en-sx'
+      | 'en-sz'
+      | 'en-tc'
+      | 'en-th'
+      | 'en-tk'
+      | 'en-tn'
+      | 'en-to'
+      | 'en-tt'
+      | 'en-tv'
+      | 'en-tz'
+      | 'en-ug'
+      | 'en-um'
+      | 'en-us'
+      | 'en-vc'
+      | 'en-vg'
+      | 'en-vi'
+      | 'en-vn'
+      | 'en-vu'
+      | 'en-ws'
+      | 'en-za'
+      | 'en-zm'
+      | 'en-zw'
+      | 'eo'
+      | 'eo-001'
+      | 'es'
+      | 'es-419'
+      | 'es-ar'
+      | 'es-bo'
+      | 'es-br'
+      | 'es-bz'
+      | 'es-cl'
+      | 'es-co'
+      | 'es-cr'
+      | 'es-cu'
+      | 'es-do'
+      | 'es-ea'
+      | 'es-ec'
+      | 'es-es'
+      | 'es-gq'
+      | 'es-gt'
+      | 'es-hn'
+      | 'es-ic'
+      | 'es-mx'
+      | 'es-ni'
+      | 'es-pa'
+      | 'es-pe'
+      | 'es-ph'
+      | 'es-pr'
+      | 'es-py'
+      | 'es-sv'
+      | 'es-us'
+      | 'es-uy'
+      | 'es-ve'
+      | 'et'
+      | 'et-ee'
+      | 'eu'
+      | 'eu-es'
+      | 'ewo'
+      | 'ewo-cm'
+      | 'fa'
+      | 'fa-af'
+      | 'fa-ir'
+      | 'ff'
+      | 'ff-bf'
+      | 'ff-cm'
+      | 'ff-gh'
+      | 'ff-gm'
+      | 'ff-gn'
+      | 'ff-gw'
+      | 'ff-lr'
+      | 'ff-mr'
+      | 'ff-ne'
+      | 'ff-ng'
+      | 'ff-sl'
+      | 'ff-sn'
+      | 'fi'
+      | 'fil'
+      | 'fil-ph'
+      | 'fi-fi'
+      | 'fj'
+      | 'fo'
+      | 'fo-dk'
+      | 'fo-fo'
+      | 'fr'
+      | 'frr'
+      | 'frr-de'
+      | 'fr-be'
+      | 'fr-bf'
+      | 'fr-bi'
+      | 'fr-bj'
+      | 'fr-bl'
+      | 'fr-ca'
+      | 'fr-cd'
+      | 'fr-cf'
+      | 'fr-cg'
+      | 'fr-ch'
+      | 'fr-ci'
+      | 'fr-cm'
+      | 'fr-dj'
+      | 'fr-dz'
+      | 'fr-fr'
+      | 'fr-ga'
+      | 'fr-gf'
+      | 'fr-gn'
+      | 'fr-gp'
+      | 'fr-gq'
+      | 'fr-ht'
+      | 'fr-km'
+      | 'fr-lu'
+      | 'fr-ma'
+      | 'fr-mc'
+      | 'fr-mf'
+      | 'fr-mg'
+      | 'fr-ml'
+      | 'fr-mq'
+      | 'fr-mr'
+      | 'fr-mu'
+      | 'fr-nc'
+      | 'fr-ne'
+      | 'fr-pf'
+      | 'fr-pm'
+      | 'fr-re'
+      | 'fr-rw'
+      | 'fr-sc'
+      | 'fr-sn'
+      | 'fr-sy'
+      | 'fr-td'
+      | 'fr-tg'
+      | 'fr-tn'
+      | 'fr-vu'
+      | 'fr-wf'
+      | 'fr-yt'
+      | 'fur'
+      | 'fur-it'
+      | 'fy'
+      | 'fy-nl'
+      | 'ga'
+      | 'ga-gb'
+      | 'ga-ie'
+      | 'gaa'
+      | 'gaa-gh'
+      | 'gd'
+      | 'gd-gb'
+      | 'gl'
+      | 'gl-es'
+      | 'gn'
+      | 'gsw'
+      | 'gsw-ch'
+      | 'gsw-fr'
+      | 'gsw-li'
+      | 'gu'
+      | 'guz'
+      | 'guz-ke'
+      | 'gu-in'
+      | 'gv'
+      | 'gv-im'
+      | 'ha'
+      | 'haw'
+      | 'haw-us'
+      | 'ha-gh'
+      | 'ha-ne'
+      | 'ha-ng'
+      | 'he'
+      | 'he-il'
+      | 'hi'
+      | 'hi-in'
+      | 'hmn'
+      | 'ho'
+      | 'hr'
+      | 'hr-ba'
+      | 'hr-hr'
+      | 'ht'
+      | 'ht-ht'
+      | 'hsb'
+      | 'hsb-de'
+      | 'hu'
+      | 'hu-hu'
+      | 'hy'
+      | 'hy-am'
+      | 'hz'
+      | 'ia'
+      | 'ia-001'
+      | 'id'
+      | 'ie'
+      | 'ie-ee'
+      | 'ig'
+      | 'ig-ng'
+      | 'ii'
+      | 'ii-cn'
+      | 'ik'
+      | 'io'
+      | 'id-id'
+      | 'is'
+      | 'is-is'
+      | 'it'
+      | 'it-ch'
+      | 'it-it'
+      | 'it-sm'
+      | 'it-va'
+      | 'iu'
+      | 'ja'
+      | 'ja-jp'
+      | 'jgo'
+      | 'jgo-cm'
+      | 'yi'
+      | 'yi-001'
+      | 'jmc'
+      | 'jmc-tz'
+      | 'jv'
+      | 'jv-id'
+      | 'ka'
+      | 'kab'
+      | 'kab-dz'
+      | 'kam'
+      | 'kam-ke'
+      | 'kar'
+      | 'ka-ge'
+      | 'kde'
+      | 'kde-tz'
+      | 'kea'
+      | 'kea-cv'
+      | 'kgp'
+      | 'kgp-br'
+      | 'kg'
+      | 'kh'
+      | 'khq'
+      | 'khq-ml'
+      | 'ki'
+      | 'ki-ke'
+      | 'kj'
+      | 'kk'
+      | 'kkj'
+      | 'kkj-cm'
+      | 'kk-kz'
+      | 'kl'
+      | 'kln'
+      | 'kln-ke'
+      | 'kl-gl'
+      | 'km'
+      | 'km-kh'
+      | 'kn'
+      | 'kn-in'
+      | 'ko'
+      | 'ko-cn'
+      | 'kok'
+      | 'kok-in'
+      | 'ko-kp'
+      | 'ko-kr'
+      | 'kr'
+      | 'ks'
+      | 'ksb'
+      | 'ksb-tz'
+      | 'ksf'
+      | 'ksf-cm'
+      | 'ksh'
+      | 'ksh-de'
+      | 'ks-in'
+      | 'ku'
+      | 'ku-tr'
+      | 'kv'
+      | 'kw'
+      | 'kw-gb'
+      | 'kxv'
+      | 'kxv-in'
+      | 'ky'
+      | 'ky-kg'
+      | 'lag'
+      | 'lag-tz'
+      | 'la'
+      | 'lb'
+      | 'lb-lu'
+      | 'lg'
+      | 'lg-ug'
+      | 'lkt'
+      | 'lkt-us'
+      | 'li'
+      | 'lij'
+      | 'lij-it'
+      | 'lmo'
+      | 'lmo-it'
+      | 'ln'
+      | 'ln-ao'
+      | 'ln-cd'
+      | 'ln-cf'
+      | 'ln-cg'
+      | 'lo'
+      | 'lo-la'
+      | 'lrc'
+      | 'lrc-iq'
+      | 'lrc-ir'
+      | 'lt'
+      | 'lt-lt'
+      | 'lu'
+      | 'luo'
+      | 'luo-ke'
+      | 'luy'
+      | 'luy-ke'
+      | 'lu-cd'
+      | 'lv'
+      | 'lv-lv'
+      | 'mai'
+      | 'mai-in'
+      | 'mas'
+      | 'mas-ke'
+      | 'mas-tz'
+      | 'mdf'
+      | 'mdf-ru'
+      | 'mer'
+      | 'mer-ke'
+      | 'mfe'
+      | 'mfe-mu'
+      | 'mg'
+      | 'mgh'
+      | 'mgh-mz'
+      | 'mgo'
+      | 'mgo-cm'
+      | 'mg-mg'
+      | 'mh'
+      | 'mi'
+      | 'mi-nz'
+      | 'mk'
+      | 'mk-mk'
+      | 'ml'
+      | 'ml-in'
+      | 'mn'
+      | 'mni'
+      | 'mni-in'
+      | 'mn-mn'
+      | 'mr'
+      | 'mr-in'
+      | 'ms'
+      | 'ms-bn'
+      | 'ms-id'
+      | 'ms-my'
+      | 'ms-sg'
+      | 'mt'
+      | 'mt-mt'
+      | 'mua'
+      | 'mua-cm'
+      | 'my'
+      | 'my-mm'
+      | 'mzn'
+      | 'mzn-ir'
+      | 'naq'
+      | 'naq-na'
+      | 'na'
+      | 'nb'
+      | 'nb-no'
+      | 'nb-sj'
+      | 'nd'
+      | 'nds'
+      | 'nds-de'
+      | 'nds-nl'
+      | 'nd-zw'
+      | 'ne'
+      | 'ne-in'
+      | 'ne-np'
+      | 'ng'
+      | 'nl'
+      | 'nl-aw'
+      | 'nl-be'
+      | 'nl-bq'
+      | 'nl-ch'
+      | 'nl-cw'
+      | 'nl-lu'
+      | 'nl-nl'
+      | 'nl-sr'
+      | 'nl-sx'
+      | 'nmg'
+      | 'nmg-cm'
+      | 'nn'
+      | 'nnh'
+      | 'nnh-cm'
+      | 'nn-no'
+      | 'nqo'
+      | 'nqo-gn'
+      | 'nr'
+      | 'nso'
+      | 'nso-za'
+      | 'nv'
+      | 'ny'
+      | 'no'
+      | 'no-no'
+      | 'nus'
+      | 'nus-ss'
+      | 'nyn'
+      | 'nyn-ug'
+      | 'oc'
+      | 'oc-es'
+      | 'oc-fr'
+      | 'oj'
+      | 'om'
+      | 'om-et'
+      | 'om-ke'
+      | 'or'
+      | 'or-in'
+      | 'os'
+      | 'os-ge'
+      | 'os-ru'
+      | 'pa'
+      | 'pa-in'
+      | 'pa-pk'
+      | 'pcm'
+      | 'pcm-ng'
+      | 'pis'
+      | 'pis-sb'
+      | 'pi'
+      | 'pl'
+      | 'pl-pl'
+      | 'prg'
+      | 'prg-001'
+      | 'ps'
+      | 'ps-af'
+      | 'ps-pk'
+      | 'pt'
+      | 'pt-ao'
+      | 'pt-br'
+      | 'pt-ch'
+      | 'pt-cv'
+      | 'pt-gq'
+      | 'pt-gw'
+      | 'pt-lu'
+      | 'pt-mo'
+      | 'pt-mz'
+      | 'pt-pt'
+      | 'pt-st'
+      | 'pt-tl'
+      | 'qu'
+      | 'qu-bo'
+      | 'qu-ec'
+      | 'qu-pe'
+      | 'raj'
+      | 'raj-in'
+      | 'rm'
+      | 'rm-ch'
+      | 'rn'
+      | 'rn-bi'
+      | 'ro'
+      | 'rof'
+      | 'rof-tz'
+      | 'ro-md'
+      | 'ro-ro'
+      | 'ru'
+      | 'ru-by'
+      | 'ru-kg'
+      | 'ru-kz'
+      | 'ru-md'
+      | 'ru-ru'
+      | 'ru-ua'
+      | 'rw'
+      | 'rwk'
+      | 'rwk-tz'
+      | 'rw-rw'
+      | 'sa'
+      | 'sah'
+      | 'sah-ru'
+      | 'saq'
+      | 'saq-ke'
+      | 'sat'
+      | 'sat-in'
+      | 'sa-in'
+      | 'sbp'
+      | 'sbp-tz'
+      | 'sc'
+      | 'sc-it'
+      | 'sd'
+      | 'sd-in'
+      | 'sd-pk'
+      | 'se'
+      | 'seh'
+      | 'seh-mz'
+      | 'ses'
+      | 'ses-ml'
+      | 'se-fi'
+      | 'se-no'
+      | 'se-se'
+      | 'sg'
+      | 'sg-cf'
+      | 'shi'
+      | 'shi-ma'
+      | 'si'
+      | 'si-lk'
+      | 'sk'
+      | 'sk-sk'
+      | 'sl'
+      | 'sl-si'
+      | 'sm'
+      | 'smn'
+      | 'smn-fi'
+      | 'sms'
+      | 'sms-fi'
+      | 'sn'
+      | 'sn-zw'
+      | 'so'
+      | 'so-dj'
+      | 'so-et'
+      | 'so-ke'
+      | 'so-so'
+      | 'sq'
+      | 'sq-al'
+      | 'sq-mk'
+      | 'sq-xk'
+      | 'sr'
+      | 'sr-ba'
+      | 'sr-cs'
+      | 'sr-me'
+      | 'sr-rs'
+      | 'sr-xk'
+      | 'ss'
+      | 'st'
+      | 'st-ls'
+      | 'st-za'
+      | 'su'
+      | 'su-id'
+      | 'sv'
+      | 'sv-ax'
+      | 'sv-fi'
+      | 'sv-se'
+      | 'sw'
+      | 'sw-cd'
+      | 'sw-ke'
+      | 'sw-tz'
+      | 'sw-ug'
+      | 'sy'
+      | 'syr'
+      | 'syr-iq'
+      | 'syr-sy'
+      | 'szl'
+      | 'szl-pl'
+      | 'ta'
+      | 'ta-in'
+      | 'ta-lk'
+      | 'ta-my'
+      | 'ta-sg'
+      | 'te'
+      | 'teo'
+      | 'teo-ke'
+      | 'teo-ug'
+      | 'te-in'
+      | 'tg'
+      | 'tg-tj'
+      | 'th'
+      | 'th-th'
+      | 'ti'
+      | 'ti-er'
+      | 'ti-et'
+      | 'tk'
+      | 'tk-tm'
+      | 'tl'
+      | 'tn'
+      | 'tn-bw'
+      | 'tn-za'
+      | 'to'
+      | 'tok'
+      | 'tok-001'
+      | 'to-to'
+      | 'ts'
+      | 'tr'
+      | 'tr-cy'
+      | 'tr-tr'
+      | 'tt'
+      | 'tt-ru'
+      | 'tw'
+      | 'ty'
+      | 'twq'
+      | 'twq-ne'
+      | 'tzm'
+      | 'tzm-ma'
+      | 'ug'
+      | 'ug-cn'
+      | 'uk'
+      | 'uk-ua'
+      | 'ur'
+      | 'ur-in'
+      | 'ur-pk'
+      | 'uz'
+      | 'uz-af'
+      | 'uz-uz'
+      | 'vai'
+      | 'vai-lr'
+      | 've'
+      | 'vec'
+      | 'vec-it'
+      | 'vi'
+      | 'vi-vn'
+      | 'vmw'
+      | 'vmw-mz'
+      | 'vo'
+      | 'vo-001'
+      | 'vun'
+      | 'vun-tz'
+      | 'wa'
+      | 'wae'
+      | 'wae-ch'
+      | 'wo'
+      | 'wo-sn'
+      | 'xh'
+      | 'xh-za'
+      | 'xnr'
+      | 'xnr-in'
+      | 'xog'
+      | 'xog-ug'
+      | 'yav'
+      | 'yav-cm'
+      | 'yi-ua'
+      | 'yo'
+      | 'yo-bj'
+      | 'yo-ng'
+      | 'yrl'
+      | 'yrl-br'
+      | 'yrl-co'
+      | 'yrl-ve'
+      | 'yue'
+      | 'yue-cn'
+      | 'yue-hk'
+      | 'yue-mo'
+      | 'zgh'
+      | 'zgh-ma'
+      | 'za'
+      | 'za-cn'
+      | 'zh'
+      | 'zh-cn'
+      | 'zh-hans'
+      | 'zh-hant'
+      | 'zh-hk'
+      | 'zh-mo'
+      | 'zh-my'
+      | 'zh-sg'
+      | 'zh-tw'
+      | 'zu'
+      | 'zu-za'
+  }
+  primaryId: string
+}
+type ContentScheduleRequestVNext = { id: string; publishDate: string }
+type PageVersion = { id: string; object: Page; updatedAt: string; user: VersionUser }
+type CollectionResponseWithTotalPageVersion = {
+  paging?: Paging | undefined
+  results: PageVersion[]
+  total: number
+}
+declare const routes: import('@hono/zod-openapi').OpenAPIHono<
+  import('hono/types').Env,
+  {
+    '/cms/pages/2026-09/landing-pages': {
+      $get:
+        | {
+            input: {
+              query: {
+                after?: string | undefined
+                archived?: boolean | undefined
+                createdAfter?: string | undefined
+                createdAt?: string | undefined
+                createdBefore?: string | undefined
+                limit?: number | undefined
+                property?: string | undefined
+                sort?: string[] | undefined
+                updatedAfter?: string | undefined
+                updatedAt?: string | undefined
+                updatedBefore?: string | undefined
+              }
+            }
+            output: CollectionResponseWithTotalPageForwardPaging
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: {
+                after?: string | undefined
+                archived?: boolean | undefined
+                createdAfter?: string | undefined
+                createdAt?: string | undefined
+                createdBefore?: string | undefined
+                limit?: number | undefined
+                property?: string | undefined
+                sort?: string[] | undefined
+                updatedAfter?: string | undefined
+                updatedAt?: string | undefined
+                updatedBefore?: string | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $post:
+        | { input: { json: Page }; output: Page; outputFormat: 'json'; status: 201 }
+        | { input: { json: Page }; output: Error; outputFormat: 'text'; status: 200 }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/ab-test/create-variation': {
+      $post:
+        | {
+            input: { json: AbTestCreateRequestVNext }
+            output: Page
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { json: AbTestCreateRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/ab-test/end': {
+      $post: {
+        input: { json: AbTestEndRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/ab-test/rerun': {
+      $post: {
+        input: { json: AbTestRerunRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/batch/archive': {
+      $post:
+        | {
+            input: { json: BatchInputString }
+            output: BatchResponsePageWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | { input: { json: BatchInputString }; output: Error; outputFormat: 'text'; status: 200 }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/batch/create': {
+      $post:
+        | {
+            input: { json: BatchInputPage }
+            output: BatchResponsePage
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { json: BatchInputPage }
+            output: BatchResponsePageWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | { input: { json: BatchInputPage }; output: Error; outputFormat: 'text'; status: 200 }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/batch/read': {
+      $post:
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: BatchResponsePage
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: BatchResponsePageWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/batch/update': {
+      $post:
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: BatchResponsePage
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: BatchResponsePageWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/clone': {
+      $post:
+        | {
+            input: { json: ContentCloneRequestVNext }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { json: ContentCloneRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders': {
+      $get:
+        | {
+            input: {
+              query: {
+                after?: string | undefined
+                archived?: boolean | undefined
+                createdAfter?: string | undefined
+                createdAt?: string | undefined
+                createdBefore?: string | undefined
+                limit?: number | undefined
+                property?: string | undefined
+                sort?: string[] | undefined
+                updatedAfter?: string | undefined
+                updatedAt?: string | undefined
+                updatedBefore?: string | undefined
+              }
+            }
+            output: CollectionResponseWithTotalContentFolderForwardPaging
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: {
+                after?: string | undefined
+                archived?: boolean | undefined
+                createdAfter?: string | undefined
+                createdAt?: string | undefined
+                createdBefore?: string | undefined
+                limit?: number | undefined
+                property?: string | undefined
+                sort?: string[] | undefined
+                updatedAfter?: string | undefined
+                updatedAt?: string | undefined
+                updatedBefore?: string | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $post:
+        | {
+            input: { json: ContentFolder }
+            output: ContentFolder
+            outputFormat: 'json'
+            status: 201
+          }
+        | { input: { json: ContentFolder }; output: Error; outputFormat: 'text'; status: 200 }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders/batch/archive': {
+      $post:
+        | {
+            input: { json: BatchInputString }
+            output: BatchResponseContentFolderWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | { input: { json: BatchInputString }; output: Error; outputFormat: 'text'; status: 200 }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders/batch/create': {
+      $post:
+        | {
+            input: { json: BatchInputContentFolder }
+            output: BatchResponseContentFolder
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { json: BatchInputContentFolder }
+            output: BatchResponseContentFolderWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | {
+            input: { json: BatchInputContentFolder }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders/batch/read': {
+      $post:
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: BatchResponseContentFolder
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: BatchResponseContentFolderWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders/batch/update': {
+      $post:
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: BatchResponseContentFolder
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: BatchResponseContentFolderWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders/:objectId': {
+      $get:
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined; property?: string | undefined }
+            }
+            output: ContentFolder
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined; property?: string | undefined }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $delete: {
+        input: { param: { objectId: string } } & { query: { archived?: boolean | undefined } }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+      $patch:
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined }
+            } & { json: ContentFolder }
+            output: ContentFolder
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined }
+            } & { json: ContentFolder }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders/:objectId/revisions': {
+      $get:
+        | {
+            input: { param: { objectId: string } } & {
+              query: {
+                after?: string | undefined
+                before?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: CollectionResponseWithTotalContentFolderVersion
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: {
+                after?: string | undefined
+                before?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders/:objectId/revisions/:revisionId': {
+      $get:
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: ContentFolderVersion
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/folders/:objectId/revisions/:revisionId/restore': {
+      $post:
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: ContentFolder
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/multi-language/attach-to-lang-group': {
+      $post: {
+        input: { json: AttachToLangPrimaryRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/multi-language/create-language-variation': {
+      $post:
+        | {
+            input: { json: ContentLanguageCloneRequestVNext }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { json: ContentLanguageCloneRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/multi-language/detach-from-lang-group': {
+      $post: {
+        input: { json: DetachFromLangGroupRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/multi-language/set-new-lang-primary': {
+      $put: {
+        input: { json: SetNewLanguagePrimaryRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/multi-language/update-languages': {
+      $post: {
+        input: { json: UpdateLanguagesRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/schedule': {
+      $post: {
+        input: { json: ContentScheduleRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/:objectId': {
+      $get:
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined; property?: string | undefined }
+            }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined; property?: string | undefined }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $delete: {
+        input: { param: { objectId: string } } & { query: { archived?: boolean | undefined } }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+      $patch:
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined }
+            } & { json: Page }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined }
+            } & { json: Page }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/:objectId/draft': {
+      $get:
+        | {
+            input: { param: { objectId: string } }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $patch:
+        | {
+            input: { param: { objectId: string } } & { json: Page }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & { json: Page }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/:objectId/draft/push-live': {
+      $post: {
+        input: { param: { objectId: string } }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/:objectId/draft/reset': {
+      $post: {
+        input: { param: { objectId: string } }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/:objectId/revisions': {
+      $get:
+        | {
+            input: { param: { objectId: string } } & {
+              query: {
+                after?: string | undefined
+                before?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: CollectionResponseWithTotalPageVersion
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: {
+                after?: string | undefined
+                before?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/:objectId/revisions/:revisionId': {
+      $get:
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: PageVersion
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/:objectId/revisions/:revisionId/restore': {
+      $post:
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/landing-pages/:objectId/revisions/:revisionId/restore-to-draft': {
+      $post:
+        | {
+            input: { param: { objectId: string; revisionId: bigint } }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string; revisionId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages': {
+      $get:
+        | {
+            input: {
+              query: {
+                after?: string | undefined
+                archived?: boolean | undefined
+                createdAfter?: string | undefined
+                createdAt?: string | undefined
+                createdBefore?: string | undefined
+                limit?: number | undefined
+                property?: string | undefined
+                sort?: string[] | undefined
+                updatedAfter?: string | undefined
+                updatedAt?: string | undefined
+                updatedBefore?: string | undefined
+              }
+            }
+            output: CollectionResponseWithTotalPageForwardPaging
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: {
+                after?: string | undefined
+                archived?: boolean | undefined
+                createdAfter?: string | undefined
+                createdAt?: string | undefined
+                createdBefore?: string | undefined
+                limit?: number | undefined
+                property?: string | undefined
+                sort?: string[] | undefined
+                updatedAfter?: string | undefined
+                updatedAt?: string | undefined
+                updatedBefore?: string | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $post:
+        | { input: { json: Page }; output: Page; outputFormat: 'json'; status: 201 }
+        | { input: { json: Page }; output: Error; outputFormat: 'text'; status: 200 }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/ab-test/create-variation': {
+      $post:
+        | {
+            input: { json: AbTestCreateRequestVNext }
+            output: Page
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { json: AbTestCreateRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/ab-test/end': {
+      $post: {
+        input: { json: AbTestEndRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/ab-test/rerun': {
+      $post: {
+        input: { json: AbTestRerunRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/batch/archive': {
+      $post:
+        | {
+            input: { json: BatchInputString }
+            output: BatchResponsePageWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | { input: { json: BatchInputString }; output: Error; outputFormat: 'text'; status: 200 }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/batch/create': {
+      $post:
+        | {
+            input: { json: BatchInputPage }
+            output: BatchResponsePage
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { json: BatchInputPage }
+            output: BatchResponsePageWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | { input: { json: BatchInputPage }; output: Error; outputFormat: 'text'; status: 200 }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/batch/read': {
+      $post:
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: BatchResponsePage
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: BatchResponsePageWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputString }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/batch/update': {
+      $post:
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: BatchResponsePage
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: BatchResponsePageWithErrors
+            outputFormat: 'json'
+            status: 207
+          }
+        | {
+            input: { query: { archived?: boolean | undefined } } & { json: BatchInputJsonNode }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/clone': {
+      $post:
+        | {
+            input: { json: ContentCloneRequestVNext }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { json: ContentCloneRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/multi-language/attach-to-lang-group': {
+      $post: {
+        input: { json: AttachToLangPrimaryRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/multi-language/create-language-variation': {
+      $post:
+        | {
+            input: { json: ContentLanguageCloneRequestVNext }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { json: ContentLanguageCloneRequestVNext }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/multi-language/detach-from-lang-group': {
+      $post: {
+        input: { json: DetachFromLangGroupRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/multi-language/set-new-lang-primary': {
+      $put: {
+        input: { json: SetNewLanguagePrimaryRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/multi-language/update-languages': {
+      $post: {
+        input: { json: UpdateLanguagesRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/schedule': {
+      $post: {
+        input: { json: ContentScheduleRequestVNext }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/:objectId': {
+      $get:
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined; property?: string | undefined }
+            }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined; property?: string | undefined }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $delete: {
+        input: { param: { objectId: string } } & { query: { archived?: boolean | undefined } }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+      $patch:
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined }
+            } & { json: Page }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: { archived?: boolean | undefined }
+            } & { json: Page }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/:objectId/draft': {
+      $get:
+        | {
+            input: { param: { objectId: string } }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+      $patch:
+        | {
+            input: { param: { objectId: string } } & { json: Page }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & { json: Page }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/:objectId/draft/push-live': {
+      $post: {
+        input: { param: { objectId: string } }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/:objectId/draft/reset': {
+      $post: {
+        input: { param: { objectId: string } }
+        output: Error
+        outputFormat: 'text'
+        status: 200
+      }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/:objectId/revisions': {
+      $get:
+        | {
+            input: { param: { objectId: string } } & {
+              query: {
+                after?: string | undefined
+                before?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: CollectionResponseWithTotalPageVersion
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string } } & {
+              query: {
+                after?: string | undefined
+                before?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/:objectId/revisions/:revisionId': {
+      $get:
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: PageVersion
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/:objectId/revisions/:revisionId/restore': {
+      $post:
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string; revisionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  } & {
+    '/cms/pages/2026-09/site-pages/:objectId/revisions/:revisionId/restore-to-draft': {
+      $post:
+        | {
+            input: { param: { objectId: string; revisionId: bigint } }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { objectId: string; revisionId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
+    }
+  },
+  '/'
+>
+export default routes

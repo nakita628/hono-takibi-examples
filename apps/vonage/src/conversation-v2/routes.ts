@@ -68,7 +68,7 @@ const TextEventSchema = z
 const CustomEventSchema = z
   .object({
     body: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The body of your `custom` event', example: { my: 'Custom Data' } }),
     type: z

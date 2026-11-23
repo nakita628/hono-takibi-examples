@@ -70,7 +70,9 @@ export const getLbheartbeatRoute = createRoute({
   responses: {
     200: {
       description: 'Returned if server is reachable.',
-      content: { 'application/json': { schema: z.object({}).openapi({ title: 'SchemaNode' }) } },
+      content: {
+        'application/json': { schema: z.looseObject({}).openapi({ title: 'SchemaNode' }) },
+      },
     },
   },
   security: [],
@@ -416,7 +418,7 @@ export const getBucketsRoute = createRoute({
                       'record:schema': z.record(z.string(), z.any()).exactOptional(),
                     })
                     .catchall(z.any())
-                    .openapi({ title: 'Data' }),
+                    .openapi({ title: 'Data', required: [] }),
                 )
                 .default([])
                 .exactOptional(),
@@ -425,37 +427,29 @@ export const getBucketsRoute = createRoute({
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -773,37 +767,29 @@ export const getBucketsMonitorCollectionsChangesRecordsRoute = createRoute({
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -1190,7 +1176,7 @@ export const getBucketsBucketIdCollectionsRoute = createRoute({
                         .openapi({ title: 'Schema' }),
                     })
                     .catchall(z.any())
-                    .openapi({ title: 'Data' }),
+                    .openapi({ title: 'Data', required: [] }),
                 )
                 .default([])
                 .exactOptional(),
@@ -1199,37 +1185,29 @@ export const getBucketsBucketIdCollectionsRoute = createRoute({
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -1551,37 +1529,29 @@ export const getBucketsBucketIdCollectionsCollectionIdRecordsRoute = createRoute
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -1782,37 +1752,29 @@ export const getBucketsBucketIdCollectionsCollectionIdRecordsIdRoute = createRou
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -2074,7 +2036,7 @@ export const getBucketsBucketIdCollectionsIdRoute = createRoute({
                 })
                 .catchall(z.any())
                 .exactOptional()
-                .openapi({ title: 'Data' }),
+                .openapi({ title: 'Data', required: [] }),
               permissions: z
                 .object({
                   read: z.array(z.string()).exactOptional().openapi({ title: 'Read' }),
@@ -2091,37 +2053,29 @@ export const getBucketsBucketIdCollectionsIdRoute = createRoute({
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -2457,7 +2411,7 @@ export const getBucketsBucketIdGroupsRoute = createRoute({
                         .openapi({ title: 'Members' }),
                     })
                     .catchall(z.any())
-                    .openapi({ title: 'Data' }),
+                    .openapi({ title: 'Data', required: [] }),
                 )
                 .default([])
                 .exactOptional(),
@@ -2466,37 +2420,29 @@ export const getBucketsBucketIdGroupsRoute = createRoute({
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -2689,7 +2635,7 @@ export const getBucketsBucketIdGroupsIdRoute = createRoute({
                 })
                 .catchall(z.any())
                 .exactOptional()
-                .openapi({ title: 'Data' }),
+                .openapi({ title: 'Data', required: [] }),
               permissions: z
                 .object({
                   read: z.array(z.string()).exactOptional().openapi({ title: 'Read' }),
@@ -2702,37 +2648,29 @@ export const getBucketsBucketIdGroupsIdRoute = createRoute({
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -2935,7 +2873,7 @@ export const getBucketsIdRoute = createRoute({
                 })
                 .catchall(z.any())
                 .exactOptional()
-                .openapi({ title: 'Data' }),
+                .openapi({ title: 'Data', required: [] }),
               permissions: z
                 .object({
                   'collection:create': z
@@ -2956,37 +2894,29 @@ export const getBucketsIdRoute = createRoute({
         },
       },
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     304: {
       description: 'Reponse has not changed since value in If-None-Match header',
       headers: z.object({
-        Etag: {
-          schema: z
-            .string()
-            .regex(/^"([0-9]+?)"$|\*/)
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Last-Modified': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Etag: z
+          .string()
+          .regex(/^"([0-9]+?)"$|\*/)
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Last-Modified': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {

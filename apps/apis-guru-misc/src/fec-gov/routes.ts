@@ -21724,7 +21724,7 @@ export const getLegalSearchIndexRoute = createRoute({
                         .exactOptional(),
                       committee_id: z.string().exactOptional(),
                       doc_id: z.string().exactOptional(),
-                      document_highlights: z.object({}).exactOptional(),
+                      document_highlights: z.looseObject({}).exactOptional(),
                       documents: z
                         .array(
                           z
@@ -21796,7 +21796,7 @@ export const getLegalSearchIndexRoute = createRoute({
                         )
                         .exactOptional(),
                       doc_id: z.string().exactOptional(),
-                      document_highlights: z.object({}).exactOptional(),
+                      document_highlights: z.looseObject({}).exactOptional(),
                       documents: z
                         .array(
                           z
@@ -21820,7 +21820,7 @@ export const getLegalSearchIndexRoute = createRoute({
                         .array(
                           z
                             .object({
-                              citations: z.object({}).exactOptional(),
+                              citations: z.looseObject({}).exactOptional(),
                               name: z.string().exactOptional(),
                               role: z.string().exactOptional(),
                             })
@@ -21859,7 +21859,7 @@ export const getLegalSearchIndexRoute = createRoute({
                         )
                         .exactOptional(),
                       commenter_names: z.array(z.string()).exactOptional(),
-                      document_highlights: z.object({}).exactOptional(),
+                      document_highlights: z.looseObject({}).exactOptional(),
                       documents: z
                         .array(
                           z
@@ -21959,7 +21959,7 @@ export const getLegalSearchIndexRoute = createRoute({
                         )
                         .exactOptional(),
                       doc_id: z.string().exactOptional(),
-                      document_highlights: z.object({}).exactOptional(),
+                      document_highlights: z.looseObject({}).exactOptional(),
                       documents: z
                         .array(
                           z
@@ -21984,7 +21984,7 @@ export const getLegalSearchIndexRoute = createRoute({
                         .array(
                           z
                             .object({
-                              citations: z.object({}).exactOptional(),
+                              citations: z.looseObject({}).exactOptional(),
                               name: z.string().exactOptional(),
                               role: z.string().exactOptional(),
                             })
@@ -22003,7 +22003,7 @@ export const getLegalSearchIndexRoute = createRoute({
                   z
                     .object({
                       doc_id: z.string().exactOptional(),
-                      document_highlights: z.object({}).exactOptional(),
+                      document_highlights: z.looseObject({}).exactOptional(),
                       highlights: z.array(z.string()).exactOptional(),
                       name: z.string().exactOptional(),
                       no: z.string().exactOptional(),
@@ -22018,7 +22018,7 @@ export const getLegalSearchIndexRoute = createRoute({
                     .object({
                       chapter: z.string().exactOptional(),
                       doc_id: z.string().exactOptional(),
-                      document_highlights: z.object({}).exactOptional(),
+                      document_highlights: z.looseObject({}).exactOptional(),
                       highlights: z.array(z.string()).exactOptional(),
                       name: z.string().exactOptional(),
                       no: z.string().exactOptional(),

@@ -115,6 +115,7 @@ const ProblemDetailsSchema = z
     type: z.string().nullable().exactOptional(),
   })
   .catchall(z.strictObject({}))
+  .openapi({ required: [] })
   .openapi('ProblemDetails')
 
 const QuestionStatusEnumSchema = z

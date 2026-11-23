@@ -581,17 +581,20 @@ const IntentPredictResponseSchema = z
 const LearningCurveSchema = z
   .object({
     epoch: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Epoch to which the metrics correspond.', example: 1 }),
     epochResults: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'Prediction results for the set of data used to test the model during training.',
       }),
-    metricsData: z.object({}).exactOptional().openapi({ description: 'Model metrics values.' }),
+    metricsData: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Model metrics values.' }),
     object: z
       .string()
       .exactOptional()
@@ -623,7 +626,10 @@ const MetricsSchema = z
       .openapi({ description: 'Date and time that the model was created.' }),
     id: z.string().exactOptional().openapi({ description: 'Model Id' }),
     language: z.string().exactOptional(),
-    metricsData: z.object({}).exactOptional().openapi({ description: 'Model metrics values.' }),
+    metricsData: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Model metrics values.' }),
     object: z.string().exactOptional(),
   })
   .openapi({ required: [] })

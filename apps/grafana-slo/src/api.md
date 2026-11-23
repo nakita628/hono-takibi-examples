@@ -504,6 +504,7 @@ curl https://grafana.example.com/api/plugins/grafana-slo-app/resources/v1/slo \
           ]
         }
       },
+      "customDashboardUid": "string",
       "description": "string",
       "destinationDatasource": {
         "type": "string",
@@ -720,6 +721,7 @@ curl https://grafana.example.com/api/plugins/grafana-slo-app/resources/v1/slo \
         ]
       }
     },
+    "customDashboardUid": "string",
     "description": "string",
     "destinationDatasource": {
       "type": "string",
@@ -898,6 +900,7 @@ curl https://grafana.example.com/api/plugins/grafana-slo-app/resources/v1/slo \
       ]
     }
   },
+  "customDashboardUid": "string",
   "description": "string",
   "destinationDatasource": {
     "type": "string",
@@ -1021,6 +1024,7 @@ curl https://grafana.example.com/api/plugins/grafana-slo-app/resources/v1/slo \
 |---|---|---|---|---|
 |body|body|[slo.v0_0.Slo](#schemaslo.v0_0.slo)|true|none|
 |» alerting|body|[slo.v0_0.Alerting](#schemaslo.v0_0.alerting)|false|none|
+|» customDashboardUid|body|string|false|none|
 |» description|body|string|true|none|
 |» destinationDatasource|body|[slo.v0_0.DestinationDatasource](#schemaslo.v0_0.destinationdatasource)|false|none|
 |» folder|body|[slo.v0_0.Folder](#schemaslo.v0_0.folder)|false|none|
@@ -1153,6 +1157,7 @@ curl https://grafana.example.com/api/plugins/grafana-slo-app/resources/v1/slo/st
       ]
     }
   },
+  "customDashboardUid": "string",
   "description": "string",
   "destinationDatasource": {
     "type": "string",
@@ -1367,6 +1372,7 @@ curl https://grafana.example.com/api/plugins/grafana-slo-app/resources/v1/slo/st
         ]
       }
     },
+    "customDashboardUid": "string",
     "description": "string",
     "destinationDatasource": {
       "type": "string",
@@ -1545,6 +1551,7 @@ curl https://grafana.example.com/api/plugins/grafana-slo-app/resources/v1/slo/st
       ]
     }
   },
+  "customDashboardUid": "string",
   "description": "string",
   "destinationDatasource": {
     "type": "string",
@@ -1669,6 +1676,7 @@ curl https://grafana.example.com/api/plugins/grafana-slo-app/resources/v1/slo/st
 |id|path|string|true|none|
 |body|body|[slo.v0_0.Slo](#schemaslo.v0_0.slo)|true|none|
 |» alerting|body|[slo.v0_0.Alerting](#schemaslo.v0_0.alerting)|false|none|
+|» customDashboardUid|body|string|false|none|
 |» description|body|string|true|none|
 |» destinationDatasource|body|[slo.v0_0.DestinationDatasource](#schemaslo.v0_0.destinationdatasource)|false|none|
 |» folder|body|[slo.v0_0.Folder](#schemaslo.v0_0.folder)|false|none|
@@ -1935,6 +1943,7 @@ bearerAuth
           ]
         }
       },
+      "customDashboardUid": "string",
       "description": "string",
       "destinationDatasource": {
         "type": "string",
@@ -2808,6 +2817,7 @@ bearerAuth
       ]
     }
   },
+  "customDashboardUid": "string",
   "description": "string",
   "destinationDatasource": {
     "type": "string",
@@ -2930,6 +2940,7 @@ bearerAuth
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |alerting|[slo.v0_0.Alerting](#schemaslo.v0_0.alerting)|false|none|none|
+|customDashboardUid|string|false|none|none|
 |description|string|true|none|none|
 |destinationDatasource|[slo.v0_0.DestinationDatasource](#schemaslo.v0_0.destinationdatasource)|false|none|none|
 |folder|[slo.v0_0.Folder](#schemaslo.v0_0.folder)|false|none|none|

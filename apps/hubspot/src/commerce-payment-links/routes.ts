@@ -943,19 +943,25 @@ const PaymentLinkResponseSchema = z
   })
   .openapi('PaymentLinkResponse')
 
-const CollectionResponsePaymentLinkResponseForwardPagingSchema = z
-  .object({
-    paging: ForwardPagingSchema.exactOptional(),
-    results: z
-      .array(PaymentLinkResponseSchema)
-      .openapi({
-        description:
-          'An array of PaymentLinkResponse objects, each representing a payment link with its associated details.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results'], example: null })
-  .openapi('CollectionResponsePaymentLinkResponseForwardPaging')
+type CollectionResponsePaymentLinkResponseForwardPagingType = {
+  paging?: z.infer<typeof ForwardPagingSchema>
+  results: z.infer<typeof PaymentLinkResponseSchema>[]
+}
+
+const CollectionResponsePaymentLinkResponseForwardPagingSchema: z.ZodType<CollectionResponsePaymentLinkResponseForwardPagingType> =
+  z
+    .object({
+      paging: ForwardPagingSchema.exactOptional(),
+      results: z
+        .array(PaymentLinkResponseSchema)
+        .openapi({
+          description:
+            'An array of PaymentLinkResponse objects, each representing a payment link with its associated details.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['results'], example: null })
+    .openapi('CollectionResponsePaymentLinkResponseForwardPaging')
 
 const DiscountRequestSchema = z
   .object({
@@ -1110,91 +1116,91 @@ const FeeRequestSchema = z
 const LineItemCloneCreateRequestSchema = z
   .object({
     allowBuyerSelectedQuantity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object indicating whether the buyer can select the quantity of the line item.',
         example: null,
       }),
     billingCycleAnchorDate: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the anchor date for the billing cycle of the line item.',
         example: null,
       }),
     billingStartDelayDays: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the number of days to delay the start of billing for the line item.',
         example: null,
       }),
     billingStartDelayMonths: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the number of months to delay the start of billing for the line item.',
         example: null,
       }),
     buyerSelectedQuantityMax: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the maximum quantity the buyer can select for the line item.',
         example: null,
       }),
     buyerSelectedQuantityMin: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the minimum quantity the buyer can select for the line item.',
         example: null,
       }),
     description: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the description of the line item.',
         example: null,
       }),
     discount: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the discount applied to the line item.',
         example: null,
       }),
     discountPercentage: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the discount percentage applied to the line item.',
         example: null,
       }),
     externalId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing an external identifier for the line item.',
         example: null,
       }),
     images: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the images associated with the line item.',
         example: null,
       }),
     isEditablePrice: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object indicating whether the price of the line item is editable.',
         example: null,
       }),
     isOptional: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object indicating whether the line item is optional.',
         example: null,
       }),
     lineItemCurrencyCode: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the currency code for the line item.',
         example: null,
@@ -1208,72 +1214,72 @@ const LineItemCloneCreateRequestSchema = z
         example: null,
       }),
     name: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'An object representing the name of the line item.', example: null }),
     positionOnQuote: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the position of the line item on the quote.',
         example: null,
       }),
     priceBookId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the price book ID associated with the line item.',
         example: null,
       }),
     pricing: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the pricing details of the line item.',
         example: null,
       }),
     productType: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the type of product for the line item.',
         example: null,
       }),
     quantity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the quantity of the line item.',
         example: null,
       }),
     recurringBillingEndDate: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the end date for recurring billing of the line item.',
         example: null,
       }),
     recurringBillingFrequency: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the frequency of recurring billing for the line item.',
         example: null,
       }),
     recurringBillingPeriod: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the billing period for recurring billing of the line item.',
         example: null,
       }),
     recurringBillingStartDate: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the start date for recurring billing of the line item.',
         example: null,
       }),
     richTextDescription: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the rich text description of the line item.',
         example: null,
       }),
     sku: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the stock keeping unit (SKU) of the line item.',
         example: null,
@@ -1285,19 +1291,19 @@ const LineItemCloneCreateRequestSchema = z
         example: null,
       }),
     taxCategory: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the tax category of the line item.',
         example: null,
       }),
     taxRateGroupId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the tax rate group ID for the line item.',
         example: null,
       }),
     variantId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the variant ID of the line item.',
         example: null,
@@ -1360,7 +1366,7 @@ const PriceUpdateEntrySchema = z
         example: null,
       }),
     price: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the price details. The specific structure of this object is not detailed in the specification.',
@@ -1623,87 +1629,87 @@ const LineItemCustomCreateRequestSchema = z
 const LineItemFromProductCreateRequestSchema = z
   .object({
     allowBuyerSelectedQuantity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object indicating whether the buyer can select the quantity of the product.',
         example: null,
       }),
     billingCycleAnchorDate: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the anchor date for the billing cycle.',
         example: null,
       }),
     billingStartDelayDays: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the number of days to delay the start of billing.',
         example: null,
       }),
     billingStartDelayMonths: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the number of months to delay the start of billing.',
         example: null,
       }),
     buyerSelectedQuantityMax: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the maximum quantity the buyer can select.',
         example: null,
       }),
     buyerSelectedQuantityMin: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the minimum quantity the buyer can select.',
         example: null,
       }),
     description: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the description of the product associated with the line item.',
         example: null,
       }),
     discount: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing any discount applied to the line item.',
         example: null,
       }),
     discountPercentage: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the percentage discount applied to the line item.',
         example: null,
       }),
     externalId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing an external identifier for the line item.',
         example: null,
       }),
     images: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing images associated with the product.',
         example: null,
       }),
     isEditablePrice: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object indicating whether the price of the line item is editable.',
         example: null,
       }),
     isOptional: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object indicating whether the line item is optional.',
         example: null,
       }),
     lineItemCurrencyCode: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the currency code for the line item.',
         example: null,
@@ -1717,26 +1723,26 @@ const LineItemFromProductCreateRequestSchema = z
         example: null,
       }),
     name: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the name of the product associated with the line item.',
         example: null,
       }),
     positionOnQuote: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the position of the line item on a quote.',
         example: null,
       }),
     priceBookId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the ID of the price book associated with the product.',
         example: null,
       }),
     pricing: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the pricing details of the line item.',
         example: null,
@@ -1748,66 +1754,66 @@ const LineItemFromProductCreateRequestSchema = z
         example: null,
       }),
     productType: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'An object representing the type of product.', example: null }),
     quantity: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the quantity of the product to be included in the line item.',
         example: null,
       }),
     recurringBillingEndDate: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the end date of the recurring billing cycle.',
         example: null,
       }),
     recurringBillingFrequency: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the frequency of recurring billing for the line item.',
         example: null,
       }),
     recurringBillingPeriod: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the period of the recurring billing cycle.',
         example: null,
       }),
     recurringBillingStartDate: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the start date of the recurring billing cycle.',
         example: null,
       }),
     richTextDescription: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing a rich text description of the product associated with the line item.',
         example: null,
       }),
     sku: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the stock keeping unit (SKU) of the product.',
         example: null,
       }),
     taxCategory: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the tax category of the product.',
         example: null,
       }),
     taxRateGroupId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the tax rate group ID for the product.',
         example: null,
       }),
     variantId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the variant ID of the product.',
         example: null,
@@ -2124,7 +2130,7 @@ const PaymentLinkUpdateRequestSchema = z
         example: null,
       }),
     businessUnitId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the business unit ID associated with the payment link.',
@@ -2161,10 +2167,10 @@ const PaymentLinkUpdateRequestSchema = z
         example: null,
       }),
     dealConfigurations: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'An object containing deal configuration settings.', example: null }),
     descriptionHtml: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object containing the HTML description of the payment link.',
         example: null,
@@ -2179,14 +2185,14 @@ const PaymentLinkUpdateRequestSchema = z
         example: null,
       }),
     discountObjectId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the discount object ID associated with the payment link.',
         example: null,
       }),
     domainId: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the domain ID associated with the payment link.',
         example: null,
@@ -2199,7 +2205,7 @@ const PaymentLinkUpdateRequestSchema = z
         example: null,
       }),
     expirationSettings: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'An object representing the expiration settings for the payment link.',
         example: null,
@@ -2282,7 +2288,7 @@ const PaymentLinkUpdateRequestSchema = z
         example: null,
       }),
     successUrl: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'An object representing the success URL where the user is redirected after a successful transaction.',
@@ -2332,14 +2338,31 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: {},
+      scopes: {
+        'commerce.payment_links.delete': '',
+        'commerce.payment_links.read': '',
+        'commerce.payment_links.write': '',
+      },
+    },
+  },
+  'x-hubspot-app-availability': {
+    'commerce.payment_links.delete': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'commerce.payment_links.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'commerce.payment_links.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
     },
   },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCommercePaymentLinks202609PaymentLinksRoute = createRoute({
   method: 'get',
@@ -2566,7 +2589,7 @@ export const getCommercePaymentLinks202609PaymentLinksRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['commerce.payment_links.read'] }],
 })
 
 export const postCommercePaymentLinks202609PaymentLinksRoute = createRoute({
@@ -2588,23 +2611,19 @@ export const postCommercePaymentLinks202609PaymentLinksRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PaymentLinkResponseSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['commerce.payment_links.write'] }],
 })
 
 export const getCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute = createRoute({
@@ -2658,7 +2677,7 @@ export const getCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute = creat
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['commerce.payment_links.read'] }],
 })
 
 export const deleteCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute = createRoute({
@@ -2688,7 +2707,7 @@ export const deleteCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute = cr
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [],
+  security: [{ oauth2: ['commerce.payment_links.delete'] }],
 })
 
 export const patchCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute = createRoute({
@@ -2728,5 +2747,5 @@ export const patchCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute = cre
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [{ oauth2: ['commerce.payment_links.write'] }],
 })

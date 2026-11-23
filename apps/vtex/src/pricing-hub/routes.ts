@@ -160,6 +160,17 @@ const GetPricesRequestObjectSchema = z
       UtmMedium: 'social',
       UtmSource: 'facebook',
       email: 'customer@email.com',
+      items: [
+        {
+          brandId: '2000000',
+          categoriesIds: ['1'],
+          index: 0,
+          priceTableIds: [],
+          quantity: 1,
+          sellerId: '1',
+          skuId: '13',
+        },
+      ],
       salesChannel: '1',
     },
     required: ['items', 'salesChannel', 'email'],

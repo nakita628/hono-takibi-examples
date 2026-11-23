@@ -1,5 +1,712 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const EntitySchema = z
+  .object({
+    corporation: z
+      .object({
+        address: z
+          .object({
+            city: z.string().openapi({ description: 'The city of the address.' }),
+            line1: z.string().openapi({ description: 'The first line of the address.' }),
+            line2: z
+              .string()
+              .nullable()
+              .openapi({ description: 'The second line of the address.' }),
+            state: z
+              .string()
+              .openapi({
+                description:
+                  'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
+              }),
+            zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
+          })
+          .openapi({
+            description: "The corporation's address.",
+            example: {
+              city: 'New York',
+              line1: '33 Liberty Street',
+              line2: null,
+              state: 'NY',
+              zip: '10045',
+            },
+            required: ['line1', 'line2', 'city', 'state', 'zip'],
+            title: 'Address',
+            'x-title-plural': 'Addresss',
+          }),
+        beneficial_owners: z
+          .array(
+            z
+              .object({
+                company_title: z
+                  .string()
+                  .nullable()
+                  .openapi({ description: "This person's role or title within the entity." }),
+                individual: z
+                  .object({
+                    address: z
+                      .object({
+                        city: z.string().openapi({ description: 'The city of the address.' }),
+                        line1: z
+                          .string()
+                          .openapi({ description: 'The first line of the address.' }),
+                        line2: z
+                          .string()
+                          .nullable()
+                          .openapi({ description: 'The second line of the address.' }),
+                        state: z
+                          .string()
+                          .openapi({
+                            description:
+                              'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
+                          }),
+                        zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
+                      })
+                      .openapi({
+                        description: "The person's address.",
+                        example: {
+                          city: 'New York',
+                          line1: '33 Liberty Street',
+                          line2: null,
+                          state: 'NY',
+                          zip: '10045',
+                        },
+                        required: ['line1', 'line2', 'city', 'state', 'zip'],
+                        title: 'Address',
+                        'x-title-plural': 'Addresss',
+                      }),
+                    date_of_birth: z.iso
+                      .date()
+                      .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
+                    identification: z
+                      .object({
+                        method: z
+                          .enum([
+                            'social_security_number',
+                            'individual_taxpayer_identification_number',
+                            'passport',
+                            'drivers_license',
+                            'other',
+                          ])
+                          .openapi({
+                            description:
+                              "A method that can be used to verify the individual's identity.",
+                            'x-enum-descriptions': [
+                              'A social security number.',
+                              'An individual taxpayer identification number (ITIN).',
+                              'A passport number.',
+                              "A driver's license number.",
+                              'Another identifying document.',
+                            ],
+                          }),
+                        number_last4: z
+                          .string()
+                          .openapi({
+                            description:
+                              "The last 4 digits of the identification number that can be used to verify the individual's identity.",
+                          }),
+                      })
+                      .openapi({
+                        description: "A means of verifying the person's identity.",
+                        required: ['method', 'number_last4'],
+                        title: 'Identification',
+                        'x-title-plural': 'Identifications',
+                      }),
+                    name: z.string().openapi({ description: "The person's legal name." }),
+                  })
+                  .openapi({
+                    description: 'Personal details for the beneficial owner.',
+                    required: ['name', 'date_of_birth', 'address', 'identification'],
+                    title: 'Individual',
+                    'x-title-plural': 'Individuals',
+                  }),
+                prong: z
+                  .enum(['ownership', 'control'])
+                  .openapi({
+                    description: 'Why this person is considered a beneficial owner of the entity.',
+                    'x-enum-descriptions': [
+                      'A person with 25% or greater direct or indirect ownership of the entity.',
+                      'A person who manages, directs, or has significant control of the entity.',
+                    ],
+                  }),
+              })
+              .openapi({
+                required: ['individual', 'company_title', 'prong'],
+                title: 'Beneficial Owners Element',
+                'x-title-plural': 'Beneficial Owners Elements',
+              }),
+          )
+          .openapi({
+            description:
+              'The identifying details of anyone controlling or owning 25% or more of the corporation.',
+          }),
+        incorporation_state: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              "The two-letter United States Postal Service (USPS) abbreviation for the corporation's state of incorporation.",
+          }),
+        name: z.string().openapi({ description: 'The legal name of the corporation.' }),
+        tax_identifier: z
+          .string()
+          .nullable()
+          .openapi({
+            description: 'The Employer Identification Number (EIN) for the corporation.',
+          }),
+        website: z.string().nullable().openapi({ description: 'The website of the corporation.' }),
+      })
+      .nullable()
+      .openapi({
+        description:
+          'Details of the corporation entity. Will be present if `structure` is equal to `corporation`.',
+        required: [
+          'name',
+          'website',
+          'tax_identifier',
+          'incorporation_state',
+          'address',
+          'beneficial_owners',
+        ],
+        title: 'Corporation',
+        'x-title-plural': 'Corporations',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: "The entity's description for display purposes." }),
+    id: z.string().openapi({ description: "The entity's identifier." }),
+    joint: z
+      .object({
+        individuals: z
+          .array(
+            z
+              .object({
+                address: z
+                  .object({
+                    city: z.string().openapi({ description: 'The city of the address.' }),
+                    line1: z.string().openapi({ description: 'The first line of the address.' }),
+                    line2: z
+                      .string()
+                      .nullable()
+                      .openapi({ description: 'The second line of the address.' }),
+                    state: z
+                      .string()
+                      .openapi({
+                        description:
+                          'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
+                      }),
+                    zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
+                  })
+                  .openapi({
+                    description: "The person's address.",
+                    example: {
+                      city: 'New York',
+                      line1: '33 Liberty Street',
+                      line2: null,
+                      state: 'NY',
+                      zip: '10045',
+                    },
+                    required: ['line1', 'line2', 'city', 'state', 'zip'],
+                    title: 'Address',
+                    'x-title-plural': 'Addresss',
+                  }),
+                date_of_birth: z.iso
+                  .date()
+                  .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
+                identification: z
+                  .object({
+                    method: z
+                      .enum([
+                        'social_security_number',
+                        'individual_taxpayer_identification_number',
+                        'passport',
+                        'drivers_license',
+                        'other',
+                      ])
+                      .openapi({
+                        description:
+                          "A method that can be used to verify the individual's identity.",
+                        'x-enum-descriptions': [
+                          'A social security number.',
+                          'An individual taxpayer identification number (ITIN).',
+                          'A passport number.',
+                          "A driver's license number.",
+                          'Another identifying document.',
+                        ],
+                      }),
+                    number_last4: z
+                      .string()
+                      .openapi({
+                        description:
+                          "The last 4 digits of the identification number that can be used to verify the individual's identity.",
+                      }),
+                  })
+                  .openapi({
+                    description: "A means of verifying the person's identity.",
+                    required: ['method', 'number_last4'],
+                    title: 'Identification',
+                    'x-title-plural': 'Identifications',
+                  }),
+                name: z.string().openapi({ description: "The person's legal name." }),
+              })
+              .openapi({
+                required: ['name', 'date_of_birth', 'address', 'identification'],
+                title: 'Individual',
+                'x-title-plural': 'Individuals',
+              }),
+          )
+          .openapi({ description: 'The two individuals that share control of the entity.' }),
+        name: z.string().openapi({ description: "The entity's name." }),
+      })
+      .nullable()
+      .openapi({
+        description:
+          'Details of the joint entity. Will be present if `structure` is equal to `joint`.',
+        required: ['name', 'individuals'],
+        title: 'Joint',
+        'x-title-plural': 'Joints',
+      }),
+    natural_person: z
+      .object({
+        address: z
+          .object({
+            city: z.string().openapi({ description: 'The city of the address.' }),
+            line1: z.string().openapi({ description: 'The first line of the address.' }),
+            line2: z
+              .string()
+              .nullable()
+              .openapi({ description: 'The second line of the address.' }),
+            state: z
+              .string()
+              .openapi({
+                description:
+                  'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
+              }),
+            zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
+          })
+          .openapi({
+            description: "The person's address.",
+            example: {
+              city: 'New York',
+              line1: '33 Liberty Street',
+              line2: null,
+              state: 'NY',
+              zip: '10045',
+            },
+            required: ['line1', 'line2', 'city', 'state', 'zip'],
+            title: 'Address',
+            'x-title-plural': 'Addresss',
+          }),
+        date_of_birth: z.iso
+          .date()
+          .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
+        identification: z
+          .object({
+            method: z
+              .enum([
+                'social_security_number',
+                'individual_taxpayer_identification_number',
+                'passport',
+                'drivers_license',
+                'other',
+              ])
+              .openapi({
+                description: "A method that can be used to verify the individual's identity.",
+                'x-enum-descriptions': [
+                  'A social security number.',
+                  'An individual taxpayer identification number (ITIN).',
+                  'A passport number.',
+                  "A driver's license number.",
+                  'Another identifying document.',
+                ],
+              }),
+            number_last4: z
+              .string()
+              .openapi({
+                description:
+                  "The last 4 digits of the identification number that can be used to verify the individual's identity.",
+              }),
+          })
+          .openapi({
+            description: "A means of verifying the person's identity.",
+            required: ['method', 'number_last4'],
+            title: 'Identification',
+            'x-title-plural': 'Identifications',
+          }),
+        name: z.string().openapi({ description: "The person's legal name." }),
+      })
+      .nullable()
+      .openapi({
+        description:
+          'Details of the natural person entity. Will be present if `structure` is equal to `natural_person`.',
+        required: ['name', 'date_of_birth', 'address', 'identification'],
+        title: 'Individual',
+        'x-title-plural': 'Individuals',
+      }),
+    relationship: z
+      .enum(['affiliated', 'informational', 'unaffiliated'])
+      .openapi({
+        description: 'The relationship between your group and the entity.',
+        'x-enum-descriptions': [
+          'The entity is controlled by your group.',
+          'The entity is for informational purposes only.',
+          'The entity is not controlled by your group, but can still directly open accounts.',
+        ],
+      }),
+    structure: z
+      .enum(['corporation', 'natural_person', 'joint', 'trust'])
+      .openapi({
+        description: "The entity's legal structure.",
+        'x-enum-descriptions': [
+          'A corporation.',
+          'An individual person.',
+          'Multiple individual people.',
+          'A trust.',
+        ],
+      }),
+    supplemental_documents: z
+      .array(
+        z
+          .object({
+            file_id: z.string().openapi({ description: 'The File containing the document.' }),
+          })
+          .openapi({
+            required: ['file_id'],
+            title: 'Supplemental Documents Element',
+            'x-title-plural': 'Supplemental Documents Elements',
+          }),
+      )
+      .openapi({ description: 'Additional documentation associated with the entity.' }),
+    trust: z
+      .object({
+        address: z
+          .object({
+            city: z.string().openapi({ description: 'The city of the address.' }),
+            line1: z.string().openapi({ description: 'The first line of the address.' }),
+            line2: z
+              .string()
+              .nullable()
+              .openapi({ description: 'The second line of the address.' }),
+            state: z
+              .string()
+              .openapi({
+                description:
+                  'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
+              }),
+            zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
+          })
+          .openapi({
+            description: "The trust's address.",
+            example: {
+              city: 'New York',
+              line1: '33 Liberty Street',
+              line2: null,
+              state: 'NY',
+              zip: '10045',
+            },
+            required: ['line1', 'line2', 'city', 'state', 'zip'],
+            title: 'Address',
+            'x-title-plural': 'Addresss',
+          }),
+        category: z
+          .enum(['revocable', 'irrevocable'])
+          .openapi({
+            description: 'Whether the trust is `revocable` or `irrevocable`.',
+            'x-enum-descriptions': [
+              'The trust is revocable by the grantor.',
+              'The trust cannot be revoked.',
+            ],
+          }),
+        formation_document_file_id: z
+          .string()
+          .nullable()
+          .openapi({
+            description: 'The ID for the File containing the formation document of the trust.',
+          }),
+        formation_state: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              'The two-letter United States Postal Service (USPS) abbreviation for the state in which the trust was formed.',
+          }),
+        grantor: z
+          .object({
+            address: z
+              .object({
+                city: z.string().openapi({ description: 'The city of the address.' }),
+                line1: z.string().openapi({ description: 'The first line of the address.' }),
+                line2: z
+                  .string()
+                  .nullable()
+                  .openapi({ description: 'The second line of the address.' }),
+                state: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
+                  }),
+                zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
+              })
+              .openapi({
+                description: "The person's address.",
+                example: {
+                  city: 'New York',
+                  line1: '33 Liberty Street',
+                  line2: null,
+                  state: 'NY',
+                  zip: '10045',
+                },
+                required: ['line1', 'line2', 'city', 'state', 'zip'],
+                title: 'Address',
+                'x-title-plural': 'Addresss',
+              }),
+            date_of_birth: z.iso
+              .date()
+              .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
+            identification: z
+              .object({
+                method: z
+                  .enum([
+                    'social_security_number',
+                    'individual_taxpayer_identification_number',
+                    'passport',
+                    'drivers_license',
+                    'other',
+                  ])
+                  .openapi({
+                    description: "A method that can be used to verify the individual's identity.",
+                    'x-enum-descriptions': [
+                      'A social security number.',
+                      'An individual taxpayer identification number (ITIN).',
+                      'A passport number.',
+                      "A driver's license number.",
+                      'Another identifying document.',
+                    ],
+                  }),
+                number_last4: z
+                  .string()
+                  .openapi({
+                    description:
+                      "The last 4 digits of the identification number that can be used to verify the individual's identity.",
+                  }),
+              })
+              .openapi({
+                description: "A means of verifying the person's identity.",
+                required: ['method', 'number_last4'],
+                title: 'Identification',
+                'x-title-plural': 'Identifications',
+              }),
+            name: z.string().openapi({ description: "The person's legal name." }),
+          })
+          .nullable()
+          .openapi({
+            description:
+              'The grantor of the trust. Will be present if the `category` is `revocable`.',
+            required: ['name', 'date_of_birth', 'address', 'identification'],
+            title: 'Individual',
+            'x-title-plural': 'Individuals',
+          }),
+        name: z.string().openapi({ description: "The trust's name" }),
+        tax_identifier: z
+          .string()
+          .nullable()
+          .openapi({
+            description: 'The Employer Identification Number (EIN) of the trust itself.',
+          }),
+        trustees: z
+          .array(
+            z
+              .object({
+                individual: z
+                  .object({
+                    address: z
+                      .object({
+                        city: z.string().openapi({ description: 'The city of the address.' }),
+                        line1: z
+                          .string()
+                          .openapi({ description: 'The first line of the address.' }),
+                        line2: z
+                          .string()
+                          .nullable()
+                          .openapi({ description: 'The second line of the address.' }),
+                        state: z
+                          .string()
+                          .openapi({
+                            description:
+                              'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
+                          }),
+                        zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
+                      })
+                      .openapi({
+                        description: "The person's address.",
+                        example: {
+                          city: 'New York',
+                          line1: '33 Liberty Street',
+                          line2: null,
+                          state: 'NY',
+                          zip: '10045',
+                        },
+                        required: ['line1', 'line2', 'city', 'state', 'zip'],
+                        title: 'Address',
+                        'x-title-plural': 'Addresss',
+                      }),
+                    date_of_birth: z.iso
+                      .date()
+                      .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
+                    identification: z
+                      .object({
+                        method: z
+                          .enum([
+                            'social_security_number',
+                            'individual_taxpayer_identification_number',
+                            'passport',
+                            'drivers_license',
+                            'other',
+                          ])
+                          .openapi({
+                            description:
+                              "A method that can be used to verify the individual's identity.",
+                            'x-enum-descriptions': [
+                              'A social security number.',
+                              'An individual taxpayer identification number (ITIN).',
+                              'A passport number.',
+                              "A driver's license number.",
+                              'Another identifying document.',
+                            ],
+                          }),
+                        number_last4: z
+                          .string()
+                          .openapi({
+                            description:
+                              "The last 4 digits of the identification number that can be used to verify the individual's identity.",
+                          }),
+                      })
+                      .openapi({
+                        description: "A means of verifying the person's identity.",
+                        required: ['method', 'number_last4'],
+                        title: 'Identification',
+                        'x-title-plural': 'Identifications',
+                      }),
+                    name: z.string().openapi({ description: "The person's legal name." }),
+                  })
+                  .nullable()
+                  .openapi({
+                    description:
+                      "The individual trustee of the trust. Will be present if the trustee's `structure` is equal to `individual`.",
+                    required: ['name', 'date_of_birth', 'address', 'identification'],
+                    title: 'Individual',
+                    'x-title-plural': 'Individuals',
+                  }),
+                structure: z
+                  .literal('individual')
+                  .openapi({
+                    description:
+                      'The structure of the trustee. Will always be equal to `individual`.',
+                    'x-enum-descriptions': ['The trustee is an individual.'],
+                  }),
+              })
+              .openapi({
+                required: ['structure', 'individual'],
+                title: 'Trustees Element',
+                'x-title-plural': 'Trustees Elements',
+              }),
+          )
+          .openapi({ description: 'The trustees of the trust.' }),
+      })
+      .nullable()
+      .openapi({
+        description:
+          'Details of the trust entity. Will be present if `structure` is equal to `trust`.',
+        required: [
+          'name',
+          'category',
+          'address',
+          'formation_state',
+          'tax_identifier',
+          'trustees',
+          'grantor',
+          'formation_document_file_id',
+        ],
+        title: 'Trust',
+        'x-title-plural': 'Trusts',
+      }),
+    type: z
+      .literal('entity')
+      .openapi({
+        description:
+          "A constant representing the object's type. For this resource it will always be `entity`.",
+      }),
+  })
+  .openapi({
+    description:
+      'Entities are the legal entities that own accounts. They can be people, corporations, partnerships, or trusts.',
+    example: {
+      corporation: {
+        address: {
+          city: 'New York',
+          line1: '33 Liberty Street',
+          line2: null,
+          state: 'NY',
+          zip: '10045',
+        },
+        beneficial_owners: [
+          {
+            company_title: 'CEO',
+            individual: {
+              address: {
+                city: 'New York',
+                line1: '33 Liberty Street',
+                line2: null,
+                state: 'NY',
+                zip: '10045',
+              },
+              date_of_birth: '1970-01-31',
+              identification: {
+                country: 'US',
+                method: 'social_security_number',
+                number_last4: '1120',
+              },
+              name: 'Ian Crease',
+            },
+            prong: 'control',
+          },
+        ],
+        incorporation_state: 'NY',
+        name: 'National Phonograph Company',
+        tax_identifier: '602214076',
+        website: 'https://example.com',
+      },
+      description: null,
+      id: 'entity_n8y8tnk2p9339ti393yi',
+      joint: null,
+      natural_person: null,
+      relationship: 'informational',
+      structure: 'corporation',
+      supplemental_documents: [{ file_id: 'file_makxrc67oh9l6sg7w9yc' }],
+      trust: null,
+      type: 'entity',
+    },
+    required: [
+      'id',
+      'structure',
+      'corporation',
+      'natural_person',
+      'joint',
+      'trust',
+      'type',
+      'description',
+      'relationship',
+      'supplemental_documents',
+    ],
+    title: 'Entity',
+    'x-tag': 'Entities',
+    'x-title-plural': 'Entities',
+  })
+  .openapi('Entity')
+
+type EntityListType = { data: z.infer<typeof EntitySchema>[]; next_cursor: string | null }
+
 const AccountSchema = z
   .object({
     balances: z
@@ -5799,712 +6506,7 @@ const DocumentListSchema = z
   })
   .openapi('DocumentList')
 
-const EntitySchema = z
-  .object({
-    corporation: z
-      .object({
-        address: z
-          .object({
-            city: z.string().openapi({ description: 'The city of the address.' }),
-            line1: z.string().openapi({ description: 'The first line of the address.' }),
-            line2: z
-              .string()
-              .nullable()
-              .openapi({ description: 'The second line of the address.' }),
-            state: z
-              .string()
-              .openapi({
-                description:
-                  'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
-              }),
-            zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
-          })
-          .openapi({
-            description: "The corporation's address.",
-            example: {
-              city: 'New York',
-              line1: '33 Liberty Street',
-              line2: null,
-              state: 'NY',
-              zip: '10045',
-            },
-            required: ['line1', 'line2', 'city', 'state', 'zip'],
-            title: 'Address',
-            'x-title-plural': 'Addresss',
-          }),
-        beneficial_owners: z
-          .array(
-            z
-              .object({
-                company_title: z
-                  .string()
-                  .nullable()
-                  .openapi({ description: "This person's role or title within the entity." }),
-                individual: z
-                  .object({
-                    address: z
-                      .object({
-                        city: z.string().openapi({ description: 'The city of the address.' }),
-                        line1: z
-                          .string()
-                          .openapi({ description: 'The first line of the address.' }),
-                        line2: z
-                          .string()
-                          .nullable()
-                          .openapi({ description: 'The second line of the address.' }),
-                        state: z
-                          .string()
-                          .openapi({
-                            description:
-                              'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
-                          }),
-                        zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
-                      })
-                      .openapi({
-                        description: "The person's address.",
-                        example: {
-                          city: 'New York',
-                          line1: '33 Liberty Street',
-                          line2: null,
-                          state: 'NY',
-                          zip: '10045',
-                        },
-                        required: ['line1', 'line2', 'city', 'state', 'zip'],
-                        title: 'Address',
-                        'x-title-plural': 'Addresss',
-                      }),
-                    date_of_birth: z.iso
-                      .date()
-                      .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
-                    identification: z
-                      .object({
-                        method: z
-                          .enum([
-                            'social_security_number',
-                            'individual_taxpayer_identification_number',
-                            'passport',
-                            'drivers_license',
-                            'other',
-                          ])
-                          .openapi({
-                            description:
-                              "A method that can be used to verify the individual's identity.",
-                            'x-enum-descriptions': [
-                              'A social security number.',
-                              'An individual taxpayer identification number (ITIN).',
-                              'A passport number.',
-                              "A driver's license number.",
-                              'Another identifying document.',
-                            ],
-                          }),
-                        number_last4: z
-                          .string()
-                          .openapi({
-                            description:
-                              "The last 4 digits of the identification number that can be used to verify the individual's identity.",
-                          }),
-                      })
-                      .openapi({
-                        description: "A means of verifying the person's identity.",
-                        required: ['method', 'number_last4'],
-                        title: 'Identification',
-                        'x-title-plural': 'Identifications',
-                      }),
-                    name: z.string().openapi({ description: "The person's legal name." }),
-                  })
-                  .openapi({
-                    description: 'Personal details for the beneficial owner.',
-                    required: ['name', 'date_of_birth', 'address', 'identification'],
-                    title: 'Individual',
-                    'x-title-plural': 'Individuals',
-                  }),
-                prong: z
-                  .enum(['ownership', 'control'])
-                  .openapi({
-                    description: 'Why this person is considered a beneficial owner of the entity.',
-                    'x-enum-descriptions': [
-                      'A person with 25% or greater direct or indirect ownership of the entity.',
-                      'A person who manages, directs, or has significant control of the entity.',
-                    ],
-                  }),
-              })
-              .openapi({
-                required: ['individual', 'company_title', 'prong'],
-                title: 'Beneficial Owners Element',
-                'x-title-plural': 'Beneficial Owners Elements',
-              }),
-          )
-          .openapi({
-            description:
-              'The identifying details of anyone controlling or owning 25% or more of the corporation.',
-          }),
-        incorporation_state: z
-          .string()
-          .nullable()
-          .openapi({
-            description:
-              "The two-letter United States Postal Service (USPS) abbreviation for the corporation's state of incorporation.",
-          }),
-        name: z.string().openapi({ description: 'The legal name of the corporation.' }),
-        tax_identifier: z
-          .string()
-          .nullable()
-          .openapi({
-            description: 'The Employer Identification Number (EIN) for the corporation.',
-          }),
-        website: z.string().nullable().openapi({ description: 'The website of the corporation.' }),
-      })
-      .nullable()
-      .openapi({
-        description:
-          'Details of the corporation entity. Will be present if `structure` is equal to `corporation`.',
-        required: [
-          'name',
-          'website',
-          'tax_identifier',
-          'incorporation_state',
-          'address',
-          'beneficial_owners',
-        ],
-        title: 'Corporation',
-        'x-title-plural': 'Corporations',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({ description: "The entity's description for display purposes." }),
-    id: z.string().openapi({ description: "The entity's identifier." }),
-    joint: z
-      .object({
-        individuals: z
-          .array(
-            z
-              .object({
-                address: z
-                  .object({
-                    city: z.string().openapi({ description: 'The city of the address.' }),
-                    line1: z.string().openapi({ description: 'The first line of the address.' }),
-                    line2: z
-                      .string()
-                      .nullable()
-                      .openapi({ description: 'The second line of the address.' }),
-                    state: z
-                      .string()
-                      .openapi({
-                        description:
-                          'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
-                      }),
-                    zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
-                  })
-                  .openapi({
-                    description: "The person's address.",
-                    example: {
-                      city: 'New York',
-                      line1: '33 Liberty Street',
-                      line2: null,
-                      state: 'NY',
-                      zip: '10045',
-                    },
-                    required: ['line1', 'line2', 'city', 'state', 'zip'],
-                    title: 'Address',
-                    'x-title-plural': 'Addresss',
-                  }),
-                date_of_birth: z.iso
-                  .date()
-                  .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
-                identification: z
-                  .object({
-                    method: z
-                      .enum([
-                        'social_security_number',
-                        'individual_taxpayer_identification_number',
-                        'passport',
-                        'drivers_license',
-                        'other',
-                      ])
-                      .openapi({
-                        description:
-                          "A method that can be used to verify the individual's identity.",
-                        'x-enum-descriptions': [
-                          'A social security number.',
-                          'An individual taxpayer identification number (ITIN).',
-                          'A passport number.',
-                          "A driver's license number.",
-                          'Another identifying document.',
-                        ],
-                      }),
-                    number_last4: z
-                      .string()
-                      .openapi({
-                        description:
-                          "The last 4 digits of the identification number that can be used to verify the individual's identity.",
-                      }),
-                  })
-                  .openapi({
-                    description: "A means of verifying the person's identity.",
-                    required: ['method', 'number_last4'],
-                    title: 'Identification',
-                    'x-title-plural': 'Identifications',
-                  }),
-                name: z.string().openapi({ description: "The person's legal name." }),
-              })
-              .openapi({
-                required: ['name', 'date_of_birth', 'address', 'identification'],
-                title: 'Individual',
-                'x-title-plural': 'Individuals',
-              }),
-          )
-          .openapi({ description: 'The two individuals that share control of the entity.' }),
-        name: z.string().openapi({ description: "The entity's name." }),
-      })
-      .nullable()
-      .openapi({
-        description:
-          'Details of the joint entity. Will be present if `structure` is equal to `joint`.',
-        required: ['name', 'individuals'],
-        title: 'Joint',
-        'x-title-plural': 'Joints',
-      }),
-    natural_person: z
-      .object({
-        address: z
-          .object({
-            city: z.string().openapi({ description: 'The city of the address.' }),
-            line1: z.string().openapi({ description: 'The first line of the address.' }),
-            line2: z
-              .string()
-              .nullable()
-              .openapi({ description: 'The second line of the address.' }),
-            state: z
-              .string()
-              .openapi({
-                description:
-                  'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
-              }),
-            zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
-          })
-          .openapi({
-            description: "The person's address.",
-            example: {
-              city: 'New York',
-              line1: '33 Liberty Street',
-              line2: null,
-              state: 'NY',
-              zip: '10045',
-            },
-            required: ['line1', 'line2', 'city', 'state', 'zip'],
-            title: 'Address',
-            'x-title-plural': 'Addresss',
-          }),
-        date_of_birth: z.iso
-          .date()
-          .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
-        identification: z
-          .object({
-            method: z
-              .enum([
-                'social_security_number',
-                'individual_taxpayer_identification_number',
-                'passport',
-                'drivers_license',
-                'other',
-              ])
-              .openapi({
-                description: "A method that can be used to verify the individual's identity.",
-                'x-enum-descriptions': [
-                  'A social security number.',
-                  'An individual taxpayer identification number (ITIN).',
-                  'A passport number.',
-                  "A driver's license number.",
-                  'Another identifying document.',
-                ],
-              }),
-            number_last4: z
-              .string()
-              .openapi({
-                description:
-                  "The last 4 digits of the identification number that can be used to verify the individual's identity.",
-              }),
-          })
-          .openapi({
-            description: "A means of verifying the person's identity.",
-            required: ['method', 'number_last4'],
-            title: 'Identification',
-            'x-title-plural': 'Identifications',
-          }),
-        name: z.string().openapi({ description: "The person's legal name." }),
-      })
-      .nullable()
-      .openapi({
-        description:
-          'Details of the natural person entity. Will be present if `structure` is equal to `natural_person`.',
-        required: ['name', 'date_of_birth', 'address', 'identification'],
-        title: 'Individual',
-        'x-title-plural': 'Individuals',
-      }),
-    relationship: z
-      .enum(['affiliated', 'informational', 'unaffiliated'])
-      .openapi({
-        description: 'The relationship between your group and the entity.',
-        'x-enum-descriptions': [
-          'The entity is controlled by your group.',
-          'The entity is for informational purposes only.',
-          'The entity is not controlled by your group, but can still directly open accounts.',
-        ],
-      }),
-    structure: z
-      .enum(['corporation', 'natural_person', 'joint', 'trust'])
-      .openapi({
-        description: "The entity's legal structure.",
-        'x-enum-descriptions': [
-          'A corporation.',
-          'An individual person.',
-          'Multiple individual people.',
-          'A trust.',
-        ],
-      }),
-    supplemental_documents: z
-      .array(
-        z
-          .object({
-            file_id: z.string().openapi({ description: 'The File containing the document.' }),
-          })
-          .openapi({
-            required: ['file_id'],
-            title: 'Supplemental Documents Element',
-            'x-title-plural': 'Supplemental Documents Elements',
-          }),
-      )
-      .openapi({ description: 'Additional documentation associated with the entity.' }),
-    trust: z
-      .object({
-        address: z
-          .object({
-            city: z.string().openapi({ description: 'The city of the address.' }),
-            line1: z.string().openapi({ description: 'The first line of the address.' }),
-            line2: z
-              .string()
-              .nullable()
-              .openapi({ description: 'The second line of the address.' }),
-            state: z
-              .string()
-              .openapi({
-                description:
-                  'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
-              }),
-            zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
-          })
-          .openapi({
-            description: "The trust's address.",
-            example: {
-              city: 'New York',
-              line1: '33 Liberty Street',
-              line2: null,
-              state: 'NY',
-              zip: '10045',
-            },
-            required: ['line1', 'line2', 'city', 'state', 'zip'],
-            title: 'Address',
-            'x-title-plural': 'Addresss',
-          }),
-        category: z
-          .enum(['revocable', 'irrevocable'])
-          .openapi({
-            description: 'Whether the trust is `revocable` or `irrevocable`.',
-            'x-enum-descriptions': [
-              'The trust is revocable by the grantor.',
-              'The trust cannot be revoked.',
-            ],
-          }),
-        formation_document_file_id: z
-          .string()
-          .nullable()
-          .openapi({
-            description: 'The ID for the File containing the formation document of the trust.',
-          }),
-        formation_state: z
-          .string()
-          .nullable()
-          .openapi({
-            description:
-              'The two-letter United States Postal Service (USPS) abbreviation for the state in which the trust was formed.',
-          }),
-        grantor: z
-          .object({
-            address: z
-              .object({
-                city: z.string().openapi({ description: 'The city of the address.' }),
-                line1: z.string().openapi({ description: 'The first line of the address.' }),
-                line2: z
-                  .string()
-                  .nullable()
-                  .openapi({ description: 'The second line of the address.' }),
-                state: z
-                  .string()
-                  .openapi({
-                    description:
-                      'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
-                  }),
-                zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
-              })
-              .openapi({
-                description: "The person's address.",
-                example: {
-                  city: 'New York',
-                  line1: '33 Liberty Street',
-                  line2: null,
-                  state: 'NY',
-                  zip: '10045',
-                },
-                required: ['line1', 'line2', 'city', 'state', 'zip'],
-                title: 'Address',
-                'x-title-plural': 'Addresss',
-              }),
-            date_of_birth: z.iso
-              .date()
-              .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
-            identification: z
-              .object({
-                method: z
-                  .enum([
-                    'social_security_number',
-                    'individual_taxpayer_identification_number',
-                    'passport',
-                    'drivers_license',
-                    'other',
-                  ])
-                  .openapi({
-                    description: "A method that can be used to verify the individual's identity.",
-                    'x-enum-descriptions': [
-                      'A social security number.',
-                      'An individual taxpayer identification number (ITIN).',
-                      'A passport number.',
-                      "A driver's license number.",
-                      'Another identifying document.',
-                    ],
-                  }),
-                number_last4: z
-                  .string()
-                  .openapi({
-                    description:
-                      "The last 4 digits of the identification number that can be used to verify the individual's identity.",
-                  }),
-              })
-              .openapi({
-                description: "A means of verifying the person's identity.",
-                required: ['method', 'number_last4'],
-                title: 'Identification',
-                'x-title-plural': 'Identifications',
-              }),
-            name: z.string().openapi({ description: "The person's legal name." }),
-          })
-          .nullable()
-          .openapi({
-            description:
-              'The grantor of the trust. Will be present if the `category` is `revocable`.',
-            required: ['name', 'date_of_birth', 'address', 'identification'],
-            title: 'Individual',
-            'x-title-plural': 'Individuals',
-          }),
-        name: z.string().openapi({ description: "The trust's name" }),
-        tax_identifier: z
-          .string()
-          .nullable()
-          .openapi({
-            description: 'The Employer Identification Number (EIN) of the trust itself.',
-          }),
-        trustees: z
-          .array(
-            z
-              .object({
-                individual: z
-                  .object({
-                    address: z
-                      .object({
-                        city: z.string().openapi({ description: 'The city of the address.' }),
-                        line1: z
-                          .string()
-                          .openapi({ description: 'The first line of the address.' }),
-                        line2: z
-                          .string()
-                          .nullable()
-                          .openapi({ description: 'The second line of the address.' }),
-                        state: z
-                          .string()
-                          .openapi({
-                            description:
-                              'The two-letter United States Postal Service (USPS) abbreviation for the state of the address.',
-                          }),
-                        zip: z.string().openapi({ description: 'The ZIP code of the address.' }),
-                      })
-                      .openapi({
-                        description: "The person's address.",
-                        example: {
-                          city: 'New York',
-                          line1: '33 Liberty Street',
-                          line2: null,
-                          state: 'NY',
-                          zip: '10045',
-                        },
-                        required: ['line1', 'line2', 'city', 'state', 'zip'],
-                        title: 'Address',
-                        'x-title-plural': 'Addresss',
-                      }),
-                    date_of_birth: z.iso
-                      .date()
-                      .openapi({ description: "The person's date of birth in YYYY-MM-DD format." }),
-                    identification: z
-                      .object({
-                        method: z
-                          .enum([
-                            'social_security_number',
-                            'individual_taxpayer_identification_number',
-                            'passport',
-                            'drivers_license',
-                            'other',
-                          ])
-                          .openapi({
-                            description:
-                              "A method that can be used to verify the individual's identity.",
-                            'x-enum-descriptions': [
-                              'A social security number.',
-                              'An individual taxpayer identification number (ITIN).',
-                              'A passport number.',
-                              "A driver's license number.",
-                              'Another identifying document.',
-                            ],
-                          }),
-                        number_last4: z
-                          .string()
-                          .openapi({
-                            description:
-                              "The last 4 digits of the identification number that can be used to verify the individual's identity.",
-                          }),
-                      })
-                      .openapi({
-                        description: "A means of verifying the person's identity.",
-                        required: ['method', 'number_last4'],
-                        title: 'Identification',
-                        'x-title-plural': 'Identifications',
-                      }),
-                    name: z.string().openapi({ description: "The person's legal name." }),
-                  })
-                  .nullable()
-                  .openapi({
-                    description:
-                      "The individual trustee of the trust. Will be present if the trustee's `structure` is equal to `individual`.",
-                    required: ['name', 'date_of_birth', 'address', 'identification'],
-                    title: 'Individual',
-                    'x-title-plural': 'Individuals',
-                  }),
-                structure: z
-                  .literal('individual')
-                  .openapi({
-                    description:
-                      'The structure of the trustee. Will always be equal to `individual`.',
-                    'x-enum-descriptions': ['The trustee is an individual.'],
-                  }),
-              })
-              .openapi({
-                required: ['structure', 'individual'],
-                title: 'Trustees Element',
-                'x-title-plural': 'Trustees Elements',
-              }),
-          )
-          .openapi({ description: 'The trustees of the trust.' }),
-      })
-      .nullable()
-      .openapi({
-        description:
-          'Details of the trust entity. Will be present if `structure` is equal to `trust`.',
-        required: [
-          'name',
-          'category',
-          'address',
-          'formation_state',
-          'tax_identifier',
-          'trustees',
-          'grantor',
-          'formation_document_file_id',
-        ],
-        title: 'Trust',
-        'x-title-plural': 'Trusts',
-      }),
-    type: z
-      .literal('entity')
-      .openapi({
-        description:
-          "A constant representing the object's type. For this resource it will always be `entity`.",
-      }),
-  })
-  .openapi({
-    description:
-      'Entities are the legal entities that own accounts. They can be people, corporations, partnerships, or trusts.',
-    example: {
-      corporation: {
-        address: {
-          city: 'New York',
-          line1: '33 Liberty Street',
-          line2: null,
-          state: 'NY',
-          zip: '10045',
-        },
-        beneficial_owners: [
-          {
-            company_title: 'CEO',
-            individual: {
-              address: {
-                city: 'New York',
-                line1: '33 Liberty Street',
-                line2: null,
-                state: 'NY',
-                zip: '10045',
-              },
-              date_of_birth: '1970-01-31',
-              identification: {
-                country: 'US',
-                method: 'social_security_number',
-                number_last4: '1120',
-              },
-              name: 'Ian Crease',
-            },
-            prong: 'control',
-          },
-        ],
-        incorporation_state: 'NY',
-        name: 'National Phonograph Company',
-        tax_identifier: '602214076',
-        website: 'https://example.com',
-      },
-      description: null,
-      id: 'entity_n8y8tnk2p9339ti393yi',
-      joint: null,
-      natural_person: null,
-      relationship: 'informational',
-      structure: 'corporation',
-      supplemental_documents: [{ file_id: 'file_makxrc67oh9l6sg7w9yc' }],
-      trust: null,
-      type: 'entity',
-    },
-    required: [
-      'id',
-      'structure',
-      'corporation',
-      'natural_person',
-      'joint',
-      'trust',
-      'type',
-      'description',
-      'relationship',
-      'supplemental_documents',
-    ],
-    title: 'Entity',
-    'x-tag': 'Entities',
-    'x-title-plural': 'Entities',
-  })
-  .openapi('Entity')
-
-const EntityListSchema = z
+const EntityListSchema: z.ZodType<EntityListType> = z
   .object({
     data: z.array(EntitySchema).openapi({ description: 'The contents of the list.' }),
     next_cursor: z
@@ -6642,7 +6644,9 @@ const ErrorSchema = z
         detail: z.string().nullable(),
         errors: z
           .array(
-            z.object({}).openapi({ title: 'Errors Element', 'x-title-plural': 'Errors Elements' }),
+            z
+              .looseObject({})
+              .openapi({ title: 'Errors Element', 'x-title-plural': 'Errors Elements' }),
           )
           .exactOptional()
           .openapi({ description: 'All errors related to parsing the request parameters.' }),

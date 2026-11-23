@@ -8,7 +8,7 @@ Base URLs:
 
 * <a href="http://truesight.local">http://truesight.local</a>
 
-* <a href="https://api.apis.guru/tsws/10.0/api/">https://api.apis.guru/tsws/10.0/api/</a> - On this TrueSight Server
+* <a href="/tsws/10.0/api/">/tsws/10.0/api/</a> - On this TrueSight Server
 
 * <a href="https://localhost:8043/tsws/10.0/api/">https://localhost:8043/tsws/10.0/api/</a> - TrueSight Presentation Server
 

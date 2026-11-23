@@ -1,0 +1,29 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  __rootHandler,
+  apiHandler,
+  contentHandler,
+  feedHandler,
+  loggedoutHandler,
+  loginHandler,
+  logoutHandler,
+  pathHandler,
+  pingHandler,
+  resetPasswordHandler,
+} from './handlers'
+
+const app = new OpenAPIHono()
+
+export const api = app
+  .route('/', apiHandler)
+  .route('/', loginHandler)
+  .route('/', resetPasswordHandler)
+  .route('/', logoutHandler)
+  .route('/', feedHandler)
+  .route('/', pingHandler)
+  .route('/', loggedoutHandler)
+  .route('/', contentHandler)
+  .route('/', __rootHandler)
+  .route('/', pathHandler)
+
+export default app

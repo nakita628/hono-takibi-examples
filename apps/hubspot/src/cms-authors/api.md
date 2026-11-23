@@ -21,13 +21,8 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|cms.blogs.blog_posts.read||
 |content||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
 
 <h1 id="authors-basic">Basic</h1>
 
@@ -39,6 +34,7 @@ Base URLs:
 
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -86,7 +82,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create a new Blog Author
@@ -98,8 +94,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors`
@@ -1071,6 +1069,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/authors/{objectId}' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -1109,7 +1108,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Delete a Blog Author
@@ -1164,8 +1163,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl 'https://api.hubapi.com/cms/blogs/2026-09/authors/{objectId}' \
   -X PATCH \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PATCH /cms/blogs/2026-09/authors/{objectId}`
@@ -2138,8 +2139,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/batch/archive \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors/batch/archive`
@@ -2161,6 +2164,12 @@ null
 
 > Example responses
 
+> 207 Response
+
+```json
+null
+```
+
 > default Response
 
 ```json
@@ -2172,6 +2181,7 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|No content|None|
+|207|Multi-Status|multiple statuses|[BatchResponseBlogAuthorWithErrors](#schemabatchresponseblogauthorwitherrors)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="warning">
@@ -2188,8 +2198,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/batch/create \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors/batch/create`
@@ -2251,8 +2263,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/batch/read \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors/batch/read`
@@ -2303,7 +2317,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.blogs.blog_posts.read ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update a batch of Blog Authors
@@ -2315,8 +2329,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/batch/update \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors/batch/update`
@@ -2381,8 +2397,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/multi-language/attach-to-lang-group \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors/multi-language/attach-to-lang-group`
@@ -4222,8 +4239,10 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/multi-language/create-language-variation \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors/multi-language/create-language-variation`
@@ -4282,8 +4301,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/multi-language/detach-from-lang-group \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors/multi-language/detach-from-lang-group`
@@ -4331,8 +4351,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/multi-language/set-new-lang-primary \
   -X PUT \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `PUT /cms/blogs/2026-09/authors/multi-language/set-new-lang-primary`
@@ -4381,8 +4402,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/cms/blogs/2026-09/authors/multi-language/update-languages \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /cms/blogs/2026-09/authors/multi-language/update-languages`

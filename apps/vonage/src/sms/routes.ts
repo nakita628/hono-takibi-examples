@@ -490,14 +490,9 @@ const SMSSchema = z
 const SMSXmlSchema = z
   .object({
     messages: z
-      .object({
-        count: z
-          .int()
-          .exactOptional()
-          .openapi({ example: 1, xml: { attribute: true } }),
-      })
+      .array(MessageSchema)
       .exactOptional()
-      .openapi({ 'x-skip-response-description': true, required: [] }),
+      .openapi({ 'x-skip-response-description': true }),
   })
   .openapi({ description: 'Message sent', xml: { name: 'mt-submission-response' }, required: [] })
   .openapi('SMSXml')

@@ -141,7 +141,7 @@ const PublicAuditInfoSchema = z
         example: null,
       }),
     rawObject: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object containing the raw data associated with the audit event.',

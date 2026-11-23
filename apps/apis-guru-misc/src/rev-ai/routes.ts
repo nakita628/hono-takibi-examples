@@ -924,7 +924,7 @@ export const getJobsRoute = createRoute({
               z
                 .object({
                   parameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -1327,7 +1327,7 @@ export const postJobsRoute = createRoute({
               z
                 .object({
                   parameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:

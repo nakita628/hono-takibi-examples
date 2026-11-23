@@ -451,7 +451,7 @@ const OptionsSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Specifies the number of threads to use for processing. A value of \n0 uses all available threads. \n(Default: 0)\n',
+          'Specifies the number of threads to use for processing. A value of\n0 uses all available threads.\n(Default: 0)\n',
         example: 0,
       }),
   })
@@ -519,6 +519,126 @@ const ChatResponseSchema = z
   })
   .openapi({ description: 'Response from a chat request', required: [] })
   .openapi('ChatResponse')
+
+const OpenAIModelSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'The model name, to be used as the model field of chat completion requests',
+      }),
+    object: z.string().openapi({ description: "The object type, always 'model'" }),
+    created: z
+      .int()
+      .openapi({
+        description: 'Unix timestamp (seconds) of the model file creation, 0 when unknown',
+      }),
+    owned_by: z.string().openapi({ description: "The owner of the model, always 'Podman AI Lab'" }),
+  })
+  .openapi({
+    description: 'A locally available model, in the OpenAI API format',
+    required: ['id', 'object', 'created', 'owned_by'],
+  })
+  .openapi('OpenAIModel')
+
+const OpenAIModelListResponseSchema = z
+  .object({
+    object: z.string().openapi({ description: "The object type, always 'list'" }),
+    data: z.array(OpenAIModelSchema).openapi({ description: 'The locally available models' }),
+  })
+  .openapi({
+    description: 'Response listing the locally available models, in the OpenAI API format',
+    required: ['object', 'data'],
+  })
+  .openapi('OpenAIModelListResponse')
+
+const OpenAIMessageSchema = z
+  .object({
+    role: z
+      .string()
+      .openapi({
+        description: 'The role of the message author (e.g. system, user, assistant, tool)',
+      }),
+    content: z
+      .union([z.string().nullable(), z.array(z.looseObject({}))])
+      .exactOptional()
+      .openapi({
+        description:
+          'The content of the message: a string, an array of content parts, or\nnull (e.g. for an assistant message carrying tool_calls). The\ncontent parts are not described here, as the inference server is\nthe authority on them.\n',
+      }),
+  })
+  .openapi({ description: 'A message in a chat, in the OpenAI API format', required: ['role'] })
+  .openapi('OpenAIMessage')
+
+const OpenAIChatCompletionRequestSchema = z
+  .object({
+    model: z.string().openapi({ description: 'The model name' }),
+    messages: z.array(OpenAIMessageSchema).openapi({ description: 'The messages of the chat' }),
+    stream: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enable streaming of the response as server-sent events' }),
+  })
+  .openapi({
+    description:
+      "Chat completion request in the OpenAI API format. The request is\nforwarded as is to the inference server's OpenAI endpoint: only the\nmodel field is rewritten, and every other OpenAI field (tools,\ntool_choice, temperature, max_tokens, stream_options, ...) is passed\nthrough.\n",
+    required: ['model', 'messages'],
+  })
+  .openapi('OpenAIChatCompletionRequest')
+
+const OpenAIChatCompletionResponseSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the completion' }),
+    object: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The object type (chat.completion, or chat.completion.chunk when streaming)',
+      }),
+    created: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Unix timestamp (seconds) of the creation' }),
+    model: z.string().exactOptional().openapi({ description: 'The model name' }),
+    choices: z
+      .array(z.looseObject({}))
+      .exactOptional()
+      .openapi({ description: 'The list of completion choices' }),
+  })
+  .openapi({
+    description:
+      'Chat completion response in the OpenAI API format, returned by the\ninference server and passed through unchanged. Only the most common\nfields are described here; the complete shape is the OpenAI chat\ncompletion object served by the inference server.\n',
+    required: [],
+  })
+  .openapi('OpenAIChatCompletionResponse')
+
+const OpenAIErrorResponseSchema = z
+  .object({
+    error: z
+      .object({
+        message: z.string().openapi({ description: 'A human-readable description of the error' }),
+        type: z
+          .string()
+          .openapi({
+            description: 'The type of the error (invalid_request_error or server_error)',
+          }),
+        code: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'A machine-readable error code (e.g. model_not_found, upstream_unreachable), null when none',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: ['message', 'type'] }),
+  })
+  .openapi({ description: 'Error response in the OpenAI API format', required: [] })
+  .openapi('OpenAIErrorResponse')
 
 export const getApiVersionRoute = createRoute({
   method: 'get',
@@ -659,6 +779,73 @@ export const getApiPsRoute = createRoute({
     200: {
       description: 'The list of running models was successfully fetched',
       content: { 'application/json': { schema: ProcessResponseSchema } },
+    },
+  },
+})
+
+export const getV1ModelsRoute = createRoute({
+  method: 'get',
+  path: '/v1/models',
+  tags: ['openai'],
+  summary: 'List the locally available models in the OpenAI API format',
+  description:
+    'List the models that are available locally, in the OpenAI API format.\nThis is the OpenAI-compatible equivalent of /api/tags: it lists the\nmodels downloaded by the user, whether their inference server is\nrunning or not.\n',
+  operationId: 'listOpenAIModels',
+  responses: {
+    200: {
+      description: 'The models were successfully fetched',
+      content: { 'application/json': { schema: OpenAIModelListResponseSchema } },
+    },
+    500: {
+      description: 'The models could not be fetched',
+      content: { 'application/json': { schema: OpenAIErrorResponseSchema } },
+    },
+  },
+})
+
+export const postV1ChatCompletionsRoute = createRoute({
+  method: 'post',
+  path: '/v1/chat/completions',
+  tags: ['openai', 'chat', 'generate'],
+  summary: 'Create a chat completion in the OpenAI API format',
+  description:
+    "Create a chat completion for a provided model, in the OpenAI API\nformat. The inference server for the model is created and started if\nnecessary. The request is forwarded as is to the inference server's\nOpenAI endpoint (only the model field is rewritten), so any OpenAI\nchat completion field (tools, tool_choice, temperature, max_tokens,\nstream_options, ...) is passed through, and the inference server\nresponse (including streaming server-sent events) is returned\nunchanged.\n",
+  operationId: 'createOpenAIChatCompletion',
+  request: {
+    body: {
+      description: 'OpenAI chat completion request',
+      content: { 'application/json': { schema: OpenAIChatCompletionRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description:
+        'The completion was successfully generated. When stream is true the\nresponse is a stream of server-sent events terminated by a\n"data: [DONE]" event\n',
+      content: {
+        'application/json': { schema: OpenAIChatCompletionResponseSchema },
+        'text/event-stream': { schema: z.string() },
+      },
+    },
+    400: {
+      description: 'The request is invalid (malformed body or missing model)',
+      content: { 'application/json': { schema: OpenAIErrorResponseSchema } },
+    },
+    404: {
+      description: 'The model does not exist or has not been downloaded',
+      content: { 'application/json': { schema: OpenAIErrorResponseSchema } },
+    },
+    413: {
+      description: 'The request body is too large',
+      content: { 'application/json': { schema: OpenAIErrorResponseSchema } },
+    },
+    500: {
+      description: 'The inference server could not be created or started',
+      content: { 'application/json': { schema: OpenAIErrorResponseSchema } },
+    },
+    502: {
+      description: 'The inference server could not be reached',
+      content: { 'application/json': { schema: OpenAIErrorResponseSchema } },
     },
   },
 })

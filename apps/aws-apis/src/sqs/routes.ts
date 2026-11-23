@@ -8,13 +8,9 @@ const LongSchema = z.int().openapi('Long')
 
 const CancelMessageMoveTaskResultSchema = z
   .object({
-    ApproximateNumberOfMessagesMoved: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The approximate number of messages already moved to the destination queue.',
-        }),
-    ).exactOptional(),
+    ApproximateNumberOfMessagesMoved: LongSchema.exactOptional().openapi({
+      description: 'The approximate number of messages already moved to the destination queue.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CancelMessageMoveTaskResult')
@@ -29,14 +25,9 @@ const ReceiptHandleIsInvalidSchema = z.any().openapi('ReceiptHandleIsInvalid')
 
 const ChangeMessageVisibilityBatchResultEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a message whose visibility timeout has been changed successfully.',
-        }),
-    ),
+    Id: StringSchema.openapi({
+      description: 'Represents a message whose visibility timeout has been changed successfully.',
+    }),
   })
   .openapi({
     required: ['Id'],
@@ -47,9 +38,9 @@ const ChangeMessageVisibilityBatchResultEntrySchema = z
 
 const ChangeMessageVisibilityBatchResultEntryListSchema = z
   .array(
-    ChangeMessageVisibilityBatchResultEntrySchema.and(
-      z.any().openapi({ xml: { name: 'ChangeMessageVisibilityBatchResultEntry' } }),
-    ),
+    ChangeMessageVisibilityBatchResultEntrySchema.openapi({
+      xml: { name: 'ChangeMessageVisibilityBatchResultEntry' },
+    }),
   )
   .openapi({ xml: { wrapped: false } })
   .openapi('ChangeMessageVisibilityBatchResultEntryList')
@@ -58,27 +49,19 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const BatchResultErrorEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The <code>Id</code> of an entry in a batch request.' }),
-    ),
-    SenderFault: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the error happened due to the caller of the batch API action.',
-        }),
-    ),
-    Code: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An error code representing why the action failed on this entry.',
-        }),
-    ),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'A message explaining why the action failed on this entry.' }),
-    ).exactOptional(),
+    Id: StringSchema.openapi({
+      description: 'The <code>Id</code> of an entry in a batch request.',
+    }),
+    SenderFault: BooleanSchema.openapi({
+      description:
+        'Specifies whether the error happened due to the caller of the batch API action.',
+    }),
+    Code: StringSchema.openapi({
+      description: 'An error code representing why the action failed on this entry.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'A message explaining why the action failed on this entry.',
+    }),
   })
   .openapi({
     required: ['Id', 'SenderFault', 'Code'],
@@ -88,27 +71,18 @@ const BatchResultErrorEntrySchema = z
   .openapi('BatchResultErrorEntry')
 
 const BatchResultErrorEntryListSchema = z
-  .array(
-    BatchResultErrorEntrySchema.and(z.any().openapi({ xml: { name: 'BatchResultErrorEntry' } })),
-  )
+  .array(BatchResultErrorEntrySchema.openapi({ xml: { name: 'BatchResultErrorEntry' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('BatchResultErrorEntryList')
 
 const ChangeMessageVisibilityBatchResultSchema = z
   .object({
-    Successful: ChangeMessageVisibilityBatchResultEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code> <a>ChangeMessageVisibilityBatchResultEntry</a> </code> items.',
-        }),
-    ),
-    Failed: BatchResultErrorEntryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code> <a>BatchResultErrorEntry</a> </code> items.' }),
-    ),
+    Successful: ChangeMessageVisibilityBatchResultEntryListSchema.openapi({
+      description: 'A list of <code> <a>ChangeMessageVisibilityBatchResultEntry</a> </code> items.',
+    }),
+    Failed: BatchResultErrorEntryListSchema.openapi({
+      description: 'A list of <code> <a>BatchResultErrorEntry</a> </code> items.',
+    }),
   })
   .openapi({
     required: ['Successful', 'Failed'],
@@ -121,22 +95,14 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const ChangeMessageVisibilityBatchRequestEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An identifier for this particular receipt handle used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
-        }),
-    ),
-    ReceiptHandle: StringSchema.and(z.any().openapi({ description: 'A receipt handle.' })),
-    VisibilityTimeout: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The new value (in seconds) for the message's visibility timeout.",
-        }),
-    ).exactOptional(),
+    Id: StringSchema.openapi({
+      description:
+        '<p>An identifier for this particular receipt handle used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
+    }),
+    ReceiptHandle: StringSchema.openapi({ description: 'A receipt handle.' }),
+    VisibilityTimeout: IntegerSchema.exactOptional().openapi({
+      description: "The new value (in seconds) for the message's visibility timeout.",
+    }),
   })
   .openapi({
     required: ['Id', 'ReceiptHandle'],
@@ -155,9 +121,9 @@ const InvalidBatchEntryIdSchema = z.any().openapi('InvalidBatchEntryId')
 
 const CreateQueueResultSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z.any().openapi({ description: 'The URL of the created Amazon SQS queue.' }),
-    ).exactOptional(),
+    QueueUrl: StringSchema.exactOptional().openapi({
+      description: 'The URL of the created Amazon SQS queue.',
+    }),
   })
   .openapi({
     description: 'Returns the <code>QueueUrl</code> attribute of the created queue.',
@@ -175,9 +141,7 @@ const InvalidIdFormatSchema = z.any().openapi('InvalidIdFormat')
 
 const DeleteMessageBatchResultEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'Represents a successfully deleted message.' }),
-    ),
+    Id: StringSchema.openapi({ description: 'Represents a successfully deleted message.' }),
   })
   .openapi({
     required: ['Id'],
@@ -188,27 +152,19 @@ const DeleteMessageBatchResultEntrySchema = z
 
 const DeleteMessageBatchResultEntryListSchema = z
   .array(
-    DeleteMessageBatchResultEntrySchema.and(
-      z.any().openapi({ xml: { name: 'DeleteMessageBatchResultEntry' } }),
-    ),
+    DeleteMessageBatchResultEntrySchema.openapi({ xml: { name: 'DeleteMessageBatchResultEntry' } }),
   )
   .openapi({ xml: { wrapped: false } })
   .openapi('DeleteMessageBatchResultEntryList')
 
 const DeleteMessageBatchResultSchema = z
   .object({
-    Successful: DeleteMessageBatchResultEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code> <a>DeleteMessageBatchResultEntry</a> </code> items.',
-        }),
-    ),
-    Failed: BatchResultErrorEntryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code> <a>BatchResultErrorEntry</a> </code> items.' }),
-    ),
+    Successful: DeleteMessageBatchResultEntryListSchema.openapi({
+      description: 'A list of <code> <a>DeleteMessageBatchResultEntry</a> </code> items.',
+    }),
+    Failed: BatchResultErrorEntryListSchema.openapi({
+      description: 'A list of <code> <a>BatchResultErrorEntry</a> </code> items.',
+    }),
   })
   .openapi({
     required: ['Successful', 'Failed'],
@@ -219,15 +175,11 @@ const DeleteMessageBatchResultSchema = z
 
 const DeleteMessageBatchRequestEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for this particular receipt handle. This is used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
-        }),
-    ),
-    ReceiptHandle: StringSchema.and(z.any().openapi({ description: 'A receipt handle.' })),
+    Id: StringSchema.openapi({
+      description:
+        '<p>The identifier for this particular receipt handle. This is used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
+    }),
+    ReceiptHandle: StringSchema.openapi({ description: 'A receipt handle.' }),
   })
   .openapi({
     required: ['Id', 'ReceiptHandle'],
@@ -242,14 +194,10 @@ const QueueAttributeMapSchema = z
 
 const GetQueueAttributesResultSchema = z
   .object({
-    Attributes: QueueAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Attribute' },
-          description: 'A map of attributes to their respective values.',
-        }),
-    ).exactOptional(),
+    Attributes: QueueAttributeMapSchema.exactOptional().openapi({
+      xml: { name: 'Attribute' },
+      description: 'A map of attributes to their respective values.',
+    }),
   })
   .openapi({ description: 'A list of returned queue attributes.', required: [] })
   .openapi('GetQueueAttributesResult')
@@ -285,9 +233,7 @@ const InvalidAttributeNameSchema = z.any().openapi('InvalidAttributeName')
 
 const GetQueueUrlResultSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z.any().openapi({ description: 'The URL of the queue.' }),
-    ).exactOptional(),
+    QueueUrl: StringSchema.exactOptional().openapi({ description: 'The URL of the queue.' }),
   })
   .openapi({
     description:
@@ -299,7 +245,7 @@ const GetQueueUrlResultSchema = z
 const QueueDoesNotExistSchema = z.any().openapi('QueueDoesNotExist')
 
 const QueueUrlListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'QueueUrl' } })))
+  .array(StringSchema.openapi({ xml: { name: 'QueueUrl' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('QueueUrlList')
 
@@ -307,111 +253,70 @@ const TokenSchema = z.string().openapi('Token')
 
 const ListDeadLetterSourceQueuesResultSchema = z
   .object({
-    queueUrls: QueueUrlListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of source queue URLs that have the <code>RedrivePolicy</code> queue attribute configured with a dead-letter queue.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token to include in the next request. Token value is <code>null</code> if there are no additional results to request, or if you did not set <code>MaxResults</code> in the request.',
-        }),
-    ).exactOptional(),
+    queueUrls: QueueUrlListSchema.openapi({
+      description:
+        'A list of source queue URLs that have the <code>RedrivePolicy</code> queue attribute configured with a dead-letter queue.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'Pagination token to include in the next request. Token value is <code>null</code> if there are no additional results to request, or if you did not set <code>MaxResults</code> in the request.',
+    }),
   })
   .openapi({ required: ['queueUrls'], description: 'A list of your dead letter source queues.' })
   .openapi('ListDeadLetterSourceQueuesResult')
 
 const ListMessageMoveTasksResultEntrySchema = z
   .object({
-    TaskHandle: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier associated with a message movement task. When this field is returned in the response of the <code>ListMessageMoveTasks</code> action, it is only populated for tasks that are in RUNNING status.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the message movement task. Possible values are: RUNNING, COMPLETED, CANCELLING, CANCELLED, and FAILED.',
-        }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the queue that contains the messages to be moved to another queue.',
-        }),
-    ).exactOptional(),
-    DestinationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the destination queue if it has been specified in the <code>StartMessageMoveTask</code> request. If a <code>DestinationArn</code> has not been specified in the <code>StartMessageMoveTask</code> request, this field value will be NULL.',
-        }),
-    ).exactOptional(),
-    MaxNumberOfMessagesPerSecond: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of messages to be moved per second (the message movement rate), if it has been specified in the <code>StartMessageMoveTask</code> request. If a <code>MaxNumberOfMessagesPerSecond</code> has not been specified in the <code>StartMessageMoveTask</code> request, this field value will be NULL.',
-        }),
-    ).exactOptional(),
-    ApproximateNumberOfMessagesMoved: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The approximate number of messages already moved to the destination queue.',
-        }),
-    ).exactOptional(),
-    ApproximateNumberOfMessagesToMove: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of messages to be moved from the source queue. This number is obtained at the time of starting the message movement task.',
-        }),
-    ).exactOptional(),
-    FailureReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The task failure reason (only included if the task status is FAILED).',
-        }),
-    ).exactOptional(),
-    StartedTimestamp: LongSchema.and(
-      z.any().openapi({ description: 'The timestamp of starting the message movement task.' }),
-    ).exactOptional(),
+    TaskHandle: StringSchema.exactOptional().openapi({
+      description:
+        'An identifier associated with a message movement task. When this field is returned in the response of the <code>ListMessageMoveTasks</code> action, it is only populated for tasks that are in RUNNING status.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The status of the message movement task. Possible values are: RUNNING, COMPLETED, CANCELLING, CANCELLED, and FAILED.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the queue that contains the messages to be moved to another queue.',
+    }),
+    DestinationArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the destination queue if it has been specified in the <code>StartMessageMoveTask</code> request. If a <code>DestinationArn</code> has not been specified in the <code>StartMessageMoveTask</code> request, this field value will be NULL.',
+    }),
+    MaxNumberOfMessagesPerSecond: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of messages to be moved per second (the message movement rate), if it has been specified in the <code>StartMessageMoveTask</code> request. If a <code>MaxNumberOfMessagesPerSecond</code> has not been specified in the <code>StartMessageMoveTask</code> request, this field value will be NULL.',
+    }),
+    ApproximateNumberOfMessagesMoved: LongSchema.exactOptional().openapi({
+      description: 'The approximate number of messages already moved to the destination queue.',
+    }),
+    ApproximateNumberOfMessagesToMove: LongSchema.exactOptional().openapi({
+      description:
+        'The number of messages to be moved from the source queue. This number is obtained at the time of starting the message movement task.',
+    }),
+    FailureReason: StringSchema.exactOptional().openapi({
+      description: 'The task failure reason (only included if the task status is FAILED).',
+    }),
+    StartedTimestamp: LongSchema.exactOptional().openapi({
+      description: 'The timestamp of starting the message movement task.',
+    }),
   })
   .openapi({ description: 'Contains the details of a message movement task. ', required: [] })
   .openapi('ListMessageMoveTasksResultEntry')
 
 const ListMessageMoveTasksResultEntryListSchema = z
   .array(
-    ListMessageMoveTasksResultEntrySchema.and(
-      z.any().openapi({ xml: { name: 'ListMessageMoveTasksResultEntry' } }),
-    ),
+    ListMessageMoveTasksResultEntrySchema.openapi({
+      xml: { name: 'ListMessageMoveTasksResultEntry' },
+    }),
   )
   .openapi({ xml: { wrapped: false } })
   .openapi('ListMessageMoveTasksResultEntryList')
 
 const ListMessageMoveTasksResultSchema = z
   .object({
-    Results: ListMessageMoveTasksResultEntryListSchema.and(
-      z.any().openapi({ description: 'A list of message movement tasks and their attributes.' }),
-    ).exactOptional(),
+    Results: ListMessageMoveTasksResultEntryListSchema.exactOptional().openapi({
+      description: 'A list of message movement tasks and their attributes.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMessageMoveTasksResult')
@@ -423,36 +328,24 @@ const TagMapSchema = z
 
 const ListQueueTagsResultSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Tag' },
-          description: 'The list of all tags added to the specified queue.',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'Tag' },
+      description: 'The list of all tags added to the specified queue.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListQueueTagsResult')
 
 const ListQueuesResultSchema = z
   .object({
-    QueueUrls: QueueUrlListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of queue URLs, up to 1,000 entries, or the value of <code>MaxResults</code> that you sent in the request.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token to include in the next request. Token value is <code>null</code> if there are no additional results to request, or if you did not set <code>MaxResults</code> in the request.',
-        }),
-    ).exactOptional(),
+    QueueUrls: QueueUrlListSchema.exactOptional().openapi({
+      description:
+        'A list of queue URLs, up to 1,000 entries, or the value of <code>MaxResults</code> that you sent in the request.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'Pagination token to include in the next request. Token value is <code>null</code> if there are no additional results to request, or if you did not set <code>MaxResults</code> in the request.',
+    }),
   })
   .openapi({ description: 'A list of your queues.', required: [] })
   .openapi('ListQueuesResult')
@@ -467,55 +360,35 @@ const MessageSystemAttributeMapSchema = z
 const BinarySchema = z.string().openapi('Binary')
 
 const StringListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'StringListValue' } })))
+  .array(StringSchema.openapi({ xml: { name: 'StringListValue' } }))
   .openapi('StringList')
 
 const BinaryListSchema = z
-  .array(BinarySchema.and(z.any().openapi({ xml: { name: 'BinaryListValue' } })))
+  .array(BinarySchema.openapi({ xml: { name: 'BinaryListValue' } }))
   .openapi('BinaryList')
 
 const MessageAttributeValueSchema = z
   .object({
-    StringValue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Strings are Unicode with UTF-8 binary encoding. For a list of code values, see <a href="http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters">ASCII Printable Characters</a>.',
-        }),
-    ).exactOptional(),
-    BinaryValue: BinarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Binary type attributes can store any binary data, such as compressed data, encrypted data, or images.',
-        }),
-    ).exactOptional(),
-    StringListValues: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'StringListValue' },
-          description: 'Not implemented. Reserved for future use.',
-        }),
-    ).exactOptional(),
-    BinaryListValues: BinaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'BinaryListValue' },
-          description: 'Not implemented. Reserved for future use.',
-        }),
-    ).exactOptional(),
-    DataType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Amazon SQS supports the following logical data types: <code>String</code>, <code>Number</code>, and <code>Binary</code>. For the <code>Number</code> data type, you must use <code>StringValue</code>.</p> <p>You can also append custom labels. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS Message Attributes</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
-        }),
-    ),
+    StringValue: StringSchema.exactOptional().openapi({
+      description:
+        'Strings are Unicode with UTF-8 binary encoding. For a list of code values, see <a href="http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters">ASCII Printable Characters</a>.',
+    }),
+    BinaryValue: BinarySchema.exactOptional().openapi({
+      description:
+        'Binary type attributes can store any binary data, such as compressed data, encrypted data, or images.',
+    }),
+    StringListValues: StringListSchema.exactOptional().openapi({
+      xml: { name: 'StringListValue' },
+      description: 'Not implemented. Reserved for future use.',
+    }),
+    BinaryListValues: BinaryListSchema.exactOptional().openapi({
+      xml: { name: 'BinaryListValue' },
+      description: 'Not implemented. Reserved for future use.',
+    }),
+    DataType: StringSchema.openapi({
+      description:
+        '<p>Amazon SQS supports the following logical data types: <code>String</code>, <code>Number</code>, and <code>Binary</code>. For the <code>Number</code> data type, you must use <code>StringValue</code>.</p> <p>You can also append custom labels. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS Message Attributes</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['DataType'],
@@ -532,68 +405,46 @@ const MessageBodyAttributeMapSchema = z
 
 const MessageSchema = z
   .object({
-    MessageId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the message. A <code>MessageId</code>is considered unique across all Amazon Web Services accounts for an extended period of time.',
-        }),
-    ).exactOptional(),
-    ReceiptHandle: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier associated with the act of receiving the message. A new receipt handle is returned every time you receive a message. When deleting a message, you provide the last received receipt handle to delete the message.',
-        }),
-    ).exactOptional(),
-    MD5OfBody: StringSchema.and(
-      z.any().openapi({ description: 'An MD5 digest of the non-URL-encoded message body string.' }),
-    ).exactOptional(),
-    Body: StringSchema.and(
-      z.any().openapi({ description: "The message's contents (not URL-encoded)." }),
-    ).exactOptional(),
-    Attributes: MessageSystemAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Attribute' },
-          description:
-            '<p>A map of the attributes requested in <code> <a>ReceiveMessage</a> </code> to their respective values. Supported attributes:</p> <ul> <li> <p> <code>ApproximateReceiveCount</code> </p> </li> <li> <p> <code>ApproximateFirstReceiveTimestamp</code> </p> </li> <li> <p> <code>MessageDeduplicationId</code> </p> </li> <li> <p> <code>MessageGroupId</code> </p> </li> <li> <p> <code>SenderId</code> </p> </li> <li> <p> <code>SentTimestamp</code> </p> </li> <li> <p> <code>SequenceNumber</code> </p> </li> </ul> <p> <code>ApproximateFirstReceiveTimestamp</code> and <code>SentTimestamp</code> are each returned as an integer representing the <a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a> in milliseconds.</p>',
-        }),
-    ).exactOptional(),
-    MD5OfMessageAttributes: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An MD5 digest of the non-URL-encoded message attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
-        }),
-    ).exactOptional(),
-    MessageAttributes: MessageBodyAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'MessageAttribute' },
-          description:
-            'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS message attributes</a> in the <i>Amazon SQS Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    MessageId: StringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the message. A <code>MessageId</code>is considered unique across all Amazon Web Services accounts for an extended period of time.',
+    }),
+    ReceiptHandle: StringSchema.exactOptional().openapi({
+      description:
+        'An identifier associated with the act of receiving the message. A new receipt handle is returned every time you receive a message. When deleting a message, you provide the last received receipt handle to delete the message.',
+    }),
+    MD5OfBody: StringSchema.exactOptional().openapi({
+      description: 'An MD5 digest of the non-URL-encoded message body string.',
+    }),
+    Body: StringSchema.exactOptional().openapi({
+      description: "The message's contents (not URL-encoded).",
+    }),
+    Attributes: MessageSystemAttributeMapSchema.exactOptional().openapi({
+      xml: { name: 'Attribute' },
+      description:
+        '<p>A map of the attributes requested in <code> <a>ReceiveMessage</a> </code> to their respective values. Supported attributes:</p> <ul> <li> <p> <code>ApproximateReceiveCount</code> </p> </li> <li> <p> <code>ApproximateFirstReceiveTimestamp</code> </p> </li> <li> <p> <code>MessageDeduplicationId</code> </p> </li> <li> <p> <code>MessageGroupId</code> </p> </li> <li> <p> <code>SenderId</code> </p> </li> <li> <p> <code>SentTimestamp</code> </p> </li> <li> <p> <code>SequenceNumber</code> </p> </li> </ul> <p> <code>ApproximateFirstReceiveTimestamp</code> and <code>SentTimestamp</code> are each returned as an integer representing the <a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a> in milliseconds.</p>',
+    }),
+    MD5OfMessageAttributes: StringSchema.exactOptional().openapi({
+      description:
+        'An MD5 digest of the non-URL-encoded message attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
+    }),
+    MessageAttributes: MessageBodyAttributeMapSchema.exactOptional().openapi({
+      xml: { name: 'MessageAttribute' },
+      description:
+        'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS message attributes</a> in the <i>Amazon SQS Developer Guide</i>.',
+    }),
   })
   .openapi({ description: 'An Amazon SQS message.', required: [] })
   .openapi('Message')
 
 const MessageListSchema = z
-  .array(MessageSchema.and(z.any().openapi({ xml: { name: 'Message' } })))
+  .array(MessageSchema.openapi({ xml: { name: 'Message' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('MessageList')
 
 const ReceiveMessageResultSchema = z
   .object({
-    Messages: MessageListSchema.and(
-      z.any().openapi({ description: 'A list of messages.' }),
-    ).exactOptional(),
+    Messages: MessageListSchema.exactOptional().openapi({ description: 'A list of messages.' }),
   })
   .openapi({ description: 'A list of received messages.', required: [] })
   .openapi('ReceiveMessageResult')
@@ -602,46 +453,26 @@ const MessageAttributeNameSchema = z.string().openapi('MessageAttributeName')
 
 const SendMessageResultSchema = z
   .object({
-    MD5OfMessageBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An MD5 digest of the non-URL-encoded message body string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
-        }),
-    ).exactOptional(),
-    MD5OfMessageAttributes: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An MD5 digest of the non-URL-encoded message attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
-        }),
-    ).exactOptional(),
-    MD5OfMessageSystemAttributes: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An MD5 digest of the non-URL-encoded message system attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest.',
-        }),
-    ).exactOptional(),
-    MessageId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An attribute containing the <code>MessageId</code> of the message sent to the queue. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-queue-message-identifiers.html">Queue and Message Identifiers</a> in the <i>Amazon SQS Developer Guide</i>. ',
-        }),
-    ).exactOptional(),
-    SequenceNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The large, non-consecutive number that Amazon SQS assigns to each message.</p> <p>The length of <code>SequenceNumber</code> is 128 bits. <code>SequenceNumber</code> continues to increase for a particular <code>MessageGroupId</code>.</p>',
-        }),
-    ).exactOptional(),
+    MD5OfMessageBody: StringSchema.exactOptional().openapi({
+      description:
+        'An MD5 digest of the non-URL-encoded message body string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
+    }),
+    MD5OfMessageAttributes: StringSchema.exactOptional().openapi({
+      description:
+        'An MD5 digest of the non-URL-encoded message attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
+    }),
+    MD5OfMessageSystemAttributes: StringSchema.exactOptional().openapi({
+      description:
+        'An MD5 digest of the non-URL-encoded message system attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest.',
+    }),
+    MessageId: StringSchema.exactOptional().openapi({
+      description:
+        'An attribute containing the <code>MessageId</code> of the message sent to the queue. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-queue-message-identifiers.html">Queue and Message Identifiers</a> in the <i>Amazon SQS Developer Guide</i>. ',
+    }),
+    SequenceNumber: StringSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The large, non-consecutive number that Amazon SQS assigns to each message.</p> <p>The length of <code>SequenceNumber</code> is 128 bits. <code>SequenceNumber</code> continues to increase for a particular <code>MessageGroupId</code>.</p>',
+    }),
   })
   .openapi({
     description: 'The <code>MD5OfMessageBody</code> and <code>MessageId</code> elements.',
@@ -651,46 +482,26 @@ const SendMessageResultSchema = z
 
 const MessageSystemAttributeValueSchema = z
   .object({
-    StringValue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Strings are Unicode with UTF-8 binary encoding. For a list of code values, see <a href="http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters">ASCII Printable Characters</a>.',
-        }),
-    ).exactOptional(),
-    BinaryValue: BinarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Binary type attributes can store any binary data, such as compressed data, encrypted data, or images.',
-        }),
-    ).exactOptional(),
-    StringListValues: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'StringListValue' },
-          description: 'Not implemented. Reserved for future use.',
-        }),
-    ).exactOptional(),
-    BinaryListValues: BinaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'BinaryListValue' },
-          description: 'Not implemented. Reserved for future use.',
-        }),
-    ).exactOptional(),
-    DataType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Amazon SQS supports the following logical data types: <code>String</code>, <code>Number</code>, and <code>Binary</code>. For the <code>Number</code> data type, you must use <code>StringValue</code>.</p> <p>You can also append custom labels. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS Message Attributes</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
-        }),
-    ),
+    StringValue: StringSchema.exactOptional().openapi({
+      description:
+        'Strings are Unicode with UTF-8 binary encoding. For a list of code values, see <a href="http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters">ASCII Printable Characters</a>.',
+    }),
+    BinaryValue: BinarySchema.exactOptional().openapi({
+      description:
+        'Binary type attributes can store any binary data, such as compressed data, encrypted data, or images.',
+    }),
+    StringListValues: StringListSchema.exactOptional().openapi({
+      xml: { name: 'StringListValue' },
+      description: 'Not implemented. Reserved for future use.',
+    }),
+    BinaryListValues: BinaryListSchema.exactOptional().openapi({
+      xml: { name: 'BinaryListValue' },
+      description: 'Not implemented. Reserved for future use.',
+    }),
+    DataType: StringSchema.openapi({
+      description:
+        '<p>Amazon SQS supports the following logical data types: <code>String</code>, <code>Number</code>, and <code>Binary</code>. For the <code>Number</code> data type, you must use <code>StringValue</code>.</p> <p>You can also append custom labels. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS Message Attributes</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['DataType'],
@@ -704,42 +515,24 @@ const InvalidMessageContentsSchema = z.any().openapi('InvalidMessageContents')
 
 const SendMessageBatchResultEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'An identifier for the message in this batch.' }),
-    ),
-    MessageId: StringSchema.and(z.any().openapi({ description: 'An identifier for the message.' })),
-    MD5OfMessageBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An MD5 digest of the non-URL-encoded message body string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
-        }),
-    ),
-    MD5OfMessageAttributes: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An MD5 digest of the non-URL-encoded message attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
-        }),
-    ).exactOptional(),
-    MD5OfMessageSystemAttributes: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An MD5 digest of the non-URL-encoded message system attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
-        }),
-    ).exactOptional(),
-    SequenceNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The large, non-consecutive number that Amazon SQS assigns to each message.</p> <p>The length of <code>SequenceNumber</code> is 128 bits. As <code>SequenceNumber</code> continues to increase for a particular <code>MessageGroupId</code>.</p>',
-        }),
-    ).exactOptional(),
+    Id: StringSchema.openapi({ description: 'An identifier for the message in this batch.' }),
+    MessageId: StringSchema.openapi({ description: 'An identifier for the message.' }),
+    MD5OfMessageBody: StringSchema.openapi({
+      description:
+        'An MD5 digest of the non-URL-encoded message body string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
+    }),
+    MD5OfMessageAttributes: StringSchema.exactOptional().openapi({
+      description:
+        'An MD5 digest of the non-URL-encoded message attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
+    }),
+    MD5OfMessageSystemAttributes: StringSchema.exactOptional().openapi({
+      description:
+        'An MD5 digest of the non-URL-encoded message system attribute string. You can use this attribute to verify that Amazon SQS received the message correctly. Amazon SQS URL-decodes the message before creating the MD5 digest. For information about MD5, see <a href="https://www.ietf.org/rfc/rfc1321.txt">RFC1321</a>.',
+    }),
+    SequenceNumber: StringSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The large, non-consecutive number that Amazon SQS assigns to each message.</p> <p>The length of <code>SequenceNumber</code> is 128 bits. As <code>SequenceNumber</code> continues to increase for a particular <code>MessageGroupId</code>.</p>',
+    }),
   })
   .openapi({
     required: ['Id', 'MessageId', 'MD5OfMessageBody'],
@@ -750,30 +543,20 @@ const SendMessageBatchResultEntrySchema = z
 
 const SendMessageBatchResultEntryListSchema = z
   .array(
-    SendMessageBatchResultEntrySchema.and(
-      z.any().openapi({ xml: { name: 'SendMessageBatchResultEntry' } }),
-    ),
+    SendMessageBatchResultEntrySchema.openapi({ xml: { name: 'SendMessageBatchResultEntry' } }),
   )
   .openapi({ xml: { wrapped: false } })
   .openapi('SendMessageBatchResultEntryList')
 
 const SendMessageBatchResultSchema = z
   .object({
-    Successful: SendMessageBatchResultEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code> <a>SendMessageBatchResultEntry</a> </code> items.',
-        }),
-    ),
-    Failed: BatchResultErrorEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of <code> <a>BatchResultErrorEntry</a> </code> items with error details about each message that can't be enqueued.",
-        }),
-    ),
+    Successful: SendMessageBatchResultEntryListSchema.openapi({
+      description: 'A list of <code> <a>SendMessageBatchResultEntry</a> </code> items.',
+    }),
+    Failed: BatchResultErrorEntryListSchema.openapi({
+      description:
+        "A list of <code> <a>BatchResultErrorEntry</a> </code> items with error details about each message that can't be enqueued.",
+    }),
   })
   .openapi({
     required: ['Successful', 'Failed'],
@@ -789,57 +572,33 @@ const MessageBodySystemAttributeMapSchema = z
 
 const SendMessageBatchRequestEntrySchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An identifier for a message in this batch used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
-        }),
-    ),
-    MessageBody: StringSchema.and(z.any().openapi({ description: 'The body of the message.' })),
-    DelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The length of time, in seconds, for which a specific message is delayed. Valid values: 0 to 900. Maximum: 15 minutes. Messages with a positive <code>DelaySeconds</code> value become available for processing after the delay period is finished. If you don't specify a value, the default value for the queue is applied. </p> <note> <p>When you set <code>FifoQueue</code>, you can't set <code>DelaySeconds</code> per message. You can set this parameter only on a queue level.</p> </note>",
-        }),
-    ).exactOptional(),
-    MessageAttributes: MessageBodyAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'MessageAttribute' },
-          description:
-            'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS message attributes</a> in the <i>Amazon SQS Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    MessageSystemAttributes: MessageBodySystemAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'MessageSystemAttribute' },
-          description:
-            "<p>The message system attribute to send Each message system attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>.</p> <important> <ul> <li> <p>Currently, the only supported message system attribute is <code>AWSTraceHeader</code>. Its type must be <code>String</code> and its value must be a correctly formatted X-Ray trace header string.</p> </li> <li> <p>The size of a message system attribute doesn't count towards the total size of a message.</p> </li> </ul> </important>",
-        }),
-    ).exactOptional(),
-    MessageDeduplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of messages within a 5-minute minimum deduplication interval. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, subsequent messages with the same <code>MessageDeduplicationId</code> are accepted successfully but aren't delivered. For more information, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html\"> Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>.</p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>,</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren't able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don't provide a <code>MessageDeduplicationId</code> and the queue doesn't have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> <note> <p>The <code>MessageDeduplicationId</code> is available to the consumer of the message (this can be useful for troubleshooting delivery issues).</p> <p>If a message is sent successfully but the acknowledgement is lost and the message is resent with the same <code>MessageDeduplicationId</code> after the deduplication interval, Amazon SQS can't detect duplicate messages.</p> <p>Amazon SQS continues to keep track of the message deduplication ID even after the message is received and deleted.</p> </note> <p>The length of <code>MessageDeduplicationId</code> is 128 characters. <code>MessageDeduplicationId</code> can contain alphanumeric characters (<code>a-z</code>, <code>A-Z</code>, <code>0-9</code>) and punctuation (<code>!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</code>).</p> <p>For best practices of using <code>MessageDeduplicationId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html\">Using the MessageDeduplicationId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p>",
-        }),
-    ).exactOptional(),
-    MessageGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). To interleave multiple ordered streams within a single queue, use <code>MessageGroupId</code> values (for example, session data for multiple users). In this scenario, multiple consumers can process the queue, but the session data of each user is processed in a FIFO fashion.</p> <ul> <li> <p>You must associate a non-empty <code>MessageGroupId</code> with a message. If you don't provide a <code>MessageGroupId</code>, the action fails.</p> </li> <li> <p> <code>ReceiveMessage</code> might return messages with multiple <code>MessageGroupId</code> values. For each <code>MessageGroupId</code>, the messages are sorted by time sent. The caller can't specify a <code>MessageGroupId</code>.</p> </li> </ul> <p>The length of <code>MessageGroupId</code> is 128 characters. Valid values: alphanumeric characters and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>For best practices of using <code>MessageGroupId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html\">Using the MessageGroupId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p> <important> <p> <code>MessageGroupId</code> is required for FIFO queues. You can't use it for Standard queues.</p> </important>",
-        }),
-    ).exactOptional(),
+    Id: StringSchema.openapi({
+      description:
+        '<p>An identifier for a message in this batch used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
+    }),
+    MessageBody: StringSchema.openapi({ description: 'The body of the message.' }),
+    DelaySeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The length of time, in seconds, for which a specific message is delayed. Valid values: 0 to 900. Maximum: 15 minutes. Messages with a positive <code>DelaySeconds</code> value become available for processing after the delay period is finished. If you don't specify a value, the default value for the queue is applied. </p> <note> <p>When you set <code>FifoQueue</code>, you can't set <code>DelaySeconds</code> per message. You can set this parameter only on a queue level.</p> </note>",
+    }),
+    MessageAttributes: MessageBodyAttributeMapSchema.exactOptional().openapi({
+      xml: { name: 'MessageAttribute' },
+      description:
+        'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS message attributes</a> in the <i>Amazon SQS Developer Guide</i>.',
+    }),
+    MessageSystemAttributes: MessageBodySystemAttributeMapSchema.exactOptional().openapi({
+      xml: { name: 'MessageSystemAttribute' },
+      description:
+        "<p>The message system attribute to send Each message system attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>.</p> <important> <ul> <li> <p>Currently, the only supported message system attribute is <code>AWSTraceHeader</code>. Its type must be <code>String</code> and its value must be a correctly formatted X-Ray trace header string.</p> </li> <li> <p>The size of a message system attribute doesn't count towards the total size of a message.</p> </li> </ul> </important>",
+    }),
+    MessageDeduplicationId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of messages within a 5-minute minimum deduplication interval. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, subsequent messages with the same <code>MessageDeduplicationId</code> are accepted successfully but aren't delivered. For more information, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html\"> Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>.</p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>,</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren't able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don't provide a <code>MessageDeduplicationId</code> and the queue doesn't have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> <note> <p>The <code>MessageDeduplicationId</code> is available to the consumer of the message (this can be useful for troubleshooting delivery issues).</p> <p>If a message is sent successfully but the acknowledgement is lost and the message is resent with the same <code>MessageDeduplicationId</code> after the deduplication interval, Amazon SQS can't detect duplicate messages.</p> <p>Amazon SQS continues to keep track of the message deduplication ID even after the message is received and deleted.</p> </note> <p>The length of <code>MessageDeduplicationId</code> is 128 characters. <code>MessageDeduplicationId</code> can contain alphanumeric characters (<code>a-z</code>, <code>A-Z</code>, <code>0-9</code>) and punctuation (<code>!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</code>).</p> <p>For best practices of using <code>MessageDeduplicationId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html\">Using the MessageDeduplicationId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p>",
+    }),
+    MessageGroupId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). To interleave multiple ordered streams within a single queue, use <code>MessageGroupId</code> values (for example, session data for multiple users). In this scenario, multiple consumers can process the queue, but the session data of each user is processed in a FIFO fashion.</p> <ul> <li> <p>You must associate a non-empty <code>MessageGroupId</code> with a message. If you don't provide a <code>MessageGroupId</code>, the action fails.</p> </li> <li> <p> <code>ReceiveMessage</code> might return messages with multiple <code>MessageGroupId</code> values. For each <code>MessageGroupId</code>, the messages are sorted by time sent. The caller can't specify a <code>MessageGroupId</code>.</p> </li> </ul> <p>The length of <code>MessageGroupId</code> is 128 characters. Valid values: alphanumeric characters and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>For best practices of using <code>MessageGroupId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html\">Using the MessageGroupId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p> <important> <p> <code>MessageGroupId</code> is required for FIFO queues. You can't use it for Standard queues.</p> </important>",
+    }),
   })
   .openapi({
     required: ['Id', 'MessageBody'],
@@ -852,14 +611,10 @@ const BatchRequestTooLongSchema = z.any().openapi('BatchRequestTooLong')
 
 const StartMessageMoveTaskResultSchema = z
   .object({
-    TaskHandle: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier associated with a message movement task. You can use this identifier to cancel a specified message movement task using the <code>CancelMessageMoveTask</code> action.',
-        }),
-    ).exactOptional(),
+    TaskHandle: StringSchema.exactOptional().openapi({
+      description:
+        'An identifier associated with a message movement task. You can use this identifier to cancel a specified message movement task using the <code>CancelMessageMoveTask</code> action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartMessageMoveTaskResult')
@@ -867,49 +622,33 @@ const StartMessageMoveTaskResultSchema = z
 const TagKeySchema = z.string().openapi('TagKey')
 
 const AWSAccountIdListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'AWSAccountId' } })))
+  .array(StringSchema.openapi({ xml: { name: 'AWSAccountId' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('AWSAccountIdList')
 
 const ActionNameListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'ActionName' } })))
+  .array(StringSchema.openapi({ xml: { name: 'ActionName' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('ActionNameList')
 
 const AddPermissionRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue to which permissions are added.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    Label: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique identification of the permission you're setting (for example, <code>AliceSendMessage</code>). Maximum 80 characters. Allowed characters include alphanumeric characters, hyphens (<code>-</code>), and underscores (<code>_</code>).",
-        }),
-    ),
-    AWSAccountIds: AWSAccountIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account numbers of the <a href="https://docs.aws.amazon.com/general/latest/gr/glos-chap.html#P">principals</a> who are to receive permission. For information about locating the Amazon Web Services account identification, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-making-api-requests.html#sqs-api-request-authentication">Your Amazon Web Services Identifiers</a> in the <i>Amazon SQS Developer Guide</i>.',
-        }),
-    ),
-    Actions: ActionNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action the client wants to allow for the specified principal. Valid values: the name of any action or <code>*</code>.</p> <p>For more information about these actions, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-overview-of-managing-access.html">Overview of Managing Access Permissions to Your Amazon Simple Queue Service Resource</a> in the <i>Amazon SQS Developer Guide</i>.</p> <p>Specifying <code>SendMessage</code>, <code>DeleteMessage</code>, or <code>ChangeMessageVisibility</code> for <code>ActionName.n</code> also grants permissions for the corresponding batch versions of those actions: <code>SendMessageBatch</code>, <code>DeleteMessageBatch</code>, and <code>ChangeMessageVisibilityBatch</code>.</p>',
-        }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue to which permissions are added.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    Label: StringSchema.openapi({
+      description:
+        "The unique identification of the permission you're setting (for example, <code>AliceSendMessage</code>). Maximum 80 characters. Allowed characters include alphanumeric characters, hyphens (<code>-</code>), and underscores (<code>_</code>).",
+    }),
+    AWSAccountIds: AWSAccountIdListSchema.openapi({
+      description:
+        'The Amazon Web Services account numbers of the <a href="https://docs.aws.amazon.com/general/latest/gr/glos-chap.html#P">principals</a> who are to receive permission. For information about locating the Amazon Web Services account identification, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-making-api-requests.html#sqs-api-request-authentication">Your Amazon Web Services Identifiers</a> in the <i>Amazon SQS Developer Guide</i>.',
+    }),
+    Actions: ActionNameListSchema.openapi({
+      description:
+        '<p>The action the client wants to allow for the specified principal. Valid values: the name of any action or <code>*</code>.</p> <p>For more information about these actions, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-overview-of-managing-access.html">Overview of Managing Access Permissions to Your Amazon Simple Queue Service Resource</a> in the <i>Amazon SQS Developer Guide</i>.</p> <p>Specifying <code>SendMessage</code>, <code>DeleteMessage</code>, or <code>ChangeMessageVisibility</code> for <code>ActionName.n</code> also grants permissions for the corresponding batch versions of those actions: <code>SendMessageBatch</code>, <code>DeleteMessageBatch</code>, and <code>ChangeMessageVisibilityBatch</code>.</p>',
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'Label', 'AWSAccountIds', 'Actions'],
@@ -919,7 +658,7 @@ const AddPermissionRequestSchema = z
   .openapi('AddPermissionRequest')
 
 const AttributeNameListSchema = z
-  .array(QueueAttributeNameSchema.and(z.any().openapi({ xml: { name: 'AttributeName' } })))
+  .array(QueueAttributeNameSchema.openapi({ xml: { name: 'AttributeName' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('AttributeNameList')
 
@@ -927,40 +666,32 @@ const BoxedIntegerSchema = z.int().openapi('BoxedInteger')
 
 const CancelMessageMoveTaskRequestSchema = z
   .object({
-    TaskHandle: StringSchema.and(
-      z.any().openapi({ description: 'An identifier associated with a message movement task.' }),
-    ),
+    TaskHandle: StringSchema.openapi({
+      description: 'An identifier associated with a message movement task.',
+    }),
   })
   .openapi({ required: ['TaskHandle'], title: 'CancelMessageMoveTaskRequest' })
   .openapi('CancelMessageMoveTaskRequest')
 
 const ChangeMessageVisibilityBatchRequestEntryListSchema = z
   .array(
-    ChangeMessageVisibilityBatchRequestEntrySchema.and(
-      z.any().openapi({ xml: { name: 'ChangeMessageVisibilityBatchRequestEntry' } }),
-    ),
+    ChangeMessageVisibilityBatchRequestEntrySchema.openapi({
+      xml: { name: 'ChangeMessageVisibilityBatchRequestEntry' },
+    }),
   )
   .openapi({ xml: { wrapped: false } })
   .openapi('ChangeMessageVisibilityBatchRequestEntryList')
 
 const ChangeMessageVisibilityBatchRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The URL of the Amazon SQS queue whose messages' visibility is changed.</p> <p>Queue URLs and names are case-sensitive.</p>",
-        }),
-    ),
-    Entries: ChangeMessageVisibilityBatchRequestEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists the receipt handles of the messages for which the visibility timeout must be changed.',
-        }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        "<p>The URL of the Amazon SQS queue whose messages' visibility is changed.</p> <p>Queue URLs and names are case-sensitive.</p>",
+    }),
+    Entries: ChangeMessageVisibilityBatchRequestEntryListSchema.openapi({
+      description:
+        'Lists the receipt handles of the messages for which the visibility timeout must be changed.',
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'Entries'],
@@ -971,30 +702,18 @@ const ChangeMessageVisibilityBatchRequestSchema = z
 
 const ChangeMessageVisibilityRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The URL of the Amazon SQS queue whose message's visibility is changed.</p> <p>Queue URLs and names are case-sensitive.</p>",
-        }),
-    ),
-    ReceiptHandle: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The receipt handle associated with the message, whose visibility timeout is changed. This parameter is returned by the <code> <a>ReceiveMessage</a> </code> action.',
-        }),
-    ),
-    VisibilityTimeout: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The new value for the message's visibility timeout (in seconds). Values range: <code>0</code> to <code>43200</code>. Maximum: 12 hours.",
-        }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        "<p>The URL of the Amazon SQS queue whose message's visibility is changed.</p> <p>Queue URLs and names are case-sensitive.</p>",
+    }),
+    ReceiptHandle: StringSchema.openapi({
+      description:
+        'The receipt handle associated with the message, whose visibility timeout is changed. This parameter is returned by the <code> <a>ReceiveMessage</a> </code> action.',
+    }),
+    VisibilityTimeout: IntegerSchema.openapi({
+      description:
+        "The new value for the message's visibility timeout (in seconds). Values range: <code>0</code> to <code>43200</code>. Maximum: 12 hours.",
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'ReceiptHandle', 'VisibilityTimeout'],
@@ -1004,58 +723,42 @@ const ChangeMessageVisibilityRequestSchema = z
 
 const CreateQueueRequestSchema = z
   .object({
-    QueueName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the new queue. The following limits apply to this name:</p> <ul> <li> <p>A queue name can have up to 80 characters.</p> </li> <li> <p>Valid values: alphanumeric characters, hyphens (<code>-</code>), and underscores (<code>_</code>).</p> </li> <li> <p>A FIFO queue name must end with the <code>.fifo</code> suffix.</p> </li> </ul> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    Attributes: QueueAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Attribute' },
-          description:
-            '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>CreateQueue</code> action uses:</p> <ul> <li> <p> <code>DelaySeconds</code> – The length of time, in seconds, for which the delivery of all messages in the queue is delayed. Valid values: An integer from 0 to 900 seconds (15 minutes). Default: 0. </p> </li> <li> <p> <code>MaximumMessageSize</code> – The limit of how many bytes a message can contain before Amazon SQS rejects it. Valid values: An integer from 1,024 bytes (1 KiB) to 262,144 bytes (256 KiB). Default: 262,144 (256 KiB). </p> </li> <li> <p> <code>MessageRetentionPeriod</code> – The length of time, in seconds, for which Amazon SQS retains a message. Valid values: An integer from 60 seconds (1 minute) to 1,209,600 seconds (14 days). Default: 345,600 (4 days). When you change a queue\'s attributes, the change can take up to 60 seconds for most of the attributes to propagate throughout the Amazon SQS system. Changes made to the <code>MessageRetentionPeriod</code> attribute can take up to 15 minutes and will impact existing messages in the queue potentially causing them to be expired and deleted if the <code>MessageRetentionPeriod</code> is reduced below the age of existing messages.</p> </li> <li> <p> <code>Policy</code> – The queue\'s policy. A valid Amazon Web Services policy. For more information about policy structure, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/PoliciesOverview.html">Overview of Amazon Web Services IAM Policies</a> in the <i>IAM User Guide</i>. </p> </li> <li> <p> <code>ReceiveMessageWaitTimeSeconds</code> – The length of time, in seconds, for which a <code> <a>ReceiveMessage</a> </code> action waits for a message to arrive. Valid values: An integer from 0 to 20 (seconds). Default: 0. </p> </li> <li> <p> <code>VisibilityTimeout</code> – The visibility timeout for the queue, in seconds. Valid values: An integer from 0 to 43,200 (12 hours). Default: 30. For more information about the visibility timeout, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html">Visibility Timeout</a> in the <i>Amazon SQS Developer Guide</i>.</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html">dead-letter queues:</a> </p> <ul> <li> <p> <code>RedrivePolicy</code> – The string that includes the parameters for the dead-letter queue functionality of the source queue as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>deadLetterTargetArn</code> – The Amazon Resource Name (ARN) of the dead-letter queue to which Amazon SQS moves messages after the value of <code>maxReceiveCount</code> is exceeded.</p> </li> <li> <p> <code>maxReceiveCount</code> – The number of times a message is delivered to the source queue before being moved to the dead-letter queue. Default: 10. When the <code>ReceiveCount</code> for a message exceeds the <code>maxReceiveCount</code> for a queue, Amazon SQS moves the message to the dead-letter-queue.</p> </li> </ul> </li> <li> <p> <code>RedriveAllowPolicy</code> – The string that includes the parameters for the permissions for the dead-letter queue redrive permission and which source queues can specify dead-letter queues as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>redrivePermission</code> – The permission type that defines which source queues can specify the current queue as the dead-letter queue. Valid values are:</p> <ul> <li> <p> <code>allowAll</code> – (Default) Any source queues in this Amazon Web Services account in the same Region can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>denyAll</code> – No source queues can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>byQueue</code> – Only queues specified by the <code>sourceQueueArns</code> parameter can specify this queue as the dead-letter queue.</p> </li> </ul> </li> <li> <p> <code>sourceQueueArns</code> – The Amazon Resource Names (ARN)s of the source queues that can specify this queue as the dead-letter queue and redrive messages. You can specify this parameter only when the <code>redrivePermission</code> parameter is set to <code>byQueue</code>. You can specify up to 10 source queue ARNs. To allow more than 10 source queues to specify dead-letter queues, set the <code>redrivePermission</code> parameter to <code>allowAll</code>.</p> </li> </ul> </li> </ul> <note> <p>The dead-letter queue of a FIFO queue must also be a FIFO queue. Similarly, the dead-letter queue of a standard queue must also be a standard queue.</p> </note> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-sse-key-terms">Key Terms</a>. While the alias of the Amazon Web Services managed CMK for Amazon SQS is always <code>alias/aws/sqs</code>, the alias of a custom CMK can, for example, be <code>alias/<i>MyAlias</i> </code>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>. </p> </li> <li> <p> <code>KmsDataKeyReusePeriodSeconds</code> – The length of time, in seconds, for which Amazon SQS can reuse a <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys">data key</a> to encrypt or decrypt messages before calling KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). Default: 300 (5 minutes). A shorter time period provides better security but results in more calls to KMS which might incur charges after Free Tier. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-how-does-the-data-key-reuse-period-work">How Does the Data Key Reuse Period Work?</a> </p> </li> <li> <p> <code>SqsManagedSseEnabled</code> – Enables server-side queue encryption using SQS owned encryption keys. Only one server-side encryption option is supported per queue (for example, <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sse-existing-queue.html">SSE-KMS</a> or <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sqs-sse-queue.html">SSE-SQS</a>).</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html">FIFO (first-in-first-out) queues</a>:</p> <ul> <li> <p> <code>FifoQueue</code> – Designates a queue as FIFO. Valid values are <code>true</code> and <code>false</code>. If you don\'t specify the <code>FifoQueue</code> attribute, Amazon SQS creates a standard queue. You can provide this attribute only during queue creation. You can\'t change it for an existing queue. When you set this attribute, you must also provide the <code>MessageGroupId</code> for your messages explicitly.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-understanding-logic.html">FIFO queue logic</a> in the <i>Amazon SQS Developer Guide</i>.</p> </li> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication. Valid values are <code>true</code> and <code>false</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html">Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>. Note the following: </p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>.</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren\'t able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don\'t provide a <code>MessageDeduplicationId</code> and the queue doesn\'t have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/high-throughput-fifo.html">high throughput for FIFO queues</a>:</p> <ul> <li> <p> <code>DeduplicationScope</code> – Specifies whether message deduplication occurs at the message group or queue level. Valid values are <code>messageGroup</code> and <code>queue</code>.</p> </li> <li> <p> <code>FifoThroughputLimit</code> – Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are <code>perQueue</code> and <code>perMessageGroupId</code>. The <code>perMessageGroupId</code> value is allowed only when the value for <code>DeduplicationScope</code> is <code>messageGroup</code>.</p> </li> </ul> <p>To enable high throughput for FIFO queues, do the following:</p> <ul> <li> <p>Set <code>DeduplicationScope</code> to <code>messageGroup</code>.</p> </li> <li> <p>Set <code>FifoThroughputLimit</code> to <code>perMessageGroupId</code>.</p> </li> </ul> <p>If you set these attributes to anything other than the values shown for enabling high throughput, normal throughput is in effect and deduplication occurs as specified.</p> <p>For information on throughput quotas, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html">Quotas related to messages</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Tag' },
-          description:
-            '<p>Add cost allocation tags to the specified Amazon SQS queue. For an overview, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-queue-tags.html">Tagging Your Amazon SQS Queues</a> in the <i>Amazon SQS Developer Guide</i>.</p> <p>When you use queue tags, keep the following guidelines in mind:</p> <ul> <li> <p>Adding more than 50 tags to a queue isn\'t recommended.</p> </li> <li> <p>Tags don\'t have any semantic meaning. Amazon SQS interprets tags as character strings.</p> </li> <li> <p>Tags are case-sensitive.</p> </li> <li> <p>A new tag with a key identical to that of an existing tag overwrites the existing tag.</p> </li> </ul> <p>For a full list of tag restrictions, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-limits.html#limits-queues">Quotas related to queues</a> in the <i>Amazon SQS Developer Guide</i>.</p> <note> <p>To be able to tag a queue on creation, you must have the <code>sqs:CreateQueue</code> and <code>sqs:TagQueue</code> permissions.</p> <p>Cross-account permissions don\'t apply to this action. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-customer-managed-policy-examples.html#grant-cross-account-permissions-to-role-and-user-name">Grant cross-account permissions to a role and a username</a> in the <i>Amazon SQS Developer Guide</i>.</p> </note>',
-        }),
-    ).exactOptional(),
+    QueueName: StringSchema.openapi({
+      description:
+        '<p>The name of the new queue. The following limits apply to this name:</p> <ul> <li> <p>A queue name can have up to 80 characters.</p> </li> <li> <p>Valid values: alphanumeric characters, hyphens (<code>-</code>), and underscores (<code>_</code>).</p> </li> <li> <p>A FIFO queue name must end with the <code>.fifo</code> suffix.</p> </li> </ul> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    Attributes: QueueAttributeMapSchema.exactOptional().openapi({
+      xml: { name: 'Attribute' },
+      description:
+        '<p>A map of attributes with their corresponding values.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>CreateQueue</code> action uses:</p> <ul> <li> <p> <code>DelaySeconds</code> – The length of time, in seconds, for which the delivery of all messages in the queue is delayed. Valid values: An integer from 0 to 900 seconds (15 minutes). Default: 0. </p> </li> <li> <p> <code>MaximumMessageSize</code> – The limit of how many bytes a message can contain before Amazon SQS rejects it. Valid values: An integer from 1,024 bytes (1 KiB) to 262,144 bytes (256 KiB). Default: 262,144 (256 KiB). </p> </li> <li> <p> <code>MessageRetentionPeriod</code> – The length of time, in seconds, for which Amazon SQS retains a message. Valid values: An integer from 60 seconds (1 minute) to 1,209,600 seconds (14 days). Default: 345,600 (4 days). When you change a queue\'s attributes, the change can take up to 60 seconds for most of the attributes to propagate throughout the Amazon SQS system. Changes made to the <code>MessageRetentionPeriod</code> attribute can take up to 15 minutes and will impact existing messages in the queue potentially causing them to be expired and deleted if the <code>MessageRetentionPeriod</code> is reduced below the age of existing messages.</p> </li> <li> <p> <code>Policy</code> – The queue\'s policy. A valid Amazon Web Services policy. For more information about policy structure, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/PoliciesOverview.html">Overview of Amazon Web Services IAM Policies</a> in the <i>IAM User Guide</i>. </p> </li> <li> <p> <code>ReceiveMessageWaitTimeSeconds</code> – The length of time, in seconds, for which a <code> <a>ReceiveMessage</a> </code> action waits for a message to arrive. Valid values: An integer from 0 to 20 (seconds). Default: 0. </p> </li> <li> <p> <code>VisibilityTimeout</code> – The visibility timeout for the queue, in seconds. Valid values: An integer from 0 to 43,200 (12 hours). Default: 30. For more information about the visibility timeout, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html">Visibility Timeout</a> in the <i>Amazon SQS Developer Guide</i>.</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html">dead-letter queues:</a> </p> <ul> <li> <p> <code>RedrivePolicy</code> – The string that includes the parameters for the dead-letter queue functionality of the source queue as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>deadLetterTargetArn</code> – The Amazon Resource Name (ARN) of the dead-letter queue to which Amazon SQS moves messages after the value of <code>maxReceiveCount</code> is exceeded.</p> </li> <li> <p> <code>maxReceiveCount</code> – The number of times a message is delivered to the source queue before being moved to the dead-letter queue. Default: 10. When the <code>ReceiveCount</code> for a message exceeds the <code>maxReceiveCount</code> for a queue, Amazon SQS moves the message to the dead-letter-queue.</p> </li> </ul> </li> <li> <p> <code>RedriveAllowPolicy</code> – The string that includes the parameters for the permissions for the dead-letter queue redrive permission and which source queues can specify dead-letter queues as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>redrivePermission</code> – The permission type that defines which source queues can specify the current queue as the dead-letter queue. Valid values are:</p> <ul> <li> <p> <code>allowAll</code> – (Default) Any source queues in this Amazon Web Services account in the same Region can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>denyAll</code> – No source queues can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>byQueue</code> – Only queues specified by the <code>sourceQueueArns</code> parameter can specify this queue as the dead-letter queue.</p> </li> </ul> </li> <li> <p> <code>sourceQueueArns</code> – The Amazon Resource Names (ARN)s of the source queues that can specify this queue as the dead-letter queue and redrive messages. You can specify this parameter only when the <code>redrivePermission</code> parameter is set to <code>byQueue</code>. You can specify up to 10 source queue ARNs. To allow more than 10 source queues to specify dead-letter queues, set the <code>redrivePermission</code> parameter to <code>allowAll</code>.</p> </li> </ul> </li> </ul> <note> <p>The dead-letter queue of a FIFO queue must also be a FIFO queue. Similarly, the dead-letter queue of a standard queue must also be a standard queue.</p> </note> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-sse-key-terms">Key Terms</a>. While the alias of the Amazon Web Services managed CMK for Amazon SQS is always <code>alias/aws/sqs</code>, the alias of a custom CMK can, for example, be <code>alias/<i>MyAlias</i> </code>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>. </p> </li> <li> <p> <code>KmsDataKeyReusePeriodSeconds</code> – The length of time, in seconds, for which Amazon SQS can reuse a <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys">data key</a> to encrypt or decrypt messages before calling KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). Default: 300 (5 minutes). A shorter time period provides better security but results in more calls to KMS which might incur charges after Free Tier. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-how-does-the-data-key-reuse-period-work">How Does the Data Key Reuse Period Work?</a> </p> </li> <li> <p> <code>SqsManagedSseEnabled</code> – Enables server-side queue encryption using SQS owned encryption keys. Only one server-side encryption option is supported per queue (for example, <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sse-existing-queue.html">SSE-KMS</a> or <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sqs-sse-queue.html">SSE-SQS</a>).</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html">FIFO (first-in-first-out) queues</a>:</p> <ul> <li> <p> <code>FifoQueue</code> – Designates a queue as FIFO. Valid values are <code>true</code> and <code>false</code>. If you don\'t specify the <code>FifoQueue</code> attribute, Amazon SQS creates a standard queue. You can provide this attribute only during queue creation. You can\'t change it for an existing queue. When you set this attribute, you must also provide the <code>MessageGroupId</code> for your messages explicitly.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-understanding-logic.html">FIFO queue logic</a> in the <i>Amazon SQS Developer Guide</i>.</p> </li> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication. Valid values are <code>true</code> and <code>false</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html">Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>. Note the following: </p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>.</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren\'t able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don\'t provide a <code>MessageDeduplicationId</code> and the queue doesn\'t have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/high-throughput-fifo.html">high throughput for FIFO queues</a>:</p> <ul> <li> <p> <code>DeduplicationScope</code> – Specifies whether message deduplication occurs at the message group or queue level. Valid values are <code>messageGroup</code> and <code>queue</code>.</p> </li> <li> <p> <code>FifoThroughputLimit</code> – Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are <code>perQueue</code> and <code>perMessageGroupId</code>. The <code>perMessageGroupId</code> value is allowed only when the value for <code>DeduplicationScope</code> is <code>messageGroup</code>.</p> </li> </ul> <p>To enable high throughput for FIFO queues, do the following:</p> <ul> <li> <p>Set <code>DeduplicationScope</code> to <code>messageGroup</code>.</p> </li> <li> <p>Set <code>FifoThroughputLimit</code> to <code>perMessageGroupId</code>.</p> </li> </ul> <p>If you set these attributes to anything other than the values shown for enabling high throughput, normal throughput is in effect and deduplication occurs as specified.</p> <p>For information on throughput quotas, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html">Quotas related to messages</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      xml: { name: 'Tag' },
+      description:
+        '<p>Add cost allocation tags to the specified Amazon SQS queue. For an overview, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-queue-tags.html">Tagging Your Amazon SQS Queues</a> in the <i>Amazon SQS Developer Guide</i>.</p> <p>When you use queue tags, keep the following guidelines in mind:</p> <ul> <li> <p>Adding more than 50 tags to a queue isn\'t recommended.</p> </li> <li> <p>Tags don\'t have any semantic meaning. Amazon SQS interprets tags as character strings.</p> </li> <li> <p>Tags are case-sensitive.</p> </li> <li> <p>A new tag with a key identical to that of an existing tag overwrites the existing tag.</p> </li> </ul> <p>For a full list of tag restrictions, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-limits.html#limits-queues">Quotas related to queues</a> in the <i>Amazon SQS Developer Guide</i>.</p> <note> <p>To be able to tag a queue on creation, you must have the <code>sqs:CreateQueue</code> and <code>sqs:TagQueue</code> permissions.</p> <p>Cross-account permissions don\'t apply to this action. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-customer-managed-policy-examples.html#grant-cross-account-permissions-to-role-and-user-name">Grant cross-account permissions to a role and a username</a> in the <i>Amazon SQS Developer Guide</i>.</p> </note>',
+    }),
   })
   .openapi({ required: ['QueueName'], title: 'CreateQueueRequest', description: '<p/>' })
   .openapi('CreateQueueRequest')
 
 const DeleteMessageBatchRequestEntryListSchema = z
   .array(
-    DeleteMessageBatchRequestEntrySchema.and(
-      z.any().openapi({ xml: { name: 'DeleteMessageBatchRequestEntry' } }),
-    ),
+    DeleteMessageBatchRequestEntrySchema.openapi({
+      xml: { name: 'DeleteMessageBatchRequestEntry' },
+    }),
   )
   .openapi({ xml: { wrapped: false } })
   .openapi('DeleteMessageBatchRequestEntryList')
 
 const DeleteMessageBatchRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue from which messages are deleted.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    Entries: DeleteMessageBatchRequestEntryListSchema.and(
-      z.any().openapi({ description: 'Lists the receipt handles for the messages to be deleted.' }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue from which messages are deleted.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    Entries: DeleteMessageBatchRequestEntryListSchema.openapi({
+      description: 'Lists the receipt handles for the messages to be deleted.',
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'Entries'],
@@ -1066,17 +769,13 @@ const DeleteMessageBatchRequestSchema = z
 
 const DeleteMessageRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue from which messages are deleted.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    ReceiptHandle: StringSchema.and(
-      z.any().openapi({ description: 'The receipt handle associated with the message to delete.' }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue from which messages are deleted.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    ReceiptHandle: StringSchema.openapi({
+      description: 'The receipt handle associated with the message to delete.',
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'ReceiptHandle'],
@@ -1087,82 +786,54 @@ const DeleteMessageRequestSchema = z
 
 const DeleteQueueRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue to delete.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue to delete.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
   })
   .openapi({ required: ['QueueUrl'], title: 'DeleteQueueRequest', description: '<p/>' })
   .openapi('DeleteQueueRequest')
 
 const GetQueueAttributesRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue whose attribute information is retrieved.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    AttributeNames: AttributeNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of attributes for which to retrieve information.</p> <p>The <code>AttributeNames</code> parameter is optional, but if you don\'t specify values for this parameter, the request returns empty results.</p> <note> <p>In the future, new attributes might be added. If you write code that calls this action, we recommend that you structure your code so that it can handle new attributes gracefully.</p> </note> <p>The following attributes are supported:</p> <important> <p>The <code>ApproximateNumberOfMessagesDelayed</code>, <code>ApproximateNumberOfMessagesNotVisible</code>, and <code>ApproximateNumberOfMessages</code> metrics may not achieve consistency until at least 1 minute after the producers stop sending messages. This period is required for the queue metadata to reach eventual consistency. </p> </important> <ul> <li> <p> <code>All</code> – Returns all values. </p> </li> <li> <p> <code>ApproximateNumberOfMessages</code> – Returns the approximate number of messages available for retrieval from the queue.</p> </li> <li> <p> <code>ApproximateNumberOfMessagesDelayed</code> – Returns the approximate number of messages in the queue that are delayed and not available for reading immediately. This can happen when the queue is configured as a delay queue or when a message has been sent with a delay parameter.</p> </li> <li> <p> <code>ApproximateNumberOfMessagesNotVisible</code> – Returns the approximate number of messages that are in flight. Messages are considered to be <i>in flight</i> if they have been sent to a client but have not yet been deleted or have not yet reached the end of their visibility window. </p> </li> <li> <p> <code>CreatedTimestamp</code> – Returns the time when the queue was created in seconds (<a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a>).</p> </li> <li> <p> <code>DelaySeconds</code> – Returns the default delay on the queue in seconds.</p> </li> <li> <p> <code>LastModifiedTimestamp</code> – Returns the time when the queue was last changed in seconds (<a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a>).</p> </li> <li> <p> <code>MaximumMessageSize</code> – Returns the limit of how many bytes a message can contain before Amazon SQS rejects it.</p> </li> <li> <p> <code>MessageRetentionPeriod</code> – Returns the length of time, in seconds, for which Amazon SQS retains a message. When you change a queue\'s attributes, the change can take up to 60 seconds for most of the attributes to propagate throughout the Amazon SQS system. Changes made to the <code>MessageRetentionPeriod</code> attribute can take up to 15 minutes and will impact existing messages in the queue potentially causing them to be expired and deleted if the <code>MessageRetentionPeriod</code> is reduced below the age of existing messages.</p> </li> <li> <p> <code>Policy</code> – Returns the policy of the queue.</p> </li> <li> <p> <code>QueueArn</code> – Returns the Amazon resource name (ARN) of the queue.</p> </li> <li> <p> <code>ReceiveMessageWaitTimeSeconds</code> – Returns the length of time, in seconds, for which the <code>ReceiveMessage</code> action waits for a message to arrive. </p> </li> <li> <p> <code>VisibilityTimeout</code> – Returns the visibility timeout for the queue. For more information about the visibility timeout, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html">Visibility Timeout</a> in the <i>Amazon SQS Developer Guide</i>. </p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html">dead-letter queues:</a> </p> <ul> <li> <p> <code>RedrivePolicy</code> – The string that includes the parameters for the dead-letter queue functionality of the source queue as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>deadLetterTargetArn</code> – The Amazon Resource Name (ARN) of the dead-letter queue to which Amazon SQS moves messages after the value of <code>maxReceiveCount</code> is exceeded.</p> </li> <li> <p> <code>maxReceiveCount</code> – The number of times a message is delivered to the source queue before being moved to the dead-letter queue. Default: 10. When the <code>ReceiveCount</code> for a message exceeds the <code>maxReceiveCount</code> for a queue, Amazon SQS moves the message to the dead-letter-queue.</p> </li> </ul> </li> <li> <p> <code>RedriveAllowPolicy</code> – The string that includes the parameters for the permissions for the dead-letter queue redrive permission and which source queues can specify dead-letter queues as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>redrivePermission</code> – The permission type that defines which source queues can specify the current queue as the dead-letter queue. Valid values are:</p> <ul> <li> <p> <code>allowAll</code> – (Default) Any source queues in this Amazon Web Services account in the same Region can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>denyAll</code> – No source queues can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>byQueue</code> – Only queues specified by the <code>sourceQueueArns</code> parameter can specify this queue as the dead-letter queue.</p> </li> </ul> </li> <li> <p> <code>sourceQueueArns</code> – The Amazon Resource Names (ARN)s of the source queues that can specify this queue as the dead-letter queue and redrive messages. You can specify this parameter only when the <code>redrivePermission</code> parameter is set to <code>byQueue</code>. You can specify up to 10 source queue ARNs. To allow more than 10 source queues to specify dead-letter queues, set the <code>redrivePermission</code> parameter to <code>allowAll</code>.</p> </li> </ul> </li> </ul> <note> <p>The dead-letter queue of a FIFO queue must also be a FIFO queue. Similarly, the dead-letter queue of a standard queue must also be a standard queue.</p> </note> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – Returns the ID of an Amazon Web Services managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-sse-key-terms">Key Terms</a>. </p> </li> <li> <p> <code>KmsDataKeyReusePeriodSeconds</code> – Returns the length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling KMS again. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-how-does-the-data-key-reuse-period-work">How Does the Data Key Reuse Period Work?</a>. </p> </li> <li> <p> <code>SqsManagedSseEnabled</code> – Returns information about whether the queue is using SSE-SQS encryption using SQS owned encryption keys. Only one server-side encryption option is supported per queue (for example, <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sse-existing-queue.html">SSE-KMS</a> or <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sqs-sse-queue.html">SSE-SQS</a>).</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html">FIFO (first-in-first-out) queues</a>:</p> <ul> <li> <p> <code>FifoQueue</code> – Returns information about whether the queue is FIFO. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-understanding-logic.html">FIFO queue logic</a> in the <i>Amazon SQS Developer Guide</i>.</p> <note> <p>To determine whether a queue is <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html">FIFO</a>, you can check whether <code>QueueName</code> ends with the <code>.fifo</code> suffix.</p> </note> </li> <li> <p> <code>ContentBasedDeduplication</code> – Returns whether content-based deduplication is enabled for the queue. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html">Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>. </p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/high-throughput-fifo.html">high throughput for FIFO queues</a>:</p> <ul> <li> <p> <code>DeduplicationScope</code> – Specifies whether message deduplication occurs at the message group or queue level. Valid values are <code>messageGroup</code> and <code>queue</code>.</p> </li> <li> <p> <code>FifoThroughputLimit</code> – Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are <code>perQueue</code> and <code>perMessageGroupId</code>. The <code>perMessageGroupId</code> value is allowed only when the value for <code>DeduplicationScope</code> is <code>messageGroup</code>.</p> </li> </ul> <p>To enable high throughput for FIFO queues, do the following:</p> <ul> <li> <p>Set <code>DeduplicationScope</code> to <code>messageGroup</code>.</p> </li> <li> <p>Set <code>FifoThroughputLimit</code> to <code>perMessageGroupId</code>.</p> </li> </ul> <p>If you set these attributes to anything other than the values shown for enabling high throughput, normal throughput is in effect and deduplication occurs as specified.</p> <p>For information on throughput quotas, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html">Quotas related to messages</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue whose attribute information is retrieved.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    AttributeNames: AttributeNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of attributes for which to retrieve information.</p> <p>The <code>AttributeNames</code> parameter is optional, but if you don\'t specify values for this parameter, the request returns empty results.</p> <note> <p>In the future, new attributes might be added. If you write code that calls this action, we recommend that you structure your code so that it can handle new attributes gracefully.</p> </note> <p>The following attributes are supported:</p> <important> <p>The <code>ApproximateNumberOfMessagesDelayed</code>, <code>ApproximateNumberOfMessagesNotVisible</code>, and <code>ApproximateNumberOfMessages</code> metrics may not achieve consistency until at least 1 minute after the producers stop sending messages. This period is required for the queue metadata to reach eventual consistency. </p> </important> <ul> <li> <p> <code>All</code> – Returns all values. </p> </li> <li> <p> <code>ApproximateNumberOfMessages</code> – Returns the approximate number of messages available for retrieval from the queue.</p> </li> <li> <p> <code>ApproximateNumberOfMessagesDelayed</code> – Returns the approximate number of messages in the queue that are delayed and not available for reading immediately. This can happen when the queue is configured as a delay queue or when a message has been sent with a delay parameter.</p> </li> <li> <p> <code>ApproximateNumberOfMessagesNotVisible</code> – Returns the approximate number of messages that are in flight. Messages are considered to be <i>in flight</i> if they have been sent to a client but have not yet been deleted or have not yet reached the end of their visibility window. </p> </li> <li> <p> <code>CreatedTimestamp</code> – Returns the time when the queue was created in seconds (<a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a>).</p> </li> <li> <p> <code>DelaySeconds</code> – Returns the default delay on the queue in seconds.</p> </li> <li> <p> <code>LastModifiedTimestamp</code> – Returns the time when the queue was last changed in seconds (<a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a>).</p> </li> <li> <p> <code>MaximumMessageSize</code> – Returns the limit of how many bytes a message can contain before Amazon SQS rejects it.</p> </li> <li> <p> <code>MessageRetentionPeriod</code> – Returns the length of time, in seconds, for which Amazon SQS retains a message. When you change a queue\'s attributes, the change can take up to 60 seconds for most of the attributes to propagate throughout the Amazon SQS system. Changes made to the <code>MessageRetentionPeriod</code> attribute can take up to 15 minutes and will impact existing messages in the queue potentially causing them to be expired and deleted if the <code>MessageRetentionPeriod</code> is reduced below the age of existing messages.</p> </li> <li> <p> <code>Policy</code> – Returns the policy of the queue.</p> </li> <li> <p> <code>QueueArn</code> – Returns the Amazon resource name (ARN) of the queue.</p> </li> <li> <p> <code>ReceiveMessageWaitTimeSeconds</code> – Returns the length of time, in seconds, for which the <code>ReceiveMessage</code> action waits for a message to arrive. </p> </li> <li> <p> <code>VisibilityTimeout</code> – Returns the visibility timeout for the queue. For more information about the visibility timeout, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html">Visibility Timeout</a> in the <i>Amazon SQS Developer Guide</i>. </p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html">dead-letter queues:</a> </p> <ul> <li> <p> <code>RedrivePolicy</code> – The string that includes the parameters for the dead-letter queue functionality of the source queue as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>deadLetterTargetArn</code> – The Amazon Resource Name (ARN) of the dead-letter queue to which Amazon SQS moves messages after the value of <code>maxReceiveCount</code> is exceeded.</p> </li> <li> <p> <code>maxReceiveCount</code> – The number of times a message is delivered to the source queue before being moved to the dead-letter queue. Default: 10. When the <code>ReceiveCount</code> for a message exceeds the <code>maxReceiveCount</code> for a queue, Amazon SQS moves the message to the dead-letter-queue.</p> </li> </ul> </li> <li> <p> <code>RedriveAllowPolicy</code> – The string that includes the parameters for the permissions for the dead-letter queue redrive permission and which source queues can specify dead-letter queues as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>redrivePermission</code> – The permission type that defines which source queues can specify the current queue as the dead-letter queue. Valid values are:</p> <ul> <li> <p> <code>allowAll</code> – (Default) Any source queues in this Amazon Web Services account in the same Region can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>denyAll</code> – No source queues can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>byQueue</code> – Only queues specified by the <code>sourceQueueArns</code> parameter can specify this queue as the dead-letter queue.</p> </li> </ul> </li> <li> <p> <code>sourceQueueArns</code> – The Amazon Resource Names (ARN)s of the source queues that can specify this queue as the dead-letter queue and redrive messages. You can specify this parameter only when the <code>redrivePermission</code> parameter is set to <code>byQueue</code>. You can specify up to 10 source queue ARNs. To allow more than 10 source queues to specify dead-letter queues, set the <code>redrivePermission</code> parameter to <code>allowAll</code>.</p> </li> </ul> </li> </ul> <note> <p>The dead-letter queue of a FIFO queue must also be a FIFO queue. Similarly, the dead-letter queue of a standard queue must also be a standard queue.</p> </note> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – Returns the ID of an Amazon Web Services managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-sse-key-terms">Key Terms</a>. </p> </li> <li> <p> <code>KmsDataKeyReusePeriodSeconds</code> – Returns the length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling KMS again. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-how-does-the-data-key-reuse-period-work">How Does the Data Key Reuse Period Work?</a>. </p> </li> <li> <p> <code>SqsManagedSseEnabled</code> – Returns information about whether the queue is using SSE-SQS encryption using SQS owned encryption keys. Only one server-side encryption option is supported per queue (for example, <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sse-existing-queue.html">SSE-KMS</a> or <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sqs-sse-queue.html">SSE-SQS</a>).</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html">FIFO (first-in-first-out) queues</a>:</p> <ul> <li> <p> <code>FifoQueue</code> – Returns information about whether the queue is FIFO. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-understanding-logic.html">FIFO queue logic</a> in the <i>Amazon SQS Developer Guide</i>.</p> <note> <p>To determine whether a queue is <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html">FIFO</a>, you can check whether <code>QueueName</code> ends with the <code>.fifo</code> suffix.</p> </note> </li> <li> <p> <code>ContentBasedDeduplication</code> – Returns whether content-based deduplication is enabled for the queue. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html">Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>. </p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/high-throughput-fifo.html">high throughput for FIFO queues</a>:</p> <ul> <li> <p> <code>DeduplicationScope</code> – Specifies whether message deduplication occurs at the message group or queue level. Valid values are <code>messageGroup</code> and <code>queue</code>.</p> </li> <li> <p> <code>FifoThroughputLimit</code> – Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are <code>perQueue</code> and <code>perMessageGroupId</code>. The <code>perMessageGroupId</code> value is allowed only when the value for <code>DeduplicationScope</code> is <code>messageGroup</code>.</p> </li> </ul> <p>To enable high throughput for FIFO queues, do the following:</p> <ul> <li> <p>Set <code>DeduplicationScope</code> to <code>messageGroup</code>.</p> </li> <li> <p>Set <code>FifoThroughputLimit</code> to <code>perMessageGroupId</code>.</p> </li> </ul> <p>If you set these attributes to anything other than the values shown for enabling high throughput, normal throughput is in effect and deduplication occurs as specified.</p> <p>For information on throughput quotas, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html">Quotas related to messages</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['QueueUrl'], title: 'GetQueueAttributesRequest', description: '<p/>' })
   .openapi('GetQueueAttributesRequest')
 
 const GetQueueUrlRequestSchema = z
   .object({
-    QueueName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the queue whose URL must be fetched. Maximum 80 characters. Valid values: alphanumeric characters, hyphens (<code>-</code>), and underscores (<code>_</code>).</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    QueueOwnerAWSAccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account ID of the account that created the queue.',
-        }),
-    ).exactOptional(),
+    QueueName: StringSchema.openapi({
+      description:
+        '<p>The name of the queue whose URL must be fetched. Maximum 80 characters. Valid values: alphanumeric characters, hyphens (<code>-</code>), and underscores (<code>_</code>).</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    QueueOwnerAWSAccountId: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the account that created the queue.',
+    }),
   })
   .openapi({ required: ['QueueName'], title: 'GetQueueUrlRequest', description: '<p/>' })
   .openapi('GetQueueUrlRequest')
 
 const ListDeadLetterSourceQueuesRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of a dead-letter queue.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'Pagination token to request the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: BoxedIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to include in the response. Value range is 1 to 1000. You must set <code>MaxResults</code> to receive a value for <code>NextToken</code> in the response.',
-        }),
-    ).exactOptional(),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of a dead-letter queue.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'Pagination token to request the next set of results.',
+    }),
+    MaxResults: BoxedIntegerSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to include in the response. Value range is 1 to 1000. You must set <code>MaxResults</code> to receive a value for <code>NextToken</code> in the response.',
+    }),
   })
   .openapi({
     required: ['QueueUrl'],
@@ -1173,57 +844,41 @@ const ListDeadLetterSourceQueuesRequestSchema = z
 
 const ListMessageMoveTasksRequestSchema = z
   .object({
-    SourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the queue whose message movement tasks are to be listed.',
-        }),
-    ),
-    MaxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. The default is 1, which provides the most recent message movement task. The upper limit is 10.',
-        }),
-    ).exactOptional(),
+    SourceArn: StringSchema.openapi({
+      description: 'The ARN of the queue whose message movement tasks are to be listed.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. The default is 1, which provides the most recent message movement task. The upper limit is 10.',
+    }),
   })
   .openapi({ required: ['SourceArn'], title: 'ListMessageMoveTasksRequest' })
   .openapi('ListMessageMoveTasksRequest')
 
 const ListQueueTagsRequestSchema = z
-  .object({ QueueUrl: StringSchema.and(z.any().openapi({ description: 'The URL of the queue.' })) })
+  .object({ QueueUrl: StringSchema.openapi({ description: 'The URL of the queue.' }) })
   .openapi({ required: ['QueueUrl'], title: 'ListQueueTagsRequest' })
   .openapi('ListQueueTagsRequest')
 
 const ListQueuesRequestSchema = z
   .object({
-    QueueNamePrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string to use for filtering the list results. Only those queues whose name begins with the specified string are returned.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'Pagination token to request the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: BoxedIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to include in the response. Value range is 1 to 1000. You must set <code>MaxResults</code> to receive a value for <code>NextToken</code> in the response.',
-        }),
-    ).exactOptional(),
+    QueueNamePrefix: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A string to use for filtering the list results. Only those queues whose name begins with the specified string are returned.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'Pagination token to request the next set of results.',
+    }),
+    MaxResults: BoxedIntegerSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to include in the response. Value range is 1 to 1000. You must set <code>MaxResults</code> to receive a value for <code>NextToken</code> in the response.',
+    }),
   })
   .openapi({ title: 'ListQueuesRequest', description: '<p/>', required: [] })
   .openapi('ListQueuesRequest')
 
 const MessageAttributeNameListSchema = z
-  .array(MessageAttributeNameSchema.and(z.any().openapi({ xml: { name: 'MessageAttributeName' } })))
+  .array(MessageAttributeNameSchema.openapi({ xml: { name: 'MessageAttributeName' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('MessageAttributeNameList')
 
@@ -1247,98 +902,58 @@ const MessageSystemAttributeNameForSendsSchema = z
 
 const PurgeQueueRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the queue from which the <code>PurgeQueue</code> action deletes messages.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the queue from which the <code>PurgeQueue</code> action deletes messages.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
   })
   .openapi({ required: ['QueueUrl'], title: 'PurgeQueueRequest', description: '<p/>' })
   .openapi('PurgeQueueRequest')
 
 const ReceiveMessageRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue from which messages are received.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    AttributeNames: AttributeNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of attributes that need to be returned along with each message. These attributes include:</p> <ul> <li> <p> <code>All</code> – Returns all values.</p> </li> <li> <p> <code>ApproximateFirstReceiveTimestamp</code> – Returns the time the message was first received from the queue (<a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a> in milliseconds).</p> </li> <li> <p> <code>ApproximateReceiveCount</code> – Returns the number of times a message has been received across all queues but not deleted.</p> </li> <li> <p> <code>AWSTraceHeader</code> – Returns the X-Ray trace header string. </p> </li> <li> <p> <code>SenderId</code> </p> <ul> <li> <p>For a user, returns the user ID, for example <code>ABCDEFGHI1JKLMNOPQ23R</code>.</p> </li> <li> <p>For an IAM role, returns the IAM role ID, for example <code>ABCDE1F2GH3I4JK5LMNOP:i-a123b456</code>.</p> </li> </ul> </li> <li> <p> <code>SentTimestamp</code> – Returns the time the message was sent to the queue (<a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a> in milliseconds).</p> </li> <li> <p> <code>SqsManagedSseEnabled</code> – Enables server-side queue encryption using SQS owned encryption keys. Only one server-side encryption option is supported per queue (for example, <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sse-existing-queue.html">SSE-KMS</a> or <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sqs-sse-queue.html">SSE-SQS</a>).</p> </li> <li> <p> <code>MessageDeduplicationId</code> – Returns the value provided by the producer that calls the <code> <a>SendMessage</a> </code> action.</p> </li> <li> <p> <code>MessageGroupId</code> – Returns the value provided by the producer that calls the <code> <a>SendMessage</a> </code> action. Messages with the same <code>MessageGroupId</code> are returned in sequence.</p> </li> <li> <p> <code>SequenceNumber</code> – Returns the value provided by Amazon SQS.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MessageAttributeNames: MessageAttributeNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the message attribute, where <i>N</i> is the index.</p> <ul> <li> <p>The name can contain alphanumeric characters and the underscore (<code>_</code>), hyphen (<code>-</code>), and period (<code>.</code>).</p> </li> <li> <p>The name is case-sensitive and must be unique among all attribute names for the message.</p> </li> <li> <p>The name must not start with AWS-reserved prefixes such as <code>AWS.</code> or <code>Amazon.</code> (or any casing variants).</p> </li> <li> <p>The name must not start or end with a period (<code>.</code>), and it should not have periods in succession (<code>..</code>).</p> </li> <li> <p>The name can be up to 256 characters long.</p> </li> </ul> <p>When using <code>ReceiveMessage</code>, you can send a list of attribute names to receive, or you can return all of the attributes by specifying <code>All</code> or <code>.*</code> in your request. You can also use all message attributes starting with a prefix, for example <code>bar.*</code>.</p>',
-        }),
-    ).exactOptional(),
-    MaxNumberOfMessages: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of messages to return. Amazon SQS never returns more messages than this value (however, fewer messages might be returned). Valid values: 1 to 10. Default: 1.',
-        }),
-    ).exactOptional(),
-    VisibilityTimeout: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The duration (in seconds) that the received messages are hidden from subsequent retrieve requests after being retrieved by a <code>ReceiveMessage</code> request.',
-        }),
-    ).exactOptional(),
-    WaitTimeSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. If a message is available, the call returns sooner than <code>WaitTimeSeconds</code>. If no messages are available and the wait time expires, the call returns successfully with an empty list of messages.</p> <important> <p>To avoid HTTP errors, ensure that the HTTP response timeout for <code>ReceiveMessage</code> requests is longer than the <code>WaitTimeSeconds</code> parameter. For example, with the Java SDK, you can set HTTP transport settings using the <a href="https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/http/nio/netty/NettyNioAsyncHttpClient.html"> NettyNioAsyncHttpClient</a> for asynchronous clients, or the <a href="https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/http/apache/ApacheHttpClient.html"> ApacheHttpClient</a> for synchronous clients. </p> </important>',
-        }),
-    ).exactOptional(),
-    ReceiveRequestAttemptId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of <code>ReceiveMessage</code> calls. If a networking issue occurs after a <code>ReceiveMessage</code> action, and instead of a response you receive a generic error, it is possible to retry the same action with an identical <code>ReceiveRequestAttemptId</code> to retrieve the same set of messages, even if their visibility timeout has not yet expired.</p> <ul> <li> <p>You can use <code>ReceiveRequestAttemptId</code> only for 5 minutes after a <code>ReceiveMessage</code> action.</p> </li> <li> <p>When you set <code>FifoQueue</code>, a caller of the <code>ReceiveMessage</code> action can provide a <code>ReceiveRequestAttemptId</code> explicitly.</p> </li> <li> <p>If a caller of the <code>ReceiveMessage</code> action doesn\'t provide a <code>ReceiveRequestAttemptId</code>, Amazon SQS generates a <code>ReceiveRequestAttemptId</code>.</p> </li> <li> <p>It is possible to retry the <code>ReceiveMessage</code> action with the same <code>ReceiveRequestAttemptId</code> if none of the messages have been modified (deleted or had their visibility changes).</p> </li> <li> <p>During a visibility timeout, subsequent calls with the same <code>ReceiveRequestAttemptId</code> return the same messages and receipt handles. If a retry occurs within the deduplication interval, it resets the visibility timeout. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html">Visibility Timeout</a> in the <i>Amazon SQS Developer Guide</i>.</p> <important> <p>If a caller of the <code>ReceiveMessage</code> action still processes messages when the visibility timeout expires and messages become visible, another worker consuming from the same queue can receive the same messages and therefore process duplicates. Also, if a consumer whose message processing time is longer than the visibility timeout tries to delete the processed messages, the action fails with an error.</p> <p>To mitigate this effect, ensure that your application observes a safe threshold before the visibility timeout expires and extend the visibility timeout as necessary.</p> </important> </li> <li> <p>While messages with a particular <code>MessageGroupId</code> are invisible, no more messages belonging to the same <code>MessageGroupId</code> are returned until the visibility timeout expires. You can still receive messages with another <code>MessageGroupId</code> as long as it is also visible.</p> </li> <li> <p>If a caller of <code>ReceiveMessage</code> can\'t track the <code>ReceiveRequestAttemptId</code>, no retries work until the original visibility timeout expires. As a result, delays might occur but the messages in the queue remain in a strict order.</p> </li> </ul> <p>The maximum length of <code>ReceiveRequestAttemptId</code> is 128 characters. <code>ReceiveRequestAttemptId</code> can contain alphanumeric characters (<code>a-z</code>, <code>A-Z</code>, <code>0-9</code>) and punctuation (<code>!"#$%&amp;\'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</code>).</p> <p>For best practices of using <code>ReceiveRequestAttemptId</code>, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-receiverequestattemptid-request-parameter.html">Using the ReceiveRequestAttemptId Request Parameter</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue from which messages are received.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    AttributeNames: AttributeNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of attributes that need to be returned along with each message. These attributes include:</p> <ul> <li> <p> <code>All</code> – Returns all values.</p> </li> <li> <p> <code>ApproximateFirstReceiveTimestamp</code> – Returns the time the message was first received from the queue (<a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a> in milliseconds).</p> </li> <li> <p> <code>ApproximateReceiveCount</code> – Returns the number of times a message has been received across all queues but not deleted.</p> </li> <li> <p> <code>AWSTraceHeader</code> – Returns the X-Ray trace header string. </p> </li> <li> <p> <code>SenderId</code> </p> <ul> <li> <p>For a user, returns the user ID, for example <code>ABCDEFGHI1JKLMNOPQ23R</code>.</p> </li> <li> <p>For an IAM role, returns the IAM role ID, for example <code>ABCDE1F2GH3I4JK5LMNOP:i-a123b456</code>.</p> </li> </ul> </li> <li> <p> <code>SentTimestamp</code> – Returns the time the message was sent to the queue (<a href="http://en.wikipedia.org/wiki/Unix_time">epoch time</a> in milliseconds).</p> </li> <li> <p> <code>SqsManagedSseEnabled</code> – Enables server-side queue encryption using SQS owned encryption keys. Only one server-side encryption option is supported per queue (for example, <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sse-existing-queue.html">SSE-KMS</a> or <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sqs-sse-queue.html">SSE-SQS</a>).</p> </li> <li> <p> <code>MessageDeduplicationId</code> – Returns the value provided by the producer that calls the <code> <a>SendMessage</a> </code> action.</p> </li> <li> <p> <code>MessageGroupId</code> – Returns the value provided by the producer that calls the <code> <a>SendMessage</a> </code> action. Messages with the same <code>MessageGroupId</code> are returned in sequence.</p> </li> <li> <p> <code>SequenceNumber</code> – Returns the value provided by Amazon SQS.</p> </li> </ul>',
+    }),
+    MessageAttributeNames: MessageAttributeNameListSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the message attribute, where <i>N</i> is the index.</p> <ul> <li> <p>The name can contain alphanumeric characters and the underscore (<code>_</code>), hyphen (<code>-</code>), and period (<code>.</code>).</p> </li> <li> <p>The name is case-sensitive and must be unique among all attribute names for the message.</p> </li> <li> <p>The name must not start with AWS-reserved prefixes such as <code>AWS.</code> or <code>Amazon.</code> (or any casing variants).</p> </li> <li> <p>The name must not start or end with a period (<code>.</code>), and it should not have periods in succession (<code>..</code>).</p> </li> <li> <p>The name can be up to 256 characters long.</p> </li> </ul> <p>When using <code>ReceiveMessage</code>, you can send a list of attribute names to receive, or you can return all of the attributes by specifying <code>All</code> or <code>.*</code> in your request. You can also use all message attributes starting with a prefix, for example <code>bar.*</code>.</p>',
+    }),
+    MaxNumberOfMessages: IntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of messages to return. Amazon SQS never returns more messages than this value (however, fewer messages might be returned). Valid values: 1 to 10. Default: 1.',
+    }),
+    VisibilityTimeout: IntegerSchema.exactOptional().openapi({
+      description:
+        'The duration (in seconds) that the received messages are hidden from subsequent retrieve requests after being retrieved by a <code>ReceiveMessage</code> request.',
+    }),
+    WaitTimeSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. If a message is available, the call returns sooner than <code>WaitTimeSeconds</code>. If no messages are available and the wait time expires, the call returns successfully with an empty list of messages.</p> <important> <p>To avoid HTTP errors, ensure that the HTTP response timeout for <code>ReceiveMessage</code> requests is longer than the <code>WaitTimeSeconds</code> parameter. For example, with the Java SDK, you can set HTTP transport settings using the <a href="https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/http/nio/netty/NettyNioAsyncHttpClient.html"> NettyNioAsyncHttpClient</a> for asynchronous clients, or the <a href="https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/http/apache/ApacheHttpClient.html"> ApacheHttpClient</a> for synchronous clients. </p> </important>',
+    }),
+    ReceiveRequestAttemptId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of <code>ReceiveMessage</code> calls. If a networking issue occurs after a <code>ReceiveMessage</code> action, and instead of a response you receive a generic error, it is possible to retry the same action with an identical <code>ReceiveRequestAttemptId</code> to retrieve the same set of messages, even if their visibility timeout has not yet expired.</p> <ul> <li> <p>You can use <code>ReceiveRequestAttemptId</code> only for 5 minutes after a <code>ReceiveMessage</code> action.</p> </li> <li> <p>When you set <code>FifoQueue</code>, a caller of the <code>ReceiveMessage</code> action can provide a <code>ReceiveRequestAttemptId</code> explicitly.</p> </li> <li> <p>If a caller of the <code>ReceiveMessage</code> action doesn\'t provide a <code>ReceiveRequestAttemptId</code>, Amazon SQS generates a <code>ReceiveRequestAttemptId</code>.</p> </li> <li> <p>It is possible to retry the <code>ReceiveMessage</code> action with the same <code>ReceiveRequestAttemptId</code> if none of the messages have been modified (deleted or had their visibility changes).</p> </li> <li> <p>During a visibility timeout, subsequent calls with the same <code>ReceiveRequestAttemptId</code> return the same messages and receipt handles. If a retry occurs within the deduplication interval, it resets the visibility timeout. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html">Visibility Timeout</a> in the <i>Amazon SQS Developer Guide</i>.</p> <important> <p>If a caller of the <code>ReceiveMessage</code> action still processes messages when the visibility timeout expires and messages become visible, another worker consuming from the same queue can receive the same messages and therefore process duplicates. Also, if a consumer whose message processing time is longer than the visibility timeout tries to delete the processed messages, the action fails with an error.</p> <p>To mitigate this effect, ensure that your application observes a safe threshold before the visibility timeout expires and extend the visibility timeout as necessary.</p> </important> </li> <li> <p>While messages with a particular <code>MessageGroupId</code> are invisible, no more messages belonging to the same <code>MessageGroupId</code> are returned until the visibility timeout expires. You can still receive messages with another <code>MessageGroupId</code> as long as it is also visible.</p> </li> <li> <p>If a caller of <code>ReceiveMessage</code> can\'t track the <code>ReceiveRequestAttemptId</code>, no retries work until the original visibility timeout expires. As a result, delays might occur but the messages in the queue remain in a strict order.</p> </li> </ul> <p>The maximum length of <code>ReceiveRequestAttemptId</code> is 128 characters. <code>ReceiveRequestAttemptId</code> can contain alphanumeric characters (<code>a-z</code>, <code>A-Z</code>, <code>0-9</code>) and punctuation (<code>!"#$%&amp;\'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</code>).</p> <p>For best practices of using <code>ReceiveRequestAttemptId</code>, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-receiverequestattemptid-request-parameter.html">Using the ReceiveRequestAttemptId Request Parameter</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['QueueUrl'], title: 'ReceiveMessageRequest', description: '<p/>' })
   .openapi('ReceiveMessageRequest')
 
 const RemovePermissionRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue from which permissions are removed.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    Label: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identification of the permission to remove. This is the label added using the <code> <a>AddPermission</a> </code> action.',
-        }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue from which permissions are removed.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    Label: StringSchema.openapi({
+      description:
+        'The identification of the permission to remove. This is the label added using the <code> <a>AddPermission</a> </code> action.',
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'Label'],
@@ -1349,30 +964,20 @@ const RemovePermissionRequestSchema = z
 
 const SendMessageBatchRequestEntryListSchema = z
   .array(
-    SendMessageBatchRequestEntrySchema.and(
-      z.any().openapi({ xml: { name: 'SendMessageBatchRequestEntry' } }),
-    ),
+    SendMessageBatchRequestEntrySchema.openapi({ xml: { name: 'SendMessageBatchRequestEntry' } }),
   )
   .openapi({ xml: { wrapped: false } })
   .openapi('SendMessageBatchRequestEntryList')
 
 const SendMessageBatchRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue to which batched messages are sent.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    Entries: SendMessageBatchRequestEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code> <a>SendMessageBatchRequestEntry</a> </code> items.',
-        }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue to which batched messages are sent.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    Entries: SendMessageBatchRequestEntryListSchema.openapi({
+      description: 'A list of <code> <a>SendMessageBatchRequestEntry</a> </code> items.',
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'Entries'],
@@ -1383,64 +988,36 @@ const SendMessageBatchRequestSchema = z
 
 const SendMessageRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue to which a message is sent.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    MessageBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The message to send. The minimum size is one character. The maximum size is 256 KiB.</p> <important> <p>A message can include only XML, JSON, and unformatted text. The following Unicode characters are allowed:</p> <p> <code>#x9</code> | <code>#xA</code> | <code>#xD</code> | <code>#x20</code> to <code>#xD7FF</code> | <code>#xE000</code> to <code>#xFFFD</code> | <code>#x10000</code> to <code>#x10FFFF</code> </p> <p>Any characters not included in this list will be rejected. For more information, see the <a href="http://www.w3.org/TR/REC-xml/#charsets">W3C specification for characters</a>.</p> </important>',
-        }),
-    ),
-    DelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The length of time, in seconds, for which to delay a specific message. Valid values: 0 to 900. Maximum: 15 minutes. Messages with a positive <code>DelaySeconds</code> value become available for processing after the delay period is finished. If you don't specify a value, the default value for the queue applies. </p> <note> <p>When you set <code>FifoQueue</code>, you can't set <code>DelaySeconds</code> per message. You can set this parameter only on a queue level.</p> </note>",
-        }),
-    ).exactOptional(),
-    MessageAttributes: MessageBodyAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'MessageAttribute' },
-          description:
-            'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS message attributes</a> in the <i>Amazon SQS Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    MessageSystemAttributes: MessageBodySystemAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'MessageSystemAttribute' },
-          description:
-            "<p>The message system attribute to send. Each message system attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>.</p> <important> <ul> <li> <p>Currently, the only supported message system attribute is <code>AWSTraceHeader</code>. Its type must be <code>String</code> and its value must be a correctly formatted X-Ray trace header string.</p> </li> <li> <p>The size of a message system attribute doesn't count towards the total size of a message.</p> </li> </ul> </important>",
-        }),
-    ).exactOptional(),
-    MessageDeduplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of sent messages. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, any messages sent with the same <code>MessageDeduplicationId</code> are accepted successfully but aren't delivered during the 5-minute deduplication interval. For more information, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html\"> Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>.</p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>,</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren't able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don't provide a <code>MessageDeduplicationId</code> and the queue doesn't have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> <note> <p>The <code>MessageDeduplicationId</code> is available to the consumer of the message (this can be useful for troubleshooting delivery issues).</p> <p>If a message is sent successfully but the acknowledgement is lost and the message is resent with the same <code>MessageDeduplicationId</code> after the deduplication interval, Amazon SQS can't detect duplicate messages.</p> <p>Amazon SQS continues to keep track of the message deduplication ID even after the message is received and deleted.</p> </note> <p>The maximum length of <code>MessageDeduplicationId</code> is 128 characters. <code>MessageDeduplicationId</code> can contain alphanumeric characters (<code>a-z</code>, <code>A-Z</code>, <code>0-9</code>) and punctuation (<code>!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</code>).</p> <p>For best practices of using <code>MessageDeduplicationId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html\">Using the MessageDeduplicationId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p>",
-        }),
-    ).exactOptional(),
-    MessageGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). To interleave multiple ordered streams within a single queue, use <code>MessageGroupId</code> values (for example, session data for multiple users). In this scenario, multiple consumers can process the queue, but the session data of each user is processed in a FIFO fashion.</p> <ul> <li> <p>You must associate a non-empty <code>MessageGroupId</code> with a message. If you don't provide a <code>MessageGroupId</code>, the action fails.</p> </li> <li> <p> <code>ReceiveMessage</code> might return messages with multiple <code>MessageGroupId</code> values. For each <code>MessageGroupId</code>, the messages are sorted by time sent. The caller can't specify a <code>MessageGroupId</code>.</p> </li> </ul> <p>The length of <code>MessageGroupId</code> is 128 characters. Valid values: alphanumeric characters and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>For best practices of using <code>MessageGroupId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html\">Using the MessageGroupId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p> <important> <p> <code>MessageGroupId</code> is required for FIFO queues. You can't use it for Standard queues.</p> </important>",
-        }),
-    ).exactOptional(),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue to which a message is sent.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    MessageBody: StringSchema.openapi({
+      description:
+        '<p>The message to send. The minimum size is one character. The maximum size is 256 KiB.</p> <important> <p>A message can include only XML, JSON, and unformatted text. The following Unicode characters are allowed:</p> <p> <code>#x9</code> | <code>#xA</code> | <code>#xD</code> | <code>#x20</code> to <code>#xD7FF</code> | <code>#xE000</code> to <code>#xFFFD</code> | <code>#x10000</code> to <code>#x10FFFF</code> </p> <p>Any characters not included in this list will be rejected. For more information, see the <a href="http://www.w3.org/TR/REC-xml/#charsets">W3C specification for characters</a>.</p> </important>',
+    }),
+    DelaySeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        "<p> The length of time, in seconds, for which to delay a specific message. Valid values: 0 to 900. Maximum: 15 minutes. Messages with a positive <code>DelaySeconds</code> value become available for processing after the delay period is finished. If you don't specify a value, the default value for the queue applies. </p> <note> <p>When you set <code>FifoQueue</code>, you can't set <code>DelaySeconds</code> per message. You can set this parameter only on a queue level.</p> </note>",
+    }),
+    MessageAttributes: MessageBodyAttributeMapSchema.exactOptional().openapi({
+      xml: { name: 'MessageAttribute' },
+      description:
+        'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS message attributes</a> in the <i>Amazon SQS Developer Guide</i>.',
+    }),
+    MessageSystemAttributes: MessageBodySystemAttributeMapSchema.exactOptional().openapi({
+      xml: { name: 'MessageSystemAttribute' },
+      description:
+        "<p>The message system attribute to send. Each message system attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>.</p> <important> <ul> <li> <p>Currently, the only supported message system attribute is <code>AWSTraceHeader</code>. Its type must be <code>String</code> and its value must be a correctly formatted X-Ray trace header string.</p> </li> <li> <p>The size of a message system attribute doesn't count towards the total size of a message.</p> </li> </ul> </important>",
+    }),
+    MessageDeduplicationId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of sent messages. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, any messages sent with the same <code>MessageDeduplicationId</code> are accepted successfully but aren't delivered during the 5-minute deduplication interval. For more information, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html\"> Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>.</p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>,</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren't able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don't provide a <code>MessageDeduplicationId</code> and the queue doesn't have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> <note> <p>The <code>MessageDeduplicationId</code> is available to the consumer of the message (this can be useful for troubleshooting delivery issues).</p> <p>If a message is sent successfully but the acknowledgement is lost and the message is resent with the same <code>MessageDeduplicationId</code> after the deduplication interval, Amazon SQS can't detect duplicate messages.</p> <p>Amazon SQS continues to keep track of the message deduplication ID even after the message is received and deleted.</p> </note> <p>The maximum length of <code>MessageDeduplicationId</code> is 128 characters. <code>MessageDeduplicationId</code> can contain alphanumeric characters (<code>a-z</code>, <code>A-Z</code>, <code>0-9</code>) and punctuation (<code>!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</code>).</p> <p>For best practices of using <code>MessageDeduplicationId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html\">Using the MessageDeduplicationId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p>",
+    }),
+    MessageGroupId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). To interleave multiple ordered streams within a single queue, use <code>MessageGroupId</code> values (for example, session data for multiple users). In this scenario, multiple consumers can process the queue, but the session data of each user is processed in a FIFO fashion.</p> <ul> <li> <p>You must associate a non-empty <code>MessageGroupId</code> with a message. If you don't provide a <code>MessageGroupId</code>, the action fails.</p> </li> <li> <p> <code>ReceiveMessage</code> might return messages with multiple <code>MessageGroupId</code> values. For each <code>MessageGroupId</code>, the messages are sorted by time sent. The caller can't specify a <code>MessageGroupId</code>.</p> </li> </ul> <p>The length of <code>MessageGroupId</code> is 128 characters. Valid values: alphanumeric characters and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>For best practices of using <code>MessageGroupId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html\">Using the MessageGroupId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p> <important> <p> <code>MessageGroupId</code> is required for FIFO queues. You can't use it for Standard queues.</p> </important>",
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'MessageBody'],
@@ -1451,23 +1028,15 @@ const SendMessageRequestSchema = z
 
 const SetQueueAttributesRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL of the Amazon SQS queue whose attributes are set.</p> <p>Queue URLs and names are case-sensitive.</p>',
-        }),
-    ),
-    Attributes: QueueAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Attribute' },
-          description:
-            '<p>A map of attributes to set.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>SetQueueAttributes</code> action uses:</p> <ul> <li> <p> <code>DelaySeconds</code> – The length of time, in seconds, for which the delivery of all messages in the queue is delayed. Valid values: An integer from 0 to 900 (15 minutes). Default: 0. </p> </li> <li> <p> <code>MaximumMessageSize</code> – The limit of how many bytes a message can contain before Amazon SQS rejects it. Valid values: An integer from 1,024 bytes (1 KiB) up to 262,144 bytes (256 KiB). Default: 262,144 (256 KiB). </p> </li> <li> <p> <code>MessageRetentionPeriod</code> – The length of time, in seconds, for which Amazon SQS retains a message. Valid values: An integer representing seconds, from 60 (1 minute) to 1,209,600 (14 days). Default: 345,600 (4 days). When you change a queue\'s attributes, the change can take up to 60 seconds for most of the attributes to propagate throughout the Amazon SQS system. Changes made to the <code>MessageRetentionPeriod</code> attribute can take up to 15 minutes and will impact existing messages in the queue potentially causing them to be expired and deleted if the <code>MessageRetentionPeriod</code> is reduced below the age of existing messages.</p> </li> <li> <p> <code>Policy</code> – The queue\'s policy. A valid Amazon Web Services policy. For more information about policy structure, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/PoliciesOverview.html">Overview of Amazon Web Services IAM Policies</a> in the <i>Identity and Access Management User Guide</i>. </p> </li> <li> <p> <code>ReceiveMessageWaitTimeSeconds</code> – The length of time, in seconds, for which a <code> <a>ReceiveMessage</a> </code> action waits for a message to arrive. Valid values: An integer from 0 to 20 (seconds). Default: 0. </p> </li> <li> <p> <code>VisibilityTimeout</code> – The visibility timeout for the queue, in seconds. Valid values: An integer from 0 to 43,200 (12 hours). Default: 30. For more information about the visibility timeout, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html">Visibility Timeout</a> in the <i>Amazon SQS Developer Guide</i>.</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html">dead-letter queues:</a> </p> <ul> <li> <p> <code>RedrivePolicy</code> – The string that includes the parameters for the dead-letter queue functionality of the source queue as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>deadLetterTargetArn</code> – The Amazon Resource Name (ARN) of the dead-letter queue to which Amazon SQS moves messages after the value of <code>maxReceiveCount</code> is exceeded.</p> </li> <li> <p> <code>maxReceiveCount</code> – The number of times a message is delivered to the source queue before being moved to the dead-letter queue. Default: 10. When the <code>ReceiveCount</code> for a message exceeds the <code>maxReceiveCount</code> for a queue, Amazon SQS moves the message to the dead-letter-queue.</p> </li> </ul> </li> <li> <p> <code>RedriveAllowPolicy</code> – The string that includes the parameters for the permissions for the dead-letter queue redrive permission and which source queues can specify dead-letter queues as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>redrivePermission</code> – The permission type that defines which source queues can specify the current queue as the dead-letter queue. Valid values are:</p> <ul> <li> <p> <code>allowAll</code> – (Default) Any source queues in this Amazon Web Services account in the same Region can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>denyAll</code> – No source queues can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>byQueue</code> – Only queues specified by the <code>sourceQueueArns</code> parameter can specify this queue as the dead-letter queue.</p> </li> </ul> </li> <li> <p> <code>sourceQueueArns</code> – The Amazon Resource Names (ARN)s of the source queues that can specify this queue as the dead-letter queue and redrive messages. You can specify this parameter only when the <code>redrivePermission</code> parameter is set to <code>byQueue</code>. You can specify up to 10 source queue ARNs. To allow more than 10 source queues to specify dead-letter queues, set the <code>redrivePermission</code> parameter to <code>allowAll</code>.</p> </li> </ul> </li> </ul> <note> <p>The dead-letter queue of a FIFO queue must also be a FIFO queue. Similarly, the dead-letter queue of a standard queue must also be a standard queue.</p> </note> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-sse-key-terms">Key Terms</a>. While the alias of the AWS-managed CMK for Amazon SQS is always <code>alias/aws/sqs</code>, the alias of a custom CMK can, for example, be <code>alias/<i>MyAlias</i> </code>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>. </p> </li> <li> <p> <code>KmsDataKeyReusePeriodSeconds</code> – The length of time, in seconds, for which Amazon SQS can reuse a <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys">data key</a> to encrypt or decrypt messages before calling KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). Default: 300 (5 minutes). A shorter time period provides better security but results in more calls to KMS which might incur charges after Free Tier. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-how-does-the-data-key-reuse-period-work">How Does the Data Key Reuse Period Work?</a>. </p> </li> <li> <p> <code>SqsManagedSseEnabled</code> – Enables server-side queue encryption using SQS owned encryption keys. Only one server-side encryption option is supported per queue (for example, <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sse-existing-queue.html">SSE-KMS</a> or <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sqs-sse-queue.html">SSE-SQS</a>).</p> </li> </ul> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html">FIFO (first-in-first-out) queues</a>:</p> <ul> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html">Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>. Note the following: </p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>.</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren\'t able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don\'t provide a <code>MessageDeduplicationId</code> and the queue doesn\'t have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/high-throughput-fifo.html">high throughput for FIFO queues</a>:</p> <ul> <li> <p> <code>DeduplicationScope</code> – Specifies whether message deduplication occurs at the message group or queue level. Valid values are <code>messageGroup</code> and <code>queue</code>.</p> </li> <li> <p> <code>FifoThroughputLimit</code> – Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are <code>perQueue</code> and <code>perMessageGroupId</code>. The <code>perMessageGroupId</code> value is allowed only when the value for <code>DeduplicationScope</code> is <code>messageGroup</code>.</p> </li> </ul> <p>To enable high throughput for FIFO queues, do the following:</p> <ul> <li> <p>Set <code>DeduplicationScope</code> to <code>messageGroup</code>.</p> </li> <li> <p>Set <code>FifoThroughputLimit</code> to <code>perMessageGroupId</code>.</p> </li> </ul> <p>If you set these attributes to anything other than the values shown for enabling high throughput, normal throughput is in effect and deduplication occurs as specified.</p> <p>For information on throughput quotas, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html">Quotas related to messages</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
-        }),
-    ),
+    QueueUrl: StringSchema.openapi({
+      description:
+        '<p>The URL of the Amazon SQS queue whose attributes are set.</p> <p>Queue URLs and names are case-sensitive.</p>',
+    }),
+    Attributes: QueueAttributeMapSchema.openapi({
+      xml: { name: 'Attribute' },
+      description:
+        '<p>A map of attributes to set.</p> <p>The following lists the names, descriptions, and values of the special request parameters that the <code>SetQueueAttributes</code> action uses:</p> <ul> <li> <p> <code>DelaySeconds</code> – The length of time, in seconds, for which the delivery of all messages in the queue is delayed. Valid values: An integer from 0 to 900 (15 minutes). Default: 0. </p> </li> <li> <p> <code>MaximumMessageSize</code> – The limit of how many bytes a message can contain before Amazon SQS rejects it. Valid values: An integer from 1,024 bytes (1 KiB) up to 262,144 bytes (256 KiB). Default: 262,144 (256 KiB). </p> </li> <li> <p> <code>MessageRetentionPeriod</code> – The length of time, in seconds, for which Amazon SQS retains a message. Valid values: An integer representing seconds, from 60 (1 minute) to 1,209,600 (14 days). Default: 345,600 (4 days). When you change a queue\'s attributes, the change can take up to 60 seconds for most of the attributes to propagate throughout the Amazon SQS system. Changes made to the <code>MessageRetentionPeriod</code> attribute can take up to 15 minutes and will impact existing messages in the queue potentially causing them to be expired and deleted if the <code>MessageRetentionPeriod</code> is reduced below the age of existing messages.</p> </li> <li> <p> <code>Policy</code> – The queue\'s policy. A valid Amazon Web Services policy. For more information about policy structure, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/PoliciesOverview.html">Overview of Amazon Web Services IAM Policies</a> in the <i>Identity and Access Management User Guide</i>. </p> </li> <li> <p> <code>ReceiveMessageWaitTimeSeconds</code> – The length of time, in seconds, for which a <code> <a>ReceiveMessage</a> </code> action waits for a message to arrive. Valid values: An integer from 0 to 20 (seconds). Default: 0. </p> </li> <li> <p> <code>VisibilityTimeout</code> – The visibility timeout for the queue, in seconds. Valid values: An integer from 0 to 43,200 (12 hours). Default: 30. For more information about the visibility timeout, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html">Visibility Timeout</a> in the <i>Amazon SQS Developer Guide</i>.</p> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html">dead-letter queues:</a> </p> <ul> <li> <p> <code>RedrivePolicy</code> – The string that includes the parameters for the dead-letter queue functionality of the source queue as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>deadLetterTargetArn</code> – The Amazon Resource Name (ARN) of the dead-letter queue to which Amazon SQS moves messages after the value of <code>maxReceiveCount</code> is exceeded.</p> </li> <li> <p> <code>maxReceiveCount</code> – The number of times a message is delivered to the source queue before being moved to the dead-letter queue. Default: 10. When the <code>ReceiveCount</code> for a message exceeds the <code>maxReceiveCount</code> for a queue, Amazon SQS moves the message to the dead-letter-queue.</p> </li> </ul> </li> <li> <p> <code>RedriveAllowPolicy</code> – The string that includes the parameters for the permissions for the dead-letter queue redrive permission and which source queues can specify dead-letter queues as a JSON object. The parameters are as follows:</p> <ul> <li> <p> <code>redrivePermission</code> – The permission type that defines which source queues can specify the current queue as the dead-letter queue. Valid values are:</p> <ul> <li> <p> <code>allowAll</code> – (Default) Any source queues in this Amazon Web Services account in the same Region can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>denyAll</code> – No source queues can specify this queue as the dead-letter queue.</p> </li> <li> <p> <code>byQueue</code> – Only queues specified by the <code>sourceQueueArns</code> parameter can specify this queue as the dead-letter queue.</p> </li> </ul> </li> <li> <p> <code>sourceQueueArns</code> – The Amazon Resource Names (ARN)s of the source queues that can specify this queue as the dead-letter queue and redrive messages. You can specify this parameter only when the <code>redrivePermission</code> parameter is set to <code>byQueue</code>. You can specify up to 10 source queue ARNs. To allow more than 10 source queues to specify dead-letter queues, set the <code>redrivePermission</code> parameter to <code>allowAll</code>.</p> </li> </ul> </li> </ul> <note> <p>The dead-letter queue of a FIFO queue must also be a FIFO queue. Similarly, the dead-letter queue of a standard queue must also be a standard queue.</p> </note> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html">server-side-encryption</a>:</p> <ul> <li> <p> <code>KmsMasterKeyId</code> – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-sse-key-terms">Key Terms</a>. While the alias of the AWS-managed CMK for Amazon SQS is always <code>alias/aws/sqs</code>, the alias of a custom CMK can, for example, be <code>alias/<i>MyAlias</i> </code>. For more examples, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters">KeyId</a> in the <i>Key Management Service API Reference</i>. </p> </li> <li> <p> <code>KmsDataKeyReusePeriodSeconds</code> – The length of time, in seconds, for which Amazon SQS can reuse a <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys">data key</a> to encrypt or decrypt messages before calling KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). Default: 300 (5 minutes). A shorter time period provides better security but results in more calls to KMS which might incur charges after Free Tier. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html#sqs-how-does-the-data-key-reuse-period-work">How Does the Data Key Reuse Period Work?</a>. </p> </li> <li> <p> <code>SqsManagedSseEnabled</code> – Enables server-side queue encryption using SQS owned encryption keys. Only one server-side encryption option is supported per queue (for example, <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sse-existing-queue.html">SSE-KMS</a> or <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-sqs-sse-queue.html">SSE-SQS</a>).</p> </li> </ul> <p>The following attribute applies only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html">FIFO (first-in-first-out) queues</a>:</p> <ul> <li> <p> <code>ContentBasedDeduplication</code> – Enables content-based deduplication. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html">Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>. Note the following: </p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>.</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren\'t able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don\'t provide a <code>MessageDeduplicationId</code> and the queue doesn\'t have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> </li> </ul> <p>The following attributes apply only to <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/high-throughput-fifo.html">high throughput for FIFO queues</a>:</p> <ul> <li> <p> <code>DeduplicationScope</code> – Specifies whether message deduplication occurs at the message group or queue level. Valid values are <code>messageGroup</code> and <code>queue</code>.</p> </li> <li> <p> <code>FifoThroughputLimit</code> – Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are <code>perQueue</code> and <code>perMessageGroupId</code>. The <code>perMessageGroupId</code> value is allowed only when the value for <code>DeduplicationScope</code> is <code>messageGroup</code>.</p> </li> </ul> <p>To enable high throughput for FIFO queues, do the following:</p> <ul> <li> <p>Set <code>DeduplicationScope</code> to <code>messageGroup</code>.</p> </li> <li> <p>Set <code>FifoThroughputLimit</code> to <code>perMessageGroupId</code>.</p> </li> </ul> <p>If you set these attributes to anything other than the values shown for enabling high throughput, normal throughput is in effect and deduplication occurs as specified.</p> <p>For information on throughput quotas, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html">Quotas related to messages</a> in the <i>Amazon SQS Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['QueueUrl', 'Attributes'],
@@ -1478,55 +1047,43 @@ const SetQueueAttributesRequestSchema = z
 
 const StartMessageMoveTaskRequestSchema = z
   .object({
-    SourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the queue that contains the messages to be moved to another queue. Currently, only ARNs of dead-letter queues (DLQs) whose sources are other Amazon SQS queues are accepted. DLQs whose sources are non-SQS queues, such as Lambda or Amazon SNS topics, are not currently supported.',
-        }),
-    ),
-    DestinationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the queue that receives the moved messages. You can use this field to specify the destination queue where you would like to redrive messages. If this field is left blank, the messages will be redriven back to their respective original source queues.',
-        }),
-    ).exactOptional(),
-    MaxNumberOfMessagesPerSecond: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of messages to be moved per second (the message movement rate). You can use this field to define a fixed message movement rate. The maximum value for messages per second is 500. If this field is left blank, the system will optimize the rate based on the queue message backlog size, which may vary throughout the duration of the message movement task.',
-        }),
-    ).exactOptional(),
+    SourceArn: StringSchema.openapi({
+      description:
+        'The ARN of the queue that contains the messages to be moved to another queue. Currently, only ARNs of dead-letter queues (DLQs) whose sources are other Amazon SQS queues are accepted. DLQs whose sources are non-SQS queues, such as Lambda or Amazon SNS topics, are not currently supported.',
+    }),
+    DestinationArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the queue that receives the moved messages. You can use this field to specify the destination queue where you would like to redrive messages. If this field is left blank, the messages will be redriven back to their respective original source queues.',
+    }),
+    MaxNumberOfMessagesPerSecond: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of messages to be moved per second (the message movement rate). You can use this field to define a fixed message movement rate. The maximum value for messages per second is 500. If this field is left blank, the system will optimize the rate based on the queue message backlog size, which may vary throughout the duration of the message movement task.',
+    }),
   })
   .openapi({ required: ['SourceArn'], title: 'StartMessageMoveTaskRequest' })
   .openapi('StartMessageMoveTaskRequest')
 
 const TagKeyListSchema = z
-  .array(TagKeySchema.and(z.any().openapi({ xml: { name: 'TagKey' } })))
+  .array(TagKeySchema.openapi({ xml: { name: 'TagKey' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('TagKeyList')
 
 const TagQueueRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(z.any().openapi({ description: 'The URL of the queue.' })),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The list of tags to be added to the specified queue.' }),
-    ),
+    QueueUrl: StringSchema.openapi({ description: 'The URL of the queue.' }),
+    Tags: TagMapSchema.openapi({
+      description: 'The list of tags to be added to the specified queue.',
+    }),
   })
   .openapi({ required: ['QueueUrl', 'Tags'], title: 'TagQueueRequest' })
   .openapi('TagQueueRequest')
 
 const UntagQueueRequestSchema = z
   .object({
-    QueueUrl: StringSchema.and(z.any().openapi({ description: 'The URL of the queue.' })),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The list of tags to be removed from the specified queue.' }),
-    ),
+    QueueUrl: StringSchema.openapi({ description: 'The URL of the queue.' }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The list of tags to be removed from the specified queue.',
+    }),
   })
   .openapi({ required: ['QueueUrl', 'TagKeys'], title: 'UntagQueueRequest' })
   .openapi('UntagQueueRequest')
@@ -1635,14 +1192,7 @@ export const getAccountNumberQueueNameActionAddPermissionRoute = createRoute({
       AWSAccountIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'AWSAccountId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'AWSAccountId' } })),
         )
         .openapi({
           param: {
@@ -1664,14 +1214,7 @@ export const getAccountNumberQueueNameActionAddPermissionRoute = createRoute({
       Actions: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ActionName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'ActionName' } })),
         )
         .openapi({
           param: {
@@ -2110,17 +1653,11 @@ export const getAccountNumberQueueNameActionChangeMessageVisibilityBatchRoute = 
           z.array(
             z
               .object({
-                Id: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>An identifier for this particular receipt handle used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
-                    }),
-                ),
-                ReceiptHandle: StringSchema.and(
-                  z.any().openapi({ description: 'A receipt handle.' }),
-                ),
+                Id: StringSchema.openapi({
+                  description:
+                    '<p>An identifier for this particular receipt handle used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
+                }),
+                ReceiptHandle: StringSchema.openapi({ description: 'A receipt handle.' }),
                 VisibilityTimeout: z
                   .preprocess(
                     (val) =>
@@ -2131,27 +1668,17 @@ export const getAccountNumberQueueNameActionChangeMessageVisibilityBatchRoute = 
                         : val,
                     IntegerSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The new value (in seconds) for the message's visibility timeout.",
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description: "The new value (in seconds) for the message's visibility timeout.",
+                  }),
               })
               .openapi({
                 required: ['Id', 'ReceiptHandle'],
                 description:
                   'Encloses a receipt handle and an entry ID for each message in <code> <a>ChangeMessageVisibilityBatch</a>.</code> ',
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'ChangeMessageVisibilityBatchRequestEntry' } }),
-              ),
+              .openapi({ xml: { name: 'ChangeMessageVisibilityBatchRequestEntry' } }),
           ),
         )
         .openapi({
@@ -2695,12 +2222,9 @@ export const getAccountNumberQueueNameActionDeleteMessageBatchRoute = createRout
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z.array(
-            DeleteMessageBatchRequestEntrySchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'DeleteMessageBatchRequestEntry' } }),
-            ),
+            DeleteMessageBatchRequestEntrySchema.openapi({
+              xml: { name: 'DeleteMessageBatchRequestEntry' },
+            }),
           ),
         )
         .openapi({
@@ -3001,14 +2525,7 @@ export const getAccountNumberQueueNameActionGetQueueAttributesRoute = createRout
       AttributeNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            QueueAttributeNameSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'AttributeName' } }),
-            ),
-          ),
+          z.array(QueueAttributeNameSchema.openapi({ xml: { name: 'AttributeName' } })),
         )
         .exactOptional()
         .openapi({
@@ -4043,14 +3560,7 @@ export const getAccountNumberQueueNameActionReceiveMessageRoute = createRoute({
       AttributeNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            QueueAttributeNameSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'AttributeName' } }),
-            ),
-          ),
+          z.array(QueueAttributeNameSchema.openapi({ xml: { name: 'AttributeName' } })),
         )
         .exactOptional()
         .openapi({
@@ -4076,14 +3586,7 @@ export const getAccountNumberQueueNameActionReceiveMessageRoute = createRoute({
       MessageAttributeNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            MessageAttributeNameSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'MessageAttributeName' } }),
-            ),
-          ),
+          z.array(MessageAttributeNameSchema.openapi({ xml: { name: 'MessageAttributeName' } })),
         )
         .exactOptional()
         .openapi({
@@ -4713,17 +4216,11 @@ export const getAccountNumberQueueNameActionSendMessageBatchRoute = createRoute(
           z.array(
             z
               .object({
-                Id: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>An identifier for a message in this batch used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
-                    }),
-                ),
-                MessageBody: StringSchema.and(
-                  z.any().openapi({ description: 'The body of the message.' }),
-                ),
+                Id: StringSchema.openapi({
+                  description:
+                    '<p>An identifier for a message in this batch used to communicate the result.</p> <note> <p>The <code>Id</code>s of a batch request need to be unique within a request.</p> <p>This identifier can have up to 80 characters. The following characters are accepted: alphanumeric characters, hyphens(-), and underscores (_).</p> </note>',
+                }),
+                MessageBody: StringSchema.openapi({ description: 'The body of the message.' }),
                 DelaySeconds: z
                   .preprocess(
                     (val) =>
@@ -4734,65 +4231,37 @@ export const getAccountNumberQueueNameActionSendMessageBatchRoute = createRoute(
                         : val,
                     IntegerSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>The length of time, in seconds, for which a specific message is delayed. Valid values: 0 to 900. Maximum: 15 minutes. Messages with a positive <code>DelaySeconds</code> value become available for processing after the delay period is finished. If you don't specify a value, the default value for the queue is applied. </p> <note> <p>When you set <code>FifoQueue</code>, you can't set <code>DelaySeconds</code> per message. You can set this parameter only on a queue level.</p> </note>",
-                      }),
-                  )
-                  .exactOptional(),
-                MessageAttributes: MessageBodyAttributeMapSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({
-                    xml: { name: 'MessageAttribute' },
+                  .exactOptional()
+                  .openapi({
                     description:
-                      'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS message attributes</a> in the <i>Amazon SQS Developer Guide</i>.',
+                      "<p>The length of time, in seconds, for which a specific message is delayed. Valid values: 0 to 900. Maximum: 15 minutes. Messages with a positive <code>DelaySeconds</code> value become available for processing after the delay period is finished. If you don't specify a value, the default value for the queue is applied. </p> <note> <p>When you set <code>FifoQueue</code>, you can't set <code>DelaySeconds</code> per message. You can set this parameter only on a queue level.</p> </note>",
                   }),
-                ).exactOptional(),
-                MessageSystemAttributes: MessageBodySystemAttributeMapSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({
+                MessageAttributes: MessageBodyAttributeMapSchema.exactOptional().openapi({
+                  xml: { name: 'MessageAttribute' },
+                  description:
+                    'Each message attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes">Amazon SQS message attributes</a> in the <i>Amazon SQS Developer Guide</i>.',
+                }),
+                MessageSystemAttributes:
+                  MessageBodySystemAttributeMapSchema.exactOptional().openapi({
                     xml: { name: 'MessageSystemAttribute' },
                     description:
                       "<p>The message system attribute to send Each message system attribute consists of a <code>Name</code>, <code>Type</code>, and <code>Value</code>.</p> <important> <ul> <li> <p>Currently, the only supported message system attribute is <code>AWSTraceHeader</code>. Its type must be <code>String</code> and its value must be a correctly formatted X-Ray trace header string.</p> </li> <li> <p>The size of a message system attribute doesn't count towards the total size of a message.</p> </li> </ul> </important>",
                   }),
-                ).exactOptional(),
-                MessageDeduplicationId: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of messages within a 5-minute minimum deduplication interval. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, subsequent messages with the same <code>MessageDeduplicationId</code> are accepted successfully but aren't delivered. For more information, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html\"> Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>.</p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>,</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren't able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don't provide a <code>MessageDeduplicationId</code> and the queue doesn't have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> <note> <p>The <code>MessageDeduplicationId</code> is available to the consumer of the message (this can be useful for troubleshooting delivery issues).</p> <p>If a message is sent successfully but the acknowledgement is lost and the message is resent with the same <code>MessageDeduplicationId</code> after the deduplication interval, Amazon SQS can't detect duplicate messages.</p> <p>Amazon SQS continues to keep track of the message deduplication ID even after the message is received and deleted.</p> </note> <p>The length of <code>MessageDeduplicationId</code> is 128 characters. <code>MessageDeduplicationId</code> can contain alphanumeric characters (<code>a-z</code>, <code>A-Z</code>, <code>0-9</code>) and punctuation (<code>!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</code>).</p> <p>For best practices of using <code>MessageDeduplicationId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html\">Using the MessageDeduplicationId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p>",
-                    }),
-                ).exactOptional(),
-                MessageGroupId: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). To interleave multiple ordered streams within a single queue, use <code>MessageGroupId</code> values (for example, session data for multiple users). In this scenario, multiple consumers can process the queue, but the session data of each user is processed in a FIFO fashion.</p> <ul> <li> <p>You must associate a non-empty <code>MessageGroupId</code> with a message. If you don't provide a <code>MessageGroupId</code>, the action fails.</p> </li> <li> <p> <code>ReceiveMessage</code> might return messages with multiple <code>MessageGroupId</code> values. For each <code>MessageGroupId</code>, the messages are sorted by time sent. The caller can't specify a <code>MessageGroupId</code>.</p> </li> </ul> <p>The length of <code>MessageGroupId</code> is 128 characters. Valid values: alphanumeric characters and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>For best practices of using <code>MessageGroupId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html\">Using the MessageGroupId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p> <important> <p> <code>MessageGroupId</code> is required for FIFO queues. You can't use it for Standard queues.</p> </important>",
-                    }),
-                ).exactOptional(),
+                MessageDeduplicationId: StringSchema.exactOptional().openapi({
+                  description:
+                    "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of messages within a 5-minute minimum deduplication interval. If a message with a particular <code>MessageDeduplicationId</code> is sent successfully, subsequent messages with the same <code>MessageDeduplicationId</code> are accepted successfully but aren't delivered. For more information, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues-exactly-once-processing.html\"> Exactly-once processing</a> in the <i>Amazon SQS Developer Guide</i>.</p> <ul> <li> <p>Every message must have a unique <code>MessageDeduplicationId</code>,</p> <ul> <li> <p>You may provide a <code>MessageDeduplicationId</code> explicitly.</p> </li> <li> <p>If you aren't able to provide a <code>MessageDeduplicationId</code> and you enable <code>ContentBasedDeduplication</code> for your queue, Amazon SQS uses a SHA-256 hash to generate the <code>MessageDeduplicationId</code> using the body of the message (but not the attributes of the message). </p> </li> <li> <p>If you don't provide a <code>MessageDeduplicationId</code> and the queue doesn't have <code>ContentBasedDeduplication</code> set, the action fails with an error.</p> </li> <li> <p>If the queue has <code>ContentBasedDeduplication</code> set, your <code>MessageDeduplicationId</code> overrides the generated one.</p> </li> </ul> </li> <li> <p>When <code>ContentBasedDeduplication</code> is in effect, messages with identical content sent within the deduplication interval are treated as duplicates and only one copy of the message is delivered.</p> </li> <li> <p>If you send one message with <code>ContentBasedDeduplication</code> enabled and then another message with a <code>MessageDeduplicationId</code> that is the same as the one generated for the first <code>MessageDeduplicationId</code>, the two messages are treated as duplicates and only one copy of the message is delivered. </p> </li> </ul> <note> <p>The <code>MessageDeduplicationId</code> is available to the consumer of the message (this can be useful for troubleshooting delivery issues).</p> <p>If a message is sent successfully but the acknowledgement is lost and the message is resent with the same <code>MessageDeduplicationId</code> after the deduplication interval, Amazon SQS can't detect duplicate messages.</p> <p>Amazon SQS continues to keep track of the message deduplication ID even after the message is received and deleted.</p> </note> <p>The length of <code>MessageDeduplicationId</code> is 128 characters. <code>MessageDeduplicationId</code> can contain alphanumeric characters (<code>a-z</code>, <code>A-Z</code>, <code>0-9</code>) and punctuation (<code>!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</code>).</p> <p>For best practices of using <code>MessageDeduplicationId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html\">Using the MessageDeduplicationId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p>",
+                }),
+                MessageGroupId: StringSchema.exactOptional().openapi({
+                  description:
+                    "<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). To interleave multiple ordered streams within a single queue, use <code>MessageGroupId</code> values (for example, session data for multiple users). In this scenario, multiple consumers can process the queue, but the session data of each user is processed in a FIFO fashion.</p> <ul> <li> <p>You must associate a non-empty <code>MessageGroupId</code> with a message. If you don't provide a <code>MessageGroupId</code>, the action fails.</p> </li> <li> <p> <code>ReceiveMessage</code> might return messages with multiple <code>MessageGroupId</code> values. For each <code>MessageGroupId</code>, the messages are sorted by time sent. The caller can't specify a <code>MessageGroupId</code>.</p> </li> </ul> <p>The length of <code>MessageGroupId</code> is 128 characters. Valid values: alphanumeric characters and punctuation <code>(!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~)</code>.</p> <p>For best practices of using <code>MessageGroupId</code>, see <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html\">Using the MessageGroupId Property</a> in the <i>Amazon SQS Developer Guide</i>.</p> <important> <p> <code>MessageGroupId</code> is required for FIFO queues. You can't use it for Standard queues.</p> </important>",
+                }),
               })
               .openapi({
                 required: ['Id', 'MessageBody'],
                 description:
                   'Contains the details of a single Amazon SQS message along with an <code>Id</code>.',
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'SendMessageBatchRequestEntry' } }),
-              ),
+              .openapi({ xml: { name: 'SendMessageBatchRequestEntry' } }),
           ),
         )
         .openapi({
@@ -5549,14 +5018,7 @@ export const getAccountNumberQueueNameActionUntagQueueRoute = createRoute({
       TagKeys: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagKeySchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'TagKey' } }),
-            ),
-          ),
+          z.array(TagKeySchema.openapi({ xml: { name: 'TagKey' } })),
         )
         .openapi({
           param: {

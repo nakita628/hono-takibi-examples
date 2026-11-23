@@ -57,7 +57,7 @@ const ImageItemSchema = z
   .openapi('ImageItem')
 
 const PageBreakItemSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A page break. The title and description of this item are shown at the top of the new page.',
@@ -131,128 +131,6 @@ const GridSchema = z
     required: [],
   })
   .openapi('Grid')
-
-const QuestionSchema: z.ZodType<QuestionType> = z
-  .lazy(() =>
-    z
-      .object({
-        choiceQuestion: ChoiceQuestionSchema.exactOptional().openapi({
-          description: 'A respondent can choose from a pre-defined set of options.',
-        }),
-        dateQuestion: DateQuestionSchema.exactOptional().openapi({
-          description: 'A respondent can enter a date.',
-        }),
-        fileUploadQuestion: FileUploadQuestionSchema.exactOptional().openapi({
-          description: 'A respondent can upload one or more files.',
-        }),
-        grading: GradingSchema.exactOptional().openapi({
-          description: 'Grading setup for the question.',
-        }),
-        questionId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Read only. The question ID. On creation, it can be provided but the ID must not be already used in the form. If not provided, a new ID is assigned.',
-          }),
-        required: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the question must be answered in order for a respondent to submit their response.',
-          }),
-        rowQuestion: RowQuestionSchema.exactOptional().openapi({
-          description: 'A row of a QuestionGroupItem.',
-        }),
-        scaleQuestion: ScaleQuestionSchema.exactOptional().openapi({
-          description: 'A respondent can choose a number from a range.',
-        }),
-        textQuestion: TextQuestionSchema.exactOptional().openapi({
-          description: 'A respondent can enter a free text response.',
-        }),
-        timeQuestion: TimeQuestionSchema.exactOptional().openapi({
-          description: 'A respondent can enter a time.',
-        }),
-      })
-      .openapi({
-        description: 'Any question. The specific type of question is known by its `kind`.',
-        required: [],
-      }),
-  )
-  .openapi('Question')
-
-const QuestionGroupItemSchema = z
-  .object({
-    grid: GridSchema.exactOptional().openapi({
-      description:
-        'The question group is a grid with rows of multiple choice questions that share the same options. When `grid` is set, all questions in the group must be of kind `row`.',
-    }),
-    image: ImageSchema.exactOptional().openapi({
-      description: 'The image displayed within the question group above the specific questions.',
-    }),
-    questions: z
-      .array(QuestionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A list of questions that belong in this question group. A question must only belong to one group. The `kind` of the group may affect what types of questions are allowed.',
-      }),
-  })
-  .openapi({
-    description: 'Defines a question that comprises multiple questions grouped together.',
-    required: [],
-  })
-  .openapi('QuestionGroupItem')
-
-const QuestionItemSchema = z
-  .object({
-    image: ImageSchema.exactOptional().openapi({
-      description: 'The image displayed within the question.',
-    }),
-    question: QuestionSchema.exactOptional().openapi({
-      description: 'Required. The displayed question.',
-    }),
-  })
-  .openapi({ description: 'A form item containing a single question.', required: [] })
-  .openapi('QuestionItem')
-
-const TextItemSchema = z.object({}).openapi({ description: 'A text item.' }).openapi('TextItem')
-
-const VideoSchema = z
-  .object({
-    properties: MediaPropertiesSchema.exactOptional().openapi({
-      description: 'Properties of a video.',
-    }),
-    youtubeUri: z.string().exactOptional().openapi({ description: 'Required. A YouTube URI.' }),
-  })
-  .openapi({ description: 'Data representing a video.', required: [] })
-  .openapi('Video')
-
-const VideoItemSchema = z
-  .object({
-    caption: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The text displayed below the video.' }),
-    video: VideoSchema.exactOptional().openapi({
-      description: 'Required. The video displayed in the item.',
-    }),
-  })
-  .openapi({ description: 'An item containing a video.', required: [] })
-  .openapi('VideoItem')
-
-type ItemType = {
-  description?: string
-  imageItem?: z.infer<typeof ImageItemSchema>
-  itemId?: string
-  pageBreakItem?: z.infer<typeof PageBreakItemSchema>
-  questionGroupItem?: z.infer<typeof QuestionGroupItemSchema>
-  questionItem?: z.infer<typeof QuestionItemSchema>
-  textItem?: z.infer<typeof TextItemSchema>
-  title?: string
-  videoItem?: z.infer<typeof VideoItemSchema>
-}
 
 const DateQuestionSchema = z
   .object({
@@ -491,59 +369,171 @@ const TimeQuestionSchema = z
   .openapi({ description: 'A time question.', required: [] })
   .openapi('TimeQuestion')
 
-type QuestionType = {
-  choiceQuestion?: z.infer<typeof ChoiceQuestionSchema>
-  dateQuestion?: z.infer<typeof DateQuestionSchema>
-  fileUploadQuestion?: z.infer<typeof FileUploadQuestionSchema>
-  grading?: z.infer<typeof GradingSchema>
-  questionId?: string
-  required?: boolean
-  rowQuestion?: z.infer<typeof RowQuestionSchema>
-  scaleQuestion?: z.infer<typeof ScaleQuestionSchema>
-  textQuestion?: z.infer<typeof TextQuestionSchema>
-  timeQuestion?: z.infer<typeof TimeQuestionSchema>
+const QuestionSchema = z
+  .object({
+    choiceQuestion: ChoiceQuestionSchema.exactOptional().openapi({
+      description: 'A respondent can choose from a pre-defined set of options.',
+    }),
+    dateQuestion: DateQuestionSchema.exactOptional().openapi({
+      description: 'A respondent can enter a date.',
+    }),
+    fileUploadQuestion: FileUploadQuestionSchema.exactOptional().openapi({
+      description: 'A respondent can upload one or more files.',
+    }),
+    grading: GradingSchema.exactOptional().openapi({
+      description: 'Grading setup for the question.',
+    }),
+    questionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Read only. The question ID. On creation, it can be provided but the ID must not be already used in the form. If not provided, a new ID is assigned.',
+      }),
+    required: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the question must be answered in order for a respondent to submit their response.',
+      }),
+    rowQuestion: RowQuestionSchema.exactOptional().openapi({
+      description: 'A row of a QuestionGroupItem.',
+    }),
+    scaleQuestion: ScaleQuestionSchema.exactOptional().openapi({
+      description: 'A respondent can choose a number from a range.',
+    }),
+    textQuestion: TextQuestionSchema.exactOptional().openapi({
+      description: 'A respondent can enter a free text response.',
+    }),
+    timeQuestion: TimeQuestionSchema.exactOptional().openapi({
+      description: 'A respondent can enter a time.',
+    }),
+  })
+  .openapi({
+    description: 'Any question. The specific type of question is known by its `kind`.',
+    required: [],
+  })
+  .openapi('Question')
+
+type QuestionGroupItemType = {
+  grid?: z.infer<typeof GridSchema>
+  image?: z.infer<typeof ImageSchema>
+  questions?: z.infer<typeof QuestionSchema>[]
+}
+
+const QuestionGroupItemSchema: z.ZodType<QuestionGroupItemType> = z
+  .object({
+    grid: GridSchema.exactOptional().openapi({
+      description:
+        'The question group is a grid with rows of multiple choice questions that share the same options. When `grid` is set, all questions in the group must be of kind `row`.',
+    }),
+    image: ImageSchema.exactOptional().openapi({
+      description: 'The image displayed within the question group above the specific questions.',
+    }),
+    questions: z
+      .array(QuestionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A list of questions that belong in this question group. A question must only belong to one group. The `kind` of the group may affect what types of questions are allowed.',
+      }),
+  })
+  .openapi({
+    description: 'Defines a question that comprises multiple questions grouped together.',
+    required: [],
+  })
+  .openapi('QuestionGroupItem')
+
+const QuestionItemSchema = z
+  .object({
+    image: ImageSchema.exactOptional().openapi({
+      description: 'The image displayed within the question.',
+    }),
+    question: QuestionSchema.exactOptional().openapi({
+      description: 'Required. The displayed question.',
+    }),
+  })
+  .openapi({ description: 'A form item containing a single question.', required: [] })
+  .openapi('QuestionItem')
+
+const TextItemSchema = z
+  .looseObject({})
+  .openapi({ description: 'A text item.' })
+  .openapi('TextItem')
+
+const VideoSchema = z
+  .object({
+    properties: MediaPropertiesSchema.exactOptional().openapi({
+      description: 'Properties of a video.',
+    }),
+    youtubeUri: z.string().exactOptional().openapi({ description: 'Required. A YouTube URI.' }),
+  })
+  .openapi({ description: 'Data representing a video.', required: [] })
+  .openapi('Video')
+
+const VideoItemSchema = z
+  .object({
+    caption: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text displayed below the video.' }),
+    video: VideoSchema.exactOptional().openapi({
+      description: 'Required. The video displayed in the item.',
+    }),
+  })
+  .openapi({ description: 'An item containing a video.', required: [] })
+  .openapi('VideoItem')
+
+type ItemType = {
+  description?: string
+  imageItem?: z.infer<typeof ImageItemSchema>
+  itemId?: string
+  pageBreakItem?: z.infer<typeof PageBreakItemSchema>
+  questionGroupItem?: z.infer<typeof QuestionGroupItemSchema>
+  questionItem?: z.infer<typeof QuestionItemSchema>
+  textItem?: z.infer<typeof TextItemSchema>
+  title?: string
+  videoItem?: z.infer<typeof VideoItemSchema>
 }
 
 const ItemSchema: z.ZodType<ItemType> = z
-  .lazy(() =>
-    z
-      .object({
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The description of the item.' }),
-        imageItem: ImageItemSchema.exactOptional().openapi({
-          description: 'Displays an image on the page.',
-        }),
-        itemId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The item ID. On creation, it can be provided but the ID must not be already used in the form. If not provided, a new ID is assigned.',
-          }),
-        pageBreakItem: PageBreakItemSchema.exactOptional().openapi({
-          description: 'Starts a new page with a title.',
-        }),
-        questionGroupItem: QuestionGroupItemSchema.exactOptional().openapi({
-          description: 'Poses one or more questions to the user with a single major prompt.',
-        }),
-        questionItem: QuestionItemSchema.exactOptional().openapi({
-          description: 'Poses a question to the user.',
-        }),
-        textItem: TextItemSchema.exactOptional().openapi({
-          description: 'Displays a title and description on the page.',
-        }),
-        title: z.string().exactOptional().openapi({ description: 'The title of the item.' }),
-        videoItem: VideoItemSchema.exactOptional().openapi({
-          description: 'Displays a video on the page.',
-        }),
-      })
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the item.' }),
+    imageItem: ImageItemSchema.exactOptional().openapi({
+      description: 'Displays an image on the page.',
+    }),
+    itemId: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'A single item of the form. `kind` defines which kind of item it is.',
-        required: [],
+        description:
+          'The item ID. On creation, it can be provided but the ID must not be already used in the form. If not provided, a new ID is assigned.',
       }),
-  )
+    pageBreakItem: PageBreakItemSchema.exactOptional().openapi({
+      description: 'Starts a new page with a title.',
+    }),
+    questionGroupItem: QuestionGroupItemSchema.exactOptional().openapi({
+      description: 'Poses one or more questions to the user with a single major prompt.',
+    }),
+    questionItem: QuestionItemSchema.exactOptional().openapi({
+      description: 'Poses a question to the user.',
+    }),
+    textItem: TextItemSchema.exactOptional().openapi({
+      description: 'Displays a title and description on the page.',
+    }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the item.' }),
+    videoItem: VideoItemSchema.exactOptional().openapi({
+      description: 'Displays a video on the page.',
+    }),
+  })
+  .openapi({
+    description: 'A single item of the form. `kind` defines which kind of item it is.',
+    required: [],
+  })
   .openapi('Item')
 
 const LocationSchema = z
@@ -559,7 +549,12 @@ const LocationSchema = z
   .openapi({ description: 'A specific location in a form.', required: [] })
   .openapi('Location')
 
-const CreateItemRequestSchema = z
+type CreateItemRequestType = {
+  item?: z.infer<typeof ItemSchema>
+  location?: z.infer<typeof LocationSchema>
+}
+
+const CreateItemRequestSchema: z.ZodType<CreateItemRequestType> = z
   .object({
     item: ItemSchema.exactOptional().openapi({ description: 'Required. The item to create.' }),
     location: LocationSchema.exactOptional().openapi({
@@ -626,7 +621,13 @@ const UpdateFormInfoRequestSchema = z
   .openapi({ description: "Update Form's Info.", required: [] })
   .openapi('UpdateFormInfoRequest')
 
-const UpdateItemRequestSchema = z
+type UpdateItemRequestType = {
+  item?: z.infer<typeof ItemSchema>
+  location?: z.infer<typeof LocationSchema>
+  updateMask?: string
+}
+
+const UpdateItemRequestSchema: z.ZodType<UpdateItemRequestType> = z
   .object({
     item: ItemSchema.exactOptional().openapi({
       description:
@@ -694,6 +695,114 @@ type RequestType = {
   updateSettings?: z.infer<typeof UpdateSettingsRequestSchema>
 }
 
+const RequestSchema: z.ZodType<RequestType> = z
+  .object({
+    createItem: CreateItemRequestSchema.exactOptional().openapi({
+      description: 'Create a new item.',
+    }),
+    deleteItem: DeleteItemRequestSchema.exactOptional().openapi({ description: 'Delete an item.' }),
+    moveItem: MoveItemRequestSchema.exactOptional().openapi({
+      description: 'Move an item to a specified location.',
+    }),
+    updateFormInfo: UpdateFormInfoRequestSchema.exactOptional().openapi({
+      description: "Update Form's Info.",
+    }),
+    updateItem: UpdateItemRequestSchema.exactOptional().openapi({ description: 'Update an item.' }),
+    updateSettings: UpdateSettingsRequestSchema.exactOptional().openapi({
+      description: "Updates the Form's settings.",
+    }),
+  })
+  .openapi({ description: 'The kinds of update requests that can be made.', required: [] })
+  .openapi('Request')
+
+const WriteControlSchema = z
+  .object({
+    requiredRevisionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The revision ID of the form that the write request is applied to. If this is not the latest revision of the form, the request is not processed and returns a 400 bad request error.',
+      }),
+    targetRevisionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The target revision ID of the form that the write request is applied to. If changes have occurred after this revision, the changes in this update request are transformed against those changes. This results in a new revision of the form that incorporates both the changes in the request and the intervening changes, with the server resolving conflicting changes. The target revision ID may only be used to write to recent versions of a form. If the target revision is too far behind the latest revision, the request is not processed and returns a 400 (Bad Request Error). The request may be retried after reading the latest version of the form. In most cases a target revision ID remains valid for several minutes after it is read, but for frequently-edited forms this window may be shorter.',
+      }),
+  })
+  .openapi({ description: 'Provides control over how write requests are executed.', required: [] })
+  .openapi('WriteControl')
+
+type BatchUpdateFormRequestType = {
+  includeFormInResponse?: boolean
+  requests?: z.infer<typeof RequestSchema>[]
+  writeControl?: z.infer<typeof WriteControlSchema>
+}
+
+type FormType = {
+  formId?: string
+  info?: z.infer<typeof InfoSchema>
+  items?: z.infer<typeof ItemSchema>[]
+  linkedSheetId?: string
+  responderUri?: string
+  revisionId?: string
+  settings?: z.infer<typeof FormSettingsSchema>
+}
+
+const FormSchema: z.ZodType<FormType> = z
+  .object({
+    formId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The form ID.', readOnly: true }),
+    info: InfoSchema.exactOptional().openapi({
+      description: 'Required. The title and description of the form.',
+    }),
+    items: z
+      .array(ItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. A list of the form's items, which can include section headers, questions, embedded media, etc.",
+      }),
+    linkedSheetId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The ID of the linked Google Sheet which is accumulating responses from this Form (if such a Sheet exists).',
+        readOnly: true,
+      }),
+    responderUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The form URI to share with responders. This opens a page that allows the user to submit responses but not edit the questions.',
+        readOnly: true,
+      }),
+    revisionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The revision ID of the form. Used in the WriteControl in update requests to identify the revision on which the changes are based. The format of the revision ID may change over time, so it should be treated opaquely. A returned revision ID is only guaranteed to be valid for 24 hours after it has been returned and cannot be shared across users. If the revision ID is unchanged between calls, then the form has not changed. Conversely, a changed ID (for the same form and user) usually means the form has been updated; however, a changed ID can also be due to internal factors such as ID format changes.',
+        readOnly: true,
+      }),
+    settings: FormSettingsSchema.exactOptional().openapi({
+      description:
+        "The form's settings. This must be updated with UpdateSettingsRequest; it is ignored during `forms.create` and UpdateFormInfoRequest.",
+    }),
+  })
+  .openapi({
+    description:
+      'A Google Forms document. A form is created in Drive, and deleting a form or changing its access protections is done via the [Drive API](https://developers.google.com/drive/api/v3/about-sdk).',
+    required: [],
+  })
+  .openapi('Form')
+
 const CreateItemResponseSchema = z
   .object({
     itemId: z.string().exactOptional().openapi({ description: 'The ID of the created item.' }),
@@ -708,7 +817,20 @@ const CreateItemResponseSchema = z
   .openapi({ description: 'The result of creating an item.', required: [] })
   .openapi('CreateItemResponse')
 
-type ResponseType = { createItem?: z.infer<typeof CreateItemResponseSchema> }
+const ResponseSchema = z
+  .object({
+    createItem: CreateItemResponseSchema.exactOptional().openapi({
+      description: 'The result of creating an item.',
+    }),
+  })
+  .openapi({ description: 'A single response from an update.', required: [] })
+  .openapi('Response')
+
+type BatchUpdateFormResponseType = {
+  form?: z.infer<typeof FormSchema>
+  replies?: z.infer<typeof ResponseSchema>[]
+  writeControl?: z.infer<typeof WriteControlSchema>
+}
 
 const FileUploadAnswerSchema = z
   .object({
@@ -831,54 +953,73 @@ const AnswerSchema = z
   .openapi({ description: 'The submitted answer for a question.', required: [] })
   .openapi('Answer')
 
-const RequestSchema: z.ZodType<RequestType> = z
-  .lazy(() =>
-    z
-      .object({
-        createItem: CreateItemRequestSchema.exactOptional().openapi({
-          description: 'Create a new item.',
-        }),
-        deleteItem: DeleteItemRequestSchema.exactOptional().openapi({
-          description: 'Delete an item.',
-        }),
-        moveItem: MoveItemRequestSchema.exactOptional().openapi({
-          description: 'Move an item to a specified location.',
-        }),
-        updateFormInfo: UpdateFormInfoRequestSchema.exactOptional().openapi({
-          description: "Update Form's Info.",
-        }),
-        updateItem: UpdateItemRequestSchema.exactOptional().openapi({
-          description: 'Update an item.',
-        }),
-        updateSettings: UpdateSettingsRequestSchema.exactOptional().openapi({
-          description: "Updates the Form's settings.",
-        }),
-      })
-      .openapi({ description: 'The kinds of update requests that can be made.', required: [] }),
-  )
-  .openapi('Request')
+type FormResponseType = {
+  answers?: { [key: string]: z.infer<typeof AnswerSchema> }
+  createTime?: string
+  formId?: string
+  lastSubmittedTime?: string
+  respondentEmail?: string
+  responseId?: string
+  totalScore?: number
+}
 
-const WriteControlSchema = z
+const FormResponseSchema: z.ZodType<FormResponseType> = z
   .object({
-    requiredRevisionId: z
-      .string()
+    answers: z
+      .record(z.string(), AnswerSchema)
       .exactOptional()
       .openapi({
-        description:
-          'The revision ID of the form that the write request is applied to. If this is not the latest revision of the form, the request is not processed and returns a 400 bad request error.',
+        description: 'Output only. The actual answers to the questions, keyed by question_id.',
+        readOnly: true,
       }),
-    targetRevisionId: z
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp for the first time the response was submitted.',
+        readOnly: true,
+      }),
+    formId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The form ID.', readOnly: true }),
+    lastSubmittedTime: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The target revision ID of the form that the write request is applied to. If changes have occurred after this revision, the changes in this update request are transformed against those changes. This results in a new revision of the form that incorporates both the changes in the request and the intervening changes, with the server resolving conflicting changes. The target revision ID may only be used to write to recent versions of a form. If the target revision is too far behind the latest revision, the request is not processed and returns a 400 (Bad Request Error). The request may be retried after reading the latest version of the form. In most cases a target revision ID remains valid for several minutes after it is read, but for frequently-edited forms this window may be shorter.',
+          'Output only. Timestamp for the most recent time the response was submitted. Does not track changes to grades.',
+        readOnly: true,
+      }),
+    respondentEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The email address (if collected) for the respondent.',
+        readOnly: true,
+      }),
+    responseId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The response ID.', readOnly: true }),
+    totalScore: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The total number of points the respondent received for their submission Only set if the form was a quiz and the response was graded. This includes points automatically awarded via autograding adjusted by any manual corrections entered by the form owner.',
+        readOnly: true,
       }),
   })
-  .openapi({ description: 'Provides control over how write requests are executed.', required: [] })
-  .openapi('WriteControl')
+  .openapi({ description: 'A form response.', required: [] })
+  .openapi('FormResponse')
 
-const BatchUpdateFormRequestSchema = z
+type ListFormResponsesResponseType = {
+  nextPageToken?: string
+  responses?: z.infer<typeof FormResponseSchema>[]
+}
+
+const BatchUpdateFormRequestSchema: z.ZodType<BatchUpdateFormRequestType> = z
   .object({
     includeFormInResponse: z
       .boolean()
@@ -901,71 +1042,7 @@ const BatchUpdateFormRequestSchema = z
   })
   .openapi('BatchUpdateFormRequest')
 
-const FormSchema = z
-  .object({
-    formId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The form ID.', readOnly: true }),
-    info: InfoSchema.exactOptional().openapi({
-      description: 'Required. The title and description of the form.',
-    }),
-    items: z
-      .array(ItemSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. A list of the form's items, which can include section headers, questions, embedded media, etc.",
-      }),
-    linkedSheetId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The ID of the linked Google Sheet which is accumulating responses from this Form (if such a Sheet exists).',
-        readOnly: true,
-      }),
-    responderUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The form URI to share with responders. This opens a page that allows the user to submit responses but not edit the questions.',
-        readOnly: true,
-      }),
-    revisionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The revision ID of the form. Used in the WriteControl in update requests to identify the revision on which the changes are based. The format of the revision ID may change over time, so it should be treated opaquely. A returned revision ID is only guaranteed to be valid for 24 hours after it has been returned and cannot be shared across users. If the revision ID is unchanged between calls, then the form has not changed. Conversely, a changed ID (for the same form and user) usually means the form has been updated; however, a changed ID can also be due to internal factors such as ID format changes.',
-        readOnly: true,
-      }),
-    settings: FormSettingsSchema.exactOptional().openapi({
-      description:
-        "The form's settings. This must be updated with UpdateSettingsRequest; it is ignored during `forms.create` and UpdateFormInfoRequest.",
-    }),
-  })
-  .openapi({
-    description:
-      'A Google Forms document. A form is created in Drive, and deleting a form or changing its access protections is done via the [Drive API](https://developers.google.com/drive/api/v3/about-sdk).',
-    required: [],
-  })
-  .openapi('Form')
-
-const ResponseSchema: z.ZodType<ResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        createItem: CreateItemResponseSchema.exactOptional().openapi({
-          description: 'The result of creating an item.',
-        }),
-      })
-      .openapi({ description: 'A single response from an update.', required: [] }),
-  )
-  .openapi('Response')
-
-const BatchUpdateFormResponseSchema = z
+const BatchUpdateFormResponseSchema: z.ZodType<BatchUpdateFormResponseType> = z
   .object({
     form: FormSchema.exactOptional().openapi({
       description:
@@ -1078,65 +1155,14 @@ const CreateWatchRequestSchema = z
   .openapi('CreateWatchRequest')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
 
-const FormResponseSchema = z
-  .object({
-    answers: z
-      .record(z.string(), AnswerSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The actual answers to the questions, keyed by question_id.',
-        readOnly: true,
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp for the first time the response was submitted.',
-        readOnly: true,
-      }),
-    formId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The form ID.', readOnly: true }),
-    lastSubmittedTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Timestamp for the most recent time the response was submitted. Does not track changes to grades.',
-        readOnly: true,
-      }),
-    respondentEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The email address (if collected) for the respondent.',
-        readOnly: true,
-      }),
-    responseId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The response ID.', readOnly: true }),
-    totalScore: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The total number of points the respondent received for their submission Only set if the form was a quiz and the response was graded. This includes points automatically awarded via autograding adjusted by any manual corrections entered by the form owner.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A form response.', required: [] })
-  .openapi('FormResponse')
-
-const ListFormResponsesResponseSchema = z
+const ListFormResponsesResponseSchema: z.ZodType<ListFormResponsesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1164,7 +1190,7 @@ const ListWatchesResponseSchema = z
   .openapi('ListWatchesResponse')
 
 const RenewWatchRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Renew an existing Watch for seven days.' })
   .openapi('RenewWatchRequest')
 

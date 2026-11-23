@@ -144,160 +144,79 @@ const GifSchema = z
       .openapi({ description: "This GIF's unique ID", example: 'YsTs5ltWtEhnq' }),
     images: z
       .object({
-        downsized: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Data surrounding a version of this GIF downsized to be under 2mb.',
-            }),
-        ).exactOptional(),
-        downsized_large: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Data surrounding a version of this GIF downsized to be under 8mb.',
-            }),
-        ).exactOptional(),
-        downsized_medium: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Data surrounding a version of this GIF downsized to be under 5mb.',
-            }),
-        ).exactOptional(),
-        downsized_small: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Data surrounding a version of this GIF downsized to be under 200kb.',
-            }),
-        ).exactOptional(),
-        downsized_still: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding a static preview image of the downsized version of this GIF.',
-            }),
-        ).exactOptional(),
-        fixed_height: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding versions of this GIF with a fixed height of 200 pixels. Good for mobile use.',
-            }),
-        ).exactOptional(),
-        fixed_height_downsampled: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding versions of this GIF with a fixed height of 200 pixels and the number of frames reduced to 6.',
-            }),
-        ).exactOptional(),
-        fixed_height_small: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding versions of this GIF with a fixed height of 100 pixels. Good for mobile keyboards.',
-            }),
-        ).exactOptional(),
-        fixed_height_small_still: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding a static image of this GIF with a fixed height of 100 pixels.',
-            }),
-        ).exactOptional(),
-        fixed_height_still: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding a static image of this GIF with a fixed height of 200 pixels.',
-            }),
-        ).exactOptional(),
-        fixed_width: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding versions of this GIF with a fixed width of 200 pixels. Good for mobile use.',
-            }),
-        ).exactOptional(),
-        fixed_width_downsampled: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding versions of this GIF with a fixed width of 200 pixels and the number of frames reduced to 6.',
-            }),
-        ).exactOptional(),
-        fixed_width_small: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding versions of this GIF with a fixed width of 100 pixels. Good for mobile keyboards.',
-            }),
-        ).exactOptional(),
-        fixed_width_small_still: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding a static image of this GIF with a fixed width of 100 pixels.',
-            }),
-        ).exactOptional(),
-        fixed_width_still: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding a static image of this GIF with a fixed width of 200 pixels.',
-            }),
-        ).exactOptional(),
-        looping: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Data surrounding a version of this GIF set to loop for 15 seconds.',
-            }),
-        ).exactOptional(),
-        original: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding the original version of this GIF. Good for desktop use.',
-            }),
-        ).exactOptional(),
-        original_still: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Data surrounding a static preview image of the original GIF.',
-            }),
-        ).exactOptional(),
-        preview: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding a version of this GIF in .MP4 format limited to 50kb that displays the first 1-2 seconds of the GIF.',
-            }),
-        ).exactOptional(),
-        preview_gif: ImageSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Data surrounding a version of this GIF limited to 50kb that displays the first 1-2 seconds of the GIF.',
-            }),
-        ).exactOptional(),
+        downsized: ImageSchema.exactOptional().openapi({
+          description: 'Data surrounding a version of this GIF downsized to be under 2mb.',
+        }),
+        downsized_large: ImageSchema.exactOptional().openapi({
+          description: 'Data surrounding a version of this GIF downsized to be under 8mb.',
+        }),
+        downsized_medium: ImageSchema.exactOptional().openapi({
+          description: 'Data surrounding a version of this GIF downsized to be under 5mb.',
+        }),
+        downsized_small: ImageSchema.exactOptional().openapi({
+          description: 'Data surrounding a version of this GIF downsized to be under 200kb.',
+        }),
+        downsized_still: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding a static preview image of the downsized version of this GIF.',
+        }),
+        fixed_height: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding versions of this GIF with a fixed height of 200 pixels. Good for mobile use.',
+        }),
+        fixed_height_downsampled: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding versions of this GIF with a fixed height of 200 pixels and the number of frames reduced to 6.',
+        }),
+        fixed_height_small: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding versions of this GIF with a fixed height of 100 pixels. Good for mobile keyboards.',
+        }),
+        fixed_height_small_still: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding a static image of this GIF with a fixed height of 100 pixels.',
+        }),
+        fixed_height_still: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding a static image of this GIF with a fixed height of 200 pixels.',
+        }),
+        fixed_width: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding versions of this GIF with a fixed width of 200 pixels. Good for mobile use.',
+        }),
+        fixed_width_downsampled: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding versions of this GIF with a fixed width of 200 pixels and the number of frames reduced to 6.',
+        }),
+        fixed_width_small: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding versions of this GIF with a fixed width of 100 pixels. Good for mobile keyboards.',
+        }),
+        fixed_width_small_still: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding a static image of this GIF with a fixed width of 100 pixels.',
+        }),
+        fixed_width_still: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding a static image of this GIF with a fixed width of 200 pixels.',
+        }),
+        looping: ImageSchema.exactOptional().openapi({
+          description: 'Data surrounding a version of this GIF set to loop for 15 seconds.',
+        }),
+        original: ImageSchema.exactOptional().openapi({
+          description: 'Data surrounding the original version of this GIF. Good for desktop use.',
+        }),
+        original_still: ImageSchema.exactOptional().openapi({
+          description: 'Data surrounding a static preview image of the original GIF.',
+        }),
+        preview: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding a version of this GIF in .MP4 format limited to 50kb that displays the first 1-2 seconds of the GIF.',
+        }),
+        preview_gif: ImageSchema.exactOptional().openapi({
+          description:
+            'Data surrounding a version of this GIF limited to 50kb that displays the first 1-2 seconds of the GIF.',
+        }),
       })
       .exactOptional()
       .openapi({

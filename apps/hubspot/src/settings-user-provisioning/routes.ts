@@ -480,11 +480,19 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.objects.users.read': { portal: ['public', 'private'], developer: false },
+    'crm.objects.users.write': { portal: ['public', 'private'], developer: false },
+    'settings.billing.write': { portal: ['public', 'private'], developer: false },
+    'settings.users.read': { portal: ['public', 'private'], developer: false },
+    'settings.users.teams.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'settings.users.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getSettingsUsers202609Route = createRoute({
   method: 'get',
@@ -571,23 +579,19 @@ export const postSettingsUsers202609Route = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicUserSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['settings.users.write'] }, { oauth2: ['crm.objects.users.write'] }],
+  security: [{ oauth2: ['crm.objects.users.write'] }, { oauth2: ['settings.users.write'] }],
 })
 
 export const getSettingsUsers202609RolesRoute = createRoute({
@@ -761,7 +765,7 @@ export const putSettingsUsers202609UserIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['settings.users.write'] }, { oauth2: ['crm.objects.users.write'] }],
+  security: [{ oauth2: ['crm.objects.users.write'] }, { oauth2: ['settings.users.write'] }],
 })
 
 export const deleteSettingsUsers202609UserIdRoute = createRoute({
@@ -809,5 +813,5 @@ export const deleteSettingsUsers202609UserIdRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [{ oauth2: ['settings.users.write'] }, { oauth2: ['crm.objects.users.write'] }],
+  security: [{ oauth2: ['crm.objects.users.write'] }, { oauth2: ['settings.users.write'] }],
 })

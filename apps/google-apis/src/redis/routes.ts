@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -63,7 +63,7 @@ const GcsSourceSchema = z
   .openapi('GcsSource')
 
 const GoogleCloudRedisV1ZoneMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Defines specific information for a particular zone. Currently empty and reserved for future use only.',

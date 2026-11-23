@@ -1,1465 +1,73 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type QueryParameterTypeType = {
-  arrayType?: QueryParameterTypeType
-  rangeElementType?: QueryParameterTypeType
-  structTypes?: { description?: string; name?: string; type?: QueryParameterTypeType }[]
-  type?: string
+const CategoryCountSchema = z
+  .object({
+    category: z.string().exactOptional().openapi({ description: 'The name of category.' }),
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The count of training samples matching the category within the cluster.',
+      }),
+  })
+  .openapi({
+    description: 'Represents the count of a single category within the cluster.',
+    required: [],
+  })
+  .openapi('CategoryCount')
+
+const CategoricalValueSchema = z
+  .object({
+    categoryCounts: z
+      .array(CategoryCountSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
+      }),
+  })
+  .openapi({ description: 'Representative value of a categorical feature.', required: [] })
+  .openapi('CategoricalValue')
+
+const FeatureValueSchema = z
+  .object({
+    categoricalValue: CategoricalValueSchema.exactOptional().openapi({
+      description: 'The categorical feature value.',
+    }),
+    featureColumn: z.string().exactOptional().openapi({ description: 'The feature column name.' }),
+    numericalValue: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The numerical feature value. This is the centroid value for this feature.',
+      }),
+  })
+  .openapi({
+    description: 'Representative value of a single feature within the cluster.',
+    required: [],
+  })
+  .openapi('FeatureValue')
+
+const ClusterSchema = z
+  .object({
+    centroidId: z.string().exactOptional().openapi({ description: 'Centroid id.' }),
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Count of training data rows that were assigned to this cluster.' }),
+    featureValues: z
+      .array(FeatureValueSchema)
+      .exactOptional()
+      .openapi({ description: 'Values of highly variant features for this cluster.' }),
+  })
+  .openapi({ description: 'Message containing the information about one cluster.', required: [] })
+  .openapi('Cluster')
+
+type ClusteringMetricsType = {
+  clusters?: z.infer<typeof ClusterSchema>[]
+  daviesBouldinIndex?: number
+  meanSquaredDistance?: number
 }
-
-const RangeValueSchema: z.ZodType<RangeValueType> = z
-  .lazy(() =>
-    z
-      .object({
-        end: QueryParameterValueSchema.exactOptional().openapi({
-          description:
-            'Optional. The end value of the range. A missing value represents an unbounded end.',
-        }),
-        start: QueryParameterValueSchema.exactOptional().openapi({
-          description:
-            'Optional. The start value of the range. A missing value represents an unbounded start.',
-        }),
-      })
-      .openapi({ description: 'Represents the value of a range.', required: [] }),
-  )
-  .openapi('RangeValue')
-
-type QueryParameterValueType = {
-  arrayValues?: QueryParameterValueType[]
-  rangeValue?: z.infer<typeof RangeValueSchema>
-  structValues?: { [key: string]: QueryParameterValueType }
-  value?: string
-}
-
-const QueryParameterValueSchema: z.ZodType<QueryParameterValueType> = z
-  .lazy(() =>
-    z
-      .object({
-        arrayValues: z
-          .array(QueryParameterValueSchema)
-          .exactOptional()
-          .openapi({ description: 'Optional. The array values, if this is an array type.' }),
-        rangeValue: RangeValueSchema.exactOptional().openapi({
-          description: 'Optional. The range value, if this is a range type.',
-        }),
-        structValues: z
-          .record(z.string(), QueryParameterValueSchema)
-          .exactOptional()
-          .openapi({ description: 'The struct field values.' }),
-        value: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Optional. The value of this value, if a simple scalar type.' }),
-      })
-      .openapi({ description: 'The value of a query parameter.', required: [] }),
-  )
-  .openapi('QueryParameterValue')
-
-type RangeValueType = {
-  end?: z.infer<typeof QueryParameterValueSchema>
-  start?: z.infer<typeof QueryParameterValueSchema>
-}
-
-const StandardSqlStructTypeSchema: z.ZodType<StandardSqlStructTypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        fields: z
-          .array(StandardSqlFieldSchema)
-          .exactOptional()
-          .openapi({ description: 'Fields within the struct.' }),
-      })
-      .openapi({ description: 'The representation of a SQL STRUCT type.', required: [] }),
-  )
-  .openapi('StandardSqlStructType')
-
-type StandardSqlDataTypeType = {
-  arrayElementType?: StandardSqlDataTypeType
-  rangeElementType?: StandardSqlDataTypeType
-  structType?: z.infer<typeof StandardSqlStructTypeSchema>
-  typeKind?:
-    | 'TYPE_KIND_UNSPECIFIED'
-    | 'INT64'
-    | 'BOOL'
-    | 'FLOAT64'
-    | 'STRING'
-    | 'BYTES'
-    | 'TIMESTAMP'
-    | 'DATE'
-    | 'TIME'
-    | 'DATETIME'
-    | 'INTERVAL'
-    | 'GEOGRAPHY'
-    | 'NUMERIC'
-    | 'BIGNUMERIC'
-    | 'JSON'
-    | 'ARRAY'
-    | 'STRUCT'
-    | 'RANGE'
-}
-
-const StandardSqlDataTypeSchema: z.ZodType<StandardSqlDataTypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        arrayElementType: StandardSqlDataTypeSchema.exactOptional().openapi({
-          description: 'The type of the array\'s elements, if type_kind = "ARRAY".',
-        }),
-        rangeElementType: StandardSqlDataTypeSchema.exactOptional().openapi({
-          description: 'The type of the range\'s elements, if type_kind = "RANGE".',
-        }),
-        structType: StandardSqlStructTypeSchema.exactOptional().openapi({
-          description: 'The fields of this struct, in order, if type_kind = "STRUCT".',
-        }),
-        typeKind: z
-          .enum([
-            'TYPE_KIND_UNSPECIFIED',
-            'INT64',
-            'BOOL',
-            'FLOAT64',
-            'STRING',
-            'BYTES',
-            'TIMESTAMP',
-            'DATE',
-            'TIME',
-            'DATETIME',
-            'INTERVAL',
-            'GEOGRAPHY',
-            'NUMERIC',
-            'BIGNUMERIC',
-            'JSON',
-            'ARRAY',
-            'STRUCT',
-            'RANGE',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
-          }),
-      })
-      .openapi({
-        description:
-          'The data type of a variable such as a function argument. Examples include: * INT64: `{"typeKind": "INT64"}` * ARRAY: { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "STRING"} } * STRUCT>: { "typeKind": "STRUCT", "structType": { "fields": [ { "name": "x", "type": {"typeKind": "STRING"} }, { "name": "y", "type": { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "DATE"} } } ] } }',
-        required: [],
-      }),
-  )
-  .openapi('StandardSqlDataType')
-
-type StandardSqlFieldType = { name?: string; type?: z.infer<typeof StandardSqlDataTypeSchema> }
-
-const StandardSqlFieldSchema: z.ZodType<StandardSqlFieldType> = z
-  .lazy(() =>
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Optional. The name of this field. Can be absent for struct fields.',
-          }),
-        type: StandardSqlDataTypeSchema.exactOptional().openapi({
-          description:
-            'Optional. The type of this parameter. Absent if not explicitly specified (e.g., CREATE FUNCTION statement can omit the return type; in this case the output parameter does not have this "type" field).',
-        }),
-      })
-      .openapi({ description: 'A field or a column.', required: [] }),
-  )
-  .openapi('StandardSqlField')
-
-type StandardSqlStructTypeType = { fields?: z.infer<typeof StandardSqlFieldSchema>[] }
-
-const BigLakeConfigurationSchema = z
-  .object({
-    connectionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The connection specifying the credentials to be used to read and write to external storage, such as Cloud Storage. The connection_id can have the form "<project\\_id>.<location\\_id>.<connection\\_id>" or "projects/<project\\_id>/locations/<location\\_id>/connections/<connection\\_id>".',
-      }),
-    fileFormat: z
-      .enum(['FILE_FORMAT_UNSPECIFIED', 'PARQUET'])
-      .exactOptional()
-      .openapi({ description: 'Required. The file format the table data is stored in.' }),
-    storageUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The fully qualified location prefix of the external folder where table data is stored. The \'*\' wildcard character is not allowed. The URI should be in the format "gs://bucket/path_to_table/"',
-      }),
-    tableFormat: z
-      .enum(['TABLE_FORMAT_UNSPECIFIED', 'ICEBERG'])
-      .exactOptional()
-      .openapi({
-        description: 'Required. The table format the metadata only snapshots are stored in.',
-      }),
-  })
-  .openapi({ description: 'Configuration for BigLake managed tables.', required: [] })
-  .openapi('BigLakeConfiguration')
-
-const TableReferenceSchema = z
-  .object({
-    datasetId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ID of the dataset containing this table.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ID of the project containing this table.' }),
-    tableId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TableReference')
-
-const CloneDefinitionSchema = z
-  .object({
-    baseTableReference: TableReferenceSchema.exactOptional().openapi({
-      description: 'Required. Reference describing the ID of the table that was cloned.',
-    }),
-    cloneTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The time at which the base table was cloned. This value is reported in the JSON response using RFC3339 format.',
-      }),
-  })
-  .openapi({
-    description: 'Information about base table and clone time of a table clone.',
-    required: [],
-  })
-  .openapi('CloneDefinition')
-
-const ClusteringSchema = z
-  .object({
-    fields: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'One or more fields on which data should be clustered. Only top-level, non-repeated, simple-type fields are supported. The ordering of the clustering fields should be prioritized from most to least important for filtering purposes. Additional information on limitations can be found here: https://cloud.google.com/bigquery/docs/creating-clustered-tables#limitations',
-      }),
-  })
-  .openapi({ description: 'Configures table clustering.', required: [] })
-  .openapi('Clustering')
-
-const EncryptionConfigurationSchema = z
-  .object({
-    kmsKeyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table. The BigQuery Service Account associated with your project requires access to this encryption key.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EncryptionConfiguration')
-
-const AvroOptionsSchema = z
-  .object({
-    useAvroLogicalTypes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If sourceFormat is set to "AVRO", indicates whether to interpret logical types as the corresponding BigQuery data type (for example, TIMESTAMP), instead of using the raw type (for example, INTEGER).',
-      }),
-  })
-  .openapi({ description: 'Options for external data sources.', required: [] })
-  .openapi('AvroOptions')
-
-const BigtableColumnSchema = z
-  .object({
-    encoding: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. 'encoding' can also be set at the column family level. However, the setting at this level takes precedence if 'encoding' is set at both levels.",
-      }),
-    fieldName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as the column field name and is used as field name in queries.',
-      }),
-    onlyReadLatest: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. If this is set, only the latest version of value in this column are exposed. 'onlyReadLatest' can also be set at the column family level. However, the setting at this level takes precedence if 'onlyReadLatest' is set at both levels.",
-      }),
-    qualifierEncoded: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Required] Qualifier of the column. Columns in the parent column family that has this exact qualifier are exposed as . field. If the qualifier is valid UTF-8 string, it can be specified in the qualifier_string field. Otherwise, a base-64 encoded value must be set to qualifier_encoded. The column field name is the same as the column qualifier. However, if the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as field_name.',
-      }),
-    qualifierString: z.string().exactOptional().openapi({ description: 'Qualifier string.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The type to convert the value in cells of this column. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. 'type' can also be set at the column family level. However, the setting at this level takes precedence if 'type' is set at both levels.",
-      }),
-  })
-  .openapi({ description: 'Information related to a Bigtable column.', required: [] })
-  .openapi('BigtableColumn')
-
-const BigtableColumnFamilySchema = z
-  .object({
-    columns: z
-      .array(BigtableColumnSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Lists of columns that should be exposed as individual fields as opposed to a list of (column name, value) pairs. All columns whose qualifier matches a qualifier in this list can be accessed as .. Other columns can be accessed as a list through .Column field.',
-      }),
-    encoding: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. This can be overridden for a specific column by listing that column in 'columns' and specifying an encoding for it.",
-      }),
-    familyId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identifier of the column family.' }),
-    onlyReadLatest: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. If this is set only the latest version of value are exposed for all columns in this column family. This can be overridden for a specific column by listing that column in 'columns' and specifying a different setting for that column.",
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The type to convert the value in cells of this column family. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. This can be overridden for a specific column by listing that column in 'columns' and specifying a type for it.",
-      }),
-  })
-  .openapi({ description: 'Information related to a Bigtable column family.', required: [] })
-  .openapi('BigtableColumnFamily')
-
-const BigtableOptionsSchema = z
-  .object({
-    columnFamilies: z
-      .array(BigtableColumnFamilySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. List of column families to expose in the table schema along with their types. This list restricts the column families that can be referenced in queries and specifies their value types. You can use this list to do type conversions - see the 'type' field for more details. If you leave this list empty, all column families are present in the table schema and their values are read as BYTES. During a query only the column families referenced in that query are read from Bigtable.",
-      }),
-    ignoreUnspecifiedColumnFamilies: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If field is true, then the column families that are not specified in columnFamilies list are not exposed in the table schema. Otherwise, they are read with BYTES type values. The default value is false.',
-      }),
-    outputColumnFamiliesAsJson: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If field is true, then each column family will be read as a single JSON column. Otherwise they are read as a repeated cell structure containing timestamp/value tuples. The default value is false.',
-      }),
-    readRowkeyAsString: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If field is true, then the rowkey column families will be read and converted to string. Otherwise they are read with BYTES type values and users need to manually cast them with CAST if necessary. The default value is false.',
-      }),
-  })
-  .openapi({ description: 'Options specific to Google Cloud Bigtable data sources.', required: [] })
-  .openapi('BigtableOptions')
-
-const CsvOptionsSchema = z
-  .object({
-    allowJaggedRows: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Indicates if BigQuery should accept rows that are missing trailing optional columns. If true, BigQuery treats missing trailing columns as null values. If false, records with missing trailing columns are treated as bad records, and if there are too many bad records, an invalid error is returned in the job result. The default value is false.',
-      }),
-    allowQuotedNewlines: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Indicates if BigQuery should allow quoted data sections that contain newline characters in a CSV file. The default value is false.',
-      }),
-    encoding: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The character encoding of the data. The supported values are UTF-8, ISO-8859-1, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8. BigQuery decodes the data after the raw, binary data has been split using the values of the quote and fieldDelimiter properties.',
-      }),
-    fieldDelimiter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The separator character for fields in a CSV file. The separator is interpreted as a single byte. For files encoded in ISO-8859-1, any single character can be used as a separator. For files encoded in UTF-8, characters represented in decimal range 1-127 (U+0001-U+007F) can be used without any modification. UTF-8 characters encoded with multiple bytes (i.e. U+0080 and above) will have only the first byte used for separating fields. The remaining bytes will be treated as a part of the field. BigQuery also supports the escape sequence "\\t" (U+0009) to specify a tab separator. The default value is comma (",", U+002C).',
-      }),
-    nullMarker: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Optional] A custom string that will represent a NULL value in CSV import data.',
-      }),
-    preserveAsciiControlCharacters: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Indicates if the embedded ASCII control characters (the first 32 characters in the ASCII-table, from '\\x00' to '\\x1F') are preserved.",
-      }),
-    quote: z
-      .string()
-      .regex(/.?/)
-      .default('"')
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The value that is used to quote data sections in a CSV file. BigQuery converts the string to ISO-8859-1 encoding, and then uses the first byte of the encoded string to split the data in its raw, binary state. The default value is a double-quote ("). If your data does not contain quoted sections, set the property value to an empty string. If your data contains quoted newline characters, you must also set the allowQuotedNewlines property to true. To include the specific quote character within a quoted value, precede it with an additional matching quote character. For example, if you want to escape the default character \' " \', use \' "" \'.',
-      }),
-    skipLeadingRows: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The number of rows at the top of a CSV file that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows in the file that should be skipped. When autodetect is on, the behavior is the following: * skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. * skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema.',
-      }),
-  })
-  .openapi({ description: 'Information related to a CSV data source.', required: [] })
-  .openapi('CsvOptions')
-
-const GoogleSheetsOptionsSchema = z
-  .object({
-    range: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Range of a sheet to query from. Only used when non-empty. Typical format: sheet_name!top_left_cell_id:bottom_right_cell_id For example: sheet1!A1:B20',
-      }),
-    skipLeadingRows: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The number of rows at the top of a sheet that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows that should be skipped. When autodetect is on, the behavior is the following: * skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. * skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema.',
-      }),
-  })
-  .openapi({ description: 'Options specific to Google Sheets data sources.', required: [] })
-  .openapi('GoogleSheetsOptions')
-
-const HivePartitioningOptionsSchema = z
-  .object({
-    fields: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. For permanent external tables, this field is populated with the hive partition keys in the order they were inferred. The types of the partition keys can be deduced by checking the table schema (which will include the partition keys). Not every API will populate this field in the output. For example, Tables.Get will populate it, but Tables.List will not contain this field.',
-        readOnly: true,
-      }),
-    mode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When set, what mode of hive partitioning to use when reading data. The following modes are supported: * AUTO: automatically infer partition key name(s) and type(s). * STRINGS: automatically infer partition key name(s). All types are strings. * CUSTOM: partition key schema is encoded in the source URI prefix. Not all storage formats support hive partitioning. Requesting hive partitioning on an unsupported format will lead to an error. Currently supported formats are: JSON, CSV, ORC, Avro and Parquet.',
-      }),
-    requirePartitionFilter: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified. Note that this field should only be true when creating a permanent external table or querying a temporary external table. Hive-partitioned loads with require_partition_filter explicitly set to true will fail.',
-      }),
-    sourceUriPrefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When hive partition detection is requested, a common prefix for all source uris must be required. The prefix must end immediately before the partition key encoding begins. For example, consider files following this data layout: gs://bucket/path_to_table/dt=2019-06-01/country=USA/id=7/file.avro gs://bucket/path_to_table/dt=2019-05-31/country=CA/id=3/file.avro When hive partitioning is requested with either AUTO or STRINGS detection, the common prefix can be either of gs://bucket/path_to_table or gs://bucket/path_to_table/. CUSTOM detection requires encoding the partitioning schema immediately after the common prefix. For CUSTOM, any of * gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:INTEGER} * gs://bucket/path_to_table/{dt:STRING}/{country:STRING}/{id:INTEGER} * gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:STRING} would all be valid source URI prefixes.',
-      }),
-  })
-  .openapi({ description: 'Options for configuring hive partitioning detect.', required: [] })
-  .openapi('HivePartitioningOptions')
-
-const JsonOptionsSchema = z
-  .object({
-    encoding: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The character encoding of the data. The supported values are UTF-8, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8.',
-      }),
-  })
-  .openapi({ description: 'Json Options for load and make external tables.', required: [] })
-  .openapi('JsonOptions')
-
-const ParquetOptionsSchema = z
-  .object({
-    enableListInference: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Indicates whether to use schema inference specifically for Parquet LIST logical type.',
-      }),
-    enumAsString: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Indicates whether to infer Parquet ENUM logical type as STRING instead of BYTES by default.',
-      }),
-  })
-  .openapi({ description: 'Parquet Options for load and make external tables.', required: [] })
-  .openapi('ParquetOptions')
-
-const TableFieldSchemaSchema: z.ZodType<TableFieldSchemaType> = z
-  .lazy(() =>
-    z
-      .object({
-        categories: z
-          .object({
-            names: z.array(z.string()).exactOptional().openapi({ description: 'Deprecated.' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'Deprecated.', required: [] }),
-        collation: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
-          }),
-        defaultValueExpression: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. A SQL expression to specify the [default value] (https://cloud.google.com/bigquery/docs/default-values) for this field.',
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Optional. The field description. The maximum length is 1,024 characters.',
-          }),
-        fields: z
-          .array(TableFieldSchemaSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Describes the nested schema fields if the type property is set to RECORD.',
-          }),
-        maxLength: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Maximum length of values of this field for STRINGS or BYTES. If max_length is not specified, no maximum length constraint is imposed on this field. If type = "STRING", then max_length represents the maximum UTF-8 length of strings in this field. If type = "BYTES", then max_length represents the maximum number of bytes in this field. It is invalid to set this field if type ≠ "STRING" and ≠ "BYTES".',
-          }),
-        mode: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE.',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.',
-          }),
-        policyTags: z
-          .object({
-            names: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({
-                description:
-                  'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The policy tags attached to this field, used for field-level access control. If not set, defaults to empty policy_tags.',
-            required: [],
-          }),
-        precision: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
-          }),
-        rangeElementType: z
-          .object({
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Required. The type of a field element. See TableFieldSchema.type.',
-              }),
-          })
-          .exactOptional()
-          .openapi({ description: 'Represents the type of a field element.', required: [] }),
-        roundingMode: z
-          .enum(['ROUNDING_MODE_UNSPECIFIED', 'ROUND_HALF_AWAY_FROM_ZERO', 'ROUND_HALF_EVEN'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Specifies the rounding mode to be used when storing values of NUMERIC and BIGNUMERIC type.',
-          }),
-        scale: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Optional. See documentation for precision.' }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. The field data type. Possible values include: * STRING * BYTES * INTEGER (or INT64) * FLOAT (or FLOAT64) * BOOLEAN (or BOOL) * TIMESTAMP * DATE * TIME * DATETIME * GEOGRAPHY * NUMERIC * BIGNUMERIC * JSON * RECORD (or STRUCT) Use of RECORD/STRUCT indicates that the field contains a nested schema.',
-          }),
-      })
-      .openapi({ description: 'A field in TableSchema', required: [] }),
-  )
-  .openapi('TableFieldSchema')
-
-const TableSchemaSchema = z
-  .object({
-    fields: z
-      .array(TableFieldSchemaSchema)
-      .exactOptional()
-      .openapi({ description: 'Describes the fields in a table.' }),
-  })
-  .openapi({ description: 'Schema of a table', required: [] })
-  .openapi('TableSchema')
-
-const ExternalDataConfigurationSchema = z
-  .object({
-    autodetect: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Try to detect schema and format options automatically. Any option specified explicitly will be honored.',
-      }),
-    avroOptions: AvroOptionsSchema.exactOptional().openapi({
-      description: 'Optional. Additional properties to set if sourceFormat is set to AVRO.',
-    }),
-    bigtableOptions: BigtableOptionsSchema.exactOptional().openapi({
-      description: 'Optional. Additional options if sourceFormat is set to BIGTABLE.',
-    }),
-    compression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The compression type of the data source. Possible values include GZIP and NONE. The default value is NONE. This setting is ignored for Google Cloud Bigtable, Google Cloud Datastore backups, Avro, ORC and Parquet formats. An empty string is an invalid value.',
-      }),
-    connectionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The connection specifying the credentials to be used to read external storage, such as Azure Blob, Cloud Storage, or S3. The connection_id can have the form "<project\\_id>.<location\\_id>.<connection\\_id>" or "projects/<project\\_id>/locations/<location\\_id>/connections/<connection\\_id>".',
-      }),
-    csvOptions: CsvOptionsSchema.exactOptional().openapi({
-      description: 'Optional. Additional properties to set if sourceFormat is set to CSV.',
-    }),
-    decimalTargetTypes: z
-      .array(z.enum(['DECIMAL_TARGET_TYPE_UNSPECIFIED', 'NUMERIC', 'BIGNUMERIC', 'STRING']))
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is ["NUMERIC", "BIGNUMERIC"]. If (precision,scale) is: * (38,9) -> NUMERIC; * (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); * (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); * (76,38) -> BIGNUMERIC; * (77,38) -> BIGNUMERIC (error if value exeeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, ["BIGNUMERIC", "NUMERIC"] is the same as ["NUMERIC", "BIGNUMERIC"] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to ["NUMERIC", "STRING"] for ORC and ["NUMERIC"] for the other file formats.',
-      }),
-    fileSetSpecType: z
-      .enum([
-        'FILE_SET_SPEC_TYPE_FILE_SYSTEM_MATCH',
-        'FILE_SET_SPEC_TYPE_NEW_LINE_DELIMITED_MANIFEST',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies how source URIs are interpreted for constructing the file set to load. By default source URIs are expanded against the underlying storage. Other options include specifying manifest files. Only applicable to object storage systems.',
-      }),
-    googleSheetsOptions: GoogleSheetsOptionsSchema.exactOptional().openapi({
-      description: 'Optional. Additional options if sourceFormat is set to GOOGLE_SHEETS.',
-    }),
-    hivePartitioningOptions: HivePartitioningOptionsSchema.exactOptional().openapi({
-      description:
-        'Optional. When set, configures hive partitioning support. Not all storage formats support hive partitioning -- requesting hive partitioning on an unsupported format will lead to an error, as will providing an invalid specification.',
-    }),
-    ignoreUnknownValues: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Indicates if BigQuery should allow extra values that are not represented in the table schema. If true, the extra values are ignored. If false, records with extra columns are treated as bad records, and if there are too many bad records, an invalid error is returned in the job result. The default value is false. The sourceFormat property determines what BigQuery treats as an extra value: CSV: Trailing columns JSON: Named values that don't match any column names Google Cloud Bigtable: This setting is ignored. Google Cloud Datastore backups: This setting is ignored. Avro: This setting is ignored. ORC: This setting is ignored. Parquet: This setting is ignored.",
-      }),
-    jsonExtension: z
-      .enum(['JSON_EXTENSION_UNSPECIFIED', 'GEOJSON'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Load option to be used together with source_format newline-delimited JSON to indicate that a variant of JSON is being loaded. To load newline-delimited GeoJSON, specify GEOJSON (and source_format must be set to NEWLINE_DELIMITED_JSON).',
-      }),
-    jsonOptions: JsonOptionsSchema.exactOptional().openapi({
-      description: 'Optional. Additional properties to set if sourceFormat is set to JSON.',
-    }),
-    maxBadRecords: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The maximum number of bad records that BigQuery can ignore when reading data. If the number of bad records exceeds this value, an invalid error is returned in the job result. The default value is 0, which requires that all records are valid. This setting is ignored for Google Cloud Bigtable, Google Cloud Datastore backups, Avro, ORC and Parquet formats.',
-      }),
-    metadataCacheMode: z
-      .enum(['METADATA_CACHE_MODE_UNSPECIFIED', 'AUTOMATIC', 'MANUAL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Metadata Cache Mode for the table. Set this to enable caching of metadata from external data source.',
-      }),
-    objectMetadata: z
-      .enum(['OBJECT_METADATA_UNSPECIFIED', 'DIRECTORY', 'SIMPLE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. ObjectMetadata is used to create Object Tables. Object Tables contain a listing of objects (with their metadata) found at the source_uris. If ObjectMetadata is set, source_format should be omitted. Currently SIMPLE is the only supported Object Metadata type.',
-      }),
-    parquetOptions: ParquetOptionsSchema.exactOptional().openapi({
-      description: 'Optional. Additional properties to set if sourceFormat is set to PARQUET.',
-    }),
-    referenceFileSchemaUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When creating an external table, the user can provide a reference file with the table schema. This is enabled for the following formats: AVRO, PARQUET, ORC.',
-      }),
-    schema: TableSchemaSchema.exactOptional().openapi({
-      description:
-        'Optional. The schema for the data. Schema is required for CSV and JSON formats if autodetect is not on. Schema is disallowed for Google Cloud Bigtable, Cloud Datastore backups, Avro, ORC and Parquet formats.',
-    }),
-    sourceFormat: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Required] The data format. For CSV files, specify "CSV". For Google sheets, specify "GOOGLE_SHEETS". For newline-delimited JSON, specify "NEWLINE_DELIMITED_JSON". For Avro files, specify "AVRO". For Google Cloud Datastore backups, specify "DATASTORE_BACKUP". For Apache Iceberg tables, specify "ICEBERG". For ORC files, specify "ORC". For Parquet files, specify "PARQUET". [Beta] For Google Cloud Bigtable, specify "BIGTABLE".',
-      }),
-    sourceUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "[Required] The fully-qualified URIs that point to your data in Google Cloud. For Google Cloud Storage URIs: Each URI can contain one '*' wildcard character and it must come after the 'bucket' name. Size limits related to load jobs apply to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table. For Google Cloud Datastore backups, exactly one URI can be specified. Also, the '*' wildcard character is not allowed.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ExternalDataConfiguration')
-
-const MaterializedViewDefinitionSchema = z
-  .object({
-    allowNonIncrementalDefinition: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. This option declares authors intention to construct a materialized view that will not be refreshed incrementally.',
-      }),
-    enableRefresh: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Enable automatic refresh of the materialized view when the base table is updated. The default value is "true".',
-      }),
-    lastRefreshTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time when this materialized view was last refreshed, in milliseconds since the epoch.',
-        readOnly: true,
-      }),
-    maxStaleness: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Optional] Max staleness of data that could be returned when materizlized view is queried (formatted as Google SQL Interval type).',
-      }),
-    query: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. A query whose results are persisted.' }),
-    refreshIntervalMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The maximum frequency at which this materialized view will be refreshed. The default value is "1800000" (30 minutes).',
-      }),
-  })
-  .openapi({ description: 'Definition and configuration of a materialized view.', required: [] })
-  .openapi('MaterializedViewDefinition')
-
-const ErrorProtoSchema = z
-  .object({
-    debugInfo: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Debugging information. This property is internal to Google and should not be used.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Specifies where the error occurred, if present.' }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A human-readable description of the error.' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A short error code that summarizes the error.' }),
-  })
-  .openapi({ description: 'Error details.', required: [] })
-  .openapi('ErrorProto')
-
-const MaterializedViewStatusSchema = z
-  .object({
-    lastRefreshStatus: ErrorProtoSchema.exactOptional().openapi({
-      description:
-        'Output only. Error result of the last automatic refresh. If present, indicates that the last automatic refresh was unsuccessful.',
-      readOnly: true,
-    }),
-    refreshWatermark: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Refresh watermark of materialized view. The base tables' data were collected into the materialized view cache until this time.",
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Status of a materialized view. The last refresh timestamp status is omitted here, but is present in the MaterializedViewDefinition message.',
-    required: [],
-  })
-  .openapi('MaterializedViewStatus')
-
-const BqmlIterationResultSchema = z
-  .object({
-    durationMs: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-    evalLoss: z.float64().exactOptional().openapi({ description: 'Deprecated.' }),
-    index: z.int32().exactOptional().openapi({ description: 'Deprecated.' }),
-    learnRate: z.float64().exactOptional().openapi({ description: 'Deprecated.' }),
-    trainingLoss: z.float64().exactOptional().openapi({ description: 'Deprecated.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('BqmlIterationResult')
-
-const BqmlTrainingRunSchema = z
-  .object({
-    iterationResults: z
-      .array(BqmlIterationResultSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated.' }),
-    startTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Deprecated.' }),
-    state: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-    trainingOptions: z
-      .object({
-        earlyStop: z.boolean().exactOptional(),
-        l1Reg: z.float64().exactOptional(),
-        l2Reg: z.float64().exactOptional(),
-        learnRate: z.float64().exactOptional(),
-        learnRateStrategy: z.string().exactOptional(),
-        lineSearchInitLearnRate: z.float64().exactOptional(),
-        maxIteration: z.string().exactOptional(),
-        minRelProgress: z.float64().exactOptional(),
-        warmStart: z.boolean().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ description: 'Deprecated.', required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('BqmlTrainingRun')
-
-const ModelDefinitionSchema = z
-  .object({
-    modelOptions: z
-      .object({
-        labels: z.array(z.string()).exactOptional(),
-        lossType: z.string().exactOptional(),
-        modelType: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ description: 'Deprecated.', required: [] }),
-    trainingRuns: z
-      .array(BqmlTrainingRunSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ModelDefinition')
-
-const RangePartitioningSchema = z
-  .object({
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. [Experimental] The table is partitioned by this field. The field must be a top-level NULLABLE/REQUIRED field. The only supported type is INTEGER/INT64.',
-      }),
-    range: z
-      .object({
-        end: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '[Experimental] The end of range partitioning, exclusive.' }),
-        interval: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '[Experimental] The width of each interval.' }),
-        start: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '[Experimental] The start of range partitioning, inclusive.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: '[Experimental] Defines the ranges for range partitioning.',
-        required: [],
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('RangePartitioning')
-
-const SnapshotDefinitionSchema = z
-  .object({
-    baseTableReference: TableReferenceSchema.exactOptional().openapi({
-      description: 'Required. Reference describing the ID of the table that was snapshot.',
-    }),
-    snapshotTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The time at which the base table was snapshot. This value is reported in the JSON response using RFC3339 format.',
-      }),
-  })
-  .openapi({
-    description: 'Information about base table and snapshot time of the snapshot.',
-    required: [],
-  })
-  .openapi('SnapshotDefinition')
-
-const StreamingbufferSchema = z
-  .object({
-    estimatedBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A lower-bound estimate of the number of bytes currently in the streaming buffer.',
-        readOnly: true,
-      }),
-    estimatedRows: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A lower-bound estimate of the number of rows currently in the streaming buffer.',
-        readOnly: true,
-      }),
-    oldestEntryTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Contains the timestamp of the oldest entry in the streaming buffer, in milliseconds since the epoch, if the streaming buffer is available.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Streamingbuffer')
-
-const TableConstraintsSchema = z
-  .object({
-    foreignKeys: z
-      .array(
-        z
-          .object({
-            columnReferences: z
-              .array(
-                z
-                  .object({
-                    referencedColumn: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Required. The column in the primary key that are referenced by the referencing_column.',
-                      }),
-                    referencingColumn: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description: 'Required. The column that composes the foreign key.',
-                      }),
-                  })
-                  .openapi({
-                    description: 'The pair of the foreign key column and primary key column.',
-                    required: [],
-                  }),
-              )
-              .exactOptional()
-              .openapi({ description: 'Required. The columns that compose the foreign key.' }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Optional. Set only if the foreign key constraint is named.',
-              }),
-            referencedTable: z
-              .object({
-                datasetId: z.string().exactOptional(),
-                projectId: z.string().exactOptional(),
-                tableId: z.string().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .openapi({
-            description: "Represents a foreign key constraint on a table's columns.",
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Present only if the table has a foreign key. The foreign key is not enforced.',
-      }),
-    primaryKey: z
-      .object({
-        columns: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description: 'Required. The columns that are composed of the primary key constraint.',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: "Represents the primary key constraint on a table's columns.",
-        required: [],
-      }),
-  })
-  .openapi({
-    description: 'The TableConstraints defines the primary key and foreign key.',
-    required: [],
-  })
-  .openapi('TableConstraints')
-
-const TableReplicationInfoSchema = z
-  .object({
-    replicatedSourceLastRefreshTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Output only. If source is a materialized view, this field signifies the last refresh time of the source.',
-        readOnly: true,
-      }),
-    replicationError: ErrorProtoSchema.exactOptional().openapi({
-      description:
-        'Optional. Output only. Replication error that will permanently stopped table replication.',
-      readOnly: true,
-    }),
-    replicationIntervalMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Specifies the interval at which the source table is polled for updates.',
-      }),
-    replicationStatus: z
-      .enum([
-        'REPLICATION_STATUS_UNSPECIFIED',
-        'ACTIVE',
-        'SOURCE_DELETED',
-        'PERMISSION_DENIED',
-        'UNSUPPORTED_CONFIGURATION',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Output only. Replication status of configured replication.',
-        readOnly: true,
-      }),
-    sourceTable: TableReferenceSchema.exactOptional().openapi({
-      description: 'Required. Source table reference that is replicated.',
-    }),
-  })
-  .openapi({
-    description:
-      'Replication info of a table created using `AS REPLICA` DDL like: `CREATE MATERIALIZED VIEW mv1 AS REPLICA OF src_mv`',
-    required: [],
-  })
-  .openapi('TableReplicationInfo')
-
-const TimePartitioningSchema = z
-  .object({
-    expirationMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Number of milliseconds for which to keep the storage for a partition. A wrapper is used here because 0 is an invalid value.',
-      }),
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. If not set, the table is partitioned by pseudo column '_PARTITIONTIME'; if set, the table is partitioned by this field. The field must be a top-level TIMESTAMP or DATE field. Its mode must be NULLABLE or REQUIRED. A wrapper is used here because an empty string is an invalid value.",
-      }),
-    requirePartitionFilter: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified. This field is deprecated; please set the field with the same name on the table itself instead. This field needs a wrapper because we want to output the default value, false, if the user explicitly set it.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The supported types are DAY, HOUR, MONTH, and YEAR, which will generate one partition per day, hour, month, and year, respectively.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TimePartitioning')
-
-const AggregationThresholdPolicySchema = z
-  .object({
-    privacyUnitColumns: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The privacy unit column(s) associated with this policy. For now, only one column per data source object (table, view) is allowed as a privacy unit column. Representing as a repeated field in metadata for extensibility to multiple columns in future. Duplicates and Repeated struct fields are not allowed. For nested fields, use dot notation ("outer.inner")',
-      }),
-    threshold: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The threshold for the "aggregation threshold" policy.' }),
-  })
-  .openapi({
-    description: 'Represents privacy policy associated with "aggregation threshold" method.',
-    required: [],
-  })
-  .openapi('AggregationThresholdPolicy')
-
-const PrivacyPolicySchema = z
-  .object({
-    aggregationThresholdPolicy: AggregationThresholdPolicySchema.exactOptional().openapi({
-      description: 'Optional. Policy used for aggregation thresholds.',
-    }),
-  })
-  .openapi({
-    description:
-      'Represents privacy policy that contains the privacy requirements specified by the data owner. Currently, this is only supported on views.',
-    required: [],
-  })
-  .openapi('PrivacyPolicy')
-
-const UserDefinedFunctionResourceSchema = z
-  .object({
-    inlineCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Pick one] An inline resource that contains code for a user-defined function (UDF). Providing a inline code resource is equivalent to providing a URI for a file containing the same code.',
-      }),
-    resourceUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Pick one] A code resource to load from a Google Cloud Storage URI (gs://bucket/path).',
-      }),
-  })
-  .openapi({
-    description:
-      ' This is used for defining User Defined Function (UDF) resources only when using legacy SQL. Users of GoogleSQL should leverage either DDL (e.g. CREATE [TEMPORARY] FUNCTION ... ) or the Routines API to define UDF resources. For additional information on migrating, see: https://cloud.google.com/bigquery/docs/reference/standard-sql/migrating-from-legacy-sql#differences_in_user-defined_javascript_functions',
-    required: [],
-  })
-  .openapi('UserDefinedFunctionResource')
-
-const ViewDefinitionSchema = z
-  .object({
-    privacyPolicy: PrivacyPolicySchema.exactOptional().openapi({
-      description: 'Optional. Specifices the privacy policy for the view.',
-    }),
-    query: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. A query that BigQuery executes when the view is referenced.',
-      }),
-    useExplicitColumnNames: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "True if the column names are explicitly specified. For example by using the 'CREATE VIEW v(c1, c2) AS ...' syntax. Can only be set for GoogleSQL views.",
-      }),
-    useLegacySql: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Specifies whether to use BigQuery's legacy SQL for this view. The default value is true. If set to false, the view will use BigQuery's GoogleSQL: https://cloud.google.com/bigquery/sql-reference/ Queries and views that reference this view must use the same flag value. A wrapper is used here because the default value is True.",
-      }),
-    userDefinedFunctionResources: z
-      .array(UserDefinedFunctionResourceSchema)
-      .exactOptional()
-      .openapi({ description: 'Describes user-defined function resources used in the query.' }),
-  })
-  .openapi({ description: 'Describes the definition of a logical view.', required: [] })
-  .openapi('ViewDefinition')
-
-type TableType = {
-  biglakeConfiguration?: z.infer<typeof BigLakeConfigurationSchema>
-  cloneDefinition?: z.infer<typeof CloneDefinitionSchema>
-  clustering?: z.infer<typeof ClusteringSchema>
-  creationTime?: string
-  defaultCollation?: string
-  defaultRoundingMode?:
-    | 'ROUNDING_MODE_UNSPECIFIED'
-    | 'ROUND_HALF_AWAY_FROM_ZERO'
-    | 'ROUND_HALF_EVEN'
-  description?: string
-  encryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
-  etag?: string
-  expirationTime?: string
-  externalDataConfiguration?: z.infer<typeof ExternalDataConfigurationSchema>
-  friendlyName?: string
-  id?: string
-  kind?: string
-  labels?: { [key: string]: string }
-  lastModifiedTime?: string
-  location?: string
-  materializedView?: z.infer<typeof MaterializedViewDefinitionSchema>
-  materializedViewStatus?: z.infer<typeof MaterializedViewStatusSchema>
-  maxStaleness?: string
-  model?: z.infer<typeof ModelDefinitionSchema>
-  numActiveLogicalBytes?: string
-  numActivePhysicalBytes?: string
-  numBytes?: string
-  numLongTermBytes?: string
-  numLongTermLogicalBytes?: string
-  numLongTermPhysicalBytes?: string
-  numPartitions?: string
-  numPhysicalBytes?: string
-  numRows?: string
-  numTimeTravelPhysicalBytes?: string
-  numTotalLogicalBytes?: string
-  numTotalPhysicalBytes?: string
-  rangePartitioning?: z.infer<typeof RangePartitioningSchema>
-  replicas?: z.infer<typeof TableReferenceSchema>[]
-  requirePartitionFilter?: boolean
-  resourceTags?: { [key: string]: string }
-  schema?: z.infer<typeof TableSchemaSchema>
-  selfLink?: string
-  snapshotDefinition?: z.infer<typeof SnapshotDefinitionSchema>
-  streamingBuffer?: z.infer<typeof StreamingbufferSchema>
-  tableConstraints?: z.infer<typeof TableConstraintsSchema>
-  tableReference?: z.infer<typeof TableReferenceSchema>
-  tableReplicationInfo?: z.infer<typeof TableReplicationInfoSchema>
-  timePartitioning?: z.infer<typeof TimePartitioningSchema>
-  type?: string
-  view?: z.infer<typeof ViewDefinitionSchema>
-}
-
-type TableFieldSchemaType = {
-  categories?: { names?: string[] }
-  collation?: string
-  defaultValueExpression?: string
-  description?: string
-  fields?: TableFieldSchemaType[]
-  maxLength?: string
-  mode?: string
-  name?: string
-  policyTags?: { names?: string[] }
-  precision?: string
-  rangeElementType?: { type?: string }
-  roundingMode?: 'ROUNDING_MODE_UNSPECIFIED' | 'ROUND_HALF_AWAY_FROM_ZERO' | 'ROUND_HALF_EVEN'
-  scale?: string
-  type?: string
-}
-
-const AggregateClassificationMetricsSchema = z
-  .object({
-    accuracy: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.',
-      }),
-    f1Score: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.',
-      }),
-    logLoss: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Logarithmic Loss. For multiclass this is a macro-averaged metric.',
-      }),
-    precision: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.',
-      }),
-    recall: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.',
-      }),
-    rocAuc: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Area Under a ROC Curve. For multiclass this is a macro-averaged metric.',
-      }),
-    threshold: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classfication models this is the confidence threshold.',
-      }),
-  })
-  .openapi({
-    description:
-      'Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.',
-    required: [],
-  })
-  .openapi('AggregateClassificationMetrics')
-
-const ArgumentSchema = z
-  .object({
-    argumentKind: z
-      .enum(['ARGUMENT_KIND_UNSPECIFIED', 'FIXED_TYPE', 'ANY_TYPE'])
-      .exactOptional()
-      .openapi({ description: 'Optional. Defaults to FIXED_TYPE.' }),
-    dataType: StandardSqlDataTypeSchema.exactOptional().openapi({
-      description: 'Required unless argument_kind = ANY_TYPE.',
-    }),
-    isAggregate: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Whether the argument is an aggregate function parameter. Must be Unset for routine types other than AGGREGATE_FUNCTION. For AGGREGATE_FUNCTION, if set to false, it is equivalent to adding "NOT AGGREGATE" clause in DDL; Otherwise, it is equivalent to omitting "NOT AGGREGATE" clause in DDL.',
-      }),
-    mode: z
-      .enum(['MODE_UNSPECIFIED', 'IN', 'OUT', 'INOUT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies whether the argument is input or output. Can be set for procedures only.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The name of this argument. Can be absent for function return argument.',
-      }),
-  })
-  .openapi({
-    description: 'Input/output argument of a function or a stored procedure.',
-    required: [],
-  })
-  .openapi('Argument')
-
-const ArimaCoefficientsSchema = z
-  .object({
-    autoRegressiveCoefficients: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({ description: 'Auto-regressive coefficients, an array of double.' }),
-    interceptCoefficient: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Intercept coefficient, just a double not an array.' }),
-    movingAverageCoefficients: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({ description: 'Moving-average coefficients, an array of double.' }),
-  })
-  .openapi({ description: 'Arima coefficients.', required: [] })
-  .openapi('ArimaCoefficients')
 
 const ArimaFittingMetricsSchema = z
   .object({
@@ -1606,231 +214,62 @@ const ArimaForecastingMetricsSchema = z
   .openapi({ description: 'Model evaluation metrics for ARIMA forecasting models.', required: [] })
   .openapi('ArimaForecastingMetrics')
 
-const ArimaModelInfoSchema = z
+const AggregateClassificationMetricsSchema = z
   .object({
-    arimaCoefficients: ArimaCoefficientsSchema.exactOptional().openapi({
-      description: 'Arima coefficients.',
-    }),
-    arimaFittingMetrics: ArimaFittingMetricsSchema.exactOptional().openapi({
-      description: 'Arima fitting metrics.',
-    }),
-    hasDrift: z
-      .boolean()
+    accuracy: z
+      .float64()
       .exactOptional()
       .openapi({
         description:
-          'Whether Arima model fitted with drift or not. It is always false when d is not 1.',
+          'Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.',
       }),
-    hasHolidayEffect: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If true, holiday_effect is a part of time series decomposition result.',
-      }),
-    hasSpikesAndDips: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If true, spikes_and_dips is a part of time series decomposition result.',
-      }),
-    hasStepChanges: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If true, step_changes is a part of time series decomposition result.',
-      }),
-    nonSeasonalOrder: ArimaOrderSchema.exactOptional().openapi({
-      description: 'Non-seasonal order.',
-    }),
-    seasonalPeriods: z
-      .array(
-        z.enum([
-          'SEASONAL_PERIOD_TYPE_UNSPECIFIED',
-          'NO_SEASONALITY',
-          'DAILY',
-          'WEEKLY',
-          'MONTHLY',
-          'QUARTERLY',
-          'YEARLY',
-        ]),
-      )
+    f1Score: z
+      .float64()
       .exactOptional()
       .openapi({
         description:
-          'Seasonal periods. Repeated because multiple periods are supported for one time series.',
+          'The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.',
       }),
-    timeSeriesId: z
-      .string()
+    logLoss: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Logarithmic Loss. For multiclass this is a macro-averaged metric.',
+      }),
+    precision: z
+      .float64()
       .exactOptional()
       .openapi({
         description:
-          'The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.',
+          'Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.',
       }),
-    timeSeriesIds: z
-      .array(z.string())
+    recall: z
+      .float64()
       .exactOptional()
       .openapi({
         description:
-          'The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.',
+          'Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.',
       }),
-  })
-  .openapi({ description: 'Arima model information.', required: [] })
-  .openapi('ArimaModelInfo')
-
-const ArimaResultSchema = z
-  .object({
-    arimaModelInfo: z
-      .array(ArimaModelInfoSchema)
+    rocAuc: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Area Under a ROC Curve. For multiclass this is a macro-averaged metric.',
+      }),
+    threshold: z
+      .float64()
       .exactOptional()
       .openapi({
         description:
-          'This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one.',
-      }),
-    seasonalPeriods: z
-      .array(
-        z.enum([
-          'SEASONAL_PERIOD_TYPE_UNSPECIFIED',
-          'NO_SEASONALITY',
-          'DAILY',
-          'WEEKLY',
-          'MONTHLY',
-          'QUARTERLY',
-          'YEARLY',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Seasonal periods. Repeated because multiple periods are supported for one time series.',
+          'Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classfication models this is the confidence threshold.',
       }),
   })
   .openapi({
     description:
-      '(Auto-)arima fitting result. Wrap everything in ArimaResult for easier refactoring if we want to use model-specific iteration results.',
+      'Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.',
     required: [],
   })
-  .openapi('ArimaResult')
-
-const AuditLogConfigSchema = z
-  .object({
-    exemptedMembers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
-  })
-  .openapi({
-    description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
-    required: [],
-  })
-  .openapi('AuditLogConfig')
-
-const AuditConfigSchema = z
-  .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
-    required: [],
-  })
-  .openapi('AuditConfig')
-
-const BiEngineReasonSchema = z
-  .object({
-    code: z
-      .enum([
-        'CODE_UNSPECIFIED',
-        'NO_RESERVATION',
-        'INSUFFICIENT_RESERVATION',
-        'UNSUPPORTED_SQL_TEXT',
-        'INPUT_TOO_LARGE',
-        'OTHER_REASON',
-        'TABLE_EXCLUDED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. High-level BI Engine reason for partial or disabled acceleration',
-        readOnly: true,
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Free form human-readable reason for partial or disabled acceleration.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: "Reason why BI Engine didn't accelerate the query (or sub-query).",
-    required: [],
-  })
-  .openapi('BiEngineReason')
-
-const BiEngineStatisticsSchema = z
-  .object({
-    accelerationMode: z
-      .enum([
-        'BI_ENGINE_ACCELERATION_MODE_UNSPECIFIED',
-        'BI_ENGINE_DISABLED',
-        'PARTIAL_INPUT',
-        'FULL_INPUT',
-        'FULL_QUERY',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Specifies which mode of BI Engine acceleration was performed (if any).',
-        readOnly: true,
-      }),
-    biEngineMode: z
-      .enum(['ACCELERATION_MODE_UNSPECIFIED', 'DISABLED', 'PARTIAL', 'FULL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Specifies which mode of BI Engine acceleration was performed (if any).',
-        readOnly: true,
-      }),
-    biEngineReasons: z
-      .array(BiEngineReasonSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'In case of DISABLED or PARTIAL bi_engine_mode, these contain the explanatory reasons as to why BI Engine could not accelerate. In case the full query was accelerated, this field is not populated.',
-      }),
-  })
-  .openapi({
-    description: 'Statistics for a BI Engine specific query. Populated as part of JobStatistics2',
-    required: [],
-  })
-  .openapi('BiEngineStatistics')
-
-const BigQueryModelTrainingSchema = z
-  .object({
-    currentIteration: z.int32().exactOptional().openapi({ description: 'Deprecated.' }),
-    expectedTotalIterations: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('BigQueryModelTraining')
+  .openapi('AggregateClassificationMetrics')
 
 const BinaryConfusionMatrixSchema = z
   .object({
@@ -1905,155 +344,7 @@ const BinaryClassificationMetricsSchema = z
   })
   .openapi('BinaryClassificationMetrics')
 
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-    }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workforce identity pool. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/group/{group_id}`: All workforce identities in a group. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All workforce identities with a specific attribute value. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/*`: All identities in a workforce identity pool. * `principal://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workload identity pool. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/group/{group_id}`: A workload identity pool group. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All identities in a workload identity pool with a certain attribute. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/*`: All identities in a workload identity pool. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding. * `deleted:principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: Deleted single identity in a workforce identity pool. For example, `deleted:principal://iam.googleapis.com/locations/global/workforcePools/my-pool-id/subject/my-subject-attribute-value`.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`. For an overview of the IAM roles and permissions, see the [IAM documentation](https://cloud.google.com/iam/docs/roles-overview). For a list of the available pre-defined roles, see [here](https://cloud.google.com/iam/docs/understanding-roles).',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const CategoryCountSchema = z
-  .object({
-    category: z.string().exactOptional().openapi({ description: 'The name of category.' }),
-    count: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The count of training samples matching the category within the cluster.',
-      }),
-  })
-  .openapi({
-    description: 'Represents the count of a single category within the cluster.',
-    required: [],
-  })
-  .openapi('CategoryCount')
-
-const CategoricalValueSchema = z
-  .object({
-    categoryCounts: z
-      .array(CategoryCountSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-      }),
-  })
-  .openapi({ description: 'Representative value of a categorical feature.', required: [] })
-  .openapi('CategoricalValue')
-
-const FeatureValueSchema = z
-  .object({
-    categoricalValue: CategoricalValueSchema.exactOptional().openapi({
-      description: 'The categorical feature value.',
-    }),
-    featureColumn: z.string().exactOptional().openapi({ description: 'The feature column name.' }),
-    numericalValue: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The numerical feature value. This is the centroid value for this feature.',
-      }),
-  })
-  .openapi({
-    description: 'Representative value of a single feature within the cluster.',
-    required: [],
-  })
-  .openapi('FeatureValue')
-
-const ClusterSchema = z
-  .object({
-    centroidId: z.string().exactOptional().openapi({ description: 'Centroid id.' }),
-    count: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Count of training data rows that were assigned to this cluster.' }),
-    featureValues: z
-      .array(FeatureValueSchema)
-      .exactOptional()
-      .openapi({ description: 'Values of highly variant features for this cluster.' }),
-  })
-  .openapi({ description: 'Message containing the information about one cluster.', required: [] })
-  .openapi('Cluster')
-
-const ClusterInfoSchema = z
-  .object({
-    centroidId: z.string().exactOptional().openapi({ description: 'Centroid id.' }),
-    clusterRadius: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Cluster radius, the average distance from centroid to each point assigned to the cluster.',
-      }),
-    clusterSize: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Cluster size, the total number of points assigned to the cluster.',
-      }),
-  })
-  .openapi({
-    description: 'Information about a single cluster for clustering model.',
-    required: [],
-  })
-  .openapi('ClusterInfo')
-
-const ClusteringMetricsSchema = z
+const ClusteringMetricsSchema: z.ZodType<ClusteringMetricsType> = z
   .object({
     clusters: z
       .array(ClusterSchema)
@@ -2072,6 +363,21 @@ const ClusteringMetricsSchema = z
   })
   .openapi({ description: 'Evaluation metrics for clustering models.', required: [] })
   .openapi('ClusteringMetrics')
+
+const DimensionalityReductionMetricsSchema = z
+  .object({
+    totalExplainedVarianceRatio: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Total percentage of variance explained by the selected principal components.',
+      }),
+  })
+  .openapi({
+    description: 'Model evaluation metrics for dimensionality reduction models.',
+    required: [],
+  })
+  .openapi('DimensionalityReductionMetrics')
 
 const EntrySchema = z
   .object({
@@ -2117,584 +423,6 @@ const ConfusionMatrixSchema = z
   })
   .openapi({ description: 'Confusion matrix for multi-class classification models.', required: [] })
   .openapi('ConfusionMatrix')
-
-const ConnectionPropertySchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'The key of the property to set.' }),
-    value: z.string().exactOptional().openapi({ description: 'The value of the property to set.' }),
-  })
-  .openapi({
-    description:
-      'A connection-level property to customize query behavior. Under JDBC, these correspond directly to connection properties passed to the DriverManager. Under ODBC, these correspond to properties in the connection string. Currently supported connection properties: * **dataset_project_id**: represents the default project for datasets that are used in the query. Setting the system variable `@@dataset_project_id` achieves the same behavior. For more information about system variables, see: https://cloud.google.com/bigquery/docs/reference/system-variables * **time_zone**: represents the default timezone used to run the query. * **session_id**: associates the query with a given session. * **query_label**: associates the query with a given job label. If set, all subsequent queries in a script or session will have this label. For the format in which a you can specify a query label, see labels in the JobConfiguration resource type: https://cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfiguration Additional properties are allowed, but ignored. Specifying multiple connection properties with the same key returns an error.',
-    required: [],
-  })
-  .openapi('ConnectionProperty')
-
-const DataFormatOptionsSchema = z
-  .object({
-    useInt64Timestamp: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Optional. Output timestamp as usec int64. Default is false.' }),
-  })
-  .openapi({ description: 'Options for data format adjustments.', required: [] })
-  .openapi('DataFormatOptions')
-
-const DataMaskingStatisticsSchema = z
-  .object({
-    dataMaskingApplied: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether any accessed data was protected by the data masking.' }),
-  })
-  .openapi({ description: 'Statistics for data-masking.', required: [] })
-  .openapi('DataMaskingStatistics')
-
-const DataSplitResultSchema = z
-  .object({
-    evaluationTable: TableReferenceSchema.exactOptional().openapi({
-      description: 'Table reference of the evaluation data after split.',
-    }),
-    testTable: TableReferenceSchema.exactOptional().openapi({
-      description: 'Table reference of the test data after split.',
-    }),
-    trainingTable: TableReferenceSchema.exactOptional().openapi({
-      description: 'Table reference of the training data after split.',
-    }),
-  })
-  .openapi({
-    description:
-      'Data split result. This contains references to the training and evaluation data tables that were used to train the model.',
-    required: [],
-  })
-  .openapi('DataSplitResult')
-
-const DatasetReferenceSchema = z
-  .object({
-    datasetId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A unique ID for this dataset, without the project name. The ID must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_). The maximum length is 1,024 characters.',
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The ID of the project containing this dataset.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('DatasetReference')
-
-const DatasetAccessEntrySchema = z
-  .object({
-    dataset: DatasetReferenceSchema.exactOptional().openapi({
-      description: 'The dataset this entry applies to',
-    }),
-    targetTypes: z
-      .array(z.enum(['TARGET_TYPE_UNSPECIFIED', 'VIEWS', 'ROUTINES']))
-      .exactOptional()
-      .openapi({
-        description:
-          'Which resources in the dataset this entry applies to. Currently, only views are supported, but additional target types may be added in the future.',
-      }),
-  })
-  .openapi({
-    description:
-      'Grants all resources of particular types in a particular dataset read access to the current dataset. Similar to how individually authorized views work, updates to any resource granted through its dataset (including creation of new resources) requires read permission to referenced resources, plus write permission to the authorizing dataset.',
-    required: [],
-  })
-  .openapi('DatasetAccessEntry')
-
-const RoutineReferenceSchema = z
-  .object({
-    datasetId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ID of the dataset containing this routine.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ID of the project containing this routine.' }),
-    routineId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The ID of the routine. The ID must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_). The maximum length is 256 characters.',
-      }),
-  })
-  .openapi({ description: 'Id path of a routine.', required: [] })
-  .openapi('RoutineReference')
-
-const ExternalDatasetReferenceSchema = z
-  .object({
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The connection id that is used to access the external_source. Format: projects/{project_id}/locations/{location_id}/connections/{connection_id}',
-      }),
-    externalSource: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. External source that backs this dataset.' }),
-  })
-  .openapi({
-    description: 'Configures the access a dataset defined in an external metadata storage.',
-    required: [],
-  })
-  .openapi('ExternalDatasetReference')
-
-const LinkedDatasetSourceSchema = z
-  .object({
-    sourceDataset: DatasetReferenceSchema.exactOptional().openapi({
-      description: 'The source dataset reference contains project numbers and not project ids.',
-    }),
-  })
-  .openapi({
-    description: 'A dataset source type which refers to another BigQuery dataset.',
-    required: [],
-  })
-  .openapi('LinkedDatasetSource')
-
-const DatasetSchema = z
-  .object({
-    access: z
-      .array(
-        z
-          .object({
-            dataset: DatasetAccessEntrySchema.exactOptional().openapi({
-              description:
-                '[Pick one] A grant authorizing all resources of a particular type in a particular dataset access to this dataset. Only views are supported for now. The role field is not required when this field is set. If that dataset is deleted and re-created, its access needs to be granted again via an update operation.',
-            }),
-            domain: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  '[Pick one] A domain to grant access to. Any users signed in with the domain specified will be granted the specified access. Example: "example.com". Maps to IAM policy member "domain:DOMAIN".',
-              }),
-            groupByEmail: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  '[Pick one] An email address of a Google Group to grant access to. Maps to IAM policy member "group:GROUP".',
-              }),
-            iamMember: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  "[Pick one] Some other type of member that appears in the IAM Policy but isn't a user, group, domain, or special group.",
-              }),
-            role: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'An IAM role ID that should be granted to the user, group, or domain specified in this access entry. The following legacy mappings will be applied: OWNER <=> roles/bigquery.dataOwner WRITER <=> roles/bigquery.dataEditor READER <=> roles/bigquery.dataViewer This field will accept any of the above formats, but will return only the legacy format. For example, if you set this field to "roles/bigquery.dataOwner", it will be returned back as "OWNER".',
-              }),
-            routine: RoutineReferenceSchema.exactOptional().openapi({
-              description:
-                '[Pick one] A routine from a different dataset to grant access to. Queries executed against that routine will have read access to views/tables/routines in this dataset. Only UDF is supported for now. The role field is not required when this field is set. If that routine is updated by any user, access to the routine needs to be granted again via an update operation.',
-            }),
-            specialGroup: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  '[Pick one] A special group to grant access to. Possible values include: projectOwners: Owners of the enclosing project. projectReaders: Readers of the enclosing project. projectWriters: Writers of the enclosing project. allAuthenticatedUsers: All authenticated BigQuery users. Maps to similarly-named IAM members.',
-              }),
-            userByEmail: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  '[Pick one] An email address of a user to grant access to. For example: fred@example.com. Maps to IAM policy member "user:EMAIL" or "serviceAccount:EMAIL".',
-              }),
-            view: TableReferenceSchema.exactOptional().openapi({
-              description:
-                '[Pick one] A view from a different dataset to grant access to. Queries executed against that view will have read access to views/tables/routines in this dataset. The role field is not required when this field is set. If that view is updated by any user, access to the view needs to be granted again via an update operation.',
-            }),
-          })
-          .openapi({
-            description: 'An object that defines dataset access for an entity.',
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. An array of objects that define dataset access for one or more entities. You can set this property when inserting or updating a dataset in order to control who is allowed to access the data. If unspecified at dataset creation time, BigQuery adds default dataset access for the following entities: access.specialGroup: projectReaders; access.role: READER; access.specialGroup: projectWriters; access.role: WRITER; access.specialGroup: projectOwners; access.role: OWNER; access.userByEmail: [dataset creator email]; access.role: OWNER;',
-      }),
-    creationTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time when this dataset was created, in milliseconds since the epoch.',
-        readOnly: true,
-      }),
-    datasetReference: DatasetReferenceSchema.exactOptional().openapi({
-      description: 'Required. A reference that identifies the dataset.',
-    }),
-    defaultCollation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Defines the default collation specification of future tables created in the dataset. If a table is created in this dataset without table-level default collation, then the table inherits the dataset default collation, which is applied to the string fields that do not have explicit collation specified. A change to this field affects only tables created afterwards, and does not alter the existing tables. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
-      }),
-    defaultEncryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
-      description:
-        'The default encryption key for all tables in the dataset. Once this property is set, all newly-created partitioned tables in the dataset will have encryption key set to this value, unless table creation request (or query) overrides the key.',
-    }),
-    defaultPartitionExpirationMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This default partition expiration, expressed in milliseconds. When new time-partitioned tables are created in a dataset where this property is set, the table will inherit this value, propagated as the `TimePartitioning.expirationMs` property on the new table. If you set `TimePartitioning.expirationMs` explicitly when creating a table, the `defaultPartitionExpirationMs` of the containing dataset is ignored. When creating a partitioned table, if `defaultPartitionExpirationMs` is set, the `defaultTableExpirationMs` value is ignored and the table will not be inherit a table expiration deadline.',
-      }),
-    defaultRoundingMode: z
-      .enum(['ROUNDING_MODE_UNSPECIFIED', 'ROUND_HALF_AWAY_FROM_ZERO', 'ROUND_HALF_EVEN'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Defines the default rounding mode specification of new tables created within this dataset. During table creation, if this field is specified, the table within this dataset will inherit the default rounding mode of the dataset. Setting the default rounding mode on a table overrides this option. Existing tables in the dataset are unaffected. If columns are defined during that table creation, they will immediately inherit the table's default rounding mode, unless otherwise specified.",
-      }),
-    defaultTableExpirationMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The default lifetime of all tables in the dataset, in milliseconds. The minimum lifetime value is 3600000 milliseconds (one hour). To clear an existing default expiration with a PATCH request, set to 0. Once this property is set, all newly-created tables in the dataset will have an expirationTime property set to the creation time plus the value in this property, and changing the value will only affect new tables, not existing ones. When the expirationTime for a given table is reached, that table will be deleted automatically. If a table's expirationTime is modified or removed before the table expires, or if you provide an explicit expirationTime when creating a table, that value takes precedence over the default expiration time indicated by this property.",
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. A user-friendly description of the dataset.' }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A hash of the resource.', readOnly: true }),
-    externalDatasetReference: ExternalDatasetReferenceSchema.exactOptional().openapi({
-      description:
-        'Optional. Reference to a read-only external dataset defined in data catalogs outside of BigQuery. Filled out when the dataset type is EXTERNAL.',
-    }),
-    friendlyName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. A descriptive name for the dataset.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The fully-qualified unique name of the dataset in the format projectId:datasetId. The dataset name without the project name is given in the datasetId field. When creating a new dataset, leave this field blank, and instead specify the datasetId field.',
-        readOnly: true,
-      }),
-    isCaseInsensitive: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. TRUE if the dataset and its table names are case-insensitive, otherwise FALSE. By default, this is FALSE, which means the dataset and its table names are case-sensitive. This field does not affect routine references.',
-      }),
-    kind: z
-      .string()
-      .default('bigquery#dataset')
-      .exactOptional()
-      .openapi({ description: 'Output only. The resource type.', readOnly: true }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The labels associated with this dataset. You can use these to organize and group your datasets. You can set this property when inserting or updating a dataset. See Creating and Updating Dataset Labels for more information.',
-      }),
-    lastModifiedTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The date when this dataset was last modified, in milliseconds since the epoch.',
-        readOnly: true,
-      }),
-    linkedDatasetSource: LinkedDatasetSourceSchema.exactOptional().openapi({
-      description:
-        'Optional. The source dataset reference when the dataset is of type LINKED. For all other dataset types it is not set. This field cannot be updated once it is set. Any attempt to update this field using Update and Patch API Operations will be ignored.',
-    }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The geographic location where the dataset should reside. See https://cloud.google.com/bigquery/docs/locations for supported locations.',
-      }),
-    maxTimeTravelHours: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Defines the time travel window in hours. The value can be from 48 to 168 hours (2 to 7 days). The default value is 168 hours if this is not set.',
-      }),
-    satisfiesPzi: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Output only. Reserved for future use.', readOnly: true }),
-    satisfiesPzs: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Output only. Reserved for future use.', readOnly: true }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A URL that can be used to access the resource again. You can use this URL in Get or Update requests to the resource.',
-        readOnly: true,
-      }),
-    storageBillingModel: z
-      .enum(['STORAGE_BILLING_MODEL_UNSPECIFIED', 'LOGICAL', 'PHYSICAL'])
-      .exactOptional()
-      .openapi({ description: 'Optional. Updates storage_billing_model for the dataset.' }),
-    tags: z
-      .array(
-        z
-          .object({
-            tagKey: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Required. The namespaced friendly name of the tag key, e.g. "12345/environment" where 12345 is org id.',
-              }),
-            tagValue: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Required. The friendly short name of the tag value, e.g. "production".',
-              }),
-          })
-          .openapi({
-            description:
-              'A global tag managed by Resource Manager. https://cloud.google.com/iam/docs/tags-access-control#definitions',
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Output only. Tags for the Dataset.', readOnly: true }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Same as `type` in `ListFormatDataset`. The type of the dataset, one of: * DEFAULT - only accessible by owner and authorized accounts, * PUBLIC - accessible by everyone, * LINKED - linked dataset, * EXTERNAL - dataset with definition in external metadata catalog. -- *BIGLAKE_METASTORE - dataset that references a database created in BigLakeMetastore service. --',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Dataset')
-
-const DatasetListSchema = z
-  .object({
-    datasets: z
-      .array(
-        z
-          .object({
-            datasetReference: DatasetReferenceSchema.exactOptional().openapi({
-              description:
-                "The dataset reference. Use this property to access specific parts of the dataset's ID, such as project ID or dataset ID.",
-            }),
-            friendlyName: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'An alternate name for the dataset. The friendly name is purely decorative in nature.',
-              }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The fully-qualified, unique, opaque ID of the dataset.' }),
-            kind: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The resource type. This property always returns the value "bigquery#dataset"',
-              }),
-            labels: z
-              .record(z.string(), z.string())
-              .exactOptional()
-              .openapi({
-                description:
-                  'The labels associated with this dataset. You can use these to organize and group your datasets.',
-              }),
-            location: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The geographic location where the dataset resides.' }),
-          })
-          .openapi({
-            description:
-              'A dataset resource with only a subset of fields, to be returned in a list of datasets.',
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of the dataset resources in the project. Each resource contains basic information. For full information about a particular dataset resource, use the Datasets: get method. This property is omitted when there are no datasets in the project.',
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A hash value of the results page. You can use this property to determine if the page has changed since the last request.',
-        readOnly: true,
-      }),
-    kind: z
-      .string()
-      .default('bigquery#datasetList')
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource type. This property always returns the value "bigquery#datasetList"',
-        readOnly: true,
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token that can be used to request the next results page. This property is omitted on the final results page.',
-      }),
-    unreachable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5"',
-      }),
-  })
-  .openapi({
-    description: 'Response format for a page of results when listing datasets.',
-    required: [],
-  })
-  .openapi('DatasetList')
-
-const DestinationTablePropertiesSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The description for the destination table. This will only be used if the destination table is newly created. If the table already exists and a value different than the current description is provided, the job will fail.',
-      }),
-    expirationTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Internal use only.' }),
-    friendlyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Friendly name for the destination table. If the table already exists, it should be same as the existing friendly name.',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The labels associated with this table. You can use these to organize and group your tables. This will only be used if the destination table is newly created. If the table already exists and labels are different than the current labels are provided, the job will fail.',
-      }),
-  })
-  .openapi({ description: 'Properties for the destination table.', required: [] })
-  .openapi('DestinationTableProperties')
-
-const DimensionalityReductionMetricsSchema = z
-  .object({
-    totalExplainedVarianceRatio: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Total percentage of variance explained by the selected principal components.',
-      }),
-  })
-  .openapi({
-    description: 'Model evaluation metrics for dimensionality reduction models.',
-    required: [],
-  })
-  .openapi('DimensionalityReductionMetrics')
-
-const DmlStatisticsSchema = z
-  .object({
-    deletedRowCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Number of deleted Rows. populated by DML DELETE, MERGE and TRUNCATE statements.',
-        readOnly: true,
-      }),
-    insertedRowCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Number of inserted Rows. Populated by DML INSERT and MERGE statements',
-        readOnly: true,
-      }),
-    updatedRowCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Number of updated Rows. Populated by DML UPDATE and MERGE statements.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Detailed statistics for DML statements', required: [] })
-  .openapi('DmlStatistics')
-
-const DoubleCandidatesSchema = z
-  .object({
-    candidates: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({ description: 'Candidates for the double parameter in increasing order.' }),
-  })
-  .openapi({ description: 'Discrete candidates of a double hyperparameter.', required: [] })
-  .openapi('DoubleCandidates')
-
-const DoubleRangeSchema = z
-  .object({
-    max: z.float64().exactOptional().openapi({ description: 'Max value of the double parameter.' }),
-    min: z.float64().exactOptional().openapi({ description: 'Min value of the double parameter.' }),
-  })
-  .openapi({ description: 'Range of a double hyperparameter.', required: [] })
-  .openapi('DoubleRange')
-
-const DoubleHparamSearchSpaceSchema = z
-  .object({
-    candidates: DoubleCandidatesSchema.exactOptional().openapi({
-      description: 'Candidates of the double hyperparameter.',
-    }),
-    range: DoubleRangeSchema.exactOptional().openapi({
-      description: 'Range of the double hyperparameter.',
-    }),
-  })
-  .openapi({ description: 'Search space for a double hyperparameter.', required: [] })
-  .openapi('DoubleHparamSearchSpace')
 
 const MultiClassClassificationMetricsSchema = z
   .object({
@@ -2774,7 +502,17 @@ const RegressionMetricsSchema = z
   })
   .openapi('RegressionMetrics')
 
-const EvaluationMetricsSchema = z
+type EvaluationMetricsType = {
+  arimaForecastingMetrics?: z.infer<typeof ArimaForecastingMetricsSchema>
+  binaryClassificationMetrics?: z.infer<typeof BinaryClassificationMetricsSchema>
+  clusteringMetrics?: z.infer<typeof ClusteringMetricsSchema>
+  dimensionalityReductionMetrics?: z.infer<typeof DimensionalityReductionMetricsSchema>
+  multiClassClassificationMetrics?: z.infer<typeof MultiClassClassificationMetricsSchema>
+  rankingMetrics?: z.infer<typeof RankingMetricsSchema>
+  regressionMetrics?: z.infer<typeof RegressionMetricsSchema>
+}
+
+const EvaluationMetricsSchema: z.ZodType<EvaluationMetricsType> = z
   .object({
     arimaForecastingMetrics: ArimaForecastingMetricsSchema.exactOptional().openapi({
       description: 'Populated for ARIMA models.',
@@ -2806,563 +544,6 @@ const EvaluationMetricsSchema = z
     required: [],
   })
   .openapi('EvaluationMetrics')
-
-const ExplainQueryStepSchema = z
-  .object({
-    kind: z.string().exactOptional().openapi({ description: 'Machine-readable operation type.' }),
-    substeps: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Human-readable description of the step(s).' }),
-  })
-  .openapi({ description: 'An operation within a stage.', required: [] })
-  .openapi('ExplainQueryStep')
-
-const ExplainQueryStageSchema = z
-  .object({
-    completedParallelInputs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of parallel input segments completed.' }),
-    computeMode: z
-      .enum(['COMPUTE_MODE_UNSPECIFIED', 'BIGQUERY', 'BI_ENGINE'])
-      .exactOptional()
-      .openapi({ description: 'Output only. Compute mode for this stage.', readOnly: true }),
-    computeMsAvg: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Milliseconds the average shard spent on CPU-bound tasks.' }),
-    computeMsMax: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Milliseconds the slowest shard spent on CPU-bound tasks.' }),
-    computeRatioAvg: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Relative amount of time the average shard spent on CPU-bound tasks.',
-      }),
-    computeRatioMax: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Relative amount of time the slowest shard spent on CPU-bound tasks.',
-      }),
-    endMs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Stage end time represented as milliseconds since the epoch.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique ID for the stage within the plan.' }),
-    inputStages: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'IDs for stages that are inputs to this stage.' }),
-    name: z.string().exactOptional().openapi({ description: 'Human-readable name for the stage.' }),
-    parallelInputs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of parallel input segments to be processed' }),
-    readMsAvg: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Milliseconds the average shard spent reading input.' }),
-    readMsMax: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Milliseconds the slowest shard spent reading input.' }),
-    readRatioAvg: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Relative amount of time the average shard spent reading input.' }),
-    readRatioMax: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Relative amount of time the slowest shard spent reading input.' }),
-    recordsRead: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of records read into the stage.' }),
-    recordsWritten: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of records written by the stage.' }),
-    shuffleOutputBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total number of bytes written to shuffle.' }),
-    shuffleOutputBytesSpilled: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total number of bytes written to shuffle and spilled to disk.' }),
-    slotMs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Slot-milliseconds used by the stage.' }),
-    startMs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Stage start time represented as milliseconds since the epoch.' }),
-    status: z.string().exactOptional().openapi({ description: 'Current status for this stage.' }),
-    steps: z
-      .array(ExplainQueryStepSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of operations within the stage in dependency order (approximately chronological).',
-      }),
-    waitMsAvg: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Milliseconds the average shard spent waiting to be scheduled.' }),
-    waitMsMax: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Milliseconds the slowest shard spent waiting to be scheduled.' }),
-    waitRatioAvg: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Relative amount of time the average shard spent waiting to be scheduled.',
-      }),
-    waitRatioMax: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Relative amount of time the slowest shard spent waiting to be scheduled.',
-      }),
-    writeMsAvg: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Milliseconds the average shard spent on writing output.' }),
-    writeMsMax: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Milliseconds the slowest shard spent on writing output.' }),
-    writeRatioAvg: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Relative amount of time the average shard spent on writing output.',
-      }),
-    writeRatioMax: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Relative amount of time the slowest shard spent on writing output.',
-      }),
-  })
-  .openapi({ description: 'A single stage of query execution.', required: [] })
-  .openapi('ExplainQueryStage')
-
-const ExplanationSchema = z
-  .object({
-    attribution: z.float64().exactOptional().openapi({ description: 'Attribution of feature.' }),
-    featureName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.',
-      }),
-  })
-  .openapi({ description: 'Explanation for a single feature.', required: [] })
-  .openapi('Explanation')
-
-const ExportDataStatisticsSchema = z
-  .object({
-    fileCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Number of destination files generated in case of EXPORT DATA statement only.',
-      }),
-    rowCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Alpha] Number of destination rows generated in case of EXPORT DATA statement only.',
-      }),
-  })
-  .openapi({
-    description:
-      'Statistics for the EXPORT DATA statement as part of Query Job. EXTRACT JOB statistics are populated in JobStatistics4.',
-    required: [],
-  })
-  .openapi('ExportDataStatistics')
-
-const ExternalServiceCostSchema = z
-  .object({
-    bytesBilled: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'External service cost in terms of bigquery bytes billed.' }),
-    bytesProcessed: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'External service cost in terms of bigquery bytes processed.' }),
-    externalService: z.string().exactOptional().openapi({ description: 'External service name.' }),
-    reservedSlotCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Non-preemptable reserved slots used for external job. For example, reserved slots for Cloua AI Platform job are the VM usages converted to BigQuery slot with equivalent mount of price.',
-      }),
-    slotMs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'External service cost in terms of bigquery slot milliseconds.' }),
-  })
-  .openapi({
-    description:
-      'The external service cost is a portion of the total cost, these costs are not additive with total_bytes_billed. Moreover, this field only track external service costs that will show up as BigQuery costs (e.g. training BigQuery ML job with google cloud CAIP or Automl Tables services), not other costs which may be accrued by running the query (e.g. reading from Bigtable or Cloud Storage). The external service costs with different billing sku (e.g. CAIP job is charged based on VM usage) are converted to BigQuery billed_bytes and slot_ms with equivalent amount of US dollars. Services may not directly correlate to these metrics, but these are the equivalents for billing purposes. Output only.',
-    required: [],
-  })
-  .openapi('ExternalServiceCost')
-
-const GetPolicyOptionsSchema = z
-  .object({
-    requestedPolicyVersion: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The maximum policy version that will be used to format the policy. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for policies with any conditional role bindings must specify version 3. Policies with no conditional role bindings may specify any valid value or leave the field unset. The policy in the response might use the policy version that you specified, or it might use a lower policy version. For example, if you specify version 3, but the policy has no conditional role bindings, the response uses version 1. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-      }),
-  })
-  .openapi({ description: 'Encapsulates settings provided to GetIamPolicy.', required: [] })
-  .openapi('GetPolicyOptions')
-
-const GetIamPolicyRequestSchema = z
-  .object({
-    options: GetPolicyOptionsSchema.exactOptional().openapi({
-      description:
-        'OPTIONAL: A `GetPolicyOptions` object for specifying options to `GetIamPolicy`.',
-    }),
-  })
-  .openapi({ description: 'Request message for `GetIamPolicy` method.', required: [] })
-  .openapi('GetIamPolicyRequest')
-
-const JobReferenceSchema = z
-  .object({
-    jobId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The ID of the job. The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-). The maximum length is 1,024 characters.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The geographic location of the job. The default value is US. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations',
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ID of the project containing this job.' }),
-  })
-  .openapi({
-    description: 'A job reference is a fully qualified identifier for referring to a job.',
-    required: [],
-  })
-  .openapi('JobReference')
-
-const TableCellSchema = z
-  .object({ v: z.any().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TableCell')
-
-const TableRowSchema = z
-  .object({
-    f: z
-      .array(TableCellSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Represents a single row in the result set, consisting of one or more fields.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TableRow')
-
-const GetQueryResultsResponseSchema = z
-  .object({
-    cacheHit: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the query result was fetched from the query cache.' }),
-    errors: z
-      .array(ErrorProtoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The first errors or warnings encountered during the running of the job. The final message includes the number of errors that caused the process to stop. Errors here do not necessarily mean that the job has completed or was unsuccessful. For more information about error messages, see [Error messages](https://cloud.google.com/bigquery/docs/error-messages).',
-        readOnly: true,
-      }),
-    etag: z.string().exactOptional().openapi({ description: 'A hash of this response.' }),
-    jobComplete: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the query has completed or not. If rows or totalRows are present, this will always be true. If this is false, totalRows will not be available.',
-      }),
-    jobReference: JobReferenceSchema.exactOptional().openapi({
-      description:
-        'Reference to the BigQuery Job that was created to run the query. This field will be present even if the original request timed out, in which case GetQueryResults can be used to read the results once the query has completed. Since this API only returns the first page of results, subsequent pages can be fetched via the same mechanism (GetQueryResults).',
-    }),
-    kind: z
-      .string()
-      .default('bigquery#getQueryResultsResponse')
-      .exactOptional()
-      .openapi({ description: 'The resource type of the response.' }),
-    numDmlAffectedRows: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The number of rows affected by a DML statement. Present only for DML statements INSERT, UPDATE or DELETE.',
-        readOnly: true,
-      }),
-    pageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token used for paging results. When this token is non-empty, it indicates additional results are available.',
-      }),
-    rows: z
-      .array(TableRowSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An object with as many results as can be contained within the maximum permitted reply size. To get any additional rows, you can call GetQueryResults and specify the jobReference returned above. Present only when the query completes successfully. The REST-based representation of this data leverages a series of JSON f,v objects for indicating fields and values.',
-      }),
-    schema: TableSchemaSchema.exactOptional().openapi({
-      description: 'The schema of the results. Present only when the query completes successfully.',
-    }),
-    totalBytesProcessed: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The total number of bytes processed for this query.' }),
-    totalRows: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The total number of rows in the complete query result set, which can be more than the number of rows in this single page of results. Present only when the query completes successfully.',
-      }),
-  })
-  .openapi({ description: 'Response object of GetQueryResults.', required: [] })
-  .openapi('GetQueryResultsResponse')
-
-const GetServiceAccountResponseSchema = z
-  .object({
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The service account email address.' }),
-    kind: z
-      .string()
-      .default('bigquery#getServiceAccountResponse')
-      .exactOptional()
-      .openapi({ description: 'The resource type of the response.' }),
-  })
-  .openapi({ description: 'Response object of GetServiceAccount', required: [] })
-  .openapi('GetServiceAccountResponse')
-
-const GlobalExplanationSchema = z
-  .object({
-    classLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.',
-      }),
-    explanations: z
-      .array(ExplanationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of the top global explanations. Sorted by absolute value of attribution in descending order.',
-      }),
-  })
-  .openapi({
-    description: 'Global explanations containing the top most important features after training.',
-    required: [],
-  })
-  .openapi('GlobalExplanation')
-
-const HighCardinalityJoinSchema = z
-  .object({
-    leftRows: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Count of left input rows.', readOnly: true }),
-    outputRows: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Count of the output rows.', readOnly: true }),
-    rightRows: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Count of right input rows.', readOnly: true }),
-    stepIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The index of the join operator in the ExplainQueryStep lists.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'High cardinality join detailed information.', required: [] })
-  .openapi('HighCardinalityJoin')
-
-const StringHparamSearchSpaceSchema = z
-  .object({
-    candidates: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Canididates for the string or enum parameter in lower case.' }),
-  })
-  .openapi({ description: 'Search space for string and enum.', required: [] })
-  .openapi('StringHparamSearchSpace')
-
-const IntCandidatesSchema = z
-  .object({
-    candidates: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Candidates for the int parameter in increasing order.' }),
-  })
-  .openapi({ description: 'Discrete candidates of an int hyperparameter.', required: [] })
-  .openapi('IntCandidates')
-
-const IntRangeSchema = z
-  .object({
-    max: z.string().exactOptional().openapi({ description: 'Max value of the int parameter.' }),
-    min: z.string().exactOptional().openapi({ description: 'Min value of the int parameter.' }),
-  })
-  .openapi({ description: 'Range of an int hyperparameter.', required: [] })
-  .openapi('IntRange')
-
-const IntHparamSearchSpaceSchema = z
-  .object({
-    candidates: IntCandidatesSchema.exactOptional().openapi({
-      description: 'Candidates of the int hyperparameter.',
-    }),
-    range: IntRangeSchema.exactOptional().openapi({
-      description: 'Range of the int hyperparameter.',
-    }),
-  })
-  .openapi({ description: 'Search space for an int hyperparameter.', required: [] })
-  .openapi('IntHparamSearchSpace')
-
-const IntArraySchema = z
-  .object({
-    elements: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Elements in the int array.' }),
-  })
-  .openapi({ description: 'An array of int.', required: [] })
-  .openapi('IntArray')
-
-const IntArrayHparamSearchSpaceSchema = z
-  .object({
-    candidates: z
-      .array(IntArraySchema)
-      .exactOptional()
-      .openapi({ description: 'Candidates for the int array parameter.' }),
-  })
-  .openapi({ description: 'Search space for int array.', required: [] })
-  .openapi('IntArrayHparamSearchSpace')
-
-const HparamSearchSpacesSchema = z
-  .object({
-    activationFn: StringHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Activation functions of neural network models.',
-    }),
-    batchSize: IntHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Mini batch sample size.',
-    }),
-    boosterType: StringHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Booster type for boosted tree models.',
-    }),
-    colsampleBylevel: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Subsample ratio of columns for each level for boosted tree models.',
-    }),
-    colsampleBynode: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Subsample ratio of columns for each node(split) for boosted tree models.',
-    }),
-    colsampleBytree: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description:
-        'Subsample ratio of columns when constructing each tree for boosted tree models.',
-    }),
-    dartNormalizeType: StringHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Dart normalization type for boosted tree models.',
-    }),
-    dropout: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description:
-        'Dropout probability for dnn model training and boosted tree models using dart booster.',
-    }),
-    hiddenUnits: IntArrayHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Hidden units for neural network models.',
-    }),
-    l1Reg: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'L1 regularization coefficient.',
-    }),
-    l2Reg: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'L2 regularization coefficient.',
-    }),
-    learnRate: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Learning rate of training jobs.',
-    }),
-    maxTreeDepth: IntHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Maximum depth of a tree for boosted tree models.',
-    }),
-    minSplitLoss: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Minimum split loss for boosted tree models.',
-    }),
-    minTreeChildWeight: IntHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Minimum sum of instance weight needed in a child for boosted tree models.',
-    }),
-    numClusters: IntHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Number of clusters for k-means.',
-    }),
-    numFactors: IntHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Number of latent factors to train on.',
-    }),
-    numParallelTree: IntHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Number of parallel trees for boosted tree models.',
-    }),
-    optimizer: StringHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Optimizer of TF models.',
-    }),
-    subsample: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description:
-        'Subsample the training data to grow tree to prevent overfitting for boosted tree models.',
-    }),
-    treeMethod: StringHparamSearchSpaceSchema.exactOptional().openapi({
-      description: 'Tree construction algorithm for boosted tree models.',
-    }),
-    walsAlpha: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
-      description:
-        'Hyperparameter for matrix factoration when implicit feedback type is specified.',
-    }),
-  })
-  .openapi({
-    description: 'Hyperparameter search spaces. These should be a subset of training_options.',
-    required: [],
-  })
-  .openapi('HparamSearchSpaces')
 
 const TrainingOptionsSchema = z
   .object({
@@ -4005,184 +1186,59 @@ const TrainingOptionsSchema = z
   .openapi({ description: 'Options used in model training.', required: [] })
   .openapi('TrainingOptions')
 
-const HparamTuningTrialSchema = z
-  .object({
-    endTimeMs: z.string().exactOptional().openapi({ description: 'Ending time of the trial.' }),
-    errorMessage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Error message for FAILED and INFEASIBLE trial.' }),
-    evalLoss: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Loss computed on the eval data at the end of trial.' }),
-    evaluationMetrics: EvaluationMetricsSchema.exactOptional().openapi({
-      description:
-        'Evaluation metrics of this trial calculated on the test data. Empty in Job API.',
-    }),
-    hparamTuningEvaluationMetrics: EvaluationMetricsSchema.exactOptional().openapi({
-      description:
-        'Hyperparameter tuning evaluation metrics of this trial calculated on the eval data. Unlike evaluation_metrics, only the fields corresponding to the hparam_tuning_objectives are set.',
-    }),
-    hparams: TrainingOptionsSchema.exactOptional().openapi({
-      description: 'The hyperprameters selected for this trial.',
-    }),
-    startTimeMs: z.string().exactOptional().openapi({ description: 'Starting time of the trial.' }),
-    status: z
-      .enum([
-        'TRIAL_STATUS_UNSPECIFIED',
-        'NOT_STARTED',
-        'RUNNING',
-        'SUCCEEDED',
-        'FAILED',
-        'INFEASIBLE',
-        'STOPPED_EARLY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The status of the trial.' }),
-    trainingLoss: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Loss computed on the training data at the end of trial.' }),
-    trialId: z.string().exactOptional().openapi({ description: '1-based index of the trial.' }),
-  })
-  .openapi({
-    description:
-      'Training info of a trial in [hyperparameter tuning](/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models.',
-    required: [],
-  })
-  .openapi('HparamTuningTrial')
+type HparamTuningTrialType = {
+  endTimeMs?: string
+  errorMessage?: string
+  evalLoss?: number
+  evaluationMetrics?: z.infer<typeof EvaluationMetricsSchema>
+  hparamTuningEvaluationMetrics?: z.infer<typeof EvaluationMetricsSchema>
+  hparams?: z.infer<typeof TrainingOptionsSchema>
+  startTimeMs?: string
+  status?:
+    | 'TRIAL_STATUS_UNSPECIFIED'
+    | 'NOT_STARTED'
+    | 'RUNNING'
+    | 'SUCCEEDED'
+    | 'FAILED'
+    | 'INFEASIBLE'
+    | 'STOPPED_EARLY'
+  trainingLoss?: number
+  trialId?: string
+}
 
-const IndexUnusedReasonSchema = z
+const EncryptionConfigurationSchema = z
   .object({
-    baseTable: TableReferenceSchema.exactOptional().openapi({
-      description: 'Specifies the base table involved in the reason that no search index was used.',
-    }),
-    code: z
-      .enum([
-        'CODE_UNSPECIFIED',
-        'INDEX_CONFIG_NOT_AVAILABLE',
-        'PENDING_INDEX_CREATION',
-        'BASE_TABLE_TRUNCATED',
-        'INDEX_CONFIG_MODIFIED',
-        'TIME_TRAVEL_QUERY',
-        'NO_PRUNING_POWER',
-        'UNINDEXED_SEARCH_FIELDS',
-        'UNSUPPORTED_SEARCH_PATTERN',
-        'OPTIMIZED_WITH_MATERIALIZED_VIEW',
-        'SECURED_BY_DATA_MASKING',
-        'MISMATCHED_TEXT_ANALYZER',
-        'BASE_TABLE_TOO_SMALL',
-        'BASE_TABLE_TOO_LARGE',
-        'ESTIMATED_PERFORMANCE_GAIN_TOO_LOW',
-        'NOT_SUPPORTED_IN_STANDARD_EDITION',
-        'INDEX_SUPPRESSED_BY_FUNCTION_OPTION',
-        'QUERY_CACHE_HIT',
-        'INTERNAL_ERROR',
-        'OTHER_REASON',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the high-level reason for the scenario when no search index was used.',
-      }),
-    indexName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Specifies the name of the unused search index, if available.' }),
-    message: z
+    kmsKeyName: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Free form human-readable reason for the scenario when no search index was used.',
+          'Optional. Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table. The BigQuery Service Account associated with your project requires access to this encryption key.',
       }),
   })
-  .openapi({
-    description: 'Reason about why no search index was used in the search query (or sub-query).',
-    required: [],
-  })
-  .openapi('IndexUnusedReason')
+  .openapi({ required: [] })
+  .openapi('EncryptionConfiguration')
 
-const InputDataChangeSchema = z
+const TableReferenceSchema = z
   .object({
-    recordsReadDiffPercentage: z
-      .float32()
+    datasetId: z
+      .string()
       .exactOptional()
-      .openapi({
-        description: 'Output only. Records read difference percentage compared to a previous run.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Details about the input data change insight.', required: [] })
-  .openapi('InputDataChange')
-
-const PrincipalComponentInfoSchema = z
-  .object({
-    cumulativeExplainedVarianceRatio: z
-      .float64()
+      .openapi({ description: 'Required. The ID of the dataset containing this table.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The ID of the project containing this table.' }),
+    tableId: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'The explained_variance is pre-ordered in the descending order to compute the cumulative explained variance ratio.',
+          'Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.',
       }),
-    explainedVariance: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Explained variance by this principal component, which is simply the eigenvalue.',
-      }),
-    explainedVarianceRatio: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Explained_variance over the total explained variance.' }),
-    principalComponentId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Id of the principal component.' }),
   })
-  .openapi({
-    description:
-      'Principal component infos, used only for eigen decomposition based models, e.g., PCA. Ordered by explained_variance in the descending order.',
-    required: [],
-  })
-  .openapi('PrincipalComponentInfo')
-
-const IterationResultSchema = z
-  .object({
-    arimaResult: ArimaResultSchema.exactOptional().openapi({ description: 'Arima result.' }),
-    clusterInfos: z
-      .array(ClusterInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Information about top clusters for clustering models.' }),
-    durationMs: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time taken to run the iteration in milliseconds.' }),
-    evalLoss: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Loss computed on the eval data at the end of iteration.' }),
-    index: z.int32().exactOptional().openapi({ description: 'Index of the iteration, 0 based.' }),
-    learnRate: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Learn rate used for this iteration.' }),
-    principalComponentInfos: z
-      .array(PrincipalComponentInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'The information of the principal components.' }),
-    trainingLoss: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Loss computed on the training data at the end of iteration.' }),
-  })
-  .openapi({
-    description: 'Information about a single iteration of the training run.',
-    required: [],
-  })
-  .openapi('IterationResult')
+  .openapi({ required: [] })
+  .openapi('TableReference')
 
 const JobConfigurationTableCopySchema = z
   .object({
@@ -4334,6 +1390,312 @@ const JobConfigurationExtractSchema = z
     required: [],
   })
   .openapi('JobConfigurationExtract')
+
+const ClusteringSchema = z
+  .object({
+    fields: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'One or more fields on which data should be clustered. Only top-level, non-repeated, simple-type fields are supported. The ordering of the clustering fields should be prioritized from most to least important for filtering purposes. Additional information on limitations can be found here: https://cloud.google.com/bigquery/docs/creating-clustered-tables#limitations',
+      }),
+  })
+  .openapi({ description: 'Configures table clustering.', required: [] })
+  .openapi('Clustering')
+
+const ConnectionPropertySchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'The key of the property to set.' }),
+    value: z.string().exactOptional().openapi({ description: 'The value of the property to set.' }),
+  })
+  .openapi({
+    description:
+      'A connection-level property to customize query behavior. Under JDBC, these correspond directly to connection properties passed to the DriverManager. Under ODBC, these correspond to properties in the connection string. Currently supported connection properties: * **dataset_project_id**: represents the default project for datasets that are used in the query. Setting the system variable `@@dataset_project_id` achieves the same behavior. For more information about system variables, see: https://cloud.google.com/bigquery/docs/reference/system-variables * **time_zone**: represents the default timezone used to run the query. * **session_id**: associates the query with a given session. * **query_label**: associates the query with a given job label. If set, all subsequent queries in a script or session will have this label. For the format in which a you can specify a query label, see labels in the JobConfiguration resource type: https://cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfiguration Additional properties are allowed, but ignored. Specifying multiple connection properties with the same key returns an error.',
+    required: [],
+  })
+  .openapi('ConnectionProperty')
+
+const DestinationTablePropertiesSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The description for the destination table. This will only be used if the destination table is newly created. If the table already exists and a value different than the current description is provided, the job will fail.',
+      }),
+    expirationTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Internal use only.' }),
+    friendlyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Friendly name for the destination table. If the table already exists, it should be same as the existing friendly name.',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The labels associated with this table. You can use these to organize and group your tables. This will only be used if the destination table is newly created. If the table already exists and labels are different than the current labels are provided, the job will fail.',
+      }),
+  })
+  .openapi({ description: 'Properties for the destination table.', required: [] })
+  .openapi('DestinationTableProperties')
+
+const HivePartitioningOptionsSchema = z
+  .object({
+    fields: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. For permanent external tables, this field is populated with the hive partition keys in the order they were inferred. The types of the partition keys can be deduced by checking the table schema (which will include the partition keys). Not every API will populate this field in the output. For example, Tables.Get will populate it, but Tables.List will not contain this field.',
+        readOnly: true,
+      }),
+    mode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When set, what mode of hive partitioning to use when reading data. The following modes are supported: * AUTO: automatically infer partition key name(s) and type(s). * STRINGS: automatically infer partition key name(s). All types are strings. * CUSTOM: partition key schema is encoded in the source URI prefix. Not all storage formats support hive partitioning. Requesting hive partitioning on an unsupported format will lead to an error. Currently supported formats are: JSON, CSV, ORC, Avro and Parquet.',
+      }),
+    requirePartitionFilter: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified. Note that this field should only be true when creating a permanent external table or querying a temporary external table. Hive-partitioned loads with require_partition_filter explicitly set to true will fail.',
+      }),
+    sourceUriPrefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When hive partition detection is requested, a common prefix for all source uris must be required. The prefix must end immediately before the partition key encoding begins. For example, consider files following this data layout: gs://bucket/path_to_table/dt=2019-06-01/country=USA/id=7/file.avro gs://bucket/path_to_table/dt=2019-05-31/country=CA/id=3/file.avro When hive partitioning is requested with either AUTO or STRINGS detection, the common prefix can be either of gs://bucket/path_to_table or gs://bucket/path_to_table/. CUSTOM detection requires encoding the partitioning schema immediately after the common prefix. For CUSTOM, any of * gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:INTEGER} * gs://bucket/path_to_table/{dt:STRING}/{country:STRING}/{id:INTEGER} * gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:STRING} would all be valid source URI prefixes.',
+      }),
+  })
+  .openapi({ description: 'Options for configuring hive partitioning detect.', required: [] })
+  .openapi('HivePartitioningOptions')
+
+const ParquetOptionsSchema = z
+  .object({
+    enableListInference: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Indicates whether to use schema inference specifically for Parquet LIST logical type.',
+      }),
+    enumAsString: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Indicates whether to infer Parquet ENUM logical type as STRING instead of BYTES by default.',
+      }),
+  })
+  .openapi({ description: 'Parquet Options for load and make external tables.', required: [] })
+  .openapi('ParquetOptions')
+
+const RangePartitioningSchema = z
+  .object({
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. [Experimental] The table is partitioned by this field. The field must be a top-level NULLABLE/REQUIRED field. The only supported type is INTEGER/INT64.',
+      }),
+    range: z
+      .object({
+        end: z
+          .string()
+          .exactOptional()
+          .openapi({ description: '[Experimental] The end of range partitioning, exclusive.' }),
+        interval: z
+          .string()
+          .exactOptional()
+          .openapi({ description: '[Experimental] The width of each interval.' }),
+        start: z
+          .string()
+          .exactOptional()
+          .openapi({ description: '[Experimental] The start of range partitioning, inclusive.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: '[Experimental] Defines the ranges for range partitioning.',
+        required: [],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RangePartitioning')
+
+const TableFieldSchemaSchema: z.ZodType<TableFieldSchemaType> = z
+  .lazy(() =>
+    z
+      .object({
+        categories: z
+          .object({
+            names: z.array(z.string()).exactOptional().openapi({ description: 'Deprecated.' }),
+          })
+          .exactOptional()
+          .openapi({ description: 'Deprecated.', required: [] }),
+        collation: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
+          }),
+        defaultValueExpression: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional. A SQL expression to specify the [default value] (https://cloud.google.com/bigquery/docs/default-values) for this field.',
+          }),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Optional. The field description. The maximum length is 1,024 characters.',
+          }),
+        fields: z
+          .array(TableFieldSchemaSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional. Describes the nested schema fields if the type property is set to RECORD.',
+          }),
+        maxLength: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional. Maximum length of values of this field for STRINGS or BYTES. If max_length is not specified, no maximum length constraint is imposed on this field. If type = "STRING", then max_length represents the maximum UTF-8 length of strings in this field. If type = "BYTES", then max_length represents the maximum number of bytes in this field. It is invalid to set this field if type ≠ "STRING" and ≠ "BYTES".',
+          }),
+        mode: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional. The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE.',
+          }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.',
+          }),
+        policyTags: z
+          .object({
+            names: z
+              .array(z.string())
+              .exactOptional()
+              .openapi({
+                description:
+                  'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional. The policy tags attached to this field, used for field-level access control. If not set, defaults to empty policy_tags.',
+            required: [],
+          }),
+        precision: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
+          }),
+        rangeElementType: z
+          .object({
+            type: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'Required. The type of a field element. See TableFieldSchema.type.',
+              }),
+          })
+          .exactOptional()
+          .openapi({ description: 'Represents the type of a field element.', required: [] }),
+        roundingMode: z
+          .enum(['ROUNDING_MODE_UNSPECIFIED', 'ROUND_HALF_AWAY_FROM_ZERO', 'ROUND_HALF_EVEN'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional. Specifies the rounding mode to be used when storing values of NUMERIC and BIGNUMERIC type.',
+          }),
+        scale: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Optional. See documentation for precision.' }),
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Required. The field data type. Possible values include: * STRING * BYTES * INTEGER (or INT64) * FLOAT (or FLOAT64) * BOOLEAN (or BOOL) * TIMESTAMP * DATE * TIME * DATETIME * GEOGRAPHY * NUMERIC * BIGNUMERIC * JSON * RECORD (or STRUCT) Use of RECORD/STRUCT indicates that the field contains a nested schema.',
+          }),
+      })
+      .openapi({ description: 'A field in TableSchema', required: [] }),
+  )
+  .openapi('TableFieldSchema')
+
+const TableSchemaSchema = z
+  .object({
+    fields: z
+      .array(TableFieldSchemaSchema)
+      .exactOptional()
+      .openapi({ description: 'Describes the fields in a table.' }),
+  })
+  .openapi({ description: 'Schema of a table', required: [] })
+  .openapi('TableSchema')
+
+const TimePartitioningSchema = z
+  .object({
+    expirationMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Number of milliseconds for which to keep the storage for a partition. A wrapper is used here because 0 is an invalid value.',
+      }),
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. If not set, the table is partitioned by pseudo column '_PARTITIONTIME'; if set, the table is partitioned by this field. The field must be a top-level TIMESTAMP or DATE field. Its mode must be NULLABLE or REQUIRED. A wrapper is used here because an empty string is an invalid value.",
+      }),
+    requirePartitionFilter: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified. This field is deprecated; please set the field with the same name on the table itself instead. This field needs a wrapper because we want to output the default value, false, if the user explicitly set it.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The supported types are DAY, HOUR, MONTH, and YEAR, which will generate one partition per day, hour, month, and year, respectively.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TimePartitioning')
 
 const JobConfigurationLoadSchema = z
   .object({
@@ -4568,6 +1930,23 @@ const JobConfigurationLoadSchema = z
   })
   .openapi('JobConfigurationLoad')
 
+const DatasetReferenceSchema = z
+  .object({
+    datasetId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A unique ID for this dataset, without the project name. The ID must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_). The maximum length is 1,024 characters.',
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The ID of the project containing this dataset.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DatasetReference')
+
 const QueryParameterTypeSchema: z.ZodType<QueryParameterTypeType> = z
   .lazy(() =>
     z
@@ -4609,6 +1988,30 @@ const QueryParameterTypeSchema: z.ZodType<QueryParameterTypeType> = z
       .openapi({ description: 'The type of a query parameter.', required: [] }),
   )
   .openapi('QueryParameterType')
+
+const QueryParameterValueSchema: z.ZodType<QueryParameterValueType> = z
+  .lazy(() =>
+    z
+      .object({
+        arrayValues: z
+          .array(QueryParameterValueSchema)
+          .exactOptional()
+          .openapi({ description: 'Optional. The array values, if this is an array type.' }),
+        rangeValue: RangeValueSchema.exactOptional().openapi({
+          description: 'Optional. The range value, if this is a range type.',
+        }),
+        structValues: z
+          .record(z.string(), QueryParameterValueSchema)
+          .exactOptional()
+          .openapi({ description: 'The struct field values.' }),
+        value: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Optional. The value of this value, if a simple scalar type.' }),
+      })
+      .openapi({ description: 'The value of a query parameter.', required: [] }),
+  )
+  .openapi('QueryParameterValue')
 
 const QueryParameterSchema = z
   .object({
@@ -4653,6 +2056,54 @@ const ScriptOptionsSchema = z
   .openapi({ description: 'Options related to script execution.', required: [] })
   .openapi('ScriptOptions')
 
+const StandardSqlDataTypeSchema: z.ZodType<StandardSqlDataTypeType> = z
+  .lazy(() =>
+    z
+      .object({
+        arrayElementType: StandardSqlDataTypeSchema.exactOptional().openapi({
+          description: 'The type of the array\'s elements, if type_kind = "ARRAY".',
+        }),
+        rangeElementType: StandardSqlDataTypeSchema.exactOptional().openapi({
+          description: 'The type of the range\'s elements, if type_kind = "RANGE".',
+        }),
+        structType: StandardSqlStructTypeSchema.exactOptional().openapi({
+          description: 'The fields of this struct, in order, if type_kind = "STRUCT".',
+        }),
+        typeKind: z
+          .enum([
+            'TYPE_KIND_UNSPECIFIED',
+            'INT64',
+            'BOOL',
+            'FLOAT64',
+            'STRING',
+            'BYTES',
+            'TIMESTAMP',
+            'DATE',
+            'TIME',
+            'DATETIME',
+            'INTERVAL',
+            'GEOGRAPHY',
+            'NUMERIC',
+            'BIGNUMERIC',
+            'JSON',
+            'ARRAY',
+            'STRUCT',
+            'RANGE',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
+          }),
+      })
+      .openapi({
+        description:
+          'The data type of a variable such as a function argument. Examples include: * INT64: `{"typeKind": "INT64"}` * ARRAY: { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "STRING"} } * STRUCT>: { "typeKind": "STRUCT", "structType": { "fields": [ { "name": "x", "type": {"typeKind": "STRING"} }, { "name": "y", "type": { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "DATE"} } } ] } }',
+        required: [],
+      }),
+  )
+  .openapi('StandardSqlDataType')
+
 const SystemVariablesSchema = z
   .object({
     types: z
@@ -4667,7 +2118,411 @@ const SystemVariablesSchema = z
   .openapi({ description: 'System variables given to a query.', required: [] })
   .openapi('SystemVariables')
 
-const JobConfigurationQuerySchema = z
+const AvroOptionsSchema = z
+  .object({
+    useAvroLogicalTypes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If sourceFormat is set to "AVRO", indicates whether to interpret logical types as the corresponding BigQuery data type (for example, TIMESTAMP), instead of using the raw type (for example, INTEGER).',
+      }),
+  })
+  .openapi({ description: 'Options for external data sources.', required: [] })
+  .openapi('AvroOptions')
+
+const BigtableColumnSchema = z
+  .object({
+    encoding: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. 'encoding' can also be set at the column family level. However, the setting at this level takes precedence if 'encoding' is set at both levels.",
+      }),
+    fieldName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as the column field name and is used as field name in queries.',
+      }),
+    onlyReadLatest: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. If this is set, only the latest version of value in this column are exposed. 'onlyReadLatest' can also be set at the column family level. However, the setting at this level takes precedence if 'onlyReadLatest' is set at both levels.",
+      }),
+    qualifierEncoded: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Required] Qualifier of the column. Columns in the parent column family that has this exact qualifier are exposed as . field. If the qualifier is valid UTF-8 string, it can be specified in the qualifier_string field. Otherwise, a base-64 encoded value must be set to qualifier_encoded. The column field name is the same as the column qualifier. However, if the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as field_name.',
+      }),
+    qualifierString: z.string().exactOptional().openapi({ description: 'Qualifier string.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The type to convert the value in cells of this column. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. 'type' can also be set at the column family level. However, the setting at this level takes precedence if 'type' is set at both levels.",
+      }),
+  })
+  .openapi({ description: 'Information related to a Bigtable column.', required: [] })
+  .openapi('BigtableColumn')
+
+const BigtableColumnFamilySchema = z
+  .object({
+    columns: z
+      .array(BigtableColumnSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Lists of columns that should be exposed as individual fields as opposed to a list of (column name, value) pairs. All columns whose qualifier matches a qualifier in this list can be accessed as .. Other columns can be accessed as a list through .Column field.',
+      }),
+    encoding: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. This can be overridden for a specific column by listing that column in 'columns' and specifying an encoding for it.",
+      }),
+    familyId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifier of the column family.' }),
+    onlyReadLatest: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. If this is set only the latest version of value are exposed for all columns in this column family. This can be overridden for a specific column by listing that column in 'columns' and specifying a different setting for that column.",
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The type to convert the value in cells of this column family. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. This can be overridden for a specific column by listing that column in 'columns' and specifying a type for it.",
+      }),
+  })
+  .openapi({ description: 'Information related to a Bigtable column family.', required: [] })
+  .openapi('BigtableColumnFamily')
+
+const BigtableOptionsSchema = z
+  .object({
+    columnFamilies: z
+      .array(BigtableColumnFamilySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. List of column families to expose in the table schema along with their types. This list restricts the column families that can be referenced in queries and specifies their value types. You can use this list to do type conversions - see the 'type' field for more details. If you leave this list empty, all column families are present in the table schema and their values are read as BYTES. During a query only the column families referenced in that query are read from Bigtable.",
+      }),
+    ignoreUnspecifiedColumnFamilies: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If field is true, then the column families that are not specified in columnFamilies list are not exposed in the table schema. Otherwise, they are read with BYTES type values. The default value is false.',
+      }),
+    outputColumnFamiliesAsJson: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If field is true, then each column family will be read as a single JSON column. Otherwise they are read as a repeated cell structure containing timestamp/value tuples. The default value is false.',
+      }),
+    readRowkeyAsString: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If field is true, then the rowkey column families will be read and converted to string. Otherwise they are read with BYTES type values and users need to manually cast them with CAST if necessary. The default value is false.',
+      }),
+  })
+  .openapi({ description: 'Options specific to Google Cloud Bigtable data sources.', required: [] })
+  .openapi('BigtableOptions')
+
+const CsvOptionsSchema = z
+  .object({
+    allowJaggedRows: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Indicates if BigQuery should accept rows that are missing trailing optional columns. If true, BigQuery treats missing trailing columns as null values. If false, records with missing trailing columns are treated as bad records, and if there are too many bad records, an invalid error is returned in the job result. The default value is false.',
+      }),
+    allowQuotedNewlines: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Indicates if BigQuery should allow quoted data sections that contain newline characters in a CSV file. The default value is false.',
+      }),
+    encoding: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The character encoding of the data. The supported values are UTF-8, ISO-8859-1, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8. BigQuery decodes the data after the raw, binary data has been split using the values of the quote and fieldDelimiter properties.',
+      }),
+    fieldDelimiter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The separator character for fields in a CSV file. The separator is interpreted as a single byte. For files encoded in ISO-8859-1, any single character can be used as a separator. For files encoded in UTF-8, characters represented in decimal range 1-127 (U+0001-U+007F) can be used without any modification. UTF-8 characters encoded with multiple bytes (i.e. U+0080 and above) will have only the first byte used for separating fields. The remaining bytes will be treated as a part of the field. BigQuery also supports the escape sequence "\\t" (U+0009) to specify a tab separator. The default value is comma (",", U+002C).',
+      }),
+    nullMarker: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Optional] A custom string that will represent a NULL value in CSV import data.',
+      }),
+    preserveAsciiControlCharacters: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Indicates if the embedded ASCII control characters (the first 32 characters in the ASCII-table, from '\\x00' to '\\x1F') are preserved.",
+      }),
+    quote: z
+      .string()
+      .regex(/.?/)
+      .default('"')
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The value that is used to quote data sections in a CSV file. BigQuery converts the string to ISO-8859-1 encoding, and then uses the first byte of the encoded string to split the data in its raw, binary state. The default value is a double-quote ("). If your data does not contain quoted sections, set the property value to an empty string. If your data contains quoted newline characters, you must also set the allowQuotedNewlines property to true. To include the specific quote character within a quoted value, precede it with an additional matching quote character. For example, if you want to escape the default character \' " \', use \' "" \'.',
+      }),
+    skipLeadingRows: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The number of rows at the top of a CSV file that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows in the file that should be skipped. When autodetect is on, the behavior is the following: * skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. * skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema.',
+      }),
+  })
+  .openapi({ description: 'Information related to a CSV data source.', required: [] })
+  .openapi('CsvOptions')
+
+const GoogleSheetsOptionsSchema = z
+  .object({
+    range: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Range of a sheet to query from. Only used when non-empty. Typical format: sheet_name!top_left_cell_id:bottom_right_cell_id For example: sheet1!A1:B20',
+      }),
+    skipLeadingRows: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The number of rows at the top of a sheet that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows that should be skipped. When autodetect is on, the behavior is the following: * skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. * skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema.',
+      }),
+  })
+  .openapi({ description: 'Options specific to Google Sheets data sources.', required: [] })
+  .openapi('GoogleSheetsOptions')
+
+const JsonOptionsSchema = z
+  .object({
+    encoding: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The character encoding of the data. The supported values are UTF-8, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8.',
+      }),
+  })
+  .openapi({ description: 'Json Options for load and make external tables.', required: [] })
+  .openapi('JsonOptions')
+
+const ExternalDataConfigurationSchema = z
+  .object({
+    autodetect: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Try to detect schema and format options automatically. Any option specified explicitly will be honored.',
+      }),
+    avroOptions: AvroOptionsSchema.exactOptional().openapi({
+      description: 'Optional. Additional properties to set if sourceFormat is set to AVRO.',
+    }),
+    bigtableOptions: BigtableOptionsSchema.exactOptional().openapi({
+      description: 'Optional. Additional options if sourceFormat is set to BIGTABLE.',
+    }),
+    compression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The compression type of the data source. Possible values include GZIP and NONE. The default value is NONE. This setting is ignored for Google Cloud Bigtable, Google Cloud Datastore backups, Avro, ORC and Parquet formats. An empty string is an invalid value.',
+      }),
+    connectionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The connection specifying the credentials to be used to read external storage, such as Azure Blob, Cloud Storage, or S3. The connection_id can have the form "<project\\_id>.<location\\_id>.<connection\\_id>" or "projects/<project\\_id>/locations/<location\\_id>/connections/<connection\\_id>".',
+      }),
+    csvOptions: CsvOptionsSchema.exactOptional().openapi({
+      description: 'Optional. Additional properties to set if sourceFormat is set to CSV.',
+    }),
+    decimalTargetTypes: z
+      .array(z.enum(['DECIMAL_TARGET_TYPE_UNSPECIFIED', 'NUMERIC', 'BIGNUMERIC', 'STRING']))
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is ["NUMERIC", "BIGNUMERIC"]. If (precision,scale) is: * (38,9) -> NUMERIC; * (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); * (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); * (76,38) -> BIGNUMERIC; * (77,38) -> BIGNUMERIC (error if value exeeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, ["BIGNUMERIC", "NUMERIC"] is the same as ["NUMERIC", "BIGNUMERIC"] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to ["NUMERIC", "STRING"] for ORC and ["NUMERIC"] for the other file formats.',
+      }),
+    fileSetSpecType: z
+      .enum([
+        'FILE_SET_SPEC_TYPE_FILE_SYSTEM_MATCH',
+        'FILE_SET_SPEC_TYPE_NEW_LINE_DELIMITED_MANIFEST',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies how source URIs are interpreted for constructing the file set to load. By default source URIs are expanded against the underlying storage. Other options include specifying manifest files. Only applicable to object storage systems.',
+      }),
+    googleSheetsOptions: GoogleSheetsOptionsSchema.exactOptional().openapi({
+      description: 'Optional. Additional options if sourceFormat is set to GOOGLE_SHEETS.',
+    }),
+    hivePartitioningOptions: HivePartitioningOptionsSchema.exactOptional().openapi({
+      description:
+        'Optional. When set, configures hive partitioning support. Not all storage formats support hive partitioning -- requesting hive partitioning on an unsupported format will lead to an error, as will providing an invalid specification.',
+    }),
+    ignoreUnknownValues: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Indicates if BigQuery should allow extra values that are not represented in the table schema. If true, the extra values are ignored. If false, records with extra columns are treated as bad records, and if there are too many bad records, an invalid error is returned in the job result. The default value is false. The sourceFormat property determines what BigQuery treats as an extra value: CSV: Trailing columns JSON: Named values that don't match any column names Google Cloud Bigtable: This setting is ignored. Google Cloud Datastore backups: This setting is ignored. Avro: This setting is ignored. ORC: This setting is ignored. Parquet: This setting is ignored.",
+      }),
+    jsonExtension: z
+      .enum(['JSON_EXTENSION_UNSPECIFIED', 'GEOJSON'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Load option to be used together with source_format newline-delimited JSON to indicate that a variant of JSON is being loaded. To load newline-delimited GeoJSON, specify GEOJSON (and source_format must be set to NEWLINE_DELIMITED_JSON).',
+      }),
+    jsonOptions: JsonOptionsSchema.exactOptional().openapi({
+      description: 'Optional. Additional properties to set if sourceFormat is set to JSON.',
+    }),
+    maxBadRecords: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum number of bad records that BigQuery can ignore when reading data. If the number of bad records exceeds this value, an invalid error is returned in the job result. The default value is 0, which requires that all records are valid. This setting is ignored for Google Cloud Bigtable, Google Cloud Datastore backups, Avro, ORC and Parquet formats.',
+      }),
+    metadataCacheMode: z
+      .enum(['METADATA_CACHE_MODE_UNSPECIFIED', 'AUTOMATIC', 'MANUAL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Metadata Cache Mode for the table. Set this to enable caching of metadata from external data source.',
+      }),
+    objectMetadata: z
+      .enum(['OBJECT_METADATA_UNSPECIFIED', 'DIRECTORY', 'SIMPLE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. ObjectMetadata is used to create Object Tables. Object Tables contain a listing of objects (with their metadata) found at the source_uris. If ObjectMetadata is set, source_format should be omitted. Currently SIMPLE is the only supported Object Metadata type.',
+      }),
+    parquetOptions: ParquetOptionsSchema.exactOptional().openapi({
+      description: 'Optional. Additional properties to set if sourceFormat is set to PARQUET.',
+    }),
+    referenceFileSchemaUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When creating an external table, the user can provide a reference file with the table schema. This is enabled for the following formats: AVRO, PARQUET, ORC.',
+      }),
+    schema: TableSchemaSchema.exactOptional().openapi({
+      description:
+        'Optional. The schema for the data. Schema is required for CSV and JSON formats if autodetect is not on. Schema is disallowed for Google Cloud Bigtable, Cloud Datastore backups, Avro, ORC and Parquet formats.',
+    }),
+    sourceFormat: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Required] The data format. For CSV files, specify "CSV". For Google sheets, specify "GOOGLE_SHEETS". For newline-delimited JSON, specify "NEWLINE_DELIMITED_JSON". For Avro files, specify "AVRO". For Google Cloud Datastore backups, specify "DATASTORE_BACKUP". For Apache Iceberg tables, specify "ICEBERG". For ORC files, specify "ORC". For Parquet files, specify "PARQUET". [Beta] For Google Cloud Bigtable, specify "BIGTABLE".',
+      }),
+    sourceUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "[Required] The fully-qualified URIs that point to your data in Google Cloud. For Google Cloud Storage URIs: Each URI can contain one '*' wildcard character and it must come after the 'bucket' name. Size limits related to load jobs apply to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table. For Google Cloud Datastore backups, exactly one URI can be specified. Also, the '*' wildcard character is not allowed.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ExternalDataConfiguration')
+
+const UserDefinedFunctionResourceSchema = z
+  .object({
+    inlineCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Pick one] An inline resource that contains code for a user-defined function (UDF). Providing a inline code resource is equivalent to providing a URI for a file containing the same code.',
+      }),
+    resourceUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Pick one] A code resource to load from a Google Cloud Storage URI (gs://bucket/path).',
+      }),
+  })
+  .openapi({
+    description:
+      ' This is used for defining User Defined Function (UDF) resources only when using legacy SQL. Users of GoogleSQL should leverage either DDL (e.g. CREATE [TEMPORARY] FUNCTION ... ) or the Routines API to define UDF resources. For additional information on migrating, see: https://cloud.google.com/bigquery/docs/reference/standard-sql/migrating-from-legacy-sql#differences_in_user-defined_javascript_functions',
+    required: [],
+  })
+  .openapi('UserDefinedFunctionResource')
+
+type JobConfigurationQueryType = {
+  allowLargeResults?: boolean
+  clustering?: z.infer<typeof ClusteringSchema>
+  connectionProperties?: z.infer<typeof ConnectionPropertySchema>[]
+  continuous?: boolean
+  createDisposition?: string
+  createSession?: boolean
+  defaultDataset?: z.infer<typeof DatasetReferenceSchema>
+  destinationEncryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
+  destinationTable?: z.infer<typeof TableReferenceSchema>
+  flattenResults?: boolean
+  maximumBillingTier?: number
+  maximumBytesBilled?: string
+  parameterMode?: string
+  preserveNulls?: boolean
+  priority?: string
+  query?: string
+  queryParameters?: z.infer<typeof QueryParameterSchema>[]
+  rangePartitioning?: z.infer<typeof RangePartitioningSchema>
+  schemaUpdateOptions?: string[]
+  scriptOptions?: z.infer<typeof ScriptOptionsSchema>
+  systemVariables?: z.infer<typeof SystemVariablesSchema>
+  tableDefinitions?: { [key: string]: z.infer<typeof ExternalDataConfigurationSchema> }
+  timePartitioning?: z.infer<typeof TimePartitioningSchema>
+  useLegacySql?: boolean
+  useQueryCache?: boolean
+  userDefinedFunctionResources?: z.infer<typeof UserDefinedFunctionResourceSchema>[]
+  writeDisposition?: string
+}
+
+const JobConfigurationQuerySchema: z.ZodType<JobConfigurationQueryType> = z
   .object({
     allowLargeResults: z
       .boolean()
@@ -4829,7 +2684,18 @@ const JobConfigurationQuerySchema = z
   .openapi({ description: 'JobConfigurationQuery configures a BigQuery query job.', required: [] })
   .openapi('JobConfigurationQuery')
 
-const JobConfigurationSchema = z
+type JobConfigurationType = {
+  copy?: z.infer<typeof JobConfigurationTableCopySchema>
+  dryRun?: boolean
+  extract?: z.infer<typeof JobConfigurationExtractSchema>
+  jobTimeoutMs?: string
+  jobType?: string
+  labels?: { [key: string]: string }
+  load?: z.infer<typeof JobConfigurationLoadSchema>
+  query?: z.infer<typeof JobConfigurationQuerySchema>
+}
+
+const JobConfigurationSchema: z.ZodType<JobConfigurationType> = z
   .object({
     copy: JobConfigurationTableCopySchema.exactOptional().openapi({
       description: '[Pick one] Copies a table.',
@@ -4892,6 +2758,33 @@ const JobCreationReasonSchema = z
   })
   .openapi('JobCreationReason')
 
+const JobReferenceSchema = z
+  .object({
+    jobId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The ID of the job. The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-). The maximum length is 1,024 characters.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The geographic location of the job. The default value is US. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations',
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The ID of the project containing this job.' }),
+  })
+  .openapi({
+    description: 'A job reference is a fully qualified identifier for referring to a job.',
+    required: [],
+  })
+  .openapi('JobReference')
+
 const JobStatistics5Schema = z
   .object({
     copiedLogicalBytes: z
@@ -4911,6 +2804,16 @@ const JobStatistics5Schema = z
   })
   .openapi({ description: 'Statistics for a copy job.', required: [] })
   .openapi('JobStatistics5')
+
+const DataMaskingStatisticsSchema = z
+  .object({
+    dataMaskingApplied: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether any accessed data was protected by the data masking.' }),
+  })
+  .openapi({ description: 'Statistics for data-masking.', required: [] })
+  .openapi('DataMaskingStatistics')
 
 const QueryTimelineSampleSchema = z
   .object({
@@ -5034,6 +2937,98 @@ const JobStatistics3Schema = z
   .openapi({ description: 'Statistics for a load job.', required: [] })
   .openapi('JobStatistics3')
 
+const BiEngineReasonSchema = z
+  .object({
+    code: z
+      .enum([
+        'CODE_UNSPECIFIED',
+        'NO_RESERVATION',
+        'INSUFFICIENT_RESERVATION',
+        'UNSUPPORTED_SQL_TEXT',
+        'INPUT_TOO_LARGE',
+        'OTHER_REASON',
+        'TABLE_EXCLUDED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. High-level BI Engine reason for partial or disabled acceleration',
+        readOnly: true,
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Free form human-readable reason for partial or disabled acceleration.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: "Reason why BI Engine didn't accelerate the query (or sub-query).",
+    required: [],
+  })
+  .openapi('BiEngineReason')
+
+const BiEngineStatisticsSchema = z
+  .object({
+    accelerationMode: z
+      .enum([
+        'BI_ENGINE_ACCELERATION_MODE_UNSPECIFIED',
+        'BI_ENGINE_DISABLED',
+        'PARTIAL_INPUT',
+        'FULL_INPUT',
+        'FULL_QUERY',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Specifies which mode of BI Engine acceleration was performed (if any).',
+        readOnly: true,
+      }),
+    biEngineMode: z
+      .enum(['ACCELERATION_MODE_UNSPECIFIED', 'DISABLED', 'PARTIAL', 'FULL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Specifies which mode of BI Engine acceleration was performed (if any).',
+        readOnly: true,
+      }),
+    biEngineReasons: z
+      .array(BiEngineReasonSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'In case of DISABLED or PARTIAL bi_engine_mode, these contain the explanatory reasons as to why BI Engine could not accelerate. In case the full query was accelerated, this field is not populated.',
+      }),
+  })
+  .openapi({
+    description: 'Statistics for a BI Engine specific query. Populated as part of JobStatistics2',
+    required: [],
+  })
+  .openapi('BiEngineStatistics')
+
+const RoutineReferenceSchema = z
+  .object({
+    datasetId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The ID of the dataset containing this routine.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The ID of the project containing this routine.' }),
+    routineId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The ID of the routine. The ID must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_). The maximum length is 256 characters.',
+      }),
+  })
+  .openapi({ description: 'Id path of a routine.', required: [] })
+  .openapi('RoutineReference')
+
 const RowAccessPolicyReferenceSchema = z
   .object({
     datasetId: z
@@ -5062,6 +3057,89 @@ const RowAccessPolicyReferenceSchema = z
   })
   .openapi({ description: 'Id path of a row access policy.', required: [] })
   .openapi('RowAccessPolicyReference')
+
+const DmlStatisticsSchema = z
+  .object({
+    deletedRowCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Number of deleted Rows. populated by DML DELETE, MERGE and TRUNCATE statements.',
+        readOnly: true,
+      }),
+    insertedRowCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Number of inserted Rows. Populated by DML INSERT and MERGE statements',
+        readOnly: true,
+      }),
+    updatedRowCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Number of updated Rows. Populated by DML UPDATE and MERGE statements.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Detailed statistics for DML statements', required: [] })
+  .openapi('DmlStatistics')
+
+const ExportDataStatisticsSchema = z
+  .object({
+    fileCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Number of destination files generated in case of EXPORT DATA statement only.',
+      }),
+    rowCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Alpha] Number of destination rows generated in case of EXPORT DATA statement only.',
+      }),
+  })
+  .openapi({
+    description:
+      'Statistics for the EXPORT DATA statement as part of Query Job. EXTRACT JOB statistics are populated in JobStatistics4.',
+    required: [],
+  })
+  .openapi('ExportDataStatistics')
+
+const ExternalServiceCostSchema = z
+  .object({
+    bytesBilled: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'External service cost in terms of bigquery bytes billed.' }),
+    bytesProcessed: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'External service cost in terms of bigquery bytes processed.' }),
+    externalService: z.string().exactOptional().openapi({ description: 'External service name.' }),
+    reservedSlotCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Non-preemptable reserved slots used for external job. For example, reserved slots for Cloua AI Platform job are the VM usages converted to BigQuery slot with equivalent mount of price.',
+      }),
+    slotMs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'External service cost in terms of bigquery slot milliseconds.' }),
+  })
+  .openapi({
+    description:
+      'The external service cost is a portion of the total cost, these costs are not additive with total_bytes_billed. Moreover, this field only track external service costs that will show up as BigQuery costs (e.g. training BigQuery ML job with google cloud CAIP or Automl Tables services), not other costs which may be accrued by running the query (e.g. reading from Bigtable or Cloud Storage). The external service costs with different billing sku (e.g. CAIP job is charged based on VM usage) are converted to BigQuery billed_bytes and slot_ms with equivalent amount of US dollars. Services may not directly correlate to these metrics, but these are the equivalents for billing purposes. Output only.',
+    required: [],
+  })
+  .openapi('ExternalServiceCost')
 
 const LoadQueryStatisticsSchema = z
   .object({
@@ -5221,7 +3299,300 @@ const MetadataCacheStatisticsSchema = z
   .openapi({ description: 'Statistics for metadata caching in BigLake tables.', required: [] })
   .openapi('MetadataCacheStatistics')
 
-const MlStatisticsSchema = z
+const HparamTuningTrialSchema: z.ZodType<HparamTuningTrialType> = z
+  .object({
+    endTimeMs: z.string().exactOptional().openapi({ description: 'Ending time of the trial.' }),
+    errorMessage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Error message for FAILED and INFEASIBLE trial.' }),
+    evalLoss: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Loss computed on the eval data at the end of trial.' }),
+    evaluationMetrics: EvaluationMetricsSchema.exactOptional().openapi({
+      description:
+        'Evaluation metrics of this trial calculated on the test data. Empty in Job API.',
+    }),
+    hparamTuningEvaluationMetrics: EvaluationMetricsSchema.exactOptional().openapi({
+      description:
+        'Hyperparameter tuning evaluation metrics of this trial calculated on the eval data. Unlike evaluation_metrics, only the fields corresponding to the hparam_tuning_objectives are set.',
+    }),
+    hparams: TrainingOptionsSchema.exactOptional().openapi({
+      description: 'The hyperprameters selected for this trial.',
+    }),
+    startTimeMs: z.string().exactOptional().openapi({ description: 'Starting time of the trial.' }),
+    status: z
+      .enum([
+        'TRIAL_STATUS_UNSPECIFIED',
+        'NOT_STARTED',
+        'RUNNING',
+        'SUCCEEDED',
+        'FAILED',
+        'INFEASIBLE',
+        'STOPPED_EARLY',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The status of the trial.' }),
+    trainingLoss: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Loss computed on the training data at the end of trial.' }),
+    trialId: z.string().exactOptional().openapi({ description: '1-based index of the trial.' }),
+  })
+  .openapi({
+    description:
+      'Training info of a trial in [hyperparameter tuning](/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models.',
+    required: [],
+  })
+  .openapi('HparamTuningTrial')
+
+const ArimaCoefficientsSchema = z
+  .object({
+    autoRegressiveCoefficients: z
+      .array(z.float64())
+      .exactOptional()
+      .openapi({ description: 'Auto-regressive coefficients, an array of double.' }),
+    interceptCoefficient: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Intercept coefficient, just a double not an array.' }),
+    movingAverageCoefficients: z
+      .array(z.float64())
+      .exactOptional()
+      .openapi({ description: 'Moving-average coefficients, an array of double.' }),
+  })
+  .openapi({ description: 'Arima coefficients.', required: [] })
+  .openapi('ArimaCoefficients')
+
+const ArimaModelInfoSchema = z
+  .object({
+    arimaCoefficients: ArimaCoefficientsSchema.exactOptional().openapi({
+      description: 'Arima coefficients.',
+    }),
+    arimaFittingMetrics: ArimaFittingMetricsSchema.exactOptional().openapi({
+      description: 'Arima fitting metrics.',
+    }),
+    hasDrift: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether Arima model fitted with drift or not. It is always false when d is not 1.',
+      }),
+    hasHolidayEffect: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If true, holiday_effect is a part of time series decomposition result.',
+      }),
+    hasSpikesAndDips: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If true, spikes_and_dips is a part of time series decomposition result.',
+      }),
+    hasStepChanges: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If true, step_changes is a part of time series decomposition result.',
+      }),
+    nonSeasonalOrder: ArimaOrderSchema.exactOptional().openapi({
+      description: 'Non-seasonal order.',
+    }),
+    seasonalPeriods: z
+      .array(
+        z.enum([
+          'SEASONAL_PERIOD_TYPE_UNSPECIFIED',
+          'NO_SEASONALITY',
+          'DAILY',
+          'WEEKLY',
+          'MONTHLY',
+          'QUARTERLY',
+          'YEARLY',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Seasonal periods. Repeated because multiple periods are supported for one time series.',
+      }),
+    timeSeriesId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.',
+      }),
+    timeSeriesIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.',
+      }),
+  })
+  .openapi({ description: 'Arima model information.', required: [] })
+  .openapi('ArimaModelInfo')
+
+const ArimaResultSchema = z
+  .object({
+    arimaModelInfo: z
+      .array(ArimaModelInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one.',
+      }),
+    seasonalPeriods: z
+      .array(
+        z.enum([
+          'SEASONAL_PERIOD_TYPE_UNSPECIFIED',
+          'NO_SEASONALITY',
+          'DAILY',
+          'WEEKLY',
+          'MONTHLY',
+          'QUARTERLY',
+          'YEARLY',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Seasonal periods. Repeated because multiple periods are supported for one time series.',
+      }),
+  })
+  .openapi({
+    description:
+      '(Auto-)arima fitting result. Wrap everything in ArimaResult for easier refactoring if we want to use model-specific iteration results.',
+    required: [],
+  })
+  .openapi('ArimaResult')
+
+const ClusterInfoSchema = z
+  .object({
+    centroidId: z.string().exactOptional().openapi({ description: 'Centroid id.' }),
+    clusterRadius: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cluster radius, the average distance from centroid to each point assigned to the cluster.',
+      }),
+    clusterSize: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Cluster size, the total number of points assigned to the cluster.',
+      }),
+  })
+  .openapi({
+    description: 'Information about a single cluster for clustering model.',
+    required: [],
+  })
+  .openapi('ClusterInfo')
+
+const PrincipalComponentInfoSchema = z
+  .object({
+    cumulativeExplainedVarianceRatio: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The explained_variance is pre-ordered in the descending order to compute the cumulative explained variance ratio.',
+      }),
+    explainedVariance: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Explained variance by this principal component, which is simply the eigenvalue.',
+      }),
+    explainedVarianceRatio: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Explained_variance over the total explained variance.' }),
+    principalComponentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Id of the principal component.' }),
+  })
+  .openapi({
+    description:
+      'Principal component infos, used only for eigen decomposition based models, e.g., PCA. Ordered by explained_variance in the descending order.',
+    required: [],
+  })
+  .openapi('PrincipalComponentInfo')
+
+const IterationResultSchema = z
+  .object({
+    arimaResult: ArimaResultSchema.exactOptional().openapi({ description: 'Arima result.' }),
+    clusterInfos: z
+      .array(ClusterInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'Information about top clusters for clustering models.' }),
+    durationMs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time taken to run the iteration in milliseconds.' }),
+    evalLoss: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Loss computed on the eval data at the end of iteration.' }),
+    index: z.int32().exactOptional().openapi({ description: 'Index of the iteration, 0 based.' }),
+    learnRate: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Learn rate used for this iteration.' }),
+    principalComponentInfos: z
+      .array(PrincipalComponentInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'The information of the principal components.' }),
+    trainingLoss: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Loss computed on the training data at the end of iteration.' }),
+  })
+  .openapi({
+    description: 'Information about a single iteration of the training run.',
+    required: [],
+  })
+  .openapi('IterationResult')
+
+type MlStatisticsType = {
+  hparamTrials?: z.infer<typeof HparamTuningTrialSchema>[]
+  iterationResults?: z.infer<typeof IterationResultSchema>[]
+  maxIterations?: string
+  modelType?:
+    | 'MODEL_TYPE_UNSPECIFIED'
+    | 'LINEAR_REGRESSION'
+    | 'LOGISTIC_REGRESSION'
+    | 'KMEANS'
+    | 'MATRIX_FACTORIZATION'
+    | 'DNN_CLASSIFIER'
+    | 'TENSORFLOW'
+    | 'DNN_REGRESSOR'
+    | 'XGBOOST'
+    | 'BOOSTED_TREE_REGRESSOR'
+    | 'BOOSTED_TREE_CLASSIFIER'
+    | 'ARIMA'
+    | 'AUTOML_REGRESSOR'
+    | 'AUTOML_CLASSIFIER'
+    | 'PCA'
+    | 'DNN_LINEAR_COMBINED_CLASSIFIER'
+    | 'DNN_LINEAR_COMBINED_REGRESSOR'
+    | 'AUTOENCODER'
+    | 'ARIMA_PLUS'
+    | 'ARIMA_PLUS_XREG'
+    | 'RANDOM_FOREST_REGRESSOR'
+    | 'RANDOM_FOREST_CLASSIFIER'
+    | 'TENSORFLOW_LITE'
+    | 'ONNX'
+  trainingType?: 'TRAINING_TYPE_UNSPECIFIED' | 'SINGLE_TRAINING' | 'HPARAM_TUNING'
+}
+
+const MlStatisticsSchema: z.ZodType<MlStatisticsType> = z
   .object({
     hparamTrials: z
       .array(HparamTuningTrialSchema)
@@ -5286,6 +3657,27 @@ const MlStatisticsSchema = z
   .openapi({ description: 'Job statistics specific to a BigQuery ML training job.', required: [] })
   .openapi('MlStatistics')
 
+const BigQueryModelTrainingSchema = z
+  .object({
+    currentIteration: z.int32().exactOptional().openapi({ description: 'Deprecated.' }),
+    expectedTotalIterations: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BigQueryModelTraining')
+
+const InputDataChangeSchema = z
+  .object({
+    recordsReadDiffPercentage: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Records read difference percentage compared to a previous run.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Details about the input data change insight.', required: [] })
+  .openapi('InputDataChange')
+
 const StagePerformanceChangeInsightSchema = z
   .object({
     inputDataChange: InputDataChangeSchema.exactOptional().openapi({
@@ -5305,6 +3697,31 @@ const StagePerformanceChangeInsightSchema = z
     required: [],
   })
   .openapi('StagePerformanceChangeInsight')
+
+const HighCardinalityJoinSchema = z
+  .object({
+    leftRows: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Count of left input rows.', readOnly: true }),
+    outputRows: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Count of the output rows.', readOnly: true }),
+    rightRows: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Count of right input rows.', readOnly: true }),
+    stepIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The index of the join operator in the ExplainQueryStep lists.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'High cardinality join detailed information.', required: [] })
+  .openapi('HighCardinalityJoin')
 
 const StagePerformanceStandaloneInsightSchema = z
   .object({
@@ -5390,6 +3807,207 @@ const QueryInfoSchema = z
   })
   .openapi({ description: 'Query optimization information for a QUERY job.', required: [] })
   .openapi('QueryInfo')
+
+const ExplainQueryStepSchema = z
+  .object({
+    kind: z.string().exactOptional().openapi({ description: 'Machine-readable operation type.' }),
+    substeps: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Human-readable description of the step(s).' }),
+  })
+  .openapi({ description: 'An operation within a stage.', required: [] })
+  .openapi('ExplainQueryStep')
+
+const ExplainQueryStageSchema = z
+  .object({
+    completedParallelInputs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of parallel input segments completed.' }),
+    computeMode: z
+      .enum(['COMPUTE_MODE_UNSPECIFIED', 'BIGQUERY', 'BI_ENGINE'])
+      .exactOptional()
+      .openapi({ description: 'Output only. Compute mode for this stage.', readOnly: true }),
+    computeMsAvg: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Milliseconds the average shard spent on CPU-bound tasks.' }),
+    computeMsMax: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Milliseconds the slowest shard spent on CPU-bound tasks.' }),
+    computeRatioAvg: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Relative amount of time the average shard spent on CPU-bound tasks.',
+      }),
+    computeRatioMax: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Relative amount of time the slowest shard spent on CPU-bound tasks.',
+      }),
+    endMs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Stage end time represented as milliseconds since the epoch.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique ID for the stage within the plan.' }),
+    inputStages: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'IDs for stages that are inputs to this stage.' }),
+    name: z.string().exactOptional().openapi({ description: 'Human-readable name for the stage.' }),
+    parallelInputs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of parallel input segments to be processed' }),
+    readMsAvg: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Milliseconds the average shard spent reading input.' }),
+    readMsMax: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Milliseconds the slowest shard spent reading input.' }),
+    readRatioAvg: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Relative amount of time the average shard spent reading input.' }),
+    readRatioMax: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Relative amount of time the slowest shard spent reading input.' }),
+    recordsRead: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of records read into the stage.' }),
+    recordsWritten: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of records written by the stage.' }),
+    shuffleOutputBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total number of bytes written to shuffle.' }),
+    shuffleOutputBytesSpilled: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total number of bytes written to shuffle and spilled to disk.' }),
+    slotMs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Slot-milliseconds used by the stage.' }),
+    startMs: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Stage start time represented as milliseconds since the epoch.' }),
+    status: z.string().exactOptional().openapi({ description: 'Current status for this stage.' }),
+    steps: z
+      .array(ExplainQueryStepSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of operations within the stage in dependency order (approximately chronological).',
+      }),
+    waitMsAvg: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Milliseconds the average shard spent waiting to be scheduled.' }),
+    waitMsMax: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Milliseconds the slowest shard spent waiting to be scheduled.' }),
+    waitRatioAvg: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Relative amount of time the average shard spent waiting to be scheduled.',
+      }),
+    waitRatioMax: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Relative amount of time the slowest shard spent waiting to be scheduled.',
+      }),
+    writeMsAvg: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Milliseconds the average shard spent on writing output.' }),
+    writeMsMax: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Milliseconds the slowest shard spent on writing output.' }),
+    writeRatioAvg: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Relative amount of time the average shard spent on writing output.',
+      }),
+    writeRatioMax: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Relative amount of time the slowest shard spent on writing output.',
+      }),
+  })
+  .openapi({ description: 'A single stage of query execution.', required: [] })
+  .openapi('ExplainQueryStage')
+
+const IndexUnusedReasonSchema = z
+  .object({
+    baseTable: TableReferenceSchema.exactOptional().openapi({
+      description: 'Specifies the base table involved in the reason that no search index was used.',
+    }),
+    code: z
+      .enum([
+        'CODE_UNSPECIFIED',
+        'INDEX_CONFIG_NOT_AVAILABLE',
+        'PENDING_INDEX_CREATION',
+        'BASE_TABLE_TRUNCATED',
+        'INDEX_CONFIG_MODIFIED',
+        'TIME_TRAVEL_QUERY',
+        'NO_PRUNING_POWER',
+        'UNINDEXED_SEARCH_FIELDS',
+        'UNSUPPORTED_SEARCH_PATTERN',
+        'OPTIMIZED_WITH_MATERIALIZED_VIEW',
+        'SECURED_BY_DATA_MASKING',
+        'MISMATCHED_TEXT_ANALYZER',
+        'BASE_TABLE_TOO_SMALL',
+        'BASE_TABLE_TOO_LARGE',
+        'ESTIMATED_PERFORMANCE_GAIN_TOO_LOW',
+        'NOT_SUPPORTED_IN_STANDARD_EDITION',
+        'INDEX_SUPPRESSED_BY_FUNCTION_OPTION',
+        'QUERY_CACHE_HIT',
+        'INTERNAL_ERROR',
+        'OTHER_REASON',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the high-level reason for the scenario when no search index was used.',
+      }),
+    indexName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies the name of the unused search index, if available.' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Free form human-readable reason for the scenario when no search index was used.',
+      }),
+  })
+  .openapi({
+    description: 'Reason about why no search index was used in the search query (or sub-query).',
+    required: [],
+  })
+  .openapi('IndexUnusedReason')
 
 const SearchStatisticsSchema = z
   .object({
@@ -5503,7 +4121,54 @@ const VectorSearchStatisticsSchema = z
   })
   .openapi('VectorSearchStatistics')
 
-const JobStatistics2Schema = z
+type JobStatistics2Type = {
+  biEngineStatistics?: z.infer<typeof BiEngineStatisticsSchema>
+  billingTier?: number
+  cacheHit?: boolean
+  dclTargetDataset?: z.infer<typeof DatasetReferenceSchema>
+  dclTargetTable?: z.infer<typeof TableReferenceSchema>
+  dclTargetView?: z.infer<typeof TableReferenceSchema>
+  ddlAffectedRowAccessPolicyCount?: string
+  ddlDestinationTable?: z.infer<typeof TableReferenceSchema>
+  ddlOperationPerformed?: string
+  ddlTargetDataset?: z.infer<typeof DatasetReferenceSchema>
+  ddlTargetRoutine?: z.infer<typeof RoutineReferenceSchema>
+  ddlTargetRowAccessPolicy?: z.infer<typeof RowAccessPolicyReferenceSchema>
+  ddlTargetTable?: z.infer<typeof TableReferenceSchema>
+  dmlStats?: z.infer<typeof DmlStatisticsSchema>
+  estimatedBytesProcessed?: string
+  exportDataStatistics?: z.infer<typeof ExportDataStatisticsSchema>
+  externalServiceCosts?: z.infer<typeof ExternalServiceCostSchema>[]
+  loadQueryStatistics?: z.infer<typeof LoadQueryStatisticsSchema>
+  materializedViewStatistics?: z.infer<typeof MaterializedViewStatisticsSchema>
+  metadataCacheStatistics?: z.infer<typeof MetadataCacheStatisticsSchema>
+  mlStatistics?: z.infer<typeof MlStatisticsSchema>
+  modelTraining?: z.infer<typeof BigQueryModelTrainingSchema>
+  modelTrainingCurrentIteration?: number
+  modelTrainingExpectedTotalIteration?: string
+  numDmlAffectedRows?: string
+  performanceInsights?: z.infer<typeof PerformanceInsightsSchema>
+  queryInfo?: z.infer<typeof QueryInfoSchema>
+  queryPlan?: z.infer<typeof ExplainQueryStageSchema>[]
+  referencedRoutines?: z.infer<typeof RoutineReferenceSchema>[]
+  referencedTables?: z.infer<typeof TableReferenceSchema>[]
+  reservationUsage?: { name?: string; slotMs?: string }[]
+  schema?: z.infer<typeof TableSchemaSchema>
+  searchStatistics?: z.infer<typeof SearchStatisticsSchema>
+  sparkStatistics?: z.infer<typeof SparkStatisticsSchema>
+  statementType?: string
+  timeline?: z.infer<typeof QueryTimelineSampleSchema>[]
+  totalBytesBilled?: string
+  totalBytesProcessed?: string
+  totalBytesProcessedAccuracy?: string
+  totalPartitionsProcessed?: string
+  totalSlotMs?: string
+  transferredBytes?: string
+  undeclaredQueryParameters?: z.infer<typeof QueryParameterSchema>[]
+  vectorSearchStatistics?: z.infer<typeof VectorSearchStatisticsSchema>
+}
+
+const JobStatistics2Schema: z.ZodType<JobStatistics2Type> = z
   .object({
     biEngineStatistics: BiEngineStatisticsSchema.exactOptional().openapi({
       description: 'Output only. BI Engine specific Statistics.',
@@ -5861,7 +4526,31 @@ const TransactionInfoSchema = z
   .openapi({ description: '[Alpha] Information of a multi-statement transaction.', required: [] })
   .openapi('TransactionInfo')
 
-const JobStatisticsSchema = z
+type JobStatisticsType = {
+  completionRatio?: number
+  copy?: z.infer<typeof JobStatistics5Schema>
+  creationTime?: string
+  dataMaskingStatistics?: z.infer<typeof DataMaskingStatisticsSchema>
+  endTime?: string
+  extract?: z.infer<typeof JobStatistics4Schema>
+  finalExecutionDurationMs?: string
+  load?: z.infer<typeof JobStatistics3Schema>
+  numChildJobs?: string
+  parentJobId?: string
+  query?: z.infer<typeof JobStatistics2Schema>
+  quotaDeferments?: string[]
+  reservationUsage?: { name?: string; slotMs?: string }[]
+  reservation_id?: string
+  rowLevelSecurityStatistics?: z.infer<typeof RowLevelSecurityStatisticsSchema>
+  scriptStatistics?: z.infer<typeof ScriptStatisticsSchema>
+  sessionInfo?: z.infer<typeof SessionInfoSchema>
+  startTime?: string
+  totalBytesProcessed?: string
+  totalSlotMs?: string
+  transactionInfo?: z.infer<typeof TransactionInfoSchema>
+}
+
+const JobStatisticsSchema: z.ZodType<JobStatisticsType> = z
   .object({
     completionRatio: z
       .float64()
@@ -6008,6 +4697,31 @@ const JobStatisticsSchema = z
   .openapi({ description: 'Statistics for a single job execution.', required: [] })
   .openapi('JobStatistics')
 
+const ErrorProtoSchema = z
+  .object({
+    debugInfo: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Debugging information. This property is internal to Google and should not be used.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Specifies where the error occurred, if present.' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A human-readable description of the error.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A short error code that summarizes the error.' }),
+  })
+  .openapi({ description: 'Error details.', required: [] })
+  .openapi('ErrorProto')
+
 const JobStatusSchema = z
   .object({
     errorResult: ErrorProtoSchema.exactOptional().openapi({
@@ -6035,7 +4749,21 @@ const JobStatusSchema = z
   .openapi({ required: [] })
   .openapi('JobStatus')
 
-const JobSchema = z
+type JobType = {
+  configuration?: z.infer<typeof JobConfigurationSchema>
+  etag?: string
+  id?: string
+  jobCreationReason?: z.infer<typeof JobCreationReasonSchema>
+  jobReference?: z.infer<typeof JobReferenceSchema>
+  kind?: string
+  principal_subject?: string
+  selfLink?: string
+  statistics?: z.infer<typeof JobStatisticsSchema>
+  status?: z.infer<typeof JobStatusSchema>
+  user_email?: string
+}
+
+const JobSchema: z.ZodType<JobType> = z
   .object({
     configuration: JobConfigurationSchema.exactOptional().openapi({
       description: 'Required. Describes the job configuration.',
@@ -6097,99 +4825,214 @@ const JobSchema = z
   .openapi({ required: [] })
   .openapi('Job')
 
-const JobCancelResponseSchema = z
-  .object({
-    job: JobSchema.exactOptional().openapi({ description: 'The final state of the job.' }),
-    kind: z
-      .string()
-      .default('bigquery#jobCancelResponse')
-      .exactOptional()
-      .openapi({ description: 'The resource type of the response.' }),
-  })
-  .openapi({ description: 'Describes format of a jobs cancellation response.', required: [] })
-  .openapi('JobCancelResponse')
+type JobCancelResponseType = { job?: z.infer<typeof JobSchema>; kind?: string }
 
-const JobListSchema = z
-  .object({
-    etag: z.string().exactOptional().openapi({ description: 'A hash of this page of results.' }),
-    jobs: z
-      .array(
-        z
-          .object({
-            configuration: JobConfigurationSchema.exactOptional().openapi({
-              description: 'Required. Describes the job configuration.',
-            }),
-            errorResult: ErrorProtoSchema.exactOptional().openapi({
-              description: 'A result object that will be present only if the job has failed.',
-            }),
-            id: z.string().exactOptional().openapi({ description: 'Unique opaque ID of the job.' }),
-            jobReference: JobReferenceSchema.exactOptional().openapi({
-              description: 'Unique opaque ID of the job.',
-            }),
-            kind: z.string().exactOptional().openapi({ description: 'The resource type.' }),
-            principal_subject: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  '[Full-projection-only] String representation of identity of requesting party. Populated for both first- and third-party identities. Only present for APIs that support third-party identities.',
-              }),
-            state: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Running state of the job. When the state is DONE, errorResult can be checked to determine whether the job succeeded or failed.',
-              }),
-            statistics: JobStatisticsSchema.exactOptional().openapi({
-              description:
-                'Output only. Information about the job, including starting time and ending time of the job.',
-              readOnly: true,
-            }),
-            status: JobStatusSchema.exactOptional().openapi({
-              description: '[Full-projection-only] Describes the status of this job.',
-            }),
-            user_email: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: '[Full-projection-only] Email address of the user who ran the job.',
-              }),
-          })
+type JobListType = {
+  etag?: string
+  jobs?: {
+    configuration?: z.infer<typeof JobConfigurationSchema>
+    errorResult?: z.infer<typeof ErrorProtoSchema>
+    id?: string
+    jobReference?: z.infer<typeof JobReferenceSchema>
+    kind?: string
+    principal_subject?: string
+    state?: string
+    statistics?: z.infer<typeof JobStatisticsSchema>
+    status?: z.infer<typeof JobStatusSchema>
+    user_email?: string
+  }[]
+  kind?: string
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const StandardSqlFieldSchema: z.ZodType<StandardSqlFieldType> = z
+  .lazy(() =>
+    z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
           .openapi({
-            description:
-              'ListFormatJob is a partial projection of job information returned as part of a jobs.list response.',
-            required: [],
+            description: 'Optional. The name of this field. Can be absent for struct fields.',
           }),
-      )
-      .exactOptional()
-      .openapi({ description: 'List of jobs that were requested.' }),
-    kind: z
-      .string()
-      .default('bigquery#jobList')
-      .exactOptional()
-      .openapi({ description: 'The resource type of the response.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token to request the next page of results.' }),
-    unreachable: z
+        type: StandardSqlDataTypeSchema.exactOptional().openapi({
+          description:
+            'Optional. The type of this parameter. Absent if not explicitly specified (e.g., CREATE FUNCTION statement can omit the return type; in this case the output parameter does not have this "type" field).',
+        }),
+      })
+      .openapi({ description: 'A field or a column.', required: [] }),
+  )
+  .openapi('StandardSqlField')
+
+const StringHparamSearchSpaceSchema = z
+  .object({
+    candidates: z
       .array(z.string())
       .exactOptional()
-      .openapi({
-        description:
-          'A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5"',
-      }),
+      .openapi({ description: 'Canididates for the string or enum parameter in lower case.' }),
   })
-  .openapi({ description: 'JobList is the response format for a jobs.list call.', required: [] })
-  .openapi('JobList')
+  .openapi({ description: 'Search space for string and enum.', required: [] })
+  .openapi('StringHparamSearchSpace')
 
-const JsonValueSchema = z.any().openapi('JsonValue')
+const IntCandidatesSchema = z
+  .object({
+    candidates: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Candidates for the int parameter in increasing order.' }),
+  })
+  .openapi({ description: 'Discrete candidates of an int hyperparameter.', required: [] })
+  .openapi('IntCandidates')
 
-const JsonObjectSchema = z
-  .record(z.string(), JsonValueSchema)
-  .openapi({ description: 'Represents a single JSON object.' })
-  .openapi('JsonObject')
+const IntRangeSchema = z
+  .object({
+    max: z.string().exactOptional().openapi({ description: 'Max value of the int parameter.' }),
+    min: z.string().exactOptional().openapi({ description: 'Min value of the int parameter.' }),
+  })
+  .openapi({ description: 'Range of an int hyperparameter.', required: [] })
+  .openapi('IntRange')
+
+const IntHparamSearchSpaceSchema = z
+  .object({
+    candidates: IntCandidatesSchema.exactOptional().openapi({
+      description: 'Candidates of the int hyperparameter.',
+    }),
+    range: IntRangeSchema.exactOptional().openapi({
+      description: 'Range of the int hyperparameter.',
+    }),
+  })
+  .openapi({ description: 'Search space for an int hyperparameter.', required: [] })
+  .openapi('IntHparamSearchSpace')
+
+const DoubleCandidatesSchema = z
+  .object({
+    candidates: z
+      .array(z.float64())
+      .exactOptional()
+      .openapi({ description: 'Candidates for the double parameter in increasing order.' }),
+  })
+  .openapi({ description: 'Discrete candidates of a double hyperparameter.', required: [] })
+  .openapi('DoubleCandidates')
+
+const DoubleRangeSchema = z
+  .object({
+    max: z.float64().exactOptional().openapi({ description: 'Max value of the double parameter.' }),
+    min: z.float64().exactOptional().openapi({ description: 'Min value of the double parameter.' }),
+  })
+  .openapi({ description: 'Range of a double hyperparameter.', required: [] })
+  .openapi('DoubleRange')
+
+const DoubleHparamSearchSpaceSchema = z
+  .object({
+    candidates: DoubleCandidatesSchema.exactOptional().openapi({
+      description: 'Candidates of the double hyperparameter.',
+    }),
+    range: DoubleRangeSchema.exactOptional().openapi({
+      description: 'Range of the double hyperparameter.',
+    }),
+  })
+  .openapi({ description: 'Search space for a double hyperparameter.', required: [] })
+  .openapi('DoubleHparamSearchSpace')
+
+const IntArraySchema = z
+  .object({
+    elements: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Elements in the int array.' }),
+  })
+  .openapi({ description: 'An array of int.', required: [] })
+  .openapi('IntArray')
+
+const IntArrayHparamSearchSpaceSchema = z
+  .object({
+    candidates: z
+      .array(IntArraySchema)
+      .exactOptional()
+      .openapi({ description: 'Candidates for the int array parameter.' }),
+  })
+  .openapi({ description: 'Search space for int array.', required: [] })
+  .openapi('IntArrayHparamSearchSpace')
+
+const HparamSearchSpacesSchema = z
+  .object({
+    activationFn: StringHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Activation functions of neural network models.',
+    }),
+    batchSize: IntHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Mini batch sample size.',
+    }),
+    boosterType: StringHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Booster type for boosted tree models.',
+    }),
+    colsampleBylevel: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Subsample ratio of columns for each level for boosted tree models.',
+    }),
+    colsampleBynode: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Subsample ratio of columns for each node(split) for boosted tree models.',
+    }),
+    colsampleBytree: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description:
+        'Subsample ratio of columns when constructing each tree for boosted tree models.',
+    }),
+    dartNormalizeType: StringHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Dart normalization type for boosted tree models.',
+    }),
+    dropout: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description:
+        'Dropout probability for dnn model training and boosted tree models using dart booster.',
+    }),
+    hiddenUnits: IntArrayHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Hidden units for neural network models.',
+    }),
+    l1Reg: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'L1 regularization coefficient.',
+    }),
+    l2Reg: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'L2 regularization coefficient.',
+    }),
+    learnRate: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Learning rate of training jobs.',
+    }),
+    maxTreeDepth: IntHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Maximum depth of a tree for boosted tree models.',
+    }),
+    minSplitLoss: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Minimum split loss for boosted tree models.',
+    }),
+    minTreeChildWeight: IntHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Minimum sum of instance weight needed in a child for boosted tree models.',
+    }),
+    numClusters: IntHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Number of clusters for k-means.',
+    }),
+    numFactors: IntHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Number of latent factors to train on.',
+    }),
+    numParallelTree: IntHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Number of parallel trees for boosted tree models.',
+    }),
+    optimizer: StringHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Optimizer of TF models.',
+    }),
+    subsample: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description:
+        'Subsample the training data to grow tree to prevent overfitting for boosted tree models.',
+    }),
+    treeMethod: StringHparamSearchSpaceSchema.exactOptional().openapi({
+      description: 'Tree construction algorithm for boosted tree models.',
+    }),
+    walsAlpha: DoubleHparamSearchSpaceSchema.exactOptional().openapi({
+      description:
+        'Hyperparameter for matrix factoration when implicit feedback type is specified.',
+    }),
+  })
+  .openapi({
+    description: 'Hyperparameter search spaces. These should be a subset of training_options.',
+    required: [],
+  })
+  .openapi('HparamSearchSpaces')
 
 const RemoteModelInfoSchema = z
   .object({
@@ -6242,7 +5085,76 @@ const RemoteModelInfoSchema = z
   .openapi({ description: 'Remote Model Info', required: [] })
   .openapi('RemoteModelInfo')
 
-const TrainingRunSchema = z
+const ExplanationSchema = z
+  .object({
+    attribution: z.float64().exactOptional().openapi({ description: 'Attribution of feature.' }),
+    featureName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.',
+      }),
+  })
+  .openapi({ description: 'Explanation for a single feature.', required: [] })
+  .openapi('Explanation')
+
+const GlobalExplanationSchema = z
+  .object({
+    classLabel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.',
+      }),
+    explanations: z
+      .array(ExplanationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of the top global explanations. Sorted by absolute value of attribution in descending order.',
+      }),
+  })
+  .openapi({
+    description: 'Global explanations containing the top most important features after training.',
+    required: [],
+  })
+  .openapi('GlobalExplanation')
+
+const DataSplitResultSchema = z
+  .object({
+    evaluationTable: TableReferenceSchema.exactOptional().openapi({
+      description: 'Table reference of the evaluation data after split.',
+    }),
+    testTable: TableReferenceSchema.exactOptional().openapi({
+      description: 'Table reference of the test data after split.',
+    }),
+    trainingTable: TableReferenceSchema.exactOptional().openapi({
+      description: 'Table reference of the training data after split.',
+    }),
+  })
+  .openapi({
+    description:
+      'Data split result. This contains references to the training and evaluation data tables that were used to train the model.',
+    required: [],
+  })
+  .openapi('DataSplitResult')
+
+type TrainingRunType = {
+  classLevelGlobalExplanations?: z.infer<typeof GlobalExplanationSchema>[]
+  dataSplitResult?: z.infer<typeof DataSplitResultSchema>
+  evaluationMetrics?: z.infer<typeof EvaluationMetricsSchema>
+  modelLevelGlobalExplanation?: z.infer<typeof GlobalExplanationSchema>
+  results?: z.infer<typeof IterationResultSchema>[]
+  startTime?: string
+  trainingOptions?: z.infer<typeof TrainingOptionsSchema>
+  trainingStartTime?: string
+  vertexAiModelId?: string
+  vertexAiModelVersion?: string
+}
+
+const TrainingRunSchema: z.ZodType<TrainingRunType> = z
   .object({
     classLevelGlobalExplanations: z
       .array(GlobalExplanationSchema)
@@ -6338,7 +5250,55 @@ const TransformColumnSchema = z
   .openapi({ description: 'Information about a single transform column.', required: [] })
   .openapi('TransformColumn')
 
-const ModelSchema = z
+type ModelType = {
+  bestTrialId?: string
+  creationTime?: string
+  defaultTrialId?: string
+  description?: string
+  encryptionConfiguration?: z.infer<typeof EncryptionConfigurationSchema>
+  etag?: string
+  expirationTime?: string
+  featureColumns?: z.infer<typeof StandardSqlFieldSchema>[]
+  friendlyName?: string
+  hparamSearchSpaces?: z.infer<typeof HparamSearchSpacesSchema>
+  hparamTrials?: z.infer<typeof HparamTuningTrialSchema>[]
+  labelColumns?: z.infer<typeof StandardSqlFieldSchema>[]
+  labels?: { [key: string]: string }
+  lastModifiedTime?: string
+  location?: string
+  modelReference?: z.infer<typeof ModelReferenceSchema>
+  modelType?:
+    | 'MODEL_TYPE_UNSPECIFIED'
+    | 'LINEAR_REGRESSION'
+    | 'LOGISTIC_REGRESSION'
+    | 'KMEANS'
+    | 'MATRIX_FACTORIZATION'
+    | 'DNN_CLASSIFIER'
+    | 'TENSORFLOW'
+    | 'DNN_REGRESSOR'
+    | 'XGBOOST'
+    | 'BOOSTED_TREE_REGRESSOR'
+    | 'BOOSTED_TREE_CLASSIFIER'
+    | 'ARIMA'
+    | 'AUTOML_REGRESSOR'
+    | 'AUTOML_CLASSIFIER'
+    | 'PCA'
+    | 'DNN_LINEAR_COMBINED_CLASSIFIER'
+    | 'DNN_LINEAR_COMBINED_REGRESSOR'
+    | 'AUTOENCODER'
+    | 'ARIMA_PLUS'
+    | 'ARIMA_PLUS_XREG'
+    | 'RANDOM_FOREST_REGRESSOR'
+    | 'RANDOM_FOREST_CLASSIFIER'
+    | 'TENSORFLOW_LITE'
+    | 'ONNX'
+  optimalTrialIds?: string[]
+  remoteModelInfo?: z.infer<typeof RemoteModelInfoSchema>
+  trainingRuns?: z.infer<typeof TrainingRunSchema>[]
+  transformColumns?: z.infer<typeof TransformColumnSchema>[]
+}
+
+const ModelSchema: z.ZodType<ModelType> = z
   .object({
     bestTrialId: z
       .string()
@@ -6496,25 +5456,44 @@ const ModelSchema = z
   .openapi({ required: [] })
   .openapi('Model')
 
-const ListModelsResponseSchema = z
+type ListModelsResponseType = { models?: z.infer<typeof ModelSchema>[]; nextPageToken?: string }
+
+const ArgumentSchema = z
   .object({
-    models: z
-      .array(ModelSchema)
+    argumentKind: z
+      .enum(['ARGUMENT_KIND_UNSPECIFIED', 'FIXED_TYPE', 'ANY_TYPE'])
+      .exactOptional()
+      .openapi({ description: 'Optional. Defaults to FIXED_TYPE.' }),
+    dataType: StandardSqlDataTypeSchema.exactOptional().openapi({
+      description: 'Required unless argument_kind = ANY_TYPE.',
+    }),
+    isAggregate: z
+      .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Models in the requested dataset. Only the following fields are populated: model_reference, model_type, creation_time, last_modified_time and labels.',
+          'Optional. Whether the argument is an aggregate function parameter. Must be Unset for routine types other than AGGREGATE_FUNCTION. For AGGREGATE_FUNCTION, if set to false, it is equivalent to adding "NOT AGGREGATE" clause in DDL; Otherwise, it is equivalent to omitting "NOT AGGREGATE" clause in DDL.',
       }),
-    nextPageToken: z
+    mode: z
+      .enum(['MODE_UNSPECIFIED', 'IN', 'OUT', 'INOUT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies whether the argument is input or output. Can be set for procedures only.',
+      }),
+    name: z
       .string()
       .exactOptional()
-      .openapi({ description: 'A token to request the next page of results.' }),
+      .openapi({
+        description:
+          'Optional. The name of this argument. Can be absent for function return argument.',
+      }),
   })
   .openapi({
-    description: 'Response format for a single page when listing BigQuery ML models.',
+    description: 'Input/output argument of a function or a stored procedure.',
     required: [],
   })
-  .openapi('ListModelsResponse')
+  .openapi('Argument')
 
 const RemoteFunctionOptionsSchema = z
   .object({
@@ -6738,7 +5717,953 @@ const RoutineSchema = z
   .openapi({ description: 'A user-defined function or a stored procedure.', required: [] })
   .openapi('Routine')
 
-const ListRoutinesResponseSchema = z
+type ListRoutinesResponseType = {
+  nextPageToken?: string
+  routines?: z.infer<typeof RoutineSchema>[]
+}
+
+type QueryParameterTypeType = {
+  arrayType?: QueryParameterTypeType
+  rangeElementType?: QueryParameterTypeType
+  structTypes?: { description?: string; name?: string; type?: QueryParameterTypeType }[]
+  type?: string
+}
+
+const RangeValueSchema: z.ZodType<RangeValueType> = z
+  .lazy(() =>
+    z
+      .object({
+        end: QueryParameterValueSchema.exactOptional().openapi({
+          description:
+            'Optional. The end value of the range. A missing value represents an unbounded end.',
+        }),
+        start: QueryParameterValueSchema.exactOptional().openapi({
+          description:
+            'Optional. The start value of the range. A missing value represents an unbounded start.',
+        }),
+      })
+      .openapi({ description: 'Represents the value of a range.', required: [] }),
+  )
+  .openapi('RangeValue')
+
+type QueryParameterValueType = {
+  arrayValues?: QueryParameterValueType[]
+  rangeValue?: z.infer<typeof RangeValueSchema>
+  structValues?: { [key: string]: QueryParameterValueType }
+  value?: string
+}
+
+type RangeValueType = {
+  end?: z.infer<typeof QueryParameterValueSchema>
+  start?: z.infer<typeof QueryParameterValueSchema>
+}
+
+const StandardSqlStructTypeSchema: z.ZodType<StandardSqlStructTypeType> = z
+  .lazy(() =>
+    z
+      .object({
+        fields: z
+          .array(StandardSqlFieldSchema)
+          .exactOptional()
+          .openapi({ description: 'Fields within the struct.' }),
+      })
+      .openapi({ description: 'The representation of a SQL STRUCT type.', required: [] }),
+  )
+  .openapi('StandardSqlStructType')
+
+type StandardSqlDataTypeType = {
+  arrayElementType?: StandardSqlDataTypeType
+  rangeElementType?: StandardSqlDataTypeType
+  structType?: z.infer<typeof StandardSqlStructTypeSchema>
+  typeKind?:
+    | 'TYPE_KIND_UNSPECIFIED'
+    | 'INT64'
+    | 'BOOL'
+    | 'FLOAT64'
+    | 'STRING'
+    | 'BYTES'
+    | 'TIMESTAMP'
+    | 'DATE'
+    | 'TIME'
+    | 'DATETIME'
+    | 'INTERVAL'
+    | 'GEOGRAPHY'
+    | 'NUMERIC'
+    | 'BIGNUMERIC'
+    | 'JSON'
+    | 'ARRAY'
+    | 'STRUCT'
+    | 'RANGE'
+}
+
+type StandardSqlFieldType = { name?: string; type?: z.infer<typeof StandardSqlDataTypeSchema> }
+
+type StandardSqlStructTypeType = { fields?: z.infer<typeof StandardSqlFieldSchema>[] }
+
+type TableFieldSchemaType = {
+  categories?: { names?: string[] }
+  collation?: string
+  defaultValueExpression?: string
+  description?: string
+  fields?: TableFieldSchemaType[]
+  maxLength?: string
+  mode?: string
+  name?: string
+  policyTags?: { names?: string[] }
+  precision?: string
+  rangeElementType?: { type?: string }
+  roundingMode?: 'ROUNDING_MODE_UNSPECIFIED' | 'ROUND_HALF_AWAY_FROM_ZERO' | 'ROUND_HALF_EVEN'
+  scale?: string
+  type?: string
+}
+
+const AggregationThresholdPolicySchema = z
+  .object({
+    privacyUnitColumns: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The privacy unit column(s) associated with this policy. For now, only one column per data source object (table, view) is allowed as a privacy unit column. Representing as a repeated field in metadata for extensibility to multiple columns in future. Duplicates and Repeated struct fields are not allowed. For nested fields, use dot notation ("outer.inner")',
+      }),
+    threshold: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The threshold for the "aggregation threshold" policy.' }),
+  })
+  .openapi({
+    description: 'Represents privacy policy associated with "aggregation threshold" method.',
+    required: [],
+  })
+  .openapi('AggregationThresholdPolicy')
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const BigLakeConfigurationSchema = z
+  .object({
+    connectionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The connection specifying the credentials to be used to read and write to external storage, such as Cloud Storage. The connection_id can have the form "<project\\_id>.<location\\_id>.<connection\\_id>" or "projects/<project\\_id>/locations/<location\\_id>/connections/<connection\\_id>".',
+      }),
+    fileFormat: z
+      .enum(['FILE_FORMAT_UNSPECIFIED', 'PARQUET'])
+      .exactOptional()
+      .openapi({ description: 'Required. The file format the table data is stored in.' }),
+    storageUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The fully qualified location prefix of the external folder where table data is stored. The \'*\' wildcard character is not allowed. The URI should be in the format "gs://bucket/path_to_table/"',
+      }),
+    tableFormat: z
+      .enum(['TABLE_FORMAT_UNSPECIFIED', 'ICEBERG'])
+      .exactOptional()
+      .openapi({
+        description: 'Required. The table format the metadata only snapshots are stored in.',
+      }),
+  })
+  .openapi({ description: 'Configuration for BigLake managed tables.', required: [] })
+  .openapi('BigLakeConfiguration')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workforce identity pool. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/group/{group_id}`: All workforce identities in a group. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All workforce identities with a specific attribute value. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/*`: All identities in a workforce identity pool. * `principal://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workload identity pool. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/group/{group_id}`: A workload identity pool group. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All identities in a workload identity pool with a certain attribute. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/*`: All identities in a workload identity pool. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding. * `deleted:principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: Deleted single identity in a workforce identity pool. For example, `deleted:principal://iam.googleapis.com/locations/global/workforcePools/my-pool-id/subject/my-subject-attribute-value`.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`. For an overview of the IAM roles and permissions, see the [IAM documentation](https://cloud.google.com/iam/docs/roles-overview). For a list of the available pre-defined roles, see [here](https://cloud.google.com/iam/docs/understanding-roles).',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const BqmlIterationResultSchema = z
+  .object({
+    durationMs: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+    evalLoss: z.float64().exactOptional().openapi({ description: 'Deprecated.' }),
+    index: z.int32().exactOptional().openapi({ description: 'Deprecated.' }),
+    learnRate: z.float64().exactOptional().openapi({ description: 'Deprecated.' }),
+    trainingLoss: z.float64().exactOptional().openapi({ description: 'Deprecated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BqmlIterationResult')
+
+const BqmlTrainingRunSchema = z
+  .object({
+    iterationResults: z
+      .array(BqmlIterationResultSchema)
+      .exactOptional()
+      .openapi({ description: 'Deprecated.' }),
+    startTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Deprecated.' }),
+    state: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+    trainingOptions: z
+      .object({
+        earlyStop: z.boolean().exactOptional(),
+        l1Reg: z.float64().exactOptional(),
+        l2Reg: z.float64().exactOptional(),
+        learnRate: z.float64().exactOptional(),
+        learnRateStrategy: z.string().exactOptional(),
+        lineSearchInitLearnRate: z.float64().exactOptional(),
+        maxIteration: z.string().exactOptional(),
+        minRelProgress: z.float64().exactOptional(),
+        warmStart: z.boolean().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ description: 'Deprecated.', required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('BqmlTrainingRun')
+
+const CloneDefinitionSchema = z
+  .object({
+    baseTableReference: TableReferenceSchema.exactOptional().openapi({
+      description: 'Required. Reference describing the ID of the table that was cloned.',
+    }),
+    cloneTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The time at which the base table was cloned. This value is reported in the JSON response using RFC3339 format.',
+      }),
+  })
+  .openapi({
+    description: 'Information about base table and clone time of a table clone.',
+    required: [],
+  })
+  .openapi('CloneDefinition')
+
+const DataFormatOptionsSchema = z
+  .object({
+    useInt64Timestamp: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Optional. Output timestamp as usec int64. Default is false.' }),
+  })
+  .openapi({ description: 'Options for data format adjustments.', required: [] })
+  .openapi('DataFormatOptions')
+
+const DatasetAccessEntrySchema = z
+  .object({
+    dataset: DatasetReferenceSchema.exactOptional().openapi({
+      description: 'The dataset this entry applies to',
+    }),
+    targetTypes: z
+      .array(z.enum(['TARGET_TYPE_UNSPECIFIED', 'VIEWS', 'ROUTINES']))
+      .exactOptional()
+      .openapi({
+        description:
+          'Which resources in the dataset this entry applies to. Currently, only views are supported, but additional target types may be added in the future.',
+      }),
+  })
+  .openapi({
+    description:
+      'Grants all resources of particular types in a particular dataset read access to the current dataset. Similar to how individually authorized views work, updates to any resource granted through its dataset (including creation of new resources) requires read permission to referenced resources, plus write permission to the authorizing dataset.',
+    required: [],
+  })
+  .openapi('DatasetAccessEntry')
+
+const ExternalDatasetReferenceSchema = z
+  .object({
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The connection id that is used to access the external_source. Format: projects/{project_id}/locations/{location_id}/connections/{connection_id}',
+      }),
+    externalSource: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. External source that backs this dataset.' }),
+  })
+  .openapi({
+    description: 'Configures the access a dataset defined in an external metadata storage.',
+    required: [],
+  })
+  .openapi('ExternalDatasetReference')
+
+const LinkedDatasetSourceSchema = z
+  .object({
+    sourceDataset: DatasetReferenceSchema.exactOptional().openapi({
+      description: 'The source dataset reference contains project numbers and not project ids.',
+    }),
+  })
+  .openapi({
+    description: 'A dataset source type which refers to another BigQuery dataset.',
+    required: [],
+  })
+  .openapi('LinkedDatasetSource')
+
+const DatasetSchema = z
+  .object({
+    access: z
+      .array(
+        z
+          .object({
+            dataset: DatasetAccessEntrySchema.exactOptional().openapi({
+              description:
+                '[Pick one] A grant authorizing all resources of a particular type in a particular dataset access to this dataset. Only views are supported for now. The role field is not required when this field is set. If that dataset is deleted and re-created, its access needs to be granted again via an update operation.',
+            }),
+            domain: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  '[Pick one] A domain to grant access to. Any users signed in with the domain specified will be granted the specified access. Example: "example.com". Maps to IAM policy member "domain:DOMAIN".',
+              }),
+            groupByEmail: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  '[Pick one] An email address of a Google Group to grant access to. Maps to IAM policy member "group:GROUP".',
+              }),
+            iamMember: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  "[Pick one] Some other type of member that appears in the IAM Policy but isn't a user, group, domain, or special group.",
+              }),
+            role: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'An IAM role ID that should be granted to the user, group, or domain specified in this access entry. The following legacy mappings will be applied: OWNER <=> roles/bigquery.dataOwner WRITER <=> roles/bigquery.dataEditor READER <=> roles/bigquery.dataViewer This field will accept any of the above formats, but will return only the legacy format. For example, if you set this field to "roles/bigquery.dataOwner", it will be returned back as "OWNER".',
+              }),
+            routine: RoutineReferenceSchema.exactOptional().openapi({
+              description:
+                '[Pick one] A routine from a different dataset to grant access to. Queries executed against that routine will have read access to views/tables/routines in this dataset. Only UDF is supported for now. The role field is not required when this field is set. If that routine is updated by any user, access to the routine needs to be granted again via an update operation.',
+            }),
+            specialGroup: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  '[Pick one] A special group to grant access to. Possible values include: projectOwners: Owners of the enclosing project. projectReaders: Readers of the enclosing project. projectWriters: Writers of the enclosing project. allAuthenticatedUsers: All authenticated BigQuery users. Maps to similarly-named IAM members.',
+              }),
+            userByEmail: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  '[Pick one] An email address of a user to grant access to. For example: fred@example.com. Maps to IAM policy member "user:EMAIL" or "serviceAccount:EMAIL".',
+              }),
+            view: TableReferenceSchema.exactOptional().openapi({
+              description:
+                '[Pick one] A view from a different dataset to grant access to. Queries executed against that view will have read access to views/tables/routines in this dataset. The role field is not required when this field is set. If that view is updated by any user, access to the view needs to be granted again via an update operation.',
+            }),
+          })
+          .openapi({
+            description: 'An object that defines dataset access for an entity.',
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. An array of objects that define dataset access for one or more entities. You can set this property when inserting or updating a dataset in order to control who is allowed to access the data. If unspecified at dataset creation time, BigQuery adds default dataset access for the following entities: access.specialGroup: projectReaders; access.role: READER; access.specialGroup: projectWriters; access.role: WRITER; access.specialGroup: projectOwners; access.role: OWNER; access.userByEmail: [dataset creator email]; access.role: OWNER;',
+      }),
+    creationTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time when this dataset was created, in milliseconds since the epoch.',
+        readOnly: true,
+      }),
+    datasetReference: DatasetReferenceSchema.exactOptional().openapi({
+      description: 'Required. A reference that identifies the dataset.',
+    }),
+    defaultCollation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Defines the default collation specification of future tables created in the dataset. If a table is created in this dataset without table-level default collation, then the table inherits the dataset default collation, which is applied to the string fields that do not have explicit collation specified. A change to this field affects only tables created afterwards, and does not alter the existing tables. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
+      }),
+    defaultEncryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description:
+        'The default encryption key for all tables in the dataset. Once this property is set, all newly-created partitioned tables in the dataset will have encryption key set to this value, unless table creation request (or query) overrides the key.',
+    }),
+    defaultPartitionExpirationMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This default partition expiration, expressed in milliseconds. When new time-partitioned tables are created in a dataset where this property is set, the table will inherit this value, propagated as the `TimePartitioning.expirationMs` property on the new table. If you set `TimePartitioning.expirationMs` explicitly when creating a table, the `defaultPartitionExpirationMs` of the containing dataset is ignored. When creating a partitioned table, if `defaultPartitionExpirationMs` is set, the `defaultTableExpirationMs` value is ignored and the table will not be inherit a table expiration deadline.',
+      }),
+    defaultRoundingMode: z
+      .enum(['ROUNDING_MODE_UNSPECIFIED', 'ROUND_HALF_AWAY_FROM_ZERO', 'ROUND_HALF_EVEN'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Defines the default rounding mode specification of new tables created within this dataset. During table creation, if this field is specified, the table within this dataset will inherit the default rounding mode of the dataset. Setting the default rounding mode on a table overrides this option. Existing tables in the dataset are unaffected. If columns are defined during that table creation, they will immediately inherit the table's default rounding mode, unless otherwise specified.",
+      }),
+    defaultTableExpirationMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The default lifetime of all tables in the dataset, in milliseconds. The minimum lifetime value is 3600000 milliseconds (one hour). To clear an existing default expiration with a PATCH request, set to 0. Once this property is set, all newly-created tables in the dataset will have an expirationTime property set to the creation time plus the value in this property, and changing the value will only affect new tables, not existing ones. When the expirationTime for a given table is reached, that table will be deleted automatically. If a table's expirationTime is modified or removed before the table expires, or if you provide an explicit expirationTime when creating a table, that value takes precedence over the default expiration time indicated by this property.",
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. A user-friendly description of the dataset.' }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A hash of the resource.', readOnly: true }),
+    externalDatasetReference: ExternalDatasetReferenceSchema.exactOptional().openapi({
+      description:
+        'Optional. Reference to a read-only external dataset defined in data catalogs outside of BigQuery. Filled out when the dataset type is EXTERNAL.',
+    }),
+    friendlyName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. A descriptive name for the dataset.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The fully-qualified unique name of the dataset in the format projectId:datasetId. The dataset name without the project name is given in the datasetId field. When creating a new dataset, leave this field blank, and instead specify the datasetId field.',
+        readOnly: true,
+      }),
+    isCaseInsensitive: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. TRUE if the dataset and its table names are case-insensitive, otherwise FALSE. By default, this is FALSE, which means the dataset and its table names are case-sensitive. This field does not affect routine references.',
+      }),
+    kind: z
+      .string()
+      .default('bigquery#dataset')
+      .exactOptional()
+      .openapi({ description: 'Output only. The resource type.', readOnly: true }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The labels associated with this dataset. You can use these to organize and group your datasets. You can set this property when inserting or updating a dataset. See Creating and Updating Dataset Labels for more information.',
+      }),
+    lastModifiedTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The date when this dataset was last modified, in milliseconds since the epoch.',
+        readOnly: true,
+      }),
+    linkedDatasetSource: LinkedDatasetSourceSchema.exactOptional().openapi({
+      description:
+        'Optional. The source dataset reference when the dataset is of type LINKED. For all other dataset types it is not set. This field cannot be updated once it is set. Any attempt to update this field using Update and Patch API Operations will be ignored.',
+    }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The geographic location where the dataset should reside. See https://cloud.google.com/bigquery/docs/locations for supported locations.',
+      }),
+    maxTimeTravelHours: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Defines the time travel window in hours. The value can be from 48 to 168 hours (2 to 7 days). The default value is 168 hours if this is not set.',
+      }),
+    satisfiesPzi: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Output only. Reserved for future use.', readOnly: true }),
+    satisfiesPzs: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Output only. Reserved for future use.', readOnly: true }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A URL that can be used to access the resource again. You can use this URL in Get or Update requests to the resource.',
+        readOnly: true,
+      }),
+    storageBillingModel: z
+      .enum(['STORAGE_BILLING_MODEL_UNSPECIFIED', 'LOGICAL', 'PHYSICAL'])
+      .exactOptional()
+      .openapi({ description: 'Optional. Updates storage_billing_model for the dataset.' }),
+    tags: z
+      .array(
+        z
+          .object({
+            tagKey: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Required. The namespaced friendly name of the tag key, e.g. "12345/environment" where 12345 is org id.',
+              }),
+            tagValue: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Required. The friendly short name of the tag value, e.g. "production".',
+              }),
+          })
+          .openapi({
+            description:
+              'A global tag managed by Resource Manager. https://cloud.google.com/iam/docs/tags-access-control#definitions',
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Output only. Tags for the Dataset.', readOnly: true }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Same as `type` in `ListFormatDataset`. The type of the dataset, one of: * DEFAULT - only accessible by owner and authorized accounts, * PUBLIC - accessible by everyone, * LINKED - linked dataset, * EXTERNAL - dataset with definition in external metadata catalog. -- *BIGLAKE_METASTORE - dataset that references a database created in BigLakeMetastore service. --',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Dataset')
+
+const DatasetListSchema = z
+  .object({
+    datasets: z
+      .array(
+        z
+          .object({
+            datasetReference: DatasetReferenceSchema.exactOptional().openapi({
+              description:
+                "The dataset reference. Use this property to access specific parts of the dataset's ID, such as project ID or dataset ID.",
+            }),
+            friendlyName: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'An alternate name for the dataset. The friendly name is purely decorative in nature.',
+              }),
+            id: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The fully-qualified, unique, opaque ID of the dataset.' }),
+            kind: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The resource type. This property always returns the value "bigquery#dataset"',
+              }),
+            labels: z
+              .record(z.string(), z.string())
+              .exactOptional()
+              .openapi({
+                description:
+                  'The labels associated with this dataset. You can use these to organize and group your datasets.',
+              }),
+            location: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The geographic location where the dataset resides.' }),
+          })
+          .openapi({
+            description:
+              'A dataset resource with only a subset of fields, to be returned in a list of datasets.',
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of the dataset resources in the project. Each resource contains basic information. For full information about a particular dataset resource, use the Datasets: get method. This property is omitted when there are no datasets in the project.',
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A hash value of the results page. You can use this property to determine if the page has changed since the last request.',
+        readOnly: true,
+      }),
+    kind: z
+      .string()
+      .default('bigquery#datasetList')
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The resource type. This property always returns the value "bigquery#datasetList"',
+        readOnly: true,
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A token that can be used to request the next results page. This property is omitted on the final results page.',
+      }),
+    unreachable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5"',
+      }),
+  })
+  .openapi({
+    description: 'Response format for a page of results when listing datasets.',
+    required: [],
+  })
+  .openapi('DatasetList')
+
+const GetPolicyOptionsSchema = z
+  .object({
+    requestedPolicyVersion: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum policy version that will be used to format the policy. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for policies with any conditional role bindings must specify version 3. Policies with no conditional role bindings may specify any valid value or leave the field unset. The policy in the response might use the policy version that you specified, or it might use a lower policy version. For example, if you specify version 3, but the policy has no conditional role bindings, the response uses version 1. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+      }),
+  })
+  .openapi({ description: 'Encapsulates settings provided to GetIamPolicy.', required: [] })
+  .openapi('GetPolicyOptions')
+
+const GetIamPolicyRequestSchema = z
+  .object({
+    options: GetPolicyOptionsSchema.exactOptional().openapi({
+      description:
+        'OPTIONAL: A `GetPolicyOptions` object for specifying options to `GetIamPolicy`.',
+    }),
+  })
+  .openapi({ description: 'Request message for `GetIamPolicy` method.', required: [] })
+  .openapi('GetIamPolicyRequest')
+
+const TableCellSchema = z
+  .object({ v: z.any().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TableCell')
+
+const TableRowSchema = z
+  .object({
+    f: z
+      .array(TableCellSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Represents a single row in the result set, consisting of one or more fields.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TableRow')
+
+const GetQueryResultsResponseSchema = z
+  .object({
+    cacheHit: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the query result was fetched from the query cache.' }),
+    errors: z
+      .array(ErrorProtoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The first errors or warnings encountered during the running of the job. The final message includes the number of errors that caused the process to stop. Errors here do not necessarily mean that the job has completed or was unsuccessful. For more information about error messages, see [Error messages](https://cloud.google.com/bigquery/docs/error-messages).',
+        readOnly: true,
+      }),
+    etag: z.string().exactOptional().openapi({ description: 'A hash of this response.' }),
+    jobComplete: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the query has completed or not. If rows or totalRows are present, this will always be true. If this is false, totalRows will not be available.',
+      }),
+    jobReference: JobReferenceSchema.exactOptional().openapi({
+      description:
+        'Reference to the BigQuery Job that was created to run the query. This field will be present even if the original request timed out, in which case GetQueryResults can be used to read the results once the query has completed. Since this API only returns the first page of results, subsequent pages can be fetched via the same mechanism (GetQueryResults).',
+    }),
+    kind: z
+      .string()
+      .default('bigquery#getQueryResultsResponse')
+      .exactOptional()
+      .openapi({ description: 'The resource type of the response.' }),
+    numDmlAffectedRows: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The number of rows affected by a DML statement. Present only for DML statements INSERT, UPDATE or DELETE.',
+        readOnly: true,
+      }),
+    pageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A token used for paging results. When this token is non-empty, it indicates additional results are available.',
+      }),
+    rows: z
+      .array(TableRowSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An object with as many results as can be contained within the maximum permitted reply size. To get any additional rows, you can call GetQueryResults and specify the jobReference returned above. Present only when the query completes successfully. The REST-based representation of this data leverages a series of JSON f,v objects for indicating fields and values.',
+      }),
+    schema: TableSchemaSchema.exactOptional().openapi({
+      description: 'The schema of the results. Present only when the query completes successfully.',
+    }),
+    totalBytesProcessed: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The total number of bytes processed for this query.' }),
+    totalRows: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The total number of rows in the complete query result set, which can be more than the number of rows in this single page of results. Present only when the query completes successfully.',
+      }),
+  })
+  .openapi({ description: 'Response object of GetQueryResults.', required: [] })
+  .openapi('GetQueryResultsResponse')
+
+const GetServiceAccountResponseSchema = z
+  .object({
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The service account email address.' }),
+    kind: z
+      .string()
+      .default('bigquery#getServiceAccountResponse')
+      .exactOptional()
+      .openapi({ description: 'The resource type of the response.' }),
+  })
+  .openapi({ description: 'Response object of GetServiceAccount', required: [] })
+  .openapi('GetServiceAccountResponse')
+
+const JobCancelResponseSchema: z.ZodType<JobCancelResponseType> = z
+  .object({
+    job: JobSchema.exactOptional().openapi({ description: 'The final state of the job.' }),
+    kind: z
+      .string()
+      .default('bigquery#jobCancelResponse')
+      .exactOptional()
+      .openapi({ description: 'The resource type of the response.' }),
+  })
+  .openapi({ description: 'Describes format of a jobs cancellation response.', required: [] })
+  .openapi('JobCancelResponse')
+
+const JobListSchema: z.ZodType<JobListType> = z
+  .object({
+    etag: z.string().exactOptional().openapi({ description: 'A hash of this page of results.' }),
+    jobs: z
+      .array(
+        z
+          .object({
+            configuration: JobConfigurationSchema.exactOptional().openapi({
+              description: 'Required. Describes the job configuration.',
+            }),
+            errorResult: ErrorProtoSchema.exactOptional().openapi({
+              description: 'A result object that will be present only if the job has failed.',
+            }),
+            id: z.string().exactOptional().openapi({ description: 'Unique opaque ID of the job.' }),
+            jobReference: JobReferenceSchema.exactOptional().openapi({
+              description: 'Unique opaque ID of the job.',
+            }),
+            kind: z.string().exactOptional().openapi({ description: 'The resource type.' }),
+            principal_subject: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  '[Full-projection-only] String representation of identity of requesting party. Populated for both first- and third-party identities. Only present for APIs that support third-party identities.',
+              }),
+            state: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Running state of the job. When the state is DONE, errorResult can be checked to determine whether the job succeeded or failed.',
+              }),
+            statistics: JobStatisticsSchema.exactOptional().openapi({
+              description:
+                'Output only. Information about the job, including starting time and ending time of the job.',
+              readOnly: true,
+            }),
+            status: JobStatusSchema.exactOptional().openapi({
+              description: '[Full-projection-only] Describes the status of this job.',
+            }),
+            user_email: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: '[Full-projection-only] Email address of the user who ran the job.',
+              }),
+          })
+          .openapi({
+            description:
+              'ListFormatJob is a partial projection of job information returned as part of a jobs.list response.',
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'List of jobs that were requested.' }),
+    kind: z
+      .string()
+      .default('bigquery#jobList')
+      .exactOptional()
+      .openapi({ description: 'The resource type of the response.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token to request the next page of results.' }),
+    unreachable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of skipped locations that were unreachable. For more information about BigQuery locations, see: https://cloud.google.com/bigquery/docs/locations. Example: "europe-west5"',
+      }),
+  })
+  .openapi({ description: 'JobList is the response format for a jobs.list call.', required: [] })
+  .openapi('JobList')
+
+const JsonValueSchema = z.any().openapi('JsonValue')
+
+const JsonObjectSchema = z
+  .record(z.string(), JsonValueSchema)
+  .openapi({ description: 'Represents a single JSON object.' })
+  .openapi('JsonObject')
+
+const ListModelsResponseSchema: z.ZodType<ListModelsResponseType> = z
+  .object({
+    models: z
+      .array(ModelSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Models in the requested dataset. Only the following fields are populated: model_reference, model_type, creation_time, last_modified_time and labels.',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token to request the next page of results.' }),
+  })
+  .openapi({
+    description: 'Response format for a single page when listing BigQuery ML models.',
+    required: [],
+  })
+  .openapi('ListModelsResponse')
+
+const ListRoutinesResponseSchema: z.ZodType<ListRoutinesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -6829,6 +6754,93 @@ const LocationMetadataSchema = z
   })
   .openapi('LocationMetadata')
 
+const MaterializedViewDefinitionSchema = z
+  .object({
+    allowNonIncrementalDefinition: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. This option declares authors intention to construct a materialized view that will not be refreshed incrementally.',
+      }),
+    enableRefresh: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Enable automatic refresh of the materialized view when the base table is updated. The default value is "true".',
+      }),
+    lastRefreshTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time when this materialized view was last refreshed, in milliseconds since the epoch.',
+        readOnly: true,
+      }),
+    maxStaleness: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Optional] Max staleness of data that could be returned when materizlized view is queried (formatted as Google SQL Interval type).',
+      }),
+    query: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. A query whose results are persisted.' }),
+    refreshIntervalMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum frequency at which this materialized view will be refreshed. The default value is "1800000" (30 minutes).',
+      }),
+  })
+  .openapi({ description: 'Definition and configuration of a materialized view.', required: [] })
+  .openapi('MaterializedViewDefinition')
+
+const MaterializedViewStatusSchema = z
+  .object({
+    lastRefreshStatus: ErrorProtoSchema.exactOptional().openapi({
+      description:
+        'Output only. Error result of the last automatic refresh. If present, indicates that the last automatic refresh was unsuccessful.',
+      readOnly: true,
+    }),
+    refreshWatermark: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. Refresh watermark of materialized view. The base tables' data were collected into the materialized view cache until this time.",
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Status of a materialized view. The last refresh timestamp status is omitted here, but is present in the MaterializedViewDefinition message.',
+    required: [],
+  })
+  .openapi('MaterializedViewStatus')
+
+const ModelDefinitionSchema = z
+  .object({
+    modelOptions: z
+      .object({
+        labels: z.array(z.string()).exactOptional(),
+        lossType: z.string().exactOptional(),
+        modelType: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ description: 'Deprecated.', required: [] }),
+    trainingRuns: z
+      .array(BqmlTrainingRunSchema)
+      .exactOptional()
+      .openapi({ description: 'Deprecated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ModelDefinition')
+
 const PolicySchema = z
   .object({
     auditConfigs: z
@@ -6863,6 +6875,19 @@ const PolicySchema = z
     required: [],
   })
   .openapi('Policy')
+
+const PrivacyPolicySchema = z
+  .object({
+    aggregationThresholdPolicy: AggregationThresholdPolicySchema.exactOptional().openapi({
+      description: 'Optional. Policy used for aggregation thresholds.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents privacy policy that contains the privacy requirements specified by the data owner. Currently, this is only supported on views.',
+    required: [],
+  })
+  .openapi('PrivacyPolicy')
 
 const ProjectReferenceSchema = z
   .object({
@@ -7170,287 +7195,489 @@ const SetIamPolicyRequestSchema = z
   .openapi({ description: 'Request message for `SetIamPolicy` method.', required: [] })
   .openapi('SetIamPolicyRequest')
 
-const TableSchema: z.ZodType<TableType> = z
-  .lazy(() =>
-    z
+const SnapshotDefinitionSchema = z
+  .object({
+    baseTableReference: TableReferenceSchema.exactOptional().openapi({
+      description: 'Required. Reference describing the ID of the table that was snapshot.',
+    }),
+    snapshotTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The time at which the base table was snapshot. This value is reported in the JSON response using RFC3339 format.',
+      }),
+  })
+  .openapi({
+    description: 'Information about base table and snapshot time of the snapshot.',
+    required: [],
+  })
+  .openapi('SnapshotDefinition')
+
+const StreamingbufferSchema = z
+  .object({
+    estimatedBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A lower-bound estimate of the number of bytes currently in the streaming buffer.',
+        readOnly: true,
+      }),
+    estimatedRows: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A lower-bound estimate of the number of rows currently in the streaming buffer.',
+        readOnly: true,
+      }),
+    oldestEntryTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Contains the timestamp of the oldest entry in the streaming buffer, in milliseconds since the epoch, if the streaming buffer is available.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Streamingbuffer')
+
+const TableConstraintsSchema = z
+  .object({
+    foreignKeys: z
+      .array(
+        z
+          .object({
+            columnReferences: z
+              .array(
+                z
+                  .object({
+                    referencedColumn: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Required. The column in the primary key that are referenced by the referencing_column.',
+                      }),
+                    referencingColumn: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Required. The column that composes the foreign key.',
+                      }),
+                  })
+                  .openapi({
+                    description: 'The pair of the foreign key column and primary key column.',
+                    required: [],
+                  }),
+              )
+              .exactOptional()
+              .openapi({ description: 'Required. The columns that compose the foreign key.' }),
+            name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'Optional. Set only if the foreign key constraint is named.',
+              }),
+            referencedTable: z
+              .object({
+                datasetId: z.string().exactOptional(),
+                projectId: z.string().exactOptional(),
+                tableId: z.string().exactOptional(),
+              })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .openapi({
+            description: "Represents a foreign key constraint on a table's columns.",
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Present only if the table has a foreign key. The foreign key is not enforced.',
+      }),
+    primaryKey: z
       .object({
-        biglakeConfiguration: BigLakeConfigurationSchema.exactOptional().openapi({
-          description: 'Optional. Specifies the configuration of a BigLake managed table.',
-        }),
-        cloneDefinition: CloneDefinitionSchema.exactOptional().openapi({
-          description:
-            'Output only. Contains information about the clone. This value is set via the clone operation.',
-          readOnly: true,
-        }),
-        clustering: ClusteringSchema.exactOptional().openapi({
-          description:
-            'Clustering specification for the table. Must be specified with time-based partitioning, data in the table will be first partitioned and subsequently clustered.',
-        }),
-        creationTime: z
-          .string()
+        columns: z
+          .array(z.string())
           .exactOptional()
           .openapi({
-            description:
-              'Output only. The time when this table was created, in milliseconds since the epoch.',
-            readOnly: true,
+            description: 'Required. The columns that are composed of the primary key constraint.',
           }),
-        defaultCollation: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Optional. Defines the default collation specification of new STRING fields in the table. During table creation or update, if a STRING field is added to this table without explicit collation specified, then the table inherits the table default collation. A change to this field affects only fields added afterwards, and does not alter the existing fields. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
-          }),
-        defaultRoundingMode: z
-          .enum(['ROUNDING_MODE_UNSPECIFIED', 'ROUND_HALF_AWAY_FROM_ZERO', 'ROUND_HALF_EVEN'])
-          .exactOptional()
-          .openapi({
-            description:
-              "Optional. Defines the default rounding mode specification of new decimal fields (NUMERIC OR BIGNUMERIC) in the table. During table creation or update, if a decimal field is added to this table without an explicit rounding mode specified, then the field inherits the table default rounding mode. Changing this field doesn't affect existing fields.",
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Optional. A user-friendly description of this table.' }),
-        encryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
-          description: 'Custom encryption configuration (e.g., Cloud KMS keys).',
-        }),
-        etag: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. A hash of this resource.', readOnly: true }),
-        expirationTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The time when this table expires, in milliseconds since the epoch. If not present, the table will persist indefinitely. Expired tables will be deleted and their storage reclaimed. The defaultTableExpirationMs property of the encapsulating dataset can be used to set a default expirationTime on newly created tables.',
-          }),
-        externalDataConfiguration: ExternalDataConfigurationSchema.exactOptional().openapi({
-          description:
-            'Optional. Describes the data format, location, and other properties of a table stored outside of BigQuery. By defining these properties, the data source can then be queried as if it were a standard BigQuery table.',
-        }),
-        friendlyName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Optional. A descriptive name for this table.' }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. An opaque ID uniquely identifying the table.',
-            readOnly: true,
-          }),
-        kind: z
-          .string()
-          .default('bigquery#table')
-          .exactOptional()
-          .openapi({ description: 'The type of resource ID.' }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The labels associated with this table. You can use these to organize and group your tables. Label keys and values can be no longer than 63 characters, can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and each label in the list must have a different key.',
-          }),
-        lastModifiedTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The time when this table was last modified, in milliseconds since the epoch.',
-            readOnly: true,
-          }),
-        location: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The geographic location where the table resides. This value is inherited from the dataset.',
-            readOnly: true,
-          }),
-        materializedView: MaterializedViewDefinitionSchema.exactOptional().openapi({
-          description: 'Optional. The materialized view definition.',
-        }),
-        materializedViewStatus: MaterializedViewStatusSchema.exactOptional().openapi({
-          description: 'Output only. The materialized view status.',
-          readOnly: true,
-        }),
-        maxStaleness: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The maximum staleness of data that could be returned when the table (or stale MV) is queried. Staleness encoded as a string encoding of sql IntervalValue type.',
-          }),
-        model: ModelDefinitionSchema.exactOptional().openapi({ description: 'Deprecated.' }),
-        numActiveLogicalBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Number of logical bytes that are less than 90 days old.',
-            readOnly: true,
-          }),
-        numActivePhysicalBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Number of physical bytes less than 90 days old. This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
-            readOnly: true,
-          }),
-        numBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The size of this table in logical bytes, excluding any data in the streaming buffer.',
-            readOnly: true,
-          }),
-        numLongTermBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The number of logical bytes in the table that are considered "long-term storage".',
-            readOnly: true,
-          }),
-        numLongTermLogicalBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Number of logical bytes that are more than 90 days old.',
-            readOnly: true,
-          }),
-        numLongTermPhysicalBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Number of physical bytes more than 90 days old. This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
-            readOnly: true,
-          }),
-        numPartitions: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The number of partitions present in the table or materialized view. This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
-            readOnly: true,
-          }),
-        numPhysicalBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The physical size of this table in bytes. This includes storage used for time travel.',
-            readOnly: true,
-          }),
-        numRows: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The number of rows of data in this table, excluding any data in the streaming buffer.',
-            readOnly: true,
-          }),
-        numTimeTravelPhysicalBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Number of physical bytes used by time travel storage (deleted or changed data). This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
-            readOnly: true,
-          }),
-        numTotalLogicalBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Total number of logical bytes in the table or materialized view.',
-            readOnly: true,
-          }),
-        numTotalPhysicalBytes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The physical size of this table in bytes. This also includes storage used for time travel. This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
-            readOnly: true,
-          }),
-        rangePartitioning: RangePartitioningSchema.exactOptional().openapi({
-          description: 'If specified, configures range partitioning for this table.',
-        }),
-        replicas: z
-          .array(TableReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Output only. Table references of all replicas currently active on the table.',
-            readOnly: true,
-          }),
-        requirePartitionFilter: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified.',
-          }),
-        resourceTags: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              '[Optional] The tags associated with this table. Tag keys are globally unique. See additional information on [tags](https://cloud.google.com/iam/docs/tags-access-control#definitions). An object containing a list of "key": value pairs. The key is the namespaced friendly name of the tag key, e.g. "12345/environment" where 12345 is parent id. The value is the friendly short name of the tag value, e.g. "production".',
-          }),
-        schema: TableSchemaSchema.exactOptional().openapi({
-          description: 'Optional. Describes the schema of this table.',
-        }),
-        selfLink: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. A URL that can be used to access this resource again.',
-            readOnly: true,
-          }),
-        snapshotDefinition: SnapshotDefinitionSchema.exactOptional().openapi({
-          description:
-            'Output only. Contains information about the snapshot. This value is set via snapshot creation.',
-          readOnly: true,
-        }),
-        streamingBuffer: StreamingbufferSchema.exactOptional().openapi({
-          description:
-            "Output only. Contains information regarding this table's streaming buffer, if one is present. This field will be absent if the table is not being streamed to or if there is no data in the streaming buffer.",
-          readOnly: true,
-        }),
-        tableConstraints: TableConstraintsSchema.exactOptional().openapi({
-          description: 'Optional. Tables Primary Key and Foreign Key information',
-        }),
-        tableReference: TableReferenceSchema.exactOptional().openapi({
-          description: 'Required. Reference describing the ID of this table.',
-        }),
-        tableReplicationInfo: TableReplicationInfoSchema.exactOptional().openapi({
-          description:
-            'Optional. Table replication info for table created `AS REPLICA` DDL like: `CREATE MATERIALIZED VIEW mv1 AS REPLICA OF src_mv`',
-        }),
-        timePartitioning: TimePartitioningSchema.exactOptional().openapi({
-          description: 'If specified, configures time-based partitioning for this table.',
-        }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Describes the table type. The following values are supported: * `TABLE`: A normal BigQuery table. * `VIEW`: A virtual table defined by a SQL query. * `EXTERNAL`: A table that references data stored in an external storage system, such as Google Cloud Storage. * `MATERIALIZED_VIEW`: A precomputed view defined by a SQL query. * `SNAPSHOT`: An immutable BigQuery table that preserves the contents of a base table at a particular time. See additional information on [table snapshots](/bigquery/docs/table-snapshots-intro). The default value is `TABLE`.',
-            readOnly: true,
-          }),
-        view: ViewDefinitionSchema.exactOptional().openapi({
-          description: 'Optional. The view definition.',
-        }),
       })
-      .openapi({ required: [] }),
-  )
+      .exactOptional()
+      .openapi({
+        description: "Represents the primary key constraint on a table's columns.",
+        required: [],
+      }),
+  })
+  .openapi({
+    description: 'The TableConstraints defines the primary key and foreign key.',
+    required: [],
+  })
+  .openapi('TableConstraints')
+
+const TableReplicationInfoSchema = z
+  .object({
+    replicatedSourceLastRefreshTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Output only. If source is a materialized view, this field signifies the last refresh time of the source.',
+        readOnly: true,
+      }),
+    replicationError: ErrorProtoSchema.exactOptional().openapi({
+      description:
+        'Optional. Output only. Replication error that will permanently stopped table replication.',
+      readOnly: true,
+    }),
+    replicationIntervalMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Specifies the interval at which the source table is polled for updates.',
+      }),
+    replicationStatus: z
+      .enum([
+        'REPLICATION_STATUS_UNSPECIFIED',
+        'ACTIVE',
+        'SOURCE_DELETED',
+        'PERMISSION_DENIED',
+        'UNSUPPORTED_CONFIGURATION',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Output only. Replication status of configured replication.',
+        readOnly: true,
+      }),
+    sourceTable: TableReferenceSchema.exactOptional().openapi({
+      description: 'Required. Source table reference that is replicated.',
+    }),
+  })
+  .openapi({
+    description:
+      'Replication info of a table created using `AS REPLICA` DDL like: `CREATE MATERIALIZED VIEW mv1 AS REPLICA OF src_mv`',
+    required: [],
+  })
+  .openapi('TableReplicationInfo')
+
+const ViewDefinitionSchema = z
+  .object({
+    privacyPolicy: PrivacyPolicySchema.exactOptional().openapi({
+      description: 'Optional. Specifices the privacy policy for the view.',
+    }),
+    query: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. A query that BigQuery executes when the view is referenced.',
+      }),
+    useExplicitColumnNames: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "True if the column names are explicitly specified. For example by using the 'CREATE VIEW v(c1, c2) AS ...' syntax. Can only be set for GoogleSQL views.",
+      }),
+    useLegacySql: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Specifies whether to use BigQuery's legacy SQL for this view. The default value is true. If set to false, the view will use BigQuery's GoogleSQL: https://cloud.google.com/bigquery/sql-reference/ Queries and views that reference this view must use the same flag value. A wrapper is used here because the default value is True.",
+      }),
+    userDefinedFunctionResources: z
+      .array(UserDefinedFunctionResourceSchema)
+      .exactOptional()
+      .openapi({ description: 'Describes user-defined function resources used in the query.' }),
+  })
+  .openapi({ description: 'Describes the definition of a logical view.', required: [] })
+  .openapi('ViewDefinition')
+
+const TableSchema = z
+  .object({
+    biglakeConfiguration: BigLakeConfigurationSchema.exactOptional().openapi({
+      description: 'Optional. Specifies the configuration of a BigLake managed table.',
+    }),
+    cloneDefinition: CloneDefinitionSchema.exactOptional().openapi({
+      description:
+        'Output only. Contains information about the clone. This value is set via the clone operation.',
+      readOnly: true,
+    }),
+    clustering: ClusteringSchema.exactOptional().openapi({
+      description:
+        'Clustering specification for the table. Must be specified with time-based partitioning, data in the table will be first partitioned and subsequently clustered.',
+    }),
+    creationTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time when this table was created, in milliseconds since the epoch.',
+        readOnly: true,
+      }),
+    defaultCollation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Defines the default collation specification of new STRING fields in the table. During table creation or update, if a STRING field is added to this table without explicit collation specified, then the table inherits the table default collation. A change to this field affects only fields added afterwards, and does not alter the existing fields. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
+      }),
+    defaultRoundingMode: z
+      .enum(['ROUNDING_MODE_UNSPECIFIED', 'ROUND_HALF_AWAY_FROM_ZERO', 'ROUND_HALF_EVEN'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Defines the default rounding mode specification of new decimal fields (NUMERIC OR BIGNUMERIC) in the table. During table creation or update, if a decimal field is added to this table without an explicit rounding mode specified, then the field inherits the table default rounding mode. Changing this field doesn't affect existing fields.",
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. A user-friendly description of this table.' }),
+    encryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description: 'Custom encryption configuration (e.g., Cloud KMS keys).',
+    }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A hash of this resource.', readOnly: true }),
+    expirationTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The time when this table expires, in milliseconds since the epoch. If not present, the table will persist indefinitely. Expired tables will be deleted and their storage reclaimed. The defaultTableExpirationMs property of the encapsulating dataset can be used to set a default expirationTime on newly created tables.',
+      }),
+    externalDataConfiguration: ExternalDataConfigurationSchema.exactOptional().openapi({
+      description:
+        'Optional. Describes the data format, location, and other properties of a table stored outside of BigQuery. By defining these properties, the data source can then be queried as if it were a standard BigQuery table.',
+    }),
+    friendlyName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. A descriptive name for this table.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. An opaque ID uniquely identifying the table.',
+        readOnly: true,
+      }),
+    kind: z
+      .string()
+      .default('bigquery#table')
+      .exactOptional()
+      .openapi({ description: 'The type of resource ID.' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The labels associated with this table. You can use these to organize and group your tables. Label keys and values can be no longer than 63 characters, can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and each label in the list must have a different key.',
+      }),
+    lastModifiedTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time when this table was last modified, in milliseconds since the epoch.',
+        readOnly: true,
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The geographic location where the table resides. This value is inherited from the dataset.',
+        readOnly: true,
+      }),
+    materializedView: MaterializedViewDefinitionSchema.exactOptional().openapi({
+      description: 'Optional. The materialized view definition.',
+    }),
+    materializedViewStatus: MaterializedViewStatusSchema.exactOptional().openapi({
+      description: 'Output only. The materialized view status.',
+      readOnly: true,
+    }),
+    maxStaleness: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum staleness of data that could be returned when the table (or stale MV) is queried. Staleness encoded as a string encoding of sql IntervalValue type.',
+      }),
+    model: ModelDefinitionSchema.exactOptional().openapi({ description: 'Deprecated.' }),
+    numActiveLogicalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of logical bytes that are less than 90 days old.',
+        readOnly: true,
+      }),
+    numActivePhysicalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Number of physical bytes less than 90 days old. This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
+        readOnly: true,
+      }),
+    numBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The size of this table in logical bytes, excluding any data in the streaming buffer.',
+        readOnly: true,
+      }),
+    numLongTermBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The number of logical bytes in the table that are considered "long-term storage".',
+        readOnly: true,
+      }),
+    numLongTermLogicalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of logical bytes that are more than 90 days old.',
+        readOnly: true,
+      }),
+    numLongTermPhysicalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Number of physical bytes more than 90 days old. This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
+        readOnly: true,
+      }),
+    numPartitions: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The number of partitions present in the table or materialized view. This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
+        readOnly: true,
+      }),
+    numPhysicalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The physical size of this table in bytes. This includes storage used for time travel.',
+        readOnly: true,
+      }),
+    numRows: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The number of rows of data in this table, excluding any data in the streaming buffer.',
+        readOnly: true,
+      }),
+    numTimeTravelPhysicalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Number of physical bytes used by time travel storage (deleted or changed data). This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
+        readOnly: true,
+      }),
+    numTotalLogicalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Total number of logical bytes in the table or materialized view.',
+        readOnly: true,
+      }),
+    numTotalPhysicalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The physical size of this table in bytes. This also includes storage used for time travel. This data is not kept in real time, and might be delayed by a few seconds to a few minutes.',
+        readOnly: true,
+      }),
+    rangePartitioning: RangePartitioningSchema.exactOptional().openapi({
+      description: 'If specified, configures range partitioning for this table.',
+    }),
+    replicas: z
+      .array(TableReferenceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Output only. Table references of all replicas currently active on the table.',
+        readOnly: true,
+      }),
+    requirePartitionFilter: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified.',
+      }),
+    resourceTags: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          '[Optional] The tags associated with this table. Tag keys are globally unique. See additional information on [tags](https://cloud.google.com/iam/docs/tags-access-control#definitions). An object containing a list of "key": value pairs. The key is the namespaced friendly name of the tag key, e.g. "12345/environment" where 12345 is parent id. The value is the friendly short name of the tag value, e.g. "production".',
+      }),
+    schema: TableSchemaSchema.exactOptional().openapi({
+      description: 'Optional. Describes the schema of this table.',
+    }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. A URL that can be used to access this resource again.',
+        readOnly: true,
+      }),
+    snapshotDefinition: SnapshotDefinitionSchema.exactOptional().openapi({
+      description:
+        'Output only. Contains information about the snapshot. This value is set via snapshot creation.',
+      readOnly: true,
+    }),
+    streamingBuffer: StreamingbufferSchema.exactOptional().openapi({
+      description:
+        "Output only. Contains information regarding this table's streaming buffer, if one is present. This field will be absent if the table is not being streamed to or if there is no data in the streaming buffer.",
+      readOnly: true,
+    }),
+    tableConstraints: TableConstraintsSchema.exactOptional().openapi({
+      description: 'Optional. Tables Primary Key and Foreign Key information',
+    }),
+    tableReference: TableReferenceSchema.exactOptional().openapi({
+      description: 'Required. Reference describing the ID of this table.',
+    }),
+    tableReplicationInfo: TableReplicationInfoSchema.exactOptional().openapi({
+      description:
+        'Optional. Table replication info for table created `AS REPLICA` DDL like: `CREATE MATERIALIZED VIEW mv1 AS REPLICA OF src_mv`',
+    }),
+    timePartitioning: TimePartitioningSchema.exactOptional().openapi({
+      description: 'If specified, configures time-based partitioning for this table.',
+    }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Describes the table type. The following values are supported: * `TABLE`: A normal BigQuery table. * `VIEW`: A virtual table defined by a SQL query. * `EXTERNAL`: A table that references data stored in an external storage system, such as Google Cloud Storage. * `MATERIALIZED_VIEW`: A precomputed view defined by a SQL query. * `SNAPSHOT`: An immutable BigQuery table that preserves the contents of a base table at a particular time. See additional information on [table snapshots](/bigquery/docs/table-snapshots-intro). The default value is `TABLE`.',
+        readOnly: true,
+      }),
+    view: ViewDefinitionSchema.exactOptional().openapi({
+      description: 'Optional. The view definition.',
+    }),
+  })
+  .openapi({ required: [] })
   .openapi('Table')
 
 const TableDataInsertAllRequestSchema = z

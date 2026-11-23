@@ -1,82 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AddAddressGroupItemsRequestSchema = z
-  .object({
-    items: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Required. List of items to add.' }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).',
-      }),
-  })
-  .openapi({ description: 'Request used by the AddAddressGroupItems method.', required: [] })
-  .openapi('AddAddressGroupItemsRequest')
-
-const AddressGroupSchema = z
-  .object({
-    capacity: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Required. Capacity of the Address Group' }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Free-text description of the resource.' }),
-    items: z.array(z.string()).exactOptional().openapi({ description: 'Optional. List of items.' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Set of label tags associated with the AddressGroup resource.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the AddressGroup resource. It matches pattern `projects/*/locations/{location}/addressGroups/`.',
-      }),
-    selfLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Server-defined fully-qualified URL for this resource.',
-        readOnly: true,
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'IPV4', 'IPV6'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The type of the Address Group. Possible values are "IPv4" or "IPV6".',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'AddressGroup is a resource that specifies how a collection of IP/DNS used in Firewall Policy.',
-    required: [],
-  })
-  .openapi('AddressGroup')
-
 const HttpHeaderMatchSchema = z
   .object({
     headerName: z
@@ -224,8 +147,90 @@ const AuthorizationPolicySchema = z
   })
   .openapi('AuthorizationPolicy')
 
+type ListAuthorizationPoliciesResponseType = {
+  authorizationPolicies?: z.infer<typeof AuthorizationPolicySchema>[]
+  nextPageToken?: string
+}
+
+const AddAddressGroupItemsRequestSchema = z
+  .object({
+    items: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Required. List of items to add.' }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).',
+      }),
+  })
+  .openapi({ description: 'Request used by the AddAddressGroupItems method.', required: [] })
+  .openapi('AddAddressGroupItemsRequest')
+
+const AddressGroupSchema = z
+  .object({
+    capacity: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Required. Capacity of the Address Group' }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Free-text description of the resource.' }),
+    items: z.array(z.string()).exactOptional().openapi({ description: 'Optional. List of items.' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Set of label tags associated with the AddressGroup resource.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the AddressGroup resource. It matches pattern `projects/*/locations/{location}/addressGroups/`.',
+      }),
+    selfLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Server-defined fully-qualified URL for this resource.',
+        readOnly: true,
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'IPV4', 'IPV6'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The type of the Address Group. Possible values are "IPv4" or "IPV6".',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'AddressGroup is a resource that specifies how a collection of IP/DNS used in Firewall Policy.',
+    required: [],
+  })
+  .openapi('AddressGroup')
+
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
 
@@ -371,7 +376,7 @@ const CloneAddressGroupItemsRequestSchema = z
   .openapi('CloneAddressGroupItemsRequest')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -716,7 +721,7 @@ const ListAddressGroupsResponseSchema = z
   .openapi({ description: 'Response returned by the ListAddressGroups method.', required: [] })
   .openapi('ListAddressGroupsResponse')
 
-const ListAuthorizationPoliciesResponseSchema = z
+const ListAuthorizationPoliciesResponseSchema: z.ZodType<ListAuthorizationPoliciesResponseType> = z
   .object({
     authorizationPolicies: z
       .array(AuthorizationPolicySchema)

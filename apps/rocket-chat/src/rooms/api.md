@@ -6825,10 +6825,15 @@ Create a new private channel, optionally including specified users. Refer to the
 The following permissions are required:
 * `create-p`: This permission is required to create a private channel.
 * `create-team-group`: This permission is required if you want to create a private channel from an existing team.
+* `create-abac-managed-room`: This permission is required if you send `abacAttributes`.
+
+While **Enforce ABAC across all workspace rooms** is on, new private channels must be ABAC-managed and carry every attribute listed in **Attributes required in all ABAC rooms**.
 
 ### Changelog
 | Version | Description                                                                                 |
 | ------- | ------------------------------------------------------------------------------------------- |
+| 9.0.0   | Added the `extraData.xmppFederated` parameter.                                              |
+| 9.0.0   | Added the `abacAttributes` parameter and the `skippedMembers` response field.               |
 | 8.8.0   | Added support for enforcing end-to-end encryption when creating private rooms.             |
 | 6.4.1   | Added `excludeSelf` param                                                                   |
 | 0.35.0  | Added                                                                                       |
@@ -6866,10 +6871,13 @@ The following permissions are required:
 |» members|body|[string]|false|The users to add to the private channel when it is created.|
 |» excludeSelf|body|boolean|false|If set to true, the user calling the endpoint is not added as a member of the private channel. The default value is false.|
 |» customFields|body|object|false|You add custom fields for private rooms using this parameter. Enter the key and value that you want to associate with this room. For example, `{ "company": "sell-and-more" }`. The custom fields are not displayed in the workspace UI.|
+|» abacAttributes|body|object|false|Optional. Creates the private channel as an ABAC-managed room with these attributes. Map of attribute keys to the values to assign, for example `{ "clearance": ["secret"] }`. Keys and values can contain letters, digits, `_` and `-`. Use 1 to 10 keys, each with 1 to 10 unique values.<br>Requires ABAC to be enabled and the `create-abac-managed-room` permission. You can only assign values returned by `GET /api/v1/abac/attributes.listAssignable`. You must meet the attributes yourself; otherwise the request fails with `error-abac-creator-not-admitted` and no room is created. A value outside the values you are offered returns `error-abac-invalid-attributes`. Members who do not meet the attributes are not added and are listed in `skippedMembers`.|
+|» » **additionalProperties**|body|[string]|false|none|
 |» extraData|body|object|false|Enter the following details for the object:<br><br>Note: For more information, see <a href="https://docs.rocket.chat/docs/channels" target="_blank">Channels</a>.|
 |» » broadcast|body|boolean|false|Whether the group should be a broadcast group. False by default.|
 |» » encrypted|body|boolean|false|Whether the private room should use end-to-end encryption. When **Force end-to-end encryption on private rooms** is enabled, omit this field or set it to `true`. Setting it to `false` returns the `error-encrypted-private-rooms-enforced` error. Federated private rooms are exempt from this policy.|
 |» » teamId|body|string|false|Enter the team ID for which you want to create a group. You will get an error if the team does not exist.|
+|» » xmppFederated|body|boolean|false|Set to `true` to create the private channel as an XMPP federated room that users on remote XMPP servers can join. Its XMPP address is built from the private channel name, the MUC subdomain, and the domain set for the native XMPP server.<br>The native XMPP server must be enabled with a valid domain. Otherwise, the request fails with `error-xmpp-federation-disabled`. You can't combine it with `federated`, `encrypted`, `broadcast`, or `readOnly`; the request fails with `error-xmpp-room-options-not-allowed`. With `abacAttributes`, the request fails with `error-abac-federated-room-attributes`.<br>The created private channel is returned with an `xmppFederation` object that holds its XMPP address in `muc`.|
 
 > Example responses
 
@@ -6939,6 +6947,12 @@ Status Code **200**
 |» ro|boolean|false|none|none|
 |» sysMes|boolean|false|none|none|
 |» _updatedAt|string|false|none|none|
+|» usersCount|integer|false|none|none|
+|» abacAttributes|[object]|false|none|The room's ABAC attributes. Returned when the private channel was created with `abacAttributes`.|
+|» » key|string|false|none|none|
+|» » values|[string]|false|none|none|
+|» xmppFederation|[XmppFederation](#schemaxmppfederation)|false|none|XMPP federation details of a room created with `extraData.xmppFederated` set to `true`. Returned only for XMPP federated rooms.|
+|skippedMembers|[string]|false|none|Usernames of the requested members who were not added because they do not meet the room's ABAC attributes. Returned only when `abacAttributes` was sent and at least one member was skipped.|
 |success|boolean|false|none|none|
 
 Status Code **400**
@@ -6948,6 +6962,7 @@ Status Code **400**
 |success|boolean|false|none|none|
 |error|string|false|none|none|
 |errorType|string|false|none|none|
+|details|object|false|none|Present only when a specific attribute or cause is at fault.|
 
 Status Code **401**
 
@@ -11346,12 +11361,15 @@ curl https://apiexplorer.support.rocket.chat/api/v1/rooms.info \
 
 Retrieves the information about the room.
 
-Users with the `view-room-administration` permission can also retrieve public and private rooms they are not a member of, except rooms managed by ABAC. Users without this permission who request a private room they are not a member of receive a `400` error with `not-allowed`.
+Users with the `view-room-administration` permission can also retrieve public and private rooms they are not a member of, except private rooms managed by ABAC. Users without this permission who request a private room they are not a member of receive a `400` error with `not-allowed`.
+
+The endpoint ignores the removed `fields` and `query` parameters and returns the full room object.
 
 ### Changelog
 | Version | Description |
 | ------- | ----------- |
-|9.0.0   | Removed the `fields` parameter. Users with the `view-room-administration` permission can read public and private rooms they are not a member of, except rooms managed by ABAC.       |
+| 9.0.0   | Removed the `fields` parameter. Users with `view-room-administration` can read rooms they are not a member of, except ABAC-managed rooms. |
+| 9.0.0   | Added the `classificationBanner` and `abacRequiredAttributes` response fields. |
 |0.72.0   | Added       |
 
 <h3 id="get-room-information-parameters">Parameters</h3>
@@ -11459,7 +11477,7 @@ Users with the `view-room-administration` permission can also retrieve public an
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK<br><br>The response includes the following objects:<br>* `parent`: Represents the parent of a room. For discussions, this is the room where the discussion was created, identified by `prid`. For rooms inside a team, the parent will be the team's main room, identified by `team.roomId`. For other rooms, this property is undefined.<br>* `team`: Represents the team a room is part of. For rooms inside a team, this is the team identified by the `teamId` property. For everything else, this is undefined.|Inline|
+|200|OK|OK<br><br>The response includes the following objects:<br>* `parent`: Represents the parent of a room. For discussions, this is the room where the discussion was created, identified by `prid`. For rooms inside a team, the parent will be the team's main room, identified by `team.roomId`. For other rooms, this property is undefined.<br>* `team`: Represents the team a room is part of. For rooms inside a team, this is the team identified by the `teamId` property. For everything else, this is undefined.<br>* `classificationBanner`: The ABAC classification banner that applies to the room, returned at the top level next to `room`. Returned only when the workspace has the ABAC license, ABAC and classification banners are enabled, and a configured banner applies. An ABAC-managed room gets the banner built from its attributes. Rooms that are not ABAC managed, including public and private channels, DMs and discussions, get a banner only from the optional non-ABAC banner list (`nonAbacBanner`) in the banner configuration. Omnichannel rooms never get a banner. The response holds only the resolved banner, never the banner configuration.<br>* `abacRequiredAttributes`: The attribute keys that every ABAC room must carry. Returned only when ABAC is enabled and **Enforce ABAC across all workspace rooms** is on. The list is empty when no attribute is required.|Inline|
 |400|Bad Request|Bad Request|Inline|
 |401|Unauthorized|Unauthorized|Inline|
 
@@ -11503,7 +11521,24 @@ Status Code **200**
 |» » drid|string|false|none|none|
 |» » _updatedAt|string|false|none|none|
 |» lm|string|false|none|none|
+|classificationBanner|object|false|none|The classification banner that applies to the room. Present only when a configured banner applies. Contains the resolved banner only, not the banner configuration.|
+|» style|string|false|none|none|
+|» uppercase|boolean|false|none|none|
+|» monospace|boolean|false|none|none|
+|» text|string|false|none|The banner text shown in the room.|
+|» segments|[object]|false|none|One entry per attribute shown in the banner of an ABAC-managed room. Empty for a banner from the non-ABAC banner list.|
+|» » attrId|string|false|none|The `id` of the attribute entry in the banner configuration.|
+|» » text|string|false|none|none|
+|» backgroundColor|string|false|none|The banner background color, in `#RRGGBB` format.|
+|» color|string|false|none|The banner text color, in `#RRGGBB` format.|
+|abacRequiredAttributes|[string]|false|none|Attribute keys required in every ABAC room. Present only while ABAC enforcement across all workspace rooms is on.|
 |success|boolean|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» style|classic|
 
 Status Code **400**
 
@@ -15310,11 +15345,17 @@ curl https://apiexplorer.support.rocket.chat/api/v1/teams.create \
 
 Create a new public or private team in the workspace.
 
-Permission required: `create-team`. When you create a team from an existing room by passing `room.id`, you also need the `edit-room` permission for that room.
+Permission required: `create-team`. When you create a team from an existing room by passing `room.id`, you also need the `edit-room` permission for that room. To create an ABAC-managed private team with `abacAttributes`, you also need the `create-abac-managed-room` permission.
+
+While **Enforce ABAC across all workspace rooms** is on, new private teams must be ABAC-managed and carry every attribute listed in **Attributes required in all ABAC rooms**.
+
+Creating a team from an existing room with `room.id` removes that room's ABAC attributes and records the removal in the ABAC audit log. If the room has attributes, you also need the `abac-management` and `manage-abac-admin-rooms` permissions or `edit-room-abac-attributes` in that room.
 
 ### Changelog
 | Version | Description |
 | ------- | ----------- |
+| 9.0.0   | Creating a team from an existing room removes the room's ABAC attributes. |
+| 9.0.0   | Added the `abacAttributes` parameter and the `skippedMembers` response field. |
 | 8.7.0   | Enforced room permission checks when creating a team from an existing room. |
 | 3.13.0  | Added |
 
@@ -15347,7 +15388,7 @@ Permission required: `create-team`. When you create a team from an existing room
 |X-User-Id|header|string|true|The `userId` of the authenticated user.|
 |body|body|object|false|none|
 |» name|body|string|true|The team name.|
-|» type|body|integer|true|Privacy of the team (0 - Public, 1 - Private).|
+|» type|body|integer|true|Privacy of the team (0 - Public, 1 - Private). Any other value is rejected with a 400 error.|
 |» members|body|[string]|false|The user IDs to add to the team when it is created.|
 |» room|body|object|false|none|
 |» » id|body|string|false|The ID of an existing room to use as the team's main room.|
@@ -15355,6 +15396,15 @@ Permission required: `create-team`. When you create a team from an existing room
 |» sidepanel|body|object|false|List the team's channels or discussions to be displayed in the sidepanel.|
 |» » items|body|[string]|false|The options are `discussions` and `channels`.|
 |» owner|body|string|false|Set the owner of the team.|
+|» abacAttributes|body|object|false|Optional. Creates the team as an ABAC-managed private team with these attributes. Map of attribute keys to the values to assign, for example `{ "clearance": ["secret"] }`. Keys and values can contain letters, digits, `_` and `-`. Use 1 to 10 keys, each with 1 to 10 unique values.<br>Requires ABAC to be enabled and the `create-abac-managed-room` permission. The team `type` must be `1` (private); a public team (`type` `0`) is rejected with `error-abac-attributes-private-rooms-only`, not converted to private. You cannot combine it with `room.id`, and `owner`, if sent, must be the caller. You can only assign values returned by `GET /api/v1/abac/attributes.listAssignable`. You must meet the attributes yourself; otherwise the request fails with `error-abac-creator-not-admitted` and no team is created. Members who do not meet the attributes are not added and are listed in `skippedMembers`.|
+|» » **additionalProperties**|body|[string]|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» type|0|
+|» type|1|
 
 > Example responses
 
@@ -15375,6 +15425,16 @@ Permission required: `create-team`. When you create a team from an existing room
     "roomId": "651619e3a2f73c7460e18cc7"
   },
   "success": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "success": false,
+  "error": "must be equal to one of the allowed values",
+  "errorType": "error-invalid-params"
 }
 ```
 
@@ -15401,6 +15461,7 @@ Permission required: `create-team`. When you create a team from an existing room
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK<br><br>Note that the `roomId` is main room ID of the team.|Inline|
+|400|Bad Request|Bad Request|Inline|
 |401|Unauthorized|Unauthorized|Inline|
 |403|Forbidden|Forbidden|Inline|
 
@@ -15420,7 +15481,17 @@ Status Code **200**
 |» » username|string|false|none|none|
 |» _updatedAt|string|false|none|none|
 |» roomId|string|false|none|none|
+|skippedMembers|[string]|false|none|Usernames of the requested members who were not added because they do not meet the team's ABAC attributes. Returned only when `abacAttributes` was sent and at least one member was skipped.|
 |success|boolean|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+|errorType|string|false|none|none|
+|details|object|false|none|Present only when a specific attribute or cause is at fault.|
 
 Status Code **401**
 
@@ -15821,6 +15892,13 @@ Updates an existing team (name and type).
 
 Permission required: `edit-team`
 
+While ABAC is enabled, an ABAC-managed private team cannot be made public. The request fails with `error-action-not-allowed` and no change is applied, including a name change sent in the same request. While ABAC is disabled, making the team public removes the team room's ABAC attributes. In that case, you also need the `abac-management` and `manage-abac-admin-rooms` permissions or `edit-room-abac-attributes` in the team room.
+
+### Changelog
+| Version | Description |
+| ------- | ----------- |
+| 9.0.0   | Refused making an ABAC-managed team public while ABAC is enabled, with `error-action-not-allowed`. Making a team public while ABAC is disabled removes its ABAC attributes. |
+
 > Body parameter
 
 ```json
@@ -15855,6 +15933,16 @@ Permission required: `edit-team`
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "success": false,
+  "error": "Changing an ABAC managed private room to public is not allowed [error-action-not-allowed]",
+  "errorType": "error-action-not-allowed"
+}
+```
+
 > 401 Response
 
 ```json
@@ -15869,6 +15957,7 @@ Permission required: `edit-team`
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|Inline|
+|400|Bad Request|Bad Request|Inline|
 |401|Unauthorized|Unauthorized|Inline|
 
 <h3 id="update-a-team-responseschema">Response Schema</h3>
@@ -15878,6 +15967,14 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |success|boolean|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+|errorType|string|false|none|none|
 
 Status Code **401**
 
@@ -16712,6 +16809,14 @@ curl https://apiexplorer.support.rocket.chat/api/v1/teams.convertToChannel \
 
 Convert a team to a channel. Permission required: `convert-team`
 
+The team's main room loses its ABAC attributes in this operation. The removal is recorded in the ABAC audit log as an `abac.object.attributes.removed` event for the room, with `reason` `api` and `change` `all-deleted`. If the team room has attributes, you also need the `abac-management` and `manage-abac-admin-rooms` permissions or `edit-room-abac-attributes` in the team room. Otherwise the request fails with `error-abac-not-authorized-to-modify-room` before anything changes.
+Rooms that leave the team keep their attributes.
+
+### Changelog
+| Version | Description |
+| ------- | ----------- |
+| 9.0.0   | Converting a team to a channel removes the team room's ABAC attributes. |
+
 > Body parameter
 
 ```json
@@ -16818,6 +16923,14 @@ Add existing rooms to a team.
 
 Permission required: `move-room-to-team`
 
+Rooms moved into the team lose their ABAC attributes. Each removal is recorded in the ABAC audit log as an `abac.object.attributes.removed` event for the room, with `reason` `api` and `change` `all-deleted`. If a room has attributes, you also need the `abac-management` and `manage-abac-admin-rooms` permissions or `edit-room-abac-attributes` in that room. Otherwise the request fails with `error-abac-not-authorized-to-modify-room` before anything changes.
+If you are not a member of a private room in `rooms`, the request fails with `invalid-room` and no room is moved, even with administrator permissions.
+
+### Changelog
+| Version | Description |
+| ------- | ----------- |
+| 9.0.0   | Moving a room into a team removes its ABAC attributes. |
+
 > Body parameter
 
 ```json
@@ -16900,6 +17013,15 @@ Permission required: `move-room-to-team`
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "success": false,
+  "error": "invalid-room"
+}
+```
+
 > 401 Response
 
 ```json
@@ -16914,6 +17036,7 @@ Permission required: `move-room-to-team`
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|Inline|
+|400|Bad Request|Bad Request|Inline|
 |401|Unauthorized|Unauthorized|Inline|
 
 <h3 id="add-rooms-to-a-team-responseschema">Response Schema</h3>
@@ -16965,6 +17088,13 @@ Status Code **200**
 |» » channels|[object]|false|none|none|
 |» teamId|string|false|none|none|
 |success|boolean|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
 
 Status Code **401**
 
@@ -18867,12 +18997,20 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/rooms/:rid/attributes \
 <div style="text-align: center; margin: 1rem 0 1rem 0;"><img src="https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/images/Defense.svg" alt="Defense" style="display: block; margin: auto"></div>
 
 - Replaces the full ABAC attribute set for a room.
-- Sets the complete set of ABAC attributes on the specified room by providing an attributes object that maps attribute keys to arrays of allowed values; any previously assigned attributes not included in the request are removed.
-- Requires the ABAC license, the `abac-management` and `manage-abac-admin-rooms` permissions, and the global setting `ABAC_Enabled` to be turned on.
+- Sets the complete set of ABAC attributes on the specified room by providing an attributes object that maps attribute keys to arrays of allowed values; any previously assigned attributes not included in the request are removed. Send an empty `attributes` object to remove every attribute from the room.
+- Requires the ABAC license and the global setting `ABAC_Enabled` to be turned on.
+- Permissions required: `abac-management` and `manage-abac-admin-rooms`, or `edit-room-abac-attributes` in the room. Administrators and room owners have `edit-room-abac-attributes` by default.
+- Users who edit through `edit-room-abac-attributes` have extra limits. With the local Policy Decision Point and **Restrict room creators and editors to attributes they hold** on (the default), they can only add values they hold. While **Enforce ABAC across all workspace rooms** is on and attributes are required, they cannot remove a required attribute or every attribute. These errors use the ABAC error contract: the key is in both `error` and `errorType`, and `details` lists the refused values or keys. ABAC administrators are not subject to these limits.
+- With **Restrict room creators and editors to attributes they hold** off, a room owner can add a value they do not hold. The owner then loses access to the room along with every other member who does not hold it.
+- Room members without `edit-room-abac-attributes` and users who are not room members receive a `403` error.
+- The change applies as soon as the request succeeds. Members who do not hold every value listed for each key are removed from the room, including the caller. To see who would lose access before saving, call `POST /api/v1/abac/rooms.evaluateMembership` with the room ID and the proposed attributes.
+- Errors outside the ABAC error contract, such as `error-abac-not-enabled`, `error-invalid-attribute-values` and `error-attribute-definition-not-found`, return only `error`, without `errorType`.
+- Adding attributes to a federated room or a discussion is refused for every user.
 
 ### Changelog
 | Version | Description |
 | ------- | ----------- |
+| 9.0.0   | Added the `edit-room-abac-attributes` room permission as an alternative to the ABAC administration permissions. An empty `attributes` object now clears the room. Federated rooms and discussions are refused. |
 | 8.0.0   | Added |
 | 8.5.0   | Added the `manage-abac-admin-rooms` granular permission requirement. |
 
@@ -18900,6 +19038,8 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/rooms/:rid/attributes \
 |X-Auth-Token|header|string|true|The `authToken` of the authenticated user.|
 |X-User-Id|header|string|true|The `userId` of the authenticated user.|
 |body|body|object|false|none|
+|» attributes|body|object|false|Map of attribute keys to the values the room requires, for example `{ "department": ["navControl"] }`. Replaces every attribute the room has. A member must hold every value listed for a key to keep access. Send an empty object to remove all attributes.|
+|» » **additionalProperties**|body|[string]|false|none|
 
 > Example responses
 
@@ -18934,7 +19074,7 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/rooms/:rid/attributes \
 ```json
 {
   "success": false,
-  "error": "error-not-authorized"
+  "error": "User does not have the permissions required for this action [error-unauthorized]"
 }
 ```
 
@@ -18961,6 +19101,8 @@ Status Code **400**
 |---|---|---|---|---|
 |success|boolean|false|none|none|
 |error|string|false|none|none|
+|errorType|string|false|none|Returned for ABAC error contract keys. Holds the same key as `error`.|
+|details|object|false|none|Returned for some ABAC error contract keys. Lists the refused values (`attributes`) or required keys (`keys`).|
 
 Status Code **401**
 
@@ -19121,12 +19263,17 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/rooms/:rid/attributes/:
 <div style="text-align: center; margin: 1rem 0 1rem 0;"><img src="https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/images/Defense.svg" alt="Defense" style="display: block; margin: auto"></div>
 
 - Sets the values of a single ABAC attribute on a room.
-- Replaces the existing values for the given attribute key on the specified room with the provided values array (or creates the attribute if it does not yet exist), enforcing the global attribute definition and ABAC validation rules.
+- Replaces the existing values for the given attribute key on the specified room with the provided values array (or creates the attribute if it does not yet exist), enforcing the global attribute definition and ABAC validation rules. Other keys on the room are not changed.
+- Members who do not hold every value of the key are removed from the room as soon as the values are saved.
 - Requires the ABAC license, the `abac-management` and `manage-abac-admin-rooms` permissions, and the global setting `ABAC_Enabled` to be turned on.
+- The `edit-room-abac-attributes` room permission does not grant access to this endpoint. Room owners who hold only that permission receive a `403` error. They can change a room's attributes with `POST /api/v1/abac/rooms/:rid/attributes`.
+- Errors such as `error-room-not-found` and `error-invalid-attribute-values` return only `error`, without `errorType` or `details`. An empty `values` array returns `error-invalid-params`.
 
 ### Changelog
 | Version | Description |
 | ------- | ----------- |
+| 9.0.0   | Federated rooms and discussions are refused with `error-abac-federated-room-attributes` and `error-abac-discussion-room-attributes`. |
+| 9.0.0   | Default rooms can carry ABAC attributes. Removed the `error-cannot-convert-default-room-to-abac` error. |
 | 8.0.0   | Added |
 | 8.5.0   | Added the `manage-abac-admin-rooms` granular permission requirement. |
 
@@ -19184,7 +19331,7 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/rooms/:rid/attributes/:
 ```json
 {
   "success": false,
-  "error": "error-not-authorized"
+  "error": "User does not have the permissions required for this action [error-unauthorized]"
 }
 ```
 
@@ -19211,6 +19358,7 @@ Status Code **400**
 |---|---|---|---|---|
 |success|boolean|false|none|none|
 |error|string|false|none|none|
+|errorType|string|false|none|Returned for ABAC error contract keys. Holds the same key as `error`.|
 
 Status Code **401**
 
@@ -19256,11 +19404,17 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/rooms/:rid/attributes/:
 
 - Adds a single ABAC attribute key to a room.
 - Creates a new ABAC attribute on the specified room for the given key, assigning it the provided values array; fails if the room already has this key or if the key/values are not allowed by the global attribute definition.
+- Members who do not hold the attribute are removed from the room as soon as the attribute is added, including the room owner and the administrator who made the call.
+- Default rooms and team default rooms can carry attributes. New users and team members are only added automatically to the attributed rooms they qualify for.
 - Requires the ABAC license, the `abac-management` and `manage-abac-admin-rooms` permissions, and the global setting `ABAC_Enabled` to be turned on.
+- The `edit-room-abac-attributes` room permission does not grant access to this endpoint. Room owners who hold only that permission receive a `403` error. They can change a room's attributes with `POST /api/v1/abac/rooms/:rid/attributes`.
+- Errors such as `error-duplicate-attribute-key`, `error-room-not-found` and `error-invalid-attribute-values` return only `error`, without `errorType` or `details`.
 
 ### Changelog
 | Version | Description |
 | ------- | ----------- |
+| 9.0.0   | Federated rooms and discussions are refused with `error-abac-federated-room-attributes` and `error-abac-discussion-room-attributes`. |
+| 9.0.0   | Default rooms can carry ABAC attributes. Removed the `error-cannot-convert-default-room-to-abac` error. |
 | 8.0.0   | Added |
 | 8.5.0   | Added the `manage-abac-admin-rooms` granular permission requirement. |
 
@@ -19316,7 +19470,7 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/rooms/:rid/attributes/:
 ```json
 {
   "success": false,
-  "error": "error-not-authorized"
+  "error": "User does not have the permissions required for this action [error-unauthorized]"
 }
 ```
 
@@ -19343,6 +19497,7 @@ Status Code **400**
 |---|---|---|---|---|
 |success|boolean|false|none|none|
 |error|string|false|none|none|
+|errorType|string|false|none|Returned for ABAC error contract keys. Holds the same key as `error`.|
 
 Status Code **401**
 
@@ -20388,6 +20543,259 @@ Status Code **403**
 This operation does not require authentication
 </aside>
 
+## List ABAC Attribute Keys
+
+<a id="opIdget-api-v1-abac-attributes.listKeys"></a>
+
+> Code samples
+
+```bash
+curl https://apiexplorer.support.rocket.chat/api/v1/abac/attributes.listKeys \
+  -H 'Accept: application/json' \
+  -H 'X-Auth-Token: RScctEHSmLGZGywfIhWyRpyofhKOiMoUIpimhvheU3f' \
+  -H 'X-User-Id: rbAXPnMktTFbNpwtJ'
+```
+
+`GET /api/v1/abac/attributes.listKeys`
+
+<div style="text-align: center; margin: 1rem 0 1rem 0;"><img src="https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/images/Defense.svg" alt="Defense" style="display: block; margin: auto"></div>
+
+Lists the attribute keys in the active attribute store, sorted alphabetically. Use the returned keys as the values of the **Attributes required in all ABAC rooms** setting (`ABAC_Required_Attributes`), which applies while **Enforce ABAC across all workspace rooms** is on.
+
+Each item has a `key` and a `label`. Both hold the attribute key.
+
+Permission required: `manage-abac-admin-settings`
+
+### Changelog
+| Version | Description |
+| ------- | ----------- |
+| 9.0.0   | Added |
+
+<h3 id="list-abac-attribute-keys-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Auth-Token|header|string|true|The `authToken` of the authenticated user.|
+|X-User-Id|header|string|true|The `userId` of the authenticated user.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "key": "clearance",
+      "label": "clearance"
+    },
+    {
+      "key": "department",
+      "label": "department"
+    }
+  ],
+  "success": true
+}
+```
+
+> 401 Response
+
+```json
+{
+  "success": false,
+  "error": "You must be logged in to do this."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "success": false,
+  "error": "User does not have the permissions required for this action [error-unauthorized]"
+}
+```
+
+<h3 id="list-abac-attribute-keys-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|401|Unauthorized|Unauthorized|Inline|
+|403|Forbidden|Forbidden|Inline|
+
+<h3 id="list-abac-attribute-keys-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[object]|false|none|none|
+|» key|string|false|none|none|
+|» label|string|false|none|none|
+|success|boolean|false|none|none|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## List Assignable ABAC Attributes
+
+<a id="opIdget-api-v1-abac-attributes.listAssignable"></a>
+
+> Code samples
+
+```bash
+curl https://apiexplorer.support.rocket.chat/api/v1/abac/attributes.listAssignable \
+  -H 'Accept: application/json' \
+  -H 'X-Auth-Token: RScctEHSmLGZGywfIhWyRpyofhKOiMoUIpimhvheU3f' \
+  -H 'X-User-Id: rbAXPnMktTFbNpwtJ'
+```
+
+`GET /api/v1/abac/attributes.listAssignable`
+
+<div style="text-align: center; margin: 1rem 0 1rem 0;"><img src="https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/images/Defense.svg" alt="Defense" style="display: block; margin: auto"></div>
+
+Lists the ABAC attributes and values the caller can assign, sorted by key. ABAC must be enabled.
+
+* Without `rid`, the list covers a new ABAC-managed private room or team. Permission required: `create-abac-managed-room`.
+* With `rid`, the list covers the attributes of that existing room. Permissions required: `abac-management` and `manage-abac-admin-rooms`, or `edit-room-abac-attributes` in that room.
+
+With the local attribute store, the list contains every attribute definition. When **Restrict room creators and editors to attributes they hold** is on, it is limited to the values the caller holds plus, with `rid`, the values the room already has. ABAC administrators editing an existing room and users with `bypass-abac-store-validation` are not limited. With an external attribute store such as Virtru, the list contains the caller's entitlements.
+
+`requiredKeys` lists the attribute keys every ABAC room must carry while **Enforce ABAC across all workspace rooms** is on. It is empty otherwise.
+
+### Changelog
+| Version | Description |
+| ------- | ----------- |
+| 9.0.0   | Added |
+
+<h3 id="list-assignable-abac-attributes-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Auth-Token|header|string|true|The `authToken` of the authenticated user.|
+|X-User-Id|header|string|true|The `userId` of the authenticated user.|
+|rid|query|string|false|Optional. The ID of an existing room. Include it to list the attributes you can assign to that room. Omit it to list the attributes you can assign when creating a room.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "attributes": [
+    {
+      "key": "clearance",
+      "values": [
+        "confidential",
+        "secret"
+      ]
+    },
+    {
+      "key": "department",
+      "values": [
+        "engineering"
+      ]
+    }
+  ],
+  "requiredKeys": [
+    "clearance"
+  ],
+  "success": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "success": false,
+  "error": "error-abac-not-enabled",
+  "errorType": "error-abac-not-enabled"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "success": false,
+  "error": "You must be logged in to do this."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "success": false,
+  "error": "User does not have the permissions required for this action [error-unauthorized]"
+}
+```
+
+<h3 id="list-assignable-abac-attributes-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|Bad Request|Inline|
+|401|Unauthorized|Unauthorized|Inline|
+|403|Forbidden|Forbidden|Inline|
+
+<h3 id="list-assignable-abac-attributes-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attributes|[object]|false|none|none|
+|» key|string|false|none|none|
+|» values|[string]|false|none|none|
+|requiredKeys|[string]|false|none|none|
+|success|boolean|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+|errorType|string|false|none|none|
+|details|object|false|none|Present only when a specific attribute or cause is at fault.|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## List rooms with ABAC attributes
 
 <a id="opIdget-abac-rooms"></a>
@@ -20534,6 +20942,239 @@ Status Code **403**
 This operation does not require authentication
 </aside>
 
+## Evaluate ABAC Room Membership
+
+<a id="opIdpost-api-v1-abac-rooms.evaluateMembership"></a>
+
+> Code samples
+
+```bash
+curl https://apiexplorer.support.rocket.chat/api/v1/abac/rooms.evaluateMembership \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'X-Auth-Token: RScctEHSmLGZGywfIhWyRpyofhKOiMoUIpimhvheU3f' \
+  -H 'X-User-Id: rbAXPnMktTFbNpwtJ' \
+  -d '{
+    "members": [
+      "jane.doe",
+      "john.roe"
+    ],
+    "attributes": {
+      "clearance": [
+        "secret"
+      ],
+      "department": [
+        "engineering"
+      ]
+    },
+    "excludeSelf": false
+  }'
+```
+
+`POST /api/v1/abac/rooms.evaluateMembership`
+
+<div style="text-align: center; margin: 1rem 0 1rem 0;"><img src="https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/images/Defense.svg" alt="Defense" style="display: block; margin: auto"></div>
+
+Previews which users would be admitted to a private room with the given ABAC attributes, without saving anything. ABAC must be enabled. The request body takes one of two forms:
+
+* **New room**: send `members` and `attributes` (and optionally `excludeSelf`) to preview who would be added when creating an ABAC-managed private room or team. The response sorts the named users into `compliant`, `nonCompliant` and `inconclusive`, and returns the caller's own verdict in `creator`. If the caller does not meet the attributes and `excludeSelf` is not `true`, the request fails with `error-abac-creator-not-admitted`. Permission required: `create-abac-managed-room`. The named users, plus the caller unless `excludeSelf` is `true`, cannot exceed the **API_User_Limit** setting.
+* **Existing room**: send `rid` and the proposed `attributes` to preview which current members keep or lose access if the room's attributes change. Results are paginated with the `after` cursor and can be narrowed with `filter` and `group`. Each member has a `verdict`. On the first page, `editor` holds the caller's own verdict when the caller is a member. Permissions required: `abac-management` and `manage-abac-admin-rooms`, or `edit-room-abac-attributes` in that room. Room members without that permission and users who are not room members receive a `403` error.
+
+A member is `compliant` only if they hold every value listed for each key. The existing room form does not accept `count` or `offset` in the body (`error-invalid-params`), and ignores them as query parameters.
+
+Successful new room previews are recorded in the ABAC audit log as an `abac.membership.evaluated` event. Existing room previews and failed requests are not recorded. The endpoint is rate limited to 20 requests every 10 seconds, except for users with the `abac-management` and `manage-abac-admin-rooms` permissions.
+
+ABAC errors such as `error-abac-not-enabled` use the ABAC error contract: the key is returned in both `error` and `errorType`, and `details` names the attribute or cause at fault when there is one. `error-room-not-found` and `error-invalid-attribute-values` return only `error`, without `errorType`.
+
+### Changelog
+| Version | Description |
+| ------- | ----------- |
+| 9.0.0   | Added |
+
+> Body parameter
+
+```json
+{
+  "members": [
+    "jane.doe",
+    "john.roe"
+  ],
+  "attributes": {
+    "clearance": [
+      "secret"
+    ],
+    "department": [
+      "engineering"
+    ]
+  },
+  "excludeSelf": false
+}
+```
+
+<h3 id="evaluate-abac-room-membership-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|X-Auth-Token|header|string|true|The `authToken` of the authenticated user.|
+|X-User-Id|header|string|true|The `userId` of the authenticated user.|
+|body|body|object|false|none|
+|» members|body|[string]|false|New room form only (required). Usernames of the users to evaluate. Values must be unique.|
+|» excludeSelf|body|boolean|false|New room form only. If `true`, the caller is not evaluated as a member. Defaults to `false`.|
+|» rid|body|string|false|Existing room form only (required). The ID of the private room whose members you want to evaluate.|
+|» attributes|body|object|true|Required. Map of attribute keys to the values to evaluate. Keys and values can contain letters, digits, `_` and `-`. Each key takes 1 to 10 unique values, and up to 10 keys are allowed.<br>In the new room form, at least one key is required. In the existing room form, an empty object previews clearing all attributes.|
+|» » **additionalProperties**|body|[string]|false|none|
+|» filter|body|string|false|Existing room form only. Text to search members by. Matches the username or the name.|
+|» group|body|string|false|Existing room form only. Return only the members who would lose access (`loses`) or keep it (`retains`).|
+|» after|body|object|false|Existing room form only. The `next` cursor from the previous response, used to fetch the next page.|
+|» » _id|body|string|false|none|
+|» » username|body|string|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» group|loses|
+|» group|retains|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "compliant": [
+    {
+      "_id": "aB3dE5fG7hJ9kL1mN",
+      "username": "jane.doe",
+      "name": "Jane Doe"
+    }
+  ],
+  "nonCompliant": [
+    {
+      "_id": "pQ2rS4tU6vW8xY0zA",
+      "username": "john.roe",
+      "name": "John Roe"
+    }
+  ],
+  "inconclusive": [],
+  "creator": "compliant",
+  "success": true
+}
+```
+
+> 400 Response
+
+```json
+{
+  "success": false,
+  "error": "error-abac-not-enabled",
+  "errorType": "error-abac-not-enabled"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "success": false,
+  "error": "You must be logged in to do this."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "success": false,
+  "error": "User does not have the permissions required for this action [error-unauthorized]"
+}
+```
+
+<h3 id="evaluate-abac-room-membership-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|Bad Request|Inline|
+|401|Unauthorized|Unauthorized|Inline|
+|403|Forbidden|Forbidden|Inline|
+
+<h3 id="evaluate-abac-room-membership-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|compliant|[object]|false|none|New room form. Users who would be added.|
+|» _id|string|false|none|none|
+|» username|string|false|none|none|
+|» name|string|false|none|none|
+|nonCompliant|[object]|false|none|New room form. Users who would be skipped.|
+|» _id|string|false|none|none|
+|» username|string|false|none|none|
+|» name|string|false|none|none|
+|inconclusive|[object]|false|none|New room form. Users whose access could not be decided.|
+|» _id|string|false|none|none|
+|» username|string|false|none|none|
+|» name|string|false|none|none|
+|creator|string|false|none|New room form. The caller's verdict.|
+|members|[object]|false|none|Existing room form. The evaluated members on this page.|
+|» _id|string|false|none|none|
+|» username|string|false|none|none|
+|» name|string|false|none|none|
+|» verdict|string|false|none|none|
+|» roles|[string]|false|none|The member's room roles, for example `owner`. Omitted for members without a room role.|
+|count|integer|false|none|Existing room form. Number of members returned on this page.|
+|checked|integer|false|none|Existing room form. Number of members checked to build this page.|
+|total|integer|false|none|Existing room form. Total number of room members, when known.|
+|next|object|false|none|Existing room form. Cursor to pass as `after` for the next page. Absent on the last page.|
+|» _id|string|false|none|none|
+|» username|string|false|none|none|
+|editor|string|false|none|Existing room form, first page only. The caller's verdict when the caller is a room member.|
+|success|boolean|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|creator|compliant|
+|creator|nonCompliant|
+|creator|inconclusive|
+|» verdict|compliant|
+|» verdict|nonCompliant|
+|» verdict|inconclusive|
+|editor|compliant|
+|editor|nonCompliant|
+|editor|inconclusive|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+|errorType|string|false|none|none|
+|details|object|false|none|Present only when a specific attribute or cause is at fault.|
+
+Status Code **401**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|none|
+|error|string|false|none|none|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## List ABAC audit events
 
 <a id="opIdget-abac-audit"></a>
@@ -20552,12 +21193,14 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/audit \
 <div style="text-align: center; margin: 1rem 0 1rem 0;"><img src="https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/images/Defense.svg" alt="Defense" style="display: block; margin: auto"></div>
 
 - Lists ABAC audit events.
-- Returns a paginated audit log of ABAC-related actions (attribute changes, room attribute changes/removals, and ABAC actions), filterable by time range (`start`, `end`) and optional `actor`, with optional sorting.
+- Returns a paginated audit log of ABAC-related actions (attribute changes, room attribute changes/removals, ABAC actions, and membership previews), filterable by time range (`start`, `end`) and optional `actor`, with optional sorting.
+- Membership previews are recorded only for successful new room previews from `POST /api/v1/abac/rooms.evaluateMembership`. Existing room previews and failed requests are not recorded.
 - Requires the ABAC and Auditing licenses, the `abac-management` and `view-abac-admin-audit` permissions.
 
 ### Changelog
 | Version | Description |
 | ------- | ----------- |
+| 9.0.0   | Added the `abac.membership.evaluated` event, recorded by `POST /api/v1/abac/rooms.evaluateMembership`. |
 | 8.0.0   | Added |
 | 8.5.0   | Added the `view-abac-admin-audit` granular permission requirement. |
 
@@ -20583,15 +21226,42 @@ curl https://apiexplorer.support.rocket.chat/api/v1/abac/audit \
   "success": true,
   "events": [
     {
-      "_id": "EVENT_ID",
-      "t": "abac.object.attribute.changed",
-      "ts": "2026-01-30T12:34:56.789Z",
+      "_id": "6720f3c5c4d5e6f7a8b9c0f3",
+      "t": "abac.membership.evaluated",
+      "ts": "2026-10-28T15:30:02.215Z",
       "actor": {
-        "_id": "USER_ID",
-        "username": "admin",
-        "name": "Admin"
+        "type": "user",
+        "_id": "aB3dE5fG7hJ9kL1mN",
+        "username": "jane.doe",
+        "ip": "203.0.113.10",
+        "useragent": "Mozilla/5.0"
       },
-      "data": {}
+      "data": [
+        {
+          "key": "reason",
+          "value": "api"
+        },
+        {
+          "key": "attributes",
+          "value": [
+            {
+              "key": "clearance",
+              "values": [
+                "secret"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "subjects",
+          "value": [
+            {
+              "_id": "pQ2rS4tU6vW8xY0zA",
+              "username": "john.roe"
+            }
+          ]
+        }
+      ]
     }
   ],
   "offset": 0,
@@ -20645,13 +21315,17 @@ Status Code **200**
 |success|boolean|false|none|none|
 |events|[object]|false|none|none|
 |» _id|string|false|none|none|
-|» t|string|false|none|none|
 |» ts|string|false|none|none|
+|» t|string|false|none|The event type, for example `abac.membership.evaluated`, `abac.attribute.changed`, `abac.object.attribute.changed` or `abac.action.performed`.|
 |» actor|object|false|none|none|
+|» » type|string|false|none|none|
 |» » _id|string|false|none|none|
 |» » username|string|false|none|none|
-|» » name|string|false|none|none|
-|» data|object|false|none|none|
+|» » ip|string|false|none|none|
+|» » useragent|string|false|none|none|
+|» data|[object]|false|none|Event details as a list of key and value pairs. The keys depend on the event type.|
+|» » key|string|false|none|none|
+|» » value|object|false|none|none|
 |offset|integer|false|none|none|
 |count|integer|false|none|none|
 |total|integer|false|none|none|
@@ -20918,3 +21592,30 @@ This operation does not require authentication
 |E2EKey|string|false|none|none|
 |draft|string|false|none|The unfinished message draft for the room.|
 |threadDrafts|object|false|none|The unfinished thread reply drafts, keyed by the ID of each thread's main message.|
+
+<h2 id="tocS_XmppFederation">XmppFederation</h2>
+<!-- backwards compatibility -->
+<a id="schemaxmppfederation"></a>
+<a id="schema_XmppFederation"></a>
+<a id="tocSxmppfederation"></a>
+<a id="tocsxmppfederation"></a>
+
+```json
+{
+  "version": 1,
+  "role": "host-muc",
+  "muc": "xmpp-public@conference.chat.example.com",
+  "origin": "chat.example.com"
+}
+```
+
+XMPP federation details of a room created with `extraData.xmppFederated` set to `true`. Returned only for XMPP federated rooms.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|version|integer|false|none|The version of the XMPP federation data.|
+|role|string|false|none|The workspace's role for the room. Rooms created on this workspace have the `host-muc` role.|
+|muc|string|false|none|The room's XMPP address, built as `<room name>@<MUC subdomain>.<XMPP domain>`.|
+|origin|string|false|none|The XMPP domain of the server that hosts the room.|

@@ -240,14 +240,31 @@ const TaskInletAssetReferenceSchema = z
   })
   .openapi('TaskInletAssetReference')
 
+const TriggerStatusSchema = z
+  .enum(['pending', 'running', 'failing', 'orphaned'])
+  .openapi({
+    title: 'TriggerStatus',
+    description:
+      "How a trigger is doing, worked out the same way for every kind from its row and its triggerer's heartbeat.",
+  })
+  .openapi('TriggerStatus')
+
 const AssetWatcherResponseSchema = z
   .object({
     name: z.string().openapi({ title: 'Name' }),
-    trigger_id: z.int().openapi({ title: 'Trigger Id' }),
+    trigger_id: z
+      .int()
+      .openapi({
+        title: 'Trigger Id',
+        description: "The watcher's trigger; `GET /triggers/{trigger_id}` has its state.",
+      }),
     created_date: z.iso.datetime({ offset: true }).openapi({ title: 'Created Date' }),
+    status: TriggerStatusSchema.openapi({
+      description: "Status of the watcher's trigger, as in `GET /triggers`.",
+    }),
   })
   .openapi({
-    required: ['name', 'trigger_id', 'created_date'],
+    required: ['name', 'trigger_id', 'created_date', 'status'],
     title: 'AssetWatcherResponse',
     description: 'Asset watcher serializer for responses.',
   })
@@ -411,6 +428,14 @@ const AssetEventResponseSchema = z
       .union([z.uuid(), z.null().nullable()])
       .exactOptional()
       .openapi({ title: 'Source Task Instance Id' }),
+    source_region_id: z
+      .union([z.uuid(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Source Region Id' }),
+    source_region_index: z
+      .union([z.int(), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Source Region Index' }),
     created_dagruns: z.array(DagRunAssetReferenceSchema).openapi({ title: 'Created Dagruns' }),
     timestamp: z.iso.datetime({ offset: true }).openapi({ title: 'Timestamp' }),
     partition_key: z
@@ -1386,6 +1411,15 @@ const BulkDAGRunClearBodySchema = z
         description:
           '(Experimental) Run on the latest bundle version of the Dag after clearing. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False``.',
       }),
+    keep_task_state: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Keep Task State',
+        description:
+          'Keep the task state store entries of the cleared task instances so the next attempt resumes from them. By default they are discarded, so the task starts over.',
+      }),
     note: z
       .union([z.string().max(1000), z.null().nullable()])
       .exactOptional()
@@ -1427,6 +1461,11 @@ const BulkResponseSchema = z
     required: [],
   })
   .openapi('BulkResponse')
+
+const CallbackStateSchema = z
+  .enum(['scheduled', 'pending', 'queued', 'running', 'success', 'failed'])
+  .openapi({ title: 'CallbackState', description: 'All possible states of callbacks.' })
+  .openapi('CallbackState')
 
 const ClearPartitionsBodySchema = z
   .strictObject({
@@ -1837,6 +1876,14 @@ const ClearTaskInstancesBodySchema = z
       .default(false)
       .exactOptional()
       .openapi({ title: 'Include Downstream' }),
+    include_dependent_dags: z
+      .union([z.boolean(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Include Dependent Dags',
+        description:
+          'Also clear the tasks in other Dags that the cleared tasks recorded as external clear targets (for example through ``ExternalTaskMarker``), with their downstream tasks. If not specified, follows ``include_downstream``.',
+      }),
     include_future: z.boolean().default(false).exactOptional().openapi({ title: 'Include Future' }),
     include_past: z.boolean().default(false).exactOptional().openapi({ title: 'Include Past' }),
     run_on_latest_version: z
@@ -2444,6 +2491,15 @@ const DAGRunClearBodySchema = z
         description:
           '(Experimental) Run on the latest bundle version of the Dag after clearing. If not specified, falls back to the DAG-level ``rerun_with_latest_version`` parameter, then the ``[core] rerun_with_latest_version`` config option, and finally ``False``.',
       }),
+    keep_task_state: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Keep Task State',
+        description:
+          'Keep the task state store entries of the cleared task instances so the next attempt resumes from them. By default they are discarded, so the task starts over.',
+      }),
     note: z
       .union([z.string().max(1000), z.null().nullable()])
       .exactOptional()
@@ -2828,7 +2884,7 @@ const DagBundleResponseSchema = z
       .openapi({
         title: 'Bundle Url',
         description:
-          'A link to view the bundle at ``version``, when one is configured and the caller may read Dag versions.',
+          'A link to view the bundle at ``version``. Null when the bundle has no URL template, when the template needs a version and the bundle has not been refreshed yet, or when the template cannot be rendered.',
       }),
     team_name: z
       .union([z.string(), z.null().nullable()])
@@ -2837,11 +2893,11 @@ const DagBundleResponseSchema = z
         description: 'The team owning the bundle, in a multi-team deployment.',
       }),
     import_error_count: z
-      .union([z.int(), z.null().nullable()])
+      .int()
       .openapi({
         title: 'Import Error Count',
         description:
-          'Number of Dag import errors recorded against this bundle that the caller is permitted to see, counted on the same terms as ``GET /importErrors``. Null when the caller may not read import errors.',
+          'Number of Dag import errors recorded against the bundle. Reading the errors themselves is authorized separately, through ``GET /importErrors``.',
       }),
   })
   .openapi({
@@ -2899,7 +2955,7 @@ const DagBundleDetailResponseSchema = z
       .openapi({
         title: 'Bundle Url',
         description:
-          'A link to view the bundle at ``version``, when one is configured and the caller may read Dag versions.',
+          'A link to view the bundle at ``version``. Null when the bundle has no URL template, when the template needs a version and the bundle has not been refreshed yet, or when the template cannot be rendered.',
       }),
     team_name: z
       .union([z.string(), z.null().nullable()])
@@ -2908,18 +2964,18 @@ const DagBundleDetailResponseSchema = z
         description: 'The team owning the bundle, in a multi-team deployment.',
       }),
     import_error_count: z
-      .union([z.int(), z.null().nullable()])
+      .int()
       .openapi({
         title: 'Import Error Count',
         description:
-          'Number of Dag import errors recorded against this bundle that the caller is permitted to see, counted on the same terms as ``GET /importErrors``. Null when the caller may not read import errors.',
+          'Number of Dag import errors recorded against the bundle. Reading the errors themselves is authorized separately, through ``GET /importErrors``.',
       }),
     dag_count: z
       .int()
       .openapi({
         title: 'Dag Count',
         description:
-          'Number of live Dags recorded against the bundle that the caller is permitted to see, counted on the same terms as ``GET /dags``.',
+          'Number of live Dags recorded against the bundle, including Dags the caller may not read.',
       }),
   })
   .openapi({
@@ -2945,7 +3001,8 @@ const DagBundleFileResponseSchema = z
       .int()
       .openapi({
         title: 'Dag Count',
-        description: 'Number of live Dags the file defines that the caller may read.',
+        description:
+          'Number of live Dags the file defines, including Dags the caller may not read.',
       }),
     last_parsed_time: z
       .union([z.iso.datetime({ offset: true }), z.null().nullable()])
@@ -2960,11 +3017,18 @@ const DagBundleFileResponseSchema = z
         description: 'How long the last successful parse of the file took, in seconds.',
       }),
     import_error_count: z
-      .union([z.int(), z.null().nullable()])
+      .int()
       .openapi({
         title: 'Import Error Count',
         description:
-          'Number of import errors recorded against the file, which is at most one. Null when the caller may not read import errors -- deliberately not zero, which would read as a file with nothing wrong.',
+          'Number of import errors recorded against the file, which is at most one. Reading the error itself is authorized separately, through ``GET /importErrors``.',
+      }),
+    can_read_import_error: z
+      .boolean()
+      .openapi({
+        title: 'Can Read Import Error',
+        description:
+          "Whether the caller may read the file's import error through ``GET /importErrors``, possibly with its stack trace redacted. Always false when the file has no error.",
       }),
   })
   .openapi({
@@ -2974,6 +3038,7 @@ const DagBundleFileResponseSchema = z
       'last_parsed_time',
       'last_parse_duration',
       'import_error_count',
+      'can_read_import_error',
     ],
     title: 'DagBundleFileResponse',
     description: 'A file in a Dag bundle, as the Dag processor last saw it.',
@@ -3329,12 +3394,42 @@ const EventLogResponseSchema = z
 const EventLogCollectionResponseSchema = z
   .object({
     event_logs: z.array(EventLogResponseSchema).openapi({ title: 'Event Logs' }),
-    total_entries: z.int().openapi({ title: 'Total Entries' }),
+    total_entries: z
+      .int()
+      .openapi({
+        title: 'Total Entries',
+        description:
+          'Number of matching items. For offset pagination this is the exact total. For cursor pagination it is capped at ``total_entries_limit``; a value equal to that limit means at least that many items match.',
+      }),
+    total_entries_limit: z
+      .union([z.int(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Total Entries Limit',
+        description:
+          'Cap applied to ``total_entries`` under cursor pagination. ``null`` for offset pagination, where ``total_entries`` is exact.',
+      }),
+    next_cursor: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Next Cursor',
+        description:
+          'Token pointing to the next page. Populated for cursor pagination, ``null`` when using offset pagination or when there is no next page.',
+      }),
+    previous_cursor: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Previous Cursor',
+        description:
+          'Token pointing to the previous page. Populated for cursor pagination, ``null`` when using offset pagination or when on the first page.',
+      }),
   })
   .openapi({
     required: ['event_logs', 'total_entries'],
     title: 'EventLogCollectionResponse',
-    description: 'Event Log Collection Response.',
+    description: 'Event Log collection response supporting both offset and cursor pagination.',
   })
   .openapi('EventLogCollectionResponse')
 
@@ -3378,6 +3473,11 @@ const ExternalViewResponseSchema = z
       .exactOptional()
       .openapi({ title: 'Nav Top Level' }),
     applies_to: z.union([PluginAppliesToResponseSchema, z.null().nullable()]).exactOptional(),
+    show_icon_with_label: z
+      .union([z.boolean(), z.null().nullable()])
+      .default(false)
+      .exactOptional()
+      .openapi({ title: 'Show Icon With Label' }),
     href: z.string().openapi({ title: 'Href' }),
     destination: z
       .enum(['nav', 'dag', 'dag_run', 'task', 'task_instance', 'asset', 'base'])
@@ -3904,6 +4004,11 @@ const ReactAppResponseSchema = z
       .exactOptional()
       .openapi({ title: 'Nav Top Level' }),
     applies_to: z.union([PluginAppliesToResponseSchema, z.null().nullable()]).exactOptional(),
+    show_icon_with_label: z
+      .union([z.boolean(), z.null().nullable()])
+      .default(false)
+      .exactOptional()
+      .openapi({ title: 'Show Icon With Label' }),
     bundle_url: z.string().openapi({ title: 'Bundle Url' }),
     destination: z
       .enum([
@@ -5016,6 +5121,164 @@ const TaskStateStorePatchBodySchema = z
   })
   .openapi('TaskStateStorePatchBody')
 
+const TriggerAssetWatcherReferenceResponseSchema = z
+  .object({
+    asset_id: z.int().openapi({ title: 'Asset Id' }),
+    asset_name: z.string().openapi({ title: 'Asset Name' }),
+    asset_uri: z.string().openapi({ title: 'Asset Uri' }),
+    watcher_name: z.string().openapi({ title: 'Watcher Name' }),
+    scheduled_dag_ids: z
+      .array(z.string())
+      .openapi({
+        title: 'Scheduled Dag Ids',
+        description:
+          "The Dags scheduled on the asset (directly or by an asset name or URI reference), which the watcher's events run; only those the caller can read.",
+      }),
+  })
+  .openapi({
+    required: ['asset_id', 'asset_name', 'asset_uri', 'watcher_name', 'scheduled_dag_ids'],
+    title: 'TriggerAssetWatcherReferenceResponse',
+    description: 'An asset watcher a trigger serves.',
+  })
+  .openapi('TriggerAssetWatcherReferenceResponse')
+
+const TriggerCallbackReferenceResponseSchema = z
+  .object({
+    id: z.string().openapi({ title: 'Id' }),
+    dag_id: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Dag Id' }),
+    dag_run_id: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Dag Run Id' }),
+    state: z.union([CallbackStateSchema, z.null().nullable()]),
+  })
+  .openapi({
+    required: ['id', 'dag_id', 'dag_run_id', 'state'],
+    title: 'TriggerCallbackReferenceResponse',
+    description: 'The callback a trigger runs.',
+  })
+  .openapi('TriggerCallbackReferenceResponse')
+
+const TriggerKindSchema = z
+  .enum(['task', 'callback', 'asset_watcher'])
+  .openapi({
+    title: 'TriggerKind',
+    description: 'What a trigger runs for, worked out from what it is used by rather than stored.',
+  })
+  .openapi('TriggerKind')
+
+const TriggerTaskInstanceReferenceResponseSchema = z
+  .object({
+    dag_id: z.string().openapi({ title: 'Dag Id' }),
+    dag_run_id: z.string().openapi({ title: 'Dag Run Id' }),
+    task_id: z.string().openapi({ title: 'Task Id' }),
+    map_index: z.int().openapi({ title: 'Map Index' }),
+    try_number: z.int().openapi({ title: 'Try Number' }),
+    state: z.union([TaskInstanceStateSchema, z.null().nullable()]),
+  })
+  .openapi({
+    required: ['dag_id', 'dag_run_id', 'task_id', 'map_index', 'try_number', 'state'],
+    title: 'TriggerTaskInstanceReferenceResponse',
+    description: 'The task instance a trigger runs for.',
+  })
+  .openapi('TriggerTaskInstanceReferenceResponse')
+
+const TriggerDetailResponseSchema = z
+  .object({
+    id: z.int().openapi({ title: 'Id' }),
+    kind: TriggerKindSchema.openapi({
+      description:
+        'What the trigger runs for: a deferred `task`, a `callback` or an `asset_watcher`.',
+    }),
+    classpath: z.string().openapi({ title: 'Classpath' }),
+    created_date: z.iso.datetime({ offset: true }).openapi({ title: 'Created Date' }),
+    queue: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Queue' }),
+    team_name: z.union([z.string(), z.null().nullable()]).openapi({ title: 'Team Name' }),
+    status: TriggerStatusSchema.openapi({
+      description:
+        '`pending`: not picked up by a triggerer yet. `running`: on a live triggerer and not failed since it last recovered. `failing`: on a live triggerer and failed since it last recovered, that is `consecutive_failures` is above 0; it recovers when it fires an event or stays up for two minutes. `orphaned`: its triggerer stopped sending heartbeats; another triggerer will take it.',
+    }),
+    triggerer_hostname: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({
+        title: 'Triggerer Hostname',
+        description:
+          'Host of the triggerer the trigger is assigned to; whether it is alive is the `orphaned` status.',
+      }),
+    consecutive_failures: z
+      .int()
+      .openapi({
+        title: 'Consecutive Failures',
+        description: 'Failures since the trigger last recovered.',
+      }),
+    first_failed_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({
+        title: 'First Failed At',
+        description: 'When the current run of failures started.',
+      }),
+    last_failed_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ title: 'Last Failed At' }),
+    last_error: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({
+        title: 'Last Error',
+        description:
+          "Exception type and message of the last failure, with secrets masked. It is kept after a recovery; the traceback is in the trigger's logs.",
+      }),
+    last_event_at: z
+      .union([z.iso.datetime({ offset: true }), z.null().nullable()])
+      .openapi({ title: 'Last Event At', description: 'When the trigger last fired an event.' }),
+    dag_id: z
+      .union([z.string(), z.null().nullable()])
+      .openapi({
+        title: 'Dag Id',
+        description: 'The Dag of the task instance or callback the trigger runs for.',
+      }),
+    task_instance: z.union([TriggerTaskInstanceReferenceResponseSchema, z.null().nullable()]),
+    callback: z.union([TriggerCallbackReferenceResponseSchema, z.null().nullable()]),
+    asset_watchers: z
+      .array(TriggerAssetWatcherReferenceResponseSchema)
+      .openapi({
+        title: 'Asset Watchers',
+        description: 'The watchers the trigger serves, on the assets the caller can read.',
+      }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'kind',
+      'classpath',
+      'created_date',
+      'queue',
+      'team_name',
+      'status',
+      'triggerer_hostname',
+      'consecutive_failures',
+      'first_failed_at',
+      'last_failed_at',
+      'last_error',
+      'last_event_at',
+      'dag_id',
+      'task_instance',
+      'callback',
+      'asset_watchers',
+    ],
+    title: 'TriggerDetailResponse',
+    description: 'A trigger, who it runs for, and how it is doing; never its kwargs.',
+  })
+  .openapi('TriggerDetailResponse')
+
+const TriggerCollectionResponseSchema = z
+  .object({
+    triggers: z.array(TriggerDetailResponseSchema).openapi({ title: 'Triggers' }),
+    total_entries: z.int().openapi({ title: 'Total Entries' }),
+  })
+  .openapi({
+    required: ['triggers', 'total_entries'],
+    title: 'TriggerCollectionResponse',
+    description: 'Trigger collection response.',
+  })
+  .openapi('TriggerCollectionResponse')
+
 const TriggerDAGRunPostBodySchema = z
   .strictObject({
     dag_run_id: z
@@ -5504,6 +5767,35 @@ export const getApiV2AssetsRoute = createRoute({
           },
           title: 'Dag Ids',
         }),
+      trigger_id: z
+        .preprocess(
+          (val) => (val === 'null' ? null : val),
+          z.preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.union([z.int(), z.null().nullable()]),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'trigger_id',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'integer' }, { type: 'null' }],
+              description: "Return only the assets this trigger's watchers watch.",
+              title: 'Trigger Id',
+            },
+            description: "Return only the assets this trigger's watchers watch.",
+          },
+          description: "Return only the assets this trigger's watchers watch.",
+          title: 'Trigger Id',
+        }),
       only_active: z
         .stringbool()
         .default(true)
@@ -5883,6 +6175,35 @@ export const getApiV2AssetsEventsRoute = createRoute({
             schema: { anyOf: [{ type: 'integer' }, { type: 'null' }], title: 'Asset Id' },
           },
           title: 'Asset Id',
+        }),
+      trigger_id: z
+        .preprocess(
+          (val) => (val === 'null' ? null : val),
+          z.preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.union([z.int(), z.null().nullable()]),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'trigger_id',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'integer' }, { type: 'null' }],
+              description: "Return only the events of the assets this trigger's watchers watch.",
+              title: 'Trigger Id',
+            },
+            description: "Return only the events of the assets this trigger's watchers watch.",
+          },
+          description: "Return only the events of the assets this trigger's watchers watch.",
+          title: 'Trigger Id',
         }),
       source_dag_id: ((schema) =>
         z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
@@ -6427,6 +6748,32 @@ export const deleteApiV2AssetsAssetIdQueuedEventsRoute = createRoute({
           },
           title: 'Before',
         }),
+      partition_key: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'partition_key',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+              title: 'Partition Key',
+            },
+            description:
+              'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+          },
+          description:
+            'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+          title: 'Partition Key',
+        }),
     }),
   },
   responses: {
@@ -6606,6 +6953,32 @@ export const deleteApiV2DagsDagIdAssetsQueuedEventsRoute = createRoute({
           },
           title: 'Before',
         }),
+      partition_key: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'partition_key',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+              title: 'Partition Key',
+            },
+            description:
+              'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+          },
+          description:
+            'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+          title: 'Partition Key',
+        }),
     }),
   },
   responses: {
@@ -6776,6 +7149,32 @@ export const deleteApiV2DagsDagIdAssetsAssetIdQueuedEventsRoute = createRoute({
             schema: { anyOf: [{ type: 'string' }, { type: 'null' }], title: 'Before' },
           },
           title: 'Before',
+        }),
+      partition_key: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'partition_key',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+              title: 'Partition Key',
+            },
+            description:
+              'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+          },
+          description:
+            'Delete queued events of partitioned assets emitted for this partition key whose Dag run has not been created yet, instead of queued events of non-partitioned assets. The key is matched against the partition key the asset event was emitted for, not against the partition keys of the Dag runs the event feeds; a partition mapper can make them differ.',
+          title: 'Partition Key',
         }),
     }),
   },
@@ -9779,7 +10178,7 @@ export const getApiV2DagBundlesRoute = createRoute({
   tags: ['Dag Bundle'],
   summary: 'Get Dag Bundles',
   description:
-    "List the Dag bundles Airflow knows about.\n\nReports the version of each bundle Airflow currently holds and when a Dag processor last\nrefreshed it, so whoever deployed the code can tell whether it has been picked up yet.\n\nA bundle is visible to a user who can read at least one Dag recorded against it. A bundle\nholding no registered Dag at all has nothing to authorize against, so it is listed only for a\nuser holding the admin-by-default ``AccessView.IMPORT_ERRORS_ALL`` for that bundle's team --\nthe same view, scoped the same way, that governs import errors for a file that never\nregistered a Dag.",
+    "List the Dag bundles Airflow knows about.\n\nReports the version of each bundle Airflow currently holds and when a Dag processor last\nrefreshed it, so whoever deployed the code can tell whether it has been picked up yet.\n\nNeeds ``AccessView.DAG_BUNDLES``. In a multi-team deployment it is checked against each\nbundle's team, and bundles of a team the caller cannot see are left out.",
   operationId: 'get_dag_bundles',
   request: {
     query: z.object({
@@ -9928,7 +10327,7 @@ export const getApiV2DagBundlesBundleNameFilesRoute = createRoute({
   tags: ['Dag Bundle'],
   summary: 'Get Dag Bundle Files',
   description:
-    'List the files in a Dag bundle, ordered by path.\n\nA file is listed when the caller can read at least one Dag it defines. A file that recorded an\nimport error without registering any Dag is listed too, on the same admin-by-default terms as\n``GET /importErrors`` -- a file that fails before defining a Dag has no Dag to authorize on,\nand it is the case this page most needs to show.\n\n``dag_count`` counts live Dags only. Dag rows are never deleted: a file that fails to import\nhas every Dag in it marked stale, and so does a file dropped from the bundle. A file therefore\nstays listed on the strength of a live Dag *or* an import error, so a file that has just broken\ndoes not vanish from the page someone opened to find out why, while a file deleted long ago\ndrops out instead of lingering forever.\n\nParse times come from the Dags in the file rather than the file itself, which is the only\nrecord Airflow keeps: a file whose every Dag was removed keeps no parse time of its own.',
+    "List the files in a Dag bundle, ordered by path.\n\nEvery file the bundle holds is listed, with counts covering the whole file: the bundle is\nauthorized as a unit, so its contents are not narrowed to the Dags the caller may read. What a\nfile's Dags contain, and the text of its import error, stay behind their own permissions.\n\n``can_read_import_error`` is per caller, unlike the counts: it says whether ``GET /importErrors``\nwould return the file's error to them.\n\n``dag_count`` counts live Dags only. Dag rows are never deleted: a file that fails to import\nhas every Dag in it marked stale, and so does a file dropped from the bundle. A file therefore\nstays listed on the strength of a live Dag *or* an import error, so a file that has just broken\ndoes not vanish from the page someone opened to find out why, while a file deleted long ago\ndrops out instead of lingering forever.\n\nParse times come from the Dags in the file rather than the file itself, which is the only\nrecord Airflow keeps: a file whose every Dag was removed keeps no parse time of its own.",
   operationId: 'get_dag_bundle_files',
   request: {
     params: z.object({
@@ -11709,7 +12108,8 @@ export const getApiV2EventLogsRoute = createRoute({
   path: '/api/v2/eventLogs',
   tags: ['Event Log'],
   summary: 'Get Event Logs',
-  description: 'Get all Event Logs.',
+  description:
+    'Get all Event Logs.\n\nSupports two pagination modes:\n\n**Offset (default):** use `limit` and `offset` query parameters. Returns `total_entries`.\n\n**Cursor:** pass `cursor` (empty string for the first page, then `next_cursor` from the response).\nWhen `cursor` is provided, `offset` is ignored and `total_entries` is capped at\n`total_entries_limit` (a value equal to that limit means at least that many events match).\n``next_cursor`` is ``null`` when there are no more pages; ``previous_cursor`` is ``null`` on\nthe first page.',
   operationId: 'get_event_logs',
   request: {
     query: z.object({
@@ -11758,6 +12158,32 @@ export const getApiV2EventLogsRoute = createRoute({
             },
           },
           title: 'Region Index',
+        }),
+      cursor: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'cursor',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                'Cursor for keyset-based pagination. Pass an empty string for the first page, then use ``next_cursor`` from the response. When ``cursor`` is provided, ``offset`` is ignored.',
+              title: 'Cursor',
+            },
+            description:
+              'Cursor for keyset-based pagination. Pass an empty string for the first page, then use ``next_cursor`` from the response. When ``cursor`` is provided, ``offset`` is ignored.',
+          },
+          description:
+            'Cursor for keyset-based pagination. Pass an empty string for the first page, then use ``next_cursor`` from the response. When ``cursor`` is provided, ``offset`` is ignored.',
+          title: 'Cursor',
         }),
       limit: z
         .preprocess(
@@ -15729,15 +16155,15 @@ export const getApiV2DagsDagIdDagRunsDagRunIdTaskInstancesTaskIdXcomEntriesRoute
             schema: {
               type: 'boolean',
               description:
-                'Leave out XComs whose keys Airflow reserves for itself, such as loop decision reasons.',
+                'Leave out XComs whose keys Airflow reserves for itself, such as loop decision reasons and cross-Dag clear targets.',
               default: false,
               title: 'Exclude Internal Keys',
             },
             description:
-              'Leave out XComs whose keys Airflow reserves for itself, such as loop decision reasons.',
+              'Leave out XComs whose keys Airflow reserves for itself, such as loop decision reasons and cross-Dag clear targets.',
           },
           description:
-            'Leave out XComs whose keys Airflow reserves for itself, such as loop decision reasons.',
+            'Leave out XComs whose keys Airflow reserves for itself, such as loop decision reasons and cross-Dag clear targets.',
           title: 'Exclude Internal Keys',
         }),
       limit: z
@@ -21261,6 +21687,334 @@ export const getApiV2DagsDagIdTasksTaskIdRoute = createRoute({
     400: {
       description: 'Bad Request',
       content: { 'application/json': { schema: HTTPExceptionResponseSchema } },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: HTTPExceptionResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: HTTPExceptionResponseSchema } },
+    },
+    404: {
+      description: 'Not Found',
+      content: { 'application/json': { schema: HTTPExceptionResponseSchema } },
+    },
+    422: {
+      description: 'Validation Error',
+      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
+    },
+  },
+  security: [{ OAuth2PasswordBearer: [] }, { HTTPBearer: [] }],
+})
+
+export const getApiV2TriggersRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/triggers',
+  tags: ['Trigger'],
+  summary: 'Get Triggers',
+  description:
+    'Get the triggers the caller can see, of every kind, and how each is doing.\n\nA trigger is visible to whoever can see what it is used by: the task instance or Dag run of its Dag, or\nan asset one of its watchers watches.',
+  operationId: 'get_triggers',
+  request: {
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0),
+        )
+        .default(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            required: false,
+            schema: { type: 'integer', minimum: 0, default: 50, title: 'Limit' },
+          },
+          title: 'Limit',
+        }),
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'offset',
+            in: 'query',
+            required: false,
+            schema: { type: 'integer', minimum: 0, default: 0, title: 'Offset' },
+          },
+          title: 'Offset',
+        }),
+      order_by: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .default(['id'])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'order_by',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'array',
+              items: { type: 'string' },
+              description:
+                'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, created_date, consecutive_failures, last_failed_at, last_event_at`',
+              default: ['id'],
+              title: 'Order By',
+            },
+            description:
+              'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, created_date, consecutive_failures, last_failed_at, last_event_at`',
+          },
+          description:
+            'Attributes to order by, multi criteria sort is supported. Prefix with `-` for descending order. Supported attributes: `id, created_date, consecutive_failures, last_failed_at, last_event_at`',
+          title: 'Order By',
+        }),
+      kind: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(TriggerKindSchema),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'kind',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/TriggerKind' },
+              description: 'Return only triggers of these kinds.',
+              title: 'Kind',
+            },
+            description: 'Return only triggers of these kinds.',
+          },
+          description: 'Return only triggers of these kinds.',
+          title: 'Kind',
+        }),
+      status: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(TriggerStatusSchema),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'status',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/TriggerStatus' },
+              description: 'Return only triggers with one of these statuses.',
+              title: 'Status',
+            },
+            description: 'Return only triggers with one of these statuses.',
+          },
+          description: 'Return only triggers with one of these statuses.',
+          title: 'Status',
+        }),
+      triggerer_hostname: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'triggerer_hostname',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description: 'Return only the triggers assigned to the triggerer on this host.',
+              title: 'Triggerer Hostname',
+            },
+            description: 'Return only the triggers assigned to the triggerer on this host.',
+          },
+          description: 'Return only the triggers assigned to the triggerer on this host.',
+          title: 'Triggerer Hostname',
+        }),
+      dag_id: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'dag_id',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description: "Return only the triggers of this Dag's task instances and callbacks.",
+              title: 'Dag Id',
+            },
+            description: "Return only the triggers of this Dag's task instances and callbacks.",
+          },
+          description: "Return only the triggers of this Dag's task instances and callbacks.",
+          title: 'Dag Id',
+        }),
+      asset_id: z
+        .preprocess(
+          (val) => (val === 'null' ? null : val),
+          z.preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.union([z.int(), z.null().nullable()]),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'asset_id',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'integer' }, { type: 'null' }],
+              description: "Return only the triggers of this asset's watchers.",
+              title: 'Asset Id',
+            },
+            description: "Return only the triggers of this asset's watchers.",
+          },
+          description: "Return only the triggers of this asset's watchers.",
+          title: 'Asset Id',
+        }),
+      scheduled_dag_id: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'scheduled_dag_id',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                'Return only the triggers of watchers on assets this Dag is scheduled on, directly or by an asset name or URI reference.',
+              title: 'Scheduled Dag Id',
+            },
+            description:
+              'Return only the triggers of watchers on assets this Dag is scheduled on, directly or by an asset name or URI reference.',
+          },
+          description:
+            'Return only the triggers of watchers on assets this Dag is scheduled on, directly or by an asset name or URI reference.',
+          title: 'Scheduled Dag Id',
+        }),
+      teams: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'teams',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Return only the triggers of these teams.',
+              title: 'Teams',
+            },
+            description: 'Return only the triggers of these teams.',
+          },
+          description: 'Return only the triggers of these teams.',
+          title: 'Teams',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful Response',
+      content: { 'application/json': { schema: TriggerCollectionResponseSchema } },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: HTTPExceptionResponseSchema } },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: HTTPExceptionResponseSchema } },
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: HTTPExceptionResponseSchema } },
+    },
+    422: {
+      description: 'Validation Error',
+      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
+    },
+  },
+  security: [{ OAuth2PasswordBearer: [] }, { HTTPBearer: [] }],
+})
+
+export const getApiV2TriggersTriggerIdRoute = createRoute({
+  method: 'get',
+  path: '/api/v2/triggers/{trigger_id}',
+  tags: ['Trigger'],
+  summary: 'Get Trigger',
+  description: 'Get a trigger, who it runs for, and how it is doing.',
+  operationId: 'get_trigger',
+  request: {
+    params: z.object({
+      trigger_id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            name: 'trigger_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', title: 'Trigger Id' },
+          },
+          title: 'Trigger Id',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful Response',
+      content: { 'application/json': { schema: TriggerDetailResponseSchema } },
     },
     401: {
       description: 'Unauthorized',

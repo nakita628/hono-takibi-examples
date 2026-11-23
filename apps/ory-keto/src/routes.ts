@@ -676,6 +676,7 @@ export const getRelationTuplesRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()

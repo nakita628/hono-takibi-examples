@@ -21,7 +21,7 @@ const BindDeviceToGatewayRequestSchema = z
   .openapi('BindDeviceToGatewayRequest')
 
 const BindDeviceToGatewayResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for `BindDeviceToGateway`.' })
   .openapi('BindDeviceToGatewayResponse')
 
@@ -533,7 +533,7 @@ const DeviceRegistrySchema = z
   .openapi('DeviceRegistry')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -689,7 +689,7 @@ const SendCommandToDeviceRequestSchema = z
   .openapi('SendCommandToDeviceRequest')
 
 const SendCommandToDeviceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for `SendCommandToDevice`.' })
   .openapi('SendCommandToDeviceResponse')
 
@@ -749,7 +749,7 @@ const UnbindDeviceFromGatewayRequestSchema = z
   .openapi('UnbindDeviceFromGatewayRequest')
 
 const UnbindDeviceFromGatewayResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for `UnbindDeviceFromGateway`.' })
   .openapi('UnbindDeviceFromGatewayResponse')
 

@@ -1,5 +1,1078 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CloudRunConfigSchema = z
+  .object({
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether Cloud Run addon is enabled for this cluster.' }),
+    loadBalancerType: z
+      .enum([
+        'LOAD_BALANCER_TYPE_UNSPECIFIED',
+        'LOAD_BALANCER_TYPE_EXTERNAL',
+        'LOAD_BALANCER_TYPE_INTERNAL',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Which load balancer type is installed for Cloud Run.' }),
+  })
+  .openapi({ description: 'Configuration options for the Cloud Run feature.', required: [] })
+  .openapi('CloudRunConfig')
+
+const ConfigConnectorConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether Cloud Connector is enabled for this cluster.' }),
+  })
+  .openapi({ description: 'Configuration options for the Config Connector add-on.', required: [] })
+  .openapi('ConfigConnectorConfig')
+
+const DnsCacheConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether NodeLocal DNSCache is enabled for this cluster.' }),
+  })
+  .openapi({ description: 'Configuration for NodeLocal DNSCache', required: [] })
+  .openapi('DnsCacheConfig')
+
+const GcePersistentDiskCsiDriverConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the Compute Engine PD CSI driver is enabled for this cluster.',
+      }),
+  })
+  .openapi({ description: 'Configuration for the Compute Engine PD CSI driver.', required: [] })
+  .openapi('GcePersistentDiskCsiDriverConfig')
+
+const GcpFilestoreCsiDriverConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the GCP Filestore CSI driver is enabled for this cluster.',
+      }),
+  })
+  .openapi({ description: 'Configuration for the GCP Filestore CSI driver.', required: [] })
+  .openapi('GcpFilestoreCsiDriverConfig')
+
+const GcsFuseCsiDriverConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the Cloud Storage Fuse CSI driver is enabled for this cluster.',
+      }),
+  })
+  .openapi({ description: 'Configuration for the Cloud Storage Fuse CSI driver.', required: [] })
+  .openapi('GcsFuseCsiDriverConfig')
+
+const GkeBackupAgentConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the Backup for GKE agent is enabled for this cluster.' }),
+  })
+  .openapi({ description: 'Configuration for the Backup for GKE Agent.', required: [] })
+  .openapi('GkeBackupAgentConfig')
+
+const HorizontalPodAutoscalingSchema = z
+  .object({
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the Horizontal Pod Autoscaling feature is enabled in the cluster. When enabled, it ensures that metrics are collected into Stackdriver Monitoring.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration options for the horizontal pod autoscaling feature, which increases or decreases the number of replica pods a replication controller has based on the resource usage of the existing pods.',
+    required: [],
+  })
+  .openapi('HorizontalPodAutoscaling')
+
+const HttpLoadBalancingSchema = z
+  .object({
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the HTTP Load Balancing controller is enabled in the cluster. When enabled, it runs a small pod in the cluster that manages the load balancers.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration options for the HTTP (L7) load balancing controller addon, which makes it easy to set up HTTP load balancers for services in a cluster.',
+    required: [],
+  })
+  .openapi('HttpLoadBalancing')
+
+const IstioConfigSchema = z
+  .object({
+    auth: z
+      .enum(['AUTH_NONE', 'AUTH_MUTUAL_TLS'])
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The specified Istio auth mode, either none, or mutual TLS.',
+      }),
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ deprecated: true, description: 'Whether Istio is enabled for this cluster.' }),
+  })
+  .openapi({ description: 'Configuration options for Istio addon.', required: [] })
+  .openapi('IstioConfig')
+
+const KalmConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ deprecated: true, description: 'Whether KALM is enabled for this cluster.' }),
+  })
+  .openapi({ description: 'Configuration options for the KALM addon.', required: [] })
+  .openapi('KalmConfig')
+
+const KubernetesDashboardSchema = z
+  .object({
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the Kubernetes Dashboard is enabled for this cluster.' }),
+  })
+  .openapi({ description: 'Configuration for the Kubernetes Dashboard.', required: [] })
+  .openapi('KubernetesDashboard')
+
+const NetworkPolicyConfigSchema = z
+  .object({
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether NetworkPolicy is enabled for this cluster.' }),
+  })
+  .openapi({
+    description:
+      'Configuration for NetworkPolicy. This only tracks whether the addon is enabled or not on the Master, it does not track whether network policy is enabled for the nodes.',
+    required: [],
+  })
+  .openapi('NetworkPolicyConfig')
+
+const StatefulHAConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the Stateful HA add-on is enabled for this cluster.' }),
+  })
+  .openapi({ description: 'Configuration for the Stateful HA add-on.', required: [] })
+  .openapi('StatefulHAConfig')
+
+const AddonsConfigSchema = z
+  .object({
+    cloudRunConfig: CloudRunConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration for the Cloud Run addon. The `IstioConfig` addon must be enabled in order to enable Cloud Run addon. This option can only be enabled at cluster creation time.',
+    }),
+    configConnectorConfig: ConfigConnectorConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration for the ConfigConnector add-on, a Kubernetes extension to manage hosted GCP services through the Kubernetes API',
+    }),
+    dnsCacheConfig: DnsCacheConfigSchema.exactOptional().openapi({
+      description: 'Configuration for NodeLocalDNS, a dns cache running on cluster nodes',
+    }),
+    gcePersistentDiskCsiDriverConfig:
+      GcePersistentDiskCsiDriverConfigSchema.exactOptional().openapi({
+        description: 'Configuration for the Compute Engine Persistent Disk CSI driver.',
+      }),
+    gcpFilestoreCsiDriverConfig: GcpFilestoreCsiDriverConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the GCP Filestore CSI driver.',
+    }),
+    gcsFuseCsiDriverConfig: GcsFuseCsiDriverConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the Cloud Storage Fuse CSI driver.',
+    }),
+    gkeBackupAgentConfig: GkeBackupAgentConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the Backup for GKE agent addon.',
+    }),
+    horizontalPodAutoscaling: HorizontalPodAutoscalingSchema.exactOptional().openapi({
+      description:
+        'Configuration for the horizontal pod autoscaling feature, which increases or decreases the number of replica pods a replication controller has based on the resource usage of the existing pods.',
+    }),
+    httpLoadBalancing: HttpLoadBalancingSchema.exactOptional().openapi({
+      description:
+        'Configuration for the HTTP (L7) load balancing controller addon, which makes it easy to set up HTTP load balancers for services in a cluster.',
+    }),
+    istioConfig: IstioConfigSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Configuration for Istio, an open platform to connect, manage, and secure microservices.',
+    }),
+    kalmConfig: KalmConfigSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Configuration for the KALM addon, which manages the lifecycle of k8s applications.',
+    }),
+    kubernetesDashboard: KubernetesDashboardSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Configuration for the Kubernetes Dashboard. This addon is deprecated, and will be disabled in 1.15. It is recommended to use the Cloud Console to manage and monitor your Kubernetes clusters, workloads and applications. For more information, see: https://cloud.google.com/kubernetes-engine/docs/concepts/dashboards',
+    }),
+    networkPolicyConfig: NetworkPolicyConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration for NetworkPolicy. This only tracks whether the addon is enabled or not on the Master, it does not track whether network policy is enabled for the nodes.',
+    }),
+    statefulHaConfig: StatefulHAConfigSchema.exactOptional().openapi({
+      description: 'Optional. Configuration for the StatefulHA add-on.',
+    }),
+  })
+  .openapi({
+    description:
+      'Configuration for the addons that can be automatically spun up in the cluster, enabling additional functionality.',
+    required: [],
+  })
+  .openapi('AddonsConfig')
+
+const AuthenticatorGroupsConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this cluster should return group membership lookups during authentication using a group of security groups.',
+      }),
+    securityGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the security group-of-groups to be used. Only relevant if enabled = true.',
+      }),
+  })
+  .openapi({
+    description: 'Configuration for returning group information from authenticators.',
+    required: [],
+  })
+  .openapi('AuthenticatorGroupsConfig')
+
+const AutopilotConversionStatusSchema = z
+  .object({
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'DONE'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The current state of the conversion.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'AutopilotConversionStatus represents conversion status.', required: [] })
+  .openapi('AutopilotConversionStatus')
+
+const WorkloadPolicyConfigSchema = z
+  .object({
+    allowNetAdmin: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, workloads can use NET_ADMIN capability.' }),
+  })
+  .openapi({
+    description:
+      'WorkloadPolicyConfig is the configuration of workload policy for autopilot clusters.',
+    required: [],
+  })
+  .openapi('WorkloadPolicyConfig')
+
+const AutopilotSchema = z
+  .object({
+    conversionStatus: AutopilotConversionStatusSchema.exactOptional().openapi({
+      description: 'Output only. ConversionStatus shows conversion status.',
+      readOnly: true,
+    }),
+    enabled: z.boolean().exactOptional().openapi({ description: 'Enable Autopilot' }),
+    workloadPolicyConfig: WorkloadPolicyConfigSchema.exactOptional().openapi({
+      description: 'Workload policy configuration for Autopilot.',
+    }),
+  })
+  .openapi({
+    description: 'Autopilot is the configuration for Autopilot settings on the cluster.',
+    required: [],
+  })
+  .openapi('Autopilot')
+
+const AutoUpgradeOptionsSchema = z
+  .object({
+    autoUpgradeStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Output only] This field is set when upgrades are about to commence with the approximate start time for the upgrades, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Output only] This field is set when upgrades are about to commence with the description of the upgrade.',
+      }),
+  })
+  .openapi({
+    description:
+      'AutoUpgradeOptions defines the set of options for the user to control how the Auto Upgrades will proceed.',
+    required: [],
+  })
+  .openapi('AutoUpgradeOptions')
+
+const NodeManagementSchema = z
+  .object({
+    autoRepair: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the nodes will be automatically repaired.' }),
+    autoUpgrade: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the nodes will be automatically upgraded.' }),
+    upgradeOptions: AutoUpgradeOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the Auto Upgrade knobs for the node pool.',
+    }),
+  })
+  .openapi({
+    description:
+      'NodeManagement defines the set of node management services turned on for the node pool.',
+    required: [],
+  })
+  .openapi('NodeManagement')
+
+const ShieldedInstanceConfigSchema = z
+  .object({
+    enableIntegrityMonitoring: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines whether the instance has integrity monitoring enabled. Enables monitoring and attestation of the boot integrity of the instance. The attestation is performed against the integrity policy baseline. This baseline is initially derived from the implicitly trusted boot image when the instance is created.',
+      }),
+    enableSecureBoot: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines whether the instance has Secure Boot enabled. Secure Boot helps ensure that the system only runs authentic software by verifying the digital signature of all boot components, and halting the boot process if signature verification fails.',
+      }),
+  })
+  .openapi({ description: 'A set of Shielded Instance options.', required: [] })
+  .openapi('ShieldedInstanceConfig')
+
+const AutoscaledRolloutPolicySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Autoscaled rollout policy uses cluster autoscaler during blue-green upgrades to scale both the green and blue pools.',
+  })
+  .openapi('AutoscaledRolloutPolicy')
+
+const StandardRolloutPolicySchema = z
+  .object({
+    batchNodeCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of blue nodes to drain in a batch.' }),
+    batchPercentage: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Percentage of the blue pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].',
+      }),
+    batchSoakDuration: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Soak time after each batch gets drained. Default to zero.' }),
+  })
+  .openapi({
+    description: 'Standard rollout policy is the default policy for blue-green.',
+    required: [],
+  })
+  .openapi('StandardRolloutPolicy')
+
+const BlueGreenSettingsSchema = z
+  .object({
+    autoscaledRolloutPolicy: AutoscaledRolloutPolicySchema.exactOptional().openapi({
+      description: 'Autoscaled policy for cluster autoscaler enabled blue-green upgrade.',
+    }),
+    nodePoolSoakDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.',
+      }),
+    standardRolloutPolicy: StandardRolloutPolicySchema.exactOptional().openapi({
+      description: 'Standard policy for the blue-green upgrade.',
+    }),
+  })
+  .openapi({ description: 'Settings for blue-green upgrade.', required: [] })
+  .openapi('BlueGreenSettings')
+
+const UpgradeSettingsSchema = z
+  .object({
+    blueGreenSettings: BlueGreenSettingsSchema.exactOptional().openapi({
+      description: 'Settings for blue-green upgrade strategy.',
+    }),
+    maxSurge: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of nodes that can be created beyond the current size of the node pool during the upgrade process.',
+      }),
+    maxUnavailable: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of nodes that can be simultaneously unavailable during the upgrade process. A node is considered available if its status is Ready.',
+      }),
+    strategy: z
+      .enum(['NODE_POOL_UPDATE_STRATEGY_UNSPECIFIED', 'BLUE_GREEN', 'SURGE'])
+      .exactOptional()
+      .openapi({ description: 'Update strategy of the node pool.' }),
+  })
+  .openapi({
+    description:
+      'These upgrade settings control the level of parallelism and the level of disruption caused by an upgrade. maxUnavailable controls the number of nodes that can be simultaneously unavailable. maxSurge controls the number of additional nodes that can be added to the node pool temporarily for the time of the upgrade to increase the number of available nodes. (maxUnavailable + maxSurge) determines the level of parallelism (how many nodes are being upgraded at the same time). Note: upgrades inevitably introduce some disruption since workloads need to be moved from old nodes to new, upgraded ones. Even if maxUnavailable=0, this holds true. (Disruption stays within the limits of PodDisruptionBudget, if it is configured.) Consider a hypothetical node pool with 5 nodes having maxSurge=2, maxUnavailable=1. This means the upgrade process upgrades 3 nodes simultaneously. It creates 2 additional (upgraded) nodes, then it brings down 3 old (not yet upgraded) nodes at the same time. This ensures that there are always at least 4 nodes available. These upgrade settings configure the upgrade strategy for the node pool. Use strategy to switch between the strategies applied to the node pool. If the strategy is SURGE, use max_surge and max_unavailable to control the level of parallelism and the level of disruption caused by upgrade. 1. maxSurge controls the number of additional nodes that can be added to the node pool temporarily for the time of the upgrade to increase the number of available nodes. 2. maxUnavailable controls the number of nodes that can be simultaneously unavailable. 3. (maxUnavailable + maxSurge) determines the level of parallelism (how many nodes are being upgraded at the same time). If the strategy is BLUE_GREEN, use blue_green_settings to configure the blue-green upgrade related settings. 1. standard_rollout_policy is the default policy. The policy is used to control the way blue pool gets drained. The draining is executed in the batch mode. The batch size could be specified as either percentage of the node pool size or the number of nodes. batch_soak_duration is the soak time after each batch gets drained. 2. node_pool_soak_duration is the soak time after all blue nodes are drained. After this period, the blue pool nodes will be deleted.',
+    required: [],
+  })
+  .openapi('UpgradeSettings')
+
+const AutoprovisioningNodePoolDefaultsSchema = z
+  .object({
+    bootDiskKmsKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          ' The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool. This should be of the form projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]. For more information about protecting resources with Cloud KMS Keys please see: https://cloud.google.com/compute/docs/disks/customer-managed-encryption',
+      }),
+    diskSizeGb: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Size of the disk attached to each node, specified in GB. The smallest allowed disk size is 10GB. If unspecified, the default disk size is 100GB.',
+      }),
+    diskType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Type of the disk attached to each node (e.g. 'pd-standard', 'pd-ssd' or 'pd-balanced') If unspecified, the default disk type is 'pd-standard'",
+      }),
+    imageType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The image type to use for NAP created node. Please see https://cloud.google.com/kubernetes-engine/docs/concepts/node-images for available image types.',
+      }),
+    insecureKubeletReadonlyPortEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enable or disable Kubelet read only port.' }),
+    management: NodeManagementSchema.exactOptional().openapi({
+      description: 'NodeManagement configuration for this NodePool.',
+    }),
+    minCpuPlatform: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Deprecated. Minimum CPU platform to be used for NAP created node pools. The instance may be scheduled on the specified or newer CPU platform. Applicable values are the friendly names of CPU platforms, such as minCpuPlatform: Intel Haswell or minCpuPlatform: Intel Sandy Bridge. For more information, read [how to specify min CPU platform](https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform). This field is deprecated, min_cpu_platform should be specified using `cloud.google.com/requested-min-cpu-platform` label selector on the pod. To unset the min cpu platform field pass "automatic" as field value.',
+      }),
+    oauthScopes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The set of Google API scopes to be made available on all of the node VMs under the "default" service account. The following scopes are recommended, but not required, and by default are not included: * `https://www.googleapis.com/auth/compute` is required for mounting persistent storage on your nodes. * `https://www.googleapis.com/auth/devstorage.read_only` is required for communicating with **gcr.io** (the [Google Container Registry](https://cloud.google.com/container-registry/)). If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring are enabled, in which case their required scopes will be added.',
+      }),
+    serviceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Google Cloud Platform Service Account to be used by the node VMs. Specify the email address of the Service Account; otherwise, if no Service Account is specified, the "default" service account is used.',
+      }),
+    shieldedInstanceConfig: ShieldedInstanceConfigSchema.exactOptional().openapi({
+      description: 'Shielded Instance options.',
+    }),
+    upgradeSettings: UpgradeSettingsSchema.exactOptional().openapi({
+      description: 'Upgrade settings control disruption and speed of the upgrade.',
+    }),
+  })
+  .openapi({
+    description:
+      'AutoprovisioningNodePoolDefaults contains defaults for a node pool created by NAP.',
+    required: [],
+  })
+  .openapi('AutoprovisioningNodePoolDefaults')
+
+const ResourceLimitSchema = z
+  .object({
+    maximum: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Maximum amount of the resource in the cluster.' }),
+    minimum: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Minimum amount of the resource in the cluster.' }),
+    resourceType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Resource name "cpu", "memory" or gpu-specific string.' }),
+  })
+  .openapi({
+    description:
+      'Contains information about amount of some resource in the cluster. For memory, value should be in GB.',
+    required: [],
+  })
+  .openapi('ResourceLimit')
+
+const ClusterAutoscalingSchema = z
+  .object({
+    autoprovisioningLocations: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The list of Google Compute Engine [zones](https://cloud.google.com/compute/docs/zones#available) in which the NodePool's nodes can be created by NAP.",
+      }),
+    autoprovisioningNodePoolDefaults:
+      AutoprovisioningNodePoolDefaultsSchema.exactOptional().openapi({
+        description:
+          'AutoprovisioningNodePoolDefaults contains defaults for a node pool created by NAP.',
+      }),
+    autoscalingProfile: z
+      .enum(['PROFILE_UNSPECIFIED', 'OPTIMIZE_UTILIZATION', 'BALANCED'])
+      .exactOptional()
+      .openapi({ description: 'Defines autoscaling behaviour.' }),
+    enableNodeAutoprovisioning: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enables automatic node pool creation and deletion.' }),
+    resourceLimits: z
+      .array(ResourceLimitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains global constraints regarding minimum and maximum amount of resources in the cluster.',
+      }),
+  })
+  .openapi({
+    description:
+      'ClusterAutoscaling contains global, per-cluster information required by Cluster Autoscaler to automatically adjust the size of the cluster and create/delete node pools based on the current needs.',
+    required: [],
+  })
+  .openapi('ClusterAutoscaling')
+
+const PolicyBindingSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The relative resource name of the binauthz platform policy to audit. GKE platform policies have the following format: `projects/{project_number}/platforms/gke/policies/{policy_id}`.',
+      }),
+  })
+  .openapi({ description: 'Binauthz policy that applies to this cluster.', required: [] })
+  .openapi('PolicyBinding')
+
+const BinaryAuthorizationSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'This field is deprecated. Leave this unset and instead configure BinaryAuthorization using evaluation_mode. If evaluation_mode is set to anything other than EVALUATION_MODE_UNSPECIFIED, this field is ignored.',
+      }),
+    evaluationMode: z
+      .enum([
+        'EVALUATION_MODE_UNSPECIFIED',
+        'DISABLED',
+        'PROJECT_SINGLETON_POLICY_ENFORCE',
+        'POLICY_BINDINGS',
+        'POLICY_BINDINGS_AND_PROJECT_SINGLETON_POLICY_ENFORCE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Mode of operation for binauthz policy evaluation. If unspecified, defaults to DISABLED.',
+      }),
+    policyBindings: z
+      .array(PolicyBindingSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional. Binauthz policies that apply to this cluster.' }),
+  })
+  .openapi({ description: 'Configuration for Binary Authorization.', required: [] })
+  .openapi('BinaryAuthorization')
+
+const ClusterTelemetrySchema = z
+  .object({
+    type: z
+      .enum(['UNSPECIFIED', 'DISABLED', 'ENABLED', 'SYSTEM_ONLY'])
+      .exactOptional()
+      .openapi({ description: 'Type of the integration.' }),
+  })
+  .openapi({ description: 'Telemetry integration for the cluster.', required: [] })
+  .openapi('ClusterTelemetry')
+
+const StatusConditionSchema = z
+  .object({
+    canonicalCode: z
+      .enum([
+        'OK',
+        'CANCELLED',
+        'UNKNOWN',
+        'INVALID_ARGUMENT',
+        'DEADLINE_EXCEEDED',
+        'NOT_FOUND',
+        'ALREADY_EXISTS',
+        'PERMISSION_DENIED',
+        'UNAUTHENTICATED',
+        'RESOURCE_EXHAUSTED',
+        'FAILED_PRECONDITION',
+        'ABORTED',
+        'OUT_OF_RANGE',
+        'UNIMPLEMENTED',
+        'INTERNAL',
+        'UNAVAILABLE',
+        'DATA_LOSS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Canonical code of the condition.' }),
+    code: z
+      .enum([
+        'UNKNOWN',
+        'GCE_STOCKOUT',
+        'GKE_SERVICE_ACCOUNT_DELETED',
+        'GCE_QUOTA_EXCEEDED',
+        'SET_BY_OPERATOR',
+        'CLOUD_KMS_KEY_ERROR',
+        'CA_EXPIRING',
+      ])
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Machine-friendly representation of the condition Deprecated. Use canonical_code instead.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Human-friendly representation of the condition' }),
+  })
+  .openapi({
+    description:
+      'StatusCondition describes why a cluster or a node pool has a certain status (e.g., ERROR or DEGRADED).',
+    required: [],
+  })
+  .openapi('StatusCondition')
+
+const ConfidentialNodesSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether Confidential Nodes feature is enabled.' }),
+  })
+  .openapi({
+    description:
+      'ConfidentialNodes is configuration for the confidential nodes feature, which makes nodes run on confidential VMs.',
+    required: [],
+  })
+  .openapi('ConfidentialNodes')
+
+const CostManagementConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the feature is enabled or not.' }),
+  })
+  .openapi({ description: 'Configuration for fine-grained cost management feature.', required: [] })
+  .openapi('CostManagementConfig')
+
+const DatabaseEncryptionSchema = z
+  .object({
+    keyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of CloudKMS key to use for the encryption of secrets in etcd. Ex. projects/my-project/locations/global/keyRings/my-ring/cryptoKeys/my-key',
+      }),
+    state: z
+      .enum(['UNKNOWN', 'ENCRYPTED', 'DECRYPTED'])
+      .exactOptional()
+      .openapi({ description: 'The desired state of etcd encryption.' }),
+  })
+  .openapi({ description: 'Configuration of etcd encryption.', required: [] })
+  .openapi('DatabaseEncryption')
+
+const MaxPodsConstraintSchema = z
+  .object({
+    maxPodsPerNode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Constraint enforced on the max num of pods per node.' }),
+  })
+  .openapi({ description: 'Constraints applied to pods.', required: [] })
+  .openapi('MaxPodsConstraint')
+
+const K8sBetaAPIConfigSchema = z
+  .object({
+    enabledApis: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'api name, e.g. storage.k8s.io/v1beta1/csistoragecapacities.' }),
+  })
+  .openapi({
+    description: 'Kubernetes open source beta apis enabled on the cluster.',
+    required: [],
+  })
+  .openapi('K8sBetaAPIConfig')
+
+const EnterpriseConfigSchema = z
+  .object({
+    clusterTier: z
+      .enum(['CLUSTER_TIER_UNSPECIFIED', 'STANDARD', 'ENTERPRISE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. [Output only] cluster_tier specifies the premium tier of the cluster.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'EnterpriseConfig is the cluster enterprise configuration.',
+    required: [],
+  })
+  .openapi('EnterpriseConfig')
+
+const FleetSchema = z
+  .object({
+    membership: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Output only] The full resource name of the registered fleet membership of the cluster, in the format `//gkehub.googleapis.com/projects/*/locations/*/memberships/*`.',
+      }),
+    preRegistered: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: '[Output only] Whether the cluster has been registered through the fleet API.',
+      }),
+    project: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Fleet host project(project ID or project number) where this cluster will be registered to. This field cannot be changed after the cluster has been registered.',
+      }),
+  })
+  .openapi({ description: 'Fleet is the fleet configuration for the cluster.', required: [] })
+  .openapi('Fleet')
+
+const IdentityServiceConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to enable the Identity Service component' }),
+  })
+  .openapi({
+    description:
+      'IdentityServiceConfig is configuration for Identity Service which allows customers to use external identity providers with the K8S API',
+    required: [],
+  })
+  .openapi('IdentityServiceConfig')
+
+const RangeInfoSchema = z
+  .object({
+    rangeName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. [Output only] Name of a range.', readOnly: true }),
+    utilization: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. [Output only] The utilization of the range.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'RangeInfo contains the range name and the range utilization by this cluster.',
+    required: [],
+  })
+  .openapi('RangeInfo')
+
+const AdditionalPodRangesConfigSchema = z
+  .object({
+    podRangeInfo: z
+      .array(RangeInfoSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. [Output only] Information for additional pod range.',
+        readOnly: true,
+      }),
+    podRangeNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Name for pod secondary ipv4 range which has the actual range defined ahead.',
+      }),
+  })
+  .openapi({
+    description:
+      'AdditionalPodRangesConfig is the configuration for additional pod secondary ranges supporting the ClusterUpdate message.',
+    required: [],
+  })
+  .openapi('AdditionalPodRangesConfig')
+
+const PodCIDROverprovisionConfigSchema = z
+  .object({
+    disable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether Pod CIDR overprovisioning is disabled. Note: Pod CIDR overprovisioning is enabled by default.',
+      }),
+  })
+  .openapi({
+    description: '[PRIVATE FIELD] Config for pod CIDR size overprovisioning.',
+    required: [],
+  })
+  .openapi('PodCIDROverprovisionConfig')
+
+const IPAllocationPolicySchema = z
+  .object({
+    additionalPodRangesConfig: AdditionalPodRangesConfigSchema.exactOptional().openapi({
+      description:
+        'Output only. [Output only] The additional pod ranges that are added to the cluster. These pod ranges can be used by new node pools to allocate pod IPs automatically. Once the range is removed it will not show up in IPAllocationPolicy.',
+      readOnly: true,
+    }),
+    allowRouteOverlap: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, allow allocation of cluster CIDR ranges that overlap with certain kinds of network routes. By default we do not allow cluster CIDR ranges to intersect with any user declared routes. With allow_route_overlap == true, we allow overlapping with CIDR ranges that are larger than the cluster CIDR range. If this field is set to true, then cluster and services CIDRs must be fully-specified (e.g. `10.96.0.0/14`, but not `/14`), which means: 1) When `use_ip_aliases` is true, `cluster_ipv4_cidr_block` and `services_ipv4_cidr_block` must be fully-specified. 2) When `use_ip_aliases` is false, `cluster.cluster_ipv4_cidr` muse be fully-specified.',
+      }),
+    clusterIpv4Cidr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'This field is deprecated, use cluster_ipv4_cidr_block.',
+      }),
+    clusterIpv4CidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IP address range for the cluster pod IPs. If this field is set, then `cluster.cluster_ipv4_cidr` must be left blank. This field is only applicable when `use_ip_aliases` is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g. `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range to use.',
+      }),
+    clusterSecondaryRangeName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the secondary range to be used for the cluster CIDR block. The secondary range will be used for pod IP addresses. This must be an existing secondary range associated with the cluster subnetwork. This field is only applicable with use_ip_aliases and create_subnetwork is false.',
+      }),
+    createSubnetwork: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether a new subnetwork will be created automatically for the cluster. This field is only applicable when `use_ip_aliases` is true.',
+      }),
+    defaultPodIpv4RangeUtilization: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. [Output only] The utilization of the cluster default IPv4 range for the pod. The ratio is Usage/[Total number of IPs in the secondary range], Usage=numNodes*numZones*podIPsPerNode.',
+        readOnly: true,
+      }),
+    ipv6AccessType: z
+      .enum(['IPV6_ACCESS_TYPE_UNSPECIFIED', 'INTERNAL', 'EXTERNAL'])
+      .exactOptional()
+      .openapi({
+        description: 'The ipv6 access type (internal or external) when create_subnetwork is true',
+      }),
+    nodeIpv4Cidr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'This field is deprecated, use node_ipv4_cidr_block.',
+      }),
+    nodeIpv4CidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IP address range of the instance IPs in this cluster. This is applicable only if `create_subnetwork` is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g. `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range to use.',
+      }),
+    podCidrOverprovisionConfig: PodCIDROverprovisionConfigSchema.exactOptional().openapi({
+      description:
+        '[PRIVATE FIELD] Pod CIDR size overprovisioning config for the cluster. Pod CIDR size per node depends on max_pods_per_node. By default, the value of max_pods_per_node is doubled and then rounded off to next power of 2 to get the size of pod CIDR block per node. Example: max_pods_per_node of 30 would result in 64 IPs (/26). This config can disable the doubling of IPs (we still round off to next power of 2) Example: max_pods_per_node of 30 will result in 32 IPs (/27) when overprovisioning is disabled.',
+    }),
+    servicesIpv4Cidr: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'This field is deprecated, use services_ipv4_cidr_block.',
+      }),
+    servicesIpv4CidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IP address range of the services IPs in this cluster. If blank, a range will be automatically chosen with the default size. This field is only applicable when `use_ip_aliases` is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g. `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range to use.',
+      }),
+    servicesIpv6CidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. [Output only] The services IPv6 CIDR block for the cluster.',
+        readOnly: true,
+      }),
+    servicesSecondaryRangeName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the secondary range to be used as for the services CIDR block. The secondary range will be used for service ClusterIPs. This must be an existing secondary range associated with the cluster subnetwork. This field is only applicable with use_ip_aliases and create_subnetwork is false.',
+      }),
+    stackType: z
+      .enum(['STACK_TYPE_UNSPECIFIED', 'IPV4', 'IPV4_IPV6'])
+      .exactOptional()
+      .openapi({ description: 'IP stack type' }),
+    subnetIpv6CidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. [Output only] The subnet's IPv6 CIDR block used by nodes and pods.",
+        readOnly: true,
+      }),
+    subnetworkName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A custom subnetwork name to be used if `create_subnetwork` is true. If this field is empty, then an automatic name will be chosen for the new subnetwork.',
+      }),
+    tpuIpv4CidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IP address range of the Cloud TPUs in this cluster. If unspecified, a range will be automatically chosen with the default size. This field is only applicable when `use_ip_aliases` is true. If unspecified, the range will use the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g. `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range to use. This field is deprecated, use cluster.tpu_config.ipv4_cidr_block instead.',
+      }),
+    useIpAliases: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether alias IPs will be used for pod IPs in the cluster. This is used in conjunction with use_routes. It cannot be true if use_routes is true. If both use_ip_aliases and use_routes are false, then the server picks the default IP allocation mode',
+      }),
+    useRoutes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether routes will be used for pod IPs in the cluster. This is used in conjunction with use_ip_aliases. It cannot be true if use_ip_aliases is true. If both use_ip_aliases and use_routes are false, then the server picks the default IP allocation mode',
+      }),
+  })
+  .openapi({
+    description: 'Configuration for controlling how IPs are allocated in the cluster.',
+    required: [],
+  })
+  .openapi('IPAllocationPolicy')
+
+const LegacyAbacSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the ABAC authorizer is enabled for this cluster. When enabled, identities in the system, including service accounts, nodes, and controllers, will have statically granted permissions beyond those provided by the RBAC configuration or IAM.',
+      }),
+  })
+  .openapi({
+    description: 'Configuration for the legacy Attribute Based Access Control authorization mode.',
+    required: [],
+  })
+  .openapi('LegacyAbac')
+
+const LoggingComponentConfigSchema = z
+  .object({
+    enableComponents: z
+      .array(
+        z.enum([
+          'COMPONENT_UNSPECIFIED',
+          'SYSTEM_COMPONENTS',
+          'WORKLOADS',
+          'APISERVER',
+          'SCHEDULER',
+          'CONTROLLER_MANAGER',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Select components to collect logs. An empty set would disable all logging.',
+      }),
+  })
+  .openapi({
+    description: 'LoggingComponentConfig is cluster logging component configuration.',
+    required: [],
+  })
+  .openapi('LoggingComponentConfig')
+
+const LoggingConfigSchema = z
+  .object({
+    componentConfig: LoggingComponentConfigSchema.exactOptional().openapi({
+      description: 'Logging components configuration',
+    }),
+  })
+  .openapi({ description: 'LoggingConfig is cluster logging configuration.', required: [] })
+  .openapi('LoggingConfig')
+
 const DailyMaintenanceWindowSchema = z
   .object({
     duration: z
@@ -69,11 +1142,438 @@ const RecurringTimeWindowSchema = z
   .openapi({ description: 'Represents an arbitrary window of time that recurs.', required: [] })
   .openapi('RecurringTimeWindow')
 
-type MaintenanceWindowType = {
-  dailyMaintenanceWindow?: z.infer<typeof DailyMaintenanceWindowSchema>
-  maintenanceExclusions?: { [key: string]: z.infer<typeof TimeWindowSchema> }
-  recurringWindow?: z.infer<typeof RecurringTimeWindowSchema>
-}
+const MaintenanceWindowSchema = z
+  .object({
+    dailyMaintenanceWindow: DailyMaintenanceWindowSchema.exactOptional().openapi({
+      description: 'DailyMaintenanceWindow specifies a daily maintenance operation window.',
+    }),
+    maintenanceExclusions: z
+      .record(z.string(), TimeWindowSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Exceptions to maintenance window. Non-emergency maintenance should not occur in these windows.',
+      }),
+    recurringWindow: RecurringTimeWindowSchema.exactOptional().openapi({
+      description:
+        'RecurringWindow specifies some number of recurring time periods for maintenance to occur. The time windows may be overlapping. If no maintenance windows are set, maintenance can occur at any time.',
+    }),
+  })
+  .openapi({
+    description: 'MaintenanceWindow defines the maintenance window to be used for the cluster.',
+    required: [],
+  })
+  .openapi('MaintenanceWindow')
+
+const MaintenancePolicySchema = z
+  .object({
+    resourceVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A hash identifying the version of this policy, so that updates to fields of the policy won't accidentally undo intermediate changes (and so that users of the API unaware of some fields won't accidentally remove other fields). Make a `get()` request to the cluster to get the current resource version and include it with requests to set the policy.",
+      }),
+    window: MaintenanceWindowSchema.exactOptional().openapi({
+      description: 'Specifies the maintenance window in which maintenance may be performed.',
+    }),
+  })
+  .openapi({
+    description: 'MaintenancePolicy defines the maintenance policy to be used for the cluster.',
+    required: [],
+  })
+  .openapi('MaintenancePolicy')
+
+const MasterSchema = z
+  .looseObject({})
+  .openapi({ description: 'Master is the configuration for components on master.' })
+  .openapi('Master')
+
+const ClientCertificateConfigSchema = z
+  .object({
+    issueClientCertificate: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Issue a client certificate.' }),
+  })
+  .openapi({ description: 'Configuration for client certificates on the cluster.', required: [] })
+  .openapi('ClientCertificateConfig')
+
+const MasterAuthSchema = z
+  .object({
+    clientCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Output only] Base64-encoded public certificate used by clients to authenticate to the cluster endpoint.',
+      }),
+    clientCertificateConfig: ClientCertificateConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration for client certificate authentication on the cluster. For clusters before v1.12, if no configuration is specified, a client certificate is issued.',
+    }),
+    clientKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[Output only] Base64-encoded private key used by clients to authenticate to the cluster endpoint.',
+      }),
+    clusterCaCertificate: z.string().exactOptional(),
+    password: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The password to use for HTTP basic authentication to the master endpoint. Because the master endpoint is open to the Internet, you should create a strong password. If a password is provided for cluster creation, username must be non-empty. Warning: basic authentication is deprecated, and will be removed in GKE control plane versions 1.19 and newer. For a list of recommended authentication methods, see: https://cloud.google.com/kubernetes-engine/docs/how-to/api-server-authentication',
+      }),
+    username: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'The username to use for HTTP basic authentication to the master endpoint. For clusters v1.6.0 and later, basic authentication can be disabled by leaving username unspecified (or setting it to the empty string). Warning: basic authentication is deprecated, and will be removed in GKE control plane versions 1.19 and newer. For a list of recommended authentication methods, see: https://cloud.google.com/kubernetes-engine/docs/how-to/api-server-authentication',
+      }),
+  })
+  .openapi({
+    description:
+      'The authentication information for accessing the master endpoint. Authentication can be done using HTTP basic auth or using client certificates.',
+    required: [],
+  })
+  .openapi('MasterAuth')
+
+const CidrBlockSchema = z
+  .object({
+    cidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'cidr_block must be specified in CIDR notation.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'display_name is an optional field for users to identify CIDR blocks.',
+      }),
+  })
+  .openapi({ description: 'CidrBlock contains an optional name and one CIDR block.', required: [] })
+  .openapi('CidrBlock')
+
+const MasterAuthorizedNetworksConfigSchema = z
+  .object({
+    cidrBlocks: z
+      .array(CidrBlockSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'cidr_blocks define up to 10 external networks that could access Kubernetes master through HTTPS.',
+      }),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not master authorized networks is enabled.' }),
+    gcpPublicCidrsAccessEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether master is accessbile via Google Compute Engine Public IP addresses.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration options for the master authorized networks feature. Enabled master authorized networks will disallow all external traffic to access Kubernetes master through HTTPS except traffic from the given CIDR blocks, Google Compute Engine Public IPs and Google Prod IPs.',
+    required: [],
+  })
+  .openapi('MasterAuthorizedNetworksConfig')
+
+const MeshCertificatesSchema = z
+  .object({
+    enableCertificates: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'enable_certificates controls issuance of workload mTLS certificates. If set, the GKE Workload Identity Certificates controller and node agent will be deployed in the cluster, which can then be configured by creating a WorkloadCertificateConfig Custom Resource. Requires Workload Identity (workload_pool must be non-empty).',
+      }),
+  })
+  .openapi({
+    description: 'Configuration for issuance of mTLS keys and certificates to Kubernetes pods.',
+    required: [],
+  })
+  .openapi('MeshCertificates')
+
+const AdvancedDatapathObservabilityConfigSchema = z
+  .object({
+    enableMetrics: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Expose flow metrics on nodes' }),
+    enableRelay: z.boolean().exactOptional().openapi({ description: 'Enable Relay component' }),
+    relayMode: z
+      .enum(['RELAY_MODE_UNSPECIFIED', 'DISABLED', 'INTERNAL_VPC_LB', 'EXTERNAL_LB'])
+      .exactOptional()
+      .openapi({ description: 'Method used to make Relay available' }),
+  })
+  .openapi({
+    description:
+      'AdvancedDatapathObservabilityConfig specifies configuration of observability features of advanced datapath.',
+    required: [],
+  })
+  .openapi('AdvancedDatapathObservabilityConfig')
+
+const MonitoringComponentConfigSchema = z
+  .object({
+    enableComponents: z
+      .array(
+        z
+          .enum([
+            'COMPONENT_UNSPECIFIED',
+            'SYSTEM_COMPONENTS',
+            'WORKLOADS',
+            'APISERVER',
+            'SCHEDULER',
+            'CONTROLLER_MANAGER',
+            'STORAGE',
+            'HPA',
+            'POD',
+            'DAEMONSET',
+            'DEPLOYMENT',
+            'STATEFULSET',
+          ])
+          .openapi({
+            'x-enumDeprecated': [
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+            ],
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Select components to collect metrics. An empty set would disable all monitoring.',
+      }),
+  })
+  .openapi({
+    description: 'MonitoringComponentConfig is cluster monitoring component configuration.',
+    required: [],
+  })
+  .openapi('MonitoringComponentConfig')
+
+const ManagedPrometheusConfigSchema = z
+  .object({
+    enabled: z.boolean().exactOptional().openapi({ description: 'Enable Managed Collection.' }),
+  })
+  .openapi({
+    description:
+      'ManagedPrometheusConfig defines the configuration for Google Cloud Managed Service for Prometheus.',
+    required: [],
+  })
+  .openapi('ManagedPrometheusConfig')
+
+const MonitoringConfigSchema = z
+  .object({
+    advancedDatapathObservabilityConfig:
+      AdvancedDatapathObservabilityConfigSchema.exactOptional().openapi({
+        description: 'Configuration of Advanced Datapath Observability features.',
+      }),
+    componentConfig: MonitoringComponentConfigSchema.exactOptional().openapi({
+      description: 'Monitoring components configuration',
+    }),
+    managedPrometheusConfig: ManagedPrometheusConfigSchema.exactOptional().openapi({
+      description: 'Enable Google Cloud Managed Service for Prometheus in the cluster.',
+    }),
+  })
+  .openapi({ description: 'MonitoringConfig is cluster monitoring configuration.', required: [] })
+  .openapi('MonitoringConfig')
+
+const DefaultSnatStatusSchema = z
+  .object({
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Disables cluster default sNAT rules.' }),
+  })
+  .openapi({
+    description:
+      'DefaultSnatStatus contains the desired state of whether default sNAT should be disabled on the cluster.',
+    required: [],
+  })
+  .openapi('DefaultSnatStatus')
+
+const DNSConfigSchema = z
+  .object({
+    clusterDns: z
+      .enum(['PROVIDER_UNSPECIFIED', 'PLATFORM_DEFAULT', 'CLOUD_DNS', 'KUBE_DNS'])
+      .exactOptional()
+      .openapi({
+        description: 'cluster_dns indicates which in-cluster DNS provider should be used.',
+      }),
+    clusterDnsDomain: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'cluster_dns_domain is the suffix used for all cluster service records.',
+      }),
+    clusterDnsScope: z
+      .enum(['DNS_SCOPE_UNSPECIFIED', 'CLUSTER_SCOPE', 'VPC_SCOPE'])
+      .exactOptional()
+      .openapi({
+        description: 'cluster_dns_scope indicates the scope of access to cluster DNS records.',
+      }),
+  })
+  .openapi({
+    description: 'DNSConfig contains the desired set of options for configuring clusterDNS.',
+    required: [],
+  })
+  .openapi('DNSConfig')
+
+const GatewayAPIConfigSchema = z
+  .object({
+    channel: z
+      .enum(['CHANNEL_UNSPECIFIED', 'CHANNEL_DISABLED', 'CHANNEL_EXPERIMENTAL', 'CHANNEL_STANDARD'])
+      .exactOptional()
+      .openapi({ description: 'The Gateway API release channel to use for Gateway API.' }),
+  })
+  .openapi({
+    description: 'GatewayAPIConfig contains the desired config of Gateway API on this cluster.',
+    required: [],
+  })
+  .openapi('GatewayAPIConfig')
+
+const ClusterNetworkPerformanceConfigSchema = z
+  .object({
+    totalEgressBandwidthTier: z
+      .enum(['TIER_UNSPECIFIED', 'TIER_1'])
+      .exactOptional()
+      .openapi({ description: 'Specifies the total network bandwidth tier for the NodePool.' }),
+  })
+  .openapi({ description: 'Configuration of all network bandwidth tiers', required: [] })
+  .openapi('ClusterNetworkPerformanceConfig')
+
+const ServiceExternalIPsConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether Services with ExternalIPs field are allowed or not.' }),
+  })
+  .openapi({ description: 'Config to block services with externalIPs field.', required: [] })
+  .openapi('ServiceExternalIPsConfig')
+
+const NetworkConfigSchema = z
+  .object({
+    datapathProvider: z
+      .enum(['DATAPATH_PROVIDER_UNSPECIFIED', 'LEGACY_DATAPATH', 'ADVANCED_DATAPATH'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The desired datapath provider for this cluster. By default, uses the IPTables-based kube-proxy implementation.',
+      }),
+    defaultSnatStatus: DefaultSnatStatusSchema.exactOptional().openapi({
+      description:
+        'Whether the cluster disables default in-node sNAT rules. In-node sNAT rules will be disabled when default_snat_status is disabled. When disabled is set to false, default IP masquerade rules will be applied to the nodes to prevent sNAT on cluster internal traffic.',
+    }),
+    dnsConfig: DNSConfigSchema.exactOptional().openapi({
+      description: 'DNSConfig contains clusterDNS config for this cluster.',
+    }),
+    enableFqdnNetworkPolicy: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether FQDN Network Policy is enabled on this cluster.' }),
+    enableIntraNodeVisibility: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether Intra-node visibility is enabled for this cluster. This makes same node pod to pod traffic visible for VPC network.',
+      }),
+    enableL4ilbSubsetting: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether L4ILB Subsetting is enabled for this cluster.' }),
+    enableMultiNetworking: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether multi-networking is enabled for this cluster.' }),
+    gatewayApiConfig: GatewayAPIConfigSchema.exactOptional().openapi({
+      description: 'GatewayAPIConfig contains the desired config of Gateway API on this cluster.',
+    }),
+    inTransitEncryptionConfig: z
+      .enum([
+        'IN_TRANSIT_ENCRYPTION_CONFIG_UNSPECIFIED',
+        'IN_TRANSIT_ENCRYPTION_DISABLED',
+        'IN_TRANSIT_ENCRYPTION_INTER_NODE_TRANSPARENT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Specify the details of in-transit encryption.' }),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The relative name of the Google Compute Engine network(https://cloud.google.com/compute/docs/networks-and-firewalls#networks) to which the cluster is connected. Example: projects/my-project/global/networks/my-network',
+      }),
+    networkPerformanceConfig: ClusterNetworkPerformanceConfigSchema.exactOptional().openapi({
+      description: 'Network bandwidth tier configuration.',
+    }),
+    privateIpv6GoogleAccess: z
+      .enum([
+        'PRIVATE_IPV6_GOOGLE_ACCESS_UNSPECIFIED',
+        'PRIVATE_IPV6_GOOGLE_ACCESS_DISABLED',
+        'PRIVATE_IPV6_GOOGLE_ACCESS_TO_GOOGLE',
+        'PRIVATE_IPV6_GOOGLE_ACCESS_BIDIRECTIONAL',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The desired state of IPv6 connectivity to Google Services. By default, no private IPv6 access to or from Google Services (all access will be via IPv4)',
+      }),
+    serviceExternalIpsConfig: ServiceExternalIPsConfigSchema.exactOptional().openapi({
+      description:
+        'ServiceExternalIPsConfig specifies if services with externalIPs field are blocked or not.',
+    }),
+    subnetwork: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The relative name of the Google Compute Engine [subnetwork](https://cloud.google.com/compute/docs/vpc) to which the cluster is connected. Example: projects/my-project/regions/us-central1/subnetworks/my-subnet',
+      }),
+  })
+  .openapi({
+    description: 'NetworkConfig reports the relative names of network & subnetwork.',
+    required: [],
+  })
+  .openapi('NetworkConfig')
+
+const NetworkPolicySchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether network policy is enabled on the cluster.' }),
+    provider: z
+      .enum(['PROVIDER_UNSPECIFIED', 'CALICO'])
+      .exactOptional()
+      .openapi({ description: 'The selected network policy provider.' }),
+  })
+  .openapi({
+    description:
+      'Configuration options for the NetworkPolicy feature. https://kubernetes.io/docs/concepts/services-networking/networkpolicies/',
+    required: [],
+  })
+  .openapi('NetworkPolicy')
 
 const GPUDriverInstallationConfigSchema = z
   .object({
@@ -162,20 +1662,6 @@ const AdvancedMachineFeaturesSchema = z
     required: [],
   })
   .openapi('AdvancedMachineFeatures')
-
-const ConfidentialNodesSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether Confidential Nodes feature is enabled.' }),
-  })
-  .openapi({
-    description:
-      'ConfidentialNodes is configuration for the confidential nodes feature, which makes nodes run on confidential VMs.',
-    required: [],
-  })
-  .openapi('ConfidentialNodes')
 
 const EphemeralStorageConfigSchema = z
   .object({
@@ -464,26 +1950,6 @@ const SecondaryBootDiskSchema = z
   })
   .openapi('SecondaryBootDisk')
 
-const ShieldedInstanceConfigSchema = z
-  .object({
-    enableIntegrityMonitoring: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines whether the instance has integrity monitoring enabled. Enables monitoring and attestation of the boot integrity of the instance. The attestation is performed against the integrity policy baseline. This baseline is initially derived from the implicitly trusted boot image when the instance is created.',
-      }),
-    enableSecureBoot: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines whether the instance has Secure Boot enabled. Secure Boot helps ensure that the system only runs authentic software by verifying the digital signature of all boot components, and halting the boot process if signature verification fails.',
-      }),
-  })
-  .openapi({ description: 'A set of Shielded Instance options.', required: [] })
-  .openapi('ShieldedInstanceConfig')
-
 const NodeAffinitySchema = z
   .object({
     key: z.string().exactOptional().openapi({ description: 'Key for NodeAffinity.' }),
@@ -574,716 +2040,18 @@ const WorkloadMetadataConfigSchema = z
   })
   .openapi('WorkloadMetadataConfig')
 
-type NodeConfigType = {
-  accelerators?: z.infer<typeof AcceleratorConfigSchema>[]
-  advancedMachineFeatures?: z.infer<typeof AdvancedMachineFeaturesSchema>
-  bootDiskKmsKey?: string
-  confidentialNodes?: z.infer<typeof ConfidentialNodesSchema>
-  diskSizeGb?: number
-  diskType?: string
-  enableConfidentialStorage?: boolean
-  ephemeralStorageConfig?: z.infer<typeof EphemeralStorageConfigSchema>
-  ephemeralStorageLocalSsdConfig?: z.infer<typeof EphemeralStorageLocalSsdConfigSchema>
-  fastSocket?: z.infer<typeof FastSocketSchema>
-  gcfsConfig?: z.infer<typeof GcfsConfigSchema>
-  gvnic?: z.infer<typeof VirtualNICSchema>
-  hostMaintenancePolicy?: z.infer<typeof HostMaintenancePolicySchema>
-  imageType?: string
-  kubeletConfig?: z.infer<typeof NodeKubeletConfigSchema>
-  labels?: { [key: string]: string }
-  linuxNodeConfig?: z.infer<typeof LinuxNodeConfigSchema>
-  localNvmeSsdBlockConfig?: z.infer<typeof LocalNvmeSsdBlockConfigSchema>
-  localSsdCount?: number
-  loggingConfig?: z.infer<typeof NodePoolLoggingConfigSchema>
-  machineType?: string
-  metadata?: { [key: string]: string }
-  minCpuPlatform?: string
-  nodeGroup?: string
-  oauthScopes?: string[]
-  preemptible?: boolean
-  reservationAffinity?: z.infer<typeof ReservationAffinitySchema>
-  resourceLabels?: { [key: string]: string }
-  resourceManagerTags?: z.infer<typeof ResourceManagerTagsSchema>
-  sandboxConfig?: z.infer<typeof SandboxConfigSchema>
-  secondaryBootDisks?: z.infer<typeof SecondaryBootDiskSchema>[]
-  serviceAccount?: string
-  shieldedInstanceConfig?: z.infer<typeof ShieldedInstanceConfigSchema>
-  soleTenantConfig?: z.infer<typeof SoleTenantConfigSchema>
-  spot?: boolean
-  tags?: string[]
-  taints?: z.infer<typeof NodeTaintSchema>[]
-  windowsNodeConfig?: z.infer<typeof WindowsNodeConfigSchema>
-  workloadMetadataConfig?: z.infer<typeof WorkloadMetadataConfigSchema>
-}
-
-const AdditionalNodeNetworkConfigSchema = z
+const NodeConfigSchema = z
   .object({
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the VPC where the additional interface belongs' }),
-    subnetwork: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the subnetwork where the additional interface belongs' }),
-  })
-  .openapi({
-    description:
-      'AdditionalNodeNetworkConfig is the configuration for additional node networks within the NodeNetworkConfig message',
-    required: [],
-  })
-  .openapi('AdditionalNodeNetworkConfig')
-
-const MaxPodsConstraintSchema = z
-  .object({
-    maxPodsPerNode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Constraint enforced on the max num of pods per node.' }),
-  })
-  .openapi({ description: 'Constraints applied to pods.', required: [] })
-  .openapi('MaxPodsConstraint')
-
-const AdditionalPodNetworkConfigSchema = z
-  .object({
-    maxPodsPerNode: MaxPodsConstraintSchema.exactOptional().openapi({
-      description: 'The maximum number of pods per node which use this pod network',
-    }),
-    secondaryPodRange: z
-      .string()
+    accelerators: z
+      .array(AcceleratorConfigSchema)
       .exactOptional()
       .openapi({
         description:
-          'The name of the secondary range on the subnet which provides IP address for this pod range',
+          'A list of hardware accelerators to be attached to each node. See https://cloud.google.com/compute/docs/gpus for more information about support for GPUs.',
       }),
-    subnetwork: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the subnetwork where the additional pod network belongs' }),
-  })
-  .openapi({
-    description:
-      'AdditionalPodNetworkConfig is the configuration for additional pod networks within the NodeNetworkConfig message',
-    required: [],
-  })
-  .openapi('AdditionalPodNetworkConfig')
-
-const NetworkPerformanceConfigSchema = z
-  .object({
-    externalIpEgressBandwidthTier: z
-      .enum(['TIER_UNSPECIFIED', 'TIER_1'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the network bandwidth tier for the NodePool for traffic to external/public IP addresses.',
-      }),
-    totalEgressBandwidthTier: z
-      .enum(['TIER_UNSPECIFIED', 'TIER_1'])
-      .exactOptional()
-      .openapi({ description: 'Specifies the total network bandwidth tier for the NodePool.' }),
-  })
-  .openapi({ description: 'Configuration of all network bandwidth tiers', required: [] })
-  .openapi('NetworkPerformanceConfig')
-
-const PodCIDROverprovisionConfigSchema = z
-  .object({
-    disable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether Pod CIDR overprovisioning is disabled. Note: Pod CIDR overprovisioning is enabled by default.',
-      }),
-  })
-  .openapi({
-    description: '[PRIVATE FIELD] Config for pod CIDR size overprovisioning.',
-    required: [],
-  })
-  .openapi('PodCIDROverprovisionConfig')
-
-type NodeNetworkConfigType = {
-  additionalNodeNetworkConfigs?: z.infer<typeof AdditionalNodeNetworkConfigSchema>[]
-  additionalPodNetworkConfigs?: z.infer<typeof AdditionalPodNetworkConfigSchema>[]
-  createPodRange?: boolean
-  enablePrivateNodes?: boolean
-  networkPerformanceConfig?: z.infer<typeof NetworkPerformanceConfigSchema>
-  podCidrOverprovisionConfig?: z.infer<typeof PodCIDROverprovisionConfigSchema>
-  podIpv4CidrBlock?: string
-  podIpv4RangeUtilization?: number
-  podRange?: string
-}
-
-const MetricSchema = z
-  .object({
-    doubleValue: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'For metrics with floating point value.' }),
-    intValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'For metrics with integer value.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Metric name, e.g., "nodes total", "percent done".' }),
-    stringValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'For metrics with custom values (ratios, visual progress, etc.).' }),
-  })
-  .openapi({ description: 'Progress metric is (string, int|float|string) pair.', required: [] })
-  .openapi('Metric')
-
-type OperationProgressType = {
-  metrics?: z.infer<typeof MetricSchema>[]
-  name?: string
-  stages?: OperationProgressType[]
-  status?: 'STATUS_UNSPECIFIED' | 'PENDING' | 'RUNNING' | 'DONE' | 'ABORTING'
-}
-
-const RangeInfoSchema = z
-  .object({
-    rangeName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. [Output only] Name of a range.', readOnly: true }),
-    utilization: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. [Output only] The utilization of the range.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'RangeInfo contains the range name and the range utilization by this cluster.',
-    required: [],
-  })
-  .openapi('RangeInfo')
-
-const AdditionalPodRangesConfigSchema = z
-  .object({
-    podRangeInfo: z
-      .array(RangeInfoSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. [Output only] Information for additional pod range.',
-        readOnly: true,
-      }),
-    podRangeNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Name for pod secondary ipv4 range which has the actual range defined ahead.',
-      }),
-  })
-  .openapi({
-    description:
-      'AdditionalPodRangesConfig is the configuration for additional pod secondary ranges supporting the ClusterUpdate message.',
-    required: [],
-  })
-  .openapi('AdditionalPodRangesConfig')
-
-const CloudRunConfigSchema = z
-  .object({
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether Cloud Run addon is enabled for this cluster.' }),
-    loadBalancerType: z
-      .enum([
-        'LOAD_BALANCER_TYPE_UNSPECIFIED',
-        'LOAD_BALANCER_TYPE_EXTERNAL',
-        'LOAD_BALANCER_TYPE_INTERNAL',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Which load balancer type is installed for Cloud Run.' }),
-  })
-  .openapi({ description: 'Configuration options for the Cloud Run feature.', required: [] })
-  .openapi('CloudRunConfig')
-
-const ConfigConnectorConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether Cloud Connector is enabled for this cluster.' }),
-  })
-  .openapi({ description: 'Configuration options for the Config Connector add-on.', required: [] })
-  .openapi('ConfigConnectorConfig')
-
-const DnsCacheConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether NodeLocal DNSCache is enabled for this cluster.' }),
-  })
-  .openapi({ description: 'Configuration for NodeLocal DNSCache', required: [] })
-  .openapi('DnsCacheConfig')
-
-const GcePersistentDiskCsiDriverConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the Compute Engine PD CSI driver is enabled for this cluster.',
-      }),
-  })
-  .openapi({ description: 'Configuration for the Compute Engine PD CSI driver.', required: [] })
-  .openapi('GcePersistentDiskCsiDriverConfig')
-
-const GcpFilestoreCsiDriverConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the GCP Filestore CSI driver is enabled for this cluster.',
-      }),
-  })
-  .openapi({ description: 'Configuration for the GCP Filestore CSI driver.', required: [] })
-  .openapi('GcpFilestoreCsiDriverConfig')
-
-const GcsFuseCsiDriverConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the Cloud Storage Fuse CSI driver is enabled for this cluster.',
-      }),
-  })
-  .openapi({ description: 'Configuration for the Cloud Storage Fuse CSI driver.', required: [] })
-  .openapi('GcsFuseCsiDriverConfig')
-
-const GkeBackupAgentConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the Backup for GKE agent is enabled for this cluster.' }),
-  })
-  .openapi({ description: 'Configuration for the Backup for GKE Agent.', required: [] })
-  .openapi('GkeBackupAgentConfig')
-
-const HorizontalPodAutoscalingSchema = z
-  .object({
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the Horizontal Pod Autoscaling feature is enabled in the cluster. When enabled, it ensures that metrics are collected into Stackdriver Monitoring.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration options for the horizontal pod autoscaling feature, which increases or decreases the number of replica pods a replication controller has based on the resource usage of the existing pods.',
-    required: [],
-  })
-  .openapi('HorizontalPodAutoscaling')
-
-const HttpLoadBalancingSchema = z
-  .object({
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the HTTP Load Balancing controller is enabled in the cluster. When enabled, it runs a small pod in the cluster that manages the load balancers.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration options for the HTTP (L7) load balancing controller addon, which makes it easy to set up HTTP load balancers for services in a cluster.',
-    required: [],
-  })
-  .openapi('HttpLoadBalancing')
-
-const IstioConfigSchema = z
-  .object({
-    auth: z
-      .enum(['AUTH_NONE', 'AUTH_MUTUAL_TLS'])
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'The specified Istio auth mode, either none, or mutual TLS.',
-      }),
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ deprecated: true, description: 'Whether Istio is enabled for this cluster.' }),
-  })
-  .openapi({ description: 'Configuration options for Istio addon.', required: [] })
-  .openapi('IstioConfig')
-
-const KalmConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ deprecated: true, description: 'Whether KALM is enabled for this cluster.' }),
-  })
-  .openapi({ description: 'Configuration options for the KALM addon.', required: [] })
-  .openapi('KalmConfig')
-
-const KubernetesDashboardSchema = z
-  .object({
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the Kubernetes Dashboard is enabled for this cluster.' }),
-  })
-  .openapi({ description: 'Configuration for the Kubernetes Dashboard.', required: [] })
-  .openapi('KubernetesDashboard')
-
-const NetworkPolicyConfigSchema = z
-  .object({
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether NetworkPolicy is enabled for this cluster.' }),
-  })
-  .openapi({
-    description:
-      'Configuration for NetworkPolicy. This only tracks whether the addon is enabled or not on the Master, it does not track whether network policy is enabled for the nodes.',
-    required: [],
-  })
-  .openapi('NetworkPolicyConfig')
-
-const StatefulHAConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the Stateful HA add-on is enabled for this cluster.' }),
-  })
-  .openapi({ description: 'Configuration for the Stateful HA add-on.', required: [] })
-  .openapi('StatefulHAConfig')
-
-const AddonsConfigSchema = z
-  .object({
-    cloudRunConfig: CloudRunConfigSchema.exactOptional().openapi({
-      description:
-        'Configuration for the Cloud Run addon. The `IstioConfig` addon must be enabled in order to enable Cloud Run addon. This option can only be enabled at cluster creation time.',
+    advancedMachineFeatures: AdvancedMachineFeaturesSchema.exactOptional().openapi({
+      description: 'Advanced features for the Compute Engine VM.',
     }),
-    configConnectorConfig: ConfigConnectorConfigSchema.exactOptional().openapi({
-      description:
-        'Configuration for the ConfigConnector add-on, a Kubernetes extension to manage hosted GCP services through the Kubernetes API',
-    }),
-    dnsCacheConfig: DnsCacheConfigSchema.exactOptional().openapi({
-      description: 'Configuration for NodeLocalDNS, a dns cache running on cluster nodes',
-    }),
-    gcePersistentDiskCsiDriverConfig:
-      GcePersistentDiskCsiDriverConfigSchema.exactOptional().openapi({
-        description: 'Configuration for the Compute Engine Persistent Disk CSI driver.',
-      }),
-    gcpFilestoreCsiDriverConfig: GcpFilestoreCsiDriverConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the GCP Filestore CSI driver.',
-    }),
-    gcsFuseCsiDriverConfig: GcsFuseCsiDriverConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the Cloud Storage Fuse CSI driver.',
-    }),
-    gkeBackupAgentConfig: GkeBackupAgentConfigSchema.exactOptional().openapi({
-      description: 'Configuration for the Backup for GKE agent addon.',
-    }),
-    horizontalPodAutoscaling: HorizontalPodAutoscalingSchema.exactOptional().openapi({
-      description:
-        'Configuration for the horizontal pod autoscaling feature, which increases or decreases the number of replica pods a replication controller has based on the resource usage of the existing pods.',
-    }),
-    httpLoadBalancing: HttpLoadBalancingSchema.exactOptional().openapi({
-      description:
-        'Configuration for the HTTP (L7) load balancing controller addon, which makes it easy to set up HTTP load balancers for services in a cluster.',
-    }),
-    istioConfig: IstioConfigSchema.exactOptional().openapi({
-      deprecated: true,
-      description:
-        'Configuration for Istio, an open platform to connect, manage, and secure microservices.',
-    }),
-    kalmConfig: KalmConfigSchema.exactOptional().openapi({
-      deprecated: true,
-      description:
-        'Configuration for the KALM addon, which manages the lifecycle of k8s applications.',
-    }),
-    kubernetesDashboard: KubernetesDashboardSchema.exactOptional().openapi({
-      deprecated: true,
-      description:
-        'Configuration for the Kubernetes Dashboard. This addon is deprecated, and will be disabled in 1.15. It is recommended to use the Cloud Console to manage and monitor your Kubernetes clusters, workloads and applications. For more information, see: https://cloud.google.com/kubernetes-engine/docs/concepts/dashboards',
-    }),
-    networkPolicyConfig: NetworkPolicyConfigSchema.exactOptional().openapi({
-      description:
-        'Configuration for NetworkPolicy. This only tracks whether the addon is enabled or not on the Master, it does not track whether network policy is enabled for the nodes.',
-    }),
-    statefulHaConfig: StatefulHAConfigSchema.exactOptional().openapi({
-      description: 'Optional. Configuration for the StatefulHA add-on.',
-    }),
-  })
-  .openapi({
-    description:
-      'Configuration for the addons that can be automatically spun up in the cluster, enabling additional functionality.',
-    required: [],
-  })
-  .openapi('AddonsConfig')
-
-const AdvancedDatapathObservabilityConfigSchema = z
-  .object({
-    enableMetrics: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Expose flow metrics on nodes' }),
-    enableRelay: z.boolean().exactOptional().openapi({ description: 'Enable Relay component' }),
-    relayMode: z
-      .enum(['RELAY_MODE_UNSPECIFIED', 'DISABLED', 'INTERNAL_VPC_LB', 'EXTERNAL_LB'])
-      .exactOptional()
-      .openapi({ description: 'Method used to make Relay available' }),
-  })
-  .openapi({
-    description:
-      'AdvancedDatapathObservabilityConfig specifies configuration of observability features of advanced datapath.',
-    required: [],
-  })
-  .openapi('AdvancedDatapathObservabilityConfig')
-
-const AuthenticatorGroupsConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether this cluster should return group membership lookups during authentication using a group of security groups.',
-      }),
-    securityGroup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the security group-of-groups to be used. Only relevant if enabled = true.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for returning group information from authenticators.',
-    required: [],
-  })
-  .openapi('AuthenticatorGroupsConfig')
-
-const AutoUpgradeOptionsSchema = z
-  .object({
-    autoUpgradeStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Output only] This field is set when upgrades are about to commence with the approximate start time for the upgrades, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Output only] This field is set when upgrades are about to commence with the description of the upgrade.',
-      }),
-  })
-  .openapi({
-    description:
-      'AutoUpgradeOptions defines the set of options for the user to control how the Auto Upgrades will proceed.',
-    required: [],
-  })
-  .openapi('AutoUpgradeOptions')
-
-const AutopilotConversionStatusSchema = z
-  .object({
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'DONE'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The current state of the conversion.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'AutopilotConversionStatus represents conversion status.', required: [] })
-  .openapi('AutopilotConversionStatus')
-
-const WorkloadPolicyConfigSchema = z
-  .object({
-    allowNetAdmin: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, workloads can use NET_ADMIN capability.' }),
-  })
-  .openapi({
-    description:
-      'WorkloadPolicyConfig is the configuration of workload policy for autopilot clusters.',
-    required: [],
-  })
-  .openapi('WorkloadPolicyConfig')
-
-const AutopilotSchema = z
-  .object({
-    conversionStatus: AutopilotConversionStatusSchema.exactOptional().openapi({
-      description: 'Output only. ConversionStatus shows conversion status.',
-      readOnly: true,
-    }),
-    enabled: z.boolean().exactOptional().openapi({ description: 'Enable Autopilot' }),
-    workloadPolicyConfig: WorkloadPolicyConfigSchema.exactOptional().openapi({
-      description: 'Workload policy configuration for Autopilot.',
-    }),
-  })
-  .openapi({
-    description: 'Autopilot is the configuration for Autopilot settings on the cluster.',
-    required: [],
-  })
-  .openapi('Autopilot')
-
-const AutopilotCompatibilityIssueSchema = z
-  .object({
-    constraintType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The constraint type of the issue.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the issue.' }),
-    documentationUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A URL to a public documnetation, which addresses resolving this issue.',
-      }),
-    incompatibilityType: z
-      .enum([
-        'UNSPECIFIED',
-        'INCOMPATIBILITY',
-        'ADDITIONAL_CONFIG_REQUIRED',
-        'PASSED_WITH_OPTIONAL_CONFIG',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The incompatibility type of this issue.' }),
-    lastObservation: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last time when this issue was observed.' }),
-    subjects: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The name of the resources which are subject to this issue.' }),
-  })
-  .openapi({
-    description:
-      'AutopilotCompatibilityIssue contains information about a specific compatibility issue with Autopilot mode.',
-    required: [],
-  })
-  .openapi('AutopilotCompatibilityIssue')
-
-const NodeManagementSchema = z
-  .object({
-    autoRepair: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the nodes will be automatically repaired.' }),
-    autoUpgrade: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the nodes will be automatically upgraded.' }),
-    upgradeOptions: AutoUpgradeOptionsSchema.exactOptional().openapi({
-      description: 'Specifies the Auto Upgrade knobs for the node pool.',
-    }),
-  })
-  .openapi({
-    description:
-      'NodeManagement defines the set of node management services turned on for the node pool.',
-    required: [],
-  })
-  .openapi('NodeManagement')
-
-const AutoscaledRolloutPolicySchema = z
-  .object({})
-  .openapi({
-    description:
-      'Autoscaled rollout policy uses cluster autoscaler during blue-green upgrades to scale both the green and blue pools.',
-  })
-  .openapi('AutoscaledRolloutPolicy')
-
-const StandardRolloutPolicySchema = z
-  .object({
-    batchNodeCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of blue nodes to drain in a batch.' }),
-    batchPercentage: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Percentage of the blue pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].',
-      }),
-    batchSoakDuration: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Soak time after each batch gets drained. Default to zero.' }),
-  })
-  .openapi({
-    description: 'Standard rollout policy is the default policy for blue-green.',
-    required: [],
-  })
-  .openapi('StandardRolloutPolicy')
-
-const BlueGreenSettingsSchema = z
-  .object({
-    autoscaledRolloutPolicy: AutoscaledRolloutPolicySchema.exactOptional().openapi({
-      description: 'Autoscaled policy for cluster autoscaler enabled blue-green upgrade.',
-    }),
-    nodePoolSoakDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.',
-      }),
-    standardRolloutPolicy: StandardRolloutPolicySchema.exactOptional().openapi({
-      description: 'Standard policy for the blue-green upgrade.',
-    }),
-  })
-  .openapi({ description: 'Settings for blue-green upgrade.', required: [] })
-  .openapi('BlueGreenSettings')
-
-const UpgradeSettingsSchema = z
-  .object({
-    blueGreenSettings: BlueGreenSettingsSchema.exactOptional().openapi({
-      description: 'Settings for blue-green upgrade strategy.',
-    }),
-    maxSurge: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of nodes that can be created beyond the current size of the node pool during the upgrade process.',
-      }),
-    maxUnavailable: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of nodes that can be simultaneously unavailable during the upgrade process. A node is considered available if its status is Ready.',
-      }),
-    strategy: z
-      .enum(['NODE_POOL_UPDATE_STRATEGY_UNSPECIFIED', 'BLUE_GREEN', 'SURGE'])
-      .exactOptional()
-      .openapi({ description: 'Update strategy of the node pool.' }),
-  })
-  .openapi({
-    description:
-      'These upgrade settings control the level of parallelism and the level of disruption caused by an upgrade. maxUnavailable controls the number of nodes that can be simultaneously unavailable. maxSurge controls the number of additional nodes that can be added to the node pool temporarily for the time of the upgrade to increase the number of available nodes. (maxUnavailable + maxSurge) determines the level of parallelism (how many nodes are being upgraded at the same time). Note: upgrades inevitably introduce some disruption since workloads need to be moved from old nodes to new, upgraded ones. Even if maxUnavailable=0, this holds true. (Disruption stays within the limits of PodDisruptionBudget, if it is configured.) Consider a hypothetical node pool with 5 nodes having maxSurge=2, maxUnavailable=1. This means the upgrade process upgrades 3 nodes simultaneously. It creates 2 additional (upgraded) nodes, then it brings down 3 old (not yet upgraded) nodes at the same time. This ensures that there are always at least 4 nodes available. These upgrade settings configure the upgrade strategy for the node pool. Use strategy to switch between the strategies applied to the node pool. If the strategy is SURGE, use max_surge and max_unavailable to control the level of parallelism and the level of disruption caused by upgrade. 1. maxSurge controls the number of additional nodes that can be added to the node pool temporarily for the time of the upgrade to increase the number of available nodes. 2. maxUnavailable controls the number of nodes that can be simultaneously unavailable. 3. (maxUnavailable + maxSurge) determines the level of parallelism (how many nodes are being upgraded at the same time). If the strategy is BLUE_GREEN, use blue_green_settings to configure the blue-green upgrade related settings. 1. standard_rollout_policy is the default policy. The policy is used to control the way blue pool gets drained. The draining is executed in the batch mode. The batch size could be specified as either percentage of the node pool size or the number of nodes. batch_soak_duration is the soak time after each batch gets drained. 2. node_pool_soak_duration is the soak time after all blue nodes are drained. After this period, the blue pool nodes will be deleted.',
-    required: [],
-  })
-  .openapi('UpgradeSettings')
-
-const AutoprovisioningNodePoolDefaultsSchema = z
-  .object({
     bootDiskKmsKey: z
       .string()
       .exactOptional()
@@ -1291,6 +2059,10 @@ const AutoprovisioningNodePoolDefaultsSchema = z
         description:
           ' The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool. This should be of the form projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]. For more information about protecting resources with Cloud KMS Keys please see: https://cloud.google.com/compute/docs/disks/customer-managed-encryption',
       }),
+    confidentialNodes: ConfidentialNodesSchema.exactOptional().openapi({
+      description:
+        'Confidential nodes config. All the nodes in the node pool will be Confidential VM once enabled.',
+    }),
     diskSizeGb: z
       .int32()
       .exactOptional()
@@ -1305,27 +2077,91 @@ const AutoprovisioningNodePoolDefaultsSchema = z
         description:
           "Type of the disk attached to each node (e.g. 'pd-standard', 'pd-ssd' or 'pd-balanced') If unspecified, the default disk type is 'pd-standard'",
       }),
+    enableConfidentialStorage: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Optional. Reserved for future use.' }),
+    ephemeralStorageConfig: EphemeralStorageConfigSchema.exactOptional().openapi({
+      description:
+        'Parameters for the ephemeral storage filesystem. If unspecified, ephemeral storage is backed by the boot disk.',
+    }),
+    ephemeralStorageLocalSsdConfig: EphemeralStorageLocalSsdConfigSchema.exactOptional().openapi({
+      description:
+        'Parameters for the node ephemeral storage using Local SSDs. If unspecified, ephemeral storage is backed by the boot disk. This field is functionally equivalent to the ephemeral_storage_config',
+    }),
+    fastSocket: FastSocketSchema.exactOptional().openapi({
+      description: 'Enable or disable NCCL fast socket for the node pool.',
+    }),
+    gcfsConfig: GcfsConfigSchema.exactOptional().openapi({
+      description: 'GCFS (Google Container File System) configs.',
+    }),
+    gvnic: VirtualNICSchema.exactOptional().openapi({
+      description: 'Enable or disable gvnic on the node pool.',
+    }),
+    hostMaintenancePolicy: HostMaintenancePolicySchema.exactOptional().openapi({
+      description:
+        'HostMaintenancePolicy contains the desired maintenance policy for the Google Compute Engine hosts.',
+    }),
     imageType: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The image type to use for NAP created node. Please see https://cloud.google.com/kubernetes-engine/docs/concepts/node-images for available image types.',
+          'The image type to use for this node. Note that for a given image type, the latest version of it will be used. Please see https://cloud.google.com/kubernetes-engine/docs/concepts/node-images for available image types.',
       }),
-    insecureKubeletReadonlyPortEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enable or disable Kubelet read only port.' }),
-    management: NodeManagementSchema.exactOptional().openapi({
-      description: 'NodeManagement configuration for this NodePool.',
+    kubeletConfig: NodeKubeletConfigSchema.exactOptional().openapi({
+      description: 'Node kubelet configs.',
     }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The map of Kubernetes labels (key/value pairs) to be applied to each node. These will added in addition to any default label(s) that Kubernetes may apply to the node. In case of conflict in label keys, the applied set may differ depending on the Kubernetes version -- it's best to assume the behavior is undefined and conflicts should be avoided. For more information, including usage and the valid values, see: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/",
+      }),
+    linuxNodeConfig: LinuxNodeConfigSchema.exactOptional().openapi({
+      description: 'Parameters that can be configured on Linux nodes.',
+    }),
+    localNvmeSsdBlockConfig: LocalNvmeSsdBlockConfigSchema.exactOptional().openapi({
+      description: 'Parameters for using raw-block Local NVMe SSDs.',
+    }),
+    localSsdCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of local SSD disks to be attached to the node. The limit for this value is dependent upon the maximum number of disks available on a machine per zone. See: https://cloud.google.com/compute/docs/disks/local-ssd for more information.',
+      }),
+    loggingConfig: NodePoolLoggingConfigSchema.exactOptional().openapi({
+      description: 'Logging configuration.',
+    }),
+    machineType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of a Google Compute Engine [machine type](https://cloud.google.com/compute/docs/machine-types). If unspecified, the default machine type is `e2-medium`.',
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The metadata key/value pairs assigned to instances in the cluster. Keys must conform to the regexp `[a-zA-Z0-9-_]+` and be less than 128 bytes in length. These are reflected as part of a URL in the metadata server. Additionally, to avoid ambiguity, keys must not conflict with any other metadata keys for the project or be one of the reserved keys: - "cluster-location" - "cluster-name" - "cluster-uid" - "configure-sh" - "containerd-configure-sh" - "enable-oslogin" - "gci-ensure-gke-docker" - "gci-metrics-enabled" - "gci-update-strategy" - "instance-template" - "kube-env" - "startup-script" - "user-data" - "disable-address-manager" - "windows-startup-script-ps1" - "common-psm1" - "k8s-node-setup-psm1" - "install-ssh-psm1" - "user-profile-psm1" Values are free-form strings, and only have meaning as interpreted by the image running in the instance. The only restriction placed on them is that each value\'s size must be less than or equal to 32 KB. The total size of all keys and values must be less than 512 KB.',
+      }),
     minCpuPlatform: z
       .string()
       .exactOptional()
       .openapi({
-        deprecated: true,
         description:
-          'Deprecated. Minimum CPU platform to be used for NAP created node pools. The instance may be scheduled on the specified or newer CPU platform. Applicable values are the friendly names of CPU platforms, such as minCpuPlatform: Intel Haswell or minCpuPlatform: Intel Sandy Bridge. For more information, read [how to specify min CPU platform](https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform). This field is deprecated, min_cpu_platform should be specified using `cloud.google.com/requested-min-cpu-platform` label selector on the pod. To unset the min cpu platform field pass "automatic" as field value.',
+          'Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or newer CPU platform. Applicable values are the friendly names of CPU platforms, such as `minCpuPlatform: "Intel Haswell"` or `minCpuPlatform: "Intel Sandy Bridge"`. For more information, read [how to specify min CPU platform](https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform).',
+      }),
+    nodeGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Setting this field will assign instances of this pool to run on the specified node group. This is useful for running workloads on [sole tenant nodes](https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes).',
       }),
     oauthScopes: z
       .array(z.string())
@@ -1334,6 +2170,34 @@ const AutoprovisioningNodePoolDefaultsSchema = z
         description:
           'The set of Google API scopes to be made available on all of the node VMs under the "default" service account. The following scopes are recommended, but not required, and by default are not included: * `https://www.googleapis.com/auth/compute` is required for mounting persistent storage on your nodes. * `https://www.googleapis.com/auth/devstorage.read_only` is required for communicating with **gcr.io** (the [Google Container Registry](https://cloud.google.com/container-registry/)). If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring are enabled, in which case their required scopes will be added.',
       }),
+    preemptible: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the nodes are created as preemptible VM instances. See: https://cloud.google.com/compute/docs/instances/preemptible for more information about preemptible VM instances.',
+      }),
+    reservationAffinity: ReservationAffinitySchema.exactOptional().openapi({
+      description:
+        'The optional reservation affinity. Setting this field will apply the specified [Zonal Compute Reservation](https://cloud.google.com/compute/docs/instances/reserving-zonal-resources) to this node pool.',
+    }),
+    resourceLabels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource labels for the node pool to use to annotate any related Google Compute Engine resources.',
+      }),
+    resourceManagerTags: ResourceManagerTagsSchema.exactOptional().openapi({
+      description: 'A map of resource manager tag keys and values to be attached to the nodes.',
+    }),
+    sandboxConfig: SandboxConfigSchema.exactOptional().openapi({
+      description: 'Sandbox configuration for this node.',
+    }),
+    secondaryBootDisks: z
+      .array(SecondaryBootDiskSchema)
+      .exactOptional()
+      .openapi({ description: 'List of secondary boot disks attached to the nodes.' }),
     serviceAccount: z
       .string()
       .exactOptional()
@@ -1344,1236 +2208,42 @@ const AutoprovisioningNodePoolDefaultsSchema = z
     shieldedInstanceConfig: ShieldedInstanceConfigSchema.exactOptional().openapi({
       description: 'Shielded Instance options.',
     }),
-    upgradeSettings: UpgradeSettingsSchema.exactOptional().openapi({
-      description: 'Upgrade settings control disruption and speed of the upgrade.',
+    soleTenantConfig: SoleTenantConfigSchema.exactOptional().openapi({
+      description: 'Parameters for node pools to be backed by shared sole tenant node groups.',
     }),
-  })
-  .openapi({
-    description:
-      'AutoprovisioningNodePoolDefaults contains defaults for a node pool created by NAP.',
-    required: [],
-  })
-  .openapi('AutoprovisioningNodePoolDefaults')
-
-const AvailableVersionSchema = z
-  .object({
-    reason: z.string().exactOptional().openapi({ description: 'Reason for availability.' }),
-    version: z.string().exactOptional().openapi({ description: 'Kubernetes version.' }),
-  })
-  .openapi({ deprecated: true, description: 'Deprecated.', required: [] })
-  .openapi('AvailableVersion')
-
-const BestEffortProvisioningSchema = z
-  .object({
-    enabled: z
+    spot: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'When this is enabled, cluster/node pool creations will ignore non-fatal errors like stockout to best provision as many nodes as possible right now and eventually bring up all target number of nodes',
+          'Spot flag for enabling Spot VM, which is a rebrand of the existing preemptible flag.',
       }),
-    minProvisionNodes: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Minimum number of nodes to be provisioned to be considered as succeeded, and the rest of nodes will be provisioned gradually and eventually when stockout issue has been resolved.',
-      }),
-  })
-  .openapi({ description: 'Best effort provisioning.', required: [] })
-  .openapi('BestEffortProvisioning')
-
-const BigQueryDestinationSchema = z
-  .object({
-    datasetId: z.string().exactOptional().openapi({ description: 'The ID of a BigQuery Dataset.' }),
-  })
-  .openapi({
-    description: 'Parameters for using BigQuery as the destination of resource usage export.',
-    required: [],
-  })
-  .openapi('BigQueryDestination')
-
-const PolicyBindingSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The relative resource name of the binauthz platform policy to audit. GKE platform policies have the following format: `projects/{project_number}/platforms/gke/policies/{policy_id}`.',
-      }),
-  })
-  .openapi({ description: 'Binauthz policy that applies to this cluster.', required: [] })
-  .openapi('PolicyBinding')
-
-const BinaryAuthorizationSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'This field is deprecated. Leave this unset and instead configure BinaryAuthorization using evaluation_mode. If evaluation_mode is set to anything other than EVALUATION_MODE_UNSPECIFIED, this field is ignored.',
-      }),
-    evaluationMode: z
-      .enum([
-        'EVALUATION_MODE_UNSPECIFIED',
-        'DISABLED',
-        'PROJECT_SINGLETON_POLICY_ENFORCE',
-        'POLICY_BINDINGS',
-        'POLICY_BINDINGS_AND_PROJECT_SINGLETON_POLICY_ENFORCE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Mode of operation for binauthz policy evaluation. If unspecified, defaults to DISABLED.',
-      }),
-    policyBindings: z
-      .array(PolicyBindingSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Binauthz policies that apply to this cluster.' }),
-  })
-  .openapi({ description: 'Configuration for Binary Authorization.', required: [] })
-  .openapi('BinaryAuthorization')
-
-const BlueGreenInfoSchema = z
-  .object({
-    blueInstanceGroupUrls: z
+    tags: z
       .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'The resource URLs of the [managed instance groups] (/compute/docs/instance-groups/creating-groups-of-managed-instances) associated with blue pool.',
+          'The list of instance tags applied to all nodes. Tags are used to identify valid sources or targets for network firewalls and are specified by the client during cluster or node pool creation. Each tag within the list must comply with RFC1035.',
       }),
-    bluePoolDeletionStartTime: z
-      .string()
+    taints: z
+      .array(NodeTaintSchema)
       .exactOptional()
       .openapi({
         description:
-          'Time to start deleting blue pool to complete blue-green upgrade, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.',
+          'List of kubernetes taints to be applied to each node. For more information, including usage and the valid values, see: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/',
       }),
-    greenInstanceGroupUrls: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource URLs of the [managed instance groups] (/compute/docs/instance-groups/creating-groups-of-managed-instances) associated with green pool.',
-      }),
-    greenPoolVersion: z.string().exactOptional().openapi({ description: 'Version of green pool.' }),
-    phase: z
-      .enum([
-        'PHASE_UNSPECIFIED',
-        'UPDATE_STARTED',
-        'CREATING_GREEN_POOL',
-        'CORDONING_BLUE_POOL',
-        'WAITING_TO_DRAIN_BLUE_POOL',
-        'DRAINING_BLUE_POOL',
-        'NODE_POOL_SOAKING',
-        'DELETING_BLUE_POOL',
-        'ROLLBACK_STARTED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Current blue-green upgrade phase.' }),
-  })
-  .openapi({ description: 'Information relevant to blue-green upgrade.', required: [] })
-  .openapi('BlueGreenInfo')
-
-const CancelOperationRequestSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name (project, location, operation id) of the operation to cancel. Specified in the format `projects/*/locations/*/operations/*`.',
-      }),
-    operationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Required. Deprecated. The server-assigned `name` of the operation. This field has been deprecated and replaced by the name field.',
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Required. Deprecated. The Google Developers Console [project ID or project number](https://cloud.google.com/resource-manager/docs/creating-managing-projects). This field has been deprecated and replaced by the name field.',
-      }),
-    zone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Required. Deprecated. The name of the Google Compute Engine [zone](https://cloud.google.com/compute/docs/zones#available) in which the operation resides. This field has been deprecated and replaced by the name field.',
-      }),
-  })
-  .openapi({ description: 'CancelOperationRequest cancels a single operation.', required: [] })
-  .openapi('CancelOperationRequest')
-
-const CheckAutopilotCompatibilityResponseSchema = z
-  .object({
-    issues: z
-      .array(AutopilotCompatibilityIssueSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of issues for the given operation.' }),
-    summary: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The summary of the autopilot compatibility response.' }),
-  })
-  .openapi({
-    description: 'CheckAutopilotCompatibilityResponse has a list of compatibility issues.',
-    required: [],
-  })
-  .openapi('CheckAutopilotCompatibilityResponse')
-
-const CidrBlockSchema = z
-  .object({
-    cidrBlock: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'cidr_block must be specified in CIDR notation.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'display_name is an optional field for users to identify CIDR blocks.',
-      }),
-  })
-  .openapi({ description: 'CidrBlock contains an optional name and one CIDR block.', required: [] })
-  .openapi('CidrBlock')
-
-const ClientCertificateConfigSchema = z
-  .object({
-    issueClientCertificate: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Issue a client certificate.' }),
-  })
-  .openapi({ description: 'Configuration for client certificates on the cluster.', required: [] })
-  .openapi('ClientCertificateConfig')
-
-const ResourceLimitSchema = z
-  .object({
-    maximum: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Maximum amount of the resource in the cluster.' }),
-    minimum: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Minimum amount of the resource in the cluster.' }),
-    resourceType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Resource name "cpu", "memory" or gpu-specific string.' }),
+    windowsNodeConfig: WindowsNodeConfigSchema.exactOptional().openapi({
+      description: 'Parameters that can be configured on Windows nodes.',
+    }),
+    workloadMetadataConfig: WorkloadMetadataConfigSchema.exactOptional().openapi({
+      description: 'The workload metadata configuration for this node.',
+    }),
   })
   .openapi({
     description:
-      'Contains information about amount of some resource in the cluster. For memory, value should be in GB.',
+      'Parameters that describe the nodes in a cluster. GKE Autopilot clusters do not recognize parameters in `NodeConfig`. Use AutoprovisioningNodePoolDefaults instead.',
     required: [],
   })
-  .openapi('ResourceLimit')
-
-const ClusterAutoscalingSchema = z
-  .object({
-    autoprovisioningLocations: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of Google Compute Engine [zones](https://cloud.google.com/compute/docs/zones#available) in which the NodePool's nodes can be created by NAP.",
-      }),
-    autoprovisioningNodePoolDefaults:
-      AutoprovisioningNodePoolDefaultsSchema.exactOptional().openapi({
-        description:
-          'AutoprovisioningNodePoolDefaults contains defaults for a node pool created by NAP.',
-      }),
-    autoscalingProfile: z
-      .enum(['PROFILE_UNSPECIFIED', 'OPTIMIZE_UTILIZATION', 'BALANCED'])
-      .exactOptional()
-      .openapi({ description: 'Defines autoscaling behaviour.' }),
-    enableNodeAutoprovisioning: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enables automatic node pool creation and deletion.' }),
-    resourceLimits: z
-      .array(ResourceLimitSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains global constraints regarding minimum and maximum amount of resources in the cluster.',
-      }),
-  })
-  .openapi({
-    description:
-      'ClusterAutoscaling contains global, per-cluster information required by Cluster Autoscaler to automatically adjust the size of the cluster and create/delete node pools based on the current needs.',
-    required: [],
-  })
-  .openapi('ClusterAutoscaling')
-
-const ClusterTelemetrySchema = z
-  .object({
-    type: z
-      .enum(['UNSPECIFIED', 'DISABLED', 'ENABLED', 'SYSTEM_ONLY'])
-      .exactOptional()
-      .openapi({ description: 'Type of the integration.' }),
-  })
-  .openapi({ description: 'Telemetry integration for the cluster.', required: [] })
-  .openapi('ClusterTelemetry')
-
-const StatusConditionSchema = z
-  .object({
-    canonicalCode: z
-      .enum([
-        'OK',
-        'CANCELLED',
-        'UNKNOWN',
-        'INVALID_ARGUMENT',
-        'DEADLINE_EXCEEDED',
-        'NOT_FOUND',
-        'ALREADY_EXISTS',
-        'PERMISSION_DENIED',
-        'UNAUTHENTICATED',
-        'RESOURCE_EXHAUSTED',
-        'FAILED_PRECONDITION',
-        'ABORTED',
-        'OUT_OF_RANGE',
-        'UNIMPLEMENTED',
-        'INTERNAL',
-        'UNAVAILABLE',
-        'DATA_LOSS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Canonical code of the condition.' }),
-    code: z
-      .enum([
-        'UNKNOWN',
-        'GCE_STOCKOUT',
-        'GKE_SERVICE_ACCOUNT_DELETED',
-        'GCE_QUOTA_EXCEEDED',
-        'SET_BY_OPERATOR',
-        'CLOUD_KMS_KEY_ERROR',
-        'CA_EXPIRING',
-      ])
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'Machine-friendly representation of the condition Deprecated. Use canonical_code instead.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Human-friendly representation of the condition' }),
-  })
-  .openapi({
-    description:
-      'StatusCondition describes why a cluster or a node pool has a certain status (e.g., ERROR or DEGRADED).',
-    required: [],
-  })
-  .openapi('StatusCondition')
-
-const CostManagementConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the feature is enabled or not.' }),
-  })
-  .openapi({ description: 'Configuration for fine-grained cost management feature.', required: [] })
-  .openapi('CostManagementConfig')
-
-const DatabaseEncryptionSchema = z
-  .object({
-    keyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of CloudKMS key to use for the encryption of secrets in etcd. Ex. projects/my-project/locations/global/keyRings/my-ring/cryptoKeys/my-key',
-      }),
-    state: z
-      .enum(['UNKNOWN', 'ENCRYPTED', 'DECRYPTED'])
-      .exactOptional()
-      .openapi({ description: 'The desired state of etcd encryption.' }),
-  })
-  .openapi({ description: 'Configuration of etcd encryption.', required: [] })
-  .openapi('DatabaseEncryption')
-
-const K8sBetaAPIConfigSchema = z
-  .object({
-    enabledApis: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'api name, e.g. storage.k8s.io/v1beta1/csistoragecapacities.' }),
-  })
-  .openapi({
-    description: 'Kubernetes open source beta apis enabled on the cluster.',
-    required: [],
-  })
-  .openapi('K8sBetaAPIConfig')
-
-const EnterpriseConfigSchema = z
-  .object({
-    clusterTier: z
-      .enum(['CLUSTER_TIER_UNSPECIFIED', 'STANDARD', 'ENTERPRISE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. [Output only] cluster_tier specifies the premium tier of the cluster.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'EnterpriseConfig is the cluster enterprise configuration.',
-    required: [],
-  })
-  .openapi('EnterpriseConfig')
-
-const FleetSchema = z
-  .object({
-    membership: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Output only] The full resource name of the registered fleet membership of the cluster, in the format `//gkehub.googleapis.com/projects/*/locations/*/memberships/*`.',
-      }),
-    preRegistered: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: '[Output only] Whether the cluster has been registered through the fleet API.',
-      }),
-    project: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Fleet host project(project ID or project number) where this cluster will be registered to. This field cannot be changed after the cluster has been registered.',
-      }),
-  })
-  .openapi({ description: 'Fleet is the fleet configuration for the cluster.', required: [] })
-  .openapi('Fleet')
-
-const IdentityServiceConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to enable the Identity Service component' }),
-  })
-  .openapi({
-    description:
-      'IdentityServiceConfig is configuration for Identity Service which allows customers to use external identity providers with the K8S API',
-    required: [],
-  })
-  .openapi('IdentityServiceConfig')
-
-const IPAllocationPolicySchema = z
-  .object({
-    additionalPodRangesConfig: AdditionalPodRangesConfigSchema.exactOptional().openapi({
-      description:
-        'Output only. [Output only] The additional pod ranges that are added to the cluster. These pod ranges can be used by new node pools to allocate pod IPs automatically. Once the range is removed it will not show up in IPAllocationPolicy.',
-      readOnly: true,
-    }),
-    allowRouteOverlap: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, allow allocation of cluster CIDR ranges that overlap with certain kinds of network routes. By default we do not allow cluster CIDR ranges to intersect with any user declared routes. With allow_route_overlap == true, we allow overlapping with CIDR ranges that are larger than the cluster CIDR range. If this field is set to true, then cluster and services CIDRs must be fully-specified (e.g. `10.96.0.0/14`, but not `/14`), which means: 1) When `use_ip_aliases` is true, `cluster_ipv4_cidr_block` and `services_ipv4_cidr_block` must be fully-specified. 2) When `use_ip_aliases` is false, `cluster.cluster_ipv4_cidr` muse be fully-specified.',
-      }),
-    clusterIpv4Cidr: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'This field is deprecated, use cluster_ipv4_cidr_block.',
-      }),
-    clusterIpv4CidrBlock: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The IP address range for the cluster pod IPs. If this field is set, then `cluster.cluster_ipv4_cidr` must be left blank. This field is only applicable when `use_ip_aliases` is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g. `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range to use.',
-      }),
-    clusterSecondaryRangeName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the secondary range to be used for the cluster CIDR block. The secondary range will be used for pod IP addresses. This must be an existing secondary range associated with the cluster subnetwork. This field is only applicable with use_ip_aliases and create_subnetwork is false.',
-      }),
-    createSubnetwork: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether a new subnetwork will be created automatically for the cluster. This field is only applicable when `use_ip_aliases` is true.',
-      }),
-    defaultPodIpv4RangeUtilization: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. [Output only] The utilization of the cluster default IPv4 range for the pod. The ratio is Usage/[Total number of IPs in the secondary range], Usage=numNodes*numZones*podIPsPerNode.',
-        readOnly: true,
-      }),
-    ipv6AccessType: z
-      .enum(['IPV6_ACCESS_TYPE_UNSPECIFIED', 'INTERNAL', 'EXTERNAL'])
-      .exactOptional()
-      .openapi({
-        description: 'The ipv6 access type (internal or external) when create_subnetwork is true',
-      }),
-    nodeIpv4Cidr: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'This field is deprecated, use node_ipv4_cidr_block.',
-      }),
-    nodeIpv4CidrBlock: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The IP address range of the instance IPs in this cluster. This is applicable only if `create_subnetwork` is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g. `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range to use.',
-      }),
-    podCidrOverprovisionConfig: PodCIDROverprovisionConfigSchema.exactOptional().openapi({
-      description:
-        '[PRIVATE FIELD] Pod CIDR size overprovisioning config for the cluster. Pod CIDR size per node depends on max_pods_per_node. By default, the value of max_pods_per_node is doubled and then rounded off to next power of 2 to get the size of pod CIDR block per node. Example: max_pods_per_node of 30 would result in 64 IPs (/26). This config can disable the doubling of IPs (we still round off to next power of 2) Example: max_pods_per_node of 30 will result in 32 IPs (/27) when overprovisioning is disabled.',
-    }),
-    servicesIpv4Cidr: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'This field is deprecated, use services_ipv4_cidr_block.',
-      }),
-    servicesIpv4CidrBlock: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The IP address range of the services IPs in this cluster. If blank, a range will be automatically chosen with the default size. This field is only applicable when `use_ip_aliases` is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g. `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range to use.',
-      }),
-    servicesIpv6CidrBlock: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. [Output only] The services IPv6 CIDR block for the cluster.',
-        readOnly: true,
-      }),
-    servicesSecondaryRangeName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the secondary range to be used as for the services CIDR block. The secondary range will be used for service ClusterIPs. This must be an existing secondary range associated with the cluster subnetwork. This field is only applicable with use_ip_aliases and create_subnetwork is false.',
-      }),
-    stackType: z
-      .enum(['STACK_TYPE_UNSPECIFIED', 'IPV4', 'IPV4_IPV6'])
-      .exactOptional()
-      .openapi({ description: 'IP stack type' }),
-    subnetIpv6CidrBlock: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. [Output only] The subnet's IPv6 CIDR block used by nodes and pods.",
-        readOnly: true,
-      }),
-    subnetworkName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A custom subnetwork name to be used if `create_subnetwork` is true. If this field is empty, then an automatic name will be chosen for the new subnetwork.',
-      }),
-    tpuIpv4CidrBlock: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The IP address range of the Cloud TPUs in this cluster. If unspecified, a range will be automatically chosen with the default size. This field is only applicable when `use_ip_aliases` is true. If unspecified, the range will use the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g. `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range to use. This field is deprecated, use cluster.tpu_config.ipv4_cidr_block instead.',
-      }),
-    useIpAliases: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether alias IPs will be used for pod IPs in the cluster. This is used in conjunction with use_routes. It cannot be true if use_routes is true. If both use_ip_aliases and use_routes are false, then the server picks the default IP allocation mode',
-      }),
-    useRoutes: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether routes will be used for pod IPs in the cluster. This is used in conjunction with use_ip_aliases. It cannot be true if use_ip_aliases is true. If both use_ip_aliases and use_routes are false, then the server picks the default IP allocation mode',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for controlling how IPs are allocated in the cluster.',
-    required: [],
-  })
-  .openapi('IPAllocationPolicy')
-
-const LegacyAbacSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the ABAC authorizer is enabled for this cluster. When enabled, identities in the system, including service accounts, nodes, and controllers, will have statically granted permissions beyond those provided by the RBAC configuration or IAM.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for the legacy Attribute Based Access Control authorization mode.',
-    required: [],
-  })
-  .openapi('LegacyAbac')
-
-const LoggingComponentConfigSchema = z
-  .object({
-    enableComponents: z
-      .array(
-        z.enum([
-          'COMPONENT_UNSPECIFIED',
-          'SYSTEM_COMPONENTS',
-          'WORKLOADS',
-          'APISERVER',
-          'SCHEDULER',
-          'CONTROLLER_MANAGER',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'Select components to collect logs. An empty set would disable all logging.',
-      }),
-  })
-  .openapi({
-    description: 'LoggingComponentConfig is cluster logging component configuration.',
-    required: [],
-  })
-  .openapi('LoggingComponentConfig')
-
-const LoggingConfigSchema = z
-  .object({
-    componentConfig: LoggingComponentConfigSchema.exactOptional().openapi({
-      description: 'Logging components configuration',
-    }),
-  })
-  .openapi({ description: 'LoggingConfig is cluster logging configuration.', required: [] })
-  .openapi('LoggingConfig')
-
-const MaintenanceWindowSchema: z.ZodType<MaintenanceWindowType> = z
-  .lazy(() =>
-    z
-      .object({
-        dailyMaintenanceWindow: DailyMaintenanceWindowSchema.exactOptional().openapi({
-          description: 'DailyMaintenanceWindow specifies a daily maintenance operation window.',
-        }),
-        maintenanceExclusions: z
-          .record(z.string(), TimeWindowSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Exceptions to maintenance window. Non-emergency maintenance should not occur in these windows.',
-          }),
-        recurringWindow: RecurringTimeWindowSchema.exactOptional().openapi({
-          description:
-            'RecurringWindow specifies some number of recurring time periods for maintenance to occur. The time windows may be overlapping. If no maintenance windows are set, maintenance can occur at any time.',
-        }),
-      })
-      .openapi({
-        description: 'MaintenanceWindow defines the maintenance window to be used for the cluster.',
-        required: [],
-      }),
-  )
-  .openapi('MaintenanceWindow')
-
-const MaintenancePolicySchema = z
-  .object({
-    resourceVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A hash identifying the version of this policy, so that updates to fields of the policy won't accidentally undo intermediate changes (and so that users of the API unaware of some fields won't accidentally remove other fields). Make a `get()` request to the cluster to get the current resource version and include it with requests to set the policy.",
-      }),
-    window: MaintenanceWindowSchema.exactOptional().openapi({
-      description: 'Specifies the maintenance window in which maintenance may be performed.',
-    }),
-  })
-  .openapi({
-    description: 'MaintenancePolicy defines the maintenance policy to be used for the cluster.',
-    required: [],
-  })
-  .openapi('MaintenancePolicy')
-
-const MasterSchema = z
-  .object({})
-  .openapi({ description: 'Master is the configuration for components on master.' })
-  .openapi('Master')
-
-const MasterAuthSchema = z
-  .object({
-    clientCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Output only] Base64-encoded public certificate used by clients to authenticate to the cluster endpoint.',
-      }),
-    clientCertificateConfig: ClientCertificateConfigSchema.exactOptional().openapi({
-      description:
-        'Configuration for client certificate authentication on the cluster. For clusters before v1.12, if no configuration is specified, a client certificate is issued.',
-    }),
-    clientKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[Output only] Base64-encoded private key used by clients to authenticate to the cluster endpoint.',
-      }),
-    clusterCaCertificate: z.string().exactOptional(),
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The password to use for HTTP basic authentication to the master endpoint. Because the master endpoint is open to the Internet, you should create a strong password. If a password is provided for cluster creation, username must be non-empty. Warning: basic authentication is deprecated, and will be removed in GKE control plane versions 1.19 and newer. For a list of recommended authentication methods, see: https://cloud.google.com/kubernetes-engine/docs/how-to/api-server-authentication',
-      }),
-    username: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'The username to use for HTTP basic authentication to the master endpoint. For clusters v1.6.0 and later, basic authentication can be disabled by leaving username unspecified (or setting it to the empty string). Warning: basic authentication is deprecated, and will be removed in GKE control plane versions 1.19 and newer. For a list of recommended authentication methods, see: https://cloud.google.com/kubernetes-engine/docs/how-to/api-server-authentication',
-      }),
-  })
-  .openapi({
-    description:
-      'The authentication information for accessing the master endpoint. Authentication can be done using HTTP basic auth or using client certificates.',
-    required: [],
-  })
-  .openapi('MasterAuth')
-
-const MasterAuthorizedNetworksConfigSchema = z
-  .object({
-    cidrBlocks: z
-      .array(CidrBlockSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'cidr_blocks define up to 10 external networks that could access Kubernetes master through HTTPS.',
-      }),
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not master authorized networks is enabled.' }),
-    gcpPublicCidrsAccessEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether master is accessbile via Google Compute Engine Public IP addresses.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration options for the master authorized networks feature. Enabled master authorized networks will disallow all external traffic to access Kubernetes master through HTTPS except traffic from the given CIDR blocks, Google Compute Engine Public IPs and Google Prod IPs.',
-    required: [],
-  })
-  .openapi('MasterAuthorizedNetworksConfig')
-
-const MeshCertificatesSchema = z
-  .object({
-    enableCertificates: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'enable_certificates controls issuance of workload mTLS certificates. If set, the GKE Workload Identity Certificates controller and node agent will be deployed in the cluster, which can then be configured by creating a WorkloadCertificateConfig Custom Resource. Requires Workload Identity (workload_pool must be non-empty).',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for issuance of mTLS keys and certificates to Kubernetes pods.',
-    required: [],
-  })
-  .openapi('MeshCertificates')
-
-const MonitoringComponentConfigSchema = z
-  .object({
-    enableComponents: z
-      .array(
-        z
-          .enum([
-            'COMPONENT_UNSPECIFIED',
-            'SYSTEM_COMPONENTS',
-            'WORKLOADS',
-            'APISERVER',
-            'SCHEDULER',
-            'CONTROLLER_MANAGER',
-            'STORAGE',
-            'HPA',
-            'POD',
-            'DAEMONSET',
-            'DEPLOYMENT',
-            'STATEFULSET',
-          ])
-          .openapi({
-            'x-enumDeprecated': [
-              false,
-              false,
-              true,
-              false,
-              false,
-              false,
-              false,
-              false,
-              false,
-              false,
-              false,
-              false,
-            ],
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Select components to collect metrics. An empty set would disable all monitoring.',
-      }),
-  })
-  .openapi({
-    description: 'MonitoringComponentConfig is cluster monitoring component configuration.',
-    required: [],
-  })
-  .openapi('MonitoringComponentConfig')
-
-const ManagedPrometheusConfigSchema = z
-  .object({
-    enabled: z.boolean().exactOptional().openapi({ description: 'Enable Managed Collection.' }),
-  })
-  .openapi({
-    description:
-      'ManagedPrometheusConfig defines the configuration for Google Cloud Managed Service for Prometheus.',
-    required: [],
-  })
-  .openapi('ManagedPrometheusConfig')
-
-const MonitoringConfigSchema = z
-  .object({
-    advancedDatapathObservabilityConfig:
-      AdvancedDatapathObservabilityConfigSchema.exactOptional().openapi({
-        description: 'Configuration of Advanced Datapath Observability features.',
-      }),
-    componentConfig: MonitoringComponentConfigSchema.exactOptional().openapi({
-      description: 'Monitoring components configuration',
-    }),
-    managedPrometheusConfig: ManagedPrometheusConfigSchema.exactOptional().openapi({
-      description: 'Enable Google Cloud Managed Service for Prometheus in the cluster.',
-    }),
-  })
-  .openapi({ description: 'MonitoringConfig is cluster monitoring configuration.', required: [] })
-  .openapi('MonitoringConfig')
-
-const DefaultSnatStatusSchema = z
-  .object({
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Disables cluster default sNAT rules.' }),
-  })
-  .openapi({
-    description:
-      'DefaultSnatStatus contains the desired state of whether default sNAT should be disabled on the cluster.',
-    required: [],
-  })
-  .openapi('DefaultSnatStatus')
-
-const DNSConfigSchema = z
-  .object({
-    clusterDns: z
-      .enum(['PROVIDER_UNSPECIFIED', 'PLATFORM_DEFAULT', 'CLOUD_DNS', 'KUBE_DNS'])
-      .exactOptional()
-      .openapi({
-        description: 'cluster_dns indicates which in-cluster DNS provider should be used.',
-      }),
-    clusterDnsDomain: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'cluster_dns_domain is the suffix used for all cluster service records.',
-      }),
-    clusterDnsScope: z
-      .enum(['DNS_SCOPE_UNSPECIFIED', 'CLUSTER_SCOPE', 'VPC_SCOPE'])
-      .exactOptional()
-      .openapi({
-        description: 'cluster_dns_scope indicates the scope of access to cluster DNS records.',
-      }),
-  })
-  .openapi({
-    description: 'DNSConfig contains the desired set of options for configuring clusterDNS.',
-    required: [],
-  })
-  .openapi('DNSConfig')
-
-const GatewayAPIConfigSchema = z
-  .object({
-    channel: z
-      .enum(['CHANNEL_UNSPECIFIED', 'CHANNEL_DISABLED', 'CHANNEL_EXPERIMENTAL', 'CHANNEL_STANDARD'])
-      .exactOptional()
-      .openapi({ description: 'The Gateway API release channel to use for Gateway API.' }),
-  })
-  .openapi({
-    description: 'GatewayAPIConfig contains the desired config of Gateway API on this cluster.',
-    required: [],
-  })
-  .openapi('GatewayAPIConfig')
-
-const ClusterNetworkPerformanceConfigSchema = z
-  .object({
-    totalEgressBandwidthTier: z
-      .enum(['TIER_UNSPECIFIED', 'TIER_1'])
-      .exactOptional()
-      .openapi({ description: 'Specifies the total network bandwidth tier for the NodePool.' }),
-  })
-  .openapi({ description: 'Configuration of all network bandwidth tiers', required: [] })
-  .openapi('ClusterNetworkPerformanceConfig')
-
-const ServiceExternalIPsConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether Services with ExternalIPs field are allowed or not.' }),
-  })
-  .openapi({ description: 'Config to block services with externalIPs field.', required: [] })
-  .openapi('ServiceExternalIPsConfig')
-
-const NetworkConfigSchema = z
-  .object({
-    datapathProvider: z
-      .enum(['DATAPATH_PROVIDER_UNSPECIFIED', 'LEGACY_DATAPATH', 'ADVANCED_DATAPATH'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The desired datapath provider for this cluster. By default, uses the IPTables-based kube-proxy implementation.',
-      }),
-    defaultSnatStatus: DefaultSnatStatusSchema.exactOptional().openapi({
-      description:
-        'Whether the cluster disables default in-node sNAT rules. In-node sNAT rules will be disabled when default_snat_status is disabled. When disabled is set to false, default IP masquerade rules will be applied to the nodes to prevent sNAT on cluster internal traffic.',
-    }),
-    dnsConfig: DNSConfigSchema.exactOptional().openapi({
-      description: 'DNSConfig contains clusterDNS config for this cluster.',
-    }),
-    enableFqdnNetworkPolicy: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether FQDN Network Policy is enabled on this cluster.' }),
-    enableIntraNodeVisibility: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether Intra-node visibility is enabled for this cluster. This makes same node pod to pod traffic visible for VPC network.',
-      }),
-    enableL4ilbSubsetting: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether L4ILB Subsetting is enabled for this cluster.' }),
-    enableMultiNetworking: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether multi-networking is enabled for this cluster.' }),
-    gatewayApiConfig: GatewayAPIConfigSchema.exactOptional().openapi({
-      description: 'GatewayAPIConfig contains the desired config of Gateway API on this cluster.',
-    }),
-    inTransitEncryptionConfig: z
-      .enum([
-        'IN_TRANSIT_ENCRYPTION_CONFIG_UNSPECIFIED',
-        'IN_TRANSIT_ENCRYPTION_DISABLED',
-        'IN_TRANSIT_ENCRYPTION_INTER_NODE_TRANSPARENT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Specify the details of in-transit encryption.' }),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The relative name of the Google Compute Engine network(https://cloud.google.com/compute/docs/networks-and-firewalls#networks) to which the cluster is connected. Example: projects/my-project/global/networks/my-network',
-      }),
-    networkPerformanceConfig: ClusterNetworkPerformanceConfigSchema.exactOptional().openapi({
-      description: 'Network bandwidth tier configuration.',
-    }),
-    privateIpv6GoogleAccess: z
-      .enum([
-        'PRIVATE_IPV6_GOOGLE_ACCESS_UNSPECIFIED',
-        'PRIVATE_IPV6_GOOGLE_ACCESS_DISABLED',
-        'PRIVATE_IPV6_GOOGLE_ACCESS_TO_GOOGLE',
-        'PRIVATE_IPV6_GOOGLE_ACCESS_BIDIRECTIONAL',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The desired state of IPv6 connectivity to Google Services. By default, no private IPv6 access to or from Google Services (all access will be via IPv4)',
-      }),
-    serviceExternalIpsConfig: ServiceExternalIPsConfigSchema.exactOptional().openapi({
-      description:
-        'ServiceExternalIPsConfig specifies if services with externalIPs field are blocked or not.',
-    }),
-    subnetwork: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The relative name of the Google Compute Engine [subnetwork](https://cloud.google.com/compute/docs/vpc) to which the cluster is connected. Example: projects/my-project/regions/us-central1/subnetworks/my-subnet',
-      }),
-  })
-  .openapi({
-    description: 'NetworkConfig reports the relative names of network & subnetwork.',
-    required: [],
-  })
-  .openapi('NetworkConfig')
-
-const NetworkPolicySchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether network policy is enabled on the cluster.' }),
-    provider: z
-      .enum(['PROVIDER_UNSPECIFIED', 'CALICO'])
-      .exactOptional()
-      .openapi({ description: 'The selected network policy provider.' }),
-  })
-  .openapi({
-    description:
-      'Configuration options for the NetworkPolicy feature. https://kubernetes.io/docs/concepts/services-networking/networkpolicies/',
-    required: [],
-  })
-  .openapi('NetworkPolicy')
-
-const NodeConfigSchema: z.ZodType<NodeConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        accelerators: z
-          .array(AcceleratorConfigSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'A list of hardware accelerators to be attached to each node. See https://cloud.google.com/compute/docs/gpus for more information about support for GPUs.',
-          }),
-        advancedMachineFeatures: AdvancedMachineFeaturesSchema.exactOptional().openapi({
-          description: 'Advanced features for the Compute Engine VM.',
-        }),
-        bootDiskKmsKey: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              ' The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool. This should be of the form projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]. For more information about protecting resources with Cloud KMS Keys please see: https://cloud.google.com/compute/docs/disks/customer-managed-encryption',
-          }),
-        confidentialNodes: ConfidentialNodesSchema.exactOptional().openapi({
-          description:
-            'Confidential nodes config. All the nodes in the node pool will be Confidential VM once enabled.',
-        }),
-        diskSizeGb: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Size of the disk attached to each node, specified in GB. The smallest allowed disk size is 10GB. If unspecified, the default disk size is 100GB.',
-          }),
-        diskType: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Type of the disk attached to each node (e.g. 'pd-standard', 'pd-ssd' or 'pd-balanced') If unspecified, the default disk type is 'pd-standard'",
-          }),
-        enableConfidentialStorage: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Optional. Reserved for future use.' }),
-        ephemeralStorageConfig: EphemeralStorageConfigSchema.exactOptional().openapi({
-          description:
-            'Parameters for the ephemeral storage filesystem. If unspecified, ephemeral storage is backed by the boot disk.',
-        }),
-        ephemeralStorageLocalSsdConfig:
-          EphemeralStorageLocalSsdConfigSchema.exactOptional().openapi({
-            description:
-              'Parameters for the node ephemeral storage using Local SSDs. If unspecified, ephemeral storage is backed by the boot disk. This field is functionally equivalent to the ephemeral_storage_config',
-          }),
-        fastSocket: FastSocketSchema.exactOptional().openapi({
-          description: 'Enable or disable NCCL fast socket for the node pool.',
-        }),
-        gcfsConfig: GcfsConfigSchema.exactOptional().openapi({
-          description: 'GCFS (Google Container File System) configs.',
-        }),
-        gvnic: VirtualNICSchema.exactOptional().openapi({
-          description: 'Enable or disable gvnic on the node pool.',
-        }),
-        hostMaintenancePolicy: HostMaintenancePolicySchema.exactOptional().openapi({
-          description:
-            'HostMaintenancePolicy contains the desired maintenance policy for the Google Compute Engine hosts.',
-        }),
-        imageType: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The image type to use for this node. Note that for a given image type, the latest version of it will be used. Please see https://cloud.google.com/kubernetes-engine/docs/concepts/node-images for available image types.',
-          }),
-        kubeletConfig: NodeKubeletConfigSchema.exactOptional().openapi({
-          description: 'Node kubelet configs.',
-        }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              "The map of Kubernetes labels (key/value pairs) to be applied to each node. These will added in addition to any default label(s) that Kubernetes may apply to the node. In case of conflict in label keys, the applied set may differ depending on the Kubernetes version -- it's best to assume the behavior is undefined and conflicts should be avoided. For more information, including usage and the valid values, see: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/",
-          }),
-        linuxNodeConfig: LinuxNodeConfigSchema.exactOptional().openapi({
-          description: 'Parameters that can be configured on Linux nodes.',
-        }),
-        localNvmeSsdBlockConfig: LocalNvmeSsdBlockConfigSchema.exactOptional().openapi({
-          description: 'Parameters for using raw-block Local NVMe SSDs.',
-        }),
-        localSsdCount: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of local SSD disks to be attached to the node. The limit for this value is dependent upon the maximum number of disks available on a machine per zone. See: https://cloud.google.com/compute/docs/disks/local-ssd for more information.',
-          }),
-        loggingConfig: NodePoolLoggingConfigSchema.exactOptional().openapi({
-          description: 'Logging configuration.',
-        }),
-        machineType: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of a Google Compute Engine [machine type](https://cloud.google.com/compute/docs/machine-types). If unspecified, the default machine type is `e2-medium`.',
-          }),
-        metadata: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The metadata key/value pairs assigned to instances in the cluster. Keys must conform to the regexp `[a-zA-Z0-9-_]+` and be less than 128 bytes in length. These are reflected as part of a URL in the metadata server. Additionally, to avoid ambiguity, keys must not conflict with any other metadata keys for the project or be one of the reserved keys: - "cluster-location" - "cluster-name" - "cluster-uid" - "configure-sh" - "containerd-configure-sh" - "enable-oslogin" - "gci-ensure-gke-docker" - "gci-metrics-enabled" - "gci-update-strategy" - "instance-template" - "kube-env" - "startup-script" - "user-data" - "disable-address-manager" - "windows-startup-script-ps1" - "common-psm1" - "k8s-node-setup-psm1" - "install-ssh-psm1" - "user-profile-psm1" Values are free-form strings, and only have meaning as interpreted by the image running in the instance. The only restriction placed on them is that each value\'s size must be less than or equal to 32 KB. The total size of all keys and values must be less than 512 KB.',
-          }),
-        minCpuPlatform: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Minimum CPU platform to be used by this instance. The instance may be scheduled on the specified or newer CPU platform. Applicable values are the friendly names of CPU platforms, such as `minCpuPlatform: "Intel Haswell"` or `minCpuPlatform: "Intel Sandy Bridge"`. For more information, read [how to specify min CPU platform](https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform).',
-          }),
-        nodeGroup: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Setting this field will assign instances of this pool to run on the specified node group. This is useful for running workloads on [sole tenant nodes](https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes).',
-          }),
-        oauthScopes: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The set of Google API scopes to be made available on all of the node VMs under the "default" service account. The following scopes are recommended, but not required, and by default are not included: * `https://www.googleapis.com/auth/compute` is required for mounting persistent storage on your nodes. * `https://www.googleapis.com/auth/devstorage.read_only` is required for communicating with **gcr.io** (the [Google Container Registry](https://cloud.google.com/container-registry/)). If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring are enabled, in which case their required scopes will be added.',
-          }),
-        preemptible: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the nodes are created as preemptible VM instances. See: https://cloud.google.com/compute/docs/instances/preemptible for more information about preemptible VM instances.',
-          }),
-        reservationAffinity: ReservationAffinitySchema.exactOptional().openapi({
-          description:
-            'The optional reservation affinity. Setting this field will apply the specified [Zonal Compute Reservation](https://cloud.google.com/compute/docs/instances/reserving-zonal-resources) to this node pool.',
-        }),
-        resourceLabels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The resource labels for the node pool to use to annotate any related Google Compute Engine resources.',
-          }),
-        resourceManagerTags: ResourceManagerTagsSchema.exactOptional().openapi({
-          description: 'A map of resource manager tag keys and values to be attached to the nodes.',
-        }),
-        sandboxConfig: SandboxConfigSchema.exactOptional().openapi({
-          description: 'Sandbox configuration for this node.',
-        }),
-        secondaryBootDisks: z
-          .array(SecondaryBootDiskSchema)
-          .exactOptional()
-          .openapi({ description: 'List of secondary boot disks attached to the nodes.' }),
-        serviceAccount: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The Google Cloud Platform Service Account to be used by the node VMs. Specify the email address of the Service Account; otherwise, if no Service Account is specified, the "default" service account is used.',
-          }),
-        shieldedInstanceConfig: ShieldedInstanceConfigSchema.exactOptional().openapi({
-          description: 'Shielded Instance options.',
-        }),
-        soleTenantConfig: SoleTenantConfigSchema.exactOptional().openapi({
-          description: 'Parameters for node pools to be backed by shared sole tenant node groups.',
-        }),
-        spot: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Spot flag for enabling Spot VM, which is a rebrand of the existing preemptible flag.',
-          }),
-        tags: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of instance tags applied to all nodes. Tags are used to identify valid sources or targets for network firewalls and are specified by the client during cluster or node pool creation. Each tag within the list must comply with RFC1035.',
-          }),
-        taints: z
-          .array(NodeTaintSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List of kubernetes taints to be applied to each node. For more information, including usage and the valid values, see: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/',
-          }),
-        windowsNodeConfig: WindowsNodeConfigSchema.exactOptional().openapi({
-          description: 'Parameters that can be configured on Windows nodes.',
-        }),
-        workloadMetadataConfig: WorkloadMetadataConfigSchema.exactOptional().openapi({
-          description: 'The workload metadata configuration for this node.',
-        }),
-      })
-      .openapi({
-        description:
-          'Parameters that describe the nodes in a cluster. GKE Autopilot clusters do not recognize parameters in `NodeConfig`. Use AutoprovisioningNodePoolDefaults instead.',
-        required: [],
-      }),
-  )
   .openapi('NodeConfig')
 
 const NetworkTagsSchema = z
@@ -2680,70 +2350,146 @@ const NodePoolAutoscalingSchema = z
   })
   .openapi('NodePoolAutoscaling')
 
-const NodeNetworkConfigSchema: z.ZodType<NodeNetworkConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        additionalNodeNetworkConfigs: z
-          .array(AdditionalNodeNetworkConfigSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'We specify the additional node networks for this node pool using this list. Each node network corresponds to an additional interface',
-          }),
-        additionalPodNetworkConfigs: z
-          .array(AdditionalPodNetworkConfigSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'We specify the additional pod networks for this node pool using this list. Each pod network corresponds to an additional alias IP range for the node',
-          }),
-        createPodRange: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Input only. Whether to create a new range for pod IPs in this node pool. Defaults are provided for `pod_range` and `pod_ipv4_cidr_block` if they are not specified. If neither `create_pod_range` or `pod_range` are specified, the cluster-level default (`ip_allocation_policy.cluster_ipv4_cidr_block`) is used. Only applicable if `ip_allocation_policy.use_ip_aliases` is true. This field cannot be changed after the node pool has been created.',
-          }),
-        enablePrivateNodes: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether nodes have internal IP addresses only. If enable_private_nodes is not specified, then the value is derived from cluster.privateClusterConfig.enablePrivateNodes',
-          }),
-        networkPerformanceConfig: NetworkPerformanceConfigSchema.exactOptional().openapi({
-          description: 'Network bandwidth tier configuration.',
-        }),
-        podCidrOverprovisionConfig: PodCIDROverprovisionConfigSchema.exactOptional().openapi({
-          description:
-            '[PRIVATE FIELD] Pod CIDR size overprovisioning config for the nodepool. Pod CIDR size per node depends on max_pods_per_node. By default, the value of max_pods_per_node is rounded off to next power of 2 and we then double that to get the size of pod CIDR block per node. Example: max_pods_per_node of 30 would result in 64 IPs (/26). This config can disable the doubling of IPs (we still round off to next power of 2) Example: max_pods_per_node of 30 will result in 32 IPs (/27) when overprovisioning is disabled.',
-        }),
-        podIpv4CidrBlock: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The IP address range for pod IPs in this node pool. Only applicable if `create_pod_range` is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) to pick a specific range to use. Only applicable if `ip_allocation_policy.use_ip_aliases` is true. This field cannot be changed after the node pool has been created.',
-          }),
-        podIpv4RangeUtilization: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. [Output only] The utilization of the IPv4 range for the pod. The ratio is Usage/[Total number of IPs in the secondary range], Usage=numNodes*numZones*podIPsPerNode.',
-            readOnly: true,
-          }),
-        podRange: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The ID of the secondary range for pod IPs. If `create_pod_range` is true, this ID is used for the new range. If `create_pod_range` is false, uses an existing secondary range with this ID. Only applicable if `ip_allocation_policy.use_ip_aliases` is true. This field cannot be changed after the node pool has been created.',
-          }),
-      })
-      .openapi({ description: 'Parameters for node pool-level network config.', required: [] }),
-  )
+const BestEffortProvisioningSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When this is enabled, cluster/node pool creations will ignore non-fatal errors like stockout to best provision as many nodes as possible right now and eventually bring up all target number of nodes',
+      }),
+    minProvisionNodes: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum number of nodes to be provisioned to be considered as succeeded, and the rest of nodes will be provisioned gradually and eventually when stockout issue has been resolved.',
+      }),
+  })
+  .openapi({ description: 'Best effort provisioning.', required: [] })
+  .openapi('BestEffortProvisioning')
+
+const AdditionalNodeNetworkConfigSchema = z
+  .object({
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the VPC where the additional interface belongs' }),
+    subnetwork: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the subnetwork where the additional interface belongs' }),
+  })
+  .openapi({
+    description:
+      'AdditionalNodeNetworkConfig is the configuration for additional node networks within the NodeNetworkConfig message',
+    required: [],
+  })
+  .openapi('AdditionalNodeNetworkConfig')
+
+const AdditionalPodNetworkConfigSchema = z
+  .object({
+    maxPodsPerNode: MaxPodsConstraintSchema.exactOptional().openapi({
+      description: 'The maximum number of pods per node which use this pod network',
+    }),
+    secondaryPodRange: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the secondary range on the subnet which provides IP address for this pod range',
+      }),
+    subnetwork: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the subnetwork where the additional pod network belongs' }),
+  })
+  .openapi({
+    description:
+      'AdditionalPodNetworkConfig is the configuration for additional pod networks within the NodeNetworkConfig message',
+    required: [],
+  })
+  .openapi('AdditionalPodNetworkConfig')
+
+const NetworkPerformanceConfigSchema = z
+  .object({
+    externalIpEgressBandwidthTier: z
+      .enum(['TIER_UNSPECIFIED', 'TIER_1'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the network bandwidth tier for the NodePool for traffic to external/public IP addresses.',
+      }),
+    totalEgressBandwidthTier: z
+      .enum(['TIER_UNSPECIFIED', 'TIER_1'])
+      .exactOptional()
+      .openapi({ description: 'Specifies the total network bandwidth tier for the NodePool.' }),
+  })
+  .openapi({ description: 'Configuration of all network bandwidth tiers', required: [] })
+  .openapi('NetworkPerformanceConfig')
+
+const NodeNetworkConfigSchema = z
+  .object({
+    additionalNodeNetworkConfigs: z
+      .array(AdditionalNodeNetworkConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'We specify the additional node networks for this node pool using this list. Each node network corresponds to an additional interface',
+      }),
+    additionalPodNetworkConfigs: z
+      .array(AdditionalPodNetworkConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'We specify the additional pod networks for this node pool using this list. Each pod network corresponds to an additional alias IP range for the node',
+      }),
+    createPodRange: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Input only. Whether to create a new range for pod IPs in this node pool. Defaults are provided for `pod_range` and `pod_ipv4_cidr_block` if they are not specified. If neither `create_pod_range` or `pod_range` are specified, the cluster-level default (`ip_allocation_policy.cluster_ipv4_cidr_block`) is used. Only applicable if `ip_allocation_policy.use_ip_aliases` is true. This field cannot be changed after the node pool has been created.',
+      }),
+    enablePrivateNodes: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether nodes have internal IP addresses only. If enable_private_nodes is not specified, then the value is derived from cluster.privateClusterConfig.enablePrivateNodes',
+      }),
+    networkPerformanceConfig: NetworkPerformanceConfigSchema.exactOptional().openapi({
+      description: 'Network bandwidth tier configuration.',
+    }),
+    podCidrOverprovisionConfig: PodCIDROverprovisionConfigSchema.exactOptional().openapi({
+      description:
+        '[PRIVATE FIELD] Pod CIDR size overprovisioning config for the nodepool. Pod CIDR size per node depends on max_pods_per_node. By default, the value of max_pods_per_node is rounded off to next power of 2 and we then double that to get the size of pod CIDR block per node. Example: max_pods_per_node of 30 would result in 64 IPs (/26). This config can disable the doubling of IPs (we still round off to next power of 2) Example: max_pods_per_node of 30 will result in 32 IPs (/27) when overprovisioning is disabled.',
+    }),
+    podIpv4CidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IP address range for pod IPs in this node pool. Only applicable if `create_pod_range` is true. Set to blank to have a range chosen with the default size. Set to /netmask (e.g. `/14`) to have a range chosen with a specific netmask. Set to a [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) notation (e.g. `10.96.0.0/14`) to pick a specific range to use. Only applicable if `ip_allocation_policy.use_ip_aliases` is true. This field cannot be changed after the node pool has been created.',
+      }),
+    podIpv4RangeUtilization: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. [Output only] The utilization of the IPv4 range for the pod. The ratio is Usage/[Total number of IPs in the secondary range], Usage=numNodes*numZones*podIPsPerNode.',
+        readOnly: true,
+      }),
+    podRange: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the secondary range for pod IPs. If `create_pod_range` is true, this ID is used for the new range. If `create_pod_range` is false, uses an existing secondary range with this ID. Only applicable if `ip_allocation_policy.use_ip_aliases` is true. This field cannot be changed after the node pool has been created.',
+      }),
+  })
+  .openapi({ description: 'Parameters for node pool-level network config.', required: [] })
   .openapi('NodeNetworkConfig')
 
 const PlacementPolicySchema = z
@@ -2788,6 +2534,48 @@ const QueuedProvisioningSchema = z
     required: [],
   })
   .openapi('QueuedProvisioning')
+
+const BlueGreenInfoSchema = z
+  .object({
+    blueInstanceGroupUrls: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource URLs of the [managed instance groups] (/compute/docs/instance-groups/creating-groups-of-managed-instances) associated with blue pool.',
+      }),
+    bluePoolDeletionStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time to start deleting blue pool to complete blue-green upgrade, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.',
+      }),
+    greenInstanceGroupUrls: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource URLs of the [managed instance groups] (/compute/docs/instance-groups/creating-groups-of-managed-instances) associated with green pool.',
+      }),
+    greenPoolVersion: z.string().exactOptional().openapi({ description: 'Version of green pool.' }),
+    phase: z
+      .enum([
+        'PHASE_UNSPECIFIED',
+        'UPDATE_STARTED',
+        'CREATING_GREEN_POOL',
+        'CORDONING_BLUE_POOL',
+        'WAITING_TO_DRAIN_BLUE_POOL',
+        'DRAINING_BLUE_POOL',
+        'NODE_POOL_SOAKING',
+        'DELETING_BLUE_POOL',
+        'ROLLBACK_STARTED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Current blue-green upgrade phase.' }),
+  })
+  .openapi({ description: 'Information relevant to blue-green upgrade.', required: [] })
+  .openapi('BlueGreenInfo')
 
 const UpdateInfoSchema = z
   .object({
@@ -3122,6 +2910,16 @@ const ReleaseChannelSchema = z
   })
   .openapi('ReleaseChannel')
 
+const BigQueryDestinationSchema = z
+  .object({
+    datasetId: z.string().exactOptional().openapi({ description: 'The ID of a BigQuery Dataset.' }),
+  })
+  .openapi({
+    description: 'Parameters for using BigQuery as the destination of resource usage export.',
+    required: [],
+  })
+  .openapi('BigQueryDestination')
+
 const ConsumptionMeteringConfigSchema = z
   .object({
     enabled: z
@@ -3277,7 +3075,94 @@ const WorkloadIdentityConfigSchema = z
   })
   .openapi('WorkloadIdentityConfig')
 
-const ClusterSchema = z
+type ClusterType = {
+  addonsConfig?: z.infer<typeof AddonsConfigSchema>
+  authenticatorGroupsConfig?: z.infer<typeof AuthenticatorGroupsConfigSchema>
+  autopilot?: z.infer<typeof AutopilotSchema>
+  autoscaling?: z.infer<typeof ClusterAutoscalingSchema>
+  binaryAuthorization?: z.infer<typeof BinaryAuthorizationSchema>
+  clusterIpv4Cidr?: string
+  clusterTelemetry?: z.infer<typeof ClusterTelemetrySchema>
+  conditions?: z.infer<typeof StatusConditionSchema>[]
+  confidentialNodes?: z.infer<typeof ConfidentialNodesSchema>
+  costManagementConfig?: z.infer<typeof CostManagementConfigSchema>
+  createTime?: string
+  currentMasterVersion?: string
+  currentNodeCount?: number
+  currentNodeVersion?: string
+  databaseEncryption?: z.infer<typeof DatabaseEncryptionSchema>
+  defaultMaxPodsConstraint?: z.infer<typeof MaxPodsConstraintSchema>
+  description?: string
+  enableK8sBetaApis?: z.infer<typeof K8sBetaAPIConfigSchema>
+  enableKubernetesAlpha?: boolean
+  enableTpu?: boolean
+  endpoint?: string
+  enterpriseConfig?: z.infer<typeof EnterpriseConfigSchema>
+  etag?: string
+  expireTime?: string
+  fleet?: z.infer<typeof FleetSchema>
+  id?: string
+  identityServiceConfig?: z.infer<typeof IdentityServiceConfigSchema>
+  initialClusterVersion?: string
+  initialNodeCount?: number
+  instanceGroupUrls?: string[]
+  ipAllocationPolicy?: z.infer<typeof IPAllocationPolicySchema>
+  labelFingerprint?: string
+  legacyAbac?: z.infer<typeof LegacyAbacSchema>
+  location?: string
+  locations?: string[]
+  loggingConfig?: z.infer<typeof LoggingConfigSchema>
+  loggingService?: string
+  maintenancePolicy?: z.infer<typeof MaintenancePolicySchema>
+  master?: z.infer<typeof MasterSchema>
+  masterAuth?: z.infer<typeof MasterAuthSchema>
+  masterAuthorizedNetworksConfig?: z.infer<typeof MasterAuthorizedNetworksConfigSchema>
+  masterIpv4CidrBlock?: string
+  meshCertificates?: z.infer<typeof MeshCertificatesSchema>
+  monitoringConfig?: z.infer<typeof MonitoringConfigSchema>
+  monitoringService?: string
+  name?: string
+  network?: string
+  networkConfig?: z.infer<typeof NetworkConfigSchema>
+  networkPolicy?: z.infer<typeof NetworkPolicySchema>
+  nodeConfig?: z.infer<typeof NodeConfigSchema>
+  nodeIpv4CidrSize?: number
+  nodePoolAutoConfig?: z.infer<typeof NodePoolAutoConfigSchema>
+  nodePoolDefaults?: z.infer<typeof NodePoolDefaultsSchema>
+  nodePools?: z.infer<typeof NodePoolSchema>[]
+  notificationConfig?: z.infer<typeof NotificationConfigSchema>
+  parentProductConfig?: z.infer<typeof ParentProductConfigSchema>
+  podSecurityPolicyConfig?: z.infer<typeof PodSecurityPolicyConfigSchema>
+  privateCluster?: boolean
+  privateClusterConfig?: z.infer<typeof PrivateClusterConfigSchema>
+  protectConfig?: z.infer<typeof ProtectConfigSchema>
+  releaseChannel?: z.infer<typeof ReleaseChannelSchema>
+  resourceLabels?: { [key: string]: string }
+  resourceUsageExportConfig?: z.infer<typeof ResourceUsageExportConfigSchema>
+  securityPostureConfig?: z.infer<typeof SecurityPostureConfigSchema>
+  selfLink?: string
+  servicesIpv4Cidr?: string
+  shieldedNodes?: z.infer<typeof ShieldedNodesSchema>
+  status?:
+    | 'STATUS_UNSPECIFIED'
+    | 'PROVISIONING'
+    | 'RUNNING'
+    | 'RECONCILING'
+    | 'STOPPING'
+    | 'ERROR'
+    | 'DEGRADED'
+  statusMessage?: string
+  subnetwork?: string
+  tpuConfig?: z.infer<typeof TpuConfigSchema>
+  tpuIpv4CidrBlock?: string
+  verticalPodAutoscaling?: z.infer<typeof VerticalPodAutoscalingSchema>
+  workloadAltsConfig?: z.infer<typeof WorkloadALTSConfigSchema>
+  workloadCertificates?: z.infer<typeof WorkloadCertificatesSchema>
+  workloadIdentityConfig?: z.infer<typeof WorkloadIdentityConfigSchema>
+  zone?: string
+}
+
+const ClusterSchema: z.ZodType<ClusterType> = z
   .object({
     addonsConfig: AddonsConfigSchema.exactOptional().openapi({
       description: 'Configurations for the various addons available to run in the cluster.',
@@ -3662,6 +3547,152 @@ const ClusterSchema = z
   .openapi({ description: 'A Google Kubernetes Engine cluster.', required: [] })
   .openapi('Cluster')
 
+type CreateClusterRequestType = {
+  cluster?: z.infer<typeof ClusterSchema>
+  parent?: string
+  projectId?: string
+  zone?: string
+}
+
+type ListClustersResponseType = {
+  clusters?: z.infer<typeof ClusterSchema>[]
+  missingZones?: string[]
+}
+
+type ListNodePoolsResponseType = { nodePools?: z.infer<typeof NodePoolSchema>[] }
+
+const MetricSchema = z
+  .object({
+    doubleValue: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'For metrics with floating point value.' }),
+    intValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'For metrics with integer value.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Metric name, e.g., "nodes total", "percent done".' }),
+    stringValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'For metrics with custom values (ratios, visual progress, etc.).' }),
+  })
+  .openapi({ description: 'Progress metric is (string, int|float|string) pair.', required: [] })
+  .openapi('Metric')
+
+type OperationProgressType = {
+  metrics?: z.infer<typeof MetricSchema>[]
+  name?: string
+  stages?: OperationProgressType[]
+  status?: 'STATUS_UNSPECIFIED' | 'PENDING' | 'RUNNING' | 'DONE' | 'ABORTING'
+}
+
+const AutopilotCompatibilityIssueSchema = z
+  .object({
+    constraintType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The constraint type of the issue.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the issue.' }),
+    documentationUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A URL to a public documnetation, which addresses resolving this issue.',
+      }),
+    incompatibilityType: z
+      .enum([
+        'UNSPECIFIED',
+        'INCOMPATIBILITY',
+        'ADDITIONAL_CONFIG_REQUIRED',
+        'PASSED_WITH_OPTIONAL_CONFIG',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The incompatibility type of this issue.' }),
+    lastObservation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last time when this issue was observed.' }),
+    subjects: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The name of the resources which are subject to this issue.' }),
+  })
+  .openapi({
+    description:
+      'AutopilotCompatibilityIssue contains information about a specific compatibility issue with Autopilot mode.',
+    required: [],
+  })
+  .openapi('AutopilotCompatibilityIssue')
+
+const AvailableVersionSchema = z
+  .object({
+    reason: z.string().exactOptional().openapi({ description: 'Reason for availability.' }),
+    version: z.string().exactOptional().openapi({ description: 'Kubernetes version.' }),
+  })
+  .openapi({ deprecated: true, description: 'Deprecated.', required: [] })
+  .openapi('AvailableVersion')
+
+const CancelOperationRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name (project, location, operation id) of the operation to cancel. Specified in the format `projects/*/locations/*/operations/*`.',
+      }),
+    operationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Required. Deprecated. The server-assigned `name` of the operation. This field has been deprecated and replaced by the name field.',
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Required. Deprecated. The Google Developers Console [project ID or project number](https://cloud.google.com/resource-manager/docs/creating-managing-projects). This field has been deprecated and replaced by the name field.',
+      }),
+    zone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'Required. Deprecated. The name of the Google Compute Engine [zone](https://cloud.google.com/compute/docs/zones#available) in which the operation resides. This field has been deprecated and replaced by the name field.',
+      }),
+  })
+  .openapi({ description: 'CancelOperationRequest cancels a single operation.', required: [] })
+  .openapi('CancelOperationRequest')
+
+const CheckAutopilotCompatibilityResponseSchema = z
+  .object({
+    issues: z
+      .array(AutopilotCompatibilityIssueSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of issues for the given operation.' }),
+    summary: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The summary of the autopilot compatibility response.' }),
+  })
+  .openapi({
+    description: 'CheckAutopilotCompatibilityResponse has a list of compatibility issues.',
+    required: [],
+  })
+  .openapi('CheckAutopilotCompatibilityResponse')
+
 const IntraNodeVisibilityConfigSchema = z
   .object({
     enabled: z
@@ -3984,14 +4015,14 @@ const CompleteIPRotationRequestSchema = z
   .openapi('CompleteIPRotationRequest')
 
 const CompleteNodePoolUpgradeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'CompleteNodePoolUpgradeRequest sets the name of target node pool to complete upgrade.',
   })
   .openapi('CompleteNodePoolUpgradeRequest')
 
-const CreateClusterRequestSchema = z
+const CreateClusterRequestSchema: z.ZodType<CreateClusterRequestType> = z
   .object({
     cluster: ClusterSchema.exactOptional().openapi({
       description:
@@ -4099,7 +4130,7 @@ const DateSchema = z
   .openapi('Date')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -4196,7 +4227,7 @@ const GetOpenIDConfigResponseSchema = z
   })
   .openapi('GetOpenIDConfigResponse')
 
-const ListClustersResponseSchema = z
+const ListClustersResponseSchema: z.ZodType<ListClustersResponseType> = z
   .object({
     clusters: z
       .array(ClusterSchema)
@@ -4266,7 +4297,7 @@ const ListLocationsResponseSchema = z
   })
   .openapi('ListLocationsResponse')
 
-const ListNodePoolsResponseSchema = z
+const ListNodePoolsResponseSchema: z.ZodType<ListNodePoolsResponseType> = z
   .object({
     nodePools: z
       .array(NodePoolSchema)

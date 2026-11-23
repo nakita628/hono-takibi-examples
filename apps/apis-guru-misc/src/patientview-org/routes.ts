@@ -1,5 +1,128 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const GroupSchema: z.ZodType<GroupType> = z
+  .lazy(() =>
+    z
+      .object({
+        address1: z.string().exactOptional(),
+        address2: z.string().exactOptional(),
+        address3: z.string().exactOptional(),
+        childGroups: z.array(GroupSchema).exactOptional(),
+        code: z.string().exactOptional(),
+        contactPoints: z
+          .array(ContactPointSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional(),
+        created: z.iso.datetime({ offset: true }).exactOptional(),
+        fhirResourceId: z.uuid().exactOptional(),
+        groupFeatures: z
+          .array(GroupFeatureSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional(),
+        groupType: LookupSchema.exactOptional(),
+        id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        lastImportDate: z.iso.datetime({ offset: true }).exactOptional(),
+        lastUpdate: z.iso.datetime({ offset: true }).exactOptional(),
+        links: z
+          .array(LinkSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional(),
+        locations: z
+          .array(LocationSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional(),
+        name: z.string().exactOptional(),
+        parentGroups: z.array(GroupSchema).exactOptional(),
+        postcode: z.string().exactOptional(),
+        sftpUser: z.string().exactOptional(),
+        shortName: z.string().exactOptional(),
+        visible: z.boolean().exactOptional(),
+        visibleToJoin: z.boolean().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('Group')
+
+const FhirObservationSchema = z
+  .object({
+    applies: z.iso.datetime({ offset: true }).exactOptional(),
+    bodySite: z.string().exactOptional(),
+    comments: z.string().exactOptional(),
+    comparator: z.string().exactOptional(),
+    diagram: z.string().exactOptional(),
+    group: GroupSchema.exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    identifier: z.string().exactOptional(),
+    location: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    temporaryUuid: z.string().exactOptional(),
+    units: z.string().exactOptional(),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FhirObservation')
+
+type EntryStringListFhirObservationType = { key?: z.infer<typeof FhirObservationSchema>[] }
+
+const EntryStringListFhirObservationSchema: z.ZodType<EntryStringListFhirObservationType> = z
+  .object({ key: z.array(FhirObservationSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('EntryStringListFhirObservation')
+
+type EntryLongMapStringListFhirObservationType = {
+  key?: z.infer<typeof EntryStringListFhirObservationSchema>[]
+}
+
 const LookupTypeSchema = z
   .object({
     created: z.iso.datetime({ offset: true }).exactOptional(),
@@ -46,6 +169,110 @@ const LookupTypeSchema = z
   })
   .openapi({ required: [] })
   .openapi('LookupType')
+
+const LookupSchema = z
+  .object({
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    description: z.string().exactOptional(),
+    descriptionFriendly: z.string().exactOptional(),
+    displayOrder: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    lastUpdate: z.iso.datetime({ offset: true }).exactOptional(),
+    lookupType: LookupTypeSchema.exactOptional(),
+    value: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Lookup')
+
+const LinkSchema = z
+  .object({
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    displayOrder: z.int32().exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    lastUpdate: z.iso.datetime({ offset: true }).exactOptional(),
+    link: z.string().exactOptional(),
+    linkType: LookupSchema.exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Link')
+
+const FhirProcedureSchema = z
+  .object({
+    bodySite: z.string().exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FhirProcedure')
+
+type FhirEncounterType = {
+  date?: string
+  encounterType?: string
+  group?: z.infer<typeof GroupSchema>
+  id?: bigint
+  identifier?: string
+  links?: z.infer<typeof LinkSchema>[]
+  observations?: z.infer<typeof FhirObservationSchema>[]
+  procedures?: z.infer<typeof FhirProcedureSchema>[]
+  status?: string
+}
+
+const EntryLongMapStringListFhirObservationSchema: z.ZodType<EntryLongMapStringListFhirObservationType> =
+  z
+    .object({ key: z.array(EntryStringListFhirObservationSchema).exactOptional() })
+    .openapi({ required: [] })
+    .openapi('EntryLongMapStringListFhirObservation')
+
+type FhirObservationPageType = {
+  data?: z.infer<typeof EntryLongMapStringListFhirObservationSchema>[]
+  totalElements?: bigint
+  totalPages?: bigint
+}
 
 const ContactPointTypeSchema = z
   .object({
@@ -146,66 +373,6 @@ const GroupFeatureSchema = z
   .openapi({ required: [] })
   .openapi('GroupFeature')
 
-const LookupSchema = z
-  .object({
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    description: z.string().exactOptional(),
-    descriptionFriendly: z.string().exactOptional(),
-    displayOrder: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    lastUpdate: z.iso.datetime({ offset: true }).exactOptional(),
-    lookupType: LookupTypeSchema.exactOptional(),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Lookup')
-
-const LinkSchema = z
-  .object({
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    displayOrder: z.int32().exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    lastUpdate: z.iso.datetime({ offset: true }).exactOptional(),
-    link: z.string().exactOptional(),
-    linkType: LookupSchema.exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Link')
-
 const LocationSchema = z
   .object({
     address: z.string().exactOptional(),
@@ -255,6 +422,68 @@ type GroupType = {
   shortName?: string
   visible?: boolean
   visibleToJoin?: boolean
+}
+
+const ObservationHeadingGroupSchema = z
+  .object({
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    group: GroupSchema.exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    panel: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    panelOrder: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ObservationHeadingGroup')
+
+type ObservationHeadingType = {
+  code?: string
+  created?: string
+  decimalPlaces?: bigint
+  defaultPanel?: bigint
+  defaultPanelOrder?: bigint
+  heading?: string
+  id?: bigint
+  infoLink?: string
+  lastUpdate?: string
+  maxGraph?: number
+  minGraph?: number
+  name?: string
+  normalRange?: string
+  observationHeadingGroups?: z.infer<typeof ObservationHeadingGroupSchema>[]
+  units?: string
 }
 
 const CategorySchema = z
@@ -401,88 +630,6 @@ const CodeSchema = z
   .openapi({ required: [] })
   .openapi('Code')
 
-const GroupSchema: z.ZodType<GroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        address1: z.string().exactOptional(),
-        address2: z.string().exactOptional(),
-        address3: z.string().exactOptional(),
-        childGroups: z.array(GroupSchema).exactOptional(),
-        code: z.string().exactOptional(),
-        contactPoints: z
-          .array(ContactPointSchema)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional(),
-        created: z.iso.datetime({ offset: true }).exactOptional(),
-        fhirResourceId: z.uuid().exactOptional(),
-        groupFeatures: z
-          .array(GroupFeatureSchema)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional(),
-        groupType: LookupSchema.exactOptional(),
-        id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        lastImportDate: z.iso.datetime({ offset: true }).exactOptional(),
-        lastUpdate: z.iso.datetime({ offset: true }).exactOptional(),
-        links: z
-          .array(LinkSchema)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional(),
-        locations: z
-          .array(LocationSchema)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional(),
-        name: z.string().exactOptional(),
-        parentGroups: z.array(GroupSchema).exactOptional(),
-        postcode: z.string().exactOptional(),
-        sftpUser: z.string().exactOptional(),
-        shortName: z.string().exactOptional(),
-        visible: z.boolean().exactOptional(),
-        visibleToJoin: z.boolean().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Group')
-
 const FhirAllergySchema = z
   .object({
     confidenceLevel: z.string().exactOptional(),
@@ -550,57 +697,7 @@ const FhirConditionSchema = z
   .openapi({ required: [] })
   .openapi('FhirCondition')
 
-const FhirObservationSchema = z
-  .object({
-    applies: z.iso.datetime({ offset: true }).exactOptional(),
-    bodySite: z.string().exactOptional(),
-    comments: z.string().exactOptional(),
-    comparator: z.string().exactOptional(),
-    diagram: z.string().exactOptional(),
-    group: GroupSchema.exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    identifier: z.string().exactOptional(),
-    location: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    temporaryUuid: z.string().exactOptional(),
-    units: z.string().exactOptional(),
-    value: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('FhirObservation')
-
-const FhirProcedureSchema = z
-  .object({
-    bodySite: z.string().exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    type: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('FhirProcedure')
-
-const FhirEncounterSchema = z
+const FhirEncounterSchema: z.ZodType<FhirEncounterType> = z
   .object({
     date: z.iso.datetime({ offset: true }).exactOptional(),
     encounterType: z.string().exactOptional(),
@@ -750,6 +847,16 @@ type PatientType = {
   id?: bigint
 }
 
+type PatientManagementType = {
+  condition?: z.infer<typeof FhirConditionSchema>
+  encounters?: z.infer<typeof FhirEncounterSchema>[]
+  groupCode?: string
+  identifier?: string
+  observations?: z.infer<typeof FhirObservationSchema>[]
+  patient?: z.infer<typeof FhirPatientSchema>
+  practitioners?: z.infer<typeof FhirPractitionerSchema>[]
+}
+
 const ApiKeySchema = z
   .object({
     expired: z.boolean().exactOptional(),
@@ -758,82 +865,6 @@ const ApiKeySchema = z
   })
   .openapi({ required: [] })
   .openapi('ApiKey')
-
-const BaseGroupSchema = z
-  .object({
-    code: z.string().exactOptional(),
-    groupType: LookupSchema.exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    lastImportDate: z.iso.datetime({ offset: true }).exactOptional(),
-    name: z.string().exactOptional(),
-    parentCodes: z.array(z.string()).exactOptional(),
-    shortName: z.string().exactOptional(),
-    visible: z.boolean().exactOptional(),
-    visibleToJoin: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BaseGroup')
-
-const CredentialsSchema = z
-  .object({
-    apiKey: z.string().exactOptional(),
-    password: z.string().exactOptional(),
-    username: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Credentials')
-
-const EntryStringListFhirObservationSchema = z
-  .object({ key: z.array(FhirObservationSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('EntryStringListFhirObservation')
-
-const EntryLongMapStringListFhirObservationSchema = z
-  .object({ key: z.array(EntryStringListFhirObservationSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('EntryLongMapStringListFhirObservation')
-
-const FhirObservationPageSchema = z
-  .object({
-    data: z.array(EntryLongMapStringListFhirObservationSchema).exactOptional(),
-    totalElements: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    totalPages: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FhirObservationPage')
 
 const RoleSchema = z
   .object({
@@ -890,10 +921,10 @@ const GroupRoleSchema = z
   .openapi({ required: [] })
   .openapi('GroupRole')
 
-const ObservationHeadingGroupSchema = z
+const BaseGroupSchema = z
   .object({
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    group: GroupSchema.exactOptional(),
+    code: z.string().exactOptional(),
+    groupType: LookupSchema.exactOptional(),
     id: z
       .preprocess(
         (val) =>
@@ -906,7 +937,21 @@ const ObservationHeadingGroupSchema = z
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
-    panel: z
+    lastImportDate: z.iso.datetime({ offset: true }).exactOptional(),
+    name: z.string().exactOptional(),
+    parentCodes: z.array(z.string()).exactOptional(),
+    shortName: z.string().exactOptional(),
+    visible: z.boolean().exactOptional(),
+    visibleToJoin: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BaseGroup')
+
+const UserFeatureSchema = z
+  .object({
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    feature: FeatureSchema.exactOptional(),
+    id: z
       .preprocess(
         (val) =>
           typeof val === 'number' && Number.isSafeInteger(val)
@@ -918,7 +963,199 @@ const ObservationHeadingGroupSchema = z
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
-    panelOrder: z
+    lastUpdate: z.iso.datetime({ offset: true }).exactOptional(),
+    optInDate: z.iso.datetime({ offset: true }).exactOptional(),
+    optInHidden: z.boolean().exactOptional(),
+    optInStatus: z.boolean().exactOptional(),
+    optOutHidden: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UserFeature')
+
+type UserType = {
+  apiKey?: z.infer<typeof ApiKeySchema>
+  canSwitchUser?: boolean
+  changePassword?: boolean
+  contactNumber?: string
+  created?: string
+  currentLogin?: string
+  currentLoginIpAddress?: string
+  dateOfBirth?: string
+  deleted?: boolean
+  dummy?: boolean
+  email?: string
+  emailVerified?: boolean
+  forename?: string
+  groupRoles?: z.infer<typeof GroupRoleSchema>[]
+  hideSecretWordNotification?: boolean
+  id?: bigint
+  identifiers?: { [key: string]: unknown }[]
+  lastLogin?: string
+  lastLoginIpAddress?: string
+  latestDataReceivedBy?: z.infer<typeof BaseGroupSchema>
+  latestDataReceivedDate?: string
+  locked?: boolean
+  picture?: string
+  roleDescription?: string
+  secretWordIsSet?: boolean
+  surname?: string
+  userFeatures?: z.infer<typeof UserFeatureSchema>[]
+  username?: string
+}
+
+const RouteSchema = z
+  .object({
+    controller: z.string().exactOptional(),
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    displayOrder: z.int32().exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    lookup: LookupSchema.exactOptional(),
+    templateUrl: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Route')
+
+const UserSchema: z.ZodType<UserType> = z
+  .object({
+    apiKey: ApiKeySchema.exactOptional(),
+    canSwitchUser: z.boolean().exactOptional(),
+    changePassword: z.boolean().exactOptional(),
+    contactNumber: z.string().exactOptional(),
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    currentLogin: z.iso.datetime({ offset: true }).exactOptional(),
+    currentLoginIpAddress: z.string().exactOptional(),
+    dateOfBirth: z.iso.datetime({ offset: true }).exactOptional(),
+    deleted: z.boolean().exactOptional(),
+    dummy: z.boolean().exactOptional(),
+    email: z.string().exactOptional(),
+    emailVerified: z.boolean().exactOptional(),
+    forename: z.string().exactOptional(),
+    groupRoles: z
+      .array(GroupRoleSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    hideSecretWordNotification: z.boolean().exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    identifiers: z
+      .array(z.looseObject({}))
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    lastLogin: z.iso.datetime({ offset: true }).exactOptional(),
+    lastLoginIpAddress: z.string().exactOptional(),
+    latestDataReceivedBy: BaseGroupSchema.exactOptional(),
+    latestDataReceivedDate: z.iso.datetime({ offset: true }).exactOptional(),
+    locked: z.boolean().exactOptional(),
+    picture: z.string().exactOptional(),
+    roleDescription: z.string().exactOptional(),
+    secretWordIsSet: z.boolean().exactOptional(),
+    surname: z.string().exactOptional(),
+    userFeatures: z
+      .array(UserFeatureSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    username: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('User')
+
+type UserTokenType = {
+  auditActions?: string[]
+  checkSecretWord?: boolean
+  created?: string
+  expiration?: string
+  externalStandards?: z.infer<typeof ExternalStandardSchema>[]
+  groupFeatures?: z.infer<typeof FeatureSchema>[]
+  groupMessagingEnabled?: boolean
+  mustSetSecretWord?: boolean
+  patientFeatures?: z.infer<typeof FeatureSchema>[]
+  patientMessagingFeatureTypes?: string[]
+  patientRoles?: z.infer<typeof RoleSchema>[]
+  routes?: z.infer<typeof RouteSchema>[]
+  secretWord?: string
+  secretWordChoices?: { [key: string]: unknown }
+  secretWordIndexes?: string[]
+  secretWordSalt?: string
+  secretWordToken?: string
+  securityRoles?: z.infer<typeof RoleSchema>[]
+  shouldEnterCondition?: boolean
+  staffFeatures?: z.infer<typeof FeatureSchema>[]
+  staffRoles?: z.infer<typeof RoleSchema>[]
+  token?: string
+  user?: z.infer<typeof UserSchema>
+  userFeatures?: z.infer<typeof FeatureSchema>[]
+  userGroups?: z.infer<typeof BaseGroupSchema>[]
+}
+
+const CredentialsSchema = z
+  .object({
+    apiKey: z.string().exactOptional(),
+    password: z.string().exactOptional(),
+    username: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Credentials')
+
+const FhirObservationPageSchema: z.ZodType<FhirObservationPageType> = z
+  .object({
+    data: z.array(EntryLongMapStringListFhirObservationSchema).exactOptional(),
+    totalElements: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    totalPages: z
       .preprocess(
         (val) =>
           typeof val === 'number' && Number.isSafeInteger(val)
@@ -932,9 +1169,9 @@ const ObservationHeadingGroupSchema = z
       .openapi({ type: 'integer', format: 'int64' }),
   })
   .openapi({ required: [] })
-  .openapi('ObservationHeadingGroup')
+  .openapi('FhirObservationPage')
 
-const ObservationHeadingSchema = z
+const ObservationHeadingSchema: z.ZodType<ObservationHeadingType> = z
   .object({
     code: z.string().exactOptional(),
     created: z.iso.datetime({ offset: true }).exactOptional(),
@@ -1010,35 +1247,32 @@ const ObservationHeadingSchema = z
   .openapi('ObservationHeading')
 
 const PatientSchema: z.ZodType<PatientType> = z
-  .lazy(() =>
-    z
-      .object({
-        diagnosisCodes: z.array(CodeSchema).exactOptional(),
-        fhirAllergies: z.array(FhirAllergySchema).exactOptional(),
-        fhirConditions: z.array(FhirConditionSchema).exactOptional(),
-        fhirEncounters: z.array(FhirEncounterSchema).exactOptional(),
-        fhirObservations: z.array(FhirObservationSchema).exactOptional(),
-        fhirPatient: FhirPatientSchema.exactOptional(),
-        fhirPractitioners: z.array(FhirPractitionerSchema).exactOptional(),
-        group: GroupSchema.exactOptional(),
-        id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-      })
-      .openapi({ required: [] }),
-  )
+  .object({
+    diagnosisCodes: z.array(CodeSchema).exactOptional(),
+    fhirAllergies: z.array(FhirAllergySchema).exactOptional(),
+    fhirConditions: z.array(FhirConditionSchema).exactOptional(),
+    fhirEncounters: z.array(FhirEncounterSchema).exactOptional(),
+    fhirObservations: z.array(FhirObservationSchema).exactOptional(),
+    fhirPatient: FhirPatientSchema.exactOptional(),
+    fhirPractitioners: z.array(FhirPractitionerSchema).exactOptional(),
+    group: GroupSchema.exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
   .openapi('Patient')
 
-const PatientManagementSchema = z
+const PatientManagementSchema: z.ZodType<PatientManagementType> = z
   .object({
     condition: FhirConditionSchema.exactOptional(),
     encounters: z.array(FhirEncounterSchema).exactOptional(),
@@ -1051,134 +1285,9 @@ const PatientManagementSchema = z
   .openapi({ required: [] })
   .openapi('PatientManagement')
 
-const RouteSchema = z
-  .object({
-    controller: z.string().exactOptional(),
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    displayOrder: z.int32().exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    lookup: LookupSchema.exactOptional(),
-    templateUrl: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    url: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Route')
-
 const UUIDSchema = z.any().openapi('UUID')
 
-const UserFeatureSchema = z
-  .object({
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    feature: FeatureSchema.exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    lastUpdate: z.iso.datetime({ offset: true }).exactOptional(),
-    optInDate: z.iso.datetime({ offset: true }).exactOptional(),
-    optInHidden: z.boolean().exactOptional(),
-    optInStatus: z.boolean().exactOptional(),
-    optOutHidden: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('UserFeature')
-
-const UserSchema = z
-  .object({
-    apiKey: ApiKeySchema.exactOptional(),
-    canSwitchUser: z.boolean().exactOptional(),
-    changePassword: z.boolean().exactOptional(),
-    contactNumber: z.string().exactOptional(),
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    currentLogin: z.iso.datetime({ offset: true }).exactOptional(),
-    currentLoginIpAddress: z.string().exactOptional(),
-    dateOfBirth: z.iso.datetime({ offset: true }).exactOptional(),
-    deleted: z.boolean().exactOptional(),
-    dummy: z.boolean().exactOptional(),
-    email: z.string().exactOptional(),
-    emailVerified: z.boolean().exactOptional(),
-    forename: z.string().exactOptional(),
-    groupRoles: z
-      .array(GroupRoleSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    hideSecretWordNotification: z.boolean().exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    identifiers: z
-      .array(z.object({}))
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    lastLogin: z.iso.datetime({ offset: true }).exactOptional(),
-    lastLoginIpAddress: z.string().exactOptional(),
-    latestDataReceivedBy: BaseGroupSchema.exactOptional(),
-    latestDataReceivedDate: z.iso.datetime({ offset: true }).exactOptional(),
-    locked: z.boolean().exactOptional(),
-    picture: z.string().exactOptional(),
-    roleDescription: z.string().exactOptional(),
-    secretWordIsSet: z.boolean().exactOptional(),
-    surname: z.string().exactOptional(),
-    userFeatures: z
-      .array(UserFeatureSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    username: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('User')
-
-const UserTokenSchema = z
+const UserTokenSchema: z.ZodType<UserTokenType> = z
   .object({
     auditActions: z.array(z.string()).exactOptional(),
     checkSecretWord: z.boolean().exactOptional(),
@@ -1203,7 +1312,7 @@ const UserTokenSchema = z
       })
       .exactOptional(),
     secretWord: z.string().exactOptional(),
-    secretWordChoices: z.object({}).exactOptional(),
+    secretWordChoices: z.looseObject({}).exactOptional(),
     secretWordIndexes: z.array(z.string()).exactOptional(),
     secretWordSalt: z.string().exactOptional(),
     secretWordToken: z.string().exactOptional(),

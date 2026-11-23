@@ -1,0 +1,1193 @@
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute,
+  deleteRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute,
+  deleteRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute,
+  deleteRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute,
+  deleteRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoute,
+  deleteRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route,
+  deleteRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRoute,
+  deleteRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute,
+  deleteRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute,
+  deleteRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute,
+  deleteRoleManagementDirectoryRoute,
+  deleteRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute,
+  deleteRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute,
+  deleteRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute,
+  deleteRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute,
+  deleteRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoute,
+  deleteRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route,
+  deleteRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRoute,
+  deleteRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute,
+  deleteRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute,
+  deleteRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute,
+  deleteRoleManagementEntitlementManagementRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleInstancesCountRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleInstancesRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdActivatedUsingRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsCountRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdActivatedUsingRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdAppScopeRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdDirectoryScopeRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdPrincipalRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoleDefinitionRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute,
+  getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdTargetScheduleRoute,
+  getRoleManagementDirectoryRoleAssignmentSchedulesCountRoute,
+  getRoleManagementDirectoryRoleAssignmentSchedulesMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementDirectoryRoleAssignmentSchedulesRoute,
+  getRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdActivatedUsingRoute,
+  getRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute,
+  getRoleManagementDirectoryRoleAssignmentsCountRoute,
+  getRoleManagementDirectoryRoleAssignmentsRoute,
+  getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute,
+  getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdDirectoryScopeRoute,
+  getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdPrincipalRoute,
+  getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoleDefinitionRoute,
+  getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoute,
+  getRoleManagementDirectoryRoleDefinitionsCountRoute,
+  getRoleManagementDirectoryRoleDefinitionsRoute,
+  getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromCountRoute,
+  getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRoute,
+  getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route,
+  getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleInstancesCountRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleInstancesRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsCountRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdAppScopeRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdDirectoryScopeRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdPrincipalRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoleDefinitionRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute,
+  getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdTargetScheduleRoute,
+  getRoleManagementDirectoryRoleEligibilitySchedulesCountRoute,
+  getRoleManagementDirectoryRoleEligibilitySchedulesMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementDirectoryRoleEligibilitySchedulesRoute,
+  getRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute,
+  getRoleManagementDirectoryRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesCountRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdActivatedUsingRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsCountRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdActivatedUsingRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdAppScopeRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdDirectoryScopeRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdPrincipalRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoleDefinitionRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdTargetScheduleRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentSchedulesCountRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentSchedulesMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentSchedulesRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdActivatedUsingRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentsCountRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentsRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdDirectoryScopeRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdPrincipalRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoleDefinitionRoute,
+  getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoute,
+  getRoleManagementEntitlementManagementRoleDefinitionsCountRoute,
+  getRoleManagementEntitlementManagementRoleDefinitionsRoute,
+  getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromCountRoute,
+  getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRoute,
+  getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route,
+  getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesCountRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsCountRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdAppScopeRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdDirectoryScopeRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdPrincipalRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoleDefinitionRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute,
+  getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdTargetScheduleRoute,
+  getRoleManagementEntitlementManagementRoleEligibilitySchedulesCountRoute,
+  getRoleManagementEntitlementManagementRoleEligibilitySchedulesMicrosoftGraphFilterByCurrentUserOnOnRoute,
+  getRoleManagementEntitlementManagementRoleEligibilitySchedulesRoute,
+  getRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute,
+  getRoleManagementEntitlementManagementRoute,
+  getRoleManagementRoute,
+  patchRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute,
+  patchRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute,
+  patchRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute,
+  patchRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute,
+  patchRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoute,
+  patchRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route,
+  patchRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRoute,
+  patchRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute,
+  patchRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute,
+  patchRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute,
+  patchRoleManagementDirectoryRoute,
+  patchRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute,
+  patchRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute,
+  patchRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute,
+  patchRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute,
+  patchRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoute,
+  patchRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route,
+  patchRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRoute,
+  patchRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute,
+  patchRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute,
+  patchRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute,
+  patchRoleManagementEntitlementManagementRoute,
+  patchRoleManagementRoute,
+  postRoleManagementDirectoryRoleAssignmentScheduleInstancesRoute,
+  postRoleManagementDirectoryRoleAssignmentScheduleRequestsRoute,
+  postRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdMicrosoftGraphCancelRoute,
+  postRoleManagementDirectoryRoleAssignmentSchedulesRoute,
+  postRoleManagementDirectoryRoleAssignmentsRoute,
+  postRoleManagementDirectoryRoleDefinitionsRoute,
+  postRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRoute,
+  postRoleManagementDirectoryRoleEligibilityScheduleInstancesRoute,
+  postRoleManagementDirectoryRoleEligibilityScheduleRequestsRoute,
+  postRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdMicrosoftGraphCancelRoute,
+  postRoleManagementDirectoryRoleEligibilitySchedulesRoute,
+  postRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesRoute,
+  postRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsRoute,
+  postRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdMicrosoftGraphCancelRoute,
+  postRoleManagementEntitlementManagementRoleAssignmentSchedulesRoute,
+  postRoleManagementEntitlementManagementRoleAssignmentsRoute,
+  postRoleManagementEntitlementManagementRoleDefinitionsRoute,
+  postRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRoute,
+  postRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesRoute,
+  postRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsRoute,
+  postRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdMicrosoftGraphCancelRoute,
+  postRoleManagementEntitlementManagementRoleEligibilitySchedulesRoute,
+} from '../routes'
+
+export const getRoleManagementRouteHandler: RouteHandler<typeof getRoleManagementRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementRouteHandler: RouteHandler<
+  typeof patchRoleManagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleInstancesRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleAssignmentScheduleInstancesRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleAssignmentScheduleInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleInstancesCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleInstancesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdActivatedUsingRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdActivatedUsingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleAssignmentScheduleRequestsRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleAssignmentScheduleRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdActivatedUsingRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdActivatedUsingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdAppScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdDirectoryScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdDirectoryScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdMicrosoftGraphCancelRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdMicrosoftGraphCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdPrincipalRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdPrincipalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoleDefinitionRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoleDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdTargetScheduleRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdTargetScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentSchedulesRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleAssignmentSchedulesRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleAssignmentSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentSchedulesCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentSchedulesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentSchedulesMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentSchedulesMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdActivatedUsingRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdActivatedUsingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentsRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleAssignmentsRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentsCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdDirectoryScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdDirectoryScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdPrincipalRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdPrincipalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoleDefinitionRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleAssignmentsUnifiedRoleAssignmentIdRoleDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleDefinitionsRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleDefinitionsRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleDefinitionsCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleDefinitionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1RouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1RouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1RouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleInstancesRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleEligibilityScheduleInstancesRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleEligibilityScheduleInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleInstancesCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleInstancesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleEligibilityScheduleRequestsRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleEligibilityScheduleRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdAppScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdDirectoryScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdDirectoryScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdMicrosoftGraphCancelRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdMicrosoftGraphCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdPrincipalRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdPrincipalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoleDefinitionRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoleDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdTargetScheduleRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdTargetScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilitySchedulesRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilitySchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementDirectoryRoleEligibilitySchedulesRouteHandler: RouteHandler<
+  typeof postRoleManagementDirectoryRoleEligibilitySchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilitySchedulesCountRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilitySchedulesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilitySchedulesMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilitySchedulesMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRouteHandler: RouteHandler<
+  typeof getRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementDirectoryRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdActivatedUsingRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleInstancesUnifiedRoleAssignmentScheduleInstanceIdActivatedUsingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdActivatedUsingRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdActivatedUsingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdAppScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdDirectoryScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdDirectoryScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdMicrosoftGraphCancelRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdMicrosoftGraphCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdPrincipalRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdPrincipalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoleDefinitionRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdRoleDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdTargetScheduleRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentScheduleRequestsUnifiedRoleAssignmentScheduleRequestIdTargetScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentSchedulesRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleAssignmentSchedulesRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleAssignmentSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentSchedulesCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentSchedulesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentSchedulesMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentSchedulesMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdActivatedUsingRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentSchedulesUnifiedRoleAssignmentScheduleIdActivatedUsingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentsRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleAssignmentsRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentsCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdDirectoryScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdDirectoryScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdPrincipalRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdPrincipalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoleDefinitionRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleAssignmentsUnifiedRoleAssignmentIdRoleDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleDefinitionsRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleDefinitionsRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleDefinitionsCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleDefinitionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1RouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1RouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1RouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleDefinitionsUnifiedRoleDefinitionIdInheritsPermissionsFromUnifiedRoleDefinitionId1Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleEligibilityScheduleInstancesUnifiedRoleEligibilityScheduleInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdAppScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdAppScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdDirectoryScopeRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdDirectoryScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdMicrosoftGraphCancelRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdMicrosoftGraphCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdPrincipalRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdPrincipalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoleDefinitionRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdRoleDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdTargetScheduleRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilityScheduleRequestsUnifiedRoleEligibilityScheduleRequestIdTargetScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilitySchedulesRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilitySchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoleManagementEntitlementManagementRoleEligibilitySchedulesRouteHandler: RouteHandler<
+  typeof postRoleManagementEntitlementManagementRoleEligibilitySchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilitySchedulesCountRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilitySchedulesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilitySchedulesMicrosoftGraphFilterByCurrentUserOnOnRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilitySchedulesMicrosoftGraphFilterByCurrentUserOnOnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRouteHandler: RouteHandler<
+  typeof deleteRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRouteHandler: RouteHandler<
+  typeof getRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRouteHandler: RouteHandler<
+  typeof patchRoleManagementEntitlementManagementRoleEligibilitySchedulesUnifiedRoleEligibilityScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

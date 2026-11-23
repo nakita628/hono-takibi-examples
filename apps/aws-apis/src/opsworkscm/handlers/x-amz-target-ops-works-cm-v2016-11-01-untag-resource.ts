@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetOpsWorksCMV20161101UntagResourceRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetOpsWorksCmV20161101UntagResourceHandler = app.openapi(
+  postXAmzTargetOpsWorksCMV20161101UntagResourceRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

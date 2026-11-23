@@ -30,67 +30,43 @@ const DiscoveryTypeSchema = z
 
 const ApplicationInfoSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group used for the application.' }),
-    ).exactOptional(),
-    LifeCycle: LifeCycleSchema.and(
-      z.any().openapi({ description: 'The lifecycle of the application. ' }),
-    ).exactOptional(),
-    OpsItemSNSTopicArn: OpsItemSNSTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The SNS topic provided to Application Insights that is associated to the created opsItems to receive SNS notifications for opsItem updates. ',
-        }),
-    ).exactOptional(),
-    OpsCenterEnabled: OpsCenterEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether Application Insights will create opsItems for any problem detected by Application Insights for an application. ',
-        }),
-    ).exactOptional(),
-    CWEMonitorEnabled: CWEMonitorEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether Application Insights can listen to CloudWatch events for the application resources, such as <code>instance terminated</code>, <code>failed deployment</code>, and others. ',
-        }),
-    ).exactOptional(),
-    Remarks: RemarksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The issues on the user side that block Application Insights from successfully monitoring an application. Example remarks include:</p> <ul> <li> <p>“Configuring application, detected 1 Errors, 3 Warnings”</p> </li> <li> <p>“Configuring application, detected 1 Unconfigured Components”</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AutoConfigEnabled: AutoConfigEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Indicates whether auto-configuration is turned on for this application. ',
-        }),
-    ).exactOptional(),
-    DiscoveryType: DiscoveryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The method used by Application Insights to onboard your resources. ',
-        }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group used for the application.',
+    }),
+    LifeCycle: LifeCycleSchema.exactOptional().openapi({
+      description: 'The lifecycle of the application. ',
+    }),
+    OpsItemSNSTopicArn: OpsItemSNSTopicArnSchema.exactOptional().openapi({
+      description:
+        ' The SNS topic provided to Application Insights that is associated to the created opsItems to receive SNS notifications for opsItem updates. ',
+    }),
+    OpsCenterEnabled: OpsCenterEnabledSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether Application Insights will create opsItems for any problem detected by Application Insights for an application. ',
+    }),
+    CWEMonitorEnabled: CWEMonitorEnabledSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether Application Insights can listen to CloudWatch events for the application resources, such as <code>instance terminated</code>, <code>failed deployment</code>, and others. ',
+    }),
+    Remarks: RemarksSchema.exactOptional().openapi({
+      description:
+        '<p>The issues on the user side that block Application Insights from successfully monitoring an application. Example remarks include:</p> <ul> <li> <p>“Configuring application, detected 1 Errors, 3 Warnings”</p> </li> <li> <p>“Configuring application, detected 1 Unconfigured Components”</p> </li> </ul>',
+    }),
+    AutoConfigEnabled: AutoConfigEnabledSchema.exactOptional().openapi({
+      description: ' Indicates whether auto-configuration is turned on for this application. ',
+    }),
+    DiscoveryType: DiscoveryTypeSchema.exactOptional().openapi({
+      description: ' The method used by Application Insights to onboard your resources. ',
+    }),
   })
   .openapi({ description: 'Describes the status of the application.', required: [] })
   .openapi('ApplicationInfo')
 
 const CreateApplicationResponseSchema = z
   .object({
-    ApplicationInfo: ApplicationInfoSchema.and(
-      z.any().openapi({ description: 'Information about the application.' }),
-    ).exactOptional(),
+    ApplicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description: 'Information about the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApplicationResponse')
@@ -111,22 +87,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that defines a tag. The maximum length of a tag key is 128 characters. The minimum length is 1 character.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The optional part of a key-value pair that defines a tag. The maximum length of a tag value is 256 characters. The minimum length is 0 characters. If you don't want an application to have a specific tag value, don't specify a value for this parameter.",
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'One part of a key-value pair that defines a tag. The maximum length of a tag key is 128 characters. The minimum length is 1 character.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        "The optional part of a key-value pair that defines a tag. The maximum length of a tag value is 256 characters. The minimum length is 0 characters. If you don't want an application to have a specific tag value, don't specify a value for this parameter.",
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -143,65 +111,37 @@ const GroupingTypeSchema = z.literal('ACCOUNT_BASED').openapi('GroupingType')
 
 const CreateApplicationRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ).exactOptional(),
-    OpsCenterEnabled: OpsCenterEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' When set to <code>true</code>, creates opsItems for any problems detected on an application. ',
-        }),
-    ).exactOptional(),
-    CWEMonitorEnabled: CWEMonitorEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether Application Insights can listen to CloudWatch events for the application resources, such as <code>instance terminated</code>, <code>failed deployment</code>, and others. ',
-        }),
-    ).exactOptional(),
-    OpsItemSNSTopicArn: OpsItemSNSTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The SNS topic provided to Application Insights that is associated to the created opsItem. Allows you to receive notifications for updates to the opsItem. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of tags to add to the application. tag key (<code>Key</code>) and an associated tag value (<code>Value</code>). The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.',
-        }),
-    ).exactOptional(),
-    AutoConfigEnabled: AutoConfigEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether Application Insights automatically configures unmonitored resources in the resource group. ',
-        }),
-    ).exactOptional(),
-    AutoCreate: AutoCreateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Configures all of the resources in the resource group by applying the recommended configurations. ',
-        }),
-    ).exactOptional(),
-    GroupingType: GroupingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Application Insights can create applications based on a resource group or on an account. To create an account-based application using all of the resources in the account, set this parameter to <code>ACCOUNT_BASED</code>. ',
-        }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group.',
+    }),
+    OpsCenterEnabled: OpsCenterEnabledSchema.exactOptional().openapi({
+      description:
+        ' When set to <code>true</code>, creates opsItems for any problems detected on an application. ',
+    }),
+    CWEMonitorEnabled: CWEMonitorEnabledSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether Application Insights can listen to CloudWatch events for the application resources, such as <code>instance terminated</code>, <code>failed deployment</code>, and others. ',
+    }),
+    OpsItemSNSTopicArn: OpsItemSNSTopicArnSchema.exactOptional().openapi({
+      description:
+        ' The SNS topic provided to Application Insights that is associated to the created opsItem. Allows you to receive notifications for updates to the opsItem. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'List of tags to add to the application. tag key (<code>Key</code>) and an associated tag value (<code>Value</code>). The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.',
+    }),
+    AutoConfigEnabled: AutoConfigEnabledSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether Application Insights automatically configures unmonitored resources in the resource group. ',
+    }),
+    AutoCreate: AutoCreateSchema.exactOptional().openapi({
+      description:
+        ' Configures all of the resources in the resource group by applying the recommended configurations. ',
+    }),
+    GroupingType: GroupingTypeSchema.exactOptional().openapi({
+      description:
+        'Application Insights can create applications based on a resource group or on an account. To create an account-based application using all of the resources in the account, set this parameter to <code>ACCOUNT_BASED</code>. ',
+    }),
   })
   .openapi({ title: 'CreateApplicationRequest', required: [] })
   .openapi('CreateApplicationRequest')
@@ -218,7 +158,7 @@ const TagsAlreadyExistExceptionSchema = z.any().openapi('TagsAlreadyExistExcepti
 
 const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
 
-const CreateComponentResponseSchema = z.object({}).openapi('CreateComponentResponse')
+const CreateComponentResponseSchema = z.looseObject({}).openapi('CreateComponentResponse')
 
 const CustomComponentNameSchema = z
   .string()
@@ -238,15 +178,13 @@ const ResourceListSchema = z.array(ResourceARNSchema).openapi('ResourceList')
 
 const CreateComponentRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    ComponentName: CustomComponentNameSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ),
-    ResourceList: ResourceListSchema.and(
-      z.any().openapi({ description: 'The list of resource ARNs that belong to the component.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    ComponentName: CustomComponentNameSchema.openapi({ description: 'The name of the component.' }),
+    ResourceList: ResourceListSchema.openapi({
+      description: 'The list of resource ARNs that belong to the component.',
+    }),
   })
   .openapi({
     required: ['ResourceGroupName', 'ComponentName', 'ResourceList'],
@@ -279,38 +217,22 @@ const LogPatternRankSchema = z.int().openapi('LogPatternRank')
 
 const LogPatternSchema = z
   .object({
-    PatternSetName: LogPatternSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the log pattern. A log pattern name can contain as many as 30 characters, and it cannot be empty. The characters can be Unicode letters, digits, or one of the following symbols: period, dash, underscore.',
-        }),
-    ).exactOptional(),
-    PatternName: LogPatternNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the log pattern. A log pattern name can contain as many as 50 characters, and it cannot be empty. The characters can be Unicode letters, digits, or one of the following symbols: period, dash, underscore.',
-        }),
-    ).exactOptional(),
-    Pattern: LogPatternRegexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A regular expression that defines the log pattern. A log pattern can contain as many as 50 characters, and it cannot be empty. The pattern must be DFA compatible. Patterns that utilize forward lookahead or backreference constructions are not supported.',
-        }),
-    ).exactOptional(),
-    Rank: LogPatternRankSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. ',
-        }),
-    ).exactOptional(),
+    PatternSetName: LogPatternSetNameSchema.exactOptional().openapi({
+      description:
+        'The name of the log pattern. A log pattern name can contain as many as 30 characters, and it cannot be empty. The characters can be Unicode letters, digits, or one of the following symbols: period, dash, underscore.',
+    }),
+    PatternName: LogPatternNameSchema.exactOptional().openapi({
+      description:
+        'The name of the log pattern. A log pattern name can contain as many as 50 characters, and it cannot be empty. The characters can be Unicode letters, digits, or one of the following symbols: period, dash, underscore.',
+    }),
+    Pattern: LogPatternRegexSchema.exactOptional().openapi({
+      description:
+        'A regular expression that defines the log pattern. A log pattern can contain as many as 50 characters, and it cannot be empty. The pattern must be DFA compatible. Patterns that utilize forward lookahead or backreference constructions are not supported.',
+    }),
+    Rank: LogPatternRankSchema.exactOptional().openapi({
+      description:
+        'Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. ',
+    }),
   })
   .openapi({
     description:
@@ -321,43 +243,33 @@ const LogPatternSchema = z
 
 const CreateLogPatternResponseSchema = z
   .object({
-    LogPattern: LogPatternSchema.and(
-      z.any().openapi({ description: 'The successfully created log pattern.' }),
-    ).exactOptional(),
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ).exactOptional(),
+    LogPattern: LogPatternSchema.exactOptional().openapi({
+      description: 'The successfully created log pattern.',
+    }),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLogPatternResponse')
 
 const CreateLogPatternRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    PatternSetName: LogPatternSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern set.' }),
-    ),
-    PatternName: LogPatternNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern.' }),
-    ),
-    Pattern: LogPatternRegexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The log pattern. The pattern must be DFA compatible. Patterns that utilize forward lookahead or backreference constructions are not supported.',
-        }),
-    ),
-    Rank: LogPatternRankSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. ',
-        }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    PatternSetName: LogPatternSetNameSchema.openapi({
+      description: 'The name of the log pattern set.',
+    }),
+    PatternName: LogPatternNameSchema.openapi({ description: 'The name of the log pattern.' }),
+    Pattern: LogPatternRegexSchema.openapi({
+      description:
+        'The log pattern. The pattern must be DFA compatible. Patterns that utilize forward lookahead or backreference constructions are not supported.',
+    }),
+    Rank: LogPatternRankSchema.openapi({
+      description:
+        'Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. ',
+    }),
   })
   .openapi({
     required: ['ResourceGroupName', 'PatternSetName', 'PatternName', 'Pattern', 'Rank'],
@@ -365,46 +277,42 @@ const CreateLogPatternRequestSchema = z
   })
   .openapi('CreateLogPatternRequest')
 
-const DeleteApplicationResponseSchema = z.object({}).openapi('DeleteApplicationResponse')
+const DeleteApplicationResponseSchema = z.looseObject({}).openapi('DeleteApplicationResponse')
 
 const DeleteApplicationRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
   })
   .openapi({ required: ['ResourceGroupName'], title: 'DeleteApplicationRequest' })
   .openapi('DeleteApplicationRequest')
 
 const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
 
-const DeleteComponentResponseSchema = z.object({}).openapi('DeleteComponentResponse')
+const DeleteComponentResponseSchema = z.looseObject({}).openapi('DeleteComponentResponse')
 
 const DeleteComponentRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    ComponentName: CustomComponentNameSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    ComponentName: CustomComponentNameSchema.openapi({ description: 'The name of the component.' }),
   })
   .openapi({ required: ['ResourceGroupName', 'ComponentName'], title: 'DeleteComponentRequest' })
   .openapi('DeleteComponentRequest')
 
-const DeleteLogPatternResponseSchema = z.object({}).openapi('DeleteLogPatternResponse')
+const DeleteLogPatternResponseSchema = z.looseObject({}).openapi('DeleteLogPatternResponse')
 
 const DeleteLogPatternRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    PatternSetName: LogPatternSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern set.' }),
-    ),
-    PatternName: LogPatternNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    PatternSetName: LogPatternSetNameSchema.openapi({
+      description: 'The name of the log pattern set.',
+    }),
+    PatternName: LogPatternNameSchema.openapi({ description: 'The name of the log pattern.' }),
   })
   .openapi({
     required: ['ResourceGroupName', 'PatternSetName', 'PatternName'],
@@ -414,18 +322,18 @@ const DeleteLogPatternRequestSchema = z
 
 const DescribeApplicationResponseSchema = z
   .object({
-    ApplicationInfo: ApplicationInfoSchema.and(
-      z.any().openapi({ description: 'Information about the application.' }),
-    ).exactOptional(),
+    ApplicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description: 'Information about the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeApplicationResponse')
 
 const DescribeApplicationRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
   })
   .openapi({ required: ['ResourceGroupName'], title: 'DescribeApplicationRequest' })
   .openapi('DescribeApplicationRequest')
@@ -481,39 +389,29 @@ const DetectedWorkloadSchema = z
 
 const ApplicationComponentSchema = z
   .object({
-    ComponentName: ComponentNameSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ).exactOptional(),
-    ComponentRemarks: RemarksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If logging is supported for the resource type, indicates whether the component has configured logs to be monitored. ',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type. Supported resource types include EC2 instances, Auto Scaling group, Classic ELB, Application ELB, and SQS Queue.',
-        }),
-    ).exactOptional(),
-    OsType: OsTypeSchema.and(
-      z.any().openapi({ description: ' The operating system of the component. ' }),
-    ).exactOptional(),
-    Tier: TierSchema.and(
-      z.any().openapi({ description: 'The stack tier of the application component.' }),
-    ).exactOptional(),
-    Monitor: MonitorSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the application component is monitored. ' }),
-    ).exactOptional(),
-    DetectedWorkload: DetectedWorkloadSchema.and(
-      z.any().openapi({ description: ' Workloads detected in the application component. ' }),
-    ).exactOptional(),
+    ComponentName: ComponentNameSchema.exactOptional().openapi({
+      description: 'The name of the component.',
+    }),
+    ComponentRemarks: RemarksSchema.exactOptional().openapi({
+      description:
+        ' If logging is supported for the resource type, indicates whether the component has configured logs to be monitored. ',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The resource type. Supported resource types include EC2 instances, Auto Scaling group, Classic ELB, Application ELB, and SQS Queue.',
+    }),
+    OsType: OsTypeSchema.exactOptional().openapi({
+      description: ' The operating system of the component. ',
+    }),
+    Tier: TierSchema.exactOptional().openapi({
+      description: 'The stack tier of the application component.',
+    }),
+    Monitor: MonitorSchema.exactOptional().openapi({
+      description: 'Indicates whether the application component is monitored. ',
+    }),
+    DetectedWorkload: DetectedWorkloadSchema.exactOptional().openapi({
+      description: ' Workloads detected in the application component. ',
+    }),
   })
   .openapi({
     description:
@@ -525,21 +423,19 @@ const ApplicationComponentSchema = z
 const DescribeComponentResponseSchema = z
   .object({
     ApplicationComponent: ApplicationComponentSchema.exactOptional(),
-    ResourceList: ResourceListSchema.and(
-      z.any().openapi({ description: 'The list of resource ARNs that belong to the component.' }),
-    ).exactOptional(),
+    ResourceList: ResourceListSchema.exactOptional().openapi({
+      description: 'The list of resource ARNs that belong to the component.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeComponentResponse')
 
 const DescribeComponentRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    ComponentName: ComponentNameSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    ComponentName: ComponentNameSchema.openapi({ description: 'The name of the component.' }),
   })
   .openapi({ required: ['ResourceGroupName', 'ComponentName'], title: 'DescribeComponentRequest' })
   .openapi('DescribeComponentRequest')
@@ -553,37 +449,27 @@ const ComponentConfigurationSchema = z
 
 const DescribeComponentConfigurationResponseSchema = z
   .object({
-    Monitor: MonitorSchema.and(
-      z.any().openapi({ description: 'Indicates whether the application component is monitored.' }),
-    ).exactOptional(),
-    Tier: TierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tier of the application component. Supported tiers include <code>DOT_NET_CORE</code>, <code>DOT_NET_WORKER</code>, <code>DOT_NET_WEB</code>, <code>SQL_SERVER</code>, and <code>DEFAULT</code> ',
-        }),
-    ).exactOptional(),
-    ComponentConfiguration: ComponentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings of the component. The value is the escaped JSON of the configuration.',
-        }),
-    ).exactOptional(),
+    Monitor: MonitorSchema.exactOptional().openapi({
+      description: 'Indicates whether the application component is monitored.',
+    }),
+    Tier: TierSchema.exactOptional().openapi({
+      description:
+        'The tier of the application component. Supported tiers include <code>DOT_NET_CORE</code>, <code>DOT_NET_WORKER</code>, <code>DOT_NET_WEB</code>, <code>SQL_SERVER</code>, and <code>DEFAULT</code> ',
+    }),
+    ComponentConfiguration: ComponentConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration settings of the component. The value is the escaped JSON of the configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeComponentConfigurationResponse')
 
 const DescribeComponentConfigurationRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    ComponentName: ComponentNameSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    ComponentName: ComponentNameSchema.openapi({ description: 'The name of the component.' }),
   })
   .openapi({
     required: ['ResourceGroupName', 'ComponentName'],
@@ -593,29 +479,21 @@ const DescribeComponentConfigurationRequestSchema = z
 
 const DescribeComponentConfigurationRecommendationResponseSchema = z
   .object({
-    ComponentConfiguration: ComponentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommended configuration settings of the component. The value is the escaped JSON of the configuration.',
-        }),
-    ).exactOptional(),
+    ComponentConfiguration: ComponentConfigurationSchema.exactOptional().openapi({
+      description:
+        'The recommended configuration settings of the component. The value is the escaped JSON of the configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeComponentConfigurationRecommendationResponse')
 
 const DescribeComponentConfigurationRecommendationRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    ComponentName: ComponentNameSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ),
-    Tier: TierSchema.and(
-      z.any().openapi({ description: 'The tier of the application component.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    ComponentName: ComponentNameSchema.openapi({ description: 'The name of the component.' }),
+    Tier: TierSchema.openapi({ description: 'The tier of the application component.' }),
   })
   .openapi({
     required: ['ResourceGroupName', 'ComponentName', 'Tier'],
@@ -625,27 +503,25 @@ const DescribeComponentConfigurationRecommendationRequestSchema = z
 
 const DescribeLogPatternResponseSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ).exactOptional(),
-    LogPattern: LogPatternSchema.and(
-      z.any().openapi({ description: 'The successfully created log pattern.' }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group.',
+    }),
+    LogPattern: LogPatternSchema.exactOptional().openapi({
+      description: 'The successfully created log pattern.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeLogPatternResponse')
 
 const DescribeLogPatternRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    PatternSetName: LogPatternSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern set.' }),
-    ),
-    PatternName: LogPatternNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern.' }),
-    ),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    PatternSetName: LogPatternSetNameSchema.openapi({
+      description: 'The name of the log pattern set.',
+    }),
+    PatternName: LogPatternNameSchema.openapi({ description: 'The name of the log pattern.' }),
   })
   .openapi({
     required: ['ResourceGroupName', 'PatternSetName', 'PatternName'],
@@ -751,242 +627,166 @@ const XRayNodeTypeSchema = z.string().openapi('XRayNodeType')
 
 const ObservationSchema = z
   .object({
-    Id: ObservationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the observation type.' }),
-    ).exactOptional(),
-    StartTime: StartTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the observation was first detected, in epoch seconds.',
-        }),
-    ).exactOptional(),
-    EndTime: EndTimeSchema.and(
-      z.any().openapi({ description: 'The time when the observation ended, in epoch seconds.' }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z.any().openapi({ description: 'The source type of the observation.' }),
-    ).exactOptional(),
-    SourceARN: SourceARNSchema.and(
-      z.any().openapi({ description: 'The source resource ARN of the observation.' }),
-    ).exactOptional(),
-    LogGroup: LogGroupSchema.and(
-      z.any().openapi({ description: 'The log group name.' }),
-    ).exactOptional(),
-    LineTime: LineTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp in the CloudWatch Logs that specifies when the matched line occurred.',
-        }),
-    ).exactOptional(),
-    LogText: LogTextSchema.and(
-      z.any().openapi({ description: 'The log text of the observation.' }),
-    ).exactOptional(),
-    LogFilter: LogFilterSchema.and(
-      z.any().openapi({ description: 'The log filter of the observation.' }),
-    ).exactOptional(),
-    MetricNamespace: MetricNamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the observation metric.' }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the observation metric.' }),
-    ).exactOptional(),
-    Unit: UnitSchema.and(
-      z.any().openapi({ description: 'The unit of the source observation metric.' }),
-    ).exactOptional(),
-    Value: ValueSchema.and(
-      z.any().openapi({ description: 'The value of the source observation metric.' }),
-    ).exactOptional(),
-    CloudWatchEventId: CloudWatchEventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the CloudWatch Event-based observation related to the detected problem. ',
-        }),
-    ).exactOptional(),
-    CloudWatchEventSource: CloudWatchEventSourceSchema.and(
-      z.any().openapi({ description: ' The source of the CloudWatch Event. ' }),
-    ).exactOptional(),
-    CloudWatchEventDetailType: CloudWatchEventDetailTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The detail type of the CloudWatch Event-based observation, for example, <code>EC2 Instance State-change Notification</code>. ',
-        }),
-    ).exactOptional(),
-    HealthEventArn: HealthEventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Resource Name (ARN) of the AWS Health Event-based observation.',
-        }),
-    ).exactOptional(),
-    HealthService: HealthServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The service to which the AWS Health Event belongs, such as EC2. ',
-        }),
-    ).exactOptional(),
-    HealthEventTypeCode: HealthEventTypeCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of the AWS Health event, for example, <code>AWS_EC2_POWER_CONNECTIVITY_ISSUE</code>. ',
-        }),
-    ).exactOptional(),
-    HealthEventTypeCategory: HealthEventTypeCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The category of the AWS Health event, such as <code>issue</code>. ',
-        }),
-    ).exactOptional(),
-    HealthEventDescription: HealthEventDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The description of the AWS Health event provided by the service, such as Amazon EC2. ',
-        }),
-    ).exactOptional(),
-    CodeDeployDeploymentId: CodeDeployDeploymentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The deployment ID of the CodeDeploy-based observation related to the detected problem. ',
-        }),
-    ).exactOptional(),
-    CodeDeployDeploymentGroup: CodeDeployDeploymentGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The deployment group to which the CodeDeploy deployment belongs. ',
-        }),
-    ).exactOptional(),
-    CodeDeployState: CodeDeployStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status of the CodeDeploy deployment, for example <code>SUCCESS</code> or <code> FAILURE</code>. ',
-        }),
-    ).exactOptional(),
-    CodeDeployApplication: CodeDeployApplicationSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The CodeDeploy application to which the deployment belongs. ' }),
-    ).exactOptional(),
-    CodeDeployInstanceGroupId: CodeDeployInstanceGroupIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The instance group to which the CodeDeploy instance belongs. ' }),
-    ).exactOptional(),
-    Ec2State: Ec2StateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The state of the instance, such as <code>STOPPING</code> or <code>TERMINATING</code>. ',
-        }),
-    ).exactOptional(),
-    RdsEventCategories: RdsEventCategoriesSchema.and(
-      z.any().openapi({ description: ' The category of an RDS event. ' }),
-    ).exactOptional(),
-    RdsEventMessage: RdsEventMessageSchema.and(
-      z.any().openapi({ description: ' The message of an RDS event. ' }),
-    ).exactOptional(),
-    S3EventName: S3EventNameSchema.and(
-      z.any().openapi({ description: ' The name of the S3 CloudWatch Event-based observation. ' }),
-    ).exactOptional(),
-    StatesExecutionArn: StatesExecutionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the step function execution-based observation. ',
-        }),
-    ).exactOptional(),
-    StatesArn: StatesArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Resource Name (ARN) of the step function-based observation. ',
-        }),
-    ).exactOptional(),
-    StatesStatus: StatesStatusSchema.and(
-      z.any().openapi({ description: ' The status of the step function-related observation. ' }),
-    ).exactOptional(),
-    StatesInput: StatesInputSchema.and(
-      z.any().openapi({ description: ' The input to the step function-based observation. ' }),
-    ).exactOptional(),
-    EbsEvent: EbsEventSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of EBS CloudWatch event, such as <code>createVolume</code>, <code>deleteVolume</code> or <code>attachVolume</code>. ',
-        }),
-    ).exactOptional(),
-    EbsResult: EbsResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The result of an EBS CloudWatch event, such as <code>failed</code> or <code>succeeded</code>. ',
-        }),
-    ).exactOptional(),
-    EbsCause: EbsCauseSchema.and(
-      z.any().openapi({ description: ' The cause of an EBS CloudWatch event. ' }),
-    ).exactOptional(),
-    EbsRequestId: EbsRequestIdSchema.and(
-      z.any().openapi({ description: ' The request ID of an EBS CloudWatch event. ' }),
-    ).exactOptional(),
-    XRayFaultPercent: XRayFaultPercentSchema.and(
-      z.any().openapi({ description: ' The X-Ray request fault percentage for this node. ' }),
-    ).exactOptional(),
-    XRayThrottlePercent: XRayThrottlePercentSchema.and(
-      z.any().openapi({ description: ' The X-Ray request throttle percentage for this node. ' }),
-    ).exactOptional(),
-    XRayErrorPercent: XRayErrorPercentSchema.and(
-      z.any().openapi({ description: ' The X-Ray request error percentage for this node. ' }),
-    ).exactOptional(),
-    XRayRequestCount: XRayRequestCountSchema.and(
-      z.any().openapi({ description: ' The X-Ray request count for this node. ' }),
-    ).exactOptional(),
-    XRayRequestAverageLatency: XRayRequestAverageLatencySchema.and(
-      z.any().openapi({ description: ' The X-Ray node request average latency for this node. ' }),
-    ).exactOptional(),
-    XRayNodeName: XRayNodeNameSchema.and(
-      z.any().openapi({ description: ' The name of the X-Ray node. ' }),
-    ).exactOptional(),
-    XRayNodeType: XRayNodeTypeSchema.and(
-      z.any().openapi({ description: ' The type of the X-Ray node. ' }),
-    ).exactOptional(),
+    Id: ObservationIdSchema.exactOptional().openapi({
+      description: 'The ID of the observation type.',
+    }),
+    StartTime: StartTimeSchema.exactOptional().openapi({
+      description: 'The time when the observation was first detected, in epoch seconds.',
+    }),
+    EndTime: EndTimeSchema.exactOptional().openapi({
+      description: 'The time when the observation ended, in epoch seconds.',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description: 'The source type of the observation.',
+    }),
+    SourceARN: SourceARNSchema.exactOptional().openapi({
+      description: 'The source resource ARN of the observation.',
+    }),
+    LogGroup: LogGroupSchema.exactOptional().openapi({ description: 'The log group name.' }),
+    LineTime: LineTimeSchema.exactOptional().openapi({
+      description:
+        'The timestamp in the CloudWatch Logs that specifies when the matched line occurred.',
+    }),
+    LogText: LogTextSchema.exactOptional().openapi({
+      description: 'The log text of the observation.',
+    }),
+    LogFilter: LogFilterSchema.exactOptional().openapi({
+      description: 'The log filter of the observation.',
+    }),
+    MetricNamespace: MetricNamespaceSchema.exactOptional().openapi({
+      description: 'The namespace of the observation metric.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description: 'The name of the observation metric.',
+    }),
+    Unit: UnitSchema.exactOptional().openapi({
+      description: 'The unit of the source observation metric.',
+    }),
+    Value: ValueSchema.exactOptional().openapi({
+      description: 'The value of the source observation metric.',
+    }),
+    CloudWatchEventId: CloudWatchEventIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the CloudWatch Event-based observation related to the detected problem. ',
+    }),
+    CloudWatchEventSource: CloudWatchEventSourceSchema.exactOptional().openapi({
+      description: ' The source of the CloudWatch Event. ',
+    }),
+    CloudWatchEventDetailType: CloudWatchEventDetailTypeSchema.exactOptional().openapi({
+      description:
+        ' The detail type of the CloudWatch Event-based observation, for example, <code>EC2 Instance State-change Notification</code>. ',
+    }),
+    HealthEventArn: HealthEventArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the AWS Health Event-based observation.',
+    }),
+    HealthService: HealthServiceSchema.exactOptional().openapi({
+      description: ' The service to which the AWS Health Event belongs, such as EC2. ',
+    }),
+    HealthEventTypeCode: HealthEventTypeCodeSchema.exactOptional().openapi({
+      description:
+        ' The type of the AWS Health event, for example, <code>AWS_EC2_POWER_CONNECTIVITY_ISSUE</code>. ',
+    }),
+    HealthEventTypeCategory: HealthEventTypeCategorySchema.exactOptional().openapi({
+      description: ' The category of the AWS Health event, such as <code>issue</code>. ',
+    }),
+    HealthEventDescription: HealthEventDescriptionSchema.exactOptional().openapi({
+      description:
+        ' The description of the AWS Health event provided by the service, such as Amazon EC2. ',
+    }),
+    CodeDeployDeploymentId: CodeDeployDeploymentIdSchema.exactOptional().openapi({
+      description:
+        ' The deployment ID of the CodeDeploy-based observation related to the detected problem. ',
+    }),
+    CodeDeployDeploymentGroup: CodeDeployDeploymentGroupSchema.exactOptional().openapi({
+      description: ' The deployment group to which the CodeDeploy deployment belongs. ',
+    }),
+    CodeDeployState: CodeDeployStateSchema.exactOptional().openapi({
+      description:
+        ' The status of the CodeDeploy deployment, for example <code>SUCCESS</code> or <code> FAILURE</code>. ',
+    }),
+    CodeDeployApplication: CodeDeployApplicationSchema.exactOptional().openapi({
+      description: ' The CodeDeploy application to which the deployment belongs. ',
+    }),
+    CodeDeployInstanceGroupId: CodeDeployInstanceGroupIdSchema.exactOptional().openapi({
+      description: ' The instance group to which the CodeDeploy instance belongs. ',
+    }),
+    Ec2State: Ec2StateSchema.exactOptional().openapi({
+      description:
+        ' The state of the instance, such as <code>STOPPING</code> or <code>TERMINATING</code>. ',
+    }),
+    RdsEventCategories: RdsEventCategoriesSchema.exactOptional().openapi({
+      description: ' The category of an RDS event. ',
+    }),
+    RdsEventMessage: RdsEventMessageSchema.exactOptional().openapi({
+      description: ' The message of an RDS event. ',
+    }),
+    S3EventName: S3EventNameSchema.exactOptional().openapi({
+      description: ' The name of the S3 CloudWatch Event-based observation. ',
+    }),
+    StatesExecutionArn: StatesExecutionArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of the step function execution-based observation. ',
+    }),
+    StatesArn: StatesArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the step function-based observation. ',
+    }),
+    StatesStatus: StatesStatusSchema.exactOptional().openapi({
+      description: ' The status of the step function-related observation. ',
+    }),
+    StatesInput: StatesInputSchema.exactOptional().openapi({
+      description: ' The input to the step function-based observation. ',
+    }),
+    EbsEvent: EbsEventSchema.exactOptional().openapi({
+      description:
+        ' The type of EBS CloudWatch event, such as <code>createVolume</code>, <code>deleteVolume</code> or <code>attachVolume</code>. ',
+    }),
+    EbsResult: EbsResultSchema.exactOptional().openapi({
+      description:
+        ' The result of an EBS CloudWatch event, such as <code>failed</code> or <code>succeeded</code>. ',
+    }),
+    EbsCause: EbsCauseSchema.exactOptional().openapi({
+      description: ' The cause of an EBS CloudWatch event. ',
+    }),
+    EbsRequestId: EbsRequestIdSchema.exactOptional().openapi({
+      description: ' The request ID of an EBS CloudWatch event. ',
+    }),
+    XRayFaultPercent: XRayFaultPercentSchema.exactOptional().openapi({
+      description: ' The X-Ray request fault percentage for this node. ',
+    }),
+    XRayThrottlePercent: XRayThrottlePercentSchema.exactOptional().openapi({
+      description: ' The X-Ray request throttle percentage for this node. ',
+    }),
+    XRayErrorPercent: XRayErrorPercentSchema.exactOptional().openapi({
+      description: ' The X-Ray request error percentage for this node. ',
+    }),
+    XRayRequestCount: XRayRequestCountSchema.exactOptional().openapi({
+      description: ' The X-Ray request count for this node. ',
+    }),
+    XRayRequestAverageLatency: XRayRequestAverageLatencySchema.exactOptional().openapi({
+      description: ' The X-Ray node request average latency for this node. ',
+    }),
+    XRayNodeName: XRayNodeNameSchema.exactOptional().openapi({
+      description: ' The name of the X-Ray node. ',
+    }),
+    XRayNodeType: XRayNodeTypeSchema.exactOptional().openapi({
+      description: ' The type of the X-Ray node. ',
+    }),
   })
   .openapi({ description: 'Describes an anomaly or error with the application.', required: [] })
   .openapi('Observation')
 
 const DescribeObservationResponseSchema = z
   .object({
-    Observation: ObservationSchema.and(
-      z.any().openapi({ description: 'Information about the observation.' }),
-    ).exactOptional(),
+    Observation: ObservationSchema.exactOptional().openapi({
+      description: 'Information about the observation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeObservationResponse')
 
 const DescribeObservationRequestSchema = z
   .object({
-    ObservationId: ObservationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the observation.' }),
-    ),
+    ObservationId: ObservationIdSchema.openapi({ description: 'The ID of the observation.' }),
   })
   .openapi({ required: ['ObservationId'], title: 'DescribeObservationRequest' })
   .openapi('DescribeObservationRequest')
@@ -1024,53 +824,37 @@ const LastRecurrenceTimeSchema = z.iso.datetime({ offset: true }).openapi('LastR
 
 const ProblemSchema = z
   .object({
-    Id: ProblemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the problem.' }),
-    ).exactOptional(),
-    Title: TitleSchema.and(
-      z.any().openapi({ description: 'The name of the problem.' }),
-    ).exactOptional(),
-    Insights: InsightsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A detailed analysis of the problem using machine learning.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the problem.' }),
-    ).exactOptional(),
-    AffectedResource: AffectedResourceSchema.and(
-      z.any().openapi({ description: 'The resource affected by the problem.' }),
-    ).exactOptional(),
-    StartTime: StartTimeSchema.and(
-      z.any().openapi({ description: 'The time when the problem started, in epoch seconds.' }),
-    ).exactOptional(),
-    EndTime: EndTimeSchema.and(
-      z.any().openapi({ description: 'The time when the problem ended, in epoch seconds.' }),
-    ).exactOptional(),
-    SeverityLevel: SeverityLevelSchema.and(
-      z.any().openapi({ description: 'A measure of the level of impact of the problem.' }),
-    ).exactOptional(),
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group affected by the problem.' }),
-    ).exactOptional(),
-    Feedback: FeedbackSchema.and(
-      z.any().openapi({ description: 'Feedback provided by the user about the problem.' }),
-    ).exactOptional(),
-    RecurringCount: RecurringCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of times that the same problem reoccurred after the first time it was resolved. ',
-        }),
-    ).exactOptional(),
-    LastRecurrenceTime: LastRecurrenceTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The last time that the problem reoccurred after its last resolution. ',
-        }),
-    ).exactOptional(),
+    Id: ProblemIdSchema.exactOptional().openapi({ description: 'The ID of the problem.' }),
+    Title: TitleSchema.exactOptional().openapi({ description: 'The name of the problem.' }),
+    Insights: InsightsSchema.exactOptional().openapi({
+      description: 'A detailed analysis of the problem using machine learning.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({ description: 'The status of the problem.' }),
+    AffectedResource: AffectedResourceSchema.exactOptional().openapi({
+      description: 'The resource affected by the problem.',
+    }),
+    StartTime: StartTimeSchema.exactOptional().openapi({
+      description: 'The time when the problem started, in epoch seconds.',
+    }),
+    EndTime: EndTimeSchema.exactOptional().openapi({
+      description: 'The time when the problem ended, in epoch seconds.',
+    }),
+    SeverityLevel: SeverityLevelSchema.exactOptional().openapi({
+      description: 'A measure of the level of impact of the problem.',
+    }),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group affected by the problem.',
+    }),
+    Feedback: FeedbackSchema.exactOptional().openapi({
+      description: 'Feedback provided by the user about the problem.',
+    }),
+    RecurringCount: RecurringCountSchema.exactOptional().openapi({
+      description:
+        ' The number of times that the same problem reoccurred after the first time it was resolved. ',
+    }),
+    LastRecurrenceTime: LastRecurrenceTimeSchema.exactOptional().openapi({
+      description: ' The last time that the problem reoccurred after its last resolution. ',
+    }),
   })
   .openapi({
     description: 'Describes a problem that is detected by correlating observations.',
@@ -1080,17 +864,15 @@ const ProblemSchema = z
 
 const DescribeProblemResponseSchema = z
   .object({
-    Problem: ProblemSchema.and(
-      z.any().openapi({ description: 'Information about the problem. ' }),
-    ).exactOptional(),
+    Problem: ProblemSchema.exactOptional().openapi({
+      description: 'Information about the problem. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProblemResponse')
 
 const DescribeProblemRequestSchema = z
-  .object({
-    ProblemId: ProblemIdSchema.and(z.any().openapi({ description: 'The ID of the problem.' })),
-  })
+  .object({ ProblemId: ProblemIdSchema.openapi({ description: 'The ID of the problem.' }) })
   .openapi({ required: ['ProblemId'], title: 'DescribeProblemRequest' })
   .openapi('DescribeProblemRequest')
 
@@ -1098,26 +880,24 @@ const ObservationListSchema = z.array(ObservationSchema).openapi('ObservationLis
 
 const RelatedObservationsSchema = z
   .object({
-    ObservationList: ObservationListSchema.and(
-      z.any().openapi({ description: 'The list of observations related to the problem.' }),
-    ).exactOptional(),
+    ObservationList: ObservationListSchema.exactOptional().openapi({
+      description: 'The list of observations related to the problem.',
+    }),
   })
   .openapi({ description: 'Describes observations related to the problem.', required: [] })
   .openapi('RelatedObservations')
 
 const DescribeProblemObservationsResponseSchema = z
   .object({
-    RelatedObservations: RelatedObservationsSchema.and(
-      z.any().openapi({ description: 'Observations related to the problem.' }),
-    ).exactOptional(),
+    RelatedObservations: RelatedObservationsSchema.exactOptional().openapi({
+      description: 'Observations related to the problem.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProblemObservationsResponse')
 
 const DescribeProblemObservationsRequestSchema = z
-  .object({
-    ProblemId: ProblemIdSchema.and(z.any().openapi({ description: 'The ID of the problem.' })),
-  })
+  .object({ ProblemId: ProblemIdSchema.openapi({ description: 'The ID of the problem.' }) })
   .openapi({ required: ['ProblemId'], title: 'DescribeProblemObservationsRequest' })
   .openapi('DescribeProblemObservationsRequest')
 
@@ -1127,17 +907,13 @@ const PaginationTokenSchema = z.string().regex(/.+/).min(1).max(1024).openapi('P
 
 const ListApplicationsResponseSchema = z
   .object({
-    ApplicationInfoList: ApplicationInfoListSchema.and(
-      z.any().openapi({ description: 'The list of applications.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    ApplicationInfoList: ApplicationInfoListSchema.exactOptional().openapi({
+      description: 'The list of applications.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationsResponse')
@@ -1146,17 +922,13 @@ const MaxEntitiesSchema = z.int().min(1).max(40).openapi('MaxEntities')
 
 const ListApplicationsRequestSchema = z
   .object({
-    MaxResults: MaxEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
+    MaxResults: MaxEntitiesSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
   })
   .openapi({ title: 'ListApplicationsRequest', required: [] })
   .openapi('ListApplicationsRequest')
@@ -1167,32 +939,28 @@ const ApplicationComponentListSchema = z
 
 const ListComponentsResponseSchema = z
   .object({
-    ApplicationComponentList: ApplicationComponentListSchema.and(
-      z.any().openapi({ description: 'The list of application components.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
+    ApplicationComponentList: ApplicationComponentListSchema.exactOptional().openapi({
+      description: 'The list of application components.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListComponentsResponse')
 
 const ListComponentsRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    MaxResults: MaxEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    MaxResults: MaxEntitiesSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
   })
   .openapi({ required: ['ResourceGroupName'], title: 'ListComponentsRequest' })
   .openapi('ListComponentsRequest')
@@ -1219,38 +987,26 @@ const ConfigurationEventResourceNameSchema = z.string().openapi('ConfigurationEv
 
 const ConfigurationEventSchema = z
   .object({
-    MonitoredResourceARN: ConfigurationEventMonitoredResourceARNSchema.and(
-      z.any().openapi({ description: ' The resource monitored by Application Insights. ' }),
-    ).exactOptional(),
-    EventStatus: ConfigurationEventStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status of the configuration update event. Possible values include INFO, WARN, and ERROR. ',
-        }),
-    ).exactOptional(),
-    EventResourceType: ConfigurationEventResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The resource type that Application Insights attempted to configure, for example, CLOUDWATCH_ALARM. ',
-        }),
-    ).exactOptional(),
-    EventTime: ConfigurationEventTimeSchema.and(
-      z.any().openapi({ description: ' The timestamp of the event. ' }),
-    ).exactOptional(),
-    EventDetail: ConfigurationEventDetailSchema.and(
-      z.any().openapi({ description: ' The details of the event in plain text. ' }),
-    ).exactOptional(),
-    EventResourceName: ConfigurationEventResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the resource Application Insights attempted to configure. ',
-        }),
-    ).exactOptional(),
+    MonitoredResourceARN: ConfigurationEventMonitoredResourceARNSchema.exactOptional().openapi({
+      description: ' The resource monitored by Application Insights. ',
+    }),
+    EventStatus: ConfigurationEventStatusSchema.exactOptional().openapi({
+      description:
+        ' The status of the configuration update event. Possible values include INFO, WARN, and ERROR. ',
+    }),
+    EventResourceType: ConfigurationEventResourceTypeSchema.exactOptional().openapi({
+      description:
+        ' The resource type that Application Insights attempted to configure, for example, CLOUDWATCH_ALARM. ',
+    }),
+    EventTime: ConfigurationEventTimeSchema.exactOptional().openapi({
+      description: ' The timestamp of the event. ',
+    }),
+    EventDetail: ConfigurationEventDetailSchema.exactOptional().openapi({
+      description: ' The details of the event in plain text. ',
+    }),
+    EventResourceName: ConfigurationEventResourceNameSchema.exactOptional().openapi({
+      description: ' The name of the resource Application Insights attempted to configure. ',
+    }),
   })
   .openapi({ description: ' The event information. ', required: [] })
   .openapi('ConfigurationEvent')
@@ -1261,60 +1017,38 @@ const ConfigurationEventListSchema = z
 
 const ListConfigurationHistoryResponseSchema = z
   .object({
-    EventList: ConfigurationEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of configuration events and their corresponding details. ',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>NextToken</code> value to include in a future <code>ListConfigurationHistory</code> request. When the results of a <code>ListConfigurationHistory</code> request exceed <code>MaxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    EventList: ConfigurationEventListSchema.exactOptional().openapi({
+      description: ' The list of configuration events and their corresponding details. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>NextToken</code> value to include in a future <code>ListConfigurationHistory</code> request. When the results of a <code>ListConfigurationHistory</code> request exceed <code>MaxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConfigurationHistoryResponse')
 
 const ListConfigurationHistoryRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'Resource group to which the application belongs. ' }),
-    ).exactOptional(),
-    StartTime: StartTimeSchema.and(
-      z.any().openapi({ description: 'The start time of the event. ' }),
-    ).exactOptional(),
-    EndTime: EndTimeSchema.and(
-      z.any().openapi({ description: 'The end time of the event.' }),
-    ).exactOptional(),
-    EventStatus: ConfigurationEventStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the configuration update event. Possible values include INFO, WARN, and ERROR.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The maximum number of results returned by <code>ListConfigurationHistory</code> in paginated output. When this parameter is used, <code>ListConfigurationHistory</code> returns only <code>MaxResults</code> in a single page along with a <code>NextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListConfigurationHistory</code> request with the returned <code>NextToken</code> value. If this parameter is not used, then <code>ListConfigurationHistory</code> returns all results. ',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>NextToken</code> value returned from a previous paginated <code>ListConfigurationHistory</code> request where <code>MaxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>NextToken</code> value. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'Resource group to which the application belongs. ',
+    }),
+    StartTime: StartTimeSchema.exactOptional().openapi({
+      description: 'The start time of the event. ',
+    }),
+    EndTime: EndTimeSchema.exactOptional().openapi({ description: 'The end time of the event.' }),
+    EventStatus: ConfigurationEventStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the configuration update event. Possible values include INFO, WARN, and ERROR.',
+    }),
+    MaxResults: MaxEntitiesSchema.exactOptional().openapi({
+      description:
+        ' The maximum number of results returned by <code>ListConfigurationHistory</code> in paginated output. When this parameter is used, <code>ListConfigurationHistory</code> returns only <code>MaxResults</code> in a single page along with a <code>NextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListConfigurationHistory</code> request with the returned <code>NextToken</code> value. If this parameter is not used, then <code>ListConfigurationHistory</code> returns all results. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>NextToken</code> value returned from a previous paginated <code>ListConfigurationHistory</code> request where <code>MaxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>NextToken</code> value. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ title: 'ListConfigurationHistoryRequest', required: [] })
   .openapi('ListConfigurationHistoryRequest')
@@ -1323,40 +1057,32 @@ const LogPatternSetListSchema = z.array(LogPatternSetNameSchema).openapi('LogPat
 
 const ListLogPatternSetsResponseSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ).exactOptional(),
-    LogPatternSets: LogPatternSetListSchema.and(
-      z.any().openapi({ description: 'The list of log pattern sets.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group.',
+    }),
+    LogPatternSets: LogPatternSetListSchema.exactOptional().openapi({
+      description: 'The list of log pattern sets.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLogPatternSetsResponse')
 
 const ListLogPatternSetsRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    MaxResults: MaxEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    MaxResults: MaxEntitiesSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
   })
   .openapi({ required: ['ResourceGroupName'], title: 'ListLogPatternSetsRequest' })
   .openapi('ListLogPatternSetsRequest')
@@ -1365,43 +1091,35 @@ const LogPatternListSchema = z.array(LogPatternSchema).openapi('LogPatternList')
 
 const ListLogPatternsResponseSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ).exactOptional(),
-    LogPatterns: LogPatternListSchema.and(
-      z.any().openapi({ description: 'The list of log patterns.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group.',
+    }),
+    LogPatterns: LogPatternListSchema.exactOptional().openapi({
+      description: 'The list of log patterns.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLogPatternsResponse')
 
 const ListLogPatternsRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    PatternSetName: LogPatternSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern set.' }),
-    ).exactOptional(),
-    MaxResults: MaxEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    PatternSetName: LogPatternSetNameSchema.exactOptional().openapi({
+      description: 'The name of the log pattern set.',
+    }),
+    MaxResults: MaxEntitiesSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
   })
   .openapi({ required: ['ResourceGroupName'], title: 'ListLogPatternsRequest' })
   .openapi('ListLogPatternsRequest')
@@ -1410,73 +1128,53 @@ const ProblemListSchema = z.array(ProblemSchema).openapi('ProblemList')
 
 const ListProblemsResponseSchema = z
   .object({
-    ProblemList: ProblemListSchema.and(
-      z.any().openapi({ description: 'The list of problems. ' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
-        }),
-    ).exactOptional(),
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: ' The name of the resource group. ' }),
-    ).exactOptional(),
+    ProblemList: ProblemListSchema.exactOptional().openapi({
+      description: 'The list of problems. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
+    }),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: ' The name of the resource group. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProblemsResponse')
 
 const ListProblemsRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ).exactOptional(),
-    StartTime: StartTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when the problem was detected, in epoch seconds. If you don't specify a time frame for the request, problems within the past seven days are returned.",
-        }),
-    ).exactOptional(),
-    EndTime: EndTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the problem ended, in epoch seconds. If not specified, problems within the past seven days are returned.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxEntitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
-    ComponentName: ComponentNameSchema.and(
-      z.any().openapi({ description: ' The name of the component. ' }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group.',
+    }),
+    StartTime: StartTimeSchema.exactOptional().openapi({
+      description:
+        "The time when the problem was detected, in epoch seconds. If you don't specify a time frame for the request, problems within the past seven days are returned.",
+    }),
+    EndTime: EndTimeSchema.exactOptional().openapi({
+      description:
+        'The time when the problem ended, in epoch seconds. If not specified, problems within the past seven days are returned.',
+    }),
+    MaxResults: MaxEntitiesSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
+    ComponentName: ComponentNameSchema.exactOptional().openapi({
+      description: ' The name of the component. ',
+    }),
   })
   .openapi({ title: 'ListProblemsRequest', required: [] })
   .openapi('ListProblemsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that lists all the tags that are associated with the application. Each tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>).',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array that lists all the tags that are associated with the application. Each tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1490,75 +1188,55 @@ const AmazonResourceNameSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the application that you want to retrieve tag information for.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the application that you want to retrieve tag information for.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the application that you want to add one or more tags to.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that to add to the application. A tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>). The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the application that you want to add one or more tags to.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'A list of tags that to add to the application. A tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>). The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the application that you want to remove one or more tags from.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tags (tag keys) that you want to remove from the resource. When you specify a tag key, the action removes both that key and its associated tag value.</p> <p>To remove more than one tag from the application, append the <code>TagKeys</code> parameter and argument for each additional tag to remove, separated by an ampersand. </p>',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the application that you want to remove one or more tags from.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        '<p>The tags (tag keys) that you want to remove from the resource. When you specify a tag key, the action removes both that key and its associated tag value.</p> <p>To remove more than one tag from the application, append the <code>TagKeys</code> parameter and argument for each additional tag to remove, separated by an ampersand. </p>',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateApplicationResponseSchema = z
   .object({
-    ApplicationInfo: ApplicationInfoSchema.and(
-      z.any().openapi({ description: 'Information about the application. ' }),
-    ).exactOptional(),
+    ApplicationInfo: ApplicationInfoSchema.exactOptional().openapi({
+      description: 'Information about the application. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateApplicationResponse')
@@ -1567,102 +1245,73 @@ const RemoveSNSTopicSchema = z.boolean().openapi('RemoveSNSTopic')
 
 const UpdateApplicationRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    OpsCenterEnabled: OpsCenterEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' When set to <code>true</code>, creates opsItems for any problems detected on an application. ',
-        }),
-    ).exactOptional(),
-    CWEMonitorEnabled: CWEMonitorEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether Application Insights can listen to CloudWatch events for the application resources, such as <code>instance terminated</code>, <code>failed deployment</code>, and others. ',
-        }),
-    ).exactOptional(),
-    OpsItemSNSTopicArn: OpsItemSNSTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The SNS topic provided to Application Insights that is associated to the created opsItem. Allows you to receive notifications for updates to the opsItem.',
-        }),
-    ).exactOptional(),
-    RemoveSNSTopic: RemoveSNSTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Disassociates the SNS topic from the opsItem created for detected problems.',
-        }),
-    ).exactOptional(),
-    AutoConfigEnabled: AutoConfigEnabledSchema.and(
-      z.any().openapi({ description: ' Turns auto-configuration on or off. ' }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    OpsCenterEnabled: OpsCenterEnabledSchema.exactOptional().openapi({
+      description:
+        ' When set to <code>true</code>, creates opsItems for any problems detected on an application. ',
+    }),
+    CWEMonitorEnabled: CWEMonitorEnabledSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether Application Insights can listen to CloudWatch events for the application resources, such as <code>instance terminated</code>, <code>failed deployment</code>, and others. ',
+    }),
+    OpsItemSNSTopicArn: OpsItemSNSTopicArnSchema.exactOptional().openapi({
+      description:
+        ' The SNS topic provided to Application Insights that is associated to the created opsItem. Allows you to receive notifications for updates to the opsItem.',
+    }),
+    RemoveSNSTopic: RemoveSNSTopicSchema.exactOptional().openapi({
+      description: ' Disassociates the SNS topic from the opsItem created for detected problems.',
+    }),
+    AutoConfigEnabled: AutoConfigEnabledSchema.exactOptional().openapi({
+      description: ' Turns auto-configuration on or off. ',
+    }),
   })
   .openapi({ required: ['ResourceGroupName'], title: 'UpdateApplicationRequest' })
   .openapi('UpdateApplicationRequest')
 
-const UpdateComponentResponseSchema = z.object({}).openapi('UpdateComponentResponse')
+const UpdateComponentResponseSchema = z.looseObject({}).openapi('UpdateComponentResponse')
 
 const UpdateComponentRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    ComponentName: CustomComponentNameSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ),
-    NewComponentName: CustomComponentNameSchema.and(
-      z.any().openapi({ description: 'The new name of the component.' }),
-    ).exactOptional(),
-    ResourceList: ResourceListSchema.and(
-      z.any().openapi({ description: 'The list of resource ARNs that belong to the component.' }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    ComponentName: CustomComponentNameSchema.openapi({ description: 'The name of the component.' }),
+    NewComponentName: CustomComponentNameSchema.exactOptional().openapi({
+      description: 'The new name of the component.',
+    }),
+    ResourceList: ResourceListSchema.exactOptional().openapi({
+      description: 'The list of resource ARNs that belong to the component.',
+    }),
   })
   .openapi({ required: ['ResourceGroupName', 'ComponentName'], title: 'UpdateComponentRequest' })
   .openapi('UpdateComponentRequest')
 
 const UpdateComponentConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateComponentConfigurationResponse')
 
 const UpdateComponentConfigurationRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    ComponentName: ComponentNameSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ),
-    Monitor: MonitorSchema.and(
-      z.any().openapi({ description: 'Indicates whether the application component is monitored.' }),
-    ).exactOptional(),
-    Tier: TierSchema.and(
-      z.any().openapi({ description: 'The tier of the application component.' }),
-    ).exactOptional(),
-    ComponentConfiguration: ComponentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings of the component. The value is the escaped JSON of the configuration. For more information about the JSON format, see <a href="https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/working-with-json.html">Working with JSON</a>. You can send a request to <code>DescribeComponentConfigurationRecommendation</code> to see the recommended configuration for a component. For the complete format of the component configuration file, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/component-config.html">Component Configuration</a>.',
-        }),
-    ).exactOptional(),
-    AutoConfigEnabled: AutoConfigEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Automatically configures the component by applying the recommended configurations. ',
-        }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    ComponentName: ComponentNameSchema.openapi({ description: 'The name of the component.' }),
+    Monitor: MonitorSchema.exactOptional().openapi({
+      description: 'Indicates whether the application component is monitored.',
+    }),
+    Tier: TierSchema.exactOptional().openapi({
+      description: 'The tier of the application component.',
+    }),
+    ComponentConfiguration: ComponentConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration settings of the component. The value is the escaped JSON of the configuration. For more information about the JSON format, see <a href="https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/working-with-json.html">Working with JSON</a>. You can send a request to <code>DescribeComponentConfigurationRecommendation</code> to see the recommended configuration for a component. For the complete format of the component configuration file, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/component-config.html">Component Configuration</a>.',
+    }),
+    AutoConfigEnabled: AutoConfigEnabledSchema.exactOptional().openapi({
+      description:
+        ' Automatically configures the component by applying the recommended configurations. ',
+    }),
   })
   .openapi({
     required: ['ResourceGroupName', 'ComponentName'],
@@ -1672,43 +1321,33 @@ const UpdateComponentConfigurationRequestSchema = z
 
 const UpdateLogPatternResponseSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ).exactOptional(),
-    LogPattern: LogPatternSchema.and(
-      z.any().openapi({ description: 'The successfully created log pattern.' }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group.',
+    }),
+    LogPattern: LogPatternSchema.exactOptional().openapi({
+      description: 'The successfully created log pattern.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateLogPatternResponse')
 
 const UpdateLogPatternRequestSchema = z
   .object({
-    ResourceGroupName: ResourceGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ),
-    PatternSetName: LogPatternSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern set.' }),
-    ),
-    PatternName: LogPatternNameSchema.and(
-      z.any().openapi({ description: 'The name of the log pattern.' }),
-    ),
-    Pattern: LogPatternRegexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The log pattern. The pattern must be DFA compatible. Patterns that utilize forward lookahead or backreference constructions are not supported.',
-        }),
-    ).exactOptional(),
-    Rank: LogPatternRankSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. ',
-        }),
-    ).exactOptional(),
+    ResourceGroupName: ResourceGroupNameSchema.openapi({
+      description: 'The name of the resource group.',
+    }),
+    PatternSetName: LogPatternSetNameSchema.openapi({
+      description: 'The name of the log pattern set.',
+    }),
+    PatternName: LogPatternNameSchema.openapi({ description: 'The name of the log pattern.' }),
+    Pattern: LogPatternRegexSchema.exactOptional().openapi({
+      description:
+        'The log pattern. The pattern must be DFA compatible. Patterns that utilize forward lookahead or backreference constructions are not supported.',
+    }),
+    Rank: LogPatternRankSchema.exactOptional().openapi({
+      description:
+        'Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. ',
+    }),
   })
   .openapi({
     required: ['ResourceGroupName', 'PatternSetName', 'PatternName'],

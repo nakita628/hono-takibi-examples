@@ -1117,7 +1117,7 @@ export const getOpenapiJsonRoute = createRoute({
   responses: {
     200: {
       description: 'OpenAPI 3.1 document',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })

@@ -1,5 +1,172 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AnyValueSchema = z
+  .any()
+  .openapi({ description: 'Can be anything: string, number, array, object, etc.' })
+  .openapi('AnyValue')
+
+const TensorSchema = z
+  .object({
+    shape: z.array(z.int32()).exactOptional(),
+    values: z.array(z.float64()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Tensor')
+
+const TensorflowTensorProtoSchema: z.ZodType<TensorflowTensorProtoType> = z
+  .lazy(() =>
+    z
+      .object({
+        bool_val: z.array(z.boolean()).exactOptional().openapi({ title: 'DT_BOOL' }),
+        dcomplex_val: z
+          .array(z.float64())
+          .exactOptional()
+          .openapi({
+            description:
+              'DT_COMPLEX128. dcomplex_val(2*i) and dcomplex_val(2*i+1) are real\nand imaginary parts of i-th double precision complex.',
+          }),
+        double_val: z.array(z.float64()).exactOptional().openapi({ description: 'DT_DOUBLE.' }),
+        dtype: TensorflowDataTypeSchema.exactOptional(),
+        float_val: z.array(z.float32()).exactOptional().openapi({ description: 'DT_FLOAT.' }),
+        half_val: z
+          .array(z.int32())
+          .exactOptional()
+          .openapi({
+            description:
+              "DT_HALF, DT_BFLOAT16. Note that since protobuf has no int16 type, we'll\nhave some pointless zero padding for each value here.",
+          }),
+        int64_val: z.array(z.string()).exactOptional().openapi({ title: 'DT_INT64' }),
+        int_val: z
+          .array(z.int32())
+          .exactOptional()
+          .openapi({ description: 'DT_INT32, DT_INT16, DT_INT8, DT_UINT8.' }),
+        resource_handle_val: z
+          .array(TensorflowResourceHandleProtoSchema)
+          .exactOptional()
+          .openapi({ title: 'DT_RESOURCE' }),
+        scomplex_val: z
+          .array(z.float32())
+          .exactOptional()
+          .openapi({
+            description:
+              'DT_COMPLEX64. scomplex_val(2*i) and scomplex_val(2*i+1) are real\nand imaginary parts of i-th single precision complex.',
+          }),
+        string_val: z.array(z.string()).exactOptional().openapi({ title: 'DT_STRING' }),
+        tensor_content: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Serialized raw tensor content from either Tensor::AsProtoTensorContent or\nmemcpy in tensorflow::grpc::EncodeTensorToByteBuffer. This representation\ncan be used for all tensor types. The purpose of this representation is to\nreduce serialization overhead during RPC call by avoiding serialization of\nmany repeated small items.',
+          }),
+        tensor_shape: TensorflowTensorShapeProtoSchema.exactOptional().openapi({
+          description: 'Shape of the tensor.  TODO(touts): sort out the 0-rank issues.',
+        }),
+        uint32_val: z
+          .array(
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+          )
+          .exactOptional()
+          .openapi({ title: 'DT_UINT32' }),
+        uint64_val: z.array(z.string()).exactOptional().openapi({ title: 'DT_UINT64' }),
+        variant_val: z
+          .array(TensorflowVariantTensorDataProtoSchema)
+          .exactOptional()
+          .openapi({ title: 'DT_VARIANT' }),
+        version_number: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'Version number.\n\nIn version 0, if the "repeated xxx" representations contain only one\nelement, that element is repeated to fill the shape.  This makes it easy\nto represent a constant Tensor with a single value.',
+          }),
+      })
+      .openapi({ description: 'Protocol buffer representing a tensor.', required: [] }),
+  )
+  .openapi('TensorflowTensorProto')
+
+const DefaultDataSchema = z
+  .object({
+    names: z.array(z.string()).exactOptional(),
+    ndarry: z.array(AnyValueSchema).exactOptional(),
+    tensor: TensorSchema.exactOptional(),
+    tftensor: TensorflowTensorProtoSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DefaultData')
+
+const MetricTypeSchema = z
+  .enum(['COUNTER', 'GAUGE', 'TIMER'])
+  .default('COUNTER')
+  .openapi('MetricType')
+
+const MetricSchema = z
+  .object({
+    key: z.string().exactOptional(),
+    type: MetricTypeSchema.exactOptional(),
+    value: z.float32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Metric')
+
+const MetaSchema = z
+  .object({
+    metrics: z.array(MetricSchema).exactOptional(),
+    puid: z.string().exactOptional(),
+    requestPath: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ example: { classifier: 'seldonio/mock_classifier:1.0' } }),
+    routing: z
+      .record(z.string(), z.int32())
+      .exactOptional()
+      .openapi({ example: { router1: 1 } }),
+    tags: z
+      .record(z.string(), AnyValueSchema)
+      .exactOptional()
+      .openapi({ example: { mytag: 'myvalue' } }),
+  })
+  .openapi({ required: [] })
+  .openapi('Meta')
+
+const StatusStatusFlagSchema = z
+  .enum(['SUCCESS', 'FAILURE'])
+  .default('SUCCESS')
+  .openapi('StatusStatusFlag')
+
+const StatusSchema = z
+  .object({
+    code: z.int32().exactOptional(),
+    info: z.string().exactOptional(),
+    reason: z.string().exactOptional(),
+    status: StatusStatusFlagSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Status')
+
+const SeldonMessageSchema = z
+  .object({
+    binData: z.string().exactOptional(),
+    data: DefaultDataSchema.exactOptional(),
+    meta: MetaSchema.exactOptional(),
+    status: StatusSchema.exactOptional(),
+    strData: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SeldonMessage')
+
+type SeldonMessageListType = { seldonMessages?: z.infer<typeof SeldonMessageSchema>[] }
+
 type TensorflowDataTypeType =
   | 'DT_INVALID'
   | 'DT_FLOAT'
@@ -234,176 +401,11 @@ type TensorflowTensorProtoType = {
   version_number?: number
 }
 
-const TensorflowTensorProtoSchema: z.ZodType<TensorflowTensorProtoType> = z
-  .lazy(() =>
-    z
-      .object({
-        bool_val: z.array(z.boolean()).exactOptional().openapi({ title: 'DT_BOOL' }),
-        dcomplex_val: z
-          .array(z.float64())
-          .exactOptional()
-          .openapi({
-            description:
-              'DT_COMPLEX128. dcomplex_val(2*i) and dcomplex_val(2*i+1) are real\nand imaginary parts of i-th double precision complex.',
-          }),
-        double_val: z.array(z.float64()).exactOptional().openapi({ description: 'DT_DOUBLE.' }),
-        dtype: TensorflowDataTypeSchema.exactOptional(),
-        float_val: z.array(z.float32()).exactOptional().openapi({ description: 'DT_FLOAT.' }),
-        half_val: z
-          .array(z.int32())
-          .exactOptional()
-          .openapi({
-            description:
-              "DT_HALF, DT_BFLOAT16. Note that since protobuf has no int16 type, we'll\nhave some pointless zero padding for each value here.",
-          }),
-        int64_val: z.array(z.string()).exactOptional().openapi({ title: 'DT_INT64' }),
-        int_val: z
-          .array(z.int32())
-          .exactOptional()
-          .openapi({ description: 'DT_INT32, DT_INT16, DT_INT8, DT_UINT8.' }),
-        resource_handle_val: z
-          .array(TensorflowResourceHandleProtoSchema)
-          .exactOptional()
-          .openapi({ title: 'DT_RESOURCE' }),
-        scomplex_val: z
-          .array(z.float32())
-          .exactOptional()
-          .openapi({
-            description:
-              'DT_COMPLEX64. scomplex_val(2*i) and scomplex_val(2*i+1) are real\nand imaginary parts of i-th single precision complex.',
-          }),
-        string_val: z.array(z.string()).exactOptional().openapi({ title: 'DT_STRING' }),
-        tensor_content: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Serialized raw tensor content from either Tensor::AsProtoTensorContent or\nmemcpy in tensorflow::grpc::EncodeTensorToByteBuffer. This representation\ncan be used for all tensor types. The purpose of this representation is to\nreduce serialization overhead during RPC call by avoiding serialization of\nmany repeated small items.',
-          }),
-        tensor_shape: TensorflowTensorShapeProtoSchema.exactOptional().openapi({
-          description: 'Shape of the tensor.  TODO(touts): sort out the 0-rank issues.',
-        }),
-        uint32_val: z
-          .array(
-            z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64' }),
-          )
-          .exactOptional()
-          .openapi({ title: 'DT_UINT32' }),
-        uint64_val: z.array(z.string()).exactOptional().openapi({ title: 'DT_UINT64' }),
-        variant_val: z
-          .array(TensorflowVariantTensorDataProtoSchema)
-          .exactOptional()
-          .openapi({ title: 'DT_VARIANT' }),
-        version_number: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Version number.\n\nIn version 0, if the "repeated xxx" representations contain only one\nelement, that element is repeated to fill the shape.  This makes it easy\nto represent a constant Tensor with a single value.',
-          }),
-      })
-      .openapi({ description: 'Protocol buffer representing a tensor.', required: [] }),
-  )
-  .openapi('TensorflowTensorProto')
-
 type TensorflowVariantTensorDataProtoType = {
   metadata?: string
   tensors?: z.infer<typeof TensorflowTensorProtoSchema>[]
   type_name?: string
 }
-
-const AnyValueSchema = z
-  .any()
-  .openapi({ description: 'Can be anything: string, number, array, object, etc.' })
-  .openapi('AnyValue')
-
-const TensorSchema = z
-  .object({
-    shape: z.array(z.int32()).exactOptional(),
-    values: z.array(z.float64()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Tensor')
-
-const DefaultDataSchema = z
-  .object({
-    names: z.array(z.string()).exactOptional(),
-    ndarry: z.array(AnyValueSchema).exactOptional(),
-    tensor: TensorSchema.exactOptional(),
-    tftensor: TensorflowTensorProtoSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DefaultData')
-
-const MetricTypeSchema = z
-  .enum(['COUNTER', 'GAUGE', 'TIMER'])
-  .default('COUNTER')
-  .openapi('MetricType')
-
-const MetricSchema = z
-  .object({
-    key: z.string().exactOptional(),
-    type: MetricTypeSchema.exactOptional(),
-    value: z.float32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Metric')
-
-const MetaSchema = z
-  .object({
-    metrics: z.array(MetricSchema).exactOptional(),
-    puid: z.string().exactOptional(),
-    requestPath: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ example: { classifier: 'seldonio/mock_classifier:1.0' } }),
-    routing: z
-      .record(z.string(), z.int32())
-      .exactOptional()
-      .openapi({ example: { router1: 1 } }),
-    tags: z
-      .record(z.string(), AnyValueSchema)
-      .exactOptional()
-      .openapi({ example: { mytag: 'myvalue' } }),
-  })
-  .openapi({ required: [] })
-  .openapi('Meta')
-
-const StatusStatusFlagSchema = z
-  .enum(['SUCCESS', 'FAILURE'])
-  .default('SUCCESS')
-  .openapi('StatusStatusFlag')
-
-const StatusSchema = z
-  .object({
-    code: z.int32().exactOptional(),
-    info: z.string().exactOptional(),
-    reason: z.string().exactOptional(),
-    status: StatusStatusFlagSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Status')
-
-const SeldonMessageSchema = z
-  .object({
-    binData: z.string().exactOptional(),
-    data: DefaultDataSchema.exactOptional(),
-    meta: MetaSchema.exactOptional(),
-    status: StatusSchema.exactOptional(),
-    strData: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SeldonMessage')
 
 const FeedbackSchema = z
   .object({
@@ -415,7 +417,7 @@ const FeedbackSchema = z
   .openapi({ required: [] })
   .openapi('Feedback')
 
-const SeldonMessageListSchema = z
+const SeldonMessageListSchema: z.ZodType<SeldonMessageListType> = z
   .object({ seldonMessages: z.array(SeldonMessageSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('SeldonMessageList')

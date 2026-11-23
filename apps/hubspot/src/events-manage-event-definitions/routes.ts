@@ -1,5 +1,1128 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const NextPageSchema = z
+  .object({
+    after: z
+      .string()
+      .openapi({
+        description:
+          'A string token used as a cursor to fetch the next page of results. This token is typically returned in the response of a paginated API call.',
+        example: null,
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A URL string that points to the next page of results. Clients can use this link to make a request for the subsequent set of data.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['after'],
+    description:
+      'Specifies the paging information needed to retrieve the next set of results in a paginated API response',
+    example: null,
+  })
+  .openapi('NextPage')
+
+const PreviousPageSchema = z
+  .object({
+    before: z
+      .string()
+      .openapi({
+        description: 'A string token used as a cursor to fetch the previous page of results.',
+        example: null,
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A URL string that provides the link to access the previous page of results.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['before'],
+    description:
+      'specifies the paging information needed to retrieve the previous set of results in a paginated API response',
+    example: null,
+  })
+  .openapi('PreviousPage')
+
+const PagingSchema = z
+  .object({ next: NextPageSchema.exactOptional(), prev: PreviousPageSchema.exactOptional() })
+  .openapi({
+    description:
+      'Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.',
+    example: null,
+    required: [],
+  })
+  .openapi('Paging')
+
+const AssociationDefinitionSchema = z
+  .object({
+    allowsCustomLabels: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating if custom labels are allowed for this association.',
+        example: null,
+      }),
+    cardinality: z
+      .enum(['ONE_TO_MANY', 'ONE_TO_ONE'])
+      .openapi({
+        description:
+          "The nature of the association in terms of cardinality, which can be 'ONE_TO_ONE' or 'ONE_TO_MANY'.",
+        example: null,
+      }),
+    category: z
+      .enum(['HUBSPOT_DEFINED', 'INTEGRATOR_DEFINED', 'USER_DEFINED', 'WORK'])
+      .openapi({
+        description:
+          "The category of the association, indicating whether it is defined by HubSpot, the user, an integrator, or for work purposes. Valid values include 'HUBSPOT_DEFINED', 'USER_DEFINED', 'INTEGRATOR_DEFINED', and 'WORK'.",
+        example: null,
+      }),
+    fromObjectType: z
+      .enum([
+        'ABANDONED_CART',
+        'ACCEPTANCE_TEST',
+        'AD',
+        'AD_ACCOUNT',
+        'AD_CAMPAIGN',
+        'AD_GROUP',
+        'AI_FORECAST',
+        'ALL_PAGES',
+        'APPROVAL',
+        'APPROVAL_STEP',
+        'ATTRIBUTION',
+        'AUDIENCE',
+        'AUTOMATION_JOURNEY',
+        'AUTOMATION_PLATFORM_FLOW',
+        'AUTOMATION_PLATFORM_FLOW_ACTION',
+        'BET_ALERT',
+        'BET_DELIVERABLE_SERVICE',
+        'BLOG_LISTING_PAGE',
+        'BLOG_POST',
+        'CALL',
+        'CAMPAIGN',
+        'CAMPAIGN_BUDGET_ITEM',
+        'CAMPAIGN_SPEND_ITEM',
+        'CAMPAIGN_STEP',
+        'CAMPAIGN_TEMPLATE',
+        'CAMPAIGN_TEMPLATE_STEP',
+        'CART',
+        'CASE_STUDY',
+        'CHATFLOW',
+        'CLIP',
+        'CMS_URL',
+        'COMBO_EVENT_CONFIGURATION',
+        'COMMERCE_PAYMENT',
+        'COMMUNICATION',
+        'COMPANY',
+        'CONTACT',
+        'CONTACT_CREATE_ATTRIBUTION',
+        'CONTENT',
+        'CONTENT_AUDIT',
+        'CONTENT_AUDIT_PAGE',
+        'CONVERSATION',
+        'CONVERSATION_INBOX',
+        'CONVERSATION_SESSION',
+        'CRM_OBJECTS_DUMMY_TYPE',
+        'CRM_PIPELINES_DUMMY_TYPE',
+        'CTA',
+        'CTA_VARIANT',
+        'DATA_PRIVACY_CONSENT',
+        'DATA_SYNC_STATE',
+        'DEAL',
+        'DEAL_CREATE_ATTRIBUTION',
+        'DEAL_REGISTRATION',
+        'DEAL_SPLIT',
+        'DISCOUNT',
+        'DISCOUNT_CODE',
+        'DISCOUNT_TEMPLATE',
+        'EMAIL',
+        'ENGAGEMENT',
+        'EXPORT',
+        'EXTERNAL_WEB_URL',
+        'FEE',
+        'FEEDBACK_SUBMISSION',
+        'FEEDBACK_SURVEY',
+        'FILE_MANAGER_FILE',
+        'FILE_MANAGER_FOLDER',
+        'FOLDER',
+        'FORECAST',
+        'FORM',
+        'FORM_SUBMISSION_INBOUNDDB',
+        'GOAL_TARGET',
+        'GOAL_TARGET_GROUP',
+        'GOAL_TEMPLATE',
+        'GSC_PROPERTY',
+        'HUB',
+        'IMPORT',
+        'INVOICE',
+        'KEYWORD',
+        'KNOWLEDGE_ARTICLE',
+        'LANDING_PAGE',
+        'LEAD',
+        'LINE_ITEM',
+        'MARKETING_CALENDAR',
+        'MARKETING_CAMPAIGN_UTM',
+        'MARKETING_EMAIL',
+        'MARKETING_EVENT',
+        'MARKETING_EVENT_ATTENDANCE',
+        'MARKETING_SMS',
+        'MEDIA_BRIDGE',
+        'MEETING_EVENT',
+        'MIC',
+        'NOTE',
+        'OBJECT_LIST',
+        'ORDER',
+        'OWNER',
+        'PARTNER_ACCOUNT',
+        'PARTNER_CLIENT',
+        'PARTNER_CLIENT_REVENUE',
+        'PARTNER_SERVICE',
+        'PAYMENT_LINK',
+        'PAYMENT_SCHEDULE',
+        'PAYMENT_SCHEDULE_INSTALLMENT',
+        'PERMISSIONS_TESTING',
+        'PLAYBOOK',
+        'PLAYBOOK_QUESTION',
+        'PLAYBOOK_SUBMISSION',
+        'PLAYBOOK_SUBMISSION_ANSWER',
+        'PLAYLIST',
+        'PLAYLIST_FOLDER',
+        'PODCAST_EPISODE',
+        'PORTAL',
+        'PORTAL_OBJECT_SYNC_MESSAGE',
+        'POSTAL_MAIL',
+        'PRIVACY_SCANNER_COOKIE',
+        'PRODUCT',
+        'PRODUCT_OR_FOLDER',
+        'PROPERTY_INFO',
+        'PROSPECTING_AGENT_CONTACT_ASSIGNMENT',
+        'PUBLISHING_TASK',
+        'QUARANTINED_SUBMISSION',
+        'QUOTA',
+        'QUOTE',
+        'QUOTE_FIELD',
+        'QUOTE_MODULE',
+        'QUOTE_MODULE_FIELD',
+        'QUOTE_TEMPLATE',
+        'RESTORABLE_CRM_OBJECT',
+        'ROSTER',
+        'ROSTER_MEMBER',
+        'SALES_DOCUMENT',
+        'SALES_TASK',
+        'SALES_WORKLOAD',
+        'SALESFORCE_SYNC_ERROR',
+        'SCHEDULING_PAGE',
+        'SCHEMAS_BACKEND_TEST',
+        'SCORE_CONFIGURATION',
+        'SEQUENCE',
+        'SEQUENCE_ENROLLMENT',
+        'SEQUENCE_STEP',
+        'SEQUENCE_STEP_ENROLLMENT',
+        'SERVICE',
+        'SITE_PAGE',
+        'SNIPPET',
+        'SOCIAL_BROADCAST',
+        'SOCIAL_CHANNEL',
+        'SOCIAL_POST',
+        'SOCIAL_PROFILE',
+        'SOX_PROTECTED_DUMMY_TYPE',
+        'SOX_PROTECTED_TEST_TYPE',
+        'SUBMISSION_TAG',
+        'SUBSCRIPTION',
+        'TASK',
+        'TASK_TEMPLATE',
+        'TAX',
+        'TEMPLATE',
+        'TICKET',
+        'UNKNOWN',
+        'UNSUBSCRIBE',
+        'USER',
+        'VIEW',
+        'VIEW_BLOCK',
+        'WEB_INTERACTIVE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "The type of object from which the association originates. Valid values include various HubSpot object types such as 'CONTACT', 'COMPANY', 'DEAL', etc.",
+        example: null,
+      }),
+    fromObjectTypeId: z
+      .string()
+      .openapi({
+        description: 'The object type ID from which the association originates.',
+        example: null,
+      }),
+    hasAllAssociatedObjects: z
+      .boolean()
+      .openapi({
+        description:
+          'A boolean indicating if all associated objects are included in the association.',
+        example: null,
+      }),
+    hasCascadingDeletes: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating if cascading deletes are enabled for this association.',
+        example: null,
+      }),
+    hasUserEnforcedMaxFromObjectIds: z
+      .boolean()
+      .openapi({
+        description:
+          "A boolean indicating if there is a user-enforced maximum on the number of 'from' object IDs.",
+        example: null,
+      }),
+    hasUserEnforcedMaxToObjectIds: z
+      .boolean()
+      .openapi({
+        description:
+          "A boolean indicating if there is a user-enforced maximum on the number of 'to' object IDs.",
+        example: null,
+      }),
+    hidden: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating if the association is hidden.',
+        example: null,
+      }),
+    hiddenReason: z
+      .enum(['DEFAULT', 'INTERNAL', 'USER_CONFIGURED'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason why the association is hidden, if applicable. Valid values include 'DEFAULT', 'INTERNAL', and 'USER_CONFIGURED'.",
+        example: null,
+      }),
+    id: z
+      .int32()
+      .openapi({
+        description: 'The unique identifier for this association definition.',
+        example: null,
+      }),
+    inverseAllowsCustomLabels: z
+      .boolean()
+      .openapi({
+        description:
+          'A boolean indicating if custom labels are allowed for the inverse association.',
+        example: null,
+      }),
+    inverseCardinality: z
+      .enum(['ONE_TO_MANY', 'ONE_TO_ONE'])
+      .openapi({
+        description:
+          "The cardinality of the inverse association, which can also be 'ONE_TO_ONE' or 'ONE_TO_MANY'.",
+        example: null,
+      }),
+    inverseHasAllAssociatedObjects: z
+      .boolean()
+      .openapi({
+        description:
+          'A boolean indicating if all associated objects are included in the inverse association.',
+        example: null,
+      }),
+    inverseId: z
+      .int32()
+      .openapi({
+        description: 'The unique identifier for the inverse of this association definition.',
+        example: null,
+      }),
+    inverseLabel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A human-readable label for the inverse association.',
+        example: null,
+      }),
+    inverseName: z
+      .string()
+      .openapi({ description: 'The name of the inverse association.', example: null }),
+    isDefault: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating if this association is the default association.',
+        example: null,
+      }),
+    isInversePrimary: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating if the inverse association is the primary association.',
+        example: null,
+      }),
+    isPrimary: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating if this association is the primary association.',
+        example: null,
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A human-readable label for the association.', example: null }),
+    maxFromObjectIds: z
+      .int32()
+      .openapi({
+        description:
+          "The maximum number of object IDs that can be associated in the 'from' direction.",
+        example: null,
+      }),
+    maxToObjectIds: z
+      .int32()
+      .openapi({
+        description:
+          "The maximum number of object IDs that can be associated in the 'to' direction.",
+        example: null,
+      }),
+    name: z.string().openapi({ description: 'The name of the association.', example: null }),
+    portalUniqueIdentifier: z
+      .string()
+      .openapi({
+        description: 'A unique identifier for the association within the portal.',
+        example: null,
+      }),
+    readOnly: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating if the association is read-only.',
+        example: null,
+      }),
+    toObjectType: z
+      .enum([
+        'ABANDONED_CART',
+        'ACCEPTANCE_TEST',
+        'AD',
+        'AD_ACCOUNT',
+        'AD_CAMPAIGN',
+        'AD_GROUP',
+        'AI_FORECAST',
+        'ALL_PAGES',
+        'APPROVAL',
+        'APPROVAL_STEP',
+        'ATTRIBUTION',
+        'AUDIENCE',
+        'AUTOMATION_JOURNEY',
+        'AUTOMATION_PLATFORM_FLOW',
+        'AUTOMATION_PLATFORM_FLOW_ACTION',
+        'BET_ALERT',
+        'BET_DELIVERABLE_SERVICE',
+        'BLOG_LISTING_PAGE',
+        'BLOG_POST',
+        'CALL',
+        'CAMPAIGN',
+        'CAMPAIGN_BUDGET_ITEM',
+        'CAMPAIGN_SPEND_ITEM',
+        'CAMPAIGN_STEP',
+        'CAMPAIGN_TEMPLATE',
+        'CAMPAIGN_TEMPLATE_STEP',
+        'CART',
+        'CASE_STUDY',
+        'CHATFLOW',
+        'CLIP',
+        'CMS_URL',
+        'COMBO_EVENT_CONFIGURATION',
+        'COMMERCE_PAYMENT',
+        'COMMUNICATION',
+        'COMPANY',
+        'CONTACT',
+        'CONTACT_CREATE_ATTRIBUTION',
+        'CONTENT',
+        'CONTENT_AUDIT',
+        'CONTENT_AUDIT_PAGE',
+        'CONVERSATION',
+        'CONVERSATION_INBOX',
+        'CONVERSATION_SESSION',
+        'CRM_OBJECTS_DUMMY_TYPE',
+        'CRM_PIPELINES_DUMMY_TYPE',
+        'CTA',
+        'CTA_VARIANT',
+        'DATA_PRIVACY_CONSENT',
+        'DATA_SYNC_STATE',
+        'DEAL',
+        'DEAL_CREATE_ATTRIBUTION',
+        'DEAL_REGISTRATION',
+        'DEAL_SPLIT',
+        'DISCOUNT',
+        'DISCOUNT_CODE',
+        'DISCOUNT_TEMPLATE',
+        'EMAIL',
+        'ENGAGEMENT',
+        'EXPORT',
+        'EXTERNAL_WEB_URL',
+        'FEE',
+        'FEEDBACK_SUBMISSION',
+        'FEEDBACK_SURVEY',
+        'FILE_MANAGER_FILE',
+        'FILE_MANAGER_FOLDER',
+        'FOLDER',
+        'FORECAST',
+        'FORM',
+        'FORM_SUBMISSION_INBOUNDDB',
+        'GOAL_TARGET',
+        'GOAL_TARGET_GROUP',
+        'GOAL_TEMPLATE',
+        'GSC_PROPERTY',
+        'HUB',
+        'IMPORT',
+        'INVOICE',
+        'KEYWORD',
+        'KNOWLEDGE_ARTICLE',
+        'LANDING_PAGE',
+        'LEAD',
+        'LINE_ITEM',
+        'MARKETING_CALENDAR',
+        'MARKETING_CAMPAIGN_UTM',
+        'MARKETING_EMAIL',
+        'MARKETING_EVENT',
+        'MARKETING_EVENT_ATTENDANCE',
+        'MARKETING_SMS',
+        'MEDIA_BRIDGE',
+        'MEETING_EVENT',
+        'MIC',
+        'NOTE',
+        'OBJECT_LIST',
+        'ORDER',
+        'OWNER',
+        'PARTNER_ACCOUNT',
+        'PARTNER_CLIENT',
+        'PARTNER_CLIENT_REVENUE',
+        'PARTNER_SERVICE',
+        'PAYMENT_LINK',
+        'PAYMENT_SCHEDULE',
+        'PAYMENT_SCHEDULE_INSTALLMENT',
+        'PERMISSIONS_TESTING',
+        'PLAYBOOK',
+        'PLAYBOOK_QUESTION',
+        'PLAYBOOK_SUBMISSION',
+        'PLAYBOOK_SUBMISSION_ANSWER',
+        'PLAYLIST',
+        'PLAYLIST_FOLDER',
+        'PODCAST_EPISODE',
+        'PORTAL',
+        'PORTAL_OBJECT_SYNC_MESSAGE',
+        'POSTAL_MAIL',
+        'PRIVACY_SCANNER_COOKIE',
+        'PRODUCT',
+        'PRODUCT_OR_FOLDER',
+        'PROPERTY_INFO',
+        'PROSPECTING_AGENT_CONTACT_ASSIGNMENT',
+        'PUBLISHING_TASK',
+        'QUARANTINED_SUBMISSION',
+        'QUOTA',
+        'QUOTE',
+        'QUOTE_FIELD',
+        'QUOTE_MODULE',
+        'QUOTE_MODULE_FIELD',
+        'QUOTE_TEMPLATE',
+        'RESTORABLE_CRM_OBJECT',
+        'ROSTER',
+        'ROSTER_MEMBER',
+        'SALES_DOCUMENT',
+        'SALES_TASK',
+        'SALES_WORKLOAD',
+        'SALESFORCE_SYNC_ERROR',
+        'SCHEDULING_PAGE',
+        'SCHEMAS_BACKEND_TEST',
+        'SCORE_CONFIGURATION',
+        'SEQUENCE',
+        'SEQUENCE_ENROLLMENT',
+        'SEQUENCE_STEP',
+        'SEQUENCE_STEP_ENROLLMENT',
+        'SERVICE',
+        'SITE_PAGE',
+        'SNIPPET',
+        'SOCIAL_BROADCAST',
+        'SOCIAL_CHANNEL',
+        'SOCIAL_POST',
+        'SOCIAL_PROFILE',
+        'SOX_PROTECTED_DUMMY_TYPE',
+        'SOX_PROTECTED_TEST_TYPE',
+        'SUBMISSION_TAG',
+        'SUBSCRIPTION',
+        'TASK',
+        'TASK_TEMPLATE',
+        'TAX',
+        'TEMPLATE',
+        'TICKET',
+        'UNKNOWN',
+        'UNSUBSCRIBE',
+        'USER',
+        'VIEW',
+        'VIEW_BLOCK',
+        'WEB_INTERACTIVE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "The type of object to which the association points. Valid values include various HubSpot object types such as 'CONTACT', 'COMPANY', 'DEAL', etc.",
+        example: null,
+      }),
+    toObjectTypeId: z
+      .string()
+      .openapi({
+        description: 'The object type ID to which the association points.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: [
+      'allowsCustomLabels',
+      'cardinality',
+      'category',
+      'fromObjectTypeId',
+      'hasAllAssociatedObjects',
+      'hasCascadingDeletes',
+      'hasUserEnforcedMaxFromObjectIds',
+      'hasUserEnforcedMaxToObjectIds',
+      'hidden',
+      'id',
+      'inverseAllowsCustomLabels',
+      'inverseCardinality',
+      'inverseHasAllAssociatedObjects',
+      'inverseId',
+      'inverseName',
+      'isDefault',
+      'isInversePrimary',
+      'isPrimary',
+      'maxFromObjectIds',
+      'maxToObjectIds',
+      'name',
+      'portalUniqueIdentifier',
+      'readOnly',
+      'toObjectTypeId',
+    ],
+    description: 'The definition of an association',
+    example: null,
+  })
+  .openapi('AssociationDefinition')
+
+const ComboEventRuleBranchSchema: z.ZodType<ComboEventRuleBranchType> = z
+  .lazy(() =>
+    z
+      .object({
+        composingRules: z
+          .array(ComboEventRuleSchema)
+          .openapi({
+            description:
+              'An array of ComboEventRule objects that define the individual rules composing this branch.',
+            example: null,
+          }),
+        operationType: z
+          .enum(['AND', 'OR'])
+          .openapi({
+            description:
+              "The type of logical operation applied to the rule branches and composing rules. Valid values are 'AND' and 'OR'.",
+            example: null,
+          }),
+        ruleBranches: z
+          .array(ComboEventRuleBranchSchema)
+          .openapi({
+            description:
+              'An array of nested ComboEventRuleBranch objects, allowing for hierarchical rule definitions.',
+            example: null,
+          }),
+      })
+      .openapi({ required: ['composingRules', 'operationType', 'ruleBranches'], example: null }),
+  )
+  .openapi('ComboEventRuleBranch')
+
+const ExternalPrimaryObjectResolutionRuleSchema = z
+  .object({
+    eventPropertyName: z
+      .string()
+      .openapi({
+        description:
+          'The name of the property on the event that is used for resolution. It is a string.',
+        example: null,
+      }),
+    targetObjectPropertyName: z
+      .string()
+      .openapi({
+        description:
+          'The name of the property on the target object that is used for resolution. It is a string.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['eventPropertyName', 'targetObjectPropertyName'], example: null })
+  .openapi('ExternalPrimaryObjectResolutionRule')
+
+const ExternalObjectResolutionMappingResponseSchema = z
+  .object({ primaryObjectRule: ExternalPrimaryObjectResolutionRuleSchema })
+  .openapi({ required: ['primaryObjectRule'], example: null })
+  .openapi('ExternalObjectResolutionMappingResponse')
+
+const BehavioralEventTypeDefinitionLabelsSchema = z
+  .object({
+    plural: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The plural form of the label for the event type. This is a string.',
+        example: null,
+      }),
+    singular: z
+      .string()
+      .openapi({
+        description:
+          'The singular form of the label for the event type. This is a string and is required.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['singular'], example: null })
+  .openapi('BehavioralEventTypeDefinitionLabels')
+
+const PropertyModificationMetadataSchema = z
+  .object({
+    archivable: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating whether the property can be archived.',
+        example: null,
+      }),
+    readOnlyDefinition: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating whether the definition of the property is read-only.',
+        example: null,
+      }),
+    readOnlyOptions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'A boolean indicating whether the options of the property are read-only.',
+        example: null,
+      }),
+    readOnlyValue: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating whether the value of the property is read-only.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['archivable', 'readOnlyDefinition', 'readOnlyValue'], example: null })
+  .openapi('PropertyModificationMetadata')
+
+const OptionSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A detailed description of the option, providing additional context.',
+        example: null,
+      }),
+    displayOrder: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'An integer that determines the order in which the option appears relative to other options.',
+        example: null,
+      }),
+    hidden: z
+      .boolean()
+      .openapi({
+        description: 'A boolean indicating whether the option is hidden from users.',
+        example: null,
+      }),
+    label: z
+      .string()
+      .openapi({ description: 'The display name of the option, shown to users.', example: null }),
+    value: z
+      .string()
+      .openapi({
+        description: 'The internal value associated with the option, used in data processing.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['hidden', 'label', 'value'],
+    description: 'A HubSpot property option',
+    example: null,
+  })
+  .openapi('Option')
+
+const PropertySchema = z
+  .object({
+    archived: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the property is archived.', example: null }),
+    archivedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when this property was archived, in ISO 8601 format.',
+        example: null,
+      }),
+    calculated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the property is calculated.', example: null }),
+    calculationFormula: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The formula used to calculate the property's value, if applicable.",
+        example: null,
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when this property was created, in ISO 8601 format.',
+        example: null,
+      }),
+    createdUserId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the user who created this property.', example: null }),
+    currencyPropertyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the currency property associated with this property.',
+        example: null,
+      }),
+    dataSensitivity: z
+      .enum(['highly_sensitive', 'non_sensitive', 'sensitive'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The sensitivity level of the data, with valid values including 'non_sensitive', 'sensitive', and 'highly_sensitive'.",
+        example: null,
+      }),
+    dateDisplayHint: z
+      .enum(['absolute', 'absolute_with_relative', 'time_since', 'time_until'])
+      .exactOptional()
+      .openapi({
+        description:
+          "A hint for displaying date properties, with valid values including 'absolute', 'absolute_with_relative', 'time_since', and 'time_until'.",
+        example: null,
+      }),
+    description: z
+      .string()
+      .openapi({ description: 'A description of the property.', example: null }),
+    displayOrder: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The order in which this property is displayed relative to other properties.',
+        example: null,
+      }),
+    externalOptions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the property options are external.',
+        example: null,
+      }),
+    fieldType: z
+      .string()
+      .openapi({ description: 'The field type of the property.', example: null }),
+    formField: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the property is a form field.', example: null }),
+    groupName: z
+      .string()
+      .openapi({
+        description: 'The name of the group to which this property belongs.',
+        example: null,
+      }),
+    hasUniqueValue: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the property has a unique value.',
+        example: null,
+      }),
+    hidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates whether the property is hidden.', example: false }),
+    hubspotDefined: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the property is defined by HubSpot.',
+        example: null,
+      }),
+    label: z
+      .string()
+      .openapi({ description: 'The display label for the property.', example: null }),
+    modificationMetadata: PropertyModificationMetadataSchema.exactOptional(),
+    name: z.string().openapi({ description: 'The unique name of the property.', example: null }),
+    numberDisplayHint: z
+      .enum(['currency', 'duration', 'formatted', 'percentage', 'probability', 'unformatted'])
+      .exactOptional()
+      .openapi({
+        description:
+          "A hint for displaying number properties, with valid values including 'unformatted', 'formatted', 'currency', 'percentage', 'duration', and 'probability'.",
+        example: null,
+      }),
+    options: z
+      .array(OptionSchema)
+      .openapi({
+        description:
+          'An array of options available for this property, applicable if the property supports multiple values.',
+        example: null,
+      }),
+    referencedObjectType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of object that this property references.', example: null }),
+    sensitiveDataCategories: z
+      .array(z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description: 'An array of categories indicating the sensitivity of the data.',
+        example: null,
+      }),
+    showCurrencySymbol: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether a currency symbol is shown for the property.',
+        example: null,
+      }),
+    textDisplayHint: z
+      .enum([
+        'domain_name',
+        'email',
+        'ip_address',
+        'multi_line',
+        'phone_number',
+        'physical_address',
+        'postal_code',
+        'unformatted_single_line',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "A hint for displaying text properties, with valid values including 'unformatted_single_line', 'multi_line', 'email', 'phone_number', 'domain_name', 'ip_address', 'physical_address', and 'postal_code'.",
+        example: null,
+      }),
+    type: z.string().openapi({ description: 'The data type of the property.', example: null }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when this property was last updated, in ISO 8601 format.',
+        example: null,
+      }),
+    updatedUserId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the user who last updated this property.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['description', 'fieldType', 'groupName', 'label', 'name', 'options', 'type'],
+    description: 'A HubSpot property',
+    example: null,
+  })
+  .openapi('Property')
+
+type ExternalBehavioralEventTypeDefinitionType = {
+  archived: boolean
+  associations: z.infer<typeof AssociationDefinitionSchema>[]
+  comboEventRules?: z.infer<typeof ComboEventRuleBranchSchema>
+  createdAt?: string
+  createdUserId?: number
+  customMatchingId?: z.infer<typeof ExternalObjectResolutionMappingResponseSchema>
+  description?: string
+  detailTemplate?: string
+  fullyQualifiedName: string
+  headerTemplate?: string
+  id: string
+  labels: z.infer<typeof BehavioralEventTypeDefinitionLabelsSchema>
+  name: string
+  objectTypeId: string
+  primaryObject?: string
+  primaryObjectId?: string
+  properties: z.infer<typeof PropertySchema>[]
+  trackingType?:
+    | 'APP_EVENT'
+    | 'AUTOCAPTURE_EVENT'
+    | 'CLICKED_ELEMENT'
+    | 'COMBO_EVENT'
+    | 'CUSTOM_SCRIPT'
+    | 'CUSTOM_SIGNAL'
+    | 'IMPORT'
+    | 'MANUAL'
+    | 'POLLING'
+    | 'PROPERTY_CHANGE'
+    | 'VISITED_URL'
+    | 'WEBHOOK'
+  updatedAt?: string
+  updatedUserId?: number
+}
+
+const ExternalBehavioralEventTypeDefinitionSchema: z.ZodType<ExternalBehavioralEventTypeDefinitionType> =
+  z
+    .object({
+      archived: z
+        .boolean()
+        .openapi({
+          description: 'A boolean indicating whether the event type is archived.',
+          example: null,
+        }),
+      associations: z
+        .array(AssociationDefinitionSchema)
+        .openapi({
+          description: 'An array of association definitions related to the event type.',
+          example: null,
+        }),
+      comboEventRules: ComboEventRuleBranchSchema.exactOptional(),
+      createdAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'A string representing the date and time when the event type was created, in ISO 8601 format.',
+          example: null,
+        }),
+      createdUserId: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description: 'An integer representing the ID of the user who created the event type.',
+          example: null,
+        }),
+      customMatchingId: ExternalObjectResolutionMappingResponseSchema.exactOptional(),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'A string providing a description of the event type.',
+          example: null,
+        }),
+      detailTemplate: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'A string template used for the details of the event.',
+          example: null,
+        }),
+      fullyQualifiedName: z
+        .string()
+        .openapi({
+          description: 'A string representing the fully qualified name of the event type.',
+          example: null,
+        }),
+      headerTemplate: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'A string template used for the header of the event.',
+          example: null,
+        }),
+      id: z
+        .string()
+        .openapi({
+          description: 'A string representing the unique identifier of the event type.',
+          example: null,
+        }),
+      labels: BehavioralEventTypeDefinitionLabelsSchema,
+      name: z
+        .string()
+        .openapi({
+          description: 'A string representing the name of the event type.',
+          example: null,
+        }),
+      objectTypeId: z
+        .string()
+        .openapi({
+          description: 'A string representing the object type ID associated with the event type.',
+          example: null,
+        }),
+      primaryObject: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'A string representing the primary object associated with the event type.',
+          example: null,
+        }),
+      primaryObjectId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A string representing the ID of the primary object associated with the event type.',
+          example: null,
+        }),
+      properties: z
+        .array(PropertySchema)
+        .openapi({
+          description: 'An array of property objects associated with the event type.',
+          example: null,
+        }),
+      trackingType: z
+        .enum([
+          'APP_EVENT',
+          'AUTOCAPTURE_EVENT',
+          'CLICKED_ELEMENT',
+          'COMBO_EVENT',
+          'CUSTOM_SCRIPT',
+          'CUSTOM_SIGNAL',
+          'IMPORT',
+          'MANUAL',
+          'POLLING',
+          'PROPERTY_CHANGE',
+          'VISITED_URL',
+          'WEBHOOK',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            "A string indicating the tracking type of the event. Valid values include 'VISITED_URL', 'CLICKED_ELEMENT', 'CUSTOM_SCRIPT', 'MANUAL', 'IMPORT', 'PROPERTY_CHANGE', 'COMBO_EVENT', 'WEBHOOK', 'APP_EVENT', 'AUTOCAPTURE_EVENT', 'CUSTOM_SIGNAL', and 'POLLING'.",
+          example: null,
+        }),
+      updatedAt: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            'A string representing the date and time when the event type was last updated, in ISO 8601 format.',
+          example: null,
+        }),
+      updatedUserId: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'An integer representing the ID of the user who last updated the event type.',
+          example: null,
+        }),
+    })
+    .openapi({
+      required: [
+        'archived',
+        'associations',
+        'fullyQualifiedName',
+        'id',
+        'labels',
+        'name',
+        'objectTypeId',
+        'properties',
+      ],
+      example: null,
+    })
+    .openapi('ExternalBehavioralEventTypeDefinition')
+
+type CollectionResponseWithTotalExternalBehavioralEventTypeDefinitionType = {
+  paging?: z.infer<typeof PagingSchema>
+  results: z.infer<typeof ExternalBehavioralEventTypeDefinitionSchema>[]
+  total: number
+}
+
 const PropertyFilterContextSchema = z
   .object({
     objectTypeId: z
@@ -2866,546 +3989,6 @@ type ComboEventRuleBranchType = {
   ruleBranches: ComboEventRuleBranchType[]
 }
 
-const AssociationDefinitionSchema = z
-  .object({
-    allowsCustomLabels: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating if custom labels are allowed for this association.',
-        example: null,
-      }),
-    cardinality: z
-      .enum(['ONE_TO_MANY', 'ONE_TO_ONE'])
-      .openapi({
-        description:
-          "The nature of the association in terms of cardinality, which can be 'ONE_TO_ONE' or 'ONE_TO_MANY'.",
-        example: null,
-      }),
-    category: z
-      .enum(['HUBSPOT_DEFINED', 'INTEGRATOR_DEFINED', 'USER_DEFINED', 'WORK'])
-      .openapi({
-        description:
-          "The category of the association, indicating whether it is defined by HubSpot, the user, an integrator, or for work purposes. Valid values include 'HUBSPOT_DEFINED', 'USER_DEFINED', 'INTEGRATOR_DEFINED', and 'WORK'.",
-        example: null,
-      }),
-    fromObjectType: z
-      .enum([
-        'ABANDONED_CART',
-        'ACCEPTANCE_TEST',
-        'AD',
-        'AD_ACCOUNT',
-        'AD_CAMPAIGN',
-        'AD_GROUP',
-        'AI_FORECAST',
-        'ALL_PAGES',
-        'APPROVAL',
-        'APPROVAL_STEP',
-        'ATTRIBUTION',
-        'AUDIENCE',
-        'AUTOMATION_JOURNEY',
-        'AUTOMATION_PLATFORM_FLOW',
-        'AUTOMATION_PLATFORM_FLOW_ACTION',
-        'BET_ALERT',
-        'BET_DELIVERABLE_SERVICE',
-        'BLOG_LISTING_PAGE',
-        'BLOG_POST',
-        'CALL',
-        'CAMPAIGN',
-        'CAMPAIGN_BUDGET_ITEM',
-        'CAMPAIGN_SPEND_ITEM',
-        'CAMPAIGN_STEP',
-        'CAMPAIGN_TEMPLATE',
-        'CAMPAIGN_TEMPLATE_STEP',
-        'CART',
-        'CASE_STUDY',
-        'CHATFLOW',
-        'CLIP',
-        'CMS_URL',
-        'COMBO_EVENT_CONFIGURATION',
-        'COMMERCE_PAYMENT',
-        'COMMUNICATION',
-        'COMPANY',
-        'CONTACT',
-        'CONTACT_CREATE_ATTRIBUTION',
-        'CONTENT',
-        'CONTENT_AUDIT',
-        'CONTENT_AUDIT_PAGE',
-        'CONVERSATION',
-        'CONVERSATION_INBOX',
-        'CONVERSATION_SESSION',
-        'CRM_OBJECTS_DUMMY_TYPE',
-        'CRM_PIPELINES_DUMMY_TYPE',
-        'CTA',
-        'CTA_VARIANT',
-        'DATA_PRIVACY_CONSENT',
-        'DATA_SYNC_STATE',
-        'DEAL',
-        'DEAL_CREATE_ATTRIBUTION',
-        'DEAL_REGISTRATION',
-        'DEAL_SPLIT',
-        'DISCOUNT',
-        'DISCOUNT_CODE',
-        'DISCOUNT_TEMPLATE',
-        'EMAIL',
-        'ENGAGEMENT',
-        'EXPORT',
-        'EXTERNAL_WEB_URL',
-        'FEE',
-        'FEEDBACK_SUBMISSION',
-        'FEEDBACK_SURVEY',
-        'FILE_MANAGER_FILE',
-        'FILE_MANAGER_FOLDER',
-        'FOLDER',
-        'FORECAST',
-        'FORM',
-        'FORM_SUBMISSION_INBOUNDDB',
-        'GOAL_TARGET',
-        'GOAL_TARGET_GROUP',
-        'GOAL_TEMPLATE',
-        'GSC_PROPERTY',
-        'HUB',
-        'IMPORT',
-        'INVOICE',
-        'KEYWORD',
-        'KNOWLEDGE_ARTICLE',
-        'LANDING_PAGE',
-        'LEAD',
-        'LINE_ITEM',
-        'MARKETING_CALENDAR',
-        'MARKETING_CAMPAIGN_UTM',
-        'MARKETING_EMAIL',
-        'MARKETING_EVENT',
-        'MARKETING_EVENT_ATTENDANCE',
-        'MARKETING_SMS',
-        'MEDIA_BRIDGE',
-        'MEETING_EVENT',
-        'MIC',
-        'NOTE',
-        'OBJECT_LIST',
-        'ORDER',
-        'OWNER',
-        'PARTNER_ACCOUNT',
-        'PARTNER_CLIENT',
-        'PARTNER_CLIENT_REVENUE',
-        'PARTNER_SERVICE',
-        'PAYMENT_LINK',
-        'PAYMENT_SCHEDULE',
-        'PAYMENT_SCHEDULE_INSTALLMENT',
-        'PERMISSIONS_TESTING',
-        'PLAYBOOK',
-        'PLAYBOOK_QUESTION',
-        'PLAYBOOK_SUBMISSION',
-        'PLAYBOOK_SUBMISSION_ANSWER',
-        'PLAYLIST',
-        'PLAYLIST_FOLDER',
-        'PODCAST_EPISODE',
-        'PORTAL',
-        'PORTAL_OBJECT_SYNC_MESSAGE',
-        'POSTAL_MAIL',
-        'PRIVACY_SCANNER_COOKIE',
-        'PRODUCT',
-        'PRODUCT_OR_FOLDER',
-        'PROPERTY_INFO',
-        'PROSPECTING_AGENT_CONTACT_ASSIGNMENT',
-        'PUBLISHING_TASK',
-        'QUARANTINED_SUBMISSION',
-        'QUOTA',
-        'QUOTE',
-        'QUOTE_FIELD',
-        'QUOTE_MODULE',
-        'QUOTE_MODULE_FIELD',
-        'QUOTE_TEMPLATE',
-        'RESTORABLE_CRM_OBJECT',
-        'ROSTER',
-        'ROSTER_MEMBER',
-        'SALES_DOCUMENT',
-        'SALES_TASK',
-        'SALES_WORKLOAD',
-        'SALESFORCE_SYNC_ERROR',
-        'SCHEDULING_PAGE',
-        'SCHEMAS_BACKEND_TEST',
-        'SCORE_CONFIGURATION',
-        'SEQUENCE',
-        'SEQUENCE_ENROLLMENT',
-        'SEQUENCE_STEP',
-        'SEQUENCE_STEP_ENROLLMENT',
-        'SERVICE',
-        'SITE_PAGE',
-        'SNIPPET',
-        'SOCIAL_BROADCAST',
-        'SOCIAL_CHANNEL',
-        'SOCIAL_POST',
-        'SOCIAL_PROFILE',
-        'SOX_PROTECTED_DUMMY_TYPE',
-        'SOX_PROTECTED_TEST_TYPE',
-        'SUBMISSION_TAG',
-        'SUBSCRIPTION',
-        'TASK',
-        'TASK_TEMPLATE',
-        'TAX',
-        'TEMPLATE',
-        'TICKET',
-        'UNKNOWN',
-        'UNSUBSCRIBE',
-        'USER',
-        'VIEW',
-        'VIEW_BLOCK',
-        'WEB_INTERACTIVE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "The type of object from which the association originates. Valid values include various HubSpot object types such as 'CONTACT', 'COMPANY', 'DEAL', etc.",
-        example: null,
-      }),
-    fromObjectTypeId: z
-      .string()
-      .openapi({
-        description: 'The object type ID from which the association originates.',
-        example: null,
-      }),
-    hasAllAssociatedObjects: z
-      .boolean()
-      .openapi({
-        description:
-          'A boolean indicating if all associated objects are included in the association.',
-        example: null,
-      }),
-    hasCascadingDeletes: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating if cascading deletes are enabled for this association.',
-        example: null,
-      }),
-    hasUserEnforcedMaxFromObjectIds: z
-      .boolean()
-      .openapi({
-        description:
-          "A boolean indicating if there is a user-enforced maximum on the number of 'from' object IDs.",
-        example: null,
-      }),
-    hasUserEnforcedMaxToObjectIds: z
-      .boolean()
-      .openapi({
-        description:
-          "A boolean indicating if there is a user-enforced maximum on the number of 'to' object IDs.",
-        example: null,
-      }),
-    hidden: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating if the association is hidden.',
-        example: null,
-      }),
-    hiddenReason: z
-      .enum(['DEFAULT', 'INTERNAL', 'USER_CONFIGURED'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The reason why the association is hidden, if applicable. Valid values include 'DEFAULT', 'INTERNAL', and 'USER_CONFIGURED'.",
-        example: null,
-      }),
-    id: z
-      .int32()
-      .openapi({
-        description: 'The unique identifier for this association definition.',
-        example: null,
-      }),
-    inverseAllowsCustomLabels: z
-      .boolean()
-      .openapi({
-        description:
-          'A boolean indicating if custom labels are allowed for the inverse association.',
-        example: null,
-      }),
-    inverseCardinality: z
-      .enum(['ONE_TO_MANY', 'ONE_TO_ONE'])
-      .openapi({
-        description:
-          "The cardinality of the inverse association, which can also be 'ONE_TO_ONE' or 'ONE_TO_MANY'.",
-        example: null,
-      }),
-    inverseHasAllAssociatedObjects: z
-      .boolean()
-      .openapi({
-        description:
-          'A boolean indicating if all associated objects are included in the inverse association.',
-        example: null,
-      }),
-    inverseId: z
-      .int32()
-      .openapi({
-        description: 'The unique identifier for the inverse of this association definition.',
-        example: null,
-      }),
-    inverseLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A human-readable label for the inverse association.',
-        example: null,
-      }),
-    inverseName: z
-      .string()
-      .openapi({ description: 'The name of the inverse association.', example: null }),
-    isDefault: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating if this association is the default association.',
-        example: null,
-      }),
-    isInversePrimary: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating if the inverse association is the primary association.',
-        example: null,
-      }),
-    isPrimary: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating if this association is the primary association.',
-        example: null,
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A human-readable label for the association.', example: null }),
-    maxFromObjectIds: z
-      .int32()
-      .openapi({
-        description:
-          "The maximum number of object IDs that can be associated in the 'from' direction.",
-        example: null,
-      }),
-    maxToObjectIds: z
-      .int32()
-      .openapi({
-        description:
-          "The maximum number of object IDs that can be associated in the 'to' direction.",
-        example: null,
-      }),
-    name: z.string().openapi({ description: 'The name of the association.', example: null }),
-    portalUniqueIdentifier: z
-      .string()
-      .openapi({
-        description: 'A unique identifier for the association within the portal.',
-        example: null,
-      }),
-    readOnly: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating if the association is read-only.',
-        example: null,
-      }),
-    toObjectType: z
-      .enum([
-        'ABANDONED_CART',
-        'ACCEPTANCE_TEST',
-        'AD',
-        'AD_ACCOUNT',
-        'AD_CAMPAIGN',
-        'AD_GROUP',
-        'AI_FORECAST',
-        'ALL_PAGES',
-        'APPROVAL',
-        'APPROVAL_STEP',
-        'ATTRIBUTION',
-        'AUDIENCE',
-        'AUTOMATION_JOURNEY',
-        'AUTOMATION_PLATFORM_FLOW',
-        'AUTOMATION_PLATFORM_FLOW_ACTION',
-        'BET_ALERT',
-        'BET_DELIVERABLE_SERVICE',
-        'BLOG_LISTING_PAGE',
-        'BLOG_POST',
-        'CALL',
-        'CAMPAIGN',
-        'CAMPAIGN_BUDGET_ITEM',
-        'CAMPAIGN_SPEND_ITEM',
-        'CAMPAIGN_STEP',
-        'CAMPAIGN_TEMPLATE',
-        'CAMPAIGN_TEMPLATE_STEP',
-        'CART',
-        'CASE_STUDY',
-        'CHATFLOW',
-        'CLIP',
-        'CMS_URL',
-        'COMBO_EVENT_CONFIGURATION',
-        'COMMERCE_PAYMENT',
-        'COMMUNICATION',
-        'COMPANY',
-        'CONTACT',
-        'CONTACT_CREATE_ATTRIBUTION',
-        'CONTENT',
-        'CONTENT_AUDIT',
-        'CONTENT_AUDIT_PAGE',
-        'CONVERSATION',
-        'CONVERSATION_INBOX',
-        'CONVERSATION_SESSION',
-        'CRM_OBJECTS_DUMMY_TYPE',
-        'CRM_PIPELINES_DUMMY_TYPE',
-        'CTA',
-        'CTA_VARIANT',
-        'DATA_PRIVACY_CONSENT',
-        'DATA_SYNC_STATE',
-        'DEAL',
-        'DEAL_CREATE_ATTRIBUTION',
-        'DEAL_REGISTRATION',
-        'DEAL_SPLIT',
-        'DISCOUNT',
-        'DISCOUNT_CODE',
-        'DISCOUNT_TEMPLATE',
-        'EMAIL',
-        'ENGAGEMENT',
-        'EXPORT',
-        'EXTERNAL_WEB_URL',
-        'FEE',
-        'FEEDBACK_SUBMISSION',
-        'FEEDBACK_SURVEY',
-        'FILE_MANAGER_FILE',
-        'FILE_MANAGER_FOLDER',
-        'FOLDER',
-        'FORECAST',
-        'FORM',
-        'FORM_SUBMISSION_INBOUNDDB',
-        'GOAL_TARGET',
-        'GOAL_TARGET_GROUP',
-        'GOAL_TEMPLATE',
-        'GSC_PROPERTY',
-        'HUB',
-        'IMPORT',
-        'INVOICE',
-        'KEYWORD',
-        'KNOWLEDGE_ARTICLE',
-        'LANDING_PAGE',
-        'LEAD',
-        'LINE_ITEM',
-        'MARKETING_CALENDAR',
-        'MARKETING_CAMPAIGN_UTM',
-        'MARKETING_EMAIL',
-        'MARKETING_EVENT',
-        'MARKETING_EVENT_ATTENDANCE',
-        'MARKETING_SMS',
-        'MEDIA_BRIDGE',
-        'MEETING_EVENT',
-        'MIC',
-        'NOTE',
-        'OBJECT_LIST',
-        'ORDER',
-        'OWNER',
-        'PARTNER_ACCOUNT',
-        'PARTNER_CLIENT',
-        'PARTNER_CLIENT_REVENUE',
-        'PARTNER_SERVICE',
-        'PAYMENT_LINK',
-        'PAYMENT_SCHEDULE',
-        'PAYMENT_SCHEDULE_INSTALLMENT',
-        'PERMISSIONS_TESTING',
-        'PLAYBOOK',
-        'PLAYBOOK_QUESTION',
-        'PLAYBOOK_SUBMISSION',
-        'PLAYBOOK_SUBMISSION_ANSWER',
-        'PLAYLIST',
-        'PLAYLIST_FOLDER',
-        'PODCAST_EPISODE',
-        'PORTAL',
-        'PORTAL_OBJECT_SYNC_MESSAGE',
-        'POSTAL_MAIL',
-        'PRIVACY_SCANNER_COOKIE',
-        'PRODUCT',
-        'PRODUCT_OR_FOLDER',
-        'PROPERTY_INFO',
-        'PROSPECTING_AGENT_CONTACT_ASSIGNMENT',
-        'PUBLISHING_TASK',
-        'QUARANTINED_SUBMISSION',
-        'QUOTA',
-        'QUOTE',
-        'QUOTE_FIELD',
-        'QUOTE_MODULE',
-        'QUOTE_MODULE_FIELD',
-        'QUOTE_TEMPLATE',
-        'RESTORABLE_CRM_OBJECT',
-        'ROSTER',
-        'ROSTER_MEMBER',
-        'SALES_DOCUMENT',
-        'SALES_TASK',
-        'SALES_WORKLOAD',
-        'SALESFORCE_SYNC_ERROR',
-        'SCHEDULING_PAGE',
-        'SCHEMAS_BACKEND_TEST',
-        'SCORE_CONFIGURATION',
-        'SEQUENCE',
-        'SEQUENCE_ENROLLMENT',
-        'SEQUENCE_STEP',
-        'SEQUENCE_STEP_ENROLLMENT',
-        'SERVICE',
-        'SITE_PAGE',
-        'SNIPPET',
-        'SOCIAL_BROADCAST',
-        'SOCIAL_CHANNEL',
-        'SOCIAL_POST',
-        'SOCIAL_PROFILE',
-        'SOX_PROTECTED_DUMMY_TYPE',
-        'SOX_PROTECTED_TEST_TYPE',
-        'SUBMISSION_TAG',
-        'SUBSCRIPTION',
-        'TASK',
-        'TASK_TEMPLATE',
-        'TAX',
-        'TEMPLATE',
-        'TICKET',
-        'UNKNOWN',
-        'UNSUBSCRIBE',
-        'USER',
-        'VIEW',
-        'VIEW_BLOCK',
-        'WEB_INTERACTIVE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "The type of object to which the association points. Valid values include various HubSpot object types such as 'CONTACT', 'COMPANY', 'DEAL', etc.",
-        example: null,
-      }),
-    toObjectTypeId: z
-      .string()
-      .openapi({
-        description: 'The object type ID to which the association points.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'allowsCustomLabels',
-      'cardinality',
-      'category',
-      'fromObjectTypeId',
-      'hasAllAssociatedObjects',
-      'hasCascadingDeletes',
-      'hasUserEnforcedMaxFromObjectIds',
-      'hasUserEnforcedMaxToObjectIds',
-      'hidden',
-      'id',
-      'inverseAllowsCustomLabels',
-      'inverseCardinality',
-      'inverseHasAllAssociatedObjects',
-      'inverseId',
-      'inverseName',
-      'isDefault',
-      'isInversePrimary',
-      'isPrimary',
-      'maxFromObjectIds',
-      'maxToObjectIds',
-      'name',
-      'portalUniqueIdentifier',
-      'readOnly',
-      'toObjectTypeId',
-    ],
-    description: 'The definition of an association',
-    example: null,
-  })
-  .openapi('AssociationDefinition')
-
 const BehavioralEventHttpCompletionRequestSchema = z
   .object({
     email: z
@@ -3475,562 +4058,26 @@ const BatchedBehavioralEventHttpCompletionRequestSchema = z
   .openapi({ required: ['inputs'], example: null })
   .openapi('BatchedBehavioralEventHttpCompletionRequest')
 
-const BehavioralEventTypeDefinitionLabelsSchema = z
-  .object({
-    plural: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The plural form of the label for the event type. This is a string.',
-        example: null,
-      }),
-    singular: z
-      .string()
-      .openapi({
-        description:
-          'The singular form of the label for the event type. This is a string and is required.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['singular'], example: null })
-  .openapi('BehavioralEventTypeDefinitionLabels')
-
-const NextPageSchema = z
-  .object({
-    after: z
-      .string()
-      .openapi({
-        description:
-          'A string token used as a cursor to fetch the next page of results. This token is typically returned in the response of a paginated API call.',
-        example: null,
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A URL string that points to the next page of results. Clients can use this link to make a request for the subsequent set of data.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['after'],
-    description:
-      'Specifies the paging information needed to retrieve the next set of results in a paginated API response',
-    example: null,
-  })
-  .openapi('NextPage')
-
-const PreviousPageSchema = z
-  .object({
-    before: z
-      .string()
-      .openapi({
-        description: 'A string token used as a cursor to fetch the previous page of results.',
-        example: null,
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A URL string that provides the link to access the previous page of results.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['before'],
-    description:
-      'specifies the paging information needed to retrieve the previous set of results in a paginated API response',
-    example: null,
-  })
-  .openapi('PreviousPage')
-
-const PagingSchema = z
-  .object({ next: NextPageSchema.exactOptional(), prev: PreviousPageSchema.exactOptional() })
-  .openapi({
-    description:
-      'Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.',
-    example: null,
-    required: [],
-  })
-  .openapi('Paging')
-
-const ComboEventRuleBranchSchema: z.ZodType<ComboEventRuleBranchType> = z
-  .lazy(() =>
-    z
-      .object({
-        composingRules: z
-          .array(ComboEventRuleSchema)
-          .openapi({
-            description:
-              'An array of ComboEventRule objects that define the individual rules composing this branch.',
-            example: null,
-          }),
-        operationType: z
-          .enum(['AND', 'OR'])
-          .openapi({
-            description:
-              "The type of logical operation applied to the rule branches and composing rules. Valid values are 'AND' and 'OR'.",
-            example: null,
-          }),
-        ruleBranches: z
-          .array(ComboEventRuleBranchSchema)
-          .openapi({
-            description:
-              'An array of nested ComboEventRuleBranch objects, allowing for hierarchical rule definitions.',
-            example: null,
-          }),
-      })
-      .openapi({ required: ['composingRules', 'operationType', 'ruleBranches'], example: null }),
-  )
-  .openapi('ComboEventRuleBranch')
-
-const ExternalPrimaryObjectResolutionRuleSchema = z
-  .object({
-    eventPropertyName: z
-      .string()
-      .openapi({
-        description:
-          'The name of the property on the event that is used for resolution. It is a string.',
-        example: null,
-      }),
-    targetObjectPropertyName: z
-      .string()
-      .openapi({
-        description:
-          'The name of the property on the target object that is used for resolution. It is a string.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['eventPropertyName', 'targetObjectPropertyName'], example: null })
-  .openapi('ExternalPrimaryObjectResolutionRule')
-
-const ExternalObjectResolutionMappingResponseSchema = z
-  .object({ primaryObjectRule: ExternalPrimaryObjectResolutionRuleSchema })
-  .openapi({ required: ['primaryObjectRule'], example: null })
-  .openapi('ExternalObjectResolutionMappingResponse')
-
-const PropertyModificationMetadataSchema = z
-  .object({
-    archivable: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating whether the property can be archived.',
-        example: null,
-      }),
-    readOnlyDefinition: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating whether the definition of the property is read-only.',
-        example: null,
-      }),
-    readOnlyOptions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'A boolean indicating whether the options of the property are read-only.',
-        example: null,
-      }),
-    readOnlyValue: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating whether the value of the property is read-only.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['archivable', 'readOnlyDefinition', 'readOnlyValue'], example: null })
-  .openapi('PropertyModificationMetadata')
-
-const OptionSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A detailed description of the option, providing additional context.',
-        example: null,
-      }),
-    displayOrder: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'An integer that determines the order in which the option appears relative to other options.',
-        example: null,
-      }),
-    hidden: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating whether the option is hidden from users.',
-        example: null,
-      }),
-    label: z
-      .string()
-      .openapi({ description: 'The display name of the option, shown to users.', example: null }),
-    value: z
-      .string()
-      .openapi({
-        description: 'The internal value associated with the option, used in data processing.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['hidden', 'label', 'value'],
-    description: 'A HubSpot property option',
-    example: null,
-  })
-  .openapi('Option')
-
-const PropertySchema = z
-  .object({
-    archived: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the property is archived.', example: null }),
-    archivedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when this property was archived, in ISO 8601 format.',
-        example: null,
-      }),
-    calculated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the property is calculated.', example: null }),
-    calculationFormula: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The formula used to calculate the property's value, if applicable.",
-        example: null,
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when this property was created, in ISO 8601 format.',
-        example: null,
-      }),
-    createdUserId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the user who created this property.', example: null }),
-    currencyPropertyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the currency property associated with this property.',
-        example: null,
-      }),
-    dataSensitivity: z
-      .enum(['highly_sensitive', 'non_sensitive', 'sensitive'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The sensitivity level of the data, with valid values including 'non_sensitive', 'sensitive', and 'highly_sensitive'.",
-        example: null,
-      }),
-    dateDisplayHint: z
-      .enum(['absolute', 'absolute_with_relative', 'time_since', 'time_until'])
-      .exactOptional()
-      .openapi({
-        description:
-          "A hint for displaying date properties, with valid values including 'absolute', 'absolute_with_relative', 'time_since', and 'time_until'.",
-        example: null,
-      }),
-    description: z
-      .string()
-      .openapi({ description: 'A description of the property.', example: null }),
-    displayOrder: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The order in which this property is displayed relative to other properties.',
-        example: null,
-      }),
-    externalOptions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the property options are external.',
-        example: null,
-      }),
-    fieldType: z
-      .string()
-      .openapi({ description: 'The field type of the property.', example: null }),
-    formField: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the property is a form field.', example: null }),
-    groupName: z
-      .string()
-      .openapi({
-        description: 'The name of the group to which this property belongs.',
-        example: null,
-      }),
-    hasUniqueValue: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the property has a unique value.',
-        example: null,
-      }),
-    hidden: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates whether the property is hidden.', example: false }),
-    hubspotDefined: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the property is defined by HubSpot.',
-        example: null,
-      }),
-    label: z
-      .string()
-      .openapi({ description: 'The display label for the property.', example: null }),
-    modificationMetadata: PropertyModificationMetadataSchema.exactOptional(),
-    name: z.string().openapi({ description: 'The unique name of the property.', example: null }),
-    numberDisplayHint: z
-      .enum(['currency', 'duration', 'formatted', 'percentage', 'probability', 'unformatted'])
-      .exactOptional()
-      .openapi({
-        description:
-          "A hint for displaying number properties, with valid values including 'unformatted', 'formatted', 'currency', 'percentage', 'duration', and 'probability'.",
-        example: null,
-      }),
-    options: z
-      .array(OptionSchema)
-      .openapi({
-        description:
-          'An array of options available for this property, applicable if the property supports multiple values.',
-        example: null,
-      }),
-    referencedObjectType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of object that this property references.', example: null }),
-    sensitiveDataCategories: z
-      .array(z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description: 'An array of categories indicating the sensitivity of the data.',
-        example: null,
-      }),
-    showCurrencySymbol: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether a currency symbol is shown for the property.',
-        example: null,
-      }),
-    textDisplayHint: z
-      .enum([
-        'domain_name',
-        'email',
-        'ip_address',
-        'multi_line',
-        'phone_number',
-        'physical_address',
-        'postal_code',
-        'unformatted_single_line',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "A hint for displaying text properties, with valid values including 'unformatted_single_line', 'multi_line', 'email', 'phone_number', 'domain_name', 'ip_address', 'physical_address', and 'postal_code'.",
-        example: null,
-      }),
-    type: z.string().openapi({ description: 'The data type of the property.', example: null }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when this property was last updated, in ISO 8601 format.',
-        example: null,
-      }),
-    updatedUserId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the user who last updated this property.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['description', 'fieldType', 'groupName', 'label', 'name', 'options', 'type'],
-    description: 'A HubSpot property',
-    example: null,
-  })
-  .openapi('Property')
-
-const ExternalBehavioralEventTypeDefinitionSchema = z
-  .object({
-    archived: z
-      .boolean()
-      .openapi({
-        description: 'A boolean indicating whether the event type is archived.',
-        example: null,
-      }),
-    associations: z
-      .array(AssociationDefinitionSchema)
-      .openapi({
-        description: 'An array of association definitions related to the event type.',
-        example: null,
-      }),
-    comboEventRules: ComboEventRuleBranchSchema.exactOptional(),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'A string representing the date and time when the event type was created, in ISO 8601 format.',
-        example: null,
-      }),
-    createdUserId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the ID of the user who created the event type.',
-        example: null,
-      }),
-    customMatchingId: ExternalObjectResolutionMappingResponseSchema.exactOptional(),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string providing a description of the event type.',
-        example: null,
-      }),
-    detailTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string template used for the details of the event.',
-        example: null,
-      }),
-    fullyQualifiedName: z
-      .string()
-      .openapi({
-        description: 'A string representing the fully qualified name of the event type.',
-        example: null,
-      }),
-    headerTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string template used for the header of the event.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'A string representing the unique identifier of the event type.',
-        example: null,
-      }),
-    labels: BehavioralEventTypeDefinitionLabelsSchema,
-    name: z
-      .string()
-      .openapi({ description: 'A string representing the name of the event type.', example: null }),
-    objectTypeId: z
-      .string()
-      .openapi({
-        description: 'A string representing the object type ID associated with the event type.',
-        example: null,
-      }),
-    primaryObject: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing the primary object associated with the event type.',
-        example: null,
-      }),
-    primaryObjectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string representing the ID of the primary object associated with the event type.',
-        example: null,
-      }),
-    properties: z
-      .array(PropertySchema)
-      .openapi({
-        description: 'An array of property objects associated with the event type.',
-        example: null,
-      }),
-    trackingType: z
-      .enum([
-        'APP_EVENT',
-        'AUTOCAPTURE_EVENT',
-        'CLICKED_ELEMENT',
-        'COMBO_EVENT',
-        'CUSTOM_SCRIPT',
-        'CUSTOM_SIGNAL',
-        'IMPORT',
-        'MANUAL',
-        'POLLING',
-        'PROPERTY_CHANGE',
-        'VISITED_URL',
-        'WEBHOOK',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "A string indicating the tracking type of the event. Valid values include 'VISITED_URL', 'CLICKED_ELEMENT', 'CUSTOM_SCRIPT', 'MANUAL', 'IMPORT', 'PROPERTY_CHANGE', 'COMBO_EVENT', 'WEBHOOK', 'APP_EVENT', 'AUTOCAPTURE_EVENT', 'CUSTOM_SIGNAL', and 'POLLING'.",
-        example: null,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'A string representing the date and time when the event type was last updated, in ISO 8601 format.',
-        example: null,
-      }),
-    updatedUserId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'An integer representing the ID of the user who last updated the event type.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: [
-      'archived',
-      'associations',
-      'fullyQualifiedName',
-      'id',
-      'labels',
-      'name',
-      'objectTypeId',
-      'properties',
-    ],
-    example: null,
-  })
-  .openapi('ExternalBehavioralEventTypeDefinition')
-
-const CollectionResponseWithTotalExternalBehavioralEventTypeDefinitionSchema = z
-  .object({
-    paging: PagingSchema.exactOptional(),
-    results: z
-      .array(ExternalBehavioralEventTypeDefinitionSchema)
-      .openapi({
-        description:
-          'An array containing the external behavioral event type definitions returned in the current page.',
-        example: null,
-      }),
-    total: z
-      .int32()
-      .openapi({
-        description: 'The total number of external behavioral event type definitions available.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['results', 'total'], example: null })
-  .openapi('CollectionResponseWithTotalExternalBehavioralEventTypeDefinition')
+const CollectionResponseWithTotalExternalBehavioralEventTypeDefinitionSchema: z.ZodType<CollectionResponseWithTotalExternalBehavioralEventTypeDefinitionType> =
+  z
+    .object({
+      paging: PagingSchema.exactOptional(),
+      results: z
+        .array(ExternalBehavioralEventTypeDefinitionSchema)
+        .openapi({
+          description:
+            'An array containing the external behavioral event type definitions returned in the current page.',
+          example: null,
+        }),
+      total: z
+        .int32()
+        .openapi({
+          description: 'The total number of external behavioral event type definitions available.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['results', 'total'], example: null })
+    .openapi('CollectionResponseWithTotalExternalBehavioralEventTypeDefinition')
 
 const ErrorDetailSchema = z
   .object({
@@ -4558,18 +4605,14 @@ export const postEvents202609EventDefinitionsRoute = createRoute({
         'application/json': { schema: ExternalBehavioralEventTypeDefinitionSchema, example: null },
       },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -4687,18 +4730,14 @@ export const patchEvents202609EventDefinitionsEventNameRoute = createRoute({
         'application/json': { schema: ExternalBehavioralEventTypeDefinitionSchema, example: null },
       },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -4744,18 +4783,14 @@ export const postEvents202609EventDefinitionsEventNamePropertyRoute = createRout
       description: 'successful operation',
       content: { 'application/json': { schema: PropertySchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -4862,18 +4897,14 @@ export const patchEvents202609EventDefinitionsEventNamePropertyPropertyNameRoute
       description: 'successful operation',
       content: { 'application/json': { schema: PropertySchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

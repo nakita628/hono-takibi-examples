@@ -5038,7 +5038,7 @@ OAuth2 ( Scopes: write:board:trello )
 > Code samples
 
 ```bash
-curl 'https://api.trello.com/1/cards/{idCard}/customFields' \
+curl https://api.trello.com/1/cards/string/customFields \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -5085,6 +5085,7 @@ Setting, updating, and removing the values for multiple Custom Fields on a card.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|idCard|path|string|true|none|
 |body|body|object|false|none|
 |» customFieldItems|body|[object]|false|An array of objects containing the custom field ID, key and value, and ID of list type option.|
 |» » idCustomField|body|object|false|The ID of the Custom Field|

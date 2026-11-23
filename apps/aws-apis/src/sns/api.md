@@ -7184,12 +7184,12 @@ Platform application object.
 
 List of customer owned phone numbers.
 
-<h2 id="tocS_string">string</h2>
+<h2 id="tocS_string2">string2</h2>
 <!-- backwards compatibility -->
-<a id="schemastring-1"></a>
-<a id="schema_string"></a>
-<a id="tocSstring-1"></a>
-<a id="tocsstring-1"></a>
+<a id="schemastring2"></a>
+<a id="schema_string2"></a>
+<a id="tocSstring2"></a>
+<a id="tocsstring2"></a>
 
 ```json
 "string"
@@ -7974,12 +7974,12 @@ Input for SetTopicAttributes action.
 "string"
 ```
 
-<h2 id="tocS_endpoint">endpoint</h2>
+<h2 id="tocS_endpoint2">endpoint2</h2>
 <!-- backwards compatibility -->
-<a id="schemaendpoint-1"></a>
-<a id="schema_endpoint"></a>
-<a id="tocSendpoint-1"></a>
-<a id="tocsendpoint-1"></a>
+<a id="schemaendpoint2"></a>
+<a id="schema_endpoint2"></a>
+<a id="tocSendpoint2"></a>
+<a id="tocsendpoint2"></a>
 
 ```json
 "string"

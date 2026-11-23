@@ -86,7 +86,7 @@ const StandardErrorSchema = z
       .string()
       .openapi({ description: 'A string indicating the status of the error.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'An object providing more specific categorization of the error.',
@@ -1210,17 +1210,28 @@ const Oauth2SecurityScheme = {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
       scopes: {
+        'communication_preferences.read': '',
         'communication_preferences.read_write': '',
         'communication_preferences.statuses.batch.read': '',
         'communication_preferences.statuses.batch.write': '',
+        'communication_preferences.write': '',
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'communication_preferences.read': { portal: ['public', 'private'], developer: false },
+    'communication_preferences.read_write': { portal: ['public', 'private'], developer: false },
+    'communication_preferences.statuses.batch.read': {
+      portal: ['public', 'private'],
+      developer: false,
+    },
+    'communication_preferences.statuses.batch.write': {
+      portal: ['public', 'private'],
+      developer: false,
+    },
+    'communication_preferences.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCommunicationPreferences202609DefinitionsRoute = createRoute({
   method: 'get',
@@ -1283,7 +1294,10 @@ export const getCommunicationPreferences202609DefinitionsRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['communication_preferences.read_write'] }],
+  security: [
+    { oauth2: ['communication_preferences.read_write'] },
+    { oauth2: ['communication_preferences.read'] },
+  ],
 })
 
 export const postCommunicationPreferences202609LinksGenerateRoute = createRoute({
@@ -1334,6 +1348,7 @@ export const postCommunicationPreferences202609LinksGenerateRoute = createRoute(
             schema: { type: 'integer', format: 'int64', example: null, default: 0 },
           },
           example: null,
+          default: 0,
         }),
     }),
     body: {
@@ -1348,7 +1363,10 @@ export const postCommunicationPreferences202609LinksGenerateRoute = createRoute(
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['communication_preferences.read_write'] }],
+  security: [
+    { oauth2: ['communication_preferences.read', 'communication_preferences.write'] },
+    { oauth2: ['communication_preferences.read_write'] },
+  ],
 })
 
 export const postCommunicationPreferences202609StatusesBatchReadRoute = createRoute({
@@ -1683,7 +1701,10 @@ export const getCommunicationPreferences202609StatusesSubscriberIdStringRoute = 
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['communication_preferences.read_write'] }],
+  security: [
+    { oauth2: ['communication_preferences.read_write'] },
+    { oauth2: ['communication_preferences.read'] },
+  ],
 })
 
 export const postCommunicationPreferences202609StatusesSubscriberIdStringRoute = createRoute({
@@ -1725,7 +1746,10 @@ export const postCommunicationPreferences202609StatusesSubscriberIdStringRoute =
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['communication_preferences.read_write'] }],
+  security: [
+    { oauth2: ['communication_preferences.read_write'] },
+    { oauth2: ['communication_preferences.write'] },
+  ],
 })
 
 export const getCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRoute =
@@ -1824,7 +1848,10 @@ export const getCommunicationPreferences202609StatusesSubscriberIdStringUnsubscr
       },
       default: ErrorResponse,
     },
-    security: [{ oauth2: ['communication_preferences.read_write'] }],
+    security: [
+      { oauth2: ['communication_preferences.read_write'] },
+      { oauth2: ['communication_preferences.read'] },
+    ],
   })
 
 export const postCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRoute =
@@ -1920,5 +1947,8 @@ export const postCommunicationPreferences202609StatusesSubscriberIdStringUnsubsc
       },
       default: ErrorResponse,
     },
-    security: [{ oauth2: ['communication_preferences.read_write'] }],
+    security: [
+      { oauth2: ['communication_preferences.read_write'] },
+      { oauth2: ['communication_preferences.write'] },
+    ],
   })

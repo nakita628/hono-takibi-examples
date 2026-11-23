@@ -1,0 +1,1512 @@
+import { createQuery, createMutation, queryOptions, mutationOptions } from '@tanstack/solid-query'
+import type {
+  UndefinedInitialDataOptions,
+  CreateMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/solid-query'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getGamesKey() {
+  return ['games'] as const
+}
+
+export function getPostGamesV1managementAchievementsResetMutationKey() {
+  return ['games', '/games/v1management/achievements/reset', 'POST'] as const
+}
+
+export function getPostGamesV1managementAchievementsResetMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.games.v1management.achievements.reset.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.games.v1management.achievements.reset.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementAchievementsResetMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.games.v1management.achievements.reset.$post>,
+    ) {
+      return parseResponse(client.games.v1management.achievements.reset.$post(args, options))
+    },
+  })
+}
+
+export function createPostGamesV1managementAchievementsReset<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.games.v1management.achievements.reset.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.games.v1management.achievements.reset.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostGamesV1managementAchievementsResetMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementAchievementsResetAllForAllPlayersMutationKey() {
+  return ['games', '/games/v1management/achievements/resetAllForAllPlayers', 'POST'] as const
+}
+
+export function getPostGamesV1managementAchievementsResetAllForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<typeof client.games.v1management.achievements.resetAllForAllPlayers.$post>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.games.v1management.achievements.resetAllForAllPlayers.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementAchievementsResetAllForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        typeof client.games.v1management.achievements.resetAllForAllPlayers.$post
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.achievements.resetAllForAllPlayers.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementAchievementsResetAllForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    typeof client.games.v1management.achievements.resetAllForAllPlayers.$post
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            typeof client.games.v1management.achievements.resetAllForAllPlayers.$post
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostGamesV1managementAchievementsResetAllForAllPlayersMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementAchievementsResetMultipleForAllPlayersMutationKey() {
+  return ['games', '/games/v1management/achievements/resetMultipleForAllPlayers', 'POST'] as const
+}
+
+export function getPostGamesV1managementAchievementsResetMultipleForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              typeof client.games.v1management.achievements.resetMultipleForAllPlayers.$post
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      typeof client.games.v1management.achievements.resetMultipleForAllPlayers.$post
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementAchievementsResetMultipleForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        typeof client.games.v1management.achievements.resetMultipleForAllPlayers.$post
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.achievements.resetMultipleForAllPlayers.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementAchievementsResetMultipleForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    typeof client.games.v1management.achievements.resetMultipleForAllPlayers.$post
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            typeof client.games.v1management.achievements.resetMultipleForAllPlayers.$post
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostGamesV1managementAchievementsResetMultipleForAllPlayersMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementAchievementsAchievementIdResetMutationKey() {
+  return ['games', '/games/v1management/achievements/:achievementId/reset', 'POST'] as const
+}
+
+export function getPostGamesV1managementAchievementsAchievementIdResetMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.games.v1management.achievements)[':achievementId']['reset']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.games.v1management.achievements)[':achievementId']['reset']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementAchievementsAchievementIdResetMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.games.v1management.achievements)[':achievementId']['reset']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.achievements[':achievementId'].reset.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementAchievementsAchievementIdReset<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.achievements)[':achievementId']['reset']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.games.v1management.achievements)[':achievementId']['reset']['$post']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostGamesV1managementAchievementsAchievementIdResetMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementAchievementsAchievementIdResetForAllPlayersMutationKey() {
+  return [
+    'games',
+    '/games/v1management/achievements/:achievementId/resetForAllPlayers',
+    'POST',
+  ] as const
+}
+
+export function getPostGamesV1managementAchievementsAchievementIdResetForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.games.v1management.achievements)[':achievementId']['resetForAllPlayers']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.games.v1management.achievements)[':achievementId']['resetForAllPlayers']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementAchievementsAchievementIdResetForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.games.v1management.achievements)[':achievementId']['resetForAllPlayers']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.achievements[':achievementId'].resetForAllPlayers.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementAchievementsAchievementIdResetForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.achievements)[':achievementId']['resetForAllPlayers']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.games.v1management.achievements)[':achievementId']['resetForAllPlayers']['$post']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostGamesV1managementAchievementsAchievementIdResetForAllPlayersMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getGamesV1managementApplicationsApplicationIdPlayersHiddenQueryKey(
+  args: InferRequestType<
+    (typeof client.games.v1management.applications)[':applicationId']['players']['hidden']['$get']
+  >,
+) {
+  return ['games', '/games/v1management/applications/:applicationId/players/hidden', args] as const
+}
+
+export function getGamesV1managementApplicationsApplicationIdPlayersHiddenQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.games.v1management.applications)[':applicationId']['players']['hidden']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.games.v1management.applications)[':applicationId']['players']['hidden']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.games.v1management.applications)[':applicationId']['players']['hidden']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getGamesV1managementApplicationsApplicationIdPlayersHiddenQueryKey>
+  >({
+    queryKey: getGamesV1managementApplicationsApplicationIdPlayersHiddenQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.games.v1management.applications[':applicationId'].players.hidden.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createGamesV1managementApplicationsApplicationIdPlayersHidden<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.games.v1management.applications)[':applicationId']['players']['hidden']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.games.v1management.applications)[':applicationId']['players']['hidden']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.applications)[':applicationId']['players']['hidden']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getGamesV1managementApplicationsApplicationIdPlayersHiddenQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getGamesV1managementApplicationsApplicationIdPlayersHiddenQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerIdMutationKey() {
+  return [
+    'games',
+    '/games/v1management/applications/:applicationId/players/hidden/:playerId',
+    'POST',
+  ] as const
+}
+
+export function getPostGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPostGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.applications[':applicationId'].players.hidden[':playerId'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$post']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerIdMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerIdMutationKey() {
+  return [
+    'games',
+    '/games/v1management/applications/:applicationId/players/hidden/:playerId',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.applications[':applicationId'].players.hidden[
+          ':playerId'
+        ].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.games.v1management.applications)[':applicationId']['players']['hidden'][':playerId']['$delete']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getDeleteGamesV1managementApplicationsApplicationIdPlayersHiddenPlayerIdMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementEventsResetMutationKey() {
+  return ['games', '/games/v1management/events/reset', 'POST'] as const
+}
+
+export function getPostGamesV1managementEventsResetMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.games.v1management.events.reset.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.games.v1management.events.reset.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementEventsResetMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.games.v1management.events.reset.$post>) {
+      return parseResponse(client.games.v1management.events.reset.$post(args, options))
+    },
+  })
+}
+
+export function createPostGamesV1managementEventsReset<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.games.v1management.events.reset.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.games.v1management.events.reset.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostGamesV1managementEventsResetMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementEventsResetAllForAllPlayersMutationKey() {
+  return ['games', '/games/v1management/events/resetAllForAllPlayers', 'POST'] as const
+}
+
+export function getPostGamesV1managementEventsResetAllForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.games.v1management.events.resetAllForAllPlayers.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.games.v1management.events.resetAllForAllPlayers.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementEventsResetAllForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.games.v1management.events.resetAllForAllPlayers.$post>,
+    ) {
+      return parseResponse(
+        client.games.v1management.events.resetAllForAllPlayers.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementEventsResetAllForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<typeof client.games.v1management.events.resetAllForAllPlayers.$post>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.games.v1management.events.resetAllForAllPlayers.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostGamesV1managementEventsResetAllForAllPlayersMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementEventsResetMultipleForAllPlayersMutationKey() {
+  return ['games', '/games/v1management/events/resetMultipleForAllPlayers', 'POST'] as const
+}
+
+export function getPostGamesV1managementEventsResetMultipleForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<typeof client.games.v1management.events.resetMultipleForAllPlayers.$post>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.games.v1management.events.resetMultipleForAllPlayers.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementEventsResetMultipleForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        typeof client.games.v1management.events.resetMultipleForAllPlayers.$post
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.events.resetMultipleForAllPlayers.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementEventsResetMultipleForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    typeof client.games.v1management.events.resetMultipleForAllPlayers.$post
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            typeof client.games.v1management.events.resetMultipleForAllPlayers.$post
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostGamesV1managementEventsResetMultipleForAllPlayersMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementEventsEventIdResetMutationKey() {
+  return ['games', '/games/v1management/events/:eventId/reset', 'POST'] as const
+}
+
+export function getPostGamesV1managementEventsEventIdResetMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.games.v1management.events)[':eventId']['reset']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.games.v1management.events)[':eventId']['reset']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementEventsEventIdResetMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.games.v1management.events)[':eventId']['reset']['$post']
+      >,
+    ) {
+      return parseResponse(client.games.v1management.events[':eventId'].reset.$post(args, options))
+    },
+  })
+}
+
+export function createPostGamesV1managementEventsEventIdReset<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.events)[':eventId']['reset']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.games.v1management.events)[':eventId']['reset']['$post']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostGamesV1managementEventsEventIdResetMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementEventsEventIdResetForAllPlayersMutationKey() {
+  return ['games', '/games/v1management/events/:eventId/resetForAllPlayers', 'POST'] as const
+}
+
+export function getPostGamesV1managementEventsEventIdResetForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.games.v1management.events)[':eventId']['resetForAllPlayers']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.games.v1management.events)[':eventId']['resetForAllPlayers']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementEventsEventIdResetForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.games.v1management.events)[':eventId']['resetForAllPlayers']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.events[':eventId'].resetForAllPlayers.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementEventsEventIdResetForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.events)[':eventId']['resetForAllPlayers']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.games.v1management.events)[':eventId']['resetForAllPlayers']['$post']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostGamesV1managementEventsEventIdResetForAllPlayersMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementLeaderboardsLeaderboardIdScoresResetMutationKey() {
+  return ['games', '/games/v1management/leaderboards/:leaderboardId/scores/reset', 'POST'] as const
+}
+
+export function getPostGamesV1managementLeaderboardsLeaderboardIdScoresResetMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['reset']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['reset']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementLeaderboardsLeaderboardIdScoresResetMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['reset']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.leaderboards[':leaderboardId'].scores.reset.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementLeaderboardsLeaderboardIdScoresReset<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['reset']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['reset']['$post']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostGamesV1managementLeaderboardsLeaderboardIdScoresResetMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementLeaderboardsLeaderboardIdScoresResetForAllPlayersMutationKey() {
+  return [
+    'games',
+    '/games/v1management/leaderboards/:leaderboardId/scores/resetForAllPlayers',
+    'POST',
+  ] as const
+}
+
+export function getPostGamesV1managementLeaderboardsLeaderboardIdScoresResetForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['resetForAllPlayers']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['resetForAllPlayers']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPostGamesV1managementLeaderboardsLeaderboardIdScoresResetForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['resetForAllPlayers']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.leaderboards[':leaderboardId'].scores.resetForAllPlayers.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementLeaderboardsLeaderboardIdScoresResetForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['resetForAllPlayers']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.games.v1management.leaderboards)[':leaderboardId']['scores']['resetForAllPlayers']['$post']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostGamesV1managementLeaderboardsLeaderboardIdScoresResetForAllPlayersMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementScoresResetMutationKey() {
+  return ['games', '/games/v1management/scores/reset', 'POST'] as const
+}
+
+export function getPostGamesV1managementScoresResetMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.games.v1management.scores.reset.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.games.v1management.scores.reset.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementScoresResetMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.games.v1management.scores.reset.$post>) {
+      return parseResponse(client.games.v1management.scores.reset.$post(args, options))
+    },
+  })
+}
+
+export function createPostGamesV1managementScoresReset<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.games.v1management.scores.reset.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.games.v1management.scores.reset.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostGamesV1managementScoresResetMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementScoresResetAllForAllPlayersMutationKey() {
+  return ['games', '/games/v1management/scores/resetAllForAllPlayers', 'POST'] as const
+}
+
+export function getPostGamesV1managementScoresResetAllForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.games.v1management.scores.resetAllForAllPlayers.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.games.v1management.scores.resetAllForAllPlayers.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementScoresResetAllForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.games.v1management.scores.resetAllForAllPlayers.$post>,
+    ) {
+      return parseResponse(
+        client.games.v1management.scores.resetAllForAllPlayers.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementScoresResetAllForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<typeof client.games.v1management.scores.resetAllForAllPlayers.$post>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.games.v1management.scores.resetAllForAllPlayers.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostGamesV1managementScoresResetAllForAllPlayersMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostGamesV1managementScoresResetMultipleForAllPlayersMutationKey() {
+  return ['games', '/games/v1management/scores/resetMultipleForAllPlayers', 'POST'] as const
+}
+
+export function getPostGamesV1managementScoresResetMultipleForAllPlayersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<typeof client.games.v1management.scores.resetMultipleForAllPlayers.$post>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.games.v1management.scores.resetMultipleForAllPlayers.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostGamesV1managementScoresResetMultipleForAllPlayersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        typeof client.games.v1management.scores.resetMultipleForAllPlayers.$post
+      >,
+    ) {
+      return parseResponse(
+        client.games.v1management.scores.resetMultipleForAllPlayers.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostGamesV1managementScoresResetMultipleForAllPlayers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    typeof client.games.v1management.scores.resetMultipleForAllPlayers.$post
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            typeof client.games.v1management.scores.resetMultipleForAllPlayers.$post
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostGamesV1managementScoresResetMultipleForAllPlayersMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}

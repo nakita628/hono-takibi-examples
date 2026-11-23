@@ -500,7 +500,7 @@ const Sku2Schema = z
       .openapi({
         description: 'Whether the SKU is active in the sales channel (true), or not (false).',
       }),
-    MainImage: z.object({}).openapi({ description: "Main image's information." }),
+    MainImage: z.looseObject({}).openapi({ description: "Main image's information." }),
     Name: z.string().default('Color: Black').openapi({ description: 'Summarized name of the SKU' }),
     NameComplete: z
       .string()
@@ -772,7 +772,7 @@ const UpsertSellerRequestSchema = z
         description:
           ' Text describing the security policy previously agreed between the marketplace and the seller.',
       }),
-    sellerCommissionConfiguration: z.object({}),
+    sellerCommissionConfiguration: z.looseObject({}),
     sellerType: z
       .int32()
       .default(1)
@@ -3461,28 +3461,31 @@ export const getSellerRegisterPvtSellersSellerIdSalesChannelMappingRoute = creat
       content: {
         'application/json': {
           schema: z
-            .object({
-              marketplaceSalesChannel: z
-                .int()
-                .default(1)
-                .exactOptional()
-                .openapi({
-                  description:
-                    "Marketplace's sales channel that will be associated to the seller's [affiliate](https://help.vtex.com/en/tutorial/configuring-affiliates--tutorials_187).",
-                }),
-              sellerChannel: z
-                .string()
-                .default('GCB')
-                .exactOptional()
-                .openapi({
-                  description:
-                    "Seller's [affiliate](https://help.vtex.com/en/tutorial/configuring-affiliates--tutorials_187) that will be associated with the marketplace's sales channel. Through the affiliate, the seller determines which of his sales channel will be used for the mapping.",
-                }),
-            })
+            .array(
+              z
+                .object({
+                  marketplaceSalesChannel: z
+                    .string()
+                    .default('1')
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "Marketplace's sales channel that will be associated to the seller's [affiliate](https://help.vtex.com/en/tutorial/configuring-affiliates--tutorials_187).",
+                    }),
+                  sellerChannel: z
+                    .string()
+                    .default('GCB')
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "Seller's [affiliate](https://help.vtex.com/en/tutorial/configuring-affiliates--tutorials_187) that will be associated with the marketplace's sales channel. Through the affiliate, the seller determines which of his sales channel will be used for the mapping.",
+                    }),
+                })
+                .openapi({ required: [] }),
+            )
             .openapi({
               example: [{ marketplaceSalesChannel: '1', sellerChannel: 'GCC' }],
               title: 'UpsertMapping',
-              required: [],
             }),
         },
       },
@@ -3611,28 +3614,31 @@ export const putSellerRegisterPvtSellersSellerIdSalesChannelMappingRoute = creat
       content: {
         'application/json': {
           schema: z
-            .object({
-              marketplaceSalesChannel: z
-                .int()
-                .default(1)
-                .exactOptional()
-                .openapi({
-                  description:
-                    "Marketplace's sales channel that will be associated to the seller's [affiliate](https://help.vtex.com/en/tutorial/configuring-affiliates--tutorials_187).",
-                }),
-              sellerChannel: z
-                .string()
-                .default('GCB')
-                .exactOptional()
-                .openapi({
-                  description:
-                    "Seller's [affiliate](https://help.vtex.com/en/tutorial/configuring-affiliates--tutorials_187) that will be associated with the marketplace's sales channel. Through the affiliate, the seller determines which of his sales channel will be used for the mapping.",
-                }),
-            })
+            .array(
+              z
+                .object({
+                  marketplaceSalesChannel: z
+                    .string()
+                    .default('1')
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "Marketplace's sales channel that will be associated to the seller's [affiliate](https://help.vtex.com/en/tutorial/configuring-affiliates--tutorials_187).",
+                    }),
+                  sellerChannel: z
+                    .string()
+                    .default('GCB')
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "Seller's [affiliate](https://help.vtex.com/en/tutorial/configuring-affiliates--tutorials_187) that will be associated with the marketplace's sales channel. Through the affiliate, the seller determines which of his sales channel will be used for the mapping.",
+                    }),
+                })
+                .openapi({ required: [] }),
+            )
             .openapi({
               example: [{ marketplaceSalesChannel: '1', sellerChannel: 'GCC' }],
               title: 'UpsertMapping',
-              required: [],
             }),
         },
       },

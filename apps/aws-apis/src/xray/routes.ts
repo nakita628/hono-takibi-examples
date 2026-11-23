@@ -1,10 +1,676 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const TraceIdSchema = z.string().min(1).max(35).openapi('TraceId')
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const NullableIntegerSchema = z.int().openapi('NullableInteger')
+
+const StringSchema = z.string().openapi('String')
+
+const ServiceNamesSchema = z.array(StringSchema).openapi('ServiceNames')
+
+const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
+
+const NullableLongSchema = z.int().openapi('NullableLong')
+
+const ErrorStatisticsSchema = z
+  .object({
+    ThrottleCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The number of requests that failed with a 419 throttling status code.',
+    }),
+    OtherCount: NullableLongSchema.exactOptional().openapi({
+      description:
+        'The number of requests that failed with untracked 4xx Client Error status codes.',
+    }),
+    TotalCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The total number of requests that failed with a 4xx Client Error status code.',
+    }),
+  })
+  .openapi({
+    description: 'Information about requests that failed with a 4xx Client Error status code.',
+    required: [],
+  })
+  .openapi('ErrorStatistics')
+
+const FaultStatisticsSchema = z
+  .object({
+    OtherCount: NullableLongSchema.exactOptional().openapi({
+      description:
+        'The number of requests that failed with untracked 5xx Server Error status codes.',
+    }),
+    TotalCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The total number of requests that failed with a 5xx Server Error status code.',
+    }),
+  })
+  .openapi({
+    description: 'Information about requests that failed with a 5xx Server Error status code.',
+    required: [],
+  })
+  .openapi('FaultStatistics')
 
 const NullableDoubleSchema = z.float64().openapi('NullableDouble')
 
-const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
+const EdgeStatisticsSchema = z
+  .object({
+    OkCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The number of requests that completed with a 2xx Success status code.',
+    }),
+    ErrorStatistics: ErrorStatisticsSchema.exactOptional().openapi({
+      description: 'Information about requests that failed with a 4xx Client Error status code.',
+    }),
+    FaultStatistics: FaultStatisticsSchema.exactOptional().openapi({
+      description: 'Information about requests that failed with a 5xx Server Error status code.',
+    }),
+    TotalCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The total number of completed requests.',
+    }),
+    TotalResponseTime: NullableDoubleSchema.exactOptional().openapi({
+      description: 'The aggregate response time of completed requests.',
+    }),
+  })
+  .openapi({ description: 'Response statistics for an edge.', required: [] })
+  .openapi('EdgeStatistics')
+
+const DoubleSchema = z.float64().openapi('Double')
+
+const IntegerSchema = z.int().openapi('Integer')
+
+const HistogramEntrySchema = z
+  .object({
+    Value: DoubleSchema.exactOptional().openapi({ description: 'The value of the entry.' }),
+    Count: IntegerSchema.exactOptional().openapi({ description: 'The prevalence of the entry.' }),
+  })
+  .openapi({
+    description:
+      'An entry in a histogram for a statistic. A histogram maps the range of observed values on the X axis, and the prevalence of each value on the Y axis.',
+    required: [],
+  })
+  .openapi('HistogramEntry')
+
+const HistogramSchema = z.array(HistogramEntrySchema).openapi('Histogram')
+
+const AliasNamesSchema = z.array(StringSchema).openapi('AliasNames')
+
+const AliasSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The canonical name of the alias.' }),
+    Names: AliasNamesSchema.exactOptional().openapi({
+      description: 'A list of names for the alias, including the canonical name.',
+    }),
+    Type: StringSchema.exactOptional().openapi({ description: 'The type of the alias.' }),
+  })
+  .openapi({ description: 'An alias for an edge.', required: [] })
+  .openapi('Alias')
+
+const AliasListSchema = z.array(AliasSchema).openapi('AliasList')
+
+const EdgeSchema = z
+  .object({
+    ReferenceId: NullableIntegerSchema.exactOptional().openapi({
+      description: 'Identifier of the edge. Unique within a service map.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of the first segment on the edge.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The end time of the last segment on the edge.',
+    }),
+    SummaryStatistics: EdgeStatisticsSchema.exactOptional().openapi({
+      description: 'Response statistics for segments on the edge.',
+    }),
+    ResponseTimeHistogram: HistogramSchema.exactOptional().openapi({
+      description:
+        'A histogram that maps the spread of client response times on an edge. Only populated for synchronous edges.',
+    }),
+    Aliases: AliasListSchema.exactOptional().openapi({ description: 'Aliases for the edge.' }),
+    EdgeType: StringSchema.exactOptional().openapi({
+      description: 'Describes an asynchronous connection, with a value of <code>link</code>.',
+    }),
+    ReceivedEventAgeHistogram: HistogramSchema.exactOptional().openapi({
+      description:
+        'A histogram that maps the spread of event age when received by consumers. Age is calculated each time an event is received. Only populated when <i>EdgeType</i> is <code>link</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about a connection between two services. An edge can be a synchronous connection, such as typical call between client and service, or an asynchronous link, such as a Lambda function which retrieves an event from an SNS queue.',
+    required: [],
+  })
+  .openapi('Edge')
+
+const EdgeListSchema = z.array(EdgeSchema).openapi('EdgeList')
+
+const ServiceStatisticsSchema = z
+  .object({
+    OkCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The number of requests that completed with a 2xx Success status code.',
+    }),
+    ErrorStatistics: ErrorStatisticsSchema.exactOptional().openapi({
+      description: 'Information about requests that failed with a 4xx Client Error status code.',
+    }),
+    FaultStatistics: FaultStatisticsSchema.exactOptional().openapi({
+      description: 'Information about requests that failed with a 5xx Server Error status code.',
+    }),
+    TotalCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The total number of completed requests.',
+    }),
+    TotalResponseTime: NullableDoubleSchema.exactOptional().openapi({
+      description: 'The aggregate response time of completed requests.',
+    }),
+  })
+  .openapi({ description: 'Response statistics for a service.', required: [] })
+  .openapi('ServiceStatistics')
+
+const ServiceSchema = z
+  .object({
+    ReferenceId: NullableIntegerSchema.exactOptional().openapi({
+      description: 'Identifier for the service. Unique within the service map.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The canonical name of the service.',
+    }),
+    Names: ServiceNamesSchema.exactOptional().openapi({
+      description: 'A list of names for the service, including the canonical name.',
+    }),
+    Root: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Indicates that the service was the first service to process a request.',
+    }),
+    AccountId: StringSchema.exactOptional().openapi({
+      description: 'Identifier of the Amazon Web Services account in which the service runs.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The type of service.</p> <ul> <li> <p>Amazon Web Services Resource - The type of an Amazon Web Services resource. For example, <code>AWS::EC2::Instance</code> for an application running on Amazon EC2 or <code>AWS::DynamoDB::Table</code> for an Amazon DynamoDB table that the application used.</p> </li> <li> <p>Amazon Web Services Service - The type of an Amazon Web Services service. For example, <code>AWS::DynamoDB</code> for downstream calls to Amazon DynamoDB that didn't target a specific table.</p> </li> <li> <p> <code>client</code> - Represents the clients that sent requests to a root service.</p> </li> <li> <p> <code>remote</code> - A downstream service of indeterminate type.</p> </li> </ul>",
+    }),
+    State: StringSchema.exactOptional().openapi({ description: "The service's state." }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of the first segment that the service generated.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The end time of the last segment that the service generated.',
+    }),
+    Edges: EdgeListSchema.exactOptional().openapi({
+      description: 'Connections to downstream services.',
+    }),
+    SummaryStatistics: ServiceStatisticsSchema.exactOptional().openapi({
+      description: 'Aggregated statistics for the service.',
+    }),
+    DurationHistogram: HistogramSchema.exactOptional().openapi({
+      description: 'A histogram that maps the spread of service durations.',
+    }),
+    ResponseTimeHistogram: HistogramSchema.exactOptional().openapi({
+      description: 'A histogram that maps the spread of service response times.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about an application that processed requests, users that made requests, or downstream services, resources, and applications that an application used.',
+    required: [],
+  })
+  .openapi('Service')
+
+const ServiceListSchema = z.array(ServiceSchema).openapi('ServiceList')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+type GetServiceGraphResultType = {
+  StartTime?: z.infer<typeof TimestampSchema> & unknown
+  EndTime?: z.infer<typeof TimestampSchema> & unknown
+  Services?: z.infer<typeof ServiceListSchema> & unknown
+  ContainsOldGroupVersions?: z.infer<typeof BooleanSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema> & unknown
+}
+
+type GetTraceGraphResultType = {
+  Services?: z.infer<typeof ServiceListSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema> & unknown
+}
+
+const TraceIdSchema = z.string().min(1).max(35).openapi('TraceId')
+
+const HttpSchema = z
+  .object({
+    HttpURL: StringSchema.exactOptional().openapi({ description: 'The request URL.' }),
+    HttpStatus: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The response status.',
+    }),
+    HttpMethod: StringSchema.exactOptional().openapi({ description: 'The request method.' }),
+    UserAgent: StringSchema.exactOptional().openapi({
+      description: "The request's user agent string.",
+    }),
+    ClientIp: StringSchema.exactOptional().openapi({
+      description: 'The IP address of the requestor.',
+    }),
+  })
+  .openapi({ description: 'Information about an HTTP request.', required: [] })
+  .openapi('Http')
+
+const AnnotationValueSchema = z
+  .object({
+    NumberValue: NullableDoubleSchema.exactOptional().openapi({
+      description: 'Value for a Number annotation.',
+    }),
+    BooleanValue: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Value for a Boolean annotation.',
+    }),
+    StringValue: StringSchema.exactOptional().openapi({
+      description: 'Value for a String annotation.',
+    }),
+  })
+  .openapi({
+    description:
+      'Value of a segment annotation. Has one of three value types: Number, Boolean, or String.',
+    required: [],
+  })
+  .openapi('AnnotationValue')
+
+const ServiceIdSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: '<p/>' }),
+    Names: ServiceNamesSchema.exactOptional().openapi({ description: '<p/>' }),
+    AccountId: StringSchema.exactOptional().openapi({ description: '<p/>' }),
+    Type: StringSchema.exactOptional().openapi({ description: '<p/>' }),
+  })
+  .openapi({ description: '<p/>', required: [] })
+  .openapi('ServiceId')
+
+const ServiceIdsSchema = z.array(ServiceIdSchema).openapi('ServiceIds')
+
+const ValueWithServiceIdsSchema = z
+  .object({
+    AnnotationValue: AnnotationValueSchema.exactOptional().openapi({
+      description: 'Values of the annotation.',
+    }),
+    ServiceIds: ServiceIdsSchema.exactOptional().openapi({
+      description: 'Services to which the annotation applies.',
+    }),
+  })
+  .openapi({ description: 'Information about a segment annotation.', required: [] })
+  .openapi('ValueWithServiceIds')
+
+const ValuesWithServiceIdsSchema = z
+  .array(ValueWithServiceIdsSchema)
+  .openapi('ValuesWithServiceIds')
+
+const AnnotationsSchema = z.record(z.string(), ValuesWithServiceIdsSchema).openapi('Annotations')
+
+const TraceUserSchema = z
+  .object({
+    UserName: StringSchema.exactOptional().openapi({ description: "The user's name." }),
+    ServiceIds: ServiceIdsSchema.exactOptional().openapi({
+      description: "Services that the user's request hit.",
+    }),
+  })
+  .openapi({ description: 'Information about a user recorded in segment documents.', required: [] })
+  .openapi('TraceUser')
+
+const TraceUsersSchema = z.array(TraceUserSchema).openapi('TraceUsers')
+
+const ResourceARNDetailSchema = z
+  .object({
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN of a corresponding resource.',
+    }),
+  })
+  .openapi({
+    description: 'A list of resources ARNs corresponding to the segments in a trace.',
+    required: [],
+  })
+  .openapi('ResourceARNDetail')
+
+const TraceResourceARNsSchema = z.array(ResourceARNDetailSchema).openapi('TraceResourceARNs')
+
+const InstanceIdDetailSchema = z
+  .object({
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of a corresponding EC2 instance.',
+    }),
+  })
+  .openapi({
+    description: 'A list of EC2 instance IDs corresponding to the segments in a trace. ',
+    required: [],
+  })
+  .openapi('InstanceIdDetail')
+
+const TraceInstanceIdsSchema = z.array(InstanceIdDetailSchema).openapi('TraceInstanceIds')
+
+const AvailabilityZoneDetailSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of a corresponding Availability Zone.',
+    }),
+  })
+  .openapi({
+    description: 'A list of Availability Zones corresponding to the segments in a trace.',
+    required: [],
+  })
+  .openapi('AvailabilityZoneDetail')
+
+const TraceAvailabilityZonesSchema = z
+  .array(AvailabilityZoneDetailSchema)
+  .openapi('TraceAvailabilityZones')
+
+const RootCauseExceptionSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the exception.' }),
+    Message: StringSchema.exactOptional().openapi({ description: 'The message of the exception.' }),
+  })
+  .openapi({ description: 'The exception associated with a root cause.', required: [] })
+  .openapi('RootCauseException')
+
+const RootCauseExceptionsSchema = z.array(RootCauseExceptionSchema).openapi('RootCauseExceptions')
+
+const FaultRootCauseEntitySchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the entity.' }),
+    Exceptions: RootCauseExceptionsSchema.exactOptional().openapi({
+      description: 'The types and messages of the exceptions.',
+    }),
+    Remote: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A flag that denotes a remote subsegment.',
+    }),
+  })
+  .openapi({
+    description:
+      'A collection of segments and corresponding subsegments associated to a trace summary fault error.',
+    required: [],
+  })
+  .openapi('FaultRootCauseEntity')
+
+const FaultRootCauseEntityPathSchema = z
+  .array(FaultRootCauseEntitySchema)
+  .openapi('FaultRootCauseEntityPath')
+
+const FaultRootCauseServiceSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The service name.' }),
+    Names: ServiceNamesSchema.exactOptional().openapi({
+      description: 'A collection of associated service names.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description: 'The type associated to the service.',
+    }),
+    AccountId: StringSchema.exactOptional().openapi({
+      description: 'The account ID associated to the service.',
+    }),
+    EntityPath: FaultRootCauseEntityPathSchema.exactOptional().openapi({
+      description: 'The path of root cause entities found on the service. ',
+    }),
+    Inferred: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating if the service is inferred from the trace.',
+    }),
+  })
+  .openapi({
+    description: 'A collection of fields identifying the services in a trace summary fault.',
+    required: [],
+  })
+  .openapi('FaultRootCauseService')
+
+const FaultRootCauseServicesSchema = z
+  .array(FaultRootCauseServiceSchema)
+  .openapi('FaultRootCauseServices')
+
+const FaultRootCauseSchema = z
+  .object({
+    Services: FaultRootCauseServicesSchema.exactOptional().openapi({
+      description:
+        'A list of corresponding services. A service identifies a segment and it contains a name, account ID, type, and inferred flag.',
+    }),
+    ClientImpacting: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A flag that denotes that the root cause impacts the trace client.',
+    }),
+  })
+  .openapi({ description: 'The root cause information for a trace summary fault.', required: [] })
+  .openapi('FaultRootCause')
+
+type FaultRootCausesType = z.infer<typeof FaultRootCauseSchema>[]
+
+const FaultRootCausesSchema: z.ZodType<FaultRootCausesType> = z
+  .array(FaultRootCauseSchema)
+  .openapi('FaultRootCauses')
+
+const ErrorRootCauseEntitySchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the entity.' }),
+    Exceptions: RootCauseExceptionsSchema.exactOptional().openapi({
+      description: 'The types and messages of the exceptions.',
+    }),
+    Remote: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A flag that denotes a remote subsegment.',
+    }),
+  })
+  .openapi({
+    description:
+      'A collection of segments and corresponding subsegments associated to a trace summary error.',
+    required: [],
+  })
+  .openapi('ErrorRootCauseEntity')
+
+const ErrorRootCauseEntityPathSchema = z
+  .array(ErrorRootCauseEntitySchema)
+  .openapi('ErrorRootCauseEntityPath')
+
+const ErrorRootCauseServiceSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The service name.' }),
+    Names: ServiceNamesSchema.exactOptional().openapi({
+      description: 'A collection of associated service names.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description: 'The type associated to the service.',
+    }),
+    AccountId: StringSchema.exactOptional().openapi({
+      description: 'The account ID associated to the service.',
+    }),
+    EntityPath: ErrorRootCauseEntityPathSchema.exactOptional().openapi({
+      description: 'The path of root cause entities found on the service. ',
+    }),
+    Inferred: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating if the service is inferred from the trace.',
+    }),
+  })
+  .openapi({
+    description: 'A collection of fields identifying the services in a trace summary error.',
+    required: [],
+  })
+  .openapi('ErrorRootCauseService')
+
+const ErrorRootCauseServicesSchema = z
+  .array(ErrorRootCauseServiceSchema)
+  .openapi('ErrorRootCauseServices')
+
+const ErrorRootCauseSchema = z
+  .object({
+    Services: ErrorRootCauseServicesSchema.exactOptional().openapi({
+      description:
+        'A list of services corresponding to an error. A service identifies a segment and it contains a name, account ID, type, and inferred flag.',
+    }),
+    ClientImpacting: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A flag that denotes that the root cause impacts the trace client.',
+    }),
+  })
+  .openapi({ description: 'The root cause of a trace summary error.', required: [] })
+  .openapi('ErrorRootCause')
+
+type ErrorRootCausesType = z.infer<typeof ErrorRootCauseSchema>[]
+
+const ErrorRootCausesSchema: z.ZodType<ErrorRootCausesType> = z
+  .array(ErrorRootCauseSchema)
+  .openapi('ErrorRootCauses')
+
+const ResponseTimeRootCauseEntitySchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the entity.' }),
+    Coverage: NullableDoubleSchema.exactOptional().openapi({
+      description: 'The type and messages of the exceptions.',
+    }),
+    Remote: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A flag that denotes a remote subsegment.',
+    }),
+  })
+  .openapi({
+    description:
+      'A collection of segments and corresponding subsegments associated to a response time warning.',
+    required: [],
+  })
+  .openapi('ResponseTimeRootCauseEntity')
+
+const ResponseTimeRootCauseEntityPathSchema = z
+  .array(ResponseTimeRootCauseEntitySchema)
+  .openapi('ResponseTimeRootCauseEntityPath')
+
+const ResponseTimeRootCauseServiceSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The service name.' }),
+    Names: ServiceNamesSchema.exactOptional().openapi({
+      description: 'A collection of associated service names.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description: 'The type associated to the service.',
+    }),
+    AccountId: StringSchema.exactOptional().openapi({
+      description: 'The account ID associated to the service.',
+    }),
+    EntityPath: ResponseTimeRootCauseEntityPathSchema.exactOptional().openapi({
+      description: 'The path of root cause entities found on the service. ',
+    }),
+    Inferred: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating if the service is inferred from the trace.',
+    }),
+  })
+  .openapi({
+    description: 'A collection of fields identifying the service in a response time warning.',
+    required: [],
+  })
+  .openapi('ResponseTimeRootCauseService')
+
+const ResponseTimeRootCauseServicesSchema = z
+  .array(ResponseTimeRootCauseServiceSchema)
+  .openapi('ResponseTimeRootCauseServices')
+
+const ResponseTimeRootCauseSchema = z
+  .object({
+    Services: ResponseTimeRootCauseServicesSchema.exactOptional().openapi({
+      description:
+        'A list of corresponding services. A service identifies a segment and contains a name, account ID, type, and inferred flag.',
+    }),
+    ClientImpacting: NullableBooleanSchema.exactOptional().openapi({
+      description: 'A flag that denotes that the root cause impacts the trace client.',
+    }),
+  })
+  .openapi({ description: 'The root cause information for a response time warning.', required: [] })
+  .openapi('ResponseTimeRootCause')
+
+const ResponseTimeRootCausesSchema = z
+  .array(ResponseTimeRootCauseSchema)
+  .openapi('ResponseTimeRootCauses')
+
+type TraceSummaryType = {
+  Id?: z.infer<typeof TraceIdSchema> & unknown
+  Duration?: z.infer<typeof NullableDoubleSchema> & unknown
+  ResponseTime?: z.infer<typeof NullableDoubleSchema> & unknown
+  HasFault?: z.infer<typeof NullableBooleanSchema> & unknown
+  HasError?: z.infer<typeof NullableBooleanSchema> & unknown
+  HasThrottle?: z.infer<typeof NullableBooleanSchema> & unknown
+  IsPartial?: z.infer<typeof NullableBooleanSchema> & unknown
+  Http?: z.infer<typeof HttpSchema> & unknown
+  Annotations?: z.infer<typeof AnnotationsSchema> & unknown
+  Users?: z.infer<typeof TraceUsersSchema> & unknown
+  ServiceIds?: z.infer<typeof ServiceIdsSchema> & unknown
+  ResourceARNs?: z.infer<typeof TraceResourceARNsSchema> & unknown
+  InstanceIds?: z.infer<typeof TraceInstanceIdsSchema> & unknown
+  AvailabilityZones?: z.infer<typeof TraceAvailabilityZonesSchema> & unknown
+  EntryPoint?: z.infer<typeof ServiceIdSchema> & unknown
+  FaultRootCauses?: z.infer<typeof FaultRootCausesSchema> & unknown
+  ErrorRootCauses?: z.infer<typeof ErrorRootCausesSchema> & unknown
+  ResponseTimeRootCauses?: z.infer<typeof ResponseTimeRootCausesSchema> & unknown
+  Revision?: z.infer<typeof IntegerSchema> & unknown
+  MatchedEventTime?: z.infer<typeof TimestampSchema> & unknown
+}
+
+const TraceSummarySchema: z.ZodType<TraceSummaryType> = z
+  .object({
+    Id: TraceIdSchema.exactOptional().openapi({
+      description:
+        "The unique identifier for the request that generated the trace's segments and subsegments.",
+    }),
+    Duration: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The length of time in seconds between the start time of the root segment and the end time of the last segment that completed.',
+    }),
+    ResponseTime: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The length of time in seconds between the start and end times of the root segment. If the service performs work asynchronously, the response time measures the time before the response is sent to the user, while the duration measures the amount of time before the last traced activity completes.',
+    }),
+    HasFault: NullableBooleanSchema.exactOptional().openapi({
+      description: 'The root segment document has a 500 series error.',
+    }),
+    HasError: NullableBooleanSchema.exactOptional().openapi({
+      description: 'The root segment document has a 400 series error.',
+    }),
+    HasThrottle: NullableBooleanSchema.exactOptional().openapi({
+      description: 'One or more of the segment documents has a 429 throttling error.',
+    }),
+    IsPartial: NullableBooleanSchema.exactOptional().openapi({
+      description: 'One or more of the segment documents is in progress.',
+    }),
+    Http: HttpSchema.exactOptional().openapi({
+      description: 'Information about the HTTP request served by the trace.',
+    }),
+    Annotations: AnnotationsSchema.exactOptional().openapi({
+      description: "Annotations from the trace's segment documents.",
+    }),
+    Users: TraceUsersSchema.exactOptional().openapi({
+      description: "Users from the trace's segment documents.",
+    }),
+    ServiceIds: ServiceIdsSchema.exactOptional().openapi({
+      description: "Service IDs from the trace's segment documents.",
+    }),
+    ResourceARNs: TraceResourceARNsSchema.exactOptional().openapi({
+      description: 'A list of resource ARNs for any resource corresponding to the trace segments.',
+    }),
+    InstanceIds: TraceInstanceIdsSchema.exactOptional().openapi({
+      description:
+        'A list of EC2 instance IDs for any instance corresponding to the trace segments.',
+    }),
+    AvailabilityZones: TraceAvailabilityZonesSchema.exactOptional().openapi({
+      description: 'A list of Availability Zones for any zone corresponding to the trace segments.',
+    }),
+    EntryPoint: ServiceIdSchema.exactOptional().openapi({ description: 'The root of a trace.' }),
+    FaultRootCauses: FaultRootCausesSchema.exactOptional().openapi({
+      description: 'A collection of FaultRootCause structures corresponding to the trace segments.',
+    }),
+    ErrorRootCauses: ErrorRootCausesSchema.exactOptional().openapi({
+      description: 'A collection of ErrorRootCause structures corresponding to the trace segments.',
+    }),
+    ResponseTimeRootCauses: ResponseTimeRootCausesSchema.exactOptional().openapi({
+      description:
+        'A collection of ResponseTimeRootCause structures corresponding to the trace segments.',
+    }),
+    Revision: IntegerSchema.exactOptional().openapi({
+      description: 'The revision number of a trace.',
+    }),
+    MatchedEventTime: TimestampSchema.exactOptional().openapi({
+      description: 'The matched time stamp of a defined event.',
+    }),
+  })
+  .openapi({
+    description: 'Metadata generated from the segment documents in a trace.',
+    required: [],
+  })
+  .openapi('TraceSummary')
+
+type TraceSummaryListType = z.infer<typeof TraceSummarySchema>[]
+
+const TraceSummaryListSchema: z.ZodType<TraceSummaryListType> = z
+  .array(TraceSummarySchema)
+  .openapi('TraceSummaryList')
+
+type GetTraceSummariesResultType = {
+  TraceSummaries?: z.infer<typeof TraceSummaryListSchema> & unknown
+  ApproximateTime?: z.infer<typeof TimestampSchema> & unknown
+  TracesProcessedCount?: z.infer<typeof NullableLongSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema> & unknown
+}
 
 const SegmentIdSchema = z.string().openapi('SegmentId')
 
@@ -12,10 +678,10 @@ const SegmentDocumentSchema = z.string().min(1).openapi('SegmentDocument')
 
 const SegmentSchema = z
   .object({
-    Id: SegmentIdSchema.and(z.any().openapi({ description: "The segment's ID." })).exactOptional(),
-    Document: SegmentDocumentSchema.and(
-      z.any().openapi({ description: 'The segment document.' }),
-    ).exactOptional(),
+    Id: SegmentIdSchema.exactOptional().openapi({ description: "The segment's ID." }),
+    Document: SegmentDocumentSchema.exactOptional().openapi({
+      description: 'The segment document.',
+    }),
   })
   .openapi({
     description:
@@ -28,38 +694,21 @@ const SegmentListSchema = z.array(SegmentSchema).openapi('SegmentList')
 
 const TraceSchema = z
   .object({
-    Id: TraceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique identifier for the request that generated the trace's segments and subsegments.",
-        }),
-    ).exactOptional(),
-    Duration: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time in seconds between the start time of the root segment and the end time of the last segment that completed.',
-        }),
-    ).exactOptional(),
-    LimitExceeded: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'LimitExceeded is set to true when the trace has exceeded the <code>Trace document size</code> limit. For more information about this limit and other X-Ray limits and quotas, see <a href="https://docs.aws.amazon.com/general/latest/gr/xray.html">Amazon Web Services X-Ray endpoints and quotas</a>.',
-        }),
-    ).exactOptional(),
-    Segments: SegmentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Segment documents for the segments and subsegments that comprise the trace.',
-        }),
-    ).exactOptional(),
+    Id: TraceIdSchema.exactOptional().openapi({
+      description:
+        "The unique identifier for the request that generated the trace's segments and subsegments.",
+    }),
+    Duration: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The length of time in seconds between the start time of the root segment and the end time of the last segment that completed.',
+    }),
+    LimitExceeded: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'LimitExceeded is set to true when the trace has exceeded the <code>Trace document size</code> limit. For more information about this limit and other X-Ray limits and quotas, see <a href="https://docs.aws.amazon.com/general/latest/gr/xray.html">Amazon Web Services X-Ray endpoints and quotas</a>.',
+    }),
+    Segments: SegmentListSchema.exactOptional().openapi({
+      description: 'Segment documents for the segments and subsegments that comprise the trace.',
+    }),
   })
   .openapi({
     description: 'A collection of segment documents with matching trace IDs.',
@@ -71,19 +720,15 @@ const TraceListSchema = z.array(TraceSchema).openapi('TraceList')
 
 const UnprocessedTraceIdListSchema = z.array(TraceIdSchema).openapi('UnprocessedTraceIdList')
 
-const StringSchema = z.string().openapi('String')
-
 const BatchGetTracesResultSchema = z
   .object({
-    Traces: TraceListSchema.and(
-      z.any().openapi({ description: 'Full traces for the specified requests.' }),
-    ).exactOptional(),
-    UnprocessedTraceIds: UnprocessedTraceIdListSchema.and(
-      z.any().openapi({ description: "Trace IDs of requests that haven't been processed." }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    Traces: TraceListSchema.exactOptional().openapi({
+      description: 'Full traces for the specified requests.',
+    }),
+    UnprocessedTraceIds: UnprocessedTraceIdListSchema.exactOptional().openapi({
+      description: "Trace IDs of requests that haven't been processed.",
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetTracesResult')
@@ -94,22 +739,14 @@ const ThrottledExceptionSchema = z.any().openapi('ThrottledException')
 
 const InsightsConfigurationSchema = z
   .object({
-    InsightsEnabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set the InsightsEnabled value to true to enable insights or false to disable insights.',
-        }),
-    ).exactOptional(),
-    NotificationsEnabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set the NotificationsEnabled value to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.',
-        }),
-    ).exactOptional(),
+    InsightsEnabled: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'Set the InsightsEnabled value to true to enable insights or false to disable insights.',
+    }),
+    NotificationsEnabled: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'Set the NotificationsEnabled value to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.',
+    }),
   })
   .openapi({
     description: 'The structure containing configurations related to insights.',
@@ -119,46 +756,29 @@ const InsightsConfigurationSchema = z
 
 const GroupSchema = z
   .object({
-    GroupName: StringSchema.and(
-      z.any().openapi({ description: 'The unique case-sensitive name of the group.' }),
-    ).exactOptional(),
-    GroupARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the group generated based on the GroupName.',
-        }),
-    ).exactOptional(),
-    FilterExpression: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The filter expression defining the parameters to include traces.',
-        }),
-    ).exactOptional(),
-    InsightsConfiguration: InsightsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the group or false to disable insights for the group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications through Amazon EventBridge for the group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    GroupName: StringSchema.exactOptional().openapi({
+      description: 'The unique case-sensitive name of the group.',
+    }),
+    GroupARN: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the group generated based on the GroupName.',
+    }),
+    FilterExpression: StringSchema.exactOptional().openapi({
+      description: 'The filter expression defining the parameters to include traces.',
+    }),
+    InsightsConfiguration: InsightsConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the group or false to disable insights for the group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications through Amazon EventBridge for the group.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Details and metadata for a group.', required: [] })
   .openapi('Group')
 
 const CreateGroupResultSchema = z
   .object({
-    Group: GroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The group that was created. Contains the name of the group that was created, the Amazon Resource Name (ARN) of the group that was generated based on the group name, the filter expression, and the insight configuration that was assigned to the group.',
-        }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description:
+        'The group that was created. Contains the name of the group that was created, the Amazon Resource Name (ARN) of the group that was generated based on the group name, the filter expression, and the insight configuration that was assigned to the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGroupResult')
@@ -169,22 +789,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag key, such as <code>Stage</code> or <code>Name</code>. A tag key cannot be empty. The key can be a maximum of 128 characters, and can contain only Unicode letters, numbers, or separators, or the following special characters: <code>+ - = . _ : /</code> ',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional tag value, such as <code>Production</code> or <code>test-only</code>. The value can be a maximum of 255 characters, and contain only Unicode letters, numbers, or separators, or the following special characters: <code>+ - = . _ : /</code> ',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'A tag key, such as <code>Stage</code> or <code>Name</code>. A tag key cannot be empty. The key can be a maximum of 128 characters, and can contain only Unicode letters, numbers, or separators, or the following special characters: <code>+ - = . _ : /</code> ',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'An optional tag value, such as <code>Production</code> or <code>test-only</code>. The value can be a maximum of 255 characters, and contain only Unicode letters, numbers, or separators, or the following special characters: <code>+ - = . _ : /</code> ',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -224,80 +836,43 @@ const AttributeMapSchema = z
 
 const SamplingRuleSchema = z
   .object({
-    RuleName: RuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
-        }),
-    ).exactOptional(),
-    RuleARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
-        }),
-    ).exactOptional(),
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Matches the ARN of the Amazon Web Services resource on which the service runs.',
-        }),
-    ),
-    Priority: PrioritySchema.and(
-      z.any().openapi({ description: 'The priority of the sampling rule.' }),
-    ),
-    FixedRate: FixedRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of matching requests to instrument, after the reservoir is exhausted.',
-        }),
-    ),
-    ReservoirSize: ReservoirSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A fixed number of matching requests to instrument per second, prior to applying the fixed rate. The reservoir is not used directly by services, but applies to all services using the rule collectively.',
-        }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Matches the <code>name</code> that the service uses to identify itself in segments.',
-        }),
-    ),
-    ServiceType: ServiceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Matches the <code>origin</code> that the service uses to identify its type in segments.',
-        }),
-    ),
-    Host: HostSchema.and(
-      z.any().openapi({ description: 'Matches the hostname from a request URL.' }),
-    ),
-    HTTPMethod: HTTPMethodSchema.and(
-      z.any().openapi({ description: 'Matches the HTTP method of a request.' }),
-    ),
-    URLPath: URLPathSchema.and(
-      z.any().openapi({ description: 'Matches the path from a request URL.' }),
-    ),
-    Version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the sampling rule format (<code>1</code>).' }),
-    ),
-    Attributes: AttributeMapSchema.and(
-      z.any().openapi({ description: 'Matches attributes derived from the request.' }),
-    ).exactOptional(),
+    RuleName: RuleNameSchema.exactOptional().openapi({
+      description:
+        'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
+    }),
+    RuleARN: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
+    }),
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'Matches the ARN of the Amazon Web Services resource on which the service runs.',
+    }),
+    Priority: PrioritySchema.openapi({ description: 'The priority of the sampling rule.' }),
+    FixedRate: FixedRateSchema.openapi({
+      description:
+        'The percentage of matching requests to instrument, after the reservoir is exhausted.',
+    }),
+    ReservoirSize: ReservoirSizeSchema.openapi({
+      description:
+        'A fixed number of matching requests to instrument per second, prior to applying the fixed rate. The reservoir is not used directly by services, but applies to all services using the rule collectively.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      description:
+        'Matches the <code>name</code> that the service uses to identify itself in segments.',
+    }),
+    ServiceType: ServiceTypeSchema.openapi({
+      description:
+        'Matches the <code>origin</code> that the service uses to identify its type in segments.',
+    }),
+    Host: HostSchema.openapi({ description: 'Matches the hostname from a request URL.' }),
+    HTTPMethod: HTTPMethodSchema.openapi({ description: 'Matches the HTTP method of a request.' }),
+    URLPath: URLPathSchema.openapi({ description: 'Matches the path from a request URL.' }),
+    Version: VersionSchema.openapi({
+      description: 'The version of the sampling rule format (<code>1</code>).',
+    }),
+    Attributes: AttributeMapSchema.exactOptional().openapi({
+      description: 'Matches attributes derived from the request.',
+    }),
   })
   .openapi({
     required: [
@@ -317,19 +892,15 @@ const SamplingRuleSchema = z
   })
   .openapi('SamplingRule')
 
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
 const SamplingRuleRecordSchema = z
   .object({
-    SamplingRule: SamplingRuleSchema.and(
-      z.any().openapi({ description: 'The sampling rule.' }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'When the rule was created.' }),
-    ).exactOptional(),
-    ModifiedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'When the rule was last modified.' }),
-    ).exactOptional(),
+    SamplingRule: SamplingRuleSchema.exactOptional().openapi({ description: 'The sampling rule.' }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'When the rule was created.',
+    }),
+    ModifiedAt: TimestampSchema.exactOptional().openapi({
+      description: 'When the rule was last modified.',
+    }),
   })
   .openapi({
     description:
@@ -340,26 +911,26 @@ const SamplingRuleRecordSchema = z
 
 const CreateSamplingRuleResultSchema = z
   .object({
-    SamplingRuleRecord: SamplingRuleRecordSchema.and(
-      z.any().openapi({ description: 'The saved rule definition and metadata.' }),
-    ).exactOptional(),
+    SamplingRuleRecord: SamplingRuleRecordSchema.exactOptional().openapi({
+      description: 'The saved rule definition and metadata.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSamplingRuleResult')
 
 const RuleLimitExceededExceptionSchema = z.any().openapi('RuleLimitExceededException')
 
-const DeleteGroupResultSchema = z.object({}).openapi('DeleteGroupResult')
+const DeleteGroupResultSchema = z.looseObject({}).openapi('DeleteGroupResult')
 
-const DeleteResourcePolicyResultSchema = z.object({}).openapi('DeleteResourcePolicyResult')
+const DeleteResourcePolicyResultSchema = z.looseObject({}).openapi('DeleteResourcePolicyResult')
 
 const InvalidPolicyRevisionIdExceptionSchema = z.any().openapi('InvalidPolicyRevisionIdException')
 
 const DeleteSamplingRuleResultSchema = z
   .object({
-    SamplingRuleRecord: SamplingRuleRecordSchema.and(
-      z.any().openapi({ description: 'The deleted rule definition and metadata.' }),
-    ).exactOptional(),
+    SamplingRuleRecord: SamplingRuleRecordSchema.exactOptional().openapi({
+      description: 'The deleted rule definition and metadata.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteSamplingRuleResult')
@@ -370,25 +941,17 @@ const EncryptionTypeSchema = z.enum(['NONE', 'KMS']).openapi('EncryptionType')
 
 const EncryptionConfigSchema = z
   .object({
-    KeyId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the KMS key used for encryption, if applicable.' }),
-    ).exactOptional(),
-    Status: EncryptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The encryption status. While the status is <code>UPDATING</code>, X-Ray may encrypt data with a combination of the new and old settings.',
-        }),
-    ).exactOptional(),
-    Type: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of encryption. Set to <code>KMS</code> for encryption with KMS keys. Set to <code>NONE</code> for default encryption.',
-        }),
-    ).exactOptional(),
+    KeyId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the KMS key used for encryption, if applicable.',
+    }),
+    Status: EncryptionStatusSchema.exactOptional().openapi({
+      description:
+        'The encryption status. While the status is <code>UPDATING</code>, X-Ray may encrypt data with a combination of the new and old settings.',
+    }),
+    Type: EncryptionTypeSchema.exactOptional().openapi({
+      description:
+        'The type of encryption. Set to <code>KMS</code> for encryption with KMS keys. Set to <code>NONE</code> for default encryption.',
+    }),
   })
   .openapi({
     description: 'A configuration document that specifies encryption configuration settings.',
@@ -398,50 +961,38 @@ const EncryptionConfigSchema = z
 
 const GetEncryptionConfigResultSchema = z
   .object({
-    EncryptionConfig: EncryptionConfigSchema.and(
-      z.any().openapi({ description: 'The encryption configuration document.' }),
-    ).exactOptional(),
+    EncryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description: 'The encryption configuration document.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEncryptionConfigResult')
 
 const GetGroupResultSchema = z
   .object({
-    Group: GroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The group that was requested. Contains the name of the group, the ARN of the group, the filter expression, and the insight configuration assigned to the group.',
-        }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description:
+        'The group that was requested. Contains the name of the group, the ARN of the group, the filter expression, and the insight configuration assigned to the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupResult')
 
 const GroupSummarySchema = z
   .object({
-    GroupName: StringSchema.and(
-      z.any().openapi({ description: 'The unique case-sensitive name of the group.' }),
-    ).exactOptional(),
-    GroupARN: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the group generated based on the GroupName.' }),
-    ).exactOptional(),
-    FilterExpression: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The filter expression defining the parameters to include traces.',
-        }),
-    ).exactOptional(),
-    InsightsConfiguration: InsightsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the group or false to disable insights for the group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    GroupName: StringSchema.exactOptional().openapi({
+      description: 'The unique case-sensitive name of the group.',
+    }),
+    GroupARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the group generated based on the GroupName.',
+    }),
+    FilterExpression: StringSchema.exactOptional().openapi({
+      description: 'The filter expression defining the parameters to include traces.',
+    }),
+    InsightsConfiguration: InsightsConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the group or false to disable insights for the group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Details for a group without metadata.', required: [] })
   .openapi('GroupSummary')
@@ -450,12 +1001,10 @@ const GroupSummaryListSchema = z.array(GroupSummarySchema).openapi('GroupSummary
 
 const GetGroupsResultSchema = z
   .object({
-    Groups: GroupSummaryListSchema.and(
-      z.any().openapi({ description: 'The collection of all active groups.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    Groups: GroupSummaryListSchema.exactOptional().openapi({
+      description: 'The collection of all active groups.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupsResult')
@@ -469,18 +1018,6 @@ const GroupARNSchema = z.string().min(1).max(400).openapi('GroupARN')
 
 const GroupNameSchema = z.string().min(1).max(32).openapi('GroupName')
 
-const ServiceNamesSchema = z.array(StringSchema).openapi('ServiceNames')
-
-const ServiceIdSchema = z
-  .object({
-    Name: StringSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    Names: ServiceNamesSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    AccountId: StringSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    Type: StringSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-  })
-  .openapi({ description: '<p/>', required: [] })
-  .openapi('ServiceId')
-
 const InsightCategorySchema = z.literal('FAULT').openapi('InsightCategory')
 
 const InsightCategoryListSchema = z.array(InsightCategorySchema).openapi('InsightCategoryList')
@@ -489,19 +1026,17 @@ const InsightStateSchema = z.enum(['ACTIVE', 'CLOSED']).openapi('InsightState')
 
 const InsightSummaryTextSchema = z.string().openapi('InsightSummaryText')
 
-const NullableLongSchema = z.int().openapi('NullableLong')
-
 const RequestImpactStatisticsSchema = z
   .object({
-    FaultCount: NullableLongSchema.and(
-      z.any().openapi({ description: 'The number of requests that have resulted in a fault,' }),
-    ).exactOptional(),
-    OkCount: NullableLongSchema.and(
-      z.any().openapi({ description: 'The number of successful requests.' }),
-    ).exactOptional(),
-    TotalCount: NullableLongSchema.and(
-      z.any().openapi({ description: 'The total number of requests to the service.' }),
-    ).exactOptional(),
+    FaultCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The number of requests that have resulted in a fault,',
+    }),
+    OkCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The number of successful requests.',
+    }),
+    TotalCount: NullableLongSchema.exactOptional().openapi({
+      description: 'The total number of requests to the service.',
+    }),
   })
   .openapi({
     description: 'Statistics that describe how the incident has impacted a service.',
@@ -521,60 +1056,42 @@ const AnomalousServiceListSchema = z.array(AnomalousServiceSchema).openapi('Anom
 
 const InsightSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z.any().openapi({ description: 'The insights unique identifier. ' }),
-    ).exactOptional(),
-    GroupARN: GroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the group that the insight belongs to.',
-        }),
-    ).exactOptional(),
-    GroupName: GroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the group that the insight belongs to.' }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.exactOptional().openapi({
+      description: 'The insights unique identifier. ',
+    }),
+    GroupARN: GroupARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the group that the insight belongs to.',
+    }),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The name of the group that the insight belongs to.',
+    }),
     RootCauseServiceId: ServiceIdSchema.exactOptional(),
-    Categories: InsightCategoryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The categories that label and describe the type of insight.' }),
-    ).exactOptional(),
-    State: InsightStateSchema.and(
-      z.any().openapi({ description: 'The current state of the insight.' }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time, in Unix seconds, at which the insight began.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time, in Unix seconds, at which the insight ended.' }),
-    ).exactOptional(),
-    Summary: InsightSummaryTextSchema.and(
-      z.any().openapi({ description: 'A brief description of the insight.' }),
-    ).exactOptional(),
-    ClientRequestImpactStatistics: RequestImpactStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The impact statistics of the client side service. This includes the number of requests to the client service and whether the requests were faults or okay.',
-        }),
-    ).exactOptional(),
-    RootCauseServiceRequestImpactStatistics: RequestImpactStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The impact statistics of the root cause service. This includes the number of requests to the client service and whether the requests were faults or okay.',
-        }),
-    ).exactOptional(),
-    TopAnomalousServices: AnomalousServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service within the insight that is most impacted by the incident.',
-        }),
-    ).exactOptional(),
+    Categories: InsightCategoryListSchema.exactOptional().openapi({
+      description: 'The categories that label and describe the type of insight.',
+    }),
+    State: InsightStateSchema.exactOptional().openapi({
+      description: 'The current state of the insight.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time, in Unix seconds, at which the insight began.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time, in Unix seconds, at which the insight ended.',
+    }),
+    Summary: InsightSummaryTextSchema.exactOptional().openapi({
+      description: 'A brief description of the insight.',
+    }),
+    ClientRequestImpactStatistics: RequestImpactStatisticsSchema.exactOptional().openapi({
+      description:
+        'The impact statistics of the client side service. This includes the number of requests to the client service and whether the requests were faults or okay.',
+    }),
+    RootCauseServiceRequestImpactStatistics: RequestImpactStatisticsSchema.exactOptional().openapi({
+      description:
+        'The impact statistics of the root cause service. This includes the number of requests to the client service and whether the requests were faults or okay.',
+    }),
+    TopAnomalousServices: AnomalousServiceListSchema.exactOptional().openapi({
+      description: 'The service within the insight that is most impacted by the incident.',
+    }),
   })
   .openapi({
     description:
@@ -585,9 +1102,9 @@ const InsightSchema = z
 
 const GetInsightResultSchema = z
   .object({
-    Insight: InsightSchema.and(
-      z.any().openapi({ description: 'The summary information of an insight.' }),
-    ).exactOptional(),
+    Insight: InsightSchema.exactOptional().openapi({
+      description: 'The summary information of an insight.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInsightResult')
@@ -596,37 +1113,23 @@ const EventSummaryTextSchema = z.string().openapi('EventSummaryText')
 
 const InsightEventSchema = z
   .object({
-    Summary: EventSummaryTextSchema.and(
-      z.any().openapi({ description: 'A brief description of the event.' }),
-    ).exactOptional(),
-    EventTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time, in Unix seconds, at which the event was recorded.' }),
-    ).exactOptional(),
-    ClientRequestImpactStatistics: RequestImpactStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The impact statistics of the client side service. This includes the number of requests to the client service and whether the requests were faults or okay.',
-        }),
-    ).exactOptional(),
-    RootCauseServiceRequestImpactStatistics: RequestImpactStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The impact statistics of the root cause service. This includes the number of requests to the client service and whether the requests were faults or okay.',
-        }),
-    ).exactOptional(),
-    TopAnomalousServices: AnomalousServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service during the event that is most impacted by the incident.',
-        }),
-    ).exactOptional(),
+    Summary: EventSummaryTextSchema.exactOptional().openapi({
+      description: 'A brief description of the event.',
+    }),
+    EventTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time, in Unix seconds, at which the event was recorded.',
+    }),
+    ClientRequestImpactStatistics: RequestImpactStatisticsSchema.exactOptional().openapi({
+      description:
+        'The impact statistics of the client side service. This includes the number of requests to the client service and whether the requests were faults or okay.',
+    }),
+    RootCauseServiceRequestImpactStatistics: RequestImpactStatisticsSchema.exactOptional().openapi({
+      description:
+        'The impact statistics of the root cause service. This includes the number of requests to the client service and whether the requests were faults or okay.',
+    }),
+    TopAnomalousServices: AnomalousServiceListSchema.exactOptional().openapi({
+      description: 'The service during the event that is most impacted by the incident.',
+    }),
   })
   .openapi({
     description:
@@ -641,30 +1144,22 @@ const TokenSchema = z.string().min(1).max(2000).openapi('Token')
 
 const GetInsightEventsResultSchema = z
   .object({
-    InsightEvents: InsightEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A detailed description of the event. This includes the time of the event, client and root cause impact statistics, and the top anomalous service at the time of the event.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Use this token to retrieve the next page of insight events.' }),
-    ).exactOptional(),
+    InsightEvents: InsightEventListSchema.exactOptional().openapi({
+      description:
+        'A detailed description of the event. This includes the time of the event, client and root cause impact statistics, and the top anomalous service at the time of the event.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'Use this token to retrieve the next page of insight events.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInsightEventsResult')
 
-const NullableIntegerSchema = z.int().openapi('NullableInteger')
-
 const InsightImpactGraphEdgeSchema = z
   .object({
-    ReferenceId: NullableIntegerSchema.and(
-      z.any().openapi({ description: 'Identifier of the edge. Unique within a service map.' }),
-    ).exactOptional(),
+    ReferenceId: NullableIntegerSchema.exactOptional().openapi({
+      description: 'Identifier of the edge. Unique within a service map.',
+    }),
   })
   .openapi({
     description: 'The connection between two service in an insight impact graph.',
@@ -678,37 +1173,25 @@ const InsightImpactGraphEdgeListSchema = z
 
 const InsightImpactGraphServiceSchema = z
   .object({
-    ReferenceId: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Identifier for the service. Unique within the service map.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Identifier for the service. Unique within the service map.</p> <ul> <li> <p>Amazon Web Services Resource - The type of an Amazon Web Services resource. For example, AWS::EC2::Instance for an application running on Amazon EC2 or AWS::DynamoDB::Table for an Amazon DynamoDB table that the application used. </p> </li> <li> <p>Amazon Web Services Service - The type of an Amazon Web Services service. For example, AWS::DynamoDB for downstream calls to Amazon DynamoDB that didn't target a specific table. </p> </li> <li> <p>Amazon Web Services Service - The type of an Amazon Web Services service. For example, AWS::DynamoDB for downstream calls to Amazon DynamoDB that didn't target a specific table. </p> </li> <li> <p>remote - A downstream service of indeterminate type.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The canonical name of the service.' }),
-    ).exactOptional(),
-    Names: ServiceNamesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of names for the service, including the canonical name.' }),
-    ).exactOptional(),
-    AccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier of the Amazon Web Services account in which the service runs.',
-        }),
-    ).exactOptional(),
-    Edges: InsightImpactGraphEdgeListSchema.and(
-      z.any().openapi({ description: 'Connections to downstream services.' }),
-    ).exactOptional(),
+    ReferenceId: NullableIntegerSchema.exactOptional().openapi({
+      description: 'Identifier for the service. Unique within the service map.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description:
+        "<p>Identifier for the service. Unique within the service map.</p> <ul> <li> <p>Amazon Web Services Resource - The type of an Amazon Web Services resource. For example, AWS::EC2::Instance for an application running on Amazon EC2 or AWS::DynamoDB::Table for an Amazon DynamoDB table that the application used. </p> </li> <li> <p>Amazon Web Services Service - The type of an Amazon Web Services service. For example, AWS::DynamoDB for downstream calls to Amazon DynamoDB that didn't target a specific table. </p> </li> <li> <p>Amazon Web Services Service - The type of an Amazon Web Services service. For example, AWS::DynamoDB for downstream calls to Amazon DynamoDB that didn't target a specific table. </p> </li> <li> <p>remote - A downstream service of indeterminate type.</p> </li> </ul>",
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The canonical name of the service.',
+    }),
+    Names: ServiceNamesSchema.exactOptional().openapi({
+      description: 'A list of names for the service, including the canonical name.',
+    }),
+    AccountId: StringSchema.exactOptional().openapi({
+      description: 'Identifier of the Amazon Web Services account in which the service runs.',
+    }),
+    Edges: InsightImpactGraphEdgeListSchema.exactOptional().openapi({
+      description: 'Connections to downstream services.',
+    }),
   })
   .openapi({
     description:
@@ -723,102 +1206,66 @@ const InsightImpactGraphServiceListSchema = z
 
 const GetInsightImpactGraphResultSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z.any().openapi({ description: "The insight's unique identifier." }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The provided start time.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The provided end time. ' }),
-    ).exactOptional(),
-    ServiceGraphStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time, in Unix seconds, at which the service graph started.' }),
-    ).exactOptional(),
-    ServiceGraphEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time, in Unix seconds, at which the service graph ended.' }),
-    ).exactOptional(),
-    Services: InsightImpactGraphServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services instrumented services related to the insight.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.exactOptional().openapi({
+      description: "The insight's unique identifier.",
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({ description: 'The provided start time.' }),
+    EndTime: TimestampSchema.exactOptional().openapi({ description: 'The provided end time. ' }),
+    ServiceGraphStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time, in Unix seconds, at which the service graph started.',
+    }),
+    ServiceGraphEndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time, in Unix seconds, at which the service graph ended.',
+    }),
+    Services: InsightImpactGraphServiceListSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services instrumented services related to the insight.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetInsightImpactGraphResult')
 
 const InsightSummarySchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z.any().openapi({ description: 'The insights unique identifier. ' }),
-    ).exactOptional(),
-    GroupARN: GroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the group that the insight belongs to.',
-        }),
-    ).exactOptional(),
-    GroupName: GroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the group that the insight belongs to.' }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.exactOptional().openapi({
+      description: 'The insights unique identifier. ',
+    }),
+    GroupARN: GroupARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the group that the insight belongs to.',
+    }),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The name of the group that the insight belongs to.',
+    }),
     RootCauseServiceId: ServiceIdSchema.exactOptional(),
-    Categories: InsightCategoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Categories The categories that label and describe the type of insight.',
-        }),
-    ).exactOptional(),
-    State: InsightStateSchema.and(
-      z.any().openapi({ description: 'The current state of the insight.' }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time, in Unix seconds, at which the insight began.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time, in Unix seconds, at which the insight ended.' }),
-    ).exactOptional(),
-    Summary: InsightSummaryTextSchema.and(
-      z.any().openapi({ description: 'A brief description of the insight.' }),
-    ).exactOptional(),
-    ClientRequestImpactStatistics: RequestImpactStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The impact statistics of the client side service. This includes the number of requests to the client service and whether the requests were faults or okay. ',
-        }),
-    ).exactOptional(),
-    RootCauseServiceRequestImpactStatistics: RequestImpactStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The impact statistics of the root cause service. This includes the number of requests to the client service and whether the requests were faults or okay. ',
-        }),
-    ).exactOptional(),
-    TopAnomalousServices: AnomalousServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service within the insight that is most impacted by the incident.',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time, in Unix seconds, that the insight was last updated.' }),
-    ).exactOptional(),
+    Categories: InsightCategoryListSchema.exactOptional().openapi({
+      description: ' Categories The categories that label and describe the type of insight.',
+    }),
+    State: InsightStateSchema.exactOptional().openapi({
+      description: 'The current state of the insight.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time, in Unix seconds, at which the insight began.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time, in Unix seconds, at which the insight ended.',
+    }),
+    Summary: InsightSummaryTextSchema.exactOptional().openapi({
+      description: 'A brief description of the insight.',
+    }),
+    ClientRequestImpactStatistics: RequestImpactStatisticsSchema.exactOptional().openapi({
+      description:
+        'The impact statistics of the client side service. This includes the number of requests to the client service and whether the requests were faults or okay. ',
+    }),
+    RootCauseServiceRequestImpactStatistics: RequestImpactStatisticsSchema.exactOptional().openapi({
+      description:
+        'The impact statistics of the root cause service. This includes the number of requests to the client service and whether the requests were faults or okay. ',
+    }),
+    TopAnomalousServices: AnomalousServiceListSchema.exactOptional().openapi({
+      description: 'The service within the insight that is most impacted by the incident.',
+    }),
+    LastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time, in Unix seconds, that the insight was last updated.',
+    }),
   })
   .openapi({ description: 'Information that describes an insight.', required: [] })
   .openapi('InsightSummary')
@@ -827,17 +1274,11 @@ const InsightSummaryListSchema = z.array(InsightSummarySchema).openapi('InsightS
 
 const GetInsightSummariesResultSchema = z
   .object({
-    InsightSummaries: InsightSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The summary of each insight within the group matching the provided filters. The summary contains the InsightID, start and end time, the root cause service, the root cause and client impact statistics, the top anomalous services, and the status of the insight.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    InsightSummaries: InsightSummaryListSchema.exactOptional().openapi({
+      description:
+        'The summary of each insight within the group matching the provided filters. The summary contains the InsightID, start and end time, the root cause service, the root cause and client impact statistics, the top anomalous services, and the status of the insight.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetInsightSummariesResult')
@@ -848,37 +1289,31 @@ const SamplingRuleRecordListSchema = z
 
 const GetSamplingRulesResultSchema = z
   .object({
-    SamplingRuleRecords: SamplingRuleRecordListSchema.and(
-      z.any().openapi({ description: 'Rule definitions and metadata.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    SamplingRuleRecords: SamplingRuleRecordListSchema.exactOptional().openapi({
+      description: 'Rule definitions and metadata.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetSamplingRulesResult')
 
-const IntegerSchema = z.int().openapi('Integer')
-
 const SamplingStatisticSummarySchema = z
   .object({
-    RuleName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the sampling rule.' }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the reporting window.' }),
-    ).exactOptional(),
-    RequestCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of requests that matched the rule.' }),
-    ).exactOptional(),
-    BorrowCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of requests recorded with borrowed reservoir quota.' }),
-    ).exactOptional(),
-    SampledCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of requests recorded.' }),
-    ).exactOptional(),
+    RuleName: StringSchema.exactOptional().openapi({
+      description: 'The name of the sampling rule.',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of the reporting window.',
+    }),
+    RequestCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of requests that matched the rule.',
+    }),
+    BorrowCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of requests recorded with borrowed reservoir quota.',
+    }),
+    SampledCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of requests recorded.',
+    }),
   })
   .openapi({
     description:
@@ -893,54 +1328,33 @@ const SamplingStatisticSummaryListSchema = z
 
 const GetSamplingStatisticSummariesResultSchema = z
   .object({
-    SamplingStatisticSummaries: SamplingStatisticSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the number of requests instrumented for each sampling rule.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    SamplingStatisticSummaries: SamplingStatisticSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the number of requests instrumented for each sampling rule.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetSamplingStatisticSummariesResult')
 
-const DoubleSchema = z.float64().openapi('Double')
-
 const SamplingTargetDocumentSchema = z
   .object({
-    RuleName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the sampling rule.' }),
-    ).exactOptional(),
-    FixedRate: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of matching requests to instrument, after the reservoir is exhausted.',
-        }),
-    ).exactOptional(),
-    ReservoirQuota: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of requests per second that X-Ray allocated for this service.',
-        }),
-    ).exactOptional(),
-    ReservoirQuotaTTL: TimestampSchema.and(
-      z.any().openapi({ description: 'When the reservoir quota expires.' }),
-    ).exactOptional(),
-    Interval: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of seconds for the service to wait before getting sampling targets again.',
-        }),
-    ).exactOptional(),
+    RuleName: StringSchema.exactOptional().openapi({
+      description: 'The name of the sampling rule.',
+    }),
+    FixedRate: DoubleSchema.exactOptional().openapi({
+      description:
+        'The percentage of matching requests to instrument, after the reservoir is exhausted.',
+    }),
+    ReservoirQuota: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The number of requests per second that X-Ray allocated for this service.',
+    }),
+    ReservoirQuotaTTL: TimestampSchema.exactOptional().openapi({
+      description: 'When the reservoir quota expires.',
+    }),
+    Interval: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of seconds for the service to wait before getting sampling targets again.',
+    }),
   })
   .openapi({
     description:
@@ -955,15 +1369,11 @@ const SamplingTargetDocumentListSchema = z
 
 const UnprocessedStatisticsSchema = z
   .object({
-    RuleName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the sampling rule.' }),
-    ).exactOptional(),
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    RuleName: StringSchema.exactOptional().openapi({
+      description: 'The name of the sampling rule.',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({ description: 'The error code.' }),
+    Message: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({
     description:
@@ -978,27 +1388,17 @@ const UnprocessedStatisticsListSchema = z
 
 const GetSamplingTargetsResultSchema = z
   .object({
-    SamplingTargetDocuments: SamplingTargetDocumentListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Updated rules that the service should use to sample requests.' }),
-    ).exactOptional(),
-    LastRuleModification: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last time a user changed the sampling rule configuration. If the sampling rule configuration changed since the service last retrieved it, the service should call <a href="https://docs.aws.amazon.com/xray/latest/api/API_GetSamplingRules.html">GetSamplingRules</a> to get the latest version.',
-        }),
-    ).exactOptional(),
-    UnprocessedStatistics: UnprocessedStatisticsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about <a href="https://docs.aws.amazon.com/xray/latest/api/API_SamplingStatisticsDocument.html">SamplingStatisticsDocument</a> that X-Ray could not process.',
-        }),
-    ).exactOptional(),
+    SamplingTargetDocuments: SamplingTargetDocumentListSchema.exactOptional().openapi({
+      description: 'Updated rules that the service should use to sample requests.',
+    }),
+    LastRuleModification: TimestampSchema.exactOptional().openapi({
+      description:
+        'The last time a user changed the sampling rule configuration. If the sampling rule configuration changed since the service last retrieved it, the service should call <a href="https://docs.aws.amazon.com/xray/latest/api/API_GetSamplingRules.html">GetSamplingRules</a> to get the latest version.',
+    }),
+    UnprocessedStatistics: UnprocessedStatisticsListSchema.exactOptional().openapi({
+      description:
+        'Information about <a href="https://docs.aws.amazon.com/xray/latest/api/API_SamplingStatisticsDocument.html">SamplingStatisticsDocument</a> that X-Ray could not process.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSamplingTargetsResult')
@@ -1013,24 +1413,18 @@ const BorrowCountSchema = z.int().min(0).openapi('BorrowCount')
 
 const SamplingStatisticsDocumentSchema = z
   .object({
-    RuleName: RuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the sampling rule.' }),
-    ),
-    ClientID: ClientIDSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the service in hexadecimal.' }),
-    ),
-    Timestamp: TimestampSchema.and(z.any().openapi({ description: 'The current time.' })),
-    RequestCount: RequestCountSchema.and(
-      z.any().openapi({ description: 'The number of requests that matched the rule.' }),
-    ),
-    SampledCount: SampledCountSchema.and(
-      z.any().openapi({ description: 'The number of requests recorded.' }),
-    ),
-    BorrowCount: BorrowCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of requests recorded with borrowed reservoir quota.' }),
-    ).exactOptional(),
+    RuleName: RuleNameSchema.openapi({ description: 'The name of the sampling rule.' }),
+    ClientID: ClientIDSchema.openapi({
+      description: 'A unique identifier for the service in hexadecimal.',
+    }),
+    Timestamp: TimestampSchema.openapi({ description: 'The current time.' }),
+    RequestCount: RequestCountSchema.openapi({
+      description: 'The number of requests that matched the rule.',
+    }),
+    SampledCount: SampledCountSchema.openapi({ description: 'The number of requests recorded.' }),
+    BorrowCount: BorrowCountSchema.exactOptional().openapi({
+      description: 'The number of requests recorded with borrowed reservoir quota.',
+    }),
   })
   .openapi({
     required: ['RuleName', 'ClientID', 'Timestamp', 'RequestCount', 'SampledCount'],
@@ -1039,343 +1433,35 @@ const SamplingStatisticsDocumentSchema = z
   })
   .openapi('SamplingStatisticsDocument')
 
-const ErrorStatisticsSchema = z
+const GetServiceGraphResultSchema: z.ZodType<GetServiceGraphResultType> = z
   .object({
-    ThrottleCount: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of requests that failed with a 419 throttling status code.',
-        }),
-    ).exactOptional(),
-    OtherCount: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of requests that failed with untracked 4xx Client Error status codes.',
-        }),
-    ).exactOptional(),
-    TotalCount: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of requests that failed with a 4xx Client Error status code.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about requests that failed with a 4xx Client Error status code.',
-    required: [],
-  })
-  .openapi('ErrorStatistics')
-
-const FaultStatisticsSchema = z
-  .object({
-    OtherCount: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of requests that failed with untracked 5xx Server Error status codes.',
-        }),
-    ).exactOptional(),
-    TotalCount: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of requests that failed with a 5xx Server Error status code.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about requests that failed with a 5xx Server Error status code.',
-    required: [],
-  })
-  .openapi('FaultStatistics')
-
-const EdgeStatisticsSchema = z
-  .object({
-    OkCount: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of requests that completed with a 2xx Success status code.',
-        }),
-    ).exactOptional(),
-    ErrorStatistics: ErrorStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about requests that failed with a 4xx Client Error status code.',
-        }),
-    ).exactOptional(),
-    FaultStatistics: FaultStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about requests that failed with a 5xx Server Error status code.',
-        }),
-    ).exactOptional(),
-    TotalCount: NullableLongSchema.and(
-      z.any().openapi({ description: 'The total number of completed requests.' }),
-    ).exactOptional(),
-    TotalResponseTime: NullableDoubleSchema.and(
-      z.any().openapi({ description: 'The aggregate response time of completed requests.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Response statistics for an edge.', required: [] })
-  .openapi('EdgeStatistics')
-
-const HistogramEntrySchema = z
-  .object({
-    Value: DoubleSchema.and(
-      z.any().openapi({ description: 'The value of the entry.' }),
-    ).exactOptional(),
-    Count: IntegerSchema.and(
-      z.any().openapi({ description: 'The prevalence of the entry.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An entry in a histogram for a statistic. A histogram maps the range of observed values on the X axis, and the prevalence of each value on the Y axis.',
-    required: [],
-  })
-  .openapi('HistogramEntry')
-
-const HistogramSchema = z.array(HistogramEntrySchema).openapi('Histogram')
-
-const AliasNamesSchema = z.array(StringSchema).openapi('AliasNames')
-
-const AliasSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The canonical name of the alias.' }),
-    ).exactOptional(),
-    Names: AliasNamesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of names for the alias, including the canonical name.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type of the alias.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'An alias for an edge.', required: [] })
-  .openapi('Alias')
-
-const AliasListSchema = z.array(AliasSchema).openapi('AliasList')
-
-const EdgeSchema = z
-  .object({
-    ReferenceId: NullableIntegerSchema.and(
-      z.any().openapi({ description: 'Identifier of the edge. Unique within a service map.' }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the first segment on the edge.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The end time of the last segment on the edge.' }),
-    ).exactOptional(),
-    SummaryStatistics: EdgeStatisticsSchema.and(
-      z.any().openapi({ description: 'Response statistics for segments on the edge.' }),
-    ).exactOptional(),
-    ResponseTimeHistogram: HistogramSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A histogram that maps the spread of client response times on an edge. Only populated for synchronous edges.',
-        }),
-    ).exactOptional(),
-    Aliases: AliasListSchema.and(
-      z.any().openapi({ description: 'Aliases for the edge.' }),
-    ).exactOptional(),
-    EdgeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes an asynchronous connection, with a value of <code>link</code>.',
-        }),
-    ).exactOptional(),
-    ReceivedEventAgeHistogram: HistogramSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A histogram that maps the spread of event age when received by consumers. Age is calculated each time an event is received. Only populated when <i>EdgeType</i> is <code>link</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about a connection between two services. An edge can be a synchronous connection, such as typical call between client and service, or an asynchronous link, such as a Lambda function which retrieves an event from an SNS queue.',
-    required: [],
-  })
-  .openapi('Edge')
-
-const EdgeListSchema = z.array(EdgeSchema).openapi('EdgeList')
-
-const ServiceStatisticsSchema = z
-  .object({
-    OkCount: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of requests that completed with a 2xx Success status code.',
-        }),
-    ).exactOptional(),
-    ErrorStatistics: ErrorStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about requests that failed with a 4xx Client Error status code.',
-        }),
-    ).exactOptional(),
-    FaultStatistics: FaultStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about requests that failed with a 5xx Server Error status code.',
-        }),
-    ).exactOptional(),
-    TotalCount: NullableLongSchema.and(
-      z.any().openapi({ description: 'The total number of completed requests.' }),
-    ).exactOptional(),
-    TotalResponseTime: NullableDoubleSchema.and(
-      z.any().openapi({ description: 'The aggregate response time of completed requests.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Response statistics for a service.', required: [] })
-  .openapi('ServiceStatistics')
-
-const ServiceSchema = z
-  .object({
-    ReferenceId: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Identifier for the service. Unique within the service map.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The canonical name of the service.' }),
-    ).exactOptional(),
-    Names: ServiceNamesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of names for the service, including the canonical name.' }),
-    ).exactOptional(),
-    Root: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates that the service was the first service to process a request.',
-        }),
-    ).exactOptional(),
-    AccountId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier of the Amazon Web Services account in which the service runs.',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of service.</p> <ul> <li> <p>Amazon Web Services Resource - The type of an Amazon Web Services resource. For example, <code>AWS::EC2::Instance</code> for an application running on Amazon EC2 or <code>AWS::DynamoDB::Table</code> for an Amazon DynamoDB table that the application used.</p> </li> <li> <p>Amazon Web Services Service - The type of an Amazon Web Services service. For example, <code>AWS::DynamoDB</code> for downstream calls to Amazon DynamoDB that didn't target a specific table.</p> </li> <li> <p> <code>client</code> - Represents the clients that sent requests to a root service.</p> </li> <li> <p> <code>remote</code> - A downstream service of indeterminate type.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z.any().openapi({ description: "The service's state." }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The start time of the first segment that the service generated.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The end time of the last segment that the service generated.' }),
-    ).exactOptional(),
-    Edges: EdgeListSchema.and(
-      z.any().openapi({ description: 'Connections to downstream services.' }),
-    ).exactOptional(),
-    SummaryStatistics: ServiceStatisticsSchema.and(
-      z.any().openapi({ description: 'Aggregated statistics for the service.' }),
-    ).exactOptional(),
-    DurationHistogram: HistogramSchema.and(
-      z.any().openapi({ description: 'A histogram that maps the spread of service durations.' }),
-    ).exactOptional(),
-    ResponseTimeHistogram: HistogramSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A histogram that maps the spread of service response times.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about an application that processed requests, users that made requests, or downstream services, resources, and applications that an application used.',
-    required: [],
-  })
-  .openapi('Service')
-
-const ServiceListSchema = z.array(ServiceSchema).openapi('ServiceList')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const GetServiceGraphResultSchema = z
-  .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The start of the time frame for which the graph was generated.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The end of the time frame for which the graph was generated.' }),
-    ).exactOptional(),
-    Services: ServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The services that have processed a traced request during the specified time frame.',
-        }),
-    ).exactOptional(),
-    ContainsOldGroupVersions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A flag indicating whether the group's filter expression has been consistent, or if the returned service graph may show traces from an older version of the group's filter expression.",
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start of the time frame for which the graph was generated.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The end of the time frame for which the graph was generated.',
+    }),
+    Services: ServiceListSchema.exactOptional().openapi({
+      description:
+        'The services that have processed a traced request during the specified time frame.',
+    }),
+    ContainsOldGroupVersions: BooleanSchema.exactOptional().openapi({
+      description:
+        "A flag indicating whether the group's filter expression has been consistent, or if the returned service graph may show traces from an older version of the group's filter expression.",
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceGraphResult')
 
 const ForecastStatisticsSchema = z
   .object({
-    FaultCountHigh: NullableLongSchema.and(
-      z.any().openapi({ description: 'The upper limit of fault counts for a service.' }),
-    ).exactOptional(),
-    FaultCountLow: NullableLongSchema.and(
-      z.any().openapi({ description: 'The lower limit of fault counts for a service.' }),
-    ).exactOptional(),
+    FaultCountHigh: NullableLongSchema.exactOptional().openapi({
+      description: 'The upper limit of fault counts for a service.',
+    }),
+    FaultCountLow: NullableLongSchema.exactOptional().openapi({
+      description: 'The lower limit of fault counts for a service.',
+    }),
   })
   .openapi({
     description:
@@ -1386,19 +1472,17 @@ const ForecastStatisticsSchema = z
 
 const TimeSeriesServiceStatisticsSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Timestamp of the window for which statistics are aggregated.' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'Timestamp of the window for which statistics are aggregated.',
+    }),
     EdgeSummaryStatistics: EdgeStatisticsSchema.exactOptional(),
     ServiceSummaryStatistics: ServiceStatisticsSchema.exactOptional(),
-    ServiceForecastStatistics: ForecastStatisticsSchema.and(
-      z.any().openapi({ description: 'The forecasted high and low fault count values.' }),
-    ).exactOptional(),
-    ResponseTimeHistogram: HistogramSchema.and(
-      z.any().openapi({ description: 'The response time histogram for the selected entities.' }),
-    ).exactOptional(),
+    ServiceForecastStatistics: ForecastStatisticsSchema.exactOptional().openapi({
+      description: 'The forecasted high and low fault count values.',
+    }),
+    ResponseTimeHistogram: HistogramSchema.exactOptional().openapi({
+      description: 'The response time histogram for the selected entities.',
+    }),
   })
   .openapi({ description: 'A list of TimeSeriesStatistic structures.', required: [] })
   .openapi('TimeSeriesServiceStatistics')
@@ -1409,558 +1493,45 @@ const TimeSeriesServiceStatisticsListSchema = z
 
 const GetTimeSeriesServiceStatisticsResultSchema = z
   .object({
-    TimeSeriesServiceStatistics: TimeSeriesServiceStatisticsListSchema.and(
-      z.any().openapi({ description: 'The collection of statistics.' }),
-    ).exactOptional(),
-    ContainsOldGroupVersions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A flag indicating whether or not a group's filter expression has been consistent, or if a returned aggregation might show statistics from an older version of the group's filter expression.",
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    TimeSeriesServiceStatistics: TimeSeriesServiceStatisticsListSchema.exactOptional().openapi({
+      description: 'The collection of statistics.',
+    }),
+    ContainsOldGroupVersions: BooleanSchema.exactOptional().openapi({
+      description:
+        "A flag indicating whether or not a group's filter expression has been consistent, or if a returned aggregation might show statistics from an older version of the group's filter expression.",
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetTimeSeriesServiceStatisticsResult')
 
-const GetTraceGraphResultSchema = z
+const GetTraceGraphResultSchema: z.ZodType<GetTraceGraphResultType> = z
   .object({
-    Services: ServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The services that have processed one of the specified requests.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    Services: ServiceListSchema.exactOptional().openapi({
+      description: 'The services that have processed one of the specified requests.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('GetTraceGraphResult')
 
-const HttpSchema = z
+const GetTraceSummariesResultSchema: z.ZodType<GetTraceSummariesResultType> = z
   .object({
-    HttpURL: StringSchema.and(z.any().openapi({ description: 'The request URL.' })).exactOptional(),
-    HttpStatus: NullableIntegerSchema.and(
-      z.any().openapi({ description: 'The response status.' }),
-    ).exactOptional(),
-    HttpMethod: StringSchema.and(
-      z.any().openapi({ description: 'The request method.' }),
-    ).exactOptional(),
-    UserAgent: StringSchema.and(
-      z.any().openapi({ description: "The request's user agent string." }),
-    ).exactOptional(),
-    ClientIp: StringSchema.and(
-      z.any().openapi({ description: 'The IP address of the requestor.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about an HTTP request.', required: [] })
-  .openapi('Http')
-
-const AnnotationValueSchema = z
-  .object({
-    NumberValue: NullableDoubleSchema.and(
-      z.any().openapi({ description: 'Value for a Number annotation.' }),
-    ).exactOptional(),
-    BooleanValue: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'Value for a Boolean annotation.' }),
-    ).exactOptional(),
-    StringValue: StringSchema.and(
-      z.any().openapi({ description: 'Value for a String annotation.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Value of a segment annotation. Has one of three value types: Number, Boolean, or String.',
-    required: [],
-  })
-  .openapi('AnnotationValue')
-
-const ServiceIdsSchema = z.array(ServiceIdSchema).openapi('ServiceIds')
-
-const ValueWithServiceIdsSchema = z
-  .object({
-    AnnotationValue: AnnotationValueSchema.and(
-      z.any().openapi({ description: 'Values of the annotation.' }),
-    ).exactOptional(),
-    ServiceIds: ServiceIdsSchema.and(
-      z.any().openapi({ description: 'Services to which the annotation applies.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about a segment annotation.', required: [] })
-  .openapi('ValueWithServiceIds')
-
-const ValuesWithServiceIdsSchema = z
-  .array(ValueWithServiceIdsSchema)
-  .openapi('ValuesWithServiceIds')
-
-const AnnotationsSchema = z.record(z.string(), ValuesWithServiceIdsSchema).openapi('Annotations')
-
-const TraceUserSchema = z
-  .object({
-    UserName: StringSchema.and(
-      z.any().openapi({ description: "The user's name." }),
-    ).exactOptional(),
-    ServiceIds: ServiceIdsSchema.and(
-      z.any().openapi({ description: "Services that the user's request hit." }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about a user recorded in segment documents.', required: [] })
-  .openapi('TraceUser')
-
-const TraceUsersSchema = z.array(TraceUserSchema).openapi('TraceUsers')
-
-const ResourceARNDetailSchema = z
-  .object({
-    ARN: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of a corresponding resource.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A list of resources ARNs corresponding to the segments in a trace.',
-    required: [],
-  })
-  .openapi('ResourceARNDetail')
-
-const TraceResourceARNsSchema = z.array(ResourceARNDetailSchema).openapi('TraceResourceARNs')
-
-const InstanceIdDetailSchema = z
-  .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of a corresponding EC2 instance.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A list of EC2 instance IDs corresponding to the segments in a trace. ',
-    required: [],
-  })
-  .openapi('InstanceIdDetail')
-
-const TraceInstanceIdsSchema = z.array(InstanceIdDetailSchema).openapi('TraceInstanceIds')
-
-const AvailabilityZoneDetailSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of a corresponding Availability Zone.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A list of Availability Zones corresponding to the segments in a trace.',
-    required: [],
-  })
-  .openapi('AvailabilityZoneDetail')
-
-const TraceAvailabilityZonesSchema = z
-  .array(AvailabilityZoneDetailSchema)
-  .openapi('TraceAvailabilityZones')
-
-const RootCauseExceptionSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the exception.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The message of the exception.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The exception associated with a root cause.', required: [] })
-  .openapi('RootCauseException')
-
-const RootCauseExceptionsSchema = z.array(RootCauseExceptionSchema).openapi('RootCauseExceptions')
-
-const FaultRootCauseEntitySchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the entity.' }),
-    ).exactOptional(),
-    Exceptions: RootCauseExceptionsSchema.and(
-      z.any().openapi({ description: 'The types and messages of the exceptions.' }),
-    ).exactOptional(),
-    Remote: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'A flag that denotes a remote subsegment.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A collection of segments and corresponding subsegments associated to a trace summary fault error.',
-    required: [],
-  })
-  .openapi('FaultRootCauseEntity')
-
-const FaultRootCauseEntityPathSchema = z
-  .array(FaultRootCauseEntitySchema)
-  .openapi('FaultRootCauseEntityPath')
-
-const FaultRootCauseServiceSchema = z
-  .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The service name.' })).exactOptional(),
-    Names: ServiceNamesSchema.and(
-      z.any().openapi({ description: 'A collection of associated service names.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type associated to the service.' }),
-    ).exactOptional(),
-    AccountId: StringSchema.and(
-      z.any().openapi({ description: 'The account ID associated to the service.' }),
-    ).exactOptional(),
-    EntityPath: FaultRootCauseEntityPathSchema.and(
-      z.any().openapi({ description: 'The path of root cause entities found on the service. ' }),
-    ).exactOptional(),
-    Inferred: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating if the service is inferred from the trace.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A collection of fields identifying the services in a trace summary fault.',
-    required: [],
-  })
-  .openapi('FaultRootCauseService')
-
-const FaultRootCauseServicesSchema = z
-  .array(FaultRootCauseServiceSchema)
-  .openapi('FaultRootCauseServices')
-
-const FaultRootCauseSchema = z
-  .object({
-    Services: FaultRootCauseServicesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of corresponding services. A service identifies a segment and it contains a name, account ID, type, and inferred flag.',
-        }),
-    ).exactOptional(),
-    ClientImpacting: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A flag that denotes that the root cause impacts the trace client.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The root cause information for a trace summary fault.', required: [] })
-  .openapi('FaultRootCause')
-
-const FaultRootCausesSchema = z.array(FaultRootCauseSchema).openapi('FaultRootCauses')
-
-const ErrorRootCauseEntitySchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the entity.' }),
-    ).exactOptional(),
-    Exceptions: RootCauseExceptionsSchema.and(
-      z.any().openapi({ description: 'The types and messages of the exceptions.' }),
-    ).exactOptional(),
-    Remote: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'A flag that denotes a remote subsegment.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A collection of segments and corresponding subsegments associated to a trace summary error.',
-    required: [],
-  })
-  .openapi('ErrorRootCauseEntity')
-
-const ErrorRootCauseEntityPathSchema = z
-  .array(ErrorRootCauseEntitySchema)
-  .openapi('ErrorRootCauseEntityPath')
-
-const ErrorRootCauseServiceSchema = z
-  .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The service name.' })).exactOptional(),
-    Names: ServiceNamesSchema.and(
-      z.any().openapi({ description: 'A collection of associated service names.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type associated to the service.' }),
-    ).exactOptional(),
-    AccountId: StringSchema.and(
-      z.any().openapi({ description: 'The account ID associated to the service.' }),
-    ).exactOptional(),
-    EntityPath: ErrorRootCauseEntityPathSchema.and(
-      z.any().openapi({ description: 'The path of root cause entities found on the service. ' }),
-    ).exactOptional(),
-    Inferred: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating if the service is inferred from the trace.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A collection of fields identifying the services in a trace summary error.',
-    required: [],
-  })
-  .openapi('ErrorRootCauseService')
-
-const ErrorRootCauseServicesSchema = z
-  .array(ErrorRootCauseServiceSchema)
-  .openapi('ErrorRootCauseServices')
-
-const ErrorRootCauseSchema = z
-  .object({
-    Services: ErrorRootCauseServicesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of services corresponding to an error. A service identifies a segment and it contains a name, account ID, type, and inferred flag.',
-        }),
-    ).exactOptional(),
-    ClientImpacting: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A flag that denotes that the root cause impacts the trace client.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The root cause of a trace summary error.', required: [] })
-  .openapi('ErrorRootCause')
-
-const ErrorRootCausesSchema = z.array(ErrorRootCauseSchema).openapi('ErrorRootCauses')
-
-const ResponseTimeRootCauseEntitySchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the entity.' }),
-    ).exactOptional(),
-    Coverage: NullableDoubleSchema.and(
-      z.any().openapi({ description: 'The type and messages of the exceptions.' }),
-    ).exactOptional(),
-    Remote: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'A flag that denotes a remote subsegment.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A collection of segments and corresponding subsegments associated to a response time warning.',
-    required: [],
-  })
-  .openapi('ResponseTimeRootCauseEntity')
-
-const ResponseTimeRootCauseEntityPathSchema = z
-  .array(ResponseTimeRootCauseEntitySchema)
-  .openapi('ResponseTimeRootCauseEntityPath')
-
-const ResponseTimeRootCauseServiceSchema = z
-  .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The service name.' })).exactOptional(),
-    Names: ServiceNamesSchema.and(
-      z.any().openapi({ description: 'A collection of associated service names.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type associated to the service.' }),
-    ).exactOptional(),
-    AccountId: StringSchema.and(
-      z.any().openapi({ description: 'The account ID associated to the service.' }),
-    ).exactOptional(),
-    EntityPath: ResponseTimeRootCauseEntityPathSchema.and(
-      z.any().openapi({ description: 'The path of root cause entities found on the service. ' }),
-    ).exactOptional(),
-    Inferred: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating if the service is inferred from the trace.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A collection of fields identifying the service in a response time warning.',
-    required: [],
-  })
-  .openapi('ResponseTimeRootCauseService')
-
-const ResponseTimeRootCauseServicesSchema = z
-  .array(ResponseTimeRootCauseServiceSchema)
-  .openapi('ResponseTimeRootCauseServices')
-
-const ResponseTimeRootCauseSchema = z
-  .object({
-    Services: ResponseTimeRootCauseServicesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of corresponding services. A service identifies a segment and contains a name, account ID, type, and inferred flag.',
-        }),
-    ).exactOptional(),
-    ClientImpacting: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A flag that denotes that the root cause impacts the trace client.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The root cause information for a response time warning.', required: [] })
-  .openapi('ResponseTimeRootCause')
-
-const ResponseTimeRootCausesSchema = z
-  .array(ResponseTimeRootCauseSchema)
-  .openapi('ResponseTimeRootCauses')
-
-const TraceSummarySchema = z
-  .object({
-    Id: TraceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique identifier for the request that generated the trace's segments and subsegments.",
-        }),
-    ).exactOptional(),
-    Duration: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time in seconds between the start time of the root segment and the end time of the last segment that completed.',
-        }),
-    ).exactOptional(),
-    ResponseTime: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time in seconds between the start and end times of the root segment. If the service performs work asynchronously, the response time measures the time before the response is sent to the user, while the duration measures the amount of time before the last traced activity completes.',
-        }),
-    ).exactOptional(),
-    HasFault: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'The root segment document has a 500 series error.' }),
-    ).exactOptional(),
-    HasError: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'The root segment document has a 400 series error.' }),
-    ).exactOptional(),
-    HasThrottle: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more of the segment documents has a 429 throttling error.',
-        }),
-    ).exactOptional(),
-    IsPartial: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'One or more of the segment documents is in progress.' }),
-    ).exactOptional(),
-    Http: HttpSchema.and(
-      z.any().openapi({ description: 'Information about the HTTP request served by the trace.' }),
-    ).exactOptional(),
-    Annotations: AnnotationsSchema.and(
-      z.any().openapi({ description: "Annotations from the trace's segment documents." }),
-    ).exactOptional(),
-    Users: TraceUsersSchema.and(
-      z.any().openapi({ description: "Users from the trace's segment documents." }),
-    ).exactOptional(),
-    ServiceIds: ServiceIdsSchema.and(
-      z.any().openapi({ description: "Service IDs from the trace's segment documents." }),
-    ).exactOptional(),
-    ResourceARNs: TraceResourceARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resource ARNs for any resource corresponding to the trace segments.',
-        }),
-    ).exactOptional(),
-    InstanceIds: TraceInstanceIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of EC2 instance IDs for any instance corresponding to the trace segments.',
-        }),
-    ).exactOptional(),
-    AvailabilityZones: TraceAvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Availability Zones for any zone corresponding to the trace segments.',
-        }),
-    ).exactOptional(),
-    EntryPoint: ServiceIdSchema.and(
-      z.any().openapi({ description: 'The root of a trace.' }),
-    ).exactOptional(),
-    FaultRootCauses: FaultRootCausesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of FaultRootCause structures corresponding to the trace segments.',
-        }),
-    ).exactOptional(),
-    ErrorRootCauses: ErrorRootCausesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of ErrorRootCause structures corresponding to the trace segments.',
-        }),
-    ).exactOptional(),
-    ResponseTimeRootCauses: ResponseTimeRootCausesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of ResponseTimeRootCause structures corresponding to the trace segments.',
-        }),
-    ).exactOptional(),
-    Revision: IntegerSchema.and(
-      z.any().openapi({ description: 'The revision number of a trace.' }),
-    ).exactOptional(),
-    MatchedEventTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The matched time stamp of a defined event.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Metadata generated from the segment documents in a trace.',
-    required: [],
-  })
-  .openapi('TraceSummary')
-
-const TraceSummaryListSchema = z.array(TraceSummarySchema).openapi('TraceSummaryList')
-
-const GetTraceSummariesResultSchema = z
-  .object({
-    TraceSummaries: TraceSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Trace IDs and annotations for traces that were found in the specified time frame.',
-        }),
-    ).exactOptional(),
-    ApproximateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of this page of results.' }),
-    ).exactOptional(),
-    TracesProcessedCount: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of traces processed, including traces that did not match the specified filter expression.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the requested time frame contained more than one page of results, you can use this token to retrieve the next page. The first page contains the most recent results, closest to the end of the time frame.',
-        }),
-    ).exactOptional(),
+    TraceSummaries: TraceSummaryListSchema.exactOptional().openapi({
+      description:
+        'Trace IDs and annotations for traces that were found in the specified time frame.',
+    }),
+    ApproximateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of this page of results.',
+    }),
+    TracesProcessedCount: NullableLongSchema.exactOptional().openapi({
+      description:
+        'The total number of traces processed, including traces that did not match the specified filter expression.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'If the requested time frame contained more than one page of results, you can use this token to retrieve the next page. The first page contains the most recent results, closest to the end of the time frame.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTraceSummariesResult')
@@ -1982,27 +1553,19 @@ const PolicyRevisionIdSchema = z.string().openapi('PolicyRevisionId')
 
 const ResourcePolicySchema = z
   .object({
-    PolicyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the resource policy. Must be unique within a specific Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    PolicyDocument: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource policy document, which can be up to 5kb in size.' }),
-    ).exactOptional(),
-    PolicyRevisionId: PolicyRevisionIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns the current policy revision id for this policy name.' }),
-    ).exactOptional(),
-    LastUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the policy was last updated, in Unix time seconds.' }),
-    ).exactOptional(),
+    PolicyName: PolicyNameSchema.exactOptional().openapi({
+      description:
+        'The name of the resource policy. Must be unique within a specific Amazon Web Services account.',
+    }),
+    PolicyDocument: PolicyDocumentSchema.exactOptional().openapi({
+      description: 'The resource policy document, which can be up to 5kb in size.',
+    }),
+    PolicyRevisionId: PolicyRevisionIdSchema.exactOptional().openapi({
+      description: 'Returns the current policy revision id for this policy name.',
+    }),
+    LastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the policy was last updated, in Unix time seconds.',
+    }),
   })
   .openapi({
     description:
@@ -2017,16 +1580,12 @@ const ResourcePolicyNextTokenSchema = z.string().min(1).max(100).openapi('Resour
 
 const ListResourcePoliciesResultSchema = z
   .object({
-    ResourcePolicies: ResourcePolicyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of resource policies in the target Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    NextToken: ResourcePolicyNextTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token. Not currently supported.' }),
-    ).exactOptional(),
+    ResourcePolicies: ResourcePolicyListSchema.exactOptional().openapi({
+      description: 'The list of resource policies in the target Amazon Web Services account.',
+    }),
+    NextToken: ResourcePolicyNextTokenSchema.exactOptional().openapi({
+      description: 'Pagination token. Not currently supported.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourcePoliciesResult')
@@ -2035,22 +1594,14 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags, as key and value pairs, that is associated with the specified X-Ray group or sampling rule.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token. If multiple pages of results are returned, use the <code>NextToken</code> value returned with the current page of results to get the next page of results.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags, as key and value pairs, that is associated with the specified X-Ray group or sampling rule.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A pagination token. If multiple pages of results are returned, use the <code>NextToken</code> value returned with the current page of results to get the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -2059,23 +1610,19 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const PutEncryptionConfigResultSchema = z
   .object({
-    EncryptionConfig: EncryptionConfigSchema.and(
-      z.any().openapi({ description: 'The new encryption configuration.' }),
-    ).exactOptional(),
+    EncryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description: 'The new encryption configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutEncryptionConfigResult')
 
 const PutResourcePolicyResultSchema = z
   .object({
-    ResourcePolicy: ResourcePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource policy document, as provided in the <code>PutResourcePolicyRequest</code>.',
-        }),
-    ).exactOptional(),
+    ResourcePolicy: ResourcePolicySchema.exactOptional().openapi({
+      description:
+        'The resource policy document, as provided in the <code>PutResourcePolicyRequest</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutResourcePolicyResult')
@@ -2088,61 +1635,41 @@ const PolicySizeLimitExceededExceptionSchema = z.any().openapi('PolicySizeLimitE
 
 const PolicyCountLimitExceededExceptionSchema = z.any().openapi('PolicyCountLimitExceededException')
 
-const PutTelemetryRecordsResultSchema = z.object({}).openapi('PutTelemetryRecordsResult')
+const PutTelemetryRecordsResultSchema = z.looseObject({}).openapi('PutTelemetryRecordsResult')
 
 const BackendConnectionErrorsSchema = z
   .object({
-    TimeoutCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    ConnectionRefusedCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    HTTPCode4XXCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    HTTPCode5XXCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    UnknownHostCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    OtherCount: NullableIntegerSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    TimeoutCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    ConnectionRefusedCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    HTTPCode4XXCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    HTTPCode5XXCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    UnknownHostCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    OtherCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('BackendConnectionErrors')
 
 const TelemetryRecordSchema = z
   .object({
-    Timestamp: TimestampSchema.and(z.any().openapi({ description: '<p/>' })),
-    SegmentsReceivedCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    SegmentsSentCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    SegmentsSpilloverCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    SegmentsRejectedCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    BackendConnectionErrors: BackendConnectionErrorsSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.openapi({ description: '<p/>' }),
+    SegmentsReceivedCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    SegmentsSentCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    SegmentsSpilloverCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    SegmentsRejectedCount: NullableIntegerSchema.exactOptional().openapi({ description: '<p/>' }),
+    BackendConnectionErrors: BackendConnectionErrorsSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
   })
   .openapi({ required: ['Timestamp'], description: '<p/>' })
   .openapi('TelemetryRecord')
 
 const UnprocessedTraceSegmentSchema = z
   .object({
-    Id: StringSchema.and(z.any().openapi({ description: "The segment's ID." })).exactOptional(),
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error that caused processing to fail.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    Id: StringSchema.exactOptional().openapi({ description: "The segment's ID." }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description: 'The error that caused processing to fail.',
+    }),
+    Message: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({ description: 'Information about a segment that failed processing.', required: [] })
   .openapi('UnprocessedTraceSegment')
@@ -2153,40 +1680,36 @@ const UnprocessedTraceSegmentListSchema = z
 
 const PutTraceSegmentsResultSchema = z
   .object({
-    UnprocessedTraceSegments: UnprocessedTraceSegmentListSchema.and(
-      z.any().openapi({ description: 'Segments that failed processing.' }),
-    ).exactOptional(),
+    UnprocessedTraceSegments: UnprocessedTraceSegmentListSchema.exactOptional().openapi({
+      description: 'Segments that failed processing.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutTraceSegmentsResult')
 
 const TraceSegmentDocumentSchema = z.string().openapi('TraceSegmentDocument')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateGroupResultSchema = z
   .object({
-    Group: GroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The group that was updated. Contains the name of the group that was updated, the ARN of the group that was updated, the updated filter expression, and the updated insight configuration assigned to the group.',
-        }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description:
+        'The group that was updated. Contains the name of the group that was updated, the ARN of the group that was updated, the updated filter expression, and the updated insight configuration assigned to the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGroupResult')
 
 const UpdateSamplingRuleResultSchema = z
   .object({
-    SamplingRuleRecord: SamplingRuleRecordSchema.and(
-      z.any().openapi({ description: 'The updated rule definition and metadata.' }),
-    ).exactOptional(),
+    SamplingRuleRecord: SamplingRuleRecordSchema.exactOptional().openapi({
+      description: 'The updated rule definition and metadata.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSamplingRuleResult')
@@ -2201,16 +1724,10 @@ const TraceIdListSchema = z.array(TraceIdSchema).openapi('TraceIdList')
 
 const BatchGetTracesRequestSchema = z
   .object({
-    TraceIds: TraceIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specify the trace IDs of requests for which to retrieve segments.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    TraceIds: TraceIdListSchema.openapi({
+      description: 'Specify the trace IDs of requests for which to retrieve segments.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: ['TraceIds'], title: 'BatchGetTracesRequest' })
   .openapi('BatchGetTracesRequest')
@@ -2219,103 +1736,71 @@ const FilterExpressionSchema = z.string().openapi('FilterExpression')
 
 const CreateGroupRequestSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The case-sensitive name of the new group. Default is a reserved name and names must be unique.',
-        }),
-    ),
-    FilterExpression: FilterExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The filter expression defining criteria by which to group traces.',
-        }),
-    ).exactOptional(),
-    InsightsConfiguration: InsightsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the new group or false to disable insights for the new group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications for the new group. Notifications may only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map that contains one or more tag keys and tag values to attach to an X-Ray group. For more information about ways to use tags, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>Maximum number of user-applied tags per resource: 50</p> </li> <li> <p>Maximum tag key length: 128 Unicode characters</p> </li> <li> <p>Maximum tag value length: 256 Unicode characters</p> </li> <li> <p>Valid values for key and value: a-z, A-Z, 0-9, space, and the following characters: _ . : / = + - and @</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Don\'t use <code>aws:</code> as a prefix for keys; it\'s reserved for Amazon Web Services use.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.openapi({
+      description:
+        'The case-sensitive name of the new group. Default is a reserved name and names must be unique.',
+    }),
+    FilterExpression: FilterExpressionSchema.exactOptional().openapi({
+      description: 'The filter expression defining criteria by which to group traces.',
+    }),
+    InsightsConfiguration: InsightsConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the new group or false to disable insights for the new group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications for the new group. Notifications may only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>A map that contains one or more tag keys and tag values to attach to an X-Ray group. For more information about ways to use tags, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>Maximum number of user-applied tags per resource: 50</p> </li> <li> <p>Maximum tag key length: 128 Unicode characters</p> </li> <li> <p>Maximum tag value length: 256 Unicode characters</p> </li> <li> <p>Valid values for key and value: a-z, A-Z, 0-9, space, and the following characters: _ . : / = + - and @</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Don\'t use <code>aws:</code> as a prefix for keys; it\'s reserved for Amazon Web Services use.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['GroupName'], title: 'CreateGroupRequest' })
   .openapi('CreateGroupRequest')
 
 const CreateSamplingRuleRequestSchema = z
   .object({
-    SamplingRule: SamplingRuleSchema.and(z.any().openapi({ description: 'The rule definition.' })),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map that contains one or more tag keys and tag values to attach to an X-Ray sampling rule. For more information about ways to use tags, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>Maximum number of user-applied tags per resource: 50</p> </li> <li> <p>Maximum tag key length: 128 Unicode characters</p> </li> <li> <p>Maximum tag value length: 256 Unicode characters</p> </li> <li> <p>Valid values for key and value: a-z, A-Z, 0-9, space, and the following characters: _ . : / = + - and @</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Don\'t use <code>aws:</code> as a prefix for keys; it\'s reserved for Amazon Web Services use.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    SamplingRule: SamplingRuleSchema.openapi({ description: 'The rule definition.' }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>A map that contains one or more tag keys and tag values to attach to an X-Ray sampling rule. For more information about ways to use tags, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>Maximum number of user-applied tags per resource: 50</p> </li> <li> <p>Maximum tag key length: 128 Unicode characters</p> </li> <li> <p>Maximum tag value length: 256 Unicode characters</p> </li> <li> <p>Valid values for key and value: a-z, A-Z, 0-9, space, and the following characters: _ . : / = + - and @</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Don\'t use <code>aws:</code> as a prefix for keys; it\'s reserved for Amazon Web Services use.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['SamplingRule'], title: 'CreateSamplingRuleRequest' })
   .openapi('CreateSamplingRuleRequest')
 
 const DeleteGroupRequestSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z.any().openapi({ description: 'The case-sensitive name of the group.' }),
-    ).exactOptional(),
-    GroupARN: GroupARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the group that was generated on creation.' }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The case-sensitive name of the group.',
+    }),
+    GroupARN: GroupARNSchema.exactOptional().openapi({
+      description: 'The ARN of the group that was generated on creation.',
+    }),
   })
   .openapi({ title: 'DeleteGroupRequest', required: [] })
   .openapi('DeleteGroupRequest')
 
 const DeleteResourcePolicyRequestSchema = z
   .object({
-    PolicyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource policy to delete.' }),
-    ),
-    PolicyRevisionId: PolicyRevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a specific policy revision to delete. Provide a <code>PolicyRevisionId</code> to ensure an atomic delete operation. If the provided revision id does not match the latest policy revision id, an <code>InvalidPolicyRevisionIdException</code> exception is returned. ',
-        }),
-    ).exactOptional(),
+    PolicyName: PolicyNameSchema.openapi({
+      description: 'The name of the resource policy to delete.',
+    }),
+    PolicyRevisionId: PolicyRevisionIdSchema.exactOptional().openapi({
+      description:
+        'Specifies a specific policy revision to delete. Provide a <code>PolicyRevisionId</code> to ensure an atomic delete operation. If the provided revision id does not match the latest policy revision id, an <code>InvalidPolicyRevisionIdException</code> exception is returned. ',
+    }),
   })
   .openapi({ required: ['PolicyName'], title: 'DeleteResourcePolicyRequest' })
   .openapi('DeleteResourcePolicyRequest')
 
 const DeleteSamplingRuleRequestSchema = z
   .object({
-    RuleName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
-        }),
-    ).exactOptional(),
-    RuleARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
-        }),
-    ).exactOptional(),
+    RuleName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
+    }),
+    RuleARN: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
+    }),
   })
   .openapi({ title: 'DeleteSamplingRuleRequest', required: [] })
   .openapi('DeleteSamplingRuleRequest')
@@ -2331,18 +1816,18 @@ const EntitySelectorExpressionSchema = z
   .openapi('EntitySelectorExpression')
 
 const GetEncryptionConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEncryptionConfigRequest' })
   .openapi('GetEncryptionConfigRequest')
 
 const GetGroupRequestSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z.any().openapi({ description: 'The case-sensitive name of the group.' }),
-    ).exactOptional(),
-    GroupARN: GroupARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the group that was generated on creation.' }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The case-sensitive name of the group.',
+    }),
+    GroupARN: GroupARNSchema.exactOptional().openapi({
+      description: 'The ARN of the group that was generated on creation.',
+    }),
   })
   .openapi({ title: 'GetGroupRequest', required: [] })
   .openapi('GetGroupRequest')
@@ -2351,9 +1836,9 @@ const GetGroupsNextTokenSchema = z.string().min(1).max(100).openapi('GetGroupsNe
 
 const GetGroupsRequestSchema = z
   .object({
-    NextToken: GetGroupsNextTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    NextToken: GetGroupsNextTokenSchema.exactOptional().openapi({
+      description: 'Pagination token.',
+    }),
   })
   .openapi({ title: 'GetGroupsRequest', required: [] })
   .openapi('GetGroupsRequest')
@@ -2366,63 +1851,39 @@ const GetInsightEventsMaxResultsSchema = z
 
 const GetInsightEventsRequestSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The insight's unique identifier. Use the GetInsightSummaries action to retrieve an InsightId.",
-        }),
-    ),
-    MaxResults: GetInsightEventsMaxResultsSchema.and(
-      z.any().openapi({ description: 'Used to retrieve at most the specified value of events.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token returned by a previous request to retrieve the next page of events. ',
-        }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.openapi({
+      description:
+        "The insight's unique identifier. Use the GetInsightSummaries action to retrieve an InsightId.",
+    }),
+    MaxResults: GetInsightEventsMaxResultsSchema.exactOptional().openapi({
+      description: 'Used to retrieve at most the specified value of events.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token returned by a previous request to retrieve the next page of events. ',
+    }),
   })
   .openapi({ required: ['InsightId'], title: 'GetInsightEventsRequest' })
   .openapi('GetInsightEventsRequest')
 
 const GetInsightImpactGraphRequestSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The insight's unique identifier. Use the GetInsightSummaries action to retrieve an InsightId.",
-        }),
-    ),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The estimated start time of the insight, in Unix time seconds. The StartTime is inclusive of the value provided and can't be more than 30 days old.",
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The estimated end time of the insight, in Unix time seconds. The EndTime is exclusive of the value provided. The time range between the start time and end time can't be more than six hours. ",
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token returned by a previous request to retrieve the next page of results. ',
-        }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.openapi({
+      description:
+        "The insight's unique identifier. Use the GetInsightSummaries action to retrieve an InsightId.",
+    }),
+    StartTime: TimestampSchema.openapi({
+      description:
+        "The estimated start time of the insight, in Unix time seconds. The StartTime is inclusive of the value provided and can't be more than 30 days old.",
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        "The estimated end time of the insight, in Unix time seconds. The EndTime is exclusive of the value provided. The time range between the start time and end time can't be more than six hours. ",
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token returned by a previous request to retrieve the next page of results. ',
+    }),
   })
   .openapi({
     required: ['InsightId', 'StartTime', 'EndTime'],
@@ -2432,14 +1893,10 @@ const GetInsightImpactGraphRequestSchema = z
 
 const GetInsightRequestSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The insight's unique identifier. Use the GetInsightSummaries action to retrieve an InsightId.",
-        }),
-    ),
+    InsightId: InsightIdSchema.openapi({
+      description:
+        "The insight's unique identifier. Use the GetInsightSummaries action to retrieve an InsightId.",
+    }),
   })
   .openapi({ required: ['InsightId'], title: 'GetInsightRequest' })
   .openapi('GetInsightRequest')
@@ -2454,65 +1911,39 @@ const InsightStateListSchema = z.array(InsightStateSchema).min(0).max(1).openapi
 
 const GetInsightSummariesRequestSchema = z
   .object({
-    States: InsightStateListSchema.and(
-      z.any().openapi({ description: 'The list of insight states. ' }),
-    ).exactOptional(),
-    GroupARN: GroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the group. Required if the GroupName isn't provided.",
-        }),
-    ).exactOptional(),
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of the group. Required if the GroupARN isn't provided.",
-        }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The beginning of the time frame in which the insights started. The start time can't be more than 30 days old.",
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The end of the time frame in which the insights ended. The end time can't be more than 30 days old.",
-        }),
-    ),
-    MaxResults: GetInsightSummariesMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to display.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    States: InsightStateListSchema.exactOptional().openapi({
+      description: 'The list of insight states. ',
+    }),
+    GroupARN: GroupARNSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the group. Required if the GroupName isn't provided.",
+    }),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: "The name of the group. Required if the GroupARN isn't provided.",
+    }),
+    StartTime: TimestampSchema.openapi({
+      description:
+        "The beginning of the time frame in which the insights started. The start time can't be more than 30 days old.",
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        "The end of the time frame in which the insights ended. The end time can't be more than 30 days old.",
+    }),
+    MaxResults: GetInsightSummariesMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: ['StartTime', 'EndTime'], title: 'GetInsightSummariesRequest' })
   .openapi('GetInsightSummariesRequest')
 
 const GetSamplingRulesRequestSchema = z
-  .object({
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
-  })
+  .object({ NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }) })
   .openapi({ title: 'GetSamplingRulesRequest', required: [] })
   .openapi('GetSamplingRulesRequest')
 
 const GetSamplingStatisticSummariesRequestSchema = z
-  .object({
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
-  })
+  .object({ NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }) })
   .openapi({ title: 'GetSamplingStatisticSummariesRequest', required: [] })
   .openapi('GetSamplingStatisticSummariesRequest')
 
@@ -2523,112 +1954,69 @@ const SamplingStatisticsDocumentListSchema = z
 
 const GetSamplingTargetsRequestSchema = z
   .object({
-    SamplingStatisticsDocuments: SamplingStatisticsDocumentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about rules that the service is using to sample requests.',
-        }),
-    ),
+    SamplingStatisticsDocuments: SamplingStatisticsDocumentListSchema.openapi({
+      description: 'Information about rules that the service is using to sample requests.',
+    }),
   })
   .openapi({ required: ['SamplingStatisticsDocuments'], title: 'GetSamplingTargetsRequest' })
   .openapi('GetSamplingTargetsRequest')
 
 const GetServiceGraphRequestSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The start of the time frame for which to generate a graph.' }),
-    ),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The end of the timeframe for which to generate a graph.' }),
-    ),
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a group based on which you want to generate a graph.',
-        }),
-    ).exactOptional(),
-    GroupARN: GroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a group based on which you want to generate a graph.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.openapi({
+      description: 'The start of the time frame for which to generate a graph.',
+    }),
+    EndTime: TimestampSchema.openapi({
+      description: 'The end of the timeframe for which to generate a graph.',
+    }),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The name of a group based on which you want to generate a graph.',
+    }),
+    GroupARN: GroupARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a group based on which you want to generate a graph.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: ['StartTime', 'EndTime'], title: 'GetServiceGraphRequest' })
   .openapi('GetServiceGraphRequest')
 
 const GetTimeSeriesServiceStatisticsRequestSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The start of the time frame for which to aggregate statistics.' }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The end of the time frame for which to aggregate statistics.' }),
-    ),
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The case-sensitive name of the group for which to pull statistics from.',
-        }),
-    ).exactOptional(),
-    GroupARN: GroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the group for which to pull statistics from.',
-        }),
-    ).exactOptional(),
-    EntitySelectorExpression: EntitySelectorExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter expression defining entities that will be aggregated for statistics. Supports ID, service, and edge functions. If no selector expression is specified, edge statistics are returned. ',
-        }),
-    ).exactOptional(),
-    Period: NullableIntegerSchema.and(
-      z.any().openapi({ description: 'Aggregation period in seconds.' }),
-    ).exactOptional(),
-    ForecastStatistics: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forecasted high and low fault count values. Forecast enabled requests require the EntitySelectorExpression ID be provided.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.openapi({
+      description: 'The start of the time frame for which to aggregate statistics.',
+    }),
+    EndTime: TimestampSchema.openapi({
+      description: 'The end of the time frame for which to aggregate statistics.',
+    }),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The case-sensitive name of the group for which to pull statistics from.',
+    }),
+    GroupARN: GroupARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the group for which to pull statistics from.',
+    }),
+    EntitySelectorExpression: EntitySelectorExpressionSchema.exactOptional().openapi({
+      description:
+        'A filter expression defining entities that will be aggregated for statistics. Supports ID, service, and edge functions. If no selector expression is specified, edge statistics are returned. ',
+    }),
+    Period: NullableIntegerSchema.exactOptional().openapi({
+      description: 'Aggregation period in seconds.',
+    }),
+    ForecastStatistics: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'The forecasted high and low fault count values. Forecast enabled requests require the EntitySelectorExpression ID be provided.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: ['StartTime', 'EndTime'], title: 'GetTimeSeriesServiceStatisticsRequest' })
   .openapi('GetTimeSeriesServiceStatisticsRequest')
 
 const GetTraceGraphRequestSchema = z
   .object({
-    TraceIds: TraceIdListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Trace IDs of requests for which to generate a service graph.' }),
-    ),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    TraceIds: TraceIdListSchema.openapi({
+      description: 'Trace IDs of requests for which to generate a service graph.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: ['TraceIds'], title: 'GetTraceGraphRequest' })
   .openapi('GetTraceGraphRequest')
@@ -2637,12 +2025,12 @@ const TimeRangeTypeSchema = z.enum(['TraceId', 'Event']).openapi('TimeRangeType'
 
 const SamplingStrategySchema = z
   .object({
-    Name: SamplingStrategyNameSchema.and(
-      z.any().openapi({ description: 'The name of a sampling rule.' }),
-    ).exactOptional(),
-    Value: NullableDoubleSchema.and(
-      z.any().openapi({ description: 'The value of a sampling rule.' }),
-    ).exactOptional(),
+    Name: SamplingStrategyNameSchema.exactOptional().openapi({
+      description: 'The name of a sampling rule.',
+    }),
+    Value: NullableDoubleSchema.exactOptional().openapi({
+      description: 'The value of a sampling rule.',
+    }),
   })
   .openapi({
     description: 'The name and value of a sampling rule to apply to a trace summary.',
@@ -2652,52 +2040,32 @@ const SamplingStrategySchema = z
 
 const GetTraceSummariesRequestSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start of the time frame for which to retrieve traces.' }),
-    ),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The end of the time frame for which to retrieve traces.' }),
-    ),
-    TimeRangeType: TimeRangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A parameter to indicate whether to query trace summaries by TraceId or Event time.',
-        }),
-    ).exactOptional(),
-    Sampling: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>true</code> to get summaries for only a subset of available traces.',
-        }),
-    ).exactOptional(),
-    SamplingStrategy: SamplingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A parameter to indicate whether to enable sampling on trace summaries. Input parameters are Name and Value.',
-        }),
-    ).exactOptional(),
-    FilterExpression: FilterExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify a filter expression to retrieve trace summaries for services or requests that meet certain requirements.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token returned by a previous request to retrieve the next page of results.',
-        }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.openapi({
+      description: 'The start of the time frame for which to retrieve traces.',
+    }),
+    EndTime: TimestampSchema.openapi({
+      description: 'The end of the time frame for which to retrieve traces.',
+    }),
+    TimeRangeType: TimeRangeTypeSchema.exactOptional().openapi({
+      description:
+        'A parameter to indicate whether to query trace summaries by TraceId or Event time.',
+    }),
+    Sampling: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>true</code> to get summaries for only a subset of available traces.',
+    }),
+    SamplingStrategy: SamplingStrategySchema.exactOptional().openapi({
+      description:
+        'A parameter to indicate whether to enable sampling on trace summaries. Input parameters are Name and Value.',
+    }),
+    FilterExpression: FilterExpressionSchema.exactOptional().openapi({
+      description:
+        'Specify a filter expression to retrieve trace summaries for services or requests that meet certain requirements.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token returned by a previous request to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: ['StartTime', 'EndTime'], title: 'GetTraceSummariesRequest' })
   .openapi('GetTraceSummariesRequest')
@@ -2706,87 +2074,57 @@ const HostnameSchema = z.string().max(255).openapi('Hostname')
 
 const ListResourcePoliciesRequestSchema = z
   .object({
-    NextToken: ResourcePolicyNextTokenSchema.and(
-      z.any().openapi({ description: 'Not currently supported.' }),
-    ).exactOptional(),
+    NextToken: ResourcePolicyNextTokenSchema.exactOptional().openapi({
+      description: 'Not currently supported.',
+    }),
   })
   .openapi({ title: 'ListResourcePoliciesRequest', required: [] })
   .openapi('ListResourcePoliciesRequest')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Number (ARN) of an X-Ray group or sampling rule.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token. If multiple pages of results are returned, use the <code>NextToken</code> value returned with the current page of results as the value of this parameter to get the next page of results.',
-        }),
-    ).exactOptional(),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of an X-Ray group or sampling rule.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A pagination token. If multiple pages of results are returned, use the <code>NextToken</code> value returned with the current page of results as the value of this parameter to get the next page of results.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutEncryptionConfigRequestSchema = z
   .object({
-    KeyId: EncryptionKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An Amazon Web Services KMS key in one of the following formats:</p> <ul> <li> <p> <b>Alias</b> - The name of the key. For example, <code>alias/MyKey</code>.</p> </li> <li> <p> <b>Key ID</b> - The KMS key ID of the key. For example, <code>ae4aa6d49-a4d8-9df9-a475-4ff6d7898456</code>. Amazon Web Services X-Ray does not support asymmetric KMS keys.</p> </li> <li> <p> <b>ARN</b> - The full Amazon Resource Name of the key ID or alias. For example, <code>arn:aws:kms:us-east-2:123456789012:key/ae4aa6d49-a4d8-9df9-a475-4ff6d7898456</code>. Use this format to specify a key in a different account.</p> </li> </ul> <p>Omit this key if you set <code>Type</code> to <code>NONE</code>.</p>',
-        }),
-    ).exactOptional(),
-    Type: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of encryption. Set to <code>KMS</code> to use your own key for encryption. Set to <code>NONE</code> for default encryption.',
-        }),
-    ),
+    KeyId: EncryptionKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>An Amazon Web Services KMS key in one of the following formats:</p> <ul> <li> <p> <b>Alias</b> - The name of the key. For example, <code>alias/MyKey</code>.</p> </li> <li> <p> <b>Key ID</b> - The KMS key ID of the key. For example, <code>ae4aa6d49-a4d8-9df9-a475-4ff6d7898456</code>. Amazon Web Services X-Ray does not support asymmetric KMS keys.</p> </li> <li> <p> <b>ARN</b> - The full Amazon Resource Name of the key ID or alias. For example, <code>arn:aws:kms:us-east-2:123456789012:key/ae4aa6d49-a4d8-9df9-a475-4ff6d7898456</code>. Use this format to specify a key in a different account.</p> </li> </ul> <p>Omit this key if you set <code>Type</code> to <code>NONE</code>.</p>',
+    }),
+    Type: EncryptionTypeSchema.openapi({
+      description:
+        'The type of encryption. Set to <code>KMS</code> to use your own key for encryption. Set to <code>NONE</code> for default encryption.',
+    }),
   })
   .openapi({ required: ['Type'], title: 'PutEncryptionConfigRequest' })
   .openapi('PutEncryptionConfigRequest')
 
 const PutResourcePolicyRequestSchema = z
   .object({
-    PolicyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the resource policy. Must be unique within a specific Amazon Web Services account.',
-        }),
-    ),
-    PolicyDocument: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource policy document, which can be up to 5kb in size.' }),
-    ),
-    PolicyRevisionId: PolicyRevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies a specific policy revision, to ensure an atomic create operation. By default the resource policy is created if it does not exist, or updated with an incremented revision id. The revision id is unique to each policy in the account.</p> <p>If the policy revision id does not match the latest revision id, the operation will fail with an <code>InvalidPolicyRevisionIdException</code> exception. You can also provide a <code>PolicyRevisionId</code> of 0. In this case, the operation will fail with an <code>InvalidPolicyRevisionIdException</code> exception if a resource policy with the same name already exists. </p>',
-        }),
-    ).exactOptional(),
-    BypassPolicyLockoutCheck: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag to indicate whether to bypass the resource policy lockout safety check.</p> <important> <p>Setting this value to true increases the risk that the policy becomes unmanageable. Do not set this value to true indiscriminately.</p> </important> <p>Use this parameter only when you include a policy in the request and you intend to prevent the principal that is making the request from making a subsequent <code>PutResourcePolicy</code> request.</p> <p>The default value is false.</p>',
-        }),
-    ).exactOptional(),
+    PolicyName: PolicyNameSchema.openapi({
+      description:
+        'The name of the resource policy. Must be unique within a specific Amazon Web Services account.',
+    }),
+    PolicyDocument: PolicyDocumentSchema.openapi({
+      description: 'The resource policy document, which can be up to 5kb in size.',
+    }),
+    PolicyRevisionId: PolicyRevisionIdSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies a specific policy revision, to ensure an atomic create operation. By default the resource policy is created if it does not exist, or updated with an incremented revision id. The revision id is unique to each policy in the account.</p> <p>If the policy revision id does not match the latest revision id, the operation will fail with an <code>InvalidPolicyRevisionIdException</code> exception. You can also provide a <code>PolicyRevisionId</code> of 0. In this case, the operation will fail with an <code>InvalidPolicyRevisionIdException</code> exception if a resource policy with the same name already exists. </p>',
+    }),
+    BypassPolicyLockoutCheck: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A flag to indicate whether to bypass the resource policy lockout safety check.</p> <important> <p>Setting this value to true increases the risk that the policy becomes unmanageable. Do not set this value to true indiscriminately.</p> </important> <p>Use this parameter only when you include a policy in the request and you intend to prevent the principal that is making the request from making a subsequent <code>PutResourcePolicy</code> request.</p> <p>The default value is false.</p>',
+    }),
   })
   .openapi({ required: ['PolicyName', 'PolicyDocument'], title: 'PutResourcePolicyRequest' })
   .openapi('PutResourcePolicyRequest')
@@ -2795,12 +2133,10 @@ const TelemetryRecordListSchema = z.array(TelemetryRecordSchema).openapi('Teleme
 
 const PutTelemetryRecordsRequestSchema = z
   .object({
-    TelemetryRecords: TelemetryRecordListSchema.and(z.any().openapi({ description: '<p/>' })),
-    EC2InstanceId: EC2InstanceIdSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    Hostname: HostnameSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    ResourceARN: ResourceARNSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    TelemetryRecords: TelemetryRecordListSchema.openapi({ description: '<p/>' }),
+    EC2InstanceId: EC2InstanceIdSchema.exactOptional().openapi({ description: '<p/>' }),
+    Hostname: HostnameSchema.exactOptional().openapi({ description: '<p/>' }),
+    ResourceARN: ResourceARNSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: ['TelemetryRecords'], title: 'PutTelemetryRecordsRequest' })
   .openapi('PutTelemetryRecordsRequest')
@@ -2811,91 +2147,58 @@ const TraceSegmentDocumentListSchema = z
 
 const PutTraceSegmentsRequestSchema = z
   .object({
-    TraceSegmentDocuments: TraceSegmentDocumentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing a JSON document defining one or more segments or subsegments.',
-        }),
-    ),
+    TraceSegmentDocuments: TraceSegmentDocumentListSchema.openapi({
+      description:
+        'A string containing a JSON document defining one or more segments or subsegments.',
+    }),
   })
   .openapi({ required: ['TraceSegmentDocuments'], title: 'PutTraceSegmentsRequest' })
   .openapi('PutTraceSegmentsRequest')
 
 const SamplingRuleUpdateSchema = z
   .object({
-    RuleName: RuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
-        }),
-    ).exactOptional(),
-    RuleARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
-        }),
-    ).exactOptional(),
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Matches the ARN of the Amazon Web Services resource on which the service runs.',
-        }),
-    ).exactOptional(),
-    Priority: NullableIntegerSchema.and(
-      z.any().openapi({ description: 'The priority of the sampling rule.' }),
-    ).exactOptional(),
-    FixedRate: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of matching requests to instrument, after the reservoir is exhausted.',
-        }),
-    ).exactOptional(),
-    ReservoirSize: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A fixed number of matching requests to instrument per second, prior to applying the fixed rate. The reservoir is not used directly by services, but applies to all services using the rule collectively.',
-        }),
-    ).exactOptional(),
-    Host: HostSchema.and(
-      z.any().openapi({ description: 'Matches the hostname from a request URL.' }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Matches the <code>name</code> that the service uses to identify itself in segments.',
-        }),
-    ).exactOptional(),
-    ServiceType: ServiceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Matches the <code>origin</code> that the service uses to identify its type in segments.',
-        }),
-    ).exactOptional(),
-    HTTPMethod: HTTPMethodSchema.and(
-      z.any().openapi({ description: 'Matches the HTTP method of a request.' }),
-    ).exactOptional(),
-    URLPath: URLPathSchema.and(
-      z.any().openapi({ description: 'Matches the path from a request URL.' }),
-    ).exactOptional(),
-    Attributes: AttributeMapSchema.and(
-      z.any().openapi({ description: 'Matches attributes derived from the request.' }),
-    ).exactOptional(),
+    RuleName: RuleNameSchema.exactOptional().openapi({
+      description:
+        'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
+    }),
+    RuleARN: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
+    }),
+    ResourceARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'Matches the ARN of the Amazon Web Services resource on which the service runs.',
+    }),
+    Priority: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The priority of the sampling rule.',
+    }),
+    FixedRate: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The percentage of matching requests to instrument, after the reservoir is exhausted.',
+    }),
+    ReservoirSize: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'A fixed number of matching requests to instrument per second, prior to applying the fixed rate. The reservoir is not used directly by services, but applies to all services using the rule collectively.',
+    }),
+    Host: HostSchema.exactOptional().openapi({
+      description: 'Matches the hostname from a request URL.',
+    }),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({
+      description:
+        'Matches the <code>name</code> that the service uses to identify itself in segments.',
+    }),
+    ServiceType: ServiceTypeSchema.exactOptional().openapi({
+      description:
+        'Matches the <code>origin</code> that the service uses to identify its type in segments.',
+    }),
+    HTTPMethod: HTTPMethodSchema.exactOptional().openapi({
+      description: 'Matches the HTTP method of a request.',
+    }),
+    URLPath: URLPathSchema.exactOptional().openapi({
+      description: 'Matches the path from a request URL.',
+    }),
+    Attributes: AttributeMapSchema.exactOptional().openapi({
+      description: 'Matches attributes derived from the request.',
+    }),
   })
   .openapi({
     description: "A document specifying changes to a sampling rule's configuration.",
@@ -2907,78 +2210,54 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Number (ARN) of an X-Ray group or sampling rule.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map that contains one or more tag keys and tag values to attach to an X-Ray group or sampling rule. For more information about ways to use tags, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>Maximum number of user-applied tags per resource: 50</p> </li> <li> <p>Maximum tag key length: 128 Unicode characters</p> </li> <li> <p>Maximum tag value length: 256 Unicode characters</p> </li> <li> <p>Valid values for key and value: a-z, A-Z, 0-9, space, and the following characters: _ . : / = + - and @</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Don\'t use <code>aws:</code> as a prefix for keys; it\'s reserved for Amazon Web Services use. You cannot edit or delete system tags.</p> </li> </ul>',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of an X-Ray group or sampling rule.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        '<p>A map that contains one or more tag keys and tag values to attach to an X-Ray group or sampling rule. For more information about ways to use tags, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>Maximum number of user-applied tags per resource: 50</p> </li> <li> <p>Maximum tag key length: 128 Unicode characters</p> </li> <li> <p>Maximum tag value length: 256 Unicode characters</p> </li> <li> <p>Valid values for key and value: a-z, A-Z, 0-9, space, and the following characters: _ . : / = + - and @</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Don\'t use <code>aws:</code> as a prefix for keys; it\'s reserved for Amazon Web Services use. You cannot edit or delete system tags.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Number (ARN) of an X-Ray group or sampling rule.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Keys for one or more tags that you want to remove from an X-Ray group or sampling rule.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Number (ARN) of an X-Ray group or sampling rule.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'Keys for one or more tags that you want to remove from an X-Ray group or sampling rule.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateGroupRequestSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z.any().openapi({ description: 'The case-sensitive name of the group.' }),
-    ).exactOptional(),
-    GroupARN: GroupARNSchema.and(
-      z.any().openapi({ description: 'The ARN that was generated upon creation.' }),
-    ).exactOptional(),
-    FilterExpression: FilterExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated filter expression defining criteria by which to group traces.',
-        }),
-    ).exactOptional(),
-    InsightsConfiguration: InsightsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the group or false to disable insights for the group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications for the group. Notifications can only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The case-sensitive name of the group.',
+    }),
+    GroupARN: GroupARNSchema.exactOptional().openapi({
+      description: 'The ARN that was generated upon creation.',
+    }),
+    FilterExpression: FilterExpressionSchema.exactOptional().openapi({
+      description: 'The updated filter expression defining criteria by which to group traces.',
+    }),
+    InsightsConfiguration: InsightsConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>The structure containing configurations related to insights.</p> <ul> <li> <p>The InsightsEnabled boolean can be set to true to enable insights for the group or false to disable insights for the group.</p> </li> <li> <p>The NotificationsEnabled boolean can be set to true to enable insights notifications for the group. Notifications can only be enabled on a group with InsightsEnabled set to true.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'UpdateGroupRequest', required: [] })
   .openapi('UpdateGroupRequest')
 
 const UpdateSamplingRuleRequestSchema = z
   .object({
-    SamplingRuleUpdate: SamplingRuleUpdateSchema.and(
-      z.any().openapi({ description: 'The rule and fields to change.' }),
-    ),
+    SamplingRuleUpdate: SamplingRuleUpdateSchema.openapi({
+      description: 'The rule and fields to change.',
+    }),
   })
   .openapi({ required: ['SamplingRuleUpdate'], title: 'UpdateSamplingRuleRequest' })
   .openapi('UpdateSamplingRuleRequest')
@@ -3155,22 +2434,14 @@ export const postCreateGroupRoute = createRoute({
                 }),
               InsightsConfiguration: z
                 .object({
-                  InsightsEnabled: NullableBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Set the InsightsEnabled value to true to enable insights or false to disable insights.',
-                      }),
-                  ).exactOptional(),
-                  NotificationsEnabled: NullableBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Set the NotificationsEnabled value to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.',
-                      }),
-                  ).exactOptional(),
+                  InsightsEnabled: NullableBooleanSchema.exactOptional().openapi({
+                    description:
+                      'Set the InsightsEnabled value to true to enable insights or false to disable insights.',
+                  }),
+                  NotificationsEnabled: NullableBooleanSchema.exactOptional().openapi({
+                    description:
+                      'Set the NotificationsEnabled value to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3232,86 +2503,52 @@ export const postCreateSamplingRuleRoute = createRoute({
             .object({
               SamplingRule: z
                 .object({
-                  RuleName: RuleNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
-                      }),
-                  ).exactOptional(),
-                  RuleARN: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
-                      }),
-                  ).exactOptional(),
-                  ResourceARN: ResourceARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Matches the ARN of the Amazon Web Services resource on which the service runs.',
-                      }),
-                  ).exactOptional(),
-                  Priority: PrioritySchema.and(
-                    z.any().openapi({ description: 'The priority of the sampling rule.' }),
-                  ).exactOptional(),
-                  FixedRate: FixedRateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The percentage of matching requests to instrument, after the reservoir is exhausted.',
-                      }),
-                  ).exactOptional(),
-                  ReservoirSize: ReservoirSizeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A fixed number of matching requests to instrument per second, prior to applying the fixed rate. The reservoir is not used directly by services, but applies to all services using the rule collectively.',
-                      }),
-                  ).exactOptional(),
-                  ServiceName: ServiceNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Matches the <code>name</code> that the service uses to identify itself in segments.',
-                      }),
-                  ).exactOptional(),
-                  ServiceType: ServiceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Matches the <code>origin</code> that the service uses to identify its type in segments.',
-                      }),
-                  ).exactOptional(),
-                  Host: HostSchema.and(
-                    z.any().openapi({ description: 'Matches the hostname from a request URL.' }),
-                  ).exactOptional(),
-                  HTTPMethod: HTTPMethodSchema.and(
-                    z.any().openapi({ description: 'Matches the HTTP method of a request.' }),
-                  ).exactOptional(),
-                  URLPath: URLPathSchema.and(
-                    z.any().openapi({ description: 'Matches the path from a request URL.' }),
-                  ).exactOptional(),
-                  Version: VersionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The version of the sampling rule format (<code>1</code>).',
-                      }),
-                  ).exactOptional(),
-                  Attributes: AttributeMapSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Matches attributes derived from the request.' }),
-                  ).exactOptional(),
+                  RuleName: RuleNameSchema.exactOptional().openapi({
+                    description:
+                      'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
+                  }),
+                  RuleARN: StringSchema.exactOptional().openapi({
+                    description:
+                      'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
+                  }),
+                  ResourceARN: ResourceARNSchema.exactOptional().openapi({
+                    description:
+                      'Matches the ARN of the Amazon Web Services resource on which the service runs.',
+                  }),
+                  Priority: PrioritySchema.exactOptional().openapi({
+                    description: 'The priority of the sampling rule.',
+                  }),
+                  FixedRate: FixedRateSchema.exactOptional().openapi({
+                    description:
+                      'The percentage of matching requests to instrument, after the reservoir is exhausted.',
+                  }),
+                  ReservoirSize: ReservoirSizeSchema.exactOptional().openapi({
+                    description:
+                      'A fixed number of matching requests to instrument per second, prior to applying the fixed rate. The reservoir is not used directly by services, but applies to all services using the rule collectively.',
+                  }),
+                  ServiceName: ServiceNameSchema.exactOptional().openapi({
+                    description:
+                      'Matches the <code>name</code> that the service uses to identify itself in segments.',
+                  }),
+                  ServiceType: ServiceTypeSchema.exactOptional().openapi({
+                    description:
+                      'Matches the <code>origin</code> that the service uses to identify its type in segments.',
+                  }),
+                  Host: HostSchema.exactOptional().openapi({
+                    description: 'Matches the hostname from a request URL.',
+                  }),
+                  HTTPMethod: HTTPMethodSchema.exactOptional().openapi({
+                    description: 'Matches the HTTP method of a request.',
+                  }),
+                  URLPath: URLPathSchema.exactOptional().openapi({
+                    description: 'Matches the path from a request URL.',
+                  }),
+                  Version: VersionSchema.exactOptional().openapi({
+                    description: 'The version of the sampling rule format (<code>1</code>).',
+                  }),
+                  Attributes: AttributeMapSchema.exactOptional().openapi({
+                    description: 'Matches attributes derived from the request.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4498,12 +3735,12 @@ export const postTraceSummariesRoute = createRoute({
                 }),
               SamplingStrategy: z
                 .object({
-                  Name: SamplingStrategyNameSchema.and(
-                    z.any().openapi({ description: 'The name of a sampling rule.' }),
-                  ).exactOptional(),
-                  Value: NullableDoubleSchema.and(
-                    z.any().openapi({ description: 'The value of a sampling rule.' }),
-                  ).exactOptional(),
+                  Name: SamplingStrategyNameSchema.exactOptional().openapi({
+                    description: 'The name of a sampling rule.',
+                  }),
+                  Value: NullableDoubleSchema.exactOptional().openapi({
+                    description: 'The value of a sampling rule.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5102,22 +4339,14 @@ export const postUpdateGroupRoute = createRoute({
                 }),
               InsightsConfiguration: z
                 .object({
-                  InsightsEnabled: NullableBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Set the InsightsEnabled value to true to enable insights or false to disable insights.',
-                      }),
-                  ).exactOptional(),
-                  NotificationsEnabled: NullableBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Set the NotificationsEnabled value to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.',
-                      }),
-                  ).exactOptional(),
+                  InsightsEnabled: NullableBooleanSchema.exactOptional().openapi({
+                    description:
+                      'Set the InsightsEnabled value to true to enable insights or false to disable insights.',
+                  }),
+                  NotificationsEnabled: NullableBooleanSchema.exactOptional().openapi({
+                    description:
+                      'Set the NotificationsEnabled value to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5169,79 +4398,49 @@ export const postUpdateSamplingRuleRoute = createRoute({
             .object({
               SamplingRuleUpdate: z
                 .object({
-                  RuleName: RuleNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
-                      }),
-                  ).exactOptional(),
-                  RuleARN: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
-                      }),
-                  ).exactOptional(),
-                  ResourceARN: ResourceARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Matches the ARN of the Amazon Web Services resource on which the service runs.',
-                      }),
-                  ).exactOptional(),
-                  Priority: NullableIntegerSchema.and(
-                    z.any().openapi({ description: 'The priority of the sampling rule.' }),
-                  ).exactOptional(),
-                  FixedRate: NullableDoubleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The percentage of matching requests to instrument, after the reservoir is exhausted.',
-                      }),
-                  ).exactOptional(),
-                  ReservoirSize: NullableIntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A fixed number of matching requests to instrument per second, prior to applying the fixed rate. The reservoir is not used directly by services, but applies to all services using the rule collectively.',
-                      }),
-                  ).exactOptional(),
-                  Host: HostSchema.and(
-                    z.any().openapi({ description: 'Matches the hostname from a request URL.' }),
-                  ).exactOptional(),
-                  ServiceName: ServiceNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Matches the <code>name</code> that the service uses to identify itself in segments.',
-                      }),
-                  ).exactOptional(),
-                  ServiceType: ServiceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Matches the <code>origin</code> that the service uses to identify its type in segments.',
-                      }),
-                  ).exactOptional(),
-                  HTTPMethod: HTTPMethodSchema.and(
-                    z.any().openapi({ description: 'Matches the HTTP method of a request.' }),
-                  ).exactOptional(),
-                  URLPath: URLPathSchema.and(
-                    z.any().openapi({ description: 'Matches the path from a request URL.' }),
-                  ).exactOptional(),
-                  Attributes: AttributeMapSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Matches attributes derived from the request.' }),
-                  ).exactOptional(),
+                  RuleName: RuleNameSchema.exactOptional().openapi({
+                    description:
+                      'The name of the sampling rule. Specify a rule by either name or ARN, but not both.',
+                  }),
+                  RuleARN: StringSchema.exactOptional().openapi({
+                    description:
+                      'The ARN of the sampling rule. Specify a rule by either name or ARN, but not both.',
+                  }),
+                  ResourceARN: ResourceARNSchema.exactOptional().openapi({
+                    description:
+                      'Matches the ARN of the Amazon Web Services resource on which the service runs.',
+                  }),
+                  Priority: NullableIntegerSchema.exactOptional().openapi({
+                    description: 'The priority of the sampling rule.',
+                  }),
+                  FixedRate: NullableDoubleSchema.exactOptional().openapi({
+                    description:
+                      'The percentage of matching requests to instrument, after the reservoir is exhausted.',
+                  }),
+                  ReservoirSize: NullableIntegerSchema.exactOptional().openapi({
+                    description:
+                      'A fixed number of matching requests to instrument per second, prior to applying the fixed rate. The reservoir is not used directly by services, but applies to all services using the rule collectively.',
+                  }),
+                  Host: HostSchema.exactOptional().openapi({
+                    description: 'Matches the hostname from a request URL.',
+                  }),
+                  ServiceName: ServiceNameSchema.exactOptional().openapi({
+                    description:
+                      'Matches the <code>name</code> that the service uses to identify itself in segments.',
+                  }),
+                  ServiceType: ServiceTypeSchema.exactOptional().openapi({
+                    description:
+                      'Matches the <code>origin</code> that the service uses to identify its type in segments.',
+                  }),
+                  HTTPMethod: HTTPMethodSchema.exactOptional().openapi({
+                    description: 'Matches the HTTP method of a request.',
+                  }),
+                  URLPath: URLPathSchema.exactOptional().openapi({
+                    description: 'Matches the path from a request URL.',
+                  }),
+                  Attributes: AttributeMapSchema.exactOptional().openapi({
+                    description: 'Matches attributes derived from the request.',
+                  }),
                 })
                 .openapi({
                   description: "A document specifying changes to a sampling rule's configuration.",

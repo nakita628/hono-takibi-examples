@@ -1,5 +1,926 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const RawMessageSchema = z.looseObject({}).openapi('RawMessage')
+
+const ReceiverExportSchema = z
+  .object({
+    disableResolveMessage: z.boolean().exactOptional(),
+    settings: RawMessageSchema.exactOptional(),
+    type: z.string().exactOptional(),
+    uid: z.string().exactOptional(),
+  })
+  .openapi({
+    title: 'ReceiverExport is the provisioned file export of alerting.ReceiverV1.',
+    required: [],
+  })
+  .openapi('ReceiverExport')
+
+const ContactPointExportSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    orgId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    receivers: z.array(ReceiverExportSchema).exactOptional(),
+  })
+  .openapi({
+    title: 'ContactPointExport is the provisioned file export of alerting.ContactPointV1.',
+    required: [],
+  })
+  .openapi('ContactPointExport')
+
+const DurationSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({
+    type: 'integer',
+    format: 'int64',
+    description:
+      'A Duration represents the elapsed time between two instants\nas an int64 nanosecond count. The representation limits the\nlargest representable duration to approximately 290 years.',
+  })
+  .openapi('Duration')
+
+const RelativeTimeRangeExportSchema = z
+  .object({
+    from: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    to: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('RelativeTimeRangeExport')
+
+const AlertQueryExportSchema = z
+  .object({
+    datasourceUid: z.string().exactOptional(),
+    model: z.record(z.string(), z.any()).exactOptional(),
+    queryType: z.string().exactOptional(),
+    refId: z.string().exactOptional(),
+    relativeTimeRange: RelativeTimeRangeExportSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'AlertQueryExport is the provisioned export of models.AlertQuery.',
+    required: [],
+  })
+  .openapi('AlertQueryExport')
+
+const AlertRuleNotificationSettingsExportSchema = z
+  .object({
+    active_time_intervals: z.array(z.string()).exactOptional(),
+    group_by: z.array(z.string()).exactOptional(),
+    group_interval: z.string().exactOptional(),
+    group_wait: z.string().exactOptional(),
+    mute_time_intervals: z.array(z.string()).exactOptional(),
+    receiver: z.string().exactOptional(),
+    repeat_interval: z.string().exactOptional(),
+  })
+  .openapi({
+    title:
+      'AlertRuleNotificationSettingsExport is the provisioned export of models.NotificationSettings.',
+    required: [],
+  })
+  .openapi('AlertRuleNotificationSettingsExport')
+
+const AlertRuleRecordExportSchema = z
+  .object({
+    from: z.string().exactOptional(),
+    metric: z.string().exactOptional(),
+    targetDatasourceUid: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Record is the provisioned export of models.Record.', required: [] })
+  .openapi('AlertRuleRecordExport')
+
+const AlertRuleExportSchema = z
+  .object({
+    annotations: z.record(z.string(), z.string()).exactOptional(),
+    condition: z.string().exactOptional(),
+    dashboardUid: z.string().exactOptional(),
+    data: z.array(AlertQueryExportSchema).exactOptional(),
+    execErrState: z.enum(['OK', 'Alerting', 'Error']).exactOptional(),
+    for: DurationSchema.exactOptional(),
+    isPaused: z.boolean().exactOptional(),
+    keepFiringFor: DurationSchema.exactOptional(),
+    labels: z.record(z.string(), z.string()).exactOptional(),
+    missing_series_evals_to_resolve: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    noDataState: z.enum(['Alerting', 'NoData', 'OK']).exactOptional(),
+    notification_settings: AlertRuleNotificationSettingsExportSchema.exactOptional(),
+    panelId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    record: AlertRuleRecordExportSchema.exactOptional(),
+    title: z.string().exactOptional(),
+    uid: z.string().exactOptional(),
+  })
+  .openapi({
+    title: 'AlertRuleExport is the provisioned file export of models.AlertRule.',
+    required: [],
+  })
+  .openapi('AlertRuleExport')
+
+const AlertRuleGroupExportSchema = z
+  .object({
+    folder: z.string().exactOptional(),
+    interval: DurationSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    orgId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    rules: z.array(AlertRuleExportSchema).exactOptional(),
+  })
+  .openapi({
+    title: 'AlertRuleGroupExport is the provisioned file export of AlertRuleGroupV1.',
+    required: [],
+  })
+  .openapi('AlertRuleGroupExport')
+
+const TimeIntervalSchema: z.ZodType<TimeIntervalType> = z
+  .lazy(() =>
+    z
+      .object({
+        name: z.string().exactOptional(),
+        time_intervals: z.array(TimeIntervalSchema).exactOptional(),
+      })
+      .openapi({
+        title:
+          'TimeInterval represents a named set of time intervals for which a route should be muted.',
+        required: [],
+      }),
+  )
+  .openapi('TimeInterval')
+
+const MuteTimeIntervalExportSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    orgId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    time_intervals: z.array(TimeIntervalSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MuteTimeIntervalExport')
+
+const MatchRegexpsSchema = z
+  .record(z.string(), z.string())
+  .openapi({ title: 'MatchRegexps represents a map of Regexp.' })
+  .openapi('MatchRegexps')
+
+const MatchTypeSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({
+    type: 'integer',
+    format: 'int64',
+    title: 'MatchType is an enum for label matching types.',
+  })
+  .openapi('MatchType')
+
+const MatcherSchema = z
+  .object({
+    Name: z.string().exactOptional(),
+    Type: MatchTypeSchema.exactOptional(),
+    Value: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Matcher models the matching of a label.', required: [] })
+  .openapi('Matcher')
+
+const MatchersSchema = z
+  .array(MatcherSchema)
+  .openapi({
+    description:
+      'Matchers is a slice of Matchers that is sortable, implements Stringer, and\nprovides a Matches method to match a LabelSet against all Matchers in the\nslice. Note that some users of Matchers might require it to be sorted.',
+  })
+  .openapi('Matchers')
+
+const ObjectMatcherSchema = z
+  .array(z.string())
+  .openapi({ title: 'ObjectMatcher is a matcher that can be used to filter alerts.' })
+  .openapi('ObjectMatcher')
+
+const ObjectMatchersSchema = z
+  .array(ObjectMatcherSchema)
+  .openapi({ title: 'ObjectMatchers is a list of matchers that can be used to filter alerts.' })
+  .openapi('ObjectMatchers')
+
+const RouteExportSchema: z.ZodType<RouteExportType> = z
+  .lazy(() =>
+    z
+      .object({
+        active_time_intervals: z.array(z.string()).exactOptional(),
+        continue: z.boolean().exactOptional(),
+        group_by: z.array(z.string()).exactOptional(),
+        group_interval: z.string().exactOptional(),
+        group_wait: z.string().exactOptional(),
+        match: z
+          .record(z.string(), z.string())
+          .exactOptional()
+          .openapi({ description: 'Deprecated. Remove before v1.0 release.' }),
+        match_re: MatchRegexpsSchema.exactOptional(),
+        matchers: MatchersSchema.exactOptional(),
+        mute_time_intervals: z.array(z.string()).exactOptional(),
+        object_matchers: ObjectMatchersSchema.exactOptional(),
+        receiver: z.string().exactOptional(),
+        repeat_interval: z.string().exactOptional(),
+        routes: z.array(RouteExportSchema).exactOptional(),
+      })
+      .openapi({
+        description:
+          "RouteExport is the provisioned file export of definitions.Route. This is needed to hide fields that aren't useable in\nprovisioning file format. An alternative would be to define a custom MarshalJSON and MarshalYAML that excludes them.",
+        required: [],
+      }),
+  )
+  .openapi('RouteExport')
+
+const NotificationPolicyExportSchema = z
+  .object({
+    active_time_intervals: z.array(z.string()).exactOptional(),
+    continue: z.boolean().exactOptional(),
+    group_by: z.array(z.string()).exactOptional(),
+    group_interval: z.string().exactOptional(),
+    group_wait: z.string().exactOptional(),
+    match: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Remove before v1.0 release.' }),
+    match_re: MatchRegexpsSchema.exactOptional(),
+    matchers: MatchersSchema.exactOptional(),
+    mute_time_intervals: z.array(z.string()).exactOptional(),
+    object_matchers: ObjectMatchersSchema.exactOptional(),
+    orgId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    receiver: z.string().exactOptional(),
+    repeat_interval: z.string().exactOptional(),
+    routes: z.array(RouteExportSchema).exactOptional(),
+  })
+  .openapi({
+    title:
+      'NotificationPolicyExport is the provisioned file export of alerting.NotificiationPolicyV1.',
+    required: [],
+  })
+  .openapi('NotificationPolicyExport')
+
+type AlertingFileExportType = {
+  apiVersion?: bigint
+  contactPoints?: z.infer<typeof ContactPointExportSchema>[]
+  groups?: z.infer<typeof AlertRuleGroupExportSchema>[]
+  muteTimes?: z.infer<typeof MuteTimeIntervalExportSchema>[]
+  policies?: z.infer<typeof NotificationPolicyExportSchema>[]
+}
+
+const ExplorePanelsStateSchema = z
+  .any()
+  .openapi({
+    description:
+      'This is an object constructed with the keys as the values of the enum VisType and the value being a bag of properties',
+  })
+  .openapi('ExplorePanelsState')
+
+const TimeRangeSchema = z
+  .object({
+    from: z.iso.datetime({ offset: true }).exactOptional(),
+    to: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ description: 'Redefining this to avoid an import cycle', required: [] })
+  .openapi('TimeRange')
+
+const SupportedTransformationTypesSchema = z.string().openapi('SupportedTransformationTypes')
+
+const LinkTransformationConfigSchema = z
+  .object({
+    expression: z.string().exactOptional(),
+    field: z.string().exactOptional(),
+    mapValue: z.string().exactOptional(),
+    type: SupportedTransformationTypesSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('LinkTransformationConfig')
+
+const InternalDataLinkSchema = z
+  .object({
+    datasourceName: z.string().exactOptional(),
+    datasourceUid: z.string().exactOptional(),
+    panelsState: ExplorePanelsStateSchema.exactOptional(),
+    query: z.any().exactOptional(),
+    timeRange: TimeRangeSchema.exactOptional(),
+    transformations: z.array(LinkTransformationConfigSchema).exactOptional(),
+  })
+  .openapi({
+    description:
+      'InternalDataLink definition to allow Explore links to be constructed in the backend',
+    required: [],
+  })
+  .openapi('InternalDataLink')
+
+const DataLinkSchema = z
+  .object({
+    internal: InternalDataLinkSchema.exactOptional(),
+    targetBlank: z.boolean().exactOptional(),
+    title: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+  })
+  .openapi({ description: 'DataLink define what', required: [] })
+  .openapi('DataLink')
+
+const ValueMappingSchema = z
+  .looseObject({})
+  .openapi({ description: 'ValueMapping allows mapping input values to text and color' })
+  .openapi('ValueMapping')
+
+const ValueMappingsSchema = z.array(ValueMappingSchema).openapi('ValueMappings')
+
+const ConfFloat64Schema = z
+  .float64()
+  .openapi({
+    description: 'ConfFloat64 is a float64. It Marshals float64 values of NaN of Inf\nto null.',
+  })
+  .openapi('ConfFloat64')
+
+const ThresholdsModeSchema = z
+  .string()
+  .openapi({ description: 'ThresholdsMode absolute or percentage' })
+  .openapi('ThresholdsMode')
+
+const ThresholdSchema = z
+  .object({
+    color: z.string().exactOptional(),
+    state: z.string().exactOptional(),
+    value: ConfFloat64Schema.exactOptional(),
+  })
+  .openapi({ description: 'Threshold a single step on the threshold list', required: [] })
+  .openapi('Threshold')
+
+const ThresholdsConfigSchema = z
+  .object({
+    mode: ThresholdsModeSchema.exactOptional(),
+    steps: z
+      .array(ThresholdSchema)
+      .exactOptional()
+      .openapi({ description: "Must be sorted by 'value', first value is always -Infinity" }),
+  })
+  .openapi({ description: 'ThresholdsConfig setup thresholds', required: [] })
+  .openapi('ThresholdsConfig')
+
+const EnumFieldConfigSchema = z
+  .object({
+    color: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Color is the color value for a given index (empty is undefined)' }),
+    description: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Description of the enum state' }),
+    icon: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Icon supports setting an icon for a given index value' }),
+    text: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Value is the string display value for a given index' }),
+  })
+  .openapi({
+    description: 'Enum field config\nVector values are used as lookup keys into the enum fields',
+    required: [],
+  })
+  .openapi('EnumFieldConfig')
+
+const FieldTypeConfigSchema = z
+  .object({ enum: EnumFieldConfigSchema.exactOptional() })
+  .openapi({
+    description: 'FieldTypeConfig has type specific configs, only one should be active at a time',
+    required: [],
+  })
+  .openapi('FieldTypeConfig')
+
+const FieldConfigSchema = z
+  .object({
+    color: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'Map values to a display color\nNOTE: this interface is under development in the frontend... so simple map for now',
+      }),
+    custom: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({ description: 'Panel Specific Values' }),
+    decimals: z.int().exactOptional(),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description is human readable field metadata' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'DisplayName overrides Grafana default naming, should not be used from a data source',
+      }),
+    displayNameFromDS: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'DisplayNameFromDS overrides Grafana default naming strategy.' }),
+    filterable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Filterable indicates if the Field's data can be filtered by additional calls.",
+      }),
+    interval: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Interval indicates the expected regular step between values in the series.\nWhen an interval exists, consumers can identify "missing" values when the expected value is not present.\nThe grafana timeseries visualization will render disconnected values when missing values are found it the time field.\nThe interval uses the same units as the values.  For time.Time, this is defined in milliseconds.',
+      }),
+    links: z
+      .array(DataLinkSchema)
+      .exactOptional()
+      .openapi({ description: 'The behavior when clicking on a result' }),
+    mappings: ValueMappingsSchema.exactOptional(),
+    max: ConfFloat64Schema.exactOptional(),
+    min: ConfFloat64Schema.exactOptional(),
+    noValue: z.string().exactOptional().openapi({ description: 'Alternative to empty string' }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Path is an explicit path to the field in the datasource. When the frame meta includes a path,\nthis will default to `${frame.meta.path}/${field.name}\n\nWhen defined, this value can be used as an identifier within the datasource scope, and\nmay be used as an identifier to update values in a subsequent request',
+      }),
+    thresholds: ThresholdsConfigSchema.exactOptional(),
+    type: FieldTypeConfigSchema.exactOptional(),
+    unit: z.string().exactOptional().openapi({ description: 'Numeric Options' }),
+    writeable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Writeable indicates that the datasource knows how to update this value',
+      }),
+  })
+  .openapi({ title: 'FieldConfig represents the display properties for a Field.', required: [] })
+  .openapi('FieldConfig')
+
+const FrameLabelsSchema = z
+  .record(z.string(), z.string())
+  .openapi({
+    description:
+      'Labels are used to add metadata to an object.  The JSON will always be sorted keys',
+  })
+  .openapi('FrameLabels')
+
+const FieldSchema = z
+  .object({
+    config: FieldConfigSchema.exactOptional(),
+    labels: FrameLabelsSchema.exactOptional(),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name is default identifier of the field. The name does not have to be unique, but the combination\nof name and Labels should be unique for proper behavior in all situations.',
+      }),
+  })
+  .openapi({
+    description:
+      'A Field is essentially a slice of various types with extra properties and methods.\nSee NewField() for supported types.\n\nThe slice data in the Field is a not exported, so methods on the Field are used to to manipulate its data.',
+    title: 'Field represents a typed column of data within a Frame.',
+    required: [],
+  })
+  .openapi('Field')
+
+const DataTopicSchema = z
+  .string()
+  .openapi({ title: 'DataTopic is used to identify which topic the frame should be assigned to.' })
+  .openapi('DataTopic')
+
+const InspectTypeSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({
+    type: 'integer',
+    format: 'int64',
+    title: 'InspectType is a type for the Inspect property of a Notice.',
+  })
+  .openapi('InspectType')
+
+const NoticeSeveritySchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({
+    type: 'integer',
+    format: 'int64',
+    title: 'NoticeSeverity is a type for the Severity property of a Notice.',
+  })
+  .openapi('NoticeSeverity')
+
+const NoticeSchema = z
+  .object({
+    inspect: InspectTypeSchema.exactOptional(),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Link is an optional link for display in the user interface and can be an\nabsolute URL or a path relative to Grafana's root url.",
+      }),
+    severity: NoticeSeveritySchema.exactOptional(),
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Text is freeform descriptive text for the notice.' }),
+  })
+  .openapi({
+    title: "Notice provides a structure for presenting notifications in Grafana's user interface.",
+    required: [],
+  })
+  .openapi('Notice')
+
+const VisTypeSchema = z
+  .string()
+  .openapi({ title: 'VisType is used to indicate how the data should be visualized in explore.' })
+  .openapi('VisType')
+
+const QueryStatSchema = z
+  .object({
+    color: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'Map values to a display color\nNOTE: this interface is under development in the frontend... so simple map for now',
+      }),
+    custom: z
+      .record(z.string(), z.any())
+      .exactOptional()
+      .openapi({ description: 'Panel Specific Values' }),
+    decimals: z.int().exactOptional(),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description is human readable field metadata' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'DisplayName overrides Grafana default naming, should not be used from a data source',
+      }),
+    displayNameFromDS: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'DisplayNameFromDS overrides Grafana default naming strategy.' }),
+    filterable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Filterable indicates if the Field's data can be filtered by additional calls.",
+      }),
+    interval: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Interval indicates the expected regular step between values in the series.\nWhen an interval exists, consumers can identify "missing" values when the expected value is not present.\nThe grafana timeseries visualization will render disconnected values when missing values are found it the time field.\nThe interval uses the same units as the values.  For time.Time, this is defined in milliseconds.',
+      }),
+    links: z
+      .array(DataLinkSchema)
+      .exactOptional()
+      .openapi({ description: 'The behavior when clicking on a result' }),
+    mappings: ValueMappingsSchema.exactOptional(),
+    max: ConfFloat64Schema.exactOptional(),
+    min: ConfFloat64Schema.exactOptional(),
+    noValue: z.string().exactOptional().openapi({ description: 'Alternative to empty string' }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Path is an explicit path to the field in the datasource. When the frame meta includes a path,\nthis will default to `${frame.meta.path}/${field.name}\n\nWhen defined, this value can be used as an identifier within the datasource scope, and\nmay be used as an identifier to update values in a subsequent request',
+      }),
+    thresholds: ThresholdsConfigSchema.exactOptional(),
+    type: FieldTypeConfigSchema.exactOptional(),
+    unit: z.string().exactOptional().openapi({ description: 'Numeric Options' }),
+    value: z.float64().exactOptional(),
+    writeable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Writeable indicates that the datasource knows how to update this value',
+      }),
+  })
+  .openapi({
+    description:
+      "The embedded FieldConfig's display name must be set.\nIt corresponds to the QueryResultMetaStat on the frontend (https://github.com/grafana/grafana/blob/master/packages/grafana-data/src/types/data.ts#L53).",
+    title:
+      'QueryStat is used for storing arbitrary statistics metadata related to a query and its result, e.g. total request time, data processing time.',
+    required: [],
+  })
+  .openapi('QueryStat')
+
+const FrameTypeSchema = z
+  .string()
+  .openapi({
+    description:
+      "A FrameType string, when present in a frame's metadata, asserts that the\nframe's structure conforms to the FrameType's specification.\nThis property is currently optional, so FrameType may be FrameTypeUnknown even if the properties of\nthe Frame correspond to a defined FrameType.",
+  })
+  .openapi('FrameType')
+
+const FrameTypeVersionSchema = z
+  .array(
+    z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.uint64(),
+      )
+      .openapi({ type: 'integer', format: 'uint64' }),
+  )
+  .openapi({ title: 'FrameType is a 2 number version (Major / Minor).' })
+  .openapi('FrameTypeVersion')
+
+type FrameMetaType = {
+  channel?: string
+  custom?: unknown
+  dataTopic?: z.infer<typeof DataTopicSchema>
+  executedQueryString?: string
+  notices?: z.infer<typeof NoticeSchema>[]
+  path?: string
+  pathSeparator?: string
+  preferredVisualisationPluginId?: string
+  preferredVisualisationType?: z.infer<typeof VisTypeSchema>
+  stats?: z.infer<typeof QueryStatSchema>[]
+  type?: z.infer<typeof FrameTypeSchema>
+  typeVersion?: z.infer<typeof FrameTypeVersionSchema>
+  uniqueRowIdFields?: bigint[]
+}
+
+const FrameMetaSchema: z.ZodType<FrameMetaType> = z
+  .object({
+    channel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Channel is the path to a stream in grafana live that has real-time updates for this data.',
+      }),
+    custom: z.any().exactOptional().openapi({ description: 'Custom datasource specific values.' }),
+    dataTopic: DataTopicSchema.exactOptional(),
+    executedQueryString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ExecutedQueryString is the raw query sent to the underlying system. All macros and templating\nhave been applied.  When metadata contains this value, it will be shown in the query inspector.',
+      }),
+    notices: z
+      .array(NoticeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Notices provide additional information about the data in the Frame that\nGrafana can display to the user in the user interface.',
+      }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Path is a browsable path on the datasource.' }),
+    pathSeparator: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "PathSeparator defines the separator pattern to decode a hierarchy. The default separator is '/'.",
+      }),
+    preferredVisualisationPluginId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'PreferredVisualizationPluginId sets the panel plugin id to use to render the data when using Explore. If\nthe plugin cannot be found will fall back to PreferredVisualization.',
+      }),
+    preferredVisualisationType: VisTypeSchema.exactOptional(),
+    stats: z
+      .array(QueryStatSchema)
+      .exactOptional()
+      .openapi({ description: 'Stats is an array of query result statistics.' }),
+    type: FrameTypeSchema.exactOptional(),
+    typeVersion: FrameTypeVersionSchema.exactOptional(),
+    uniqueRowIdFields: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "Array of field indices which values create a unique id for each row. Ideally this should be globally unique ID\nbut that isn't guarantied. Should help with keeping track and deduplicating rows in visualizations, especially\nwith streaming data with frequent updates.",
+        example: 'TraceID in Tempo, table name + primary key in SQL',
+      }),
+  })
+  .openapi({
+    description:
+      'https://github.com/grafana/grafana/blob/master/packages/grafana-data/src/types/data.ts#L11\nNOTE -- in javascript this can accept any `[key: string]: any;` however\nthis interface only exposes the values we want to be exposed',
+    title: 'FrameMeta matches:',
+    required: [],
+  })
+  .openapi('FrameMeta')
+
+type FrameType = {
+  Fields?: z.infer<typeof FieldSchema>[]
+  Meta?: z.infer<typeof FrameMetaSchema>
+  Name?: string
+  RefID?: string
+}
+
+const FrameSchema: z.ZodType<FrameType> = z
+  .object({
+    Fields: z
+      .array(FieldSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Fields are the columns of a frame.\nAll Fields must be of the same the length when marshalling the Frame for transmission.\nThere should be no `nil` entries in the Fields slice (making them pointers was a mistake).',
+      }),
+    Meta: FrameMetaSchema.exactOptional(),
+    Name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name is used in some Grafana visualizations.' }),
+    RefID: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'RefID is a property that can be set to match a Frame to its originating query.',
+      }),
+  })
+  .openapi({
+    description:
+      'Each Field is well typed by its FieldType and supports optional Labels.\n\nA Frame is a general data container for Grafana. A Frame can be table data\nor time series data depending on its content and field types.',
+    title: 'Frame is a columnar data structure where each column is a Field.',
+    required: [],
+  })
+  .openapi('Frame')
+
+type BacktestResultType = z.infer<typeof FrameSchema>
+
+const SourceSchema = z
+  .string()
+  .openapi({ title: 'Source type defines the status source.' })
+  .openapi('Source')
+
+type FramesType = z.infer<typeof FrameSchema>[]
+
+const FramesSchema: z.ZodType<FramesType> = z
+  .array(FrameSchema)
+  .openapi({
+    description:
+      'It is the main data container within a backend.DataResponse.\nThere should be no `nil` entries in the Frames slice (making them pointers was a mistake).',
+    title: 'Frames is a slice of Frame pointers.',
+  })
+  .openapi('Frames')
+
+const StatusSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64(),
+  )
+  .openapi({ type: 'integer', format: 'int64' })
+  .openapi('Status')
+
+type DataResponseType = {
+  Error?: string
+  ErrorSource?: z.infer<typeof SourceSchema>
+  Frames?: z.infer<typeof FramesSchema>
+  Status?: z.infer<typeof StatusSchema>
+}
+
 const SecretSchema = z
   .string()
   .openapi({ title: 'Secret special type for storing secrets.' })
@@ -247,24 +1168,6 @@ const HTTPClientConfigSchema = z
   .openapi({ title: 'HTTPClientConfig configures an HTTP client.', required: [] })
   .openapi('HTTPClientConfig')
 
-const DurationSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({
-    type: 'integer',
-    format: 'int64',
-    description:
-      'A Duration represents the elapsed time between two instants\nas an int64 nanosecond count. The representation limits the\nlargest representable duration to approximately 290 years.',
-  })
-  .openapi('Duration')
-
 const HostPortSchema = z
   .object({ Host: z.string().exactOptional(), Port: z.string().exactOptional() })
   .openapi({ title: 'HostPort represents a "host:port" network address.', required: [] })
@@ -307,45 +1210,6 @@ const GlobalConfigSchema = z
   })
   .openapi('GlobalConfig')
 
-const MatchRegexpsSchema = z
-  .record(z.string(), z.string())
-  .openapi({ title: 'MatchRegexps represents a map of Regexp.' })
-  .openapi('MatchRegexps')
-
-const MatchTypeSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({
-    type: 'integer',
-    format: 'int64',
-    title: 'MatchType is an enum for label matching types.',
-  })
-  .openapi('MatchType')
-
-const MatcherSchema = z
-  .object({
-    Name: z.string().exactOptional(),
-    Type: MatchTypeSchema.exactOptional(),
-    Value: z.string().exactOptional(),
-  })
-  .openapi({ title: 'Matcher models the matching of a label.', required: [] })
-  .openapi('Matcher')
-
-const MatchersSchema = z
-  .array(MatcherSchema)
-  .openapi({
-    description:
-      'Matchers is a slice of Matchers that is sortable, implements Stringer, and\nprovides a Matches method to match a LabelSet against all Matchers in the\nslice. Note that some users of Matchers might require it to be sorted.',
-  })
-  .openapi('Matchers')
-
 const InhibitRuleSchema = z
   .object({
     equal: z
@@ -380,21 +1244,6 @@ const InhibitRuleSchema = z
     required: [],
   })
   .openapi('InhibitRule')
-
-const TimeIntervalSchema: z.ZodType<TimeIntervalType> = z
-  .lazy(() =>
-    z
-      .object({
-        name: z.string().exactOptional(),
-        time_intervals: z.array(TimeIntervalSchema).exactOptional(),
-      })
-      .openapi({
-        title:
-          'TimeInterval represents a named set of time intervals for which a route should be muted.',
-        required: [],
-      }),
-  )
-  .openapi('TimeInterval')
 
 const MuteTimeIntervalSchema = z
   .object({
@@ -438,64 +1287,68 @@ const RouteSchema: z.ZodType<RouteType> = z
   )
   .openapi('Route')
 
-type ConfigType = {
-  global?: z.infer<typeof GlobalConfigSchema>
-  inhibit_rules?: z.infer<typeof InhibitRuleSchema>[]
-  mute_time_intervals?: z.infer<typeof MuteTimeIntervalSchema>[]
-  route?: z.infer<typeof RouteSchema>
-  templates?: string[]
-  time_intervals?: z.infer<typeof TimeIntervalSchema>[]
-}
-
-const ExplorePanelsStateSchema = z
-  .any()
-  .openapi({
-    description:
-      'This is an object constructed with the keys as the values of the enum VisType and the value being a bag of properties',
-  })
-  .openapi('ExplorePanelsState')
-
-const TimeRangeSchema = z
+const ConfigSchema = z
   .object({
-    from: z.iso.datetime({ offset: true }).exactOptional(),
-    to: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ description: 'Redefining this to avoid an import cycle', required: [] })
-  .openapi('TimeRange')
-
-const SupportedTransformationTypesSchema = z.string().openapi('SupportedTransformationTypes')
-
-const LinkTransformationConfigSchema = z
-  .object({
-    expression: z.string().exactOptional(),
-    field: z.string().exactOptional(),
-    mapValue: z.string().exactOptional(),
-    type: SupportedTransformationTypesSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('LinkTransformationConfig')
-
-const InternalDataLinkSchema = z
-  .object({
-    datasourceName: z.string().exactOptional(),
-    datasourceUid: z.string().exactOptional(),
-    panelsState: ExplorePanelsStateSchema.exactOptional(),
-    query: z.any().exactOptional(),
-    timeRange: TimeRangeSchema.exactOptional(),
-    transformations: z.array(LinkTransformationConfigSchema).exactOptional(),
+    global: GlobalConfigSchema.exactOptional(),
+    inhibit_rules: z.array(InhibitRuleSchema).exactOptional(),
+    mute_time_intervals: z
+      .array(MuteTimeIntervalSchema)
+      .exactOptional()
+      .openapi({
+        description: 'MuteTimeIntervals is deprecated and will be removed before Alertmanager 1.0.',
+      }),
+    route: RouteSchema.exactOptional(),
+    templates: z.array(z.string()).exactOptional(),
+    time_intervals: z.array(TimeIntervalSchema).exactOptional(),
   })
   .openapi({
-    description:
-      'InternalDataLink definition to allow Explore links to be constructed in the backend',
+    title: "Config is the top-level configuration for Alertmanager's config files.",
     required: [],
   })
-  .openapi('InternalDataLink')
+  .openapi('Config')
 
-type DataLinkType = {
-  internal?: z.infer<typeof InternalDataLinkSchema>
-  targetBlank?: boolean
-  title?: string
-  url?: string
+type ExternalAlertmanagerConfigType = {
+  alertmanager_config?: z.infer<typeof ConfigSchema>
+  template_files?: { [key: string]: string }
+}
+
+const PeerStatusSchema = z
+  .object({
+    address: z.string().openapi({ description: 'address' }),
+    name: z.string().openapi({ description: 'name' }),
+  })
+  .openapi({ description: 'PeerStatus peer status', required: ['address', 'name'] })
+  .openapi('PeerStatus')
+
+const ClusterStatusSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'name' }),
+    peers: z.array(PeerStatusSchema).exactOptional().openapi({ description: 'peers' }),
+    status: z.literal('[ready settling disabled]').openapi({ description: 'status' }),
+  })
+  .openapi({ description: 'ClusterStatus cluster status', required: ['status'] })
+  .openapi('ClusterStatus')
+
+const VersionInfoSchema = z
+  .object({
+    branch: z.string().openapi({ description: 'branch' }),
+    buildDate: z.string().openapi({ description: 'build date' }),
+    buildUser: z.string().openapi({ description: 'build user' }),
+    goVersion: z.string().openapi({ description: 'go version' }),
+    revision: z.string().openapi({ description: 'revision' }),
+    version: z.string().openapi({ description: 'version' }),
+  })
+  .openapi({
+    description: 'VersionInfo version info',
+    required: ['branch', 'buildDate', 'buildUser', 'goVersion', 'revision', 'version'],
+  })
+  .openapi('VersionInfo')
+
+type ExternalAlertmanagerStatusType = {
+  cluster: z.infer<typeof ClusterStatusSchema>
+  config: z.infer<typeof ConfigSchema>
+  uptime: string
+  versionInfo: z.infer<typeof VersionInfoSchema>
 }
 
 const MetadataSchema = z
@@ -536,17 +1389,885 @@ type FolderType = {
   version?: bigint
 }
 
-const ObjectMatcherSchema = z
-  .array(z.string())
-  .openapi({ title: 'ObjectMatcher is a matcher that can be used to filter alerts.' })
-  .openapi('ObjectMatcher')
-
-const ObjectMatchersSchema = z
-  .array(ObjectMatcherSchema)
-  .openapi({ title: 'ObjectMatchers is a list of matchers that can be used to filter alerts.' })
-  .openapi('ObjectMatchers')
-
 const ProvenanceSchema = z.string().openapi('Provenance')
+
+const DiscordConfigSchema = z
+  .object({
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    message: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    title: z.string().exactOptional(),
+    webhook_url: URLSchema.exactOptional(),
+    webhook_url_file: z.string().exactOptional(),
+  })
+  .openapi({ title: 'DiscordConfig configures notifications via Discord.', required: [] })
+  .openapi('DiscordConfig')
+
+const EmailConfigSchema = z
+  .object({
+    auth_identity: z.string().exactOptional(),
+    auth_password: SecretSchema.exactOptional(),
+    auth_password_file: z.string().exactOptional(),
+    auth_secret: SecretSchema.exactOptional(),
+    auth_username: z.string().exactOptional(),
+    from: z.string().exactOptional(),
+    headers: z.record(z.string(), z.string()).exactOptional(),
+    hello: z.string().exactOptional(),
+    html: z.string().exactOptional(),
+    require_tls: z.boolean().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    smarthost: HostPortSchema.exactOptional(),
+    text: z.string().exactOptional(),
+    tls_config: TLSConfigSchema.exactOptional(),
+    to: z.string().exactOptional().openapi({ description: 'Email address to notify.' }),
+  })
+  .openapi({ title: 'EmailConfig configures notifications via mail.', required: [] })
+  .openapi('EmailConfig')
+
+const GettableGrafanaReceiverSchema = z
+  .object({
+    disableResolveMessage: z.boolean().exactOptional(),
+    name: z.string().exactOptional(),
+    provenance: ProvenanceSchema.exactOptional(),
+    secureFields: z.record(z.string(), z.boolean()).exactOptional(),
+    settings: RawMessageSchema.exactOptional(),
+    type: z.string().exactOptional(),
+    uid: z.string().exactOptional(),
+    version: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GettableGrafanaReceiver')
+
+const JiraConfigSchema = z
+  .object({
+    api_url: URLSchema.exactOptional(),
+    custom_fields: z.record(z.string(), z.any()).exactOptional(),
+    description: z.string().exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    issue_type: z.string().exactOptional(),
+    labels: z.array(z.string()).exactOptional(),
+    priority: z.string().exactOptional(),
+    project: z.string().exactOptional(),
+    reopen_duration: DurationSchema.exactOptional(),
+    reopen_transition: z.string().exactOptional(),
+    resolve_transition: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    summary: z.string().exactOptional(),
+    wont_fix_resolution: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('JiraConfig')
+
+const MSTeamsConfigSchema = z
+  .object({
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    summary: z.string().exactOptional(),
+    text: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    webhook_url: URLSchema.exactOptional(),
+    webhook_url_file: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MSTeamsConfig')
+
+const MSTeamsV2ConfigSchema = z
+  .object({
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    text: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    webhook_url: URLSchema.exactOptional(),
+    webhook_url_file: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MSTeamsV2Config')
+
+const OpsGenieConfigResponderSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'One of those 3 should be filled.' }),
+    name: z.string().exactOptional(),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'team, user, escalation, schedule etc.' }),
+    username: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OpsGenieConfigResponder')
+
+const OpsGenieConfigSchema = z
+  .object({
+    actions: z.string().exactOptional(),
+    api_key: SecretSchema.exactOptional(),
+    api_key_file: z.string().exactOptional(),
+    api_url: URLSchema.exactOptional(),
+    description: z.string().exactOptional(),
+    details: z.record(z.string(), z.string()).exactOptional(),
+    entity: z.string().exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    message: z.string().exactOptional(),
+    note: z.string().exactOptional(),
+    priority: z.string().exactOptional(),
+    responders: z.array(OpsGenieConfigResponderSchema).exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    source: z.string().exactOptional(),
+    tags: z.string().exactOptional(),
+    update_alerts: z.boolean().exactOptional(),
+  })
+  .openapi({ title: 'OpsGenieConfig configures notifications via OpsGenie.', required: [] })
+  .openapi('OpsGenieConfig')
+
+const PagerdutyImageSchema = z
+  .object({
+    alt: z.string().exactOptional(),
+    href: z.string().exactOptional(),
+    src: z.string().exactOptional(),
+  })
+  .openapi({ title: 'PagerdutyImage is an image.', required: [] })
+  .openapi('PagerdutyImage')
+
+const PagerdutyLinkSchema = z
+  .object({ href: z.string().exactOptional(), text: z.string().exactOptional() })
+  .openapi({ title: 'PagerdutyLink is a link.', required: [] })
+  .openapi('PagerdutyLink')
+
+const PagerdutyConfigSchema = z
+  .object({
+    class: z.string().exactOptional(),
+    client: z.string().exactOptional(),
+    client_url: z.string().exactOptional(),
+    component: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    details: z.record(z.string(), z.string()).exactOptional(),
+    group: z.string().exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    images: z.array(PagerdutyImageSchema).exactOptional(),
+    links: z.array(PagerdutyLinkSchema).exactOptional(),
+    routing_key: SecretSchema.exactOptional(),
+    routing_key_file: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    service_key: SecretSchema.exactOptional(),
+    service_key_file: z.string().exactOptional(),
+    severity: z.string().exactOptional(),
+    source: z.string().exactOptional(),
+    url: URLSchema.exactOptional(),
+  })
+  .openapi({ title: 'PagerdutyConfig configures notifications via PagerDuty.', required: [] })
+  .openapi('PagerdutyConfig')
+
+const PushoverConfigSchema = z
+  .object({
+    device: z.string().exactOptional(),
+    expire: z.string().exactOptional(),
+    html: z.boolean().exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    message: z.string().exactOptional(),
+    priority: z.string().exactOptional(),
+    retry: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    sound: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    token: SecretSchema.exactOptional(),
+    token_file: z.string().exactOptional(),
+    ttl: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+    url_title: z.string().exactOptional(),
+    user_key: SecretSchema.exactOptional(),
+    user_key_file: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PushoverConfig')
+
+const SlackConfirmationFieldSchema = z
+  .object({
+    dismiss_text: z.string().exactOptional(),
+    ok_text: z.string().exactOptional(),
+    text: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'SlackConfirmationField protect users from destructive actions or particularly distinguished decisions\nby asking them to confirm their button click one more time.\nSee https://api.slack.com/docs/interactive-message-field-guide#confirmation_fields for more information.',
+    required: [],
+  })
+  .openapi('SlackConfirmationField')
+
+const SlackActionSchema = z
+  .object({
+    confirm: SlackConfirmationFieldSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    style: z.string().exactOptional(),
+    text: z.string().exactOptional(),
+    type: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+    value: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'See https://api.slack.com/docs/message-attachments#action_fields and https://api.slack.com/docs/message-buttons\nfor more information.',
+    title: 'SlackAction configures a single Slack action that is sent with each notification.',
+    required: [],
+  })
+  .openapi('SlackAction')
+
+const SlackFieldSchema = z
+  .object({
+    short: z.boolean().exactOptional(),
+    title: z.string().exactOptional(),
+    value: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'Each field must contain a title, value, and optionally, a boolean value to indicate if the field\nis short enough to be displayed next to other fields designated as short.\nSee https://api.slack.com/docs/message-attachments#fields for more information.',
+    title: 'SlackField configures a single Slack field that is sent with each notification.',
+    required: [],
+  })
+  .openapi('SlackField')
+
+const SlackConfigSchema = z
+  .object({
+    actions: z.array(SlackActionSchema).exactOptional(),
+    api_url: URLSchema.exactOptional(),
+    api_url_file: z.string().exactOptional(),
+    callback_id: z.string().exactOptional(),
+    channel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Slack channel override, (like #other-channel or @username).' }),
+    color: z.string().exactOptional(),
+    fallback: z.string().exactOptional(),
+    fields: z.array(SlackFieldSchema).exactOptional(),
+    footer: z.string().exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    icon_emoji: z.string().exactOptional(),
+    icon_url: z.string().exactOptional(),
+    image_url: z.string().exactOptional(),
+    link_names: z.boolean().exactOptional(),
+    mrkdwn_in: z.array(z.string()).exactOptional(),
+    pretext: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    short_fields: z.boolean().exactOptional(),
+    text: z.string().exactOptional(),
+    thumb_url: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    title_link: z.string().exactOptional(),
+    username: z.string().exactOptional(),
+  })
+  .openapi({ title: 'SlackConfig configures notifications via Slack.', required: [] })
+  .openapi('SlackConfig')
+
+const SigV4ConfigSchema = z
+  .object({
+    AccessKey: z.string().exactOptional(),
+    Profile: z.string().exactOptional(),
+    Region: z.string().exactOptional(),
+    RoleARN: z.string().exactOptional(),
+    SecretKey: SecretSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      "SigV4Config is the configuration for signing remote write requests with\nAWS's SigV4 verification process. Empty values will be retrieved using the\nAWS default credentials chain.",
+    required: [],
+  })
+  .openapi('SigV4Config')
+
+const SNSConfigSchema = z
+  .object({
+    api_url: z.string().exactOptional(),
+    attributes: z.record(z.string(), z.string()).exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    message: z.string().exactOptional(),
+    phone_number: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    sigv4: SigV4ConfigSchema.exactOptional(),
+    subject: z.string().exactOptional(),
+    target_arn: z.string().exactOptional(),
+    topic_arn: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SNSConfig')
+
+const TelegramConfigSchema = z
+  .object({
+    api_url: URLSchema.exactOptional(),
+    chat: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    disable_notifications: z.boolean().exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    message: z.string().exactOptional(),
+    parse_mode: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    token: SecretSchema.exactOptional(),
+    token_file: z.string().exactOptional(),
+  })
+  .openapi({ title: 'TelegramConfig configures notifications via Telegram.', required: [] })
+  .openapi('TelegramConfig')
+
+const VictorOpsConfigSchema = z
+  .object({
+    api_key: SecretSchema.exactOptional(),
+    api_key_file: z.string().exactOptional(),
+    api_url: URLSchema.exactOptional(),
+    custom_fields: z.record(z.string(), z.string()).exactOptional(),
+    entity_display_name: z.string().exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    message_type: z.string().exactOptional(),
+    monitoring_tool: z.string().exactOptional(),
+    routing_key: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    state_message: z.string().exactOptional(),
+  })
+  .openapi({ title: 'VictorOpsConfig configures notifications via VictorOps.', required: [] })
+  .openapi('VictorOpsConfig')
+
+const WebexConfigSchema = z
+  .object({
+    api_url: URLSchema.exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    message: z.string().exactOptional(),
+    room_id: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+  })
+  .openapi({ title: 'WebexConfig configures notifications via Webex.', required: [] })
+  .openapi('WebexConfig')
+
+const WebhookConfigSchema = z
+  .object({
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    max_alerts: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.uint64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'uint64',
+        description:
+          'MaxAlerts is the maximum number of alerts to be sent per webhook message.\nAlerts exceeding this threshold will be truncated. Setting this to 0\nallows an unlimited number of alerts.',
+      }),
+    send_resolved: z.boolean().exactOptional(),
+    timeout: DurationSchema.exactOptional(),
+    url: URLSchema.exactOptional(),
+    url_file: z.string().exactOptional(),
+  })
+  .openapi({ title: 'WebhookConfig configures notifications via a generic webhook.', required: [] })
+  .openapi('WebhookConfig')
+
+const WechatConfigSchema = z
+  .object({
+    agent_id: z.string().exactOptional(),
+    api_secret: SecretSchema.exactOptional(),
+    api_url: URLSchema.exactOptional(),
+    corp_id: z.string().exactOptional(),
+    http_config: HTTPClientConfigSchema.exactOptional(),
+    message: z.string().exactOptional(),
+    message_type: z.string().exactOptional(),
+    send_resolved: z.boolean().exactOptional(),
+    to_party: z.string().exactOptional(),
+    to_tag: z.string().exactOptional(),
+    to_user: z.string().exactOptional(),
+  })
+  .openapi({ title: 'WechatConfig configures notifications via Wechat.', required: [] })
+  .openapi('WechatConfig')
+
+type GettableApiReceiverType = {
+  discord_configs?: z.infer<typeof DiscordConfigSchema>[]
+  email_configs?: z.infer<typeof EmailConfigSchema>[]
+  grafana_managed_receiver_configs?: z.infer<typeof GettableGrafanaReceiverSchema>[]
+  jira_configs?: z.infer<typeof JiraConfigSchema>[]
+  msteams_configs?: z.infer<typeof MSTeamsConfigSchema>[]
+  msteamsv2_configs?: z.infer<typeof MSTeamsV2ConfigSchema>[]
+  name?: string
+  opsgenie_configs?: z.infer<typeof OpsGenieConfigSchema>[]
+  pagerduty_configs?: z.infer<typeof PagerdutyConfigSchema>[]
+  pushover_configs?: z.infer<typeof PushoverConfigSchema>[]
+  slack_configs?: z.infer<typeof SlackConfigSchema>[]
+  sns_configs?: z.infer<typeof SNSConfigSchema>[]
+  telegram_configs?: z.infer<typeof TelegramConfigSchema>[]
+  victorops_configs?: z.infer<typeof VictorOpsConfigSchema>[]
+  webex_configs?: z.infer<typeof WebexConfigSchema>[]
+  webhook_configs?: z.infer<typeof WebhookConfigSchema>[]
+  wechat_configs?: z.infer<typeof WechatConfigSchema>[]
+}
+
+const GettableApiReceiverSchema: z.ZodType<GettableApiReceiverType> = z
+  .object({
+    discord_configs: z.array(DiscordConfigSchema).exactOptional(),
+    email_configs: z.array(EmailConfigSchema).exactOptional(),
+    grafana_managed_receiver_configs: z.array(GettableGrafanaReceiverSchema).exactOptional(),
+    jira_configs: z.array(JiraConfigSchema).exactOptional(),
+    msteams_configs: z.array(MSTeamsConfigSchema).exactOptional(),
+    msteamsv2_configs: z.array(MSTeamsV2ConfigSchema).exactOptional(),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique identifier for this receiver.' }),
+    opsgenie_configs: z.array(OpsGenieConfigSchema).exactOptional(),
+    pagerduty_configs: z.array(PagerdutyConfigSchema).exactOptional(),
+    pushover_configs: z.array(PushoverConfigSchema).exactOptional(),
+    slack_configs: z.array(SlackConfigSchema).exactOptional(),
+    sns_configs: z.array(SNSConfigSchema).exactOptional(),
+    telegram_configs: z.array(TelegramConfigSchema).exactOptional(),
+    victorops_configs: z.array(VictorOpsConfigSchema).exactOptional(),
+    webex_configs: z.array(WebexConfigSchema).exactOptional(),
+    webhook_configs: z.array(WebhookConfigSchema).exactOptional(),
+    wechat_configs: z.array(WechatConfigSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GettableApiReceiver')
+
+type GettableApiAlertingConfigType = {
+  global?: z.infer<typeof GlobalConfigSchema>
+  inhibit_rules?: z.infer<typeof InhibitRuleSchema>[]
+  muteTimeProvenances?: { [key: string]: z.infer<typeof ProvenanceSchema> }
+  mute_time_intervals?: z.infer<typeof MuteTimeIntervalSchema>[]
+  receivers?: z.infer<typeof GettableApiReceiverSchema>[]
+  route?: z.infer<typeof RouteSchema>
+  templates?: string[]
+  time_intervals?: z.infer<typeof TimeIntervalSchema>[]
+}
+
+const GettableApiAlertingConfigSchema: z.ZodType<GettableApiAlertingConfigType> = z
+  .object({
+    global: GlobalConfigSchema.exactOptional(),
+    inhibit_rules: z.array(InhibitRuleSchema).exactOptional(),
+    muteTimeProvenances: z.record(z.string(), ProvenanceSchema).exactOptional(),
+    mute_time_intervals: z
+      .array(MuteTimeIntervalSchema)
+      .exactOptional()
+      .openapi({
+        description: 'MuteTimeIntervals is deprecated and will be removed before Alertmanager 1.0.',
+      }),
+    receivers: z
+      .array(GettableApiReceiverSchema)
+      .exactOptional()
+      .openapi({ description: 'Override with our superset receiver type' }),
+    route: RouteSchema.exactOptional(),
+    templates: z.array(z.string()).exactOptional(),
+    time_intervals: z.array(TimeIntervalSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GettableApiAlertingConfig')
+
+type GettableHistoricUserConfigType = {
+  alertmanager_config?: z.infer<typeof GettableApiAlertingConfigSchema>
+  id?: bigint
+  last_applied?: string
+  template_file_provenances?: { [key: string]: z.infer<typeof ProvenanceSchema> }
+  template_files?: { [key: string]: string }
+}
+
+const PostableGrafanaReceiverSchema = z
+  .object({
+    disableResolveMessage: z.boolean().exactOptional(),
+    name: z.string().exactOptional(),
+    secureSettings: z.record(z.string(), z.string()).exactOptional(),
+    settings: RawMessageSchema.exactOptional(),
+    type: z.string().exactOptional(),
+    uid: z.string().exactOptional(),
+    version: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PostableGrafanaReceiver')
+
+const PostableApiReceiverSchema = z
+  .object({
+    grafana_managed_receiver_configs: z.array(PostableGrafanaReceiverSchema).exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ description: 'nolint:revive', required: [] })
+  .openapi('PostableApiReceiver')
+
+const PostableApiAlertingConfigSchema = z
+  .object({
+    global: GlobalConfigSchema.exactOptional(),
+    inhibit_rules: z.array(InhibitRuleSchema).exactOptional(),
+    mute_time_intervals: z
+      .array(MuteTimeIntervalSchema)
+      .exactOptional()
+      .openapi({
+        description: 'MuteTimeIntervals is deprecated and will be removed before Alertmanager 1.0.',
+      }),
+    receivers: z
+      .array(PostableApiReceiverSchema)
+      .exactOptional()
+      .openapi({ description: 'Override with our superset receiver type' }),
+    route: RouteSchema.exactOptional(),
+    templates: z.array(z.string()).exactOptional(),
+    time_intervals: z.array(TimeIntervalSchema).exactOptional(),
+  })
+  .openapi({ description: 'nolint:revive', required: [] })
+  .openapi('PostableApiAlertingConfig')
+
+type GettableStatusType = {
+  cluster: z.infer<typeof ClusterStatusSchema>
+  config: z.infer<typeof PostableApiAlertingConfigSchema>
+  uptime: string
+  versionInfo: z.infer<typeof VersionInfoSchema>
+}
+
+const ExtraConfigurationSchema = z
+  .object({
+    alertmanager_config: z.string().exactOptional(),
+    identifier: z.string().exactOptional(),
+    managed_by: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ManagedBy is "manual" or "auto-sync", computed server-side so callers don\'t need configs:get\nto tell the two apart.',
+      }),
+    template_files: z.record(z.string(), z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ExtraConfiguration')
+
+type GettableUserConfigType = {
+  alertmanager_config?: z.infer<typeof GettableApiAlertingConfigSchema>
+  extra_config?: z.infer<typeof ExtraConfigurationSchema>[]
+  template_file_provenances?: { [key: string]: z.infer<typeof ProvenanceSchema> }
+  template_files?: { [key: string]: string }
+}
+
+const RemoteWriteConfigSchema = z
+  .object({ url: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('RemoteWriteConfig')
+
+const RelativeTimeRangeSchema = z
+  .object({ from: DurationSchema.exactOptional(), to: DurationSchema.exactOptional() })
+  .openapi({
+    description: 'RelativeTimeRange is the per query start and end time\nfor requests.',
+    required: [],
+  })
+  .openapi('RelativeTimeRange')
+
+const AlertQuerySchema = z
+  .object({
+    datasourceUid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Grafana data source unique identifier; it should be '__expr__' for a Server Side Expression operation.",
+      }),
+    model: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'JSON is the raw JSON query and includes the above properties as well as custom properties.',
+      }),
+    queryType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'QueryType is an optional identifier for the type of query.\nIt can be used to distinguish different types of queries.',
+      }),
+    refId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'RefID is the unique identifier of the query, set by the frontend call.',
+      }),
+    relativeTimeRange: RelativeTimeRangeSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'AlertQuery represents a single query associated with an alert definition.',
+    required: [],
+  })
+  .openapi('AlertQuery')
+
+const AlertRuleEditorSettingsSchema = z
+  .object({
+    simplified_notifications_section: z.boolean().exactOptional(),
+    simplified_query_and_expressions_section: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AlertRuleEditorSettings')
+
+const AlertRuleMetadataSchema = z
+  .object({ editor_settings: AlertRuleEditorSettingsSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AlertRuleMetadata')
+
+const AlertRuleNotificationSettingsSchema = z
+  .object({
+    active_time_intervals: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Override the times when notifications should not be muted. These must match the name of a mute time interval defined\nin the alertmanager configuration time_intervals section. All notifications will be suppressed unless they are sent\nat the time that matches any interval.',
+        example: ['maintenance'],
+      }),
+    group_by: z
+      .array(z.string())
+      .default(['alertname', 'grafana_folder'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Override the labels by which incoming alerts are grouped together. For example, multiple alerts coming in for\ncluster=A and alertname=LatencyHigh would be batched into a single group. To aggregate by all possible labels\nuse the special value '...' as the sole label name.\nThis effectively disables aggregation entirely, passing through all alerts as-is. This is unlikely to be what\nyou want, unless you have a very low alert volume or your upstream notification system performs its own grouping.\nMust include 'alertname' and 'grafana_folder' if not using '...'.",
+        example: ['alertname', 'grafana_folder', 'cluster'],
+      }),
+    group_interval: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Override how long to wait before sending a notification about new alerts that are added to a group of alerts for\nwhich an initial notification has already been sent. (Usually ~5m or more.)',
+        example: '5m',
+      }),
+    group_wait: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Override how long to initially wait to send a notification for a group of alerts. Allows to wait for an\ninhibiting alert to arrive or collect more initial alerts for the same group. (Usually ~0s to few minutes.)',
+        example: '30s',
+      }),
+    mute_time_intervals: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Override the times when notifications should be muted. These must match the name of a mute time interval defined\nin the alertmanager configuration time_intervals section. When muted it will not send any notifications, but\notherwise acts normally.',
+        example: ['maintenance'],
+      }),
+    policy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the notification policy to route alerts through.\nMutually exclusive with all other fields, cannot be used with contact point routing via the "receiver" field.',
+        example: '"Alerting Team"',
+      }),
+    receiver: z
+      .string()
+      .openapi({
+        description: 'Name of the receiver to send notifications to.',
+        example: 'grafana-default-email',
+      }),
+    repeat_interval: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Override how long to wait before sending a notification again if it has already been sent successfully for an\nalert. (Usually ~3h or more).\nNote that this parameter is implicitly bound by Alertmanager's `--data.retention` configuration flag.\nNotifications will be resent after either repeat_interval or the data retention period have passed, whichever\noccurs first. `repeat_interval` should not be less than `group_interval`.",
+        example: '4h',
+      }),
+  })
+  .openapi({ required: ['receiver'] })
+  .openapi('AlertRuleNotificationSettings')
+
+const RecordSchema = z
+  .object({
+    from: z
+      .string()
+      .openapi({
+        description: 'Which expression node should be used as the input for the recorded metric.',
+        example: 'A',
+      }),
+    metric: z
+      .string()
+      .openapi({ description: 'Name of the recorded metric.', example: 'grafana_alerts_ratio' }),
+    target_datasource_uid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Which data source should be used to write the output of the recording rule, specified by UID.',
+        example: 'my-prom',
+      }),
+  })
+  .openapi({ required: ['metric', 'from'] })
+  .openapi('Record')
+
+const UserInfoSchema = z
+  .object({ name: z.string().exactOptional(), uid: z.string().exactOptional() })
+  .openapi({
+    title:
+      'UserInfo represents user-related information, including a unique identifier and a name.',
+    required: [],
+  })
+  .openapi('UserInfo')
+
+const GettableGrafanaRuleSchema = z
+  .object({
+    condition: z.string().exactOptional(),
+    data: z.array(AlertQuerySchema).exactOptional(),
+    exec_err_state: z.enum(['OK', 'Alerting', 'Error']).exactOptional(),
+    guid: z.string().exactOptional(),
+    intervalSeconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    is_paused: z.boolean().exactOptional(),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Field is only populated when listing alert rule versions.' }),
+    metadata: AlertRuleMetadataSchema.exactOptional(),
+    missing_series_evals_to_resolve: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    namespace_uid: z.string().exactOptional(),
+    no_data_state: z.enum(['Alerting', 'NoData', 'OK']).exactOptional(),
+    notification_settings: AlertRuleNotificationSettingsSchema.exactOptional(),
+    provenance: ProvenanceSchema.exactOptional(),
+    record: RecordSchema.exactOptional(),
+    rule_group: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    uid: z.string().exactOptional(),
+    updated: z.iso.datetime({ offset: true }).exactOptional(),
+    updated_by: UserInfoSchema.exactOptional(),
+    version: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GettableGrafanaRule')
+
+const GettableExtendedRuleNodeSchema = z
+  .object({
+    alert: z.string().exactOptional(),
+    annotations: z.record(z.string(), z.string()).exactOptional(),
+    expr: z.string().exactOptional(),
+    for: z.string().exactOptional(),
+    grafana_alert: GettableGrafanaRuleSchema.exactOptional(),
+    keep_firing_for: z.string().exactOptional(),
+    labels: z.record(z.string(), z.string()).exactOptional(),
+    record: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GettableExtendedRuleNode')
+
+const GettableRuleGroupConfigSchema = z
+  .object({
+    align_evaluation_time_on_interval: z.boolean().exactOptional(),
+    evaluation_delay: z.string().exactOptional(),
+    interval: DurationSchema.exactOptional(),
+    labels: z.record(z.string(), z.string()).exactOptional(),
+    limit: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    name: z.string().exactOptional(),
+    query_offset: z.string().exactOptional(),
+    remote_write: z.array(RemoteWriteConfigSchema).exactOptional(),
+    rules: z.array(GettableExtendedRuleNodeSchema).exactOptional(),
+    source_tenants: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GettableRuleGroupConfig')
+
+type NamespaceConfigResponseType = {
+  [key: string]: z.infer<typeof GettableRuleGroupConfigSchema>[]
+}
+
+const DataResponseSchema: z.ZodType<DataResponseType> = z
+  .object({
+    Error: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Error is a property to be set if the corresponding DataQuery has an error.',
+      }),
+    ErrorSource: SourceSchema.exactOptional(),
+    Frames: FramesSchema.exactOptional(),
+    Status: StatusSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'A map of RefIDs (unique query identifiers) to this type makes up the Responses property of a QueryDataResponse.\nThe Error property is used to allow for partial success responses from the containing QueryDataResponse.',
+    title: 'DataResponse contains the results from a DataQuery.',
+    required: [],
+  })
+  .openapi('DataResponse')
+
+type ResponsesType = { [key: string]: z.infer<typeof DataResponseSchema> }
+
+const ResponsesSchema: z.ZodType<ResponsesType> = z
+  .record(z.string(), DataResponseSchema)
+  .openapi({
+    description:
+      "The QueryData method the QueryDataHandler method will set the RefId\nproperty on the DataResponses' frames based on these RefIDs.",
+    title: 'Responses is a map of RefIDs (Unique Query ID) to DataResponses.',
+  })
+  .openapi('Responses')
+
+type QueryDataResponseType = { results?: z.infer<typeof ResponsesSchema> }
+
+type ReceiverType = {
+  discord_configs?: z.infer<typeof DiscordConfigSchema>[]
+  email_configs?: z.infer<typeof EmailConfigSchema>[]
+  jira_configs?: z.infer<typeof JiraConfigSchema>[]
+  msteams_configs?: z.infer<typeof MSTeamsConfigSchema>[]
+  msteamsv2_configs?: z.infer<typeof MSTeamsV2ConfigSchema>[]
+  name?: string
+  opsgenie_configs?: z.infer<typeof OpsGenieConfigSchema>[]
+  pagerduty_configs?: z.infer<typeof PagerdutyConfigSchema>[]
+  pushover_configs?: z.infer<typeof PushoverConfigSchema>[]
+  slack_configs?: z.infer<typeof SlackConfigSchema>[]
+  sns_configs?: z.infer<typeof SNSConfigSchema>[]
+  telegram_configs?: z.infer<typeof TelegramConfigSchema>[]
+  victorops_configs?: z.infer<typeof VictorOpsConfigSchema>[]
+  webex_configs?: z.infer<typeof WebexConfigSchema>[]
+  webhook_configs?: z.infer<typeof WebhookConfigSchema>[]
+  wechat_configs?: z.infer<typeof WechatConfigSchema>[]
+}
 
 type RouteType = {
   active_time_intervals?: string[]
@@ -581,6 +2302,160 @@ type RouteExportType = {
   routes?: RouteExportType[]
 }
 
+const LabelsSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Each name and value is preceded by its length, encoded as a single byte\nfor size 0-254, or the following 3 bytes little-endian, if the first byte is 255.\nMaximum length allowed is 2^24 or 16MB.\nNames are in order.',
+    title: 'Labels is implemented by a single flat string holding name/value pairs.',
+  })
+  .openapi('Labels')
+
+const AlertSchema = z
+  .object({
+    activeAt: z.iso.datetime({ offset: true }).exactOptional(),
+    annotations: LabelsSchema,
+    labels: LabelsSchema,
+    state: z.string(),
+    value: z.string(),
+  })
+  .openapi({
+    required: ['labels', 'annotations', 'state', 'value'],
+    title: 'Alert has info for an alert.',
+  })
+  .openapi('Alert')
+
+const AlertingRuleSchema = z
+  .object({
+    activeAt: z.iso.datetime({ offset: true }),
+    alerts: z.array(AlertSchema).exactOptional(),
+    annotations: LabelsSchema,
+    duration: z.float64().exactOptional(),
+    evaluationTime: z.float64().exactOptional(),
+    folderUid: z.string().exactOptional(),
+    health: z.string(),
+    isPaused: z.boolean().exactOptional(),
+    keepFiringFor: z.float64().exactOptional(),
+    labels: LabelsSchema.exactOptional(),
+    lastError: z.string().exactOptional(),
+    lastEvaluation: z.iso.datetime({ offset: true }).exactOptional(),
+    name: z.string(),
+    notificationSettings: AlertRuleNotificationSettingsSchema.exactOptional(),
+    provenance: ProvenanceSchema.exactOptional(),
+    queriedDatasourceUIDs: z.array(z.string()).exactOptional(),
+    query: z.string(),
+    state: z.string().openapi({ description: 'State can be "pending", "firing", "inactive".' }),
+    totals: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional(),
+    totalsFiltered: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional(),
+    type: z.string(),
+    uid: z.string().exactOptional(),
+  })
+  .openapi({
+    description: 'adapted from cortex',
+    required: ['name', 'query', 'health', 'type', 'state', 'annotations', 'activeAt'],
+  })
+  .openapi('AlertingRule')
+
+const RuleGroupSchema = z
+  .object({
+    evaluationTime: z.float64().exactOptional(),
+    file: z.string(),
+    folderUid: z.string(),
+    interval: z.float64(),
+    lastEvaluation: z.iso.datetime({ offset: true }).exactOptional(),
+    name: z.string(),
+    rules: z
+      .array(AlertingRuleSchema)
+      .openapi({
+        description:
+          'In order to preserve rule ordering, while exposing type (alerting or recording)\nspecific properties, both alerting and recording rules are exposed in the\nsame array.',
+      }),
+    totals: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: ['name', 'file', 'folderUid', 'rules', 'interval'] })
+  .openapi('RuleGroup')
+
+const RuleDiscoverySchema = z
+  .object({
+    groupNextToken: z.string().exactOptional(),
+    groups: z.array(RuleGroupSchema),
+    totals: z
+      .record(
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: ['groups'] })
+  .openapi('RuleDiscovery')
+
+const ErrorTypeSchema = z
+  .string()
+  .openapi({ title: 'ErrorType models the different API error types.' })
+  .openapi('ErrorType')
+
+type RuleResponseType = {
+  data?: z.infer<typeof RuleDiscoverySchema>
+  error?: string
+  errorType?: z.infer<typeof ErrorTypeSchema>
+  status: string
+}
+
 type TimeIntervalType = { name?: string; time_intervals?: TimeIntervalType[] }
 
 const AccessControlStatusSchema = z
@@ -588,7 +2463,7 @@ const AccessControlStatusSchema = z
   .openapi({ required: [] })
   .openapi('AccessControlStatus')
 
-const AckSchema = z.object({}).openapi('Ack')
+const AckSchema = z.looseObject({}).openapi('Ack')
 
 const FailedUserSchema = z
   .object({ Error: z.string().exactOptional(), Login: z.string().exactOptional() })
@@ -707,7 +2582,7 @@ const ActiveUserStatsSchema = z
 
 const DsAccessSchema = z.string().openapi('DsAccess')
 
-const JsonSchema = z.object({}).openapi('Json')
+const JsonSchema = z.looseObject({}).openapi('Json')
 
 const AddDataSourceCommandSchema = z
   .object({
@@ -1152,29 +3027,6 @@ const AdminUpdateUserPermissionsFormSchema = z
   .openapi({ required: [] })
   .openapi('AdminUpdateUserPermissionsForm')
 
-const LabelsSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Each name and value is preceded by its length, encoded as a single byte\nfor size 0-254, or the following 3 bytes little-endian, if the first byte is 255.\nMaximum length allowed is 2^24 or 16MB.\nNames are in order.',
-    title: 'Labels is implemented by a single flat string holding name/value pairs.',
-  })
-  .openapi('Labels')
-
-const AlertSchema = z
-  .object({
-    activeAt: z.iso.datetime({ offset: true }).exactOptional(),
-    annotations: LabelsSchema,
-    labels: LabelsSchema,
-    state: z.string(),
-    value: z.string(),
-  })
-  .openapi({
-    required: ['labels', 'annotations', 'state', 'value'],
-    title: 'Alert has info for an alert.',
-  })
-  .openapi('Alert')
-
 const AlertDiscoverySchema = z
   .object({ alerts: z.array(AlertSchema) })
   .openapi({ required: ['alerts'], title: 'AlertDiscovery has info for all active alerts.' })
@@ -1198,7 +3050,7 @@ const AlertManagerSchema = z
   .openapi({ title: 'AlertManager models a configured Alert Manager.', required: [] })
   .openapi('AlertManager')
 
-const AlertManagerNotReadySchema = z.object({}).openapi('AlertManagerNotReady')
+const AlertManagerNotReadySchema = z.looseObject({}).openapi('AlertManagerNotReady')
 
 const AlertManagersResultSchema = z
   .object({
@@ -1211,100 +3063,6 @@ const AlertManagersResultSchema = z
   })
   .openapi('AlertManagersResult')
 
-const RelativeTimeRangeSchema = z
-  .object({ from: DurationSchema.exactOptional(), to: DurationSchema.exactOptional() })
-  .openapi({
-    description: 'RelativeTimeRange is the per query start and end time\nfor requests.',
-    required: [],
-  })
-  .openapi('RelativeTimeRange')
-
-const AlertQuerySchema = z
-  .object({
-    datasourceUid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Grafana data source unique identifier; it should be '__expr__' for a Server Side Expression operation.",
-      }),
-    model: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description:
-          'JSON is the raw JSON query and includes the above properties as well as custom properties.',
-      }),
-    queryType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'QueryType is an optional identifier for the type of query.\nIt can be used to distinguish different types of queries.',
-      }),
-    refId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'RefID is the unique identifier of the query, set by the frontend call.',
-      }),
-    relativeTimeRange: RelativeTimeRangeSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'AlertQuery represents a single query associated with an alert definition.',
-    required: [],
-  })
-  .openapi('AlertQuery')
-
-const RelativeTimeRangeExportSchema = z
-  .object({
-    from: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    to: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('RelativeTimeRangeExport')
-
-const AlertQueryExportSchema = z
-  .object({
-    datasourceUid: z.string().exactOptional(),
-    model: z.record(z.string(), z.any()).exactOptional(),
-    queryType: z.string().exactOptional(),
-    refId: z.string().exactOptional(),
-    relativeTimeRange: RelativeTimeRangeExportSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'AlertQueryExport is the provisioned export of models.AlertQuery.',
-    required: [],
-  })
-  .openapi('AlertQueryExport')
-
-const ErrorTypeSchema = z
-  .string()
-  .openapi({ title: 'ErrorType models the different API error types.' })
-  .openapi('ErrorType')
-
 const AlertResponseSchema = z
   .object({
     data: AlertDiscoverySchema.exactOptional(),
@@ -1314,179 +3072,6 @@ const AlertResponseSchema = z
   })
   .openapi({ required: ['status'] })
   .openapi('AlertResponse')
-
-const AlertRuleEditorSettingsSchema = z
-  .object({
-    simplified_notifications_section: z.boolean().exactOptional(),
-    simplified_query_and_expressions_section: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AlertRuleEditorSettings')
-
-const AlertRuleNotificationSettingsExportSchema = z
-  .object({
-    active_time_intervals: z.array(z.string()).exactOptional(),
-    group_by: z.array(z.string()).exactOptional(),
-    group_interval: z.string().exactOptional(),
-    group_wait: z.string().exactOptional(),
-    mute_time_intervals: z.array(z.string()).exactOptional(),
-    receiver: z.string().exactOptional(),
-    repeat_interval: z.string().exactOptional(),
-  })
-  .openapi({
-    title:
-      'AlertRuleNotificationSettingsExport is the provisioned export of models.NotificationSettings.',
-    required: [],
-  })
-  .openapi('AlertRuleNotificationSettingsExport')
-
-const AlertRuleRecordExportSchema = z
-  .object({
-    from: z.string().exactOptional(),
-    metric: z.string().exactOptional(),
-    targetDatasourceUid: z.string().exactOptional(),
-  })
-  .openapi({ title: 'Record is the provisioned export of models.Record.', required: [] })
-  .openapi('AlertRuleRecordExport')
-
-const AlertRuleExportSchema = z
-  .object({
-    annotations: z.record(z.string(), z.string()).exactOptional(),
-    condition: z.string().exactOptional(),
-    dashboardUid: z.string().exactOptional(),
-    data: z.array(AlertQueryExportSchema).exactOptional(),
-    execErrState: z.enum(['OK', 'Alerting', 'Error']).exactOptional(),
-    for: DurationSchema.exactOptional(),
-    isPaused: z.boolean().exactOptional(),
-    keepFiringFor: DurationSchema.exactOptional(),
-    labels: z.record(z.string(), z.string()).exactOptional(),
-    missing_series_evals_to_resolve: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    noDataState: z.enum(['Alerting', 'NoData', 'OK']).exactOptional(),
-    notification_settings: AlertRuleNotificationSettingsExportSchema.exactOptional(),
-    panelId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    record: AlertRuleRecordExportSchema.exactOptional(),
-    title: z.string().exactOptional(),
-    uid: z.string().exactOptional(),
-  })
-  .openapi({
-    title: 'AlertRuleExport is the provisioned file export of models.AlertRule.',
-    required: [],
-  })
-  .openapi('AlertRuleExport')
-
-const AlertRuleNotificationSettingsSchema = z
-  .object({
-    active_time_intervals: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Override the times when notifications should not be muted. These must match the name of a mute time interval defined\nin the alertmanager configuration time_intervals section. All notifications will be suppressed unless they are sent\nat the time that matches any interval.',
-        example: ['maintenance'],
-      }),
-    group_by: z
-      .array(z.string())
-      .default(['alertname', 'grafana_folder'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Override the labels by which incoming alerts are grouped together. For example, multiple alerts coming in for\ncluster=A and alertname=LatencyHigh would be batched into a single group. To aggregate by all possible labels\nuse the special value '...' as the sole label name.\nThis effectively disables aggregation entirely, passing through all alerts as-is. This is unlikely to be what\nyou want, unless you have a very low alert volume or your upstream notification system performs its own grouping.\nMust include 'alertname' and 'grafana_folder' if not using '...'.",
-        example: ['alertname', 'grafana_folder', 'cluster'],
-      }),
-    group_interval: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Override how long to wait before sending a notification about new alerts that are added to a group of alerts for\nwhich an initial notification has already been sent. (Usually ~5m or more.)',
-        example: '5m',
-      }),
-    group_wait: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Override how long to initially wait to send a notification for a group of alerts. Allows to wait for an\ninhibiting alert to arrive or collect more initial alerts for the same group. (Usually ~0s to few minutes.)',
-        example: '30s',
-      }),
-    mute_time_intervals: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Override the times when notifications should be muted. These must match the name of a mute time interval defined\nin the alertmanager configuration time_intervals section. When muted it will not send any notifications, but\notherwise acts normally.',
-        example: ['maintenance'],
-      }),
-    policy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the notification policy to route alerts through.\nMutually exclusive with all other fields, cannot be used with contact point routing via the "receiver" field.',
-        example: '"Alerting Team"',
-      }),
-    receiver: z
-      .string()
-      .openapi({
-        description: 'Name of the receiver to send notifications to.',
-        example: 'grafana-default-email',
-      }),
-    repeat_interval: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Override how long to wait before sending a notification again if it has already been sent successfully for an\nalert. (Usually ~3h or more).\nNote that this parameter is implicitly bound by Alertmanager's `--data.retention` configuration flag.\nNotifications will be resent after either repeat_interval or the data retention period have passed, whichever\noccurs first. `repeat_interval` should not be less than `group_interval`.",
-        example: '4h',
-      }),
-  })
-  .openapi({ required: ['receiver'] })
-  .openapi('AlertRuleNotificationSettings')
-
-const RecordSchema = z
-  .object({
-    from: z
-      .string()
-      .openapi({
-        description: 'Which expression node should be used as the input for the recorded metric.',
-        example: 'A',
-      }),
-    metric: z
-      .string()
-      .openapi({ description: 'Name of the recorded metric.', example: 'grafana_alerts_ratio' }),
-    target_datasource_uid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Which data source should be used to write the output of the recording rule, specified by UID.',
-        example: 'my-prom',
-      }),
-  })
-  .openapi({ required: ['metric', 'from'] })
-  .openapi('Record')
 
 const ProvisionedAlertRuleSchema = z
   .object({
@@ -1619,31 +3204,6 @@ const AlertRuleGroupSchema = z
   .openapi({ required: [] })
   .openapi('AlertRuleGroup')
 
-const AlertRuleGroupExportSchema = z
-  .object({
-    folder: z.string().exactOptional(),
-    interval: DurationSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    orgId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    rules: z.array(AlertRuleExportSchema).exactOptional(),
-  })
-  .openapi({
-    title: 'AlertRuleGroupExport is the provisioned file export of AlertRuleGroupV1.',
-    required: [],
-  })
-  .openapi('AlertRuleGroupExport')
-
 const AlertRuleGroupMetadataSchema = z
   .object({
     interval: z
@@ -1662,137 +3222,7 @@ const AlertRuleGroupMetadataSchema = z
   .openapi({ required: [] })
   .openapi('AlertRuleGroupMetadata')
 
-const AlertRuleMetadataSchema = z
-  .object({ editor_settings: AlertRuleEditorSettingsSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AlertRuleMetadata')
-
-const RawMessageSchema = z.object({}).openapi('RawMessage')
-
-const ReceiverExportSchema = z
-  .object({
-    disableResolveMessage: z.boolean().exactOptional(),
-    settings: RawMessageSchema.exactOptional(),
-    type: z.string().exactOptional(),
-    uid: z.string().exactOptional(),
-  })
-  .openapi({
-    title: 'ReceiverExport is the provisioned file export of alerting.ReceiverV1.',
-    required: [],
-  })
-  .openapi('ReceiverExport')
-
-const ContactPointExportSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    orgId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    receivers: z.array(ReceiverExportSchema).exactOptional(),
-  })
-  .openapi({
-    title: 'ContactPointExport is the provisioned file export of alerting.ContactPointV1.',
-    required: [],
-  })
-  .openapi('ContactPointExport')
-
-const MuteTimeIntervalExportSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    orgId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    time_intervals: z.array(TimeIntervalSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MuteTimeIntervalExport')
-
-const RouteExportSchema: z.ZodType<RouteExportType> = z
-  .lazy(() =>
-    z
-      .object({
-        active_time_intervals: z.array(z.string()).exactOptional(),
-        continue: z.boolean().exactOptional(),
-        group_by: z.array(z.string()).exactOptional(),
-        group_interval: z.string().exactOptional(),
-        group_wait: z.string().exactOptional(),
-        match: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({ description: 'Deprecated. Remove before v1.0 release.' }),
-        match_re: MatchRegexpsSchema.exactOptional(),
-        matchers: MatchersSchema.exactOptional(),
-        mute_time_intervals: z.array(z.string()).exactOptional(),
-        object_matchers: ObjectMatchersSchema.exactOptional(),
-        receiver: z.string().exactOptional(),
-        repeat_interval: z.string().exactOptional(),
-        routes: z.array(RouteExportSchema).exactOptional(),
-      })
-      .openapi({
-        description:
-          "RouteExport is the provisioned file export of definitions.Route. This is needed to hide fields that aren't useable in\nprovisioning file format. An alternative would be to define a custom MarshalJSON and MarshalYAML that excludes them.",
-        required: [],
-      }),
-  )
-  .openapi('RouteExport')
-
-const NotificationPolicyExportSchema = z
-  .object({
-    active_time_intervals: z.array(z.string()).exactOptional(),
-    continue: z.boolean().exactOptional(),
-    group_by: z.array(z.string()).exactOptional(),
-    group_interval: z.string().exactOptional(),
-    group_wait: z.string().exactOptional(),
-    match: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Remove before v1.0 release.' }),
-    match_re: MatchRegexpsSchema.exactOptional(),
-    matchers: MatchersSchema.exactOptional(),
-    mute_time_intervals: z.array(z.string()).exactOptional(),
-    object_matchers: ObjectMatchersSchema.exactOptional(),
-    orgId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    receiver: z.string().exactOptional(),
-    repeat_interval: z.string().exactOptional(),
-    routes: z.array(RouteExportSchema).exactOptional(),
-  })
-  .openapi({
-    title:
-      'NotificationPolicyExport is the provisioned file export of alerting.NotificiationPolicyV1.',
-    required: [],
-  })
-  .openapi('NotificationPolicyExport')
-
-const AlertingFileExportSchema = z
+const AlertingFileExportSchema: z.ZodType<AlertingFileExportType> = z
   .object({
     apiVersion: z
       .preprocess(
@@ -1813,67 +3243,6 @@ const AlertingFileExportSchema = z
   })
   .openapi({ title: 'AlertingFileExport is the full provisioned file export.', required: [] })
   .openapi('AlertingFileExport')
-
-const AlertingRuleSchema = z
-  .object({
-    activeAt: z.iso.datetime({ offset: true }),
-    alerts: z.array(AlertSchema).exactOptional(),
-    annotations: LabelsSchema,
-    duration: z.float64().exactOptional(),
-    evaluationTime: z.float64().exactOptional(),
-    folderUid: z.string().exactOptional(),
-    health: z.string(),
-    isPaused: z.boolean().exactOptional(),
-    keepFiringFor: z.float64().exactOptional(),
-    labels: LabelsSchema.exactOptional(),
-    lastError: z.string().exactOptional(),
-    lastEvaluation: z.iso.datetime({ offset: true }).exactOptional(),
-    name: z.string(),
-    notificationSettings: AlertRuleNotificationSettingsSchema.exactOptional(),
-    provenance: ProvenanceSchema.exactOptional(),
-    queriedDatasourceUIDs: z.array(z.string()).exactOptional(),
-    query: z.string(),
-    state: z.string().openapi({ description: 'State can be "pending", "firing", "inactive".' }),
-    totals: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional(),
-    totalsFiltered: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional(),
-    type: z.string(),
-    uid: z.string().exactOptional(),
-  })
-  .openapi({
-    description: 'adapted from cortex',
-    required: ['name', 'query', 'health', 'type', 'state', 'annotations', 'activeAt'],
-  })
-  .openapi('AlertingRule')
 
 const AlertingStatusSchema = z
   .object({
@@ -1918,8 +3287,13 @@ const AnnotationSchema = z
         z.int64(),
       )
       .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Deprecated. Use alertUID instead.',
+      }),
     alertName: z.string().exactOptional(),
+    alertUID: z.string().exactOptional(),
     avatarUrl: z.string().exactOptional(),
     created: z
       .preprocess(
@@ -2324,469 +3698,7 @@ const BacktestConfigSchema = z
   .openapi({ required: [] })
   .openapi('BacktestConfig')
 
-const DataLinkSchema: z.ZodType<DataLinkType> = z
-  .lazy(() =>
-    z
-      .object({
-        internal: InternalDataLinkSchema.exactOptional(),
-        targetBlank: z.boolean().exactOptional(),
-        title: z.string().exactOptional(),
-        url: z.string().exactOptional(),
-      })
-      .openapi({ description: 'DataLink define what', required: [] }),
-  )
-  .openapi('DataLink')
-
-const ValueMappingSchema = z
-  .object({})
-  .openapi({ description: 'ValueMapping allows mapping input values to text and color' })
-  .openapi('ValueMapping')
-
-const ValueMappingsSchema = z.array(ValueMappingSchema).openapi('ValueMappings')
-
-const ConfFloat64Schema = z
-  .float64()
-  .openapi({
-    description: 'ConfFloat64 is a float64. It Marshals float64 values of NaN of Inf\nto null.',
-  })
-  .openapi('ConfFloat64')
-
-const ThresholdsModeSchema = z
-  .string()
-  .openapi({ description: 'ThresholdsMode absolute or percentage' })
-  .openapi('ThresholdsMode')
-
-const ThresholdSchema = z
-  .object({
-    color: z.string().exactOptional(),
-    state: z.string().exactOptional(),
-    value: ConfFloat64Schema.exactOptional(),
-  })
-  .openapi({ description: 'Threshold a single step on the threshold list', required: [] })
-  .openapi('Threshold')
-
-const ThresholdsConfigSchema = z
-  .object({
-    mode: ThresholdsModeSchema.exactOptional(),
-    steps: z
-      .array(ThresholdSchema)
-      .exactOptional()
-      .openapi({ description: "Must be sorted by 'value', first value is always -Infinity" }),
-  })
-  .openapi({ description: 'ThresholdsConfig setup thresholds', required: [] })
-  .openapi('ThresholdsConfig')
-
-const EnumFieldConfigSchema = z
-  .object({
-    color: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Color is the color value for a given index (empty is undefined)' }),
-    description: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Description of the enum state' }),
-    icon: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Icon supports setting an icon for a given index value' }),
-    text: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Value is the string display value for a given index' }),
-  })
-  .openapi({
-    description: 'Enum field config\nVector values are used as lookup keys into the enum fields',
-    required: [],
-  })
-  .openapi('EnumFieldConfig')
-
-const FieldTypeConfigSchema = z
-  .object({ enum: EnumFieldConfigSchema.exactOptional() })
-  .openapi({
-    description: 'FieldTypeConfig has type specific configs, only one should be active at a time',
-    required: [],
-  })
-  .openapi('FieldTypeConfig')
-
-const FieldConfigSchema = z
-  .object({
-    color: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'Map values to a display color\nNOTE: this interface is under development in the frontend... so simple map for now',
-      }),
-    custom: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({ description: 'Panel Specific Values' }),
-    decimals: z.int().exactOptional(),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description is human readable field metadata' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'DisplayName overrides Grafana default naming, should not be used from a data source',
-      }),
-    displayNameFromDS: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'DisplayNameFromDS overrides Grafana default naming strategy.' }),
-    filterable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Filterable indicates if the Field's data can be filtered by additional calls.",
-      }),
-    interval: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Interval indicates the expected regular step between values in the series.\nWhen an interval exists, consumers can identify "missing" values when the expected value is not present.\nThe grafana timeseries visualization will render disconnected values when missing values are found it the time field.\nThe interval uses the same units as the values.  For time.Time, this is defined in milliseconds.',
-      }),
-    links: z
-      .array(DataLinkSchema)
-      .exactOptional()
-      .openapi({ description: 'The behavior when clicking on a result' }),
-    mappings: ValueMappingsSchema.exactOptional(),
-    max: ConfFloat64Schema.exactOptional(),
-    min: ConfFloat64Schema.exactOptional(),
-    noValue: z.string().exactOptional().openapi({ description: 'Alternative to empty string' }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Path is an explicit path to the field in the datasource. When the frame meta includes a path,\nthis will default to `${frame.meta.path}/${field.name}\n\nWhen defined, this value can be used as an identifier within the datasource scope, and\nmay be used as an identifier to update values in a subsequent request',
-      }),
-    thresholds: ThresholdsConfigSchema.exactOptional(),
-    type: FieldTypeConfigSchema.exactOptional(),
-    unit: z.string().exactOptional().openapi({ description: 'Numeric Options' }),
-    writeable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Writeable indicates that the datasource knows how to update this value',
-      }),
-  })
-  .openapi({ title: 'FieldConfig represents the display properties for a Field.', required: [] })
-  .openapi('FieldConfig')
-
-const FrameLabelsSchema = z
-  .record(z.string(), z.string())
-  .openapi({
-    description:
-      'Labels are used to add metadata to an object.  The JSON will always be sorted keys',
-  })
-  .openapi('FrameLabels')
-
-const FieldSchema = z
-  .object({
-    config: FieldConfigSchema.exactOptional(),
-    labels: FrameLabelsSchema.exactOptional(),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name is default identifier of the field. The name does not have to be unique, but the combination\nof name and Labels should be unique for proper behavior in all situations.',
-      }),
-  })
-  .openapi({
-    description:
-      'A Field is essentially a slice of various types with extra properties and methods.\nSee NewField() for supported types.\n\nThe slice data in the Field is a not exported, so methods on the Field are used to to manipulate its data.',
-    title: 'Field represents a typed column of data within a Frame.',
-    required: [],
-  })
-  .openapi('Field')
-
-const DataTopicSchema = z
-  .string()
-  .openapi({ title: 'DataTopic is used to identify which topic the frame should be assigned to.' })
-  .openapi('DataTopic')
-
-const InspectTypeSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({
-    type: 'integer',
-    format: 'int64',
-    title: 'InspectType is a type for the Inspect property of a Notice.',
-  })
-  .openapi('InspectType')
-
-const NoticeSeveritySchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({
-    type: 'integer',
-    format: 'int64',
-    title: 'NoticeSeverity is a type for the Severity property of a Notice.',
-  })
-  .openapi('NoticeSeverity')
-
-const NoticeSchema = z
-  .object({
-    inspect: InspectTypeSchema.exactOptional(),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Link is an optional link for display in the user interface and can be an\nabsolute URL or a path relative to Grafana's root url.",
-      }),
-    severity: NoticeSeveritySchema.exactOptional(),
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Text is freeform descriptive text for the notice.' }),
-  })
-  .openapi({
-    title: "Notice provides a structure for presenting notifications in Grafana's user interface.",
-    required: [],
-  })
-  .openapi('Notice')
-
-const VisTypeSchema = z
-  .string()
-  .openapi({ title: 'VisType is used to indicate how the data should be visualized in explore.' })
-  .openapi('VisType')
-
-const QueryStatSchema = z
-  .object({
-    color: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'Map values to a display color\nNOTE: this interface is under development in the frontend... so simple map for now',
-      }),
-    custom: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({ description: 'Panel Specific Values' }),
-    decimals: z.int().exactOptional(),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description is human readable field metadata' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'DisplayName overrides Grafana default naming, should not be used from a data source',
-      }),
-    displayNameFromDS: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'DisplayNameFromDS overrides Grafana default naming strategy.' }),
-    filterable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Filterable indicates if the Field's data can be filtered by additional calls.",
-      }),
-    interval: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Interval indicates the expected regular step between values in the series.\nWhen an interval exists, consumers can identify "missing" values when the expected value is not present.\nThe grafana timeseries visualization will render disconnected values when missing values are found it the time field.\nThe interval uses the same units as the values.  For time.Time, this is defined in milliseconds.',
-      }),
-    links: z
-      .array(DataLinkSchema)
-      .exactOptional()
-      .openapi({ description: 'The behavior when clicking on a result' }),
-    mappings: ValueMappingsSchema.exactOptional(),
-    max: ConfFloat64Schema.exactOptional(),
-    min: ConfFloat64Schema.exactOptional(),
-    noValue: z.string().exactOptional().openapi({ description: 'Alternative to empty string' }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Path is an explicit path to the field in the datasource. When the frame meta includes a path,\nthis will default to `${frame.meta.path}/${field.name}\n\nWhen defined, this value can be used as an identifier within the datasource scope, and\nmay be used as an identifier to update values in a subsequent request',
-      }),
-    thresholds: ThresholdsConfigSchema.exactOptional(),
-    type: FieldTypeConfigSchema.exactOptional(),
-    unit: z.string().exactOptional().openapi({ description: 'Numeric Options' }),
-    value: z.float64().exactOptional(),
-    writeable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Writeable indicates that the datasource knows how to update this value',
-      }),
-  })
-  .openapi({
-    description:
-      "The embedded FieldConfig's display name must be set.\nIt corresponds to the QueryResultMetaStat on the frontend (https://github.com/grafana/grafana/blob/master/packages/grafana-data/src/types/data.ts#L53).",
-    title:
-      'QueryStat is used for storing arbitrary statistics metadata related to a query and its result, e.g. total request time, data processing time.',
-    required: [],
-  })
-  .openapi('QueryStat')
-
-const FrameTypeSchema = z
-  .string()
-  .openapi({
-    description:
-      "A FrameType string, when present in a frame's metadata, asserts that the\nframe's structure conforms to the FrameType's specification.\nThis property is currently optional, so FrameType may be FrameTypeUnknown even if the properties of\nthe Frame correspond to a defined FrameType.",
-  })
-  .openapi('FrameType')
-
-const FrameTypeVersionSchema = z
-  .array(
-    z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.uint64(),
-      )
-      .openapi({ type: 'integer', format: 'uint64' }),
-  )
-  .openapi({ title: 'FrameType is a 2 number version (Major / Minor).' })
-  .openapi('FrameTypeVersion')
-
-const FrameMetaSchema = z
-  .object({
-    channel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Channel is the path to a stream in grafana live that has real-time updates for this data.',
-      }),
-    custom: z.any().exactOptional().openapi({ description: 'Custom datasource specific values.' }),
-    dataTopic: DataTopicSchema.exactOptional(),
-    executedQueryString: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ExecutedQueryString is the raw query sent to the underlying system. All macros and templating\nhave been applied.  When metadata contains this value, it will be shown in the query inspector.',
-      }),
-    notices: z
-      .array(NoticeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Notices provide additional information about the data in the Frame that\nGrafana can display to the user in the user interface.',
-      }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Path is a browsable path on the datasource.' }),
-    pathSeparator: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "PathSeparator defines the separator pattern to decode a hierarchy. The default separator is '/'.",
-      }),
-    preferredVisualisationPluginId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'PreferredVisualizationPluginId sets the panel plugin id to use to render the data when using Explore. If\nthe plugin cannot be found will fall back to PreferredVisualization.',
-      }),
-    preferredVisualisationType: VisTypeSchema.exactOptional(),
-    stats: z
-      .array(QueryStatSchema)
-      .exactOptional()
-      .openapi({ description: 'Stats is an array of query result statistics.' }),
-    type: FrameTypeSchema.exactOptional(),
-    typeVersion: FrameTypeVersionSchema.exactOptional(),
-    uniqueRowIdFields: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          "Array of field indices which values create a unique id for each row. Ideally this should be globally unique ID\nbut that isn't guarantied. Should help with keeping track and deduplicating rows in visualizations, especially\nwith streaming data with frequent updates.",
-        example: 'TraceID in Tempo, table name + primary key in SQL',
-      }),
-  })
-  .openapi({
-    description:
-      'https://github.com/grafana/grafana/blob/master/packages/grafana-data/src/types/data.ts#L11\nNOTE -- in javascript this can accept any `[key: string]: any;` however\nthis interface only exposes the values we want to be exposed',
-    title: 'FrameMeta matches:',
-    required: [],
-  })
-  .openapi('FrameMeta')
-
-const FrameSchema = z
-  .object({
-    Fields: z
-      .array(FieldSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Fields are the columns of a frame.\nAll Fields must be of the same the length when marshalling the Frame for transmission.\nThere should be no `nil` entries in the Fields slice (making them pointers was a mistake).',
-      }),
-    Meta: FrameMetaSchema.exactOptional(),
-    Name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name is used in some Grafana visualizations.' }),
-    RefID: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'RefID is a property that can be set to match a Frame to its originating query.',
-      }),
-  })
-  .openapi({
-    description:
-      'Each Field is well typed by its FieldType and supports optional Labels.\n\nA Frame is a general data container for Grafana. A Frame can be table data\nor time series data depending on its content and field types.',
-    title: 'Frame is a columnar data structure where each column is a Field.',
-    required: [],
-  })
-  .openapi('Frame')
-
-const BacktestResultSchema = FrameSchema.openapi('BacktestResult')
+const BacktestResultSchema: z.ZodType<BacktestResultType> = FrameSchema.openapi('BacktestResult')
 
 const CacheConfigSchema = z
   .object({
@@ -3440,30 +4352,6 @@ const CloudMigrationSessionRequestDTOSchema = z
   .openapi({ required: [] })
   .openapi('CloudMigrationSessionRequestDTO')
 
-const ConfigSchema: z.ZodType<ConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        global: GlobalConfigSchema.exactOptional(),
-        inhibit_rules: z.array(InhibitRuleSchema).exactOptional(),
-        mute_time_intervals: z
-          .array(MuteTimeIntervalSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'MuteTimeIntervals is deprecated and will be removed before Alertmanager 1.0.',
-          }),
-        route: RouteSchema.exactOptional(),
-        templates: z.array(z.string()).exactOptional(),
-        time_intervals: z.array(TimeIntervalSchema).exactOptional(),
-      })
-      .openapi({
-        title: "Config is the top-level configuration for Alertmanager's config files.",
-        required: [],
-      }),
-  )
-  .openapi('Config')
-
 const EmbeddedContactPointSchema = z
   .object({
     disableResolveMessage: z.boolean().exactOptional().openapi({ example: false }),
@@ -3909,7 +4797,7 @@ const CreateLibraryElementCommandSchema = z
           'Kind of element to create, Use 1 for library panels or 2 for c.\nDescription:\n- 1 - library panels',
       }),
     model: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The JSON model for the library element.' }),
     name: z.string().exactOptional().openapi({ description: 'Name of the library element.' }),
@@ -4532,53 +5420,6 @@ const DashboardVersionResponseMetaSchema = z
   .openapi({ required: [] })
   .openapi('DashboardVersionResponseMeta')
 
-const SourceSchema = z
-  .string()
-  .openapi({ title: 'Source type defines the status source.' })
-  .openapi('Source')
-
-const FramesSchema = z
-  .array(FrameSchema)
-  .openapi({
-    description:
-      'It is the main data container within a backend.DataResponse.\nThere should be no `nil` entries in the Frames slice (making them pointers was a mistake).',
-    title: 'Frames is a slice of Frame pointers.',
-  })
-  .openapi('Frames')
-
-const StatusSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64(),
-  )
-  .openapi({ type: 'integer', format: 'int64' })
-  .openapi('Status')
-
-const DataResponseSchema = z
-  .object({
-    Error: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Error is a property to be set if the corresponding DataQuery has an error.',
-      }),
-    ErrorSource: SourceSchema.exactOptional(),
-    Frames: FramesSchema.exactOptional(),
-    Status: StatusSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'A map of RefIDs (unique query identifiers) to this type makes up the Responses property of a QueryDataResponse.\nThe Error property is used to allow for partial success responses from the containing QueryDataResponse.',
-    title: 'DataResponse contains the results from a DataQuery.',
-    required: [],
-  })
-  .openapi('DataResponse')
-
 const DataSourceSchema = z
   .object({
     access: DsAccessSchema.exactOptional(),
@@ -4729,18 +5570,6 @@ const DeviceSearchHitDTOSchema = z
   .openapi({ required: [] })
   .openapi('DeviceSearchHitDTO')
 
-const DiscordConfigSchema = z
-  .object({
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    message: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    title: z.string().exactOptional(),
-    webhook_url: URLSchema.exactOptional(),
-    webhook_url_file: z.string().exactOptional(),
-  })
-  .openapi({ title: 'DiscordConfig configures notifications via Discord.', required: [] })
-  .openapi('DiscordConfig')
-
 const DiscoveryBaseSchema = z
   .object({
     error: z.string().exactOptional(),
@@ -4767,27 +5596,6 @@ const DsPermissionTypeSchema = z
       'Datasource permission\nDescription:\n- `0` - No Access\n- `1` - Query\n- `2` - Edit',
   })
   .openapi('DsPermissionType')
-
-const EmailConfigSchema = z
-  .object({
-    auth_identity: z.string().exactOptional(),
-    auth_password: SecretSchema.exactOptional(),
-    auth_password_file: z.string().exactOptional(),
-    auth_secret: SecretSchema.exactOptional(),
-    auth_username: z.string().exactOptional(),
-    from: z.string().exactOptional(),
-    headers: z.record(z.string(), z.string()).exactOptional(),
-    hello: z.string().exactOptional(),
-    html: z.string().exactOptional(),
-    require_tls: z.boolean().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    smarthost: HostPortSchema.exactOptional(),
-    text: z.string().exactOptional(),
-    tls_config: TLSConfigSchema.exactOptional(),
-    to: z.string().exactOptional().openapi({ description: 'Email address to notify.' }),
-  })
-  .openapi({ title: 'EmailConfig configures notifications via mail.', required: [] })
-  .openapi('EmailConfig')
 
 const EmailDTOSchema = z
   .object({ recipient: z.string().exactOptional(), uid: z.string().exactOptional() })
@@ -4836,256 +5644,7 @@ const EvalQueriesPayloadSchema = z
   .openapi({ required: [] })
   .openapi('EvalQueriesPayload')
 
-const EvalQueriesResponseSchema = z.object({}).openapi('EvalQueriesResponse')
-
-const PostableGrafanaReceiverSchema = z
-  .object({
-    disableResolveMessage: z.boolean().exactOptional(),
-    name: z.string().exactOptional(),
-    secureSettings: z.record(z.string(), z.string()).exactOptional(),
-    settings: RawMessageSchema.exactOptional(),
-    type: z.string().exactOptional(),
-    uid: z.string().exactOptional(),
-    version: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PostableGrafanaReceiver')
-
-const OpsGenieConfigResponderSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'One of those 3 should be filled.' }),
-    name: z.string().exactOptional(),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'team, user, escalation, schedule etc.' }),
-    username: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OpsGenieConfigResponder')
-
-const OpsGenieConfigSchema = z
-  .object({
-    actions: z.string().exactOptional(),
-    api_key: SecretSchema.exactOptional(),
-    api_key_file: z.string().exactOptional(),
-    api_url: URLSchema.exactOptional(),
-    description: z.string().exactOptional(),
-    details: z.record(z.string(), z.string()).exactOptional(),
-    entity: z.string().exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    message: z.string().exactOptional(),
-    note: z.string().exactOptional(),
-    priority: z.string().exactOptional(),
-    responders: z.array(OpsGenieConfigResponderSchema).exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    source: z.string().exactOptional(),
-    tags: z.string().exactOptional(),
-    update_alerts: z.boolean().exactOptional(),
-  })
-  .openapi({ title: 'OpsGenieConfig configures notifications via OpsGenie.', required: [] })
-  .openapi('OpsGenieConfig')
-
-const PagerdutyImageSchema = z
-  .object({
-    alt: z.string().exactOptional(),
-    href: z.string().exactOptional(),
-    src: z.string().exactOptional(),
-  })
-  .openapi({ title: 'PagerdutyImage is an image.', required: [] })
-  .openapi('PagerdutyImage')
-
-const PagerdutyLinkSchema = z
-  .object({ href: z.string().exactOptional(), text: z.string().exactOptional() })
-  .openapi({ title: 'PagerdutyLink is a link.', required: [] })
-  .openapi('PagerdutyLink')
-
-const PagerdutyConfigSchema = z
-  .object({
-    class: z.string().exactOptional(),
-    client: z.string().exactOptional(),
-    client_url: z.string().exactOptional(),
-    component: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    details: z.record(z.string(), z.string()).exactOptional(),
-    group: z.string().exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    images: z.array(PagerdutyImageSchema).exactOptional(),
-    links: z.array(PagerdutyLinkSchema).exactOptional(),
-    routing_key: SecretSchema.exactOptional(),
-    routing_key_file: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    service_key: SecretSchema.exactOptional(),
-    service_key_file: z.string().exactOptional(),
-    severity: z.string().exactOptional(),
-    source: z.string().exactOptional(),
-    url: URLSchema.exactOptional(),
-  })
-  .openapi({ title: 'PagerdutyConfig configures notifications via PagerDuty.', required: [] })
-  .openapi('PagerdutyConfig')
-
-const PushoverConfigSchema = z
-  .object({
-    device: z.string().exactOptional(),
-    expire: z.string().exactOptional(),
-    html: z.boolean().exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    message: z.string().exactOptional(),
-    priority: z.string().exactOptional(),
-    retry: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    sound: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    token: SecretSchema.exactOptional(),
-    token_file: z.string().exactOptional(),
-    ttl: z.string().exactOptional(),
-    url: z.string().exactOptional(),
-    url_title: z.string().exactOptional(),
-    user_key: SecretSchema.exactOptional(),
-    user_key_file: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PushoverConfig')
-
-const SlackConfirmationFieldSchema = z
-  .object({
-    dismiss_text: z.string().exactOptional(),
-    ok_text: z.string().exactOptional(),
-    text: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'SlackConfirmationField protect users from destructive actions or particularly distinguished decisions\nby asking them to confirm their button click one more time.\nSee https://api.slack.com/docs/interactive-message-field-guide#confirmation_fields for more information.',
-    required: [],
-  })
-  .openapi('SlackConfirmationField')
-
-const SlackActionSchema = z
-  .object({
-    confirm: SlackConfirmationFieldSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    style: z.string().exactOptional(),
-    text: z.string().exactOptional(),
-    type: z.string().exactOptional(),
-    url: z.string().exactOptional(),
-    value: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'See https://api.slack.com/docs/message-attachments#action_fields and https://api.slack.com/docs/message-buttons\nfor more information.',
-    title: 'SlackAction configures a single Slack action that is sent with each notification.',
-    required: [],
-  })
-  .openapi('SlackAction')
-
-const SlackFieldSchema = z
-  .object({
-    short: z.boolean().exactOptional(),
-    title: z.string().exactOptional(),
-    value: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'Each field must contain a title, value, and optionally, a boolean value to indicate if the field\nis short enough to be displayed next to other fields designated as short.\nSee https://api.slack.com/docs/message-attachments#fields for more information.',
-    title: 'SlackField configures a single Slack field that is sent with each notification.',
-    required: [],
-  })
-  .openapi('SlackField')
-
-const SlackConfigSchema = z
-  .object({
-    actions: z.array(SlackActionSchema).exactOptional(),
-    api_url: URLSchema.exactOptional(),
-    api_url_file: z.string().exactOptional(),
-    callback_id: z.string().exactOptional(),
-    channel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Slack channel override, (like #other-channel or @username).' }),
-    color: z.string().exactOptional(),
-    fallback: z.string().exactOptional(),
-    fields: z.array(SlackFieldSchema).exactOptional(),
-    footer: z.string().exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    icon_emoji: z.string().exactOptional(),
-    icon_url: z.string().exactOptional(),
-    image_url: z.string().exactOptional(),
-    link_names: z.boolean().exactOptional(),
-    mrkdwn_in: z.array(z.string()).exactOptional(),
-    pretext: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    short_fields: z.boolean().exactOptional(),
-    text: z.string().exactOptional(),
-    thumb_url: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    title_link: z.string().exactOptional(),
-    username: z.string().exactOptional(),
-  })
-  .openapi({ title: 'SlackConfig configures notifications via Slack.', required: [] })
-  .openapi('SlackConfig')
-
-const VictorOpsConfigSchema = z
-  .object({
-    api_key: SecretSchema.exactOptional(),
-    api_key_file: z.string().exactOptional(),
-    api_url: URLSchema.exactOptional(),
-    custom_fields: z.record(z.string(), z.string()).exactOptional(),
-    entity_display_name: z.string().exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    message_type: z.string().exactOptional(),
-    monitoring_tool: z.string().exactOptional(),
-    routing_key: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    state_message: z.string().exactOptional(),
-  })
-  .openapi({ title: 'VictorOpsConfig configures notifications via VictorOps.', required: [] })
-  .openapi('VictorOpsConfig')
-
-const WebhookConfigSchema = z
-  .object({
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    max_alerts: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.uint64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'uint64',
-        description:
-          'MaxAlerts is the maximum number of alerts to be sent per webhook message.\nAlerts exceeding this threshold will be truncated. Setting this to 0\nallows an unlimited number of alerts.',
-      }),
-    send_resolved: z.boolean().exactOptional(),
-    timeout: DurationSchema.exactOptional(),
-    url: URLSchema.exactOptional(),
-    url_file: z.string().exactOptional(),
-  })
-  .openapi({ title: 'WebhookConfig configures notifications via a generic webhook.', required: [] })
-  .openapi('WebhookConfig')
-
-const WechatConfigSchema = z
-  .object({
-    agent_id: z.string().exactOptional(),
-    api_secret: SecretSchema.exactOptional(),
-    api_url: URLSchema.exactOptional(),
-    corp_id: z.string().exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    message: z.string().exactOptional(),
-    message_type: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    to_party: z.string().exactOptional(),
-    to_tag: z.string().exactOptional(),
-    to_user: z.string().exactOptional(),
-  })
-  .openapi({ title: 'WechatConfig configures notifications via Wechat.', required: [] })
-  .openapi('WechatConfig')
+const EvalQueriesResponseSchema = z.looseObject({}).openapi('EvalQueriesResponse')
 
 const ExtendedReceiverSchema = z
   .object({
@@ -5102,7 +5661,7 @@ const ExtendedReceiverSchema = z
   .openapi({ required: [] })
   .openapi('ExtendedReceiver')
 
-const ExternalAlertmanagerConfigSchema = z
+const ExternalAlertmanagerConfigSchema: z.ZodType<ExternalAlertmanagerConfigType> = z
   .object({
     alertmanager_config: ConfigSchema.exactOptional(),
     template_files: z.record(z.string(), z.string()).exactOptional(),
@@ -5110,39 +5669,7 @@ const ExternalAlertmanagerConfigSchema = z
   .openapi({ required: [] })
   .openapi('ExternalAlertmanagerConfig')
 
-const PeerStatusSchema = z
-  .object({
-    address: z.string().openapi({ description: 'address' }),
-    name: z.string().openapi({ description: 'name' }),
-  })
-  .openapi({ description: 'PeerStatus peer status', required: ['address', 'name'] })
-  .openapi('PeerStatus')
-
-const ClusterStatusSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'name' }),
-    peers: z.array(PeerStatusSchema).exactOptional().openapi({ description: 'peers' }),
-    status: z.literal('[ready settling disabled]').openapi({ description: 'status' }),
-  })
-  .openapi({ description: 'ClusterStatus cluster status', required: ['status'] })
-  .openapi('ClusterStatus')
-
-const VersionInfoSchema = z
-  .object({
-    branch: z.string().openapi({ description: 'branch' }),
-    buildDate: z.string().openapi({ description: 'build date' }),
-    buildUser: z.string().openapi({ description: 'build user' }),
-    goVersion: z.string().openapi({ description: 'go version' }),
-    revision: z.string().openapi({ description: 'revision' }),
-    version: z.string().openapi({ description: 'version' }),
-  })
-  .openapi({
-    description: 'VersionInfo version info',
-    required: ['branch', 'buildDate', 'buildUser', 'goVersion', 'revision', 'version'],
-  })
-  .openapi('VersionInfo')
-
-const ExternalAlertmanagerStatusSchema = z
+const ExternalAlertmanagerStatusSchema: z.ZodType<ExternalAlertmanagerStatusType> = z
   .object({
     cluster: ClusterStatusSchema,
     config: ConfigSchema,
@@ -5151,22 +5678,6 @@ const ExternalAlertmanagerStatusSchema = z
   })
   .openapi({ required: ['cluster', 'config', 'uptime', 'versionInfo'] })
   .openapi('ExternalAlertmanagerStatus')
-
-const ExtraConfigurationSchema = z
-  .object({
-    alertmanager_config: z.string().exactOptional(),
-    identifier: z.string().exactOptional(),
-    managed_by: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ManagedBy is "manual" or "auto-sync", computed server-side so callers don\'t need configs:get\nto tell the two apart.',
-      }),
-    template_files: z.record(z.string(), z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ExtraConfiguration')
 
 const ResponseDetailsSchema = z
   .object({ msg: z.string().exactOptional() })
@@ -5554,266 +6065,6 @@ const GettableAlertmanagersSchema = z
   .openapi({ required: [] })
   .openapi('GettableAlertmanagers')
 
-const GettableGrafanaReceiverSchema = z
-  .object({
-    disableResolveMessage: z.boolean().exactOptional(),
-    name: z.string().exactOptional(),
-    provenance: ProvenanceSchema.exactOptional(),
-    secureFields: z.record(z.string(), z.boolean()).exactOptional(),
-    settings: RawMessageSchema.exactOptional(),
-    type: z.string().exactOptional(),
-    uid: z.string().exactOptional(),
-    version: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GettableGrafanaReceiver')
-
-const JiraConfigSchema = z
-  .object({
-    api_url: URLSchema.exactOptional(),
-    custom_fields: z.record(z.string(), z.any()).exactOptional(),
-    description: z.string().exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    issue_type: z.string().exactOptional(),
-    labels: z.array(z.string()).exactOptional(),
-    priority: z.string().exactOptional(),
-    project: z.string().exactOptional(),
-    reopen_duration: DurationSchema.exactOptional(),
-    reopen_transition: z.string().exactOptional(),
-    resolve_transition: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    summary: z.string().exactOptional(),
-    wont_fix_resolution: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('JiraConfig')
-
-const MSTeamsConfigSchema = z
-  .object({
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    summary: z.string().exactOptional(),
-    text: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    webhook_url: URLSchema.exactOptional(),
-    webhook_url_file: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MSTeamsConfig')
-
-const MSTeamsV2ConfigSchema = z
-  .object({
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    text: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    webhook_url: URLSchema.exactOptional(),
-    webhook_url_file: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MSTeamsV2Config')
-
-const SigV4ConfigSchema = z
-  .object({
-    AccessKey: z.string().exactOptional(),
-    Profile: z.string().exactOptional(),
-    Region: z.string().exactOptional(),
-    RoleARN: z.string().exactOptional(),
-    SecretKey: SecretSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      "SigV4Config is the configuration for signing remote write requests with\nAWS's SigV4 verification process. Empty values will be retrieved using the\nAWS default credentials chain.",
-    required: [],
-  })
-  .openapi('SigV4Config')
-
-const SNSConfigSchema = z
-  .object({
-    api_url: z.string().exactOptional(),
-    attributes: z.record(z.string(), z.string()).exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    message: z.string().exactOptional(),
-    phone_number: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    sigv4: SigV4ConfigSchema.exactOptional(),
-    subject: z.string().exactOptional(),
-    target_arn: z.string().exactOptional(),
-    topic_arn: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SNSConfig')
-
-const TelegramConfigSchema = z
-  .object({
-    api_url: URLSchema.exactOptional(),
-    chat: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    disable_notifications: z.boolean().exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    message: z.string().exactOptional(),
-    parse_mode: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-    token: SecretSchema.exactOptional(),
-    token_file: z.string().exactOptional(),
-  })
-  .openapi({ title: 'TelegramConfig configures notifications via Telegram.', required: [] })
-  .openapi('TelegramConfig')
-
-const WebexConfigSchema = z
-  .object({
-    api_url: URLSchema.exactOptional(),
-    http_config: HTTPClientConfigSchema.exactOptional(),
-    message: z.string().exactOptional(),
-    room_id: z.string().exactOptional(),
-    send_resolved: z.boolean().exactOptional(),
-  })
-  .openapi({ title: 'WebexConfig configures notifications via Webex.', required: [] })
-  .openapi('WebexConfig')
-
-const GettableApiReceiverSchema = z
-  .object({
-    discord_configs: z.array(DiscordConfigSchema).exactOptional(),
-    email_configs: z.array(EmailConfigSchema).exactOptional(),
-    grafana_managed_receiver_configs: z.array(GettableGrafanaReceiverSchema).exactOptional(),
-    jira_configs: z.array(JiraConfigSchema).exactOptional(),
-    msteams_configs: z.array(MSTeamsConfigSchema).exactOptional(),
-    msteamsv2_configs: z.array(MSTeamsV2ConfigSchema).exactOptional(),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A unique identifier for this receiver.' }),
-    opsgenie_configs: z.array(OpsGenieConfigSchema).exactOptional(),
-    pagerduty_configs: z.array(PagerdutyConfigSchema).exactOptional(),
-    pushover_configs: z.array(PushoverConfigSchema).exactOptional(),
-    slack_configs: z.array(SlackConfigSchema).exactOptional(),
-    sns_configs: z.array(SNSConfigSchema).exactOptional(),
-    telegram_configs: z.array(TelegramConfigSchema).exactOptional(),
-    victorops_configs: z.array(VictorOpsConfigSchema).exactOptional(),
-    webex_configs: z.array(WebexConfigSchema).exactOptional(),
-    webhook_configs: z.array(WebhookConfigSchema).exactOptional(),
-    wechat_configs: z.array(WechatConfigSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GettableApiReceiver')
-
-const GettableApiAlertingConfigSchema = z
-  .object({
-    global: GlobalConfigSchema.exactOptional(),
-    inhibit_rules: z.array(InhibitRuleSchema).exactOptional(),
-    muteTimeProvenances: z.record(z.string(), ProvenanceSchema).exactOptional(),
-    mute_time_intervals: z
-      .array(MuteTimeIntervalSchema)
-      .exactOptional()
-      .openapi({
-        description: 'MuteTimeIntervals is deprecated and will be removed before Alertmanager 1.0.',
-      }),
-    receivers: z
-      .array(GettableApiReceiverSchema)
-      .exactOptional()
-      .openapi({ description: 'Override with our superset receiver type' }),
-    route: RouteSchema.exactOptional(),
-    templates: z.array(z.string()).exactOptional(),
-    time_intervals: z.array(TimeIntervalSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GettableApiAlertingConfig')
-
-const UserInfoSchema = z
-  .object({ name: z.string().exactOptional(), uid: z.string().exactOptional() })
-  .openapi({
-    title:
-      'UserInfo represents user-related information, including a unique identifier and a name.',
-    required: [],
-  })
-  .openapi('UserInfo')
-
-const GettableGrafanaRuleSchema = z
-  .object({
-    condition: z.string().exactOptional(),
-    data: z.array(AlertQuerySchema).exactOptional(),
-    exec_err_state: z.enum(['OK', 'Alerting', 'Error']).exactOptional(),
-    guid: z.string().exactOptional(),
-    intervalSeconds: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    is_paused: z.boolean().exactOptional(),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Field is only populated when listing alert rule versions.' }),
-    metadata: AlertRuleMetadataSchema.exactOptional(),
-    missing_series_evals_to_resolve: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    namespace_uid: z.string().exactOptional(),
-    no_data_state: z.enum(['Alerting', 'NoData', 'OK']).exactOptional(),
-    notification_settings: AlertRuleNotificationSettingsSchema.exactOptional(),
-    provenance: ProvenanceSchema.exactOptional(),
-    record: RecordSchema.exactOptional(),
-    rule_group: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    uid: z.string().exactOptional(),
-    updated: z.iso.datetime({ offset: true }).exactOptional(),
-    updated_by: UserInfoSchema.exactOptional(),
-    version: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GettableGrafanaRule')
-
-const GettableExtendedRuleNodeSchema = z
-  .object({
-    alert: z.string().exactOptional(),
-    annotations: z.record(z.string(), z.string()).exactOptional(),
-    expr: z.string().exactOptional(),
-    for: z.string().exactOptional(),
-    grafana_alert: GettableGrafanaRuleSchema.exactOptional(),
-    keep_firing_for: z.string().exactOptional(),
-    labels: z.record(z.string(), z.string()).exactOptional(),
-    record: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GettableExtendedRuleNode')
-
 const GettableGrafanaReceiversSchema = z
   .object({
     grafana_managed_receiver_configs: z.array(GettableGrafanaReceiverSchema).exactOptional(),
@@ -5821,7 +6072,7 @@ const GettableGrafanaReceiversSchema = z
   .openapi({ required: [] })
   .openapi('GettableGrafanaReceivers')
 
-const GettableHistoricUserConfigSchema = z
+const GettableHistoricUserConfigSchema: z.ZodType<GettableHistoricUserConfigType> = z
   .object({
     alertmanager_config: GettableApiAlertingConfigSchema.exactOptional(),
     id: z
@@ -5857,72 +6108,11 @@ const GettableNGalertConfigSchema = z
   .openapi({ required: [] })
   .openapi('GettableNGalertConfig')
 
-const RemoteWriteConfigSchema = z
-  .object({ url: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('RemoteWriteConfig')
-
-const GettableRuleGroupConfigSchema = z
-  .object({
-    align_evaluation_time_on_interval: z.boolean().exactOptional(),
-    evaluation_delay: z.string().exactOptional(),
-    interval: DurationSchema.exactOptional(),
-    labels: z.record(z.string(), z.string()).exactOptional(),
-    limit: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    name: z.string().exactOptional(),
-    query_offset: z.string().exactOptional(),
-    remote_write: z.array(RemoteWriteConfigSchema).exactOptional(),
-    rules: z.array(GettableExtendedRuleNodeSchema).exactOptional(),
-    source_tenants: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GettableRuleGroupConfig')
-
 const GettableRuleVersionsSchema = z
   .array(GettableExtendedRuleNodeSchema)
   .openapi('GettableRuleVersions')
 
-const PostableApiReceiverSchema = z
-  .object({
-    grafana_managed_receiver_configs: z.array(PostableGrafanaReceiverSchema).exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ description: 'nolint:revive', required: [] })
-  .openapi('PostableApiReceiver')
-
-const PostableApiAlertingConfigSchema = z
-  .object({
-    global: GlobalConfigSchema.exactOptional(),
-    inhibit_rules: z.array(InhibitRuleSchema).exactOptional(),
-    mute_time_intervals: z
-      .array(MuteTimeIntervalSchema)
-      .exactOptional()
-      .openapi({
-        description: 'MuteTimeIntervals is deprecated and will be removed before Alertmanager 1.0.',
-      }),
-    receivers: z
-      .array(PostableApiReceiverSchema)
-      .exactOptional()
-      .openapi({ description: 'Override with our superset receiver type' }),
-    route: RouteSchema.exactOptional(),
-    templates: z.array(z.string()).exactOptional(),
-    time_intervals: z.array(TimeIntervalSchema).exactOptional(),
-  })
-  .openapi({ description: 'nolint:revive', required: [] })
-  .openapi('PostableApiAlertingConfig')
-
-const GettableStatusSchema = z
+const GettableStatusSchema: z.ZodType<GettableStatusType> = z
   .object({
     cluster: ClusterStatusSchema,
     config: PostableApiAlertingConfigSchema,
@@ -5932,7 +6122,7 @@ const GettableStatusSchema = z
   .openapi({ required: ['cluster', 'config', 'uptime', 'versionInfo'] })
   .openapi('GettableStatus')
 
-const GettableUserConfigSchema = z
+const GettableUserConfigSchema: z.ZodType<GettableUserConfigType> = z
   .object({
     alertmanager_config: GettableApiAlertingConfigSchema.exactOptional(),
     extra_config: z.array(ExtraConfigurationSchema).exactOptional(),
@@ -5942,7 +6132,7 @@ const GettableUserConfigSchema = z
   .openapi({ required: [] })
   .openapi('GettableUserConfig')
 
-const GoneSchema = z.object({}).openapi('Gone')
+const GoneSchema = z.looseObject({}).openapi('Gone')
 
 const HitTypeSchema = z.string().openapi('HitType')
 
@@ -6585,11 +6775,11 @@ const MoveFolderCommandSchema = z
   })
   .openapi('MoveFolderCommand')
 
-const MultiStatusSchema = z.object({}).openapi('MultiStatus')
+const MultiStatusSchema = z.looseObject({}).openapi('MultiStatus')
 
 const MuteTimingsSchema = z.array(MuteTimeIntervalSchema).openapi('MuteTimings')
 
-const NamespaceConfigResponseSchema = z
+const NamespaceConfigResponseSchema: z.ZodType<NamespaceConfigResponseType> = z
   .record(z.string(), z.array(GettableRuleGroupConfigSchema))
   .openapi('NamespaceConfigResponse')
 
@@ -6621,7 +6811,7 @@ const NewApiKeyResultSchema = z
   .openapi({ required: [] })
   .openapi('NewApiKeyResult')
 
-const NotFoundSchema = z.object({}).openapi('NotFound')
+const NotFoundSchema = z.looseObject({}).openapi('NotFound')
 
 const NotificationTemplateSchema = z
   .object({
@@ -6901,7 +7091,7 @@ const PatchQueryCommentInQueryHistoryCommandSchema = z
   })
   .openapi('PatchQueryCommentInQueryHistoryCommand')
 
-const PermissionDeniedSchema = z.object({}).openapi('PermissionDenied')
+const PermissionDeniedSchema = z.looseObject({}).openapi('PermissionDenied')
 
 const PlaylistSchema = z
   .object({
@@ -7419,16 +7609,7 @@ const PublicDashboardListResponseWithPaginationSchema = z
   .openapi({ required: [] })
   .openapi('PublicDashboardListResponseWithPagination')
 
-const ResponsesSchema = z
-  .record(z.string(), DataResponseSchema)
-  .openapi({
-    description:
-      "The QueryData method the QueryDataHandler method will set the RefId\nproperty on the DataResponses' frames based on these RefIDs.",
-    title: 'Responses is a map of RefIDs (Unique Query ID) to DataResponses.',
-  })
-  .openapi('Responses')
-
-const QueryDataResponseSchema = z
+const QueryDataResponseSchema: z.ZodType<QueryDataResponseType> = z
   .object({ results: ResponsesSchema.exactOptional() })
   .openapi({
     description: 'It is the return type of a QueryData call.',
@@ -7606,7 +7787,7 @@ const QuotaDTOSchema = z
   .openapi({ required: [] })
   .openapi('QuotaDTO')
 
-const ReceiverSchema = z
+const ReceiverSchema: z.ZodType<ReceiverType> = z
   .object({
     discord_configs: z.array(DiscordConfigSchema).exactOptional(),
     email_configs: z.array(EmailConfigSchema).exactOptional(),
@@ -8097,64 +8278,6 @@ const RuleSchema = z
   .openapi({ description: 'adapted from cortex', required: ['name', 'query', 'health', 'type'] })
   .openapi('Rule')
 
-const RuleGroupSchema = z
-  .object({
-    evaluationTime: z.float64().exactOptional(),
-    file: z.string(),
-    folderUid: z.string(),
-    interval: z.float64(),
-    lastEvaluation: z.iso.datetime({ offset: true }).exactOptional(),
-    name: z.string(),
-    rules: z
-      .array(AlertingRuleSchema)
-      .openapi({
-        description:
-          'In order to preserve rule ordering, while exposing type (alerting or recording)\nspecific properties, both alerting and recording rules are exposed in the\nsame array.',
-      }),
-    totals: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: ['name', 'file', 'folderUid', 'rules', 'interval'] })
-  .openapi('RuleGroup')
-
-const RuleDiscoverySchema = z
-  .object({
-    groupNextToken: z.string().exactOptional(),
-    groups: z.array(RuleGroupSchema),
-    totals: z
-      .record(
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: ['groups'] })
-  .openapi('RuleDiscovery')
-
 const RuleGroupConfigResponseSchema = z
   .object({
     align_evaluation_time_on_interval: z.boolean().exactOptional(),
@@ -8182,7 +8305,7 @@ const RuleGroupConfigResponseSchema = z
   .openapi({ required: [] })
   .openapi('RuleGroupConfigResponse')
 
-const RuleResponseSchema = z
+const RuleResponseSchema: z.ZodType<RuleResponseType> = z
   .object({
     data: RuleDiscoverySchema.exactOptional(),
     error: z.string().exactOptional(),
@@ -8894,6 +9017,237 @@ const SetUserRolesCommandSchema = z
 const SettingsBagSchema = z
   .record(z.string(), z.record(z.string(), z.string()))
   .openapi('SettingsBag')
+
+const SharedVariableClusterSchema = z
+  .object({
+    conflictReason: z.string().exactOptional(),
+    count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    fingerprint: z.string().exactOptional(),
+    folderUID: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    kind: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    nameConflict: z.boolean().exactOptional(),
+    noWritableDashboards: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'NoWritableDashboards means promote would change nothing: every dashboard is locked.',
+      }),
+    promoted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Promoted means the Variable exists and only local copies remain to strip.',
+      }),
+    scope: z.string().exactOptional(),
+    spec: z.any().exactOptional(),
+  })
+  .openapi({
+    description:
+      'SharedVariableCluster is a set of dashboards that share an identical local variable\ndefinition.',
+    required: [],
+  })
+  .openapi('SharedVariableCluster')
+
+const SharedVariableClustersSchema = z
+  .object({
+    clusters: z.array(SharedVariableClusterSchema).exactOptional(),
+    dashboards: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    error: z.string().exactOptional(),
+    progress: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    scannedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'ScannedAt is when the clusters were computed; dashboards may have changed since.',
+      }),
+    startedAt: z.iso.datetime({ offset: true }).exactOptional(),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Status is "scanning", "ready" or "failed". While scanning, clusters are the previous result.',
+      }),
+    totalClusters: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'TotalClusters counts every qualifying cluster; Truncated is set when clusters holds\nonly the largest of them.',
+      }),
+    truncated: z.boolean().exactOptional(),
+  })
+  .openapi({ title: "SharedVariableClusters is the org's latest scan result.", required: [] })
+  .openapi('SharedVariableClusters')
+
+const SharedVariableDashboardPromoteResultSchema = z
+  .object({
+    dashboardUID: z.string().exactOptional(),
+    error: z.string().exactOptional(),
+    skipReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "SkipReason is the scanner's reason for a dashboard this tool cannot write.",
+      }),
+    status: z.string().exactOptional(),
+  })
+  .openapi({
+    title: 'DashboardPromoteResult is the outcome for one dashboard update.',
+    required: [],
+  })
+  .openapi('SharedVariableDashboardPromoteResult')
+
+const SharedVariableOccurrenceSchema = z
+  .object({
+    dashboardUID: z.string().exactOptional(),
+    folderUID: z.string().exactOptional(),
+    markedReadOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'MarkedReadOnly is a dashboard whose own Editable setting is off. That is not a lock:\nanyone who can edit the dashboard can still save it, so promote still writes it. But it\noften means the dashboard is maintained as code elsewhere, whose next push would bring\nthe local copy back, so the UI calls it out.',
+      }),
+    skipReason: z.string().exactOptional(),
+    storedVersion: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    writable: z.boolean().exactOptional(),
+  })
+  .openapi({
+    title: 'Occurrence is one dashboard that contains a matching local variable.',
+    required: [],
+  })
+  .openapi('SharedVariableOccurrence')
+
+const SharedVariableOccurrencesSchema = z
+  .object({
+    id: z.string().exactOptional(),
+    occurrences: z.array(SharedVariableOccurrenceSchema).exactOptional(),
+  })
+  .openapi({
+    title: 'SharedVariableOccurrences lists the dashboards in one cluster.',
+    required: [],
+  })
+  .openapi('SharedVariableOccurrences')
+
+const SharedVariableScopeSchema = z
+  .string()
+  .openapi({
+    title: 'Scope is the recommended Variable resource scope for a cluster: "global" or "folder".',
+  })
+  .openapi('SharedVariableScope')
+
+const SharedVariablePromoteRequestSchema = z
+  .object({
+    clusterId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "ClusterID is the cluster to promote, from the org's latest snapshot.",
+      }),
+    dashboardUIDs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'DashboardUIDs limits which dashboards are updated, at most MaxPromoteBatch (200). Empty means\nthe whole cluster, which is allowed only when it fits in one batch.',
+      }),
+    folderUID: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'FolderUID is the folder for a folder Scope override.' }),
+    scope: SharedVariableScopeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      "PromoteRequest creates/ensures a cluster's Variable and strips matching locals from its\ndashboards.",
+    required: [],
+  })
+  .openapi('SharedVariablePromoteRequest')
+
+const SharedVariablePromoteResultSchema = z
+  .object({
+    clusterId: z.string().exactOptional(),
+    folderUID: z.string().exactOptional(),
+    remaining: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          "Remaining counts the cluster's dashboards in the snapshot still to strip after this\nbatch; ones this tool cannot write, or that the Variable's scope does not cover, are\nnot counted.",
+      }),
+    results: z.array(SharedVariableDashboardPromoteResultSchema).exactOptional(),
+    scope: SharedVariableScopeSchema.exactOptional(),
+    variableAction: z.string().exactOptional(),
+    variableName: z.string().exactOptional(),
+  })
+  .openapi({ title: 'PromoteResult is the promote API response.', required: [] })
+  .openapi('SharedVariablePromoteResult')
+
+const SharedVariableRescanResultSchema = z
+  .object({
+    status: z.string().exactOptional().openapi({ description: 'Status is always "scanning".' }),
+  })
+  .openapi({ title: 'SharedVariableRescanResult acknowledges a scan request.', required: [] })
+  .openapi('SharedVariableRescanResult')
 
 const SilenceMetadataSchema = z
   .object({
@@ -9927,7 +10281,7 @@ const UserTokenSchema = z
   .openapi('UserToken')
 
 const UserinfoSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'The Userinfo type is an immutable encapsulation of username and\npassword details for a [URL]. An existing Userinfo value is guaranteed\nto have a username set (potentially empty, as allowed by RFC 2396),\nand optionally a password.',
@@ -10991,6 +11345,16 @@ const GetSSOSettingsResponseResponse = {
   },
 }
 
+const GetSharedVariableClusterOccurrencesResponseResponse = {
+  description: '(empty)',
+  content: { 'application/json': { schema: SharedVariableOccurrencesSchema } },
+}
+
+const GetSharedVariableClustersResponseResponse = {
+  description: '(empty)',
+  content: { 'application/json': { schema: SharedVariableClustersSchema } },
+}
+
 const GetSharingOptionsResponseResponse = {
   description: '(empty)',
   content: {
@@ -11174,7 +11538,7 @@ const ListUsersRolesResponseResponse = {
 
 const NoContentResponseResponse = {
   description: '(empty)',
-  content: { 'application/json': { schema: z.object({}) } },
+  content: { 'application/json': { schema: z.looseObject({}) } },
 }
 
 const NotAcceptableErrorResponse = {
@@ -11308,6 +11672,11 @@ const PreconditionFailedErrorResponse = {
   content: { 'application/json': { schema: ErrorResponseBodySchema } },
 }
 
+const PromoteSharedVariableClusterResponseResponse = {
+  description: '(empty)',
+  content: { 'application/json': { schema: SharedVariablePromoteResultSchema } },
+}
+
 const PublicErrorResponseResponse = {
   description: '(empty)',
   content: { 'application/json': { schema: PublicError2Schema } },
@@ -11341,6 +11710,11 @@ const RecordingRuleWriteTargetResponseResponse = {
 const RefreshLicenseStatsResponseResponse = {
   description: '(empty)',
   content: { 'application/json': { schema: ActiveUserStatsSchema } },
+}
+
+const RescanSharedVariableClustersResponseResponse = {
+  description: '(empty)',
+  content: { 'application/json': { schema: SharedVariableRescanResultSchema } },
 }
 
 const ResourceDependenciesResponseResponse = {
@@ -13139,25 +13513,6 @@ export const getAnnotationsRoute = createRoute({
             required: false,
           },
         }),
-      alertId: z
-        .preprocess((val) => {
-          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
-            return val
-          if (/^-?\d+$/.test(val)) return BigInt(val)
-          const num = Number(val)
-          return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64())
-        .exactOptional()
-        .openapi({
-          param: {
-            description:
-              'Find annotations for a specified alert rule by its ID.\ndeprecated: AlertID is deprecated and will be removed in future versions. Please use AlertUID instead.',
-            in: 'query',
-            name: 'alertId',
-            schema: { format: 'int64', type: 'integer' },
-            required: false,
-          },
-        }),
       alertUID: z
         .string()
         .exactOptional()
@@ -13283,6 +13638,7 @@ export const getAnnotationsRoute = createRoute({
   },
   responses: {
     200: GetAnnotationsResponseResponse,
+    400: BadRequestErrorResponse,
     401: UnauthorisedErrorResponse,
     500: InternalServerErrorResponse,
   },
@@ -13685,6 +14041,7 @@ export const getCloudmigrationMigrationUidSnapshotSnapshotUidRoute = createRoute
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       resultLimit: z
         .preprocess((val) => {
@@ -13704,6 +14061,7 @@ export const getCloudmigrationMigrationUidSnapshotSnapshotUidRoute = createRoute
             schema: { default: 100, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 100,
         }),
       resultSortColumn: z
         .string()
@@ -13890,6 +14248,7 @@ export const getCloudmigrationMigrationUidSnapshotsRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       limit: z
         .preprocess((val) => {
@@ -13909,6 +14268,7 @@ export const getCloudmigrationMigrationUidSnapshotsRoute = createRoute({
             schema: { default: 100, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 100,
         }),
       sort: z
         .string()
@@ -14572,6 +14932,7 @@ export const getDashboardSnapshotsRoute = createRoute({
             schema: { default: 1000, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1000,
         }),
     }),
   },
@@ -14979,6 +15340,7 @@ export const getDashboardsUidUidVersionsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       start: z
         .preprocess((val) => {
@@ -14998,6 +15360,7 @@ export const getDashboardsUidUidVersionsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
     }),
   },
@@ -15050,6 +15413,99 @@ export const getDashboardsUidUidVersionsDashboardVersionIDRoute = createRoute({
     500: InternalServerErrorResponse,
   },
   deprecated: true,
+})
+
+export const postDashboardsVariablesPromoteRoute = createRoute({
+  method: 'post',
+  path: '/dashboards/variables/promote',
+  tags: ['dashboard_variables', 'enterprise'],
+  summary:
+    'Turns a cluster into a shared Variable and removes the matching local copies from its\ndashboards.',
+  description:
+    'Creates the Variable if it does not exist yet, then removes the local variable from each\ndashboard and opts the dashboard in to the shared one. Provisioned dashboards and ones\nthis tool cannot convert are skipped and reported in `results`. A cluster with more than\n200 dashboards is promoted in batches: pass up to 200 `dashboardUIDs` per call and repeat\nuntil `remaining` is 0.\n\nRequires the same permissions as `GET /dashboards/variables/shared-clusters`, plus\n`variables:create` with scope `folders:*`.',
+  operationId: 'promoteSharedVariableCluster',
+  request: {
+    body: {
+      content: { 'application/json': { schema: SharedVariablePromoteRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: PromoteSharedVariableClusterResponseResponse,
+    400: BadRequestErrorResponse,
+    401: UnauthorisedErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: NotFoundErrorResponse,
+    500: InternalServerErrorResponse,
+  },
+})
+
+export const getDashboardsVariablesSharedClustersRoute = createRoute({
+  method: 'get',
+  path: '/dashboards/variables/shared-clusters',
+  tags: ['dashboard_variables', 'enterprise'],
+  summary:
+    "Returns the dashboard variables that are defined identically in several dashboards, from\nthe org's latest background scan.",
+  description:
+    'The scan runs in the background, so this returns immediately. While a scan runs, `status`\nis `scanning` and `clusters` holds the previous result. At most 50 clusters are returned,\nlargest first; `truncated` is set when there are more. Opening this endpoint marks the org\nas active, which keeps its scheduled scans running.\n\nRequires the `dashboardGlobalVariables` and `dashboardVariablesMigration` feature toggles;\nevery endpoint returns 404 while either is off. Requires `dashboards:read` and\n`dashboards:write` on every dashboard in the org (scope `dashboards:*` or `folders:*`).',
+  operationId: 'getSharedVariableClusters',
+  responses: {
+    200: GetSharedVariableClustersResponseResponse,
+    401: UnauthorisedErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: NotFoundErrorResponse,
+    500: InternalServerErrorResponse,
+  },
+})
+
+export const getDashboardsVariablesSharedClustersOccurrencesRoute = createRoute({
+  method: 'get',
+  path: '/dashboards/variables/shared-clusters/occurrences',
+  tags: ['dashboard_variables', 'enterprise'],
+  summary:
+    "Returns the dashboards in one cluster from the org's latest scan, and whether this tool\ncan update each one.",
+  description: 'Requires the same permissions as `GET /dashboards/variables/shared-clusters`.',
+  operationId: 'getSharedVariableClusterOccurrences',
+  request: {
+    query: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            description: "The cluster's id, from `GET /dashboards/variables/shared-clusters`.",
+            in: 'query',
+            name: 'id',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: GetSharedVariableClusterOccurrencesResponseResponse,
+    400: BadRequestErrorResponse,
+    401: UnauthorisedErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: NotFoundErrorResponse,
+    500: InternalServerErrorResponse,
+  },
+})
+
+export const postDashboardsVariablesSharedClustersRescanRoute = createRoute({
+  method: 'post',
+  path: '/dashboards/variables/shared-clusters/rescan',
+  tags: ['dashboard_variables', 'enterprise'],
+  summary:
+    "Starts a background scan of the org's dashboards. Poll\n`GET /dashboards/variables/shared-clusters` for progress. If a scan is already running,\nthis does not start another.",
+  description: 'Requires the same permissions as `GET /dashboards/variables/shared-clusters`.',
+  operationId: 'rescanSharedVariableClusters',
+  responses: {
+    202: RescanSharedVariableClustersResponseResponse,
+    401: UnauthorisedErrorResponse,
+    403: ForbiddenErrorResponse,
+    404: NotFoundErrorResponse,
+    500: InternalServerErrorResponse,
+  },
 })
 
 export const getDatasourcesRoute = createRoute({
@@ -15117,6 +15573,7 @@ export const getDatasourcesCorrelationsRoute = createRoute({
             schema: { default: 100, format: 'int64', maximum: 1000, type: 'integer' },
             required: false,
           },
+          default: 100,
         }),
       page: z
         .preprocess((val) => {
@@ -15136,6 +15593,7 @@ export const getDatasourcesCorrelationsRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       sourceUID: z
         .preprocess(
@@ -15915,6 +16373,7 @@ export const getFoldersRoute = createRoute({
             schema: { default: 1000, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1000,
         }),
       page: z
         .preprocess((val) => {
@@ -15934,6 +16393,7 @@ export const getFoldersRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       parentUid: z
         .string()
@@ -16342,6 +16802,7 @@ export const getLibraryElementsRoute = createRoute({
             schema: { default: 100, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 100,
         }),
       page: z
         .preprocess((val) => {
@@ -16362,6 +16823,7 @@ export const getLibraryElementsRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
     }),
   },
@@ -16647,7 +17109,9 @@ export const postLicensingTokenRenewRoute = createRoute({
   description:
     'Manually ask license issuer for a new token. Available in Grafana Enterprise v7.4+.\n\nYou need to have a permission with action `licensing:write`.',
   operationId: 'postRenewLicenseToken',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } }, required: true } },
+  request: {
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
+  },
   responses: {
     200: PostRenewLicenseTokenResponseResponse,
     401: UnauthorisedErrorResponse,
@@ -17064,6 +17528,7 @@ export const getOrgsRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       perpage: z
         .preprocess((val) => {
@@ -17084,6 +17549,7 @@ export const getOrgsRoute = createRoute({
             schema: { default: 1000, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1000,
         }),
       name: z
         .string()
@@ -19517,6 +19983,7 @@ export const getTeamsSearchRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       perpage: z
         .preprocess((val) => {
@@ -19537,6 +20004,7 @@ export const getTeamsSearchRoute = createRoute({
             schema: { default: 1000, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1000,
         }),
       name: z
         .string()
@@ -19712,6 +20180,7 @@ export const getTeamsTeamIdGroupsSearchRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       perpage: z
         .preprocess((val) => {
@@ -19731,6 +20200,7 @@ export const getTeamsTeamIdGroupsSearchRoute = createRoute({
             schema: { default: 1000, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1000,
         }),
       query: z
         .string()
@@ -20394,6 +20864,7 @@ export const getUsersRoute = createRoute({
             schema: { default: 1000, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1000,
         }),
       page: z
         .preprocess((val) => {
@@ -20413,6 +20884,7 @@ export const getUsersRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
     }),
   },

@@ -418,6 +418,14 @@ const MetastoreV1QueryMetadataRequestSchema = z
       .openapi({ type: 'integer', format: 'int64', title: 'end_time' }),
     query: z.string().exactOptional().openapi({ title: 'query' }),
     labels: z.array(z.string()).exactOptional().openapi({ title: 'labels' }),
+    shardSelector: z
+      .string()
+      .exactOptional()
+      .openapi({
+        title: 'shard_selector',
+        description:
+          'Optional pruning hint, not a filter: the metastore may skip shards whose\n string table lacks a name or value of an equality matcher. Returned blocks\n and datasets are selected by query alone and may not match the selector;\n metastores that predate the field ignore it.',
+      }),
   })
   .openapi({ title: 'QueryMetadataRequest', required: [] })
   .openapi('MetastoreV1QueryMetadataRequest')

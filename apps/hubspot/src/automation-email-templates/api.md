@@ -19,11 +19,10 @@ Base URLs:
     - Authorization URL = [https://app.hubspot.com/oauth/authorize](https://app.hubspot.com/oauth/authorize)
     - Token URL = [https://api.hubapi.com/oauth/v1/token](https://api.hubapi.com/oauth/v1/token)
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|Scope|Scope Description|
+|---|---|
+|automation.email_templates.read||
+|automation.email_templates.write||
 
 <h1 id="automation-email-templates-basic">Basic</h1>
 
@@ -35,7 +34,8 @@ Base URLs:
 
 ```bash
 curl https://api.hubapi.com/automation/email-templates/2026-09 \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /automation/email-templates/2026-09`
@@ -70,8 +70,9 @@ null
 |200|OK|successful operation|[CollectionResponsePublicTemplateForwardPaging](#schemacollectionresponsepublictemplateforwardpaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: automation.email_templates.read )
 </aside>
 
 ## Create
@@ -85,6 +86,7 @@ curl https://api.hubapi.com/automation/email-templates/2026-09 \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -135,8 +137,9 @@ null
 |---|---|---|---|---|
 |201|Location|string||URL of the newly created resource|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: automation.email_templates.write )
 </aside>
 
 ## List folders
@@ -147,7 +150,8 @@ This operation does not require authentication
 
 ```bash
 curl https://api.hubapi.com/automation/email-templates/2026-09/folders \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /automation/email-templates/2026-09/folders`
@@ -182,8 +186,9 @@ null
 |200|OK|successful operation|[CollectionResponsePublicFolderForwardPaging](#schemacollectionresponsepublicfolderforwardpaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: automation.email_templates.read )
 </aside>
 
 ## Retrieve template
@@ -194,7 +199,8 @@ This operation does not require authentication
 
 ```bash
 curl 'https://api.hubapi.com/automation/email-templates/2026-09/{templateId}' \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /automation/email-templates/2026-09/{templateId}`
@@ -228,8 +234,9 @@ null
 |200|OK|successful operation|[PublicTemplate](#schemapublictemplate)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: automation.email_templates.read )
 </aside>
 
 ## Update template
@@ -243,6 +250,7 @@ curl 'https://api.hubapi.com/automation/email-templates/2026-09/{templateId}' \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -288,8 +296,9 @@ null
 |200|OK|successful operation|[PublicTemplate](#schemapublictemplate)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: automation.email_templates.write )
 </aside>
 
 # Schemas

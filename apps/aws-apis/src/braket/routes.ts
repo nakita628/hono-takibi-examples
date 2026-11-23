@@ -1,33 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const S3PathSchema = z
-  .string()
-  .regex(/^(https|s3):\/\/([^\/]+)\/?(.*)$/)
-  .min(0)
-  .max(1024)
-  .openapi('S3Path')
-
-const S3DataSourceSchema = z
-  .object({
-    s3Uri: S3PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Depending on the value specified for the <code>S3DataType</code>, identifies either a key name prefix or a manifest that locates the S3 data source.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['s3Uri'],
-    description: 'Information about the data stored in Amazon S3 used by the Amazon Braket job.',
-  })
-  .openapi('S3DataSource')
-
-type DataSourceType = {
-  s3DataSource: z.infer<typeof S3DataSourceSchema> & { [key: string]: unknown }
-}
-
 const CancellationStatusSchema = z.enum(['CANCELLING', 'CANCELLED']).openapi('CancellationStatus')
 
 const JobArnSchema = z
@@ -37,10 +9,10 @@ const JobArnSchema = z
 
 const CancelJobResponseSchema = z
   .object({
-    cancellationStatus: CancellationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the job cancellation request.' }),
-    ),
-    jobArn: JobArnSchema.and(z.any().openapi({ description: 'The ARN of the Amazon Braket job.' })),
+    cancellationStatus: CancellationStatusSchema.openapi({
+      description: 'The status of the job cancellation request.',
+    }),
+    jobArn: JobArnSchema.openapi({ description: 'The ARN of the Amazon Braket job.' }),
   })
   .openapi({ required: ['cancellationStatus', 'jobArn'] })
   .openapi('CancelJobResponse')
@@ -61,21 +33,17 @@ const QuantumTaskArnSchema = z.string().min(1).max(256).openapi('QuantumTaskArn'
 
 const CancelQuantumTaskResponseSchema = z
   .object({
-    cancellationStatus: CancellationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the cancellation request.' }),
-    ),
-    quantumTaskArn: QuantumTaskArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the task.' }),
-    ),
+    cancellationStatus: CancellationStatusSchema.openapi({
+      description: 'The status of the cancellation request.',
+    }),
+    quantumTaskArn: QuantumTaskArnSchema.openapi({ description: 'The ARN of the task.' }),
   })
   .openapi({ required: ['cancellationStatus', 'quantumTaskArn'] })
   .openapi('CancelQuantumTaskResponse')
 
 const CreateJobResponseSchema = z
   .object({
-    jobArn: JobArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the Amazon Braket job created.' }),
-    ),
+    jobArn: JobArnSchema.openapi({ description: 'The ARN of the Amazon Braket job created.' }),
   })
   .openapi({ required: ['jobArn'] })
   .openapi('CreateJobResponse')
@@ -88,9 +56,7 @@ const UriSchema = z
   .openapi('Uri')
 
 const ContainerImageSchema = z
-  .object({
-    uri: UriSchema.and(z.any().openapi({ description: 'The URI locating the container image.' })),
-  })
+  .object({ uri: UriSchema.openapi({ description: 'The URI locating the container image.' }) })
   .openapi({
     required: ['uri'],
     description: 'The container image used to create an Amazon Braket job.',
@@ -101,32 +67,26 @@ const CompressionTypeSchema = z.enum(['NONE', 'GZIP']).openapi('CompressionType'
 
 const StringSchema = z.string().openapi('String')
 
+const S3PathSchema = z
+  .string()
+  .regex(/^(https|s3):\/\/([^\/]+)\/?(.*)$/)
+  .min(0)
+  .max(1024)
+  .openapi('S3Path')
+
 const ScriptModeConfigSchema = z
   .object({
-    compressionType: CompressionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of compression used by the Python scripts for an Amazon Braket job.',
-        }),
-    ).exactOptional(),
-    entryPoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the Python script that serves as the entry point for an Amazon Braket job.',
-        }),
-    ),
-    s3Uri: S3PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI that specifies the S3 path to the Python script module that contains the training script used by an Amazon Braket job.',
-        }),
-    ),
+    compressionType: CompressionTypeSchema.exactOptional().openapi({
+      description: 'The type of compression used by the Python scripts for an Amazon Braket job.',
+    }),
+    entryPoint: StringSchema.openapi({
+      description:
+        'The path to the Python script that serves as the entry point for an Amazon Braket job.',
+    }),
+    s3Uri: S3PathSchema.openapi({
+      description:
+        'The URI that specifies the S3 path to the Python script module that contains the training script used by an Amazon Braket job.',
+    }),
   })
   .openapi({
     required: ['entryPoint', 's3Uri'],
@@ -152,39 +112,40 @@ const InputFileConfigChannelNameStringSchema = z
   .max(64)
   .openapi('InputFileConfigChannelNameString')
 
-const DataSourceSchema: z.ZodType<DataSourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        s3DataSource: S3DataSourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Information about the data stored in Amazon S3 used by the Amazon Braket job.',
-            }),
-        ),
-      })
-      .openapi({
-        required: ['s3DataSource'],
-        description: 'Information about the source of the data used by the Amazon Braket job.',
-      }),
-  )
+const S3DataSourceSchema = z
+  .object({
+    s3Uri: S3PathSchema.openapi({
+      description:
+        'Depending on the value specified for the <code>S3DataType</code>, identifies either a key name prefix or a manifest that locates the S3 data source.',
+    }),
+  })
+  .openapi({
+    required: ['s3Uri'],
+    description: 'Information about the data stored in Amazon S3 used by the Amazon Braket job.',
+  })
+  .openapi('S3DataSource')
+
+const DataSourceSchema = z
+  .object({
+    s3DataSource: S3DataSourceSchema.openapi({
+      description: 'Information about the data stored in Amazon S3 used by the Amazon Braket job.',
+    }),
+  })
+  .openapi({
+    required: ['s3DataSource'],
+    description: 'Information about the source of the data used by the Amazon Braket job.',
+  })
   .openapi('DataSource')
 
 const InputFileConfigSchema = z
   .object({
-    channelName: InputFileConfigChannelNameStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A named input source that an Amazon Braket job can consume.' }),
-    ),
-    contentType: String256Schema.and(
-      z.any().openapi({ description: 'The MIME type of the data.' }),
-    ).exactOptional(),
-    dataSource: DataSourceSchema.and(
-      z.any().openapi({ description: 'The location of the channel data.' }),
-    ),
+    channelName: InputFileConfigChannelNameStringSchema.openapi({
+      description: 'A named input source that an Amazon Braket job can consume.',
+    }),
+    contentType: String256Schema.exactOptional().openapi({
+      description: 'The MIME type of the data.',
+    }),
+    dataSource: DataSourceSchema.openapi({ description: 'The location of the channel data.' }),
   })
   .openapi({
     required: ['channelName', 'dataSource'],
@@ -261,9 +222,9 @@ const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceede
 
 const CreateQuantumTaskResponseSchema = z
   .object({
-    quantumTaskArn: QuantumTaskArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the task created by the request.' }),
-    ),
+    quantumTaskArn: QuantumTaskArnSchema.openapi({
+      description: 'The ARN of the task created by the request.',
+    }),
   })
   .openapi({ required: ['quantumTaskArn'] })
   .openapi('CreateQuantumTaskResponse')
@@ -280,18 +241,16 @@ const DeviceTypeSchema = z.enum(['QPU', 'SIMULATOR']).openapi('DeviceType')
 
 const GetDeviceResponseSchema = z
   .object({
-    deviceArn: DeviceArnSchema.and(z.any().openapi({ description: 'The ARN of the device.' })),
-    deviceCapabilities: JsonValueSchema.and(
-      z.any().openapi({ description: 'Details about the capabilities of the device.' }),
-    ),
-    deviceName: StringSchema.and(z.any().openapi({ description: 'The name of the device.' })),
-    deviceStatus: DeviceStatusSchema.and(
-      z.any().openapi({ description: 'The status of the device.' }),
-    ),
-    deviceType: DeviceTypeSchema.and(z.any().openapi({ description: 'The type of the device.' })),
-    providerName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the partner company for the device.' }),
-    ),
+    deviceArn: DeviceArnSchema.openapi({ description: 'The ARN of the device.' }),
+    deviceCapabilities: JsonValueSchema.openapi({
+      description: 'Details about the capabilities of the device.',
+    }),
+    deviceName: StringSchema.openapi({ description: 'The name of the device.' }),
+    deviceStatus: DeviceStatusSchema.openapi({ description: 'The status of the device.' }),
+    deviceType: DeviceTypeSchema.openapi({ description: 'The type of the device.' }),
+    providerName: StringSchema.openapi({
+      description: 'The name of the partner company for the device.',
+    }),
   })
   .openapi({
     required: [
@@ -307,16 +266,12 @@ const GetDeviceResponseSchema = z
 
 const AlgorithmSpecificationSchema = z
   .object({
-    containerImage: ContainerImageSchema.and(
-      z.any().openapi({ description: 'The container image used to create an Amazon Braket job.' }),
-    ).exactOptional(),
-    scriptModeConfig: ScriptModeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configures the paths to the Python scripts used for entry and training.',
-        }),
-    ).exactOptional(),
+    containerImage: ContainerImageSchema.exactOptional().openapi({
+      description: 'The container image used to create an Amazon Braket job.',
+    }),
+    scriptModeConfig: ScriptModeConfigSchema.exactOptional().openapi({
+      description: 'Configures the paths to the Python scripts used for entry and training.',
+    }),
   })
   .openapi({
     description:
@@ -329,22 +284,14 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const JobCheckpointConfigSchema = z
   .object({
-    localPath: String4096Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The local directory where checkpoints are written. The default directory is <code>/opt/braket/checkpoints/</code>.',
-        }),
-    ).exactOptional(),
-    s3Uri: S3PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the S3 path where you want Amazon Braket to store checkpoints. For example, <code>s3://bucket-name/key-name-prefix</code>.',
-        }),
-    ),
+    localPath: String4096Schema.exactOptional().openapi({
+      description:
+        '(Optional) The local directory where checkpoints are written. The default directory is <code>/opt/braket/checkpoints/</code>.',
+    }),
+    s3Uri: S3PathSchema.openapi({
+      description:
+        'Identifies the S3 path where you want Amazon Braket to store checkpoints. For example, <code>s3://bucket-name/key-name-prefix</code>.',
+    }),
   })
   .openapi({
     required: ['s3Uri'],
@@ -358,14 +305,10 @@ const SyntheticTimestampDateTimeSchema = z.iso
 
 const DeviceConfigSchema = z
   .object({
-    device: String256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The primary quantum processing unit (QPU) or simulator used to create and run an Amazon Braket job.',
-        }),
-    ),
+    device: String256Schema.openapi({
+      description:
+        'The primary quantum processing unit (QPU) or simulator used to create and run an Amazon Braket job.',
+    }),
   })
   .openapi({
     required: ['device'],
@@ -398,28 +341,15 @@ const JobEventDetailsMessageStringSchema = z
 
 const JobEventDetailsSchema = z
   .object({
-    eventType: JobEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of event that occurred related to the Amazon Braket job.',
-        }),
-    ).exactOptional(),
-    message: JobEventDetailsMessageStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message describing the event that occurred related to the Amazon Braket job.',
-        }),
-    ).exactOptional(),
-    timeOfEvent: SyntheticTimestampDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'TThe type of event that occurred related to the Amazon Braket job.',
-        }),
-    ).exactOptional(),
+    eventType: JobEventTypeSchema.exactOptional().openapi({
+      description: 'The type of event that occurred related to the Amazon Braket job.',
+    }),
+    message: JobEventDetailsMessageStringSchema.exactOptional().openapi({
+      description: 'A message describing the event that occurred related to the Amazon Braket job.',
+    }),
+    timeOfEvent: SyntheticTimestampDateTimeSchema.exactOptional().openapi({
+      description: 'TThe type of event that occurred related to the Amazon Braket job.',
+    }),
   })
   .openapi({
     description:
@@ -442,29 +372,17 @@ const InputConfigListSchema = z.array(InputFileConfigSchema).openapi('InputConfi
 
 const InstanceConfigSchema = z
   .object({
-    instanceCount: InstanceConfigInstanceCountIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configures the number of resource instances to use while running an Amazon Braket job on Amazon Braket. The default value is 1.',
-        }),
-    ).exactOptional(),
-    instanceType: InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configures the type resource instances to use while running an Amazon Braket hybrid job.',
-        }),
-    ),
-    volumeSizeInGb: InstanceConfigVolumeSizeInGbIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The size of the storage volume, in GB, that user wants to provision.',
-        }),
-    ),
+    instanceCount: InstanceConfigInstanceCountIntegerSchema.exactOptional().openapi({
+      description:
+        'Configures the number of resource instances to use while running an Amazon Braket job on Amazon Braket. The default value is 1.',
+    }),
+    instanceType: InstanceTypeSchema.openapi({
+      description:
+        'Configures the type resource instances to use while running an Amazon Braket hybrid job.',
+    }),
+    volumeSizeInGb: InstanceConfigVolumeSizeInGbIntegerSchema.openapi({
+      description: 'The size of the storage volume, in GB, that user wants to provision.',
+    }),
   })
   .openapi({
     required: ['instanceType', 'volumeSizeInGb'],
@@ -482,22 +400,14 @@ const GetJobResponseJobNameStringSchema = z
 
 const JobOutputDataConfigSchema = z
   .object({
-    kmsKeyId: String2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Key Management Service (AWS KMS) key that Amazon Braket uses to encrypt the job training artifacts at rest using Amazon S3 server-side encryption.',
-        }),
-    ).exactOptional(),
-    s3Path: S3PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the S3 path where you want Amazon Braket to store the job training artifacts. For example, <code>s3://bucket-name/key-name-prefix</code>.',
-        }),
-    ),
+    kmsKeyId: String2048Schema.exactOptional().openapi({
+      description:
+        'The AWS Key Management Service (AWS KMS) key that Amazon Braket uses to encrypt the job training artifacts at rest using Amazon S3 server-side encryption.',
+    }),
+    s3Path: S3PathSchema.openapi({
+      description:
+        'Identifies the S3 path where you want Amazon Braket to store the job training artifacts. For example, <code>s3://bucket-name/key-name-prefix</code>.',
+    }),
   })
   .openapi({
     required: ['s3Path'],
@@ -517,13 +427,10 @@ const JobPrimaryStatusSchema = z
 
 const JobStoppingConditionSchema = z
   .object({
-    maxRuntimeInSeconds: JobStoppingConditionMaxRuntimeInSecondsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum length of time, in seconds, that an Amazon Braket job can run.',
-        }),
-    ).exactOptional(),
+    maxRuntimeInSeconds:
+      JobStoppingConditionMaxRuntimeInSecondsIntegerSchema.exactOptional().openapi({
+        description: 'The maximum length of time, in seconds, that an Amazon Braket job can run.',
+      }),
   })
   .openapi({
     description: 'Specifies limits for how long an Amazon Braket job can run. ',
@@ -535,118 +442,67 @@ const TagsMapSchema = z.record(z.string(), StringSchema).openapi('TagsMap')
 
 const GetJobResponseSchema = z
   .object({
-    algorithmSpecification: AlgorithmSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Definition of the Amazon Braket job created. Specifies the container image the job uses, information about the Python scripts used for entry and training, and the user-defined metrics used to evaluation the job.',
-        }),
-    ),
-    billableDuration: IntegerSchema.and(
-      z.any().openapi({ description: 'The billable time the Amazon Braket job used to complete.' }),
-    ).exactOptional(),
-    checkpointConfig: JobCheckpointConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the output locations for job checkpoint data.',
-        }),
-    ).exactOptional(),
-    createdAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the Amazon Braket job was created.' }),
-    ),
-    deviceConfig: DeviceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The quantum processing unit (QPU) or simulator used to run the Amazon Braket job.',
-        }),
-    ).exactOptional(),
-    endedAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the Amazon Braket job ended.' }),
-    ).exactOptional(),
-    events: JobEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about the type and time events occurred related to the Amazon Braket job.',
-        }),
-    ).exactOptional(),
-    failureReason: String1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the reason why an Amazon Braket job failed, if it failed.',
-        }),
-    ).exactOptional(),
-    hyperParameters: HyperParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Algorithm-specific parameters used by an Amazon Braket job that influence the quality of the traiing job. The values are set with a string of JSON key:value pairs, where the key is the name of the hyperparameter and the value is the value of th hyperparameter.',
-        }),
-    ).exactOptional(),
-    inputDataConfig: InputConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of parameters that specify the name and type of input data and where it is located.',
-        }),
-    ).exactOptional(),
-    instanceConfig: InstanceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource instances to use while running the hybrid job on Amazon Braket.',
-        }),
-    ),
-    jobArn: JobArnSchema.and(z.any().openapi({ description: 'The ARN of the Amazon Braket job.' })),
-    jobName: GetJobResponseJobNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Braket job.' }),
-    ),
-    outputDataConfig: JobOutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the S3 location where job artifacts are stored and the encryption key used to store them there.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM role that Amazon Braket can assume to perform tasks on behalf of a user. It can access user resources, run an Amazon Braket job container on behalf of user, and output resources to the s3 buckets of a user.',
-        }),
-    ),
-    startedAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the Amazon Braket job was started.' }),
-    ).exactOptional(),
-    status: JobPrimaryStatusSchema.and(
-      z.any().openapi({ description: 'The status of the Amazon Braket job.' }),
-    ),
-    stoppingCondition: JobStoppingConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user-defined criteria that specifies when to stop a job running.',
-        }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag object that consists of a key and an optional value, used to manage metadata for Amazon Braket resources.',
-        }),
-    ).exactOptional(),
+    algorithmSpecification: AlgorithmSpecificationSchema.openapi({
+      description:
+        'Definition of the Amazon Braket job created. Specifies the container image the job uses, information about the Python scripts used for entry and training, and the user-defined metrics used to evaluation the job.',
+    }),
+    billableDuration: IntegerSchema.exactOptional().openapi({
+      description: 'The billable time the Amazon Braket job used to complete.',
+    }),
+    checkpointConfig: JobCheckpointConfigSchema.exactOptional().openapi({
+      description: 'Information about the output locations for job checkpoint data.',
+    }),
+    createdAt: SyntheticTimestampDateTimeSchema.openapi({
+      description: 'The date and time that the Amazon Braket job was created.',
+    }),
+    deviceConfig: DeviceConfigSchema.exactOptional().openapi({
+      description:
+        'The quantum processing unit (QPU) or simulator used to run the Amazon Braket job.',
+    }),
+    endedAt: SyntheticTimestampDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the Amazon Braket job ended.',
+    }),
+    events: JobEventsSchema.exactOptional().openapi({
+      description:
+        'Details about the type and time events occurred related to the Amazon Braket job.',
+    }),
+    failureReason: String1024Schema.exactOptional().openapi({
+      description: 'A description of the reason why an Amazon Braket job failed, if it failed.',
+    }),
+    hyperParameters: HyperParametersSchema.exactOptional().openapi({
+      description:
+        'Algorithm-specific parameters used by an Amazon Braket job that influence the quality of the traiing job. The values are set with a string of JSON key:value pairs, where the key is the name of the hyperparameter and the value is the value of th hyperparameter.',
+    }),
+    inputDataConfig: InputConfigListSchema.exactOptional().openapi({
+      description:
+        'A list of parameters that specify the name and type of input data and where it is located.',
+    }),
+    instanceConfig: InstanceConfigSchema.openapi({
+      description: 'The resource instances to use while running the hybrid job on Amazon Braket.',
+    }),
+    jobArn: JobArnSchema.openapi({ description: 'The ARN of the Amazon Braket job.' }),
+    jobName: GetJobResponseJobNameStringSchema.openapi({
+      description: 'The name of the Amazon Braket job.',
+    }),
+    outputDataConfig: JobOutputDataConfigSchema.openapi({
+      description:
+        'The path to the S3 location where job artifacts are stored and the encryption key used to store them there.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM role that Amazon Braket can assume to perform tasks on behalf of a user. It can access user resources, run an Amazon Braket job container on behalf of user, and output resources to the s3 buckets of a user.',
+    }),
+    startedAt: SyntheticTimestampDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the Amazon Braket job was started.',
+    }),
+    status: JobPrimaryStatusSchema.openapi({ description: 'The status of the Amazon Braket job.' }),
+    stoppingCondition: JobStoppingConditionSchema.exactOptional().openapi({
+      description: 'The user-defined criteria that specifies when to stop a job running.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description:
+        'A tag object that consists of a key and an optional value, used to manage metadata for Amazon Braket resources.',
+    }),
   })
   .openapi({
     required: [
@@ -670,48 +526,36 @@ const QuantumTaskStatusSchema = z
 
 const GetQuantumTaskResponseSchema = z
   .object({
-    createdAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The time at which the task was created.' }),
-    ),
-    deviceArn: DeviceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the device the task was run on.' }),
-    ),
-    deviceParameters: JsonValueSchema.and(
-      z.any().openapi({ description: 'The parameters for the device on which the task ran.' }),
-    ),
-    endedAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The time at which the task ended.' }),
-    ).exactOptional(),
-    failureReason: StringSchema.and(
-      z.any().openapi({ description: 'The reason that a task failed.' }),
-    ).exactOptional(),
-    jobArn: JobArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the Amazon Braket job associated with the quantum task.',
-        }),
-    ).exactOptional(),
-    outputS3Bucket: StringSchema.and(
-      z.any().openapi({ description: 'The S3 bucket where task results are stored.' }),
-    ),
-    outputS3Directory: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The folder in the S3 bucket where task results are stored.' }),
-    ),
-    quantumTaskArn: QuantumTaskArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the task.' }),
-    ),
-    shots: LongSchema.and(
-      z.any().openapi({ description: 'The number of shots used in the task.' }),
-    ),
-    status: QuantumTaskStatusSchema.and(
-      z.any().openapi({ description: 'The status of the task.' }),
-    ),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'The tags that belong to this task.' }),
-    ).exactOptional(),
+    createdAt: SyntheticTimestampDateTimeSchema.openapi({
+      description: 'The time at which the task was created.',
+    }),
+    deviceArn: DeviceArnSchema.openapi({
+      description: 'The ARN of the device the task was run on.',
+    }),
+    deviceParameters: JsonValueSchema.openapi({
+      description: 'The parameters for the device on which the task ran.',
+    }),
+    endedAt: SyntheticTimestampDateTimeSchema.exactOptional().openapi({
+      description: 'The time at which the task ended.',
+    }),
+    failureReason: StringSchema.exactOptional().openapi({
+      description: 'The reason that a task failed.',
+    }),
+    jobArn: JobArnSchema.exactOptional().openapi({
+      description: 'The ARN of the Amazon Braket job associated with the quantum task.',
+    }),
+    outputS3Bucket: StringSchema.openapi({
+      description: 'The S3 bucket where task results are stored.',
+    }),
+    outputS3Directory: StringSchema.openapi({
+      description: 'The folder in the S3 bucket where task results are stored.',
+    }),
+    quantumTaskArn: QuantumTaskArnSchema.openapi({ description: 'The ARN of the task.' }),
+    shots: LongSchema.openapi({ description: 'The number of shots used in the task.' }),
+    status: QuantumTaskStatusSchema.openapi({ description: 'The status of the task.' }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'The tags that belong to this task.',
+    }),
   })
   .openapi({
     required: [
@@ -729,26 +573,20 @@ const GetQuantumTaskResponseSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Displays the key, value pairs of tags associated with this resource.',
-        }),
-    ).exactOptional(),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'Displays the key, value pairs of tags associated with this resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const DeviceSummarySchema = z
   .object({
-    deviceArn: DeviceArnSchema.and(z.any().openapi({ description: 'The ARN of the device.' })),
-    deviceName: StringSchema.and(z.any().openapi({ description: 'The name of the device.' })),
-    deviceStatus: DeviceStatusSchema.and(
-      z.any().openapi({ description: 'The status of the device.' }),
-    ),
-    deviceType: DeviceTypeSchema.and(z.any().openapi({ description: 'The type of the device.' })),
-    providerName: StringSchema.and(z.any().openapi({ description: 'The provider of the device.' })),
+    deviceArn: DeviceArnSchema.openapi({ description: 'The ARN of the device.' }),
+    deviceName: StringSchema.openapi({ description: 'The name of the device.' }),
+    deviceStatus: DeviceStatusSchema.openapi({ description: 'The status of the device.' }),
+    deviceType: DeviceTypeSchema.openapi({ description: 'The type of the device.' }),
+    providerName: StringSchema.openapi({ description: 'The provider of the device.' }),
   })
   .openapi({
     required: ['deviceArn', 'deviceName', 'deviceStatus', 'deviceType', 'providerName'],
@@ -760,22 +598,14 @@ const DeviceSummaryListSchema = z.array(DeviceSummarySchema).openapi('DeviceSumm
 
 const SearchDevicesResponseSchema = z
   .object({
-    devices: DeviceSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>DeviceSummary</code> objects for devices that match the specified filter values.',
-        }),
-    ),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for pagination of results, or null if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.',
-        }),
-    ).exactOptional(),
+    devices: DeviceSummaryListSchema.openapi({
+      description:
+        'An array of <code>DeviceSummary</code> objects for devices that match the specified filter values.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token used for pagination of results, or null if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.',
+    }),
   })
   .openapi({ required: ['devices'] })
   .openapi('SearchDevicesResponse')
@@ -794,12 +624,12 @@ const SearchDevicesFilterValuesListSchema = z
 
 const SearchDevicesFilterSchema = z
   .object({
-    name: SearchDevicesFilterNameStringSchema.and(
-      z.any().openapi({ description: 'The name to use to filter results.' }),
-    ),
-    values: SearchDevicesFilterValuesListSchema.and(
-      z.any().openapi({ description: 'The values to use to filter results.' }),
-    ),
+    name: SearchDevicesFilterNameStringSchema.openapi({
+      description: 'The name to use to filter results.',
+    }),
+    values: SearchDevicesFilterValuesListSchema.openapi({
+      description: 'The values to use to filter results.',
+    }),
   })
   .openapi({
     required: ['name', 'values'],
@@ -809,38 +639,26 @@ const SearchDevicesFilterSchema = z
 
 const JobSummarySchema = z
   .object({
-    createdAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the Amazon Braket job was created.' }),
-    ),
-    device: String256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides summary information about the primary device used by an Amazon Braket job.',
-        }),
-    ),
-    endedAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the Amazon Braket job ended.' }),
-    ).exactOptional(),
-    jobArn: JobArnSchema.and(z.any().openapi({ description: 'The ARN of the Amazon Braket job.' })),
-    jobName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Braket job.' }),
-    ),
-    startedAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the Amazon Braket job was started.' }),
-    ).exactOptional(),
-    status: JobPrimaryStatusSchema.and(
-      z.any().openapi({ description: 'The status of the Amazon Braket job.' }),
-    ),
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag object that consists of a key and an optional value, used to manage metadata for Amazon Braket resources.',
-        }),
-    ).exactOptional(),
+    createdAt: SyntheticTimestampDateTimeSchema.openapi({
+      description: 'The date and time that the Amazon Braket job was created.',
+    }),
+    device: String256Schema.openapi({
+      description:
+        'Provides summary information about the primary device used by an Amazon Braket job.',
+    }),
+    endedAt: SyntheticTimestampDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the Amazon Braket job ended.',
+    }),
+    jobArn: JobArnSchema.openapi({ description: 'The ARN of the Amazon Braket job.' }),
+    jobName: StringSchema.openapi({ description: 'The name of the Amazon Braket job.' }),
+    startedAt: SyntheticTimestampDateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the Amazon Braket job was started.',
+    }),
+    status: JobPrimaryStatusSchema.openapi({ description: 'The status of the Amazon Braket job.' }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description:
+        'A tag object that consists of a key and an optional value, used to manage metadata for Amazon Braket resources.',
+    }),
   })
   .openapi({
     required: ['createdAt', 'device', 'jobArn', 'jobName', 'status'],
@@ -852,22 +670,14 @@ const JobSummaryListSchema = z.array(JobSummarySchema).openapi('JobSummaryList')
 
 const SearchJobsResponseSchema = z
   .object({
-    jobs: JobSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>JobSummary</code> objects for devices that match the specified filter values.',
-        }),
-    ),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for pagination of results, or <code>null</code> if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.',
-        }),
-    ).exactOptional(),
+    jobs: JobSummaryListSchema.openapi({
+      description:
+        'An array of <code>JobSummary</code> objects for devices that match the specified filter values.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token used for pagination of results, or <code>null</code> if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.',
+    }),
   })
   .openapi({ required: ['jobs'] })
   .openapi('SearchJobsResponse')
@@ -886,15 +696,13 @@ const SearchJobsFilterValuesListSchema = z
 
 const SearchJobsFilterSchema = z
   .object({
-    name: String64Schema.and(
-      z.any().openapi({ description: 'The name to use for the jobs filter.' }),
-    ),
-    operator: SearchJobsFilterOperatorSchema.and(
-      z.any().openapi({ description: 'An operator to use for the jobs filter.' }),
-    ),
-    values: SearchJobsFilterValuesListSchema.and(
-      z.any().openapi({ description: 'The values to use for the jobs filter.' }),
-    ),
+    name: String64Schema.openapi({ description: 'The name to use for the jobs filter.' }),
+    operator: SearchJobsFilterOperatorSchema.openapi({
+      description: 'An operator to use for the jobs filter.',
+    }),
+    values: SearchJobsFilterValuesListSchema.openapi({
+      description: 'The values to use for the jobs filter.',
+    }),
   })
   .openapi({
     required: ['name', 'operator', 'values'],
@@ -904,39 +712,25 @@ const SearchJobsFilterSchema = z
 
 const QuantumTaskSummarySchema = z
   .object({
-    createdAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The time at which the task was created.' }),
-    ),
-    deviceArn: DeviceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the device the task ran on.' }),
-    ),
-    endedAt: SyntheticTimestampDateTimeSchema.and(
-      z.any().openapi({ description: 'The time at which the task finished.' }),
-    ).exactOptional(),
-    outputS3Bucket: StringSchema.and(
-      z.any().openapi({ description: 'The S3 bucket where the task result file is stored..' }),
-    ),
-    outputS3Directory: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The folder in the S3 bucket where the task result file is stored.',
-        }),
-    ),
-    quantumTaskArn: QuantumTaskArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the task.' }),
-    ),
-    shots: LongSchema.and(z.any().openapi({ description: 'The shots used for the task.' })),
-    status: QuantumTaskStatusSchema.and(
-      z.any().openapi({ description: 'The status of the task.' }),
-    ),
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Displays the key, value pairs of tags associated with this quantum task.',
-        }),
-    ).exactOptional(),
+    createdAt: SyntheticTimestampDateTimeSchema.openapi({
+      description: 'The time at which the task was created.',
+    }),
+    deviceArn: DeviceArnSchema.openapi({ description: 'The ARN of the device the task ran on.' }),
+    endedAt: SyntheticTimestampDateTimeSchema.exactOptional().openapi({
+      description: 'The time at which the task finished.',
+    }),
+    outputS3Bucket: StringSchema.openapi({
+      description: 'The S3 bucket where the task result file is stored..',
+    }),
+    outputS3Directory: StringSchema.openapi({
+      description: 'The folder in the S3 bucket where the task result file is stored.',
+    }),
+    quantumTaskArn: QuantumTaskArnSchema.openapi({ description: 'The ARN of the task.' }),
+    shots: LongSchema.openapi({ description: 'The shots used for the task.' }),
+    status: QuantumTaskStatusSchema.openapi({ description: 'The status of the task.' }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'Displays the key, value pairs of tags associated with this quantum task.',
+    }),
   })
   .openapi({
     required: [
@@ -958,22 +752,14 @@ const QuantumTaskSummaryListSchema = z
 
 const SearchQuantumTasksResponseSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for pagination of results, or null if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.',
-        }),
-    ).exactOptional(),
-    quantumTasks: QuantumTaskSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>QuantumTaskSummary</code> objects for tasks that match the specified filters.',
-        }),
-    ),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token used for pagination of results, or null if there are no additional results. Use the token value in a subsequent request to continue results where the previous request ended.',
+    }),
+    quantumTasks: QuantumTaskSummaryListSchema.openapi({
+      description:
+        'An array of <code>QuantumTaskSummary</code> objects for tasks that match the specified filters.',
+    }),
   })
   .openapi({ required: ['quantumTasks'] })
   .openapi('SearchQuantumTasksResponse')
@@ -990,15 +776,13 @@ const SearchQuantumTasksFilterValuesListSchema = z
 
 const SearchQuantumTasksFilterSchema = z
   .object({
-    name: String64Schema.and(
-      z.any().openapi({ description: 'The name of the device used for the task.' }),
-    ),
-    operator: SearchQuantumTasksFilterOperatorSchema.and(
-      z.any().openapi({ description: 'An operator to use in the filter.' }),
-    ),
-    values: SearchQuantumTasksFilterValuesListSchema.and(
-      z.any().openapi({ description: 'The values to use for the filter.' }),
-    ),
+    name: String64Schema.openapi({ description: 'The name of the device used for the task.' }),
+    operator: SearchQuantumTasksFilterOperatorSchema.openapi({
+      description: 'An operator to use in the filter.',
+    }),
+    values: SearchQuantumTasksFilterValuesListSchema.openapi({
+      description: 'The values to use for the filter.',
+    }),
   })
   .openapi({
     required: ['name', 'operator', 'values'],
@@ -1006,20 +790,20 @@ const SearchQuantumTasksFilterSchema = z
   })
   .openapi('SearchQuantumTasksFilter')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const CancelJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelJobRequest' })
   .openapi('CancelJobRequest')
 
 const CancelQuantumTaskRequestSchema = z
   .object({
-    clientToken: String64Schema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ),
+    clientToken: String64Schema.openapi({
+      description: 'The client token associated with the request.',
+    }),
   })
   .openapi({ required: ['clientToken'], title: 'CancelQuantumTaskRequest' })
   .openapi('CancelQuantumTaskRequest')
@@ -1039,94 +823,50 @@ const CreateJobRequestJobNameStringSchema = z
 
 const CreateJobRequestSchema = z
   .object({
-    algorithmSpecification: AlgorithmSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Definition of the Amazon Braket job to be created. Specifies the container image the job uses and information about the Python scripts used for entry and training.',
-        }),
-    ),
-    checkpointConfig: JobCheckpointConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the output locations for job checkpoint data.',
-        }),
-    ).exactOptional(),
-    clientToken: String64Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique token that guarantees that the call to this API is idempotent.',
-        }),
-    ),
-    deviceConfig: DeviceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The quantum processing unit (QPU) or simulator used to create an Amazon Braket job.',
-        }),
-    ),
-    hyperParameters: HyperParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Algorithm-specific parameters used by an Amazon Braket job that influence the quality of the training job. The values are set with a string of JSON key:value pairs, where the key is the name of the hyperparameter and the value is the value of th hyperparameter.',
-        }),
-    ).exactOptional(),
-    inputDataConfig: CreateJobRequestInputDataConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of parameters that specify the name and type of input data and where it is located.',
-        }),
-    ).exactOptional(),
-    instanceConfig: InstanceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration of the resource instances to use while running the hybrid job on Amazon Braket.',
-        }),
-    ),
-    jobName: CreateJobRequestJobNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Braket job.' }),
-    ),
-    outputDataConfig: JobOutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the S3 location where you want to store job artifacts and the encryption key used to store them.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of an IAM role that Amazon Braket can assume to perform tasks on behalf of a user. It can access user resources, run an Amazon Braket job container on behalf of user, and output resources to the users' s3 buckets.",
-        }),
-    ),
-    stoppingCondition: JobStoppingConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The user-defined criteria that specifies when a job stops running.',
-        }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A tag object that consists of a key and an optional value, used to manage metadata for Amazon Braket resources.',
-        }),
-    ).exactOptional(),
+    algorithmSpecification: AlgorithmSpecificationSchema.openapi({
+      description:
+        'Definition of the Amazon Braket job to be created. Specifies the container image the job uses and information about the Python scripts used for entry and training.',
+    }),
+    checkpointConfig: JobCheckpointConfigSchema.exactOptional().openapi({
+      description: 'Information about the output locations for job checkpoint data.',
+    }),
+    clientToken: String64Schema.openapi({
+      description: 'A unique token that guarantees that the call to this API is idempotent.',
+    }),
+    deviceConfig: DeviceConfigSchema.openapi({
+      description:
+        'The quantum processing unit (QPU) or simulator used to create an Amazon Braket job.',
+    }),
+    hyperParameters: HyperParametersSchema.exactOptional().openapi({
+      description:
+        'Algorithm-specific parameters used by an Amazon Braket job that influence the quality of the training job. The values are set with a string of JSON key:value pairs, where the key is the name of the hyperparameter and the value is the value of th hyperparameter.',
+    }),
+    inputDataConfig: CreateJobRequestInputDataConfigListSchema.exactOptional().openapi({
+      description:
+        'A list of parameters that specify the name and type of input data and where it is located.',
+    }),
+    instanceConfig: InstanceConfigSchema.openapi({
+      description:
+        'Configuration of the resource instances to use while running the hybrid job on Amazon Braket.',
+    }),
+    jobName: CreateJobRequestJobNameStringSchema.openapi({
+      description: 'The name of the Amazon Braket job.',
+    }),
+    outputDataConfig: JobOutputDataConfigSchema.openapi({
+      description:
+        'The path to the S3 location where you want to store job artifacts and the encryption key used to store them.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        "The Amazon Resource Name (ARN) of an IAM role that Amazon Braket can assume to perform tasks on behalf of a user. It can access user resources, run an Amazon Braket job container on behalf of user, and output resources to the users' s3 buckets.",
+    }),
+    stoppingCondition: JobStoppingConditionSchema.exactOptional().openapi({
+      description: ' The user-defined criteria that specifies when a job stops running.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description:
+        'A tag object that consists of a key and an optional value, used to manage metadata for Amazon Braket resources.',
+    }),
   })
   .openapi({
     required: [
@@ -1169,42 +909,31 @@ const CreateQuantumTaskRequestShotsLongSchema = z
 
 const CreateQuantumTaskRequestSchema = z
   .object({
-    action: JsonValueSchema.and(
-      z.any().openapi({ description: 'The action associated with the task.' }),
-    ),
-    clientToken: String64Schema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ),
-    deviceArn: DeviceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the device to run the task on.' }),
-    ),
-    deviceParameters: CreateQuantumTaskRequestDeviceParametersStringSchema.and(
-      z.any().openapi({ description: 'The parameters for the device to run the task on.' }),
-    ).exactOptional(),
-    jobToken: JobTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for an Amazon Braket job that associates it with the quantum task.',
-        }),
-    ).exactOptional(),
-    outputS3Bucket: CreateQuantumTaskRequestOutputS3BucketStringSchema.and(
-      z.any().openapi({ description: 'The S3 bucket to store task result files in.' }),
-    ),
-    outputS3KeyPrefix: CreateQuantumTaskRequestOutputS3KeyPrefixStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The key prefix for the location in the S3 bucket to store task results in.',
-        }),
-    ),
-    shots: CreateQuantumTaskRequestShotsLongSchema.and(
-      z.any().openapi({ description: 'The number of shots to use for the task.' }),
-    ),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: "Tags to be added to the quantum task you're creating." }),
-    ).exactOptional(),
+    action: JsonValueSchema.openapi({ description: 'The action associated with the task.' }),
+    clientToken: String64Schema.openapi({
+      description: 'The client token associated with the request.',
+    }),
+    deviceArn: DeviceArnSchema.openapi({
+      description: 'The ARN of the device to run the task on.',
+    }),
+    deviceParameters: CreateQuantumTaskRequestDeviceParametersStringSchema.exactOptional().openapi({
+      description: 'The parameters for the device to run the task on.',
+    }),
+    jobToken: JobTokenSchema.exactOptional().openapi({
+      description: 'The token for an Amazon Braket job that associates it with the quantum task.',
+    }),
+    outputS3Bucket: CreateQuantumTaskRequestOutputS3BucketStringSchema.openapi({
+      description: 'The S3 bucket to store task result files in.',
+    }),
+    outputS3KeyPrefix: CreateQuantumTaskRequestOutputS3KeyPrefixStringSchema.openapi({
+      description: 'The key prefix for the location in the S3 bucket to store task results in.',
+    }),
+    shots: CreateQuantumTaskRequestShotsLongSchema.openapi({
+      description: 'The number of shots to use for the task.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: "Tags to be added to the quantum task you're creating.",
+    }),
   })
   .openapi({
     required: [
@@ -1220,22 +949,22 @@ const CreateQuantumTaskRequestSchema = z
   .openapi('CreateQuantumTaskRequest')
 
 const GetDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeviceRequest' })
   .openapi('GetDeviceRequest')
 
 const GetJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetJobRequest' })
   .openapi('GetJobRequest')
 
 const GetQuantumTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetQuantumTaskRequest' })
   .openapi('GetQuantumTaskRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -1253,20 +982,16 @@ const SearchDevicesRequestMaxResultsIntegerSchema = z
 
 const SearchDevicesRequestSchema = z
   .object({
-    filters: SearchDevicesRequestFiltersListSchema.and(
-      z.any().openapi({ description: 'The filter values to use to search for a device.' }),
-    ),
-    maxResults: SearchDevicesRequestMaxResultsIntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for pagination of results returned in the response. Use the token returned from the previous request continue results where the previous request ended.',
-        }),
-    ).exactOptional(),
+    filters: SearchDevicesRequestFiltersListSchema.openapi({
+      description: 'The filter values to use to search for a device.',
+    }),
+    maxResults: SearchDevicesRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token used for pagination of results returned in the response. Use the token returned from the previous request continue results where the previous request ended.',
+    }),
   })
   .openapi({ required: ['filters'], title: 'SearchDevicesRequest' })
   .openapi('SearchDevicesRequest')
@@ -1285,20 +1010,16 @@ const SearchJobsRequestMaxResultsIntegerSchema = z
 
 const SearchJobsRequestSchema = z
   .object({
-    filters: SearchJobsRequestFiltersListSchema.and(
-      z.any().openapi({ description: 'The filter values to use when searching for a job.' }),
-    ),
-    maxResults: SearchJobsRequestMaxResultsIntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for pagination of results returned in the response. Use the token returned from the previous request to continue results where the previous request ended.',
-        }),
-    ).exactOptional(),
+    filters: SearchJobsRequestFiltersListSchema.openapi({
+      description: 'The filter values to use when searching for a job.',
+    }),
+    maxResults: SearchJobsRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token used for pagination of results returned in the response. Use the token returned from the previous request to continue results where the previous request ended.',
+    }),
   })
   .openapi({ required: ['filters'], title: 'SearchJobsRequest' })
   .openapi('SearchJobsRequest')
@@ -1317,20 +1038,16 @@ const SearchQuantumTasksRequestMaxResultsIntegerSchema = z
 
 const SearchQuantumTasksRequestSchema = z
   .object({
-    filters: SearchQuantumTasksRequestFiltersListSchema.and(
-      z.any().openapi({ description: 'Array of <code>SearchQuantumTasksFilter</code> objects.' }),
-    ),
-    maxResults: SearchQuantumTasksRequestMaxResultsIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in the response.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for pagination of results returned in the response. Use the token returned from the previous request continue results where the previous request ended.',
-        }),
-    ).exactOptional(),
+    filters: SearchQuantumTasksRequestFiltersListSchema.openapi({
+      description: 'Array of <code>SearchQuantumTasksFilter</code> objects.',
+    }),
+    maxResults: SearchQuantumTasksRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in the response.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token used for pagination of results returned in the response. Use the token returned from the previous request continue results where the previous request ended.',
+    }),
   })
   .openapi({ required: ['filters'], title: 'SearchQuantumTasksRequest' })
   .openapi('SearchQuantumTasksRequest')
@@ -1339,15 +1056,13 @@ const TagKeysSchema = z.array(StringSchema).openapi('TagKeys')
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'Specify the tags to add to the resource.' }),
-    ),
+    tags: TagsMapSchema.openapi({ description: 'Specify the tags to add to the resource.' }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -1589,21 +1304,13 @@ export const postJobRoute = createRoute({
             .object({
               algorithmSpecification: z
                 .object({
-                  containerImage: ContainerImageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The container image used to create an Amazon Braket job.',
-                      }),
-                  ).exactOptional(),
-                  scriptModeConfig: ScriptModeConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configures the paths to the Python scripts used for entry and training.',
-                      }),
-                  ).exactOptional(),
+                  containerImage: ContainerImageSchema.exactOptional().openapi({
+                    description: 'The container image used to create an Amazon Braket job.',
+                  }),
+                  scriptModeConfig: ScriptModeConfigSchema.exactOptional().openapi({
+                    description:
+                      'Configures the paths to the Python scripts used for entry and training.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -1612,22 +1319,14 @@ export const postJobRoute = createRoute({
                 }),
               checkpointConfig: z
                 .object({
-                  localPath: String4096Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '(Optional) The local directory where checkpoints are written. The default directory is <code>/opt/braket/checkpoints/</code>.',
-                      }),
-                  ).exactOptional(),
-                  s3Uri: S3PathSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Identifies the S3 path where you want Amazon Braket to store checkpoints. For example, <code>s3://bucket-name/key-name-prefix</code>.',
-                      }),
-                  ).exactOptional(),
+                  localPath: String4096Schema.exactOptional().openapi({
+                    description:
+                      '(Optional) The local directory where checkpoints are written. The default directory is <code>/opt/braket/checkpoints/</code>.',
+                  }),
+                  s3Uri: S3PathSchema.exactOptional().openapi({
+                    description:
+                      'Identifies the S3 path where you want Amazon Braket to store checkpoints. For example, <code>s3://bucket-name/key-name-prefix</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1645,14 +1344,10 @@ export const postJobRoute = createRoute({
                 }),
               deviceConfig: z
                 .object({
-                  device: String256Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The primary quantum processing unit (QPU) or simulator used to create and run an Amazon Braket job.',
-                      }),
-                  ).exactOptional(),
+                  device: String256Schema.exactOptional().openapi({
+                    description:
+                      'The primary quantum processing unit (QPU) or simulator used to create and run an Amazon Braket job.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -1679,30 +1374,20 @@ export const postJobRoute = createRoute({
                 }),
               instanceConfig: z
                 .object({
-                  instanceCount: InstanceConfigInstanceCountIntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configures the number of resource instances to use while running an Amazon Braket job on Amazon Braket. The default value is 1.',
-                      }),
-                  ).exactOptional(),
-                  instanceType: InstanceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configures the type resource instances to use while running an Amazon Braket hybrid job.',
-                      }),
-                  ).exactOptional(),
-                  volumeSizeInGb: InstanceConfigVolumeSizeInGbIntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The size of the storage volume, in GB, that user wants to provision.',
-                      }),
-                  ).exactOptional(),
+                  instanceCount: InstanceConfigInstanceCountIntegerSchema.exactOptional().openapi({
+                    description:
+                      'Configures the number of resource instances to use while running an Amazon Braket job on Amazon Braket. The default value is 1.',
+                  }),
+                  instanceType: InstanceTypeSchema.exactOptional().openapi({
+                    description:
+                      'Configures the type resource instances to use while running an Amazon Braket hybrid job.',
+                  }),
+                  volumeSizeInGb: InstanceConfigVolumeSizeInGbIntegerSchema.exactOptional().openapi(
+                    {
+                      description:
+                        'The size of the storage volume, in GB, that user wants to provision.',
+                    },
+                  ),
                 })
                 .openapi({
                   description:
@@ -1717,22 +1402,14 @@ export const postJobRoute = createRoute({
                 .openapi({ description: 'The name of the Amazon Braket job.' }),
               outputDataConfig: z
                 .object({
-                  kmsKeyId: String2048Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The AWS Key Management Service (AWS KMS) key that Amazon Braket uses to encrypt the job training artifacts at rest using Amazon S3 server-side encryption.',
-                      }),
-                  ).exactOptional(),
-                  s3Path: S3PathSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Identifies the S3 path where you want Amazon Braket to store the job training artifacts. For example, <code>s3://bucket-name/key-name-prefix</code>.',
-                      }),
-                  ).exactOptional(),
+                  kmsKeyId: String2048Schema.exactOptional().openapi({
+                    description:
+                      'The AWS Key Management Service (AWS KMS) key that Amazon Braket uses to encrypt the job training artifacts at rest using Amazon S3 server-side encryption.',
+                  }),
+                  s3Path: S3PathSchema.exactOptional().openapi({
+                    description:
+                      'Identifies the S3 path where you want Amazon Braket to store the job training artifacts. For example, <code>s3://bucket-name/key-name-prefix</code>.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -1748,14 +1425,11 @@ export const postJobRoute = createRoute({
                 }),
               stoppingCondition: z
                 .object({
-                  maxRuntimeInSeconds: JobStoppingConditionMaxRuntimeInSecondsIntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The maximum length of time, in seconds, that an Amazon Braket job can run.',
-                      }),
-                  ).exactOptional(),
+                  maxRuntimeInSeconds:
+                    JobStoppingConditionMaxRuntimeInSecondsIntegerSchema.exactOptional().openapi({
+                      description:
+                        'The maximum length of time, in seconds, that an Amazon Braket job can run.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({

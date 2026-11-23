@@ -1030,7 +1030,11 @@ Get all blob storage integrations for the organization (requires organization-sc
       "bucketName": "string",
       "endpoint": "string",
       "region": "string",
+      "authType": "ACCESS_KEYS",
       "accessKeyId": "string",
+      "roleArn": "string",
+      "externalId": "string",
+      "crossAccountRoleArn": "string",
       "prefix": "string",
       "exportFrequency": "every_20_minutes",
       "enabled": true,
@@ -1118,6 +1122,8 @@ curl https://cloud.langfuse.com/api/public/integrations/blob-storage \
     "bucketName": "string",
     "endpoint": "string",
     "region": "string",
+    "authType": "ACCESS_KEYS",
+    "roleArn": "string",
     "accessKeyId": "string",
     "secretAccessKey": "string",
     "prefix": "string",
@@ -1148,6 +1154,8 @@ Create or update a blob storage integration for a specific project (requires org
   "bucketName": "string",
   "endpoint": "string",
   "region": "string",
+  "authType": "ACCESS_KEYS",
+  "roleArn": "string",
   "accessKeyId": "string",
   "secretAccessKey": "string",
   "prefix": "string",
@@ -1175,7 +1183,9 @@ Create or update a blob storage integration for a specific project (requires org
 |» bucketName|body|string|true|Name of the storage bucket. For AZURE_BLOB_STORAGE, must be a valid Azure container name (3-63 chars, lowercase letters, numbers, and hyphens only, must start and end with a letter or number, no consecutive hyphens). For GOOGLE_CLOUD_STORAGE with default credentials, the bucket must be listed in `LANGFUSE_BLOB_STORAGE_GCS_ALLOWED_BUCKETS`.|
 |» endpoint|body|string \| null|false|Custom endpoint URL (required for S3_COMPATIBLE type). Ignored for GOOGLE_CLOUD_STORAGE.|
 |» region|body|string|true|Storage region used by S3-compatible clients (AWS, GCS, Cloudflare R2, MinIO, Azure location IDs such as eastus, OCI). Leading and trailing whitespace is removed. The remaining value must be 1-63 letters, numbers, or hyphens, and cannot start or end with a hyphen. Examples: us-east-1, europe-west1, eastus, auto. Not used by GOOGLE_CLOUD_STORAGE; pass auto.|
-|» accessKeyId|body|string \| null|false|Access key ID for authentication. Not used for GOOGLE_CLOUD_STORAGE.|
+|» authType|body|[BlobStorageIntegrationAuthType](#schemablobstorageintegrationauthtype)|false|Authentication method. `ROLE_ARN` requires type `S3`, a concrete AWS region (not `auto`), and `roleArn`; `accessKeyId` and `secretAccessKey` must then be omitted, and `endpoint` and `forcePathStyle` are ignored. When omitted, `ROLE_ARN` applies to type `S3` if the request sends `roleArn` or the integration already uses `ROLE_ARN`, unless the request sends `accessKeyId` or `secretAccessKey`; otherwise `ACCESS_KEYS` applies.<br><br>The external ID is generated on the first save that uses `ROLE_ARN` and stays the same afterwards. That save stores the integration with `enabled: false`, because the trust policy cannot reference the new ID yet. Add the trust policy for `crossAccountRoleArn` with the returned `externalId` to your role, then update the integration with `enabled: true`.|
+|» roleArn|body|string \| null|false|ARN of the IAM role in your AWS account that Langfuse assumes when `authType` is `ROLE_ARN`, e.g. `arn:aws:iam::123456789012:role/langfuse-export`. When omitted on update, the stored role ARN is kept.|
+|» accessKeyId|body|string \| null|false|Access key ID for authentication. Not used for GOOGLE_CLOUD_STORAGE or when `authType` is `ROLE_ARN`.|
 |» secretAccessKey|body|string \| null|false|Secret access key for authentication (will be encrypted when stored). When omitted on update, the stored secret is kept, unless the type changes between GOOGLE_CLOUD_STORAGE and another type.<br><br>For GOOGLE_CLOUD_STORAGE, a GCP service account JSON key. On self-hosted deployments, pass `__GCS_DEFAULT_CREDENTIALS__` instead to use the deployment's Application Default Credentials; the bucket must then be listed in `LANGFUSE_BLOB_STORAGE_GCS_ALLOWED_BUCKETS`. Default credentials are not available on Langfuse Cloud.|
 |» prefix|body|string \| null|false|Path prefix for exported files (must end with forward slash if provided)|
 |» exportFrequency|body|[BlobStorageExportFrequency](#schemablobstorageexportfrequency)|true|none|
@@ -1196,6 +1206,8 @@ Create or update a blob storage integration for a specific project (requires org
 |» type|S3_COMPATIBLE|
 |» type|AZURE_BLOB_STORAGE|
 |» type|GOOGLE_CLOUD_STORAGE|
+|» authType|ACCESS_KEYS|
+|» authType|ROLE_ARN|
 |» exportFrequency|every_20_minutes|
 |» exportFrequency|hourly|
 |» exportFrequency|daily|
@@ -1236,7 +1248,11 @@ Create or update a blob storage integration for a specific project (requires org
   "bucketName": "string",
   "endpoint": "string",
   "region": "string",
+  "authType": "ACCESS_KEYS",
   "accessKeyId": "string",
+  "roleArn": "string",
+  "externalId": "string",
+  "crossAccountRoleArn": "string",
   "prefix": "string",
   "exportFrequency": "every_20_minutes",
   "enabled": true,
@@ -6279,6 +6295,12 @@ Query numeric and boolean score data.
 - `observationPromptName` - Prompt name of the associated observation
 - `observationPromptVersion` - Prompt version of the associated observation
 
+**Trace dimensions** (`traceName`, `tags`, `userId`, `traceRelease`, `traceVersion`) describe the score's whole trace, across all of its observations in the query time range:
+- `tags` is the union of the tags on every observation of the trace. `traceName`, `userId`, `traceRelease` and `traceVersion` take the most recent non-empty value.
+- A `tags` filter matches if any observation of the trace carries the tag; `none of` matches only when no observation does.
+- Filters on the other trace dimensions compare the trace-level value; `is null` matches when no observation has a value.
+- Filters and groupings read the same trace-level values, so they agree within one query.
+
 **Measures:**
 - `count` - Total number of scores
 - `value` - Score value (for aggregations)
@@ -6614,8 +6636,8 @@ Create a model
 |» outputPrice|body|number(double) \| null|false|Deprecated. Use 'pricingTiers' instead. Price (USD) per output unit. Creates a default tier if pricingTiers not provided.|
 |» totalPrice|body|number(double) \| null|false|Deprecated. Use 'pricingTiers' instead. Price (USD) per total units. Cannot be set if input or output price is set. Creates a default tier if pricingTiers not provided.|
 |» pricingTiers|body|[[PricingTierInput](#schemapricingtierinput)]|false|Optional. Array of pricing tiers for this model.<br><br>Use pricing tiers for all models - both those with threshold-based pricing variations and those with simple flat pricing:<br><br>- For models with standard flat pricing: Create a single default tier with your prices<br>  (e.g., one tier with isDefault=true, priority=0, conditions=[], and your standard prices)<br><br>- For models with threshold-based pricing: Create a default tier plus additional conditional tiers<br>  (e.g., default tier for standard usage + high-volume tier for usage above certain thresholds)<br><br>Requirements:<br>- Cannot be provided with flat prices (inputPrice/outputPrice/totalPrice) - use one approach or the other<br>- Must include exactly one default tier with isDefault=true, priority=0, and conditions=[]<br>- All tier names and priorities must be unique within the model<br>- Each tier must define at least one price<br><br>If omitted, you must provide flat prices instead (inputPrice/outputPrice/totalPrice),<br>which will automatically create a single default tier named "Standard".|
-|» tokenizerId|body|[ModelTokenizerId](#schemamodeltokenizerid)|false|Optional. Tokenizer to be applied to observations which match to this model. See docs for more details.|
-|» tokenizerConfig|body|object \| null|false|Optional. Configuration for the selected tokenizer. Needs to be JSON. See docs for more details.|
+|» tokenizerId|body|[ModelTokenizerId](#schemamodeltokenizerid)|false|Legacy tokenizer identifier retained for API compatibility. Ingestion no longer uses it to infer observation usage.|
+|» tokenizerConfig|body|object \| null|false|Legacy tokenizer configuration retained for API compatibility. Ingestion no longer uses it to infer observation usage.|
 
 #### Enumerated Values
 
@@ -6939,8 +6961,8 @@ Create or replace a project-owned model using its id. Built-in models cannot be 
 |» outputPrice|body|number(double) \| null|false|Deprecated. Use 'pricingTiers' instead. Price (USD) per output unit. Creates a default tier if pricingTiers not provided.|
 |» totalPrice|body|number(double) \| null|false|Deprecated. Use 'pricingTiers' instead. Price (USD) per total units. Cannot be set if input or output price is set. Creates a default tier if pricingTiers not provided.|
 |» pricingTiers|body|[[PricingTierInput](#schemapricingtierinput)]|false|Optional. Array of pricing tiers for this model.<br><br>Use pricing tiers for all models - both those with threshold-based pricing variations and those with simple flat pricing:<br><br>- For models with standard flat pricing: Create a single default tier with your prices<br>  (e.g., one tier with isDefault=true, priority=0, conditions=[], and your standard prices)<br><br>- For models with threshold-based pricing: Create a default tier plus additional conditional tiers<br>  (e.g., default tier for standard usage + high-volume tier for usage above certain thresholds)<br><br>Requirements:<br>- Cannot be provided with flat prices (inputPrice/outputPrice/totalPrice) - use one approach or the other<br>- Must include exactly one default tier with isDefault=true, priority=0, and conditions=[]<br>- All tier names and priorities must be unique within the model<br>- Each tier must define at least one price<br><br>If omitted, you must provide flat prices instead (inputPrice/outputPrice/totalPrice),<br>which will automatically create a single default tier named "Standard".|
-|» tokenizerId|body|[ModelTokenizerId](#schemamodeltokenizerid)|false|Optional. Tokenizer to be applied to observations which match to this model. See docs for more details.|
-|» tokenizerConfig|body|object \| null|false|Optional. Configuration for the selected tokenizer. Needs to be JSON. See docs for more details.|
+|» tokenizerId|body|[ModelTokenizerId](#schemamodeltokenizerid)|false|Legacy tokenizer identifier retained for API compatibility. Ingestion no longer uses it to infer observation usage.|
+|» tokenizerConfig|body|object \| null|false|Legacy tokenizer configuration retained for API compatibility. Ingestion no longer uses it to infer observation usage.|
 
 #### Enumerated Values
 
@@ -7144,7 +7166,10 @@ Together with OpenTelemetry ingestion and Metrics API v2, this is the only real-
 ## Cursor-based Pagination
 This endpoint uses cursor-based pagination for efficient traversal of large datasets.
 The cursor is returned in the response metadata and should be passed in subsequent requests
-to retrieve the next page of results.
+to retrieve the next page of results. The `limit` parameter is a maximum: a page may contain
+fewer items than the requested limit, including zero items, while `meta.cursor` is present.
+Continue requesting pages until `meta.cursor` is absent.
+Requests without a lower start-time bound may search only from January 1, 2020.
 
 ## Field Selection
 Use the `fields` parameter to control which observation fields are returned:
@@ -7163,7 +7188,7 @@ If not specified, `core` and `basic` field groups are returned.
 
 ## Filters
 Multiple filtering options are available via query parameters or the structured `filter` parameter.
-When using the `filter` parameter, it takes precedence over individual query parameter filters.
+A condition in the `filter` parameter replaces the query parameter for the same field. Query parameters for other fields still apply. A `startTime` condition replaces both `fromStartTime` and `toStartTime`.
 
 <h3 id="observationsgetmany-parameters">Parameters</h3>
 
@@ -7171,7 +7196,7 @@ When using the `filter` parameter, it takes precedence over individual query par
 |---|---|---|---|---|
 |fields|query|string \| null|false|Comma-separated list of field groups to include in the response.<br>Available groups: core, basic, time, io, metadata, model, usage, prompt, metrics, trace_context.<br>If not specified, `core` and `basic` field groups are returned.<br>Example: "basic,usage,model"|
 |expandMetadata|query|string \| null|false|Comma-separated list of metadata keys to return non-truncated.<br>By default, metadata values over 200 characters are truncated.<br>Use this parameter to retrieve full values for specific keys.<br>Example: "key1,key2"|
-|limit|query|integer \| null|false|Number of items to return per page. Maximum 1000, default 50.|
+|limit|query|integer \| null|false|Maximum number of items to return per page. A page may contain fewer items, including zero items, while meta.cursor is present. Maximum 1000, default 50.|
 |cursor|query|string \| null|false|Base64-encoded cursor for pagination. Use the cursor from the previous response to get the next page.|
 |parseIoAsJson|query|boolean \| null|false|**Deprecated.** Setting this to `true` will return a 400 error.<br>Input/output fields are always returned as raw strings.<br>Remove this parameter or set it to `false`.|
 |name|query|string \| null|false|none|
@@ -7186,7 +7211,7 @@ When using the `filter` parameter, it takes precedence over individual query par
 |fromStartTime|query|string(date-time) \| null|false|Retrieve only observations with a start_time on or after this datetime (ISO 8601).|
 |toStartTime|query|string(date-time) \| null|false|Retrieve only observations with a start_time before this datetime (ISO 8601).|
 |version|query|string \| null|false|Optional filter to only include observations with a certain version.|
-|filter|query|string \| null|false|JSON string containing an array of filter conditions. When provided, this takes precedence over query parameter filters (userId, name, type, level, environment, fromStartTime, ...).<br><br>## Filter Structure<br>Each filter condition has the following structure:<br>```json<br>[<br>  {<br>    "type": string,           // Required. One of: "datetime", "string", "number", "stringOptions", "categoryOptions", "arrayOptions", "stringObject", "numberObject", "boolean", "null"<br>    "column": string,         // Required. Column to filter on (see available columns below)<br>    "operator": string,       // Required. Operator based on type:<br>                              // - datetime: ">", "<", ">=", "<="<br>                              // - string: "=", "contains", "does not contain", "starts with", "ends with", "matches"<br>                              // - stringOptions: "any of", "none of"<br>                              // - categoryOptions: "any of", "none of"<br>                              // - arrayOptions: "any of", "none of", "all of"<br>                              // - number: "=", ">", "<", ">=", "<="<br>                              // - stringObject: "=", "contains", "does not contain", "starts with", "ends with", "matches", "is set", "is not set"<br>                              // - numberObject: "=", ">", "<", ">=", "<="<br>                              // - boolean: "=", "<>"<br>                              // - null: "is null", "is not null"<br>    "value": any,             // Required (except for null type). Value to compare against. Type depends on filter type<br>    "key": string             // Required only for stringObject, numberObject, and categoryOptions types when filtering on nested fields like metadata<br>  }<br>]<br>```<br><br>## Available Columns<br><br>### Core Observation Fields<br>- `id` (string) - Observation ID<br>- `type` (string) - Observation type (SPAN, GENERATION, EVENT)<br>- `name` (string) - Observation name<br>- `traceId` (string) - Associated trace ID<br>- `startTime` (datetime) - Observation start time<br>- `endTime` (datetime) - Observation end time<br>- `environment` (string) - Environment tag<br>- `level` (string) - Log level (DEBUG, DEFAULT, WARNING, ERROR)<br>- `statusMessage` (string) - Status message<br>- `version` (string) - Version tag<br>- `userId` (string) - User ID<br>- `sessionId` (string) - Session ID<br>- `isRootObservation` (boolean) - Whether the observation is a logical root. Observations marked as app roots by the SDK may retain a non-null parentObservationId.<br><br>### Trace-Related Fields<br>- `traceName` (string) - Name of the parent trace<br>- `traceTags` (arrayOptions) - Tags from the parent trace<br>- `tags` (arrayOptions) - Alias for traceTags<br><br>### Performance Metrics<br>- `latency` (number) - Latency in seconds (calculated: end_time - start_time)<br>- `timeToFirstToken` (number) - Time to first token in seconds<br>- `tokensPerSecond` (number) - Output tokens per second<br><br>### Token Usage<br>- `inputTokens` (number) - Number of input tokens<br>- `outputTokens` (number) - Number of output tokens<br>- `totalTokens` (number) - Total tokens (alias: `tokens`)<br><br>### Cost Metrics<br>- `inputCost` (number) - Input cost in USD<br>- `outputCost` (number) - Output cost in USD<br>- `totalCost` (number) - Total cost in USD<br><br>### Model Information<br>- `model` (string) - Provided model name (alias: `providedModelName`)<br>- `promptName` (string) - Associated prompt name<br>- `promptVersion` (number) - Associated prompt version<br><br>### Structured Data<br>- `input` (string) - Observation input. Supports accelerated indexed literal search with the `matches` operator.<br>- `output` (string) - Observation output. Supports accelerated indexed literal search with the `matches` operator.<br>- `metadata` (stringObject/numberObject/categoryOptions) - Metadata key-value pairs. Use `key` parameter to filter on specific metadata keys.<br><br>The `matches` operator is only supported for `input`, `output`, and stringObject `metadata` filters. It performs indexed literal search with token-boundary pruning using the events table text indexes. Case sensitivity differs by target: `input` and `output` matches are case-insensitive, while metadata value matches are case-sensitive. Unlike SQL `LIKE`, `%` and `_` are treated as literal characters. Use `contains` for legacy substring semantics where the API allows it. Any v2 `input` or `output` filter must be accompanied by at least one `=` or `matches` filter on `input` or `output`; standalone `contains`, `starts with`, `ends with`, and `does not contain` filters on these columns are rejected.<br><br>## Filter Examples<br>```json<br>[<br>  {<br>    "type": "string",<br>    "column": "type",<br>    "operator": "=",<br>    "value": "GENERATION"<br>  },<br>  {<br>    "type": "number",<br>    "column": "latency",<br>    "operator": ">=",<br>    "value": 2.5<br>  },<br>  {<br>    "type": "stringObject",<br>    "column": "metadata",<br>    "key": "environment",<br>    "operator": "=",<br>    "value": "production"<br>  },<br>  {<br>    "type": "string",<br>    "column": "output",<br>    "operator": "matches",<br>    "value": "needle"<br>  },<br>  {<br>    "type": "boolean",<br>    "column": "isRootObservation",<br>    "operator": "=",<br>    "value": true<br>  }<br>]<br>```|
+|filter|query|string \| null|false|JSON string containing an array of filter conditions. A condition on the same field as a query parameter filter (userId, name, type, level, environment, fromStartTime, ...) replaces that parameter. Query parameters for other fields still apply. A `startTime` condition replaces both `fromStartTime` and `toStartTime`.<br><br>## Filter Structure<br>Each filter condition has the following structure:<br>```json<br>[<br>  {<br>    "type": string,           // Required. One of: "datetime", "string", "number", "stringOptions", "arrayOptions", "stringObject", "boolean", "null"<br>    "column": string,         // Required. Column to filter on (see available columns below)<br>    "operator": string,       // Required. Operator based on type:<br>                              // - datetime: ">", "<", ">=", "<="<br>                              // - string: "=", "contains", "does not contain", "starts with", "ends with", "is not empty", "matches" (input/output only)<br>                              // - stringOptions: "any of", "none of" (works on any string column except input/output)<br>                              // - arrayOptions: "any of", "none of", "all of"<br>                              // - number: "=", ">", "<", ">=", "<="<br>                              // - stringObject: "=", "contains", "does not contain", "starts with", "ends with", "matches", "is set", "is not set"<br>                              // - boolean: "=", "<>"<br>                              // - null: "is null", "is not null"<br>    "value": any,             // Required. Type depends on filter type: ISO 8601 string for datetime, JSON number for number (not a numeric string), array of strings for stringOptions/arrayOptions, boolean for boolean, and "" (empty string) for null<br>    "key": string             // Required only for stringObject (the metadata key to filter on)<br>  }<br>]<br>```<br><br>## Available Columns<br><br>### Core Observation Fields<br>- `id` (string) - Observation ID<br>- `type` (string) - Observation type (SPAN, GENERATION, EVENT)<br>- `name` (string) - Observation name<br>- `traceId` (string) - Associated trace ID<br>- `startTime` (datetime) - Observation start time<br>- `endTime` (datetime) - Observation end time<br>- `environment` (string) - Environment tag<br>- `level` (string) - Log level (DEBUG, DEFAULT, WARNING, ERROR)<br>- `statusMessage` (string) - Status message<br>- `version` (string) - Version tag<br>- `userId` (string) - User ID<br>- `sessionId` (string) - Session ID<br>- `isRootObservation` (boolean) - Whether the observation is a logical root. Observations marked as app roots by the SDK may retain a non-null parentObservationId.<br><br>### Trace-Related Fields<br>- `traceName` (string) - Name of the parent trace<br>- `traceTags` (arrayOptions) - Tags from the parent trace<br>- `tags` (arrayOptions) - Alias for traceTags<br><br>### Performance Metrics<br>- `latency` (number) - Latency in seconds (calculated: end_time - start_time)<br>- `timeToFirstToken` (number) - Time to first token in seconds<br>- `tokensPerSecond` (number) - Output tokens per second<br><br>### Token Usage<br>- `inputTokens` (number) - Number of input tokens<br>- `outputTokens` (number) - Number of output tokens<br>- `totalTokens` (number) - Total tokens (alias: `tokens`)<br><br>### Cost Metrics<br>- `inputCost` (number) - Input cost in USD<br>- `outputCost` (number) - Output cost in USD<br>- `totalCost` (number) - Total cost in USD<br><br>### Model Information<br>- `model` (string) - Provided model name (alias: `providedModelName`)<br>- `promptName` (string) - Associated prompt name<br>- `promptVersion` (number) - Associated prompt version<br><br>### Structured Data<br>- `input` (string) - Observation input. Supports accelerated indexed literal search with the `matches` operator.<br>- `output` (string) - Observation output. Supports accelerated indexed literal search with the `matches` operator.<br>- `metadata` (stringObject) - Metadata key-value pairs. Use the `key` parameter to filter on a specific metadata key. Metadata values are stored as strings, so match numbers and booleans by their string form with `=` (for example `"value": "true"` or `"value": "42"`); numeric comparisons such as `>` are not supported on metadata.<br><br>The `matches` operator is only supported for `input`, `output`, and stringObject `metadata` filters. It performs indexed literal search with token-boundary pruning using the events table text indexes. Case sensitivity differs by target: `input` and `output` matches are case-insensitive, while metadata value matches are case-sensitive. Unlike SQL `LIKE`, `%` and `_` are treated as literal characters. Use `contains` for legacy substring semantics where the API allows it. Any v2 `input` or `output` filter must be accompanied by at least one `=` or `matches` filter on `input` or `output`; standalone `contains`, `starts with`, `ends with`, and `does not contain` filters on these columns are rejected.<br><br>## Filter Examples<br>```json<br>[<br>  {<br>    "type": "string",<br>    "column": "type",<br>    "operator": "=",<br>    "value": "GENERATION"<br>  },<br>  {<br>    "type": "number",<br>    "column": "latency",<br>    "operator": ">=",<br>    "value": 2.5<br>  },<br>  {<br>    "type": "stringObject",<br>    "column": "metadata",<br>    "key": "environment",<br>    "operator": "=",<br>    "value": "production"<br>  },<br>  {<br>    "type": "string",<br>    "column": "output",<br>    "operator": "matches",<br>    "value": "needle"<br>  },<br>  {<br>    "type": "boolean",<br>    "column": "isRootObservation",<br>    "operator": "=",<br>    "value": true<br>  }<br>]<br>```|
 
 #### Enumerated Values
 
@@ -7258,7 +7283,8 @@ When using the `filter` parameter, it takes precedence over individual query par
     }
   ],
   "meta": {
-    "cursor": "string"
+    "cursor": "string",
+    "comment": "string"
   }
 }
 ```
@@ -8576,7 +8602,7 @@ curl https://cloud.langfuse.com/api/public/projects/string \
 
 `DELETE /api/public/projects/{projectId}`
 
-Delete a project by ID (requires organization-scoped API key). Project deletion is processed asynchronously.
+Delete a project by ID (requires organization-scoped API key). Project deletion is processed asynchronously. Deleting the AI Gateway ingestion project turns off the AI Gateway for the organization until another ingestion project is selected.
 
 <h3 id="projectsdelete-parameters">Parameters</h3>
 
@@ -8939,6 +8965,9 @@ curl https://cloud.langfuse.com/api/public/v2/prompts/string/versions/0 \
   -d '{
     "newLabels": [
       "string"
+    ],
+    "removeLabels": [
+      "string"
     ]
   }'
 ```
@@ -8953,6 +8982,9 @@ Update labels for a specific prompt version
 {
   "newLabels": [
     "string"
+  ],
+  "removeLabels": [
+    "string"
   ]
 }
 ```
@@ -8964,7 +8996,8 @@ Update labels for a specific prompt version
 |name|path|string|true|The name of the prompt. If the prompt is in a folder (e.g., "folder/subfolder/prompt-name"), <br>the folder path must be URL encoded.|
 |version|path|integer|true|Version of the prompt to update|
 |body|body|object|true|none|
-|» newLabels|body|[string]|true|New labels for the prompt version. Labels are unique across versions. The "latest" label is reserved and managed by Langfuse.|
+|» newLabels|body|[string]|false|New labels for the prompt version. Labels are unique across versions. The "latest" label is reserved and managed by Langfuse.|
+|» removeLabels|body|[string]|false|Labels to remove from the prompt version. The "latest" label is reserved and managed by Langfuse.|
 
 > Example responses
 
@@ -11928,6 +11961,192 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth
 </aside>
 
+<h1 id="server-unstablebillableunits">UnstableBillableUnits</h1>
+
+## unstable_billableUnits_get
+
+<a id="opIdunstable_billableUnits_get"></a>
+
+> Code samples
+
+```bash
+curl 'https://cloud.langfuse.com/api/public/unstable/organizations/billable-units?fromTimestamp=1970-01-01T00%3A00%3A00Z&toTimestamp=1970-01-01T00%3A00%3A00Z' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /api/public/unstable/organizations/billable-units`
+
+Unstable: the shape may change without notice.
+
+Billable units of the organization's projects, per UTC time bucket and
+project. These are the numbers of the organization's Usage settings
+tab. Requires an organization-scoped API key.
+
+Units are counted by ingestion time in `[fromTimestamp, toTimestamp)`
+as approximate distinct units per bucket (about 0.3% error on large
+counts, small counts are exact). A unit counts once in every bucket it
+appears in, so the counts stay close to, but are not exactly, what is
+billed. Deployments still in the v3 `legacy` write mode count the rows
+of the traces, observations and scores tables instead.
+
+Buckets start at UTC hour, day, Monday or month boundaries. The first
+and last bucket cover only the part inside the range, and a
+`toTimestamp` in the future is cut off at now. Buckets and projects
+without usage are left out, and so are deleted projects.
+
+<h3 id="unstablebillableunitsget-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|fromTimestamp|query|string(date-time)|true|Start of the range (inclusive), ISO 8601 with a time zone.|
+|toTimestamp|query|string(date-time)|true|End of the range (exclusive), ISO 8601 with a time zone. At most 31 days after `fromTimestamp` for `hour` granularity, 366 days otherwise.|
+|granularity|query|[unstableBillableUnitsGranularity](#schemaunstablebillableunitsgranularity)|false|Bucket size. Defaults to `day`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|granularity|hour|
+|granularity|day|
+|granularity|week|
+|granularity|month|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "bucket": "1970-01-01T00:00:00Z",
+      "projectId": "string",
+      "count": 0,
+      "traces": 0,
+      "observations": 0,
+      "scores": 0,
+      "topicFacetSummaries": 0
+    }
+  ],
+  "usageRecordedFrom": "1970-01-01T00:00:00Z"
+}
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+<h3 id="unstablebillableunitsget-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[unstableBillableUnitsResponse](#schemaunstablebillableunitsresponse)|
+|400|Bad Request||Inline|
+|401|Unauthorized||Inline|
+|403|Forbidden||Inline|
+|404|Not Found||Inline|
+|405|Method Not Allowed||Inline|
+|429|Too Many Requests||[unstablePublicApiError](#schemaunstablepublicapierror)|
+|500|Internal Server Error||[unstablePublicApiError](#schemaunstablepublicapierror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
 <h1 id="server-unstabledashboardwidgets">UnstableDashboardWidgets</h1>
 
 ## unstable_dashboardWidgets_list
@@ -14659,9 +14878,9 @@ curl https://cloud.langfuse.com/api/public/unstable/topic-facets \
 
 Unstable: Topics is in closed beta. The shape may change without notice.
 
-List the project's Topics facets. Only active facets (attached to the
-project's Topics rule, or all facets if the project has no rule) are
-returned unless `filter` contains an `active` condition.
+List the project's Topics facets. Only active facets (run by a Topics
+rule, or all facets if the project has no rule) are returned unless
+`filter` contains an `active` condition.
 
 `filter` is a JSON array of filter conditions combined with AND.
 String matching is case-insensitive. Columns: `id` (stringOptions),
@@ -14689,6 +14908,9 @@ String matching is case-insensitive. Columns: `id` (stringOptions),
       "description": "string",
       "isBuiltIn": true,
       "active": true,
+      "ruleIds": [
+        "string"
+      ],
       "version": 0,
       "prompt": "string",
       "publishedRun": {
@@ -14856,6 +15078,9 @@ Get one Topics facet by id, including inactive facets.
   "description": "string",
   "isBuiltIn": true,
   "active": true,
+  "ruleIds": [
+    "string"
+  ],
   "version": 0,
   "prompt": "string",
   "publishedRun": {
@@ -14996,7 +15221,7 @@ curl https://cloud.langfuse.com/api/public/unstable/topics \
 
 Unstable: Topics is in closed beta. The shape may change without notice.
 
-List the topics of each active facet's current published map, with
+List the topics of each active facet's live map, with
 the number of traces currently assigned to each topic in the window.
 Retired topics are not listed. `facets` holds per-facet trace counts
 by topic status.
@@ -15006,9 +15231,9 @@ The window applies to the trace start time. It defaults to the last
 
 `filter` is a JSON array of filter conditions combined with AND.
 String matching is case-insensitive. Columns: `facetId`
-(stringOptions), `facetName` (string, stringOptions), `id`
-(stringOptions), `name` (string, stringOptions). Facet conditions also
-restrict `facets`.
+(stringOptions), `facetName` (string, stringOptions), `ruleId`
+(stringOptions), `id` (stringOptions), `name` (string, stringOptions).
+Facet and rule conditions also restrict `facets`.
 
 <h3 id="unstabletopicslist-parameters">Parameters</h3>
 
@@ -15051,6 +15276,7 @@ restrict `facets`.
         "name": "string",
         "version": 0
       },
+      "ruleId": "string",
       "runId": "string",
       "traceCount": 0
     }
@@ -15062,6 +15288,7 @@ restrict `facets`.
         "name": "string",
         "version": 0
       },
+      "ruleId": "string",
       "publishedRunId": "string",
       "counts": {
         "assigned": 0,
@@ -15211,9 +15438,8 @@ curl https://cloud.langfuse.com/api/public/unstable/topics/string \
 
 Unstable: Topics is in closed beta. The shape may change without notice.
 
-Get one topic by its stable id. Topics on the current map are always
-found. A retired topic is found while traces in the window are still
-assigned to it, with `inCurrentMap: false`.
+Get one topic of a facet's current map by its stable id. Retired
+topics are not found.
 
 <h3 id="unstabletopicsget-parameters">Parameters</h3>
 
@@ -15238,6 +15464,7 @@ assigned to it, with `inCurrentMap: false`.
     "name": "string",
     "version": 0
   },
+  "ruleId": "string",
   "runId": "string",
   "traceCount": 0,
   "inCurrentMap": true,
@@ -15349,6 +15576,779 @@ null
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[unstableTopicWithStatus](#schemaunstabletopicwithstatus)|
+|400|Bad Request||Inline|
+|401|Unauthorized||Inline|
+|403|Forbidden||Inline|
+|404|Not Found||Inline|
+|405|Method Not Allowed||Inline|
+|429|Too Many Requests||[unstablePublicApiError](#schemaunstablepublicapierror)|
+|500|Internal Server Error||[unstablePublicApiError](#schemaunstablepublicapierror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## unstable_topics_listRules
+
+<a id="opIdunstable_topics_listRules"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.langfuse.com/api/public/unstable/topic-rules \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /api/public/unstable/topic-rules`
+
+Unstable: Topics is in closed beta. The shape may change without notice.
+
+List the project's Topics rules. A rule selects traces with an
+observation filter and a sampling rate, runs the facets in `facetIds`
+and keeps its own live topic map.
+
+`filter` is a JSON array of filter conditions combined with AND.
+String matching is case-insensitive. Columns: `id` (stringOptions),
+`name` (string, stringOptions).
+
+<h3 id="unstabletopicslistrules-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|filter|query|string \| null|false|JSON array of filter conditions, for example `[{"type":"string","column":"name","operator":"contains","value":"support"}]`.|
+|page|query|integer \| null|false|1-based page number. Defaults to `1`.|
+|limit|query|integer \| null|false|Maximum number of items per page. Defaults to `50`, at most `100`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "name": "string",
+      "filter": [
+        {
+          "type": "string",
+          "column": "string",
+          "operator": "string",
+          "value": null,
+          "key": "string"
+        }
+      ],
+      "sampling": 0,
+      "facetIds": [
+        "string"
+      ],
+      "updatedAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "page": 0,
+    "limit": 0,
+    "totalItems": 0,
+    "totalPages": 0
+  }
+}
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+<h3 id="unstabletopicslistrules-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[unstableTopicRuleList](#schemaunstabletopicrulelist)|
+|400|Bad Request||Inline|
+|401|Unauthorized||Inline|
+|403|Forbidden||Inline|
+|404|Not Found||Inline|
+|405|Method Not Allowed||Inline|
+|429|Too Many Requests||[unstablePublicApiError](#schemaunstablepublicapierror)|
+|500|Internal Server Error||[unstablePublicApiError](#schemaunstablepublicapierror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## unstable_topics_getRule
+
+<a id="opIdunstable_topics_getRule"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.langfuse.com/api/public/unstable/topic-rules/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /api/public/unstable/topic-rules/{ruleId}`
+
+Unstable: Topics is in closed beta. The shape may change without notice.
+
+Get one Topics rule by id.
+
+<h3 id="unstabletopicsgetrule-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ruleId|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "filter": [
+    {
+      "type": "string",
+      "column": "string",
+      "operator": "string",
+      "value": null,
+      "key": "string"
+    }
+  ],
+  "sampling": 0,
+  "facetIds": [
+    "string"
+  ],
+  "updatedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+<h3 id="unstabletopicsgetrule-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[unstableTopicRule](#schemaunstabletopicrule)|
+|400|Bad Request||Inline|
+|401|Unauthorized||Inline|
+|403|Forbidden||Inline|
+|404|Not Found||Inline|
+|405|Method Not Allowed||Inline|
+|429|Too Many Requests||[unstablePublicApiError](#schemaunstablepublicapierror)|
+|500|Internal Server Error||[unstablePublicApiError](#schemaunstablepublicapierror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## unstable_topics_listSummaries
+
+<a id="opIdunstable_topics_listSummaries"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.langfuse.com/api/public/unstable/topic-summaries \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /api/public/unstable/topic-summaries`
+
+Unstable: Topics is in closed beta. The shape may change without notice.
+
+List the current Topics summary per trace and facet: what the trace
+is about from the facet's perspective. Summaries are shared by all
+rules. A trace that was re-summarized lists only its latest summary.
+
+The window applies to the trace start time. It defaults to the last
+7 days and can span at most 30 days, starting no earlier than the
+plan's data access window. Without `fromTimestamp` and `toTimestamp`,
+a `traceId` `any of` filter reads the listed traces at their own start
+time within the last 93 days. Rows are ordered by trace start time.
+
+Each request scans a bounded number of candidate rows. A page shorter
+than `limit` (even an empty one) with a `meta.cursor` does not
+indicate completion; continue with the cursor until it is null.
+
+Only active facets (attached to a Topics rule, or all facets if the
+project has no rule) are read. Traces Topics never processed are not
+listed.
+
+`filter` is a JSON array of filter conditions combined with AND, with
+at most 100 `traceId` values. Columns: `traceId`, `facetId`, `facetName`, `ruleId`, `environment`
+(stringOptions), `timestamp`, `processedAt` (datetime), `state`,
+`topicId`, `topicName` (stringOptions), `assignmentStatus`
+(stringOptions, `any of` only). An unknown `topicName` matches nothing under `any of`
+and is ignored under `none of`.
+
+`state` values: `complete` (summarized), `not_applicable` (the facet
+does not apply to the trace), `insufficient_input` (too little input
+to summarize). `assignmentStatus` values: `assigned`, `outlier` (no
+topic fits), `awaiting_map` (summarized, not yet assigned).
+
+Common questions:
+- Summaries of specific traces: `traceId` `any of` the trace ids.
+- Summaries of a topic's traces: `topicId` or `topicName`.
+- Traces without a topic yet: `assignmentStatus` `any of` `["awaiting_map", "outlier"]`.
+
+<h3 id="unstabletopicslistsummaries-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|fromTimestamp|query|string(date-time) \| null|false|Start of the window (trace start time, inclusive). Defaults to 7 days before `toTimestamp`.|
+|toTimestamp|query|string(date-time) \| null|false|End of the window (trace start time, exclusive). Defaults to now.|
+|filter|query|string \| null|false|JSON array of filter conditions, for example `[{"type":"stringOptions","column":"traceId","operator":"any of","value":["<trace id>"]}]`.|
+|truncateSummaries|query|boolean \| null|false|Whether to truncate summaries to 500 characters. Defaults to `false`.|
+|orderBy|query|[unstableTopicResultsOrderBy](#schemaunstabletopicresultsorderby)|false|Defaults to `timestamp.desc`.|
+|limit|query|integer \| null|false|Maximum number of rows per page. Defaults to `50`, at most `100`.|
+|cursor|query|string \| null|false|The `meta.cursor` of the previous page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|orderBy|timestamp.desc|
+|orderBy|timestamp.asc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "window": {
+    "from": "1970-01-01T00:00:00Z",
+    "to": "1970-01-01T00:00:00Z"
+  },
+  "data": [
+    {
+      "traceId": "string",
+      "traceName": "string",
+      "environment": "string",
+      "timestamp": "1970-01-01T00:00:00Z",
+      "facetId": "string",
+      "facetName": "string",
+      "facetVersion": 0,
+      "state": "complete",
+      "summary": "string",
+      "summaryTruncated": true,
+      "processedAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "cursor": "string",
+    "comment": "string"
+  }
+}
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+<h3 id="unstabletopicslistsummaries-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[unstableTopicSummaryList](#schemaunstabletopicsummarylist)|
+|400|Bad Request||Inline|
+|401|Unauthorized||Inline|
+|403|Forbidden||Inline|
+|404|Not Found||Inline|
+|405|Method Not Allowed||Inline|
+|429|Too Many Requests||[unstablePublicApiError](#schemaunstablepublicapierror)|
+|500|Internal Server Error||[unstablePublicApiError](#schemaunstablepublicapierror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## unstable_topics_listAssignments
+
+<a id="opIdunstable_topics_listAssignments"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.langfuse.com/api/public/unstable/topic-assignments \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /api/public/unstable/topic-assignments`
+
+Unstable: Topics is in closed beta. The shape may change without notice.
+
+List the current topic per trace, facet and rule on each rule's live
+map: `assigned` with its topic, or `outlier` when no topic fits.
+Summarized traces that are not assigned yet are not listed; find
+them through `GET /topic-summaries` with `assignmentStatus`.
+
+The window applies to the trace start time. It defaults to the last
+7 days and can span at most 30 days, starting no earlier than the
+plan's data access window. Without `fromTimestamp` and `toTimestamp`,
+a `traceId` `any of` filter reads the listed traces at their own start
+time within the last 93 days. Rows are ordered by trace start time.
+
+Each request scans a bounded number of candidate rows. A page shorter
+than `limit` (even an empty one) with a `meta.cursor` does not
+indicate completion; continue with the cursor until it is null.
+
+Only active facets (attached to a Topics rule, or all facets if the
+project has no rule) are read. Traces Topics never processed are not
+listed.
+
+`filter` is a JSON array of filter conditions combined with AND, with
+at most 100 `traceId` values. Columns: `traceId`, `facetId`, `facetName`, `ruleId`, `environment`,
+`topicId`, `topicName` (stringOptions), `status` (stringOptions,
+`any of` only: `assigned`, `outlier`), `timestamp` (datetime). An
+unknown `topicName` matches nothing under `any of` and is ignored
+under `none of`.
+
+Common questions:
+- Topics of specific traces: `traceId` `any of` the trace ids.
+- Traces in a topic: `topicId` or `topicName`.
+
+<h3 id="unstabletopicslistassignments-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|fromTimestamp|query|string(date-time) \| null|false|Start of the window (trace start time, inclusive). Defaults to 7 days before `toTimestamp`.|
+|toTimestamp|query|string(date-time) \| null|false|End of the window (trace start time, exclusive). Defaults to now.|
+|filter|query|string \| null|false|JSON array of filter conditions, for example `[{"type":"stringOptions","column":"topicName","operator":"any of","value":["Refunds"]}]`.|
+|orderBy|query|[unstableTopicResultsOrderBy](#schemaunstabletopicresultsorderby)|false|Defaults to `timestamp.desc`.|
+|limit|query|integer \| null|false|Maximum number of rows per page. Defaults to `50`, at most `100`.|
+|cursor|query|string \| null|false|The `meta.cursor` of the previous page.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|orderBy|timestamp.desc|
+|orderBy|timestamp.asc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "window": {
+    "from": "1970-01-01T00:00:00Z",
+    "to": "1970-01-01T00:00:00Z"
+  },
+  "data": [
+    {
+      "traceId": "string",
+      "timestamp": "1970-01-01T00:00:00Z",
+      "facetId": "string",
+      "facetName": "string",
+      "facetVersion": 0,
+      "ruleId": "string",
+      "status": "assigned",
+      "topic": {
+        "id": "string",
+        "versionId": "string",
+        "name": "string"
+      },
+      "runId": "string",
+      "assignedAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "cursor": "string",
+    "comment": "string"
+  }
+}
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+> 500 Response
+
+```json
+{
+  "message": "string",
+  "code": "authentication_failed",
+  "details": {
+    "issues": [
+      {
+        "code": "string",
+        "message": "string",
+        "path": [
+          null
+        ]
+      }
+    ],
+    "field": "string",
+    "column": "string",
+    "invalidValues": [
+      "string"
+    ],
+    "allowedValues": [
+      "string"
+    ],
+    "value": "string",
+    "retryAfterSeconds": 0,
+    "limit": 0,
+    "remaining": 0,
+    "resetAt": "string"
+  }
+}
+```
+
+<h3 id="unstabletopicslistassignments-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[unstableTopicAssignmentList](#schemaunstabletopicassignmentlist)|
 |400|Bad Request||Inline|
 |401|Unauthorized||Inline|
 |403|Forbidden||Inline|
@@ -15711,6 +16711,21 @@ BasicAuth
 "S3"
 ```
 
+<h2 id="tocS_BlobStorageIntegrationAuthType">BlobStorageIntegrationAuthType</h2>
+<!-- backwards compatibility -->
+<a id="schemablobstorageintegrationauthtype"></a>
+<a id="schema_BlobStorageIntegrationAuthType"></a>
+<a id="tocSblobstorageintegrationauthtype"></a>
+<a id="tocsblobstorageintegrationauthtype"></a>
+
+```json
+"ACCESS_KEYS"
+```
+
+How Langfuse authenticates to the bucket.
+- `ACCESS_KEYS`: stored access key ID and secret access key.
+- `ROLE_ARN`: Langfuse assumes an IAM role in your AWS account (Amazon S3 only). Langfuse's cross-account role (`crossAccountRoleArn`) assumes your role with the integration's `externalId`, using a session limited to writing under the configured prefix. Requires an Enterprise plan and a deployment that configures a cross-account role; `crossAccountRoleArn` is not null when both apply.
+
 <h2 id="tocS_BlobStorageIntegrationFileType">BlobStorageIntegrationFileType</h2>
 <!-- backwards compatibility -->
 <a id="schemablobstorageintegrationfiletype"></a>
@@ -15806,6 +16821,8 @@ Field group selecting which columns are included in the export. Applies to all e
   "bucketName": "string",
   "endpoint": "string",
   "region": "string",
+  "authType": "ACCESS_KEYS",
+  "roleArn": "string",
   "accessKeyId": "string",
   "secretAccessKey": "string",
   "prefix": "string",
@@ -15832,7 +16849,9 @@ Field group selecting which columns are included in the export. Applies to all e
 |bucketName|string|true|none|Name of the storage bucket. For AZURE_BLOB_STORAGE, must be a valid Azure container name (3-63 chars, lowercase letters, numbers, and hyphens only, must start and end with a letter or number, no consecutive hyphens). For GOOGLE_CLOUD_STORAGE with default credentials, the bucket must be listed in `LANGFUSE_BLOB_STORAGE_GCS_ALLOWED_BUCKETS`.|
 |endpoint|string \| null|false|none|Custom endpoint URL (required for S3_COMPATIBLE type). Ignored for GOOGLE_CLOUD_STORAGE.|
 |region|string|true|none|Storage region used by S3-compatible clients (AWS, GCS, Cloudflare R2, MinIO, Azure location IDs such as eastus, OCI). Leading and trailing whitespace is removed. The remaining value must be 1-63 letters, numbers, or hyphens, and cannot start or end with a hyphen. Examples: us-east-1, europe-west1, eastus, auto. Not used by GOOGLE_CLOUD_STORAGE; pass auto.|
-|accessKeyId|string \| null|false|none|Access key ID for authentication. Not used for GOOGLE_CLOUD_STORAGE.|
+|authType|[BlobStorageIntegrationAuthType](#schemablobstorageintegrationauthtype)|false|none|Authentication method. `ROLE_ARN` requires type `S3`, a concrete AWS region (not `auto`), and `roleArn`; `accessKeyId` and `secretAccessKey` must then be omitted, and `endpoint` and `forcePathStyle` are ignored. When omitted, `ROLE_ARN` applies to type `S3` if the request sends `roleArn` or the integration already uses `ROLE_ARN`, unless the request sends `accessKeyId` or `secretAccessKey`; otherwise `ACCESS_KEYS` applies.<br><br>The external ID is generated on the first save that uses `ROLE_ARN` and stays the same afterwards. That save stores the integration with `enabled: false`, because the trust policy cannot reference the new ID yet. Add the trust policy for `crossAccountRoleArn` with the returned `externalId` to your role, then update the integration with `enabled: true`.|
+|roleArn|string \| null|false|none|ARN of the IAM role in your AWS account that Langfuse assumes when `authType` is `ROLE_ARN`, e.g. `arn:aws:iam::123456789012:role/langfuse-export`. When omitted on update, the stored role ARN is kept.|
+|accessKeyId|string \| null|false|none|Access key ID for authentication. Not used for GOOGLE_CLOUD_STORAGE or when `authType` is `ROLE_ARN`.|
 |secretAccessKey|string \| null|false|none|Secret access key for authentication (will be encrypted when stored). When omitted on update, the stored secret is kept, unless the type changes between GOOGLE_CLOUD_STORAGE and another type.<br><br>For GOOGLE_CLOUD_STORAGE, a GCP service account JSON key. On self-hosted deployments, pass `__GCS_DEFAULT_CREDENTIALS__` instead to use the deployment's Application Default Credentials; the bucket must then be listed in `LANGFUSE_BLOB_STORAGE_GCS_ALLOWED_BUCKETS`. Default credentials are not available on Langfuse Cloud.|
 |prefix|string \| null|false|none|Path prefix for exported files (must end with forward slash if provided)|
 |exportFrequency|[BlobStorageExportFrequency](#schemablobstorageexportfrequency)|true|none|none|
@@ -15853,6 +16872,8 @@ Field group selecting which columns are included in the export. Applies to all e
 |type|S3_COMPATIBLE|
 |type|AZURE_BLOB_STORAGE|
 |type|GOOGLE_CLOUD_STORAGE|
+|authType|ACCESS_KEYS|
+|authType|ROLE_ARN|
 |exportFrequency|every_20_minutes|
 |exportFrequency|hourly|
 |exportFrequency|daily|
@@ -15896,7 +16917,11 @@ Field group selecting which columns are included in the export. Applies to all e
   "bucketName": "string",
   "endpoint": "string",
   "region": "string",
+  "authType": "ACCESS_KEYS",
   "accessKeyId": "string",
+  "roleArn": "string",
+  "externalId": "string",
+  "crossAccountRoleArn": "string",
   "prefix": "string",
   "exportFrequency": "every_20_minutes",
   "enabled": true,
@@ -15928,7 +16953,11 @@ Field group selecting which columns are included in the export. Applies to all e
 |bucketName|string|true|none|none|
 |endpoint|string \| null|true|none|none|
 |region|string|true|none|none|
+|authType|[BlobStorageIntegrationAuthType](#schemablobstorageintegrationauthtype)|true|none|How Langfuse authenticates to the bucket.<br>- `ACCESS_KEYS`: stored access key ID and secret access key.<br>- `ROLE_ARN`: Langfuse assumes an IAM role in your AWS account (Amazon S3 only). Langfuse's cross-account role (`crossAccountRoleArn`) assumes your role with the integration's `externalId`, using a session limited to writing under the configured prefix. Requires an Enterprise plan and a deployment that configures a cross-account role; `crossAccountRoleArn` is not null when both apply.|
 |accessKeyId|string \| null|true|none|none|
+|roleArn|string \| null|true|none|IAM role Langfuse assumes. May be set while `authType` is `ACCESS_KEYS` if the integration used `ROLE_ARN` before.|
+|externalId|string \| null|true|none|External ID Langfuse passes when assuming `roleArn`. Require it in the role's trust policy with an `sts:ExternalId` condition. Null until the integration first uses `ROLE_ARN`.|
+|crossAccountRoleArn|string \| null|true|none|Langfuse role that must be trusted by `roleArn`. Null when the deployment does not support IAM role auth or the organization is not on an Enterprise plan.|
 |prefix|string|true|none|none|
 |exportFrequency|[BlobStorageExportFrequency](#schemablobstorageexportfrequency)|true|none|none|
 |enabled|boolean|true|none|none|
@@ -15954,6 +16983,8 @@ Field group selecting which columns are included in the export. Applies to all e
 |type|S3_COMPATIBLE|
 |type|AZURE_BLOB_STORAGE|
 |type|GOOGLE_CLOUD_STORAGE|
+|authType|ACCESS_KEYS|
+|authType|ROLE_ARN|
 |exportFrequency|every_20_minutes|
 |exportFrequency|hourly|
 |exportFrequency|daily|
@@ -15999,7 +17030,11 @@ Field group selecting which columns are included in the export. Applies to all e
       "bucketName": "string",
       "endpoint": "string",
       "region": "string",
+      "authType": "ACCESS_KEYS",
       "accessKeyId": "string",
+      "roleArn": "string",
+      "externalId": "string",
+      "crossAccountRoleArn": "string",
       "prefix": "string",
       "exportFrequency": "every_20_minutes",
       "enabled": true,
@@ -17267,7 +18302,7 @@ The value of the score. Must be passed as string for categorical and text scores
 }
 ```
 
-Model definition used for transforming usage into USD cost and/or tokenization.
+Model definition used for calculating USD cost from usage submitted with observations.
 
 Models can have either simple flat pricing or tiered pricing:
 - Flat pricing: Single price per usage type (legacy, but still supported)
@@ -17289,8 +18324,8 @@ from the default tier for backward compatibility.
 |inputPrice|number(double) \| null|true|none|Deprecated. See 'prices' instead. Price (USD) per input unit|
 |outputPrice|number(double) \| null|true|none|Deprecated. See 'prices' instead. Price (USD) per output unit|
 |totalPrice|number(double) \| null|true|none|Deprecated. See 'prices' instead. Price (USD) per total unit. Cannot be set if input or output price is set.|
-|tokenizerId|string \| null|true|none|Optional. Tokenizer to be applied to observations which match to this model. See docs for more details.|
-|tokenizerConfig|object|true|none|Optional. Configuration for the selected tokenizer. Needs to be JSON. See docs for more details.|
+|tokenizerId|string \| null|true|none|Legacy tokenizer identifier retained for API compatibility. Ingestion no longer uses it to infer observation usage.|
+|tokenizerConfig|object|true|none|Legacy tokenizer configuration retained for API compatibility. Ingestion no longer uses it to infer observation usage.|
 |isLangfuseManaged|boolean|true|none|none|
 |createdAt|string(date-time)|true|none|Timestamp when the model was created|
 |prices|object|true|none|Deprecated. Use 'pricingTiers' instead for models with usage-based pricing variations.<br><br>This field shows prices by usage type from the default pricing tier. Maintained for backward compatibility.<br>If the model uses tiered pricing, this field will be populated from the default tier's prices.|
@@ -18600,7 +19635,7 @@ Optional empty descriptions from legacy definitions are omitted.
 |---|---|---|---|---|
 |column|string|true|none|Column to filter on, for example `parentObservationId`.|
 |operator|[EvaluationRuleNullFilterOperator](#schemaevaluationrulenullfilteroperator)|true|none|none|
-|value|string|true|none|Required empty-string placeholder used by the runtime filter contract.|
+|value|string|true|none|Empty-string placeholder. Can be omitted on servers newer than v4.78.0.|
 
 #### Enumerated Values
 
@@ -18881,7 +19916,7 @@ Supported columns. Each column accepts exactly one filter `type`; sending a colu
 |type|string|true|none|none|
 |column|string|true|none|Column to filter on, for example `parentObservationId`.|
 |operator|[EvaluationRuleNullFilterOperator](#schemaevaluationrulenullfilteroperator)|true|none|none|
-|value|string|true|none|Required empty-string placeholder used by the runtime filter contract.|
+|value|string|true|none|Empty-string placeholder. Can be omitted on servers newer than v4.78.0.|
 
 #### Enumerated Values
 
@@ -21438,7 +22473,7 @@ The MIME type of the media record
 "openai"
 ```
 
-Tokenizer supported by Langfuse for model usage inference.
+Legacy tokenizer identifier retained for API compatibility. Ingestion no longer uses it to infer observation usage.
 
 <h2 id="tocS_PaginatedModels">PaginatedModels</h2>
 <!-- backwards compatibility -->
@@ -21561,8 +22596,8 @@ Tokenizer supported by Langfuse for model usage inference.
 |outputPrice|number(double) \| null|false|none|Deprecated. Use 'pricingTiers' instead. Price (USD) per output unit. Creates a default tier if pricingTiers not provided.|
 |totalPrice|number(double) \| null|false|none|Deprecated. Use 'pricingTiers' instead. Price (USD) per total units. Cannot be set if input or output price is set. Creates a default tier if pricingTiers not provided.|
 |pricingTiers|[[PricingTierInput](#schemapricingtierinput)]|false|none|Optional. Array of pricing tiers for this model.<br><br>Use pricing tiers for all models - both those with threshold-based pricing variations and those with simple flat pricing:<br><br>- For models with standard flat pricing: Create a single default tier with your prices<br>  (e.g., one tier with isDefault=true, priority=0, conditions=[], and your standard prices)<br><br>- For models with threshold-based pricing: Create a default tier plus additional conditional tiers<br>  (e.g., default tier for standard usage + high-volume tier for usage above certain thresholds)<br><br>Requirements:<br>- Cannot be provided with flat prices (inputPrice/outputPrice/totalPrice) - use one approach or the other<br>- Must include exactly one default tier with isDefault=true, priority=0, and conditions=[]<br>- All tier names and priorities must be unique within the model<br>- Each tier must define at least one price<br><br>If omitted, you must provide flat prices instead (inputPrice/outputPrice/totalPrice),<br>which will automatically create a single default tier named "Standard".|
-|tokenizerId|[ModelTokenizerId](#schemamodeltokenizerid)|false|none|Optional. Tokenizer to be applied to observations which match to this model. See docs for more details.|
-|tokenizerConfig|object \| null|false|none|Optional. Configuration for the selected tokenizer. Needs to be JSON. See docs for more details.|
+|tokenizerId|[ModelTokenizerId](#schemamodeltokenizerid)|false|none|Legacy tokenizer identifier retained for API compatibility. Ingestion no longer uses it to infer observation usage.|
+|tokenizerConfig|object \| null|false|none|Legacy tokenizer configuration retained for API compatibility. Ingestion no longer uses it to infer observation usage.|
 
 #### Enumerated Values
 
@@ -21641,7 +22676,8 @@ Tokenizer supported by Langfuse for model usage inference.
     }
   ],
   "meta": {
-    "cursor": "string"
+    "cursor": "string",
+    "comment": "string"
   }
 }
 ```
@@ -21649,7 +22685,9 @@ Tokenizer supported by Langfuse for model usage inference.
 Response containing observations with field-group-based filtering and cursor-based pagination.
 
 The `data` array contains observation objects with only the requested field groups included.
-Use the `cursor` in `meta` to retrieve the next page of results.
+Use the `cursor` in `meta` to retrieve the next page of results. The array may contain fewer
+than the requested `limit` items, or be empty, while a cursor is present. Continue until the
+cursor is absent.
 
 ### Properties
 
@@ -21667,7 +22705,8 @@ Use the `cursor` in `meta` to retrieve the next page of results.
 
 ```json
 {
-  "cursor": "string"
+  "cursor": "string",
+  "comment": "string"
 }
 ```
 
@@ -21678,6 +22717,7 @@ Metadata for cursor-based pagination.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |cursor|string \| null|false|none|Opaque cursor for the next page. Omitted when there is no next page.|
+|comment|string \| null|false|none|Present when an empty page has a cursor; continue requesting pages until the cursor is absent.|
 
 <h2 id="tocS_OtelResourceSpan">OtelResourceSpan</h2>
 <!-- backwards compatibility -->
@@ -24984,6 +26024,81 @@ Provide exactly one of content or sha256Hash for each path.
 |---|---|---|---|---|
 |message|string|true|none|none|
 
+<h2 id="tocS_unstableBillableUnitsGranularity">unstableBillableUnitsGranularity</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstablebillableunitsgranularity"></a>
+<a id="schema_unstableBillableUnitsGranularity"></a>
+<a id="tocSunstablebillableunitsgranularity"></a>
+<a id="tocsunstablebillableunitsgranularity"></a>
+
+```json
+"hour"
+```
+
+<h2 id="tocS_unstableBillableUnitsRow">unstableBillableUnitsRow</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstablebillableunitsrow"></a>
+<a id="schema_unstableBillableUnitsRow"></a>
+<a id="tocSunstablebillableunitsrow"></a>
+<a id="tocsunstablebillableunitsrow"></a>
+
+```json
+{
+  "bucket": "1970-01-01T00:00:00Z",
+  "projectId": "string",
+  "count": 0,
+  "traces": 0,
+  "observations": 0,
+  "scores": 0,
+  "topicFacetSummaries": 0
+}
+```
+
+Billable units of one project in one bucket.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bucket|string(date-time)|true|none|Start of the UTC bucket.|
+|projectId|string|true|none|none|
+|count|integer|true|none|All billable units, the sum of the per-type counts.|
+|traces|integer|true|none|none|
+|observations|integer|true|none|none|
+|scores|integer|true|none|none|
+|topicFacetSummaries|integer|true|none|none|
+
+<h2 id="tocS_unstableBillableUnitsResponse">unstableBillableUnitsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstablebillableunitsresponse"></a>
+<a id="schema_unstableBillableUnitsResponse"></a>
+<a id="tocSunstablebillableunitsresponse"></a>
+<a id="tocsunstablebillableunitsresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "bucket": "1970-01-01T00:00:00Z",
+      "projectId": "string",
+      "count": 0,
+      "traces": 0,
+      "observations": 0,
+      "scores": 0,
+      "topicFacetSummaries": 0
+    }
+  ],
+  "usageRecordedFrom": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[unstableBillableUnitsRow](#schemaunstablebillableunitsrow)]|true|none|none|
+|usageRecordedFrom|string(date-time) \| null|false|none|When usage recording started on this deployment. Buckets before it show no usage. Null while nothing has been recorded, and on deployments that count the legacy tables.|
+
 <h2 id="tocS_unstableDashboardWidgetView">unstableDashboardWidgetView</h2>
 <!-- backwards compatibility -->
 <a id="schemaunstabledashboardwidgetview"></a>
@@ -25114,7 +26229,7 @@ allowed operators depend on `type`:
 | `number` | number | `=`, `>`, `<`, `>=`, `<=` |
 | `datetime` | ISO datetime string | `>`, `<`, `>=`, `<=` |
 | `boolean` | boolean | `=`, `<>` |
-| `null` | `""` | `is null`, `is not null` |
+| `null` | `""` (can be omitted on servers newer than v4.78.0) | `is null`, `is not null` |
 | `stringOptions` | list of strings | `any of`, `none of` |
 | `arrayOptions` | list of strings | `any of`, `none of`, `all of` |
 | `categoryOptions` | list of strings (requires `key`) | `any of`, `none of` |
@@ -26251,6 +27366,351 @@ Standard error envelope for unstable public API endpoints.
 |code|method_not_allowed|
 |code|internal_error|
 
+<h2 id="tocS_unstableTopicResultsOrderBy">unstableTopicResultsOrderBy</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicresultsorderby"></a>
+<a id="schema_unstableTopicResultsOrderBy"></a>
+<a id="tocSunstabletopicresultsorderby"></a>
+<a id="tocsunstabletopicresultsorderby"></a>
+
+```json
+"timestamp.desc"
+```
+
+<h2 id="tocS_unstableTopicResultListMeta">unstableTopicResultListMeta</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicresultlistmeta"></a>
+<a id="schema_unstableTopicResultListMeta"></a>
+<a id="tocSunstabletopicresultlistmeta"></a>
+<a id="tocsunstabletopicresultlistmeta"></a>
+
+```json
+{
+  "cursor": "string",
+  "comment": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cursor|string \| null|false|none|Pass as `cursor` to fetch the next page. Null on the last page.|
+|comment|string \| null|false|none|Set when the page is shorter than `limit` but more rows may follow.|
+
+<h2 id="tocS_unstableTopicRule">unstableTopicRule</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicrule"></a>
+<a id="schema_unstableTopicRule"></a>
+<a id="tocSunstabletopicrule"></a>
+<a id="tocsunstabletopicrule"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "filter": [
+    {
+      "type": "string",
+      "column": "string",
+      "operator": "string",
+      "value": null,
+      "key": "string"
+    }
+  ],
+  "sampling": 0,
+  "facetIds": [
+    "string"
+  ],
+  "updatedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|name|string|true|none|none|
+|filter|[[EvaluationRuleReadFilter](#schemaevaluationrulereadfilter)]|true|none|Observation filter that selects the rule's traces, returned verbatim.|
+|sampling|number(double)|true|none|Fraction of matching traces that are processed, between `0` and `1`.|
+|facetIds|[string]|true|none|Facets the rule runs.|
+|updatedAt|string(date-time)|true|none|none|
+
+<h2 id="tocS_unstableTopicRuleList">unstableTopicRuleList</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicrulelist"></a>
+<a id="schema_unstableTopicRuleList"></a>
+<a id="tocSunstabletopicrulelist"></a>
+<a id="tocsunstabletopicrulelist"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "name": "string",
+      "filter": [
+        {
+          "type": "string",
+          "column": "string",
+          "operator": "string",
+          "value": null,
+          "key": "string"
+        }
+      ],
+      "sampling": 0,
+      "facetIds": [
+        "string"
+      ],
+      "updatedAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "page": 0,
+    "limit": 0,
+    "totalItems": 0,
+    "totalPages": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[unstableTopicRule](#schemaunstabletopicrule)]|true|none|none|
+|meta|[utilsMetaResponse](#schemautilsmetaresponse)|true|none|none|
+
+<h2 id="tocS_unstableTopicSummaryState">unstableTopicSummaryState</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicsummarystate"></a>
+<a id="schema_unstableTopicSummaryState"></a>
+<a id="tocSunstabletopicsummarystate"></a>
+<a id="tocsunstabletopicsummarystate"></a>
+
+```json
+"complete"
+```
+
+<h2 id="tocS_unstableTopicSummary">unstableTopicSummary</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicsummary"></a>
+<a id="schema_unstableTopicSummary"></a>
+<a id="tocSunstabletopicsummary"></a>
+<a id="tocsunstabletopicsummary"></a>
+
+```json
+{
+  "traceId": "string",
+  "traceName": "string",
+  "environment": "string",
+  "timestamp": "1970-01-01T00:00:00Z",
+  "facetId": "string",
+  "facetName": "string",
+  "facetVersion": 0,
+  "state": "complete",
+  "summary": "string",
+  "summaryTruncated": true,
+  "processedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|traceId|string|true|none|none|
+|traceName|string|true|none|none|
+|environment|string|true|none|none|
+|timestamp|string(date-time)|true|none|Trace start time.|
+|facetId|string|true|none|none|
+|facetName|string|true|none|none|
+|facetVersion|integer|true|none|none|
+|state|[unstableTopicSummaryState](#schemaunstabletopicsummarystate)|true|none|none|
+|summary|string \| null|false|none|Set when `state` is `complete`.|
+|summaryTruncated|boolean|true|none|none|
+|processedAt|string(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|complete|
+|state|not_applicable|
+|state|insufficient_input|
+
+<h2 id="tocS_unstableTopicSummaryList">unstableTopicSummaryList</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicsummarylist"></a>
+<a id="schema_unstableTopicSummaryList"></a>
+<a id="tocSunstabletopicsummarylist"></a>
+<a id="tocsunstabletopicsummarylist"></a>
+
+```json
+{
+  "window": {
+    "from": "1970-01-01T00:00:00Z",
+    "to": "1970-01-01T00:00:00Z"
+  },
+  "data": [
+    {
+      "traceId": "string",
+      "traceName": "string",
+      "environment": "string",
+      "timestamp": "1970-01-01T00:00:00Z",
+      "facetId": "string",
+      "facetName": "string",
+      "facetVersion": 0,
+      "state": "complete",
+      "summary": "string",
+      "summaryTruncated": true,
+      "processedAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "cursor": "string",
+    "comment": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|window|[unstableTopicWindow](#schemaunstabletopicwindow)|true|none|none|
+|data|[[unstableTopicSummary](#schemaunstabletopicsummary)]|true|none|none|
+|meta|[unstableTopicResultListMeta](#schemaunstabletopicresultlistmeta)|true|none|none|
+
+<h2 id="tocS_unstableTopicAssignmentStatus">unstableTopicAssignmentStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicassignmentstatus"></a>
+<a id="schema_unstableTopicAssignmentStatus"></a>
+<a id="tocSunstabletopicassignmentstatus"></a>
+<a id="tocsunstabletopicassignmentstatus"></a>
+
+```json
+"assigned"
+```
+
+<h2 id="tocS_unstableTopicAssignmentTopic">unstableTopicAssignmentTopic</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicassignmenttopic"></a>
+<a id="schema_unstableTopicAssignmentTopic"></a>
+<a id="tocSunstabletopicassignmenttopic"></a>
+<a id="tocsunstabletopicassignmenttopic"></a>
+
+```json
+{
+  "id": "string",
+  "versionId": "string",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Stable topic id.|
+|versionId|string|true|none|none|
+|name|string|true|none|none|
+
+<h2 id="tocS_unstableTopicAssignment">unstableTopicAssignment</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicassignment"></a>
+<a id="schema_unstableTopicAssignment"></a>
+<a id="tocSunstabletopicassignment"></a>
+<a id="tocsunstabletopicassignment"></a>
+
+```json
+{
+  "traceId": "string",
+  "timestamp": "1970-01-01T00:00:00Z",
+  "facetId": "string",
+  "facetName": "string",
+  "facetVersion": 0,
+  "ruleId": "string",
+  "status": "assigned",
+  "topic": {
+    "id": "string",
+    "versionId": "string",
+    "name": "string"
+  },
+  "runId": "string",
+  "assignedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|traceId|string|true|none|none|
+|timestamp|string(date-time)|true|none|Trace start time.|
+|facetId|string|true|none|none|
+|facetName|string|true|none|none|
+|facetVersion|integer|true|none|none|
+|ruleId|string \| null|false|none|The rule whose map assigned the trace. Null when the project has no rule.|
+|status|[unstableTopicAssignmentStatus](#schemaunstabletopicassignmentstatus)|true|none|none|
+|topic|[unstableTopicAssignmentTopic](#schemaunstabletopicassignmenttopic)|false|none|Set when `status` is `assigned`.|
+|runId|string \| null|false|none|The run that assigned the trace. Null for assignments made as traces arrive.|
+|assignedAt|string(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|assigned|
+|status|outlier|
+
+<h2 id="tocS_unstableTopicAssignmentList">unstableTopicAssignmentList</h2>
+<!-- backwards compatibility -->
+<a id="schemaunstabletopicassignmentlist"></a>
+<a id="schema_unstableTopicAssignmentList"></a>
+<a id="tocSunstabletopicassignmentlist"></a>
+<a id="tocsunstabletopicassignmentlist"></a>
+
+```json
+{
+  "window": {
+    "from": "1970-01-01T00:00:00Z",
+    "to": "1970-01-01T00:00:00Z"
+  },
+  "data": [
+    {
+      "traceId": "string",
+      "timestamp": "1970-01-01T00:00:00Z",
+      "facetId": "string",
+      "facetName": "string",
+      "facetVersion": 0,
+      "ruleId": "string",
+      "status": "assigned",
+      "topic": {
+        "id": "string",
+        "versionId": "string",
+        "name": "string"
+      },
+      "runId": "string",
+      "assignedAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "cursor": "string",
+    "comment": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|window|[unstableTopicWindow](#schemaunstabletopicwindow)|true|none|none|
+|data|[[unstableTopicAssignment](#schemaunstabletopicassignment)]|true|none|none|
+|meta|[unstableTopicResultListMeta](#schemaunstabletopicresultlistmeta)|true|none|none|
+
 <h2 id="tocS_unstableTopicsOrderBy">unstableTopicsOrderBy</h2>
 <!-- backwards compatibility -->
 <a id="schemaunstabletopicsorderby"></a>
@@ -26299,6 +27759,9 @@ Standard error envelope for unstable public API endpoints.
   "description": "string",
   "isBuiltIn": true,
   "active": true,
+  "ruleIds": [
+    "string"
+  ],
   "version": 0,
   "prompt": "string",
   "publishedRun": {
@@ -26317,7 +27780,8 @@ Standard error envelope for unstable public API endpoints.
 |name|string|true|none|none|
 |description|string|true|none|none|
 |isBuiltIn|boolean|true|none|none|
-|active|boolean|true|none|Whether the facet is attached to the project's Topics rule. True for all facets if the project has no rule.|
+|active|boolean|true|none|Whether a Topics rule runs the facet. True for all facets if the project has no rule.|
+|ruleIds|[string]|true|none|The rules that run the facet.|
 |version|integer|true|none|Latest facet version.|
 |prompt|string|true|none|Prompt of the latest facet version.|
 |publishedRun|[unstableTopicFacetPublishedRun](#schemaunstabletopicfacetpublishedrun)|false|none|The run that produced the facet's current map. Null before the first map.|
@@ -26338,6 +27802,9 @@ Standard error envelope for unstable public API endpoints.
       "description": "string",
       "isBuiltIn": true,
       "active": true,
+      "ruleIds": [
+        "string"
+      ],
       "version": 0,
       "prompt": "string",
       "publishedRun": {
@@ -26425,6 +27892,7 @@ Standard error envelope for unstable public API endpoints.
     "name": "string",
     "version": 0
   },
+  "ruleId": "string",
   "runId": "string",
   "traceCount": 0
 }
@@ -26439,6 +27907,7 @@ Standard error envelope for unstable public API endpoints.
 |name|string|true|none|none|
 |description|string|true|none|none|
 |facet|[unstableTopicFacetRef](#schemaunstabletopicfacetref)|true|none|none|
+|ruleId|string \| null|false|none|The rule whose live map has the topic. Null when the project has no rule.|
 |runId|string|true|none|The run that produced this topic version.|
 |traceCount|integer|true|none|Traces in the window whose current result for the facet is this topic.|
 
@@ -26460,6 +27929,7 @@ Standard error envelope for unstable public API endpoints.
     "name": "string",
     "version": 0
   },
+  "ruleId": "string",
   "runId": "string",
   "traceCount": 0,
   "inCurrentMap": true,
@@ -26479,9 +27949,10 @@ Standard error envelope for unstable public API endpoints.
 |name|string|true|none|none|
 |description|string|true|none|none|
 |facet|[unstableTopicFacetRef](#schemaunstabletopicfacetref)|true|none|none|
+|ruleId|string \| null|false|none|The rule whose live map has the topic. Null when the project has no rule.|
 |runId|string|true|none|The run that produced this topic version.|
 |traceCount|integer|true|none|Traces in the window whose current result for the facet is this topic.|
-|inCurrentMap|boolean|true|none|False for retired topics that still have assigned traces in the window.|
+|inCurrentMap|boolean|true|none|Always true; retired topics are not returned.|
 |window|[unstableTopicWindow](#schemaunstabletopicwindow)|true|none|none|
 
 <h2 id="tocS_unstableTopicStatusCounts">unstableTopicStatusCounts</h2>
@@ -26527,6 +27998,7 @@ Traces in the window by their current result for one facet.
     "name": "string",
     "version": 0
   },
+  "ruleId": "string",
   "publishedRunId": "string",
   "counts": {
     "assigned": 0,
@@ -26543,6 +28015,7 @@ Traces in the window by their current result for one facet.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |facet|[unstableTopicFacetRef](#schemaunstabletopicfacetref)|true|none|none|
+|ruleId|string \| null|false|none|none|
 |publishedRunId|string \| null|false|none|none|
 |counts|[unstableTopicStatusCounts](#schemaunstabletopicstatuscounts)|true|none|Traces in the window by their current result for one facet.|
 
@@ -26570,6 +28043,7 @@ Traces in the window by their current result for one facet.
         "name": "string",
         "version": 0
       },
+      "ruleId": "string",
       "runId": "string",
       "traceCount": 0
     }
@@ -26581,6 +28055,7 @@ Traces in the window by their current result for one facet.
         "name": "string",
         "version": 0
       },
+      "ruleId": "string",
       "publishedRunId": "string",
       "counts": {
         "assigned": 0,

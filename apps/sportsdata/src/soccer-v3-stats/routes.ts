@@ -250,7 +250,19 @@ const SeasonSchema = z
   .openapi({ required: [] })
   .openapi('Season')
 
-const CompetitionSchema = z
+type CompetitionType = {
+  AreaId?: number
+  AreaName?: string | null
+  CompetitionId?: number
+  Format?: string | null
+  Gender?: string | null
+  Key?: string | null
+  Name?: string | null
+  Seasons?: z.infer<typeof SeasonSchema>[]
+  Type?: string | null
+}
+
+const CompetitionSchema: z.ZodType<CompetitionType> = z
   .object({
     AreaId: z.int().exactOptional(),
     AreaName: z.string().nullable().exactOptional(),
@@ -265,7 +277,99 @@ const CompetitionSchema = z
   .openapi({ required: [] })
   .openapi('Competition')
 
-const AreaSchema = z
+type AreaType = {
+  AreaId?: number
+  Competitions?: z.infer<typeof CompetitionSchema>[]
+  CountryCode?: string | null
+  Name?: string | null
+}
+
+const PlayerSchema = z
+  .object({
+    BirthCity: z.string().nullable().exactOptional(),
+    BirthCountry: z.string().nullable().exactOptional(),
+    BirthDate: z.string().nullable().exactOptional(),
+    CommonName: z.string().nullable().exactOptional(),
+    DraftKingsPosition: z.string().nullable().exactOptional(),
+    FirstName: z.string().nullable().exactOptional(),
+    Foot: z.string().nullable().exactOptional(),
+    Gender: z.string().nullable().exactOptional(),
+    Height: z.int().nullable().exactOptional(),
+    InjuryBodyPart: z.string().nullable().exactOptional(),
+    InjuryNotes: z.string().nullable().exactOptional(),
+    InjuryStartDate: z.string().nullable().exactOptional(),
+    InjuryStatus: z.string().nullable().exactOptional(),
+    Jersey: z.int().nullable().exactOptional(),
+    LastName: z.string().nullable().exactOptional(),
+    Nationality: z.string().nullable().exactOptional(),
+    PhotoUrl: z.string().nullable().exactOptional(),
+    PlayerId: z.int().exactOptional(),
+    Position: z.string().nullable().exactOptional(),
+    PositionCategory: z.string().nullable().exactOptional(),
+    RotoWirePlayerID: z.int().nullable().exactOptional(),
+    ShortName: z.string().nullable().exactOptional(),
+    Updated: z.string().nullable().exactOptional(),
+    UsaTodayHeadshotNoBackgroundUpdated: z.string().nullable().exactOptional(),
+    UsaTodayHeadshotNoBackgroundUrl: z.string().nullable().exactOptional(),
+    UsaTodayHeadshotUpdated: z.string().nullable().exactOptional(),
+    UsaTodayHeadshotUrl: z.string().nullable().exactOptional(),
+    UsaTodayPlayerID: z.int().nullable().exactOptional(),
+    Weight: z.int().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Player')
+
+const TeamDetailSchema = z
+  .object({
+    Active: z.boolean().exactOptional(),
+    Address: z.string().nullable().exactOptional(),
+    AreaId: z.int().nullable().exactOptional(),
+    AreaName: z.string().nullable().exactOptional(),
+    City: z.string().nullable().exactOptional(),
+    ClubColor1: z.string().nullable().exactOptional(),
+    ClubColor2: z.string().nullable().exactOptional(),
+    ClubColor3: z.string().nullable().exactOptional(),
+    Email: z.string().nullable().exactOptional(),
+    Fax: z.string().nullable().exactOptional(),
+    Founded: z.int().nullable().exactOptional(),
+    FullName: z.string().nullable().exactOptional(),
+    Gender: z.string().nullable().exactOptional(),
+    GlobalTeamId: z.int().exactOptional(),
+    Key: z.string().nullable().exactOptional(),
+    Name: z.string().nullable().exactOptional(),
+    Nickname1: z.string().nullable().exactOptional(),
+    Nickname2: z.string().nullable().exactOptional(),
+    Nickname3: z.string().nullable().exactOptional(),
+    Phone: z.string().nullable().exactOptional(),
+    Players: z.array(PlayerSchema).exactOptional(),
+    TeamId: z.int().exactOptional(),
+    Type: z.string().nullable().exactOptional(),
+    VenueId: z.int().nullable().exactOptional(),
+    VenueName: z.string().nullable().exactOptional(),
+    Website: z.string().nullable().exactOptional(),
+    WikipediaLogoUrl: z.string().nullable().exactOptional(),
+    WikipediaWordMarkUrl: z.string().nullable().exactOptional(),
+    Zip: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TeamDetail')
+
+type CompetitionDetailType = {
+  AreaId?: number
+  AreaName?: string | null
+  CompetitionId?: number
+  CurrentSeason?: z.infer<typeof SeasonSchema>
+  Format?: string | null
+  Games?: z.infer<typeof GameSchema>[]
+  Gender?: string | null
+  Key?: string | null
+  Name?: string | null
+  Seasons?: z.infer<typeof SeasonSchema>[]
+  Teams?: z.infer<typeof TeamDetailSchema>[]
+  Type?: string | null
+}
+
+const AreaSchema: z.ZodType<AreaType> = z
   .object({
     AreaId: z.int().exactOptional(),
     Competitions: z.array(CompetitionSchema).exactOptional(),
@@ -538,77 +642,7 @@ const BoxScoreSchema = z
   .openapi({ required: [] })
   .openapi('BoxScore')
 
-const PlayerSchema = z
-  .object({
-    BirthCity: z.string().nullable().exactOptional(),
-    BirthCountry: z.string().nullable().exactOptional(),
-    BirthDate: z.string().nullable().exactOptional(),
-    CommonName: z.string().nullable().exactOptional(),
-    DraftKingsPosition: z.string().nullable().exactOptional(),
-    FirstName: z.string().nullable().exactOptional(),
-    Foot: z.string().nullable().exactOptional(),
-    Gender: z.string().nullable().exactOptional(),
-    Height: z.int().nullable().exactOptional(),
-    InjuryBodyPart: z.string().nullable().exactOptional(),
-    InjuryNotes: z.string().nullable().exactOptional(),
-    InjuryStartDate: z.string().nullable().exactOptional(),
-    InjuryStatus: z.string().nullable().exactOptional(),
-    Jersey: z.int().nullable().exactOptional(),
-    LastName: z.string().nullable().exactOptional(),
-    Nationality: z.string().nullable().exactOptional(),
-    PhotoUrl: z.string().nullable().exactOptional(),
-    PlayerId: z.int().exactOptional(),
-    Position: z.string().nullable().exactOptional(),
-    PositionCategory: z.string().nullable().exactOptional(),
-    RotoWirePlayerID: z.int().nullable().exactOptional(),
-    ShortName: z.string().nullable().exactOptional(),
-    Updated: z.string().nullable().exactOptional(),
-    UsaTodayHeadshotNoBackgroundUpdated: z.string().nullable().exactOptional(),
-    UsaTodayHeadshotNoBackgroundUrl: z.string().nullable().exactOptional(),
-    UsaTodayHeadshotUpdated: z.string().nullable().exactOptional(),
-    UsaTodayHeadshotUrl: z.string().nullable().exactOptional(),
-    UsaTodayPlayerID: z.int().nullable().exactOptional(),
-    Weight: z.int().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Player')
-
-const TeamDetailSchema = z
-  .object({
-    Active: z.boolean().exactOptional(),
-    Address: z.string().nullable().exactOptional(),
-    AreaId: z.int().nullable().exactOptional(),
-    AreaName: z.string().nullable().exactOptional(),
-    City: z.string().nullable().exactOptional(),
-    ClubColor1: z.string().nullable().exactOptional(),
-    ClubColor2: z.string().nullable().exactOptional(),
-    ClubColor3: z.string().nullable().exactOptional(),
-    Email: z.string().nullable().exactOptional(),
-    Fax: z.string().nullable().exactOptional(),
-    Founded: z.int().nullable().exactOptional(),
-    FullName: z.string().nullable().exactOptional(),
-    Gender: z.string().nullable().exactOptional(),
-    GlobalTeamId: z.int().exactOptional(),
-    Key: z.string().nullable().exactOptional(),
-    Name: z.string().nullable().exactOptional(),
-    Nickname1: z.string().nullable().exactOptional(),
-    Nickname2: z.string().nullable().exactOptional(),
-    Nickname3: z.string().nullable().exactOptional(),
-    Phone: z.string().nullable().exactOptional(),
-    Players: z.array(PlayerSchema).exactOptional(),
-    TeamId: z.int().exactOptional(),
-    Type: z.string().nullable().exactOptional(),
-    VenueId: z.int().nullable().exactOptional(),
-    VenueName: z.string().nullable().exactOptional(),
-    Website: z.string().nullable().exactOptional(),
-    WikipediaLogoUrl: z.string().nullable().exactOptional(),
-    WikipediaWordMarkUrl: z.string().nullable().exactOptional(),
-    Zip: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TeamDetail')
-
-const CompetitionDetailSchema = z
+const CompetitionDetailSchema: z.ZodType<CompetitionDetailType> = z
   .object({
     AreaId: z.int().exactOptional(),
     AreaName: z.string().nullable().exactOptional(),

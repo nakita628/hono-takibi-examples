@@ -1785,7 +1785,7 @@ const VideoSchema = z
             example: 'Added to',
           }),
         resource: z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
@@ -2926,7 +2926,276 @@ const GroupSchema = z
   })
   .openapi('Group')
 
-const Activity_3_1Schema = z
+type Activity_3_1Type = {
+  category?: z.infer<typeof CategorySchema>
+  channel?: z.infer<typeof ChannelSchema>
+  clip: z.infer<typeof VideoSchema>
+  group?: z.infer<typeof GroupSchema>
+  metadata: { connections: { related: { options: string[]; uri: string } | null } }
+  tag?: z.infer<typeof TagSchema>
+  time: string
+  type:
+    | 'appearance'
+    | 'category'
+    | 'channel'
+    | 'facebook_feed'
+    | 'group'
+    | 'like'
+    | 'ondemand'
+    | 'share'
+    | 'tag'
+    | 'twitter_timeline'
+    | 'upload'
+  user?: z.infer<typeof UserSchema>
+}
+
+type CreditType = {
+  name: string
+  role: string
+  uri: string
+  user?: z.infer<typeof UserSchema>
+  video?: z.infer<typeof VideoSchema>
+}
+
+const OnDemandGenreSchema = z
+  .object({
+    canonical: z
+      .string()
+      .openapi({ description: 'The canonical name or URL slug of the genre.', example: 'horror' }),
+    interactions: z
+      .object({
+        page: z
+          .object({
+            added: z
+              .boolean()
+              .openapi({ description: 'Whether this On Demand genre was added.', example: 'true' }),
+            options: z
+              .array(z.string())
+              .openapi({ description: 'An array of HTTP methods permitted on this URI.' }),
+            uri: z
+              .string()
+              .openapi({
+                description: 'The URI to access the On Demand page.',
+                example: '/ondemand/genres/horror/pages/12345',
+              }),
+          })
+          .openapi({
+            description: 'Interactions for On Demand pages that are in this genre.',
+            required: ['added', 'options', 'uri'],
+          }),
+      })
+      .openapi({ required: ['page'] }),
+    link: z
+      .string()
+      .openapi({
+        description: 'The Vimeo URL for this genre.',
+        example: 'http://vimeo.com/ondemand/browse/horror',
+      }),
+    metadata: z
+      .object({
+        connections: z
+          .object({
+            pages: z
+              .object({
+                options: z
+                  .array(z.string())
+                  .openapi({ description: 'An array of HTTP methods permitted on this URI.' }),
+                uri: z
+                  .string()
+                  .openapi({
+                    description: 'The API URI that resolves to the connection data.',
+                    example: '/ondemand/genres/horror/pages',
+                  }),
+              })
+              .openapi({
+                description: 'Information about the On Demand pages related to this group.',
+                required: ['options', 'uri'],
+              }),
+          })
+          .openapi({
+            description: 'A collection of information connected to this resource.',
+            required: ['pages'],
+          }),
+      })
+      .openapi({ required: ['connections'] }),
+    name: z
+      .string()
+      .openapi({ description: 'The descriptive name of the genre.', example: 'Horror' }),
+    uri: z
+      .string()
+      .openapi({
+        description: 'The relative URI of the On Demand genre.',
+        example: '/ondemand/genres/horror',
+      }),
+  })
+  .openapi({
+    required: ['canonical', 'interactions', 'link', 'metadata', 'name', 'uri'],
+    title: 'On Demand Genre',
+  })
+  .openapi('OnDemandGenre')
+
+const PurchaseInteractionSchema = z
+  .object({
+    buy: z
+      .object({
+        drm: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether the On Demand video for purchase has DRM.',
+            example: 'true',
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Information on purchasing this video.', required: [] }),
+    rent: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Information on renting this video.' }),
+    subscribe: z
+      .object({
+        drm: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether the On Demand subscription has DRM.', example: 'true' }),
+        expires_time: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The time in ISO 8601 format when the On Demand video will expire.',
+            example: '2018-03-05T21:04:47+00:00',
+          }),
+        link: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The URL to purchase this On Demand subscription on Vimeo.',
+            example: 'https://vimeo.com/ondemand/darbyforever',
+          }),
+        purchase_time: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The time in ISO 8601 format when the On Demand was purchased.',
+            example: '2018-03-05T21:04:47+00:00',
+          }),
+        stream: z
+          .enum(['available', 'purchased', 'restricted', 'unavailable'])
+          .exactOptional()
+          .openapi({
+            description:
+              "The user's streaming access to this On Demand subscription:\n\nOption descriptions:\n * `available` - The On Demand subscription is available for streaming.\n * `purchased` - The On Demand subscription has been purchased.\n * `restricted` - Streaming for the On Demand subscription is restricted.\n * `unavailable` - The On Demand subscription is unavailable.\n",
+            example: 'available',
+          }),
+        uri: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: "The On Demand subscription's product URI.",
+            example: '/ondemand/pages/61326/products/12345',
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Information on subscribing to this video.', required: [] }),
+  })
+  .openapi({ title: 'Purchase Interaction', required: [] })
+  .openapi('PurchaseInteraction')
+
+type OnDemandPageType = {
+  background: z.infer<typeof PictureSchema> | null
+  colors: { primary: string; secondary: string }
+  content_rating: string[]
+  created_time?: string
+  description: string | null
+  domain_link: string | null
+  episodes: {
+    buy: { active: boolean; price: number | null }
+    rent: {
+      active: boolean
+      period:
+        | '1 day'
+        | '1 month'
+        | '1 week'
+        | '1 year'
+        | '2 day'
+        | '24 hour'
+        | '3 day'
+        | '3 month'
+        | '30 day'
+        | '48 hour'
+        | '6 month'
+        | '60 day'
+        | '7 day'
+        | '72 hour'
+        | null
+      price: number | null
+    }
+  }
+  film?: z.infer<typeof VideoSchema>
+  genres: z.infer<typeof OnDemandGenreSchema>[]
+  link: string
+  metadata: {
+    connections: {
+      metadata: {
+        connections: {
+          comments: { options: string[]; total: number; uri: string }
+          genres: { options: string[]; total: number; uri: string }
+          likes: { options: string[]; total: number; uri: string }
+          pictures: { options: string[]; total: number; uri: string }
+          seasons: { options: string[]; total: number; uri: string }
+          videos: {
+            extra_total: number
+            main_total: number
+            options: string[]
+            total: number
+            uri: string
+            viewable_total: number
+          }
+        }
+      }
+    }
+    interactions: z.infer<typeof PurchaseInteractionSchema>
+  }
+  modified_time?: string
+  name: string
+  pictures: z.infer<typeof PictureSchema> | null
+  preorder: { active: boolean; cancel_time: string; publish_time: string; time: string }
+  published: { enabled: boolean; time: string }
+  rating: number | null
+  resource_key: string
+  sku?: string | null
+  subscription: {
+    active: boolean
+    link: string | null
+    period?: string
+    price: { [key: string]: unknown }
+  } | null
+  theme: string
+  thumbnail: z.infer<typeof PictureSchema> | null
+  trailer: z.infer<typeof VideoSchema> | null
+  type: 'film' | 'series'
+  uri: string
+  user: z.infer<typeof UserSchema> | null
+}
+
+type UploadAttemptType = {
+  clip?: z.infer<typeof VideoSchema>
+  complete_uri?: string
+  form?: string
+  ticket_id: string
+  upload_link: string
+  uri: string
+  user: z.infer<typeof UserSchema>
+}
+
+const Activity_3_1Schema: z.ZodType<Activity_3_1Type> = z
   .object({
     category: CategorySchema.exactOptional().openapi({
       description:
@@ -3513,7 +3782,7 @@ const CreativeCommonsSchema = z
   .openapi({ required: ['code', 'name', 'uri'], title: 'Creative Commons' })
   .openapi('CreativeCommons')
 
-const CreditSchema = z
+const CreditSchema: z.ZodType<CreditType> = z
   .object({
     name: z
       .string()
@@ -3617,158 +3886,7 @@ const LegacyErrorSchema = z
   .openapi({ required: ['error'], title: 'Legacy Error' })
   .openapi('LegacyError')
 
-const OnDemandGenreSchema = z
-  .object({
-    canonical: z
-      .string()
-      .openapi({ description: 'The canonical name or URL slug of the genre.', example: 'horror' }),
-    interactions: z
-      .object({
-        page: z
-          .object({
-            added: z
-              .boolean()
-              .openapi({ description: 'Whether this On Demand genre was added.', example: 'true' }),
-            options: z
-              .array(z.string())
-              .openapi({ description: 'An array of HTTP methods permitted on this URI.' }),
-            uri: z
-              .string()
-              .openapi({
-                description: 'The URI to access the On Demand page.',
-                example: '/ondemand/genres/horror/pages/12345',
-              }),
-          })
-          .openapi({
-            description: 'Interactions for On Demand pages that are in this genre.',
-            required: ['added', 'options', 'uri'],
-          }),
-      })
-      .openapi({ required: ['page'] }),
-    link: z
-      .string()
-      .openapi({
-        description: 'The Vimeo URL for this genre.',
-        example: 'http://vimeo.com/ondemand/browse/horror',
-      }),
-    metadata: z
-      .object({
-        connections: z
-          .object({
-            pages: z
-              .object({
-                options: z
-                  .array(z.string())
-                  .openapi({ description: 'An array of HTTP methods permitted on this URI.' }),
-                uri: z
-                  .string()
-                  .openapi({
-                    description: 'The API URI that resolves to the connection data.',
-                    example: '/ondemand/genres/horror/pages',
-                  }),
-              })
-              .openapi({
-                description: 'Information about the On Demand pages related to this group.',
-                required: ['options', 'uri'],
-              }),
-          })
-          .openapi({
-            description: 'A collection of information connected to this resource.',
-            required: ['pages'],
-          }),
-      })
-      .openapi({ required: ['connections'] }),
-    name: z
-      .string()
-      .openapi({ description: 'The descriptive name of the genre.', example: 'Horror' }),
-    uri: z
-      .string()
-      .openapi({
-        description: 'The relative URI of the On Demand genre.',
-        example: '/ondemand/genres/horror',
-      }),
-  })
-  .openapi({
-    required: ['canonical', 'interactions', 'link', 'metadata', 'name', 'uri'],
-    title: 'On Demand Genre',
-  })
-  .openapi('OnDemandGenre')
-
-const PurchaseInteractionSchema = z
-  .object({
-    buy: z
-      .object({
-        drm: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether the On Demand video for purchase has DRM.',
-            example: 'true',
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Information on purchasing this video.', required: [] }),
-    rent: z
-      .object({})
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Information on renting this video.' }),
-    subscribe: z
-      .object({
-        drm: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether the On Demand subscription has DRM.', example: 'true' }),
-        expires_time: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The time in ISO 8601 format when the On Demand video will expire.',
-            example: '2018-03-05T21:04:47+00:00',
-          }),
-        link: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The URL to purchase this On Demand subscription on Vimeo.',
-            example: 'https://vimeo.com/ondemand/darbyforever',
-          }),
-        purchase_time: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The time in ISO 8601 format when the On Demand was purchased.',
-            example: '2018-03-05T21:04:47+00:00',
-          }),
-        stream: z
-          .enum(['available', 'purchased', 'restricted', 'unavailable'])
-          .exactOptional()
-          .openapi({
-            description:
-              "The user's streaming access to this On Demand subscription:\n\nOption descriptions:\n * `available` - The On Demand subscription is available for streaming.\n * `purchased` - The On Demand subscription has been purchased.\n * `restricted` - Streaming for the On Demand subscription is restricted.\n * `unavailable` - The On Demand subscription is unavailable.\n",
-            example: 'available',
-          }),
-        uri: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: "The On Demand subscription's product URI.",
-            example: '/ondemand/pages/61326/products/12345',
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Information on subscribing to this video.', required: [] }),
-  })
-  .openapi({ title: 'Purchase Interaction', required: [] })
-  .openapi('PurchaseInteraction')
-
-const OnDemandPageSchema = z
+const OnDemandPageSchema: z.ZodType<OnDemandPageType> = z
   .object({
     background: PictureSchema.nullable().openapi({
       description: 'The background image for the On Demand page on Vimeo.',
@@ -4176,7 +4294,7 @@ const OnDemandPageSchema = z
           }),
         period: z.string().exactOptional().openapi({ description: "The product's rental period." }),
         price: z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'The accepted currencies and respective pricing for this product.',
           }),
@@ -4488,7 +4606,7 @@ const OnDemandVideoSchema = z
             description: 'Whether this On Demand video can be purchased.',
             example: 'true',
           }),
-        price: z.object({}).openapi({ description: 'A map of currency type to price.' }),
+        price: z.looseObject({}).openapi({ description: 'A map of currency type to price.' }),
         purchased: z
           .boolean()
           .exactOptional()
@@ -4684,7 +4802,7 @@ const OnDemandVideoSchema = z
         active: z
           .boolean()
           .openapi({ description: 'Whether this On Demand video can be rented.', example: 'true' }),
-        price: z.object({}).openapi({ description: 'A map of currency type to price.' }),
+        price: z.looseObject({}).openapi({ description: 'A map of currency type to price.' }),
         purchased: z
           .boolean()
           .exactOptional()
@@ -4755,7 +4873,7 @@ const PlaySchema = z
                 example: '2017-05-16T17:21:51+00:00',
               }),
             log: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'The URLs for logging events.' }),
             md5: z
@@ -5150,7 +5268,7 @@ const TextTrackSchema = z
   })
   .openapi('TextTrack')
 
-const UploadAttemptSchema = z
+const UploadAttemptSchema: z.ZodType<UploadAttemptType> = z
   .object({
     clip: VideoSchema.exactOptional().openapi({ description: 'The video to upload.' }),
     complete_uri: z

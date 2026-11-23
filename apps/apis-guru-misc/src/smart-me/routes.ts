@@ -983,7 +983,7 @@ const MeterFolderInformationToPostSchema = z
   .openapi({ description: 'Container for a Meter or Folder Information to Post', required: [] })
   .openapi('MeterFolderInformationToPost')
 
-const ObjectSchema = z.object({}).openapi('Object')
+const ObjectSchema = z.looseObject({}).openapi('Object')
 
 const OutputConfigurationContainerSchema = z
   .object({

@@ -15991,12 +15991,12 @@ The attributes of a skill group.
 "string"
 ```
 
-<h2 id="tocS_boolean">boolean</h2>
+<h2 id="tocS_boolean2">boolean2</h2>
 <!-- backwards compatibility -->
-<a id="schemaboolean-1"></a>
-<a id="schema_boolean"></a>
-<a id="tocSboolean-1"></a>
-<a id="tocsboolean-1"></a>
+<a id="schemaboolean2"></a>
+<a id="schema_boolean2"></a>
+<a id="tocSboolean2"></a>
+<a id="tocsboolean2"></a>
 
 ```json
 true

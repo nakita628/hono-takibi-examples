@@ -1,0 +1,2650 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getApiKey() {
+  return ['api'] as const
+}
+
+export function getPriceSheetKey() {
+  return ['price-sheet'] as const
+}
+
+export function getPubKey() {
+  return ['pub'] as const
+}
+
+export function getPostApiRnbPubNotificationsMutationKey() {
+  return ['api', '/api/rnb/pub/notifications', 'POST'] as const
+}
+
+export function getPostApiRnbPubNotificationsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pub.notifications.$post>>>
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.api.rnb.pub.notifications.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPubNotificationsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.api.rnb.pub.notifications.$post>) {
+      return parseResponse(client.api.rnb.pub.notifications.$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPubNotifications<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pub.notifications.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.api.rnb.pub.notifications.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPubNotificationsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtArchiveBenefitsCalculatorConfigurationQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/archive/benefits/calculatorConfiguration', keyArgs] as const
+}
+
+export function getApiRnbPvtArchiveBenefitsCalculatorConfigurationQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtArchiveBenefitsCalculatorConfigurationQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtArchiveBenefitsCalculatorConfiguration<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    typeof client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    typeof client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtArchiveBenefitsCalculatorConfigurationQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<typeof client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtArchiveBenefitsCalculatorConfigurationQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtArchiveBenefitsCalculatorConfigurationQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.archive.benefits.calculatorConfiguration.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtArchiveCalculatorConfigurationIdCalculatorConfigurationMutationKey() {
+  return [
+    'api',
+    '/api/rnb/pvt/archive/calculatorConfiguration/:idCalculatorConfiguration',
+    'POST',
+  ] as const
+}
+
+export function getPostApiRnbPvtArchiveCalculatorConfigurationIdCalculatorConfigurationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.api.rnb.pvt.archive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<
+      (typeof client.api.rnb.pvt.archive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPostApiRnbPvtArchiveCalculatorConfigurationIdCalculatorConfigurationMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.api.rnb.pvt.archive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.api.rnb.pvt.archive.calculatorConfiguration[':idCalculatorConfiguration'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostApiRnbPvtArchiveCalculatorConfigurationIdCalculatorConfiguration<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<
+                    ReturnType<
+                      (typeof client.api.rnb.pvt.archive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+                    >
+                  >
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<
+            (typeof client.api.rnb.pvt.archive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostApiRnbPvtArchiveCalculatorConfigurationIdCalculatorConfigurationMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtArchiveCouponCouponCodeQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$get']>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/archive/coupon/:couponCode', keyArgs] as const
+}
+
+export function getApiRnbPvtArchiveCouponCouponCodeQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtArchiveCouponCouponCodeQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.archive.coupon[':couponCode'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtArchiveCouponCouponCode<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$get']>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$get']>
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtArchiveCouponCouponCodeQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtArchiveCouponCouponCodeQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtArchiveCouponCouponCodeQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.archive.coupon[':couponCode'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtArchiveCouponCouponCodeMutationKey() {
+  return ['api', '/api/rnb/pvt/archive/coupon/:couponCode', 'POST'] as const
+}
+
+export function getPostApiRnbPvtArchiveCouponCouponCodeMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtArchiveCouponCouponCodeMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$post']>,
+    ) {
+      return parseResponse(client.api.rnb.pvt.archive.coupon[':couponCode'].$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtArchiveCouponCouponCode<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.api.rnb.pvt.archive.coupon)[':couponCode']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtArchiveCouponCouponCodeMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtArchiveTaxesCalculatorConfigurationQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/archive/taxes/calculatorConfiguration', keyArgs] as const
+}
+
+export function getApiRnbPvtArchiveTaxesCalculatorConfigurationQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtArchiveTaxesCalculatorConfigurationQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtArchiveTaxesCalculatorConfiguration<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<typeof client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<typeof client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get>
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtArchiveTaxesCalculatorConfigurationQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtArchiveTaxesCalculatorConfigurationQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtArchiveTaxesCalculatorConfigurationQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.archive.taxes.calculatorConfiguration.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtBenefitsCalculatorconfigurationQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.benefits.calculatorconfiguration.$get>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/benefits/calculatorconfiguration', keyArgs] as const
+}
+
+export function getApiRnbPvtBenefitsCalculatorconfigurationQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.benefits.calculatorconfiguration.$get>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtBenefitsCalculatorconfigurationQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.benefits.calculatorconfiguration.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtBenefitsCalculatorconfiguration<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.api.rnb.pvt.benefits.calculatorconfiguration.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.benefits.calculatorconfiguration.$get>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.benefits.calculatorconfiguration.$get>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.benefits.calculatorconfiguration.$get>>
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtBenefitsCalculatorconfigurationQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.api.rnb.pvt.benefits.calculatorconfiguration.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtBenefitsCalculatorconfigurationQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtBenefitsCalculatorconfigurationQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.benefits.calculatorconfiguration.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtCalculatorconfigurationMutationKey() {
+  return ['api', '/api/rnb/pvt/calculatorconfiguration', 'POST'] as const
+}
+
+export function getPostApiRnbPvtCalculatorconfigurationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.api.rnb.pvt.calculatorconfiguration.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.api.rnb.pvt.calculatorconfiguration.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtCalculatorconfigurationMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.api.rnb.pvt.calculatorconfiguration.$post>,
+    ) {
+      return parseResponse(client.api.rnb.pvt.calculatorconfiguration.$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtCalculatorconfiguration<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.calculatorconfiguration.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.api.rnb.pvt.calculatorconfiguration.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtCalculatorconfigurationMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.api.rnb.pvt.calculatorconfiguration)[':idCalculatorConfiguration']['$get']
+    >
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return [
+    'api',
+    '/api/rnb/pvt/calculatorconfiguration/:idCalculatorConfiguration',
+    keyArgs,
+  ] as const
+}
+
+export function getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.api.rnb.pvt.calculatorconfiguration)[':idCalculatorConfiguration']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() =>
+      getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationQueryKey(args),
+    ),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.calculatorconfiguration[':idCalculatorConfiguration'].$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtCalculatorconfigurationIdCalculatorConfiguration<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.api.rnb.pvt.calculatorconfiguration)[':idCalculatorConfiguration']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.api.rnb.pvt.calculatorconfiguration)[':idCalculatorConfiguration']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.api.rnb.pvt.calculatorconfiguration)[':idCalculatorConfiguration']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.api.rnb.pvt.calculatorconfiguration)[':idCalculatorConfiguration']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.api.rnb.pvt.calculatorconfiguration)[':idCalculatorConfiguration']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getApiRnbPvtCalculatorconfigurationIdCalculatorConfigurationQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.calculatorconfiguration[':idCalculatorConfiguration'].$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtCampaignConfigurationQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.api.rnb.pvt.campaignConfiguration.$get>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/campaignConfiguration', keyArgs] as const
+}
+
+export function getApiRnbPvtCampaignConfigurationQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.api.rnb.pvt.campaignConfiguration.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtCampaignConfigurationQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.campaignConfiguration.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtCampaignConfiguration<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.api.rnb.pvt.campaignConfiguration.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.api.rnb.pvt.campaignConfiguration.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.campaignConfiguration.$get>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.campaignConfiguration.$get>>
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtCampaignConfigurationQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.api.rnb.pvt.campaignConfiguration.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtCampaignConfigurationQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtCampaignConfigurationQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.campaignConfiguration.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtCampaignConfigurationMutationKey() {
+  return ['api', '/api/rnb/pvt/campaignConfiguration', 'POST'] as const
+}
+
+export function getPostApiRnbPvtCampaignConfigurationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.api.rnb.pvt.campaignConfiguration.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.api.rnb.pvt.campaignConfiguration.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtCampaignConfigurationMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.api.rnb.pvt.campaignConfiguration.$post>,
+    ) {
+      return parseResponse(client.api.rnb.pvt.campaignConfiguration.$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtCampaignConfiguration<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.campaignConfiguration.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.api.rnb.pvt.campaignConfiguration.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtCampaignConfigurationMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtCampaignConfigurationCampaignIdQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.campaignConfiguration)[':campaignId']['$get']>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/campaignConfiguration/:campaignId', keyArgs] as const
+}
+
+export function getApiRnbPvtCampaignConfigurationCampaignIdQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.campaignConfiguration)[':campaignId']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtCampaignConfigurationCampaignIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.campaignConfiguration[':campaignId'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtCampaignConfigurationCampaignId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.api.rnb.pvt.campaignConfiguration)[':campaignId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.campaignConfiguration)[':campaignId']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.api.rnb.pvt.campaignConfiguration)[':campaignId']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.api.rnb.pvt.campaignConfiguration)[':campaignId']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtCampaignConfigurationCampaignIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.api.rnb.pvt.campaignConfiguration)[':campaignId']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtCampaignConfigurationCampaignIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtCampaignConfigurationCampaignIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.campaignConfiguration[':campaignId'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtCouponQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.api.rnb.pvt.coupon.$get>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/coupon', keyArgs] as const
+}
+
+export function getApiRnbPvtCouponQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.api.rnb.pvt.coupon.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtCouponQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.coupon.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtCoupon<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupon.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.api.rnb.pvt.coupon.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupon.$get>>>
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupon.$get>>>
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtCouponQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupon.$get>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtCouponQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtCouponQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.coupon.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtCouponMutationKey() {
+  return ['api', '/api/rnb/pvt/coupon', 'POST'] as const
+}
+
+export function getPostApiRnbPvtCouponMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupon.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.api.rnb.pvt.coupon.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtCouponMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.api.rnb.pvt.coupon.$post>) {
+      return parseResponse(client.api.rnb.pvt.coupon.$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtCoupon<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupon.$post>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.api.rnb.pvt.coupon.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtCouponMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtCouponIndexMutationKey() {
+  return ['api', '/api/rnb/pvt/coupon/', 'POST'] as const
+}
+
+export function getPostApiRnbPvtCouponIndexMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupon.index.$post>>>
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.api.rnb.pvt.coupon.index.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtCouponIndexMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.api.rnb.pvt.coupon.index.$post>) {
+      return parseResponse(client.api.rnb.pvt.coupon.index.$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtCouponIndex<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.coupon.index.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.api.rnb.pvt.coupon.index.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtCouponIndexMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtCouponUsageCouponCodeQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.coupon.usage)[':couponCode']['$get']>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/coupon/usage/:couponCode', keyArgs] as const
+}
+
+export function getApiRnbPvtCouponUsageCouponCodeQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.coupon.usage)[':couponCode']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtCouponUsageCouponCodeQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.coupon.usage[':couponCode'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtCouponUsageCouponCode<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.api.rnb.pvt.coupon.usage)[':couponCode']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.coupon.usage)[':couponCode']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.api.rnb.pvt.coupon.usage)[':couponCode']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.api.rnb.pvt.coupon.usage)[':couponCode']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtCouponUsageCouponCodeQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.api.rnb.pvt.coupon.usage)[':couponCode']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtCouponUsageCouponCodeQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtCouponUsageCouponCodeQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.coupon.usage[':couponCode'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtCouponCouponCodeQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.coupon)[':couponCode']['$get']>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/coupon/:couponCode', keyArgs] as const
+}
+
+export function getApiRnbPvtCouponCouponCodeQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.coupon)[':couponCode']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtCouponCouponCodeQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.coupon[':couponCode'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtCouponCouponCode<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.api.rnb.pvt.coupon)[':couponCode']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.rnb.pvt.coupon)[':couponCode']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.api.rnb.pvt.coupon)[':couponCode']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.api.rnb.pvt.coupon)[':couponCode']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtCouponCouponCodeQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.api.rnb.pvt.coupon)[':couponCode']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtCouponCouponCodeQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtCouponCouponCodeQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.coupon[':couponCode'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtCouponsMutationKey() {
+  return ['api', '/api/rnb/pvt/coupons', 'POST'] as const
+}
+
+export function getPostApiRnbPvtCouponsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupons.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.api.rnb.pvt.coupons.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtCouponsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.api.rnb.pvt.coupons.$post>) {
+      return parseResponse(client.api.rnb.pvt.coupons.$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtCoupons<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.api.rnb.pvt.coupons.$post>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.api.rnb.pvt.coupons.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtCouponsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtImportCalculatorConfigurationMutationKey() {
+  return ['api', '/api/rnb/pvt/import/calculatorConfiguration', 'POST'] as const
+}
+
+export function getPostApiRnbPvtImportCalculatorConfigurationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.api.rnb.pvt.import.calculatorConfiguration.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.api.rnb.pvt.import.calculatorConfiguration.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtImportCalculatorConfigurationMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.api.rnb.pvt.import.calculatorConfiguration.$post>,
+    ) {
+      return parseResponse(client.api.rnb.pvt.import.calculatorConfiguration.$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtImportCalculatorConfiguration<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.import.calculatorConfiguration.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.api.rnb.pvt.import.calculatorConfiguration.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtImportCalculatorConfigurationMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPutApiRnbPvtImportCalculatorConfigurationPromotionIdMutationKey() {
+  return ['api', '/api/rnb/pvt/import/calculatorConfiguration/:promotionId', 'PUT'] as const
+}
+
+export function getPutApiRnbPvtImportCalculatorConfigurationPromotionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.api.rnb.pvt.import.calculatorConfiguration)[':promotionId']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.api.rnb.pvt.import.calculatorConfiguration)[':promotionId']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutApiRnbPvtImportCalculatorConfigurationPromotionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.api.rnb.pvt.import.calculatorConfiguration)[':promotionId']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.api.rnb.pvt.import.calculatorConfiguration[':promotionId'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function usePutApiRnbPvtImportCalculatorConfigurationPromotionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.api.rnb.pvt.import.calculatorConfiguration)[':promotionId']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.api.rnb.pvt.import.calculatorConfiguration)[':promotionId']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPutApiRnbPvtImportCalculatorConfigurationPromotionIdMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtMultipleCouponsMutationKey() {
+  return ['api', '/api/rnb/pvt/multiple-coupons', 'POST'] as const
+}
+
+export function getPostApiRnbPvtMultipleCouponsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.api.rnb.pvt)['multiple-coupons']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.api.rnb.pvt)['multiple-coupons']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtMultipleCouponsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.api.rnb.pvt)['multiple-coupons']['$post']>,
+    ) {
+      return parseResponse(client.api.rnb.pvt['multiple-coupons'].$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtMultipleCoupons<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.api.rnb.pvt)['multiple-coupons']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.api.rnb.pvt)['multiple-coupons']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtMultipleCouponsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getApiRnbPvtTaxesCalculatorconfigurationQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.taxes.calculatorconfiguration.$get>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['api', '/api/rnb/pvt/taxes/calculatorconfiguration', keyArgs] as const
+}
+
+export function getApiRnbPvtTaxesCalculatorconfigurationQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.taxes.calculatorconfiguration.$get>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getApiRnbPvtTaxesCalculatorconfigurationQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.api.rnb.pvt.taxes.calculatorconfiguration.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useApiRnbPvtTaxesCalculatorconfiguration<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.api.rnb.pvt.taxes.calculatorconfiguration.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.api.rnb.pvt.taxes.calculatorconfiguration.$get>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.taxes.calculatorconfiguration.$get>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.api.rnb.pvt.taxes.calculatorconfiguration.$get>>
+              >
+            >
+          >,
+          ReturnType<typeof getApiRnbPvtTaxesCalculatorconfigurationQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.api.rnb.pvt.taxes.calculatorconfiguration.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getApiRnbPvtTaxesCalculatorconfigurationQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getApiRnbPvtTaxesCalculatorconfigurationQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.api.rnb.pvt.taxes.calculatorconfiguration.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtUnarchiveCalculatorConfigurationIdCalculatorConfigurationMutationKey() {
+  return [
+    'api',
+    '/api/rnb/pvt/unarchive/calculatorConfiguration/:idCalculatorConfiguration',
+    'POST',
+  ] as const
+}
+
+export function getPostApiRnbPvtUnarchiveCalculatorConfigurationIdCalculatorConfigurationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.api.rnb.pvt.unarchive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<
+      (typeof client.api.rnb.pvt.unarchive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPostApiRnbPvtUnarchiveCalculatorConfigurationIdCalculatorConfigurationMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.api.rnb.pvt.unarchive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.api.rnb.pvt.unarchive.calculatorConfiguration[':idCalculatorConfiguration'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostApiRnbPvtUnarchiveCalculatorConfigurationIdCalculatorConfiguration<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<
+                    ReturnType<
+                      (typeof client.api.rnb.pvt.unarchive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+                    >
+                  >
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<
+            (typeof client.api.rnb.pvt.unarchive.calculatorConfiguration)[':idCalculatorConfiguration']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostApiRnbPvtUnarchiveCalculatorConfigurationIdCalculatorConfigurationMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostApiRnbPvtUnarchiveCouponCouponCodeMutationKey() {
+  return ['api', '/api/rnb/pvt/unarchive/coupon/:couponCode', 'POST'] as const
+}
+
+export function getPostApiRnbPvtUnarchiveCouponCouponCodeMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.api.rnb.pvt.unarchive.coupon)[':couponCode']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.api.rnb.pvt.unarchive.coupon)[':couponCode']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostApiRnbPvtUnarchiveCouponCouponCodeMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.api.rnb.pvt.unarchive.coupon)[':couponCode']['$post']>,
+    ) {
+      return parseResponse(client.api.rnb.pvt.unarchive.coupon[':couponCode'].$post(args, options))
+    },
+  })
+}
+
+export function usePostApiRnbPvtUnarchiveCouponCouponCode<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.api.rnb.pvt.unarchive.coupon)[':couponCode']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.api.rnb.pvt.unarchive.coupon)[':couponCode']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostApiRnbPvtUnarchiveCouponCouponCodeMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostPriceSheetMutationKey() {
+  return ['price-sheet', '/price-sheet', 'POST'] as const
+}
+
+export function getPostPriceSheetMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['price-sheet']['$post']>>>>
+    >,
+    TError,
+    InferRequestType<(typeof client)['price-sheet']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostPriceSheetMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client)['price-sheet']['$post']>) {
+      return parseResponse(client['price-sheet'].$post(args, options))
+    },
+  })
+}
+
+export function usePostPriceSheet<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client)['price-sheet']['$post']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client)['price-sheet']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostPriceSheetMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPriceSheetAllPagePageSizeQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['price-sheet']['all'][':page'][':pageSize']['$get']>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['price-sheet', '/price-sheet/all/:page/:pageSize', keyArgs] as const
+}
+
+export function getPriceSheetAllPagePageSizeQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['price-sheet']['all'][':page'][':pageSize']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getPriceSheetAllPagePageSizeQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client['price-sheet'].all[':page'][':pageSize'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function usePriceSheetAllPagePageSize<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)['price-sheet']['all'][':page'][':pageSize']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['price-sheet']['all'][':page'][':pageSize']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)['price-sheet']['all'][':page'][':pageSize']['$get']>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)['price-sheet']['all'][':page'][':pageSize']['$get']>
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getPriceSheetAllPagePageSizeQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)['price-sheet']['all'][':page'][':pageSize']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getPriceSheetAllPagePageSizeQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getPriceSheetAllPagePageSizeQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client['price-sheet'].all[':page'][':pageSize'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostPriceSheetContextMutationKey() {
+  return ['price-sheet', '/price-sheet/context', 'POST'] as const
+}
+
+export function getPostPriceSheetContextMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)['price-sheet']['context']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client)['price-sheet']['context']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostPriceSheetContextMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client)['price-sheet']['context']['$post']>) {
+      return parseResponse(client['price-sheet'].context.$post(args, options))
+    },
+  })
+}
+
+export function usePostPriceSheetContext<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['price-sheet']['context']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client)['price-sheet']['context']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostPriceSheetContextMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPriceSheetSkuIdQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['price-sheet'][':skuId']['$get']>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['price-sheet', '/price-sheet/:skuId', keyArgs] as const
+}
+
+export function getPriceSheetSkuIdQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['price-sheet'][':skuId']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getPriceSheetSkuIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client['price-sheet'][':skuId'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function usePriceSheetSkuId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['price-sheet'][':skuId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['price-sheet'][':skuId']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['price-sheet'][':skuId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['price-sheet'][':skuId']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getPriceSheetSkuIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['price-sheet'][':skuId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getPriceSheetSkuIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getPriceSheetSkuIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client['price-sheet'][':skuId'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getDeletePriceSheetSkuIdMutationKey() {
+  return ['price-sheet', '/price-sheet/:skuId', 'DELETE'] as const
+}
+
+export function getDeletePriceSheetSkuIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)['price-sheet'][':skuId']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client)['price-sheet'][':skuId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeletePriceSheetSkuIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client)['price-sheet'][':skuId']['$delete']>) {
+      return parseResponse(client['price-sheet'][':skuId'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeletePriceSheetSkuId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['price-sheet'][':skuId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client)['price-sheet'][':skuId']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeletePriceSheetSkuIdMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPriceSheetSkuIdTradePolicyQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['price-sheet'][':skuId'][':tradePolicy']['$get']>
+  >,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['price-sheet', '/price-sheet/:skuId/:tradePolicy', keyArgs] as const
+}
+
+export function getPriceSheetSkuIdTradePolicyQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['price-sheet'][':skuId'][':tradePolicy']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getPriceSheetSkuIdTradePolicyQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client['price-sheet'][':skuId'][':tradePolicy'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function usePriceSheetSkuIdTradePolicy<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)['price-sheet'][':skuId'][':tradePolicy']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['price-sheet'][':skuId'][':tradePolicy']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)['price-sheet'][':skuId'][':tradePolicy']['$get']>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)['price-sheet'][':skuId'][':tradePolicy']['$get']>
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getPriceSheetSkuIdTradePolicyQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)['price-sheet'][':skuId'][':tradePolicy']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getPriceSheetSkuIdTradePolicyQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getPriceSheetSkuIdTradePolicyQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client['price-sheet'][':skuId'][':tradePolicy'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostPubBundlesMutationKey() {
+  return ['pub', '/pub/bundles', 'POST'] as const
+}
+
+export function getPostPubBundlesMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.pub.bundles.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.pub.bundles.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostPubBundlesMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.pub.bundles.$post>) {
+      return parseResponse(client.pub.bundles.$post(args, options))
+    },
+  })
+}
+
+export function usePostPubBundles<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.pub.bundles.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.pub.bundles.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostPubBundlesMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

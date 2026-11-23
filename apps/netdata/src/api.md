@@ -1920,7 +1920,7 @@ Multi-node, multi-context, multi-instance, multi-dimension data queries, with ti
 |options|query|[string]|false|Options that affect data generation.<br>* `jsonwrap` - Wrap the output in a JSON object with metadata about the query.<br>* `raw` - change the output so that it is aggregatable across multiple such queries. Supported by `/api/v2` data queries and `json2` format.<br>* `minify` - Remove unnecessary spaces and newlines from the output.<br>* `debug` - Provide additional information in `jsonwrap` output to help tracing issues.<br>* `nonzero` - Do not return dimensions that all their values are zero, to improve the visual appearance of charts. They will still be returned if all the dimensions are entirely zero.<br>* `null2zero` - Replace `null` values with `0`.<br>* `absolute` or `abs` - Traditionally Netdata returns select dimensions negative to improve visual appearance. This option turns this feature off.<br>* `display-absolute` - Only used by badges, to do color calculation using the signed value, but render the value without a sign.<br>* `flip` or `reversed` - Order the timestamps array in reverse order (newest to oldest).<br>* `min2max` - When flattening multi-dimensional data into a single metric format, use `max - min` instead of `sum`. This is EOL - use `/api/v2` to control aggregation across dimensions.<br>* `percentage` - Convert all values into a percentage vs the row total. When enabled, Netdata will query all dimensions, even the ones that have not been selected or are hidden, to find the row total, in order to calculate the percentage of each dimension selected.<br>* `seconds` - Output timestamps in seconds instead of dates.<br>* `milliseconds` or `ms` - Output timestamps in milliseconds instead of dates.<br>* `unaligned` - by default queries are aligned to the the view, so that as time passes past data returned do not change. When a data query will not be used for visualization, `unaligned` can be given to avoid aligning the query time-frame for visual precision.<br>* `match-ids`, `match-names`. By default filters match both IDs and names when they are available. Setting either of the two options will disable the other.<br>* `anomaly-bit` - query the anomaly information instead of metric values. This is EOL, use `/api/v2` and `json2` format which always returns this information and many more.<br>* `jw-anomaly-rates` - return anomaly rates as a separate result set in the same `json` format response. This is EOL, use `/api/v2` and `json2` format which always returns information and many more. <br>* `details` - `/api/v2/data` returns in `jsonwrap` the full tree of dimensions that have been matched by the query.<br>* `group-by-labels` - `/api/v2/data` returns in `jsonwrap` flattened labels per output dimension. These are used to identify the instances that have been aggregated into each dimension, making it possible to provide a map, like Netdata does for Kubernetes.<br>* `natural-points` - return timestamps as found in the database. The result is again fixed-step, but the query engine attempts to align them with the timestamps found in the database.<br>* `virtual-points` - return timestamps independent of the database alignment. This is needed aggregating data across multiple Netdata Agents, to ensure that their outputs do not need to be interpolated to be merged.<br>* `selected-tier` - use data exclusively from the selected tier given with the `tier` parameter. This option is set automatically when the `tier` parameter is set.<br>* `all-dimensions` - In `/api/v1` `jsonwrap` include metadata for all candidate metrics examined. In `/api/v2` this is standard behavior and no option is needed.<br>* `label-quotes` - In `csv` output format, enclose each header label in quotes.<br>* `objectrows` - Each row of value should be an object, not an array (only for `json` format).<br>* `google_json` - Comply with google JSON/JSONP specs (only for `json` format).<br>* `minimal-stats` or `minimal` - Reduce the amount of statistics returned in `jsonwrap` format to save bandwidth.<br>* `long-json-keys` or `long-keys` - Use descriptive key names in JSON output instead of abbreviated ones.<br>* `mcp-info` - Include additional metadata useful for the Model Context Protocol (MCP) integration.<br>* `rfc3339` - Return timestamps in RFC3339 format (e.g., "2023-01-01T00:00:00Z") instead of Unix timestamps.<br>* `cardinality-limit-all` - Apply the `cardinality_limit` parameter to the `jsonwrap` summary metadata (nodes, instances, dimensions, labels) too. Without this option `cardinality_limit` reduces only the result dataset (the top contributing dimensions plus one `remaining` aggregate), keeping the summary complete so dashboards can still build their filtering menus.<br>|
 |time_group|query|string|false|Time aggregation function. If multiple collected values are to be grouped in order to return fewer points, this parameters defines the method of grouping. If the `absolute` option is set, the values are turned positive before applying this calculation.<br>|
 |time_group_options|query|string|false|When the time grouping function supports additional parameters, this field can be used to pass them to it. `percentage-of-samples` (alias `countif`), `percentage-of-time`, `number-of-flaps` and `number-of-times` take a CONDITION; `trimmed-mean`, `trimmed-median` and `percentile` take a number.<br>A condition is an operator followed by a value. The operators are `>`, `>=` (or `>:`), `<`, `<=` (or `<:`), `=` (or `==` or `:`) and `!=` (or `!:`, `!` or `<>`); with no operator the value compares equal. The value is one of:<br>- a number, e.g. `>10`<br>- a gap token - `gap`, `nan`, `null` or `empty` are synonyms for "no data was collected", e.g. `==gap` matches the slots with no data and `!=gap` matches the collected ones. For `percentage-of-samples`, `number-of-flaps` and `number-of-times`, naming a gap token is what makes gaps participate at all; without one they are invisible for these three aggregations. `percentage-of-time` always counts uncollected time in its denominator, whatever the condition compares against.<br>- the previous collected sample - `previous` or `last`, e.g. `<previous` matches every sample lower than the one before it, which counts counter resets (reboots). Gaps are skipped, so a drop across a gap is still a drop, and the first sample of a query never matches.<br>An omitted, empty or whitespace-only condition means `==0`. An operator without a value applies to zero, so `>` means `>0`.<br>There are no and/or compounds.<br>Over a window long enough to read lower-resolution data `percentage-of-time`, `number-of-flaps` and `number-of-times` return estimates. `percentage-of-time` is exact over whole stored intervals for a fully collected 0-or-1 signal sampled at a steady cadence. Partial intervals, cadence changes and other signals or conditions are approximate. Gaps hidden inside a stored interval can overstate availability and understate missing time. `number-of-flaps` and `number-of-times` are exact only when each stored interval contains at most one relevant transition or match; otherwise they report at most one event for that interval. Every result bucket covering the same stored interval reports that interval's estimate. `percentage-of-time` always measures against the SELECTED duration, not against the collected part of it. When gaps remain separately represented in storage, uncollected time does not enter the numerator for a numeric condition, so a window with one matching sample and the rest missing answers a small percentage, not 100%. A condition such as `==gap` or `==null` includes uncollected time in the numerator instead. `percentage-of-samples` does not estimate and stays blind to gaps unless the condition names one - it evaluates each stored point as one sample. Use `tier=0` for the highest-resolution available result. When the response includes `db.per_tier`, such as with `format=json2`, inspect it to verify the selected tier; exactness still depends on the stored interval resolution.<br>|
-|time_resampling|query|number(integer)|false|For incremental values that are "per second", this value is used to resample them to "per minute` (60) or "per hour" (3600). It can only be used in conjunction with group=average.<br>|
+|time_resampling|query|number(integer)|false|For incremental values that are "per second", this value is used to resample them to "per minute` (60) or "per hour" (3600). It can only be used in conjunction with group=average. Values above 315360000 (10 years) are treated as 315360000.<br>|
 |format|query|string|false|The format of the data to be returned.|
 |cardinality_limit|query|integer(int64)|false|Limits the number of unique items returned, to prevent excessive memory usage and response sizes when a request matches a large number of items. For data queries, the query engine keeps the top contributing dimensions and folds the rest into one `remaining` aggregate dimension, so the total number of returned dimensions equals this limit; the `jsonwrap` summary metadata (nodes, instances, dimensions, labels) stays complete unless the `cardinality-limit-all` option is also given. Other endpoints (alerts, contexts) apply this limit to their own result items. Weights endpoints define separate result-limit semantics.<br>|
 |limit|query|integer(int64)|false|Limits the number of dimensions returned by a data query to the top-N contributors: the query engine keeps the `limit` highest-contributing dimensions and folds the rest into one `remaining` aggregate dimension (equivalent to `cardinality_limit` = `limit` + 1; `cardinality_limit`, when given, takes precedence). Agents that predate this parameter ignore it and return all dimensions, so clients can use it without version gating.<br>|
@@ -2454,7 +2454,7 @@ Multi-node, multi-context, multi-instance, multi-dimension data queries, with ti
 |options|query|[string]|false|Options that affect data generation.<br>* `jsonwrap` - Wrap the output in a JSON object with metadata about the query.<br>* `raw` - change the output so that it is aggregatable across multiple such queries. Supported by `/api/v2` data queries and `json2` format.<br>* `minify` - Remove unnecessary spaces and newlines from the output.<br>* `debug` - Provide additional information in `jsonwrap` output to help tracing issues.<br>* `nonzero` - Do not return dimensions that all their values are zero, to improve the visual appearance of charts. They will still be returned if all the dimensions are entirely zero.<br>* `null2zero` - Replace `null` values with `0`.<br>* `absolute` or `abs` - Traditionally Netdata returns select dimensions negative to improve visual appearance. This option turns this feature off.<br>* `display-absolute` - Only used by badges, to do color calculation using the signed value, but render the value without a sign.<br>* `flip` or `reversed` - Order the timestamps array in reverse order (newest to oldest).<br>* `min2max` - When flattening multi-dimensional data into a single metric format, use `max - min` instead of `sum`. This is EOL - use `/api/v2` to control aggregation across dimensions.<br>* `percentage` - Convert all values into a percentage vs the row total. When enabled, Netdata will query all dimensions, even the ones that have not been selected or are hidden, to find the row total, in order to calculate the percentage of each dimension selected.<br>* `seconds` - Output timestamps in seconds instead of dates.<br>* `milliseconds` or `ms` - Output timestamps in milliseconds instead of dates.<br>* `unaligned` - by default queries are aligned to the the view, so that as time passes past data returned do not change. When a data query will not be used for visualization, `unaligned` can be given to avoid aligning the query time-frame for visual precision.<br>* `match-ids`, `match-names`. By default filters match both IDs and names when they are available. Setting either of the two options will disable the other.<br>* `anomaly-bit` - query the anomaly information instead of metric values. This is EOL, use `/api/v2` and `json2` format which always returns this information and many more.<br>* `jw-anomaly-rates` - return anomaly rates as a separate result set in the same `json` format response. This is EOL, use `/api/v2` and `json2` format which always returns information and many more. <br>* `details` - `/api/v2/data` returns in `jsonwrap` the full tree of dimensions that have been matched by the query.<br>* `group-by-labels` - `/api/v2/data` returns in `jsonwrap` flattened labels per output dimension. These are used to identify the instances that have been aggregated into each dimension, making it possible to provide a map, like Netdata does for Kubernetes.<br>* `natural-points` - return timestamps as found in the database. The result is again fixed-step, but the query engine attempts to align them with the timestamps found in the database.<br>* `virtual-points` - return timestamps independent of the database alignment. This is needed aggregating data across multiple Netdata Agents, to ensure that their outputs do not need to be interpolated to be merged.<br>* `selected-tier` - use data exclusively from the selected tier given with the `tier` parameter. This option is set automatically when the `tier` parameter is set.<br>* `all-dimensions` - In `/api/v1` `jsonwrap` include metadata for all candidate metrics examined. In `/api/v2` this is standard behavior and no option is needed.<br>* `label-quotes` - In `csv` output format, enclose each header label in quotes.<br>* `objectrows` - Each row of value should be an object, not an array (only for `json` format).<br>* `google_json` - Comply with google JSON/JSONP specs (only for `json` format).<br>* `minimal-stats` or `minimal` - Reduce the amount of statistics returned in `jsonwrap` format to save bandwidth.<br>* `long-json-keys` or `long-keys` - Use descriptive key names in JSON output instead of abbreviated ones.<br>* `mcp-info` - Include additional metadata useful for the Model Context Protocol (MCP) integration.<br>* `rfc3339` - Return timestamps in RFC3339 format (e.g., "2023-01-01T00:00:00Z") instead of Unix timestamps.<br>* `cardinality-limit-all` - Apply the `cardinality_limit` parameter to the `jsonwrap` summary metadata (nodes, instances, dimensions, labels) too. Without this option `cardinality_limit` reduces only the result dataset (the top contributing dimensions plus one `remaining` aggregate), keeping the summary complete so dashboards can still build their filtering menus.<br>|
 |time_group|query|string|false|Time aggregation function. If multiple collected values are to be grouped in order to return fewer points, this parameters defines the method of grouping. If the `absolute` option is set, the values are turned positive before applying this calculation.<br>|
 |time_group_options|query|string|false|When the time grouping function supports additional parameters, this field can be used to pass them to it. `percentage-of-samples` (alias `countif`), `percentage-of-time`, `number-of-flaps` and `number-of-times` take a CONDITION; `trimmed-mean`, `trimmed-median` and `percentile` take a number.<br>A condition is an operator followed by a value. The operators are `>`, `>=` (or `>:`), `<`, `<=` (or `<:`), `=` (or `==` or `:`) and `!=` (or `!:`, `!` or `<>`); with no operator the value compares equal. The value is one of:<br>- a number, e.g. `>10`<br>- a gap token - `gap`, `nan`, `null` or `empty` are synonyms for "no data was collected", e.g. `==gap` matches the slots with no data and `!=gap` matches the collected ones. For `percentage-of-samples`, `number-of-flaps` and `number-of-times`, naming a gap token is what makes gaps participate at all; without one they are invisible for these three aggregations. `percentage-of-time` always counts uncollected time in its denominator, whatever the condition compares against.<br>- the previous collected sample - `previous` or `last`, e.g. `<previous` matches every sample lower than the one before it, which counts counter resets (reboots). Gaps are skipped, so a drop across a gap is still a drop, and the first sample of a query never matches.<br>An omitted, empty or whitespace-only condition means `==0`. An operator without a value applies to zero, so `>` means `>0`.<br>There are no and/or compounds.<br>Over a window long enough to read lower-resolution data `percentage-of-time`, `number-of-flaps` and `number-of-times` return estimates. `percentage-of-time` is exact over whole stored intervals for a fully collected 0-or-1 signal sampled at a steady cadence. Partial intervals, cadence changes and other signals or conditions are approximate. Gaps hidden inside a stored interval can overstate availability and understate missing time. `number-of-flaps` and `number-of-times` are exact only when each stored interval contains at most one relevant transition or match; otherwise they report at most one event for that interval. Every result bucket covering the same stored interval reports that interval's estimate. `percentage-of-time` always measures against the SELECTED duration, not against the collected part of it. When gaps remain separately represented in storage, uncollected time does not enter the numerator for a numeric condition, so a window with one matching sample and the rest missing answers a small percentage, not 100%. A condition such as `==gap` or `==null` includes uncollected time in the numerator instead. `percentage-of-samples` does not estimate and stays blind to gaps unless the condition names one - it evaluates each stored point as one sample. Use `tier=0` for the highest-resolution available result. When the response includes `db.per_tier`, such as with `format=json2`, inspect it to verify the selected tier; exactness still depends on the stored interval resolution.<br>|
-|time_resampling|query|number(integer)|false|For incremental values that are "per second", this value is used to resample them to "per minute` (60) or "per hour" (3600). It can only be used in conjunction with group=average.<br>|
+|time_resampling|query|number(integer)|false|For incremental values that are "per second", this value is used to resample them to "per minute` (60) or "per hour" (3600). It can only be used in conjunction with group=average. Values above 315360000 (10 years) are treated as 315360000.<br>|
 |format|query|string|false|The format of the data to be returned.|
 |cardinality_limit|query|integer(int64)|false|Limits the number of unique items returned, to prevent excessive memory usage and response sizes when a request matches a large number of items. For data queries, the query engine keeps the top contributing dimensions and folds the rest into one `remaining` aggregate dimension, so the total number of returned dimensions equals this limit; the `jsonwrap` summary metadata (nodes, instances, dimensions, labels) stays complete unless the `cardinality-limit-all` option is also given. Other endpoints (alerts, contexts) apply this limit to their own result items. Weights endpoints define separate result-limit semantics.<br>|
 |limit|query|integer(int64)|false|Limits the number of dimensions returned by a data query to the top-N contributors: the query engine keeps the `limit` highest-contributing dimensions and folds the rest into one `remaining` aggregate dimension (equivalent to `cardinality_limit` = `limit` + 1; `cardinality_limit`, when given, takes precedence). Agents that predate this parameter ignore it and return all dimensions, so clients can use it without version gating.<br>|
@@ -2986,7 +2986,7 @@ At least a `chart` or a `context` have to be given for the data query to be exec
 |format|query|string|false|The format of the data to be returned.|
 |group|query|string|false|Time aggregation function. If multiple collected values are to be grouped in order to return fewer points, this parameters defines the method of grouping. If the `absolute` option is set, the values are turned positive before applying this calculation.<br>|
 |group_options|query|string|false|When the time grouping function supports additional parameters, this field can be used to pass them to it. `percentage-of-samples` (alias `countif`), `percentage-of-time`, `number-of-flaps` and `number-of-times` take a CONDITION; `trimmed-mean`, `trimmed-median` and `percentile` take a number.<br>A condition is an operator followed by a value. The operators are `>`, `>=` (or `>:`), `<`, `<=` (or `<:`), `=` (or `==` or `:`) and `!=` (or `!:`, `!` or `<>`); with no operator the value compares equal. The value is one of:<br>- a number, e.g. `>10`<br>- a gap token - `gap`, `nan`, `null` or `empty` are synonyms for "no data was collected", e.g. `==gap` matches the slots with no data and `!=gap` matches the collected ones. For `percentage-of-samples`, `number-of-flaps` and `number-of-times`, naming a gap token is what makes gaps participate at all; without one they are invisible for these three aggregations. `percentage-of-time` always counts uncollected time in its denominator, whatever the condition compares against.<br>- the previous collected sample - `previous` or `last`, e.g. `<previous` matches every sample lower than the one before it, which counts counter resets (reboots). Gaps are skipped, so a drop across a gap is still a drop, and the first sample of a query never matches.<br>An omitted, empty or whitespace-only condition means `==0`. An operator without a value applies to zero, so `>` means `>0`.<br>There are no and/or compounds.<br>Over a window long enough to read lower-resolution data `percentage-of-time`, `number-of-flaps` and `number-of-times` return estimates. `percentage-of-time` is exact over whole stored intervals for a fully collected 0-or-1 signal sampled at a steady cadence. Partial intervals, cadence changes and other signals or conditions are approximate. Gaps hidden inside a stored interval can overstate availability and understate missing time. `number-of-flaps` and `number-of-times` are exact only when each stored interval contains at most one relevant transition or match; otherwise they report at most one event for that interval. Every result bucket covering the same stored interval reports that interval's estimate. `percentage-of-time` always measures against the SELECTED duration, not against the collected part of it. When gaps remain separately represented in storage, uncollected time does not enter the numerator for a numeric condition, so a window with one matching sample and the rest missing answers a small percentage, not 100%. A condition such as `==gap` or `==null` includes uncollected time in the numerator instead. `percentage-of-samples` does not estimate and stays blind to gaps unless the condition names one - it evaluates each stored point as one sample. Use `tier=0` for the highest-resolution available result. When the response includes `db.per_tier`, such as with `format=json2`, inspect it to verify the selected tier; exactness still depends on the stored interval resolution.<br>|
-|gtime|query|number(integer)|false|The grouping number of seconds. This is used in conjunction with group=average to change the units of metrics (ie when the data is per-second, setting gtime=60 will turn them to per-minute).<br>|
+|gtime|query|number(integer)|false|The grouping number of seconds. This is used in conjunction with group=average to change the units of metrics (ie when the data is per-second, setting gtime=60 will turn them to per-minute). Values above 315360000 (10 years) are treated as 315360000.<br>|
 |timeout|query|number(integer)|false|Specify a timeout value in milliseconds after which the Agent will abort the query and return a 503 error. A value of 0 indicates no timeout.<br>|
 |callback|query|string|false|For JSONP responses, the callback function name.<br>|
 |filename|query|string|false|Add `Content-Disposition: attachment; filename=` header to the response, that will instruct the browser to save the response with the given filename."<br>|
@@ -6495,9 +6495,11 @@ Returns detailed statistics about Netdata's DBEngine storage system for all conf
 
 **Storage Tiers:**
 Netdata supports multiple storage tiers with different retention periods:
-- **Tier 0:** High resolution (1-second), short retention
-- **Tier 1:** Medium resolution, medium retention
-- **Tier 2:** Low resolution, long retention
+- **Tier 0:** per-second
+- **Tier 1:** per-minute
+- **Tier 2:** per-hour
+
+Each tier's retention is configurable by disk size and time.
 
 **Availability:**
 This endpoint only works if DBEngine is enabled. Returns 404 if DBEngine is disabled.
@@ -6637,7 +6639,7 @@ Returns 503 (Service Unavailable) if ML is not compiled in or not ready.
 Modern deployments should:
 - Use internal metrics: `netdata.ml_*` charts
 - Check Netdata Cloud for ML insights
-- Use alert transitions API to see ML-based alerts
+- Use the alert transitions API for alerts, and `/api/v2/data` for anomaly rates
 - Monitor anomaly rates via `/api/v2/data` with appropriate options
 
 **Security & Access Control:**
@@ -7368,7 +7370,7 @@ bearerAuth
 
 <h1 id="netdata-api-settings">settings</h1>
 
-## Retrieve user settings/preferences (GET)
+## Retrieve the agent-wide dashboard settings (GET)
 
 <a id="opIdsettings_get"></a>
 
@@ -7383,59 +7385,40 @@ curl http://localhost:19999/api/v3/settings \
 
 **V3 SPECIFIC ENDPOINT**
 
-Retrieves stored user settings and preferences from Netdata's settings storage.
-The settings API provides persistent key-value storage for UI preferences, dashboard layouts,
-alert configurations, and other user-specific data.
+Retrieves the agent's dashboard settings object.
 
 **Settings System:**
-- **Persistent storage**: Settings survive agent restarts
-- **Version-controlled**: Each update increments version for conflict detection
-- **User-scoped**: Authenticated users can have multiple named settings files
-- **Anonymous access**: Limited to 'default' file only
-- **JSON format**: All settings stored as JSON with mandatory 'version' field
+- **One object per agent**: there is a single settings object, `default`. It is shared by every caller
+  admitted to this API, anonymous or authenticated; it is not scoped to a user.
+- **Persistent storage**: stored as `settings/default` in Netdata's var/lib directory; survives restarts
+- **Version-controlled**: each update increments `version` for conflict detection
+- **JSON format**: a JSON object with a mandatory integer `version` field
 
-**File-Based Storage:**
-Settings are stored as individual files in Netdata's var/lib directory:
-- Anonymous users: Only `file=default` allowed
-- Authenticated users: Can create custom files (e.g., `file=my-dashboard`)
-- File names: Alphanumeric, dashes, underscores only
+The dashboard keeps agent-wide preferences here, such as the preferred nodes of the agent's local space.
+Do not store per-user or sensitive data in it.
 
 **Version Control:**
-Each settings object has a `version` field:
-- Starts at version 1 for new files
+- A missing object reads as version 1
 - Auto-incremented on each PUT operation
 - Used for optimistic locking to prevent conflicts
 
-**Use Cases:**
-- **Dashboard preferences**: Store layout, theme, selected metrics
-- **Alert customization**: Save user-specific alert thresholds
-- **UI state**: Remember filters, time ranges, node selections
-- **Multi-device sync**: Share settings across browsers/devices (for authenticated users)
-
-**Common Usage Patterns:**
-
-1. **Get default settings (anonymous user):**
-   ```
-   GET /api/v3/settings?file=default
-   ```
-
-2. **Get named settings file (authenticated):**
-   ```
-   GET /api/v3/settings?file=production-dashboard
-   ```
+**Usage:**
+```
+GET /api/v3/settings?file=default
+```
 
 **Response Structure:**
 ```json
 {
   "version": 3,
-  "theme": "dark",
-  "defaultTimeRange": "-3600",
-  "favoriteMetrics": ["system.cpu", "system.ram"]
+  "value": {
+    "preferred_node_ids": ["..."]
+  }
 }
 ```
 
-**New Files:**
-If requested file doesn't exist, returns initial version:
+**New Object:**
+If the object doesn't exist (or its stored `version` is not an integer from 1 to 9223372036854775806), returns the initial version:
 ```json
 {
   "version": 1
@@ -7453,11 +7436,18 @@ Maximum settings file size: 20 MiB
 - **Access Methods:** Direct HTTP/HTTPS, Netdata Cloud, external tools
 
 
-<h3 id="retrieve-user-settingspreferences-get-parameters">Parameters</h3>
+<h3 id="retrieve-the-agent-wide-dashboard-settings-get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|file|query|string|false|Name of the settings file to retrieve.<br><br>**File Naming Rules:**<br>- Alphanumeric characters only<br>- Dashes (-) and underscores (_) allowed<br>- No spaces or special characters<br>- Case-sensitive<br><br>**Access Control:**<br>- **Anonymous users**: Only `file=default` allowed<br>- **Authenticated users (bearer token)**: Any valid file name<br><br>**Examples:**<br>- `default` - Default settings file<br>- `my-dashboard` - Custom dashboard settings<br>- `prod-alerts` - Production alert preferences<br>- `mobile-view` - Mobile UI settings<br><br>**Invalid File Names:**<br>- Missing or empty: Returns 400 Bad Request<br>- Special characters: Returns 400 Bad Request<br>- Non-default for anonymous: Returns 400 Bad Request<br>|
+|file|query|string|false|Name of the settings object. Only `default` is supported; omitting the parameter (or giving it an empty<br>value) selects `default`. Any other value returns 400 Bad Request.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|file|default|
+|file|""|
 
 > Example responses
 
@@ -7469,28 +7459,28 @@ Maximum settings file size: 20 MiB
 }
 ```
 
-<h3 id="retrieve-user-settingspreferences-get-responses">Responses</h3>
+<h3 id="retrieve-the-agent-wide-dashboard-settings-get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Settings file retrieved successfully.<br><br>Returns JSON object with at minimum a `version` field.<br>May contain any additional user-defined fields.<br>|Inline|
-|400|Bad Request|Bad request. Common causes:<br>- Invalid file name (contains special characters)<br>- Anonymous user trying to access non-default file<br>- Empty file name<br>|None|
+|400|Bad Request|Bad request. Common causes:<br>- `file` is not `default`<br>- The request is not for the agent node<br>|None|
 |500|Internal Server Error|Internal server error during settings retrieval.|None|
 
-<h3 id="retrieve-user-settingspreferences-get-responseschema">Response Schema</h3>
+<h3 id="retrieve-the-agent-wide-dashboard-settings-get-responseschema">Response Schema</h3>
 
 Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version|integer|true|none|Current version number (auto-incremented on updates)|
+|version|integer(int64)|true|none|Current version number (auto-incremented on updates)|
 
 <aside class="warning">
 Authentication is optional for this operation. To authenticate, use one of the following methods:
 bearerAuth
 </aside>
 
-## Create or update user settings/preferences (PUT)
+## Create or update the agent-wide dashboard settings (PUT)
 
 <a id="opIdsettings_put"></a>
 
@@ -7502,9 +7492,10 @@ curl http://localhost:19999/api/v3/settings \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "version": 0,
-    "theme": "dark",
-    "language": "en"
+    "version": 1,
+    "value": {
+      "preferred_node_ids": []
+    }
   }'
 ```
 
@@ -7512,7 +7503,9 @@ curl http://localhost:19999/api/v3/settings \
 
 **V3 SPECIFIC ENDPOINT**
 
-Creates or updates user settings with optimistic locking to prevent concurrent modification conflicts.
+Creates or updates the agent's single settings object (`default`), with optimistic locking to prevent
+concurrent modification conflicts. The object is shared by every caller admitted to this API, anonymous
+or authenticated; it is not scoped to a user.
 
 **Update Process:**
 1. Client GET current settings (to get current version)
@@ -7532,14 +7525,14 @@ When you receive 409 Conflict:
 **Optimistic Locking Flow:**
 ```javascript
 // 1. Get current settings
-const response = await fetch('/api/v3/settings?file=my-dashboard');
+const response = await fetch('/api/v3/settings?file=default');
 const settings = await response.json(); // { version: 3, ... }
 
 // 2. Modify settings
-settings.theme = 'dark';
+settings.value = { ...settings.value, preferred_node_ids: nodeIds };
 
 // 3. PUT with ORIGINAL version (still 3)
-const result = await fetch('/api/v3/settings?file=my-dashboard', {
+const result = await fetch('/api/v3/settings?file=default', {
   method: 'PUT',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(settings) // version: 3
@@ -7554,7 +7547,7 @@ if (result.status === 409) {
 
 **Payload Requirements:**
 - MUST be valid JSON
-- MUST include `version` field with current file version
+- MUST include an integer `version` field with the current version (1 when nothing is stored yet)
 - MAY include any additional fields
 - Maximum size: 20 MiB (20,971,520 bytes); larger payloads return 413 Payload Too Large
 
@@ -7563,12 +7556,6 @@ if (result.status === 409) {
 - Netdata verifies version matches file on disk
 - Netdata increments version before saving
 - Saved file has version + 1
-
-**Use Cases:**
-- Save dashboard configuration changes
-- Update user preferences
-- Store UI state
-- Persist alert customizations
 
 **Security & Access Control:**
 - 📊 **Public Data API** - Bearer token optional, IP-based ACL restrictions apply
@@ -7582,19 +7569,27 @@ if (result.status === 409) {
 
 ```json
 {
-  "version": 0,
-  "theme": "dark",
-  "language": "en"
+  "version": 1,
+  "value": {
+    "preferred_node_ids": []
+  }
 }
 ```
 
-<h3 id="create-or-update-user-settingspreferences-put-parameters">Parameters</h3>
+<h3 id="create-or-update-the-agent-wide-dashboard-settings-put-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|file|query|string|false|Name of the settings file to create or update.<br><br>**File Naming Rules:**<br>- Alphanumeric characters only<br>- Dashes (-) and underscores (_) allowed<br>- No spaces or special characters<br>- Case-sensitive<br><br>**Access Control:**<br>- **Anonymous users**: Only `file=default` allowed<br>- **Authenticated users (bearer token)**: Any valid file name<br><br>**File Creation:**<br>- If file doesn't exist: Created with initial payload<br>- If file exists: Updated with new payload (version check applies)<br>|
-|body|body|object|true|JSON object containing settings data with mandatory `version` field.<br><br>**Required Fields:**<br>- `version`: Integer matching current file version (or 0 for non-existent files)<br><br>**Optional Fields:**<br>- Any user-defined fields<br><br>**Size Limit:**<br>Maximum 20 MiB (20,971,520 bytes); larger payloads return 413 Payload Too Large<br><br>**Version Rules:**<br>- New file: version can be 0 or 1<br>- Existing file: version MUST match current file version exactly<br>- Mismatch causes 409 Conflict<br>|
-|» version|body|integer|true|Current version from GET request|
+|file|query|string|false|Name of the settings object. Only `default` is supported; omitting the parameter (or giving it an empty<br>value) selects `default`. Any other value returns 400 Bad Request.<br>|
+|body|body|object|true|JSON object containing settings data with mandatory `version` field.<br><br>**Required Fields:**<br>- `version`: Integer matching the current version (1 when nothing is stored yet)<br><br>**Optional Fields:**<br>- Any user-defined fields<br><br>**Size Limit:**<br>Maximum 20 MiB (20,971,520 bytes); larger payloads return 413 Payload Too Large<br><br>**Version Rules:**<br>- MUST be a JSON integer from 1 to 9223372036854775806 (strings, decimals and booleans return 400)<br>- A stored version that has reached 9223372036854775806 cannot be incremented; such a PUT returns 400<br>- Nothing stored yet: version MUST be 1<br>- Existing object: version MUST match the stored version exactly<br>- Mismatch causes 409 Conflict<br>|
+|» version|body|integer(int64)|true|Current version from GET request|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|file|default|
+|file|""|
 
 > Example responses
 
@@ -7602,7 +7597,8 @@ if (result.status === 409) {
 
 ```json
 {
-  "message": "OK"
+  "status": 200,
+  "errorMessage": "OK"
 }
 ```
 
@@ -7610,33 +7606,36 @@ if (result.status === 409) {
 
 ```json
 {
-  "message": "Payload version does not match the version of the stored object"
+  "status": 409,
+  "errorMessage": "Payload version does not match the version of the stored object"
 }
 ```
 
-<h3 id="create-or-update-user-settingspreferences-put-responses">Responses</h3>
+<h3 id="create-or-update-the-agent-wide-dashboard-settings-put-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Settings updated successfully. Version has been incremented.<br>|Inline|
-|400|Bad Request|Bad request. Common causes:<br>- Invalid file name<br>- Missing `version` field in payload<br>- Invalid JSON payload<br>- Empty payload<br>- Anonymous user trying to access non-default file<br>|None|
+|400|Bad Request|Bad request. Common causes:<br>- `file` is not `default`<br>- Missing `version` field in payload, `version` is not a valid integer, or it cannot be incremented<br>- Invalid JSON payload<br>- Empty payload<br>|None|
 |409|Conflict|Conflict. Version mismatch detected.<br><br>**Resolution Steps:**<br>1. GET current settings to retrieve latest version<br>2. Reapply your changes to the new version<br>3. PUT again with updated version number<br><br>This prevents lost updates when multiple clients modify settings concurrently.<br>|Inline|
 |413|Payload Too Large|Payload too large. The PUT payload exceeds the 20 MiB (20,971,520-byte) maximum.|None|
 |500|Internal Server Error|Internal server error during settings update.|None|
 
-<h3 id="create-or-update-user-settingspreferences-put-responseschema">Response Schema</h3>
+<h3 id="create-or-update-the-agent-wide-dashboard-settings-put-responseschema">Response Schema</h3>
 
 Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|message|string|false|none|none|
+|status|integer|false|none|none|
+|errorMessage|string|false|none|none|
 
 Status Code **409**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|message|string|false|none|none|
+|status|integer|false|none|none|
+|errorMessage|string|false|none|none|
 
 <aside class="warning">
 Authentication is optional for this operation. To authenticate, use one of the following methods:
@@ -8075,7 +8074,7 @@ This endpoint initiates the process of claiming (connecting) a Netdata agent to 
 
 **Security Features:**
 - Random session key verification prevents unauthorized claiming
-- Key is regenerated after each claim attempt (successful or failed)
+- Key is regenerated after a claim attempt that presented the correct key, and on a successful claim (a wrong key does not regenerate it)
 - Key stored in file system requires server access to retrieve
 - Parameter validation ensures only safe characters (alphanumeric, dots, commas, dashes, colons, slashes, underscores)
 - Different OS-specific commands for key retrieval (Linux/Docker/Windows)
@@ -8086,9 +8085,10 @@ This endpoint initiates the process of claiming (connecting) a Netdata agent to 
 - **Windows:** `more C:\path\to\netdata_random_session_id`
 
 **Response Formats:**
-- **Info Response:** Returns cloud status, can_be_claimed flag, verification command, and agents info
-- **Success Response:** Includes success=true, message="ok", updated cloud status
-- **Error Response:** Includes success=false, error message, can_be_claimed flag, new verification key
+- **Info Response:** Returns cloud status, can_be_claimed flag, verification command, and agent info
+- **Success Response:** Includes success=true, message="ok", updated cloud status, and agent info
+- **Error Response:** Includes success=false, error message, cloud status, can_be_claimed flag, verification command, and agent info. When the agent can be claimed, a wrong key or invalid parameters return HTTP 400; a claim that Netdata Cloud rejects returns HTTP 200
+- The verification command (`key_filename`, `cmd`, `help`) is present only after the verification key file has been published successfully at least once
 
 **Important Notes:**
 - Agent must be in AVAILABLE, OFFLINE, or INDIRECT state to be claimed
@@ -8096,7 +8096,7 @@ This endpoint initiates the process of claiming (connecting) a Netdata agent to 
 - Base URL typically points to Netdata Cloud API (e.g., https://api.netdata.cloud)
 - Rooms parameter is optional - agent will be added to specified war rooms if provided
 - After successful claiming, agent automatically reloads connection and waits for online status
-- Failed claim attempts regenerate the verification key for security
+- Claim attempts that present the correct key regenerate the verification key for security; a wrong key does not
 
 **Example Workflow:**
 ```bash
@@ -8122,7 +8122,7 @@ curl "http://localhost:19999/api/v3/claim?key=12345678-1234-1234-1234-123456789a
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|key|query|string(uuid)|false|**Verification key (UUID) obtained from the server's file system.**<br><br>This is a randomly generated session ID that proves the requester has access to the server.<br>To obtain this key:<br>1. Call the endpoint without parameters to get the OS-specific command<br>2. Run the command on the server (requires sudo/admin access)<br>3. Copy the UUID from the file content<br>4. Use it in the claim request<br><br>**Security Notes:**<br>- Key is randomly generated on each info request<br>- Key is regenerated after each claim attempt (prevents reuse)<br>- Mismatched key triggers new key generation (prevents brute force)<br>- Validates server ownership through file system access<br><br>**When to Include:**<br>- Omit when requesting claiming info/status<br>- Include when submitting actual claim request<br><br>Example: `12345678-1234-1234-1234-123456789abc`<br>|
+|key|query|string(uuid)|false|**Verification key (UUID) obtained from the server's file system.**<br><br>This is a randomly generated session ID that proves the requester has access to the server.<br>To obtain this key:<br>1. Call the endpoint without parameters to get the OS-specific command<br>2. Run the command on the server (requires sudo/admin access)<br>3. Copy the UUID from the file content<br>4. Use it in the claim request<br><br>**Security Notes:**<br>- Key is generated at startup (and on an info request if none exists yet)<br>- Key is regenerated after a claim attempt that presented the correct key, and on a successful claim (prevents reuse)<br>- A mismatched key does NOT regenerate it: the endpoint is unauthenticated, so a wrong key must not be able to reset the challenge<br>- Validates server ownership through file system access<br><br>**When to Include:**<br>- Omit when requesting claiming info/status<br>- Include when submitting actual claim request<br><br>Example: `12345678-1234-1234-1234-123456789abc`<br>|
 |token|query|string|false|**Claiming token from Netdata Cloud.**<br><br>This token authorizes the agent to connect to a specific Netdata Cloud space.<br>Obtained from Netdata Cloud UI: Space settings → Nodes tab → Add Nodes → Copy claim token<br><br>**Validation:**<br>- Must contain only alphanumeric characters, dots, commas, dashes, colons, slashes, underscores<br>- Required when key parameter is provided<br>- Invalid token triggers error and key regeneration<br><br>**Token Characteristics:**<br>- Space-specific (each cloud space has different tokens)<br>- Can be regenerated in cloud UI if compromised<br>- Does not expire (remains valid until regenerated)<br><br>Example: `a1b2c3d4-e5f6-7890-abcd-ef1234567890`<br>|
 |url|query|string(uri)|false|**Netdata Cloud API base URL.**<br><br>The endpoint URL for Netdata Cloud API where the agent will connect.<br><br>**Standard Values:**<br>- Production: `https://api.netdata.cloud`<br>- Staging/Testing: `https://api-staging.netdata.cloud` (if applicable)<br><br>**Validation:**<br>- Must contain only alphanumeric characters, dots, commas, dashes, colons, slashes, underscores<br>- Required when key parameter is provided<br>- Should be valid HTTPS URL pointing to Netdata Cloud API<br><br>**Important Notes:**<br>- Use the URL provided in Netdata Cloud UI claim instructions<br>- Different cloud regions may have different URLs<br>- Invalid URL prevents successful claiming<br><br>Example: `https://api.netdata.cloud`<br>|
 |rooms|query|string|false|**Comma-separated list of war room IDs to add the agent to.**<br><br>War rooms are organizational units within a Netdata Cloud space for grouping related nodes.<br><br>**Format:**<br>- Comma-separated room IDs (no spaces)<br>- Each room ID validated for safe characters<br>- Optional parameter (agent claimed to space without specific rooms if omitted)<br><br>**Validation:**<br>- Must contain only alphanumeric characters, dots, commas, dashes, colons, slashes, underscores<br>- Invalid format triggers error and key regeneration<br><br>**Room IDs:**<br>- Obtained from Netdata Cloud UI (room settings)<br>- Room must exist in the target space<br>- Agent added to all specified rooms after claiming<br>- Can be modified later in cloud UI<br><br>**Use Cases:**<br>- Add agent to production monitoring room<br>- Organize by environment (dev, staging, prod)<br>- Group by application or service type<br><br>Example: `room-1234-5678-90ab,room-cdef-0123-4567`<br>|
@@ -8145,12 +8145,39 @@ curl "http://localhost:19999/api/v3/claim?key=12345678-1234-1234-1234-123456789a
   "key_filename": "/var/lib/netdata/netdata_random_session_id",
   "cmd": "sudo cat /var/lib/netdata/netdata_random_session_id",
   "help": "We need to verify this server is yours. SSH to this server and run this command. It will give you a UUID. Copy and paste this UUID to this box:",
-  "agents": [
-    {
-      "hostname": "my-server",
-      "machine_guid": "12345678-1234-1234-1234-123456789abc"
-    }
-  ]
+  "agent": {
+    "mg": "12345678-1234-1234-1234-123456789abc",
+    "nd": null,
+    "nm": "my-server",
+    "now": 1720000120
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "success": false,
+  "message": "invalid key",
+  "cloud": {
+    "id": 0,
+    "status": "available",
+    "since": 1720000000,
+    "age": 120,
+    "url": "https://app.netdata.cloud",
+    "reason": "Agent is not claimed yet"
+  },
+  "can_be_claimed": true,
+  "key_filename": "/var/lib/netdata/netdata_random_session_id",
+  "cmd": "sudo cat /var/lib/netdata/netdata_random_session_id",
+  "help": "We need to verify this server is yours. SSH to this server and run this command. It will give you a UUID. Copy and paste this UUID to this box:",
+  "agent": {
+    "mg": "12345678-1234-1234-1234-123456789abc",
+    "nd": null,
+    "nm": "my-server",
+    "now": 1720000120
+  }
 }
 ```
 
@@ -8158,42 +8185,8 @@ curl "http://localhost:19999/api/v3/claim?key=12345678-1234-1234-1234-123456789a
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Claiming request processed successfully. Check the `success` field to determine if claiming succeeded.<br>- **Info response** (no key provided): Returns cloud status, verification command, and can_be_claimed flag<br>- **Success response** (key provided, claim succeeded): Returns success=true with updated cloud status<br>- **Action failed response** (key provided, claim failed): Returns success=false with failure reason<br>|Inline|
-|400|Bad Request|Bad request (only in v2 API or earlier). V3 returns errors as JSON with HTTP 200.<br>Reasons include:<br>- Invalid key (doesn't match generated session ID)<br>- Invalid parameters (missing token/url, or invalid characters)<br>- Cloud connection failure<br>|None|
-
-<h3 id="claim-agent-to-netdata-cloud-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|success|boolean|false|none|Present only for claim action responses (when key is provided).<br>true = claiming succeeded, false = claiming failed.<br>Not present in info responses (when requesting claim status without key).<br>|
-|message|string|false|none|Result message. Present only for claim action responses.<br>- Success: "ok"<br>- Failure: Reason for failure (e.g., "invalid key", "invalid parameters", cloud connection error)<br>|
-|cloud|object|true|none|Current Netdata Cloud connection state.|
-|» id|integer|true|none|Cloud connection ID counter.|
-|» status|string|true|none|Current cloud connection status of the agent.<br>- available: Not claimed yet, can be claimed<br>- offline: Claimed but currently disconnected<br>- indirect: Connected through parent agent<br>- online: Claimed and connected (cannot re-claim)<br>- banned: Banned from cloud (cannot claim)<br>|
-|» since|integer(int64)|true|none|Unix timestamp of the latest cloud connection state change.|
-|» age|integer(int64)|true|none|Signed difference in seconds between response generation time and `since`; may be negative after a backward system-clock adjustment.|
-|» url|string \| null|true|none|Netdata Cloud URL. Emitted for every status and may be null when the active ACLK URL is unavailable.<br>For banned status, the current runtime emits this member twice from two URL sources; OpenAPI represents it as one logical property.<br>|
-|» reason|string|true|none|Status explanation or connection error; an empty string when online.|
-|» claim_id|string|false|none|Present for banned, offline, online, and indirect statuses.<br>Contains the canonical claim UUID when one is available; it can be empty when no claim ID is available.<br>|
-|» next_check|integer(int64)|false|none|Unix timestamp of the next connection attempt; present only for offline status when scheduled in the future.|
-|» next_in|integer(int64)|false|none|Seconds until `next_check`; present only when `next_check` is present.|
-|can_be_claimed|boolean|false|none|Whether the agent can currently be claimed. Present in info and error responses.<br>true for available/offline/indirect states, false for online/banned.<br>|
-|key_filename|string|false|none|Full path to the file containing the verification key.<br>Present in info and error responses after the verification key file has been published successfully at least once.<br>Not present after a successful claim or if no verification key file has ever been published successfully.<br>Platform-specific path (Linux: /var/lib/netdata/..., Windows: C:\...).<br>|
-|cmd|string|false|none|OS-specific command to retrieve the verification key.<br>Present in info and error responses after the verification key file has been published successfully at least once.<br>- Linux: "sudo cat /var/lib/netdata/netdata_random_session_id"<br>- Docker: "docker exec netdata cat /var/lib/netdata/netdata_random_session_id"<br>- Windows: "more C:\path\to\netdata_random_session_id"<br>|
-|help|string|false|none|Human-readable instructions for obtaining the verification key.<br>Present in info and error responses after the verification key file has been published successfully at least once.<br>|
-|agents|[object]|false|none|Agent information for the claimed node(s)|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» status|available|
-|» status|offline|
-|» status|indirect|
-|» status|online|
-|» status|banned|
+|200|OK|Claiming request processed successfully. When `success` is present, it tells whether claiming succeeded; info responses do not carry it.<br>- **Info response** (no key provided, or the agent cannot be claimed): Returns cloud status, verification command, and can_be_claimed flag<br>- **Success response** (key provided, claim succeeded): Returns success=true with updated cloud status<br>- **Action failed response** (valid key and parameters, claim failed): Returns success=false with failure reason<br>When the agent can be claimed, a wrong key or invalid parameters return HTTP 400 instead (see below).<br>|[claim_response](#schemaclaim_response)|
+|400|Bad Request|The claim request was rejected before contacting Netdata Cloud (only when the agent can be claimed; otherwise<br>any key is ignored and the 200 info response is returned). The body is JSON with the same<br>fields as the 200 error response (`success`=false, `message`, `cloud`, `can_be_claimed`, `agent`, and<br>`key_filename`, `cmd`, `help` once the verification key file has been published). Reasons:<br>- `invalid key`: the key does not match the current verification key<br>- `invalid parameters`: missing token/url, or invalid characters in token, url or rooms<br>|[claim_response](#schemaclaim_response)|
 
 <aside class="success">
 This operation does not require authentication
@@ -8270,7 +8263,7 @@ curl 'http://localhost:19999/api/v3/bearer_protection?claim_id=string&machine_gu
 
 **Bearer Token Authentication Control**
 
-This endpoint controls whether the Netdata agent requires bearer token authentication for API access. Bearer protection adds an additional security layer by downgrading unauthenticated requests to `HTTP_ACCESS_NONE` when enabled. To reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`, an unauthenticated direct HTTP request must present a valid bearer token in the `Authorization` header. API messages sent over an established WebRTC data channel are not parsed for an `Authorization` header (unlike the initial HTTP `rtc_offer` signaling request, which is), so an unauthenticated call made over the data channel cannot supply a bearer token and is rejected for such routes. Already-authenticated sessions (for example Netdata Cloud/ACLK) keep their permissions and are unaffected. Routes declared with `HTTP_ACCESS_NONE` do not acquire a generic bearer-token requirement; their own ACL, transport, and callback authorization still apply.
+This endpoint controls whether the Netdata Agent requires bearer token authentication for API access. Bearer protection adds an additional security layer by downgrading unauthenticated requests to `HTTP_ACCESS_NONE` when enabled. To reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`, an unauthenticated direct HTTP request must present a valid bearer token in the `Authorization` header. API messages sent over an established WebRTC data channel are not parsed for an `Authorization` header (unlike the initial HTTP `rtc_offer` signaling request, which is), so an unauthenticated call made over the data channel cannot supply a bearer token and is rejected for such routes. Already-authenticated sessions (for example Netdata Cloud/ACLK) keep their permissions and are unaffected. Routes declared with `HTTP_ACCESS_NONE` do not acquire a generic bearer-token requirement; their own ACL, transport, and callback authorization still apply.
 
 **Use Cases:**
 - **Cloud Integration:** Enable bearer protection when agent is claimed to Netdata Cloud
@@ -8324,21 +8317,10 @@ This endpoint controls whether the Netdata agent requires bearer token authentic
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|bearer_protection|query|string|false|**Whether to enable or disable bearer token authentication requirement.**<br><br>**Valid Values:**<br>- Enable: `on`, `true`, `yes`<br>- Disable: `off`, `false`, `no`<br><br>**Default Behavior:**<br>- If omitted, maintains current bearer protection state<br>- When agent is unclaimed, defaults to disabled<br>- When agent is claimed, typically enabled by Netdata Cloud<br><br>**Effect:**<br>- When enabled: an unauthenticated direct HTTP request must include a valid bearer token in the `Authorization` header to reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`; unauthenticated API messages sent over an established WebRTC data channel carry no `Authorization` header and are rejected for such routes; already-authenticated sessions keep their permissions, and `HTTP_ACCESS_NONE` routes do not acquire a generic bearer-token requirement, though their own ACL, transport, and callback authorization still apply<br>- When disabled: API requests work without bearer tokens (less secure)<br><br>Example: `bearer_protection=on`<br>|
+|bearer_protection|query|[bearerProtectionValue](#schemabearerprotectionvalue)|false|**Whether to enable or disable bearer token authentication requirement.**<br><br>**Valid Values** (matched case-insensitively, so `ON` and `True` also work):<br>- Enable: `on`, `true`, `yes`<br>- Disable: `off`, `false`, `no`<br>- Any other value is rejected with HTTP 400 and the protection state is not changed<br><br>**Default Behavior:**<br>- If omitted or empty, the protection state is not changed and the current state is returned<br>- When agent is unclaimed, defaults to disabled<br>- When agent is claimed, typically enabled by Netdata Cloud<br><br>**Effect:**<br>- When enabled: an unauthenticated direct HTTP request must include a valid bearer token in the `Authorization` header to reach routes whose required access includes `HTTP_ACCESS_ANONYMOUS_DATA`; unauthenticated API messages sent over an established WebRTC data channel carry no `Authorization` header and are rejected for such routes; already-authenticated sessions keep their permissions, and `HTTP_ACCESS_NONE` routes do not acquire a generic bearer-token requirement, though their own ACL, transport, and callback authorization still apply<br>- When disabled: API requests work without bearer tokens (less secure)<br><br>Example: `bearer_protection=on`<br>|
 |claim_id|query|string|true|**Claim ID of the agent from Netdata Cloud.**<br><br>This identifies which Netdata Cloud space the agent is claimed to.<br>Used to verify the request is for the correct agent.<br><br>**Validation:**<br>- Must match the agent's current claim ID<br>- Request fails with HTTP 400 if claim ID doesn't match<br>- Prevents accidentally enabling protection on wrong agent<br><br>**Where to Find:**<br>- Obtained from cloud when agent is claimed<br>- Available in agent's claiming configuration<br>- Included in cloud API responses<br><br>Example: `claim_id=1234567890abcdef`<br>|
 |machine_guid|query|string|true|**Machine GUID of the agent.**<br><br>Hardware-based unique identifier for the agent instance.<br>Generated based on machine characteristics.<br><br>**Purpose:**<br>- Verifies request is for the specific agent instance<br>- Prevents applying protection to wrong node<br>- Part of multi-factor agent identification<br><br>**Characteristics:**<br>- Persists across agent restarts<br>- May change if hardware changes significantly<br>- Matches the `machine_guid` in agent info<br><br>**Where to Find:**<br>- Available in `/api/v3/info` response<br>- Stored in agent's state files<br>- Shown in Netdata Cloud node details<br><br>Example: `machine_guid=12345678-1234-1234-1234-123456789abc`<br>|
 |node_id|query|string(uuid)|true|**Node UUID of the agent.**<br><br>Persistent unique identifier for the agent.<br>More stable than machine_guid.<br><br>**Purpose:**<br>- Provides additional verification layer<br>- Ensures request targets correct node<br>- Used alongside claim_id and machine_guid for security<br><br>**Characteristics:**<br>- Generated once and persists<br>- Does not change with hardware changes<br>- Unique across all Netdata installations<br><br>**Where to Find:**<br>- Available in `/api/v3/info` response<br>- Stored in agent's persistent state<br>- Used by Netdata Cloud for node identification<br><br>Example: `node_id=23456789-2345-2345-2345-234567890abc`<br>|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|bearer_protection|on|
-|bearer_protection|off|
-|bearer_protection|true|
-|bearer_protection|false|
-|bearer_protection|yes|
-|bearer_protection|no|
 
 > Example responses
 
@@ -8354,8 +8336,8 @@ This endpoint controls whether the Netdata agent requires bearer token authentic
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Bearer protection state successfully changed.|Inline|
-|400|Bad Request|Bad request due to one of the following:<br>- claim_id doesn't match the agent's claim ID<br>- machine_guid doesn't match the agent's machine GUID<br>- node_id doesn't match or is missing<br>- Invalid parameter values<br>|None|
+|200|OK|Current bearer protection state, after applying the requested change if one was given.|Inline|
+|400|Bad Request|Bad request due to one of the following:<br>- claim_id doesn't match the agent's claim ID<br>- machine_guid doesn't match the agent's machine GUID<br>- node_id doesn't match or is missing<br>- bearer_protection has a value other than on/off, true/false or yes/no (case-insensitive); the<br>  protection state is not changed<br>|None|
 
 <h3 id="enable-or-disable-bearer-token-authentication-requirement-responseschema">Response Schema</h3>
 
@@ -8701,6 +8683,7 @@ This operation does not require authentication
 
 ```bash
 curl 'http://localhost:19999/api/v2/bearer_protection?claim_id=string&machine_guid=string&node_id=497f6eca-6276-4993-bfeb-53cbbbba6f08' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -8729,28 +8712,35 @@ Used by Netdata Cloud to secure agents after claiming.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|bearer_protection|query|string|false|Enable or disable bearer protection|
+|bearer_protection|query|[bearerProtectionValue](#schemabearerprotectionvalue)|false|Enable (`on`, `true`, `yes`) or disable (`off`, `false`, `no`) bearer protection, matched case-insensitively. Any other value returns HTTP 400 without changing the state; if omitted or empty, the state is not changed.|
 |claim_id|query|string|true|Agent's claim ID|
 |machine_guid|query|string|true|Agent's machine GUID|
 |node_id|query|string(uuid)|true|Agent's node UUID|
 
-#### Enumerated Values
+> Example responses
 
-|Parameter|Value|
-|---|---|
-|bearer_protection|on|
-|bearer_protection|off|
-|bearer_protection|true|
-|bearer_protection|false|
-|bearer_protection|yes|
-|bearer_protection|no|
+> 200 Response
+
+```json
+{
+  "bearer_protection": true
+}
+```
 
 <h3 id="obsolete-enabledisable-bearer-authentication-use-apiv3bearerprotection-instead-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Bearer protection state successfully changed|None|
-|400|Bad Request|Invalid parameters or verification failed|None|
+|200|OK|Current bearer protection state, after applying the requested change if one was given|Inline|
+|400|Bad Request|Identity verification failed, or bearer_protection has a value other than on/off, true/false or yes/no (case-insensitive); the protection state is not changed|None|
+
+<h3 id="obsolete-enabledisable-bearer-authentication-use-apiv3bearerprotection-instead-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|bearer_protection|boolean|false|none|Current bearer protection state after the operation (true = enabled, false = disabled)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -9117,6 +9107,19 @@ This operation does not require authentication
 </aside>
 
 # Schemas
+
+<h2 id="tocS_bearerProtectionValue">bearerProtectionValue</h2>
+<!-- backwards compatibility -->
+<a id="schemabearerprotectionvalue"></a>
+<a id="schema_bearerProtectionValue"></a>
+<a id="tocSbearerprotectionvalue"></a>
+<a id="tocsbearerprotectionvalue"></a>
+
+```json
+"string"
+```
+
+`on`, `true` or `yes` enable; `off`, `false` or `no` disable; matched case-insensitively. Empty means no change.
 
 <h2 id="tocS_info">info</h2>
 <!-- backwards compatibility -->
@@ -11397,3 +11400,51 @@ Present only for a positive weights result cap. Parent summaries and analyzed co
 |status|integer|false|none|The HTTP status code of the response.|
 |message|string|false|none|A descriptive message about the response or the action taken.|
 |data|object|false|none|The data payload of the response, contents vary depending on the specific request and action.|
+
+<h2 id="tocS_claim_response">claim_response</h2>
+<!-- backwards compatibility -->
+<a id="schemaclaim_response"></a>
+<a id="schema_claim_response"></a>
+<a id="tocSclaim_response"></a>
+<a id="tocsclaim_response"></a>
+
+```json
+{
+  "success": true,
+  "message": "string",
+  "cloud": {
+    "id": 0,
+    "status": "available",
+    "since": 0,
+    "age": 0,
+    "url": "string",
+    "reason": "string",
+    "claim_id": "string",
+    "next_check": 0,
+    "next_in": 1
+  },
+  "can_be_claimed": true,
+  "key_filename": "string",
+  "cmd": "string",
+  "help": "string",
+  "agent": {
+    "mg": "string",
+    "nd": "string",
+    "nm": "string",
+    "now": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|boolean|false|none|Present only for claim action responses (when key is provided).<br>true = claiming succeeded, false = claiming failed.<br>Not present in info responses (when requesting claim status without key).<br>|
+|message|string|false|none|Result message. Present only for claim action responses.<br>- Success: "ok"<br>- Failure: Reason the claim failed (e.g., "Failed: token is expired, not found, or invalid", "Failed: Netdata Cloud is unavailable")<br>- HTTP 400: "invalid key" or "invalid parameters"<br>|
+|cloud|object|true|none|Current Netdata Cloud connection state.|
+|can_be_claimed|boolean|false|none|Whether the agent can currently be claimed. Present in info and error responses.<br>true for available/offline/indirect states, false for online/banned.<br>|
+|key_filename|string|false|none|Full path to the file containing the verification key.<br>Present in info and error responses after the verification key file has been published successfully at least once.<br>Not present after a successful claim or if no verification key file has ever been published successfully.<br>Platform-specific path (Linux: /var/lib/netdata/..., Windows: C:\...).<br>|
+|cmd|string|false|none|OS-specific command to retrieve the verification key.<br>Present in info and error responses after the verification key file has been published successfully at least once.<br>- Linux: "sudo cat /var/lib/netdata/netdata_random_session_id"<br>- Docker: "docker exec netdata cat /var/lib/netdata/netdata_random_session_id"<br>- Windows: "more C:\path\to\netdata_random_session_id"<br>|
+|help|string|false|none|Human-readable instructions for obtaining the verification key.<br>Present in info and error responses after the verification key file has been published successfully at least once.<br>|
+|agent|object|true|none|Identity of this agent. Present in every response.|

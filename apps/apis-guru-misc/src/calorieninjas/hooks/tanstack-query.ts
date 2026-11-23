@@ -1,0 +1,99 @@
+import { useQuery, useSuspenseQuery, queryOptions } from '@tanstack/react-query'
+import type {
+  UseQueryOptions,
+  UseSuspenseQueryOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/react-query'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getV1Key() {
+  return ['v1'] as const
+}
+
+export function getV1NutritionQueryKey(args: InferRequestType<typeof client.v1.nutrition.$get>) {
+  return ['v1', '/v1/nutrition', args] as const
+}
+
+export function getV1NutritionQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.nutrition.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.v1.nutrition.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.nutrition.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getV1NutritionQueryKey>
+  >({
+    queryKey: getV1NutritionQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.v1.nutrition.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function useV1Nutrition<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.nutrition.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<typeof client.v1.nutrition.$get>,
+  options?: {
+    query?: Omit<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.nutrition.$get>>>>
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getV1NutritionQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery(
+    { ...getV1NutritionQueryOptions<TData, TError>(args, clientOptions), ...queryOptions },
+    queryClient,
+  )
+}
+
+export function useSuspenseV1Nutrition<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.nutrition.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<typeof client.v1.nutrition.$get>,
+  options?: {
+    query?: Omit<
+      UseSuspenseQueryOptions<
+        Awaited<
+          ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.nutrition.$get>>>>
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getV1NutritionQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useSuspenseQuery(
+    { ...getV1NutritionQueryOptions<TData, TError>(args, clientOptions), ...queryOptions },
+    queryClient,
+  )
+}

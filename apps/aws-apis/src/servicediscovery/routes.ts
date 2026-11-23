@@ -4,14 +4,10 @@ const OperationIdSchema = z.string().max(255).openapi('OperationId')
 
 const CreateHttpNamespaceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ example: { OperationId: 'httpvoqozuhfet5kzxoxg-a-response-example' }, required: [] })
   .openapi('CreateHttpNamespaceResponse')
@@ -32,17 +28,11 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: 'The key identifier, or name, of the tag.' }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string value that's associated with the key of the tag. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
-        }),
-    ),
+    Key: TagKeySchema.openapi({ description: 'The key identifier, or name, of the tag.' }),
+    Value: TagValueSchema.openapi({
+      description:
+        "The string value that's associated with the key of the tag. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -54,28 +44,20 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const CreateHttpNamespaceRequestSchema = z
   .object({
-    Name: NamespaceNameHttpSchema.and(
-      z.any().openapi({ description: 'The name that you want to assign to this namespace.' }),
-    ),
-    CreatorRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed <code>CreateHttpNamespace</code> requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/time stamp).',
-        }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the namespace.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the namespace. Each tag consists of a key and an optional value that you define. Tags keys can be up to 128 characters in length, and tag values can be up to 256 characters in length.',
-        }),
-    ).exactOptional(),
+    Name: NamespaceNameHttpSchema.openapi({
+      description: 'The name that you want to assign to this namespace.',
+    }),
+    CreatorRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed <code>CreateHttpNamespace</code> requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/time stamp).',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the namespace.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to add to the namespace. Each tag consists of a key and an optional value that you define. Tags keys can be up to 128 characters in length, and tag values can be up to 256 characters in length.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateHttpNamespaceRequest' })
   .openapi('CreateHttpNamespaceRequest')
@@ -92,14 +74,10 @@ const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
 const CreatePrivateDnsNamespaceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ example: { OperationId: 'gv4g5meo7ndmeh4fqskygvk23d2fijwa-k9302yzd' }, required: [] })
   .openapi('CreatePrivateDnsNamespaceResponse')
@@ -114,9 +92,9 @@ const RecordTTLSchema = z.int().min(0).max(2147483647).openapi('RecordTTL')
 
 const SOASchema = z
   .object({
-    TTL: RecordTTLSchema.and(
-      z.any().openapi({ description: 'The time to live (TTL) for purposes of negative caching.' }),
-    ),
+    TTL: RecordTTLSchema.openapi({
+      description: 'The time to live (TTL) for purposes of negative caching.',
+    }),
   })
   .openapi({
     required: ['TTL'],
@@ -126,23 +104,19 @@ const SOASchema = z
 
 const PrivateDnsPropertiesMutableSchema = z
   .object({
-    SOA: SOASchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Fields for the Start of Authority (SOA) record for the hosted zone for the private DNS namespace.',
-        }),
-    ),
+    SOA: SOASchema.openapi({
+      description:
+        'Fields for the Start of Authority (SOA) record for the hosted zone for the private DNS namespace.',
+    }),
   })
   .openapi({ required: ['SOA'], description: 'DNS properties for the private DNS namespace.' })
   .openapi('PrivateDnsPropertiesMutable')
 
 const PrivateDnsNamespacePropertiesSchema = z
   .object({
-    DnsProperties: PrivateDnsPropertiesMutableSchema.and(
-      z.any().openapi({ description: 'DNS properties for the private DNS namespace.' }),
-    ),
+    DnsProperties: PrivateDnsPropertiesMutableSchema.openapi({
+      description: 'DNS properties for the private DNS namespace.',
+    }),
   })
   .openapi({
     required: ['DnsProperties'],
@@ -152,57 +126,37 @@ const PrivateDnsNamespacePropertiesSchema = z
 
 const CreatePrivateDnsNamespaceRequestSchema = z
   .object({
-    Name: NamespaceNamePrivateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that you want to assign to this namespace. When you create a private DNS namespace, Cloud Map automatically creates an Amazon Route 53 private hosted zone that has the same name as the namespace.',
-        }),
-    ),
-    CreatorRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed <code>CreatePrivateDnsNamespace</code> requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).',
-        }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the namespace.' }),
-    ).exactOptional(),
-    Vpc: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon VPC that you want to associate the namespace with.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the namespace. Each tag consists of a key and an optional value that you define. Tags keys can be up to 128 characters in length, and tag values can be up to 256 characters in length.',
-        }),
-    ).exactOptional(),
-    Properties: PrivateDnsNamespacePropertiesSchema.and(
-      z.any().openapi({ description: 'Properties for the private DNS namespace.' }),
-    ).exactOptional(),
+    Name: NamespaceNamePrivateSchema.openapi({
+      description:
+        'The name that you want to assign to this namespace. When you create a private DNS namespace, Cloud Map automatically creates an Amazon Route 53 private hosted zone that has the same name as the namespace.',
+    }),
+    CreatorRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed <code>CreatePrivateDnsNamespace</code> requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the namespace.',
+    }),
+    Vpc: ResourceIdSchema.openapi({
+      description: 'The ID of the Amazon VPC that you want to associate the namespace with.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to add to the namespace. Each tag consists of a key and an optional value that you define. Tags keys can be up to 128 characters in length, and tag values can be up to 256 characters in length.',
+    }),
+    Properties: PrivateDnsNamespacePropertiesSchema.exactOptional().openapi({
+      description: 'Properties for the private DNS namespace.',
+    }),
   })
   .openapi({ required: ['Name', 'Vpc'], title: 'CreatePrivateDnsNamespaceRequest' })
   .openapi('CreatePrivateDnsNamespaceRequest')
 
 const CreatePublicDnsNamespaceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ example: { OperationId: 'dns2voqozuhfet5kzxoxg-a-response-example' }, required: [] })
   .openapi('CreatePublicDnsNamespaceResponse')
@@ -217,23 +171,19 @@ const NamespaceNamePublicSchema = z
 
 const PublicDnsPropertiesMutableSchema = z
   .object({
-    SOA: SOASchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Start of Authority (SOA) record for the hosted zone for the public DNS namespace.',
-        }),
-    ),
+    SOA: SOASchema.openapi({
+      description:
+        'Start of Authority (SOA) record for the hosted zone for the public DNS namespace.',
+    }),
   })
   .openapi({ required: ['SOA'], description: 'DNS properties for the public DNS namespace.' })
   .openapi('PublicDnsPropertiesMutable')
 
 const PublicDnsNamespacePropertiesSchema = z
   .object({
-    DnsProperties: PublicDnsPropertiesMutableSchema.and(
-      z.any().openapi({ description: 'DNS properties for the public DNS namespace.' }),
-    ),
+    DnsProperties: PublicDnsPropertiesMutableSchema.openapi({
+      description: 'DNS properties for the public DNS namespace.',
+    }),
   })
   .openapi({
     required: ['DnsProperties'],
@@ -243,36 +193,24 @@ const PublicDnsNamespacePropertiesSchema = z
 
 const CreatePublicDnsNamespaceRequestSchema = z
   .object({
-    Name: NamespaceNamePublicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name that you want to assign to this namespace.</p> <note> <p>Do not include sensitive information in the name. The name is publicly available using DNS queries.</p> </note>',
-        }),
-    ),
-    CreatorRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed <code>CreatePublicDnsNamespace</code> requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).',
-        }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the namespace.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the namespace. Each tag consists of a key and an optional value that you define. Tags keys can be up to 128 characters in length, and tag values can be up to 256 characters in length.',
-        }),
-    ).exactOptional(),
-    Properties: PublicDnsNamespacePropertiesSchema.and(
-      z.any().openapi({ description: 'Properties for the public DNS namespace.' }),
-    ).exactOptional(),
+    Name: NamespaceNamePublicSchema.openapi({
+      description:
+        '<p>The name that you want to assign to this namespace.</p> <note> <p>Do not include sensitive information in the name. The name is publicly available using DNS queries.</p> </note>',
+    }),
+    CreatorRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed <code>CreatePublicDnsNamespace</code> requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the namespace.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to add to the namespace. Each tag consists of a key and an optional value that you define. Tags keys can be up to 128 characters in length, and tag values can be up to 256 characters in length.',
+    }),
+    Properties: PublicDnsNamespacePropertiesSchema.exactOptional().openapi({
+      description: 'Properties for the public DNS namespace.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreatePublicDnsNamespaceRequest' })
   .openapi('CreatePublicDnsNamespaceRequest')
@@ -294,22 +232,14 @@ const RecordTypeSchema = z.enum(['SRV', 'A', 'AAAA', 'CNAME']).openapi('RecordTy
 
 const DnsRecordSchema = z
   .object({
-    Type: RecordTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the resource, which indicates the type of value that Route 53 returns in response to DNS queries. You can specify values for <code>Type</code> in the following combinations:</p> <ul> <li> <p> <b> <code>A</code> </b> </p> </li> <li> <p> <b> <code>AAAA</code> </b> </p> </li> <li> <p> <b> <code>A</code> </b> and <b> <code>AAAA</code> </b> </p> </li> <li> <p> <b> <code>SRV</code> </b> </p> </li> <li> <p> <b> <code>CNAME</code> </b> </p> </li> </ul> <p>If you want Cloud Map to create a Route 53 alias record when you register an instance, specify <code>A</code> or <code>AAAA</code> for <code>Type</code>.</p> <p>You specify other settings, such as the IP address for <code>A</code> and <code>AAAA</code> records, when you register an instance. For more information, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a>.</p> <p>The following values are supported:</p> <dl> <dt>A</dt> <dd> <p>Route 53 returns the IP address of the resource in IPv4 format, such as 192.0.2.44.</p> </dd> <dt>AAAA</dt> <dd> <p>Route 53 returns the IP address of the resource in IPv6 format, such as 2001:0db8:85a3:0000:0000:abcd:0001:2345.</p> </dd> <dt>CNAME</dt> <dd> <p>Route 53 returns the domain name of the resource, such as www.example.com. Note the following:</p> <ul> <li> <p>You specify the domain name that you want to route traffic to when you register an instance. For more information, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html#cloudmap-RegisterInstance-request-Attributes">Attributes</a> in the topic <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a>.</p> </li> <li> <p>You must specify <code>WEIGHTED</code> for the value of <code>RoutingPolicy</code>.</p> </li> <li> <p>You can\'t specify both <code>CNAME</code> for <code>Type</code> and settings for <code>HealthCheckConfig</code>. If you do, the request will fail with an <code>InvalidInput</code> error.</p> </li> </ul> </dd> <dt>SRV</dt> <dd> <p>Route 53 returns the value for an <code>SRV</code> record. The value for an <code>SRV</code> record uses the following values:</p> <p> <code>priority weight port service-hostname</code> </p> <p>Note the following about the values:</p> <ul> <li> <p>The values of <code>priority</code> and <code>weight</code> are both set to <code>1</code> and can\'t be changed. </p> </li> <li> <p>The value of <code>port</code> comes from the value that you specify for the <code>AWS_INSTANCE_PORT</code> attribute when you submit a <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a> request.</p> </li> <li> <p>The value of <code>service-hostname</code> is a concatenation of the following values:</p> <ul> <li> <p>The value that you specify for <code>InstanceId</code> when you register an instance.</p> </li> <li> <p>The name of the service.</p> </li> <li> <p>The name of the namespace. </p> </li> </ul> <p>For example, if the value of <code>InstanceId</code> is <code>test</code>, the name of the service is <code>backend</code>, and the name of the namespace is <code>example.com</code>, the value of <code>service-hostname</code> is the following:</p> <p> <code>test.backend.example.com</code> </p> </li> </ul> <p>If you specify settings for an <code>SRV</code> record, note the following:</p> <ul> <li> <p>If you specify values for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both in the <code>RegisterInstance</code> request, Cloud Map automatically creates <code>A</code> and/or <code>AAAA</code> records that have the same name as the value of <code>service-hostname</code> in the <code>SRV</code> record. You can ignore these records.</p> </li> <li> <p>If you\'re using a system that requires a specific <code>SRV</code> format, such as HAProxy, see the <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_CreateService.html#cloudmap-CreateService-request-Name">Name</a> element in the documentation about <code>CreateService</code> for information about how to specify the correct name format.</p> </li> </ul> </dd> </dl>',
-        }),
-    ),
-    TTL: RecordTTLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time, in seconds, that you want DNS resolvers to cache the settings for this record.</p> <note> <p>Alias records don\'t include a TTL because Route 53 uses the TTL for the Amazon Web Services resource that an alias record routes traffic to. If you include the <code>AWS_ALIAS_DNS_NAME</code> attribute when you submit a <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a> request, the <code>TTL</code> value is ignored. Always specify a TTL for the service; you can use a service to register instances that create either alias or non-alias records.</p> </note>',
-        }),
-    ),
+    Type: RecordTypeSchema.openapi({
+      description:
+        '<p>The type of the resource, which indicates the type of value that Route 53 returns in response to DNS queries. You can specify values for <code>Type</code> in the following combinations:</p> <ul> <li> <p> <b> <code>A</code> </b> </p> </li> <li> <p> <b> <code>AAAA</code> </b> </p> </li> <li> <p> <b> <code>A</code> </b> and <b> <code>AAAA</code> </b> </p> </li> <li> <p> <b> <code>SRV</code> </b> </p> </li> <li> <p> <b> <code>CNAME</code> </b> </p> </li> </ul> <p>If you want Cloud Map to create a Route 53 alias record when you register an instance, specify <code>A</code> or <code>AAAA</code> for <code>Type</code>.</p> <p>You specify other settings, such as the IP address for <code>A</code> and <code>AAAA</code> records, when you register an instance. For more information, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a>.</p> <p>The following values are supported:</p> <dl> <dt>A</dt> <dd> <p>Route 53 returns the IP address of the resource in IPv4 format, such as 192.0.2.44.</p> </dd> <dt>AAAA</dt> <dd> <p>Route 53 returns the IP address of the resource in IPv6 format, such as 2001:0db8:85a3:0000:0000:abcd:0001:2345.</p> </dd> <dt>CNAME</dt> <dd> <p>Route 53 returns the domain name of the resource, such as www.example.com. Note the following:</p> <ul> <li> <p>You specify the domain name that you want to route traffic to when you register an instance. For more information, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html#cloudmap-RegisterInstance-request-Attributes">Attributes</a> in the topic <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a>.</p> </li> <li> <p>You must specify <code>WEIGHTED</code> for the value of <code>RoutingPolicy</code>.</p> </li> <li> <p>You can\'t specify both <code>CNAME</code> for <code>Type</code> and settings for <code>HealthCheckConfig</code>. If you do, the request will fail with an <code>InvalidInput</code> error.</p> </li> </ul> </dd> <dt>SRV</dt> <dd> <p>Route 53 returns the value for an <code>SRV</code> record. The value for an <code>SRV</code> record uses the following values:</p> <p> <code>priority weight port service-hostname</code> </p> <p>Note the following about the values:</p> <ul> <li> <p>The values of <code>priority</code> and <code>weight</code> are both set to <code>1</code> and can\'t be changed. </p> </li> <li> <p>The value of <code>port</code> comes from the value that you specify for the <code>AWS_INSTANCE_PORT</code> attribute when you submit a <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a> request.</p> </li> <li> <p>The value of <code>service-hostname</code> is a concatenation of the following values:</p> <ul> <li> <p>The value that you specify for <code>InstanceId</code> when you register an instance.</p> </li> <li> <p>The name of the service.</p> </li> <li> <p>The name of the namespace. </p> </li> </ul> <p>For example, if the value of <code>InstanceId</code> is <code>test</code>, the name of the service is <code>backend</code>, and the name of the namespace is <code>example.com</code>, the value of <code>service-hostname</code> is the following:</p> <p> <code>test.backend.example.com</code> </p> </li> </ul> <p>If you specify settings for an <code>SRV</code> record, note the following:</p> <ul> <li> <p>If you specify values for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both in the <code>RegisterInstance</code> request, Cloud Map automatically creates <code>A</code> and/or <code>AAAA</code> records that have the same name as the value of <code>service-hostname</code> in the <code>SRV</code> record. You can ignore these records.</p> </li> <li> <p>If you\'re using a system that requires a specific <code>SRV</code> format, such as HAProxy, see the <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_CreateService.html#cloudmap-CreateService-request-Name">Name</a> element in the documentation about <code>CreateService</code> for information about how to specify the correct name format.</p> </li> </ul> </dd> </dl>',
+    }),
+    TTL: RecordTTLSchema.openapi({
+      description:
+        '<p>The amount of time, in seconds, that you want DNS resolvers to cache the settings for this record.</p> <note> <p>Alias records don\'t include a TTL because Route 53 uses the TTL for the Amazon Web Services resource that an alias record routes traffic to. If you include the <code>AWS_ALIAS_DNS_NAME</code> attribute when you submit a <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a> request, the <code>TTL</code> value is ignored. Always specify a TTL for the service; you can use a service to register instances that create either alias or non-alias records.</p> </note>',
+    }),
   })
   .openapi({
     required: ['Type', 'TTL'],
@@ -322,31 +252,19 @@ const DnsRecordListSchema = z.array(DnsRecordSchema).openapi('DnsRecordList')
 
 const DnsConfigSchema = z
   .object({
-    NamespaceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p> <i>Use NamespaceId in <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_Service.html">Service</a> instead.</i> </p> <p>The ID of the namespace to use for DNS configuration.</p>Top level attribute in request should be used to reference namespace-id',
-        }),
-    ).exactOptional(),
-    RoutingPolicy: RoutingPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The routing policy that you want to apply to all Route 53 DNS records that Cloud Map creates when you register an instance and specify this service.</p> <note> <p>If you want to use this service to register instances that create alias records, specify <code>WEIGHTED</code> for the routing policy.</p> </note> <p>You can specify the following values:</p> <dl> <dt>MULTIVALUE</dt> <dd> <p>If you define a health check for the service and the health check is healthy, Route 53 returns the applicable value for up to eight instances.</p> <p>For example, suppose that the service includes configurations for one <code>A</code> record and a health check. You use the service to register 10 instances. Route 53 responds to DNS queries with IP addresses for up to eight healthy instances. If fewer than eight instances are healthy, Route 53 responds to every DNS query with the IP addresses for all of the healthy instances.</p> <p>If you don\'t define a health check for the service, Route 53 assumes that all instances are healthy and returns the values for up to eight instances.</p> <p>For more information about the multivalue routing policy, see <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-multivalue">Multivalue Answer Routing</a> in the <i>Route 53 Developer Guide</i>.</p> </dd> <dt>WEIGHTED</dt> <dd> <p>Route 53 returns the applicable value from one randomly selected instance from among the instances that you registered using the same service. Currently, all records have the same weight, so you can\'t route more or less traffic to any instances.</p> <p>For example, suppose that the service includes configurations for one <code>A</code> record and a health check. You use the service to register 10 instances. Route 53 responds to DNS queries with the IP address for one randomly selected instance from among the healthy instances. If no instances are healthy, Route 53 responds to DNS queries as if all of the instances were healthy.</p> <p>If you don\'t define a health check for the service, Route 53 assumes that all instances are healthy and returns the applicable value for one randomly selected instance.</p> <p>For more information about the weighted routing policy, see <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-weighted">Weighted Routing</a> in the <i>Route 53 Developer Guide</i>.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    DnsRecords: DnsRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains one <code>DnsRecord</code> object for each Route 53 DNS record that you want Cloud Map to create when you register an instance.',
-        }),
-    ),
+    NamespaceId: ResourceIdSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p> <i>Use NamespaceId in <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_Service.html">Service</a> instead.</i> </p> <p>The ID of the namespace to use for DNS configuration.</p>Top level attribute in request should be used to reference namespace-id',
+    }),
+    RoutingPolicy: RoutingPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The routing policy that you want to apply to all Route 53 DNS records that Cloud Map creates when you register an instance and specify this service.</p> <note> <p>If you want to use this service to register instances that create alias records, specify <code>WEIGHTED</code> for the routing policy.</p> </note> <p>You can specify the following values:</p> <dl> <dt>MULTIVALUE</dt> <dd> <p>If you define a health check for the service and the health check is healthy, Route 53 returns the applicable value for up to eight instances.</p> <p>For example, suppose that the service includes configurations for one <code>A</code> record and a health check. You use the service to register 10 instances. Route 53 responds to DNS queries with IP addresses for up to eight healthy instances. If fewer than eight instances are healthy, Route 53 responds to every DNS query with the IP addresses for all of the healthy instances.</p> <p>If you don\'t define a health check for the service, Route 53 assumes that all instances are healthy and returns the values for up to eight instances.</p> <p>For more information about the multivalue routing policy, see <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-multivalue">Multivalue Answer Routing</a> in the <i>Route 53 Developer Guide</i>.</p> </dd> <dt>WEIGHTED</dt> <dd> <p>Route 53 returns the applicable value from one randomly selected instance from among the instances that you registered using the same service. Currently, all records have the same weight, so you can\'t route more or less traffic to any instances.</p> <p>For example, suppose that the service includes configurations for one <code>A</code> record and a health check. You use the service to register 10 instances. Route 53 responds to DNS queries with the IP address for one randomly selected instance from among the healthy instances. If no instances are healthy, Route 53 responds to DNS queries as if all of the instances were healthy.</p> <p>If you don\'t define a health check for the service, Route 53 assumes that all instances are healthy and returns the applicable value for one randomly selected instance.</p> <p>For more information about the weighted routing policy, see <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-weighted">Weighted Routing</a> in the <i>Route 53 Developer Guide</i>.</p> </dd> </dl>',
+    }),
+    DnsRecords: DnsRecordListSchema.openapi({
+      description:
+        'An array that contains one <code>DnsRecord</code> object for each Route 53 DNS record that you want Cloud Map to create when you register an instance.',
+    }),
   })
   .openapi({
     required: ['DnsRecords'],
@@ -365,30 +283,18 @@ const FailureThresholdSchema = z.int().min(1).max(10).openapi('FailureThreshold'
 
 const HealthCheckConfigSchema = z
   .object({
-    Type: HealthCheckTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of health check that you want to create, which indicates how Route 53 determines whether an endpoint is healthy.</p> <important> <p>You can\'t change the value of <code>Type</code> after you create a health check.</p> </important> <p>You can create the following types of health checks:</p> <ul> <li> <p> <b>HTTP</b>: Route 53 tries to establish a TCP connection. If successful, Route 53 submits an HTTP request and waits for an HTTP status code of 200 or greater and less than 400.</p> </li> <li> <p> <b>HTTPS</b>: Route 53 tries to establish a TCP connection. If successful, Route 53 submits an HTTPS request and waits for an HTTP status code of 200 or greater and less than 400.</p> <important> <p>If you specify HTTPS for the value of <code>Type</code>, the endpoint must support TLS v1.0 or later.</p> </important> </li> <li> <p> <b>TCP</b>: Route 53 tries to establish a TCP connection.</p> <p>If you specify <code>TCP</code> for <code>Type</code>, don\'t specify a value for <code>ResourcePath</code>.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-determining-health-of-endpoints.html">How Route 53 Determines Whether an Endpoint Is Healthy</a> in the <i>Route 53 Developer Guide</i>.</p>',
-        }),
-    ),
-    ResourcePath: ResourcePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The path that you want Route 53 to request when performing health checks. The path can be any value that your endpoint returns an HTTP status code of a 2xx or 3xx format for when the endpoint is healthy. An example file is <code>/docs/route53-health-check.html</code>. Route 53 automatically adds the DNS name for the service. If you don't specify a value for <code>ResourcePath</code>, the default value is <code>/</code>.</p> <p>If you specify <code>TCP</code> for <code>Type</code>, you must <i>not</i> specify a value for <code>ResourcePath</code>.</p>",
-        }),
-    ).exactOptional(),
-    FailureThreshold: FailureThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive health checks that an endpoint must pass or fail for Route 53 to change the current status of the endpoint from unhealthy to healthy or the other way around. For more information, see <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-determining-health-of-endpoints.html">How Route 53 Determines Whether an Endpoint Is Healthy</a> in the <i>Route 53 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    Type: HealthCheckTypeSchema.openapi({
+      description:
+        '<p>The type of health check that you want to create, which indicates how Route 53 determines whether an endpoint is healthy.</p> <important> <p>You can\'t change the value of <code>Type</code> after you create a health check.</p> </important> <p>You can create the following types of health checks:</p> <ul> <li> <p> <b>HTTP</b>: Route 53 tries to establish a TCP connection. If successful, Route 53 submits an HTTP request and waits for an HTTP status code of 200 or greater and less than 400.</p> </li> <li> <p> <b>HTTPS</b>: Route 53 tries to establish a TCP connection. If successful, Route 53 submits an HTTPS request and waits for an HTTP status code of 200 or greater and less than 400.</p> <important> <p>If you specify HTTPS for the value of <code>Type</code>, the endpoint must support TLS v1.0 or later.</p> </important> </li> <li> <p> <b>TCP</b>: Route 53 tries to establish a TCP connection.</p> <p>If you specify <code>TCP</code> for <code>Type</code>, don\'t specify a value for <code>ResourcePath</code>.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-determining-health-of-endpoints.html">How Route 53 Determines Whether an Endpoint Is Healthy</a> in the <i>Route 53 Developer Guide</i>.</p>',
+    }),
+    ResourcePath: ResourcePathSchema.exactOptional().openapi({
+      description:
+        "<p>The path that you want Route 53 to request when performing health checks. The path can be any value that your endpoint returns an HTTP status code of a 2xx or 3xx format for when the endpoint is healthy. An example file is <code>/docs/route53-health-check.html</code>. Route 53 automatically adds the DNS name for the service. If you don't specify a value for <code>ResourcePath</code>, the default value is <code>/</code>.</p> <p>If you specify <code>TCP</code> for <code>Type</code>, you must <i>not</i> specify a value for <code>ResourcePath</code>.</p>",
+    }),
+    FailureThreshold: FailureThresholdSchema.exactOptional().openapi({
+      description:
+        'The number of consecutive health checks that an endpoint must pass or fail for Route 53 to change the current status of the endpoint from unhealthy to healthy or the other way around. For more information, see <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-determining-health-of-endpoints.html">How Route 53 Determines Whether an Endpoint Is Healthy</a> in the <i>Route 53 Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -399,15 +305,11 @@ const HealthCheckConfigSchema = z
 
 const HealthCheckCustomConfigSchema = z
   .object({
-    FailureThreshold: FailureThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<important> <p>This parameter is no longer supported and is always set to 1. Cloud Map waits for approximately 30 seconds after receiving an <code>UpdateInstanceCustomHealthStatus</code> request before changing the status of the service instance.</p> </important> <p>The number of 30-second intervals that you want Cloud Map to wait after receiving an <code>UpdateInstanceCustomHealthStatus</code> request before it changes the health status of a service instance.</p> <p>Sending a second or subsequent <code>UpdateInstanceCustomHealthStatus</code> request with the same value before 30 seconds has passed doesn't accelerate the change. Cloud Map still waits <code>30</code> seconds after the first request to make the change.</p>Configurable FailureThreshold of HealthCheckCustomConfig is deprecated.  It will always have value 1.",
-        }),
-    ).exactOptional(),
+    FailureThreshold: FailureThresholdSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<important> <p>This parameter is no longer supported and is always set to 1. Cloud Map waits for approximately 30 seconds after receiving an <code>UpdateInstanceCustomHealthStatus</code> request before changing the status of the service instance.</p> </important> <p>The number of 30-second intervals that you want Cloud Map to wait after receiving an <code>UpdateInstanceCustomHealthStatus</code> request before it changes the health status of a service instance.</p> <p>Sending a second or subsequent <code>UpdateInstanceCustomHealthStatus</code> request with the same value before 30 seconds has passed doesn't accelerate the change. Cloud Map still waits <code>30</code> seconds after the first request to make the change.</p>Configurable FailureThreshold of HealthCheckCustomConfig is deprecated.  It will always have value 1.",
+    }),
   })
   .openapi({
     description:
@@ -420,88 +322,48 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const ServiceSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID that Cloud Map assigned to the service when you created it.',
-        }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that Cloud Map assigns to the service when you create it.',
-        }),
-    ).exactOptional(),
-    Name: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service.' }),
-    ).exactOptional(),
-    NamespaceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the namespace that was used to create the service.' }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the service.' }),
-    ).exactOptional(),
-    InstanceCount: ResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of instances that are currently associated with the service. Instances that were previously associated with the service but that are deleted aren't included in the count. The count might not reflect pending registrations and deregistrations.",
-        }),
-    ).exactOptional(),
-    DnsConfig: DnsConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A complex type that contains information about the Route 53 DNS records that you want Cloud Map to create when you register an instance.</p> <important> <p>The record types of a service can only be changed by deleting the service and recreating it with a new <code>Dnsconfig</code>.</p> </important>',
-        }),
-    ).exactOptional(),
-    Type: ServiceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the systems that can be used to discover the service instances.</p> <dl> <dt>DNS_HTTP</dt> <dd> <p>The service instances can be discovered using either DNS queries or the <code>DiscoverInstances</code> API operation.</p> </dd> <dt>HTTP</dt> <dd> <p>The service instances can only be discovered using the <code>DiscoverInstances</code> API operation.</p> </dd> <dt>DNS</dt> <dd> <p>Reserved.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    HealthCheckConfig: HealthCheckConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <i>Public DNS and HTTP namespaces only.</i> A complex type that contains settings for an optional health check. If you specify settings for a health check, Cloud Map associates the health check with the records that you specify in <code>DnsConfig</code>.</p> <p>For information about the charges for health checks, see <a href="http://aws.amazon.com/route53/pricing/">Amazon Route 53 Pricing</a>.</p>',
-        }),
-    ).exactOptional(),
-    HealthCheckCustomConfig: HealthCheckCustomConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A complex type that contains information about an optional custom health check.</p> <important> <p>If you specify a health check configuration, you can specify either <code>HealthCheckCustomConfig</code> or <code>HealthCheckConfig</code> but not both.</p> </important>',
-        }),
-    ).exactOptional(),
-    CreateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the service was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreateDate</code> is accurate to milliseconds. For example, the value <code>1516925490.087</code> represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID that Cloud Map assigned to the service when you created it.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that Cloud Map assigns to the service when you create it.',
+    }),
+    Name: ServiceNameSchema.exactOptional().openapi({ description: 'The name of the service.' }),
+    NamespaceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the namespace that was used to create the service.',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the service.',
+    }),
+    InstanceCount: ResourceCountSchema.exactOptional().openapi({
+      description:
+        "The number of instances that are currently associated with the service. Instances that were previously associated with the service but that are deleted aren't included in the count. The count might not reflect pending registrations and deregistrations.",
+    }),
+    DnsConfig: DnsConfigSchema.exactOptional().openapi({
+      description:
+        '<p>A complex type that contains information about the Route 53 DNS records that you want Cloud Map to create when you register an instance.</p> <important> <p>The record types of a service can only be changed by deleting the service and recreating it with a new <code>Dnsconfig</code>.</p> </important>',
+    }),
+    Type: ServiceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the systems that can be used to discover the service instances.</p> <dl> <dt>DNS_HTTP</dt> <dd> <p>The service instances can be discovered using either DNS queries or the <code>DiscoverInstances</code> API operation.</p> </dd> <dt>HTTP</dt> <dd> <p>The service instances can only be discovered using the <code>DiscoverInstances</code> API operation.</p> </dd> <dt>DNS</dt> <dd> <p>Reserved.</p> </dd> </dl>',
+    }),
+    HealthCheckConfig: HealthCheckConfigSchema.exactOptional().openapi({
+      description:
+        '<p> <i>Public DNS and HTTP namespaces only.</i> A complex type that contains settings for an optional health check. If you specify settings for a health check, Cloud Map associates the health check with the records that you specify in <code>DnsConfig</code>.</p> <p>For information about the charges for health checks, see <a href="http://aws.amazon.com/route53/pricing/">Amazon Route 53 Pricing</a>.</p>',
+    }),
+    HealthCheckCustomConfig: HealthCheckCustomConfigSchema.exactOptional().openapi({
+      description:
+        '<p>A complex type that contains information about an optional custom health check.</p> <important> <p>If you specify a health check configuration, you can specify either <code>HealthCheckCustomConfig</code> or <code>HealthCheckConfig</code> but not both.</p> </important>',
+    }),
+    CreateDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the service was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreateDate</code> is accurate to milliseconds. For example, the value <code>1516925490.087</code> represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CreatorRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).',
+    }),
   })
   .openapi({
     description: 'A complex type that contains information about the specified service.',
@@ -511,13 +373,9 @@ const ServiceSchema = z
 
 const CreateServiceResponseSchema = z
   .object({
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A complex type that contains information about the new service.',
-        }),
-    ).exactOptional(),
+    Service: ServiceSchema.exactOptional().openapi({
+      description: 'A complex type that contains information about the new service.',
+    }),
   })
   .openapi({
     example: {
@@ -543,73 +401,41 @@ const ServiceTypeOptionSchema = z.literal('HTTP').openapi('ServiceTypeOption')
 
 const CreateServiceRequestSchema = z
   .object({
-    Name: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name that you want to assign to the service.</p> <note> <p>Do not include sensitive information in the name if the namespace is discoverable by public DNS queries.</p> </note> <p>If you want Cloud Map to create an <code>SRV</code> record when you register an instance and you're using a system that requires a specific <code>SRV</code> format, such as <a href=\"http://www.haproxy.org/\">HAProxy</a>, specify the following for <code>Name</code>:</p> <ul> <li> <p>Start the name with an underscore (_), such as <code>_exampleservice</code>.</p> </li> <li> <p>End the name with <i>._protocol</i>, such as <code>._tcp</code>.</p> </li> </ul> <p>When you register an instance, Cloud Map creates an <code>SRV</code> record and assigns a name to the record by concatenating the service name and the namespace name (for example,</p> <p> <code>_exampleservice._tcp.example.com</code>).</p> <note> <p>For services that are accessible by DNS queries, you can't create multiple services with names that differ only by case (such as EXAMPLE and example). Otherwise, these services have the same DNS name and can't be distinguished. However, if you use a namespace that's only accessible by API calls, then you can create services that with names that differ only by case.</p> </note>",
-        }),
-    ),
-    NamespaceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the namespace that you want to use to create the service. The namespace ID must be specified, but it can be specified either here or in the <code>DnsConfig</code> object.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed <code>CreateService</code> requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).',
-        }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the service.' }),
-    ).exactOptional(),
-    DnsConfig: DnsConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains information about the Amazon Route 53 records that you want Cloud Map to create when you register an instance. ',
-        }),
-    ).exactOptional(),
-    HealthCheckConfig: HealthCheckConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <i>Public DNS and HTTP namespaces only.</i> A complex type that contains settings for an optional Route 53 health check. If you specify settings for a health check, Cloud Map associates the health check with all the Route 53 DNS records that you specify in <code>DnsConfig</code>.</p> <important> <p>If you specify a health check configuration, you can specify either <code>HealthCheckCustomConfig</code> or <code>HealthCheckConfig</code> but not both.</p> </important> <p>For information about the charges for health checks, see <a href="http://aws.amazon.com/cloud-map/pricing/">Cloud Map Pricing</a>.</p>',
-        }),
-    ).exactOptional(),
-    HealthCheckCustomConfig: HealthCheckCustomConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A complex type that contains information about an optional custom health check.</p> <important> <p>If you specify a health check configuration, you can specify either <code>HealthCheckCustomConfig</code> or <code>HealthCheckConfig</code> but not both.</p> </important> <p>You can't add, update, or delete a <code>HealthCheckCustomConfig</code> configuration from an existing service.</p>",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the service. Each tag consists of a key and an optional value that you define. Tags keys can be up to 128 characters in length, and tag values can be up to 256 characters in length.',
-        }),
-    ).exactOptional(),
-    Type: ServiceTypeOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, specifies that the service instances are only discoverable using the <code>DiscoverInstances</code> API operation. No DNS records is registered for the service instances. The only valid value is <code>HTTP</code>.',
-        }),
-    ).exactOptional(),
+    Name: ServiceNameSchema.openapi({
+      description:
+        "<p>The name that you want to assign to the service.</p> <note> <p>Do not include sensitive information in the name if the namespace is discoverable by public DNS queries.</p> </note> <p>If you want Cloud Map to create an <code>SRV</code> record when you register an instance and you're using a system that requires a specific <code>SRV</code> format, such as <a href=\"http://www.haproxy.org/\">HAProxy</a>, specify the following for <code>Name</code>:</p> <ul> <li> <p>Start the name with an underscore (_), such as <code>_exampleservice</code>.</p> </li> <li> <p>End the name with <i>._protocol</i>, such as <code>._tcp</code>.</p> </li> </ul> <p>When you register an instance, Cloud Map creates an <code>SRV</code> record and assigns a name to the record by concatenating the service name and the namespace name (for example,</p> <p> <code>_exampleservice._tcp.example.com</code>).</p> <note> <p>For services that are accessible by DNS queries, you can't create multiple services with names that differ only by case (such as EXAMPLE and example). Otherwise, these services have the same DNS name and can't be distinguished. However, if you use a namespace that's only accessible by API calls, then you can create services that with names that differ only by case.</p> </note>",
+    }),
+    NamespaceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the namespace that you want to use to create the service. The namespace ID must be specified, but it can be specified either here or in the <code>DnsConfig</code> object.',
+    }),
+    CreatorRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed <code>CreateService</code> requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the service.',
+    }),
+    DnsConfig: DnsConfigSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains information about the Amazon Route 53 records that you want Cloud Map to create when you register an instance. ',
+    }),
+    HealthCheckConfig: HealthCheckConfigSchema.exactOptional().openapi({
+      description:
+        '<p> <i>Public DNS and HTTP namespaces only.</i> A complex type that contains settings for an optional Route 53 health check. If you specify settings for a health check, Cloud Map associates the health check with all the Route 53 DNS records that you specify in <code>DnsConfig</code>.</p> <important> <p>If you specify a health check configuration, you can specify either <code>HealthCheckCustomConfig</code> or <code>HealthCheckConfig</code> but not both.</p> </important> <p>For information about the charges for health checks, see <a href="http://aws.amazon.com/cloud-map/pricing/">Cloud Map Pricing</a>.</p>',
+    }),
+    HealthCheckCustomConfig: HealthCheckCustomConfigSchema.exactOptional().openapi({
+      description:
+        "<p>A complex type that contains information about an optional custom health check.</p> <important> <p>If you specify a health check configuration, you can specify either <code>HealthCheckCustomConfig</code> or <code>HealthCheckConfig</code> but not both.</p> </important> <p>You can't add, update, or delete a <code>HealthCheckCustomConfig</code> configuration from an existing service.</p>",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to add to the service. Each tag consists of a key and an optional value that you define. Tags keys can be up to 128 characters in length, and tag values can be up to 256 characters in length.',
+    }),
+    Type: ServiceTypeOptionSchema.exactOptional().openapi({
+      description:
+        'If present, specifies that the service instances are only discoverable using the <code>DiscoverInstances</code> API operation. No DNS records is registered for the service instances. The only valid value is <code>HTTP</code>.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateServiceRequest' })
   .openapi('CreateServiceRequest')
@@ -620,23 +446,19 @@ const ServiceAlreadyExistsSchema = z.any().openapi('ServiceAlreadyExists')
 
 const DeleteNamespaceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ example: { OperationId: 'gv4g5meo7ndmeh4fqskygvk23d2fijwa-k98y6drk' }, required: [] })
   .openapi('DeleteNamespaceResponse')
 
 const DeleteNamespaceRequestSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the namespace that you want to delete.' }),
-    ),
+    Id: ResourceIdSchema.openapi({
+      description: 'The ID of the namespace that you want to delete.',
+    }),
   })
   .openapi({ required: ['Id'], title: 'DeleteNamespaceRequest' })
   .openapi('DeleteNamespaceRequest')
@@ -644,15 +466,13 @@ const DeleteNamespaceRequestSchema = z
 const ResourceInUseSchema = z.any().openapi('ResourceInUse')
 
 const DeleteServiceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('DeleteServiceResponse')
 
 const DeleteServiceRequestSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the service that you want to delete.' }),
-    ),
+    Id: ResourceIdSchema.openapi({ description: 'The ID of the service that you want to delete.' }),
   })
   .openapi({ required: ['Id'], title: 'DeleteServiceRequest' })
   .openapi('DeleteServiceRequest')
@@ -661,33 +481,23 @@ const ServiceNotFoundSchema = z.any().openapi('ServiceNotFound')
 
 const DeregisterInstanceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ example: { OperationId: '4yejorelbukcjzpnr6tlmrghsjwpngf4-k98rnaiq' }, required: [] })
   .openapi('DeregisterInstanceResponse')
 
 const DeregisterInstanceRequestSchema = z
   .object({
-    ServiceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the service that the instance is associated with.' }),
-    ),
-    InstanceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value that you specified for <code>Id</code> in the <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a> request.',
-        }),
-    ),
+    ServiceId: ResourceIdSchema.openapi({
+      description: 'The ID of the service that the instance is associated with.',
+    }),
+    InstanceId: ResourceIdSchema.openapi({
+      description:
+        'The value that you specified for <code>Id</code> in the <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_RegisterInstance.html">RegisterInstance</a> request.',
+    }),
   })
   .openapi({ required: ['ServiceId', 'InstanceId'], title: 'DeregisterInstanceRequest' })
   .openapi('DeregisterInstanceRequest')
@@ -706,46 +516,25 @@ const AttributesSchema = z.record(z.string(), AttrValueSchema).openapi('Attribut
 
 const HttpInstanceSummarySchema = z
   .object({
-    InstanceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of an instance that matches the values that you specified in the request.',
-        }),
-    ).exactOptional(),
-    NamespaceName: NamespaceNameHttpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> <code/> <code/> <code/> </p> <p>The <code>HttpName</code> name of the namespace. It's found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace.</p>",
-        }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that you specified when you registered the instance.',
-        }),
-    ).exactOptional(),
-    HealthStatus: HealthStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you configured health checking in the service, the current health status of the service instance.',
-        }),
-    ).exactOptional(),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you included any attributes when you registered the instance, the values of those attributes.',
-        }),
-    ).exactOptional(),
+    InstanceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of an instance that matches the values that you specified in the request.',
+    }),
+    NamespaceName: NamespaceNameHttpSchema.exactOptional().openapi({
+      description:
+        "<p> <code/> <code/> <code/> </p> <p>The <code>HttpName</code> name of the namespace. It's found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace.</p>",
+    }),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({
+      description: 'The name of the service that you specified when you registered the instance.',
+    }),
+    HealthStatus: HealthStatusSchema.exactOptional().openapi({
+      description:
+        'If you configured health checking in the service, the current health status of the service instance.',
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        'If you included any attributes when you registered the instance, the values of those attributes.',
+    }),
   })
   .openapi({
     description:
@@ -760,14 +549,10 @@ const HttpInstanceSummaryListSchema = z
 
 const DiscoverInstancesResponseSchema = z
   .object({
-    Instances: HttpInstanceSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains one <code>HttpInstanceSummary</code> for each registered instance.',
-        }),
-    ).exactOptional(),
+    Instances: HttpInstanceSummaryListSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains one <code>HttpInstanceSummary</code> for each registered instance.',
+    }),
   })
   .openapi({
     example: {
@@ -795,54 +580,29 @@ const HealthStatusFilterSchema = z
 
 const DiscoverInstancesRequestSchema = z
   .object({
-    NamespaceName: NamespaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The <code>HttpName</code> name of the namespace. It's found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace.",
-        }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service that you specified when you registered the instance.',
-        }),
-    ),
-    MaxResults: DiscoverMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of instances that you want Cloud Map to return in the response to a <code>DiscoverInstances</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 instances.",
-        }),
-    ).exactOptional(),
-    QueryParameters: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters to scope the results based on custom attributes for the instance (for example, <code>{version=v1, az=1a}</code>). Only instances that match all the specified key-value pairs are returned.',
-        }),
-    ).exactOptional(),
-    OptionalParameters: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Opportunistic filters to scope the results based on custom attributes. If there are instances that match both the filters specified in both the <code>QueryParameters</code> parameter and this parameter, all of these instances are returned. Otherwise, the filters are ignored, and only instances that match the filters that are specified in the <code>QueryParameters</code> parameter are returned.',
-        }),
-    ).exactOptional(),
-    HealthStatus: HealthStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The health status of the instances that you want to discover. This parameter is ignored for services that don't have a health check configured, and all instances are returned.</p> <dl> <dt>HEALTHY</dt> <dd> <p>Returns healthy instances.</p> </dd> <dt>UNHEALTHY</dt> <dd> <p>Returns unhealthy instances.</p> </dd> <dt>ALL</dt> <dd> <p>Returns all instances.</p> </dd> <dt>HEALTHY_OR_ELSE_ALL</dt> <dd> <p>Returns healthy instances, unless none are reporting a healthy state. In that case, return all instances. This is also called failing open.</p> </dd> </dl>",
-        }),
-    ).exactOptional(),
+    NamespaceName: NamespaceNameSchema.openapi({
+      description:
+        "The <code>HttpName</code> name of the namespace. It's found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace.",
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      description: 'The name of the service that you specified when you registered the instance.',
+    }),
+    MaxResults: DiscoverMaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of instances that you want Cloud Map to return in the response to a <code>DiscoverInstances</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 instances.",
+    }),
+    QueryParameters: AttributesSchema.exactOptional().openapi({
+      description:
+        'Filters to scope the results based on custom attributes for the instance (for example, <code>{version=v1, az=1a}</code>). Only instances that match all the specified key-value pairs are returned.',
+    }),
+    OptionalParameters: AttributesSchema.exactOptional().openapi({
+      description:
+        'Opportunistic filters to scope the results based on custom attributes. If there are instances that match both the filters specified in both the <code>QueryParameters</code> parameter and this parameter, all of these instances are returned. Otherwise, the filters are ignored, and only instances that match the filters that are specified in the <code>QueryParameters</code> parameter are returned.',
+    }),
+    HealthStatus: HealthStatusFilterSchema.exactOptional().openapi({
+      description:
+        "<p>The health status of the instances that you want to discover. This parameter is ignored for services that don't have a health check configured, and all instances are returned.</p> <dl> <dt>HEALTHY</dt> <dd> <p>Returns healthy instances.</p> </dd> <dt>UNHEALTHY</dt> <dd> <p>Returns unhealthy instances.</p> </dd> <dt>ALL</dt> <dd> <p>Returns all instances.</p> </dd> <dt>HEALTHY_OR_ELSE_ALL</dt> <dd> <p>Returns healthy instances, unless none are reporting a healthy state. In that case, return all instances. This is also called failing open.</p> </dd> </dl>",
+    }),
   })
   .openapi({ required: ['NamespaceName', 'ServiceName'], title: 'DiscoverInstancesRequest' })
   .openapi('DiscoverInstancesRequest')
@@ -851,30 +611,18 @@ const RequestLimitExceededSchema = z.any().openapi('RequestLimitExceeded')
 
 const InstanceSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An identifier that you want to associate with the instance. Note the following:</p> <ul> <li> <p>If the service that's specified by <code>ServiceId</code> includes settings for an <code>SRV</code> record, the value of <code>InstanceId</code> is automatically included as part of the value for the <code>SRV</code> record. For more information, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/api/API_DnsRecord.html#cloudmap-Type-DnsRecord-Type\">DnsRecord &gt; Type</a>.</p> </li> <li> <p>You can use this value to update an existing instance.</p> </li> <li> <p>To register a new instance, you must specify a value that's unique among instances that you register by using the same service. </p> </li> <li> <p>If you specify an existing <code>InstanceId</code> and <code>ServiceId</code>, Cloud Map updates the existing DNS records. If there's also an existing health check, Cloud Map deletes the old health check and creates a new one. </p> <note> <p>The health check isn't deleted immediately, so it will still appear for a while if you submit a <code>ListHealthChecks</code> request, for example.</p> </note> </li> </ul>",
-        }),
-    ),
-    CreatorRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique string that identifies the request and that allows failed <code>RegisterInstance</code> requests to be retried without the risk of executing the operation twice. You must use a unique <code>CreatorRequestId</code> string every time you submit a <code>RegisterInstance</code> request if you're registering additional instances for the same namespace and service. <code>CreatorRequestId</code> can be any unique string (for example, a date/time stamp).",
-        }),
-    ).exactOptional(),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A string map that contains the following information for the service that you specify in <code>ServiceId</code>:</p> <ul> <li> <p>The attributes that apply to the records that are defined in the service. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <note> <p>Do not include sensitive information in the attributes if the namespace is discoverable by public DNS queries.</p> </note> <p>Supported attribute keys include the following:</p> <dl> <dt>AWS_ALIAS_DNS_NAME</dt> <dd> <p>If you want Cloud Map to create a Route 53 alias record that routes traffic to an Elastic Load Balancing load balancer, specify the DNS name that's associated with the load balancer. For information about how to get the DNS name, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_AliasTarget.html#Route53-Type-AliasTarget-DNSName\">AliasTarget-&gt;DNSName</a> in the <i>Route 53 API Reference</i>.</p> <p>Note the following:</p> <ul> <li> <p>The configuration for the service that's specified by <code>ServiceId</code> must include settings for an <code>A</code> record, an <code>AAAA</code> record, or both.</p> </li> <li> <p>In the service that's specified by <code>ServiceId</code>, the value of <code>RoutingPolicy</code> must be <code>WEIGHTED</code>.</p> </li> <li> <p>If the service that's specified by <code>ServiceId</code> includes <code>HealthCheckConfig</code> settings, Cloud Map creates the health check, but it won't associate the health check with the alias record.</p> </li> <li> <p>Auto naming currently doesn't support creating alias records that route traffic to Amazon Web Services resources other than ELB load balancers.</p> </li> <li> <p>If you specify a value for <code>AWS_ALIAS_DNS_NAME</code>, don't specify values for any of the <code>AWS_INSTANCE</code> attributes.</p> </li> </ul> </dd> <dt>AWS_EC2_INSTANCE_ID</dt> <dd> <p> <i>HTTP namespaces only.</i> The Amazon EC2 instance ID for the instance. The <code>AWS_INSTANCE_IPV4</code> attribute contains the primary private IPv4 address.</p> </dd> <dt>AWS_INIT_HEALTH_STATUS</dt> <dd> <p>If the service configuration includes <code>HealthCheckCustomConfig</code>, you can optionally use <code>AWS_INIT_HEALTH_STATUS</code> to specify the initial status of the custom health check, <code>HEALTHY</code> or <code>UNHEALTHY</code>. If you don't specify a value for <code>AWS_INIT_HEALTH_STATUS</code>, the initial status is <code>HEALTHY</code>.</p> </dd> <dt>AWS_INSTANCE_CNAME</dt> <dd> <p>If the service configuration includes a <code>CNAME</code> record, the domain name that you want Route 53 to return in response to DNS queries (for example, <code>example.com</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>CNAME</code> record.</p> </dd> <dt>AWS_INSTANCE_IPV4</dt> <dd> <p>If the service configuration includes an <code>A</code> record, the IPv4 address that you want Route 53 to return in response to DNS queries (for example, <code>192.0.2.44</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>A</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_IPV6</dt> <dd> <p>If the service configuration includes an <code>AAAA</code> record, the IPv6 address that you want Route 53 to return in response to DNS queries (for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>AAAA</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_PORT</dt> <dd> <p>If the service includes an <code>SRV</code> record, the value that you want Route 53 to return for the port.</p> <p>If the service includes <code>HealthCheckConfig</code>, the port on the endpoint that you want Route 53 to send requests to. </p> <p>This value is required if you specified settings for an <code>SRV</code> record or a Route 53 health check when you created the service.</p> </dd> </dl>",
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.openapi({
+      description:
+        "<p>An identifier that you want to associate with the instance. Note the following:</p> <ul> <li> <p>If the service that's specified by <code>ServiceId</code> includes settings for an <code>SRV</code> record, the value of <code>InstanceId</code> is automatically included as part of the value for the <code>SRV</code> record. For more information, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/api/API_DnsRecord.html#cloudmap-Type-DnsRecord-Type\">DnsRecord &gt; Type</a>.</p> </li> <li> <p>You can use this value to update an existing instance.</p> </li> <li> <p>To register a new instance, you must specify a value that's unique among instances that you register by using the same service. </p> </li> <li> <p>If you specify an existing <code>InstanceId</code> and <code>ServiceId</code>, Cloud Map updates the existing DNS records. If there's also an existing health check, Cloud Map deletes the old health check and creates a new one. </p> <note> <p>The health check isn't deleted immediately, so it will still appear for a while if you submit a <code>ListHealthChecks</code> request, for example.</p> </note> </li> </ul>",
+    }),
+    CreatorRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        "A unique string that identifies the request and that allows failed <code>RegisterInstance</code> requests to be retried without the risk of executing the operation twice. You must use a unique <code>CreatorRequestId</code> string every time you submit a <code>RegisterInstance</code> request if you're registering additional instances for the same namespace and service. <code>CreatorRequestId</code> can be any unique string (for example, a date/time stamp).",
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        "<p>A string map that contains the following information for the service that you specify in <code>ServiceId</code>:</p> <ul> <li> <p>The attributes that apply to the records that are defined in the service. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <note> <p>Do not include sensitive information in the attributes if the namespace is discoverable by public DNS queries.</p> </note> <p>Supported attribute keys include the following:</p> <dl> <dt>AWS_ALIAS_DNS_NAME</dt> <dd> <p>If you want Cloud Map to create a Route 53 alias record that routes traffic to an Elastic Load Balancing load balancer, specify the DNS name that's associated with the load balancer. For information about how to get the DNS name, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_AliasTarget.html#Route53-Type-AliasTarget-DNSName\">AliasTarget-&gt;DNSName</a> in the <i>Route 53 API Reference</i>.</p> <p>Note the following:</p> <ul> <li> <p>The configuration for the service that's specified by <code>ServiceId</code> must include settings for an <code>A</code> record, an <code>AAAA</code> record, or both.</p> </li> <li> <p>In the service that's specified by <code>ServiceId</code>, the value of <code>RoutingPolicy</code> must be <code>WEIGHTED</code>.</p> </li> <li> <p>If the service that's specified by <code>ServiceId</code> includes <code>HealthCheckConfig</code> settings, Cloud Map creates the health check, but it won't associate the health check with the alias record.</p> </li> <li> <p>Auto naming currently doesn't support creating alias records that route traffic to Amazon Web Services resources other than ELB load balancers.</p> </li> <li> <p>If you specify a value for <code>AWS_ALIAS_DNS_NAME</code>, don't specify values for any of the <code>AWS_INSTANCE</code> attributes.</p> </li> </ul> </dd> <dt>AWS_EC2_INSTANCE_ID</dt> <dd> <p> <i>HTTP namespaces only.</i> The Amazon EC2 instance ID for the instance. The <code>AWS_INSTANCE_IPV4</code> attribute contains the primary private IPv4 address.</p> </dd> <dt>AWS_INIT_HEALTH_STATUS</dt> <dd> <p>If the service configuration includes <code>HealthCheckCustomConfig</code>, you can optionally use <code>AWS_INIT_HEALTH_STATUS</code> to specify the initial status of the custom health check, <code>HEALTHY</code> or <code>UNHEALTHY</code>. If you don't specify a value for <code>AWS_INIT_HEALTH_STATUS</code>, the initial status is <code>HEALTHY</code>.</p> </dd> <dt>AWS_INSTANCE_CNAME</dt> <dd> <p>If the service configuration includes a <code>CNAME</code> record, the domain name that you want Route 53 to return in response to DNS queries (for example, <code>example.com</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>CNAME</code> record.</p> </dd> <dt>AWS_INSTANCE_IPV4</dt> <dd> <p>If the service configuration includes an <code>A</code> record, the IPv4 address that you want Route 53 to return in response to DNS queries (for example, <code>192.0.2.44</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>A</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_IPV6</dt> <dd> <p>If the service configuration includes an <code>AAAA</code> record, the IPv6 address that you want Route 53 to return in response to DNS queries (for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>AAAA</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_PORT</dt> <dd> <p>If the service includes an <code>SRV</code> record, the value that you want Route 53 to return for the port.</p> <p>If the service includes <code>HealthCheckConfig</code>, the port on the endpoint that you want Route 53 to send requests to. </p> <p>This value is required if you specified settings for an <code>SRV</code> record or a Route 53 health check when you created the service.</p> </dd> </dl>",
+    }),
   })
   .openapi({
     required: ['Id'],
@@ -885,13 +633,9 @@ const InstanceSchema = z
 
 const GetInstanceResponseSchema = z
   .object({
-    Instance: InstanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A complex type that contains information about a specified instance.',
-        }),
-    ).exactOptional(),
+    Instance: InstanceSchema.exactOptional().openapi({
+      description: 'A complex type that contains information about a specified instance.',
+    }),
   })
   .openapi({
     example: {
@@ -912,16 +656,12 @@ const GetInstanceResponseSchema = z
 
 const GetInstanceRequestSchema = z
   .object({
-    ServiceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the service that the instance is associated with.' }),
-    ),
-    InstanceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the instance that you want to get information about.' }),
-    ),
+    ServiceId: ResourceIdSchema.openapi({
+      description: 'The ID of the service that the instance is associated with.',
+    }),
+    InstanceId: ResourceIdSchema.openapi({
+      description: 'The ID of the instance that you want to get information about.',
+    }),
   })
   .openapi({ required: ['ServiceId', 'InstanceId'], title: 'GetInstanceRequest' })
   .openapi('GetInstanceRequest')
@@ -934,22 +674,14 @@ const NextTokenSchema = z.string().max(4096).openapi('NextToken')
 
 const GetInstancesHealthStatusResponseSchema = z
   .object({
-    Status: InstanceHealthStatusMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains the IDs and the health status of the instances that you specified in the <code>GetInstancesHealthStatus</code> request.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If more than <code>MaxResults</code> instances match the specified criteria, you can submit another <code>GetInstancesHealthStatus</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.',
-        }),
-    ).exactOptional(),
+    Status: InstanceHealthStatusMapSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains the IDs and the health status of the instances that you specified in the <code>GetInstancesHealthStatus</code> request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If more than <code>MaxResults</code> instances match the specified criteria, you can submit another <code>GetInstancesHealthStatus</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.',
+    }),
   })
   .openapi({
     example: { Status: { 'i-abcd1234': 'HEALTHY', 'i-abcd1235': 'UNHEALTHY' } },
@@ -963,35 +695,21 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const GetInstancesHealthStatusRequestSchema = z
   .object({
-    ServiceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the service that the instance is associated with.' }),
-    ),
-    Instances: InstanceIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array that contains the IDs of all the instances that you want to get the health status for.</p> <p>If you omit <code>Instances</code>, Cloud Map returns the health status for all the instances that are associated with the specified service.</p> <note> <p>To get the IDs for the instances that you\'ve registered by using a specified service, submit a <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_ListInstances.html">ListInstances</a> request.</p> </note>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of instances that you want Cloud Map to return in the response to a <code>GetInstancesHealthStatus</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 instances.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>GetInstancesHealthStatus</code> request, omit this value.</p> <p>If more than <code>MaxResults</code> instances match the specified criteria, you can submit another <code>GetInstancesHealthStatus</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p>',
-        }),
-    ).exactOptional(),
+    ServiceId: ResourceIdSchema.openapi({
+      description: 'The ID of the service that the instance is associated with.',
+    }),
+    Instances: InstanceIdListSchema.exactOptional().openapi({
+      description:
+        '<p>An array that contains the IDs of all the instances that you want to get the health status for.</p> <p>If you omit <code>Instances</code>, Cloud Map returns the health status for all the instances that are associated with the specified service.</p> <note> <p>To get the IDs for the instances that you\'ve registered by using a specified service, submit a <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_ListInstances.html">ListInstances</a> request.</p> </note>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of instances that you want Cloud Map to return in the response to a <code>GetInstancesHealthStatus</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 instances.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>GetInstancesHealthStatus</code> request, omit this value.</p> <p>If more than <code>MaxResults</code> instances match the specified criteria, you can submit another <code>GetInstancesHealthStatus</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p>',
+    }),
   })
   .openapi({ required: ['ServiceId'], title: 'GetInstancesHealthStatusRequest' })
   .openapi('GetInstancesHealthStatusRequest')
@@ -1000,17 +718,13 @@ const NamespaceTypeSchema = z.enum(['DNS_PUBLIC', 'DNS_PRIVATE', 'HTTP']).openap
 
 const DnsPropertiesSchema = z
   .object({
-    HostedZoneId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID for the Route 53 hosted zone that Cloud Map creates when you create a namespace.',
-        }),
-    ).exactOptional(),
-    SOA: SOASchema.and(
-      z.any().openapi({ description: 'Start of Authority (SOA) record for the hosted zone.' }),
-    ).exactOptional(),
+    HostedZoneId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID for the Route 53 hosted zone that Cloud Map creates when you create a namespace.',
+    }),
+    SOA: SOASchema.exactOptional().openapi({
+      description: 'Start of Authority (SOA) record for the hosted zone.',
+    }),
   })
   .openapi({
     description:
@@ -1021,9 +735,9 @@ const DnsPropertiesSchema = z
 
 const HttpPropertiesSchema = z
   .object({
-    HttpName: NamespaceNameSchema.and(
-      z.any().openapi({ description: 'The name of an HTTP namespace.' }),
-    ).exactOptional(),
+    HttpName: NamespaceNameSchema.exactOptional().openapi({
+      description: 'The name of an HTTP namespace.',
+    }),
   })
   .openapi({
     description: 'A complex type that contains the name of an HTTP namespace.',
@@ -1033,19 +747,13 @@ const HttpPropertiesSchema = z
 
 const NamespacePropertiesSchema = z
   .object({
-    DnsProperties: DnsPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains the ID for the Route 53 hosted zone that Cloud Map creates when you create a namespace.',
-        }),
-    ).exactOptional(),
-    HttpProperties: HttpPropertiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A complex type that contains the name of an HTTP namespace.' }),
-    ).exactOptional(),
+    DnsProperties: DnsPropertiesSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains the ID for the Route 53 hosted zone that Cloud Map creates when you create a namespace.',
+    }),
+    HttpProperties: HttpPropertiesSchema.exactOptional().openapi({
+      description: 'A complex type that contains the name of an HTTP namespace.',
+    }),
   })
   .openapi({
     description: "A complex type that contains information that's specific to the namespace type.",
@@ -1055,66 +763,36 @@ const NamespacePropertiesSchema = z
 
 const NamespaceSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of a namespace.' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that Cloud Map assigns to the namespace when you create it.',
-        }),
-    ).exactOptional(),
-    Name: NamespaceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the namespace, such as <code>example.com</code>.' }),
-    ).exactOptional(),
-    Type: NamespaceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the namespace. The methods for discovering instances depends on the value that you specify:</p> <dl> <dt>HTTP</dt> <dd> <p>Instances can be discovered only programmatically, using the Cloud Map <code>DiscoverInstances</code> API.</p> </dd> <dt>DNS_PUBLIC</dt> <dd> <p>Instances can be discovered using public DNS queries and using the <code>DiscoverInstances</code> API.</p> </dd> <dt>DNS_PRIVATE</dt> <dd> <p>Instances can be discovered using DNS queries in VPCs and using the <code>DiscoverInstances</code> API.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description that you specify for the namespace when you create it.',
-        }),
-    ).exactOptional(),
-    ServiceCount: ResourceCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of services that are associated with the namespace.' }),
-    ).exactOptional(),
-    Properties: NamespacePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A complex type that contains information that's specific to the type of the namespace.",
-        }),
-    ).exactOptional(),
-    CreateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the namespace was created, in Unix date/time format and Coordinated Universal Time (UTC). The value of <code>CreateDate</code> is accurate to milliseconds. For example, the value <code>1516925490.087</code> represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed requests to be retried without the risk of running an operation twice. ',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of a namespace.' }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that Cloud Map assigns to the namespace when you create it.',
+    }),
+    Name: NamespaceNameSchema.exactOptional().openapi({
+      description: 'The name of the namespace, such as <code>example.com</code>.',
+    }),
+    Type: NamespaceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the namespace. The methods for discovering instances depends on the value that you specify:</p> <dl> <dt>HTTP</dt> <dd> <p>Instances can be discovered only programmatically, using the Cloud Map <code>DiscoverInstances</code> API.</p> </dd> <dt>DNS_PUBLIC</dt> <dd> <p>Instances can be discovered using public DNS queries and using the <code>DiscoverInstances</code> API.</p> </dd> <dt>DNS_PRIVATE</dt> <dd> <p>Instances can be discovered using DNS queries in VPCs and using the <code>DiscoverInstances</code> API.</p> </dd> </dl>',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'The description that you specify for the namespace when you create it.',
+    }),
+    ServiceCount: ResourceCountSchema.exactOptional().openapi({
+      description: 'The number of services that are associated with the namespace.',
+    }),
+    Properties: NamespacePropertiesSchema.exactOptional().openapi({
+      description:
+        "A complex type that contains information that's specific to the type of the namespace.",
+    }),
+    CreateDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date that the namespace was created, in Unix date/time format and Coordinated Universal Time (UTC). The value of <code>CreateDate</code> is accurate to milliseconds. For example, the value <code>1516925490.087</code> represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    CreatorRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed requests to be retried without the risk of running an operation twice. ',
+    }),
   })
   .openapi({
     description: 'A complex type that contains information about a specified namespace.',
@@ -1124,13 +802,9 @@ const NamespaceSchema = z
 
 const GetNamespaceResponseSchema = z
   .object({
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A complex type that contains information about the specified namespace.',
-        }),
-    ).exactOptional(),
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      description: 'A complex type that contains information about the specified namespace.',
+    }),
   })
   .openapi({
     example: {
@@ -1151,13 +825,9 @@ const GetNamespaceResponseSchema = z
 
 const GetNamespaceRequestSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the namespace that you want to get information about.',
-        }),
-    ),
+    Id: ResourceIdSchema.openapi({
+      description: 'The ID of the namespace that you want to get information about.',
+    }),
   })
   .openapi({ required: ['Id'], title: 'GetNamespaceRequest' })
   .openapi('GetNamespaceRequest')
@@ -1187,68 +857,36 @@ const OperationTargetsMapSchema = z
 
 const OperationSchema = z
   .object({
-    Id: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the operation that you want to get information about.',
-        }),
-    ).exactOptional(),
-    Type: OperationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of the operation that's associated with the specified ID.",
-        }),
-    ).exactOptional(),
-    Status: OperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the operation. Values include the following:</p> <dl> <dt>SUBMITTED</dt> <dd> <p>This is the initial state that occurs immediately after you submit a request.</p> </dd> <dt>PENDING</dt> <dd> <p>Cloud Map is performing the operation.</p> </dd> <dt>SUCCESS</dt> <dd> <p>The operation succeeded.</p> </dd> <dt>FAIL</dt> <dd> <p>The operation failed. For the failure reason, see <code>ErrorMessage</code>.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    ErrorMessage: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the value of <code>Status</code> is <code>FAIL</code>, the reason that the operation failed.',
-        }),
-    ).exactOptional(),
-    ErrorCode: CodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The code associated with <code>ErrorMessage</code>. Values for <code>ErrorCode</code> include the following:</p> <ul> <li> <p> <code>ACCESS_DENIED</code> </p> </li> <li> <p> <code>CANNOT_CREATE_HOSTED_ZONE</code> </p> </li> <li> <p> <code>EXPIRED_TOKEN</code> </p> </li> <li> <p> <code>HOSTED_ZONE_NOT_FOUND</code> </p> </li> <li> <p> <code>INTERNAL_FAILURE</code> </p> </li> <li> <p> <code>INVALID_CHANGE_BATCH</code> </p> </li> <li> <p> <code>THROTTLED_REQUEST</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the request was submitted, in Unix date/time format and Coordinated Universal Time (UTC). The value of <code>CreateDate</code> is accurate to milliseconds. For example, the value <code>1516925490.087</code> represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    UpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the value of <code>Status</code> changed to the current value, in Unix date/time format and Coordinated Universal Time (UTC). The value of <code>UpdateDate</code> is accurate to milliseconds. For example, the value <code>1516925490.087</code> represents Friday, January 26, 2018 12:11:30.087 AM.',
-        }),
-    ).exactOptional(),
-    Targets: OperationTargetsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the target entity that's associated with the operation:</p> <dl> <dt>NAMESPACE</dt> <dd> <p>The namespace ID is returned in the <code>ResourceId</code> property.</p> </dd> <dt>SERVICE</dt> <dd> <p>The service ID is returned in the <code>ResourceId</code> property.</p> </dd> <dt>INSTANCE</dt> <dd> <p>The instance ID is returned in the <code>ResourceId</code> property.</p> </dd> </dl>",
-        }),
-    ).exactOptional(),
+    Id: OperationIdSchema.exactOptional().openapi({
+      description: 'The ID of the operation that you want to get information about.',
+    }),
+    Type: OperationTypeSchema.exactOptional().openapi({
+      description: "The name of the operation that's associated with the specified ID.",
+    }),
+    Status: OperationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the operation. Values include the following:</p> <dl> <dt>SUBMITTED</dt> <dd> <p>This is the initial state that occurs immediately after you submit a request.</p> </dd> <dt>PENDING</dt> <dd> <p>Cloud Map is performing the operation.</p> </dd> <dt>SUCCESS</dt> <dd> <p>The operation succeeded.</p> </dd> <dt>FAIL</dt> <dd> <p>The operation failed. For the failure reason, see <code>ErrorMessage</code>.</p> </dd> </dl>',
+    }),
+    ErrorMessage: MessageSchema.exactOptional().openapi({
+      description:
+        'If the value of <code>Status</code> is <code>FAIL</code>, the reason that the operation failed.',
+    }),
+    ErrorCode: CodeSchema.exactOptional().openapi({
+      description:
+        '<p>The code associated with <code>ErrorMessage</code>. Values for <code>ErrorCode</code> include the following:</p> <ul> <li> <p> <code>ACCESS_DENIED</code> </p> </li> <li> <p> <code>CANNOT_CREATE_HOSTED_ZONE</code> </p> </li> <li> <p> <code>EXPIRED_TOKEN</code> </p> </li> <li> <p> <code>HOSTED_ZONE_NOT_FOUND</code> </p> </li> <li> <p> <code>INTERNAL_FAILURE</code> </p> </li> <li> <p> <code>INVALID_CHANGE_BATCH</code> </p> </li> <li> <p> <code>THROTTLED_REQUEST</code> </p> </li> </ul>',
+    }),
+    CreateDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the request was submitted, in Unix date/time format and Coordinated Universal Time (UTC). The value of <code>CreateDate</code> is accurate to milliseconds. For example, the value <code>1516925490.087</code> represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    UpdateDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the value of <code>Status</code> changed to the current value, in Unix date/time format and Coordinated Universal Time (UTC). The value of <code>UpdateDate</code> is accurate to milliseconds. For example, the value <code>1516925490.087</code> represents Friday, January 26, 2018 12:11:30.087 AM.',
+    }),
+    Targets: OperationTargetsMapSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the target entity that's associated with the operation:</p> <dl> <dt>NAMESPACE</dt> <dd> <p>The namespace ID is returned in the <code>ResourceId</code> property.</p> </dd> <dt>SERVICE</dt> <dd> <p>The service ID is returned in the <code>ResourceId</code> property.</p> </dd> <dt>INSTANCE</dt> <dd> <p>The instance ID is returned in the <code>ResourceId</code> property.</p> </dd> </dl>",
+    }),
   })
   .openapi({
     description: 'A complex type that contains information about a specified operation.',
@@ -1258,11 +896,9 @@ const OperationSchema = z
 
 const GetOperationResponseSchema = z
   .object({
-    Operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A complex type that contains information about the operation.' }),
-    ).exactOptional(),
+    Operation: OperationSchema.exactOptional().openapi({
+      description: 'A complex type that contains information about the operation.',
+    }),
   })
   .openapi({
     example: {
@@ -1281,13 +917,9 @@ const GetOperationResponseSchema = z
 
 const GetOperationRequestSchema = z
   .object({
-    OperationId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the operation that you want to get more information about.',
-        }),
-    ),
+    OperationId: ResourceIdSchema.openapi({
+      description: 'The ID of the operation that you want to get more information about.',
+    }),
   })
   .openapi({ required: ['OperationId'], title: 'GetOperationRequest' })
   .openapi('GetOperationRequest')
@@ -1296,11 +928,9 @@ const OperationNotFoundSchema = z.any().openapi('OperationNotFound')
 
 const GetServiceResponseSchema = z
   .object({
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A complex type that contains information about the service.' }),
-    ).exactOptional(),
+    Service: ServiceSchema.exactOptional().openapi({
+      description: 'A complex type that contains information about the service.',
+    }),
   })
   .openapi({
     example: {
@@ -1321,30 +951,22 @@ const GetServiceResponseSchema = z
 
 const GetServiceRequestSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the service that you want to get settings for.' }),
-    ),
+    Id: ResourceIdSchema.openapi({
+      description: 'The ID of the service that you want to get settings for.',
+    }),
   })
   .openapi({ required: ['Id'], title: 'GetServiceRequest' })
   .openapi('GetServiceRequest')
 
 const InstanceSummarySchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID for an instance that you created by using a specified service.',
-        }),
-    ).exactOptional(),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A string map that contains the following information:</p> <ul> <li> <p>The attributes that are associated with the instance. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <p>Supported attribute keys include the following:</p> <dl> <dt>AWS_ALIAS_DNS_NAME</dt> <dd> <p>For an alias record that routes traffic to an Elastic Load Balancing load balancer, the DNS name that's associated with the load balancer. </p> </dd> <dt>AWS_EC2_INSTANCE_ID (HTTP namespaces only)</dt> <dd> <p>The Amazon EC2 instance ID for the instance. When the <code>AWS_EC2_INSTANCE_ID</code> attribute is specified, then the <code>AWS_INSTANCE_IPV4</code> attribute contains the primary private IPv4 address.</p> </dd> <dt>AWS_INIT_HEALTH_STATUS</dt> <dd> <p>If the service configuration includes <code>HealthCheckCustomConfig</code>, you can optionally use <code>AWS_INIT_HEALTH_STATUS</code> to specify the initial status of the custom health check, <code>HEALTHY</code> or <code>UNHEALTHY</code>. If you don't specify a value for <code>AWS_INIT_HEALTH_STATUS</code>, the initial status is <code>HEALTHY</code>.</p> </dd> <dt>AWS_INSTANCE_CNAME</dt> <dd> <p>For a <code>CNAME</code> record, the domain name that Route 53 returns in response to DNS queries (for example, <code>example.com</code>).</p> </dd> <dt>AWS_INSTANCE_IPV4</dt> <dd> <p>For an <code>A</code> record, the IPv4 address that Route 53 returns in response to DNS queries (for example, <code>192.0.2.44</code>).</p> </dd> <dt>AWS_INSTANCE_IPV6</dt> <dd> <p>For an <code>AAAA</code> record, the IPv6 address that Route 53 returns in response to DNS queries (for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>).</p> </dd> <dt>AWS_INSTANCE_PORT</dt> <dd> <p>For an <code>SRV</code> record, the value that Route 53 returns for the port. In addition, if the service includes <code>HealthCheckConfig</code>, the port on the endpoint that Route 53 sends requests to.</p> </dd> </dl>",
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID for an instance that you created by using a specified service.',
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        "<p>A string map that contains the following information:</p> <ul> <li> <p>The attributes that are associated with the instance. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <p>Supported attribute keys include the following:</p> <dl> <dt>AWS_ALIAS_DNS_NAME</dt> <dd> <p>For an alias record that routes traffic to an Elastic Load Balancing load balancer, the DNS name that's associated with the load balancer. </p> </dd> <dt>AWS_EC2_INSTANCE_ID (HTTP namespaces only)</dt> <dd> <p>The Amazon EC2 instance ID for the instance. When the <code>AWS_EC2_INSTANCE_ID</code> attribute is specified, then the <code>AWS_INSTANCE_IPV4</code> attribute contains the primary private IPv4 address.</p> </dd> <dt>AWS_INIT_HEALTH_STATUS</dt> <dd> <p>If the service configuration includes <code>HealthCheckCustomConfig</code>, you can optionally use <code>AWS_INIT_HEALTH_STATUS</code> to specify the initial status of the custom health check, <code>HEALTHY</code> or <code>UNHEALTHY</code>. If you don't specify a value for <code>AWS_INIT_HEALTH_STATUS</code>, the initial status is <code>HEALTHY</code>.</p> </dd> <dt>AWS_INSTANCE_CNAME</dt> <dd> <p>For a <code>CNAME</code> record, the domain name that Route 53 returns in response to DNS queries (for example, <code>example.com</code>).</p> </dd> <dt>AWS_INSTANCE_IPV4</dt> <dd> <p>For an <code>A</code> record, the IPv4 address that Route 53 returns in response to DNS queries (for example, <code>192.0.2.44</code>).</p> </dd> <dt>AWS_INSTANCE_IPV6</dt> <dd> <p>For an <code>AAAA</code> record, the IPv6 address that Route 53 returns in response to DNS queries (for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>).</p> </dd> <dt>AWS_INSTANCE_PORT</dt> <dd> <p>For an <code>SRV</code> record, the value that Route 53 returns for the port. In addition, if the service includes <code>HealthCheckConfig</code>, the port on the endpoint that Route 53 sends requests to.</p> </dd> </dl>",
+    }),
   })
   .openapi({
     description:
@@ -1357,22 +979,14 @@ const InstanceSummaryListSchema = z.array(InstanceSummarySchema).openapi('Instan
 
 const ListInstancesResponseSchema = z
   .object({
-    Instances: InstanceSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Summary information about the instances that are associated with the specified service.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If more than <code>MaxResults</code> instances match the specified criteria, you can submit another <code>ListInstances</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.',
-        }),
-    ).exactOptional(),
+    Instances: InstanceSummaryListSchema.exactOptional().openapi({
+      description:
+        'Summary information about the instances that are associated with the specified service.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If more than <code>MaxResults</code> instances match the specified criteria, you can submit another <code>ListInstances</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.',
+    }),
   })
   .openapi({
     example: {
@@ -1389,69 +1003,47 @@ const ListInstancesResponseSchema = z
 
 const ListInstancesRequestSchema = z
   .object({
-    ServiceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the service that you want to list instances for.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>ListInstances</code> request, omit this value.</p> <p>If more than <code>MaxResults</code> instances match the specified criteria, you can submit another <code>ListInstances</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of instances that you want Cloud Map to return in the response to a <code>ListInstances</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 instances.",
-        }),
-    ).exactOptional(),
+    ServiceId: ResourceIdSchema.openapi({
+      description: 'The ID of the service that you want to list instances for.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>ListInstances</code> request, omit this value.</p> <p>If more than <code>MaxResults</code> instances match the specified criteria, you can submit another <code>ListInstances</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of instances that you want Cloud Map to return in the response to a <code>ListInstances</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 instances.",
+    }),
   })
   .openapi({ required: ['ServiceId'], title: 'ListInstancesRequest' })
   .openapi('ListInstancesRequest')
 
 const NamespaceSummarySchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the namespace.' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that Cloud Map assigns to the namespace when you create it.',
-        }),
-    ).exactOptional(),
-    Name: NamespaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the namespace. When you create a namespace, Cloud Map automatically creates a Route 53 hosted zone that has the same name as the namespace.',
-        }),
-    ).exactOptional(),
-    Type: NamespaceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the namespace, either public or private.' }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the namespace.' }),
-    ).exactOptional(),
-    ServiceCount: ResourceCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of services that were created using the namespace.' }),
-    ).exactOptional(),
-    Properties: NamespacePropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the namespace.' }),
-    ).exactOptional(),
-    CreateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the namespace was created.' }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of the namespace.' }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that Cloud Map assigns to the namespace when you create it.',
+    }),
+    Name: NamespaceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the namespace. When you create a namespace, Cloud Map automatically creates a Route 53 hosted zone that has the same name as the namespace.',
+    }),
+    Type: NamespaceTypeSchema.exactOptional().openapi({
+      description: 'The type of the namespace, either public or private.',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the namespace.',
+    }),
+    ServiceCount: ResourceCountSchema.exactOptional().openapi({
+      description: 'The number of services that were created using the namespace.',
+    }),
+    Properties: NamespacePropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the namespace.',
+    }),
+    CreateDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the namespace was created.',
+    }),
   })
   .openapi({
     description: 'A complex type that contains information about a namespace.',
@@ -1465,22 +1057,14 @@ const NamespaceSummariesListSchema = z
 
 const ListNamespacesResponseSchema = z
   .object({
-    Namespaces: NamespaceSummariesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains one <code>NamespaceSummary</code> object for each namespace that matches the specified filter criteria.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If the response contains <code>NextToken</code>, submit another <code>ListNamespaces</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> namespaces and then filters them based on the specified criteria. It's possible that no namespaces in the first <code>MaxResults</code> namespaces matched the specified criteria but that subsequent groups of <code>MaxResults</code> namespaces do contain namespaces that match the criteria.</p> </note>",
-        }),
-    ).exactOptional(),
+    Namespaces: NamespaceSummariesListSchema.exactOptional().openapi({
+      description:
+        'An array that contains one <code>NamespaceSummary</code> object for each namespace that matches the specified filter criteria.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>If the response contains <code>NextToken</code>, submit another <code>ListNamespaces</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> namespaces and then filters them based on the specified criteria. It's possible that no namespaces in the first <code>MaxResults</code> namespaces matched the specified criteria but that subsequent groups of <code>MaxResults</code> namespaces do contain namespaces that match the criteria.</p> </note>",
+    }),
   })
   .openapi({
     example: {
@@ -1536,30 +1120,18 @@ const FilterConditionSchema = z
 
 const NamespaceFilterSchema = z
   .object({
-    Name: NamespaceFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the namespaces that you want to get using one of the following.</p> <ul> <li> <p> <code>TYPE</code>: Gets the namespaces of the specified type.</p> </li> <li> <p> <code>NAME</code>: Gets the namespaces with the specified name.</p> </li> <li> <p> <code>HTTP_NAME</code>: Gets the namespaces with the specified HTTP name.</p> </li> </ul>',
-        }),
-    ),
-    Values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the values that are applicable to the value that you specify for <code>Name</code>.</p> <ul> <li> <p> <code>TYPE</code>: Specify <code>HTTP</code>, <code>DNS_PUBLIC</code>, or <code>DNS_PRIVATE</code>.</p> </li> <li> <p> <code>NAME</code>: Specify the name of the namespace, which is found in <code>Namespace.Name</code>.</p> </li> <li> <p> <code>HTTP_NAME</code>: Specify the HTTP name of the namespace, which is found in <code>Namespace.Properties.HttpProperties.HttpName</code>.</p> </li> </ul>',
-        }),
-    ),
-    Condition: FilterConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the operator that you want to use to determine whether a namespace matches the specified value. Valid values for <code>Condition</code> are one of the following.</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code> for <code>Condition</code>, you can specify only one value. <code>EQ</code> is supported for <code>TYPE</code>, <code>NAME</code>, and <code>HTTP_NAME</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> <li> <p> <code>BEGINS_WITH</code>: When you specify <code>BEGINS_WITH</code> for <code>Condition</code>, you can specify only one value. <code>BEGINS_WITH</code> is supported for <code>TYPE</code>, <code>NAME</code>, and <code>HTTP_NAME</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: NamespaceFilterNameSchema.openapi({
+      description:
+        '<p>Specify the namespaces that you want to get using one of the following.</p> <ul> <li> <p> <code>TYPE</code>: Gets the namespaces of the specified type.</p> </li> <li> <p> <code>NAME</code>: Gets the namespaces with the specified name.</p> </li> <li> <p> <code>HTTP_NAME</code>: Gets the namespaces with the specified HTTP name.</p> </li> </ul>',
+    }),
+    Values: FilterValuesSchema.openapi({
+      description:
+        '<p>Specify the values that are applicable to the value that you specify for <code>Name</code>.</p> <ul> <li> <p> <code>TYPE</code>: Specify <code>HTTP</code>, <code>DNS_PUBLIC</code>, or <code>DNS_PRIVATE</code>.</p> </li> <li> <p> <code>NAME</code>: Specify the name of the namespace, which is found in <code>Namespace.Name</code>.</p> </li> <li> <p> <code>HTTP_NAME</code>: Specify the HTTP name of the namespace, which is found in <code>Namespace.Properties.HttpProperties.HttpName</code>.</p> </li> </ul>',
+    }),
+    Condition: FilterConditionSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the operator that you want to use to determine whether a namespace matches the specified value. Valid values for <code>Condition</code> are one of the following.</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code> for <code>Condition</code>, you can specify only one value. <code>EQ</code> is supported for <code>TYPE</code>, <code>NAME</code>, and <code>HTTP_NAME</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> <li> <p> <code>BEGINS_WITH</code>: When you specify <code>BEGINS_WITH</code> for <code>Condition</code>, you can specify only one value. <code>BEGINS_WITH</code> is supported for <code>TYPE</code>, <code>NAME</code>, and <code>HTTP_NAME</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Values'],
@@ -1572,47 +1144,29 @@ const NamespaceFiltersSchema = z.array(NamespaceFilterSchema).openapi('Namespace
 
 const ListNamespacesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>For the first <code>ListNamespaces</code> request, omit this value.</p> <p>If the response contains <code>NextToken</code>, submit another <code>ListNamespaces</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> namespaces and then filters them based on the specified criteria. It's possible that no namespaces in the first <code>MaxResults</code> namespaces matched the specified criteria but that subsequent groups of <code>MaxResults</code> namespaces do contain namespaces that match the criteria.</p> </note>",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of namespaces that you want Cloud Map to return in the response to a <code>ListNamespaces</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 namespaces.",
-        }),
-    ).exactOptional(),
-    Filters: NamespaceFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A complex type that contains specifications for the namespaces that you want to list.</p> <p>If you specify more than one filter, a namespace must match all filters to be returned by <code>ListNamespaces</code>.</p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>For the first <code>ListNamespaces</code> request, omit this value.</p> <p>If the response contains <code>NextToken</code>, submit another <code>ListNamespaces</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> namespaces and then filters them based on the specified criteria. It's possible that no namespaces in the first <code>MaxResults</code> namespaces matched the specified criteria but that subsequent groups of <code>MaxResults</code> namespaces do contain namespaces that match the criteria.</p> </note>",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of namespaces that you want Cloud Map to return in the response to a <code>ListNamespaces</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 namespaces.",
+    }),
+    Filters: NamespaceFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>A complex type that contains specifications for the namespaces that you want to list.</p> <p>If you specify more than one filter, a namespace must match all filters to be returned by <code>ListNamespaces</code>.</p>',
+    }),
   })
   .openapi({ title: 'ListNamespacesRequest', required: [] })
   .openapi('ListNamespacesRequest')
 
 const OperationSummarySchema = z
   .object({
-    Id: OperationIdSchema.and(
-      z.any().openapi({ description: 'The ID for an operation.' }),
-    ).exactOptional(),
-    Status: OperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the operation. Values include the following:</p> <ul> <li> <p> <b>SUBMITTED</b>: This is the initial state immediately after you submit a request.</p> </li> <li> <p> <b>PENDING</b>: Cloud Map is performing the operation.</p> </li> <li> <p> <b>SUCCESS</b>: The operation succeeded.</p> </li> <li> <p> <b>FAIL</b>: The operation failed. For the failure reason, see <code>ErrorMessage</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Id: OperationIdSchema.exactOptional().openapi({ description: 'The ID for an operation.' }),
+    Status: OperationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the operation. Values include the following:</p> <ul> <li> <p> <b>SUBMITTED</b>: This is the initial state immediately after you submit a request.</p> </li> <li> <p> <b>PENDING</b>: Cloud Map is performing the operation.</p> </li> <li> <p> <b>SUCCESS</b>: The operation succeeded.</p> </li> <li> <p> <b>FAIL</b>: The operation failed. For the failure reason, see <code>ErrorMessage</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -1625,22 +1179,13 @@ const OperationSummaryListSchema = z.array(OperationSummarySchema).openapi('Oper
 
 const ListOperationsResponseSchema = z
   .object({
-    Operations: OperationSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Summary information about the operations that match the specified criteria.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If the response contains <code>NextToken</code>, submit another <code>ListOperations</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> operations and then filters them based on the specified criteria. It's possible that no operations in the first <code>MaxResults</code> operations matched the specified criteria but that subsequent groups of <code>MaxResults</code> operations do contain operations that match the criteria.</p> </note>",
-        }),
-    ).exactOptional(),
+    Operations: OperationSummaryListSchema.exactOptional().openapi({
+      description: 'Summary information about the operations that match the specified criteria.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>If the response contains <code>NextToken</code>, submit another <code>ListOperations</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> operations and then filters them based on the specified criteria. It's possible that no operations in the first <code>MaxResults</code> operations matched the specified criteria but that subsequent groups of <code>MaxResults</code> operations do contain operations that match the criteria.</p> </note>",
+    }),
   })
   .openapi({
     example: {
@@ -1660,30 +1205,18 @@ const OperationFilterNameSchema = z
 
 const OperationFilterSchema = z
   .object({
-    Name: OperationFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the operations that you want to get:</p> <ul> <li> <p> <b>NAMESPACE_ID</b>: Gets operations related to specified namespaces.</p> </li> <li> <p> <b>SERVICE_ID</b>: Gets operations related to specified services.</p> </li> <li> <p> <b>STATUS</b>: Gets operations based on the status of the operations: <code>SUBMITTED</code>, <code>PENDING</code>, <code>SUCCEED</code>, or <code>FAIL</code>.</p> </li> <li> <p> <b>TYPE</b>: Gets specified types of operation.</p> </li> <li> <p> <b>UPDATE_DATE</b>: Gets operations that changed status during a specified date/time range. </p> </li> </ul>',
-        }),
-    ),
-    Values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify values that are applicable to the value that you specify for <code>Name</code>: </p> <ul> <li> <p> <b>NAMESPACE_ID</b>: Specify one namespace ID.</p> </li> <li> <p> <b>SERVICE_ID</b>: Specify one service ID.</p> </li> <li> <p> <b>STATUS</b>: Specify one or more statuses: <code>SUBMITTED</code>, <code>PENDING</code>, <code>SUCCEED</code>, or <code>FAIL</code>.</p> </li> <li> <p> <b>TYPE</b>: Specify one or more of the following types: <code>CREATE_NAMESPACE</code>, <code>DELETE_NAMESPACE</code>, <code>UPDATE_SERVICE</code>, <code>REGISTER_INSTANCE</code>, or <code>DEREGISTER_INSTANCE</code>.</p> </li> <li> <p> <b>UPDATE_DATE</b>: Specify a start date and an end date in Unix date/time format and Coordinated Universal Time (UTC). The start date must be the first value.</p> </li> </ul>',
-        }),
-    ),
-    Condition: FilterConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The operator that you want to use to determine whether an operation matches the specified value. Valid values for condition include:</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code> for the condition, you can specify only one value. <code>EQ</code> is supported for <code>NAMESPACE_ID</code>, <code>SERVICE_ID</code>, <code>STATUS</code>, and <code>TYPE</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> <li> <p> <code>IN</code>: When you specify <code>IN</code> for the condition, you can specify a list of one or more values. <code>IN</code> is supported for <code>STATUS</code> and <code>TYPE</code>. An operation must match one of the specified values to be returned in the response.</p> </li> <li> <p> <code>BETWEEN</code>: Specify a start date and an end date in Unix date/time format and Coordinated Universal Time (UTC). The start date must be the first value. <code>BETWEEN</code> is supported for <code>UPDATE_DATE</code>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: OperationFilterNameSchema.openapi({
+      description:
+        '<p>Specify the operations that you want to get:</p> <ul> <li> <p> <b>NAMESPACE_ID</b>: Gets operations related to specified namespaces.</p> </li> <li> <p> <b>SERVICE_ID</b>: Gets operations related to specified services.</p> </li> <li> <p> <b>STATUS</b>: Gets operations based on the status of the operations: <code>SUBMITTED</code>, <code>PENDING</code>, <code>SUCCEED</code>, or <code>FAIL</code>.</p> </li> <li> <p> <b>TYPE</b>: Gets specified types of operation.</p> </li> <li> <p> <b>UPDATE_DATE</b>: Gets operations that changed status during a specified date/time range. </p> </li> </ul>',
+    }),
+    Values: FilterValuesSchema.openapi({
+      description:
+        '<p>Specify values that are applicable to the value that you specify for <code>Name</code>: </p> <ul> <li> <p> <b>NAMESPACE_ID</b>: Specify one namespace ID.</p> </li> <li> <p> <b>SERVICE_ID</b>: Specify one service ID.</p> </li> <li> <p> <b>STATUS</b>: Specify one or more statuses: <code>SUBMITTED</code>, <code>PENDING</code>, <code>SUCCEED</code>, or <code>FAIL</code>.</p> </li> <li> <p> <b>TYPE</b>: Specify one or more of the following types: <code>CREATE_NAMESPACE</code>, <code>DELETE_NAMESPACE</code>, <code>UPDATE_SERVICE</code>, <code>REGISTER_INSTANCE</code>, or <code>DEREGISTER_INSTANCE</code>.</p> </li> <li> <p> <b>UPDATE_DATE</b>: Specify a start date and an end date in Unix date/time format and Coordinated Universal Time (UTC). The start date must be the first value.</p> </li> </ul>',
+    }),
+    Condition: FilterConditionSchema.exactOptional().openapi({
+      description:
+        '<p>The operator that you want to use to determine whether an operation matches the specified value. Valid values for condition include:</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code> for the condition, you can specify only one value. <code>EQ</code> is supported for <code>NAMESPACE_ID</code>, <code>SERVICE_ID</code>, <code>STATUS</code>, and <code>TYPE</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> <li> <p> <code>IN</code>: When you specify <code>IN</code> for the condition, you can specify a list of one or more values. <code>IN</code> is supported for <code>STATUS</code> and <code>TYPE</code>. An operation must match one of the specified values to be returned in the response.</p> </li> <li> <p> <code>BETWEEN</code>: Specify a start date and an end date in Unix date/time format and Coordinated Universal Time (UTC). The start date must be the first value. <code>BETWEEN</code> is supported for <code>UPDATE_DATE</code>. </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Values'],
@@ -1695,102 +1228,58 @@ const OperationFiltersSchema = z.array(OperationFilterSchema).openapi('Operation
 
 const ListOperationsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>For the first <code>ListOperations</code> request, omit this value.</p> <p>If the response contains <code>NextToken</code>, submit another <code>ListOperations</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> operations and then filters them based on the specified criteria. It's possible that no operations in the first <code>MaxResults</code> operations matched the specified criteria but that subsequent groups of <code>MaxResults</code> operations do contain operations that match the criteria.</p> </note>",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of items that you want Cloud Map to return in the response to a <code>ListOperations</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 operations.",
-        }),
-    ).exactOptional(),
-    Filters: OperationFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A complex type that contains specifications for the operations that you want to list, for example, operations that you started between a specified start date and end date.</p> <p>If you specify more than one filter, an operation must match all filters to be returned by <code>ListOperations</code>.</p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>For the first <code>ListOperations</code> request, omit this value.</p> <p>If the response contains <code>NextToken</code>, submit another <code>ListOperations</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> operations and then filters them based on the specified criteria. It's possible that no operations in the first <code>MaxResults</code> operations matched the specified criteria but that subsequent groups of <code>MaxResults</code> operations do contain operations that match the criteria.</p> </note>",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of items that you want Cloud Map to return in the response to a <code>ListOperations</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 operations.",
+    }),
+    Filters: OperationFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>A complex type that contains specifications for the operations that you want to list, for example, operations that you started between a specified start date and end date.</p> <p>If you specify more than one filter, an operation must match all filters to be returned by <code>ListOperations</code>.</p>',
+    }),
   })
   .openapi({ title: 'ListOperationsRequest', required: [] })
   .openapi('ListOperationsRequest')
 
 const ServiceSummarySchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID that Cloud Map assigned to the service when you created it.',
-        }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that Cloud Map assigns to the service when you create it.',
-        }),
-    ).exactOptional(),
-    Name: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the service.' }),
-    ).exactOptional(),
-    Type: ServiceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the systems that can be used to discover the service instances.</p> <dl> <dt>DNS_HTTP</dt> <dd> <p>The service instances can be discovered using either DNS queries or the <code>DiscoverInstances</code> API operation.</p> </dd> <dt>HTTP</dt> <dd> <p>The service instances can only be discovered using the <code>DiscoverInstances</code> API operation.</p> </dd> <dt>DNS</dt> <dd> <p>Reserved.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description that you specify when you create the service.' }),
-    ).exactOptional(),
-    InstanceCount: ResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of instances that are currently associated with the service. Instances that were previously associated with the service but that are deleted aren't included in the count. The count might not reflect pending registrations and deregistrations.",
-        }),
-    ).exactOptional(),
-    DnsConfig: DnsConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Route 53 DNS records that you want Cloud Map to create when you register an instance.',
-        }),
-    ).exactOptional(),
-    HealthCheckConfig: HealthCheckConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>Public DNS and HTTP namespaces only.</i> Settings for an optional health check. If you specify settings for a health check, Cloud Map associates the health check with the records that you specify in <code>DnsConfig</code>.',
-        }),
-    ).exactOptional(),
-    HealthCheckCustomConfig: HealthCheckCustomConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Information about an optional custom health check. A custom health check, which requires that you use a third-party health checker to evaluate the health of your resources, is useful in the following circumstances:</p> <ul> <li> <p>You can't use a health check that's defined by <code>HealthCheckConfig</code> because the resource isn't available over the internet. For example, you can use a custom health check when the instance is in an Amazon VPC. (To check the health of resources in a VPC, the health checker must also be in the VPC.)</p> </li> <li> <p>You want to use a third-party health checker regardless of where your resources are located.</p> </li> </ul> <important> <p>If you specify a health check configuration, you can specify either <code>HealthCheckCustomConfig</code> or <code>HealthCheckConfig</code> but not both.</p> </important>",
-        }),
-    ).exactOptional(),
-    CreateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the service was created.' }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID that Cloud Map assigned to the service when you created it.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that Cloud Map assigns to the service when you create it.',
+    }),
+    Name: ServiceNameSchema.exactOptional().openapi({ description: 'The name of the service.' }),
+    Type: ServiceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the systems that can be used to discover the service instances.</p> <dl> <dt>DNS_HTTP</dt> <dd> <p>The service instances can be discovered using either DNS queries or the <code>DiscoverInstances</code> API operation.</p> </dd> <dt>HTTP</dt> <dd> <p>The service instances can only be discovered using the <code>DiscoverInstances</code> API operation.</p> </dd> <dt>DNS</dt> <dd> <p>Reserved.</p> </dd> </dl>',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'The description that you specify when you create the service.',
+    }),
+    InstanceCount: ResourceCountSchema.exactOptional().openapi({
+      description:
+        "The number of instances that are currently associated with the service. Instances that were previously associated with the service but that are deleted aren't included in the count. The count might not reflect pending registrations and deregistrations.",
+    }),
+    DnsConfig: DnsConfigSchema.exactOptional().openapi({
+      description:
+        'Information about the Route 53 DNS records that you want Cloud Map to create when you register an instance.',
+    }),
+    HealthCheckConfig: HealthCheckConfigSchema.exactOptional().openapi({
+      description:
+        ' <i>Public DNS and HTTP namespaces only.</i> Settings for an optional health check. If you specify settings for a health check, Cloud Map associates the health check with the records that you specify in <code>DnsConfig</code>.',
+    }),
+    HealthCheckCustomConfig: HealthCheckCustomConfigSchema.exactOptional().openapi({
+      description:
+        "<p>Information about an optional custom health check. A custom health check, which requires that you use a third-party health checker to evaluate the health of your resources, is useful in the following circumstances:</p> <ul> <li> <p>You can't use a health check that's defined by <code>HealthCheckConfig</code> because the resource isn't available over the internet. For example, you can use a custom health check when the instance is in an Amazon VPC. (To check the health of resources in a VPC, the health checker must also be in the VPC.)</p> </li> <li> <p>You want to use a third-party health checker regardless of where your resources are located.</p> </li> </ul> <important> <p>If you specify a health check configuration, you can specify either <code>HealthCheckCustomConfig</code> or <code>HealthCheckConfig</code> but not both.</p> </important>",
+    }),
+    CreateDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the service was created.',
+    }),
   })
   .openapi({
     description: 'A complex type that contains information about a specified service.',
@@ -1802,22 +1291,14 @@ const ServiceSummariesListSchema = z.array(ServiceSummarySchema).openapi('Servic
 
 const ListServicesResponseSchema = z
   .object({
-    Services: ServiceSummariesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains one <code>ServiceSummary</code> object for each service that matches the specified filter criteria.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If the response contains <code>NextToken</code>, submit another <code>ListServices</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> services and then filters them based on the specified criteria. It's possible that no services in the first <code>MaxResults</code> services matched the specified criteria but that subsequent groups of <code>MaxResults</code> services do contain services that match the criteria.</p> </note>",
-        }),
-    ).exactOptional(),
+    Services: ServiceSummariesListSchema.exactOptional().openapi({
+      description:
+        'An array that contains one <code>ServiceSummary</code> object for each service that matches the specified filter criteria.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>If the response contains <code>NextToken</code>, submit another <code>ListServices</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> services and then filters them based on the specified criteria. It's possible that no services in the first <code>MaxResults</code> services matched the specified criteria but that subsequent groups of <code>MaxResults</code> services do contain services that match the criteria.</p> </note>",
+    }),
   })
   .openapi({
     example: {
@@ -1839,25 +1320,15 @@ const ServiceFilterNameSchema = z.literal('NAMESPACE_ID').openapi('ServiceFilter
 
 const ServiceFilterSchema = z
   .object({
-    Name: ServiceFilterNameSchema.and(
-      z.any().openapi({ description: 'Specify <code>NAMESPACE_ID</code>.' }),
-    ),
-    Values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The values that are applicable to the value that you specify for <code>Condition</code> to filter the list of services.',
-        }),
-    ),
-    Condition: FilterConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The operator that you want to use to determine whether a service is returned by <code>ListServices</code>. Valid values for <code>Condition</code> include the following:</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code>, specify one namespace ID for <code>Values</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: ServiceFilterNameSchema.openapi({ description: 'Specify <code>NAMESPACE_ID</code>.' }),
+    Values: FilterValuesSchema.openapi({
+      description:
+        'The values that are applicable to the value that you specify for <code>Condition</code> to filter the list of services.',
+    }),
+    Condition: FilterConditionSchema.exactOptional().openapi({
+      description:
+        '<p>The operator that you want to use to determine whether a service is returned by <code>ListServices</code>. Valid values for <code>Condition</code> include the following:</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code>, specify one namespace ID for <code>Values</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Values'],
@@ -1870,39 +1341,27 @@ const ServiceFiltersSchema = z.array(ServiceFilterSchema).openapi('ServiceFilter
 
 const ListServicesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>For the first <code>ListServices</code> request, omit this value.</p> <p>If the response contains <code>NextToken</code>, submit another <code>ListServices</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> services and then filters them based on the specified criteria. It's possible that no services in the first <code>MaxResults</code> services matched the specified criteria but that subsequent groups of <code>MaxResults</code> services do contain services that match the criteria.</p> </note>",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of services that you want Cloud Map to return in the response to a <code>ListServices</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 services.",
-        }),
-    ).exactOptional(),
-    Filters: ServiceFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A complex type that contains specifications for the namespaces that you want to list services for. </p> <p>If you specify more than one filter, an operation must match all filters to be returned by <code>ListServices</code>.</p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>For the first <code>ListServices</code> request, omit this value.</p> <p>If the response contains <code>NextToken</code>, submit another <code>ListServices</code> request to get the next group of results. Specify the value of <code>NextToken</code> from the previous response in the next request.</p> <note> <p>Cloud Map gets <code>MaxResults</code> services and then filters them based on the specified criteria. It's possible that no services in the first <code>MaxResults</code> services matched the specified criteria but that subsequent groups of <code>MaxResults</code> services do contain services that match the criteria.</p> </note>",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of services that you want Cloud Map to return in the response to a <code>ListServices</code> request. If you don't specify a value for <code>MaxResults</code>, Cloud Map returns up to 100 services.",
+    }),
+    Filters: ServiceFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>A complex type that contains specifications for the namespaces that you want to list services for. </p> <p>If you specify more than one filter, an operation must match all filters to be returned by <code>ListServices</code>.</p>',
+    }),
   })
   .openapi({ title: 'ListServicesRequest', required: [] })
   .openapi('ListServicesRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags that are assigned to the resource.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags that are assigned to the resource.',
+    }),
   })
   .openapi({
     example: {
@@ -1919,14 +1378,10 @@ const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonReso
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that you want to retrieve tags for.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that you want to retrieve tags for.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -1935,14 +1390,10 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const RegisterInstanceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ example: { OperationId: '4yejorelbukcjzpnr6tlmrghsjwpngf4-k95yg2u7' }, required: [] })
   .openapi('RegisterInstanceResponse')
@@ -1955,37 +1406,21 @@ const InstanceIdSchema = z
 
 const RegisterInstanceRequestSchema = z
   .object({
-    ServiceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the service that you want to use for settings for the instance.',
-        }),
-    ),
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An identifier that you want to associate with the instance. Note the following:</p> <ul> <li> <p>If the service that's specified by <code>ServiceId</code> includes settings for an <code>SRV</code> record, the value of <code>InstanceId</code> is automatically included as part of the value for the <code>SRV</code> record. For more information, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/api/API_DnsRecord.html#cloudmap-Type-DnsRecord-Type\">DnsRecord &gt; Type</a>.</p> </li> <li> <p>You can use this value to update an existing instance.</p> </li> <li> <p>To register a new instance, you must specify a value that's unique among instances that you register by using the same service. </p> </li> <li> <p>If you specify an existing <code>InstanceId</code> and <code>ServiceId</code>, Cloud Map updates the existing DNS records, if any. If there's also an existing health check, Cloud Map deletes the old health check and creates a new one. </p> <note> <p>The health check isn't deleted immediately, so it will still appear for a while if you submit a <code>ListHealthChecks</code> request, for example.</p> </note> </li> </ul> <note> <p>Do not include sensitive information in <code>InstanceId</code> if the namespace is discoverable by public DNS queries and any <code>Type</code> member of <code>DnsRecord</code> for the service contains <code>SRV</code> because the <code>InstanceId</code> is discoverable by public DNS queries.</p> </note>",
-        }),
-    ),
-    CreatorRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique string that identifies the request and that allows failed <code>RegisterInstance</code> requests to be retried without the risk of executing the operation twice. You must use a unique <code>CreatorRequestId</code> string every time you submit a <code>RegisterInstance</code> request if you're registering additional instances for the same namespace and service. <code>CreatorRequestId</code> can be any unique string (for example, a date/time stamp).",
-        }),
-    ).exactOptional(),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A string map that contains the following information for the service that you specify in <code>ServiceId</code>:</p> <ul> <li> <p>The attributes that apply to the records that are defined in the service. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <note> <p>Do not include sensitive information in the attributes if the namespace is discoverable by public DNS queries.</p> </note> <p>Supported attribute keys include the following:</p> <dl> <dt>AWS_ALIAS_DNS_NAME</dt> <dd> <p>If you want Cloud Map to create an Amazon Route 53 alias record that routes traffic to an Elastic Load Balancing load balancer, specify the DNS name that's associated with the load balancer. For information about how to get the DNS name, see \"DNSName\" in the topic <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_AliasTarget.html\">AliasTarget</a> in the <i>Route 53 API Reference</i>.</p> <p>Note the following:</p> <ul> <li> <p>The configuration for the service that's specified by <code>ServiceId</code> must include settings for an <code>A</code> record, an <code>AAAA</code> record, or both.</p> </li> <li> <p>In the service that's specified by <code>ServiceId</code>, the value of <code>RoutingPolicy</code> must be <code>WEIGHTED</code>.</p> </li> <li> <p>If the service that's specified by <code>ServiceId</code> includes <code>HealthCheckConfig</code> settings, Cloud Map will create the Route 53 health check, but it doesn't associate the health check with the alias record.</p> </li> <li> <p>Auto naming currently doesn't support creating alias records that route traffic to Amazon Web Services resources other than Elastic Load Balancing load balancers.</p> </li> <li> <p>If you specify a value for <code>AWS_ALIAS_DNS_NAME</code>, don't specify values for any of the <code>AWS_INSTANCE</code> attributes.</p> </li> </ul> </dd> <dt>AWS_EC2_INSTANCE_ID</dt> <dd> <p> <i>HTTP namespaces only.</i> The Amazon EC2 instance ID for the instance. If the <code>AWS_EC2_INSTANCE_ID</code> attribute is specified, then the only other attribute that can be specified is <code>AWS_INIT_HEALTH_STATUS</code>. When the <code>AWS_EC2_INSTANCE_ID</code> attribute is specified, then the <code>AWS_INSTANCE_IPV4</code> attribute will be filled out with the primary private IPv4 address.</p> </dd> <dt>AWS_INIT_HEALTH_STATUS</dt> <dd> <p>If the service configuration includes <code>HealthCheckCustomConfig</code>, you can optionally use <code>AWS_INIT_HEALTH_STATUS</code> to specify the initial status of the custom health check, <code>HEALTHY</code> or <code>UNHEALTHY</code>. If you don't specify a value for <code>AWS_INIT_HEALTH_STATUS</code>, the initial status is <code>HEALTHY</code>.</p> </dd> <dt>AWS_INSTANCE_CNAME</dt> <dd> <p>If the service configuration includes a <code>CNAME</code> record, the domain name that you want Route 53 to return in response to DNS queries (for example, <code>example.com</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>CNAME</code> record.</p> </dd> <dt>AWS_INSTANCE_IPV4</dt> <dd> <p>If the service configuration includes an <code>A</code> record, the IPv4 address that you want Route 53 to return in response to DNS queries (for example, <code>192.0.2.44</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>A</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_IPV6</dt> <dd> <p>If the service configuration includes an <code>AAAA</code> record, the IPv6 address that you want Route 53 to return in response to DNS queries (for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>AAAA</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_PORT</dt> <dd> <p>If the service includes an <code>SRV</code> record, the value that you want Route 53 to return for the port.</p> <p>If the service includes <code>HealthCheckConfig</code>, the port on the endpoint that you want Route 53 to send requests to. </p> <p>This value is required if you specified settings for an <code>SRV</code> record or a Route 53 health check when you created the service.</p> </dd> <dt>Custom attributes</dt> <dd> <p>You can add up to 30 custom attributes. For each key-value pair, the maximum length of the attribute name is 255 characters, and the maximum length of the attribute value is 1,024 characters. The total size of all provided attributes (sum of all keys and values) must not exceed 5,000 characters.</p> </dd> </dl>",
-        }),
-    ),
+    ServiceId: ResourceIdSchema.openapi({
+      description: 'The ID of the service that you want to use for settings for the instance.',
+    }),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        "<p>An identifier that you want to associate with the instance. Note the following:</p> <ul> <li> <p>If the service that's specified by <code>ServiceId</code> includes settings for an <code>SRV</code> record, the value of <code>InstanceId</code> is automatically included as part of the value for the <code>SRV</code> record. For more information, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/api/API_DnsRecord.html#cloudmap-Type-DnsRecord-Type\">DnsRecord &gt; Type</a>.</p> </li> <li> <p>You can use this value to update an existing instance.</p> </li> <li> <p>To register a new instance, you must specify a value that's unique among instances that you register by using the same service. </p> </li> <li> <p>If you specify an existing <code>InstanceId</code> and <code>ServiceId</code>, Cloud Map updates the existing DNS records, if any. If there's also an existing health check, Cloud Map deletes the old health check and creates a new one. </p> <note> <p>The health check isn't deleted immediately, so it will still appear for a while if you submit a <code>ListHealthChecks</code> request, for example.</p> </note> </li> </ul> <note> <p>Do not include sensitive information in <code>InstanceId</code> if the namespace is discoverable by public DNS queries and any <code>Type</code> member of <code>DnsRecord</code> for the service contains <code>SRV</code> because the <code>InstanceId</code> is discoverable by public DNS queries.</p> </note>",
+    }),
+    CreatorRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        "A unique string that identifies the request and that allows failed <code>RegisterInstance</code> requests to be retried without the risk of executing the operation twice. You must use a unique <code>CreatorRequestId</code> string every time you submit a <code>RegisterInstance</code> request if you're registering additional instances for the same namespace and service. <code>CreatorRequestId</code> can be any unique string (for example, a date/time stamp).",
+    }),
+    Attributes: AttributesSchema.openapi({
+      description:
+        "<p>A string map that contains the following information for the service that you specify in <code>ServiceId</code>:</p> <ul> <li> <p>The attributes that apply to the records that are defined in the service. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <note> <p>Do not include sensitive information in the attributes if the namespace is discoverable by public DNS queries.</p> </note> <p>Supported attribute keys include the following:</p> <dl> <dt>AWS_ALIAS_DNS_NAME</dt> <dd> <p>If you want Cloud Map to create an Amazon Route 53 alias record that routes traffic to an Elastic Load Balancing load balancer, specify the DNS name that's associated with the load balancer. For information about how to get the DNS name, see \"DNSName\" in the topic <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_AliasTarget.html\">AliasTarget</a> in the <i>Route 53 API Reference</i>.</p> <p>Note the following:</p> <ul> <li> <p>The configuration for the service that's specified by <code>ServiceId</code> must include settings for an <code>A</code> record, an <code>AAAA</code> record, or both.</p> </li> <li> <p>In the service that's specified by <code>ServiceId</code>, the value of <code>RoutingPolicy</code> must be <code>WEIGHTED</code>.</p> </li> <li> <p>If the service that's specified by <code>ServiceId</code> includes <code>HealthCheckConfig</code> settings, Cloud Map will create the Route 53 health check, but it doesn't associate the health check with the alias record.</p> </li> <li> <p>Auto naming currently doesn't support creating alias records that route traffic to Amazon Web Services resources other than Elastic Load Balancing load balancers.</p> </li> <li> <p>If you specify a value for <code>AWS_ALIAS_DNS_NAME</code>, don't specify values for any of the <code>AWS_INSTANCE</code> attributes.</p> </li> </ul> </dd> <dt>AWS_EC2_INSTANCE_ID</dt> <dd> <p> <i>HTTP namespaces only.</i> The Amazon EC2 instance ID for the instance. If the <code>AWS_EC2_INSTANCE_ID</code> attribute is specified, then the only other attribute that can be specified is <code>AWS_INIT_HEALTH_STATUS</code>. When the <code>AWS_EC2_INSTANCE_ID</code> attribute is specified, then the <code>AWS_INSTANCE_IPV4</code> attribute will be filled out with the primary private IPv4 address.</p> </dd> <dt>AWS_INIT_HEALTH_STATUS</dt> <dd> <p>If the service configuration includes <code>HealthCheckCustomConfig</code>, you can optionally use <code>AWS_INIT_HEALTH_STATUS</code> to specify the initial status of the custom health check, <code>HEALTHY</code> or <code>UNHEALTHY</code>. If you don't specify a value for <code>AWS_INIT_HEALTH_STATUS</code>, the initial status is <code>HEALTHY</code>.</p> </dd> <dt>AWS_INSTANCE_CNAME</dt> <dd> <p>If the service configuration includes a <code>CNAME</code> record, the domain name that you want Route 53 to return in response to DNS queries (for example, <code>example.com</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>CNAME</code> record.</p> </dd> <dt>AWS_INSTANCE_IPV4</dt> <dd> <p>If the service configuration includes an <code>A</code> record, the IPv4 address that you want Route 53 to return in response to DNS queries (for example, <code>192.0.2.44</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>A</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_IPV6</dt> <dd> <p>If the service configuration includes an <code>AAAA</code> record, the IPv6 address that you want Route 53 to return in response to DNS queries (for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>AAAA</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_PORT</dt> <dd> <p>If the service includes an <code>SRV</code> record, the value that you want Route 53 to return for the port.</p> <p>If the service includes <code>HealthCheckConfig</code>, the port on the endpoint that you want Route 53 to send requests to. </p> <p>This value is required if you specified settings for an <code>SRV</code> record or a Route 53 health check when you created the service.</p> </dd> <dt>Custom attributes</dt> <dd> <p>You can add up to 30 custom attributes. For each key-value pair, the maximum length of the attribute name is 255 characters, and the maximum length of the attribute value is 1,024 characters. The total size of all provided attributes (sum of all keys and values) must not exceed 5,000 characters.</p> </dd> </dl>",
+    }),
   })
   .openapi({
     required: ['ServiceId', 'InstanceId', 'Attributes'],
@@ -1994,34 +1429,26 @@ const RegisterInstanceRequestSchema = z
   .openapi('RegisterInstanceRequest')
 
 const TagResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that you want to retrieve tags for.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The tags to add to the specified resource. Specifying the tag key is required. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that you want to retrieve tags for.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        "The tags to add to the specified resource. Specifying the tag key is required. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('UntagResourceResponse')
 
@@ -2029,60 +1456,48 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyLi
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that you want to retrieve tags for.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The tag keys to remove from the specified resource.' }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that you want to retrieve tags for.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The tag keys to remove from the specified resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateHttpNamespaceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateHttpNamespaceResponse')
 
 const HttpNamespaceChangeSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'An updated description for the HTTP namespace.' }),
-    ),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'An updated description for the HTTP namespace.',
+    }),
   })
   .openapi({ required: ['Description'], description: 'Updated properties for the HTTP namespace.' })
   .openapi('HttpNamespaceChange')
 
 const UpdateHttpNamespaceRequestSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the namespace that you want to update.' }),
-    ),
-    UpdaterRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed <code>UpdateHttpNamespace</code> requests to be retried without the risk of running the operation twice. <code>UpdaterRequestId</code> can be any unique string (for example, a date/timestamp).',
-        }),
-    ).exactOptional(),
-    Namespace: HttpNamespaceChangeSchema.and(
-      z.any().openapi({ description: 'Updated properties for the the HTTP namespace.' }),
-    ),
+    Id: ResourceIdSchema.openapi({
+      description: 'The ID of the namespace that you want to update.',
+    }),
+    UpdaterRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed <code>UpdateHttpNamespace</code> requests to be retried without the risk of running the operation twice. <code>UpdaterRequestId</code> can be any unique string (for example, a date/timestamp).',
+    }),
+    Namespace: HttpNamespaceChangeSchema.openapi({
+      description: 'Updated properties for the the HTTP namespace.',
+    }),
   })
   .openapi({ required: ['Id', 'Namespace'], title: 'UpdateHttpNamespaceRequest' })
   .openapi('UpdateHttpNamespaceRequest')
@@ -2091,29 +1506,17 @@ const CustomHealthStatusSchema = z.enum(['HEALTHY', 'UNHEALTHY']).openapi('Custo
 
 const UpdateInstanceCustomHealthStatusRequestSchema = z
   .object({
-    ServiceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the service that includes the configuration for the custom health check that you want to change the status for.',
-        }),
-    ),
-    InstanceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the instance that you want to change the health status for.',
-        }),
-    ),
-    Status: CustomHealthStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new status of the instance, <code>HEALTHY</code> or <code>UNHEALTHY</code>.',
-        }),
-    ),
+    ServiceId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the service that includes the configuration for the custom health check that you want to change the status for.',
+    }),
+    InstanceId: ResourceIdSchema.openapi({
+      description: 'The ID of the instance that you want to change the health status for.',
+    }),
+    Status: CustomHealthStatusSchema.openapi({
+      description:
+        'The new status of the instance, <code>HEALTHY</code> or <code>UNHEALTHY</code>.',
+    }),
   })
   .openapi({
     required: ['ServiceId', 'InstanceId', 'Status'],
@@ -2125,27 +1528,19 @@ const CustomHealthNotFoundSchema = z.any().openapi('CustomHealthNotFound')
 
 const UpdatePrivateDnsNamespaceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePrivateDnsNamespaceResponse')
 
 const SOAChangeSchema = z
   .object({
-    TTL: RecordTTLSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated time to live (TTL) for purposes of negative caching.',
-        }),
-    ),
+    TTL: RecordTTLSchema.openapi({
+      description: 'The updated time to live (TTL) for purposes of negative caching.',
+    }),
   })
   .openapi({
     required: ['TTL'],
@@ -2156,14 +1551,10 @@ const SOAChangeSchema = z
 
 const PrivateDnsPropertiesMutableChangeSchema = z
   .object({
-    SOA: SOAChangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updated fields for the Start of Authority (SOA) record for the hosted zone for the private DNS namespace.',
-        }),
-    ),
+    SOA: SOAChangeSchema.openapi({
+      description:
+        'Updated fields for the Start of Authority (SOA) record for the hosted zone for the private DNS namespace.',
+    }),
   })
   .openapi({
     required: ['SOA'],
@@ -2173,9 +1564,9 @@ const PrivateDnsPropertiesMutableChangeSchema = z
 
 const PrivateDnsNamespacePropertiesChangeSchema = z
   .object({
-    DnsProperties: PrivateDnsPropertiesMutableChangeSchema.and(
-      z.any().openapi({ description: 'Updated DNS properties for the private DNS namespace.' }),
-    ),
+    DnsProperties: PrivateDnsPropertiesMutableChangeSchema.openapi({
+      description: 'Updated DNS properties for the private DNS namespace.',
+    }),
   })
   .openapi({
     required: ['DnsProperties'],
@@ -2185,60 +1576,48 @@ const PrivateDnsNamespacePropertiesChangeSchema = z
 
 const PrivateDnsNamespaceChangeSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'An updated description for the private DNS namespace.' }),
-    ).exactOptional(),
-    Properties: PrivateDnsNamespacePropertiesChangeSchema.and(
-      z.any().openapi({ description: 'Properties to be updated in the private DNS namespace.' }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'An updated description for the private DNS namespace.',
+    }),
+    Properties: PrivateDnsNamespacePropertiesChangeSchema.exactOptional().openapi({
+      description: 'Properties to be updated in the private DNS namespace.',
+    }),
   })
   .openapi({ description: 'Updated properties for the private DNS namespace.', required: [] })
   .openapi('PrivateDnsNamespaceChange')
 
 const UpdatePrivateDnsNamespaceRequestSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the namespace that you want to update.' }),
-    ),
-    UpdaterRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed <code>UpdatePrivateDnsNamespace</code> requests to be retried without the risk of running the operation twice. <code>UpdaterRequestId</code> can be any unique string (for example, a date/timestamp).',
-        }),
-    ).exactOptional(),
-    Namespace: PrivateDnsNamespaceChangeSchema.and(
-      z.any().openapi({ description: 'Updated properties for the private DNS namespace.' }),
-    ),
+    Id: ResourceIdSchema.openapi({
+      description: 'The ID of the namespace that you want to update.',
+    }),
+    UpdaterRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed <code>UpdatePrivateDnsNamespace</code> requests to be retried without the risk of running the operation twice. <code>UpdaterRequestId</code> can be any unique string (for example, a date/timestamp).',
+    }),
+    Namespace: PrivateDnsNamespaceChangeSchema.openapi({
+      description: 'Updated properties for the private DNS namespace.',
+    }),
   })
   .openapi({ required: ['Id', 'Namespace'], title: 'UpdatePrivateDnsNamespaceRequest' })
   .openapi('UpdatePrivateDnsNamespaceRequest')
 
 const UpdatePublicDnsNamespaceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePublicDnsNamespaceResponse')
 
 const PublicDnsPropertiesMutableChangeSchema = z
   .object({
-    SOA: SOAChangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updated fields for the Start of Authority (SOA) record for the hosted zone for the public DNS namespace.',
-        }),
-    ),
+    SOA: SOAChangeSchema.openapi({
+      description:
+        'Updated fields for the Start of Authority (SOA) record for the hosted zone for the public DNS namespace.',
+    }),
   })
   .openapi({
     required: ['SOA'],
@@ -2248,13 +1627,9 @@ const PublicDnsPropertiesMutableChangeSchema = z
 
 const PublicDnsNamespacePropertiesChangeSchema = z
   .object({
-    DnsProperties: PublicDnsPropertiesMutableChangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Updated DNS properties for the hosted zone for the public DNS namespace.',
-        }),
-    ),
+    DnsProperties: PublicDnsPropertiesMutableChangeSchema.openapi({
+      description: 'Updated DNS properties for the hosted zone for the public DNS namespace.',
+    }),
   })
   .openapi({
     required: ['DnsProperties'],
@@ -2264,60 +1639,46 @@ const PublicDnsNamespacePropertiesChangeSchema = z
 
 const PublicDnsNamespaceChangeSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'An updated description for the public DNS namespace.' }),
-    ).exactOptional(),
-    Properties: PublicDnsNamespacePropertiesChangeSchema.and(
-      z.any().openapi({ description: 'Properties to be updated in the public DNS namespace.' }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'An updated description for the public DNS namespace.',
+    }),
+    Properties: PublicDnsNamespacePropertiesChangeSchema.exactOptional().openapi({
+      description: 'Properties to be updated in the public DNS namespace.',
+    }),
   })
   .openapi({ description: 'Updated properties for the public DNS namespace.', required: [] })
   .openapi('PublicDnsNamespaceChange')
 
 const UpdatePublicDnsNamespaceRequestSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the namespace being updated.' }),
-    ),
-    UpdaterRequestId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed <code>UpdatePublicDnsNamespace</code> requests to be retried without the risk of running the operation twice. <code>UpdaterRequestId</code> can be any unique string (for example, a date/timestamp).',
-        }),
-    ).exactOptional(),
-    Namespace: PublicDnsNamespaceChangeSchema.and(
-      z.any().openapi({ description: 'Updated properties for the public DNS namespace.' }),
-    ),
+    Id: ResourceIdSchema.openapi({ description: 'The ID of the namespace being updated.' }),
+    UpdaterRequestId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request and that allows failed <code>UpdatePublicDnsNamespace</code> requests to be retried without the risk of running the operation twice. <code>UpdaterRequestId</code> can be any unique string (for example, a date/timestamp).',
+    }),
+    Namespace: PublicDnsNamespaceChangeSchema.openapi({
+      description: 'Updated properties for the public DNS namespace.',
+    }),
   })
   .openapi({ required: ['Id', 'Namespace'], title: 'UpdatePublicDnsNamespaceRequest' })
   .openapi('UpdatePublicDnsNamespaceRequest')
 
 const UpdateServiceResponseSchema = z
   .object({
-    OperationId: OperationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
-        }),
-    ).exactOptional(),
+    OperationId: OperationIdSchema.exactOptional().openapi({
+      description:
+        'A value that you can use to determine whether the request completed successfully. To get the status of the operation, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html">GetOperation</a>.',
+    }),
   })
   .openapi({ example: { OperationId: 'm35hsdrkxwjffm3xef4bxyy6vc3ewakx-jdn3y5g5' }, required: [] })
   .openapi('UpdateServiceResponse')
 
 const DnsConfigChangeSchema = z
   .object({
-    DnsRecords: DnsRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains one <code>DnsRecord</code> object for each Route 53 record that you want Cloud Map to create when you register an instance.',
-        }),
-    ),
+    DnsRecords: DnsRecordListSchema.openapi({
+      description:
+        'An array that contains one <code>DnsRecord</code> object for each Route 53 record that you want Cloud Map to create when you register an instance.',
+    }),
   })
   .openapi({
     required: ['DnsRecords'],
@@ -2328,25 +1689,17 @@ const DnsConfigChangeSchema = z
 
 const ServiceChangeSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the service.' }),
-    ).exactOptional(),
-    DnsConfig: DnsConfigChangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Route 53 DNS records that you want Cloud Map to create when you register an instance.',
-        }),
-    ).exactOptional(),
-    HealthCheckConfig: HealthCheckConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>Public DNS and HTTP namespaces only.</i> Settings for an optional health check. If you specify settings for a health check, Cloud Map associates the health check with the records that you specify in <code>DnsConfig</code>.',
-        }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the service.',
+    }),
+    DnsConfig: DnsConfigChangeSchema.exactOptional().openapi({
+      description:
+        'Information about the Route 53 DNS records that you want Cloud Map to create when you register an instance.',
+    }),
+    HealthCheckConfig: HealthCheckConfigSchema.exactOptional().openapi({
+      description:
+        ' <i>Public DNS and HTTP namespaces only.</i> Settings for an optional health check. If you specify settings for a health check, Cloud Map associates the health check with the records that you specify in <code>DnsConfig</code>.',
+    }),
   })
   .openapi({
     description: 'A complex type that contains changes to an existing service.',
@@ -2356,14 +1709,10 @@ const ServiceChangeSchema = z
 
 const UpdateServiceRequestSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the service that you want to update.' }),
-    ),
-    Service: ServiceChangeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A complex type that contains the new settings for the service.' }),
-    ),
+    Id: ResourceIdSchema.openapi({ description: 'The ID of the service that you want to update.' }),
+    Service: ServiceChangeSchema.openapi({
+      description: 'A complex type that contains the new settings for the service.',
+    }),
   })
   .openapi({ required: ['Id', 'Service'], title: 'UpdateServiceRequest' })
   .openapi('UpdateServiceRequest')

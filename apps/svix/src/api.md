@@ -46,21 +46,21 @@ List of all the organization's applications.
 {
   "data": [
     {
-      "createdAt": "1970-01-01T00:00:00Z",
+      "uid": "unique-app-identifier",
+      "name": "My first application",
+      "throttleRate": 0,
       "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
       "metadata": {
         "property1": "string",
         "property2": "string"
-      },
-      "name": "My first application",
-      "throttleRate": 0,
-      "uid": "unique-app-identifier",
-      "updatedAt": "1970-01-01T00:00:00Z"
+      }
     }
   ],
-  "done": true,
   "iterator": "iterator",
-  "prevIterator": "-iterator"
+  "prevIterator": "-iterator",
+  "done": true
 }
 ```
 
@@ -153,10 +153,10 @@ curl https://api.svix.com/api/v1/app \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "metadata": {},
     "name": "My first application",
     "throttleRate": 1,
-    "uid": "unique-app-identifier"
+    "uid": "unique-app-identifier",
+    "metadata": {}
   }'
 ```
 
@@ -168,10 +168,10 @@ Create a new application.
 
 ```json
 {
-  "metadata": {},
   "name": "My first application",
   "throttleRate": 1,
-  "uid": "unique-app-identifier"
+  "uid": "unique-app-identifier",
+  "metadata": {}
 }
 ```
 
@@ -182,11 +182,11 @@ Create a new application.
 |get_if_exists|query|boolean|false|Get an existing application, or create a new one if doesn't exist. It's two separate functions in the libs.|
 |idempotency-key|header|string|false|The request's idempotency key|
 |body|body|[ApplicationIn](#schemaapplicationin)|true|none|
-|» metadata|body|object|false|none|
-|» » **additionalProperties**|body|string|false|none|
 |» name|body|string|true|none|
 |» throttleRate|body|integer(uint16) \| null|false|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
 |» uid|body|string \| null|false|Optional unique identifier for the application|
+|» metadata|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
 
 > Example responses
 
@@ -194,16 +194,16 @@ Create a new application.
 
 ```json
 {
-  "createdAt": "1970-01-01T00:00:00Z",
+  "uid": "unique-app-identifier",
+  "name": "My first application",
+  "throttleRate": 0,
   "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
   "metadata": {
     "property1": "string",
     "property2": "string"
-  },
-  "name": "My first application",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z"
+  }
 }
 ```
 
@@ -211,16 +211,16 @@ Create a new application.
 
 ```json
 {
-  "createdAt": "1970-01-01T00:00:00Z",
+  "uid": "unique-app-identifier",
+  "name": "My first application",
+  "throttleRate": 0,
   "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
   "metadata": {
     "property1": "string",
     "property2": "string"
-  },
-  "name": "My first application",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z"
+  }
 }
 ```
 
@@ -309,7 +309,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.svix.com/api/v1/app/{app_id}' \
+curl https://api.svix.com/api/v1/app/string \
   -H 'Accept: application/json'
 ```
 
@@ -317,22 +317,28 @@ curl 'https://api.svix.com/api/v1/app/{app_id}' \
 
 Get an application.
 
+<h3 id="get-application-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|app_id|path|string|true|none|
+
 > Example responses
 
 > 200 Response
 
 ```json
 {
-  "createdAt": "1970-01-01T00:00:00Z",
+  "uid": "unique-app-identifier",
+  "name": "My first application",
+  "throttleRate": 0,
   "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
   "metadata": {
     "property1": "string",
     "property2": "string"
-  },
-  "name": "My first application",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z"
+  }
 }
 ```
 
@@ -425,10 +431,10 @@ curl https://api.svix.com/api/v1/app/unique-app-identifier \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "metadata": {},
     "name": "My first application",
     "throttleRate": 1,
-    "uid": "unique-app-identifier"
+    "uid": "unique-app-identifier",
+    "metadata": {}
   }'
 ```
 
@@ -440,10 +446,10 @@ Update an application.
 
 ```json
 {
-  "metadata": {},
   "name": "My first application",
   "throttleRate": 1,
-  "uid": "unique-app-identifier"
+  "uid": "unique-app-identifier",
+  "metadata": {}
 }
 ```
 
@@ -453,11 +459,11 @@ Update an application.
 |---|---|---|---|---|
 |app_id|path|string|true|none|
 |body|body|[ApplicationIn](#schemaapplicationin)|true|none|
-|» metadata|body|object|false|none|
-|» » **additionalProperties**|body|string|false|none|
 |» name|body|string|true|none|
 |» throttleRate|body|integer(uint16) \| null|false|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
 |» uid|body|string \| null|false|Optional unique identifier for the application|
+|» metadata|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
 
 > Example responses
 
@@ -465,16 +471,16 @@ Update an application.
 
 ```json
 {
-  "createdAt": "1970-01-01T00:00:00Z",
+  "uid": "unique-app-identifier",
+  "name": "My first application",
+  "throttleRate": 0,
   "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
   "metadata": {
     "property1": "string",
     "property2": "string"
-  },
-  "name": "My first application",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z"
+  }
 }
 ```
 
@@ -482,16 +488,16 @@ Update an application.
 
 ```json
 {
-  "createdAt": "1970-01-01T00:00:00Z",
+  "uid": "unique-app-identifier",
+  "name": "My first application",
+  "throttleRate": 0,
   "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
   "metadata": {
     "property1": "string",
     "property2": "string"
-  },
-  "name": "My first application",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z"
+  }
 }
 ```
 
@@ -580,7 +586,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.svix.com/api/v1/app/{app_id}' \
+curl https://api.svix.com/api/v1/app/string \
   -X DELETE \
   -H 'Accept: application/json'
 ```
@@ -588,6 +594,12 @@ curl 'https://api.svix.com/api/v1/app/{app_id}' \
 `DELETE /api/v1/app/{app_id}`
 
 Delete an application.
+
+<h3 id="delete-application-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|app_id|path|string|true|none|
 
 > Example responses
 
@@ -675,18 +687,18 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.svix.com/api/v1/app/{app_id}' \
+curl https://api.svix.com/api/v1/app/string \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
+    "name": "string",
+    "throttleRate": 0,
+    "uid": "unique-app-identifier",
     "metadata": {
       "property1": "string",
       "property2": "string"
-    },
-    "name": "string",
-    "throttleRate": 0,
-    "uid": "unique-app-identifier"
+    }
   }'
 ```
 
@@ -698,13 +710,13 @@ Partially update an application.
 
 ```json
 {
+  "name": "string",
+  "throttleRate": 0,
+  "uid": "unique-app-identifier",
   "metadata": {
     "property1": "string",
     "property2": "string"
-  },
-  "name": "string",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier"
+  }
 }
 ```
 
@@ -712,12 +724,13 @@ Partially update an application.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|app_id|path|string|true|none|
 |body|body|[ApplicationPatch](#schemaapplicationpatch)|true|none|
-|» metadata|body|object|false|none|
-|» » **additionalProperties**|body|string|false|none|
 |» name|body|string|false|none|
 |» throttleRate|body|integer(uint16) \| null|false|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
 |» uid|body|string \| null|false|none|
+|» metadata|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
 
 > Example responses
 
@@ -725,16 +738,16 @@ Partially update an application.
 
 ```json
 {
-  "createdAt": "1970-01-01T00:00:00Z",
+  "uid": "unique-app-identifier",
+  "name": "My first application",
+  "throttleRate": 0,
   "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
   "metadata": {
     "property1": "string",
     "property2": "string"
-  },
-  "name": "My first application",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z"
+  }
 }
 ```
 
@@ -824,7 +837,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.svix.com/api/v1/app/{app_id}/msg' \
+curl https://api.svix.com/api/v1/app/string/msg \
   -H 'Accept: application/json'
 ```
 
@@ -847,6 +860,7 @@ The `after` parameter lets you filter all items created after a certain date and
 |after|query|string(date-time) \| null|false|Only include items created after a certain date|
 |with_content|query|boolean|false|When `true` message payloads are included in the response|
 |event_types|query|[string]|false|Filter response based on the event type|
+|app_id|path|string|true|none|
 
 > Example responses
 
@@ -856,23 +870,23 @@ The `after` parameter lets you filter all items created after a certain date and
 {
   "data": [
     {
-      "channels": [
-        "project_123",
-        "group_2"
-      ],
       "eventId": "unique-msg-identifier",
       "eventType": "user.signup",
-      "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
       "payload": {
         "email": "test@example.com",
         "username": "test_user"
       },
+      "channels": [
+        "project_123",
+        "group_2"
+      ],
+      "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
       "timestamp": "1970-01-01T00:00:00Z"
     }
   ],
-  "done": true,
   "iterator": "iterator",
-  "prevIterator": "-iterator"
+  "prevIterator": "-iterator",
+  "done": true
 }
 ```
 
@@ -965,23 +979,23 @@ curl https://api.svix.com/api/v1/app/unique-app-identifier/msg \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "application": {
-      "metadata": {},
-      "name": "My first application",
-      "throttleRate": 1,
-      "uid": "unique-app-identifier"
-    },
-    "channels": [
-      "project_123",
-      "group_2"
-    ],
     "eventId": "unique-msg-identifier",
     "eventType": "user.signup",
     "payload": {
       "email": "test@example.com",
       "username": "test_user"
     },
-    "payloadRetentionPeriod": 90
+    "channels": [
+      "project_123",
+      "group_2"
+    ],
+    "payloadRetentionPeriod": 90,
+    "application": {
+      "name": "My first application",
+      "throttleRate": 1,
+      "uid": "unique-app-identifier",
+      "metadata": {}
+    }
   }'
 ```
 
@@ -1001,23 +1015,23 @@ The `payload` property is the webhook's body (the actual webhook message). Svix 
 
 ```json
 {
-  "application": {
-    "metadata": {},
-    "name": "My first application",
-    "throttleRate": 1,
-    "uid": "unique-app-identifier"
-  },
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
   "eventId": "unique-msg-identifier",
   "eventType": "user.signup",
   "payload": {
     "email": "test@example.com",
     "username": "test_user"
   },
-  "payloadRetentionPeriod": 90
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "payloadRetentionPeriod": 90,
+  "application": {
+    "name": "My first application",
+    "throttleRate": 1,
+    "uid": "unique-app-identifier",
+    "metadata": {}
+  }
 }
 ```
 
@@ -1029,12 +1043,12 @@ The `payload` property is the webhook's body (the actual webhook message). Svix 
 |app_id|path|string|true|none|
 |idempotency-key|header|string|false|The request's idempotency key|
 |body|body|[MessageIn](#schemamessagein)|true|none|
-|» application|body|[ApplicationIn](#schemaapplicationin)|false|Optionally creates a new application alongside the message.<br><br>If the application id or uid that is used in the path already exists, this argument is ignored.|
-|» channels|body|[string]|false|List of free-form identifiers that endpoints can filter by|
 |» eventId|body|string \| null|false|Optional unique identifier for the message|
 |» eventType|body|string|true|none|
 |» payload|body|object|true|none|
+|» channels|body|[string]|false|List of free-form identifiers that endpoints can filter by|
 |» payloadRetentionPeriod|body|integer(int64)|false|none|
+|» application|body|[ApplicationIn](#schemaapplicationin)|false|Optionally creates a new application alongside the message.<br><br>If the application id or uid that is used in the path already exists, this argument is ignored.|
 
 > Example responses
 
@@ -1042,17 +1056,17 @@ The `payload` property is the webhook's body (the actual webhook message). Svix 
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
   "eventId": "unique-msg-identifier",
   "eventType": "user.signup",
-  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "payload": {
     "email": "test@example.com",
     "username": "test_user"
   },
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "timestamp": "1970-01-01T00:00:00Z"
 }
 ```
@@ -1134,137 +1148,6 @@ The `payload` property is the webhook's body (the actual webhook message). Svix 
 This operation does not require authentication
 </aside>
 
-## Bulk Expunge Message Content
-
-<a id="opIdv1.message.bulk-expunge-content"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/msg/bulk-expunge \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -d '{
-    "ids": []
-  }'
-```
-
-`POST /api/v1/app/{app_id}/msg/bulk-expunge`
-
-Delete the payloads from the given messages under the current application
-
-Useful in cases when a message was accidentally sent with sensitive content.
-A message can't be replayed or resent once its payload has been deleted
-(or has expired).
-
-> Body parameter
-
-```json
-{
-  "ids": []
-}
-```
-
-<h3 id="bulk-expunge-message-content-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|app_id|path|string|true|none|
-|idempotency-key|header|string|false|The request's idempotency key|
-|body|body|[BulkExpungeContentsIn](#schemabulkexpungecontentsin)|true|none|
-|» ids|body|[string]|false|Message ID or UID to delete|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "results": {
-    "property1": "expunged",
-    "property2": "expunged"
-  }
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="bulk-expunge-message-content-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[BulkExpungeContentsOut](#schemabulkexpungecontentsout)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
 ## Get Message
 
 <a id="opIdv1.message.get"></a>
@@ -1294,17 +1177,17 @@ Get a message by its ID or eventID.
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
   "eventId": "unique-msg-identifier",
   "eventType": "user.signup",
-  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "payload": {
     "email": "test@example.com",
     "username": "test_user"
   },
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "timestamp": "1970-01-01T00:00:00Z"
 }
 ```
@@ -1489,457 +1372,138 @@ The message can't be replayed or resent once its payload has been deleted (or ha
 This operation does not require authentication
 </aside>
 
+## Bulk Expunge Message Content
+
+<a id="opIdv1.message.bulk-expunge-content"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/msg/bulk-expunge \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "ids": []
+  }'
+```
+
+`POST /api/v1/app/{app_id}/msg/bulk-expunge`
+
+Delete the payloads from the given messages under the current application
+
+Useful in cases when a message was accidentally sent with sensitive content.
+A message can't be replayed or resent once its payload has been deleted
+(or has expired).
+
+> Body parameter
+
+```json
+{
+  "ids": []
+}
+```
+
+<h3 id="bulk-expunge-message-content-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|app_id|path|string|true|none|
+|idempotency-key|header|string|false|The request's idempotency key|
+|body|body|[BulkExpungeContentsIn](#schemabulkexpungecontentsin)|true|none|
+|» ids|body|[string]|false|Message ID or UID to delete|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "results": {
+    "property1": "expunged",
+    "property2": "expunged"
+  }
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="bulk-expunge-message-content-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[BulkExpungeContentsOut](#schemabulkexpungecontentsout)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 <h1 id="svix-api-message-attempt">Message Attempt</h1>
-
-## List Attempts By Endpoint
-
-<a id="opIdv1.message-attempt.list-by-endpoint"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/attempt/endpoint/unique-ep-identifier \
-  -H 'Accept: application/json'
-```
-
-`GET /api/v1/app/{app_id}/attempt/endpoint/{endpoint_id}`
-
-List attempts by endpoint id
-
-<h3 id="list-attempts-by-endpoint-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|limit|query|integer(uint64)|false|Limit the number of returned items|
-|iterator|query|string \| null|false|The iterator returned from a prior invocation|
-|status|query|[MessageStatus](#schemamessagestatus)|false|Filter response based on the delivery status|
-|status_code_class|query|[StatusCodeClass](#schemastatuscodeclass)|false|Filter response based on the HTTP status code|
-|channel|query|string \| null|false|Filter response based on the channel|
-|before|query|string(date-time) \| null|false|Only include items created before a certain date|
-|after|query|string(date-time) \| null|false|Only include items created after a certain date|
-|with_content|query|boolean|false|When `true` attempt content is included in the response|
-|event_types|query|[string]|false|Filter response based on the event type|
-|app_id|path|string|true|none|
-|endpoint_id|path|string|true|none|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
-|status|3|
-|status_code_class|0|
-|status_code_class|100|
-|status_code_class|200|
-|status_code_class|300|
-|status_code_class|400|
-|status_code_class|500|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {
-      "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "response": "{}",
-      "responseDurationMs": 0,
-      "responseStatusCode": 200,
-      "status": 0,
-      "statusText": "success",
-      "timestamp": "1970-01-01T00:00:00Z",
-      "triggerType": 0,
-      "url": "https://example.com/webhook/"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="list-attempts-by-endpoint-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ListResponse_MessageAttemptOut_](#schemalistresponse_messageattemptout_)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## List Attempts By Msg
-
-<a id="opIdv1.message-attempt.list-by-msg"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/attempt/msg/unique-msg-identifier \
-  -H 'Accept: application/json'
-```
-
-`GET /api/v1/app/{app_id}/attempt/msg/{msg_id}`
-
-List attempts by message id
-
-<h3 id="list-attempts-by-msg-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|limit|query|integer(uint64)|false|Limit the number of returned items|
-|iterator|query|string \| null|false|The iterator returned from a prior invocation|
-|status|query|[MessageStatus](#schemamessagestatus)|false|Filter response based on the delivery status|
-|status_code_class|query|[StatusCodeClass](#schemastatuscodeclass)|false|Filter response based on the HTTP status code|
-|channel|query|string \| null|false|Filter response based on the channel|
-|endpoint_id|query|string \| null|false|Filter the attempts based on the attempted endpoint|
-|before|query|string(date-time) \| null|false|Only include items created before a certain date|
-|after|query|string(date-time) \| null|false|Only include items created after a certain date|
-|with_content|query|boolean|false|When `true` attempt content is included in the response|
-|app_id|path|string|true|none|
-|msg_id|path|string|true|none|
-|event_types|query|[string]|false|Filter response based on the event type|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
-|status|3|
-|status_code_class|0|
-|status_code_class|100|
-|status_code_class|200|
-|status_code_class|300|
-|status_code_class|400|
-|status_code_class|500|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {
-      "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "response": "{}",
-      "responseDurationMs": 0,
-      "responseStatusCode": 200,
-      "status": 0,
-      "statusText": "success",
-      "timestamp": "1970-01-01T00:00:00Z",
-      "triggerType": 0,
-      "url": "https://example.com/webhook/"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="list-attempts-by-msg-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ListResponse_MessageAttemptOut_](#schemalistresponse_messageattemptout_)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## List Attempted Messages
-
-<a id="opIdv1.message-attempt.list-attempted-messages"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/msg \
-  -H 'Accept: application/json'
-```
-
-`GET /api/v1/app/{app_id}/endpoint/{endpoint_id}/msg`
-
-List messages for a particular endpoint. Additionally includes metadata about the latest message attempt.
-
-The `before` parameter lets you filter all items created before a certain date and is ignored if an iterator is passed.
-
-<h3 id="list-attempted-messages-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|limit|query|integer(uint64)|false|Limit the number of returned items|
-|iterator|query|string \| null|false|The iterator returned from a prior invocation|
-|channel|query|string \| null|false|Filter response based on the channel|
-|status|query|[MessageStatus](#schemamessagestatus)|false|Filter response based on the delivery status|
-|before|query|string(date-time) \| null|false|Only include items created before a certain date|
-|after|query|string(date-time) \| null|false|Only include items created after a certain date|
-|with_content|query|boolean|false|When `true` message payloads are included in the response|
-|app_id|path|string|true|none|
-|endpoint_id|path|string|true|none|
-|event_types|query|[string]|false|Filter response based on the event type|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
-|status|3|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "data": [
-    {
-      "channels": [
-        "project_123",
-        "group_2"
-      ],
-      "eventId": "unique-msg-identifier",
-      "eventType": "user.signup",
-      "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "nextAttempt": "1970-01-01T00:00:00Z",
-      "payload": {
-        "email": "test@example.com",
-        "username": "test_user"
-      },
-      "status": 0,
-      "statusText": "success",
-      "timestamp": "1970-01-01T00:00:00Z"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="list-attempted-messages-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ListResponse_EndpointMessageOut_](#schemalistresponse_endpointmessageout_)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
 
 ## Get Messageattempt
 
@@ -1970,17 +1534,17 @@ curl https://api.svix.com/api/v1/app/unique-app-identifier/msg/unique-msg-identi
 
 ```json
 {
-  "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "url": "https://example.com/webhook/",
   "response": "{}",
-  "responseDurationMs": 0,
   "responseStatusCode": 200,
+  "responseDurationMs": 0,
   "status": 0,
   "statusText": "success",
-  "timestamp": "1970-01-01T00:00:00Z",
   "triggerType": 0,
-  "url": "https://example.com/webhook/"
+  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "timestamp": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -2195,31 +1759,31 @@ curl https://api.svix.com/api/v1/app/unique-app-identifier/msg/unique-msg-identi
 {
   "data": [
     {
-      "channels": [
-        "project_123",
-        "group_2"
-      ],
-      "createdAt": "1970-01-01T00:00:00Z",
+      "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "status": 0,
+      "statusText": "success",
+      "nextAttempt": "1970-01-01T00:00:00Z",
       "description": "string",
+      "throttleRate": 0,
+      "uid": "unique-ep-identifier",
+      "url": "https://example.com/webhook/",
       "disabled": false,
       "eventTypes": [
         "user.signup",
         "user.deleted"
       ],
-      "expiry": "1970-01-01T00:00:00Z",
-      "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "nextAttempt": "1970-01-01T00:00:00Z",
-      "status": 0,
-      "statusText": "success",
-      "throttleRate": 0,
-      "uid": "unique-ep-identifier",
+      "channels": [
+        "project_123",
+        "group_2"
+      ],
+      "createdAt": "1970-01-01T00:00:00Z",
       "updatedAt": "1970-01-01T00:00:00Z",
-      "url": "https://example.com/webhook/"
+      "expiry": "1970-01-01T00:00:00Z"
     }
   ],
-  "done": true,
   "iterator": "iterator",
-  "prevIterator": "-iterator"
+  "prevIterator": "-iterator",
+  "done": true
 }
 ```
 
@@ -2410,6 +1974,456 @@ Resend a message to the specified endpoint.
 This operation does not require authentication
 </aside>
 
+## List Attempted Messages
+
+<a id="opIdv1.message-attempt.list-attempted-messages"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/msg \
+  -H 'Accept: application/json'
+```
+
+`GET /api/v1/app/{app_id}/endpoint/{endpoint_id}/msg`
+
+List messages for a particular endpoint. Additionally includes metadata about the latest message attempt.
+
+The `before` parameter lets you filter all items created before a certain date and is ignored if an iterator is passed.
+
+<h3 id="list-attempted-messages-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer(uint64)|false|Limit the number of returned items|
+|iterator|query|string \| null|false|The iterator returned from a prior invocation|
+|channel|query|string \| null|false|Filter response based on the channel|
+|status|query|[MessageStatus](#schemamessagestatus)|false|Filter response based on the delivery status|
+|before|query|string(date-time) \| null|false|Only include items created before a certain date|
+|after|query|string(date-time) \| null|false|Only include items created after a certain date|
+|with_content|query|boolean|false|When `true` message payloads are included in the response|
+|app_id|path|string|true|none|
+|endpoint_id|path|string|true|none|
+|event_types|query|[string]|false|Filter response based on the event type|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|0|
+|status|1|
+|status|2|
+|status|3|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "status": 0,
+      "statusText": "success",
+      "nextAttempt": "1970-01-01T00:00:00Z",
+      "eventId": "unique-msg-identifier",
+      "eventType": "user.signup",
+      "payload": {
+        "email": "test@example.com",
+        "username": "test_user"
+      },
+      "channels": [
+        "project_123",
+        "group_2"
+      ],
+      "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "timestamp": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="list-attempted-messages-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[ListResponse_EndpointMessageOut_](#schemalistresponse_endpointmessageout_)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## List Attempts By Endpoint
+
+<a id="opIdv1.message-attempt.list-by-endpoint"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/attempt/endpoint/unique-ep-identifier \
+  -H 'Accept: application/json'
+```
+
+`GET /api/v1/app/{app_id}/attempt/endpoint/{endpoint_id}`
+
+List attempts by endpoint id
+
+<h3 id="list-attempts-by-endpoint-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer(uint64)|false|Limit the number of returned items|
+|iterator|query|string \| null|false|The iterator returned from a prior invocation|
+|status|query|[MessageStatus](#schemamessagestatus)|false|Filter response based on the delivery status|
+|status_code_class|query|[StatusCodeClass](#schemastatuscodeclass)|false|Filter response based on the HTTP status code|
+|channel|query|string \| null|false|Filter response based on the channel|
+|before|query|string(date-time) \| null|false|Only include items created before a certain date|
+|after|query|string(date-time) \| null|false|Only include items created after a certain date|
+|with_content|query|boolean|false|When `true` attempt content is included in the response|
+|event_types|query|[string]|false|Filter response based on the event type|
+|app_id|path|string|true|none|
+|endpoint_id|path|string|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|0|
+|status|1|
+|status|2|
+|status|3|
+|status_code_class|0|
+|status_code_class|100|
+|status_code_class|200|
+|status_code_class|300|
+|status_code_class|400|
+|status_code_class|500|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "url": "https://example.com/webhook/",
+      "response": "{}",
+      "responseStatusCode": 200,
+      "responseDurationMs": 0,
+      "status": 0,
+      "statusText": "success",
+      "triggerType": 0,
+      "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "timestamp": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="list-attempts-by-endpoint-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[ListResponse_MessageAttemptOut_](#schemalistresponse_messageattemptout_)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## List Attempts By Msg
+
+<a id="opIdv1.message-attempt.list-by-msg"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/attempt/msg/unique-msg-identifier \
+  -H 'Accept: application/json'
+```
+
+`GET /api/v1/app/{app_id}/attempt/msg/{msg_id}`
+
+List attempts by message id
+
+<h3 id="list-attempts-by-msg-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|limit|query|integer(uint64)|false|Limit the number of returned items|
+|iterator|query|string \| null|false|The iterator returned from a prior invocation|
+|status|query|[MessageStatus](#schemamessagestatus)|false|Filter response based on the delivery status|
+|status_code_class|query|[StatusCodeClass](#schemastatuscodeclass)|false|Filter response based on the HTTP status code|
+|channel|query|string \| null|false|Filter response based on the channel|
+|endpoint_id|query|string \| null|false|Filter the attempts based on the attempted endpoint|
+|before|query|string(date-time) \| null|false|Only include items created before a certain date|
+|after|query|string(date-time) \| null|false|Only include items created after a certain date|
+|with_content|query|boolean|false|When `true` attempt content is included in the response|
+|app_id|path|string|true|none|
+|msg_id|path|string|true|none|
+|event_types|query|[string]|false|Filter response based on the event type|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|0|
+|status|1|
+|status|2|
+|status|3|
+|status_code_class|0|
+|status_code_class|100|
+|status_code_class|200|
+|status_code_class|300|
+|status_code_class|400|
+|status_code_class|500|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "url": "https://example.com/webhook/",
+      "response": "{}",
+      "responseStatusCode": 200,
+      "responseDurationMs": 0,
+      "status": 0,
+      "statusText": "success",
+      "triggerType": 0,
+      "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "timestamp": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="list-attempts-by-msg-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[ListResponse_MessageAttemptOut_](#schemalistresponse_messageattemptout_)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 <h1 id="svix-api-endpoint">Endpoint</h1>
 
 ## List Endpoints
@@ -2451,32 +2465,32 @@ List the application's endpoints.
 {
   "data": [
     {
-      "channels": [
-        "project_123",
-        "group_2"
-      ],
-      "createdAt": "1970-01-01T00:00:00Z",
-      "description": "string",
-      "disabled": false,
-      "eventTypes": [
-        "user.signup",
-        "user.deleted"
-      ],
-      "expiry": "1970-01-01T00:00:00Z",
       "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
       "metadata": {
         "property1": "string",
         "property2": "string"
       },
+      "description": "string",
       "throttleRate": 0,
       "uid": "unique-ep-identifier",
+      "url": "https://example.com/webhook/",
+      "disabled": false,
+      "eventTypes": [
+        "user.signup",
+        "user.deleted"
+      ],
+      "channels": [
+        "project_123",
+        "group_2"
+      ],
+      "createdAt": "1970-01-01T00:00:00Z",
       "updatedAt": "1970-01-01T00:00:00Z",
-      "url": "https://example.com/webhook/"
+      "expiry": "1970-01-01T00:00:00Z"
     }
   ],
-  "done": true,
   "iterator": "iterator",
-  "prevIterator": "-iterator"
+  "prevIterator": "-iterator",
+  "done": true
 }
 ```
 
@@ -2569,21 +2583,21 @@ curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "channels": [
-      "project_123",
-      "group_2"
-    ],
     "description": "An example endpoint name",
+    "throttleRate": 1,
+    "uid": "unique-ep-identifier",
+    "url": "https://example.com/webhook/",
     "disabled": false,
     "eventTypes": [
       "user.signup",
       "user.deleted"
     ],
-    "metadata": {},
+    "channels": [
+      "project_123",
+      "group_2"
+    ],
     "secret": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD",
-    "throttleRate": 1,
-    "uid": "unique-ep-identifier",
-    "url": "https://example.com/webhook/"
+    "metadata": {}
   }'
 ```
 
@@ -2597,21 +2611,21 @@ When `secret` is `null` the secret is automatically generated (recommended)
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
   "description": "An example endpoint name",
+  "throttleRate": 1,
+  "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
   "disabled": false,
   "eventTypes": [
     "user.signup",
     "user.deleted"
   ],
-  "metadata": {},
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
   "secret": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD",
-  "throttleRate": 1,
-  "uid": "unique-ep-identifier",
-  "url": "https://example.com/webhook/"
+  "metadata": {}
 }
 ```
 
@@ -2622,16 +2636,16 @@ When `secret` is `null` the secret is automatically generated (recommended)
 |app_id|path|string|true|none|
 |idempotency-key|header|string|false|The request's idempotency key|
 |body|body|[EndpointIn](#schemaendpointin)|true|none|
-|» channels|body|[string]|false|List of message channels this endpoint listens to (omit for all)|
 |» description|body|string|false|none|
-|» disabled|body|boolean|false|none|
-|» eventTypes|body|[string]|false|none|
-|» metadata|body|object|false|none|
-|» » **additionalProperties**|body|string|false|none|
-|» secret|body|string \| null|false|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
 |» throttleRate|body|integer(uint16) \| null|false|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
 |» uid|body|string \| null|false|Optional unique identifier for the endpoint|
 |» url|body|string(uri)|true|none|
+|» disabled|body|boolean|false|none|
+|» eventTypes|body|[string]|false|none|
+|» channels|body|[string]|false|List of message channels this endpoint listens to (omit for all)|
+|» secret|body|string \| null|false|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
+|» metadata|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
 
 > Example responses
 
@@ -2639,27 +2653,27 @@ When `secret` is `null` the secret is automatically generated (recommended)
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "createdAt": "1970-01-01T00:00:00Z",
-  "description": "string",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "expiry": "1970-01-01T00:00:00Z",
   "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "metadata": {
     "property1": "string",
     "property2": "string"
   },
+  "description": "string",
   "throttleRate": 0,
   "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
   "updatedAt": "1970-01-01T00:00:00Z",
-  "url": "https://example.com/webhook/"
+  "expiry": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -2768,27 +2782,27 @@ Get an endpoint.
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "createdAt": "1970-01-01T00:00:00Z",
-  "description": "string",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "expiry": "1970-01-01T00:00:00Z",
   "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "metadata": {
     "property1": "string",
     "property2": "string"
   },
+  "description": "string",
   "throttleRate": 0,
   "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
   "updatedAt": "1970-01-01T00:00:00Z",
-  "url": "https://example.com/webhook/"
+  "expiry": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -2881,20 +2895,20 @@ curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-id
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "channels": [
-      "project_123",
-      "group_2"
-    ],
     "description": "An example endpoint name",
+    "throttleRate": 1,
+    "uid": "unique-ep-identifier",
+    "url": "https://example.com/webhook/",
     "disabled": false,
     "eventTypes": [
       "user.signup",
       "user.deleted"
     ],
-    "metadata": {},
-    "throttleRate": 1,
-    "uid": "unique-ep-identifier",
-    "url": "https://example.com/webhook/"
+    "channels": [
+      "project_123",
+      "group_2"
+    ],
+    "metadata": {}
   }'
 ```
 
@@ -2906,20 +2920,20 @@ Update an endpoint.
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
   "description": "An example endpoint name",
+  "throttleRate": 1,
+  "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
   "disabled": false,
   "eventTypes": [
     "user.signup",
     "user.deleted"
   ],
-  "metadata": {},
-  "throttleRate": 1,
-  "uid": "unique-ep-identifier",
-  "url": "https://example.com/webhook/"
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "metadata": {}
 }
 ```
 
@@ -2930,15 +2944,15 @@ Update an endpoint.
 |app_id|path|string|true|none|
 |endpoint_id|path|string|true|none|
 |body|body|[EndpointUpdate](#schemaendpointupdate)|true|none|
-|» channels|body|[string]|false|List of message channels this endpoint listens to (omit for all)|
 |» description|body|string|false|none|
-|» disabled|body|boolean|false|none|
-|» eventTypes|body|[string]|false|none|
-|» metadata|body|object|false|none|
-|» » **additionalProperties**|body|string|false|none|
 |» throttleRate|body|integer(uint16) \| null|false|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
 |» uid|body|string \| null|false|Optional unique identifier for the endpoint|
 |» url|body|string(uri)|true|none|
+|» disabled|body|boolean|false|none|
+|» eventTypes|body|[string]|false|none|
+|» channels|body|[string]|false|List of message channels this endpoint listens to (omit for all)|
+|» metadata|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
 
 > Example responses
 
@@ -2946,27 +2960,27 @@ Update an endpoint.
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "createdAt": "1970-01-01T00:00:00Z",
-  "description": "string",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "expiry": "1970-01-01T00:00:00Z",
   "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "metadata": {
     "property1": "string",
     "property2": "string"
   },
+  "description": "string",
   "throttleRate": 0,
   "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
   "updatedAt": "1970-01-01T00:00:00Z",
-  "url": "https://example.com/webhook/"
+  "expiry": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -2974,27 +2988,27 @@ Update an endpoint.
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "createdAt": "1970-01-01T00:00:00Z",
-  "description": "string",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "expiry": "1970-01-01T00:00:00Z",
   "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "metadata": {
     "property1": "string",
     "property2": "string"
   },
+  "description": "string",
   "throttleRate": 0,
   "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
   "updatedAt": "1970-01-01T00:00:00Z",
-  "url": "https://example.com/webhook/"
+  "expiry": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -3190,21 +3204,21 @@ curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-id
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "channels": [
-      "project_1337"
-    ],
     "description": "string",
+    "throttleRate": 0,
+    "uid": "unique-ep-identifier",
+    "url": "http://example.com",
     "disabled": true,
     "eventTypes": [
       "user.signup"
     ],
+    "channels": [
+      "project_1337"
+    ],
     "metadata": {
       "property1": "string",
       "property2": "string"
-    },
-    "throttleRate": 0,
-    "uid": "unique-ep-identifier",
-    "url": "http://example.com"
+    }
   }'
 ```
 
@@ -3216,21 +3230,21 @@ Partially update an endpoint.
 
 ```json
 {
-  "channels": [
-    "project_1337"
-  ],
   "description": "string",
+  "throttleRate": 0,
+  "uid": "unique-ep-identifier",
+  "url": "http://example.com",
   "disabled": true,
   "eventTypes": [
     "user.signup"
   ],
+  "channels": [
+    "project_1337"
+  ],
   "metadata": {
     "property1": "string",
     "property2": "string"
-  },
-  "throttleRate": 0,
-  "uid": "unique-ep-identifier",
-  "url": "http://example.com"
+  }
 }
 ```
 
@@ -3241,15 +3255,15 @@ Partially update an endpoint.
 |app_id|path|string|true|none|
 |endpoint_id|path|string|true|none|
 |body|body|[EndpointPatch](#schemaendpointpatch)|true|none|
-|» channels|body|[string]|false|none|
 |» description|body|string|false|none|
-|» disabled|body|boolean|false|none|
-|» eventTypes|body|[string]|false|none|
-|» metadata|body|object|false|none|
-|» » **additionalProperties**|body|string|false|none|
 |» throttleRate|body|integer(uint16) \| null|false|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
 |» uid|body|string \| null|false|none|
 |» url|body|string(uri)|false|none|
+|» disabled|body|boolean|false|none|
+|» eventTypes|body|[string]|false|none|
+|» channels|body|[string]|false|none|
+|» metadata|body|object|false|none|
+|» » **additionalProperties**|body|string|false|none|
 
 > Example responses
 
@@ -3257,27 +3271,27 @@ Partially update an endpoint.
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "createdAt": "1970-01-01T00:00:00Z",
-  "description": "string",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "expiry": "1970-01-01T00:00:00Z",
   "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "metadata": {
     "property1": "string",
     "property2": "string"
   },
+  "description": "string",
   "throttleRate": 0,
   "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
   "updatedAt": "1970-01-01T00:00:00Z",
-  "url": "https://example.com/webhook/"
+  "expiry": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -3347,6 +3361,628 @@ Partially update an endpoint.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[EndpointOut](#schemaendpointout)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Get Endpoint Secret
+
+<a id="opIdv1.endpoint.get-secret"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/secret \
+  -H 'Accept: application/json'
+```
+
+`GET /api/v1/app/{app_id}/endpoint/{endpoint_id}/secret`
+
+Get the endpoint's signing secret.
+
+This is used to verify the authenticity of the webhook.
+For more information please refer to [the consuming webhooks docs](https://docs.svix.com/consuming-webhooks/).
+
+<h3 id="get-endpoint-secret-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|app_id|path|string|true|none|
+|endpoint_id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="get-endpoint-secret-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[EndpointSecretOut](#schemaendpointsecretout)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Rotate Endpoint Secret
+
+<a id="opIdv1.endpoint.rotate-secret"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/secret/rotate \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD",
+    "gracePeriodSeconds": 86400
+  }'
+```
+
+`POST /api/v1/app/{app_id}/endpoint/{endpoint_id}/secret/rotate`
+
+Rotates the endpoint's signing secret.  The previous secret will be valid for the next 24 hours.
+
+> Body parameter
+
+```json
+{
+  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD",
+  "gracePeriodSeconds": 86400
+}
+```
+
+<h3 id="rotate-endpoint-secret-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|app_id|path|string|true|none|
+|endpoint_id|path|string|true|none|
+|idempotency-key|header|string|false|The request's idempotency key|
+|body|body|[EndpointSecretRotateIn](#schemaendpointsecretrotatein)|true|none|
+|» key|body|string \| null|false|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
+|» gracePeriodSeconds|body|integer(uint32) \| null|false|How long the old secret will be valid for, in seconds.<br><br>Valid values are between 0 (immediate expiry) and 7 days. The default is 24 hours.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="rotate-endpoint-secret-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[EndpointSecretOut](#schemaendpointsecretout)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Endpoint Stats
+
+<a id="opIdv1.endpoint.get-stats"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/stats \
+  -H 'Accept: application/json'
+```
+
+`GET /api/v1/app/{app_id}/endpoint/{endpoint_id}/stats`
+
+Get basic statistics for the endpoint.
+
+<h3 id="endpoint-stats-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|app_id|path|string|true|none|
+|endpoint_id|path|string|true|none|
+|since|query|string(date-time) \| null|false|none|
+|until|query|string(date-time) \| null|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "success": 0,
+  "pending": 0,
+  "sending": 0,
+  "fail": 0,
+  "canceled": 0
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="endpoint-stats-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[EndpointStats](#schemaendpointstats)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Send Event Type Example Message
+
+<a id="opIdv1.endpoint.send-example"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/send-example \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "eventType": "user.signup"
+  }'
+```
+
+`POST /api/v1/app/{app_id}/endpoint/{endpoint_id}/send-example`
+
+Send an example message for an event
+
+> Body parameter
+
+```json
+{
+  "eventType": "user.signup"
+}
+```
+
+<h3 id="send-event-type-example-message-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|app_id|path|string|true|none|
+|endpoint_id|path|string|true|none|
+|idempotency-key|header|string|false|The request's idempotency key|
+|body|body|[EventExampleIn](#schemaeventexamplein)|true|none|
+|» eventType|body|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "eventId": "unique-msg-identifier",
+  "eventType": "user.signup",
+  "payload": {
+    "email": "test@example.com",
+    "username": "test_user"
+  },
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "timestamp": "1970-01-01T00:00:00Z"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="send-event-type-example-message-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[MessageOut](#schemamessageout)|
+|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
+|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
+|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
+|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Recover Failed Webhooks
+
+<a id="opIdv1.endpoint.recover"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/recover \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "since": "1970-01-01T00:00:00Z",
+    "until": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`POST /api/v1/app/{app_id}/endpoint/{endpoint_id}/recover`
+
+Resend all failed messages since a given time.
+
+> Body parameter
+
+```json
+{
+  "since": "1970-01-01T00:00:00Z",
+  "until": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="recover-failed-webhooks-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|app_id|path|string|true|none|
+|endpoint_id|path|string|true|none|
+|idempotency-key|header|string|false|The request's idempotency key|
+|body|body|[RecoverIn](#schemarecoverin)|true|none|
+|» since|body|string(date-time)|true|none|
+|» until|body|string(date-time) \| null|false|none|
+
+> Example responses
+
+> 202 Response
+
+```json
+{
+  "id": "string",
+  "status": "running",
+  "task": "endpoint.recover",
+  "updatedAt": "1970-01-01T00:00:00Z"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+> 429 Response
+
+```json
+{
+  "code": "string",
+  "detail": "string"
+}
+```
+
+<h3 id="recover-failed-webhooks-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted||[RecoverOut](#schemarecoverout)|
 |401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
 |403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
 |404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
@@ -3719,628 +4355,6 @@ Partially set the additional headers to be sent with the webhook
 This operation does not require authentication
 </aside>
 
-## Recover Failed Webhooks
-
-<a id="opIdv1.endpoint.recover"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/recover \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -d '{
-    "since": "1970-01-01T00:00:00Z",
-    "until": "1970-01-01T00:00:00Z"
-  }'
-```
-
-`POST /api/v1/app/{app_id}/endpoint/{endpoint_id}/recover`
-
-Resend all failed messages since a given time.
-
-> Body parameter
-
-```json
-{
-  "since": "1970-01-01T00:00:00Z",
-  "until": "1970-01-01T00:00:00Z"
-}
-```
-
-<h3 id="recover-failed-webhooks-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|app_id|path|string|true|none|
-|endpoint_id|path|string|true|none|
-|idempotency-key|header|string|false|The request's idempotency key|
-|body|body|[RecoverIn](#schemarecoverin)|true|none|
-|» since|body|string(date-time)|true|none|
-|» until|body|string(date-time) \| null|false|none|
-
-> Example responses
-
-> 202 Response
-
-```json
-{
-  "id": "string",
-  "status": "running",
-  "task": "endpoint.recover",
-  "updatedAt": "1970-01-01T00:00:00Z"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="recover-failed-webhooks-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|202|Accepted||[RecoverOut](#schemarecoverout)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## Get Endpoint Secret
-
-<a id="opIdv1.endpoint.get-secret"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/secret \
-  -H 'Accept: application/json'
-```
-
-`GET /api/v1/app/{app_id}/endpoint/{endpoint_id}/secret`
-
-Get the endpoint's signing secret.
-
-This is used to verify the authenticity of the webhook.
-For more information please refer to [the consuming webhooks docs](https://docs.svix.com/consuming-webhooks/).
-
-<h3 id="get-endpoint-secret-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|app_id|path|string|true|none|
-|endpoint_id|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="get-endpoint-secret-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[EndpointSecretOut](#schemaendpointsecretout)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## Rotate Endpoint Secret
-
-<a id="opIdv1.endpoint.rotate-secret"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/secret/rotate \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -d '{
-    "gracePeriodSeconds": 86400,
-    "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
-  }'
-```
-
-`POST /api/v1/app/{app_id}/endpoint/{endpoint_id}/secret/rotate`
-
-Rotates the endpoint's signing secret.  The previous secret will be valid for the next 24 hours.
-
-> Body parameter
-
-```json
-{
-  "gracePeriodSeconds": 86400,
-  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
-}
-```
-
-<h3 id="rotate-endpoint-secret-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|app_id|path|string|true|none|
-|endpoint_id|path|string|true|none|
-|idempotency-key|header|string|false|The request's idempotency key|
-|body|body|[EndpointSecretRotateIn](#schemaendpointsecretrotatein)|true|none|
-|» gracePeriodSeconds|body|integer(uint32) \| null|false|How long the old secret will be valid for, in seconds.<br><br>Valid values are between 0 (immediate expiry) and 7 days. The default is 24 hours.|
-|» key|body|string \| null|false|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="rotate-endpoint-secret-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[EndpointSecretOut](#schemaendpointsecretout)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## Send Event Type Example Message
-
-<a id="opIdv1.endpoint.send-example"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/send-example \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -d '{
-    "eventType": "user.signup"
-  }'
-```
-
-`POST /api/v1/app/{app_id}/endpoint/{endpoint_id}/send-example`
-
-Send an example message for an event
-
-> Body parameter
-
-```json
-{
-  "eventType": "user.signup"
-}
-```
-
-<h3 id="send-event-type-example-message-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|app_id|path|string|true|none|
-|endpoint_id|path|string|true|none|
-|idempotency-key|header|string|false|The request's idempotency key|
-|body|body|[EventExampleIn](#schemaeventexamplein)|true|none|
-|» eventType|body|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "eventId": "unique-msg-identifier",
-  "eventType": "user.signup",
-  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "payload": {
-    "email": "test@example.com",
-    "username": "test_user"
-  },
-  "timestamp": "1970-01-01T00:00:00Z"
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="send-event-type-example-message-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[MessageOut](#schemamessageout)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## Endpoint Stats
-
-<a id="opIdv1.endpoint.get-stats"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/app/unique-app-identifier/endpoint/unique-ep-identifier/stats \
-  -H 'Accept: application/json'
-```
-
-`GET /api/v1/app/{app_id}/endpoint/{endpoint_id}/stats`
-
-Get basic statistics for the endpoint.
-
-<h3 id="endpoint-stats-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|app_id|path|string|true|none|
-|endpoint_id|path|string|true|none|
-|since|query|string(date-time) \| null|false|none|
-|until|query|string(date-time) \| null|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "canceled": 0,
-  "fail": 0,
-  "pending": 0,
-  "sending": 0,
-  "success": 0
-}
-```
-
-> 401 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 403 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 404 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 409 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-> 429 Response
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-<h3 id="endpoint-stats-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[EndpointStats](#schemaendpointstats)|
-|401|Unauthorized|Unauthorized|[HttpErrorOut](#schemahttperrorout)|
-|403|Forbidden|Forbidden|[HttpErrorOut](#schemahttperrorout)|
-|404|Not Found|Not Found|[HttpErrorOut](#schemahttperrorout)|
-|409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-|429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
 <h1 id="svix-api-event-type">Event Type</h1>
 
 ## List Event Types
@@ -4383,12 +4397,10 @@ Return the list of event types.
 {
   "data": [
     {
-      "archived": false,
-      "createdAt": "1970-01-01T00:00:00Z",
-      "deprecated": true,
-      "description": "A user has signed up",
-      "featureFlag": "cool-new-feature",
       "name": "user.signup",
+      "description": "A user has signed up",
+      "archived": false,
+      "deprecated": true,
       "schemas": {
         "1": {
           "description": "An invoice was paid by a user",
@@ -4410,12 +4422,14 @@ Return the list of event types.
           "type": "object"
         }
       },
-      "updatedAt": "1970-01-01T00:00:00Z"
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "featureFlag": "cool-new-feature"
     }
   ],
-  "done": true,
   "iterator": "iterator",
-  "prevIterator": "-iterator"
+  "prevIterator": "-iterator",
+  "done": true
 }
 ```
 
@@ -4508,11 +4522,10 @@ curl https://api.svix.com/api/v1/event-type \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
+    "name": "user.signup",
+    "description": "A user has signed up",
     "archived": false,
     "deprecated": false,
-    "description": "A user has signed up",
-    "featureFlag": "cool-new-feature",
-    "name": "user.signup",
     "schemas": {
       "1": {
         "description": "An invoice was paid by a user",
@@ -4533,7 +4546,8 @@ curl https://api.svix.com/api/v1/event-type \
         "title": "Invoice Paid Event",
         "type": "object"
       }
-    }
+    },
+    "featureFlag": "cool-new-feature"
   }'
 ```
 
@@ -4549,61 +4563,10 @@ This operation does not preserve the description and schemas.
 
 ```json
 {
+  "name": "user.signup",
+  "description": "A user has signed up",
   "archived": false,
   "deprecated": false,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
-  "name": "user.signup",
-  "schemas": {
-    "1": {
-      "description": "An invoice was paid by a user",
-      "properties": {
-        "invoiceId": {
-          "description": "The invoice id",
-          "type": "string"
-        },
-        "userId": {
-          "description": "The user id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "invoiceId",
-        "userId"
-      ],
-      "title": "Invoice Paid Event",
-      "type": "object"
-    }
-  }
-}
-```
-
-<h3 id="create-event-type-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|idempotency-key|header|string|false|The request's idempotency key|
-|body|body|[EventTypeIn](#schemaeventtypein)|true|none|
-|» archived|body|boolean|false|none|
-|» deprecated|body|boolean|false|none|
-|» description|body|string|true|none|
-|» featureFlag|body|string \| null|false|none|
-|» name|body|string|true|none|
-|» schemas|body|object \| null|false|The schema for the event type for a specific version as a JSON schema.|
-|» » **additionalProperties**|body|object|false|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "archived": false,
-  "createdAt": "1970-01-01T00:00:00Z",
-  "deprecated": true,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
-  "name": "user.signup",
   "schemas": {
     "1": {
       "description": "An invoice was paid by a user",
@@ -4625,7 +4588,58 @@ This operation does not preserve the description and schemas.
       "type": "object"
     }
   },
-  "updatedAt": "1970-01-01T00:00:00Z"
+  "featureFlag": "cool-new-feature"
+}
+```
+
+<h3 id="create-event-type-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|idempotency-key|header|string|false|The request's idempotency key|
+|body|body|[EventTypeIn](#schemaeventtypein)|true|none|
+|» name|body|string|true|none|
+|» description|body|string|true|none|
+|» archived|body|boolean|false|none|
+|» deprecated|body|boolean|false|none|
+|» schemas|body|object \| null|false|The schema for the event type for a specific version as a JSON schema.|
+|» » **additionalProperties**|body|object|false|none|
+|» featureFlag|body|string \| null|false|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "name": "user.signup",
+  "description": "A user has signed up",
+  "archived": false,
+  "deprecated": true,
+  "schemas": {
+    "1": {
+      "description": "An invoice was paid by a user",
+      "properties": {
+        "invoiceId": {
+          "description": "The invoice id",
+          "type": "string"
+        },
+        "userId": {
+          "description": "The user id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "invoiceId",
+        "userId"
+      ],
+      "title": "Invoice Paid Event",
+      "type": "object"
+    }
+  },
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "featureFlag": "cool-new-feature"
 }
 ```
 
@@ -4733,12 +4747,10 @@ Get an event type.
 
 ```json
 {
-  "archived": false,
-  "createdAt": "1970-01-01T00:00:00Z",
-  "deprecated": true,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
   "name": "user.signup",
+  "description": "A user has signed up",
+  "archived": false,
+  "deprecated": true,
   "schemas": {
     "1": {
       "description": "An invoice was paid by a user",
@@ -4760,7 +4772,9 @@ Get an event type.
       "type": "object"
     }
   },
-  "updatedAt": "1970-01-01T00:00:00Z"
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "featureFlag": "cool-new-feature"
 }
 ```
 
@@ -4853,10 +4867,9 @@ curl https://api.svix.com/api/v1/event-type/user.signup \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
+    "description": "A user has signed up",
     "archived": false,
     "deprecated": false,
-    "description": "A user has signed up",
-    "featureFlag": "cool-new-feature",
     "schemas": {
       "1": {
         "description": "An invoice was paid by a user",
@@ -4877,7 +4890,8 @@ curl https://api.svix.com/api/v1/event-type/user.signup \
         "title": "Invoice Paid Event",
         "type": "object"
       }
-    }
+    },
+    "featureFlag": "cool-new-feature"
   }'
 ```
 
@@ -4889,10 +4903,9 @@ Update an event type.
 
 ```json
 {
+  "description": "A user has signed up",
   "archived": false,
   "deprecated": false,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
   "schemas": {
     "1": {
       "description": "An invoice was paid by a user",
@@ -4913,7 +4926,8 @@ Update an event type.
       "title": "Invoice Paid Event",
       "type": "object"
     }
-  }
+  },
+  "featureFlag": "cool-new-feature"
 }
 ```
 
@@ -4923,12 +4937,12 @@ Update an event type.
 |---|---|---|---|---|
 |event_type_name|path|string|true|none|
 |body|body|[EventTypeUpdate](#schemaeventtypeupdate)|true|none|
+|» description|body|string|true|none|
 |» archived|body|boolean|false|none|
 |» deprecated|body|boolean|false|none|
-|» description|body|string|true|none|
-|» featureFlag|body|string \| null|false|none|
 |» schemas|body|object \| null|false|The schema for the event type for a specific version as a JSON schema.|
 |» » **additionalProperties**|body|object|false|none|
+|» featureFlag|body|string \| null|false|none|
 
 > Example responses
 
@@ -4936,12 +4950,10 @@ Update an event type.
 
 ```json
 {
-  "archived": false,
-  "createdAt": "1970-01-01T00:00:00Z",
-  "deprecated": true,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
   "name": "user.signup",
+  "description": "A user has signed up",
+  "archived": false,
+  "deprecated": true,
   "schemas": {
     "1": {
       "description": "An invoice was paid by a user",
@@ -4963,7 +4975,9 @@ Update an event type.
       "type": "object"
     }
   },
-  "updatedAt": "1970-01-01T00:00:00Z"
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "featureFlag": "cool-new-feature"
 }
 ```
 
@@ -4971,12 +4985,10 @@ Update an event type.
 
 ```json
 {
-  "archived": false,
-  "createdAt": "1970-01-01T00:00:00Z",
-  "deprecated": true,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
   "name": "user.signup",
+  "description": "A user has signed up",
+  "archived": false,
+  "deprecated": true,
   "schemas": {
     "1": {
       "description": "An invoice was paid by a user",
@@ -4998,7 +5010,9 @@ Update an event type.
       "type": "object"
     }
   },
-  "updatedAt": "1970-01-01T00:00:00Z"
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "featureFlag": "cool-new-feature"
 }
 ```
 
@@ -5199,10 +5213,9 @@ curl https://api.svix.com/api/v1/event-type/user.signup \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
+    "description": "string",
     "archived": true,
     "deprecated": true,
-    "description": "string",
-    "featureFlag": "cool-new-feature",
     "schemas": {
       "description": "An invoice was paid by a user",
       "properties": {
@@ -5221,7 +5234,8 @@ curl https://api.svix.com/api/v1/event-type/user.signup \
       ],
       "title": "Invoice Paid Event",
       "type": "object"
-    }
+    },
+    "featureFlag": "cool-new-feature"
   }'
 ```
 
@@ -5233,10 +5247,9 @@ Partially update an event type.
 
 ```json
 {
+  "description": "string",
   "archived": true,
   "deprecated": true,
-  "description": "string",
-  "featureFlag": "cool-new-feature",
   "schemas": {
     "description": "An invoice was paid by a user",
     "properties": {
@@ -5255,7 +5268,8 @@ Partially update an event type.
     ],
     "title": "Invoice Paid Event",
     "type": "object"
-  }
+  },
+  "featureFlag": "cool-new-feature"
 }
 ```
 
@@ -5265,12 +5279,12 @@ Partially update an event type.
 |---|---|---|---|---|
 |event_type_name|path|string|true|none|
 |body|body|[EventTypePatch](#schemaeventtypepatch)|true|none|
+|» description|body|string|false|none|
 |» archived|body|boolean|false|none|
 |» deprecated|body|boolean|false|none|
-|» description|body|string|false|none|
-|» featureFlag|body|string \| null|false|none|
 |» schemas|body|object \| null|false|none|
 |» » **additionalProperties**|body|object|false|none|
+|» featureFlag|body|string \| null|false|none|
 
 > Example responses
 
@@ -5278,12 +5292,10 @@ Partially update an event type.
 
 ```json
 {
-  "archived": false,
-  "createdAt": "1970-01-01T00:00:00Z",
-  "deprecated": true,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
   "name": "user.signup",
+  "description": "A user has signed up",
+  "archived": false,
+  "deprecated": true,
   "schemas": {
     "1": {
       "description": "An invoice was paid by a user",
@@ -5305,7 +5317,9 @@ Partially update an event type.
       "type": "object"
     }
   },
-  "updatedAt": "1970-01-01T00:00:00Z"
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "featureFlag": "cool-new-feature"
 }
 ```
 
@@ -5388,6 +5402,41 @@ This operation does not require authentication
 
 <h1 id="svix-api-authentication">Authentication</h1>
 
+## Logout
+
+<a id="opIdlogout_api_v1_auth_logout__post"></a>
+
+> Code samples
+
+```bash
+curl https://api.svix.com/api/v1/auth/logout \
+  -X POST
+```
+
+`POST /api/v1/auth/logout`
+
+
+Logout an app token.
+
+Trying to log out other tokens will fail.
+
+
+<h3 id="logout-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|idempotency-key|header|string|false|The request's idempotency key|
+
+<h3 id="logout-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|no content|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## App Portal Access
 
 <a id="opIdv1.authentication.app-portal-access"></a>
@@ -5400,13 +5449,13 @@ curl https://api.svix.com/api/v1/auth/app-portal-access/unique-app-identifier \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
+    "featureFlags": [],
     "application": {
-      "metadata": {},
       "name": "My first application",
       "throttleRate": 1,
-      "uid": "unique-app-identifier"
-    },
-    "featureFlags": []
+      "uid": "unique-app-identifier",
+      "metadata": {}
+    }
   }'
 ```
 
@@ -5418,13 +5467,13 @@ Use this function to get magic links (and authentication codes) for connecting y
 
 ```json
 {
+  "featureFlags": [],
   "application": {
-    "metadata": {},
     "name": "My first application",
     "throttleRate": 1,
-    "uid": "unique-app-identifier"
-  },
-  "featureFlags": []
+    "uid": "unique-app-identifier",
+    "metadata": {}
+  }
 }
 ```
 
@@ -5435,8 +5484,8 @@ Use this function to get magic links (and authentication codes) for connecting y
 |app_id|path|string|true|none|
 |idempotency-key|header|string|false|The request's idempotency key|
 |body|body|[AppPortalAccessIn](#schemaappportalaccessin)|true|none|
-|» application|body|[ApplicationIn](#schemaapplicationin)|false|Optionally creates a new application alongside the message.<br><br>If the application id or uid that is used in the path already exists, this argument is ignored.|
 |» featureFlags|body|[string]|false|The set of feature flags the created token will have access to.|
+|» application|body|[ApplicationIn](#schemaapplicationin)|false|Optionally creates a new application alongside the message.<br><br>If the application id or uid that is used in the path already exists, this argument is ignored.|
 
 > Example responses
 
@@ -5444,8 +5493,8 @@ Use this function to get magic links (and authentication codes) for connecting y
 
 ```json
 {
-  "token": "appsk_kV3ts5tKPNJN4Dl25cMTfUNdmabxbX0O",
-  "url": "https://app.svix.com/login#key=eyJhcHBJZCI6ICJhcHBfMXRSdFl"
+  "url": "https://app.svix.com/login#key=eyJhcHBJZCI6ICJhcHBfMXRSdFl",
+  "token": "appsk_kV3ts5tKPNJN4Dl25cMTfUNdmabxbX0O"
 }
 ```
 
@@ -5521,41 +5570,6 @@ Use this function to get magic links (and authentication codes) for connecting y
 |409|Conflict|Conflict|[HttpErrorOut](#schemahttperrorout)|
 |422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 |429|Too Many Requests|Too Many Requests|[HttpErrorOut](#schemahttperrorout)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-## Logout
-
-<a id="opIdlogout_api_v1_auth_logout__post"></a>
-
-> Code samples
-
-```bash
-curl https://api.svix.com/api/v1/auth/logout \
-  -X POST
-```
-
-`POST /api/v1/auth/logout`
-
-
-Logout an app token.
-
-Trying to log out other tokens will fail.
-
-
-<h3 id="logout-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|idempotency-key|header|string|false|The request's idempotency key|
-
-<h3 id="logout-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|no content|None|
 
 <aside class="success">
 This operation does not require authentication
@@ -5796,225 +5810,6 @@ This operation does not require authentication
 
 # Schemas
 
-<h2 id="tocS_AppPortalAccessIn">AppPortalAccessIn</h2>
-<!-- backwards compatibility -->
-<a id="schemaappportalaccessin"></a>
-<a id="schema_AppPortalAccessIn"></a>
-<a id="tocSappportalaccessin"></a>
-<a id="tocsappportalaccessin"></a>
-
-```json
-{
-  "application": {
-    "metadata": {},
-    "name": "My first application",
-    "throttleRate": 1,
-    "uid": "unique-app-identifier"
-  },
-  "featureFlags": []
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|application|[ApplicationIn](#schemaapplicationin)|false|none|Optionally creates a new application alongside the message.<br><br>If the application id or uid that is used in the path already exists, this argument is ignored.|
-|featureFlags|[string]|false|none|The set of feature flags the created token will have access to.|
-
-<h2 id="tocS_AppPortalAccessOut">AppPortalAccessOut</h2>
-<!-- backwards compatibility -->
-<a id="schemaappportalaccessout"></a>
-<a id="schema_AppPortalAccessOut"></a>
-<a id="tocSappportalaccessout"></a>
-<a id="tocsappportalaccessout"></a>
-
-```json
-{
-  "token": "appsk_kV3ts5tKPNJN4Dl25cMTfUNdmabxbX0O",
-  "url": "https://app.svix.com/login#key=eyJhcHBJZCI6ICJhcHBfMXRSdFl"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|token|string|true|none|none|
-|url|string(uri)|true|none|none|
-
-<h2 id="tocS_ApplicationIn">ApplicationIn</h2>
-<!-- backwards compatibility -->
-<a id="schemaapplicationin"></a>
-<a id="schema_ApplicationIn"></a>
-<a id="tocSapplicationin"></a>
-<a id="tocsapplicationin"></a>
-
-```json
-{
-  "metadata": {},
-  "name": "My first application",
-  "throttleRate": 1,
-  "uid": "unique-app-identifier"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|metadata|object|false|none|none|
-|name|string|true|none|none|
-|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
-|uid|string \| null|false|none|Optional unique identifier for the application|
-
-<h2 id="tocS_ApplicationOut">ApplicationOut</h2>
-<!-- backwards compatibility -->
-<a id="schemaapplicationout"></a>
-<a id="schema_ApplicationOut"></a>
-<a id="tocSapplicationout"></a>
-<a id="tocsapplicationout"></a>
-
-```json
-{
-  "createdAt": "1970-01-01T00:00:00Z",
-  "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "metadata": {
-    "property1": "string",
-    "property2": "string"
-  },
-  "name": "My first application",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|createdAt|string(date-time)|true|none|none|
-|id|string|true|none|none|
-|metadata|object|true|none|none|
-|name|string|true|none|none|
-|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
-|uid|string \| null|false|none|none|
-|updatedAt|string(date-time)|true|none|none|
-
-<h2 id="tocS_ApplicationPatch">ApplicationPatch</h2>
-<!-- backwards compatibility -->
-<a id="schemaapplicationpatch"></a>
-<a id="schema_ApplicationPatch"></a>
-<a id="tocSapplicationpatch"></a>
-<a id="tocsapplicationpatch"></a>
-
-```json
-{
-  "metadata": {
-    "property1": "string",
-    "property2": "string"
-  },
-  "name": "string",
-  "throttleRate": 0,
-  "uid": "unique-app-identifier"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|metadata|object|false|none|none|
-|name|string|false|none|none|
-|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
-|uid|string \| null|false|none|none|
-
-<h2 id="tocS_BackgroundTaskStatus">BackgroundTaskStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemabackgroundtaskstatus"></a>
-<a id="schema_BackgroundTaskStatus"></a>
-<a id="tocSbackgroundtaskstatus"></a>
-<a id="tocsbackgroundtaskstatus"></a>
-
-```json
-"running"
-```
-
-<h2 id="tocS_BackgroundTaskType">BackgroundTaskType</h2>
-<!-- backwards compatibility -->
-<a id="schemabackgroundtasktype"></a>
-<a id="schema_BackgroundTaskType"></a>
-<a id="tocSbackgroundtasktype"></a>
-<a id="tocsbackgroundtasktype"></a>
-
-```json
-"endpoint.recover"
-```
-
-<h2 id="tocS_BulkExpungeContentsIn">BulkExpungeContentsIn</h2>
-<!-- backwards compatibility -->
-<a id="schemabulkexpungecontentsin"></a>
-<a id="schema_BulkExpungeContentsIn"></a>
-<a id="tocSbulkexpungecontentsin"></a>
-<a id="tocsbulkexpungecontentsin"></a>
-
-```json
-{
-  "ids": []
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ids|[string]|false|none|Message ID or UID to delete|
-
-<h2 id="tocS_BulkExpungeContentsOut">BulkExpungeContentsOut</h2>
-<!-- backwards compatibility -->
-<a id="schemabulkexpungecontentsout"></a>
-<a id="schema_BulkExpungeContentsOut"></a>
-<a id="tocSbulkexpungecontentsout"></a>
-<a id="tocsbulkexpungecontentsout"></a>
-
-```json
-{
-  "results": {
-    "property1": "expunged",
-    "property2": "expunged"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|results|object|true|none|Results of expunging (by ID)|
-
-<h2 id="tocS_BulkExpungeStatus">BulkExpungeStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemabulkexpungestatus"></a>
-<a id="schema_BulkExpungeStatus"></a>
-<a id="tocSbulkexpungestatus"></a>
-<a id="tocsbulkexpungestatus"></a>
-
-```json
-"expunged"
-```
-
-<h2 id="tocS_EmptyResponse">EmptyResponse</h2>
-<!-- backwards compatibility -->
-<a id="schemaemptyresponse"></a>
-<a id="schema_EmptyResponse"></a>
-<a id="tocSemptyresponse"></a>
-<a id="tocsemptyresponse"></a>
-
-```json
-{}
-```
-
 <h2 id="tocS_EndpointCreatedEvent">EndpointCreatedEvent</h2>
 <!-- backwards compatibility -->
 <a id="schemaendpointcreatedevent"></a>
@@ -6201,394 +5996,6 @@ Sent when an endpoint has been automatically disabled after continuous failures.
 |endpointUid|string \| null|false|none|none|
 |failSince|string(date-time)|true|none|none|
 
-<h2 id="tocS_EndpointHeadersIn">EndpointHeadersIn</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointheadersin"></a>
-<a id="schema_EndpointHeadersIn"></a>
-<a id="tocSendpointheadersin"></a>
-<a id="tocsendpointheadersin"></a>
-
-```json
-{
-  "headers": {
-    "X-Example": "123",
-    "X-Foobar": "Bar"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|headers|object|true|none|none|
-
-<h2 id="tocS_EndpointHeadersOut">EndpointHeadersOut</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointheadersout"></a>
-<a id="schema_EndpointHeadersOut"></a>
-<a id="tocSendpointheadersout"></a>
-<a id="tocsendpointheadersout"></a>
-
-```json
-{
-  "headers": {
-    "X-Example": "123",
-    "X-Foobar": "Bar"
-  },
-  "sensitive": [
-    "Authorization"
-  ]
-}
-```
-
-The value of the headers is returned in the `headers` field.
-
-Sensitive headers that have been redacted are returned in the sensitive field.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|headers|object|true|none|none|
-|sensitive|[string]|true|none|none|
-
-<h2 id="tocS_EndpointHeadersPatchIn">EndpointHeadersPatchIn</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointheaderspatchin"></a>
-<a id="schema_EndpointHeadersPatchIn"></a>
-<a id="tocSendpointheaderspatchin"></a>
-<a id="tocsendpointheaderspatchin"></a>
-
-```json
-{
-  "headers": {
-    "X-Example": "123",
-    "X-Foobar": "Bar"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|headers|object|true|none|none|
-
-<h2 id="tocS_EndpointIn">EndpointIn</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointin"></a>
-<a id="schema_EndpointIn"></a>
-<a id="tocSendpointin"></a>
-<a id="tocsendpointin"></a>
-
-```json
-{
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "description": "An example endpoint name",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "metadata": {},
-  "secret": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD",
-  "throttleRate": 1,
-  "uid": "unique-ep-identifier",
-  "url": "https://example.com/webhook/"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|channels|[string]|false|none|List of message channels this endpoint listens to (omit for all)|
-|description|string|false|none|none|
-|disabled|boolean|false|none|none|
-|eventTypes|[string]|false|none|none|
-|metadata|object|false|none|none|
-|secret|string \| null|false|none|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
-|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
-|uid|string \| null|false|none|Optional unique identifier for the endpoint|
-|url|string(uri)|true|none|none|
-
-<h2 id="tocS_EndpointMessageOut">EndpointMessageOut</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointmessageout"></a>
-<a id="schema_EndpointMessageOut"></a>
-<a id="tocSendpointmessageout"></a>
-<a id="tocsendpointmessageout"></a>
-
-```json
-{
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "eventId": "unique-msg-identifier",
-  "eventType": "user.signup",
-  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "nextAttempt": "1970-01-01T00:00:00Z",
-  "payload": {
-    "email": "test@example.com",
-    "username": "test_user"
-  },
-  "status": 0,
-  "statusText": "success",
-  "timestamp": "1970-01-01T00:00:00Z"
-}
-```
-
-A model containing information on a given message plus additional fields on the last attempt for that message.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|channels|[string]|false|none|List of free-form identifiers that endpoints can filter by|
-|eventId|string \| null|false|none|Optional unique identifier for the message|
-|eventType|string|true|none|none|
-|id|string|true|none|none|
-|nextAttempt|string(date-time) \| null|false|none|none|
-|payload|object|true|none|none|
-|status|[MessageStatus](#schemamessagestatus)|true|none|The sending status of the message:<br>- Success = 0<br>- Pending = 1<br>- Fail = 2<br>- Sending = 3|
-|statusText|[MessageStatusText](#schemamessagestatustext)|true|none|none|
-|timestamp|string(date-time)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
-|status|3|
-|statusText|success|
-|statusText|pending|
-|statusText|fail|
-|statusText|sending|
-
-<h2 id="tocS_EndpointOut">EndpointOut</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointout"></a>
-<a id="schema_EndpointOut"></a>
-<a id="tocSendpointout"></a>
-<a id="tocsendpointout"></a>
-
-```json
-{
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "createdAt": "1970-01-01T00:00:00Z",
-  "description": "string",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "expiry": "1970-01-01T00:00:00Z",
-  "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "metadata": {
-    "property1": "string",
-    "property2": "string"
-  },
-  "throttleRate": 0,
-  "uid": "unique-ep-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z",
-  "url": "https://example.com/webhook/"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|channels|[string]|false|none|List of message channels this endpoint listens to (omit for all)|
-|createdAt|string(date-time)|true|none|none|
-|description|string|true|none|An example endpoint name|
-|disabled|boolean|false|none|none|
-|eventTypes|[string]|false|none|none|
-|expiry|string(date-time) \| null|false|none|When the endpoint expires, if ever.<br><br>This field currently exists only for compatibility with the Svix Cloud API. If you want expiring endpoints in Svix Server OSS, please open an issue.|
-|id|string|true|none|none|
-|metadata|object|true|none|none|
-|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
-|uid|string \| null|false|none|Optional unique identifier for the endpoint|
-|updatedAt|string(date-time)|true|none|none|
-|url|string(uri)|true|none|none|
-
-<h2 id="tocS_EndpointPatch">EndpointPatch</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointpatch"></a>
-<a id="schema_EndpointPatch"></a>
-<a id="tocSendpointpatch"></a>
-<a id="tocsendpointpatch"></a>
-
-```json
-{
-  "channels": [
-    "project_1337"
-  ],
-  "description": "string",
-  "disabled": true,
-  "eventTypes": [
-    "user.signup"
-  ],
-  "metadata": {
-    "property1": "string",
-    "property2": "string"
-  },
-  "throttleRate": 0,
-  "uid": "unique-ep-identifier",
-  "url": "http://example.com"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|channels|[string]|false|none|none|
-|description|string|false|none|none|
-|disabled|boolean|false|none|none|
-|eventTypes|[string]|false|none|none|
-|metadata|object|false|none|none|
-|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
-|uid|string \| null|false|none|none|
-|url|string(uri)|false|none|none|
-
-<h2 id="tocS_EndpointSecretOut">EndpointSecretOut</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointsecretout"></a>
-<a id="schema_EndpointSecretOut"></a>
-<a id="tocSendpointsecretout"></a>
-<a id="tocsendpointsecretout"></a>
-
-```json
-{
-  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|key|string|true|none|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
-
-<h2 id="tocS_EndpointSecretRotateIn">EndpointSecretRotateIn</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointsecretrotatein"></a>
-<a id="schema_EndpointSecretRotateIn"></a>
-<a id="tocSendpointsecretrotatein"></a>
-<a id="tocsendpointsecretrotatein"></a>
-
-```json
-{
-  "gracePeriodSeconds": 86400,
-  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|gracePeriodSeconds|integer(uint32) \| null|false|none|How long the old secret will be valid for, in seconds.<br><br>Valid values are between 0 (immediate expiry) and 7 days. The default is 24 hours.|
-|key|string \| null|false|none|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
-
-<h2 id="tocS_EndpointStats">EndpointStats</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointstats"></a>
-<a id="schema_EndpointStats"></a>
-<a id="tocSendpointstats"></a>
-<a id="tocsendpointstats"></a>
-
-```json
-{
-  "canceled": 0,
-  "fail": 0,
-  "pending": 0,
-  "sending": 0,
-  "success": 0
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|canceled|integer(int64)|true|none|none|
-|fail|integer(int64)|true|none|none|
-|pending|integer(int64)|true|none|none|
-|sending|integer(int64)|true|none|none|
-|success|integer(int64)|true|none|none|
-
-<h2 id="tocS_EndpointStatsRange">EndpointStatsRange</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointstatsrange"></a>
-<a id="schema_EndpointStatsRange"></a>
-<a id="tocSendpointstatsrange"></a>
-<a id="tocsendpointstatsrange"></a>
-
-```json
-{
-  "since": "1970-01-01T00:00:00Z",
-  "until": "1970-01-01T00:00:00Z"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|since|string(date-time) \| null|false|none|none|
-|until|string(date-time) \| null|false|none|none|
-
-<h2 id="tocS_EndpointUpdate">EndpointUpdate</h2>
-<!-- backwards compatibility -->
-<a id="schemaendpointupdate"></a>
-<a id="schema_EndpointUpdate"></a>
-<a id="tocSendpointupdate"></a>
-<a id="tocsendpointupdate"></a>
-
-```json
-{
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "description": "An example endpoint name",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "metadata": {},
-  "throttleRate": 1,
-  "uid": "unique-ep-identifier",
-  "url": "https://example.com/webhook/"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|channels|[string]|false|none|List of message channels this endpoint listens to (omit for all)|
-|description|string|false|none|none|
-|disabled|boolean|false|none|none|
-|eventTypes|[string]|false|none|none|
-|metadata|object|false|none|none|
-|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
-|uid|string \| null|false|none|Optional unique identifier for the endpoint|
-|url|string(uri)|true|none|none|
-
 <h2 id="tocS_EndpointUpdatedEvent">EndpointUpdatedEvent</h2>
 <!-- backwards compatibility -->
 <a id="schemaendpointupdatedevent"></a>
@@ -6650,603 +6057,6 @@ Sent when an endpoint is created, updated, or deleted
 |endpointId|string|true|none|none|
 |endpointUid|string \| null|false|none|none|
 
-<h2 id="tocS_EventExampleIn">EventExampleIn</h2>
-<!-- backwards compatibility -->
-<a id="schemaeventexamplein"></a>
-<a id="schema_EventExampleIn"></a>
-<a id="tocSeventexamplein"></a>
-<a id="tocseventexamplein"></a>
-
-```json
-{
-  "eventType": "user.signup"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|eventType|string|true|none|none|
-
-<h2 id="tocS_EventTypeIn">EventTypeIn</h2>
-<!-- backwards compatibility -->
-<a id="schemaeventtypein"></a>
-<a id="schema_EventTypeIn"></a>
-<a id="tocSeventtypein"></a>
-<a id="tocseventtypein"></a>
-
-```json
-{
-  "archived": false,
-  "deprecated": false,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
-  "name": "user.signup",
-  "schemas": {
-    "1": {
-      "description": "An invoice was paid by a user",
-      "properties": {
-        "invoiceId": {
-          "description": "The invoice id",
-          "type": "string"
-        },
-        "userId": {
-          "description": "The user id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "invoiceId",
-        "userId"
-      ],
-      "title": "Invoice Paid Event",
-      "type": "object"
-    }
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|archived|boolean|false|none|none|
-|deprecated|boolean|false|none|none|
-|description|string|true|none|none|
-|featureFlag|string \| null|false|none|none|
-|name|string|true|none|none|
-|schemas|object \| null|false|none|The schema for the event type for a specific version as a JSON schema.|
-
-<h2 id="tocS_EventTypeOut">EventTypeOut</h2>
-<!-- backwards compatibility -->
-<a id="schemaeventtypeout"></a>
-<a id="schema_EventTypeOut"></a>
-<a id="tocSeventtypeout"></a>
-<a id="tocseventtypeout"></a>
-
-```json
-{
-  "archived": false,
-  "createdAt": "1970-01-01T00:00:00Z",
-  "deprecated": true,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
-  "name": "user.signup",
-  "schemas": {
-    "1": {
-      "description": "An invoice was paid by a user",
-      "properties": {
-        "invoiceId": {
-          "description": "The invoice id",
-          "type": "string"
-        },
-        "userId": {
-          "description": "The user id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "invoiceId",
-        "userId"
-      ],
-      "title": "Invoice Paid Event",
-      "type": "object"
-    }
-  },
-  "updatedAt": "1970-01-01T00:00:00Z"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|archived|boolean|false|none|none|
-|createdAt|string(date-time)|true|none|none|
-|deprecated|boolean|true|none|none|
-|description|string|true|none|none|
-|featureFlag|string \| null|false|none|none|
-|name|string|true|none|none|
-|schemas|object \| null|false|none|The schema for the event type for a specific version as a JSON schema.|
-|updatedAt|string(date-time)|true|none|none|
-
-<h2 id="tocS_EventTypePatch">EventTypePatch</h2>
-<!-- backwards compatibility -->
-<a id="schemaeventtypepatch"></a>
-<a id="schema_EventTypePatch"></a>
-<a id="tocSeventtypepatch"></a>
-<a id="tocseventtypepatch"></a>
-
-```json
-{
-  "archived": true,
-  "deprecated": true,
-  "description": "string",
-  "featureFlag": "cool-new-feature",
-  "schemas": {
-    "description": "An invoice was paid by a user",
-    "properties": {
-      "invoiceId": {
-        "description": "The invoice id",
-        "type": "string"
-      },
-      "userId": {
-        "description": "The user id",
-        "type": "string"
-      }
-    },
-    "required": [
-      "invoiceId",
-      "userId"
-    ],
-    "title": "Invoice Paid Event",
-    "type": "object"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|archived|boolean|false|none|none|
-|deprecated|boolean|false|none|none|
-|description|string|false|none|none|
-|featureFlag|string \| null|false|none|none|
-|schemas|object \| null|false|none|none|
-
-<h2 id="tocS_EventTypeUpdate">EventTypeUpdate</h2>
-<!-- backwards compatibility -->
-<a id="schemaeventtypeupdate"></a>
-<a id="schema_EventTypeUpdate"></a>
-<a id="tocSeventtypeupdate"></a>
-<a id="tocseventtypeupdate"></a>
-
-```json
-{
-  "archived": false,
-  "deprecated": false,
-  "description": "A user has signed up",
-  "featureFlag": "cool-new-feature",
-  "schemas": {
-    "1": {
-      "description": "An invoice was paid by a user",
-      "properties": {
-        "invoiceId": {
-          "description": "The invoice id",
-          "type": "string"
-        },
-        "userId": {
-          "description": "The user id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "invoiceId",
-        "userId"
-      ],
-      "title": "Invoice Paid Event",
-      "type": "object"
-    }
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|archived|boolean|false|none|none|
-|deprecated|boolean|false|none|none|
-|description|string|true|none|none|
-|featureFlag|string \| null|false|none|none|
-|schemas|object \| null|false|none|The schema for the event type for a specific version as a JSON schema.|
-
-<h2 id="tocS_HTTPValidationError">HTTPValidationError</h2>
-<!-- backwards compatibility -->
-<a id="schemahttpvalidationerror"></a>
-<a id="schema_HTTPValidationError"></a>
-<a id="tocShttpvalidationerror"></a>
-<a id="tocshttpvalidationerror"></a>
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|detail|[[ValidationErrorItem](#schemavalidationerroritem)]|true|none|none|
-
-<h2 id="tocS_HttpErrorOut">HttpErrorOut</h2>
-<!-- backwards compatibility -->
-<a id="schemahttperrorout"></a>
-<a id="schema_HttpErrorOut"></a>
-<a id="tocShttperrorout"></a>
-<a id="tocshttperrorout"></a>
-
-```json
-{
-  "code": "string",
-  "detail": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|code|string|true|none|none|
-|detail|string|true|none|none|
-
-<h2 id="tocS_ListResponse_ApplicationOut_">ListResponse_ApplicationOut_</h2>
-<!-- backwards compatibility -->
-<a id="schemalistresponse_applicationout_"></a>
-<a id="schema_ListResponse_ApplicationOut_"></a>
-<a id="tocSlistresponse_applicationout_"></a>
-<a id="tocslistresponse_applicationout_"></a>
-
-```json
-{
-  "data": [
-    {
-      "createdAt": "1970-01-01T00:00:00Z",
-      "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "metadata": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "name": "My first application",
-      "throttleRate": 0,
-      "uid": "unique-app-identifier",
-      "updatedAt": "1970-01-01T00:00:00Z"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[[ApplicationOut](#schemaapplicationout)]|true|none|none|
-|done|boolean|true|none|none|
-|iterator|string \| null|false|none|none|
-|prevIterator|string \| null|false|none|none|
-
-<h2 id="tocS_ListResponse_EndpointMessageOut_">ListResponse_EndpointMessageOut_</h2>
-<!-- backwards compatibility -->
-<a id="schemalistresponse_endpointmessageout_"></a>
-<a id="schema_ListResponse_EndpointMessageOut_"></a>
-<a id="tocSlistresponse_endpointmessageout_"></a>
-<a id="tocslistresponse_endpointmessageout_"></a>
-
-```json
-{
-  "data": [
-    {
-      "channels": [
-        "project_123",
-        "group_2"
-      ],
-      "eventId": "unique-msg-identifier",
-      "eventType": "user.signup",
-      "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "nextAttempt": "1970-01-01T00:00:00Z",
-      "payload": {
-        "email": "test@example.com",
-        "username": "test_user"
-      },
-      "status": 0,
-      "statusText": "success",
-      "timestamp": "1970-01-01T00:00:00Z"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[[EndpointMessageOut](#schemaendpointmessageout)]|true|none|none|
-|done|boolean|true|none|none|
-|iterator|string \| null|false|none|none|
-|prevIterator|string \| null|false|none|none|
-
-<h2 id="tocS_ListResponse_EndpointOut_">ListResponse_EndpointOut_</h2>
-<!-- backwards compatibility -->
-<a id="schemalistresponse_endpointout_"></a>
-<a id="schema_ListResponse_EndpointOut_"></a>
-<a id="tocSlistresponse_endpointout_"></a>
-<a id="tocslistresponse_endpointout_"></a>
-
-```json
-{
-  "data": [
-    {
-      "channels": [
-        "project_123",
-        "group_2"
-      ],
-      "createdAt": "1970-01-01T00:00:00Z",
-      "description": "string",
-      "disabled": false,
-      "eventTypes": [
-        "user.signup",
-        "user.deleted"
-      ],
-      "expiry": "1970-01-01T00:00:00Z",
-      "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "metadata": {
-        "property1": "string",
-        "property2": "string"
-      },
-      "throttleRate": 0,
-      "uid": "unique-ep-identifier",
-      "updatedAt": "1970-01-01T00:00:00Z",
-      "url": "https://example.com/webhook/"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[[EndpointOut](#schemaendpointout)]|true|none|none|
-|done|boolean|true|none|none|
-|iterator|string \| null|false|none|none|
-|prevIterator|string \| null|false|none|none|
-
-<h2 id="tocS_ListResponse_EventTypeOut_">ListResponse_EventTypeOut_</h2>
-<!-- backwards compatibility -->
-<a id="schemalistresponse_eventtypeout_"></a>
-<a id="schema_ListResponse_EventTypeOut_"></a>
-<a id="tocSlistresponse_eventtypeout_"></a>
-<a id="tocslistresponse_eventtypeout_"></a>
-
-```json
-{
-  "data": [
-    {
-      "archived": false,
-      "createdAt": "1970-01-01T00:00:00Z",
-      "deprecated": true,
-      "description": "A user has signed up",
-      "featureFlag": "cool-new-feature",
-      "name": "user.signup",
-      "schemas": {
-        "1": {
-          "description": "An invoice was paid by a user",
-          "properties": {
-            "invoiceId": {
-              "description": "The invoice id",
-              "type": "string"
-            },
-            "userId": {
-              "description": "The user id",
-              "type": "string"
-            }
-          },
-          "required": [
-            "invoiceId",
-            "userId"
-          ],
-          "title": "Invoice Paid Event",
-          "type": "object"
-        }
-      },
-      "updatedAt": "1970-01-01T00:00:00Z"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[[EventTypeOut](#schemaeventtypeout)]|true|none|none|
-|done|boolean|true|none|none|
-|iterator|string \| null|false|none|none|
-|prevIterator|string \| null|false|none|none|
-
-<h2 id="tocS_ListResponse_MessageAttemptOut_">ListResponse_MessageAttemptOut_</h2>
-<!-- backwards compatibility -->
-<a id="schemalistresponse_messageattemptout_"></a>
-<a id="schema_ListResponse_MessageAttemptOut_"></a>
-<a id="tocSlistresponse_messageattemptout_"></a>
-<a id="tocslistresponse_messageattemptout_"></a>
-
-```json
-{
-  "data": [
-    {
-      "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "response": "{}",
-      "responseDurationMs": 0,
-      "responseStatusCode": 200,
-      "status": 0,
-      "statusText": "success",
-      "timestamp": "1970-01-01T00:00:00Z",
-      "triggerType": 0,
-      "url": "https://example.com/webhook/"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[[MessageAttemptOut](#schemamessageattemptout)]|true|none|none|
-|done|boolean|true|none|none|
-|iterator|string \| null|false|none|none|
-|prevIterator|string \| null|false|none|none|
-
-<h2 id="tocS_ListResponse_MessageEndpointOut_">ListResponse_MessageEndpointOut_</h2>
-<!-- backwards compatibility -->
-<a id="schemalistresponse_messageendpointout_"></a>
-<a id="schema_ListResponse_MessageEndpointOut_"></a>
-<a id="tocSlistresponse_messageendpointout_"></a>
-<a id="tocslistresponse_messageendpointout_"></a>
-
-```json
-{
-  "data": [
-    {
-      "channels": [
-        "project_123",
-        "group_2"
-      ],
-      "createdAt": "1970-01-01T00:00:00Z",
-      "description": "string",
-      "disabled": false,
-      "eventTypes": [
-        "user.signup",
-        "user.deleted"
-      ],
-      "expiry": "1970-01-01T00:00:00Z",
-      "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "nextAttempt": "1970-01-01T00:00:00Z",
-      "status": 0,
-      "statusText": "success",
-      "throttleRate": 0,
-      "uid": "unique-ep-identifier",
-      "updatedAt": "1970-01-01T00:00:00Z",
-      "url": "https://example.com/webhook/"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[[MessageEndpointOut](#schemamessageendpointout)]|true|none|none|
-|done|boolean|true|none|none|
-|iterator|string \| null|false|none|none|
-|prevIterator|string \| null|false|none|none|
-
-<h2 id="tocS_ListResponse_MessageOut_">ListResponse_MessageOut_</h2>
-<!-- backwards compatibility -->
-<a id="schemalistresponse_messageout_"></a>
-<a id="schema_ListResponse_MessageOut_"></a>
-<a id="tocSlistresponse_messageout_"></a>
-<a id="tocslistresponse_messageout_"></a>
-
-```json
-{
-  "data": [
-    {
-      "channels": [
-        "project_123",
-        "group_2"
-      ],
-      "eventId": "unique-msg-identifier",
-      "eventType": "user.signup",
-      "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-      "payload": {
-        "email": "test@example.com",
-        "username": "test_user"
-      },
-      "timestamp": "1970-01-01T00:00:00Z"
-    }
-  ],
-  "done": true,
-  "iterator": "iterator",
-  "prevIterator": "-iterator"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|data|[[MessageOut](#schemamessageout)]|true|none|none|
-|done|boolean|true|none|none|
-|iterator|string \| null|false|none|none|
-|prevIterator|string \| null|false|none|none|
-
-<h2 id="tocS_MessageAttempetLast">MessageAttempetLast</h2>
-<!-- backwards compatibility -->
-<a id="schemamessageattempetlast"></a>
-<a id="schema_MessageAttempetLast"></a>
-<a id="tocSmessageattempetlast"></a>
-<a id="tocsmessageattempetlast"></a>
-
-```json
-{
-  "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "responseStatusCode": 0,
-  "timestamp": "1970-01-01T00:00:00Z"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|none|
-|responseStatusCode|integer(int16)|true|none|none|
-|timestamp|string(date-time)|true|none|none|
-
 <h2 id="tocS_MessageAttemptExhaustedEvent">MessageAttemptExhaustedEvent</h2>
 <!-- backwards compatibility -->
 <a id="schemamessageattemptexhaustedevent"></a>
@@ -7259,14 +6069,14 @@ Sent when an endpoint is created, updated, or deleted
   "data": {
     "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "appUid": "unique-app-identifier",
+    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+    "msgEventId": "unique-msg-identifier",
     "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "lastAttempt": {
       "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
       "responseStatusCode": 0,
       "timestamp": "1970-01-01T00:00:00Z"
-    },
-    "msgEventId": "unique-msg-identifier",
-    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+    }
   },
   "type": "message.attempt.exhausted"
 }
@@ -7298,14 +6108,14 @@ Sent when a message delivery has failed (all of the retry attempts have been exh
 {
   "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "appUid": "unique-app-identifier",
+  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "msgEventId": "unique-msg-identifier",
   "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "lastAttempt": {
     "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "responseStatusCode": 0,
     "timestamp": "1970-01-01T00:00:00Z"
-  },
-  "msgEventId": "unique-msg-identifier",
-  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+  }
 }
 ```
 
@@ -7317,10 +6127,33 @@ Sent when a message delivery has failed (all of the retry attempts have been exh
 |---|---|---|---|---|
 |appId|string|true|none|none|
 |appUid|string \| null|false|none|none|
+|msgId|string|true|none|none|
+|msgEventId|string \| null|false|none|none|
 |endpointId|string|true|none|none|
 |lastAttempt|[MessageAttempetLast](#schemamessageattempetlast)|true|none|none|
-|msgEventId|string \| null|false|none|none|
-|msgId|string|true|none|none|
+
+<h2 id="tocS_MessageAttempetLast">MessageAttempetLast</h2>
+<!-- backwards compatibility -->
+<a id="schemamessageattempetlast"></a>
+<a id="schema_MessageAttempetLast"></a>
+<a id="tocSmessageattempetlast"></a>
+<a id="tocsmessageattempetlast"></a>
+
+```json
+{
+  "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "responseStatusCode": 0,
+  "timestamp": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|responseStatusCode|integer(int16)|true|none|none|
+|timestamp|string(date-time)|true|none|none|
 
 <h2 id="tocS_MessageAttemptFailingEvent">MessageAttemptFailingEvent</h2>
 <!-- backwards compatibility -->
@@ -7334,14 +6167,14 @@ Sent when a message delivery has failed (all of the retry attempts have been exh
   "data": {
     "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "appUid": "unique-app-identifier",
+    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+    "msgEventId": "unique-msg-identifier",
     "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "lastAttempt": {
       "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
       "responseStatusCode": 0,
       "timestamp": "1970-01-01T00:00:00Z"
-    },
-    "msgEventId": "unique-msg-identifier",
-    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+    }
   },
   "type": "message.attempt.failing"
 }
@@ -7374,14 +6207,14 @@ It's sent on the fourth failure. It complements `message.attempt.exhausted` whic
 {
   "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "appUid": "unique-app-identifier",
+  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "msgEventId": "unique-msg-identifier",
   "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "lastAttempt": {
     "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "responseStatusCode": 0,
     "timestamp": "1970-01-01T00:00:00Z"
-  },
-  "msgEventId": "unique-msg-identifier",
-  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+  }
 }
 ```
 
@@ -7393,64 +6226,10 @@ Sent when a message delivery has failed (all of the retry attempts have been exh
 |---|---|---|---|---|
 |appId|string|true|none|none|
 |appUid|string \| null|false|none|none|
+|msgId|string|true|none|none|
+|msgEventId|string \| null|false|none|none|
 |endpointId|string|true|none|none|
 |lastAttempt|[MessageAttempetLast](#schemamessageattempetlast)|true|none|none|
-|msgEventId|string \| null|false|none|none|
-|msgId|string|true|none|none|
-
-<h2 id="tocS_MessageAttemptOut">MessageAttemptOut</h2>
-<!-- backwards compatibility -->
-<a id="schemamessageattemptout"></a>
-<a id="schema_MessageAttemptOut"></a>
-<a id="tocSmessageattemptout"></a>
-<a id="tocsmessageattemptout"></a>
-
-```json
-{
-  "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "response": "{}",
-  "responseDurationMs": 0,
-  "responseStatusCode": 200,
-  "status": 0,
-  "statusText": "success",
-  "timestamp": "1970-01-01T00:00:00Z",
-  "triggerType": 0,
-  "url": "https://example.com/webhook/"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|endpointId|string|true|none|none|
-|id|string|true|none|none|
-|msgId|string|true|none|none|
-|response|string|true|none|none|
-|responseDurationMs|integer(int64)|true|none|Response duration in milliseconds.|
-|responseStatusCode|integer(int16)|true|none|none|
-|status|[MessageStatus](#schemamessagestatus)|true|none|The sending status of the message:<br>- Success = 0<br>- Pending = 1<br>- Fail = 2<br>- Sending = 3|
-|statusText|[MessageStatusText](#schemamessagestatustext)|true|none|none|
-|timestamp|string(date-time)|true|none|none|
-|triggerType|[MessageAttemptTriggerType](#schemamessageattempttriggertype)|true|none|The reason an attempt was made:<br>- Scheduled = 0<br>- Manual = 1|
-|url|string(uri)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
-|status|3|
-|statusText|success|
-|statusText|pending|
-|statusText|fail|
-|statusText|sending|
-|triggerType|0|
-|triggerType|1|
 
 <h2 id="tocS_MessageAttemptRecoveredEvent">MessageAttemptRecoveredEvent</h2>
 <!-- backwards compatibility -->
@@ -7464,14 +6243,14 @@ Sent when a message delivery has failed (all of the retry attempts have been exh
   "data": {
     "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "appUid": "unique-app-identifier",
+    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+    "msgEventId": "unique-msg-identifier",
     "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "lastAttempt": {
       "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
       "responseStatusCode": 0,
       "timestamp": "1970-01-01T00:00:00Z"
-    },
-    "msgEventId": "unique-msg-identifier",
-    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+    }
   },
   "type": "message.attempt.recovered"
 }
@@ -7503,14 +6282,14 @@ Sent on a successful dispatch after an earlier failure op webhook has already be
 {
   "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "appUid": "unique-app-identifier",
+  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "msgEventId": "unique-msg-identifier",
   "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
   "lastAttempt": {
     "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
     "responseStatusCode": 0,
     "timestamp": "1970-01-01T00:00:00Z"
-  },
-  "msgEventId": "unique-msg-identifier",
-  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+  }
 }
 ```
 
@@ -7522,55 +6301,22 @@ Sent when a message delivery has failed (all of the retry attempts have been exh
 |---|---|---|---|---|
 |appId|string|true|none|none|
 |appUid|string \| null|false|none|none|
+|msgId|string|true|none|none|
+|msgEventId|string \| null|false|none|none|
 |endpointId|string|true|none|none|
 |lastAttempt|[MessageAttempetLast](#schemamessageattempetlast)|true|none|none|
-|msgEventId|string \| null|false|none|none|
-|msgId|string|true|none|none|
 
-<h2 id="tocS_MessageAttemptTriggerType">MessageAttemptTriggerType</h2>
+<h2 id="tocS_HttpErrorOut">HttpErrorOut</h2>
 <!-- backwards compatibility -->
-<a id="schemamessageattempttriggertype"></a>
-<a id="schema_MessageAttemptTriggerType"></a>
-<a id="tocSmessageattempttriggertype"></a>
-<a id="tocsmessageattempttriggertype"></a>
-
-```json
-0
-```
-
-The reason an attempt was made:
-- Scheduled = 0
-- Manual = 1
-
-<h2 id="tocS_MessageEndpointOut">MessageEndpointOut</h2>
-<!-- backwards compatibility -->
-<a id="schemamessageendpointout"></a>
-<a id="schema_MessageEndpointOut"></a>
-<a id="tocSmessageendpointout"></a>
-<a id="tocsmessageendpointout"></a>
+<a id="schemahttperrorout"></a>
+<a id="schema_HttpErrorOut"></a>
+<a id="tocShttperrorout"></a>
+<a id="tocshttperrorout"></a>
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "createdAt": "1970-01-01T00:00:00Z",
-  "description": "string",
-  "disabled": false,
-  "eventTypes": [
-    "user.signup",
-    "user.deleted"
-  ],
-  "expiry": "1970-01-01T00:00:00Z",
-  "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "nextAttempt": "1970-01-01T00:00:00Z",
-  "status": 0,
-  "statusText": "success",
-  "throttleRate": 0,
-  "uid": "unique-ep-identifier",
-  "updatedAt": "1970-01-01T00:00:00Z",
-  "url": "https://example.com/webhook/"
+  "code": "string",
+  "detail": "string"
 }
 ```
 
@@ -7578,60 +6324,79 @@ The reason an attempt was made:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|channels|[string]|false|none|List of message channels this endpoint listens to (omit for all)|
-|createdAt|string(date-time)|true|none|none|
-|description|string|true|none|An example endpoint name|
-|disabled|boolean|false|none|none|
-|eventTypes|[string]|false|none|none|
-|expiry|string(date-time) \| null|false|none|When the endpoint expires, if ever.<br><br>This field currently exists only for compatibility with the Svix Cloud API. If you want expiring endpoints in Svix Server OSS, please open an issue.|
-|id|string|true|none|none|
-|nextAttempt|string(date-time) \| null|false|none|none|
-|status|[MessageStatus](#schemamessagestatus)|true|none|The sending status of the message:<br>- Success = 0<br>- Pending = 1<br>- Fail = 2<br>- Sending = 3|
-|statusText|[MessageStatusText](#schemamessagestatustext)|true|none|none|
-|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
-|uid|string \| null|false|none|Optional unique identifier for the endpoint|
-|updatedAt|string(date-time)|true|none|none|
-|url|string(uri)|true|none|none|
+|code|string|true|none|none|
+|detail|string|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|0|
-|status|1|
-|status|2|
-|status|3|
-|statusText|success|
-|statusText|pending|
-|statusText|fail|
-|statusText|sending|
-
-<h2 id="tocS_MessageIn">MessageIn</h2>
+<h2 id="tocS_HTTPValidationError">HTTPValidationError</h2>
 <!-- backwards compatibility -->
-<a id="schemamessagein"></a>
-<a id="schema_MessageIn"></a>
-<a id="tocSmessagein"></a>
-<a id="tocsmessagein"></a>
+<a id="schemahttpvalidationerror"></a>
+<a id="schema_HTTPValidationError"></a>
+<a id="tocShttpvalidationerror"></a>
+<a id="tocshttpvalidationerror"></a>
 
 ```json
 {
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|[[ValidationErrorItem](#schemavalidationerroritem)]|true|none|none|
+
+<h2 id="tocS_ValidationErrorItem">ValidationErrorItem</h2>
+<!-- backwards compatibility -->
+<a id="schemavalidationerroritem"></a>
+<a id="schema_ValidationErrorItem"></a>
+<a id="tocSvalidationerroritem"></a>
+<a id="tocsvalidationerroritem"></a>
+
+```json
+{
+  "loc": [
+    "string"
+  ],
+  "msg": "string",
+  "type": "string"
+}
+```
+
+Validation errors have their own schema to provide context for invalid requests eg. mismatched types and out of bounds values. There may be any number of these per 422 UNPROCESSABLE ENTITY error.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|loc|[string]|true|none|The location as a [`Vec`] of [`String`]s -- often in the form `["body", "field_name"]`, `["query", "field_name"]`, etc. They may, however, be arbitrarily deep.|
+|msg|string|true|none|The message accompanying the validation error item.|
+|type|string|true|none|The type of error, often "type_error" or "value_error", but sometimes with more context like as "value_error.number.not_ge"|
+
+<h2 id="tocS_AppPortalAccessIn">AppPortalAccessIn</h2>
+<!-- backwards compatibility -->
+<a id="schemaappportalaccessin"></a>
+<a id="schema_AppPortalAccessIn"></a>
+<a id="tocSappportalaccessin"></a>
+<a id="tocsappportalaccessin"></a>
+
+```json
+{
+  "featureFlags": [],
   "application": {
-    "metadata": {},
     "name": "My first application",
     "throttleRate": 1,
-    "uid": "unique-app-identifier"
-  },
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "eventId": "unique-msg-identifier",
-  "eventType": "user.signup",
-  "payload": {
-    "email": "test@example.com",
-    "username": "test_user"
-  },
-  "payloadRetentionPeriod": 90
+    "uid": "unique-app-identifier",
+    "metadata": {}
+  }
 }
 ```
 
@@ -7639,34 +6404,22 @@ The reason an attempt was made:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|featureFlags|[string]|false|none|The set of feature flags the created token will have access to.|
 |application|[ApplicationIn](#schemaapplicationin)|false|none|Optionally creates a new application alongside the message.<br><br>If the application id or uid that is used in the path already exists, this argument is ignored.|
-|channels|[string]|false|none|List of free-form identifiers that endpoints can filter by|
-|eventId|string \| null|false|none|Optional unique identifier for the message|
-|eventType|string|true|none|none|
-|payload|object|true|none|none|
-|payloadRetentionPeriod|integer(int64)|false|none|none|
 
-<h2 id="tocS_MessageOut">MessageOut</h2>
+<h2 id="tocS_ApplicationIn">ApplicationIn</h2>
 <!-- backwards compatibility -->
-<a id="schemamessageout"></a>
-<a id="schema_MessageOut"></a>
-<a id="tocSmessageout"></a>
-<a id="tocsmessageout"></a>
+<a id="schemaapplicationin"></a>
+<a id="schema_ApplicationIn"></a>
+<a id="tocSapplicationin"></a>
+<a id="tocsapplicationin"></a>
 
 ```json
 {
-  "channels": [
-    "project_123",
-    "group_2"
-  ],
-  "eventId": "unique-msg-identifier",
-  "eventType": "user.signup",
-  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
-  "payload": {
-    "email": "test@example.com",
-    "username": "test_user"
-  },
-  "timestamp": "1970-01-01T00:00:00Z"
+  "name": "My first application",
+  "throttleRate": 1,
+  "uid": "unique-app-identifier",
+  "metadata": {}
 }
 ```
 
@@ -7674,40 +6427,65 @@ The reason an attempt was made:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|channels|[string]|false|none|List of free-form identifiers that endpoints can filter by|
-|eventId|string \| null|false|none|Optional unique identifier for the message|
-|eventType|string|true|none|none|
+|name|string|true|none|none|
+|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
+|uid|string \| null|false|none|Optional unique identifier for the application|
+|metadata|object|false|none|none|
+
+<h2 id="tocS_AppPortalAccessOut">AppPortalAccessOut</h2>
+<!-- backwards compatibility -->
+<a id="schemaappportalaccessout"></a>
+<a id="schema_AppPortalAccessOut"></a>
+<a id="tocSappportalaccessout"></a>
+<a id="tocsappportalaccessout"></a>
+
+```json
+{
+  "url": "https://app.svix.com/login#key=eyJhcHBJZCI6ICJhcHBfMXRSdFl",
+  "token": "appsk_kV3ts5tKPNJN4Dl25cMTfUNdmabxbX0O"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string(uri)|true|none|none|
+|token|string|true|none|none|
+
+<h2 id="tocS_ApplicationOut">ApplicationOut</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationout"></a>
+<a id="schema_ApplicationOut"></a>
+<a id="tocSapplicationout"></a>
+<a id="tocsapplicationout"></a>
+
+```json
+{
+  "uid": "unique-app-identifier",
+  "name": "My first application",
+  "throttleRate": 0,
+  "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "metadata": {
+    "property1": "string",
+    "property2": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|uid|string \| null|false|none|none|
+|name|string|true|none|none|
+|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
 |id|string|true|none|none|
-|payload|object|true|none|none|
-|timestamp|string(date-time)|true|none|none|
-
-<h2 id="tocS_MessageStatus">MessageStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemamessagestatus"></a>
-<a id="schema_MessageStatus"></a>
-<a id="tocSmessagestatus"></a>
-<a id="tocsmessagestatus"></a>
-
-```json
-0
-```
-
-The sending status of the message:
-- Success = 0
-- Pending = 1
-- Fail = 2
-- Sending = 3
-
-<h2 id="tocS_MessageStatusText">MessageStatusText</h2>
-<!-- backwards compatibility -->
-<a id="schemamessagestatustext"></a>
-<a id="schema_MessageStatusText"></a>
-<a id="tocSmessagestatustext"></a>
-<a id="tocsmessagestatustext"></a>
-
-```json
-"success"
-```
+|createdAt|string(date-time)|true|none|none|
+|updatedAt|string(date-time)|true|none|none|
+|metadata|object|true|none|none|
 
 <h2 id="tocS_Ordering">Ordering</h2>
 <!-- backwards compatibility -->
@@ -7721,6 +6499,433 @@ The sending status of the message:
 ```
 
 Defines the ordering in a listing of results.
+
+<h2 id="tocS_ListResponse_ApplicationOut_">ListResponse_ApplicationOut_</h2>
+<!-- backwards compatibility -->
+<a id="schemalistresponse_applicationout_"></a>
+<a id="schema_ListResponse_ApplicationOut_"></a>
+<a id="tocSlistresponse_applicationout_"></a>
+<a id="tocslistresponse_applicationout_"></a>
+
+```json
+{
+  "data": [
+    {
+      "uid": "unique-app-identifier",
+      "name": "My first application",
+      "throttleRate": 0,
+      "id": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "metadata": {
+        "property1": "string",
+        "property2": "string"
+      }
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[ApplicationOut](#schemaapplicationout)]|true|none|none|
+|iterator|string \| null|false|none|none|
+|prevIterator|string \| null|false|none|none|
+|done|boolean|true|none|none|
+
+<h2 id="tocS_ApplicationPatch">ApplicationPatch</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationpatch"></a>
+<a id="schema_ApplicationPatch"></a>
+<a id="tocSapplicationpatch"></a>
+<a id="tocsapplicationpatch"></a>
+
+```json
+{
+  "name": "string",
+  "throttleRate": 0,
+  "uid": "unique-app-identifier",
+  "metadata": {
+    "property1": "string",
+    "property2": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|none|
+|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this application's endpoints.<br><br>Outgoing messages will be throttled to this rate.|
+|uid|string \| null|false|none|none|
+|metadata|object|false|none|none|
+
+<h2 id="tocS_EndpointIn">EndpointIn</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointin"></a>
+<a id="schema_EndpointIn"></a>
+<a id="tocSendpointin"></a>
+<a id="tocsendpointin"></a>
+
+```json
+{
+  "description": "An example endpoint name",
+  "throttleRate": 1,
+  "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "secret": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD",
+  "metadata": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|none|
+|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
+|uid|string \| null|false|none|Optional unique identifier for the endpoint|
+|url|string(uri)|true|none|none|
+|disabled|boolean|false|none|none|
+|eventTypes|[string]|false|none|none|
+|channels|[string]|false|none|List of message channels this endpoint listens to (omit for all)|
+|secret|string \| null|false|none|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
+|metadata|object|false|none|none|
+
+<h2 id="tocS_EndpointOut">EndpointOut</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointout"></a>
+<a id="schema_EndpointOut"></a>
+<a id="tocSendpointout"></a>
+<a id="tocsendpointout"></a>
+
+```json
+{
+  "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "metadata": {
+    "property1": "string",
+    "property2": "string"
+  },
+  "description": "string",
+  "throttleRate": 0,
+  "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "expiry": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|metadata|object|true|none|none|
+|description|string|true|none|An example endpoint name|
+|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
+|uid|string \| null|false|none|Optional unique identifier for the endpoint|
+|url|string(uri)|true|none|none|
+|disabled|boolean|false|none|none|
+|eventTypes|[string]|false|none|none|
+|channels|[string]|false|none|List of message channels this endpoint listens to (omit for all)|
+|createdAt|string(date-time)|true|none|none|
+|updatedAt|string(date-time)|true|none|none|
+|expiry|string(date-time) \| null|false|none|When the endpoint expires, if ever.<br><br>This field currently exists only for compatibility with the Svix Cloud API. If you want expiring endpoints in Svix Server OSS, please open an issue.|
+
+<h2 id="tocS_ListResponse_EndpointOut_">ListResponse_EndpointOut_</h2>
+<!-- backwards compatibility -->
+<a id="schemalistresponse_endpointout_"></a>
+<a id="schema_ListResponse_EndpointOut_"></a>
+<a id="tocSlistresponse_endpointout_"></a>
+<a id="tocslistresponse_endpointout_"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "metadata": {
+        "property1": "string",
+        "property2": "string"
+      },
+      "description": "string",
+      "throttleRate": 0,
+      "uid": "unique-ep-identifier",
+      "url": "https://example.com/webhook/",
+      "disabled": false,
+      "eventTypes": [
+        "user.signup",
+        "user.deleted"
+      ],
+      "channels": [
+        "project_123",
+        "group_2"
+      ],
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "expiry": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[EndpointOut](#schemaendpointout)]|true|none|none|
+|iterator|string \| null|false|none|none|
+|prevIterator|string \| null|false|none|none|
+|done|boolean|true|none|none|
+
+<h2 id="tocS_EndpointUpdate">EndpointUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointupdate"></a>
+<a id="schema_EndpointUpdate"></a>
+<a id="tocSendpointupdate"></a>
+<a id="tocsendpointupdate"></a>
+
+```json
+{
+  "description": "An example endpoint name",
+  "throttleRate": 1,
+  "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "metadata": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|none|
+|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
+|uid|string \| null|false|none|Optional unique identifier for the endpoint|
+|url|string(uri)|true|none|none|
+|disabled|boolean|false|none|none|
+|eventTypes|[string]|false|none|none|
+|channels|[string]|false|none|List of message channels this endpoint listens to (omit for all)|
+|metadata|object|false|none|none|
+
+<h2 id="tocS_EndpointPatch">EndpointPatch</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointpatch"></a>
+<a id="schema_EndpointPatch"></a>
+<a id="tocSendpointpatch"></a>
+<a id="tocsendpointpatch"></a>
+
+```json
+{
+  "description": "string",
+  "throttleRate": 0,
+  "uid": "unique-ep-identifier",
+  "url": "http://example.com",
+  "disabled": true,
+  "eventTypes": [
+    "user.signup"
+  ],
+  "channels": [
+    "project_1337"
+  ],
+  "metadata": {
+    "property1": "string",
+    "property2": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|none|
+|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
+|uid|string \| null|false|none|none|
+|url|string(uri)|false|none|none|
+|disabled|boolean|false|none|none|
+|eventTypes|[string]|false|none|none|
+|channels|[string]|false|none|none|
+|metadata|object|false|none|none|
+
+<h2 id="tocS_EndpointSecretOut">EndpointSecretOut</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointsecretout"></a>
+<a id="schema_EndpointSecretOut"></a>
+<a id="tocSendpointsecretout"></a>
+<a id="tocsendpointsecretout"></a>
+
+```json
+{
+  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
+
+<h2 id="tocS_EndpointSecretRotateIn">EndpointSecretRotateIn</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointsecretrotatein"></a>
+<a id="schema_EndpointSecretRotateIn"></a>
+<a id="tocSendpointsecretrotatein"></a>
+<a id="tocsendpointsecretrotatein"></a>
+
+```json
+{
+  "key": "whsec_C2FVsBQIhrscChlQIMV+b5sSYspob7oD",
+  "gracePeriodSeconds": 86400
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string \| null|false|none|The endpoint's verification secret. If `null` is passed, a secret is automatically generated. Format: `base64` encoded random bytes optionally prefixed with `whsec_`. Recommended size: 24.|
+|gracePeriodSeconds|integer(uint32) \| null|false|none|How long the old secret will be valid for, in seconds.<br><br>Valid values are between 0 (immediate expiry) and 7 days. The default is 24 hours.|
+
+<h2 id="tocS_EndpointStatsRange">EndpointStatsRange</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointstatsrange"></a>
+<a id="schema_EndpointStatsRange"></a>
+<a id="tocSendpointstatsrange"></a>
+<a id="tocsendpointstatsrange"></a>
+
+```json
+{
+  "since": "1970-01-01T00:00:00Z",
+  "until": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|since|string(date-time) \| null|false|none|none|
+|until|string(date-time) \| null|false|none|none|
+
+<h2 id="tocS_EndpointStats">EndpointStats</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointstats"></a>
+<a id="schema_EndpointStats"></a>
+<a id="tocSendpointstats"></a>
+<a id="tocsendpointstats"></a>
+
+```json
+{
+  "success": 0,
+  "pending": 0,
+  "sending": 0,
+  "fail": 0,
+  "canceled": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|success|integer(int64)|true|none|none|
+|pending|integer(int64)|true|none|none|
+|sending|integer(int64)|true|none|none|
+|fail|integer(int64)|true|none|none|
+|canceled|integer(int64)|true|none|none|
+
+<h2 id="tocS_EventExampleIn">EventExampleIn</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventexamplein"></a>
+<a id="schema_EventExampleIn"></a>
+<a id="tocSeventexamplein"></a>
+<a id="tocseventexamplein"></a>
+
+```json
+{
+  "eventType": "user.signup"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|eventType|string|true|none|none|
+
+<h2 id="tocS_MessageOut">MessageOut</h2>
+<!-- backwards compatibility -->
+<a id="schemamessageout"></a>
+<a id="schema_MessageOut"></a>
+<a id="tocSmessageout"></a>
+<a id="tocsmessageout"></a>
+
+```json
+{
+  "eventId": "unique-msg-identifier",
+  "eventType": "user.signup",
+  "payload": {
+    "email": "test@example.com",
+    "username": "test_user"
+  },
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "timestamp": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|eventId|string \| null|false|none|Optional unique identifier for the message|
+|eventType|string|true|none|none|
+|payload|object|true|none|none|
+|channels|[string]|false|none|List of free-form identifiers that endpoints can filter by|
+|id|string|true|none|none|
+|timestamp|string(date-time)|true|none|none|
 
 <h2 id="tocS_RecoverIn">RecoverIn</h2>
 <!-- backwards compatibility -->
@@ -7775,6 +6980,803 @@ Defines the ordering in a listing of results.
 |status|running|
 |task|endpoint.recover|
 
+<h2 id="tocS_BackgroundTaskStatus">BackgroundTaskStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemabackgroundtaskstatus"></a>
+<a id="schema_BackgroundTaskStatus"></a>
+<a id="tocSbackgroundtaskstatus"></a>
+<a id="tocsbackgroundtaskstatus"></a>
+
+```json
+"running"
+```
+
+<h2 id="tocS_BackgroundTaskType">BackgroundTaskType</h2>
+<!-- backwards compatibility -->
+<a id="schemabackgroundtasktype"></a>
+<a id="schema_BackgroundTaskType"></a>
+<a id="tocSbackgroundtasktype"></a>
+<a id="tocsbackgroundtasktype"></a>
+
+```json
+"endpoint.recover"
+```
+
+<h2 id="tocS_EndpointHeadersOut">EndpointHeadersOut</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointheadersout"></a>
+<a id="schema_EndpointHeadersOut"></a>
+<a id="tocSendpointheadersout"></a>
+<a id="tocsendpointheadersout"></a>
+
+```json
+{
+  "headers": {
+    "X-Example": "123",
+    "X-Foobar": "Bar"
+  },
+  "sensitive": [
+    "Authorization"
+  ]
+}
+```
+
+The value of the headers is returned in the `headers` field.
+
+Sensitive headers that have been redacted are returned in the sensitive field.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|headers|object|true|none|none|
+|sensitive|[string]|true|none|none|
+
+<h2 id="tocS_EndpointHeadersPatchIn">EndpointHeadersPatchIn</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointheaderspatchin"></a>
+<a id="schema_EndpointHeadersPatchIn"></a>
+<a id="tocSendpointheaderspatchin"></a>
+<a id="tocsendpointheaderspatchin"></a>
+
+```json
+{
+  "headers": {
+    "X-Example": "123",
+    "X-Foobar": "Bar"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|headers|object|true|none|none|
+
+<h2 id="tocS_EndpointHeadersIn">EndpointHeadersIn</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointheadersin"></a>
+<a id="schema_EndpointHeadersIn"></a>
+<a id="tocSendpointheadersin"></a>
+<a id="tocsendpointheadersin"></a>
+
+```json
+{
+  "headers": {
+    "X-Example": "123",
+    "X-Foobar": "Bar"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|headers|object|true|none|none|
+
+<h2 id="tocS_EventTypeIn">EventTypeIn</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventtypein"></a>
+<a id="schema_EventTypeIn"></a>
+<a id="tocSeventtypein"></a>
+<a id="tocseventtypein"></a>
+
+```json
+{
+  "name": "user.signup",
+  "description": "A user has signed up",
+  "archived": false,
+  "deprecated": false,
+  "schemas": {
+    "1": {
+      "description": "An invoice was paid by a user",
+      "properties": {
+        "invoiceId": {
+          "description": "The invoice id",
+          "type": "string"
+        },
+        "userId": {
+          "description": "The user id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "invoiceId",
+        "userId"
+      ],
+      "title": "Invoice Paid Event",
+      "type": "object"
+    }
+  },
+  "featureFlag": "cool-new-feature"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|description|string|true|none|none|
+|archived|boolean|false|none|none|
+|deprecated|boolean|false|none|none|
+|schemas|object \| null|false|none|The schema for the event type for a specific version as a JSON schema.|
+|featureFlag|string \| null|false|none|none|
+
+<h2 id="tocS_EventTypeOut">EventTypeOut</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventtypeout"></a>
+<a id="schema_EventTypeOut"></a>
+<a id="tocSeventtypeout"></a>
+<a id="tocseventtypeout"></a>
+
+```json
+{
+  "name": "user.signup",
+  "description": "A user has signed up",
+  "archived": false,
+  "deprecated": true,
+  "schemas": {
+    "1": {
+      "description": "An invoice was paid by a user",
+      "properties": {
+        "invoiceId": {
+          "description": "The invoice id",
+          "type": "string"
+        },
+        "userId": {
+          "description": "The user id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "invoiceId",
+        "userId"
+      ],
+      "title": "Invoice Paid Event",
+      "type": "object"
+    }
+  },
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "featureFlag": "cool-new-feature"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|description|string|true|none|none|
+|archived|boolean|false|none|none|
+|deprecated|boolean|true|none|none|
+|schemas|object \| null|false|none|The schema for the event type for a specific version as a JSON schema.|
+|createdAt|string(date-time)|true|none|none|
+|updatedAt|string(date-time)|true|none|none|
+|featureFlag|string \| null|false|none|none|
+
+<h2 id="tocS_ListResponse_EventTypeOut_">ListResponse_EventTypeOut_</h2>
+<!-- backwards compatibility -->
+<a id="schemalistresponse_eventtypeout_"></a>
+<a id="schema_ListResponse_EventTypeOut_"></a>
+<a id="tocSlistresponse_eventtypeout_"></a>
+<a id="tocslistresponse_eventtypeout_"></a>
+
+```json
+{
+  "data": [
+    {
+      "name": "user.signup",
+      "description": "A user has signed up",
+      "archived": false,
+      "deprecated": true,
+      "schemas": {
+        "1": {
+          "description": "An invoice was paid by a user",
+          "properties": {
+            "invoiceId": {
+              "description": "The invoice id",
+              "type": "string"
+            },
+            "userId": {
+              "description": "The user id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "invoiceId",
+            "userId"
+          ],
+          "title": "Invoice Paid Event",
+          "type": "object"
+        }
+      },
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "featureFlag": "cool-new-feature"
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[EventTypeOut](#schemaeventtypeout)]|true|none|none|
+|iterator|string \| null|false|none|none|
+|prevIterator|string \| null|false|none|none|
+|done|boolean|true|none|none|
+
+<h2 id="tocS_EventTypeUpdate">EventTypeUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventtypeupdate"></a>
+<a id="schema_EventTypeUpdate"></a>
+<a id="tocSeventtypeupdate"></a>
+<a id="tocseventtypeupdate"></a>
+
+```json
+{
+  "description": "A user has signed up",
+  "archived": false,
+  "deprecated": false,
+  "schemas": {
+    "1": {
+      "description": "An invoice was paid by a user",
+      "properties": {
+        "invoiceId": {
+          "description": "The invoice id",
+          "type": "string"
+        },
+        "userId": {
+          "description": "The user id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "invoiceId",
+        "userId"
+      ],
+      "title": "Invoice Paid Event",
+      "type": "object"
+    }
+  },
+  "featureFlag": "cool-new-feature"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|true|none|none|
+|archived|boolean|false|none|none|
+|deprecated|boolean|false|none|none|
+|schemas|object \| null|false|none|The schema for the event type for a specific version as a JSON schema.|
+|featureFlag|string \| null|false|none|none|
+
+<h2 id="tocS_EventTypePatch">EventTypePatch</h2>
+<!-- backwards compatibility -->
+<a id="schemaeventtypepatch"></a>
+<a id="schema_EventTypePatch"></a>
+<a id="tocSeventtypepatch"></a>
+<a id="tocseventtypepatch"></a>
+
+```json
+{
+  "description": "string",
+  "archived": true,
+  "deprecated": true,
+  "schemas": {
+    "description": "An invoice was paid by a user",
+    "properties": {
+      "invoiceId": {
+        "description": "The invoice id",
+        "type": "string"
+      },
+      "userId": {
+        "description": "The user id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "invoiceId",
+      "userId"
+    ],
+    "title": "Invoice Paid Event",
+    "type": "object"
+  },
+  "featureFlag": "cool-new-feature"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|none|
+|archived|boolean|false|none|none|
+|deprecated|boolean|false|none|none|
+|schemas|object \| null|false|none|none|
+|featureFlag|string \| null|false|none|none|
+
+<h2 id="tocS_MessageIn">MessageIn</h2>
+<!-- backwards compatibility -->
+<a id="schemamessagein"></a>
+<a id="schema_MessageIn"></a>
+<a id="tocSmessagein"></a>
+<a id="tocsmessagein"></a>
+
+```json
+{
+  "eventId": "unique-msg-identifier",
+  "eventType": "user.signup",
+  "payload": {
+    "email": "test@example.com",
+    "username": "test_user"
+  },
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "payloadRetentionPeriod": 90,
+  "application": {
+    "name": "My first application",
+    "throttleRate": 1,
+    "uid": "unique-app-identifier",
+    "metadata": {}
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|eventId|string \| null|false|none|Optional unique identifier for the message|
+|eventType|string|true|none|none|
+|payload|object|true|none|none|
+|channels|[string]|false|none|List of free-form identifiers that endpoints can filter by|
+|payloadRetentionPeriod|integer(int64)|false|none|none|
+|application|[ApplicationIn](#schemaapplicationin)|false|none|Optionally creates a new application alongside the message.<br><br>If the application id or uid that is used in the path already exists, this argument is ignored.|
+
+<h2 id="tocS_ListResponse_MessageOut_">ListResponse_MessageOut_</h2>
+<!-- backwards compatibility -->
+<a id="schemalistresponse_messageout_"></a>
+<a id="schema_ListResponse_MessageOut_"></a>
+<a id="tocSlistresponse_messageout_"></a>
+<a id="tocslistresponse_messageout_"></a>
+
+```json
+{
+  "data": [
+    {
+      "eventId": "unique-msg-identifier",
+      "eventType": "user.signup",
+      "payload": {
+        "email": "test@example.com",
+        "username": "test_user"
+      },
+      "channels": [
+        "project_123",
+        "group_2"
+      ],
+      "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "timestamp": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[MessageOut](#schemamessageout)]|true|none|none|
+|iterator|string \| null|false|none|none|
+|prevIterator|string \| null|false|none|none|
+|done|boolean|true|none|none|
+
+<h2 id="tocS_BulkExpungeContentsIn">BulkExpungeContentsIn</h2>
+<!-- backwards compatibility -->
+<a id="schemabulkexpungecontentsin"></a>
+<a id="schema_BulkExpungeContentsIn"></a>
+<a id="tocSbulkexpungecontentsin"></a>
+<a id="tocsbulkexpungecontentsin"></a>
+
+```json
+{
+  "ids": []
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ids|[string]|false|none|Message ID or UID to delete|
+
+<h2 id="tocS_BulkExpungeContentsOut">BulkExpungeContentsOut</h2>
+<!-- backwards compatibility -->
+<a id="schemabulkexpungecontentsout"></a>
+<a id="schema_BulkExpungeContentsOut"></a>
+<a id="tocSbulkexpungecontentsout"></a>
+<a id="tocsbulkexpungecontentsout"></a>
+
+```json
+{
+  "results": {
+    "property1": "expunged",
+    "property2": "expunged"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|object|true|none|Results of expunging (by ID)|
+
+<h2 id="tocS_BulkExpungeStatus">BulkExpungeStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemabulkexpungestatus"></a>
+<a id="schema_BulkExpungeStatus"></a>
+<a id="tocSbulkexpungestatus"></a>
+<a id="tocsbulkexpungestatus"></a>
+
+```json
+"expunged"
+```
+
+<h2 id="tocS_MessageAttemptOut">MessageAttemptOut</h2>
+<!-- backwards compatibility -->
+<a id="schemamessageattemptout"></a>
+<a id="schema_MessageAttemptOut"></a>
+<a id="tocSmessageattemptout"></a>
+<a id="tocsmessageattemptout"></a>
+
+```json
+{
+  "url": "https://example.com/webhook/",
+  "response": "{}",
+  "responseStatusCode": 200,
+  "responseDurationMs": 0,
+  "status": 0,
+  "statusText": "success",
+  "triggerType": 0,
+  "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "timestamp": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string(uri)|true|none|none|
+|response|string|true|none|none|
+|responseStatusCode|integer(int16)|true|none|none|
+|responseDurationMs|integer(int64)|true|none|Response duration in milliseconds.|
+|status|[MessageStatus](#schemamessagestatus)|true|none|The sending status of the message:<br>- Success = 0<br>- Pending = 1<br>- Fail = 2<br>- Sending = 3|
+|statusText|[MessageStatusText](#schemamessagestatustext)|true|none|none|
+|triggerType|[MessageAttemptTriggerType](#schemamessageattempttriggertype)|true|none|The reason an attempt was made:<br>- Scheduled = 0<br>- Manual = 1|
+|msgId|string|true|none|none|
+|endpointId|string|true|none|none|
+|id|string|true|none|none|
+|timestamp|string(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|0|
+|status|1|
+|status|2|
+|status|3|
+|statusText|success|
+|statusText|pending|
+|statusText|fail|
+|statusText|sending|
+|triggerType|0|
+|triggerType|1|
+
+<h2 id="tocS_MessageStatus">MessageStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemamessagestatus"></a>
+<a id="schema_MessageStatus"></a>
+<a id="tocSmessagestatus"></a>
+<a id="tocsmessagestatus"></a>
+
+```json
+0
+```
+
+The sending status of the message:
+- Success = 0
+- Pending = 1
+- Fail = 2
+- Sending = 3
+
+<h2 id="tocS_MessageStatusText">MessageStatusText</h2>
+<!-- backwards compatibility -->
+<a id="schemamessagestatustext"></a>
+<a id="schema_MessageStatusText"></a>
+<a id="tocSmessagestatustext"></a>
+<a id="tocsmessagestatustext"></a>
+
+```json
+"success"
+```
+
+<h2 id="tocS_MessageAttemptTriggerType">MessageAttemptTriggerType</h2>
+<!-- backwards compatibility -->
+<a id="schemamessageattempttriggertype"></a>
+<a id="schema_MessageAttemptTriggerType"></a>
+<a id="tocSmessageattempttriggertype"></a>
+<a id="tocsmessageattempttriggertype"></a>
+
+```json
+0
+```
+
+The reason an attempt was made:
+- Scheduled = 0
+- Manual = 1
+
+<h2 id="tocS_ListResponse_MessageEndpointOut_">ListResponse_MessageEndpointOut_</h2>
+<!-- backwards compatibility -->
+<a id="schemalistresponse_messageendpointout_"></a>
+<a id="schema_ListResponse_MessageEndpointOut_"></a>
+<a id="tocSlistresponse_messageendpointout_"></a>
+<a id="tocslistresponse_messageendpointout_"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "status": 0,
+      "statusText": "success",
+      "nextAttempt": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "throttleRate": 0,
+      "uid": "unique-ep-identifier",
+      "url": "https://example.com/webhook/",
+      "disabled": false,
+      "eventTypes": [
+        "user.signup",
+        "user.deleted"
+      ],
+      "channels": [
+        "project_123",
+        "group_2"
+      ],
+      "createdAt": "1970-01-01T00:00:00Z",
+      "updatedAt": "1970-01-01T00:00:00Z",
+      "expiry": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[MessageEndpointOut](#schemamessageendpointout)]|true|none|none|
+|iterator|string \| null|false|none|none|
+|prevIterator|string \| null|false|none|none|
+|done|boolean|true|none|none|
+
+<h2 id="tocS_MessageEndpointOut">MessageEndpointOut</h2>
+<!-- backwards compatibility -->
+<a id="schemamessageendpointout"></a>
+<a id="schema_MessageEndpointOut"></a>
+<a id="tocSmessageendpointout"></a>
+<a id="tocsmessageendpointout"></a>
+
+```json
+{
+  "id": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "status": 0,
+  "statusText": "success",
+  "nextAttempt": "1970-01-01T00:00:00Z",
+  "description": "string",
+  "throttleRate": 0,
+  "uid": "unique-ep-identifier",
+  "url": "https://example.com/webhook/",
+  "disabled": false,
+  "eventTypes": [
+    "user.signup",
+    "user.deleted"
+  ],
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "expiry": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|status|[MessageStatus](#schemamessagestatus)|true|none|The sending status of the message:<br>- Success = 0<br>- Pending = 1<br>- Fail = 2<br>- Sending = 3|
+|statusText|[MessageStatusText](#schemamessagestatustext)|true|none|none|
+|nextAttempt|string(date-time) \| null|false|none|none|
+|description|string|true|none|An example endpoint name|
+|throttleRate|integer(uint16) \| null|false|none|Maximum messages per second to send to this endpoint.<br><br>Outgoing messages will be throttled to this rate.|
+|uid|string \| null|false|none|Optional unique identifier for the endpoint|
+|url|string(uri)|true|none|none|
+|disabled|boolean|false|none|none|
+|eventTypes|[string]|false|none|none|
+|channels|[string]|false|none|List of message channels this endpoint listens to (omit for all)|
+|createdAt|string(date-time)|true|none|none|
+|updatedAt|string(date-time)|true|none|none|
+|expiry|string(date-time) \| null|false|none|When the endpoint expires, if ever.<br><br>This field currently exists only for compatibility with the Svix Cloud API. If you want expiring endpoints in Svix Server OSS, please open an issue.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|0|
+|status|1|
+|status|2|
+|status|3|
+|statusText|success|
+|statusText|pending|
+|statusText|fail|
+|statusText|sending|
+
+<h2 id="tocS_EmptyResponse">EmptyResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaemptyresponse"></a>
+<a id="schema_EmptyResponse"></a>
+<a id="tocSemptyresponse"></a>
+<a id="tocsemptyresponse"></a>
+
+```json
+{}
+```
+
+<h2 id="tocS_ListResponse_EndpointMessageOut_">ListResponse_EndpointMessageOut_</h2>
+<!-- backwards compatibility -->
+<a id="schemalistresponse_endpointmessageout_"></a>
+<a id="schema_ListResponse_EndpointMessageOut_"></a>
+<a id="tocSlistresponse_endpointmessageout_"></a>
+<a id="tocslistresponse_endpointmessageout_"></a>
+
+```json
+{
+  "data": [
+    {
+      "status": 0,
+      "statusText": "success",
+      "nextAttempt": "1970-01-01T00:00:00Z",
+      "eventId": "unique-msg-identifier",
+      "eventType": "user.signup",
+      "payload": {
+        "email": "test@example.com",
+        "username": "test_user"
+      },
+      "channels": [
+        "project_123",
+        "group_2"
+      ],
+      "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "timestamp": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[EndpointMessageOut](#schemaendpointmessageout)]|true|none|none|
+|iterator|string \| null|false|none|none|
+|prevIterator|string \| null|false|none|none|
+|done|boolean|true|none|none|
+
+<h2 id="tocS_EndpointMessageOut">EndpointMessageOut</h2>
+<!-- backwards compatibility -->
+<a id="schemaendpointmessageout"></a>
+<a id="schema_EndpointMessageOut"></a>
+<a id="tocSendpointmessageout"></a>
+<a id="tocsendpointmessageout"></a>
+
+```json
+{
+  "status": 0,
+  "statusText": "success",
+  "nextAttempt": "1970-01-01T00:00:00Z",
+  "eventId": "unique-msg-identifier",
+  "eventType": "user.signup",
+  "payload": {
+    "email": "test@example.com",
+    "username": "test_user"
+  },
+  "channels": [
+    "project_123",
+    "group_2"
+  ],
+  "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+  "timestamp": "1970-01-01T00:00:00Z"
+}
+```
+
+A model containing information on a given message plus additional fields on the last attempt for that message.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|[MessageStatus](#schemamessagestatus)|true|none|The sending status of the message:<br>- Success = 0<br>- Pending = 1<br>- Fail = 2<br>- Sending = 3|
+|statusText|[MessageStatusText](#schemamessagestatustext)|true|none|none|
+|nextAttempt|string(date-time) \| null|false|none|none|
+|eventId|string \| null|false|none|Optional unique identifier for the message|
+|eventType|string|true|none|none|
+|payload|object|true|none|none|
+|channels|[string]|false|none|List of free-form identifiers that endpoints can filter by|
+|id|string|true|none|none|
+|timestamp|string(date-time)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|0|
+|status|1|
+|status|2|
+|status|3|
+|statusText|success|
+|statusText|pending|
+|statusText|fail|
+|statusText|sending|
+
 <h2 id="tocS_StatusCodeClass">StatusCodeClass</h2>
 <!-- backwards compatibility -->
 <a id="schemastatuscodeclass"></a>
@@ -7794,29 +7796,41 @@ The different classes of HTTP status codes:
 - Code4xx = 400
 - Code5xx = 500
 
-<h2 id="tocS_ValidationErrorItem">ValidationErrorItem</h2>
+<h2 id="tocS_ListResponse_MessageAttemptOut_">ListResponse_MessageAttemptOut_</h2>
 <!-- backwards compatibility -->
-<a id="schemavalidationerroritem"></a>
-<a id="schema_ValidationErrorItem"></a>
-<a id="tocSvalidationerroritem"></a>
-<a id="tocsvalidationerroritem"></a>
+<a id="schemalistresponse_messageattemptout_"></a>
+<a id="schema_ListResponse_MessageAttemptOut_"></a>
+<a id="tocSlistresponse_messageattemptout_"></a>
+<a id="tocslistresponse_messageattemptout_"></a>
 
 ```json
 {
-  "loc": [
-    "string"
+  "data": [
+    {
+      "url": "https://example.com/webhook/",
+      "response": "{}",
+      "responseStatusCode": 200,
+      "responseDurationMs": 0,
+      "status": 0,
+      "statusText": "success",
+      "triggerType": 0,
+      "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+      "timestamp": "1970-01-01T00:00:00Z"
+    }
   ],
-  "msg": "string",
-  "type": "string"
+  "iterator": "iterator",
+  "prevIterator": "-iterator",
+  "done": true
 }
 ```
-
-Validation errors have their own schema to provide context for invalid requests eg. mismatched types and out of bounds values. There may be any number of these per 422 UNPROCESSABLE ENTITY error.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|loc|[string]|true|none|The location as a [`Vec`] of [`String`]s -- often in the form `["body", "field_name"]`, `["query", "field_name"]`, etc. They may, however, be arbitrarily deep.|
-|msg|string|true|none|The message accompanying the validation error item.|
-|type|string|true|none|The type of error, often "type_error" or "value_error", but sometimes with more context like as "value_error.number.not_ge"|
+|data|[[MessageAttemptOut](#schemamessageattemptout)]|true|none|none|
+|iterator|string \| null|false|none|none|
+|prevIterator|string \| null|false|none|none|
+|done|boolean|true|none|none|

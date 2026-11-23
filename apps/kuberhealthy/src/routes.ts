@@ -144,8 +144,8 @@ const AdmissionReviewSchema = z
   .object({
     apiVersion: z.string().exactOptional(),
     kind: z.string().exactOptional(),
-    request: z.object({}).exactOptional(),
-    response: z.object({}).exactOptional(),
+    request: z.looseObject({}).exactOptional(),
+    response: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('AdmissionReview')
@@ -154,8 +154,8 @@ const ConversionReviewSchema = z
   .object({
     apiVersion: z.string().exactOptional(),
     kind: z.string().exactOptional(),
-    request: z.object({}).exactOptional(),
-    response: z.object({}).exactOptional(),
+    request: z.looseObject({}).exactOptional(),
+    response: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('ConversionReview')
@@ -344,7 +344,7 @@ export const getOpenapiJsonRoute = createRoute({
   responses: {
     200: {
       description: 'OpenAPI specification in JSON',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })

@@ -3169,97 +3169,71 @@ export const getDataInsightsRoute = createRoute({
         },
       },
       headers: z.object({
-        Connection: {
-          schema: z
-            .string()
-            .default('keep-alive')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .default('gzip')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .default('1473')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .default('Fri, 26 Jun 2020 00:59:03 GMT')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .default('RapidAPI-1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .default('Accept-Encoding')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Via: {
-          schema: z
-            .string()
-            .default('1.1 google')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Region': {
-          schema: z
-            .string()
-            .default('AWS - us-east-1')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Version': {
-          schema: z
-            .string()
-            .default('1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-credentials': {
-          schema: z
-            .string()
-            .default('true')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-origin': {
-          schema: z
-            .string()
-            .default('*')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-expose-headers': {
-          schema: z
-            .string()
-            .default('')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'cache-control': {
-          schema: z
-            .string()
-            .default('max-age=0, private, must-revalidate')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Connection: z
+          .string()
+          .default('keep-alive')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Encoding': z
+          .string()
+          .default('gzip')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Length': z
+          .string()
+          .default('1473')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Date: z
+          .string()
+          .default('Fri, 26 Jun 2020 00:59:03 GMT')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Server: z
+          .string()
+          .default('RapidAPI-1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Vary: z
+          .string()
+          .default('Accept-Encoding')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Via: z
+          .string()
+          .default('1.1 google')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Region': z
+          .string()
+          .default('AWS - us-east-1')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Version': z
+          .string()
+          .default('1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-credentials': z
+          .string()
+          .default('true')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-origin': z
+          .string()
+          .default('*')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-expose-headers': z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'cache-control': z
+          .string()
+          .default('max-age=0, private, must-revalidate')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4143,97 +4117,71 @@ export const getDataInsightsInsightIdRoute = createRoute({
         },
       },
       headers: z.object({
-        Connection: {
-          schema: z
-            .string()
-            .default('keep-alive')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .default('gzip')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .default('2895')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .default('Fri, 26 Jun 2020 01:26:42 GMT')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .default('RapidAPI-1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .default('Accept-Encoding')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Via: {
-          schema: z
-            .string()
-            .default('1.1 google')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Region': {
-          schema: z
-            .string()
-            .default('AWS - us-east-1')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Version': {
-          schema: z
-            .string()
-            .default('1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-credentials': {
-          schema: z
-            .string()
-            .default('true')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-origin': {
-          schema: z
-            .string()
-            .default('*')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-expose-headers': {
-          schema: z
-            .string()
-            .default('')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'cache-control': {
-          schema: z
-            .string()
-            .default('max-age=0, private, must-revalidate')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Connection: z
+          .string()
+          .default('keep-alive')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Encoding': z
+          .string()
+          .default('gzip')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Length': z
+          .string()
+          .default('2895')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Date: z
+          .string()
+          .default('Fri, 26 Jun 2020 01:26:42 GMT')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Server: z
+          .string()
+          .default('RapidAPI-1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Vary: z
+          .string()
+          .default('Accept-Encoding')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Via: z
+          .string()
+          .default('1.1 google')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Region': z
+          .string()
+          .default('AWS - us-east-1')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Version': z
+          .string()
+          .default('1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-credentials': z
+          .string()
+          .default('true')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-origin': z
+          .string()
+          .default('*')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-expose-headers': z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'cache-control': z
+          .string()
+          .default('max-age=0, private, must-revalidate')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4321,97 +4269,71 @@ export const getDataInsightsInsightIdQueryRoute = createRoute({
         'application/json; charset=utf-8': { schema: Homevalueswithin1miRadiusofLocationSchema },
       },
       headers: z.object({
-        Connection: {
-          schema: z
-            .string()
-            .default('keep-alive')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .default('gzip')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .default('727')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .default('Fri, 26 Jun 2020 01:21:28 GMT')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .default('RapidAPI-1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .default('Accept-Encoding')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Via: {
-          schema: z
-            .string()
-            .default('1.1 google')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Region': {
-          schema: z
-            .string()
-            .default('AWS - us-east-1')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Version': {
-          schema: z
-            .string()
-            .default('1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-credentials': {
-          schema: z
-            .string()
-            .default('true')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-origin': {
-          schema: z
-            .string()
-            .default('*')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-expose-headers': {
-          schema: z
-            .string()
-            .default('')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'cache-control': {
-          schema: z
-            .string()
-            .default('max-age=0, private, must-revalidate')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Connection: z
+          .string()
+          .default('keep-alive')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Encoding': z
+          .string()
+          .default('gzip')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Length': z
+          .string()
+          .default('727')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Date: z
+          .string()
+          .default('Fri, 26 Jun 2020 01:21:28 GMT')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Server: z
+          .string()
+          .default('RapidAPI-1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Vary: z
+          .string()
+          .default('Accept-Encoding')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Via: z
+          .string()
+          .default('1.1 google')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Region': z
+          .string()
+          .default('AWS - us-east-1')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Version': z
+          .string()
+          .default('1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-credentials': z
+          .string()
+          .default('true')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-origin': z
+          .string()
+          .default('*')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-expose-headers': z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'cache-control': z
+          .string()
+          .default('max-age=0, private, must-revalidate')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4475,97 +4397,71 @@ export const getGeometriesGeometryRoute = createRoute({
         },
       },
       headers: z.object({
-        Connection: {
-          schema: z
-            .string()
-            .default('keep-alive')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .default('gzip')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .default('16704')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .default('Fri, 26 Jun 2020 01:37:31 GMT')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .default('RapidAPI-1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .default('Accept-Encoding')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Via: {
-          schema: z
-            .string()
-            .default('1.1 google')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Region': {
-          schema: z
-            .string()
-            .default('AWS - us-east-1')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Version': {
-          schema: z
-            .string()
-            .default('1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-credentials': {
-          schema: z
-            .string()
-            .default('true')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-origin': {
-          schema: z
-            .string()
-            .default('*')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-expose-headers': {
-          schema: z
-            .string()
-            .default('')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'cache-control': {
-          schema: z
-            .string()
-            .default('max-age=0, private, must-revalidate')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Connection: z
+          .string()
+          .default('keep-alive')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Encoding': z
+          .string()
+          .default('gzip')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Length': z
+          .string()
+          .default('16704')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Date: z
+          .string()
+          .default('Fri, 26 Jun 2020 01:37:31 GMT')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Server: z
+          .string()
+          .default('RapidAPI-1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Vary: z
+          .string()
+          .default('Accept-Encoding')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Via: z
+          .string()
+          .default('1.1 google')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Region': z
+          .string()
+          .default('AWS - us-east-1')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Version': z
+          .string()
+          .default('1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-credentials': z
+          .string()
+          .default('true')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-origin': z
+          .string()
+          .default('*')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-expose-headers': z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'cache-control': z
+          .string()
+          .default('max-age=0, private, must-revalidate')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4654,97 +4550,71 @@ export const getGeometriesRegionsIntersectingLatitudeLongitudeRoute = createRout
         'application/json; charset=utf-8': { schema: FetchAdministrativeRegionsusingLatLngSchema },
       },
       headers: z.object({
-        Connection: {
-          schema: z
-            .string()
-            .default('keep-alive')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .default('gzip')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .default('Fri, 26 Jun 2020 01:40:28 GMT')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .default('RapidAPI-1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .default('Accept-Encoding')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Via: {
-          schema: z
-            .string()
-            .default('1.1 google')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Region': {
-          schema: z
-            .string()
-            .default('AWS - us-east-1')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Version': {
-          schema: z
-            .string()
-            .default('1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-credentials': {
-          schema: z
-            .string()
-            .default('true')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-origin': {
-          schema: z
-            .string()
-            .default('*')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-expose-headers': {
-          schema: z
-            .string()
-            .default('')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'cache-control': {
-          schema: z
-            .string()
-            .default('max-age=0, private, must-revalidate')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'transfer-encoding': {
-          schema: z
-            .string()
-            .default('chunked')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Connection: z
+          .string()
+          .default('keep-alive')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Encoding': z
+          .string()
+          .default('gzip')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Date: z
+          .string()
+          .default('Fri, 26 Jun 2020 01:40:28 GMT')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Server: z
+          .string()
+          .default('RapidAPI-1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Vary: z
+          .string()
+          .default('Accept-Encoding')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Via: z
+          .string()
+          .default('1.1 google')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Region': z
+          .string()
+          .default('AWS - us-east-1')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Version': z
+          .string()
+          .default('1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-credentials': z
+          .string()
+          .default('true')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-origin': z
+          .string()
+          .default('*')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-expose-headers': z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'cache-control': z
+          .string()
+          .default('max-age=0, private, must-revalidate')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'transfer-encoding': z
+          .string()
+          .default('chunked')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4979,97 +4849,71 @@ export const getTrafficCountsSegmentIdRoute = createRoute({
         },
       },
       headers: z.object({
-        Connection: {
-          schema: z
-            .string()
-            .default('keep-alive')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .default('gzip')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .default('826')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .default('Fri, 26 Jun 2020 01:49:02 GMT')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .default('RapidAPI-1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .default('Accept-Encoding')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Via: {
-          schema: z
-            .string()
-            .default('1.1 google')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Region': {
-          schema: z
-            .string()
-            .default('AWS - us-east-1')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Version': {
-          schema: z
-            .string()
-            .default('1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-credentials': {
-          schema: z
-            .string()
-            .default('true')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-origin': {
-          schema: z
-            .string()
-            .default('*')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-expose-headers': {
-          schema: z
-            .string()
-            .default('')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'cache-control': {
-          schema: z
-            .string()
-            .default('max-age=0, private, must-revalidate')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Connection: z
+          .string()
+          .default('keep-alive')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Encoding': z
+          .string()
+          .default('gzip')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Length': z
+          .string()
+          .default('826')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Date: z
+          .string()
+          .default('Fri, 26 Jun 2020 01:49:02 GMT')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Server: z
+          .string()
+          .default('RapidAPI-1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Vary: z
+          .string()
+          .default('Accept-Encoding')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Via: z
+          .string()
+          .default('1.1 google')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Region': z
+          .string()
+          .default('AWS - us-east-1')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Version': z
+          .string()
+          .default('1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-credentials': z
+          .string()
+          .default('true')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-origin': z
+          .string()
+          .default('*')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-expose-headers': z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'cache-control': z
+          .string()
+          .default('max-age=0, private, must-revalidate')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5220,97 +5064,71 @@ export const getTrafficRoadsNearestLatitudeLongitudeRoute = createRoute({
         },
       },
       headers: z.object({
-        Connection: {
-          schema: z
-            .string()
-            .default('keep-alive')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .default('gzip')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .default('351')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .default('Fri, 26 Jun 2020 01:46:53 GMT')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .default('RapidAPI-1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .default('Accept-Encoding')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Via: {
-          schema: z
-            .string()
-            .default('1.1 google')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Region': {
-          schema: z
-            .string()
-            .default('AWS - us-east-1')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-RapidAPI-Version': {
-          schema: z
-            .string()
-            .default('1.1.15')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-credentials': {
-          schema: z
-            .string()
-            .default('true')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-allow-origin': {
-          schema: z
-            .string()
-            .default('*')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'access-control-expose-headers': {
-          schema: z
-            .string()
-            .default('')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'cache-control': {
-          schema: z
-            .string()
-            .default('max-age=0, private, must-revalidate')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Connection: z
+          .string()
+          .default('keep-alive')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Encoding': z
+          .string()
+          .default('gzip')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Length': z
+          .string()
+          .default('351')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Date: z
+          .string()
+          .default('Fri, 26 Jun 2020 01:46:53 GMT')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Server: z
+          .string()
+          .default('RapidAPI-1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Vary: z
+          .string()
+          .default('Accept-Encoding')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Via: z
+          .string()
+          .default('1.1 google')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Region': z
+          .string()
+          .default('AWS - us-east-1')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-RapidAPI-Version': z
+          .string()
+          .default('1.1.15')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-credentials': z
+          .string()
+          .default('true')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-allow-origin': z
+          .string()
+          .default('*')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'access-control-expose-headers': z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'cache-control': z
+          .string()
+          .default('max-age=0, private, must-revalidate')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

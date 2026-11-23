@@ -112,7 +112,10 @@ Showcase of responses with an `examples` property present.
 
 ```json
 {
-  "$ref": "#/components/schemas/UserResponse/example"
+  "user": {
+    "email": "test@example.com",
+    "name": "Test user name"
+  }
 }
 ```
 

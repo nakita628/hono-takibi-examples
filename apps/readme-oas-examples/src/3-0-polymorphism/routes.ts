@@ -519,8 +519,8 @@ export const postOneOfWithTypeRoute = createRoute({
             .object({
               event: z
                 .xor([
-                  z.any().openapi({ description: 'oneof one' }),
-                  z.any().openapi({ description: 'oneof two' }),
+                  z.string().openapi({ description: 'oneof one' }),
+                  z.string().openapi({ description: 'oneof two' }),
                 ])
                 .exactOptional(),
             })

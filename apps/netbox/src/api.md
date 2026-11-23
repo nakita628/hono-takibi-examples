@@ -1,4 +1,4 @@
-<h1 id="netbox-rest-api">NetBox REST API v4.7.4</h1>
+<h1 id="netbox-rest-api">NetBox REST API v4.7.5</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -21796,7 +21796,7 @@ Put a cable object.
 |» a_terminations|body|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|
 |» b_terminations|body|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|
 |» status|body|string|false|* `connected` - Connected<br>* `planned` - Planned<br>* `decommissioning` - Decommissioning|
-|» profile|body|string|false|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
+|» profile|body|string|false|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-3c8p` - 3C8P trunk<br>* `trunk-3c12p` - 3C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-4c12p` - 4C12P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
 |» tenant|body|integer(int64) \| object \| null|false|none|
 |» » *oneOf*|body|integer(int64)|false|none|
 |» » *oneOf*|body|object \| null|false|none|
@@ -21881,12 +21881,15 @@ Put a cable object.
 |» profile|trunk-2c6p|
 |» profile|trunk-2c8p|
 |» profile|trunk-2c12p|
+|» profile|trunk-3c8p|
+|» profile|trunk-3c12p|
 |» profile|trunk-4c1p|
 |» profile|trunk-4c2p|
 |» profile|trunk-4c4p|
 |» profile|trunk-4c4p-shuffle|
 |» profile|trunk-4c6p|
 |» profile|trunk-4c8p|
+|» profile|trunk-4c12p|
 |» profile|trunk-8c1p|
 |» profile|trunk-8c4p|
 |» profile|trunk-12c1p|
@@ -22141,7 +22144,7 @@ Patch a cable object.
 |» a_terminations|body|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|
 |» b_terminations|body|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|
 |» status|body|string|false|* `connected` - Connected<br>* `planned` - Planned<br>* `decommissioning` - Decommissioning|
-|» profile|body|string|false|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
+|» profile|body|string|false|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-3c8p` - 3C8P trunk<br>* `trunk-3c12p` - 3C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-4c12p` - 4C12P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
 |» tenant|body|integer(int64) \| object \| null|false|none|
 |» » *oneOf*|body|integer(int64)|false|none|
 |» » *oneOf*|body|object \| null|false|none|
@@ -22226,12 +22229,15 @@ Patch a cable object.
 |» profile|trunk-2c6p|
 |» profile|trunk-2c8p|
 |» profile|trunk-2c12p|
+|» profile|trunk-3c8p|
+|» profile|trunk-3c12p|
 |» profile|trunk-4c1p|
 |» profile|trunk-4c2p|
 |» profile|trunk-4c4p|
 |» profile|trunk-4c4p-shuffle|
 |» profile|trunk-4c6p|
 |» profile|trunk-4c8p|
+|» profile|trunk-4c12p|
 |» profile|trunk-8c1p|
 |» profile|trunk-8c4p|
 |» profile|trunk-12c1p|
@@ -211516,7 +211522,7 @@ Base serializer class for models inheriting from PrimaryModel.
 |a_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |b_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |status|string|false|none|* `connected` - Connected<br>* `planned` - Planned<br>* `decommissioning` - Decommissioning|
-|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
+|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-3c8p` - 3C8P trunk<br>* `trunk-3c12p` - 3C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-4c12p` - 4C12P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
 |tenant|integer(int64) \| object \| null|false|none|none|
 |bundle|integer(int64) \| object \| null|false|none|none|
 |label|string|false|none|none|
@@ -211585,12 +211591,15 @@ Base serializer class for models inheriting from PrimaryModel.
 |profile|trunk-2c6p|
 |profile|trunk-2c8p|
 |profile|trunk-2c12p|
+|profile|trunk-3c8p|
+|profile|trunk-3c12p|
 |profile|trunk-4c1p|
 |profile|trunk-4c2p|
 |profile|trunk-4c4p|
 |profile|trunk-4c4p-shuffle|
 |profile|trunk-4c6p|
 |profile|trunk-4c8p|
+|profile|trunk-4c12p|
 |profile|trunk-8c1p|
 |profile|trunk-8c4p|
 |profile|trunk-12c1p|
@@ -220921,7 +220930,7 @@ Base serializer class for models inheriting from PrimaryModel.
 |a_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |b_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |status|string|false|none|* `connected` - Connected<br>* `planned` - Planned<br>* `decommissioning` - Decommissioning|
-|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
+|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-3c8p` - 3C8P trunk<br>* `trunk-3c12p` - 3C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-4c12p` - 4C12P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
 |tenant|integer(int64) \| object \| null|false|none|none|
 |bundle|integer(int64) \| object \| null|false|none|none|
 |label|string|false|none|none|
@@ -220990,12 +220999,15 @@ Base serializer class for models inheriting from PrimaryModel.
 |profile|trunk-2c6p|
 |profile|trunk-2c8p|
 |profile|trunk-2c12p|
+|profile|trunk-3c8p|
+|profile|trunk-3c12p|
 |profile|trunk-4c1p|
 |profile|trunk-4c2p|
 |profile|trunk-4c4p|
 |profile|trunk-4c4p-shuffle|
 |profile|trunk-4c6p|
 |profile|trunk-4c8p|
+|profile|trunk-4c12p|
 |profile|trunk-8c1p|
 |profile|trunk-8c4p|
 |profile|trunk-12c1p|
@@ -247455,7 +247467,7 @@ Base serializer class for models inheriting from PrimaryModel.
 |a_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |b_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |status|string|false|none|* `connected` - Connected<br>* `planned` - Planned<br>* `decommissioning` - Decommissioning|
-|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
+|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-3c8p` - 3C8P trunk<br>* `trunk-3c12p` - 3C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-4c12p` - 4C12P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
 |tenant|integer(int64) \| object \| null|false|none|none|
 |bundle|integer(int64) \| object \| null|false|none|none|
 |label|string|false|none|none|
@@ -247524,12 +247536,15 @@ Base serializer class for models inheriting from PrimaryModel.
 |profile|trunk-2c6p|
 |profile|trunk-2c8p|
 |profile|trunk-2c12p|
+|profile|trunk-3c8p|
+|profile|trunk-3c12p|
 |profile|trunk-4c1p|
 |profile|trunk-4c2p|
 |profile|trunk-4c4p|
 |profile|trunk-4c4p-shuffle|
 |profile|trunk-4c6p|
 |profile|trunk-4c8p|
+|profile|trunk-4c12p|
 |profile|trunk-8c1p|
 |profile|trunk-8c4p|
 |profile|trunk-12c1p|
@@ -259229,7 +259244,7 @@ Base serializer class for models inheriting from PrimaryModel.
 |a_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |b_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |status|string|false|none|* `connected` - Connected<br>* `planned` - Planned<br>* `decommissioning` - Decommissioning|
-|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
+|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-3c8p` - 3C8P trunk<br>* `trunk-3c12p` - 3C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-4c12p` - 4C12P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
 |tenant|integer(int64) \| object \| null|false|none|none|
 |bundle|integer(int64) \| object \| null|false|none|none|
 |label|string|false|none|none|
@@ -259298,12 +259313,15 @@ Base serializer class for models inheriting from PrimaryModel.
 |profile|trunk-2c6p|
 |profile|trunk-2c8p|
 |profile|trunk-2c12p|
+|profile|trunk-3c8p|
+|profile|trunk-3c12p|
 |profile|trunk-4c1p|
 |profile|trunk-4c2p|
 |profile|trunk-4c4p|
 |profile|trunk-4c4p-shuffle|
 |profile|trunk-4c6p|
 |profile|trunk-4c8p|
+|profile|trunk-4c12p|
 |profile|trunk-8c1p|
 |profile|trunk-8c4p|
 |profile|trunk-12c1p|
@@ -275287,7 +275305,7 @@ Base serializer class for models inheriting from PrimaryModel.
 |a_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |b_terminations|[[GenericObjectRequest](#schemagenericobjectrequest)]|false|none|none|
 |status|string|false|none|* `connected` - Connected<br>* `planned` - Planned<br>* `decommissioning` - Decommissioning|
-|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
+|profile|string|false|none|* `single-1c1p` - 1C1P<br>* `single-1c2p` - 1C2P<br>* `single-1c4p` - 1C4P<br>* `single-1c6p` - 1C6P<br>* `single-1c8p` - 1C8P<br>* `single-1c12p` - 1C12P<br>* `single-1c16p` - 1C16P<br>* `trunk-2c1p` - 2C1P trunk<br>* `trunk-2c2p` - 2C2P trunk<br>* `trunk-2c4p` - 2C4P trunk<br>* `trunk-2c4p-shuffle` - 2C4P trunk (shuffle)<br>* `trunk-2c6p` - 2C6P trunk<br>* `trunk-2c8p` - 2C8P trunk<br>* `trunk-2c12p` - 2C12P trunk<br>* `trunk-3c8p` - 3C8P trunk<br>* `trunk-3c12p` - 3C12P trunk<br>* `trunk-4c1p` - 4C1P trunk<br>* `trunk-4c2p` - 4C2P trunk<br>* `trunk-4c4p` - 4C4P trunk<br>* `trunk-4c4p-shuffle` - 4C4P trunk (shuffle)<br>* `trunk-4c6p` - 4C6P trunk<br>* `trunk-4c8p` - 4C8P trunk<br>* `trunk-4c12p` - 4C12P trunk<br>* `trunk-8c1p` - 8C1P trunk<br>* `trunk-8c4p` - 8C4P trunk<br>* `trunk-12c1p` - 12C1P trunk<br>* `trunk-24c1p` - 24C1P trunk<br>* `breakout-1c2p-2c1p` - 1C2P:2C1P breakout<br>* `breakout-1c4p-4c1p` - 1C4P:4C1P breakout<br>* `breakout-1c6p-6c1p` - 1C6P:6C1P breakout<br>* `breakout-1c8p-8c1p` - 1C8P:8C1P breakout<br>* `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)|
 |tenant|integer(int64) \| object \| null|false|none|none|
 |bundle|integer(int64) \| object \| null|false|none|none|
 |label|string|false|none|none|
@@ -275356,12 +275374,15 @@ Base serializer class for models inheriting from PrimaryModel.
 |profile|trunk-2c6p|
 |profile|trunk-2c8p|
 |profile|trunk-2c12p|
+|profile|trunk-3c8p|
+|profile|trunk-3c12p|
 |profile|trunk-4c1p|
 |profile|trunk-4c2p|
 |profile|trunk-4c4p|
 |profile|trunk-4c4p-shuffle|
 |profile|trunk-4c6p|
 |profile|trunk-4c8p|
+|profile|trunk-4c12p|
 |profile|trunk-8c1p|
 |profile|trunk-8c4p|
 |profile|trunk-12c1p|

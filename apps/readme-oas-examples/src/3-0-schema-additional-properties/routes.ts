@@ -54,14 +54,33 @@ export const postPostRoute = createRoute({
               'object with `additionalProperties: $ref, with $ref`': z
                 .record(z.string(), RefWithRefSchema)
                 .exactOptional(),
-              'object with `additionalPropeties` within an allOf': z
-                .strictObject({ primitiveProperty: z.string().exactOptional() })
-                .openapi({ required: [] })
-                .and(
-                  z
-                    .strictObject({ alt_primitiveProperty: z.string().exactOptional() })
-                    .openapi({ required: [] }),
-                )
+              'object with `additionalPropeties` within an allOf': (() => {
+                const Schema = z
+                  .strictObject({ primitiveProperty: z.string().exactOptional() })
+                  .openapi({ required: [] })
+                  .and(
+                    z
+                      .strictObject({ alt_primitiveProperty: z.string().exactOptional() })
+                      .openapi({ required: [] }),
+                  )
+                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                  ;((ctx) => {
+                    const o = ctx.value
+                    if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                    for (const k of Object.keys(o)) {
+                      if (!['primitiveProperty'].includes(k)) {
+                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                      }
+                    }
+                    for (const k of Object.keys(o)) {
+                      if (!['alt_primitiveProperty'].includes(k)) {
+                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                      }
+                    }
+                  })(ctx)
+                  return val
+                }, Schema)
+              })()
                 .exactOptional()
                 .openapi({
                   description:

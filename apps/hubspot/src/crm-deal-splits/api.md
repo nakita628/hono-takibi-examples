@@ -23,12 +23,6 @@ Base URLs:
 |---|---|
 |crm.dealsplits.read_write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="crm-deal-splits-batch">Batch</h1>
 
 ## Read a batch of deal split objects by their associated deal object internal ID

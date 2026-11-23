@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AcceptQualificationRequestResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AcceptQualificationRequestResponse')
 
 const StringSchema = z.string().openapi('String')
@@ -10,22 +10,14 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const AcceptQualificationRequestRequestSchema = z
   .object({
-    QualificationRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Qualification request, as returned by the <code>GetQualificationRequests</code> operation.',
-        }),
-    ),
-    IntegerValue: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The value of the Qualification. You can omit this value if you are using the presence or absence of the Qualification as the basis for a HIT requirement. ',
-        }),
-    ).exactOptional(),
+    QualificationRequestId: StringSchema.openapi({
+      description:
+        'The ID of the Qualification request, as returned by the <code>GetQualificationRequests</code> operation.',
+    }),
+    IntegerValue: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The value of the Qualification. You can omit this value if you are using the presence or absence of the Qualification as the basis for a HIT requirement. ',
+    }),
   })
   .openapi({ required: ['QualificationRequestId'], title: 'AcceptQualificationRequestRequest' })
   .openapi('AcceptQualificationRequestRequest')
@@ -34,7 +26,7 @@ const ServiceFaultSchema = z.any().openapi('ServiceFault')
 
 const RequestErrorSchema = z.any().openapi('RequestError')
 
-const ApproveAssignmentResponseSchema = z.object({}).openapi('ApproveAssignmentResponse')
+const ApproveAssignmentResponseSchema = z.looseObject({}).openapi('ApproveAssignmentResponse')
 
 const EntityIdSchema = z
   .string()
@@ -47,36 +39,24 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const ApproveAssignmentRequestSchema = z
   .object({
-    AssignmentId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the assignment. The assignment must correspond to a HIT created by the Requester. ',
-        }),
-    ),
-    RequesterFeedback: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A message for the Worker, which the Worker can see in the Status section of the web site. ',
-        }),
-    ).exactOptional(),
-    OverrideRejection: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A flag indicating that an assignment should be approved even if it was previously rejected. Defaults to <code>False</code>. ',
-        }),
-    ).exactOptional(),
+    AssignmentId: EntityIdSchema.openapi({
+      description:
+        ' The ID of the assignment. The assignment must correspond to a HIT created by the Requester. ',
+    }),
+    RequesterFeedback: StringSchema.exactOptional().openapi({
+      description:
+        ' A message for the Worker, which the Worker can see in the Status section of the web site. ',
+    }),
+    OverrideRejection: BooleanSchema.exactOptional().openapi({
+      description:
+        ' A flag indicating that an assignment should be approved even if it was previously rejected. Defaults to <code>False</code>. ',
+    }),
   })
   .openapi({ required: ['AssignmentId'], title: 'ApproveAssignmentRequest' })
   .openapi('ApproveAssignmentRequest')
 
 const AssociateQualificationWithWorkerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateQualificationWithWorkerResponse')
 
 const CustomerIdSchema = z
@@ -88,32 +68,20 @@ const CustomerIdSchema = z
 
 const AssociateQualificationWithWorkerRequestSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Qualification type to use for the assigned Qualification.',
-        }),
-    ),
-    WorkerId: CustomerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the Worker to whom the Qualification is being assigned. Worker IDs are included with submitted HIT assignments and Qualification requests. ',
-        }),
-    ),
-    IntegerValue: IntegerSchema.and(
-      z.any().openapi({ description: 'The value of the Qualification to assign.' }),
-    ).exactOptional(),
-    SendNotification: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether to send a notification email message to the Worker saying that the qualification was assigned to the Worker. Note: this is true by default. ',
-        }),
-    ).exactOptional(),
+    QualificationTypeId: EntityIdSchema.openapi({
+      description: 'The ID of the Qualification type to use for the assigned Qualification.',
+    }),
+    WorkerId: CustomerIdSchema.openapi({
+      description:
+        ' The ID of the Worker to whom the Qualification is being assigned. Worker IDs are included with submitted HIT assignments and Qualification requests. ',
+    }),
+    IntegerValue: IntegerSchema.exactOptional().openapi({
+      description: 'The value of the Qualification to assign.',
+    }),
+    SendNotification: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Specifies whether to send a notification email message to the Worker saying that the qualification was assigned to the Worker. Note: this is true by default. ',
+    }),
   })
   .openapi({
     required: ['QualificationTypeId', 'WorkerId'],
@@ -122,27 +90,21 @@ const AssociateQualificationWithWorkerRequestSchema = z
   .openapi('AssociateQualificationWithWorkerRequest')
 
 const CreateAdditionalAssignmentsForHITResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateAdditionalAssignmentsForHITResponse')
 
 const IdempotencyTokenSchema = z.string().min(1).max(64).openapi('IdempotencyToken')
 
 const CreateAdditionalAssignmentsForHITRequestSchema = z
   .object({
-    HITId: EntityIdSchema.and(z.any().openapi({ description: 'The ID of the HIT to extend.' })),
-    NumberOfAdditionalAssignments: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of additional assignments to request for this HIT.' }),
-    ),
-    UniqueRequestToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A unique identifier for this request, which allows you to retry the call on error without extending the HIT multiple times. This is useful in cases such as network timeouts where it is unclear whether or not the call succeeded on the server. If the extend HIT already exists in the system from a previous call using the same <code>UniqueRequestToken</code>, subsequent calls will return an error with a message containing the request ID. ',
-        }),
-    ).exactOptional(),
+    HITId: EntityIdSchema.openapi({ description: 'The ID of the HIT to extend.' }),
+    NumberOfAdditionalAssignments: IntegerSchema.openapi({
+      description: 'The number of additional assignments to request for this HIT.',
+    }),
+    UniqueRequestToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        ' A unique identifier for this request, which allows you to retry the call on error without extending the HIT multiple times. This is useful in cases such as network timeouts where it is unclear whether or not the call succeeded on the server. If the extend HIT already exists in the system from a previous call using the same <code>UniqueRequestToken</code>, subsequent calls will return an error with a message containing the request ID. ',
+    }),
   })
   .openapi({
     required: ['HITId', 'NumberOfAdditionalAssignments'],
@@ -185,22 +147,14 @@ const CountryParametersSchema = z.string().length(2).openapi('CountryParameters'
 
 const LocaleSchema = z
   .object({
-    Country: CountryParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The country of the locale. Must be a valid ISO 3166 country code. For example, the code US refers to the United States of America. ',
-        }),
-    ),
-    Subdivision: CountryParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state or subdivision of the locale. A valid ISO 3166-2 subdivision code. For example, the code WA refers to the state of Washington.',
-        }),
-    ).exactOptional(),
+    Country: CountryParametersSchema.openapi({
+      description:
+        ' The country of the locale. Must be a valid ISO 3166 country code. For example, the code US refers to the United States of America. ',
+    }),
+    Subdivision: CountryParametersSchema.exactOptional().openapi({
+      description:
+        'The state or subdivision of the locale. A valid ISO 3166-2 subdivision code. For example, the code WA refers to the state of Washington.',
+    }),
   })
   .openapi({
     required: ['Country'],
@@ -216,50 +170,30 @@ const HITAccessActionsSchema = z
 
 const QualificationRequirementSchema = z
   .object({
-    QualificationTypeId: StringSchema.and(
-      z.any().openapi({ description: ' The ID of the Qualification type for the requirement.' }),
-    ),
-    Comparator: ComparatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The kind of comparison to make against a Qualification's value. You can compare a Qualification's value to an IntegerValue to see if it is LessThan, LessThanOrEqualTo, GreaterThan, GreaterThanOrEqualTo, EqualTo, or NotEqualTo the IntegerValue. You can compare it to a LocaleValue to see if it is EqualTo, or NotEqualTo the LocaleValue. You can check to see if the value is In or NotIn a set of IntegerValue or LocaleValue values. Lastly, a Qualification requirement can also test if a Qualification Exists or DoesNotExist in the user's profile, regardless of its value. ",
-        }),
-    ),
-    IntegerValues: IntegerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The integer value to compare against the Qualification's value. IntegerValue must not be present if Comparator is Exists or DoesNotExist. IntegerValue can only be used if the Qualification type has an integer value; it cannot be used with the Worker_Locale QualificationType ID. When performing a set comparison by using the In or the NotIn comparator, you can use up to 15 IntegerValue elements in a QualificationRequirement data structure. ",
-        }),
-    ).exactOptional(),
-    LocaleValues: LocaleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The locale value to compare against the Qualification's value. The local value must be a valid ISO 3166 country code or supports ISO 3166-2 subdivisions. LocaleValue can only be used with a Worker_Locale QualificationType ID. LocaleValue can only be used with the EqualTo, NotEqualTo, In, and NotIn comparators. You must only use a single LocaleValue element when using the EqualTo or NotEqualTo comparators. When performing a set comparison by using the In or the NotIn comparator, you can use up to 30 LocaleValue elements in a QualificationRequirement data structure. ",
-        }),
-    ).exactOptional(),
-    RequiredToPreview: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            " DEPRECATED: Use the <code>ActionsGuarded</code> field instead. If RequiredToPreview is true, the question data for the HIT will not be shown when a Worker whose Qualifications do not meet this requirement tries to preview the HIT. That is, a Worker's Qualifications must meet all of the requirements for which RequiredToPreview is true in order to preview the HIT. If a Worker meets all of the requirements where RequiredToPreview is true (or if there are no such requirements), but does not meet all of the requirements for the HIT, the Worker will be allowed to preview the HIT's question data, but will not be allowed to accept and complete the HIT. The default is false. This should not be used in combination with the <code>ActionsGuarded</code> field. ",
-        }),
-    ).exactOptional(),
-    ActionsGuarded: HITAccessActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Setting this attribute prevents Workers whose Qualifications do not meet this QualificationRequirement from taking the specified action. Valid arguments include "Accept" (Worker cannot accept the HIT, but can preview the HIT and see it in their search results), "PreviewAndAccept" (Worker cannot accept or preview the HIT, but can see the HIT in their search results), and "DiscoverPreviewAndAccept" (Worker cannot accept, preview, or see the HIT in their search results). It\'s possible for you to create a HIT with multiple QualificationRequirements (which can have different values for the ActionGuarded attribute). In this case, the Worker is only permitted to perform an action when they have met all QualificationRequirements guarding the action. The actions in the order of least restrictive to most restrictive are Discover, Preview and Accept. For example, if a Worker meets all QualificationRequirements that are set to DiscoverPreviewAndAccept, but do not meet all requirements that are set with PreviewAndAccept, then the Worker will be able to Discover, i.e. see the HIT in their search result, but will not be able to Preview or Accept the HIT. ActionsGuarded should not be used in combination with the <code>RequiredToPreview</code> field. ',
-        }),
-    ).exactOptional(),
+    QualificationTypeId: StringSchema.openapi({
+      description: ' The ID of the Qualification type for the requirement.',
+    }),
+    Comparator: ComparatorSchema.openapi({
+      description:
+        "The kind of comparison to make against a Qualification's value. You can compare a Qualification's value to an IntegerValue to see if it is LessThan, LessThanOrEqualTo, GreaterThan, GreaterThanOrEqualTo, EqualTo, or NotEqualTo the IntegerValue. You can compare it to a LocaleValue to see if it is EqualTo, or NotEqualTo the LocaleValue. You can check to see if the value is In or NotIn a set of IntegerValue or LocaleValue values. Lastly, a Qualification requirement can also test if a Qualification Exists or DoesNotExist in the user's profile, regardless of its value. ",
+    }),
+    IntegerValues: IntegerListSchema.exactOptional().openapi({
+      description:
+        " The integer value to compare against the Qualification's value. IntegerValue must not be present if Comparator is Exists or DoesNotExist. IntegerValue can only be used if the Qualification type has an integer value; it cannot be used with the Worker_Locale QualificationType ID. When performing a set comparison by using the In or the NotIn comparator, you can use up to 15 IntegerValue elements in a QualificationRequirement data structure. ",
+    }),
+    LocaleValues: LocaleListSchema.exactOptional().openapi({
+      description:
+        " The locale value to compare against the Qualification's value. The local value must be a valid ISO 3166 country code or supports ISO 3166-2 subdivisions. LocaleValue can only be used with a Worker_Locale QualificationType ID. LocaleValue can only be used with the EqualTo, NotEqualTo, In, and NotIn comparators. You must only use a single LocaleValue element when using the EqualTo or NotEqualTo comparators. When performing a set comparison by using the In or the NotIn comparator, you can use up to 30 LocaleValue elements in a QualificationRequirement data structure. ",
+    }),
+    RequiredToPreview: BooleanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        " DEPRECATED: Use the <code>ActionsGuarded</code> field instead. If RequiredToPreview is true, the question data for the HIT will not be shown when a Worker whose Qualifications do not meet this requirement tries to preview the HIT. That is, a Worker's Qualifications must meet all of the requirements for which RequiredToPreview is true in order to preview the HIT. If a Worker meets all of the requirements where RequiredToPreview is true (or if there are no such requirements), but does not meet all of the requirements for the HIT, the Worker will be allowed to preview the HIT's question data, but will not be allowed to accept and complete the HIT. The default is false. This should not be used in combination with the <code>ActionsGuarded</code> field. ",
+    }),
+    ActionsGuarded: HITAccessActionsSchema.exactOptional().openapi({
+      description:
+        ' Setting this attribute prevents Workers whose Qualifications do not meet this QualificationRequirement from taking the specified action. Valid arguments include "Accept" (Worker cannot accept the HIT, but can preview the HIT and see it in their search results), "PreviewAndAccept" (Worker cannot accept or preview the HIT, but can see the HIT in their search results), and "DiscoverPreviewAndAccept" (Worker cannot accept, preview, or see the HIT in their search results). It\'s possible for you to create a HIT with multiple QualificationRequirements (which can have different values for the ActionGuarded attribute). In this case, the Worker is only permitted to perform an action when they have met all QualificationRequirements guarding the action. The actions in the order of least restrictive to most restrictive are Discover, Preview and Accept. For example, if a Worker meets all QualificationRequirements that are set to DiscoverPreviewAndAccept, but do not meet all requirements that are set with PreviewAndAccept, then the Worker will be able to Discover, i.e. see the HIT in their search result, but will not be able to Preview or Accept the HIT. ActionsGuarded should not be used in combination with the <code>RequiredToPreview</code> field. ',
+    }),
   })
   .openapi({
     required: ['QualificationTypeId', 'Comparator'],
@@ -278,127 +212,76 @@ const HITReviewStatusSchema = z
 
 const HITSchema = z
   .object({
-    HITId: EntityIdSchema.and(
-      z.any().openapi({ description: ' A unique identifier for the HIT.' }),
-    ).exactOptional(),
-    HITTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the HIT type of this HIT' }),
-    ).exactOptional(),
-    HITGroupId: EntityIdSchema.and(
-      z.any().openapi({ description: ' The ID of the HIT Group of this HIT.' }),
-    ).exactOptional(),
-    HITLayoutId: EntityIdSchema.and(
-      z.any().openapi({ description: ' The ID of the HIT Layout of this HIT.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The date and time the HIT was created.' }),
-    ).exactOptional(),
-    Title: StringSchema.and(
-      z.any().openapi({ description: ' The title of the HIT.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: ' A general description of the HIT.' }),
-    ).exactOptional(),
-    Question: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The data the Worker completing the HIT uses produce the results. This is either either a QuestionForm, HTMLQuestion or an ExternalQuestion data structure.',
-        }),
-    ).exactOptional(),
-    Keywords: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' One or more words or phrases that describe the HIT, separated by commas. Search terms similar to the keywords of a HIT are more likely to have the HIT in the search results.',
-        }),
-    ).exactOptional(),
-    HITStatus: HITStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the HIT and its assignments. Valid Values are Assignable | Unassignable | Reviewable | Reviewing | Disposed. ',
-        }),
-    ).exactOptional(),
-    MaxAssignments: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of times the HIT can be accepted and completed before the HIT becomes unavailable. ',
-        }),
-    ).exactOptional(),
+    HITId: EntityIdSchema.exactOptional().openapi({
+      description: ' A unique identifier for the HIT.',
+    }),
+    HITTypeId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the HIT type of this HIT',
+    }),
+    HITGroupId: EntityIdSchema.exactOptional().openapi({
+      description: ' The ID of the HIT Group of this HIT.',
+    }),
+    HITLayoutId: EntityIdSchema.exactOptional().openapi({
+      description: ' The ID of the HIT Layout of this HIT.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: ' The date and time the HIT was created.',
+    }),
+    Title: StringSchema.exactOptional().openapi({ description: ' The title of the HIT.' }),
+    Description: StringSchema.exactOptional().openapi({
+      description: ' A general description of the HIT.',
+    }),
+    Question: StringSchema.exactOptional().openapi({
+      description:
+        ' The data the Worker completing the HIT uses produce the results. This is either either a QuestionForm, HTMLQuestion or an ExternalQuestion data structure.',
+    }),
+    Keywords: StringSchema.exactOptional().openapi({
+      description:
+        ' One or more words or phrases that describe the HIT, separated by commas. Search terms similar to the keywords of a HIT are more likely to have the HIT in the search results.',
+    }),
+    HITStatus: HITStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the HIT and its assignments. Valid Values are Assignable | Unassignable | Reviewable | Reviewing | Disposed. ',
+    }),
+    MaxAssignments: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of times the HIT can be accepted and completed before the HIT becomes unavailable. ',
+    }),
     Reward: CurrencyAmountSchema.exactOptional(),
-    AutoApprovalDelayInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time, in seconds, after the Worker submits an assignment for the HIT that the results are automatically approved by Amazon Mechanical Turk. This is the amount of time the Requester has to reject an assignment submitted by a Worker before the assignment is auto-approved and the Worker is paid. ',
-        }),
-    ).exactOptional(),
-    Expiration: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the HIT expires.' }),
-    ).exactOptional(),
-    AssignmentDurationInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The length of time, in seconds, that a Worker has to complete the HIT after accepting it.',
-        }),
-    ).exactOptional(),
-    RequesterAnnotation: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An arbitrary data field the Requester who created the HIT can use. This field is visible only to the creator of the HIT.',
-        }),
-    ).exactOptional(),
-    QualificationRequirements: QualificationRequirementListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Conditions that a Worker's Qualifications must meet in order to accept the HIT. A HIT can have between zero and ten Qualification requirements. All requirements must be met in order for a Worker to accept the HIT. Additionally, other actions can be restricted using the <code>ActionsGuarded</code> field on each <code>QualificationRequirement</code> structure. ",
-        }),
-    ).exactOptional(),
-    HITReviewStatus: HITReviewStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates the review status of the HIT. Valid Values are NotReviewed | MarkedForReview | ReviewedAppropriate | ReviewedInappropriate.',
-        }),
-    ).exactOptional(),
-    NumberOfAssignmentsPending: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of assignments for this HIT that are being previewed or have been accepted by Workers, but have not yet been submitted, returned, or abandoned.',
-        }),
-    ).exactOptional(),
-    NumberOfAssignmentsAvailable: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of assignments for this HIT that are available for Workers to accept.',
-        }),
-    ).exactOptional(),
-    NumberOfAssignmentsCompleted: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of assignments for this HIT that have been approved or rejected.',
-        }),
-    ).exactOptional(),
+    AutoApprovalDelayInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of time, in seconds, after the Worker submits an assignment for the HIT that the results are automatically approved by Amazon Mechanical Turk. This is the amount of time the Requester has to reject an assignment submitted by a Worker before the assignment is auto-approved and the Worker is paid. ',
+    }),
+    Expiration: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the HIT expires.',
+    }),
+    AssignmentDurationInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        ' The length of time, in seconds, that a Worker has to complete the HIT after accepting it.',
+    }),
+    RequesterAnnotation: StringSchema.exactOptional().openapi({
+      description:
+        ' An arbitrary data field the Requester who created the HIT can use. This field is visible only to the creator of the HIT.',
+    }),
+    QualificationRequirements: QualificationRequirementListSchema.exactOptional().openapi({
+      description:
+        " Conditions that a Worker's Qualifications must meet in order to accept the HIT. A HIT can have between zero and ten Qualification requirements. All requirements must be met in order for a Worker to accept the HIT. Additionally, other actions can be restricted using the <code>ActionsGuarded</code> field on each <code>QualificationRequirement</code> structure. ",
+    }),
+    HITReviewStatus: HITReviewStatusSchema.exactOptional().openapi({
+      description:
+        ' Indicates the review status of the HIT. Valid Values are NotReviewed | MarkedForReview | ReviewedAppropriate | ReviewedInappropriate.',
+    }),
+    NumberOfAssignmentsPending: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of assignments for this HIT that are being previewed or have been accepted by Workers, but have not yet been submitted, returned, or abandoned.',
+    }),
+    NumberOfAssignmentsAvailable: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of assignments for this HIT that are available for Workers to accept.',
+    }),
+    NumberOfAssignmentsCompleted: IntegerSchema.exactOptional().openapi({
+      description: ' The number of assignments for this HIT that have been approved or rejected.',
+    }),
   })
   .openapi({
     description:
@@ -409,14 +292,10 @@ const HITSchema = z
 
 const CreateHITResponseSchema = z
   .object({
-    HIT: HITSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains the newly created HIT data. For a description of the HIT data structure as it appears in responses, see the HIT Data Structure documentation. ',
-        }),
-    ).exactOptional(),
+    HIT: HITSchema.exactOptional().openapi({
+      description:
+        ' Contains the newly created HIT data. For a description of the HIT data structure as it appears in responses, see the HIT Data Structure documentation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateHITResponse')
@@ -425,22 +304,14 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const ParameterMapEntrySchema = z
   .object({
-    Key: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The QuestionID from the HIT that is used to identify which question requires Mechanical Turk to score as part of the ScoreMyKnownAnswers/2011-09-01 Review Policy. ',
-        }),
-    ).exactOptional(),
-    Values: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of answers to the question specified in the MapEntry Key element. The Worker must match all values in order for the answer to be scored correctly. ',
-        }),
-    ).exactOptional(),
+    Key: StringSchema.exactOptional().openapi({
+      description:
+        ' The QuestionID from the HIT that is used to identify which question requires Mechanical Turk to score as part of the ScoreMyKnownAnswers/2011-09-01 Review Policy. ',
+    }),
+    Values: StringListSchema.exactOptional().openapi({
+      description:
+        ' The list of answers to the question specified in the MapEntry Key element. The Worker must match all values in order for the answer to be scored correctly. ',
+    }),
   })
   .openapi({
     description:
@@ -455,15 +326,15 @@ const ParameterMapEntryListSchema = z
 
 const PolicyParameterSchema = z
   .object({
-    Key: StringSchema.and(
-      z.any().openapi({ description: ' Name of the parameter from the list of Review Polices. ' }),
-    ).exactOptional(),
-    Values: StringListSchema.and(
-      z.any().openapi({ description: ' The list of values of the Parameter' }),
-    ).exactOptional(),
-    MapEntries: ParameterMapEntryListSchema.and(
-      z.any().openapi({ description: ' List of ParameterMapEntry objects. ' }),
-    ).exactOptional(),
+    Key: StringSchema.exactOptional().openapi({
+      description: ' Name of the parameter from the list of Review Polices. ',
+    }),
+    Values: StringListSchema.exactOptional().openapi({
+      description: ' The list of values of the Parameter',
+    }),
+    MapEntries: ParameterMapEntryListSchema.exactOptional().openapi({
+      description: ' List of ParameterMapEntry objects. ',
+    }),
   })
   .openapi({ description: ' Name of the parameter from the Review policy. ', required: [] })
   .openapi('PolicyParameter')
@@ -472,17 +343,13 @@ const PolicyParameterListSchema = z.array(PolicyParameterSchema).openapi('Policy
 
 const ReviewPolicySchema = z
   .object({
-    PolicyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Name of a Review Policy: SimplePlurality/2011-09-01 or ScoreMyKnownAnswers/2011-09-01 ',
-        }),
-    ),
-    Parameters: PolicyParameterListSchema.and(
-      z.any().openapi({ description: 'Name of the parameter from the Review policy.' }),
-    ).exactOptional(),
+    PolicyName: StringSchema.openapi({
+      description:
+        ' Name of a Review Policy: SimplePlurality/2011-09-01 or ScoreMyKnownAnswers/2011-09-01 ',
+    }),
+    Parameters: PolicyParameterListSchema.exactOptional().openapi({
+      description: 'Name of the parameter from the Review policy.',
+    }),
   })
   .openapi({
     required: ['PolicyName'],
@@ -493,16 +360,10 @@ const ReviewPolicySchema = z
 
 const HITLayoutParameterSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: ' The name of the parameter in the HITLayout. ' }),
-    ),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value substituted for the parameter referenced in the HITLayout. ',
-        }),
-    ),
+    Name: StringSchema.openapi({ description: ' The name of the parameter in the HITLayout. ' }),
+    Value: StringSchema.openapi({
+      description: 'The value substituted for the parameter referenced in the HITLayout. ',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -517,134 +378,70 @@ const HITLayoutParameterListSchema = z
 
 const CreateHITRequestSchema = z
   .object({
-    MaxAssignments: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of times the HIT can be accepted and completed before the HIT becomes unavailable. ',
-        }),
-    ).exactOptional(),
-    AutoApprovalDelayInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of seconds after an assignment for the HIT has been submitted, after which the assignment is considered Approved automatically unless the Requester explicitly rejects it. ',
-        }),
-    ).exactOptional(),
-    LifetimeInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An amount of time, in seconds, after which the HIT is no longer available for users to accept. After the lifetime of the HIT elapses, the HIT no longer appears in HIT searches, even if not all of the assignments for the HIT have been accepted. ',
-        }),
-    ),
-    AssignmentDurationInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The amount of time, in seconds, that a Worker has to complete the HIT after accepting it. If a Worker does not complete the assignment within the specified duration, the assignment is considered abandoned. If the HIT is still active (that is, its lifetime has not elapsed), the assignment becomes available for other users to find and accept. ',
-        }),
-    ),
-    Reward: CurrencyAmountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The amount of money the Requester will pay a Worker for successfully completing the HIT. ',
-        }),
-    ),
-    Title: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The title of the HIT. A title should be short and descriptive about the kind of task the HIT contains. On the Amazon Mechanical Turk web site, the HIT title appears in search results, and everywhere the HIT is mentioned. ',
-        }),
-    ),
-    Keywords: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' One or more words or phrases that describe the HIT, separated by commas. These words are used in searches to find HITs. ',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A general description of the HIT. A description includes detailed information about the kind of task the HIT contains. On the Amazon Mechanical Turk web site, the HIT description appears in the expanded view of search results, and in the HIT and assignment screens. A good description gives the user enough information to evaluate the HIT before accepting it. ',
-        }),
-    ),
-    Question: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The data the person completing the HIT uses to produce the results. </p> <p> Constraints: Must be a QuestionForm data structure, an ExternalQuestion data structure, or an HTMLQuestion data structure. The XML question data must not be larger than 64 kilobytes (65,535 bytes) in size, including whitespace. </p> <p>Either a Question parameter or a HITLayoutId parameter must be provided.</p>',
-        }),
-    ).exactOptional(),
-    RequesterAnnotation: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> An arbitrary data field. The RequesterAnnotation parameter lets your application attach arbitrary data to the HIT for tracking purposes. For example, this parameter could be an identifier internal to the Requester's application that corresponds with the HIT. </p> <p> The RequesterAnnotation parameter for a HIT is only visible to the Requester who created the HIT. It is not shown to the Worker, or any other Requester. </p> <p> The RequesterAnnotation parameter may be different for each HIT you submit. It does not affect how your HITs are grouped. </p>",
-        }),
-    ).exactOptional(),
-    QualificationRequirements: QualificationRequirementListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Conditions that a Worker's Qualifications must meet in order to accept the HIT. A HIT can have between zero and ten Qualification requirements. All requirements must be met in order for a Worker to accept the HIT. Additionally, other actions can be restricted using the <code>ActionsGuarded</code> field on each <code>QualificationRequirement</code> structure. ",
-        }),
-    ).exactOptional(),
-    UniqueRequestToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A unique identifier for this request which allows you to retry the call on error without creating duplicate HITs. This is useful in cases such as network timeouts where it is unclear whether or not the call succeeded on the server. If the HIT already exists in the system from a previous call using the same UniqueRequestToken, subsequent calls will return a AWS.MechanicalTurk.HitAlreadyExists error with a message containing the HITId. </p> <note> <p> Note: It is your responsibility to ensure uniqueness of the token. The unique token expires after 24 hours. Subsequent calls using the same UniqueRequestToken made after the 24 hour limit could create duplicate HITs. </p> </note>',
-        }),
-    ).exactOptional(),
-    AssignmentReviewPolicy: ReviewPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Assignment-level Review Policy applies to the assignments under the HIT. You can specify for Mechanical Turk to take various actions based on the policy. ',
-        }),
-    ).exactOptional(),
-    HITReviewPolicy: ReviewPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The HIT-level Review Policy applies to the HIT. You can specify for Mechanical Turk to take various actions based on the policy. ',
-        }),
-    ).exactOptional(),
-    HITLayoutId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The HITLayoutId allows you to use a pre-existing HIT design with placeholder values and create an additional HIT by providing those values as HITLayoutParameters. </p> <p> Constraints: Either a Question parameter or a HITLayoutId parameter must be provided. </p>',
-        }),
-    ).exactOptional(),
-    HITLayoutParameters: HITLayoutParameterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the HITLayoutId is provided, any placeholder values must be filled in with values using the HITLayoutParameter structure. For more information, see HITLayout. ',
-        }),
-    ).exactOptional(),
+    MaxAssignments: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of times the HIT can be accepted and completed before the HIT becomes unavailable. ',
+    }),
+    AutoApprovalDelayInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        ' The number of seconds after an assignment for the HIT has been submitted, after which the assignment is considered Approved automatically unless the Requester explicitly rejects it. ',
+    }),
+    LifetimeInSeconds: LongSchema.openapi({
+      description:
+        ' An amount of time, in seconds, after which the HIT is no longer available for users to accept. After the lifetime of the HIT elapses, the HIT no longer appears in HIT searches, even if not all of the assignments for the HIT have been accepted. ',
+    }),
+    AssignmentDurationInSeconds: LongSchema.openapi({
+      description:
+        ' The amount of time, in seconds, that a Worker has to complete the HIT after accepting it. If a Worker does not complete the assignment within the specified duration, the assignment is considered abandoned. If the HIT is still active (that is, its lifetime has not elapsed), the assignment becomes available for other users to find and accept. ',
+    }),
+    Reward: CurrencyAmountSchema.openapi({
+      description:
+        ' The amount of money the Requester will pay a Worker for successfully completing the HIT. ',
+    }),
+    Title: StringSchema.openapi({
+      description:
+        ' The title of the HIT. A title should be short and descriptive about the kind of task the HIT contains. On the Amazon Mechanical Turk web site, the HIT title appears in search results, and everywhere the HIT is mentioned. ',
+    }),
+    Keywords: StringSchema.exactOptional().openapi({
+      description:
+        ' One or more words or phrases that describe the HIT, separated by commas. These words are used in searches to find HITs. ',
+    }),
+    Description: StringSchema.openapi({
+      description:
+        ' A general description of the HIT. A description includes detailed information about the kind of task the HIT contains. On the Amazon Mechanical Turk web site, the HIT description appears in the expanded view of search results, and in the HIT and assignment screens. A good description gives the user enough information to evaluate the HIT before accepting it. ',
+    }),
+    Question: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The data the person completing the HIT uses to produce the results. </p> <p> Constraints: Must be a QuestionForm data structure, an ExternalQuestion data structure, or an HTMLQuestion data structure. The XML question data must not be larger than 64 kilobytes (65,535 bytes) in size, including whitespace. </p> <p>Either a Question parameter or a HITLayoutId parameter must be provided.</p>',
+    }),
+    RequesterAnnotation: StringSchema.exactOptional().openapi({
+      description:
+        "<p> An arbitrary data field. The RequesterAnnotation parameter lets your application attach arbitrary data to the HIT for tracking purposes. For example, this parameter could be an identifier internal to the Requester's application that corresponds with the HIT. </p> <p> The RequesterAnnotation parameter for a HIT is only visible to the Requester who created the HIT. It is not shown to the Worker, or any other Requester. </p> <p> The RequesterAnnotation parameter may be different for each HIT you submit. It does not affect how your HITs are grouped. </p>",
+    }),
+    QualificationRequirements: QualificationRequirementListSchema.exactOptional().openapi({
+      description:
+        " Conditions that a Worker's Qualifications must meet in order to accept the HIT. A HIT can have between zero and ten Qualification requirements. All requirements must be met in order for a Worker to accept the HIT. Additionally, other actions can be restricted using the <code>ActionsGuarded</code> field on each <code>QualificationRequirement</code> structure. ",
+    }),
+    UniqueRequestToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        '<p> A unique identifier for this request which allows you to retry the call on error without creating duplicate HITs. This is useful in cases such as network timeouts where it is unclear whether or not the call succeeded on the server. If the HIT already exists in the system from a previous call using the same UniqueRequestToken, subsequent calls will return a AWS.MechanicalTurk.HitAlreadyExists error with a message containing the HITId. </p> <note> <p> Note: It is your responsibility to ensure uniqueness of the token. The unique token expires after 24 hours. Subsequent calls using the same UniqueRequestToken made after the 24 hour limit could create duplicate HITs. </p> </note>',
+    }),
+    AssignmentReviewPolicy: ReviewPolicySchema.exactOptional().openapi({
+      description:
+        ' The Assignment-level Review Policy applies to the assignments under the HIT. You can specify for Mechanical Turk to take various actions based on the policy. ',
+    }),
+    HITReviewPolicy: ReviewPolicySchema.exactOptional().openapi({
+      description:
+        ' The HIT-level Review Policy applies to the HIT. You can specify for Mechanical Turk to take various actions based on the policy. ',
+    }),
+    HITLayoutId: EntityIdSchema.exactOptional().openapi({
+      description:
+        '<p> The HITLayoutId allows you to use a pre-existing HIT design with placeholder values and create an additional HIT by providing those values as HITLayoutParameters. </p> <p> Constraints: Either a Question parameter or a HITLayoutId parameter must be provided. </p>',
+    }),
+    HITLayoutParameters: HITLayoutParameterListSchema.exactOptional().openapi({
+      description:
+        ' If the HITLayoutId is provided, any placeholder values must be filled in with values using the HITLayoutParameter structure. For more information, see HITLayout. ',
+    }),
   })
   .openapi({
     required: [
@@ -660,71 +457,43 @@ const CreateHITRequestSchema = z
 
 const CreateHITTypeResponseSchema = z
   .object({
-    HITTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: ' The ID of the newly registered HIT type.' }),
-    ).exactOptional(),
+    HITTypeId: EntityIdSchema.exactOptional().openapi({
+      description: ' The ID of the newly registered HIT type.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateHITTypeResponse')
 
 const CreateHITTypeRequestSchema = z
   .object({
-    AutoApprovalDelayInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of seconds after an assignment for the HIT has been submitted, after which the assignment is considered Approved automatically unless the Requester explicitly rejects it. ',
-        }),
-    ).exactOptional(),
-    AssignmentDurationInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The amount of time, in seconds, that a Worker has to complete the HIT after accepting it. If a Worker does not complete the assignment within the specified duration, the assignment is considered abandoned. If the HIT is still active (that is, its lifetime has not elapsed), the assignment becomes available for other users to find and accept. ',
-        }),
-    ),
-    Reward: CurrencyAmountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The amount of money the Requester will pay a Worker for successfully completing the HIT. ',
-        }),
-    ),
-    Title: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The title of the HIT. A title should be short and descriptive about the kind of task the HIT contains. On the Amazon Mechanical Turk web site, the HIT title appears in search results, and everywhere the HIT is mentioned. ',
-        }),
-    ),
-    Keywords: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' One or more words or phrases that describe the HIT, separated by commas. These words are used in searches to find HITs. ',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A general description of the HIT. A description includes detailed information about the kind of task the HIT contains. On the Amazon Mechanical Turk web site, the HIT description appears in the expanded view of search results, and in the HIT and assignment screens. A good description gives the user enough information to evaluate the HIT before accepting it. ',
-        }),
-    ),
-    QualificationRequirements: QualificationRequirementListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Conditions that a Worker's Qualifications must meet in order to accept the HIT. A HIT can have between zero and ten Qualification requirements. All requirements must be met in order for a Worker to accept the HIT. Additionally, other actions can be restricted using the <code>ActionsGuarded</code> field on each <code>QualificationRequirement</code> structure. ",
-        }),
-    ).exactOptional(),
+    AutoApprovalDelayInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        ' The number of seconds after an assignment for the HIT has been submitted, after which the assignment is considered Approved automatically unless the Requester explicitly rejects it. ',
+    }),
+    AssignmentDurationInSeconds: LongSchema.openapi({
+      description:
+        ' The amount of time, in seconds, that a Worker has to complete the HIT after accepting it. If a Worker does not complete the assignment within the specified duration, the assignment is considered abandoned. If the HIT is still active (that is, its lifetime has not elapsed), the assignment becomes available for other users to find and accept. ',
+    }),
+    Reward: CurrencyAmountSchema.openapi({
+      description:
+        ' The amount of money the Requester will pay a Worker for successfully completing the HIT. ',
+    }),
+    Title: StringSchema.openapi({
+      description:
+        ' The title of the HIT. A title should be short and descriptive about the kind of task the HIT contains. On the Amazon Mechanical Turk web site, the HIT title appears in search results, and everywhere the HIT is mentioned. ',
+    }),
+    Keywords: StringSchema.exactOptional().openapi({
+      description:
+        ' One or more words or phrases that describe the HIT, separated by commas. These words are used in searches to find HITs. ',
+    }),
+    Description: StringSchema.openapi({
+      description:
+        ' A general description of the HIT. A description includes detailed information about the kind of task the HIT contains. On the Amazon Mechanical Turk web site, the HIT description appears in the expanded view of search results, and in the HIT and assignment screens. A good description gives the user enough information to evaluate the HIT before accepting it. ',
+    }),
+    QualificationRequirements: QualificationRequirementListSchema.exactOptional().openapi({
+      description:
+        " Conditions that a Worker's Qualifications must meet in order to accept the HIT. A HIT can have between zero and ten Qualification requirements. All requirements must be met in order for a Worker to accept the HIT. Additionally, other actions can be restricted using the <code>ActionsGuarded</code> field on each <code>QualificationRequirement</code> structure. ",
+    }),
   })
   .openapi({
     required: ['AssignmentDurationInSeconds', 'Reward', 'Title', 'Description'],
@@ -734,95 +503,55 @@ const CreateHITTypeRequestSchema = z
 
 const CreateHITWithHITTypeResponseSchema = z
   .object({
-    HIT: HITSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains the newly created HIT data. For a description of the HIT data structure as it appears in responses, see the HIT Data Structure documentation. ',
-        }),
-    ).exactOptional(),
+    HIT: HITSchema.exactOptional().openapi({
+      description:
+        ' Contains the newly created HIT data. For a description of the HIT data structure as it appears in responses, see the HIT Data Structure documentation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateHITWithHITTypeResponse')
 
 const CreateHITWithHITTypeRequestSchema = z
   .object({
-    HITTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The HIT type ID you want to create this HIT with.' }),
-    ),
-    MaxAssignments: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of times the HIT can be accepted and completed before the HIT becomes unavailable. ',
-        }),
-    ).exactOptional(),
-    LifetimeInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An amount of time, in seconds, after which the HIT is no longer available for users to accept. After the lifetime of the HIT elapses, the HIT no longer appears in HIT searches, even if not all of the assignments for the HIT have been accepted. ',
-        }),
-    ),
-    Question: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The data the person completing the HIT uses to produce the results. </p> <p> Constraints: Must be a QuestionForm data structure, an ExternalQuestion data structure, or an HTMLQuestion data structure. The XML question data must not be larger than 64 kilobytes (65,535 bytes) in size, including whitespace. </p> <p>Either a Question parameter or a HITLayoutId parameter must be provided.</p>',
-        }),
-    ).exactOptional(),
-    RequesterAnnotation: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> An arbitrary data field. The RequesterAnnotation parameter lets your application attach arbitrary data to the HIT for tracking purposes. For example, this parameter could be an identifier internal to the Requester's application that corresponds with the HIT. </p> <p> The RequesterAnnotation parameter for a HIT is only visible to the Requester who created the HIT. It is not shown to the Worker, or any other Requester. </p> <p> The RequesterAnnotation parameter may be different for each HIT you submit. It does not affect how your HITs are grouped. </p>",
-        }),
-    ).exactOptional(),
-    UniqueRequestToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A unique identifier for this request which allows you to retry the call on error without creating duplicate HITs. This is useful in cases such as network timeouts where it is unclear whether or not the call succeeded on the server. If the HIT already exists in the system from a previous call using the same UniqueRequestToken, subsequent calls will return a AWS.MechanicalTurk.HitAlreadyExists error with a message containing the HITId. </p> <note> <p> Note: It is your responsibility to ensure uniqueness of the token. The unique token expires after 24 hours. Subsequent calls using the same UniqueRequestToken made after the 24 hour limit could create duplicate HITs. </p> </note>',
-        }),
-    ).exactOptional(),
-    AssignmentReviewPolicy: ReviewPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Assignment-level Review Policy applies to the assignments under the HIT. You can specify for Mechanical Turk to take various actions based on the policy. ',
-        }),
-    ).exactOptional(),
-    HITReviewPolicy: ReviewPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The HIT-level Review Policy applies to the HIT. You can specify for Mechanical Turk to take various actions based on the policy. ',
-        }),
-    ).exactOptional(),
-    HITLayoutId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The HITLayoutId allows you to use a pre-existing HIT design with placeholder values and create an additional HIT by providing those values as HITLayoutParameters. </p> <p> Constraints: Either a Question parameter or a HITLayoutId parameter must be provided. </p>',
-        }),
-    ).exactOptional(),
-    HITLayoutParameters: HITLayoutParameterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the HITLayoutId is provided, any placeholder values must be filled in with values using the HITLayoutParameter structure. For more information, see HITLayout. ',
-        }),
-    ).exactOptional(),
+    HITTypeId: EntityIdSchema.openapi({
+      description: 'The HIT type ID you want to create this HIT with.',
+    }),
+    MaxAssignments: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of times the HIT can be accepted and completed before the HIT becomes unavailable. ',
+    }),
+    LifetimeInSeconds: LongSchema.openapi({
+      description:
+        ' An amount of time, in seconds, after which the HIT is no longer available for users to accept. After the lifetime of the HIT elapses, the HIT no longer appears in HIT searches, even if not all of the assignments for the HIT have been accepted. ',
+    }),
+    Question: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The data the person completing the HIT uses to produce the results. </p> <p> Constraints: Must be a QuestionForm data structure, an ExternalQuestion data structure, or an HTMLQuestion data structure. The XML question data must not be larger than 64 kilobytes (65,535 bytes) in size, including whitespace. </p> <p>Either a Question parameter or a HITLayoutId parameter must be provided.</p>',
+    }),
+    RequesterAnnotation: StringSchema.exactOptional().openapi({
+      description:
+        "<p> An arbitrary data field. The RequesterAnnotation parameter lets your application attach arbitrary data to the HIT for tracking purposes. For example, this parameter could be an identifier internal to the Requester's application that corresponds with the HIT. </p> <p> The RequesterAnnotation parameter for a HIT is only visible to the Requester who created the HIT. It is not shown to the Worker, or any other Requester. </p> <p> The RequesterAnnotation parameter may be different for each HIT you submit. It does not affect how your HITs are grouped. </p>",
+    }),
+    UniqueRequestToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        '<p> A unique identifier for this request which allows you to retry the call on error without creating duplicate HITs. This is useful in cases such as network timeouts where it is unclear whether or not the call succeeded on the server. If the HIT already exists in the system from a previous call using the same UniqueRequestToken, subsequent calls will return a AWS.MechanicalTurk.HitAlreadyExists error with a message containing the HITId. </p> <note> <p> Note: It is your responsibility to ensure uniqueness of the token. The unique token expires after 24 hours. Subsequent calls using the same UniqueRequestToken made after the 24 hour limit could create duplicate HITs. </p> </note>',
+    }),
+    AssignmentReviewPolicy: ReviewPolicySchema.exactOptional().openapi({
+      description:
+        ' The Assignment-level Review Policy applies to the assignments under the HIT. You can specify for Mechanical Turk to take various actions based on the policy. ',
+    }),
+    HITReviewPolicy: ReviewPolicySchema.exactOptional().openapi({
+      description:
+        ' The HIT-level Review Policy applies to the HIT. You can specify for Mechanical Turk to take various actions based on the policy. ',
+    }),
+    HITLayoutId: EntityIdSchema.exactOptional().openapi({
+      description:
+        '<p> The HITLayoutId allows you to use a pre-existing HIT design with placeholder values and create an additional HIT by providing those values as HITLayoutParameters. </p> <p> Constraints: Either a Question parameter or a HITLayoutId parameter must be provided. </p>',
+    }),
+    HITLayoutParameters: HITLayoutParameterListSchema.exactOptional().openapi({
+      description:
+        ' If the HITLayoutId is provided, any placeholder values must be filled in with values using the HITLayoutParameter structure. For more information, see HITLayout. ',
+    }),
   })
   .openapi({ required: ['HITTypeId', 'LifetimeInSeconds'], title: 'CreateHITWithHITTypeRequest' })
   .openapi('CreateHITWithHITTypeRequest')
@@ -833,99 +562,55 @@ const QualificationTypeStatusSchema = z
 
 const QualificationTypeSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A unique identifier for the Qualification type. A Qualification type is given a Qualification type ID when you call the CreateQualificationType operation. ',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The date and time the Qualification type was created. ' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the Qualification type. The type name is used to identify the type, and to find the type using a Qualification type search. ',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: ' A long description for the Qualification type. ' }),
-    ).exactOptional(),
-    Keywords: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' One or more words or phrases that describe theQualification type, separated by commas. The Keywords make the type easier to find using a search. ',
-        }),
-    ).exactOptional(),
-    QualificationTypeStatus: QualificationTypeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The status of the Qualification type. A Qualification type's status determines if users can apply to receive a Qualification of this type, and if HITs can be created with requirements based on this type. Valid values are Active | Inactive. ",
-        }),
-    ).exactOptional(),
-    Test: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The questions for a Qualification test associated with this Qualification type that a user can take to obtain a Qualification of this type. This parameter must be specified if AnswerKey is present. A Qualification type cannot have both a specified Test parameter and an AutoGranted value of true. ',
-        }),
-    ).exactOptional(),
-    TestDurationInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The amount of time, in seconds, given to a Worker to complete the Qualification test, beginning from the time the Worker requests the Qualification. ',
-        }),
-    ).exactOptional(),
-    AnswerKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The answers to the Qualification test specified in the Test parameter.',
-        }),
-    ).exactOptional(),
-    RetryDelayInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The amount of time, in seconds, Workers must wait after taking the Qualification test before they can take it again. Workers can take a Qualification test multiple times if they were not granted the Qualification from a previous attempt, or if the test offers a gradient score and they want a better score. If not specified, retries are disabled and Workers can request a Qualification only once. ',
-        }),
-    ).exactOptional(),
-    IsRequestable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether the Qualification type is one that a user can request through the Amazon Mechanical Turk web site, such as by taking a Qualification test. This value is False for Qualifications assigned automatically by the system. Valid values are True | False. ',
-        }),
-    ).exactOptional(),
-    AutoGranted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test. Valid values are True | False.',
-        }),
-    ).exactOptional(),
-    AutoGrantedValue: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Qualification integer value to use for automatically granted Qualifications, if AutoGranted is true. This is 1 by default. ',
-        }),
-    ).exactOptional(),
+    QualificationTypeId: EntityIdSchema.exactOptional().openapi({
+      description:
+        ' A unique identifier for the Qualification type. A Qualification type is given a Qualification type ID when you call the CreateQualificationType operation. ',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: ' The date and time the Qualification type was created. ',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description:
+        ' The name of the Qualification type. The type name is used to identify the type, and to find the type using a Qualification type search. ',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: ' A long description for the Qualification type. ',
+    }),
+    Keywords: StringSchema.exactOptional().openapi({
+      description:
+        ' One or more words or phrases that describe theQualification type, separated by commas. The Keywords make the type easier to find using a search. ',
+    }),
+    QualificationTypeStatus: QualificationTypeStatusSchema.exactOptional().openapi({
+      description:
+        " The status of the Qualification type. A Qualification type's status determines if users can apply to receive a Qualification of this type, and if HITs can be created with requirements based on this type. Valid values are Active | Inactive. ",
+    }),
+    Test: StringSchema.exactOptional().openapi({
+      description:
+        ' The questions for a Qualification test associated with this Qualification type that a user can take to obtain a Qualification of this type. This parameter must be specified if AnswerKey is present. A Qualification type cannot have both a specified Test parameter and an AutoGranted value of true. ',
+    }),
+    TestDurationInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        ' The amount of time, in seconds, given to a Worker to complete the Qualification test, beginning from the time the Worker requests the Qualification. ',
+    }),
+    AnswerKey: StringSchema.exactOptional().openapi({
+      description: 'The answers to the Qualification test specified in the Test parameter.',
+    }),
+    RetryDelayInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        ' The amount of time, in seconds, Workers must wait after taking the Qualification test before they can take it again. Workers can take a Qualification test multiple times if they were not granted the Qualification from a previous attempt, or if the test offers a gradient score and they want a better score. If not specified, retries are disabled and Workers can request a Qualification only once. ',
+    }),
+    IsRequestable: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Specifies whether the Qualification type is one that a user can request through the Amazon Mechanical Turk web site, such as by taking a Qualification test. This value is False for Qualifications assigned automatically by the system. Valid values are True | False. ',
+    }),
+    AutoGranted: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies that requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test. Valid values are True | False.',
+    }),
+    AutoGrantedValue: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The Qualification integer value to use for automatically granted Qualifications, if AutoGranted is true. This is 1 by default. ',
+    }),
   })
   .openapi({
     description:
@@ -936,100 +621,56 @@ const QualificationTypeSchema = z
 
 const CreateQualificationTypeResponseSchema = z
   .object({
-    QualificationType: QualificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The created Qualification type, returned as a QualificationType data structure.',
-        }),
-    ).exactOptional(),
+    QualificationType: QualificationTypeSchema.exactOptional().openapi({
+      description:
+        'The created Qualification type, returned as a QualificationType data structure.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateQualificationTypeResponse')
 
 const CreateQualificationTypeRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name you give to the Qualification type. The type name is used to represent the Qualification to Workers, and to find the type using a Qualification type search. It must be unique across all of your Qualification types.',
-        }),
-    ),
-    Keywords: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more words or phrases that describe the Qualification type, separated by commas. The keywords of a type make the type easier to find during a search.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A long description for the Qualification type. On the Amazon Mechanical Turk website, the long description is displayed when a Worker examines a Qualification type.',
-        }),
-    ),
-    QualificationTypeStatus: QualificationTypeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The initial status of the Qualification type.</p> <p>Constraints: Valid values are: Active | Inactive</p>',
-        }),
-    ),
-    RetryDelayInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of seconds that a Worker must wait after requesting a Qualification of the Qualification type before the worker can retry the Qualification request.</p> <p>Constraints: None. If not specified, retries are disabled and Workers can request a Qualification of this type only once, even if the Worker has not been granted the Qualification. It is not possible to disable retries for a Qualification type after it has been created with retries enabled. If you want to disable retries, you must delete existing retry-enabled Qualification type and then create a new Qualification type with retries disabled.</p>',
-        }),
-    ).exactOptional(),
-    Test: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The questions for the Qualification test a Worker must answer correctly to obtain a Qualification of this type. If this parameter is specified, <code>TestDurationInSeconds</code> must also be specified. </p> <p>Constraints: Must not be longer than 65535 bytes. Must be a QuestionForm data structure. This parameter cannot be specified if AutoGranted is true.</p> <p>Constraints: None. If not specified, the Worker may request the Qualification without answering any questions.</p>',
-        }),
-    ).exactOptional(),
-    AnswerKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The answers to the Qualification test specified in the Test parameter, in the form of an AnswerKey data structure.</p> <p>Constraints: Must not be longer than 65535 bytes.</p> <p>Constraints: None. If not specified, you must process Qualification requests manually.</p>',
-        }),
-    ).exactOptional(),
-    TestDurationInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of seconds the Worker has to complete the Qualification test, starting from the time the Worker requests the Qualification.',
-        }),
-    ).exactOptional(),
-    AutoGranted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test.</p> <p>Constraints: If the Test parameter is specified, this parameter cannot be true.</p>',
-        }),
-    ).exactOptional(),
-    AutoGrantedValue: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Qualification value to use for automatically granted Qualifications. This parameter is used only if the AutoGranted parameter is true.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({
+      description:
+        ' The name you give to the Qualification type. The type name is used to represent the Qualification to Workers, and to find the type using a Qualification type search. It must be unique across all of your Qualification types.',
+    }),
+    Keywords: StringSchema.exactOptional().openapi({
+      description:
+        'One or more words or phrases that describe the Qualification type, separated by commas. The keywords of a type make the type easier to find during a search.',
+    }),
+    Description: StringSchema.openapi({
+      description:
+        'A long description for the Qualification type. On the Amazon Mechanical Turk website, the long description is displayed when a Worker examines a Qualification type.',
+    }),
+    QualificationTypeStatus: QualificationTypeStatusSchema.openapi({
+      description:
+        '<p>The initial status of the Qualification type.</p> <p>Constraints: Valid values are: Active | Inactive</p>',
+    }),
+    RetryDelayInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        '<p>The number of seconds that a Worker must wait after requesting a Qualification of the Qualification type before the worker can retry the Qualification request.</p> <p>Constraints: None. If not specified, retries are disabled and Workers can request a Qualification of this type only once, even if the Worker has not been granted the Qualification. It is not possible to disable retries for a Qualification type after it has been created with retries enabled. If you want to disable retries, you must delete existing retry-enabled Qualification type and then create a new Qualification type with retries disabled.</p>',
+    }),
+    Test: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The questions for the Qualification test a Worker must answer correctly to obtain a Qualification of this type. If this parameter is specified, <code>TestDurationInSeconds</code> must also be specified. </p> <p>Constraints: Must not be longer than 65535 bytes. Must be a QuestionForm data structure. This parameter cannot be specified if AutoGranted is true.</p> <p>Constraints: None. If not specified, the Worker may request the Qualification without answering any questions.</p>',
+    }),
+    AnswerKey: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The answers to the Qualification test specified in the Test parameter, in the form of an AnswerKey data structure.</p> <p>Constraints: Must not be longer than 65535 bytes.</p> <p>Constraints: None. If not specified, you must process Qualification requests manually.</p>',
+    }),
+    TestDurationInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        'The number of seconds the Worker has to complete the Qualification test, starting from the time the Worker requests the Qualification.',
+    }),
+    AutoGranted: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test.</p> <p>Constraints: If the Test parameter is specified, this parameter cannot be true.</p>',
+    }),
+    AutoGrantedValue: IntegerSchema.exactOptional().openapi({
+      description:
+        'The Qualification value to use for automatically granted Qualifications. This parameter is used only if the AutoGranted parameter is true.',
+    }),
   })
   .openapi({
     required: ['Name', 'Description', 'QualificationTypeStatus'],
@@ -1037,94 +678,68 @@ const CreateQualificationTypeRequestSchema = z
   })
   .openapi('CreateQualificationTypeRequest')
 
-const CreateWorkerBlockResponseSchema = z.object({}).openapi('CreateWorkerBlockResponse')
+const CreateWorkerBlockResponseSchema = z.looseObject({}).openapi('CreateWorkerBlockResponse')
 
 const CreateWorkerBlockRequestSchema = z
   .object({
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Worker to block.' }),
-    ),
-    Reason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message explaining the reason for blocking the Worker. This parameter enables you to keep track of your Workers. The Worker does not see this message.',
-        }),
-    ),
+    WorkerId: CustomerIdSchema.openapi({ description: 'The ID of the Worker to block.' }),
+    Reason: StringSchema.openapi({
+      description:
+        'A message explaining the reason for blocking the Worker. This parameter enables you to keep track of your Workers. The Worker does not see this message.',
+    }),
   })
   .openapi({ required: ['WorkerId', 'Reason'], title: 'CreateWorkerBlockRequest' })
   .openapi('CreateWorkerBlockRequest')
 
-const DeleteHITResponseSchema = z.object({}).openapi('DeleteHITResponse')
+const DeleteHITResponseSchema = z.looseObject({}).openapi('DeleteHITResponse')
 
 const DeleteHITRequestSchema = z
-  .object({
-    HITId: EntityIdSchema.and(z.any().openapi({ description: 'The ID of the HIT to be deleted.' })),
-  })
+  .object({ HITId: EntityIdSchema.openapi({ description: 'The ID of the HIT to be deleted.' }) })
   .openapi({ required: ['HITId'], title: 'DeleteHITRequest' })
   .openapi('DeleteHITRequest')
 
 const DeleteQualificationTypeResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteQualificationTypeResponse')
 
 const DeleteQualificationTypeRequestSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the QualificationType to dispose.' }),
-    ),
+    QualificationTypeId: EntityIdSchema.openapi({
+      description: 'The ID of the QualificationType to dispose.',
+    }),
   })
   .openapi({ required: ['QualificationTypeId'], title: 'DeleteQualificationTypeRequest' })
   .openapi('DeleteQualificationTypeRequest')
 
-const DeleteWorkerBlockResponseSchema = z.object({}).openapi('DeleteWorkerBlockResponse')
+const DeleteWorkerBlockResponseSchema = z.looseObject({}).openapi('DeleteWorkerBlockResponse')
 
 const DeleteWorkerBlockRequestSchema = z
   .object({
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Worker to unblock.' }),
-    ),
-    Reason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message that explains the reason for unblocking the Worker. The Worker does not see this message.',
-        }),
-    ).exactOptional(),
+    WorkerId: CustomerIdSchema.openapi({ description: 'The ID of the Worker to unblock.' }),
+    Reason: StringSchema.exactOptional().openapi({
+      description:
+        'A message that explains the reason for unblocking the Worker. The Worker does not see this message.',
+    }),
   })
   .openapi({ required: ['WorkerId'], title: 'DeleteWorkerBlockRequest' })
   .openapi('DeleteWorkerBlockRequest')
 
 const DisassociateQualificationFromWorkerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateQualificationFromWorkerResponse')
 
 const DisassociateQualificationFromWorkerRequestSchema = z
   .object({
-    WorkerId: CustomerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Worker who possesses the Qualification to be revoked.',
-        }),
-    ),
-    QualificationTypeId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Qualification type of the Qualification to be revoked.',
-        }),
-    ),
-    Reason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A text message that explains why the Qualification was revoked. The user who had the Qualification sees this message.',
-        }),
-    ).exactOptional(),
+    WorkerId: CustomerIdSchema.openapi({
+      description: 'The ID of the Worker who possesses the Qualification to be revoked.',
+    }),
+    QualificationTypeId: EntityIdSchema.openapi({
+      description: 'The ID of the Qualification type of the Qualification to be revoked.',
+    }),
+    Reason: StringSchema.exactOptional().openapi({
+      description:
+        'A text message that explains why the Qualification was revoked. The user who had the Qualification sees this message.',
+    }),
   })
   .openapi({
     required: ['WorkerId', 'QualificationTypeId'],
@@ -1141,7 +756,7 @@ const GetAccountBalanceResponseSchema = z
   .openapi('GetAccountBalanceResponse')
 
 const GetAccountBalanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAccountBalanceRequest' })
   .openapi('GetAccountBalanceRequest')
 
@@ -1151,77 +766,47 @@ const AssignmentStatusSchema = z
 
 const AssignmentSchema = z
   .object({
-    AssignmentId: EntityIdSchema.and(
-      z.any().openapi({ description: ' A unique identifier for the assignment.' }),
-    ).exactOptional(),
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Worker who accepted the HIT.' }),
-    ).exactOptional(),
-    HITId: EntityIdSchema.and(
-      z.any().openapi({ description: ' The ID of the HIT.' }),
-    ).exactOptional(),
-    AssignmentStatus: AssignmentStatusSchema.and(
-      z.any().openapi({ description: ' The status of the assignment.' }),
-    ).exactOptional(),
-    AutoApprovalTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If results have been submitted, AutoApprovalTime is the date and time the results of the assignment results are considered Approved automatically if they have not already been explicitly approved or rejected by the Requester. This value is derived from the auto-approval delay specified by the Requester in the HIT. This value is omitted from the assignment if the Worker has not yet submitted results.',
-        }),
-    ).exactOptional(),
-    AcceptTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The date and time the Worker accepted the assignment.' }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the Worker has submitted results, SubmitTime is the date and time the assignment was submitted. This value is omitted from the assignment if the Worker has not yet submitted results.',
-        }),
-    ).exactOptional(),
-    ApprovalTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the Worker has submitted results and the Requester has approved the results, ApprovalTime is the date and time the Requester approved the results. This value is omitted from the assignment if the Requester has not yet approved the results.',
-        }),
-    ).exactOptional(),
-    RejectionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If the Worker has submitted results and the Requester has rejected the results, RejectionTime is the date and time the Requester rejected the results.',
-        }),
-    ).exactOptional(),
-    Deadline: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The date and time of the deadline for the assignment. This value is derived from the deadline specification for the HIT and the date and time the Worker accepted the HIT.',
-        }),
-    ).exactOptional(),
-    Answer: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The Worker's answers submitted for the HIT contained in a QuestionFormAnswers document, if the Worker provides an answer. If the Worker does not provide any answers, Answer may contain a QuestionFormAnswers document, or Answer may be empty.",
-        }),
-    ).exactOptional(),
-    RequesterFeedback: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The feedback string included with the call to the ApproveAssignment operation or the RejectAssignment operation, if the Requester approved or rejected the assignment and specified feedback.',
-        }),
-    ).exactOptional(),
+    AssignmentId: EntityIdSchema.exactOptional().openapi({
+      description: ' A unique identifier for the assignment.',
+    }),
+    WorkerId: CustomerIdSchema.exactOptional().openapi({
+      description: ' The ID of the Worker who accepted the HIT.',
+    }),
+    HITId: EntityIdSchema.exactOptional().openapi({ description: ' The ID of the HIT.' }),
+    AssignmentStatus: AssignmentStatusSchema.exactOptional().openapi({
+      description: ' The status of the assignment.',
+    }),
+    AutoApprovalTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' If results have been submitted, AutoApprovalTime is the date and time the results of the assignment results are considered Approved automatically if they have not already been explicitly approved or rejected by the Requester. This value is derived from the auto-approval delay specified by the Requester in the HIT. This value is omitted from the assignment if the Worker has not yet submitted results.',
+    }),
+    AcceptTime: TimestampSchema.exactOptional().openapi({
+      description: ' The date and time the Worker accepted the assignment.',
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' If the Worker has submitted results, SubmitTime is the date and time the assignment was submitted. This value is omitted from the assignment if the Worker has not yet submitted results.',
+    }),
+    ApprovalTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' If the Worker has submitted results and the Requester has approved the results, ApprovalTime is the date and time the Requester approved the results. This value is omitted from the assignment if the Requester has not yet approved the results.',
+    }),
+    RejectionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' If the Worker has submitted results and the Requester has rejected the results, RejectionTime is the date and time the Requester rejected the results.',
+    }),
+    Deadline: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The date and time of the deadline for the assignment. This value is derived from the deadline specification for the HIT and the date and time the Worker accepted the HIT.',
+    }),
+    Answer: StringSchema.exactOptional().openapi({
+      description:
+        " The Worker's answers submitted for the HIT contained in a QuestionFormAnswers document, if the Worker provides an answer. If the Worker does not provide any answers, Answer may contain a QuestionFormAnswers document, or Answer may be empty.",
+    }),
+    RequesterFeedback: StringSchema.exactOptional().openapi({
+      description:
+        ' The feedback string included with the call to the ApproveAssignment operation or the RejectAssignment operation, if the Requester approved or rejected the assignment and specified feedback.',
+    }),
   })
   .openapi({
     description:
@@ -1232,84 +817,57 @@ const AssignmentSchema = z
 
 const GetAssignmentResponseSchema = z
   .object({
-    Assignment: AssignmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The assignment. The response includes one Assignment element. ',
-        }),
-    ).exactOptional(),
-    HIT: HITSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The HIT associated with this assignment. The response includes one HIT element.',
-        }),
-    ).exactOptional(),
+    Assignment: AssignmentSchema.exactOptional().openapi({
+      description: ' The assignment. The response includes one Assignment element. ',
+    }),
+    HIT: HITSchema.exactOptional().openapi({
+      description:
+        ' The HIT associated with this assignment. The response includes one HIT element.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAssignmentResponse')
 
 const GetAssignmentRequestSchema = z
   .object({
-    AssignmentId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Assignment to be retrieved.' }),
-    ),
+    AssignmentId: EntityIdSchema.openapi({
+      description: 'The ID of the Assignment to be retrieved.',
+    }),
   })
   .openapi({ required: ['AssignmentId'], title: 'GetAssignmentRequest' })
   .openapi('GetAssignmentRequest')
 
 const GetFileUploadURLResponseSchema = z
   .object({
-    FileUploadURL: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A temporary URL for the file that the Worker uploaded for the answer. ',
-        }),
-    ).exactOptional(),
+    FileUploadURL: StringSchema.exactOptional().openapi({
+      description: ' A temporary URL for the file that the Worker uploaded for the answer. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFileUploadURLResponse')
 
 const GetFileUploadURLRequestSchema = z
   .object({
-    AssignmentId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the assignment that contains the question with a FileUploadAnswer.',
-        }),
-    ),
-    QuestionIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the question with a FileUploadAnswer, as specified in the QuestionForm of the HIT.',
-        }),
-    ),
+    AssignmentId: EntityIdSchema.openapi({
+      description: 'The ID of the assignment that contains the question with a FileUploadAnswer.',
+    }),
+    QuestionIdentifier: StringSchema.openapi({
+      description:
+        'The identifier of the question with a FileUploadAnswer, as specified in the QuestionForm of the HIT.',
+    }),
   })
   .openapi({ required: ['AssignmentId', 'QuestionIdentifier'], title: 'GetFileUploadURLRequest' })
   .openapi('GetFileUploadURLRequest')
 
 const GetHITResponseSchema = z
   .object({
-    HIT: HITSchema.and(
-      z.any().openapi({ description: ' Contains the requested HIT data.' }),
-    ).exactOptional(),
+    HIT: HITSchema.exactOptional().openapi({ description: ' Contains the requested HIT data.' }),
   })
   .openapi({ required: [] })
   .openapi('GetHITResponse')
 
 const GetHITRequestSchema = z
-  .object({
-    HITId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the HIT to be retrieved.' }),
-    ),
-  })
+  .object({ HITId: EntityIdSchema.openapi({ description: 'The ID of the HIT to be retrieved.' }) })
   .openapi({ required: ['HITId'], title: 'GetHITRequest' })
   .openapi('GetHITRequest')
 
@@ -1317,36 +875,24 @@ const QualificationStatusSchema = z.enum(['Granted', 'Revoked']).openapi('Qualif
 
 const QualificationSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Qualification type for the Qualification.' }),
-    ).exactOptional(),
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Worker who possesses the Qualification. ' }),
-    ).exactOptional(),
-    GrantTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The date and time the Qualification was granted to the Worker. If the Worker's Qualification was revoked, and then re-granted based on a new Qualification request, GrantTime is the date and time of the last call to the AcceptQualificationRequest operation.",
-        }),
-    ).exactOptional(),
-    IntegerValue: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The value (score) of the Qualification, if the Qualification has an integer value.',
-        }),
-    ).exactOptional(),
+    QualificationTypeId: EntityIdSchema.exactOptional().openapi({
+      description: ' The ID of the Qualification type for the Qualification.',
+    }),
+    WorkerId: CustomerIdSchema.exactOptional().openapi({
+      description: ' The ID of the Worker who possesses the Qualification. ',
+    }),
+    GrantTime: TimestampSchema.exactOptional().openapi({
+      description:
+        " The date and time the Qualification was granted to the Worker. If the Worker's Qualification was revoked, and then re-granted based on a new Qualification request, GrantTime is the date and time of the last call to the AcceptQualificationRequest operation.",
+    }),
+    IntegerValue: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The value (score) of the Qualification, if the Qualification has an integer value.',
+    }),
     LocaleValue: LocaleSchema.exactOptional(),
-    Status: QualificationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The status of the Qualification. Valid values are Granted | Revoked.',
-        }),
-    ).exactOptional(),
+    Status: QualificationStatusSchema.exactOptional().openapi({
+      description: ' The status of the Qualification. Valid values are Granted | Revoked.',
+    }),
   })
   .openapi({
     description:
@@ -1357,46 +903,40 @@ const QualificationSchema = z
 
 const GetQualificationScoreResponseSchema = z
   .object({
-    Qualification: QualificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Qualification data structure of the Qualification assigned to a user, including the Qualification type and the value (score). ',
-        }),
-    ).exactOptional(),
+    Qualification: QualificationSchema.exactOptional().openapi({
+      description:
+        ' The Qualification data structure of the Qualification assigned to a user, including the Qualification type and the value (score). ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetQualificationScoreResponse')
 
 const GetQualificationScoreRequestSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the QualificationType.' }),
-    ),
-    WorkerId: CustomerIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Worker whose Qualification is being updated.' }),
-    ),
+    QualificationTypeId: EntityIdSchema.openapi({
+      description: 'The ID of the QualificationType.',
+    }),
+    WorkerId: CustomerIdSchema.openapi({
+      description: 'The ID of the Worker whose Qualification is being updated.',
+    }),
   })
   .openapi({ required: ['QualificationTypeId', 'WorkerId'], title: 'GetQualificationScoreRequest' })
   .openapi('GetQualificationScoreRequest')
 
 const GetQualificationTypeResponseSchema = z
   .object({
-    QualificationType: QualificationTypeSchema.and(
-      z.any().openapi({ description: ' The returned Qualification Type' }),
-    ).exactOptional(),
+    QualificationType: QualificationTypeSchema.exactOptional().openapi({
+      description: ' The returned Qualification Type',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetQualificationTypeResponse')
 
 const GetQualificationTypeRequestSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the QualificationType.' }),
-    ),
+    QualificationTypeId: EntityIdSchema.openapi({
+      description: 'The ID of the QualificationType.',
+    }),
   })
   .openapi({ required: ['QualificationTypeId'], title: 'GetQualificationTypeRequest' })
   .openapi('GetQualificationTypeRequest')
@@ -1416,21 +956,13 @@ const AssignmentListSchema = z.array(AssignmentSchema).openapi('AssignmentList')
 const ListAssignmentsForHITResponseSchema = z
   .object({
     NextToken: PaginationTokenSchema.exactOptional(),
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of assignments on the page in the filtered results list, equivalent to the number of assignments returned by this call.',
-        }),
-    ).exactOptional(),
-    Assignments: AssignmentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The collection of Assignment data structures returned by this call.',
-        }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of assignments on the page in the filtered results list, equivalent to the number of assignments returned by this call.',
+    }),
+    Assignments: AssignmentListSchema.exactOptional().openapi({
+      description: ' The collection of Assignment data structures returned by this call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssignmentsForHITResponse')
@@ -1441,39 +973,31 @@ const AssignmentStatusListSchema = z.array(AssignmentStatusSchema).openapi('Assi
 
 const ListAssignmentsForHITRequestSchema = z
   .object({
-    HITId: EntityIdSchema.and(z.any().openapi({ description: 'The ID of the HIT.' })),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token' }),
-    ).exactOptional(),
+    HITId: EntityIdSchema.openapi({ description: 'The ID of the HIT.' }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token' }),
     MaxResults: ResultSizeSchema.exactOptional(),
-    AssignmentStatuses: AssignmentStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the assignments to return: Submitted | Approved | Rejected',
-        }),
-    ).exactOptional(),
+    AssignmentStatuses: AssignmentStatusListSchema.exactOptional().openapi({
+      description: 'The status of the assignments to return: Submitted | Approved | Rejected',
+    }),
   })
   .openapi({ required: ['HITId'], title: 'ListAssignmentsForHITRequest' })
   .openapi('ListAssignmentsForHITRequest')
 
 const BonusPaymentSchema = z
   .object({
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Worker to whom the bonus was paid.' }),
-    ).exactOptional(),
+    WorkerId: CustomerIdSchema.exactOptional().openapi({
+      description: 'The ID of the Worker to whom the bonus was paid.',
+    }),
     BonusAmount: CurrencyAmountSchema.exactOptional(),
-    AssignmentId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the assignment associated with this bonus payment.' }),
-    ).exactOptional(),
-    Reason: StringSchema.and(
-      z.any().openapi({ description: 'The Reason text given when the bonus was granted, if any.' }),
-    ).exactOptional(),
-    GrantTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time of when the bonus was granted.' }),
-    ).exactOptional(),
+    AssignmentId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the assignment associated with this bonus payment.',
+    }),
+    Reason: StringSchema.exactOptional().openapi({
+      description: 'The Reason text given when the bonus was granted, if any.',
+    }),
+    GrantTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time of when the bonus was granted.',
+    }),
   })
   .openapi({
     description: 'An object representing a Bonus payment paid to a Worker.',
@@ -1485,48 +1009,30 @@ const BonusPaymentListSchema = z.array(BonusPaymentSchema).openapi('BonusPayment
 
 const ListBonusPaymentsResponseSchema = z
   .object({
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of bonus payments on this page in the filtered results list, equivalent to the number of bonus payments being returned by this call. ',
-        }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of bonus payments on this page in the filtered results list, equivalent to the number of bonus payments being returned by this call. ',
+    }),
     NextToken: PaginationTokenSchema.exactOptional(),
-    BonusPayments: BonusPaymentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A successful request to the ListBonusPayments operation returns a list of BonusPayment objects. ',
-        }),
-    ).exactOptional(),
+    BonusPayments: BonusPaymentListSchema.exactOptional().openapi({
+      description:
+        'A successful request to the ListBonusPayments operation returns a list of BonusPayment objects. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBonusPaymentsResponse')
 
 const ListBonusPaymentsRequestSchema = z
   .object({
-    HITId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the HIT associated with the bonus payments to retrieve. If not specified, all bonus payments for all assignments for the given HIT are returned. Either the HITId parameter or the AssignmentId parameter must be specified',
-        }),
-    ).exactOptional(),
-    AssignmentId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the assignment associated with the bonus payments to retrieve. If specified, only bonus payments for the given assignment are returned. Either the HITId parameter or the AssignmentId parameter must be specified',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token' }),
-    ).exactOptional(),
+    HITId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the HIT associated with the bonus payments to retrieve. If not specified, all bonus payments for all assignments for the given HIT are returned. Either the HITId parameter or the AssignmentId parameter must be specified',
+    }),
+    AssignmentId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the assignment associated with the bonus payments to retrieve. If specified, only bonus payments for the given assignment are returned. Either the HITId parameter or the AssignmentId parameter must be specified',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token' }),
     MaxResults: ResultSizeSchema.exactOptional(),
   })
   .openapi({ title: 'ListBonusPaymentsRequest', required: [] })
@@ -1537,26 +1043,20 @@ const HITListSchema = z.array(HITSchema).openapi('HITList')
 const ListHITsResponseSchema = z
   .object({
     NextToken: PaginationTokenSchema.exactOptional(),
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of HITs on this page in the filtered results list, equivalent to the number of HITs being returned by this call.',
-        }),
-    ).exactOptional(),
-    HITs: HITListSchema.and(
-      z.any().openapi({ description: ' The list of HIT elements returned by the query.' }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of HITs on this page in the filtered results list, equivalent to the number of HITs being returned by this call.',
+    }),
+    HITs: HITListSchema.exactOptional().openapi({
+      description: ' The list of HIT elements returned by the query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListHITsResponse')
 
 const ListHITsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token' }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token' }),
     MaxResults: ResultSizeSchema.exactOptional(),
   })
   .openapi({ title: 'ListHITsRequest', required: [] })
@@ -1565,83 +1065,55 @@ const ListHITsRequestSchema = z
 const ListHITsForQualificationTypeResponseSchema = z
   .object({
     NextToken: PaginationTokenSchema.exactOptional(),
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of HITs on this page in the filtered results list, equivalent to the number of HITs being returned by this call. ',
-        }),
-    ).exactOptional(),
-    HITs: HITListSchema.and(
-      z.any().openapi({ description: ' The list of HIT elements returned by the query.' }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of HITs on this page in the filtered results list, equivalent to the number of HITs being returned by this call. ',
+    }),
+    HITs: HITListSchema.exactOptional().openapi({
+      description: ' The list of HIT elements returned by the query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListHITsForQualificationTypeResponse')
 
 const ListHITsForQualificationTypeRequestSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The ID of the Qualification type to use when querying HITs. ' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination Token' }),
-    ).exactOptional(),
-    MaxResults: ResultSizeSchema.and(
-      z.any().openapi({ description: ' Limit the number of results returned. ' }),
-    ).exactOptional(),
+    QualificationTypeId: EntityIdSchema.openapi({
+      description: ' The ID of the Qualification type to use when querying HITs. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination Token' }),
+    MaxResults: ResultSizeSchema.exactOptional().openapi({
+      description: ' Limit the number of results returned. ',
+    }),
   })
   .openapi({ required: ['QualificationTypeId'], title: 'ListHITsForQualificationTypeRequest' })
   .openapi('ListHITsForQualificationTypeRequest')
 
 const QualificationRequestSchema = z
   .object({
-    QualificationRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Qualification request, a unique identifier generated when the request was submitted. ',
-        }),
-    ).exactOptional(),
-    QualificationTypeId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the Qualification type the Worker is requesting, as returned by the CreateQualificationType operation. ',
-        }),
-    ).exactOptional(),
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Worker requesting the Qualification.' }),
-    ).exactOptional(),
-    Test: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The contents of the Qualification test that was presented to the Worker, if the type has a test and the Worker has submitted answers. This value is identical to the QuestionForm associated with the Qualification type at the time the Worker requests the Qualification.',
-        }),
-    ).exactOptional(),
-    Answer: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The Worker's answers for the Qualification type's test contained in a QuestionFormAnswers document, if the type has a test and the Worker has submitted answers. If the Worker does not provide any answers, Answer may be empty. ",
-        }),
-    ).exactOptional(),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time the Qualification request had a status of Submitted. This is either the time the Worker submitted answers for a Qualification test, or the time the Worker requested the Qualification if the Qualification type does not have a test. ',
-        }),
-    ).exactOptional(),
+    QualificationRequestId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the Qualification request, a unique identifier generated when the request was submitted. ',
+    }),
+    QualificationTypeId: EntityIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the Qualification type the Worker is requesting, as returned by the CreateQualificationType operation. ',
+    }),
+    WorkerId: CustomerIdSchema.exactOptional().openapi({
+      description: ' The ID of the Worker requesting the Qualification.',
+    }),
+    Test: StringSchema.exactOptional().openapi({
+      description:
+        ' The contents of the Qualification test that was presented to the Worker, if the type has a test and the Worker has submitted answers. This value is identical to the QuestionForm associated with the Qualification type at the time the Worker requests the Qualification.',
+    }),
+    Answer: StringSchema.exactOptional().openapi({
+      description:
+        " The Worker's answers for the Qualification type's test contained in a QuestionFormAnswers document, if the type has a test and the Worker has submitted answers. If the Worker does not provide any answers, Answer may be empty. ",
+    }),
+    SubmitTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time the Qualification request had a status of Submitted. This is either the time the Worker submitted answers for a Qualification test, or the time the Worker requested the Qualification if the Qualification type does not have a test. ',
+    }),
   })
   .openapi({
     description:
@@ -1656,38 +1128,28 @@ const QualificationRequestListSchema = z
 
 const ListQualificationRequestsResponseSchema = z
   .object({
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Qualification requests on this page in the filtered results list, equivalent to the number of Qualification requests being returned by this call.',
-        }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of Qualification requests on this page in the filtered results list, equivalent to the number of Qualification requests being returned by this call.',
+    }),
     NextToken: PaginationTokenSchema.exactOptional(),
-    QualificationRequests: QualificationRequestListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Qualification request. The response includes one QualificationRequest element for each Qualification request returned by the query.',
-        }),
-    ).exactOptional(),
+    QualificationRequests: QualificationRequestListSchema.exactOptional().openapi({
+      description:
+        'The Qualification request. The response includes one QualificationRequest element for each Qualification request returned by the query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListQualificationRequestsResponse')
 
 const ListQualificationRequestsRequestSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the QualificationType.' }),
-    ).exactOptional(),
+    QualificationTypeId: EntityIdSchema.exactOptional().openapi({
+      description: 'The ID of the QualificationType.',
+    }),
     NextToken: PaginationTokenSchema.exactOptional(),
-    MaxResults: ResultSizeSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The maximum number of results to return in a single call. ' }),
-    ).exactOptional(),
+    MaxResults: ResultSizeSchema.exactOptional().openapi({
+      description: ' The maximum number of results to return in a single call. ',
+    }),
   })
   .openapi({ title: 'ListQualificationRequestsRequest', required: [] })
   .openapi('ListQualificationRequestsRequest')
@@ -1698,98 +1160,62 @@ const QualificationTypeListSchema = z
 
 const ListQualificationTypesResponseSchema = z
   .object({
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of Qualification types on this page in the filtered results list, equivalent to the number of types this operation returns. ',
-        }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of Qualification types on this page in the filtered results list, equivalent to the number of types this operation returns. ',
+    }),
     NextToken: PaginationTokenSchema.exactOptional(),
-    QualificationTypes: QualificationTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of QualificationType elements returned by the query. ',
-        }),
-    ).exactOptional(),
+    QualificationTypes: QualificationTypeListSchema.exactOptional().openapi({
+      description: ' The list of QualificationType elements returned by the query. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListQualificationTypesResponse')
 
 const ListQualificationTypesRequestSchema = z
   .object({
-    Query: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A text query against all of the searchable attributes of Qualification types. ',
-        }),
-    ).exactOptional(),
-    MustBeRequestable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that only Qualification types that a user can request through the Amazon Mechanical Turk web site, such as by taking a Qualification test, are returned as results of the search. Some Qualification types, such as those assigned automatically by the system, cannot be requested directly by users. If false, all Qualification types, including those managed by the system, are considered. Valid values are True | False. ',
-        }),
-    ),
-    MustBeOwnedByCaller: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies that only Qualification types that the Requester created are returned. If false, the operation returns all Qualification types. ',
-        }),
-    ).exactOptional(),
+    Query: StringSchema.exactOptional().openapi({
+      description:
+        ' A text query against all of the searchable attributes of Qualification types. ',
+    }),
+    MustBeRequestable: BooleanSchema.openapi({
+      description:
+        'Specifies that only Qualification types that a user can request through the Amazon Mechanical Turk web site, such as by taking a Qualification test, are returned as results of the search. Some Qualification types, such as those assigned automatically by the system, cannot be requested directly by users. If false, all Qualification types, including those managed by the system, are considered. Valid values are True | False. ',
+    }),
+    MustBeOwnedByCaller: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Specifies that only Qualification types that the Requester created are returned. If false, the operation returns all Qualification types. ',
+    }),
     NextToken: PaginationTokenSchema.exactOptional(),
-    MaxResults: ResultSizeSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The maximum number of results to return in a single call. ' }),
-    ).exactOptional(),
+    MaxResults: ResultSizeSchema.exactOptional().openapi({
+      description: ' The maximum number of results to return in a single call. ',
+    }),
   })
   .openapi({ required: ['MustBeRequestable'], title: 'ListQualificationTypesRequest' })
   .openapi('ListQualificationTypesRequest')
 
 const ReviewResultDetailSchema = z
   .object({
-    ActionId: EntityIdSchema.and(
-      z.any().openapi({ description: ' A unique identifier of the Review action result. ' }),
-    ).exactOptional(),
-    SubjectId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HITID or AssignmentId about which this result was taken. Note that HIT-level Review Policies will often emit results about both the HIT itself and its Assignments, while Assignment-level review policies generally only emit results about the Assignment itself. ',
-        }),
-    ).exactOptional(),
-    SubjectType: StringSchema.and(
-      z.any().openapi({ description: ' The type of the object from the SubjectId field.' }),
-    ).exactOptional(),
-    QuestionId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Specifies the QuestionId the result is describing. Depending on whether the TargetType is a HIT or Assignment this results could specify multiple values. If TargetType is HIT and QuestionId is absent, then the result describes results of the HIT, including the HIT agreement score. If ObjectType is Assignment and QuestionId is absent, then the result describes the Worker's performance on the HIT. ",
-        }),
-    ).exactOptional(),
-    Key: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Key identifies the particular piece of reviewed information. ' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The values of Key provided by the review policies you have selected. ',
-        }),
-    ).exactOptional(),
+    ActionId: EntityIdSchema.exactOptional().openapi({
+      description: ' A unique identifier of the Review action result. ',
+    }),
+    SubjectId: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The HITID or AssignmentId about which this result was taken. Note that HIT-level Review Policies will often emit results about both the HIT itself and its Assignments, while Assignment-level review policies generally only emit results about the Assignment itself. ',
+    }),
+    SubjectType: StringSchema.exactOptional().openapi({
+      description: ' The type of the object from the SubjectId field.',
+    }),
+    QuestionId: EntityIdSchema.exactOptional().openapi({
+      description:
+        " Specifies the QuestionId the result is describing. Depending on whether the TargetType is a HIT or Assignment this results could specify multiple values. If TargetType is HIT and QuestionId is absent, then the result describes results of the HIT, including the HIT agreement score. If ObjectType is Assignment and QuestionId is absent, then the result describes the Worker's performance on the HIT. ",
+    }),
+    Key: StringSchema.exactOptional().openapi({
+      description: ' Key identifies the particular piece of reviewed information. ',
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      description: ' The values of Key provided by the review policies you have selected. ',
+    }),
   })
   .openapi({
     description:
@@ -1808,42 +1234,32 @@ const ReviewActionStatusSchema = z
 
 const ReviewActionDetailSchema = z
   .object({
-    ActionId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the action.' }),
-    ).exactOptional(),
-    ActionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The nature of the action itself. The Review Policy is responsible for examining the HIT and Assignments, emitting results, and deciding which other actions will be necessary. ',
-        }),
-    ).exactOptional(),
-    TargetId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The specific HITId or AssignmentID targeted by the action.' }),
-    ).exactOptional(),
-    TargetType: StringSchema.and(
-      z.any().openapi({ description: ' The type of object in TargetId.' }),
-    ).exactOptional(),
-    Status: ReviewActionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The current disposition of the action: INTENDED, SUCCEEDED, FAILED, or CANCELLED. ',
-        }),
-    ).exactOptional(),
-    CompleteTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The date when the action was completed.' }),
-    ).exactOptional(),
-    Result: StringSchema.and(
-      z.any().openapi({ description: ' A description of the outcome of the review.' }),
-    ).exactOptional(),
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: ' Present only when the Results have a FAILED Status.' }),
-    ).exactOptional(),
+    ActionId: EntityIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the action.',
+    }),
+    ActionName: StringSchema.exactOptional().openapi({
+      description:
+        ' The nature of the action itself. The Review Policy is responsible for examining the HIT and Assignments, emitting results, and deciding which other actions will be necessary. ',
+    }),
+    TargetId: EntityIdSchema.exactOptional().openapi({
+      description: ' The specific HITId or AssignmentID targeted by the action.',
+    }),
+    TargetType: StringSchema.exactOptional().openapi({
+      description: ' The type of object in TargetId.',
+    }),
+    Status: ReviewActionStatusSchema.exactOptional().openapi({
+      description:
+        ' The current disposition of the action: INTENDED, SUCCEEDED, FAILED, or CANCELLED. ',
+    }),
+    CompleteTime: TimestampSchema.exactOptional().openapi({
+      description: ' The date when the action was completed.',
+    }),
+    Result: StringSchema.exactOptional().openapi({
+      description: ' A description of the outcome of the review.',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description: ' Present only when the Results have a FAILED Status.',
+    }),
   })
   .openapi({
     description:
@@ -1858,22 +1274,14 @@ const ReviewActionDetailListSchema = z
 
 const ReviewReportSchema = z
   .object({
-    ReviewResults: ReviewResultDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of ReviewResults objects for each action specified in the Review Policy. ',
-        }),
-    ).exactOptional(),
-    ReviewActions: ReviewActionDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of ReviewAction objects for each action specified in the Review Policy. ',
-        }),
-    ).exactOptional(),
+    ReviewResults: ReviewResultDetailListSchema.exactOptional().openapi({
+      description:
+        ' A list of ReviewResults objects for each action specified in the Review Policy. ',
+    }),
+    ReviewActions: ReviewActionDetailListSchema.exactOptional().openapi({
+      description:
+        ' A list of ReviewAction objects for each action specified in the Review Policy. ',
+    }),
   })
   .openapi({
     description: ' Contains both ReviewResult and ReviewAction elements for a particular HIT. ',
@@ -1883,42 +1291,23 @@ const ReviewReportSchema = z
 
 const ListReviewPolicyResultsForHITResponseSchema = z
   .object({
-    HITId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The HITId of the HIT for which results have been returned.' }),
-    ).exactOptional(),
-    AssignmentReviewPolicy: ReviewPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the Assignment-level Review Policy. This contains only the PolicyName element. ',
-        }),
-    ).exactOptional(),
-    HITReviewPolicy: ReviewPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the HIT-level Review Policy. This contains only the PolicyName element.',
-        }),
-    ).exactOptional(),
-    AssignmentReviewReport: ReviewReportSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Contains both ReviewResult and ReviewAction elements for an Assignment. ',
-        }),
-    ).exactOptional(),
-    HITReviewReport: ReviewReportSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains both ReviewResult and ReviewAction elements for a particular HIT. ',
-        }),
-    ).exactOptional(),
+    HITId: EntityIdSchema.exactOptional().openapi({
+      description: 'The HITId of the HIT for which results have been returned.',
+    }),
+    AssignmentReviewPolicy: ReviewPolicySchema.exactOptional().openapi({
+      description:
+        ' The name of the Assignment-level Review Policy. This contains only the PolicyName element. ',
+    }),
+    HITReviewPolicy: ReviewPolicySchema.exactOptional().openapi({
+      description:
+        'The name of the HIT-level Review Policy. This contains only the PolicyName element.',
+    }),
+    AssignmentReviewReport: ReviewReportSchema.exactOptional().openapi({
+      description: ' Contains both ReviewResult and ReviewAction elements for an Assignment. ',
+    }),
+    HITReviewReport: ReviewReportSchema.exactOptional().openapi({
+      description: 'Contains both ReviewResult and ReviewAction elements for a particular HIT. ',
+    }),
     NextToken: PaginationTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1932,43 +1321,25 @@ const ReviewPolicyLevelListSchema = z
 
 const ListReviewPolicyResultsForHITRequestSchema = z
   .object({
-    HITId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the HIT to retrieve review results for.',
-        }),
-    ),
-    PolicyLevels: ReviewPolicyLevelListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Policy Level(s) to retrieve review results for - HIT or Assignment. If omitted, the default behavior is to retrieve all data for both policy levels. For a list of all the described policies, see Review Policies. ',
-        }),
-    ).exactOptional(),
-    RetrieveActions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specify if the operation should retrieve a list of the actions taken executing the Review Policies and their outcomes. ',
-        }),
-    ).exactOptional(),
-    RetrieveResults: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specify if the operation should retrieve a list of the results computed by the Review Policies. ',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token' }),
-    ).exactOptional(),
-    MaxResults: ResultSizeSchema.and(
-      z.any().openapi({ description: 'Limit the number of results returned.' }),
-    ).exactOptional(),
+    HITId: EntityIdSchema.openapi({
+      description: 'The unique identifier of the HIT to retrieve review results for.',
+    }),
+    PolicyLevels: ReviewPolicyLevelListSchema.exactOptional().openapi({
+      description:
+        ' The Policy Level(s) to retrieve review results for - HIT or Assignment. If omitted, the default behavior is to retrieve all data for both policy levels. For a list of all the described policies, see Review Policies. ',
+    }),
+    RetrieveActions: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Specify if the operation should retrieve a list of the actions taken executing the Review Policies and their outcomes. ',
+    }),
+    RetrieveResults: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Specify if the operation should retrieve a list of the results computed by the Review Policies. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token' }),
+    MaxResults: ResultSizeSchema.exactOptional().openapi({
+      description: 'Limit the number of results returned.',
+    }),
   })
   .openapi({ required: ['HITId'], title: 'ListReviewPolicyResultsForHITRequest' })
   .openapi('ListReviewPolicyResultsForHITRequest')
@@ -1976,17 +1347,13 @@ const ListReviewPolicyResultsForHITRequestSchema = z
 const ListReviewableHITsResponseSchema = z
   .object({
     NextToken: PaginationTokenSchema.exactOptional(),
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of HITs on this page in the filtered results list, equivalent to the number of HITs being returned by this call. ',
-        }),
-    ).exactOptional(),
-    HITs: HITListSchema.and(
-      z.any().openapi({ description: ' The list of HIT elements returned by the query.' }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of HITs on this page in the filtered results list, equivalent to the number of HITs being returned by this call. ',
+    }),
+    HITs: HITListSchema.exactOptional().openapi({
+      description: ' The list of HIT elements returned by the query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReviewableHITsResponse')
@@ -1995,40 +1362,30 @@ const ReviewableHITStatusSchema = z.enum(['Reviewable', 'Reviewing']).openapi('R
 
 const ListReviewableHITsRequestSchema = z
   .object({
-    HITTypeId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the HIT type of the HITs to consider for the query. If not specified, all HITs for the Reviewer are considered ',
-        }),
-    ).exactOptional(),
-    Status: ReviewableHITStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Can be either <code>Reviewable</code> or <code>Reviewing</code>. Reviewable is the default value. ',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination Token' }),
-    ).exactOptional(),
-    MaxResults: ResultSizeSchema.and(
-      z.any().openapi({ description: ' Limit the number of results returned. ' }),
-    ).exactOptional(),
+    HITTypeId: EntityIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the HIT type of the HITs to consider for the query. If not specified, all HITs for the Reviewer are considered ',
+    }),
+    Status: ReviewableHITStatusSchema.exactOptional().openapi({
+      description:
+        ' Can be either <code>Reviewable</code> or <code>Reviewing</code>. Reviewable is the default value. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination Token' }),
+    MaxResults: ResultSizeSchema.exactOptional().openapi({
+      description: ' Limit the number of results returned. ',
+    }),
   })
   .openapi({ title: 'ListReviewableHITsRequest', required: [] })
   .openapi('ListReviewableHITsRequest')
 
 const WorkerBlockSchema = z
   .object({
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Worker who accepted the HIT.' }),
-    ).exactOptional(),
-    Reason: StringSchema.and(
-      z.any().openapi({ description: ' A message explaining the reason the Worker was blocked. ' }),
-    ).exactOptional(),
+    WorkerId: CustomerIdSchema.exactOptional().openapi({
+      description: ' The ID of the Worker who accepted the HIT.',
+    }),
+    Reason: StringSchema.exactOptional().openapi({
+      description: ' A message explaining the reason the Worker was blocked. ',
+    }),
   })
   .openapi({
     description:
@@ -2042,31 +1399,21 @@ const WorkerBlockListSchema = z.array(WorkerBlockSchema).openapi('WorkerBlockLis
 const ListWorkerBlocksResponseSchema = z
   .object({
     NextToken: PaginationTokenSchema.exactOptional(),
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of assignments on the page in the filtered results list, equivalent to the number of assignments returned by this call.',
-        }),
-    ).exactOptional(),
-    WorkerBlocks: WorkerBlockListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of WorkerBlocks, containing the collection of Worker IDs and reasons for blocking.',
-        }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of assignments on the page in the filtered results list, equivalent to the number of assignments returned by this call.',
+    }),
+    WorkerBlocks: WorkerBlockListSchema.exactOptional().openapi({
+      description:
+        ' The list of WorkerBlocks, containing the collection of Worker IDs and reasons for blocking.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWorkerBlocksResponse')
 
 const ListWorkerBlocksRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token' }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination token' }),
     MaxResults: ResultSizeSchema.exactOptional(),
   })
   .openapi({ title: 'ListWorkerBlocksRequest', required: [] })
@@ -2077,46 +1424,30 @@ const QualificationListSchema = z.array(QualificationSchema).openapi('Qualificat
 const ListWorkersWithQualificationTypeResponseSchema = z
   .object({
     NextToken: PaginationTokenSchema.exactOptional(),
-    NumResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of Qualifications on this page in the filtered results list, equivalent to the number of Qualifications being returned by this call.',
-        }),
-    ).exactOptional(),
-    Qualifications: QualificationListSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The list of Qualification elements returned by this call. ' }),
-    ).exactOptional(),
+    NumResults: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of Qualifications on this page in the filtered results list, equivalent to the number of Qualifications being returned by this call.',
+    }),
+    Qualifications: QualificationListSchema.exactOptional().openapi({
+      description: ' The list of Qualification elements returned by this call. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWorkersWithQualificationTypeResponse')
 
 const ListWorkersWithQualificationTypeRequestSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Qualification type of the Qualifications to return.',
-        }),
-    ),
-    Status: QualificationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status of the Qualifications to return. Can be <code>Granted | Revoked</code>. ',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination Token' }),
-    ).exactOptional(),
-    MaxResults: ResultSizeSchema.and(
-      z.any().openapi({ description: ' Limit the number of results returned. ' }),
-    ).exactOptional(),
+    QualificationTypeId: EntityIdSchema.openapi({
+      description: 'The ID of the Qualification type of the Qualifications to return.',
+    }),
+    Status: QualificationStatusSchema.exactOptional().openapi({
+      description:
+        ' The status of the Qualifications to return. Can be <code>Granted | Revoked</code>. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({ description: 'Pagination Token' }),
+    MaxResults: ResultSizeSchema.exactOptional().openapi({
+      description: ' Limit the number of results returned. ',
+    }),
   })
   .openapi({ required: ['QualificationTypeId'], title: 'ListWorkersWithQualificationTypeRequest' })
   .openapi('ListWorkersWithQualificationTypeRequest')
@@ -2127,19 +1458,13 @@ const NotifyWorkersFailureCodeSchema = z
 
 const NotifyWorkersFailureStatusSchema = z
   .object({
-    NotifyWorkersFailureCode: NotifyWorkersFailureCodeSchema.and(
-      z.any().openapi({ description: ' Encoded value for the failure type. ' }),
-    ).exactOptional(),
-    NotifyWorkersFailureMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A message detailing the reason the Worker could not be notified. ',
-        }),
-    ).exactOptional(),
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Worker.' }),
-    ).exactOptional(),
+    NotifyWorkersFailureCode: NotifyWorkersFailureCodeSchema.exactOptional().openapi({
+      description: ' Encoded value for the failure type. ',
+    }),
+    NotifyWorkersFailureMessage: StringSchema.exactOptional().openapi({
+      description: ' A message detailing the reason the Worker could not be notified. ',
+    }),
+    WorkerId: CustomerIdSchema.exactOptional().openapi({ description: ' The ID of the Worker.' }),
   })
   .openapi({
     description:
@@ -2154,14 +1479,10 @@ const NotifyWorkersFailureStatusListSchema = z
 
 const NotifyWorkersResponseSchema = z
   .object({
-    NotifyWorkersFailureStatuses: NotifyWorkersFailureStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' When MTurk sends notifications to the list of Workers, it returns back any failures it encounters in this list of NotifyWorkersFailureStatus objects. ',
-        }),
-    ).exactOptional(),
+    NotifyWorkersFailureStatuses: NotifyWorkersFailureStatusListSchema.exactOptional().openapi({
+      description:
+        ' When MTurk sends notifications to the list of Workers, it returns back any failures it encounters in this list of NotifyWorkersFailureStatus objects. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('NotifyWorkersResponse')
@@ -2170,117 +1491,77 @@ const CustomerIdListSchema = z.array(CustomerIdSchema).openapi('CustomerIdList')
 
 const NotifyWorkersRequestSchema = z
   .object({
-    Subject: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subject line of the email message to send. Can include up to 200 characters.',
-        }),
-    ),
-    MessageText: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The text of the email message to send. Can include up to 4,096 characters',
-        }),
-    ),
-    WorkerIds: CustomerIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Worker IDs you wish to notify. You can notify upto 100 Workers at a time.',
-        }),
-    ),
+    Subject: StringSchema.openapi({
+      description:
+        'The subject line of the email message to send. Can include up to 200 characters.',
+    }),
+    MessageText: StringSchema.openapi({
+      description: 'The text of the email message to send. Can include up to 4,096 characters',
+    }),
+    WorkerIds: CustomerIdListSchema.openapi({
+      description:
+        'A list of Worker IDs you wish to notify. You can notify upto 100 Workers at a time.',
+    }),
   })
   .openapi({ required: ['Subject', 'MessageText', 'WorkerIds'], title: 'NotifyWorkersRequest' })
   .openapi('NotifyWorkersRequest')
 
-const RejectAssignmentResponseSchema = z.object({}).openapi('RejectAssignmentResponse')
+const RejectAssignmentResponseSchema = z.looseObject({}).openapi('RejectAssignmentResponse')
 
 const RejectAssignmentRequestSchema = z
   .object({
-    AssignmentId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the assignment. The assignment must correspond to a HIT created by the Requester. ',
-        }),
-    ),
-    RequesterFeedback: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A message for the Worker, which the Worker can see in the Status section of the web site. ',
-        }),
-    ),
+    AssignmentId: EntityIdSchema.openapi({
+      description:
+        ' The ID of the assignment. The assignment must correspond to a HIT created by the Requester. ',
+    }),
+    RequesterFeedback: StringSchema.openapi({
+      description:
+        ' A message for the Worker, which the Worker can see in the Status section of the web site. ',
+    }),
   })
   .openapi({ required: ['AssignmentId', 'RequesterFeedback'], title: 'RejectAssignmentRequest' })
   .openapi('RejectAssignmentRequest')
 
 const RejectQualificationRequestResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RejectQualificationRequestResponse')
 
 const RejectQualificationRequestRequestSchema = z
   .object({
-    QualificationRequestId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the Qualification request, as returned by the <code>ListQualificationRequests</code> operation. ',
-        }),
-    ),
-    Reason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A text message explaining why the request was rejected, to be shown to the Worker who made the request.',
-        }),
-    ).exactOptional(),
+    QualificationRequestId: StringSchema.openapi({
+      description:
+        ' The ID of the Qualification request, as returned by the <code>ListQualificationRequests</code> operation. ',
+    }),
+    Reason: StringSchema.exactOptional().openapi({
+      description:
+        'A text message explaining why the request was rejected, to be shown to the Worker who made the request.',
+    }),
   })
   .openapi({ required: ['QualificationRequestId'], title: 'RejectQualificationRequestRequest' })
   .openapi('RejectQualificationRequestRequest')
 
-const SendBonusResponseSchema = z.object({}).openapi('SendBonusResponse')
+const SendBonusResponseSchema = z.looseObject({}).openapi('SendBonusResponse')
 
 const SendBonusRequestSchema = z
   .object({
-    WorkerId: CustomerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Worker being paid the bonus.' }),
-    ),
-    BonusAmount: CurrencyAmountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Bonus amount is a US Dollar amount specified using a string (for example, "5" represents $5.00 USD and "101.42" represents $101.42 USD). Do not include currency symbols or currency codes. ',
-        }),
-    ),
-    AssignmentId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the assignment for which this bonus is paid.' }),
-    ),
-    Reason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message that explains the reason for the bonus payment. The Worker receiving the bonus can see this message.',
-        }),
-    ),
-    UniqueRequestToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for this request, which allows you to retry the call on error without granting multiple bonuses. This is useful in cases such as network timeouts where it is unclear whether or not the call succeeded on the server. If the bonus already exists in the system from a previous call using the same UniqueRequestToken, subsequent calls will return an error with a message containing the request ID.',
-        }),
-    ).exactOptional(),
+    WorkerId: CustomerIdSchema.openapi({
+      description: 'The ID of the Worker being paid the bonus.',
+    }),
+    BonusAmount: CurrencyAmountSchema.openapi({
+      description:
+        ' The Bonus amount is a US Dollar amount specified using a string (for example, "5" represents $5.00 USD and "101.42" represents $101.42 USD). Do not include currency symbols or currency codes. ',
+    }),
+    AssignmentId: EntityIdSchema.openapi({
+      description: 'The ID of the assignment for which this bonus is paid.',
+    }),
+    Reason: StringSchema.openapi({
+      description:
+        'A message that explains the reason for the bonus payment. The Worker receiving the bonus can see this message.',
+    }),
+    UniqueRequestToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for this request, which allows you to retry the call on error without granting multiple bonuses. This is useful in cases such as network timeouts where it is unclear whether or not the call succeeded on the server. If the bonus already exists in the system from a previous call using the same UniqueRequestToken, subsequent calls will return an error with a message containing the request ID.',
+    }),
   })
   .openapi({
     required: ['WorkerId', 'BonusAmount', 'AssignmentId', 'Reason'],
@@ -2289,7 +1570,7 @@ const SendBonusRequestSchema = z
   .openapi('SendBonusRequest')
 
 const SendTestEventNotificationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('SendTestEventNotificationResponse')
 
 const NotificationTransportSchema = z.enum(['Email', 'SQS', 'SNS']).openapi('NotificationTransport')
@@ -2315,37 +1596,21 @@ const EventTypeListSchema = z.array(EventTypeSchema).openapi('EventTypeList')
 
 const NotificationSpecificationSchema = z
   .object({
-    Destination: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The target for notification messages. The Destination’s format is determined by the specified Transport: </p> <ul> <li> <p>When Transport is Email, the Destination is your email address.</p> </li> <li> <p>When Transport is SQS, the Destination is your queue URL.</p> </li> <li> <p>When Transport is SNS, the Destination is the ARN of your topic.</p> </li> </ul>',
-        }),
-    ),
-    Transport: NotificationTransportSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The method Amazon Mechanical Turk uses to send the notification. Valid Values: Email | SQS | SNS. ',
-        }),
-    ),
-    Version: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the Notification API to use. Valid value is 2006-05-05.',
-        }),
-    ),
-    EventTypes: EventTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of events that should cause notifications to be sent. Valid Values: AssignmentAccepted | AssignmentAbandoned | AssignmentReturned | AssignmentSubmitted | AssignmentRejected | AssignmentApproved | HITCreated | HITExtended | HITDisposed | HITReviewable | HITExpired | Ping. The Ping event is only valid for the SendTestEventNotification operation. ',
-        }),
-    ),
+    Destination: StringSchema.openapi({
+      description:
+        '<p> The target for notification messages. The Destination’s format is determined by the specified Transport: </p> <ul> <li> <p>When Transport is Email, the Destination is your email address.</p> </li> <li> <p>When Transport is SQS, the Destination is your queue URL.</p> </li> <li> <p>When Transport is SNS, the Destination is the ARN of your topic.</p> </li> </ul>',
+    }),
+    Transport: NotificationTransportSchema.openapi({
+      description:
+        ' The method Amazon Mechanical Turk uses to send the notification. Valid Values: Email | SQS | SNS. ',
+    }),
+    Version: StringSchema.openapi({
+      description: 'The version of the Notification API to use. Valid value is 2006-05-05.',
+    }),
+    EventTypes: EventTypeListSchema.openapi({
+      description:
+        ' The list of events that should cause notifications to be sent. Valid Values: AssignmentAccepted | AssignmentAbandoned | AssignmentReturned | AssignmentSubmitted | AssignmentRejected | AssignmentApproved | HITCreated | HITExtended | HITDisposed | HITReviewable | HITExpired | Ping. The Ping event is only valid for the SendTestEventNotification operation. ',
+    }),
   })
   .openapi({
     required: ['Destination', 'Transport', 'Version', 'EventTypes'],
@@ -2356,22 +1621,14 @@ const NotificationSpecificationSchema = z
 
 const SendTestEventNotificationRequestSchema = z
   .object({
-    Notification: NotificationSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The notification specification to test. This value is identical to the value you would provide to the UpdateNotificationSettings operation when you establish the notification specification for a HIT type. ',
-        }),
-    ),
-    TestEventType: EventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The event to simulate to test the notification specification. This event is included in the test message even if the notification specification does not include the event type. The notification specification does not filter out the test event. ',
-        }),
-    ),
+    Notification: NotificationSpecificationSchema.openapi({
+      description:
+        ' The notification specification to test. This value is identical to the value you would provide to the UpdateNotificationSettings operation when you establish the notification specification for a HIT type. ',
+    }),
+    TestEventType: EventTypeSchema.openapi({
+      description:
+        ' The event to simulate to test the notification specification. This event is included in the test message even if the notification specification does not include the event type. The notification specification does not filter out the test event. ',
+    }),
   })
   .openapi({
     required: ['Notification', 'TestEventType'],
@@ -2379,144 +1636,109 @@ const SendTestEventNotificationRequestSchema = z
   })
   .openapi('SendTestEventNotificationRequest')
 
-const UpdateExpirationForHITResponseSchema = z.object({}).openapi('UpdateExpirationForHITResponse')
+const UpdateExpirationForHITResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateExpirationForHITResponse')
 
 const UpdateExpirationForHITRequestSchema = z
   .object({
-    HITId: EntityIdSchema.and(z.any().openapi({ description: ' The HIT to update. ' })),
-    ExpireAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The date and time at which you want the HIT to expire ' }),
-    ),
+    HITId: EntityIdSchema.openapi({ description: ' The HIT to update. ' }),
+    ExpireAt: TimestampSchema.openapi({
+      description: ' The date and time at which you want the HIT to expire ',
+    }),
   })
   .openapi({ required: ['HITId', 'ExpireAt'], title: 'UpdateExpirationForHITRequest' })
   .openapi('UpdateExpirationForHITRequest')
 
-const UpdateHITReviewStatusResponseSchema = z.object({}).openapi('UpdateHITReviewStatusResponse')
+const UpdateHITReviewStatusResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateHITReviewStatusResponse')
 
 const UpdateHITReviewStatusRequestSchema = z
   .object({
-    HITId: EntityIdSchema.and(z.any().openapi({ description: ' The ID of the HIT to update. ' })),
-    Revert: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Specifies how to update the HIT status. Default is <code>False</code>. </p> <ul> <li> <p> Setting this to false will only transition a HIT from <code>Reviewable</code> to <code>Reviewing</code> </p> </li> <li> <p> Setting this to true will only transition a HIT from <code>Reviewing</code> to <code>Reviewable</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    HITId: EntityIdSchema.openapi({ description: ' The ID of the HIT to update. ' }),
+    Revert: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p> Specifies how to update the HIT status. Default is <code>False</code>. </p> <ul> <li> <p> Setting this to false will only transition a HIT from <code>Reviewable</code> to <code>Reviewing</code> </p> </li> <li> <p> Setting this to true will only transition a HIT from <code>Reviewing</code> to <code>Reviewable</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['HITId'], title: 'UpdateHITReviewStatusRequest' })
   .openapi('UpdateHITReviewStatusRequest')
 
-const UpdateHITTypeOfHITResponseSchema = z.object({}).openapi('UpdateHITTypeOfHITResponse')
+const UpdateHITTypeOfHITResponseSchema = z.looseObject({}).openapi('UpdateHITTypeOfHITResponse')
 
 const UpdateHITTypeOfHITRequestSchema = z
   .object({
-    HITId: EntityIdSchema.and(z.any().openapi({ description: 'The HIT to update.' })),
-    HITTypeId: EntityIdSchema.and(z.any().openapi({ description: 'The ID of the new HIT type.' })),
+    HITId: EntityIdSchema.openapi({ description: 'The HIT to update.' }),
+    HITTypeId: EntityIdSchema.openapi({ description: 'The ID of the new HIT type.' }),
   })
   .openapi({ required: ['HITId', 'HITTypeId'], title: 'UpdateHITTypeOfHITRequest' })
   .openapi('UpdateHITTypeOfHITRequest')
 
 const UpdateNotificationSettingsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateNotificationSettingsResponse')
 
 const UpdateNotificationSettingsRequestSchema = z
   .object({
-    HITTypeId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the HIT type whose notification specification is being updated. ',
-        }),
-    ),
-    Notification: NotificationSpecificationSchema.and(
-      z.any().openapi({ description: ' The notification specification for the HIT type. ' }),
-    ).exactOptional(),
-    Active: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether notifications are sent for HITs of this HIT type, according to the notification specification. You must specify either the Notification parameter or the Active parameter for the call to UpdateNotificationSettings to succeed. ',
-        }),
-    ).exactOptional(),
+    HITTypeId: EntityIdSchema.openapi({
+      description: ' The ID of the HIT type whose notification specification is being updated. ',
+    }),
+    Notification: NotificationSpecificationSchema.exactOptional().openapi({
+      description: ' The notification specification for the HIT type. ',
+    }),
+    Active: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Specifies whether notifications are sent for HITs of this HIT type, according to the notification specification. You must specify either the Notification parameter or the Active parameter for the call to UpdateNotificationSettings to succeed. ',
+    }),
   })
   .openapi({ required: ['HITTypeId'], title: 'UpdateNotificationSettingsRequest' })
   .openapi('UpdateNotificationSettingsRequest')
 
 const UpdateQualificationTypeResponseSchema = z
   .object({
-    QualificationType: QualificationTypeSchema.and(
-      z.any().openapi({ description: ' Contains a QualificationType data structure.' }),
-    ).exactOptional(),
+    QualificationType: QualificationTypeSchema.exactOptional().openapi({
+      description: ' Contains a QualificationType data structure.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateQualificationTypeResponse')
 
 const UpdateQualificationTypeRequestSchema = z
   .object({
-    QualificationTypeId: EntityIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Qualification type to update.' }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The new description of the Qualification type.' }),
-    ).exactOptional(),
-    QualificationTypeStatus: QualificationTypeStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The new status of the Qualification type - Active | Inactive' }),
-    ).exactOptional(),
-    Test: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The questions for the Qualification test a Worker must answer correctly to obtain a Qualification of this type. If this parameter is specified, <code>TestDurationInSeconds</code> must also be specified.</p> <p>Constraints: Must not be longer than 65535 bytes. Must be a QuestionForm data structure. This parameter cannot be specified if AutoGranted is true.</p> <p>Constraints: None. If not specified, the Worker may request the Qualification without answering any questions.</p>',
-        }),
-    ).exactOptional(),
-    AnswerKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The answers to the Qualification test specified in the Test parameter, in the form of an AnswerKey data structure.',
-        }),
-    ).exactOptional(),
-    TestDurationInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of seconds the Worker has to complete the Qualification test, starting from the time the Worker requests the Qualification.',
-        }),
-    ).exactOptional(),
-    RetryDelayInSeconds: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time, in seconds, that Workers must wait after requesting a Qualification of the specified Qualification type before they can retry the Qualification request. It is not possible to disable retries for a Qualification type after it has been created with retries enabled. If you want to disable retries, you must dispose of the existing retry-enabled Qualification type using DisposeQualificationType and then create a new Qualification type with retries disabled using CreateQualificationType.',
-        }),
-    ).exactOptional(),
-    AutoGranted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test.</p> <p>Constraints: If the Test parameter is specified, this parameter cannot be true.</p>',
-        }),
-    ).exactOptional(),
-    AutoGrantedValue: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Qualification value to use for automatically granted Qualifications. This parameter is used only if the AutoGranted parameter is true.',
-        }),
-    ).exactOptional(),
+    QualificationTypeId: EntityIdSchema.openapi({
+      description: 'The ID of the Qualification type to update.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The new description of the Qualification type.',
+    }),
+    QualificationTypeStatus: QualificationTypeStatusSchema.exactOptional().openapi({
+      description: 'The new status of the Qualification type - Active | Inactive',
+    }),
+    Test: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The questions for the Qualification test a Worker must answer correctly to obtain a Qualification of this type. If this parameter is specified, <code>TestDurationInSeconds</code> must also be specified.</p> <p>Constraints: Must not be longer than 65535 bytes. Must be a QuestionForm data structure. This parameter cannot be specified if AutoGranted is true.</p> <p>Constraints: None. If not specified, the Worker may request the Qualification without answering any questions.</p>',
+    }),
+    AnswerKey: StringSchema.exactOptional().openapi({
+      description:
+        'The answers to the Qualification test specified in the Test parameter, in the form of an AnswerKey data structure.',
+    }),
+    TestDurationInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        'The number of seconds the Worker has to complete the Qualification test, starting from the time the Worker requests the Qualification.',
+    }),
+    RetryDelayInSeconds: LongSchema.exactOptional().openapi({
+      description:
+        'The amount of time, in seconds, that Workers must wait after requesting a Qualification of the specified Qualification type before they can retry the Qualification request. It is not possible to disable retries for a Qualification type after it has been created with retries enabled. If you want to disable retries, you must dispose of the existing retry-enabled Qualification type using DisposeQualificationType and then create a new Qualification type with retries disabled using CreateQualificationType.',
+    }),
+    AutoGranted: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether requests for the Qualification type are granted immediately, without prompting the Worker with a Qualification test.</p> <p>Constraints: If the Test parameter is specified, this parameter cannot be true.</p>',
+    }),
+    AutoGrantedValue: IntegerSchema.exactOptional().openapi({
+      description:
+        'The Qualification value to use for automatically granted Qualifications. This parameter is used only if the AutoGranted parameter is true.',
+    }),
   })
   .openapi({ required: ['QualificationTypeId'], title: 'UpdateQualificationTypeRequest' })
   .openapi('UpdateQualificationTypeRequest')

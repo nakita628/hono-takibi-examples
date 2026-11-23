@@ -175,12 +175,36 @@ const NangoToolFunctionSchema = z
   })
   .openapi('NangoToolFunction')
 
-const ProviderTemplateFunctionSchema = z
-  .xor([NangoSyncFunctionSchema, NangoActionFunctionSchema])
-  .openapi({
-    description:
-      'A sync template or catalog tool definition (no deployment metadata). Catalog tool templates currently use deprecated action definitions.',
+const ProviderTemplateToolFunctionSchema = z
+  .object({
+    name: z.string(),
+    type: z.literal('tool'),
+    description: z.string(),
+    scopes: z.array(z.string()).exactOptional(),
+    input_json_schema: z
+      .looseObject({})
+      .nullable()
+      .openapi({
+        description:
+          'Input JSON Schema with its referenced definitions, or null when absent or unresolved.',
+      }),
+    output_json_schema: z
+      .looseObject({})
+      .nullable()
+      .openapi({
+        description:
+          'Output JSON Schema with its referenced definitions, or null when absent or unresolved.',
+      }),
   })
+  .openapi({
+    description: 'A catalog tool definition.',
+    required: ['name', 'type', 'description', 'input_json_schema', 'output_json_schema'],
+  })
+  .openapi('ProviderTemplateToolFunction')
+
+const ProviderTemplateFunctionSchema = z
+  .xor([NangoSyncFunctionSchema, NangoActionFunctionSchema, ProviderTemplateToolFunctionSchema])
+  .openapi({ description: 'A sync template or catalog tool definition (no deployment metadata).' })
   .openapi('ProviderTemplateFunction')
 
 const ListedNangoFunctionSchema = z
@@ -750,19 +774,49 @@ const IntegrationCredentialsWithConfigSchema = z
   })
   .openapi('IntegrationCredentialsWithConfig')
 
-const IntegrationFullSchema = IntegrationSchema.and(
-  z
-    .strictObject({
-      webhook_url: z
-        .union([z.string(), z.null().nullable()])
-        .exactOptional()
-        .openapi({ description: 'Configure your integration webhooks to point to this URL' }),
-      credentials: z
-        .union([IntegrationCredentialsWithConfigSchema, z.null().nullable()])
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('IntegrationFull')
+const IntegrationFullSchema = (() => {
+  const Schema = IntegrationSchema.and(
+    z
+      .strictObject({
+        webhook_url: z
+          .union([z.string(), z.null().nullable()])
+          .exactOptional()
+          .openapi({ description: 'Configure your integration webhooks to point to this URL' }),
+        credentials: z
+          .union([IntegrationCredentialsWithConfigSchema, z.null().nullable()])
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'unique_key',
+            'display_name',
+            'provider',
+            'logo',
+            'created_at',
+            'updated_at',
+            'forward_webhooks',
+            'missing_fields',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['webhook_url', 'credentials'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('IntegrationFull')
 
 const TagsSchema = z
   .record(z.string(), z.string().max(255))
@@ -913,9 +967,28 @@ const OAuth1CredentialsSchema = z
   .openapi({ title: 'OAuth1', required: ['oauth_token', 'oauth_token_secret', 'type'] })
   .openapi('OAuth1Credentials')
 
-const OAuth1CredentialsWithRawSchema = OAuth1CredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const OAuth1CredentialsWithRawSchema = (() => {
+  const Schema = OAuth1CredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['oauth_token', 'oauth_token_secret', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'OAuth1' })
   .openapi('OAuth1CredentialsWithRaw')
 
@@ -936,9 +1009,30 @@ const OAuth2CredentialsSchema = z
   .openapi({ title: 'OAuth2', required: ['access_token', 'type'] })
   .openapi('OAuth2Credentials')
 
-const OAuth2CredentialsWithRawSchema = OAuth2CredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const OAuth2CredentialsWithRawSchema = (() => {
+  const Schema = OAuth2CredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          !['access_token', 'config_override', 'expires_at', 'refresh_token', 'type'].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'OAuth2' })
   .openapi('OAuth2CredentialsWithRaw')
 
@@ -990,9 +1084,28 @@ const OAuth2ClientCredentialsSchema = z
   .openapi({ title: 'OAuth2 Client', required: ['client_id', 'client_secret', 'token', 'type'] })
   .openapi('OAuth2ClientCredentials')
 
-const OAuth2ClientCredentialsWithRawSchema = OAuth2ClientCredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const OAuth2ClientCredentialsWithRawSchema = (() => {
+  const Schema = OAuth2ClientCredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['client_id', 'client_secret', 'expires_at', 'token', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'OAuth2 Client' })
   .openapi('OAuth2ClientCredentialsWithRaw')
 
@@ -1006,9 +1119,28 @@ const AppStoreCredentialsSchema = z
   .openapi({ title: 'App Store', required: ['access_token', 'private_key'] })
   .openapi('AppStoreCredentials')
 
-const AppStoreCredentialsWithRawSchema = AppStoreCredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const AppStoreCredentialsWithRawSchema = (() => {
+  const Schema = AppStoreCredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['access_token', 'expires_at', 'private_key', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'App Store' })
   .openapi('AppStoreCredentialsWithRaw')
 
@@ -1054,9 +1186,39 @@ const BillCredentialsSchema = z
   })
   .openapi('BillCredentials')
 
-const BillCredentialsWithRawSchema = BillCredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const BillCredentialsWithRawSchema = (() => {
+  const Schema = BillCredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'dev_key',
+            'expires_at',
+            'organization_id',
+            'password',
+            'session_id',
+            'type',
+            'user_id',
+            'username',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'Bill' })
   .openapi('BillCredentialsWithRaw')
 
@@ -4908,7 +5070,7 @@ export const getActionActionIdRoute = createRoute({
   path: '/action/{actionId}',
   summary: 'Get action result (deprecated)',
   description:
-    'Retrieves the result of an asynchronous action. See [Asynchronous action documentation](/guides/functions/action-functions#trigger-asynchronously) for more details.',
+    'Retrieves the result of an asynchronous action. See [Asynchronous action documentation](/guides/platform/functions/action-functions#trigger-asynchronously) for more details.',
   request: {
     params: z.object({
       actionId: z
@@ -5175,7 +5337,7 @@ export const postActionTriggerRoute = createRoute({
             required: false,
             schema: { type: 'boolean' },
             description:
-              'Set to true to trigger the action asynchronously. When true, the response will include a status URL and ID for retrieving the action result later. See [Asynchronous action documentation](/guides/functions/action-functions#trigger-asynchronously) for more details.',
+              'Set to true to trigger the action asynchronously. When true, the response will include a status URL and ID for retrieving the action result later. See [Asynchronous action documentation](/guides/platform/functions/action-functions#trigger-asynchronously) for more details.',
           },
         }),
       'X-Max-Retries': z
@@ -5305,7 +5467,10 @@ export const postActionTriggerRoute = createRoute({
                           }
                         })
                         .exactOptional()
-                        .openapi({ required: [] }),
+                        .openapi({
+                          ...{ patternProperties: { '^x-rate': { type: 'string' } } },
+                          required: [],
+                        }),
                       body: z.looseObject({}).exactOptional(),
                     })
                     .exactOptional()
@@ -5436,7 +5601,7 @@ export const postEnvironmentsRoute = createRoute({
                 .openapi({
                   deprecated: true,
                   description:
-                    'Legacy public-key authorization HMAC key. Use [Connect sessions](/guides/auth/auth-guide#guide) instead.',
+                    'Legacy public-key authorization HMAC key. Use [Connect sessions](/guides/auth/setup#generate-session-token) instead.',
                 }),
               hmac_enabled: z
                 .boolean()
@@ -5444,7 +5609,7 @@ export const postEnvironmentsRoute = createRoute({
                 .openapi({
                   deprecated: true,
                   description:
-                    'Whether legacy public-key authorization HMAC verification is enabled. Use [Connect sessions](/guides/auth/auth-guide#guide) instead.',
+                    'Whether legacy public-key authorization HMAC verification is enabled. Use [Connect sessions](/guides/auth/setup#generate-session-token) instead.',
                 }),
               slack_notifications: z
                 .boolean()

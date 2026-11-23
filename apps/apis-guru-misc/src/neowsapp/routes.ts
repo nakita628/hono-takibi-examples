@@ -205,7 +205,10 @@ const NearEarthObjectSchema = z
 const NearEarthObjectListSchema = z
   .object({
     element_count: z.int32().exactOptional().openapi({ description: 'Number of NEOs in list' }),
-    links: z.object({}).exactOptional().openapi({ description: 'Hypermedia links to collection' }),
+    links: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Hypermedia links to collection' }),
     near_earth_objects: HashMapStringListNearEarthObjectSchema.exactOptional().openapi({
       description: 'A collection of NearEarthObjects',
     }),
@@ -293,7 +296,7 @@ const SentryImpactRiskObjectSchema = z
 
 const SentryObjectPagingDtoSchema = z
   .object({
-    links: z.object({}).exactOptional(),
+    links: z.looseObject({}).exactOptional(),
     page: PageMetaDataSchema.exactOptional(),
     sentry_objects: z.array(SentryImpactRiskObjectSchema).exactOptional(),
   })
@@ -303,7 +306,7 @@ const SentryObjectPagingDtoSchema = z
 const URLSchema = z
   .object({
     authority: z.string().exactOptional(),
-    content: z.object({}).exactOptional(),
+    content: z.looseObject({}).exactOptional(),
     defaultPort: z.int32().exactOptional(),
     file: z.string().exactOptional(),
     host: z.string().exactOptional(),

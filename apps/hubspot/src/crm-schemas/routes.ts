@@ -1042,14 +1042,38 @@ const Oauth2SecurityScheme = {
         'crm.objects.custom.write': '',
         'crm.schemas.custom.read': '',
         'crm.schemas.custom.write': '',
+        oauth: '',
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.objects.custom.highly_sensitive.read.v2': { portal: ['private'], developer: false },
+    'crm.objects.custom.highly_sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.custom.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: true,
+    },
+    'crm.objects.custom.sensitive.read.v2': { portal: ['private'], developer: false },
+    'crm.objects.custom.sensitive.write.v2': { portal: ['private'], developer: false },
+    'crm.objects.custom.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: true,
+    },
+    'crm.schemas.custom.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: true,
+    },
+    'crm.schemas.custom.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: true,
+    },
+    oauth: { portal: ['public', 'private'], user: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCrmObjectSchemas202609SchemasRoute = createRoute({
   method: 'get',
@@ -1141,8 +1165,8 @@ export const getCrmObjectSchemas202609SchemasRoute = createRoute({
   security: [
     { oauth2: ['crm.schemas.custom.read'] },
     { oauth2: ['crm.objects.custom.sensitive.read.v2'] },
-    { oauth2: ['crm.objects.custom.read'] },
     { oauth2: ['crm.objects.custom.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.custom.read'] },
   ],
 })
 
@@ -1164,18 +1188,14 @@ export const postCrmObjectSchemas202609SchemasRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: ObjectSchemaSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -1212,8 +1232,9 @@ export const postCrmObjectSchemas202609SchemasBatchReadRoute = createRoute({
   security: [
     { oauth2: ['crm.schemas.custom.read'] },
     { oauth2: ['crm.objects.custom.sensitive.read.v2'] },
-    { oauth2: ['crm.objects.custom.read'] },
     { oauth2: ['crm.objects.custom.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.custom.read'] },
+    { oauth2: ['oauth'] },
   ],
 })
 
@@ -1307,8 +1328,9 @@ export const getCrmObjectSchemas202609SchemasObjectTypeRoute = createRoute({
   security: [
     { oauth2: ['crm.schemas.custom.read'] },
     { oauth2: ['crm.objects.custom.sensitive.read.v2'] },
-    { oauth2: ['crm.objects.custom.read'] },
     { oauth2: ['crm.objects.custom.highly_sensitive.read.v2'] },
+    { oauth2: ['crm.objects.custom.read'] },
+    { oauth2: ['oauth'] },
   ],
 })
 
@@ -1438,18 +1460,14 @@ export const postCrmObjectSchemas202609SchemasObjectTypeAssociationsRoute = crea
       description: 'successful operation',
       content: { 'application/json': { schema: AssociationDefinitionSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

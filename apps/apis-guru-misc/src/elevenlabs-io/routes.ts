@@ -322,7 +322,7 @@ const HistoryItemResponseModelSchema = z
     feedback: FeedbackResponseModelSchema,
     history_item_id: z.string().openapi({ title: 'History Item Id' }),
     request_id: z.string().openapi({ title: 'Request Id' }),
-    settings: z.object({}).openapi({ title: 'Settings' }),
+    settings: z.looseObject({}).openapi({ title: 'Settings' }),
     state: z.enum(['created', 'deleted', 'processing']).openapi({ title: 'State' }),
     text: z.string().openapi({ title: 'Text' }),
     voice_id: z.string().openapi({ title: 'Voice Id' }),

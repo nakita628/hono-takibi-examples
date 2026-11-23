@@ -1,0 +1,8484 @@
+import { createQuery, createMutation, queryOptions, mutationOptions } from '@tanstack/svelte-query'
+import type {
+  CreateQueryOptions,
+  CreateMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/svelte-query'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getBatchesKey() {
+  return ['batches'] as const
+}
+
+export function getDumpsKey() {
+  return ['dumps'] as const
+}
+
+export function getExperimentalFeaturesKey() {
+  return ['experimental-features'] as const
+}
+
+export function getHealthKey() {
+  return ['health'] as const
+}
+
+export function getIndexesKey() {
+  return ['indexes'] as const
+}
+
+export function getKeysKey() {
+  return ['keys'] as const
+}
+
+export function getLogsKey() {
+  return ['logs'] as const
+}
+
+export function getMetricsKey() {
+  return ['metrics'] as const
+}
+
+export function getMultiSearchKey() {
+  return ['multi-search'] as const
+}
+
+export function getNetworkKey() {
+  return ['network'] as const
+}
+
+export function getSnapshotsKey() {
+  return ['snapshots'] as const
+}
+
+export function getStatsKey() {
+  return ['stats'] as const
+}
+
+export function getSwapIndexesKey() {
+  return ['swap-indexes'] as const
+}
+
+export function getTasksKey() {
+  return ['tasks'] as const
+}
+
+export function getVersionKey() {
+  return ['version'] as const
+}
+
+export function getBatchesQueryKey(args: InferRequestType<typeof client.batches.$get>) {
+  return ['batches', '/batches', args] as const
+}
+
+export function getBatchesQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.batches.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.batches.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.batches.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getBatchesQueryKey>
+  >({
+    queryKey: getBatchesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.batches.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createBatches<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.batches.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.batches.$get>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.batches.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getBatchesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getBatchesQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getBatchesBatchUidQueryKey(
+  args: InferRequestType<(typeof client.batches)[':batchUid']['$get']>,
+) {
+  return ['batches', '/batches/:batchUid', args] as const
+}
+
+export function getBatchesBatchUidQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.batches)[':batchUid']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.batches)[':batchUid']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.batches)[':batchUid']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getBatchesBatchUidQueryKey>
+  >({
+    queryKey: getBatchesBatchUidQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.batches[':batchUid'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createBatchesBatchUid<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.batches)[':batchUid']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.batches)[':batchUid']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client.batches)[':batchUid']['$get']>>>
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getBatchesBatchUidQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getBatchesBatchUidQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostDumpsMutationKey() {
+  return ['dumps', '/dumps', 'POST'] as const
+}
+
+export function getPostDumpsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.dumps.$post>>>>>,
+    TError,
+    void,
+    TOnMutateResult
+  >({
+    mutationKey: getPostDumpsMutationKey(),
+    async mutationFn() {
+      return parseResponse(client.dumps.$post(undefined, options))
+    },
+  })
+}
+
+export function createPostDumps<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.dumps.$post>>>>>,
+        TError,
+        void,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostDumpsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getExperimentalFeaturesQueryKey() {
+  return ['experimental-features', '/experimental-features'] as const
+}
+
+export function getExperimentalFeaturesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['experimental-features']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['experimental-features']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getExperimentalFeaturesQueryKey>
+  >({
+    queryKey: getExperimentalFeaturesQueryKey(),
+    queryFn({ signal }) {
+      return parseResponse(
+        client['experimental-features'].$get(undefined, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createExperimentalFeatures<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['experimental-features']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client)['experimental-features']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getExperimentalFeaturesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getExperimentalFeaturesQueryOptions<TData, TError>(clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPatchExperimentalFeaturesMutationKey() {
+  return ['experimental-features', '/experimental-features', 'PATCH'] as const
+}
+
+export function getPatchExperimentalFeaturesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)['experimental-features']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    void,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchExperimentalFeaturesMutationKey(),
+    async mutationFn() {
+      return parseResponse(client['experimental-features'].$patch(undefined, options))
+    },
+  })
+}
+
+export function createPatchExperimentalFeatures<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client)['experimental-features']['$patch']>>
+            >
+          >
+        >,
+        TError,
+        void,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchExperimentalFeaturesMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getHealthQueryKey() {
+  return ['health', '/health'] as const
+}
+
+export function getHealthQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.health.$get>>>>>,
+  TError = DefaultError,
+>(options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.health.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getHealthQueryKey>
+  >({
+    queryKey: getHealthQueryKey(),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.health.$get(undefined, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createHealth<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.health.$get>>>>>,
+  TError = DefaultError,
+>(
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.health.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getHealthQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getHealthQueryOptions<TData, TError>(clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getIndexesQueryKey(args: InferRequestType<typeof client.indexes.$get>) {
+  return ['indexes', '/indexes', args] as const
+}
+
+export function getIndexesQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.indexes.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.indexes.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.indexes.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesQueryKey>
+  >({
+    queryKey: getIndexesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createIndexes<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.indexes.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.indexes.$get>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.indexes.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getIndexesQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostIndexesMutationKey() {
+  return ['indexes', '/indexes', 'POST'] as const
+}
+
+export function getPostIndexesMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.indexes.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.indexes.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.indexes.$post>) {
+      return parseResponse(client.indexes.$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexes<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.indexes.$post>>>>>,
+        TError,
+        InferRequestType<typeof client.indexes.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid', args] as const
+}
+
+export function getIndexesIndexUidQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.indexes)[':indexUid']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.indexes)[':indexUid']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidQueryKey>
+  >({
+    queryKey: getIndexesIndexUidQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUid<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.indexes)[':indexUid']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.indexes)[':indexUid']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client.indexes)[':indexUid']['$get']>>>
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getIndexesIndexUidQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidMutationKey() {
+  return ['indexes', '/indexes/:indexUid', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.indexes)[':indexUid']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.indexes)[':indexUid']['$delete']>) {
+      return parseResponse(client.indexes[':indexUid'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUid<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['$delete']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchIndexesIndexUidMutationKey() {
+  return ['indexes', '/indexes/:indexUid', 'PATCH'] as const
+}
+
+export function getPatchIndexesIndexUidMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.indexes)[':indexUid']['$patch']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchIndexesIndexUidMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.indexes)[':indexUid']['$patch']>) {
+      return parseResponse(client.indexes[':indexUid'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchIndexesIndexUid<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['$patch']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['$patch']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchIndexesIndexUidMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostIndexesIndexUidDeleteBatchMutationKey() {
+  return ['indexes', '/indexes/:indexUid/delete-batch', 'POST'] as const
+}
+
+export function getPostIndexesIndexUidDeleteBatchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['delete-batch']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['delete-batch']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesIndexUidDeleteBatchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['delete-batch']['$post']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid']['delete-batch'].$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexesIndexUidDeleteBatch<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['delete-batch']['$post']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['delete-batch']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesIndexUidDeleteBatchMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidDocumentsQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/documents', args] as const
+}
+
+export function getIndexesIndexUidDocumentsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidDocumentsQueryKey>
+  >({
+    queryKey: getIndexesIndexUidDocumentsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].documents.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidDocuments<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidDocumentsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidDocumentsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidDocumentsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/documents', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidDocumentsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$put']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidDocumentsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$put']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].documents.$put(args, options))
+    },
+  })
+}
+
+export function createPutIndexesIndexUidDocuments<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$put']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$put']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidDocumentsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostIndexesIndexUidDocumentsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/documents', 'POST'] as const
+}
+
+export function getPostIndexesIndexUidDocumentsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesIndexUidDocumentsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$post']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].documents.$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexesIndexUidDocuments<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$post']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesIndexUidDocumentsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidDocumentsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/documents', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidDocumentsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidDocumentsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$delete']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].documents.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidDocuments<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['$delete']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['documents']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidDocumentsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostIndexesIndexUidDocumentsDeleteMutationKey() {
+  return ['indexes', '/indexes/:indexUid/documents/delete', 'POST'] as const
+}
+
+export function getPostIndexesIndexUidDocumentsDeleteMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['delete']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['documents']['delete']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesIndexUidDocumentsDeleteMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['documents']['delete']['$post']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].documents.delete.$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexesIndexUidDocumentsDelete<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['documents']['delete']['$post']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['documents']['delete']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesIndexUidDocumentsDeleteMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostIndexesIndexUidDocumentsEditMutationKey() {
+  return ['indexes', '/indexes/:indexUid/documents/edit', 'POST'] as const
+}
+
+export function getPostIndexesIndexUidDocumentsEditMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['edit']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['documents']['edit']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesIndexUidDocumentsEditMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['documents']['edit']['$post']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].documents.edit.$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexesIndexUidDocumentsEdit<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['documents']['edit']['$post']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['documents']['edit']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesIndexUidDocumentsEditMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostIndexesIndexUidDocumentsFetchMutationKey() {
+  return ['indexes', '/indexes/:indexUid/documents/fetch', 'POST'] as const
+}
+
+export function getPostIndexesIndexUidDocumentsFetchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['documents']['fetch']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['documents']['fetch']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesIndexUidDocumentsFetchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['documents']['fetch']['$post']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].documents.fetch.$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexesIndexUidDocumentsFetch<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['documents']['fetch']['$post']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['documents']['fetch']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesIndexUidDocumentsFetchMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidDocumentsDocumentIdQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['documents'][':documentId']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/documents/:documentId', args] as const
+}
+
+export function getIndexesIndexUidDocumentsDocumentIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['documents'][':documentId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['documents'][':documentId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['documents'][':documentId']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidDocumentsDocumentIdQueryKey>
+  >({
+    queryKey: getIndexesIndexUidDocumentsDocumentIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].documents[':documentId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidDocumentsDocumentId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['documents'][':documentId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['documents'][':documentId']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['documents'][':documentId']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidDocumentsDocumentIdQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidDocumentsDocumentIdQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidDocumentsDocumentIdMutationKey() {
+  return ['indexes', '/indexes/:indexUid/documents/:documentId', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidDocumentsDocumentIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['documents'][':documentId']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['documents'][':documentId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidDocumentsDocumentIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['documents'][':documentId']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].documents[':documentId'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidDocumentsDocumentId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['documents'][':documentId']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['documents'][':documentId']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidDocumentsDocumentIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostIndexesIndexUidFacetSearchMutationKey() {
+  return ['indexes', '/indexes/:indexUid/facet-search', 'POST'] as const
+}
+
+export function getPostIndexesIndexUidFacetSearchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['facet-search']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['facet-search']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesIndexUidFacetSearchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['facet-search']['$post']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid']['facet-search'].$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexesIndexUidFacetSearch<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['facet-search']['$post']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['facet-search']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesIndexUidFacetSearchMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSearchQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['search']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/search', args] as const
+}
+
+export function getIndexesIndexUidSearchQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['search']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['search']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['search']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSearchQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSearchQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].search.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSearch<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['search']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.indexes)[':indexUid']['search']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['search']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSearchQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSearchQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostIndexesIndexUidSearchMutationKey() {
+  return ['indexes', '/indexes/:indexUid/search', 'POST'] as const
+}
+
+export function getPostIndexesIndexUidSearchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['search']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['search']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesIndexUidSearchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['search']['$post']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].search.$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexesIndexUidSearch<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['search']['$post']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['search']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesIndexUidSearchMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings', args] as const
+}
+
+export function getIndexesIndexUidSettingsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettings<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$delete']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettings<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['$delete']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchIndexesIndexUidSettingsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings', 'PATCH'] as const
+}
+
+export function getPatchIndexesIndexUidSettingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchIndexesIndexUidSettingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$patch']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.$patch(args, options))
+    },
+  })
+}
+
+export function createPatchIndexesIndexUidSettings<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['$patch']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['$patch']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchIndexesIndexUidSettingsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsChatQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/chat', args] as const
+}
+
+export function getIndexesIndexUidSettingsChatQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['chat']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['chat']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsChatQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsChatQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings.chat.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsChat<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['chat']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['chat']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsChatQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsChatQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsChatMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/chat', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsChatMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['chat']['$put']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsChatMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$put']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.chat.$put(args, options))
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsChat<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['chat']['$put']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$put']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsChatMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsChatMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/chat', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsChatMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['chat']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsChatMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$delete']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.chat.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsChat<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['chat']['$delete']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['chat']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsChatMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsDictionaryQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/dictionary', args] as const
+}
+
+export function getIndexesIndexUidSettingsDictionaryQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsDictionaryQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsDictionaryQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings.dictionary.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsDictionary<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['dictionary']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsDictionaryQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsDictionaryQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsDictionaryMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/dictionary', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsDictionaryMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$put']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsDictionaryMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['dictionary']['$put']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.dictionary.$put(args, options))
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsDictionary<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$put']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$put']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsDictionaryMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsDictionaryMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/dictionary', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsDictionaryMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsDictionaryMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['dictionary']['$delete']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.dictionary.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsDictionary<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['dictionary']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['dictionary']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsDictionaryMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsDisplayedAttributesQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/displayed-attributes', args] as const
+}
+
+export function getIndexesIndexUidSettingsDisplayedAttributesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsDisplayedAttributesQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsDisplayedAttributesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['displayed-attributes'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsDisplayedAttributes<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsDisplayedAttributesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsDisplayedAttributesQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsDisplayedAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/displayed-attributes', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsDisplayedAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsDisplayedAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['displayed-attributes'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsDisplayedAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsDisplayedAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsDisplayedAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/displayed-attributes', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsDisplayedAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsDisplayedAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['displayed-attributes'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsDisplayedAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['displayed-attributes']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsDisplayedAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsDistinctAttributeQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/distinct-attribute', args] as const
+}
+
+export function getIndexesIndexUidSettingsDistinctAttributeQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsDistinctAttributeQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsDistinctAttributeQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['distinct-attribute'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsDistinctAttribute<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsDistinctAttributeQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsDistinctAttributeQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsDistinctAttributeMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/distinct-attribute', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsDistinctAttributeMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsDistinctAttributeMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['distinct-attribute'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsDistinctAttribute<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsDistinctAttributeMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsDistinctAttributeMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/distinct-attribute', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsDistinctAttributeMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsDistinctAttributeMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['distinct-attribute'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsDistinctAttribute<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['distinct-attribute']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsDistinctAttributeMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsEmbeddersQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/embedders', args] as const
+}
+
+export function getIndexesIndexUidSettingsEmbeddersQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsEmbeddersQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsEmbeddersQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings.embedders.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsEmbedders<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['embedders']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsEmbeddersQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsEmbeddersQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsEmbeddersMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/embedders', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsEmbeddersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsEmbeddersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['embedders']['$delete']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.embedders.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsEmbedders<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$delete']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsEmbeddersMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchIndexesIndexUidSettingsEmbeddersMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/embedders', 'PATCH'] as const
+}
+
+export function getPatchIndexesIndexUidSettingsEmbeddersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$patch']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchIndexesIndexUidSettingsEmbeddersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['embedders']['$patch']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.embedders.$patch(args, options))
+    },
+  })
+}
+
+export function createPatchIndexesIndexUidSettingsEmbedders<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$patch']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['embedders']['$patch']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchIndexesIndexUidSettingsEmbeddersMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsFacetSearchQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/facet-search', args] as const
+}
+
+export function getIndexesIndexUidSettingsFacetSearchQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsFacetSearchQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsFacetSearchQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['facet-search'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsFacetSearch<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['facet-search']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsFacetSearchQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsFacetSearchQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsFacetSearchMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/facet-search', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsFacetSearchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$put']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsFacetSearchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['facet-search']['$put']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings['facet-search'].$put(args, options))
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsFacetSearch<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$put']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$put']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsFacetSearchMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsFacetSearchMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/facet-search', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsFacetSearchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['facet-search']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsFacetSearchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['facet-search']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['facet-search'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsFacetSearch<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['facet-search']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['facet-search']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsFacetSearchMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsFacetingQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/faceting', args] as const
+}
+
+export function getIndexesIndexUidSettingsFacetingQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsFacetingQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsFacetingQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings.faceting.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsFaceting<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['faceting']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsFacetingQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsFacetingQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsFacetingMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/faceting', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsFacetingMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsFacetingMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['faceting']['$delete']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.faceting.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsFaceting<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$delete']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsFacetingMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchIndexesIndexUidSettingsFacetingMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/faceting', 'PATCH'] as const
+}
+
+export function getPatchIndexesIndexUidSettingsFacetingMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$patch']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchIndexesIndexUidSettingsFacetingMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['faceting']['$patch']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.faceting.$patch(args, options))
+    },
+  })
+}
+
+export function createPatchIndexesIndexUidSettingsFaceting<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$patch']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['faceting']['$patch']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchIndexesIndexUidSettingsFacetingMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsFilterableAttributesQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/filterable-attributes', args] as const
+}
+
+export function getIndexesIndexUidSettingsFilterableAttributesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsFilterableAttributesQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsFilterableAttributesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['filterable-attributes'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsFilterableAttributes<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsFilterableAttributesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsFilterableAttributesQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsFilterableAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/filterable-attributes', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsFilterableAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsFilterableAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['filterable-attributes'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsFilterableAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsFilterableAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsFilterableAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/filterable-attributes', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsFilterableAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsFilterableAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['filterable-attributes'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsFilterableAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['filterable-attributes']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsFilterableAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsLocalizedAttributesQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/localized-attributes', args] as const
+}
+
+export function getIndexesIndexUidSettingsLocalizedAttributesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsLocalizedAttributesQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsLocalizedAttributesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['localized-attributes'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsLocalizedAttributes<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsLocalizedAttributesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsLocalizedAttributesQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsLocalizedAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/localized-attributes', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsLocalizedAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsLocalizedAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['localized-attributes'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsLocalizedAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsLocalizedAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsLocalizedAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/localized-attributes', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsLocalizedAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsLocalizedAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['localized-attributes'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsLocalizedAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['localized-attributes']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsLocalizedAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsNonSeparatorTokensQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/non-separator-tokens', args] as const
+}
+
+export function getIndexesIndexUidSettingsNonSeparatorTokensQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsNonSeparatorTokensQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsNonSeparatorTokensQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['non-separator-tokens'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsNonSeparatorTokens<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsNonSeparatorTokensQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsNonSeparatorTokensQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsNonSeparatorTokensMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/non-separator-tokens', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsNonSeparatorTokensMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsNonSeparatorTokensMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['non-separator-tokens'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsNonSeparatorTokens<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsNonSeparatorTokensMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsNonSeparatorTokensMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/non-separator-tokens', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsNonSeparatorTokensMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsNonSeparatorTokensMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['non-separator-tokens'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsNonSeparatorTokens<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['non-separator-tokens']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsNonSeparatorTokensMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsPaginationQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/pagination', args] as const
+}
+
+export function getIndexesIndexUidSettingsPaginationQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsPaginationQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsPaginationQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings.pagination.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsPagination<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['pagination']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsPaginationQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsPaginationQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsPaginationMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/pagination', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsPaginationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsPaginationMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['pagination']['$delete']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.pagination.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsPagination<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['pagination']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsPaginationMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchIndexesIndexUidSettingsPaginationMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/pagination', 'PATCH'] as const
+}
+
+export function getPatchIndexesIndexUidSettingsPaginationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$patch']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchIndexesIndexUidSettingsPaginationMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['pagination']['$patch']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.pagination.$patch(args, options))
+    },
+  })
+}
+
+export function createPatchIndexesIndexUidSettingsPagination<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$patch']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['pagination']['$patch']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchIndexesIndexUidSettingsPaginationMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsPrefixSearchQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/prefix-search', args] as const
+}
+
+export function getIndexesIndexUidSettingsPrefixSearchQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsPrefixSearchQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsPrefixSearchQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['prefix-search'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsPrefixSearch<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['prefix-search']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['prefix-search']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsPrefixSearchQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsPrefixSearchQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsPrefixSearchMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/prefix-search', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsPrefixSearchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$put']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsPrefixSearchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['prefix-search']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['prefix-search'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsPrefixSearch<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['prefix-search']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$put']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsPrefixSearchMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsPrefixSearchMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/prefix-search', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsPrefixSearchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['prefix-search']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsPrefixSearchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['prefix-search']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['prefix-search'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsPrefixSearch<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['prefix-search']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['prefix-search']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsPrefixSearchMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsProximityPrecisionQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/proximity-precision', args] as const
+}
+
+export function getIndexesIndexUidSettingsProximityPrecisionQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsProximityPrecisionQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsProximityPrecisionQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['proximity-precision'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsProximityPrecision<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsProximityPrecisionQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsProximityPrecisionQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsProximityPrecisionMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/proximity-precision', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsProximityPrecisionMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsProximityPrecisionMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['proximity-precision'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsProximityPrecision<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsProximityPrecisionMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsProximityPrecisionMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/proximity-precision', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsProximityPrecisionMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsProximityPrecisionMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['proximity-precision'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsProximityPrecision<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['proximity-precision']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsProximityPrecisionMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsRankingRulesQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/ranking-rules', args] as const
+}
+
+export function getIndexesIndexUidSettingsRankingRulesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsRankingRulesQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsRankingRulesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['ranking-rules'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsRankingRules<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsRankingRulesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsRankingRulesQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsRankingRulesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/ranking-rules', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsRankingRulesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$put']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsRankingRulesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['ranking-rules'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsRankingRules<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$put']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsRankingRulesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsRankingRulesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/ranking-rules', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsRankingRulesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsRankingRulesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['ranking-rules'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsRankingRules<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['ranking-rules']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsRankingRulesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsSearchCutoffMsQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/search-cutoff-ms', args] as const
+}
+
+export function getIndexesIndexUidSettingsSearchCutoffMsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsSearchCutoffMsQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsSearchCutoffMsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['search-cutoff-ms'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsSearchCutoffMs<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsSearchCutoffMsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsSearchCutoffMsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsSearchCutoffMsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/search-cutoff-ms', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsSearchCutoffMsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$put']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsSearchCutoffMsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['search-cutoff-ms'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsSearchCutoffMs<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsSearchCutoffMsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsSearchCutoffMsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/search-cutoff-ms', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsSearchCutoffMsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsSearchCutoffMsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['search-cutoff-ms'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsSearchCutoffMs<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['search-cutoff-ms']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsSearchCutoffMsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsSearchableAttributesQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/searchable-attributes', args] as const
+}
+
+export function getIndexesIndexUidSettingsSearchableAttributesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsSearchableAttributesQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsSearchableAttributesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['searchable-attributes'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsSearchableAttributes<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsSearchableAttributesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsSearchableAttributesQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsSearchableAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/searchable-attributes', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsSearchableAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsSearchableAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['searchable-attributes'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsSearchableAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsSearchableAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsSearchableAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/searchable-attributes', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsSearchableAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsSearchableAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['searchable-attributes'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsSearchableAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['searchable-attributes']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsSearchableAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsSeparatorTokensQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/separator-tokens', args] as const
+}
+
+export function getIndexesIndexUidSettingsSeparatorTokensQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsSeparatorTokensQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsSeparatorTokensQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['separator-tokens'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsSeparatorTokens<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsSeparatorTokensQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsSeparatorTokensQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsSeparatorTokensMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/separator-tokens', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsSeparatorTokensMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$put']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsSeparatorTokensMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['separator-tokens'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsSeparatorTokens<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsSeparatorTokensMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsSeparatorTokensMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/separator-tokens', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsSeparatorTokensMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsSeparatorTokensMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['separator-tokens'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsSeparatorTokens<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['separator-tokens']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsSeparatorTokensMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsSortableAttributesQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/sortable-attributes', args] as const
+}
+
+export function getIndexesIndexUidSettingsSortableAttributesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsSortableAttributesQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsSortableAttributesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['sortable-attributes'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsSortableAttributes<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsSortableAttributesQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsSortableAttributesQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsSortableAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/sortable-attributes', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsSortableAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsSortableAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['sortable-attributes'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsSortableAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$put']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$put']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsSortableAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsSortableAttributesMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/sortable-attributes', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsSortableAttributesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsSortableAttributesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['sortable-attributes'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsSortableAttributes<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['sortable-attributes']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsSortableAttributesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsStopWordsQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/stop-words', args] as const
+}
+
+export function getIndexesIndexUidSettingsStopWordsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsStopWordsQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsStopWordsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['stop-words'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsStopWords<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['stop-words']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsStopWordsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsStopWordsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsStopWordsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/stop-words', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsStopWordsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$put']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsStopWordsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['stop-words']['$put']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings['stop-words'].$put(args, options))
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsStopWords<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$put']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$put']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsStopWordsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsStopWordsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/stop-words', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsStopWordsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsStopWordsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['stop-words']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['stop-words'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsStopWords<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['stop-words']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['stop-words']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsStopWordsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsSynonymsQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/synonyms', args] as const
+}
+
+export function getIndexesIndexUidSettingsSynonymsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsSynonymsQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsSynonymsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings.synonyms.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsSynonyms<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['synonyms']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$get']>
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsSynonymsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsSynonymsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPutIndexesIndexUidSettingsSynonymsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/synonyms', 'PUT'] as const
+}
+
+export function getPutIndexesIndexUidSettingsSynonymsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$put']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutIndexesIndexUidSettingsSynonymsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$put']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.synonyms.$put(args, options))
+    },
+  })
+}
+
+export function createPutIndexesIndexUidSettingsSynonyms<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$put']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$put']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPutIndexesIndexUidSettingsSynonymsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsSynonymsMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/synonyms', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsSynonymsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$delete']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsSynonymsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['synonyms']['$delete']
+      >,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].settings.synonyms.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsSynonyms<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$delete']>
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['settings']['synonyms']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsSynonymsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSettingsTypoToleranceQueryKey(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$get']
+  >,
+) {
+  return ['indexes', '/indexes/:indexUid/settings/typo-tolerance', args] as const
+}
+
+export function getIndexesIndexUidSettingsTypoToleranceQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSettingsTypoToleranceQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSettingsTypoToleranceQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['typo-tolerance'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSettingsTypoTolerance<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSettingsTypoToleranceQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSettingsTypoToleranceQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteIndexesIndexUidSettingsTypoToleranceMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/typo-tolerance', 'DELETE'] as const
+}
+
+export function getDeleteIndexesIndexUidSettingsTypoToleranceMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteIndexesIndexUidSettingsTypoToleranceMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['typo-tolerance'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteIndexesIndexUidSettingsTypoTolerance<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$delete']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteIndexesIndexUidSettingsTypoToleranceMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchIndexesIndexUidSettingsTypoToleranceMutationKey() {
+  return ['indexes', '/indexes/:indexUid/settings/typo-tolerance', 'PATCH'] as const
+}
+
+export function getPatchIndexesIndexUidSettingsTypoToleranceMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$patch']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchIndexesIndexUidSettingsTypoToleranceMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.indexes[':indexUid'].settings['typo-tolerance'].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function createPatchIndexesIndexUidSettingsTypoTolerance<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$patch']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.indexes)[':indexUid']['settings']['typo-tolerance']['$patch']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchIndexesIndexUidSettingsTypoToleranceMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidSimilarQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['similar']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/similar', args] as const
+}
+
+export function getIndexesIndexUidSimilarQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['similar']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['similar']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['similar']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidSimilarQueryKey>
+  >({
+    queryKey: getIndexesIndexUidSimilarQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].similar.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidSimilar<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['similar']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.indexes)[':indexUid']['similar']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['similar']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidSimilarQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidSimilarQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostIndexesIndexUidSimilarMutationKey() {
+  return ['indexes', '/indexes/:indexUid/similar', 'POST'] as const
+}
+
+export function getPostIndexesIndexUidSimilarMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['similar']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.indexes)[':indexUid']['similar']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostIndexesIndexUidSimilarMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.indexes)[':indexUid']['similar']['$post']>,
+    ) {
+      return parseResponse(client.indexes[':indexUid'].similar.$post(args, options))
+    },
+  })
+}
+
+export function createPostIndexesIndexUidSimilar<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['similar']['$post']>>
+            >
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.indexes)[':indexUid']['similar']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostIndexesIndexUidSimilarMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getIndexesIndexUidStatsQueryKey(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['stats']['$get']>,
+) {
+  return ['indexes', '/indexes/:indexUid/stats', args] as const
+}
+
+export function getIndexesIndexUidStatsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['stats']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.indexes)[':indexUid']['stats']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.indexes)[':indexUid']['stats']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getIndexesIndexUidStatsQueryKey>
+  >({
+    queryKey: getIndexesIndexUidStatsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.indexes[':indexUid'].stats.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createIndexesIndexUidStats<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.indexes)[':indexUid']['stats']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.indexes)[':indexUid']['stats']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.indexes)[':indexUid']['stats']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getIndexesIndexUidStatsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getIndexesIndexUidStatsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getKeysQueryKey(args: InferRequestType<typeof client.keys.$get>) {
+  return ['keys', '/keys', args] as const
+}
+
+export function getKeysQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.keys.$get>>>>>,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.keys.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.keys.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getKeysQueryKey>
+  >({
+    queryKey: getKeysQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.keys.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createKeys<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.keys.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.keys.$get>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.keys.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getKeysQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getKeysQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostKeysMutationKey() {
+  return ['keys', '/keys', 'POST'] as const
+}
+
+export function getPostKeysMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.keys.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.keys.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostKeysMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.keys.$post>) {
+      return parseResponse(client.keys.$post(args, options))
+    },
+  })
+}
+
+export function createPostKeys<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.keys.$post>>>>>,
+        TError,
+        InferRequestType<typeof client.keys.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostKeysMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getKeysUidOrKeyQueryKey(
+  args: InferRequestType<(typeof client.keys)[':uidOrKey']['$get']>,
+) {
+  return ['keys', '/keys/:uidOrKey', args] as const
+}
+
+export function getKeysUidOrKeyQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.keys)[':uidOrKey']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.keys)[':uidOrKey']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.keys)[':uidOrKey']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getKeysUidOrKeyQueryKey>
+  >({
+    queryKey: getKeysUidOrKeyQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.keys[':uidOrKey'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createKeysUidOrKey<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.keys)[':uidOrKey']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.keys)[':uidOrKey']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client.keys)[':uidOrKey']['$get']>>>
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getKeysUidOrKeyQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getKeysUidOrKeyQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteKeysUidOrKeyMutationKey() {
+  return ['keys', '/keys/:uidOrKey', 'DELETE'] as const
+}
+
+export function getDeleteKeysUidOrKeyMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<Awaited<ReturnType<(typeof client.keys)[':uidOrKey']['$delete']>>>
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<(typeof client.keys)[':uidOrKey']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteKeysUidOrKeyMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.keys)[':uidOrKey']['$delete']>) {
+      return parseResponse(client.keys[':uidOrKey'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteKeysUidOrKey<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        | Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.keys)[':uidOrKey']['$delete']>>
+              >
+            >
+          >
+        | undefined,
+        TError,
+        InferRequestType<(typeof client.keys)[':uidOrKey']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteKeysUidOrKeyMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchKeysUidOrKeyMutationKey() {
+  return ['keys', '/keys/:uidOrKey', 'PATCH'] as const
+}
+
+export function getPatchKeysUidOrKeyMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.keys)[':uidOrKey']['$patch']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.keys)[':uidOrKey']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchKeysUidOrKeyMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.keys)[':uidOrKey']['$patch']>) {
+      return parseResponse(client.keys[':uidOrKey'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchKeysUidOrKey<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client.keys)[':uidOrKey']['$patch']>>>
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client.keys)[':uidOrKey']['$patch']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchKeysUidOrKeyMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostLogsStderrMutationKey() {
+  return ['logs', '/logs/stderr', 'POST'] as const
+}
+
+export function getPostLogsStderrMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.stderr.$post>>>>
+      >
+    | undefined,
+    TError,
+    InferRequestType<typeof client.logs.stderr.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostLogsStderrMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.logs.stderr.$post>) {
+      return parseResponse(client.logs.stderr.$post(args, options))
+    },
+  })
+}
+
+export function createPostLogsStderr<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        | Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.stderr.$post>>>>
+          >
+        | undefined,
+        TError,
+        InferRequestType<typeof client.logs.stderr.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostLogsStderrMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostLogsStreamMutationKey() {
+  return ['logs', '/logs/stream', 'POST'] as const
+}
+
+export function getPostLogsStreamMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.stream.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.logs.stream.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostLogsStreamMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.logs.stream.$post>) {
+      return parseResponse(client.logs.stream.$post(args, options))
+    },
+  })
+}
+
+export function createPostLogsStream<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.stream.$post>>>>
+        >,
+        TError,
+        InferRequestType<typeof client.logs.stream.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostLogsStreamMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteLogsStreamMutationKey() {
+  return ['logs', '/logs/stream', 'DELETE'] as const
+}
+
+export function getDeleteLogsStreamMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.stream.$delete>>>>
+      >
+    | undefined,
+    TError,
+    void,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteLogsStreamMutationKey(),
+    async mutationFn() {
+      return parseResponse(client.logs.stream.$delete(undefined, options))
+    },
+  })
+}
+
+export function createDeleteLogsStream<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        | Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.stream.$delete>>>>
+          >
+        | undefined,
+        TError,
+        void,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteLogsStreamMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getMetricsQueryKey() {
+  return ['metrics', '/metrics'] as const
+}
+
+export function getMetricsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.metrics.$get>>>>
+  >,
+  TError = DefaultError,
+>(options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.metrics.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getMetricsQueryKey>
+  >({
+    queryKey: getMetricsQueryKey(),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.metrics.$get(undefined, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createMetrics<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.metrics.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.metrics.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getMetricsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getMetricsQueryOptions<TData, TError>(clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostMultiSearchMutationKey() {
+  return ['multi-search', '/multi-search', 'POST'] as const
+}
+
+export function getPostMultiSearchMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['multi-search']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client)['multi-search']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostMultiSearchMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client)['multi-search']['$post']>) {
+      return parseResponse(client['multi-search'].$post(args, options))
+    },
+  })
+}
+
+export function createPostMultiSearch<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['multi-search']['$post']>>>
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client)['multi-search']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostMultiSearchMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getNetworkQueryKey() {
+  return ['network', '/network'] as const
+}
+
+export function getNetworkQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.network.$get>>>>
+  >,
+  TError = DefaultError,
+>(options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.network.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getNetworkQueryKey>
+  >({
+    queryKey: getNetworkQueryKey(),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.network.$get(undefined, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createNetwork<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.network.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.network.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getNetworkQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getNetworkQueryOptions<TData, TError>(clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPatchNetworkMutationKey() {
+  return ['network', '/network', 'PATCH'] as const
+}
+
+export function getPatchNetworkMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.network.$patch>>>>>,
+    TError,
+    InferRequestType<typeof client.network.$patch>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchNetworkMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.network.$patch>) {
+      return parseResponse(client.network.$patch(args, options))
+    },
+  })
+}
+
+export function createPatchNetwork<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.network.$patch>>>>
+        >,
+        TError,
+        InferRequestType<typeof client.network.$patch>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchNetworkMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostSnapshotsMutationKey() {
+  return ['snapshots', '/snapshots', 'POST'] as const
+}
+
+export function getPostSnapshotsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.snapshots.$post>>>>>,
+    TError,
+    void,
+    TOnMutateResult
+  >({
+    mutationKey: getPostSnapshotsMutationKey(),
+    async mutationFn() {
+      return parseResponse(client.snapshots.$post(undefined, options))
+    },
+  })
+}
+
+export function createPostSnapshots<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.snapshots.$post>>>>
+        >,
+        TError,
+        void,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostSnapshotsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getStatsQueryKey() {
+  return ['stats', '/stats'] as const
+}
+
+export function getStatsQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.stats.$get>>>>>,
+  TError = DefaultError,
+>(options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.stats.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getStatsQueryKey>
+  >({
+    queryKey: getStatsQueryKey(),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.stats.$get(undefined, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createStats<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.stats.$get>>>>>,
+  TError = DefaultError,
+>(
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.stats.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getStatsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getStatsQueryOptions<TData, TError>(clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostSwapIndexesMutationKey() {
+  return ['swap-indexes', '/swap-indexes', 'POST'] as const
+}
+
+export function getPostSwapIndexesMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['swap-indexes']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client)['swap-indexes']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostSwapIndexesMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client)['swap-indexes']['$post']>) {
+      return parseResponse(client['swap-indexes'].$post(args, options))
+    },
+  })
+}
+
+export function createPostSwapIndexes<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['swap-indexes']['$post']>>>
+          >
+        >,
+        TError,
+        InferRequestType<(typeof client)['swap-indexes']['$post']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostSwapIndexesMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getTasksQueryKey(args: InferRequestType<typeof client.tasks.$get>) {
+  return ['tasks', '/tasks', args] as const
+}
+
+export function getTasksQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.tasks.$get>>>>>,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.tasks.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.tasks.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getTasksQueryKey>
+  >({
+    queryKey: getTasksQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.tasks.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createTasks<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.tasks.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.tasks.$get>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.tasks.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getTasksQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getTasksQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteTasksMutationKey() {
+  return ['tasks', '/tasks', 'DELETE'] as const
+}
+
+export function getDeleteTasksMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.tasks.$delete>>>>>,
+    TError,
+    InferRequestType<typeof client.tasks.$delete>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteTasksMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.tasks.$delete>) {
+      return parseResponse(client.tasks.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteTasks<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.tasks.$delete>>>>>,
+        TError,
+        InferRequestType<typeof client.tasks.$delete>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteTasksMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostTasksCancelMutationKey() {
+  return ['tasks', '/tasks/cancel', 'POST'] as const
+}
+
+export function getPostTasksCancelMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.tasks.cancel.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.tasks.cancel.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostTasksCancelMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.tasks.cancel.$post>) {
+      return parseResponse(client.tasks.cancel.$post(args, options))
+    },
+  })
+}
+
+export function createPostTasksCancel<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.tasks.cancel.$post>>>>
+        >,
+        TError,
+        InferRequestType<typeof client.tasks.cancel.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostTasksCancelMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getTasksTaskUidQueryKey(
+  args: InferRequestType<(typeof client.tasks)[':taskUid']['$get']>,
+) {
+  return ['tasks', '/tasks/:taskUid', args] as const
+}
+
+export function getTasksTaskUidQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.tasks)[':taskUid']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.tasks)[':taskUid']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.tasks)[':taskUid']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getTasksTaskUidQueryKey>
+  >({
+    queryKey: getTasksTaskUidQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.tasks[':taskUid'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createTasksTaskUid<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.tasks)[':taskUid']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.tasks)[':taskUid']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<(typeof client.tasks)[':taskUid']['$get']>>>
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getTasksTaskUidQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getTasksTaskUidQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getVersionQueryKey() {
+  return ['version', '/version'] as const
+}
+
+export function getVersionQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.version.$get>>>>
+  >,
+  TError = DefaultError,
+>(options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.version.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getVersionQueryKey>
+  >({
+    queryKey: getVersionQueryKey(),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.version.$get(undefined, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createVersion<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.version.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.version.$get>>>>>,
+        TError,
+        TData,
+        ReturnType<typeof getVersionQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getVersionQueryOptions<TData, TError>(clientOptions), ...query }
+  }, queryClient)
+}

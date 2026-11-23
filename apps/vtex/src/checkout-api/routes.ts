@@ -31,7 +31,13 @@ const OrderFormSimulationRequestSchema = z
         description: 'Array containing information about the SKUs inside the cart to be simulated.',
       }),
   })
-  .openapi({ example: { country: '{{countryCode-ISO-3-digits}}' }, required: ['items', 'country'] })
+  .openapi({
+    example: {
+      country: '{{countryCode-ISO-3-digits}}',
+      items: [{ id: '{{skuId}}', quantity: 1, seller: '1' }],
+    },
+    required: ['items', 'country'],
+  })
   .openapi('OrderFormSimulationRequest')
 
 const PaymentConfigurationSchema = z
@@ -1511,22 +1517,22 @@ export const postApiCheckoutPubOrderFormOrderFormIdCouponsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: "Customer's profile information.", required: [] }),
               commercialConditionData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Object containing commercial condition information.' }),
               customData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Customer additional information.' }),
               giftRegistryData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Gift registry list information.' }),
               hooksData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Hooks information.' }),
@@ -1535,7 +1541,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdCouponsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Ignore customer profile data.' }),
               invoiceData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -2634,14 +2640,14 @@ export const postApiCheckoutPubOrderFormOrderFormIdCouponsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'ID of the store.' }),
               storePreferencesData: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     "Object containing data from the store's configuration (stored in VTEX's License Manager).",
                 }),
               subscriptionData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Subscription information.' }),
@@ -3823,22 +3829,22 @@ export const postApiCheckoutPubOrderFormOrderFormIdItemsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: "Customer's profile information.", required: [] }),
               commercialConditionData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Object containing commercial condition information.' }),
               customData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Customer additional information.' }),
               giftRegistryData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Gift registry list information.' }),
               hooksData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Hooks information.' }),
@@ -3847,7 +3853,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdItemsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Ignore customer profile data.' }),
               invoiceData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -4943,14 +4949,14 @@ export const postApiCheckoutPubOrderFormOrderFormIdItemsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'ID of the store.' }),
               storePreferencesData: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     "Object containing data from the store's configuration (stored in VTEX's License Manager).",
                 }),
               subscriptionData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Subscription information.' }),
@@ -5387,7 +5393,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdItemsRemoveAllRoute = createR
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .default({})
             .openapi({ description: 'This object must be empty.', title: '' }),
         },
@@ -5399,7 +5405,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdItemsRemoveAllRoute = createR
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -5826,22 +5832,22 @@ export const postApiCheckoutPubOrderFormOrderFormIdItemsUpdateRoute = createRout
                 .exactOptional()
                 .openapi({ description: "Customer's profile information.", required: [] }),
               commercialConditionData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Object containing commercial condition information.' }),
               customData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Customer additional information.' }),
               giftRegistryData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Gift registry list information.' }),
               hooksData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Hooks information.' }),
@@ -5850,7 +5856,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdItemsUpdateRoute = createRout
                 .exactOptional()
                 .openapi({ description: 'Ignore customer profile data.' }),
               invoiceData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -6946,14 +6952,14 @@ export const postApiCheckoutPubOrderFormOrderFormIdItemsUpdateRoute = createRout
                 .exactOptional()
                 .openapi({ description: 'ID of the store.' }),
               storePreferencesData: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     "Object containing data from the store's configuration (stored in VTEX's License Manager).",
                 }),
               subscriptionData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Subscription information.' }),
@@ -7468,7 +7474,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdMessagesClearRoute = createRo
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .default({})
             .openapi({ description: 'This object must be empty.', title: '' }),
         },
@@ -7649,22 +7655,22 @@ export const postApiCheckoutPubOrderFormOrderFormIdMessagesClearRoute = createRo
                 .exactOptional()
                 .openapi({ description: "Customer's profile information.", required: [] }),
               commercialConditionData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Object containing commercial condition information.' }),
               customData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Customer additional information.' }),
               giftRegistryData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Gift registry list information.' }),
               hooksData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Hooks information.' }),
@@ -7673,7 +7679,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdMessagesClearRoute = createRo
                 .exactOptional()
                 .openapi({ description: 'Ignore customer profile data.' }),
               invoiceData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -8769,14 +8775,14 @@ export const postApiCheckoutPubOrderFormOrderFormIdMessagesClearRoute = createRo
                 .exactOptional()
                 .openapi({ description: 'ID of the store.' }),
               storePreferencesData: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     "Object containing data from the store's configuration (stored in VTEX's License Manager).",
                 }),
               subscriptionData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Subscription information.' }),
@@ -9272,7 +9278,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdTransactionRoute = createRout
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             orderForm: null,
             orders: [
@@ -9975,36 +9981,9 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                               z
                                 .object({
                                   assemblyOptions: z
-                                    .object({
-                                      composition: z
-                                        .string()
-                                        .nullable()
-                                        .exactOptional()
-                                        .openapi({ description: 'Composition information.' }),
-                                      id: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({ description: 'Item ID.' }),
-                                      inputValues: z
-                                        .object({})
-                                        .exactOptional()
-                                        .openapi({ description: 'Input values information.' }),
-                                      name: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({ description: 'Item name.' }),
-                                      required: z
-                                        .boolean()
-                                        .exactOptional()
-                                        .openapi({
-                                          description: 'Indicates whether the item is required.',
-                                        }),
-                                    })
+                                    .array(z.any())
                                     .exactOptional()
-                                    .openapi({
-                                      description: 'Assembly options information.',
-                                      required: [],
-                                    }),
+                                    .openapi({ description: 'Assembly options information.' }),
                                   id: z
                                     .string()
                                     .exactOptional()
@@ -10212,7 +10191,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                                                   description: 'Additional information.',
                                                 }),
                                               address: z
-                                                .object({})
+                                                .looseObject({})
                                                 .nullable()
                                                 .exactOptional()
                                                 .openapi({ description: 'Address information.' }),
@@ -10442,7 +10421,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                                     .exactOptional()
                                     .openapi({ description: 'Additional information.' }),
                                   address: z
-                                    .object({})
+                                    .looseObject({})
                                     .nullable()
                                     .exactOptional()
                                     .openapi({ description: 'Address information.' }),
@@ -10506,7 +10485,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: 'Information on available SLAs.' }),
                       subscriptionData: z
-                        .object({})
+                        .looseObject({})
                         .nullable()
                         .exactOptional()
                         .openapi({ description: 'Subscription information.' }),
@@ -10537,7 +10516,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                     'Array with logistics information on each item of the `items` array in the `orderForm`.',
                 }),
               marketingData: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -10551,7 +10530,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'Available accounts.' }),
                   availableAssociations: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Available associations.' }),
                   availableTokens: z
@@ -10567,64 +10546,9 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'Gift card information, if it applies to the order.' }),
                   installmentOptions: z
-                    .object({
-                      bin: z.string().nullable().exactOptional().openapi({ description: 'Bin.' }),
-                      installments: z
-                        .object({
-                          count: z
-                            .int()
-                            .exactOptional()
-                            .openapi({ description: 'Count information.' }),
-                          hasInterestRate: z
-                            .boolean()
-                            .exactOptional()
-                            .openapi({
-                              description: 'Indicates whether the payment has interest.',
-                            }),
-                          interestRate: z
-                            .int()
-                            .exactOptional()
-                            .openapi({ description: 'Interest rate value.' }),
-                          sellerMerchantInstallments: z
-                            .array(z.any())
-                            .exactOptional()
-                            .openapi({ description: 'Seller merchant installments information.' }),
-                          total: z
-                            .int()
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'Total value of the order without separating cents. For example, $24.99 is represented `2499`.',
-                            }),
-                          value: z
-                            .int()
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'Value of the order without the interest rate. The value is shown without separating cents.',
-                            }),
-                        })
-                        .exactOptional()
-                        .openapi({ description: 'Installments information.', required: [] }),
-                      paymentGroupName: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'Payment group name.' }),
-                      paymentName: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'Payment name.' }),
-                      paymentSystem: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ description: 'Payment system identification.' }),
-                      value: z
-                        .int()
-                        .exactOptional()
-                        .openapi({ description: 'Total value assigned to this payment.' }),
-                    })
+                    .array(z.any())
                     .exactOptional()
-                    .openapi({ description: 'Installment options information.', required: [] }),
+                    .openapi({ description: 'Installment options information.' }),
                   paymentSystems: z
                     .array(
                       z
@@ -10681,7 +10605,7 @@ export const postApiCheckoutPubOrderFormsSimulationRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'Template.' }),
                           validator: z
-                            .object({})
+                            .looseObject({})
                             .nullable()
                             .exactOptional()
                             .openapi({ description: 'Payment system validator.' }),
@@ -14438,7 +14362,10 @@ export const getCheckoutChangeToAnonymousUserOrderFormIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { 'text/plain': { schema: z.object({}), example: {} } } },
+    200: {
+      description: 'OK',
+      content: { 'text/plain': { schema: z.looseObject({}), example: {} } },
+    },
   },
   security: [],
 })

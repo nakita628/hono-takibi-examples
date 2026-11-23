@@ -1,4 +1,4 @@
-<h1 id="ccf-public-node-api">CCF Public Node API v5.0.9</h1>
+<h1 id="ccf-public-node-api">CCF Public Node API v5.0.10</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -949,6 +949,7 @@ curl https://localhost:8000/node/network \
 {
   "current_service_create_txid": "string",
   "current_view": 0,
+  "pq_service_certificate": "string",
   "primary_id": "string",
   "recovery_count": 0,
   "service_certificate": "string",
@@ -1027,10 +1028,7 @@ curl https://localhost:8000/node/network/nodes \
           },
           "forwarding_timeout_ms": 0,
           "http_configuration": {
-            "initial_window_size": "string",
             "max_body_size": "string",
-            "max_concurrent_streams_count": 0,
-            "max_frame_size": "string",
             "max_header_size": "string",
             "max_headers_count": 0,
             "max_request_target_size": "string"
@@ -1064,10 +1062,7 @@ curl https://localhost:8000/node/network/nodes \
           },
           "forwarding_timeout_ms": 0,
           "http_configuration": {
-            "initial_window_size": "string",
             "max_body_size": "string",
-            "max_concurrent_streams_count": 0,
-            "max_frame_size": "string",
             "max_header_size": "string",
             "max_headers_count": 0,
             "max_request_target_size": "string"
@@ -1154,10 +1149,7 @@ curl https://localhost:8000/node/network/nodes/primary \
       },
       "forwarding_timeout_ms": 0,
       "http_configuration": {
-        "initial_window_size": "string",
         "max_body_size": "string",
-        "max_concurrent_streams_count": 0,
-        "max_frame_size": "string",
         "max_header_size": "string",
         "max_headers_count": 0,
         "max_request_target_size": "string"
@@ -1191,10 +1183,7 @@ curl https://localhost:8000/node/network/nodes/primary \
       },
       "forwarding_timeout_ms": 0,
       "http_configuration": {
-        "initial_window_size": "string",
         "max_body_size": "string",
-        "max_concurrent_streams_count": 0,
-        "max_frame_size": "string",
         "max_header_size": "string",
         "max_headers_count": 0,
         "max_request_target_size": "string"
@@ -1279,10 +1268,7 @@ curl https://localhost:8000/node/network/nodes/self \
       },
       "forwarding_timeout_ms": 0,
       "http_configuration": {
-        "initial_window_size": "string",
         "max_body_size": "string",
-        "max_concurrent_streams_count": 0,
-        "max_frame_size": "string",
         "max_header_size": "string",
         "max_headers_count": 0,
         "max_request_target_size": "string"
@@ -1316,10 +1302,7 @@ curl https://localhost:8000/node/network/nodes/self \
       },
       "forwarding_timeout_ms": 0,
       "http_configuration": {
-        "initial_window_size": "string",
         "max_body_size": "string",
-        "max_concurrent_streams_count": 0,
-        "max_frame_size": "string",
         "max_header_size": "string",
         "max_headers_count": 0,
         "max_request_target_size": "string"
@@ -1410,10 +1393,7 @@ curl https://localhost:8000/node/network/nodes/string \
       },
       "forwarding_timeout_ms": 0,
       "http_configuration": {
-        "initial_window_size": "string",
         "max_body_size": "string",
-        "max_concurrent_streams_count": 0,
-        "max_frame_size": "string",
         "max_header_size": "string",
         "max_headers_count": 0,
         "max_request_target_size": "string"
@@ -1447,10 +1427,7 @@ curl https://localhost:8000/node/network/nodes/string \
       },
       "forwarding_timeout_ms": 0,
       "http_configuration": {
-        "initial_window_size": "string",
         "max_body_size": "string",
-        "max_concurrent_streams_count": 0,
-        "max_frame_size": "string",
         "max_header_size": "string",
         "max_headers_count": 0,
         "max_request_target_size": "string"
@@ -1587,10 +1564,7 @@ curl https://localhost:8000/node/network/removable_nodes \
           },
           "forwarding_timeout_ms": 0,
           "http_configuration": {
-            "initial_window_size": "string",
             "max_body_size": "string",
-            "max_concurrent_streams_count": 0,
-            "max_frame_size": "string",
             "max_header_size": "string",
             "max_headers_count": 0,
             "max_request_target_size": "string"
@@ -1624,10 +1598,7 @@ curl https://localhost:8000/node/network/removable_nodes \
           },
           "forwarding_timeout_ms": 0,
           "http_configuration": {
-            "initial_window_size": "string",
             "max_body_size": "string",
-            "max_concurrent_streams_count": 0,
-            "max_frame_size": "string",
             "max_header_size": "string",
             "max_headers_count": 0,
             "max_request_target_size": "string"
@@ -3024,6 +2995,7 @@ This operation does not require authentication
 {
   "current_service_create_txid": "string",
   "current_view": 0,
+  "pq_service_certificate": "string",
   "primary_id": "string",
   "recovery_count": 0,
   "service_certificate": "string",
@@ -3038,6 +3010,7 @@ This operation does not require authentication
 |---|---|---|---|---|
 |current_service_create_txid|[TransactionId](#schematransactionid) \| object \| null|true|none|none|
 |current_view|[uint64](#schemauint64) \| object \| null|true|none|none|
+|pq_service_certificate|[Pem](#schemapem)|false|none|none|
 |primary_id|[NodeId](#schemanodeid) \| object \| null|true|none|none|
 |recovery_count|[uint64](#schemauint64)|true|none|none|
 |service_certificate|[Pem](#schemapem)|true|none|none|
@@ -3081,10 +3054,7 @@ This operation does not require authentication
       },
       "forwarding_timeout_ms": 0,
       "http_configuration": {
-        "initial_window_size": "string",
         "max_body_size": "string",
-        "max_concurrent_streams_count": 0,
-        "max_frame_size": "string",
         "max_header_size": "string",
         "max_headers_count": 0,
         "max_request_target_size": "string"
@@ -3118,10 +3088,7 @@ This operation does not require authentication
       },
       "forwarding_timeout_ms": 0,
       "http_configuration": {
-        "initial_window_size": "string",
         "max_body_size": "string",
-        "max_concurrent_streams_count": 0,
-        "max_frame_size": "string",
         "max_header_size": "string",
         "max_headers_count": 0,
         "max_request_target_size": "string"
@@ -3194,10 +3161,7 @@ This operation does not require authentication
         },
         "forwarding_timeout_ms": 0,
         "http_configuration": {
-          "initial_window_size": "string",
           "max_body_size": "string",
-          "max_concurrent_streams_count": 0,
-          "max_frame_size": "string",
           "max_header_size": "string",
           "max_headers_count": 0,
           "max_request_target_size": "string"
@@ -3231,10 +3195,7 @@ This operation does not require authentication
         },
         "forwarding_timeout_ms": 0,
         "http_configuration": {
-          "initial_window_size": "string",
           "max_body_size": "string",
-          "max_concurrent_streams_count": 0,
-          "max_frame_size": "string",
           "max_header_size": "string",
           "max_headers_count": 0,
           "max_request_target_size": "string"
@@ -3290,10 +3251,7 @@ This operation does not require authentication
           },
           "forwarding_timeout_ms": 0,
           "http_configuration": {
-            "initial_window_size": "string",
             "max_body_size": "string",
-            "max_concurrent_streams_count": 0,
-            "max_frame_size": "string",
             "max_header_size": "string",
             "max_headers_count": 0,
             "max_request_target_size": "string"
@@ -3327,10 +3285,7 @@ This operation does not require authentication
           },
           "forwarding_timeout_ms": 0,
           "http_configuration": {
-            "initial_window_size": "string",
             "max_body_size": "string",
-            "max_concurrent_streams_count": 0,
-            "max_frame_size": "string",
             "max_header_size": "string",
             "max_headers_count": 0,
             "max_request_target_size": "string"
@@ -3683,10 +3638,7 @@ This operation does not require authentication
   },
   "forwarding_timeout_ms": 0,
   "http_configuration": {
-    "initial_window_size": "string",
     "max_body_size": "string",
-    "max_concurrent_streams_count": 0,
-    "max_frame_size": "string",
     "max_header_size": "string",
     "max_headers_count": 0,
     "max_request_target_size": "string"
@@ -3852,10 +3804,7 @@ This operation does not require authentication
 
 ```json
 {
-  "initial_window_size": "string",
   "max_body_size": "string",
-  "max_concurrent_streams_count": 0,
-  "max_frame_size": "string",
   "max_header_size": "string",
   "max_headers_count": 0,
   "max_request_target_size": "string"
@@ -3866,10 +3815,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|initial_window_size|[SizeString](#schemasizestring)|false|none|none|
 |max_body_size|[SizeString](#schemasizestring)|false|none|none|
-|max_concurrent_streams_count|[uint64](#schemauint64)|false|none|none|
-|max_frame_size|[SizeString](#schemasizestring)|false|none|none|
 |max_header_size|[SizeString](#schemasizestring)|false|none|none|
 |max_headers_count|[uint32](#schemauint32)|false|none|none|
 |max_request_target_size|[SizeString](#schemasizestring)|false|none|none|
@@ -4348,10 +4294,7 @@ null
     },
     "forwarding_timeout_ms": 0,
     "http_configuration": {
-      "initial_window_size": "string",
       "max_body_size": "string",
-      "max_concurrent_streams_count": 0,
-      "max_frame_size": "string",
       "max_header_size": "string",
       "max_headers_count": 0,
       "max_request_target_size": "string"
@@ -4385,10 +4328,7 @@ null
     },
     "forwarding_timeout_ms": 0,
     "http_configuration": {
-      "initial_window_size": "string",
       "max_body_size": "string",
-      "max_concurrent_streams_count": 0,
-      "max_frame_size": "string",
       "max_header_size": "string",
       "max_headers_count": 0,
       "max_request_target_size": "string"

@@ -20,13 +20,13 @@ const DeclarativeFormFieldSchema = z
     ]),
     placeholder: z.string().exactOptional(),
     label: z.string().exactOptional(),
-    default: z.object({}),
+    default: z.looseObject({}),
     options: z
       .array(
         z.xor([
           z.string(),
           z
-            .object({ name: z.string(), value: z.object({}) })
+            .object({ name: z.string(), value: z.looseObject({}) })
             .openapi({ required: ['name', 'value'] }),
         ]),
       )
@@ -121,12 +121,10 @@ export const getIndexPhpSettingsAdminLogDownloadRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Disposition': {
-          schema: z
-            .literal('attachment; filename="nextcloud.log"')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Content-Disposition': z
+          .literal('attachment; filename="nextcloud.log"')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     401: {
@@ -178,7 +176,7 @@ export const postOcsV2PhpSettingsApiDeclarativeValueRoute = createRoute({
               app: z.string().openapi({ description: 'ID of the app' }),
               formId: z.string().openapi({ description: 'ID of the form' }),
               fieldId: z.string().openapi({ description: 'ID of the field' }),
-              value: z.object({}).openapi({ description: 'Value to be saved' }),
+              value: z.looseObject({}).openapi({ description: 'Value to be saved' }),
             })
             .openapi({ required: ['app', 'formId', 'fieldId', 'value'] }),
         },
@@ -268,7 +266,7 @@ export const postOcsV2PhpSettingsApiDeclarativeValueSensitiveRoute = createRoute
               app: z.string().openapi({ description: 'ID of the app' }),
               formId: z.string().openapi({ description: 'ID of the form' }),
               fieldId: z.string().openapi({ description: 'ID of the field' }),
-              value: z.object({}).openapi({ description: 'Value to be saved' }),
+              value: z.looseObject({}).openapi({ description: 'Value to be saved' }),
             })
             .openapi({ required: ['app', 'formId', 'fieldId', 'value'] }),
         },

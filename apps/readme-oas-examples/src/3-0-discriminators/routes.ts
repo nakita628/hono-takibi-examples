@@ -337,6 +337,15 @@ export const patchMappingWithDuplicateSchemasRoute = createRoute({
         'application/json': {
           schema: z
             .xor([OptionOneNoDiscSchema, OptionTwoNoDiscSchema, OptionThreeNoDiscSchema])
+            .and(
+              z
+                .object({
+                  discrimValue: z
+                    .enum(['oneA', 'oneB', 'oneC', 'twoA', 'twoB', 'three'])
+                    .exactOptional(),
+                })
+                .openapi({ required: [] }),
+            )
             .openapi({
               discriminator: {
                 propertyName: 'discrimValue',

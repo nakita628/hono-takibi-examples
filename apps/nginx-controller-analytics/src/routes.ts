@@ -106,6 +106,7 @@ const ResourceMetaSchema = z
         example: 'resource-name',
         description:
           'Resource name is a unique identifier for a resource within the context of a namespace.\nResource names must conform to [RFC 1738 Section 2.2](https://www.ietf.org/rfc/rfc1738.txt) and have a valid syntax for email addresses. The following rules are enforced:\n\n- do not utilize URL encoding;\n- do not include spaces;\n- do not use uppercase characters, for example, \'A-Z\'; extended character sets are supported;\n- do not use the following characters: `"`, `*`, `:`, `;`, `/`, `\\`, `%`, `?`, `hash`, `=`, `&`, `|`, `~`, `^`, `{`, `}`, `[`, `]`, `<`, `>`;\n- cannot start or end with an `@` sign;\n- cannot be only `.` or `..`\n\nFor example: For a collection resource located at\n\n`https://controller.example.com/api/v1/services/apps/shopping_@1`\n\nthe resource name is "shopping_@1".\n',
+        not: { type: 'string', enum: ['.', '..'] },
       }),
     displayName: z
       .string()
@@ -854,7 +855,129 @@ const ForwarderListResponseSchema = z
       .exactOptional()
       .openapi({ description: 'List of Forwarder resources.' }),
   })
-  .openapi({ example: {}, required: [] })
+  .openapi({
+    example: {
+      items: [
+        {
+          metadata: {
+            name: 'splunk',
+            displayName: 'Splunk - Metrics',
+            description: 'Metrics forwarder going to Splunk HEC',
+            kind: 'forwarder',
+            uid: 'd290f1ee-6c54-4b01-90e6-d701748f0851',
+            links: { rel: '/api/v1/analytics/forwarders/splunk' },
+            createTime: '2019-07-29T09:12:33.001Z',
+            updateTime: '2019-07-29T10:12:33.001Z',
+          },
+          desiredState: {
+            collectorType: 'SPLUNK',
+            integrationRef: { ref: '/platform/integrations/splunk_hec' },
+            streams: [
+              {
+                inputDataType: 'METRICS',
+                outputFormat: 'SPLUNK',
+                selector: 'names=http.request.bytes_rcvd',
+              },
+              {
+                inputDataType: 'METRICS',
+                outputFormat: 'SPLUNK',
+                selector: 'names=http.request.count',
+              },
+            ],
+          },
+          currentStatus: {
+            state: {
+              selfConfigState: {
+                isConfigured: true,
+                isConfiguring: false,
+                isError: false,
+                isDeleting: false,
+                total: 1,
+                configured: 1,
+                configuring: 0,
+                error: 0,
+                deleting: 0,
+              },
+              conditions: [{ type: 'error', message: 'integration reference not found' }],
+            },
+            collectorType: 'SPLUNK',
+            integrationRef: { ref: '/platform/integrations/splunk_hec' },
+            streams: [
+              {
+                inputDataType: 'METRICS',
+                outputFormat: 'SPLUNK',
+                selector: "names=http.request.bytes_rcvd&filter=app='myapp'",
+              },
+              {
+                inputDataType: 'METRICS',
+                outputFormat: 'SPLUNK',
+                selector: "names=http.request.count&filter=app='myapp'",
+              },
+            ],
+          },
+        },
+        {
+          metadata: {
+            name: 'splunk',
+            displayName: 'Splunk - Metrics',
+            description: 'Metrics forwarder going to Splunk HEC',
+            kind: 'forwarder',
+            uid: 'd290f1ee-6c54-4b01-90e6-d701748f0851',
+            links: { rel: '/api/v1/analytics/forwarders/splunk' },
+            createTime: '2019-07-29T09:12:33.001Z',
+            updateTime: '2019-07-29T10:12:33.001Z',
+          },
+          desiredState: {
+            collectorType: 'SPLUNK',
+            integrationRef: { ref: '/platform/integrations/splunk_hec' },
+            streams: [
+              {
+                inputDataType: 'METRICS',
+                outputFormat: 'SPLUNK',
+                selector: "names=http.request.bytes_rcvd&filter=app='myapp'",
+              },
+              {
+                inputDataType: 'METRICS',
+                outputFormat: 'SPLUNK',
+                selector: "names=http.request.count&filter=app='myapp'",
+              },
+            ],
+          },
+          currentStatus: {
+            state: {
+              selfConfigState: {
+                isConfigured: true,
+                isConfiguring: false,
+                isError: false,
+                isDeleting: false,
+                total: 0,
+                configured: 1,
+                configuring: 0,
+                error: 0,
+                deleting: 0,
+              },
+              conditions: [{ type: 'error', message: 'integration reference not found' }],
+            },
+            collectorType: 'SPLUNK',
+            integrationRef: { ref: '/platform/integrations/splunk_hec' },
+            streams: [
+              {
+                inputDataType: 'METRICS',
+                outputFormat: 'SPLUNK',
+                selector: "names=http.request.bytes_rcvd&filter=app='myapp'",
+              },
+              {
+                inputDataType: 'METRICS',
+                outputFormat: 'SPLUNK',
+                selector: "names=http.request.count&filter=app='myapp'",
+              },
+            ],
+          },
+        },
+      ],
+    },
+    required: [],
+  })
   .openapi('ForwarderListResponse')
 
 const BadRequestResponse = {

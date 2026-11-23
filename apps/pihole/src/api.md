@@ -434,6 +434,19 @@ Using this endpoint, a session can be deleted by its ID.
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "error": {
+    "key": "forbidden",
+    "message": "Unable to delete session",
+    "hint": "App sessions without webserver.api.app_sudo and CLI sessions cannot delete sessions"
+  },
+  "took": 0.003
+}
+```
+
 > 404 Response
 
 ```json
@@ -449,6 +462,7 @@ Using this endpoint, a session can be deleted by its ID.
 |204|No Content|No Content (deleted)|None|
 |400|Bad Request|Bad Request|Inline|
 |401|Unauthorized|Unauthorized|Inline|
+|403|Forbidden|Forbidden (app session without `webserver.api.app_sudo`, or CLI session)|Inline|
 |404|Not Found|Not Found (session not found)|Inline|
 
 <h3 id="delete-session-by-id-responseschema">Response Schema</h3>
@@ -471,6 +485,16 @@ Status Code **401**
 |» key|string|false|none|Machine-readable error type|
 |» message|string|false|none|Human-readable error message|
 |» hint|string \| null|false|none|No additional data available|
+|took|number|false|none|Time in seconds it took to process the request|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|object|false|none|none|
+|» key|string|false|none|Machine-readable error type|
+|» message|string|false|none|Human-readable error message|
+|» hint|string \| null|false|none|Further details|
 |took|number|false|none|Time in seconds it took to process the request|
 
 Status Code **404**
@@ -541,12 +565,26 @@ List of all current sessions including their validity and further information ab
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "error": {
+    "key": "forbidden",
+    "message": "Unable to list sessions",
+    "hint": "App sessions without webserver.api.app_sudo and CLI sessions cannot list sessions"
+  },
+  "took": 0.003
+}
+```
+
 <h3 id="list-of-all-current-sessions-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|Inline|
 |401|Unauthorized|Unauthorized|Inline|
+|403|Forbidden|Forbidden (app session without `webserver.api.app_sudo`, or CLI session)|Inline|
 
 <h3 id="list-of-all-current-sessions-responseschema">Response Schema</h3>
 
@@ -579,6 +617,16 @@ Status Code **401**
 |» key|string|false|none|Machine-readable error type|
 |» message|string|false|none|Human-readable error message|
 |» hint|string \| null|false|none|No additional data available|
+|took|number|false|none|Time in seconds it took to process the request|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|object|false|none|none|
+|» key|string|false|none|Machine-readable error type|
+|» message|string|false|none|Human-readable error message|
+|» hint|string \| null|false|none|Further details|
 |took|number|false|none|Time in seconds it took to process the request|
 
 <aside class="warning">
@@ -6164,7 +6212,7 @@ curl "http://pi.hole/api/search/doubleclick.net?sid=${API_KEY}" \
 Search for domains in Pi-hole's list. The specified domain is automatically converted to lowercase.
 The optional parameters `N` and `partial` limit the maximum number of returned records and whether partial matches should be returned, respectively.
 There is a hard upper limit of `N` defined in FTL (currently set to 10,000) to ensure that the response is not too large.
-ABP matches are not returned when partial matching is requested.
+ABP-style entries (`||domain^`) are matched against every parent domain of the search term, for partial and exact searches alike.
 International domains names (IDNs) are internally converted to punycode before matching.
 
 
@@ -6455,14 +6503,14 @@ This API hook returns a collection of various system infos.
       "%cpu": 0,
       "load": {
         "raw": [
-          0.58837890625,
-          0.64990234375,
-          0.66748046875
+          0.58,
+          0.65,
+          0.67
         ],
         "percent": [
-          4.903157711029053,
-          5.415853023529053,
-          5.562337398529053
+          7.25,
+          8.125,
+          8.375
         ]
       }
     },
@@ -11937,14 +11985,14 @@ curl "http://pi.hole/api/padd?sid=${API_KEY}" \
       "%cpu": 0,
       "load": {
         "raw": [
-          0.58837890625,
-          0.64990234375,
-          0.66748046875
+          0.58,
+          0.65,
+          0.67
         ],
         "percent": [
-          4.903157711029053,
-          5.415853023529053,
-          5.562337398529053
+          7.25,
+          8.125,
+          8.375
         ]
       }
     },
@@ -12409,6 +12457,19 @@ Managing DHCP leases is only possible when the DHCP server is enabled.
 }
 ```
 
+> 503 Response
+
+```json
+{
+  "error": {
+    "key": "service_unavailable",
+    "message": "Failed to delete DHCP lease",
+    "hint": "timed out waiting for the resolver to remove the lease"
+  },
+  "took": 5.002
+}
+```
+
 <h3 id="remove-dhcp-lease-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -12417,6 +12478,7 @@ Managing DHCP leases is only possible when the DHCP server is enabled.
 |400|Bad Request|Bad request|Inline|
 |401|Unauthorized|Unauthorized|Inline|
 |404|Not Found|Item not found|Inline|
+|503|Service Unavailable|The resolver did not remove the lease in time, the request can be repeated|Inline|
 
 <h3 id="remove-dhcp-lease-responseschema">Response Schema</h3>
 
@@ -12444,6 +12506,16 @@ Status Code **404**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|took|number|false|none|Time in seconds it took to process the request|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|object|false|none|none|
+|» key|string|false|none|Machine-readable error type|
+|» message|string|false|none|Human-readable error message|
+|» hint|string \| null|false|none|Further details|
 |took|number|false|none|Time in seconds it took to process the request|
 
 <aside class="warning">

@@ -9,7 +9,7 @@ const SubscriptionSchema = z
       .string()
       .exactOptional()
       .openapi({ example: 'urn:uuid:5e94c686-2c0b-4f9b-958c-92ccc3bbb4eb' }),
-    payload: z.object({}).exactOptional(),
+    payload: z.looseObject({}).exactOptional(),
     subscriber: z.string().openapi({ example: 'urn:uuid:bb3de268-05b0-4c65-b44e-8f9acefc29d6' }),
     topic: z.string().openapi({ example: 'https://example.com/{selector}' }),
     type: z.string().openapi({ example: 'Subscription' }),

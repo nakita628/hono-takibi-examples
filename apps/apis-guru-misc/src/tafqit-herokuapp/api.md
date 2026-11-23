@@ -6,7 +6,7 @@ Convert numbers to their Arabic text representation
 
 Base URLs:
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a> - Base URL
+* <a href="/">/</a> - Base URL
 
 Email: <a href="mailto:info@tafqit.com">Sami Morcos</a> 
 Web: <a href="https://tafqit.com">Sami Morcos</a> 

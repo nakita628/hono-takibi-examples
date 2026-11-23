@@ -558,6 +558,7 @@ const PublicImportErrorSchema = z
         'INVALID_SPREADSHEET',
         'LIMIT_EXCEEDED',
         'LINE_ITEM_MULTIPLE_PARENTS_IN_ROW',
+        'MANY_DUPLICATE_ERRORS',
         'MANY_ERRORS_IN_ROW',
         'MISSING_EVENT_DEFINITION',
         'MISSING_EVENT_TIMESTAMP',
@@ -894,7 +895,7 @@ const PublicImportResponseSchema = z
       .exactOptional()
       .openapi({ description: 'The user-provided name for this import.', example: null }),
     importRequestJson: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The complete import request configuration as a JSON object.',
@@ -1071,14 +1072,14 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { 'crm.import': '' },
+      scopes: { 'crm.import': '', 'crm.objects.contacts.import': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'crm.import': { portal: ['public', 'private'], developer: true },
+    'crm.objects.contacts.import': { user: ['public'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCrmImports202609Route = createRoute({
   method: 'get',
@@ -1143,7 +1144,7 @@ export const getCrmImports202609Route = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['crm.import'] }],
+  security: [{ oauth2: ['crm.objects.contacts.import'] }, { oauth2: ['crm.import'] }],
 })
 
 export const postCrmImports202609Route = createRoute({
@@ -1220,7 +1221,7 @@ export const getCrmImports202609ImportIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['crm.import'] }],
+  security: [{ oauth2: ['crm.objects.contacts.import'] }, { oauth2: ['crm.import'] }],
 })
 
 export const postCrmImports202609ImportIdCancelRoute = createRoute({
@@ -1382,5 +1383,5 @@ export const getCrmImports202609ImportIdErrorsRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['crm.import'] }],
+  security: [{ oauth2: ['crm.objects.contacts.import'] }, { oauth2: ['crm.import'] }],
 })

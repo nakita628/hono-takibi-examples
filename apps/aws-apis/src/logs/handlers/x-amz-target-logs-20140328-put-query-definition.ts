@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetLogs20140328PutQueryDefinitionRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetLogs20140328PutQueryDefinitionHandler = app.openapi(
+  postXAmzTargetLogs20140328PutQueryDefinitionRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

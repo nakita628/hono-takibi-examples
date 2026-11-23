@@ -4454,6 +4454,14 @@ top_k: 10
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|category|query|string \| null|false|Voice category used for filtering|
+|gender|query|string \| null|false|Gender used for filtering|
+|age|query|string \| null|false|Age used for filtering|
+|use_cases|query|[string] \| null|false|Use-case used for filtering|
+|min_notice_period_days|query|integer \| null|false|Filter voices with a minimum notice period of the given number of days.|
+|include_custom_rates|query|boolean \| null|false|Include/exclude voices with custom rates|
+|include_live_moderated|query|boolean \| null|false|Include/exclude voices that are live moderated|
+|owner_id|query|string \| null|false|Filter voices by public owner ID|
 |xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
 |body|body|[Body_Get_similar_library_voices_v1_similar_voices_post](#schemabody_get_similar_library_voices_v1_similar_voices_post)|false|none|
 |» audio_file|body|string(binary)|false|none|
@@ -4463,6 +4471,14 @@ top_k: 10
 |» top_k|body|integer \| null|false|Number of most similar voices to return. If similarity_threshold is provided, less than this number of voices may be returned. Values range from 1 to 100.|
 |» » *anyOf*|body|integer|false|none|
 |» » *anyOf*|body|null|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|category|professional|
+|category|famous|
+|category|high_quality|
 
 > Example responses
 
@@ -10463,6 +10479,89 @@ file_format: pcm_s16le_16
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Successful Response|None|
+|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+<h1 id="elevenlabs-api-documentation-content-provenance">content-provenance</h1>
+
+Check audio for an embedded ElevenLabs watermark to verify where it came from.
+
+## Check Watermark
+
+<a id="opIdcheck_content_provenance_watermark"></a>
+
+> Code samples
+
+```bash
+curl https://api.elevenlabs.io/v1/content-provenance/watermark \
+  -X POST \
+  -H 'Accept: application/json' \
+  -F 'file=@/path/to/file' \
+  -F 'version=string'
+```
+
+`POST /v1/content-provenance/watermark`
+
+Check an audio file for an embedded ElevenLabs watermark. This endpoint is in beta and may change.
+
+> Body parameter
+
+```yaml
+file: string
+version: string
+```
+
+<h3 id="check-watermark-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
+|body|body|[Body_Check_watermark_v1_content_provenance_watermark_post](#schemabody_check_watermark_v1_content_provenance_watermark_post)|true|none|
+|» file|body|string(binary)|true|Audio file to check for an embedded watermark.|
+|» version|body|string \| null|false|Watermark decoder version. Defaults to latest.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "is_detected": true,
+  "details": {
+    "product": "string",
+    "model": "string",
+    "generated_at": "string",
+    "unique_id": "string"
+  }
+}
+```
+
+> 422 Response
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string"
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+<h3 id="check-watermark-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful Response|[WatermarkCheck](#schemawatermarkcheck)|
 |422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
 <aside class="success">
@@ -22338,6 +22437,9 @@ curl https://api.elevenlabs.io/v1/convai/agents/create \
           }
         },
         "auto_resolve_after_inactive_minutes": 1,
+        "environments": [
+          "string"
+        ],
         "notifiers": [
           {
             "type": "webhook",
@@ -22921,6 +23023,9 @@ Create an agent from a config object
         }
       },
       "auto_resolve_after_inactive_minutes": 1,
+      "environments": [
+        "string"
+      ],
       "notifiers": [
         {
           "type": "webhook",
@@ -39340,7 +39445,7 @@ curl 'https://api.elevenlabs.io/v1/convai/agents/agent_3701k3ttaq12ewp8b7qv5rfys
 
 `GET /v1/convai/agents/{agent_id}/branches/{source_branch_id}/merge-preview`
 
-Returns the result of merging the source branch into the target branch without performing the merge. Useful for showing an accurate diff before confirming.
+Returns the result of merging the source branch into the target branch without performing the merge. When `conflicts` is not empty, the merge itself is rejected unless `conflict_resolutions` settles every conflict or `force` is set; until then the returned configuration shows one side of each conflict only as a placeholder.
 
 <h3 id="preview-merged-configuration-parameters">Parameters</h3>
 
@@ -39349,7 +39454,7 @@ Returns the result of merging the source branch into the target branch without p
 |agent_id|path|string|true|The id of an agent. This is returned on agent creation.|
 |source_branch_id|path|string|true|Unique identifier for the source branch to merge from.|
 |target_branch_id|query|string|true|The ID of the target branch to merge into.|
-|force|query|boolean|false|When true, source branch changes always win conflicts regardless of timestamps|
+|force|query|boolean|false|When true, the preview keeps the source branch's value for every conflict, as a merge with `force` does. Without it, a merge with conflicts needs `conflict_resolutions`.|
 |include_procedure_generated_workflow_elements|query|boolean|false|Whether to include the workflow nodes and edges generated from structured procedures. When false, the workflow contains only authored elements.|
 |xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
 
@@ -39644,20 +39749,36 @@ curl 'https://api.elevenlabs.io/v1/convai/agents/agent_3701k3ttaq12ewp8b7qv5rfys
   -H 'Accept: application/json' \
   -d '{
     "archive_source_branch": true,
-    "force": false
+    "force": false,
+    "conflict_resolutions": [
+      {
+        "choice": "source",
+        "conflict_id": "conversation_config:agent.first_message"
+      }
+    ],
+    "source_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t",
+    "target_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t"
   }'
 ```
 
 `POST /v1/convai/agents/{agent_id}/branches/{source_branch_id}/merge`
 
-Merge a branch into a target branch
+Merge a branch into a target branch. If both branches changed the same field, the merge returns 409 unless `conflict_resolutions` settles every conflict the merge preview reports, or `force` is set.
 
 > Body parameter
 
 ```json
 {
   "archive_source_branch": true,
-  "force": false
+  "force": false,
+  "conflict_resolutions": [
+    {
+      "choice": "source",
+      "conflict_id": "conversation_config:agent.first_message"
+    }
+  ],
+  "source_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t",
+  "target_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t"
 }
 ```
 
@@ -39671,7 +39792,16 @@ Merge a branch into a target branch
 |xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
 |body|body|[Body_Merge_a_branch_into_a_target_branch_v1_convai_agents__agent_id__branches__source_branch_id__merge_post](#schemabody_merge_a_branch_into_a_target_branch_v1_convai_agents__agent_id__branches__source_branch_id__merge_post)|false|none|
 |» archive_source_branch|body|boolean|false|Whether to archive the source branch after merging|
-|» force|body|boolean|false|Force source branch changes onto the target, overriding timestamp-based conflict resolution|
+|» force|body|boolean|false|Keep the source branch's value for every conflict instead of sending `conflict_resolutions`|
+|» conflict_resolutions|body|[[ConflictResolution](#schemaconflictresolution)] \| null|false|Side to keep, or custom text where the conflict accepts it, for each conflict the preview reported. A merge or rebase with conflicts is rejected unless there is one for every conflict, sent with both tip ids. On a merge it can't be combined with `force`, which lets the source win every conflict instead.|
+|» » *anyOf*|body|[[ConflictResolution](#schemaconflictresolution)]|false|none|
+|» » *anyOf*|body|null|false|none|
+|» source_tip_id|body|string \| null|false|Source branch tip version the conflicts were resolved against (`source_tip_version_id` of the preview). The request fails with 409 if the branch moved since.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» target_tip_id|body|string \| null|false|Target branch tip version the conflicts were resolved against (`target_tip_version_id` of the preview). The request fails with 409 if the branch moved since.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
 
 > Example responses
 
@@ -39721,7 +39851,7 @@ curl https://api.elevenlabs.io/v1/convai/agents/agent_3701k3ttaq12ewp8b7qv5rfysz
 
 `GET /v1/convai/agents/{agent_id}/branches/{branch_id}/rebase-preview`
 
-Returns the result of pulling changes from a source branch (defaults to main) into the given branch without performing it, preserving the given branch's own changes. Useful for showing an accurate diff before confirming.
+Returns the result of pulling changes from a source branch (defaults to main) into the given branch without performing it. When `conflicts` is not empty, the rebase itself is rejected unless `conflict_resolutions` settles every conflict; until then the returned configuration keeps the given branch's side of each conflict.
 
 <h3 id="preview-rebased-configuration-parameters">Parameters</h3>
 
@@ -40022,17 +40152,35 @@ curl https://api.elevenlabs.io/v1/convai/agents/agent_3701k3ttaq12ewp8b7qv5rfysz
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -d '{}'
+  -d '{
+    "conflict_resolutions": [
+      {
+        "choice": "source",
+        "conflict_id": "conversation_config:agent.first_message"
+      }
+    ],
+    "branch_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t",
+    "source_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t"
+  }'
 ```
 
 `POST /v1/convai/agents/{agent_id}/branches/{branch_id}/rebase`
 
-Pull changes from a source branch (defaults to main) into this branch as a new version, preserving this branch's own changes on conflicts.
+Pull changes from a source branch (defaults to main) into this branch as a new version. If both branches changed the same field, the rebase returns 409 unless `conflict_resolutions` settles every conflict the rebase preview reports.
 
 > Body parameter
 
 ```json
-{}
+{
+  "conflict_resolutions": [
+    {
+      "choice": "source",
+      "conflict_id": "conversation_config:agent.first_message"
+    }
+  ],
+  "branch_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t",
+  "source_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t"
+}
 ```
 
 <h3 id="rebase-a-branch-onto-main-parameters">Parameters</h3>
@@ -40044,6 +40192,15 @@ Pull changes from a source branch (defaults to main) into this branch as a new v
 |source_branch_id|query|string \| null|false|The ID of the branch to pull changes from. Defaults to the agent's main branch.|
 |xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
 |body|body|[Body_Rebase_a_branch_onto_main_v1_convai_agents__agent_id__branches__branch_id__rebase_post](#schemabody_rebase_a_branch_onto_main_v1_convai_agents__agent_id__branches__branch_id__rebase_post)|false|none|
+|» conflict_resolutions|body|[[ConflictResolution](#schemaconflictresolution)] \| null|false|Side to keep, or custom text where the conflict accepts it, for each conflict the preview reported. A merge or rebase with conflicts is rejected unless there is one for every conflict, sent with both tip ids. On a merge it can't be combined with `force`, which lets the source win every conflict instead.|
+|» » *anyOf*|body|[[ConflictResolution](#schemaconflictresolution)]|false|none|
+|» » *anyOf*|body|null|false|none|
+|» branch_tip_id|body|string \| null|false|Tip version of the branch being rebased (`source_tip_version_id` of the rebase preview) the conflicts were resolved against. The request fails with 409 if it moved since.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
+|» source_tip_id|body|string \| null|false|Tip version of the branch the changes are pulled from (`source_branch_id`, the main branch by default; `target_tip_version_id` of the rebase preview) the conflicts were resolved against. The request fails with 409 if it moved since.|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|null|false|none|
 
 > Example responses
 
@@ -41397,7 +41554,7 @@ Execute the merge. The caller must have write access to the target branch (admin
 |xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
 |body|body|[Body_Merge_a_merge_proposal_v1_convai_agents__agent_id__merge_proposals__merge_proposal_id__merge_post](#schemabody_merge_a_merge_proposal_v1_convai_agents__agent_id__merge_proposals__merge_proposal_id__merge_post)|false|none|
 |» archive_source_branch|body|boolean|false|Whether to archive the source branch after merging.|
-|» force|body|boolean|false|Force source branch changes onto the target, overriding timestamp-based conflict resolution.|
+|» force|body|boolean|false|Keep the source branch's value for every conflict.|
 
 > Example responses
 
@@ -41529,6 +41686,19 @@ Get the workspace's outbound campaign configuration: the default policy new camp
           ]
         }
       ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
+        }
+      ],
       "data_collection": {
         "callback_time": "__system_data_collection_callback_time",
         "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -41569,6 +41739,19 @@ Get the workspace's outbound campaign configuration: the default policy new camp
                 "end": "string"
               }
             ]
+          }
+        ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
           }
         ],
         "data_collection": {
@@ -41612,6 +41795,19 @@ Get the workspace's outbound campaign configuration: the default policy new camp
             ]
           }
         ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
+          }
+        ],
         "data_collection": {
           "callback_time": "__system_data_collection_callback_time",
           "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -41652,6 +41848,19 @@ Get the workspace's outbound campaign configuration: the default policy new camp
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {
@@ -41740,6 +41949,19 @@ curl https://api.elevenlabs.io/v1/convai/outbound-campaigns/config \
             ]
           }
         ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
+          }
+        ],
         "data_collection": {
           "callback_time": "__system_data_collection_callback_time",
           "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -41780,6 +42002,19 @@ curl https://api.elevenlabs.io/v1/convai/outbound-campaigns/config \
                   "end": "string"
                 }
               ]
+            }
+          ],
+          "date_overrides": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "intervals": [
+                {
+                  "start": "string",
+                  "end": "string"
+                }
+              ],
+              "name": "string"
             }
           ],
           "data_collection": {
@@ -41823,6 +42058,19 @@ curl https://api.elevenlabs.io/v1/convai/outbound-campaigns/config \
               ]
             }
           ],
+          "date_overrides": [
+            {
+              "start_date": "1970-01-01",
+              "end_date": "1970-01-01",
+              "intervals": [
+                {
+                  "start": "string",
+                  "end": "string"
+                }
+              ],
+              "name": "string"
+            }
+          ],
           "data_collection": {
             "callback_time": "__system_data_collection_callback_time",
             "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -41863,6 +42111,19 @@ curl https://api.elevenlabs.io/v1/convai/outbound-campaigns/config \
                 "end": "string"
               }
             ]
+          }
+        ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
           }
         ],
         "data_collection": {
@@ -41920,6 +42181,19 @@ Create or replace the workspace's outbound campaign configuration. Send the `ver
           ]
         }
       ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
+        }
+      ],
       "data_collection": {
         "callback_time": "__system_data_collection_callback_time",
         "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -41960,6 +42234,19 @@ Create or replace the workspace's outbound campaign configuration. Send the `ver
                 "end": "string"
               }
             ]
+          }
+        ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
           }
         ],
         "data_collection": {
@@ -42003,6 +42290,19 @@ Create or replace the workspace's outbound campaign configuration. Send the `ver
             ]
           }
         ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
+          }
+        ],
         "data_collection": {
           "callback_time": "__system_data_collection_callback_time",
           "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -42043,6 +42343,19 @@ Create or replace the workspace's outbound campaign configuration. Send the `ver
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {
@@ -42109,6 +42422,19 @@ Create or replace the workspace's outbound campaign configuration. Send the `ver
           ]
         }
       ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
+        }
+      ],
       "data_collection": {
         "callback_time": "__system_data_collection_callback_time",
         "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -42149,6 +42475,19 @@ Create or replace the workspace's outbound campaign configuration. Send the `ver
                 "end": "string"
               }
             ]
+          }
+        ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
           }
         ],
         "data_collection": {
@@ -42192,6 +42531,19 @@ Create or replace the workspace's outbound campaign configuration. Send the `ver
             ]
           }
         ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
+          }
+        ],
         "data_collection": {
           "callback_time": "__system_data_collection_callback_time",
           "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -42232,6 +42584,19 @@ Create or replace the workspace's outbound campaign configuration. Send the `ver
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {
@@ -42364,6 +42729,19 @@ List the workspace's outbound campaigns, newest first.
                 "end": "string"
               }
             ]
+          }
+        ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
           }
         ],
         "data_collection": {
@@ -42586,6 +42964,7 @@ curl https://api.elevenlabs.io/v1/convai/outbound-campaigns/campaigns/submit \
         ],
         "whatsapp_user_id": "string",
         "id": "string",
+        "timezone_override": "string",
         "conversation_initiation_client_data": {
           "conversation_config_override": {
             "agent": {
@@ -42671,6 +43050,19 @@ curl https://api.elevenlabs.io/v1/convai/outbound-campaigns/campaigns/submit \
           ]
         }
       ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
+        }
+      ],
       "data_collection": {
         "callback_time": "__system_data_collection_callback_time",
         "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -42729,6 +43121,7 @@ Create an outbound campaign that calls or messages each recipient with the agent
       ],
       "whatsapp_user_id": "string",
       "id": "string",
+      "timezone_override": "string",
       "conversation_initiation_client_data": {
         "conversation_config_override": {
           "agent": {
@@ -42812,6 +43205,19 @@ Create an outbound campaign that calls or messages each recipient with the agent
             "end": "string"
           }
         ]
+      }
+    ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
       }
     ],
     "data_collection": {
@@ -42952,6 +43358,19 @@ Create an outbound campaign that calls or messages each recipient with the agent
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {
@@ -43101,6 +43520,19 @@ Get an outbound campaign and its lead counts.
             "end": "string"
           }
         ]
+      }
+    ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
       }
     ],
     "data_collection": {
@@ -43294,6 +43726,7 @@ List the leads of an outbound campaign, one per recipient.
         "string"
       ],
       "phone_numbers_index": 0,
+      "timezone_override": "string",
       "user_id": "string",
       "attempt_count": 0,
       "failure_count": 0,
@@ -43609,6 +44042,7 @@ Get one lead of an outbound campaign.
     "string"
   ],
   "phone_numbers_index": 0,
+  "timezone_override": "string",
   "user_id": "string",
   "attempt_count": 0,
   "failure_count": 0,
@@ -43806,6 +44240,19 @@ Pause an outbound campaign. It places no new calls until resumed; calls already 
         ]
       }
     ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
+      }
+    ],
     "data_collection": {
       "callback_time": "string",
       "redirect_phone_number": "string",
@@ -43953,6 +44400,19 @@ Resume a paused outbound campaign, including calls an attention item held back.
         ]
       }
     ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
+      }
+    ],
     "data_collection": {
       "callback_time": "string",
       "redirect_phone_number": "string",
@@ -44098,6 +44558,19 @@ Stop an outbound campaign for good: queued calls are cancelled and no lead is ca
             "end": "string"
           }
         ]
+      }
+    ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
       }
     ],
     "data_collection": {
@@ -46387,6 +46860,7 @@ Generate a time limited single-use token with embedded authentication for fronte
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |token_type|path|[SingleUseTokenType](#schemasingleusetokentype)|true|none|
+|max_session_duration_seconds|query|integer \| null|false|Closes the realtime transcription session opened with this token after this many seconds. Only for realtime_scribe tokens.|
 |xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
 
 #### Enumerated Values
@@ -49494,6 +49968,9 @@ curl https://api.elevenlabs.io/v1/convai/agents/agent_3701k3ttaq12ewp8b7qv5rfysz
             }
           },
           "auto_resolve_after_inactive_minutes": 1,
+          "environments": [
+            "string"
+          ],
           "notifiers": [
             {
               "type": "webhook",
@@ -50084,6 +50561,9 @@ Run selected tests on the agent with provided configuration. If the agent config
           }
         },
         "auto_resolve_after_inactive_minutes": 1,
+        "environments": [
+          "string"
+        ],
         "notifiers": [
           {
             "type": "webhook",
@@ -52739,6 +53219,9 @@ curl https://api.elevenlabs.io/v1/convai/test-invocations/string/resubmit \
             }
           },
           "auto_resolve_after_inactive_minutes": 1,
+          "environments": [
+            "string"
+          ],
           "notifiers": [
             {
               "type": "webhook",
@@ -53323,6 +53806,9 @@ Resubmits specific test runs from a test invocation.
           }
         },
         "auto_resolve_after_inactive_minutes": 1,
+        "environments": [
+          "string"
+        ],
         "notifiers": [
           {
             "type": "webhook",
@@ -53548,10 +54034,9 @@ List an agent's issues, ordered by most recently created first unless sorted by 
 |status|query|[AgentConversationTicketStatus](#schemaagentconversationticketstatus) \| null|false|Filter agent issues by status.|
 |sources|query|[[AgentConversationTicketSource](#schemaagentconversationticketsource)] \| null|false|Filter agent issues by how they were raised (qa, agent, manual). Repeat the parameter to filter by multiple sources.|
 |priorities|query|[[AgentConversationTicketPriority](#schemaagentconversationticketpriority)] \| null|false|Filter agent issues by priority. Repeat the parameter to filter by multiple priorities.|
-|sort_by|query|[AgentConversationTicketSortBy](#schemaagentconversationticketsortby)|false|Order by most recently created, by priority (most urgent first, then most recently created), or by most recently reported (the newest report merged into the agent issue, else its creation).|
+|sort_by|query|[AgentConversationTicketSortBy](#schemaagentconversationticketsortby)|false|Order by most recently created, by priority (most urgent first, then most recently created), by most recently reported (the newest report merged into the agent issue, else its creation), or by report count (most reports merged into the agent issue first, then most recently created).|
 |owner_user_id|query|string \| null|false|Filter agent issues by creator. Use 'agent' for agent-raised issues.|
 |assignee_user_id|query|string \| null|false|Filter agent issues by assignee. Use 'unassigned' for issues with no assignee.|
-|issue_type|query|[AgentConversationTicketIssueType](#schemaagentconversationticketissuetype) \| null|false|Filter agent issues by type.|
 |label|query|string \| null|false|Filter agent issues by an exact label.|
 |merged_into_ticket_id|query|string \| null|false|Filter agent issues merged into this issue.|
 |search|query|string \| null|false|Case-insensitive free-text search across the agent issue's title, description, comments, and turn comments.|
@@ -53580,7 +54065,7 @@ List an agent's issues, ordered by most recently created first unless sorted by 
       "agent_id": "string",
       "needs_clustering": true,
       "title": "string",
-      "issue_type": "knowledge_gap",
+      "issue_type": null,
       "labels": [
         "string"
       ],
@@ -53735,7 +54220,7 @@ Manually raise a follow-up issue against an agent, not tied to any conversation 
   "agent_id": "string",
   "needs_clustering": true,
   "title": "string",
-  "issue_type": "knowledge_gap",
+  "issue_type": null,
   "labels": [
     "string"
   ],
@@ -53842,10 +54327,9 @@ List agent issues across every agent in the workspace, ordered by most recently 
 |status|query|[AgentConversationTicketStatus](#schemaagentconversationticketstatus) \| null|false|Filter agent issues by status.|
 |sources|query|[[AgentConversationTicketSource](#schemaagentconversationticketsource)] \| null|false|Filter agent issues by how they were raised (qa, agent, manual). Repeat the parameter to filter by multiple sources.|
 |priorities|query|[[AgentConversationTicketPriority](#schemaagentconversationticketpriority)] \| null|false|Filter agent issues by priority. Repeat the parameter to filter by multiple priorities.|
-|sort_by|query|[AgentConversationTicketSortBy](#schemaagentconversationticketsortby)|false|Order by most recently created, by priority (most urgent first, then most recently created), or by most recently reported (the newest report merged into the agent issue, else its creation).|
+|sort_by|query|[AgentConversationTicketSortBy](#schemaagentconversationticketsortby)|false|Order by most recently created, by priority (most urgent first, then most recently created), by most recently reported (the newest report merged into the agent issue, else its creation), or by report count (most reports merged into the agent issue first, then most recently created).|
 |owner_user_id|query|string \| null|false|Filter agent issues by creator. Use 'agent' for agent-raised issues.|
 |assignee_user_id|query|string \| null|false|Filter agent issues by assignee. Use 'unassigned' for issues with no assignee.|
-|issue_type|query|[AgentConversationTicketIssueType](#schemaagentconversationticketissuetype) \| null|false|Filter agent issues by type.|
 |label|query|string \| null|false|Filter agent issues by an exact label.|
 |merged_into_ticket_id|query|string \| null|false|Filter agent issues merged into this issue.|
 |search|query|string \| null|false|Case-insensitive free-text search across the agent issue's title, description, comments, and turn comments.|
@@ -53874,7 +54358,7 @@ List agent issues across every agent in the workspace, ordered by most recently 
       "agent_id": "string",
       "needs_clustering": true,
       "title": "string",
-      "issue_type": "knowledge_gap",
+      "issue_type": null,
       "labels": [
         "string"
       ],
@@ -54046,7 +54530,7 @@ Raise an issue about an agent's performance on a conversation, to work on with A
   "agent_id": "string",
   "needs_clustering": true,
   "title": "string",
-  "issue_type": "knowledge_gap",
+  "issue_type": null,
   "labels": [
     "string"
   ],
@@ -54236,7 +54720,7 @@ Get an agent issue by ID.
   "agent_id": "string",
   "needs_clustering": true,
   "title": "string",
-  "issue_type": "knowledge_gap",
+  "issue_type": null,
   "labels": [
     "string"
   ],
@@ -54456,7 +54940,7 @@ Update an agent issue's title, comment, status, priority, and/or assignee. Requi
   "agent_id": "string",
   "needs_clustering": true,
   "title": "string",
-  "issue_type": "knowledge_gap",
+  "issue_type": null,
   "labels": [
     "string"
   ],
@@ -54588,7 +55072,7 @@ Append a comment discussing how to resolve the agent issue. Requires viewer acce
   "agent_id": "string",
   "needs_clustering": true,
   "title": "string",
-  "issue_type": "knowledge_gap",
+  "issue_type": null,
   "labels": [
     "string"
   ],
@@ -54724,7 +55208,7 @@ Merge other open issues of the same agent into this pending, in-progress, or res
   "agent_id": "string",
   "needs_clustering": true,
   "title": "string",
-  "issue_type": "knowledge_gap",
+  "issue_type": null,
   "labels": [
     "string"
   ],
@@ -54859,7 +55343,7 @@ Append a turn-level comment to an agent issue. Requires viewer access to the iss
   "agent_id": "string",
   "needs_clustering": true,
   "title": "string",
-  "issue_type": "knowledge_gap",
+  "issue_type": null,
   "labels": [
     "string"
   ],
@@ -55068,7 +55552,7 @@ curl https://api.elevenlabs.io/v1/workspace/webhooks/string/deliveries/string/re
 
 `POST /v1/workspace/webhooks/{webhook_id}/deliveries/{delivery_id}/redeliver`
 
-Sends a stored delivery again, once, with the same delivery ID, a new signature and an ElevenLabs-Webhook-Redelivery header. A retry that is already scheduled is still sent. Only workspace admins on a web session can redeliver, and only deliveries whose payload is stored. Redeliveries and test events share a limit of 10 per webhook per minute.
+Sends a stored delivery again, once, with the same delivery ID, a new signature and an ElevenLabs-Webhook-Redelivery header. A retry that is already scheduled is still sent. Redelivering needs permission to manage webhooks and a web session, and the delivery's payload must be stored. Redeliveries and test events share a limit of 10 per webhook per minute.
 
 <h3 id="redeliver-webhook-delivery-parameters">Parameters</h3>
 
@@ -56665,87 +57149,6 @@ Enterprise only. Re-dub a target from its edited transcript, re-synthesizing onl
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |202|Accepted|Successful Response|[DubbingRegenerateResponse](#schemadubbingregenerateresponse)|
-|422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-<h1 id="elevenlabs-api-documentation-content-provenance">content-provenance</h1>
-
-## Check Watermark
-
-<a id="opIdcheck_content_provenance_watermark"></a>
-
-> Code samples
-
-```bash
-curl https://api.elevenlabs.io/v1/content-provenance/watermark \
-  -X POST \
-  -H 'Accept: application/json' \
-  -F 'file=@/path/to/file' \
-  -F 'version=string'
-```
-
-`POST /v1/content-provenance/watermark`
-
-Check an audio file for an embedded ElevenLabs watermark. This endpoint is in beta and may change.
-
-> Body parameter
-
-```yaml
-file: string
-version: string
-```
-
-<h3 id="check-watermark-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
-|body|body|[Body_Check_watermark_v1_content_provenance_watermark_post](#schemabody_check_watermark_v1_content_provenance_watermark_post)|true|none|
-|» file|body|string(binary)|true|Audio file to check for an embedded watermark.|
-|» version|body|string \| null|false|Watermark decoder version. Defaults to latest.|
-|» » *anyOf*|body|string|false|none|
-|» » *anyOf*|body|null|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "is_detected": true,
-  "details": {
-    "product": "string",
-    "model": "string",
-    "generated_at": "string",
-    "unique_id": "string"
-  }
-}
-```
-
-> 422 Response
-
-```json
-{
-  "detail": [
-    {
-      "loc": [
-        "string"
-      ],
-      "msg": "string",
-      "type": "string"
-    }
-  ]
-}
-```
-
-<h3 id="check-watermark-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Successful Response|[WatermarkCheck](#schemawatermarkcheck)|
 |422|Unprocessable Entity|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
 <aside class="success">
@@ -62796,7 +63199,7 @@ List every customer-facing receptionist for the workspace.
         "string"
       ],
       "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-      "disable_first_message_interruptions": false,
+      "first_message_mode": "interruptible",
       "enable_end_call_tool": true,
       "enable_skip_turn_tool": true,
       "enable_play_keypad_touch_tone_tool": false,
@@ -62920,7 +63323,7 @@ curl https://api.elevenlabs.io/v1/reception/customer-facing-agents/agent_4801jx8
         "string"
       ],
       "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-      "disable_first_message_interruptions": true,
+      "first_message_mode": "interruptible",
       "enable_end_call_tool": true,
       "enable_skip_turn_tool": true,
       "enable_play_keypad_touch_tone_tool": true,
@@ -62969,7 +63372,7 @@ Update a receptionist's display name, config and/or widget appearance.
       "string"
     ],
     "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-    "disable_first_message_interruptions": true,
+    "first_message_mode": "interruptible",
     "enable_end_call_tool": true,
     "enable_skip_turn_tool": true,
     "enable_play_keypad_touch_tone_tool": true,
@@ -63035,7 +63438,7 @@ Update a receptionist's display name, config and/or widget appearance.
       "string"
     ],
     "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-    "disable_first_message_interruptions": false,
+    "first_message_mode": "interruptible",
     "enable_end_call_tool": true,
     "enable_skip_turn_tool": true,
     "enable_play_keypad_touch_tone_tool": false,
@@ -63169,7 +63572,7 @@ Re-activate a deactivated receptionist. Fails with `quota_exceeded` when the pla
       "string"
     ],
     "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-    "disable_first_message_interruptions": false,
+    "first_message_mode": "interruptible",
     "enable_end_call_tool": true,
     "enable_skip_turn_tool": true,
     "enable_play_keypad_touch_tone_tool": false,
@@ -65885,6 +66288,7 @@ Update the business profile. Every receptionist is updated to match.
 |» currency|NGN|
 |» currency|KES|
 |» currency|PKR|
+|» currency|GEL|
 |» » *anyOf*|typing|
 |» » *anyOf*|elevator1|
 |» » *anyOf*|elevator2|
@@ -66471,6 +66875,7 @@ curl https://api.elevenlabs.io/v1/reception/reseller/workspaces \
   -H 'Accept: application/json' \
   -d '{
     "business_name": "string",
+    "vertical": "salon_barbershop",
     "subscription": {
       "tier_id": "string",
       "billing_period": "monthly_period"
@@ -66491,6 +66896,7 @@ Create a workspace for one of your customers, optionally with a tier, a phone nu
 ```json
 {
   "business_name": "string",
+  "vertical": "salon_barbershop",
   "subscription": {
     "tier_id": "string",
     "billing_period": "monthly_period"
@@ -66507,8 +66913,11 @@ Create a workspace for one of your customers, optionally with a tier, a phone nu
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |xi-api-key|header|string \| null|false|Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.|
-|body|body|[ProvisionResellerWorkspaceRequest](#schemaprovisionresellerworkspacerequest)|true|none|
+|body|body|[ReceptionProvisionResellerWorkspaceRequest](#schemareceptionprovisionresellerworkspacerequest)|true|none|
 |» business_name|body|string|true|none|
+|» vertical|body|[ReceptionVertical](#schemareceptionvertical) \| null|false|The business's vertical, used with `complete_onboarding`. Without it, onboarding picks the vertical as usual.|
+|» » *anyOf*|body|[ReceptionVertical](#schemareceptionvertical)|false|none|
+|» » *anyOf*|body|null|false|none|
 |» subscription|body|[ProvisionResellerWorkspaceSubscription](#schemaprovisionresellerworkspacesubscription) \| null|false|Paid tier to subscribe to. Omitted leaves the workspace with no subscription.|
 |» » *anyOf*|body|[ProvisionResellerWorkspaceSubscription](#schemaprovisionresellerworkspacesubscription)|false|none|
 |» » *anyOf*|body|null|false|none|
@@ -66520,6 +66929,27 @@ Create a workspace for one of your customers, optionally with a tier, a phone nu
 |» idempotency_key|body|string \| null|false|Client-generated key that makes a retry safe. The same key and body within 24 hours returns the first result without running again. While that first request is still running, a retry gets 409 `idempotency_key_in_progress`; a different body with the same key gets 400 `idempotency_key_reused`. A request that fails is not saved, so it can be retried with the same key.|
 |» » *anyOf*|body|string|false|none|
 |» » *anyOf*|body|null|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » *anyOf*|salon_barbershop|
+|» » *anyOf*|nail_beauty|
+|» » *anyOf*|spa|
+|» » *anyOf*|medical|
+|» » *anyOf*|veterinary|
+|» » *anyOf*|fitness|
+|» » *anyOf*|home_services|
+|» » *anyOf*|photography|
+|» » *anyOf*|consulting|
+|» » *anyOf*|restaurant|
+|» » *anyOf*|dental|
+|» » *anyOf*|auto_service|
+|» » *anyOf*|tutoring|
+|» » *anyOf*|legal|
+|» » *anyOf*|real_estate|
+|» » *anyOf*|other|
 
 > Example responses
 
@@ -67068,6 +67498,7 @@ The tiers you can sell, cheapest first. The first is the trial. Retired tiers ar
   {
     "tier_id": "string",
     "display_name": "string",
+    "currency": "USD",
     "tier_economics": {
       "monthly_price_usd": 99,
       "annual_price_usd": 990,
@@ -67873,6 +68304,8 @@ This operation does not require authentication
 |provider|elevenlabs|
 |provider|scribe_realtime|
 |provider|scribe_v2_turbo|
+|provider|scribe_v3_live|
+|provider|scribe_v3_live_medical|
 |user_input_audio_format|pcm_8000|
 |user_input_audio_format|pcm_16000|
 |user_input_audio_format|pcm_22050|
@@ -69946,6 +70379,9 @@ A web page or site to learn from.
         }
       },
       "auto_resolve_after_inactive_minutes": 1,
+      "environments": [
+        "string"
+      ],
       "notifiers": [
         {
           "type": "webhook",
@@ -70096,9 +70532,9 @@ A web page or site to learn from.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|conversation_config|[ConversationalConfigAPIModel-Input](#schemaconversationalconfigapimodel-input)|true|none|none|
-|platform_settings|[AgentPlatformSettingsRequestModel](#schemaagentplatformsettingsrequestmodel)|true|none|none|
-|workflow|[AgentWorkflowRequestModel](#schemaagentworkflowrequestmodel) \| null|false|none|none|
+|conversation_config|[ConversationalConfigAPIModel-Input](#schemaconversationalconfigapimodel-input)|false|none|Conversation config fields to change for this run. Fields left out keep the agent's values.|
+|platform_settings|[AgentPlatformSettingsRequestModel](#schemaagentplatformsettingsrequestmodel)|false|none|Platform settings fields to change for this run. Fields left out keep the agent's values.|
+|workflow|[AgentWorkflowRequestModel](#schemaagentworkflowrequestmodel) \| null|false|none|A workflow to run instead of the agent's. It replaces the agent's workflow whole.|
 
 <h2 id="tocS_AgentAnalysisItems-Input">AgentAnalysisItems-Input</h2>
 <!-- backwards compatibility -->
@@ -70729,17 +71165,6 @@ A web page or site to learn from.
 |max_conversation_duration_message|boolean|false|none|Whether to allow overriding the max_conversation_duration_message field.|
 |prompt|[PromptAgentAPIModelOverrideConfig](#schemapromptagentapimodeloverrideconfig)|false|none|Configures overrides for nested fields.|
 
-<h2 id="tocS_AgentConversationTicketIssueType">AgentConversationTicketIssueType</h2>
-<!-- backwards compatibility -->
-<a id="schemaagentconversationticketissuetype"></a>
-<a id="schema_AgentConversationTicketIssueType"></a>
-<a id="tocSagentconversationticketissuetype"></a>
-<a id="tocsagentconversationticketissuetype"></a>
-
-```json
-"knowledge_gap"
-```
-
 <h2 id="tocS_AgentConversationTicketPriority">AgentConversationTicketPriority</h2>
 <!-- backwards compatibility -->
 <a id="schemaagentconversationticketpriority"></a>
@@ -70766,7 +71191,7 @@ A web page or site to learn from.
   "agent_id": "string",
   "needs_clustering": true,
   "title": "string",
-  "issue_type": "knowledge_gap",
+  "issue_type": null,
   "labels": [
     "string"
   ],
@@ -70832,7 +71257,7 @@ A web page or site to learn from.
 |agent_id|string|true|none|none|
 |needs_clustering|boolean|true|none|none|
 |title|string \| null|true|none|One-line headline for the agent issue. None only on issues created before titles existed.|
-|issue_type|[AgentConversationTicketIssueType](#schemaagentconversationticketissuetype) \| null|true|none|none|
+|issue_type|null|false|none|**Deprecated.** Always null. Issue types are labels, written as `issue_type:<value>`.|
 |labels|[string]|true|none|none|
 |conversation_ids|[string]|true|none|none|
 |first_seen_unix_secs|integer \| null|true|none|none|
@@ -71888,6 +72313,9 @@ agent create or update requests are ignored.
       }
     },
     "auto_resolve_after_inactive_minutes": 1,
+    "environments": [
+      "string"
+    ],
     "notifiers": [
       {
         "type": "webhook",
@@ -71954,6 +72382,8 @@ agent create or update requests are ignored.
 |analysis_llm|gpt-6-luna|
 |analysis_llm|gpt-6.1-sol|
 |analysis_llm|gpt-6.1-terra|
+|analysis_llm|gpt-6.2-astra|
+|analysis_llm|gpt-6.2-sol|
 |analysis_llm|gpt-5-mini|
 |analysis_llm|gpt-5-nano|
 |analysis_llm|gpt-3.5-turbo|
@@ -71974,6 +72404,8 @@ agent create or update requests are ignored.
 |analysis_llm|gemini-3.7-flash|
 |analysis_llm|gemini-3.8-flash|
 |analysis_llm|gemini-4-argon|
+|analysis_llm|gemini-4-hydrogen|
+|analysis_llm|gemini-4-neon|
 |analysis_llm|claude-sonnet-4-5|
 |analysis_llm|claude-opus-4-6|
 |analysis_llm|claude-opus-4-7|
@@ -71990,7 +72422,6 @@ agent create or update requests are ignored.
 |analysis_llm|claude-3-5-sonnet|
 |analysis_llm|claude-3-5-sonnet-v1|
 |analysis_llm|claude-3-haiku|
-|analysis_llm|grok-beta|
 |analysis_llm|custom-llm|
 |analysis_llm|qwen3-4b|
 |analysis_llm|qwen3-30b-a3b|
@@ -72330,6 +72761,9 @@ agent create or update requests are ignored.
       }
     },
     "auto_resolve_after_inactive_minutes": 0,
+    "environments": [
+      "string"
+    ],
     "notifiers": [
       {
         "type": "webhook",
@@ -72402,6 +72836,8 @@ agent create or update requests are ignored.
 |analysis_llm|gpt-6-luna|
 |analysis_llm|gpt-6.1-sol|
 |analysis_llm|gpt-6.1-terra|
+|analysis_llm|gpt-6.2-astra|
+|analysis_llm|gpt-6.2-sol|
 |analysis_llm|gpt-5-mini|
 |analysis_llm|gpt-5-nano|
 |analysis_llm|gpt-3.5-turbo|
@@ -72422,6 +72858,8 @@ agent create or update requests are ignored.
 |analysis_llm|gemini-3.7-flash|
 |analysis_llm|gemini-3.8-flash|
 |analysis_llm|gemini-4-argon|
+|analysis_llm|gemini-4-hydrogen|
+|analysis_llm|gemini-4-neon|
 |analysis_llm|claude-sonnet-4-5|
 |analysis_llm|claude-opus-4-6|
 |analysis_llm|claude-opus-4-7|
@@ -72438,7 +72876,6 @@ agent create or update requests are ignored.
 |analysis_llm|claude-3-5-sonnet|
 |analysis_llm|claude-3-5-sonnet-v1|
 |analysis_llm|claude-3-haiku|
-|analysis_llm|grok-beta|
 |analysis_llm|custom-llm|
 |analysis_llm|qwen3-4b|
 |analysis_llm|qwen3-30b-a3b|
@@ -72525,6 +72962,19 @@ agent create or update requests are ignored.
       ]
     }
   ],
+  "date_overrides": [
+    {
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01",
+      "intervals": [
+        {
+          "start": "string",
+          "end": "string"
+        }
+      ],
+      "name": "string"
+    }
+  ],
   "data_collection": {
     "callback_time": "__system_data_collection_callback_time",
     "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -72552,6 +73002,7 @@ Each section set here replaces the whole matching section of the policy.
 |timezone|string \| null|false|none|none|
 |retry|[RetryPolicy](#schemaretrypolicy) \| null|false|none|none|
 |calling_periods|[[CallingPeriod](#schemacallingperiod)] \| null|false|none|none|
+|date_overrides|[[DateOverride](#schemadateoverride)] \| null|false|none|Replaces the inherited date overrides; unset inherits them and an empty list clears them.|
 |data_collection|[DataCollectionConfig](#schemadatacollectionconfig) \| null|false|none|none|
 |followup_context|[FollowupContextPolicy](#schemafollowupcontextpolicy) \| null|false|none|none|
 
@@ -72588,6 +73039,19 @@ Each section set here replaces the whole matching section of the policy.
       ]
     }
   ],
+  "date_overrides": [
+    {
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01",
+      "intervals": [
+        {
+          "start": "string",
+          "end": "string"
+        }
+      ],
+      "name": "string"
+    }
+  ],
   "data_collection": {
     "callback_time": "__system_data_collection_callback_time",
     "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -72615,6 +73079,7 @@ Each section set here replaces the whole matching section of the policy.
 |timezone|string \| null|false|none|none|
 |retry|[RetryPolicy](#schemaretrypolicy) \| null|false|none|none|
 |calling_periods|[[CallingPeriod](#schemacallingperiod)] \| null|false|none|none|
+|date_overrides|[[DateOverride](#schemadateoverride)] \| null|false|none|Replaces the inherited date overrides; unset inherits them and an empty list clears them.|
 |data_collection|[DataCollectionConfig](#schemadatacollectionconfig) \| null|false|none|none|
 |followup_context|[FollowupContextPolicy](#schemafollowupcontextpolicy) \| null|false|none|none|
 
@@ -73683,86 +74148,6 @@ Settings for agent testing configuration.
 |preserve_client_tts_overrides|boolean|false|none|Defines whether TTS client overrides should be carried over to the transferred agent.|
 |preserve_voice_settings|boolean|false|none|Defines whether the base voice, TTS model and voice settings should be carried over to the transferred agent.|
 
-<h2 id="tocS_AgentTransferOp">AgentTransferOp</h2>
-<!-- backwards compatibility -->
-<a id="schemaagenttransferop"></a>
-<a id="schema_AgentTransferOp"></a>
-<a id="tocSagenttransferop"></a>
-<a id="tocsagenttransferop"></a>
-
-```json
-{
-  "type": "replace"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|[AgentTransferOpReplace](#schemaagenttransferopreplace)|false|none|none|
-|*oneOf*|[AgentTransferOpPush](#schemaagenttransferoppush)|false|none|none|
-|*oneOf*|[AgentTransferOpPop](#schemaagenttransferoppop)|false|none|none|
-
-<h2 id="tocS_AgentTransferOpPop">AgentTransferOpPop</h2>
-<!-- backwards compatibility -->
-<a id="schemaagenttransferoppop"></a>
-<a id="schema_AgentTransferOpPop"></a>
-<a id="tocSagenttransferoppop"></a>
-<a id="tocsagenttransferoppop"></a>
-
-```json
-{
-  "type": "pop"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-
-<h2 id="tocS_AgentTransferOpPush">AgentTransferOpPush</h2>
-<!-- backwards compatibility -->
-<a id="schemaagenttransferoppush"></a>
-<a id="schema_AgentTransferOpPush"></a>
-<a id="tocSagenttransferoppush"></a>
-<a id="tocsagenttransferoppush"></a>
-
-```json
-{
-  "type": "push",
-  "return_node_id": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|return_node_id|string \| null|false|none|none|
-
-<h2 id="tocS_AgentTransferOpReplace">AgentTransferOpReplace</h2>
-<!-- backwards compatibility -->
-<a id="schemaagenttransferopreplace"></a>
-<a id="schema_AgentTransferOpReplace"></a>
-<a id="tocSagenttransferopreplace"></a>
-<a id="tocsagenttransferopreplace"></a>
-
-```json
-{
-  "type": "replace"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-
 <h2 id="tocS_AgentTrustContext">AgentTrustContext</h2>
 <!-- backwards compatibility -->
 <a id="schemaagenttrustcontext"></a>
@@ -74456,6 +74841,9 @@ HIGH: serves the owner (e.g. personal assistant) — full tool access is appropr
     }
   },
   "auto_resolve_after_inactive_minutes": 1,
+  "environments": [
+    "string"
+  ],
   "notifiers": [
     {
       "type": "webhook",
@@ -74475,6 +74863,7 @@ system default.
 |---|---|---|---|---|
 |monitor_configs|object|false|none|Alerting configuration keyed by monitor name.|
 |auto_resolve_after_inactive_minutes|integer \| null|false|none|How many minutes an alert can stay inactive before it is auto-resolved. Unset values fall through to the next layer.|
+|environments|[string] \| null|false|none|Environments whose conversations are monitored, e.g. ``['production']``. The list must include ``production``. Unset values fall through to the next layer; when no layer sets it, every environment is monitored.|
 |notifiers|[[AlertingWebhookNotifier](#schemaalertingwebhooknotifier) \| [AlertingPagerDutyNotifier](#schemaalertingpagerdutynotifier) \| [AlertingSlackNotifier](#schemaalertingslacknotifier)]|false|none|Delivery channels for alert lifecycle notifications. Stacked with other layers and deduped by ``webhook_id``, PagerDuty ``connection_id``, or Slack ``(connection_id, channel_id)``.|
 
 <h2 id="tocS_AlertingSettingsResponse">AlertingSettingsResponse</h2>
@@ -74509,6 +74898,9 @@ system default.
     }
   },
   "auto_resolve_after_inactive_minutes": 0,
+  "environments": [
+    "string"
+  ],
   "notifiers": [
     {
       "type": "webhook",
@@ -74528,6 +74920,7 @@ channels whose URLs must never be returned outside the admin API.
 |---|---|---|---|---|
 |monitor_configs|object|false|none|none|
 |auto_resolve_after_inactive_minutes|integer \| null|false|none|none|
+|environments|[string] \| null|false|none|none|
 |notifiers|[[AlertingWebhookNotifierResponse](#schemaalertingwebhooknotifierresponse) \| [AlertingPagerDutyNotifierResponse](#schemaalertingpagerdutynotifierresponse) \| [AlertingSlackNotifierResponse](#schemaalertingslacknotifierresponse)]|false|none|none|
 
 <h2 id="tocS_AlertingSlackNotifier">AlertingSlackNotifier</h2>
@@ -74579,40 +74972,6 @@ channels whose URLs must never be returned outside the admin API.
 |integration_type|string|false|none|none|
 |connection_id|string|true|none|none|
 |channel_id|string|true|none|none|
-
-<h2 id="tocS_AlertingWebhookHeader">AlertingWebhookHeader</h2>
-<!-- backwards compatibility -->
-<a id="schemaalertingwebhookheader"></a>
-<a id="schema_AlertingWebhookHeader"></a>
-<a id="tocSalertingwebhookheader"></a>
-<a id="tocsalertingwebhookheader"></a>
-
-```json
-{
-  "name": "string",
-  "is_secret": false,
-  "value": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|true|none|none|
-|is_secret|boolean|false|none|none|
-|value|string \| null|false|none|Header value. May be null only for a secret header on update.|
-
-<h2 id="tocS_AlertingWebhookMethod">AlertingWebhookMethod</h2>
-<!-- backwards compatibility -->
-<a id="schemaalertingwebhookmethod"></a>
-<a id="schema_AlertingWebhookMethod"></a>
-<a id="tocSalertingwebhookmethod"></a>
-<a id="tocsalertingwebhookmethod"></a>
-
-```json
-"POST"
-```
 
 <h2 id="tocS_AlertingWebhookNotifier">AlertingWebhookNotifier</h2>
 <!-- backwards compatibility -->
@@ -75173,6 +75532,200 @@ Cumulative LLM cost of running post-call analysis on this conversation.
 "evaluation_criteria"
 ```
 
+<h2 id="tocS_AnyOfJsonSchemaProperty-Input">AnyOfJsonSchemaProperty-Input</h2>
+<!-- backwards compatibility -->
+<a id="schemaanyofjsonschemaproperty-input"></a>
+<a id="schema_AnyOfJsonSchemaProperty-Input"></a>
+<a id="tocSanyofjsonschemaproperty-input"></a>
+<a id="tocsanyofjsonschemaproperty-input"></a>
+
+```json
+{
+  "any_of": [
+    {
+      "property_kind": "object",
+      "description": "",
+      "dynamic_variable": "",
+      "constant_value": {},
+      "is_omitted": false,
+      "type": "object",
+      "required": [
+        "string"
+      ],
+      "properties": {
+        "property1": {
+          "description": "A user-provided message",
+          "type": "string"
+        },
+        "property2": {
+          "description": "A user-provided message",
+          "type": "string"
+        }
+      },
+      "required_constraints": {
+        "any_of": [
+          {
+            "required": [
+              "string"
+            ]
+          }
+        ],
+        "all_of": [
+          {
+            "required": [
+              "string"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "property_kind": "object",
+      "description": "",
+      "dynamic_variable": "",
+      "constant_value": {},
+      "is_omitted": false,
+      "type": "object",
+      "required": [
+        "string"
+      ],
+      "properties": {
+        "property1": {
+          "description": "A user-provided message",
+          "type": "string"
+        },
+        "property2": {
+          "description": "A user-provided message",
+          "type": "string"
+        }
+      },
+      "required_constraints": {
+        "any_of": [
+          {
+            "required": [
+              "string"
+            ]
+          }
+        ],
+        "all_of": [
+          {
+            "required": [
+              "string"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "discriminator": "string",
+  "description": ""
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|any_of|[[ObjectJsonSchemaProperty-Input](#schemaobjectjsonschemaproperty-input)]|true|none|The object shapes the value can take.|
+|discriminator|string|true|none|The property every branch declares as a required string with a single enum value; that value names the branch.|
+|description|string|false|none|What the value is, for the LLM.|
+
+<h2 id="tocS_AnyOfJsonSchemaProperty-Output">AnyOfJsonSchemaProperty-Output</h2>
+<!-- backwards compatibility -->
+<a id="schemaanyofjsonschemaproperty-output"></a>
+<a id="schema_AnyOfJsonSchemaProperty-Output"></a>
+<a id="tocSanyofjsonschemaproperty-output"></a>
+<a id="tocsanyofjsonschemaproperty-output"></a>
+
+```json
+{
+  "any_of": [
+    {
+      "description": "",
+      "dynamic_variable": "",
+      "constant_value": {},
+      "is_omitted": false,
+      "type": "object",
+      "required": [
+        "string"
+      ],
+      "properties": {
+        "property1": {
+          "description": "A user-provided message",
+          "type": "string"
+        },
+        "property2": {
+          "description": "A user-provided message",
+          "type": "string"
+        }
+      },
+      "required_constraints": {
+        "any_of": [
+          {
+            "required": [
+              "string"
+            ]
+          }
+        ],
+        "all_of": [
+          {
+            "required": [
+              "string"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "description": "",
+      "dynamic_variable": "",
+      "constant_value": {},
+      "is_omitted": false,
+      "type": "object",
+      "required": [
+        "string"
+      ],
+      "properties": {
+        "property1": {
+          "description": "A user-provided message",
+          "type": "string"
+        },
+        "property2": {
+          "description": "A user-provided message",
+          "type": "string"
+        }
+      },
+      "required_constraints": {
+        "any_of": [
+          {
+            "required": [
+              "string"
+            ]
+          }
+        ],
+        "all_of": [
+          {
+            "required": [
+              "string"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "discriminator": "string",
+  "description": ""
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|any_of|[[ObjectJsonSchemaProperty-Output](#schemaobjectjsonschemaproperty-output)]|true|none|The object shapes the value can take.|
+|discriminator|string|true|none|The property every branch declares as a required string with a single enum value; that value names the branch.|
+|description|string|false|none|What the value is, for the LLM.|
+
 <h2 id="tocS_ApiIntegrationOAuth2AuthCodeResponse">ApiIntegrationOAuth2AuthCodeResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemaapiintegrationoauth2authcoderesponse"></a>
@@ -75563,40 +76116,6 @@ Response model for user-owned OAuth2 Custom App auth connections
 
 Which kind of regulated number a request or an issued number is for.
 
-<h2 id="tocS_AppointmentReminderMode">AppointmentReminderMode</h2>
-<!-- backwards compatibility -->
-<a id="schemaappointmentremindermode"></a>
-<a id="schema_AppointmentReminderMode"></a>
-<a id="tocSappointmentremindermode"></a>
-<a id="tocsappointmentremindermode"></a>
-
-```json
-"reminder"
-```
-
-<h2 id="tocS_ArchitectDispatchResponseModel">ArchitectDispatchResponseModel</h2>
-<!-- backwards compatibility -->
-<a id="schemaarchitectdispatchresponsemodel"></a>
-<a id="schema_ArchitectDispatchResponseModel"></a>
-<a id="tocSarchitectdispatchresponsemodel"></a>
-<a id="tocsarchitectdispatchresponsemodel"></a>
-
-```json
-{
-  "architect_chat_id": "string",
-  "user_id": "string",
-  "dispatched_at_unix_secs": 0
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|architect_chat_id|string|true|none|none|
-|user_id|string|true|none|none|
-|dispatched_at_unix_secs|integer|true|none|none|
-
 <h2 id="tocS_ArrayJsonSchemaProperty-Input">ArrayJsonSchemaProperty-Input</h2>
 <!-- backwards compatibility -->
 <a id="schemaarrayjsonschemaproperty-input"></a>
@@ -75636,7 +76155,7 @@ Which kind of regulated number a request or an issued number is for.
 |constant_value|[object] \| null|false|none|When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.|
 |is_omitted|boolean|false|none|If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.|
 |type|string|false|none|none|
-|items|[LiteralJsonSchemaProperty](#schemaliteraljsonschemaproperty) \| [ObjectJsonSchemaProperty-Input](#schemaobjectjsonschemaproperty-input) \| [ArrayJsonSchemaProperty-Input](#schemaarrayjsonschemaproperty-input)|false|none|Schema for array elements.|
+|items|[LiteralJsonSchemaProperty](#schemaliteraljsonschemaproperty) \| [ObjectJsonSchemaProperty-Input](#schemaobjectjsonschemaproperty-input) \| [ArrayJsonSchemaProperty-Input](#schemaarrayjsonschemaproperty-input) \| [AnyOfJsonSchemaProperty-Input](#schemaanyofjsonschemaproperty-input)|false|none|Schema for array elements.|
 
 #### Enumerated Values
 
@@ -75682,7 +76201,7 @@ Which kind of regulated number a request or an issued number is for.
 |constant_value|[object] \| null|false|none|When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.|
 |is_omitted|boolean|false|none|If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.|
 |type|string|false|none|none|
-|items|[LiteralJsonSchemaProperty](#schemaliteraljsonschemaproperty) \| [ObjectJsonSchemaProperty-Output](#schemaobjectjsonschemaproperty-output) \| [ArrayJsonSchemaProperty-Output](#schemaarrayjsonschemaproperty-output)|false|none|Schema for array elements.|
+|items|[LiteralJsonSchemaProperty](#schemaliteraljsonschemaproperty) \| [ObjectJsonSchemaProperty-Output](#schemaobjectjsonschemaproperty-output) \| [ArrayJsonSchemaProperty-Output](#schemaarrayjsonschemaproperty-output) \| [AnyOfJsonSchemaProperty-Output](#schemaanyofjsonschemaproperty-output)|false|none|Schema for array elements.|
 
 <h2 id="tocS_ArraySchema">ArraySchema</h2>
 <!-- backwards compatibility -->
@@ -77057,41 +77576,6 @@ Spec: https://schema.ocsf.io/1.6.0/classes/authentication
 "public"
 ```
 
-<h2 id="tocS_AutoGenerationMetadata">AutoGenerationMetadata</h2>
-<!-- backwards compatibility -->
-<a id="schemaautogenerationmetadata"></a>
-<a id="schema_AutoGenerationMetadata"></a>
-<a id="tocSautogenerationmetadata"></a>
-<a id="tocsautogenerationmetadata"></a>
-
-```json
-{
-  "agent_id": "string",
-  "stable_topic_id": "string",
-  "criteria_id": "string",
-  "topic_label": "string",
-  "source_conversation_id": "string",
-  "generated_at_unix": 0
-}
-```
-
-Metadata for an automatically generated simulation test.
-
-Tracks the origin and context of tests that were auto-generated from
-conversations, including the source conversation, topic, and evaluation
-criteria the test covers.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|agent_id|string|true|none|Agent whose simulation library this test belongs to.|
-|stable_topic_id|string|true|none|Stable topic id (from topic discovery) this test covers.|
-|criteria_id|string|true|none|Evaluation criterion id this test targets.|
-|topic_label|string|true|none|Human-readable topic label at generation time.|
-|source_conversation_id|string|true|none|Conversation the test was generated from.|
-|generated_at_unix|integer|true|none|Unix timestamp (seconds) when the test was generated.|
-
 <h2 id="tocS_AutoRebaseAttempt">AutoRebaseAttempt</h2>
 <!-- backwards compatibility -->
 <a id="schemaautorebaseattempt"></a>
@@ -77348,6 +77832,8 @@ The type of background sound source.
 |order|gpt-6-luna|
 |order|gpt-6.1-sol|
 |order|gpt-6.1-terra|
+|order|gpt-6.2-astra|
+|order|gpt-6.2-sol|
 |order|gpt-5-mini|
 |order|gpt-5-nano|
 |order|gpt-3.5-turbo|
@@ -77368,6 +77854,8 @@ The type of background sound source.
 |order|gemini-3.7-flash|
 |order|gemini-3.8-flash|
 |order|gemini-4-argon|
+|order|gemini-4-hydrogen|
+|order|gemini-4-neon|
 |order|claude-sonnet-4-5|
 |order|claude-opus-4-6|
 |order|claude-opus-4-7|
@@ -77384,7 +77872,6 @@ The type of background sound source.
 |order|claude-3-5-sonnet|
 |order|claude-3-5-sonnet-v1|
 |order|claude-3-haiku|
-|order|grok-beta|
 |order|custom-llm|
 |order|qwen3-4b|
 |order|qwen3-30b-a3b|
@@ -79154,6 +79641,9 @@ Response model for bearer auth
         }
       },
       "auto_resolve_after_inactive_minutes": 1,
+      "environments": [
+        "string"
+      ],
       "notifiers": [
         {
           "type": "webhook",
@@ -81240,7 +81730,15 @@ Response model for bearer auth
 ```json
 {
   "archive_source_branch": true,
-  "force": false
+  "force": false,
+  "conflict_resolutions": [
+    {
+      "choice": "source",
+      "conflict_id": "conversation_config:agent.first_message"
+    }
+  ],
+  "source_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t",
+  "target_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t"
 }
 ```
 
@@ -81249,7 +81747,10 @@ Response model for bearer auth
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |archive_source_branch|boolean|false|none|Whether to archive the source branch after merging|
-|force|boolean|false|none|Force source branch changes onto the target, overriding timestamp-based conflict resolution|
+|force|boolean|false|none|Keep the source branch's value for every conflict instead of sending `conflict_resolutions`|
+|conflict_resolutions|[[ConflictResolution](#schemaconflictresolution)] \| null|false|none|Side to keep, or custom text where the conflict accepts it, for each conflict the preview reported. A merge or rebase with conflicts is rejected unless there is one for every conflict, sent with both tip ids. On a merge it can't be combined with `force`, which lets the source win every conflict instead.|
+|source_tip_id|string \| null|false|none|Source branch tip version the conflicts were resolved against (`source_tip_version_id` of the preview). The request fails with 409 if the branch moved since.|
+|target_tip_id|string \| null|false|none|Target branch tip version the conflicts were resolved against (`target_tip_version_id` of the preview). The request fails with 409 if the branch moved since.|
 
 <h2 id="tocS_Body_Merge_a_merge_proposal_v1_convai_agents__agent_id__merge_proposals__merge_proposal_id__merge_post">Body_Merge_a_merge_proposal_v1_convai_agents__agent_id__merge_proposals__merge_proposal_id__merge_post</h2>
 <!-- backwards compatibility -->
@@ -81270,7 +81771,7 @@ Response model for bearer auth
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |archive_source_branch|boolean|false|none|Whether to archive the source branch after merging.|
-|force|boolean|false|none|Force source branch changes onto the target, overriding timestamp-based conflict resolution.|
+|force|boolean|false|none|Keep the source branch's value for every conflict.|
 
 <h2 id="tocS_Body_Move_entity_to_folder_v1_convai_knowledge_base__document_id__move_post">Body_Move_entity_to_folder_v1_convai_knowledge_base__document_id__move_post</h2>
 <!-- backwards compatibility -->
@@ -81538,8 +82039,25 @@ Response model for bearer auth
 <a id="tocsbody_rebase_a_branch_onto_main_v1_convai_agents__agent_id__branches__branch_id__rebase_post"></a>
 
 ```json
-{}
+{
+  "conflict_resolutions": [
+    {
+      "choice": "source",
+      "conflict_id": "conversation_config:agent.first_message"
+    }
+  ],
+  "branch_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t",
+  "source_tip_id": "agtvrsn_0901k4aafjxxfxt93gd841r7tv5t"
+}
 ```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|conflict_resolutions|[[ConflictResolution](#schemaconflictresolution)] \| null|false|none|Side to keep, or custom text where the conflict accepts it, for each conflict the preview reported. A merge or rebase with conflicts is rejected unless there is one for every conflict, sent with both tip ids. On a merge it can't be combined with `force`, which lets the source win every conflict instead.|
+|branch_tip_id|string \| null|false|none|Tip version of the branch being rebased (`source_tip_version_id` of the rebase preview) the conflicts were resolved against. The request fails with 409 if it moved since.|
+|source_tip_id|string \| null|false|none|Tip version of the branch the changes are pulled from (`source_branch_id`, the main branch by default; `target_tip_version_id` of the rebase preview) the conflicts were resolved against. The request fails with 409 if it moved since.|
 
 <h2 id="tocS_Body_Register_a_Twilio_call_and_return_TwiML_v1_convai_twilio_register_call_post">Body_Register_a_Twilio_call_and_return_TwiML_v1_convai_twilio_register_call_post</h2>
 <!-- backwards compatibility -->
@@ -85482,28 +86000,6 @@ before use. Contact support to request access.
 |resolution|1K|
 |resolution|2K|
 
-<h2 id="tocS_CalComConnectionHealthStatus">CalComConnectionHealthStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemacalcomconnectionhealthstatus"></a>
-<a id="schema_CalComConnectionHealthStatus"></a>
-<a id="tocScalcomconnectionhealthstatus"></a>
-<a id="tocscalcomconnectionhealthstatus"></a>
-
-```json
-"healthy"
-```
-
-<h2 id="tocS_CalendlyConnectionHealthStatus">CalendlyConnectionHealthStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemacalendlyconnectionhealthstatus"></a>
-<a id="schema_CalendlyConnectionHealthStatus"></a>
-<a id="tocScalendlyconnectionhealthstatus"></a>
-<a id="tocscalendlyconnectionhealthstatus"></a>
-
-```json
-"healthy"
-```
-
 <h2 id="tocS_CallResult">CallResult</h2>
 <!-- backwards compatibility -->
 <a id="schemacallresult"></a>
@@ -85754,6 +86250,19 @@ before use. Contact support to request access.
         ]
       }
     ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
+      }
+    ],
     "data_collection": {
       "callback_time": "__system_data_collection_callback_time",
       "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -85794,6 +86303,19 @@ before use. Contact support to request access.
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {
@@ -85837,6 +86359,19 @@ before use. Contact support to request access.
           ]
         }
       ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
+        }
+      ],
       "data_collection": {
         "callback_time": "__system_data_collection_callback_time",
         "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -85877,6 +86412,19 @@ before use. Contact support to request access.
             "end": "string"
           }
         ]
+      }
+    ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
       }
     ],
     "data_collection": {
@@ -85940,6 +86488,19 @@ before use. Contact support to request access.
         ]
       }
     ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
+      }
+    ],
     "data_collection": {
       "callback_time": "__system_data_collection_callback_time",
       "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -85980,6 +86541,19 @@ before use. Contact support to request access.
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {
@@ -86023,6 +86597,19 @@ before use. Contact support to request access.
           ]
         }
       ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
+        }
+      ],
       "data_collection": {
         "callback_time": "__system_data_collection_callback_time",
         "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -86063,6 +86650,19 @@ before use. Contact support to request access.
             "end": "string"
           }
         ]
+      }
+    ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
       }
     ],
     "data_collection": {
@@ -86156,6 +86756,7 @@ before use. Contact support to request access.
         "string"
       ],
       "phone_numbers_index": 0,
+      "timezone_override": "string",
       "user_id": "string",
       "attempt_count": 0,
       "failure_count": 0,
@@ -86257,6 +86858,19 @@ before use. Contact support to request access.
             ]
           }
         ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
+          }
+        ],
         "data_collection": {
           "callback_time": "string",
           "redirect_phone_number": "string",
@@ -86344,6 +86958,19 @@ before use. Contact support to request access.
       ]
     }
   ],
+  "date_overrides": [
+    {
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01",
+      "intervals": [
+        {
+          "start": "string",
+          "end": "string"
+        }
+      ],
+      "name": "string"
+    }
+  ],
   "data_collection": {
     "callback_time": "string",
     "redirect_phone_number": "string",
@@ -86371,6 +86998,7 @@ The policy the campaign took when it was created, laid out like a submitted `pol
 |timezone|string|true|none|none|
 |retry|[RetryPolicy](#schemaretrypolicy)|true|none|none|
 |calling_periods|[[CallingPeriodPolicy](#schemacallingperiodpolicy)]|true|none|none|
+|date_overrides|[[DateOverridePolicy](#schemadateoverridepolicy)]|false|none|none|
 |data_collection|[DataCollectionPolicy](#schemadatacollectionpolicy)|true|none|none|
 |followup_context|[FollowupContextPolicy](#schemafollowupcontextpolicy)|true|none|Which `campaign__` dynamic variables follow-up calls get.|
 
@@ -86472,6 +87100,19 @@ The policy the campaign took when it was created, laid out like a submitted `pol
             "end": "string"
           }
         ]
+      }
+    ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
       }
     ],
     "data_collection": {
@@ -87521,17 +88162,6 @@ Not used. Make sure you anticipate new types in the future.
 |state|default|
 |state|converting|
 
-<h2 id="tocS_CharacterAge">CharacterAge</h2>
-<!-- backwards compatibility -->
-<a id="schemacharacterage"></a>
-<a id="schema_CharacterAge"></a>
-<a id="tocScharacterage"></a>
-<a id="tocscharacterage"></a>
-
-```json
-"young"
-```
-
 <h2 id="tocS_CharacterAlignmentModel">CharacterAlignmentModel</h2>
 <!-- backwards compatibility -->
 <a id="schemacharacteralignmentmodel"></a>
@@ -87590,48 +88220,6 @@ Not used. Make sure you anticipate new types in the future.
 |character_start_times_seconds|[number]|true|none|none|
 |character_end_times_seconds|[number]|true|none|none|
 
-<h2 id="tocS_CharacterGender">CharacterGender</h2>
-<!-- backwards compatibility -->
-<a id="schemacharactergender"></a>
-<a id="schema_CharacterGender"></a>
-<a id="tocScharactergender"></a>
-<a id="tocscharactergender"></a>
-
-```json
-"male"
-```
-
-<h2 id="tocS_CharacterMetadataResponseModel">CharacterMetadataResponseModel</h2>
-<!-- backwards compatibility -->
-<a id="schemacharactermetadataresponsemodel"></a>
-<a id="schema_CharacterMetadataResponseModel"></a>
-<a id="tocScharactermetadataresponsemodel"></a>
-<a id="tocscharactermetadataresponsemodel"></a>
-
-```json
-{
-  "description": "string",
-  "sample_message": "string",
-  "voice_creation_prompt_suggestion": "string",
-  "gender": "male",
-  "age": "young",
-  "accent": "string",
-  "role": "narrator"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|description|string \| null|false|none|none|
-|sample_message|string \| null|false|none|none|
-|voice_creation_prompt_suggestion|string \| null|false|none|none|
-|gender|[CharacterGender](#schemacharactergender) \| null|false|none|none|
-|age|[CharacterAge](#schemacharacterage) \| null|false|none|none|
-|accent|string \| null|false|none|none|
-|role|[CharacterRole](#schemacharacterrole) \| null|false|none|none|
-
 <h2 id="tocS_CharacterRefreshPeriod">CharacterRefreshPeriod</h2>
 <!-- backwards compatibility -->
 <a id="schemacharacterrefreshperiod"></a>
@@ -87641,50 +88229,6 @@ Not used. Make sure you anticipate new types in the future.
 
 ```json
 "monthly_period"
-```
-
-<h2 id="tocS_CharacterResponseModel">CharacterResponseModel</h2>
-<!-- backwards compatibility -->
-<a id="schemacharacterresponsemodel"></a>
-<a id="schema_CharacterResponseModel"></a>
-<a id="tocScharacterresponsemodel"></a>
-<a id="tocscharacterresponsemodel"></a>
-
-```json
-{
-  "character_id": "string",
-  "name": "string",
-  "metadata": {
-    "description": "string",
-    "sample_message": "string",
-    "voice_creation_prompt_suggestion": "string",
-    "gender": "male",
-    "age": "young",
-    "accent": "string",
-    "role": "narrator"
-  },
-  "recommended_voice_ids": []
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|character_id|string|true|none|none|
-|name|string|true|none|none|
-|metadata|[CharacterMetadataResponseModel](#schemacharactermetadataresponsemodel) \| null|true|none|none|
-|recommended_voice_ids|[string]|false|none|none|
-
-<h2 id="tocS_CharacterRole">CharacterRole</h2>
-<!-- backwards compatibility -->
-<a id="schemacharacterrole"></a>
-<a id="schema_CharacterRole"></a>
-<a id="tocScharacterrole"></a>
-<a id="tocscharacterrole"></a>
-
-```json
-"narrator"
 ```
 
 <h2 id="tocS_ChatSourceMedium">ChatSourceMedium</h2>
@@ -88213,31 +88757,6 @@ A `client_tool_result` whose `type` is required, so that it can share `input` wi
 "ms"
 ```
 
-<h2 id="tocS_CompactionSettingsWorkflowOverride">CompactionSettingsWorkflowOverride</h2>
-<!-- backwards compatibility -->
-<a id="schemacompactionsettingsworkflowoverride"></a>
-<a id="schema_CompactionSettingsWorkflowOverride"></a>
-<a id="tocScompactionsettingsworkflowoverride"></a>
-<a id="tocscompactionsettingsworkflowoverride"></a>
-
-```json
-{
-  "enabled": true,
-  "soft_trigger_fraction": 0,
-  "tail_size": 0,
-  "min_reclaimable_tokens": 0
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|enabled|boolean \| null|false|none|Whether context compaction is enabled for this agent.|
-|soft_trigger_fraction|number \| null|false|none|Context window fraction at which compaction is triggered.|
-|tail_size|integer \| null|false|none|Number of recent messages kept verbatim after compaction.|
-|min_reclaimable_tokens|integer \| null|false|none|Minimum number of tokens that compaction must reclaim.|
-
 <h2 id="tocS_CompileProceduresResponseModel">CompileProceduresResponseModel</h2>
 <!-- backwards compatibility -->
 <a id="schemacompileproceduresresponsemodel"></a>
@@ -88386,6 +88905,72 @@ This enum contains all valid entity type configurations that users can specify:
 - Standalone terminal types (e.g., "email_address")
 
 When converted for service use, parent types expand to all their terminal subtypes.
+
+<h2 id="tocS_ConfirmChangeParams">ConfirmChangeParams</h2>
+<!-- backwards compatibility -->
+<a id="schemaconfirmchangeparams"></a>
+<a id="schema_ConfirmChangeParams"></a>
+<a id="tocSconfirmchangeparams"></a>
+<a id="tocsconfirmchangeparams"></a>
+
+```json
+{
+  "smb_tool_type": "smb_confirm_change"
+}
+```
+
+The owner's spoken answer to changes the assistant read back to them.
+
+Runs in the agent runtime rather than Reception: it needs the conversation's
+chat to check the owner actually answered after hearing the changes.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|smb_tool_type|string|false|none|none|
+
+<h2 id="tocS_ConflictResolution">ConflictResolution</h2>
+<!-- backwards compatibility -->
+<a id="schemaconflictresolution"></a>
+<a id="schema_ConflictResolution"></a>
+<a id="tocSconflictresolution"></a>
+<a id="tocsconflictresolution"></a>
+
+```json
+{
+  "conflict_id": "conversation_config:agent.first_message",
+  "choice": "source",
+  "custom_value": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|conflict_id|string|true|none|`id` of the conflict this resolves, as the merge or rebase preview reported it.|
+|choice|[ConflictResolutionChoice](#schemaconflictresolutionchoice)|true|none|Keep the source value, the target value, or `custom_value`. On a list of entities, the side settles the entities both branches changed; ones only one branch changed still merge in.|
+|custom_value|string \| null|false|none|Text to keep when `choice` is `custom`, or for a procedure conflict the id of the procedure version to pin. Only conflicts with `accepts_custom_value` take one.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|choice|source|
+|choice|target|
+|choice|custom|
+
+<h2 id="tocS_ConflictResolutionChoice">ConflictResolutionChoice</h2>
+<!-- backwards compatibility -->
+<a id="schemaconflictresolutionchoice"></a>
+<a id="schema_ConflictResolutionChoice"></a>
+<a id="tocSconflictresolutionchoice"></a>
+<a id="tocsconflictresolutionchoice"></a>
+
+```json
+"source"
+```
 
 <h2 id="tocS_ConflictSection">ConflictSection</h2>
 <!-- backwards compatibility -->
@@ -89256,7 +89841,7 @@ Aggregated ASR usage for a conversation (analytics-only, not billing).
 |tts_usage|[ConversationTTSUsageModel](#schemaconversationttsusagemodel) \| null|false|none|none|
 |asr_usage|[ConversationASRUsageModel](#schemaconversationasrusagemodel) \| null|false|none|none|
 |analysis|[AnalysisCharging](#schemaanalysischarging) \| null|false|none|none|
-|voice_surcharge_charge|integer \| null|false|none|Credits charged as the voice actor reward for the Voice Library voices this conversation used. It is not included in `cost`.|
+|voice_surcharge_charge|integer \| null|false|none|Credits charged as the voice owner fee for the custom rate voices this conversation used. It is not included in `cost`.|
 
 <h2 id="tocS_ConversationConfig-Input">ConversationConfig-Input</h2>
 <!-- backwards compatibility -->
@@ -90599,11 +91184,13 @@ Stored in conversation history. Never exposed to customers directly.
 |conversation_initiation_source|whatsapp|
 |conversation_initiation_source|twilio_sms|
 |conversation_initiation_source|flutter_sdk|
+|conversation_initiation_source|unity_sdk|
 |conversation_initiation_source|zendesk_integration|
 |conversation_initiation_source|slack_integration|
 |conversation_initiation_source|telegram_integration|
 |conversation_initiation_source|intercom_integration|
 |conversation_initiation_source|freshdesk_integration|
+|conversation_initiation_source|plain_integration|
 |conversation_initiation_source|salesforce_integration|
 |conversation_initiation_source|template_preview|
 |conversation_initiation_source|genesys_bot_connector|
@@ -90744,6 +91331,7 @@ Represents a single voice part of a multi-voice message.
 |entities|occupation|
 |entities|physical_attribute|
 |entities|language|
+|entities|criminal_record|
 |entities|username|
 |entities|password|
 |entities|url|
@@ -91855,6 +92443,12 @@ Represents a single voice part of a multi-voice message.
       "property2": "string"
     },
     "body": "string"
+  },
+  "function_details": {
+    "resolved_parameters": {
+      "property1": "string",
+      "property2": "string"
+    }
   }
 }
 ```
@@ -91868,6 +92462,7 @@ Represents a single voice part of a multi-voice message.
 |credential_id|string|false|none|none|
 |integration_connection_id|string|false|none|none|
 |webhook_details|[ConversationHistoryTranscriptToolCallWebhookDetails](#schemaconversationhistorytranscripttoolcallwebhookdetails)|true|none|none|
+|function_details|[ConversationHistoryTranscriptToolCallIntegrationFunctionDetails](#schemaconversationhistorytranscripttoolcallintegrationfunctiondetails) \| null|false|none|none|
 
 <h2 id="tocS_ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetails-Output">ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetails-Output</h2>
 <!-- backwards compatibility -->
@@ -91899,6 +92494,12 @@ Represents a single voice part of a multi-voice message.
       "property2": "string"
     },
     "body": "string"
+  },
+  "function_details": {
+    "resolved_parameters": {
+      "property1": "string",
+      "property2": "string"
+    }
   }
 }
 ```
@@ -91912,6 +92513,7 @@ Represents a single voice part of a multi-voice message.
 |credential_id|string|true|none|none|
 |integration_connection_id|string|true|none|none|
 |webhook_details|[ConversationHistoryTranscriptToolCallWebhookDetails](#schemaconversationhistorytranscripttoolcallwebhookdetails)|true|none|none|
+|function_details|[ConversationHistoryTranscriptToolCallIntegrationFunctionDetails](#schemaconversationhistorytranscripttoolcallintegrationfunctiondetails) \| null|true|none|none|
 
 <h2 id="tocS_ConversationHistoryTranscriptToolCallClientDetails">ConversationHistoryTranscriptToolCallClientDetails</h2>
 <!-- backwards compatibility -->
@@ -92029,6 +92631,28 @@ Represents a single voice part of a multi-voice message.
 |params_as_json|string|true|none|none|
 |tool_has_been_called|boolean|true|none|none|
 |tool_details|[ConversationHistoryTranscriptToolCallWebhookDetails](#schemaconversationhistorytranscripttoolcallwebhookdetails) \| [ConversationHistoryTranscriptToolCallClientDetails](#schemaconversationhistorytranscripttoolcallclientdetails) \| [ConversationHistoryTranscriptToolCallMCPDetails](#schemaconversationhistorytranscripttoolcallmcpdetails) \| [ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetails-Output](#schemaconversationhistorytranscripttoolcallapiintegrationwebhookdetails-output) \| null|false|none|none|
+
+<h2 id="tocS_ConversationHistoryTranscriptToolCallIntegrationFunctionDetails">ConversationHistoryTranscriptToolCallIntegrationFunctionDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaconversationhistorytranscripttoolcallintegrationfunctiondetails"></a>
+<a id="schema_ConversationHistoryTranscriptToolCallIntegrationFunctionDetails"></a>
+<a id="tocSconversationhistorytranscripttoolcallintegrationfunctiondetails"></a>
+<a id="tocsconversationhistorytranscripttoolcallintegrationfunctiondetails"></a>
+
+```json
+{
+  "resolved_parameters": {
+    "property1": "string",
+    "property2": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resolved_parameters|object|true|none|none|
 
 <h2 id="tocS_ConversationHistoryTranscriptToolCallMCPDetails">ConversationHistoryTranscriptToolCallMCPDetails</h2>
 <!-- backwards compatibility -->
@@ -92993,27 +93617,6 @@ A specification that will be used to simulate a conversation between an agent an
 |tool_mock_config|object|false|none|none|
 |partial_conversation_history|[[ConversationHistoryTranscriptCommonModel-Input](#schemaconversationhistorytranscriptcommonmodel-input)]|false|none|A partial conversation history to start the simulation from. If empty, simulation starts fresh.|
 |dynamic_variables|object|false|none|none|
-
-<h2 id="tocS_ConversationSource">ConversationSource</h2>
-<!-- backwards compatibility -->
-<a id="schemaconversationsource"></a>
-<a id="schema_ConversationSource"></a>
-<a id="tocSconversationsource"></a>
-<a id="tocsconversationsource"></a>
-
-```json
-{
-  "type": "conversation",
-  "conversation_id": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|conversation_id|string|true|none|none|
 
 <h2 id="tocS_ConversationSummaryMessageModel">ConversationSummaryMessageModel</h2>
 <!-- backwards compatibility -->
@@ -96702,6 +97305,9 @@ Response model for Custom Header Auth auth connections
   "auth_connection": {
     "auth_connection_id": "string"
   },
+  "mtls_auth_connection": {
+    "auth_connection_id": "string"
+  },
   "request_headers": {
     "property1": "string",
     "property2": "string"
@@ -96719,6 +97325,7 @@ Response model for Custom Header Auth auth connections
 |model_id|string \| null|false|none|The model ID to be used if URL serves multiple models|
 |api_key|[ConvAISecretLocator](#schemaconvaisecretlocator) \| [ConvAIEnvVarLocator](#schemaconvaienvvarlocator) \| null|false|none|The API key for authentication. Either a workspace secret reference {'secret_id': '...'} or an environment variable reference {'env_var_label': '...'}.|
 |auth_connection|[AuthConnectionLocator](#schemaauthconnectionlocator) \| [EnvironmentAuthConnectionLocator](#schemaenvironmentauthconnectionlocator) \| null|false|none|Optional workspace auth connection for authentication. Only auth connections that produce an Authorization Bearer token are supported; Basic auth, mTLS, custom header, and URL secret auth connections are not supported.|
+|mtls_auth_connection|[AuthConnectionLocator](#schemaauthconnectionlocator) \| [EnvironmentAuthConnectionLocator](#schemaenvironmentauthconnectionlocator) \| null|false|none|Optional mTLS auth connection. When set, its client certificate is used for the TLS handshake with the LLM endpoint and, when auth_connection is OAuth2 client credentials or OAuth2 JWT, with its token endpoint too. Application auth stays on auth_connection or api_key. auth_connection must then be OAuth2 client credentials, OAuth2 JWT or bearer.|
 |request_headers|object|false|none|Headers that should be included in the request|
 |api_version|string \| null|false|none|The API version to use for the request|
 |api_type|[CustomLLMAPIType](#schemacustomllmapitype)|false|none|The API type to use (chat_completions, responses or websocket)|
@@ -97029,6 +97636,66 @@ Represents a calendar date as individual numeric components.
 |year|integer|true|none|Year|
 |month|integer|true|none|Month (1-12)|
 |day|integer|true|none|Day of month (1-31)|
+
+<h2 id="tocS_DateOverride">DateOverride</h2>
+<!-- backwards compatibility -->
+<a id="schemadateoverride"></a>
+<a id="schema_DateOverride"></a>
+<a id="tocSdateoverride"></a>
+<a id="tocsdateoverride"></a>
+
+```json
+{
+  "start_date": "1970-01-01",
+  "end_date": "1970-01-01",
+  "intervals": [
+    {
+      "start": "string",
+      "end": "string"
+    }
+  ],
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|start_date|string(date)|true|none|First local date the override applies on.|
+|end_date|string(date)|true|none|Last local date the override applies on, inclusive.|
+|intervals|[[CallingIntervalPolicy](#schemacallingintervalpolicy)]|false|none|Calling windows on every day from `start_date` to `end_date`, replacing the weekly ones. Empty means no calls on those days.|
+|name|string \| null|false|none|What the override is for, such as `Christmas`.|
+
+<h2 id="tocS_DateOverridePolicy">DateOverridePolicy</h2>
+<!-- backwards compatibility -->
+<a id="schemadateoverridepolicy"></a>
+<a id="schema_DateOverridePolicy"></a>
+<a id="tocSdateoverridepolicy"></a>
+<a id="tocsdateoverridepolicy"></a>
+
+```json
+{
+  "start_date": "1970-01-01",
+  "end_date": "1970-01-01",
+  "intervals": [
+    {
+      "start": "string",
+      "end": "string"
+    }
+  ],
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|start_date|string(date)|true|none|First local date the override applies on.|
+|end_date|string(date)|true|none|Last local date the override applies on, inclusive.|
+|intervals|[[CallingIntervalPolicy](#schemacallingintervalpolicy)]|false|none|Calling windows on every day from `start_date` to `end_date`, replacing the weekly ones. Empty means no calls on those days.|
+|name|string \| null|false|none|none|
 
 <h2 id="tocS_DayOfWeek">DayOfWeek</h2>
 <!-- backwards compatibility -->
@@ -100513,17 +101180,6 @@ Overrides for the voice's saved settings, applied to one generation.
 |---|---|---|---|---|
 |stability|number \| null|false|none|How consistent the voice stays across generations. Lower values give more expressive, varied speech.|
 
-<h2 id="tocS_EmailOptional">EmailOptional</h2>
-<!-- backwards compatibility -->
-<a id="schemaemailoptional"></a>
-<a id="schema_EmailOptional"></a>
-<a id="tocSemailoptional"></a>
-<a id="tocsemailoptional"></a>
-
-```json
-"string"
-```
-
 <h2 id="tocS_EmbedVariant">EmbedVariant</h2>
 <!-- backwards compatibility -->
 <a id="schemaembedvariant"></a>
@@ -101769,7 +102425,9 @@ Metadata for a KB folder that mirrors an external source folder.
   "section": "conversation_config",
   "base_value": null,
   "source_value": null,
-  "target_value": null
+  "target_value": null,
+  "id": "string",
+  "accepts_custom_value": true
 }
 ```
 
@@ -101782,6 +102440,8 @@ Metadata for a KB folder that mirrors an external source folder.
 |base_value|object|false|none|Value at the common ancestor (merge base).|
 |source_value|object|false|none|Value on the source branch tip.|
 |target_value|object|false|none|Value on the target branch tip.|
+|id|string|true|read-only|Stable identifier of this conflict within a merge.|
+|accepts_custom_value|boolean|true|read-only|Whether a resolution of this conflict may use `custom` with a `custom_value` instead of keeping a side.|
 
 #### Enumerated Values
 
@@ -101997,6 +102657,19 @@ In-flight/last refresh state for an externally-synced KB file.
 ```json
 "private"
 ```
+
+<h2 id="tocS_FirstMessageMode">FirstMessageMode</h2>
+<!-- backwards compatibility -->
+<a id="schemafirstmessagemode"></a>
+<a id="schema_FirstMessageMode"></a>
+<a id="tocSfirstmessagemode"></a>
+<a id="tocsfirstmessagemode"></a>
+
+```json
+"interruptible"
+```
+
+How the receptionist's greeting plays.
 
 <h2 id="tocS_FlattenedConfigOverrides">FlattenedConfigOverrides</h2>
 <!-- backwards compatibility -->
@@ -102950,34 +103623,6 @@ The output of a prior generation on this API.
 |model_parameters|object \| null|false|none|none|
 |extend_video|[ReferenceVideo](#schemareferencevideo) \| null|false|none|none|
 
-<h2 id="tocS_GenesysBotOutcome">GenesysBotOutcome</h2>
-<!-- backwards compatibility -->
-<a id="schemagenesysbotoutcome"></a>
-<a id="schema_GenesysBotOutcome"></a>
-<a id="tocSgenesysbotoutcome"></a>
-<a id="tocsgenesysbotoutcome"></a>
-
-```json
-"success"
-```
-
-Exit branch taken when the Genesys Bot Connector session ends.
-
-These values are the intent names registered in the Genesys bot list, so they are
-what the Call Bot Connector node branches on. Adding a value here without also
-registering the intent in Genesys would produce an exit the flow cannot handle.
-
-<h2 id="tocS_GenesysRegion">GenesysRegion</h2>
-<!-- backwards compatibility -->
-<a id="schemagenesysregion"></a>
-<a id="schema_GenesysRegion"></a>
-<a id="tocSgenesysregion"></a>
-<a id="tocsgenesysregion"></a>
-
-```json
-"us_east_1"
-```
-
 <h2 id="tocS_GetAgentConfigParams">GetAgentConfigParams</h2>
 <!-- backwards compatibility -->
 <a id="schemagetagentconfigparams"></a>
@@ -103034,7 +103679,7 @@ the owner says calls are not reaching the staff phone.
       "agent_id": "string",
       "needs_clustering": true,
       "title": "string",
-      "issue_type": "knowledge_gap",
+      "issue_type": null,
       "labels": [
         "string"
       ],
@@ -109303,77 +109948,6 @@ Answer shape for a per-item intake question.
 "realtime"
 ```
 
-<h2 id="tocS_InternalAlertingWebhookNotifier">InternalAlertingWebhookNotifier</h2>
-<!-- backwards compatibility -->
-<a id="schemainternalalertingwebhooknotifier"></a>
-<a id="schema_InternalAlertingWebhookNotifier"></a>
-<a id="tocSinternalalertingwebhooknotifier"></a>
-<a id="tocsinternalalertingwebhooknotifier"></a>
-
-```json
-{
-  "type": "webhook",
-  "url": "string",
-  "method": "POST",
-  "headers": [
-    {
-      "name": "string",
-      "is_secret": false,
-      "value": "string"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|url|string|true|none|The URL to send alert lifecycle notifications to.|
-|method|[AlertingWebhookMethod](#schemaalertingwebhookmethod)|false|none|HTTP method used when calling the webhook URL.|
-|headers|[[AlertingWebhookHeader](#schemaalertingwebhookheader)]|false|none|Custom request headers sent with every notification. Secret header values are encrypted at rest and never returned by the API.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|method|POST|
-|method|PUT|
-
-<h2 id="tocS_InternalKBCrawlPageTiming">InternalKBCrawlPageTiming</h2>
-<!-- backwards compatibility -->
-<a id="schemainternalkbcrawlpagetiming"></a>
-<a id="schema_InternalKBCrawlPageTiming"></a>
-<a id="tocSinternalkbcrawlpagetiming"></a>
-<a id="tocsinternalkbcrawlpagetiming"></a>
-
-```json
-{
-  "url": "string",
-  "doc_id": "string",
-  "read_ms": 0,
-  "index_ms": 0,
-  "html_len": 0,
-  "skipped": false,
-  "error": false
-}
-```
-
-Per-document timing data for one crawled page.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|url|string|true|none|none|
-|doc_id|string|true|none|none|
-|read_ms|integer \| null|false|none|none|
-|index_ms|integer \| null|false|none|none|
-|html_len|integer \| null|false|none|none|
-|skipped|boolean|false|none|none|
-|error|boolean|false|none|none|
-
 <h2 id="tocS_InternalSamplingConfigResponseModel">InternalSamplingConfigResponseModel</h2>
 <!-- backwards compatibility -->
 <a id="schemainternalsamplingconfigresponsemodel"></a>
@@ -110251,120 +110825,6 @@ Type of knowledge source.
 "gpt-4o-mini"
 ```
 
-<h2 id="tocS_LLMAnyOfJsonSchemaProperty-Input">LLMAnyOfJsonSchemaProperty-Input</h2>
-<!-- backwards compatibility -->
-<a id="schemallmanyofjsonschemaproperty-input"></a>
-<a id="schema_LLMAnyOfJsonSchemaProperty-Input"></a>
-<a id="tocSllmanyofjsonschemaproperty-input"></a>
-<a id="tocsllmanyofjsonschemaproperty-input"></a>
-
-```json
-{
-  "any_of": [
-    {
-      "type": "object",
-      "required": [
-        "string"
-      ],
-      "description": "",
-      "properties": {
-        "property1": {
-          "type": "boolean",
-          "description": "string",
-          "enum": [
-            "string"
-          ]
-        },
-        "property2": {
-          "type": "boolean",
-          "description": "string",
-          "enum": [
-            "string"
-          ]
-        }
-      }
-    }
-  ],
-  "description": ""
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|any_of|[[LLMObjectJsonSchemaProperty-Input](#schemallmobjectjsonschemaproperty-input)]|true|none|none|
-|description|string|false|none|none|
-
-<h2 id="tocS_LLMAnyOfJsonSchemaProperty-Output">LLMAnyOfJsonSchemaProperty-Output</h2>
-<!-- backwards compatibility -->
-<a id="schemallmanyofjsonschemaproperty-output"></a>
-<a id="schema_LLMAnyOfJsonSchemaProperty-Output"></a>
-<a id="tocSllmanyofjsonschemaproperty-output"></a>
-<a id="tocsllmanyofjsonschemaproperty-output"></a>
-
-```json
-{}
-```
-
-<h2 id="tocS_LLMArrayJsonSchemaProperty-Input">LLMArrayJsonSchemaProperty-Input</h2>
-<!-- backwards compatibility -->
-<a id="schemallmarrayjsonschemaproperty-input"></a>
-<a id="schema_LLMArrayJsonSchemaProperty-Input"></a>
-<a id="tocSllmarrayjsonschemaproperty-input"></a>
-<a id="tocsllmarrayjsonschemaproperty-input"></a>
-
-```json
-{
-  "type": "array",
-  "description": "",
-  "items": {
-    "type": "boolean",
-    "description": "string",
-    "enum": [
-      "string"
-    ]
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|description|string|false|none|none|
-|items|[LLMLiteralJsonSchemaProperty](#schemallmliteraljsonschemaproperty) \| [LLMObjectJsonSchemaProperty-Input](#schemallmobjectjsonschemaproperty-input) \| [LLMArrayJsonSchemaProperty-Input](#schemallmarrayjsonschemaproperty-input) \| [LLMAnyOfJsonSchemaProperty-Input](#schemallmanyofjsonschemaproperty-input)|true|none|none|
-
-<h2 id="tocS_LLMArrayJsonSchemaProperty-Output">LLMArrayJsonSchemaProperty-Output</h2>
-<!-- backwards compatibility -->
-<a id="schemallmarrayjsonschemaproperty-output"></a>
-<a id="schema_LLMArrayJsonSchemaProperty-Output"></a>
-<a id="tocSllmarrayjsonschemaproperty-output"></a>
-<a id="tocsllmarrayjsonschemaproperty-output"></a>
-
-```json
-{
-  "type": "array",
-  "description": "",
-  "items": {
-    "type": "boolean",
-    "description": "string",
-    "enum": [
-      "string"
-    ]
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|description|string|false|none|none|
-|items|[LLMLiteralJsonSchemaProperty](#schemallmliteraljsonschemaproperty) \| [LLMObjectJsonSchemaProperty-Output](#schemallmobjectjsonschemaproperty-output) \| [LLMArrayJsonSchemaProperty-Output](#schemallmarrayjsonschemaproperty-output) \| [LLMAnyOfJsonSchemaProperty-Output](#schemallmanyofjsonschemaproperty-output)|true|none|none|
-
 <h2 id="tocS_LLMCategoryUsage">LLMCategoryUsage</h2>
 <!-- backwards compatibility -->
 <a id="schemallmcategoryusage"></a>
@@ -110552,6 +111012,8 @@ LLM usage of a conversation, split by whether the generated response reached the
 |llm|gpt-6-luna|
 |llm|gpt-6.1-sol|
 |llm|gpt-6.1-terra|
+|llm|gpt-6.2-astra|
+|llm|gpt-6.2-sol|
 |llm|gpt-5-mini|
 |llm|gpt-5-nano|
 |llm|gpt-3.5-turbo|
@@ -110572,6 +111034,8 @@ LLM usage of a conversation, split by whether the generated response reached the
 |llm|gemini-3.7-flash|
 |llm|gemini-3.8-flash|
 |llm|gemini-4-argon|
+|llm|gemini-4-hydrogen|
+|llm|gemini-4-neon|
 |llm|claude-sonnet-4-5|
 |llm|claude-opus-4-6|
 |llm|claude-opus-4-7|
@@ -110588,7 +111052,6 @@ LLM usage of a conversation, split by whether the generated response reached the
 |llm|claude-3-5-sonnet|
 |llm|claude-3-5-sonnet-v1|
 |llm|claude-3-haiku|
-|llm|grok-beta|
 |llm|custom-llm|
 |llm|qwen3-4b|
 |llm|qwen3-30b-a3b|
@@ -110713,6 +111176,8 @@ LLM usage of a conversation, split by whether the generated response reached the
 |llm|gpt-6-luna|
 |llm|gpt-6.1-sol|
 |llm|gpt-6.1-terra|
+|llm|gpt-6.2-astra|
+|llm|gpt-6.2-sol|
 |llm|gpt-5-mini|
 |llm|gpt-5-nano|
 |llm|gpt-3.5-turbo|
@@ -110733,6 +111198,8 @@ LLM usage of a conversation, split by whether the generated response reached the
 |llm|gemini-3.7-flash|
 |llm|gemini-3.8-flash|
 |llm|gemini-4-argon|
+|llm|gemini-4-hydrogen|
+|llm|gemini-4-neon|
 |llm|claude-sonnet-4-5|
 |llm|claude-opus-4-6|
 |llm|claude-opus-4-7|
@@ -110749,7 +111216,6 @@ LLM usage of a conversation, split by whether the generated response reached the
 |llm|claude-3-5-sonnet|
 |llm|claude-3-5-sonnet-v1|
 |llm|claude-3-haiku|
-|llm|grok-beta|
 |llm|custom-llm|
 |llm|qwen3-4b|
 |llm|qwen3-30b-a3b|
@@ -110912,90 +111378,6 @@ LLM usage of a conversation, split by whether the generated response reached the
 |type|string \| [string]|true|none|none|
 |description|string|true|none|none|
 |enum|[string] \| null|false|none|List of allowed string values for string type parameters|
-
-<h2 id="tocS_LLMObjectJsonSchemaProperty-Input">LLMObjectJsonSchemaProperty-Input</h2>
-<!-- backwards compatibility -->
-<a id="schemallmobjectjsonschemaproperty-input"></a>
-<a id="schema_LLMObjectJsonSchemaProperty-Input"></a>
-<a id="tocSllmobjectjsonschemaproperty-input"></a>
-<a id="tocsllmobjectjsonschemaproperty-input"></a>
-
-```json
-{
-  "type": "object",
-  "required": [
-    "string"
-  ],
-  "description": "",
-  "properties": {
-    "property1": {
-      "type": "boolean",
-      "description": "string",
-      "enum": [
-        "string"
-      ]
-    },
-    "property2": {
-      "type": "boolean",
-      "description": "string",
-      "enum": [
-        "string"
-      ]
-    }
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|required|[string]|false|none|none|
-|description|string|false|none|none|
-|properties|object|false|none|none|
-
-<h2 id="tocS_LLMObjectJsonSchemaProperty-Output">LLMObjectJsonSchemaProperty-Output</h2>
-<!-- backwards compatibility -->
-<a id="schemallmobjectjsonschemaproperty-output"></a>
-<a id="schema_LLMObjectJsonSchemaProperty-Output"></a>
-<a id="tocSllmobjectjsonschemaproperty-output"></a>
-<a id="tocsllmobjectjsonschemaproperty-output"></a>
-
-```json
-{
-  "type": "object",
-  "required": [
-    "string"
-  ],
-  "description": "",
-  "properties": {
-    "property1": {
-      "type": "boolean",
-      "description": "string",
-      "enum": [
-        "string"
-      ]
-    },
-    "property2": {
-      "type": "boolean",
-      "description": "string",
-      "enum": [
-        "string"
-      ]
-    }
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|required|[string]|false|none|none|
-|description|string|false|none|none|
-|properties|object|false|none|none|
 
 <h2 id="tocS_LLMParameterEvaluationStrategy">LLMParameterEvaluationStrategy</h2>
 <!-- backwards compatibility -->
@@ -111251,6 +111633,8 @@ FAST: pays a per-token price premium for higher throughput / lower latency.
 |llm|gpt-6-luna|
 |llm|gpt-6.1-sol|
 |llm|gpt-6.1-terra|
+|llm|gpt-6.2-astra|
+|llm|gpt-6.2-sol|
 |llm|gpt-5-mini|
 |llm|gpt-5-nano|
 |llm|gpt-3.5-turbo|
@@ -111271,6 +111655,8 @@ FAST: pays a per-token price premium for higher throughput / lower latency.
 |llm|gemini-3.7-flash|
 |llm|gemini-3.8-flash|
 |llm|gemini-4-argon|
+|llm|gemini-4-hydrogen|
+|llm|gemini-4-neon|
 |llm|claude-sonnet-4-5|
 |llm|claude-opus-4-6|
 |llm|claude-opus-4-7|
@@ -111287,7 +111673,6 @@ FAST: pays a per-token price premium for higher throughput / lower latency.
 |llm|claude-3-5-sonnet|
 |llm|claude-3-5-sonnet-v1|
 |llm|claude-3-haiku|
-|llm|grok-beta|
 |llm|custom-llm|
 |llm|qwen3-4b|
 |llm|qwen3-30b-a3b|
@@ -111833,6 +112218,7 @@ FAST: pays a per-token price premium for higher throughput / lower latency.
     "string"
   ],
   "phone_numbers_index": 0,
+  "timezone_override": "string",
   "user_id": "string",
   "attempt_count": 0,
   "failure_count": 0,
@@ -111871,6 +112257,7 @@ FAST: pays a per-token price premium for higher throughput / lower latency.
 |phone_number|string|true|none|The number the lead's next call dials. It changes when the lead moves on to another listed number or the contact asks to be called on a different one.|
 |phone_numbers|[string]|false|none|The lead's listed numbers, in calling order.|
 |phone_numbers_index|integer|true|none|The position in `phone_numbers` of the number being called.|
+|timezone_override|string \| null|false|none|The timezone the recipient's calling windows are read in; unset when the lead follows the campaign's.|
 |user_id|string|true|none|The contact's identity: the `user_id` submitted in `conversation_initiation_client_data`, else the lead's phone number.|
 |attempt_count|integer|true|none|Calls placed, counted against the policy's `max_total_calls`.|
 |failure_count|integer|true|none|Failed calls to the current number; resets on a new number.|
@@ -111900,6 +112287,7 @@ FAST: pays a per-token price premium for higher throughput / lower latency.
     "string"
   ],
   "phone_numbers_index": 0,
+  "timezone_override": "string",
   "user_id": "string",
   "attempt_count": 0,
   "failure_count": 0,
@@ -111938,6 +112326,7 @@ FAST: pays a per-token price premium for higher throughput / lower latency.
 |phone_number|string|true|none|The number the lead's next call dials. It changes when the lead moves on to another listed number or the contact asks to be called on a different one.|
 |phone_numbers|[string]|false|none|The lead's listed numbers, in calling order.|
 |phone_numbers_index|integer|true|none|The position in `phone_numbers` of the number being called.|
+|timezone_override|string \| null|false|none|The timezone the recipient's calling windows are read in; unset when the lead follows the campaign's.|
 |user_id|string|true|none|The contact's identity: the `user_id` submitted in `conversation_initiation_client_data`, else the lead's phone number.|
 |attempt_count|integer|true|none|Calls placed, counted against the policy's `max_total_calls`.|
 |failure_count|integer|true|none|Failed calls to the current number; resets on a new number.|
@@ -112001,167 +112390,6 @@ FAST: pays a per-token price premium for higher throughput / lower latency.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |smb_tool_type|string|false|none|none|
-
-<h2 id="tocS_LenientCountry">LenientCountry</h2>
-<!-- backwards compatibility -->
-<a id="schemalenientcountry"></a>
-<a id="schema_LenientCountry"></a>
-<a id="tocSlenientcountry"></a>
-<a id="tocslenientcountry"></a>
-
-```json
-"string"
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|[CountryCode](#schemacountrycode)|false|none|none|
-|*anyOf*|null|false|none|none|
-
-<h2 id="tocS_LenientCurrency">LenientCurrency</h2>
-<!-- backwards compatibility -->
-<a id="schemalenientcurrency"></a>
-<a id="schema_LenientCurrency"></a>
-<a id="tocSlenientcurrency"></a>
-<a id="tocslenientcurrency"></a>
-
-```json
-"USD"
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|string|false|none|none|
-|*anyOf*|null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|*anyOf*|USD|
-|*anyOf*|EUR|
-|*anyOf*|GBP|
-|*anyOf*|PLN|
-|*anyOf*|CAD|
-|*anyOf*|AUD|
-|*anyOf*|CHF|
-|*anyOf*|SEK|
-|*anyOf*|NOK|
-|*anyOf*|DKK|
-|*anyOf*|ISK|
-|*anyOf*|CZK|
-|*anyOf*|HUF|
-|*anyOf*|RON|
-|*anyOf*|BGN|
-|*anyOf*|JPY|
-|*anyOf*|CNY|
-|*anyOf*|TWD|
-|*anyOf*|INR|
-|*anyOf*|BRL|
-|*anyOf*|MXN|
-|*anyOf*|KRW|
-|*anyOf*|SGD|
-|*anyOf*|HKD|
-|*anyOf*|NZD|
-|*anyOf*|ZAR|
-|*anyOf*|AED|
-|*anyOf*|SAR|
-|*anyOf*|QAR|
-|*anyOf*|KWD|
-|*anyOf*|ILS|
-|*anyOf*|TRY|
-|*anyOf*|THB|
-|*anyOf*|IDR|
-|*anyOf*|MYR|
-|*anyOf*|PHP|
-|*anyOf*|VND|
-|*anyOf*|BDT|
-|*anyOf*|RUB|
-|*anyOf*|UAH|
-|*anyOf*|CLP|
-|*anyOf*|COP|
-|*anyOf*|ARS|
-|*anyOf*|PEN|
-|*anyOf*|EGP|
-|*anyOf*|NGN|
-|*anyOf*|KES|
-|*anyOf*|PKR|
-
-<h2 id="tocS_LenientOptionalBool">LenientOptionalBool</h2>
-<!-- backwards compatibility -->
-<a id="schemalenientoptionalbool"></a>
-<a id="schema_LenientOptionalBool"></a>
-<a id="tocSlenientoptionalbool"></a>
-<a id="tocslenientoptionalbool"></a>
-
-```json
-true
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|boolean|false|none|none|
-|*anyOf*|null|false|none|none|
-
-<h2 id="tocS_LenientOptionalStr">LenientOptionalStr</h2>
-<!-- backwards compatibility -->
-<a id="schemalenientoptionalstr"></a>
-<a id="schema_LenientOptionalStr"></a>
-<a id="tocSlenientoptionalstr"></a>
-<a id="tocslenientoptionalstr"></a>
-
-```json
-"string"
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|string|false|none|none|
-|*anyOf*|null|false|none|none|
-
-<h2 id="tocS_LenientPhone">LenientPhone</h2>
-<!-- backwards compatibility -->
-<a id="schemalenientphone"></a>
-<a id="schema_LenientPhone"></a>
-<a id="tocSlenientphone"></a>
-<a id="tocslenientphone"></a>
-
-```json
-"string"
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|[PhoneNumberNullable](#schemaphonenumbernullable)|false|none|none|
-|*anyOf*|null|false|none|none|
-
-<h2 id="tocS_LenientState">LenientState</h2>
-<!-- backwards compatibility -->
-<a id="schemalenientstate"></a>
-<a id="schema_LenientState"></a>
-<a id="tocSlenientstate"></a>
-<a id="tocslenientstate"></a>
-
-```json
-"string"
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|string|false|none|none|
-|*anyOf*|null|false|none|none|
 
 <h2 id="tocS_LibraryVoiceMatchResponseModel">LibraryVoiceMatchResponseModel</h2>
 <!-- backwards compatibility -->
@@ -113056,40 +113284,6 @@ Schema property for literal JSON types. IMPORTANT: Only ONE of the following fie
 ```json
 "standard"
 ```
-
-<h2 id="tocS_LoadMemoryEntryToolErrorStatus">LoadMemoryEntryToolErrorStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemaloadmemoryentrytoolerrorstatus"></a>
-<a id="schema_LoadMemoryEntryToolErrorStatus"></a>
-<a id="tocSloadmemoryentrytoolerrorstatus"></a>
-<a id="tocsloadmemoryentrytoolerrorstatus"></a>
-
-```json
-"not_found"
-```
-
-<h2 id="tocS_LoadableMemoryEntry">LoadableMemoryEntry</h2>
-<!-- backwards compatibility -->
-<a id="schemaloadablememoryentry"></a>
-<a id="schema_LoadableMemoryEntry"></a>
-<a id="tocSloadablememoryentry"></a>
-<a id="tocsloadablememoryentry"></a>
-
-```json
-{
-  "entry_id": "string",
-  "summary": "string",
-  "text": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|entry_id|string|true|none|none|
-|summary|string|true|none|none|
-|text|string|true|none|none|
 
 <h2 id="tocS_LockReason">LockReason</h2>
 <!-- backwards compatibility -->
@@ -114603,17 +114797,6 @@ An MCP tool configuration that can be used to call MCP servers
 |input_overrides|object \| null|false|none|Mapping of json path to input override configuration|
 |response_mocks|[[ToolResponseMockConfig-Input](#schematoolresponsemockconfig-input)] \| null|false|none|Mock responses with optional parameter conditions. Evaluated top-to-bottom; first match wins.|
 
-<h2 id="tocS_MCPTransport">MCPTransport</h2>
-<!-- backwards compatibility -->
-<a id="schemamcptransport"></a>
-<a id="schema_MCPTransport"></a>
-<a id="tocSmcptransport"></a>
-<a id="tocsmcptransport"></a>
-
-```json
-"SSE"
-```
-
 <h2 id="tocS_MTLSAuthResponse">MTLSAuthResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemamtlsauthresponse"></a>
@@ -114661,29 +114844,6 @@ Response model for mTLS auth connections.
 |status|refresh_failed|
 |status|revoked|
 |status|credential_invalid|
-
-<h2 id="tocS_ManualSource">ManualSource</h2>
-<!-- backwards compatibility -->
-<a id="schemamanualsource"></a>
-<a id="schema_ManualSource"></a>
-<a id="tocSmanualsource"></a>
-<a id="tocsmanualsource"></a>
-
-```json
-{
-  "type": "manual",
-  "created_by_user_id": "string",
-  "notes": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|created_by_user_id|string|true|none|none|
-|notes|string \| null|false|none|none|
 
 <h2 id="tocS_ManualVerificationFileResponseModel">ManualVerificationFileResponseModel</h2>
 <!-- backwards compatibility -->
@@ -114960,36 +115120,6 @@ One page of the caller's generations, newest first.
 ```json
 "string"
 ```
-
-<h2 id="tocS_MemoryEntrySearchResult">MemoryEntrySearchResult</h2>
-<!-- backwards compatibility -->
-<a id="schemamemoryentrysearchresult"></a>
-<a id="schema_MemoryEntrySearchResult"></a>
-<a id="tocSmemoryentrysearchresult"></a>
-<a id="tocsmemoryentrysearchresult"></a>
-
-```json
-{
-  "entry_id": "string",
-  "version": 0,
-  "summary": "string",
-  "text": "string",
-  "source": {
-    "type": "conversation",
-    "conversation_id": "string"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|entry_id|string|true|none|none|
-|version|integer|true|none|none|
-|summary|string \| null|false|none|none|
-|text|string \| null|false|none|none|
-|source|[ConversationSource](#schemaconversationsource) \| [ManualSource](#schemamanualsource) \| null|false|none|none|
 
 <h2 id="tocS_MergeAgentConversationTicketsRequestModel">MergeAgentConversationTicketsRequestModel</h2>
 <!-- backwards compatibility -->
@@ -115286,8 +115416,11 @@ One page of the caller's generations, newest first.
 |procedures|object|false|none|Procedures keyed by procedure_id.|
 |default_hold_audio_url|string|false|none|URL of the default hold tone played to queued callers when no custom hold audio is uploaded, so the dashboard can preview it.|
 |overridden_fields|[string]|false|none|Dot-paths of config fields where both branches modified the same field relative to their common ancestor (conflicts). Present regardless of which side wins the conflict.|
-|conflicts|[[FieldConflict](#schemafieldconflict)]|false|none|Structured view of the same conflicts as overridden_fields, each carrying the value on the base (common ancestor), source branch, and target branch so the divergence can be presented and resolved field-by-field.|
+|conflicts|[[FieldConflict](#schemafieldconflict)]|false|none|Structured view of the same conflicts as overridden_fields, each carrying the value on the base (common ancestor), source branch, and target branch so the divergence can be presented and resolved field-by-field. A merge or rebase is rejected while any of them has no resolution in `conflict_resolutions`, unless the merge is forced.|
 |source_identical_to_target|boolean|false|none|True when the merge/rebase would be a no-op, i.e. the merged result is identical to the source branch tip. The rebase endpoint rejects in this case.|
+|source_tip_version_id|string \| null|false|none|Tip version of the source branch (the rebased branch for a rebase) the preview was computed from.|
+|target_tip_version_id|string \| null|false|none|Tip version of the target branch (main for a rebase) the preview was computed from.|
+|merge_error|string \| null|false|none|Why the merge doesn't combine into a valid configuration while conflicts are left to resolve. The preview then shows the branch the merge writes unchanged.|
 
 <h2 id="tocS_MergeProposalCloseReason">MergeProposalCloseReason</h2>
 <!-- backwards compatibility -->
@@ -117850,142 +117983,6 @@ Only ``group_id`` is acted on; ``workflow_name`` and ``metadata`` are kept so th
 |---|---|---|---|---|
 |status|string|false|none|none|
 
-<h2 id="tocS_OpenerConfig">OpenerConfig</h2>
-<!-- backwards compatibility -->
-<a id="schemaopenerconfig"></a>
-<a id="schema_OpenerConfig"></a>
-<a id="tocSopenerconfig"></a>
-<a id="tocsopenerconfig"></a>
-
-```json
-{
-  "llm": "gpt-4o-mini"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|llm|[LLM](#schemallm)|true|none|Model used to speak a fast opener while the main model generates its full reply. Must be a hosted model (not a bring-your-own LLM type).|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|llm|gpt-4o-mini|
-|llm|gpt-4o|
-|llm|gpt-4|
-|llm|gpt-4-turbo|
-|llm|gpt-4.1|
-|llm|gpt-4.1-mini|
-|llm|gpt-4.1-nano|
-|llm|gpt-5|
-|llm|gpt-5.1|
-|llm|gpt-5.2|
-|llm|gpt-5.2-chat-latest|
-|llm|gpt-5.4|
-|llm|gpt-5.4-mini|
-|llm|gpt-5.4-nano|
-|llm|gpt-5.5|
-|llm|gpt-5.6-sol|
-|llm|gpt-5.6-terra|
-|llm|gpt-5.6-luna|
-|llm|gpt-6-astra|
-|llm|gpt-6-sol|
-|llm|gpt-6-luna|
-|llm|gpt-6.1-sol|
-|llm|gpt-6.1-terra|
-|llm|gpt-5-mini|
-|llm|gpt-5-nano|
-|llm|gpt-3.5-turbo|
-|llm|gemini-1.5-pro|
-|llm|gemini-1.5-flash|
-|llm|gemini-2.0-flash|
-|llm|gemini-2.0-flash-lite|
-|llm|gemini-2.5-flash-lite|
-|llm|gemini-2.5-flash|
-|llm|gemini-3-pro-preview|
-|llm|gemini-3-flash-preview|
-|llm|gemini-3.1-pro-preview|
-|llm|gemini-3.1-flash-lite-preview|
-|llm|gemini-3.1-flash-lite|
-|llm|gemini-3.5-flash|
-|llm|gemini-3.5-flash-lite|
-|llm|gemini-3.6-flash|
-|llm|gemini-3.7-flash|
-|llm|gemini-3.8-flash|
-|llm|gemini-4-argon|
-|llm|claude-sonnet-4-5|
-|llm|claude-opus-4-6|
-|llm|claude-opus-4-7|
-|llm|claude-opus-4-8|
-|llm|claude-opus-5|
-|llm|claude-opus-5-5|
-|llm|claude-sonnet-4-6|
-|llm|claude-sonnet-5|
-|llm|claude-sonnet-5-5|
-|llm|claude-sonnet-4|
-|llm|claude-haiku-4-5|
-|llm|claude-haiku-5-5|
-|llm|claude-3-7-sonnet|
-|llm|claude-3-5-sonnet|
-|llm|claude-3-5-sonnet-v1|
-|llm|claude-3-haiku|
-|llm|grok-beta|
-|llm|custom-llm|
-|llm|qwen3-4b|
-|llm|qwen3-30b-a3b|
-|llm|qwen36-35b-a3b|
-|llm|qwen35-397b-a17b|
-|llm|gpt-oss-20b|
-|llm|gpt-oss-120b|
-|llm|glm-45-air-fp8|
-|llm|glm-52|
-|llm|deepseek-v41-flash|
-|llm|nemotron-35-super-vl-nvfp4|
-|llm|gemini-2.5-flash-preview-09-2025|
-|llm|gemini-2.5-flash-lite-preview-09-2025|
-|llm|gemini-2.5-flash-preview-05-20|
-|llm|gemini-2.5-flash-preview-04-17|
-|llm|gemini-2.5-flash-lite-preview-06-17|
-|llm|gemini-2.0-flash-lite-001|
-|llm|gemini-2.0-flash-001|
-|llm|gemini-1.5-flash-002|
-|llm|gemini-1.5-flash-001|
-|llm|gemini-1.5-pro-002|
-|llm|gemini-1.5-pro-001|
-|llm|claude-sonnet-4@20250514|
-|llm|claude-sonnet-4-5@20250929|
-|llm|claude-haiku-4-5@20251001|
-|llm|claude-3-7-sonnet@20250219|
-|llm|claude-3-5-sonnet@20240620|
-|llm|claude-3-5-sonnet-v2@20241022|
-|llm|claude-3-haiku@20240307|
-|llm|gpt-5-2025-08-07|
-|llm|gpt-5.1-2025-11-13|
-|llm|gpt-5.2-2025-12-11|
-|llm|gpt-5.4-2026-03-05|
-|llm|gpt-5.4-mini-2026-03-17|
-|llm|gpt-5.4-nano-2026-03-17|
-|llm|gpt-5.5-2026-04-23|
-|llm|gpt-5-mini-2025-08-07|
-|llm|gpt-5-nano-2025-08-07|
-|llm|gpt-4.1-2025-04-14|
-|llm|gpt-4.1-mini-2025-04-14|
-|llm|gpt-4.1-nano-2025-04-14|
-|llm|gpt-4o-mini-2024-07-18|
-|llm|gpt-4o-2024-11-20|
-|llm|gpt-4o-2024-08-06|
-|llm|gpt-4o-2024-05-13|
-|llm|gpt-4-0613|
-|llm|gpt-4-0314|
-|llm|gpt-4-turbo-2024-04-09|
-|llm|gpt-3.5-turbo-0125|
-|llm|gpt-3.5-turbo-1106|
-|llm|watt-tool-8b|
-|llm|watt-tool-70b|
-
 <h2 id="tocS_OptInSmsReminderParams">OptInSmsReminderParams</h2>
 <!-- backwards compatibility -->
 <a id="schemaoptinsmsreminderparams"></a>
@@ -118023,25 +118020,6 @@ Only ``group_id`` is acted on; ``workflow_name`` and ``metadata`` are kept so th
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |smb_tool_type|string|false|none|none|
-
-<h2 id="tocS_OptionValue">OptionValue</h2>
-<!-- backwards compatibility -->
-<a id="schemaoptionvalue"></a>
-<a id="schema_OptionValue"></a>
-<a id="tocSoptionvalue"></a>
-<a id="tocsoptionvalue"></a>
-
-```json
-0
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|number|false|none|none|
-|*anyOf*|string|false|none|none|
-|*anyOf*|boolean|false|none|none|
 
 <h2 id="tocS_OrbAvatar">OrbAvatar</h2>
 <!-- backwards compatibility -->
@@ -119573,24 +119551,6 @@ Every owner-editable field, working hours included.
 |type|string|false|none|none|
 |phone_number|string|true|none|none|
 
-<h2 id="tocS_PhoneNumberNullable">PhoneNumberNullable</h2>
-<!-- backwards compatibility -->
-<a id="schemaphonenumbernullable"></a>
-<a id="schema_PhoneNumberNullable"></a>
-<a id="tocSphonenumbernullable"></a>
-<a id="tocsphonenumbernullable"></a>
-
-```json
-"string"
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|string|false|none|none|
-|*anyOf*|null|false|none|none|
-
 <h2 id="tocS_PhoneNumberOptional">PhoneNumberOptional</h2>
 <!-- backwards compatibility -->
 <a id="schemaphonenumberoptional"></a>
@@ -120198,6 +120158,19 @@ navigating phone menus, entering extensions, or inputting numeric codes.
       ]
     }
   ],
+  "date_overrides": [
+    {
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01",
+      "intervals": [
+        {
+          "start": "string",
+          "end": "string"
+        }
+      ],
+      "name": "string"
+    }
+  ],
   "data_collection": {
     "callback_time": "__system_data_collection_callback_time",
     "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -120223,6 +120196,7 @@ navigating phone menus, entering extensions, or inputting numeric codes.
 |timezone|string|false|none|IANA timezone the calling periods are read in.|
 |retry|[RetryPolicy](#schemaretrypolicy)|false|none|none|
 |calling_periods|[[CallingPeriod](#schemacallingperiod)]|false|none|The weekly windows calls may be placed in.|
+|date_overrides|[[DateOverride](#schemadateoverride)]|false|none|Local dates in `timezone` whose calling windows replace `calling_periods`. Date ranges may not overlap.|
 |data_collection|[DataCollectionConfig](#schemadatacollectionconfig)|false|none|The agent's data collection items that steer follow-up calls. Each defaults<br>to the built-in item for its purpose; `null` turns it off.|
 |followup_context|[FollowupContextPolicy](#schemafollowupcontextpolicy)|false|none|Which `campaign__` dynamic variables follow-up calls get.|
 
@@ -120259,6 +120233,19 @@ navigating phone menus, entering extensions, or inputting numeric codes.
       ]
     }
   ],
+  "date_overrides": [
+    {
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01",
+      "intervals": [
+        {
+          "start": "string",
+          "end": "string"
+        }
+      ],
+      "name": "string"
+    }
+  ],
   "data_collection": {
     "callback_time": "__system_data_collection_callback_time",
     "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -120284,6 +120271,7 @@ navigating phone menus, entering extensions, or inputting numeric codes.
 |timezone|string|false|none|IANA timezone the calling periods are read in.|
 |retry|[RetryPolicy](#schemaretrypolicy)|false|none|none|
 |calling_periods|[[CallingPeriod](#schemacallingperiod)]|false|none|The weekly windows calls may be placed in.|
+|date_overrides|[[DateOverride](#schemadateoverride)]|false|none|Local dates in `timezone` whose calling windows replace `calling_periods`. Date ranges may not overlap.|
 |data_collection|[DataCollectionConfig](#schemadatacollectionconfig)|false|none|The agent's data collection items that steer follow-up calls. Each defaults<br>to the built-in item for its purpose; `null` turns it off.|
 |followup_context|[FollowupContextPolicy](#schemafollowupcontextpolicy)|false|none|Which `campaign__` dynamic variables follow-up calls get.|
 
@@ -120952,19 +120940,6 @@ Response model for Private Key JWT auth connections
 |---|---|---|---|---|
 |procedure_id|string|true|none|Procedure ID|
 |version_id|string|true|none|Version ID of the procedure version.|
-
-<h2 id="tocS_ProcessingProgress">ProcessingProgress</h2>
-<!-- backwards compatibility -->
-<a id="schemaprocessingprogress"></a>
-<a id="schema_ProcessingProgress"></a>
-<a id="tocSprocessingprogress"></a>
-<a id="tocsprocessingprogress"></a>
-
-```json
-"Converting"
-```
-
-Single-word processing step shown in the UI status badge.
 
 <h2 id="tocS_ProjectCreationMetaResponseModel">ProjectCreationMetaResponseModel</h2>
 <!-- backwards compatibility -->
@@ -122021,6 +121996,8 @@ What a promotion discounts: the service price or add-on prices.
 |llm|gpt-6-luna|
 |llm|gpt-6.1-sol|
 |llm|gpt-6.1-terra|
+|llm|gpt-6.2-astra|
+|llm|gpt-6.2-sol|
 |llm|gpt-5-mini|
 |llm|gpt-5-nano|
 |llm|gpt-3.5-turbo|
@@ -122041,6 +122018,8 @@ What a promotion discounts: the service price or add-on prices.
 |llm|gemini-3.7-flash|
 |llm|gemini-3.8-flash|
 |llm|gemini-4-argon|
+|llm|gemini-4-hydrogen|
+|llm|gemini-4-neon|
 |llm|claude-sonnet-4-5|
 |llm|claude-opus-4-6|
 |llm|claude-opus-4-7|
@@ -122057,7 +122036,6 @@ What a promotion discounts: the service price or add-on prices.
 |llm|claude-3-5-sonnet|
 |llm|claude-3-5-sonnet-v1|
 |llm|claude-3-haiku|
-|llm|grok-beta|
 |llm|custom-llm|
 |llm|qwen3-4b|
 |llm|qwen3-30b-a3b|
@@ -122186,6 +122164,8 @@ What a promotion discounts: the service price or add-on prices.
 |llm|gpt-6-luna|
 |llm|gpt-6.1-sol|
 |llm|gpt-6.1-terra|
+|llm|gpt-6.2-astra|
+|llm|gpt-6.2-sol|
 |llm|gpt-5-mini|
 |llm|gpt-5-nano|
 |llm|gpt-3.5-turbo|
@@ -122206,6 +122186,8 @@ What a promotion discounts: the service price or add-on prices.
 |llm|gemini-3.7-flash|
 |llm|gemini-3.8-flash|
 |llm|gemini-4-argon|
+|llm|gemini-4-hydrogen|
+|llm|gemini-4-neon|
 |llm|claude-sonnet-4-5|
 |llm|claude-opus-4-6|
 |llm|claude-opus-4-7|
@@ -122222,7 +122204,6 @@ What a promotion discounts: the service price or add-on prices.
 |llm|claude-3-5-sonnet|
 |llm|claude-3-5-sonnet-v1|
 |llm|claude-3-haiku|
-|llm|grok-beta|
 |llm|custom-llm|
 |llm|qwen3-4b|
 |llm|qwen3-30b-a3b|
@@ -122777,38 +122758,6 @@ A pronunciation dictionary to apply during speech synthesis.
 |creation_time_unix|integer|true|none|none|
 |archived_time_unix|integer \| null|false|none|none|
 
-<h2 id="tocS_ProvisionResellerWorkspaceRequest">ProvisionResellerWorkspaceRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaprovisionresellerworkspacerequest"></a>
-<a id="schema_ProvisionResellerWorkspaceRequest"></a>
-<a id="tocSprovisionresellerworkspacerequest"></a>
-<a id="tocsprovisionresellerworkspacerequest"></a>
-
-```json
-{
-  "business_name": "string",
-  "subscription": {
-    "tier_id": "string",
-    "billing_period": "monthly_period"
-  },
-  "phone_number": "string",
-  "members": [],
-  "complete_onboarding": false,
-  "idempotency_key": "3c1d2b7e-8f4a-4e5b-9c6d-1a2b3c4d5e6f"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|business_name|string|true|none|none|
-|subscription|[ProvisionResellerWorkspaceSubscription](#schemaprovisionresellerworkspacesubscription) \| null|false|none|Paid tier to subscribe to. Omitted leaves the workspace with no subscription.|
-|phone_number|string \| null|false|none|A free number from the reseller's phone pool, reserved for the workspace until onboarding binds it to the receptionist.|
-|members|[[TeamInviteRequest](#schemateaminviterequest)]|false|none|People to invite once the workspace exists, capped by the tier's team size. Best-effort: each outcome is in `member_results`.|
-|complete_onboarding|boolean|false|none|Finish setup right away, as `POST /v1/reception/reseller/workspaces/{workspace_id}/complete-onboarding` does. Best-effort: `onboarding_completed_at_unix` stays null on failure, and that call can be retried.|
-|idempotency_key|string \| null|false|none|Client-generated key that makes a retry safe. The same key and body within 24 hours returns the first result without running again. While that first request is still running, a retry gets 409 `idempotency_key_in_progress`; a different body with the same key gets 400 `idempotency_key_reused`. A request that fails is not saved, so it can be retried with the same key.|
-
 <h2 id="tocS_ProvisionResellerWorkspaceResponse">ProvisionResellerWorkspaceResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemaprovisionresellerworkspaceresponse"></a>
@@ -122916,6 +122865,97 @@ Required to ensure compat with the rest of the agent data models.
 ```json
 "standard"
 ```
+
+<h2 id="tocS_QueryArrayJsonSchemaProperty-Input">QueryArrayJsonSchemaProperty-Input</h2>
+<!-- backwards compatibility -->
+<a id="schemaqueryarrayjsonschemaproperty-input"></a>
+<a id="schema_QueryArrayJsonSchemaProperty-Input"></a>
+<a id="tocSqueryarrayjsonschemaproperty-input"></a>
+<a id="tocsqueryarrayjsonschemaproperty-input"></a>
+
+```json
+{
+  "property_kind": "array",
+  "description": "",
+  "dynamic_variable": "",
+  "constant_value": [
+    null
+  ],
+  "is_omitted": false,
+  "type": "array",
+  "items": {
+    "type": "string",
+    "description": "Array element",
+    "is_system_provided": false,
+    "dynamic_variable": "",
+    "allowed_values_dynamic_variable": "",
+    "constant_value": "",
+    "is_omitted": false
+  }
+}
+```
+
+A query param holding several literals, sent as a repeated key (?a=x&a=y).
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|property_kind|string|false|none|none|
+|description|string|false|none|none|
+|dynamic_variable|string|false|none|When set, the entire parameter is populated from this dynamic variable at runtime. Mutually exclusive with description (LLM-provided value), constant_value, and is_omitted.|
+|constant_value|[object] \| null|false|none|When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.|
+|is_omitted|boolean|false|none|If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.|
+|type|string|true|none|none|
+|items|[LiteralJsonSchemaProperty](#schemaliteraljsonschemaproperty) \| [ObjectJsonSchemaProperty-Input](#schemaobjectjsonschemaproperty-input) \| [ArrayJsonSchemaProperty-Input](#schemaarrayjsonschemaproperty-input) \| [AnyOfJsonSchemaProperty-Input](#schemaanyofjsonschemaproperty-input)|false|none|Schema for each value; must be a string, number or boolean.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|property_kind|array|
+|property_kind|object|
+
+<h2 id="tocS_QueryArrayJsonSchemaProperty-Output">QueryArrayJsonSchemaProperty-Output</h2>
+<!-- backwards compatibility -->
+<a id="schemaqueryarrayjsonschemaproperty-output"></a>
+<a id="schema_QueryArrayJsonSchemaProperty-Output"></a>
+<a id="tocSqueryarrayjsonschemaproperty-output"></a>
+<a id="tocsqueryarrayjsonschemaproperty-output"></a>
+
+```json
+{
+  "description": "",
+  "dynamic_variable": "",
+  "constant_value": [
+    null
+  ],
+  "is_omitted": false,
+  "type": "array",
+  "items": {
+    "type": "string",
+    "description": "Array element",
+    "is_system_provided": false,
+    "dynamic_variable": "",
+    "allowed_values_dynamic_variable": "",
+    "constant_value": "",
+    "is_omitted": false
+  }
+}
+```
+
+A query param holding several literals, sent as a repeated key (?a=x&a=y).
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|none|
+|dynamic_variable|string|false|none|When set, the entire parameter is populated from this dynamic variable at runtime. Mutually exclusive with description (LLM-provided value), constant_value, and is_omitted.|
+|constant_value|[object] \| null|false|none|When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.|
+|is_omitted|boolean|false|none|If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.|
+|type|string|true|none|none|
+|items|[LiteralJsonSchemaProperty](#schemaliteraljsonschemaproperty) \| [ObjectJsonSchemaProperty-Output](#schemaobjectjsonschemaproperty-output) \| [ArrayJsonSchemaProperty-Output](#schemaarrayjsonschemaproperty-output) \| [AnyOfJsonSchemaProperty-Output](#schemaanyofjsonschemaproperty-output)|false|none|Schema for each value; must be a string, number or boolean.|
 
 <h2 id="tocS_QueryParamsJsonSchema-Input">QueryParamsJsonSchema-Input</h2>
 <!-- backwards compatibility -->
@@ -123441,99 +123481,6 @@ Required to ensure compat with the rest of the agent data models.
 |embedding_model|e5_mistral_7b_instruct|
 |embedding_model|multilingual_e5_large_instruct|
 
-<h2 id="tocS_RawBusinessInfo">RawBusinessInfo</h2>
-<!-- backwards compatibility -->
-<a id="schemarawbusinessinfo"></a>
-<a id="schema_RawBusinessInfo"></a>
-<a id="tocSrawbusinessinfo"></a>
-<a id="tocsrawbusinessinfo"></a>
-
-```json
-{
-  "company_name": "string",
-  "description": "string",
-  "business_phone": "string",
-  "locations": [
-    {
-      "name": "string",
-      "address": "string",
-      "operating_hours": {}
-    }
-  ],
-  "business_country": "string",
-  "business_state": "string",
-  "suggested_currency": "string",
-  "suggested_language": "string"
-}
-```
-
-Business profile data extracted from a single page.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|company_name|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-|description|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-|business_phone|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-|locations|[[RawLocationInfo](#schemarawlocationinfo)]|false|none|none|
-|business_country|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-|business_state|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-|suggested_currency|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-|suggested_language|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-
-<h2 id="tocS_RawItem">RawItem</h2>
-<!-- backwards compatibility -->
-<a id="schemarawitem"></a>
-<a id="schema_RawItem"></a>
-<a id="tocSrawitem"></a>
-<a id="tocsrawitem"></a>
-
-```json
-{
-  "name": "string",
-  "description": "",
-  "price": 0,
-  "duration_minutes": 0
-}
-```
-
-A single item extracted from a page — could be a service, person, product, or asset.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|true|none|none|
-|description|string|false|none|none|
-|price|number \| null|false|none|none|
-|duration_minutes|integer \| null|false|none|none|
-
-<h2 id="tocS_RawLocationInfo">RawLocationInfo</h2>
-<!-- backwards compatibility -->
-<a id="schemarawlocationinfo"></a>
-<a id="schema_RawLocationInfo"></a>
-<a id="tocSrawlocationinfo"></a>
-<a id="tocsrawlocationinfo"></a>
-
-```json
-{
-  "name": "string",
-  "address": "string",
-  "operating_hours": {}
-}
-```
-
-A single branch/location extracted from a page.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-|address|[LenientOptionalStr](#schemalenientoptionalstr)|false|none|none|
-|operating_hours|object \| null|false|none|none|
-
 <h2 id="tocS_ReadLegalTerms">ReadLegalTerms</h2>
 <!-- backwards compatibility -->
 <a id="schemareadlegalterms"></a>
@@ -123936,17 +123883,7 @@ The business profile, with the current time in the business's timezone.
 |currency|NGN|
 |currency|KES|
 |currency|PKR|
-
-<h2 id="tocS_ReceptionAgentTarget">ReceptionAgentTarget</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionagenttarget"></a>
-<a id="schema_ReceptionAgentTarget"></a>
-<a id="tocSreceptionagenttarget"></a>
-<a id="tocsreceptionagenttarget"></a>
-
-```json
-"customer_facing"
-```
+|currency|GEL|
 
 <h2 id="tocS_ReceptionAssetResource">ReceptionAssetResource</h2>
 <!-- backwards compatibility -->
@@ -124015,38 +123952,6 @@ Represents a physical resource that can be booked (rooms, equipment, vehicles).
 |id|string|true|none|The asset's ID.|
 |created_at_unix|[UnixTimestamp](#schemaunixtimestamp)|false|none|When this was created, as a Unix timestamp in seconds.|
 |updated_at_unix|[UnixTimestamp](#schemaunixtimestamp)|false|none|When this was last updated, as a Unix timestamp in seconds.|
-
-<h2 id="tocS_ReceptionAssetScrapable">ReceptionAssetScrapable</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionassetscrapable"></a>
-<a id="schema_ReceptionAssetScrapable"></a>
-<a id="tocSreceptionassetscrapable"></a>
-<a id="tocsreceptionassetscrapable"></a>
-
-```json
-{
-  "groups": [
-    {
-      "label": "string",
-      "rank": 0
-    }
-  ],
-  "ungrouped_rank": 0,
-  "name": "string",
-  "description": "string"
-}
-```
-
-Scrape-reachable subset of an asset (resource that can be booked).
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|groups|[[ReceptionGroupMembership](#schemareceptiongroupmembership)]|false|none|Group memberships for this item. Each entry carries the group label and the item's 0-based rank within that group.|
-|ungrouped_rank|integer \| null|false|none|Display position among items with no group; `null` sorts last. Change it with the reorder endpoint.|
-|name|[StrippedStr](#schemastrippedstr)|true|none|Internal/admin name of the asset, shown in the dashboard and owner notifications.|
-|description|[StrippedStr](#schemastrippedstr)|false|none|Description of the asset.|
 
 <h2 id="tocS_ReceptionConfirmServiceUpdateRequest">ReceptionConfirmServiceUpdateRequest</h2>
 <!-- backwards compatibility -->
@@ -124653,93 +124558,6 @@ Request model for creating a new transfer rule.
 |condition|[StrippedStr](#schemastrippedstr)|true|none|What the caller does that triggers the transfer, e.g. 'The caller asks to speak to a human or to Alvin'. Describe only the trigger; do not restate the phone number or the word 'transfer'.|
 |post_dial_digits|string \| null|false|none|DTMF digits automatically played after the transfer destination picks up (e.g. '1' to answer a 'press 1 to accept' screen, or 'www1234' to key an extension after a pause). Valid characters are 0-9, *, #, w (0.5s pause) and W (1s pause). Twilio transfers only.|
 
-<h2 id="tocS_ReceptionCustomerFacingAgent">ReceptionCustomerFacingAgent</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptioncustomerfacingagent"></a>
-<a id="schema_ReceptionCustomerFacingAgent"></a>
-<a id="tocSreceptioncustomerfacingagent"></a>
-<a id="tocsreceptioncustomerfacingagent"></a>
-
-```json
-{
-  "agent_id": "agent_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-  "config": {
-    "additional_instructions": "string",
-    "tone_traits": [
-      "string"
-    ],
-    "details_to_collect": [
-      "string"
-    ],
-    "llm": "gpt-4o-mini",
-    "reasoning_effort": "none",
-    "disable_rag": false,
-    "background_voice_detection": true,
-    "turn_eagerness": "eager",
-    "voice_id": "21m00Tcm4TlvDq8ikWAM",
-    "language": "string",
-    "additional_languages": [
-      "string"
-    ],
-    "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-    "disable_first_message_interruptions": false,
-    "enable_end_call_tool": true,
-    "enable_skip_turn_tool": true,
-    "enable_play_keypad_touch_tone_tool": false,
-    "agent_rules": [
-      {
-        "title": "string",
-        "description": "string",
-        "priority": "strict",
-        "id": "rule_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-        "created_at_unix": 0
-      }
-    ],
-    "transfer_rules": [
-      {
-        "label": "string",
-        "phone_number": "string",
-        "condition": "string",
-        "post_dial_digits": "www1234",
-        "id": "transferrule_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-        "created_at_unix": 0
-      }
-    ],
-    "hide_caller_number_on_transfers": false,
-    "record_after_transfers": false,
-    "procedures": [
-      {
-        "name": "string",
-        "trigger": "string",
-        "body": "1. Ask for the caller's name and order number.\n2. Look up the order and read back its status.",
-        "id": "agtprc_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-        "created_at_unix": 0,
-        "source_key": "string"
-      }
-    ],
-    "enable_secure_mode": false,
-    "enable_spam_protection": false
-  },
-  "deactivated_at_unix": 1767225600,
-  "deactivation_reason": "tier_downgrade"
-}
-```
-
-A single customer-facing receptionist agent.
-
-A workspace can have multiple of these. Each entry owns its own ConvAI
-agent id and full ``CustomerFacingConfig`` (voice, language, first message,
-system tool toggles, agent rules, transfer rules).
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|agent_id|string|false|none|ID of the ElevenLabs agent behind this receptionist.|
-|config|[ReceptionCustomerFacingConfig-Input](#schemareceptioncustomerfacingconfig-input)|false|none|The receptionist's voice, language, greeting, rules and other settings.|
-|deactivated_at_unix|integer \| null|false|none|Unix timestamp when this receptionist was deactivated. None when active.|
-|deactivation_reason|[ReceptionCustomerFacingAgentDeactivationReason](#schemareceptioncustomerfacingagentdeactivationreason) \| null|false|none|Why this receptionist was deactivated. None when active.|
-
 <h2 id="tocS_ReceptionCustomerFacingAgentDeactivationReason">ReceptionCustomerFacingAgentDeactivationReason</h2>
 <!-- backwards compatibility -->
 <a id="schemareceptioncustomerfacingagentdeactivationreason"></a>
@@ -124782,7 +124600,7 @@ Why a receptionist is currently inactive (live calls disabled).
       "string"
     ],
     "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-    "disable_first_message_interruptions": false,
+    "first_message_mode": "interruptible",
     "enable_end_call_tool": true,
     "enable_skip_turn_tool": true,
     "enable_play_keypad_touch_tone_tool": false,
@@ -124854,109 +124672,6 @@ A receptionist.
 |widget|[ReceptionWidgetAppearance](#schemareceptionwidgetappearance) \| null|false|none|How the website widget looks. Null when the agent is missing. Unset labels follow the receptionist's language.|
 |is_active|boolean|true|read-only|Whether the receptionist is active. Inactive receptionists take no live calls.|
 
-<h2 id="tocS_ReceptionCustomerFacingConfig-Input">ReceptionCustomerFacingConfig-Input</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptioncustomerfacingconfig-input"></a>
-<a id="schema_ReceptionCustomerFacingConfig-Input"></a>
-<a id="tocSreceptioncustomerfacingconfig-input"></a>
-<a id="tocsreceptioncustomerfacingconfig-input"></a>
-
-```json
-{
-  "additional_instructions": "string",
-  "tone_traits": [
-    "string"
-  ],
-  "details_to_collect": [
-    "string"
-  ],
-  "llm": "gpt-4o-mini",
-  "reasoning_effort": "none",
-  "disable_rag": false,
-  "background_voice_detection": true,
-  "turn_eagerness": "eager",
-  "voice_id": "21m00Tcm4TlvDq8ikWAM",
-  "language": "string",
-  "additional_languages": [
-    "string"
-  ],
-  "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-  "disable_first_message_interruptions": false,
-  "enable_end_call_tool": true,
-  "enable_skip_turn_tool": true,
-  "enable_play_keypad_touch_tone_tool": false,
-  "agent_rules": [
-    {
-      "title": "string",
-      "description": "string",
-      "priority": "strict",
-      "id": "rule_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-      "created_at_unix": 0
-    }
-  ],
-  "transfer_rules": [
-    {
-      "label": "string",
-      "phone_number": "string",
-      "condition": "string",
-      "post_dial_digits": "www1234",
-      "id": "transferrule_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-      "created_at_unix": 0
-    }
-  ],
-  "hide_caller_number_on_transfers": false,
-  "record_after_transfers": false,
-  "procedures": [
-    {
-      "name": "string",
-      "trigger": "string",
-      "body": "1. Ask for the caller's name and order number.\n2. Look up the order and read back its status.",
-      "id": "agtprc_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-      "created_at_unix": 0,
-      "source_key": "string"
-    }
-  ],
-  "enable_secure_mode": false,
-  "enable_spam_protection": false
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|additional_instructions|[StrippedStr](#schemastrippedstr)|false|none|Extra instructions for the agent (e.g., 'Always ask callers to spell out their name')|
-|tone_traits|[[StrippedStr](#schemastrippedstr)]|false|none|Personality traits for the receptionist, e.g. `['professional', 'concise']`.|
-|details_to_collect|[[StrippedStr](#schemastrippedstr)]|false|none|Details the agent should always try to collect from callers (presets + custom labels, e.g. ['full name', 'phone number']).|
-|llm|[LLM](#schemallm) \| null|false|none|Model the receptionist runs on. Null uses the default.|
-|reasoning_effort|[LLMReasoningEffort](#schemallmreasoningeffort) \| null|false|none|Reasoning effort for the receptionist's model, up to `medium` and only among the efforts the model supports. Null uses the model's default.|
-|disable_rag|boolean|false|none|When true, the whole knowledge base is given to the receptionist up front instead of searched on each turn. Faster, but only for small knowledge bases; larger ones are still searched.|
-|background_voice_detection|boolean|false|none|Filter out far-field human speech before transcription.|
-|turn_eagerness|[ReceptionTurnEagerness](#schemareceptionturneagerness)|false|none|How quickly the receptionist decides the caller has finished speaking. Eager replies soonest; patient waits for a clearer end of turn.|
-|voice_id|string|false|none|ElevenLabs voice ID|
-|language|[SupportedLang](#schemasupportedlang)|false|none|Primary language code|
-|additional_languages|[[SupportedLang](#schemasupportedlang)]|false|none|Additional language codes the agent can communicate in|
-|first_message|string|false|none|The first message the agent says when starting a conversation|
-|disable_first_message_interruptions|boolean|false|none|When true, callers cannot interrupt the receptionist while the first message is being delivered. Use when the greeting carries a recording or legal notice callers must hear in full.|
-|enable_end_call_tool|boolean|false|none|Allow the end_call system tool during conversations.|
-|enable_skip_turn_tool|boolean|false|none|Allow the skip_turn system tool during conversations.|
-|enable_play_keypad_touch_tone_tool|boolean|false|none|Allow the play_keypad_touch_tone (DTMF) system tool during conversations. When enabled, the receptionist can play touch-tone digits on a live call to navigate automated phone menus or answer carrier prompts such as a 'press 1 to accept' call-screening step.|
-|agent_rules|[[AgentRule](#schemaagentrule)]|false|none|Behavioral rules this agent must follow.|
-|transfer_rules|[[ReceptionTransferRule](#schemareceptiontransferrule)]|false|none|Phone numbers this agent can transfer calls to.|
-|hide_caller_number_on_transfers|boolean|false|none|Show the business's own number, rather than the caller's, as the caller ID on transferred calls.|
-|record_after_transfers|boolean|false|none|Keep recording after a call is transferred and add that audio to the call recording.|
-|procedures|[[ReceptionProcedure](#schemareceptionprocedure)]|false|none|Standard operating procedures (SOPs) this agent can run on calls.|
-|enable_secure_mode|boolean|false|none|When enabled, the receptionist may only look up or modify appointments and client records tied to the caller's verified phone number.|
-|enable_spam_protection|boolean|false|none|When enabled, inbound calls to US numbers are screened before the receptionist answers: calls whose caller ID failed carrier (STIR/SHAKEN) verification are rejected, and unknown callers whose caller ID the carrier could not vouch for must press a key to be connected.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|turn_eagerness|patient|
-|turn_eagerness|normal|
-|turn_eagerness|eager|
-
 <h2 id="tocS_ReceptionCustomerFacingConfig-Output">ReceptionCustomerFacingConfig-Output</h2>
 <!-- backwards compatibility -->
 <a id="schemareceptioncustomerfacingconfig-output"></a>
@@ -124984,7 +124699,7 @@ A receptionist.
     "string"
   ],
   "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-  "disable_first_message_interruptions": false,
+  "first_message_mode": "interruptible",
   "enable_end_call_tool": true,
   "enable_skip_turn_tool": true,
   "enable_play_keypad_touch_tone_tool": false,
@@ -125040,7 +124755,7 @@ A receptionist.
 |language|[SupportedLang](#schemasupportedlang)|false|none|Primary language code|
 |additional_languages|[[SupportedLang](#schemasupportedlang)]|false|none|Additional language codes the agent can communicate in|
 |first_message|string|false|none|The first message the agent says when starting a conversation|
-|disable_first_message_interruptions|boolean|false|none|When true, callers cannot interrupt the receptionist while the first message is being delivered. Use when the greeting carries a recording or legal notice callers must hear in full.|
+|first_message_mode|[FirstMessageMode](#schemafirstmessagemode)|false|none|How the first message plays. interruptible: callers can talk over it. uninterruptible: it always plays to the end. recording_notice: it opens with a short 'this call may be recorded' notice in the receptionist's language, spoken by a separate voice, and always plays to the end.|
 |enable_end_call_tool|boolean|false|none|Allow the end_call system tool during conversations.|
 |enable_skip_turn_tool|boolean|false|none|Allow the skip_turn system tool during conversations.|
 |enable_play_keypad_touch_tone_tool|boolean|false|none|Allow the play_keypad_touch_tone (DTMF) system tool during conversations. When enabled, the receptionist can play touch-tone digits on a live call to navigate automated phone menus or answer carrier prompts such as a 'press 1 to accept' call-screening step.|
@@ -125059,6 +124774,9 @@ A receptionist.
 |turn_eagerness|patient|
 |turn_eagerness|normal|
 |turn_eagerness|eager|
+|first_message_mode|interruptible|
+|first_message_mode|uninterruptible|
+|first_message_mode|recording_notice|
 
 <h2 id="tocS_ReceptionCustomerFacingConfigPatch">ReceptionCustomerFacingConfigPatch</h2>
 <!-- backwards compatibility -->
@@ -125087,7 +124805,7 @@ A receptionist.
     "string"
   ],
   "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-  "disable_first_message_interruptions": true,
+  "first_message_mode": "interruptible",
   "enable_end_call_tool": true,
   "enable_skip_turn_tool": true,
   "enable_play_keypad_touch_tone_tool": true,
@@ -125116,7 +124834,7 @@ Rules, procedures and transfer rules are changed through their own endpoints, no
 |language|[SupportedLang](#schemasupportedlang)|false|none|Primary language code|
 |additional_languages|[[SupportedLang](#schemasupportedlang)]|false|none|Additional language codes the agent can communicate in|
 |first_message|string|false|none|The first message the agent says when starting a conversation|
-|disable_first_message_interruptions|boolean|false|none|When true, callers cannot interrupt the receptionist while the first message is being delivered. Use when the greeting carries a recording or legal notice callers must hear in full.|
+|first_message_mode|[FirstMessageMode](#schemafirstmessagemode)|false|none|How the first message plays. interruptible: callers can talk over it. uninterruptible: it always plays to the end. recording_notice: it opens with a short 'this call may be recorded' notice in the receptionist's language, spoken by a separate voice, and always plays to the end.|
 |enable_end_call_tool|boolean|false|none|Allow the end_call system tool during conversations.|
 |enable_skip_turn_tool|boolean|false|none|Allow the skip_turn system tool during conversations.|
 |enable_play_keypad_touch_tone_tool|boolean|false|none|Allow the play_keypad_touch_tone (DTMF) system tool during conversations. When enabled, the receptionist can play touch-tone digits on a live call to navigate automated phone menus or answer carrier prompts such as a 'press 1 to accept' call-screening step.|
@@ -125132,6 +124850,9 @@ Rules, procedures and transfer rules are changed through their own endpoints, no
 |turn_eagerness|patient|
 |turn_eagerness|normal|
 |turn_eagerness|eager|
+|first_message_mode|interruptible|
+|first_message_mode|uninterruptible|
+|first_message_mode|recording_notice|
 
 <h2 id="tocS_ReceptionGroupMembership">ReceptionGroupMembership</h2>
 <!-- backwards compatibility -->
@@ -125155,40 +124876,6 @@ Membership of an item in a single user-defined group, with its display rank insi
 |---|---|---|---|---|
 |label|[StrippedStr](#schemastrippedstr)|true|none|Name of the group.|
 |rank|integer|false|none|0-based display position within this group. Change it with the reorder endpoint; send back the value you read to keep the order, a membership sent without it goes to position 0.|
-
-<h2 id="tocS_ReceptionIdentityVerificationConfig">ReceptionIdentityVerificationConfig</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionidentityverificationconfig"></a>
-<a id="schema_ReceptionIdentityVerificationConfig"></a>
-<a id="tocSreceptionidentityverificationconfig"></a>
-<a id="tocsreceptionidentityverificationconfig"></a>
-
-```json
-{
-  "enabled": false,
-  "channels": [
-    "email"
-  ],
-  "sms_phone_number_id": "string"
-}
-```
-
-Per-agent (receptionist) configuration for client identity verification codes.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|enabled|boolean|false|none|When enabled, the receptionist may only look up or modify a client's appointments and records after that client has completed OTP identity verification in this conversation.|
-|channels|[[ReceptionNotificationChannel](#schemareceptionnotificationchannel)]|false|none|none|
-|sms_phone_number_id|string \| null|false|none|Twilio phone number ID used to send SMS verification codes.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|channels|email|
-|channels|sms|
 
 <h2 id="tocS_ReceptionIntakeQuestion">ReceptionIntakeQuestion</h2>
 <!-- backwards compatibility -->
@@ -125291,161 +124978,6 @@ A file or web page the receptionists learn from.
 |status|processing|
 |status|ready|
 |status|error|
-
-<h2 id="tocS_ReceptionLenientVertical">ReceptionLenientVertical</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionlenientvertical"></a>
-<a id="schema_ReceptionLenientVertical"></a>
-<a id="tocSreceptionlenientvertical"></a>
-<a id="tocsreceptionlenientvertical"></a>
-
-```json
-"salon_barbershop"
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anyOf*|[ReceptionVertical](#schemareceptionvertical)|false|none|none|
-|*anyOf*|null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|*anyOf*|salon_barbershop|
-|*anyOf*|nail_beauty|
-|*anyOf*|spa|
-|*anyOf*|medical|
-|*anyOf*|veterinary|
-|*anyOf*|fitness|
-|*anyOf*|home_services|
-|*anyOf*|photography|
-|*anyOf*|consulting|
-|*anyOf*|restaurant|
-|*anyOf*|dental|
-|*anyOf*|auto_service|
-|*anyOf*|tutoring|
-|*anyOf*|legal|
-|*anyOf*|real_estate|
-|*anyOf*|other|
-
-<h2 id="tocS_ReceptionLocation-Input">ReceptionLocation-Input</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionlocation-input"></a>
-<a id="schema_ReceptionLocation-Input"></a>
-<a id="tocSreceptionlocation-input"></a>
-<a id="tocsreceptionlocation-input"></a>
-
-```json
-{
-  "name": "string",
-  "address": "string",
-  "notes": "string",
-  "operating_hours": {
-    "hours": {
-      "property1": [
-        {
-          "start_hour": 9,
-          "start_minute": 0,
-          "end_hour": 17,
-          "end_minute": 30
-        }
-      ],
-      "property2": [
-        {
-          "start_hour": 9,
-          "start_minute": 0,
-          "end_hour": 17,
-          "end_minute": 30
-        }
-      ]
-    },
-    "timezone": "America/New_York"
-  },
-  "customer_facing_name": "string",
-  "max_concurrent_appointments": 3,
-  "id": "string",
-  "deactivated_at_unix": 1767225600,
-  "deactivation_reason": "tier_downgrade"
-}
-```
-
-A single business location stored inline in agent info.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|[StrippedStr](#schemastrippedstr)|true|none|Internal name, e.g. 'Main Office' or 'Downtown Branch', shown in the dashboard and owner notifications.|
-|address|[StrippedStr](#schemastrippedstr)|false|none|Street address.|
-|notes|[StrippedStr](#schemastrippedstr)|false|none|Directions or other notes for customers, e.g. 'Free parking behind the building'.|
-|operating_hours|[WorkingHours](#schemaworkinghours)|false|none|When this location is open.|
-|customer_facing_name|[StrippedStr](#schemastrippedstr)|false|none|Name shown to customers; empty reuses name.|
-|max_concurrent_appointments|integer|false|none|Maximum number of appointments that may overlap at this location at a single instant. Only enforced while the booking page setting concurrent_limit_enabled is on.|
-|id|string|true|none|none|
-|deactivated_at_unix|integer \| null|false|none|Unix timestamp when this location was deactivated. None when active.|
-|deactivation_reason|[ReceptionLocationDeactivationReason](#schemareceptionlocationdeactivationreason) \| null|false|none|Why this location was deactivated. None when active.|
-
-<h2 id="tocS_ReceptionLocation-Output">ReceptionLocation-Output</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionlocation-output"></a>
-<a id="schema_ReceptionLocation-Output"></a>
-<a id="tocSreceptionlocation-output"></a>
-<a id="tocsreceptionlocation-output"></a>
-
-```json
-{
-  "name": "string",
-  "address": "string",
-  "notes": "string",
-  "operating_hours": {
-    "hours": {
-      "property1": [
-        {
-          "start_hour": 9,
-          "start_minute": 0,
-          "end_hour": 17,
-          "end_minute": 30
-        }
-      ],
-      "property2": [
-        {
-          "start_hour": 9,
-          "start_minute": 0,
-          "end_hour": 17,
-          "end_minute": 30
-        }
-      ]
-    },
-    "timezone": "America/New_York"
-  },
-  "customer_facing_name": "string",
-  "max_concurrent_appointments": 3,
-  "id": "string",
-  "deactivated_at_unix": 1767225600,
-  "deactivation_reason": "tier_downgrade",
-  "is_active": true
-}
-```
-
-A single business location stored inline in agent info.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|[StrippedStr](#schemastrippedstr)|true|none|Internal name, e.g. 'Main Office' or 'Downtown Branch', shown in the dashboard and owner notifications.|
-|address|[StrippedStr](#schemastrippedstr)|false|none|Street address.|
-|notes|[StrippedStr](#schemastrippedstr)|false|none|Directions or other notes for customers, e.g. 'Free parking behind the building'.|
-|operating_hours|[WorkingHours](#schemaworkinghours)|false|none|When this location is open.|
-|customer_facing_name|[StrippedStr](#schemastrippedstr)|false|none|Name shown to customers; empty reuses name.|
-|max_concurrent_appointments|integer|false|none|Maximum number of appointments that may overlap at this location at a single instant. Only enforced while the booking page setting concurrent_limit_enabled is on.|
-|id|string|true|none|none|
-|deactivated_at_unix|integer \| null|false|none|Unix timestamp when this location was deactivated. None when active.|
-|deactivation_reason|[ReceptionLocationDeactivationReason](#schemareceptionlocationdeactivationreason) \| null|false|none|Why this location was deactivated. None when active.|
-|is_active|boolean|true|read-only|Whether the location is active. Inactive locations take no bookings.|
 
 <h2 id="tocS_ReceptionLocationDeactivationReason">ReceptionLocationDeactivationReason</h2>
 <!-- backwards compatibility -->
@@ -125622,17 +125154,6 @@ A business location.
 |deactivated_at_unix|integer \| null|false|none|Unix timestamp when this location was deactivated. None when active.|
 |deactivation_reason|[ReceptionLocationDeactivationReason](#schemareceptionlocationdeactivationreason) \| null|false|none|Why this location was deactivated. None when active.|
 |is_active|boolean|true|read-only|Whether the location is active. Inactive locations take no bookings.|
-
-<h2 id="tocS_ReceptionNotificationChannel">ReceptionNotificationChannel</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionnotificationchannel"></a>
-<a id="schema_ReceptionNotificationChannel"></a>
-<a id="tocSreceptionnotificationchannel"></a>
-<a id="tocsreceptionnotificationchannel"></a>
-
-```json
-"email"
-```
 
 <h2 id="tocS_ReceptionPhoneAssignment">ReceptionPhoneAssignment</h2>
 <!-- backwards compatibility -->
@@ -125881,59 +125402,39 @@ Used for restaurants (menu), e-commerce (products), salons (retail items), etc.
 |allowed_fulfillment_types|delivery|
 |allowed_fulfillment_types|digital|
 
-<h2 id="tocS_ReceptionProductScrapable">ReceptionProductScrapable</h2>
+<h2 id="tocS_ReceptionProvisionResellerWorkspaceRequest">ReceptionProvisionResellerWorkspaceRequest</h2>
 <!-- backwards compatibility -->
-<a id="schemareceptionproductscrapable"></a>
-<a id="schema_ReceptionProductScrapable"></a>
-<a id="tocSreceptionproductscrapable"></a>
-<a id="tocsreceptionproductscrapable"></a>
+<a id="schemareceptionprovisionresellerworkspacerequest"></a>
+<a id="schema_ReceptionProvisionResellerWorkspaceRequest"></a>
+<a id="tocSreceptionprovisionresellerworkspacerequest"></a>
+<a id="tocsreceptionprovisionresellerworkspacerequest"></a>
 
 ```json
 {
-  "pricing_mode": "fixed",
-  "groups": [
-    {
-      "label": "string",
-      "rank": 0
-    }
-  ],
-  "ungrouped_rank": 0,
-  "name": "string",
-  "description": "string",
-  "price": 4.5
+  "business_name": "string",
+  "vertical": "salon_barbershop",
+  "subscription": {
+    "tier_id": "string",
+    "billing_period": "monthly_period"
+  },
+  "phone_number": "string",
+  "members": [],
+  "complete_onboarding": false,
+  "idempotency_key": "3c1d2b7e-8f4a-4e5b-9c6d-1a2b3c4d5e6f"
 }
 ```
-
-Scrape-reachable subset of a product (retail/catalog item).
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pricing_mode|[PricingMode](#schemapricingmode)|false|none|'fixed' (default): the item has a known price the agent can quote, and customers can book or order it directly. 'quote': the price depends on the job (renovation, catering, custom work), so no price or slot is offered; the agent collects the intake_questions and files a quote request instead. Takes effect only while quotes are enabled for the business. Group services cannot use 'quote'.|
-|groups|[[ReceptionGroupMembership](#schemareceptiongroupmembership)]|false|none|Group memberships for this item. Each entry carries the group label and the item's 0-based rank within that group.|
-|ungrouped_rank|integer \| null|false|none|Display position among items with no group; `null` sorts last. Change it with the reorder endpoint.|
-|name|[StrippedStr](#schemastrippedstr)|true|none|Name of the product.|
-|description|[StrippedStr](#schemastrippedstr)|false|none|Description of the product.|
-|price|number \| null|false|none|Price of the product; null for no listed price.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|pricing_mode|fixed|
-|pricing_mode|quote|
-
-<h2 id="tocS_ReceptionScrapingMode">ReceptionScrapingMode</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionscrapingmode"></a>
-<a id="schema_ReceptionScrapingMode"></a>
-<a id="tocSreceptionscrapingmode"></a>
-<a id="tocsreceptionscrapingmode"></a>
-
-```json
-"single_page"
-```
+|business_name|string|true|none|none|
+|vertical|[ReceptionVertical](#schemareceptionvertical) \| null|false|none|The business's vertical, used with `complete_onboarding`. Without it, onboarding picks the vertical as usual.|
+|subscription|[ProvisionResellerWorkspaceSubscription](#schemaprovisionresellerworkspacesubscription) \| null|false|none|Paid tier to subscribe to. Omitted leaves the workspace with no subscription.|
+|phone_number|string \| null|false|none|A free number from the reseller's phone pool, reserved for the workspace until onboarding binds it to the receptionist.|
+|members|[[TeamInviteRequest](#schemateaminviterequest)]|false|none|People to invite once the workspace exists, capped by the tier's team size. Best-effort: each outcome is in `member_results`.|
+|complete_onboarding|boolean|false|none|Finish setup right away, as `POST /v1/reception/reseller/workspaces/{workspace_id}/complete-onboarding` does. Best-effort: `onboarding_completed_at_unix` stays null on failure, and that call can be retried.|
+|idempotency_key|string \| null|false|none|Client-generated key that makes a retry safe. The same key and body within 24 hours returns the first result without running again. While that first request is still running, a retry gets 409 `idempotency_key_in_progress`; a different body with the same key gets 400 `idempotency_key_reused`. A request that fails is not saved, so it can be retried with the same key.|
 
 <h2 id="tocS_ReceptionService">ReceptionService</h2>
 <!-- backwards compatibility -->
@@ -126141,84 +125642,6 @@ A time-bound promotion on a service/variant or on add-ons.
 |target|service|
 |target|add_on|
 
-<h2 id="tocS_ReceptionServiceScrapable">ReceptionServiceScrapable</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionservicescrapable"></a>
-<a id="schema_ReceptionServiceScrapable"></a>
-<a id="tocSreceptionservicescrapable"></a>
-<a id="tocsreceptionservicescrapable"></a>
-
-```json
-{
-  "pricing_mode": "fixed",
-  "groups": [
-    {
-      "label": "string",
-      "rank": 0
-    }
-  ],
-  "ungrouped_rank": 0,
-  "name": "string",
-  "description": "string",
-  "variants": [
-    {
-      "id": "variant_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-      "duration_minutes": 60,
-      "price": 45,
-      "is_active": true
-    }
-  ],
-  "kind": "classic",
-  "buffer_minutes": 15,
-  "service_location": "business",
-  "add_ons": [
-    {
-      "id": "addon_4801jx8k3m5n7p9q2r4s6t8v0w2y",
-      "name": "string",
-      "description": "string",
-      "add_duration_minutes": 10,
-      "add_price": 5
-    }
-  ],
-  "max_participants": 12
-}
-```
-
-Scrape-reachable subset of a service (classic, rental or group).
-
-The extraction pipeline uses one LLM prompt per kind (so the model sees
-kind-specific guidance), but every code path produces this single shape:
-onboarding, imports and the unified ``smb_services`` collection all
-discriminate by the ``kind`` field.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|pricing_mode|[PricingMode](#schemapricingmode)|false|none|'fixed' (default): the item has a known price the agent can quote, and customers can book or order it directly. 'quote': the price depends on the job (renovation, catering, custom work), so no price or slot is offered; the agent collects the intake_questions and files a quote request instead. Takes effect only while quotes are enabled for the business. Group services cannot use 'quote'.|
-|groups|[[ReceptionGroupMembership](#schemareceptiongroupmembership)]|false|none|Group memberships for this item. Each entry carries the group label and the item's 0-based rank within that group.|
-|ungrouped_rank|integer \| null|false|none|Display position among items with no group; `null` sorts last. Change it with the reorder endpoint.|
-|name|[StrippedStr](#schemastrippedstr)|true|none|Service name shown to customers and the receptionist.|
-|description|[StrippedStr](#schemastrippedstr)|false|none|Details about the service for customers and the receptionist; empty string means none.|
-|variants|[[ReceptionServiceVariant](#schemareceptionservicevariant)]|false|none|Bookable options for this service. Always non-empty; `variants[0]` is the default option shown when callers don't pick a specific variant. Each entry has its own duration and (optional) price, and uniqueness is keyed by duration.|
-|kind|[ReceptionServiceKind](#schemareceptionservicekind)|false|none|Classic = staff-delivered; rental = asset-based; group = multi-participant session.|
-|buffer_minutes|integer|false|none|Turnover/cleanup time reserved after each booking. Applies to every service kind; default 0 means no buffer.|
-|service_location|[ServiceLocationType](#schemaservicelocationtype)|false|none|Where the service is delivered. `business` = client visits the business location (default); `customer` = staff travels to the client. Only meaningful for `kind='classic'`.|
-|add_ons|[[ReceptionAddOn](#schemareceptionaddon)]|false|none|Optional extras that can be added to a booking of this service.|
-|max_participants|integer \| null|false|none|Capacity for `kind='group'`: how many seats a single session can sell across all registrations. Must be null for classic and rental services (those are always exclusive to one client per booking).|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|pricing_mode|fixed|
-|pricing_mode|quote|
-|kind|classic|
-|kind|rental|
-|kind|group|
-|service_location|business|
-|service_location|customer|
-
 <h2 id="tocS_ReceptionServiceUpdateResponse">ReceptionServiceUpdateResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemareceptionserviceupdateresponse"></a>
@@ -126424,38 +125847,6 @@ Represents a staff member who can provide services.
 |id|string|true|none|The staff member's ID.|
 |created_at_unix|[UnixTimestamp](#schemaunixtimestamp)|false|none|When this was created, as a Unix timestamp in seconds.|
 |updated_at_unix|[UnixTimestamp](#schemaunixtimestamp)|false|none|When this was last updated, as a Unix timestamp in seconds.|
-
-<h2 id="tocS_ReceptionStaffScrapable">ReceptionStaffScrapable</h2>
-<!-- backwards compatibility -->
-<a id="schemareceptionstaffscrapable"></a>
-<a id="schema_ReceptionStaffScrapable"></a>
-<a id="tocSreceptionstaffscrapable"></a>
-<a id="tocsreceptionstaffscrapable"></a>
-
-```json
-{
-  "groups": [
-    {
-      "label": "string",
-      "rank": 0
-    }
-  ],
-  "ungrouped_rank": 0,
-  "name": "string",
-  "description": "string"
-}
-```
-
-Scrape-reachable subset of a staff/team member.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|groups|[[ReceptionGroupMembership](#schemareceptiongroupmembership)]|false|none|Group memberships for this item. Each entry carries the group label and the item's 0-based rank within that group.|
-|ungrouped_rank|integer \| null|false|none|Display position among items with no group; `null` sorts last. Change it with the reorder endpoint.|
-|name|[StrippedStr](#schemastrippedstr)|true|none|Internal/admin name of the staff member, shown in the dashboard and owner notifications.|
-|description|[StrippedStr](#schemastrippedstr)|false|none|Description or bio of the staff member.|
 
 <h2 id="tocS_ReceptionTeamInviteResponse">ReceptionTeamInviteResponse</h2>
 <!-- backwards compatibility -->
@@ -126670,6 +126061,7 @@ Fields to change on the business profile.
 |currency|NGN|
 |currency|KES|
 |currency|PKR|
+|currency|GEL|
 
 <h2 id="tocS_ReceptionUpdateAgentRuleRequest">ReceptionUpdateAgentRuleRequest</h2>
 <!-- backwards compatibility -->
@@ -126791,7 +126183,7 @@ Request model for updating an existing agent rule.
       "string"
     ],
     "first_message": "Hi, thanks for calling Bloom Salon! How can I help you today?",
-    "disable_first_message_interruptions": true,
+    "first_message_mode": "interruptible",
     "enable_end_call_tool": true,
     "enable_skip_turn_tool": true,
     "enable_play_keypad_touch_tone_tool": true,
@@ -127715,6 +127107,19 @@ Register a client for a scheduled group session.
           ]
         }
       ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
+        }
+      ],
       "data_collection": {
         "callback_time": "__system_data_collection_callback_time",
         "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -127755,6 +127160,19 @@ Register a client for a scheduled group session.
                 "end": "string"
               }
             ]
+          }
+        ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
           }
         ],
         "data_collection": {
@@ -127798,6 +127216,19 @@ Register a client for a scheduled group session.
             ]
           }
         ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
+          }
+        ],
         "data_collection": {
           "callback_time": "__system_data_collection_callback_time",
           "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -127838,6 +127269,19 @@ Register a client for a scheduled group session.
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {
@@ -128257,6 +127701,7 @@ A tier's prices and the limits shown on its tier card.
 {
   "tier_id": "string",
   "display_name": "string",
+  "currency": "USD",
   "tier_economics": {
     "monthly_price_usd": 99,
     "annual_price_usd": 990,
@@ -128280,7 +127725,62 @@ A tier you can sell.
 |---|---|---|---|---|
 |tier_id|string|true|none|none|
 |display_name|string|true|none|none|
+|currency|string|true|none|What the prices are in. The same for every tier on a ladder.|
 |tier_economics|[ResellerTierEconomics](#schemaresellertiereconomics)|true|none|A tier's prices and the limits shown on its tier card.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|currency|USD|
+|currency|EUR|
+|currency|GBP|
+|currency|PLN|
+|currency|CAD|
+|currency|AUD|
+|currency|CHF|
+|currency|SEK|
+|currency|NOK|
+|currency|DKK|
+|currency|ISK|
+|currency|CZK|
+|currency|HUF|
+|currency|RON|
+|currency|BGN|
+|currency|JPY|
+|currency|CNY|
+|currency|TWD|
+|currency|INR|
+|currency|BRL|
+|currency|MXN|
+|currency|KRW|
+|currency|SGD|
+|currency|HKD|
+|currency|NZD|
+|currency|ZAR|
+|currency|AED|
+|currency|SAR|
+|currency|QAR|
+|currency|KWD|
+|currency|ILS|
+|currency|TRY|
+|currency|THB|
+|currency|IDR|
+|currency|MYR|
+|currency|PHP|
+|currency|VND|
+|currency|BDT|
+|currency|RUB|
+|currency|UAH|
+|currency|CLP|
+|currency|COP|
+|currency|ARS|
+|currency|PEN|
+|currency|EGP|
+|currency|NGN|
+|currency|KES|
+|currency|PKR|
+|currency|GEL|
 
 <h2 id="tocS_ResellerUpcomingPayment">ResellerUpcomingPayment</h2>
 <!-- backwards compatibility -->
@@ -129383,6 +128883,9 @@ Controls how tool responses are filtered before being visible to the agent.
           }
         },
         "auto_resolve_after_inactive_minutes": 1,
+        "environments": [
+          "string"
+        ],
         "notifiers": [
           {
             "type": "webhook",
@@ -130109,6 +129612,9 @@ How strictly the receptionist follows a rule.
           }
         },
         "auto_resolve_after_inactive_minutes": 1,
+        "environments": [
+          "string"
+        ],
         "notifiers": [
           {
             "type": "webhook",
@@ -130733,7 +130239,7 @@ SMB tool configuration that wraps SMB tool parameters.
 |tool_error_handling_mode|[ToolErrorHandlingMode](#schematoolerrorhandlingmode)|false|none|Controls how tool errors are processed before being shared with the agent. 'auto' determines handling based on tool type (summarized for native integrations, hide for others), 'summarized' sends an LLM-generated summary, 'passthrough' sends the raw error, 'hide' does not share the error with the agent.|
 |human_description|string|false|none|User-facing tooltip for the procedure reference picker. Not sent to the LLM.|
 |enabled|boolean|false|none|Whether this tool is enabled for the agent|
-|params|[SearchClientsParams](#schemasearchclientsparams) \| [SendCustomEmailParams](#schemasendcustomemailparams) \| [ListClientsParams](#schemalistclientsparams) \| [GetClientByPhoneParams](#schemagetclientbyphoneparams) \| [CreateClientParams](#schemacreateclientparams) \| [UpdateClientParams](#schemaupdateclientparams) \| [DeleteClientParams](#schemadeleteclientparams) \| [ListStaffParams](#schemaliststaffparams) \| [CreateStaffParams](#schemacreatestaffparams) \| [UpdateStaffParams](#schemaupdatestaffparams) \| [DeleteStaffParams](#schemadeletestaffparams) \| [ListAssetsParams](#schemalistassetsparams) \| [CreateAssetParams](#schemacreateassetparams) \| [UpdateAssetParams](#schemaupdateassetparams) \| [DeleteAssetParams](#schemadeleteassetparams) \| [ListServicesParams](#schemalistservicesparams) \| [CreateServiceParams](#schemacreateserviceparams) \| [UpdateServiceParams](#schemaupdateserviceparams) \| [DeleteServiceParams](#schemadeleteserviceparams) \| [ListProductsParams](#schemalistproductsparams) \| [CreateProductParams](#schemacreateproductparams) \| [UpdateProductParams](#schemaupdateproductparams) \| [DeleteProductParams](#schemadeleteproductparams) \| [CheckServiceAvailabilityParams](#schemacheckserviceavailabilityparams) \| [CreateClientAppointmentParams](#schemacreateclientappointmentparams) \| [GetClientAppointmentsParams](#schemagetclientappointmentsparams) \| [GetAppointmentByConfirmationNumberParams](#schemagetappointmentbyconfirmationnumberparams) \| [CreateOrderParams](#schemacreateorderparams) \| [GetOrderByConfirmationNumberParams](#schemagetorderbyconfirmationnumberparams) \| [GetClientOrdersParams](#schemagetclientordersparams) \| [UpdateOrderParams](#schemaupdateorderparams) \| [CancelOrderParams](#schemacancelorderparams) \| [ListGroupSessionsParams](#schemalistgroupsessionsparams) \| [ScheduleGroupSessionParams](#schemaschedulegroupsessionparams) \| [RegisterForGroupSessionParams](#schemaregisterforgroupsessionparams) \| [CancelGroupSessionRegistrationParams](#schemacancelgroupsessionregistrationparams) \| [UpdateGroupSessionSeatsParams](#schemaupdategroupsessionseatsparams) \| [CancelGroupSessionForAllParams](#schemacancelgroupsessionforallparams) \| [DeleteGroupSessionParams](#schemadeletegroupsessionparams) \| [ListCalendarEventsParams](#schemalistcalendareventsparams) \| [UpdateCalendarEventParams](#schemaupdatecalendareventparams) \| [CancelCalendarEventParams](#schemacancelcalendareventparams) \| [RestoreCalendarEventParams](#schemarestorecalendareventparams) \| [DeleteCalendarEventParams](#schemadeletecalendareventparams) \| [ListCustomerFacingAgentsParams](#schemalistcustomerfacingagentsparams) \| [GetAgentConfigParams](#schemagetagentconfigparams) \| [ListAgentRulesParams](#schemalistagentrulesparams) \| [CreateAgentRuleParams](#schemacreateagentruleparams) \| [UpdateAgentRuleParams](#schemaupdateagentruleparams) \| [DeleteAgentRuleParams](#schemadeleteagentruleparams) \| [ListTransferRulesParams](#schemalisttransferrulesparams) \| [CreateTransferRuleParams](#schemacreatetransferruleparams) \| [UpdateTransferRuleParams](#schemaupdatetransferruleparams) \| [DeleteTransferRuleParams](#schemadeletetransferruleparams) \| [ListAgentProceduresParams](#schemalistagentproceduresparams) \| [ListAgentReferencesParams](#schemalistagentreferencesparams) \| [CreateAgentProcedureParams](#schemacreateagentprocedureparams) \| [UpdateAgentProcedureParams](#schemaupdateagentprocedureparams) \| [DeleteAgentProcedureParams](#schemadeleteagentprocedureparams) \| [ListHolidaysParams](#schemalistholidaysparams) \| [CreateHolidayParams](#schemacreateholidayparams) \| [UpdateHolidayParams](#schemaupdateholidayparams) \| [DeleteHolidayParams](#schemadeleteholidayparams) \| [GetScheduleParams](#schemagetscheduleparams) \| [SubmitBusinessInfoParams](#schemasubmitbusinessinfoparams) \| [UpdateBusinessInfoParams](#schemaupdatebusinessinfoparams) \| [UpdateAgentConfigParams](#schemaupdateagentconfigparams) \| [GetAnalyticsSummaryParams](#schemagetanalyticssummaryparams) \| [GetWorkspacePlanParams](#schemagetworkspaceplanparams) \| [GetBookingPageSettingsParams](#schemagetbookingpagesettingsparams) \| [UpdateBookingPageSettingsParams](#schemaupdatebookingpagesettingsparams) \| [UpdateBookingPageAppearanceParams](#schemaupdatebookingpageappearanceparams) \| [GetBookingSlugStatusParams](#schemagetbookingslugstatusparams) \| [SetBookingSlugParams](#schemasetbookingslugparams) \| [ListClientInteractionsParams](#schemalistclientinteractionsparams) \| [CreateClientInteractionParams](#schemacreateclientinteractionparams) \| [DeleteClientInteractionParams](#schemadeleteclientinteractionparams) \| [ListLocationsParams](#schemalistlocationsparams) \| [CreateLocationParams](#schemacreatelocationparams) \| [UpdateLocationParams](#schemaupdatelocationparams) \| [DeleteLocationParams](#schemadeletelocationparams) \| [LeaveMessageParams](#schemaleavemessageparams) \| [CreateServiceQuoteRequestParams](#schemacreateservicequoterequestparams) \| [CreateProductQuoteRequestParams](#schemacreateproductquoterequestparams) \| [ReportKnowledgeGapParams](#schemareportknowledgegapparams) \| [OptInSmsReminderParams](#schemaoptinsmsreminderparams) \| [OptOutSmsReminderParams](#schemaoptoutsmsreminderparams) \| [TriggerUserVerificationParams](#schematriggeruserverificationparams) \| [ValidateUserVerificationCodeParams](#schemavalidateuserverificationcodeparams) \| [OwnerListStaffParams](#schemaownerliststaffparams) \| [OwnerListAssetsParams](#schemaownerlistassetsparams) \| [OwnerListLocationsParams](#schemaownerlistlocationsparams) \| [OwnerListServicesParams](#schemaownerlistservicesparams) \| [OwnerListProductsParams](#schemaownerlistproductsparams) \| [OwnerGetClientAppointmentsParams](#schemaownergetclientappointmentsparams)|true|none|none|
+|params|[SearchClientsParams](#schemasearchclientsparams) \| [SendCustomEmailParams](#schemasendcustomemailparams) \| [ListClientsParams](#schemalistclientsparams) \| [GetClientByPhoneParams](#schemagetclientbyphoneparams) \| [CreateClientParams](#schemacreateclientparams) \| [UpdateClientParams](#schemaupdateclientparams) \| [DeleteClientParams](#schemadeleteclientparams) \| [ListStaffParams](#schemaliststaffparams) \| [CreateStaffParams](#schemacreatestaffparams) \| [UpdateStaffParams](#schemaupdatestaffparams) \| [DeleteStaffParams](#schemadeletestaffparams) \| [ListAssetsParams](#schemalistassetsparams) \| [CreateAssetParams](#schemacreateassetparams) \| [UpdateAssetParams](#schemaupdateassetparams) \| [DeleteAssetParams](#schemadeleteassetparams) \| [ListServicesParams](#schemalistservicesparams) \| [CreateServiceParams](#schemacreateserviceparams) \| [UpdateServiceParams](#schemaupdateserviceparams) \| [DeleteServiceParams](#schemadeleteserviceparams) \| [ListProductsParams](#schemalistproductsparams) \| [CreateProductParams](#schemacreateproductparams) \| [UpdateProductParams](#schemaupdateproductparams) \| [DeleteProductParams](#schemadeleteproductparams) \| [CheckServiceAvailabilityParams](#schemacheckserviceavailabilityparams) \| [CreateClientAppointmentParams](#schemacreateclientappointmentparams) \| [GetClientAppointmentsParams](#schemagetclientappointmentsparams) \| [GetAppointmentByConfirmationNumberParams](#schemagetappointmentbyconfirmationnumberparams) \| [CreateOrderParams](#schemacreateorderparams) \| [GetOrderByConfirmationNumberParams](#schemagetorderbyconfirmationnumberparams) \| [GetClientOrdersParams](#schemagetclientordersparams) \| [UpdateOrderParams](#schemaupdateorderparams) \| [CancelOrderParams](#schemacancelorderparams) \| [ListGroupSessionsParams](#schemalistgroupsessionsparams) \| [ScheduleGroupSessionParams](#schemaschedulegroupsessionparams) \| [RegisterForGroupSessionParams](#schemaregisterforgroupsessionparams) \| [CancelGroupSessionRegistrationParams](#schemacancelgroupsessionregistrationparams) \| [UpdateGroupSessionSeatsParams](#schemaupdategroupsessionseatsparams) \| [CancelGroupSessionForAllParams](#schemacancelgroupsessionforallparams) \| [DeleteGroupSessionParams](#schemadeletegroupsessionparams) \| [ListCalendarEventsParams](#schemalistcalendareventsparams) \| [UpdateCalendarEventParams](#schemaupdatecalendareventparams) \| [CancelCalendarEventParams](#schemacancelcalendareventparams) \| [RestoreCalendarEventParams](#schemarestorecalendareventparams) \| [DeleteCalendarEventParams](#schemadeletecalendareventparams) \| [ListCustomerFacingAgentsParams](#schemalistcustomerfacingagentsparams) \| [GetAgentConfigParams](#schemagetagentconfigparams) \| [ListAgentRulesParams](#schemalistagentrulesparams) \| [CreateAgentRuleParams](#schemacreateagentruleparams) \| [UpdateAgentRuleParams](#schemaupdateagentruleparams) \| [DeleteAgentRuleParams](#schemadeleteagentruleparams) \| [ListTransferRulesParams](#schemalisttransferrulesparams) \| [CreateTransferRuleParams](#schemacreatetransferruleparams) \| [UpdateTransferRuleParams](#schemaupdatetransferruleparams) \| [DeleteTransferRuleParams](#schemadeletetransferruleparams) \| [ListAgentProceduresParams](#schemalistagentproceduresparams) \| [ListAgentReferencesParams](#schemalistagentreferencesparams) \| [CreateAgentProcedureParams](#schemacreateagentprocedureparams) \| [UpdateAgentProcedureParams](#schemaupdateagentprocedureparams) \| [DeleteAgentProcedureParams](#schemadeleteagentprocedureparams) \| [ListHolidaysParams](#schemalistholidaysparams) \| [CreateHolidayParams](#schemacreateholidayparams) \| [UpdateHolidayParams](#schemaupdateholidayparams) \| [DeleteHolidayParams](#schemadeleteholidayparams) \| [GetScheduleParams](#schemagetscheduleparams) \| [SubmitBusinessInfoParams](#schemasubmitbusinessinfoparams) \| [UpdateBusinessInfoParams](#schemaupdatebusinessinfoparams) \| [UpdateAgentConfigParams](#schemaupdateagentconfigparams) \| [GetAnalyticsSummaryParams](#schemagetanalyticssummaryparams) \| [GetWorkspacePlanParams](#schemagetworkspaceplanparams) \| [GetBookingPageSettingsParams](#schemagetbookingpagesettingsparams) \| [UpdateBookingPageSettingsParams](#schemaupdatebookingpagesettingsparams) \| [UpdateBookingPageAppearanceParams](#schemaupdatebookingpageappearanceparams) \| [GetBookingSlugStatusParams](#schemagetbookingslugstatusparams) \| [ConfirmChangeParams](#schemaconfirmchangeparams) \| [SetBookingSlugParams](#schemasetbookingslugparams) \| [ListClientInteractionsParams](#schemalistclientinteractionsparams) \| [CreateClientInteractionParams](#schemacreateclientinteractionparams) \| [DeleteClientInteractionParams](#schemadeleteclientinteractionparams) \| [ListLocationsParams](#schemalistlocationsparams) \| [CreateLocationParams](#schemacreatelocationparams) \| [UpdateLocationParams](#schemaupdatelocationparams) \| [DeleteLocationParams](#schemadeletelocationparams) \| [LeaveMessageParams](#schemaleavemessageparams) \| [CreateServiceQuoteRequestParams](#schemacreateservicequoterequestparams) \| [CreateProductQuoteRequestParams](#schemacreateproductquoterequestparams) \| [ReportKnowledgeGapParams](#schemareportknowledgegapparams) \| [OptInSmsReminderParams](#schemaoptinsmsreminderparams) \| [OptOutSmsReminderParams](#schemaoptoutsmsreminderparams) \| [TriggerUserVerificationParams](#schematriggeruserverificationparams) \| [ValidateUserVerificationCodeParams](#schemavalidateuserverificationcodeparams) \| [OwnerListStaffParams](#schemaownerliststaffparams) \| [OwnerListAssetsParams](#schemaownerlistassetsparams) \| [OwnerListLocationsParams](#schemaownerlistlocationsparams) \| [OwnerListServicesParams](#schemaownerlistservicesparams) \| [OwnerListProductsParams](#schemaownerlistproductsparams) \| [OwnerGetClientAppointmentsParams](#schemaownergetclientappointmentsparams)|true|none|none|
 
 #### Enumerated Values
 
@@ -130790,43 +130296,6 @@ SMB tool configuration that wraps SMB tool parameters.
 <a id="schema_SafetyCommonModel-Input"></a>
 <a id="tocSsafetycommonmodel-input"></a>
 <a id="tocssafetycommonmodel-input"></a>
-
-```json
-{
-  "ivc": {
-    "is_unsafe": false,
-    "llm_reason": "",
-    "safety_prompt_version": 0,
-    "matched_rule_id": [
-      "sexual_minors"
-    ]
-  },
-  "non_ivc": {
-    "is_unsafe": false,
-    "llm_reason": "",
-    "safety_prompt_version": 0,
-    "matched_rule_id": [
-      "sexual_minors"
-    ]
-  }
-}
-```
-
-Safety object that has the information of safety evaluations based on used voice.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|ivc|[SafetyEvaluation](#schemasafetyevaluation)|false|none|Safety evaluation of the agent. Prompt and first message is taken into account.<br>The unsafe reason is provided from the evaluation|
-|non_ivc|[SafetyEvaluation](#schemasafetyevaluation)|false|none|Safety evaluation of the agent. Prompt and first message is taken into account.<br>The unsafe reason is provided from the evaluation|
-
-<h2 id="tocS_SafetyCommonModel-Output">SafetyCommonModel-Output</h2>
-<!-- backwards compatibility -->
-<a id="schemasafetycommonmodel-output"></a>
-<a id="schema_SafetyCommonModel-Output"></a>
-<a id="tocSsafetycommonmodel-output"></a>
-<a id="tocssafetycommonmodel-output"></a>
 
 ```json
 {
@@ -130996,108 +130465,6 @@ The unsafe reason is provided from the evaluation
 |speaker_separation|[SpeakerSeparationResponseModel](#schemaspeakerseparationresponsemodel) \| null|false|none|none|
 |trim_start|integer \| null|false|none|none|
 |trim_end|integer \| null|false|none|none|
-
-<h2 id="tocS_SayNodeLiteralMessage-Input">SayNodeLiteralMessage-Input</h2>
-<!-- backwards compatibility -->
-<a id="schemasaynodeliteralmessage-input"></a>
-<a id="schema_SayNodeLiteralMessage-Input"></a>
-<a id="tocSsaynodeliteralmessage-input"></a>
-<a id="tocssaynodeliteralmessage-input"></a>
-
-```json
-{
-  "type": "literal",
-  "text": "string",
-  "text_translations": {
-    "property1": {
-      "value": "string"
-    },
-    "property2": {
-      "value": "string"
-    }
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|text|string|true|none|Literal text message to be spoken by the agent.|
-|text_translations|object|false|none|Translations for the text field|
-
-<h2 id="tocS_SayNodeLiteralMessage-Output">SayNodeLiteralMessage-Output</h2>
-<!-- backwards compatibility -->
-<a id="schemasaynodeliteralmessage-output"></a>
-<a id="schema_SayNodeLiteralMessage-Output"></a>
-<a id="tocSsaynodeliteralmessage-output"></a>
-<a id="tocssaynodeliteralmessage-output"></a>
-
-```json
-{
-  "type": "literal",
-  "text": "string",
-  "text_translations": {
-    "property1": {
-      "value": "string"
-    },
-    "property2": {
-      "value": "string"
-    }
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|true|none|none|
-|text|string|true|none|Literal text message to be spoken by the agent.|
-|text_translations|object|true|none|Translations for the text field|
-
-<h2 id="tocS_SayNodePromptMessage-Input">SayNodePromptMessage-Input</h2>
-<!-- backwards compatibility -->
-<a id="schemasaynodepromptmessage-input"></a>
-<a id="schema_SayNodePromptMessage-Input"></a>
-<a id="tocSsaynodepromptmessage-input"></a>
-<a id="tocssaynodepromptmessage-input"></a>
-
-```json
-{
-  "type": "prompt",
-  "prompt": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|false|none|none|
-|prompt|string|true|none|LLM prompt describing what message should be generated.|
-
-<h2 id="tocS_SayNodePromptMessage-Output">SayNodePromptMessage-Output</h2>
-<!-- backwards compatibility -->
-<a id="schemasaynodepromptmessage-output"></a>
-<a id="schema_SayNodePromptMessage-Output"></a>
-<a id="tocSsaynodepromptmessage-output"></a>
-<a id="tocssaynodepromptmessage-output"></a>
-
-```json
-{
-  "type": "prompt",
-  "prompt": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|type|string|true|none|none|
-|prompt|string|true|none|LLM prompt describing what message should be generated.|
 
 <h2 id="tocS_ScheduleGroupSessionParams">ScheduleGroupSessionParams</h2>
 <!-- backwards compatibility -->
@@ -131940,17 +131307,6 @@ Context for sound effect clips.
 |---|---|---|---|---|
 |voices|[[SimilarVoice](#schemasimilarvoice)]|true|none|none|
 
-<h2 id="tocS_SimulationLibrarySettings">SimulationLibrarySettings</h2>
-<!-- backwards compatibility -->
-<a id="schemasimulationlibrarysettings"></a>
-<a id="schema_SimulationLibrarySettings"></a>
-<a id="tocSsimulationlibrarysettings"></a>
-<a id="tocssimulationlibrarysettings"></a>
-
-```json
-{}
-```
-
 <h2 id="tocS_SimulationTestModel">SimulationTestModel</h2>
 <!-- backwards compatibility -->
 <a id="schemasimulationtestmodel"></a>
@@ -132532,52 +131888,6 @@ Response model for the internal Slack BYO bot auth connection.
 |status|revoked|
 |status|credential_invalid|
 
-<h2 id="tocS_SmbSipMediaEncryption">SmbSipMediaEncryption</h2>
-<!-- backwards compatibility -->
-<a id="schemasmbsipmediaencryption"></a>
-<a id="schema_SmbSipMediaEncryption"></a>
-<a id="tocSsmbsipmediaencryption"></a>
-<a id="tocssmbsipmediaencryption"></a>
-
-```json
-"disabled"
-```
-
-Media (SRTP) encryption policy for a SIP trunk.
-
-Values match the Agents platform ``SIPMediaEncryptionEnum`` so the SMB
-adapter maps by value.
-
-<h2 id="tocS_SmbSipTransport">SmbSipTransport</h2>
-<!-- backwards compatibility -->
-<a id="schemasmbsiptransport"></a>
-<a id="schema_SmbSipTransport"></a>
-<a id="tocSsmbsiptransport"></a>
-<a id="tocssmbsiptransport"></a>
-
-```json
-"udp"
-```
-
-Signalling transport for outbound SIP INVITEs.
-
-Values match the Agents platform ``SIPTrunkTransportEnum`` so the SMB adapter
-maps by value. ``AUTO`` is omitted: the Agents UI hides it too, since it can
-pick UDP, which is known to misbehave (CAI-299). Reception defaults to TLS.
-
-<h2 id="tocS_SmsTemplateStyle">SmsTemplateStyle</h2>
-<!-- backwards compatibility -->
-<a id="schemasmstemplatestyle"></a>
-<a id="schema_SmsTemplateStyle"></a>
-<a id="tocSsmstemplatestyle"></a>
-<a id="tocssmstemplatestyle"></a>
-
-```json
-"friendly"
-```
-
-Preset tone for an SMS message body.
-
 <h2 id="tocS_SoftTimeoutConfig">SoftTimeoutConfig</h2>
 <!-- backwards compatibility -->
 <a id="schemasofttimeoutconfig"></a>
@@ -132605,6 +131915,7 @@ Configuration for soft timeout functionality during LLM response generation.
 |use_llm_generated_message|boolean|false|none|If enabled, the soft timeout message will be generated dynamically instead of using the static message.|
 |randomize_fillers|boolean|false|none|If enabled, shuffle the order of static soft timeout messages once at the start of each turn. Only applies when use_llm_generated_message is false.|
 |max_soft_timeouts_per_generation|integer|false|none|Maximum filler messages while waiting for a single LLM response. Fires every timeout_seconds until the LLM streams content or this limit is reached.|
+|pause_after_filler|boolean|false|none|If enabled, leave a short pause after a filler message before the agent's response, so the two do not run together.|
 |llm_generated_message_prompt_override|string \| null|false|none|Custom prompt for generating the soft timeout filler message when use_llm_generated_message is enabled. Recent conversation context is provided as a separate user message. If not set, the default prompt will be used. Supports dynamic variables (e.g., {{system__time}}, {{custom_variable}}).|
 |disable_until_first_user_message|boolean|false|none|When true, soft timeout fillers are suppressed until the conversation has at least one real user message. Prevents fillers during the agent's opening turn (e.g. workflow generate-immediately / tool calls before the user speaks).|
 
@@ -132674,6 +131985,7 @@ Configuration for soft timeout functionality during LLM response generation.
 |use_llm_generated_message|boolean \| null|false|none|If enabled, the soft timeout message will be generated dynamically instead of using the static message.|
 |randomize_fillers|boolean \| null|false|none|If enabled, shuffle the order of static soft timeout messages once at the start of each turn. Only applies when use_llm_generated_message is false.|
 |max_soft_timeouts_per_generation|integer \| null|false|none|Maximum filler messages while waiting for a single LLM response. Fires every timeout_seconds until the LLM streams content or this limit is reached.|
+|pause_after_filler|boolean \| null|false|none|If enabled, leave a short pause after a filler message before the agent's response, so the two do not run together.|
 |llm_generated_message_prompt_override|string \| null|false|none|Custom prompt for generating the soft timeout filler message when use_llm_generated_message is enabled. Recent conversation context is provided as a separate user message. If not set, the default prompt will be used. Supports dynamic variables (e.g., {{system__time}}, {{custom_variable}}).|
 |disable_until_first_user_message|boolean \| null|false|none|When true, soft timeout fillers are suppressed until the conversation has at least one real user message. Prevents fillers during the agent's opening turn (e.g. workflow generate-immediately / tool calls before the user speaks).|
 
@@ -134493,6 +133805,7 @@ Finalize the onboarding interview: create a text knowledge source and mark done.
   ],
   "whatsapp_user_id": "string",
   "id": "string",
+  "timezone_override": "string",
   "conversation_initiation_client_data": {
     "conversation_config_override": {
       "agent": {
@@ -134556,6 +133869,7 @@ Finalize the onboarding interview: create a text knowledge source and mark done.
 |phone_numbers|[string] \| null|false|none|More numbers to call, in order after `phone_number`. The lead moves on to the next one when calls to its current number keep failing.|
 |whatsapp_user_id|string \| null|false|none|The contact's WhatsApp user ID. WhatsApp campaigns use it instead of the phone numbers.|
 |id|string \| null|false|none|Your identifier for the recipient, returned as its lead's `recipient_id`.|
+|timezone_override|string \| null|false|none|IANA timezone to read the calling windows and callback times in for this recipient, overriding the campaign's.|
 |conversation_initiation_client_data|[ConversationInitiationClientDataRequest-Input](#schemaconversationinitiationclientdatarequest-input) \| null|false|none|Dynamic variables and overrides for this recipient's calls.|
 
 <h2 id="tocS_SubmitCampaignRequest">SubmitCampaignRequest</h2>
@@ -134577,6 +133891,7 @@ Finalize the onboarding interview: create a text knowledge source and mark done.
       ],
       "whatsapp_user_id": "string",
       "id": "string",
+      "timezone_override": "string",
       "conversation_initiation_client_data": {
         "conversation_config_override": {
           "agent": {
@@ -134660,6 +133975,19 @@ Finalize the onboarding interview: create a text knowledge source and mark done.
             "end": "string"
           }
         ]
+      }
+    ],
+    "date_overrides": [
+      {
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01",
+        "intervals": [
+          {
+            "start": "string",
+            "end": "string"
+          }
+        ],
+        "name": "string"
       }
     ],
     "data_collection": {
@@ -134776,6 +134104,19 @@ Finalize the onboarding interview: create a text knowledge source and mark done.
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {
@@ -135272,27 +134613,6 @@ itself, so the client never supplies its components.
 ```json
 "__system_data_collection_topic"
 ```
-
-<h2 id="tocS_SystemEvaluationCriteria">SystemEvaluationCriteria</h2>
-<!-- backwards compatibility -->
-<a id="schemasystemevaluationcriteria"></a>
-<a id="schema_SystemEvaluationCriteria"></a>
-<a id="tocSsystemevaluationcriteria"></a>
-<a id="tocssystemevaluationcriteria"></a>
-
-```json
-{
-  "user_sentiment_score": -1,
-  "user_frustration_score": 0
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|user_sentiment_score|number|true|none|none|
-|user_frustration_score|number|true|none|none|
 
 <h2 id="tocS_SystemEvaluationId">SystemEvaluationId</h2>
 <!-- backwards compatibility -->
@@ -137275,29 +136595,6 @@ Method for converting numbers to words before sending to TTS
 |created_at_unix_secs|integer|true|none|none|
 |owner_user_id|string \| null|true|none|none|
 
-<h2 id="tocS_TicketMergeProposalLinkResponseModel">TicketMergeProposalLinkResponseModel</h2>
-<!-- backwards compatibility -->
-<a id="schematicketmergeproposallinkresponsemodel"></a>
-<a id="schema_TicketMergeProposalLinkResponseModel"></a>
-<a id="tocSticketmergeproposallinkresponsemodel"></a>
-<a id="tocsticketmergeproposallinkresponsemodel"></a>
-
-```json
-{
-  "merge_proposal_id": "string",
-  "linked_by_user_id": "string",
-  "linked_at_unix_secs": 0
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|merge_proposal_id|string|true|none|none|
-|linked_by_user_id|string \| null|true|none|none|
-|linked_at_unix_secs|integer|true|none|none|
-
 <h2 id="tocS_TicketPriorityChangeResponseModel">TicketPriorityChangeResponseModel</h2>
 <!-- backwards compatibility -->
 <a id="schematicketprioritychangeresponsemodel"></a>
@@ -139078,25 +138375,6 @@ An error returned in place of an edited transcript when the edit could not be pr
 ```json
 "conference"
 ```
-
-<h2 id="tocS_TranslatedString">TranslatedString</h2>
-<!-- backwards compatibility -->
-<a id="schematranslatedstring"></a>
-<a id="schema_TranslatedString"></a>
-<a id="tocStranslatedstring"></a>
-<a id="tocstranslatedstring"></a>
-
-```json
-{
-  "value": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|value|string|true|none|none|
 
 <h2 id="tocS_TriggerUserVerificationParams">TriggerUserVerificationParams</h2>
 <!-- backwards compatibility -->
@@ -144738,17 +144016,6 @@ Settings for creating an HMAC-authenticated webhook
 |request_headers|object \| null|false|none|Optional custom request headers to include with each webhook delivery|
 |log_redacted_fields|[string]|false|none|Field names whose values the delivery log hides when it shows the request payload, matched at any depth, ignoring case and punctuation such as _ or -. Fields with secret-looking names, such as tokens and passwords, are always hidden. The stored log and redeliveries keep the original values. At most 50 names, each 1 to 128 characters, with no whitespace, dots or wildcards.|
 
-<h2 id="tocS_WebhookHttpMethod">WebhookHttpMethod</h2>
-<!-- backwards compatibility -->
-<a id="schemawebhookhttpmethod"></a>
-<a id="schema_WebhookHttpMethod"></a>
-<a id="tocSwebhookhttpmethod"></a>
-<a id="tocswebhookhttpmethod"></a>
-
-```json
-"GET"
-```
-
 <h2 id="tocS_WebhookOutcome">WebhookOutcome</h2>
 <!-- backwards compatibility -->
 <a id="schemawebhookoutcome"></a>
@@ -147555,6 +146822,80 @@ Whether reaching an End node completes successfully or fails.
 |position|[Position-Output](#schemaposition-output)|true|none|Position of the node in the workflow.|
 |edge_order|[string]|true|none|The ids of outgoing edges in the order they should be evaluated.|
 
+<h2 id="tocS_WorkflowStartProcedureNodeModel-Input">WorkflowStartProcedureNodeModel-Input</h2>
+<!-- backwards compatibility -->
+<a id="schemaworkflowstartprocedurenodemodel-input"></a>
+<a id="schema_WorkflowStartProcedureNodeModel-Input"></a>
+<a id="tocSworkflowstartprocedurenodemodel-input"></a>
+<a id="tocsworkflowstartprocedurenodemodel-input"></a>
+
+```json
+{
+  "type": "start_procedure",
+  "position": {
+    "x": 0,
+    "y": 0
+  },
+  "edge_order": [
+    "string"
+  ],
+  "procedure_id": "string"
+}
+```
+
+Starts one procedure when the workflow reaches it.
+
+A freeform procedure is injected and traversal continues along the node's
+outgoing edges in the same turn. A structured procedure transfers into its
+compiled island with this node as the return node; when it ends, the
+workflow runner hosts this node and evaluates its outgoing edges.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|none|
+|position|[Position-Input](#schemaposition-input)|false|none|Position of the node in the workflow.|
+|edge_order|[string]|false|none|The ids of outgoing edges in the order they should be evaluated.|
+|procedure_id|string|true|none|ID of the procedure to start when the workflow reaches this node.|
+
+<h2 id="tocS_WorkflowStartProcedureNodeModel-Output">WorkflowStartProcedureNodeModel-Output</h2>
+<!-- backwards compatibility -->
+<a id="schemaworkflowstartprocedurenodemodel-output"></a>
+<a id="schema_WorkflowStartProcedureNodeModel-Output"></a>
+<a id="tocSworkflowstartprocedurenodemodel-output"></a>
+<a id="tocsworkflowstartprocedurenodemodel-output"></a>
+
+```json
+{
+  "type": "start_procedure",
+  "position": {
+    "x": 0,
+    "y": 0
+  },
+  "edge_order": [
+    "string"
+  ],
+  "procedure_id": "string"
+}
+```
+
+Starts one procedure when the workflow reaches it.
+
+A freeform procedure is injected and traversal continues along the node's
+outgoing edges in the same turn. A structured procedure transfers into its
+compiled island with this node as the return node; when it ends, the
+workflow runner hosts this node and evaluates its outgoing edges.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|none|
+|position|[Position-Output](#schemaposition-output)|true|none|Position of the node in the workflow.|
+|edge_order|[string]|true|none|The ids of outgoing edges in the order they should be evaluated.|
+|procedure_id|string|true|none|ID of the procedure to start when the workflow reaches this node.|
+
 <h2 id="tocS_WorkflowToolEdgeStepModel">WorkflowToolEdgeStepModel</h2>
 <!-- backwards compatibility -->
 <a id="schemaworkflowtooledgestepmodel"></a>
@@ -148475,6 +147816,19 @@ Paginated workspace audit log response.
           ]
         }
       ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
+        }
+      ],
       "data_collection": {
         "callback_time": "__system_data_collection_callback_time",
         "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -148515,6 +147869,19 @@ Paginated workspace audit log response.
                 "end": "string"
               }
             ]
+          }
+        ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
           }
         ],
         "data_collection": {
@@ -148558,6 +147925,19 @@ Paginated workspace audit log response.
             ]
           }
         ],
+        "date_overrides": [
+          {
+            "start_date": "1970-01-01",
+            "end_date": "1970-01-01",
+            "intervals": [
+              {
+                "start": "string",
+                "end": "string"
+              }
+            ],
+            "name": "string"
+          }
+        ],
         "data_collection": {
           "callback_time": "__system_data_collection_callback_time",
           "redirect_phone_number": "__system_data_collection_redirect_phone_number",
@@ -148598,6 +147978,19 @@ Paginated workspace audit log response.
               "end": "string"
             }
           ]
+        }
+      ],
+      "date_overrides": [
+        {
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01",
+          "intervals": [
+            {
+              "start": "string",
+              "end": "string"
+            }
+          ],
+          "name": "string"
         }
       ],
       "data_collection": {

@@ -13,17 +13,56 @@ const HrefTypeSchema = z
   .openapi({ description: 'Link to a resource.', required: [] })
   .openapi('HrefType')
 
-const LinksAccountDetailsSchema = z
-  .object({
-    balances: HrefTypeSchema.exactOptional(),
-    transactions: HrefTypeSchema.exactOptional(),
-  })
+const LinksDownloadSchema = z
+  .object({ download: HrefTypeSchema })
   .catchall(HrefTypeSchema)
   .openapi({
     description:
-      'Links to the account, which can be directly used for retrieving account information from this dedicated account.\n\nLinks to "balances" and/or "transactions"\n\nThese links are only supported, when the corresponding consent has been already granted.\n',
+      'A list of hyperlinks to be recognised by the TPP.\n\nType of links admitted in this response:\n  - "download": a link to a resource, where the transaction report might be downloaded from in\n  case where transaction reports have a huge size.\n\nRemark: This feature shall only be used where camt-data is requested which has a huge size.\n',
+    required: ['download'],
   })
-  .openapi('LinksAccountDetails')
+  .openapi('LinksDownload')
+
+const CashAccountTypeSchema = z
+  .string()
+  .openapi({ description: 'ExternalCashAccountType1Code from ISO 20022.\n' })
+  .openapi('CashAccountType')
+
+const CurrencyCodeSchema = z
+  .string()
+  .regex(/[A-Z]{3}/)
+  .openapi({ description: 'ISO 4217 Alpha 3 currency code.\n', example: 'EUR' })
+  .openapi('CurrencyCode')
+
+const IbanSchema = z
+  .string()
+  .regex(/[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}/)
+  .openapi({ description: 'IBAN of an account.', example: 'FR7612345987650123456789014' })
+  .openapi('Iban')
+
+const OtherAccountIdentification1CHSchema = z
+  .string()
+  .max(34)
+  .openapi({
+    description:
+      'Other payment account Identifier.\nadapted from ISO pain.001.001.03.ch.02 GenericAccountIdentification1-CH\n',
+    example: '90-100100-0',
+  })
+  .openapi('OtherAccountIdentification1CH')
+
+const AccountReference16CHSchema = z
+  .object({
+    cashAccountType: CashAccountTypeSchema.exactOptional(),
+    currency: CurrencyCodeSchema.exactOptional(),
+    iban: IbanSchema.exactOptional(),
+    otherAccountIdentification: OtherAccountIdentification1CHSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Reference to an account by either\n  * IBAN, of a payment accounts, or\n  * otherAccountIdentification, for payment accounts if there is no IBAN\nadapted from ISO pain.001.001.03.ch.02 CashAccount16-CH_IdTpCcy\n',
+    required: [],
+  })
+  .openapi('AccountReference16CH')
 
 const AmountValueSchema = z
   .string()
@@ -34,12 +73,6 @@ const AmountValueSchema = z
     example: '5877.78',
   })
   .openapi('AmountValue')
-
-const CurrencyCodeSchema = z
-  .string()
-  .regex(/[A-Z]{3}/)
-  .openapi({ description: 'ISO 4217 Alpha 3 currency code.\n', example: 'EUR' })
-  .openapi('CurrencyCode')
 
 const AmountSchema = z
   .object({ amount: AmountValueSchema, currency: CurrencyCodeSchema })
@@ -107,83 +140,6 @@ const BalanceListSchema = z
       'A list of balances regarding this account, e.g. the current balance, the last booked balance.\nThe list might be restricted to the current balance.\n',
   })
   .openapi('BalanceList')
-
-const BbanSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9]{1,30}/)
-  .openapi({
-    description:
-      'Basic Bank Account Number (BBAN) Identifier.\n\nThis data element can be used in the body of the consent request.\n  Message for retrieving account access consent from this account. This\n  data elements is used for payment accounts which have no IBAN.\n  ISO20022: Basic Bank Account Number (BBAN). \n  \n  Identifier used nationally by financial institutions, i.e., in individual countries, \n  generally as part of a National Account Numbering Scheme(s), \n  which uniquely identifies the account of a customer.\n',
-    example: 'BARC12345612345678',
-  })
-  .openapi('Bban')
-
-const BicfiSchema = z
-  .string()
-  .regex(/[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}/)
-  .openapi({ description: 'BICFI\n', example: 'AAAADEBBXXX' })
-  .openapi('Bicfi')
-
-const CashAccountTypeSchema = z
-  .string()
-  .openapi({ description: 'ExternalCashAccountType1Code from ISO 20022.\n' })
-  .openapi('CashAccountType')
-
-const DisplayNameSchema = z
-  .string()
-  .max(70)
-  .openapi({ description: 'Name of the account as defined by the PSU within online channels.\n' })
-  .openapi('DisplayName')
-
-const IbanSchema = z
-  .string()
-  .regex(/[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}/)
-  .openapi({ description: 'IBAN of an account.', example: 'FR7612345987650123456789014' })
-  .openapi('Iban')
-
-const MsisdnSchema = z
-  .string()
-  .max(35)
-  .openapi({ description: 'Mobile phone number.', example: '+49 170 1234567' })
-  .openapi('Msisdn')
-
-const OwnerNameSchema = z
-  .string()
-  .max(140)
-  .openapi({
-    description:
-      'Name of the legal account owner. \nIf there is more than one owner, then e.g. two names might be noted here.\n\nFor a corporate account, the corporate name is used for this attribute.\nEven if supported by the ASPSP, the provision of this field might depend on the fact whether an explicit consent to this specific additional account information has been given by the PSU.\n',
-    example: 'John Doe',
-  })
-  .openapi('OwnerName')
-
-const AccountStatusSchema = z
-  .enum(['enabled', 'deleted', 'blocked'])
-  .openapi({
-    description:
-      'Account status. The value is one of the following:\n  - "enabled": account is available\n  - "deleted": account is terminated\n  - "blocked": account is blocked e.g. for legal reasons\nIf this field is not used, than the account is available in the sense of this specification.\n',
-  })
-  .openapi('AccountStatus')
-
-type AccountDetailsType = {
-  _links?: z.infer<typeof LinksAccountDetailsSchema>
-  balances?: z.infer<typeof BalanceListSchema>
-  bban?: z.infer<typeof BbanSchema>
-  bic?: z.infer<typeof BicfiSchema>
-  cashAccountType?: z.infer<typeof CashAccountTypeSchema>
-  currency: z.infer<typeof CurrencyCodeSchema>
-  details?: string
-  displayName?: z.infer<typeof DisplayNameSchema>
-  iban?: z.infer<typeof IbanSchema>
-  linkedAccounts?: string
-  msisdn?: z.infer<typeof MsisdnSchema>
-  name?: string
-  ownerName?: z.infer<typeof OwnerNameSchema>
-  product?: string
-  resourceId?: string
-  status?: z.infer<typeof AccountStatusSchema>
-  usage?: 'PRIV' | 'ORGA'
-}
 
 const LinksAccountReportSchema = z
   .object({
@@ -356,29 +312,11 @@ const BookingDateSchema = z.iso
   .openapi({ description: 'The date when an entry is posted to an account on the ASPSPs books.\n' })
   .openapi('BookingDate')
 
-const OtherAccountIdentification1CHSchema = z
+const BicfiSchema = z
   .string()
-  .max(34)
-  .openapi({
-    description:
-      'Other payment account Identifier.\nadapted from ISO pain.001.001.03.ch.02 GenericAccountIdentification1-CH\n',
-    example: '90-100100-0',
-  })
-  .openapi('OtherAccountIdentification1CH')
-
-const AccountReference16CHSchema = z
-  .object({
-    cashAccountType: CashAccountTypeSchema.exactOptional(),
-    currency: CurrencyCodeSchema.exactOptional(),
-    iban: IbanSchema.exactOptional(),
-    otherAccountIdentification: OtherAccountIdentification1CHSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Reference to an account by either\n  * IBAN, of a payment accounts, or\n  * otherAccountIdentification, for payment accounts if there is no IBAN\nadapted from ISO pain.001.001.03.ch.02 CashAccount16-CH_IdTpCcy\n',
-    required: [],
-  })
-  .openapi('AccountReference16CH')
+  .regex(/[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}/)
+  .openapi({ description: 'BICFI\n', example: 'AAAADEBBXXX' })
+  .openapi('Bicfi')
 
 const CreditorIdSchema = z
   .string()
@@ -628,127 +566,25 @@ const TransactionListSchema = z
   .openapi({ description: 'Array of transaction details.' })
   .openapi('TransactionList')
 
-type AccountReportType = {
-  _links: z.infer<typeof LinksAccountReportSchema>
-  booked?: z.infer<typeof TransactionListSchema>
-  information?: z.infer<typeof TransactionListSchema>
-  pending?: z.infer<typeof TransactionListSchema>
-}
-
-const LinksCardAccountReportSchema = z
+const AccountReportSchema = z
   .object({
-    card: HrefTypeSchema.exactOptional(),
-    cardAccount: HrefTypeSchema.exactOptional(),
-    first: HrefTypeSchema.exactOptional(),
-    last: HrefTypeSchema.exactOptional(),
-    next: HrefTypeSchema.exactOptional(),
-    previous: HrefTypeSchema.exactOptional(),
+    _links: LinksAccountReportSchema,
+    booked: TransactionListSchema.exactOptional(),
+    information: TransactionListSchema.exactOptional(),
+    pending: TransactionListSchema.exactOptional(),
   })
-  .catchall(HrefTypeSchema)
-  .openapi('LinksCardAccountReport')
-
-const CountryCodeSchema = z
-  .string()
-  .regex(/[A-Z]{2}/)
-  .openapi({ description: 'ISO 3166 ALPHA2 country code.', example: 'SE' })
-  .openapi('CountryCode')
-
-const AddressSchema = z
-  .object({
-    buildingNumber: z.string().exactOptional(),
-    country: CountryCodeSchema,
-    postCode: z.string().exactOptional(),
-    streetName: z.string().max(70).exactOptional(),
-    townName: z.string().exactOptional(),
-  })
-  .openapi({
-    example: {
-      buildingnNumber: '89',
-      country: 'FR',
-      postCode: '75000',
-      streetName: 'rue blue',
-      townName: 'Paris',
-    },
-    required: ['country'],
-  })
-  .openapi('Address')
-
-const CardAcceptorPhoneSchema = z
-  .string()
-  .regex(/\+[0-9]{1,3}\-[0-9()+\-]{1,30}/)
   .openapi({
     description:
-      'Merchant phone number\nIt consists of a "+" followed by the country code (from 1 to 3 characters) then a "-" and finally, any\ncombination of numbers, "(", ")", "+" and "-" (up to 30 characters).\npattern according to ISO20022 \\+[0-9]{1,3}-[0-9()+\\-]{1,30}\n',
+      'JSON based account report.\nThis account report contains transactions resulting from the query parameters.\n\n\'booked\' shall be contained if bookingStatus parameter is set to "booked" or "both".\n\n\'pending\' is not contained if the bookingStatus parameter is set to "booked" or "information".\n\n\'information\' Only contained if the bookingStatus is set to "information" and if supported by ASPSP.\n',
+    required: ['_links'],
   })
-  .openapi('CardAcceptorPhone')
+  .openapi('AccountReport')
 
-const CardTransactionIdSchema = z
-  .string()
-  .max(35)
-  .openapi({ description: 'Unique end to end identity.' })
-  .openapi('CardTransactionId')
-
-const MaskedPanSchema = z
-  .string()
-  .max(35)
-  .openapi({ description: 'Masked Primary Account Number.\n', example: '123456xxxxxx1234' })
-  .openapi('MaskedPan')
-
-const MerchantCategoryCodeSchema = z
-  .string()
-  .length(4)
-  .openapi({ description: 'Merchant category code.' })
-  .openapi('MerchantCategoryCode')
-
-const TerminalIdSchema = z
-  .string()
-  .max(35)
-  .openapi({ description: 'Identification of the Terminal, where the card has been used.' })
-  .openapi('TerminalId')
-
-const TransactionDateSchema = z.iso
-  .date()
-  .openapi({ description: 'Date of the actual card transaction.' })
-  .openapi('TransactionDate')
-
-const CardTransactionSchema = z
-  .object({
-    acceptorTransactionDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Timestamp of the actual card transaction within the acceptance system',
-      }),
-    bookingDate: BookingDateSchema.exactOptional(),
-    cardAcceptorAddress: AddressSchema.exactOptional(),
-    cardAcceptorId: z.string().max(35).exactOptional(),
-    cardAcceptorPhone: CardAcceptorPhoneSchema.exactOptional(),
-    cardTransactionId: CardTransactionIdSchema.exactOptional(),
-    currencyExchange: ReportExchangeRateListSchema.exactOptional(),
-    invoiced: z.boolean().exactOptional(),
-    markupFee: AmountSchema.exactOptional(),
-    markupFeePercentage: z.string().exactOptional().openapi({ example: '0.3' }),
-    maskedPAN: MaskedPanSchema.exactOptional(),
-    merchantCategoryCode: MerchantCategoryCodeSchema.exactOptional(),
-    originalAmount: AmountSchema.exactOptional(),
-    proprietaryBankTransactionCode: ProprietaryBankTransactionCodeSchema.exactOptional(),
-    terminalId: TerminalIdSchema.exactOptional(),
-    transactionAmount: AmountSchema,
-    transactionDate: TransactionDateSchema.exactOptional(),
-    transactionDetails: z.string().max(140).exactOptional(),
-  })
-  .openapi({ description: 'Card transaction information.', required: ['transactionAmount'] })
-  .openapi('CardTransaction')
-
-const CardTransactionListSchema = z
-  .array(CardTransactionSchema)
-  .openapi({ description: 'Array of transaction details.' })
-  .openapi('CardTransactionList')
-
-type CardAccountReportType = {
-  _links: z.infer<typeof LinksCardAccountReportSchema>
-  booked: z.infer<typeof CardTransactionListSchema>
-  pending?: z.infer<typeof CardTransactionListSchema>
+type TransactionsResponse_200JsonType = {
+  _links?: z.infer<typeof LinksDownloadSchema>
+  account?: z.infer<typeof AccountReference16CHSchema>
+  balances?: z.infer<typeof BalanceListSchema>
+  transactions?: z.infer<typeof AccountReportSchema>
 }
 
 const LinksAllSchema = z
@@ -787,7 +623,7 @@ const LinksAllSchema = z
     updatePsuIdentification: HrefTypeSchema.exactOptional(),
   })
   .catchall(HrefTypeSchema)
-  .openapi({ description: 'A _link object with all availabel link types.\n' })
+  .openapi({ description: 'A _link object with all availabel link types.\n', required: [] })
   .openapi('LinksAll')
 
 const MessageCode400AISSchema = z
@@ -3205,14 +3041,41 @@ const MessageCode2XXSchema = z
   .openapi({ description: 'Message codes for HTTP Error codes 2XX.' })
   .openapi('MessageCode2XX')
 
+const LinksAccountDetailsSchema = z
+  .object({
+    balances: HrefTypeSchema.exactOptional(),
+    transactions: HrefTypeSchema.exactOptional(),
+  })
+  .catchall(HrefTypeSchema)
+  .openapi({
+    description:
+      'Links to the account, which can be directly used for retrieving account information from this dedicated account.\n\nLinks to "balances" and/or "transactions"\n\nThese links are only supported, when the corresponding consent has been already granted.\n',
+    required: [],
+  })
+  .openapi('LinksAccountDetails')
+
 const LinksAuthorisationConfirmationSchema = z
   .object({ scaStatus: HrefTypeSchema.exactOptional() })
   .catchall(HrefTypeSchema)
   .openapi({
     description:
       "A list of hyperlinks to be recognised by the TPP. The actual hyperlinks used in the response depend on the dynamical decisions of the ASPSP when processing the request.\n\n**Remark:** All links can be relative or full links, to be decided by the ASPSP.\n\nType of links admitted in this response, (further links might be added for ASPSP \ndefined extensions):\n\n- 'scaStatus': The link to retrieve the status of the corresponding transaction resource.\n",
+    required: [],
   })
   .openapi('LinksAuthorisationConfirmation')
+
+const LinksCardAccountReportSchema = z
+  .object({
+    card: HrefTypeSchema.exactOptional(),
+    cardAccount: HrefTypeSchema.exactOptional(),
+    first: HrefTypeSchema.exactOptional(),
+    last: HrefTypeSchema.exactOptional(),
+    next: HrefTypeSchema.exactOptional(),
+    previous: HrefTypeSchema.exactOptional(),
+  })
+  .catchall(HrefTypeSchema)
+  .openapi({ required: [] })
+  .openapi('LinksCardAccountReport')
 
 const LinksConsentsSchema = z
   .object({
@@ -3233,18 +3096,9 @@ const LinksConsentsSchema = z
   .openapi({
     description:
       "A list of hyperlinks to be recognised by the TPP.\n\nType of links admitted in this response (which might be extended by single ASPSPs as indicated in its XS2A\ndocumentation):\n  * 'scaRedirect': \n    In case of an SCA Redirect Approach, the ASPSP is transmitting the link to which to redirect the \n    PSU browser.\n  * 'scaOAuth': \n    In case of an OAuth2 based Redirect Approach, the ASPSP is transmitting the link where the configuration \n    of the OAuth2 Server is defined. \n    The configuration follows the OAuth 2.0 Authorisation Server Metadata specification. \n* 'confirmation': \n  Might be added by the ASPSP if either the \"scaRedirect\" or \"scaOAuth\" hyperlink is returned \n  in the same response message. \n  This hyperlink defines the URL to the resource which needs to be updated with \n    * a confirmation code as retrieved after the plain redirect authentication process with the ASPSP authentication server or\n    * an access token as retrieved by submitting an authorization code after the integrated OAuth based authentication process with the ASPSP authentication server.\n  * 'startAuthorisation': \n    In case, where an explicit start of the transaction authorisation is needed, \n    but no more data needs to be updated (no authentication method to be selected, \n    no PSU identification nor PSU authentication data to be uploaded).\n  * 'startAuthorisationWithPsuIdentification': \n    The link to the authorisation end-point, where the authorisation sub-resource has to be generated \n    while uploading the PSU identification data.\n  * 'startAuthorisationWithPsuAuthentication':\n    The link to the authorisation end-point, where the authorisation sub-resource has to be generated \n    while uploading the PSU authentication data.\n  * 'startAuthorisationWithEncryptedPsuAuthentication':\n    Same as startAuthorisactionWithPsuAuthentication where the authentication data need to be encrypted on\n    application layer in uploading.\n  * 'startAuthorisationWithAuthenticationMethodSelection':\n    The link to the authorisation end-point, where the authorisation sub-resource has to be generated \n    while selecting the authentication method. This link is contained under exactly the same conditions \n    as the data element 'scaMethods' \n  * 'startAuthorisationWithTransactionAuthorisation':\n    The link to the authorisation end-point, where the authorisation sub-resource has to be generated \n    while authorising the transaction e.g. by uploading an OTP received by SMS.\n  * 'self': \n    The link to the Establish Account Information Consent resource created by this request. \n    This link can be used to retrieve the resource data. \n  * 'status': \n    The link to retrieve the status of the account information consent.\n  * 'scaStatus': The link to retrieve the scaStatus of the corresponding authorisation sub-resource. \n    This link is only contained, if an authorisation sub-resource has been already created.\n",
+    required: [],
   })
   .openapi('LinksConsents')
-
-const LinksDownloadSchema = z
-  .object({ download: HrefTypeSchema })
-  .catchall(HrefTypeSchema)
-  .openapi({
-    description:
-      'A list of hyperlinks to be recognised by the TPP.\n\nType of links admitted in this response:\n  - "download": a link to a resource, where the transaction report might be downloaded from in\n  case where transaction reports have a huge size.\n\nRemark: This feature shall only be used where camt-data is requested which has a huge size.\n',
-    required: ['download'],
-  })
-  .openapi('LinksDownload')
 
 const LinksGetConsentSchema = z
   .object({
@@ -3255,6 +3109,7 @@ const LinksGetConsentSchema = z
   .openapi({
     description:
       'A list of hyperlinks to be recognised by the TPP.\n\nLinks of type "account" and/or "cardAccount", depending on the nature of the consent.\n',
+    required: [],
   })
   .openapi('LinksGetConsent')
 
@@ -3281,6 +3136,7 @@ const LinksPaymentInitiationSchema = z
       scaRedirect: { href: 'https://www.testbank.com/asdfasdfasdf' },
       self: { href: '/v1/payments/swiss-sepa-credit-transfers/1234-wertiq-983' },
     },
+    required: [],
   })
   .openapi('LinksPaymentInitiation')
 
@@ -3296,6 +3152,7 @@ const LinksPaymentInitiationCancelSchema = z
   .openapi({
     description:
       "A list of hyperlinks to be recognised by the TPP. The actual hyperlinks used in the response depend on the\ndynamical decisions of the ASPSP when processing the request.\n\nRemark: All links can be relative or full links, to be decided by the ASPSP.\n\nType of links admitted in this response, (further links might be added for ASPSP defined extensions):\n\n  * 'startAuthorisation':\n    In case, where just the authorisation process of the cancellation needs to be started,\n    but no additional data needs to be updated for time being (no authentication method to be selected,\n    no PSU identification nor PSU authentication data to be uploaded).\n  * 'startAuthorisationWithPsuIdentification': \n    In case where a PSU identification needs to be updated when starting the cancellation authorisation:\n    The link to the cancellation-authorisations end-point, where the cancellation sub-resource has to be \n    generated while uploading the PSU identification data.\n  * 'startAuthorisationWithPsuAuthentication':\n    In case of a yet to be created authorisation sub-resource: The link to the cancalation authorisation end-point,\n    where the authorisation sub-resource has to be generated while uploading the PSU authentication data.\n  * 'startAuthorisationWithEncryptedPsuAuthentication':\n    Same as startAuthorisactionWithPsuAuthentication where the authentication data need to be encrypted on\n    application layer in uploading.\n  * 'startAuthorisationWithAuthenticationMethodSelection':\n    The link to the authorisation end-point, where the cancellation-authorisation sub-resource has to be\n    generated while selecting the authentication method. This link is contained under exactly the same\n    conditions as the data element 'scaMethods'\n",
+    required: [],
   })
   .openapi('LinksPaymentInitiationCancel')
 
@@ -3315,6 +3172,7 @@ const LinksSelectPsuAuthenticationMethodSchema = z
   .openapi({
     description:
       "A list of hyperlinks to be recognised by the TPP. The actual hyperlinks used in\nthe response depend on the dynamical decisions of the ASPSP when processing the request.\n\n**Remark:** All links can be relative or full links, to be decided by the ASPSP.\n\n**Remark:** This method can be applied before or after PSU identification.\nThis leads to many possible hyperlink responses.\nType of links admitted in this response, (further links might be added for ASPSP defined\nextensions):\n\n- 'scaRedirect':\n  In case of an SCA Redirect Approach, the ASPSP is transmitting the link to which to\n  redirect the PSU browser.\n- 'scaOAuth':\n  In case of a SCA OAuth2 Approach, the ASPSP is transmitting the URI where the\n  configuration of the Authorisation Server can be retrieved.\n  The configuration follows the OAuth 2.0 Authorisation Server Metadata specification.\n* 'confirmation': \n  Might be added by the ASPSP if either the \"scaRedirect\" or \"scaOAuth\" hyperlink is returned \n  in the same response message. \n  This hyperlink defines the URL to the resource which needs to be updated with \n    * a confirmation code as retrieved after the plain redirect authentication process with the ASPSP authentication server or\n    * an access token as retrieved by submitting an authorization code after the integrated OAuth based authentication process with the ASPSP authentication server.\n- 'updatePsuIdentification': \n  The link to the authorisation or cancellation authorisation sub-resource, \n  where PSU identification data needs to be uploaded.\n- 'updatePsuAuthentication':\n  The link to the authorisation or cancellation authorisation sub-resource,\n  where PSU authentication data needs to be uploaded.\n  - 'updateEncryptedPsuAuthentication':\n  The link to the authorisation or cancellation authorisation sub-resource,\n  where PSU authentication encrypted data needs to be uploaded.\n- 'updateAdditionalPsuAuthentication':\n    The link to the payment initiation or account information resource,\n    which needs to be updated by an additional PSU password.\n- 'updateAdditionalEncryptedPsuAuthentication':\n    The link to the payment initiation or account information resource,\n    which needs to be updated by an additional encrypted PSU password.\n- 'authoriseTransaction':\n  The link to the authorisation or cancellation authorisation sub-resource,\n  where the authorisation data has to be uploaded, e.g. the TOP received by SMS.\n- 'scaStatus':\n  The link to retrieve the scaStatus of the corresponding authorisation sub-resource.\n",
+    required: [],
   })
   .openapi('LinksSelectPsuAuthenticationMethod')
 
@@ -3355,6 +3213,7 @@ const LinksStartScaProcessSchema = z
   .openapi({
     description:
       "A list of hyperlinks to be recognised by the TPP. The actual hyperlinks used in the\nresponse depend on the dynamical decisions of the ASPSP when processing the request.\n\n**Remark:** All links can be relative or full links, to be decided by the ASPSP.\n\nType of links admitted in this response, (further links might be added for ASPSP defined\nextensions):\n\n- 'scaRedirect':\n  In case of an SCA Redirect Approach, the ASPSP is transmitting the link to which to\n  redirect the PSU browser.\n- 'scaOAuth':\n  In case of a SCA OAuth2 Approach, the ASPSP is transmitting the URI where the configuration of the Authorisation Server can be retrieved. The configuration follows the OAuth 2.0 Authorisation Server Metadata specification.\n* 'confirmation': \n  Might be added by the ASPSP if either the \"scaRedirect\" or \"scaOAuth\" hyperlink is returned \n  in the same response message. \n  This hyperlink defines the URL to the resource which needs to be updated with \n    * a confirmation code as retrieved after the plain redirect authentication process with the ASPSP authentication server or\n    * an access token as retrieved by submitting an authorization code after the integrated OAuth based authentication process with the ASPSP authentication server.\n- 'updatePsuIdentification': \n  The link to the authorisation or cancellation authorisation sub-resource, \n  where PSU identification data needs to be uploaded.\n- 'startAuthorisationWithPsuAuthentication':\n  The link to the authorisation or cancellation authorisation sub-resource,\n  where PSU authentication data needs to be uploaded.\n- 'startAuthorisationWithEncryptedPsuAuthentication':\n    Same as startAuthorisactionWithPsuAuthentication where the authentication data need to be encrypted on\n    application layer in uploading.\n- 'selectAuthenticationMethod':\n  The link to the authorisation or cancellation authorisation sub-resource,\n  where the selected authentication method needs to be uploaded.\n  This link is contained under exactly the same conditions as the data element 'scaMethods'.\n- 'authoriseTransaction':\n  The link to the authorisation or cancellation authorisation sub-resource,\n  where the authorisation data has to be uploaded, e.g. the TOP received by SMS.\n- 'scaStatus':\n  The link to retrieve the scaStatus of the corresponding authorisation sub-resource.\n",
+    required: [],
   })
   .openapi('LinksStartScaProcess')
 
@@ -3370,6 +3229,7 @@ const LinksUpdatePsuAuthenticationSchema = z
   .openapi({
     description:
       "A list of hyperlinks to be recognised by the TPP. Might be contained, if several authentication methods\nare available for the PSU.\nType of links admitted in this response:\n  * 'updateAdditionalPsuAuthentication':\n    The link to the payment initiation or account information resource,\n    which needs to be updated by an additional PSU password.\n    This link is only contained in rare cases,\n    where such additional passwords are needed for PSU authentications.\n  * 'updateAdditionalEncryptedPsuAuthentication':\n    The link to the payment initiation or account information resource,\n    which needs to be updated by an additional encrypted PSU password.\n    This link is only contained in rare cases, where such additional passwords are needed for PSU authentications.\n  * 'selectAuthenticationMethod':\n    This is a link to a resource, where the TPP can select the applicable second factor authentication\n    methods for the PSU, if there were several available authentication methods.\n    This link is only contained, if the PSU is already identified or authenticated with the first relevant\n    factor or alternatively an access token, if SCA is required and if the PSU has a choice between different\n    authentication methods.\n    If this link is contained, then there is also the data element 'scaMethods' contained in the response body.\n  * 'authoriseTransaction': \n    The link to the resource, where the \"Transaction authorisation request\" is sent to. \n    This is the link to the resource which will authorise the transaction by checking the SCA authentication \n    data within the Embedded SCA approach.\n  * 'scaStatus':\n    The link to retrieve the scaStatus of the corresponding authorisation sub-resource.\n",
+    required: [],
   })
   .openapi('LinksUpdatePsuAuthentication')
 
@@ -3382,6 +3242,7 @@ const LinksUpdatePsuIdentificationSchema = z
   .openapi({
     description:
       "A list of hyperlinks to be recognised by the TPP. The actual hyperlinks used in the response depend on the dynamical decisions of the ASPSP when processing the request.\n\n**Remark:** All links can be relative or full links, to be decided by the ASPSP.\n\nType of links admitted in this response, (further links might be added for ASPSP\ndefined extensions):\n\n- 'scaStatus': The link to retrieve the scaStatus of the corresponding authorisation sub-resource.\n- 'selectAuthenticationMethod': This is a link to a resource, where the TPP can select the applicable second factor authentication methods for the PSU, if there are several available authentication methods and if the PSU is already sufficiently authenticated.. If this link is contained, then there is also the data element \"scaMethods\" contained in the response body.\n",
+    required: [],
   })
   .openapi('LinksUpdatePsuIdentification')
 
@@ -3465,73 +3326,110 @@ const AccountAccessSchema = z
   .openapi({ description: 'Requested access services for a consent.\n', required: [] })
   .openapi('AccountAccess')
 
-const AccountDetailsSchema: z.ZodType<AccountDetailsType> = z
-  .lazy(() =>
-    z
-      .object({
-        _links: LinksAccountDetailsSchema.exactOptional(),
-        balances: BalanceListSchema.exactOptional(),
-        bban: BbanSchema.exactOptional(),
-        bic: BicfiSchema.exactOptional(),
-        cashAccountType: CashAccountTypeSchema.exactOptional(),
-        currency: CurrencyCodeSchema,
-        details: z
-          .string()
-          .max(500)
-          .exactOptional()
-          .openapi({
-            description:
-              'Specifications that might be provided by the ASPSP:\n  - characteristics of the account\n  - characteristics of the relevant card\n',
-          }),
-        displayName: DisplayNameSchema.exactOptional(),
-        iban: IbanSchema.exactOptional(),
-        linkedAccounts: z
-          .string()
-          .max(70)
-          .exactOptional()
-          .openapi({
-            description:
-              'Case of a set of pending card transactions, the APSP will provide the relevant cash account the card is set up on.',
-          }),
-        msisdn: MsisdnSchema.exactOptional(),
-        name: z
-          .string()
-          .max(70)
-          .exactOptional()
-          .openapi({
-            description:
-              'Name of the account, as assigned by the ASPSP, in agreement with the account owner in order to provide an additional means of identification of the account.',
-          }),
-        ownerName: OwnerNameSchema.exactOptional(),
-        product: z
-          .string()
-          .max(35)
-          .exactOptional()
-          .openapi({
-            description: 'Product name of the bank for this account, proprietary definition.',
-          }),
-        resourceId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'This shall be filled, if addressable resource are created by the ASPSP on the /accounts or /card-accounts endpoint.',
-          }),
-        status: AccountStatusSchema.exactOptional(),
-        usage: z
-          .enum(['PRIV', 'ORGA'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Specifies the usage of the account:\n  * PRIV: private personal account\n  * ORGA: professional account\n',
-          }),
-      })
+const BbanSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9]{1,30}/)
+  .openapi({
+    description:
+      'Basic Bank Account Number (BBAN) Identifier.\n\nThis data element can be used in the body of the consent request.\n  Message for retrieving account access consent from this account. This\n  data elements is used for payment accounts which have no IBAN.\n  ISO20022: Basic Bank Account Number (BBAN). \n  \n  Identifier used nationally by financial institutions, i.e., in individual countries, \n  generally as part of a National Account Numbering Scheme(s), \n  which uniquely identifies the account of a customer.\n',
+    example: 'BARC12345612345678',
+  })
+  .openapi('Bban')
+
+const DisplayNameSchema = z
+  .string()
+  .max(70)
+  .openapi({ description: 'Name of the account as defined by the PSU within online channels.\n' })
+  .openapi('DisplayName')
+
+const MsisdnSchema = z
+  .string()
+  .max(35)
+  .openapi({ description: 'Mobile phone number.', example: '+49 170 1234567' })
+  .openapi('Msisdn')
+
+const OwnerNameSchema = z
+  .string()
+  .max(140)
+  .openapi({
+    description:
+      'Name of the legal account owner. \nIf there is more than one owner, then e.g. two names might be noted here.\n\nFor a corporate account, the corporate name is used for this attribute.\nEven if supported by the ASPSP, the provision of this field might depend on the fact whether an explicit consent to this specific additional account information has been given by the PSU.\n',
+    example: 'John Doe',
+  })
+  .openapi('OwnerName')
+
+const AccountStatusSchema = z
+  .enum(['enabled', 'deleted', 'blocked'])
+  .openapi({
+    description:
+      'Account status. The value is one of the following:\n  - "enabled": account is available\n  - "deleted": account is terminated\n  - "blocked": account is blocked e.g. for legal reasons\nIf this field is not used, than the account is available in the sense of this specification.\n',
+  })
+  .openapi('AccountStatus')
+
+const AccountDetailsSchema = z
+  .object({
+    _links: LinksAccountDetailsSchema.exactOptional(),
+    balances: BalanceListSchema.exactOptional(),
+    bban: BbanSchema.exactOptional(),
+    bic: BicfiSchema.exactOptional(),
+    cashAccountType: CashAccountTypeSchema.exactOptional(),
+    currency: CurrencyCodeSchema,
+    details: z
+      .string()
+      .max(500)
+      .exactOptional()
       .openapi({
         description:
-          'The ASPSP shall give at least one of the account reference identifiers:\n  - iban\n  - bban\n  - pan\n  - maskedPan\n  - msisdn\nIf the account is a multicurrency account currency code in "currency" is set to "XXX".\n',
-        required: ['currency'],
+          'Specifications that might be provided by the ASPSP:\n  - characteristics of the account\n  - characteristics of the relevant card\n',
       }),
-  )
+    displayName: DisplayNameSchema.exactOptional(),
+    iban: IbanSchema.exactOptional(),
+    linkedAccounts: z
+      .string()
+      .max(70)
+      .exactOptional()
+      .openapi({
+        description:
+          'Case of a set of pending card transactions, the APSP will provide the relevant cash account the card is set up on.',
+      }),
+    msisdn: MsisdnSchema.exactOptional(),
+    name: z
+      .string()
+      .max(70)
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the account, as assigned by the ASPSP, in agreement with the account owner in order to provide an additional means of identification of the account.',
+      }),
+    ownerName: OwnerNameSchema.exactOptional(),
+    product: z
+      .string()
+      .max(35)
+      .exactOptional()
+      .openapi({
+        description: 'Product name of the bank for this account, proprietary definition.',
+      }),
+    resourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This shall be filled, if addressable resource are created by the ASPSP on the /accounts or /card-accounts endpoint.',
+      }),
+    status: AccountStatusSchema.exactOptional(),
+    usage: z
+      .enum(['PRIV', 'ORGA'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the usage of the account:\n  * PRIV: private personal account\n  * ORGA: professional account\n',
+      }),
+  })
+  .openapi({
+    description:
+      'The ASPSP shall give at least one of the account reference identifiers:\n  - iban\n  - bban\n  - pan\n  - maskedPan\n  - msisdn\nIf the account is a multicurrency account currency code in "currency" is set to "XXX".\n',
+    required: ['currency'],
+  })
   .openapi('AccountDetails')
 
 const AccountIdSchema = z
@@ -3548,22 +3446,31 @@ const AccountListSchema = z
   .openapi({ description: 'List of accounts with details.\n', required: ['accounts'] })
   .openapi('AccountList')
 
-const AccountReportSchema: z.ZodType<AccountReportType> = z
-  .lazy(() =>
-    z
-      .object({
-        _links: LinksAccountReportSchema,
-        booked: TransactionListSchema.exactOptional(),
-        information: TransactionListSchema.exactOptional(),
-        pending: TransactionListSchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          'JSON based account report.\nThis account report contains transactions resulting from the query parameters.\n\n\'booked\' shall be contained if bookingStatus parameter is set to "booked" or "both".\n\n\'pending\' is not contained if the bookingStatus parameter is set to "booked" or "information".\n\n\'information\' Only contained if the bookingStatus is set to "information" and if supported by ASPSP.\n',
-        required: ['_links'],
-      }),
-  )
-  .openapi('AccountReport')
+const CountryCodeSchema = z
+  .string()
+  .regex(/[A-Z]{2}/)
+  .openapi({ description: 'ISO 3166 ALPHA2 country code.', example: 'SE' })
+  .openapi('CountryCode')
+
+const AddressSchema = z
+  .object({
+    buildingNumber: z.string().exactOptional(),
+    country: CountryCodeSchema,
+    postCode: z.string().exactOptional(),
+    streetName: z.string().max(70).exactOptional(),
+    townName: z.string().exactOptional(),
+  })
+  .openapi({
+    example: {
+      buildingnNumber: '89',
+      country: 'FR',
+      postCode: '75000',
+      streetName: 'rue blue',
+      townName: 'Paris',
+    },
+    required: ['country'],
+  })
+  .openapi('Address')
 
 const AuthenticationMethodIdSchema = z
   .string()
@@ -3912,6 +3819,15 @@ const Camt_054Schema = z
   .openapi({ description: 'camt.054 XML message.\n' })
   .openapi('Camt_054')
 
+const CardAcceptorPhoneSchema = z
+  .string()
+  .regex(/\+[0-9]{1,3}\-[0-9()+\-]{1,30}/)
+  .openapi({
+    description:
+      'Merchant phone number\nIt consists of a "+" followed by the country code (from 1 to 3 characters) then a "-" and finally, any\ncombination of numbers, "(", ")", "+" and "-" (up to 30 characters).\npattern according to ISO20022 \\+[0-9]{1,3}-[0-9()+\\-]{1,30}\n',
+  })
+  .openapi('CardAcceptorPhone')
+
 const DebitAccountingSchema = z
   .boolean()
   .openapi({
@@ -3919,6 +3835,12 @@ const DebitAccountingSchema = z
       'If true, the amounts of debits on the reports are quoted positive with the related consequence for balances.\nIf false, the amount of debits on the reports are quoted negative.\n',
   })
   .openapi('DebitAccounting')
+
+const MaskedPanSchema = z
+  .string()
+  .max(35)
+  .openapi({ description: 'Masked Primary Account Number.\n', example: '123456xxxxxx1234' })
+  .openapi('MaskedPan')
 
 const CardAccountDetailsSchema = z
   .object({
@@ -3977,20 +3899,74 @@ const CardAccountListSchema = z
   .openapi({ description: 'List of card accounts with details.\n', required: ['cardAccounts'] })
   .openapi('CardAccountList')
 
-const CardAccountReportSchema: z.ZodType<CardAccountReportType> = z
-  .lazy(() =>
-    z
-      .object({
-        _links: LinksCardAccountReportSchema,
-        booked: CardTransactionListSchema,
-        pending: CardTransactionListSchema.exactOptional(),
-      })
+const CardTransactionIdSchema = z
+  .string()
+  .max(35)
+  .openapi({ description: 'Unique end to end identity.' })
+  .openapi('CardTransactionId')
+
+const MerchantCategoryCodeSchema = z
+  .string()
+  .length(4)
+  .openapi({ description: 'Merchant category code.' })
+  .openapi('MerchantCategoryCode')
+
+const TerminalIdSchema = z
+  .string()
+  .max(35)
+  .openapi({ description: 'Identification of the Terminal, where the card has been used.' })
+  .openapi('TerminalId')
+
+const TransactionDateSchema = z.iso
+  .date()
+  .openapi({ description: 'Date of the actual card transaction.' })
+  .openapi('TransactionDate')
+
+const CardTransactionSchema = z
+  .object({
+    acceptorTransactionDateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
       .openapi({
-        description:
-          'JSON based card account report.\n\nThis card account report contains transactions resulting from the query parameters.\n',
-        required: ['booked', '_links'],
+        description: 'Timestamp of the actual card transaction within the acceptance system',
       }),
-  )
+    bookingDate: BookingDateSchema.exactOptional(),
+    cardAcceptorAddress: AddressSchema.exactOptional(),
+    cardAcceptorId: z.string().max(35).exactOptional(),
+    cardAcceptorPhone: CardAcceptorPhoneSchema.exactOptional(),
+    cardTransactionId: CardTransactionIdSchema.exactOptional(),
+    currencyExchange: ReportExchangeRateListSchema.exactOptional(),
+    invoiced: z.boolean().exactOptional(),
+    markupFee: AmountSchema.exactOptional(),
+    markupFeePercentage: z.string().exactOptional().openapi({ example: '0.3' }),
+    maskedPAN: MaskedPanSchema.exactOptional(),
+    merchantCategoryCode: MerchantCategoryCodeSchema.exactOptional(),
+    originalAmount: AmountSchema.exactOptional(),
+    proprietaryBankTransactionCode: ProprietaryBankTransactionCodeSchema.exactOptional(),
+    terminalId: TerminalIdSchema.exactOptional(),
+    transactionAmount: AmountSchema,
+    transactionDate: TransactionDateSchema.exactOptional(),
+    transactionDetails: z.string().max(140).exactOptional(),
+  })
+  .openapi({ description: 'Card transaction information.', required: ['transactionAmount'] })
+  .openapi('CardTransaction')
+
+const CardTransactionListSchema = z
+  .array(CardTransactionSchema)
+  .openapi({ description: 'Array of transaction details.' })
+  .openapi('CardTransactionList')
+
+const CardAccountReportSchema = z
+  .object({
+    _links: LinksCardAccountReportSchema,
+    booked: CardTransactionListSchema,
+    pending: CardTransactionListSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'JSON based card account report.\n\nThis card account report contains transactions resulting from the query parameters.\n',
+    required: ['booked', '_links'],
+  })
   .openapi('CardAccountReport')
 
 const CardAccountsTransactionsResponse200Schema = z
@@ -4774,7 +4750,7 @@ const TransactionDetailsBodySchema = z
   .openapi({ description: 'Transaction details.', required: ['transactionDetails'] })
   .openapi('TransactionDetailsBody')
 
-const TransactionsResponse_200JsonSchema = z
+const TransactionsResponse_200JsonSchema: z.ZodType<TransactionsResponse_200JsonType> = z
   .object({
     _links: LinksDownloadSchema.exactOptional(),
     account: AccountReference16CHSchema.exactOptional(),

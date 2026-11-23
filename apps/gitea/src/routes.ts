@@ -275,6 +275,13 @@ const RepositorySchema: z.ZodType<RepositoryType> = z
           .openapi({ 'x-go-name': 'IgnoreWhitespaceConflicts' }),
         internal: z.boolean().exactOptional().openapi({ 'x-go-name': 'Internal' }),
         internal_tracker: InternalTrackerSchema.exactOptional(),
+        issues_creation_restriction: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'who is allowed to create issues: "reader", "member" or "writer"',
+            'x-go-name': 'IssuesCreationRestriction',
+          }),
         language: z.string().exactOptional().openapi({ 'x-go-name': 'Language' }),
         languages_url: z.url().exactOptional().openapi({ 'x-go-name': 'LanguagesURL' }),
         licenses: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'Licenses' }),
@@ -323,6 +330,13 @@ const RepositorySchema: z.ZodType<RepositoryType> = z
         permissions: PermissionSchema.exactOptional(),
         private: z.boolean().exactOptional().openapi({ 'x-go-name': 'Private' }),
         projects_mode: z.string().exactOptional().openapi({ 'x-go-name': 'ProjectsMode' }),
+        pull_requests_creation_restriction: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'who is allowed to create pull requests: "reader", "member" or "writer"',
+            'x-go-name': 'PullRequestsCreationRestriction',
+          }),
         release_counter: z
           .preprocess(
             (val) =>
@@ -641,6 +655,89 @@ type ActionWorkflowRunsResponseType = {
   workflow_runs?: z.infer<typeof ActionWorkflowRunSchema>[]
 }
 
+const CodeSearchTextMatchTermSchema = z
+  .object({
+    indices: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Start and end UTF-8 byte offsets in the fragment, end-exclusive',
+        'x-go-name': 'Indices',
+      }),
+    text: z.string().exactOptional().openapi({ 'x-go-name': 'Text' }),
+  })
+  .openapi({
+    title: 'CodeSearchTextMatchTerm is a matched term.',
+    'x-go-package': 'gitea.dev/modules/structs',
+    required: [],
+  })
+  .openapi('CodeSearchTextMatchTerm')
+
+const CodeSearchTextMatchSchema = z
+  .object({
+    fragment: z.string().exactOptional().openapi({ 'x-go-name': 'Fragment' }),
+    matches: z
+      .array(CodeSearchTextMatchTermSchema)
+      .exactOptional()
+      .openapi({ 'x-go-name': 'Matches' }),
+    object_type: z.string().exactOptional().openapi({ 'x-go-name': 'ObjectType' }),
+    object_url: z.url().exactOptional().openapi({ 'x-go-name': 'ObjectURL' }),
+    property: z.string().exactOptional().openapi({ 'x-go-name': 'Property' }),
+  })
+  .openapi({
+    title: 'CodeSearchTextMatch is a matching fragment.',
+    'x-go-package': 'gitea.dev/modules/structs',
+    required: [],
+  })
+  .openapi('CodeSearchTextMatch')
+
+const CodeSearchResultItemSchema = z
+  .object({
+    html_url: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'File URL at the searched commit', 'x-go-name': 'HTMLURL' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Programming language (Gitea extension)', 'x-go-name': 'Language' }),
+    name: z.string().exactOptional().openapi({ 'x-go-name': 'Name' }),
+    path: z.string().exactOptional().openapi({ 'x-go-name': 'Path' }),
+    repository: RepositorySchema.exactOptional(),
+    text_matches: z
+      .array(CodeSearchTextMatchSchema)
+      .exactOptional()
+      .openapi({ 'x-go-name': 'TextMatches' }),
+    url: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'Contents API URL at the searched commit', 'x-go-name': 'URL' }),
+  })
+  .openapi({
+    title: 'CodeSearchResultItem is a matching file.',
+    'x-go-package': 'gitea.dev/modules/structs',
+    required: [],
+  })
+  .openapi('CodeSearchResultItem')
+
+type CodeSearchResultsType = {
+  incomplete_results?: boolean
+  items?: z.infer<typeof CodeSearchResultItemSchema>[]
+  total_count?: bigint
+}
+
 const GPGKeyEmailSchema = z
   .object({
     email: z
@@ -743,6 +840,14 @@ const InternalTrackerSchema = z
       .openapi({
         description: 'Let only contributors track time (Built-in issue tracker)',
         'x-go-name': 'AllowOnlyContributorsToTrackTime',
+      }),
+    creation_restriction: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'who is allowed to create issues: "reader" (default, any user with read access), "member" (must be a collaborator with read access) or "writer" (must be a collaborator with write access).',
+        'x-go-name': 'CreationRestriction',
       }),
     enable_issue_dependencies: z
       .boolean()
@@ -1009,6 +1114,7 @@ type RepositoryType = {
   ignore_whitespace_conflicts?: boolean
   internal?: boolean
   internal_tracker?: z.infer<typeof InternalTrackerSchema>
+  issues_creation_restriction?: string
   language?: string
   languages_url?: string
   licenses?: string[]
@@ -1027,6 +1133,7 @@ type RepositoryType = {
   permissions?: z.infer<typeof PermissionSchema>
   private?: boolean
   projects_mode?: string
+  pull_requests_creation_restriction?: string
   release_counter?: bigint
   repo_transfer?: z.infer<typeof RepoTransferSchema>
   size?: bigint
@@ -1652,6 +1759,14 @@ const AttachmentSchema = z
       .openapi({
         description: 'Created is the time when the attachment was uploaded',
         'x-go-name': 'Created',
+      }),
+    digest: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Digest is the SHA-256 of the content as "sha256:{hex}", omitted when not recorded at upload',
+        'x-go-name': 'Digest',
       }),
     download_count: z
       .preprocess(
@@ -2726,8 +2841,35 @@ const ChangedFileSchema = z
   })
   .openapi('ChangedFile')
 
+const CodeSearchResultsSchema: z.ZodType<CodeSearchResultsType> = z
+  .object({
+    incomplete_results: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Search stopped early', 'x-go-name': 'IncompleteResults' }),
+    items: z.array(CodeSearchResultItemSchema).exactOptional().openapi({ 'x-go-name': 'Items' }),
+    total_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'TotalCount' }),
+  })
+  .openapi({
+    title: 'CodeSearchResults contains matching files.',
+    'x-go-package': 'gitea.dev/modules/structs',
+    required: [],
+  })
+  .openapi('CodeSearchResults')
+
 const CommitStatusStateSchema = z
-  .enum(['pending', 'success', 'error', 'failure', 'warning', 'skipped'])
+  .enum(['pending', 'running', 'success', 'error', 'failure', 'warning', 'skipped'])
   .openapi('CommitStatusState')
 
 const CommitStatusSchema = z
@@ -2769,7 +2911,8 @@ const CommitStatusSchema = z
         'x-go-name': 'ID',
       }),
     status: CommitStatusStateSchema.exactOptional().openapi({
-      description: 'State represents the status state (pending, success, error, failure)',
+      description:
+        'State represents the status state (pending, running, success, error, failure, warning, skipped)',
     }),
     target_url: z
       .url()
@@ -3362,7 +3505,10 @@ const CreateBranchProtectionOptionSchema = z
     enable_force_push_allowlist: z
       .boolean()
       .exactOptional()
-      .openapi({ 'x-go-name': 'EnableForcePushAllowlist' }),
+      .openapi({
+        description: 'EnableForcePushAllowlist only takes effect when enable_force_push is true',
+        'x-go-name': 'EnableForcePushAllowlist',
+      }),
     enable_merge_whitelist: z
       .boolean()
       .exactOptional()
@@ -4240,12 +4386,12 @@ const CreatePullReviewCommentSchema = z
         description: 'if comment to old file line or 0',
         'x-go-name': 'OldLineNum',
       }),
-    path: z.string().exactOptional().openapi({ description: 'the tree path', 'x-go-name': 'Path' }),
+    path: z.string().openapi({ description: 'the tree path', 'x-go-name': 'Path' }),
   })
   .openapi({
     description: 'CreatePullReviewComment represent a review comment for creation api',
+    required: ['path'],
     'x-go-package': 'gitea.dev/modules/structs',
-    required: [],
   })
   .openapi('CreatePullReviewComment')
 
@@ -4320,6 +4466,8 @@ const CreatePushMirrorOptionSchema = z
   })
   .openapi('CreatePushMirrorOption')
 
+const MakeLatestSchema = z.enum(['true', 'false', 'legacy']).openapi('MakeLatest')
+
 const CreateReleaseOptionSchema = z
   .object({
     body: z
@@ -4330,6 +4478,10 @@ const CreateReleaseOptionSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether to create the release as a draft', 'x-go-name': 'IsDraft' }),
+    make_latest: MakeLatestSchema.exactOptional().openapi({
+      description:
+        '"true" sets the release as the latest, "false" keeps the current latest, "legacy" returns to the newest stable release by date. If omitted, a newly published release becomes the latest only if it is the newest by date',
+    }),
     name: z
       .string()
       .exactOptional()
@@ -4441,7 +4593,8 @@ const CreateStatusOptionSchema = z
         'x-go-name': 'Description',
       }),
     state: CommitStatusStateSchema.exactOptional().openapi({
-      description: 'State represents the status state to set (pending, success, error, failure)',
+      description:
+        'State represents the status state to set (pending, running, success, error, failure, warning, skipped)',
     }),
     target_url: z
       .url()
@@ -4579,7 +4732,8 @@ const CreateTeamOptionSchema = z
         'x-go-name': 'UnitsMap',
       }),
     visibility: TeamVisibilitySchema.exactOptional().openapi({
-      description: 'Team visibility within the organization. Defaults to "private".',
+      description:
+        'Team visibility within the organization. Defaults to the instance\'s default team visibility, "private" unless configured.',
     }),
   })
   .openapi({
@@ -5242,14 +5396,16 @@ const EditHookOptionSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Authorization header to include in webhook requests',
+        description:
+          'Authorization header to include in webhook requests, omitted keeps the current value unless the url changes',
         'x-go-name': 'AuthorizationHeader',
       }),
     branch_filter: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Branch filter pattern to determine which branches trigger the webhook',
+        description:
+          'Branch filter pattern to determine which branches trigger the webhook, omitted keeps the current value',
         'x-go-name': 'BranchFilter',
       }),
     config: z
@@ -5259,7 +5415,11 @@ const EditHookOptionSchema = z
     events: z
       .array(z.string())
       .exactOptional()
-      .openapi({ description: 'List of events that trigger this webhook', 'x-go-name': 'Events' }),
+      .openapi({
+        description:
+          'List of events that trigger this webhook, omitted or empty keeps the current events',
+        'x-go-name': 'Events',
+      }),
     name: z
       .string()
       .exactOptional()
@@ -5675,6 +5835,10 @@ const EditReleaseOptionSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether to change the draft status', 'x-go-name': 'IsDraft' }),
+    make_latest: MakeLatestSchema.exactOptional().openapi({
+      description:
+        '"true" sets the release as the latest, "false" keeps the current latest, "legacy" returns to the newest stable release by date. If omitted, a newly published release becomes the latest only if it is the newest by date',
+    }),
     name: z
       .string()
       .exactOptional()
@@ -5948,6 +6112,14 @@ const EditRepoOptionSchema = z
         description:
           '`repo` to only allow repo-level projects, `owner` to only allow owner projects, `all` to allow both.',
         'x-go-name': 'ProjectsMode',
+      }),
+    pull_requests_creation_restriction: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'who is allowed to create pull requests: "reader" (default, any user with read access), "member" (must be a collaborator with read access) or "writer" (must be a collaborator with write access).',
+        'x-go-name': 'PullRequestsCreationRestriction',
       }),
     squash_merge_commit_message: z
       .string()
@@ -8809,6 +8981,40 @@ const PublicKeySchema = z
   })
   .openapi('PublicKey')
 
+const PullRequestAutoMergeSchema = z
+  .object({
+    commit_message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The message of the resulting merge commit',
+        'x-go-name': 'CommitMessage',
+      }),
+    commit_title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The title of the resulting merge commit',
+        'x-go-name': 'CommitTitle',
+      }),
+    enabled_by: UserSchema.exactOptional(),
+    merge_method: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The merge method that will be used, eg: "merge", "rebase", "rebase-merge", "squash", "fast-forward-only"',
+        'x-go-name': 'MergeMethod',
+      }),
+  })
+  .openapi({
+    description:
+      'PullRequestAutoMerge represents a pull request scheduled to auto merge when all checks succeed',
+    'x-go-package': 'gitea.dev/modules/structs',
+    required: [],
+  })
+  .openapi('PullRequestAutoMerge')
+
 const PullRequestSchema = z
   .object({
     additions: z
@@ -8843,6 +9049,7 @@ const PullRequestSchema = z
         description: 'The list of users assigned to the pull request',
         'x-go-name': 'Assignees',
       }),
+    auto_merge: PullRequestAutoMergeSchema.exactOptional(),
     base: PRBranchInfoSchema.exactOptional(),
     body: z
       .string()
@@ -10709,6 +10916,11 @@ const ChangedFileListResponse = {
   }),
 }
 
+const CodeSearchResultsResponse = {
+  description: 'CodeSearchResults',
+  content: { 'application/json': { schema: CodeSearchResultsSchema } },
+}
+
 const CombinedStatusResponse = {
   description: 'CombinedStatus',
   content: { 'application/json': { schema: CombinedStatusSchema } },
@@ -11298,11 +11510,6 @@ const ServerVersionResponse = {
 const StopWatchListResponse = {
   description: 'StopWatchList',
   content: { 'application/json': { schema: z.array(StopWatchSchema) } },
-}
-
-const StringSliceResponse = {
-  description: 'StringSlice',
-  content: { 'application/json': { schema: z.array(z.string()) } },
 }
 
 const TagResponse = { description: 'Tag', content: { 'application/json': { schema: TagSchema } } }
@@ -12275,6 +12482,7 @@ export const getAdminPackagesRoute = createRoute({
       type: z
         .enum([
           'alpine',
+          'arch',
           'cargo',
           'chef',
           'composer',
@@ -12295,6 +12503,7 @@ export const getAdminPackagesRoute = createRoute({
           'rubygems',
           'swift',
           'terraform',
+          'terraform-module',
           'vagrant',
         ])
         .exactOptional()
@@ -12306,6 +12515,7 @@ export const getAdminPackagesRoute = createRoute({
             schema: {
               enum: [
                 'alpine',
+                'arch',
                 'cargo',
                 'chef',
                 'composer',
@@ -12326,6 +12536,7 @@ export const getAdminPackagesRoute = createRoute({
                 'rubygems',
                 'swift',
                 'terraform',
+                'terraform-module',
                 'vagrant',
               ],
               type: 'string',
@@ -12348,142 +12559,6 @@ export const getAdminPackagesRoute = createRoute({
     }),
   },
   responses: { 200: PackageListResponse, default: ErrorResponse },
-})
-
-export const getAdminUnadoptedRoute = createRoute({
-  method: 'get',
-  path: '/admin/unadopted',
-  tags: ['admin'],
-  summary: 'List unadopted repositories',
-  operationId: 'adminUnadoptedList',
-  request: {
-    query: z.object({
-      page: z
-        .preprocess(
-          (val) =>
-            typeof val === 'string' &&
-            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-              ? Number(val)
-              : val,
-          z.int(),
-        )
-        .exactOptional()
-        .openapi({
-          param: {
-            description: 'page number of results to return (1-based)',
-            in: 'query',
-            name: 'page',
-            schema: { type: 'integer' },
-            required: false,
-          },
-        }),
-      limit: z
-        .preprocess(
-          (val) =>
-            typeof val === 'string' &&
-            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-              ? Number(val)
-              : val,
-          z.int(),
-        )
-        .exactOptional()
-        .openapi({
-          param: {
-            description: 'page size of results',
-            in: 'query',
-            name: 'limit',
-            schema: { type: 'integer' },
-            required: false,
-          },
-        }),
-      query: z
-        .string()
-        .exactOptional()
-        .openapi({
-          param: {
-            description:
-              'glob pattern of repositories to search for, in the form owner or owner/repo',
-            in: 'query',
-            name: 'query',
-            schema: { type: 'string' },
-            required: false,
-          },
-        }),
-    }),
-  },
-  responses: { 200: StringSliceResponse, default: ErrorResponse },
-})
-
-export const postAdminUnadoptedOwnerRepoRoute = createRoute({
-  method: 'post',
-  path: '/admin/unadopted/{owner}/{repo}',
-  tags: ['admin'],
-  summary: 'Adopt unadopted files as a repository',
-  operationId: 'adminAdoptRepository',
-  request: {
-    params: z.object({
-      owner: z
-        .string()
-        .openapi({
-          param: {
-            description: 'owner of the repo',
-            in: 'path',
-            name: 'owner',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-      repo: z
-        .string()
-        .openapi({
-          param: {
-            description: 'name of the repo',
-            in: 'path',
-            name: 'repo',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-  },
-  responses: { 204: EmptyResponse, default: ErrorResponse },
-})
-
-export const deleteAdminUnadoptedOwnerRepoRoute = createRoute({
-  method: 'delete',
-  path: '/admin/unadopted/{owner}/{repo}',
-  tags: ['admin'],
-  summary: 'Delete unadopted files',
-  operationId: 'adminDeleteUnadoptedRepository',
-  request: {
-    params: z.object({
-      owner: z
-        .string()
-        .openapi({
-          param: {
-            description: 'owner of the repo',
-            in: 'path',
-            name: 'owner',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-      repo: z
-        .string()
-        .openapi({
-          param: {
-            description: 'name of the repo',
-            in: 'path',
-            name: 'repo',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-  },
-  responses: { 204: EmptyResponse, default: ErrorResponse },
 })
 
 export const getAdminUsersRoute = createRoute({
@@ -16950,6 +17025,7 @@ export const getPackagesOwnerRoute = createRoute({
       type: z
         .enum([
           'alpine',
+          'arch',
           'cargo',
           'chef',
           'composer',
@@ -16970,6 +17046,7 @@ export const getPackagesOwnerRoute = createRoute({
           'rubygems',
           'swift',
           'terraform',
+          'terraform-module',
           'vagrant',
         ])
         .exactOptional()
@@ -16981,6 +17058,7 @@ export const getPackagesOwnerRoute = createRoute({
             schema: {
               enum: [
                 'alpine',
+                'arch',
                 'cargo',
                 'chef',
                 'composer',
@@ -17001,6 +17079,7 @@ export const getPackagesOwnerRoute = createRoute({
                 'rubygems',
                 'swift',
                 'terraform',
+                'terraform-module',
                 'vagrant',
               ],
               type: 'string',
@@ -21615,6 +21694,110 @@ export const patchReposOwnerRepoBranchesBranchRoute = createRoute({
     body: { content: { 'application/json': { schema: RenameBranchRepoOptionSchema } } },
   },
   responses: { 204: EmptyResponse, default: ErrorResponse },
+})
+
+export const getReposOwnerRepoCodeSearchRoute = createRoute({
+  method: 'get',
+  path: '/repos/{owner}/{repo}/code/search',
+  tags: ['repository'],
+  summary: 'Search the code of a repository',
+  description:
+    'The files of the ref are searched with git grep, which returns at most 50 files. The result window is limited to 1000 files (page * limit).',
+  operationId: 'repoSearchCode',
+  request: {
+    params: z.object({
+      owner: z
+        .string()
+        .openapi({
+          param: {
+            description: 'owner of the repo',
+            in: 'path',
+            name: 'owner',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      repo: z
+        .string()
+        .openapi({
+          param: {
+            description: 'name of the repo',
+            in: 'path',
+            name: 'repo',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    query: z.object({
+      q: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'Terms must all occur in a file. Supports "exact phrases", /regexp/ and path:DIR. Language and repository qualifiers are not supported.',
+            in: 'query',
+            name: 'q',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      ref: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'The name of the commit/branch/tag. Default to the repository’s default branch',
+            in: 'query',
+            name: 'ref',
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      page: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'page number of results to return (1-based)',
+            in: 'query',
+            name: 'page',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'page size of results',
+            in: 'query',
+            name: 'limit',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: { 200: CodeSearchResultsResponse, default: ErrorResponse },
 })
 
 export const getReposOwnerRepoCollaboratorsRoute = createRoute({
@@ -32195,7 +32378,7 @@ export const postReposOwnerRepoPullsIndexMergeRoute = createRoute({
     }),
     body: { content: { 'application/json': { schema: MergePullRequestOptionSchema } } },
   },
-  responses: { 200: EmptyResponse, default: ErrorResponse },
+  responses: { 200: EmptyResponse, 201: EmptyResponse, default: ErrorResponse },
 })
 
 export const deleteReposOwnerRepoPullsIndexMergeRoute = createRoute({
@@ -33468,7 +33651,7 @@ export const getReposOwnerRepoReleasesLatestRoute = createRoute({
   path: '/repos/{owner}/{repo}/releases/latest',
   tags: ['repository'],
   summary:
-    'Gets the most recent non-prerelease, non-draft release of a repository, sorted by created_at',
+    'Gets the release set as latest, else the most recent non-prerelease, non-draft release of a repository by created_at',
   operationId: 'repoGetLatestRelease',
   request: {
     params: z.object({
@@ -36114,6 +36297,73 @@ export const getRepositoriesIdRoute = createRoute({
     }),
   },
   responses: { 200: RepositoryResponse, default: ErrorResponse },
+})
+
+export const getSearchCodeRoute = createRoute({
+  method: 'get',
+  path: '/search/code',
+  tags: ['repository'],
+  summary: 'Search the code of all repositories',
+  description:
+    'Authentication is required. The default branches are searched with the code indexer. Regular expressions are not supported. The result window is limited to 1000 files (page * limit).',
+  operationId: 'codeSearch',
+  request: {
+    query: z.object({
+      q: z
+        .string()
+        .openapi({
+          param: {
+            description:
+              'Literal terms and "exact phrases" must all occur in a file, with optional qualifiers:\n"repo:OWNER/NAME", "user:NAME" and "org:NAME" to only search these repositories (each can be repeated),\n"path:DIR" to only search the files in a directory, "language:NAME" to only search the files of a language\n',
+            in: 'query',
+            name: 'q',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      page: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'page number of results to return (1-based)',
+            in: 'query',
+            name: 'page',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            description: 'page size of results',
+            in: 'query',
+            name: 'limit',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: { 200: CodeSearchResultsResponse, default: ErrorResponse },
 })
 
 export const getSettingsApiRoute = createRoute({
@@ -39494,7 +39744,7 @@ export const patchUserSettingsRoute = createRoute({
   summary: 'Update user settings',
   operationId: 'updateUserSettings',
   request: { body: { content: { 'application/json': { schema: UserSettingsOptionsSchema } } } },
-  responses: { 200: UserSettingsResponse },
+  responses: { 200: UserSettingsResponse, default: ErrorResponse },
 })
 
 export const getUserStarredRoute = createRoute({

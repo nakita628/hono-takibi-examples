@@ -3793,18 +3793,31 @@ const ServerSwitchingRulesSchema = z
   })
   .openapi('ServerSwitchingRules')
 
-const ServerTemplateSchema = ServerParamsSchema.and(
-  z
-    .object({
-      fqdn: z.string(),
-      id: z.int().nullable().exactOptional(),
-      metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
-      num_or_range: z.string(),
-      port: z.int().min(1).max(65535).nullable().exactOptional(),
-      prefix: z.string().regex(/^[^\s]+$/),
-    })
-    .openapi({ required: ['prefix', 'num_or_range', 'fqdn'] }),
-)
+const ServerTemplateSchema = (() => {
+  const Schema = ServerParamsSchema.and(
+    z
+      .object({
+        fqdn: z.string(),
+        id: z.int().nullable().exactOptional(),
+        metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
+        num_or_range: z.string(),
+        port: z.int().min(1).max(65535).nullable().exactOptional(),
+        prefix: z.string().regex(/^[^\s]+$/),
+      })
+      .openapi({ required: ['prefix', 'num_or_range', 'fqdn'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'Set a template to initialize servers with shared parameters.',
     example: { fqdn: 'google.com', num_or_range: '1-3', port: 80, prefix: 'srv' },
@@ -3814,17 +3827,30 @@ const ServerTemplateSchema = ServerParamsSchema.and(
   })
   .openapi('ServerTemplate')
 
-const ServerSchema = ServerParamsSchema.and(
-  z
-    .object({
-      address: z.string().regex(/^[^\s]+$/),
-      id: z.int().nullable().exactOptional(),
-      metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
-      name: z.string().regex(/^[^\s]+$/),
-      port: z.int().min(1).max(65535).nullable().exactOptional(),
-    })
-    .openapi({ required: ['name', 'address'] }),
-)
+const ServerSchema = (() => {
+  const Schema = ServerParamsSchema.and(
+    z
+      .object({
+        address: z.string().regex(/^[^\s]+$/),
+        id: z.int().nullable().exactOptional(),
+        metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
+        name: z.string().regex(/^[^\s]+$/),
+        port: z.int().min(1).max(65535).nullable().exactOptional(),
+      })
+      .openapi({ required: ['name', 'address'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'HAProxy backend server configuration',
     example: { address: '10.1.1.1', name: 'www', port: 8080 },
@@ -4773,27 +4799,134 @@ const TcpResponseRulesSchema = z
   })
   .openapi('TcpResponseRules')
 
-const BackendSchema = BackendBaseSchema.and(
-  z
-    .object({
-      acl_list: AclsSchema.exactOptional(),
-      filter_list: FiltersSchema.exactOptional(),
-      http_after_response_rule_list: HttpAfterResponseRulesSchema.exactOptional(),
-      http_check_list: HttpChecksSchema.exactOptional(),
-      http_error_rule_list: HttpErrorRulesSchema.exactOptional(),
-      http_request_rule_list: HttpRequestRulesSchema.exactOptional(),
-      http_response_rule_list: HttpResponseRulesSchema.exactOptional(),
-      log_target_list: LogTargetsSchema.exactOptional(),
-      server_switching_rule_list: ServerSwitchingRulesSchema.exactOptional(),
-      server_templates: z.record(z.string(), ServerTemplateSchema).exactOptional(),
-      servers: z.record(z.string(), ServerSchema).exactOptional(),
-      stick_rule_list: StickRulesSchema.exactOptional(),
-      tcp_check_rule_list: TcpChecksSchema.exactOptional(),
-      tcp_request_rule_list: TcpRequestRulesSchema.exactOptional(),
-      tcp_response_rule_list: TcpResponseRulesSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const BackendSchema = (() => {
+  const Schema = BackendBaseSchema.and(
+    z
+      .object({
+        acl_list: AclsSchema.exactOptional(),
+        filter_list: FiltersSchema.exactOptional(),
+        http_after_response_rule_list: HttpAfterResponseRulesSchema.exactOptional(),
+        http_check_list: HttpChecksSchema.exactOptional(),
+        http_error_rule_list: HttpErrorRulesSchema.exactOptional(),
+        http_request_rule_list: HttpRequestRulesSchema.exactOptional(),
+        http_response_rule_list: HttpResponseRulesSchema.exactOptional(),
+        log_target_list: LogTargetsSchema.exactOptional(),
+        server_switching_rule_list: ServerSwitchingRulesSchema.exactOptional(),
+        server_templates: z.record(z.string(), ServerTemplateSchema).exactOptional(),
+        servers: z.record(z.string(), ServerSchema).exactOptional(),
+        stick_rule_list: StickRulesSchema.exactOptional(),
+        tcp_check_rule_list: TcpChecksSchema.exactOptional(),
+        tcp_request_rule_list: TcpRequestRulesSchema.exactOptional(),
+        tcp_response_rule_list: TcpResponseRulesSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'abortonclose',
+            'accept_invalid_http_response',
+            'accept_unsafe_violations_in_http_response',
+            'adv_check',
+            'allbackups',
+            'balance',
+            'check_timeout',
+            'checkcache',
+            'compression',
+            'connect_timeout',
+            'cookie',
+            'default_server',
+            'description',
+            'disabled',
+            'dynamic_cookie_key',
+            'email_alert',
+            'enabled',
+            'error_files',
+            'errorfiles_from_http_errors',
+            'errorloc302',
+            'errorloc303',
+            'external_check',
+            'external_check_command',
+            'external_check_path',
+            'force_persist',
+            'force_persist_list',
+            'forwarded',
+            'forwardfor',
+            'from',
+            'fullconn',
+            'guid',
+            'h1_case_adjust_bogus_server',
+            'hash_balance_factor',
+            'hash_preserve_affinity',
+            'hash_type',
+            'http-buffer-request',
+            'http-drop-request-trailers',
+            'http-no-delay',
+            'http_connection_mode',
+            'http_keep_alive_timeout',
+            'http_pretend_keepalive',
+            'http_request_timeout',
+            'http_restrict_req_hdr_names',
+            'http_reuse',
+            'http_send_name_header',
+            'httpchk_params',
+            'id',
+            'ignore_persist',
+            'ignore_persist_list',
+            'independent_streams',
+            'load_server_state_from_file',
+            'log_health_checks',
+            'log_tag',
+            'max_keep_alive_queue',
+            'metadata',
+            'mode',
+            'mysql_check_params',
+            'name',
+            'nolinger',
+            'originalto',
+            'persist',
+            'persist_rule',
+            'pgsql_check_params',
+            'prefer_last_server',
+            'queue_timeout',
+            'redispatch',
+            'retries',
+            'retry_on',
+            'server_fin_timeout',
+            'server_state_file_name',
+            'server_timeout',
+            'smtpchk_params',
+            'source',
+            'splice_auto',
+            'splice_request',
+            'splice_response',
+            'spop_check',
+            'srvtcpka',
+            'srvtcpka_cnt',
+            'srvtcpka_idle',
+            'srvtcpka_intvl',
+            'stats_options',
+            'stick_table',
+            'tarpit_timeout',
+            'tcp_smart_connect',
+            'tcpka',
+            'transparent',
+            'tunnel_timeout',
+            'use_fcgi_app',
+            'use_small_buffers',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Backend with all its children resources',
     'x-go-name': 'Backend',
@@ -5180,27 +5313,136 @@ const BindParamsSchema = z
   .openapi({ required: [] })
   .openapi('BindParams')
 
-const BindSchema = BindParamsSchema.and(
-  z
-    .strictObject({
-      address: z
-        .string()
-        .regex(/^[^\s]+$/)
-        .exactOptional()
-        .openapi({ example: '127.0.0.1' }),
-      metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
-      name: z.string().regex(/^[^\s]+$/),
-      port: z.int().min(1).max(65535).nullable().exactOptional().openapi({ example: 80 }),
-      'port-range-end': z
-        .int()
-        .min(1)
-        .max(65535)
-        .nullable()
-        .exactOptional()
-        .openapi({ example: 81 }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const BindSchema = (() => {
+  const Schema = BindParamsSchema.and(
+    z
+      .strictObject({
+        address: z
+          .string()
+          .regex(/^[^\s]+$/)
+          .exactOptional()
+          .openapi({ example: '127.0.0.1' }),
+        metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
+        name: z.string().regex(/^[^\s]+$/),
+        port: z.int().min(1).max(65535).nullable().exactOptional().openapi({ example: 80 }),
+        'port-range-end': z
+          .int()
+          .min(1)
+          .max(65535)
+          .nullable()
+          .exactOptional()
+          .openapi({ example: 81 }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'accept_netscaler_cip',
+            'accept_proxy',
+            'allow_0rtt',
+            'alpn',
+            'backlog',
+            'ca_ignore_err',
+            'ca_sign_file',
+            'ca_sign_pass',
+            'ca_verify_file',
+            'cc',
+            'ciphers',
+            'ciphersuites',
+            'client_sigalgs',
+            'crl_file',
+            'crt_ignore_err',
+            'crt_list',
+            'curves',
+            'default_crt_list',
+            'defer_accept',
+            'ecdhe',
+            'expose_fd_listeners',
+            'force_sslv3',
+            'force_strict_sni',
+            'force_tlsv10',
+            'force_tlsv11',
+            'force_tlsv12',
+            'force_tlsv13',
+            'generate_certificates',
+            'gid',
+            'group',
+            'guid_prefix',
+            'id',
+            'idle_ping',
+            'interface',
+            'ktls',
+            'label',
+            'level',
+            'maxconn',
+            'mode',
+            'mss',
+            'namespace',
+            'nbconn',
+            'nice',
+            'no_alpn',
+            'no_ca_names',
+            'no_sslv3',
+            'no_strict_sni',
+            'no_tls_tickets',
+            'no_tlsv10',
+            'no_tlsv11',
+            'no_tlsv12',
+            'no_tlsv13',
+            'npn',
+            'prefer_client_ciphers',
+            'proto',
+            'quic-cc-algo',
+            'quic-force-retry',
+            'quic-socket',
+            'quic_cc_algo_burst_size',
+            'quic_cc_algo_max_window',
+            'severity_output',
+            'shards',
+            'sigalgs',
+            'ssl',
+            'ssl_cafile',
+            'ssl_certificate',
+            'ssl_max_ver',
+            'ssl_min_ver',
+            'sslv3',
+            'strict_sni',
+            'tcp_md5sig',
+            'tcp_ss',
+            'tcp_user_timeout',
+            'tfo',
+            'thread',
+            'tls_ticket_keys',
+            'tls_tickets',
+            'tlsv10',
+            'tlsv11',
+            'tlsv12',
+            'tlsv13',
+            'transparent',
+            'uid',
+            'user',
+            'v4v6',
+            'v6only',
+            'verify',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['address', 'metadata', 'name', 'port', 'port-range-end'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'HAProxy frontend bind configuration',
     title: 'Bind',
@@ -5458,11 +5700,25 @@ const CrtStoreBaseSchema = z
   })
   .openapi('CrtStoreBase')
 
-const CrtStoreSchema = CrtStoreBaseSchema.and(
-  z
-    .object({ crt_loads: z.record(z.string(), CrtLoadSchema).exactOptional() })
-    .openapi({ required: [] }),
-)
+const CrtStoreSchema = (() => {
+  const Schema = CrtStoreBaseSchema.and(
+    z
+      .object({ crt_loads: z.record(z.string(), CrtLoadSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['crt_base', 'key_base', 'metadata', 'name'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Storage mechanism to load and store certificates used in the configuration',
     title: 'Certificate Store',
@@ -5484,6 +5740,8 @@ const CrtStoresSchema = z
 const DebugOptionsSchema = z
   .object({
     anonkey: z.int().min(0).max(4294967295).nullable().exactOptional(),
+    counters: z.enum(['enabled', 'disabled']).exactOptional(),
+    quick_exit: z.boolean().exactOptional(),
     quiet: z.boolean().exactOptional(),
     stress_level: z.int().min(0).max(9).nullable().exactOptional(),
     zero_warning: z.boolean().exactOptional(),
@@ -5491,17 +5749,121 @@ const DebugOptionsSchema = z
   .openapi({ required: [] })
   .openapi('DebugOptions')
 
-const DefaultBindSchema = BindParamsSchema.and(
-  z
-    .object({
-      metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
-      name: z
-        .string()
-        .regex(/^[^\s]+$/)
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const DefaultBindSchema = (() => {
+  const Schema = BindParamsSchema.and(
+    z
+      .object({
+        metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
+        name: z
+          .string()
+          .regex(/^[^\s]+$/)
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'accept_netscaler_cip',
+            'accept_proxy',
+            'allow_0rtt',
+            'alpn',
+            'backlog',
+            'ca_ignore_err',
+            'ca_sign_file',
+            'ca_sign_pass',
+            'ca_verify_file',
+            'cc',
+            'ciphers',
+            'ciphersuites',
+            'client_sigalgs',
+            'crl_file',
+            'crt_ignore_err',
+            'crt_list',
+            'curves',
+            'default_crt_list',
+            'defer_accept',
+            'ecdhe',
+            'expose_fd_listeners',
+            'force_sslv3',
+            'force_strict_sni',
+            'force_tlsv10',
+            'force_tlsv11',
+            'force_tlsv12',
+            'force_tlsv13',
+            'generate_certificates',
+            'gid',
+            'group',
+            'guid_prefix',
+            'id',
+            'idle_ping',
+            'interface',
+            'ktls',
+            'label',
+            'level',
+            'maxconn',
+            'mode',
+            'mss',
+            'namespace',
+            'nbconn',
+            'nice',
+            'no_alpn',
+            'no_ca_names',
+            'no_sslv3',
+            'no_strict_sni',
+            'no_tls_tickets',
+            'no_tlsv10',
+            'no_tlsv11',
+            'no_tlsv12',
+            'no_tlsv13',
+            'npn',
+            'prefer_client_ciphers',
+            'proto',
+            'quic-cc-algo',
+            'quic-force-retry',
+            'quic-socket',
+            'quic_cc_algo_burst_size',
+            'quic_cc_algo_max_window',
+            'severity_output',
+            'shards',
+            'sigalgs',
+            'ssl',
+            'ssl_cafile',
+            'ssl_certificate',
+            'ssl_max_ver',
+            'ssl_min_ver',
+            'sslv3',
+            'strict_sni',
+            'tcp_md5sig',
+            'tcp_ss',
+            'tcp_user_timeout',
+            'tfo',
+            'thread',
+            'tls_ticket_keys',
+            'tls_tickets',
+            'tlsv10',
+            'tlsv11',
+            'tlsv12',
+            'tlsv13',
+            'transparent',
+            'uid',
+            'user',
+            'v4v6',
+            'v6only',
+            'verify',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'HAProxy default bind configuration', title: 'Default Bind' })
   .openapi('DefaultBind')
 
@@ -5556,6 +5918,12 @@ const DefaultsBaseSchema = z
       .openapi({ 'x-display-name': 'Checkcache' }),
     clflog: z.boolean().exactOptional().openapi({ 'x-display-name': 'CLF Log' }),
     client_fin_timeout: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({ 'x-default-unit': 'ms', 'x-duration': true }),
+    client_hs_timeout: z
       .int()
       .min(0)
       .nullable()
@@ -5751,6 +6119,12 @@ const DefaultsBaseSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Maximum server queue size for maintaining keep-alive connections' }),
+    max_session_srv_conns: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({ 'x-display-name': 'Max Session Server Connections' }),
     maxconn: z.int().nullable().exactOptional().openapi({ 'x-display-name': 'Max Connections' }),
     metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
     mode: z.enum(['tcp', 'http', 'log']).exactOptional(),
@@ -5778,6 +6152,13 @@ const DefaultsBaseSchema = z
       .nullable()
       .exactOptional()
       .openapi({ 'x-default-unit': 'ms', 'x-duration': true }),
+    rate_limit_sessions: z
+      .int()
+      .min(0)
+      .max(4294967295)
+      .nullable()
+      .exactOptional()
+      .openapi({ 'x-display-name': 'Rate Limit Sessions' }),
     redispatch: RedispatchSchema.exactOptional(),
     retries: z.int().nullable().exactOptional(),
     retry_on: z
@@ -5814,6 +6195,10 @@ const DefaultsBaseSchema = z
       .enum(['enabled', 'disabled'])
       .exactOptional()
       .openapi({ 'x-display-name': 'Splice Response' }),
+    spop_check: z
+      .enum(['enabled', 'disabled'])
+      .exactOptional()
+      .openapi({ 'x-display-name': 'Spop Check' }),
     srvtcpka: z
       .enum(['enabled', 'disabled'])
       .exactOptional()
@@ -5836,6 +6221,7 @@ const DefaultsBaseSchema = z
       .nullable()
       .exactOptional()
       .openapi({ 'x-default-unit': 'ms', 'x-duration': true }),
+    tcp_clflog: z.boolean().exactOptional().openapi({ 'x-display-name': 'TCP CLF Log' }),
     tcp_smart_accept: z
       .enum(['enabled', 'disabled'])
       .exactOptional()
@@ -5881,8 +6267,12 @@ const QuicInitialRuleSchema = z
         'x-display-name': 'Condition Test',
         'x-dynamic-enum': { freeFormat: true, operation: 'getACLs', property: 'acl_name' },
       }),
+    log_profile: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-dependency': { type: { value: 'do-log' } }, 'x-display-name': 'Log Profile' }),
     metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
-    type: z.enum(['reject', 'accept', 'send-retry', 'dgram-drop']),
+    type: z.enum(['reject', 'accept', 'send-retry', 'dgram-drop', 'do-log']),
   })
   .openapi({
     description: 'QUIC Initial configuration',
@@ -5905,23 +6295,159 @@ const QuicInitialRulesSchema = z
   })
   .openapi('QuicInitialRules')
 
-const DefaultsSchema = DefaultsBaseSchema.and(
-  z
-    .object({
-      acl_list: AclsSchema.exactOptional(),
-      http_after_response_rule_list: HttpAfterResponseRulesSchema.exactOptional(),
-      http_check_list: HttpChecksSchema.exactOptional(),
-      http_error_rule_list: HttpErrorRulesSchema.exactOptional(),
-      http_request_rule_list: HttpRequestRulesSchema.exactOptional(),
-      http_response_rule_list: HttpResponseRulesSchema.exactOptional(),
-      log_target_list: LogTargetsSchema.exactOptional(),
-      quic_initial_rule_list: QuicInitialRulesSchema.exactOptional(),
-      tcp_check_rule_list: TcpChecksSchema.exactOptional(),
-      tcp_request_rule_list: TcpRequestRulesSchema.exactOptional(),
-      tcp_response_rule_list: TcpResponseRulesSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const DefaultsSchema = (() => {
+  const Schema = DefaultsBaseSchema.and(
+    z
+      .object({
+        acl_list: AclsSchema.exactOptional(),
+        http_after_response_rule_list: HttpAfterResponseRulesSchema.exactOptional(),
+        http_check_list: HttpChecksSchema.exactOptional(),
+        http_error_rule_list: HttpErrorRulesSchema.exactOptional(),
+        http_request_rule_list: HttpRequestRulesSchema.exactOptional(),
+        http_response_rule_list: HttpResponseRulesSchema.exactOptional(),
+        log_target_list: LogTargetsSchema.exactOptional(),
+        quic_initial_rule_list: QuicInitialRulesSchema.exactOptional(),
+        tcp_check_rule_list: TcpChecksSchema.exactOptional(),
+        tcp_request_rule_list: TcpRequestRulesSchema.exactOptional(),
+        tcp_response_rule_list: TcpResponseRulesSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'abortonclose',
+            'accept_invalid_http_request',
+            'accept_invalid_http_response',
+            'accept_unsafe_violations_in_http_request',
+            'accept_unsafe_violations_in_http_response',
+            'adv_check',
+            'allbackups',
+            'backlog',
+            'balance',
+            'check_timeout',
+            'checkcache',
+            'clflog',
+            'client_fin_timeout',
+            'client_hs_timeout',
+            'client_timeout',
+            'clitcpka',
+            'clitcpka_cnt',
+            'clitcpka_idle',
+            'clitcpka_intvl',
+            'compression',
+            'connect_timeout',
+            'contstats',
+            'cookie',
+            'default_backend',
+            'default_server',
+            'disable_h2_upgrade',
+            'disabled',
+            'dontlog_normal',
+            'dontlognull',
+            'dynamic_cookie_key',
+            'email_alert',
+            'enabled',
+            'error_files',
+            'error_log_format',
+            'errorfiles_from_http_errors',
+            'errorloc302',
+            'errorloc303',
+            'external_check',
+            'external_check_command',
+            'external_check_path',
+            'forwarded',
+            'forwardfor',
+            'from',
+            'fullconn',
+            'h1_case_adjust_bogus_client',
+            'h1_case_adjust_bogus_server',
+            'hash_balance_factor',
+            'hash_preserve_affinity',
+            'hash_type',
+            'http-buffer-request',
+            'http-drop-request-trailers',
+            'http-drop-response-trailers',
+            'http_connection_mode',
+            'http_ignore_probes',
+            'http_keep_alive_timeout',
+            'http_no_delay',
+            'http_pretend_keepalive',
+            'http_request_timeout',
+            'http_restrict_req_hdr_names',
+            'http_reuse',
+            'http_send_name_header',
+            'http_use_proxy_header',
+            'httpchk_params',
+            'httplog',
+            'httpslog',
+            'idle_close_on_response',
+            'independent_streams',
+            'load_server_state_from_file',
+            'log_format',
+            'log_format_sd',
+            'log_health_checks',
+            'log_separate_errors',
+            'log_steps',
+            'log_tag',
+            'logasap',
+            'max_keep_alive_queue',
+            'max_session_srv_conns',
+            'maxconn',
+            'metadata',
+            'mode',
+            'monitor_uri',
+            'mysql_check_params',
+            'name',
+            'nolinger',
+            'originalto',
+            'persist',
+            'persist_rule',
+            'pgsql_check_params',
+            'prefer_last_server',
+            'queue_timeout',
+            'rate_limit_sessions',
+            'redispatch',
+            'retries',
+            'retry_on',
+            'server_fin_timeout',
+            'server_timeout',
+            'smtpchk_params',
+            'socket_stats',
+            'source',
+            'splice_auto',
+            'splice_request',
+            'splice_response',
+            'spop_check',
+            'srvtcpka',
+            'srvtcpka_cnt',
+            'srvtcpka_idle',
+            'srvtcpka_intvl',
+            'stats_options',
+            'tarpit_timeout',
+            'tcp_clflog',
+            'tcp_smart_accept',
+            'tcp_smart_connect',
+            'tcpka',
+            'tcplog',
+            'transparent',
+            'tunnel_timeout',
+            'unique_id_format',
+            'unique_id_header',
+            'use_small_buffers',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Defaults with all its children resources',
     'x-go-name': 'Defaults',
@@ -6305,6 +6831,12 @@ const FrontendBaseSchema = z
       .nullable()
       .exactOptional()
       .openapi({ 'x-default-unit': 'ms', 'x-duration': true }),
+    client_hs_timeout: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({ 'x-default-unit': 'ms', 'x-duration': true }),
     client_timeout: z
       .int()
       .min(0)
@@ -6457,6 +6989,12 @@ const FrontendBaseSchema = z
       .enum(['enabled', 'disabled'])
       .exactOptional()
       .openapi({ 'x-display-name': 'Log ASAP' }),
+    max_session_srv_conns: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({ 'x-display-name': 'Max Session Server Connections' }),
     maxconn: z.int().nullable().exactOptional().openapi({ 'x-display-name': 'Max Connections' }),
     metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
     mode: z.enum(['http', 'tcp']).exactOptional(),
@@ -6468,6 +7006,13 @@ const FrontendBaseSchema = z
       .exactOptional()
       .openapi({ 'x-display-name': 'Nolinger' }),
     originalto: OriginaltoSchema.exactOptional(),
+    rate_limit_sessions: z
+      .int()
+      .min(0)
+      .max(4294967295)
+      .nullable()
+      .exactOptional()
+      .openapi({ 'x-display-name': 'Rate Limit Sessions' }),
     socket_stats: z
       .enum(['enabled', 'disabled'])
       .exactOptional()
@@ -6492,6 +7037,10 @@ const FrontendBaseSchema = z
       .nullable()
       .exactOptional()
       .openapi({ 'x-default-unit': 'ms', 'x-duration': true }),
+    tcp_clflog: z
+      .boolean()
+      .exactOptional()
+      .openapi({ 'x-dependency': { mode: { value: 'tcp' } }, 'x-display-name': 'TCP CLF Log' }),
     tcp_smart_accept: z
       .enum(['enabled', 'disabled'])
       .exactOptional()
@@ -6576,26 +7125,118 @@ const SslFrontUsesSchema = z
   })
   .openapi('SslFrontUses')
 
-const FrontendSchema = FrontendBaseSchema.and(
-  z
-    .object({
-      acl_list: AclsSchema.exactOptional(),
-      backend_switching_rule_list: BackendSwitchingRulesSchema.exactOptional(),
-      binds: z.record(z.string(), BindSchema).exactOptional(),
-      capture_list: CapturesSchema.exactOptional(),
-      filter_list: FiltersSchema.exactOptional(),
-      force_be_switch_list: ForceBeSwitchesSchema.exactOptional(),
-      http_after_response_rule_list: HttpAfterResponseRulesSchema.exactOptional(),
-      http_error_rule_list: HttpErrorRulesSchema.exactOptional(),
-      http_request_rule_list: HttpRequestRulesSchema.exactOptional(),
-      http_response_rule_list: HttpResponseRulesSchema.exactOptional(),
-      log_target_list: LogTargetsSchema.exactOptional(),
-      quic_initial_rule_list: QuicInitialRulesSchema.exactOptional(),
-      ssl_front_use_list: SslFrontUsesSchema.exactOptional(),
-      tcp_request_rule_list: TcpRequestRulesSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const FrontendSchema = (() => {
+  const Schema = FrontendBaseSchema.and(
+    z
+      .object({
+        acl_list: AclsSchema.exactOptional(),
+        backend_switching_rule_list: BackendSwitchingRulesSchema.exactOptional(),
+        binds: z.record(z.string(), BindSchema).exactOptional(),
+        capture_list: CapturesSchema.exactOptional(),
+        filter_list: FiltersSchema.exactOptional(),
+        force_be_switch_list: ForceBeSwitchesSchema.exactOptional(),
+        http_after_response_rule_list: HttpAfterResponseRulesSchema.exactOptional(),
+        http_error_rule_list: HttpErrorRulesSchema.exactOptional(),
+        http_request_rule_list: HttpRequestRulesSchema.exactOptional(),
+        http_response_rule_list: HttpResponseRulesSchema.exactOptional(),
+        log_target_list: LogTargetsSchema.exactOptional(),
+        quic_initial_rule_list: QuicInitialRulesSchema.exactOptional(),
+        ssl_front_use_list: SslFrontUsesSchema.exactOptional(),
+        tcp_request_rule_list: TcpRequestRulesSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'abortonclose',
+            'accept_invalid_http_request',
+            'accept_unsafe_violations_in_http_request',
+            'backlog',
+            'clflog',
+            'client_fin_timeout',
+            'client_hs_timeout',
+            'client_timeout',
+            'clitcpka',
+            'clitcpka_cnt',
+            'clitcpka_idle',
+            'clitcpka_intvl',
+            'compression',
+            'contstats',
+            'default_backend',
+            'description',
+            'disable_h2_upgrade',
+            'disabled',
+            'dontlog_normal',
+            'dontlognull',
+            'email_alert',
+            'enabled',
+            'error_files',
+            'error_log_format',
+            'errorfiles_from_http_errors',
+            'errorloc302',
+            'errorloc303',
+            'forwarded',
+            'forwardfor',
+            'from',
+            'guid',
+            'h1_case_adjust_bogus_client',
+            'http-buffer-request',
+            'http-drop-response-trailers',
+            'http_connection_mode',
+            'http_ignore_probes',
+            'http_keep_alive_timeout',
+            'http_no_delay',
+            'http_request_timeout',
+            'http_restrict_req_hdr_names',
+            'http_use_proxy_header',
+            'httplog',
+            'httpslog',
+            'id',
+            'idle_close_on_response',
+            'independent_streams',
+            'log_format',
+            'log_format_sd',
+            'log_separate_errors',
+            'log_steps',
+            'log_tag',
+            'logasap',
+            'max_session_srv_conns',
+            'maxconn',
+            'metadata',
+            'mode',
+            'monitor_fail',
+            'monitor_uri',
+            'name',
+            'nolinger',
+            'originalto',
+            'rate_limit_sessions',
+            'socket_stats',
+            'splice_auto',
+            'splice_request',
+            'splice_response',
+            'stats_options',
+            'stick_table',
+            'tarpit_timeout',
+            'tcp_clflog',
+            'tcp_smart_accept',
+            'tcpka',
+            'tcplog',
+            'unique_id_format',
+            'unique_id_header',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Frontend with all its children resources',
     'x-go-name': 'Frontend',
@@ -6980,6 +7621,10 @@ const SslOptionsSchema = z
       .exactOptional()
       .openapi({ 'x-display-name': 'SSL Engines', 'x-go-name': 'SslEngines', 'x-omitempty': true }),
     issuers_chain_path: z.string().exactOptional(),
+    key_base: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-display-name': 'SSL Private Keys Base Directory' }),
     load_extra_del_ext: z
       .boolean()
       .exactOptional()
@@ -7576,6 +8221,13 @@ const TuneSslOptionsSchema = z
       .boolean()
       .exactOptional()
       .openapi({ 'x-display-name': 'SSL Force Private Cache' }),
+    hard_maxrecord: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .nullable()
+      .exactOptional()
+      .openapi({ 'x-display-name': 'SSL Hard Maximum Size', 'x-size': false }),
     keylog: z
       .enum(['enabled', 'disabled'])
       .exactOptional()
@@ -7899,6 +8551,11 @@ const GlobalBaseSchema = z
         'x-display-name': 'Log Send Hostname',
         'x-go-name': 'GlobalLogSendHostname',
       }),
+    log_tag: z
+      .string()
+      .regex(/^[^\s]+$/)
+      .exactOptional()
+      .openapi({ 'x-display-name': 'Log Tag' }),
     lua_options: LuaOptionsSchema.exactOptional(),
     'master-worker': z
       .boolean()
@@ -7938,17 +8595,121 @@ const GlobalBaseSchema = z
     prealloc_fd: z.boolean().exactOptional().openapi({ 'x-display-name': 'Prealloc FD' }),
     runtime_apis: z
       .array(
-        BindParamsSchema.and(
-          z
-            .object({
-              address: z.string().regex(/^[^\s]+$/),
-              name: z
-                .string()
-                .regex(/^[^\s]+$/)
-                .exactOptional(),
-            })
-            .openapi({ required: ['address'] }),
-        ).openapi({ 'x-go-name': 'RuntimeAPI' }),
+        (() => {
+          const Schema = BindParamsSchema.and(
+            z
+              .object({
+                address: z.string().regex(/^[^\s]+$/),
+                name: z
+                  .string()
+                  .regex(/^[^\s]+$/)
+                  .exactOptional(),
+              })
+              .openapi({ required: ['address'] }),
+          )
+          return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+            ;((ctx) => {
+              const o = ctx.value
+              if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+              for (const k of Object.keys(o)) {
+                if (
+                  ![
+                    'accept_netscaler_cip',
+                    'accept_proxy',
+                    'allow_0rtt',
+                    'alpn',
+                    'backlog',
+                    'ca_ignore_err',
+                    'ca_sign_file',
+                    'ca_sign_pass',
+                    'ca_verify_file',
+                    'cc',
+                    'ciphers',
+                    'ciphersuites',
+                    'client_sigalgs',
+                    'crl_file',
+                    'crt_ignore_err',
+                    'crt_list',
+                    'curves',
+                    'default_crt_list',
+                    'defer_accept',
+                    'ecdhe',
+                    'expose_fd_listeners',
+                    'force_sslv3',
+                    'force_strict_sni',
+                    'force_tlsv10',
+                    'force_tlsv11',
+                    'force_tlsv12',
+                    'force_tlsv13',
+                    'generate_certificates',
+                    'gid',
+                    'group',
+                    'guid_prefix',
+                    'id',
+                    'idle_ping',
+                    'interface',
+                    'ktls',
+                    'label',
+                    'level',
+                    'maxconn',
+                    'mode',
+                    'mss',
+                    'namespace',
+                    'nbconn',
+                    'nice',
+                    'no_alpn',
+                    'no_ca_names',
+                    'no_sslv3',
+                    'no_strict_sni',
+                    'no_tls_tickets',
+                    'no_tlsv10',
+                    'no_tlsv11',
+                    'no_tlsv12',
+                    'no_tlsv13',
+                    'npn',
+                    'prefer_client_ciphers',
+                    'proto',
+                    'quic-cc-algo',
+                    'quic-force-retry',
+                    'quic-socket',
+                    'quic_cc_algo_burst_size',
+                    'quic_cc_algo_max_window',
+                    'severity_output',
+                    'shards',
+                    'sigalgs',
+                    'ssl',
+                    'ssl_cafile',
+                    'ssl_certificate',
+                    'ssl_max_ver',
+                    'ssl_min_ver',
+                    'sslv3',
+                    'strict_sni',
+                    'tcp_md5sig',
+                    'tcp_ss',
+                    'tcp_user_timeout',
+                    'tfo',
+                    'thread',
+                    'tls_ticket_keys',
+                    'tls_tickets',
+                    'tlsv10',
+                    'tlsv11',
+                    'tlsv12',
+                    'tlsv13',
+                    'transparent',
+                    'uid',
+                    'user',
+                    'v4v6',
+                    'v6only',
+                    'verify',
+                  ].includes(k)
+                ) {
+                  ctx.issues.push({ code: 'custom', path: [k], input: o })
+                }
+              }
+            })(ctx)
+            return val
+          }, Schema)
+        })().openapi({ 'x-go-name': 'RuntimeAPI' }),
       )
       .exactOptional()
       .openapi({
@@ -8069,9 +8830,106 @@ const GlobalBaseSchema = z
   .openapi({ description: 'HAProxy global configuration', title: 'Global Base', required: [] })
   .openapi('GlobalBase')
 
-const GlobalSchema = GlobalBaseSchema.and(
-  z.object({ log_target_list: LogTargetsSchema.exactOptional() }).openapi({ required: [] }),
-)
+const GlobalSchema = (() => {
+  const Schema = GlobalBaseSchema.and(
+    z.object({ log_target_list: LogTargetsSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'chroot',
+            'close_spread_time',
+            'cluster_secret',
+            'cpu_affinity',
+            'cpu_maps',
+            'cpu_policy',
+            'cpu_set',
+            'daemon',
+            'debug_options',
+            'default_path',
+            'description',
+            'device_atlas_options',
+            'dns_accept_family',
+            'environment_options',
+            'expose_deprecated_directives',
+            'expose_experimental_directives',
+            'external_check',
+            'fifty_one_degrees_options',
+            'force_cfg_parser_pause',
+            'gid',
+            'grace',
+            'group',
+            'h1_accept_payload_with_any_method',
+            'h1_case_adjust',
+            'h1_case_adjust_file',
+            'h1_do_not_close_on_insecure_transfer_encoding',
+            'h2_workaround_bogus_websocket_clients',
+            'hard_stop_after',
+            'harden',
+            'http_client_options',
+            'http_err_codes',
+            'http_fail_codes',
+            'insecure_fork_wanted',
+            'insecure_setuid_wanted',
+            'jwt_options',
+            'limited_quic',
+            'localpeer',
+            'log_send_hostname',
+            'log_tag',
+            'lua_options',
+            'master-worker',
+            'max_threads_per_group',
+            'metadata',
+            'mworker_max_reloads',
+            'nbthread',
+            'no_quic',
+            'node',
+            'numa_cpu_mapping',
+            'ocsp_update_options',
+            'performance_options',
+            'pidfile',
+            'pp2_never_send_local',
+            'prealloc_fd',
+            'runtime_apis',
+            'set_dumpable',
+            'set_var',
+            'set_var_fmt',
+            'setcap',
+            'shm_stats_file',
+            'shm_stats_file_max_objects',
+            'ssl_options',
+            'stats_calculate_max_counters',
+            'stats_file',
+            'stats_maxconn',
+            'stats_timeout',
+            'strict_limits',
+            'thread_group_lines',
+            'thread_groups',
+            'tune_buffer_options',
+            'tune_lua_options',
+            'tune_options',
+            'tune_quic_options',
+            'tune_ssl_options',
+            'tune_vars_options',
+            'tune_zlib_options',
+            'uid',
+            'ulimit_n',
+            'user',
+            'warn_blocked_traffic_after',
+            'wurfl_options',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Frontend with all its children resources',
     'x-go-name': 'Global',
@@ -8287,6 +9145,10 @@ const LogForwardBaseSchema = z
       .openapi({ 'x-display-name': 'Assume RFC-6587 Non-Transparent Framing' }),
     backlog: z.int().nullable().exactOptional(),
     'dont-parse-log': z.boolean().exactOptional().openapi({ 'x-display-name': "Don't Parse Log" }),
+    host: z
+      .enum(['append', 'fill', 'keep', 'replace'])
+      .exactOptional()
+      .openapi({ description: 'How the host field is handled when forwarding logs' }),
     maxconn: z.int().nullable().exactOptional(),
     metadata: z.record(z.string(), z.looseObject({})).exactOptional(),
     name: z.string().regex(/^[A-Za-z0-9-_.:]+$/),
@@ -8305,15 +9167,40 @@ const LogForwardBaseSchema = z
   })
   .openapi('LogForwardBase')
 
-const LogForwardSchema = LogForwardBaseSchema.and(
-  z
-    .object({
-      binds: z.record(z.string(), BindSchema).exactOptional(),
-      dgram_binds: z.record(z.string(), DgramBindSchema).exactOptional(),
-      log_target_list: LogTargetsSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const LogForwardSchema = (() => {
+  const Schema = LogForwardBaseSchema.and(
+    z
+      .object({
+        binds: z.record(z.string(), BindSchema).exactOptional(),
+        dgram_binds: z.record(z.string(), DgramBindSchema).exactOptional(),
+        log_target_list: LogTargetsSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'assume-rfc6587-ntf',
+            'backlog',
+            'dont-parse-log',
+            'host',
+            'maxconn',
+            'metadata',
+            'name',
+            'timeout_client',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'LogForward with all its children resources',
     'x-go-name': 'LogForward',
@@ -8453,11 +9340,25 @@ const MailersSectionBaseSchema = z
   })
   .openapi('MailersSectionBase')
 
-const MailersSectionSchema = MailersSectionBaseSchema.and(
-  z
-    .object({ mailer_entries: z.record(z.string(), MailerEntrySchema).exactOptional() })
-    .openapi({ required: [] }),
-)
+const MailersSectionSchema = (() => {
+  const Schema = MailersSectionBaseSchema.and(
+    z
+      .object({ mailer_entries: z.record(z.string(), MailerEntrySchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['metadata', 'name', 'timeout'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'MailersSection with all its children resources',
     'x-go-name': 'MailersSection',
@@ -9039,17 +9940,41 @@ const TableSchema = z
   })
   .openapi('Table')
 
-const PeerSectionSchema = PeerSectionBaseSchema.and(
-  z
-    .object({
-      binds: z.record(z.string(), BindSchema).exactOptional(),
-      log_target_list: LogTargetsSchema.exactOptional(),
-      peer_entries: z.record(z.string(), PeerEntrySchema).exactOptional(),
-      servers: z.record(z.string(), ServerSchema).exactOptional(),
-      tables: z.record(z.string(), TableSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const PeerSectionSchema = (() => {
+  const Schema = PeerSectionBaseSchema.and(
+    z
+      .object({
+        binds: z.record(z.string(), BindSchema).exactOptional(),
+        log_target_list: LogTargetsSchema.exactOptional(),
+        peer_entries: z.record(z.string(), PeerEntrySchema).exactOptional(),
+        servers: z.record(z.string(), ServerSchema).exactOptional(),
+        tables: z.record(z.string(), TableSchema).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'default_bind',
+            'default_server',
+            'disabled',
+            'enabled',
+            'metadata',
+            'name',
+            'shards',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Peer Section with all its children resources',
     'x-go-name': 'PeerSection',
@@ -9319,6 +10244,10 @@ const ResolversSchema = z
 
 const RingBaseSchema = z
   .strictObject({
+    backing_file: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional file used to persist the ring buffer' }),
     description: z
       .string()
       .exactOptional()
@@ -9356,11 +10285,37 @@ const RingBaseSchema = z
   .openapi({ description: 'HAProxy ring configuration', required: ['name'], title: 'Ring Base' })
   .openapi('RingBase')
 
-const RingSchema = RingBaseSchema.and(
-  z
-    .object({ servers: z.record(z.string(), ServerSchema).exactOptional() })
-    .openapi({ required: [] }),
-)
+const RingSchema = (() => {
+  const Schema = RingBaseSchema.and(
+    z
+      .object({ servers: z.record(z.string(), ServerSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'backing_file',
+            'description',
+            'format',
+            'maxlen',
+            'metadata',
+            'name',
+            'size',
+            'timeout_connect',
+            'timeout_server',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Ring with all its children resources',
     'x-go-name': 'Ring',

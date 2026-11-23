@@ -2,42 +2,18 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const UUIDSchema = z.string().min(12).max(36).openapi('UUID')
 
+const SuiteDefinitionVersionSchema = z.string().min(2).max(255).openapi('SuiteDefinitionVersion')
+
 const AmazonResourceNameSchema = z.string().min(20).max(2048).openapi('AmazonResourceName')
-
-const SuiteDefinitionNameSchema = z.string().min(1).max(256).openapi('SuiteDefinitionName')
-
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
-const CreateSuiteDefinitionResponseSchema = z
-  .object({
-    suiteDefinitionId: UUIDSchema.and(
-      z.any().openapi({ description: 'The UUID of the test suite created.' }),
-    ).exactOptional(),
-    suiteDefinitionArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the test suite.' }),
-    ).exactOptional(),
-    suiteDefinitionName: SuiteDefinitionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The suite definition name of the test suite. This is a required parameter.',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the test suite was created.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateSuiteDefinitionResponse')
 
 const DeviceUnderTestSchema = z
   .object({
-    thingArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'Lists devices thing ARN.' }),
-    ).exactOptional(),
-    certificateArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'Lists devices certificate ARN.' }),
-    ).exactOptional(),
+    thingArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'Lists devices thing ARN.',
+    }),
+    certificateArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'Lists devices certificate ARN.',
+    }),
   })
   .openapi({
     description: 'Information of a test device. A thing ARN or a certificate ARN is required.',
@@ -45,147 +21,22 @@ const DeviceUnderTestSchema = z
   })
   .openapi('DeviceUnderTest')
 
-const DeviceUnderTestListSchema = z
-  .array(DeviceUnderTestSchema)
-  .min(0)
-  .max(2)
-  .openapi('DeviceUnderTestList')
-
-const IntendedForQualificationBooleanSchema = z.boolean().openapi('IntendedForQualificationBoolean')
-
-const IsLongDurationTestBooleanSchema = z.boolean().openapi('IsLongDurationTestBoolean')
-
-const RootGroupSchema = z.string().min(1).max(2048).openapi('RootGroup')
-
-const ProtocolSchema = z.enum(['MqttV3_1_1', 'MqttV5']).openapi('Protocol')
-
-const String256Schema = z.string().min(1).max(256).openapi('String256')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const DeleteSuiteDefinitionResponseSchema = z.object({}).openapi('DeleteSuiteDefinitionResponse')
-
-const EndpointSchema = z.string().min(45).max(75).openapi('Endpoint')
-
-const GetEndpointResponseSchema = z
-  .object({
-    endpoint: EndpointSchema.and(
-      z.any().openapi({ description: 'The response of an Device Advisor endpoint.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetEndpointResponse')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const SuiteDefinitionVersionSchema = z.string().min(2).max(255).openapi('SuiteDefinitionVersion')
-
-const SuiteDefinitionConfigurationSchema = z
-  .object({
-    suiteDefinitionName: SuiteDefinitionNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Gets the suite definition name. This is a required parameter.' }),
-    ),
-    devices: DeviceUnderTestListSchema.and(
-      z.any().openapi({ description: 'Gets the devices configured.' }),
-    ).exactOptional(),
-    intendedForQualification: IntendedForQualificationBooleanSchema.and(
-      z.any().openapi({ description: 'Gets the tests intended for qualification in a suite.' }),
-    ).exactOptional(),
-    isLongDurationTest: IsLongDurationTestBooleanSchema.and(
-      z.any().openapi({ description: 'Verifies if the test suite is a long duration test.' }),
-    ).exactOptional(),
-    rootGroup: RootGroupSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Gets the test suite root group. This is a required parameter.' }),
-    ),
-    devicePermissionRoleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Gets the device permission ARN. This is a required parameter.' }),
-    ),
-    protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Sets the MQTT protocol that is configured in the suite definition.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['suiteDefinitionName', 'rootGroup', 'devicePermissionRoleArn'],
-    description: 'Gets the suite definition configuration.',
-  })
-  .openapi('SuiteDefinitionConfiguration')
-
-const TagMapSchema = z
-  .record(z.string(), String256Schema)
-  .refine((val) => Object.keys(val).length >= 0)
-  .refine((val) => Object.keys(val).length <= 50)
-  .openapi('TagMap')
-
-const GetSuiteDefinitionResponseSchema = z
-  .object({
-    suiteDefinitionId: UUIDSchema.and(
-      z.any().openapi({ description: 'Suite definition ID of the suite definition.' }),
-    ).exactOptional(),
-    suiteDefinitionArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the suite definition.' }),
-    ).exactOptional(),
-    suiteDefinitionVersion: SuiteDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Suite definition version of the suite definition.' }),
-    ).exactOptional(),
-    latestVersion: SuiteDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Latest suite definition version of the suite definition.' }),
-    ).exactOptional(),
-    suiteDefinitionConfiguration: SuiteDefinitionConfigurationSchema.and(
-      z.any().openapi({ description: 'Suite configuration of the suite definition.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Date (in Unix epoch time) when the suite definition was created.',
-        }),
-    ).exactOptional(),
-    lastModifiedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Date (in Unix epoch time) when the suite definition was last modified.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Tags attached to the suite definition.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetSuiteDefinitionResponse')
-
 const SelectedTestListSchema = z.array(UUIDSchema).min(0).max(100).openapi('SelectedTestList')
 
 const ParallelRunSchema = z.boolean().openapi('ParallelRun')
 
 const SuiteRunConfigurationSchema = z
   .object({
-    primaryDevice: DeviceUnderTestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the primary device for the test suite run. This requires a thing ARN or a certificate ARN.',
-        }),
-    ),
-    selectedTestList: SelectedTestListSchema.and(
-      z.any().openapi({ description: 'Sets test case list.' }),
-    ).exactOptional(),
-    parallelRun: ParallelRunSchema.and(
-      z.any().openapi({ description: 'TRUE if multiple test suites run in parallel.' }),
-    ).exactOptional(),
+    primaryDevice: DeviceUnderTestSchema.openapi({
+      description:
+        'Sets the primary device for the test suite run. This requires a thing ARN or a certificate ARN.',
+    }),
+    selectedTestList: SelectedTestListSchema.exactOptional().openapi({
+      description: 'Sets test case list.',
+    }),
+    parallelRun: ParallelRunSchema.exactOptional().openapi({
+      description: 'TRUE if multiple test suites run in parallel.',
+    }),
   })
   .openapi({ required: ['primaryDevice'], description: 'Gets suite run configuration.' })
   .openapi('SuiteRunConfiguration')
@@ -207,6 +58,8 @@ const StatusSchema = z
     'ERROR',
   ])
   .openapi('Status')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const LogUrlSchema = z.string().openapi('LogUrl')
 
@@ -236,29 +89,21 @@ const SystemMessageSchema = z.string().openapi('SystemMessage')
 
 const TestCaseScenarioSchema = z
   .object({
-    testCaseScenarioId: TestCaseScenarioIdSchema.and(
-      z.any().openapi({ description: 'Provides test case scenario ID.' }),
-    ).exactOptional(),
-    testCaseScenarioType: TestCaseScenarioTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides test case scenario type. Type is one of the following:</p> <ul> <li> <p>Advanced</p> </li> <li> <p>Basic</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    status: TestCaseScenarioStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the test case scenario status. Status is one of the following:</p> <ul> <li> <p> <code>PASS</code>: Test passed.</p> </li> <li> <p> <code>FAIL</code>: Test failed.</p> </li> <li> <p> <code>PENDING</code>: Test has not started running but is scheduled.</p> </li> <li> <p> <code>RUNNING</code>: Test is running.</p> </li> <li> <p> <code>STOPPING</code>: Test is performing cleanup steps. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>STOPPED</code> Test is stopped. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>PASS_WITH_WARNINGS</code>: Test passed with warnings.</p> </li> <li> <p> <code>ERORR</code>: Test faced an error when running due to an internal issue.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    failure: FailureSchema.and(
-      z.any().openapi({ description: 'Provides test case scenario failure result.' }),
-    ).exactOptional(),
-    systemMessage: SystemMessageSchema.and(z.any().openapi({ description: ' ' })).exactOptional(),
+    testCaseScenarioId: TestCaseScenarioIdSchema.exactOptional().openapi({
+      description: 'Provides test case scenario ID.',
+    }),
+    testCaseScenarioType: TestCaseScenarioTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Provides test case scenario type. Type is one of the following:</p> <ul> <li> <p>Advanced</p> </li> <li> <p>Basic</p> </li> </ul>',
+    }),
+    status: TestCaseScenarioStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the test case scenario status. Status is one of the following:</p> <ul> <li> <p> <code>PASS</code>: Test passed.</p> </li> <li> <p> <code>FAIL</code>: Test failed.</p> </li> <li> <p> <code>PENDING</code>: Test has not started running but is scheduled.</p> </li> <li> <p> <code>RUNNING</code>: Test is running.</p> </li> <li> <p> <code>STOPPING</code>: Test is performing cleanup steps. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>STOPPED</code> Test is stopped. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>PASS_WITH_WARNINGS</code>: Test passed with warnings.</p> </li> <li> <p> <code>ERORR</code>: Test faced an error when running due to an internal issue.</p> </li> </ul>',
+    }),
+    failure: FailureSchema.exactOptional().openapi({
+      description: 'Provides test case scenario failure result.',
+    }),
+    systemMessage: SystemMessageSchema.exactOptional().openapi({ description: ' ' }),
   })
   .openapi({ description: 'Provides test case scenario.', required: [] })
   .openapi('TestCaseScenario')
@@ -267,41 +112,37 @@ const TestCaseScenariosListSchema = z.array(TestCaseScenarioSchema).openapi('Tes
 
 const TestCaseRunSchema = z
   .object({
-    testCaseRunId: UUIDSchema.and(
-      z.any().openapi({ description: 'Provides the test case run ID.' }),
-    ).exactOptional(),
-    testCaseDefinitionId: UUIDSchema.and(
-      z.any().openapi({ description: 'Provides the test case run definition ID.' }),
-    ).exactOptional(),
-    testCaseDefinitionName: TestCaseDefinitionNameSchema.and(
-      z.any().openapi({ description: 'Provides the test case run definition name.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the test case run status. Status is one of the following:</p> <ul> <li> <p> <code>PASS</code>: Test passed.</p> </li> <li> <p> <code>FAIL</code>: Test failed.</p> </li> <li> <p> <code>PENDING</code>: Test has not started running but is scheduled.</p> </li> <li> <p> <code>RUNNING</code>: Test is running.</p> </li> <li> <p> <code>STOPPING</code>: Test is performing cleanup steps. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>STOPPED</code> Test is stopped. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>PASS_WITH_WARNINGS</code>: Test passed with warnings.</p> </li> <li> <p> <code>ERORR</code>: Test faced an error when running due to an internal issue.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Provides test case run start time.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Provides test case run end time.' }),
-    ).exactOptional(),
-    logUrl: LogUrlSchema.and(
-      z.any().openapi({ description: 'Provides test case run log URL.' }),
-    ).exactOptional(),
-    warnings: WarningsSchema.and(
-      z.any().openapi({ description: 'Provides test case run warnings.' }),
-    ).exactOptional(),
-    failure: FailureSchema.and(
-      z.any().openapi({ description: 'Provides test case run failure result.' }),
-    ).exactOptional(),
-    testScenarios: TestCaseScenariosListSchema.and(
-      z.any().openapi({ description: ' Provides the test scenarios for the test case run. ' }),
-    ).exactOptional(),
+    testCaseRunId: UUIDSchema.exactOptional().openapi({
+      description: 'Provides the test case run ID.',
+    }),
+    testCaseDefinitionId: UUIDSchema.exactOptional().openapi({
+      description: 'Provides the test case run definition ID.',
+    }),
+    testCaseDefinitionName: TestCaseDefinitionNameSchema.exactOptional().openapi({
+      description: 'Provides the test case run definition name.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the test case run status. Status is one of the following:</p> <ul> <li> <p> <code>PASS</code>: Test passed.</p> </li> <li> <p> <code>FAIL</code>: Test failed.</p> </li> <li> <p> <code>PENDING</code>: Test has not started running but is scheduled.</p> </li> <li> <p> <code>RUNNING</code>: Test is running.</p> </li> <li> <p> <code>STOPPING</code>: Test is performing cleanup steps. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>STOPPED</code> Test is stopped. You will see this status only if you stop a suite run.</p> </li> <li> <p> <code>PASS_WITH_WARNINGS</code>: Test passed with warnings.</p> </li> <li> <p> <code>ERORR</code>: Test faced an error when running due to an internal issue.</p> </li> </ul>',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'Provides test case run start time.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'Provides test case run end time.',
+    }),
+    logUrl: LogUrlSchema.exactOptional().openapi({
+      description: 'Provides test case run log URL.',
+    }),
+    warnings: WarningsSchema.exactOptional().openapi({
+      description: 'Provides test case run warnings.',
+    }),
+    failure: FailureSchema.exactOptional().openapi({
+      description: 'Provides test case run failure result.',
+    }),
+    testScenarios: TestCaseScenariosListSchema.exactOptional().openapi({
+      description: ' Provides the test scenarios for the test case run. ',
+    }),
   })
   .openapi({ description: 'Provides the test case run.', required: [] })
   .openapi('TestCaseRun')
@@ -313,13 +154,9 @@ const TestCaseRunsSchema = z
 
 const GroupResultSchema = z
   .object({
-    groupId: UUIDSchema.and(z.any().openapi({ description: 'Group result ID.' })).exactOptional(),
-    groupName: GroupNameSchema.and(
-      z.any().openapi({ description: 'Group Result Name.' }),
-    ).exactOptional(),
-    tests: TestCaseRunsSchema.and(
-      z.any().openapi({ description: 'Tests under Group Result.' }),
-    ).exactOptional(),
+    groupId: UUIDSchema.exactOptional().openapi({ description: 'Group result ID.' }),
+    groupName: GroupNameSchema.exactOptional().openapi({ description: 'Group Result Name.' }),
+    tests: TestCaseRunsSchema.exactOptional().openapi({ description: 'Tests under Group Result.' }),
   })
   .openapi({ description: 'Show Group Result.', required: [] })
   .openapi('GroupResult')
@@ -331,9 +168,9 @@ const GroupResultListSchema = z
 
 const TestResultSchema = z
   .object({
-    groups: GroupResultListSchema.and(
-      z.any().openapi({ description: 'Show each group of test results.' }),
-    ).exactOptional(),
+    groups: GroupResultListSchema.exactOptional().openapi({
+      description: 'Show each group of test results.',
+    }),
   })
   .openapi({ description: 'Show each group result.', required: [] })
   .openapi('TestResult')
@@ -354,43 +191,178 @@ const SuiteRunStatusSchema = z
 
 const ErrorReasonSchema = z.string().openapi('ErrorReason')
 
-const GetSuiteRunResponseSchema = z
+const String256Schema = z.string().min(1).max(256).openapi('String256')
+
+const TagMapSchema = z
+  .record(z.string(), String256Schema)
+  .refine((val) => Object.keys(val).length >= 0)
+  .refine((val) => Object.keys(val).length <= 50)
+  .openapi('TagMap')
+
+type GetSuiteRunResponseType = {
+  suiteDefinitionId?: z.infer<typeof UUIDSchema> & unknown
+  suiteDefinitionVersion?: z.infer<typeof SuiteDefinitionVersionSchema> & unknown
+  suiteRunId?: z.infer<typeof UUIDSchema> & unknown
+  suiteRunArn?: z.infer<typeof AmazonResourceNameSchema> & unknown
+  suiteRunConfiguration?: z.infer<typeof SuiteRunConfigurationSchema> & unknown
+  testResult?: z.infer<typeof TestResultSchema> & unknown
+  startTime?: z.infer<typeof TimestampSchema> & unknown
+  endTime?: z.infer<typeof TimestampSchema> & unknown
+  status?: z.infer<typeof SuiteRunStatusSchema> & unknown
+  errorReason?: z.infer<typeof ErrorReasonSchema> & unknown
+  tags?: z.infer<typeof TagMapSchema> & unknown
+}
+
+const SuiteDefinitionNameSchema = z.string().min(1).max(256).openapi('SuiteDefinitionName')
+
+const CreateSuiteDefinitionResponseSchema = z
   .object({
-    suiteDefinitionId: UUIDSchema.and(
-      z.any().openapi({ description: 'Suite definition ID for the test suite run.' }),
-    ).exactOptional(),
-    suiteDefinitionVersion: SuiteDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Suite definition version for the test suite run.' }),
-    ).exactOptional(),
-    suiteRunId: UUIDSchema.and(
-      z.any().openapi({ description: 'Suite run ID for the test suite run.' }),
-    ).exactOptional(),
-    suiteRunArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the suite run.' }),
-    ).exactOptional(),
-    suiteRunConfiguration: SuiteRunConfigurationSchema.and(
-      z.any().openapi({ description: 'Suite run configuration for the test suite run.' }),
-    ).exactOptional(),
-    testResult: TestResultSchema.and(
-      z.any().openapi({ description: 'Test results for the test suite run.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Date (in Unix epoch time) when the test suite run started.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Date (in Unix epoch time) when the test suite run ended.' }),
-    ).exactOptional(),
-    status: SuiteRunStatusSchema.and(
-      z.any().openapi({ description: 'Status for the test suite run.' }),
-    ).exactOptional(),
-    errorReason: ErrorReasonSchema.and(
-      z.any().openapi({ description: 'Error reason for any test suite run failure.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags attached to the suite run.' }),
-    ).exactOptional(),
+    suiteDefinitionId: UUIDSchema.exactOptional().openapi({
+      description: 'The UUID of the test suite created.',
+    }),
+    suiteDefinitionArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the test suite.',
+    }),
+    suiteDefinitionName: SuiteDefinitionNameSchema.exactOptional().openapi({
+      description: 'The suite definition name of the test suite. This is a required parameter.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the test suite was created.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateSuiteDefinitionResponse')
+
+const DeviceUnderTestListSchema = z
+  .array(DeviceUnderTestSchema)
+  .min(0)
+  .max(2)
+  .openapi('DeviceUnderTestList')
+
+const IntendedForQualificationBooleanSchema = z.boolean().openapi('IntendedForQualificationBoolean')
+
+const IsLongDurationTestBooleanSchema = z.boolean().openapi('IsLongDurationTestBoolean')
+
+const RootGroupSchema = z.string().min(1).max(2048).openapi('RootGroup')
+
+const ProtocolSchema = z.enum(['MqttV3_1_1', 'MqttV5']).openapi('Protocol')
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const DeleteSuiteDefinitionResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteSuiteDefinitionResponse')
+
+const EndpointSchema = z.string().min(45).max(75).openapi('Endpoint')
+
+const GetEndpointResponseSchema = z
+  .object({
+    endpoint: EndpointSchema.exactOptional().openapi({
+      description: 'The response of an Device Advisor endpoint.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetEndpointResponse')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const SuiteDefinitionConfigurationSchema = z
+  .object({
+    suiteDefinitionName: SuiteDefinitionNameSchema.openapi({
+      description: 'Gets the suite definition name. This is a required parameter.',
+    }),
+    devices: DeviceUnderTestListSchema.exactOptional().openapi({
+      description: 'Gets the devices configured.',
+    }),
+    intendedForQualification: IntendedForQualificationBooleanSchema.exactOptional().openapi({
+      description: 'Gets the tests intended for qualification in a suite.',
+    }),
+    isLongDurationTest: IsLongDurationTestBooleanSchema.exactOptional().openapi({
+      description: 'Verifies if the test suite is a long duration test.',
+    }),
+    rootGroup: RootGroupSchema.openapi({
+      description: 'Gets the test suite root group. This is a required parameter.',
+    }),
+    devicePermissionRoleArn: AmazonResourceNameSchema.openapi({
+      description: 'Gets the device permission ARN. This is a required parameter.',
+    }),
+    protocol: ProtocolSchema.exactOptional().openapi({
+      description: 'Sets the MQTT protocol that is configured in the suite definition.',
+    }),
+  })
+  .openapi({
+    required: ['suiteDefinitionName', 'rootGroup', 'devicePermissionRoleArn'],
+    description: 'Gets the suite definition configuration.',
+  })
+  .openapi('SuiteDefinitionConfiguration')
+
+const GetSuiteDefinitionResponseSchema = z
+  .object({
+    suiteDefinitionId: UUIDSchema.exactOptional().openapi({
+      description: 'Suite definition ID of the suite definition.',
+    }),
+    suiteDefinitionArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the suite definition.',
+    }),
+    suiteDefinitionVersion: SuiteDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Suite definition version of the suite definition.',
+    }),
+    latestVersion: SuiteDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Latest suite definition version of the suite definition.',
+    }),
+    suiteDefinitionConfiguration: SuiteDefinitionConfigurationSchema.exactOptional().openapi({
+      description: 'Suite configuration of the suite definition.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'Date (in Unix epoch time) when the suite definition was created.',
+    }),
+    lastModifiedAt: TimestampSchema.exactOptional().openapi({
+      description: 'Date (in Unix epoch time) when the suite definition was last modified.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'Tags attached to the suite definition.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetSuiteDefinitionResponse')
+
+const GetSuiteRunResponseSchema: z.ZodType<GetSuiteRunResponseType> = z
+  .object({
+    suiteDefinitionId: UUIDSchema.exactOptional().openapi({
+      description: 'Suite definition ID for the test suite run.',
+    }),
+    suiteDefinitionVersion: SuiteDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Suite definition version for the test suite run.',
+    }),
+    suiteRunId: UUIDSchema.exactOptional().openapi({
+      description: 'Suite run ID for the test suite run.',
+    }),
+    suiteRunArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the suite run.',
+    }),
+    suiteRunConfiguration: SuiteRunConfigurationSchema.exactOptional().openapi({
+      description: 'Suite run configuration for the test suite run.',
+    }),
+    testResult: TestResultSchema.exactOptional().openapi({
+      description: 'Test results for the test suite run.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'Date (in Unix epoch time) when the test suite run started.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'Date (in Unix epoch time) when the test suite run ended.',
+    }),
+    status: SuiteRunStatusSchema.exactOptional().openapi({
+      description: 'Status for the test suite run.',
+    }),
+    errorReason: ErrorReasonSchema.exactOptional().openapi({
+      description: 'Error reason for any test suite run failure.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags attached to the suite run.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSuiteRunResponse')
@@ -399,46 +371,36 @@ const QualificationReportDownloadUrlSchema = z.string().openapi('QualificationRe
 
 const GetSuiteRunReportResponseSchema = z
   .object({
-    qualificationReportDownloadUrl: QualificationReportDownloadUrlSchema.and(
-      z.any().openapi({ description: 'Download URL of the qualification report.' }),
-    ).exactOptional(),
+    qualificationReportDownloadUrl: QualificationReportDownloadUrlSchema.exactOptional().openapi({
+      description: 'Download URL of the qualification report.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSuiteRunReportResponse')
 
 const SuiteDefinitionInformationSchema = z
   .object({
-    suiteDefinitionId: UUIDSchema.and(
-      z.any().openapi({ description: 'Suite definition ID of the test suite.' }),
-    ).exactOptional(),
-    suiteDefinitionName: SuiteDefinitionNameSchema.and(
-      z.any().openapi({ description: 'Suite name of the test suite.' }),
-    ).exactOptional(),
-    defaultDevices: DeviceUnderTestListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the devices that are under test for the test suite.' }),
-    ).exactOptional(),
-    intendedForQualification: IntendedForQualificationBooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies if the test suite is intended for qualification.' }),
-    ).exactOptional(),
-    isLongDurationTest: IsLongDurationTestBooleanSchema.and(
-      z.any().openapi({ description: 'Verifies if the test suite is a long duration test.' }),
-    ).exactOptional(),
-    protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Gets the MQTT protocol that is configured in the suite definition.',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Date (in Unix epoch time) when the test suite was created.' }),
-    ).exactOptional(),
+    suiteDefinitionId: UUIDSchema.exactOptional().openapi({
+      description: 'Suite definition ID of the test suite.',
+    }),
+    suiteDefinitionName: SuiteDefinitionNameSchema.exactOptional().openapi({
+      description: 'Suite name of the test suite.',
+    }),
+    defaultDevices: DeviceUnderTestListSchema.exactOptional().openapi({
+      description: 'Specifies the devices that are under test for the test suite.',
+    }),
+    intendedForQualification: IntendedForQualificationBooleanSchema.exactOptional().openapi({
+      description: 'Specifies if the test suite is intended for qualification.',
+    }),
+    isLongDurationTest: IsLongDurationTestBooleanSchema.exactOptional().openapi({
+      description: 'Verifies if the test suite is a long duration test.',
+    }),
+    protocol: ProtocolSchema.exactOptional().openapi({
+      description: 'Gets the MQTT protocol that is configured in the suite definition.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'Date (in Unix epoch time) when the test suite was created.',
+    }),
   })
   .openapi({ description: 'Information about the suite definition.', required: [] })
   .openapi('SuiteDefinitionInformation')
@@ -451,17 +413,13 @@ const TokenSchema = z.string().max(2000).openapi('Token')
 
 const ListSuiteDefinitionsResponseSchema = z
   .object({
-    suiteDefinitionInformationList: SuiteDefinitionInformationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that provide summaries of information about the suite definitions in the list.',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used to get the next set of results.' }),
-    ).exactOptional(),
+    suiteDefinitionInformationList: SuiteDefinitionInformationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that provide summaries of information about the suite definitions in the list.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSuiteDefinitionsResponse')
@@ -470,36 +428,36 @@ const SuiteRunResultCountSchema = z.int().min(0).max(500).openapi('SuiteRunResul
 
 const SuiteRunInformationSchema = z
   .object({
-    suiteDefinitionId: UUIDSchema.and(
-      z.any().openapi({ description: 'Suite definition ID of the suite run.' }),
-    ).exactOptional(),
-    suiteDefinitionVersion: SuiteDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Suite definition version of the suite run.' }),
-    ).exactOptional(),
-    suiteDefinitionName: SuiteDefinitionNameSchema.and(
-      z.any().openapi({ description: 'Suite definition name of the suite run.' }),
-    ).exactOptional(),
-    suiteRunId: UUIDSchema.and(
-      z.any().openapi({ description: 'Suite run ID of the suite run.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Date (in Unix epoch time) when the suite run was created.' }),
-    ).exactOptional(),
-    startedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Date (in Unix epoch time) when the suite run was started.' }),
-    ).exactOptional(),
-    endAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Date (in Unix epoch time) when the suite run ended.' }),
-    ).exactOptional(),
-    status: SuiteRunStatusSchema.and(
-      z.any().openapi({ description: 'Status of the suite run.' }),
-    ).exactOptional(),
-    passed: SuiteRunResultCountSchema.and(
-      z.any().openapi({ description: 'Number of test cases that passed in the suite run.' }),
-    ).exactOptional(),
-    failed: SuiteRunResultCountSchema.and(
-      z.any().openapi({ description: 'Number of test cases that failed in the suite run.' }),
-    ).exactOptional(),
+    suiteDefinitionId: UUIDSchema.exactOptional().openapi({
+      description: 'Suite definition ID of the suite run.',
+    }),
+    suiteDefinitionVersion: SuiteDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Suite definition version of the suite run.',
+    }),
+    suiteDefinitionName: SuiteDefinitionNameSchema.exactOptional().openapi({
+      description: 'Suite definition name of the suite run.',
+    }),
+    suiteRunId: UUIDSchema.exactOptional().openapi({
+      description: 'Suite run ID of the suite run.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'Date (in Unix epoch time) when the suite run was created.',
+    }),
+    startedAt: TimestampSchema.exactOptional().openapi({
+      description: 'Date (in Unix epoch time) when the suite run was started.',
+    }),
+    endAt: TimestampSchema.exactOptional().openapi({
+      description: 'Date (in Unix epoch time) when the suite run ended.',
+    }),
+    status: SuiteRunStatusSchema.exactOptional().openapi({
+      description: 'Status of the suite run.',
+    }),
+    passed: SuiteRunResultCountSchema.exactOptional().openapi({
+      description: 'Number of test cases that passed in the suite run.',
+    }),
+    failed: SuiteRunResultCountSchema.exactOptional().openapi({
+      description: 'Number of test cases that failed in the suite run.',
+    }),
   })
   .openapi({
     description:
@@ -512,165 +470,149 @@ const SuiteRunsListSchema = z.array(SuiteRunInformationSchema).openapi('SuiteRun
 
 const ListSuiteRunsResponseSchema = z
   .object({
-    suiteRunsList: SuiteRunsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that provide summaries of information about the suite runs in the list.',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token to retrieve the next set of results.' }),
-    ).exactOptional(),
+    suiteRunsList: SuiteRunsListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that provide summaries of information about the suite runs in the list.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSuiteRunsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags attached to the IoT Device Advisor resource.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags attached to the IoT Device Advisor resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const StartSuiteRunResponseSchema = z
   .object({
-    suiteRunId: UUIDSchema.and(
-      z.any().openapi({ description: 'Suite Run ID of the started suite run.' }),
-    ).exactOptional(),
-    suiteRunArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the started suite run.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Starts a Device Advisor test suite run based on suite create time.',
-        }),
-    ).exactOptional(),
-    endpoint: EndpointSchema.and(
-      z.any().openapi({ description: 'The response of an Device Advisor test endpoint.' }),
-    ).exactOptional(),
+    suiteRunId: UUIDSchema.exactOptional().openapi({
+      description: 'Suite Run ID of the started suite run.',
+    }),
+    suiteRunArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the started suite run.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'Starts a Device Advisor test suite run based on suite create time.',
+    }),
+    endpoint: EndpointSchema.exactOptional().openapi({
+      description: 'The response of an Device Advisor test endpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSuiteRunResponse')
 
 const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
-const StopSuiteRunResponseSchema = z.object({}).openapi('StopSuiteRunResponse')
+const StopSuiteRunResponseSchema = z.looseObject({}).openapi('StopSuiteRunResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const String128Schema = z.string().min(1).max(128).openapi('String128')
 
 const UpdateSuiteDefinitionResponseSchema = z
   .object({
-    suiteDefinitionId: UUIDSchema.and(
-      z.any().openapi({ description: 'Suite definition ID of the updated test suite.' }),
-    ).exactOptional(),
-    suiteDefinitionArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the updated test suite.' }),
-    ).exactOptional(),
-    suiteDefinitionName: SuiteDefinitionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Updates the suite definition name. This is a required parameter.',
-        }),
-    ).exactOptional(),
-    suiteDefinitionVersion: SuiteDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Suite definition version of the updated test suite.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the test suite was created.' }),
-    ).exactOptional(),
-    lastUpdatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the test suite was updated.' }),
-    ).exactOptional(),
+    suiteDefinitionId: UUIDSchema.exactOptional().openapi({
+      description: 'Suite definition ID of the updated test suite.',
+    }),
+    suiteDefinitionArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the updated test suite.',
+    }),
+    suiteDefinitionName: SuiteDefinitionNameSchema.exactOptional().openapi({
+      description: 'Updates the suite definition name. This is a required parameter.',
+    }),
+    suiteDefinitionVersion: SuiteDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Suite definition version of the updated test suite.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'Timestamp of when the test suite was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'Timestamp of when the test suite was updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSuiteDefinitionResponse')
 
 const CreateSuiteDefinitionRequestSchema = z
   .object({
-    suiteDefinitionConfiguration: SuiteDefinitionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Creates a Device Advisor test suite with suite definition configuration.',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags to be attached to the suite definition.' }),
-    ).exactOptional(),
+    suiteDefinitionConfiguration: SuiteDefinitionConfigurationSchema.openapi({
+      description: 'Creates a Device Advisor test suite with suite definition configuration.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags to be attached to the suite definition.',
+    }),
   })
   .openapi({ required: ['suiteDefinitionConfiguration'], title: 'CreateSuiteDefinitionRequest' })
   .openapi('CreateSuiteDefinitionRequest')
 
 const DeleteSuiteDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSuiteDefinitionRequest' })
   .openapi('DeleteSuiteDefinitionRequest')
 
 const GetEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEndpointRequest' })
   .openapi('GetEndpointRequest')
 
 const GetSuiteDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSuiteDefinitionRequest' })
   .openapi('GetSuiteDefinitionRequest')
 
 const GetSuiteRunReportRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSuiteRunReportRequest' })
   .openapi('GetSuiteRunReportRequest')
 
 const GetSuiteRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSuiteRunRequest' })
   .openapi('GetSuiteRunRequest')
 
 const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 const ListSuiteDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSuiteDefinitionsRequest' })
   .openapi('ListSuiteDefinitionsRequest')
 
 const ListSuiteRunsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSuiteRunsRequest' })
   .openapi('ListSuiteRunsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const StartSuiteRunRequestSchema = z
   .object({
-    suiteDefinitionVersion: SuiteDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Suite definition version of the test suite.' }),
-    ).exactOptional(),
-    suiteRunConfiguration: SuiteRunConfigurationSchema.and(
-      z.any().openapi({ description: 'Suite run configuration.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags to be attached to the suite run.' }),
-    ).exactOptional(),
+    suiteDefinitionVersion: SuiteDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Suite definition version of the test suite.',
+    }),
+    suiteRunConfiguration: SuiteRunConfigurationSchema.openapi({
+      description: 'Suite run configuration.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags to be attached to the suite run.',
+    }),
   })
   .openapi({ required: ['suiteRunConfiguration'], title: 'StartSuiteRunRequest' })
   .openapi('StartSuiteRunRequest')
 
 const StopSuiteRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopSuiteRunRequest' })
   .openapi('StopSuiteRunRequest')
 
@@ -678,29 +620,23 @@ const TagKeyListSchema = z.array(String128Schema).min(0).max(50).openapi('TagKey
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags to be attached to the IoT Device Advisor resource.' }),
-    ),
+    tags: TagMapSchema.openapi({
+      description: 'The tags to be attached to the IoT Device Advisor resource.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateSuiteDefinitionRequestSchema = z
   .object({
-    suiteDefinitionConfiguration: SuiteDefinitionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Updates a Device Advisor test suite with suite definition configuration.',
-        }),
-    ),
+    suiteDefinitionConfiguration: SuiteDefinitionConfigurationSchema.openapi({
+      description: 'Updates a Device Advisor test suite with suite definition configuration.',
+    }),
   })
   .openapi({ required: ['suiteDefinitionConfiguration'], title: 'UpdateSuiteDefinitionRequest' })
   .openapi('UpdateSuiteDefinitionRequest')
@@ -868,55 +804,29 @@ export const postSuiteDefinitionsRoute = createRoute({
             .object({
               suiteDefinitionConfiguration: z
                 .object({
-                  suiteDefinitionName: SuiteDefinitionNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Gets the suite definition name. This is a required parameter.',
-                      }),
-                  ).exactOptional(),
-                  devices: DeviceUnderTestListSchema.and(
-                    z.any().openapi({ description: 'Gets the devices configured.' }),
-                  ).exactOptional(),
-                  intendedForQualification: IntendedForQualificationBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Gets the tests intended for qualification in a suite.',
-                      }),
-                  ).exactOptional(),
-                  isLongDurationTest: IsLongDurationTestBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Verifies if the test suite is a long duration test.',
-                      }),
-                  ).exactOptional(),
-                  rootGroup: RootGroupSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Gets the test suite root group. This is a required parameter.',
-                      }),
-                  ).exactOptional(),
-                  devicePermissionRoleArn: AmazonResourceNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Gets the device permission ARN. This is a required parameter.',
-                      }),
-                  ).exactOptional(),
-                  protocol: ProtocolSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Sets the MQTT protocol that is configured in the suite definition.',
-                      }),
-                  ).exactOptional(),
+                  suiteDefinitionName: SuiteDefinitionNameSchema.exactOptional().openapi({
+                    description: 'Gets the suite definition name. This is a required parameter.',
+                  }),
+                  devices: DeviceUnderTestListSchema.exactOptional().openapi({
+                    description: 'Gets the devices configured.',
+                  }),
+                  intendedForQualification:
+                    IntendedForQualificationBooleanSchema.exactOptional().openapi({
+                      description: 'Gets the tests intended for qualification in a suite.',
+                    }),
+                  isLongDurationTest: IsLongDurationTestBooleanSchema.exactOptional().openapi({
+                    description: 'Verifies if the test suite is a long duration test.',
+                  }),
+                  rootGroup: RootGroupSchema.exactOptional().openapi({
+                    description: 'Gets the test suite root group. This is a required parameter.',
+                  }),
+                  devicePermissionRoleArn: AmazonResourceNameSchema.exactOptional().openapi({
+                    description: 'Gets the device permission ARN. This is a required parameter.',
+                  }),
+                  protocol: ProtocolSchema.exactOptional().openapi({
+                    description:
+                      'Sets the MQTT protocol that is configured in the suite definition.',
+                  }),
                 })
                 .openapi({ description: 'Gets the suite definition configuration.', required: [] }),
               tags: z
@@ -1102,55 +1012,29 @@ export const patchSuiteDefinitionsSuiteDefinitionIdRoute = createRoute({
             .object({
               suiteDefinitionConfiguration: z
                 .object({
-                  suiteDefinitionName: SuiteDefinitionNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Gets the suite definition name. This is a required parameter.',
-                      }),
-                  ).exactOptional(),
-                  devices: DeviceUnderTestListSchema.and(
-                    z.any().openapi({ description: 'Gets the devices configured.' }),
-                  ).exactOptional(),
-                  intendedForQualification: IntendedForQualificationBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Gets the tests intended for qualification in a suite.',
-                      }),
-                  ).exactOptional(),
-                  isLongDurationTest: IsLongDurationTestBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Verifies if the test suite is a long duration test.',
-                      }),
-                  ).exactOptional(),
-                  rootGroup: RootGroupSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Gets the test suite root group. This is a required parameter.',
-                      }),
-                  ).exactOptional(),
-                  devicePermissionRoleArn: AmazonResourceNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Gets the device permission ARN. This is a required parameter.',
-                      }),
-                  ).exactOptional(),
-                  protocol: ProtocolSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Sets the MQTT protocol that is configured in the suite definition.',
-                      }),
-                  ).exactOptional(),
+                  suiteDefinitionName: SuiteDefinitionNameSchema.exactOptional().openapi({
+                    description: 'Gets the suite definition name. This is a required parameter.',
+                  }),
+                  devices: DeviceUnderTestListSchema.exactOptional().openapi({
+                    description: 'Gets the devices configured.',
+                  }),
+                  intendedForQualification:
+                    IntendedForQualificationBooleanSchema.exactOptional().openapi({
+                      description: 'Gets the tests intended for qualification in a suite.',
+                    }),
+                  isLongDurationTest: IsLongDurationTestBooleanSchema.exactOptional().openapi({
+                    description: 'Verifies if the test suite is a long duration test.',
+                  }),
+                  rootGroup: RootGroupSchema.exactOptional().openapi({
+                    description: 'Gets the test suite root group. This is a required parameter.',
+                  }),
+                  devicePermissionRoleArn: AmazonResourceNameSchema.exactOptional().openapi({
+                    description: 'Gets the device permission ARN. This is a required parameter.',
+                  }),
+                  protocol: ProtocolSchema.exactOptional().openapi({
+                    description:
+                      'Sets the MQTT protocol that is configured in the suite definition.',
+                  }),
                 })
                 .openapi({ description: 'Gets the suite definition configuration.', required: [] }),
             })
@@ -1638,22 +1522,16 @@ export const postSuiteDefinitionsSuiteDefinitionIdSuiteRunsRoute = createRoute({
                 .openapi({ description: 'Suite definition version of the test suite.' }),
               suiteRunConfiguration: z
                 .object({
-                  primaryDevice: DeviceUnderTestSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Sets the primary device for the test suite run. This requires a thing ARN or a certificate ARN.',
-                      }),
-                  ).exactOptional(),
-                  selectedTestList: SelectedTestListSchema.and(
-                    z.any().openapi({ description: 'Sets test case list.' }),
-                  ).exactOptional(),
-                  parallelRun: ParallelRunSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'TRUE if multiple test suites run in parallel.' }),
-                  ).exactOptional(),
+                  primaryDevice: DeviceUnderTestSchema.exactOptional().openapi({
+                    description:
+                      'Sets the primary device for the test suite run. This requires a thing ARN or a certificate ARN.',
+                  }),
+                  selectedTestList: SelectedTestListSchema.exactOptional().openapi({
+                    description: 'Sets test case list.',
+                  }),
+                  parallelRun: ParallelRunSchema.exactOptional().openapi({
+                    description: 'TRUE if multiple test suites run in parallel.',
+                  }),
                 })
                 .openapi({ description: 'Gets suite run configuration.', required: [] }),
               tags: z

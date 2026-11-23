@@ -148,7 +148,7 @@ and customization options such as glossaries, style rules, and translation memor
 |» custom_instructions|body|[string]|false|Specify a list of instructions to customize the translation behavior. Up to 10 custom instructions can be specified, each with a maximum of 300 characters.|
 |» style_profile_id|body|string(uuid)|false|Translate with a [style profile](/api-reference/style-profiles/list-all-style-profiles): its glossaries,<br>style rule lists and translation memories through one ID. The profile is applied per text once the<br>source language is known: the glossaries with a dictionary for the text's language pair, the style<br>rule list for the target language, and the translation memories whose source language matches the<br>text. A component that does not fit a text's language pair is left out for that text; this is not an<br>error.<br><br>Cannot be combined with `glossary_id`, `glossary_ids`, `style_id`, `translation_memory_id`,<br>`translation_memory_threshold` or `custom_instructions`. A request that combines them is rejected<br>with `400 Bad Request`. A style profile that does not exist or that your account cannot access is<br>rejected with `404 Not Found`.|
 |» tag_handling|body|[TagHandlingOption](#schemataghandlingoption)|false|Sets which kind of tags should be handled. Options currently available:<br> * `xml`<br> * `html`|
-|» tag_handling_version|body|[TagHandlingVersionOption](#schemataghandlingversionoption)|false|Sets which version of the tag handling algorithm should be used. Options currently available:<br>* `v1`: Traditional algorithm (currently the default, will become deprecated in the future).<br>* `v2`: Improved algorithm released in October 2025 (will become the default in the future).|
+|» tag_handling_version|body|[TagHandlingVersionOption](#schemataghandlingversionoption)|false|Sets which version of the tag handling algorithm should be used. Options currently available:<br>* `v1`: Traditional algorithm (will become deprecated in the future).<br>* `v2`: Improved algorithm released in October 2025. This is the default.<br><br>The `tag_handling_version` field in the response shows which version was applied.|
 |» outline_detection|body|[OutlineDetectionOption](#schemaoutlinedetectionoption)|false|Disable the automatic detection of XML structure by setting the `outline_detection` parameter<br>to `false` and selecting the tags that should be considered structure tags. This will split sentences<br>using the `splitting_tags` parameter.|
 |» enable_beta_languages|body|boolean|false|**Deprecated.** This parameter is maintained for backward compatibility and has no effect.|
 |» non_splitting_tags|body|[string]|false|Comma-separated list of XML tags which never split sentences.|
@@ -14414,8 +14414,10 @@ Sets which kind of tags should be handled. Options currently available:
 ```
 
 Sets which version of the tag handling algorithm should be used. Options currently available:
-* `v1`: Traditional algorithm (currently the default, will become deprecated in the future).
-* `v2`: Improved algorithm released in October 2025 (will become the default in the future).
+* `v1`: Traditional algorithm (will become deprecated in the future).
+* `v2`: Improved algorithm released in October 2025. This is the default.
+
+The `tag_handling_version` field in the response shows which version was applied.
 
 <h2 id="tocS_NonSplittingTagCommaSeparatedList">NonSplittingTagCommaSeparatedList</h2>
 <!-- backwards compatibility -->

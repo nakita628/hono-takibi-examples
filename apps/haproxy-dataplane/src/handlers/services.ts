@@ -1,0 +1,2236 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  deleteServicesHaproxyConfigurationAcmeNameRoute,
+  deleteServicesHaproxyConfigurationBackendsNameRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameServersNameRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute,
+  deleteServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute,
+  deleteServicesHaproxyConfigurationCachesNameRoute,
+  deleteServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute,
+  deleteServicesHaproxyConfigurationCrtStoresNameRoute,
+  deleteServicesHaproxyConfigurationDefaultsNameRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute,
+  deleteServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute,
+  deleteServicesHaproxyConfigurationFcgiAppsNameRoute,
+  deleteServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsNameRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute,
+  deleteServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute,
+  deleteServicesHaproxyConfigurationGlobalLogTargetsIndexRoute,
+  deleteServicesHaproxyConfigurationGroupsNameRoute,
+  deleteServicesHaproxyConfigurationHealthchecksNameRoute,
+  deleteServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute,
+  deleteServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute,
+  deleteServicesHaproxyConfigurationHttpErrorsSectionsNameRoute,
+  deleteServicesHaproxyConfigurationLogForwardsNameRoute,
+  deleteServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute,
+  deleteServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute,
+  deleteServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute,
+  deleteServicesHaproxyConfigurationLogProfilesNameRoute,
+  deleteServicesHaproxyConfigurationMailerEntriesNameRoute,
+  deleteServicesHaproxyConfigurationMailersSectionNameRoute,
+  deleteServicesHaproxyConfigurationNameserversNameRoute,
+  deleteServicesHaproxyConfigurationPeerEntriesNameRoute,
+  deleteServicesHaproxyConfigurationPeerSectionNameRoute,
+  deleteServicesHaproxyConfigurationPeersParentNameBindsNameRoute,
+  deleteServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute,
+  deleteServicesHaproxyConfigurationPeersParentNameServersNameRoute,
+  deleteServicesHaproxyConfigurationPeersParentNameTablesNameRoute,
+  deleteServicesHaproxyConfigurationResolversNameRoute,
+  deleteServicesHaproxyConfigurationRingsNameRoute,
+  deleteServicesHaproxyConfigurationRingsParentNameServersNameRoute,
+  deleteServicesHaproxyConfigurationTracesEntriesRoute,
+  deleteServicesHaproxyConfigurationTracesRoute,
+  deleteServicesHaproxyConfigurationUserlistsNameRoute,
+  deleteServicesHaproxyConfigurationUsersUsernameRoute,
+  deleteServicesHaproxyRuntimeAclsParentNameEntriesIdRoute,
+  deleteServicesHaproxyRuntimeBackendsParentNameServersNameRoute,
+  deleteServicesHaproxyRuntimeMapsNameRoute,
+  deleteServicesHaproxyRuntimeMapsParentNameEntriesIdRoute,
+  deleteServicesHaproxyRuntimeSslCaFilesNameRoute,
+  deleteServicesHaproxyRuntimeSslCertsNameRoute,
+  deleteServicesHaproxyRuntimeSslCrlFilesNameRoute,
+  deleteServicesHaproxyRuntimeSslCrtListsEntriesRoute,
+  deleteServicesHaproxySitesNameRoute,
+  deleteServicesHaproxySpoeSpoeFilesNameRoute,
+  deleteServicesHaproxySpoeSpoeFilesParentNameScopesNameRoute,
+  deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute,
+  deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute,
+  deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute,
+  deleteServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute,
+  deleteServicesHaproxyStorageGeneralNameRoute,
+  deleteServicesHaproxyStorageMapsNameRoute,
+  deleteServicesHaproxyStorageSslCertificatesNameRoute,
+  deleteServicesHaproxyStorageSslCrtListsNameEntriesRoute,
+  deleteServicesHaproxyStorageSslCrtListsNameRoute,
+  deleteServicesHaproxyTransactionsIdRoute,
+  getServicesHaproxyConfigurationAcmeNameRoute,
+  getServicesHaproxyConfigurationAcmeRoute,
+  getServicesHaproxyConfigurationBackendsNameRoute,
+  getServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameAclsRoute,
+  getServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameFiltersRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpChecksRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRoute,
+  getServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameLogTargetsRoute,
+  getServicesHaproxyConfigurationBackendsParentNameServersNameRoute,
+  getServicesHaproxyConfigurationBackendsParentNameServersRoute,
+  getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRoute,
+  getServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute,
+  getServicesHaproxyConfigurationBackendsParentNameServerTemplatesRoute,
+  getServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameStickRulesRoute,
+  getServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameTcpChecksRoute,
+  getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRoute,
+  getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute,
+  getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRoute,
+  getServicesHaproxyConfigurationBackendsRoute,
+  getServicesHaproxyConfigurationCachesNameRoute,
+  getServicesHaproxyConfigurationCachesRoute,
+  getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute,
+  getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRoute,
+  getServicesHaproxyConfigurationCrtStoresNameRoute,
+  getServicesHaproxyConfigurationCrtStoresRoute,
+  getServicesHaproxyConfigurationDefaultsNameRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameAclsRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpChecksRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameLogTargetsRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameTcpChecksRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute,
+  getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRoute,
+  getServicesHaproxyConfigurationDefaultsRoute,
+  getServicesHaproxyConfigurationFcgiAppsNameRoute,
+  getServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute,
+  getServicesHaproxyConfigurationFcgiAppsParentNameAclsRoute,
+  getServicesHaproxyConfigurationFcgiAppsRoute,
+  getServicesHaproxyConfigurationFrontendsNameRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameAclsRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameBindsRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameCapturesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameFiltersRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameLogTargetsRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute,
+  getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRoute,
+  getServicesHaproxyConfigurationFrontendsRoute,
+  getServicesHaproxyConfigurationGlobalLogTargetsIndexRoute,
+  getServicesHaproxyConfigurationGlobalLogTargetsRoute,
+  getServicesHaproxyConfigurationGlobalRoute,
+  getServicesHaproxyConfigurationGroupsNameRoute,
+  getServicesHaproxyConfigurationGroupsRoute,
+  getServicesHaproxyConfigurationHealthchecksNameRoute,
+  getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute,
+  getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRoute,
+  getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute,
+  getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRoute,
+  getServicesHaproxyConfigurationHealthchecksRoute,
+  getServicesHaproxyConfigurationHttpErrorsSectionsNameRoute,
+  getServicesHaproxyConfigurationHttpErrorsSectionsRoute,
+  getServicesHaproxyConfigurationLogForwardsNameRoute,
+  getServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute,
+  getServicesHaproxyConfigurationLogForwardsParentNameBindsRoute,
+  getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute,
+  getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRoute,
+  getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute,
+  getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRoute,
+  getServicesHaproxyConfigurationLogForwardsRoute,
+  getServicesHaproxyConfigurationLogProfilesNameRoute,
+  getServicesHaproxyConfigurationLogProfilesRoute,
+  getServicesHaproxyConfigurationMailerEntriesNameRoute,
+  getServicesHaproxyConfigurationMailerEntriesRoute,
+  getServicesHaproxyConfigurationMailersSectionNameRoute,
+  getServicesHaproxyConfigurationMailersSectionRoute,
+  getServicesHaproxyConfigurationNameserversNameRoute,
+  getServicesHaproxyConfigurationNameserversRoute,
+  getServicesHaproxyConfigurationPeerEntriesNameRoute,
+  getServicesHaproxyConfigurationPeerEntriesRoute,
+  getServicesHaproxyConfigurationPeerSectionNameRoute,
+  getServicesHaproxyConfigurationPeerSectionRoute,
+  getServicesHaproxyConfigurationPeersParentNameBindsNameRoute,
+  getServicesHaproxyConfigurationPeersParentNameBindsRoute,
+  getServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute,
+  getServicesHaproxyConfigurationPeersParentNameLogTargetsRoute,
+  getServicesHaproxyConfigurationPeersParentNameServersNameRoute,
+  getServicesHaproxyConfigurationPeersParentNameServersRoute,
+  getServicesHaproxyConfigurationPeersParentNameTablesNameRoute,
+  getServicesHaproxyConfigurationPeersParentNameTablesRoute,
+  getServicesHaproxyConfigurationRawRoute,
+  getServicesHaproxyConfigurationResolversNameRoute,
+  getServicesHaproxyConfigurationResolversRoute,
+  getServicesHaproxyConfigurationRingsNameRoute,
+  getServicesHaproxyConfigurationRingsParentNameServersNameRoute,
+  getServicesHaproxyConfigurationRingsParentNameServersRoute,
+  getServicesHaproxyConfigurationRingsRoute,
+  getServicesHaproxyConfigurationRoute,
+  getServicesHaproxyConfigurationTracesRoute,
+  getServicesHaproxyConfigurationUserlistsNameRoute,
+  getServicesHaproxyConfigurationUserlistsRoute,
+  getServicesHaproxyConfigurationUsersRoute,
+  getServicesHaproxyConfigurationUsersUsernameRoute,
+  getServicesHaproxyConfigurationVersionRoute,
+  getServicesHaproxyReloadsIdRoute,
+  getServicesHaproxyReloadsRoute,
+  getServicesHaproxyRoute,
+  getServicesHaproxyRuntimeAclsIdRoute,
+  getServicesHaproxyRuntimeAclsParentNameEntriesIdRoute,
+  getServicesHaproxyRuntimeAclsParentNameEntriesRoute,
+  getServicesHaproxyRuntimeAclsRoute,
+  getServicesHaproxyRuntimeAcmeRoute,
+  getServicesHaproxyRuntimeBackendsParentNameServersNameRoute,
+  getServicesHaproxyRuntimeBackendsParentNameServersRoute,
+  getServicesHaproxyRuntimeInfoRoute,
+  getServicesHaproxyRuntimeMapsNameRoute,
+  getServicesHaproxyRuntimeMapsParentNameEntriesIdRoute,
+  getServicesHaproxyRuntimeMapsParentNameEntriesRoute,
+  getServicesHaproxyRuntimeMapsRoute,
+  getServicesHaproxyRuntimeRoute,
+  getServicesHaproxyRuntimeSslCaFilesNameEntriesIndexRoute,
+  getServicesHaproxyRuntimeSslCaFilesNameRoute,
+  getServicesHaproxyRuntimeSslCaFilesRoute,
+  getServicesHaproxyRuntimeSslCertsNameRoute,
+  getServicesHaproxyRuntimeSslCertsRoute,
+  getServicesHaproxyRuntimeSslCrlFilesNameRoute,
+  getServicesHaproxyRuntimeSslCrlFilesRoute,
+  getServicesHaproxyRuntimeSslCrtListsEntriesRoute,
+  getServicesHaproxyRuntimeSslCrtListsRoute,
+  getServicesHaproxyRuntimeStickTablesNameRoute,
+  getServicesHaproxyRuntimeStickTablesParentNameEntriesRoute,
+  getServicesHaproxyRuntimeStickTablesRoute,
+  getServicesHaproxySitesNameRoute,
+  getServicesHaproxySitesRoute,
+  getServicesHaproxySpoeParentNameVersionRoute,
+  getServicesHaproxySpoeRoute,
+  getServicesHaproxySpoeSpoeFilesNameRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameScopesNameRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameScopesRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute,
+  getServicesHaproxySpoeSpoeFilesParentNameTransactionsRoute,
+  getServicesHaproxySpoeSpoeFilesRoute,
+  getServicesHaproxyStatsNativeRoute,
+  getServicesHaproxyStatsRoute,
+  getServicesHaproxyStorageGeneralNameRoute,
+  getServicesHaproxyStorageGeneralRoute,
+  getServicesHaproxyStorageMapsNameRoute,
+  getServicesHaproxyStorageMapsRoute,
+  getServicesHaproxyStorageRoute,
+  getServicesHaproxyStorageSslCertificatesNameRoute,
+  getServicesHaproxyStorageSslCertificatesRoute,
+  getServicesHaproxyStorageSslCrtListsNameEntriesRoute,
+  getServicesHaproxyStorageSslCrtListsNameRoute,
+  getServicesHaproxyStorageSslCrtListsRoute,
+  getServicesHaproxyTransactionsIdRoute,
+  getServicesHaproxyTransactionsRoute,
+  getServicesRoute,
+  postServicesHaproxyConfigurationAcmeRoute,
+  postServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameServersRoute,
+  postServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameServerTemplatesRoute,
+  postServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute,
+  postServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute,
+  postServicesHaproxyConfigurationBackendsRoute,
+  postServicesHaproxyConfigurationCachesRoute,
+  postServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRoute,
+  postServicesHaproxyConfigurationCrtStoresRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute,
+  postServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute,
+  postServicesHaproxyConfigurationDefaultsRoute,
+  postServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute,
+  postServicesHaproxyConfigurationFcgiAppsRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameBindsRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRoute,
+  postServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute,
+  postServicesHaproxyConfigurationFrontendsRoute,
+  postServicesHaproxyConfigurationGlobalLogTargetsIndexRoute,
+  postServicesHaproxyConfigurationGroupsRoute,
+  postServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute,
+  postServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute,
+  postServicesHaproxyConfigurationHealthchecksRoute,
+  postServicesHaproxyConfigurationHttpErrorsSectionsRoute,
+  postServicesHaproxyConfigurationLogForwardsParentNameBindsRoute,
+  postServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRoute,
+  postServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute,
+  postServicesHaproxyConfigurationLogForwardsRoute,
+  postServicesHaproxyConfigurationLogProfilesRoute,
+  postServicesHaproxyConfigurationMailerEntriesRoute,
+  postServicesHaproxyConfigurationMailersSectionRoute,
+  postServicesHaproxyConfigurationNameserversRoute,
+  postServicesHaproxyConfigurationPeerEntriesRoute,
+  postServicesHaproxyConfigurationPeerSectionRoute,
+  postServicesHaproxyConfigurationPeersParentNameBindsRoute,
+  postServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute,
+  postServicesHaproxyConfigurationPeersParentNameServersRoute,
+  postServicesHaproxyConfigurationPeersParentNameTablesRoute,
+  postServicesHaproxyConfigurationRawRoute,
+  postServicesHaproxyConfigurationResolversRoute,
+  postServicesHaproxyConfigurationRingsParentNameServersRoute,
+  postServicesHaproxyConfigurationRingsRoute,
+  postServicesHaproxyConfigurationTracesEntriesRoute,
+  postServicesHaproxyConfigurationTracesRoute,
+  postServicesHaproxyConfigurationUserlistsRoute,
+  postServicesHaproxyConfigurationUsersRoute,
+  postServicesHaproxyRuntimeAclsParentNameEntriesRoute,
+  postServicesHaproxyRuntimeBackendsParentNameServersRoute,
+  postServicesHaproxyRuntimeMapsParentNameEntriesRoute,
+  postServicesHaproxyRuntimeSslCaFilesNameEntriesRoute,
+  postServicesHaproxyRuntimeSslCaFilesRoute,
+  postServicesHaproxyRuntimeSslCertsRoute,
+  postServicesHaproxyRuntimeSslCrlFilesRoute,
+  postServicesHaproxyRuntimeSslCrtListsEntriesRoute,
+  postServicesHaproxyRuntimeStickTablesParentNameEntriesRoute,
+  postServicesHaproxySitesRoute,
+  postServicesHaproxySpoeSpoeFilesParentNameScopesRoute,
+  postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRoute,
+  postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRoute,
+  postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRoute,
+  postServicesHaproxySpoeSpoeFilesParentNameTransactionsRoute,
+  postServicesHaproxySpoeSpoeFilesRoute,
+  postServicesHaproxyStorageGeneralRoute,
+  postServicesHaproxyStorageMapsRoute,
+  postServicesHaproxyStorageSslCertificatesRoute,
+  postServicesHaproxyStorageSslCrtListsNameEntriesRoute,
+  postServicesHaproxyStorageSslCrtListsRoute,
+  postServicesHaproxyTransactionsRoute,
+  putServicesHaproxyConfigurationAcmeNameRoute,
+  putServicesHaproxyConfigurationBackendsNameRoute,
+  putServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameAclsRoute,
+  putServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameFiltersRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpChecksRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRoute,
+  putServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameLogTargetsRoute,
+  putServicesHaproxyConfigurationBackendsParentNameServersNameRoute,
+  putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRoute,
+  putServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute,
+  putServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameStickRulesRoute,
+  putServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameTcpChecksRoute,
+  putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRoute,
+  putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute,
+  putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRoute,
+  putServicesHaproxyConfigurationCachesNameRoute,
+  putServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute,
+  putServicesHaproxyConfigurationCrtStoresNameRoute,
+  putServicesHaproxyConfigurationDefaultsNameRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameAclsRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpChecksRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameLogTargetsRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameTcpChecksRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute,
+  putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRoute,
+  putServicesHaproxyConfigurationDefaultsRoute,
+  putServicesHaproxyConfigurationFcgiAppsNameRoute,
+  putServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute,
+  putServicesHaproxyConfigurationFcgiAppsParentNameAclsRoute,
+  putServicesHaproxyConfigurationFrontendsNameRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameAclsRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameCapturesRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameFiltersRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameLogTargetsRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute,
+  putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRoute,
+  putServicesHaproxyConfigurationGlobalLogTargetsIndexRoute,
+  putServicesHaproxyConfigurationGlobalLogTargetsRoute,
+  putServicesHaproxyConfigurationGlobalRoute,
+  putServicesHaproxyConfigurationGroupsNameRoute,
+  putServicesHaproxyConfigurationHealthchecksNameRoute,
+  putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute,
+  putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRoute,
+  putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute,
+  putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRoute,
+  putServicesHaproxyConfigurationHttpErrorsSectionsNameRoute,
+  putServicesHaproxyConfigurationLogForwardsNameRoute,
+  putServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute,
+  putServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute,
+  putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute,
+  putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRoute,
+  putServicesHaproxyConfigurationLogProfilesNameRoute,
+  putServicesHaproxyConfigurationMailerEntriesNameRoute,
+  putServicesHaproxyConfigurationMailersSectionNameRoute,
+  putServicesHaproxyConfigurationNameserversNameRoute,
+  putServicesHaproxyConfigurationPeerEntriesNameRoute,
+  putServicesHaproxyConfigurationPeersParentNameBindsNameRoute,
+  putServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute,
+  putServicesHaproxyConfigurationPeersParentNameLogTargetsRoute,
+  putServicesHaproxyConfigurationPeersParentNameServersNameRoute,
+  putServicesHaproxyConfigurationPeersParentNameTablesNameRoute,
+  putServicesHaproxyConfigurationResolversNameRoute,
+  putServicesHaproxyConfigurationRingsNameRoute,
+  putServicesHaproxyConfigurationRingsParentNameServersNameRoute,
+  putServicesHaproxyConfigurationTracesRoute,
+  putServicesHaproxyConfigurationUsersUsernameRoute,
+  putServicesHaproxyRuntimeAclsParentNameEntriesRoute,
+  putServicesHaproxyRuntimeAcmeRoute,
+  putServicesHaproxyRuntimeBackendsParentNameServersNameRoute,
+  putServicesHaproxyRuntimeMapsNameRoute,
+  putServicesHaproxyRuntimeMapsParentNameEntriesIdRoute,
+  putServicesHaproxyRuntimeMapsParentNameEntriesRoute,
+  putServicesHaproxyRuntimeSslCaFilesNameRoute,
+  putServicesHaproxyRuntimeSslCertsNameRoute,
+  putServicesHaproxyRuntimeSslCrlFilesNameRoute,
+  putServicesHaproxySitesNameRoute,
+  putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute,
+  putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute,
+  putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute,
+  putServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute,
+  putServicesHaproxyStorageGeneralNameRoute,
+  putServicesHaproxyStorageMapsNameRoute,
+  putServicesHaproxyStorageSslCertificatesNameRoute,
+  putServicesHaproxyStorageSslCrtListsNameRoute,
+  putServicesHaproxyTransactionsIdRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const servicesHandler = app
+  .openapi(getServicesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationAcmeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationAcmeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationAcmeNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationAcmeNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationAcmeNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameFiltersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameFiltersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameServerTemplatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameServerTemplatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameStickRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameStickRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationCachesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationCachesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationCachesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationCachesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationCachesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationCrtStoresRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationCrtStoresRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationCrtStoresNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationCrtStoresNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationCrtStoresNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFcgiAppsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFcgiAppsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFcgiAppsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFcgiAppsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFcgiAppsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFcgiAppsParentNameAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFcgiAppsParentNameAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameBindsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameBindsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameCapturesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameCapturesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameFiltersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameFiltersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationGlobalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationGlobalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationGlobalLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationGlobalLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationGlobalLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationGlobalLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationGlobalLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationGlobalLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationGroupsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationGroupsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationGroupsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationHealthchecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationHealthchecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationHealthchecksNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationHealthchecksNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationHealthchecksNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationHttpErrorsSectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationHttpErrorsSectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationHttpErrorsSectionsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationHttpErrorsSectionsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationHttpErrorsSectionsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogForwardsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationLogForwardsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationLogForwardsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogForwardsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationLogForwardsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameBindsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationLogForwardsParentNameBindsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationLogProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationLogProfilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationLogProfilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationLogProfilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationMailerEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationMailerEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationMailerEntriesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationMailerEntriesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationMailerEntriesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationMailersSectionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationMailersSectionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationMailersSectionNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationMailersSectionNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationMailersSectionNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationNameserversRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationNameserversRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationNameserversNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationNameserversNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationNameserversNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeerEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationPeerEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationPeerEntriesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeerEntriesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationPeerEntriesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeerSectionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationPeerSectionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationPeerSectionNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeerSectionNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeersParentNameBindsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationPeersParentNameBindsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationPeersParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeersParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationPeersParentNameBindsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeersParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationPeersParentNameLogTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeersParentNameServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationPeersParentNameServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationPeersParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeersParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationPeersParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeersParentNameTablesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationPeersParentNameTablesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationPeersParentNameTablesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationPeersParentNameTablesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationPeersParentNameTablesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationRawRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationRawRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationResolversRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationResolversRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationResolversNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationResolversNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationResolversNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationRingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationRingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationRingsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationRingsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationRingsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationRingsParentNameServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationRingsParentNameServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationRingsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationRingsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationRingsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationTracesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationTracesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationTracesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationTracesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationTracesEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationTracesEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationUserlistsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationUserlistsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationUserlistsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationUserlistsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationUsersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyConfigurationUsersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyConfigurationUsersUsernameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationUsersUsernameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyConfigurationUsersUsernameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyConfigurationVersionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyReloadsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyReloadsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeAclsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeAclsParentNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeAclsParentNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeAclsParentNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyRuntimeAclsParentNameEntriesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeAclsParentNameEntriesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeAcmeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeAcmeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeBackendsParentNameServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeBackendsParentNameServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyRuntimeBackendsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeBackendsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeBackendsParentNameServersNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeInfoRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeMapsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyRuntimeMapsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeMapsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeMapsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeMapsParentNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeMapsParentNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeMapsParentNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyRuntimeMapsParentNameEntriesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeMapsParentNameEntriesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeMapsParentNameEntriesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCaFilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeSslCaFilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyRuntimeSslCaFilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCaFilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeSslCaFilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeSslCaFilesNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCaFilesNameEntriesIndexRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCertsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeSslCertsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyRuntimeSslCertsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCertsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeSslCertsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCrlFilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeSslCrlFilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyRuntimeSslCrlFilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCrlFilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyRuntimeSslCrlFilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCrtListsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyRuntimeSslCrtListsEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeSslCrtListsEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeSslCrtListsEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeStickTablesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeStickTablesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyRuntimeStickTablesParentNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyRuntimeStickTablesParentNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySitesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxySitesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxySitesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySitesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxySitesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeParentNameVersionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxySpoeSpoeFilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxySpoeSpoeFilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxySpoeSpoeFilesParentNameScopesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameScopesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameTransactionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxySpoeSpoeFilesParentNameTransactionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStatsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStatsNativeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageGeneralRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyStorageGeneralRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyStorageGeneralNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageGeneralNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyStorageGeneralNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageMapsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyStorageMapsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyStorageMapsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageMapsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyStorageMapsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageSslCertificatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyStorageSslCertificatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyStorageSslCertificatesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageSslCertificatesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyStorageSslCertificatesNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageSslCrtListsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyStorageSslCrtListsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyStorageSslCrtListsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageSslCrtListsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyStorageSslCrtListsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyStorageSslCrtListsNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyStorageSslCrtListsNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyStorageSslCrtListsNameEntriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyTransactionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postServicesHaproxyTransactionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteServicesHaproxyTransactionsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getServicesHaproxyTransactionsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putServicesHaproxyTransactionsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })

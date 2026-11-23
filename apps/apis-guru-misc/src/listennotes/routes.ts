@@ -1119,7 +1119,7 @@ const GetPodcastsInBatchResponseSchema = z
 const GetRegionsResponseSchema = z
   .object({
     regions: z
-      .object({})
+      .looseObject({})
       .openapi({
         examples: [{ au: 'Australia', de: 'Germany', ua: 'Ukraine', us: 'United States' }],
       }),

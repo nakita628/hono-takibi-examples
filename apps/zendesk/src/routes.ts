@@ -1,5 +1,4485 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ErrorSchema = z
+  .object({
+    code: z.string(),
+    detail: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    links: z.looseObject({}).exactOptional(),
+    source: z.looseObject({}).exactOptional(),
+    status: z.string().exactOptional(),
+    title: z.string(),
+  })
+  .openapi({ required: ['code', 'title'] })
+  .openapi('Error')
+
+const BatchErrorItemSchema = ErrorSchema.and(
+  z.object({ trigger_id: z.string().exactOptional() }).openapi({ required: [] }),
+).openapi('BatchErrorItem')
+
+const TriggerCategorySchema = z
+  .object({
+    created_at: z.string().exactOptional().openapi({ readOnly: true }),
+    id: z.string().exactOptional().openapi({ readOnly: true }),
+    name: z.string().exactOptional(),
+    position: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    updated_at: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('TriggerCategory')
+
+const TriggerActionObjectSchema = z
+  .object({
+    field: z.string().exactOptional(),
+    value: z.xor([z.string(), z.int(), z.array(z.xor([z.string(), z.int()]))]).exactOptional(),
+  })
+  .openapi({ example: { field: 'status', value: 'solved' }, required: [] })
+  .openapi('TriggerActionObject')
+
+const TriggerConditionObjectSchema = z
+  .object({
+    field: z.string().exactOptional(),
+    operator: z.string().exactOptional(),
+    value: z.xor([z.string(), z.int(), z.array(z.xor([z.string(), z.int()]))]).exactOptional(),
+  })
+  .openapi({ example: { field: 'status', operator: 'less_than', value: 'solved' }, required: [] })
+  .openapi('TriggerConditionObject')
+
+const TriggerConditionsObjectSchema = z
+  .object({
+    all: z.array(TriggerConditionObjectSchema).nullable().exactOptional(),
+    any: z.array(TriggerConditionObjectSchema).nullable().exactOptional(),
+  })
+  .openapi({
+    description:
+      'An object that describes the circumstances under which the trigger performs its actions. See [Conditions reference](/documentation/ticketing/reference-guides/conditions-reference)',
+    example: {
+      all: [
+        { field: 'status', operator: 'less_than', value: 'solved' },
+        { field: 'assignee_id', operator: 'is', value: '296220096' },
+        { field: 'custom_status_id', operator: 'includes', value: ['1', '2'] },
+      ],
+      any: [
+        { field: 'status', operator: 'less_than', value: 'solved' },
+        { field: 'custom_status_id', operator: 'includes', value: ['1', '2'] },
+      ],
+    },
+    required: [],
+  })
+  .openapi('TriggerConditionsObject')
+
+const TriggerObjectSchema = z
+  .object({
+    actions: z
+      .array(TriggerActionObjectSchema)
+      .openapi({
+        description:
+          'An array of actions describing what the ticket trigger will do. See [Actions reference](/documentation/ticketing/reference-guides/actions-reference)',
+      }),
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the ticket trigger is active' }),
+    all: z
+      .array(TriggerConditionObjectSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Legacy format for conditions (deprecated). Use conditions.all instead',
+      }),
+    any: z
+      .array(TriggerConditionObjectSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Legacy format for conditions (deprecated). Use conditions.any instead',
+      }),
+    brand_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the brand the ticket trigger belongs to',
+      }),
+    category: z
+      .object({ name: z.string().exactOptional(), position: z.int().exactOptional() })
+      .exactOptional()
+      .openapi({
+        description: 'A category to create and assign to the trigger',
+        writeOnly: true,
+        required: [],
+      }),
+    category_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The ID of the category the ticket trigger belongs to' }),
+    conditions: TriggerConditionsObjectSchema.exactOptional(),
+    created_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time the ticket trigger was created', readOnly: true }),
+    default: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If true, the ticket trigger is a standard trigger',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the ticket trigger' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned when created',
+        readOnly: true,
+      }),
+    position: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Position of the ticket trigger, determines the order they will execute in',
+      }),
+    raw_title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The raw format of the title of the ticket trigger' }),
+    restriction: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Access restriction for this trigger. A null value allows unrestricted access',
+      }),
+    title: z.string().openapi({ description: 'The title of the ticket trigger' }),
+    updated_at: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time of the last update of the ticket trigger',
+        readOnly: true,
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The url of the ticket trigger', readOnly: true }),
+  })
+  .openapi({
+    example: {
+      actions: [{}],
+      active: true,
+      category_id: '10026',
+      conditions: {},
+      created_at: '2012-09-25T22:50:26Z',
+      default: false,
+      description: 'Close and save a ticket',
+      id: 25,
+      position: 8,
+      raw_title: 'Close and Save',
+      title: 'Close and Save',
+      updated_at: '2012-09-25T22:50:26Z',
+      url: 'http://{subdomain}.zendesk.com/api/v2/triggers/25',
+    },
+    required: ['actions', 'title'],
+  })
+  .openapi('TriggerObject')
+
+type BatchJobResponseType = {
+  errors?: z.infer<typeof BatchErrorItemSchema>[]
+  results?: {
+    trigger_categories?: z.infer<typeof TriggerCategorySchema>[]
+    triggers?: z.infer<typeof TriggerObjectSchema>[]
+  }
+  status?: 'complete' | 'failed'
+}
+
+const CollaboratorObjectSchema = z
+  .xor([
+    z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({ type: 'integer', format: 'int64', description: 'User ID' }),
+    z.string().openapi({ description: 'Email address or user ID as a string' }),
+    z
+      .looseObject({ email: z.email(), name: z.string().exactOptional() })
+      .openapi({ description: 'User with name and email', required: ['email'] }),
+  ])
+  .openapi({
+    description:
+      'A collaborator can be specified as a user ID (integer or string), an email address string,\nor an object with name and email properties.\n',
+    example: { email: 'someone@example.com', name: 'Someone Special' },
+  })
+  .openapi('CollaboratorObject')
+
+const AttachmentBaseObjectSchema = z
+  .object({
+    content_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The content type of the image. Example value: "image/png"',
+        readOnly: true,
+      }),
+    content_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A full URL where the attachment image file can be downloaded. The file may be hosted externally so take care not to inadvertently send Zendesk authentication credentials. See [Working with url properties](/documentation/api-basics/best-practices/working-with-url-properties/)',
+        readOnly: true,
+      }),
+    deleted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, the attachment has been deleted', readOnly: true }),
+    file_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the image file', readOnly: true }),
+    height: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The height of the image file in pixels. If height is unknown, returns null',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned when created',
+        readOnly: true,
+      }),
+    inline: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If true, the attachment is excluded from the attachment list and the attachment's URL\ncan be referenced within the comment of a ticket. Default is false\n",
+        readOnly: true,
+      }),
+    malware_access_override: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If true, you can download an attachment flagged as malware. If false, you can't download such an attachment.",
+        readOnly: true,
+      }),
+    malware_scan_result: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The result of the malware scan. There is a delay between the time the attachment is uploaded and when the malware scan is completed. Usually the scan is done within a few seconds, but high load conditions can delay the scan results. Possible values: "malware_found", "malware_not_found", "failed_to_scan", "not_scanned"',
+        readOnly: true,
+      }),
+    mapped_content_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The URL the attachment image file has been mapped to',
+        readOnly: true,
+      }),
+    size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The size of the image file in bytes', readOnly: true }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A URL to access the attachment details', readOnly: true }),
+    width: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The width of the image file in pixels. If width is unknown, returns null',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentBaseObject')
+
+const AttachmentThumbnailsSchema = z
+  .object({
+    thumbnails: z
+      .array(AttachmentBaseObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of attachment objects. Note that photo thumbnails do not have thumbnails',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentThumbnails')
+
+const AttachmentObjectSchema = AttachmentBaseObjectSchema.and(AttachmentThumbnailsSchema)
+  .openapi({
+    description:
+      'A file represented as an [Attachment](/api-reference/ticketing/tickets/ticket-attachments/) object',
+    example: {
+      content_type: 'image/png',
+      content_url: 'https://company.zendesk.com/attachments/my_funny_profile_pic.png',
+      file_name: 'my_funny_profile_pic.png',
+      id: 928374,
+      size: 166144,
+      thumbnails: [
+        {
+          content_type: 'image/png',
+          content_url: 'https://company.zendesk.com/attachments/my_funny_profile_pic_thumb.png',
+          file_name: 'my_funny_profile_pic_thumb.png',
+          id: 928375,
+          size: 58298,
+        },
+      ],
+    },
+  })
+  .openapi('AttachmentObject')
+
+const TicketAuditViaObjectSchema = z
+  .object({
+    channel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This tells you how the ticket or event was created. Examples: "web", "mobile", "rule", "system"',
+        readOnly: true,
+      }),
+    source: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'For some channels a source object gives more information about how or why the ticket or event was created',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Describes how the object was created. See the [Via object reference](/documentation/ticketing/reference-guides/via-object-reference)',
+    required: [],
+  })
+  .openapi('TicketAuditViaObject')
+
+const TicketCommentObjectSchema = z
+  .object({
+    add_short_url: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Internal flag for adding short URLs to the comment' }),
+    attachments: z
+      .array(AttachmentObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Attachments, if any. See [Attachment](/api-reference/ticketing/tickets/ticket-attachments/)',
+        readOnly: true,
+      }),
+    audit_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The id of the ticket audit record. See [Show Audit](/api-reference/ticketing/tickets/ticket_audits/#show-audit)',
+        readOnly: true,
+      }),
+    author_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The id of the comment author. If null or omitted on create, defaults to the authenticated user. See [Author id](#author-id)',
+      }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The comment string. See [Bodies](#bodies)' }),
+    channel_back: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Internal channel back identifier for the comment' }),
+    channel_source_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Internal channel source identifier for the comment' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the comment was created', readOnly: true }),
+    html_body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The comment formatted as HTML. See [Bodies](#bodies)' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned when the comment is created',
+        readOnly: true,
+      }),
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'System information (web client, IP address, etc.) and comment flags, if any. See [Comment flags](#comment-flags)',
+        readOnly: true,
+      }),
+    plain_body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The comment presented as plain text. See [Bodies](#bodies)',
+        readOnly: true,
+      }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'true if a public comment; false if an internal note. The initial value set on ticket creation persists for any additional comment unless you change it',
+      }),
+    translate_to: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The locale code to translate the comment body to.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '`Comment` or `VoiceComment`. The JSON object for adding voice comments to tickets is different. See [Adding voice comments to tickets](/documentation/ticketing/managing-tickets/adding-voice-comments-to-tickets)',
+        readOnly: true,
+      }),
+    uploads: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of tokens received from [uploading files](/api-reference/ticketing/tickets/ticket-attachments/#upload-files) for comment attachments. The files are attached by creating or updating tickets with the tokens. See [Attaching files](/api-reference/ticketing/tickets/tickets/#attaching-files) in Tickets',
+      }),
+    via: TicketAuditViaObjectSchema.exactOptional(),
+  })
+  .openapi({
+    example: {
+      attachments: [
+        {
+          content_type: 'text/plain',
+          content_url: 'https://company.zendesk.com/attachments/crash.log',
+          file_name: 'crash.log',
+          id: 498483,
+          size: 2532,
+          thumbnails: [],
+        },
+      ],
+      author_id: 123123,
+      body: 'Thanks for your help!',
+      created_at: '2009-07-20T22:55:29Z',
+      id: 1274,
+      metadata: {
+        system: {
+          client:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
+          ip_address: '1.1.1.1',
+          latitude: -37.000000000001,
+          location: 'Melbourne, 07, Australia',
+          longitude: 144.0000000000002,
+        },
+        via: { channel: 'web', source: { from: {}, rel: 'web_widget', to: {} } },
+      },
+      public: true,
+      type: 'Comment',
+    },
+    required: [],
+  })
+  .openapi('TicketCommentObject')
+
+const TicketFieldValueInputSchema = z
+  .object({
+    id: z
+      .xor([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .openapi({ description: 'The ID of the custom field', example: 27642 }),
+    value: z
+      .xor([z.string(), z.number(), z.boolean(), z.array(z.string()), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'The value to assign to the custom field.\nType depends on the field configuration:\n- Text/textarea: string\n- Checkbox: boolean or "true"/"false" string\n- Dropdown/tagger: string or array of strings (multi-select)\n- Number/decimal: number or string representation\n- Date: string (ISO 8601 format)\n- Lookup: the target record\'s id, or an id prefixed with `external_id:` or `name:`\n- Multi-lookup: an array of target record ids, up to `max_selections` entries. Each write replaces the\n  entire set of selections. Unresolved ids are silently dropped. See\n  [Setting multi-lookup field values](/api-reference/ticketing/lookup_relationships/lookup_relationships/#setting-multi-lookup-field-values)\n- null when the field has no value set\n',
+        example: '745',
+      }),
+  })
+  .openapi({ description: 'A ticket custom field value assignment', required: ['id'] })
+  .openapi('TicketFieldValueInput')
+
+const FollowerObjectSchema = z
+  .object({
+    action: z.enum(['put', 'delete']).exactOptional(),
+    user_email: z.email().exactOptional(),
+    user_id: z
+      .xor([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional(),
+    user_name: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FollowerObject')
+
+const EmailCCObjectSchema = FollowerObjectSchema.and(
+  z
+    .object({
+      action: z.enum(['put', 'delete']).exactOptional(),
+      user_email: z.string().exactOptional(),
+      user_name: z.string().exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('EmailCCObject')
+
+const SharingAgreementInputSchema = z
+  .object({
+    custom_fields: z.array(TicketFieldValueInputSchema).exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ID of the sharing agreement',
+      }),
+  })
+  .openapi({ description: 'A sharing agreement configuration to apply to a ticket', required: [] })
+  .openapi('SharingAgreementInput')
+
+const ViaObjectSchema = z
+  .object({
+    channel: z
+      .xor([z.string(), z.int()])
+      .exactOptional()
+      .openapi({
+        description:
+          'This tells you how the ticket or event was created. Examples: "web", "mobile", "rule", "system".\nMay be a string name or an integer channel ID.\n',
+      }),
+    source: z
+      .looseObject({
+        from: z
+          .object({
+            address: z.string().nullable().exactOptional(),
+            id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .nullable()
+              .exactOptional()
+              .openapi({ type: ['integer', 'null'], format: 'int64' }),
+            name: z.string().nullable().exactOptional(),
+            title: z.string().nullable().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        rel: z.string().nullable().exactOptional(),
+        to: z
+          .object({ address: z.string().exactOptional(), name: z.string().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'For some channels a source object gives more information about how or why the ticket or event was created\n',
+        required: [],
+      }),
+  })
+  .openapi({
+    description:
+      'An object explaining how the ticket was created. See the [Via object reference](/documentation/ticketing/reference-guides/via-object-reference)\n',
+    example: {
+      channel: 'rule',
+      source: {
+        from: { id: 22472716, title: 'Assign to first responder' },
+        rel: 'trigger',
+        to: {},
+      },
+    },
+    readOnly: true,
+    required: [],
+  })
+  .openapi('ViaObject')
+
+const TicketObjectSchema = z
+  .object({
+    additional_collaborators: z
+      .array(CollaboratorObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. An array of numeric IDs, emails, or objects containing name and email properties. See [Setting Collaborators](/api-reference/ticketing/tickets/tickets/#setting-collaborators). An email notification is sent to them when the ticket is updated',
+        writeOnly: true,
+      }),
+    allow_attachments: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Permission for agents to add add attachments to a comment. Defaults to true',
+        readOnly: true,
+      }),
+    allow_channelback: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Is false if channelback is disabled, true otherwise. Only applicable for channels framework ticket',
+        readOnly: true,
+      }),
+    assignee_email: z
+      .email()
+      .exactOptional()
+      .openapi({
+        description: 'Write only. The email address of the agent to assign the ticket to',
+        writeOnly: true,
+      }),
+    assignee_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The agent currently assigned to the ticket',
+      }),
+    attribute_value_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. An array of the IDs of attribute values to be associated with the ticket',
+        writeOnly: true,
+      }),
+    brand_id: z
+      .xor([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The id of the brand this ticket is associated with. See [Setting up multiple brands](https://support.zendesk.com/hc/en-us/articles/4408829476378)',
+      }),
+    collaborator_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({ description: "The ids of users currently CC'ed on the ticket" }),
+    collaborators: z
+      .array(CollaboratorObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Write only. Users to add as cc's when creating a ticket. See [Setting Collaborators](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-collaborators)",
+        writeOnly: true,
+      }),
+    comment: TicketCommentObjectSchema.exactOptional(),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When this record was created', readOnly: true }),
+    custom_fields: z
+      .array(
+        z.xor([
+          TicketFieldValueInputSchema,
+          z
+            .looseObject({})
+            .refine((val) => Object.keys(val).length >= 1)
+            .refine(
+              (val) =>
+                !z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['id'] })
+                  .safeParse(val).success,
+            )
+            .openapi({
+              description: 'Alternative format using field ID as key, e.g. {"123": "value"}',
+              not: { required: ['id'] },
+            }),
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom field values to set on the ticket.\nEach entry specifies a field ID and its value.\nSee [Setting custom field values](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-custom-field-values)\n',
+      }),
+    custom_status_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The custom ticket status id of the ticket. See [custom ticket statuses](#custom-ticket-statuses)',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The first comment on the ticket. When [creating a ticket](#create-ticket), use `comment` to set the description.\nSee [Description and first comment](#description-and-first-comment).\nOn create, can be set directly as an alternative to `comment`. Silently ignored on update.\n',
+      }),
+    due_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If this is a ticket of type "task" it has a due date.  Due date format uses [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format',
+      }),
+    email_cc_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          "The ids of agents or end users currently CC'ed on the ticket. See [CCs and followers resources](https://support.zendesk.com/hc/en-us/articles/4408822451482) in the Support Help Center",
+        readOnly: true,
+      }),
+    email_ccs: z
+      .array(EmailCCObjectSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. An array of objects that represent agent or end users email CCs to add or delete from the ticket. See [Setting email CCs](/documentation/ticketing/managing-tickets/creating-and-updating-tickets/#setting-email-ccs). Ignored when [CCs and followers](https://support.zendesk.com/hc/en-us/articles/4408822451482) is not enabled',
+        writeOnly: true,
+      }),
+    encoded_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "An encoded string representing the ticket's unique identifier",
+        readOnly: true,
+      }),
+    external_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'An id you can use to link Zendesk Support tickets to local records',
+      }),
+    fields: z
+      .array(
+        z.xor([
+          TicketFieldValueInputSchema,
+          z
+            .looseObject({})
+            .refine((val) => Object.keys(val).length >= 1)
+            .refine(
+              (val) =>
+                !z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['id'] })
+                  .safeParse(val).success,
+            )
+            .openapi({
+              description: 'Alternative format using field ID as key, e.g. {"123": "value"}',
+              not: { required: ['id'] },
+            }),
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Alias for custom_fields. Custom field values to set on the ticket.\nEach entry specifies a field ID and its value.\n',
+      }),
+    follower_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The ids of agents currently following the ticket. Ignored when [CCs and followers](https://support.zendesk.com/hc/en-us/articles/4408822451482) is not enabled',
+        readOnly: true,
+      }),
+    followers: z
+      .array(FollowerObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. An array of objects that represents agent followers to add or delete from the ticket. See [Setting followers](/documentation/ticketing/managing-tickets/creating-and-updating-tickets/#setting-followers). Ignored when [CCs and followers](https://support.zendesk.com/hc/en-us/articles/4408822451482) is not enabled',
+        writeOnly: true,
+      }),
+    followup_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The ids of the followups created from this ticket. Ids are only visible once the ticket is closed',
+        readOnly: true,
+      }),
+    forum_topic_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The topic in the Zendesk Web portal this ticket originated from, if any. The Web portal is deprecated',
+      }),
+    from_messaging_channel: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If true, the ticket's [via type](/documentation/ticketing/reference-guides/via-object-reference/) is a messaging channel.",
+        readOnly: true,
+      }),
+    generated_timestamp: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Unix timestamp that represents the most accurate reading of when this record was last updated. It is updated for all ticket updates, including system updates',
+        readOnly: true,
+      }),
+    group_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The group this ticket is assigned to',
+      }),
+    has_incidents: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Is true if a ticket is a problem type and has one or more incidents linked to it. Otherwise, the value is false.',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned when the ticket is created',
+        readOnly: true,
+      }),
+    is_public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Is true if any comments are public, false otherwise',
+        readOnly: true,
+      }),
+    macro_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Write only. A single macro ID to be recorded in the ticket audit',
+        writeOnly: true,
+      }),
+    macro_ids: z
+      .array(
+        z.xor([
+          z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({ type: 'integer', format: 'int64' }),
+          z.string(),
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Write only. List of macro IDs to be recorded in the ticket audit',
+        writeOnly: true,
+      }),
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. Metadata for the audit. In the `audit` object, the data is specified in the `custom` property of the `metadata` object. See [Setting Metadata](/documentation/ticketing/managing-tickets/creating-and-updating-tickets/#setting-metadata)',
+        writeOnly: true,
+      }),
+    organization_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The organization of the requester. You can only specify the ID of an organization associated with the requester. See [Organization Memberships](/api-reference/ticketing/organizations/organization_memberships/)',
+      }),
+    origin_zrn: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Write only. The Zendesk Resource Name (ZRN) of the origin for this ticket',
+        writeOnly: true,
+      }),
+    priority: z
+      .enum(['urgent', 'high', 'normal', 'low'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The urgency with which the ticket should be addressed' }),
+    problem_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'For tickets of type "incident", the ID of the problem the incident is linked to',
+      }),
+    raw_subject: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The dynamic content placeholder, if present, or the "subject" value, if not. See [Dynamic Content Items](/api-reference/ticketing/ticket-management/dynamic_content/).\nWhen set on create or update, overrides the `subject` field.\n',
+      }),
+    recipient: z
+      .xor([
+        z.string(),
+        z.array(z.string()),
+        z
+          .object({ email: z.email().exactOptional(), name: z.string().exactOptional() })
+          .openapi({ required: [] }),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The original recipient e-mail address of the ticket. Notification emails for the ticket are sent from this address',
+      }),
+    requester: z
+      .xor([
+        z.string().openapi({ description: 'Email address or username' }),
+        z.int().openapi({ description: 'User ID' }),
+        z
+          .object({
+            email: z
+              .email()
+              .exactOptional()
+              .openapi({ description: "The user's primary email address" }),
+            locale: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The user\'s locale (e.g., "en-US")' }),
+            locale_id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64', description: "The user's locale ID" }),
+            name: z.string().exactOptional().openapi({ description: "The user's name" }),
+            organization_id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({
+                type: 'integer',
+                format: 'int64',
+                description: 'The organization ID to associate with the user',
+              }),
+            role: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The user\'s role (e.g., "end-user", "agent", "admin")' }),
+            verified: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: "Whether the user's email is verified" }),
+          })
+          .openapi({ description: 'User creation attributes', required: [] }),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. Alternative to requester_id for specifying the ticket requester.\n\nCan be provided as:\n- Email string: "user@example.com"\n- User ID integer: 12345\n- User object: {name: "John Doe", email: "john@example.com"}\n\nIf both requester and requester_id are provided, requester_id takes precedence.\n\nWhen creating a ticket, if the user doesn\'t exist, they may be created\nautomatically depending on account settings.\n',
+        writeOnly: true,
+      }),
+    requester_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The user who requested this ticket',
+      }),
+    safe_update: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. Optional boolean. When true and an `updated_stamp` date is included, protects against ticket update collisions and returns a message to let you know if one occurs. See [Protecting against ticket update collisions](/documentation/ticketing/managing-tickets/creating-and-updating-tickets/#protecting-against-ticket-update-collisions). A value of false has the same effect as true. Omit the property to force the updates to not be safe',
+        writeOnly: true,
+      }),
+    satisfaction_probability: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The predicted satisfaction probability score', readOnly: true }),
+    satisfaction_rating: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'The satisfaction rating of the ticket, if it exists, or the state of satisfaction, "offered" or "unoffered". The value is null for plan types that don\'t support CSAT',
+        readOnly: true,
+      }),
+    sharing_agreement_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of the numeric IDs of sharing agreements. Note that this replaces any existing agreements',
+      }),
+    sharing_agreements: z
+      .xor([SharingAgreementInputSchema, z.array(SharingAgreementInputSchema)])
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. Sharing agreement configuration for the ticket.\nAccepts a single object or an array of objects.\n',
+        writeOnly: true,
+      }),
+    status: z
+      .enum(['new', 'open', 'pending', 'hold', 'solved', 'closed'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The state of the ticket.\n\nIf your account has activated custom ticket statuses, this is the ticket's\nstatus category. See [custom ticket statuses](#custom-ticket-statuses)\n",
+      }),
+    subject: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value of the subject field for this ticket. See [Subject](/api-reference/ticketing/tickets/tickets/#subject)\n',
+      }),
+    submitter_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The user who submitted the ticket. The submitter always becomes the\nauthor of the first comment on the ticket.\n\nIf not specified, defaults to the authenticated user.\n',
+      }),
+    support_type: z
+      .enum(['agent', 'ai_agent'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The type of support that handled the ticket' }),
+    suspended_ticket_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Write only. The ID of the suspended ticket being recovered',
+        writeOnly: true,
+      }),
+    suspension_type_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Write only. The suspension type ID when recovering a suspended ticket',
+        writeOnly: true,
+      }),
+    system_metadata: z
+      .object({ client: z.string().exactOptional(), ip_address: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. System metadata for the ticket, typically set by internal clients',
+        writeOnly: true,
+        required: [],
+      }),
+    tags: z
+      .xor([
+        z.array(z.string()).openapi({ description: 'An array of tag strings' }),
+        z.string().openapi({ description: 'A single tag string' }),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The tags applied to this ticket. Unless otherwise specified, the [set tag](/api-reference/ticketing/ticket-management/tags/#set-tags) behavior is used, which overwrites and replaces existing tags',
+      }),
+    tde_workspace: z
+      .object({
+        previous_workspace: z
+          .object({
+            id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64' }),
+            title: z.string().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        type: z.enum(['ADD', 'CHANGE', 'DELETE']).exactOptional(),
+        workspace: z
+          .object({
+            id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64' }),
+            title: z.string().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Write only. TDE workspace information for the ticket',
+        writeOnly: true,
+        required: [],
+      }),
+    ticket_form_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Enterprise only. The id of the ticket form to render for the ticket',
+      }),
+    tpe_voice_comment: z
+      .object({
+        agent_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({ type: ['integer', 'null'], format: 'int64' }),
+        answering_machine_detection_status: z.string().nullable().exactOptional(),
+        app_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        app_name: z.string().nullable().exactOptional(),
+        author_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        call_connected_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        call_disposition: z.string().nullable().exactOptional(),
+        call_ended_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        call_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        call_recording_consent: z.string().nullable().exactOptional(),
+        call_recording_consent_action: z.string().nullable().exactOptional(),
+        call_recording_consent_keypress: z.string().nullable().exactOptional(),
+        call_started_at: z.iso.datetime({ offset: true }).exactOptional(),
+        call_type: z.string().nullable().exactOptional(),
+        callback_number: z.string().nullable().exactOptional(),
+        callback_requested_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        completion_status: z.string().nullable().exactOptional(),
+        connection_attempts: z.int().nullable().exactOptional(),
+        consultation_time: z.int().nullable().exactOptional(),
+        direction: z.string().exactOptional(),
+        disconnection_reason: z.string().nullable().exactOptional(),
+        dnis: z.string().nullable().exactOptional(),
+        duration: z.int().nullable().exactOptional(),
+        end_user_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({ type: ['integer', 'null'], format: 'int64' }),
+        end_user_location: z.string().nullable().exactOptional(),
+        exceeded_queue_time: z.boolean().nullable().exactOptional(),
+        extension: z.string().nullable().exactOptional(),
+        external_id: z.string().exactOptional(),
+        from_line: z.string().exactOptional(),
+        from_line_nickname: z.string().nullable().exactOptional(),
+        hold_time: z.int().nullable().exactOptional(),
+        intent: z.string().nullable().exactOptional(),
+        ivr_destination_group_name: z.string().nullable().exactOptional(),
+        ivr_time_spent: z.int().nullable().exactOptional(),
+        language: z.string().nullable().exactOptional(),
+        line_type: z.string().exactOptional(),
+        longest_hold_time: z.int().nullable().exactOptional(),
+        number_of_holds: z.int().nullable().exactOptional(),
+        outside_business_hours: z.boolean().nullable().exactOptional(),
+        overflowed_to: z.string().nullable().exactOptional(),
+        phone_name: z.string().nullable().exactOptional(),
+        public: z.boolean().exactOptional(),
+        quality_score: z.int().nullable().exactOptional(),
+        queue_name: z.string().nullable().exactOptional(),
+        queue_time: z.int().nullable().exactOptional(),
+        recorded: z.boolean().exactOptional(),
+        recording_time: z.int().nullable().exactOptional(),
+        recording_type: z.string().exactOptional(),
+        recording_url: z.string().nullable().exactOptional(),
+        sentiment_agent: z.string().nullable().exactOptional(),
+        sentiment_call: z.string().nullable().exactOptional(),
+        sentiment_customer: z.string().nullable().exactOptional(),
+        sentiment_trend: z.string().nullable().exactOptional(),
+        short_summary: z.string().nullable().exactOptional(),
+        summary: z.string().nullable().exactOptional(),
+        talk_time: z.int().nullable().exactOptional(),
+        time_to_answer: z.int().nullable().exactOptional(),
+        title: z.string().exactOptional(),
+        to_line: z.string().exactOptional(),
+        to_line_nickname: z.string().nullable().exactOptional(),
+        transcript: z.string().nullable().exactOptional(),
+        via_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        video_recording_url: z.string().nullable().exactOptional(),
+        voicemail: z.boolean().nullable().exactOptional(),
+        voicemail_requested_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        wait_time: z.int().nullable().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Write only. A TPE voice comment for Talk Partner Edition tickets',
+        writeOnly: true,
+        required: [],
+      }),
+    type: z
+      .enum(['problem', 'incident', 'question', 'task'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The type of this ticket' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'When this record last got updated. It is updated only if the update generates a [ticket event](#incremental-ticket-event-export)',
+        readOnly: true,
+      }),
+    updated_stamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. Datetime of last update received from API. See the `safe_update` property',
+        writeOnly: true,
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The API url of this ticket', readOnly: true }),
+    via: ViaObjectSchema.exactOptional(),
+    via_followup_source_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Write only. The id of a closed ticket when creating a follow-up ticket. See [Creating a follow-up ticket](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#creating-a-follow-up-ticket)',
+        writeOnly: true,
+      }),
+    via_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Write only. For more information, see the [Via object reference](/documentation/ticketing/reference-guides/via-object-reference/)',
+        writeOnly: true,
+      }),
+    voice_comment: z
+      .looseObject({
+        answered_by_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            description: 'The agent who answered the call',
+          }),
+        call_duration: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Duration of the call in seconds' }),
+        from: z.string().exactOptional().openapi({ description: 'Incoming phone number' }),
+        location: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Location of the caller' }),
+        recording_url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'URL of the recording' }),
+        to: z.string().exactOptional().openapi({ description: 'Dialed phone number' }),
+        transcription_text: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Transcription of the call' }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Write only. A voice comment for Talk tickets. See [Adding voice comments to tickets](/documentation/ticketing/managing-tickets/adding-voice-comments-to-tickets/)',
+        writeOnly: true,
+        required: [],
+      }),
+  })
+  .openapi({
+    example: {
+      assignee_id: 235323,
+      collaborator_ids: [35334, 234],
+      created_at: '2009-07-20T22:55:29Z',
+      custom_fields: [
+        { id: 27642, value: '745' },
+        { id: 27648, value: 'yes' },
+      ],
+      custom_status_id: 123,
+      description: 'The fire is very colorful.',
+      due_at: null,
+      external_id: 'ahg35h3jh',
+      follower_ids: [35334, 234],
+      from_messaging_channel: false,
+      generated_timestamp: 1304553600,
+      group_id: 98738,
+      has_incidents: false,
+      id: 35436,
+      organization_id: 509974,
+      priority: 'high',
+      problem_id: 9873764,
+      raw_subject: '{{dc.printer_on_fire}}',
+      recipient: 'support@company.com',
+      requester_id: 20978392,
+      satisfaction_rating: { comment: 'Great support!', id: 1234, score: 'good' },
+      sharing_agreement_ids: [84432],
+      status: 'open',
+      subject: 'Help, my printer is on fire!',
+      submitter_id: 76872,
+      tags: ['enterprise', 'other_tag'],
+      type: 'incident',
+      updated_at: '2011-05-05T10:38:52Z',
+      url: 'https://company.zendesk.com/api/v2/tickets/35436',
+      via: { channel: 'web' },
+    },
+    required: [],
+  })
+  .openapi('TicketObject')
+
+const BookmarkObjectSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the bookmark was created', readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned when the bookmark is created',
+        readOnly: true,
+      }),
+    ticket: TicketObjectSchema.exactOptional().openapi({ readOnly: true }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The API url of this bookmark', readOnly: true }),
+  })
+  .openapi({
+    title: 'Bookmarks',
+    example: {
+      created_at: '2014-11-20T22:55:29Z',
+      id: 35436,
+      ticket: {
+        description: 'The fire is very colorful.',
+        id: 60,
+        priority: 'high',
+        requester_id: 156,
+        subject: 'Help, my printer is on fire!',
+      },
+      url: 'https://{subdomain}.zendesk.com/api/v2/bookmarks/35436',
+    },
+    required: [],
+  })
+  .openapi('BookmarkObject')
+
+type BookmarkResponseType = { bookmark?: z.infer<typeof BookmarkObjectSchema> }
+
+const OffsetPaginationObjectSchema = z
+  .object({
+    count: z.int().exactOptional().openapi({ description: 'the total record count' }),
+    next_page: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'the URL of the next page' }),
+    previous_page: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'the URL of the previous page' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OffsetPaginationObject')
+
+type BookmarksResponseType = z.infer<typeof OffsetPaginationObjectSchema> & {
+  bookmarks?: z.infer<typeof BookmarkObjectSchema>[]
+}
+
+type CursorBasedExportIncrementalTicketsResponseType = {
+  after_cursor?: string | null
+  after_url?: string | null
+  before_cursor?: string | null
+  before_url?: string | null
+  end_of_stream?: boolean
+  tickets?: z.infer<typeof TicketObjectSchema>[]
+}
+
+const CustomObjectRecordFilteredSearchConditionSchema = z
+  .looseObject({
+    field_key: z
+      .object({
+        operator: z.string().exactOptional(),
+        value: z.xor([z.string(), z.int(), z.array(z.xor([z.string(), z.int()]))]).exactOptional(),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ example: { operator: 'value' }, required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomObjectRecordFilteredSearchCondition')
+
+const CustomObjectRecordFilterExpressionLevel1Schema =
+  CustomObjectRecordFilteredSearchConditionSchema.and(
+    z
+      .looseObject({})
+      .refine(
+        (val) =>
+          !z
+            .union([
+              z.looseObject({}).openapi({ required: ['$and'] }),
+              z.looseObject({}).openapi({ required: ['$or'] }),
+            ])
+            .safeParse(val).success,
+      )
+      .openapi({
+        not: {
+          anyOf: [
+            { type: 'object', required: ['$and'] },
+            { type: 'object', required: ['$or'] },
+          ],
+        },
+      }),
+  ).openapi('CustomObjectRecordFilterExpressionLevel1')
+
+const CustomObjectRecordFilterExpressionLevel2Schema = z
+  .xor([
+    CustomObjectRecordFilterExpressionLevel1Schema,
+    z
+      .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel1Schema).min(1) })
+      .openapi({ required: ['$and'] }),
+    z
+      .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel1Schema).min(1) })
+      .openapi({ required: ['$or'] }),
+  ])
+  .openapi('CustomObjectRecordFilterExpressionLevel2')
+
+const CustomObjectRecordFilterExpressionLevel3Schema = z
+  .xor([
+    CustomObjectRecordFilterExpressionLevel1Schema,
+    z
+      .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel2Schema).min(1) })
+      .openapi({ required: ['$and'] }),
+    z
+      .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel2Schema).min(1) })
+      .openapi({ required: ['$or'] }),
+  ])
+  .openapi('CustomObjectRecordFilterExpressionLevel3')
+
+type CustomObjectRecordFilterExpressionLevel4Type =
+  | z.infer<typeof CustomObjectRecordFilterExpressionLevel1Schema>
+  | { $and: z.infer<typeof CustomObjectRecordFilterExpressionLevel3Schema>[] }
+  | { $or: z.infer<typeof CustomObjectRecordFilterExpressionLevel3Schema>[] }
+
+const CustomObjectRecordFilterExpressionLevel4Schema: z.ZodType<CustomObjectRecordFilterExpressionLevel4Type> =
+  z
+    .xor([
+      CustomObjectRecordFilterExpressionLevel1Schema,
+      z
+        .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel3Schema).min(1) })
+        .openapi({ required: ['$and'] }),
+      z
+        .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel3Schema).min(1) })
+        .openapi({ required: ['$or'] }),
+    ])
+    .openapi('CustomObjectRecordFilterExpressionLevel4')
+
+type CustomObjectRecordFilterExpressionLevel5Type =
+  | z.infer<typeof CustomObjectRecordFilterExpressionLevel1Schema>
+  | { $and: z.infer<typeof CustomObjectRecordFilterExpressionLevel4Schema>[] }
+  | { $or: z.infer<typeof CustomObjectRecordFilterExpressionLevel4Schema>[] }
+
+const CustomObjectRecordFilterExpressionLevel5Schema: z.ZodType<CustomObjectRecordFilterExpressionLevel5Type> =
+  z
+    .xor([
+      CustomObjectRecordFilterExpressionLevel1Schema,
+      z
+        .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel4Schema).min(1) })
+        .openapi({ required: ['$and'] }),
+      z
+        .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel4Schema).min(1) })
+        .openapi({ required: ['$or'] }),
+    ])
+    .openapi('CustomObjectRecordFilterExpressionLevel5')
+
+type CustomObjectRecordFilterExpressionType =
+  | z.infer<typeof CustomObjectRecordFilterExpressionLevel1Schema>
+  | { $and: z.infer<typeof CustomObjectRecordFilterExpressionLevel5Schema>[] }
+  | { $or: z.infer<typeof CustomObjectRecordFilterExpressionLevel5Schema>[] }
+
+const CustomObjectRecordFilterExpressionSchema: z.ZodType<CustomObjectRecordFilterExpressionType> =
+  z
+    .xor([
+      CustomObjectRecordFilterExpressionLevel1Schema,
+      z
+        .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel5Schema).min(1) })
+        .openapi({ required: ['$and'] }),
+      z
+        .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel5Schema).min(1) })
+        .openapi({ required: ['$or'] }),
+    ])
+    .openapi({
+      description:
+        'A recursive filter expression: either a single comparison object\n(`{ "<field>": { "$<operator>": <value> } }`) or a logical group\ncombining child expressions with `$and` / `$or`. Maximum nesting\ndepth is 5 (outermost group counts as level 1).\n',
+    })
+    .openapi('CustomObjectRecordFilterExpression')
+
+type CustomObjectRecordsFilteredSearchRequestComplexType = {
+  filter?: {
+    $and?: z.infer<typeof CustomObjectRecordFilterExpressionSchema>[]
+    $or?: z.infer<typeof CustomObjectRecordFilterExpressionSchema>[]
+  }
+}
+
+const MobileCommentingAgentObjectSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The id of the agent',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the agent', readOnly: true }),
+    photo: AttachmentObjectSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'An agent who authored one of the most recent public comments on a request',
+    example: {
+      id: 10002,
+      name: 'Admin Extraordinaire',
+      photo: {
+        content_type: 'image/png',
+        content_url: 'https://company.zendesk.com/system/photos/0010/0025/large_2.png',
+        file_name: 'large_2.png',
+        id: 100025,
+        size: 165982,
+        thumbnails: [],
+      },
+    },
+    required: [],
+  })
+  .openapi('MobileCommentingAgentObject')
+
+const MobileCommentObjectSchema = z
+  .object({
+    attachments: z
+      .array(AttachmentObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'Read-only list of attachments to the comment', readOnly: true }),
+    author_attribution: z
+      .object({ avatar_url: z.string().exactOptional(), name: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({
+        description:
+          'Name and avatar of the AI agent that authored the comment. Only present on accounts with the AI agent request comment persona enabled',
+        readOnly: true,
+        required: [],
+      }),
+    author_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The id of the author',
+        readOnly: true,
+      }),
+    body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The actual comment made by the author' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When this comment was created', readOnly: true }),
+    html_body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The comment formatted as HTML', readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned when the comment is created',
+        readOnly: true,
+      }),
+    plain_body: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The comment formatted as plain text', readOnly: true }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, the comment is public', readOnly: true }),
+    request_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The request token if available, the nice id of the request otherwise',
+        readOnly: true,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of the comment, "Comment" or "VoiceComment"',
+        readOnly: true,
+      }),
+    uploads: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'On create only. List of tokens received after uploading files to attach',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The API url of this comment', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'A comment on a request as returned by the private mobile API.\nUnlike the public v2 Request Comments API, `request_id` is the request token (or nice id) as a string.\n',
+    example: {
+      attachments: [],
+      author_id: 1,
+      body: 'Thanks for your help!',
+      created_at: '2009-07-20T22:55:29Z',
+      html_body: '<p>Thanks for your help!</p>',
+      id: 1274,
+      plain_body: 'Thanks for your help!',
+      public: true,
+      request_id: 'UHF0CU0VsnnY3bR9jDSC1We1w',
+      type: 'Comment',
+    },
+    required: [],
+  })
+  .openapi('MobileCommentObject')
+
+const MobileRequestObjectSchema = z
+  .object({
+    assignee_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The id of the assignee if the field is visible to end users',
+        readOnly: true,
+      }),
+    can_be_solved_by_me: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If true, the end user can mark the request as solved',
+        readOnly: true,
+      }),
+    can_comment: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the requester can comment on the request. Only present on accounts with the AI agent request comment persona enabled',
+        readOnly: true,
+      }),
+    can_update_ccs: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the requester can update collaborators. Only present on accounts with the AI agent request comment persona enabled',
+        readOnly: true,
+      }),
+    collaborator_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({ description: "Who is currently CC'ed on the ticket" }),
+    comment_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The count of public comments associated to the request',
+        readOnly: true,
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When this record was created', readOnly: true }),
+    csat: z
+      .object({
+        comment: z.string().exactOptional(),
+        created_at: z.iso.datetime({ offset: true }).exactOptional(),
+        id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        score: z.string().exactOptional(),
+        updated_at: z.iso.datetime({ offset: true }).exactOptional(),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The satisfaction rating for the request. Null when no rating exists or CSAT is not enabled for the SDK app',
+        readOnly: true,
+        required: [],
+      }),
+    custom_fields: z
+      .array(
+        z
+          .object({
+            id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64' }),
+            value: z.string().nullable().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The fields and entries for this request' }),
+    custom_status_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The custom ticket status id of the ticket. Only present on accounts with custom statuses enabled',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The first comment on the request', readOnly: true }),
+    due_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'When the task is due (only applies if the request is of type "task")',
+      }),
+    email_cc_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'The ids of users who are currently email CCs on the ticket',
+        readOnly: true,
+      }),
+    fields: z
+      .array(
+        z
+          .object({
+            id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64' }),
+            value: z.string().nullable().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Deprecated alias of `custom_fields`', deprecated: true }),
+    first_comment: MobileCommentObjectSchema.exactOptional(),
+    followup_source_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The id of the original ticket if this request is a follow-up ticket',
+        readOnly: true,
+      }),
+    group_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The id of the assigned group if the field is visible to end users',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The request token if available, the nice id otherwise',
+        readOnly: true,
+      }),
+    is_public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Is true if any comments are public, false otherwise',
+        readOnly: true,
+      }),
+    last_comment: MobileCommentObjectSchema.exactOptional(),
+    last_commenting_agents_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The ids of the agents who made the most recent public comments on the request, most recent first',
+        readOnly: true,
+      }),
+    organization_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'The organization of the requester',
+        readOnly: true,
+      }),
+    priority: z
+      .enum(['low', 'normal', 'high', 'urgent'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The priority of the request' }),
+    public_updated_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When a public event last occurred on the request. Only present when sideloaded with `include=public_updated_at`',
+        readOnly: true,
+      }),
+    recipient: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The original recipient e-mail address of the request' }),
+    requester_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The id of the requester',
+        readOnly: true,
+      }),
+    solved: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not the request is solved (an end user can set this if `can_be_solved_by_me` is true for that user)',
+      }),
+    status: z
+      .enum(['new', 'open', 'pending', 'hold', 'solved', 'closed'])
+      .exactOptional()
+      .openapi({ description: 'The state of the request' }),
+    subject: z
+      .string()
+      .openapi({
+        description:
+          'The value of the subject field for this request if the subject field is visible to end users; a truncated version of the description otherwise',
+      }),
+    ticket_form_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The numeric id of the ticket form associated with this request if the form is visible to end users - only applicable for enterprise accounts',
+      }),
+    type: z
+      .enum(['question', 'incident', 'problem', 'task'])
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The type of the request' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'When this record last got updated', readOnly: true }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The API url of this request', readOnly: true }),
+    via: TicketAuditViaObjectSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'A request (end-user ticket) as returned by the private mobile API.\nUnlike the public v2 Requests API, `id` is the request token if one exists, otherwise the ticket nice id - always serialized as a string.\n',
+    example: {
+      assignee_id: 72983,
+      can_be_solved_by_me: false,
+      collaborator_ids: [],
+      comment_count: 2,
+      created_at: '2009-07-20T22:55:29Z',
+      csat: null,
+      custom_fields: [],
+      description: 'The fire is very colorful.',
+      due_at: null,
+      fields: [],
+      group_id: 8665,
+      id: 'UHF0CU0VsnnY3bR9jDSC1We1w',
+      last_commenting_agents_ids: [],
+      organization_id: 509974,
+      priority: 'normal',
+      requester_id: 1462,
+      status: 'open',
+      subject: 'Help, my printer is on fire!',
+      ticket_form_id: 2,
+      type: 'problem',
+      updated_at: '2011-05-05T10:38:52Z',
+      url: 'https://company.zendesk.com/api/mobile/requests/UHF0CU0VsnnY3bR9jDSC1We1w.json',
+      via: { channel: 'mobile_sdk' },
+    },
+    required: ['subject'],
+  })
+  .openapi('MobileRequestObject')
+
+type MobileRequestsResponseType = {
+  count?: number
+  last_commenting_agents?: z.infer<typeof MobileCommentingAgentObjectSchema>[]
+  next_page?: string | null
+  previous_page?: string | null
+  requests?: z.infer<typeof MobileRequestObjectSchema>[]
+}
+
+type RecoverSuspendedTicketsResponseType = { tickets?: z.infer<typeof TicketObjectSchema>[] }
+
+const TicketPriorityEnumSchema = z
+  .enum(['urgent', 'high', 'normal', 'low'])
+  .openapi({ description: 'The urgency with which the ticket should be addressed.' })
+  .openapi('TicketPriorityEnum')
+
+const TicketImportInputSchema = z
+  .object({
+    assignee_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The agent currently assigned to the ticket',
+      }),
+    brand_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The id of the brand this ticket is associated with. If not specified, the ticket is assigned to the default brand',
+      }),
+    collaborators: z
+      .array(CollaboratorObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Users to add as cc's when creating a ticket. See [Setting Collaborators](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-collaborators)",
+      }),
+    comment: z
+      .looseObject({
+        value: z.string().exactOptional().openapi({ description: 'The comment string value' }),
+      })
+      .openapi({ required: [] })
+      .and(TicketCommentObjectSchema)
+      .exactOptional(),
+    comments: z
+      .array(
+        z
+          .looseObject({
+            author_id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .nullable()
+              .exactOptional()
+              .openapi({ type: ['integer', 'null'], format: 'int64' }),
+            body: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The comment body in plain text' }),
+            created_at: z.iso.datetime({ offset: true }).exactOptional(),
+            html_body: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The comment body in HTML' }),
+            metadata: z.looseObject({}).exactOptional(),
+            public: z.boolean().exactOptional(),
+            value: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The comment string value (legacy alias for body)' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The conversation between requesters, collaborators, and agents' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the ticket was created (for historical imports)' }),
+    custom_fields: z
+      .array(TicketFieldValueInputSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom field values to set on the ticket.\nEach entry specifies a field ID and its value.\n',
+      }),
+    custom_status_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The custom ticket status id of the ticket',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Read-only first comment on the ticket. When [creating a ticket](#create-ticket), use `comment` to set the description. See [Description and first comment](#description-and-first-comment)',
+      }),
+    email_ccs: z
+      .array(EmailCCObjectSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects that represent agent or end users email CCs to add or delete from the ticket. See [Setting email CCs](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-email-ccs)',
+      }),
+    external_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An id you can use to link Zendesk Support tickets to local records',
+      }),
+    followers: z
+      .array(FollowerObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of objects that represent agent followers to add or delete from the ticket. See [Setting followers](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-followers)',
+      }),
+    group_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The group this ticket is assigned to',
+      }),
+    priority: TicketPriorityEnumSchema.exactOptional(),
+    recipient: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The original recipient e-mail address of the ticket' }),
+    requester_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The user who requested this ticket',
+      }),
+    solved_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the ticket was solved (for historical imports)' }),
+    status: z
+      .enum(['new', 'open', 'pending', 'hold', 'solved', 'closed'])
+      .exactOptional()
+      .openapi({ description: 'The state of the ticket' }),
+    subject: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The value of the subject field for this ticket' }),
+    submitter_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          'The user who submitted the ticket. The current API caller is used if not specified',
+      }),
+    tags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The array of tags applied to this ticket' }),
+    type: z
+      .enum(['question', 'incident', 'problem', 'task'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "The type of the ticket. `null` maps to the account's default ticket type",
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the ticket was last updated (for historical imports)' }),
+    via: z
+      .object({
+        channel: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'This tells you how the ticket or event was created' }),
+        source: z
+          .looseObject({})
+          .exactOptional()
+          .openapi({
+            description:
+              'For some channels a source object gives more information about how or why the ticket or event was created',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'An object explaining how the ticket was created. See the [Via object reference](/documentation/ticketing/reference-guides/via-object-reference)\n',
+        required: [],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TicketImportInput')
+
+type TicketBulkImportRequestType = { tickets?: z.infer<typeof TicketImportInputSchema>[] }
+
+const TicketFormAgentConditionObjectSchema = z
+  .object({
+    child_fields: z
+      .array(
+        z
+          .object({
+            id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'int64',
+                description:
+                  'The ID of the ticket field to show. Must be a field on this form, active, and cannot be the `parent_field_id`',
+              }),
+            is_required: z
+              .boolean()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Accepted but ignored on agent conditions. Whatever is sent is overwritten by a value derived from\n`required_on_statuses` — true when the type is `ALL_STATUSES` or when `solved` is among the statuses, false\nwhen `required_on_statuses` is omitted. Set `required_on_statuses` to control it. A null is accepted and\nignored like any other value\n',
+              }),
+            required_on_statuses: z
+              .object({
+                custom_statuses: z
+                  .array(
+                    z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .openapi({ type: 'integer', format: 'int64' }),
+                  )
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'For `SOME_STATUSES` only, and only on accounts with custom ticket statuses enabled — otherwise ignored.\nThe IDs of the custom statuses the field is required on. Cannot be combined with `statuses`\n',
+                  }),
+                statuses: z
+                  .array(z.enum(['new', 'open', 'pending', 'hold', 'solved']))
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'For `SOME_STATUSES` only. The system statuses the field is required on. Cannot be combined with\n`custom_statuses` — on accounts with custom ticket statuses enabled sending both is rejected, and on\nother accounts `custom_statuses` is ignored. A null counts as sending the attribute for that rejection,\nand otherwise behaves like an empty array: the condition is stored as `NO_STATUSES`\n',
+                  }),
+                type: z
+                  .union([
+                    z.literal('ALL_STATUSES'),
+                    z.literal('SOME_STATUSES'),
+                    z.literal('NO_STATUSES'),
+                    z.literal(null),
+                  ])
+                  .nullable()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '`ALL_STATUSES` requires the field on every status, `NO_STATUSES` on none, and `SOME_STATUSES`\nrequires the field only on the statuses listed in `statuses` or `custom_statuses`. A `SOME_STATUSES`\nobject carrying neither list is stored as `NO_STATUSES`. Omitting the type, or sending null, is also\nstored as `NO_STATUSES`\n',
+                  }),
+              })
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The ticket statuses on which the child field must have a value. Omitting it, or sending null, makes the field\nnever required\n',
+                required: [],
+              }),
+          })
+          .openapi({ required: ['id'] }),
+      )
+      .openapi({
+        description:
+          'The fields shown while the condition is active. Duplicate `id` entries are collapsed. An empty array is accepted rather than rejected — it creates no condition, and on an update it deletes every existing condition of this kind, because none are restated',
+      }),
+    parent_field_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the ticket field whose value activates the condition. Must be a field on this form, active, and of type `tagger`, `priority`, `tickettype`, `checkbox`, `textarea` or `text`',
+      }),
+    value: z
+      .xor([z.string().nullable(), z.boolean()])
+      .openapi({
+        description:
+          "The parent field value that activates the condition. For a `checkbox` parent field, send a boolean — any\nunrecognized value is coerced to false rather than rejected. For `priority` send a priority name, which is limited\nto `normal` and `high` on an account using the basic priority set. For `tickettype` send one of `question`,\n`incident`, `problem` or `task`. For `tagger` send the tag value of one of the parent field's options.\n\nNull is only accepted for a `checkbox` parent field, where it is coerced to false like any other unrecognized\nvalue. For every other parent field type a null is rejected\n",
+      }),
+  })
+  .openapi({
+    description:
+      "A condition set that shows and optionally requires child fields in the agent interface when a parent field\nholds a given value. Requires the account's native conditional fields feature; without it the `agent_conditions`\narray is silently ignored.\n",
+    example: {
+      child_fields: [
+        { id: 44, required_on_statuses: { statuses: ['new', 'open'], type: 'SOME_STATUSES' } },
+      ],
+      parent_field_id: 5,
+      value: 'matching_value_1',
+    },
+    required: ['parent_field_id', 'value', 'child_fields'],
+  })
+  .openapi('TicketFormAgentConditionObject')
+
+const TicketFormEndUserConditionObjectSchema = z
+  .object({
+    child_fields: z
+      .array(
+        z
+          .object({
+            id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'int64',
+                description:
+                  'The ID of the ticket field to show. Must be a field on this form, active, editable in the help center, and cannot be the `parent_field_id`',
+              }),
+            is_required: z
+              .boolean()
+              .nullable()
+              .exactOptional()
+              .openapi({
+                description:
+                  'If true, end users must enter a value in the field to submit the request. Omitting it stores false, so\nrestate it on every update to keep an existing child field required. Null behaves exactly like omitting it\n',
+              }),
+          })
+          .openapi({ required: ['id'] }),
+      )
+      .openapi({
+        description:
+          'The fields shown while the condition is active. Duplicate `id` entries are collapsed. An empty array is accepted rather than rejected — it creates no condition, and on an update it deletes every existing condition of this kind, because none are restated',
+      }),
+    parent_field_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The ID of the ticket field whose value activates the condition. Must be a field on this form, active, editable in the help center, and of type `tagger`, `priority`, `tickettype`, `checkbox`, `textarea` or `text`',
+      }),
+    value: z
+      .xor([z.string().nullable(), z.boolean()])
+      .openapi({
+        description:
+          "The parent field value that activates the condition. For a `checkbox` parent field, send a boolean — any\nunrecognized value is coerced to false rather than rejected. For `priority` send a priority name, which is limited\nto `normal` and `high` on an account using the basic priority set. For `tickettype` send one of `question`,\n`incident`, `problem` or `task`. For `tagger` send the tag value of one of the parent field's options.\n\nNull is only accepted for a `checkbox` parent field, where it is coerced to false like any other unrecognized\nvalue. For every other parent field type a null is rejected\n",
+      }),
+  })
+  .openapi({
+    description:
+      "A condition set that shows and optionally requires child fields in end-user products when a parent field holds\na given value. Requires the account's native conditional fields feature; without it the `end_user_conditions`\narray is silently ignored.\n",
+    example: {
+      child_fields: [{ id: 32, is_required: true }],
+      parent_field_id: 5,
+      value: 'matching_value_1',
+    },
+    required: ['parent_field_id', 'value', 'child_fields'],
+  })
+  .openapi('TicketFormEndUserConditionObject')
+
+const TicketFormInputSchema = z
+  .object({
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the form is available for use. A form cannot be both inactive and the default form',
+      }),
+    agent_conditions: z
+      .array(TicketFormAgentConditionObjectSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Condition sets applied in the agent interface. Null and an empty array both create no conditions',
+      }),
+    default: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether this is the account's default form. Setting it forces `end_user_visible` to true, demotes the previous\ndefault form, and is rejected for a `service_catalog` form or an inactive form\n",
+      }),
+    display_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the form shown to end users. Defaults to `name`, but only when `end_user_visible` is also being set to\ntrue. Sending null is equivalent to omitting it and follows the same defaulting\n',
+      }),
+    end_user_conditions: z
+      .array(TicketFormEndUserConditionObjectSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Condition sets applied in end-user products. Null and an empty array both create no conditions',
+      }),
+    end_user_visible: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the form is visible to end users. Always true for the default form',
+      }),
+    form_type: z
+      .union([z.literal('standard'), z.literal('service_catalog'), z.literal(null)])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of form to create. Only honored on accounts with the Service Catalog feature, where `service_catalog`\ncreates a service catalog form; other accounts always get a `standard` form. Defaults to `standard`, as does a\nnull value\n',
+      }),
+    in_all_brands: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the form is available in every brand on this account. A null value is ignored rather than applied',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the form' }),
+    position: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The position of this form among the account's other forms. Defaults to the end of the list when omitted or null\n",
+      }),
+    raw_display_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A dynamic content placeholder for the display name. Takes the place of `display_name` when both are given,\nincluding when it is an empty string. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/).\nSending null is accepted and discarded: `display_name` is left as sent\n',
+      }),
+    raw_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A dynamic content placeholder for the name. Takes the place of `name` when both are given, including when it is an\nempty string. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/). Sending null is\naccepted and discarded: `name` is left as sent\n',
+      }),
+    restricted_brand_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IDs of the brands this form is restricted to, used when `in_all_brands` is false. IDs that do not name an\nactive brand on the account are silently dropped. Unlike an update, a create applies these on any account, even\none with a single active brand — but such an account then cannot change them again. Null and an empty array both\nleave the form unrestricted, the same as omitting the attribute\n',
+      }),
+    ticket_field_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The IDs of the ticket fields on this form, in the order they are shown. The account's system-required fields are\nprepended automatically whether or not they are listed. An empty array or null is treated as if the attribute were\nomitted, leaving the form with only those system-required fields\n",
+      }),
+  })
+  .openapi({
+    description:
+      'The writable attributes accepted when creating a ticket form. The form must be given a name, through either `name`\nor `raw_name`.\n',
+    required: [],
+  })
+  .openapi('TicketFormInput')
+
+type TicketFormRequestType = { ticket_form: z.infer<typeof TicketFormInputSchema> }
+
+const TicketFormUpdateInputSchema = z
+  .object({
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the form is available for use. The default form cannot be made inactive',
+      }),
+    agent_conditions: z
+      .array(TicketFormAgentConditionObjectSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The complete set of condition sets for the agent interface. Any existing agent condition not restated in the array\nis deleted, so send the full list. Passing an empty array or null deletes them all\n',
+      }),
+    default: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether this is the account's default form. Setting it forces `end_user_visible` to true, demotes the previous\ndefault form, and is rejected for a `service_catalog` form or an inactive form. The current default form cannot\nclear its own flag — promote another form instead\n",
+      }),
+    display_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the form shown to end users. Sending null clears it, but only on a form that is not end-user visible —\non an end-user-visible form a null is rejected, and when the same request also sets `end_user_visible` the null is\nreplaced by `name`\n',
+      }),
+    end_user_conditions: z
+      .array(TicketFormEndUserConditionObjectSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The complete set of condition sets for end-user products. Any existing end-user condition not restated in the\narray is deleted, so send the full list. Passing an empty array or null deletes them all\n',
+      }),
+    end_user_visible: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the form is visible to end users. Always true for the default form',
+      }),
+    in_all_brands: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the form is available in every brand on this account. A null value is ignored rather than applied',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the form' }),
+    position: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The position of this form among the account's other forms. Unlike a create, an update will not default it: a null\nis rejected because a live form must have a position\n",
+      }),
+    raw_display_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A dynamic content placeholder for the display name. Takes the place of `display_name` when both are given,\nincluding when it is an empty string. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/).\nSending null is accepted and discarded: `display_name` is left as sent\n',
+      }),
+    raw_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A dynamic content placeholder for the name. Takes the place of `name` when both are given, including when it is an\nempty string. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/). Sending null is\naccepted and discarded: `name` is left as sent\n',
+      }),
+    restricted_brand_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The complete set of brands this form is restricted to. Any brand currently restricting the form whose ID is absent\nfrom the array is removed, so send the full list rather than a partial one. Passing an empty array or null removes\nevery restriction. IDs that do not name an active brand on the account are silently dropped. Only applied on\naccounts with more than one active brand\n',
+      }),
+    ticket_field_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The complete, ordered set of ticket fields on this form. Any field currently on the form whose ID is absent from\nthe array is REMOVED from the form, so a partial list silently drops fields — send the full list, or omit the\nattribute entirely to leave the form's fields untouched. An empty array and null are also treated as omitted and\ncannot be used to clear the form. The account's system-required fields are prepended automatically\n",
+      }),
+  })
+  .openapi({
+    description:
+      "The writable attributes accepted when updating a ticket form. Every attribute is optional and an omitted attribute is\nleft unchanged, but `ticket_field_ids`, `restricted_brand_ids`, `agent_conditions` and `end_user_conditions` are\nreplaced wholesale rather than merged — see each description. A form's `form_type` cannot be changed after creation.\n",
+    required: [],
+  })
+  .openapi('TicketFormUpdateInput')
+
+type TicketFormUpdateRequestType = { ticket_form: z.infer<typeof TicketFormUpdateInputSchema> }
+
+const TicketSkipObjectSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Time the skip was created', readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned upon creation',
+        readOnly: true,
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Reason for skipping the ticket', readOnly: true }),
+    ticket: TicketObjectSchema.exactOptional().openapi({
+      description:
+        'The skipped ticket. See the [Ticket object reference](/api-reference/ticketing/tickets/tickets/#json-format)',
+    }),
+    ticket_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'ID of the skipped ticket',
+        readOnly: true,
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Time the skip was last updated', readOnly: true }),
+    user_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'ID of the skipping agent',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    example: {
+      created_at: '2015-09-30T21:44:03Z',
+      id: 1,
+      reason: 'I have no idea.',
+      ticket: {
+        assignee_id: 235323,
+        collaborator_ids: [35334, 234],
+        created_at: '2009-07-20T22:55:29Z',
+        custom_fields: [
+          { id: 27642, value: '745' },
+          { id: 27648, value: 'yes' },
+        ],
+        description: 'The fire is very colorful.',
+        due_at: null,
+        external_id: 'ahg35h3jh',
+        follower_ids: [35334, 234],
+        from_messaging_channel: false,
+        generated_timestamp: 1304553600,
+        group_id: 98738,
+        has_incidents: false,
+        id: 123,
+        organization_id: 509974,
+        priority: 'high',
+        problem_id: 9873764,
+        raw_subject: '{{dc.printer_on_fire}}',
+        recipient: 'support@company.com',
+        requester_id: 20978392,
+        satisfaction_rating: { comment: 'Great support!', id: 1234, score: 'good' },
+        sharing_agreement_ids: [84432],
+        status: 'open',
+        subject: 'Help, my printer is on fire!',
+        submitter_id: 76872,
+        tags: ['enterprise', 'other_tag'],
+        type: 'incident',
+        updated_at: '2011-05-05T10:38:52Z',
+        url: 'https://company.zendesk.com/api/v2/tickets/35436',
+        via: { channel: 'web' },
+      },
+      ticket_id: 123,
+      updated_at: '2015-09-30T21:44:03Z',
+      user_id: 456,
+    },
+    required: [],
+  })
+  .openapi('TicketSkipObject')
+
+type TicketSkipCreationType = { skip?: z.infer<typeof TicketSkipObjectSchema> }
+
+type TicketSkipsResponseType = { skips?: z.infer<typeof TicketSkipObjectSchema>[] }
+
+type TicketsCreateRequestType = { tickets?: z.infer<typeof TicketObjectSchema>[] }
+
+type TicketsResponseType = { tickets?: z.infer<typeof TicketObjectSchema>[] }
+
+type TicketsUpdateRequestType =
+  | {
+      ticket: z.infer<typeof TicketObjectSchema> & {
+        additional_tags?: string[]
+        remove_tags?: string[]
+      }
+    }
+  | {
+      tickets: (z.infer<typeof TicketObjectSchema> & {
+        additional_tags?: string[]
+        id: bigint
+        remove_tags?: string[]
+      })[]
+    }
+
+type TimeBasedExportIncrementalTicketsResponseType = {
+  count?: number
+  end_of_stream?: boolean
+  end_time?: number
+  next_page?: string | null
+  tickets?: z.infer<typeof TicketObjectSchema>[]
+}
+
+const TriggerSnapshotObjectSchema = z
+  .object({
+    actions: z
+      .array(TriggerActionObjectSchema)
+      .exactOptional()
+      .openapi({
+        description: 'An array of [Actions](#actions) describing what the ticket trigger will do',
+      }),
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the ticket trigger is active' }),
+    category_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The name of the trigger category at the time of the revision' }),
+    conditions: TriggerConditionsObjectSchema.exactOptional(),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The description of the ticket trigger' }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the ticket trigger' }),
+  })
+  .openapi({
+    example: {
+      actions: [],
+      active: true,
+      category_name: 'Notifications',
+      conditions: {},
+      description: 'Notifies requester that a comment was updated',
+      title: 'Notify requester of comment update',
+    },
+    required: [],
+  })
+  .openapi('TriggerSnapshotObject')
+
+const TriggerRevisionObjectSchema = z
+  .object({
+    author_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'ID of the user who made the revision',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Time the revision was created' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'ID of the revision' }),
+    snapshot: TriggerSnapshotObjectSchema.exactOptional(),
+    url: z.string().exactOptional().openapi({ description: 'The API url of this revision' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TriggerRevisionObject')
+
+const TriggerChangeObjectSchema = z
+  .object({
+    change: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'One of `-`, `+`, `=` representing the type of change' }),
+    content: z
+      .xor([
+        z.boolean(),
+        z.string().nullable(),
+        z.int(),
+        z.array(z.xor([z.string(), z.int(), z.boolean()])),
+      ])
+      .exactOptional()
+      .openapi({ description: 'The value of the item it represents' }),
+  })
+  .openapi({ example: { change: '+', content: 'solved' }, required: [] })
+  .openapi('TriggerChangeObject')
+
+const TriggerActionDiffObjectSchema = z
+  .object({
+    field: z
+      .array(TriggerChangeObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of [change](#change) objects.' }),
+    value: z
+      .array(TriggerChangeObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of [change](#change) objects.' }),
+  })
+  .openapi({
+    example: {
+      field: [{ change: '+', content: 'solved' }],
+      value: [{ change: '-', content: 'open' }],
+    },
+    required: [],
+  })
+  .openapi('TriggerActionDiffObject')
+
+const TriggerConditionDiffObjectSchema = z
+  .object({
+    field: z
+      .array(TriggerChangeObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of [change](#change) objects' }),
+    operator: z
+      .array(TriggerChangeObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of [change](#change) objects' }),
+    value: z
+      .array(TriggerChangeObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of [change](#change) objects' }),
+  })
+  .openapi({
+    example: {
+      field: [{ change: '=', content: 'status' }],
+      operator: [{ change: '=', content: 'less_than' }],
+      value: [{ change: '+', content: 'solved' }],
+    },
+    required: [],
+  })
+  .openapi('TriggerConditionDiffObject')
+
+const TriggerConditionsDiffObjectSchema = z
+  .object({
+    all: z.array(TriggerConditionDiffObjectSchema).nullable().exactOptional(),
+    any: z.array(TriggerConditionDiffObjectSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TriggerConditionsDiffObject')
+
+const UserForAdminSchema = z
+  .object({
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'false if the user has been deleted', readOnly: true }),
+    agent_brand_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'PUT or POST requests only. Assigns agent or agents to a brand. For more information, see [Agent brand ids](#agent-brand-ids)',
+      }),
+    alias: z.string().exactOptional().openapi({ description: 'An alias displayed to end users' }),
+    chat_only: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the user is a chat-only agent', readOnly: true }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the user was created', readOnly: true }),
+    custom_role_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'A custom role if the user is an agent on the Enterprise plan or above',
+      }),
+    default_group_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: "The id of the user's default group",
+      }),
+    details: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Any details you want to store about the user, such as an address' }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The user's primary email address. *Writeable on create only. On update, a secondary email is added. See [Email Address](#email-address)",
+      }),
+    external_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier from another system. The API treats the id as case insensitive. Example: "ian1" and "IAN1" are the same value.',
+      }),
+    iana_time_zone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time zone for the user', readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned when the user is created',
+        readOnly: true,
+      }),
+    last_login_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Last time the user signed in to Zendesk Support or made an API request\nusing an API token\n',
+        readOnly: true,
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user\'s locale. A BCP-47 compliant tag for the locale. If both "locale" and "locale_id" are present on create or update, "locale_id" is ignored and only "locale" is used.',
+      }),
+    locale_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: "The user's language identifier" }),
+    moderator: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Designates whether the user has forum moderation capabilities' }),
+    name: z.string().openapi({ description: "The user's name" }),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Any notes you want to store about the user' }),
+    only_private_comments: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'true if the user can only create private comments' }),
+    organization_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          "The id of the user's organization. If the user has more than one [organization memberships](/api-reference/ticketing/organizations/organization_memberships/), the id of the user's default organization. If updating, see [Organization ID](#organization-id)",
+      }),
+    phone: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "The user's primary phone number. See [Phone Number](#phone-number) below",
+      }),
+    photo: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The user's profile picture represented as an [Attachment](/api-reference/ticketing/tickets/ticket-attachments/) object",
+      }),
+    remote_photo_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A URL pointing to the user's profile picture." }),
+    report_csv: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'This parameter is inert and has no effect. It may be deprecated in the\nfuture.\n\nPreviously, this parameter determined whether a user could access a CSV\nreport in a legacy Guide dashboard. This dashboard has been removed. See\n[Announcing Guide legacy reporting upgrade to\nExplore](https://support.zendesk.com/hc/en-us/articles/4762263171610-Announcing-Guide-legacy-reporting-upgrade-to-Explore-)\n',
+        readOnly: true,
+      }),
+    restricted_agent: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the agent has any restrictions; false for admins and unrestricted agents, true for other agents',
+        readOnly: true,
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The user\'s role. Possible values are "end-user", "agent", or "admin"',
+      }),
+    role_type: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The user's role id. 0 for a custom agent, 1 for a light agent, 2 for a chat agent, 3 for a chat agent added to the Support account as a contributor ([Chat Phase 4](https://support.zendesk.com/hc/en-us/articles/4408836197658#topic_p1h_sx4_pgb)), 4 for an admin, and 5 for a billing admin",
+        readOnly: true,
+      }),
+    separation: z
+      .object({
+        brand_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'The id of the brand the user is scoped to. Only present when "scope" is "brand".',
+            readOnly: true,
+          }),
+        scope: z
+          .enum(['account', 'brand'])
+          .openapi({
+            description:
+              'The separation scope. "account" means account-level access; "brand" means access limited to a specific brand.',
+            readOnly: true,
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'The brand separation scope for the user. Only present when the account has brand separation enabled.\nFor end users, indicates whether they are scoped to the full account or a specific brand.\nStaff users (agents and admins) always have `scope: "account"`.\n',
+        readOnly: true,
+        required: ['scope'],
+      }),
+    shared: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the user is shared from a different Zendesk Support instance. Shared users can be added to organizations but cannot be modified through update requests. Any attempt to update a shared user results in a 403 Forbidden error. Ticket sharing accounts only',
+        readOnly: true,
+      }),
+    shared_agent: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the user is a shared agent from a different Zendesk Support instance. Ticket sharing accounts only',
+        readOnly: true,
+      }),
+    shared_phone_number: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the `phone` number is shared or not. See [Phone Number](#phone-number) below',
+      }),
+    signature: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The user's signature. Only agents and admins can have signatures" }),
+    suspended: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the agent is suspended. Tickets from suspended users are also suspended, and these users cannot sign in to the end user portal',
+      }),
+    suspension_details: z
+      .object({
+        channels: z
+          .array(z.enum(['all', 'messaging']))
+          .min(1)
+          .openapi({
+            description:
+              'Channels on which the user is suspended. `["all"]` means suspended across every channel. If "all" is present, it must be the only element',
+          }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Channel-level suspension state for the user. The value is null if the user has no active channel-level suspension',
+        readOnly: true,
+        required: ['channels'],
+      }),
+    tags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: "The user's tags. Only present if your account has user tagging enabled",
+      }),
+    ticket_restriction: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies which tickets the user has access to. Possible values are: "organization", "groups", "assigned", "requested", null. "groups" and "assigned" are valid only for agents. If you pass an invalid value to an end user (for example, "groups"), they will be assigned to "requested", regardless of their previous access',
+      }),
+    time_zone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The user's time zone. See [Time Zone](#time-zone)" }),
+    two_factor_auth_enabled: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'If two factor authentication is enabled', readOnly: true }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the user was last updated', readOnly: true }),
+    url: z.string().exactOptional().openapi({ description: "The user's API url", readOnly: true }),
+    user_fields: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          "Values of custom fields in the user's profile. See [User Fields](#user-fields)",
+      }),
+    verified: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Any of the user's identities is verified. See [User Identities](/api-reference/ticketing/users/user_identities)",
+      }),
+  })
+  .openapi({
+    title: 'Users',
+    example: {
+      active: true,
+      alias: 'Mr. Johnny',
+      created_at: '2009-07-20T22:55:29Z',
+      custom_role_id: 9373643,
+      details: '',
+      email: 'johnny@example.com',
+      external_id: 'sai989sur98w9',
+      iana_time_zone: 'Pacific/Pago_Pago',
+      id: 35436,
+      last_login_at: '2011-05-05T10:38:52Z',
+      locale: 'en-US',
+      locale_id: 1,
+      moderator: true,
+      name: 'Johnny Agent',
+      notes: 'Johnny is a nice guy!',
+      only_private_comments: false,
+      organization_id: 57542,
+      phone: '+15551234567',
+      photo: {
+        content_type: 'image/png',
+        content_url: 'https://company.zendesk.com/photos/my_funny_profile_pic.png',
+        id: 928374,
+        name: 'my_funny_profile_pic.png',
+        size: 166144,
+        thumbnails: [
+          {
+            content_type: 'image/png',
+            content_url: 'https://company.zendesk.com/photos/my_funny_profile_pic_thumb.png',
+            id: 928375,
+            name: 'my_funny_profile_pic_thumb.png',
+            size: 58298,
+          },
+        ],
+      },
+      restricted_agent: true,
+      role: 'agent',
+      role_type: 0,
+      shared: false,
+      shared_agent: false,
+      signature: 'Have a nice day, Johnny',
+      suspended: true,
+      tags: ['enterprise', 'other_tag'],
+      ticket_restriction: 'assigned',
+      time_zone: 'Copenhagen',
+      updated_at: '2011-05-05T10:38:52Z',
+      url: 'https://company.zendesk.com/api/v2/users/35436',
+      user_fields: {
+        user_date: '2012-07-23T00:00:00Z',
+        user_decimal: 5.1,
+        user_dropdown: 'option_1',
+      },
+      verified: true,
+    },
+    required: ['name'],
+  })
+  .openapi('UserForAdmin')
+
+const UserForEndUserSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the user was created', readOnly: true }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The primary email address of this user. If the primary email address is not [verified](https://support.zendesk.com/hc/en-us/articles/4408886752410), the secondary email address is used',
+      }),
+    iana_time_zone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time zone for the user', readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned when creating users',
+        readOnly: true,
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The locale for this user', readOnly: true }),
+    locale_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The language identifier for this user',
+      }),
+    name: z.string().openapi({ description: 'The name of the user' }),
+    organization_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          "The id of the user's organization. If the user has more than one [organization memberships](/api-reference/ticketing/organizations/organization_memberships/), the id of the user's default organization. If updating, see [Organization ID](/api-reference/ticketing/users/users/#organization-id)",
+      }),
+    phone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The primary phone number of this user. See [Phone Number](/api-reference/ticketing/users/users/#phone-number) in the Users API',
+      }),
+    photo: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          "The user's profile picture represented as an [Attachment](/api-reference/ticketing/tickets/ticket-attachments/) object",
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The role of the user. Possible values: `"end-user"`, `"agent"`, `"admin"`',
+      }),
+    shared_phone_number: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the `phone` number is shared or not. See [Phone Number](/api-reference/ticketing/users/users/#phone-number) in the Users API',
+      }),
+    time_zone: z.string().exactOptional().openapi({ description: 'The time-zone of this user' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time of the last update of the user', readOnly: true }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The API url of this user', readOnly: true }),
+    verified: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Any of the user's identities is verified. See [User Identities](/api-reference/ticketing/users/user_identities)",
+      }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('UserForEndUser')
+
+const UserObjectSchema = z.union([UserForAdminSchema, UserForEndUserSchema]).openapi('UserObject')
+
+type TriggerRevisionsResponseType = {
+  after_cursor?: string | null
+  after_url?: string | null
+  before_cursor?: string | null
+  before_url?: string | null
+  count?: number
+  trigger_revisions?: (z.infer<typeof TriggerRevisionObjectSchema> & {
+    diff?: {
+      actions?: z.infer<typeof TriggerActionDiffObjectSchema>[]
+      active?: z.infer<typeof TriggerChangeObjectSchema>[]
+      category_name?: z.infer<typeof TriggerChangeObjectSchema>[]
+      conditions?: z.infer<typeof TriggerConditionsDiffObjectSchema>
+      description?: z.infer<typeof TriggerChangeObjectSchema>[]
+      source_id?: bigint
+      target_id?: bigint
+      title?: z.infer<typeof TriggerChangeObjectSchema>[]
+    }
+  })[]
+  users?: z.infer<typeof UserObjectSchema>[]
+}
+
+const ConditionObjectSchema = z
+  .object({
+    field: z.string().exactOptional().openapi({ description: 'The name of a ticket field' }),
+    operator: z.string().exactOptional().openapi({ description: 'A comparison operator' }),
+    value: z.string().exactOptional().openapi({ description: 'The value of a ticket field' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ConditionObject')
+
+const ConditionsObjectSchema = z
+  .object({
+    all: z
+      .array(ConditionObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Logical AND. Tickets must fulfill all of the conditions to be considered matching',
+      }),
+    any: z
+      .array(ConditionObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Logical OR. Tickets may satisfy any of the conditions to be considered matching',
+      }),
+  })
+  .openapi({
+    description:
+      'An object that describes the conditions under which the automation will execute. See [Conditions reference](/documentation/ticketing/reference-guides/conditions-reference)',
+    required: [],
+  })
+  .openapi('ConditionsObject')
+
+const ActionObjectSchema = z
+  .object({
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of a ticket field to modify' }),
+    value: z
+      .xor([
+        z.string(),
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.boolean(),
+        z.array(z.string()),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The new value of the field. Type depends on the action:\n- Most field-setting actions: string\n- Checkbox fields: boolean\n- id-valued fields: integer or numeric string\n- Notification actions (`notification_user`, `notification_group`, `notification_target`): array of strings\n',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ActionObject')
+
+const MacroCommonObjectSchema = z
+  .object({
+    actions: z
+      .array(ActionObjectSchema)
+      .openapi({
+        description:
+          'Each action describes what the macro will do. See [Actions reference](/documentation/ticketing/reference-guides/actions-reference)',
+      }),
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Useful for determining if the macro should be displayed' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the macro was created', readOnly: true }),
+    default: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, the macro is a default macro', readOnly: true }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The description of the macro' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The id automatically assigned when a macro is created',
+        readOnly: true,
+      }),
+    position: z.int().exactOptional().openapi({ description: 'The position of the macro' }),
+    raw_title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The raw format of the title of the macro' }),
+    restriction: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Access to this macro. A null value allows unrestricted access for all users in the account',
+      }),
+    title: z.string().openapi({ description: 'The title of the macro' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time of the last update of the macro', readOnly: true }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A URL to access the macro's details", readOnly: true }),
+  })
+  .openapi({
+    example: {
+      actions: [
+        { field: 'status', value: 'solved' },
+        { field: 'priority', value: 'normal' },
+        { field: 'type', value: 'incident' },
+        { field: 'assignee_id', value: 'current_user' },
+        { field: 'group_id', value: 'current_groups' },
+        {
+          field: 'comment_value',
+          value:
+            'Thanks for your request. This issue you reported is a known issue. For more information, please visit our forums. ',
+        },
+      ],
+      active: true,
+      created_at: '2019-09-16T02:17:38Z',
+      default: false,
+      description: null,
+      id: 360111062754,
+      position: 9999,
+      raw_title: 'Close and redirect to topics',
+      restriction: null,
+      title: 'Close and redirect to topics',
+      updated_at: '2019-09-16T02:17:38Z',
+      url: 'https://subdomain.zendesk.com/api/v2/macros/360111062754',
+    },
+    required: ['actions', 'title'],
+  })
+  .openapi('MacroCommonObject')
+
+const MacroObjectSchema = MacroCommonObjectSchema.and(
+  z
+    .object({
+      app_installation: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The app installation that requires each macro, if present' }),
+      attachments: z
+        .array(
+          z
+            .preprocess(
+              (val) =>
+                typeof val === 'number' && Number.isSafeInteger(val)
+                  ? BigInt(val)
+                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                    ? BigInt(val)
+                    : val,
+              z.int64(),
+            )
+            .openapi({ type: 'integer', format: 'int64' }),
+        )
+        .exactOptional()
+        .openapi({
+          description: "The ids of the macro's attachments. Present when the macro has attachments",
+          readOnly: true,
+        }),
+      categories: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'The macro categories' }),
+      permissions: z
+        .object({
+          can_edit: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'Whether the current user can edit the macro' }),
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'Permissions for each macro', required: [] }),
+      usage_1h: z
+        .int()
+        .exactOptional()
+        .openapi({ description: 'The number of times each macro has been used in the past hour' }),
+      usage_7d: z
+        .int()
+        .exactOptional()
+        .openapi({ description: 'The number of times each macro has been used in the past week' }),
+      usage_24h: z
+        .int()
+        .exactOptional()
+        .openapi({ description: 'The number of times each macro has been used in the past day' }),
+      usage_30d: z
+        .int()
+        .exactOptional()
+        .openapi({
+          description: 'The number of times each macro has been used in the past thirty days',
+        }),
+      valid: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            "Whether the macro's definition is currently valid. Present when the `valid` sideload is included",
+          readOnly: true,
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    example: {
+      actions: [],
+      active: true,
+      description: 'Sets the ticket status to `solved`',
+      id: 25,
+      position: 42,
+      restriction: { id: 4, type: 'User' },
+      title: 'Close and Save',
+    },
+  })
+  .openapi('MacroObject')
+
+const WorkspaceObjectSchema = z
+  .object({
+    activated: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, this workspace is available for use' }),
+    apps: z
+      .array(z.looseObject({}))
+      .exactOptional()
+      .openapi({ description: 'The apps associated to this workspace' }),
+    conditions: ConditionsObjectSchema.exactOptional(),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the workspace was created' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "User-defined description of this workspace's purpose" }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Automatically assigned upon creation',
+      }),
+    macro_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The ids of the macros associated to this workspace' }),
+    macros: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({ description: 'The ids of the macros associated to this workspace' }),
+    position: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Ordering of the workspace relative to other workspaces' }),
+    prefer_workspace_app_order: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If true, the order of apps within the workspace will be preserved',
+      }),
+    selected_macros: z
+      .array(MacroObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of the macro objects that will be used in this workspace. See [Macros](/api-reference/ticketing/business-rules/macros/)',
+      }),
+    ticket_form_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The id of the ticket web form associated to this workspace',
+      }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the workspace' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time of the last update of the workspace' }),
+    url: z.string().exactOptional().openapi({ description: 'The URL for this resource' }),
+  })
+  .openapi({ required: [] })
+  .openapi('WorkspaceObject')
+
+type WorkspaceResponseType = { workspaces?: z.infer<typeof WorkspaceObjectSchema>[] } & z.infer<
+  typeof OffsetPaginationObjectSchema
+>
+
 const AccessRuleConditionSchema = z
   .object({
     field: z
@@ -613,8 +5093,7 @@ const AccountSettingsApprovalsInputSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description:
-          'Rejected with a 422 ("Approvals Slack integration is not enabled for this\naccount") unless the account has `has_approvals_slack_notifications?`\n(`validate_approvals_slack_workspace`, `settings_controller.rb`).\n',
+        description: 'Slack workspace identifier for the Approvals Slack integration.\n',
       }),
   })
   .openapi({
@@ -851,6 +5330,22 @@ const AccountSettingsEmailInputSchema = z
   .object({
     accept_wildcard_emails: z.boolean().exactOptional(),
     custom_dkim_domain: z.boolean().exactOptional(),
+    email_category_outcome_overrides: z
+      .object({
+        adult_content: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        blocklisted: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        marketing: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        phishing: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        scam: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        slightly_spam: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        spam: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether emails that match given categories follow the default outcome or experience overrides to accept or suspend. Only present when the feature is available for the account.',
+        required: [],
+      }),
     email_hc_ai_agent_comments: z
       .boolean()
       .exactOptional()
@@ -913,6 +5408,22 @@ const AccountSettingsEmailObjectSchema = z
   .object({
     accept_wildcard_emails: z.boolean().exactOptional(),
     custom_dkim_domain: z.boolean().exactOptional(),
+    email_category_outcome_overrides: z
+      .object({
+        adult_content: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        blocklisted: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        marketing: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        phishing: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        scam: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        slightly_spam: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+        spam: z.enum(['default', 'accept', 'suspend']).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether emails that match given categories follow the default outcome or experience overrides to accept or suspend. Only present when the feature is available for the account.',
+        required: [],
+      }),
     email_hc_ai_agent_comments: z
       .boolean()
       .exactOptional()
@@ -2994,38 +7505,6 @@ const AcknowledgedRisksResponseSchema = CursorPaginationMetaSchema.and(
     .openapi({ required: [] }),
 ).openapi('AcknowledgedRisksResponse')
 
-const ActionObjectSchema = z
-  .object({
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of a ticket field to modify' }),
-    value: z
-      .xor([
-        z.string(),
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.boolean(),
-        z.array(z.string()),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The new value of the field. Type depends on the action:\n- Most field-setting actions: string\n- Checkbox fields: boolean\n- id-valued fields: integer or numeric string\n- Notification actions (`notification_user`, `notification_group`, `notification_target`): array of strings\n',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ActionObject')
-
 const ActionsObjectSchema = z
   .object({ actions: z.array(ActionObjectSchema).exactOptional() })
   .openapi({ required: [] })
@@ -3043,533 +7522,6 @@ const ActivitiesCountResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('ActivitiesCountResponse')
-
-const UserForAdminSchema = z
-  .object({
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'false if the user has been deleted', readOnly: true }),
-    agent_brand_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'PUT or POST requests only. Assigns agent or agents to a brand. For more information, see [Agent brand ids](#agent-brand-ids)',
-      }),
-    alias: z.string().exactOptional().openapi({ description: 'An alias displayed to end users' }),
-    chat_only: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the user is a chat-only agent', readOnly: true }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the user was created', readOnly: true }),
-    custom_role_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'A custom role if the user is an agent on the Enterprise plan or above',
-      }),
-    default_group_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: "The id of the user's default group",
-      }),
-    details: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Any details you want to store about the user, such as an address' }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The user's primary email address. *Writeable on create only. On update, a secondary email is added. See [Email Address](#email-address)",
-      }),
-    external_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier from another system. The API treats the id as case insensitive. Example: "ian1" and "IAN1" are the same value.',
-      }),
-    iana_time_zone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time zone for the user', readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned when the user is created',
-        readOnly: true,
-      }),
-    last_login_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Last time the user signed in to Zendesk Support or made an API request\nusing an API token\n',
-        readOnly: true,
-      }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user\'s locale. A BCP-47 compliant tag for the locale. If both "locale" and "locale_id" are present on create or update, "locale_id" is ignored and only "locale" is used.',
-      }),
-    locale_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: "The user's language identifier" }),
-    moderator: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Designates whether the user has forum moderation capabilities' }),
-    name: z.string().openapi({ description: "The user's name" }),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Any notes you want to store about the user' }),
-    only_private_comments: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'true if the user can only create private comments' }),
-    organization_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          "The id of the user's organization. If the user has more than one [organization memberships](/api-reference/ticketing/organizations/organization_memberships/), the id of the user's default organization. If updating, see [Organization ID](#organization-id)",
-      }),
-    phone: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "The user's primary phone number. See [Phone Number](#phone-number) below",
-      }),
-    photo: z
-      .looseObject({})
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The user's profile picture represented as an [Attachment](/api-reference/ticketing/tickets/ticket-attachments/) object",
-      }),
-    remote_photo_url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "A URL pointing to the user's profile picture." }),
-    report_csv: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'This parameter is inert and has no effect. It may be deprecated in the\nfuture.\n\nPreviously, this parameter determined whether a user could access a CSV\nreport in a legacy Guide dashboard. This dashboard has been removed. See\n[Announcing Guide legacy reporting upgrade to\nExplore](https://support.zendesk.com/hc/en-us/articles/4762263171610-Announcing-Guide-legacy-reporting-upgrade-to-Explore-)\n',
-        readOnly: true,
-      }),
-    restricted_agent: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the agent has any restrictions; false for admins and unrestricted agents, true for other agents',
-        readOnly: true,
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The user\'s role. Possible values are "end-user", "agent", or "admin"',
-      }),
-    role_type: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The user's role id. 0 for a custom agent, 1 for a light agent, 2 for a chat agent, 3 for a chat agent added to the Support account as a contributor ([Chat Phase 4](https://support.zendesk.com/hc/en-us/articles/4408836197658#topic_p1h_sx4_pgb)), 4 for an admin, and 5 for a billing admin",
-        readOnly: true,
-      }),
-    separation: z
-      .object({
-        brand_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description:
-              'The id of the brand the user is scoped to. Only present when "scope" is "brand".',
-            readOnly: true,
-          }),
-        scope: z
-          .enum(['account', 'brand'])
-          .openapi({
-            description:
-              'The separation scope. "account" means account-level access; "brand" means access limited to a specific brand.',
-            readOnly: true,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'The brand separation scope for the user. Only present when the account has brand separation enabled.\nFor end users, indicates whether they are scoped to the full account or a specific brand.\nStaff users (agents and admins) always have `scope: "account"`.\n',
-        readOnly: true,
-        required: ['scope'],
-      }),
-    shared: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the user is shared from a different Zendesk Support instance. Shared users can be added to organizations but cannot be modified through update requests. Any attempt to update a shared user results in a 403 Forbidden error. Ticket sharing accounts only',
-        readOnly: true,
-      }),
-    shared_agent: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the user is a shared agent from a different Zendesk Support instance. Ticket sharing accounts only',
-        readOnly: true,
-      }),
-    shared_phone_number: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the `phone` number is shared or not. See [Phone Number](#phone-number) below',
-      }),
-    signature: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The user's signature. Only agents and admins can have signatures" }),
-    suspended: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the agent is suspended. Tickets from suspended users are also suspended, and these users cannot sign in to the end user portal',
-      }),
-    suspension_details: z
-      .object({
-        channels: z
-          .array(z.enum(['all', 'messaging']))
-          .min(1)
-          .openapi({
-            description:
-              'Channels on which the user is suspended. `["all"]` means suspended across every channel. If "all" is present, it must be the only element',
-          }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Channel-level suspension state for the user. The value is null if the user has no active channel-level suspension',
-        readOnly: true,
-        required: ['channels'],
-      }),
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: "The user's tags. Only present if your account has user tagging enabled",
-      }),
-    ticket_restriction: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies which tickets the user has access to. Possible values are: "organization", "groups", "assigned", "requested", null. "groups" and "assigned" are valid only for agents. If you pass an invalid value to an end user (for example, "groups"), they will be assigned to "requested", regardless of their previous access',
-      }),
-    time_zone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The user's time zone. See [Time Zone](#time-zone)" }),
-    two_factor_auth_enabled: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'If two factor authentication is enabled', readOnly: true }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the user was last updated', readOnly: true }),
-    url: z.string().exactOptional().openapi({ description: "The user's API url", readOnly: true }),
-    user_fields: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          "Values of custom fields in the user's profile. See [User Fields](#user-fields)",
-      }),
-    verified: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Any of the user's identities is verified. See [User Identities](/api-reference/ticketing/users/user_identities)",
-      }),
-  })
-  .openapi({
-    title: 'Users',
-    example: {
-      active: true,
-      alias: 'Mr. Johnny',
-      created_at: '2009-07-20T22:55:29Z',
-      custom_role_id: 9373643,
-      details: '',
-      email: 'johnny@example.com',
-      external_id: 'sai989sur98w9',
-      iana_time_zone: 'Pacific/Pago_Pago',
-      id: 35436,
-      last_login_at: '2011-05-05T10:38:52Z',
-      locale: 'en-US',
-      locale_id: 1,
-      moderator: true,
-      name: 'Johnny Agent',
-      notes: 'Johnny is a nice guy!',
-      only_private_comments: false,
-      organization_id: 57542,
-      phone: '+15551234567',
-      photo: {
-        content_type: 'image/png',
-        content_url: 'https://company.zendesk.com/photos/my_funny_profile_pic.png',
-        id: 928374,
-        name: 'my_funny_profile_pic.png',
-        size: 166144,
-        thumbnails: [
-          {
-            content_type: 'image/png',
-            content_url: 'https://company.zendesk.com/photos/my_funny_profile_pic_thumb.png',
-            id: 928375,
-            name: 'my_funny_profile_pic_thumb.png',
-            size: 58298,
-          },
-        ],
-      },
-      restricted_agent: true,
-      role: 'agent',
-      role_type: 0,
-      shared: false,
-      shared_agent: false,
-      signature: 'Have a nice day, Johnny',
-      suspended: true,
-      tags: ['enterprise', 'other_tag'],
-      ticket_restriction: 'assigned',
-      time_zone: 'Copenhagen',
-      updated_at: '2011-05-05T10:38:52Z',
-      url: 'https://company.zendesk.com/api/v2/users/35436',
-      user_fields: {
-        user_date: '2012-07-23T00:00:00Z',
-        user_decimal: 5.1,
-        user_dropdown: 'option_1',
-      },
-      verified: true,
-    },
-    required: ['name'],
-  })
-  .openapi('UserForAdmin')
-
-const UserForEndUserSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the user was created', readOnly: true }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The primary email address of this user. If the primary email address is not [verified](https://support.zendesk.com/hc/en-us/articles/4408886752410), the secondary email address is used',
-      }),
-    iana_time_zone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time zone for the user', readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned when creating users',
-        readOnly: true,
-      }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The locale for this user', readOnly: true }),
-    locale_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The language identifier for this user',
-      }),
-    name: z.string().openapi({ description: 'The name of the user' }),
-    organization_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          "The id of the user's organization. If the user has more than one [organization memberships](/api-reference/ticketing/organizations/organization_memberships/), the id of the user's default organization. If updating, see [Organization ID](/api-reference/ticketing/users/users/#organization-id)",
-      }),
-    phone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The primary phone number of this user. See [Phone Number](/api-reference/ticketing/users/users/#phone-number) in the Users API',
-      }),
-    photo: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          "The user's profile picture represented as an [Attachment](/api-reference/ticketing/tickets/ticket-attachments/) object",
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The role of the user. Possible values: `"end-user"`, `"agent"`, `"admin"`',
-      }),
-    shared_phone_number: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the `phone` number is shared or not. See [Phone Number](/api-reference/ticketing/users/users/#phone-number) in the Users API',
-      }),
-    time_zone: z.string().exactOptional().openapi({ description: 'The time-zone of this user' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time of the last update of the user', readOnly: true }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The API url of this user', readOnly: true }),
-    verified: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Any of the user's identities is verified. See [User Identities](/api-reference/ticketing/users/user_identities)",
-      }),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('UserForEndUser')
-
-const UserObjectSchema = z.union([UserForAdminSchema, UserForEndUserSchema]).openapi('UserObject')
 
 const ActivityObjectSchema = z
   .object({
@@ -4221,13 +8173,14 @@ const AiAgentProfileCreateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Name of the service that owns this profile. Known values are "commerce_agent_engine", "ultimate", and "voice". Send null to store no service.',
+              'Deprecated and ignored. The owning service is the authenticated system user.',
+            deprecated: true,
           }),
       })
       .refine((val) => Object.keys(val).length >= 1)
       .openapi({
         description:
-          '`name`, `service`, and `avatar_upload_id` are each optional, and at least one must be present.\nSend null to store that field as null. Omit `avatar_upload_id` or send null to create the profile without an avatar.\nAn empty object is rejected.\n',
+          '`name` and `avatar_upload_id` are each optional. `service` is deprecated and ignored. At least one field must be present.\nSend null to store that field as null. Omit `avatar_upload_id` or send null to create the profile without an avatar.\nAn empty object is rejected.\n',
         required: [],
       }),
   })
@@ -4325,7 +8278,7 @@ const AiAgentProfileObjectSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Name of the service that owns this profile. Known values are "commerce_agent_engine", "ultimate", and "voice".\nStored and returned as given. The list endpoint can filter on an exact match.\n',
+          'Name of the service that owns this profile. Set from the authenticated system user when the profile is created, and never changed afterwards.\nCallers only see profiles owned by their own service.\n',
       }),
     updated_at: z.iso
       .datetime({ offset: true })
@@ -4434,13 +8387,14 @@ const AiAgentProfileUpdateRequestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Name of the service that owns this profile. Known values are "commerce_agent_engine", "ultimate", and "voice". Omit it to leave the current value. Send null to clear it.',
+              'Deprecated and ignored. The owning service is the authenticated system user. The stored service is never changed by an update.',
+            deprecated: true,
           }),
       })
       .refine((val) => Object.keys(val).length >= 1)
       .openapi({
         description:
-          'Omitted `name`, `service`, and `avatar_upload_id` values stay as they are.\nSend null to clear a field. Send a new `avatar_upload_id` to replace the stored upload id, or null to remove the avatar.\nAt least one field must be present. An empty object is rejected.\n',
+          'Omitted `name` and `avatar_upload_id` values stay as they are. `service` is deprecated and ignored.\nSend null to clear a field. Send a new `avatar_upload_id` to replace the stored upload id, or null to remove the avatar.\nAt least one field must be present. An empty object is rejected.\n',
         required: [],
       }),
   })
@@ -4756,6 +8710,14 @@ const ApprovalClarificationFlowMessagesShowResponseSchema = z
 
 const ApprovalRequestCreateRequestSchema = z
   .object({
+    approval_attachment_tokens: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Staged upload tokens returned when uploading files for the approval request.\nEach token is consumed once to attach its staged file to the approval request at\ncreation time. Maximum five tokens, matching the attachments limit.\n',
+        example: ['01JAR7ZK3M9Q2VX8B5C4D6E7F8', '01JAR7ZK3M9Q2VX8B5C4D6E7F9'],
+      }),
     approval_requests: z
       .array(
         z
@@ -5378,7 +9340,7 @@ const ApprovalRequestShowResponseSchema = z
           }),
         ticket_details: z
           .object({
-            custom_fields: z.array(z.object({})).exactOptional(),
+            custom_fields: z.array(z.looseObject({})).exactOptional(),
             id: z
               .preprocess(
                 (val) =>
@@ -6282,144 +10244,6 @@ const AssigneeFieldAssignableGroupsResponseSchema = z
   })
   .openapi('AssigneeFieldAssignableGroupsResponse')
 
-const AttachmentBaseObjectSchema = z
-  .object({
-    content_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The content type of the image. Example value: "image/png"',
-        readOnly: true,
-      }),
-    content_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A full URL where the attachment image file can be downloaded. The file may be hosted externally so take care not to inadvertently send Zendesk authentication credentials. See [Working with url properties](/documentation/api-basics/best-practices/working-with-url-properties/)',
-        readOnly: true,
-      }),
-    deleted: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, the attachment has been deleted', readOnly: true }),
-    file_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the image file', readOnly: true }),
-    height: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The height of the image file in pixels. If height is unknown, returns null',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned when created',
-        readOnly: true,
-      }),
-    inline: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If true, the attachment is excluded from the attachment list and the attachment's URL\ncan be referenced within the comment of a ticket. Default is false\n",
-        readOnly: true,
-      }),
-    malware_access_override: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If true, you can download an attachment flagged as malware. If false, you can't download such an attachment.",
-        readOnly: true,
-      }),
-    malware_scan_result: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The result of the malware scan. There is a delay between the time the attachment is uploaded and when the malware scan is completed. Usually the scan is done within a few seconds, but high load conditions can delay the scan results. Possible values: "malware_found", "malware_not_found", "failed_to_scan", "not_scanned"',
-        readOnly: true,
-      }),
-    mapped_content_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The URL the attachment image file has been mapped to',
-        readOnly: true,
-      }),
-    size: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The size of the image file in bytes', readOnly: true }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A URL to access the attachment details', readOnly: true }),
-    width: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The width of the image file in pixels. If width is unknown, returns null',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentBaseObject')
-
-const AttachmentThumbnailsSchema = z
-  .object({
-    thumbnails: z
-      .array(AttachmentBaseObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of attachment objects. Note that photo thumbnails do not have thumbnails',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentThumbnails')
-
-const AttachmentObjectSchema = AttachmentBaseObjectSchema.and(AttachmentThumbnailsSchema)
-  .openapi({
-    description:
-      'A file represented as an [Attachment](/api-reference/ticketing/tickets/ticket-attachments/) object',
-    example: {
-      content_type: 'image/png',
-      content_url: 'https://company.zendesk.com/attachments/my_funny_profile_pic.png',
-      file_name: 'my_funny_profile_pic.png',
-      id: 928374,
-      size: 166144,
-      thumbnails: [
-        {
-          content_type: 'image/png',
-          content_url: 'https://company.zendesk.com/attachments/my_funny_profile_pic_thumb.png',
-          file_name: 'my_funny_profile_pic_thumb.png',
-          id: 928375,
-          size: 58298,
-        },
-      ],
-    },
-  })
-  .openapi('AttachmentObject')
-
 const AttachmentResponseSchema = z
   .object({ attachment: AttachmentObjectSchema.exactOptional() })
   .openapi({ required: [] })
@@ -6587,67 +10411,6 @@ const AuditLogsResponseSchema = z
   .openapi({ required: [] })
   .openapi('AuditLogsResponse')
 
-const ViaObjectSchema = z
-  .object({
-    channel: z
-      .xor([z.string(), z.int()])
-      .exactOptional()
-      .openapi({
-        description:
-          'This tells you how the ticket or event was created. Examples: "web", "mobile", "rule", "system".\nMay be a string name or an integer channel ID.\n',
-      }),
-    source: z
-      .looseObject({
-        from: z
-          .object({
-            address: z.string().nullable().exactOptional(),
-            id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({ type: ['integer', 'null'], format: 'int64' }),
-            name: z.string().nullable().exactOptional(),
-            title: z.string().nullable().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        rel: z.string().nullable().exactOptional(),
-        to: z
-          .object({ address: z.string().exactOptional(), name: z.string().exactOptional() })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'For some channels a source object gives more information about how or why the ticket or event was created\n',
-        required: [],
-      }),
-  })
-  .openapi({
-    description:
-      'An object explaining how the ticket was created. See the [Via object reference](/documentation/ticketing/reference-guides/via-object-reference)\n',
-    example: {
-      channel: 'rule',
-      source: {
-        from: { id: 22472716, title: 'Assign to first responder' },
-        rel: 'trigger',
-        to: {},
-      },
-    },
-    readOnly: true,
-    required: [],
-  })
-  .openapi('ViaObject')
-
 const AuditObjectSchema = z
   .object({
     author_id: z
@@ -6700,7 +10463,7 @@ const AuditObjectSchema = z
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-    metadata: z.object({}).exactOptional().openapi({ readOnly: true }),
+    metadata: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     ticket_id: z
       .preprocess(
         (val) =>
@@ -6792,39 +10555,6 @@ const AutomationBulkUpdateItemSchema = z
   .openapi({ example: { active: true, id: 26, position: 8 }, required: ['id'] })
   .openapi('AutomationBulkUpdateItem')
 
-const ConditionObjectSchema = z
-  .object({
-    field: z.string().exactOptional().openapi({ description: 'The name of a ticket field' }),
-    operator: z.string().exactOptional().openapi({ description: 'A comparison operator' }),
-    value: z.string().exactOptional().openapi({ description: 'The value of a ticket field' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ConditionObject')
-
-const ConditionsObjectSchema = z
-  .object({
-    all: z
-      .array(ConditionObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Logical AND. Tickets must fulfill all of the conditions to be considered matching',
-      }),
-    any: z
-      .array(ConditionObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Logical OR. Tickets may satisfy any of the conditions to be considered matching',
-      }),
-  })
-  .openapi({
-    description:
-      'An object that describes the conditions under which the automation will execute. See [Conditions reference](/documentation/ticketing/reference-guides/conditions-reference)',
-    required: [],
-  })
-  .openapi('ConditionsObject')
-
 const AutomationInputSchema = z
   .object({
     actions: z
@@ -6861,7 +10591,7 @@ const AutomationInputSchema = z
           'Logical OR conditions. Accepted as a top-level alternative to `conditions.any`.\n`null` is accepted and treated as omitted\n',
       }),
     conditions: z
-      .union([ConditionsObjectSchema, z.object({}).nullable()])
+      .union([ConditionsObjectSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -7039,7 +10769,7 @@ const AutomationUpdateInputSchema = z
           'Logical OR conditions. Accepted as a top-level alternative to `conditions.any`.\n`null` leaves the stored conditions unchanged. An empty array `[]` is not the same thing: it\nbuilds an empty definition, which is rejected with a 422\n',
       }),
     conditions: z
-      .union([ConditionsObjectSchema, z.object({}).nullable()])
+      .union([ConditionsObjectSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -7209,23 +10939,6 @@ const AvailableAgentsResponseSchema = z
   .and(CursorPaginationMetaSchema)
   .openapi('AvailableAgentsResponse')
 
-const ErrorSchema = z
-  .object({
-    code: z.string(),
-    detail: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    links: z.object({}).exactOptional(),
-    source: z.object({}).exactOptional(),
-    status: z.string().exactOptional(),
-    title: z.string(),
-  })
-  .openapi({ required: ['code', 'title'] })
-  .openapi('Error')
-
-const BatchErrorItemSchema = ErrorSchema.and(
-  z.object({ trigger_id: z.string().exactOptional() }).openapi({ required: [] }),
-).openapi('BatchErrorItem')
-
 const TriggerCategoryBatchRequestSchema = z
   .object({
     id: z.string(),
@@ -7284,205 +10997,7 @@ const BatchJobRequestSchema = z
   .openapi({ required: [] })
   .openapi('BatchJobRequest')
 
-const TriggerCategorySchema = z
-  .object({
-    created_at: z.string().exactOptional().openapi({ readOnly: true }),
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    name: z.string().exactOptional(),
-    position: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    updated_at: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('TriggerCategory')
-
-const TriggerActionObjectSchema = z
-  .object({
-    field: z.string().exactOptional(),
-    value: z.xor([z.string(), z.int(), z.array(z.xor([z.string(), z.int()]))]).exactOptional(),
-  })
-  .openapi({ example: { field: 'status', value: 'solved' }, required: [] })
-  .openapi('TriggerActionObject')
-
-const TriggerConditionObjectSchema = z
-  .object({
-    field: z.string().exactOptional(),
-    operator: z.string().exactOptional(),
-    value: z.xor([z.string(), z.int(), z.array(z.xor([z.string(), z.int()]))]).exactOptional(),
-  })
-  .openapi({ example: { field: 'status', operator: 'less_than', value: 'solved' }, required: [] })
-  .openapi('TriggerConditionObject')
-
-const TriggerConditionsObjectSchema = z
-  .object({
-    all: z.array(TriggerConditionObjectSchema).nullable().exactOptional(),
-    any: z.array(TriggerConditionObjectSchema).nullable().exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object that describes the circumstances under which the trigger performs its actions. See [Conditions reference](/documentation/ticketing/reference-guides/conditions-reference)',
-    example: {
-      all: [
-        { field: 'status', operator: 'less_than', value: 'solved' },
-        { field: 'assignee_id', operator: 'is', value: '296220096' },
-        { field: 'custom_status_id', operator: 'includes', value: ['1', '2'] },
-      ],
-      any: [
-        { field: 'status', operator: 'less_than', value: 'solved' },
-        { field: 'custom_status_id', operator: 'includes', value: ['1', '2'] },
-      ],
-    },
-    required: [],
-  })
-  .openapi('TriggerConditionsObject')
-
-const TriggerObjectSchema = z
-  .object({
-    actions: z
-      .array(TriggerActionObjectSchema)
-      .openapi({
-        description:
-          'An array of actions describing what the ticket trigger will do. See [Actions reference](/documentation/ticketing/reference-guides/actions-reference)',
-      }),
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the ticket trigger is active' }),
-    all: z
-      .array(TriggerConditionObjectSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Legacy format for conditions (deprecated). Use conditions.all instead',
-      }),
-    any: z
-      .array(TriggerConditionObjectSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Legacy format for conditions (deprecated). Use conditions.any instead',
-      }),
-    brand_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the brand the ticket trigger belongs to',
-      }),
-    category: z
-      .object({ name: z.string().exactOptional(), position: z.int().exactOptional() })
-      .exactOptional()
-      .openapi({
-        description: 'A category to create and assign to the trigger',
-        writeOnly: true,
-        required: [],
-      }),
-    category_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The ID of the category the ticket trigger belongs to' }),
-    conditions: TriggerConditionsObjectSchema.exactOptional(),
-    created_at: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time the ticket trigger was created', readOnly: true }),
-    default: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If true, the ticket trigger is a standard trigger',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the ticket trigger' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned when created',
-        readOnly: true,
-      }),
-    position: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Position of the ticket trigger, determines the order they will execute in',
-      }),
-    raw_title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The raw format of the title of the ticket trigger' }),
-    restriction: z
-      .looseObject({})
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Access restriction for this trigger. A null value allows unrestricted access',
-      }),
-    title: z.string().openapi({ description: 'The title of the ticket trigger' }),
-    updated_at: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time of the last update of the ticket trigger',
-        readOnly: true,
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The url of the ticket trigger', readOnly: true }),
-  })
-  .openapi({
-    example: {
-      actions: [{}],
-      active: true,
-      category_id: '10026',
-      conditions: {},
-      created_at: '2012-09-25T22:50:26Z',
-      default: false,
-      description: 'Close and save a ticket',
-      id: 25,
-      position: 8,
-      raw_title: 'Close and Save',
-      title: 'Close and Save',
-      updated_at: '2012-09-25T22:50:26Z',
-      url: 'http://{subdomain}.zendesk.com/api/v2/triggers/25',
-    },
-    required: ['actions', 'title'],
-  })
-  .openapi('TriggerObject')
-
-const BatchJobResponseSchema = z
+const BatchJobResponseSchema: z.ZodType<BatchJobResponseType> = z
   .object({
     errors: z.array(BatchErrorItemSchema).exactOptional(),
     results: z
@@ -7524,1455 +11039,12 @@ const BookmarkCreateRequestSchema = z
   .openapi({ required: [] })
   .openapi('BookmarkCreateRequest')
 
-const CollaboratorObjectSchema = z
-  .xor([
-    z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({ type: 'integer', format: 'int64', description: 'User ID' }),
-    z.string().openapi({ description: 'Email address or user ID as a string' }),
-    z
-      .looseObject({ email: z.email(), name: z.string().exactOptional() })
-      .openapi({ description: 'User with name and email', required: ['email'] }),
-  ])
-  .openapi({
-    description:
-      'A collaborator can be specified as a user ID (integer or string), an email address string,\nor an object with name and email properties.\n',
-    example: { email: 'someone@example.com', name: 'Someone Special' },
-  })
-  .openapi('CollaboratorObject')
-
-const TicketAuditViaObjectSchema = z
-  .object({
-    channel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This tells you how the ticket or event was created. Examples: "web", "mobile", "rule", "system"',
-        readOnly: true,
-      }),
-    source: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          'For some channels a source object gives more information about how or why the ticket or event was created',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Describes how the object was created. See the [Via object reference](/documentation/ticketing/reference-guides/via-object-reference)',
-    required: [],
-  })
-  .openapi('TicketAuditViaObject')
-
-const TicketCommentObjectSchema = z
-  .object({
-    add_short_url: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Internal flag for adding short URLs to the comment' }),
-    attachments: z
-      .array(AttachmentObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Attachments, if any. See [Attachment](/api-reference/ticketing/tickets/ticket-attachments/)',
-        readOnly: true,
-      }),
-    audit_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The id of the ticket audit record. See [Show Audit](/api-reference/ticketing/tickets/ticket_audits/#show-audit)',
-        readOnly: true,
-      }),
-    author_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The id of the comment author. If null or omitted on create, defaults to the authenticated user. See [Author id](#author-id)',
-      }),
-    body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The comment string. See [Bodies](#bodies)' }),
-    channel_back: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Internal channel back identifier for the comment' }),
-    channel_source_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Internal channel source identifier for the comment' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the comment was created', readOnly: true }),
-    html_body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The comment formatted as HTML. See [Bodies](#bodies)' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned when the comment is created',
-        readOnly: true,
-      }),
-    metadata: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          'System information (web client, IP address, etc.) and comment flags, if any. See [Comment flags](#comment-flags)',
-        readOnly: true,
-      }),
-    plain_body: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The comment presented as plain text. See [Bodies](#bodies)',
-        readOnly: true,
-      }),
-    public: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'true if a public comment; false if an internal note. The initial value set on ticket creation persists for any additional comment unless you change it',
-      }),
-    translate_to: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The locale code to translate the comment body to.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '`Comment` or `VoiceComment`. The JSON object for adding voice comments to tickets is different. See [Adding voice comments to tickets](/documentation/ticketing/managing-tickets/adding-voice-comments-to-tickets)',
-        readOnly: true,
-      }),
-    uploads: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of tokens received from [uploading files](/api-reference/ticketing/tickets/ticket-attachments/#upload-files) for comment attachments. The files are attached by creating or updating tickets with the tokens. See [Attaching files](/api-reference/ticketing/tickets/tickets/#attaching-files) in Tickets',
-      }),
-    via: TicketAuditViaObjectSchema.exactOptional(),
-  })
-  .openapi({
-    example: {
-      attachments: [
-        {
-          content_type: 'text/plain',
-          content_url: 'https://company.zendesk.com/attachments/crash.log',
-          file_name: 'crash.log',
-          id: 498483,
-          size: 2532,
-          thumbnails: [],
-        },
-      ],
-      author_id: 123123,
-      body: 'Thanks for your help!',
-      created_at: '2009-07-20T22:55:29Z',
-      id: 1274,
-      metadata: {
-        system: {
-          client:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-          ip_address: '1.1.1.1',
-          latitude: -37.000000000001,
-          location: 'Melbourne, 07, Australia',
-          longitude: 144.0000000000002,
-        },
-        via: { channel: 'web', source: { from: {}, rel: 'web_widget', to: {} } },
-      },
-      public: true,
-      type: 'Comment',
-    },
-    required: [],
-  })
-  .openapi('TicketCommentObject')
-
-const TicketFieldValueInputSchema = z
-  .object({
-    id: z
-      .xor([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .openapi({ description: 'The ID of the custom field', example: 27642 }),
-    value: z
-      .xor([z.string(), z.number(), z.boolean(), z.array(z.string()), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        description:
-          'The value to assign to the custom field.\nType depends on the field configuration:\n- Text/textarea: string\n- Checkbox: boolean or "true"/"false" string\n- Dropdown/tagger: string or array of strings (multi-select)\n- Number/decimal: number or string representation\n- Date: string (ISO 8601 format)\n- Lookup: the target record\'s id, or an id prefixed with `external_id:` or `name:`\n- Multi-lookup: an array of target record ids, up to `max_selections` entries. Each write replaces the\n  entire set of selections. Unresolved ids are silently dropped. See\n  [Setting multi-lookup field values](/api-reference/ticketing/lookup_relationships/lookup_relationships/#setting-multi-lookup-field-values)\n- null when the field has no value set\n',
-        example: '745',
-      }),
-  })
-  .openapi({ description: 'A ticket custom field value assignment', required: ['id'] })
-  .openapi('TicketFieldValueInput')
-
-const FollowerObjectSchema = z
-  .object({
-    action: z.enum(['put', 'delete']).exactOptional(),
-    user_email: z.email().exactOptional(),
-    user_id: z
-      .xor([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional(),
-    user_name: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('FollowerObject')
-
-const EmailCCObjectSchema = FollowerObjectSchema.and(
-  z
-    .object({
-      action: z.enum(['put', 'delete']).exactOptional(),
-      user_email: z.string().exactOptional(),
-      user_name: z.string().exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('EmailCCObject')
-
-const SharingAgreementInputSchema = z
-  .object({
-    custom_fields: z.array(TicketFieldValueInputSchema).exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ID of the sharing agreement',
-      }),
-  })
-  .openapi({ description: 'A sharing agreement configuration to apply to a ticket', required: [] })
-  .openapi('SharingAgreementInput')
-
-const TicketObjectSchema = z
-  .object({
-    additional_collaborators: z
-      .array(CollaboratorObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. An array of numeric IDs, emails, or objects containing name and email properties. See [Setting Collaborators](/api-reference/ticketing/tickets/tickets/#setting-collaborators). An email notification is sent to them when the ticket is updated',
-        writeOnly: true,
-      }),
-    allow_attachments: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Permission for agents to add add attachments to a comment. Defaults to true',
-        readOnly: true,
-      }),
-    allow_channelback: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Is false if channelback is disabled, true otherwise. Only applicable for channels framework ticket',
-        readOnly: true,
-      }),
-    assignee_email: z
-      .email()
-      .exactOptional()
-      .openapi({
-        description: 'Write only. The email address of the agent to assign the ticket to',
-        writeOnly: true,
-      }),
-    assignee_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'The agent currently assigned to the ticket',
-      }),
-    attribute_value_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. An array of the IDs of attribute values to be associated with the ticket',
-        writeOnly: true,
-      }),
-    brand_id: z
-      .xor([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-        z.null().nullable(),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The id of the brand this ticket is associated with. See [Setting up multiple brands](https://support.zendesk.com/hc/en-us/articles/4408829476378)',
-      }),
-    collaborator_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({ description: "The ids of users currently CC'ed on the ticket" }),
-    collaborators: z
-      .array(CollaboratorObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Write only. Users to add as cc's when creating a ticket. See [Setting Collaborators](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-collaborators)",
-        writeOnly: true,
-      }),
-    comment: TicketCommentObjectSchema.exactOptional(),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'When this record was created', readOnly: true }),
-    custom_fields: z
-      .array(
-        z.xor([
-          TicketFieldValueInputSchema,
-          z
-            .looseObject({})
-            .refine((val) => Object.keys(val).length >= 1)
-            .refine(
-              (val) =>
-                !z
-                  .unknown()
-                  .superRefine((val, ctx) => {
-                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                      if (!Object.hasOwn(val, 'id')) {
-                        ctx.addIssue({ code: 'custom' })
-                      }
-                    }
-                  })
-                  .openapi({ required: ['id'] })
-                  .safeParse(val).success,
-            )
-            .openapi({
-              description: 'Alternative format using field ID as key, e.g. {"123": "value"}',
-            }),
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom field values to set on the ticket.\nEach entry specifies a field ID and its value.\nSee [Setting custom field values](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-custom-field-values)\n',
-      }),
-    custom_status_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The custom ticket status id of the ticket. See [custom ticket statuses](#custom-ticket-statuses)',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The first comment on the ticket. When [creating a ticket](#create-ticket), use `comment` to set the description.\nSee [Description and first comment](#description-and-first-comment).\nOn create, can be set directly as an alternative to `comment`. Silently ignored on update.\n',
-      }),
-    due_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If this is a ticket of type "task" it has a due date.  Due date format uses [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format',
-      }),
-    email_cc_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          "The ids of agents or end users currently CC'ed on the ticket. See [CCs and followers resources](https://support.zendesk.com/hc/en-us/articles/4408822451482) in the Support Help Center",
-        readOnly: true,
-      }),
-    email_ccs: z
-      .array(EmailCCObjectSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. An array of objects that represent agent or end users email CCs to add or delete from the ticket. See [Setting email CCs](/documentation/ticketing/managing-tickets/creating-and-updating-tickets/#setting-email-ccs). Ignored when [CCs and followers](https://support.zendesk.com/hc/en-us/articles/4408822451482) is not enabled',
-        writeOnly: true,
-      }),
-    encoded_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "An encoded string representing the ticket's unique identifier",
-        readOnly: true,
-      }),
-    external_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'An id you can use to link Zendesk Support tickets to local records',
-      }),
-    fields: z
-      .array(
-        z.xor([
-          TicketFieldValueInputSchema,
-          z
-            .looseObject({})
-            .refine((val) => Object.keys(val).length >= 1)
-            .refine(
-              (val) =>
-                !z
-                  .unknown()
-                  .superRefine((val, ctx) => {
-                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                      if (!Object.hasOwn(val, 'id')) {
-                        ctx.addIssue({ code: 'custom' })
-                      }
-                    }
-                  })
-                  .openapi({ required: ['id'] })
-                  .safeParse(val).success,
-            )
-            .openapi({
-              description: 'Alternative format using field ID as key, e.g. {"123": "value"}',
-            }),
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Alias for custom_fields. Custom field values to set on the ticket.\nEach entry specifies a field ID and its value.\n',
-      }),
-    follower_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The ids of agents currently following the ticket. Ignored when [CCs and followers](https://support.zendesk.com/hc/en-us/articles/4408822451482) is not enabled',
-        readOnly: true,
-      }),
-    followers: z
-      .array(FollowerObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. An array of objects that represents agent followers to add or delete from the ticket. See [Setting followers](/documentation/ticketing/managing-tickets/creating-and-updating-tickets/#setting-followers). Ignored when [CCs and followers](https://support.zendesk.com/hc/en-us/articles/4408822451482) is not enabled',
-        writeOnly: true,
-      }),
-    followup_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The ids of the followups created from this ticket. Ids are only visible once the ticket is closed',
-        readOnly: true,
-      }),
-    forum_topic_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The topic in the Zendesk Web portal this ticket originated from, if any. The Web portal is deprecated',
-      }),
-    from_messaging_channel: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If true, the ticket's [via type](/documentation/ticketing/reference-guides/via-object-reference/) is a messaging channel.",
-        readOnly: true,
-      }),
-    generated_timestamp: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'A Unix timestamp that represents the most accurate reading of when this record was last updated. It is updated for all ticket updates, including system updates',
-        readOnly: true,
-      }),
-    group_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'The group this ticket is assigned to',
-      }),
-    has_incidents: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Is true if a ticket is a problem type and has one or more incidents linked to it. Otherwise, the value is false.',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned when the ticket is created',
-        readOnly: true,
-      }),
-    is_public: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Is true if any comments are public, false otherwise',
-        readOnly: true,
-      }),
-    macro_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Write only. A single macro ID to be recorded in the ticket audit',
-        writeOnly: true,
-      }),
-    macro_ids: z
-      .array(
-        z.xor([
-          z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .openapi({ type: 'integer', format: 'int64' }),
-          z.string(),
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'Write only. List of macro IDs to be recorded in the ticket audit',
-        writeOnly: true,
-      }),
-    metadata: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. Metadata for the audit. In the `audit` object, the data is specified in the `custom` property of the `metadata` object. See [Setting Metadata](/documentation/ticketing/managing-tickets/creating-and-updating-tickets/#setting-metadata)',
-        writeOnly: true,
-      }),
-    organization_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The organization of the requester. You can only specify the ID of an organization associated with the requester. See [Organization Memberships](/api-reference/ticketing/organizations/organization_memberships/)',
-      }),
-    origin_zrn: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Write only. The Zendesk Resource Name (ZRN) of the origin for this ticket',
-        writeOnly: true,
-      }),
-    priority: z
-      .enum(['urgent', 'high', 'normal', 'low'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The urgency with which the ticket should be addressed' }),
-    problem_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'For tickets of type "incident", the ID of the problem the incident is linked to',
-      }),
-    raw_subject: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The dynamic content placeholder, if present, or the "subject" value, if not. See [Dynamic Content Items](/api-reference/ticketing/ticket-management/dynamic_content/).\nWhen set on create or update, overrides the `subject` field.\n',
-      }),
-    recipient: z
-      .xor([
-        z.string(),
-        z.array(z.string()),
-        z
-          .object({ email: z.email().exactOptional(), name: z.string().exactOptional() })
-          .openapi({ required: [] }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The original recipient e-mail address of the ticket. Notification emails for the ticket are sent from this address',
-      }),
-    requester: z
-      .xor([
-        z.string().openapi({ description: 'Email address or username' }),
-        z.int().openapi({ description: 'User ID' }),
-        z
-          .object({
-            email: z
-              .email()
-              .exactOptional()
-              .openapi({ description: "The user's primary email address" }),
-            locale: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The user\'s locale (e.g., "en-US")' }),
-            locale_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64', description: "The user's locale ID" }),
-            name: z.string().exactOptional().openapi({ description: "The user's name" }),
-            organization_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                description: 'The organization ID to associate with the user',
-              }),
-            role: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The user\'s role (e.g., "end-user", "agent", "admin")' }),
-            verified: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: "Whether the user's email is verified" }),
-          })
-          .openapi({ description: 'User creation attributes', required: [] }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. Alternative to requester_id for specifying the ticket requester.\n\nCan be provided as:\n- Email string: "user@example.com"\n- User ID integer: 12345\n- User object: {name: "John Doe", email: "john@example.com"}\n\nIf both requester and requester_id are provided, requester_id takes precedence.\n\nWhen creating a ticket, if the user doesn\'t exist, they may be created\nautomatically depending on account settings.\n',
-        writeOnly: true,
-      }),
-    requester_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'The user who requested this ticket',
-      }),
-    safe_update: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. Optional boolean. When true and an `updated_stamp` date is included, protects against ticket update collisions and returns a message to let you know if one occurs. See [Protecting against ticket update collisions](/documentation/ticketing/managing-tickets/creating-and-updating-tickets/#protecting-against-ticket-update-collisions). A value of false has the same effect as true. Omit the property to force the updates to not be safe',
-        writeOnly: true,
-      }),
-    satisfaction_probability: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The predicted satisfaction probability score', readOnly: true }),
-    satisfaction_rating: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          'The satisfaction rating of the ticket, if it exists, or the state of satisfaction, "offered" or "unoffered". The value is null for plan types that don\'t support CSAT',
-        readOnly: true,
-      }),
-    sharing_agreement_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of the numeric IDs of sharing agreements. Note that this replaces any existing agreements',
-      }),
-    sharing_agreements: z
-      .xor([SharingAgreementInputSchema, z.array(SharingAgreementInputSchema)])
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. Sharing agreement configuration for the ticket.\nAccepts a single object or an array of objects.\n',
-        writeOnly: true,
-      }),
-    status: z
-      .enum(['new', 'open', 'pending', 'hold', 'solved', 'closed'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The state of the ticket.\n\nIf your account has activated custom ticket statuses, this is the ticket's\nstatus category. See [custom ticket statuses](#custom-ticket-statuses)\n",
-      }),
-    subject: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of the subject field for this ticket. See [Subject](/api-reference/ticketing/tickets/tickets/#subject)\n',
-      }),
-    submitter_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The user who submitted the ticket. The submitter always becomes the\nauthor of the first comment on the ticket.\n\nIf not specified, defaults to the authenticated user.\n',
-      }),
-    support_type: z
-      .enum(['agent', 'ai_agent'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The type of support that handled the ticket' }),
-    suspended_ticket_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Write only. The ID of the suspended ticket being recovered',
-        writeOnly: true,
-      }),
-    suspension_type_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Write only. The suspension type ID when recovering a suspended ticket',
-        writeOnly: true,
-      }),
-    system_metadata: z
-      .object({ client: z.string().exactOptional(), ip_address: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. System metadata for the ticket, typically set by internal clients',
-        writeOnly: true,
-        required: [],
-      }),
-    tags: z
-      .xor([
-        z.array(z.string()).openapi({ description: 'An array of tag strings' }),
-        z.string().openapi({ description: 'A single tag string' }),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The tags applied to this ticket. Unless otherwise specified, the [set tag](/api-reference/ticketing/ticket-management/tags/#set-tags) behavior is used, which overwrites and replaces existing tags',
-      }),
-    tde_workspace: z
-      .object({
-        previous_workspace: z
-          .object({
-            id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64' }),
-            title: z.string().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        type: z.enum(['ADD', 'CHANGE', 'DELETE']).exactOptional(),
-        workspace: z
-          .object({
-            id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64' }),
-            title: z.string().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Write only. TDE workspace information for the ticket',
-        writeOnly: true,
-        required: [],
-      }),
-    ticket_form_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'Enterprise only. The id of the ticket form to render for the ticket',
-      }),
-    tpe_voice_comment: z
-      .object({
-        agent_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({ type: ['integer', 'null'], format: 'int64' }),
-        answering_machine_detection_status: z.string().nullable().exactOptional(),
-        app_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        app_name: z.string().nullable().exactOptional(),
-        author_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        call_connected_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        call_disposition: z.string().nullable().exactOptional(),
-        call_ended_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        call_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        call_recording_consent: z.string().nullable().exactOptional(),
-        call_recording_consent_action: z.string().nullable().exactOptional(),
-        call_recording_consent_keypress: z.string().nullable().exactOptional(),
-        call_started_at: z.iso.datetime({ offset: true }).exactOptional(),
-        call_type: z.string().nullable().exactOptional(),
-        callback_number: z.string().nullable().exactOptional(),
-        callback_requested_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        completion_status: z.string().nullable().exactOptional(),
-        connection_attempts: z.int().nullable().exactOptional(),
-        consultation_time: z.int().nullable().exactOptional(),
-        direction: z.string().exactOptional(),
-        disconnection_reason: z.string().nullable().exactOptional(),
-        dnis: z.string().nullable().exactOptional(),
-        duration: z.int().nullable().exactOptional(),
-        end_user_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({ type: ['integer', 'null'], format: 'int64' }),
-        end_user_location: z.string().nullable().exactOptional(),
-        exceeded_queue_time: z.boolean().nullable().exactOptional(),
-        extension: z.string().nullable().exactOptional(),
-        external_id: z.string().exactOptional(),
-        from_line: z.string().exactOptional(),
-        from_line_nickname: z.string().nullable().exactOptional(),
-        hold_time: z.int().nullable().exactOptional(),
-        intent: z.string().nullable().exactOptional(),
-        ivr_destination_group_name: z.string().nullable().exactOptional(),
-        ivr_time_spent: z.int().nullable().exactOptional(),
-        language: z.string().nullable().exactOptional(),
-        line_type: z.string().exactOptional(),
-        longest_hold_time: z.int().nullable().exactOptional(),
-        number_of_holds: z.int().nullable().exactOptional(),
-        outside_business_hours: z.boolean().nullable().exactOptional(),
-        overflowed_to: z.string().nullable().exactOptional(),
-        phone_name: z.string().nullable().exactOptional(),
-        public: z.boolean().exactOptional(),
-        quality_score: z.int().nullable().exactOptional(),
-        queue_name: z.string().nullable().exactOptional(),
-        queue_time: z.int().nullable().exactOptional(),
-        recorded: z.boolean().exactOptional(),
-        recording_time: z.int().nullable().exactOptional(),
-        recording_type: z.string().exactOptional(),
-        recording_url: z.string().nullable().exactOptional(),
-        sentiment_agent: z.string().nullable().exactOptional(),
-        sentiment_call: z.string().nullable().exactOptional(),
-        sentiment_customer: z.string().nullable().exactOptional(),
-        sentiment_trend: z.string().nullable().exactOptional(),
-        short_summary: z.string().nullable().exactOptional(),
-        summary: z.string().nullable().exactOptional(),
-        talk_time: z.int().nullable().exactOptional(),
-        time_to_answer: z.int().nullable().exactOptional(),
-        title: z.string().exactOptional(),
-        to_line: z.string().exactOptional(),
-        to_line_nickname: z.string().nullable().exactOptional(),
-        transcript: z.string().nullable().exactOptional(),
-        via_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        video_recording_url: z.string().nullable().exactOptional(),
-        voicemail: z.boolean().nullable().exactOptional(),
-        voicemail_requested_at: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        wait_time: z.int().nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Write only. A TPE voice comment for Talk Partner Edition tickets',
-        writeOnly: true,
-        required: [],
-      }),
-    type: z
-      .enum(['problem', 'incident', 'question', 'task'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The type of this ticket' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'When this record last got updated. It is updated only if the update generates a [ticket event](#incremental-ticket-event-export)',
-        readOnly: true,
-      }),
-    updated_stamp: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. Datetime of last update received from API. See the `safe_update` property',
-        writeOnly: true,
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The API url of this ticket', readOnly: true }),
-    via: ViaObjectSchema.exactOptional(),
-    via_followup_source_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Write only. The id of a closed ticket when creating a follow-up ticket. See [Creating a follow-up ticket](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#creating-a-follow-up-ticket)',
-        writeOnly: true,
-      }),
-    via_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Write only. For more information, see the [Via object reference](/documentation/ticketing/reference-guides/via-object-reference/)',
-        writeOnly: true,
-      }),
-    voice_comment: z
-      .looseObject({
-        answered_by_id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            type: ['integer', 'null'],
-            format: 'int64',
-            description: 'The agent who answered the call',
-          }),
-        call_duration: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Duration of the call in seconds' }),
-        from: z.string().exactOptional().openapi({ description: 'Incoming phone number' }),
-        location: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Location of the caller' }),
-        recording_url: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'URL of the recording' }),
-        to: z.string().exactOptional().openapi({ description: 'Dialed phone number' }),
-        transcription_text: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Transcription of the call' }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Write only. A voice comment for Talk tickets. See [Adding voice comments to tickets](/documentation/ticketing/managing-tickets/adding-voice-comments-to-tickets/)',
-        writeOnly: true,
-        required: [],
-      }),
-  })
-  .openapi({
-    example: {
-      assignee_id: 235323,
-      collaborator_ids: [35334, 234],
-      created_at: '2009-07-20T22:55:29Z',
-      custom_fields: [
-        { id: 27642, value: '745' },
-        { id: 27648, value: 'yes' },
-      ],
-      custom_status_id: 123,
-      description: 'The fire is very colorful.',
-      due_at: null,
-      external_id: 'ahg35h3jh',
-      follower_ids: [35334, 234],
-      from_messaging_channel: false,
-      generated_timestamp: 1304553600,
-      group_id: 98738,
-      has_incidents: false,
-      id: 35436,
-      organization_id: 509974,
-      priority: 'high',
-      problem_id: 9873764,
-      raw_subject: '{{dc.printer_on_fire}}',
-      recipient: 'support@company.com',
-      requester_id: 20978392,
-      satisfaction_rating: { comment: 'Great support!', id: 1234, score: 'good' },
-      sharing_agreement_ids: [84432],
-      status: 'open',
-      subject: 'Help, my printer is on fire!',
-      submitter_id: 76872,
-      tags: ['enterprise', 'other_tag'],
-      type: 'incident',
-      updated_at: '2011-05-05T10:38:52Z',
-      url: 'https://company.zendesk.com/api/v2/tickets/35436',
-      via: { channel: 'web' },
-    },
-    required: [],
-  })
-  .openapi('TicketObject')
-
-const BookmarkObjectSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the bookmark was created', readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned when the bookmark is created',
-        readOnly: true,
-      }),
-    ticket: TicketObjectSchema.exactOptional().openapi({ readOnly: true }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The API url of this bookmark', readOnly: true }),
-  })
-  .openapi({
-    title: 'Bookmarks',
-    example: {
-      created_at: '2014-11-20T22:55:29Z',
-      id: 35436,
-      ticket: {
-        description: 'The fire is very colorful.',
-        id: 60,
-        priority: 'high',
-        requester_id: 156,
-        subject: 'Help, my printer is on fire!',
-      },
-      url: 'https://{subdomain}.zendesk.com/api/v2/bookmarks/35436',
-    },
-    required: [],
-  })
-  .openapi('BookmarkObject')
-
-const BookmarkResponseSchema = z
+const BookmarkResponseSchema: z.ZodType<BookmarkResponseType> = z
   .object({ bookmark: BookmarkObjectSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('BookmarkResponse')
 
-const OffsetPaginationObjectSchema = z
-  .object({
-    count: z.int().exactOptional().openapi({ description: 'the total record count' }),
-    next_page: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'the URL of the next page' }),
-    previous_page: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'the URL of the previous page' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OffsetPaginationObject')
-
-const BookmarksResponseSchema = OffsetPaginationObjectSchema.and(
+const BookmarksResponseSchema: z.ZodType<BookmarksResponseType> = OffsetPaginationObjectSchema.and(
   z.object({ bookmarks: z.array(BookmarkObjectSchema).exactOptional() }).openapi({ required: [] }),
 )
   .openapi({ title: 'Bookmarks' })
@@ -9364,7 +11436,7 @@ const BrandUserMigrationSchema = z
       .exactOptional()
       .openapi({ description: 'Execution mode of the migration' }),
     status: z
-      .enum(['in_progress', 'validating', 'reconciling', 'aborted', 'completed'])
+      .enum(['in_progress', 'reconciling', 'aborted', 'completed'])
       .exactOptional()
       .openapi({ description: 'Current status of the migration' }),
     updated_at: z.iso
@@ -9389,19 +11461,6 @@ const BrandUserMigrationResponseSchema = z
   .object({ user_migration: BrandUserMigrationSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('BrandUserMigrationResponse')
-
-const BrandUserMigrationUpdateRequestSchema = z
-  .object({
-    user_migration: z
-      .object({
-        status: z
-          .literal('validating')
-          .openapi({ description: 'Desired status to set on the migration' }),
-      })
-      .openapi({ required: ['status'] }),
-  })
-  .openapi({ required: ['user_migration'] })
-  .openapi('BrandUserMigrationUpdateRequest')
 
 const BrandUserMigrationsResponseSchema = z
   .object({ user_migrations: z.array(BrandUserMigrationSchema).exactOptional() })
@@ -9563,7 +11622,7 @@ const BulkUpdateDefaultCustomStatusRequestSchema = z
   .openapi('BulkUpdateDefaultCustomStatusRequest')
 
 const BulkUpdateDefaultCustomStatusResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('BulkUpdateDefaultCustomStatusResponse')
 
 const ChannelFrameworkResultStatusObjectSchema = z
@@ -9660,12 +11719,17 @@ const CheckIdentityUsedResponseSchema = z
     role: z
       .string()
       .openapi({
-        description: 'The role of the user (staff or end-user), empty if identity does not exist',
+        description:
+          'The role of the user (staff or end-user), empty if the identity does not exist or is reserved as a Support address',
         example: 'staff',
       }),
     status: z
-      .enum(['EXISTS', 'DOES_NOT_EXIST'])
-      .openapi({ description: 'Whether the identity exists', example: 'EXISTS' }),
+      .enum(['EXISTS', 'DOES_NOT_EXIST', 'RESERVED_SUPPORT_ADDRESS'])
+      .openapi({
+        description:
+          'Whether the identity exists, or whether it is reserved as a Support address and cannot be used for a new user',
+        example: 'EXISTS',
+      }),
     type: z
       .string()
       .openapi({ description: 'The identity type that was checked', example: 'email' }),
@@ -10432,64 +12496,65 @@ const CurrentUserResponseSchema = z
   .openapi({ required: [] })
   .openapi('CurrentUserResponse')
 
-const CursorBasedExportIncrementalTicketsResponseSchema = z
-  .object({
-    after_cursor: z.string().nullable().exactOptional(),
-    after_url: z.string().nullable().exactOptional(),
-    before_cursor: z.string().nullable().exactOptional(),
-    before_url: z.string().nullable().exactOptional(),
-    end_of_stream: z.boolean().exactOptional(),
-    tickets: z.array(TicketObjectSchema).exactOptional(),
-  })
-  .openapi({
-    description:
-      'See [Tickets](/api-reference/ticketing/tickets/tickets/) for a detailed example.\n',
-    example: {
-      after_cursor: 'MTU3NjYxMzUzOS4wfHw0Njd8',
-      after_url:
-        'https://{subdomain}.zendesk.com/api/v2/incremental/tickets/cursor?cursor=MTU3NjYxMzUzOS4wfHw0Njd8',
-      before_cursor: null,
-      before_url: null,
-      end_of_stream: true,
-      tickets: [
-        {
-          assignee_id: 235323,
-          collaborator_ids: [35334, 234],
-          created_at: '2009-07-20T22:55:29Z',
-          custom_fields: [
-            { id: 27642, value: '745' },
-            { id: 27648, value: 'yes' },
-          ],
-          description: 'The fire is very colorful.',
-          due_at: null,
-          external_id: 'ahg35h3jh',
-          follower_ids: [35334, 234],
-          generated_timestamp: 1304553600,
-          group_id: 98738,
-          has_incidents: false,
-          id: 35436,
-          organization_id: 509974,
-          priority: 'high',
-          problem_id: 9873764,
-          raw_subject: '{{dc.printer_on_fire}}',
-          recipient: 'support@company.com',
-          requester_id: 20978392,
-          satisfaction_rating: { comment: 'Great support!', id: 1234, score: 'good' },
-          sharing_agreement_ids: [84432],
-          status: 'open',
-          subject: 'Help, my printer is on fire!',
-          submitter_id: 76872,
-          tags: ['enterprise', 'other_tag'],
-          type: 'incident',
-          updated_at: '2011-05-05T10:38:52Z',
-          url: 'https://company.zendesk.com/api/v2/tickets/35436',
-          via: { channel: 'web' },
-        },
-      ],
-    },
-    required: [],
-  })
-  .openapi('CursorBasedExportIncrementalTicketsResponse')
+const CursorBasedExportIncrementalTicketsResponseSchema: z.ZodType<CursorBasedExportIncrementalTicketsResponseType> =
+  z
+    .object({
+      after_cursor: z.string().nullable().exactOptional(),
+      after_url: z.string().nullable().exactOptional(),
+      before_cursor: z.string().nullable().exactOptional(),
+      before_url: z.string().nullable().exactOptional(),
+      end_of_stream: z.boolean().exactOptional(),
+      tickets: z.array(TicketObjectSchema).exactOptional(),
+    })
+    .openapi({
+      description:
+        'See [Tickets](/api-reference/ticketing/tickets/tickets/) for a detailed example.\n',
+      example: {
+        after_cursor: 'MTU3NjYxMzUzOS4wfHw0Njd8',
+        after_url:
+          'https://{subdomain}.zendesk.com/api/v2/incremental/tickets/cursor?cursor=MTU3NjYxMzUzOS4wfHw0Njd8',
+        before_cursor: null,
+        before_url: null,
+        end_of_stream: true,
+        tickets: [
+          {
+            assignee_id: 235323,
+            collaborator_ids: [35334, 234],
+            created_at: '2009-07-20T22:55:29Z',
+            custom_fields: [
+              { id: 27642, value: '745' },
+              { id: 27648, value: 'yes' },
+            ],
+            description: 'The fire is very colorful.',
+            due_at: null,
+            external_id: 'ahg35h3jh',
+            follower_ids: [35334, 234],
+            generated_timestamp: 1304553600,
+            group_id: 98738,
+            has_incidents: false,
+            id: 35436,
+            organization_id: 509974,
+            priority: 'high',
+            problem_id: 9873764,
+            raw_subject: '{{dc.printer_on_fire}}',
+            recipient: 'support@company.com',
+            requester_id: 20978392,
+            satisfaction_rating: { comment: 'Great support!', id: 1234, score: 'good' },
+            sharing_agreement_ids: [84432],
+            status: 'open',
+            subject: 'Help, my printer is on fire!',
+            submitter_id: 76872,
+            tags: ['enterprise', 'other_tag'],
+            type: 'incident',
+            updated_at: '2011-05-05T10:38:52Z',
+            url: 'https://company.zendesk.com/api/v2/tickets/35436',
+            via: { channel: 'web' },
+          },
+        ],
+      },
+      required: [],
+    })
+    .openapi('CursorBasedExportIncrementalTicketsResponse')
 
 const CursorBasedExportIncrementalUsersResponseSchema = z
   .object({
@@ -10685,7 +12750,7 @@ const CustomFieldObjectSchema = z
           'Regular expression field only. The validation pattern for a field value to be deemed valid',
       }),
     relationship_filter: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A filter definition that allows your autocomplete to filter down results',
@@ -11428,7 +13493,8 @@ const CustomObjectRecordAttachmentSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The name of the user who created the attachment',
+        description:
+          'The name of the user who created the attachment. Omitted from responses to anonymous requests.',
         example: 'John Doe',
         readOnly: true,
       }),
@@ -11461,7 +13527,7 @@ const CustomObjectRecordAttachmentSchema = z
       .exactOptional()
       .openapi({
         description:
-          "If true, you can download an attachment flagged as malware. If false, you can't download such an attachment.",
+          "If true, you can download an attachment flagged as malware. If false, you can't download such an attachment. Omitted from responses to anonymous requests.",
         example: false,
         readOnly: true,
       }),
@@ -11470,7 +13536,8 @@ const CustomObjectRecordAttachmentSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'The date and time when the malware scan was completed',
+        description:
+          'The date and time when the malware scan was completed. Omitted from responses to anonymous requests.',
         example: '2024-01-15T14:30:00Z',
         readOnly: true,
       }),
@@ -11479,7 +13546,7 @@ const CustomObjectRecordAttachmentSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The result of the malware scan. There is a delay between the time the attachment is uploaded and when the malware scan is completed.',
+          'The result of the malware scan. There is a delay between the time the attachment is uploaded and when the malware scan is completed. Omitted from responses to anonymous requests.',
         example: 'malware_not_found',
         readOnly: true,
       }),
@@ -11522,99 +13589,6 @@ const CustomObjectRecordAttachmentsResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('CustomObjectRecordAttachmentsResponse')
-
-const CustomObjectRecordFilteredSearchConditionSchema = z
-  .looseObject({
-    field_key: z
-      .object({
-        operator: z.string().exactOptional(),
-        value: z.xor([z.string(), z.int(), z.array(z.xor([z.string(), z.int()]))]).exactOptional(),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ example: { operator: 'value' }, required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomObjectRecordFilteredSearchCondition')
-
-const CustomObjectRecordFilterExpressionLevel1Schema =
-  CustomObjectRecordFilteredSearchConditionSchema.and(
-    z
-      .any()
-      .refine(
-        (val) =>
-          !z
-            .union([
-              z.object({}).openapi({ required: ['$and'] }),
-              z.object({}).openapi({ required: ['$or'] }),
-            ])
-            .safeParse(val).success,
-      ),
-  ).openapi('CustomObjectRecordFilterExpressionLevel1')
-
-const CustomObjectRecordFilterExpressionLevel2Schema = z
-  .xor([
-    CustomObjectRecordFilterExpressionLevel1Schema,
-    z
-      .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel1Schema).min(1) })
-      .openapi({ required: ['$and'] }),
-    z
-      .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel1Schema).min(1) })
-      .openapi({ required: ['$or'] }),
-  ])
-  .openapi('CustomObjectRecordFilterExpressionLevel2')
-
-const CustomObjectRecordFilterExpressionLevel3Schema = z
-  .xor([
-    CustomObjectRecordFilterExpressionLevel1Schema,
-    z
-      .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel2Schema).min(1) })
-      .openapi({ required: ['$and'] }),
-    z
-      .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel2Schema).min(1) })
-      .openapi({ required: ['$or'] }),
-  ])
-  .openapi('CustomObjectRecordFilterExpressionLevel3')
-
-const CustomObjectRecordFilterExpressionLevel4Schema = z
-  .xor([
-    CustomObjectRecordFilterExpressionLevel1Schema,
-    z
-      .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel3Schema).min(1) })
-      .openapi({ required: ['$and'] }),
-    z
-      .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel3Schema).min(1) })
-      .openapi({ required: ['$or'] }),
-  ])
-  .openapi('CustomObjectRecordFilterExpressionLevel4')
-
-const CustomObjectRecordFilterExpressionLevel5Schema = z
-  .xor([
-    CustomObjectRecordFilterExpressionLevel1Schema,
-    z
-      .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel4Schema).min(1) })
-      .openapi({ required: ['$and'] }),
-    z
-      .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel4Schema).min(1) })
-      .openapi({ required: ['$or'] }),
-  ])
-  .openapi('CustomObjectRecordFilterExpressionLevel5')
-
-const CustomObjectRecordFilterExpressionSchema = z
-  .xor([
-    CustomObjectRecordFilterExpressionLevel1Schema,
-    z
-      .strictObject({ $and: z.array(CustomObjectRecordFilterExpressionLevel5Schema).min(1) })
-      .openapi({ required: ['$and'] }),
-    z
-      .strictObject({ $or: z.array(CustomObjectRecordFilterExpressionLevel5Schema).min(1) })
-      .openapi({ required: ['$or'] }),
-  ])
-  .openapi({
-    description:
-      'A recursive filter expression: either a single comparison object\n(`{ "<field>": { "$<operator>": <value> } }`) or a logical group\ncombining child expressions with `$and` / `$or`. Maximum nesting\ndepth is 5 (outermost group counts as level 1).\n',
-  })
-  .openapi('CustomObjectRecordFilterExpression')
 
 const CustomObjectRecordResponseSchema = z
   .object({ custom_object_record: CustomObjectRecordSchema.exactOptional() })
@@ -11707,18 +13681,19 @@ const CustomObjectRecordsFilteredSearchRequestBasicSchema = z
   .openapi({ required: [] })
   .openapi('CustomObjectRecordsFilteredSearchRequestBasic')
 
-const CustomObjectRecordsFilteredSearchRequestComplexSchema = z
-  .object({
-    filter: z
-      .object({
-        $and: z.array(CustomObjectRecordFilterExpressionSchema).exactOptional(),
-        $or: z.array(CustomObjectRecordFilterExpressionSchema).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomObjectRecordsFilteredSearchRequestComplex')
+const CustomObjectRecordsFilteredSearchRequestComplexSchema: z.ZodType<CustomObjectRecordsFilteredSearchRequestComplexType> =
+  z
+    .object({
+      filter: z
+        .object({
+          $and: z.array(CustomObjectRecordFilterExpressionSchema).exactOptional(),
+          $or: z.array(CustomObjectRecordFilterExpressionSchema).exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({ required: [] })
+    .openapi('CustomObjectRecordsFilteredSearchRequestComplex')
 
 const CustomObjectRecordsJobsResponseSchema = z
   .object({
@@ -11904,6 +13879,115 @@ const CustomRoleConfigurationObjectSchema = z
       })
       .exactOptional()
       .openapi({ description: "The agent's level of access to AI agents", required: [] }),
+    analytics: z
+      .object({
+        access: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The level of access to analytics. Allowed values: "none", "readonly", "edit", "full"',
+          }),
+        brands_ticket_access: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Which tickets the agent can analyze, by brand. Allowed values: "all", "none", "within-brands", "selected-brands"',
+          }),
+        export_analytics_data: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether or not the agent can export analytics data' }),
+        groups_ticket_access: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Which tickets the agent can analyze, by group. Allowed values: "all", "none", "within-groups", "selected-groups"',
+          }),
+        manage_custom_alerts: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether or not the agent can create report alerts and receive notifications. Requires `access` of "full"',
+          }),
+        manage_custom_datasets: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether or not the agent can define and manage custom datasets. Requires `access` of "full"',
+          }),
+        ticket_access_selected_brands: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The brand ids whose tickets the agent can analyze. Used when `brands_ticket_access` is "selected-brands"',
+          }),
+        ticket_access_selected_groups: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The group ids whose tickets the agent can analyze. Used when `groups_ticket_access` is "selected-groups"',
+          }),
+        use_ai_dashboard_builder: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether or not the agent can generate dashboard datasets with natural language',
+          }),
+        use_ai_dataset_builder: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether or not the agent can generate report-ready datasets with natural language',
+          }),
+        use_analyst_copilot: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether or not the agent can use the analyst copilot for AI-assisted analysis',
+          }),
+        use_conversational_assistant: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether or not the agent can use the AI-powered assistant in analytics',
+          }),
+        use_deep_exploration: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether or not the agent can use deep exploration. Requires `use_analyst_copilot`',
+          }),
+        view_zra_anomaly_detection: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether or not the agent can view AI-powered anomaly detection insights',
+          }),
+        view_zra_trending_topics: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether or not the agent can view AI-powered trending-topic summaries. Requires `use_analyst_copilot`',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "The agent's access to analytics. Only available to accounts with agentic analytics permissions enabled",
+        required: [],
+      }),
     assign_agent_statuses: z
       .boolean()
       .exactOptional()
@@ -11940,6 +14024,13 @@ const CustomRoleConfigurationObjectSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether or not the agent has access to Chat', readOnly: true }),
+    delete_brands: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not the agent can delete brands. Deletion is limited by the scope of `manage_brands`: "all" allows any brand, "member" only brands the agent belongs to, and "none" disables deletion regardless of this value',
+      }),
     end_user_list_access: z
       .string()
       .exactOptional()
@@ -12013,6 +14104,17 @@ const CustomRoleConfigurationObjectSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether the agent can manage API credentials' }),
+    manage_approval_requests: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the agent can create and manage approval requests' }),
+    manage_brands: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Which brands the agent can create and update. "all" covers every brand and brand settings. "member" covers only brands the agent belongs to. Allowed values: "all", "member", "none"',
+      }),
     manage_business_rules: z
       .boolean()
       .exactOptional()
@@ -12077,7 +14179,10 @@ const CustomRoleConfigurationObjectSchema = z
     manage_support_apps: z
       .boolean()
       .exactOptional()
-      .openapi({ description: 'Whether or not the agent can manage support apps' }),
+      .openapi({
+        description:
+          'Whether or not the agent can manage Zendesk Support apps. Defaults to false for custom roles.',
+      }),
     manage_ticket_fields: z
       .boolean()
       .exactOptional()
@@ -12618,7 +14723,7 @@ const DeletedUserObjectSchema = z
       .nullable()
       .openapi({ type: ['integer', 'null'], format: 'int64' }),
     phone: z.string().nullable(),
-    photo: z.object({}).nullable(),
+    photo: z.looseObject({}).nullable(),
     role: z.string(),
     separation: z
       .object({
@@ -13261,7 +15366,7 @@ const DynamicContentVariantUpdateInputSchema = z
 const DynamicContentVariantUpdateRequestSchema = z
   .object({
     variant: z
-      .union([DynamicContentVariantUpdateInputSchema, z.object({}).nullable()])
+      .union([DynamicContentVariantUpdateInputSchema, z.looseObject({}).nullable()])
       .openapi({
         description:
           'The attributes to update. `null` is accepted and is a no-op — the variant is returned unchanged with a 200',
@@ -13565,6 +15670,22 @@ const EmailNotificationTemplateObjectSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether this template is the account default', readOnly: true }),
+    default_body: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The built-in default email body, before any customization. Present only on the default template.\nUse it to pre-fill a new template.\n',
+        readOnly: true,
+      }),
+    default_subject: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The built-in default email subject, before any customization. Present only on the default template.\nUse it to pre-fill a new template.\n',
+        readOnly: true,
+      }),
     id: z
       .string()
       .exactOptional()
@@ -13733,7 +15854,7 @@ const EndUserIdentityCreateInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to `google` identities - an ownership conflict for a Google-backed email identity is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.',
+          'When true, creates the email identity as "owned", or as "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
       }),
     ownership: z
       .union([z.literal('owned'), z.literal('shared'), z.literal(null)])
@@ -13741,7 +15862,7 @@ const EndUserIdentityCreateInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to `owned`. `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected outright for `google` identities (a Google-backed email identity can only be owned), and is subject to a per-brand cap on shared identities per address (100 by default; past the cap the request fails with `LimitExceeded`). A create that will send a verification email for a shared address is rate-limited and can be rejected with `429 Too Many Requests`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.',
+          'Sets the email identity to "owned" or "shared". Defaults to "owned". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
       }),
     primary: z
       .boolean()
@@ -13811,7 +15932,7 @@ const EndUserIdentityCreateInputSchema = z
         .openapi({ required: ['ownership', 'auto_ownership'] })
         .safeParse(val).success,
   )
-  .openapi({ required: ['type', 'value'] })
+  .openapi({ required: ['type', 'value'], not: { required: ['ownership', 'auto_ownership'] } })
   .openapi('EndUserIdentityCreateInput')
 
 const EndUserIdentityCreateRequestSchema = z
@@ -15459,7 +17580,7 @@ const GroupSLAPolicyUpdateInputSchema = z
         example: 'Tier 1 Group SLA',
       }),
     filter: z
-      .union([GroupSLAPolicyFilterInputSchema, z.object({}).nullable()])
+      .union([GroupSLAPolicyFilterInputSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -17135,6 +19256,114 @@ const LotusChatSettingsResponseSchema = z
   .openapi({ required: ['account'] })
   .openapi('LotusChatSettingsResponse')
 
+const LotusConversationResponseSchema = z
+  .object({
+    conversation_item: z
+      .looseObject({
+        created_at: z.iso.datetime({ offset: true }).exactOptional(),
+        id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        metadata: z.looseObject({}).exactOptional(),
+        type: z.string(),
+        via: z
+          .looseObject({
+            channel: z
+              .xor([z.string(), z.int()])
+              .exactOptional()
+              .openapi({ description: 'Channel name or numeric channel ID.' }),
+            source: z
+              .looseObject({
+                from: z
+                  .looseObject({
+                    address: z.string().nullable().exactOptional(),
+                    id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({ type: ['integer', 'null'], format: 'int64' }),
+                    name: z.string().nullable().exactOptional(),
+                    title: z.string().nullable().exactOptional(),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                rel: z.string().nullable().exactOptional(),
+                to: z
+                  .looseObject({
+                    address: z.string().exactOptional(),
+                    name: z.string().exactOptional(),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+              })
+              .exactOptional()
+              .openapi({ description: 'Channel-specific event origin details.', required: [] }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'Channel-specific event origin. Email events can include original recipients and email CCs.',
+            readOnly: true,
+            required: [],
+          }),
+      })
+      .openapi({
+        description:
+          'Mixed audit events serialized by the event-specific presenters. Additional fields depend on the event type; comment bodies and attachments are not shared by every event.',
+        required: ['id', 'type'],
+      }),
+    users: z
+      .array(
+        z
+          .looseObject({
+            email: z.string().nullable().exactOptional(),
+            id: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64' }),
+            is_billing_admin: z.boolean().exactOptional(),
+            name: z.string().exactOptional(),
+            role: z.string().exactOptional(),
+          })
+          .openapi({
+            description:
+              "Accessible event authors and recipients serialized by the user presenter. Fields vary with the viewing user's permissions and account capabilities, including agent-only billing administrator information.",
+            required: [],
+          }),
+      )
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      'A single mixed audit event serialized by the same event-specific presenters as the conversations collection. Comment bodies and attachments depend on the event type. Users are optionally sideloaded with include=users.',
+    required: ['conversation_item'],
+  })
+  .openapi('LotusConversationResponse')
+
 const LotusConversationStateResponseSchema = z
   .object({ conversationState: z.enum(['NONE', 'CONCLUDED', 'ENDED', 'ONGOING']) })
   .openapi({ required: ['conversationState'] })
@@ -17434,101 +19663,6 @@ const MacroCategoriesResponseSchema = z
   .openapi({ required: [] })
   .openapi('MacroCategoriesResponse')
 
-const MacroCommonObjectSchema = z
-  .object({
-    actions: z
-      .array(ActionObjectSchema)
-      .openapi({
-        description:
-          'Each action describes what the macro will do. See [Actions reference](/documentation/ticketing/reference-guides/actions-reference)',
-      }),
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Useful for determining if the macro should be displayed' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the macro was created', readOnly: true }),
-    default: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, the macro is a default macro', readOnly: true }),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The description of the macro' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The id automatically assigned when a macro is created',
-        readOnly: true,
-      }),
-    position: z.int().exactOptional().openapi({ description: 'The position of the macro' }),
-    raw_title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The raw format of the title of the macro' }),
-    restriction: z
-      .looseObject({})
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Access to this macro. A null value allows unrestricted access for all users in the account',
-      }),
-    title: z.string().openapi({ description: 'The title of the macro' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time of the last update of the macro', readOnly: true }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "A URL to access the macro's details", readOnly: true }),
-  })
-  .openapi({
-    example: {
-      actions: [
-        { field: 'status', value: 'solved' },
-        { field: 'priority', value: 'normal' },
-        { field: 'type', value: 'incident' },
-        { field: 'assignee_id', value: 'current_user' },
-        { field: 'group_id', value: 'current_groups' },
-        {
-          field: 'comment_value',
-          value:
-            'Thanks for your request. This issue you reported is a known issue. For more information, please visit our forums. ',
-        },
-      ],
-      active: true,
-      created_at: '2019-09-16T02:17:38Z',
-      default: false,
-      description: null,
-      id: 360111062754,
-      position: 9999,
-      raw_title: 'Close and redirect to topics',
-      restriction: null,
-      title: 'Close and redirect to topics',
-      updated_at: '2019-09-16T02:17:38Z',
-      url: 'https://subdomain.zendesk.com/api/v2/macros/360111062754',
-    },
-    required: ['actions', 'title'],
-  })
-  .openapi('MacroCommonObject')
-
 const MacroInputSchema = z
   .object({
     actions: z
@@ -17623,90 +19757,6 @@ const MacroInputSchema = z
   })
   .openapi({ required: ['title', 'actions'] })
   .openapi('MacroInput')
-
-const MacroObjectSchema = MacroCommonObjectSchema.and(
-  z
-    .object({
-      app_installation: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'The app installation that requires each macro, if present' }),
-      attachments: z
-        .array(
-          z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .openapi({ type: 'integer', format: 'int64' }),
-        )
-        .exactOptional()
-        .openapi({
-          description: "The ids of the macro's attachments. Present when the macro has attachments",
-          readOnly: true,
-        }),
-      categories: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'The macro categories' }),
-      permissions: z
-        .object({
-          can_edit: z
-            .boolean()
-            .exactOptional()
-            .openapi({ description: 'Whether the current user can edit the macro' }),
-        })
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'Permissions for each macro', required: [] }),
-      usage_1h: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'The number of times each macro has been used in the past hour' }),
-      usage_7d: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'The number of times each macro has been used in the past week' }),
-      usage_24h: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'The number of times each macro has been used in the past day' }),
-      usage_30d: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description: 'The number of times each macro has been used in the past thirty days',
-        }),
-      valid: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            "Whether the macro's definition is currently valid. Present when the `valid` sideload is included",
-          readOnly: true,
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    example: {
-      actions: [],
-      active: true,
-      description: 'Sets the ticket status to `solved`',
-      id: 25,
-      position: 42,
-      restriction: { id: 4, type: 'User' },
-      title: 'Close and Save',
-    },
-  })
-  .openapi('MacroObject')
 
 const MacroResponseSchema = z
   .object({ macro: MacroObjectSchema.exactOptional() })
@@ -18064,162 +20114,6 @@ const MobileAccountLookupResponseSchema = z
   })
   .openapi('MobileAccountLookupResponse')
 
-const MobileCommentObjectSchema = z
-  .object({
-    attachments: z
-      .array(AttachmentObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'Read-only list of attachments to the comment', readOnly: true }),
-    author_attribution: z
-      .object({ avatar_url: z.string().exactOptional(), name: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({
-        description:
-          'Name and avatar of the AI agent that authored the comment. Only present on accounts with the AI agent request comment persona enabled',
-        readOnly: true,
-        required: [],
-      }),
-    author_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The id of the author',
-        readOnly: true,
-      }),
-    body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The actual comment made by the author' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'When this comment was created', readOnly: true }),
-    html_body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The comment formatted as HTML', readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned when the comment is created',
-        readOnly: true,
-      }),
-    plain_body: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The comment formatted as plain text', readOnly: true }),
-    public: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, the comment is public', readOnly: true }),
-    request_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The request token if available, the nice id of the request otherwise',
-        readOnly: true,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of the comment, "Comment" or "VoiceComment"',
-        readOnly: true,
-      }),
-    uploads: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'On create only. List of tokens received after uploading files to attach',
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The API url of this comment', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'A comment on a request as returned by the private mobile API.\nUnlike the public v2 Request Comments API, `request_id` is the request token (or nice id) as a string.\n',
-    example: {
-      attachments: [],
-      author_id: 1,
-      body: 'Thanks for your help!',
-      created_at: '2009-07-20T22:55:29Z',
-      html_body: '<p>Thanks for your help!</p>',
-      id: 1274,
-      plain_body: 'Thanks for your help!',
-      public: true,
-      request_id: 'UHF0CU0VsnnY3bR9jDSC1We1w',
-      type: 'Comment',
-    },
-    required: [],
-  })
-  .openapi('MobileCommentObject')
-
-const MobileCommentingAgentObjectSchema = z
-  .object({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The id of the agent',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the agent', readOnly: true }),
-    photo: AttachmentObjectSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'An agent who authored one of the most recent public comments on a request',
-    example: {
-      id: 10002,
-      name: 'Admin Extraordinaire',
-      photo: {
-        content_type: 'image/png',
-        content_url: 'https://company.zendesk.com/system/photos/0010/0025/large_2.png',
-        file_name: 'large_2.png',
-        id: 100025,
-        size: 165982,
-        thumbnails: [],
-      },
-    },
-    required: [],
-  })
-  .openapi('MobileCommentingAgentObject')
-
 const MobileCommentsResponseSchema = z
   .object({
     comments: z.array(MobileCommentObjectSchema).exactOptional(),
@@ -18530,403 +20424,6 @@ const MobileRequestCreateRequestSchema = z
   })
   .openapi('MobileRequestCreateRequest')
 
-const MobileRequestObjectSchema = z
-  .object({
-    assignee_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'The id of the assignee if the field is visible to end users',
-        readOnly: true,
-      }),
-    can_be_solved_by_me: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If true, the end user can mark the request as solved',
-        readOnly: true,
-      }),
-    can_comment: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the requester can comment on the request. Only present on accounts with the AI agent request comment persona enabled',
-        readOnly: true,
-      }),
-    can_update_ccs: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the requester can update collaborators. Only present on accounts with the AI agent request comment persona enabled',
-        readOnly: true,
-      }),
-    collaborator_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({ description: "Who is currently CC'ed on the ticket" }),
-    comment_count: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The count of public comments associated to the request',
-        readOnly: true,
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'When this record was created', readOnly: true }),
-    csat: z
-      .object({
-        comment: z.string().exactOptional(),
-        created_at: z.iso.datetime({ offset: true }).exactOptional(),
-        id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        score: z.string().exactOptional(),
-        updated_at: z.iso.datetime({ offset: true }).exactOptional(),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The satisfaction rating for the request. Null when no rating exists or CSAT is not enabled for the SDK app',
-        readOnly: true,
-        required: [],
-      }),
-    custom_fields: z
-      .array(
-        z
-          .object({
-            id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64' }),
-            value: z.string().nullable().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'The fields and entries for this request' }),
-    custom_status_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The custom ticket status id of the ticket. Only present on accounts with custom statuses enabled',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The first comment on the request', readOnly: true }),
-    due_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'When the task is due (only applies if the request is of type "task")',
-      }),
-    email_cc_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'The ids of users who are currently email CCs on the ticket',
-        readOnly: true,
-      }),
-    fields: z
-      .array(
-        z
-          .object({
-            id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64' }),
-            value: z.string().nullable().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Deprecated alias of `custom_fields`', deprecated: true }),
-    first_comment: MobileCommentObjectSchema.exactOptional(),
-    followup_source_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'The id of the original ticket if this request is a follow-up ticket',
-        readOnly: true,
-      }),
-    group_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'The id of the assigned group if the field is visible to end users',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The request token if available, the nice id otherwise',
-        readOnly: true,
-      }),
-    is_public: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Is true if any comments are public, false otherwise',
-        readOnly: true,
-      }),
-    last_comment: MobileCommentObjectSchema.exactOptional(),
-    last_commenting_agents_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The ids of the agents who made the most recent public comments on the request, most recent first',
-        readOnly: true,
-      }),
-    organization_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description: 'The organization of the requester',
-        readOnly: true,
-      }),
-    priority: z
-      .enum(['low', 'normal', 'high', 'urgent'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The priority of the request' }),
-    public_updated_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When a public event last occurred on the request. Only present when sideloaded with `include=public_updated_at`',
-        readOnly: true,
-      }),
-    recipient: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The original recipient e-mail address of the request' }),
-    requester_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The id of the requester',
-        readOnly: true,
-      }),
-    solved: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether or not the request is solved (an end user can set this if `can_be_solved_by_me` is true for that user)',
-      }),
-    status: z
-      .enum(['new', 'open', 'pending', 'hold', 'solved', 'closed'])
-      .exactOptional()
-      .openapi({ description: 'The state of the request' }),
-    subject: z
-      .string()
-      .openapi({
-        description:
-          'The value of the subject field for this request if the subject field is visible to end users; a truncated version of the description otherwise',
-      }),
-    ticket_form_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The numeric id of the ticket form associated with this request if the form is visible to end users - only applicable for enterprise accounts',
-      }),
-    type: z
-      .enum(['question', 'incident', 'problem', 'task'])
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The type of the request' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'When this record last got updated', readOnly: true }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The API url of this request', readOnly: true }),
-    via: TicketAuditViaObjectSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'A request (end-user ticket) as returned by the private mobile API.\nUnlike the public v2 Requests API, `id` is the request token if one exists, otherwise the ticket nice id - always serialized as a string.\n',
-    example: {
-      assignee_id: 72983,
-      can_be_solved_by_me: false,
-      collaborator_ids: [],
-      comment_count: 2,
-      created_at: '2009-07-20T22:55:29Z',
-      csat: null,
-      custom_fields: [],
-      description: 'The fire is very colorful.',
-      due_at: null,
-      fields: [],
-      group_id: 8665,
-      id: 'UHF0CU0VsnnY3bR9jDSC1We1w',
-      last_commenting_agents_ids: [],
-      organization_id: 509974,
-      priority: 'normal',
-      requester_id: 1462,
-      status: 'open',
-      subject: 'Help, my printer is on fire!',
-      ticket_form_id: 2,
-      type: 'problem',
-      updated_at: '2011-05-05T10:38:52Z',
-      url: 'https://company.zendesk.com/api/mobile/requests/UHF0CU0VsnnY3bR9jDSC1We1w.json',
-      via: { channel: 'mobile_sdk' },
-    },
-    required: ['subject'],
-  })
-  .openapi('MobileRequestObject')
-
 const MobileRequestResponseSchema = z
   .object({
     last_commenting_agents: z
@@ -18941,7 +20438,7 @@ const MobileRequestResponseSchema = z
   .openapi({ required: [] })
   .openapi('MobileRequestResponse')
 
-const MobileRequestsResponseSchema = z
+const MobileRequestsResponseSchema: z.ZodType<MobileRequestsResponseType> = z
   .object({
     count: z
       .int()
@@ -19422,6 +20919,59 @@ const OAuthClientsResponseSchema = z
   .object({ clients: z.array(OAuthClientObjectSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('OAuthClientsResponse')
+
+const OAuthDeviceAuthorizationResponseSchema = z
+  .object({
+    device_code: z
+      .string()
+      .openapi({
+        description:
+          'The device verification code. The device sends it to the token endpoint as the `device_code` parameter when polling for the access token. The device must treat it like a password.',
+        readOnly: true,
+      }),
+    expires_in: z
+      .int()
+      .openapi({
+        description:
+          'Number of seconds the device_code and user_code remain valid (300 = 5 minutes). Both codes share a single lifetime.',
+        readOnly: true,
+      }),
+    interval: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum number of seconds the device must wait between polling requests to the token endpoint. Polling faster returns the `slow_down` error, which requires adding 5 seconds to the interval.',
+        readOnly: true,
+      }),
+    user_code: z
+      .string()
+      .openapi({
+        description:
+          'The end-user verification code to display on the device. The user enters it at the verification_uri, where Dashes are for display only and can be omitted on entry.',
+        readOnly: true,
+      }),
+    verification_uri: z
+      .string()
+      .openapi({
+        description:
+          'The URL the end user visits on a browser-equipped device to enter the user_code and approve or deny the request.',
+        readOnly: true,
+      }),
+    verification_uri_complete: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The verification_uri with the user_code pre-filled. Devices that can display it should direct the end user to this URL instead.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    title: 'Device Authorization Response',
+    required: ['device_code', 'user_code', 'verification_uri', 'expires_in'],
+  })
+  .openapi('OAuthDeviceAuthorizationResponse')
 
 const OAuthTokenForGrantTypesObjectSchema = z
   .object({
@@ -21537,7 +23087,7 @@ const PermissionPolicySchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: "The policy ID (e.g., 'custom-role-123' or 'end-user')",
+        description: "The policy ID (e.g., 'custom-role-123', 'end-user', or 'anonymous')",
         example: 'custom-role-6678128886399',
       }),
     records: z
@@ -21664,9 +23214,91 @@ const QueueDefinitionInputSchema = z
 
 const QueueSubqueueInputSchema = z
   .xor([
-    z.object({}).openapi({ required: ['name', 'priority', 'percentage', 'primary_groups_id'] }),
-    z.object({}).openapi({ required: ['id', 'primary_groups_id'] }),
+    z
+      .looseObject({})
+      .openapi({ required: ['name', 'priority', 'percentage', 'primary_groups_id'] }),
+    z.looseObject({}).openapi({ required: ['id', 'primary_groups_id'] }),
   ])
+  .and(
+    z
+      .object({
+        id: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The id of an existing subqueue to update. Omit it to create a new subqueue. `null` means the same thing as omitting it — the writer\nbranches on `id.nil?` — so it is the explicit way to say "create"\n',
+          }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The name of the subqueue. Must be unique within the account, including against queue names',
+          }),
+        percentage: z
+          .int()
+          .max(100)
+          .exactOptional()
+          .openapi({
+            description:
+              'The share of matching tickets routed to this subqueue. The percentages across all subqueues of a queue must total exactly 100',
+          }),
+        predictive_routing: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether predictive routing is applied to this subqueue' }),
+        primary_groups_id: z
+          .array(
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+          )
+          .max(20)
+          .exactOptional()
+          .openapi({
+            description:
+              'The ids of the groups this subqueue routes to first. At least one is required',
+          }),
+        priority: z
+          .int()
+          .min(1)
+          .max(100)
+          .exactOptional()
+          .openapi({ description: 'The priority applied to tickets that enter this subqueue' }),
+        secondary_groups_id: z
+          .array(
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+          )
+          .max(20)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The ids of the groups this subqueue falls back to. Ids also present in `primary_groups_id` are ignored. `null`, an empty array and\nomitting the property all remove every secondary group from the subqueue, and nothing validates secondary groups, so the request\nsucceeds\n',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description:
       'A subqueue of the parent queue. Requires the account to have a minimum Enterprise level plan for whichever of Support, Chat, Talk\nproducts it has — without that the whole `subqueues` array is dropped before it reaches the model. Omit `id` to create a subqueue, or\npass the id of an existing one to update it. An unknown id is rejected. `name`, `priority` and `percentage` are required for a new\nsubqueue (one without `id`); when updating an existing subqueue (one with `id`) they may be omitted and the stored values are preserved.\n`primary_groups_id` is always required\n',
@@ -21907,7 +23539,7 @@ const QueueResponseSchema = z
 const QueueUpdateInputSchema = z
   .object({
     definition: z
-      .union([QueueDefinitionInputSchema, z.object({}).nullable()])
+      .union([QueueDefinitionInputSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({ description: '`null` is accepted and leaves the stored definition unchanged' }),
     description: z
@@ -22028,7 +23660,7 @@ const RecoverSuspendedTicketResponseSchema = z
   .openapi({ required: [] })
   .openapi('RecoverSuspendedTicketResponse')
 
-const RecoverSuspendedTicketsResponseSchema = z
+const RecoverSuspendedTicketsResponseSchema: z.ZodType<RecoverSuspendedTicketsResponseType> = z
   .object({ tickets: z.array(TicketObjectSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('RecoverSuspendedTicketsResponse')
@@ -22563,7 +24195,72 @@ const RequestInputSchema = z
         description:
           'The collaborators (CCs) to set on the request, as user ids, email addresses, or objects carrying a name and an\nemail. Only applied when the account allows collaborators, and rejected when the request is submitted from the\nhelp center by an account that does not allow help center collaborators. At most 48 collaborators may be sent in\none call on accounts with CCs and followers enabled, and null is ignored\n',
       }),
-    comment: RequestCommentInputSchema,
+    comment: (() => {
+      const Schema = RequestCommentInputSchema
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        const reported = ctx.issues.length
+        try {
+          ;((ctx) => {
+            const val = ctx.value
+            if (
+              !(
+                z
+                  .looseObject({})
+                  .openapi({ required: ['body'] })
+                  .safeParse(val).success ||
+                z
+                  .looseObject({})
+                  .openapi({ required: ['html_body'] })
+                  .safeParse(val).success ||
+                z
+                  .looseObject({})
+                  .openapi({ required: ['value'] })
+                  .safeParse(val).success
+              )
+            ) {
+              ctx.issues.push({ code: 'custom', input: val })
+            }
+          })(ctx)
+        } catch (error) {
+          if (!(error instanceof z.core.$ZodAsyncError)) throw error
+          ctx.issues.length = reported
+          return (async (ctx) => {
+            const val = ctx.value
+            if (
+              !(
+                (
+                  await z
+                    .looseObject({})
+                    .openapi({ required: ['body'] })
+                    .safeParseAsync(val)
+                ).success ||
+                (
+                  await z
+                    .looseObject({})
+                    .openapi({ required: ['html_body'] })
+                    .safeParseAsync(val)
+                ).success ||
+                (
+                  await z
+                    .looseObject({})
+                    .openapi({ required: ['value'] })
+                    .safeParseAsync(val)
+                ).success
+              )
+            ) {
+              ctx.issues.push({ code: 'custom', input: val })
+            }
+          })(ctx).then(() => val)
+        }
+        return val
+      }, Schema)
+    })().openapi({
+      anyOf: [
+        { type: 'object', additionalProperties: true, required: ['body'] },
+        { type: 'object', additionalProperties: true, required: ['html_body'] },
+        { type: 'object', additionalProperties: true, required: ['value'] },
+      ],
+    }),
     custom_fields: z
       .union([
         z.array(z.union([z.looseObject({}), z.string(), z.int(), z.boolean()])).nullable(),
@@ -23942,7 +25639,7 @@ const SLAPolicyInputSchema = z
       }),
     filter: SLAPolicyFilterInputSchema,
     metric_settings: z
-      .union([SLAPolicyMetricSettingsInputSchema, z.object({}).nullable()])
+      .union([SLAPolicyMetricSettingsInputSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -24000,14 +25697,14 @@ const SLAPolicyUpdateInputSchema = z
         example: 'For urgent incidents, we will resolve the ticket within 2 hours',
       }),
     filter: z
-      .union([SLAPolicyFilterInputSchema, z.object({}).nullable()])
+      .union([SLAPolicyFilterInputSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({
         description:
           "The conditions a ticket must match for the SLA policy to be applied to it. A supplied filter **replaces the policy's conditions in full**, so omitting `all` or sending it as `null` or `[]` removes the policy's existing `all` conditions - and likewise for `any`. Sending `null` or `{}` for `filter` itself is a no-op that leaves the current filter in place",
       }),
     metric_settings: z
-      .union([SLAPolicyMetricSettingsInputSchema, z.object({}).nullable()])
+      .union([SLAPolicyMetricSettingsInputSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -24384,7 +26081,7 @@ const SatisfactionRatingRequestSchema = z
   .openapi('SatisfactionRatingRequest')
 
 const SatisfactionRatingResponseSchema = z
-  .object({ satisfaction_rating: z.array(SatisfactionRatingObjectSchema).exactOptional() })
+  .object({ satisfaction_rating: SatisfactionRatingObjectSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('SatisfactionRatingResponse')
 
@@ -25029,7 +26726,14 @@ const SecuritySettingsObjectSchema = z
                   max_sequence: z.int().nullable().exactOptional(),
                   password_complexity: z.int().exactOptional(),
                   password_duration: z.int().nullable().exactOptional(),
-                  password_history_length: z.int().nullable().exactOptional(),
+                  password_history_length: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Number of most recently recorded passwords to reject, including the current password. Supports 3–8, or 3–20 with auth_extended_password_history enabled. A saved higher value remains supported when the flag is disabled. Null means history checking is disabled.',
+                    }),
                   password_in_mixed_case: z
                     .boolean()
                     .exactOptional()
@@ -25574,6 +27278,24 @@ const SkillBasedRoutingAttributeResponseSchema = z
   .object({ attribute: SkillBasedRoutingAttributeObjectSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('SkillBasedRoutingAttributeResponse')
+
+const SkillBasedRoutingAttributeValueIdsRequestSchema = z
+  .object({
+    attribute_value_ids: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ids of the attribute values to assign. Each id must be a valid UUID. Sending `null`,\n`[]`, or omitting this field entirely clears every attribute value\ncurrently assigned. There is no way to leave the existing set unchanged while calling this endpoint\n',
+      }),
+  })
+  .openapi({
+    description:
+      'Replaces the full set of attribute values (skills) assigned to the ticket. Ids that are valid UUIDs but\nunknown or deleted are ignored. Every id that resolves is added if missing and kept if already present,\nand every existing attribute value not named here is removed. A malformed id causes a 422 response\n',
+    required: [],
+  })
+  .openapi('SkillBasedRoutingAttributeValueIdsRequest')
 
 const SkillBasedRoutingAttributeValueResponseSchema = z
   .object({ attribute_value: SkillBasedRoutingAttributeValueObjectSchema.exactOptional() })
@@ -26147,7 +27869,7 @@ const SuspendedTicketObjectSchema = z
         readOnly: true,
       }),
     error_messages: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .nullable()
       .exactOptional()
       .openapi({
@@ -27745,260 +29467,7 @@ const TicketAuditsResponseNoneCursorSchema = z
   .openapi({ required: [] })
   .openapi('TicketAuditsResponseNoneCursor')
 
-const TicketPriorityEnumSchema = z
-  .enum(['urgent', 'high', 'normal', 'low'])
-  .openapi({ description: 'The urgency with which the ticket should be addressed.' })
-  .openapi('TicketPriorityEnum')
-
-const TicketImportInputSchema = z
-  .object({
-    assignee_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The agent currently assigned to the ticket',
-      }),
-    brand_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The id of the brand this ticket is associated with. If not specified, the ticket is assigned to the default brand',
-      }),
-    collaborators: z
-      .array(CollaboratorObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Users to add as cc's when creating a ticket. See [Setting Collaborators](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-collaborators)",
-      }),
-    comment: z
-      .looseObject({
-        value: z.string().exactOptional().openapi({ description: 'The comment string value' }),
-      })
-      .openapi({ required: [] })
-      .and(TicketCommentObjectSchema)
-      .exactOptional(),
-    comments: z
-      .array(
-        z
-          .looseObject({
-            author_id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({ type: ['integer', 'null'], format: 'int64' }),
-            body: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The comment body in plain text' }),
-            created_at: z.iso.datetime({ offset: true }).exactOptional(),
-            html_body: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The comment body in HTML' }),
-            metadata: z.looseObject({}).exactOptional(),
-            public: z.boolean().exactOptional(),
-            value: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The comment string value (legacy alias for body)' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'The conversation between requesters, collaborators, and agents' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the ticket was created (for historical imports)' }),
-    custom_fields: z
-      .array(TicketFieldValueInputSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom field values to set on the ticket.\nEach entry specifies a field ID and its value.\n',
-      }),
-    custom_status_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The custom ticket status id of the ticket',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Read-only first comment on the ticket. When [creating a ticket](#create-ticket), use `comment` to set the description. See [Description and first comment](#description-and-first-comment)',
-      }),
-    email_ccs: z
-      .array(EmailCCObjectSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of objects that represent agent or end users email CCs to add or delete from the ticket. See [Setting email CCs](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-email-ccs)',
-      }),
-    external_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An id you can use to link Zendesk Support tickets to local records',
-      }),
-    followers: z
-      .array(FollowerObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of objects that represent agent followers to add or delete from the ticket. See [Setting followers](/documentation/ticketing/managing-tickets/creating-and-updating-tickets#setting-followers)',
-      }),
-    group_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The group this ticket is assigned to',
-      }),
-    priority: TicketPriorityEnumSchema.exactOptional(),
-    recipient: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The original recipient e-mail address of the ticket' }),
-    requester_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The user who requested this ticket',
-      }),
-    solved_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the ticket was solved (for historical imports)' }),
-    status: z
-      .enum(['new', 'open', 'pending', 'hold', 'solved', 'closed'])
-      .exactOptional()
-      .openapi({ description: 'The state of the ticket' }),
-    subject: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The value of the subject field for this ticket' }),
-    submitter_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        type: ['integer', 'null'],
-        format: 'int64',
-        description:
-          'The user who submitted the ticket. The current API caller is used if not specified',
-      }),
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The array of tags applied to this ticket' }),
-    type: z
-      .enum(['question', 'incident', 'problem', 'task'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: "The type of the ticket. `null` maps to the account's default ticket type",
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the ticket was last updated (for historical imports)' }),
-    via: z
-      .object({
-        channel: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'This tells you how the ticket or event was created' }),
-        source: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({
-            description:
-              'For some channels a source object gives more information about how or why the ticket or event was created',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'An object explaining how the ticket was created. See the [Via object reference](/documentation/ticketing/reference-guides/via-object-reference)\n',
-        required: [],
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TicketImportInput')
-
-const TicketBulkImportRequestSchema = z
+const TicketBulkImportRequestSchema: z.ZodType<TicketBulkImportRequestType> = z
   .object({ tickets: z.array(TicketImportInputSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('TicketBulkImportRequest')
@@ -28684,10 +30153,18 @@ const TicketFieldObjectSchema = z
           'For "regexp" fields only. The validation pattern for a field value to be deemed valid',
       }),
     relationship_filter: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A filter definition that allows your autocomplete to filter down results',
+      }),
+    relationship_target_publicly_listable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Present for "lookup" and "multi_lookup" fields that target a custom object, and only when the `include_anonymous_availability` query parameter is true. True if anonymous users can read the target custom object\'s records. See [Anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access).',
+        readOnly: true,
       }),
     relationship_target_type: z
       .string()
@@ -29015,337 +30492,6 @@ const TicketFieldsShowManyResponseSchema = z
   .openapi({ required: ['ticket_fields'] })
   .openapi('TicketFieldsShowManyResponse')
 
-const TicketFormAgentConditionObjectSchema = z
-  .object({
-    child_fields: z
-      .array(
-        z
-          .object({
-            id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                description:
-                  'The ID of the ticket field to show. Must be a field on this form, active, and cannot be the `parent_field_id`',
-              }),
-            is_required: z
-              .boolean()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Accepted but ignored on agent conditions. Whatever is sent is overwritten by a value derived from\n`required_on_statuses` — true when the type is `ALL_STATUSES` or when `solved` is among the statuses, false\nwhen `required_on_statuses` is omitted. Set `required_on_statuses` to control it. A null is accepted and\nignored like any other value\n',
-              }),
-            required_on_statuses: z
-              .object({
-                custom_statuses: z
-                  .array(
-                    z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'number' && Number.isSafeInteger(val)
-                            ? BigInt(val)
-                            : typeof val === 'string' && /^-?\d+$/.test(val)
-                              ? BigInt(val)
-                              : val,
-                        z.int64(),
-                      )
-                      .openapi({ type: 'integer', format: 'int64' }),
-                  )
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'For `SOME_STATUSES` only, and only on accounts with custom ticket statuses enabled — otherwise ignored.\nThe IDs of the custom statuses the field is required on. Cannot be combined with `statuses`\n',
-                  }),
-                statuses: z
-                  .array(z.enum(['new', 'open', 'pending', 'hold', 'solved']))
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'For `SOME_STATUSES` only. The system statuses the field is required on. Cannot be combined with\n`custom_statuses` — on accounts with custom ticket statuses enabled sending both is rejected, and on\nother accounts `custom_statuses` is ignored. A null counts as sending the attribute for that rejection,\nand otherwise behaves like an empty array: the condition is stored as `NO_STATUSES`\n',
-                  }),
-                type: z
-                  .union([
-                    z.literal('ALL_STATUSES'),
-                    z.literal('SOME_STATUSES'),
-                    z.literal('NO_STATUSES'),
-                    z.literal(null),
-                  ])
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      '`ALL_STATUSES` requires the field on every status, `NO_STATUSES` on none, and `SOME_STATUSES`\nrequires the field only on the statuses listed in `statuses` or `custom_statuses`. A `SOME_STATUSES`\nobject carrying neither list is stored as `NO_STATUSES`. Omitting the type, or sending null, is also\nstored as `NO_STATUSES`\n',
-                  }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The ticket statuses on which the child field must have a value. Omitting it, or sending null, makes the field\nnever required\n',
-                required: [],
-              }),
-          })
-          .openapi({ required: ['id'] }),
-      )
-      .openapi({
-        description:
-          'The fields shown while the condition is active. Duplicate `id` entries are collapsed. An empty array is accepted rather than rejected — it creates no condition, and on an update it deletes every existing condition of this kind, because none are restated',
-      }),
-    parent_field_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the ticket field whose value activates the condition. Must be a field on this form, active, and of type `tagger`, `priority`, `tickettype`, `checkbox`, `textarea` or `text`',
-      }),
-    value: z
-      .xor([z.string().nullable(), z.boolean()])
-      .openapi({
-        description:
-          "The parent field value that activates the condition. For a `checkbox` parent field, send a boolean — any\nunrecognized value is coerced to false rather than rejected. For `priority` send a priority name, which is limited\nto `normal` and `high` on an account using the basic priority set. For `tickettype` send one of `question`,\n`incident`, `problem` or `task`. For `tagger` send the tag value of one of the parent field's options.\n\nNull is only accepted for a `checkbox` parent field, where it is coerced to false like any other unrecognized\nvalue. For every other parent field type a null is rejected\n",
-      }),
-  })
-  .openapi({
-    description:
-      "A condition set that shows and optionally requires child fields in the agent interface when a parent field\nholds a given value. Requires the account's native conditional fields feature; without it the `agent_conditions`\narray is silently ignored.\n",
-    example: {
-      child_fields: [
-        { id: 44, required_on_statuses: { statuses: ['new', 'open'], type: 'SOME_STATUSES' } },
-      ],
-      parent_field_id: 5,
-      value: 'matching_value_1',
-    },
-    required: ['parent_field_id', 'value', 'child_fields'],
-  })
-  .openapi('TicketFormAgentConditionObject')
-
-const TicketFormEndUserConditionObjectSchema = z
-  .object({
-    child_fields: z
-      .array(
-        z
-          .object({
-            id: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                description:
-                  'The ID of the ticket field to show. Must be a field on this form, active, editable in the help center, and cannot be the `parent_field_id`',
-              }),
-            is_required: z
-              .boolean()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'If true, end users must enter a value in the field to submit the request. Omitting it stores false, so\nrestate it on every update to keep an existing child field required. Null behaves exactly like omitting it\n',
-              }),
-          })
-          .openapi({ required: ['id'] }),
-      )
-      .openapi({
-        description:
-          'The fields shown while the condition is active. Duplicate `id` entries are collapsed. An empty array is accepted rather than rejected — it creates no condition, and on an update it deletes every existing condition of this kind, because none are restated',
-      }),
-    parent_field_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The ID of the ticket field whose value activates the condition. Must be a field on this form, active, editable in the help center, and of type `tagger`, `priority`, `tickettype`, `checkbox`, `textarea` or `text`',
-      }),
-    value: z
-      .xor([z.string().nullable(), z.boolean()])
-      .openapi({
-        description:
-          "The parent field value that activates the condition. For a `checkbox` parent field, send a boolean — any\nunrecognized value is coerced to false rather than rejected. For `priority` send a priority name, which is limited\nto `normal` and `high` on an account using the basic priority set. For `tickettype` send one of `question`,\n`incident`, `problem` or `task`. For `tagger` send the tag value of one of the parent field's options.\n\nNull is only accepted for a `checkbox` parent field, where it is coerced to false like any other unrecognized\nvalue. For every other parent field type a null is rejected\n",
-      }),
-  })
-  .openapi({
-    description:
-      "A condition set that shows and optionally requires child fields in end-user products when a parent field holds\na given value. Requires the account's native conditional fields feature; without it the `end_user_conditions`\narray is silently ignored.\n",
-    example: {
-      child_fields: [{ id: 32, is_required: true }],
-      parent_field_id: 5,
-      value: 'matching_value_1',
-    },
-    required: ['parent_field_id', 'value', 'child_fields'],
-  })
-  .openapi('TicketFormEndUserConditionObject')
-
-const TicketFormInputSchema = z
-  .object({
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the form is available for use. A form cannot be both inactive and the default form',
-      }),
-    agent_conditions: z
-      .array(TicketFormAgentConditionObjectSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Condition sets applied in the agent interface. Null and an empty array both create no conditions',
-      }),
-    default: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether this is the account's default form. Setting it forces `end_user_visible` to true, demotes the previous\ndefault form, and is rejected for a `service_catalog` form or an inactive form\n",
-      }),
-    display_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the form shown to end users. Defaults to `name`, but only when `end_user_visible` is also being set to\ntrue. Sending null is equivalent to omitting it and follows the same defaulting\n',
-      }),
-    end_user_conditions: z
-      .array(TicketFormEndUserConditionObjectSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Condition sets applied in end-user products. Null and an empty array both create no conditions',
-      }),
-    end_user_visible: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the form is visible to end users. Always true for the default form',
-      }),
-    form_type: z
-      .union([z.literal('standard'), z.literal('service_catalog'), z.literal(null)])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of form to create. Only honored on accounts with the Service Catalog feature, where `service_catalog`\ncreates a service catalog form; other accounts always get a `standard` form. Defaults to `standard`, as does a\nnull value\n',
-      }),
-    in_all_brands: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the form is available in every brand on this account. A null value is ignored rather than applied',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the form' }),
-    position: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The position of this form among the account's other forms. Defaults to the end of the list when omitted or null\n",
-      }),
-    raw_display_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A dynamic content placeholder for the display name. Takes the place of `display_name` when both are given,\nincluding when it is an empty string. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/).\nSending null is accepted and discarded: `display_name` is left as sent\n',
-      }),
-    raw_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A dynamic content placeholder for the name. Takes the place of `name` when both are given, including when it is an\nempty string. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/). Sending null is\naccepted and discarded: `name` is left as sent\n',
-      }),
-    restricted_brand_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The IDs of the brands this form is restricted to, used when `in_all_brands` is false. IDs that do not name an\nactive brand on the account are silently dropped. Unlike an update, a create applies these on any account, even\none with a single active brand — but such an account then cannot change them again. Null and an empty array both\nleave the form unrestricted, the same as omitting the attribute\n',
-      }),
-    ticket_field_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The IDs of the ticket fields on this form, in the order they are shown. The account's system-required fields are\nprepended automatically whether or not they are listed. An empty array or null is treated as if the attribute were\nomitted, leaving the form with only those system-required fields\n",
-      }),
-  })
-  .openapi({
-    description:
-      'The writable attributes accepted when creating a ticket form. The form must be given a name, through either `name`\nor `raw_name`.\n',
-    required: [],
-  })
-  .openapi('TicketFormInput')
-
 const TicketFormObjectSchema = z
   .object({
     active: z.boolean().exactOptional().openapi({ description: 'If the form is set as active' }),
@@ -29539,7 +30685,7 @@ const TicketFormObjectSchema = z
   })
   .openapi('TicketFormObject')
 
-const TicketFormRequestSchema = z
+const TicketFormRequestSchema: z.ZodType<TicketFormRequestType> = z
   .object({ ticket_form: TicketFormInputSchema })
   .openapi({ required: ['ticket_form'] })
   .openapi('TicketFormRequest')
@@ -29654,133 +30800,7 @@ const TicketFormStatusesUpdateParamsSchema = z
   .openapi({ example: { _destroy: '1', custom_status_id: 12345, id: 'abcdef' }, required: [] })
   .openapi('TicketFormStatusesUpdateParams')
 
-const TicketFormUpdateInputSchema = z
-  .object({
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the form is available for use. The default form cannot be made inactive',
-      }),
-    agent_conditions: z
-      .array(TicketFormAgentConditionObjectSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The complete set of condition sets for the agent interface. Any existing agent condition not restated in the array\nis deleted, so send the full list. Passing an empty array or null deletes them all\n',
-      }),
-    default: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether this is the account's default form. Setting it forces `end_user_visible` to true, demotes the previous\ndefault form, and is rejected for a `service_catalog` form or an inactive form. The current default form cannot\nclear its own flag — promote another form instead\n",
-      }),
-    display_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the form shown to end users. Sending null clears it, but only on a form that is not end-user visible —\non an end-user-visible form a null is rejected, and when the same request also sets `end_user_visible` the null is\nreplaced by `name`\n',
-      }),
-    end_user_conditions: z
-      .array(TicketFormEndUserConditionObjectSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The complete set of condition sets for end-user products. Any existing end-user condition not restated in the\narray is deleted, so send the full list. Passing an empty array or null deletes them all\n',
-      }),
-    end_user_visible: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the form is visible to end users. Always true for the default form',
-      }),
-    in_all_brands: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the form is available in every brand on this account. A null value is ignored rather than applied',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the form' }),
-    position: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          "The position of this form among the account's other forms. Unlike a create, an update will not default it: a null\nis rejected because a live form must have a position\n",
-      }),
-    raw_display_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A dynamic content placeholder for the display name. Takes the place of `display_name` when both are given,\nincluding when it is an empty string. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/).\nSending null is accepted and discarded: `display_name` is left as sent\n',
-      }),
-    raw_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A dynamic content placeholder for the name. Takes the place of `name` when both are given, including when it is an\nempty string. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/). Sending null is\naccepted and discarded: `name` is left as sent\n',
-      }),
-    restricted_brand_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The complete set of brands this form is restricted to. Any brand currently restricting the form whose ID is absent\nfrom the array is removed, so send the full list rather than a partial one. Passing an empty array or null removes\nevery restriction. IDs that do not name an active brand on the account are silently dropped. Only applied on\naccounts with more than one active brand\n',
-      }),
-    ticket_field_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The complete, ordered set of ticket fields on this form. Any field currently on the form whose ID is absent from\nthe array is REMOVED from the form, so a partial list silently drops fields — send the full list, or omit the\nattribute entirely to leave the form's fields untouched. An empty array and null are also treated as omitted and\ncannot be used to clear the form. The account's system-required fields are prepended automatically\n",
-      }),
-  })
-  .openapi({
-    description:
-      "The writable attributes accepted when updating a ticket form. Every attribute is optional and an omitted attribute is\nleft unchanged, but `ticket_field_ids`, `restricted_brand_ids`, `agent_conditions` and `end_user_conditions` are\nreplaced wholesale rather than merged — see each description. A form's `form_type` cannot be changed after creation.\n",
-    required: [],
-  })
-  .openapi('TicketFormUpdateInput')
-
-const TicketFormUpdateRequestSchema = z
+const TicketFormUpdateRequestSchema: z.ZodType<TicketFormUpdateRequestType> = z
   .object({ ticket_form: TicketFormUpdateInputSchema })
   .openapi({ required: ['ticket_form'] })
   .openapi('TicketFormUpdateRequest')
@@ -29841,7 +30861,7 @@ const TicketMetricEventGroupSLAObjectSchema = TicketMetricEventBaseObjectSchema.
   z
     .object({
       group_sla: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           description:
@@ -29858,7 +30878,7 @@ const TicketMetricEventSLAObjectSchema = TicketMetricEventBaseObjectSchema.and(
   z
     .object({
       sla: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           description:
@@ -29875,7 +30895,7 @@ const TicketMetricEventUpdateStatusObjectSchema = TicketMetricEventBaseObjectSch
   z
     .object({
       status: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           description:
@@ -30192,129 +31212,12 @@ const TicketSkipCreateInputSchema = z
   .openapi({ required: ['skip'] })
   .openapi('TicketSkipCreateInput')
 
-const TicketSkipObjectSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Time the skip was created', readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned upon creation',
-        readOnly: true,
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Reason for skipping the ticket', readOnly: true }),
-    ticket: TicketObjectSchema.exactOptional().openapi({
-      description:
-        'The skipped ticket. See the [Ticket object reference](/api-reference/ticketing/tickets/tickets/#json-format)',
-    }),
-    ticket_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'ID of the skipped ticket',
-        readOnly: true,
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Time the skip was last updated', readOnly: true }),
-    user_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'ID of the skipping agent',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    example: {
-      created_at: '2015-09-30T21:44:03Z',
-      id: 1,
-      reason: 'I have no idea.',
-      ticket: {
-        assignee_id: 235323,
-        collaborator_ids: [35334, 234],
-        created_at: '2009-07-20T22:55:29Z',
-        custom_fields: [
-          { id: 27642, value: '745' },
-          { id: 27648, value: 'yes' },
-        ],
-        description: 'The fire is very colorful.',
-        due_at: null,
-        external_id: 'ahg35h3jh',
-        follower_ids: [35334, 234],
-        from_messaging_channel: false,
-        generated_timestamp: 1304553600,
-        group_id: 98738,
-        has_incidents: false,
-        id: 123,
-        organization_id: 509974,
-        priority: 'high',
-        problem_id: 9873764,
-        raw_subject: '{{dc.printer_on_fire}}',
-        recipient: 'support@company.com',
-        requester_id: 20978392,
-        satisfaction_rating: { comment: 'Great support!', id: 1234, score: 'good' },
-        sharing_agreement_ids: [84432],
-        status: 'open',
-        subject: 'Help, my printer is on fire!',
-        submitter_id: 76872,
-        tags: ['enterprise', 'other_tag'],
-        type: 'incident',
-        updated_at: '2011-05-05T10:38:52Z',
-        url: 'https://company.zendesk.com/api/v2/tickets/35436',
-        via: { channel: 'web' },
-      },
-      ticket_id: 123,
-      updated_at: '2015-09-30T21:44:03Z',
-      user_id: 456,
-    },
-    required: [],
-  })
-  .openapi('TicketSkipObject')
-
-const TicketSkipCreationSchema = z
+const TicketSkipCreationSchema: z.ZodType<TicketSkipCreationType> = z
   .object({ skip: TicketSkipObjectSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('TicketSkipCreation')
 
-const TicketSkipsResponseSchema = z
+const TicketSkipsResponseSchema: z.ZodType<TicketSkipsResponseType> = z
   .object({ skips: z.array(TicketSkipObjectSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('TicketSkipsResponse')
@@ -30337,17 +31240,17 @@ const TicketUpdateResponseSchema = z
   .openapi({ required: [] })
   .openapi('TicketUpdateResponse')
 
-const TicketsCreateRequestSchema = z
+const TicketsCreateRequestSchema: z.ZodType<TicketsCreateRequestType> = z
   .object({ tickets: z.array(TicketObjectSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('TicketsCreateRequest')
 
-const TicketsResponseSchema = z
+const TicketsResponseSchema: z.ZodType<TicketsResponseType> = z
   .object({ tickets: z.array(TicketObjectSchema).exactOptional() })
   .openapi({ required: [] })
   .openapi('TicketsResponse')
 
-const TicketsUpdateRequestSchema = z
+const TicketsUpdateRequestSchema: z.ZodType<TicketsUpdateRequestType> = z
   .xor([
     z
       .object({
@@ -30407,62 +31310,63 @@ const TicketsUpdateRequestSchema = z
   ])
   .openapi('TicketsUpdateRequest')
 
-const TimeBasedExportIncrementalTicketsResponseSchema = z
-  .object({
-    count: z.int().exactOptional(),
-    end_of_stream: z.boolean().exactOptional(),
-    end_time: z.int().exactOptional(),
-    next_page: z.string().nullable().exactOptional(),
-    tickets: z.array(TicketObjectSchema).exactOptional(),
-  })
-  .openapi({
-    description:
-      'See [Tickets](/api-reference/ticketing/tickets/tickets/) for a detailed example.\n',
-    example: {
-      count: 2,
-      end_of_stream: true,
-      end_time: 1390362485,
-      next_page:
-        'https://{subdomain}.zendesk.com/api/v2/incremental/tickets?per_page=3&start_time=1390362485',
-      tickets: [
-        {
-          assignee_id: 235323,
-          collaborator_ids: [35334, 234],
-          created_at: '2009-07-20T22:55:29Z',
-          custom_fields: [
-            { id: 27642, value: '745' },
-            { id: 27648, value: 'yes' },
-          ],
-          description: 'The fire is very colorful.',
-          due_at: null,
-          external_id: 'ahg35h3jh',
-          follower_ids: [35334, 234],
-          generated_timestamp: 1304553600,
-          group_id: 98738,
-          has_incidents: false,
-          id: 35436,
-          organization_id: 509974,
-          priority: 'high',
-          problem_id: 9873764,
-          raw_subject: '{{dc.printer_on_fire}}',
-          recipient: 'support@company.com',
-          requester_id: 20978392,
-          satisfaction_rating: { comment: 'Great support!', id: 1234, score: 'good' },
-          sharing_agreement_ids: [84432],
-          status: 'open',
-          subject: 'Help, my printer is on fire!',
-          submitter_id: 76872,
-          tags: ['enterprise', 'other_tag'],
-          type: 'incident',
-          updated_at: '2011-05-05T10:38:52Z',
-          url: 'https://company.zendesk.com/api/v2/tickets/35436',
-          via: { channel: 'web' },
-        },
-      ],
-    },
-    required: [],
-  })
-  .openapi('TimeBasedExportIncrementalTicketsResponse')
+const TimeBasedExportIncrementalTicketsResponseSchema: z.ZodType<TimeBasedExportIncrementalTicketsResponseType> =
+  z
+    .object({
+      count: z.int().exactOptional(),
+      end_of_stream: z.boolean().exactOptional(),
+      end_time: z.int().exactOptional(),
+      next_page: z.string().nullable().exactOptional(),
+      tickets: z.array(TicketObjectSchema).exactOptional(),
+    })
+    .openapi({
+      description:
+        'See [Tickets](/api-reference/ticketing/tickets/tickets/) for a detailed example.\n',
+      example: {
+        count: 2,
+        end_of_stream: true,
+        end_time: 1390362485,
+        next_page:
+          'https://{subdomain}.zendesk.com/api/v2/incremental/tickets?per_page=3&start_time=1390362485',
+        tickets: [
+          {
+            assignee_id: 235323,
+            collaborator_ids: [35334, 234],
+            created_at: '2009-07-20T22:55:29Z',
+            custom_fields: [
+              { id: 27642, value: '745' },
+              { id: 27648, value: 'yes' },
+            ],
+            description: 'The fire is very colorful.',
+            due_at: null,
+            external_id: 'ahg35h3jh',
+            follower_ids: [35334, 234],
+            generated_timestamp: 1304553600,
+            group_id: 98738,
+            has_incidents: false,
+            id: 35436,
+            organization_id: 509974,
+            priority: 'high',
+            problem_id: 9873764,
+            raw_subject: '{{dc.printer_on_fire}}',
+            recipient: 'support@company.com',
+            requester_id: 20978392,
+            satisfaction_rating: { comment: 'Great support!', id: 1234, score: 'good' },
+            sharing_agreement_ids: [84432],
+            status: 'open',
+            subject: 'Help, my printer is on fire!',
+            submitter_id: 76872,
+            tags: ['enterprise', 'other_tag'],
+            type: 'incident',
+            updated_at: '2011-05-05T10:38:52Z',
+            url: 'https://company.zendesk.com/api/v2/tickets/35436',
+            via: { channel: 'web' },
+          },
+        ],
+      },
+      required: [],
+    })
+    .openapi('TimeBasedExportIncrementalTicketsResponse')
 
 const TimeBasedExportIncrementalUsersResponseSchema = z
   .object({
@@ -30733,7 +31637,7 @@ const TrialAccountInputSchema = z
           "The name of the account. Not enforced by this controller's own gates; accepted and forwarded to the account service, which decides whether it is required. `null` and omission are indistinguishable here.",
       }),
     remote_authentication: z
-      .union([TrialAccountRemoteAuthenticationInputSchema, z.object({}).nullable()])
+      .union([TrialAccountRemoteAuthenticationInputSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -30891,7 +31795,7 @@ const TrialAccountRequestSchema = z
       description: 'Attributes of the account owner to create.',
     }),
     partner: z
-      .union([TrialAccountPartnerInputSchema, z.object({}).nullable()])
+      .union([TrialAccountPartnerInputSchema, z.looseObject({}).nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -30941,45 +31845,6 @@ const TriggerActionDefinitionObjectSchema = z
   .openapi({ required: [] })
   .openapi('TriggerActionDefinitionObject')
 
-const TriggerChangeObjectSchema = z
-  .object({
-    change: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'One of `-`, `+`, `=` representing the type of change' }),
-    content: z
-      .xor([
-        z.boolean(),
-        z.string().nullable(),
-        z.int(),
-        z.array(z.xor([z.string(), z.int(), z.boolean()])),
-      ])
-      .exactOptional()
-      .openapi({ description: 'The value of the item it represents' }),
-  })
-  .openapi({ example: { change: '+', content: 'solved' }, required: [] })
-  .openapi('TriggerChangeObject')
-
-const TriggerActionDiffObjectSchema = z
-  .object({
-    field: z
-      .array(TriggerChangeObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of [change](#change) objects.' }),
-    value: z
-      .array(TriggerChangeObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of [change](#change) objects.' }),
-  })
-  .openapi({
-    example: {
-      field: [{ change: '+', content: 'solved' }],
-      value: [{ change: '-', content: 'open' }],
-    },
-    required: [],
-  })
-  .openapi('TriggerActionDiffObject')
-
 const TriggerBulkUpdateItemSchema = z
   .object({
     active: z
@@ -31021,42 +31886,6 @@ const TriggerBulkUpdateRequestSchema = z
   .openapi({ required: [] })
   .openapi('TriggerBulkUpdateRequest')
 
-const TriggerCategoriesResponseSchema = z
-  .object({ trigger_categories: z.array(TriggerCategorySchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TriggerCategoriesResponse')
-
-const TriggerCategoryIdSchema = z.string().openapi('TriggerCategoryId')
-
-const TriggerCategoryRequestSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    position: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TriggerCategoryRequest')
-
-const TriggerCategoryRequestRequiredSchema = z
-  .object({})
-  .openapi({ required: ['name'] })
-  .openapi('TriggerCategoryRequestRequired')
-
-const TriggerCategoryResponseSchema = z
-  .object({ trigger_category: TriggerCategorySchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TriggerCategoryResponse')
-
 const TriggerCategoryRuleCountsSchema = z
   .object({
     active_count: z
@@ -31087,38 +31916,80 @@ const TriggerCategoryRuleCountsSchema = z
   .openapi({ required: [] })
   .openapi('TriggerCategoryRuleCounts')
 
-const TriggerConditionDiffObjectSchema = z
+const TriggerCategoriesResponseSchema = z
   .object({
-    field: z
-      .array(TriggerChangeObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of [change](#change) objects' }),
-    operator: z
-      .array(TriggerChangeObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of [change](#change) objects' }),
-    value: z
-      .array(TriggerChangeObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of [change](#change) objects' }),
-  })
-  .openapi({
-    example: {
-      field: [{ change: '=', content: 'status' }],
-      operator: [{ change: '=', content: 'less_than' }],
-      value: [{ change: '+', content: 'solved' }],
-    },
-    required: [],
-  })
-  .openapi('TriggerConditionDiffObject')
-
-const TriggerConditionsDiffObjectSchema = z
-  .object({
-    all: z.array(TriggerConditionDiffObjectSchema).nullable().exactOptional(),
-    any: z.array(TriggerConditionDiffObjectSchema).nullable().exactOptional(),
+    trigger_categories: z
+      .array(
+        (() => {
+          const Schema = TriggerCategorySchema
+          return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+            const reported = ctx.issues.length
+            try {
+              ;((ctx) => {
+                const val = ctx.value
+                if (!TriggerCategoryRuleCountsSchema.safeParse(val).success) {
+                  ctx.issues.push({ code: 'custom', input: val })
+                }
+              })(ctx)
+            } catch (error) {
+              if (!(error instanceof z.core.$ZodAsyncError)) throw error
+              ctx.issues.length = reported
+              return (async (ctx) => {
+                const val = ctx.value
+                if (!(await TriggerCategoryRuleCountsSchema.safeParseAsync(val)).success) {
+                  ctx.issues.push({ code: 'custom', input: val })
+                }
+              })(ctx).then(() => val)
+            }
+            return val
+          }, Schema)
+        })().openapi({
+          anyOf: [
+            {
+              type: 'object',
+              properties: {
+                active_count: { type: 'integer', format: 'int64' },
+                inactive_count: { type: 'integer', format: 'int64' },
+              },
+            },
+          ],
+        }),
+      )
+      .exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('TriggerConditionsDiffObject')
+  .openapi('TriggerCategoriesResponse')
+
+const TriggerCategoryIdSchema = z.string().openapi('TriggerCategoryId')
+
+const TriggerCategoryRequestSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    position: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TriggerCategoryRequest')
+
+const TriggerCategoryRequestRequiredSchema = z
+  .looseObject({})
+  .openapi({ required: ['name'] })
+  .openapi('TriggerCategoryRequestRequired')
+
+const TriggerCategoryResponseSchema = z
+  .object({ trigger_category: TriggerCategorySchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TriggerCategoryResponse')
 
 const TriggerDefinitionObjectSchema = z
   .object({
@@ -31217,84 +32088,6 @@ const TriggerRevisionErrorResponseSchema = z
   .openapi({ required: [] })
   .openapi('TriggerRevisionErrorResponse')
 
-const TriggerSnapshotObjectSchema = z
-  .object({
-    actions: z
-      .array(TriggerActionObjectSchema)
-      .exactOptional()
-      .openapi({
-        description: 'An array of [Actions](#actions) describing what the ticket trigger will do',
-      }),
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the ticket trigger is active' }),
-    category_name: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The name of the trigger category at the time of the revision' }),
-    conditions: TriggerConditionsObjectSchema.exactOptional(),
-    description: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The description of the ticket trigger' }),
-    title: z.string().exactOptional().openapi({ description: 'The title of the ticket trigger' }),
-  })
-  .openapi({
-    example: {
-      actions: [],
-      active: true,
-      category_name: 'Notifications',
-      conditions: {},
-      description: 'Notifies requester that a comment was updated',
-      title: 'Notify requester of comment update',
-    },
-    required: [],
-  })
-  .openapi('TriggerSnapshotObject')
-
-const TriggerRevisionObjectSchema = z
-  .object({
-    author_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'ID of the user who made the revision',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Time the revision was created' }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'ID of the revision' }),
-    snapshot: TriggerSnapshotObjectSchema.exactOptional(),
-    url: z.string().exactOptional().openapi({ description: 'The API url of this revision' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TriggerRevisionObject')
-
 const TriggerRevisionResponseSchema = z
   .object({
     trigger_revision: TriggerRevisionObjectSchema.exactOptional(),
@@ -31309,7 +32102,7 @@ const TriggerRevisionResponseSchema = z
   .openapi({ required: [] })
   .openapi('TriggerRevisionResponse')
 
-const TriggerRevisionsResponseSchema = z
+const TriggerRevisionsResponseSchema: z.ZodType<TriggerRevisionsResponseType> = z
   .object({
     after_cursor: z
       .string()
@@ -31836,14 +32629,16 @@ const UserIdentityInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. When true, attempts `owned` first and falls back to `shared` on an ownership conflict. Ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.',
+          'When true, creates the email identity as "owned", or as "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
+        writeOnly: true,
       }),
     ownership: z
       .enum(['owned', 'shared'])
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. Ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.',
+          'Sets the email identity to "owned" or "shared". Defaults to "owned". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
+        writeOnly: true,
       }),
     primary: z
       .boolean()
@@ -31925,7 +32720,7 @@ const UserCreateInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. When true, automatic ownership is applied only to the identity created from `email`. Ignored unless the account has the Shared Email EAP enabled.',
+          'When true, creates the identity specified by `email` as "owned", or as "shared" if another user owns the address. Does not apply to `identities[]`. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
         writeOnly: true,
       }),
     custom_role_id: z
@@ -32841,7 +33636,7 @@ const UserIdentityObjectSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Indicates whether the identity is owned or shared. Only returned to non-end-user callers.',
+          'Indicates whether the email identity is "owned" or "shared". Only returned to non-end-user callers. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
         readOnly: true,
       }),
     primary: z
@@ -32958,7 +33753,8 @@ const UserIdentityCreateInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to `google` identities - an ownership conflict for a Google-backed email identity is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.',
+          'When true, creates the email identity as "owned", or as "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
+        writeOnly: true,
       }),
     ownership: z
       .union([z.literal('owned'), z.literal('shared'), z.literal(null)])
@@ -32966,7 +33762,8 @@ const UserIdentityCreateInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to `owned`. `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected outright for `google` identities (a Google-backed email identity can only be owned), and is subject to a per-brand cap on shared identities per address (100 by default; past the cap the request fails with `LimitExceeded`). A create that will send a verification email for a shared address is rate-limited and can be rejected with `429 Too Many Requests`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.',
+          'Sets the email identity to "owned" or "shared". Defaults to "owned". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
+        writeOnly: true,
       }),
     primary: z
       .boolean()
@@ -33044,7 +33841,7 @@ const UserIdentityCreateInputSchema = z
         .openapi({ required: ['ownership', 'auto_ownership'] })
         .safeParse(val).success,
   )
-  .openapi({ required: ['type', 'value'] })
+  .openapi({ required: ['type', 'value'], not: { required: ['ownership', 'auto_ownership'] } })
   .openapi('UserIdentityCreateInput')
 
 const UserIdentityCreateRequestSchema = z
@@ -33065,7 +33862,8 @@ const UserIdentityUpdateInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The `shared` fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to Google-backed identities - a conflict for one is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.',
+          'When true, sets the email identity to "owned", or to "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
+        writeOnly: true,
       }),
     deliverable_state: z
       .union([z.literal('deliverable'), z.literal(null)])
@@ -33081,7 +33879,8 @@ const UserIdentityUpdateInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          "Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to the identity's current ownership, so it changes nothing. Setting `owned` on a shared identity promotes it to owned and demotes the identity that currently owns the address to shared in the same transaction, instead of failing with an ownership conflict. Demoting an owned identity to `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected for Google-backed identities, and is subject to the per-brand cap on shared identities per address (100 by default, `LimitExceeded` past it) when the request also changes `value`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.",
+          'Sets the email identity to "owned" or "shared". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
+        writeOnly: true,
       }),
     value: z
       .string()
@@ -33131,6 +33930,7 @@ const UserIdentityUpdateInputSchema = z
   .openapi({
     description:
       'A partial update. Only the properties listed here can be changed on an existing identity - `type` and\n`primary` cannot, and are ignored if sent. Omitting a property leaves it unchanged.\n\nOne exception to "leaves it unchanged": if the identity is a non-primary email identity of the account\nowner, sending an `identity` object unverifies the identity and sends a verification email. The\ntrigger is the presence of the object - its contents make no difference, and `verified: true` or\n`verification_method: low` does not prevent it. Sending `"identity": null` instead of an object is the\none way to avoid it, because the whole update branch is then skipped. The account owner\'s primary\nemail identity cannot be updated at all.\n',
+    not: { required: ['ownership', 'auto_ownership'] },
   })
   .openapi('UserIdentityUpdateInput')
 
@@ -33600,7 +34400,7 @@ const UserUpdateInputSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Write-only ownership control for the Shared Email EAP. When true, automatic ownership is applied only to the identity created from `email`. Ignored unless the account has the Shared Email EAP enabled.',
+          'When true, creates the identity specified by `email` as "owned", or as "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).',
         writeOnly: true,
       }),
     custom_role_id: z
@@ -34042,8 +34842,8 @@ const ViewCategoryErrorSchema = z
     code: z.string(),
     detail: z.string().exactOptional(),
     id: z.string().exactOptional(),
-    links: z.object({}).exactOptional(),
-    source: z.object({}).exactOptional(),
+    links: z.looseObject({}).exactOptional(),
+    source: z.looseObject({}).exactOptional(),
     status: z.string().exactOptional(),
     title: z.string(),
   })
@@ -34061,7 +34861,7 @@ const ViewCategoryRequestSchema = z
   .openapi('ViewCategoryRequest')
 
 const ViewCategoryRequestRequiredSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ required: ['name'] })
   .openapi('ViewCategoryRequestRequired')
 
@@ -34734,105 +35534,7 @@ const WorkspaceInputSchema = z
   .openapi({ required: [] })
   .openapi('WorkspaceInput')
 
-const WorkspaceObjectSchema = z
-  .object({
-    activated: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, this workspace is available for use' }),
-    apps: z
-      .array(z.looseObject({}))
-      .exactOptional()
-      .openapi({ description: 'The apps associated to this workspace' }),
-    conditions: ConditionsObjectSchema.exactOptional(),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the workspace was created' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "User-defined description of this workspace's purpose" }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Automatically assigned upon creation',
-      }),
-    macro_ids: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({ description: 'The ids of the macros associated to this workspace' }),
-    macros: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({ description: 'The ids of the macros associated to this workspace' }),
-    position: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Ordering of the workspace relative to other workspaces' }),
-    prefer_workspace_app_order: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If true, the order of apps within the workspace will be preserved',
-      }),
-    selected_macros: z
-      .array(MacroObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of the macro objects that will be used in this workspace. See [Macros](/api-reference/ticketing/business-rules/macros/)',
-      }),
-    ticket_form_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The id of the ticket web form associated to this workspace',
-      }),
-    title: z.string().exactOptional().openapi({ description: 'The title of the workspace' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time of the last update of the workspace' }),
-    url: z.string().exactOptional().openapi({ description: 'The URL for this resource' }),
-  })
-  .openapi({ required: [] })
-  .openapi('WorkspaceObject')
-
-const WorkspaceResponseSchema = z
+const WorkspaceResponseSchema: z.ZodType<WorkspaceResponseType> = z
   .object({ workspaces: z.array(WorkspaceObjectSchema).exactOptional() })
   .openapi({ required: [] })
   .and(OffsetPaginationObjectSchema)
@@ -39155,11 +39857,7 @@ const AiAgentChannelsWriteResponseExampleExample = {
 
 const AiAgentProfileCreateRequestExampleExample = {
   value: {
-    ai_agent_profile: {
-      avatar_upload_id: '01M49Q8TZBKXZBDGGAK96FHFXY',
-      name: 'Support Agent',
-      service: 'ultimate',
-    },
+    ai_agent_profile: { avatar_upload_id: '01M49Q8TZBKXZBDGGAK96FHFXY', name: 'Support Agent' },
   },
 }
 
@@ -39229,7 +39927,7 @@ const AiAgentProfileResponseExampleExample = {
 }
 
 const AiAgentProfileUpdateRequestExampleExample = {
-  value: { ai_agent_profile: { name: 'Renamed Agent', service: 'supreme' } },
+  value: { ai_agent_profile: { name: 'Renamed Agent' } },
 }
 
 const AiAgentProfileUpdateResponseExampleExample = {
@@ -39240,7 +39938,7 @@ const AiAgentProfileUpdateResponseExampleExample = {
       created_at: '2025-03-18T03:59:19Z',
       id: '01J4JXETB5Q4RZHHG0KYZE1W4V',
       name: 'Renamed Agent',
-      service: 'supreme',
+      service: 'ultimate',
       updated_at: '2025-04-18T03:59:19Z',
       url: 'https://example.zendesk.com/api/v2/internal/ai_agent_profiles/01J4JXETB5Q4RZHHG0KYZE1W4V.json',
     },
@@ -39385,6 +40083,7 @@ const ApprovalClarificationFlowMessagesShowResponseExampleExample = {
 const ApprovalRequestCreateParallelRequestExampleExample = {
   summary: 'Parallel (multiple approval requests)',
   value: {
+    approval_attachment_tokens: ['01JAR7ZK3M9Q2VX8B5C4D6E7F8', '01JAR7ZK3M9Q2VX8B5C4D6E7F9'],
     approval_requests: [{ assignee_user_id: 101 }, { assignee_group_id: 202 }],
     message: 'Please approve the Q1 budget',
     subject: 'Budget Approval',
@@ -39394,6 +40093,7 @@ const ApprovalRequestCreateParallelRequestExampleExample = {
 
 const ApprovalRequestCreateRequestExampleExample = {
   value: {
+    approval_attachment_tokens: ['01JAR7ZK3M9Q2VX8B5C4D6E7F8', '01JAR7ZK3M9Q2VX8B5C4D6E7F9'],
     assignee_user_id: 456,
     message: 'Please approve this request for a new laptop for the engineering team',
     subject: 'Laptop Purchase Approval',
@@ -40252,8 +40952,17 @@ const BrandUserMigrationExampleExample = {
   },
 }
 
-const BrandUserMigrationUpdateRequestExampleExample = {
-  value: { user_migration: { status: 'validating' } },
+const BrandUserMigrationUnprocessableEntityExampleExample = {
+  value: {
+    description: 'Record validation errors',
+    details: {
+      base: [
+        { description: 'Brand migration direction from and to must differ.' },
+        { description: 'Brand migration direction from must match brand user separation value.' },
+      ],
+    },
+    error: 'RecordInvalid',
+  },
 }
 
 const BrandUserMigrationsExampleExample = {
@@ -41299,6 +42008,7 @@ const CustomRoleResponseExampleExample = {
         assign_tickets_to_any_group: false,
         capacity_rules_access: 'view-and-assign',
         chat_access: true,
+        delete_brands: false,
         end_user_list_access: 'full',
         end_user_profile_access: 'readonly',
         explore_access: 'edit',
@@ -41307,12 +42017,14 @@ const CustomRoleResponseExampleExample = {
         group_access: true,
         light_agent: false,
         macro_access: 'full',
+        manage_brands: 'none',
         manage_business_rules: true,
         manage_contextual_workspaces: false,
         manage_dynamic_content: false,
         manage_extensions_and_channels: true,
         manage_facebook: false,
         manage_organization_fields: false,
+        manage_support_apps: false,
         manage_ticket_fields: false,
         manage_ticket_forms: false,
         manage_user_fields: false,
@@ -41353,6 +42065,7 @@ const CustomRolesResponseExampleExample = {
           assign_tickets_to_any_group: false,
           capacity_rules_access: 'all',
           chat_access: true,
+          delete_brands: false,
           end_user_list_access: 'full',
           end_user_profile_access: 'readonly',
           explore_access: 'edit',
@@ -41362,6 +42075,7 @@ const CustomRolesResponseExampleExample = {
           group_access: true,
           light_agent: false,
           macro_access: 'full',
+          manage_brands: 'none',
           manage_business_rules: true,
           manage_contextual_workspaces: false,
           manage_dynamic_content: false,
@@ -41369,6 +42083,7 @@ const CustomRolesResponseExampleExample = {
           manage_extensions_and_channels: true,
           manage_facebook: false,
           manage_organization_fields: false,
+          manage_support_apps: false,
           manage_ticket_fields: false,
           manage_ticket_forms: false,
           manage_ticket_settings: false,
@@ -41411,6 +42126,7 @@ const CustomRolesResponseExampleExample = {
           assign_tickets_to_any_group: false,
           capacity_rules_access: 'view-and-assign',
           chat_access: true,
+          delete_brands: false,
           end_user_list_access: 'full',
           end_user_profile_access: 'readonly',
           explore_access: 'edit',
@@ -41420,6 +42136,7 @@ const CustomRolesResponseExampleExample = {
           group_access: true,
           light_agent: false,
           macro_access: 'full',
+          manage_brands: 'none',
           manage_business_rules: true,
           manage_contextual_workspaces: false,
           manage_dynamic_content: false,
@@ -41427,6 +42144,7 @@ const CustomRolesResponseExampleExample = {
           manage_extensions_and_channels: true,
           manage_facebook: false,
           manage_organization_fields: false,
+          manage_support_apps: false,
           manage_ticket_fields: false,
           manage_ticket_forms: false,
           manage_ticket_settings: false,
@@ -42214,6 +42932,8 @@ const EmailNotificationTemplateDefaultResponseExampleExample = {
       brand_ids: [],
       created_at: '2026-09-03T23:25:19Z',
       default: true,
+      default_body: '{{ticket.latest_comment_html}}',
+      default_subject: '[{{ticket.account}}] Re: {{ticket.title}}',
       id: '0',
       subject: '[{{ticket.account}}] Re: {{ticket.title}}',
       template_name: 'Default AI Agent template',
@@ -42284,6 +43004,8 @@ const EmailNotificationTemplatesResponseExampleExample = {
         brand_ids: [],
         created_at: '2026-09-03T23:25:19Z',
         default: true,
+        default_body: '{{ticket.latest_comment_html}}',
+        default_subject: '[{{ticket.account}}] Re: {{ticket.title}}',
         id: '0',
         subject: '[{{ticket.account}}] Re: {{ticket.title}}',
         template_name: 'Default AI Agent template',
@@ -44834,6 +45556,17 @@ const OAuthClientsResponseExampleExample = {
   },
 }
 
+const OAuthDeviceAuthorizationResponseExampleExample = {
+  value: {
+    device_code: '1c73ef0ff5fb9eaf7826378c275c3bcd5b6178b5ce40667469d0ca73f8f5c515',
+    expires_in: 300,
+    interval: 5,
+    user_code: 'DPKV-TJBF',
+    verification_uri: 'https://example.zendesk.com/oauth/device',
+    verification_uri_complete: 'https://example.zendesk.com/oauth/device?user_code=DPKV-TJBF',
+  },
+}
+
 const OAuthTokenForGrantTypesResponseExampleExample = {
   value: {
     access_token: 'gErypPlm4dOVgGRvA1ZzMH5MQ3nLo8bo',
@@ -45744,6 +46477,15 @@ const PermissionPoliciesResponseExampleExample = {
         },
         role_name: 'End User',
       },
+      {
+        id: 'anonymous',
+        records: {
+          create: { allowed: false, rule_id: null },
+          delete: { allowed: false, rule_id: null },
+          read: { allowed: true, rule_id: null },
+          update: { allowed: false, rule_id: null },
+        },
+      },
     ],
   },
 }
@@ -46606,20 +47348,18 @@ const SatisfactionRatingRequestExampleExample = {
 
 const SatisfactionRatingResponseExampleExample = {
   value: {
-    satisfaction_rating: [
-      {
-        assignee_id: 135,
-        comment: 'Awesome support!',
-        created_at: '2011-07-20T22:55:29Z',
-        group_id: 44,
-        id: 35436,
-        requester_id: 7881,
-        score: 'good',
-        ticket_id: 208,
-        updated_at: '2011-07-20T22:55:29Z',
-        url: 'https://example.zendesk.com/api/v2/satisfaction_ratings/35436',
-      },
-    ],
+    satisfaction_rating: {
+      assignee_id: 135,
+      comment: 'Awesome support!',
+      created_at: '2011-07-20T22:55:29Z',
+      group_id: 44,
+      id: 35436,
+      requester_id: 7881,
+      score: 'good',
+      ticket_id: 208,
+      updated_at: '2011-07-20T22:55:29Z',
+      url: 'https://example.zendesk.com/api/v2/satisfaction_ratings/35436',
+    },
   },
 }
 
@@ -47156,6 +47896,10 @@ const SkillBasedRoutingAttributeValueCreateResponseExampleExample = {
       url: 'https://{subdomain}.zendesk.com/api/v2/routing/attributes/afa31619-e38b-11e8-a292-5d17513d969b/values/6ccddacf-e85e-11e8-a292-ad7686bdff67',
     },
   },
+}
+
+const SkillBasedRoutingAttributeValueIdsRequestExampleExample = {
+  value: { attribute_value_ids: ['fa1131e2-d6cd-11e7-a492-dbdd5500c7e3'] },
 }
 
 const SkillBasedRoutingAttributeValueResponseExampleExample = {
@@ -50658,6 +51402,7 @@ const Oauth2SecurityScheme = {
         'accounts:write': 'Accounts write scope.',
         'ai_agents:chat': 'Ai agents chat scope.',
         'ai_agents:list': 'Ai agents list scope.',
+        'ai_agents:search': 'Ai agents search scope.',
         'any_channel:write':
           'Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only.',
         'apps:read':
@@ -50833,6 +51578,7 @@ export const getApiV2TargetTypeTargetIdRelationshipFieldsFieldIdSourceTypeRoute 
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2AccountEmailSettingsRoute = createRoute({
@@ -51014,6 +51760,7 @@ export const getApiV2AccountSettingsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const putApiV2AccountSettingsRoute = createRoute({
@@ -51061,6 +51808,7 @@ export const putApiV2AccountSettingsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const postApiV2AccountsRoute = createRoute({
@@ -51191,7 +51939,10 @@ export const postApiV2AccountsRoute = createRoute({
                         "The name of the account. Not enforced by this controller's own gates; accepted and forwarded to the account service, which decides whether it is required. `null` and omission are indistinguishable here.",
                     }),
                   remote_authentication: z
-                    .union([TrialAccountRemoteAuthenticationInputSchema, z.object({}).nullable()])
+                    .union([
+                      TrialAccountRemoteAuthenticationInputSchema,
+                      z.looseObject({}).nullable(),
+                    ])
                     .exactOptional()
                     .openapi({
                       description:
@@ -51418,7 +52169,7 @@ export const postApiV2AccountsRoute = createRoute({
                 })
                 .openapi({ description: 'Attributes of the account owner to create.' }),
               partner: z
-                .union([TrialAccountPartnerInputSchema, z.object({}).nullable()])
+                .union([TrialAccountPartnerInputSchema, z.looseObject({}).nullable()])
                 .exactOptional()
                 .openapi({
                   description:
@@ -51454,6 +52205,7 @@ export const postApiV2AccountsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['accounts:write'] }],
 })
 
 export const getApiV2AccountsAvailableRoute = createRoute({
@@ -51492,6 +52244,7 @@ export const getApiV2AccountsAvailableRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['accounts:read'] }],
 })
 
 export const getApiV2ActivitiesRoute = createRoute({
@@ -51535,6 +52288,7 @@ export const getApiV2ActivitiesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2ActivitiesActivityIdRoute = createRoute({
@@ -51556,6 +52310,7 @@ export const getApiV2ActivitiesActivityIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2ActivitiesCountRoute = createRoute({
@@ -51577,6 +52332,7 @@ export const getApiV2ActivitiesCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2AnyChannelChannelbackReportErrorRoute = createRoute({
@@ -51598,6 +52354,7 @@ export const postApiV2AnyChannelChannelbackReportErrorRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['any_channel:write'] }],
 })
 
 export const postApiV2AnyChannelPushRoute = createRoute({
@@ -51619,6 +52376,7 @@ export const postApiV2AnyChannelPushRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['any_channel:write'] }],
 })
 
 export const postApiV2AnyChannelValidateTokenRoute = createRoute({
@@ -51640,6 +52398,7 @@ export const postApiV2AnyChannelValidateTokenRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['any_channel:write'] }],
 })
 
 export const getApiV2ApiTokensRoute = createRoute({
@@ -51843,7 +52602,7 @@ export const postApiV2ApprovalClarificationFlowMessagesRoute = createRoute({
   tags: ['Approval Requests'],
   summary: 'Create Approval Clarification Flow Message',
   description:
-    "Adds a message to the clarification flow thread for an approval request and returns the\nfull, updated thread.\n\n#### Allowed For\n\n* The approval request's assignee or creator, the ticket assignee, or a member of the\n  assigned group\n* Any user who can view the ticket when the `approvals_allow_comments_from_ticket_viewers`\n  feature is enabled\n",
+    "Adds a message to the clarification flow thread for an approval request and returns the\nfull, updated thread.\n\n#### Allowed For\n\n* The approval request's assignee or creator, the ticket assignee, or a member of the\n  assigned group\n* Any user who can view the ticket\n",
   operationId: 'CreateApprovalClarificationFlowMessage',
   request: {
     body: {
@@ -52014,6 +52773,7 @@ export const postApiV2ApprovalClarificationFlowMessagesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2ApprovalClarificationFlowMessagesApprovalRequestIdRoute = createRoute({
@@ -52083,6 +52843,7 @@ export const getApiV2ApprovalClarificationFlowMessagesApprovalRequestIdRoute = c
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2ApprovalRequestsRoute = createRoute({
@@ -52091,7 +52852,7 @@ export const getApiV2ApprovalRequestsRoute = createRoute({
   tags: ['Approval Requests'],
   summary: 'List Approval Requests',
   description:
-    "Lists all approval requests for the current account with optional filtering by status and assignee.\n\n#### Allowed For\n\n* Admins\n\n#### Query Parameters\n\n| Name                      | Type   | Description\n|---------------------------|--------|--------------------------------------------------------------------------------------------\n| filter[status]            | string | Filter by a comma-separated list of one or more approval statuses. Values: active, approved, rejected, withdrawn\n| filter[assignee_user_id]  | string | Filter by a comma-separated list of assigned user ids. Maximum 100 ids\n| filter[assignee_group_id] | string | Filter by a comma-separated list of assigned group ids. Maximum 100 ids\n| include                   | string | Comma-separated list of extra fields to sideload. Supports `deeplinks` — adds a `deeplink` field to each approval request, resolving to that request's agent-facing or Help Center decision page. Omitting `include` leaves the response unchanged.\n\n`include=deeplinks` requires the `approvals_api_parity` feature to be enabled for the account. When it isn't, `include=deeplinks` is silently ignored: no `deeplink` field is added, and the rest of the response is unaffected.\n\n#### Filtering Logic\n\n- When multiple values are provided for a filter, `or` logic is used. For example, `filter[status]=active,approved` is evaluated as `status=active OR status=approved`.\n- If multiple filters are applied to a single request, `AND` logic is used. For example, `filter[status]=active AND filter[assignee_user_id]=123`.\n- Each filter parameter supports a maximum 100 values.\n- Numeric ids must be valid integers.\n\n#### Pagination\n\nThis endpoint supports cursor-based pagination. Use `after_cursor` and `before_cursor` parameters to navigate through results.\n",
+    "Lists all approval requests for the current account with optional filtering by status and assignee.\n\n#### Allowed For\n\n* Admins\n\n#### Query Parameters\n\n| Name                      | Type   | Description\n|---------------------------|--------|--------------------------------------------------------------------------------------------\n| filter[status]            | string | Filter by a comma-separated list of one or more approval statuses. Values: active, approved, rejected, withdrawn. Case-insensitive\n| filter[assignee_user_id]  | string | Filter by a comma-separated list of assigned user ids. Maximum 100 ids\n| filter[assignee_group_id] | string | Filter by a comma-separated list of assigned group ids. Maximum 100 ids\n| include                   | string | Comma-separated list of extra fields to sideload. Supports `deeplinks` — adds a `deeplink` field to each approval request, resolving to that request's agent-facing or Help Center decision page. Omitting `include` leaves the response unchanged.\n\n`include=deeplinks` requires the `approvals_api_parity` feature to be enabled for the account. When it isn't, `include=deeplinks` is silently ignored: no `deeplink` field is added, and the rest of the response is unaffected.\n\n#### Filtering Logic\n\n- When multiple values are provided for a filter, `or` logic is used. For example, `filter[status]=active,approved` is evaluated as `status=active OR status=approved`.\n- If multiple filters are applied to a single request, `AND` logic is used. For example, `filter[status]=active AND filter[assignee_user_id]=123`.\n- Each filter parameter supports a maximum 100 values.\n- Numeric ids must be valid integers.\n\n#### Pagination\n\nThis endpoint supports cursor-based pagination. Use `after_cursor` and `before_cursor` parameters to navigate through results.\n",
   operationId: 'ListApprovalRequests',
   request: {
     query: z.object({
@@ -52103,7 +52864,7 @@ export const getApiV2ApprovalRequestsRoute = createRoute({
             name: 'filter[status]',
             in: 'query',
             description:
-              'Filter by a comma-separated list of one or more approval statuses. Allowed values are active, approved, rejected, withdrawn. Maximum 100 values.',
+              'Filter by a comma-separated list of one or more approval statuses. Allowed values are active, approved, rejected, withdrawn. Case-insensitive. Maximum 100 values.',
             schema: { type: 'string' },
             examples: {
               multiple: { summary: 'Multiple statuses', value: 'active,approved' },
@@ -52218,6 +52979,7 @@ export const getApiV2ApprovalRequestsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const postApiV2ApprovalRequestsRoute = createRoute({
@@ -52270,6 +53032,7 @@ export const postApiV2ApprovalRequestsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdRoute =
@@ -52385,6 +53148,7 @@ export const getApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequests
         },
       },
     },
+    security: [{ oauth2: ['read'] }],
   })
 
 export const patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdDecisionRoute =
@@ -52433,8 +53197,11 @@ export const patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalReques
                   .exactOptional()
                   .openapi({ description: 'Optional notes to record with the decision' }),
                 status: z
-                  .enum(['pending', 'active', 'approved', 'rejected', 'withdrawn'])
-                  .openapi({ description: 'The decision to record' }),
+                  .string()
+                  .openapi({
+                    description:
+                      'The decision to record. Case-insensitive; the server normalizes the value. Canonical values are pending, active, approved, rejected, withdrawn.',
+                  }),
               })
               .openapi({ required: ['status'] }),
             examples: { default: { value: { notes: 'Looks good, approved', status: 'approved' } } },
@@ -52569,6 +53336,7 @@ export const patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalReques
         },
       },
     },
+    security: [{ oauth2: ['write'] }],
   })
 
 export const patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdWithdrawRoute = createRoute({
@@ -52691,6 +53459,7 @@ export const patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdWithdrawRoute 
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2AttachmentsAttachmentIdRoute = createRoute({
@@ -52713,6 +53482,7 @@ export const getApiV2AttachmentsAttachmentIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_attachments:read'] }],
 })
 
 export const putApiV2AttachmentsAttachmentIdRoute = createRoute({
@@ -52745,6 +53515,7 @@ export const putApiV2AttachmentsAttachmentIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_attachments:write'] }],
 })
 
 export const deleteApiV2AttachmentsAttachmentIdRoute = createRoute({
@@ -52756,6 +53527,7 @@ export const deleteApiV2AttachmentsAttachmentIdRoute = createRoute({
   operationId: 'DeleteAttachment',
   request: { params: z.object({ attachment_id: AttachmentIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['ticket_attachments:write'] }],
 })
 
 export const getApiV2AuditLogsRoute = createRoute({
@@ -53048,6 +53820,7 @@ export const getApiV2AuditLogsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['auditlogs:read'] }],
 })
 
 export const getApiV2AuditLogsAuditLogIdRoute = createRoute({
@@ -53069,6 +53842,7 @@ export const getApiV2AuditLogsAuditLogIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['auditlogs:read'] }],
 })
 
 export const postApiV2AuditLogsExportRoute = createRoute({
@@ -53180,6 +53954,7 @@ export const postApiV2AuditLogsExportRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['auditlogs:read'] }],
 })
 
 export const getApiV2AutocompleteTagsRoute = createRoute({
@@ -53202,6 +53977,7 @@ export const getApiV2AutocompleteTagsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }, { oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2AutocompleteTagsRoute = createRoute({
@@ -53241,6 +54017,7 @@ export const postApiV2AutocompleteTagsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }, { oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2AutomationsRoute = createRoute({
@@ -53271,6 +54048,7 @@ export const getApiV2AutomationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['automations:read'] }, { basicAuth: [] }],
 })
 
 export const postApiV2AutomationsRoute = createRoute({
@@ -53303,6 +54081,7 @@ export const postApiV2AutomationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['automations:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2AutomationsAutomationIdRoute = createRoute({
@@ -53324,6 +54103,7 @@ export const getApiV2AutomationsAutomationIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['automations:read'] }, { basicAuth: [] }],
 })
 
 export const putApiV2AutomationsAutomationIdRoute = createRoute({
@@ -53357,6 +54137,7 @@ export const putApiV2AutomationsAutomationIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['automations:write'] }, { basicAuth: [] }],
 })
 
 export const deleteApiV2AutomationsAutomationIdRoute = createRoute({
@@ -53369,6 +54150,7 @@ export const deleteApiV2AutomationsAutomationIdRoute = createRoute({
   operationId: 'DeleteAutomation',
   request: { params: z.object({ automation_id: AutomationIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['automations:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2AutomationsActiveRoute = createRoute({
@@ -53390,6 +54172,7 @@ export const getApiV2AutomationsActiveRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['automations:read'] }, { basicAuth: [] }],
 })
 
 export const deleteApiV2AutomationsDestroyManyRoute = createRoute({
@@ -53430,6 +54213,7 @@ export const deleteApiV2AutomationsDestroyManyRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['automations:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2AutomationsSearchRoute = createRoute({
@@ -53460,6 +54244,7 @@ export const getApiV2AutomationsSearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['automations:read'] }, { basicAuth: [] }],
 })
 
 export const putApiV2AutomationsUpdateManyRoute = createRoute({
@@ -53492,6 +54277,7 @@ export const putApiV2AutomationsUpdateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['automations:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2BookmarksRoute = createRoute({
@@ -53513,6 +54299,7 @@ export const getApiV2BookmarksRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2BookmarksRoute = createRoute({
@@ -53552,6 +54339,7 @@ export const postApiV2BookmarksRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2BookmarksBookmarkIdRoute = createRoute({
@@ -53564,6 +54352,7 @@ export const deleteApiV2BookmarksBookmarkIdRoute = createRoute({
   operationId: 'DeleteBookmark',
   request: { params: z.object({ bookmark_id: BookmarkIdParamsSchema }) },
   responses: { 204: { description: 'No content' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2BrandAgentsRoute = createRoute({
@@ -53592,6 +54381,7 @@ export const getApiV2BrandAgentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['brands:read'] }],
 })
 
 export const postApiV2BrandAgentsRoute = createRoute({
@@ -53624,6 +54414,7 @@ export const postApiV2BrandAgentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['brands:write'] }],
 })
 
 export const getApiV2BrandAgentsBrandAgentIdRoute = createRoute({
@@ -53646,6 +54437,7 @@ export const getApiV2BrandAgentsBrandAgentIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['brands:read'] }],
 })
 
 export const deleteApiV2BrandAgentsBrandAgentIdRoute = createRoute({
@@ -53658,6 +54450,7 @@ export const deleteApiV2BrandAgentsBrandAgentIdRoute = createRoute({
   operationId: 'DeleteBrandAgentById',
   request: { params: z.object({ brand_agent_id: BrandAgentIdParamsSchema }) },
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['brands:write'] }],
 })
 
 export const getApiV2BrandsRoute = createRoute({
@@ -53932,6 +54725,7 @@ export const getApiV2BrandsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['brands:read'] }],
 })
 
 export const postApiV2BrandsRoute = createRoute({
@@ -53940,7 +54734,7 @@ export const postApiV2BrandsRoute = createRoute({
   tags: ['Brands'],
   summary: 'Create Brand',
   description:
-    'Creates a brand. To attach a logo, make a follow-up request to\n`PUT /api/v2/brands/{brand_id}/logo`.\n\n#### Allowed for\n- Admins',
+    'Creates a brand. To attach a logo, make a follow-up request to\n`PUT /api/v2/brands/{brand_id}/logo`.\n\n#### Allowed for\n- Admins\n- Agents with `manage_brands` set to "all" or "member", when brand-based ticket access is enabled on the account',
   operationId: 'CreateBrand',
   request: {
     body: {
@@ -54008,6 +54802,7 @@ export const postApiV2BrandsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['brands:write'] }],
 })
 
 export const getApiV2BrandsBrandIdRoute = createRoute({
@@ -54090,6 +54885,7 @@ export const getApiV2BrandsBrandIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['brands:read'] }],
 })
 
 export const putApiV2BrandsBrandIdRoute = createRoute({
@@ -54098,7 +54894,7 @@ export const putApiV2BrandsBrandIdRoute = createRoute({
   tags: ['Brands'],
   summary: 'Update a Brand',
   description:
-    "Returns an updated brand.\n\n#### Allowed for\n* Admins\n\n#### Updating a Brand's Image\nUse `PUT /api/v2/brands/{brand_id}/logo` to set or replace the brand logo,\nand `DELETE /api/v2/brands/{brand_id}/logo` to remove it.",
+    'Returns an updated brand.\n\n#### Allowed for\n* Admins\n* Agents with `manage_brands` set to "all"\n* Agents with `manage_brands` set to "member", for brands they belong to\n\n#### Updating a Brand\'s Image\nUse `PUT /api/v2/brands/{brand_id}/logo` to set or replace the brand logo,\nand `DELETE /api/v2/brands/{brand_id}/logo` to remove it.',
   operationId: 'UpdateBrand',
   request: {
     params: z.object({ brand_id: BrandIdParamsSchema }),
@@ -54166,6 +54962,7 @@ export const putApiV2BrandsBrandIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['brands:write'] }],
 })
 
 export const deleteApiV2BrandsBrandIdRoute = createRoute({
@@ -54173,10 +54970,12 @@ export const deleteApiV2BrandsBrandIdRoute = createRoute({
   path: '/api/v2/brands/{brand_id}',
   tags: ['Brands'],
   summary: 'Delete a Brand',
-  description: 'Deletes a brand.\n\n#### Allowed for\n- Admins',
+  description:
+    'Deletes a brand.\n\n#### Allowed for\n- Admins\n- Agents with `delete_brands` enabled and `manage_brands` set to "all"\n- Agents with `delete_brands` enabled and `manage_brands` set to "member", for brands they belong to',
   operationId: 'DeleteBrand',
   request: { params: z.object({ brand_id: BrandIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['brands:write'] }],
 })
 
 export const getApiV2BrandsBrandIdAgentsRoute = createRoute({
@@ -54199,6 +54998,7 @@ export const getApiV2BrandsBrandIdAgentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['brands:read'] }],
 })
 
 export const getApiV2BrandsBrandIdCheckHostMappingRoute = createRoute({
@@ -54225,6 +55025,7 @@ export const getApiV2BrandsBrandIdCheckHostMappingRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['brands:read'] }],
 })
 
 export const putApiV2BrandsBrandIdLogoRoute = createRoute({
@@ -54271,6 +55072,7 @@ export const putApiV2BrandsBrandIdLogoRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['brands:write'] }],
 })
 
 export const deleteApiV2BrandsBrandIdLogoRoute = createRoute({
@@ -54283,6 +55085,7 @@ export const deleteApiV2BrandsBrandIdLogoRoute = createRoute({
   operationId: 'DeleteBrandLogo',
   request: { params: z.object({ brand_id: BrandIdParamsSchema }) },
   responses: { 204: { description: 'Successful response' } },
+  security: [{ oauth2: ['brands:write'] }],
 })
 
 export const getApiV2BrandsBrandIdUserMigrationsRoute = createRoute({
@@ -54305,6 +55108,7 @@ export const getApiV2BrandsBrandIdUserMigrationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['brands:read'] }],
 })
 
 export const postApiV2BrandsBrandIdUserMigrationsRoute = createRoute({
@@ -54368,10 +55172,12 @@ export const postApiV2BrandsBrandIdUserMigrationsRoute = createRoute({
               error: z.string().exactOptional(),
             })
             .openapi({ required: [] }),
+          examples: { default: BrandUserMigrationUnprocessableEntityExampleExample },
         },
       },
     },
   },
+  security: [{ oauth2: ['brands:write'] }],
 })
 
 export const getApiV2BrandsBrandIdUserMigrationsMigrationIdRoute = createRoute({
@@ -54394,6 +55200,7 @@ export const getApiV2BrandsBrandIdUserMigrationsMigrationIdRoute = createRoute({
             description: 'ULID of the brand user migration',
             required: true,
             schema: { type: 'string' },
+            example: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
           },
         }),
     }),
@@ -54409,74 +55216,7 @@ export const getApiV2BrandsBrandIdUserMigrationsMigrationIdRoute = createRoute({
       },
     },
   },
-})
-
-export const putApiV2BrandsBrandIdUserMigrationsMigrationIdRoute = createRoute({
-  method: 'put',
-  path: '/api/v2/brands/{brand_id}/user_migrations/{migration_id}',
-  tags: ['Brand User Migrations', 'Brands'],
-  summary: 'Update Brand User Migration',
-  description:
-    'Updates the status of a brand user migration.\n\n#### Allowed For\n\n* Admins\n\n#### Availability\n\nAvailable on accounts with Department Spaces.\n',
-  operationId: 'UpdateBrandUserMigration',
-  request: {
-    params: z.object({
-      brand_id: BrandIdParamsSchema,
-      migration_id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'migration_id',
-            in: 'path',
-            description: 'ULID of the brand user migration',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
-    }),
-    body: {
-      content: {
-        'application/json': {
-          schema: BrandUserMigrationUpdateRequestSchema,
-          examples: { default: BrandUserMigrationUpdateRequestExampleExample },
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'Migration updated',
-      content: {
-        'application/json': {
-          schema: BrandUserMigrationResponseSchema,
-          examples: { default: BrandUserMigrationExampleExample },
-        },
-      },
-    },
-    422: {
-      description:
-        'Validation failed. Only an `in_progress` migration can be moved to\n`validating`; updating a completed or aborted migration returns 422.\n',
-      content: {
-        'application/json': {
-          schema: z
-            .object({
-              description: z.string().exactOptional(),
-              details: z
-                .record(
-                  z.string(),
-                  z.array(
-                    z.object({ description: z.string().exactOptional() }).openapi({ required: [] }),
-                  ),
-                )
-                .exactOptional(),
-              error: z.string().exactOptional(),
-            })
-            .openapi({ required: [] }),
-        },
-      },
-    },
-  },
+  security: [{ oauth2: ['brands:read'] }],
 })
 
 export const getApiV2BrandsCheckHostMappingRoute = createRoute({
@@ -54485,7 +55225,7 @@ export const getApiV2BrandsCheckHostMappingRoute = createRoute({
   tags: ['Brands'],
   summary: 'Check Host Mapping Validity',
   description:
-    'Returns a JSON object determining whether a host mapping is valid for a given subdomain.\n\n#### Allowed for\n\n* Admins',
+    'Returns a JSON object determining whether a host mapping is valid for a given subdomain.\n\n#### Allowed for\n\n* Admins\n* Agents with `manage_brands` set to "all" or "member"',
   operationId: 'CheckHostMappingValidity',
   request: {
     query: z.object({ host_mapping: HostMappingParamsSchema, subdomain: SubdomainParamsSchema }),
@@ -54505,6 +55245,7 @@ export const getApiV2BrandsCheckHostMappingRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['brands:read'] }],
 })
 
 export const getApiV2ChannelsTwitterMonitoredTwitterHandlesRoute = createRoute({
@@ -54678,6 +55419,7 @@ export const postApiV2ChannelsVoiceAgentsAgentIdTicketsTicketIdDisplayRoute = cr
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2ChannelsVoiceAgentsAgentIdUsersUserIdDisplayRoute = createRoute({
@@ -54709,6 +55451,7 @@ export const postApiV2ChannelsVoiceAgentsAgentIdUsersUserIdDisplayRoute = create
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const postApiV2ChannelsVoiceTicketsRoute = createRoute({
@@ -55694,6 +56437,7 @@ export const postApiV2ChannelsVoiceTicketsRoute = createRoute({
                           ).openapi({
                             description:
                               'Alternative format using field ID as key, e.g. {"123": "value"}',
+                            not: { required: ['id'] },
                           }),
                         ]),
                       ),
@@ -55960,6 +56704,7 @@ export const postApiV2ChannelsVoiceTicketsRoute = createRoute({
                           ).openapi({
                             description:
                               'Alternative format using field ID as key, e.g. {"123": "value"}',
+                            not: { required: ['id'] },
                           }),
                         ]),
                       ),
@@ -57744,6 +58489,7 @@ export const postApiV2ChannelsVoiceTicketsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2ChannelsWhatsappTemplatesRoute = createRoute({
@@ -57851,6 +58597,7 @@ export const getApiV2ChannelsWhatsappTemplatesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const putApiV2ChannelsWhatsappTemplatesTemplateIdToggleRoute = createRoute({
@@ -57957,6 +58704,7 @@ export const putApiV2ChannelsWhatsappTemplatesTemplateIdToggleRoute = createRout
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2ChannelsWhatsappTemplatesLanguagesRoute = createRoute({
@@ -58010,6 +58758,7 @@ export const getApiV2ChannelsWhatsappTemplatesLanguagesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const putApiV2ChannelsWhatsappTemplatesToggleManyRoute = createRoute({
@@ -58098,6 +58847,7 @@ export const putApiV2ChannelsWhatsappTemplatesToggleManyRoute = createRoute({
         'Returned when `template_ids` contains no non-blank values. No response body is returned\nin this case.\n',
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const putApiV2ChatFileRedactionsTicketIdRoute = createRoute({
@@ -58118,6 +58868,32 @@ export const putApiV2ChatFileRedactionsTicketIdRoute = createRoute({
               z.looseObject({}).openapi({ required: ['chat_indexes'] }),
               z.looseObject({}).openapi({ required: ['message_ids'] }),
             ])
+            .and(
+              z
+                .object({
+                  chat_id: z
+                    .string()
+                    .openapi({
+                      description:
+                        'The `chat_id` in the `ChatStartedEvent` event in the ticket audit.',
+                    }),
+                  chat_indexes: z
+                    .array(z.int())
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The array of `chat_index` in the `ChatFileAttachment` event in the ticket audit. Mandatory if `message_ids` is not used.',
+                    }),
+                  message_ids: z
+                    .array(z.string())
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The array of `message_id` in the `ChatFileAttachment` event in the ticket audit that is part of a `ChatStartedEvent` history. Used when redacting a ChatFileAttachment that is part of a conversation history. Mandatory if `chat_indexes` is not used.',
+                    }),
+                })
+                .openapi({ required: ['chat_id'] }),
+            )
             .openapi({ required: ['chat_id'] }),
           example: { chat_id: '2109.10502823.Sjuj2YrBpXwei', chat_indexes: [0, 1] },
         },
@@ -58136,6 +58912,7 @@ export const putApiV2ChatFileRedactionsTicketIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2ChatRedactionsTicketIdRoute = createRoute({
@@ -58156,6 +58933,38 @@ export const putApiV2ChatRedactionsTicketIdRoute = createRoute({
               z.looseObject({}).openapi({ required: ['chat_index'] }),
               z.looseObject({}).openapi({ required: ['message_id'] }),
             ])
+            .and(
+              z
+                .object({
+                  chat_id: z
+                    .string()
+                    .openapi({
+                      description:
+                        'The `chat_id` in the `ChatStartedEvent` event in the ticket audit.',
+                    }),
+                  chat_index: z
+                    .int()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The `chat_index` in the `ChatMessage` event in the ticket audit. Mandatory if `message_id` is not used.',
+                    }),
+                  message_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The `message_id` of the `ChatMessage` event in the ticket audit that is part of a `ChatStartedEvent` history. Used when redacting a ChatMessage that is part of a conversation history. Mandatory if `chat_index` is not used.',
+                    }),
+                  text: z
+                    .string()
+                    .openapi({
+                      description:
+                        'The `message` in the `ChatMessage` event in the ticket audit. Wrap `message` with `<redact>` tags.',
+                    }),
+                })
+                .openapi({ required: ['chat_id', 'text'] }),
+            )
             .openapi({ required: ['chat_id', 'text'] }),
           example: {
             chat_id: '2109.10502823.Sjuj2YrBpXwei',
@@ -58186,19 +58995,17 @@ export const putApiV2ChatRedactionsTicketIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Retry-After': {
-          description: 'Number of seconds to wait before retrying the request',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Number of seconds to wait before retrying the request',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Number of seconds to wait before retrying the request',
+            param: { required: false },
+          }),
       }),
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2CommentRedactionsTicketCommentIdRoute = createRoute({
@@ -58275,16 +59082,13 @@ export const putApiV2CommentRedactionsTicketCommentIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Retry-After': {
-          description: 'Number of seconds to wait before retrying the request',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Number of seconds to wait before retrying the request',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Number of seconds to wait before retrying the request',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -58305,19 +59109,17 @@ export const putApiV2CommentRedactionsTicketCommentIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'Retry-After': {
-          description: 'Number of seconds to wait before retrying the request',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Number of seconds to wait before retrying the request',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Number of seconds to wait before retrying the request',
+            param: { required: false },
+          }),
       }),
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2CountriesJsonRoute = createRoute({
@@ -58445,6 +59247,7 @@ export const getApiV2CustomObjectsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['custom_objects:read'] }],
 })
 
 export const postApiV2CustomObjectsRoute = createRoute({
@@ -58476,6 +59279,7 @@ export const postApiV2CustomObjectsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['custom_objects:write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyRoute = createRoute({
@@ -58525,6 +59329,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['custom_objects:read'] }],
 })
 
 export const deleteApiV2CustomObjectsCustomObjectKeyRoute = createRoute({
@@ -58537,6 +59342,7 @@ export const deleteApiV2CustomObjectsCustomObjectKeyRoute = createRoute({
   operationId: 'DeleteCustomObject',
   request: { params: z.object({ custom_object_key: CustomObjectKeyParamsSchema }) },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['custom_objects:write'] }],
 })
 
 export const patchApiV2CustomObjectsCustomObjectKeyRoute = createRoute({
@@ -58570,6 +59376,7 @@ export const patchApiV2CustomObjectsCustomObjectKeyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['custom_objects:write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyAccessRulesRoute = createRoute({
@@ -58592,6 +59399,7 @@ export const getApiV2CustomObjectsCustomObjectKeyAccessRulesRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const postApiV2CustomObjectsCustomObjectKeyAccessRulesRoute = createRoute({
@@ -58625,6 +59433,7 @@ export const postApiV2CustomObjectsCustomObjectKeyAccessRulesRoute = createRoute
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute = createRoute({
@@ -58662,6 +59471,7 @@ export const getApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute = createRout
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const deleteApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute = createRoute({
@@ -58690,6 +59500,7 @@ export const deleteApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute = createR
     }),
   },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const patchApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute = createRoute({
@@ -58736,6 +59547,7 @@ export const patchApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute = createRo
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyAccessRulesDefinitionsRoute = createRoute({
@@ -58758,6 +59570,7 @@ export const getApiV2CustomObjectsCustomObjectKeyAccessRulesDefinitionsRoute = c
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyFieldsRoute = createRoute({
@@ -58783,6 +59596,7 @@ export const getApiV2CustomObjectsCustomObjectKeyFieldsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const postApiV2CustomObjectsCustomObjectKeyFieldsRoute = createRoute({
@@ -58815,6 +59629,7 @@ export const postApiV2CustomObjectsCustomObjectKeyFieldsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute = createRoute({
@@ -58856,6 +59671,7 @@ export const getApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdR
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const deleteApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute =
@@ -58874,6 +59690,7 @@ export const deleteApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOr
       }),
     },
     responses: { 204: { description: 'No content response' } },
+    security: [{ oauth2: ['write'] }],
   })
 
 export const patchApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute =
@@ -58911,6 +59728,7 @@ export const patchApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrI
         },
       },
     },
+    security: [{ oauth2: ['write'] }],
   })
 
 export const putApiV2CustomObjectsCustomObjectKeyFieldsReorderRoute = createRoute({
@@ -58944,6 +59762,7 @@ export const putApiV2CustomObjectsCustomObjectKeyFieldsReorderRoute = createRout
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const postApiV2CustomObjectsCustomObjectKeyJobsRoute = createRoute({
@@ -58996,6 +59815,7 @@ export const postApiV2CustomObjectsCustomObjectKeyJobsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyLimitsFieldLimitRoute = createRoute({
@@ -59018,6 +59838,7 @@ export const getApiV2CustomObjectsCustomObjectKeyLimitsFieldLimitRoute = createR
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesRoute = createRoute({
@@ -59026,7 +59847,7 @@ export const getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesRoute = creat
   tags: ['Custom Object Permissions'],
   summary: 'List Permission Policies',
   description:
-    'Returns a list of permission policies for a custom object.\nPermission policies define what actions (create, read, update, delete) different roles can perform on custom object records.\n#### Allowed For\n* Admins\n',
+    "Returns a list of permission policies for a custom object.\nPermission policies define what actions (create, read, update, delete) different roles can perform on custom object records.\nThe list also includes an `anonymous` policy that controls whether unauthenticated users can read the object's records. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).\n#### Allowed For\n* Admins\n",
   operationId: 'ListPermissionPolicies',
   request: { params: z.object({ custom_object_key: CustomObjectKeyParamsSchema }) },
   responses: {
@@ -59040,6 +59861,7 @@ export const getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesRoute = creat
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute = createRoute({
@@ -59048,7 +59870,7 @@ export const getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute = cre
   tags: ['Custom Object Permissions'],
   summary: 'Show Permission Policy',
   description:
-    'Returns a permission policy for a specific role on a custom object.\nThe policy ID can be:\n- `custom-role-{custom_role_id}` for custom roles\n- `end-user` for the end user system role\n#### Allowed For\n* Admins\n',
+    'Returns a permission policy for a specific role on a custom object.\nThe policy ID can be:\n- `custom-role-{custom_role_id}` for custom roles\n- `end-user` for the end user system role\n- `anonymous` for unauthenticated users. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).\n#### Allowed For\n* Admins\n',
   operationId: 'ShowPermissionPolicy',
   request: {
     params: z.object({
@@ -59060,7 +59882,7 @@ export const getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute = cre
             name: 'id',
             in: 'path',
             description:
-              'The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles or `end-user` for the end user system role.\n',
+              'The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles, `end-user` for the end user system role, or `anonymous` for unauthenticated users.\n',
             required: true,
             schema: { type: 'string' },
             example: 'custom-role-6678128886399',
@@ -59079,6 +59901,7 @@ export const getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute = cre
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const patchApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute = createRoute({
@@ -59087,7 +59910,7 @@ export const patchApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute = c
   tags: ['Custom Object Permissions'],
   summary: 'Update Permission Policy',
   description:
-    'Updates a permission policy for a specific role on a custom object.\nDefine what actions (create, read, update, delete) the role can perform and optionally specify access rules.\n#### Allowed For\n* Admins\n',
+    "Updates a permission policy for a specific role on a custom object.\nDefine what actions (create, read, update, delete) the role can perform and optionally specify access rules.\n\nFor the `anonymous` policy, only the `read` scope can be set: `records.read.allowed` turns anonymous read access on or off, and `rule_id` has no effect. Allowing a write scope returns `400 Bad Request`. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).\n\nWhile anonymous reads are allowed, every role has object-level read access, but read access rules still limit the records that each role, and anonymous users through the `end-user` policy, can read. A request that changes the `read` scope of any other policy returns `422 Unprocessable Entity`.\n\nWhile anonymous reads are allowed, allowing a write scope on a policy other than `anonymous` also grants that policy full read access if its `read` scope doesn't allow it. A full write scope replaces a rule-scoped read with full read. The read access stays if you later remove the write scopes or turn off anonymous access.\n\n#### Allowed For\n* Admins\n",
   operationId: 'UpdatePermissionPolicy',
   request: {
     params: z.object({
@@ -59099,7 +59922,7 @@ export const patchApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute = c
             name: 'id',
             in: 'path',
             description:
-              'The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles or `end-user` for the end user system role.\n',
+              'The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles, `end-user` for the end user system role, or `anonymous` for unauthenticated users.\n',
             required: true,
             schema: { type: 'string' },
             example: 'custom-role-6678128886399',
@@ -59126,7 +59949,15 @@ export const patchApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute = c
         },
       },
     },
+    400: {
+      description: 'Bad Request. For example, a write scope was allowed on the `anonymous` policy.',
+    },
+    422: {
+      description:
+        "Unprocessable Entity. The `read` scope of a policy other than `anonymous` can't be changed while anonymous reads are allowed.",
+    },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
@@ -59135,7 +59966,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
   tags: ['Custom Object Records'],
   summary: 'List Custom Object Records',
   description:
-    'Lists all undeleted custom object records for the specified object.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n #### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n#### Allowed For\n* Agents',
+    'Lists all undeleted custom object records for the specified object.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n #### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)',
   operationId: 'ListCustomObjectRecords',
   request: {
     params: z.object({ custom_object_key: CustomObjectKeyParamsSchema }),
@@ -59246,7 +60077,16 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
         },
       },
     },
+    401: {
+      description:
+        "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.",
+    },
+    429: {
+      description:
+        'Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.',
+    },
   },
+  security: [{ oauth2: ['read'] }, { basicAuth: [] }],
 })
 
 export const postApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
@@ -59279,6 +60119,7 @@ export const postApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const deleteApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
@@ -59324,6 +60165,7 @@ export const deleteApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
       ),
   },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const patchApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
@@ -59387,6 +60229,7 @@ export const patchApiV2CustomObjectsCustomObjectKeyRecordsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute = createRoute({
@@ -59395,7 +60238,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRout
   tags: ['Custom Object Records'],
   summary: 'Show Custom Object Record',
   description:
-    'Returns a custom record for a specific object using a provided id.\n#### Allowed For\n* Agents\n',
+    'Returns a custom record for a specific object using a provided id.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)\n',
   operationId: 'ShowCustomObjectRecord',
   request: {
     params: z.object({
@@ -59413,7 +60256,16 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRout
         },
       },
     },
+    401: {
+      description:
+        "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.",
+    },
+    429: {
+      description:
+        'Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.',
+    },
   },
+  security: [{ oauth2: ['read'] }, { basicAuth: [] }],
 })
 
 export const deleteApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute = createRoute({
@@ -59431,6 +60283,7 @@ export const deleteApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdR
     }),
   },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const patchApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute = createRoute({
@@ -59467,6 +60320,7 @@ export const patchApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRo
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRoute = createRoute({
@@ -59475,7 +60329,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRoute
   tags: ['Custom Object Record Attachments'],
   summary: 'List Custom Object Record Attachments',
   description:
-    'Lists all attachments associated with a custom object record.\n\n#### Allowed For\n* Agents',
+    'Lists all attachments associated with a custom object record.\n\n#### Allowed For\n* Agents\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)',
   operationId: 'ListCustomObjectRecordAttachments',
   request: {
     params: z.object({
@@ -59502,7 +60356,16 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRoute
         },
       },
     },
+    401: {
+      description:
+        "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.",
+    },
+    429: {
+      description:
+        'Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.',
+    },
   },
+  security: [{ oauth2: ['custom_objects:read'] }, { basicAuth: [] }],
 })
 
 export const postApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRoute = createRoute({
@@ -59557,6 +60420,7 @@ export const postApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRout
       },
     },
   },
+  security: [{ oauth2: ['custom_objects:write'] }],
 })
 
 export const putApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRoute = createRoute({
@@ -59602,6 +60466,7 @@ export const putApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRou
       },
     },
   },
+  security: [{ oauth2: ['custom_objects:write'] }],
 })
 
 export const deleteApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRoute = createRoute(
@@ -59632,6 +60497,7 @@ export const deleteApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsId
         },
       },
     },
+    security: [{ oauth2: ['custom_objects:write'] }],
   },
 )
 
@@ -59642,7 +60508,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdDow
     tags: ['Custom Object Record Attachments'],
     summary: 'Download Custom Object Record Attachment',
     description:
-      "Downloads the specified attachment content. Returns a redirect to the attachment's content URL.\nAccess to malicious attachments is controlled by the `malware_access_override` setting.\n\n#### Allowed For\n* Agents\n",
+      "Downloads the specified attachment content. Returns a redirect to the attachment's content URL.\nAccess to malicious attachments is controlled by the `malware_access_override` setting.\n\n#### Allowed For\n* Agents\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)\n",
     operationId: 'DownloadCustomObjectRecordAttachment',
     request: {
       params: z.object({
@@ -59689,7 +60555,16 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdDow
           },
         },
       },
+      401: {
+        description:
+          "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.",
+      },
+      429: {
+        description:
+          'Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.',
+      },
     },
+    security: [{ oauth2: ['custom_objects:read'] }, { basicAuth: [] }],
   })
 
 export const getApiV2CustomObjectsCustomObjectKeyRecordsAutocompleteRoute = createRoute({
@@ -59698,7 +60573,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsAutocompleteRoute = crea
   tags: ['Custom Object Records'],
   summary: 'Autocomplete Custom Object Record Search',
   description:
-    'Retrieves an array of custom object records that have a field value that matches the value specified in the `name` parameter.\n\nIf the object has a parent field with `cascade_permissions_enabled`, the request must be made in the context of a cascade parent field using the `field_id` and `source` parameters.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the first 10,000 records sorted by relevancy with page limits.\n#### Allowed For\n* Agents',
+    'Retrieves an array of custom object records that have a field value that matches the value specified in the `name` parameter.\n\nIf the object has a parent field with `cascade_permissions_enabled`, the request must be made in the context of a cascade parent field using the `field_id` and `source` parameters.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the first 10,000 records sorted by relevancy with page limits.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)',
   operationId: 'AutocompleteCustomObjectRecordSearch',
   request: {
     params: z.object({ custom_object_key: CustomObjectKeyParamsSchema }),
@@ -59998,7 +60873,16 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsAutocompleteRoute = crea
         },
       },
     },
+    401: {
+      description:
+        "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.",
+    },
+    429: {
+      description:
+        'Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.',
+    },
   },
+  security: [{ oauth2: ['read'] }, { basicAuth: [] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyRecordsCountRoute = createRoute({
@@ -60007,7 +60891,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsCountRoute = createRoute
   tags: ['Custom Object Records'],
   summary: 'Count Custom Object Records',
   description:
-    'Returns a total count of records for a specific custom object as well as the time the count was refreshed.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n#### Allowed For\n* Agents',
+    'Returns a total count of records for a specific custom object as well as the time the count was refreshed.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)',
   operationId: 'CountCustomObjectRecords',
   request: { params: z.object({ custom_object_key: CustomObjectKeyParamsSchema }) },
   responses: {
@@ -60049,7 +60933,12 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsCountRoute = createRoute
         },
       },
     },
+    401: {
+      description:
+        "Unauthorized. Returned to an anonymous caller; this endpoint doesn't allow anonymous access.",
+    },
   },
+  security: [{ oauth2: ['read'] }, { basicAuth: [] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute = createRoute({
@@ -60058,7 +60947,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute = createRout
   tags: ['Custom Object Records'],
   summary: 'Search Custom Object Records',
   description:
-    'Returns an array of custom object records where the search query matches the values in Text Fields, Multi Line Text fields, and RegExp fields. To find records in other fields, use the [Filtered Search API](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) endpoint.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.\n#### Allowed For\n* Agents',
+    'Returns an array of custom object records where the search query matches the values in Text Fields, Multi Line Text fields, and RegExp fields. To find records in other fields, use the [Filtered Search API](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) endpoint.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)',
   operationId: 'SearchCustomObjectRecords',
   request: {
     params: z.object({ custom_object_key: CustomObjectKeyParamsSchema }),
@@ -60149,7 +61038,16 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute = createRout
         },
       },
     },
+    401: {
+      description:
+        "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.",
+    },
+    429: {
+      description:
+        'Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.',
+    },
   },
+  security: [{ oauth2: ['read'] }, { basicAuth: [] }],
 })
 
 export const postApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute = createRoute({
@@ -60158,7 +61056,7 @@ export const postApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute = createRou
   tags: ['Custom Object Records'],
   summary: 'Filtered Search of Custom Object Records',
   description:
-    'Returns an array of custom object records that meet the search and filter criteria. For simple searches limited to only text fields and no complex logic, use the [Search Custom Object Records API](/api-reference/custom-data/custom-objects/custom_object_records/#search-custom-object-records) endpoint.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents must include a filter on the parent field (for example, `"custom_object_fields.parent_field_key": { "$eq": "parent_record_id" }`). Requests without a parent filter return `403 Forbidden`.\n\nFilters can contain either an individual [comparison object](#comparison-object) or an array of filter expressions within logical namespaces. Filter expressions can themselves be either comparison objects or `$and` / `$or` groups, so logical operators can be nested to build complex Boolean queries.\n\nA filter is a JSON object that has the following properties:\n\n| Name      | Type   | Required | Description\n| --------- | ------ | -------- | -----------\n| ATTRIBUTE | object | no       | A [comparison object](#comparison-object) specifying an attribute value condition to be met for records to match.<br/><br/>Examples are marked below.\n| $and      | array  | no       | Array of filter expressions combined with logical AND. Each element may be a comparison object or a nested `$and` / `$or` group.\n| $or       | array  | no       | Array of filter expressions combined with logical OR. Each element may be a comparison object or a nested `$and` / `$or` group.\n\nLimits for nested `$and` / `$or` groups:\n\n* Maximum nesting depth: `5` (outermost `$and` / `$or` counts as level 1). Exceeding it returns `422 Invalid Condition`.\n* Attribute keys cannot share a level with `$and` / `$or` once the payload contains any `$and` / `$or` nested inside another `$and` / `$or`. The request returns `422 Invalid Condition`; wrap the attribute inside the group instead.\n\n##### Examples\n\n```js\n{\n  "filter": {\n    "custom_object_fields.field_key": { "$eq": "value" } // ATTRIBUTE\n  }\n}\n```\n\n```js\n{\n  "filter": {\n    "$or": [\n      { "custom_object_fields.field_key": { "$eq": "value" } }, // ATTRIBUTE\n      { "external_id": { "$eq": "Record123" } } // ATTRIBUTE\n    ]\n  }\n}\n```\n\n```js\n// Nested $and / $or\n{\n  "filter": {\n    "$and": [\n      { "custom_object_fields.contract_term_months": { "$gt": 5 } },\n      {\n        "$or": [\n          { "custom_object_fields.status": { "$eq": "active" } },\n          { "custom_object_fields.status": { "$eq": "pending" } }\n        ]\n      }\n    ]\n  }\n}\n```\n\n#### Comparison Object\n\nA comparison object defines a condition a record must meet to be considered a match. The condition is based on an attribute value or object type.\n\nA comparison object is a JSON object that has the following properties:\n\n| Name      | Type          | Required | Description\n| --------- | ------------- | -------- | -----------\n| FIELD_KEY | string        | yes      | When filtering on a custom field, they must be namedspaced with `custom_object_fields.`. ex. `custom_object_fields.field_key`<br/><br/>When filtering on a standard field, no namespace is required. The following fields are considered standard: `created_at`, `updated_at`, `created_by_user`, `updated_by_user`, `name`, `external_id`\n| OPERATOR  | string        | yes      | [Supported operators](/documentation/custom-data/v2/searching-custom-object-records/) vary by the value\'s data type\n| VALUE     | string, array | yes      | The value you\'re filtering for\n\n* Date values should be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.\n\n#### Allowed For\n\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)',
+    'Returns an array of custom object records that meet the search and filter criteria. For simple searches limited to only text fields and no complex logic, use the [Search Custom Object Records API](/api-reference/custom-data/custom-objects/custom_object_records/#search-custom-object-records) endpoint.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents must include a filter on the parent field (for example, `"custom_object_fields.parent_field_key": { "$eq": "parent_record_id" }`). Requests without a parent filter return `403 Forbidden`.\n\nFilters can contain either an individual [comparison object](#comparison-object) or an array of filter expressions within logical namespaces. Filter expressions can themselves be either comparison objects or `$and` / `$or` groups, so logical operators can be nested to build complex Boolean queries.\n\nA filter is a JSON object that has the following properties:\n\n| Name      | Type   | Required | Description\n| --------- | ------ | -------- | -----------\n| ATTRIBUTE | object | no       | A [comparison object](#comparison-object) specifying an attribute value condition to be met for records to match.<br/><br/>Examples are marked below.\n| $and      | array  | no       | Array of filter expressions combined with logical AND. Each element may be a comparison object or a nested `$and` / `$or` group.\n| $or       | array  | no       | Array of filter expressions combined with logical OR. Each element may be a comparison object or a nested `$and` / `$or` group.\n\nLimits for nested `$and` / `$or` groups:\n\n* Maximum nesting depth: `5` (outermost `$and` / `$or` counts as level 1). Exceeding it returns `422 Invalid Condition`.\n* Attribute keys cannot share a level with `$and` / `$or` once the payload contains any `$and` / `$or` nested inside another `$and` / `$or`. The request returns `422 Invalid Condition`; wrap the attribute inside the group instead.\n\n##### Examples\n\n```js\n{\n  "filter": {\n    "custom_object_fields.field_key": { "$eq": "value" } // ATTRIBUTE\n  }\n}\n```\n\n```js\n{\n  "filter": {\n    "$or": [\n      { "custom_object_fields.field_key": { "$eq": "value" } }, // ATTRIBUTE\n      { "external_id": { "$eq": "Record123" } } // ATTRIBUTE\n    ]\n  }\n}\n```\n\n```js\n// Nested $and / $or\n{\n  "filter": {\n    "$and": [\n      { "custom_object_fields.contract_term_months": { "$gt": 5 } },\n      {\n        "$or": [\n          { "custom_object_fields.status": { "$eq": "active" } },\n          { "custom_object_fields.status": { "$eq": "pending" } }\n        ]\n      }\n    ]\n  }\n}\n```\n\n#### Comparison Object\n\nA comparison object defines a condition a record must meet to be considered a match. The condition is based on an attribute value or object type.\n\nA comparison object is a JSON object that has the following properties:\n\n| Name      | Type          | Required | Description\n| --------- | ------------- | -------- | -----------\n| FIELD_KEY | string        | yes      | When filtering on a custom field, they must be namedspaced with `custom_object_fields.`. ex. `custom_object_fields.field_key`<br/><br/>When filtering on a standard field, no namespace is required. The following fields are considered standard: `created_at`, `updated_at`, `created_by_user`, `updated_by_user`, `name`, `external_id`\n| OPERATOR  | string        | yes      | [Supported operators](/documentation/custom-data/v2/searching-custom-object-records/) vary by the value\'s data type\n| VALUE     | string, array | yes      | The value you\'re filtering for\n\n* Date values should be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.\n\n#### Allowed For\n\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)',
   operationId: 'FilteredSearchCustomObjectRecords',
   request: {
     params: z.object({ custom_object_key: CustomObjectKeyParamsSchema }),
@@ -60263,7 +61161,16 @@ export const postApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute = createRou
         },
       },
     },
+    401: {
+      description:
+        "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.",
+    },
+    429: {
+      description:
+        'Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.',
+    },
   },
+  security: [{ oauth2: ['read'] }, { basicAuth: [] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyRecordsShowByUniqueIdentifierRoute = createRoute({
@@ -60272,7 +61179,7 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsShowByUniqueIdentifierRo
   tags: ['Custom Object Records'],
   summary: 'Show Custom Object Record by Unique Identifier',
   description:
-    "Returns a custom object record identified by its external id, its name, or the value of one of the custom object's unique fields. Send exactly one identifier per request.\n\n* To identify the record by name, the `is_unique` property on the custom object's name field must be enabled.\n* To identify the record by a unique field, send the field's key as the query parameter, for example `?vin=1HGCM82633A004352`. The field's `is_unique` property must be enabled. For a unique lookup field, the value is the id of the record the field references.\n\nReturns a `400 Bad Request` if more than one identifier is sent, if `name` is sent and the name field isn't unique, or if no identifier is sent. A parameter that isn't the key of a unique field doesn't count as an identifier. Returns a `404 Not Found` if no record matches.\n#### Allowed For\n* Agents\n",
+    "Returns a custom object record identified by its external id, its name, or the value of one of the custom object's unique fields. Send exactly one identifier per request.\n\n* To identify the record by name, the `is_unique` property on the custom object's name field must be enabled.\n* To identify the record by a unique field, send the field's key as the query parameter, for example `?vin=1HGCM82633A004352`. The field's `is_unique` property must be enabled. For a unique lookup field, the value is the id of the record the field references.\n\nReturns a `400 Bad Request` if more than one identifier is sent, if `name` is sent and the name field isn't unique, or if no identifier is sent. A parameter that isn't the key of a unique field doesn't count as an identifier. Returns a `404 Not Found` if no record matches.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)\n",
   operationId: 'ShowCustomObjectRecordByUniqueIdentifier',
   request: {
     params: z.object({ custom_object_key: CustomObjectKeyParamsSchema }),
@@ -60318,7 +61225,16 @@ export const getApiV2CustomObjectsCustomObjectKeyRecordsShowByUniqueIdentifierRo
         },
       },
     },
+    401: {
+      description:
+        "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.",
+    },
+    429: {
+      description:
+        'Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.',
+    },
   },
+  security: [{ oauth2: ['read'] }, { basicAuth: [] }],
 })
 
 export const putApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRoute = createRoute(
@@ -60383,6 +61299,7 @@ export const putApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifier
         },
       },
     },
+    security: [{ oauth2: ['write'] }],
   },
 )
 
@@ -60448,6 +61365,7 @@ export const patchApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifi
         },
       },
     },
+    security: [{ oauth2: ['write'] }],
   })
 
 export const getApiV2CustomObjectsCustomObjectKeyTriggersRoute = createRoute({
@@ -60477,6 +61395,7 @@ export const getApiV2CustomObjectsCustomObjectKeyTriggersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const postApiV2CustomObjectsCustomObjectKeyTriggersRoute = createRoute({
@@ -60510,6 +61429,7 @@ export const postApiV2CustomObjectsCustomObjectKeyTriggersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute = createRoute({
@@ -60536,6 +61456,7 @@ export const getApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute = create
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const putApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute = createRoute({
@@ -60572,6 +61493,7 @@ export const putApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute = create
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const deleteApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute = createRoute({
@@ -60589,6 +61511,7 @@ export const deleteApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute = cre
     }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyTriggersActiveRoute = createRoute({
@@ -60617,6 +61540,7 @@ export const getApiV2CustomObjectsCustomObjectKeyTriggersActiveRoute = createRou
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyTriggersDefinitionsRoute = createRoute({
@@ -60639,6 +61563,7 @@ export const getApiV2CustomObjectsCustomObjectKeyTriggersDefinitionsRoute = crea
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const deleteApiV2CustomObjectsCustomObjectKeyTriggersDestroyManyRoute = createRoute({
@@ -60654,6 +61579,7 @@ export const deleteApiV2CustomObjectsCustomObjectKeyTriggersDestroyManyRoute = c
     query: z.object({ ids: TriggerIdsParamsSchema }),
   },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsCustomObjectKeyTriggersSearchRoute = createRoute({
@@ -60687,6 +61613,7 @@ export const getApiV2CustomObjectsCustomObjectKeyTriggersSearchRoute = createRou
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const putApiV2CustomObjectsCustomObjectKeyTriggersUpdateManyRoute = createRoute({
@@ -60720,6 +61647,7 @@ export const putApiV2CustomObjectsCustomObjectKeyTriggersUpdateManyRoute = creat
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2CustomObjectsLimitsObjectLimitRoute = createRoute({
@@ -60741,6 +61669,7 @@ export const getApiV2CustomObjectsLimitsObjectLimitRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['custom_objects:read'] }],
 })
 
 export const getApiV2CustomObjectsLimitsRecordLimitRoute = createRoute({
@@ -60762,6 +61691,7 @@ export const getApiV2CustomObjectsLimitsRecordLimitRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2CustomRolesRoute = createRoute({
@@ -60783,6 +61713,7 @@ export const getApiV2CustomRolesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const postApiV2CustomRolesRoute = createRoute({
@@ -60804,6 +61735,7 @@ export const postApiV2CustomRolesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2CustomRolesCustomRoleIdRoute = createRoute({
@@ -60826,6 +61758,7 @@ export const getApiV2CustomRolesCustomRoleIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const putApiV2CustomRolesCustomRoleIdRoute = createRoute({
@@ -60848,6 +61781,7 @@ export const putApiV2CustomRolesCustomRoleIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const deleteApiV2CustomRolesCustomRoleIdRoute = createRoute({
@@ -60860,6 +61794,7 @@ export const deleteApiV2CustomRolesCustomRoleIdRoute = createRoute({
   operationId: 'DeleteCustomRoleById',
   request: { params: z.object({ custom_role_id: CustomRoleIdParamsSchema }) },
   responses: { 204: { description: 'No Contetnt response' } },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const putApiV2CustomStatusDefaultRoute = createRoute({
@@ -60891,6 +61826,7 @@ export const putApiV2CustomStatusDefaultRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2CustomStatusesRoute = createRoute({
@@ -60955,6 +61891,7 @@ export const getApiV2CustomStatusesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2CustomStatusesRoute = createRoute({
@@ -60987,6 +61924,7 @@ export const postApiV2CustomStatusesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2CustomStatusesCustomStatusIdRoute = createRoute({
@@ -61008,6 +61946,7 @@ export const getApiV2CustomStatusesCustomStatusIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2CustomStatusesCustomStatusIdRoute = createRoute({
@@ -61040,6 +61979,7 @@ export const putApiV2CustomStatusesCustomStatusIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2CustomStatusesCustomStatusIdRoute = createRoute({
@@ -61052,6 +61992,7 @@ export const deleteApiV2CustomStatusesCustomStatusIdRoute = createRoute({
   operationId: 'DeleteCustomStatus',
   request: { params: z.object({ custom_status_id: CustomStatusIdParamsSchema }) },
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2CustomStatusesCustomStatusIdTicketFormStatusesRoute = createRoute({
@@ -61118,6 +62059,7 @@ export const postApiV2CustomStatusesCustomStatusIdTicketFormStatusesRoute = crea
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2CustomStatusesShowManyRoute = createRoute({
@@ -61157,6 +62099,7 @@ export const getApiV2CustomStatusesShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2DeletedTicketsRoute = createRoute({
@@ -61187,6 +62130,7 @@ export const getApiV2DeletedTicketsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const deleteApiV2DeletedTicketsTicketIdRoute = createRoute({
@@ -61209,6 +62153,7 @@ export const deleteApiV2DeletedTicketsTicketIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2DeletedTicketsTicketIdRestoreRoute = createRoute({
@@ -61230,6 +62175,7 @@ export const putApiV2DeletedTicketsTicketIdRestoreRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2DeletedTicketsDestroyManyRoute = createRoute({
@@ -61252,6 +62198,7 @@ export const deleteApiV2DeletedTicketsDestroyManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2DeletedTicketsRestoreManyRoute = createRoute({
@@ -61273,6 +62220,7 @@ export const putApiV2DeletedTicketsRestoreManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2DeletedUsersRoute = createRoute({
@@ -61417,6 +62365,7 @@ export const getApiV2DeletedUsersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2DeletedUsersDeletedUserIdRoute = createRoute({
@@ -61483,6 +62432,7 @@ export const getApiV2DeletedUsersDeletedUserIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const deleteApiV2DeletedUsersDeletedUserIdRoute = createRoute({
@@ -61549,6 +62499,7 @@ export const deleteApiV2DeletedUsersDeletedUserIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2DeletedUsersCountRoute = createRoute({
@@ -61570,6 +62521,7 @@ export const getApiV2DeletedUsersCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2DeletionSchedulesRoute = createRoute({
@@ -61593,6 +62545,7 @@ export const getApiV2DeletionSchedulesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['deletion_schedules:read'] }],
 })
 
 export const postApiV2DeletionSchedulesRoute = createRoute({
@@ -61628,6 +62581,7 @@ export const postApiV2DeletionSchedulesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['deletion_schedules:write'] }],
 })
 
 export const getApiV2DeletionSchedulesDeletionScheduleIdRoute = createRoute({
@@ -61651,6 +62605,7 @@ export const getApiV2DeletionSchedulesDeletionScheduleIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['deletion_schedules:read'] }],
 })
 
 export const putApiV2DeletionSchedulesDeletionScheduleIdRoute = createRoute({
@@ -61688,6 +62643,7 @@ export const putApiV2DeletionSchedulesDeletionScheduleIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['deletion_schedules:write'] }],
 })
 
 export const deleteApiV2DeletionSchedulesDeletionScheduleIdRoute = createRoute({
@@ -61699,6 +62655,7 @@ export const deleteApiV2DeletionSchedulesDeletionScheduleIdRoute = createRoute({
   operationId: 'DeleteDeletionSchedule',
   request: { params: z.object({ deletion_schedule_id: DeletionScheduleIdParamsSchema }) },
   responses: { 204: { description: 'Success Response' } },
+  security: [{ oauth2: ['deletion_schedules:write'] }],
 })
 
 export const getApiV2DynamicContentItemsRoute = createRoute({
@@ -61727,6 +62684,7 @@ export const getApiV2DynamicContentItemsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:read'] }],
 })
 
 export const postApiV2DynamicContentItemsRoute = createRoute({
@@ -61759,6 +62717,7 @@ export const postApiV2DynamicContentItemsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:write'] }],
 })
 
 export const getApiV2DynamicContentItemsDynamicContentItemIdRoute = createRoute({
@@ -61780,6 +62739,7 @@ export const getApiV2DynamicContentItemsDynamicContentItemIdRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:read'] }],
 })
 
 export const putApiV2DynamicContentItemsDynamicContentItemIdRoute = createRoute({
@@ -61813,6 +62773,7 @@ export const putApiV2DynamicContentItemsDynamicContentItemIdRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:write'] }],
 })
 
 export const deleteApiV2DynamicContentItemsDynamicContentItemIdRoute = createRoute({
@@ -61824,6 +62785,7 @@ export const deleteApiV2DynamicContentItemsDynamicContentItemIdRoute = createRou
   operationId: 'DeleteDynamicContentItem',
   request: { params: z.object({ dynamic_content_item_id: DynamicContentItemIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['dynamic_content:write'] }],
 })
 
 export const getApiV2DynamicContentItemsDynamicContentItemIdVariantsRoute = createRoute({
@@ -61853,6 +62815,7 @@ export const getApiV2DynamicContentItemsDynamicContentItemIdVariantsRoute = crea
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:read'] }],
 })
 
 export const postApiV2DynamicContentItemsDynamicContentItemIdVariantsRoute = createRoute({
@@ -61886,6 +62849,7 @@ export const postApiV2DynamicContentItemsDynamicContentItemIdVariantsRoute = cre
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:write'] }],
 })
 
 export const getApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute =
@@ -61913,6 +62877,7 @@ export const getApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicConte
         },
       },
     },
+    security: [{ oauth2: ['dynamic_content:read'] }],
   })
 
 export const putApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute =
@@ -61950,6 +62915,7 @@ export const putApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicConte
         },
       },
     },
+    security: [{ oauth2: ['dynamic_content:write'] }],
   })
 
 export const deleteApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute =
@@ -61967,6 +62933,7 @@ export const deleteApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicCo
       }),
     },
     responses: { 204: { description: 'No Content response' } },
+    security: [{ oauth2: ['dynamic_content:write'] }],
   })
 
 export const postApiV2DynamicContentItemsDynamicContentItemIdVariantsCreateManyRoute = createRoute({
@@ -61999,6 +62966,7 @@ export const postApiV2DynamicContentItemsDynamicContentItemIdVariantsCreateManyR
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:write'] }],
 })
 
 export const putApiV2DynamicContentItemsDynamicContentItemIdVariantsUpdateManyRoute = createRoute({
@@ -62032,6 +63000,7 @@ export const putApiV2DynamicContentItemsDynamicContentItemIdVariantsUpdateManyRo
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:write'] }],
 })
 
 export const getApiV2DynamicContentItemsShowManyRoute = createRoute({
@@ -62069,6 +63038,7 @@ export const getApiV2DynamicContentItemsShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['dynamic_content:read'] }],
 })
 
 export const getApiV2EmailNotificationsRoute = createRoute({
@@ -62206,6 +63176,7 @@ export const getApiV2EmailNotificationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2EmailNotificationsNotificationIdRoute = createRoute({
@@ -62228,6 +63199,7 @@ export const getApiV2EmailNotificationsNotificationIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2EmailNotificationsShowManyRoute = createRoute({
@@ -62256,6 +63228,7 @@ export const getApiV2EmailNotificationsShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2EndUsersUserIdIdentitiesRoute = createRoute({
@@ -62300,6 +63273,7 @@ export const getApiV2EndUsersUserIdIdentitiesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const postApiV2EndUsersUserIdIdentitiesRoute = createRoute({
@@ -62372,6 +63346,7 @@ export const postApiV2EndUsersUserIdIdentitiesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2EndUsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
@@ -62396,6 +63371,7 @@ export const getApiV2EndUsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const deleteApiV2EndUsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
@@ -62410,6 +63386,7 @@ export const deleteApiV2EndUsersUserIdIdentitiesUserIdentityIdRoute = createRout
     params: z.object({ user_id: UserIdParamsSchema, user_identity_id: UserIdentityIdParamsSchema }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const putApiV2EndUsersUserIdIdentitiesUserIdentityIdMakePrimaryRoute = createRoute({
@@ -62434,6 +63411,7 @@ export const putApiV2EndUsersUserIdIdentitiesUserIdentityIdMakePrimaryRoute = cr
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const putApiV2EndUsersUserIdIdentitiesUserIdentityIdRequestVerificationRoute = createRoute({
@@ -62458,6 +63436,7 @@ export const putApiV2EndUsersUserIdIdentitiesUserIdentityIdRequestVerificationRo
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2GroupMembershipsRoute = createRoute({
@@ -62487,6 +63466,7 @@ export const getApiV2GroupMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['groups:read'] }],
 })
 
 export const postApiV2GroupMembershipsRoute = createRoute({
@@ -62519,6 +63499,7 @@ export const postApiV2GroupMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['groups:write'] }],
 })
 
 export const getApiV2GroupMembershipsGroupMembershipIdRoute = createRoute({
@@ -62541,6 +63522,7 @@ export const getApiV2GroupMembershipsGroupMembershipIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['groups:read'] }],
 })
 
 export const deleteApiV2GroupMembershipsGroupMembershipIdRoute = createRoute({
@@ -62553,6 +63535,7 @@ export const deleteApiV2GroupMembershipsGroupMembershipIdRoute = createRoute({
   operationId: 'DeleteGroupMembership',
   request: { params: z.object({ group_membership_id: GroupMembershipIdParamsSchema }) },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['groups:write'] }],
 })
 
 export const getApiV2GroupMembershipsAssignableRoute = createRoute({
@@ -62574,6 +63557,7 @@ export const getApiV2GroupMembershipsAssignableRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['groups:read'] }],
 })
 
 export const postApiV2GroupMembershipsCreateManyRoute = createRoute({
@@ -62606,6 +63590,7 @@ export const postApiV2GroupMembershipsCreateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['groups:write'] }],
 })
 
 export const deleteApiV2GroupMembershipsDestroyManyRoute = createRoute({
@@ -62644,6 +63629,7 @@ export const deleteApiV2GroupMembershipsDestroyManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['groups:write'] }],
 })
 
 export const getApiV2GroupSlasPoliciesRoute = createRoute({
@@ -62709,6 +63695,7 @@ export const getApiV2GroupSlasPoliciesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:read'] }],
 })
 
 export const postApiV2GroupSlasPoliciesRoute = createRoute({
@@ -62740,6 +63727,7 @@ export const postApiV2GroupSlasPoliciesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:write'] }],
 })
 
 export const getApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute = createRoute({
@@ -62828,6 +63816,7 @@ export const getApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:read'] }],
 })
 
 export const putApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute = createRoute({
@@ -62860,6 +63849,7 @@ export const putApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:write'] }],
 })
 
 export const deleteApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute = createRoute({
@@ -62871,6 +63861,7 @@ export const deleteApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute = createRoute({
   operationId: 'DeleteGroupSLAPolicy',
   request: { params: z.object({ group_sla_policy_id: GroupSLAPolicyIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['sla_policies:write'] }],
 })
 
 export const getApiV2GroupSlasPoliciesDefinitionsRoute = createRoute({
@@ -62891,6 +63882,7 @@ export const getApiV2GroupSlasPoliciesDefinitionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:read'] }],
 })
 
 export const putApiV2GroupSlasPoliciesReorderRoute = createRoute({
@@ -62975,6 +63967,7 @@ export const putApiV2GroupSlasPoliciesReorderRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:write'] }],
 })
 
 export const getApiV2GroupsRoute = createRoute({
@@ -63007,6 +64000,7 @@ export const getApiV2GroupsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const postApiV2GroupsRoute = createRoute({
@@ -63039,6 +64033,7 @@ export const postApiV2GroupsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:write'] }],
 })
 
 export const getApiV2GroupsGroupIdRoute = createRoute({
@@ -63063,6 +64058,7 @@ export const getApiV2GroupsGroupIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const putApiV2GroupsGroupIdRoute = createRoute({
@@ -63095,6 +64091,7 @@ export const putApiV2GroupsGroupIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:write'] }],
 })
 
 export const deleteApiV2GroupsGroupIdRoute = createRoute({
@@ -63107,6 +64104,7 @@ export const deleteApiV2GroupsGroupIdRoute = createRoute({
   operationId: 'DeleteGroup',
   request: { params: z.object({ group_id: GroupIdParamsSchema }) },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['groups:write'] }],
 })
 
 export const getApiV2GroupsGroupIdMembershipsRoute = createRoute({
@@ -63129,6 +64127,7 @@ export const getApiV2GroupsGroupIdMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['groups:read'] }],
 })
 
 export const getApiV2GroupsGroupIdMembershipsAssignableRoute = createRoute({
@@ -63151,6 +64150,7 @@ export const getApiV2GroupsGroupIdMembershipsAssignableRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['groups:read'] }],
 })
 
 export const getApiV2GroupsGroupIdUsersRoute = createRoute({
@@ -63181,6 +64181,7 @@ export const getApiV2GroupsGroupIdUsersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2GroupsGroupIdUsersCountRoute = createRoute({
@@ -63210,6 +64211,7 @@ export const getApiV2GroupsGroupIdUsersCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2GroupsAssignableRoute = createRoute({
@@ -63231,6 +64233,7 @@ export const getApiV2GroupsAssignableRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const getApiV2GroupsAutocompleteRoute = createRoute({
@@ -63268,6 +64271,7 @@ export const getApiV2GroupsAutocompleteRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const getApiV2GroupsAvailableAgentsRoute = createRoute({
@@ -63419,6 +64423,7 @@ export const getApiV2GroupsAvailableAgentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const getApiV2GroupsCountRoute = createRoute({
@@ -63440,6 +64445,7 @@ export const getApiV2GroupsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const getApiV2GroupsDefaultRoute = createRoute({
@@ -63460,6 +64466,7 @@ export const getApiV2GroupsDefaultRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const postApiV2ImportsTicketsRoute = createRoute({
@@ -63555,6 +64562,7 @@ export const postApiV2ImportsTicketsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2ImportsTicketsCreateManyRoute = createRoute({
@@ -63626,6 +64634,7 @@ export const postApiV2ImportsTicketsCreateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2IncrementalIncrementalResourceSampleRoute = createRoute({
@@ -63954,6 +64963,7 @@ export const getApiV2IncrementalCustomObjectsCustomObjectKeyCursorRoute = create
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2IncrementalOrganizationsRoute = createRoute({
@@ -63981,6 +64991,7 @@ export const getApiV2IncrementalOrganizationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const getApiV2IncrementalRoutingAttributeValuesRoute = createRoute({
@@ -64002,6 +65013,7 @@ export const getApiV2IncrementalRoutingAttributeValuesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2IncrementalRoutingAttributesRoute = createRoute({
@@ -64023,6 +65035,7 @@ export const getApiV2IncrementalRoutingAttributesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2IncrementalRoutingInstanceValuesRoute = createRoute({
@@ -64044,6 +65057,7 @@ export const getApiV2IncrementalRoutingInstanceValuesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2IncrementalTicketEventsRoute = createRoute({
@@ -64072,6 +65086,7 @@ export const getApiV2IncrementalTicketEventsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2IncrementalTicketMetricEventsRoute = createRoute({
@@ -64175,6 +65190,7 @@ export const getApiV2IncrementalTicketMetricEventsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2IncrementalTicketsRoute = createRoute({
@@ -64202,6 +65218,7 @@ export const getApiV2IncrementalTicketsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2IncrementalTicketsCursorRoute = createRoute({
@@ -64230,6 +65247,7 @@ export const getApiV2IncrementalTicketsCursorRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2IncrementalUsersRoute = createRoute({
@@ -64257,6 +65275,7 @@ export const getApiV2IncrementalUsersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2IncrementalUsersCursorRoute = createRoute({
@@ -64285,6 +65304,7 @@ export const getApiV2IncrementalUsersCursorRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2ItAssetManagementAssetTypesRoute = createRoute({
@@ -64719,6 +65739,7 @@ export const getApiV2ItAssetManagementAssetsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const postApiV2ItAssetManagementAssetsRoute = createRoute({
@@ -65103,6 +66124,7 @@ export const postApiV2ItAssetManagementAssetsSearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2ItAssetManagementFieldsRoute = createRoute({
@@ -66040,6 +67062,7 @@ export const getApiV2JobStatusesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2JobStatusesJobStatusIdRoute = createRoute({
@@ -66061,6 +67084,7 @@ export const getApiV2JobStatusesJobStatusIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2JobStatusesShowManyRoute = createRoute({
@@ -66098,6 +67122,7 @@ export const getApiV2JobStatusesShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2LocalesRoute = createRoute({
@@ -66271,6 +67296,7 @@ export const getApiV2MacrosRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const postApiV2MacrosRoute = createRoute({
@@ -66316,6 +67342,7 @@ export const postApiV2MacrosRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:write'] }],
 })
 
 export const getApiV2MacrosMacroIdRoute = createRoute({
@@ -66337,6 +67364,7 @@ export const getApiV2MacrosMacroIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const putApiV2MacrosMacroIdRoute = createRoute({
@@ -66377,6 +67405,7 @@ export const putApiV2MacrosMacroIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:write'] }],
 })
 
 export const deleteApiV2MacrosMacroIdRoute = createRoute({
@@ -66388,6 +67417,7 @@ export const deleteApiV2MacrosMacroIdRoute = createRoute({
   operationId: 'DeleteMacro',
   request: { params: z.object({ macro_id: MacroIdParamsSchema }) },
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['macros:write'] }],
 })
 
 export const getApiV2MacrosMacroIdApplyRoute = createRoute({
@@ -66427,6 +67457,7 @@ export const getApiV2MacrosMacroIdApplyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const getApiV2MacrosMacroIdAttachmentsRoute = createRoute({
@@ -66448,6 +67479,7 @@ export const getApiV2MacrosMacroIdAttachmentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const postApiV2MacrosMacroIdAttachmentsRoute = createRoute({
@@ -66470,6 +67502,7 @@ export const postApiV2MacrosMacroIdAttachmentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:write'] }],
 })
 
 export const getApiV2MacrosActionsRoute = createRoute({
@@ -66492,6 +67525,7 @@ export const getApiV2MacrosActionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const getApiV2MacrosActiveRoute = createRoute({
@@ -66538,6 +67572,7 @@ export const getApiV2MacrosActiveRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const postApiV2MacrosAttachmentsRoute = createRoute({
@@ -66559,6 +67594,7 @@ export const postApiV2MacrosAttachmentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:write'] }],
 })
 
 export const getApiV2MacrosAttachmentsAttachmentIdRoute = createRoute({
@@ -66581,6 +67617,7 @@ export const getApiV2MacrosAttachmentsAttachmentIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const getApiV2MacrosAttachmentsAttachmentIdContentRoute = createRoute({
@@ -66602,6 +67639,7 @@ export const getApiV2MacrosAttachmentsAttachmentIdContentRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const getApiV2MacrosCategoriesRoute = createRoute({
@@ -66623,6 +67661,7 @@ export const getApiV2MacrosCategoriesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const getApiV2MacrosDefinitionsRoute = createRoute({
@@ -66651,6 +67690,7 @@ export const getApiV2MacrosDefinitionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const deleteApiV2MacrosDestroyManyRoute = createRoute({
@@ -66691,6 +67731,7 @@ export const deleteApiV2MacrosDestroyManyRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['macros:write'] }],
 })
 
 export const getApiV2MacrosGroupsRoute = createRoute({
@@ -66715,6 +67756,7 @@ export const getApiV2MacrosGroupsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const getApiV2MacrosMostUsedRoute = createRoute({
@@ -66736,6 +67778,7 @@ export const getApiV2MacrosMostUsedRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const getApiV2MacrosNewRoute = createRoute({
@@ -66780,6 +67823,7 @@ export const getApiV2MacrosNewRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const getApiV2MacrosSearchRoute = createRoute({
@@ -66814,6 +67858,7 @@ export const getApiV2MacrosSearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const putApiV2MacrosUpdateManyRoute = createRoute({
@@ -66854,6 +67899,7 @@ export const putApiV2MacrosUpdateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:write'] }],
 })
 
 export const getApiV2OauthClientsRoute = createRoute({
@@ -66990,6 +68036,7 @@ export const getApiV2OauthClientsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const postApiV2OauthClientsRoute = createRoute({
@@ -67011,6 +68058,7 @@ export const postApiV2OauthClientsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2OauthClientsOauthClientIdRoute = createRoute({
@@ -67033,6 +68081,7 @@ export const getApiV2OauthClientsOauthClientIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const putApiV2OauthClientsOauthClientIdRoute = createRoute({
@@ -67055,6 +68104,7 @@ export const putApiV2OauthClientsOauthClientIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const deleteApiV2OauthClientsOauthClientIdRoute = createRoute({
@@ -67067,6 +68117,7 @@ export const deleteApiV2OauthClientsOauthClientIdRoute = createRoute({
   operationId: 'DeleteClient',
   request: { params: z.object({ oauth_client_id: OAuthClientIdParamsSchema }) },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const putApiV2OauthClientsOauthClientIdGenerateSecretRoute = createRoute({
@@ -67089,6 +68140,7 @@ export const putApiV2OauthClientsOauthClientIdGenerateSecretRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2OauthGlobalClientsRoute = createRoute({
@@ -67225,6 +68277,7 @@ export const getApiV2OauthGlobalClientsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2OauthGlobalClientsGlobalClientIdRoute = createRoute({
@@ -67413,6 +68466,7 @@ export const getApiV2OauthTokensRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2OauthTokensOauthTokenIdRoute = createRoute({
@@ -67435,6 +68489,7 @@ export const getApiV2OauthTokensOauthTokenIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const deleteApiV2OauthTokensOauthTokenIdRoute = createRoute({
@@ -67467,6 +68522,7 @@ export const getApiV2OauthTokensCurrentRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const deleteApiV2OauthTokensCurrentRoute = createRoute({
@@ -67647,6 +68703,7 @@ export const getApiV2OrganizationFieldsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const postApiV2OrganizationFieldsRoute = createRoute({
@@ -67679,6 +68736,7 @@ export const postApiV2OrganizationFieldsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2OrganizationFieldsOrganizationFieldIdRoute = createRoute({
@@ -67700,6 +68758,7 @@ export const getApiV2OrganizationFieldsOrganizationFieldIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const putApiV2OrganizationFieldsOrganizationFieldIdRoute = createRoute({
@@ -67732,6 +68791,7 @@ export const putApiV2OrganizationFieldsOrganizationFieldIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const deleteApiV2OrganizationFieldsOrganizationFieldIdRoute = createRoute({
@@ -67743,6 +68803,7 @@ export const deleteApiV2OrganizationFieldsOrganizationFieldIdRoute = createRoute
   operationId: 'DeleteOrganizationField',
   request: { params: z.object({ organization_field_id: OrganizationFieldIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const putApiV2OrganizationFieldsReorderRoute = createRoute({
@@ -67774,6 +68835,7 @@ export const putApiV2OrganizationFieldsReorderRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2OrganizationMembershipsRoute = createRoute({
@@ -67803,6 +68865,7 @@ export const getApiV2OrganizationMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const postApiV2OrganizationMembershipsRoute = createRoute({
@@ -67835,6 +68898,7 @@ export const postApiV2OrganizationMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2OrganizationMembershipsOrganizationMembershipIdRoute = createRoute({
@@ -67858,6 +68922,7 @@ export const getApiV2OrganizationMembershipsOrganizationMembershipIdRoute = crea
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const deleteApiV2OrganizationMembershipsOrganizationMembershipIdRoute = createRoute({
@@ -67872,6 +68937,7 @@ export const deleteApiV2OrganizationMembershipsOrganizationMembershipIdRoute = c
     params: z.object({ organization_membership_id: OrganizationMembershipIdParamsSchema }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
 })
 
 export const postApiV2OrganizationMembershipsCreateManyRoute = createRoute({
@@ -67904,6 +68970,7 @@ export const postApiV2OrganizationMembershipsCreateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
 })
 
 export const deleteApiV2OrganizationMembershipsDestroyManyRoute = createRoute({
@@ -67954,6 +69021,7 @@ export const deleteApiV2OrganizationMembershipsDestroyManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2OrganizationMergesOrganizationMergeIdRoute = createRoute({
@@ -67976,6 +69044,7 @@ export const getApiV2OrganizationMergesOrganizationMergeIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const getApiV2OrganizationSubscriptionsRoute = createRoute({
@@ -67997,6 +69066,7 @@ export const getApiV2OrganizationSubscriptionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const postApiV2OrganizationSubscriptionsRoute = createRoute({
@@ -68028,6 +69098,7 @@ export const postApiV2OrganizationSubscriptionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRoute = createRoute({
@@ -68052,6 +69123,7 @@ export const getApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRoute = 
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const deleteApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRoute = createRoute({
@@ -68065,6 +69137,7 @@ export const deleteApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRoute
     params: z.object({ organization_subscription_id: OrganizationSubscriptionIdParamsSchema }),
   },
   responses: { 204: { description: 'No content' } },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2OrganizationsRoute = createRoute({
@@ -68095,6 +69168,7 @@ export const getApiV2OrganizationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const postApiV2OrganizationsRoute = createRoute({
@@ -68127,6 +69201,7 @@ export const postApiV2OrganizationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdRoute = createRoute({
@@ -68167,6 +69242,7 @@ export const getApiV2OrganizationsOrganizationIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const putApiV2OrganizationsOrganizationIdRoute = createRoute({
@@ -68214,6 +69290,7 @@ export const putApiV2OrganizationsOrganizationIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const deleteApiV2OrganizationsOrganizationIdRoute = createRoute({
@@ -68226,6 +69303,7 @@ export const deleteApiV2OrganizationsOrganizationIdRoute = createRoute({
   operationId: 'DeleteOrganization',
   request: { params: z.object({ organization_id: OrganizationIdParamsSchema }) },
   responses: { 204: { description: 'No Content Response' } },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const postApiV2OrganizationsOrganizationIdMergeRoute = createRoute({
@@ -68259,6 +69337,7 @@ export const postApiV2OrganizationsOrganizationIdMergeRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdMergesRoute = createRoute({
@@ -68281,6 +69360,7 @@ export const getApiV2OrganizationsOrganizationIdMergesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdOrganizationMembershipsRoute = createRoute({
@@ -68303,6 +69383,7 @@ export const getApiV2OrganizationsOrganizationIdOrganizationMembershipsRoute = c
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdRelatedRoute = createRoute({
@@ -68324,6 +69405,7 @@ export const getApiV2OrganizationsOrganizationIdRelatedRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdRequestsRoute = createRoute({
@@ -68374,6 +69456,7 @@ export const getApiV2OrganizationsOrganizationIdRequestsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdSubscriptionsRoute = createRoute({
@@ -68396,6 +69479,7 @@ export const getApiV2OrganizationsOrganizationIdSubscriptionsRoute = createRoute
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdTagsRoute = createRoute({
@@ -68522,6 +69606,7 @@ export const getApiV2OrganizationsOrganizationIdTicketsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdTicketsCountRoute = createRoute({
@@ -68556,6 +69641,7 @@ export const getApiV2OrganizationsOrganizationIdTicketsCountRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdUsersRoute = createRoute({
@@ -68590,6 +69676,7 @@ export const getApiV2OrganizationsOrganizationIdUsersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2OrganizationsOrganizationIdUsersCountRoute = createRoute({
@@ -68619,6 +69706,7 @@ export const getApiV2OrganizationsOrganizationIdUsersCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2OrganizationsAutocompleteRoute = createRoute({
@@ -68677,6 +69765,7 @@ export const getApiV2OrganizationsAutocompleteRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const getApiV2OrganizationsCountRoute = createRoute({
@@ -68704,6 +69793,7 @@ export const getApiV2OrganizationsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const postApiV2OrganizationsCreateManyRoute = createRoute({
@@ -68725,6 +69815,7 @@ export const postApiV2OrganizationsCreateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const postApiV2OrganizationsCreateOrUpdateRoute = createRoute({
@@ -68766,6 +69857,7 @@ export const postApiV2OrganizationsCreateOrUpdateRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const deleteApiV2OrganizationsDestroyManyRoute = createRoute({
@@ -68793,6 +69885,7 @@ export const deleteApiV2OrganizationsDestroyManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2OrganizationsSearchRoute = createRoute({
@@ -68820,6 +69913,7 @@ export const getApiV2OrganizationsSearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2OrganizationsShowManyRoute = createRoute({
@@ -68847,6 +69941,7 @@ export const getApiV2OrganizationsShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const putApiV2OrganizationsUpdateManyRoute = createRoute({
@@ -68891,6 +69986,7 @@ export const putApiV2OrganizationsUpdateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2ProblemsRoute = createRoute({
@@ -68921,6 +70017,7 @@ export const getApiV2ProblemsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2ProblemsAutocompleteRoute = createRoute({
@@ -68970,6 +70067,7 @@ export const postApiV2ProblemsAutocompleteRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }, { oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2PushNotificationDevicesDestroyManyRoute = createRoute({
@@ -69001,6 +70099,7 @@ export const postApiV2PushNotificationDevicesDestroyManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2QueuesRoute = createRoute({
@@ -69138,6 +70237,7 @@ export const getApiV2QueuesDefinitionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const patchApiV2QueuesOrderRoute = createRoute({
@@ -69160,6 +70260,7 @@ export const patchApiV2QueuesOrderRoute = createRoute({
     },
   },
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2RecipientAddressesRoute = createRoute({
@@ -69189,6 +70290,7 @@ export const getApiV2RecipientAddressesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const postApiV2RecipientAddressesRoute = createRoute({
@@ -69210,6 +70312,7 @@ export const postApiV2RecipientAddressesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2RecipientAddressesSupportAddressIdRoute = createRoute({
@@ -69231,6 +70334,7 @@ export const getApiV2RecipientAddressesSupportAddressIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const putApiV2RecipientAddressesSupportAddressIdRoute = createRoute({
@@ -69253,6 +70357,7 @@ export const putApiV2RecipientAddressesSupportAddressIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const deleteApiV2RecipientAddressesSupportAddressIdRoute = createRoute({
@@ -69265,6 +70370,7 @@ export const deleteApiV2RecipientAddressesSupportAddressIdRoute = createRoute({
   operationId: 'DeleteRecipientAddress',
   request: { params: z.object({ support_address_id: SupportAddressIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const putApiV2RecipientAddressesSupportAddressIdVerifyRoute = createRoute({
@@ -69287,6 +70393,7 @@ export const putApiV2RecipientAddressesSupportAddressIdVerifyRoute = createRoute
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2RelationshipsDefinitionsTargetTypeRoute = createRoute({
@@ -69341,6 +70448,7 @@ export const getApiV2RelationshipsDefinitionsTargetTypeRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2RemoteAuthenticationsRoute = createRoute({
@@ -69384,6 +70492,7 @@ export const getApiV2RemoteAuthenticationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['security:read'] }],
 })
 
 export const getApiV2RequestsRoute = createRoute({
@@ -69448,6 +70557,7 @@ export const getApiV2RequestsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const postApiV2RequestsRoute = createRoute({
@@ -69480,6 +70590,7 @@ export const postApiV2RequestsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:write'] }],
 })
 
 export const getApiV2RequestsRequestIdRoute = createRoute({
@@ -69502,6 +70613,7 @@ export const getApiV2RequestsRequestIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const putApiV2RequestsRequestIdRoute = createRoute({
@@ -69534,6 +70646,7 @@ export const putApiV2RequestsRequestIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:write'] }],
 })
 
 export const getApiV2RequestsRequestIdCommentsRoute = createRoute({
@@ -69584,6 +70697,7 @@ export const getApiV2RequestsRequestIdCommentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const getApiV2RequestsRequestIdCommentsTicketCommentIdRoute = createRoute({
@@ -69610,6 +70724,7 @@ export const getApiV2RequestsRequestIdCommentsTicketCommentIdRoute = createRoute
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const getApiV2RequestsCcdRoute = createRoute({
@@ -69659,6 +70774,7 @@ export const getApiV2RequestsCcdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const getApiV2RequestsOpenRoute = createRoute({
@@ -69708,6 +70824,7 @@ export const getApiV2RequestsOpenRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const getApiV2RequestsSearchRoute = createRoute({
@@ -69746,6 +70863,7 @@ export const getApiV2RequestsSearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const getApiV2RequestsSolvedRoute = createRoute({
@@ -69795,6 +70913,7 @@ export const getApiV2RequestsSolvedRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const getApiV2ResourceCollectionsRoute = createRoute({
@@ -69816,6 +70935,7 @@ export const getApiV2ResourceCollectionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['apps:read'] }],
 })
 
 export const postApiV2ResourceCollectionsRoute = createRoute({
@@ -69837,6 +70957,7 @@ export const postApiV2ResourceCollectionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['apps:write'] }],
 })
 
 export const getApiV2ResourceCollectionsResourceCollectionIdRoute = createRoute({
@@ -69859,6 +70980,7 @@ export const getApiV2ResourceCollectionsResourceCollectionIdRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['apps:read'] }],
 })
 
 export const putApiV2ResourceCollectionsResourceCollectionIdRoute = createRoute({
@@ -69881,6 +71003,7 @@ export const putApiV2ResourceCollectionsResourceCollectionIdRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['apps:write'] }],
 })
 
 export const deleteApiV2ResourceCollectionsResourceCollectionIdRoute = createRoute({
@@ -69903,6 +71026,7 @@ export const deleteApiV2ResourceCollectionsResourceCollectionIdRoute = createRou
       },
     },
   },
+  security: [{ oauth2: ['apps:write'] }],
 })
 
 export const getApiV2RoutingAgentsUserIdInstanceValuesRoute = createRoute({
@@ -69925,6 +71049,7 @@ export const getApiV2RoutingAgentsUserIdInstanceValuesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const postApiV2RoutingAgentsUserIdInstanceValuesRoute = createRoute({
@@ -69966,6 +71091,7 @@ export const postApiV2RoutingAgentsUserIdInstanceValuesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2RoutingAgentsInstanceValuesRoute = createRoute({
@@ -70058,6 +71184,7 @@ export const getApiV2RoutingAgentsInstanceValuesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const postApiV2RoutingAgentsInstanceValuesJobsRoute = createRoute({
@@ -70101,6 +71228,7 @@ export const postApiV2RoutingAgentsInstanceValuesJobsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2RoutingAttributesRoute = createRoute({
@@ -70123,6 +71251,7 @@ export const getApiV2RoutingAttributesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2RoutingAttributesRoute = createRoute({
@@ -70144,6 +71273,7 @@ export const postApiV2RoutingAttributesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2RoutingAttributesAttributeIdRoute = createRoute({
@@ -70166,6 +71296,7 @@ export const getApiV2RoutingAttributesAttributeIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2RoutingAttributesAttributeIdRoute = createRoute({
@@ -70188,6 +71319,7 @@ export const putApiV2RoutingAttributesAttributeIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2RoutingAttributesAttributeIdRoute = createRoute({
@@ -70200,6 +71332,7 @@ export const deleteApiV2RoutingAttributesAttributeIdRoute = createRoute({
   operationId: 'DeleteAttribute',
   request: { params: z.object({ attribute_id: SkillBasedRoutingAttributeIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2RoutingAttributesAttributeIdValuesRoute = createRoute({
@@ -70224,6 +71357,7 @@ export const getApiV2RoutingAttributesAttributeIdValuesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2RoutingAttributesAttributeIdValuesRoute = createRoute({
@@ -70246,6 +71380,7 @@ export const postApiV2RoutingAttributesAttributeIdValuesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute = createRoute({
@@ -70273,6 +71408,7 @@ export const getApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute = c
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute = createRoute({
@@ -70300,6 +71436,7 @@ export const putApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute = c
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute = createRoute({
@@ -70317,6 +71454,7 @@ export const deleteApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute 
     }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const patchApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute = createRoute({
@@ -70344,6 +71482,7 @@ export const patchApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute =
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2RoutingAttributesDefinitionsRoute = createRoute({
@@ -70365,6 +71504,7 @@ export const getApiV2RoutingAttributesDefinitionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2RoutingRequirementsFulfilledRoute = createRoute({
@@ -70408,6 +71548,7 @@ export const getApiV2RoutingRequirementsFulfilledRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2RoutingTicketsTicketIdInstanceValuesRoute = createRoute({
@@ -70430,6 +71571,7 @@ export const getApiV2RoutingTicketsTicketIdInstanceValuesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2RoutingTicketsTicketIdInstanceValuesRoute = createRoute({
@@ -70438,9 +71580,19 @@ export const postApiV2RoutingTicketsTicketIdInstanceValuesRoute = createRoute({
   tags: ['Skill Based Routing'],
   summary: 'Set Ticket Attribute Values',
   description:
-    'Adds the specified attributes if no attributes exists, or replaces all existing attributes with the specified attributes.\n\nInvalid or deleted attributes are ignored.\n\n#### Allowed For\n\n* Admins\n* [Agents in custom role with permission to manage skills](https://support.zendesk.com/hc/en-us/articles/4408882153882)\n* Agents, when the account setting for editing ticket skills is enabled for all agents\n',
+    'Adds the specified attributes if no attributes exists, or replaces all existing attributes with the specified attributes.\n\nAttribute value ids that are valid UUIDs but unknown or deleted are ignored; a malformed id causes a 422 response.\n\n#### Allowed For\n\n* Admins\n* [Agents in custom role with permission to manage skills](https://support.zendesk.com/hc/en-us/articles/4408882153882)\n* Agents, when the account setting for editing ticket skills is enabled for all agents\n',
   operationId: 'SetTicketAttributeValues',
-  request: { params: z.object({ ticket_id: TicketIdParamsSchema }) },
+  request: {
+    params: z.object({ ticket_id: TicketIdParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: SkillBasedRoutingAttributeValueIdsRequestSchema,
+          examples: { default: SkillBasedRoutingAttributeValueIdsRequestExampleExample },
+        },
+      },
+    },
+  },
   responses: {
     200: {
       description: 'Success response',
@@ -70451,7 +71603,93 @@ export const postApiV2RoutingTicketsTicketIdInstanceValuesRoute = createRoute({
         },
       },
     },
+    400: {
+      description:
+        'Bad request. The `attribute_value_ids` parameter is invalid: it must be\nan array of strings (attribute value IDs).\n',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .object({ message: z.string().exactOptional(), title: z.string().exactOptional() })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({ required: [] }),
+          examples: {
+            default: {
+              value: {
+                error: {
+                  message:
+                    'You passed an invalid value for the attribute_value_ids attribute. must be an array',
+                  title: 'Invalid attribute',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description:
+        "Forbidden. The authenticated user is not allowed to edit ticket skills.\nOnly admins, agents in a custom role with permission to manage skills,\nor agents when the account setting for editing ticket skills is enabled\nfor all agents can set a ticket's attribute values.\n",
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .object({ message: z.string().exactOptional(), title: z.string().exactOptional() })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({ required: [] }),
+          examples: {
+            default: {
+              value: {
+                error: {
+                  message:
+                    'You do not have access to this page. Please contact the account owner of this help desk for further help.',
+                  title: 'Forbidden',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    404: {
+      description:
+        'Not found. Either the skill-based ticket routing feature is not enabled\nfor the account (empty response body), or no ticket with the given id\nexists.\n',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ description: z.string().exactOptional(), error: z.string().exactOptional() })
+            .openapi({ required: [] }),
+          examples: { default: { value: { description: 'Not found', error: 'RecordNotFound' } } },
+        },
+      },
+    },
+    422: {
+      description:
+        'Unprocessable Entity. Either an attribute value id in the request body is\nmalformed (fails the UUID shape check; empty response body), or the ticket\nis a change management ticket, whose skills cannot be modified (JSON body\nwith an `error` code of "ChangeManagementTicket").\n',
+      content: {
+        'application/json': {
+          schema: z
+            .object({ description: z.string().exactOptional(), error: z.string().exactOptional() })
+            .openapi({ required: [] }),
+          examples: {
+            default: {
+              value: {
+                description: 'Skills cannot be modified on change management tickets',
+                error: 'ChangeManagementTicket',
+              },
+            },
+          },
+        },
+      },
+    },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2SatisfactionRatingsRoute = createRoute({
@@ -70460,7 +71698,7 @@ export const getApiV2SatisfactionRatingsRoute = createRoute({
   tags: ['Satisfaction Ratings'],
   summary: 'List Satisfaction Ratings',
   description:
-    '#### Allowed For\n* Admins\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Filters\n\n| Parameter  | Value\n| ---------- | -----\n| score      | offered, unoffered, received, received\\_with\\_comment, received\\_without\\_comment,<br/>good, good\\_with\\_comment, good\\_without\\_comment,<br/>bad, bad\\_with\\_comment, bad\\_without\\_comment\n| start_time | Time of the oldest satisfaction rating, as a [Unix epoch time](https://www.epochconverter.com/)\n| end_time   | Time of the most recent satisfaction rating, as a [Unix epoch time](https://www.epochconverter.com/)\n\nIf you specify an unqualified score such as `good`, the results include all the records with and without comments.\n\nExamples:\n\n* `/api/v2/satisfaction_ratings?score=bad`\n* `/api/v2/satisfaction_ratings?score=bad&start_time=1498151194`\n* `/api/v2/satisfaction_ratings?start_time=1340384793&end_time=1371920793`\n',
+    'Returns all rating changes and states over the lifetime of a ticket, not just the ticket\'s final rating. For example, if a survey is offered to a user, the user rates it "bad", and later updates it to "good", the endpoint returns three separate entries for that ticket ("offered", "bad", and "good"). To filter tickets by their current, final rating, use the [Search API](/api-reference/ticketing/ticket-management/search/) instead.\n\n#### Allowed For\n* Admins\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Filters\n\n| Parameter  | Value\n| ---------- | -----\n| score      | offered, unoffered, received, received\\_with\\_comment, received\\_without\\_comment,<br/>good, good\\_with\\_comment, good\\_without\\_comment,<br/>bad, bad\\_with\\_comment, bad\\_without\\_comment\n| start_time | Time of the oldest satisfaction rating, as a [Unix epoch time](https://www.epochconverter.com/)\n| end_time   | Time of the most recent satisfaction rating, as a [Unix epoch time](https://www.epochconverter.com/)\n\nIf you specify an unqualified score such as `good`, the results include all the records with and without comments.\n\nExamples:\n\n* `/api/v2/satisfaction_ratings?score=bad`\n* `/api/v2/satisfaction_ratings?score=bad&start_time=1498151194`\n* `/api/v2/satisfaction_ratings?start_time=1340384793&end_time=1371920793`\n',
   operationId: 'ListSatisfactionRatings',
   request: {
     query: z.object({
@@ -70480,6 +71718,7 @@ export const getApiV2SatisfactionRatingsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['satisfaction_ratings:read'] }],
 })
 
 export const getApiV2SatisfactionRatingsSatisfactionRatingIdRoute = createRoute({
@@ -70523,6 +71762,7 @@ export const getApiV2SatisfactionRatingsSatisfactionRatingIdRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['satisfaction_ratings:read'] }],
 })
 
 export const getApiV2SatisfactionRatingsCountRoute = createRoute({
@@ -70544,6 +71784,7 @@ export const getApiV2SatisfactionRatingsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['satisfaction_ratings:read'] }],
 })
 
 export const getApiV2SatisfactionReasonsRoute = createRoute({
@@ -70564,6 +71805,7 @@ export const getApiV2SatisfactionReasonsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['satisfaction_ratings:read'] }],
 })
 
 export const getApiV2SatisfactionReasonsSatisfactionReasonIdRoute = createRoute({
@@ -70606,6 +71848,7 @@ export const getApiV2SatisfactionReasonsSatisfactionReasonIdRoute = createRoute(
       },
     },
   },
+  security: [{ oauth2: ['satisfaction_ratings:read'] }],
 })
 
 export const getApiV2SavedSearchesRoute = createRoute({
@@ -70861,7 +72104,7 @@ export const getApiV2SearchRoute = createRoute({
             name: 'brand_id',
             in: 'query',
             description:
-              'When brand separation is enabled, scopes user results to the specified brand.\nThis parameter applies only when the account has brand separation enabled\n(`brand_user_separation_eap`). Non-user document types are unaffected.\n\nAccepted values:\n\n* "all" — apply no brand scoping.\n* 0 — return only account-scoped (brand-less) end users; all agents and admins remain visible.\n* A numeric brand id — if the brand has user separation enabled, return that\n  brand\'s end users plus the agents with membership in that brand and all admins.\n  If the brand does not have user separation enabled, the request falls back to\n  account scope (0). A brand id that does not exist on the account matches no users.\n\nAny other value returns 400 Bad Request, whether or not brand separation is enabled.\n\nThe query keyword form (`query=type:user brand_id:{brand_id}`) continues to work. It\nmatches the brand id as indexed on every document type, so admins match only through\ntheir brand memberships, and it does not apply the account-scope fallback for brands\nwithout user separation.\n',
+              "When brand separation is enabled, scopes user results to the specified brand.\nThis parameter applies only when the account has brand separation enabled\n(`brand_user_separation_eap`). Non-user document types are unaffected.\n\nAccepted values:\n\n* \"all\" — apply no brand scoping.\n* 0 — return only account-scoped (brand-less) end users; all agents and admins remain visible.\n* A numeric brand id — if the brand has user separation enabled, return that\n  brand's end users plus the agents with membership in that brand and all admins.\n  If the brand's users are account-scoped, return the account-scoped end users, any end\n  users still indexed with the brand, and all agents and admins. A brand id that does\n  not exist on the account matches no users.\n\nAny other value returns 400 Bad Request, whether or not brand separation is enabled.\n\nOmitting `brand_id` applies no brand scoping; this endpoint does not fall back to the\naccount's default brand_id behavior. Use the users search and autocomplete endpoints\nfor that fallback.\n\nThe query keyword forms (`query=type:user brand_id:{brand_id}` and `brand:{brand_id}`)\ncontinue to work. They match the brand id as indexed on every document type, so agents\nand admins match only through their brand memberships. When brand separation is enabled\nand the brand's users are account-scoped, they also match every account-scoped end user,\nand a negated keyword (`-brand_id:{brand_id}`) excludes those end users too.\n",
             schema: {
               oneOf: [
                 { type: 'string', enum: ['all'] },
@@ -70886,6 +72129,7 @@ export const getApiV2SearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2SearchCountRoute = createRoute({
@@ -70966,6 +72210,7 @@ export const getApiV2SearchCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2SearchExportRoute = createRoute({
@@ -71051,6 +72296,7 @@ export const getApiV2SearchExportRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2SecuritySettingsRoute = createRoute({
@@ -71094,6 +72340,7 @@ export const getApiV2SecuritySettingsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['security:read'] }],
 })
 
 export const getApiV2SessionsRoute = createRoute({
@@ -71230,6 +72477,7 @@ export const getApiV2SessionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2SharingAgreementsRoute = createRoute({
@@ -71250,6 +72498,7 @@ export const getApiV2SharingAgreementsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2SharingAgreementsRoute = createRoute({
@@ -71281,6 +72530,7 @@ export const postApiV2SharingAgreementsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2SharingAgreementsSharingAgreementIdRoute = createRoute({
@@ -71302,6 +72552,7 @@ export const getApiV2SharingAgreementsSharingAgreementIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2SharingAgreementsSharingAgreementIdRoute = createRoute({
@@ -71335,6 +72586,7 @@ export const putApiV2SharingAgreementsSharingAgreementIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2SharingAgreementsSharingAgreementIdRoute = createRoute({
@@ -71346,6 +72598,7 @@ export const deleteApiV2SharingAgreementsSharingAgreementIdRoute = createRoute({
   operationId: 'DeleteSharingAgreement',
   request: { params: z.object({ sharing_agreement_id: SharingAgreementIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2SkipsRoute = createRoute({
@@ -71368,6 +72621,7 @@ export const getApiV2SkipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2SkipsRoute = createRoute({
@@ -71400,6 +72654,7 @@ export const postApiV2SkipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2SlasPoliciesRoute = createRoute({
@@ -71421,6 +72676,7 @@ export const getApiV2SlasPoliciesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:read'] }],
 })
 
 export const postApiV2SlasPoliciesRoute = createRoute({
@@ -71453,6 +72709,7 @@ export const postApiV2SlasPoliciesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:write'] }],
 })
 
 export const getApiV2SlasPoliciesSlaPolicyIdRoute = createRoute({
@@ -71475,6 +72732,7 @@ export const getApiV2SlasPoliciesSlaPolicyIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:read'] }],
 })
 
 export const putApiV2SlasPoliciesSlaPolicyIdRoute = createRoute({
@@ -71508,6 +72766,7 @@ export const putApiV2SlasPoliciesSlaPolicyIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:write'] }],
 })
 
 export const deleteApiV2SlasPoliciesSlaPolicyIdRoute = createRoute({
@@ -71520,6 +72779,7 @@ export const deleteApiV2SlasPoliciesSlaPolicyIdRoute = createRoute({
   operationId: 'DeleteSLAPolicy',
   request: { params: z.object({ sla_policy_id: SLAPolicyIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['sla_policies:write'] }],
 })
 
 export const getApiV2SlasPoliciesDefinitionsRoute = createRoute({
@@ -71541,6 +72801,7 @@ export const getApiV2SlasPoliciesDefinitionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:read'] }],
 })
 
 export const putApiV2SlasPoliciesReorderRoute = createRoute({
@@ -71572,6 +72833,7 @@ export const putApiV2SlasPoliciesReorderRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:write'] }],
 })
 
 export const getApiV2SuspendedTicketsRoute = createRoute({
@@ -71601,6 +72863,7 @@ export const getApiV2SuspendedTicketsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2SuspendedTicketsIdRoute = createRoute({
@@ -71623,6 +72886,7 @@ export const getApiV2SuspendedTicketsIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const deleteApiV2SuspendedTicketsIdRoute = createRoute({
@@ -71634,6 +72898,7 @@ export const deleteApiV2SuspendedTicketsIdRoute = createRoute({
   operationId: 'DeleteSuspendedTicket',
   request: { params: z.object({ id: SuspendedTicketIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2SuspendedTicketsIdRecoverRoute = createRoute({
@@ -71657,6 +72922,7 @@ export const putApiV2SuspendedTicketsIdRecoverRoute = createRoute({
     },
     422: { description: 'Recovery failed response' },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2SuspendedTicketsAttachmentsRoute = createRoute({
@@ -71775,6 +73041,7 @@ export const putApiV2SuspendedTicketsBulkRecoverRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2SuspendedTicketsDestroyManyRoute = createRoute({
@@ -71787,6 +73054,7 @@ export const deleteApiV2SuspendedTicketsDestroyManyRoute = createRoute({
   operationId: 'DeleteSuspendedTickets',
   request: { query: z.object({ ids: SuspendedTicketsDeleteIdsParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2SuspendedTicketsExportRoute = createRoute({
@@ -71808,6 +73076,7 @@ export const postApiV2SuspendedTicketsExportRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2SuspendedTicketsRecoverManyRoute = createRoute({
@@ -71830,6 +73099,7 @@ export const putApiV2SuspendedTicketsRecoverManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TagsRoute = createRoute({
@@ -71900,6 +73170,7 @@ export const getApiV2TargetFailuresRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['targets:read'] }],
 })
 
 export const getApiV2TargetFailuresTargetFailureIdRoute = createRoute({
@@ -71921,6 +73192,7 @@ export const getApiV2TargetFailuresTargetFailureIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['targets:read'] }],
 })
 
 export const getApiV2TargetsRoute = createRoute({
@@ -71941,6 +73213,7 @@ export const getApiV2TargetsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['targets:read'] }],
 })
 
 export const postApiV2TargetsRoute = createRoute({
@@ -71961,6 +73234,7 @@ export const postApiV2TargetsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['targets:write'] }],
 })
 
 export const getApiV2TargetsTargetIdRoute = createRoute({
@@ -71982,6 +73256,7 @@ export const getApiV2TargetsTargetIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['targets:read'] }],
 })
 
 export const putApiV2TargetsTargetIdRoute = createRoute({
@@ -72003,6 +73278,7 @@ export const putApiV2TargetsTargetIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['targets:write'] }],
 })
 
 export const deleteApiV2TargetsTargetIdRoute = createRoute({
@@ -72014,6 +73290,7 @@ export const deleteApiV2TargetsTargetIdRoute = createRoute({
   operationId: 'DeleteTarget',
   request: { params: z.object({ target_id: TargetIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['targets:write'] }],
 })
 
 export const getApiV2TaskListTemplatesRoute = createRoute({
@@ -72035,6 +73312,7 @@ export const getApiV2TaskListTemplatesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const postApiV2TaskListTemplatesRoute = createRoute({
@@ -72065,6 +73343,7 @@ export const postApiV2TaskListTemplatesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2TaskListTemplatesTaskListTemplateIdRoute = createRoute({
@@ -72087,6 +73366,7 @@ export const getApiV2TaskListTemplatesTaskListTemplateIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const putApiV2TaskListTemplatesTaskListTemplateIdRoute = createRoute({
@@ -72119,6 +73399,7 @@ export const putApiV2TaskListTemplatesTaskListTemplateIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const deleteApiV2TaskListTemplatesTaskListTemplateIdRoute = createRoute({
@@ -72131,6 +73412,7 @@ export const deleteApiV2TaskListTemplatesTaskListTemplateIdRoute = createRoute({
   operationId: 'DeleteTaskListTemplate',
   request: { params: z.object({ task_list_template_id: TaskListTemplateIdParamsSchema }) },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2TaskListTemplatesTaskListTemplateIdTasksRoute = createRoute({
@@ -72175,6 +73457,7 @@ export const getApiV2TaskListsTaskListIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2TaskListsTaskListIdRoute = createRoute({
@@ -72207,6 +73490,7 @@ export const putApiV2TaskListsTaskListIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2TaskListsTaskListIdRoute = createRoute({
@@ -72218,6 +73502,7 @@ export const deleteApiV2TaskListsTaskListIdRoute = createRoute({
   operationId: 'DeleteTaskList',
   request: { params: z.object({ task_list_id: TaskListIdParamsSchema }) },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TaskListsTaskListIdTaskItemsRoute = createRoute({
@@ -72423,6 +73708,7 @@ export const getApiV2TicketAuditsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketContentPinsRoute = createRoute({
@@ -72468,6 +73754,7 @@ export const getApiV2TicketContentPinsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2TicketContentPinsRoute = createRoute({
@@ -72626,6 +73913,7 @@ export const postApiV2TicketContentPinsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2TicketContentPinsContentPinIdRoute = createRoute({
@@ -72675,6 +73963,7 @@ export const deleteApiV2TicketContentPinsContentPinIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketFieldsRoute = createRoute({
@@ -72846,6 +74135,19 @@ export const getApiV2TicketFieldsRoute = createRoute({
                 required: false,
               },
             }),
+          include_anonymous_availability: z
+            .stringbool()
+            .exactOptional()
+            .openapi({
+              param: {
+                name: 'include_anonymous_availability',
+                in: 'query',
+                description:
+                  "If true, includes the `relationship_target_publicly_listable` property on each lookup and multi-lookup field that targets a custom object. The property is true when anonymous users can read the target custom object's records. See [Anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access).\n",
+                schema: { type: 'boolean' },
+                required: false,
+              },
+            }),
           page: CursorPaginationPageParamsSchema,
           sort: CursorPaginationSortParamsSchema,
           include_boundary_indicators: IncludeBoundaryIndicatorsParamsSchema,
@@ -72864,6 +74166,7 @@ export const getApiV2TicketFieldsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const postApiV2TicketFieldsRoute = createRoute({
@@ -72896,6 +74199,7 @@ export const postApiV2TicketFieldsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2TicketFieldsTicketFieldIdRoute = createRoute({
@@ -72921,6 +74225,7 @@ export const getApiV2TicketFieldsTicketFieldIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const putApiV2TicketFieldsTicketFieldIdRoute = createRoute({
@@ -72955,6 +74260,7 @@ export const putApiV2TicketFieldsTicketFieldIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const deleteApiV2TicketFieldsTicketFieldIdRoute = createRoute({
@@ -72969,6 +74275,7 @@ export const deleteApiV2TicketFieldsTicketFieldIdRoute = createRoute({
     query: z.object({ creator: CreatorParamsSchema }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2TicketFieldsTicketFieldIdOptionsRoute = createRoute({
@@ -72991,6 +74298,7 @@ export const getApiV2TicketFieldsTicketFieldIdOptionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const postApiV2TicketFieldsTicketFieldIdOptionsRoute = createRoute({
@@ -73022,6 +74330,7 @@ export const postApiV2TicketFieldsTicketFieldIdOptionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRoute = createRoute({
@@ -73048,6 +74357,7 @@ export const getApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRoute = 
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const deleteApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRoute = createRoute({
@@ -73064,6 +74374,7 @@ export const deleteApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRoute
     }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2TicketFieldsCountRoute = createRoute({
@@ -73085,6 +74396,7 @@ export const getApiV2TicketFieldsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const putApiV2TicketFieldsReorderRoute = createRoute({
@@ -73106,6 +74418,7 @@ export const putApiV2TicketFieldsReorderRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2TicketFieldsShowManyRoute = createRoute({
@@ -73184,6 +74497,7 @@ export const getApiV2TicketFieldsShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const getApiV2TicketFormStatusesRoute = createRoute({
@@ -73369,6 +74683,7 @@ export const getApiV2TicketFormStatusesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketFormStatusesShowManyRoute = createRoute({
@@ -73406,6 +74721,7 @@ export const getApiV2TicketFormStatusesShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketFormsRoute = createRoute({
@@ -73515,6 +74831,7 @@ export const getApiV2TicketFormsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2TicketFormsRoute = createRoute({
@@ -73546,6 +74863,7 @@ export const postApiV2TicketFormsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketFormsTicketFormIdRoute = createRoute({
@@ -73567,6 +74885,7 @@ export const getApiV2TicketFormsTicketFormIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2TicketFormsTicketFormIdRoute = createRoute({
@@ -73599,6 +74918,7 @@ export const putApiV2TicketFormsTicketFormIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2TicketFormsTicketFormIdRoute = createRoute({
@@ -73610,6 +74930,7 @@ export const deleteApiV2TicketFormsTicketFormIdRoute = createRoute({
   operationId: 'DeleteTicketForm',
   request: { params: z.object({ ticket_form_id: TicketFormIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2TicketFormsTicketFormIdCloneRoute = createRoute({
@@ -73641,6 +74962,7 @@ export const postApiV2TicketFormsTicketFormIdCloneRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketFormsTicketFormIdTicketFormStatusesRoute = createRoute({
@@ -73663,6 +74985,7 @@ export const getApiV2TicketFormsTicketFormIdTicketFormStatusesRoute = createRout
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2TicketFormsTicketFormIdTicketFormStatusesRoute = createRoute({
@@ -73697,6 +75020,7 @@ export const putApiV2TicketFormsTicketFormIdTicketFormStatusesRoute = createRout
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2TicketFormsTicketFormIdTicketFormStatusesRoute = createRoute({
@@ -73729,6 +75053,7 @@ export const postApiV2TicketFormsTicketFormIdTicketFormStatusesRoute = createRou
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2TicketFormsTicketFormIdTicketFormStatusesRoute = createRoute({
@@ -73758,6 +75083,7 @@ export const deleteApiV2TicketFormsTicketFormIdTicketFormStatusesRoute = createR
     },
   },
   responses: { 204: { description: 'Success response' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRoute = createRoute(
@@ -73836,6 +75162,7 @@ export const deleteApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatu
       }),
     },
     responses: { 204: { description: 'Success response' } },
+    security: [{ oauth2: ['tickets:write'] }],
   })
 
 export const putApiV2TicketFormsReorderRoute = createRoute({
@@ -73868,6 +75195,7 @@ export const putApiV2TicketFormsReorderRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2TicketFormsShowManyRoute = createRoute({
@@ -74095,6 +75423,7 @@ export const getApiV2TicketMetricsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketMetricsTicketMetricIdRoute = createRoute({
@@ -74132,6 +75461,7 @@ export const getApiV2TicketMetricsTicketMetricIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsRoute = createRoute({
@@ -74219,6 +75549,7 @@ export const getApiV2TicketsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2TicketsRoute = createRoute({
@@ -74303,16 +75634,14 @@ export const postApiV2TicketsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          description: 'The URL of the created ticket',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'The URL of the created ticket', param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'The URL of the created ticket', param: { required: false } }),
       }),
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketsTicketIdRoute = createRoute({
@@ -74406,6 +75735,7 @@ export const getApiV2TicketsTicketIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2TicketsTicketIdRoute = createRoute({
@@ -74482,6 +75812,7 @@ export const putApiV2TicketsTicketIdRoute = createRoute({
     404: { description: 'Ticket not found' },
     409: { description: 'Conflict - optimistic locking failure (database collision)' },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2TicketsTicketIdRoute = createRoute({
@@ -74494,6 +75825,7 @@ export const deleteApiV2TicketsTicketIdRoute = createRoute({
   operationId: 'DeleteTicket',
   request: { params: z.object({ ticket_id: TicketIdParamsSchema }) },
   responses: { 204: { description: 'No content' } },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketsTicketIdAuditsRoute = createRoute({
@@ -74544,6 +75876,7 @@ export const getApiV2TicketsTicketIdAuditsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdAuditsTicketAuditIdRoute = createRoute({
@@ -74570,6 +75903,7 @@ export const getApiV2TicketsTicketIdAuditsTicketAuditIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2TicketsTicketIdAuditsTicketAuditIdMakePrivateRoute = createRoute({
@@ -74596,6 +75930,7 @@ export const putApiV2TicketsTicketIdAuditsTicketAuditIdMakePrivateRoute = create
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketsTicketIdAuditsCountRoute = createRoute({
@@ -74618,6 +75953,7 @@ export const getApiV2TicketsTicketIdAuditsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdCollaboratorsRoute = createRoute({
@@ -74827,6 +76163,7 @@ export const getApiV2TicketsTicketIdCommentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2TicketsTicketIdCommentsCommentIdAttachmentsAttachmentIdRedactRoute =
@@ -74856,6 +76193,7 @@ export const putApiV2TicketsTicketIdCommentsCommentIdAttachmentsAttachmentIdReda
         },
       },
     },
+    security: [{ oauth2: ['ticket_attachments:write'] }],
   })
 
 export const putApiV2TicketsTicketIdCommentsTicketCommentIdMakePrivateRoute = createRoute({
@@ -74882,6 +76220,7 @@ export const putApiV2TicketsTicketIdCommentsTicketCommentIdMakePrivateRoute = cr
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2TicketsTicketIdCommentsTicketCommentIdRedactRoute = createRoute({
@@ -74926,6 +76265,7 @@ export const putApiV2TicketsTicketIdCommentsTicketCommentIdRedactRoute = createR
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketsTicketIdCommentsCountRoute = createRoute({
@@ -74948,6 +76288,7 @@ export const getApiV2TicketsTicketIdCommentsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdConversationLogRoute = createRoute({
@@ -75085,6 +76426,7 @@ export const getApiV2TicketsTicketIdConversationLogRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdEmailCcsRoute = createRoute({
@@ -75181,6 +76523,7 @@ export const getApiV2TicketsTicketIdGroupSlasPolicyMetricsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:read'] }],
 })
 
 export const getApiV2TicketsTicketIdIncidentsRoute = createRoute({
@@ -75203,6 +76546,7 @@ export const getApiV2TicketsTicketIdIncidentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdMacrosMacroIdApplyRoute = createRoute({
@@ -75262,6 +76606,7 @@ export const getApiV2TicketsTicketIdMacrosMacroIdApplyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['macros:read'] }],
 })
 
 export const putApiV2TicketsTicketIdMarkAsSpamRoute = createRoute({
@@ -75278,6 +76623,7 @@ export const putApiV2TicketsTicketIdMarkAsSpamRoute = createRoute({
       content: { 'application/json': { schema: z.string().openapi({ example: '' }), example: '' } },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const postApiV2TicketsTicketIdMergeRoute = createRoute({
@@ -75310,6 +76656,7 @@ export const postApiV2TicketsTicketIdMergeRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketsTicketIdMetricEventsRoute = createRoute({
@@ -75402,6 +76749,7 @@ export const getApiV2TicketsTicketIdMetricEventsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdMetricsRoute = createRoute({
@@ -75423,6 +76771,7 @@ export const getApiV2TicketsTicketIdMetricsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdParentTicketTasksRoute = createRoute({
@@ -75445,6 +76794,7 @@ export const getApiV2TicketsTicketIdParentTicketTasksRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdRelatedRoute = createRoute({
@@ -75467,6 +76817,7 @@ export const getApiV2TicketsTicketIdRelatedRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2TicketsTicketIdSatisfactionRatingRoute = createRoute({
@@ -75519,6 +76870,7 @@ export const postApiV2TicketsTicketIdSatisfactionRatingRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['satisfaction_ratings:write'] }],
 })
 
 export const getApiV2TicketsTicketIdSkipsRoute = createRoute({
@@ -75544,6 +76896,7 @@ export const getApiV2TicketsTicketIdSkipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsTicketIdSlasPolicyMetricsRoute = createRoute({
@@ -75596,6 +76949,7 @@ export const getApiV2TicketsTicketIdSlasPolicyMetricsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['sla_policies:read'] }],
 })
 
 export const getApiV2TicketsTicketIdTagsRoute = createRoute({
@@ -75750,6 +77104,7 @@ export const postApiV2TicketsTicketIdTaskItemsTaskItemIdSubticketRoute = createR
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRoute = createRoute({
@@ -75773,6 +77128,7 @@ export const getApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRoute = createRo
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRoute = createRoute({
@@ -75805,6 +77161,7 @@ export const postApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRoute = createR
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksTaskObjectLinkIdRoute =
@@ -75835,6 +77192,7 @@ export const deleteApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksTaskObjectLin
       }),
     },
     responses: { 204: { description: 'No content response' } },
+    security: [{ oauth2: ['tickets:write'] }],
   })
 
 export const getApiV2TicketsTicketIdTaskListsRoute = createRoute({
@@ -75857,6 +77215,7 @@ export const getApiV2TicketsTicketIdTaskListsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2TicketsTicketIdTaskListsRoute = createRoute({
@@ -75902,6 +77261,7 @@ export const postApiV2TicketsTicketIdTaskListsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['write'] }],
 })
 
 export const getApiV2TicketsAutocompleteRoute = createRoute({
@@ -75943,6 +77303,7 @@ export const getApiV2TicketsAutocompleteRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsCountRoute = createRoute({
@@ -75976,6 +77337,7 @@ export const getApiV2TicketsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const postApiV2TicketsCreateManyRoute = createRoute({
@@ -76007,6 +77369,7 @@ export const postApiV2TicketsCreateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const deleteApiV2TicketsDestroyManyRoute = createRoute({
@@ -76029,6 +77392,7 @@ export const deleteApiV2TicketsDestroyManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const putApiV2TicketsMarkManyAsSpamRoute = createRoute({
@@ -76051,6 +77415,7 @@ export const putApiV2TicketsMarkManyAsSpamRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TicketsMessagingConversationsConversationIdTicketRoute = createRoute({
@@ -76089,6 +77454,7 @@ export const getApiV2TicketsMessagingConversationsConversationIdTicketRoute = cr
     },
     404: { description: 'No active ticket found for the given conversation ID' },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsRecentRoute = createRoute({
@@ -76110,6 +77476,7 @@ export const getApiV2TicketsRecentRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2TicketsShowManyRoute = createRoute({
@@ -76148,6 +77515,7 @@ export const getApiV2TicketsShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const putApiV2TicketsUpdateManyRoute = createRoute({
@@ -76201,6 +77569,7 @@ export const putApiV2TicketsUpdateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }],
 })
 
 export const getApiV2TriggerCategoriesRoute = createRoute({
@@ -76474,6 +77843,7 @@ export const getApiV2TriggerCategoriesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const postApiV2TriggerCategoriesRoute = createRoute({
@@ -76563,6 +77933,7 @@ export const postApiV2TriggerCategoriesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggerCategoriesTriggerCategoryIdRoute = createRoute({
@@ -76623,6 +77994,7 @@ export const getApiV2TriggerCategoriesTriggerCategoryIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const deleteApiV2TriggerCategoriesTriggerCategoryIdRoute = createRoute({
@@ -76683,6 +78055,7 @@ export const deleteApiV2TriggerCategoriesTriggerCategoryIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const patchApiV2TriggerCategoriesTriggerCategoryIdRoute = createRoute({
@@ -76765,6 +78138,7 @@ export const patchApiV2TriggerCategoriesTriggerCategoryIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const postApiV2TriggerCategoriesJobsRoute = createRoute({
@@ -76873,6 +78247,7 @@ export const postApiV2TriggerCategoriesJobsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggersRoute = createRoute({
@@ -76906,6 +78281,7 @@ export const getApiV2TriggersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const postApiV2TriggersRoute = createRoute({
@@ -76937,6 +78313,7 @@ export const postApiV2TriggersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggersTriggerIdRoute = createRoute({
@@ -76959,6 +78336,7 @@ export const getApiV2TriggersTriggerIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const putApiV2TriggersTriggerIdRoute = createRoute({
@@ -76992,6 +78370,7 @@ export const putApiV2TriggersTriggerIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const deleteApiV2TriggersTriggerIdRoute = createRoute({
@@ -77003,6 +78382,7 @@ export const deleteApiV2TriggersTriggerIdRoute = createRoute({
   operationId: 'DeleteTrigger',
   request: { params: z.object({ trigger_id: TriggerIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggersTriggerIdRevisionsRoute = createRoute({
@@ -77119,6 +78499,7 @@ export const getApiV2TriggersTriggerIdRevisionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggersTriggerIdRevisionsTriggerRevisionIdRoute = createRoute({
@@ -77190,6 +78571,7 @@ export const getApiV2TriggersTriggerIdRevisionsTriggerRevisionIdRoute = createRo
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggersActiveRoute = createRoute({
@@ -77219,6 +78601,7 @@ export const getApiV2TriggersActiveRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggersDefinitionsRoute = createRoute({
@@ -77240,6 +78623,7 @@ export const getApiV2TriggersDefinitionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const deleteApiV2TriggersDestroyManyRoute = createRoute({
@@ -77252,6 +78636,7 @@ export const deleteApiV2TriggersDestroyManyRoute = createRoute({
   operationId: 'DeleteManyTriggers',
   request: { query: z.object({ ids: TriggerIdsParamsSchema }) },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggersLimitsRoute = createRoute({
@@ -77273,6 +78658,7 @@ export const getApiV2TriggersLimitsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const putApiV2TriggersReorderRoute = createRoute({
@@ -77295,6 +78681,7 @@ export const putApiV2TriggersReorderRoute = createRoute({
     },
   },
   responses: { 200: { description: 'Success response (empty body)' } },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const getApiV2TriggersSearchRoute = createRoute({
@@ -77327,6 +78714,7 @@ export const getApiV2TriggersSearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:read'] }, { basicAuth: [] }],
 })
 
 export const putApiV2TriggersUpdateManyRoute = createRoute({
@@ -77359,6 +78747,7 @@ export const putApiV2TriggersUpdateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const postApiV2TriggersValidateRoute = createRoute({
@@ -77408,6 +78797,7 @@ export const postApiV2TriggersValidateRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['triggers:write'] }, { basicAuth: [] }],
 })
 
 export const postApiV2UploadsRoute = createRoute({
@@ -77445,6 +78835,7 @@ export const postApiV2UploadsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:write'] }, { oauth2: ['ticket_attachments:write'] }],
 })
 
 export const deleteApiV2UploadsTokenRoute = createRoute({
@@ -77471,6 +78862,7 @@ export const deleteApiV2UploadsTokenRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['tickets:write'] }, { oauth2: ['ticket_attachments:write'] }],
 })
 
 export const getApiV2UserFieldsRoute = createRoute({
@@ -77618,6 +79010,7 @@ export const getApiV2UserFieldsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const postApiV2UserFieldsRoute = createRoute({
@@ -77650,6 +79043,7 @@ export const postApiV2UserFieldsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2UserFieldsUserFieldIdRoute = createRoute({
@@ -77671,6 +79065,7 @@ export const getApiV2UserFieldsUserFieldIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const putApiV2UserFieldsUserFieldIdRoute = createRoute({
@@ -77704,6 +79099,7 @@ export const putApiV2UserFieldsUserFieldIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const deleteApiV2UserFieldsUserFieldIdRoute = createRoute({
@@ -77715,6 +79111,7 @@ export const deleteApiV2UserFieldsUserFieldIdRoute = createRoute({
   operationId: 'DeleteUserField',
   request: { params: z.object({ user_field_id: UserFieldIdParamsSchema }) },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2UserFieldsUserFieldIdOptionsRoute = createRoute({
@@ -77737,6 +79134,7 @@ export const getApiV2UserFieldsUserFieldIdOptionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const postApiV2UserFieldsUserFieldIdOptionsRoute = createRoute({
@@ -77779,6 +79177,7 @@ export const postApiV2UserFieldsUserFieldIdOptionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRoute = createRoute({
@@ -77805,6 +79204,7 @@ export const getApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRoute = create
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const deleteApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRoute = createRoute({
@@ -77821,6 +79221,7 @@ export const deleteApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRoute = cre
     }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const putApiV2UserFieldsReorderRoute = createRoute({
@@ -77852,6 +79253,7 @@ export const putApiV2UserFieldsReorderRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2UserFieldsShowManyRoute = createRoute({
@@ -77889,6 +79291,7 @@ export const getApiV2UserFieldsShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const getApiV2UsersRoute = createRoute({
@@ -77992,6 +79395,7 @@ export const getApiV2UsersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const postApiV2UsersRoute = createRoute({
@@ -78005,7 +79409,35 @@ export const postApiV2UsersRoute = createRoute({
       content: {
         'application/json': {
           schema: UserRequestSchema,
-          examples: { default: UserRequestExampleExample },
+          examples: {
+            default: UserRequestExampleExample,
+            identity_auto_ownership: {
+              summary: 'Create a user with automatic ownership on an identity',
+              value: {
+                user: {
+                  external_id: 'household-customer-202',
+                  identities: [
+                    { auto_ownership: true, type: 'email', value: 'household@example.com' },
+                  ],
+                  name: 'Jamie Rivera',
+                  role: 'end-user',
+                },
+              },
+            },
+            shared_email_identity: {
+              summary: 'Create a user with a shared email identity',
+              value: {
+                user: {
+                  external_id: 'household-customer-202',
+                  identities: [
+                    { ownership: 'shared', type: 'email', value: 'household@example.com' },
+                  ],
+                  name: 'Jamie Rivera',
+                  role: 'end-user',
+                },
+              },
+            },
+          },
         },
       },
       required: true,
@@ -78050,6 +79482,7 @@ export const postApiV2UsersRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersUserIdRoute = createRoute({
@@ -78085,6 +79518,7 @@ export const getApiV2UsersUserIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const putApiV2UsersUserIdRoute = createRoute({
@@ -78103,7 +79537,7 @@ export const putApiV2UsersUserIdRoute = createRoute({
         },
         'multipart/form-data': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ description: 'Form data for file uploads (e.g., user photo)' }),
         },
       },
@@ -78132,6 +79566,7 @@ export const putApiV2UsersUserIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const deleteApiV2UsersUserIdRoute = createRoute({
@@ -78166,6 +79601,7 @@ export const deleteApiV2UsersUserIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersUserIdBrandAgentsRoute = createRoute({
@@ -78188,6 +79624,7 @@ export const getApiV2UsersUserIdBrandAgentsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['brands:read'] }],
 })
 
 export const getApiV2UsersUserIdBrandAgentsBrandAgentIdRoute = createRoute({
@@ -78212,6 +79649,7 @@ export const getApiV2UsersUserIdBrandAgentsBrandAgentIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['brands:read'] }],
 })
 
 export const getApiV2UsersUserIdComplianceDeletionStatusesRoute = createRoute({
@@ -78251,6 +79689,7 @@ export const getApiV2UsersUserIdComplianceDeletionStatusesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2UsersUserIdEntitlementsFullRoute = createRoute({
@@ -78291,6 +79730,7 @@ export const getApiV2UsersUserIdEntitlementsFullRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2UsersUserIdGroupMembershipsRoute = createRoute({
@@ -78320,6 +79760,7 @@ export const getApiV2UsersUserIdGroupMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['groups:read'] }],
 })
 
 export const postApiV2UsersUserIdGroupMembershipsRoute = createRoute({
@@ -78353,6 +79794,7 @@ export const postApiV2UsersUserIdGroupMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['groups:write'] }],
 })
 
 export const getApiV2UsersUserIdGroupMembershipsGroupMembershipIdRoute = createRoute({
@@ -78379,6 +79821,7 @@ export const getApiV2UsersUserIdGroupMembershipsGroupMembershipIdRoute = createR
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['groups:read'] }],
 })
 
 export const deleteApiV2UsersUserIdGroupMembershipsGroupMembershipIdRoute = createRoute({
@@ -78396,6 +79839,7 @@ export const deleteApiV2UsersUserIdGroupMembershipsGroupMembershipIdRoute = crea
     }),
   },
   responses: { 204: { description: 'No content response' } },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['groups:write'] }],
 })
 
 export const putApiV2UsersUserIdGroupMembershipsGroupMembershipIdMakeDefaultRoute = createRoute({
@@ -78422,6 +79866,7 @@ export const putApiV2UsersUserIdGroupMembershipsGroupMembershipIdMakeDefaultRout
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['groups:write'] }],
 })
 
 export const getApiV2UsersUserIdGroupsRoute = createRoute({
@@ -78454,6 +79899,7 @@ export const getApiV2UsersUserIdGroupsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const getApiV2UsersUserIdGroupsCountRoute = createRoute({
@@ -78476,6 +79922,7 @@ export const getApiV2UsersUserIdGroupsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['groups:read'] }],
 })
 
 export const getApiV2UsersUserIdIdentitiesRoute = createRoute({
@@ -78663,6 +80110,7 @@ export const getApiV2UsersUserIdIdentitiesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const postApiV2UsersUserIdIdentitiesRoute = createRoute({
@@ -78701,7 +80149,21 @@ export const postApiV2UsersUserIdIdentitiesRoute = createRoute({
       content: {
         'application/json': {
           schema: UserIdentityCreateRequestSchema,
-          examples: { default: UserIdentityCreateRequestExampleExample },
+          examples: {
+            auto_ownership: {
+              summary: 'Create an email identity with automatic ownership',
+              value: {
+                identity: { auto_ownership: true, type: 'email', value: 'household@example.com' },
+              },
+            },
+            default: UserIdentityCreateRequestExampleExample,
+            shared_email: {
+              summary: 'Create a shared email identity',
+              value: {
+                identity: { ownership: 'shared', type: 'email', value: 'household@example.com' },
+              },
+            },
+          },
         },
       },
       required: true,
@@ -78713,11 +80175,30 @@ export const postApiV2UsersUserIdIdentitiesRoute = createRoute({
       content: {
         'application/json': {
           schema: UserIdentityResponseSchema,
-          examples: { default: UserIdentityCreateResponseExampleExample },
+          examples: {
+            default: UserIdentityCreateResponseExampleExample,
+            shared_email: {
+              summary: 'Created shared email identity',
+              value: {
+                identity: {
+                  created_at: '2026-10-22T14:25:21Z',
+                  id: 77939,
+                  ownership: 'shared',
+                  primary: true,
+                  type: 'email',
+                  updated_at: '2026-10-22T14:25:21Z',
+                  user_id: 202,
+                  value: 'household@example.com',
+                  verification_method: 'none',
+                },
+              },
+            },
+          },
         },
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
@@ -78742,6 +80223,7 @@ export const getApiV2UsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const putApiV2UsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
@@ -78758,7 +80240,13 @@ export const putApiV2UsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
       content: {
         'application/json': {
           schema: UserIdentityUpdateRequestSchema,
-          examples: { default: UserIdentityUpdateRequestExampleExample },
+          examples: {
+            default: UserIdentityUpdateRequestExampleExample,
+            ownership_transfer: {
+              summary: 'Promote a shared email identity to owned',
+              value: { identity: { ownership: 'owned' } },
+            },
+          },
         },
       },
     },
@@ -78769,11 +80257,30 @@ export const putApiV2UsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
       content: {
         'application/json': {
           schema: UserIdentityResponseSchema,
-          examples: { default: UserIdentityUpdateResponseExampleExample },
+          examples: {
+            default: UserIdentityUpdateResponseExampleExample,
+            ownership_transfer: {
+              summary: 'Updated identity after ownership transfer',
+              value: {
+                identity: {
+                  created_at: '2026-10-22T14:25:21Z',
+                  id: 77939,
+                  ownership: 'owned',
+                  primary: true,
+                  type: 'email',
+                  updated_at: '2026-10-22T15:25:21Z',
+                  user_id: 202,
+                  value: 'household@example.com',
+                  verification_method: 'none',
+                },
+              },
+            },
+          },
         },
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const deleteApiV2UsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
@@ -78788,6 +80295,7 @@ export const deleteApiV2UsersUserIdIdentitiesUserIdentityIdRoute = createRoute({
     params: z.object({ user_id: UserIdParamsSchema, user_identity_id: UserIdentityIdParamsSchema }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const putApiV2UsersUserIdIdentitiesUserIdentityIdMakePrimaryRoute = createRoute({
@@ -78812,6 +80320,7 @@ export const putApiV2UsersUserIdIdentitiesUserIdentityIdMakePrimaryRoute = creat
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const putApiV2UsersUserIdIdentitiesUserIdentityIdRequestVerificationRoute = createRoute({
@@ -78858,6 +80367,7 @@ export const putApiV2UsersUserIdIdentitiesUserIdentityIdRequestVerificationRoute
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const putApiV2UsersUserIdIdentitiesUserIdentityIdVerifyRoute = createRoute({
@@ -78882,6 +80392,7 @@ export const putApiV2UsersUserIdIdentitiesUserIdentityIdVerifyRoute = createRout
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const putApiV2UsersUserIdMergeRoute = createRoute({
@@ -78926,6 +80437,7 @@ export const putApiV2UsersUserIdMergeRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersUserIdOrganizationMembershipsRoute = createRoute({
@@ -78951,6 +80463,7 @@ export const getApiV2UsersUserIdOrganizationMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const postApiV2UsersUserIdOrganizationMembershipsRoute = createRoute({
@@ -78984,6 +80497,7 @@ export const postApiV2UsersUserIdOrganizationMembershipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRoute = createRoute({
@@ -79010,6 +80524,7 @@ export const getApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdR
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const deleteApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRoute =
@@ -79028,6 +80543,7 @@ export const deleteApiV2UsersUserIdOrganizationMembershipsOrganizationMembership
       }),
     },
     responses: { 204: { description: 'No Content response' } },
+    security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
   })
 
 export const putApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdMakeDefaultRoute =
@@ -79056,6 +80572,7 @@ export const putApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdM
         },
       },
     },
+    security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
   })
 
 export const getApiV2UsersUserIdOrganizationSubscriptionsRoute = createRoute({
@@ -79078,6 +80595,7 @@ export const getApiV2UsersUserIdOrganizationSubscriptionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const getApiV2UsersUserIdOrganizationsRoute = createRoute({
@@ -79127,6 +80645,7 @@ export const getApiV2UsersUserIdOrganizationsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const deleteApiV2UsersUserIdOrganizationsOrganizationIdRoute = createRoute({
@@ -79141,6 +80660,7 @@ export const deleteApiV2UsersUserIdOrganizationsOrganizationIdRoute = createRout
     params: z.object({ organization_id: OrganizationIdParamsSchema, user_id: UserIdParamsSchema }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
 })
 
 export const putApiV2UsersUserIdOrganizationsOrganizationIdMakeDefaultRoute = createRoute({
@@ -79165,6 +80685,7 @@ export const putApiV2UsersUserIdOrganizationsOrganizationIdMakeDefaultRoute = cr
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }, { oauth2: ['organizations:write'] }],
 })
 
 export const getApiV2UsersUserIdOrganizationsCountRoute = createRoute({
@@ -79187,6 +80708,7 @@ export const getApiV2UsersUserIdOrganizationsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['organizations:read'] }],
 })
 
 export const putApiV2UsersUserIdPasswordRoute = createRoute({
@@ -79233,6 +80755,7 @@ export const putApiV2UsersUserIdPasswordRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const postApiV2UsersUserIdPasswordRoute = createRoute({
@@ -79255,6 +80778,7 @@ export const postApiV2UsersUserIdPasswordRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersUserIdPasswordRequirementsRoute = createRoute({
@@ -79276,6 +80800,7 @@ export const getApiV2UsersUserIdPasswordRequirementsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2UsersUserIdRelatedRoute = createRoute({
@@ -79296,6 +80821,7 @@ export const getApiV2UsersUserIdRelatedRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2UsersUserIdRequestsRoute = createRoute({
@@ -79358,6 +80884,7 @@ export const getApiV2UsersUserIdRequestsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['requests:read'] }],
 })
 
 export const getApiV2UsersUserIdSessionsRoute = createRoute({
@@ -79380,6 +80907,7 @@ export const getApiV2UsersUserIdSessionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const deleteApiV2UsersUserIdSessionsRoute = createRoute({
@@ -79392,6 +80920,7 @@ export const deleteApiV2UsersUserIdSessionsRoute = createRoute({
   operationId: 'BulkDeleteSessionsByUserId',
   request: { params: z.object({ user_id: UserIdParamsSchema }) },
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersUserIdSessionsSessionIdRoute = createRoute({
@@ -79413,6 +80942,7 @@ export const getApiV2UsersUserIdSessionsSessionIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const deleteApiV2UsersUserIdSessionsSessionIdRoute = createRoute({
@@ -79424,6 +80954,7 @@ export const deleteApiV2UsersUserIdSessionsSessionIdRoute = createRoute({
   operationId: 'DeleteSession',
   request: { params: z.object({ session_id: SessionIdParamsSchema, user_id: UserIdParamsSchema }) },
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersUserIdSkipsRoute = createRoute({
@@ -79449,6 +80980,7 @@ export const getApiV2UsersUserIdSkipsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2UsersUserIdSuspensionRoute = createRoute({
@@ -79485,6 +81017,7 @@ export const getApiV2UsersUserIdSuspensionRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const putApiV2UsersUserIdSuspensionRoute = createRoute({
@@ -79569,6 +81102,7 @@ export const putApiV2UsersUserIdSuspensionRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const postApiV2UsersUserIdSuspensionRoute = createRoute({
@@ -79656,6 +81190,7 @@ export const postApiV2UsersUserIdSuspensionRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const deleteApiV2UsersUserIdSuspensionRoute = createRoute({
@@ -79695,6 +81230,7 @@ export const deleteApiV2UsersUserIdSuspensionRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersUserIdTagsRoute = createRoute({
@@ -79820,6 +81356,7 @@ export const getApiV2UsersUserIdTicketsAssignedRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2UsersUserIdTicketsAssignedCountRoute = createRoute({
@@ -79854,6 +81391,7 @@ export const getApiV2UsersUserIdTicketsAssignedCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2UsersUserIdTicketsCcdRoute = createRoute({
@@ -79875,6 +81413,7 @@ export const getApiV2UsersUserIdTicketsCcdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2UsersUserIdTicketsCcdCountRoute = createRoute({
@@ -79909,6 +81448,7 @@ export const getApiV2UsersUserIdTicketsCcdCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2UsersUserIdTicketsFollowedRoute = createRoute({
@@ -79950,6 +81490,7 @@ export const getApiV2UsersUserIdTicketsFollowedRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2UsersUserIdTicketsRequestedRoute = createRoute({
@@ -80003,6 +81544,7 @@ export const getApiV2UsersUserIdTicketsRequestedRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['tickets:read'] }],
 })
 
 export const getApiV2UsersAutocompleteRoute = createRoute({
@@ -80168,6 +81710,7 @@ export const getApiV2UsersAutocompleteRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const postApiV2UsersAutocompleteRoute = createRoute({
@@ -80260,7 +81803,7 @@ export const postApiV2UsersAutocompleteRoute = createRoute({
                 .xor([
                   z.enum(['assignable', 'requester']),
                   z
-                    .object({ dynamic_values: z.object({}).exactOptional() })
+                    .object({ dynamic_values: z.looseObject({}).exactOptional() })
                     .openapi({ required: [] }),
                 ])
                 .exactOptional()
@@ -80349,6 +81892,7 @@ export const postApiV2UsersAutocompleteRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2UsersCountRoute = createRoute({
@@ -80420,6 +81964,7 @@ export const getApiV2UsersCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const postApiV2UsersCreateManyRoute = createRoute({
@@ -80452,6 +81997,7 @@ export const postApiV2UsersCreateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const postApiV2UsersCreateOrUpdateRoute = createRoute({
@@ -80549,6 +82095,7 @@ export const postApiV2UsersCreateOrUpdateRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const postApiV2UsersCreateOrUpdateManyRoute = createRoute({
@@ -80581,6 +82128,7 @@ export const postApiV2UsersCreateOrUpdateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const deleteApiV2UsersDestroyManyRoute = createRoute({
@@ -80675,6 +82223,7 @@ export const deleteApiV2UsersDestroyManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const postApiV2UsersLogoutManyRoute = createRoute({
@@ -80713,6 +82262,7 @@ export const postApiV2UsersLogoutManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersMeRoute = createRoute({
@@ -80866,6 +82416,7 @@ export const deleteApiV2UsersMeLogoutRoute = createRoute({
     "Deletes the current session. In practice, this only works when using session auth for requests, such as client-side requests\nmade from a Zendesk app. When using OAuth or basic authentication, you don't have a current session so this endpoint has no effect.\n\n#### Allowed For\n\n* Admins, Agents, End users\n",
   operationId: 'DeleteAuthenticatedSession',
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersMeOauthClientsRoute = createRoute({
@@ -80887,6 +82438,7 @@ export const getApiV2UsersMeOauthClientsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['read'] }],
 })
 
 export const getApiV2UsersMeSessionRoute = createRoute({
@@ -80907,6 +82459,7 @@ export const getApiV2UsersMeSessionRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2UsersMeSessionRenewRoute = createRoute({
@@ -80927,6 +82480,7 @@ export const getApiV2UsersMeSessionRenewRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const getApiV2UsersMeSettingsRoute = createRoute({
@@ -80948,6 +82502,7 @@ export const getApiV2UsersMeSettingsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const putApiV2UsersMeSettingsRoute = createRoute({
@@ -81007,6 +82562,7 @@ export const putApiV2UsersMeSettingsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const postApiV2UsersRequestCreateRoute = createRoute({
@@ -81039,6 +82595,7 @@ export const postApiV2UsersRequestCreateRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersSearchRoute = createRoute({
@@ -81164,6 +82721,7 @@ export const getApiV2UsersSearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }, { oauth2: ['users:write'] }],
 })
 
 export const getApiV2UsersShowManyRoute = createRoute({
@@ -81282,6 +82840,7 @@ export const getApiV2UsersShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:read'] }],
 })
 
 export const putApiV2UsersUpdateManyRoute = createRoute({
@@ -81360,6 +82919,7 @@ export const putApiV2UsersUpdateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['users:write'] }],
 })
 
 export const getApiV2ViewsRoute = createRoute({
@@ -81468,6 +83028,7 @@ export const getApiV2ViewsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const postApiV2ViewsRoute = createRoute({
@@ -81489,6 +83050,7 @@ export const postApiV2ViewsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:write'] }],
 })
 
 export const getApiV2ViewsViewIdRoute = createRoute({
@@ -81556,6 +83118,7 @@ export const getApiV2ViewsViewIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const putApiV2ViewsViewIdRoute = createRoute({
@@ -81622,6 +83185,7 @@ export const putApiV2ViewsViewIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:write'] }],
 })
 
 export const deleteApiV2ViewsViewIdRoute = createRoute({
@@ -81677,6 +83241,7 @@ export const deleteApiV2ViewsViewIdRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['ticket_views:write'] }],
 })
 
 export const getApiV2ViewsViewIdCountRoute = createRoute({
@@ -81743,6 +83308,7 @@ export const getApiV2ViewsViewIdCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsViewIdExecuteRoute = createRoute({
@@ -81852,6 +83418,7 @@ export const getApiV2ViewsViewIdExecuteRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsViewIdExportRoute = createRoute({
@@ -81874,6 +83441,7 @@ export const getApiV2ViewsViewIdExportRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsViewIdTicketsRoute = createRoute({
@@ -81968,6 +83536,7 @@ export const getApiV2ViewsViewIdTicketsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsActiveRoute = createRoute({
@@ -82049,6 +83618,7 @@ export const getApiV2ViewsActiveRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsCompactRoute = createRoute({
@@ -82070,6 +83640,7 @@ export const getApiV2ViewsCompactRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsCountRoute = createRoute({
@@ -82091,6 +83662,7 @@ export const getApiV2ViewsCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsCountManyRoute = createRoute({
@@ -82143,6 +83715,7 @@ export const getApiV2ViewsCountManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsDefinitionsRoute = createRoute({
@@ -82217,6 +83790,7 @@ export const getApiV2ViewsDefinitionsRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const deleteApiV2ViewsDestroyManyRoute = createRoute({
@@ -82244,6 +83818,7 @@ export const deleteApiV2ViewsDestroyManyRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No Content response' } },
+  security: [{ oauth2: ['ticket_views:write'] }],
 })
 
 export const postApiV2ViewsPreviewRoute = createRoute({
@@ -82282,6 +83857,7 @@ export const postApiV2ViewsPreviewRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const postApiV2ViewsPreviewCountRoute = createRoute({
@@ -82302,6 +83878,7 @@ export const postApiV2ViewsPreviewCountRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsSearchRoute = createRoute({
@@ -82420,6 +83997,7 @@ export const getApiV2ViewsSearchRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const getApiV2ViewsShowManyRoute = createRoute({
@@ -82469,6 +84047,7 @@ export const getApiV2ViewsShowManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:read'] }],
 })
 
 export const putApiV2ViewsUpdateManyRoute = createRoute({
@@ -82490,6 +84069,7 @@ export const putApiV2ViewsUpdateManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['ticket_views:write'] }],
 })
 
 export const getApiV2WorkspacesRoute = createRoute({
@@ -82553,6 +84133,7 @@ export const getApiV2WorkspacesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const postApiV2WorkspacesRoute = createRoute({
@@ -82640,6 +84221,7 @@ export const postApiV2WorkspacesRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const getApiV2WorkspacesWorkspaceIdRoute = createRoute({
@@ -82701,6 +84283,7 @@ export const getApiV2WorkspacesWorkspaceIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:read'] }],
 })
 
 export const putApiV2WorkspacesWorkspaceIdRoute = createRoute({
@@ -82789,6 +84372,7 @@ export const putApiV2WorkspacesWorkspaceIdRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const deleteApiV2WorkspacesWorkspaceIdRoute = createRoute({
@@ -82800,6 +84384,7 @@ export const deleteApiV2WorkspacesWorkspaceIdRoute = createRoute({
   operationId: 'DeleteWorkspace',
   request: { params: z.object({ workspace_id: WorkspaceIdParamsSchema }) },
   responses: { 204: { description: 'No Content' } },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const deleteApiV2WorkspacesDestroyManyRoute = createRoute({
@@ -82849,6 +84434,7 @@ export const deleteApiV2WorkspacesDestroyManyRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const putApiV2WorkspacesReorderRoute = createRoute({
@@ -82879,6 +84465,7 @@ export const putApiV2WorkspacesReorderRoute = createRoute({
       },
     },
   },
+  security: [{ oauth2: ['account_settings:write'] }],
 })
 
 export const postOauthTokensRoute = createRoute({
@@ -82887,7 +84474,7 @@ export const postOauthTokensRoute = createRoute({
   tags: ['Grant Type Tokens'],
   summary: 'Create Token for Grant Type',
   description:
-    'Returns an OAuth access token in exchange for one of the following:\n\n- an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)\n- a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n- a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n\n**Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.\n\nTo revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oauth_tokens/#revoke-token).\n\n#### Request parameters\n\nThe POST request takes the following parameters, which must be formatted as JSON:\n\n| Name                     | Description\n| ------------------------ | --------------------------------------------------\n| grant_type               | "authorization_code", "refresh_token", or "client_credentials"\n| code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user\'s authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help\n| client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| redirect_uri             | Authorization grant flow only. The redirect URL you specified when you sent the user to the Zendesk authorization page. For ID purposes only. See [Send the user to the Zendesk authorization page](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_mkc_dcm_dcc)\n| scope                    | Valid scope for this token. A space-separated string of scope values. Must be within the client\'s configured allowed scopes, if set. See [Scope](#scope) below\n| expires_in               | Number of seconds the access token is valid. Must be greater than or equal to 300 seconds (5 minutes) and less than or equal to 172,800 seconds (2 days), or less than `refresh_token_expires_in`, whichever is the shorter. Defaults to null\n| refresh_token_expires_in | Number of seconds the refresh token is valid. Must be greater than or equal to 604,800 seconds (7 days) or `expires_in` (if given), and less than or equal to 7,776,000 seconds (90 days). Defaults to 2,592,000 seconds (30 days)\n| refresh_token            | A valid refresh token. See [Replacing expired access tokens](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n\n**Authorization code example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  "https://{subdomain}.zendesk.com/oauth/tokens",\n  {\n    grant_type: "authorization_code",\n    code: AUTHORIZATION_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    redirect_uri: REDIRECT_URI_PKCE,\n    scope: "tickets:read users:read",\n    code_verifier: CODE_VERIFIER,\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { "Content-Type": "application/json" } }\n);\n```\n\n**Refresh token example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  "https://{subdomain}.zendesk.com/oauth/tokens",\n  {\n    grant_type: "refresh_token",\n    refresh_token: REFRESH_TOKEN,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: "tickets:write",\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { "Content-Type": "application/json" } }\n);\n```\n\n**Client credentials example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  "https://{subdomain}.zendesk.com/oauth/tokens",\n  {\n    grant_type: "client_credentials",\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: "tickets:write",\n    expires_in: 86400\n  },\n  { headers: { "Content-Type": "application/json" } }\n);\n```\n\n#### Scope\n\nYou must specify a scope to control the app\'s access to Zendesk resources. The "read" scope gives access to GET endpoints and includes permission to sideload related resources. The "write" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.\n\n**Note**: Don\'t confuse the **scope** parameter (singular) with the **scopes** parameter (plural) for non-grant-type tokens described in [OAuth Tokens](/api-reference/ticketing/oauth/oauth_tokens).\n\nThe "impersonate" scope allows a Zendesk admin to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).\n\n**Broad scopes**\n\nThe following parameter gives read access to all resources:\n\n`"scope": "read"`\n\nThe following parameter gives read and write access to all resources:\n\n`"scope": "read write"`\n\n**Resource-specific scopes**\n\nYou can fine-tune access using resource-specific scopes. The syntax is as follows:\n\n`"scope": "resource:action"`\n\nFor example, the following parameter restricts the scope to only reading tickets:\n\n`"scope": "tickets:read"`\n\nTo give read and write access to a resource, specify both scopes:\n\n`"scope": "users:read users:write"`\n\nTo give write access only to one resource, such as organizations, and read access to everything else:\n\n`"scope": "organizations:write read"`\n\n**Scope errors**\n\nThere are two distinct scope-related error cases to be aware of:\n\n- **Unrecognized scope string**: If you specify a scope value that doesn\'t exist (for example, a typo such as `"scope": ["read", "write"]` using an array instead of a string), the endpoint still creates an access token. However, any API request made with that token will return a `403 Forbidden` error.\n- **Scope outside client\'s allowed scopes**: If the OAuth client has [allowed scopes](/api-reference/ticketing/oauth/oauth_clients/#create-client) configured and you request a scope not included in that list, the endpoint returns `400 Bad Request` with an `invalid_scope` error and no token is created.\n\n**Available scopes**\n\n| Scope | Description |\n| ----- | ----------- |\n| `read` | Read all data. Gives access to GET endpoints, including permission to sideload related resources. |\n| `write` | Write all data. Gives access to POST, PUT, and DELETE endpoints. |\n| `impersonate` | Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/). |\n| `account_settings:read` | View account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |\n| `ai_agents:list` | List AI agents. Includes listing the AI agents configured on the account via the Zendesk Developers API. |\n| `apps:read` | View installed apps and their settings. Includes which apps are installed and each app\'s settings. |\n| `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |\n| `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |\n| `automations:read` | View automations and their details. |\n| `automations:write` | Create, edit, and delete automations. |\n| `brands:read` | View brands and their agent assignments. |\n| `brands:write` | Create, edit, and delete brands and their agent assignments. |\n| `custom_objects:read` | View custom objects. Includes custom object definitions and record attachments. |\n| `custom_objects:write` | Create, edit, and delete custom objects. Includes definitions and record attachments. |\n| `deletion_schedules:read` | View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data. |\n| `deletion_schedules:write` | Delete deletion schedules. Includes deleting data retention policies. |\n| `dynamic_content:read` | View dynamic content items and language variants. |\n| `dynamic_content:write` | Create, edit, and delete dynamic content items and language variants. |\n| `groups:read` | View groups and their memberships. |\n| `groups:write` | Create, edit, and delete groups and their memberships. |\n| `hc:read` | View Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `hc:write` | Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `macros:read` | View macros, their categories, and attachments. |\n| `macros:write` | Create, edit, and delete macros and their attachments. |\n| `organizations:read` | View organizations and their details. Includes memberships, subscriptions, and merge history. |\n| `organizations:write` | Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations. |\n| `requests:read` | View support requests and their comments. |\n| `requests:write` | Submit and edit support requests. Includes creating new requests and adding to existing ones. |\n| `satisfaction_ratings:read` | View satisfaction ratings, scores, and reasons. |\n| `satisfaction_ratings:write` | Submit satisfaction ratings. Includes rating a ticket good or bad with an optional reason. |\n| `security:read` | View security and sign-in settings. Includes password policy, session timeouts, IP restrictions, and SSO configuration. Read only. |\n| `side_conversations:read` | View side conversations. Includes the side conversations on a ticket, their messages and events, and their participants. |\n| `side_conversations:write` | Create, update, and reply to side conversations. Includes starting side conversations with people outside the ticket by email, Slack, or Microsoft Teams, creating child tickets, sending replies and files, and importing conversations from other systems. |\n| `sla_policies:read` | View SLA and group SLA policies. |\n| `sla_policies:write` | Create, edit, delete, and reorder SLA and group SLA policies. |\n| `targets:read` | View targets and their delivery failures. |\n| `targets:write` | Create, edit, and delete targets. |\n| `themes:read` | View Guide themes and their files. |\n| `themes:write` | Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes. |\n| `ticket_attachments:read` | View files attached to tickets. |\n| `ticket_attachments:write` | Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them. |\n| `ticket_views:read` | View ticket views and the tickets they return. |\n| `ticket_views:write` | Create, edit, and delete ticket views. |\n| `tickets:read` | View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics. |\n| `tickets:write` | Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses. |\n| `triggers:read` | View triggers, trigger categories, and their revision history. |\n| `triggers:write` | Create, edit, delete, and reorder triggers and trigger categories. |\n| `users:read` | View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings. |\n| `users:write` | Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles. |\n| `webhooks:read` | View webhooks and their activity history. |\n| `webhooks:write` | Create, edit, test, and delete webhooks. |\n| `any_channel:write` | Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only. |\n| `web_widget:write` | Edit Web Widget settings and configuration. Write only. |\n| `zis:read` | View private integrations. Includes configurations, connections, and inbound webhooks. |\n| `zis:write` | Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks. |\n',
+    'Returns an OAuth access token in exchange for one of the following:\n\n- an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)\n- a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n- a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n- a [device code](https://datatracker.ietf.org/doc/html/rfc8628) obtained from [Start a device authorization grant](#oauth-device-authorization) (not yet generally available)\n\n**Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.\n\nTo revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oauth_tokens/#revoke-token).\n\n#### Request parameters\n\nThe POST request takes the following parameters. Send them in the request body as JSON or URL-encoded form data:\n\n| Name                     | Description\n| ------------------------ | --------------------------------------------------\n| grant_type               | "authorization_code", "refresh_token", "client_credentials",  "urn:ietf:params:oauth:grant-type:device_code" (not yet generally available), or "urn:ietf:params:oauth:grant-type:jwt-bearer"\n| assertion                 | ID-JAG grant only. A valid identity assertion JWT of type "oauth-id-jag+jwt" from the identity provider. Required for the ID-JAG grant\n| device_code              | Device grant flow only. The device verification code received from [Start a device authorization grant](#oauth-device-authorization). Required for the device grant type\n| code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user\'s authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help\n| client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| redirect_uri             | Authorization grant flow only. The redirect URL you specified when you sent the user to the Zendesk authorization page. For ID purposes only. See [Send the user to the Zendesk authorization page](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_mkc_dcm_dcc)\n| scope                    | Valid scope for this token. A space-separated string of scope values. Must be within the client\'s configured allowed scopes, if set. See [Scope](#scope) below\n| expires_in               | Number of seconds the access token is valid. Must be greater than or equal to 300 seconds (5 minutes) and less than or equal to 172,800 seconds (2 days), or less than `refresh_token_expires_in`, whichever is the shorter. Defaults to null\n| refresh_token_expires_in | Number of seconds the refresh token is valid. Must be greater than or equal to 604,800 seconds (7 days) or `expires_in` (if given), and less than or equal to 7,776,000 seconds (90 days). Defaults to 2,592,000 seconds (30 days)\n| refresh_token            | A valid refresh token. See [Replacing expired access tokens](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n\n**Authorization code example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  "https://{subdomain}.zendesk.com/oauth/tokens",\n  {\n    grant_type: "authorization_code",\n    code: AUTHORIZATION_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    redirect_uri: REDIRECT_URI_PKCE,\n    scope: "tickets:read users:read",\n    code_verifier: CODE_VERIFIER,\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { "Content-Type": "application/json" } }\n);\n```\n\n**Refresh token example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  "https://{subdomain}.zendesk.com/oauth/tokens",\n  {\n    grant_type: "refresh_token",\n    refresh_token: REFRESH_TOKEN,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: "tickets:write",\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { "Content-Type": "application/json" } }\n);\n```\n\n**Client credentials example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  "https://{subdomain}.zendesk.com/oauth/tokens",\n  {\n    grant_type: "client_credentials",\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: "tickets:write",\n    expires_in: 86400\n  },\n  { headers: { "Content-Type": "application/json" } }\n);\n```\n\n**Device grant example**\n\n```javascript\n// Poll after starting the flow at POST /oauth/device_authorization.\n// While the end user has not yet approved: 400 authorization_pending.\n// If polling faster than the advertised interval: 400 slow_down.\nconst tokenResponse = await axios.post(\n  "https://{subdomain}.zendesk.com/oauth/tokens",\n  {\n    grant_type: "urn:ietf:params:oauth:grant-type:device_code",\n    device_code: DEVICE_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET\n  },\n  { headers: { "Content-Type": "application/json" } }\n);\n```\n\n#### Scope\n\nYou must specify a scope to control the app\'s access to Zendesk resources. The "read" scope gives access to GET endpoints and includes permission to sideload related resources. The "write" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.\n\n**Note**: Don\'t confuse the **scope** parameter (singular) with the **scopes** parameter (plural) for non-grant-type tokens described in [OAuth Tokens](/api-reference/ticketing/oauth/oauth_tokens).\n\nThe "impersonate" scope allows a Zendesk admin to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).\n\n**Broad scopes**\n\nThe following parameter gives read access to all resources:\n\n`"scope": "read"`\n\nThe following parameter gives read and write access to all resources:\n\n`"scope": "read write"`\n\n**Resource-specific scopes**\n\nYou can fine-tune access using resource-specific scopes. The syntax is as follows:\n\n`"scope": "resource:action"`\n\nFor example, the following parameter restricts the scope to only reading tickets:\n\n`"scope": "tickets:read"`\n\nTo give read and write access to a resource, specify both scopes:\n\n`"scope": "users:read users:write"`\n\nTo give write access only to one resource, such as organizations, and read access to everything else:\n\n`"scope": "organizations:write read"`\n\n**Scope errors**\n\nThere are two distinct scope-related error cases to be aware of:\n\n- **Unrecognized scope string**: If you specify a scope value that doesn\'t exist (for example, a typo such as `"scope": ["read", "write"]` using an array instead of a string), the endpoint still creates an access token. However, any API request made with that token will return a `403 Forbidden` error.\n- **Scope outside client\'s allowed scopes**: If the OAuth client has [allowed scopes](/api-reference/ticketing/oauth/oauth_clients/#create-client) configured and you request a scope not included in that list, the endpoint returns `400 Bad Request` with an `invalid_scope` error and no token is created.\n\n**Available scopes**\n\n| Scope | Description |\n| ----- | ----------- |\n| `read` | Read all data. Gives access to GET endpoints, including permission to sideload related resources. |\n| `write` | Write all data. Gives access to POST, PUT, and DELETE endpoints. |\n| `impersonate` | Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/). |\n| `account_settings:read` | View account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |\n| `ai_agents:list` | List AI agents. Includes listing the AI agents configured on the account via the Zendesk Developers API. |\n| `ai_agents:search` | Search AI agent knowledge. Includes searching the knowledge sources of the AI agents configured on the account via the Zendesk Developers API. |\n| `apps:read` | View installed apps and their settings. Includes which apps are installed and each app\'s settings. |\n| `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |\n| `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |\n| `automations:read` | View automations and their details. |\n| `automations:write` | Create, edit, and delete automations. |\n| `brands:read` | View brands and their agent assignments. |\n| `brands:write` | Create, edit, and delete brands and their agent assignments. |\n| `custom_objects:read` | View custom objects. Includes custom object definitions and record attachments. |\n| `custom_objects:write` | Create, edit, and delete custom objects. Includes definitions and record attachments. |\n| `deletion_schedules:read` | View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data. |\n| `deletion_schedules:write` | Delete deletion schedules. Includes deleting data retention policies. |\n| `dynamic_content:read` | View dynamic content items and language variants. |\n| `dynamic_content:write` | Create, edit, and delete dynamic content items and language variants. |\n| `groups:read` | View groups and their memberships. |\n| `groups:write` | Create, edit, and delete groups and their memberships. |\n| `hc:read` | View Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `hc:write` | Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `macros:read` | View macros, their categories, and attachments. |\n| `macros:write` | Create, edit, and delete macros and their attachments. |\n| `organizations:read` | View organizations and their details. Includes memberships, subscriptions, and merge history. |\n| `organizations:write` | Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations. |\n| `requests:read` | View support requests and their comments. |\n| `requests:write` | Submit and edit support requests. Includes creating new requests and adding to existing ones. |\n| `satisfaction_ratings:read` | View satisfaction ratings, scores, and reasons. |\n| `satisfaction_ratings:write` | Submit satisfaction ratings. Includes rating a ticket good or bad with an optional reason. |\n| `security:read` | View security and sign-in settings. Includes password policy, session timeouts, IP restrictions, and SSO configuration. Read only. |\n| `side_conversations:read` | View side conversations. Includes the side conversations on a ticket, their messages and events, and their participants. |\n| `side_conversations:write` | Create, update, and reply to side conversations. Includes starting side conversations with people outside the ticket by email, Slack, or Microsoft Teams, creating child tickets, sending replies and files, and importing conversations from other systems. |\n| `sla_policies:read` | View SLA and group SLA policies. |\n| `sla_policies:write` | Create, edit, delete, and reorder SLA and group SLA policies. |\n| `targets:read` | View targets and their delivery failures. |\n| `targets:write` | Create, edit, and delete targets. |\n| `themes:read` | View Guide themes and their files. |\n| `themes:write` | Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes. |\n| `ticket_attachments:read` | View files attached to tickets. |\n| `ticket_attachments:write` | Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them. |\n| `ticket_views:read` | View ticket views and the tickets they return. |\n| `ticket_views:write` | Create, edit, and delete ticket views. |\n| `tickets:read` | View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics. |\n| `tickets:write` | Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses. |\n| `triggers:read` | View triggers, trigger categories, and their revision history. |\n| `triggers:write` | Create, edit, delete, and reorder triggers and trigger categories. |\n| `users:read` | View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings. |\n| `users:write` | Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles. |\n| `webhooks:read` | View webhooks and their activity history. |\n| `webhooks:write` | Create, edit, test, and delete webhooks. |\n| `any_channel:write` | Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only. |\n| `web_widget:write` | Edit Web Widget settings and configuration. Write only. |\n| `zis:read` | View private integrations. Includes configurations, connections, and inbound webhooks. |\n| `zis:write` | Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks. |\n',
   operationId: 'CreateTokenForGrantType',
   responses: {
     201: {

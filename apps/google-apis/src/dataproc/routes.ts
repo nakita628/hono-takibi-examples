@@ -1,439 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ExecutionConfigSchema = z
-  .object({
-    idleTtl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The duration to keep the session alive while it's idling. Exceeding this threshold causes the session to terminate. This field cannot be set on a batch workload. Minimum value is 10 minutes; maximum value is 14 days (see JSON representation of Duration (https://developers.google.com/protocol-buffers/docs/proto3#json)). Defaults to 4 hours if not set. If both ttl and idle_ttl are specified, the conditions are treated as OR conditions: the workload will be terminated when it has been idle for idle_ttl or when ttl has been exceed, whichever occurs first.",
-      }),
-    kmsKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The Cloud KMS key to use for encryption.' }),
-    networkTags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Optional. Tags used for network traffic control.' }),
-    networkUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Network URI to connect workload to.' }),
-    serviceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Service account that used to execute workload.' }),
-    stagingBucket: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A Cloud Storage bucket used to stage workload dependencies, config files, and store workload output and other ephemeral data, such as Spark history files. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location according to the region where your workload is running, and then create and manage project-level, per-location staging and temporary buckets. This field requires a Cloud Storage bucket name, not a gs://... URI to a Cloud Storage bucket.',
-      }),
-    subnetworkUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Subnetwork URI to connect workload to.' }),
-    ttl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The duration after which the workload will be terminated. When the workload exceeds this duration, it will be unconditionally terminated without waiting for ongoing work to finish. If ttl is not specified for a batch workload, the workload will be allowed to run until it exits naturally (or runs forever without exiting). If ttl is not specified for an interactive session, it defaults to 24h. Minimum value is 10 minutes; maximum value is 14 days (see JSON representation of Duration (https://developers.google.com/protocol-buffers/docs/proto3#json)). If both ttl and idle_ttl are specified (for an interactive session), the conditions are treated as OR conditions: the workload will be terminated when it has been idle for idle_ttl or when ttl has been exceeded, whichever occurs first.',
-      }),
-  })
-  .openapi({ description: 'Execution configuration for a workload.', required: [] })
-  .openapi('ExecutionConfig')
-
-const SparkHistoryServerConfigSchema = z
-  .object({
-    dataprocCluster: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Resource name of an existing Dataproc Cluster to act as a Spark History Server for the workload.Example: projects/[project_id]/regions/[region]/clusters/[cluster_name]',
-      }),
-  })
-  .openapi({ description: 'Spark History Server configuration for the workload.', required: [] })
-  .openapi('SparkHistoryServerConfig')
-
-const PeripheralsConfigSchema = z
-  .object({
-    metastoreService: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Resource name of an existing Dataproc Metastore service.Example: projects/[project_id]/locations/[region]/services/[service_id]',
-      }),
-    sparkHistoryServerConfig: SparkHistoryServerConfigSchema.exactOptional().openapi({
-      description: 'Optional. The Spark History Server configuration for the workload.',
-    }),
-  })
-  .openapi({ description: 'Auxiliary services configuration for a workload.', required: [] })
-  .openapi('PeripheralsConfig')
-
-const EnvironmentConfigSchema = z
-  .object({
-    executionConfig: ExecutionConfigSchema.exactOptional().openapi({
-      description: 'Optional. Execution configuration for a workload.',
-    }),
-    peripheralsConfig: PeripheralsConfigSchema.exactOptional().openapi({
-      description: 'Optional. Peripherals configuration that workload has access to.',
-    }),
-  })
-  .openapi({ description: 'Environment configuration for a workload.', required: [] })
-  .openapi('EnvironmentConfig')
-
-const PySparkBatchSchema = z
-  .object({
-    archiveUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.',
-      }),
-    args: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The arguments to pass to the driver. Do not include arguments that can be set as batch properties, such as --conf, since a collision can occur that causes an incorrect batch submission.',
-      }),
-    fileUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS URIs of files to be placed in the working directory of each executor.',
-      }),
-    jarFileUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS URIs of jar files to add to the classpath of the Spark driver and tasks.',
-      }),
-    mainPythonFileUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The HCFS URI of the main Python file to use as the Spark driver. Must be a .py file.',
-      }),
-    pythonFileUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS file URIs of Python files to pass to the PySpark framework. Supported file types: .py, .egg, and .zip.',
-      }),
-  })
-  .openapi({
-    description:
-      'A configuration for running an Apache PySpark (https://spark.apache.org/docs/latest/api/python/getting_started/quickstart.html) batch workload.',
-    required: [],
-  })
-  .openapi('PySparkBatch')
-
-const RuntimeConfigSchema = z
-  .object({
-    containerImage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Optional custom container image for the job runtime environment. If not specified, a default container image will be used.',
-      }),
-    properties: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A mapping of property names to values, which are used to configure workload execution.',
-      }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Version of the batch runtime.' }),
-  })
-  .openapi({ description: 'Runtime configuration for a workload.', required: [] })
-  .openapi('RuntimeConfig')
-
-const UsageMetricsSchema = z
-  .object({
-    milliDcuSeconds: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. DCU (Dataproc Compute Units) usage in (milliDCU x seconds) (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing)).',
-      }),
-    shuffleStorageGbSeconds: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Shuffle storage usage in (GB x seconds) (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing)).',
-      }),
-  })
-  .openapi({
-    description: 'Usage metrics represent approximate total resources consumed by a workload.',
-    required: [],
-  })
-  .openapi('UsageMetrics')
-
-const UsageSnapshotSchema = z
-  .object({
-    milliDcu: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Milli (one-thousandth) Dataproc Compute Units (DCUs) (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing)).',
-      }),
-    shuffleStorageGb: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Shuffle Storage in gigabytes (GB). (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing))',
-      }),
-    snapshotTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The timestamp of the usage snapshot.' }),
-  })
-  .openapi({
-    description:
-      'The usage snaphot represents the resources consumed by a workload at a specified time.',
-    required: [],
-  })
-  .openapi('UsageSnapshot')
-
-const RuntimeInfoSchema = z
-  .object({
-    approximateUsage: UsageMetricsSchema.exactOptional().openapi({
-      description:
-        'Output only. Approximate workload resource usage calculated after workload finishes (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing)).',
-      readOnly: true,
-    }),
-    currentUsage: UsageSnapshotSchema.exactOptional().openapi({
-      description: 'Output only. Snapshot of current workload resource usage.',
-      readOnly: true,
-    }),
-    diagnosticOutputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. A URI pointing to the location of the diagnostics tarball.',
-        readOnly: true,
-      }),
-    endpoints: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Map of remote access endpoints (such as web interfaces and APIs) to their URIs.',
-        readOnly: true,
-      }),
-    outputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A URI pointing to the location of the stdout and stderr of the workload.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Runtime information about workload execution.', required: [] })
-  .openapi('RuntimeInfo')
-
-const SparkBatchSchema = z
-  .object({
-    archiveUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.',
-      }),
-    args: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The arguments to pass to the driver. Do not include arguments that can be set as batch properties, such as --conf, since a collision can occur that causes an incorrect batch submission.',
-      }),
-    fileUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS URIs of files to be placed in the working directory of each executor.',
-      }),
-    jarFileUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS URIs of jar files to add to the classpath of the Spark driver and tasks.',
-      }),
-    mainClass: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The name of the driver main class. The jar file that contains the class must be in the classpath or specified in jar_file_uris.',
-      }),
-    mainJarFileUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The HCFS URI of the jar file that contains the main class.',
-      }),
-  })
-  .openapi({
-    description:
-      'A configuration for running an Apache Spark (https://spark.apache.org/) batch workload.',
-    required: [],
-  })
-  .openapi('SparkBatch')
-
-const SparkRBatchSchema = z
-  .object({
-    archiveUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.',
-      }),
-    args: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The arguments to pass to the Spark driver. Do not include arguments that can be set as batch properties, such as --conf, since a collision can occur that causes an incorrect batch submission.',
-      }),
-    fileUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. HCFS URIs of files to be placed in the working directory of each executor.',
-      }),
-    mainRFileUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The HCFS URI of the main R file to use as the driver. Must be a .R or .r file.',
-      }),
-  })
-  .openapi({
-    description:
-      'A configuration for running an Apache SparkR (https://spark.apache.org/docs/latest/sparkr.html) batch workload.',
-    required: [],
-  })
-  .openapi('SparkRBatch')
-
-const SparkSqlBatchSchema = z
-  .object({
-    jarFileUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Optional. HCFS URIs of jar files to be added to the Spark CLASSPATH.',
-      }),
-    queryFileUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The HCFS URI of the script that contains Spark SQL queries to execute.',
-      }),
-    queryVariables: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Mapping of query variable names to values (equivalent to the Spark SQL command: SET name="value";).',
-      }),
-  })
-  .openapi({
-    description:
-      'A configuration for running Apache Spark SQL (https://spark.apache.org/sql/) queries as a batch workload.',
-    required: [],
-  })
-  .openapi('SparkSqlBatch')
-
-const StateHistorySchema = z
-  .object({
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'RUNNING',
-        'CANCELLING',
-        'CANCELLED',
-        'SUCCEEDED',
-        'FAILED',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The state of the batch at this point in history.',
-        readOnly: true,
-      }),
-    stateMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Details about the state at this point in history.',
-        readOnly: true,
-      }),
-    stateStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the batch entered the historical state.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Historical state information.', required: [] })
-  .openapi('StateHistory')
-
-type BatchType = {
-  createTime?: string
-  creator?: string
-  environmentConfig?: z.infer<typeof EnvironmentConfigSchema>
-  labels?: { [key: string]: string }
-  name?: string
-  operation?: string
-  pysparkBatch?: z.infer<typeof PySparkBatchSchema>
-  runtimeConfig?: z.infer<typeof RuntimeConfigSchema>
-  runtimeInfo?: z.infer<typeof RuntimeInfoSchema>
-  sparkBatch?: z.infer<typeof SparkBatchSchema>
-  sparkRBatch?: z.infer<typeof SparkRBatchSchema>
-  sparkSqlBatch?: z.infer<typeof SparkSqlBatchSchema>
-  state?:
-    | 'STATE_UNSPECIFIED'
-    | 'PENDING'
-    | 'RUNNING'
-    | 'CANCELLING'
-    | 'CANCELLED'
-    | 'SUCCEEDED'
-    | 'FAILED'
-  stateHistory?: z.infer<typeof StateHistorySchema>[]
-  stateMessage?: string
-  stateTime?: string
-  uuid?: string
-}
-
 const AutoscalingConfigSchema = z
   .object({
     policyUri: z
@@ -1401,19 +967,325 @@ type ClusterConfigType = {
   workerConfig?: z.infer<typeof InstanceGroupConfigSchema>
 }
 
-const DriverSchedulingConfigSchema = z
+const ClusterConfigSchema: z.ZodType<ClusterConfigType> = z
   .object({
-    memoryMb: z
-      .int32()
+    autoscalingConfig: AutoscalingConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. Autoscaling config for the policy associated with the cluster. Cluster does not autoscale if this field is unset.',
+    }),
+    auxiliaryNodeGroups: z
+      .array(AuxiliaryNodeGroupSchema)
       .exactOptional()
-      .openapi({ description: 'Required. The amount of memory in MB the driver is requesting.' }),
-    vcores: z
-      .int32()
+      .openapi({ description: 'Optional. The node group settings.' }),
+    configBucket: z
+      .string()
       .exactOptional()
-      .openapi({ description: 'Required. The number of vCPUs the driver is requesting.' }),
+      .openapi({
+        description:
+          "Optional. A Cloud Storage bucket used to stage job dependencies, config files, and job driver console output. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's staging bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket (see Dataproc staging and temp buckets (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)). This field requires a Cloud Storage bucket name, not a gs://... URI to a Cloud Storage bucket.",
+      }),
+    dataprocMetricConfig: DataprocMetricConfigSchema.exactOptional().openapi({
+      description: 'Optional. The config for Dataproc metrics.',
+    }),
+    encryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description: 'Optional. Encryption settings for the cluster.',
+    }),
+    endpointConfig: EndpointConfigSchema.exactOptional().openapi({
+      description: 'Optional. Port/endpoint configuration for this cluster',
+    }),
+    gceClusterConfig: GceClusterConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The shared Compute Engine config settings for all instances in a cluster.',
+    }),
+    gkeClusterConfig: GkeClusterConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. BETA. The Kubernetes Engine config for Dataproc clusters deployed to The Kubernetes Engine config for Dataproc clusters deployed to Kubernetes. These config settings are mutually exclusive with Compute Engine-based options, such as gce_cluster_config, master_config, worker_config, secondary_worker_config, and autoscaling_config.',
+    }),
+    initializationActions: z
+      .array(NodeInitializationActionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Commands to execute on each node after config is completed. By default, executables are run on master and all worker nodes. You can test a node's role metadata to run an executable on a master or worker node, as shown below using curl (you can also use wget): ROLE=$(curl -H Metadata-Flavor:Google http://metadata/computeMetadata/v1/instance/attributes/dataproc-role) if [[ \"${ROLE}\" == 'Master' ]]; then ... master specific actions ... else ... worker specific actions ... fi ",
+      }),
+    lifecycleConfig: LifecycleConfigSchema.exactOptional().openapi({
+      description: 'Optional. Lifecycle setting for the cluster.',
+    }),
+    masterConfig: InstanceGroupConfigSchema.exactOptional().openapi({
+      description:
+        "Optional. The Compute Engine config settings for the cluster's master instance.",
+    }),
+    metastoreConfig: MetastoreConfigSchema.exactOptional().openapi({
+      description: 'Optional. Metastore configuration.',
+    }),
+    secondaryWorkerConfig: InstanceGroupConfigSchema.exactOptional().openapi({
+      description:
+        "Optional. The Compute Engine config settings for a cluster's secondary worker instances",
+    }),
+    securityConfig: SecurityConfigSchema.exactOptional().openapi({
+      description: 'Optional. Security settings for the cluster.',
+    }),
+    softwareConfig: SoftwareConfigSchema.exactOptional().openapi({
+      description: 'Optional. The config settings for cluster software.',
+    }),
+    tempBucket: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. A Cloud Storage bucket used to store ephemeral cluster and jobs data, such as Spark and MapReduce history files. If you do not specify a temp bucket, Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's temp bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket. The default bucket has a TTL of 90 days, but you can use any TTL (or none) if you specify a bucket (see Dataproc staging and temp buckets (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)). This field requires a Cloud Storage bucket name, not a gs://... URI to a Cloud Storage bucket.",
+      }),
+    workerConfig: InstanceGroupConfigSchema.exactOptional().openapi({
+      description:
+        "Optional. The Compute Engine config settings for the cluster's worker instances.",
+    }),
   })
-  .openapi({ description: 'Driver scheduling configuration.', required: [] })
-  .openapi('DriverSchedulingConfig')
+  .openapi({ description: 'The cluster config.', required: [] })
+  .openapi('ClusterConfig')
+
+const ClusterMetricsSchema = z
+  .object({
+    hdfsMetrics: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The HDFS metrics.' }),
+    yarnMetrics: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'YARN metrics.' }),
+  })
+  .openapi({
+    description:
+      'Contains cluster daemon metrics, such as HDFS and YARN stats.Beta Feature: This report is available for testing purposes only. It may be changed before final release.',
+    required: [],
+  })
+  .openapi('ClusterMetrics')
+
+const ClusterStatusSchema = z
+  .object({
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Optional. Output only. Details of cluster's state.",
+        readOnly: true,
+      }),
+    state: z
+      .enum([
+        'UNKNOWN',
+        'CREATING',
+        'RUNNING',
+        'ERROR',
+        'ERROR_DUE_TO_UPDATE',
+        'DELETING',
+        'UPDATING',
+        'STOPPING',
+        'STOPPED',
+        'STARTING',
+        'REPAIRING',
+      ])
+      .exactOptional()
+      .openapi({ description: "Output only. The cluster's state.", readOnly: true }),
+    stateStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Time when this state was entered (see JSON representation of Timestamp (https://developers.google.com/protocol-buffers/docs/proto3#json)).',
+        readOnly: true,
+      }),
+    substate: z
+      .enum(['UNSPECIFIED', 'UNHEALTHY', 'STALE_STATUS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Additional state information that includes status reported by the agent.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'The status of a cluster and its instances.', required: [] })
+  .openapi('ClusterStatus')
+
+const SparkHistoryServerConfigSchema = z
+  .object({
+    dataprocCluster: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Resource name of an existing Dataproc Cluster to act as a Spark History Server for the workload.Example: projects/[project_id]/regions/[region]/clusters/[cluster_name]',
+      }),
+  })
+  .openapi({ description: 'Spark History Server configuration for the workload.', required: [] })
+  .openapi('SparkHistoryServerConfig')
+
+const AuxiliaryServicesConfigSchema = z
+  .object({
+    metastoreConfig: MetastoreConfigSchema.exactOptional().openapi({
+      description: 'Optional. The Hive Metastore configuration for this workload.',
+    }),
+    sparkHistoryServerConfig: SparkHistoryServerConfigSchema.exactOptional().openapi({
+      description: 'Optional. The Spark History Server configuration for the workload.',
+    }),
+  })
+  .openapi({ description: 'Auxiliary services configuration for a Cluster.', required: [] })
+  .openapi('AuxiliaryServicesConfig')
+
+const KubernetesSoftwareConfigSchema = z
+  .object({
+    componentVersion: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The components that should be installed in this Dataproc cluster. The key must be a string from the KubernetesComponent enumeration. The value is the version of the software to be installed. At least one entry must be specified.',
+      }),
+    properties: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The properties to set on daemon config files.Property keys are specified in prefix:property format, for example spark:spark.kubernetes.container.image. The following are supported prefixes and their mappings: spark: spark-defaults.confFor more information, see Cluster properties (https://cloud.google.com/dataproc/docs/concepts/cluster-properties).',
+      }),
+  })
+  .openapi({
+    description: 'The software configuration for this Dataproc cluster running on Kubernetes.',
+    required: [],
+  })
+  .openapi('KubernetesSoftwareConfig')
+
+type KubernetesClusterConfigType = {
+  gkeClusterConfig?: z.infer<typeof GkeClusterConfigSchema>
+  kubernetesNamespace?: string
+  kubernetesSoftwareConfig?: z.infer<typeof KubernetesSoftwareConfigSchema>
+}
+
+const KubernetesClusterConfigSchema: z.ZodType<KubernetesClusterConfigType> = z
+  .object({
+    gkeClusterConfig: GkeClusterConfigSchema.exactOptional().openapi({
+      description: 'Required. The configuration for running the Dataproc cluster on GKE.',
+    }),
+    kubernetesNamespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A namespace within the Kubernetes cluster to deploy into. If this namespace does not exist, it is created. If it exists, Dataproc verifies that another Dataproc VirtualCluster is not installed into it. If not specified, the name of the Dataproc Cluster is used.',
+      }),
+    kubernetesSoftwareConfig: KubernetesSoftwareConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The software configuration for this Dataproc cluster running on Kubernetes.',
+    }),
+  })
+  .openapi({
+    description: 'The configuration for running the Dataproc cluster on Kubernetes.',
+    required: [],
+  })
+  .openapi('KubernetesClusterConfig')
+
+type VirtualClusterConfigType = {
+  auxiliaryServicesConfig?: z.infer<typeof AuxiliaryServicesConfigSchema>
+  kubernetesClusterConfig?: z.infer<typeof KubernetesClusterConfigSchema>
+  stagingBucket?: string
+}
+
+const VirtualClusterConfigSchema: z.ZodType<VirtualClusterConfigType> = z
+  .object({
+    auxiliaryServicesConfig: AuxiliaryServicesConfigSchema.exactOptional().openapi({
+      description: 'Optional. Configuration of auxiliary services used by this cluster.',
+    }),
+    kubernetesClusterConfig: KubernetesClusterConfigSchema.exactOptional().openapi({
+      description: 'Required. The configuration for running the Dataproc cluster on Kubernetes.',
+    }),
+    stagingBucket: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. A Cloud Storage bucket used to stage job dependencies, config files, and job driver console output. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's staging bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket (see Dataproc staging and temp buckets (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)). This field requires a Cloud Storage bucket name, not a gs://... URI to a Cloud Storage bucket.",
+      }),
+  })
+  .openapi({
+    description:
+      'The Dataproc cluster config for a cluster that does not directly control the underlying compute resources, such as a Dataproc-on-GKE cluster (https://cloud.google.com/dataproc/docs/guides/dpgke/dataproc-gke-overview).',
+    required: [],
+  })
+  .openapi('VirtualClusterConfig')
+
+type ClusterType = {
+  clusterName?: string
+  clusterUuid?: string
+  config?: z.infer<typeof ClusterConfigSchema>
+  labels?: { [key: string]: string }
+  metrics?: z.infer<typeof ClusterMetricsSchema>
+  projectId?: string
+  status?: z.infer<typeof ClusterStatusSchema>
+  statusHistory?: z.infer<typeof ClusterStatusSchema>[]
+  virtualClusterConfig?: z.infer<typeof VirtualClusterConfigSchema>
+}
+
+const ClusterSchema: z.ZodType<ClusterType> = z
+  .object({
+    clusterName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The cluster name, which must be unique within a project. The name must start with a lowercase letter, and can contain up to 51 lowercase letters, numbers, and hyphens. It cannot end with a hyphen. The name of a deleted cluster can be reused.',
+      }),
+    clusterUuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A cluster UUID (Unique Universal Identifier). Dataproc generates this value when it creates the cluster.',
+        readOnly: true,
+      }),
+    config: ClusterConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The cluster config for a cluster of Compute Engine Instances. Note that Dataproc may set default values, and values may change when clusters are updated.Exactly one of ClusterConfig or VirtualClusterConfig must be specified.',
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The labels to associate with this cluster. Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a cluster.',
+      }),
+    metrics: ClusterMetricsSchema.exactOptional().openapi({
+      description:
+        'Output only. Contains cluster daemon metrics such as HDFS and YARN stats.Beta Feature: This report is available for testing purposes only. It may be changed before final release.',
+      readOnly: true,
+    }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The Google Cloud Platform project ID that the cluster belongs to.',
+      }),
+    status: ClusterStatusSchema.exactOptional().openapi({
+      description: 'Output only. Cluster status.',
+      readOnly: true,
+    }),
+    statusHistory: z
+      .array(ClusterStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. The previous cluster status.', readOnly: true }),
+    virtualClusterConfig: VirtualClusterConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The virtual cluster config is used when creating a Dataproc cluster that does not directly control the underlying compute resources, for example, when creating a Dataproc-on-GKE cluster (https://cloud.google.com/dataproc/docs/guides/dpgke/dataproc-gke-overview). Dataproc may set default values, and values may change when clusters are updated. Exactly one of config or virtual_cluster_config must be specified.',
+    }),
+  })
+  .openapi({
+    description: 'Describes the identifying information, config, and status of a Dataproc cluster',
+    required: [],
+  })
+  .openapi('Cluster')
+
+type ListClustersResponseType = {
+  clusters?: z.infer<typeof ClusterSchema>[]
+  nextPageToken?: string
+}
 
 const LoggingConfigSchema = z
   .object({
@@ -1604,33 +1476,6 @@ const PigJobSchema = z
   })
   .openapi('PigJob')
 
-const JobPlacementSchema = z
-  .object({
-    clusterLabels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Cluster labels to identify a cluster where the job will be submitted.',
-      }),
-    clusterName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The name of the cluster where the job will be submitted.',
-      }),
-    clusterUuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A cluster UUID generated by the Dataproc service when the job is submitted.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Dataproc job config.', required: [] })
-  .openapi('JobPlacement')
-
 const PrestoJobSchema = z
   .object({
     clientTags: z
@@ -1735,26 +1580,6 @@ const PySparkJobSchema = z
     required: [],
   })
   .openapi('PySparkJob')
-
-const JobReferenceSchema = z
-  .object({
-    jobId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The job ID, which must be unique within the project.The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or hyphens (-). The maximum length is 100 characters.If not specified by the caller, the job ID will be provided by the server.',
-      }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The ID of the Google Cloud Platform project that the job belongs to. If specified, must match the request project ID.',
-      }),
-  })
-  .openapi({ description: 'Encapsulates the full scoping used to reference a job.', required: [] })
-  .openapi('JobReference')
 
 const JobSchedulingSchema = z
   .object({
@@ -1921,53 +1746,6 @@ const SparkSqlJobSchema = z
   })
   .openapi('SparkSqlJob')
 
-const JobStatusSchema = z
-  .object({
-    details: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Output only. Job state details, such as an error description if the state is ERROR.',
-        readOnly: true,
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'SETUP_DONE',
-        'RUNNING',
-        'CANCEL_PENDING',
-        'CANCEL_STARTED',
-        'CANCELLED',
-        'DONE',
-        'ERROR',
-        'ATTEMPT_FAILURE',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. A state message specifying the overall job state.',
-        readOnly: true,
-      }),
-    stateStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when this state was entered.',
-        readOnly: true,
-      }),
-    substate: z
-      .enum(['UNSPECIFIED', 'SUBMITTED', 'QUEUED', 'STALE_STATUS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Additional state information, which includes status reported by the agent.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Dataproc job status.', required: [] })
-  .openapi('JobStatus')
-
 const TrinoJobSchema = z
   .object({
     clientTags: z
@@ -2011,66 +1789,275 @@ const TrinoJobSchema = z
   })
   .openapi('TrinoJob')
 
-const YarnApplicationSchema = z
+const OrderedJobSchema = z
   .object({
-    name: z.string().exactOptional().openapi({ description: 'Required. The application name.' }),
-    progress: z
-      .float32()
+    hadoopJob: HadoopJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a Hadoop job.',
+    }),
+    hiveJob: HiveJobSchema.exactOptional().openapi({ description: 'Optional. Job is a Hive job.' }),
+    labels: z
+      .record(z.string(), z.string())
       .exactOptional()
       .openapi({
-        description: 'Required. The numerical progress of the application, from 1 to 100.',
+        description:
+          'Optional. The labels to associate with this job.Label keys must be between 1 and 63 characters long, and must conform to the following regular expression: \\p{Ll}\\p{Lo}{0,62}Label values must be between 1 and 63 characters long, and must conform to the following regular expression: \\p{Ll}\\p{Lo}\\p{N}_-{0,63}No more than 32 labels can be associated with a given job.',
       }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'NEW',
-        'NEW_SAVING',
-        'SUBMITTED',
-        'ACCEPTED',
-        'RUNNING',
-        'FINISHED',
-        'FAILED',
-        'KILLED',
-      ])
+    pigJob: PigJobSchema.exactOptional().openapi({ description: 'Optional. Job is a Pig job.' }),
+    prerequisiteStepIds: z
+      .array(z.string())
       .exactOptional()
-      .openapi({ description: 'Required. The application state.' }),
-    trackingUrl: z
+      .openapi({
+        description:
+          'Optional. The optional list of prerequisite job step_ids. If not specified, the job will start at the beginning of workflow.',
+      }),
+    prestoJob: PrestoJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a Presto job.',
+    }),
+    pysparkJob: PySparkJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a PySpark job.',
+    }),
+    scheduling: JobSchedulingSchema.exactOptional().openapi({
+      description: 'Optional. Job scheduling configuration.',
+    }),
+    sparkJob: SparkJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a Spark job.',
+    }),
+    sparkRJob: SparkRJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a SparkR job.',
+    }),
+    sparkSqlJob: SparkSqlJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a SparkSql job.',
+    }),
+    stepId: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Optional. The HTTP URL of the ApplicationMaster, HistoryServer, or TimelineServer that provides application-specific information. The URL uses the internal hostname, and requires a proxy server for resolution and, possibly, access.',
+          'Required. The step id. The id must be unique among all jobs within the template.The step id is used as prefix for job id, as job goog-dataproc-workflow-step-id label, and in prerequisiteStepIds field from other steps.The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between 3 and 50 characters.',
       }),
+    trinoJob: TrinoJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a Trino job.',
+    }),
+  })
+  .openapi({ description: 'A job executed by the workflow.', required: [] })
+  .openapi('OrderedJob')
+
+const RegexValidationSchema = z
+  .object({
+    regexes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. RE2 regular expressions used to validate the parameter's value. The value must match the regex in its entirety (substring matches are not sufficient).",
+      }),
+  })
+  .openapi({ description: 'Validation based on regular expressions.', required: [] })
+  .openapi('RegexValidation')
+
+const ValueValidationSchema = z
+  .object({
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Required. List of allowed values for the parameter.' }),
+  })
+  .openapi({ description: 'Validation based on a list of allowed values.', required: [] })
+  .openapi('ValueValidation')
+
+const ParameterValidationSchema = z
+  .object({
+    regex: RegexValidationSchema.exactOptional().openapi({
+      description: 'Validation based on regular expressions.',
+    }),
+    values: ValueValidationSchema.exactOptional().openapi({
+      description: 'Validation based on a list of allowed values.',
+    }),
+  })
+  .openapi({ description: 'Configuration for parameter validation.', required: [] })
+  .openapi('ParameterValidation')
+
+const TemplateParameterSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Brief description of the parameter. Must not exceed 1024 characters.',
+      }),
+    fields: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. Paths to all fields that the parameter replaces. A field is allowed to appear in at most one parameter's list of field paths.A field path is similar in syntax to a google.protobuf.FieldMask. For example, a field path that references the zone field of a workflow template's cluster selector would be specified as placement.clusterSelector.zone.Also, field paths can reference fields using the following syntax: Values in maps can be referenced by key: labels'key' placement.clusterSelector.clusterLabels'key' placement.managedCluster.labels'key' placement.clusterSelector.clusterLabels'key' jobs'step-id'.labels'key' Jobs in the jobs list can be referenced by step-id: jobs'step-id'.hadoopJob.mainJarFileUri jobs'step-id'.hiveJob.queryFileUri jobs'step-id'.pySparkJob.mainPythonFileUri jobs'step-id'.hadoopJob.jarFileUris0 jobs'step-id'.hadoopJob.archiveUris0 jobs'step-id'.hadoopJob.fileUris0 jobs'step-id'.pySparkJob.pythonFileUris0 Items in repeated fields can be referenced by a zero-based index: jobs'step-id'.sparkJob.args0 Other examples: jobs'step-id'.hadoopJob.properties'key' jobs'step-id'.hadoopJob.args0 jobs'step-id'.hiveJob.scriptVariables'key' jobs'step-id'.hadoopJob.mainJarFileUri placement.clusterSelector.zoneIt may not be possible to parameterize maps and repeated fields in their entirety since only individual map values and individual items in repeated fields can be referenced. For example, the following field paths are invalid: placement.clusterSelector.clusterLabels jobs'step-id'.sparkJob.args",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Parameter name. The parameter name is used as the key, and paired with the parameter value, which are passed to the template when the template is instantiated. The name must contain only capital letters (A-Z), numbers (0-9), and underscores (_), and must not start with a number. The maximum length is 40 characters.',
+      }),
+    validation: ParameterValidationSchema.exactOptional().openapi({
+      description: "Optional. Validation rules to be applied to this parameter's value.",
+    }),
   })
   .openapi({
     description:
-      'A YARN application created by a job. Application information is a subset of org.apache.hadoop.yarn.proto.YarnProtos.ApplicationReportProto.Beta Feature: This report is available for testing purposes only. It may be changed before final release.',
+      'A configurable parameter that replaces one or more fields in the template. Parameterizable fields: - Labels - File uris - Job properties - Job arguments - Script variables - Main class (in HadoopJob and SparkJob) - Zone (in ClusterSelector)',
     required: [],
   })
-  .openapi('YarnApplication')
+  .openapi('TemplateParameter')
 
-type JobType = {
-  done?: boolean
-  driverControlFilesUri?: string
-  driverOutputResourceUri?: string
-  driverSchedulingConfig?: z.infer<typeof DriverSchedulingConfigSchema>
-  hadoopJob?: z.infer<typeof HadoopJobSchema>
-  hiveJob?: z.infer<typeof HiveJobSchema>
-  jobUuid?: string
+const ClusterSelectorSchema = z
+  .object({
+    clusterLabels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Required. The cluster labels. Cluster must have all labels to match.',
+      }),
+    zone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The zone where workflow process executes. This parameter does not affect the selection of the cluster.If unspecified, the zone of the first cluster matching the selector is used.',
+      }),
+  })
+  .openapi({
+    description: 'A selector that chooses target cluster for jobs based on metadata.',
+    required: [],
+  })
+  .openapi('ClusterSelector')
+
+type ManagedClusterType = {
+  clusterName?: string
+  config?: z.infer<typeof ClusterConfigSchema>
   labels?: { [key: string]: string }
-  pigJob?: z.infer<typeof PigJobSchema>
-  placement?: z.infer<typeof JobPlacementSchema>
-  prestoJob?: z.infer<typeof PrestoJobSchema>
-  pysparkJob?: z.infer<typeof PySparkJobSchema>
-  reference?: z.infer<typeof JobReferenceSchema>
-  scheduling?: z.infer<typeof JobSchedulingSchema>
-  sparkJob?: z.infer<typeof SparkJobSchema>
-  sparkRJob?: z.infer<typeof SparkRJobSchema>
-  sparkSqlJob?: z.infer<typeof SparkSqlJobSchema>
-  status?: z.infer<typeof JobStatusSchema>
-  statusHistory?: z.infer<typeof JobStatusSchema>[]
-  trinoJob?: z.infer<typeof TrinoJobSchema>
-  yarnApplications?: z.infer<typeof YarnApplicationSchema>[]
+}
+
+const ManagedClusterSchema: z.ZodType<ManagedClusterType> = z
+  .object({
+    clusterName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The cluster name prefix. A unique cluster name will be formed by appending a random suffix.The name must contain only lower-case letters (a-z), numbers (0-9), and hyphens (-). Must begin with a letter. Cannot begin or end with hyphen. Must consist of between 2 and 35 characters.',
+      }),
+    config: ClusterConfigSchema.exactOptional().openapi({
+      description: 'Required. The cluster configuration.',
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The labels to associate with this cluster.Label keys must be between 1 and 63 characters long, and must conform to the following PCRE regular expression: \\p{Ll}\\p{Lo}{0,62}Label values must be between 1 and 63 characters long, and must conform to the following PCRE regular expression: \\p{Ll}\\p{Lo}\\p{N}_-{0,63}No more than 32 labels can be associated with a given cluster.',
+      }),
+  })
+  .openapi({ description: 'Cluster that is managed by the workflow.', required: [] })
+  .openapi('ManagedCluster')
+
+type WorkflowTemplatePlacementType = {
+  clusterSelector?: z.infer<typeof ClusterSelectorSchema>
+  managedCluster?: z.infer<typeof ManagedClusterSchema>
+}
+
+const WorkflowTemplatePlacementSchema: z.ZodType<WorkflowTemplatePlacementType> = z
+  .object({
+    clusterSelector: ClusterSelectorSchema.exactOptional().openapi({
+      description:
+        'Optional. A selector that chooses target cluster for jobs based on metadata.The selector is evaluated at the time each job is submitted.',
+    }),
+    managedCluster: ManagedClusterSchema.exactOptional().openapi({
+      description: 'A cluster that is managed by the workflow.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies workflow execution target.Either managed_cluster or cluster_selector is required.',
+    required: [],
+  })
+  .openapi('WorkflowTemplatePlacement')
+
+type WorkflowTemplateType = {
+  createTime?: string
+  dagTimeout?: string
+  id?: string
+  jobs?: z.infer<typeof OrderedJobSchema>[]
+  labels?: { [key: string]: string }
+  name?: string
+  parameters?: z.infer<typeof TemplateParameterSchema>[]
+  placement?: z.infer<typeof WorkflowTemplatePlacementSchema>
+  updateTime?: string
+  version?: number
+}
+
+const WorkflowTemplateSchema: z.ZodType<WorkflowTemplateType> = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time template was created.', readOnly: true }),
+    dagTimeout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Timeout duration for the DAG of jobs, expressed in seconds (see JSON representation of duration (https://developers.google.com/protocol-buffers/docs/proto3#json)). The timeout duration must be from 10 minutes ("600s") to 24 hours ("86400s"). The timer begins when the first job is submitted. If the workflow is running at the end of the timeout period, any remaining jobs are cancelled, the workflow is ended, and if the workflow was running on a managed cluster, the cluster is deleted.',
+      }),
+    id: z.string().exactOptional(),
+    jobs: z
+      .array(OrderedJobSchema)
+      .exactOptional()
+      .openapi({ description: 'Required. The Directed Acyclic Graph of Jobs to submit.' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The labels to associate with this template. These labels will be propagated to all jobs and clusters created by the workflow instance.Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt).Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt).No more than 32 labels can be associated with a template.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The resource name of the workflow template, as described in https://cloud.google.com/apis/design/resource_names. For projects.regions.workflowTemplates, the resource name of the template has the following format: projects/{project_id}/regions/{region}/workflowTemplates/{template_id} For projects.locations.workflowTemplates, the resource name of the template has the following format: projects/{project_id}/locations/{location}/workflowTemplates/{template_id}',
+        readOnly: true,
+      }),
+    parameters: z
+      .array(TemplateParameterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Template parameters whose values are substituted into the template. Values for parameters must be provided when the template is instantiated.',
+      }),
+    placement: WorkflowTemplatePlacementSchema.exactOptional().openapi({
+      description: 'Required. WorkflowTemplate scheduling information.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time template was last updated.', readOnly: true }),
+    version: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Used to perform a consistent read-modify-write.This field should be left blank for a CreateWorkflowTemplate request. It is required for an UpdateWorkflowTemplate request, and must match the current server version. A typical update template flow would fetch the current template with a GetWorkflowTemplate request, which will return the current template with the version field filled in with the current server version. The user updates other fields in the template, then returns it as part of the UpdateWorkflowTemplate request.',
+      }),
+  })
+  .openapi({ description: 'A Dataproc workflow template resource.', required: [] })
+  .openapi('WorkflowTemplate')
+
+type ListWorkflowTemplatesResponseType = {
+  nextPageToken?: string
+  templates?: z.infer<typeof WorkflowTemplateSchema>[]
 }
 
 const SparkStandaloneAutoscalingConfigSchema = z
@@ -2243,125 +2230,500 @@ const AutoscalingPolicySchema = z
   })
   .openapi('AutoscalingPolicy')
 
-const AuxiliaryServicesConfigSchema = z
+const ExecutionConfigSchema = z
   .object({
-    metastoreConfig: MetastoreConfigSchema.exactOptional().openapi({
-      description: 'Optional. The Hive Metastore configuration for this workload.',
-    }),
+    idleTtl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The duration to keep the session alive while it's idling. Exceeding this threshold causes the session to terminate. This field cannot be set on a batch workload. Minimum value is 10 minutes; maximum value is 14 days (see JSON representation of Duration (https://developers.google.com/protocol-buffers/docs/proto3#json)). Defaults to 4 hours if not set. If both ttl and idle_ttl are specified, the conditions are treated as OR conditions: the workload will be terminated when it has been idle for idle_ttl or when ttl has been exceed, whichever occurs first.",
+      }),
+    kmsKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The Cloud KMS key to use for encryption.' }),
+    networkTags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Optional. Tags used for network traffic control.' }),
+    networkUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Network URI to connect workload to.' }),
+    serviceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Service account that used to execute workload.' }),
+    stagingBucket: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A Cloud Storage bucket used to stage workload dependencies, config files, and store workload output and other ephemeral data, such as Spark history files. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location according to the region where your workload is running, and then create and manage project-level, per-location staging and temporary buckets. This field requires a Cloud Storage bucket name, not a gs://... URI to a Cloud Storage bucket.',
+      }),
+    subnetworkUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Subnetwork URI to connect workload to.' }),
+    ttl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The duration after which the workload will be terminated. When the workload exceeds this duration, it will be unconditionally terminated without waiting for ongoing work to finish. If ttl is not specified for a batch workload, the workload will be allowed to run until it exits naturally (or runs forever without exiting). If ttl is not specified for an interactive session, it defaults to 24h. Minimum value is 10 minutes; maximum value is 14 days (see JSON representation of Duration (https://developers.google.com/protocol-buffers/docs/proto3#json)). If both ttl and idle_ttl are specified (for an interactive session), the conditions are treated as OR conditions: the workload will be terminated when it has been idle for idle_ttl or when ttl has been exceeded, whichever occurs first.',
+      }),
+  })
+  .openapi({ description: 'Execution configuration for a workload.', required: [] })
+  .openapi('ExecutionConfig')
+
+const PeripheralsConfigSchema = z
+  .object({
+    metastoreService: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Resource name of an existing Dataproc Metastore service.Example: projects/[project_id]/locations/[region]/services/[service_id]',
+      }),
     sparkHistoryServerConfig: SparkHistoryServerConfigSchema.exactOptional().openapi({
       description: 'Optional. The Spark History Server configuration for the workload.',
     }),
   })
-  .openapi({ description: 'Auxiliary services configuration for a Cluster.', required: [] })
-  .openapi('AuxiliaryServicesConfig')
+  .openapi({ description: 'Auxiliary services configuration for a workload.', required: [] })
+  .openapi('PeripheralsConfig')
 
-const BatchSchema: z.ZodType<BatchType> = z
-  .lazy(() =>
-    z
-      .object({
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The time when the batch was created.',
-            readOnly: true,
-          }),
-        creator: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The email address of the user who created the batch.',
-            readOnly: true,
-          }),
-        environmentConfig: EnvironmentConfigSchema.exactOptional().openapi({
-          description: 'Optional. Environment configuration for the batch execution.',
-        }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The labels to associate with this batch. Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a batch.',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. The resource name of the batch.', readOnly: true }),
-        operation: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The resource name of the operation associated with this batch.',
-            readOnly: true,
-          }),
-        pysparkBatch: PySparkBatchSchema.exactOptional().openapi({
-          description: 'Optional. PySpark batch config.',
-        }),
-        runtimeConfig: RuntimeConfigSchema.exactOptional().openapi({
-          description: 'Optional. Runtime configuration for the batch execution.',
-        }),
-        runtimeInfo: RuntimeInfoSchema.exactOptional().openapi({
-          description: 'Output only. Runtime information about batch execution.',
-          readOnly: true,
-        }),
-        sparkBatch: SparkBatchSchema.exactOptional().openapi({
-          description: 'Optional. Spark batch config.',
-        }),
-        sparkRBatch: SparkRBatchSchema.exactOptional().openapi({
-          description: 'Optional. SparkR batch config.',
-        }),
-        sparkSqlBatch: SparkSqlBatchSchema.exactOptional().openapi({
-          description: 'Optional. SparkSql batch config.',
-        }),
-        state: z
-          .enum([
-            'STATE_UNSPECIFIED',
-            'PENDING',
-            'RUNNING',
-            'CANCELLING',
-            'CANCELLED',
-            'SUCCEEDED',
-            'FAILED',
-          ])
-          .exactOptional()
-          .openapi({ description: 'Output only. The state of the batch.', readOnly: true }),
-        stateHistory: z
-          .array(StateHistorySchema)
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Historical state information for the batch.',
-            readOnly: true,
-          }),
-        stateMessage: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Batch state details, such as a failure description if the state is FAILED.',
-            readOnly: true,
-          }),
-        stateTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The time when the batch entered a current state.',
-            readOnly: true,
-          }),
-        uuid: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. A batch UUID (Unique Universal Identifier). The service generates this value when it creates the batch.',
-            readOnly: true,
-          }),
-      })
+const EnvironmentConfigSchema = z
+  .object({
+    executionConfig: ExecutionConfigSchema.exactOptional().openapi({
+      description: 'Optional. Execution configuration for a workload.',
+    }),
+    peripheralsConfig: PeripheralsConfigSchema.exactOptional().openapi({
+      description: 'Optional. Peripherals configuration that workload has access to.',
+    }),
+  })
+  .openapi({ description: 'Environment configuration for a workload.', required: [] })
+  .openapi('EnvironmentConfig')
+
+const PySparkBatchSchema = z
+  .object({
+    archiveUris: z
+      .array(z.string())
+      .exactOptional()
       .openapi({
-        description: 'A representation of a batch workload in the service.',
-        required: [],
+        description:
+          'Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.',
       }),
-  )
+    args: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The arguments to pass to the driver. Do not include arguments that can be set as batch properties, such as --conf, since a collision can occur that causes an incorrect batch submission.',
+      }),
+    fileUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. HCFS URIs of files to be placed in the working directory of each executor.',
+      }),
+    jarFileUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. HCFS URIs of jar files to add to the classpath of the Spark driver and tasks.',
+      }),
+    mainPythonFileUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The HCFS URI of the main Python file to use as the Spark driver. Must be a .py file.',
+      }),
+    pythonFileUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. HCFS file URIs of Python files to pass to the PySpark framework. Supported file types: .py, .egg, and .zip.',
+      }),
+  })
+  .openapi({
+    description:
+      'A configuration for running an Apache PySpark (https://spark.apache.org/docs/latest/api/python/getting_started/quickstart.html) batch workload.',
+    required: [],
+  })
+  .openapi('PySparkBatch')
+
+const RuntimeConfigSchema = z
+  .object({
+    containerImage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Optional custom container image for the job runtime environment. If not specified, a default container image will be used.',
+      }),
+    properties: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A mapping of property names to values, which are used to configure workload execution.',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Version of the batch runtime.' }),
+  })
+  .openapi({ description: 'Runtime configuration for a workload.', required: [] })
+  .openapi('RuntimeConfig')
+
+const UsageMetricsSchema = z
+  .object({
+    milliDcuSeconds: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. DCU (Dataproc Compute Units) usage in (milliDCU x seconds) (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing)).',
+      }),
+    shuffleStorageGbSeconds: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Shuffle storage usage in (GB x seconds) (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing)).',
+      }),
+  })
+  .openapi({
+    description: 'Usage metrics represent approximate total resources consumed by a workload.',
+    required: [],
+  })
+  .openapi('UsageMetrics')
+
+const UsageSnapshotSchema = z
+  .object({
+    milliDcu: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Milli (one-thousandth) Dataproc Compute Units (DCUs) (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing)).',
+      }),
+    shuffleStorageGb: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Shuffle Storage in gigabytes (GB). (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing))',
+      }),
+    snapshotTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The timestamp of the usage snapshot.' }),
+  })
+  .openapi({
+    description:
+      'The usage snaphot represents the resources consumed by a workload at a specified time.',
+    required: [],
+  })
+  .openapi('UsageSnapshot')
+
+const RuntimeInfoSchema = z
+  .object({
+    approximateUsage: UsageMetricsSchema.exactOptional().openapi({
+      description:
+        'Output only. Approximate workload resource usage calculated after workload finishes (see Dataproc Serverless pricing (https://cloud.google.com/dataproc-serverless/pricing)).',
+      readOnly: true,
+    }),
+    currentUsage: UsageSnapshotSchema.exactOptional().openapi({
+      description: 'Output only. Snapshot of current workload resource usage.',
+      readOnly: true,
+    }),
+    diagnosticOutputUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. A URI pointing to the location of the diagnostics tarball.',
+        readOnly: true,
+      }),
+    endpoints: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Map of remote access endpoints (such as web interfaces and APIs) to their URIs.',
+        readOnly: true,
+      }),
+    outputUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A URI pointing to the location of the stdout and stderr of the workload.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Runtime information about workload execution.', required: [] })
+  .openapi('RuntimeInfo')
+
+const SparkBatchSchema = z
+  .object({
+    archiveUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.',
+      }),
+    args: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The arguments to pass to the driver. Do not include arguments that can be set as batch properties, such as --conf, since a collision can occur that causes an incorrect batch submission.',
+      }),
+    fileUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. HCFS URIs of files to be placed in the working directory of each executor.',
+      }),
+    jarFileUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. HCFS URIs of jar files to add to the classpath of the Spark driver and tasks.',
+      }),
+    mainClass: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The name of the driver main class. The jar file that contains the class must be in the classpath or specified in jar_file_uris.',
+      }),
+    mainJarFileUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The HCFS URI of the jar file that contains the main class.',
+      }),
+  })
+  .openapi({
+    description:
+      'A configuration for running an Apache Spark (https://spark.apache.org/) batch workload.',
+    required: [],
+  })
+  .openapi('SparkBatch')
+
+const SparkRBatchSchema = z
+  .object({
+    archiveUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. HCFS URIs of archives to be extracted into the working directory of each executor. Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.',
+      }),
+    args: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The arguments to pass to the Spark driver. Do not include arguments that can be set as batch properties, such as --conf, since a collision can occur that causes an incorrect batch submission.',
+      }),
+    fileUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. HCFS URIs of files to be placed in the working directory of each executor.',
+      }),
+    mainRFileUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The HCFS URI of the main R file to use as the driver. Must be a .R or .r file.',
+      }),
+  })
+  .openapi({
+    description:
+      'A configuration for running an Apache SparkR (https://spark.apache.org/docs/latest/sparkr.html) batch workload.',
+    required: [],
+  })
+  .openapi('SparkRBatch')
+
+const SparkSqlBatchSchema = z
+  .object({
+    jarFileUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Optional. HCFS URIs of jar files to be added to the Spark CLASSPATH.',
+      }),
+    queryFileUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The HCFS URI of the script that contains Spark SQL queries to execute.',
+      }),
+    queryVariables: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Mapping of query variable names to values (equivalent to the Spark SQL command: SET name="value";).',
+      }),
+  })
+  .openapi({
+    description:
+      'A configuration for running Apache Spark SQL (https://spark.apache.org/sql/) queries as a batch workload.',
+    required: [],
+  })
+  .openapi('SparkSqlBatch')
+
+const StateHistorySchema = z
+  .object({
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'RUNNING',
+        'CANCELLING',
+        'CANCELLED',
+        'SUCCEEDED',
+        'FAILED',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The state of the batch at this point in history.',
+        readOnly: true,
+      }),
+    stateMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Details about the state at this point in history.',
+        readOnly: true,
+      }),
+    stateStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the batch entered the historical state.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Historical state information.', required: [] })
+  .openapi('StateHistory')
+
+const BatchSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the batch was created.',
+        readOnly: true,
+      }),
+    creator: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The email address of the user who created the batch.',
+        readOnly: true,
+      }),
+    environmentConfig: EnvironmentConfigSchema.exactOptional().openapi({
+      description: 'Optional. Environment configuration for the batch execution.',
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The labels to associate with this batch. Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a batch.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The resource name of the batch.', readOnly: true }),
+    operation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The resource name of the operation associated with this batch.',
+        readOnly: true,
+      }),
+    pysparkBatch: PySparkBatchSchema.exactOptional().openapi({
+      description: 'Optional. PySpark batch config.',
+    }),
+    runtimeConfig: RuntimeConfigSchema.exactOptional().openapi({
+      description: 'Optional. Runtime configuration for the batch execution.',
+    }),
+    runtimeInfo: RuntimeInfoSchema.exactOptional().openapi({
+      description: 'Output only. Runtime information about batch execution.',
+      readOnly: true,
+    }),
+    sparkBatch: SparkBatchSchema.exactOptional().openapi({
+      description: 'Optional. Spark batch config.',
+    }),
+    sparkRBatch: SparkRBatchSchema.exactOptional().openapi({
+      description: 'Optional. SparkR batch config.',
+    }),
+    sparkSqlBatch: SparkSqlBatchSchema.exactOptional().openapi({
+      description: 'Optional. SparkSql batch config.',
+    }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'RUNNING',
+        'CANCELLING',
+        'CANCELLED',
+        'SUCCEEDED',
+        'FAILED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. The state of the batch.', readOnly: true }),
+    stateHistory: z
+      .array(StateHistorySchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Historical state information for the batch.',
+        readOnly: true,
+      }),
+    stateMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Batch state details, such as a failure description if the state is FAILED.',
+        readOnly: true,
+      }),
+    stateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the batch entered a current state.',
+        readOnly: true,
+      }),
+    uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A batch UUID (Unique Universal Identifier). The service generates this value when it creates the batch.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A representation of a batch workload in the service.', required: [] })
   .openapi('Batch')
 
 const BatchOperationMetadataSchema = z
@@ -2462,278 +2824,9 @@ const BindingSchema = z
   .openapi('Binding')
 
 const CancelJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A request to cancel a job.' })
   .openapi('CancelJobRequest')
-
-const ClusterConfigSchema: z.ZodType<ClusterConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        autoscalingConfig: AutoscalingConfigSchema.exactOptional().openapi({
-          description:
-            'Optional. Autoscaling config for the policy associated with the cluster. Cluster does not autoscale if this field is unset.',
-        }),
-        auxiliaryNodeGroups: z
-          .array(AuxiliaryNodeGroupSchema)
-          .exactOptional()
-          .openapi({ description: 'Optional. The node group settings.' }),
-        configBucket: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Optional. A Cloud Storage bucket used to stage job dependencies, config files, and job driver console output. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's staging bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket (see Dataproc staging and temp buckets (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)). This field requires a Cloud Storage bucket name, not a gs://... URI to a Cloud Storage bucket.",
-          }),
-        dataprocMetricConfig: DataprocMetricConfigSchema.exactOptional().openapi({
-          description: 'Optional. The config for Dataproc metrics.',
-        }),
-        encryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
-          description: 'Optional. Encryption settings for the cluster.',
-        }),
-        endpointConfig: EndpointConfigSchema.exactOptional().openapi({
-          description: 'Optional. Port/endpoint configuration for this cluster',
-        }),
-        gceClusterConfig: GceClusterConfigSchema.exactOptional().openapi({
-          description:
-            'Optional. The shared Compute Engine config settings for all instances in a cluster.',
-        }),
-        gkeClusterConfig: GkeClusterConfigSchema.exactOptional().openapi({
-          description:
-            'Optional. BETA. The Kubernetes Engine config for Dataproc clusters deployed to The Kubernetes Engine config for Dataproc clusters deployed to Kubernetes. These config settings are mutually exclusive with Compute Engine-based options, such as gce_cluster_config, master_config, worker_config, secondary_worker_config, and autoscaling_config.',
-        }),
-        initializationActions: z
-          .array(NodeInitializationActionSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              "Optional. Commands to execute on each node after config is completed. By default, executables are run on master and all worker nodes. You can test a node's role metadata to run an executable on a master or worker node, as shown below using curl (you can also use wget): ROLE=$(curl -H Metadata-Flavor:Google http://metadata/computeMetadata/v1/instance/attributes/dataproc-role) if [[ \"${ROLE}\" == 'Master' ]]; then ... master specific actions ... else ... worker specific actions ... fi ",
-          }),
-        lifecycleConfig: LifecycleConfigSchema.exactOptional().openapi({
-          description: 'Optional. Lifecycle setting for the cluster.',
-        }),
-        masterConfig: InstanceGroupConfigSchema.exactOptional().openapi({
-          description:
-            "Optional. The Compute Engine config settings for the cluster's master instance.",
-        }),
-        metastoreConfig: MetastoreConfigSchema.exactOptional().openapi({
-          description: 'Optional. Metastore configuration.',
-        }),
-        secondaryWorkerConfig: InstanceGroupConfigSchema.exactOptional().openapi({
-          description:
-            "Optional. The Compute Engine config settings for a cluster's secondary worker instances",
-        }),
-        securityConfig: SecurityConfigSchema.exactOptional().openapi({
-          description: 'Optional. Security settings for the cluster.',
-        }),
-        softwareConfig: SoftwareConfigSchema.exactOptional().openapi({
-          description: 'Optional. The config settings for cluster software.',
-        }),
-        tempBucket: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Optional. A Cloud Storage bucket used to store ephemeral cluster and jobs data, such as Spark and MapReduce history files. If you do not specify a temp bucket, Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's temp bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket. The default bucket has a TTL of 90 days, but you can use any TTL (or none) if you specify a bucket (see Dataproc staging and temp buckets (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)). This field requires a Cloud Storage bucket name, not a gs://... URI to a Cloud Storage bucket.",
-          }),
-        workerConfig: InstanceGroupConfigSchema.exactOptional().openapi({
-          description:
-            "Optional. The Compute Engine config settings for the cluster's worker instances.",
-        }),
-      })
-      .openapi({ description: 'The cluster config.', required: [] }),
-  )
-  .openapi('ClusterConfig')
-
-const ClusterMetricsSchema = z
-  .object({
-    hdfsMetrics: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The HDFS metrics.' }),
-    yarnMetrics: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'YARN metrics.' }),
-  })
-  .openapi({
-    description:
-      'Contains cluster daemon metrics, such as HDFS and YARN stats.Beta Feature: This report is available for testing purposes only. It may be changed before final release.',
-    required: [],
-  })
-  .openapi('ClusterMetrics')
-
-const ClusterStatusSchema = z
-  .object({
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Optional. Output only. Details of cluster's state.",
-        readOnly: true,
-      }),
-    state: z
-      .enum([
-        'UNKNOWN',
-        'CREATING',
-        'RUNNING',
-        'ERROR',
-        'ERROR_DUE_TO_UPDATE',
-        'DELETING',
-        'UPDATING',
-        'STOPPING',
-        'STOPPED',
-        'STARTING',
-        'REPAIRING',
-      ])
-      .exactOptional()
-      .openapi({ description: "Output only. The cluster's state.", readOnly: true }),
-    stateStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Time when this state was entered (see JSON representation of Timestamp (https://developers.google.com/protocol-buffers/docs/proto3#json)).',
-        readOnly: true,
-      }),
-    substate: z
-      .enum(['UNSPECIFIED', 'UNHEALTHY', 'STALE_STATUS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Additional state information that includes status reported by the agent.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'The status of a cluster and its instances.', required: [] })
-  .openapi('ClusterStatus')
-
-const KubernetesSoftwareConfigSchema = z
-  .object({
-    componentVersion: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The components that should be installed in this Dataproc cluster. The key must be a string from the KubernetesComponent enumeration. The value is the version of the software to be installed. At least one entry must be specified.',
-      }),
-    properties: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The properties to set on daemon config files.Property keys are specified in prefix:property format, for example spark:spark.kubernetes.container.image. The following are supported prefixes and their mappings: spark: spark-defaults.confFor more information, see Cluster properties (https://cloud.google.com/dataproc/docs/concepts/cluster-properties).',
-      }),
-  })
-  .openapi({
-    description: 'The software configuration for this Dataproc cluster running on Kubernetes.',
-    required: [],
-  })
-  .openapi('KubernetesSoftwareConfig')
-
-const KubernetesClusterConfigSchema = z
-  .object({
-    gkeClusterConfig: GkeClusterConfigSchema.exactOptional().openapi({
-      description: 'Required. The configuration for running the Dataproc cluster on GKE.',
-    }),
-    kubernetesNamespace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A namespace within the Kubernetes cluster to deploy into. If this namespace does not exist, it is created. If it exists, Dataproc verifies that another Dataproc VirtualCluster is not installed into it. If not specified, the name of the Dataproc Cluster is used.',
-      }),
-    kubernetesSoftwareConfig: KubernetesSoftwareConfigSchema.exactOptional().openapi({
-      description:
-        'Optional. The software configuration for this Dataproc cluster running on Kubernetes.',
-    }),
-  })
-  .openapi({
-    description: 'The configuration for running the Dataproc cluster on Kubernetes.',
-    required: [],
-  })
-  .openapi('KubernetesClusterConfig')
-
-const VirtualClusterConfigSchema = z
-  .object({
-    auxiliaryServicesConfig: AuxiliaryServicesConfigSchema.exactOptional().openapi({
-      description: 'Optional. Configuration of auxiliary services used by this cluster.',
-    }),
-    kubernetesClusterConfig: KubernetesClusterConfigSchema.exactOptional().openapi({
-      description: 'Required. The configuration for running the Dataproc cluster on Kubernetes.',
-    }),
-    stagingBucket: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. A Cloud Storage bucket used to stage job dependencies, config files, and job driver console output. If you do not specify a staging bucket, Cloud Dataproc will determine a Cloud Storage location (US, ASIA, or EU) for your cluster's staging bucket according to the Compute Engine zone where your cluster is deployed, and then create and manage this project-level, per-location bucket (see Dataproc staging and temp buckets (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)). This field requires a Cloud Storage bucket name, not a gs://... URI to a Cloud Storage bucket.",
-      }),
-  })
-  .openapi({
-    description:
-      'The Dataproc cluster config for a cluster that does not directly control the underlying compute resources, such as a Dataproc-on-GKE cluster (https://cloud.google.com/dataproc/docs/guides/dpgke/dataproc-gke-overview).',
-    required: [],
-  })
-  .openapi('VirtualClusterConfig')
-
-const ClusterSchema = z
-  .object({
-    clusterName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The cluster name, which must be unique within a project. The name must start with a lowercase letter, and can contain up to 51 lowercase letters, numbers, and hyphens. It cannot end with a hyphen. The name of a deleted cluster can be reused.',
-      }),
-    clusterUuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A cluster UUID (Unique Universal Identifier). Dataproc generates this value when it creates the cluster.',
-        readOnly: true,
-      }),
-    config: ClusterConfigSchema.exactOptional().openapi({
-      description:
-        'Optional. The cluster config for a cluster of Compute Engine Instances. Note that Dataproc may set default values, and values may change when clusters are updated.Exactly one of ClusterConfig or VirtualClusterConfig must be specified.',
-    }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The labels to associate with this cluster. Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a cluster.',
-      }),
-    metrics: ClusterMetricsSchema.exactOptional().openapi({
-      description:
-        'Output only. Contains cluster daemon metrics such as HDFS and YARN stats.Beta Feature: This report is available for testing purposes only. It may be changed before final release.',
-      readOnly: true,
-    }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The Google Cloud Platform project ID that the cluster belongs to.',
-      }),
-    status: ClusterStatusSchema.exactOptional().openapi({
-      description: 'Output only. Cluster status.',
-      readOnly: true,
-    }),
-    statusHistory: z
-      .array(ClusterStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. The previous cluster status.', readOnly: true }),
-    virtualClusterConfig: VirtualClusterConfigSchema.exactOptional().openapi({
-      description:
-        'Optional. The virtual cluster config is used when creating a Dataproc cluster that does not directly control the underlying compute resources, for example, when creating a Dataproc-on-GKE cluster (https://cloud.google.com/dataproc/docs/guides/dpgke/dataproc-gke-overview). Dataproc may set default values, and values may change when clusters are updated. Exactly one of config or virtual_cluster_config must be specified.',
-    }),
-  })
-  .openapi({
-    description: 'Describes the identifying information, config, and status of a Dataproc cluster',
-    required: [],
-  })
-  .openapi('Cluster')
 
 const ClusterOperationSchema = z
   .object({
@@ -2835,28 +2928,6 @@ const ClusterOperationMetadataSchema = z
   .openapi({ description: 'Metadata describing the operation.', required: [] })
   .openapi('ClusterOperationMetadata')
 
-const ClusterSelectorSchema = z
-  .object({
-    clusterLabels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Required. The cluster labels. Cluster must have all labels to match.',
-      }),
-    zone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The zone where workflow process executes. This parameter does not affect the selection of the cluster.If unspecified, the zone of the first cluster matching the selector is used.',
-      }),
-  })
-  .openapi({
-    description: 'A selector that chooses target cluster for jobs based on metadata.',
-    required: [],
-  })
-  .openapi('ClusterSelector')
-
 const IntervalSchema = z
   .object({
     endTime: z
@@ -2933,8 +3004,22 @@ const DiagnoseClusterResultsSchema = z
   .openapi({ description: 'The location of diagnostic output.', required: [] })
   .openapi('DiagnoseClusterResults')
 
+const DriverSchedulingConfigSchema = z
+  .object({
+    memoryMb: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Required. The amount of memory in MB the driver is requesting.' }),
+    vcores: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Required. The number of vCPUs the driver is requesting.' }),
+  })
+  .openapi({ description: 'Driver scheduling configuration.', required: [] })
+  .openapi('DriverSchedulingConfig')
+
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); } ',
@@ -3004,109 +3089,234 @@ const InstantiateWorkflowTemplateRequestSchema = z
   .openapi({ description: 'A request to instantiate a workflow template.', required: [] })
   .openapi('InstantiateWorkflowTemplateRequest')
 
-const JobSchema: z.ZodType<JobType> = z
-  .lazy(() =>
-    z
-      .object({
-        done: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Indicates whether the job is completed. If the value is false, the job is still in progress. If true, the job is completed, and status.state field will indicate if it was successful, failed, or cancelled.',
-            readOnly: true,
-          }),
-        driverControlFilesUri: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. If present, the location of miscellaneous control files which may be used as part of job setup and handling. If not present, control files may be placed in the same location as driver_output_uri.',
-            readOnly: true,
-          }),
-        driverOutputResourceUri: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Output only. A URI pointing to the location of the stdout of the job's driver program.",
-            readOnly: true,
-          }),
-        driverSchedulingConfig: DriverSchedulingConfigSchema.exactOptional().openapi({
-          description: 'Optional. Driver scheduling configuration.',
-        }),
-        hadoopJob: HadoopJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a Hadoop job.',
-        }),
-        hiveJob: HiveJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a Hive job.',
-        }),
-        jobUuid: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. A UUID that uniquely identifies a job within the project over time. This is in contrast to a user-settable reference.job_id that may be reused over time.',
-            readOnly: true,
-          }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The labels to associate with this job. Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a job.',
-          }),
-        pigJob: PigJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a Pig job.',
-        }),
-        placement: JobPlacementSchema.exactOptional().openapi({
-          description: 'Required. Job information, including how, when, and where to run the job.',
-        }),
-        prestoJob: PrestoJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a Presto job.',
-        }),
-        pysparkJob: PySparkJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a PySpark job.',
-        }),
-        reference: JobReferenceSchema.exactOptional().openapi({
-          description:
-            'Optional. The fully qualified reference to the job, which can be used to obtain the equivalent REST path of the job resource. If this property is not specified when a job is created, the server generates a job_id.',
-        }),
-        scheduling: JobSchedulingSchema.exactOptional().openapi({
-          description: 'Optional. Job scheduling configuration.',
-        }),
-        sparkJob: SparkJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a Spark job.',
-        }),
-        sparkRJob: SparkRJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a SparkR job.',
-        }),
-        sparkSqlJob: SparkSqlJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a SparkSql job.',
-        }),
-        status: JobStatusSchema.exactOptional().openapi({
-          description:
-            'Output only. The job status. Additional application-specific status information may be contained in the type_job and yarn_applications fields.',
-          readOnly: true,
-        }),
-        statusHistory: z
-          .array(JobStatusSchema)
-          .exactOptional()
-          .openapi({ description: 'Output only. The previous job status.', readOnly: true }),
-        trinoJob: TrinoJobSchema.exactOptional().openapi({
-          description: 'Optional. Job is a Trino job.',
-        }),
-        yarnApplications: z
-          .array(YarnApplicationSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The collection of YARN applications spun up by this job.Beta Feature: This report is available for testing purposes only. It may be changed before final release.',
-            readOnly: true,
-          }),
-      })
-      .openapi({ description: 'A Dataproc job resource.', required: [] }),
-  )
+const JobPlacementSchema = z
+  .object({
+    clusterLabels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Cluster labels to identify a cluster where the job will be submitted.',
+      }),
+    clusterName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The name of the cluster where the job will be submitted.',
+      }),
+    clusterUuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A cluster UUID generated by the Dataproc service when the job is submitted.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Dataproc job config.', required: [] })
+  .openapi('JobPlacement')
+
+const JobReferenceSchema = z
+  .object({
+    jobId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The job ID, which must be unique within the project.The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), or hyphens (-). The maximum length is 100 characters.If not specified by the caller, the job ID will be provided by the server.',
+      }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The ID of the Google Cloud Platform project that the job belongs to. If specified, must match the request project ID.',
+      }),
+  })
+  .openapi({ description: 'Encapsulates the full scoping used to reference a job.', required: [] })
+  .openapi('JobReference')
+
+const JobStatusSchema = z
+  .object({
+    details: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Output only. Job state details, such as an error description if the state is ERROR.',
+        readOnly: true,
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'SETUP_DONE',
+        'RUNNING',
+        'CANCEL_PENDING',
+        'CANCEL_STARTED',
+        'CANCELLED',
+        'DONE',
+        'ERROR',
+        'ATTEMPT_FAILURE',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. A state message specifying the overall job state.',
+        readOnly: true,
+      }),
+    stateStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when this state was entered.',
+        readOnly: true,
+      }),
+    substate: z
+      .enum(['UNSPECIFIED', 'SUBMITTED', 'QUEUED', 'STALE_STATUS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Additional state information, which includes status reported by the agent.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Dataproc job status.', required: [] })
+  .openapi('JobStatus')
+
+const YarnApplicationSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'Required. The application name.' }),
+    progress: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The numerical progress of the application, from 1 to 100.',
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'NEW',
+        'NEW_SAVING',
+        'SUBMITTED',
+        'ACCEPTED',
+        'RUNNING',
+        'FINISHED',
+        'FAILED',
+        'KILLED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. The application state.' }),
+    trackingUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The HTTP URL of the ApplicationMaster, HistoryServer, or TimelineServer that provides application-specific information. The URL uses the internal hostname, and requires a proxy server for resolution and, possibly, access.',
+      }),
+  })
+  .openapi({
+    description:
+      'A YARN application created by a job. Application information is a subset of org.apache.hadoop.yarn.proto.YarnProtos.ApplicationReportProto.Beta Feature: This report is available for testing purposes only. It may be changed before final release.',
+    required: [],
+  })
+  .openapi('YarnApplication')
+
+const JobSchema = z
+  .object({
+    done: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Indicates whether the job is completed. If the value is false, the job is still in progress. If true, the job is completed, and status.state field will indicate if it was successful, failed, or cancelled.',
+        readOnly: true,
+      }),
+    driverControlFilesUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. If present, the location of miscellaneous control files which may be used as part of job setup and handling. If not present, control files may be placed in the same location as driver_output_uri.',
+        readOnly: true,
+      }),
+    driverOutputResourceUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. A URI pointing to the location of the stdout of the job's driver program.",
+        readOnly: true,
+      }),
+    driverSchedulingConfig: DriverSchedulingConfigSchema.exactOptional().openapi({
+      description: 'Optional. Driver scheduling configuration.',
+    }),
+    hadoopJob: HadoopJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a Hadoop job.',
+    }),
+    hiveJob: HiveJobSchema.exactOptional().openapi({ description: 'Optional. Job is a Hive job.' }),
+    jobUuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A UUID that uniquely identifies a job within the project over time. This is in contrast to a user-settable reference.job_id that may be reused over time.',
+        readOnly: true,
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The labels to associate with this job. Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a job.',
+      }),
+    pigJob: PigJobSchema.exactOptional().openapi({ description: 'Optional. Job is a Pig job.' }),
+    placement: JobPlacementSchema.exactOptional().openapi({
+      description: 'Required. Job information, including how, when, and where to run the job.',
+    }),
+    prestoJob: PrestoJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a Presto job.',
+    }),
+    pysparkJob: PySparkJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a PySpark job.',
+    }),
+    reference: JobReferenceSchema.exactOptional().openapi({
+      description:
+        'Optional. The fully qualified reference to the job, which can be used to obtain the equivalent REST path of the job resource. If this property is not specified when a job is created, the server generates a job_id.',
+    }),
+    scheduling: JobSchedulingSchema.exactOptional().openapi({
+      description: 'Optional. Job scheduling configuration.',
+    }),
+    sparkJob: SparkJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a Spark job.',
+    }),
+    sparkRJob: SparkRJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a SparkR job.',
+    }),
+    sparkSqlJob: SparkSqlJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a SparkSql job.',
+    }),
+    status: JobStatusSchema.exactOptional().openapi({
+      description:
+        'Output only. The job status. Additional application-specific status information may be contained in the type_job and yarn_applications fields.',
+      readOnly: true,
+    }),
+    statusHistory: z
+      .array(JobStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. The previous job status.', readOnly: true }),
+    trinoJob: TrinoJobSchema.exactOptional().openapi({
+      description: 'Optional. Job is a Trino job.',
+    }),
+    yarnApplications: z
+      .array(YarnApplicationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The collection of YARN applications spun up by this job.Beta Feature: This report is available for testing purposes only. It may be changed before final release.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A Dataproc job resource.', required: [] })
   .openapi('Job')
 
 const JobMetadataSchema = z
@@ -3169,7 +3379,7 @@ const ListBatchesResponseSchema = z
   .openapi({ description: 'A list of batch workloads.', required: [] })
   .openapi('ListBatchesResponse')
 
-const ListClustersResponseSchema = z
+const ListClustersResponseSchema: z.ZodType<ListClustersResponseType> = z
   .object({
     clusters: z
       .array(ClusterSchema)
@@ -3314,227 +3524,7 @@ const ListOperationsResponseSchema = z
   .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
   .openapi('ListOperationsResponse')
 
-const OrderedJobSchema = z
-  .object({
-    hadoopJob: HadoopJobSchema.exactOptional().openapi({
-      description: 'Optional. Job is a Hadoop job.',
-    }),
-    hiveJob: HiveJobSchema.exactOptional().openapi({ description: 'Optional. Job is a Hive job.' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The labels to associate with this job.Label keys must be between 1 and 63 characters long, and must conform to the following regular expression: \\p{Ll}\\p{Lo}{0,62}Label values must be between 1 and 63 characters long, and must conform to the following regular expression: \\p{Ll}\\p{Lo}\\p{N}_-{0,63}No more than 32 labels can be associated with a given job.',
-      }),
-    pigJob: PigJobSchema.exactOptional().openapi({ description: 'Optional. Job is a Pig job.' }),
-    prerequisiteStepIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The optional list of prerequisite job step_ids. If not specified, the job will start at the beginning of workflow.',
-      }),
-    prestoJob: PrestoJobSchema.exactOptional().openapi({
-      description: 'Optional. Job is a Presto job.',
-    }),
-    pysparkJob: PySparkJobSchema.exactOptional().openapi({
-      description: 'Optional. Job is a PySpark job.',
-    }),
-    scheduling: JobSchedulingSchema.exactOptional().openapi({
-      description: 'Optional. Job scheduling configuration.',
-    }),
-    sparkJob: SparkJobSchema.exactOptional().openapi({
-      description: 'Optional. Job is a Spark job.',
-    }),
-    sparkRJob: SparkRJobSchema.exactOptional().openapi({
-      description: 'Optional. Job is a SparkR job.',
-    }),
-    sparkSqlJob: SparkSqlJobSchema.exactOptional().openapi({
-      description: 'Optional. Job is a SparkSql job.',
-    }),
-    stepId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The step id. The id must be unique among all jobs within the template.The step id is used as prefix for job id, as job goog-dataproc-workflow-step-id label, and in prerequisiteStepIds field from other steps.The id must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). Cannot begin or end with underscore or hyphen. Must consist of between 3 and 50 characters.',
-      }),
-    trinoJob: TrinoJobSchema.exactOptional().openapi({
-      description: 'Optional. Job is a Trino job.',
-    }),
-  })
-  .openapi({ description: 'A job executed by the workflow.', required: [] })
-  .openapi('OrderedJob')
-
-const RegexValidationSchema = z
-  .object({
-    regexes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. RE2 regular expressions used to validate the parameter's value. The value must match the regex in its entirety (substring matches are not sufficient).",
-      }),
-  })
-  .openapi({ description: 'Validation based on regular expressions.', required: [] })
-  .openapi('RegexValidation')
-
-const ValueValidationSchema = z
-  .object({
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Required. List of allowed values for the parameter.' }),
-  })
-  .openapi({ description: 'Validation based on a list of allowed values.', required: [] })
-  .openapi('ValueValidation')
-
-const ParameterValidationSchema = z
-  .object({
-    regex: RegexValidationSchema.exactOptional().openapi({
-      description: 'Validation based on regular expressions.',
-    }),
-    values: ValueValidationSchema.exactOptional().openapi({
-      description: 'Validation based on a list of allowed values.',
-    }),
-  })
-  .openapi({ description: 'Configuration for parameter validation.', required: [] })
-  .openapi('ParameterValidation')
-
-const TemplateParameterSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Brief description of the parameter. Must not exceed 1024 characters.',
-      }),
-    fields: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. Paths to all fields that the parameter replaces. A field is allowed to appear in at most one parameter's list of field paths.A field path is similar in syntax to a google.protobuf.FieldMask. For example, a field path that references the zone field of a workflow template's cluster selector would be specified as placement.clusterSelector.zone.Also, field paths can reference fields using the following syntax: Values in maps can be referenced by key: labels'key' placement.clusterSelector.clusterLabels'key' placement.managedCluster.labels'key' placement.clusterSelector.clusterLabels'key' jobs'step-id'.labels'key' Jobs in the jobs list can be referenced by step-id: jobs'step-id'.hadoopJob.mainJarFileUri jobs'step-id'.hiveJob.queryFileUri jobs'step-id'.pySparkJob.mainPythonFileUri jobs'step-id'.hadoopJob.jarFileUris0 jobs'step-id'.hadoopJob.archiveUris0 jobs'step-id'.hadoopJob.fileUris0 jobs'step-id'.pySparkJob.pythonFileUris0 Items in repeated fields can be referenced by a zero-based index: jobs'step-id'.sparkJob.args0 Other examples: jobs'step-id'.hadoopJob.properties'key' jobs'step-id'.hadoopJob.args0 jobs'step-id'.hiveJob.scriptVariables'key' jobs'step-id'.hadoopJob.mainJarFileUri placement.clusterSelector.zoneIt may not be possible to parameterize maps and repeated fields in their entirety since only individual map values and individual items in repeated fields can be referenced. For example, the following field paths are invalid: placement.clusterSelector.clusterLabels jobs'step-id'.sparkJob.args",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Parameter name. The parameter name is used as the key, and paired with the parameter value, which are passed to the template when the template is instantiated. The name must contain only capital letters (A-Z), numbers (0-9), and underscores (_), and must not start with a number. The maximum length is 40 characters.',
-      }),
-    validation: ParameterValidationSchema.exactOptional().openapi({
-      description: "Optional. Validation rules to be applied to this parameter's value.",
-    }),
-  })
-  .openapi({
-    description:
-      'A configurable parameter that replaces one or more fields in the template. Parameterizable fields: - Labels - File uris - Job properties - Job arguments - Script variables - Main class (in HadoopJob and SparkJob) - Zone (in ClusterSelector)',
-    required: [],
-  })
-  .openapi('TemplateParameter')
-
-const ManagedClusterSchema = z
-  .object({
-    clusterName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The cluster name prefix. A unique cluster name will be formed by appending a random suffix.The name must contain only lower-case letters (a-z), numbers (0-9), and hyphens (-). Must begin with a letter. Cannot begin or end with hyphen. Must consist of between 2 and 35 characters.',
-      }),
-    config: ClusterConfigSchema.exactOptional().openapi({
-      description: 'Required. The cluster configuration.',
-    }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The labels to associate with this cluster.Label keys must be between 1 and 63 characters long, and must conform to the following PCRE regular expression: \\p{Ll}\\p{Lo}{0,62}Label values must be between 1 and 63 characters long, and must conform to the following PCRE regular expression: \\p{Ll}\\p{Lo}\\p{N}_-{0,63}No more than 32 labels can be associated with a given cluster.',
-      }),
-  })
-  .openapi({ description: 'Cluster that is managed by the workflow.', required: [] })
-  .openapi('ManagedCluster')
-
-const WorkflowTemplatePlacementSchema = z
-  .object({
-    clusterSelector: ClusterSelectorSchema.exactOptional().openapi({
-      description:
-        'Optional. A selector that chooses target cluster for jobs based on metadata.The selector is evaluated at the time each job is submitted.',
-    }),
-    managedCluster: ManagedClusterSchema.exactOptional().openapi({
-      description: 'A cluster that is managed by the workflow.',
-    }),
-  })
-  .openapi({
-    description:
-      'Specifies workflow execution target.Either managed_cluster or cluster_selector is required.',
-    required: [],
-  })
-  .openapi('WorkflowTemplatePlacement')
-
-const WorkflowTemplateSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time template was created.', readOnly: true }),
-    dagTimeout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Timeout duration for the DAG of jobs, expressed in seconds (see JSON representation of duration (https://developers.google.com/protocol-buffers/docs/proto3#json)). The timeout duration must be from 10 minutes ("600s") to 24 hours ("86400s"). The timer begins when the first job is submitted. If the workflow is running at the end of the timeout period, any remaining jobs are cancelled, the workflow is ended, and if the workflow was running on a managed cluster, the cluster is deleted.',
-      }),
-    id: z.string().exactOptional(),
-    jobs: z
-      .array(OrderedJobSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. The Directed Acyclic Graph of Jobs to submit.' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The labels to associate with this template. These labels will be propagated to all jobs and clusters created by the workflow instance.Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt).Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt).No more than 32 labels can be associated with a template.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource name of the workflow template, as described in https://cloud.google.com/apis/design/resource_names. For projects.regions.workflowTemplates, the resource name of the template has the following format: projects/{project_id}/regions/{region}/workflowTemplates/{template_id} For projects.locations.workflowTemplates, the resource name of the template has the following format: projects/{project_id}/locations/{location}/workflowTemplates/{template_id}',
-        readOnly: true,
-      }),
-    parameters: z
-      .array(TemplateParameterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Template parameters whose values are substituted into the template. Values for parameters must be provided when the template is instantiated.',
-      }),
-    placement: WorkflowTemplatePlacementSchema.exactOptional().openapi({
-      description: 'Required. WorkflowTemplate scheduling information.',
-    }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time template was last updated.', readOnly: true }),
-    version: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Used to perform a consistent read-modify-write.This field should be left blank for a CreateWorkflowTemplate request. It is required for an UpdateWorkflowTemplate request, and must match the current server version. A typical update template flow would fetch the current template with a GetWorkflowTemplate request, which will return the current template with the version field filled in with the current server version. The user updates other fields in the template, then returns it as part of the UpdateWorkflowTemplate request.',
-      }),
-  })
-  .openapi({ description: 'A Dataproc workflow template resource.', required: [] })
-  .openapi('WorkflowTemplate')
-
-const ListWorkflowTemplatesResponseSchema = z
+const ListWorkflowTemplatesResponseSchema: z.ZodType<ListWorkflowTemplatesResponseType> = z
   .object({
     nextPageToken: z
       .string()

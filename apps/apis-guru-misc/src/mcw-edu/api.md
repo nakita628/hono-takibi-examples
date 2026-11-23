@@ -6,7 +6,7 @@ The RGD REST API provides programmatic access to information and annotation stor
 
 Base URLs:
 
-* <a href="https://api.apis.guru//rest.rgd.mcw.edu/rgdws">https://api.apis.guru//rest.rgd.mcw.edu/rgdws</a>
+* <a href="//rest.rgd.mcw.edu/rgdws">//rest.rgd.mcw.edu/rgdws</a>
 
 <a href="http://rgd.mcw.edu/wg/citing-rgd">Terms of service</a>
 Email: <a href="mailto:RGD.Data2@mcw.edu">Rat Genome Database</a> 

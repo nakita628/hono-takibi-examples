@@ -1,5 +1,431 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AudioRendersFilesListSchema = z
+  .object({
+    bits_sample: z
+      .number()
+      .openapi({ description: 'The bit depth of the audio files in bits/sample' }),
+    content_type: z.string().openapi({ description: 'The content-type of the file' }),
+    download_url: z
+      .string()
+      .openapi({
+        description:
+          'The internet-accessible URL from which the file can be downloaded. Any redirects encountered when using this URL must be followed',
+      }),
+    filename: z
+      .string()
+      .openapi({
+        description:
+          'The user-specified file name suggestion from the render request; this file name becomes the filename property of the Content-Disposition header when the user downloads the rendered audio file',
+      }),
+    frequency_hz: z
+      .number()
+      .openapi({ description: 'The Sample rate of the audio files in Hertz (Hz)' }),
+    kbits_second: z
+      .number()
+      .openapi({ description: 'The data rate of the audio files in kilobits/second' }),
+    size_bytes: z.number().openapi({ description: 'Size of the file in bytes' }),
+    tracks: z
+      .array(z.string())
+      .openapi({ description: 'An array of track names included in the file' }),
+  })
+  .openapi({
+    description: 'Files associated with the render',
+    example: {
+      bits_sample: 16,
+      content_type: 'audio/mp3',
+      download_url:
+        'https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/0.mp3',
+      filename: 'My_audio_ai.mp3',
+      frequency_hz: 44100,
+      kbits_second: 192,
+      size_bytes: 481556,
+      tracks: ['master'],
+    },
+    required: [
+      'filename',
+      'bits_sample',
+      'content_type',
+      'download_url',
+      'frequency_hz',
+      'kbits_second',
+      'size_bytes',
+      'tracks',
+    ],
+  })
+  .openapi('AudioRendersFilesList')
+
+const AudioRenderTimelineSpanInstrumentGroupStatusSchema = z
+  .object({
+    beat: z
+      .number()
+      .openapi({ description: 'The beat, relative to the span, at which the status begins' }),
+    status: z
+      .enum(['active', 'inactive'])
+      .openapi({ description: 'Whether the instrument is playing or not' }),
+  })
+  .openapi({
+    description: 'The status of an instrument at a specific beat',
+    example: { beat: 12, status: 'active' },
+    required: ['beat', 'status'],
+  })
+  .openapi('AudioRenderTimelineSpanInstrumentGroupStatus')
+
+const AudioRenderTimelineSpanInstrumentGroupSchema = z
+  .object({
+    instrument_group: z.string().openapi({ description: 'The instrument ID' }),
+    statuses: z
+      .array(AudioRenderTimelineSpanInstrumentGroupStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of status objects' }),
+  })
+  .openapi({
+    description: 'An instrument and the status objects that specify when that instrument plays',
+    example: { instrument_group: 'bright_roomy_kit', statuses: [{ beat: 12, status: 'active' }] },
+    required: ['instrument_group'],
+  })
+  .openapi('AudioRenderTimelineSpanInstrumentGroup')
+
+const AudioRenderTimelineSpanRegionSchema = z
+  .object({
+    beat: z
+      .int()
+      .openapi({
+        description: "The beat, relative to the span, at which the region object's music begins",
+      }),
+    descriptor: z
+      .string()
+      .openapi({ description: 'The descriptor ID needed to compose the music' }),
+    end_type: z
+      .object({
+        beat: z
+          .number()
+          .openapi({
+            description:
+              'The beat, relative to the start of the active region, at which the end_type begins; in other words, the ending starts on this beat of the region',
+          }),
+        event: z.enum(['ending', 'transition']).openapi({ description: 'The type of event' }),
+        type: z
+          .enum(['ringout', 'cut'])
+          .openapi({
+            description:
+              'The specific action to perform; if the event type is "ending" then this must be "ringout" and if event type is "transition" this must be "cut"',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'A high-level description of how a region ends',
+        required: ['beat', 'event', 'type'],
+      }),
+    id: z
+      .number()
+      .openapi({ description: 'An identifier which must be unique within the parent span' }),
+    key: z
+      .object({
+        tonic_accidental: z
+          .enum(['double flat', 'flat', 'natural', 'sharp', 'double sharp'])
+          .exactOptional()
+          .openapi({
+            description:
+              'A text representation of the accidental; if this field is specified, the tonic_note field should also be specified',
+          }),
+        tonic_note: z
+          .enum(['c', 'd', 'e', 'f', 'g', 'a', 'b'])
+          .exactOptional()
+          .openapi({
+            description:
+              'A text representation of the musical note; if this field is specified, the tonic_accidental field should also be specified',
+          }),
+        tonic_quality: z
+          .enum([
+            'major',
+            'natural_minor',
+            'harmonic_minor',
+            'melodic_minor',
+            'ionian',
+            'dorian',
+            'phrygian',
+            'lydian',
+            'mixolydian',
+            'aeolian',
+            'locrian',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'The scale quality; if this field is not specified, the API selects the quality automatically',
+            example: 'major',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The key signature active at the beginning of the region',
+        required: [],
+      }),
+    region: z.enum(['music', 'silence']).openapi({ description: 'The type of region' }),
+  })
+  .openapi({
+    description: 'A period of music or silence, measured in beats',
+    example: {
+      beat: 12,
+      descriptor: 'cinematic_minimal_tense',
+      end_type: { beat: 24, event: 'ending', type: 'ringout' },
+      id: 222,
+      key: { tonic_note: 'c', tonic_quality: 'major' },
+      region: 'music',
+    },
+    required: ['id', 'region', 'descriptor', 'beat'],
+  })
+  .openapi('AudioRenderTimelineSpanRegion')
+
+const AudioRenderTimelineSpanTempoChangesSchema = z
+  .object({
+    tempo: z
+      .number()
+      .openapi({ description: 'The tempo, in beats per minute, active at this time' }),
+    time: z.number().openapi({ description: 'The time, in seconds, at which the tempo exists' }),
+  })
+  .openapi({
+    description:
+      'An inflection point in a tempo curve; the API creates the overall tempo by using a linear interpolation of the time between each tempo change',
+    example: { tempo: 86, time: 5 },
+    required: ['time', 'tempo'],
+  })
+  .openapi('AudioRenderTimelineSpanTempoChanges')
+
+const AudioRenderTimelineSpanSchema = z
+  .object({
+    id: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'An identifier which must be unique within the parent span' }),
+    instrument_groups: z
+      .array(AudioRenderTimelineSpanInstrumentGroupSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of instrument_group objects that are used in this span' }),
+    regions: z
+      .array(AudioRenderTimelineSpanRegionSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of region objects within the span' }),
+    span_type: z
+      .enum(['metered', 'unmetered'])
+      .openapi({
+        description:
+          'Type of span; metered spans represent a pariod of time with music, and unmetered spans denote the end of the prior metered span',
+      }),
+    tempo: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The tempo, in beats per minute, at the start of the span; if not provided, the API selects a random tempo',
+      }),
+    tempo_changes: z
+      .array(AudioRenderTimelineSpanTempoChangesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Two or more inflection points in a tempo curve; the API creates a smoothly changing tempo by using a linear interpolation of the time between each tempo change',
+      }),
+    time: z
+      .int()
+      .openapi({ description: 'The absolute time, in seconds, at which the span starts' }),
+  })
+  .openapi({
+    description: 'The beginning of a non-overlapping period of absolute time',
+    example: {
+      id: 111,
+      regions: [
+        {
+          beat: 12,
+          descriptor: 'cinematic_minimal_tense',
+          end_type: { beat: 24, event: 'ending', type: 'ringout' },
+          id: 222,
+          key: { tonic_note: 'c', tonic_quality: 'major' },
+          region: 'music',
+        },
+      ],
+      span_type: 'metered',
+      tempo: 76,
+      time: 0,
+    },
+    required: ['span_type', 'time'],
+  })
+  .openapi('AudioRenderTimelineSpan')
+
+const AudioRenderTimelineSchema = z
+  .object({
+    spans: z
+      .array(AudioRenderTimelineSpanSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A span object that represents the beginning of a period of absolute time',
+      }),
+  })
+  .openapi({
+    description:
+      'A timeline object that represents either a request for music to be created or an entire music composition',
+    example: {
+      spans: [
+        {
+          id: 123456,
+          instrument_groups: [
+            { instrument_group: 'The instrument ID', statuses: [{ beat: 12, status: 'active' }] },
+          ],
+          regions: [
+            {
+              beat: 12,
+              descriptor: 'The descriptor ID needed to compose the music',
+              end_type: { beat: 12, event: 'ending', type: 'ringout' },
+              id: 123456,
+              key: { tonic_accidental: 'double flat', tonic_note: 'c', tonic_quality: 'major' },
+              region: 'music',
+            },
+          ],
+          span_type: 'metered',
+          tempo: 12345,
+          tempo_changes: [{ tempo: 12345, time: 5 }],
+          time: 5,
+        },
+      ],
+    },
+    required: [],
+  })
+  .openapi('AudioRenderTimeline')
+
+type AudioRenderResultType = {
+  created_date?: string
+  files?: z.infer<typeof AudioRendersFilesListSchema>[]
+  id: string
+  preset?: 'MASTER_MP3' | 'MASTER_WAV' | 'STEMS_WAV'
+  progress_percent?: number
+  status:
+    | 'WAITING_COMPOSE'
+    | 'RUNNING_COMPOSE'
+    | 'WAITING_RENDER'
+    | 'RUNNING_RENDER'
+    | 'CREATED'
+    | 'FAILED_CREATE'
+  timeline: z.infer<typeof AudioRenderTimelineSchema>
+  updated_date?: string
+}
+
+const AudioRenderResultSchema: z.ZodType<AudioRenderResultType> = z
+  .object({
+    created_date: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time the render was submitted to the API' }),
+    files: z
+      .array(AudioRendersFilesListSchema)
+      .exactOptional()
+      .openapi({ description: 'The files associated with the render' }),
+    id: z.string().openapi({ description: 'The alphanumeric ID of the simple render' }),
+    preset: z
+      .enum(['MASTER_MP3', 'MASTER_WAV', 'STEMS_WAV'])
+      .exactOptional()
+      .openapi({ description: 'The file format preset' }),
+    progress_percent: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The current progress of the render as a percentage' }),
+    status: z
+      .enum([
+        'WAITING_COMPOSE',
+        'RUNNING_COMPOSE',
+        'WAITING_RENDER',
+        'RUNNING_RENDER',
+        'CREATED',
+        'FAILED_CREATE',
+      ])
+      .openapi({ description: 'A coarse progress indicator' }),
+    timeline: AudioRenderTimelineSchema,
+    updated_date: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The time that the audio output was uploaded' }),
+  })
+  .openapi({
+    description: 'The output of an audio render in WAV or MP3 format',
+    example: {
+      created_date: '2021-07-13T16:19:30-04:00',
+      files: [],
+      id: '2yZp13IhLqnjfh2KquDTOHUHzTiP',
+      preset: 'MASTER_MP3',
+      progress_percent: 0,
+      status: 'WAITING_COMPOSE',
+      timeline: {},
+      updated_date: '2021-07-13T16:19:30-04:00',
+    },
+    required: ['id', 'timeline', 'status'],
+  })
+  .openapi('AudioRenderResult')
+
+type AudioRendersListResultsType = { audio_renders: z.infer<typeof AudioRenderResultSchema>[] }
+
+type CreateAudioRenderType = {
+  filename: string
+  preset: 'MASTER_MP3' | 'MASTER_WAV' | 'STEMS_WAV'
+  timeline: z.infer<typeof AudioRenderTimelineSchema>
+}
+
+const CreateAudioRenderSchema: z.ZodType<CreateAudioRenderType> = z
+  .object({
+    filename: z
+      .string()
+      .openapi({
+        description:
+          'A user-specified file name suggestion; this file name becomes the filename property of the Content-Disposition header when the user downloads the rendered audio file',
+        example: 'My Project.mp3',
+      }),
+    preset: z
+      .enum(['MASTER_MP3', 'MASTER_WAV', 'STEMS_WAV'])
+      .openapi({
+        description:
+          'File format, such as MP3 file, combined WAV file, or individual track WAV files',
+        example: 'MASTER_MP3',
+      }),
+    timeline: AudioRenderTimelineSchema.openapi({
+      description: 'The timeline data with which to generate the render',
+    }),
+  })
+  .openapi({
+    description: 'Data required to create an audio render',
+    example: {
+      filename: 'My Project.mp3',
+      preset: 'MASTER_MP3',
+      timeline: {
+        spans: [
+          {
+            id: 111,
+            instrument_groups: [
+              { instrument_group: 'roomy_kit', statuses: [{ beat: 12, status: 'active' }] },
+            ],
+            regions: [
+              {
+                beat: 12,
+                descriptor: 'cinematic_minimal_tense',
+                end_type: { beat: 24, event: 'ending', type: 'ringout' },
+                id: 222,
+                key: { tonic_note: 'c', tonic_quality: 'major' },
+                region: 'music',
+              },
+            ],
+            span_type: 'metered',
+            tempo: 76,
+            tempo_changes: [{ tempo: 86, time: 5 }],
+            time: 5,
+          },
+          { span_type: 'unmetered', time: 20 },
+        ],
+      },
+    },
+    required: ['preset', 'timeline', 'filename'],
+  })
+  .openapi('CreateAudioRender')
+
+type CreateAudioRendersRequestType = { audio_renders: z.infer<typeof CreateAudioRenderSchema>[] }
+
 const AccessTokenDetailsSchema = z
   .object({
     client_id: z
@@ -400,7 +826,7 @@ const ErrorSchema = z
       .exactOptional()
       .openapi({ description: 'Debugging information about the error' }),
     items: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'A list of items that produced the error' }),
     message: z.string().openapi({ description: 'Specific details about this error' }),
@@ -512,351 +938,7 @@ const AudioDataListSchema = z
   })
   .openapi('AudioDataList')
 
-const AudioRendersFilesListSchema = z
-  .object({
-    bits_sample: z
-      .number()
-      .openapi({ description: 'The bit depth of the audio files in bits/sample' }),
-    content_type: z.string().openapi({ description: 'The content-type of the file' }),
-    download_url: z
-      .string()
-      .openapi({
-        description:
-          'The internet-accessible URL from which the file can be downloaded. Any redirects encountered when using this URL must be followed',
-      }),
-    filename: z
-      .string()
-      .openapi({
-        description:
-          'The user-specified file name suggestion from the render request; this file name becomes the filename property of the Content-Disposition header when the user downloads the rendered audio file',
-      }),
-    frequency_hz: z
-      .number()
-      .openapi({ description: 'The Sample rate of the audio files in Hertz (Hz)' }),
-    kbits_second: z
-      .number()
-      .openapi({ description: 'The data rate of the audio files in kilobits/second' }),
-    size_bytes: z.number().openapi({ description: 'Size of the file in bytes' }),
-    tracks: z
-      .array(z.string())
-      .openapi({ description: 'An array of track names included in the file' }),
-  })
-  .openapi({
-    description: 'Files associated with the render',
-    example: {
-      bits_sample: 16,
-      content_type: 'audio/mp3',
-      download_url:
-        'https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/0.mp3',
-      filename: 'My_audio_ai.mp3',
-      frequency_hz: 44100,
-      kbits_second: 192,
-      size_bytes: 481556,
-      tracks: ['master'],
-    },
-    required: [
-      'filename',
-      'bits_sample',
-      'content_type',
-      'download_url',
-      'frequency_hz',
-      'kbits_second',
-      'size_bytes',
-      'tracks',
-    ],
-  })
-  .openapi('AudioRendersFilesList')
-
-const AudioRenderTimelineSpanInstrumentGroupStatusSchema = z
-  .object({
-    beat: z
-      .number()
-      .openapi({ description: 'The beat, relative to the span, at which the status begins' }),
-    status: z
-      .enum(['active', 'inactive'])
-      .openapi({ description: 'Whether the instrument is playing or not' }),
-  })
-  .openapi({
-    description: 'The status of an instrument at a specific beat',
-    example: { beat: 12, status: 'active' },
-    required: ['beat', 'status'],
-  })
-  .openapi('AudioRenderTimelineSpanInstrumentGroupStatus')
-
-const AudioRenderTimelineSpanInstrumentGroupSchema = z
-  .object({
-    instrument_group: z.string().openapi({ description: 'The instrument ID' }),
-    statuses: z
-      .array(AudioRenderTimelineSpanInstrumentGroupStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of status objects' }),
-  })
-  .openapi({
-    description: 'An instrument and the status objects that specify when that instrument plays',
-    example: { instrument_group: 'bright_roomy_kit', statuses: [{ beat: 12, status: 'active' }] },
-    required: ['instrument_group'],
-  })
-  .openapi('AudioRenderTimelineSpanInstrumentGroup')
-
-const AudioRenderTimelineSpanRegionSchema = z
-  .object({
-    beat: z
-      .int()
-      .openapi({
-        description: "The beat, relative to the span, at which the region object's music begins",
-      }),
-    descriptor: z
-      .string()
-      .openapi({ description: 'The descriptor ID needed to compose the music' }),
-    end_type: z
-      .object({
-        beat: z
-          .number()
-          .openapi({
-            description:
-              'The beat, relative to the start of the active region, at which the end_type begins; in other words, the ending starts on this beat of the region',
-          }),
-        event: z.enum(['ending', 'transition']).openapi({ description: 'The type of event' }),
-        type: z
-          .enum(['ringout', 'cut'])
-          .openapi({
-            description:
-              'The specific action to perform; if the event type is "ending" then this must be "ringout" and if event type is "transition" this must be "cut"',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'A high-level description of how a region ends',
-        required: ['beat', 'event', 'type'],
-      }),
-    id: z
-      .number()
-      .openapi({ description: 'An identifier which must be unique within the parent span' }),
-    key: z
-      .object({
-        tonic_accidental: z
-          .enum(['double flat', 'flat', 'natural', 'sharp', 'double sharp'])
-          .exactOptional()
-          .openapi({
-            description:
-              'A text representation of the accidental; if this field is specified, the tonic_note field should also be specified',
-          }),
-        tonic_note: z
-          .enum(['c', 'd', 'e', 'f', 'g', 'a', 'b'])
-          .exactOptional()
-          .openapi({
-            description:
-              'A text representation of the musical note; if this field is specified, the tonic_accidental field should also be specified',
-          }),
-        tonic_quality: z
-          .enum([
-            'major',
-            'natural_minor',
-            'harmonic_minor',
-            'melodic_minor',
-            'ionian',
-            'dorian',
-            'phrygian',
-            'lydian',
-            'mixolydian',
-            'aeolian',
-            'locrian',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'The scale quality; if this field is not specified, the API selects the quality automatically',
-            example: 'major',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The key signature active at the beginning of the region',
-        required: [],
-      }),
-    region: z.enum(['music', 'silence']).openapi({ description: 'The type of region' }),
-  })
-  .openapi({
-    description: 'A period of music or silence, measured in beats',
-    example: {
-      beat: 12,
-      descriptor: 'cinematic_minimal_tense',
-      end_type: { beat: 24, event: 'ending', type: 'ringout' },
-      id: 222,
-      key: { tonic_note: 'c', tonic_quality: 'major' },
-      region: 'music',
-    },
-    required: ['id', 'region', 'descriptor', 'beat'],
-  })
-  .openapi('AudioRenderTimelineSpanRegion')
-
-const AudioRenderTimelineSpanTempoChangesSchema = z
-  .object({
-    tempo: z
-      .number()
-      .openapi({ description: 'The tempo, in beats per minute, active at this time' }),
-    time: z.number().openapi({ description: 'The time, in seconds, at which the tempo exists' }),
-  })
-  .openapi({
-    description:
-      'An inflection point in a tempo curve; the API creates the overall tempo by using a linear interpolation of the time between each tempo change',
-    example: { tempo: 86, time: 5 },
-    required: ['time', 'tempo'],
-  })
-  .openapi('AudioRenderTimelineSpanTempoChanges')
-
-const AudioRenderTimelineSpanSchema = z
-  .object({
-    id: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'An identifier which must be unique within the parent span' }),
-    instrument_groups: z
-      .array(AudioRenderTimelineSpanInstrumentGroupSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of instrument_group objects that are used in this span' }),
-    regions: z
-      .array(AudioRenderTimelineSpanRegionSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of region objects within the span' }),
-    span_type: z
-      .enum(['metered', 'unmetered'])
-      .openapi({
-        description:
-          'Type of span; metered spans represent a pariod of time with music, and unmetered spans denote the end of the prior metered span',
-      }),
-    tempo: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The tempo, in beats per minute, at the start of the span; if not provided, the API selects a random tempo',
-      }),
-    tempo_changes: z
-      .array(AudioRenderTimelineSpanTempoChangesSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Two or more inflection points in a tempo curve; the API creates a smoothly changing tempo by using a linear interpolation of the time between each tempo change',
-      }),
-    time: z
-      .int()
-      .openapi({ description: 'The absolute time, in seconds, at which the span starts' }),
-  })
-  .openapi({
-    description: 'The beginning of a non-overlapping period of absolute time',
-    example: {
-      id: 111,
-      regions: [
-        {
-          beat: 12,
-          descriptor: 'cinematic_minimal_tense',
-          end_type: { beat: 24, event: 'ending', type: 'ringout' },
-          id: 222,
-          key: { tonic_note: 'c', tonic_quality: 'major' },
-          region: 'music',
-        },
-      ],
-      span_type: 'metered',
-      tempo: 76,
-      time: 0,
-    },
-    required: ['span_type', 'time'],
-  })
-  .openapi('AudioRenderTimelineSpan')
-
-const AudioRenderTimelineSchema = z
-  .object({
-    spans: z
-      .array(AudioRenderTimelineSpanSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A span object that represents the beginning of a period of absolute time',
-      }),
-  })
-  .openapi({
-    description:
-      'A timeline object that represents either a request for music to be created or an entire music composition',
-    example: {
-      spans: [
-        {
-          id: 123456,
-          instrument_groups: [
-            { instrument_group: 'The instrument ID', statuses: [{ beat: 12, status: 'active' }] },
-          ],
-          regions: [
-            {
-              beat: 12,
-              descriptor: 'The descriptor ID needed to compose the music',
-              end_type: { beat: 12, event: 'ending', type: 'ringout' },
-              id: 123456,
-              key: { tonic_accidental: 'double flat', tonic_note: 'c', tonic_quality: 'major' },
-              region: 'music',
-            },
-          ],
-          span_type: 'metered',
-          tempo: 12345,
-          tempo_changes: [{ tempo: 12345, time: 5 }],
-          time: 5,
-        },
-      ],
-    },
-    required: [],
-  })
-  .openapi('AudioRenderTimeline')
-
-const AudioRenderResultSchema = z
-  .object({
-    created_date: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time the render was submitted to the API' }),
-    files: z
-      .array(AudioRendersFilesListSchema)
-      .exactOptional()
-      .openapi({ description: 'The files associated with the render' }),
-    id: z.string().openapi({ description: 'The alphanumeric ID of the simple render' }),
-    preset: z
-      .enum(['MASTER_MP3', 'MASTER_WAV', 'STEMS_WAV'])
-      .exactOptional()
-      .openapi({ description: 'The file format preset' }),
-    progress_percent: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The current progress of the render as a percentage' }),
-    status: z
-      .enum([
-        'WAITING_COMPOSE',
-        'RUNNING_COMPOSE',
-        'WAITING_RENDER',
-        'RUNNING_RENDER',
-        'CREATED',
-        'FAILED_CREATE',
-      ])
-      .openapi({ description: 'A coarse progress indicator' }),
-    timeline: AudioRenderTimelineSchema,
-    updated_date: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The time that the audio output was uploaded' }),
-  })
-  .openapi({
-    description: 'The output of an audio render in WAV or MP3 format',
-    example: {
-      created_date: '2021-07-13T16:19:30-04:00',
-      files: [],
-      id: '2yZp13IhLqnjfh2KquDTOHUHzTiP',
-      preset: 'MASTER_MP3',
-      progress_percent: 0,
-      status: 'WAITING_COMPOSE',
-      timeline: {},
-      updated_date: '2021-07-13T16:19:30-04:00',
-    },
-    required: ['id', 'timeline', 'status'],
-  })
-  .openapi('AudioRenderResult')
-
-const AudioRendersListResultsSchema = z
+const AudioRendersListResultsSchema: z.ZodType<AudioRendersListResultsType> = z
   .object({
     audio_renders: z
       .array(AudioRenderResultSchema)
@@ -1640,7 +1722,7 @@ const ImageSearchResultsSchema = z
     per_page: z.int().exactOptional().openapi({ description: 'Number of results per page' }),
     search_id: z.string().openapi({ description: 'Unique identifier for the search request' }),
     spellcheck_info: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2165,7 +2247,9 @@ const CollectionItemRequestSchema = z
   .object({ items: z.array(CollectionItemSchema).openapi({ description: 'List of items' }) })
   .openapi({
     description: 'Request to get a list of items in a collection',
-    example: {},
+    example: {
+      items: [{ added_time: '2020-05-29T12:10:22-05:00', id: '1690105108', media_type: 'image' }],
+    },
     required: ['items'],
   })
   .openapi('CollectionItemRequest')
@@ -2358,62 +2442,7 @@ const CookieSchema = z
   })
   .openapi('Cookie')
 
-const CreateAudioRenderSchema = z
-  .object({
-    filename: z
-      .string()
-      .openapi({
-        description:
-          'A user-specified file name suggestion; this file name becomes the filename property of the Content-Disposition header when the user downloads the rendered audio file',
-        example: 'My Project.mp3',
-      }),
-    preset: z
-      .enum(['MASTER_MP3', 'MASTER_WAV', 'STEMS_WAV'])
-      .openapi({
-        description:
-          'File format, such as MP3 file, combined WAV file, or individual track WAV files',
-        example: 'MASTER_MP3',
-      }),
-    timeline: AudioRenderTimelineSchema.openapi({
-      description: 'The timeline data with which to generate the render',
-    }),
-  })
-  .openapi({
-    description: 'Data required to create an audio render',
-    example: {
-      filename: 'My Project.mp3',
-      preset: 'MASTER_MP3',
-      timeline: {
-        spans: [
-          {
-            id: 111,
-            instrument_groups: [
-              { instrument_group: 'roomy_kit', statuses: [{ beat: 12, status: 'active' }] },
-            ],
-            regions: [
-              {
-                beat: 12,
-                descriptor: 'cinematic_minimal_tense',
-                end_type: { beat: 24, event: 'ending', type: 'ringout' },
-                id: 222,
-                key: { tonic_note: 'c', tonic_quality: 'major' },
-                region: 'music',
-              },
-            ],
-            span_type: 'metered',
-            tempo: 76,
-            tempo_changes: [{ tempo: 86, time: 5 }],
-            time: 5,
-          },
-          { span_type: 'unmetered', time: 20 },
-        ],
-      },
-    },
-    required: ['preset', 'timeline', 'filename'],
-  })
-  .openapi('CreateAudioRender')
-
-const CreateAudioRendersRequestSchema = z
+const CreateAudioRendersRequestSchema: z.ZodType<CreateAudioRendersRequestType> = z
   .object({
     audio_renders: z
       .array(CreateAudioRenderSchema)
@@ -2473,12 +2502,22 @@ const CreateCatalogCollectionSchema = z
     name: z.string().min(1).max(100000),
     visibility: z.enum(['private', 'public']).default('private').exactOptional(),
   })
-  .openapi({ example: { name: 'New Collection', visibility: 'public' }, required: ['name'] })
+  .openapi({
+    example: {
+      items: [{ asset: { id: '1690105108', type: 'image' } }],
+      name: 'New Collection',
+      visibility: 'public',
+    },
+    required: ['name'],
+  })
   .openapi('CreateCatalogCollection')
 
 const CreateCatalogCollectionItemsSchema = z
   .object({ items: z.array(CreateCatalogCollectionItemSchema).min(1).max(50) })
-  .openapi({ example: {}, required: ['items'] })
+  .openapi({
+    example: { items: [{ asset: { id: '1690105108', type: 'image' } }] },
+    required: ['items'],
+  })
   .openapi('CreateCatalogCollectionItems')
 
 const CustomSizeDimensionsSchema = z
@@ -2924,7 +2963,7 @@ const DownloadHistorySchema = z
       }),
     license: z.string().openapi({ description: 'The name of the license of this download' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The metadata that was passed in the original licensing request' }),
     revshare: DownloadHistoryRevshareDetailsSchema.exactOptional(),
@@ -4911,7 +4950,7 @@ const LicenseAudioResultDataListSchema = z
   .openapi('LicenseAudioResultDataList')
 
 const LicenseRequestMetadataSchema = z
-  .object({})
+  .looseObject({})
   .refine((val) => Object.keys(val).length <= 4)
   .openapi({
     description:
@@ -5801,7 +5840,7 @@ const RemoveCatalogCollectionItemSchema = z
 
 const RemoveCatalogCollectionItemsSchema = z
   .object({ items: z.array(RemoveCatalogCollectionItemSchema).min(1).max(50) })
-  .openapi({ example: {}, required: ['items'] })
+  .openapi({ example: { items: [{ id: '123' }] }, required: ['items'] })
   .openapi('RemoveCatalogCollectionItems')
 
 const SFXAssetDetailsSchema = z
@@ -5990,7 +6029,7 @@ const SfxUrlSchema = z
   .openapi('SfxUrl')
 
 const SubscriptionMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Subscription metadata; different for each customer',
     example: {

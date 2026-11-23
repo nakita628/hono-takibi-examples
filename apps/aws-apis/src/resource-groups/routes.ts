@@ -24,13 +24,11 @@ const DescriptionSchema = z
 
 const GroupSchema = z
   .object({
-    GroupArn: GroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource group.' }),
-    ),
-    Name: GroupNameSchema.and(z.any().openapi({ description: 'The name of the resource group.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the resource group.' }),
-    ).exactOptional(),
+    GroupArn: GroupArnSchema.openapi({ description: 'The ARN of the resource group.' }),
+    Name: GroupNameSchema.openapi({ description: 'The name of the resource group.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the resource group.',
+    }),
   })
   .openapi({
     required: ['GroupArn', 'Name'],
@@ -49,22 +47,14 @@ const QuerySchema = z
 
 const ResourceQuerySchema = z
   .object({
-    Type: QueryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>',
-        }),
-    ),
-    Query: QuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The query that defines a group or a search. The contents depends on the value of the <code>Type</code> element.</p> <ul> <li> <p> <code>ResourceTypeFilters</code> – Applies to all <code>ResourceQuery</code> objects of either <code>Type</code>. This element contains one of the following two items:</p> <ul> <li> <p>The value <code>AWS::AllSupported</code>. This causes the ResourceQuery to match resources of any resource type that also match the query.</p> </li> <li> <p>A list (a JSON array) of resource type identifiers that limit the query to only resources of the specified types. For the complete list of resource types that you can use in the array value for <code>ResourceTypeFilters</code>, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html">Resources you can use with Resource Groups and Tag Editor</a> in the <i>Resource Groups User Guide</i>.</p> </li> </ul> <p>Example: <code>"ResourceTypeFilters": ["AWS::AllSupported"]</code> or <code>"ResourceTypeFilters": ["AWS::EC2::Instance", "AWS::S3::Bucket"]</code> </p> </li> <li> <p> <code>TagFilters</code> – applicable only if <code>Type</code> = <code>TAG_FILTERS_1_0</code>. The <code>Query</code> contains a JSON string that represents a collection of simple tag filters. The JSON string uses a syntax similar to the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html">GetResources</a> </code> operation, but uses only the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters"> ResourceTypeFilters</a> </code> and <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters">TagFilters</a> </code> fields. If you specify more than one tag key, only resources that match all tag keys, and at least one value of each specified tag key, are returned in your query. If you specify more than one value for a tag key, a resource matches the filter if it has a tag key value that matches <i>any</i> of the specified values.</p> <p>For example, consider the following sample query for resources that have two tags, <code>Stage</code> and <code>Version</code>, with two values each:</p> <p> <code>[{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]</code> </p> <p>The results of this resource query could include the following.</p> <ul> <li> <p>An Amazon EC2 instance that has the following two tags: <code>{"Stage":"Deploy"}</code>, and <code>{"Version":"2"}</code> </p> </li> <li> <p>An S3 bucket that has the following two tags: <code>{"Stage":"Test"}</code>, and <code>{"Version":"1"}</code> </p> </li> </ul> <p>The resource query results would <i>not</i> include the following items in the results, however. </p> <ul> <li> <p>An Amazon EC2 instance that has only the following tag: <code>{"Stage":"Deploy"}</code>.</p> <p>The instance does not have <b>all</b> of the tag keys specified in the filter, so it is excluded from the results.</p> </li> <li> <p>An RDS database that has the following two tags: <code>{"Stage":"Archived"}</code> and <code>{"Version":"4"}</code> </p> <p>The database has all of the tag keys, but none of those keys has an associated value that matches at least one of the specified values in the filter.</p> </li> </ul> <p>Example: <code>"TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }</code> </p> </li> <li> <p> <code>StackIdentifier</code> – applicable only if <code>Type</code> = <code>CLOUDFORMATION_STACK_1_0</code>. The value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation stack whose resources you want included in the group.</p> </li> </ul>',
-        }),
-    ),
+    Type: QueryTypeSchema.openapi({
+      description:
+        '<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>',
+    }),
+    Query: QuerySchema.openapi({
+      description:
+        '<p>The query that defines a group or a search. The contents depends on the value of the <code>Type</code> element.</p> <ul> <li> <p> <code>ResourceTypeFilters</code> – Applies to all <code>ResourceQuery</code> objects of either <code>Type</code>. This element contains one of the following two items:</p> <ul> <li> <p>The value <code>AWS::AllSupported</code>. This causes the ResourceQuery to match resources of any resource type that also match the query.</p> </li> <li> <p>A list (a JSON array) of resource type identifiers that limit the query to only resources of the specified types. For the complete list of resource types that you can use in the array value for <code>ResourceTypeFilters</code>, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html">Resources you can use with Resource Groups and Tag Editor</a> in the <i>Resource Groups User Guide</i>.</p> </li> </ul> <p>Example: <code>"ResourceTypeFilters": ["AWS::AllSupported"]</code> or <code>"ResourceTypeFilters": ["AWS::EC2::Instance", "AWS::S3::Bucket"]</code> </p> </li> <li> <p> <code>TagFilters</code> – applicable only if <code>Type</code> = <code>TAG_FILTERS_1_0</code>. The <code>Query</code> contains a JSON string that represents a collection of simple tag filters. The JSON string uses a syntax similar to the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html">GetResources</a> </code> operation, but uses only the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters"> ResourceTypeFilters</a> </code> and <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters">TagFilters</a> </code> fields. If you specify more than one tag key, only resources that match all tag keys, and at least one value of each specified tag key, are returned in your query. If you specify more than one value for a tag key, a resource matches the filter if it has a tag key value that matches <i>any</i> of the specified values.</p> <p>For example, consider the following sample query for resources that have two tags, <code>Stage</code> and <code>Version</code>, with two values each:</p> <p> <code>[{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]</code> </p> <p>The results of this resource query could include the following.</p> <ul> <li> <p>An Amazon EC2 instance that has the following two tags: <code>{"Stage":"Deploy"}</code>, and <code>{"Version":"2"}</code> </p> </li> <li> <p>An S3 bucket that has the following two tags: <code>{"Stage":"Test"}</code>, and <code>{"Version":"1"}</code> </p> </li> </ul> <p>The resource query results would <i>not</i> include the following items in the results, however. </p> <ul> <li> <p>An Amazon EC2 instance that has only the following tag: <code>{"Stage":"Deploy"}</code>.</p> <p>The instance does not have <b>all</b> of the tag keys specified in the filter, so it is excluded from the results.</p> </li> <li> <p>An RDS database that has the following two tags: <code>{"Stage":"Archived"}</code> and <code>{"Version":"4"}</code> </p> <p>The database has all of the tag keys, but none of those keys has an associated value that matches at least one of the specified values in the filter.</p> </li> </ul> <p>Example: <code>"TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }</code> </p> </li> <li> <p> <code>StackIdentifier</code> – applicable only if <code>Type</code> = <code>CLOUDFORMATION_STACK_1_0</code>. The value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation stack whose resources you want included in the group.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Type', 'Query'],
@@ -108,22 +98,14 @@ const GroupConfigurationParameterValueListSchema = z
 
 const GroupConfigurationParameterSchema = z
   .object({
-    Name: GroupConfigurationParameterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the group configuration parameter. For the list of parameters that you can use with each configuration item type, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types">Supported resource types and parameters</a>.',
-        }),
-    ),
-    Values: GroupConfigurationParameterValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value or values to be used for the specified parameter. For the list of values you can use with each parameter, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types">Supported resource types and parameters</a>.',
-        }),
-    ).exactOptional(),
+    Name: GroupConfigurationParameterNameSchema.openapi({
+      description:
+        'The name of the group configuration parameter. For the list of parameters that you can use with each configuration item type, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types">Supported resource types and parameters</a>.',
+    }),
+    Values: GroupConfigurationParameterValueListSchema.exactOptional().openapi({
+      description:
+        'The value or values to be used for the specified parameter. For the list of values you can use with each parameter, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types">Supported resource types and parameters</a>.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -138,22 +120,14 @@ const GroupParameterListSchema = z
 
 const GroupConfigurationItemSchema = z
   .object({
-    Type: GroupConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of group configuration item. Each item must have a unique value for <code>type</code>. For the list of types that you can specify for a configuration item, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types">Supported resource types and parameters</a>.',
-        }),
-    ),
-    Parameters: GroupParameterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of parameters for this group configuration item. For the list of parameters that you can use with each configuration item type, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types">Supported resource types and parameters</a>.',
-        }),
-    ).exactOptional(),
+    Type: GroupConfigurationTypeSchema.openapi({
+      description:
+        'Specifies the type of group configuration item. Each item must have a unique value for <code>type</code>. For the list of types that you can specify for a configuration item, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types">Supported resource types and parameters</a>.',
+    }),
+    Parameters: GroupParameterListSchema.exactOptional().openapi({
+      description:
+        'A collection of parameters for this group configuration item. For the list of parameters that you can use with each configuration item type, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types">Supported resource types and parameters</a>.',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -175,36 +149,19 @@ const GroupConfigurationFailureReasonSchema = z.string().openapi('GroupConfigura
 
 const GroupConfigurationSchema = z
   .object({
-    Configuration: GroupConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration currently associated with the group and in effect.',
-        }),
-    ).exactOptional(),
-    ProposedConfiguration: GroupConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, the new configuration that is in the process of being applied to the group.',
-        }),
-    ).exactOptional(),
-    Status: GroupConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current status of an attempt to update the group configuration.',
-        }),
-    ).exactOptional(),
-    FailureReason: GroupConfigurationFailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, the reason why a request to update the group configuration failed.',
-        }),
-    ).exactOptional(),
+    Configuration: GroupConfigurationListSchema.exactOptional().openapi({
+      description: 'The configuration currently associated with the group and in effect.',
+    }),
+    ProposedConfiguration: GroupConfigurationListSchema.exactOptional().openapi({
+      description:
+        'If present, the new configuration that is in the process of being applied to the group.',
+    }),
+    Status: GroupConfigurationStatusSchema.exactOptional().openapi({
+      description: 'The current status of an attempt to update the group configuration.',
+    }),
+    FailureReason: GroupConfigurationFailureReasonSchema.exactOptional().openapi({
+      description: 'If present, the reason why a request to update the group configuration failed.',
+    }),
   })
   .openapi({
     description:
@@ -215,28 +172,20 @@ const GroupConfigurationSchema = z
 
 const CreateGroupOutputSchema = z
   .object({
-    Group: GroupSchema.and(
-      z.any().openapi({ description: 'The description of the resource group.' }),
-    ).exactOptional(),
-    ResourceQuery: ResourceQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource query associated with the group. For more information about resource queries, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html#gettingstarted-query-cli-tag">Create a tag-based group in Resource Groups</a>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags associated with the group.' }),
-    ).exactOptional(),
-    GroupConfiguration: GroupConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service configuration associated with the resource group. For details about the syntax of a service configuration, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html">Service configurations for Resource Groups</a>.',
-        }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description: 'The description of the resource group.',
+    }),
+    ResourceQuery: ResourceQuerySchema.exactOptional().openapi({
+      description:
+        'The resource query associated with the group. For more information about resource queries, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html#gettingstarted-query-cli-tag">Create a tag-based group in Resource Groups</a>. ',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags associated with the group.',
+    }),
+    GroupConfiguration: GroupConfigurationSchema.exactOptional().openapi({
+      description:
+        'The service configuration associated with the resource group. For details about the syntax of a service configuration, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html">Service configurations for Resource Groups</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGroupOutput')
@@ -253,9 +202,9 @@ const InternalServerErrorExceptionSchema = z.any().openapi('InternalServerErrorE
 
 const DeleteGroupOutputSchema = z
   .object({
-    Group: GroupSchema.and(
-      z.any().openapi({ description: 'A full description of the deleted resource group.' }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description: 'A full description of the deleted resource group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteGroupOutput')
@@ -278,24 +227,18 @@ const GroupLifecycleEventsStatusMessageSchema = z
 
 const AccountSettingsSchema = z
   .object({
-    GroupLifecycleEventsDesiredStatus: GroupLifecycleEventsDesiredStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The desired target status of the group lifecycle events feature. If',
-        }),
-    ).exactOptional(),
-    GroupLifecycleEventsStatus: GroupLifecycleEventsStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the group lifecycle events feature.' }),
-    ).exactOptional(),
-    GroupLifecycleEventsStatusMessage: GroupLifecycleEventsStatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text of any error message occurs during an attempt to turn group lifecycle events on or off.',
-        }),
-    ).exactOptional(),
+    GroupLifecycleEventsDesiredStatus:
+      GroupLifecycleEventsDesiredStatusSchema.exactOptional().openapi({
+        description: 'The desired target status of the group lifecycle events feature. If',
+      }),
+    GroupLifecycleEventsStatus: GroupLifecycleEventsStatusSchema.exactOptional().openapi({
+      description: 'The current status of the group lifecycle events feature.',
+    }),
+    GroupLifecycleEventsStatusMessage:
+      GroupLifecycleEventsStatusMessageSchema.exactOptional().openapi({
+        description:
+          'The text of any error message occurs during an attempt to turn group lifecycle events on or off.',
+      }),
   })
   .openapi({
     description: 'The Resource Groups settings for this Amazon Web Services account.',
@@ -305,63 +248,43 @@ const AccountSettingsSchema = z
 
 const GetAccountSettingsOutputSchema = z
   .object({
-    AccountSettings: AccountSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current settings for the optional features in Resource Groups.',
-        }),
-    ).exactOptional(),
+    AccountSettings: AccountSettingsSchema.exactOptional().openapi({
+      description: 'The current settings for the optional features in Resource Groups.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccountSettingsOutput')
 
 const GetGroupOutputSchema = z
   .object({
-    Group: GroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the metadata details for the specified resource group. Use <a>GetGroupQuery</a> and <a>GetGroupConfiguration</a> to get those additional details of the resource group.',
-        }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description:
+        'A structure that contains the metadata details for the specified resource group. Use <a>GetGroupQuery</a> and <a>GetGroupConfiguration</a> to get those additional details of the resource group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupOutput')
 
 const GetGroupConfigurationOutputSchema = z
   .object({
-    GroupConfiguration: GroupConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that describes the service configuration attached with the specified group. For details about the service configuration syntax, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html">Service configurations for Resource Groups</a>.',
-        }),
-    ).exactOptional(),
+    GroupConfiguration: GroupConfigurationSchema.exactOptional().openapi({
+      description:
+        'A structure that describes the service configuration attached with the specified group. For details about the service configuration syntax, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html">Service configurations for Resource Groups</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupConfigurationOutput')
 
 const GroupQuerySchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the resource group that is associated with the specified resource query.',
-        }),
-    ),
-    ResourceQuery: ResourceQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource query that determines which Amazon Web Services resources are members of the associated resource group.',
-        }),
-    ),
+    GroupName: GroupNameSchema.openapi({
+      description:
+        'The name of the resource group that is associated with the specified resource query.',
+    }),
+    ResourceQuery: ResourceQuerySchema.openapi({
+      description:
+        'The resource query that determines which Amazon Web Services resources are members of the associated resource group.',
+    }),
   })
   .openapi({
     required: ['GroupName', 'ResourceQuery'],
@@ -372,26 +295,22 @@ const GroupQuerySchema = z
 
 const GetGroupQueryOutputSchema = z
   .object({
-    GroupQuery: GroupQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource query associated with the specified group. For more information about resource queries, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html#gettingstarted-query-cli-tag">Create a tag-based group in Resource Groups</a>.',
-        }),
-    ).exactOptional(),
+    GroupQuery: GroupQuerySchema.exactOptional().openapi({
+      description:
+        'The resource query associated with the specified group. For more information about resource queries, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html#gettingstarted-query-cli-tag">Create a tag-based group in Resource Groups</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupQueryOutput')
 
 const GetTagsOutputSchema = z
   .object({
-    Arn: GroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the tagged resource group.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags associated with the specified resource group.' }),
-    ).exactOptional(),
+    Arn: GroupArnSchema.exactOptional().openapi({
+      description: 'The ARN of the tagged resource group.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags associated with the specified resource group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTagsOutput')
@@ -409,17 +328,15 @@ const ErrorCodeSchema = z.string().min(1).max(128).openapi('ErrorCode')
 
 const FailedResourceSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the resource that failed to be added or removed.' }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The error message text associated with the failure.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code associated with the failure.' }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the resource that failed to be added or removed.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The error message text associated with the failure.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code associated with the failure.',
+    }),
   })
   .openapi({
     description: 'A resource that failed to be added to or removed from a group.',
@@ -431,13 +348,9 @@ const FailedResourceListSchema = z.array(FailedResourceSchema).openapi('FailedRe
 
 const PendingResourceSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon resource name (ARN) of the resource that's in a pending state.",
-        }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: "The Amazon resource name (ARN) of the resource that's in a pending state.",
+    }),
   })
   .openapi({
     description:
@@ -450,30 +363,18 @@ const PendingResourceListSchema = z.array(PendingResourceSchema).openapi('Pendin
 
 const GroupResourcesOutputSchema = z
   .object({
-    Succeeded: ResourceArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of ARNs of the resources that this operation successfully added to the group.',
-        }),
-    ).exactOptional(),
-    Failed: FailedResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of ARNs of any resources that this operation failed to add to the group.',
-        }),
-    ).exactOptional(),
-    Pending: PendingResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of ARNs of any resources that this operation is still in the process adding to the group. These pending additions continue asynchronously. You can check the status of pending additions by using the <code> <a>ListGroupResources</a> </code> operation, and checking the <code>Resources</code> array in the response and the <code>Status</code> field of each object in that array. ',
-        }),
-    ).exactOptional(),
+    Succeeded: ResourceArnListSchema.exactOptional().openapi({
+      description:
+        'A list of ARNs of the resources that this operation successfully added to the group.',
+    }),
+    Failed: FailedResourceListSchema.exactOptional().openapi({
+      description:
+        'A list of ARNs of any resources that this operation failed to add to the group.',
+    }),
+    Pending: PendingResourceListSchema.exactOptional().openapi({
+      description:
+        'A list of ARNs of any resources that this operation is still in the process adding to the group. These pending additions continue asynchronously. You can check the status of pending additions by using the <code> <a>ListGroupResources</a> </code> operation, and checking the <code>Resources</code> array in the response and the <code>Status</code> field of each object in that array. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GroupResourcesOutput')
@@ -485,16 +386,12 @@ const ResourceTypeSchema = z
 
 const ResourceIdentifierSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a resource.' }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource type of a resource, such as <code>AWS::EC2::Instance</code>.',
-        }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of a resource.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type of a resource, such as <code>AWS::EC2::Instance</code>.',
+    }),
   })
   .openapi({
     description: 'A structure that contains the ARN of a resource and its resource type.',
@@ -506,9 +403,7 @@ const ResourceStatusValueSchema = z.literal('PENDING').openapi('ResourceStatusVa
 
 const ResourceStatusSchema = z
   .object({
-    Name: ResourceStatusValueSchema.and(
-      z.any().openapi({ description: 'The current status.' }),
-    ).exactOptional(),
+    Name: ResourceStatusValueSchema.exactOptional().openapi({ description: 'The current status.' }),
   })
   .openapi({
     description:
@@ -520,14 +415,10 @@ const ResourceStatusSchema = z
 const ListGroupResourcesItemSchema = z
   .object({
     Identifier: ResourceIdentifierSchema.exactOptional(),
-    Status: ResourceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A structure that contains the status of this resource's membership in the group.</p> <note> <p>This field is present in the response only if the group is of type <code>AWS::EC2::HostManagement</code>.</p> </note>",
-        }),
-    ).exactOptional(),
+    Status: ResourceStatusSchema.exactOptional().openapi({
+      description:
+        "<p>A structure that contains the status of this resource's membership in the group.</p> <note> <p>This field is present in the response only if the group is of type <code>AWS::EC2::HostManagement</code>.</p> </note>",
+    }),
   })
   .openapi({
     description:
@@ -563,17 +454,13 @@ const QueryErrorMessageSchema = z.string().openapi('QueryErrorMessage')
 
 const QueryErrorSchema = z
   .object({
-    ErrorCode: QueryErrorCodeSchema.and(
-      z.any().openapi({ description: 'Specifies the error code that was raised.' }),
-    ).exactOptional(),
-    Message: QueryErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message that explains the <code>ErrorCode</code> value. Messages might state that the specified CloudFront stack does not exist (or no longer exists). For <code>CLOUDFORMATION_STACK_INACTIVE</code>, the message typically states that the CloudFront stack has a status that is not (or no longer) active, such as <code>CREATE_FAILED</code>.',
-        }),
-    ).exactOptional(),
+    ErrorCode: QueryErrorCodeSchema.exactOptional().openapi({
+      description: 'Specifies the error code that was raised.',
+    }),
+    Message: QueryErrorMessageSchema.exactOptional().openapi({
+      description:
+        'A message that explains the <code>ErrorCode</code> value. Messages might state that the specified CloudFront stack does not exist (or no longer exists). For <code>CLOUDFORMATION_STACK_INACTIVE</code>, the message typically states that the CloudFront stack has a status that is not (or no longer) active, such as <code>CREATE_FAILED</code>.',
+    }),
   })
   .openapi({
     description:
@@ -586,39 +473,23 @@ const QueryErrorListSchema = z.array(QueryErrorSchema).openapi('QueryErrorList')
 
 const ListGroupResourcesOutputSchema = z
   .object({
-    Resources: ListGroupResourcesItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of resources from which you can determine each resource's identity, type, and group membership status.",
-        }),
-    ).exactOptional(),
-    ResourceIdentifiers: ResourceIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<important> <p> <b> <i>Deprecated - don't use this parameter. Use the <code>Resources</code> response field instead.</i> </b> </p> </important>This field is deprecated, use Resources instead.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
-    QueryErrors: QueryErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>QueryError</code> objects. Each error is an object that contains <code>ErrorCode</code> and <code>Message</code> structures. Possible values for <code>ErrorCode</code> are <code>CLOUDFORMATION_STACK_INACTIVE</code> and <code>CLOUDFORMATION_STACK_NOT_EXISTING</code>.',
-        }),
-    ).exactOptional(),
+    Resources: ListGroupResourcesItemListSchema.exactOptional().openapi({
+      description:
+        "An array of resources from which you can determine each resource's identity, type, and group membership status.",
+    }),
+    ResourceIdentifiers: ResourceIdentifierListSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<important> <p> <b> <i>Deprecated - don't use this parameter. Use the <code>Resources</code> response field instead.</i> </b> </p> </important>This field is deprecated, use Resources instead.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
+    QueryErrors: QueryErrorListSchema.exactOptional().openapi({
+      description:
+        'A list of <code>QueryError</code> objects. Each error is an object that contains <code>ErrorCode</code> and <code>Message</code> structures. Possible values for <code>ErrorCode</code> are <code>CLOUDFORMATION_STACK_INACTIVE</code> and <code>CLOUDFORMATION_STACK_NOT_EXISTING</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupResourcesOutput')
@@ -640,17 +511,13 @@ const ResourceFilterValuesSchema = z
 
 const ResourceFilterSchema = z
   .object({
-    Name: ResourceFilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the filter. Filter names are case-sensitive.' }),
-    ),
-    Values: ResourceFilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more filter values. Allowed filter values vary by resource filter name, and are case-sensitive.',
-        }),
-    ),
+    Name: ResourceFilterNameSchema.openapi({
+      description: 'The name of the filter. Filter names are case-sensitive.',
+    }),
+    Values: ResourceFilterValuesSchema.openapi({
+      description:
+        'One or more filter values. Allowed filter values vary by resource filter name, and are case-sensitive.',
+    }),
   })
   .openapi({
     required: ['Name', 'Values'],
@@ -663,12 +530,12 @@ const UnauthorizedExceptionSchema = z.any().openapi('UnauthorizedException')
 
 const GroupIdentifierSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource group.' }),
-    ).exactOptional(),
-    GroupArn: GroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource group.' }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description: 'The name of the resource group.',
+    }),
+    GroupArn: GroupArnSchema.exactOptional().openapi({
+      description: 'The ARN of the resource group.',
+    }),
   })
   .openapi({ description: 'The unique identifiers for a resource group.', required: [] })
   .openapi('GroupIdentifier')
@@ -679,31 +546,19 @@ const GroupListSchema = z.array(GroupSchema).openapi('GroupList')
 
 const ListGroupsOutputSchema = z
   .object({
-    GroupIdentifiers: GroupIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a>GroupIdentifier</a> objects. Each identifier is an object that contains both the <code>Name</code> and the <code>GroupArn</code>.',
-        }),
-    ).exactOptional(),
-    Groups: GroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<important> <p> <i> <b>Deprecated - don't use this field. Use the <code>GroupIdentifiers</code> response field instead.</b> </i> </p> </important>This field is deprecated, use GroupIdentifiers instead.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    GroupIdentifiers: GroupIdentifierListSchema.exactOptional().openapi({
+      description:
+        'A list of <a>GroupIdentifier</a> objects. Each identifier is an object that contains both the <code>Name</code> and the <code>GroupArn</code>.',
+    }),
+    Groups: GroupListSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<important> <p> <i> <b>Deprecated - don't use this field. Use the <code>GroupIdentifiers</code> response field instead.</b> </i> </p> </important>This field is deprecated, use GroupIdentifiers instead.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupsOutput')
@@ -727,17 +582,13 @@ const GroupFilterValuesSchema = z
 
 const GroupFilterSchema = z
   .object({
-    Name: GroupFilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the filter. Filter names are case-sensitive.' }),
-    ),
-    Values: GroupFilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more filter values. Allowed filter values vary by group filter name, and are case-sensitive.',
-        }),
-    ),
+    Name: GroupFilterNameSchema.openapi({
+      description: 'The name of the filter. Filter names are case-sensitive.',
+    }),
+    Values: GroupFilterValuesSchema.openapi({
+      description:
+        'One or more filter values. Allowed filter values vary by group filter name, and are case-sensitive.',
+    }),
   })
   .openapi({
     required: ['Name', 'Values'],
@@ -746,78 +597,50 @@ const GroupFilterSchema = z
   })
   .openapi('GroupFilter')
 
-const PutGroupConfigurationOutputSchema = z.object({}).openapi('PutGroupConfigurationOutput')
+const PutGroupConfigurationOutputSchema = z.looseObject({}).openapi('PutGroupConfigurationOutput')
 
 const SearchResourcesOutputSchema = z
   .object({
-    ResourceIdentifiers: ResourceIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARNs and resource types of resources that are members of the group that you specified.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
-    QueryErrors: QueryErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of <code>QueryError</code> objects. Each error is an object that contains <code>ErrorCode</code> and <code>Message</code> structures.</p> <p>Possible values for <code>ErrorCode</code>:</p> <ul> <li> <p> <code>CLOUDFORMATION_STACK_INACTIVE</code> </p> </li> <li> <p> <code>CLOUDFORMATION_STACK_NOT_EXISTING</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ResourceIdentifiers: ResourceIdentifierListSchema.exactOptional().openapi({
+      description:
+        'The ARNs and resource types of resources that are members of the group that you specified.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
+    QueryErrors: QueryErrorListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of <code>QueryError</code> objects. Each error is an object that contains <code>ErrorCode</code> and <code>Message</code> structures.</p> <p>Possible values for <code>ErrorCode</code>:</p> <ul> <li> <p> <code>CLOUDFORMATION_STACK_INACTIVE</code> </p> </li> <li> <p> <code>CLOUDFORMATION_STACK_NOT_EXISTING</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchResourcesOutput')
 
 const TagOutputSchema = z
   .object({
-    Arn: GroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the tagged resource.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags that have been added to the specified resource group.' }),
-    ).exactOptional(),
+    Arn: GroupArnSchema.exactOptional().openapi({ description: 'The ARN of the tagged resource.' }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags that have been added to the specified resource group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TagOutput')
 
 const UngroupResourcesOutputSchema = z
   .object({
-    Succeeded: ResourceArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resources that were successfully removed from the group by this operation.',
-        }),
-    ).exactOptional(),
-    Failed: FailedResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of any resources that failed to be removed from the group by this operation.',
-        }),
-    ).exactOptional(),
-    Pending: PendingResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of any resources that are still in the process of being removed from the group by this operation. These pending removals continue asynchronously. You can check the status of pending removals by using the <code> <a>ListGroupResources</a> </code> operation. After the resource is successfully removed, it no longer appears in the response.',
-        }),
-    ).exactOptional(),
+    Succeeded: ResourceArnListSchema.exactOptional().openapi({
+      description:
+        'A list of resources that were successfully removed from the group by this operation.',
+    }),
+    Failed: FailedResourceListSchema.exactOptional().openapi({
+      description:
+        'A list of any resources that failed to be removed from the group by this operation.',
+    }),
+    Pending: PendingResourceListSchema.exactOptional().openapi({
+      description:
+        'A list of any resources that are still in the process of being removed from the group by this operation. These pending removals continue asynchronously. You can check the status of pending removals by using the <code> <a>ListGroupResources</a> </code> operation. After the resource is successfully removed, it no longer appears in the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UngroupResourcesOutput')
@@ -833,96 +656,65 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagOutputSchema = z
   .object({
-    Arn: GroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the resource group from which tags have been removed.',
-        }),
-    ).exactOptional(),
-    Keys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags that were removed.' }),
-    ).exactOptional(),
+    Arn: GroupArnSchema.exactOptional().openapi({
+      description: 'The ARN of the resource group from which tags have been removed.',
+    }),
+    Keys: TagKeyListSchema.exactOptional().openapi({
+      description: 'The keys of the tags that were removed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UntagOutput')
 
 const UpdateAccountSettingsOutputSchema = z
   .object({
-    AccountSettings: AccountSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that displays the status of the optional features in the account.',
-        }),
-    ).exactOptional(),
+    AccountSettings: AccountSettingsSchema.exactOptional().openapi({
+      description: 'A structure that displays the status of the optional features in the account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAccountSettingsOutput')
 
 const UpdateGroupOutputSchema = z
   .object({
-    Group: GroupSchema.and(
-      z.any().openapi({ description: 'The update description of the resource group.' }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description: 'The update description of the resource group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGroupOutput')
 
 const UpdateGroupQueryOutputSchema = z
   .object({
-    GroupQuery: GroupQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated resource query associated with the resource group after the update.',
-        }),
-    ).exactOptional(),
+    GroupQuery: GroupQuerySchema.exactOptional().openapi({
+      description:
+        'The updated resource query associated with the resource group after the update.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGroupQueryOutput')
 
 const CreateGroupInputSchema = z
   .object({
-    Name: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the group, which is the identifier of the group in other operations. You can't change the name of a resource group after you create it. A resource group name can consist of letters, numbers, hyphens, periods, and underscores. The name cannot start with <code>AWS</code> or <code>aws</code>; these are reserved. A resource group name must be unique within each Amazon Web Services Region in your Amazon Web Services account.",
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the resource group. Descriptions can consist of letters, numbers, hyphens, underscores, periods, and spaces.',
-        }),
-    ).exactOptional(),
-    ResourceQuery: ResourceQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource query that determines which Amazon Web Services resources are members of this group. For more information about resource queries, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html#gettingstarted-query-cli-tag">Create a tag-based group in Resource Groups</a>. </p> <note> <p>A resource group can contain either a <code>ResourceQuery</code> or a <code>Configuration</code>, but not both.</p> </note>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags to add to the group. A tag is key-value pair string.' }),
-    ).exactOptional(),
-    Configuration: GroupConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A configuration associates the resource group with an Amazon Web Services service and specifies how the service can interact with the resources in the group. A configuration is an array of <a>GroupConfigurationItem</a> elements. For details about the syntax of service configurations, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html">Service configurations for Resource Groups</a>.</p> <note> <p>A resource group can contain either a <code>Configuration</code> or a <code>ResourceQuery</code>, but not both.</p> </note>',
-        }),
-    ).exactOptional(),
+    Name: GroupNameSchema.openapi({
+      description:
+        "The name of the group, which is the identifier of the group in other operations. You can't change the name of a resource group after you create it. A resource group name can consist of letters, numbers, hyphens, periods, and underscores. The name cannot start with <code>AWS</code> or <code>aws</code>; these are reserved. A resource group name must be unique within each Amazon Web Services Region in your Amazon Web Services account.",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'The description of the resource group. Descriptions can consist of letters, numbers, hyphens, underscores, periods, and spaces.',
+    }),
+    ResourceQuery: ResourceQuerySchema.exactOptional().openapi({
+      description:
+        '<p>The resource query that determines which Amazon Web Services resources are members of this group. For more information about resource queries, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html#gettingstarted-query-cli-tag">Create a tag-based group in Resource Groups</a>. </p> <note> <p>A resource group can contain either a <code>ResourceQuery</code> or a <code>Configuration</code>, but not both.</p> </note>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags to add to the group. A tag is key-value pair string.',
+    }),
+    Configuration: GroupConfigurationListSchema.exactOptional().openapi({
+      description:
+        '<p>A configuration associates the resource group with an Amazon Web Services service and specifies how the service can interact with the resources in the group. A configuration is an array of <a>GroupConfigurationItem</a> elements. For details about the syntax of service configurations, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html">Service configurations for Resource Groups</a>.</p> <note> <p>A resource group can contain either a <code>Configuration</code> or a <code>ResourceQuery</code>, but not both.</p> </note>',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateGroupInput' })
   .openapi('CreateGroupInput')
@@ -938,88 +730,71 @@ const GroupStringSchema = z
 
 const DeleteGroupInputSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "Deprecated - don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
-        }),
-    ).exactOptional(),
-    Group: GroupStringSchema.and(
-      z.any().openapi({ description: 'The name or the ARN of the resource group to delete.' }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "Deprecated - don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
+    }),
+    Group: GroupStringSchema.exactOptional().openapi({
+      description: 'The name or the ARN of the resource group to delete.',
+    }),
   })
   .openapi({ title: 'DeleteGroupInput', required: [] })
   .openapi('DeleteGroupInput')
 
 const GetGroupConfigurationInputSchema = z
   .object({
-    Group: GroupStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or the ARN of the resource group for which you want to retrive the service configuration.',
-        }),
-    ).exactOptional(),
+    Group: GroupStringSchema.exactOptional().openapi({
+      description:
+        'The name or the ARN of the resource group for which you want to retrive the service configuration.',
+    }),
   })
   .openapi({ title: 'GetGroupConfigurationInput', required: [] })
   .openapi('GetGroupConfigurationInput')
 
 const GetGroupInputSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "Deprecated - don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
-        }),
-    ).exactOptional(),
-    Group: GroupStringSchema.and(
-      z.any().openapi({ description: 'The name or the ARN of the resource group to retrieve.' }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "Deprecated - don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
+    }),
+    Group: GroupStringSchema.exactOptional().openapi({
+      description: 'The name or the ARN of the resource group to retrieve.',
+    }),
   })
   .openapi({ title: 'GetGroupInput', required: [] })
   .openapi('GetGroupInput')
 
 const GetGroupQueryInputSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "Don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
-        }),
-    ).exactOptional(),
-    Group: GroupStringSchema.and(
-      z.any().openapi({ description: 'The name or the ARN of the resource group to query.' }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "Don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
+    }),
+    Group: GroupStringSchema.exactOptional().openapi({
+      description: 'The name or the ARN of the resource group to query.',
+    }),
   })
   .openapi({ title: 'GetGroupQueryInput', required: [] })
   .openapi('GetGroupQueryInput')
 
-const GetTagsInputSchema = z.object({}).openapi({ title: 'GetTagsInput' }).openapi('GetTagsInput')
+const GetTagsInputSchema = z
+  .looseObject({})
+  .openapi({ title: 'GetTagsInput' })
+  .openapi('GetTagsInput')
 
 const GroupFilterListSchema = z.array(GroupFilterSchema).openapi('GroupFilterList')
 
 const GroupResourcesInputSchema = z
   .object({
-    Group: GroupStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name or the ARN of the resource group to add resources to.' }),
-    ),
-    ResourceArns: ResourceArnListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of ARNs of the resources to be added to the group. ' }),
-    ),
+    Group: GroupStringSchema.openapi({
+      description: 'The name or the ARN of the resource group to add resources to.',
+    }),
+    ResourceArns: ResourceArnListSchema.openapi({
+      description: 'The list of ARNs of the resources to be added to the group. ',
+    }),
   })
   .openapi({ required: ['Group', 'ResourceArns'], title: 'GroupResourcesInput' })
   .openapi('GroupResourcesInput')
@@ -1030,214 +805,144 @@ const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 const ListGroupResourcesInputSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<important> <p> <i> <b>Deprecated - don't use this parameter. Use the <code>Group</code> request field instead.</b> </i> </p> </important>This field is deprecated, use Group instead.",
-        }),
-    ).exactOptional(),
-    Group: GroupStringSchema.and(
-      z.any().openapi({ description: 'The name or the ARN of the resource group' }),
-    ).exactOptional(),
-    Filters: ResourceFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Filters, formatted as <a>ResourceFilter</a> objects, that you want to apply to a <code>ListGroupResources</code> operation. Filters the results to include only those of the specified resource types.</p> <ul> <li> <p> <code>resource-type</code> - Filter resources by their type. Specify up to five resource types in the format <code>AWS::ServiceCode::ResourceType</code>. For example, <code>AWS::EC2::Instance</code>, or <code>AWS::S3::Bucket</code>. </p> </li> </ul> <p>When you specify a <code>resource-type</code> filter for <code>ListGroupResources</code>, Resource Groups validates your filter resource types against the types that are defined in the query associated with the group. For example, if a group contains only S3 buckets because its query specifies only that resource type, but your <code>resource-type</code> filter includes EC2 instances, AWS Resource Groups does not filter for EC2 instances. In this case, a <code>ListGroupResources</code> request returns a <code>BadRequestException</code> error with a message similar to the following:</p> <p> <code>The resource types specified as filters in the request are not valid.</code> </p> <p>The error includes a list of resource types that failed the validation because they are not part of the query associated with the group. This validation doesn't occur when the group query specifies <code>AWS::AllSupported</code>, because a group based on such a query can contain any of the allowed resource types for the query type (tag-based or Amazon CloudFront stack-based queries).</p>",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value provided by a previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<important> <p> <i> <b>Deprecated - don't use this parameter. Use the <code>Group</code> request field instead.</b> </i> </p> </important>This field is deprecated, use Group instead.",
+    }),
+    Group: GroupStringSchema.exactOptional().openapi({
+      description: 'The name or the ARN of the resource group',
+    }),
+    Filters: ResourceFilterListSchema.exactOptional().openapi({
+      description:
+        "<p>Filters, formatted as <a>ResourceFilter</a> objects, that you want to apply to a <code>ListGroupResources</code> operation. Filters the results to include only those of the specified resource types.</p> <ul> <li> <p> <code>resource-type</code> - Filter resources by their type. Specify up to five resource types in the format <code>AWS::ServiceCode::ResourceType</code>. For example, <code>AWS::EC2::Instance</code>, or <code>AWS::S3::Bucket</code>. </p> </li> </ul> <p>When you specify a <code>resource-type</code> filter for <code>ListGroupResources</code>, Resource Groups validates your filter resource types against the types that are defined in the query associated with the group. For example, if a group contains only S3 buckets because its query specifies only that resource type, but your <code>resource-type</code> filter includes EC2 instances, AWS Resource Groups does not filter for EC2 instances. In this case, a <code>ListGroupResources</code> request returns a <code>BadRequestException</code> error with a message similar to the following:</p> <p> <code>The resource types specified as filters in the request are not valid.</code> </p> <p>The error includes a list of resource types that failed the validation because they are not part of the query associated with the group. This validation doesn't occur when the group query specifies <code>AWS::AllSupported</code>, because a group based on such a query can contain any of the allowed resource types for the query type (tag-based or Amazon CloudFront stack-based queries).</p>",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value provided by a previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
   })
   .openapi({ title: 'ListGroupResourcesInput', required: [] })
   .openapi('ListGroupResourcesInput')
 
 const ListGroupsInputSchema = z
   .object({
-    Filters: GroupFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters, formatted as <a>GroupFilter</a> objects, that you want to apply to a <code>ListGroups</code> operation.</p> <ul> <li> <p> <code>resource-type</code> - Filter the results to include only those of the specified resource types. Specify up to five resource types in the format <code>AWS::<i>ServiceCode</i>::<i>ResourceType</i> </code>. For example, <code>AWS::EC2::Instance</code>, or <code>AWS::S3::Bucket</code>.</p> </li> <li> <p> <code>configuration-type</code> - Filter the results to include only those groups that have the specified configuration types attached. The current supported values are:</p> <ul> <li> <p> <code>AWS::EC2::CapacityReservationPool</code> </p> </li> <li> <p> <code>AWS::EC2::HostManagement</code> </p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Filters: GroupFilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters, formatted as <a>GroupFilter</a> objects, that you want to apply to a <code>ListGroups</code> operation.</p> <ul> <li> <p> <code>resource-type</code> - Filter the results to include only those of the specified resource types. Specify up to five resource types in the format <code>AWS::<i>ServiceCode</i>::<i>ResourceType</i> </code>. For example, <code>AWS::EC2::Instance</code>, or <code>AWS::S3::Bucket</code>.</p> </li> <li> <p> <code>configuration-type</code> - Filter the results to include only those groups that have the specified configuration types attached. The current supported values are:</p> <ul> <li> <p> <code>AWS::EC2::CapacityReservationPool</code> </p> </li> <li> <p> <code>AWS::EC2::HostManagement</code> </p> </li> </ul> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListGroupsInput', required: [] })
   .openapi('ListGroupsInput')
 
 const PutGroupConfigurationInputSchema = z
   .object({
-    Group: GroupStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the resource group with the configuration that you want to update.',
-        }),
-    ).exactOptional(),
-    Configuration: GroupConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new configuration to associate with the specified group. A configuration associates the resource group with an Amazon Web Services service and specifies how the service can interact with the resources in the group. A configuration is an array of <a>GroupConfigurationItem</a> elements.</p> <p>For information about the syntax of a service configuration, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html">Service configurations for Resource Groups</a>.</p> <note> <p>A resource group can contain either a <code>Configuration</code> or a <code>ResourceQuery</code>, but not both.</p> </note>',
-        }),
-    ).exactOptional(),
+    Group: GroupStringSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the resource group with the configuration that you want to update.',
+    }),
+    Configuration: GroupConfigurationListSchema.exactOptional().openapi({
+      description:
+        '<p>The new configuration to associate with the specified group. A configuration associates the resource group with an Amazon Web Services service and specifies how the service can interact with the resources in the group. A configuration is an array of <a>GroupConfigurationItem</a> elements.</p> <p>For information about the syntax of a service configuration, see <a href="https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html">Service configurations for Resource Groups</a>.</p> <note> <p>A resource group can contain either a <code>Configuration</code> or a <code>ResourceQuery</code>, but not both.</p> </note>',
+    }),
   })
   .openapi({ title: 'PutGroupConfigurationInput', required: [] })
   .openapi('PutGroupConfigurationInput')
 
 const SearchResourcesInputSchema = z
   .object({
-    ResourceQuery: ResourceQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The search query, using the same formats that are supported for resource group definition. For more information, see <a>CreateGroup</a>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value provided by a previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
+    ResourceQuery: ResourceQuerySchema.openapi({
+      description:
+        'The search query, using the same formats that are supported for resource group definition. For more information, see <a>CreateGroup</a>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value provided by a previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
   })
   .openapi({ required: ['ResourceQuery'], title: 'SearchResourcesInput' })
   .openapi('SearchResourcesInput')
 
 const TagInputSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the specified resource group. A tag is a string-to-string map of key-value pairs.',
-        }),
-    ),
+    Tags: TagsSchema.openapi({
+      description:
+        'The tags to add to the specified resource group. A tag is a string-to-string map of key-value pairs.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagInput' })
   .openapi('TagInput')
 
 const UngroupResourcesInputSchema = z
   .object({
-    Group: GroupStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or the ARN of the resource group from which to remove the resources.',
-        }),
-    ),
-    ResourceArns: ResourceArnListSchema.and(
-      z.any().openapi({ description: 'The ARNs of the resources to be removed from the group.' }),
-    ),
+    Group: GroupStringSchema.openapi({
+      description: 'The name or the ARN of the resource group from which to remove the resources.',
+    }),
+    ResourceArns: ResourceArnListSchema.openapi({
+      description: 'The ARNs of the resources to be removed from the group.',
+    }),
   })
   .openapi({ required: ['Group', 'ResourceArns'], title: 'UngroupResourcesInput' })
   .openapi('UngroupResourcesInput')
 
 const UntagInputSchema = z
   .object({
-    Keys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to be removed.' }),
-    ),
+    Keys: TagKeyListSchema.openapi({ description: 'The keys of the tags to be removed.' }),
   })
   .openapi({ required: ['Keys'], title: 'UntagInput' })
   .openapi('UntagInput')
 
 const UpdateAccountSettingsInputSchema = z
   .object({
-    GroupLifecycleEventsDesiredStatus: GroupLifecycleEventsDesiredStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether you want to turn <a href="https://docs.aws.amazon.com/ARG/latest/userguide/monitor-groups.html">group lifecycle events</a> on or off.',
-        }),
-    ).exactOptional(),
+    GroupLifecycleEventsDesiredStatus:
+      GroupLifecycleEventsDesiredStatusSchema.exactOptional().openapi({
+        description:
+          'Specifies whether you want to turn <a href="https://docs.aws.amazon.com/ARG/latest/userguide/monitor-groups.html">group lifecycle events</a> on or off.',
+      }),
   })
   .openapi({ title: 'UpdateAccountSettingsInput', required: [] })
   .openapi('UpdateAccountSettingsInput')
 
 const UpdateGroupInputSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "Don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
-        }),
-    ).exactOptional(),
-    Group: GroupStringSchema.and(
-      z.any().openapi({ description: 'The name or the ARN of the resource group to modify.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new description that you want to update the resource group with. Descriptions can contain letters, numbers, hyphens, underscores, periods, and spaces.',
-        }),
-    ).exactOptional(),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "Don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
+    }),
+    Group: GroupStringSchema.exactOptional().openapi({
+      description: 'The name or the ARN of the resource group to modify.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'The new description that you want to update the resource group with. Descriptions can contain letters, numbers, hyphens, underscores, periods, and spaces.',
+    }),
   })
   .openapi({ title: 'UpdateGroupInput', required: [] })
   .openapi('UpdateGroupInput')
 
 const UpdateGroupQueryInputSchema = z
   .object({
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "Don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
-        }),
-    ).exactOptional(),
-    Group: GroupStringSchema.and(
-      z.any().openapi({ description: 'The name or the ARN of the resource group to query.' }),
-    ).exactOptional(),
-    ResourceQuery: ResourceQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource query to determine which Amazon Web Services resources are members of this resource group.</p> <note> <p>A resource group can contain either a <code>Configuration</code> or a <code>ResourceQuery</code>, but not both.</p> </note>',
-        }),
-    ),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "Don't use this parameter. Use <code>Group</code> instead.This field is deprecated, use Group instead.",
+    }),
+    Group: GroupStringSchema.exactOptional().openapi({
+      description: 'The name or the ARN of the resource group to query.',
+    }),
+    ResourceQuery: ResourceQuerySchema.openapi({
+      description:
+        '<p>The resource query to determine which Amazon Web Services resources are members of this resource group.</p> <note> <p>A resource group can contain either a <code>Configuration</code> or a <code>ResourceQuery</code>, but not both.</p> </note>',
+    }),
   })
   .openapi({ required: ['ResourceQuery'], title: 'UpdateGroupQueryInput' })
   .openapi('UpdateGroupQueryInput')
@@ -1355,22 +1060,14 @@ export const postGroupsRoute = createRoute({
                 }),
               ResourceQuery: z
                 .object({
-                  Type: QueryTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  Query: QuerySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The query that defines a group or a search. The contents depends on the value of the <code>Type</code> element.</p> <ul> <li> <p> <code>ResourceTypeFilters</code> – Applies to all <code>ResourceQuery</code> objects of either <code>Type</code>. This element contains one of the following two items:</p> <ul> <li> <p>The value <code>AWS::AllSupported</code>. This causes the ResourceQuery to match resources of any resource type that also match the query.</p> </li> <li> <p>A list (a JSON array) of resource type identifiers that limit the query to only resources of the specified types. For the complete list of resource types that you can use in the array value for <code>ResourceTypeFilters</code>, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html">Resources you can use with Resource Groups and Tag Editor</a> in the <i>Resource Groups User Guide</i>.</p> </li> </ul> <p>Example: <code>"ResourceTypeFilters": ["AWS::AllSupported"]</code> or <code>"ResourceTypeFilters": ["AWS::EC2::Instance", "AWS::S3::Bucket"]</code> </p> </li> <li> <p> <code>TagFilters</code> – applicable only if <code>Type</code> = <code>TAG_FILTERS_1_0</code>. The <code>Query</code> contains a JSON string that represents a collection of simple tag filters. The JSON string uses a syntax similar to the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html">GetResources</a> </code> operation, but uses only the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters"> ResourceTypeFilters</a> </code> and <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters">TagFilters</a> </code> fields. If you specify more than one tag key, only resources that match all tag keys, and at least one value of each specified tag key, are returned in your query. If you specify more than one value for a tag key, a resource matches the filter if it has a tag key value that matches <i>any</i> of the specified values.</p> <p>For example, consider the following sample query for resources that have two tags, <code>Stage</code> and <code>Version</code>, with two values each:</p> <p> <code>[{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]</code> </p> <p>The results of this resource query could include the following.</p> <ul> <li> <p>An Amazon EC2 instance that has the following two tags: <code>{"Stage":"Deploy"}</code>, and <code>{"Version":"2"}</code> </p> </li> <li> <p>An S3 bucket that has the following two tags: <code>{"Stage":"Test"}</code>, and <code>{"Version":"1"}</code> </p> </li> </ul> <p>The resource query results would <i>not</i> include the following items in the results, however. </p> <ul> <li> <p>An Amazon EC2 instance that has only the following tag: <code>{"Stage":"Deploy"}</code>.</p> <p>The instance does not have <b>all</b> of the tag keys specified in the filter, so it is excluded from the results.</p> </li> <li> <p>An RDS database that has the following two tags: <code>{"Stage":"Archived"}</code> and <code>{"Version":"4"}</code> </p> <p>The database has all of the tag keys, but none of those keys has an associated value that matches at least one of the specified values in the filter.</p> </li> </ul> <p>Example: <code>"TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }</code> </p> </li> <li> <p> <code>StackIdentifier</code> – applicable only if <code>Type</code> = <code>CLOUDFORMATION_STACK_1_0</code>. The value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation stack whose resources you want included in the group.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  Type: QueryTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>',
+                  }),
+                  Query: QuerySchema.exactOptional().openapi({
+                    description:
+                      '<p>The query that defines a group or a search. The contents depends on the value of the <code>Type</code> element.</p> <ul> <li> <p> <code>ResourceTypeFilters</code> – Applies to all <code>ResourceQuery</code> objects of either <code>Type</code>. This element contains one of the following two items:</p> <ul> <li> <p>The value <code>AWS::AllSupported</code>. This causes the ResourceQuery to match resources of any resource type that also match the query.</p> </li> <li> <p>A list (a JSON array) of resource type identifiers that limit the query to only resources of the specified types. For the complete list of resource types that you can use in the array value for <code>ResourceTypeFilters</code>, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html">Resources you can use with Resource Groups and Tag Editor</a> in the <i>Resource Groups User Guide</i>.</p> </li> </ul> <p>Example: <code>"ResourceTypeFilters": ["AWS::AllSupported"]</code> or <code>"ResourceTypeFilters": ["AWS::EC2::Instance", "AWS::S3::Bucket"]</code> </p> </li> <li> <p> <code>TagFilters</code> – applicable only if <code>Type</code> = <code>TAG_FILTERS_1_0</code>. The <code>Query</code> contains a JSON string that represents a collection of simple tag filters. The JSON string uses a syntax similar to the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html">GetResources</a> </code> operation, but uses only the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters"> ResourceTypeFilters</a> </code> and <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters">TagFilters</a> </code> fields. If you specify more than one tag key, only resources that match all tag keys, and at least one value of each specified tag key, are returned in your query. If you specify more than one value for a tag key, a resource matches the filter if it has a tag key value that matches <i>any</i> of the specified values.</p> <p>For example, consider the following sample query for resources that have two tags, <code>Stage</code> and <code>Version</code>, with two values each:</p> <p> <code>[{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]</code> </p> <p>The results of this resource query could include the following.</p> <ul> <li> <p>An Amazon EC2 instance that has the following two tags: <code>{"Stage":"Deploy"}</code>, and <code>{"Version":"2"}</code> </p> </li> <li> <p>An S3 bucket that has the following two tags: <code>{"Stage":"Test"}</code>, and <code>{"Version":"1"}</code> </p> </li> </ul> <p>The resource query results would <i>not</i> include the following items in the results, however. </p> <ul> <li> <p>An Amazon EC2 instance that has only the following tag: <code>{"Stage":"Deploy"}</code>.</p> <p>The instance does not have <b>all</b> of the tag keys specified in the filter, so it is excluded from the results.</p> </li> <li> <p>An RDS database that has the following two tags: <code>{"Stage":"Archived"}</code> and <code>{"Version":"4"}</code> </p> <p>The database has all of the tag keys, but none of those keys has an associated value that matches at least one of the specified values in the filter.</p> </li> </ul> <p>Example: <code>"TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }</code> </p> </li> <li> <p> <code>StackIdentifier</code> – applicable only if <code>Type</code> = <code>CLOUDFORMATION_STACK_1_0</code>. The value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation stack whose resources you want included in the group.</p> </li> </ul>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2496,22 +2193,14 @@ export const postResourcesSearchRoute = createRoute({
             .object({
               ResourceQuery: z
                 .object({
-                  Type: QueryTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  Query: QuerySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The query that defines a group or a search. The contents depends on the value of the <code>Type</code> element.</p> <ul> <li> <p> <code>ResourceTypeFilters</code> – Applies to all <code>ResourceQuery</code> objects of either <code>Type</code>. This element contains one of the following two items:</p> <ul> <li> <p>The value <code>AWS::AllSupported</code>. This causes the ResourceQuery to match resources of any resource type that also match the query.</p> </li> <li> <p>A list (a JSON array) of resource type identifiers that limit the query to only resources of the specified types. For the complete list of resource types that you can use in the array value for <code>ResourceTypeFilters</code>, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html">Resources you can use with Resource Groups and Tag Editor</a> in the <i>Resource Groups User Guide</i>.</p> </li> </ul> <p>Example: <code>"ResourceTypeFilters": ["AWS::AllSupported"]</code> or <code>"ResourceTypeFilters": ["AWS::EC2::Instance", "AWS::S3::Bucket"]</code> </p> </li> <li> <p> <code>TagFilters</code> – applicable only if <code>Type</code> = <code>TAG_FILTERS_1_0</code>. The <code>Query</code> contains a JSON string that represents a collection of simple tag filters. The JSON string uses a syntax similar to the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html">GetResources</a> </code> operation, but uses only the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters"> ResourceTypeFilters</a> </code> and <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters">TagFilters</a> </code> fields. If you specify more than one tag key, only resources that match all tag keys, and at least one value of each specified tag key, are returned in your query. If you specify more than one value for a tag key, a resource matches the filter if it has a tag key value that matches <i>any</i> of the specified values.</p> <p>For example, consider the following sample query for resources that have two tags, <code>Stage</code> and <code>Version</code>, with two values each:</p> <p> <code>[{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]</code> </p> <p>The results of this resource query could include the following.</p> <ul> <li> <p>An Amazon EC2 instance that has the following two tags: <code>{"Stage":"Deploy"}</code>, and <code>{"Version":"2"}</code> </p> </li> <li> <p>An S3 bucket that has the following two tags: <code>{"Stage":"Test"}</code>, and <code>{"Version":"1"}</code> </p> </li> </ul> <p>The resource query results would <i>not</i> include the following items in the results, however. </p> <ul> <li> <p>An Amazon EC2 instance that has only the following tag: <code>{"Stage":"Deploy"}</code>.</p> <p>The instance does not have <b>all</b> of the tag keys specified in the filter, so it is excluded from the results.</p> </li> <li> <p>An RDS database that has the following two tags: <code>{"Stage":"Archived"}</code> and <code>{"Version":"4"}</code> </p> <p>The database has all of the tag keys, but none of those keys has an associated value that matches at least one of the specified values in the filter.</p> </li> </ul> <p>Example: <code>"TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }</code> </p> </li> <li> <p> <code>StackIdentifier</code> – applicable only if <code>Type</code> = <code>CLOUDFORMATION_STACK_1_0</code>. The value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation stack whose resources you want included in the group.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  Type: QueryTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>',
+                  }),
+                  Query: QuerySchema.exactOptional().openapi({
+                    description:
+                      '<p>The query that defines a group or a search. The contents depends on the value of the <code>Type</code> element.</p> <ul> <li> <p> <code>ResourceTypeFilters</code> – Applies to all <code>ResourceQuery</code> objects of either <code>Type</code>. This element contains one of the following two items:</p> <ul> <li> <p>The value <code>AWS::AllSupported</code>. This causes the ResourceQuery to match resources of any resource type that also match the query.</p> </li> <li> <p>A list (a JSON array) of resource type identifiers that limit the query to only resources of the specified types. For the complete list of resource types that you can use in the array value for <code>ResourceTypeFilters</code>, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html">Resources you can use with Resource Groups and Tag Editor</a> in the <i>Resource Groups User Guide</i>.</p> </li> </ul> <p>Example: <code>"ResourceTypeFilters": ["AWS::AllSupported"]</code> or <code>"ResourceTypeFilters": ["AWS::EC2::Instance", "AWS::S3::Bucket"]</code> </p> </li> <li> <p> <code>TagFilters</code> – applicable only if <code>Type</code> = <code>TAG_FILTERS_1_0</code>. The <code>Query</code> contains a JSON string that represents a collection of simple tag filters. The JSON string uses a syntax similar to the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html">GetResources</a> </code> operation, but uses only the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters"> ResourceTypeFilters</a> </code> and <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters">TagFilters</a> </code> fields. If you specify more than one tag key, only resources that match all tag keys, and at least one value of each specified tag key, are returned in your query. If you specify more than one value for a tag key, a resource matches the filter if it has a tag key value that matches <i>any</i> of the specified values.</p> <p>For example, consider the following sample query for resources that have two tags, <code>Stage</code> and <code>Version</code>, with two values each:</p> <p> <code>[{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]</code> </p> <p>The results of this resource query could include the following.</p> <ul> <li> <p>An Amazon EC2 instance that has the following two tags: <code>{"Stage":"Deploy"}</code>, and <code>{"Version":"2"}</code> </p> </li> <li> <p>An S3 bucket that has the following two tags: <code>{"Stage":"Test"}</code>, and <code>{"Version":"1"}</code> </p> </li> </ul> <p>The resource query results would <i>not</i> include the following items in the results, however. </p> <ul> <li> <p>An Amazon EC2 instance that has only the following tag: <code>{"Stage":"Deploy"}</code>.</p> <p>The instance does not have <b>all</b> of the tag keys specified in the filter, so it is excluded from the results.</p> </li> <li> <p>An RDS database that has the following two tags: <code>{"Stage":"Archived"}</code> and <code>{"Version":"4"}</code> </p> <p>The database has all of the tag keys, but none of those keys has an associated value that matches at least one of the specified values in the filter.</p> </li> </ul> <p>Example: <code>"TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }</code> </p> </li> <li> <p> <code>StackIdentifier</code> – applicable only if <code>Type</code> = <code>CLOUDFORMATION_STACK_1_0</code>. The value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation stack whose resources you want included in the group.</p> </li> </ul>',
+                  }),
                 })
                 .openapi({
                   description:
@@ -2845,22 +2534,14 @@ export const postUpdateGroupQueryRoute = createRoute({
                 .openapi({ description: 'The name or the ARN of the resource group to query.' }),
               ResourceQuery: z
                 .object({
-                  Type: QueryTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  Query: QuerySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The query that defines a group or a search. The contents depends on the value of the <code>Type</code> element.</p> <ul> <li> <p> <code>ResourceTypeFilters</code> – Applies to all <code>ResourceQuery</code> objects of either <code>Type</code>. This element contains one of the following two items:</p> <ul> <li> <p>The value <code>AWS::AllSupported</code>. This causes the ResourceQuery to match resources of any resource type that also match the query.</p> </li> <li> <p>A list (a JSON array) of resource type identifiers that limit the query to only resources of the specified types. For the complete list of resource types that you can use in the array value for <code>ResourceTypeFilters</code>, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html">Resources you can use with Resource Groups and Tag Editor</a> in the <i>Resource Groups User Guide</i>.</p> </li> </ul> <p>Example: <code>"ResourceTypeFilters": ["AWS::AllSupported"]</code> or <code>"ResourceTypeFilters": ["AWS::EC2::Instance", "AWS::S3::Bucket"]</code> </p> </li> <li> <p> <code>TagFilters</code> – applicable only if <code>Type</code> = <code>TAG_FILTERS_1_0</code>. The <code>Query</code> contains a JSON string that represents a collection of simple tag filters. The JSON string uses a syntax similar to the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html">GetResources</a> </code> operation, but uses only the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters"> ResourceTypeFilters</a> </code> and <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters">TagFilters</a> </code> fields. If you specify more than one tag key, only resources that match all tag keys, and at least one value of each specified tag key, are returned in your query. If you specify more than one value for a tag key, a resource matches the filter if it has a tag key value that matches <i>any</i> of the specified values.</p> <p>For example, consider the following sample query for resources that have two tags, <code>Stage</code> and <code>Version</code>, with two values each:</p> <p> <code>[{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]</code> </p> <p>The results of this resource query could include the following.</p> <ul> <li> <p>An Amazon EC2 instance that has the following two tags: <code>{"Stage":"Deploy"}</code>, and <code>{"Version":"2"}</code> </p> </li> <li> <p>An S3 bucket that has the following two tags: <code>{"Stage":"Test"}</code>, and <code>{"Version":"1"}</code> </p> </li> </ul> <p>The resource query results would <i>not</i> include the following items in the results, however. </p> <ul> <li> <p>An Amazon EC2 instance that has only the following tag: <code>{"Stage":"Deploy"}</code>.</p> <p>The instance does not have <b>all</b> of the tag keys specified in the filter, so it is excluded from the results.</p> </li> <li> <p>An RDS database that has the following two tags: <code>{"Stage":"Archived"}</code> and <code>{"Version":"4"}</code> </p> <p>The database has all of the tag keys, but none of those keys has an associated value that matches at least one of the specified values in the filter.</p> </li> </ul> <p>Example: <code>"TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }</code> </p> </li> <li> <p> <code>StackIdentifier</code> – applicable only if <code>Type</code> = <code>CLOUDFORMATION_STACK_1_0</code>. The value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation stack whose resources you want included in the group.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  Type: QueryTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>',
+                  }),
+                  Query: QuerySchema.exactOptional().openapi({
+                    description:
+                      '<p>The query that defines a group or a search. The contents depends on the value of the <code>Type</code> element.</p> <ul> <li> <p> <code>ResourceTypeFilters</code> – Applies to all <code>ResourceQuery</code> objects of either <code>Type</code>. This element contains one of the following two items:</p> <ul> <li> <p>The value <code>AWS::AllSupported</code>. This causes the ResourceQuery to match resources of any resource type that also match the query.</p> </li> <li> <p>A list (a JSON array) of resource type identifiers that limit the query to only resources of the specified types. For the complete list of resource types that you can use in the array value for <code>ResourceTypeFilters</code>, see <a href="https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html">Resources you can use with Resource Groups and Tag Editor</a> in the <i>Resource Groups User Guide</i>.</p> </li> </ul> <p>Example: <code>"ResourceTypeFilters": ["AWS::AllSupported"]</code> or <code>"ResourceTypeFilters": ["AWS::EC2::Instance", "AWS::S3::Bucket"]</code> </p> </li> <li> <p> <code>TagFilters</code> – applicable only if <code>Type</code> = <code>TAG_FILTERS_1_0</code>. The <code>Query</code> contains a JSON string that represents a collection of simple tag filters. The JSON string uses a syntax similar to the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html">GetResources</a> </code> operation, but uses only the <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters"> ResourceTypeFilters</a> </code> and <code> <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters">TagFilters</a> </code> fields. If you specify more than one tag key, only resources that match all tag keys, and at least one value of each specified tag key, are returned in your query. If you specify more than one value for a tag key, a resource matches the filter if it has a tag key value that matches <i>any</i> of the specified values.</p> <p>For example, consider the following sample query for resources that have two tags, <code>Stage</code> and <code>Version</code>, with two values each:</p> <p> <code>[{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]</code> </p> <p>The results of this resource query could include the following.</p> <ul> <li> <p>An Amazon EC2 instance that has the following two tags: <code>{"Stage":"Deploy"}</code>, and <code>{"Version":"2"}</code> </p> </li> <li> <p>An S3 bucket that has the following two tags: <code>{"Stage":"Test"}</code>, and <code>{"Version":"1"}</code> </p> </li> </ul> <p>The resource query results would <i>not</i> include the following items in the results, however. </p> <ul> <li> <p>An Amazon EC2 instance that has only the following tag: <code>{"Stage":"Deploy"}</code>.</p> <p>The instance does not have <b>all</b> of the tag keys specified in the filter, so it is excluded from the results.</p> </li> <li> <p>An RDS database that has the following two tags: <code>{"Stage":"Archived"}</code> and <code>{"Version":"4"}</code> </p> <p>The database has all of the tag keys, but none of those keys has an associated value that matches at least one of the specified values in the filter.</p> </li> </ul> <p>Example: <code>"TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }</code> </p> </li> <li> <p> <code>StackIdentifier</code> – applicable only if <code>Type</code> = <code>CLOUDFORMATION_STACK_1_0</code>. The value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation stack whose resources you want included in the group.</p> </li> </ul>',
+                  }),
                 })
                 .openapi({
                   description:

@@ -1,0 +1,1564 @@
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRoute,
+  deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRoute,
+  deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRoute,
+  deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRoute,
+  deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRoute,
+  deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRoute,
+  deleteDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRoute,
+  deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRoute,
+  deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRoute,
+  deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRoute,
+  deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRoute,
+  deleteDeviceAppManagementManagedAppStatusesManagedAppStatusIdRoute,
+  deleteDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRoute,
+  deleteDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRoute,
+  deleteDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRoute,
+  deleteDeviceAppManagementManagedEBooksManagedEBookIdRoute,
+  deleteDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRoute,
+  deleteDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRoute,
+  deleteDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRoute,
+  deleteDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRoute,
+  deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRoute,
+  deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRoute,
+  deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRoute,
+  deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRoute,
+  deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRoute,
+  deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRoute,
+  deleteDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRoute,
+  deleteDeviceAppManagementMobileAppsMobileAppIdRoute,
+  deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRoute,
+  deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRoute,
+  deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRoute,
+  deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRoute,
+  deleteDeviceAppManagementVppTokensVppTokenIdRoute,
+  deleteDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRoute,
+  getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsCountRoute,
+  getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsRoute,
+  getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRoute,
+  getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRoute,
+  getDeviceAppManagementAndroidManagedAppProtectionsCountRoute,
+  getDeviceAppManagementAndroidManagedAppProtectionsRoute,
+  getDeviceAppManagementDefaultManagedAppProtectionsCountRoute,
+  getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsCountRoute,
+  getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsRoute,
+  getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRoute,
+  getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRoute,
+  getDeviceAppManagementDefaultManagedAppProtectionsRoute,
+  getDeviceAppManagementIosManagedAppProtectionsCountRoute,
+  getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsCountRoute,
+  getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsRoute,
+  getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRoute,
+  getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRoute,
+  getDeviceAppManagementIosManagedAppProtectionsRoute,
+  getDeviceAppManagementManagedAppPoliciesCountRoute,
+  getDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRoute,
+  getDeviceAppManagementManagedAppPoliciesRoute,
+  getDeviceAppManagementManagedAppRegistrationsCountRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesCountRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesCountRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsCountRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsRoute,
+  getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRoute,
+  getDeviceAppManagementManagedAppRegistrationsMicrosoftGraphGetUserIdsWithFlaggedAppRegistrationRoute,
+  getDeviceAppManagementManagedAppRegistrationsRoute,
+  getDeviceAppManagementManagedAppStatusesCountRoute,
+  getDeviceAppManagementManagedAppStatusesManagedAppStatusIdRoute,
+  getDeviceAppManagementManagedAppStatusesRoute,
+  getDeviceAppManagementManagedEBooksCountRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsCountRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesCountRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryCountRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesCountRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesRoute,
+  getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRoute,
+  getDeviceAppManagementManagedEBooksRoute,
+  getDeviceAppManagementMdmWindowsInformationProtectionPoliciesCountRoute,
+  getDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRoute,
+  getDeviceAppManagementMdmWindowsInformationProtectionPoliciesRoute,
+  getDeviceAppManagementMobileAppCategoriesCountRoute,
+  getDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRoute,
+  getDeviceAppManagementMobileAppCategoriesRoute,
+  getDeviceAppManagementMobileAppConfigurationsCountRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsCountRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesCountRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesCountRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesRoute,
+  getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRoute,
+  getDeviceAppManagementMobileAppConfigurationsRoute,
+  getDeviceAppManagementMobileAppsCountRoute,
+  getDeviceAppManagementMobileAppsMicrosoftGraphManagedMobileLobAppCountRoute,
+  getDeviceAppManagementMobileAppsMicrosoftGraphManagedMobileLobAppRoute,
+  getDeviceAppManagementMobileAppsMicrosoftGraphMobileLobAppCountRoute,
+  getDeviceAppManagementMobileAppsMicrosoftGraphMobileLobAppRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdAssignmentsCountRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdAssignmentsRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdCategoriesCountRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdCategoriesMobileAppCategoryIdRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdCategoriesRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphManagedMobileLobAppRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphMobileLobAppRoute,
+  getDeviceAppManagementMobileAppsMobileAppIdRoute,
+  getDeviceAppManagementMobileAppsRoute,
+  getDeviceAppManagementRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsCountRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsCountRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsCountRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRoute,
+  getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRoute,
+  getDeviceAppManagementVppTokensCountRoute,
+  getDeviceAppManagementVppTokensRoute,
+  getDeviceAppManagementVppTokensVppTokenIdRoute,
+  getDeviceAppManagementWindowsInformationProtectionPoliciesCountRoute,
+  getDeviceAppManagementWindowsInformationProtectionPoliciesRoute,
+  getDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRoute,
+  patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRoute,
+  patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRoute,
+  patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRoute,
+  patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRoute,
+  patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRoute,
+  patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRoute,
+  patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRoute,
+  patchDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRoute,
+  patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRoute,
+  patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRoute,
+  patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRoute,
+  patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRoute,
+  patchDeviceAppManagementManagedAppStatusesManagedAppStatusIdRoute,
+  patchDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRoute,
+  patchDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRoute,
+  patchDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRoute,
+  patchDeviceAppManagementManagedEBooksManagedEBookIdRoute,
+  patchDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRoute,
+  patchDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRoute,
+  patchDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRoute,
+  patchDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRoute,
+  patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRoute,
+  patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRoute,
+  patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRoute,
+  patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRoute,
+  patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRoute,
+  patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRoute,
+  patchDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRoute,
+  patchDeviceAppManagementMobileAppsMobileAppIdRoute,
+  patchDeviceAppManagementRoute,
+  patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRoute,
+  patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRoute,
+  patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRoute,
+  patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRoute,
+  patchDeviceAppManagementVppTokensVppTokenIdRoute,
+  patchDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRoute,
+  postDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsRoute,
+  postDeviceAppManagementAndroidManagedAppProtectionsRoute,
+  postDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsRoute,
+  postDeviceAppManagementDefaultManagedAppProtectionsRoute,
+  postDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsRoute,
+  postDeviceAppManagementIosManagedAppProtectionsRoute,
+  postDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRoute,
+  postDeviceAppManagementManagedAppPoliciesRoute,
+  postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRoute,
+  postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesRoute,
+  postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRoute,
+  postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesRoute,
+  postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsRoute,
+  postDeviceAppManagementManagedAppRegistrationsRoute,
+  postDeviceAppManagementManagedAppStatusesRoute,
+  postDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsRoute,
+  postDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesRoute,
+  postDeviceAppManagementManagedEBooksManagedEBookIdMicrosoftGraphAssignRoute,
+  postDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryRoute,
+  postDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesRoute,
+  postDeviceAppManagementManagedEBooksRoute,
+  postDeviceAppManagementMdmWindowsInformationProtectionPoliciesRoute,
+  postDeviceAppManagementMicrosoftGraphSyncMicrosoftStoreForBusinessAppsRoute,
+  postDeviceAppManagementMobileAppCategoriesRoute,
+  postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsRoute,
+  postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesRoute,
+  postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdMicrosoftGraphAssignRoute,
+  postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesRoute,
+  postDeviceAppManagementMobileAppConfigurationsRoute,
+  postDeviceAppManagementMobileAppsMobileAppIdAssignmentsRoute,
+  postDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphAssignRoute,
+  postDeviceAppManagementMobileAppsRoute,
+  postDeviceAppManagementTargetedManagedAppConfigurationsRoute,
+  postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsRoute,
+  postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsRoute,
+  postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdMicrosoftGraphAssignRoute,
+  postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdMicrosoftGraphTargetAppsRoute,
+  postDeviceAppManagementVppTokensRoute,
+  postDeviceAppManagementVppTokensVppTokenIdMicrosoftGraphSyncLicensesRoute,
+  postDeviceAppManagementWindowsInformationProtectionPoliciesRoute,
+} from '../routes'
+
+export const getDeviceAppManagementRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementAndroidManagedAppProtectionsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementAndroidManagedAppProtectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementAndroidManagedAppProtectionsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementAndroidManagedAppProtectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementAndroidManagedAppProtectionsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementAndroidManagedAppProtectionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementAndroidManagedAppProtectionsAndroidManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementDefaultManagedAppProtectionsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementDefaultManagedAppProtectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementDefaultManagedAppProtectionsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementDefaultManagedAppProtectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementDefaultManagedAppProtectionsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementDefaultManagedAppProtectionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementDefaultManagedAppProtectionsDefaultManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementIosManagedAppProtectionsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementIosManagedAppProtectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementIosManagedAppProtectionsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementIosManagedAppProtectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementIosManagedAppProtectionsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementIosManagedAppProtectionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementIosManagedAppProtectionsIosManagedAppProtectionIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppPoliciesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppPoliciesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppPoliciesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppPoliciesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppRegistrationsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppRegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsMicrosoftGraphGetUserIdsWithFlaggedAppRegistrationRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsMicrosoftGraphGetUserIdsWithFlaggedAppRegistrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdAppliedPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdIntendedPoliciesManagedAppPolicyIdMicrosoftGraphTargetAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedAppRegistrationsManagedAppRegistrationIdOperationsManagedAppOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppStatusesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedAppStatusesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedAppStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppStatusesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppStatusesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedAppStatusesManagedAppStatusIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedAppStatusesManagedAppStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedAppStatusesManagedAppStatusIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedAppStatusesManagedAppStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedAppStatusesManagedAppStatusIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedAppStatusesManagedAppStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedEBooksRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedEBooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedEBooksManagedEBookIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedEBooksManagedEBookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedEBooksManagedEBookIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedEBooksManagedEBookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedEBooksManagedEBookIdAssignmentsManagedEBookAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedEBooksManagedEBookIdDeviceStatesDeviceInstallStateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedEBooksManagedEBookIdInstallSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedEBooksManagedEBookIdMicrosoftGraphAssignRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedEBooksManagedEBookIdMicrosoftGraphAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementManagedEBooksManagedEBookIdUserStateSummaryUserInstallStateSummaryIdDeviceStatesDeviceInstallStateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMdmWindowsInformationProtectionPoliciesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMdmWindowsInformationProtectionPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMdmWindowsInformationProtectionPoliciesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMdmWindowsInformationProtectionPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMdmWindowsInformationProtectionPoliciesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMdmWindowsInformationProtectionPoliciesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMdmWindowsInformationProtectionPoliciesMdmWindowsInformationProtectionPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMicrosoftGraphSyncMicrosoftStoreForBusinessAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMicrosoftGraphSyncMicrosoftStoreForBusinessAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppCategoriesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppCategoriesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppCategoriesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppCategoriesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppCategoriesMobileAppCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppConfigurationsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdAssignmentsManagedDeviceMobileAppConfigurationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdDeviceStatusesManagedDeviceMobileAppConfigurationDeviceStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdMicrosoftGraphAssignRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdMicrosoftGraphAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppConfigurationsManagedDeviceMobileAppConfigurationIdUserStatusesManagedDeviceMobileAppConfigurationUserStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMicrosoftGraphManagedMobileLobAppRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMicrosoftGraphManagedMobileLobAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMicrosoftGraphManagedMobileLobAppCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMicrosoftGraphManagedMobileLobAppCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMicrosoftGraphMobileLobAppRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMicrosoftGraphMobileLobAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMicrosoftGraphMobileLobAppCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMicrosoftGraphMobileLobAppCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppsMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppsMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdAssignmentsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppsMobileAppIdAssignmentsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppsMobileAppIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdAssignmentsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementMobileAppsMobileAppIdAssignmentsMobileAppAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdCategoriesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdCategoriesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdCategoriesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdCategoriesMobileAppCategoryIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdCategoriesMobileAppCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphAssignRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphManagedMobileLobAppRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphManagedMobileLobAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphMobileLobAppRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementMobileAppsMobileAppIdMicrosoftGraphMobileLobAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementTargetedManagedAppConfigurationsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementTargetedManagedAppConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAppsManagedMobileAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdAssignmentsTargetedManagedAppPolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdDeploymentSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdMicrosoftGraphAssignRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdMicrosoftGraphAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdMicrosoftGraphTargetAppsRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementTargetedManagedAppConfigurationsTargetedManagedAppConfigurationIdMicrosoftGraphTargetAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementVppTokensRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementVppTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementVppTokensRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementVppTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementVppTokensCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementVppTokensCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementVppTokensVppTokenIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementVppTokensVppTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementVppTokensVppTokenIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementVppTokensVppTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementVppTokensVppTokenIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementVppTokensVppTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementVppTokensVppTokenIdMicrosoftGraphSyncLicensesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementVppTokensVppTokenIdMicrosoftGraphSyncLicensesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementWindowsInformationProtectionPoliciesRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementWindowsInformationProtectionPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeviceAppManagementWindowsInformationProtectionPoliciesRouteHandler: RouteHandler<
+  typeof postDeviceAppManagementWindowsInformationProtectionPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementWindowsInformationProtectionPoliciesCountRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementWindowsInformationProtectionPoliciesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRouteHandler: RouteHandler<
+  typeof deleteDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRouteHandler: RouteHandler<
+  typeof getDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRouteHandler: RouteHandler<
+  typeof patchDeviceAppManagementWindowsInformationProtectionPoliciesWindowsInformationProtectionPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

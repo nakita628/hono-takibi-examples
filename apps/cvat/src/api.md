@@ -1,4 +1,4 @@
-<h1 id="cvat-rest-api">CVAT REST API v2.81.1</h1>
+<h1 id="cvat-rest-api">CVAT REST API v2.83.1</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -4365,6 +4365,12 @@ curl http://localhost:8080/api/jobs/0/data/meta \
       "height": 0,
       "name": "string",
       "related_files": 0,
+      "related_files_metadata": [
+        {
+          "name": "string",
+          "type": "file"
+        }
+      ],
       "has_related_context": true
     }
   ],
@@ -4458,6 +4464,12 @@ curl http://localhost:8080/api/jobs/0/data/meta \
       "height": 0,
       "name": "string",
       "related_files": 0,
+      "related_files_metadata": [
+        {
+          "name": "string",
+          "type": "file"
+        }
+      ],
       "has_related_context": true
     }
   ],
@@ -6949,6 +6961,12 @@ curl http://localhost:8080/api/quality/conflicts \
       "severity": {},
       "attribute_names": [
         "string"
+      ],
+      "requirements": [
+        {
+          "id": 0,
+          "name": "string"
+        }
       ]
     }
   ]
@@ -7604,7 +7622,11 @@ If you want to restrict results only to a specific parent type, use the "parent_
           "metric": "accuracy",
           "required_score": 0,
           "parent_requirement": 0,
+          "similarity_metric": "iou",
           "iou_threshold": 0,
+          "oks_threshold": 0,
+          "boundary_f_threshold": 0,
+          "boundary_f_tolerance": 0,
           "point_size": 0,
           "point_size_base": "image_size",
           "line_thickness": 0,
@@ -7699,7 +7721,11 @@ curl http://localhost:8080/api/quality/settings/0 \
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -7772,7 +7798,11 @@ curl http://localhost:8080/api/quality/settings/0 \
         "metric": "accuracy",
         "required_score": 0,
         "parent_requirement": 0,
+        "similarity_metric": "iou",
         "iou_threshold": 0,
+        "oks_threshold": 0,
+        "boundary_f_threshold": 0,
+        "boundary_f_tolerance": 0,
         "point_size": 0,
         "point_size_base": "image_size",
         "line_thickness": 0,
@@ -7823,7 +7853,11 @@ curl http://localhost:8080/api/quality/settings/0 \
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -7892,7 +7926,11 @@ curl http://localhost:8080/api/quality/settings/0 \
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -7965,7 +8003,11 @@ curl http://localhost:8080/api/quality/settings/0 \
         "metric": "accuracy",
         "required_score": 0,
         "parent_requirement": 0,
+        "similarity_metric": "iou",
         "iou_threshold": 0,
+        "oks_threshold": 0,
+        "boundary_f_threshold": 0,
+        "boundary_f_tolerance": 0,
         "point_size": 0,
         "point_size_base": "image_size",
         "line_thickness": 0,
@@ -8016,7 +8058,11 @@ curl http://localhost:8080/api/quality/settings/0 \
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -8085,7 +8131,11 @@ curl http://localhost:8080/api/quality/settings/0 \
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -8200,7 +8250,11 @@ curl http://localhost:8080/api/quality/settings/requirements \
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -8266,7 +8320,11 @@ curl http://localhost:8080/api/quality/settings/requirements \
     "metric": "accuracy",
     "required_score": 0,
     "parent_requirement": 0,
+    "similarity_metric": "iou",
     "iou_threshold": 0,
+    "oks_threshold": 0,
+    "boundary_f_threshold": 0,
+    "boundary_f_tolerance": 0,
     "point_size": 0,
     "point_size_base": "image_size",
     "line_thickness": 0,
@@ -8310,7 +8368,11 @@ curl http://localhost:8080/api/quality/settings/requirements \
   "metric": "accuracy",
   "required_score": 0,
   "parent_requirement": 0,
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -8358,15 +8420,22 @@ curl http://localhost:8080/api/quality/settings/requirements \
 |» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
 |» required_score|body|number(double) \| null|false|Defines the minimal quality requirements in terms of the selected target metric.|
 |» parent_requirement|body|integer \| null|false|The parent requirement. Child requirements inherit comparison settings from it.|
-|» iou_threshold|body|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|» similarity_metric|body|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|» » *oneOf*|body|[SimilarityMetricEnum](#schemasimilaritymetricenum)|false|* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|» » *oneOf*|body|[BlankEnum](#schemablankenum)|false|none|
+|» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
+|» iou_threshold|body|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
 |» » *oneOf*|body|number|false|none|
 |» » *oneOf*|body|[SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest)|false|An IoU threshold policy for rectangle, polygon, mask, and ellipse requirements.<br><br>The `iou_threshold` field also accepts a finite number between 0 and 1, such as `0.7`.<br>Existing numeric thresholds are returned as numbers.<br><br>A constant policy uses one threshold for all shapes:<br><br>```json<br>{"type": "iou", "mode": "constant", "value": 0.7}<br>```<br><br>A linear policy chooses a threshold from the GT shape area in px²:<br><br>```json<br>{<br>  "type": "iou",<br>  "mode": "linear",<br>  "input": "gt.shape_area",<br>  "extrapolation": "clamp",<br>  "points": [{"x": 100, "y": 0.4}, {"x": 1000, "y": 0.9}]<br>}<br>```<br><br>Linear policies require 2-200 points with unique positive areas sorted in ascending order<br>and thresholds between 0 and 1. Outside the curve, the nearest endpoint applies.<br>Policies without `type` are accepted as IoU for compatibility; responses include it.<br>Other threshold types are not supported.<br><br>Setting a child's threshold to `null` restores inheritance of the whole threshold.<br>Root requirements cannot inherit their threshold.|
+|» oks_threshold|body|number(double) \| null|false|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|» boundary_f_threshold|body|number(double) \| null|false|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|» boundary_f_tolerance|body|number(double) \| null|false|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |» point_size|body|number(double) \| null|false|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|» point_size_base|body|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|» point_size_base|body|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
 |» » *oneOf*|body|[QualityPointSizeBase](#schemaqualitypointsizebase)|false|* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
 |» » *oneOf*|body|[BlankEnum](#schemablankenum)|false|none|
 |» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
-|» line_thickness|body|number(double) \| null|false|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|» line_thickness|body|number(double) \| null|false|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |» match_orientation|body|boolean \| null|false|Enables or disables polyline orientation comparison|
 |» line_orientation_threshold|body|number(double) \| null|false|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |» match_groups|body|boolean \| null|false|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -8414,6 +8483,12 @@ curl http://localhost:8080/api/quality/settings/requirements \
 |» » *oneOf*|label_jaccard_index|
 |» » *oneOf*|label_dice|
 |» » *oneOf*|null|
+|» » *oneOf*|iou|
+|» » *oneOf*|oks|
+|» » *oneOf*|boundary_f|
+|» » *oneOf*|equality|
+|» » *oneOf*|""|
+|» » *oneOf*|null|
 |» » *oneOf*|image_size|
 |» » *oneOf*|group_bbox_size|
 |» » *oneOf*|""|
@@ -8442,7 +8517,11 @@ curl http://localhost:8080/api/quality/settings/requirements \
   "required_score": 0,
   "parent_requirement": 0,
   "effective": {},
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -8524,7 +8603,11 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
   "required_score": 0,
   "parent_requirement": 0,
   "effective": {},
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -8588,7 +8671,11 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
     "metric": "accuracy",
     "required_score": 0,
     "parent_requirement": 0,
+    "similarity_metric": "iou",
     "iou_threshold": 0,
+    "oks_threshold": 0,
+    "boundary_f_threshold": 0,
+    "boundary_f_tolerance": 0,
     "point_size": 0,
     "point_size_base": "image_size",
     "line_thickness": 0,
@@ -8632,7 +8719,11 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
   "metric": "accuracy",
   "required_score": 0,
   "parent_requirement": 0,
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -8681,15 +8772,22 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
 |» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
 |» required_score|body|number(double) \| null|false|Defines the minimal quality requirements in terms of the selected target metric.|
 |» parent_requirement|body|integer \| null|false|The parent requirement. Child requirements inherit comparison settings from it.|
-|» iou_threshold|body|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|» similarity_metric|body|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|» » *oneOf*|body|[SimilarityMetricEnum](#schemasimilaritymetricenum)|false|* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|» » *oneOf*|body|[BlankEnum](#schemablankenum)|false|none|
+|» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
+|» iou_threshold|body|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
 |» » *oneOf*|body|number|false|none|
 |» » *oneOf*|body|[SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest)|false|An IoU threshold policy for rectangle, polygon, mask, and ellipse requirements.<br><br>The `iou_threshold` field also accepts a finite number between 0 and 1, such as `0.7`.<br>Existing numeric thresholds are returned as numbers.<br><br>A constant policy uses one threshold for all shapes:<br><br>```json<br>{"type": "iou", "mode": "constant", "value": 0.7}<br>```<br><br>A linear policy chooses a threshold from the GT shape area in px²:<br><br>```json<br>{<br>  "type": "iou",<br>  "mode": "linear",<br>  "input": "gt.shape_area",<br>  "extrapolation": "clamp",<br>  "points": [{"x": 100, "y": 0.4}, {"x": 1000, "y": 0.9}]<br>}<br>```<br><br>Linear policies require 2-200 points with unique positive areas sorted in ascending order<br>and thresholds between 0 and 1. Outside the curve, the nearest endpoint applies.<br>Policies without `type` are accepted as IoU for compatibility; responses include it.<br>Other threshold types are not supported.<br><br>Setting a child's threshold to `null` restores inheritance of the whole threshold.<br>Root requirements cannot inherit their threshold.|
+|» oks_threshold|body|number(double) \| null|false|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|» boundary_f_threshold|body|number(double) \| null|false|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|» boundary_f_tolerance|body|number(double) \| null|false|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |» point_size|body|number(double) \| null|false|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|» point_size_base|body|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|» point_size_base|body|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
 |» » *oneOf*|body|[QualityPointSizeBase](#schemaqualitypointsizebase)|false|* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
 |» » *oneOf*|body|[BlankEnum](#schemablankenum)|false|none|
 |» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
-|» line_thickness|body|number(double) \| null|false|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|» line_thickness|body|number(double) \| null|false|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |» match_orientation|body|boolean \| null|false|Enables or disables polyline orientation comparison|
 |» line_orientation_threshold|body|number(double) \| null|false|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |» match_groups|body|boolean \| null|false|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -8737,6 +8835,12 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
 |» » *oneOf*|label_jaccard_index|
 |» » *oneOf*|label_dice|
 |» » *oneOf*|null|
+|» » *oneOf*|iou|
+|» » *oneOf*|oks|
+|» » *oneOf*|boundary_f|
+|» » *oneOf*|equality|
+|» » *oneOf*|""|
+|» » *oneOf*|null|
 |» » *oneOf*|image_size|
 |» » *oneOf*|group_bbox_size|
 |» » *oneOf*|""|
@@ -8765,7 +8869,11 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
   "required_score": 0,
   "parent_requirement": 0,
   "effective": {},
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -8860,7 +8968,11 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
     "metric": "accuracy",
     "required_score": 0,
     "parent_requirement": 0,
+    "similarity_metric": "iou",
     "iou_threshold": 0,
+    "oks_threshold": 0,
+    "boundary_f_threshold": 0,
+    "boundary_f_tolerance": 0,
     "point_size": 0,
     "point_size_base": "image_size",
     "line_thickness": 0,
@@ -8904,7 +9016,11 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
   "metric": "accuracy",
   "required_score": 0,
   "parent_requirement": 0,
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -8953,15 +9069,22 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
 |» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
 |» required_score|body|number(double) \| null|false|Defines the minimal quality requirements in terms of the selected target metric.|
 |» parent_requirement|body|integer \| null|false|The parent requirement. Child requirements inherit comparison settings from it.|
-|» iou_threshold|body|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|» similarity_metric|body|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|» » *oneOf*|body|[SimilarityMetricEnum](#schemasimilaritymetricenum)|false|* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|» » *oneOf*|body|[BlankEnum](#schemablankenum)|false|none|
+|» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
+|» iou_threshold|body|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
 |» » *oneOf*|body|number|false|none|
 |» » *oneOf*|body|[SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest)|false|An IoU threshold policy for rectangle, polygon, mask, and ellipse requirements.<br><br>The `iou_threshold` field also accepts a finite number between 0 and 1, such as `0.7`.<br>Existing numeric thresholds are returned as numbers.<br><br>A constant policy uses one threshold for all shapes:<br><br>```json<br>{"type": "iou", "mode": "constant", "value": 0.7}<br>```<br><br>A linear policy chooses a threshold from the GT shape area in px²:<br><br>```json<br>{<br>  "type": "iou",<br>  "mode": "linear",<br>  "input": "gt.shape_area",<br>  "extrapolation": "clamp",<br>  "points": [{"x": 100, "y": 0.4}, {"x": 1000, "y": 0.9}]<br>}<br>```<br><br>Linear policies require 2-200 points with unique positive areas sorted in ascending order<br>and thresholds between 0 and 1. Outside the curve, the nearest endpoint applies.<br>Policies without `type` are accepted as IoU for compatibility; responses include it.<br>Other threshold types are not supported.<br><br>Setting a child's threshold to `null` restores inheritance of the whole threshold.<br>Root requirements cannot inherit their threshold.|
+|» oks_threshold|body|number(double) \| null|false|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|» boundary_f_threshold|body|number(double) \| null|false|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|» boundary_f_tolerance|body|number(double) \| null|false|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |» point_size|body|number(double) \| null|false|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|» point_size_base|body|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|» point_size_base|body|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
 |» » *oneOf*|body|[QualityPointSizeBase](#schemaqualitypointsizebase)|false|* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
 |» » *oneOf*|body|[BlankEnum](#schemablankenum)|false|none|
 |» » *oneOf*|body|[NullEnum](#schemanullenum)|false|none|
-|» line_thickness|body|number(double) \| null|false|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|» line_thickness|body|number(double) \| null|false|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |» match_orientation|body|boolean \| null|false|Enables or disables polyline orientation comparison|
 |» line_orientation_threshold|body|number(double) \| null|false|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |» match_groups|body|boolean \| null|false|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -9009,6 +9132,12 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
 |» » *oneOf*|label_jaccard_index|
 |» » *oneOf*|label_dice|
 |» » *oneOf*|null|
+|» » *oneOf*|iou|
+|» » *oneOf*|oks|
+|» » *oneOf*|boundary_f|
+|» » *oneOf*|equality|
+|» » *oneOf*|""|
+|» » *oneOf*|null|
 |» » *oneOf*|image_size|
 |» » *oneOf*|group_bbox_size|
 |» » *oneOf*|""|
@@ -9037,7 +9166,11 @@ curl http://localhost:8080/api/quality/settings/requirements/0 \
   "required_score": 0,
   "parent_requirement": 0,
   "effective": {},
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -9103,7 +9236,11 @@ curl http://localhost:8080/api/quality/settings/requirements/bulk \
         "metric": "accuracy",
         "required_score": 0,
         "parent_requirement": 0,
+        "similarity_metric": "iou",
         "iou_threshold": 0,
+        "oks_threshold": 0,
+        "boundary_f_threshold": 0,
+        "boundary_f_tolerance": 0,
         "point_size": 0,
         "point_size_base": "image_size",
         "line_thickness": 0,
@@ -9154,7 +9291,11 @@ curl http://localhost:8080/api/quality/settings/requirements/bulk \
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -9217,7 +9358,11 @@ curl http://localhost:8080/api/quality/settings/requirements/bulk \
     "required_score": 0,
     "parent_requirement": 0,
     "effective": {},
+    "similarity_metric": "iou",
     "iou_threshold": 0,
+    "oks_threshold": 0,
+    "boundary_f_threshold": 0,
+    "boundary_f_tolerance": 0,
     "point_size": 0,
     "point_size_base": "image_size",
     "line_thickness": 0,
@@ -11129,6 +11274,12 @@ curl http://localhost:8080/api/tasks/0/data/meta \
       "height": 0,
       "name": "string",
       "related_files": 0,
+      "related_files_metadata": [
+        {
+          "name": "string",
+          "type": "file"
+        }
+      ],
       "has_related_context": true
     }
   ],
@@ -11225,6 +11376,12 @@ curl http://localhost:8080/api/tasks/0/data/meta \
       "height": 0,
       "name": "string",
       "related_files": 0,
+      "related_files_metadata": [
+        {
+          "name": "string",
+          "type": "file"
+        }
+      ],
       "has_related_context": true
     }
   ],
@@ -13061,6 +13218,12 @@ tokenAuth, accessTokenAuth, sessionAuth & csrfAuth & csrfHeaderAuth, basicAuth
   "severity": {},
   "attribute_names": [
     "string"
+  ],
+  "requirements": [
+    {
+      "id": 0,
+      "name": "string"
+    }
   ]
 }
 ```
@@ -13076,6 +13239,7 @@ tokenAuth, accessTokenAuth, sessionAuth & csrfAuth & csrfHeaderAuth, basicAuth
 |report_id|integer|false|read-only|none|
 |severity|object|false|read-only|none|
 |attribute_names|[string]|false|read-only|none|
+|requirements|[[AnnotationConflictRequirement](#schemaannotationconflictrequirement)]|false|read-only|none|
 
 <h2 id="tocS_AnnotationConflictAnnotationType">AnnotationConflictAnnotationType</h2>
 <!-- backwards compatibility -->
@@ -13091,6 +13255,27 @@ tokenAuth, accessTokenAuth, sessionAuth & csrfAuth & csrfHeaderAuth, basicAuth
 * `tag` - TAG
 * `shape` - SHAPE
 * `track` - TRACK
+
+<h2 id="tocS_AnnotationConflictRequirement">AnnotationConflictRequirement</h2>
+<!-- backwards compatibility -->
+<a id="schemaannotationconflictrequirement"></a>
+<a id="schema_AnnotationConflictRequirement"></a>
+<a id="tocSannotationconflictrequirement"></a>
+<a id="tocsannotationconflictrequirement"></a>
+
+```json
+{
+  "id": 0,
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer|false|read-only|none|
+|name|string|false|read-only|none|
 
 <h2 id="tocS_AnnotationConflictSeverity">AnnotationConflictSeverity</h2>
 <!-- backwards compatibility -->
@@ -14152,6 +14337,12 @@ tokenAuth, accessTokenAuth, sessionAuth & csrfAuth & csrfHeaderAuth, basicAuth
       "height": 0,
       "name": "string",
       "related_files": 0,
+      "related_files_metadata": [
+        {
+          "name": "string",
+          "type": "file"
+        }
+      ],
       "has_related_context": true
     }
   ],
@@ -14633,6 +14824,40 @@ https://docs.cvat.ai/docs/manual/basics/create-annotation-task/#advanced-configu
 * `REG` - REG
 * `DIR` - DIR
 
+<h2 id="tocS_FileMetadata">FileMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schemafilemetadata"></a>
+<a id="schema_FileMetadata"></a>
+<a id="tocSfilemetadata"></a>
+<a id="tocsfilemetadata"></a>
+
+```json
+{
+  "name": "string",
+  "type": "file"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|type|object|false|none|none|
+
+<h2 id="tocS_FileMetadataTypeEnum">FileMetadataTypeEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemafilemetadatatypeenum"></a>
+<a id="schema_FileMetadataTypeEnum"></a>
+<a id="tocSfilemetadatatypeenum"></a>
+<a id="tocsfilemetadatatypeenum"></a>
+
+```json
+"file"
+```
+
+* `file` - file
+
 <h2 id="tocS_FrameMeta">FrameMeta</h2>
 <!-- backwards compatibility -->
 <a id="schemaframemeta"></a>
@@ -14646,6 +14871,12 @@ https://docs.cvat.ai/docs/manual/basics/create-annotation-task/#advanced-configu
   "height": 0,
   "name": "string",
   "related_files": 0,
+  "related_files_metadata": [
+    {
+      "name": "string",
+      "type": "file"
+    }
+  ],
   "has_related_context": true
 }
 ```
@@ -14658,6 +14889,7 @@ https://docs.cvat.ai/docs/manual/basics/create-annotation-task/#advanced-configu
 |height|integer|false|none|none|
 |name|string|true|none|none|
 |related_files|integer|true|none|none|
+|related_files_metadata|[[RelatedFileMetadata](#schemarelatedfilemetadata)]|false|none|It is only included in job "meta" responses.|
 |has_related_context|boolean|false|read-only|none|
 
 <h2 id="tocS_FrameSelectionMethod">FrameSelectionMethod</h2>
@@ -16251,6 +16483,12 @@ null
       "severity": {},
       "attribute_names": [
         "string"
+      ],
+      "requirements": [
+        {
+          "id": 0,
+          "name": "string"
+        }
       ]
     }
   ]
@@ -16949,7 +17187,11 @@ null
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -17026,7 +17268,11 @@ null
           "metric": "accuracy",
           "required_score": 0,
           "parent_requirement": 0,
+          "similarity_metric": "iou",
           "iou_threshold": 0,
+          "oks_threshold": 0,
+          "boundary_f_threshold": 0,
+          "boundary_f_tolerance": 0,
           "point_size": 0,
           "point_size_base": "image_size",
           "line_thickness": 0,
@@ -17869,7 +18115,11 @@ Serializer for requesting a password reset e-mail.
   "metric": "accuracy",
   "required_score": 0,
   "parent_requirement": 0,
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -17911,10 +18161,14 @@ Serializer for requesting a password reset e-mail.
 |metric|[QualityTargetMetric](#schemaqualitytargetmetric) \| [NullEnum](#schemanullenum) \| null|false|none|The primary metric used for quality estimation<br><br>* `accuracy` - ACCURACY<br>* `precision` - PRECISION<br>* `recall` - RECALL<br>* `jaccard_index` - JACCARD_INDEX<br>* `dice` - DICE<br>* `mean_accuracy` - MEAN_ACCURACY<br>* `mean_precision` - MEAN_PRECISION<br>* `mean_recall` - MEAN_RECALL<br>* `mean_jaccard_index` - MEAN_JACCARD_INDEX<br>* `mean_dice` - MEAN_DICE<br>* `label_accuracy` - LABEL_ACCURACY<br>* `label_precision` - LABEL_PRECISION<br>* `label_recall` - LABEL_RECALL<br>* `label_jaccard_index` - LABEL_JACCARD_INDEX<br>* `label_dice` - LABEL_DICE|
 |required_score|number(double) \| null|false|none|Defines the minimal quality requirements in terms of the selected target metric.|
 |parent_requirement|integer \| null|false|none|The parent requirement. Child requirements inherit comparison settings from it.|
-|iou_threshold|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|none|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|similarity_metric|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|iou_threshold|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|none|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|oks_threshold|number(double) \| null|false|none|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|boundary_f_threshold|number(double) \| null|false|none|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|boundary_f_tolerance|number(double) \| null|false|none|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |point_size|number(double) \| null|false|none|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
-|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |match_orientation|boolean \| null|false|none|Enables or disables polyline orientation comparison|
 |line_orientation_threshold|number(double) \| null|false|none|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |match_groups|boolean \| null|false|none|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -17947,7 +18201,11 @@ Serializer for requesting a password reset e-mail.
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -19066,7 +19324,11 @@ Serializer for requesting a password reset e-mail.
   "required_score": 0,
   "parent_requirement": 0,
   "effective": {},
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -19115,10 +19377,14 @@ Serializer for requesting a password reset e-mail.
 |required_score|number(double) \| null|false|none|Defines the minimal quality requirements in terms of the selected target metric.|
 |parent_requirement|integer \| null|false|none|The parent requirement. Child requirements inherit comparison settings from it.|
 |effective|object|false|read-only|none|
-|iou_threshold|number \| [SimilarityThresholdPolicy](#schemasimilaritythresholdpolicy) \| null|false|none|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|similarity_metric|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|iou_threshold|number \| [SimilarityThresholdPolicy](#schemasimilaritythresholdpolicy) \| null|false|none|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|oks_threshold|number(double) \| null|false|none|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|boundary_f_threshold|number(double) \| null|false|none|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|boundary_f_tolerance|number(double) \| null|false|none|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |point_size|number(double) \| null|false|none|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
-|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |match_orientation|boolean \| null|false|none|Enables or disables polyline orientation comparison|
 |line_orientation_threshold|number(double) \| null|false|none|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |match_groups|boolean \| null|false|none|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -19147,7 +19413,11 @@ Serializer for requesting a password reset e-mail.
   "metric": "accuracy",
   "required_score": 0,
   "parent_requirement": 0,
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -19183,7 +19453,11 @@ Serializer for requesting a password reset e-mail.
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -19229,10 +19503,14 @@ Serializer for requesting a password reset e-mail.
 |metric|[QualityTargetMetric](#schemaqualitytargetmetric) \| [NullEnum](#schemanullenum) \| null|false|none|The primary metric used for quality estimation<br><br>* `accuracy` - ACCURACY<br>* `precision` - PRECISION<br>* `recall` - RECALL<br>* `jaccard_index` - JACCARD_INDEX<br>* `dice` - DICE<br>* `mean_accuracy` - MEAN_ACCURACY<br>* `mean_precision` - MEAN_PRECISION<br>* `mean_recall` - MEAN_RECALL<br>* `mean_jaccard_index` - MEAN_JACCARD_INDEX<br>* `mean_dice` - MEAN_DICE<br>* `label_accuracy` - LABEL_ACCURACY<br>* `label_precision` - LABEL_PRECISION<br>* `label_recall` - LABEL_RECALL<br>* `label_jaccard_index` - LABEL_JACCARD_INDEX<br>* `label_dice` - LABEL_DICE|
 |required_score|number(double) \| null|false|none|Defines the minimal quality requirements in terms of the selected target metric.|
 |parent_requirement|integer \| null|false|none|Required for root requirements and forbidden for nested requirements. Must identify an existing requirement from the selected quality settings.|
-|iou_threshold|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|none|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|similarity_metric|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|iou_threshold|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|none|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|oks_threshold|number(double) \| null|false|none|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|boundary_f_threshold|number(double) \| null|false|none|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|boundary_f_tolerance|number(double) \| null|false|none|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |point_size|number(double) \| null|false|none|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
-|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |match_orientation|boolean \| null|false|none|Enables or disables polyline orientation comparison|
 |line_orientation_threshold|number(double) \| null|false|none|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |match_groups|boolean \| null|false|none|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -19263,7 +19541,11 @@ Serializer for requesting a password reset e-mail.
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -19326,7 +19608,11 @@ Serializer for requesting a password reset e-mail.
   "metric": "accuracy",
   "required_score": 0,
   "parent_requirement": 0,
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -19374,10 +19660,14 @@ Serializer for requesting a password reset e-mail.
 |metric|[QualityTargetMetric](#schemaqualitytargetmetric) \| [NullEnum](#schemanullenum) \| null|false|none|The primary metric used for quality estimation<br><br>* `accuracy` - ACCURACY<br>* `precision` - PRECISION<br>* `recall` - RECALL<br>* `jaccard_index` - JACCARD_INDEX<br>* `dice` - DICE<br>* `mean_accuracy` - MEAN_ACCURACY<br>* `mean_precision` - MEAN_PRECISION<br>* `mean_recall` - MEAN_RECALL<br>* `mean_jaccard_index` - MEAN_JACCARD_INDEX<br>* `mean_dice` - MEAN_DICE<br>* `label_accuracy` - LABEL_ACCURACY<br>* `label_precision` - LABEL_PRECISION<br>* `label_recall` - LABEL_RECALL<br>* `label_jaccard_index` - LABEL_JACCARD_INDEX<br>* `label_dice` - LABEL_DICE|
 |required_score|number(double) \| null|false|none|Defines the minimal quality requirements in terms of the selected target metric.|
 |parent_requirement|integer \| null|false|none|The parent requirement. Child requirements inherit comparison settings from it.|
-|iou_threshold|number \| [SimilarityThresholdPolicy](#schemasimilaritythresholdpolicy) \| null|false|none|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|similarity_metric|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|iou_threshold|number \| [SimilarityThresholdPolicy](#schemasimilaritythresholdpolicy) \| null|false|none|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|oks_threshold|number(double) \| null|false|none|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|boundary_f_threshold|number(double) \| null|false|none|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|boundary_f_tolerance|number(double) \| null|false|none|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |point_size|number(double) \| null|false|none|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
-|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |match_orientation|boolean \| null|false|none|Enables or disables polyline orientation comparison|
 |line_orientation_threshold|number(double) \| null|false|none|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |match_groups|boolean \| null|false|none|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -19407,7 +19697,11 @@ Serializer for requesting a password reset e-mail.
   "metric": "accuracy",
   "required_score": 0,
   "parent_requirement": 0,
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -19449,10 +19743,14 @@ Serializer for requesting a password reset e-mail.
 |metric|[QualityTargetMetric](#schemaqualitytargetmetric) \| [NullEnum](#schemanullenum) \| null|false|none|The primary metric used for quality estimation<br><br>* `accuracy` - ACCURACY<br>* `precision` - PRECISION<br>* `recall` - RECALL<br>* `jaccard_index` - JACCARD_INDEX<br>* `dice` - DICE<br>* `mean_accuracy` - MEAN_ACCURACY<br>* `mean_precision` - MEAN_PRECISION<br>* `mean_recall` - MEAN_RECALL<br>* `mean_jaccard_index` - MEAN_JACCARD_INDEX<br>* `mean_dice` - MEAN_DICE<br>* `label_accuracy` - LABEL_ACCURACY<br>* `label_precision` - LABEL_PRECISION<br>* `label_recall` - LABEL_RECALL<br>* `label_jaccard_index` - LABEL_JACCARD_INDEX<br>* `label_dice` - LABEL_DICE|
 |required_score|number(double) \| null|false|none|Defines the minimal quality requirements in terms of the selected target metric.|
 |parent_requirement|integer \| null|false|none|The parent requirement. Child requirements inherit comparison settings from it.|
-|iou_threshold|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|none|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|similarity_metric|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|iou_threshold|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|none|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|oks_threshold|number(double) \| null|false|none|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|boundary_f_threshold|number(double) \| null|false|none|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|boundary_f_tolerance|number(double) \| null|false|none|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |point_size|number(double) \| null|false|none|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
-|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |match_orientation|boolean \| null|false|none|Enables or disables polyline orientation comparison|
 |line_orientation_threshold|number(double) \| null|false|none|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |match_groups|boolean \| null|false|none|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -19480,7 +19778,11 @@ Serializer for requesting a password reset e-mail.
   "metric": "accuracy",
   "required_score": 0,
   "parent_requirement": 0,
+  "similarity_metric": "iou",
   "iou_threshold": 0,
+  "oks_threshold": 0,
+  "boundary_f_threshold": 0,
+  "boundary_f_tolerance": 0,
   "point_size": 0,
   "point_size_base": "image_size",
   "line_thickness": 0,
@@ -19522,10 +19824,14 @@ Serializer for requesting a password reset e-mail.
 |metric|[QualityTargetMetric](#schemaqualitytargetmetric) \| [NullEnum](#schemanullenum) \| null|false|none|The primary metric used for quality estimation<br><br>* `accuracy` - ACCURACY<br>* `precision` - PRECISION<br>* `recall` - RECALL<br>* `jaccard_index` - JACCARD_INDEX<br>* `dice` - DICE<br>* `mean_accuracy` - MEAN_ACCURACY<br>* `mean_precision` - MEAN_PRECISION<br>* `mean_recall` - MEAN_RECALL<br>* `mean_jaccard_index` - MEAN_JACCARD_INDEX<br>* `mean_dice` - MEAN_DICE<br>* `label_accuracy` - LABEL_ACCURACY<br>* `label_precision` - LABEL_PRECISION<br>* `label_recall` - LABEL_RECALL<br>* `label_jaccard_index` - LABEL_JACCARD_INDEX<br>* `label_dice` - LABEL_DICE|
 |required_score|number(double) \| null|false|none|Defines the minimal quality requirements in terms of the selected target metric.|
 |parent_requirement|integer \| null|false|none|The parent requirement. Child requirements inherit comparison settings from it.|
-|iou_threshold|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|none|A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|similarity_metric|[SimilarityMetricEnum](#schemasimilaritymetricenum) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|The similarity metric used to match the objects. The supported metrics<br>depend on the annotation type:<br>- ellipse: 'boundary_f', 'iou' (default);<br>- mask: 'boundary_f', 'iou' (default);<br>- points: 'oks' (default);<br>- polygon: 'boundary_f', 'iou' (default);<br>- polyline: 'boundary_f', 'iou' (default);<br>- rectangle: 'boundary_f', 'iou' (default);<br>- skeleton: 'oks' (default);<br>- skeleton_keypoint: 'oks' (default);<br>- tag: 'equality' (default)<br><br><br>* `iou` - IoU<br>* `oks` - OKS<br>* `boundary_f` - Boundary F<br>* `equality` - Equality|
+|iou_threshold|number \| [SimilarityThresholdPolicyRequest](#schemasimilaritythresholdpolicyrequest) \| null|false|none|The minimal IoU for distinction between matched / unmatched objects. Only used with the 'iou' similarity metric. A constant threshold or an IoU policy by GT shape area (rectangle, polygon, mask, ellipse). Null inherits the whole threshold from the parent.|
+|oks_threshold|number(double) \| null|false|none|The minimal OKS for distinction between matched / unmatched objects.<br>Only used with the 'oks' similarity metric.<br>|
+|boundary_f_threshold|number(double) \| null|false|none|The minimal Boundary F score for distinction between matched / unmatched<br>objects. Only used with the 'boundary_f' similarity metric.<br>|
+|boundary_f_tolerance|number(double) \| null|false|none|The maximum allowed boundary deviation, in pixels. The boundary points<br>within this distance from the other object boundary are considered matching.<br>Only used with the 'boundary_f' similarity metric.<br>|
 |point_size|number(double) \| null|false|none|The point "size" (the OKS sigma), as a fraction of the object size, defined by<br>the point size base. Corresponds to the standard deviation of the keypoint position.<br>Larger values give larger areas around the GT points, where the checked points<br>are accepted.<br>Read more about the point matching in the documentation.|
-|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point annotations (including both separate points and point groups),<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group bbox size. Useful if each point group represents an object<br>or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
-|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be<br>|
+|point_size_base|[QualityPointSizeBase](#schemaqualitypointsizebase) \| [BlankEnum](#schemablankenum) \| [NullEnum](#schemanullenum) \| null|false|none|When comparing point groups, skeletons, and skeleton keypoints,<br>the point size parameter defines matching area for each GT point based to the<br>object size. The point size base parameter allows to configure how to determine<br>the object size. Single points without a group are always compared<br>using the image size.<br>If image_size, the image size is used. Useful if each point<br>annotation represents a separate object or boxes grouped with points do not<br>represent object boundaries.<br>If group_bbox_size, the object size is based on<br>the point group or skeleton bbox size. Useful if each point group represents<br>an object or there is a bbox grouped with points, representing the object size.<br><br><br>* `image_size` - IMAGE_SIZE<br>* `group_bbox_size` - GROUP_BBOX_SIZE|
+|line_thickness|number(double) \| null|false|none|Thickness of polylines, relatively to the (image area) ^ 0.5.<br>The distance to the boundary around the GT line,<br>inside of which the checked line points should be.<br>With the 'boundary_f' similarity metric, the boundary tolerance is used instead<br>|
 |match_orientation|boolean \| null|false|none|Enables or disables polyline orientation comparison|
 |line_orientation_threshold|number(double) \| null|false|none|The minimal gain in the GT IoU between the given and reversed line directions<br>to consider the line inverted.<br>Only used when the 'match_orientation' parameter is true<br>|
 |match_groups|boolean \| null|false|none|Enables or disables annotation group checks. Only annotations of the same shape type can form matching groups.|
@@ -19565,7 +19871,11 @@ Serializer for requesting a password reset e-mail.
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -19637,7 +19947,11 @@ Serializer for requesting a password reset e-mail.
       "metric": "accuracy",
       "required_score": 0,
       "parent_requirement": 0,
+      "similarity_metric": "iou",
       "iou_threshold": 0,
+      "oks_threshold": 0,
+      "boundary_f_threshold": 0,
+      "boundary_f_tolerance": 0,
       "point_size": 0,
       "point_size_base": "image_size",
       "line_thickness": 0,
@@ -19776,6 +20090,100 @@ Serializer for requesting a password reset e-mail.
 |password2|string|true|write-only|none|
 |first_name|string|false|none|none|
 |last_name|string|false|none|none|
+
+<h2 id="tocS_RelatedFileMetadata">RelatedFileMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schemarelatedfilemetadata"></a>
+<a id="schema_RelatedFileMetadata"></a>
+<a id="tocSrelatedfilemetadata"></a>
+<a id="tocsrelatedfilemetadata"></a>
+
+```json
+{
+  "name": "string",
+  "type": "file"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[FileMetadata](#schemafilemetadata)|false|none|none|
+|*oneOf*|[RelatedImageMetadata](#schemarelatedimagemetadata)|false|none|none|
+
+<h2 id="tocS_RelatedImageMetadata">RelatedImageMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schemarelatedimagemetadata"></a>
+<a id="schema_RelatedImageMetadata"></a>
+<a id="tocSrelatedimagemetadata"></a>
+<a id="tocsrelatedimagemetadata"></a>
+
+```json
+{
+  "name": "string",
+  "type": "related_image",
+  "intrinsic_matrix": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "extrinsic_matrix": [
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ]
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|type|object|false|none|none|
+|intrinsic_matrix|[[number(double)]]|false|none|none|
+|extrinsic_matrix|[[number(double)]]|false|none|none|
+
+<h2 id="tocS_RelatedImageMetadataTypeEnum">RelatedImageMetadataTypeEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemarelatedimagemetadatatypeenum"></a>
+<a id="schema_RelatedImageMetadataTypeEnum"></a>
+<a id="tocSrelatedimagemetadatatypeenum"></a>
+<a id="tocsrelatedimagemetadatatypeenum"></a>
+
+```json
+"related_image"
+```
+
+* `related_image` - related_image
 
 <h2 id="tocS_ReplicaJobCreateRequest">ReplicaJobCreateRequest</h2>
 <!-- backwards compatibility -->
@@ -20056,6 +20464,22 @@ Serializer for requesting a password reset e-mail.
 * `cuboid` - CUBOID
 * `mask` - MASK
 * `skeleton` - SKELETON
+
+<h2 id="tocS_SimilarityMetricEnum">SimilarityMetricEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemasimilaritymetricenum"></a>
+<a id="schema_SimilarityMetricEnum"></a>
+<a id="tocSsimilaritymetricenum"></a>
+<a id="tocssimilaritymetricenum"></a>
+
+```json
+"iou"
+```
+
+* `iou` - IoU
+* `oks` - OKS
+* `boundary_f` - Boundary F
+* `equality` - Equality
 
 <h2 id="tocS_SimilarityThresholdPolicy">SimilarityThresholdPolicy</h2>
 <!-- backwards compatibility -->

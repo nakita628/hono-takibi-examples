@@ -1,8 +1,8 @@
-<h1 id="kavita">Kavita v0.9.1.16</h1>
+<h1 id="kavita">Kavita v0.9.1.24</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
-Kavita provides a set of APIs authenticated via an Auth Key passed in the `x-api-key` header. Generate an Auth Key under User Settings → Manage Auth Keys, paste it into the Authorize panel, and all Try It requests will include it. Assume all fields of a payload are required unless marked optional. Built against v0.9.1.16
+Kavita provides a set of APIs authenticated via an Auth Key passed in the `x-api-key` header. Generate an Auth Key under User Settings → Manage Auth Keys, paste it into the Authorize panel, and all Try It requests will include it. Assume all fields of a payload are required unless marked optional. Built against v0.9.1.24
 
 Base URLs:
 
@@ -402,6 +402,24 @@ Does not return tokens for the user
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0,
+      "hasManagedCollection": true
     }
   },
   "ageRestriction": {
@@ -423,9 +441,7 @@ Does not return tokens for the user
       "provider": 0
     }
   ],
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string"
+  "hasCoverImage": true
 }
 ```
 
@@ -839,6 +855,24 @@ curl http://localhost:5000/api/Account/register \
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0,
+      "hasManagedCollection": true
     }
   },
   "ageRestriction": {
@@ -860,9 +894,7 @@ curl http://localhost:5000/api/Account/register \
       "provider": 0
     }
   ],
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string"
+  "hasCoverImage": true
 }
 ```
 
@@ -1228,6 +1260,24 @@ curl http://localhost:5000/api/Account/login \
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0,
+      "hasManagedCollection": true
     }
   },
   "ageRestriction": {
@@ -1249,9 +1299,7 @@ curl http://localhost:5000/api/Account/login \
       "provider": 0
     }
   ],
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string"
+  "hasCoverImage": true
 }
 ```
 
@@ -1591,6 +1639,24 @@ curl http://localhost:5000/api/Account/refresh-account \
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0,
+      "hasManagedCollection": true
     }
   },
   "ageRestriction": {
@@ -1612,9 +1678,7 @@ curl http://localhost:5000/api/Account/refresh-account \
       "provider": 0
     }
   ],
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string"
+  "hasCoverImage": true
 }
 ```
 
@@ -2459,6 +2523,24 @@ curl http://localhost:5000/api/Account/confirm-email \
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0,
+      "hasManagedCollection": true
     }
   },
   "ageRestriction": {
@@ -2480,9 +2562,7 @@ curl http://localhost:5000/api/Account/confirm-email \
       "provider": 0
     }
   ],
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string"
+  "hasCoverImage": true
 }
 ```
 
@@ -3018,6 +3098,24 @@ curl http://localhost:5000/api/Account/confirm-migration-email \
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0,
+      "hasManagedCollection": true
     }
   },
   "ageRestriction": {
@@ -3039,9 +3137,7 @@ curl http://localhost:5000/api/Account/confirm-migration-email \
       "provider": 0
     }
   ],
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string"
+  "hasCoverImage": true
 }
 ```
 
@@ -4510,7 +4606,8 @@ This only applies to Epub or PDF files
   "libraryId": 0,
   "pages": 0,
   "isSpecial": true,
-  "chapterTitle": "string"
+  "chapterTitle": "string",
+  "seriesPublicationStatus": 0
 }
 ```
 
@@ -5718,10 +5815,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5742,10 +5837,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5766,10 +5859,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5790,10 +5881,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5814,10 +5903,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5838,10 +5925,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5862,10 +5947,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5886,10 +5969,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5910,10 +5991,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5934,10 +6013,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5958,10 +6035,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -5982,10 +6057,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6006,10 +6079,8 @@ curl http://localhost:5000/api/Chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6064,9 +6135,7 @@ curl http://localhost:5000/api/Chapter \
   "releaseDateLocked": true,
   "titleNameLocked": true,
   "sortOrderLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "format": 0,
   "aniListId": 0,
   "malId": 0,
@@ -6121,6 +6190,59 @@ true
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|Inline|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns information to restore chapters in the Kobo Sync UI
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Chapter/restore-info \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/Chapter/restore-info`
+
+<h3 id="returns-information-to-restore-chapters-in-the-kobo-sync-ui-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|syncPointId|query|integer(int32)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "chapterId": 0,
+    "seriesId": 0,
+    "seriesTitle": "string",
+    "title": "string",
+    "removedAtUtc": "1970-01-01T00:00:00Z"
+  }
+]
+```
+
+<h3 id="returns-information-to-restore-chapters-in-the-kobo-sync-ui-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="returns-information-to-restore-chapters-in-the-kobo-sync-ui-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[ChapterRestoreInfoDto](#schemachapterrestoreinfodto)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -6212,10 +6334,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6236,10 +6356,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6260,10 +6378,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6284,10 +6400,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6308,10 +6422,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6332,10 +6444,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6356,10 +6466,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6380,10 +6488,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6404,10 +6510,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6428,10 +6532,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6452,10 +6554,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6476,10 +6576,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6500,10 +6598,8 @@ curl http://localhost:5000/api/Chapter/update \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -6583,10 +6679,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6607,10 +6701,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6631,10 +6723,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6655,10 +6745,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6679,10 +6767,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6703,10 +6789,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6727,10 +6811,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6751,10 +6833,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6775,10 +6855,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6799,10 +6877,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6823,10 +6899,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6847,10 +6921,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -6871,10 +6943,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7061,10 +7131,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7085,10 +7153,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7109,10 +7175,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7133,10 +7197,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7157,10 +7219,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7181,10 +7241,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7205,10 +7263,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7229,10 +7285,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7253,10 +7307,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7277,10 +7329,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7301,10 +7351,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7325,10 +7373,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7349,10 +7395,8 @@ curl http://localhost:5000/api/Chapter/update \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -7407,9 +7451,7 @@ curl http://localhost:5000/api/Chapter/update \
   "releaseDateLocked": true,
   "titleNameLocked": true,
   "sortOrderLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "format": 0,
   "aniListId": 0,
   "malId": 0,
@@ -7481,7 +7523,6 @@ curl http://localhost:5000/api/Chapter/chapter-detail-plus \
   "ratings": [
     {
       "averageScore": 0,
-      "favoriteCount": 0,
       "provider": 0,
       "authority": 0,
       "providerUrl": "string"
@@ -7536,17 +7577,15 @@ curl http://localhost:5000/api/Collection \
     "summary": "string",
     "promoted": true,
     "ageRating": 0,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImageLocked": true,
     "itemCount": 0,
     "owner": "string",
     "lastSyncUtc": "1970-01-01T00:00:00Z",
     "source": 0,
     "sourceUrl": "string",
     "totalSourceCount": 0,
-    "missingSeriesFromSource": "string"
+    "missingSeriesFromSource": "string",
+    "hasCoverImage": true,
+    "coverImageLocked": true
   }
 ]
 ```
@@ -7628,17 +7667,15 @@ curl http://localhost:5000/api/Collection/single \
   "summary": "string",
   "promoted": true,
   "ageRating": 0,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImageLocked": true,
   "itemCount": 0,
   "owner": "string",
   "lastSyncUtc": "1970-01-01T00:00:00Z",
   "source": 0,
   "sourceUrl": "string",
   "totalSourceCount": 0,
-  "missingSeriesFromSource": "string"
+  "missingSeriesFromSource": "string",
+  "hasCoverImage": true,
+  "coverImageLocked": true
 }
 ```
 
@@ -7684,17 +7721,15 @@ curl http://localhost:5000/api/Collection/all-series \
     "summary": "string",
     "promoted": true,
     "ageRating": 0,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImageLocked": true,
     "itemCount": 0,
     "owner": "string",
     "lastSyncUtc": "1970-01-01T00:00:00Z",
     "source": 0,
     "sourceUrl": "string",
     "totalSourceCount": 0,
-    "missingSeriesFromSource": "string"
+    "missingSeriesFromSource": "string",
+    "hasCoverImage": true,
+    "coverImageLocked": true
   }
 ]
 ```
@@ -7771,17 +7806,15 @@ curl http://localhost:5000/api/Collection/update \
     "summary": "string",
     "promoted": true,
     "ageRating": 0,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImageLocked": true,
     "itemCount": 0,
     "owner": "string",
     "lastSyncUtc": "1970-01-01T00:00:00Z",
     "source": 0,
     "sourceUrl": "string",
     "totalSourceCount": 0,
-    "missingSeriesFromSource": "string"
+    "missingSeriesFromSource": "string",
+    "hasCoverImage": true,
+    "coverImageLocked": true
   }'
 ```
 
@@ -7796,17 +7829,15 @@ curl http://localhost:5000/api/Collection/update \
   "summary": "string",
   "promoted": true,
   "ageRating": 0,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImageLocked": true,
   "itemCount": 0,
   "owner": "string",
   "lastSyncUtc": "1970-01-01T00:00:00Z",
   "source": 0,
   "sourceUrl": "string",
   "totalSourceCount": 0,
-  "missingSeriesFromSource": "string"
+  "missingSeriesFromSource": "string",
+  "hasCoverImage": true,
+  "coverImageLocked": true
 }
 ```
 
@@ -7820,10 +7851,6 @@ curl http://localhost:5000/api/Collection/update \
 |» summary|body|string \| null|false|none|
 |» promoted|body|boolean|false|none|
 |» ageRating|body|[AgeRating](#schemaagerating)|false|Members:<br>- `0` — Unknown<br>- `1` — Rating Pending (RatingPending)<br>- `2` — Early Childhood (EarlyChildhood)<br>- `3` — Everyone<br>- `4` — G<br>- `5` — Everyone 10+ (Everyone10Plus)<br>- `6` — PG<br>- `7` — Kids to Adults (KidsToAdults)<br>- `8` — Teen<br>- `9` — MA15+ (Mature15Plus)<br>- `10` — Mature 17+ (Mature17Plus)<br>- `11` — M (Mature)<br>- `12` — R18+ (R18Plus)<br>- `13` — Adults Only 18+ (AdultsOnly)<br>- `14` — X18+ (X18Plus)<br>- `-1` — Not Applicable (NotApplicable)|
-|» coverImage|body|string \| null|false|none|
-|» primaryColor|body|string \| null|false|none|
-|» secondaryColor|body|string \| null|false|none|
-|» coverImageLocked|body|boolean|false|none|
 |» itemCount|body|integer(int32)|false|none|
 |» owner|body|string \| null|false|none|
 |» lastSyncUtc|body|string(date-time)|false|none|
@@ -7831,6 +7858,8 @@ curl http://localhost:5000/api/Collection/update \
 |» sourceUrl|body|string \| null|false|none|
 |» totalSourceCount|body|integer(int32)|false|none|
 |» missingSeriesFromSource|body|string \| null|false|none|
+|» hasCoverImage|body|boolean|false|none|
+|» coverImageLocked|body|boolean|false|none|
 
 #### Enumerated Values
 
@@ -7870,17 +7899,15 @@ curl http://localhost:5000/api/Collection/update \
   "summary": "string",
   "promoted": true,
   "ageRating": 0,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImageLocked": true,
   "itemCount": 0,
   "owner": "string",
   "lastSyncUtc": "1970-01-01T00:00:00Z",
   "source": 0,
   "sourceUrl": "string",
   "totalSourceCount": 0,
-  "missingSeriesFromSource": "string"
+  "missingSeriesFromSource": "string",
+  "hasCoverImage": true,
+  "coverImageLocked": true
 }
 ```
 
@@ -8058,17 +8085,15 @@ curl http://localhost:5000/api/Collection/update-series \
       "summary": "string",
       "promoted": true,
       "ageRating": 0,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImageLocked": true,
       "itemCount": 0,
       "owner": "string",
       "lastSyncUtc": "1970-01-01T00:00:00Z",
       "source": 0,
       "sourceUrl": "string",
       "totalSourceCount": 0,
-      "missingSeriesFromSource": "string"
+      "missingSeriesFromSource": "string",
+      "hasCoverImage": true,
+      "coverImageLocked": true
     },
     "seriesIdsToRemove": [
       0
@@ -8088,17 +8113,15 @@ curl http://localhost:5000/api/Collection/update-series \
     "summary": "string",
     "promoted": true,
     "ageRating": 0,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImageLocked": true,
     "itemCount": 0,
     "owner": "string",
     "lastSyncUtc": "1970-01-01T00:00:00Z",
     "source": 0,
     "sourceUrl": "string",
     "totalSourceCount": 0,
-    "missingSeriesFromSource": "string"
+    "missingSeriesFromSource": "string",
+    "hasCoverImage": true,
+    "coverImageLocked": true
   },
   "seriesIdsToRemove": [
     0
@@ -8252,7 +8275,7 @@ curl http://localhost:5000/api/ColorScape/series \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|query|integer(int32)|false|none|
+|seriesId|query|integer(int32)|false|none|
 
 > Example responses
 
@@ -8292,7 +8315,7 @@ curl http://localhost:5000/api/ColorScape/volume \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|query|integer(int32)|false|none|
+|volumeId|query|integer(int32)|false|none|
 
 > Example responses
 
@@ -8332,7 +8355,7 @@ curl http://localhost:5000/api/ColorScape/chapter \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|query|integer(int32)|false|none|
+|chapterId|query|integer(int32)|false|none|
 
 > Example responses
 
@@ -8346,6 +8369,126 @@ curl http://localhost:5000/api/ColorScape/chapter \
 ```
 
 <h3 id="returns-the-color-scape-for-a-chapter-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ColorScapeDto](#schemacolorscapedto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns the color scape for a person
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/ColorScape/person \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/ColorScape/person`
+
+<h3 id="returns-the-color-scape-for-a-person-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|personId|query|integer(int32)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "primary": "string",
+  "secondary": "string"
+}
+```
+
+<h3 id="returns-the-color-scape-for-a-person-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ColorScapeDto](#schemacolorscapedto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns the color scape for a reading list
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/ColorScape/reading-list \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/ColorScape/reading-list`
+
+<h3 id="returns-the-color-scape-for-a-reading-list-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|readingListId|query|integer(int32)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "primary": "string",
+  "secondary": "string"
+}
+```
+
+<h3 id="returns-the-color-scape-for-a-reading-list-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[ColorScapeDto](#schemacolorscapedto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns the color scape for a collection
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/ColorScape/collection \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/ColorScape/collection`
+
+<h3 id="returns-the-color-scape-for-a-collection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|collectionId|query|integer(int32)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "primary": "string",
+  "secondary": "string"
+}
+```
+
+<h3 id="returns-the-color-scape-for-a-collection-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -9446,13 +9589,11 @@ curl http://localhost:5000/api/Download/bookmarks \
           "folderPath": "string",
           "lowestFolderPath": "string",
           "lastFolderScanned": "1970-01-01T00:00:00Z",
+          "hasCoverImage": true,
           "dontMatch": true,
           "isBlacklisted": true,
           "isStandAlone": true,
           "metadataProviderOverride": 2,
-          "coverImage": "string",
-          "primaryColor": "string",
-          "secondaryColor": "string",
           "aniListId": 0,
           "malId": 0,
           "hardcoverId": 0,
@@ -9512,13 +9653,11 @@ curl http://localhost:5000/api/Download/bookmarks \
         "folderPath": "string",
         "lowestFolderPath": "string",
         "lastFolderScanned": "1970-01-01T00:00:00Z",
+        "hasCoverImage": true,
         "dontMatch": true,
         "isBlacklisted": true,
         "isStandAlone": true,
         "metadataProviderOverride": 2,
-        "coverImage": "string",
-        "primaryColor": "string",
-        "secondaryColor": "string",
         "aniListId": 0,
         "malId": 0,
         "hardcoverId": 0,
@@ -10599,7 +10738,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 AuthKey
 </aside>
 
-## Removes a font family from the system. The family is validated for in-use server side and only removed when it is not selected by a user, or when an admin forces the deletion.
+## Removes a font family from the system. The family is validated for in-use server side and only removed when it is not selected by a user, or when force is true.
 
 > Code samples
 
@@ -10612,12 +10751,12 @@ curl http://localhost:5000/api/Font \
 
 `DELETE /api/Font`
 
-<h3 id="removes-a-font-family-from-the-system-the-family-is-validated-for-in-use-server-side-and-only-removed-when-it-is-not-selected-by-a-user-or-when-an-admin-forces-the-deletion-parameters">Parameters</h3>
+<h3 id="removes-a-font-family-from-the-system-the-family-is-validated-for-in-use-server-side-and-only-removed-when-it-is-not-selected-by-a-user-or-when-force-is-true-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |fontId|query|integer(int32)|false|Any file within the family to delete|
-|force|query|boolean|false|If the family is in use and an admin wants it deleted, they must confirm to force delete it. This is prompted in the UI.|
+|force|query|boolean|false|True to force deletion if the font is in use. This is prompted in the UI.|
 
 > Example responses
 
@@ -10630,7 +10769,7 @@ curl http://localhost:5000/api/Font \
 }
 ```
 
-<h3 id="removes-a-font-family-from-the-system-the-family-is-validated-for-in-use-server-side-and-only-removed-when-it-is-not-selected-by-a-user-or-when-an-admin-forces-the-deletion-responses">Responses</h3>
+<h3 id="removes-a-font-family-from-the-system-the-family-is-validated-for-in-use-server-side-and-only-removed-when-it-is-not-selected-by-a-user-or-when-force-is-true-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -11937,6 +12076,710 @@ To perform this operation, you must be authenticated by means of one of the foll
 AuthKey
 </aside>
 
+<h1 id="kavita-kobo">Kobo</h1>
+
+Kobo sync implementation. Not intended for use beyond Kobo devices
+
+## First request when starting the sync flow. Returns all config for the Kobo to make request. We inject some redirect to the Kavita instance Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/initialization \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/initialization`
+
+<h3 id="first-request-when-starting-the-sync-flow-returns-all-config-for-the-kobo-to-make-request-we-inject-some-redirect-to-the-kavita-instance-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiKey|path|string|true|none|
+
+<h3 id="first-request-when-starting-the-sync-flow-returns-all-config-for-the-kobo-to-make-request-we-inject-some-redirect-to-the-kavita-instance-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns changes since last sync Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/library/sync \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/library/sync`
+
+<h3 id="returns-changes-since-last-sync-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiKey|path|string|true|none|
+
+<h3 id="returns-changes-since-last-sync-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Metadata for the given book. Called when opening information, and sometimes during sync but not always Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/library/string/metadata \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/library/{bookId}/metadata`
+
+<h3 id="metadata-for-the-given-book-called-when-opening-information-and-sometimes-during-sync-but-not-always-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="metadata-for-the-given-book-called-when-opening-information-and-sometimes-during-sync-but-not-always-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Gets progress. Called on book open to sync Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/library/string/state \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/library/{bookId}/state`
+
+<h3 id="gets-progress-called-on-book-open-to-sync-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="gets-progress-called-on-book-open-to-sync-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Updates progress. Call on book close and when switching chapters via ToC while connected to the internet. Otherwise, during sync Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/library/string/state \
+  -X PUT \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`PUT /Kobo/{apiKey}/v1/library/{bookId}/state`
+
+<h3 id="updates-progress-call-on-book-close-and-when-switching-chapters-via-toc-while-connected-to-the-internet-otherwise-during-sync-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="updates-progress-call-on-book-close-and-when-switching-chapters-via-toc-while-connected-to-the-internet-otherwise-during-sync-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Gets the (k)epub file Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/library/0/file/epub \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/library/{bookId}/file/epub`
+
+<h3 id="gets-the-kepub-file-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|integer(int32)|true|none|
+|convert|query|boolean|false|none|
+|apiKey|path|string|true|none|
+
+<h3 id="gets-the-kepub-file-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Gets the cover. Called during sync, and on extra info when missing Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/books/string/thumbnail/string/string/false/image.jpg \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/books/{thumbnailId}/thumbnail/{width}/{height}/{isGreyScale}/image.jpg`
+
+<h3 id="gets-the-cover-called-during-sync-and-on-extra-info-when-missing-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|thumbnailId|path|string|true|none|
+|width|path|string|true|none|
+|height|path|string|true|none|
+|isGreyScale|path|boolean|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="gets-the-cover-called-during-sync-and-on-extra-info-when-missing-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Gets the cover. Called during sync, and on extra info when missing Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/books/string/thumbnail/string/string/string/false/image.jpg \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/books/{thumbnailId}/thumbnail/{width}/{height}/{quality}/{isGreyScale}/image.jpg`
+
+<h3 id="gets-the-cover-called-during-sync-and-on-extra-info-when-missing-not-intended-for-use-beyond-kobo-devices-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|thumbnailId|path|string|true|none|
+|width|path|string|true|none|
+|height|path|string|true|none|
+|quality|path|string|true|none|
+|isGreyScale|path|boolean|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="gets-the-cover-called-during-sync-and-on-extra-info-when-missing-not-intended-for-use-beyond-kobo-devices-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Called when clicking on a recommendation. Adds the series to the Kobo sync collection if enabled Otherwise No-Op Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/library/string \
+  -X POST \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`POST /Kobo/{apiKey}/v1/library/{bookId}`
+
+<h3 id="called-when-clicking-on-a-recommendation-adds-the-series-to-the-kobo-sync-collection-if-enabled-otherwise-no-op-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="called-when-clicking-on-a-recommendation-adds-the-series-to-the-kobo-sync-collection-if-enabled-otherwise-no-op-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Called when a book is deleted from the Kobo. Will no longer be synced to the Kobo. Can be restored in the UI Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/library/string \
+  -X DELETE \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`DELETE /Kobo/{apiKey}/v1/library/{bookId}`
+
+<h3 id="called-when-a-book-is-deleted-from-the-kobo-will-no-longer-be-synced-to-the-kobo-can-be-restored-in-the-ui-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="called-when-a-book-is-deleted-from-the-kobo-will-no-longer-be-synced-to-the-kobo-can-be-restored-in-the-ui-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns reviews for the book. Implemented to reduce upstream bad requests. Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/products/string/reviews \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/products/{bookId}/reviews`
+
+<h3 id="returns-reviews-for-the-book-implemented-to-reduce-upstream-bad-requests-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="returns-reviews-for-the-book-implemented-to-reduce-upstream-bad-requests-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Updates review for a book. Doesn't work 100%. Reviews are a bit weird on Kobo, needs more work Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/products/string/reviews \
+  -X PUT \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`PUT /Kobo/{apiKey}/v1/products/{bookId}/reviews`
+
+<h3 id="updates-review-for-a-book-doesnt-work-100-reviews-are-a-bit-weird-on-kobo-needs-more-work-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="updates-review-for-a-book-doesnt-work-100-reviews-are-a-bit-weird-on-kobo-needs-more-work-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns the first books in a series that's recommended to the series the book belongs to Requires Kavita+ and Collection Sync Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/products/string/recommendations \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/products/{bookId}/recommendations`
+
+<h3 id="returns-the-first-books-in-a-series-thats-recommended-to-the-series-the-book-belongs-to-requires-kavita-and-collection-sync-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="returns-the-first-books-in-a-series-thats-recommended-to-the-series-the-book-belongs-to-requires-kavita-and-collection-sync-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Book metadata when viewing recommendations Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/products/books/string \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/products/books/{bookId}`
+
+<h3 id="book-metadata-when-viewing-recommendations-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="book-metadata-when-viewing-recommendations-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Implemented to reduce upstream bad requests. Called during sync, and sometimes otherwise Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/products/string/nextread \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/products/{bookId}/nextread`
+
+<h3 id="implemented-to-reduce-upstream-bad-requests-called-during-sync-and-sometimes-otherwise-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="implemented-to-reduce-upstream-bad-requests-called-during-sync-and-sometimes-otherwise-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Implemented to reduce upstream bad requests. Called during sync, and sometimes otherwise Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/products/books/series/string \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/products/books/series/{bookId}`
+
+<h3 id="implemented-to-reduce-upstream-bad-requests-called-during-sync-and-sometimes-otherwise-not-intended-for-use-beyond-kobo-devices-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="implemented-to-reduce-upstream-bad-requests-called-during-sync-and-sometimes-otherwise-not-intended-for-use-beyond-kobo-devices-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Implemented to reduce upstream bad requests. Always returns FREE Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/products/string/prices \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/products/{bookIds}/prices`
+
+<h3 id="implemented-to-reduce-upstream-bad-requests-always-returns-free-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookIds|path|string|true|none|
+|apiKey|path|string|true|none|
+
+<h3 id="implemented-to-reduce-upstream-bad-requests-always-returns-free-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns a list of reviews Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/user/reviews \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/user/reviews`
+
+<h3 id="returns-a-list-of-reviews-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ProductIds|query|[string]|false|none|
+|apiKey|path|string|true|none|
+
+<h3 id="returns-a-list-of-reviews-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Dummy implementation to reduce failure when forward is off. Returns an empty pagination response Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/user/wishlist \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/user/wishlist`
+
+<h3 id="dummy-implementation-to-reduce-failure-when-forward-is-off-returns-an-empty-pagination-response-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiKey|path|string|true|none|
+
+<h3 id="dummy-implementation-to-reduce-failure-when-forward-is-off-returns-an-empty-pagination-response-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Dummy implementation Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/analytics/gettests \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /Kobo/{apiKey}/v1/analytics/gettests`
+
+<h3 id="dummy-implementation-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiKey|path|string|true|none|
+
+<h3 id="dummy-implementation-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Dummy implementation Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/Kobo/string/v1/analytics/gettests \
+  -X POST \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`POST /Kobo/{apiKey}/v1/analytics/gettests`
+
+<h3 id="dummy-implementation-not-intended-for-use-beyond-kobo-devices-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|apiKey|path|string|true|none|
+
+<h3 id="dummy-implementation-not-intended-for-use-beyond-kobo-devices-1-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+<h1 id="kavita-koboannotation">KoboAnnotation</h1>
+
+## Returns annotations for the given book Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/v3/content/string/annotations \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/v3/content/{bookId}/annotations`
+
+<h3 id="returns-annotations-for-the-given-book-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+|limit|query|integer(int32)|false|none|
+
+<h3 id="returns-annotations-for-the-given-book-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Update an annotation Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/v3/content/string/annotations \
+  -X PATCH \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`PATCH /api/v3/content/{bookId}/annotations`
+
+<h3 id="update-an-annotation-not-intended-for-use-beyond-kobo-devices-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|bookId|path|string|true|none|
+
+<h3 id="update-an-annotation-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Check if the given books have had any changes since their last ETag Not intended for use beyond Kobo devices
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/v3/content/checkforchanges \
+  -X POST \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`POST /api/v3/content/checkforchanges`
+
+<h3 id="check-if-the-given-books-have-had-any-changes-since-their-last-etag-not-intended-for-use-beyond-kobo-devices-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
 <h1 id="kavita-koreader">Koreader</h1>
 
 The endpoint to interface with Koreader's Progress Sync plugin.
@@ -12197,7 +13040,6 @@ curl http://localhost:5000/api/Library/create \
   "name": "string",
   "type": 0,
   "lastScanned": "1970-01-01T00:00:00Z",
-  "coverImage": "string",
   "folderWatchMode": 0,
   "includeInDashboard": true,
   "includeInRecommended": true,
@@ -12220,7 +13062,8 @@ curl http://localhost:5000/api/Library/create \
   "removePrefixForSortName": true,
   "inheritWebLinksFromFirstChapter": true,
   "defaultLanguage": "string",
-  "metadataProvider": 2
+  "metadataProvider": 2,
+  "hasCoverImage": true
 }
 ```
 
@@ -12380,7 +13223,6 @@ If the user is not an admin, only id, type, and name will be returned (Kavita.Mo
   "name": "string",
   "type": 0,
   "lastScanned": "1970-01-01T00:00:00Z",
-  "coverImage": "string",
   "folderWatchMode": 0,
   "includeInDashboard": true,
   "includeInRecommended": true,
@@ -12403,7 +13245,8 @@ If the user is not an admin, only id, type, and name will be returned (Kavita.Mo
   "removePrefixForSortName": true,
   "inheritWebLinksFromFirstChapter": true,
   "defaultLanguage": "string",
-  "metadataProvider": 2
+  "metadataProvider": 2,
+  "hasCoverImage": true
 }
 ```
 
@@ -12441,7 +13284,6 @@ curl http://localhost:5000/api/Library/libraries \
     "name": "string",
     "type": 0,
     "lastScanned": "1970-01-01T00:00:00Z",
-    "coverImage": "string",
     "folderWatchMode": 0,
     "includeInDashboard": true,
     "includeInRecommended": true,
@@ -12464,7 +13306,8 @@ curl http://localhost:5000/api/Library/libraries \
     "removePrefixForSortName": true,
     "inheritWebLinksFromFirstChapter": true,
     "defaultLanguage": "string",
-    "metadataProvider": 2
+    "metadataProvider": 2,
+    "hasCoverImage": true
   }
 ]
 ```
@@ -12517,7 +13360,6 @@ curl http://localhost:5000/api/Library/user-libraries \
     "name": "string",
     "type": 0,
     "lastScanned": "1970-01-01T00:00:00Z",
-    "coverImage": "string",
     "folderWatchMode": 0,
     "includeInDashboard": true,
     "includeInRecommended": true,
@@ -12540,7 +13382,8 @@ curl http://localhost:5000/api/Library/user-libraries \
     "removePrefixForSortName": true,
     "inheritWebLinksFromFirstChapter": true,
     "defaultLanguage": "string",
-    "metadataProvider": 2
+    "metadataProvider": 2,
+    "hasCoverImage": true
   }
 ]
 ```
@@ -12633,7 +13476,6 @@ curl http://localhost:5000/api/Library/grant-access \
         "name": "string",
         "type": 0,
         "lastScanned": "1970-01-01T00:00:00Z",
-        "coverImage": "string",
         "folderWatchMode": 0,
         "includeInDashboard": true,
         "includeInRecommended": true,
@@ -12656,7 +13498,8 @@ curl http://localhost:5000/api/Library/grant-access \
         "removePrefixForSortName": true,
         "inheritWebLinksFromFirstChapter": true,
         "defaultLanguage": "string",
-        "metadataProvider": 2
+        "metadataProvider": 2,
+        "hasCoverImage": true
       }
     ]
   }'
@@ -12675,7 +13518,6 @@ curl http://localhost:5000/api/Library/grant-access \
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -12698,7 +13540,8 @@ curl http://localhost:5000/api/Library/grant-access \
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     }
   ]
 }
@@ -12736,7 +13579,6 @@ curl http://localhost:5000/api/Library/grant-access \
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -12759,7 +13601,8 @@ curl http://localhost:5000/api/Library/grant-access \
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     }
   ],
   "roles": [
@@ -14333,13 +15176,11 @@ curl http://localhost:5000/api/Manage/series-metadata \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -14585,10 +15426,8 @@ curl http://localhost:5000/api/Metadata/people-by-role \
   {
     "id": 0,
     "name": "string",
+    "hasCoverImage": true,
     "coverImageLocked": true,
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImage": "string",
     "aliases": [
       "string"
     ],
@@ -14653,10 +15492,8 @@ curl http://localhost:5000/api/Metadata/people \
   {
     "id": 0,
     "name": "string",
+    "hasCoverImage": true,
     "coverImageLocked": true,
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImage": "string",
     "aliases": [
       "string"
     ],
@@ -15209,13 +16046,11 @@ This will hit upstream K+ if the data in local db is 2 weeks old
           "folderPath": "string",
           "lowestFolderPath": "string",
           "lastFolderScanned": "1970-01-01T00:00:00Z",
+          "hasCoverImage": true,
           "dontMatch": true,
           "isBlacklisted": true,
           "isStandAlone": true,
           "metadataProviderOverride": 2,
-          "coverImage": "string",
-          "primaryColor": "string",
-          "secondaryColor": "string",
           "aniListId": 0,
           "malId": 0,
           "hardcoverId": 0,
@@ -15268,7 +16103,6 @@ This will hit upstream K+ if the data in local db is 2 weeks old
   "ratings": [
     {
       "averageScore": 0,
-      "favoriteCount": 0,
       "provider": 0,
       "authority": 0,
       "providerUrl": "string"
@@ -15360,7 +16194,6 @@ This will hit upstream K+ if the data in local db is 2 weeks old
     "ratings": [
       {
         "averageScore": 0,
-        "favoriteCount": 0,
         "provider": 0,
         "authority": 0,
         "providerUrl": "string"
@@ -16263,6 +17096,7 @@ curl http://localhost:5000/api/Panels/save-progress \
     "seriesId": 0,
     "libraryId": 0,
     "bookScrollId": "string",
+    "koboSpan": "string",
     "lastModifiedUtc": "1970-01-01T00:00:00Z"
   }'
 ```
@@ -16279,6 +17113,7 @@ curl http://localhost:5000/api/Panels/save-progress \
   "seriesId": 0,
   "libraryId": 0,
   "bookScrollId": "string",
+  "koboSpan": "string",
   "lastModifiedUtc": "1970-01-01T00:00:00Z"
 }
 ```
@@ -16295,6 +17130,7 @@ curl http://localhost:5000/api/Panels/save-progress \
 |» seriesId|body|integer(int32)|true|none|
 |» libraryId|body|integer(int32)|true|none|
 |» bookScrollId|body|string \| null|false|none|
+|» koboSpan|body|string \| null|false|none|
 |» lastModifiedUtc|body|string(date-time)|false|none|
 
 <h3 id="saves-the-progress-of-a-given-chapter-this-will-generate-a-reading-session-with-the-estimated-time-from-the-last-progress-till-the-current-responses">Responses</h3>
@@ -16339,6 +17175,7 @@ curl http://localhost:5000/api/Panels/get-progress \
   "seriesId": 0,
   "libraryId": 0,
   "bookScrollId": "string",
+  "koboSpan": "string",
   "lastModifiedUtc": "1970-01-01T00:00:00Z"
 }
 ```
@@ -16382,10 +17219,8 @@ curl http://localhost:5000/api/Person \
 {
   "id": 0,
   "name": "string",
+  "hasCoverImage": true,
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImage": "string",
   "aliases": [
     "string"
   ],
@@ -16441,10 +17276,8 @@ curl http://localhost:5000/api/Person/search \
   {
     "id": 0,
     "name": "string",
+    "hasCoverImage": true,
     "coverImageLocked": true,
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImage": "string",
     "aliases": [
       "string"
     ],
@@ -16619,10 +17452,8 @@ curl http://localhost:5000/api/Person/all \
   {
     "id": 0,
     "name": "string",
+    "hasCoverImage": true,
     "coverImageLocked": true,
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImage": "string",
     "aliases": [
       "string"
     ],
@@ -16730,10 +17561,8 @@ curl http://localhost:5000/api/Person/update \
 {
   "id": 0,
   "name": "string",
+  "hasCoverImage": true,
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImage": "string",
   "aliases": [
     "string"
   ],
@@ -16852,13 +17681,11 @@ curl http://localhost:5000/api/Person/series-known-for \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -16978,10 +17805,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17002,10 +17827,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17026,10 +17849,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17050,10 +17871,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17074,10 +17893,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17098,10 +17915,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17122,10 +17937,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17146,10 +17959,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17170,10 +17981,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17194,10 +18003,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17218,10 +18025,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17242,10 +18047,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17266,10 +18069,8 @@ curl http://localhost:5000/api/Person/chapters-by-role \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -17324,9 +18125,7 @@ curl http://localhost:5000/api/Person/chapters-by-role \
     "releaseDateLocked": true,
     "titleNameLocked": true,
     "sortOrderLocked": true,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
+    "hasCoverImage": true,
     "format": 0,
     "aniListId": 0,
     "malId": 0,
@@ -17405,10 +18204,8 @@ curl http://localhost:5000/api/Person/merge \
 {
   "id": 0,
   "name": "string",
+  "hasCoverImage": true,
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImage": "string",
   "aliases": [
     "string"
   ],
@@ -17831,6 +18628,24 @@ This API is not fully built out and may require more information in later releas
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0,
+      "hasManagedCollection": true
     }
   },
   "ageRestriction": {
@@ -17852,9 +18667,7 @@ This API is not fully built out and may require more information in later releas
       "provider": 0
     }
   ],
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string"
+  "hasCoverImage": true
 }
 ```
 
@@ -18219,7 +19032,6 @@ If the authenticated user is the only user to have rated the series, returns 0
 ```json
 {
   "averageScore": 0,
-  "favoriteCount": 0,
   "provider": 0,
   "authority": 0,
   "providerUrl": "string"
@@ -18264,7 +19076,6 @@ If the authenticated user is the only user to have rated the chapter, returns 0
 ```json
 {
   "averageScore": 0,
-  "favoriteCount": 0,
   "provider": 0,
   "authority": 0,
   "providerUrl": "string"
@@ -19078,6 +19889,7 @@ curl http://localhost:5000/api/Reader/get-progress \
   "seriesId": 0,
   "libraryId": 0,
   "bookScrollId": "string",
+  "koboSpan": "string",
   "lastModifiedUtc": "1970-01-01T00:00:00Z"
 }
 ```
@@ -19109,6 +19921,7 @@ curl http://localhost:5000/api/Reader/progress \
     "seriesId": 0,
     "libraryId": 0,
     "bookScrollId": "string",
+    "koboSpan": "string",
     "lastModifiedUtc": "1970-01-01T00:00:00Z"
   }'
 ```
@@ -19125,6 +19938,7 @@ curl http://localhost:5000/api/Reader/progress \
   "seriesId": 0,
   "libraryId": 0,
   "bookScrollId": "string",
+  "koboSpan": "string",
   "lastModifiedUtc": "1970-01-01T00:00:00Z"
 }
 ```
@@ -19140,6 +19954,7 @@ curl http://localhost:5000/api/Reader/progress \
 |» seriesId|body|integer(int32)|true|none|
 |» libraryId|body|integer(int32)|true|none|
 |» bookScrollId|body|string \| null|false|none|
+|» koboSpan|body|string \| null|false|none|
 |» lastModifiedUtc|body|string(date-time)|false|none|
 
 <h3 id="save-page-against-chapter-for-authenticated-user-responses">Responses</h3>
@@ -19222,10 +20037,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19246,10 +20059,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19270,10 +20081,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19294,10 +20103,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19318,10 +20125,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19342,10 +20147,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19366,10 +20169,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19390,10 +20191,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19414,10 +20213,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19438,10 +20235,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19462,10 +20257,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19486,10 +20279,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19510,10 +20301,8 @@ curl http://localhost:5000/api/Reader/continue-point \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -19568,9 +20357,7 @@ curl http://localhost:5000/api/Reader/continue-point \
   "releaseDateLocked": true,
   "titleNameLocked": true,
   "sortOrderLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "format": 0,
   "aniListId": 0,
   "malId": 0,
@@ -19691,13 +20478,11 @@ curl http://localhost:5000/api/Reader/chapter-bookmarks \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -19853,13 +20638,11 @@ curl http://localhost:5000/api/Reader/all-bookmarks \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -20042,13 +20825,11 @@ curl http://localhost:5000/api/Reader/volume-bookmarks \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -20143,13 +20924,11 @@ curl http://localhost:5000/api/Reader/series-bookmarks \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -20229,13 +21008,11 @@ curl http://localhost:5000/api/Reader/bookmark \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -20293,13 +21070,11 @@ This has a side effect of caching the chapter files to disk
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -20385,13 +21160,11 @@ curl http://localhost:5000/api/Reader/unbookmark \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -20447,13 +21220,11 @@ curl http://localhost:5000/api/Reader/unbookmark \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -21060,9 +21831,6 @@ curl http://localhost:5000/api/ReadingList \
   "summary": "string",
   "promoted": true,
   "coverImageLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "itemCount": 0,
   "startingYear": 0,
   "startingMonth": 0,
@@ -21084,7 +21852,8 @@ curl http://localhost:5000/api/ReadingList \
       "normalizedTitle": "string"
     }
   ],
-  "canSync": true
+  "canSync": true,
+  "hasCoverImage": true
 }
 ```
 
@@ -21162,9 +21931,6 @@ curl http://localhost:5000/api/ReadingList/lists \
     "summary": "string",
     "promoted": true,
     "coverImageLocked": true,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "itemCount": 0,
     "startingYear": 0,
     "startingMonth": 0,
@@ -21186,7 +21952,8 @@ curl http://localhost:5000/api/ReadingList/lists \
         "normalizedTitle": "string"
       }
     ],
-    "canSync": true
+    "canSync": true,
+    "hasCoverImage": true
   }
 ]
 ```
@@ -21303,9 +22070,6 @@ curl http://localhost:5000/api/ReadingList/all \
     "summary": "string",
     "promoted": true,
     "coverImageLocked": true,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "itemCount": 0,
     "startingYear": 0,
     "startingMonth": 0,
@@ -21327,7 +22091,8 @@ curl http://localhost:5000/api/ReadingList/all \
         "normalizedTitle": "string"
       }
     ],
-    "canSync": true
+    "canSync": true,
+    "hasCoverImage": true
   }
 ]
 ```
@@ -21381,9 +22146,6 @@ curl http://localhost:5000/api/ReadingList/lists-for-series \
     "summary": "string",
     "promoted": true,
     "coverImageLocked": true,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "itemCount": 0,
     "startingYear": 0,
     "startingMonth": 0,
@@ -21405,7 +22167,8 @@ curl http://localhost:5000/api/ReadingList/lists-for-series \
         "normalizedTitle": "string"
       }
     ],
-    "canSync": true
+    "canSync": true,
+    "hasCoverImage": true
   }
 ]
 ```
@@ -21459,9 +22222,6 @@ curl http://localhost:5000/api/ReadingList/lists-for-chapter \
     "summary": "string",
     "promoted": true,
     "coverImageLocked": true,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "itemCount": 0,
     "startingYear": 0,
     "startingMonth": 0,
@@ -21483,7 +22243,8 @@ curl http://localhost:5000/api/ReadingList/lists-for-chapter \
         "normalizedTitle": "string"
       }
     ],
-    "canSync": true
+    "canSync": true,
+    "hasCoverImage": true
   }
 ]
 ```
@@ -21777,9 +22538,6 @@ curl http://localhost:5000/api/ReadingList/create \
   "summary": "string",
   "promoted": true,
   "coverImageLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "itemCount": 0,
   "startingYear": 0,
   "startingMonth": 0,
@@ -21801,7 +22559,8 @@ curl http://localhost:5000/api/ReadingList/create \
       "normalizedTitle": "string"
     }
   ],
-  "canSync": true
+  "canSync": true,
+  "hasCoverImage": true
 }
 ```
 
@@ -21890,9 +22649,6 @@ curl http://localhost:5000/api/ReadingList/update \
   "summary": "string",
   "promoted": true,
   "coverImageLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "itemCount": 0,
   "startingYear": 0,
   "startingMonth": 0,
@@ -21914,7 +22670,8 @@ curl http://localhost:5000/api/ReadingList/update \
       "normalizedTitle": "string"
     }
   ],
-  "canSync": true
+  "canSync": true,
+  "hasCoverImage": true
 }
 ```
 
@@ -22224,10 +22981,8 @@ curl http://localhost:5000/api/ReadingList/people \
   {
     "id": 0,
     "name": "string",
+    "hasCoverImage": true,
     "coverImageLocked": true,
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImage": "string",
     "aliases": [
       "string"
     ],
@@ -22292,10 +23047,8 @@ curl http://localhost:5000/api/ReadingList/all-people \
   {
     "id": 0,
     "name": "string",
+    "hasCoverImage": true,
     "coverImageLocked": true,
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImage": "string",
     "aliases": [
       "string"
     ],
@@ -24596,13 +25349,11 @@ curl http://localhost:5000/api/Review/all \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -24658,10 +25409,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24682,10 +25431,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24706,10 +25453,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24730,10 +25475,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24754,10 +25497,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24778,10 +25519,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24802,10 +25541,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24826,10 +25563,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24850,10 +25585,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24874,10 +25607,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24898,10 +25629,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24922,10 +25651,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -24946,10 +25673,8 @@ curl http://localhost:5000/api/Review/all \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -25004,9 +25729,7 @@ curl http://localhost:5000/api/Review/all \
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -25021,10 +25744,8 @@ curl http://localhost:5000/api/Review/all \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -26342,13 +27063,11 @@ curl http://localhost:5000/api/Search/series-for-mangafile \
   "folderPath": "string",
   "lowestFolderPath": "string",
   "lastFolderScanned": "1970-01-01T00:00:00Z",
+  "hasCoverImage": true,
   "dontMatch": true,
   "isBlacklisted": true,
   "isStandAlone": true,
   "metadataProviderOverride": 2,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -26423,13 +27142,11 @@ curl http://localhost:5000/api/Search/series-for-chapter \
   "folderPath": "string",
   "lowestFolderPath": "string",
   "lastFolderScanned": "1970-01-01T00:00:00Z",
+  "hasCoverImage": true,
   "dontMatch": true,
   "isBlacklisted": true,
   "isStandAlone": true,
   "metadataProviderOverride": 2,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -26483,7 +27200,6 @@ curl http://localhost:5000/api/Search/search \
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -26506,7 +27222,8 @@ curl http://localhost:5000/api/Search/search \
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     }
   ],
   "series": [
@@ -26531,17 +27248,15 @@ curl http://localhost:5000/api/Search/search \
       "summary": "string",
       "promoted": true,
       "ageRating": 0,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImageLocked": true,
       "itemCount": 0,
       "owner": "string",
       "lastSyncUtc": "1970-01-01T00:00:00Z",
       "source": 0,
       "sourceUrl": "string",
       "totalSourceCount": 0,
-      "missingSeriesFromSource": "string"
+      "missingSeriesFromSource": "string",
+      "hasCoverImage": true,
+      "coverImageLocked": true
     }
   ],
   "readingLists": [
@@ -26551,9 +27266,6 @@ curl http://localhost:5000/api/Search/search \
       "summary": "string",
       "promoted": true,
       "coverImageLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "itemCount": 0,
       "startingYear": 0,
       "startingMonth": 0,
@@ -26575,17 +27287,16 @@ curl http://localhost:5000/api/Search/search \
           "normalizedTitle": "string"
         }
       ],
-      "canSync": true
+      "canSync": true,
+      "hasCoverImage": true
     }
   ],
   "persons": [
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -26673,10 +27384,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26697,10 +27406,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26721,10 +27428,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26745,10 +27450,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26769,10 +27472,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26793,10 +27494,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26817,10 +27516,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26841,10 +27538,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26865,10 +27560,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26889,10 +27582,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26913,10 +27604,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26937,10 +27626,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -26961,10 +27648,8 @@ curl http://localhost:5000/api/Search/search \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -27019,9 +27704,7 @@ curl http://localhost:5000/api/Search/search \
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -27157,10 +27840,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27181,10 +27862,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27205,10 +27884,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27229,10 +27906,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27253,10 +27928,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27277,10 +27950,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27301,10 +27972,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27325,10 +27994,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27349,10 +28016,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27373,10 +28038,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27397,10 +28060,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27421,10 +28082,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27445,10 +28104,8 @@ curl http://localhost:5000/api/Search/chapters-by-series \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -27503,9 +28160,7 @@ curl http://localhost:5000/api/Search/chapters-by-series \
     "releaseDateLocked": true,
     "titleNameLocked": true,
     "sortOrderLocked": true,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
+    "hasCoverImage": true,
     "format": 0,
     "aniListId": 0,
     "malId": 0,
@@ -27655,13 +28310,11 @@ curl http://localhost:5000/api/Series/v2 \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -27745,13 +28398,11 @@ curl http://localhost:5000/api/Series/0 \
   "folderPath": "string",
   "lowestFolderPath": "string",
   "lastFolderScanned": "1970-01-01T00:00:00Z",
+  "hasCoverImage": true,
   "dontMatch": true,
   "isBlacklisted": true,
   "isStandAlone": true,
   "metadataProviderOverride": 2,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -27942,10 +28593,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -27966,10 +28615,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -27990,10 +28637,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28014,10 +28659,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28038,10 +28681,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28062,10 +28703,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28086,10 +28725,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28110,10 +28747,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28134,10 +28769,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28158,10 +28791,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28182,10 +28813,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28206,10 +28835,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28230,10 +28857,8 @@ curl http://localhost:5000/api/Series/volumes \
           {
             "id": 0,
             "name": "string",
+            "hasCoverImage": true,
             "coverImageLocked": true,
-            "primaryColor": "string",
-            "secondaryColor": "string",
-            "coverImage": "string",
             "aliases": [
               "string"
             ],
@@ -28288,9 +28913,7 @@ curl http://localhost:5000/api/Series/volumes \
         "releaseDateLocked": true,
         "titleNameLocked": true,
         "sortOrderLocked": true,
-        "coverImage": "string",
-        "primaryColor": "string",
-        "secondaryColor": "string",
+        "hasCoverImage": true,
         "format": 0,
         "aniListId": 0,
         "malId": 0,
@@ -28305,10 +28928,8 @@ curl http://localhost:5000/api/Series/volumes \
     "maxHoursToRead": 0,
     "avgHoursToRead": 0,
     "wordCount": 0,
-    "coverImage": "string",
     "coverImageLocked": true,
-    "primaryColor": "string",
-    "secondaryColor": "string",
+    "hasCoverImage": true,
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -28422,10 +29043,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28446,10 +29065,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28470,10 +29087,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28494,10 +29109,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28518,10 +29131,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28542,10 +29153,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28566,10 +29175,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28590,10 +29197,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28614,10 +29219,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28638,10 +29241,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28662,10 +29263,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28686,10 +29285,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28710,10 +29307,8 @@ curl http://localhost:5000/api/Series/volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -28768,9 +29363,7 @@ curl http://localhost:5000/api/Series/volume \
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -28785,10 +29378,8 @@ curl http://localhost:5000/api/Series/volume \
   "maxHoursToRead": 0,
   "avgHoursToRead": 0,
   "wordCount": 0,
-  "coverImage": "string",
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -28879,10 +29470,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -28903,10 +29492,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -28927,10 +29514,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -28951,10 +29536,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -28975,10 +29558,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -28999,10 +29580,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -29023,10 +29602,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -29047,10 +29624,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -29071,10 +29646,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -29095,10 +29668,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -29119,10 +29690,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -29143,10 +29712,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -29167,10 +29734,8 @@ curl http://localhost:5000/api/Series/chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -29225,9 +29790,7 @@ curl http://localhost:5000/api/Series/chapter \
   "releaseDateLocked": true,
   "titleNameLocked": true,
   "sortOrderLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "format": 0,
   "aniListId": 0,
   "malId": 0,
@@ -29369,13 +29932,11 @@ curl http://localhost:5000/api/Series/update \
   "folderPath": "string",
   "lowestFolderPath": "string",
   "lastFolderScanned": "1970-01-01T00:00:00Z",
+  "hasCoverImage": true,
   "dontMatch": true,
   "isBlacklisted": true,
   "isStandAlone": true,
   "metadataProviderOverride": 2,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -29514,13 +30075,11 @@ curl http://localhost:5000/api/Series/recently-added-v2 \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -29734,13 +30293,11 @@ curl http://localhost:5000/api/Series/all-v2 \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -29828,13 +30385,11 @@ curl http://localhost:5000/api/Series/on-deck \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -29950,13 +30505,11 @@ curl http://localhost:5000/api/Series/currently-reading \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -30183,10 +30736,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30207,10 +30758,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30231,10 +30780,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30255,10 +30802,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30279,10 +30824,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30303,10 +30846,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30327,10 +30868,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30351,10 +30890,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30375,10 +30912,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30399,10 +30934,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30423,10 +30956,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30447,10 +30978,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30471,10 +31000,8 @@ curl http://localhost:5000/api/Series/metadata \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -30562,10 +31089,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30586,10 +31111,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30610,10 +31133,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30634,10 +31155,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30658,10 +31177,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30682,10 +31199,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30706,10 +31221,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30730,10 +31243,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30754,10 +31265,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30778,10 +31287,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30802,10 +31309,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30826,10 +31331,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30850,10 +31353,8 @@ curl http://localhost:5000/api/Series/metadata \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -30927,10 +31428,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -30951,10 +31450,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -30975,10 +31472,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -30999,10 +31494,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31023,10 +31516,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31047,10 +31538,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31071,10 +31560,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31095,10 +31582,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31119,10 +31604,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31143,10 +31626,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31167,10 +31648,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31191,10 +31670,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31215,10 +31692,8 @@ curl http://localhost:5000/api/Series/metadata \
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -31340,13 +31815,11 @@ curl http://localhost:5000/api/Series/series-by-collection \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -31449,13 +31922,11 @@ curl http://localhost:5000/api/Series/series-by-ids \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -31597,10 +32068,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31621,10 +32090,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31645,10 +32112,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31669,10 +32134,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31693,10 +32156,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31717,10 +32178,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31741,10 +32200,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31765,10 +32222,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31789,10 +32244,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31813,10 +32266,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31837,10 +32288,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31861,10 +32310,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31885,10 +32332,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -31943,9 +32388,7 @@ Do not rely on this API externally. May change without hesitation.
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -32003,10 +32446,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32027,10 +32468,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32051,10 +32490,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32075,10 +32512,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32099,10 +32534,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32123,10 +32556,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32147,10 +32578,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32171,10 +32600,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32195,10 +32622,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32219,10 +32644,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32243,10 +32666,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32267,10 +32688,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32291,10 +32710,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32349,9 +32766,7 @@ Do not rely on this API externally. May change without hesitation.
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -32423,10 +32838,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32447,10 +32860,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32471,10 +32882,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32495,10 +32904,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32519,10 +32926,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32543,10 +32948,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32567,10 +32970,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32591,10 +32992,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32615,10 +33014,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32639,10 +33036,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32663,10 +33058,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32687,10 +33080,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32711,10 +33102,8 @@ Do not rely on this API externally. May change without hesitation.
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -32769,9 +33158,7 @@ Do not rely on this API externally. May change without hesitation.
           "releaseDateLocked": true,
           "titleNameLocked": true,
           "sortOrderLocked": true,
-          "coverImage": "string",
-          "primaryColor": "string",
-          "secondaryColor": "string",
+          "hasCoverImage": true,
           "format": 0,
           "aniListId": 0,
           "malId": 0,
@@ -32786,10 +33173,8 @@ Do not rely on this API externally. May change without hesitation.
       "maxHoursToRead": 0,
       "avgHoursToRead": 0,
       "wordCount": 0,
-      "coverImage": "string",
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -32846,10 +33231,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32870,10 +33253,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32894,10 +33275,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32918,10 +33297,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32942,10 +33319,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32966,10 +33341,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -32990,10 +33363,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -33014,10 +33385,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -33038,10 +33407,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -33062,10 +33429,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -33086,10 +33451,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -33110,10 +33473,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -33134,10 +33495,8 @@ Do not rely on this API externally. May change without hesitation.
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -33192,9 +33551,7 @@ Do not rely on this API externally. May change without hesitation.
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -33296,13 +33653,11 @@ curl http://localhost:5000/api/Series/related \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -33389,13 +33744,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33436,13 +33789,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33483,13 +33834,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33530,13 +33879,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33577,13 +33924,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33624,13 +33969,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33671,13 +34014,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33718,13 +34059,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33765,13 +34104,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33812,13 +34149,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33859,13 +34194,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33906,13 +34239,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -33953,13 +34284,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -34000,13 +34329,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -34047,13 +34374,11 @@ curl http://localhost:5000/api/Series/all-related \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -34332,7 +34657,6 @@ curl http://localhost:5000/api/Series/external-series-detail \
   "ratings": [
     {
       "averageScore": 0,
-      "favoriteCount": 0,
       "provider": 0,
       "authority": 0,
       "providerUrl": "string"
@@ -34612,7 +34936,6 @@ curl http://localhost:5000/api/Series/match \
         "ratings": [
           {
             "averageScore": 0,
-            "favoriteCount": 0,
             "provider": 0,
             "authority": 0,
             "providerUrl": "string"
@@ -34921,13 +35244,11 @@ curl http://localhost:5000/api/Series/series-with-annotations \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -35119,7 +35440,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 AuthKey
 </aside>
 
-## Triggers the scheduling of the convert media job. This will convert all media to the target encoding (except for PNG). Only one job will run at a time.
+## Triggers the scheduling of the convert media job. This will convert all media to the target encoding. Only one job will run at a time.
 
 > Code samples
 
@@ -35131,7 +35452,7 @@ curl http://localhost:5000/api/Server/convert-media \
 
 `POST /api/Server/convert-media`
 
-<h3 id="triggers-the-scheduling-of-the-convert-media-job-this-will-convert-all-media-to-the-target-encoding-except-for-png-only-one-job-will-run-at-a-time-responses">Responses</h3>
+<h3 id="triggers-the-scheduling-of-the-convert-media-job-this-will-convert-all-media-to-the-target-encoding-only-one-job-will-run-at-a-time-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -35154,6 +35475,57 @@ curl http://localhost:5000/api/Server/logs \
 `GET /api/Server/logs`
 
 <h3 id="downloads-all-the-log-files-via-a-zip-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Starts building a scrubbed debug export. Admins get `DebugExportReady` with the export id when it is done
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Server/debug-export \
+  -X POST \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`POST /api/Server/debug-export`
+
+<h3 id="starts-building-a-scrubbed-debug-export-admins-get-debugexportready-with-the-export-id-when-it-is-done-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Downloads a finished debug export
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Server/debug-export/string \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/Server/debug-export/{exportId}`
+
+<h3 id="downloads-a-finished-debug-export-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|exportId|path|string|true|From the `DebugExportReady` event|
+
+<h3 id="downloads-a-finished-debug-export-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -35931,6 +36303,7 @@ curl http://localhost:5000/api/Settings \
   "taskBackup": "string",
   "taskCleanup": "string",
   "taskCblSync": "string",
+  "taskCompositeCovers": "string",
   "loggingLevel": "string",
   "port": 0,
   "ipAddresses": "string",
@@ -35986,6 +36359,8 @@ curl http://localhost:5000/api/Settings \
     "defaultIncludeUnknowns": true,
     "enabled": true
   },
+  "enableKobo": true,
+  "enableKepubify": true,
   "firstInstallDate": "1970-01-01T00:00:00Z",
   "firstInstallVersion": "string",
   "statsApiHits": 0
@@ -36019,6 +36394,7 @@ curl http://localhost:5000/api/Settings \
     "taskBackup": "string",
     "taskCleanup": "string",
     "taskCblSync": "string",
+    "taskCompositeCovers": "string",
     "loggingLevel": "string",
     "port": 0,
     "ipAddresses": "string",
@@ -36073,6 +36449,8 @@ curl http://localhost:5000/api/Settings \
       "defaultAgeRestriction": 0,
       "defaultIncludeUnknowns": true
     },
+    "enableKobo": true,
+    "enableKepubify": true,
     "firstInstallDate": "1970-01-01T00:00:00Z",
     "firstInstallVersion": "string",
     "statsApiHits": 0
@@ -36090,6 +36468,7 @@ curl http://localhost:5000/api/Settings \
   "taskBackup": "string",
   "taskCleanup": "string",
   "taskCblSync": "string",
+  "taskCompositeCovers": "string",
   "loggingLevel": "string",
   "port": 0,
   "ipAddresses": "string",
@@ -36144,6 +36523,8 @@ curl http://localhost:5000/api/Settings \
     "defaultAgeRestriction": 0,
     "defaultIncludeUnknowns": true
   },
+  "enableKobo": true,
+  "enableKepubify": true,
   "firstInstallDate": "1970-01-01T00:00:00Z",
   "firstInstallVersion": "string",
   "statsApiHits": 0
@@ -36160,6 +36541,7 @@ curl http://localhost:5000/api/Settings \
 |» taskBackup|body|string \| null|false|none|
 |» taskCleanup|body|string \| null|false|none|
 |» taskCblSync|body|string \| null|false|none|
+|» taskCompositeCovers|body|string \| null|false|none|
 |» loggingLevel|body|string \| null|false|none|
 |» port|body|integer(int32)|false|none|
 |» ipAddresses|body|string \| null|false|none|
@@ -36169,7 +36551,7 @@ curl http://localhost:5000/api/Settings \
 |» bookmarksDirectory|body|string \| null|false|none|
 |» installVersion|body|string \| null|false|none|
 |» installId|body|string \| null|false|none|
-|» encodeMediaAs|body|[EncodeFormat](#schemaencodeformat)|false|Members:<br>- `0` — PNG<br>- `1` — WebP (WEBP)<br>- `2` — AVIF|
+|» encodeMediaAs|body|[EncodeFormat](#schemaencodeformat)|false|Members:<br>- `0` — PNG<br>- `1` — WebP (WEBP)<br>- `2` — AVIF<br>- `3` — JPEG|
 |» totalBackups|body|integer(int32)|false|none|
 |» enableFolderWatching|body|boolean|false|none|
 |» totalLogs|body|integer(int32)|false|none|
@@ -36181,6 +36563,8 @@ curl http://localhost:5000/api/Settings \
 |» pdfRenderResolution|body|[PdfRenderResolution](#schemapdfrenderresolution)|false|Members:<br>- `1` — Default<br>- `2` — High<br>- `3` — Ultra|
 |» smtpConfig|body|[SmtpConfigDto](#schemasmtpconfigdto)|false|none|
 |» oidcConfig|body|[OidcConfigDto](#schemaoidcconfigdto)|false|none|
+|» enableKobo|body|boolean|false|none|
+|» enableKepubify|body|boolean|false|none|
 |» firstInstallDate|body|string(date-time) \| null|false|none|
 |» firstInstallVersion|body|string \| null|false|none|
 |» statsApiHits|body|integer(int32)|false|none|
@@ -36192,6 +36576,7 @@ curl http://localhost:5000/api/Settings \
 |» encodeMediaAs|0|
 |» encodeMediaAs|1|
 |» encodeMediaAs|2|
+|» encodeMediaAs|3|
 |» coverImageSize|1|
 |» coverImageSize|2|
 |» coverImageSize|3|
@@ -36211,6 +36596,7 @@ curl http://localhost:5000/api/Settings \
   "taskBackup": "string",
   "taskCleanup": "string",
   "taskCblSync": "string",
+  "taskCompositeCovers": "string",
   "loggingLevel": "string",
   "port": 0,
   "ipAddresses": "string",
@@ -36266,6 +36652,8 @@ curl http://localhost:5000/api/Settings \
     "defaultIncludeUnknowns": true,
     "enabled": true
   },
+  "enableKobo": true,
+  "enableKepubify": true,
   "firstInstallDate": "1970-01-01T00:00:00Z",
   "firstInstallVersion": "string",
   "statsApiHits": 0
@@ -36307,6 +36695,7 @@ curl http://localhost:5000/api/Settings/reset \
   "taskBackup": "string",
   "taskCleanup": "string",
   "taskCblSync": "string",
+  "taskCompositeCovers": "string",
   "loggingLevel": "string",
   "port": 0,
   "ipAddresses": "string",
@@ -36362,6 +36751,8 @@ curl http://localhost:5000/api/Settings/reset \
     "defaultIncludeUnknowns": true,
     "enabled": true
   },
+  "enableKobo": true,
+  "enableKepubify": true,
   "firstInstallDate": "1970-01-01T00:00:00Z",
   "firstInstallVersion": "string",
   "statsApiHits": 0
@@ -36403,6 +36794,7 @@ curl http://localhost:5000/api/Settings/reset-ip-addresses \
   "taskBackup": "string",
   "taskCleanup": "string",
   "taskCblSync": "string",
+  "taskCompositeCovers": "string",
   "loggingLevel": "string",
   "port": 0,
   "ipAddresses": "string",
@@ -36458,6 +36850,8 @@ curl http://localhost:5000/api/Settings/reset-ip-addresses \
     "defaultIncludeUnknowns": true,
     "enabled": true
   },
+  "enableKobo": true,
+  "enableKepubify": true,
   "firstInstallDate": "1970-01-01T00:00:00Z",
   "firstInstallVersion": "string",
   "statsApiHits": 0
@@ -36499,6 +36893,7 @@ curl http://localhost:5000/api/Settings/reset-base-url \
   "taskBackup": "string",
   "taskCleanup": "string",
   "taskCblSync": "string",
+  "taskCompositeCovers": "string",
   "loggingLevel": "string",
   "port": 0,
   "ipAddresses": "string",
@@ -36554,6 +36949,8 @@ curl http://localhost:5000/api/Settings/reset-base-url \
     "defaultIncludeUnknowns": true,
     "enabled": true
   },
+  "enableKobo": true,
+  "enableKepubify": true,
   "firstInstallDate": "1970-01-01T00:00:00Z",
   "firstInstallVersion": "string",
   "statsApiHits": 0
@@ -36756,6 +37153,129 @@ true
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|Inline|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## get/api/Settings/kobo-enabled
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Settings/kobo-enabled \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/Settings/kobo-enabled`
+
+> Example responses
+
+> 200 Response
+
+```json
+true
+```
+
+<h3 id="getapisettingskobo-enabled-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## get/api/Settings/kepubify-supported
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Settings/kepubify-supported \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/Settings/kepubify-supported`
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 0,
+  "source": 0,
+  "path": "string",
+  "reason": 0
+}
+```
+
+<h3 id="getapisettingskepubify-supported-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[KepubifyStatusDto](#schemakepubifystatusdto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Saves EnableKepubify and queues the check. Returns Checking, the result comes as a kepubify-checked event
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Settings/kepubify \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${API_KEY}" \
+  -d '{
+    "enabled": true
+  }'
+```
+
+`POST /api/Settings/kepubify`
+
+> Body parameter
+
+```json
+{
+  "enabled": true
+}
+```
+
+<h3 id="saves-enablekepubify-and-queues-the-check-returns-checking-the-result-comes-as-a-kepubify-checked-event-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[UpdateKepubifyDto](#schemaupdatekepubifydto)|false|none|
+|» enabled|body|boolean|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 0,
+  "source": 0,
+  "path": "string",
+  "reason": 0
+}
+```
+
+<h3 id="saves-enablekepubify-and-queues-the-check-returns-checking-the-result-comes-as-a-kepubify-checked-event-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[KepubifyStatusDto](#schemakepubifystatusdto)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -37839,7 +38359,6 @@ curl http://localhost:5000/api/Stats/popular-libraries \
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -37862,7 +38381,8 @@ curl http://localhost:5000/api/Stats/popular-libraries \
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     },
     "count": 0
   }
@@ -37936,13 +38456,11 @@ curl http://localhost:5000/api/Stats/popular-series \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -38024,13 +38542,11 @@ curl http://localhost:5000/api/Stats/popular-reading-list \
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -38204,10 +38720,8 @@ curl http://localhost:5000/api/Stats/popular-people \
     "value": {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -39587,7 +40101,6 @@ curl http://localhost:5000/api/Stream/sidenav \
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -39610,7 +40123,8 @@ curl http://localhost:5000/api/Stream/sidenav \
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     },
     "entityType": 0
   }
@@ -40128,7 +40642,6 @@ curl http://localhost:5000/api/Stream/add-sidenav-stream \
     "name": "string",
     "type": 0,
     "lastScanned": "1970-01-01T00:00:00Z",
-    "coverImage": "string",
     "folderWatchMode": 0,
     "includeInDashboard": true,
     "includeInRecommended": true,
@@ -40151,7 +40664,8 @@ curl http://localhost:5000/api/Stream/add-sidenav-stream \
     "removePrefixForSortName": true,
     "inheritWebLinksFromFirstChapter": true,
     "defaultLanguage": "string",
-    "metadataProvider": 2
+    "metadataProvider": 2,
+    "hasCoverImage": true
   },
   "entityType": 0
 }
@@ -40214,7 +40728,6 @@ curl http://localhost:5000/api/Stream/add-sidenav-stream-from-external-source \
     "name": "string",
     "type": 0,
     "lastScanned": "1970-01-01T00:00:00Z",
-    "coverImage": "string",
     "folderWatchMode": 0,
     "includeInDashboard": true,
     "includeInRecommended": true,
@@ -40237,7 +40750,8 @@ curl http://localhost:5000/api/Stream/add-sidenav-stream-from-external-source \
     "removePrefixForSortName": true,
     "inheritWebLinksFromFirstChapter": true,
     "defaultLanguage": "string",
-    "metadataProvider": 2
+    "metadataProvider": 2,
+    "hasCoverImage": true
   },
   "entityType": 0
 }
@@ -40285,7 +40799,6 @@ curl http://localhost:5000/api/Stream/update-sidenav-stream \
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -40308,7 +40821,8 @@ curl http://localhost:5000/api/Stream/update-sidenav-stream \
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     },
     "entityType": 0
   }'
@@ -40341,7 +40855,6 @@ curl http://localhost:5000/api/Stream/update-sidenav-stream \
     "name": "string",
     "type": 0,
     "lastScanned": "1970-01-01T00:00:00Z",
-    "coverImage": "string",
     "folderWatchMode": 0,
     "includeInDashboard": true,
     "includeInRecommended": true,
@@ -40364,7 +40877,8 @@ curl http://localhost:5000/api/Stream/update-sidenav-stream \
     "removePrefixForSortName": true,
     "inheritWebLinksFromFirstChapter": true,
     "defaultLanguage": "string",
-    "metadataProvider": 2
+    "metadataProvider": 2,
+    "hasCoverImage": true
   },
   "entityType": 0
 }
@@ -40652,10 +41166,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40676,10 +41188,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40700,10 +41210,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40724,10 +41232,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40748,10 +41254,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40772,10 +41276,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40796,10 +41298,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40820,10 +41320,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40844,10 +41342,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40868,10 +41364,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40892,10 +41386,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40916,10 +41408,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40940,10 +41430,8 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -40998,9 +41486,7 @@ curl http://localhost:5000/api/Tachiyomi/latest-chapter \
   "releaseDateLocked": true,
   "titleNameLocked": true,
   "sortOrderLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "format": 0,
   "aniListId": 0,
   "malId": 0,
@@ -42179,7 +42665,6 @@ curl http://localhost:5000/api/Users \
         "name": "string",
         "type": 0,
         "lastScanned": "1970-01-01T00:00:00Z",
-        "coverImage": "string",
         "folderWatchMode": 0,
         "includeInDashboard": true,
         "includeInRecommended": true,
@@ -42202,7 +42687,8 @@ curl http://localhost:5000/api/Users \
         "removePrefixForSortName": true,
         "inheritWebLinksFromFirstChapter": true,
         "defaultLanguage": "string",
-        "metadataProvider": 2
+        "metadataProvider": 2,
+        "hasCoverImage": true
       }
     ],
     "roles": [
@@ -42259,8 +42745,7 @@ curl http://localhost:5000/api/Users/profile-info \
   "id": 0,
   "username": "string",
   "created": "1970-01-01T00:00:00Z",
-  "createdUtc": "1970-01-01T00:00:00Z",
-  "coverImage": "string"
+  "createdUtc": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -42692,6 +43177,23 @@ curl http://localhost:5000/api/Users/update-preferences \
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0
     }
   }'
 ```
@@ -42999,6 +43501,23 @@ If the user has ReadOnly role, they will not be able to perform this action
   "opdsPreferences": {
     "embedProgressIndicator": true,
     "includeContinueFrom": true
+  },
+  "koboSyncPreferences": {
+    "syncItemLimit": 25,
+    "forwardToKoboStore": true,
+    "librarySyncEnabled": true,
+    "syncLibraries": [
+      0
+    ],
+    "readingListSyncEnabled": true,
+    "syncReadingLists": [
+      0
+    ],
+    "collectionSyncEnabled": true,
+    "syncCollections": [
+      0
+    ],
+    "managedCollection": 0
   }
 }
 ```
@@ -43046,6 +43565,7 @@ If the user has ReadOnly role, they will not be able to perform this action
 |» bookReaderHighlightSlots|body|[[HighlightSlot](#schemahighlightslot)]|true|none|
 |» socialPreferences|body|[AppUserSocialPreferences](#schemaappusersocialpreferences)|true|none|
 |» opdsPreferences|body|[AppUserOpdsPreferences](#schemaappuseropdspreferences)|true|none|
+|» koboSyncPreferences|body|[AppUserKoboSyncPreferences](#schemaappuserkobosyncpreferences)|true|none|
 
 #### Enumerated Values
 
@@ -43356,6 +43876,24 @@ If the user has ReadOnly role, they will not be able to perform this action
   "opdsPreferences": {
     "embedProgressIndicator": true,
     "includeContinueFrom": true
+  },
+  "koboSyncPreferences": {
+    "syncItemLimit": 25,
+    "forwardToKoboStore": true,
+    "librarySyncEnabled": true,
+    "syncLibraries": [
+      0
+    ],
+    "readingListSyncEnabled": true,
+    "syncReadingLists": [
+      0
+    ],
+    "collectionSyncEnabled": true,
+    "syncCollections": [
+      0
+    ],
+    "managedCollection": 0,
+    "hasManagedCollection": true
   }
 }
 ```
@@ -43685,6 +44223,24 @@ curl http://localhost:5000/api/Users/get-preferences \
   "opdsPreferences": {
     "embedProgressIndicator": true,
     "includeContinueFrom": true
+  },
+  "koboSyncPreferences": {
+    "syncItemLimit": 25,
+    "forwardToKoboStore": true,
+    "librarySyncEnabled": true,
+    "syncLibraries": [
+      0
+    ],
+    "readingListSyncEnabled": true,
+    "syncReadingLists": [
+      0
+    ],
+    "collectionSyncEnabled": true,
+    "syncCollections": [
+      0
+    ],
+    "managedCollection": 0,
+    "hasManagedCollection": true
   }
 }
 ```
@@ -43694,6 +44250,130 @@ curl http://localhost:5000/api/Users/get-preferences \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[UserPreferencesDto](#schemauserpreferencesdto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Returns all sync points for the currently active user
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Users/kobo-sync-points \
+  -H 'Accept: application/json' \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`GET /api/Users/kobo-sync-points`
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "id": 0,
+    "deviceId": "string",
+    "removedChapterCount": 0,
+    "lastSync": "1970-01-01T00:00:00Z"
+  }
+]
+```
+
+<h3 id="returns-all-sync-points-for-the-currently-active-user-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+
+<h3 id="returns-all-sync-points-for-the-currently-active-user-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[KoboSyncPointDto](#schemakobosyncpointdto)]|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Delete a kobo sync point. By id
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Users/kobo-sync-point \
+  -X DELETE \
+  -H "x-api-key: ${API_KEY}"
+```
+
+`DELETE /api/Users/kobo-sync-point`
+
+<h3 id="delete-a-kobo-sync-point-by-id-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|syncPointId|query|integer(int32)|false|none|
+
+<h3 id="delete-a-kobo-sync-point-by-id-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+AuthKey
+</aside>
+
+## Undo removal of books for the given sync point
+
+> Code samples
+
+```bash
+curl http://localhost:5000/api/Users/kobo-sync-point/undo-remove-books \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H "x-api-key: ${API_KEY}" \
+  -d '{
+    "syncPointId": 0,
+    "undoBookIds": [
+      0
+    ]
+  }'
+```
+
+`POST /api/Users/kobo-sync-point/undo-remove-books`
+
+> Body parameter
+
+```json
+{
+  "syncPointId": 0,
+  "undoBookIds": [
+    0
+  ]
+}
+```
+
+<h3 id="undo-removal-of-books-for-the-given-sync-point-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[UndoKoboRemoveBookDto](#schemaundokoboremovebookdto)|false|none|
+|» syncPointId|body|integer(int32)|false|none|
+|» undoBookIds|body|[integer(int32)]|false|none|
+
+<h3 id="undo-removal-of-books-for-the-given-sync-point-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -43878,10 +44558,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -43902,10 +44580,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -43926,10 +44602,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -43950,10 +44624,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -43974,10 +44646,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -43998,10 +44668,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44022,10 +44690,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44046,10 +44712,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44070,10 +44734,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44094,10 +44756,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44118,10 +44778,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44142,10 +44800,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44166,10 +44822,8 @@ curl http://localhost:5000/api/Volume \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44224,9 +44878,7 @@ curl http://localhost:5000/api/Volume \
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -44241,10 +44893,8 @@ curl http://localhost:5000/api/Volume \
   "maxHoursToRead": 0,
   "avgHoursToRead": 0,
   "wordCount": 0,
-  "coverImage": "string",
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -44422,10 +45072,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44446,10 +45094,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44470,10 +45116,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44494,10 +45138,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44518,10 +45160,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44542,10 +45182,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44566,10 +45204,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44590,10 +45226,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44614,10 +45248,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44638,10 +45270,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44662,10 +45292,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44686,10 +45314,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44710,10 +45336,8 @@ curl http://localhost:5000/api/Volume/update \
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -44768,9 +45392,7 @@ curl http://localhost:5000/api/Volume/update \
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -44785,10 +45407,8 @@ curl http://localhost:5000/api/Volume/update \
   "maxHoursToRead": 0,
   "avgHoursToRead": 0,
   "wordCount": 0,
-  "coverImage": "string",
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -44981,13 +45601,11 @@ curl http://localhost:5000/api/want-to-read/v2 \
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -45738,17 +46356,15 @@ Members:
   "summary": "string",
   "promoted": true,
   "ageRating": 0,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImageLocked": true,
   "itemCount": 0,
   "owner": "string",
   "lastSyncUtc": "1970-01-01T00:00:00Z",
   "source": 0,
   "sourceUrl": "string",
   "totalSourceCount": 0,
-  "missingSeriesFromSource": "string"
+  "missingSeriesFromSource": "string",
+  "hasCoverImage": true,
+  "coverImageLocked": true
 }
 ```
 
@@ -45761,10 +46377,6 @@ Members:
 |summary|string \| null|false|none|none|
 |promoted|boolean|false|none|none|
 |ageRating|[AgeRating](#schemaagerating)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Rating Pending (RatingPending)<br>- `2` — Early Childhood (EarlyChildhood)<br>- `3` — Everyone<br>- `4` — G<br>- `5` — Everyone 10+ (Everyone10Plus)<br>- `6` — PG<br>- `7` — Kids to Adults (KidsToAdults)<br>- `8` — Teen<br>- `9` — MA15+ (Mature15Plus)<br>- `10` — Mature 17+ (Mature17Plus)<br>- `11` — M (Mature)<br>- `12` — R18+ (R18Plus)<br>- `13` — Adults Only 18+ (AdultsOnly)<br>- `14` — X18+ (X18Plus)<br>- `-1` — Not Applicable (NotApplicable)|
-|coverImage|string \| null|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
-|coverImageLocked|boolean|false|none|none|
 |itemCount|integer(int32)|false|none|none|
 |owner|string \| null|false|none|none|
 |lastSyncUtc|string(date-time)|false|none|none|
@@ -45772,6 +46384,8 @@ Members:
 |sourceUrl|string \| null|false|none|none|
 |totalSourceCount|integer(int32)|false|none|none|
 |missingSeriesFromSource|string \| null|false|none|none|
+|hasCoverImage|boolean|false|none|none|
+|coverImageLocked|boolean|false|none|none|
 
 #### Enumerated Values
 
@@ -45799,6 +46413,49 @@ Members:
 |source|4|
 |source|5|
 |source|6|
+
+<h2 id="tocS_AppUserKoboSyncPreferences">AppUserKoboSyncPreferences</h2>
+<!-- backwards compatibility -->
+<a id="schemaappuserkobosyncpreferences"></a>
+<a id="schema_AppUserKoboSyncPreferences"></a>
+<a id="tocSappuserkobosyncpreferences"></a>
+<a id="tocsappuserkobosyncpreferences"></a>
+
+```json
+{
+  "syncItemLimit": 25,
+  "forwardToKoboStore": true,
+  "librarySyncEnabled": true,
+  "syncLibraries": [
+    0
+  ],
+  "readingListSyncEnabled": true,
+  "syncReadingLists": [
+    0
+  ],
+  "collectionSyncEnabled": true,
+  "syncCollections": [
+    0
+  ],
+  "managedCollection": 0,
+  "hasManagedCollection": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|syncItemLimit|integer(int32)|false|none|none|
+|forwardToKoboStore|boolean|false|none|none|
+|librarySyncEnabled|boolean|false|none|none|
+|syncLibraries|[integer(int32)]|false|none|none|
+|readingListSyncEnabled|boolean|false|none|none|
+|syncReadingLists|[integer(int32)]|false|none|none|
+|collectionSyncEnabled|boolean|false|none|none|
+|syncCollections|[integer(int32)]|false|none|none|
+|managedCollection|integer(int32)|false|none|none|
+|hasManagedCollection|boolean|false|read-only|none|
 
 <h2 id="tocS_AppUserOpdsPreferences">AppUserOpdsPreferences</h2>
 <!-- backwards compatibility -->
@@ -46027,6 +46684,7 @@ Members:
 - `1` — JWT
 - `2` — AuthKey
 - `3` — OIDC
+- `4` — KoboDevice
 
 <h2 id="tocS_AuthorChapterDto">AuthorChapterDto</h2>
 <!-- backwards compatibility -->
@@ -46143,7 +46801,8 @@ Members:
   "libraryId": 0,
   "pages": 0,
   "isSpecial": true,
-  "chapterTitle": "string"
+  "chapterTitle": "string",
+  "seriesPublicationStatus": 0
 }
 ```
 
@@ -46162,6 +46821,7 @@ Members:
 |pages|integer(int32)|false|none|none|
 |isSpecial|boolean|false|none|none|
 |chapterTitle|string \| null|false|none|none|
+|seriesPublicationStatus|[PublicationStatus](#schemapublicationstatus)|false|none|Members:<br>- `0` — Ongoing (OnGoing)<br>- `1` — Hiatus<br>- `2` — Completed<br>- `3` — Cancelled<br>- `4` — Ended|
 
 #### Enumerated Values
 
@@ -46172,6 +46832,11 @@ Members:
 |seriesFormat|2|
 |seriesFormat|3|
 |seriesFormat|4|
+|seriesPublicationStatus|0|
+|seriesPublicationStatus|1|
+|seriesPublicationStatus|2|
+|seriesPublicationStatus|3|
+|seriesPublicationStatus|4|
 
 <h2 id="tocS_BookPageLayoutMode">BookPageLayoutMode</h2>
 <!-- backwards compatibility -->
@@ -46234,13 +46899,11 @@ Members:
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -46410,10 +47073,8 @@ Members:
 {
   "id": 0,
   "name": "string",
+  "hasCoverImage": true,
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImage": "string",
   "aliases": [
     "string"
   ],
@@ -46439,10 +47100,8 @@ Members:
 |---|---|---|---|---|
 |id|integer(int32)|false|none|none|
 |name|string \| null|true|none|none|
+|hasCoverImage|boolean|false|none|none|
 |coverImageLocked|boolean|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
-|coverImage|string \| null|false|none|none|
 |aliases|[string]|false|none|none|
 |description|string \| null|false|none|none|
 |asin|string \| null|false|none|none|
@@ -47286,7 +47945,6 @@ Members:
   "ratings": [
     {
       "averageScore": 0,
-      "favoriteCount": 0,
       "provider": 0,
       "authority": 0,
       "providerUrl": "string"
@@ -47358,10 +48016,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47382,10 +48038,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47406,10 +48060,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47430,10 +48082,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47454,10 +48104,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47478,10 +48126,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47502,10 +48148,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47526,10 +48170,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47550,10 +48192,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47574,10 +48214,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47598,10 +48236,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47622,10 +48258,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47646,10 +48280,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -47704,9 +48336,7 @@ Members:
   "releaseDateLocked": true,
   "titleNameLocked": true,
   "sortOrderLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "format": 0,
   "aniListId": 0,
   "malId": 0,
@@ -47793,9 +48423,7 @@ Members:
 |releaseDateLocked|boolean|false|none|none|
 |titleNameLocked|boolean|false|none|none|
 |sortOrderLocked|boolean|false|none|none|
-|coverImage|string \| null|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
+|hasCoverImage|boolean|false|none|none|
 |format|[MangaFormat](#schemamangaformat)|false|none|Members:<br>- `0` — Image<br>- `1` — Archive<br>- `2` — Unknown<br>- `3` — EPUB (Epub)<br>- `4` — PDF (Pdf)|
 |aniListId|integer(int32)|false|none|none|
 |malId|integer(int64)|false|none|none|
@@ -47923,6 +48551,33 @@ Members:
 |seriesPublicationStatus|3|
 |seriesPublicationStatus|4|
 
+<h2 id="tocS_ChapterRestoreInfoDto">ChapterRestoreInfoDto</h2>
+<!-- backwards compatibility -->
+<a id="schemachapterrestoreinfodto"></a>
+<a id="schema_ChapterRestoreInfoDto"></a>
+<a id="tocSchapterrestoreinfodto"></a>
+<a id="tocschapterrestoreinfodto"></a>
+
+```json
+{
+  "chapterId": 0,
+  "seriesId": 0,
+  "seriesTitle": "string",
+  "title": "string",
+  "removedAtUtc": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|chapterId|integer(int32)|false|none|none|
+|seriesId|integer(int32)|false|none|none|
+|seriesTitle|string \| null|false|none|none|
+|title|string \| null|false|none|none|
+|removedAtUtc|string(date-time)|false|none|none|
+
 <h2 id="tocS_CharacterRole">CharacterRole</h2>
 <!-- backwards compatibility -->
 <a id="schemacharacterrole"></a>
@@ -48044,6 +48699,7 @@ Members:
 - `4` — Panels
 - `5` — Librera
 - `6` — OPDS Client (OpdsClient)
+- `7` — Kobo
 
 <h2 id="tocS_ClientDeviceTypeStatCount">ClientDeviceTypeStatCount</h2>
 <!-- backwards compatibility -->
@@ -48063,7 +48719,7 @@ Members:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|value|[ClientDeviceType](#schemaclientdevicetype)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Web Browser (WebBrowser)<br>- `2` — Web App (WebApp)<br>- `3` — KOReader (KoReader)<br>- `4` — Panels<br>- `5` — Librera<br>- `6` — OPDS Client (OpdsClient)|
+|value|[ClientDeviceType](#schemaclientdevicetype)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Web Browser (WebBrowser)<br>- `2` — Web App (WebApp)<br>- `3` — KOReader (KoReader)<br>- `4` — Panels<br>- `5` — Librera<br>- `6` — OPDS Client (OpdsClient)<br>- `7` — Kobo|
 |count|integer(int64)|false|none|none|
 
 #### Enumerated Values
@@ -48077,6 +48733,7 @@ Members:
 |value|4|
 |value|5|
 |value|6|
+|value|7|
 
 <h2 id="tocS_ClientInfoDto">ClientInfoDto</h2>
 <!-- backwards compatibility -->
@@ -48108,8 +48765,8 @@ Members:
 |---|---|---|---|---|
 |userAgent|string \| null|false|none|none|
 |ipAddress|string \| null|false|none|none|
-|authType|[AuthenticationType](#schemaauthenticationtype)|false|none|Members:<br>- `0` — Unknown<br>- `1` — JWT<br>- `2` — AuthKey<br>- `3` — OIDC|
-|clientType|[ClientDeviceType](#schemaclientdevicetype)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Web Browser (WebBrowser)<br>- `2` — Web App (WebApp)<br>- `3` — KOReader (KoReader)<br>- `4` — Panels<br>- `5` — Librera<br>- `6` — OPDS Client (OpdsClient)|
+|authType|[AuthenticationType](#schemaauthenticationtype)|false|none|Members:<br>- `0` — Unknown<br>- `1` — JWT<br>- `2` — AuthKey<br>- `3` — OIDC<br>- `4` — KoboDevice|
+|clientType|[ClientDeviceType](#schemaclientdevicetype)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Web Browser (WebBrowser)<br>- `2` — Web App (WebApp)<br>- `3` — KOReader (KoReader)<br>- `4` — Panels<br>- `5` — Librera<br>- `6` — OPDS Client (OpdsClient)<br>- `7` — Kobo|
 |appVersion|string \| null|false|none|none|
 |browser|string \| null|false|none|none|
 |browserVersion|string \| null|false|none|none|
@@ -48127,6 +48784,7 @@ Members:
 |authType|1|
 |authType|2|
 |authType|3|
+|authType|4|
 |clientType|0|
 |clientType|1|
 |clientType|2|
@@ -48134,6 +48792,7 @@ Members:
 |clientType|4|
 |clientType|5|
 |clientType|6|
+|clientType|7|
 |platform|0|
 |platform|1|
 |platform|2|
@@ -48817,13 +49476,11 @@ Members:
         "folderPath": "string",
         "lowestFolderPath": "string",
         "lastFolderScanned": "1970-01-01T00:00:00Z",
+        "hasCoverImage": true,
         "dontMatch": true,
         "isBlacklisted": true,
         "isStandAlone": true,
         "metadataProviderOverride": 2,
-        "coverImage": "string",
-        "primaryColor": "string",
-        "secondaryColor": "string",
         "aniListId": 0,
         "malId": 0,
         "hardcoverId": 0,
@@ -49020,6 +49677,7 @@ Members:
 - `0` — PNG
 - `1` — WebP (WEBP)
 - `2` — AVIF
+- `3` — JPEG
 
 <h2 id="tocS_EpubFontDto">EpubFontDto</h2>
 <!-- backwards compatibility -->
@@ -49406,7 +50064,6 @@ Members:
   "ratings": [
     {
       "averageScore": 0,
-      "favoriteCount": 0,
       "provider": 0,
       "authority": 0,
       "providerUrl": "string"
@@ -49726,7 +50383,6 @@ Members:
     "ratings": [
       {
         "averageScore": 0,
-        "favoriteCount": 0,
         "provider": 0,
         "authority": 0,
         "providerUrl": "string"
@@ -51809,6 +52465,93 @@ Members:
 |---|---|---|---|---|
 |username|string \| null|true|none|none|
 
+<h2 id="tocS_KepubifyCheckStatus">KepubifyCheckStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemakepubifycheckstatus"></a>
+<a id="schema_KepubifyCheckStatus"></a>
+<a id="tocSkepubifycheckstatus"></a>
+<a id="tocskepubifycheckstatus"></a>
+
+```json
+0
+```
+
+Members:
+- `0` — Checking
+- `1` — Supported
+- `2` — NotSupported
+
+<h2 id="tocS_KepubifyOffReason">KepubifyOffReason</h2>
+<!-- backwards compatibility -->
+<a id="schemakepubifyoffreason"></a>
+<a id="schema_KepubifyOffReason"></a>
+<a id="tocSkepubifyoffreason"></a>
+<a id="tocskepubifyoffreason"></a>
+
+```json
+0
+```
+
+Members:
+- `0` — Disabled
+- `1` — FileMissing
+- `2` — HashMismatch
+- `3` — VersionCheckFailed
+
+<h2 id="tocS_KepubifySource">KepubifySource</h2>
+<!-- backwards compatibility -->
+<a id="schemakepubifysource"></a>
+<a id="schema_KepubifySource"></a>
+<a id="tocSkepubifysource"></a>
+<a id="tocskepubifysource"></a>
+
+```json
+0
+```
+
+Members:
+- `0` — Shipped
+- `1` — Custom
+
+<h2 id="tocS_KepubifyStatusDto">KepubifyStatusDto</h2>
+<!-- backwards compatibility -->
+<a id="schemakepubifystatusdto"></a>
+<a id="schema_KepubifyStatusDto"></a>
+<a id="tocSkepubifystatusdto"></a>
+<a id="tocskepubifystatusdto"></a>
+
+```json
+{
+  "status": 0,
+  "source": 0,
+  "path": "string",
+  "reason": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|[KepubifyCheckStatus](#schemakepubifycheckstatus)|false|none|Members:<br>- `0` — Checking<br>- `1` — Supported<br>- `2` — NotSupported|
+|source|[KepubifySource](#schemakepubifysource)|false|none|Members:<br>- `0` — Shipped<br>- `1` — Custom|
+|path|string \| null|false|none|none|
+|reason|[KepubifyOffReason](#schemakepubifyoffreason)|false|none|Members:<br>- `0` — Disabled<br>- `1` — FileMissing<br>- `2` — HashMismatch<br>- `3` — VersionCheckFailed|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|0|
+|status|1|
+|status|2|
+|source|0|
+|source|1|
+|reason|0|
+|reason|1|
+|reason|2|
+|reason|3|
+
 <h2 id="tocS_KeyBind">KeyBind</h2>
 <!-- backwards compatibility -->
 <a id="schemakeybind"></a>
@@ -51839,6 +52582,31 @@ Members:
 |meta|boolean|false|none|none|
 |alt|boolean|false|none|none|
 |controllerSequence|[string]|false|none|none|
+
+<h2 id="tocS_KoboSyncPointDto">KoboSyncPointDto</h2>
+<!-- backwards compatibility -->
+<a id="schemakobosyncpointdto"></a>
+<a id="schema_KoboSyncPointDto"></a>
+<a id="tocSkobosyncpointdto"></a>
+<a id="tocskobosyncpointdto"></a>
+
+```json
+{
+  "id": 0,
+  "deviceId": "string",
+  "removedChapterCount": 0,
+  "lastSync": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int32)|false|none|none|
+|deviceId|string \| null|false|none|none|
+|removedChapterCount|integer(int32)|false|none|none|
+|lastSync|string(date-time)|false|none|none|
 
 <h2 id="tocS_KoreaderBookDto">KoreaderBookDto</h2>
 <!-- backwards compatibility -->
@@ -51940,7 +52708,6 @@ Members:
   "name": "string",
   "type": 0,
   "lastScanned": "1970-01-01T00:00:00Z",
-  "coverImage": "string",
   "folderWatchMode": 0,
   "includeInDashboard": true,
   "includeInRecommended": true,
@@ -51963,7 +52730,8 @@ Members:
   "removePrefixForSortName": true,
   "inheritWebLinksFromFirstChapter": true,
   "defaultLanguage": "string",
-  "metadataProvider": 2
+  "metadataProvider": 2,
+  "hasCoverImage": true
 }
 ```
 
@@ -51975,7 +52743,6 @@ Members:
 |name|string \| null|false|none|none|
 |type|[LibraryType](#schemalibrarytype)|false|none|Members:<br>- `0` — Manga<br>- `1` — Comic (Flexible) (Comic)<br>- `2` — Book<br>- `3` — Image<br>- `4` — Light Novel (LightNovel)<br>- `5` — Comic (ComicVine)|
 |lastScanned|string(date-time)|false|none|none|
-|coverImage|string \| null|false|none|none|
 |folderWatchMode|[FolderWatchMode](#schemafolderwatchmode)|false|none|Members:<br>- `0` — Off<br>- `1` — Automatic<br>- `2` — File Watcher (FileWatcher)<br>- `3` — Polling|
 |includeInDashboard|boolean|false|none|none|
 |includeInRecommended|boolean|false|none|none|
@@ -51993,6 +52760,7 @@ Members:
 |inheritWebLinksFromFirstChapter|boolean|false|none|none|
 |defaultLanguage|string \| null|false|none|none|
 |metadataProvider|[MetadataProvider](#schemametadataprovider)|false|none|Members:<br>- `2` — Hardcover<br>- `3` — Mangabaka<br>- `4` — ComicBookRoundup|
+|hasCoverImage|boolean|false|none|none|
 
 #### Enumerated Values
 
@@ -52030,7 +52798,6 @@ Members:
     "name": "string",
     "type": 0,
     "lastScanned": "1970-01-01T00:00:00Z",
-    "coverImage": "string",
     "folderWatchMode": 0,
     "includeInDashboard": true,
     "includeInRecommended": true,
@@ -52053,7 +52820,8 @@ Members:
     "removePrefixForSortName": true,
     "inheritWebLinksFromFirstChapter": true,
     "defaultLanguage": "string",
-    "metadataProvider": 2
+    "metadataProvider": 2,
+    "hasCoverImage": true
   },
   "count": 0
 }
@@ -52352,13 +53120,11 @@ Members:
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -52788,7 +53554,6 @@ Members:
         "ratings": [
           {
             "averageScore": 0,
-            "favoriteCount": 0,
             "provider": 0,
             "authority": 0,
             "providerUrl": "string"
@@ -52966,8 +53731,8 @@ Members:
 |extension|string \| null|true|none|none|
 |filePath|string \| null|true|none|none|
 |details|string \| null|false|none|none|
-|producer|[MediaErrorProducer](#schemamediaerrorproducer)|false|none|Members:<br>- `0` — BookService<br>- `1` — ArchiveService<br>- `2` — Scanner|
-|reason|[MediaErrorReason](#schemamediaerrorreason)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Parse Failed (ParseFailed)<br>- `2` — No Series Name (NoSeriesName)<br>- `3` — Unreadable Archive (UnreadableArchive)<br>- `5` — Corrupt Epub (CorruptEpub)<br>- `6` — No Pages (NoPages)<br>- `7` — Cover Failed (CoverFailed)<br>- `8` — Word Count Failed (WordCountFailed)<br>- `9` — I/O Error (IoError)<br>- `10` — Metadata Unreadable (MetadataUnreadable)<br>- `11` — Epub Not Strict (EpubNotStrict)<br>- `12` — Ambiguous Series (AmbiguousSeries)|
+|producer|[MediaErrorProducer](#schemamediaerrorproducer)|false|none|Members:<br>- `0` — BookService<br>- `1` — ArchiveService<br>- `2` — Scanner<br>- `3` — Kepubify|
+|reason|[MediaErrorReason](#schemamediaerrorreason)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Parse Failed (ParseFailed)<br>- `2` — No Series Name (NoSeriesName)<br>- `3` — Unreadable Archive (UnreadableArchive)<br>- `5` — Corrupt Epub (CorruptEpub)<br>- `6` — No Pages (NoPages)<br>- `7` — Cover Failed (CoverFailed)<br>- `8` — Word Count Failed (WordCountFailed)<br>- `9` — I/O Error (IoError)<br>- `10` — Metadata Unreadable (MetadataUnreadable)<br>- `11` — Epub Not Strict (EpubNotStrict)<br>- `12` — Ambiguous Series (AmbiguousSeries)<br>- `13` — Kepub Conversion Failed (KepubConversionFailed)|
 |seriesId|integer(int32) \| null|false|none|none|
 |seriesName|string \| null|false|none|none|
 |libraryId|integer(int32) \| null|false|none|none|
@@ -52983,6 +53748,7 @@ Members:
 |producer|0|
 |producer|1|
 |producer|2|
+|producer|3|
 |reason|0|
 |reason|1|
 |reason|2|
@@ -52995,6 +53761,7 @@ Members:
 |reason|10|
 |reason|11|
 |reason|12|
+|reason|13|
 
 <h2 id="tocS_MediaErrorProducer">MediaErrorProducer</h2>
 <!-- backwards compatibility -->
@@ -53011,6 +53778,7 @@ Members:
 - `0` — BookService
 - `1` — ArchiveService
 - `2` — Scanner
+- `3` — Kepubify
 
 <h2 id="tocS_MediaErrorReason">MediaErrorReason</h2>
 <!-- backwards compatibility -->
@@ -53036,6 +53804,7 @@ Members:
 - `10` — Metadata Unreadable (MetadataUnreadable)
 - `11` — Epub Not Strict (EpubNotStrict)
 - `12` — Ambiguous Series (AmbiguousSeries)
+- `13` — Kepub Conversion Failed (KepubConversionFailed)
 
 <h2 id="tocS_MemberDto">MemberDto</h2>
 <!-- backwards compatibility -->
@@ -53064,7 +53833,6 @@ Members:
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -53087,7 +53855,8 @@ Members:
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     }
   ],
   "roles": [
@@ -53133,8 +53902,7 @@ Members:
   "id": 0,
   "username": "string",
   "created": "1970-01-01T00:00:00Z",
-  "createdUtc": "1970-01-01T00:00:00Z",
-  "coverImage": "string"
+  "createdUtc": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -53146,7 +53914,6 @@ Members:
 |username|string \| null|false|none|none|
 |created|string(date-time)|false|none|none|
 |createdUtc|string(date-time)|false|none|none|
-|coverImage|string \| null|false|none|none|
 
 <h2 id="tocS_MessageEventPriority">MessageEventPriority</h2>
 <!-- backwards compatibility -->
@@ -53964,10 +54731,8 @@ Members:
 {
   "id": 0,
   "name": "string",
+  "hasCoverImage": true,
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
-  "coverImage": "string",
   "aliases": [
     "string"
   ],
@@ -53991,10 +54756,8 @@ Members:
 |---|---|---|---|---|
 |id|integer(int32)|false|none|none|
 |name|string \| null|true|none|none|
+|hasCoverImage|boolean|false|none|none|
 |coverImageLocked|boolean|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
-|coverImage|string \| null|false|none|none|
 |aliases|[string]|false|none|none|
 |description|string \| null|false|none|none|
 |asin|string \| null|false|none|none|
@@ -54034,10 +54797,8 @@ Members:
   "value": {
     "id": 0,
     "name": "string",
+    "hasCoverImage": true,
     "coverImageLocked": true,
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImage": "string",
     "aliases": [
       "string"
     ],
@@ -54371,6 +55132,7 @@ Members:
   "seriesId": 0,
   "libraryId": 0,
   "bookScrollId": "string",
+  "koboSpan": "string",
   "lastModifiedUtc": "1970-01-01T00:00:00Z"
 }
 ```
@@ -54385,6 +55147,7 @@ Members:
 |seriesId|integer(int32)|true|none|none|
 |libraryId|integer(int32)|true|none|none|
 |bookScrollId|string \| null|false|none|none|
+|koboSpan|string \| null|false|none|none|
 |lastModifiedUtc|string(date-time)|false|none|none|
 
 <h2 id="tocS_PromoteCollectionsDto">PromoteCollectionsDto</h2>
@@ -54523,7 +55286,6 @@ Members:
 ```json
 {
   "averageScore": 0,
-  "favoriteCount": 0,
   "provider": 0,
   "authority": 0,
   "providerUrl": "string"
@@ -54535,7 +55297,6 @@ Members:
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |averageScore|integer(int32)|false|none|none|
-|favoriteCount|integer(int32)|false|none|**Deprecated.**|
 |provider|[ScrobbleProvider](#schemascrobbleprovider)|false|none|Members:<br>- `0` — Kavita<br>- `1` — AniList<br>- `2` — Mal<br>- `4` — Cbr<br>- `5` — Hardcover<br>- `6` — MangaBaka|
 |authority|[RatingAuthority](#schemaratingauthority)|false|none|Members:<br>- `0` — User<br>- `1` — Critic|
 |providerUrl|string \| null|false|none|none|
@@ -54870,9 +55631,6 @@ Members:
   "summary": "string",
   "promoted": true,
   "coverImageLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "itemCount": 0,
   "startingYear": 0,
   "startingMonth": 0,
@@ -54894,7 +55652,8 @@ Members:
       "normalizedTitle": "string"
     }
   ],
-  "canSync": true
+  "canSync": true,
+  "hasCoverImage": true
 }
 ```
 
@@ -54907,9 +55666,6 @@ Members:
 |summary|string \| null|false|none|none|
 |promoted|boolean|false|none|none|
 |coverImageLocked|boolean|false|none|none|
-|coverImage|string \| null|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
 |itemCount|integer(int32)|false|none|none|
 |startingYear|integer(int32)|false|none|none|
 |startingMonth|integer(int32)|false|none|none|
@@ -54926,6 +55682,7 @@ Members:
 |totalItemsAtImport|integer(int32)|false|none|none|
 |tags|[[ReadingListTagDto](#schemareadinglisttagdto)]|false|none|none|
 |canSync|boolean|false|none|none|
+|hasCoverImage|boolean|false|none|none|
 
 #### Enumerated Values
 
@@ -55580,13 +56337,11 @@ Members:
         "folderPath": "string",
         "lowestFolderPath": "string",
         "lastFolderScanned": "1970-01-01T00:00:00Z",
+        "hasCoverImage": true,
         "dontMatch": true,
         "isBlacklisted": true,
         "isStandAlone": true,
         "metadataProviderOverride": 2,
-        "coverImage": "string",
-        "primaryColor": "string",
-        "secondaryColor": "string",
         "aniListId": 0,
         "malId": 0,
         "hardcoverId": 0,
@@ -55679,13 +56434,11 @@ Members:
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -55802,13 +56555,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -55849,13 +56600,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -55896,13 +56645,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -55943,13 +56690,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -55990,13 +56735,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56037,13 +56780,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56084,13 +56825,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56131,13 +56870,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56178,13 +56915,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56225,13 +56960,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56272,13 +57005,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56319,13 +57050,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56366,13 +57095,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56413,13 +57140,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56460,13 +57185,11 @@ Members:
       "folderPath": "string",
       "lowestFolderPath": "string",
       "lastFolderScanned": "1970-01-01T00:00:00Z",
+      "hasCoverImage": true,
       "dontMatch": true,
       "isBlacklisted": true,
       "isStandAlone": true,
       "metadataProviderOverride": 2,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -56904,7 +57627,7 @@ Members:
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |filePath|string \| null|false|none|none|
-|reason|[MediaErrorReason](#schemamediaerrorreason)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Parse Failed (ParseFailed)<br>- `2` — No Series Name (NoSeriesName)<br>- `3` — Unreadable Archive (UnreadableArchive)<br>- `5` — Corrupt Epub (CorruptEpub)<br>- `6` — No Pages (NoPages)<br>- `7` — Cover Failed (CoverFailed)<br>- `8` — Word Count Failed (WordCountFailed)<br>- `9` — I/O Error (IoError)<br>- `10` — Metadata Unreadable (MetadataUnreadable)<br>- `11` — Epub Not Strict (EpubNotStrict)<br>- `12` — Ambiguous Series (AmbiguousSeries)|
+|reason|[MediaErrorReason](#schemamediaerrorreason)|false|none|Members:<br>- `0` — Unknown<br>- `1` — Parse Failed (ParseFailed)<br>- `2` — No Series Name (NoSeriesName)<br>- `3` — Unreadable Archive (UnreadableArchive)<br>- `5` — Corrupt Epub (CorruptEpub)<br>- `6` — No Pages (NoPages)<br>- `7` — Cover Failed (CoverFailed)<br>- `8` — Word Count Failed (WordCountFailed)<br>- `9` — I/O Error (IoError)<br>- `10` — Metadata Unreadable (MetadataUnreadable)<br>- `11` — Epub Not Strict (EpubNotStrict)<br>- `12` — Ambiguous Series (AmbiguousSeries)<br>- `13` — Kepub Conversion Failed (KepubConversionFailed)|
 |seriesId|integer(int32) \| null|false|none|none|
 |seriesName|string \| null|false|none|none|
 
@@ -56924,6 +57647,7 @@ Members:
 |reason|10|
 |reason|11|
 |reason|12|
+|reason|13|
 
 <h2 id="tocS_ScheduledFolderScanDto">ScheduledFolderScanDto</h2>
 <!-- backwards compatibility -->
@@ -57433,7 +58157,6 @@ Members:
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -57456,7 +58179,8 @@ Members:
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     }
   ],
   "series": [
@@ -57481,17 +58205,15 @@ Members:
       "summary": "string",
       "promoted": true,
       "ageRating": 0,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImageLocked": true,
       "itemCount": 0,
       "owner": "string",
       "lastSyncUtc": "1970-01-01T00:00:00Z",
       "source": 0,
       "sourceUrl": "string",
       "totalSourceCount": 0,
-      "missingSeriesFromSource": "string"
+      "missingSeriesFromSource": "string",
+      "hasCoverImage": true,
+      "coverImageLocked": true
     }
   ],
   "readingLists": [
@@ -57501,9 +58223,6 @@ Members:
       "summary": "string",
       "promoted": true,
       "coverImageLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
       "itemCount": 0,
       "startingYear": 0,
       "startingMonth": 0,
@@ -57525,17 +58244,16 @@ Members:
           "normalizedTitle": "string"
         }
       ],
-      "canSync": true
+      "canSync": true,
+      "hasCoverImage": true
     }
   ],
   "persons": [
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -57623,10 +58341,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57647,10 +58363,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57671,10 +58385,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57695,10 +58407,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57719,10 +58429,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57743,10 +58451,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57767,10 +58473,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57791,10 +58495,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57815,10 +58517,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57839,10 +58539,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57863,10 +58561,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57887,10 +58583,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57911,10 +58605,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -57969,9 +58661,7 @@ Members:
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -58198,10 +58888,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58222,10 +58910,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58246,10 +58932,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58270,10 +58954,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58294,10 +58976,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58318,10 +58998,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58342,10 +59020,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58366,10 +59042,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58390,10 +59064,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58414,10 +59086,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58438,10 +59108,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58462,10 +59130,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58486,10 +59152,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58544,9 +59208,7 @@ Members:
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -58604,10 +59266,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58628,10 +59288,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58652,10 +59310,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58676,10 +59332,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58700,10 +59354,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58724,10 +59376,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58748,10 +59398,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58772,10 +59420,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58796,10 +59442,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58820,10 +59464,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58844,10 +59486,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58868,10 +59508,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58892,10 +59530,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -58950,9 +59586,7 @@ Members:
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -59024,10 +59658,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59048,10 +59680,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59072,10 +59702,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59096,10 +59724,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59120,10 +59746,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59144,10 +59768,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59168,10 +59790,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59192,10 +59812,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59216,10 +59834,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59240,10 +59856,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59264,10 +59878,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59288,10 +59900,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59312,10 +59922,8 @@ Members:
             {
               "id": 0,
               "name": "string",
+              "hasCoverImage": true,
               "coverImageLocked": true,
-              "primaryColor": "string",
-              "secondaryColor": "string",
-              "coverImage": "string",
               "aliases": [
                 "string"
               ],
@@ -59370,9 +59978,7 @@ Members:
           "releaseDateLocked": true,
           "titleNameLocked": true,
           "sortOrderLocked": true,
-          "coverImage": "string",
-          "primaryColor": "string",
-          "secondaryColor": "string",
+          "hasCoverImage": true,
           "format": 0,
           "aniListId": 0,
           "malId": 0,
@@ -59387,10 +59993,8 @@ Members:
       "maxHoursToRead": 0,
       "avgHoursToRead": 0,
       "wordCount": 0,
-      "coverImage": "string",
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "aniListId": 0,
       "malId": 0,
       "hardcoverId": 0,
@@ -59447,10 +60051,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59471,10 +60073,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59495,10 +60095,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59519,10 +60117,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59543,10 +60139,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59567,10 +60161,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59591,10 +60183,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59615,10 +60205,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59639,10 +60227,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59663,10 +60249,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59687,10 +60271,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59711,10 +60293,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59735,10 +60315,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -59793,9 +60371,7 @@ Members:
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -59876,13 +60452,11 @@ Members:
           "folderPath": "string",
           "lowestFolderPath": "string",
           "lastFolderScanned": "1970-01-01T00:00:00Z",
+          "hasCoverImage": true,
           "dontMatch": true,
           "isBlacklisted": true,
           "isStandAlone": true,
           "metadataProviderOverride": 2,
-          "coverImage": "string",
-          "primaryColor": "string",
-          "secondaryColor": "string",
           "aniListId": 0,
           "malId": 0,
           "hardcoverId": 0,
@@ -59935,7 +60509,6 @@ Members:
   "ratings": [
     {
       "averageScore": 0,
-      "favoriteCount": 0,
       "provider": 0,
       "authority": 0,
       "providerUrl": "string"
@@ -60027,7 +60600,6 @@ Members:
     "ratings": [
       {
         "averageScore": 0,
-        "favoriteCount": 0,
         "provider": 0,
         "authority": 0,
         "providerUrl": "string"
@@ -60157,13 +60729,11 @@ Members:
   "folderPath": "string",
   "lowestFolderPath": "string",
   "lastFolderScanned": "1970-01-01T00:00:00Z",
+  "hasCoverImage": true,
   "dontMatch": true,
   "isBlacklisted": true,
   "isStandAlone": true,
   "metadataProviderOverride": 2,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -60207,13 +60777,11 @@ Members:
 |folderPath|string \| null|false|none|none|
 |lowestFolderPath|string \| null|false|none|none|
 |lastFolderScanned|string(date-time)|false|none|none|
+|hasCoverImage|boolean|false|none|none|
 |dontMatch|boolean|false|none|none|
 |isBlacklisted|boolean|false|none|none|
 |isStandAlone|boolean|false|none|none|
 |metadataProviderOverride|[MetadataProvider](#schemametadataprovider)|false|none|Members:<br>- `2` — Hardcover<br>- `3` — Mangabaka<br>- `4` — ComicBookRoundup|
-|coverImage|string \| null|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
 |aniListId|integer(int32)|false|none|none|
 |malId|integer(int64)|false|none|none|
 |hardcoverId|integer(int32)|false|none|none|
@@ -60274,13 +60842,11 @@ Members:
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -60508,10 +61074,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60532,10 +61096,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60556,10 +61118,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60580,10 +61140,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60604,10 +61162,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60628,10 +61184,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60652,10 +61206,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60676,10 +61228,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60700,10 +61250,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60724,10 +61272,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60748,10 +61294,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60772,10 +61316,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -60796,10 +61338,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -61051,7 +61591,6 @@ Members:
     "ratings": [
       {
         "averageScore": 0,
-        "favoriteCount": 0,
         "provider": 0,
         "authority": 0,
         "providerUrl": "string"
@@ -61319,6 +61858,7 @@ Members:
   "taskBackup": "string",
   "taskCleanup": "string",
   "taskCblSync": "string",
+  "taskCompositeCovers": "string",
   "loggingLevel": "string",
   "port": 0,
   "ipAddresses": "string",
@@ -61374,6 +61914,8 @@ Members:
     "defaultIncludeUnknowns": true,
     "enabled": true
   },
+  "enableKobo": true,
+  "enableKepubify": true,
   "firstInstallDate": "1970-01-01T00:00:00Z",
   "firstInstallVersion": "string",
   "statsApiHits": 0
@@ -61389,6 +61931,7 @@ Members:
 |taskBackup|string \| null|false|none|none|
 |taskCleanup|string \| null|false|none|none|
 |taskCblSync|string \| null|false|none|none|
+|taskCompositeCovers|string \| null|false|none|none|
 |loggingLevel|string \| null|false|none|none|
 |port|integer(int32)|false|none|none|
 |ipAddresses|string \| null|false|none|none|
@@ -61398,7 +61941,7 @@ Members:
 |bookmarksDirectory|string \| null|false|none|none|
 |installVersion|string \| null|false|none|none|
 |installId|string \| null|false|none|none|
-|encodeMediaAs|[EncodeFormat](#schemaencodeformat)|false|none|Members:<br>- `0` — PNG<br>- `1` — WebP (WEBP)<br>- `2` — AVIF|
+|encodeMediaAs|[EncodeFormat](#schemaencodeformat)|false|none|Members:<br>- `0` — PNG<br>- `1` — WebP (WEBP)<br>- `2` — AVIF<br>- `3` — JPEG|
 |totalBackups|integer(int32)|false|none|none|
 |enableFolderWatching|boolean|false|none|none|
 |totalLogs|integer(int32)|false|none|none|
@@ -61410,6 +61953,8 @@ Members:
 |pdfRenderResolution|[PdfRenderResolution](#schemapdfrenderresolution)|false|none|Members:<br>- `1` — Default<br>- `2` — High<br>- `3` — Ultra|
 |smtpConfig|[SmtpConfigDto](#schemasmtpconfigdto)|false|none|none|
 |oidcConfig|[OidcConfigDto](#schemaoidcconfigdto)|false|none|none|
+|enableKobo|boolean|false|none|none|
+|enableKepubify|boolean|false|none|none|
 |firstInstallDate|string(date-time) \| null|false|none|none|
 |firstInstallVersion|string \| null|false|none|none|
 |statsApiHits|integer(int32)|false|none|none|
@@ -61421,6 +61966,7 @@ Members:
 |encodeMediaAs|0|
 |encodeMediaAs|1|
 |encodeMediaAs|2|
+|encodeMediaAs|3|
 |coverImageSize|1|
 |coverImageSize|2|
 |coverImageSize|3|
@@ -61494,7 +62040,6 @@ Members:
     "name": "string",
     "type": 0,
     "lastScanned": "1970-01-01T00:00:00Z",
-    "coverImage": "string",
     "folderWatchMode": 0,
     "includeInDashboard": true,
     "includeInRecommended": true,
@@ -61517,7 +62062,8 @@ Members:
     "removePrefixForSortName": true,
     "inheritWebLinksFromFirstChapter": true,
     "defaultLanguage": "string",
-    "metadataProvider": 2
+    "metadataProvider": 2,
+    "hasCoverImage": true
   },
   "entityType": 0
 }
@@ -61826,10 +62372,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -61850,10 +62394,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -61874,10 +62416,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -61898,10 +62438,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -61922,10 +62460,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -61946,10 +62482,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -61970,10 +62504,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -61994,10 +62526,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62018,10 +62548,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62042,10 +62570,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62066,10 +62592,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62090,10 +62614,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62114,10 +62636,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62172,9 +62692,7 @@ Members:
   "releaseDateLocked": true,
   "titleNameLocked": true,
   "sortOrderLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "format": 0,
   "aniListId": 0,
   "malId": 0,
@@ -62264,9 +62782,7 @@ Members:
 |releaseDateLocked|boolean|false|none|none|
 |titleNameLocked|boolean|false|none|none|
 |sortOrderLocked|boolean|false|none|none|
-|coverImage|string \| null|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
+|hasCoverImage|boolean|false|none|none|
 |format|[MangaFormat](#schemamangaformat)|false|none|Members:<br>- `0` — Image<br>- `1` — Archive<br>- `2` — Unknown<br>- `3` — EPUB (Epub)<br>- `4` — PDF (Pdf)|
 |aniListId|integer(int32)|false|none|none|
 |malId|integer(int64)|false|none|none|
@@ -62446,10 +62962,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62470,10 +62984,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62494,10 +63006,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62518,10 +63028,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62542,10 +63050,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62566,10 +63072,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62590,10 +63094,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62614,10 +63116,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62638,10 +63138,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62662,10 +63160,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62686,10 +63182,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62710,10 +63204,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62734,10 +63226,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -62792,9 +63282,7 @@ Members:
   "releaseDateLocked": true,
   "titleNameLocked": true,
   "sortOrderLocked": true,
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "format": 0,
   "aniListId": 0,
   "malId": 0,
@@ -62881,9 +63369,7 @@ Members:
 |releaseDateLocked|boolean|false|none|none|
 |titleNameLocked|boolean|false|none|none|
 |sortOrderLocked|boolean|false|none|none|
-|coverImage|string \| null|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
+|hasCoverImage|boolean|false|none|none|
 |format|[MangaFormat](#schemamangaformat)|false|none|Members:<br>- `0` — Image<br>- `1` — Archive<br>- `2` — Unknown<br>- `3` — EPUB (Epub)<br>- `4` — PDF (Pdf)|
 |aniListId|integer(int32)|false|none|none|
 |malId|integer(int64)|false|none|none|
@@ -63083,6 +63569,29 @@ Members:
 |booksTime|number(float)|false|none|none|
 |mangaTime|number(float)|false|none|none|
 
+<h2 id="tocS_UndoKoboRemoveBookDto">UndoKoboRemoveBookDto</h2>
+<!-- backwards compatibility -->
+<a id="schemaundokoboremovebookdto"></a>
+<a id="schema_UndoKoboRemoveBookDto"></a>
+<a id="tocSundokoboremovebookdto"></a>
+<a id="tocsundokoboremovebookdto"></a>
+
+```json
+{
+  "syncPointId": 0,
+  "undoBookIds": [
+    0
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|syncPointId|integer(int32)|false|none|none|
+|undoBookIds|[integer(int32)]|false|none|none|
+
 <h2 id="tocS_UpcomingTaskDto">UpcomingTaskDto</h2>
 <!-- backwards compatibility -->
 <a id="schemaupcomingtaskdto"></a>
@@ -63175,10 +63684,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63199,10 +63706,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63223,10 +63728,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63247,10 +63750,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63271,10 +63772,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63295,10 +63794,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63319,10 +63816,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63343,10 +63838,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63367,10 +63860,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63391,10 +63882,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63415,10 +63904,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63439,10 +63926,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63463,10 +63948,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -63696,6 +64179,25 @@ Members:
 |email|string \| null|false|none|none|
 |password|string \| null|false|none|none|
 
+<h2 id="tocS_UpdateKepubifyDto">UpdateKepubifyDto</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatekepubifydto"></a>
+<a id="schema_UpdateKepubifyDto"></a>
+<a id="tocSupdatekepubifydto"></a>
+<a id="tocsupdatekepubifydto"></a>
+
+```json
+{
+  "enabled": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|enabled|boolean|false|none|none|
+
 <h2 id="tocS_UpdateLibraryDto">UpdateLibraryDto</h2>
 <!-- backwards compatibility -->
 <a id="schemaupdatelibrarydto"></a>
@@ -63793,7 +64295,6 @@ Members:
       "name": "string",
       "type": 0,
       "lastScanned": "1970-01-01T00:00:00Z",
-      "coverImage": "string",
       "folderWatchMode": 0,
       "includeInDashboard": true,
       "includeInRecommended": true,
@@ -63816,7 +64317,8 @@ Members:
       "removePrefixForSortName": true,
       "inheritWebLinksFromFirstChapter": true,
       "defaultLanguage": "string",
-      "metadataProvider": 2
+      "metadataProvider": 2,
+      "hasCoverImage": true
     }
   ]
 }
@@ -64384,17 +64886,15 @@ Members:
     "summary": "string",
     "promoted": true,
     "ageRating": 0,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
-    "coverImageLocked": true,
     "itemCount": 0,
     "owner": "string",
     "lastSyncUtc": "1970-01-01T00:00:00Z",
     "source": 0,
     "sourceUrl": "string",
     "totalSourceCount": 0,
-    "missingSeriesFromSource": "string"
+    "missingSeriesFromSource": "string",
+    "hasCoverImage": true,
+    "coverImageLocked": true
   },
   "seriesIdsToRemove": [
     0
@@ -64437,10 +64937,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64461,10 +64959,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64485,10 +64981,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64509,10 +65003,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64533,10 +65025,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64557,10 +65047,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64581,10 +65069,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64605,10 +65091,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64629,10 +65113,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64653,10 +65135,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64677,10 +65157,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64701,10 +65179,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -64725,10 +65201,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -65311,6 +65785,24 @@ Members:
     "opdsPreferences": {
       "embedProgressIndicator": true,
       "includeContinueFrom": true
+    },
+    "koboSyncPreferences": {
+      "syncItemLimit": 25,
+      "forwardToKoboStore": true,
+      "librarySyncEnabled": true,
+      "syncLibraries": [
+        0
+      ],
+      "readingListSyncEnabled": true,
+      "syncReadingLists": [
+        0
+      ],
+      "collectionSyncEnabled": true,
+      "syncCollections": [
+        0
+      ],
+      "managedCollection": 0,
+      "hasManagedCollection": true
     }
   },
   "ageRestriction": {
@@ -65332,9 +65824,7 @@ Members:
       "provider": 0
     }
   ],
-  "coverImage": "string",
-  "primaryColor": "string",
-  "secondaryColor": "string"
+  "hasCoverImage": true
 }
 ```
 
@@ -65357,9 +65847,7 @@ Members:
 |created|string(date-time)|false|none|none|
 |createdUtc|string(date-time)|false|none|none|
 |authKeys|[[AuthKeyDto](#schemaauthkeydto)]|false|none|none|
-|coverImage|string \| null|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
+|hasCoverImage|boolean|false|none|none|
 
 #### Enumerated Values
 
@@ -65694,6 +66182,24 @@ Members:
   "opdsPreferences": {
     "embedProgressIndicator": true,
     "includeContinueFrom": true
+  },
+  "koboSyncPreferences": {
+    "syncItemLimit": 25,
+    "forwardToKoboStore": true,
+    "librarySyncEnabled": true,
+    "syncLibraries": [
+      0
+    ],
+    "readingListSyncEnabled": true,
+    "syncReadingLists": [
+      0
+    ],
+    "collectionSyncEnabled": true,
+    "syncCollections": [
+      0
+    ],
+    "managedCollection": 0,
+    "hasManagedCollection": true
   }
 }
 ```
@@ -65720,6 +66226,7 @@ Members:
 |bookReaderHighlightSlots|[[HighlightSlot](#schemahighlightslot)]|true|none|none|
 |socialPreferences|[AppUserSocialPreferences](#schemaappusersocialpreferences)|true|none|none|
 |opdsPreferences|[AppUserOpdsPreferences](#schemaappuseropdspreferences)|true|none|none|
+|koboSyncPreferences|[AppUserKoboSyncPreferences](#schemaappuserkobosyncpreferences)|true|none|none|
 
 #### Enumerated Values
 
@@ -66019,13 +66526,11 @@ Members:
     "folderPath": "string",
     "lowestFolderPath": "string",
     "lastFolderScanned": "1970-01-01T00:00:00Z",
+    "hasCoverImage": true,
     "dontMatch": true,
     "isBlacklisted": true,
     "isStandAlone": true,
     "metadataProviderOverride": 2,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
     "aniListId": 0,
     "malId": 0,
     "hardcoverId": 0,
@@ -66081,10 +66586,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66105,10 +66608,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66129,10 +66630,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66153,10 +66652,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66177,10 +66674,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66201,10 +66696,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66225,10 +66718,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66249,10 +66740,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66273,10 +66762,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66297,10 +66784,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66321,10 +66806,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66345,10 +66828,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66369,10 +66850,8 @@ Members:
       {
         "id": 0,
         "name": "string",
+        "hasCoverImage": true,
         "coverImageLocked": true,
-        "primaryColor": "string",
-        "secondaryColor": "string",
-        "coverImage": "string",
         "aliases": [
           "string"
         ],
@@ -66427,9 +66906,7 @@ Members:
     "releaseDateLocked": true,
     "titleNameLocked": true,
     "sortOrderLocked": true,
-    "coverImage": "string",
-    "primaryColor": "string",
-    "secondaryColor": "string",
+    "hasCoverImage": true,
     "format": 0,
     "aniListId": 0,
     "malId": 0,
@@ -66444,10 +66921,8 @@ Members:
     {
       "id": 0,
       "name": "string",
+      "hasCoverImage": true,
       "coverImageLocked": true,
-      "primaryColor": "string",
-      "secondaryColor": "string",
-      "coverImage": "string",
       "aliases": [
         "string"
       ],
@@ -66579,10 +67054,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66603,10 +67076,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66627,10 +67098,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66651,10 +67120,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66675,10 +67142,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66699,10 +67164,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66723,10 +67186,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66747,10 +67208,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66771,10 +67230,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66795,10 +67252,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66819,10 +67274,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66843,10 +67296,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66867,10 +67318,8 @@ Members:
         {
           "id": 0,
           "name": "string",
+          "hasCoverImage": true,
           "coverImageLocked": true,
-          "primaryColor": "string",
-          "secondaryColor": "string",
-          "coverImage": "string",
           "aliases": [
             "string"
           ],
@@ -66925,9 +67374,7 @@ Members:
       "releaseDateLocked": true,
       "titleNameLocked": true,
       "sortOrderLocked": true,
-      "coverImage": "string",
-      "primaryColor": "string",
-      "secondaryColor": "string",
+      "hasCoverImage": true,
       "format": 0,
       "aniListId": 0,
       "malId": 0,
@@ -66942,10 +67389,8 @@ Members:
   "maxHoursToRead": 0,
   "avgHoursToRead": 0,
   "wordCount": 0,
-  "coverImage": "string",
   "coverImageLocked": true,
-  "primaryColor": "string",
-  "secondaryColor": "string",
+  "hasCoverImage": true,
   "aniListId": 0,
   "malId": 0,
   "hardcoverId": 0,
@@ -66977,10 +67422,8 @@ Members:
 |maxHoursToRead|integer(int32)|false|none|none|
 |avgHoursToRead|number(float)|false|none|none|
 |wordCount|integer(int64)|false|none|none|
-|coverImage|string \| null|false|none|none|
 |coverImageLocked|boolean|false|none|none|
-|primaryColor|string \| null|false|none|none|
-|secondaryColor|string \| null|false|none|none|
+|hasCoverImage|boolean|false|none|none|
 |aniListId|integer(int32)|false|none|none|
 |malId|integer(int64)|false|none|none|
 |hardcoverId|integer(int32)|false|none|none|

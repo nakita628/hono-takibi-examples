@@ -14,12 +14,10 @@ export const postSpeakersRoute = createRoute({
     201: {
       description: 'Acknowledge creation of a new speaker resource',
       headers: z.object({
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

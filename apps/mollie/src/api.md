@@ -71,6 +71,8 @@ The results are paginated.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -106,9 +108,31 @@ The results are paginated.
             "value": "5000.00"
           }
         },
-        "createdAt": "2024-03-20T09:13:37+00:00"
+        "createdAt": "2024-03-20T09:13:37+00:00",
+        "_links": {
+          "self": {
+            "href": "https://api.mollie.com/v2/business-accounts/accounts/ba_nopqrstuvwxyz23456789A",
+            "type": "application/hal+json"
+          },
+          "documentation": {
+            "href": "https://docs.mollie.com/reference/get-business-account",
+            "type": "text/html"
+          }
+        }
       }
     ]
+  },
+  "_links": {
+    "self": {
+      "href": "https://api.mollie.com/v2/business-accounts/accounts?limit=50",
+      "type": "application/hal+json"
+    },
+    "previous": null,
+    "next": null,
+    "documentation": {
+      "href": "https://docs.mollie.com/reference/list-business-accounts",
+      "type": "text/html"
+    }
   }
 }
 ```
@@ -162,11 +186,189 @@ Status Code **200**
 |---|---|---|---|---|
 |count|[list-count](#schemalist-count)|true|none|The number of items in this result set. If more items are available, a `_links.next` URL will be present in the result<br>as well.<br><br>The maximum number of items per result set is controlled by the `limit` property provided in the request. The default<br>limit is 50 items.|
 |_embedded|object|true|none|none|
-|» businessAccounts|[[business-account-response](#schemabusiness-account-response)]|false|none|An array of business account objects.|
+|» businessAccounts|[[list-business-account-response](#schemalist-business-account-response)]|false|none|An array of business account objects.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 oAuth ( Scopes: business-accounts.read )
+</aside>
+
+## Create business account
+
+<a id="opIdcreate-business-account"></a>
+
+> Code samples
+
+```bash
+curl https://api.mollie.com/v2/business-accounts/accounts \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/hal+json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "Main Checking Account",
+    "currency": "EUR",
+    "testmode": false
+  }'
+```
+
+`POST /v2/business-accounts/accounts`
+
+> 🔒 Restricted access
+>
+> This API is currently only available to Mollie's authorized partners via OAuth. Direct access for individual businesses isn't available yet, but it's on our roadmap — check back here for updates.
+
+Create a new business account for the authenticated organization.
+
+The response contains the newly created business account.
+
+Each organization can have up to 5 active business accounts. Need more? [Contact us](https://www.mollie.com/contact)
+and we'll help you out.
+
+> Body parameter
+
+```json
+{
+  "name": "Main Checking Account",
+  "currency": "EUR",
+  "testmode": false
+}
+```
+
+<h3 id="create-business-account-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Idempotency-Key|header|string|false|A unique value that identifies this request, so you can safely retry it without creating a second account.<br>Retrying with the same key within one hour returns the original response. We recommend a UUIDv4.<br><br>Keys are tied to the credential that sent the original request, so a refreshed OAuth token won't match<br>earlier keys. View the [public documentation](https://docs.mollie.com/reference/api-idempotency) to learn<br>more.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
+|body|body|object|false|none|
+|» name|body|string|true|The name of the business account, as shown to the account holder.|
+|» currency|body|[account-currency](#schemaaccount-currency)|true|The currency of the business account, as an [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code.<br><br>Only `EUR` is supported for now. We're working on more currencies, and they'll be available soon.|
+|» testmode|body|[oauth-testmode-create](#schemaoauth-testmode-create)|false|Whether to create the entity in test mode or live mode.<br><br>You can enable test mode by setting `testmode` to `true`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» currency|EUR|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "resource": "business-account",
+  "id": "ba_nopqrstuvwxyz23456789A",
+  "mode": "live",
+  "accountDetails": {
+    "accountHolderName": "Mollie B.V.",
+    "name": "Main Checking Account",
+    "currency": "EUR",
+    "iban": "NL95MLLE1234567890",
+    "bic": "MLLENL2AXXX"
+  },
+  "status": "active",
+  "balance": {
+    "total": {
+      "currency": "EUR",
+      "value": "0.00"
+    }
+  },
+  "createdAt": "2024-03-20T09:13:37+00:00",
+  "_links": {
+    "self": {
+      "href": "https://api.mollie.com/v2/business-accounts/accounts/ba_nopqrstuvwxyz23456789A",
+      "type": "application/hal+json"
+    },
+    "documentation": {
+      "href": "https://docs.mollie.com/reference/create-business-account",
+      "type": "text/html"
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "title": "Bad Request",
+  "detail": "The 'name' field is missing",
+  "field": "name",
+  "_links": {
+    "documentation": {
+      "href": "https://docs.mollie.com/overview/handling-errors",
+      "type": "text/html"
+    }
+  }
+}
+```
+
+> 409 Response
+
+```json
+{
+  "status": 409,
+  "title": "Conflict",
+  "detail": "A business account with the name 'Main Checking Account' already exists",
+  "field": "name",
+  "_links": {
+    "documentation": {
+      "href": "https://docs.mollie.com/overview/handling-errors",
+      "type": "text/html"
+    }
+  }
+}
+```
+
+> 422 Response
+
+```json
+{
+  "status": 422,
+  "title": "Unprocessable Entity",
+  "detail": "Your organization has reached the maximum of 5 active business accounts",
+  "_links": {
+    "documentation": {
+      "href": "https://docs.mollie.com/overview/handling-errors",
+      "type": "text/html"
+    }
+  }
+}
+```
+
+> 429 Response
+
+```json
+{
+  "status": 429,
+  "title": "Too Many Requests",
+  "detail": "You have exceeded the rate limit. Please slow down your requests.",
+  "_links": {
+    "documentation": {
+      "href": "https://docs.mollie.com/overview/handling-errors",
+      "type": "text/html"
+    }
+  }
+}
+```
+
+<h3 id="create-business-account-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The newly created business account object.|[business-account-response](#schemabusiness-account-response)|
+|400|Bad Request|The request is malformed. For example, the body isn't valid JSON, a required field such as `name` is missing,<br>or the `Idempotency-Key` was already used for a request with different parameters.|[error-response](#schemaerror-response)|
+|409|Conflict|Your organization already has a business account with this name, or a request with the same<br>`Idempotency-Key` is still being processed.|[error-response](#schemaerror-response)|
+|422|Unprocessable Entity|The request is well-formed, but Mollie can't create the account. For example, your organization already<br>has 5 active business accounts, the maximum allowed. [Contact us](https://www.mollie.com/contact) if you<br>need more.|[error-response](#schemaerror-response)|
+|429|Too Many Requests|Rate Limit has been reached.|[error-response](#schemaerror-response)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oAuth ( Scopes: business-accounts.write )
 </aside>
 
 ## Get business account
@@ -196,6 +398,8 @@ balance, and account details.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |businessAccountId|path|[businessAccountToken](#schemabusinessaccounttoken)|true|Provide the ID of the related business account.|
 
 > Example responses
@@ -221,7 +425,17 @@ balance, and account details.
       "value": "5000.00"
     }
   },
-  "createdAt": "2024-03-20T09:13:37+00:00"
+  "createdAt": "2024-03-20T09:13:37+00:00",
+  "_links": {
+    "self": {
+      "href": "https://api.mollie.com/v2/business-accounts/accounts/ba_nopqrstuvwxyz23456789A",
+      "type": "application/hal+json"
+    },
+    "documentation": {
+      "href": "https://docs.mollie.com/reference/get-business-account",
+      "type": "text/html"
+    }
+  }
 }
 ```
 
@@ -304,6 +518,8 @@ The results are paginated.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |businessAccountId|path|[businessAccountToken](#schemabusinessaccounttoken)|true|Provide the ID of the related business account.|
 
 #### Enumerated Values
@@ -462,6 +678,8 @@ amount, counterparty, and balance impact of a specific transaction.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |businessAccountId|path|[businessAccountToken](#schemabusinessaccounttoken)|true|Provide the ID of the related business account.|
 |transactionId|path|[businessAccountTransactionToken](#schemabusinessaccounttransactiontoken)|true|Provide the ID of the related transaction.|
 
@@ -571,6 +789,8 @@ Returns a paginated list of balance transfers associated with your organization.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -795,6 +1015,8 @@ that has authorized the `balance-transfers.write` scope for your organization.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[entity-balance-transfer](#schemaentity-balance-transfer)|false|none|
 |» amount|body|[amount](#schemaamount)|true|The amount to be transferred, e.g. `{"currency":"EUR", "value":"1000.00"}` if you would like to transfer €1000.00.|
 |» source|body|[entity-balance-transfer-party](#schemaentity-balance-transfer-party)|true|A party involved in the balance transfer, either the sender or the receiver.|
@@ -923,6 +1145,8 @@ Retrieve a single Connect balance transfer object by its ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |balanceTransferId|path|[connectBalanceTransferToken](#schemaconnectbalancetransfertoken)|true|Provide the ID of the related balance transfer.|
 
 > Example responses
@@ -1039,6 +1263,8 @@ The results are paginated.
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -1213,6 +1439,8 @@ funds are available on your balance. These funds will be shown under the *pendin
 |---|---|---|---|---|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |balanceId|path|[balanceToken](#schemabalancetoken)|true|Provide the ID of the related balance.|
 
 > Example responses
@@ -1330,6 +1558,8 @@ endpoint.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -1435,6 +1665,8 @@ organization's primary balance.
 |grouping|query|[balance-report-grouping](#schemabalance-report-grouping)|false|You can retrieve reports in two different formats. With the `status-balances` format, transactions are grouped<br>by status (e.g. `pending`, `available`), then by transaction type, and then by other sub-groupings where<br>available (e.g. payment method).<br><br>With the `transaction-categories` format, transactions are grouped by<br>transaction type, then by status, and then again by other sub-groupings where available.|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |balanceId|path|[balanceToken](#schemabalancetoken)|true|Provide the ID of the related balance.|
 
 #### Enumerated Values
@@ -1696,6 +1928,8 @@ The results are paginated.
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |balanceId|path|[balanceToken](#schemabalancetoken)|true|Provide the ID of the related balance.|
 
 > Example responses
@@ -1908,6 +2142,8 @@ the payments capability is enabled, communicating that the organization can inde
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -2037,6 +2273,8 @@ The results are paginated.
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 
 > Example responses
@@ -2223,6 +2461,8 @@ having collected the customer's authorization.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |body|body|[entity-capture](#schemaentity-capture)|false|none|
 |» description|body|string|false|The description of the capture.|
@@ -2352,6 +2592,8 @@ payment.
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |captureId|path|[captureToken](#schemacapturetoken)|true|Provide the ID of the related capture.|
 
@@ -2466,6 +2708,8 @@ The results are paginated.
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 
 > Example responses
@@ -2627,6 +2871,8 @@ Retrieve a single payment chargeback by its ID and the ID of its parent payment.
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |chargebackId|path|[chargebackToken](#schemachargebacktoken)|true|Provide the ID of the related chargeback.|
 
@@ -2744,6 +2990,8 @@ The results are paginated.
 |profileId|query|[profileToken](#schemaprofiletoken)|false|The identifier referring to the [profile](get-profile) you wish to<br>retrieve chargebacks for.<br><br>Most API credentials are linked to a single profile. In these cases the<br>`profileId` is already implied.<br><br>To retrieve all chargebacks across the organization, use an<br>organization-level API credential and omit the `profileId` parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -3102,6 +3350,8 @@ Create a Checkout Session to start a checkout process with Mollie Components.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[session-request](#schemasession-request)|false|none|
 |» amount|body|[amount](#schemaamount)|true|In v2 endpoints, monetary amounts are represented as objects with a `currency` and `value` field.|
 |» description|body|string|true|A user-friendly description of the Checkout Session that may be shown to the customer during the checkout process.<br><br>Any payment created for the Checkout Session will use the same description.|
@@ -3287,6 +3537,8 @@ Retrieve a Checkout Session to view its details and status to inform your custom
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |sessionId|path|[sessionToken](#schemasessiontoken)|true|Provide the ID of the related Checkout Session.|
 
 > Example responses
@@ -3519,6 +3771,8 @@ to the URL.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[client-link-request](#schemaclient-link-request)|false|none|
 |» owner|body|object|true|Personal data of your customer.|
 |» » email|body|string|true|The email address of your customer.<br><br>If the domain contains non-ASCII characters, encode it as Punycode per [RFC 3492](https://www.rfc-editor.org/rfc/rfc3492).|
@@ -3692,6 +3946,8 @@ The results are paginated.
 |from|query|string \| null|false|Provide an ID to start the result set from the item with the given ID and onwards. This allows you to paginate the<br>result set.|
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -3845,6 +4101,8 @@ Retrieve a single client by its ID.
 |---|---|---|---|---|
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |organizationId|path|[organizationToken](#schemaorganizationtoken)|true|Provide the ID of the related organization.|
 
 > Example responses
@@ -3974,6 +4232,8 @@ The results are paginated.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -4150,6 +4410,8 @@ Once registered, customers will also appear in your Mollie dashboard.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[entity-customer](#schemaentity-customer)|false|none|
 |» name|body|string \| null|false|The full name of the customer.|
 |» email|body|string \| null|false|The email address of the customer.<br><br>If the domain contains non-ASCII characters, encode it as Punycode per [RFC 3492](https://www.rfc-editor.org/rfc/rfc3492).|
@@ -4295,6 +4557,8 @@ Retrieve a single customer by its ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 
 > Example responses
@@ -4410,6 +4674,8 @@ Delete a customer. All mandates and subscriptions created for this customer will
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |body|body|object|false|none|
 |» testmode|body|[testmode](#schematestmode)|false|Most API credentials are specifically created for either live mode or test mode, in which case this parameter must<br>not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by setting<br>`testmode` to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
@@ -4505,6 +4771,8 @@ For an in-depth explanation of each parameter, refer to the [Create customer](cr
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |body|body|object|false|none|
 |» name|body|string \| null|false|The full name of the customer.|
@@ -4653,6 +4921,8 @@ Retrieve all payments linked to the customer.
 |profileId|query|[profileToken](#schemaprofiletoken)|false|The identifier referring to the [profile](get-profile) you wish to<br>retrieve the resources for.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` must not be sent. For<br>organization-level credentials such as OAuth access tokens however, the `profileId` parameter is required.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 
 #### Enumerated Values
@@ -5080,6 +5350,8 @@ parameter predefined.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |body|body|[payment-request](#schemapayment-request)|false|none|
 |» description|body|string|true|The description of the payment will be shown to your customer on their card or bank statement when possible.<br>We truncate the description automatically according to the limits of the used payment method. The description is<br>also visible in any exports you generate.<br><br>We recommend you use a unique identifier so that you can always link the payment to the order in your back office.<br>This is particularly useful for bookkeeping.<br><br>The maximum length of the description field differs per payment method, with the absolute maximum being 255<br>characters. The API will not reject strings longer than the maximum length but it will truncate them to fit.|
@@ -5146,7 +5418,7 @@ parameter predefined.
 |» » entityType|body|string|false|The organization's entity type.|
 |» cardToken|body|string|false|When creating credit card payments using Mollie Components, you need to provide the card token you received<br>from the card component in this field. The token represents the customer's card information needed to complete<br>the payment. **Note:** field only valid for `oneoff` and `first` payments. For recurring payments, the<br>`customerId` alone is enough.|
 |» googlePayPaymentToken|body|string|false|The Google Pay payment token object (encoded as JSON) returned by the Google Pay SDK after the customer<br>authorizes the payment. The token contains the payment information needed to complete the payment.<br><br>The object should be passed encoded in a JSON string.|
-|» voucherNumber|body|string|false|The card token you received from the card component of Mollie Components. The token represents the customer's<br>card information needed to complete the payment.|
+|» voucherNumber|body|string|false|Number of the voucher.|
 |» voucherPin|body|string|false|The PIN on the gift card. You can supply this to prefill the PIN, if the card has any.|
 |» consumerDateOfBirth|body|string(date)|false|The customer's date of birth. If not provided via the API, iDeal in3 will ask the customer to provide it<br>during the payment process.|
 |» extraMerchantData|body|object|false|For some industries, additional purchase information can be sent to Klarna to increase the authorization rate.<br>You can submit your extra data in this field if you have agreed upon this with Klarna. This field should be an<br>object containing any of the allowed keys and sub-objects described at the<br><Anchor label="Klarna Developer Documentation" target="_blank" href="https://docs.klarna.com/acquirer/mollie/api/extra-merchant-data/">Klarna Developer Documentation</Anchor>.<br><br>Reach out to your account manager at Mollie to enable this feature with Klarna, and to agree on which fields<br>you can send.|
@@ -5418,6 +5690,8 @@ Retrieve a list of all routes created for a specific payment.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 
 > Example responses
@@ -5640,6 +5914,8 @@ The routed amount is credited to the account of your customer.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |body|body|[route-create-request](#schemaroute-create-request)|false|none|
 |» amount|body|[amount](#schemaamount)|true|The amount to be routed.|
@@ -5756,6 +6032,8 @@ Retrieve a single route created for a specific payment.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |routeId|path|[connectRouteToken](#schemaconnectroutetoken)|true|Provide the ID of the route.|
 
@@ -5877,6 +6155,8 @@ In test mode, this returns synthetic draft transfers only, not your real data.
 |status|query|[draft-transfer-status](#schemadraft-transfer-status)|false|Filter the list by draft transfer status. Omit to return draft transfers in any status.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -6090,6 +6370,8 @@ Cancelling (via `DELETE`) is unaffected by the amount: it always transitions the
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[create-draft-transfer-request](#schemacreate-draft-transfer-request)|false|none|
 |» debtorIban|body|string|true|The IBAN of the debtor's (sender) Mollie Business Account.|
 |» creditor|body|[draft-transfer-party](#schemadraft-transfer-party)|true|The creditor (recipient) of the draft transfer, including their name and account details.|
@@ -6236,6 +6518,8 @@ transfer](create-draft-transfer) for how to simulate `approved` and `declined` o
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |draftTransferId|path|[draftTransferToken](#schemadrafttransfertoken)|true|Provide the ID of the related draft transfer.|
 
 > Example responses
@@ -6370,6 +6654,8 @@ transfer](create-draft-transfer) for how to simulate `approved` and `declined` o
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |draftTransferId|path|[draftTransferToken](#schemadrafttransfertoken)|true|Provide the ID of the related draft transfer.|
 |body|body|object|false|none|
 |» testmode|body|[testmode](#schematestmode)|false|Most API credentials are specifically created for either live mode or test mode, in which case this parameter must<br>not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by setting<br>`testmode` to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
@@ -6514,6 +6800,8 @@ The results are paginated.
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -6688,6 +6976,8 @@ call the [List invoices](list-invoices) endpoint with the `reference` parameter.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |invoiceId|path|[invoiceToken](#schemainvoicetoken)|true|Provide the ID of the related invoice.|
 
 > Example responses
@@ -6821,6 +7111,8 @@ The results are paginated.
 |scopes|query|[[mandate-scopes](#schemamandate-scopes)]|false|Returns only mandates that include the specified scopes.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 
 #### Enumerated Values
@@ -7022,6 +7314,8 @@ mandates for cards, your customers need to perform a 'first payment' with their 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |body|body|[mandate-request](#schemamandate-request)|false|none|
 |» id|body|object|false|The identifier uniquely referring to this mandate. Example: `mdt_pWUnw6pkBN`.|
@@ -7152,6 +7446,8 @@ account details, card details, or PayPal account details.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |mandateId|path|[mandateToken](#schemamandatetoken)|true|Provide the ID of the related mandate.|
 
@@ -7275,6 +7571,8 @@ mandate, and all connected subscriptions will be canceled.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |mandateId|path|[mandateToken](#schemamandatetoken)|true|Provide the ID of the related mandate.|
 |body|body|object|false|none|
@@ -7380,6 +7678,8 @@ a non-online payment method, you can use the [Get payment method endpoint](get-m
 |include|query|string \| null|false|This endpoint allows you to include additional information via the `include` query string parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -7597,6 +7897,8 @@ a non-online payment method, you can use the [Get payment method endpoint](get-m
 |profileId|query|[profileToken](#schemaprofiletoken)|false|The identifier referring to the [profile](get-profile) you wish to<br>retrieve the resources for.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` must not be sent. For<br>organization-level credentials such as OAuth access tokens however, the `profileId` parameter is required.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -7809,6 +8111,8 @@ are enabled by passing the wallet ID (`applepay`) as the method ID.
 |sequenceType|query|[sequence-type](#schemasequence-type)|false|Set this parameter to `first` to only return the methods that<br>can be used for the first payment of a recurring sequence.<br><br>Set it to `recurring` to only return methods that can be used for recurring payments or subscriptions.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |methodId|path|[method-id](#schemamethod-id)|true|Provide the ID of the related payment method.|
 
 #### Enumerated Values
@@ -8018,6 +8322,8 @@ To enable voucher or gift card issuers, refer to the [Enable payment method issu
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |profileId|path|[profileToken](#schemaprofiletoken)|true|Provide the ID of the related profile.|
 |methodId|path|[method-id](#schemamethod-id)|true|Provide the ID of the related payment method.|
 
@@ -8186,6 +8492,8 @@ instead of the profile ID to refer to the current profile.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |profileId|path|[profileToken](#schemaprofiletoken)|true|Provide the ID of the related profile.|
 |methodId|path|[method-id](#schemamethod-id)|true|Provide the ID of the related payment method.|
 
@@ -8317,6 +8625,8 @@ current profile.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |profileId|path|[profileToken](#schemaprofiletoken)|true|Provide the ID of the related profile.|
 |methodId|path|[method-id-with-issuer](#schemamethod-id-with-issuer)|true|Provide the ID of the related payment method.|
 |issuerId|path|string|true|Provide the ID of the related issuer.|
@@ -8452,6 +8762,8 @@ current profile.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |profileId|path|[profileToken](#schemaprofiletoken)|true|Provide the ID of the related profile.|
 |methodId|path|[method-id-with-issuer](#schemamethod-id-with-issuer)|true|Provide the ID of the related payment method.|
 |issuerId|path|string|true|Provide the ID of the related issuer.|
@@ -8752,6 +9064,8 @@ Retrieve the onboarding status of the currently authenticated organization.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -8891,6 +9205,8 @@ Information that the merchant has entered in their dashboard will not be overwri
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|object|false|none|
 |» organization|body|object|false|none|
 |» » name|body|string|false|The name of the organization.|
@@ -8975,6 +9291,8 @@ If you have a *partner account*', you can retrieve organization details of conne
 |---|---|---|---|---|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |organizationId|path|[organizationToken](#schemaorganizationtoken)|true|Provide the ID of the related organization.|
 
 > Example responses
@@ -9083,6 +9401,8 @@ documentation.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -9200,6 +9520,8 @@ accounts*.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -9315,6 +9637,8 @@ The results are paginated.
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -9643,6 +9967,8 @@ complete the payment. A [payment](get-payment) will only be created once the cus
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|object|false|none|
 |» description|body|string|true|A short description of the payment link. The description is visible in the Dashboard and will be shown on the<br>customer's bank or card statement when possible.|
 |» amount|body|[amount-nullable](#schemaamount-nullable)|false|The amount of the payment link. If no amount is provided initially, the customer will be prompted to enter an<br>amount.|
@@ -9830,6 +10156,8 @@ Retrieve a single payment link by its ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentLinkId|path|[paymentLinkToken](#schemapaymentlinktoken)|true|Provide the ID of the related payment link.|
 
 > Example responses
@@ -9961,6 +10289,8 @@ To simply disable a payment link without fully deleting it, you can use the `arc
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentLinkId|path|[paymentLinkToken](#schemapaymentlinktoken)|true|Provide the ID of the related payment link.|
 |body|body|object|false|none|
 |» testmode|body|[testmode](#schematestmode)|false|Most API credentials are specifically created for either live mode or test mode, in which case this parameter must<br>not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by setting<br>`testmode` to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
@@ -10201,6 +10531,8 @@ Certain details of an existing payment link can be updated.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentLinkId|path|[paymentLinkToken](#schemapaymentlinktoken)|true|Provide the ID of the related payment link.|
 |body|body|object|false|none|
 |» description|body|string|false|A short description of the payment link. The description is visible in the Dashboard and will be shown<br>on the customer's bank or card statement when possible.<br><br>Updating the description does not affect any previously existing payments created for this payment link.|
@@ -10381,6 +10713,8 @@ The results are paginated.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentLinkId|path|[paymentLinkToken](#schemapaymentlinktoken)|true|Provide the ID of the related payment link.|
 
 #### Enumerated Values
@@ -10544,6 +10878,8 @@ The results are paginated.
 |profileId|query|[profileToken](#schemaprofiletoken)|false|The identifier referring to the [profile](get-profile) you wish to<br>retrieve the resources for.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` must not be sent. For<br>organization-level credentials such as OAuth access tokens however, the `profileId` parameter is required.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -10972,6 +11308,8 @@ guide on [method-specific parameters](extra-payment-parameters).
 |---|---|---|---|---|
 |include|query|string \| null|false|This endpoint allows you to include additional information via the `include` query string parameter.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[payment-request](#schemapayment-request)|false|none|
 |» description|body|string|true|The description of the payment will be shown to your customer on their card or bank statement when possible.<br>We truncate the description automatically according to the limits of the used payment method. The description is<br>also visible in any exports you generate.<br><br>We recommend you use a unique identifier so that you can always link the payment to the order in your back office.<br>This is particularly useful for bookkeeping.<br><br>The maximum length of the description field differs per payment method, with the absolute maximum being 255<br>characters. The API will not reject strings longer than the maximum length but it will truncate them to fit.|
 |» amount|body|[amount](#schemaamount)|true|The amount that you want to charge, e.g. `{currency:"EUR", value:"1000.00"}` if you would want to charge €1000.00.<br><br>You can find the minimum and maximum amounts per payment method in our help center. Additionally, they can be<br>retrieved using the Get method endpoint.<br><br>If a tip was added for a Point-of-Sale payment, the amount will be updated to reflect the initial amount plus the<br>tip amount.|
@@ -11037,7 +11375,7 @@ guide on [method-specific parameters](extra-payment-parameters).
 |» » entityType|body|string|false|The organization's entity type.|
 |» cardToken|body|string|false|When creating credit card payments using Mollie Components, you need to provide the card token you received<br>from the card component in this field. The token represents the customer's card information needed to complete<br>the payment. **Note:** field only valid for `oneoff` and `first` payments. For recurring payments, the<br>`customerId` alone is enough.|
 |» googlePayPaymentToken|body|string|false|The Google Pay payment token object (encoded as JSON) returned by the Google Pay SDK after the customer<br>authorizes the payment. The token contains the payment information needed to complete the payment.<br><br>The object should be passed encoded in a JSON string.|
-|» voucherNumber|body|string|false|The card token you received from the card component of Mollie Components. The token represents the customer's<br>card information needed to complete the payment.|
+|» voucherNumber|body|string|false|Number of the voucher.|
 |» voucherPin|body|string|false|The PIN on the gift card. You can supply this to prefill the PIN, if the card has any.|
 |» consumerDateOfBirth|body|string(date)|false|The customer's date of birth. If not provided via the API, iDeal in3 will ask the customer to provide it<br>during the payment process.|
 |» extraMerchantData|body|object|false|For some industries, additional purchase information can be sent to Klarna to increase the authorization rate.<br>You can submit your extra data in this field if you have agreed upon this with Klarna. This field should be an<br>object containing any of the allowed keys and sub-objects described at the<br><Anchor label="Klarna Developer Documentation" target="_blank" href="https://docs.klarna.com/acquirer/mollie/api/extra-merchant-data/">Klarna Developer Documentation</Anchor>.<br><br>Reach out to your account manager at Mollie to enable this feature with Klarna, and to agree on which fields<br>you can send.|
@@ -11307,6 +11645,8 @@ Retrieve a single payment object by its payment ID.
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 
 > Example responses
@@ -11437,6 +11777,8 @@ The `isCancelable` property on the [Payment object](get-payment) will indicate i
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |body|body|object|false|none|
 |» testmode|body|[testmode-create](#schematestmode-create)|false|Whether to create the entity in test mode or live mode.<br><br>Most API credentials are specifically created for either live mode or test mode, in which case this parameter must<br>not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by setting<br>`testmode` to `true`.|
@@ -11662,6 +12004,8 @@ Updating the payment details will not result in a webhook call.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |body|body|object|false|none|
 |» description|body|[description](#schemadescription)|false|The description of the payment will be shown to your customer on their card or bank statement when possible.<br>We truncate the description automatically according to the limits of the used payment method. The description is<br>also visible in any exports you generate.<br><br>We recommend you use a unique identifier so that you can always link the payment to the order in your back office.<br>This is particularly useful for bookkeeping.<br><br>The maximum length of the description field differs per payment method, with the absolute maximum being 255<br>characters. The API will not reject strings longer than the maximum length but it will truncate them to fit.|
@@ -11868,6 +12212,8 @@ If there is a successful capture, the payment will transition to `paid`.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |body|body|object|false|none|
 |» profileId|body|[profileId](#schemaprofileid)|false|The identifier referring to the [profile](get-profile) this entity belongs to.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` can be omitted in the creation<br>request. For organization-level credentials such as OAuth access tokens however, the `profileId` parameter is<br>required.|
@@ -11973,6 +12319,8 @@ the full result set.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -12184,6 +12532,8 @@ A payout request may fail immediately if one of the following conditions applies
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[payout-request](#schemapayout-request)|true|none|
 |» balanceId|body|string|true|The identifier of the balance that will be paid out. Example: `bal_gVMhHKqSSRYJyPsuoPNFH`.|
 |» amount|body|[amount-nullable](#schemaamount-nullable)|false|The amount to pay out. When omitted from the request, the full available balance minus any configured<br>balance reserve is paid out.<br><br>Merchants registered in the United Kingdom cannot specify a custom amount — omit this field to pay out<br>the full available balance.<br><br>The value in the response reflects the amount paid out, excluding any applicable fees.|
@@ -12295,6 +12645,8 @@ Retrieve a single payout by its ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |payoutId|path|string|true|Provide the ID of the payout.|
 
 > Example responses
@@ -12405,6 +12757,8 @@ The canceled payout object is returned with the status set to `canceled`.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |payoutId|path|string|true|Provide the ID of the payout.|
 
 > Example responses
@@ -12533,6 +12887,8 @@ The results are **not** paginated.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -12663,6 +13019,8 @@ Retrieve a single permission by its ID, and see if the permission is granted to 
 |---|---|---|---|---|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |permissionId|path|[permissionToken](#schemapermissiontoken)|true|Provide the ID of the related permission.|
 
 > Example responses
@@ -12762,6 +13120,8 @@ The results are paginated.
 |from|query|string \| null|false|Provide an ID to start the result set from the item with the given ID and onwards. This allows you to paginate the<br>result set.|
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -12925,6 +13285,8 @@ can use this endpoint to automate profile creation.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[profile-request](#schemaprofile-request)|true|none|
 |» name|body|string|true|The profile's name, this will usually reflect the trade name or brand name of the profile's website or<br>application.|
 |» website|body|string|true|The URL to the profile's website or application. Only `https` or `http` URLs are allowed. No `@` signs are<br>allowed.|
@@ -13055,6 +13417,8 @@ Retrieve a single profile by its ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |profileId|path|[profileToken](#schemaprofiletoken)|true|Provide the ID of the related profile.|
 
 > Example responses
@@ -13177,6 +13541,8 @@ Delete a profile. A deleted profile and its related credentials can no longer be
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |profileId|path|[profileToken](#schemaprofiletoken)|true|Provide the ID of the related profile.|
 
 > Example responses
@@ -13298,6 +13664,8 @@ Alternatively, you can use this endpoint to automate profile management.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |profileId|path|[profileToken](#schemaprofiletoken)|true|Provide the ID of the related profile.|
 |body|body|object|true|none|
 |» name|body|string \| null|false|The profile's name, this will usually reflect the trade name or brand name of the profile's website or<br>application.|
@@ -13465,6 +13833,8 @@ documentation.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -13578,6 +13948,8 @@ The results are paginated.
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 
 > Example responses
@@ -13786,6 +14158,8 @@ transfer or by refunding the amount to your customer's credit card.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |body|body|[refund-request](#schemarefund-request)|false|none|
 |» description|body|string \| null|false|The description of the refund that may be shown to your customer, depending on the payment method used.|
@@ -13937,6 +14311,8 @@ Retrieve a single payment refund by its ID and the ID of its parent payment.
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |refundId|path|[refundToken](#schemarefundtoken)|true|Provide the ID of the related refund.|
 
@@ -14047,6 +14423,8 @@ A refund can only be canceled while its `status` field is either `queued` or `pe
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |paymentId|path|[paymentToken](#schemapaymenttoken)|true|Provide the ID of the related payment.|
 |refundId|path|[refundToken](#schemarefundtoken)|true|Provide the ID of the related refund.|
 
@@ -14126,6 +14504,8 @@ The results are paginated.
 |profileId|query|[profileToken](#schemaprofiletoken)|false|The identifier referring to the [profile](get-profile) you wish to<br>retrieve the resources for.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` must not be sent. For<br>organization-level credentials such as OAuth access tokens however, the `profileId` parameter is required.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -14267,7 +14647,7 @@ curl https://api.mollie.com/v2/reports \
   -H 'Accept: application/hal+json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "reportType": "transaction_margin",
+    "reportType": "transaction-margin",
     "fromDate": "2026-08-01",
     "untilDate": "2026-08-31"
   }'
@@ -14284,11 +14664,6 @@ Create a report. Mollie generates it in the background, so you get a `pending` s
 
 Poll [Get report](get-report) to check on progress, and grab a download link once it's ready.
 
-This needs an organization access token. A token scoped to a single website profile can't be used,
-since report data spans the whole organization.
-
-Test mode credentials are rejected, since report data has no live/test distinction.
-
 Creating a report with the exact same parameters while one is already pending or completed doesn't create
 a new one. You get the existing report back instead, whatever status it currently has.
 
@@ -14296,7 +14671,7 @@ a new one. You get the existing report back instead, whatever status it currentl
 
 ```json
 {
-  "reportType": "transaction_margin",
+  "reportType": "transaction-margin",
   "fromDate": "2026-08-01",
   "untilDate": "2026-08-31"
 }
@@ -14307,6 +14682,8 @@ a new one. You get the existing report back instead, whatever status it currentl
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[create-report-request](#schemacreate-report-request)|true|none|
 |» reportType|body|[report-type](#schemareport-type)|true|The type of report to generate. Determines which other fields the request needs, and which fields show up<br>on the resulting report.|
 |» fromDate|body|string(date)|true|The start date of the report period, in `YYYY-MM-DD` format. Must be strictly before `untilDate`; a<br>report can't cover a single day. Data is available from 2026-01-01 onwards.|
@@ -14316,7 +14693,7 @@ a new one. You get the existing report back instead, whatever status it currentl
 
 |Parameter|Value|
 |---|---|
-|» reportType|transaction_margin|
+|» reportType|transaction-margin|
 
 > Example responses
 
@@ -14326,7 +14703,7 @@ a new one. You get the existing report back instead, whatever status it currentl
 {
   "status": 400,
   "title": "Bad Request",
-  "detail": "This endpoint cannot be accessed using a test mode credential",
+  "detail": "Operation not supported in test mode.",
   "_links": {
     "documentation": {
       "href": "https://docs.mollie.com/overview/handling-errors",
@@ -14342,7 +14719,7 @@ a new one. You get the existing report back instead, whatever status it currentl
 {
   "status": 403,
   "title": "Forbidden",
-  "detail": "This endpoint requires an organization-level access token",
+  "detail": "Report data spans a whole organization, use an organization-level credential instead.",
   "_links": {
     "documentation": {
       "href": "https://docs.mollie.com/overview/handling-errors",
@@ -14358,7 +14735,7 @@ a new one. You get the existing report back instead, whatever status it currentl
 {
   "status": 422,
   "title": "Unprocessable Entity",
-  "detail": "The 'fromDate' field is after 'untilDate' field",
+  "detail": "The fromDate must not be after the untilDate.",
   "field": "fromDate",
   "_links": {
     "documentation": {
@@ -14389,7 +14766,7 @@ a new one. You get the existing report back instead, whatever status it currentl
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|202|Accepted|The report was accepted. Its `status` is usually `pending` for a brand new report, but if an<br>identical request (same organization, same parameters) already has a pending or completed report,<br>you get that report back instead, with its current status. Read `status` from the body rather than<br>assuming `202` always means `pending`.|None|
+|202|Accepted|The report was accepted. Returns `pending` for a new report, or the existing report's status when<br>deduplicated.|None|
 |400|Bad Request|The request contains issues, or was made with a test mode credential.|[error-response](#schemaerror-response)|
 |403|Forbidden|The request was made with a credential scoped to a single website profile. Use an organization-level<br>credential instead.|[error-response](#schemaerror-response)|
 |422|Unprocessable Entity|The request is invalid. For example, the `fromDate` is after `untilDate`, or `fromDate` and<br>`untilDate` are the same date.|[error-response](#schemaerror-response)|
@@ -14426,16 +14803,13 @@ The download link is pre-signed and freshly generated on every call, and expires
 it. If it expires before you download the file, just call this endpoint again for a new one. Expiry of
 the link doesn't affect the report itself.
 
-A report that belongs to another organization gets a `404`, same as one that doesn't exist. The same goes
-for a credential scoped to a single website profile, or a test mode credential. Reports are
-organization-wide with no live/test distinction, so neither can ever own a real report. That keeps the
-rule simple: any credential that can't own this report gets a `404`, and we never leak whether it exists.
-
 <h3 id="get-report-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |reportId|path|[reportToken](#schemareporttoken)|true|Provide the ID of the related report.|
 
 > Example responses
@@ -14446,7 +14820,7 @@ rule simple: any credential that can't own this report gets a `404`, and we neve
 {
   "resource": "report",
   "id": "rpt_9fKq2pLxAqYTBz9WQvhc4",
-  "reportType": "transaction_margin",
+  "reportType": "transaction-margin",
   "fromDate": "2026-08-01",
   "untilDate": "2026-08-31",
   "status": "pending",
@@ -14458,6 +14832,38 @@ rule simple: any credential that can't own this report gets a `404`, and we neve
     },
     "documentation": {
       "href": "https://docs.mollie.com/reference/get-report",
+      "type": "text/html"
+    }
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "title": "Bad Request",
+  "detail": "Operation not supported in test mode.",
+  "_links": {
+    "documentation": {
+      "href": "https://docs.mollie.com/overview/handling-errors",
+      "type": "text/html"
+    }
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "status": 403,
+  "title": "Forbidden",
+  "detail": "Report data spans a whole organization, use an organization-level credential instead.",
+  "_links": {
+    "documentation": {
+      "href": "https://docs.mollie.com/overview/handling-errors",
       "type": "text/html"
     }
   }
@@ -14501,6 +14907,8 @@ rule simple: any credential that can't own this report gets a `404`, and we neve
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|The report object.|[entity-report](#schemaentity-report)|
+|400|Bad Request|The request contains issues, or was made with a test mode credential.|[error-response](#schemaerror-response)|
+|403|Forbidden|The request was made with a credential scoped to a single website profile. Use an organization-level<br>credential instead.|[error-response](#schemaerror-response)|
 |404|Not Found|No entity with this ID exists.|[error-response](#schemaerror-response)|
 |429|Too Many Requests|Rate Limit has been reached.|[error-response](#schemaerror-response)|
 
@@ -14539,6 +14947,8 @@ The results are paginated.
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -14816,6 +15226,8 @@ With the Sales Invoice API you can generate sales invoices to send to your custo
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[sales-invoice-request](#schemasales-invoice-request)|false|none|
 |» testmode|body|[testmode-create](#schematestmode-create)|false|Whether to create the entity in test mode or live mode.<br><br>Most API credentials are specifically created for either live mode or test mode, in which case this parameter must<br>not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by setting<br>`testmode` to `true`.|
 |» profileId|body|string \| null|false|The identifier referring to the [profile](get-profile) this entity belongs to.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` must not be sent in the creation<br>request. For organization-level credentials such as OAuth access tokens however, the `profileId` parameter is<br>required.|
@@ -15020,6 +15432,8 @@ Retrieve a single sales invoice by its ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |salesInvoiceId|path|[salesInvoiceToken](#schemasalesinvoicetoken)|true|Provide the ID of the related sales invoice.|
 
 > Example responses
@@ -15181,6 +15595,8 @@ Sales invoices which are in status `draft` can be deleted. For all other statuse
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |salesInvoiceId|path|[salesInvoiceToken](#schemasalesinvoicetoken)|true|Provide the ID of the related sales invoice.|
 |body|body|[delete-values-sales-invoice](#schemadelete-values-sales-invoice)|false|none|
 |» testmode|body|[testmode](#schematestmode)|false|Most API credentials are specifically created for either live mode or test mode, in which case this parameter must<br>not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by setting<br>`testmode` to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
@@ -15385,6 +15801,8 @@ respectively).
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |salesInvoiceId|path|[salesInvoiceToken](#schemasalesinvoicetoken)|true|Provide the ID of the related sales invoice.|
 |body|body|object|false|none|
 |» testmode|body|[testmode](#schematestmode)|false|Most API credentials are specifically created for either live mode or test mode, in which case this parameter must<br>not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by setting<br>`testmode` to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
@@ -15592,6 +16010,8 @@ The results are paginated.
 |month|query|string \| null|false|Provide the month to query the settlements. Must be used combined with `year` parameter|
 |currencies|query|[currencies](#schemacurrencies)|false|Provides the currencies to retrieve the settlements. It accepts multiple currencies in a comma-separated format.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -15787,6 +16207,8 @@ For more accurate bookkeeping, refer to the [balance report](get-balance-report)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |settlementId|path|[settlementToken](#schemasettlementtoken)|true|Provide the ID of the related settlement.|
 
 > Example responses
@@ -16000,6 +16422,8 @@ For more accurate bookkeeping, refer to the [balance report](get-balance-report)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -16327,6 +16751,8 @@ For more accurate bookkeeping, refer to the [balance report](get-balance-report)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -16657,6 +17083,8 @@ For capture-based payment methods such as Klarna, the payments are not listed he
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |profileId|query|[profileToken](#schemaprofiletoken)|false|The identifier referring to the [profile](get-profile) you wish to<br>retrieve the resources for.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` must not be sent. For<br>organization-level credentials such as OAuth access tokens however, the `profileId` parameter is required.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |settlementId|path|[settlementToken](#schemasettlementtoken)|true|Provide the ID of the related settlement.|
 
 #### Enumerated Values
@@ -16808,6 +17236,8 @@ The response is in the same format as the response of the [List captures endpoin
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |settlementId|path|[settlementToken](#schemasettlementtoken)|true|Provide the ID of the related settlement.|
 
 > Example responses
@@ -16968,6 +17398,8 @@ The response is in the same format as the response of the [List refunds endpoint
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |settlementId|path|[settlementToken](#schemasettlementtoken)|true|Provide the ID of the related settlement.|
 
 > Example responses
@@ -17131,6 +17563,8 @@ The response is in the same format as the response of the [List chargebacks endp
 |embed|query|string \| null|false|This endpoint allows embedding related API items by appending the following values via the `embed` query string<br>parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |settlementId|path|[settlementToken](#schemasettlementtoken)|true|Provide the ID of the related settlement.|
 
 > Example responses
@@ -17300,6 +17734,8 @@ The results are paginated.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 
 #### Enumerated Values
@@ -17544,6 +17980,8 @@ Your customer will be charged €10 on the last day of each month, starting in A
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |body|body|[subscription-request](#schemasubscription-request)|false|none|
 |» amount|body|[amount](#schemaamount)|false|The amount for each individual payment that is charged with this subscription. For example, for a monthly<br>subscription of €10, the subscription amount should be set to €10.|
@@ -17684,6 +18122,8 @@ Retrieve a single subscription by its ID and the ID of its parent customer.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |subscriptionId|path|[subscriptionToken](#schemasubscriptiontoken)|true|Provide the ID of the related subscription.|
 
@@ -17813,6 +18253,8 @@ Cancel an existing subscription. Canceling a subscription has no effect on the m
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |subscriptionId|path|[subscriptionToken](#schemasubscriptiontoken)|true|Provide the ID of the related subscription.|
 |body|body|object|false|none|
@@ -17970,6 +18412,8 @@ For an in-depth explanation of each parameter, refer to the [Create subscription
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |subscriptionId|path|[subscriptionToken](#schemasubscriptiontoken)|true|Provide the ID of the related subscription.|
 |body|body|object|false|none|
@@ -18102,6 +18546,8 @@ The results are paginated.
 |profileId|query|string \| null|false|The identifier referring to the [profile](get-profile) you wish to retrieve subscriptions for.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` is already implied.<br><br>To retrieve all subscriptions across the organization, use an organization-level API credential and omit the<br>`profileId` parameter.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -18274,6 +18720,8 @@ The results are paginated.
 |profileId|query|[profileToken](#schemaprofiletoken)|false|The identifier referring to the [profile](get-profile) you wish to<br>retrieve the resources for.<br><br>Most API credentials are linked to a single profile. In these cases the `profileId` must not be sent. For<br>organization-level credentials such as OAuth access tokens however, the `profileId` parameter is required.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |customerId|path|[customerToken](#schemacustomertoken)|true|Provide the ID of the related customer.|
 |subscriptionId|path|[subscriptionToken](#schemasubscriptiontoken)|true|Provide the ID of the related subscription.|
 
@@ -18435,6 +18883,8 @@ The results are paginated.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -18572,6 +19022,8 @@ Retrieve a single terminal by its ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |terminalId|path|[terminalToken](#schematerminaltoken)|true|Provide the ID of the related terminal.|
 
 > Example responses
@@ -18682,6 +19134,8 @@ this list. Active pairing codes are never deleted.
 |sort|query|[sorting](#schemasorting)|false|Used for setting the direction of the result set. Defaults to descending order, meaning the results are ordered from<br>newest to oldest.|
 |profileId|query|string|false|The identifier referring to the [profile](get-profile) you wish to retrieve pairing codes for.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -18892,6 +19346,8 @@ Pairing codes expire after 90 days (see `expiresAt`) and can be used multiple ti
 |---|---|---|---|---|
 |include|query|string \| null|false|This endpoint allows you to include additional information via the `include` query string parameter.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|object|false|none|
 |» profileId|body|string|true|The ID of the profile to pair the terminal with.|
 
@@ -19030,6 +19486,8 @@ returns a 404. Active pairing codes are never deleted.
 |pairingCodeId|path|[terminalPairingCodeToken](#schematerminalpairingcodetoken)|true|Provide the ID of the terminal pairing code.|
 |include|query|string \| null|false|This endpoint allows you to include additional information via the `include` query string parameter.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -19146,6 +19604,8 @@ We keep a revoked pairing code for one month, then delete it. Once deleted, this
 |---|---|---|---|---|
 |pairingCodeId|path|[terminalPairingCodeToken](#schematerminalpairingcodetoken)|true|Provide the ID of the terminal pairing code.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -19341,7 +19801,6 @@ it reaches a final status: `blocked`, `failed`, `processed`, or `returned`.
 |X-Client-Signature|header|string|true|A cryptographic signature of the request payload, used to verify the authenticity of the transfer request.|
 |X-Client-Signed-At|header|string|true|The timestamp (in ISO 8601 format) indicating when the client signed the request. Used in conjunction with<br>`X-Client-Signature` for request verification.|
 |Idempotency-Key|header|string|true|A unique value used to identify this request and prevent duplicate transfers. UUIDv4 is recommended to<br>guarantee uniqueness across multiple processes or servers. If two requests are received with the same<br>idempotency key, the second request will be discarded.<br><br>View the [public documentation](https://docs.mollie.com/reference/api-idempotency#using-an-idempotency-key)<br>to learn more.|
-|idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
 |body|body|[transfer-request](#schematransfer-request)|false|none|
 |» debtorIban|body|string|true|The IBAN of the debtor's (sender) Mollie account from which to initiate the transfer.|
 |» creditor|body|[transfer-party](#schematransfer-party)|true|The creditor (recipient) of the transfer, including their name and account details.|
@@ -19490,6 +19949,8 @@ and details of a previously created transfer.
 |---|---|---|---|---|
 |testmode|query|boolean|false|Most API credentials are specifically created for either live mode or test mode. In those cases the `testmode` query<br>parameter must not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by<br>setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |businessAccountsTransferId|path|[businessAccountTransferToken](#schemabusinessaccounttransfertoken)|true|Provide the ID of the related transfer.|
 
 > Example responses
@@ -19619,6 +20080,8 @@ The results are paginated.
 |from|query|string \| null|false|Provide an ID to start the result set from the item with the given ID and onwards. This allows you to paginate the<br>result set.|
 |limit|query|integer \| null|false|The maximum number of items to return. Defaults to 50 items.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 > Example responses
 
@@ -19801,6 +20264,8 @@ Retrieves a single unmatched credit transfer by its identifier.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |unmatchedCreditTransferId|path|[unmatchedCreditTransferToken](#schemaunmatchedcredittransfertoken)|true|Provide the ID of the related unmatched credit transfer.|
 
 > Example responses
@@ -19911,9 +20376,9 @@ curl https://api.mollie.com/v2/unmatched-credit-transfers/uct_abcDEFghij12345678
 
 `POST /v2/unmatched-credit-transfers/{unmatchedCreditTransferId}/match`
 
-> 🚧 Beta feature
+> 🚧
 >
-> This feature is currently in private beta, and the final specification may still change.
+> To get access to this functionality, a virtual IBAN must be assigned to your webshop. We are currently rolling out virtual IBANs to our merchant base. Contact our support team or your account/sales manager to request access today.
 
 Matches an unmatched credit transfer to one or more payments, settling the funds accordingly.
 
@@ -19932,6 +20397,8 @@ Matches an unmatched credit transfer to one or more payments, settling the funds
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |unmatchedCreditTransferId|path|[unmatchedCreditTransferToken](#schemaunmatchedcredittransfertoken)|true|Provide the ID of the related unmatched credit transfer.|
 |body|body|[unmatched-credit-transfer-match-request](#schemaunmatched-credit-transfer-match-request)|false|none|
 |» paymentIds|body|[[paymentToken](#schemapaymenttoken)]|true|The IDs of the payments to match against the unmatched credit transfer.|
@@ -20054,6 +20521,8 @@ Returns an unmatched credit transfer, sending the funds back to the original sen
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |unmatchedCreditTransferId|path|[unmatchedCreditTransferToken](#schemaunmatchedcredittransfertoken)|true|Provide the ID of the related unmatched credit transfer.|
 
 > Example responses
@@ -20195,6 +20664,8 @@ results without needing special properties. The names are case insensitive.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|[verification-of-payee-request](#schemaverification-of-payee-request)|false|none|
 |» creditorBankAccount|body|[creditor-bank-account](#schemacreditor-bank-account)|true|The bank account details of the creditor (recipient) to verify.|
 |» testmode|body|[testmode-create](#schematestmode-create)|false|Whether to create the entity in test mode or live mode.<br><br>Most API credentials are specifically created for either live mode or test mode, in which case this parameter must<br>not be sent. For organization-level credentials such as OAuth access tokens, you can enable test mode by setting<br>`testmode` to `true`.|
@@ -20342,6 +20813,8 @@ full documentation, see the official
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|object|false|none|
 |» validationUrl|body|string|true|The validationUrl you got from the<br>[ApplePayValidateMerchant event](https://developer.apple.com/documentation/apple_pay_on_the_web/applepayvalidatemerchantevent).<br><br>A list of all<br>[valid host names](https://developer.apple.com/documentation/apple_pay_on_the_web/setting_up_your_server)<br>for merchant validation is available. You should white list these in your application and reject any<br>`validationUrl`s that have a host name not in the list.|
 |» domain|body|string|true|The domain of your web shop, that is visible in the browser's location bar. For example<br>`pay.myshop.com`.|
@@ -20435,6 +20908,8 @@ Retrieve a single webhook event object by its event ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |webhookEventId|path|[webhookEventToken](#schemawebhookeventtoken)|true|Provide the ID of the related webhook event.|
 
 > Example responses
@@ -20579,6 +21054,8 @@ Returns a paginated list of your webhooks. If no webhook endpoints are available
 |eventTypes|query|[webhook-event-types](#schemawebhook-event-types)|false|Used to filter out only the webhooks that are subscribed to certain types of events.|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 
 #### Enumerated Values
 
@@ -20625,6 +21102,7 @@ Returns a paginated list of your webhooks. If no webhook endpoints are available
 |eventTypes|business-account-draft-transfer.created|
 |eventTypes|business-account-draft-transfer.approved|
 |eventTypes|business-account-draft-transfer.declined|
+|eventTypes|business-account.created|
 |eventTypes|unmatched-credit-transfer.received|
 |eventTypes|unmatched-credit-transfer.matched|
 |eventTypes|unmatched-credit-transfer.returned|
@@ -20817,6 +21295,8 @@ A webhook must have a name, an url and a list of event types. You can also creat
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |body|body|object|false|none|
 |» name|body|string|true|A name that identifies the webhook.|
 |» url|body|string|true|The URL Mollie will send the events to. This URL must be publicly accessible.|
@@ -20868,6 +21348,7 @@ A webhook must have a name, an url and a list of event types. You can also creat
 |» » *oneOf*|business-account-draft-transfer.created|
 |» » *oneOf*|business-account-draft-transfer.approved|
 |» » *oneOf*|business-account-draft-transfer.declined|
+|» » *oneOf*|business-account.created|
 |» » *oneOf*|unmatched-credit-transfer.received|
 |» » *oneOf*|unmatched-credit-transfer.matched|
 |» » *oneOf*|unmatched-credit-transfer.returned|
@@ -20918,6 +21399,7 @@ A webhook must have a name, an url and a list of event types. You can also creat
 |» » *oneOf*|business-account-draft-transfer.created|
 |» » *oneOf*|business-account-draft-transfer.approved|
 |» » *oneOf*|business-account-draft-transfer.declined|
+|» » *oneOf*|business-account.created|
 |» » *oneOf*|unmatched-credit-transfer.received|
 |» » *oneOf*|unmatched-credit-transfer.matched|
 |» » *oneOf*|unmatched-credit-transfer.returned|
@@ -21029,6 +21511,8 @@ Retrieve a single webhook object by its ID.
 |---|---|---|---|---|
 |testmode|query|boolean|false|You can enable test mode by setting the `testmode` query parameter to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |webhookId|path|[webhookToken](#schemawebhooktoken)|true|Provide the ID of the related webhook.|
 
 > Example responses
@@ -21158,6 +21642,8 @@ Delete a single webhook object by its webhook ID.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |webhookId|path|[webhookToken](#schemawebhooktoken)|true|Provide the ID of the related webhook.|
 |body|body|object|false|none|
 |» testmode|body|[oauth-testmode](#schemaoauth-testmode)|false|You can enable test mode by setting `testmode` to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
@@ -21270,6 +21756,8 @@ Updates the webhook. You may edit the name, url and the list of subscribed event
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |webhookId|path|[webhookToken](#schemawebhooktoken)|true|Provide the ID of the related webhook.|
 |body|body|object|false|none|
 |» name|body|string|false|A name that identifies the webhook.|
@@ -21322,6 +21810,7 @@ Updates the webhook. You may edit the name, url and the list of subscribed event
 |» » *oneOf*|business-account-draft-transfer.created|
 |» » *oneOf*|business-account-draft-transfer.approved|
 |» » *oneOf*|business-account-draft-transfer.declined|
+|» » *oneOf*|business-account.created|
 |» » *oneOf*|unmatched-credit-transfer.received|
 |» » *oneOf*|unmatched-credit-transfer.matched|
 |» » *oneOf*|unmatched-credit-transfer.returned|
@@ -21372,6 +21861,7 @@ Updates the webhook. You may edit the name, url and the list of subscribed event
 |» » *oneOf*|business-account-draft-transfer.created|
 |» » *oneOf*|business-account-draft-transfer.approved|
 |» » *oneOf*|business-account-draft-transfer.declined|
+|» » *oneOf*|business-account.created|
 |» » *oneOf*|unmatched-credit-transfer.received|
 |» » *oneOf*|unmatched-credit-transfer.matched|
 |» » *oneOf*|unmatched-credit-transfer.returned|
@@ -21512,6 +22002,8 @@ Sends a test event to the webhook to verify the endpoint is working as expected.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idempotency-key|header|string|false|A unique key to ensure idempotent requests. This key should be a UUID v4 string.|
+|X-Client-Signature|header|string|false|A cryptographic signature of the request, used to verify that it was sent by you and hasn't been tampered with. Required if you've enabled request signing for your integration.|
+|X-Client-Signed-At|header|string|false|The timestamp, in ISO 8601 format, at which you generated the `X-Client-Signature`. Required together with `X-Client-Signature` if you've enabled request signing for your integration.|
 |webhookId|path|[webhookToken](#schemawebhooktoken)|true|Provide the ID of the related webhook.|
 |body|body|object|false|none|
 |» testmode|body|[oauth-testmode](#schemaoauth-testmode)|false|You can enable test mode by setting `testmode` to `true`.<br><br>Test entities cannot be retrieved when the endpoint is set to live mode, and vice versa.|
@@ -23848,7 +24340,7 @@ In v2 endpoints, monetary amounts are represented as objects with a `currency` a
 <a id="tocsreport-type"></a>
 
 ```json
-"transaction_margin"
+"transaction-margin"
 ```
 
 The type of report to generate. Determines which other fields the request needs, and which fields show up
@@ -23863,7 +24355,7 @@ on the resulting report.
 
 ```json
 {
-  "reportType": "transaction_margin",
+  "reportType": "transaction-margin",
   "fromDate": "2026-08-01",
   "untilDate": "2026-08-31"
 }
@@ -23883,7 +24375,7 @@ Generate a transaction margin report for your organization over a date range.
 
 |Property|Value|
 |---|---|
-|reportType|transaction_margin|
+|reportType|transaction-margin|
 
 <h2 id="tocS_reportToken">reportToken</h2>
 <!-- backwards compatibility -->
@@ -23909,6 +24401,67 @@ Generate a transaction margin report for your organization over a date range.
 
 The report's current status.
 
+<h2 id="tocS_create-report-response">create-report-response</h2>
+<!-- backwards compatibility -->
+<a id="schemacreate-report-response"></a>
+<a id="schema_create-report-response"></a>
+<a id="tocScreate-report-response"></a>
+<a id="tocscreate-report-response"></a>
+
+```json
+{
+  "resource": "report",
+  "id": {},
+  "reportType": "transaction-margin",
+  "fromDate": "2026-08-01",
+  "untilDate": "2026-08-31",
+  "status": {},
+  "createdAt": "2024-03-20T09:13:37+00:00",
+  "_links": {
+    "self": {
+      "href": "https://...",
+      "type": "application/hal+json"
+    },
+    "documentation": {
+      "href": "https://...",
+      "type": "application/hal+json"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resource|string|true|read-only|Indicates the response contains a report object. Will always contain the string `report` for this<br>endpoint.|
+|id|object|true|read-only|none|
+|reportType|[report-type-response](#schemareport-type-response)|true|none|The type of report to generate. Determines which other fields the request needs, and which fields show up<br>on the resulting report.|
+|fromDate|string(date)|false|read-only|The start date of the report period. Only present for date-range report types.|
+|untilDate|string(date)|false|read-only|The end date of the report period. Only present for date-range report types.|
+|status|object|true|read-only|none|
+|createdAt|[created-at](#schemacreated-at)|true|read-only|The entity's date and time of creation, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
+|_links|object|true|read-only|An object with several relevant URLs. Every URL object will contain an `href` and a `type` field.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|reportType|transaction-margin|
+
+<h2 id="tocS_report-status-reason-code">report-status-reason-code</h2>
+<!-- backwards compatibility -->
+<a id="schemareport-status-reason-code"></a>
+<a id="schema_report-status-reason-code"></a>
+<a id="tocSreport-status-reason-code"></a>
+<a id="tocsreport-status-reason-code"></a>
+
+```json
+"generation-failed"
+```
+
+A machine-readable code for the failure reason.
+
 <h2 id="tocS_report-status-reason">report-status-reason</h2>
 <!-- backwards compatibility -->
 <a id="schemareport-status-reason"></a>
@@ -23918,8 +24471,8 @@ The report's current status.
 
 ```json
 {
-  "code": "generation_failed",
-  "message": "Something went wrong while generating the report. Try again, or contact support if it keeps happening."
+  "code": "generation-failed",
+  "message": "An error occurred while generating the report. Please try again or contact support if the issue persists."
 }
 ```
 
@@ -23929,8 +24482,16 @@ Present when `status` is `failed`. Explains what went wrong.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|code|string|true|none|A machine-readable code for the failure reason.|
+|code|[report-status-reason-code](#schemareport-status-reason-code)|true|read-only|A machine-readable code for the failure reason.|
 |message|string|true|none|A human-readable explanation of why the report failed.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|code|generation-failed|
+|code|validation-failed|
+|code|empty-report|
 
 <h2 id="tocS_entity-report">entity-report</h2>
 <!-- backwards compatibility -->
@@ -23943,13 +24504,13 @@ Present when `status` is `failed`. Explains what went wrong.
 {
   "resource": "report",
   "id": {},
-  "reportType": "transaction_margin",
+  "reportType": "transaction-margin",
   "fromDate": "2026-08-01",
   "untilDate": "2026-08-31",
   "status": {},
   "statusReason": {
-    "code": "generation_failed",
-    "message": "Something went wrong while generating the report. Try again, or contact support if it keeps happening."
+    "code": "generation-failed",
+    "message": "An error occurred while generating the report. Please try again or contact support if the issue persists."
   },
   "createdAt": "2024-03-20T09:13:37+00:00",
   "completedAt": "2026-09-01T09:01:12+00:00",
@@ -23979,21 +24540,21 @@ Present when `status` is `failed`. Explains what went wrong.
 |resource|string|true|read-only|Indicates the response contains a report object. Will always contain the string `report` for this<br>endpoint.|
 |id|object|true|read-only|none|
 |reportType|[report-type-response](#schemareport-type-response)|true|none|The type of report to generate. Determines which other fields the request needs, and which fields show up<br>on the resulting report.|
-|fromDate|string \| null(date)|false|read-only|The start date of the report period. Set for date-range report types, `null` otherwise.|
-|untilDate|string \| null(date)|false|read-only|The end date of the report period. Set for date-range report types, `null` otherwise.|
+|fromDate|string(date)|false|read-only|The start date of the report period. Only present for date-range report types.|
+|untilDate|string(date)|false|read-only|The end date of the report period. Only present for date-range report types.|
 |status|object|true|read-only|none|
 |statusReason|[report-status-reason](#schemareport-status-reason)|false|read-only|Present when `status` is `failed`. Explains what went wrong.|
 |createdAt|[created-at](#schemacreated-at)|true|read-only|The entity's date and time of creation, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
-|completedAt|string \| null(date-time)|false|read-only|The date and time the report finished generating, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>format. Only present once `status` is `completed`.|
-|failedAt|string \| null(date-time)|false|read-only|The date and time the report failed to generate, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>format. Only present once `status` is `failed`.|
-|downloadExpiresAt|string \| null(date-time)|false|read-only|The date and time the `_links.download` link expires, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>format. We issue a fresh link and expiry on every call to [Get report](get-report), so just call it<br>again once this one expires.|
+|completedAt|string(date-time)|false|read-only|The date and time the report finished generating, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>format. Only present when `status` is `completed`.|
+|failedAt|string(date-time)|false|read-only|The date and time the report failed to generate, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>format. Only present when `status` is `failed`.|
+|downloadExpiresAt|string(date-time)|false|read-only|The date and time the `_links.download` link expires, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)<br>format. Only present when `status` is `completed`.|
 |_links|object|true|read-only|An object with several relevant URLs. Every URL object will contain an `href` and a `type` field.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
-|reportType|transaction_margin|
+|reportType|transaction-margin|
 
 <h2 id="tocS_settlement-status">settlement-status</h2>
 <!-- backwards compatibility -->
@@ -28670,6 +29231,7 @@ The subscription's current status.
 |eventTypes|business-account-draft-transfer.created|
 |eventTypes|business-account-draft-transfer.approved|
 |eventTypes|business-account-draft-transfer.declined|
+|eventTypes|business-account.created|
 |eventTypes|unmatched-credit-transfer.received|
 |eventTypes|unmatched-credit-transfer.matched|
 |eventTypes|unmatched-credit-transfer.returned|
@@ -28796,6 +29358,7 @@ You can enable test mode by setting `testmode` to `true`.
 |eventTypes|business-account-draft-transfer.created|
 |eventTypes|business-account-draft-transfer.approved|
 |eventTypes|business-account-draft-transfer.declined|
+|eventTypes|business-account.created|
 |eventTypes|unmatched-credit-transfer.received|
 |eventTypes|unmatched-credit-transfer.matched|
 |eventTypes|unmatched-credit-transfer.returned|
@@ -30738,6 +31301,198 @@ The reason for the draft transfer's current status. `null` unless `status` is `d
 |mode|live|
 |mode|test|
 
+<h2 id="tocS_businessAccountToken">businessAccountToken</h2>
+<!-- backwards compatibility -->
+<a id="schemabusinessaccounttoken"></a>
+<a id="schema_businessAccountToken"></a>
+<a id="tocSbusinessaccounttoken"></a>
+<a id="tocsbusinessaccounttoken"></a>
+
+```json
+"ba_nopqrstuvwxyz23456789A"
+```
+
+<h2 id="tocS_account-details">account-details</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccount-details"></a>
+<a id="schema_account-details"></a>
+<a id="tocSaccount-details"></a>
+<a id="tocsaccount-details"></a>
+
+```json
+{
+  "accountHolderName": "Mollie B.V.",
+  "name": "Main Checking Account",
+  "currency": "EUR",
+  "iban": "NL95MLLE1234567890",
+  "bic": "MLLENL2AXXX"
+}
+```
+
+The account holder details and bank account information for the business account.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountHolderName|string|true|none|The name of the account holder.|
+|name|string|false|none|A name of the account.|
+|currency|string|true|none|The currency of the account in ISO 4217 format.|
+|iban|string|true|none|The IBAN (International Bank Account Number) of the account.|
+|bic|string|false|none|The BIC (Bank Identifier Code) of the account.|
+
+<h2 id="tocS_balance">balance</h2>
+<!-- backwards compatibility -->
+<a id="schemabalance"></a>
+<a id="schema_balance"></a>
+<a id="tocSbalance"></a>
+<a id="tocsbalance"></a>
+
+```json
+{
+  "total": {
+    "currency": "EUR",
+    "value": "10.00"
+  }
+}
+```
+
+The balance of the business account.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|total|[amount](#schemaamount)|true|none|The total available balance of the business account.|
+
+<h2 id="tocS_account-status">account-status</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccount-status"></a>
+<a id="schema_account-status"></a>
+<a id="tocSaccount-status"></a>
+<a id="tocsaccount-status"></a>
+
+```json
+"active"
+```
+
+The status of the business account.
+
+<h2 id="tocS_entity-business-account">entity-business-account</h2>
+<!-- backwards compatibility -->
+<a id="schemaentity-business-account"></a>
+<a id="schema_entity-business-account"></a>
+<a id="tocSentity-business-account"></a>
+<a id="tocsentity-business-account"></a>
+
+```json
+{
+  "resource": "business-account",
+  "id": {},
+  "accountDetails": {
+    "accountHolderName": "Mollie B.V.",
+    "name": "Main Checking Account",
+    "currency": "EUR",
+    "iban": "NL95MLLE1234567890",
+    "bic": "MLLENL2AXXX"
+  },
+  "balance": {
+    "total": {
+      "currency": "EUR",
+      "value": "10.00"
+    }
+  },
+  "status": "active",
+  "mode": "live",
+  "createdAt": "2024-03-20T09:13:37+00:00"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resource|string|false|read-only|Indicates the response contains a business account object. Will always contain the string `business-account`<br>for this endpoint.|
+|id|object|false|read-only|The identifier uniquely referring to this business account. Mollie assigns this identifier at account creation<br>time.|
+|accountDetails|[account-details](#schemaaccount-details)|false|none|The account holder details and bank account information for the business account.|
+|balance|[balance](#schemabalance)|false|none|The balance of the business account.|
+|status|[account-status](#schemaaccount-status)|false|read-only|The status of the business account.|
+|mode|[mode](#schemamode)|false|read-only|Whether this entity was created in live mode or in test mode.|
+|createdAt|[created-at](#schemacreated-at)|false|read-only|The entity's date and time of creation, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|active|
+|status|blocked|
+|status|closed|
+|mode|live|
+|mode|test|
+
+<h2 id="tocS_business-account-response">business-account-response</h2>
+<!-- backwards compatibility -->
+<a id="schemabusiness-account-response"></a>
+<a id="schema_business-account-response"></a>
+<a id="tocSbusiness-account-response"></a>
+<a id="tocsbusiness-account-response"></a>
+
+```json
+{
+  "resource": "business-account",
+  "id": {},
+  "accountDetails": {
+    "accountHolderName": "Mollie B.V.",
+    "name": "Main Checking Account",
+    "currency": "EUR",
+    "iban": "NL95MLLE1234567890",
+    "bic": "MLLENL2AXXX"
+  },
+  "balance": {
+    "total": {
+      "currency": "EUR",
+      "value": "10.00"
+    }
+  },
+  "status": "active",
+  "mode": "live",
+  "createdAt": "2024-03-20T09:13:37+00:00",
+  "_links": {
+    "self": {
+      "href": "https://...",
+      "type": "application/hal+json"
+    },
+    "documentation": {
+      "href": "https://...",
+      "type": "application/hal+json"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resource|string|true|read-only|Indicates the response contains a business account object. Will always contain the string `business-account`<br>for this endpoint.|
+|id|object|true|read-only|The identifier uniquely referring to this business account. Mollie assigns this identifier at account creation<br>time.|
+|accountDetails|[account-details](#schemaaccount-details)|true|none|The account holder details and bank account information for the business account.|
+|balance|[balance](#schemabalance)|true|none|The balance of the business account.|
+|status|[account-status](#schemaaccount-status)|true|read-only|The status of the business account.|
+|mode|[mode](#schemamode)|true|read-only|Whether this entity was created in live mode or in test mode.|
+|createdAt|[created-at](#schemacreated-at)|true|read-only|The entity's date and time of creation, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
+|_links|object|true|read-only|An object with several relevant URLs. Every URL object will contain an `href` and a `type` field.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|active|
+|status|blocked|
+|status|closed|
+|mode|live|
+|mode|test|
+
 <h2 id="tocS_entity-webhook-event">entity-webhook-event</h2>
 <!-- backwards compatibility -->
 <a id="schemaentity-webhook-event"></a>
@@ -31298,7 +32053,7 @@ The type of the transfer. Different fees may apply to different types of transfe
 |company|object|false|write-only|Billie is a business-to-business (B2B) payment method. It requires extra information to identify the<br>organization that is completing the payment. It is recommended to include these parameters up front for a<br>seamless flow. Otherwise, Billie will ask the customer to complete the missing fields during checkout.<br><br>* `billingAddress.organizationName`: The organization's name.<br>* `registrationNumber` _string_: The organization's registration number.<br>* `vatNumber` _string_: The organization's VAT number.<br>* `entityType` _string_: The organization's entity type.|
 |cardToken|string|false|write-only|When creating credit card payments using Mollie Components, you need to provide the card token you received<br>from the card component in this field. The token represents the customer's card information needed to complete<br>the payment. **Note:** field only valid for `oneoff` and `first` payments. For recurring payments, the<br>`customerId` alone is enough.|
 |googlePayPaymentToken|string|false|write-only|The Google Pay payment token object (encoded as JSON) returned by the Google Pay SDK after the customer<br>authorizes the payment. The token contains the payment information needed to complete the payment.<br><br>The object should be passed encoded in a JSON string.|
-|voucherNumber|string|false|write-only|The card token you received from the card component of Mollie Components. The token represents the customer's<br>card information needed to complete the payment.|
+|voucherNumber|string|false|write-only|Number of the voucher.|
 |voucherPin|string|false|write-only|The PIN on the gift card. You can supply this to prefill the PIN, if the card has any.|
 |consumerDateOfBirth|string(date)|false|write-only|The customer's date of birth. If not provided via the API, iDeal in3 will ask the customer to provide it<br>during the payment process.|
 |extraMerchantData|object|false|write-only|For some industries, additional purchase information can be sent to Klarna to increase the authorization rate.<br>You can submit your extra data in this field if you have agreed upon this with Klarna. This field should be an<br>object containing any of the allowed keys and sub-objects described at the<br><Anchor label="Klarna Developer Documentation" target="_blank" href="https://docs.klarna.com/acquirer/mollie/api/extra-merchant-data/">Klarna Developer Documentation</Anchor>.<br><br>Reach out to your account manager at Mollie to enable this feature with Klarna, and to agree on which fields<br>you can send.|
@@ -31694,7 +32449,7 @@ The type of the transfer. Different fees may apply to different types of transfe
 |company|object|false|write-only|Billie is a business-to-business (B2B) payment method. It requires extra information to identify the<br>organization that is completing the payment. It is recommended to include these parameters up front for a<br>seamless flow. Otherwise, Billie will ask the customer to complete the missing fields during checkout.<br><br>* `billingAddress.organizationName`: The organization's name.<br>* `registrationNumber` _string_: The organization's registration number.<br>* `vatNumber` _string_: The organization's VAT number.<br>* `entityType` _string_: The organization's entity type.|
 |cardToken|string|false|write-only|When creating credit card payments using Mollie Components, you need to provide the card token you received<br>from the card component in this field. The token represents the customer's card information needed to complete<br>the payment. **Note:** field only valid for `oneoff` and `first` payments. For recurring payments, the<br>`customerId` alone is enough.|
 |googlePayPaymentToken|string|false|write-only|The Google Pay payment token object (encoded as JSON) returned by the Google Pay SDK after the customer<br>authorizes the payment. The token contains the payment information needed to complete the payment.<br><br>The object should be passed encoded in a JSON string.|
-|voucherNumber|string|false|write-only|The card token you received from the card component of Mollie Components. The token represents the customer's<br>card information needed to complete the payment.|
+|voucherNumber|string|false|write-only|Number of the voucher.|
 |voucherPin|string|false|write-only|The PIN on the gift card. You can supply this to prefill the PIN, if the card has any.|
 |consumerDateOfBirth|string(date)|false|write-only|The customer's date of birth. If not provided via the API, iDeal in3 will ask the customer to provide it<br>during the payment process.|
 |extraMerchantData|object|false|write-only|For some industries, additional purchase information can be sent to Klarna to increase the authorization rate.<br>You can submit your extra data in this field if you have agreed upon this with Klarna. This field should be an<br>object containing any of the allowed keys and sub-objects described at the<br><Anchor label="Klarna Developer Documentation" target="_blank" href="https://docs.klarna.com/acquirer/mollie/api/extra-merchant-data/">Klarna Developer Documentation</Anchor>.<br><br>Reach out to your account manager at Mollie to enable this feature with Klarna, and to agree on which fields<br>you can send.|
@@ -35070,186 +35825,20 @@ Dependent parameters:
 |paymentTerm|90 days|
 |paymentTerm|120 days|
 
-<h2 id="tocS_businessAccountToken">businessAccountToken</h2>
+<h2 id="tocS_account-currency">account-currency</h2>
 <!-- backwards compatibility -->
-<a id="schemabusinessaccounttoken"></a>
-<a id="schema_businessAccountToken"></a>
-<a id="tocSbusinessaccounttoken"></a>
-<a id="tocsbusinessaccounttoken"></a>
+<a id="schemaaccount-currency"></a>
+<a id="schema_account-currency"></a>
+<a id="tocSaccount-currency"></a>
+<a id="tocsaccount-currency"></a>
 
 ```json
-"ba_nopqrstuvwxyz23456789A"
+"EUR"
 ```
 
-<h2 id="tocS_account-details">account-details</h2>
-<!-- backwards compatibility -->
-<a id="schemaaccount-details"></a>
-<a id="schema_account-details"></a>
-<a id="tocSaccount-details"></a>
-<a id="tocsaccount-details"></a>
+The currency of the business account, as an [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code.
 
-```json
-{
-  "accountHolderName": "Mollie B.V.",
-  "name": "Main Checking Account",
-  "currency": "EUR",
-  "iban": "NL95MLLE1234567890",
-  "bic": "MLLENL2AXXX"
-}
-```
-
-The account holder details and bank account information for the business account.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|accountHolderName|string|true|none|The name of the account holder.|
-|name|string|false|none|A name of the account.|
-|currency|string|true|none|The currency of the account in ISO 4217 format.|
-|iban|string|true|none|The IBAN (International Bank Account Number) of the account.|
-|bic|string|false|none|The BIC (Bank Identifier Code) of the account.|
-
-<h2 id="tocS_balance">balance</h2>
-<!-- backwards compatibility -->
-<a id="schemabalance"></a>
-<a id="schema_balance"></a>
-<a id="tocSbalance"></a>
-<a id="tocsbalance"></a>
-
-```json
-{
-  "total": {
-    "currency": "EUR",
-    "value": "10.00"
-  }
-}
-```
-
-The balance of the business account.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|total|[amount](#schemaamount)|true|none|The total available balance of the business account.|
-
-<h2 id="tocS_account-status">account-status</h2>
-<!-- backwards compatibility -->
-<a id="schemaaccount-status"></a>
-<a id="schema_account-status"></a>
-<a id="tocSaccount-status"></a>
-<a id="tocsaccount-status"></a>
-
-```json
-"active"
-```
-
-The status of the business account.
-
-<h2 id="tocS_entity-business-account">entity-business-account</h2>
-<!-- backwards compatibility -->
-<a id="schemaentity-business-account"></a>
-<a id="schema_entity-business-account"></a>
-<a id="tocSentity-business-account"></a>
-<a id="tocsentity-business-account"></a>
-
-```json
-{
-  "resource": "business-account",
-  "id": {},
-  "accountDetails": {
-    "accountHolderName": "Mollie B.V.",
-    "name": "Main Checking Account",
-    "currency": "EUR",
-    "iban": "NL95MLLE1234567890",
-    "bic": "MLLENL2AXXX"
-  },
-  "balance": {
-    "total": {
-      "currency": "EUR",
-      "value": "10.00"
-    }
-  },
-  "status": "active",
-  "mode": "live",
-  "createdAt": "2024-03-20T09:13:37+00:00"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|resource|string|false|read-only|Indicates the response contains a business account object. Will always contain the string `business-account`<br>for this endpoint.|
-|id|object|false|read-only|The identifier uniquely referring to this business account. Mollie assigns this identifier at account creation<br>time.|
-|accountDetails|[account-details](#schemaaccount-details)|false|none|The account holder details and bank account information for the business account.|
-|balance|[balance](#schemabalance)|false|none|The balance of the business account.|
-|status|[account-status](#schemaaccount-status)|false|read-only|The status of the business account.|
-|mode|[mode](#schemamode)|false|read-only|Whether this entity was created in live mode or in test mode.|
-|createdAt|[created-at](#schemacreated-at)|false|read-only|The entity's date and time of creation, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|active|
-|status|blocked|
-|status|closed|
-|mode|live|
-|mode|test|
-
-<h2 id="tocS_business-account-response">business-account-response</h2>
-<!-- backwards compatibility -->
-<a id="schemabusiness-account-response"></a>
-<a id="schema_business-account-response"></a>
-<a id="tocSbusiness-account-response"></a>
-<a id="tocsbusiness-account-response"></a>
-
-```json
-{
-  "resource": "business-account",
-  "id": {},
-  "accountDetails": {
-    "accountHolderName": "Mollie B.V.",
-    "name": "Main Checking Account",
-    "currency": "EUR",
-    "iban": "NL95MLLE1234567890",
-    "bic": "MLLENL2AXXX"
-  },
-  "balance": {
-    "total": {
-      "currency": "EUR",
-      "value": "10.00"
-    }
-  },
-  "status": "active",
-  "mode": "live",
-  "createdAt": "2024-03-20T09:13:37+00:00"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|resource|string|true|read-only|Indicates the response contains a business account object. Will always contain the string `business-account`<br>for this endpoint.|
-|id|object|true|read-only|The identifier uniquely referring to this business account. Mollie assigns this identifier at account creation<br>time.|
-|accountDetails|[account-details](#schemaaccount-details)|true|none|The account holder details and bank account information for the business account.|
-|balance|[balance](#schemabalance)|true|none|The balance of the business account.|
-|status|[account-status](#schemaaccount-status)|true|read-only|The status of the business account.|
-|mode|[mode](#schemamode)|true|read-only|Whether this entity was created in live mode or in test mode.|
-|createdAt|[created-at](#schemacreated-at)|true|read-only|The entity's date and time of creation, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|status|active|
-|status|blocked|
-|status|closed|
-|mode|live|
-|mode|test|
+Only `EUR` is supported for now. We're working on more currencies, and they'll be available soon.
 
 <h2 id="tocS_transaction-type">transaction-type</h2>
 <!-- backwards compatibility -->
@@ -38229,6 +38818,7 @@ account holder name against the records held by the receiving bank.
 |eventTypes|business-account-draft-transfer.created|
 |eventTypes|business-account-draft-transfer.approved|
 |eventTypes|business-account-draft-transfer.declined|
+|eventTypes|business-account.created|
 |eventTypes|unmatched-credit-transfer.received|
 |eventTypes|unmatched-credit-transfer.matched|
 |eventTypes|unmatched-credit-transfer.returned|
@@ -39572,6 +40162,69 @@ account holder name against the records held by the receiving bank.
 |status|expired|
 |status|failed|
 
+<h2 id="tocS_list-business-account-response">list-business-account-response</h2>
+<!-- backwards compatibility -->
+<a id="schemalist-business-account-response"></a>
+<a id="schema_list-business-account-response"></a>
+<a id="tocSlist-business-account-response"></a>
+<a id="tocslist-business-account-response"></a>
+
+```json
+{
+  "resource": "business-account",
+  "id": {},
+  "accountDetails": {
+    "accountHolderName": "Mollie B.V.",
+    "name": "Main Checking Account",
+    "currency": "EUR",
+    "iban": "NL95MLLE1234567890",
+    "bic": "MLLENL2AXXX"
+  },
+  "balance": {
+    "total": {
+      "currency": "EUR",
+      "value": "10.00"
+    }
+  },
+  "status": "active",
+  "mode": "live",
+  "createdAt": "2024-03-20T09:13:37+00:00",
+  "_links": {
+    "self": {
+      "href": "https://...",
+      "type": "application/hal+json"
+    },
+    "documentation": {
+      "href": "https://...",
+      "type": "application/hal+json"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resource|string|true|read-only|Indicates the response contains a business account object. Will always contain the string `business-account`<br>for this endpoint.|
+|id|object|true|read-only|The identifier uniquely referring to this business account. Mollie assigns this identifier at account creation<br>time.|
+|accountDetails|[account-details](#schemaaccount-details)|true|none|The account holder details and bank account information for the business account.|
+|balance|[balance](#schemabalance)|true|none|The balance of the business account.|
+|status|[account-status](#schemaaccount-status)|true|read-only|The status of the business account.|
+|mode|[mode](#schemamode)|true|read-only|Whether this entity was created in live mode or in test mode.|
+|createdAt|[created-at](#schemacreated-at)|true|read-only|The entity's date and time of creation, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
+|_links|object|true|read-only|An object with several relevant URLs. Every URL object will contain an `href` and a `type` field.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|active|
+|status|blocked|
+|status|closed|
+|mode|live|
+|mode|test|
+
 <h2 id="tocS_list-entity-payout">list-entity-payout</h2>
 <!-- backwards compatibility -->
 <a id="schemalist-entity-payout"></a>
@@ -39649,7 +40302,7 @@ account holder name against the records held by the receiving bank.
 <a id="tocsreport-type-response"></a>
 
 ```json
-"transaction_margin"
+"transaction-margin"
 ```
 
 The type of report to generate. Determines which other fields the request needs, and which fields show up

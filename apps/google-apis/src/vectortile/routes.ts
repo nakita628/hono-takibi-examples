@@ -1,5 +1,21 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const TileCoordinatesSchema = z
+  .object({
+    x: z.int32().exactOptional().openapi({ description: 'Required. The x coordinate.' }),
+    y: z.int32().exactOptional().openapi({ description: 'Required. The y coordinate.' }),
+    zoom: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Required. The Google Maps API zoom level.' }),
+  })
+  .openapi({
+    description:
+      'Global tile coordinates. Global tile coordinates reference a specific tile on the map at a specific zoom level. The origin of this coordinate system is always at the northwest corner of the map, with x values increasing from west to east and y values increasing from north to south. Tiles are indexed using x, y coordinates from that origin. The zoom level containing the entire world in a tile is 0, and it increases as you zoom in. Zoom level n + 1 will contain 4 times as many tiles as zoom level n. The zoom level controls the level of detail of the data that is returned. In particular, this affects the set of feature types returned, their density, and geometry simplification. The exact tile contents may change over time, but care will be taken to keep supporting the most important use cases. For example, zoom level 15 shows roads for orientation and planning in the local neighborhood and zoom level 17 shows buildings to give users on foot a sense of situational awareness.',
+    required: [],
+  })
+  .openapi('TileCoordinates')
+
 const BasemapZOrderSchema = z
   .object({
     zGrade: z
@@ -348,22 +364,6 @@ const FeatureSchema = z
   .openapi({ description: 'A feature representing a single geographic entity.', required: [] })
   .openapi('Feature')
 
-const TileCoordinatesSchema = z
-  .object({
-    x: z.int32().exactOptional().openapi({ description: 'Required. The x coordinate.' }),
-    y: z.int32().exactOptional().openapi({ description: 'Required. The y coordinate.' }),
-    zoom: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Required. The Google Maps API zoom level.' }),
-  })
-  .openapi({
-    description:
-      'Global tile coordinates. Global tile coordinates reference a specific tile on the map at a specific zoom level. The origin of this coordinate system is always at the northwest corner of the map, with x values increasing from west to east and y values increasing from north to south. Tiles are indexed using x, y coordinates from that origin. The zoom level containing the entire world in a tile is 0, and it increases as you zoom in. Zoom level n + 1 will contain 4 times as many tiles as zoom level n. The zoom level controls the level of detail of the data that is returned. In particular, this affects the set of feature types returned, their density, and geometry simplification. The exact tile contents may change over time, but care will be taken to keep supporting the most important use cases. For example, zoom level 15 shows roads for orientation and planning in the local neighborhood and zoom level 17 shows buildings to give users on foot a sense of situational awareness.',
-    required: [],
-  })
-  .openapi('TileCoordinates')
-
 const ProviderInfoSchema = z
   .object({
     description: z
@@ -380,7 +380,16 @@ const ProviderInfoSchema = z
   })
   .openapi('ProviderInfo')
 
-const FeatureTileSchema = z
+type FeatureTileType = {
+  coordinates?: z.infer<typeof TileCoordinatesSchema>
+  features?: z.infer<typeof FeatureSchema>[]
+  name?: string
+  providers?: z.infer<typeof ProviderInfoSchema>[]
+  status?: 'STATUS_OK' | 'STATUS_OK_DATA_UNCHANGED'
+  versionId?: string
+}
+
+const FeatureTileSchema: z.ZodType<FeatureTileType> = z
   .object({
     coordinates: TileCoordinatesSchema.exactOptional().openapi({
       description: 'The global tile coordinates that uniquely identify this tile.',

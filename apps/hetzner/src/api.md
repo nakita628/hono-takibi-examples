@@ -2368,7 +2368,7 @@ curl https://api.hetzner.cloud/v1/datacenters \
 This operation is deprecated
 </aside>
 
-**Deprecated:** This endpoint is deprecated as of 01 June 2026 and will be removed after 01 October 2026.
+**Deprecated:** This endpoint was deprecated on 01 June 2026 and removed on 01 October 2026. It now returns `410 Gone`.
 
 Returns all [Data Centers](#tag/data-centers).
 
@@ -2553,7 +2553,7 @@ curl https://api.hetzner.cloud/v1/datacenters/42 \
 This operation is deprecated
 </aside>
 
-**Deprecated:** This endpoint is deprecated as of 01 June 2026 and will be removed after 01 October 2026.
+**Deprecated:** This endpoint was deprecated on 01 June 2026 and removed on 01 October 2026. It now returns `410 Gone`.
 
 Returns a single [Data Center](#tag/data-centers).
 
@@ -7200,7 +7200,6 @@ Returns all Image objects. You can select specific Image types only and sort the
       "protection": {
         "delete": false
       },
-      "deprecated": "2018-02-28T00:00:00Z",
       "deprecation": {
         "unavailable_after": "2023-09-01T00:00:00Z",
         "announced": "2023-06-01T00:00:00Z"
@@ -7283,7 +7282,6 @@ Status Code **200**
 |» rapid_deploy|boolean|false|none|Indicates that rapid deploy of the Image is available.|
 |» protection|object|true|none|Protection configuration for the Resource.|
 |» » delete|boolean|true|none|Prevent the Resource from being deleted.|
-|» deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated, use the deprecation object instead.<br><br>Point in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -7394,7 +7392,6 @@ Returns a specific Image object.
     "protection": {
       "delete": false
     },
-    "deprecated": "2018-02-28T00:00:00Z",
     "deprecation": {
       "unavailable_after": "2023-09-01T00:00:00Z",
       "announced": "2023-06-01T00:00:00Z"
@@ -7466,7 +7463,6 @@ Status Code **200**
 |» rapid_deploy|boolean|false|none|Indicates that rapid deploy of the Image is available.|
 |» protection|object|true|none|Protection configuration for the Resource.|
 |» » delete|boolean|true|none|Prevent the Resource from being deleted.|
-|» deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated, use the deprecation object instead.<br><br>Point in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -7605,7 +7601,6 @@ Updates the Image. You may change the description, convert a Backup Image to a S
     "protection": {
       "delete": false
     },
-    "deprecated": null,
     "deprecation": null,
     "deleted": null,
     "labels": {
@@ -7672,7 +7667,6 @@ Status Code **200**
 |» rapid_deploy|boolean|false|none|Indicates that rapid deploy of the Image is available.|
 |» protection|object|true|none|Protection configuration for the Resource.|
 |» » delete|boolean|true|none|Prevent the Resource from being deleted.|
-|» deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated, use the deprecation object instead.<br><br>Point in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -8970,7 +8964,6 @@ Gets all existing Load Balancers that you have available.
         "max_services": 5,
         "max_targets": 25,
         "max_assigned_certificates": 10,
-        "deprecated": "2016-01-30T23:50:00Z",
         "deprecation": {
           "unavailable_after": "2023-09-01T00:00:00Z",
           "announced": "2023-06-01T00:00:00Z"
@@ -9140,7 +9133,6 @@ Status Code **200**
 |» » max_services|integer(int64)|true|none|Number of services a Load Balancer of this type can have.|
 |» » max_targets|integer(int64)|true|none|Number of targets a single Load Balancer can have.|
 |» » max_assigned_certificates|integer(int64)|true|none|Number of SSL Certificates that can be assigned to a single Load Balancer.|
-|» » deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated. Use the `deprecation` object instead.<br><br>Point in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» » deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -9702,7 +9694,6 @@ Creates a Load Balancer.
       "max_services": 5,
       "max_targets": 25,
       "max_assigned_certificates": 10,
-      "deprecated": "2016-01-30T23:50:00Z",
       "deprecation": null,
       "prices": [
         {
@@ -9897,7 +9888,6 @@ Status Code **201**
 |» » max_services|integer(int64)|true|none|Number of services a Load Balancer of this type can have.|
 |» » max_targets|integer(int64)|true|none|Number of targets a single Load Balancer can have.|
 |» » max_assigned_certificates|integer(int64)|true|none|Number of SSL Certificates that can be assigned to a single Load Balancer.|
-|» » deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated. Use the `deprecation` object instead.<br><br>Point in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» » deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -10205,7 +10195,6 @@ Gets a specific Load Balancer object.
       "max_services": 5,
       "max_targets": 25,
       "max_assigned_certificates": 10,
-      "deprecated": "2016-01-30T23:50:00Z",
       "deprecation": {
         "unavailable_after": "2023-09-01T00:00:00Z",
         "announced": "2023-06-01T00:00:00Z"
@@ -10364,7 +10353,6 @@ Status Code **200**
 |» » max_services|integer(int64)|true|none|Number of services a Load Balancer of this type can have.|
 |» » max_targets|integer(int64)|true|none|Number of targets a single Load Balancer can have.|
 |» » max_assigned_certificates|integer(int64)|true|none|Number of SSL Certificates that can be assigned to a single Load Balancer.|
-|» » deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated. Use the `deprecation` object instead.<br><br>Point in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» » deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -10685,7 +10673,6 @@ Note: if the Load Balancer object changes during the request, the response will 
       "max_services": 5,
       "max_targets": 25,
       "max_assigned_certificates": 10,
-      "deprecated": "2016-01-30T23:50:00Z",
       "deprecation": null,
       "prices": [
         {
@@ -10868,7 +10855,6 @@ Status Code **200**
 |» » max_services|integer(int64)|true|none|Number of services a Load Balancer of this type can have.|
 |» » max_targets|integer(int64)|true|none|Number of targets a single Load Balancer can have.|
 |» » max_assigned_certificates|integer(int64)|true|none|Number of SSL Certificates that can be assigned to a single Load Balancer.|
-|» » deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated. Use the `deprecation` object instead.<br><br>Point in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» » deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -14298,7 +14284,6 @@ Gets all Load Balancer type objects.
       "max_services": 5,
       "max_targets": 25,
       "max_assigned_certificates": 10,
-      "deprecated": "2016-01-30T23:50:00Z",
       "deprecation": {
         "unavailable_after": "2023-09-01T00:00:00Z",
         "announced": "2023-06-01T00:00:00Z"
@@ -14382,7 +14367,6 @@ Status Code **200**
 |» max_services|integer(int64)|true|none|Number of services a Load Balancer of this type can have.|
 |» max_targets|integer(int64)|true|none|Number of targets a single Load Balancer can have.|
 |» max_assigned_certificates|integer(int64)|true|none|Number of SSL Certificates that can be assigned to a single Load Balancer.|
-|» deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated. Use the `deprecation` object instead.<br><br>Point in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -14467,7 +14451,6 @@ Gets a specific Load Balancer type object.
     "max_services": 5,
     "max_targets": 25,
     "max_assigned_certificates": 10,
-    "deprecated": "2016-01-30T23:50:00Z",
     "deprecation": {
       "unavailable_after": "2023-09-01T00:00:00Z",
       "announced": "2023-06-01T00:00:00Z"
@@ -14540,7 +14523,6 @@ Status Code **200**
 |» max_services|integer(int64)|true|none|Number of services a Load Balancer of this type can have.|
 |» max_targets|integer(int64)|true|none|Number of targets a single Load Balancer can have.|
 |» max_assigned_certificates|integer(int64)|true|none|Number of SSL Certificates that can be assigned to a single Load Balancer.|
-|» deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated. Use the `deprecation` object instead.<br><br>Point in time when the Load Balancer type is deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -14582,7 +14564,7 @@ APIToken
 
 <h1 id="hetzner-cloud-api-locations">Locations</h1>
 
-Datacenters are organized by Locations. Datacenters in the same Location are connected with very low latency links.
+Locations are geographic sites where resources are hosted at. A Location belongs to a Network Zone.
 
 
 ## List Locations
@@ -16806,12 +16788,13 @@ Changes the IP range of a [Network](#tag/networks).
 The following restrictions apply to changing the IP range:
 - IP ranges can only be extended and never shrunk.
 - IPs can only be added to the end of the existing range, therefore only the netmask is allowed to be changed.
+- The Network must not have any attached members.
 
 To update the routes on the connected [Servers](#tag/servers), they need to be rebooted or the routes to be updated manually.
 
 For example if the [Network](#tag/networks) has a range of `10.0.0.0/16` to extend it the new range has to start with the IP `10.0.0.0` as well. The netmask `/16` can be changed to a smaller one then `16` therefore increasing the IP range. A valid entry would be `10.0.0.0/15`, `10.0.0.0/14` or `10.0.0.0/13` and so on.
 
-If a change is currently being performed on this [Network](#tag/networks), a error response with code `conflict` will be returned.
+If a change is currently being performed on this [Network](#tag/networks), an error response with code `conflict` will be returned. If the Network has any attached members, an error response with code `service_error` will be returned.
 
 
 > Body parameter
@@ -20799,7 +20782,6 @@ Returns all existing Server objects.
         "cores": 2,
         "memory": 4,
         "disk": 80,
-        "deprecated": false,
         "prices": [
           {
             "location": "fsn1",
@@ -20869,7 +20851,6 @@ Returns all existing Server objects.
         "protection": {
           "delete": false
         },
-        "deprecated": "2018-02-28T00:00:00Z",
         "deprecation": {
           "unavailable_after": "2023-09-01T00:00:00Z",
           "announced": "2023-06-01T00:00:00Z"
@@ -21016,7 +20997,6 @@ Status Code **200**
 |» » cores|number|true|none|Number of cpu cores a Server of this type will have.|
 |» » memory|number|true|none|Memory a Server of this type will have in GB.|
 |» » disk|number|true|none|Disk size a Server of this type will have in GB.|
-|» » deprecated|boolean|true|none|This field is deprecated. Use the deprecation object instead.|
 |» » prices|[object]|true|none|Price per [Location](#tag/locations).|
 |» » » location|string|true|none|Name of the [Location](#tag/locations) the price is for.|
 |» » » price_hourly|object|true|none|Hourly price in this [Location](#tag/locations).|
@@ -21071,7 +21051,6 @@ Status Code **200**
 |» » rapid_deploy|boolean|false|none|Indicates that rapid deploy of the Image is available.|
 |» » protection|object|true|none|Protection configuration for the Resource.|
 |» » » delete|boolean|true|none|Prevent the Resource from being deleted.|
-|» » deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated, use the deprecation object instead.<br><br>Point in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» » deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -21373,7 +21352,6 @@ Creates a new Server. Returns preliminary information about the Server as well a
       "cores": 2,
       "memory": 4,
       "disk": 80,
-      "deprecated": true,
       "prices": [
         {
           "location": "fsn1",
@@ -21445,7 +21423,6 @@ Creates a new Server. Returns preliminary information about the Server as well a
       "protection": {
         "delete": false
       },
-      "deprecated": null,
       "deprecation": null,
       "deleted": null,
       "labels": {
@@ -21595,7 +21572,6 @@ Status Code **201**
 |» » cores|number|true|none|Number of cpu cores a Server of this type will have.|
 |» » memory|number|true|none|Memory a Server of this type will have in GB.|
 |» » disk|number|true|none|Disk size a Server of this type will have in GB.|
-|» » deprecated|boolean|true|none|This field is deprecated. Use the deprecation object instead.|
 |» » prices|[object]|true|none|Price per [Location](#tag/locations).|
 |» » » location|string|true|none|Name of the [Location](#tag/locations) the price is for.|
 |» » » price_hourly|object|true|none|Hourly price in this [Location](#tag/locations).|
@@ -21650,7 +21626,6 @@ Status Code **201**
 |» » rapid_deploy|boolean|false|none|Indicates that rapid deploy of the Image is available.|
 |» » protection|object|true|none|Protection configuration for the Resource.|
 |» » » delete|boolean|true|none|Prevent the Resource from being deleted.|
-|» » deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated, use the deprecation object instead.<br><br>Point in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» » deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -21870,7 +21845,6 @@ Returns a specific Server object. The Server must exist inside the Project.
       "cores": 2,
       "memory": 4,
       "disk": 80,
-      "deprecated": false,
       "prices": [
         {
           "location": "fsn1",
@@ -21940,7 +21914,6 @@ Returns a specific Server object. The Server must exist inside the Project.
       "protection": {
         "delete": false
       },
-      "deprecated": "2018-02-28T00:00:00Z",
       "deprecation": {
         "unavailable_after": "2023-09-01T00:00:00Z",
         "announced": "2023-06-01T00:00:00Z"
@@ -22076,7 +22049,6 @@ Status Code **200**
 |» » cores|number|true|none|Number of cpu cores a Server of this type will have.|
 |» » memory|number|true|none|Memory a Server of this type will have in GB.|
 |» » disk|number|true|none|Disk size a Server of this type will have in GB.|
-|» » deprecated|boolean|true|none|This field is deprecated. Use the deprecation object instead.|
 |» » prices|[object]|true|none|Price per [Location](#tag/locations).|
 |» » » location|string|true|none|Name of the [Location](#tag/locations) the price is for.|
 |» » » price_hourly|object|true|none|Hourly price in this [Location](#tag/locations).|
@@ -22131,7 +22103,6 @@ Status Code **200**
 |» » rapid_deploy|boolean|false|none|Indicates that rapid deploy of the Image is available.|
 |» » protection|object|true|none|Protection configuration for the Resource.|
 |» » » delete|boolean|true|none|Prevent the Resource from being deleted.|
-|» » deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated, use the deprecation object instead.<br><br>Point in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» » deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -22347,7 +22318,6 @@ Please note that Server names must be unique per Project and valid hostnames as 
       "cores": 2,
       "memory": 4,
       "disk": 80,
-      "deprecated": false,
       "prices": [
         {
           "location": "fsn1",
@@ -22417,7 +22387,6 @@ Please note that Server names must be unique per Project and valid hostnames as 
       "protection": {
         "delete": false
       },
-      "deprecated": "2018-02-28T00:00:00Z",
       "deprecation": {
         "unavailable_after": "2023-09-01T00:00:00Z",
         "announced": "2023-06-01T00:00:00Z"
@@ -22553,7 +22522,6 @@ Status Code **200**
 |» » cores|number|true|none|Number of cpu cores a Server of this type will have.|
 |» » memory|number|true|none|Memory a Server of this type will have in GB.|
 |» » disk|number|true|none|Disk size a Server of this type will have in GB.|
-|» » deprecated|boolean|true|none|This field is deprecated. Use the deprecation object instead.|
 |» » prices|[object]|true|none|Price per [Location](#tag/locations).|
 |» » » location|string|true|none|Name of the [Location](#tag/locations) the price is for.|
 |» » » price_hourly|object|true|none|Hourly price in this [Location](#tag/locations).|
@@ -22608,7 +22576,6 @@ Status Code **200**
 |» » rapid_deploy|boolean|false|none|Indicates that rapid deploy of the Image is available.|
 |» » protection|object|true|none|Protection configuration for the Resource.|
 |» » » delete|boolean|true|none|Prevent the Resource from being deleted.|
-|» » deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated, use the deprecation object instead.<br><br>Point in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» » deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -24708,7 +24675,6 @@ You can either create a `backup` Image that is bound to the Server and therefore
     "protection": {
       "delete": false
     },
-    "deprecated": null,
     "deprecation": null,
     "deleted": null,
     "labels": {
@@ -24793,7 +24759,6 @@ Status Code **201**
 |» rapid_deploy|boolean|false|none|Indicates that rapid deploy of the Image is available.|
 |» protection|object|true|none|Protection configuration for the Resource.|
 |» » delete|boolean|true|none|Prevent the Resource from being deleted.|
-|» deprecated|string \| null(date-time)|true|none|**Deprecated.** **Deprecated:** This field is deprecated, use the deprecation object instead.<br><br>Point in time when the Image is considered to be deprecated (in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format).<br>|
 |» deprecation|object \| null|true|none|Describes if, when and how the resource is deprecated. If this field is<br>set to `null` the resource is not deprecated. If a value is set, it is<br>considered deprecated.<br>|
 |» » unavailable_after|string(date-time)|true|none|Date of the deprecated resource removal.<br><br>Once this date is reached, the resource will not be returned<br>by resource type "list" endpoint, and the resource can not be<br>used to create new resources. For example, if this is an<br>image, you can not create new servers with this image after<br>the mentioned date.<br>|
 |» » announced|string(date-time)|true|none|Date of the deprecation announcement.<br>|
@@ -27156,7 +27121,6 @@ Gets all Server type objects.
       "cores": 2,
       "memory": 4,
       "disk": 80,
-      "deprecated": false,
       "prices": [
         {
           "location": "fsn1",
@@ -27255,7 +27219,6 @@ Status Code **200**
 |» cores|number|true|none|Number of cpu cores a Server of this type will have.|
 |» memory|number|true|none|Memory a Server of this type will have in GB.|
 |» disk|number|true|none|Disk size a Server of this type will have in GB.|
-|» deprecated|boolean|true|none|This field is deprecated. Use the deprecation object instead.|
 |» prices|[object]|true|none|Price per [Location](#tag/locations).|
 |» » location|string|true|none|Name of the [Location](#tag/locations) the price is for.|
 |» » price_hourly|object|true|none|Hourly price in this [Location](#tag/locations).|
@@ -27362,7 +27325,6 @@ Gets a specific Server type object.
     "cores": 2,
     "memory": 4,
     "disk": 80,
-    "deprecated": false,
     "prices": [
       {
         "location": "fsn1",
@@ -27450,7 +27412,6 @@ Status Code **200**
 |» cores|number|true|none|Number of cpu cores a Server of this type will have.|
 |» memory|number|true|none|Memory a Server of this type will have in GB.|
 |» disk|number|true|none|Disk size a Server of this type will have in GB.|
-|» deprecated|boolean|true|none|This field is deprecated. Use the deprecation object instead.|
 |» prices|[object]|true|none|Price per [Location](#tag/locations).|
 |» » location|string|true|none|Name of the [Location](#tag/locations) the price is for.|
 |» » price_hourly|object|true|none|Hourly price in this [Location](#tag/locations).|

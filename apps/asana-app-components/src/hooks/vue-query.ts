@@ -1,0 +1,1127 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getActionMetadataUrlPathPlaceholderKey() {
+  return ['action.metadata_url_path_placeholder'] as const
+}
+
+export function getActionOnChangeCallbackPathPlaceholderKey() {
+  return ['action.on_change_callback_path_placeholder'] as const
+}
+
+export function getActionOnSubmitCallbackPathPlaceholderKey() {
+  return ['action.on_submit_callback_path_placeholder'] as const
+}
+
+export function getFormMetadataUrlPathPlaceholderKey() {
+  return ['form_metadata_url_path_placeholder'] as const
+}
+
+export function getModalFormTypeaheadUrlPathPlaceholderKey() {
+  return ['modal_form_typeahead_url_path_placeholder'] as const
+}
+
+export function getOnChangeCallbackPathPlaceholderKey() {
+  return ['on_change_callback_path_placeholder'] as const
+}
+
+export function getOnSubmitCallbackPathPlaceholderKey() {
+  return ['on_submit_callback_path_placeholder'] as const
+}
+
+export function getResourceAttachUrlPathPlaceholderKey() {
+  return ['resource_attach_url_path_placeholder'] as const
+}
+
+export function getResourceTypeaheadUrlPathPlaceholderKey() {
+  return ['resource_typeahead_url_path_placeholder'] as const
+}
+
+export function getRuleActionTypeaheadUrlPathPlaceholderKey() {
+  return ['rule_action_typeahead_url_path_placeholder'] as const
+}
+
+export function getRunActionUrlPathPlaceholderKey() {
+  return ['run_action_url_path_placeholder'] as const
+}
+
+export function getWidgetMetadataUrlPathPlaceholderKey() {
+  return ['widget_metadata_url_path_placeholder'] as const
+}
+
+export function getWidgetMetadataUrlPathPlaceholderQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.widget_metadata_url_path_placeholder.$get>>,
+) {
+  return [
+    'widget_metadata_url_path_placeholder',
+    '/widget_metadata_url_path_placeholder',
+    toValue(args),
+  ] as const
+}
+
+export function getWidgetMetadataUrlPathPlaceholderQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.widget_metadata_url_path_placeholder.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getWidgetMetadataUrlPathPlaceholderQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.widget_metadata_url_path_placeholder.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useWidgetMetadataUrlPathPlaceholder<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.widget_metadata_url_path_placeholder.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.widget_metadata_url_path_placeholder.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.widget_metadata_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.widget_metadata_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          ReturnType<typeof getWidgetMetadataUrlPathPlaceholderQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.widget_metadata_url_path_placeholder.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getWidgetMetadataUrlPathPlaceholderQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getWidgetMetadataUrlPathPlaceholderQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.widget_metadata_url_path_placeholder.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostResourceAttachUrlPathPlaceholderMutationKey() {
+  return [
+    'resource_attach_url_path_placeholder',
+    '/resource_attach_url_path_placeholder',
+    'POST',
+  ] as const
+}
+
+export function getPostResourceAttachUrlPathPlaceholderMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.resource_attach_url_path_placeholder.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.resource_attach_url_path_placeholder.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostResourceAttachUrlPathPlaceholderMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.resource_attach_url_path_placeholder.$post>,
+    ) {
+      return parseResponse(client.resource_attach_url_path_placeholder.$post(args, options))
+    },
+  })
+}
+
+export function usePostResourceAttachUrlPathPlaceholder<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.resource_attach_url_path_placeholder.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.resource_attach_url_path_placeholder.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostResourceAttachUrlPathPlaceholderMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getResourceTypeaheadUrlPathPlaceholderQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.resource_typeahead_url_path_placeholder.$get>
+  >,
+) {
+  return [
+    'resource_typeahead_url_path_placeholder',
+    '/resource_typeahead_url_path_placeholder',
+    toValue(args),
+  ] as const
+}
+
+export function getResourceTypeaheadUrlPathPlaceholderQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.resource_typeahead_url_path_placeholder.$get>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getResourceTypeaheadUrlPathPlaceholderQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.resource_typeahead_url_path_placeholder.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useResourceTypeaheadUrlPathPlaceholder<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.resource_typeahead_url_path_placeholder.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.resource_typeahead_url_path_placeholder.$get>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.resource_typeahead_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.resource_typeahead_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          ReturnType<typeof getResourceTypeaheadUrlPathPlaceholderQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.resource_typeahead_url_path_placeholder.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getResourceTypeaheadUrlPathPlaceholderQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getResourceTypeaheadUrlPathPlaceholderQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.resource_typeahead_url_path_placeholder.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormMetadataUrlPathPlaceholderQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.form_metadata_url_path_placeholder.$get>>,
+) {
+  return [
+    'form_metadata_url_path_placeholder',
+    '/form_metadata_url_path_placeholder',
+    toValue(args),
+  ] as const
+}
+
+export function getFormMetadataUrlPathPlaceholderQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.form_metadata_url_path_placeholder.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormMetadataUrlPathPlaceholderQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.form_metadata_url_path_placeholder.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormMetadataUrlPathPlaceholder<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.form_metadata_url_path_placeholder.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.form_metadata_url_path_placeholder.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.form_metadata_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.form_metadata_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormMetadataUrlPathPlaceholderQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.form_metadata_url_path_placeholder.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormMetadataUrlPathPlaceholderQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormMetadataUrlPathPlaceholderQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.form_metadata_url_path_placeholder.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getModalFormTypeaheadUrlPathPlaceholderQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.modal_form_typeahead_url_path_placeholder.$get>
+  >,
+) {
+  return [
+    'modal_form_typeahead_url_path_placeholder',
+    '/modal_form_typeahead_url_path_placeholder',
+    toValue(args),
+  ] as const
+}
+
+export function getModalFormTypeaheadUrlPathPlaceholderQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.modal_form_typeahead_url_path_placeholder.$get>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getModalFormTypeaheadUrlPathPlaceholderQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.modal_form_typeahead_url_path_placeholder.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useModalFormTypeaheadUrlPathPlaceholder<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.modal_form_typeahead_url_path_placeholder.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.modal_form_typeahead_url_path_placeholder.$get>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.modal_form_typeahead_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.modal_form_typeahead_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          ReturnType<typeof getModalFormTypeaheadUrlPathPlaceholderQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.modal_form_typeahead_url_path_placeholder.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getModalFormTypeaheadUrlPathPlaceholderQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getModalFormTypeaheadUrlPathPlaceholderQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.modal_form_typeahead_url_path_placeholder.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getRuleActionTypeaheadUrlPathPlaceholderQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.rule_action_typeahead_url_path_placeholder.$get>
+  >,
+) {
+  return [
+    'rule_action_typeahead_url_path_placeholder',
+    '/rule_action_typeahead_url_path_placeholder',
+    toValue(args),
+  ] as const
+}
+
+export function getRuleActionTypeaheadUrlPathPlaceholderQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.rule_action_typeahead_url_path_placeholder.$get>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getRuleActionTypeaheadUrlPathPlaceholderQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.rule_action_typeahead_url_path_placeholder.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useRuleActionTypeaheadUrlPathPlaceholder<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<typeof client.rule_action_typeahead_url_path_placeholder.$get>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<typeof client.rule_action_typeahead_url_path_placeholder.$get>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.rule_action_typeahead_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.rule_action_typeahead_url_path_placeholder.$get>>
+              >
+            >
+          >,
+          ReturnType<typeof getRuleActionTypeaheadUrlPathPlaceholderQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.rule_action_typeahead_url_path_placeholder.$get>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getRuleActionTypeaheadUrlPathPlaceholderQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getRuleActionTypeaheadUrlPathPlaceholderQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.rule_action_typeahead_url_path_placeholder.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostOnChangeCallbackPathPlaceholderMutationKey() {
+  return [
+    'on_change_callback_path_placeholder',
+    '/on_change_callback_path_placeholder',
+    'POST',
+  ] as const
+}
+
+export function getPostOnChangeCallbackPathPlaceholderMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.on_change_callback_path_placeholder.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.on_change_callback_path_placeholder.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostOnChangeCallbackPathPlaceholderMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.on_change_callback_path_placeholder.$post>,
+    ) {
+      return parseResponse(client.on_change_callback_path_placeholder.$post(args, options))
+    },
+  })
+}
+
+export function usePostOnChangeCallbackPathPlaceholder<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.on_change_callback_path_placeholder.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.on_change_callback_path_placeholder.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostOnChangeCallbackPathPlaceholderMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostOnSubmitCallbackPathPlaceholderMutationKey() {
+  return [
+    'on_submit_callback_path_placeholder',
+    '/on_submit_callback_path_placeholder',
+    'POST',
+  ] as const
+}
+
+export function getPostOnSubmitCallbackPathPlaceholderMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.on_submit_callback_path_placeholder.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.on_submit_callback_path_placeholder.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostOnSubmitCallbackPathPlaceholderMutationKey(),
+    async mutationFn(
+      args: InferRequestType<typeof client.on_submit_callback_path_placeholder.$post>,
+    ) {
+      return parseResponse(client.on_submit_callback_path_placeholder.$post(args, options))
+    },
+  })
+}
+
+export function usePostOnSubmitCallbackPathPlaceholder<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.on_submit_callback_path_placeholder.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.on_submit_callback_path_placeholder.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostOnSubmitCallbackPathPlaceholderMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostRunActionUrlPathPlaceholderMutationKey() {
+  return ['run_action_url_path_placeholder', '/run_action_url_path_placeholder', 'POST'] as const
+}
+
+export function getPostRunActionUrlPathPlaceholderMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<typeof client.run_action_url_path_placeholder.$post>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.run_action_url_path_placeholder.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostRunActionUrlPathPlaceholderMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.run_action_url_path_placeholder.$post>) {
+      return parseResponse(client.run_action_url_path_placeholder.$post(args, options))
+    },
+  })
+}
+
+export function usePostRunActionUrlPathPlaceholder<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.run_action_url_path_placeholder.$post>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.run_action_url_path_placeholder.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostRunActionUrlPathPlaceholderMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getActionMetadataUrlPathPlaceholderQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['action.metadata_url_path_placeholder']['$get']>
+  >,
+) {
+  return [
+    'action.metadata_url_path_placeholder',
+    '/action.metadata_url_path_placeholder',
+    toValue(args),
+  ] as const
+}
+
+export function getActionMetadataUrlPathPlaceholderQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['action.metadata_url_path_placeholder']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getActionMetadataUrlPathPlaceholderQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client['action.metadata_url_path_placeholder'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useActionMetadataUrlPathPlaceholder<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)['action.metadata_url_path_placeholder']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)['action.metadata_url_path_placeholder']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['action.metadata_url_path_placeholder']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['action.metadata_url_path_placeholder']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getActionMetadataUrlPathPlaceholderQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)['action.metadata_url_path_placeholder']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getActionMetadataUrlPathPlaceholderQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getActionMetadataUrlPathPlaceholderQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client['action.metadata_url_path_placeholder'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostActionOnChangeCallbackPathPlaceholderMutationKey() {
+  return [
+    'action.on_change_callback_path_placeholder',
+    '/action.on_change_callback_path_placeholder',
+    'POST',
+  ] as const
+}
+
+export function getPostActionOnChangeCallbackPathPlaceholderMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client)['action.on_change_callback_path_placeholder']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client)['action.on_change_callback_path_placeholder']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostActionOnChangeCallbackPathPlaceholderMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client)['action.on_change_callback_path_placeholder']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client['action.on_change_callback_path_placeholder'].$post(args, options),
+      )
+    },
+  })
+}
+
+export function usePostActionOnChangeCallbackPathPlaceholder<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)['action.on_change_callback_path_placeholder']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client)['action.on_change_callback_path_placeholder']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostActionOnChangeCallbackPathPlaceholderMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostActionOnSubmitCallbackPathPlaceholderMutationKey() {
+  return [
+    'action.on_submit_callback_path_placeholder',
+    '/action.on_submit_callback_path_placeholder',
+    'POST',
+  ] as const
+}
+
+export function getPostActionOnSubmitCallbackPathPlaceholderMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client)['action.on_submit_callback_path_placeholder']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client)['action.on_submit_callback_path_placeholder']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostActionOnSubmitCallbackPathPlaceholderMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client)['action.on_submit_callback_path_placeholder']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client['action.on_submit_callback_path_placeholder'].$post(args, options),
+      )
+    },
+  })
+}
+
+export function usePostActionOnSubmitCallbackPathPlaceholder<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)['action.on_submit_callback_path_placeholder']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client)['action.on_submit_callback_path_placeholder']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostActionOnSubmitCallbackPathPlaceholderMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

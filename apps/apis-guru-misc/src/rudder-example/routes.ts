@@ -60,6 +60,153 @@ type TechniqueBlockType = {
   reportingLogic?: { type?: string; value?: string }
 }
 
+const TechniqueBlockSchema: z.ZodType<TechniqueBlockType> = z
+  .lazy(() =>
+    z
+      .object({
+        calls: z
+          .array(z.xor([TechniqueMethodCallSchema, TechniqueBlockSchema]))
+          .exactOptional()
+          .openapi({ description: 'Method and blocks contained by this block', example: [] }),
+        component: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Component is used in reporting to identify this method call. You can see it as a name',
+            example: 'Install my app',
+          }),
+        condition: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Condition to run this method.',
+            example: 'linux.package_present_vim_repaired',
+          }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Method call id',
+            example: '6a8de98f-7829-4c1b-b4e7-b9387f27f279',
+          }),
+        reportingLogic: z
+          .object({
+            type: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'kind of reporting logic', example: 'worst' }),
+            value: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'reporting value used for some reporting logic (ie focus)',
+                example: 'id/name of a component',
+              }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('TechniqueBlock')
+
+const TechniqueParameterSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'description of this parameter',
+        example: 'Name of a package to install',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'parameter id', example: '6a8de98f-7829-4c1b-b4e7-b9387f27f279' }),
+    mayBeEmpty: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'May the value given when creating a directive be empty',
+        example: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Parameter name', example: 'Package to install' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TechniqueParameter')
+
+const TechniqueResourceSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'resource name. this is the relative path to the resource',
+        example: 'conf/my/app/new',
+      }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'State of the resource file. it can be a value between new, modified, deleted, untouched',
+        example: 'modified',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TechniqueResource')
+
+const EditorTechniqueSchema = z
+  .object({
+    calls: z
+      .array(z.xor([TechniqueMethodCallSchema, TechniqueBlockSchema]))
+      .exactOptional()
+      .openapi({ description: 'Method and blocks contained by this technique' }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'category of this technique', example: 'user_techniques' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'description of this technique',
+        example: 'This techniques apply generic security policies',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Technique id', example: 'security-policy' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Technique name', example: 'Security Policy' }),
+    parameters: z
+      .array(TechniqueParameterSchema)
+      .exactOptional()
+      .openapi({ description: 'Parameters for this technique' }),
+    resources: z
+      .array(TechniqueResourceSchema)
+      .exactOptional()
+      .openapi({ description: 'Resources for this technique' }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Source of the technique, always editor here', example: 'editor' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'version of this technique', example: '1.0' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EditorTechnique')
+
+type TechniquesType = z.infer<typeof EditorTechniqueSchema>[]
+
 const AgentKeySchema = z
   .object({
     status: z
@@ -258,7 +405,12 @@ const CategoriesTreeSchema = z
             example: 'systemSettings/systemManagement',
             type: 'string',
           },
-          subcategories: { description: 'List of sub categories', example: [], type: 'array' },
+          subcategories: {
+            description: 'List of sub categories',
+            example: [],
+            items: [{ $ref: '#/components/schemas/category' }],
+            type: 'array',
+          },
         },
         required: ['name', 'path', 'id', 'subcategories'],
         type: 'object',
@@ -572,7 +724,7 @@ const DirectiveSchema = z
         example: '# Documentation\n* [Ticket link](https://tickets.example.com/issues/3456)',
       }),
     parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Directive parameters (depends on the source technique)',
@@ -712,7 +864,7 @@ const DirectiveNewSchema = z
         example: '# Documentation\n* [Ticket link](https://tickets.example.com/issues/3456)',
       }),
     parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Directive parameters (depends on the source technique)',
@@ -830,151 +982,6 @@ const DirectiveNewSchema = z
   })
   .openapi({ required: [] })
   .openapi('DirectiveNew')
-
-const TechniqueBlockSchema: z.ZodType<TechniqueBlockType> = z
-  .lazy(() =>
-    z
-      .object({
-        calls: z
-          .array(z.xor([TechniqueMethodCallSchema, TechniqueBlockSchema]))
-          .exactOptional()
-          .openapi({ description: 'Method and blocks contained by this block', example: [] }),
-        component: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Component is used in reporting to identify this method call. You can see it as a name',
-            example: 'Install my app',
-          }),
-        condition: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Condition to run this method.',
-            example: 'linux.package_present_vim_repaired',
-          }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Method call id',
-            example: '6a8de98f-7829-4c1b-b4e7-b9387f27f279',
-          }),
-        reportingLogic: z
-          .object({
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'kind of reporting logic', example: 'worst' }),
-            value: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'reporting value used for some reporting logic (ie focus)',
-                example: 'id/name of a component',
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('TechniqueBlock')
-
-const TechniqueParameterSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'description of this parameter',
-        example: 'Name of a package to install',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'parameter id', example: '6a8de98f-7829-4c1b-b4e7-b9387f27f279' }),
-    mayBeEmpty: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'May the value given when creating a directive be empty',
-        example: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Parameter name', example: 'Package to install' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TechniqueParameter')
-
-const TechniqueResourceSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'resource name. this is the relative path to the resource',
-        example: 'conf/my/app/new',
-      }),
-    state: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'State of the resource file. it can be a value between new, modified, deleted, untouched',
-        example: 'modified',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TechniqueResource')
-
-const EditorTechniqueSchema = z
-  .object({
-    calls: z
-      .array(z.xor([TechniqueMethodCallSchema, TechniqueBlockSchema]))
-      .exactOptional()
-      .openapi({ description: 'Method and blocks contained by this technique' }),
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'category of this technique', example: 'user_techniques' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'description of this technique',
-        example: 'This techniques apply generic security policies',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Technique id', example: 'security-policy' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Technique name', example: 'Security Policy' }),
-    parameters: z
-      .array(TechniqueParameterSchema)
-      .exactOptional()
-      .openapi({ description: 'Parameters for this technique' }),
-    resources: z
-      .array(TechniqueResourceSchema)
-      .exactOptional()
-      .openapi({ description: 'Resources for this technique' }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Source of the technique, always editor here', example: 'editor' }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'version of this technique', example: '1.0' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EditorTechnique')
 
 const GroupSchema = z
   .object({
@@ -2962,7 +2969,7 @@ const SecretsSchema = z
   .openapi({ required: [] })
   .openapi('Secrets')
 
-const TechniquesSchema = z
+const TechniquesSchema: z.ZodType<TechniquesType> = z
   .array(EditorTechniqueSchema)
   .openapi({
     'x-definitions': {
@@ -5661,7 +5668,7 @@ export const getGroupsTreeRoute = createRoute({
               data: z
                 .object({
                   groupCategories: z
-                    .object({})
+                    .looseObject({})
                     .openapi({ description: 'Group tree', example: null }),
                 })
                 .openapi({
@@ -7211,7 +7218,9 @@ export const getRulesTreeRoute = createRoute({
               action: z.literal('GetRuleTree').openapi({ description: 'The id of the action' }),
               data: z
                 .object({
-                  ruleCategories: z.object({}).openapi({ description: 'Rule tree', example: null }),
+                  ruleCategories: z
+                    .looseObject({})
+                    .openapi({ description: 'Rule tree', example: null }),
                 })
                 .openapi({
                   example: {
@@ -8120,7 +8129,7 @@ export const postSettingsAllowedNetworksNodeIdRoute = createRoute({
           schema: z
             .object({
               value: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'New value of the allowed networks', example: 'enforce' }),
             })

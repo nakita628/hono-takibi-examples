@@ -1,11 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type StringType = string
-
-const StringSchema: z.ZodType<StringType> = z.string().openapi('String')
-
-type StringMapType = { [key: string]: z.infer<typeof StringSchema> }
-
 const XmlStringMaxLen256Schema = z
   .string()
   .min(0)
@@ -15,177 +9,80 @@ const XmlStringMaxLen256Schema = z
   })
   .openapi('XmlStringMaxLen256')
 
-const XmlStringSchema = z
-  .string()
-  .min(0)
-  .max(10280)
-  .openapi({
-    'x-pattern': '[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*',
-  })
-  .openapi('XmlString')
-
-const XmlStringListSchema = z.array(XmlStringSchema).openapi('XmlStringList')
-
-const ScriptBootstrapActionConfigSchema = z
-  .object({
-    Path: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Location in Amazon S3 of the script to run during a bootstrap action.',
-        }),
-    ),
-    Args: XmlStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of command line arguments to pass to the bootstrap action script.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Path'],
-    description: 'Configuration of the script to run during a bootstrap action.',
-  })
-  .openapi('ScriptBootstrapActionConfig')
-
-type BootstrapActionConfigType = {
-  Name: z.infer<typeof XmlStringMaxLen256Schema> & { [key: string]: unknown }
-  ScriptBootstrapAction: z.infer<typeof ScriptBootstrapActionConfigSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const ConfigurationSchema: z.ZodType<ConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        Classification: StringSchema.and(
-          z.any().openapi({ description: 'The classification within a configuration.' }),
-        ).exactOptional(),
-        Configurations: ConfigurationListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of additional configurations to apply within a configuration object.',
-            }),
-        ).exactOptional(),
-        Properties: StringMapSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'A set of properties specified within a configuration classification.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          '<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>An optional configuration specification to be used when provisioning cluster instances, which can include configurations for applications and software bundled with Amazon EMR. A configuration consists of a classification, properties, and optional nested configurations. A classification refers to an application-specific configuration file. Properties are the settings you want to change in that file. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html">Configuring Applications</a>.</p>',
-        required: [],
-      }),
-  )
-  .openapi('Configuration')
-
-type ConfigurationListType = z.infer<typeof ConfigurationSchema>[]
-
-const ConfigurationListSchema: z.ZodType<ConfigurationListType> = z
-  .lazy(() => z.array(ConfigurationSchema))
-  .openapi('ConfigurationList')
-
-const StringMapSchema: z.ZodType<StringMapType> = z
-  .record(z.string(), StringSchema)
-  .openapi('StringMap')
-
-type ConfigurationType = {
-  Classification?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  Configurations?: z.infer<typeof ConfigurationListSchema> & { [key: string]: unknown }
-  Properties?: z.infer<typeof StringMapSchema> & { [key: string]: unknown }
-}
-
-const ActionOnFailureSchema = z
-  .enum(['TERMINATE_JOB_FLOW', 'TERMINATE_CLUSTER', 'CANCEL_AND_WAIT', 'CONTINUE'])
-  .openapi('ActionOnFailure')
-
-const KeyValueSchema = z
-  .object({
-    Key: XmlStringSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a key-value pair.' }),
-    ).exactOptional(),
-    Value: XmlStringSchema.and(
-      z.any().openapi({ description: 'The value part of the identified key.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'A key-value pair.', required: [] })
-  .openapi('KeyValue')
-
-const KeyValueListSchema = z.array(KeyValueSchema).openapi('KeyValueList')
-
-const HadoopJarStepConfigSchema = z
-  .object({
-    Properties: KeyValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Java properties that are set when the step runs. You can use these properties to pass key-value pairs to your main function.',
-        }),
-    ).exactOptional(),
-    Jar: XmlStringSchema.and(
-      z.any().openapi({ description: 'A path to a JAR file run during the step.' }),
-    ),
-    MainClass: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the main class in the specified Java file. If not specified, the JAR file should specify a Main-Class in its manifest file.',
-        }),
-    ).exactOptional(),
-    Args: XmlStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of command line arguments passed to the JAR file's main function when executed.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Jar'],
-    description:
-      'A job flow step consisting of a JAR file whose main function will be executed. The main function submits a job for Hadoop to execute and waits for the job to finish or fail.',
-  })
-  .openapi('HadoopJarStepConfig')
-
-type StepConfigType = {
-  Name: z.infer<typeof XmlStringMaxLen256Schema> & { [key: string]: unknown }
-  ActionOnFailure?: z.infer<typeof ActionOnFailureSchema> & { [key: string]: unknown }
-  HadoopJarStep: z.infer<typeof HadoopJarStepConfigSchema> & { [key: string]: unknown }
-}
-
-const InstanceFleetIdSchema = z.string().openapi('InstanceFleetId')
-
-const ArnTypeSchema = z.string().min(20).max(2048).openapi('ArnType')
-
-const AddInstanceFleetOutputSchema = z
-  .object({
-    ClusterId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique identifier of the cluster.' }),
-    ).exactOptional(),
-    InstanceFleetId: InstanceFleetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the instance fleet.' }),
-    ).exactOptional(),
-    ClusterArn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the cluster.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddInstanceFleetOutput')
-
 const InstanceFleetTypeSchema = z.enum(['MASTER', 'CORE', 'TASK']).openapi('InstanceFleetType')
 
 const WholeNumberSchema = z.int().min(0).openapi('WholeNumber')
+
+const InstanceIdSchema = z.string().openapi('InstanceId')
+
+type StringType = string
+
+const StringSchema: z.ZodType<StringType> = z.string().openapi('String')
+
+const InstanceStateSchema = z
+  .enum(['AWAITING_FULFILLMENT', 'PROVISIONING', 'BOOTSTRAPPING', 'RUNNING', 'TERMINATED'])
+  .openapi('InstanceState')
+
+const InstanceStateChangeReasonCodeSchema = z
+  .enum([
+    'INTERNAL_ERROR',
+    'VALIDATION_ERROR',
+    'INSTANCE_FAILURE',
+    'BOOTSTRAP_FAILURE',
+    'CLUSTER_TERMINATED',
+  ])
+  .openapi('InstanceStateChangeReasonCode')
+
+const InstanceStateChangeReasonSchema = z
+  .object({
+    Code: InstanceStateChangeReasonCodeSchema.exactOptional().openapi({
+      description: 'The programmable code for the state change reason.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'The status change reason description.',
+    }),
+  })
+  .openapi({
+    description: 'The details of the status change reason for the instance.',
+    required: [],
+  })
+  .openapi('InstanceStateChangeReason')
+
+const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
+
+const InstanceTimelineSchema = z
+  .object({
+    CreationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time of the instance.',
+    }),
+    ReadyDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the instance was ready to perform tasks.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the instance was terminated.',
+    }),
+  })
+  .openapi({ description: 'The timeline of the instance lifecycle.', required: [] })
+  .openapi('InstanceTimeline')
+
+const InstanceStatusSchema = z
+  .object({
+    State: InstanceStateSchema.exactOptional().openapi({
+      description: 'The current state of the instance.',
+    }),
+    StateChangeReason: InstanceStateChangeReasonSchema.exactOptional().openapi({
+      description: 'The details of the status change reason for the instance.',
+    }),
+    Timeline: InstanceTimelineSchema.exactOptional().openapi({
+      description: 'The timeline of the instance status over time.',
+    }),
+  })
+  .openapi({ description: 'The instance status details.', required: [] })
+  .openapi('InstanceStatus')
+
+const InstanceFleetIdSchema = z.string().openapi('InstanceFleetId')
+
+const MarketTypeSchema = z.enum(['ON_DEMAND', 'SPOT']).openapi('MarketType')
 
 const InstanceTypeSchema = z
   .string()
@@ -196,6 +93,35 @@ const InstanceTypeSchema = z
   })
   .openapi('InstanceType')
 
+const EbsVolumeSchema = z
+  .object({
+    Device: StringSchema.exactOptional().openapi({
+      description: 'The device name that is exposed to the instance, such as /dev/sdh.',
+    }),
+    VolumeId: StringSchema.exactOptional().openapi({
+      description: 'The volume identifier of the EBS volume.',
+    }),
+  })
+  .openapi({ description: "EBS block device that's attached to an EC2 instance.", required: [] })
+  .openapi('EbsVolume')
+
+const EbsVolumeListSchema = z.array(EbsVolumeSchema).openapi('EbsVolumeList')
+
+type InstanceType = {
+  Id?: z.infer<typeof InstanceIdSchema> & unknown
+  Ec2InstanceId?: z.infer<typeof InstanceIdSchema> & unknown
+  PublicDnsName?: z.infer<typeof StringSchema> & unknown
+  PublicIpAddress?: z.infer<typeof StringSchema> & unknown
+  PrivateDnsName?: z.infer<typeof StringSchema> & unknown
+  PrivateIpAddress?: z.infer<typeof StringSchema> & unknown
+  Status?: z.infer<typeof InstanceStatusSchema> & unknown
+  InstanceGroupId?: z.infer<typeof StringSchema> & unknown
+  InstanceFleetId?: z.infer<typeof InstanceFleetIdSchema> & unknown
+  Market?: z.infer<typeof MarketTypeSchema> & unknown
+  InstanceType?: z.infer<typeof InstanceTypeSchema> & unknown
+  EbsVolumes?: z.infer<typeof EbsVolumeListSchema> & unknown
+}
+
 const NonNegativeDoubleSchema = z.float64().min(0).openapi('NonNegativeDouble')
 
 const IntegerSchema = z.int().openapi('Integer')
@@ -204,37 +130,21 @@ const ThroughputValSchema = z.int().min(0).openapi('ThroughputVal')
 
 const VolumeSpecificationSchema = z
   .object({
-    VolumeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The volume type. Volume types supported are gp3, gp2, io1, st1, sc1, and standard.',
-        }),
-    ),
-    Iops: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of I/O operations per second (IOPS) that the volume supports.',
-        }),
-    ).exactOptional(),
-    SizeInGB: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The volume size, in gibibytes (GiB). This can be a number from 1 - 1024. If the volume type is EBS-optimized, the minimum value is 10.',
-        }),
-    ),
-    Throughput: ThroughputValSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The throughput, in mebibyte per second (MiB/s). This optional parameter can be a number from 125 - 1000 and is valid only for gp3 volumes.',
-        }),
-    ).exactOptional(),
+    VolumeType: StringSchema.openapi({
+      description:
+        'The volume type. Volume types supported are gp3, gp2, io1, st1, sc1, and standard.',
+    }),
+    Iops: IntegerSchema.exactOptional().openapi({
+      description: 'The number of I/O operations per second (IOPS) that the volume supports.',
+    }),
+    SizeInGB: IntegerSchema.openapi({
+      description:
+        'The volume size, in gibibytes (GiB). This can be a number from 1 - 1024. If the volume type is EBS-optimized, the minimum value is 10.',
+    }),
+    Throughput: ThroughputValSchema.exactOptional().openapi({
+      description:
+        'The throughput, in mebibyte per second (MiB/s). This optional parameter can be a number from 125 - 1000 and is valid only for gp3 volumes.',
+    }),
   })
   .openapi({
     required: ['VolumeType', 'SizeInGB'],
@@ -245,22 +155,14 @@ const VolumeSpecificationSchema = z
 
 const EbsBlockDeviceConfigSchema = z
   .object({
-    VolumeSpecification: VolumeSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an EC2 instance in the cluster.',
-        }),
-    ),
-    VolumesPerInstance: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Number of EBS volumes with a specific volume configuration that are associated with every instance in the instance group',
-        }),
-    ).exactOptional(),
+    VolumeSpecification: VolumeSpecificationSchema.openapi({
+      description:
+        'EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an EC2 instance in the cluster.',
+    }),
+    VolumesPerInstance: IntegerSchema.exactOptional().openapi({
+      description:
+        'Number of EBS volumes with a specific volume configuration that are associated with every instance in the instance group',
+    }),
   })
   .openapi({
     required: ['VolumeSpecification'],
@@ -277,69 +179,48 @@ const BooleanObjectSchema = z.boolean().openapi('BooleanObject')
 
 const EbsConfigurationSchema = z
   .object({
-    EbsBlockDeviceConfigs: EbsBlockDeviceConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Amazon EBS volume specifications attached to a cluster instance.',
-        }),
-    ).exactOptional(),
-    EbsOptimized: BooleanObjectSchema.and(
-      z.any().openapi({ description: 'Indicates whether an Amazon EBS volume is EBS-optimized.' }),
-    ).exactOptional(),
+    EbsBlockDeviceConfigs: EbsBlockDeviceConfigListSchema.exactOptional().openapi({
+      description: 'An array of Amazon EBS volume specifications attached to a cluster instance.',
+    }),
+    EbsOptimized: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether an Amazon EBS volume is EBS-optimized.',
+    }),
   })
   .openapi({ description: 'The Amazon EBS configuration of a cluster instance.', required: [] })
   .openapi('EbsConfiguration')
 
+const ConfigurationListSchema: z.ZodType<ConfigurationListType> = z
+  .lazy(() => z.array(ConfigurationSchema))
+  .openapi('ConfigurationList')
+
 const InstanceTypeConfigSchema = z
   .object({
-    InstanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'An EC2 instance type, such as <code>m3.xlarge</code>. ' }),
-    ),
-    WeightedCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of units that a provisioned instance of this type provides toward fulfilling the target capacities defined in <a>InstanceFleetConfig</a>. This value is 1 for a master instance fleet, and must be 1 or greater for core and task instance fleets. Defaults to 1 if not specified. ',
-        }),
-    ).exactOptional(),
-    BidPrice: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bid price for each EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided, <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%. ',
-        }),
-    ).exactOptional(),
-    BidPriceAsPercentageOfOnDemandPrice: NonNegativeDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bid price, as a percentage of On-Demand price, for each EC2 Spot Instance as defined by <code>InstanceType</code>. Expressed as a number (for example, 20 specifies 20%). If neither <code>BidPrice</code> nor <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided, <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.',
-        }),
-    ).exactOptional(),
-    EbsConfiguration: EbsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration of Amazon Elastic Block Store (Amazon EBS) attached to each instance as defined by <code>InstanceType</code>. ',
-        }),
-    ).exactOptional(),
-    Configurations: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A configuration classification that applies when provisioning cluster instances, which can include configurations for applications and software that run on the cluster.',
-        }),
-    ).exactOptional(),
-    CustomAmiId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The custom AMI ID to use for the instance type.' }),
-    ).exactOptional(),
+    InstanceType: InstanceTypeSchema.openapi({
+      description: 'An EC2 instance type, such as <code>m3.xlarge</code>. ',
+    }),
+    WeightedCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of units that a provisioned instance of this type provides toward fulfilling the target capacities defined in <a>InstanceFleetConfig</a>. This value is 1 for a master instance fleet, and must be 1 or greater for core and task instance fleets. Defaults to 1 if not specified. ',
+    }),
+    BidPrice: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The bid price for each EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided, <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%. ',
+    }),
+    BidPriceAsPercentageOfOnDemandPrice: NonNegativeDoubleSchema.exactOptional().openapi({
+      description:
+        'The bid price, as a percentage of On-Demand price, for each EC2 Spot Instance as defined by <code>InstanceType</code>. Expressed as a number (for example, 20 specifies 20%). If neither <code>BidPrice</code> nor <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided, <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.',
+    }),
+    EbsConfiguration: EbsConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration of Amazon Elastic Block Store (Amazon EBS) attached to each instance as defined by <code>InstanceType</code>. ',
+    }),
+    Configurations: ConfigurationListSchema.exactOptional().openapi({
+      description:
+        'A configuration classification that applies when provisioning cluster instances, which can include configurations for applications and software that run on the cluster.',
+    }),
+    CustomAmiId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The custom AMI ID to use for the instance type.',
+    }),
   })
   .openapi({
     required: ['InstanceType'],
@@ -362,38 +243,22 @@ const SpotProvisioningAllocationStrategySchema = z
 
 const SpotProvisioningSpecificationSchema = z
   .object({
-    TimeoutDurationMinutes: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Spot provisioning timeout period in minutes. If Spot Instances are not provisioned within this time period, the <code>TimeOutAction</code> is taken. Minimum value is 5 and maximum value is 1440. The timeout applies only during initial provisioning, when the cluster is first created.',
-        }),
-    ),
-    TimeoutAction: SpotProvisioningTimeoutActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action to take when <code>TargetSpotCapacity</code> has not been fulfilled when the <code>TimeoutDurationMinutes</code> has expired; that is, when all Spot Instances could not be provisioned within the Spot provisioning timeout. Valid values are <code>TERMINATE_CLUSTER</code> and <code>SWITCH_TO_ON_DEMAND</code>. SWITCH_TO_ON_DEMAND specifies that if no Spot Instances are available, On-Demand Instances should be provisioned to fulfill any remaining Spot capacity.',
-        }),
-    ),
-    BlockDurationMinutes: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The defined duration for Spot Instances (also known as Spot blocks) in minutes. When specified, the Spot Instance does not terminate before the defined duration expires, and defined duration pricing for Spot Instances applies. Valid values are 60, 120, 180, 240, 300, or 360. The duration period starts as soon as a Spot Instance receives its instance ID. At the end of the duration, Amazon EC2 marks the Spot Instance for termination and provides a Spot Instance termination notice, which gives the instance a two-minute warning before it terminates. </p> <note> <p>Spot Instances with a defined duration (also known as Spot blocks) are no longer available to new customers from July 1, 2021. For customers who have previously used the feature, we will continue to support Spot Instances with a defined duration until December 31, 2022. </p> </note>',
-        }),
-    ).exactOptional(),
-    AllocationStrategy: SpotProvisioningAllocationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the strategy to use in launching Spot Instance fleets. Currently, the only option is capacity-optimized (the default), which launches instances from Spot Instance pools with optimal capacity for the number of instances that are launching. ',
-        }),
-    ).exactOptional(),
+    TimeoutDurationMinutes: WholeNumberSchema.openapi({
+      description:
+        'The Spot provisioning timeout period in minutes. If Spot Instances are not provisioned within this time period, the <code>TimeOutAction</code> is taken. Minimum value is 5 and maximum value is 1440. The timeout applies only during initial provisioning, when the cluster is first created.',
+    }),
+    TimeoutAction: SpotProvisioningTimeoutActionSchema.openapi({
+      description:
+        'The action to take when <code>TargetSpotCapacity</code> has not been fulfilled when the <code>TimeoutDurationMinutes</code> has expired; that is, when all Spot Instances could not be provisioned within the Spot provisioning timeout. Valid values are <code>TERMINATE_CLUSTER</code> and <code>SWITCH_TO_ON_DEMAND</code>. SWITCH_TO_ON_DEMAND specifies that if no Spot Instances are available, On-Demand Instances should be provisioned to fulfill any remaining Spot capacity.',
+    }),
+    BlockDurationMinutes: WholeNumberSchema.exactOptional().openapi({
+      description:
+        '<p>The defined duration for Spot Instances (also known as Spot blocks) in minutes. When specified, the Spot Instance does not terminate before the defined duration expires, and defined duration pricing for Spot Instances applies. Valid values are 60, 120, 180, 240, 300, or 360. The duration period starts as soon as a Spot Instance receives its instance ID. At the end of the duration, Amazon EC2 marks the Spot Instance for termination and provides a Spot Instance termination notice, which gives the instance a two-minute warning before it terminates. </p> <note> <p>Spot Instances with a defined duration (also known as Spot blocks) are no longer available to new customers from July 1, 2021. For customers who have previously used the feature, we will continue to support Spot Instances with a defined duration until December 31, 2022. </p> </note>',
+    }),
+    AllocationStrategy: SpotProvisioningAllocationStrategySchema.exactOptional().openapi({
+      description:
+        ' Specifies the strategy to use in launching Spot Instance fleets. Currently, the only option is capacity-optimized (the default), which launches instances from Spot Instance pools with optimal capacity for the number of instances that are launching. ',
+    }),
   })
   .openapi({
     required: ['TimeoutDurationMinutes', 'TimeoutAction'],
@@ -416,30 +281,19 @@ const OnDemandCapacityReservationPreferenceSchema = z
 
 const OnDemandCapacityReservationOptionsSchema = z
   .object({
-    UsageStrategy: OnDemandCapacityReservationUsageStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to use unused Capacity Reservations for fulfilling On-Demand capacity.</p> <p>If you specify <code>use-capacity-reservations-first</code>, the fleet uses unused Capacity Reservations to fulfill On-Demand capacity up to the target On-Demand capacity. If multiple instance pools have unused Capacity Reservations, the On-Demand allocation strategy (<code>lowest-price</code>) is applied. If the number of unused Capacity Reservations is less than the On-Demand target capacity, the remaining On-Demand target capacity is launched according to the On-Demand allocation strategy (<code>lowest-price</code>).</p> <p>If you do not specify a value, the fleet fulfills the On-Demand capacity according to the chosen On-Demand allocation strategy.</p>',
-        }),
-    ).exactOptional(),
-    CapacityReservationPreference: OnDemandCapacityReservationPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates the instance's Capacity Reservation preferences. Possible preferences include:</p> <ul> <li> <p> <code>open</code> - The instance can run in any open Capacity Reservation that has matching attributes (instance type, platform, Availability Zone).</p> </li> <li> <p> <code>none</code> - The instance avoids running in a Capacity Reservation even if one is available. The instance runs as an On-Demand Instance.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    CapacityReservationResourceGroupArn: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Capacity Reservation resource group in which to run the instance.',
-        }),
-    ).exactOptional(),
+    UsageStrategy: OnDemandCapacityReservationUsageStrategySchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to use unused Capacity Reservations for fulfilling On-Demand capacity.</p> <p>If you specify <code>use-capacity-reservations-first</code>, the fleet uses unused Capacity Reservations to fulfill On-Demand capacity up to the target On-Demand capacity. If multiple instance pools have unused Capacity Reservations, the On-Demand allocation strategy (<code>lowest-price</code>) is applied. If the number of unused Capacity Reservations is less than the On-Demand target capacity, the remaining On-Demand target capacity is launched according to the On-Demand allocation strategy (<code>lowest-price</code>).</p> <p>If you do not specify a value, the fleet fulfills the On-Demand capacity according to the chosen On-Demand allocation strategy.</p>',
+    }),
+    CapacityReservationPreference:
+      OnDemandCapacityReservationPreferenceSchema.exactOptional().openapi({
+        description:
+          "<p>Indicates the instance's Capacity Reservation preferences. Possible preferences include:</p> <ul> <li> <p> <code>open</code> - The instance can run in any open Capacity Reservation that has matching attributes (instance type, platform, Availability Zone).</p> </li> <li> <p> <code>none</code> - The instance avoids running in a Capacity Reservation even if one is available. The instance runs as an On-Demand Instance.</p> </li> </ul>",
+      }),
+    CapacityReservationResourceGroupArn: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The ARN of the Capacity Reservation resource group in which to run the instance.',
+    }),
   })
   .openapi({
     description:
@@ -450,22 +304,14 @@ const OnDemandCapacityReservationOptionsSchema = z
 
 const OnDemandProvisioningSpecificationSchema = z
   .object({
-    AllocationStrategy: OnDemandProvisioningAllocationStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the strategy to use in launching On-Demand instance fleets. Currently, the only option is <code>lowest-price</code> (the default), which launches the lowest price first.',
-        }),
-    ),
-    CapacityReservationOptions: OnDemandCapacityReservationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The launch specification for On-Demand instances in the instance fleet, which determines the allocation strategy.',
-        }),
-    ).exactOptional(),
+    AllocationStrategy: OnDemandProvisioningAllocationStrategySchema.openapi({
+      description:
+        'Specifies the strategy to use in launching On-Demand instance fleets. Currently, the only option is <code>lowest-price</code> (the default), which launches the lowest price first.',
+    }),
+    CapacityReservationOptions: OnDemandCapacityReservationOptionsSchema.exactOptional().openapi({
+      description:
+        'The launch specification for On-Demand instances in the instance fleet, which determines the allocation strategy.',
+    }),
   })
   .openapi({
     required: ['AllocationStrategy'],
@@ -476,22 +322,14 @@ const OnDemandProvisioningSpecificationSchema = z
 
 const InstanceFleetProvisioningSpecificationsSchema = z
   .object({
-    SpotSpecification: SpotProvisioningSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The launch specification for Spot instances in the fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.',
-        }),
-    ).exactOptional(),
-    OnDemandSpecification: OnDemandProvisioningSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR version 5.12.1 and later.</p> </note>',
-        }),
-    ).exactOptional(),
+    SpotSpecification: SpotProvisioningSpecificationSchema.exactOptional().openapi({
+      description:
+        'The launch specification for Spot instances in the fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.',
+    }),
+    OnDemandSpecification: OnDemandProvisioningSpecificationSchema.exactOptional().openapi({
+      description:
+        '<p> The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR version 5.12.1 and later.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -502,14 +340,10 @@ const InstanceFleetProvisioningSpecificationsSchema = z
 
 const SpotResizingSpecificationSchema = z
   .object({
-    TimeoutDurationMinutes: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Spot resize timeout in minutes. If Spot Instances are not provisioned within this time, the resize workflow will stop provisioning of Spot instances. Minimum value is 5 minutes and maximum value is 10,080 minutes (7 days). The timeout applies to all resize workflows on the Instance Fleet. The resize could be triggered by Amazon EMR Managed Scaling or by the customer (via Amazon EMR Console, Amazon EMR CLI modify-instance-fleet or Amazon EMR SDK ModifyInstanceFleet API) or by Amazon EMR due to Amazon EC2 Spot Reclamation.',
-        }),
-    ),
+    TimeoutDurationMinutes: WholeNumberSchema.openapi({
+      description:
+        'Spot resize timeout in minutes. If Spot Instances are not provisioned within this time, the resize workflow will stop provisioning of Spot instances. Minimum value is 5 minutes and maximum value is 10,080 minutes (7 days). The timeout applies to all resize workflows on the Instance Fleet. The resize could be triggered by Amazon EMR Managed Scaling or by the customer (via Amazon EMR Console, Amazon EMR CLI modify-instance-fleet or Amazon EMR SDK ModifyInstanceFleet API) or by Amazon EMR due to Amazon EC2 Spot Reclamation.',
+    }),
   })
   .openapi({
     required: ['TimeoutDurationMinutes'],
@@ -520,14 +354,10 @@ const SpotResizingSpecificationSchema = z
 
 const OnDemandResizingSpecificationSchema = z
   .object({
-    TimeoutDurationMinutes: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'On-Demand resize timeout in minutes. If On-Demand Instances are not provisioned within this time, the resize workflow stops. The minimum value is 5 minutes, and the maximum value is 10,080 minutes (7 days). The timeout applies to all resize workflows on the Instance Fleet. The resize could be triggered by Amazon EMR Managed Scaling or by the customer (via Amazon EMR Console, Amazon EMR CLI modify-instance-fleet or Amazon EMR SDK ModifyInstanceFleet API) or by Amazon EMR due to Amazon EC2 Spot Reclamation.',
-        }),
-    ),
+    TimeoutDurationMinutes: WholeNumberSchema.openapi({
+      description:
+        'On-Demand resize timeout in minutes. If On-Demand Instances are not provisioned within this time, the resize workflow stops. The minimum value is 5 minutes, and the maximum value is 10,080 minutes (7 days). The timeout applies to all resize workflows on the Instance Fleet. The resize could be triggered by Amazon EMR Managed Scaling or by the customer (via Amazon EMR Console, Amazon EMR CLI modify-instance-fleet or Amazon EMR SDK ModifyInstanceFleet API) or by Amazon EMR due to Amazon EC2 Spot Reclamation.',
+    }),
   })
   .openapi({
     required: ['TimeoutDurationMinutes'],
@@ -538,22 +368,14 @@ const OnDemandResizingSpecificationSchema = z
 
 const InstanceFleetResizingSpecificationsSchema = z
   .object({
-    SpotResizeSpecification: SpotResizingSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resize specification for Spot Instances in the instance fleet, which contains the resize timeout period. ',
-        }),
-    ).exactOptional(),
-    OnDemandResizeSpecification: OnDemandResizingSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resize specification for On-Demand Instances in the instance fleet, which contains the resize timeout period. ',
-        }),
-    ).exactOptional(),
+    SpotResizeSpecification: SpotResizingSpecificationSchema.exactOptional().openapi({
+      description:
+        'The resize specification for Spot Instances in the instance fleet, which contains the resize timeout period. ',
+    }),
+    OnDemandResizeSpecification: OnDemandResizingSpecificationSchema.exactOptional().openapi({
+      description:
+        'The resize specification for On-Demand Instances in the instance fleet, which contains the resize timeout period. ',
+    }),
   })
   .openapi({
     description: 'The resize specification for On-Demand and Spot Instances in the fleet.',
@@ -563,47 +385,31 @@ const InstanceFleetResizingSpecificationsSchema = z
 
 const InstanceFleetConfigSchema = z
   .object({
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The friendly name of the instance fleet.' }),
-    ).exactOptional(),
-    InstanceFleetType: InstanceFleetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The node type that the instance fleet hosts. Valid values are MASTER, CORE, and TASK.',
-        }),
-    ),
-    TargetOnDemandCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target capacity of On-Demand units for the instance fleet, which determines how many On-Demand Instances to provision. When the instance fleet launches, Amazon EMR tries to provision On-Demand Instances as specified by <a>InstanceTypeConfig</a>. Each instance configuration has a specified <code>WeightedCapacity</code>. When an On-Demand Instance is provisioned, the <code>WeightedCapacity</code> units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a <code>WeightedCapacity</code> of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units.</p> <note> <p>If not specified or set to 0, only Spot Instances are provisioned for the instance fleet using <code>TargetSpotCapacity</code>. At least one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> should be greater than 0. For a master instance fleet, only one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> can be specified, and its value must be 1.</p> </note>',
-        }),
-    ).exactOptional(),
-    TargetSpotCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target capacity of Spot units for the instance fleet, which determines how many Spot Instances to provision. When the instance fleet launches, Amazon EMR tries to provision Spot Instances as specified by <a>InstanceTypeConfig</a>. Each instance configuration has a specified <code>WeightedCapacity</code>. When a Spot Instance is provisioned, the <code>WeightedCapacity</code> units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a <code>WeightedCapacity</code> of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units.</p> <note> <p>If not specified or set to 0, only On-Demand Instances are provisioned for the instance fleet. At least one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> should be greater than 0. For a master instance fleet, only one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> can be specified, and its value must be 1.</p> </note>',
-        }),
-    ).exactOptional(),
-    InstanceTypeConfigs: InstanceTypeConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance type configurations that define the EC2 instances in the instance fleet.',
-        }),
-    ).exactOptional(),
-    LaunchSpecifications: InstanceFleetProvisioningSpecificationsSchema.and(
-      z.any().openapi({ description: 'The launch specification for the instance fleet.' }),
-    ).exactOptional(),
-    ResizeSpecifications: InstanceFleetResizingSpecificationsSchema.and(
-      z.any().openapi({ description: 'The resize specification for the instance fleet.' }),
-    ).exactOptional(),
+    Name: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The friendly name of the instance fleet.',
+    }),
+    InstanceFleetType: InstanceFleetTypeSchema.openapi({
+      description:
+        'The node type that the instance fleet hosts. Valid values are MASTER, CORE, and TASK.',
+    }),
+    TargetOnDemandCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        '<p>The target capacity of On-Demand units for the instance fleet, which determines how many On-Demand Instances to provision. When the instance fleet launches, Amazon EMR tries to provision On-Demand Instances as specified by <a>InstanceTypeConfig</a>. Each instance configuration has a specified <code>WeightedCapacity</code>. When an On-Demand Instance is provisioned, the <code>WeightedCapacity</code> units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a <code>WeightedCapacity</code> of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units.</p> <note> <p>If not specified or set to 0, only Spot Instances are provisioned for the instance fleet using <code>TargetSpotCapacity</code>. At least one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> should be greater than 0. For a master instance fleet, only one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> can be specified, and its value must be 1.</p> </note>',
+    }),
+    TargetSpotCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        '<p>The target capacity of Spot units for the instance fleet, which determines how many Spot Instances to provision. When the instance fleet launches, Amazon EMR tries to provision Spot Instances as specified by <a>InstanceTypeConfig</a>. Each instance configuration has a specified <code>WeightedCapacity</code>. When a Spot Instance is provisioned, the <code>WeightedCapacity</code> units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a <code>WeightedCapacity</code> of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units.</p> <note> <p>If not specified or set to 0, only On-Demand Instances are provisioned for the instance fleet. At least one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> should be greater than 0. For a master instance fleet, only one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> can be specified, and its value must be 1.</p> </note>',
+    }),
+    InstanceTypeConfigs: InstanceTypeConfigListSchema.exactOptional().openapi({
+      description:
+        'The instance type configurations that define the EC2 instances in the instance fleet.',
+    }),
+    LaunchSpecifications: InstanceFleetProvisioningSpecificationsSchema.exactOptional().openapi({
+      description: 'The launch specification for the instance fleet.',
+    }),
+    ResizeSpecifications: InstanceFleetResizingSpecificationsSchema.exactOptional().openapi({
+      description: 'The resize specification for the instance fleet.',
+    }),
   })
   .openapi({
     required: ['InstanceFleetType'],
@@ -612,61 +418,23 @@ const InstanceFleetConfigSchema = z
   })
   .openapi('InstanceFleetConfig')
 
-const AddInstanceFleetInputSchema = z
-  .object({
-    ClusterId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique identifier of the cluster.' }),
-    ),
-    InstanceFleet: InstanceFleetConfigSchema.and(
-      z.any().openapi({ description: 'Specifies the configuration of the instance fleet.' }),
-    ),
-  })
-  .openapi({ required: ['ClusterId', 'InstanceFleet'], title: 'AddInstanceFleetInput' })
-  .openapi('AddInstanceFleetInput')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
-
-const InstanceGroupIdsListSchema = z.array(XmlStringMaxLen256Schema).openapi('InstanceGroupIdsList')
-
-const AddInstanceGroupsOutputSchema = z
-  .object({
-    JobFlowId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The job flow ID in which the instance groups are added.' }),
-    ).exactOptional(),
-    InstanceGroupIds: InstanceGroupIdsListSchema.and(
-      z.any().openapi({ description: 'Instance group IDs of the newly created instance groups.' }),
-    ).exactOptional(),
-    ClusterArn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the cluster.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Output from an AddInstanceGroups call.', required: [] })
-  .openapi('AddInstanceGroupsOutput')
-
-const MarketTypeSchema = z.enum(['ON_DEMAND', 'SPOT']).openapi('MarketType')
+type AddInstanceFleetInputType = {
+  ClusterId: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  InstanceFleet: z.infer<typeof InstanceFleetConfigSchema> & unknown
+}
 
 const InstanceRoleTypeSchema = z.enum(['MASTER', 'CORE', 'TASK']).openapi('InstanceRoleType')
 
 const ScalingConstraintsSchema = z
   .object({
-    MinCapacity: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The lower boundary of EC2 instances in an instance group below which scaling activities are not allowed to shrink. Scale-in activities will not terminate instances below this boundary.',
-        }),
-    ),
-    MaxCapacity: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upper boundary of EC2 instances in an instance group beyond which scaling activities are not allowed to grow. Scale-out activities will not add instances beyond this boundary.',
-        }),
-    ),
+    MinCapacity: IntegerSchema.openapi({
+      description:
+        'The lower boundary of EC2 instances in an instance group below which scaling activities are not allowed to shrink. Scale-in activities will not terminate instances below this boundary.',
+    }),
+    MaxCapacity: IntegerSchema.openapi({
+      description:
+        'The upper boundary of EC2 instances in an instance group beyond which scaling activities are not allowed to grow. Scale-out activities will not add instances beyond this boundary.',
+    }),
   })
   .openapi({
     required: ['MinCapacity', 'MaxCapacity'],
@@ -681,30 +449,18 @@ const AdjustmentTypeSchema = z
 
 const SimpleScalingPolicyConfigurationSchema = z
   .object({
-    AdjustmentType: AdjustmentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The way in which EC2 instances are added (if <code>ScalingAdjustment</code> is a positive number) or terminated (if <code>ScalingAdjustment</code> is a negative number) each time the scaling activity is triggered. <code>CHANGE_IN_CAPACITY</code> is the default. <code>CHANGE_IN_CAPACITY</code> indicates that the EC2 instance count increments or decrements by <code>ScalingAdjustment</code>, which should be expressed as an integer. <code>PERCENT_CHANGE_IN_CAPACITY</code> indicates the instance count increments or decrements by the percentage specified by <code>ScalingAdjustment</code>, which should be expressed as an integer. For example, 20 indicates an increase in 20% increments of cluster capacity. <code>EXACT_CAPACITY</code> indicates the scaling activity results in an instance group with the number of EC2 instances specified by <code>ScalingAdjustment</code>, which should be expressed as a positive integer.',
-        }),
-    ).exactOptional(),
-    ScalingAdjustment: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The amount by which to scale in or scale out, based on the specified <code>AdjustmentType</code>. A positive value adds to the instance group's EC2 instance count while a negative number removes instances. If <code>AdjustmentType</code> is set to <code>EXACT_CAPACITY</code>, the number should only be a positive integer. If <code>AdjustmentType</code> is set to <code>PERCENT_CHANGE_IN_CAPACITY</code>, the value should express the percentage as an integer. For example, -20 indicates a decrease in 20% increments of cluster capacity.",
-        }),
-    ),
-    CoolDown: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start. The default value is 0.',
-        }),
-    ).exactOptional(),
+    AdjustmentType: AdjustmentTypeSchema.exactOptional().openapi({
+      description:
+        'The way in which EC2 instances are added (if <code>ScalingAdjustment</code> is a positive number) or terminated (if <code>ScalingAdjustment</code> is a negative number) each time the scaling activity is triggered. <code>CHANGE_IN_CAPACITY</code> is the default. <code>CHANGE_IN_CAPACITY</code> indicates that the EC2 instance count increments or decrements by <code>ScalingAdjustment</code>, which should be expressed as an integer. <code>PERCENT_CHANGE_IN_CAPACITY</code> indicates the instance count increments or decrements by the percentage specified by <code>ScalingAdjustment</code>, which should be expressed as an integer. For example, 20 indicates an increase in 20% increments of cluster capacity. <code>EXACT_CAPACITY</code> indicates the scaling activity results in an instance group with the number of EC2 instances specified by <code>ScalingAdjustment</code>, which should be expressed as a positive integer.',
+    }),
+    ScalingAdjustment: IntegerSchema.openapi({
+      description:
+        "The amount by which to scale in or scale out, based on the specified <code>AdjustmentType</code>. A positive value adds to the instance group's EC2 instance count while a negative number removes instances. If <code>AdjustmentType</code> is set to <code>EXACT_CAPACITY</code>, the number should only be a positive integer. If <code>AdjustmentType</code> is set to <code>PERCENT_CHANGE_IN_CAPACITY</code>, the value should express the percentage as an integer. For example, -20 indicates a decrease in 20% increments of cluster capacity.",
+    }),
+    CoolDown: IntegerSchema.exactOptional().openapi({
+      description:
+        'The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start. The default value is 0.',
+    }),
   })
   .openapi({
     required: ['ScalingAdjustment'],
@@ -715,22 +471,14 @@ const SimpleScalingPolicyConfigurationSchema = z
 
 const ScalingActionSchema = z
   .object({
-    Market: MarketTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Not available for instance groups. Instance groups use the market type specified for the group.',
-        }),
-    ).exactOptional(),
-    SimpleScalingPolicyConfiguration: SimpleScalingPolicyConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of adjustment the automatic scaling activity makes when triggered, and the periodicity of the adjustment.',
-        }),
-    ),
+    Market: MarketTypeSchema.exactOptional().openapi({
+      description:
+        'Not available for instance groups. Instance groups use the market type specified for the group.',
+    }),
+    SimpleScalingPolicyConfiguration: SimpleScalingPolicyConfigurationSchema.openapi({
+      description:
+        'The type of adjustment the automatic scaling activity makes when triggered, and the periodicity of the adjustment.',
+    }),
   })
   .openapi({
     required: ['SimpleScalingPolicyConfiguration'],
@@ -781,10 +529,8 @@ const UnitSchema = z
 
 const MetricDimensionSchema = z
   .object({
-    Key: StringSchema.and(z.any().openapi({ description: 'The dimension name.' })).exactOptional(),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The dimension value.' }),
-    ).exactOptional(),
+    Key: StringSchema.exactOptional().openapi({ description: 'The dimension name.' }),
+    Value: StringSchema.exactOptional().openapi({ description: 'The dimension value.' }),
   })
   .openapi({
     description:
@@ -797,70 +543,40 @@ const MetricDimensionListSchema = z.array(MetricDimensionSchema).openapi('Metric
 
 const CloudWatchAlarmDefinitionSchema = z
   .object({
-    ComparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines how the metric specified by <code>MetricName</code> is compared to the value specified by <code>Threshold</code>.',
-        }),
-    ),
-    EvaluationPeriods: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of periods, in five-minute increments, during which the alarm condition must exist before the alarm triggers automatic scaling activity. The default value is <code>1</code>.',
-        }),
-    ).exactOptional(),
-    MetricName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the CloudWatch metric that is watched to determine an alarm condition.',
-        }),
-    ),
-    Namespace: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The namespace for the CloudWatch metric. The default is <code>AWS/ElasticMapReduce</code>.',
-        }),
-    ).exactOptional(),
-    Period: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The period, in seconds, over which the statistic is applied. EMR CloudWatch metrics are emitted every five minutes (300 seconds), so if an EMR CloudWatch metric is specified, specify <code>300</code>.',
-        }),
-    ),
-    Statistic: StatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The statistic to apply to the metric associated with the alarm. The default is <code>AVERAGE</code>.',
-        }),
-    ).exactOptional(),
-    Threshold: NonNegativeDoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value against which the specified statistic is compared.' }),
-    ),
-    Unit: UnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit of measure associated with the CloudWatch metric being watched. The value specified for <code>Unit</code> must correspond to the units specified in the CloudWatch metric.',
-        }),
-    ).exactOptional(),
-    Dimensions: MetricDimensionListSchema.and(
-      z.any().openapi({ description: 'A CloudWatch metric dimension.' }),
-    ).exactOptional(),
+    ComparisonOperator: ComparisonOperatorSchema.openapi({
+      description:
+        'Determines how the metric specified by <code>MetricName</code> is compared to the value specified by <code>Threshold</code>.',
+    }),
+    EvaluationPeriods: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of periods, in five-minute increments, during which the alarm condition must exist before the alarm triggers automatic scaling activity. The default value is <code>1</code>.',
+    }),
+    MetricName: StringSchema.openapi({
+      description:
+        'The name of the CloudWatch metric that is watched to determine an alarm condition.',
+    }),
+    Namespace: StringSchema.exactOptional().openapi({
+      description:
+        'The namespace for the CloudWatch metric. The default is <code>AWS/ElasticMapReduce</code>.',
+    }),
+    Period: IntegerSchema.openapi({
+      description:
+        'The period, in seconds, over which the statistic is applied. EMR CloudWatch metrics are emitted every five minutes (300 seconds), so if an EMR CloudWatch metric is specified, specify <code>300</code>.',
+    }),
+    Statistic: StatisticSchema.exactOptional().openapi({
+      description:
+        'The statistic to apply to the metric associated with the alarm. The default is <code>AVERAGE</code>.',
+    }),
+    Threshold: NonNegativeDoubleSchema.openapi({
+      description: 'The value against which the specified statistic is compared.',
+    }),
+    Unit: UnitSchema.exactOptional().openapi({
+      description:
+        'The unit of measure associated with the CloudWatch metric being watched. The value specified for <code>Unit</code> must correspond to the units specified in the CloudWatch metric.',
+    }),
+    Dimensions: MetricDimensionListSchema.exactOptional().openapi({
+      description: 'A CloudWatch metric dimension.',
+    }),
   })
   .openapi({
     required: ['ComparisonOperator', 'MetricName', 'Period', 'Threshold'],
@@ -871,14 +587,10 @@ const CloudWatchAlarmDefinitionSchema = z
 
 const ScalingTriggerSchema = z
   .object({
-    CloudWatchAlarmDefinition: CloudWatchAlarmDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The definition of a CloudWatch metric alarm. When the defined alarm conditions are met along with other trigger parameters, scaling activity begins.',
-        }),
-    ),
+    CloudWatchAlarmDefinition: CloudWatchAlarmDefinitionSchema.openapi({
+      description:
+        'The definition of a CloudWatch metric alarm. When the defined alarm conditions are met along with other trigger parameters, scaling activity begins.',
+    }),
   })
   .openapi({
     required: ['CloudWatchAlarmDefinition'],
@@ -888,34 +600,20 @@ const ScalingTriggerSchema = z
 
 const ScalingRuleSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name used to identify an automatic scaling rule. Rule names must be unique within a scaling policy.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A friendly, more verbose description of the automatic scaling rule.',
-        }),
-    ).exactOptional(),
-    Action: ScalingActionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The conditions that trigger an automatic scaling activity.' }),
-    ),
-    Trigger: ScalingTriggerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The CloudWatch alarm definition that determines when automatic scaling activity is triggered.',
-        }),
-    ),
+    Name: StringSchema.openapi({
+      description:
+        'The name used to identify an automatic scaling rule. Rule names must be unique within a scaling policy.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A friendly, more verbose description of the automatic scaling rule.',
+    }),
+    Action: ScalingActionSchema.openapi({
+      description: 'The conditions that trigger an automatic scaling activity.',
+    }),
+    Trigger: ScalingTriggerSchema.openapi({
+      description:
+        'The CloudWatch alarm definition that determines when automatic scaling activity is triggered.',
+    }),
   })
   .openapi({
     required: ['Name', 'Action', 'Trigger'],
@@ -928,22 +626,13 @@ const ScalingRuleListSchema = z.array(ScalingRuleSchema).openapi('ScalingRuleLis
 
 const AutoScalingPolicySchema = z
   .object({
-    Constraints: ScalingConstraintsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upper and lower EC2 instance limits for an automatic scaling policy. Automatic scaling activity will not cause an instance group to grow above or below these limits.',
-        }),
-    ),
-    Rules: ScalingRuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scale-in and scale-out rules that comprise the automatic scaling policy.',
-        }),
-    ),
+    Constraints: ScalingConstraintsSchema.openapi({
+      description:
+        'The upper and lower EC2 instance limits for an automatic scaling policy. Automatic scaling activity will not cause an instance group to grow above or below these limits.',
+    }),
+    Rules: ScalingRuleListSchema.openapi({
+      description: 'The scale-in and scale-out rules that comprise the automatic scaling policy.',
+    }),
   })
   .openapi({
     required: ['Constraints', 'Rules'],
@@ -952,66 +641,55 @@ const AutoScalingPolicySchema = z
   })
   .openapi('AutoScalingPolicy')
 
-const InstanceGroupConfigSchema = z
+type InstanceGroupConfigType = {
+  Name?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  Market?: z.infer<typeof MarketTypeSchema> & unknown
+  InstanceRole: z.infer<typeof InstanceRoleTypeSchema> & unknown
+  BidPrice?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  InstanceType: z.infer<typeof InstanceTypeSchema> & unknown
+  InstanceCount: z.infer<typeof IntegerSchema> & unknown
+  Configurations?: z.infer<typeof ConfigurationListSchema> & unknown
+  EbsConfiguration?: z.infer<typeof EbsConfigurationSchema> & unknown
+  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicySchema> & unknown
+  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+}
+
+const InstanceGroupConfigSchema: z.ZodType<InstanceGroupConfigType> = z
   .object({
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'Friendly name given to the instance group.' }),
-    ).exactOptional(),
-    Market: MarketTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Market type of the EC2 instances used to create a cluster node.',
-        }),
-    ).exactOptional(),
-    InstanceRole: InstanceRoleTypeSchema.and(
-      z.any().openapi({ description: 'The role of the instance group in the cluster.' }),
-    ),
-    BidPrice: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.',
-        }),
-    ).exactOptional(),
-    InstanceType: InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The EC2 instance type for all instances in the instance group.' }),
-    ),
-    InstanceCount: IntegerSchema.and(
-      z.any().openapi({ description: 'Target number of instances for the instance group.' }),
-    ),
-    Configurations: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>The list of configurations supplied for an EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).</p>',
-        }),
-    ).exactOptional(),
-    EbsConfiguration: EbsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'EBS configurations that will be attached to each EC2 instance in the instance group.',
-        }),
-    ).exactOptional(),
-    AutoScalingPolicy: AutoScalingPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates EC2 instances in response to the value of a CloudWatch metric. See <a>PutAutoScalingPolicy</a>.',
-        }),
-    ).exactOptional(),
-    CustomAmiId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The custom AMI ID to use for the provisioned instance group.' }),
-    ).exactOptional(),
+    Name: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'Friendly name given to the instance group.',
+    }),
+    Market: MarketTypeSchema.exactOptional().openapi({
+      description: 'Market type of the EC2 instances used to create a cluster node.',
+    }),
+    InstanceRole: InstanceRoleTypeSchema.openapi({
+      description: 'The role of the instance group in the cluster.',
+    }),
+    BidPrice: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.',
+    }),
+    InstanceType: InstanceTypeSchema.openapi({
+      description: 'The EC2 instance type for all instances in the instance group.',
+    }),
+    InstanceCount: IntegerSchema.openapi({
+      description: 'Target number of instances for the instance group.',
+    }),
+    Configurations: ConfigurationListSchema.exactOptional().openapi({
+      description:
+        '<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>The list of configurations supplied for an EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).</p>',
+    }),
+    EbsConfiguration: EbsConfigurationSchema.exactOptional().openapi({
+      description:
+        'EBS configurations that will be attached to each EC2 instance in the instance group.',
+    }),
+    AutoScalingPolicy: AutoScalingPolicySchema.exactOptional().openapi({
+      description:
+        'An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates EC2 instances in response to the value of a CloudWatch metric. See <a>PutAutoScalingPolicy</a>.',
+    }),
+    CustomAmiId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The custom AMI ID to use for the provisioned instance group.',
+    }),
   })
   .openapi({
     required: ['InstanceRole', 'InstanceType', 'InstanceCount'],
@@ -1019,512 +697,444 @@ const InstanceGroupConfigSchema = z
   })
   .openapi('InstanceGroupConfig')
 
-const InstanceGroupConfigListSchema = z
+type InstanceGroupConfigListType = z.infer<typeof InstanceGroupConfigSchema>[]
+
+const InstanceGroupConfigListSchema: z.ZodType<InstanceGroupConfigListType> = z
   .array(InstanceGroupConfigSchema)
   .openapi('InstanceGroupConfigList')
 
-const AddInstanceGroupsInputSchema = z
+type AddInstanceGroupsInputType = {
+  InstanceGroups: z.infer<typeof InstanceGroupConfigListSchema> & unknown
+  JobFlowId: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+}
+
+const XmlStringSchema = z
+  .string()
+  .min(0)
+  .max(10280)
+  .openapi({
+    'x-pattern': '[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*',
+  })
+  .openapi('XmlString')
+
+const JobFlowExecutionStateSchema = z
+  .enum([
+    'STARTING',
+    'BOOTSTRAPPING',
+    'RUNNING',
+    'WAITING',
+    'SHUTTING_DOWN',
+    'TERMINATED',
+    'COMPLETED',
+    'FAILED',
+  ])
+  .openapi({ description: 'The type of instance.' })
+  .openapi('JobFlowExecutionState')
+
+const JobFlowExecutionStatusDetailSchema = z
   .object({
-    InstanceGroups: InstanceGroupConfigListSchema.and(
-      z.any().openapi({ description: 'Instance groups to add.' }),
-    ),
-    JobFlowId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'Job flow in which to add the instance groups.' }),
-    ),
+    State: JobFlowExecutionStateSchema.openapi({ description: 'The state of the job flow.' }),
+    CreationDateTime: DateSchema.openapi({
+      description: 'The creation date and time of the job flow.',
+    }),
+    StartDateTime: DateSchema.exactOptional().openapi({
+      description: 'The start date and time of the job flow.',
+    }),
+    ReadyDateTime: DateSchema.exactOptional().openapi({
+      description:
+        'The date and time when the job flow was ready to start running bootstrap actions.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The completion date and time of the job flow.',
+    }),
+    LastStateChangeReason: XmlStringSchema.exactOptional().openapi({
+      description: 'Description of the job flow last changed state.',
+    }),
   })
   .openapi({
-    required: ['InstanceGroups', 'JobFlowId'],
-    title: 'AddInstanceGroupsInput',
-    description: 'Input to an AddInstanceGroups call.',
+    required: ['State', 'CreationDateTime'],
+    description: 'Describes the status of the cluster (job flow).',
   })
-  .openapi('AddInstanceGroupsInput')
+  .openapi('JobFlowExecutionStatusDetail')
 
-const InternalServerErrorSchema = z.any().openapi('InternalServerError')
+const InstanceGroupStateSchema = z
+  .enum([
+    'PROVISIONING',
+    'BOOTSTRAPPING',
+    'RUNNING',
+    'RECONFIGURING',
+    'RESIZING',
+    'SUSPENDED',
+    'TERMINATING',
+    'TERMINATED',
+    'ARRESTED',
+    'SHUTTING_DOWN',
+    'ENDED',
+  ])
+  .openapi('InstanceGroupState')
 
-const StepIdsListSchema = z.array(XmlStringMaxLen256Schema).openapi('StepIdsList')
-
-const AddJobFlowStepsOutputSchema = z
+const InstanceGroupDetailSchema = z
   .object({
-    StepIds: StepIdsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifiers of the list of steps added to the job flow.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The output for the <a>AddJobFlowSteps</a> operation. ', required: [] })
-  .openapi('AddJobFlowStepsOutput')
-
-const StepConfigSchema: z.ZodType<StepConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        Name: XmlStringMaxLen256Schema.and(
-          z.any().openapi({ description: 'The name of the step.' }),
-        ),
-        ActionOnFailure: ActionOnFailureSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "<p>The action to take when the step fails. Use one of the following values:</p> <ul> <li> <p> <code>TERMINATE_CLUSTER</code> - Shuts down the cluster.</p> </li> <li> <p> <code>CANCEL_AND_WAIT</code> - Cancels any pending steps and returns the cluster to the <code>WAITING</code> state.</p> </li> <li> <p> <code>CONTINUE</code> - Continues to the next step in the queue.</p> </li> <li> <p> <code>TERMINATE_JOB_FLOW</code> - Shuts down the cluster. <code>TERMINATE_JOB_FLOW</code> is provided for backward compatibility. We recommend using <code>TERMINATE_CLUSTER</code> instead.</p> </li> </ul> <p>If a cluster's <code>StepConcurrencyLevel</code> is greater than <code>1</code>, do not use <code>AddJobFlowSteps</code> to submit a step with this parameter set to <code>CANCEL_AND_WAIT</code> or <code>TERMINATE_CLUSTER</code>. The step is not submitted and the action fails with a message that the <code>ActionOnFailure</code> setting is not valid.</p> <p>If you change a cluster's <code>StepConcurrencyLevel</code> to be greater than 1 while a step is running, the <code>ActionOnFailure</code> parameter may not behave as you expect. In this case, for a step that fails with this parameter set to <code>CANCEL_AND_WAIT</code>, pending steps and the running step are not canceled; for a step that fails with this parameter set to <code>TERMINATE_CLUSTER</code>, the cluster does not terminate.</p>",
-            }),
-        ).exactOptional(),
-        HadoopJarStep: HadoopJarStepConfigSchema.and(
-          z.any().openapi({ description: 'The JAR file used for the step.' }),
-        ),
-      })
-      .openapi({
-        required: ['Name', 'HadoopJarStep'],
-        description: 'Specification for a cluster (job flow) step.',
-      }),
-  )
-  .openapi('StepConfig')
-
-const StepConfigListSchema = z.array(StepConfigSchema).openapi('StepConfigList')
-
-const AddJobFlowStepsInputSchema = z
-  .object({
-    JobFlowId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that uniquely identifies the job flow. This identifier is returned by <a>RunJobFlow</a> and can also be obtained from <a>ListClusters</a>. ',
-        }),
-    ),
-    Steps: StepConfigListSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A list of <a>StepConfig</a> to be executed by the job flow. ' }),
-    ),
-    ExecutionRoleArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>. </p> <p>For example, <code>arn:aws:iam::1234567890:role/ReadOnly</code> is a correctly formatted runtime role ARN.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['JobFlowId', 'Steps'],
-    title: 'AddJobFlowStepsInput',
-    description: ' The input argument to the <a>AddJobFlowSteps</a> operation. ',
-  })
-  .openapi('AddJobFlowStepsInput')
-
-const AddTagsOutputSchema = z
-  .object({})
-  .openapi({ description: 'This output indicates the result of adding tags to a resource.' })
-  .openapi('AddTagsOutput')
-
-const ResourceIdSchema = z.string().openapi('ResourceId')
-
-const TagSchema = z
-  .object({
-    Key: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-defined key, which is the minimum required information for a valid tag. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html">Tag</a>. ',
-        }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-defined value, which is optional in a tag. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html">Tag Clusters</a>. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A key-value pair containing user-defined metadata that you can associate with an Amazon EMR resource. Tags make it easier to associate clusters in various ways, such as grouping clusters to track your Amazon EMR resource allocation costs. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html">Tag Clusters</a>. ',
-    required: [],
-  })
-  .openapi('Tag')
-
-const TagListSchema = z.array(TagSchema).openapi('TagList')
-
-const AddTagsInputSchema = z
-  .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EMR resource identifier to which tags will be added. For example, a cluster identifier or an Amazon EMR Studio ID.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to associate with a resource. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters, and an optional value string with a maximum of 256 characters.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceId', 'Tags'],
-    title: 'AddTagsInput',
-    description: 'This input identifies an Amazon EMR resource and a list of tags to attach.',
-  })
-  .openapi('AddTagsInput')
-
-const StepIdSchema = z.string().openapi('StepId')
-
-const CancelStepsRequestStatusSchema = z
-  .enum(['SUBMITTED', 'FAILED'])
-  .openapi('CancelStepsRequestStatus')
-
-const CancelStepsInfoSchema = z
-  .object({
-    StepId: StepIdSchema.and(
-      z.any().openapi({ description: 'The encrypted StepId of a step.' }),
-    ).exactOptional(),
-    Status: CancelStepsRequestStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of a CancelSteps Request. The value may be SUBMITTED or FAILED.',
-        }),
-    ).exactOptional(),
-    Reason: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The reason for the failure if the CancelSteps request fails.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specification of the status of a CancelSteps request. Available only in Amazon EMR version 4.8.0 and later, excluding version 5.0.0.',
-    required: [],
-  })
-  .openapi('CancelStepsInfo')
-
-const CancelStepsInfoListSchema = z.array(CancelStepsInfoSchema).openapi('CancelStepsInfoList')
-
-const CancelStepsOutputSchema = z
-  .object({
-    CancelStepsInfoList: CancelStepsInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a>CancelStepsInfo</a>, which shows the status of specified cancel requests for each <code>StepID</code> specified.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The output for the <a>CancelSteps</a> operation. ', required: [] })
-  .openapi('CancelStepsOutput')
-
-const StepCancellationOptionSchema = z
-  .enum(['SEND_INTERRUPT', 'TERMINATE_PROCESS'])
-  .openapi('StepCancellationOption')
-
-const CancelStepsInputSchema = z
-  .object({
-    ClusterId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ClusterID</code> for the specified steps that will be canceled. Use <a>RunJobFlow</a> and <a>ListClusters</a> to get ClusterIDs. ',
-        }),
-    ),
-    StepIds: StepIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of <code>StepIDs</code> to cancel. Use <a>ListSteps</a> to get steps and their states for the specified cluster.',
-        }),
-    ),
-    StepCancellationOption: StepCancellationOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to choose to cancel <code>RUNNING</code> steps. By default, the value is <code>SEND_INTERRUPT</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ClusterId', 'StepIds'],
-    title: 'CancelStepsInput',
-    description: 'The input argument to the <a>CancelSteps</a> operation.',
-  })
-  .openapi('CancelStepsInput')
-
-const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
-
-const CreateSecurityConfigurationOutputSchema = z
-  .object({
-    Name: XmlStringSchema.and(
-      z.any().openapi({ description: 'The name of the security configuration.' }),
-    ),
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time the security configuration was created.' }),
-    ),
-  })
-  .openapi({ required: ['Name', 'CreationDateTime'] })
-  .openapi('CreateSecurityConfigurationOutput')
-
-const CreateSecurityConfigurationInputSchema = z
-  .object({
-    Name: XmlStringSchema.and(
-      z.any().openapi({ description: 'The name of the security configuration.' }),
-    ),
-    SecurityConfiguration: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security configuration details in JSON format. For JSON parameters and examples, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-security-configurations.html">Use Security Configurations to Set Up Cluster Security</a> in the <i>Amazon EMR Management Guide</i>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Name', 'SecurityConfiguration'],
-    title: 'CreateSecurityConfigurationInput',
-  })
-  .openapi('CreateSecurityConfigurationInput')
-
-const CreateStudioOutputSchema = z
-  .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    Url: XmlStringSchema.and(
-      z.any().openapi({ description: 'The unique Studio access URL.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateStudioOutput')
-
-const AuthModeSchema = z.enum(['SSO', 'IAM']).openapi('AuthMode')
-
-const SubnetIdListSchema = z.array(StringSchema).openapi('SubnetIdList')
-
-const CreateStudioInputSchema = z
-  .object({
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'A descriptive name for the Amazon EMR Studio.' }),
-    ),
-    Description: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'A detailed description of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    AuthMode: AuthModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the Studio authenticates users using IAM or IAM Identity Center.',
-        }),
-    ),
-    VpcId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Virtual Private Cloud (Amazon VPC) to associate with the Studio.',
-        }),
-    ),
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of subnet IDs to associate with the Amazon EMR Studio. A Studio can have a maximum of 5 subnets. The subnets must belong to the VPC specified by <code>VpcId</code>. Studio users can create a Workspace in any of the specified subnets.',
-        }),
-    ),
-    ServiceRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that the Amazon EMR Studio assumes. The service role provides a way for Amazon EMR Studio to interoperate with other Amazon Web Services services.',
-        }),
-    ),
-    UserRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM user role that users and groups assume when logged in to an Amazon EMR Studio. Only specify a <code>UserRole</code> when you use IAM Identity Center authentication. The permissions attached to the <code>UserRole</code> can be scoped down for each user or group using session policies.',
-        }),
-    ).exactOptional(),
-    WorkspaceSecurityGroupId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon EMR Studio Workspace security group. The Workspace security group allows outbound network traffic to resources in the Engine security group, and it must be in the same VPC specified by <code>VpcId</code>.',
-        }),
-    ),
-    EngineSecurityGroupId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon EMR Studio Engine security group. The Engine security group allows inbound network traffic from the Workspace security group, and it must be in the same VPC specified by <code>VpcId</code>.',
-        }),
-    ),
-    DefaultS3Location: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location to back up Amazon EMR Studio Workspaces and notebook files.',
-        }),
-    ),
-    IdpAuthUrl: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication endpoint of your identity provider (IdP). Specify this value when you use IAM authentication and want to let federated users log in to a Studio with the Studio URL and credentials from your IdP. Amazon EMR Studio redirects users to this endpoint to enter credentials.',
-        }),
-    ).exactOptional(),
-    IdpRelayStateParameterName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that your identity provider (IdP) uses for its <code>RelayState</code> parameter. For example, <code>RelayState</code> or <code>TargetSource</code>. Specify this value when you use IAM authentication and want to let federated users log in to a Studio using the Studio URL. The <code>RelayState</code> parameter differs by IdP.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to associate with the Amazon EMR Studio. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters, and an optional value string with a maximum of 256 characters.',
-        }),
-    ).exactOptional(),
+    InstanceGroupId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'Unique identifier for the instance group.',
+    }),
+    Name: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'Friendly name for the instance group.',
+    }),
+    Market: MarketTypeSchema.openapi({
+      description: 'Market type of the EC2 instances used to create a cluster node.',
+    }),
+    InstanceRole: InstanceRoleTypeSchema.openapi({
+      description: 'Instance group role in the cluster',
+    }),
+    BidPrice: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.',
+    }),
+    InstanceType: InstanceTypeSchema.openapi({ description: 'EC2 instance type.' }),
+    InstanceRequestCount: IntegerSchema.openapi({
+      description: 'Target number of instances to run in the instance group.',
+    }),
+    InstanceRunningCount: IntegerSchema.openapi({
+      description: 'Actual count of running instances.',
+    }),
+    State: InstanceGroupStateSchema.openapi({
+      description:
+        'State of instance group. The following values are no longer supported: STARTING, TERMINATED, and FAILED.',
+    }),
+    LastStateChangeReason: XmlStringSchema.exactOptional().openapi({
+      description: 'Details regarding the state of the instance group.',
+    }),
+    CreationDateTime: DateSchema.openapi({
+      description: 'The date/time the instance group was created.',
+    }),
+    StartDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date/time the instance group was started.',
+    }),
+    ReadyDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date/time the instance group was available to the cluster.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date/time the instance group was terminated.',
+    }),
+    CustomAmiId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The custom AMI ID to use for the provisioned instance group.',
+    }),
   })
   .openapi({
     required: [
-      'Name',
-      'AuthMode',
-      'VpcId',
-      'SubnetIds',
-      'ServiceRole',
-      'WorkspaceSecurityGroupId',
-      'EngineSecurityGroupId',
-      'DefaultS3Location',
+      'Market',
+      'InstanceRole',
+      'InstanceType',
+      'InstanceRequestCount',
+      'InstanceRunningCount',
+      'State',
+      'CreationDateTime',
     ],
-    title: 'CreateStudioInput',
+    description: 'Detailed information about an instance group.',
   })
-  .openapi('CreateStudioInput')
+  .openapi('InstanceGroupDetail')
 
-const IdentityTypeSchema = z.enum(['USER', 'GROUP']).openapi('IdentityType')
+const InstanceGroupDetailListSchema = z
+  .array(InstanceGroupDetailSchema)
+  .openapi('InstanceGroupDetailList')
 
-const CreateStudioSessionMappingInputSchema = z
+const XmlStringMaxLen256ListSchema = z
+  .array(XmlStringMaxLen256Schema)
+  .openapi('XmlStringMaxLen256List')
+
+const PlacementTypeSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon EMR Studio to which the user or group will be mapped.',
-        }),
-    ),
-    IdentityId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier (GUID) of the user or group from the IAM Identity Center Identity Store. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId">UserId</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId">GroupId</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified, but not both.',
-        }),
-    ).exactOptional(),
-    IdentityName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified, but not both.',
-        }),
-    ).exactOptional(),
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the identity to map to the Amazon EMR Studio is a user or a group.',
-        }),
-    ),
-    SessionPolicyArn: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the session policy that will be applied to the user or group. You should specify the ARN for the session policy that you want to apply, not the ARN of your user role. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-studio-user-role.html">Create an EMR Studio User Role with Session Policies</a>.',
-        }),
-    ),
+    AvailabilityZone: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon EC2 Availability Zone for the cluster. <code>AvailabilityZone</code> is used for uniform instance groups, while <code>AvailabilityZones</code> (plural) is used for instance fleets.',
+    }),
+    AvailabilityZones: XmlStringMaxLen256ListSchema.exactOptional().openapi({
+      description:
+        '<p>When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances in the optimal Availability Zone. <code>AvailabilityZones</code> is used for instance fleets, while <code>AvailabilityZone</code> (singular) is used for uniform instance groups.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
+    }),
   })
   .openapi({
-    required: ['StudioId', 'IdentityType', 'SessionPolicyArn'],
-    title: 'CreateStudioSessionMappingInput',
+    description: 'The Amazon EC2 Availability Zone configuration of the cluster (job flow).',
+    required: [],
   })
-  .openapi('CreateStudioSessionMappingInput')
+  .openapi('PlacementType')
 
-const DeleteSecurityConfigurationOutputSchema = z
-  .object({})
-  .openapi('DeleteSecurityConfigurationOutput')
+const BooleanSchema = z.boolean().openapi('Boolean')
 
-const DeleteSecurityConfigurationInputSchema = z
+const JobFlowInstancesDetailSchema = z
   .object({
-    Name: XmlStringSchema.and(
-      z.any().openapi({ description: 'The name of the security configuration.' }),
-    ),
+    MasterInstanceType: InstanceTypeSchema.openapi({
+      description: 'The Amazon EC2 master node instance type.',
+    }),
+    MasterPublicDnsName: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The DNS name of the master node. If the cluster is on a private subnet, this is the private DNS name. On a public subnet, this is the public DNS name.',
+    }),
+    MasterInstanceId: XmlStringSchema.exactOptional().openapi({
+      description: 'The Amazon EC2 instance identifier of the master node.',
+    }),
+    SlaveInstanceType: InstanceTypeSchema.openapi({
+      description: 'The Amazon EC2 core and task node instance type.',
+    }),
+    InstanceCount: IntegerSchema.openapi({
+      description:
+        'The number of Amazon EC2 instances in the cluster. If the value is 1, the same instance serves as both the master and core and task node. If the value is greater than 1, one instance is the master node and all others are core and task nodes.',
+    }),
+    InstanceGroups: InstanceGroupDetailListSchema.exactOptional().openapi({
+      description: 'Details about the instance groups in a cluster.',
+    }),
+    NormalizedInstanceHours: IntegerSchema.exactOptional().openapi({
+      description:
+        'An approximation of the cost of the cluster, represented in m1.small/hours. This value is increased one time for every hour that an m1.small instance runs. Larger instances are weighted more heavily, so an Amazon EC2 instance that is roughly four times more expensive would result in the normalized instance hours being increased incrementally four times. This result is only an approximation and does not reflect the actual billing rate.',
+    }),
+    Ec2KeyName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name of an Amazon EC2 key pair that can be used to connect to the master node using SSH.',
+    }),
+    Ec2SubnetId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'For clusters launched within Amazon Virtual Private Cloud, this is the identifier of the subnet where the cluster was launched.',
+    }),
+    Placement: PlacementTypeSchema.exactOptional().openapi({
+      description: 'The Amazon EC2 Availability Zone for the cluster.',
+    }),
+    KeepJobFlowAliveWhenNoSteps: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the cluster should remain available after completing all steps.',
+    }),
+    TerminationProtected: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the Amazon EC2 instances in the cluster are protected from termination by API calls, user intervention, or in the event of a job-flow error.',
+    }),
+    HadoopVersion: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The Hadoop version for the cluster.',
+    }),
   })
-  .openapi({ required: ['Name'], title: 'DeleteSecurityConfigurationInput' })
-  .openapi('DeleteSecurityConfigurationInput')
+  .openapi({
+    required: ['MasterInstanceType', 'SlaveInstanceType', 'InstanceCount'],
+    description: 'Specify the type of Amazon EC2 instances that the cluster (job flow) runs on.',
+  })
+  .openapi('JobFlowInstancesDetail')
 
-const DeleteStudioInputSchema = z
-  .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ),
-  })
-  .openapi({ required: ['StudioId'], title: 'DeleteStudioInput' })
-  .openapi('DeleteStudioInput')
+const ActionOnFailureSchema = z
+  .enum(['TERMINATE_JOB_FLOW', 'TERMINATE_CLUSTER', 'CANCEL_AND_WAIT', 'CONTINUE'])
+  .openapi('ActionOnFailure')
 
-const DeleteStudioSessionMappingInputSchema = z
+const KeyValueSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ),
-    IdentityId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier (GUID) of the user or group to remove from the Amazon EMR Studio. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId">UserId</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId">GroupId</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
-        }),
-    ).exactOptional(),
-    IdentityName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the user name or group to remove from the Amazon EMR Studio. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
-        }),
-    ).exactOptional(),
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the identity to delete from the Amazon EMR Studio is a user or a group.',
-        }),
-    ),
+    Key: XmlStringSchema.exactOptional().openapi({
+      description: 'The unique identifier of a key-value pair.',
+    }),
+    Value: XmlStringSchema.exactOptional().openapi({
+      description: 'The value part of the identified key.',
+    }),
   })
-  .openapi({ required: ['StudioId', 'IdentityType'], title: 'DeleteStudioSessionMappingInput' })
-  .openapi('DeleteStudioSessionMappingInput')
+  .openapi({ description: 'A key-value pair.', required: [] })
+  .openapi('KeyValue')
+
+const KeyValueListSchema = z.array(KeyValueSchema).openapi('KeyValueList')
+
+const XmlStringListSchema = z.array(XmlStringSchema).openapi('XmlStringList')
+
+const HadoopJarStepConfigSchema = z
+  .object({
+    Properties: KeyValueListSchema.exactOptional().openapi({
+      description:
+        'A list of Java properties that are set when the step runs. You can use these properties to pass key-value pairs to your main function.',
+    }),
+    Jar: XmlStringSchema.openapi({ description: 'A path to a JAR file run during the step.' }),
+    MainClass: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The name of the main class in the specified Java file. If not specified, the JAR file should specify a Main-Class in its manifest file.',
+    }),
+    Args: XmlStringListSchema.exactOptional().openapi({
+      description:
+        "A list of command line arguments passed to the JAR file's main function when executed.",
+    }),
+  })
+  .openapi({
+    required: ['Jar'],
+    description:
+      'A job flow step consisting of a JAR file whose main function will be executed. The main function submits a job for Hadoop to execute and waits for the job to finish or fail.',
+  })
+  .openapi('HadoopJarStepConfig')
+
+const StepConfigSchema = z
+  .object({
+    Name: XmlStringMaxLen256Schema.openapi({ description: 'The name of the step.' }),
+    ActionOnFailure: ActionOnFailureSchema.exactOptional().openapi({
+      description:
+        "<p>The action to take when the step fails. Use one of the following values:</p> <ul> <li> <p> <code>TERMINATE_CLUSTER</code> - Shuts down the cluster.</p> </li> <li> <p> <code>CANCEL_AND_WAIT</code> - Cancels any pending steps and returns the cluster to the <code>WAITING</code> state.</p> </li> <li> <p> <code>CONTINUE</code> - Continues to the next step in the queue.</p> </li> <li> <p> <code>TERMINATE_JOB_FLOW</code> - Shuts down the cluster. <code>TERMINATE_JOB_FLOW</code> is provided for backward compatibility. We recommend using <code>TERMINATE_CLUSTER</code> instead.</p> </li> </ul> <p>If a cluster's <code>StepConcurrencyLevel</code> is greater than <code>1</code>, do not use <code>AddJobFlowSteps</code> to submit a step with this parameter set to <code>CANCEL_AND_WAIT</code> or <code>TERMINATE_CLUSTER</code>. The step is not submitted and the action fails with a message that the <code>ActionOnFailure</code> setting is not valid.</p> <p>If you change a cluster's <code>StepConcurrencyLevel</code> to be greater than 1 while a step is running, the <code>ActionOnFailure</code> parameter may not behave as you expect. In this case, for a step that fails with this parameter set to <code>CANCEL_AND_WAIT</code>, pending steps and the running step are not canceled; for a step that fails with this parameter set to <code>TERMINATE_CLUSTER</code>, the cluster does not terminate.</p>",
+    }),
+    HadoopJarStep: HadoopJarStepConfigSchema.openapi({
+      description: 'The JAR file used for the step.',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'HadoopJarStep'],
+    description: 'Specification for a cluster (job flow) step.',
+  })
+  .openapi('StepConfig')
+
+const StepExecutionStateSchema = z
+  .enum(['PENDING', 'RUNNING', 'CONTINUE', 'COMPLETED', 'CANCELLED', 'FAILED', 'INTERRUPTED'])
+  .openapi('StepExecutionState')
+
+const StepExecutionStatusDetailSchema = z
+  .object({
+    State: StepExecutionStateSchema.openapi({ description: 'The state of the step.' }),
+    CreationDateTime: DateSchema.openapi({
+      description: 'The creation date and time of the step.',
+    }),
+    StartDateTime: DateSchema.exactOptional().openapi({
+      description: 'The start date and time of the step.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The completion date and time of the step.',
+    }),
+    LastStateChangeReason: XmlStringSchema.exactOptional().openapi({
+      description: "A description of the step's current state.",
+    }),
+  })
+  .openapi({
+    required: ['State', 'CreationDateTime'],
+    description: 'The execution state of a step.',
+  })
+  .openapi('StepExecutionStatusDetail')
+
+const StepDetailSchema = z
+  .object({
+    StepConfig: StepConfigSchema.openapi({ description: 'The step configuration.' }),
+    ExecutionStatusDetail: StepExecutionStatusDetailSchema.openapi({
+      description: 'The description of the step status.',
+    }),
+  })
+  .openapi({
+    required: ['StepConfig', 'ExecutionStatusDetail'],
+    description: 'Combines the execution state and configuration of a step.',
+  })
+  .openapi('StepDetail')
+
+const StepDetailListSchema = z.array(StepDetailSchema).openapi('StepDetailList')
+
+const ScriptBootstrapActionConfigSchema = z
+  .object({
+    Path: XmlStringSchema.openapi({
+      description: 'Location in Amazon S3 of the script to run during a bootstrap action.',
+    }),
+    Args: XmlStringListSchema.exactOptional().openapi({
+      description: 'A list of command line arguments to pass to the bootstrap action script.',
+    }),
+  })
+  .openapi({
+    required: ['Path'],
+    description: 'Configuration of the script to run during a bootstrap action.',
+  })
+  .openapi('ScriptBootstrapActionConfig')
+
+const BootstrapActionConfigSchema = z
+  .object({
+    Name: XmlStringMaxLen256Schema.openapi({ description: 'The name of the bootstrap action.' }),
+    ScriptBootstrapAction: ScriptBootstrapActionConfigSchema.openapi({
+      description: 'The script run by the bootstrap action.',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'ScriptBootstrapAction'],
+    description: 'Configuration of a bootstrap action.',
+  })
+  .openapi('BootstrapActionConfig')
+
+const BootstrapActionDetailSchema = z
+  .object({
+    BootstrapActionConfig: BootstrapActionConfigSchema.exactOptional().openapi({
+      description: 'A description of the bootstrap action.',
+    }),
+  })
+  .openapi({
+    description: 'Reports the configuration of a bootstrap action in a cluster (job flow).',
+    required: [],
+  })
+  .openapi('BootstrapActionDetail')
+
+const BootstrapActionDetailListSchema = z
+  .array(BootstrapActionDetailSchema)
+  .openapi('BootstrapActionDetailList')
+
+const SupportedProductsListSchema = z
+  .array(XmlStringMaxLen256Schema)
+  .openapi('SupportedProductsList')
+
+const ScaleDownBehaviorSchema = z
+  .enum(['TERMINATE_AT_INSTANCE_HOUR', 'TERMINATE_AT_TASK_COMPLETION'])
+  .openapi('ScaleDownBehavior')
+
+const JobFlowDetailSchema = z
+  .object({
+    JobFlowId: XmlStringMaxLen256Schema.openapi({ description: 'The job flow identifier.' }),
+    Name: XmlStringMaxLen256Schema.openapi({ description: 'The name of the job flow.' }),
+    LogUri: XmlStringSchema.exactOptional().openapi({
+      description: 'The location in Amazon S3 where log files for the job are stored.',
+    }),
+    LogEncryptionKmsKeyId: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The KMS key used for encrypting log files. This attribute is only available with EMR version 5.30.0 and later, excluding EMR 6.0.0.',
+    }),
+    AmiVersion: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and later, <code>ReleaseLabel</code> is used. To specify a custom AMI, use <code>CustomAmiID</code>.',
+    }),
+    ExecutionStatusDetail: JobFlowExecutionStatusDetailSchema.openapi({
+      description: 'Describes the execution status of the job flow.',
+    }),
+    Instances: JobFlowInstancesDetailSchema.openapi({
+      description: 'Describes the Amazon EC2 instances of the job flow.',
+    }),
+    Steps: StepDetailListSchema.exactOptional().openapi({
+      description: 'A list of steps run by the job flow.',
+    }),
+    BootstrapActions: BootstrapActionDetailListSchema.exactOptional().openapi({
+      description: 'A list of the bootstrap actions run by the job flow.',
+    }),
+    SupportedProducts: SupportedProductsListSchema.exactOptional().openapi({
+      description:
+        'A list of strings set by third-party software when the job flow is launched. If you are not using third-party software to manage the job flow, this value is empty.',
+    }),
+    VisibleToAllUsers: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the cluster is visible to IAM principals in the Amazon Web Services account associated with the cluster. When <code>true</code>, IAM principals in the Amazon Web Services account can perform EMR cluster actions that their IAM policies allow. When <code>false</code>, only the IAM principal that created the cluster and the Amazon Web Services account root user can perform EMR actions, regardless of IAM permissions policies attached to other IAM principals.</p> <p>The default value is <code>true</code> if a value is not provided when creating a cluster using the EMR API <a>RunJobFlow</a> command, the CLI <a href="https://docs.aws.amazon.com/cli/latest/reference/emr/create-cluster.html">create-cluster</a> command, or the Amazon Web Services Management Console.</p>',
+    }),
+    JobFlowRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The IAM role that was specified when the job flow was launched. The EC2 instances of the job flow assume this role.',
+    }),
+    ServiceRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The IAM role that is assumed by the Amazon EMR service to access Amazon Web Services resources on your behalf.',
+    }),
+    AutoScalingRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        'An IAM role for automatic scaling policies. The default role is <code>EMR_AutoScaling_DefaultRole</code>. The IAM role provides a way for the automatic scaling feature to get the required permissions it needs to launch and terminate EC2 instances in an instance group.',
+    }),
+    ScaleDownBehavior: ScaleDownBehaviorSchema.exactOptional().openapi({
+      description:
+        'The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> available only in Amazon EMR version 4.1.0 and later, and is the default for versions of Amazon EMR earlier than 5.1.0.',
+    }),
+  })
+  .openapi({
+    required: ['JobFlowId', 'Name', 'ExecutionStatusDetail', 'Instances'],
+    description: 'A description of a cluster (job flow).',
+  })
+  .openapi('JobFlowDetail')
+
+type JobFlowDetailListType = z.infer<typeof JobFlowDetailSchema>[]
+
+const JobFlowDetailListSchema: z.ZodType<JobFlowDetailListType> = z
+  .array(JobFlowDetailSchema)
+  .openapi('JobFlowDetailList')
+
+type DescribeJobFlowsOutputType = { JobFlows?: z.infer<typeof JobFlowDetailListSchema> & unknown }
 
 const ClusterIdSchema = z.string().openapi('ClusterId')
 
@@ -1555,12 +1165,12 @@ const ClusterStateChangeReasonCodeSchema = z
 
 const ClusterStateChangeReasonSchema = z
   .object({
-    Code: ClusterStateChangeReasonCodeSchema.and(
-      z.any().openapi({ description: 'The programmatic code for the state change reason.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The descriptive message for the state change reason.' }),
-    ).exactOptional(),
+    Code: ClusterStateChangeReasonCodeSchema.exactOptional().openapi({
+      description: 'The programmatic code for the state change reason.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'The descriptive message for the state change reason.',
+    }),
   })
   .openapi({
     description: 'The reason that the cluster changed to its current state.',
@@ -1570,39 +1180,39 @@ const ClusterStateChangeReasonSchema = z
 
 const ClusterTimelineSchema = z
   .object({
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The creation date and time of the cluster.' }),
-    ).exactOptional(),
-    ReadyDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the cluster was ready to run steps.' }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the cluster was terminated.' }),
-    ).exactOptional(),
+    CreationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time of the cluster.',
+    }),
+    ReadyDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the cluster was ready to run steps.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the cluster was terminated.',
+    }),
   })
   .openapi({ description: "Represents the timeline of the cluster's lifecycle.", required: [] })
   .openapi('ClusterTimeline')
+
+type StringMapType = { [key: string]: z.infer<typeof StringSchema> }
+
+const StringMapSchema: z.ZodType<StringMapType> = z
+  .record(z.string(), StringSchema)
+  .openapi('StringMap')
 
 const ErrorDataSchema = z.array(StringMapSchema).openapi('ErrorData')
 
 const ErrorDetailSchema = z
   .object({
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: "The name or code that's associated with the error." }),
-    ).exactOptional(),
-    ErrorData: ErrorDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key value pairs that provide contextual information to explain why the error may have occured.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'A message describing the error that occured.' }),
-    ).exactOptional(),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description: "The name or code that's associated with the error.",
+    }),
+    ErrorData: ErrorDataSchema.exactOptional().openapi({
+      description:
+        'A list of key value pairs that provide contextual information to explain why the error may have occured.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'A message describing the error that occured.',
+    }),
   })
   .openapi({
     description:
@@ -1615,154 +1225,656 @@ const ErrorDetailListSchema = z.array(ErrorDetailSchema).openapi('ErrorDetailLis
 
 const ClusterStatusSchema = z
   .object({
-    State: ClusterStateSchema.and(
-      z.any().openapi({ description: 'The current state of the cluster.' }),
-    ).exactOptional(),
-    StateChangeReason: ClusterStateChangeReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the cluster status change.' }),
-    ).exactOptional(),
-    Timeline: ClusterTimelineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timeline that represents the status of a cluster over the lifetime of the cluster.',
-        }),
-    ).exactOptional(),
-    ErrorDetails: ErrorDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tuples that provide information about the errors that caused a cluster termination. This structure may have up to 10 different <code>ErrorDetail</code> tuples.',
-        }),
-    ).exactOptional(),
+    State: ClusterStateSchema.exactOptional().openapi({
+      description: 'The current state of the cluster.',
+    }),
+    StateChangeReason: ClusterStateChangeReasonSchema.exactOptional().openapi({
+      description: 'The reason for the cluster status change.',
+    }),
+    Timeline: ClusterTimelineSchema.exactOptional().openapi({
+      description:
+        'A timeline that represents the status of a cluster over the lifetime of the cluster.',
+    }),
+    ErrorDetails: ErrorDetailListSchema.exactOptional().openapi({
+      description:
+        'A list of tuples that provide information about the errors that caused a cluster termination. This structure may have up to 10 different <code>ErrorDetail</code> tuples.',
+    }),
   })
   .openapi({ description: 'The detailed status of the cluster.', required: [] })
   .openapi('ClusterStatus')
 
-const XmlStringMaxLen256ListSchema = z
-  .array(XmlStringMaxLen256Schema)
-  .openapi('XmlStringMaxLen256List')
+const ArnTypeSchema = z.string().min(20).max(2048).openapi('ArnType')
 
-const StringListSchema = z.array(StringSchema).openapi('StringList')
+const OptionalArnTypeSchema = z.string().min(0).max(2048).openapi('OptionalArnType')
 
-const Ec2InstanceAttributesSchema = z
+const ClusterSummarySchema = z
   .object({
-    Ec2KeyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon EC2 key pair to use when connecting with SSH into the master node as a user named "hadoop".',
-        }),
-    ).exactOptional(),
-    Ec2SubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set this parameter to the identifier of the Amazon VPC subnet where you want the cluster to launch. If you do not specify this value, and your account supports EC2-Classic, the cluster launches in EC2-Classic.',
-        }),
-    ).exactOptional(),
-    RequestedEc2SubnetIds: XmlStringMaxLen256ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies to clusters configured with the instance fleets option. Specifies the unique identifier of one or more Amazon EC2 subnets in which to launch EC2 cluster instances. Subnets must exist within the same VPC. Amazon EMR chooses the EC2 subnet with the best fit from among the list of <code>RequestedEc2SubnetIds</code>, and then launches all cluster instances within that Subnet. If this value is not specified, and the account and Region support EC2-Classic networks, the cluster launches instances in the EC2-Classic network and uses <code>RequestedEc2AvailabilityZones</code> instead of this setting. If EC2-Classic is not supported, and no Subnet is specified, Amazon EMR chooses the subnet for you. <code>RequestedEc2SubnetIDs</code> and <code>RequestedEc2AvailabilityZones</code> cannot be specified together.',
-        }),
-    ).exactOptional(),
-    Ec2AvailabilityZone: StringSchema.and(
-      z.any().openapi({ description: 'The Availability Zone in which the cluster will run. ' }),
-    ).exactOptional(),
-    RequestedEc2AvailabilityZones: XmlStringMaxLen256ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies to clusters configured with the instance fleets option. Specifies one or more Availability Zones in which to launch EC2 cluster instances when the EC2-Classic network configuration is supported. Amazon EMR chooses the Availability Zone with the best fit from among the list of <code>RequestedEc2AvailabilityZones</code>, and then launches all cluster instances within that Availability Zone. If you do not specify this value, Amazon EMR chooses the Availability Zone for you. <code>RequestedEc2SubnetIDs</code> and <code>RequestedEc2AvailabilityZones</code> cannot be specified together.',
-        }),
-    ).exactOptional(),
-    IamInstanceProfile: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that was specified when the cluster was launched. The EC2 instances of the cluster assume this role.',
-        }),
-    ).exactOptional(),
-    EmrManagedMasterSecurityGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the Amazon EC2 security group for the master node.',
-        }),
-    ).exactOptional(),
-    EmrManagedSlaveSecurityGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon EC2 security group for the core and task nodes.',
-        }),
-    ).exactOptional(),
-    ServiceAccessSecurityGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon EC2 security group for the Amazon EMR service to access clusters in VPC private subnets.',
-        }),
-    ).exactOptional(),
-    AdditionalMasterSecurityGroups: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of additional Amazon EC2 security group IDs for the master node.',
-        }),
-    ).exactOptional(),
-    AdditionalSlaveSecurityGroups: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of additional Amazon EC2 security group IDs for the core and task nodes.',
-        }),
-    ).exactOptional(),
+    Id: ClusterIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the cluster.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the cluster.' }),
+    Status: ClusterStatusSchema.exactOptional().openapi({
+      description: 'The details about the current status of the cluster.',
+    }),
+    NormalizedInstanceHours: IntegerSchema.exactOptional().openapi({
+      description:
+        'An approximation of the cost of the cluster, represented in m1.small/hours. This value is incremented one time for every hour an m1.small instance runs. Larger instances are weighted more, so an EC2 instance that is roughly four times more expensive would result in the normalized instance hours being incremented by four. This result is only an approximation and does not reflect the actual billing rate.',
+    }),
+    ClusterArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the cluster.',
+    }),
+    OutpostArn: OptionalArnTypeSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the Outpost where the cluster is launched. ',
+    }),
+  })
+  .openapi({ description: 'The summary description of the cluster.', required: [] })
+  .openapi('ClusterSummary')
+
+const ClusterSummaryListSchema = z.array(ClusterSummarySchema).openapi('ClusterSummaryList')
+
+const MarkerSchema = z.string().openapi('Marker')
+
+type ListClustersOutputType = {
+  Clusters?: z.infer<typeof ClusterSummaryListSchema> & unknown
+  Marker?: z.infer<typeof MarkerSchema> & unknown
+}
+
+const InstanceFleetStateSchema = z
+  .enum([
+    'PROVISIONING',
+    'BOOTSTRAPPING',
+    'RUNNING',
+    'RESIZING',
+    'SUSPENDED',
+    'TERMINATING',
+    'TERMINATED',
+  ])
+  .openapi('InstanceFleetState')
+
+const InstanceFleetStateChangeReasonCodeSchema = z
+  .enum(['INTERNAL_ERROR', 'VALIDATION_ERROR', 'INSTANCE_FAILURE', 'CLUSTER_TERMINATED'])
+  .openapi('InstanceFleetStateChangeReasonCode')
+
+const InstanceFleetStateChangeReasonSchema = z
+  .object({
+    Code: InstanceFleetStateChangeReasonCodeSchema.exactOptional().openapi({
+      description: 'A code corresponding to the reason the state change occurred.',
+    }),
+    Message: StringSchema.exactOptional().openapi({ description: 'An explanatory message.' }),
   })
   .openapi({
     description:
-      'Provides information about the EC2 instances in a cluster grouped by category. For example, key name, subnet ID, IAM instance profile, and so on.',
+      '<p>Provides status change reason details for the instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
     required: [],
   })
-  .openapi('Ec2InstanceAttributes')
+  .openapi('InstanceFleetStateChangeReason')
 
-const InstanceCollectionTypeSchema = z
-  .enum(['INSTANCE_FLEET', 'INSTANCE_GROUP'])
-  .openapi('InstanceCollectionType')
+const InstanceFleetTimelineSchema = z
+  .object({
+    CreationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time and date the instance fleet was created.',
+    }),
+    ReadyDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time and date the instance fleet was ready to run jobs.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time and date the instance fleet terminated.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Provides historical timestamps for the instance fleet, including the time of creation, the time it became ready to run jobs, and the time of termination.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
+    required: [],
+  })
+  .openapi('InstanceFleetTimeline')
 
-const BooleanSchema = z.boolean().openapi('Boolean')
+const InstanceFleetStatusSchema = z
+  .object({
+    State: InstanceFleetStateSchema.exactOptional().openapi({
+      description:
+        "<p>A code representing the instance fleet status.</p> <ul> <li> <p> <code>PROVISIONING</code>—The instance fleet is provisioning EC2 resources and is not yet ready to run jobs.</p> </li> <li> <p> <code>BOOTSTRAPPING</code>—EC2 instances and other resources have been provisioned and the bootstrap actions specified for the instances are underway.</p> </li> <li> <p> <code>RUNNING</code>—EC2 instances and other resources are running. They are either executing jobs or waiting to execute jobs.</p> </li> <li> <p> <code>RESIZING</code>—A resize operation is underway. EC2 instances are either being added or removed.</p> </li> <li> <p> <code>SUSPENDED</code>—A resize operation could not complete. Existing EC2 instances are running, but instances can't be added or removed.</p> </li> <li> <p> <code>TERMINATING</code>—The instance fleet is terminating EC2 instances.</p> </li> <li> <p> <code>TERMINATED</code>—The instance fleet is no longer active, and all EC2 instances have been terminated.</p> </li> </ul>",
+    }),
+    StateChangeReason: InstanceFleetStateChangeReasonSchema.exactOptional().openapi({
+      description: 'Provides status change reason details for the instance fleet.',
+    }),
+    Timeline: InstanceFleetTimelineSchema.exactOptional().openapi({
+      description:
+        'Provides historical timestamps for the instance fleet, including the time of creation, the time it became ready to run jobs, and the time of termination.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The status of the instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
+    required: [],
+  })
+  .openapi('InstanceFleetStatus')
+
+const EbsBlockDeviceSchema = z
+  .object({
+    VolumeSpecification: VolumeSpecificationSchema.exactOptional().openapi({
+      description:
+        'EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an EC2 instance in the cluster.',
+    }),
+    Device: StringSchema.exactOptional().openapi({
+      description: 'The device name that is exposed to the instance, such as /dev/sdh.',
+    }),
+  })
+  .openapi({
+    description: 'Configuration of requested EBS block device associated with the instance group.',
+    required: [],
+  })
+  .openapi('EbsBlockDevice')
+
+const EbsBlockDeviceListSchema = z.array(EbsBlockDeviceSchema).openapi('EbsBlockDeviceList')
+
+const InstanceTypeSpecificationSchema = z
+  .object({
+    InstanceType: InstanceTypeSchema.exactOptional().openapi({
+      description: 'The EC2 instance type, for example <code>m3.xlarge</code>.',
+    }),
+    WeightedCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of units that a provisioned instance of this type provides toward fulfilling the target capacities defined in <a>InstanceFleetConfig</a>. Capacity values represent performance characteristics such as vCPUs, memory, or I/O. If not specified, the default value is 1.',
+    }),
+    BidPrice: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The bid price for each EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD.',
+    }),
+    BidPriceAsPercentageOfOnDemandPrice: NonNegativeDoubleSchema.exactOptional().openapi({
+      description:
+        'The bid price, as a percentage of On-Demand price, for each EC2 Spot Instance as defined by <code>InstanceType</code>. Expressed as a number (for example, 20 specifies 20%).',
+    }),
+    Configurations: ConfigurationListSchema.exactOptional().openapi({
+      description:
+        'A configuration classification that applies when provisioning cluster instances, which can include configurations for applications and software bundled with Amazon EMR.',
+    }),
+    EbsBlockDevices: EbsBlockDeviceListSchema.exactOptional().openapi({
+      description:
+        'The configuration of Amazon Elastic Block Store (Amazon EBS) attached to each instance as defined by <code>InstanceType</code>.',
+    }),
+    EbsOptimized: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Evaluates to <code>TRUE</code> when the specified <code>InstanceType</code> is EBS-optimized.',
+    }),
+    CustomAmiId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The custom AMI ID to use for the instance type.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The configuration specification for each instance type in an instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
+    required: [],
+  })
+  .openapi('InstanceTypeSpecification')
+
+const InstanceTypeSpecificationListSchema = z
+  .array(InstanceTypeSpecificationSchema)
+  .openapi('InstanceTypeSpecificationList')
+
+const InstanceFleetSchema = z
+  .object({
+    Id: InstanceFleetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the instance fleet.',
+    }),
+    Name: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'A friendly name for the instance fleet.',
+    }),
+    Status: InstanceFleetStatusSchema.exactOptional().openapi({
+      description: 'The current status of the instance fleet. ',
+    }),
+    InstanceFleetType: InstanceFleetTypeSchema.exactOptional().openapi({
+      description:
+        'The node type that the instance fleet hosts. Valid values are MASTER, CORE, or TASK. ',
+    }),
+    TargetOnDemandCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        '<p>The target capacity of On-Demand units for the instance fleet, which determines how many On-Demand Instances to provision. When the instance fleet launches, Amazon EMR tries to provision On-Demand Instances as specified by <a>InstanceTypeConfig</a>. Each instance configuration has a specified <code>WeightedCapacity</code>. When an On-Demand Instance is provisioned, the <code>WeightedCapacity</code> units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a <code>WeightedCapacity</code> of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units. You can use <a>InstanceFleet$ProvisionedOnDemandCapacity</a> to determine the Spot capacity units that have been provisioned for the instance fleet.</p> <note> <p>If not specified or set to 0, only Spot Instances are provisioned for the instance fleet using <code>TargetSpotCapacity</code>. At least one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> should be greater than 0. For a master instance fleet, only one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> can be specified, and its value must be 1.</p> </note>',
+    }),
+    TargetSpotCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        '<p>The target capacity of Spot units for the instance fleet, which determines how many Spot Instances to provision. When the instance fleet launches, Amazon EMR tries to provision Spot Instances as specified by <a>InstanceTypeConfig</a>. Each instance configuration has a specified <code>WeightedCapacity</code>. When a Spot instance is provisioned, the <code>WeightedCapacity</code> units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a <code>WeightedCapacity</code> of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units. You can use <a>InstanceFleet$ProvisionedSpotCapacity</a> to determine the Spot capacity units that have been provisioned for the instance fleet.</p> <note> <p>If not specified or set to 0, only On-Demand Instances are provisioned for the instance fleet. At least one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> should be greater than 0. For a master instance fleet, only one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> can be specified, and its value must be 1.</p> </note>',
+    }),
+    ProvisionedOnDemandCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of On-Demand units that have been provisioned for the instance fleet to fulfill <code>TargetOnDemandCapacity</code>. This provisioned capacity might be less than or greater than <code>TargetOnDemandCapacity</code>.',
+    }),
+    ProvisionedSpotCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of Spot units that have been provisioned for this instance fleet to fulfill <code>TargetSpotCapacity</code>. This provisioned capacity might be less than or greater than <code>TargetSpotCapacity</code>.',
+    }),
+    InstanceTypeSpecifications: InstanceTypeSpecificationListSchema.exactOptional().openapi({
+      description:
+        'An array of specifications for the instance types that comprise an instance fleet.',
+    }),
+    LaunchSpecifications: InstanceFleetProvisioningSpecificationsSchema.exactOptional().openapi({
+      description: 'Describes the launch specification for an instance fleet. ',
+    }),
+    ResizeSpecifications: InstanceFleetResizingSpecificationsSchema.exactOptional().openapi({
+      description: 'The resize specification for the instance fleet.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes an instance fleet, which is a group of EC2 instances that host a particular node type (master, core, or task) in an Amazon EMR cluster. Instance fleets can consist of a mix of instance types and On-Demand and Spot Instances, which are provisioned to meet a defined target capacity. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
+    required: [],
+  })
+  .openapi('InstanceFleet')
+
+const InstanceFleetListSchema = z.array(InstanceFleetSchema).openapi('InstanceFleetList')
+
+type ListInstanceFleetsOutputType = {
+  InstanceFleets?: z.infer<typeof InstanceFleetListSchema> & unknown
+  Marker?: z.infer<typeof MarkerSchema> & unknown
+}
+
+const InstanceGroupIdSchema = z.string().openapi('InstanceGroupId')
+
+const InstanceGroupTypeSchema = z.enum(['MASTER', 'CORE', 'TASK']).openapi('InstanceGroupType')
+
+const InstanceGroupStateChangeReasonCodeSchema = z
+  .enum(['INTERNAL_ERROR', 'VALIDATION_ERROR', 'INSTANCE_FAILURE', 'CLUSTER_TERMINATED'])
+  .openapi('InstanceGroupStateChangeReasonCode')
+
+const InstanceGroupStateChangeReasonSchema = z
+  .object({
+    Code: InstanceGroupStateChangeReasonCodeSchema.exactOptional().openapi({
+      description: 'The programmable code for the state change reason.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'The status change reason description.',
+    }),
+  })
+  .openapi({
+    description: 'The status change reason details for the instance group.',
+    required: [],
+  })
+  .openapi('InstanceGroupStateChangeReason')
+
+const InstanceGroupTimelineSchema = z
+  .object({
+    CreationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time of the instance group.',
+    }),
+    ReadyDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the instance group became ready to perform tasks.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the instance group terminated.',
+    }),
+  })
+  .openapi({ description: 'The timeline of the instance group lifecycle.', required: [] })
+  .openapi('InstanceGroupTimeline')
+
+const InstanceGroupStatusSchema = z
+  .object({
+    State: InstanceGroupStateSchema.exactOptional().openapi({
+      description: 'The current state of the instance group.',
+    }),
+    StateChangeReason: InstanceGroupStateChangeReasonSchema.exactOptional().openapi({
+      description: 'The status change reason details for the instance group.',
+    }),
+    Timeline: InstanceGroupTimelineSchema.exactOptional().openapi({
+      description: 'The timeline of the instance group status over time.',
+    }),
+  })
+  .openapi({ description: 'The details of the instance group status.', required: [] })
+  .openapi('InstanceGroupStatus')
+
+const LongSchema = z.int().openapi('Long')
+
+const EC2InstanceIdsListSchema = z.array(InstanceIdSchema).openapi('EC2InstanceIdsList')
+
+const InstanceResizePolicySchema = z
+  .object({
+    InstancesToTerminate: EC2InstanceIdsListSchema.exactOptional().openapi({
+      description: 'Specific list of instances to be terminated when shrinking an instance group.',
+    }),
+    InstancesToProtect: EC2InstanceIdsListSchema.exactOptional().openapi({
+      description: 'Specific list of instances to be protected when shrinking an instance group.',
+    }),
+    InstanceTerminationTimeout: IntegerSchema.exactOptional().openapi({
+      description:
+        'Decommissioning timeout override for the specific list of instances to be terminated.',
+    }),
+  })
+  .openapi({
+    description:
+      'Custom policy for requesting termination protection or termination of specific instances when shrinking an instance group.',
+    required: [],
+  })
+  .openapi('InstanceResizePolicy')
+
+const ShrinkPolicySchema = z
+  .object({
+    DecommissionTimeout: IntegerSchema.exactOptional().openapi({
+      description:
+        'The desired timeout for decommissioning an instance. Overrides the default YARN decommissioning timeout.',
+    }),
+    InstanceResizePolicy: InstanceResizePolicySchema.exactOptional().openapi({
+      description:
+        'Custom policy for requesting termination protection or termination of specific instances when shrinking an instance group.',
+    }),
+  })
+  .openapi({
+    description:
+      'Policy for customizing shrink operations. Allows configuration of decommissioning timeout and targeted instance shrinking.',
+    required: [],
+  })
+  .openapi('ShrinkPolicy')
+
+const AutoScalingPolicyStateSchema = z
+  .enum(['PENDING', 'ATTACHING', 'ATTACHED', 'DETACHING', 'DETACHED', 'FAILED'])
+  .openapi('AutoScalingPolicyState')
+
+const AutoScalingPolicyStateChangeReasonCodeSchema = z
+  .enum(['USER_REQUEST', 'PROVISION_FAILURE', 'CLEANUP_FAILURE'])
+  .openapi('AutoScalingPolicyStateChangeReasonCode')
+
+const AutoScalingPolicyStateChangeReasonSchema = z
+  .object({
+    Code: AutoScalingPolicyStateChangeReasonCodeSchema.exactOptional().openapi({
+      description:
+        'The code indicating the reason for the change in status.<code>USER_REQUEST</code> indicates that the scaling policy status was changed by a user. <code>PROVISION_FAILURE</code> indicates that the status change was because the policy failed to provision. <code>CLEANUP_FAILURE</code> indicates an error.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description:
+        'A friendly, more verbose message that accompanies an automatic scaling policy state change.',
+    }),
+  })
+  .openapi({
+    description: 'The reason for an <a>AutoScalingPolicyStatus</a> change.',
+    required: [],
+  })
+  .openapi('AutoScalingPolicyStateChangeReason')
+
+const AutoScalingPolicyStatusSchema = z
+  .object({
+    State: AutoScalingPolicyStateSchema.exactOptional().openapi({
+      description: 'Indicates the status of the automatic scaling policy.',
+    }),
+    StateChangeReason: AutoScalingPolicyStateChangeReasonSchema.exactOptional().openapi({
+      description: 'The reason for a change in status.',
+    }),
+  })
+  .openapi({ description: 'The status of an automatic scaling policy. ', required: [] })
+  .openapi('AutoScalingPolicyStatus')
+
+const AutoScalingPolicyDescriptionSchema = z
+  .object({
+    Status: AutoScalingPolicyStatusSchema.exactOptional().openapi({
+      description: 'The status of an automatic scaling policy. ',
+    }),
+    Constraints: ScalingConstraintsSchema.exactOptional().openapi({
+      description:
+        'The upper and lower EC2 instance limits for an automatic scaling policy. Automatic scaling activity will not cause an instance group to grow above or below these limits.',
+    }),
+    Rules: ScalingRuleListSchema.exactOptional().openapi({
+      description: 'The scale-in and scale-out rules that comprise the automatic scaling policy.',
+    }),
+  })
+  .openapi({
+    description:
+      'An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates EC2 instances in response to the value of a CloudWatch metric. See <a>PutAutoScalingPolicy</a>.',
+    required: [],
+  })
+  .openapi('AutoScalingPolicyDescription')
+
+type InstanceGroupType = {
+  Id?: z.infer<typeof InstanceGroupIdSchema> & unknown
+  Name?: z.infer<typeof StringSchema> & unknown
+  Market?: z.infer<typeof MarketTypeSchema> & unknown
+  InstanceGroupType?: z.infer<typeof InstanceGroupTypeSchema> & unknown
+  BidPrice?: z.infer<typeof StringSchema> & unknown
+  InstanceType?: z.infer<typeof InstanceTypeSchema> & unknown
+  RequestedInstanceCount?: z.infer<typeof IntegerSchema> & unknown
+  RunningInstanceCount?: z.infer<typeof IntegerSchema> & unknown
+  Status?: z.infer<typeof InstanceGroupStatusSchema> & unknown
+  Configurations?: z.infer<typeof ConfigurationListSchema> & unknown
+  ConfigurationsVersion?: z.infer<typeof LongSchema> & unknown
+  LastSuccessfullyAppliedConfigurations?: z.infer<typeof ConfigurationListSchema> & unknown
+  LastSuccessfullyAppliedConfigurationsVersion?: z.infer<typeof LongSchema> & unknown
+  EbsBlockDevices?: z.infer<typeof EbsBlockDeviceListSchema> & unknown
+  EbsOptimized?: z.infer<typeof BooleanObjectSchema> & unknown
+  ShrinkPolicy?: z.infer<typeof ShrinkPolicySchema> & unknown
+  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicyDescriptionSchema> & unknown
+  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+}
+
+const InstanceGroupSchema: z.ZodType<InstanceGroupType> = z
+  .object({
+    Id: InstanceGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the instance group.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the instance group.' }),
+    Market: MarketTypeSchema.exactOptional().openapi({
+      description:
+        'The marketplace to provision instances for this group. Valid values are ON_DEMAND or SPOT.',
+    }),
+    InstanceGroupType: InstanceGroupTypeSchema.exactOptional().openapi({
+      description: 'The type of the instance group. Valid values are MASTER, CORE or TASK.',
+    }),
+    BidPrice: StringSchema.exactOptional().openapi({
+      description:
+        'If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.',
+    }),
+    InstanceType: InstanceTypeSchema.exactOptional().openapi({
+      description: 'The EC2 instance type for all instances in the instance group.',
+    }),
+    RequestedInstanceCount: IntegerSchema.exactOptional().openapi({
+      description: 'The target number of instances for the instance group.',
+    }),
+    RunningInstanceCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances currently running in this instance group.',
+    }),
+    Status: InstanceGroupStatusSchema.exactOptional().openapi({
+      description: 'The current status of the instance group.',
+    }),
+    Configurations: ConfigurationListSchema.exactOptional().openapi({
+      description:
+        '<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>The list of configurations supplied for an Amazon EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).</p>',
+    }),
+    ConfigurationsVersion: LongSchema.exactOptional().openapi({
+      description:
+        'The version number of the requested configuration specification for this instance group.',
+    }),
+    LastSuccessfullyAppliedConfigurations: ConfigurationListSchema.exactOptional().openapi({
+      description:
+        'A list of configurations that were successfully applied for an instance group last time.',
+    }),
+    LastSuccessfullyAppliedConfigurationsVersion: LongSchema.exactOptional().openapi({
+      description:
+        'The version number of a configuration specification that was successfully applied for an instance group last time. ',
+    }),
+    EbsBlockDevices: EbsBlockDeviceListSchema.exactOptional().openapi({
+      description: 'The EBS block devices that are mapped to this instance group.',
+    }),
+    EbsOptimized: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'If the instance group is EBS-optimized. An Amazon EBS-optimized instance uses an optimized configuration stack and provides additional, dedicated capacity for Amazon EBS I/O.',
+    }),
+    ShrinkPolicy: ShrinkPolicySchema.exactOptional().openapi({
+      description: 'Policy for customizing shrink operations.',
+    }),
+    AutoScalingPolicy: AutoScalingPolicyDescriptionSchema.exactOptional().openapi({
+      description:
+        'An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates EC2 instances in response to the value of a CloudWatch metric. See PutAutoScalingPolicy.',
+    }),
+    CustomAmiId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The custom AMI ID to use for the provisioned instance group.',
+    }),
+  })
+  .openapi({
+    description:
+      'This entity represents an instance group, which is a group of instances that have common purpose. For example, CORE instance group is used for HDFS.',
+    required: [],
+  })
+  .openapi('InstanceGroup')
+
+type InstanceGroupListType = z.infer<typeof InstanceGroupSchema>[]
+
+const InstanceGroupListSchema: z.ZodType<InstanceGroupListType> = z
+  .array(InstanceGroupSchema)
+  .openapi('InstanceGroupList')
+
+type ListInstanceGroupsOutputType = {
+  InstanceGroups?: z.infer<typeof InstanceGroupListSchema> & unknown
+  Marker?: z.infer<typeof MarkerSchema> & unknown
+}
+
+type PutAutoScalingPolicyOutputType = {
+  ClusterId?: z.infer<typeof ClusterIdSchema> & unknown
+  InstanceGroupId?: z.infer<typeof InstanceGroupIdSchema> & unknown
+  AutoScalingPolicy?: z.infer<typeof AutoScalingPolicyDescriptionSchema> & unknown
+  ClusterArn?: z.infer<typeof ArnTypeSchema> & unknown
+}
+
+type PutAutoScalingPolicyInputType = {
+  ClusterId: z.infer<typeof ClusterIdSchema> & unknown
+  InstanceGroupId: z.infer<typeof InstanceGroupIdSchema> & unknown
+  AutoScalingPolicy: z.infer<typeof AutoScalingPolicySchema> & unknown
+}
+
+type InstanceFleetConfigListType = z.infer<typeof InstanceFleetConfigSchema>[]
+
+const InstanceFleetConfigListSchema: z.ZodType<InstanceFleetConfigListType> = z
+  .array(InstanceFleetConfigSchema)
+  .openapi('InstanceFleetConfigList')
+
+const SecurityGroupsListSchema = z.array(XmlStringMaxLen256Schema).openapi('SecurityGroupsList')
+
+type JobFlowInstancesConfigType = {
+  MasterInstanceType?: z.infer<typeof InstanceTypeSchema> & unknown
+  SlaveInstanceType?: z.infer<typeof InstanceTypeSchema> & unknown
+  InstanceCount?: z.infer<typeof IntegerSchema> & unknown
+  InstanceGroups?: z.infer<typeof InstanceGroupConfigListSchema> & unknown
+  InstanceFleets?: z.infer<typeof InstanceFleetConfigListSchema> & unknown
+  Ec2KeyName?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  Placement?: z.infer<typeof PlacementTypeSchema> & unknown
+  KeepJobFlowAliveWhenNoSteps?: z.infer<typeof BooleanSchema> & unknown
+  TerminationProtected?: z.infer<typeof BooleanSchema> & unknown
+  HadoopVersion?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  Ec2SubnetId?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  Ec2SubnetIds?: z.infer<typeof XmlStringMaxLen256ListSchema> & unknown
+  EmrManagedMasterSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  EmrManagedSlaveSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  ServiceAccessSecurityGroup?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  AdditionalMasterSecurityGroups?: z.infer<typeof SecurityGroupsListSchema> & unknown
+  AdditionalSlaveSecurityGroups?: z.infer<typeof SecurityGroupsListSchema> & unknown
+}
+
+const JobFlowInstancesConfigSchema: z.ZodType<JobFlowInstancesConfigType> = z
+  .object({
+    MasterInstanceType: InstanceTypeSchema.exactOptional().openapi({
+      description: 'The EC2 instance type of the master node.',
+    }),
+    SlaveInstanceType: InstanceTypeSchema.exactOptional().openapi({
+      description: 'The EC2 instance type of the core and task nodes.',
+    }),
+    InstanceCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of EC2 instances in the cluster.',
+    }),
+    InstanceGroups: InstanceGroupConfigListSchema.exactOptional().openapi({
+      description: 'Configuration for the instance groups in a cluster.',
+    }),
+    InstanceFleets: InstanceFleetConfigListSchema.exactOptional().openapi({
+      description:
+        '<note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note> <p>Describes the EC2 instances and instance configurations for clusters that use the instance fleet configuration.</p>',
+    }),
+    Ec2KeyName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name of the EC2 key pair that can be used to connect to the master node using SSH as the user called "hadoop."',
+    }),
+    Placement: PlacementTypeSchema.exactOptional().openapi({
+      description: 'The Availability Zone in which the cluster runs.',
+    }),
+    KeepJobFlowAliveWhenNoSteps: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the cluster should remain available after completing all steps. Defaults to <code>true</code>. For more information about configuring cluster termination, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-termination.html">Control Cluster Termination</a> in the <i>EMR Management Guide</i>.',
+    }),
+    TerminationProtected: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether to lock the cluster to prevent the Amazon EC2 instances from being terminated by API call, user intervention, or in the event of a job-flow error.',
+    }),
+    HadoopVersion: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'Applies only to Amazon EMR release versions earlier than 4.0. The Hadoop version for the cluster. Valid inputs are "0.18" (no longer maintained), "0.20" (no longer maintained), "0.20.205" (no longer maintained), "1.0.3", "2.2.0", or "2.4.0". If you do not set this value, the default of 0.18 is used, unless the <code>AmiVersion</code> parameter is set in the RunJobFlow call, in which case the default version of Hadoop for that AMI version is used.',
+    }),
+    Ec2SubnetId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'Applies to clusters that use the uniform instance group configuration. To launch the cluster in Amazon Virtual Private Cloud (Amazon VPC), set this parameter to the identifier of the Amazon VPC subnet where you want the cluster to launch. If you do not specify this value and your account supports EC2-Classic, the cluster launches in EC2-Classic.',
+    }),
+    Ec2SubnetIds: XmlStringMaxLen256ListSchema.exactOptional().openapi({
+      description:
+        '<p>Applies to clusters that use the instance fleet configuration. When multiple EC2 subnet IDs are specified, Amazon EMR evaluates them and launches instances in the optimal subnet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
+    }),
+    EmrManagedMasterSecurityGroup: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon EC2 security group for the master node. If you specify <code>EmrManagedMasterSecurityGroup</code>, you must also specify <code>EmrManagedSlaveSecurityGroup</code>.',
+    }),
+    EmrManagedSlaveSecurityGroup: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon EC2 security group for the core and task nodes. If you specify <code>EmrManagedSlaveSecurityGroup</code>, you must also specify <code>EmrManagedMasterSecurityGroup</code>.',
+    }),
+    ServiceAccessSecurityGroup: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon EC2 security group for the Amazon EMR service to access clusters in VPC private subnets.',
+    }),
+    AdditionalMasterSecurityGroups: SecurityGroupsListSchema.exactOptional().openapi({
+      description: 'A list of additional Amazon EC2 security group IDs for the master node.',
+    }),
+    AdditionalSlaveSecurityGroups: SecurityGroupsListSchema.exactOptional().openapi({
+      description:
+        'A list of additional Amazon EC2 security group IDs for the core and task nodes.',
+    }),
+  })
+  .openapi({
+    description:
+      "A description of the Amazon EC2 instance on which the cluster (job flow) runs. A valid JobFlowInstancesConfig must contain either InstanceGroups or InstanceFleets. They cannot be used together. You may also have MasterInstanceType, SlaveInstanceType, and InstanceCount (all three must be present), but we don't recommend this configuration.",
+    required: [],
+  })
+  .openapi('JobFlowInstancesConfig')
+
+const StepConfigListSchema = z.array(StepConfigSchema).openapi('StepConfigList')
+
+const BootstrapActionConfigListSchema = z
+  .array(BootstrapActionConfigSchema)
+  .openapi('BootstrapActionConfigList')
+
+const SupportedProductConfigSchema = z
+  .object({
+    Name: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The name of the product configuration.',
+    }),
+    Args: XmlStringListSchema.exactOptional().openapi({
+      description: 'The list of user-supplied arguments.',
+    }),
+  })
+  .openapi({
+    description:
+      'The list of supported product configurations that allow user-supplied arguments. EMR accepts these arguments and forwards them to the corresponding installation script as bootstrap action arguments.',
+    required: [],
+  })
+  .openapi('SupportedProductConfig')
+
+const NewSupportedProductsListSchema = z
+  .array(SupportedProductConfigSchema)
+  .openapi('NewSupportedProductsList')
+
+const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const ApplicationSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the application.' }),
-    ).exactOptional(),
-    Args: StringListSchema.and(
-      z.any().openapi({ description: 'Arguments for Amazon EMR to pass to the application.' }),
-    ).exactOptional(),
-    AdditionalInfo: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This option is for advanced users only. This is meta information about third-party applications that third-party vendors use for testing purposes.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the application.' }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version of the application.',
+    }),
+    Args: StringListSchema.exactOptional().openapi({
+      description: 'Arguments for Amazon EMR to pass to the application.',
+    }),
+    AdditionalInfo: StringMapSchema.exactOptional().openapi({
+      description:
+        'This option is for advanced users only. This is meta information about third-party applications that third-party vendors use for testing purposes.',
+    }),
   })
   .openapi({
     description:
@@ -1773,53 +1885,49 @@ const ApplicationSchema = z
 
 const ApplicationListSchema = z.array(ApplicationSchema).openapi('ApplicationList')
 
-const ScaleDownBehaviorSchema = z
-  .enum(['TERMINATE_AT_INSTANCE_HOUR', 'TERMINATE_AT_TASK_COMPLETION'])
-  .openapi('ScaleDownBehavior')
+const TagSchema = z
+  .object({
+    Key: StringSchema.exactOptional().openapi({
+      description:
+        'A user-defined key, which is the minimum required information for a valid tag. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html">Tag</a>. ',
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      description:
+        'A user-defined value, which is optional in a tag. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html">Tag Clusters</a>. ',
+    }),
+  })
+  .openapi({
+    description:
+      'A key-value pair containing user-defined metadata that you can associate with an Amazon EMR resource. Tags make it easier to associate clusters in various ways, such as grouping clusters to track your Amazon EMR resource allocation costs. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-tags.html">Tag Clusters</a>. ',
+    required: [],
+  })
+  .openapi('Tag')
+
+const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const RepoUpgradeOnBootSchema = z.enum(['SECURITY', 'NONE']).openapi('RepoUpgradeOnBoot')
 
 const KerberosAttributesSchema = z
   .object({
-    Realm: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Kerberos realm to which all nodes in a cluster belong. For example, <code>EC2.INTERNAL</code>. ',
-        }),
-    ),
-    KdcAdminPassword: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The password used within the cluster for the kadmin service on the cluster-dedicated KDC, which maintains Kerberos principals, password policies, and keytabs for the cluster.',
-        }),
-    ),
-    CrossRealmTrustPrincipalPassword: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required only when establishing a cross-realm trust with a KDC in a different realm. The cross-realm principal password, which must be identical across realms.',
-        }),
-    ).exactOptional(),
-    ADDomainJoinUser: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required only when establishing a cross-realm trust with an Active Directory domain. A user with sufficient privileges to join resources to the domain.',
-        }),
-    ).exactOptional(),
-    ADDomainJoinPassword: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Active Directory password for <code>ADDomainJoinUser</code>.',
-        }),
-    ).exactOptional(),
+    Realm: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The name of the Kerberos realm to which all nodes in a cluster belong. For example, <code>EC2.INTERNAL</code>. ',
+    }),
+    KdcAdminPassword: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The password used within the cluster for the kadmin service on the cluster-dedicated KDC, which maintains Kerberos principals, password policies, and keytabs for the cluster.',
+    }),
+    CrossRealmTrustPrincipalPassword: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'Required only when establishing a cross-realm trust with a KDC in a different realm. The cross-realm principal password, which must be identical across realms.',
+    }),
+    ADDomainJoinUser: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'Required only when establishing a cross-realm trust with an Active Directory domain. A user with sufficient privileges to join resources to the domain.',
+    }),
+    ADDomainJoinPassword: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The Active Directory password for <code>ADDomainJoinUser</code>.',
+    }),
   })
   .openapi({
     required: ['Realm', 'KdcAdminPassword'],
@@ -1828,7 +1936,52 @@ const KerberosAttributesSchema = z
   })
   .openapi('KerberosAttributes')
 
-const OptionalArnTypeSchema = z.string().min(0).max(2048).openapi('OptionalArnType')
+const ComputeLimitsUnitTypeSchema = z
+  .enum(['InstanceFleetUnits', 'Instances', 'VCPU'])
+  .openapi('ComputeLimitsUnitType')
+
+const ComputeLimitsSchema = z
+  .object({
+    UnitType: ComputeLimitsUnitTypeSchema.openapi({
+      description: ' The unit type used for specifying a managed scaling policy. ',
+    }),
+    MinimumCapacityUnits: IntegerSchema.openapi({
+      description:
+        ' The lower boundary of EC2 units. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. Managed scaling activities are not allowed beyond this boundary. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration. ',
+    }),
+    MaximumCapacityUnits: IntegerSchema.openapi({
+      description:
+        ' The upper boundary of EC2 units. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. Managed scaling activities are not allowed beyond this boundary. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration. ',
+    }),
+    MaximumOnDemandCapacityUnits: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The upper boundary of On-Demand EC2 units. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. The On-Demand units are not allowed to scale beyond this boundary. The parameter is used to split capacity allocation between On-Demand and Spot Instances. ',
+    }),
+    MaximumCoreCapacityUnits: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The upper boundary of EC2 units for core node type in a cluster. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. The core units are not allowed to scale beyond this boundary. The parameter is used to split capacity allocation between core and task nodes. ',
+    }),
+  })
+  .openapi({
+    required: ['UnitType', 'MinimumCapacityUnits', 'MaximumCapacityUnits'],
+    description:
+      ' The EC2 unit limits for a managed scaling policy. The managed scaling activity of a cluster can not be above or below these limits. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration. ',
+  })
+  .openapi('ComputeLimits')
+
+const ManagedScalingPolicySchema = z
+  .object({
+    ComputeLimits: ComputeLimitsSchema.exactOptional().openapi({
+      description:
+        'The EC2 unit limits for a managed scaling policy. The managed scaling activity of a cluster is not allowed to go above or below these limits. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration.',
+    }),
+  })
+  .openapi({
+    description:
+      ' Managed scaling policy for an Amazon EMR cluster. The policy specifies the limits for resources that can be added or terminated from a cluster. The policy only applies to the core and task nodes. The master node cannot be scaled after initial configuration. ',
+    required: [],
+  })
+  .openapi('ManagedScalingPolicy')
 
 const PlacementGroupStrategySchema = z
   .enum(['SPREAD', 'PARTITION', 'CLUSTER', 'NONE'])
@@ -1836,22 +1989,14 @@ const PlacementGroupStrategySchema = z
 
 const PlacementGroupConfigSchema = z
   .object({
-    InstanceRole: InstanceRoleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Role of the instance in the cluster.</p> <p>Starting with Amazon EMR version 5.23.0, the only supported instance role is <code>MASTER</code>.</p>',
-        }),
-    ),
-    PlacementStrategy: PlacementGroupStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>EC2 Placement Group strategy associated with instance role.</p> <p>Starting with Amazon EMR version 5.23.0, the only supported placement strategy is <code>SPREAD</code> for the <code>MASTER</code> instance role.</p>',
-        }),
-    ).exactOptional(),
+    InstanceRole: InstanceRoleTypeSchema.openapi({
+      description:
+        '<p>Role of the instance in the cluster.</p> <p>Starting with Amazon EMR version 5.23.0, the only supported instance role is <code>MASTER</code>.</p>',
+    }),
+    PlacementStrategy: PlacementGroupStrategySchema.exactOptional().openapi({
+      description:
+        '<p>EC2 Placement Group strategy associated with instance role.</p> <p>Starting with Amazon EMR version 5.23.0, the only supported placement strategy is <code>SPREAD</code> for the <code>MASTER</code> instance role.</p>',
+    }),
   })
   .openapi({
     required: ['InstanceRole'],
@@ -1864,225 +2009,624 @@ const PlacementGroupConfigListSchema = z
   .array(PlacementGroupConfigSchema)
   .openapi('PlacementGroupConfigList')
 
+const AutoTerminationPolicySchema = z
+  .object({
+    IdleTimeout: LongSchema.exactOptional().openapi({
+      description:
+        'Specifies the amount of idle time in seconds after which the cluster automatically terminates. You can specify a minimum of 60 seconds and a maximum of 604800 seconds (seven days).',
+    }),
+  })
+  .openapi({
+    description:
+      'An auto-termination policy for an Amazon EMR cluster. An auto-termination policy defines the amount of idle time in seconds after which a cluster automatically terminates. For alternative cluster termination options, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-termination.html">Control cluster termination</a>.',
+    required: [],
+  })
+  .openapi('AutoTerminationPolicy')
+
+type RunJobFlowInputType = {
+  Name: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  LogUri?: z.infer<typeof XmlStringSchema> & unknown
+  LogEncryptionKmsKeyId?: z.infer<typeof XmlStringSchema> & unknown
+  AdditionalInfo?: z.infer<typeof XmlStringSchema> & unknown
+  AmiVersion?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  ReleaseLabel?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  Instances: z.infer<typeof JobFlowInstancesConfigSchema> & unknown
+  Steps?: z.infer<typeof StepConfigListSchema> & unknown
+  BootstrapActions?: z.infer<typeof BootstrapActionConfigListSchema> & unknown
+  SupportedProducts?: z.infer<typeof SupportedProductsListSchema> & unknown
+  NewSupportedProducts?: z.infer<typeof NewSupportedProductsListSchema> & unknown
+  Applications?: z.infer<typeof ApplicationListSchema> & unknown
+  Configurations?: z.infer<typeof ConfigurationListSchema> & unknown
+  VisibleToAllUsers?: z.infer<typeof BooleanSchema> & unknown
+  JobFlowRole?: z.infer<typeof XmlStringSchema> & unknown
+  ServiceRole?: z.infer<typeof XmlStringSchema> & unknown
+  Tags?: z.infer<typeof TagListSchema> & unknown
+  SecurityConfiguration?: z.infer<typeof XmlStringSchema> & unknown
+  AutoScalingRole?: z.infer<typeof XmlStringSchema> & unknown
+  ScaleDownBehavior?: z.infer<typeof ScaleDownBehaviorSchema> & unknown
+  CustomAmiId?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+  EbsRootVolumeSize?: z.infer<typeof IntegerSchema> & unknown
+  RepoUpgradeOnBoot?: z.infer<typeof RepoUpgradeOnBootSchema> & unknown
+  KerberosAttributes?: z.infer<typeof KerberosAttributesSchema> & unknown
+  StepConcurrencyLevel?: z.infer<typeof IntegerSchema> & unknown
+  ManagedScalingPolicy?: z.infer<typeof ManagedScalingPolicySchema> & unknown
+  PlacementGroupConfigs?: z.infer<typeof PlacementGroupConfigListSchema> & unknown
+  AutoTerminationPolicy?: z.infer<typeof AutoTerminationPolicySchema>
+  OSReleaseLabel?: z.infer<typeof XmlStringMaxLen256Schema> & unknown
+}
+
+const ConfigurationSchema: z.ZodType<ConfigurationType> = z
+  .lazy(() =>
+    z
+      .object({
+        Classification: StringSchema.exactOptional().openapi({
+          description: 'The classification within a configuration.',
+        }),
+        Configurations: ConfigurationListSchema.exactOptional().openapi({
+          description:
+            'A list of additional configurations to apply within a configuration object.',
+        }),
+        Properties: StringMapSchema.exactOptional().openapi({
+          description: 'A set of properties specified within a configuration classification.',
+        }),
+      })
+      .openapi({
+        description:
+          '<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>An optional configuration specification to be used when provisioning cluster instances, which can include configurations for applications and software bundled with Amazon EMR. A configuration consists of a classification, properties, and optional nested configurations. A classification refers to an application-specific configuration file. Properties are the settings you want to change in that file. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html">Configuring Applications</a>.</p>',
+        required: [],
+      }),
+  )
+  .openapi('Configuration')
+
+type ConfigurationListType = z.infer<typeof ConfigurationSchema>[]
+
+type ConfigurationType = {
+  Classification?: z.infer<typeof StringSchema> & unknown
+  Configurations?: z.infer<typeof ConfigurationListSchema> & unknown
+  Properties?: z.infer<typeof StringMapSchema> & unknown
+}
+
+const AddInstanceFleetOutputSchema = z
+  .object({
+    ClusterId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The unique identifier of the cluster.',
+    }),
+    InstanceFleetId: InstanceFleetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the instance fleet.',
+    }),
+    ClusterArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the cluster.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddInstanceFleetOutput')
+
+const AddInstanceFleetInputSchema: z.ZodType<AddInstanceFleetInputType> = z
+  .object({
+    ClusterId: XmlStringMaxLen256Schema.openapi({
+      description: 'The unique identifier of the cluster.',
+    }),
+    InstanceFleet: InstanceFleetConfigSchema.openapi({
+      description: 'Specifies the configuration of the instance fleet.',
+    }),
+  })
+  .openapi({ required: ['ClusterId', 'InstanceFleet'], title: 'AddInstanceFleetInput' })
+  .openapi('AddInstanceFleetInput')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
+
+const InstanceGroupIdsListSchema = z.array(XmlStringMaxLen256Schema).openapi('InstanceGroupIdsList')
+
+const AddInstanceGroupsOutputSchema = z
+  .object({
+    JobFlowId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The job flow ID in which the instance groups are added.',
+    }),
+    InstanceGroupIds: InstanceGroupIdsListSchema.exactOptional().openapi({
+      description: 'Instance group IDs of the newly created instance groups.',
+    }),
+    ClusterArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the cluster.',
+    }),
+  })
+  .openapi({ description: 'Output from an AddInstanceGroups call.', required: [] })
+  .openapi('AddInstanceGroupsOutput')
+
+const AddInstanceGroupsInputSchema: z.ZodType<AddInstanceGroupsInputType> = z
+  .object({
+    InstanceGroups: InstanceGroupConfigListSchema.openapi({
+      description: 'Instance groups to add.',
+    }),
+    JobFlowId: XmlStringMaxLen256Schema.openapi({
+      description: 'Job flow in which to add the instance groups.',
+    }),
+  })
+  .openapi({
+    required: ['InstanceGroups', 'JobFlowId'],
+    title: 'AddInstanceGroupsInput',
+    description: 'Input to an AddInstanceGroups call.',
+  })
+  .openapi('AddInstanceGroupsInput')
+
+const InternalServerErrorSchema = z.any().openapi('InternalServerError')
+
+const StepIdsListSchema = z.array(XmlStringMaxLen256Schema).openapi('StepIdsList')
+
+const AddJobFlowStepsOutputSchema = z
+  .object({
+    StepIds: StepIdsListSchema.exactOptional().openapi({
+      description: 'The identifiers of the list of steps added to the job flow.',
+    }),
+  })
+  .openapi({ description: ' The output for the <a>AddJobFlowSteps</a> operation. ', required: [] })
+  .openapi('AddJobFlowStepsOutput')
+
+const AddJobFlowStepsInputSchema = z
+  .object({
+    JobFlowId: XmlStringMaxLen256Schema.openapi({
+      description:
+        'A string that uniquely identifies the job flow. This identifier is returned by <a>RunJobFlow</a> and can also be obtained from <a>ListClusters</a>. ',
+    }),
+    Steps: StepConfigListSchema.openapi({
+      description: ' A list of <a>StepConfig</a> to be executed by the job flow. ',
+    }),
+    ExecutionRoleArn: ArnTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>. </p> <p>For example, <code>arn:aws:iam::1234567890:role/ReadOnly</code> is a correctly formatted runtime role ARN.</p>',
+    }),
+  })
+  .openapi({
+    required: ['JobFlowId', 'Steps'],
+    title: 'AddJobFlowStepsInput',
+    description: ' The input argument to the <a>AddJobFlowSteps</a> operation. ',
+  })
+  .openapi('AddJobFlowStepsInput')
+
+const AddTagsOutputSchema = z
+  .looseObject({})
+  .openapi({ description: 'This output indicates the result of adding tags to a resource.' })
+  .openapi('AddTagsOutput')
+
+const ResourceIdSchema = z.string().openapi('ResourceId')
+
+const AddTagsInputSchema = z
+  .object({
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        'The Amazon EMR resource identifier to which tags will be added. For example, a cluster identifier or an Amazon EMR Studio ID.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'A list of tags to associate with a resource. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters, and an optional value string with a maximum of 256 characters.',
+    }),
+  })
+  .openapi({
+    required: ['ResourceId', 'Tags'],
+    title: 'AddTagsInput',
+    description: 'This input identifies an Amazon EMR resource and a list of tags to attach.',
+  })
+  .openapi('AddTagsInput')
+
+const StepIdSchema = z.string().openapi('StepId')
+
+const CancelStepsRequestStatusSchema = z
+  .enum(['SUBMITTED', 'FAILED'])
+  .openapi('CancelStepsRequestStatus')
+
+const CancelStepsInfoSchema = z
+  .object({
+    StepId: StepIdSchema.exactOptional().openapi({
+      description: 'The encrypted StepId of a step.',
+    }),
+    Status: CancelStepsRequestStatusSchema.exactOptional().openapi({
+      description: 'The status of a CancelSteps Request. The value may be SUBMITTED or FAILED.',
+    }),
+    Reason: StringSchema.exactOptional().openapi({
+      description: 'The reason for the failure if the CancelSteps request fails.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specification of the status of a CancelSteps request. Available only in Amazon EMR version 4.8.0 and later, excluding version 5.0.0.',
+    required: [],
+  })
+  .openapi('CancelStepsInfo')
+
+const CancelStepsInfoListSchema = z.array(CancelStepsInfoSchema).openapi('CancelStepsInfoList')
+
+const CancelStepsOutputSchema = z
+  .object({
+    CancelStepsInfoList: CancelStepsInfoListSchema.exactOptional().openapi({
+      description:
+        'A list of <a>CancelStepsInfo</a>, which shows the status of specified cancel requests for each <code>StepID</code> specified.',
+    }),
+  })
+  .openapi({ description: ' The output for the <a>CancelSteps</a> operation. ', required: [] })
+  .openapi('CancelStepsOutput')
+
+const StepCancellationOptionSchema = z
+  .enum(['SEND_INTERRUPT', 'TERMINATE_PROCESS'])
+  .openapi('StepCancellationOption')
+
+const CancelStepsInputSchema = z
+  .object({
+    ClusterId: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The <code>ClusterID</code> for the specified steps that will be canceled. Use <a>RunJobFlow</a> and <a>ListClusters</a> to get ClusterIDs. ',
+    }),
+    StepIds: StepIdsListSchema.openapi({
+      description:
+        'The list of <code>StepIDs</code> to cancel. Use <a>ListSteps</a> to get steps and their states for the specified cluster.',
+    }),
+    StepCancellationOption: StepCancellationOptionSchema.exactOptional().openapi({
+      description:
+        'The option to choose to cancel <code>RUNNING</code> steps. By default, the value is <code>SEND_INTERRUPT</code>.',
+    }),
+  })
+  .openapi({
+    required: ['ClusterId', 'StepIds'],
+    title: 'CancelStepsInput',
+    description: 'The input argument to the <a>CancelSteps</a> operation.',
+  })
+  .openapi('CancelStepsInput')
+
+const CreateSecurityConfigurationOutputSchema = z
+  .object({
+    Name: XmlStringSchema.openapi({ description: 'The name of the security configuration.' }),
+    CreationDateTime: DateSchema.openapi({
+      description: 'The date and time the security configuration was created.',
+    }),
+  })
+  .openapi({ required: ['Name', 'CreationDateTime'] })
+  .openapi('CreateSecurityConfigurationOutput')
+
+const CreateSecurityConfigurationInputSchema = z
+  .object({
+    Name: XmlStringSchema.openapi({ description: 'The name of the security configuration.' }),
+    SecurityConfiguration: StringSchema.openapi({
+      description:
+        'The security configuration details in JSON format. For JSON parameters and examples, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-security-configurations.html">Use Security Configurations to Set Up Cluster Security</a> in the <i>Amazon EMR Management Guide</i>.',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'SecurityConfiguration'],
+    title: 'CreateSecurityConfigurationInput',
+  })
+  .openapi('CreateSecurityConfigurationInput')
+
+const CreateStudioOutputSchema = z
+  .object({
+    StudioId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon EMR Studio.',
+    }),
+    Url: XmlStringSchema.exactOptional().openapi({ description: 'The unique Studio access URL.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateStudioOutput')
+
+const AuthModeSchema = z.enum(['SSO', 'IAM']).openapi('AuthMode')
+
+const SubnetIdListSchema = z.array(StringSchema).openapi('SubnetIdList')
+
+const CreateStudioInputSchema = z
+  .object({
+    Name: XmlStringMaxLen256Schema.openapi({
+      description: 'A descriptive name for the Amazon EMR Studio.',
+    }),
+    Description: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'A detailed description of the Amazon EMR Studio.',
+    }),
+    AuthMode: AuthModeSchema.openapi({
+      description:
+        'Specifies whether the Studio authenticates users using IAM or IAM Identity Center.',
+    }),
+    VpcId: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The ID of the Amazon Virtual Private Cloud (Amazon VPC) to associate with the Studio.',
+    }),
+    SubnetIds: SubnetIdListSchema.openapi({
+      description:
+        'A list of subnet IDs to associate with the Amazon EMR Studio. A Studio can have a maximum of 5 subnets. The subnets must belong to the VPC specified by <code>VpcId</code>. Studio users can create a Workspace in any of the specified subnets.',
+    }),
+    ServiceRole: XmlStringSchema.openapi({
+      description:
+        'The IAM role that the Amazon EMR Studio assumes. The service role provides a way for Amazon EMR Studio to interoperate with other Amazon Web Services services.',
+    }),
+    UserRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The IAM user role that users and groups assume when logged in to an Amazon EMR Studio. Only specify a <code>UserRole</code> when you use IAM Identity Center authentication. The permissions attached to the <code>UserRole</code> can be scoped down for each user or group using session policies.',
+    }),
+    WorkspaceSecurityGroupId: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The ID of the Amazon EMR Studio Workspace security group. The Workspace security group allows outbound network traffic to resources in the Engine security group, and it must be in the same VPC specified by <code>VpcId</code>.',
+    }),
+    EngineSecurityGroupId: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The ID of the Amazon EMR Studio Engine security group. The Engine security group allows inbound network traffic from the Workspace security group, and it must be in the same VPC specified by <code>VpcId</code>.',
+    }),
+    DefaultS3Location: XmlStringSchema.openapi({
+      description:
+        'The Amazon S3 location to back up Amazon EMR Studio Workspaces and notebook files.',
+    }),
+    IdpAuthUrl: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The authentication endpoint of your identity provider (IdP). Specify this value when you use IAM authentication and want to let federated users log in to a Studio with the Studio URL and credentials from your IdP. Amazon EMR Studio redirects users to this endpoint to enter credentials.',
+    }),
+    IdpRelayStateParameterName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name that your identity provider (IdP) uses for its <code>RelayState</code> parameter. For example, <code>RelayState</code> or <code>TargetSource</code>. Specify this value when you use IAM authentication and want to let federated users log in to a Studio using the Studio URL. The <code>RelayState</code> parameter differs by IdP.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to associate with the Amazon EMR Studio. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters, and an optional value string with a maximum of 256 characters.',
+    }),
+  })
+  .openapi({
+    required: [
+      'Name',
+      'AuthMode',
+      'VpcId',
+      'SubnetIds',
+      'ServiceRole',
+      'WorkspaceSecurityGroupId',
+      'EngineSecurityGroupId',
+      'DefaultS3Location',
+    ],
+    title: 'CreateStudioInput',
+  })
+  .openapi('CreateStudioInput')
+
+const IdentityTypeSchema = z.enum(['USER', 'GROUP']).openapi('IdentityType')
+
+const CreateStudioSessionMappingInputSchema = z
+  .object({
+    StudioId: XmlStringMaxLen256Schema.openapi({
+      description: 'The ID of the Amazon EMR Studio to which the user or group will be mapped.',
+    }),
+    IdentityId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The globally unique identifier (GUID) of the user or group from the IAM Identity Center Identity Store. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId">UserId</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId">GroupId</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified, but not both.',
+    }),
+    IdentityName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified, but not both.',
+    }),
+    IdentityType: IdentityTypeSchema.openapi({
+      description:
+        'Specifies whether the identity to map to the Amazon EMR Studio is a user or a group.',
+    }),
+    SessionPolicyArn: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the session policy that will be applied to the user or group. You should specify the ARN for the session policy that you want to apply, not the ARN of your user role. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-studio-user-role.html">Create an EMR Studio User Role with Session Policies</a>.',
+    }),
+  })
+  .openapi({
+    required: ['StudioId', 'IdentityType', 'SessionPolicyArn'],
+    title: 'CreateStudioSessionMappingInput',
+  })
+  .openapi('CreateStudioSessionMappingInput')
+
+const DeleteSecurityConfigurationOutputSchema = z
+  .looseObject({})
+  .openapi('DeleteSecurityConfigurationOutput')
+
+const DeleteSecurityConfigurationInputSchema = z
+  .object({
+    Name: XmlStringSchema.openapi({ description: 'The name of the security configuration.' }),
+  })
+  .openapi({ required: ['Name'], title: 'DeleteSecurityConfigurationInput' })
+  .openapi('DeleteSecurityConfigurationInput')
+
+const DeleteStudioInputSchema = z
+  .object({
+    StudioId: XmlStringMaxLen256Schema.openapi({ description: 'The ID of the Amazon EMR Studio.' }),
+  })
+  .openapi({ required: ['StudioId'], title: 'DeleteStudioInput' })
+  .openapi('DeleteStudioInput')
+
+const DeleteStudioSessionMappingInputSchema = z
+  .object({
+    StudioId: XmlStringMaxLen256Schema.openapi({ description: 'The ID of the Amazon EMR Studio.' }),
+    IdentityId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The globally unique identifier (GUID) of the user or group to remove from the Amazon EMR Studio. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId">UserId</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId">GroupId</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
+    }),
+    IdentityName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name of the user name or group to remove from the Amazon EMR Studio. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
+    }),
+    IdentityType: IdentityTypeSchema.openapi({
+      description:
+        'Specifies whether the identity to delete from the Amazon EMR Studio is a user or a group.',
+    }),
+  })
+  .openapi({ required: ['StudioId', 'IdentityType'], title: 'DeleteStudioSessionMappingInput' })
+  .openapi('DeleteStudioSessionMappingInput')
+
+const Ec2InstanceAttributesSchema = z
+  .object({
+    Ec2KeyName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon EC2 key pair to use when connecting with SSH into the master node as a user named "hadoop".',
+    }),
+    Ec2SubnetId: StringSchema.exactOptional().openapi({
+      description:
+        'Set this parameter to the identifier of the Amazon VPC subnet where you want the cluster to launch. If you do not specify this value, and your account supports EC2-Classic, the cluster launches in EC2-Classic.',
+    }),
+    RequestedEc2SubnetIds: XmlStringMaxLen256ListSchema.exactOptional().openapi({
+      description:
+        'Applies to clusters configured with the instance fleets option. Specifies the unique identifier of one or more Amazon EC2 subnets in which to launch EC2 cluster instances. Subnets must exist within the same VPC. Amazon EMR chooses the EC2 subnet with the best fit from among the list of <code>RequestedEc2SubnetIds</code>, and then launches all cluster instances within that Subnet. If this value is not specified, and the account and Region support EC2-Classic networks, the cluster launches instances in the EC2-Classic network and uses <code>RequestedEc2AvailabilityZones</code> instead of this setting. If EC2-Classic is not supported, and no Subnet is specified, Amazon EMR chooses the subnet for you. <code>RequestedEc2SubnetIDs</code> and <code>RequestedEc2AvailabilityZones</code> cannot be specified together.',
+    }),
+    Ec2AvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'The Availability Zone in which the cluster will run. ',
+    }),
+    RequestedEc2AvailabilityZones: XmlStringMaxLen256ListSchema.exactOptional().openapi({
+      description:
+        'Applies to clusters configured with the instance fleets option. Specifies one or more Availability Zones in which to launch EC2 cluster instances when the EC2-Classic network configuration is supported. Amazon EMR chooses the Availability Zone with the best fit from among the list of <code>RequestedEc2AvailabilityZones</code>, and then launches all cluster instances within that Availability Zone. If you do not specify this value, Amazon EMR chooses the Availability Zone for you. <code>RequestedEc2SubnetIDs</code> and <code>RequestedEc2AvailabilityZones</code> cannot be specified together.',
+    }),
+    IamInstanceProfile: StringSchema.exactOptional().openapi({
+      description:
+        'The IAM role that was specified when the cluster was launched. The EC2 instances of the cluster assume this role.',
+    }),
+    EmrManagedMasterSecurityGroup: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the Amazon EC2 security group for the master node.',
+    }),
+    EmrManagedSlaveSecurityGroup: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the Amazon EC2 security group for the core and task nodes.',
+    }),
+    ServiceAccessSecurityGroup: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon EC2 security group for the Amazon EMR service to access clusters in VPC private subnets.',
+    }),
+    AdditionalMasterSecurityGroups: StringListSchema.exactOptional().openapi({
+      description: 'A list of additional Amazon EC2 security group IDs for the master node.',
+    }),
+    AdditionalSlaveSecurityGroups: StringListSchema.exactOptional().openapi({
+      description:
+        'A list of additional Amazon EC2 security group IDs for the core and task nodes.',
+    }),
+  })
+  .openapi({
+    description:
+      'Provides information about the EC2 instances in a cluster grouped by category. For example, key name, subnet ID, IAM instance profile, and so on.',
+    required: [],
+  })
+  .openapi('Ec2InstanceAttributes')
+
+const InstanceCollectionTypeSchema = z
+  .enum(['INSTANCE_FLEET', 'INSTANCE_GROUP'])
+  .openapi('InstanceCollectionType')
+
 const ClusterSchema = z
   .object({
-    Id: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the cluster.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster.' }),
-    ).exactOptional(),
-    Status: ClusterStatusSchema.and(
-      z.any().openapi({ description: 'The current status details about the cluster.' }),
-    ).exactOptional(),
-    Ec2InstanceAttributes: Ec2InstanceAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information about the EC2 instances in a cluster grouped by category. For example, key name, subnet ID, IAM instance profile, and so on.',
-        }),
-    ).exactOptional(),
-    InstanceCollectionType: InstanceCollectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note> <p>The instance group configuration of the cluster. A value of <code>INSTANCE_GROUP</code> indicates a uniform instance group configuration. A value of <code>INSTANCE_FLEET</code> indicates an instance fleets configuration.</p>',
-        }),
-    ).exactOptional(),
-    LogUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The path to the Amazon S3 location where logs for this cluster are stored.',
-        }),
-    ).exactOptional(),
-    LogEncryptionKmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The KMS key used for encrypting log files. This attribute is only available with EMR version 5.30.0 and later, excluding EMR 6.0.0. ',
-        }),
-    ).exactOptional(),
-    RequestedAmiVersion: StringSchema.and(
-      z.any().openapi({ description: 'The AMI version requested for this cluster.' }),
-    ).exactOptional(),
-    RunningAmiVersion: StringSchema.and(
-      z.any().openapi({ description: 'The AMI version running on this cluster.' }),
-    ).exactOptional(),
-    ReleaseLabel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EMR release label, which determines the version of open-source application packages installed on the cluster. Release labels are in the form <code>emr-x.x.x</code>, where x.x.x is an Amazon EMR release version such as <code>emr-5.14.0</code>. For more information about Amazon EMR release versions and included application versions and features, see <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/">https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</a>. The release label applies only to Amazon EMR releases version 4.0 and later. Earlier versions use <code>AmiVersion</code>.',
-        }),
-    ).exactOptional(),
-    AutoTerminate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether the cluster should terminate after completing all steps.',
-        }),
-    ).exactOptional(),
-    TerminationProtected: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether Amazon EMR will lock the cluster to prevent the EC2 instances from being terminated by an API call or user intervention, or in the event of a cluster error.',
-        }),
-    ).exactOptional(),
-    VisibleToAllUsers: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the cluster is visible to IAM principals in the Amazon Web Services account associated with the cluster. When <code>true</code>, IAM principals in the Amazon Web Services account can perform EMR cluster actions on the cluster that their IAM policies allow. When <code>false</code>, only the IAM principal that created the cluster and the Amazon Web Services account root user can perform EMR actions, regardless of IAM permissions policies attached to other IAM principals.</p> <p>The default value is <code>true</code> if a value is not provided when creating a cluster using the EMR API <a>RunJobFlow</a> command, the CLI <a href="https://docs.aws.amazon.com/cli/latest/reference/emr/create-cluster.html">create-cluster</a> command, or the Amazon Web Services Management Console.</p>',
-        }),
-    ).exactOptional(),
-    Applications: ApplicationListSchema.and(
-      z.any().openapi({ description: 'The applications installed on this cluster.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tags associated with a cluster.' }),
-    ).exactOptional(),
-    ServiceRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that Amazon EMR assumes in order to access Amazon Web Services resources on your behalf.',
-        }),
-    ).exactOptional(),
-    NormalizedInstanceHours: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An approximation of the cost of the cluster, represented in m1.small/hours. This value is incremented one time for every hour an m1.small instance runs. Larger instances are weighted more, so an EC2 instance that is roughly four times more expensive would result in the normalized instance hours being incremented by four. This result is only an approximation and does not reflect the actual billing rate.',
-        }),
-    ).exactOptional(),
-    MasterPublicDnsName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DNS name of the master node. If the cluster is on a private subnet, this is the private DNS name. On a public subnet, this is the public DNS name.',
-        }),
-    ).exactOptional(),
-    Configurations: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies only to Amazon EMR releases 4.x and later. The list of Configurations supplied to the EMR cluster.',
-        }),
-    ).exactOptional(),
-    SecurityConfiguration: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the security configuration applied to the cluster.' }),
-    ).exactOptional(),
-    AutoScalingRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role for automatic scaling policies. The default role is <code>EMR_AutoScaling_DefaultRole</code>. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate EC2 instances in an instance group.',
-        }),
-    ).exactOptional(),
-    ScaleDownBehavior: ScaleDownBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> is available only in Amazon EMR version 4.1.0 and later, and is the default for versions of Amazon EMR earlier than 5.1.0.',
-        }),
-    ).exactOptional(),
-    CustomAmiId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Available only in Amazon EMR version 5.7.0 and later. The ID of a custom Amazon EBS-backed Linux AMI if the cluster uses a custom AMI.',
-        }),
-    ).exactOptional(),
-    EbsRootVolumeSize: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size, in GiB, of the Amazon EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later.',
-        }),
-    ).exactOptional(),
-    RepoUpgradeOnBoot: RepoUpgradeOnBootSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies only when <code>CustomAmiID</code> is used. Specifies the type of updates that are applied from the Amazon Linux AMI package repositories when an instance boots using the AMI.',
-        }),
-    ).exactOptional(),
-    KerberosAttributes: KerberosAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Attributes for Kerberos configuration when Kerberos authentication is enabled using a security configuration. For more information see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-kerberos.html">Use Kerberos Authentication</a> in the <i>Amazon EMR Management Guide</i>.',
-        }),
-    ).exactOptional(),
-    ClusterArn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the cluster.' }),
-    ).exactOptional(),
-    OutpostArn: OptionalArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the Outpost where the cluster is launched. ',
-        }),
-    ).exactOptional(),
-    StepConcurrencyLevel: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the number of steps that can be executed concurrently.',
-        }),
-    ).exactOptional(),
-    PlacementGroups: PlacementGroupConfigListSchema.and(
-      z.any().openapi({ description: 'Placement group configured for an Amazon EMR cluster.' }),
-    ).exactOptional(),
-    OSReleaseLabel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Linux release specified in a cluster launch RunJobFlow request. If no Amazon Linux release was specified, the default Amazon Linux release is shown in the response.',
-        }),
-    ).exactOptional(),
+    Id: ClusterIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the cluster.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the cluster.' }),
+    Status: ClusterStatusSchema.exactOptional().openapi({
+      description: 'The current status details about the cluster.',
+    }),
+    Ec2InstanceAttributes: Ec2InstanceAttributesSchema.exactOptional().openapi({
+      description:
+        'Provides information about the EC2 instances in a cluster grouped by category. For example, key name, subnet ID, IAM instance profile, and so on.',
+    }),
+    InstanceCollectionType: InstanceCollectionTypeSchema.exactOptional().openapi({
+      description:
+        '<note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note> <p>The instance group configuration of the cluster. A value of <code>INSTANCE_GROUP</code> indicates a uniform instance group configuration. A value of <code>INSTANCE_FLEET</code> indicates an instance fleets configuration.</p>',
+    }),
+    LogUri: StringSchema.exactOptional().openapi({
+      description: 'The path to the Amazon S3 location where logs for this cluster are stored.',
+    }),
+    LogEncryptionKmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        ' The KMS key used for encrypting log files. This attribute is only available with EMR version 5.30.0 and later, excluding EMR 6.0.0. ',
+    }),
+    RequestedAmiVersion: StringSchema.exactOptional().openapi({
+      description: 'The AMI version requested for this cluster.',
+    }),
+    RunningAmiVersion: StringSchema.exactOptional().openapi({
+      description: 'The AMI version running on this cluster.',
+    }),
+    ReleaseLabel: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon EMR release label, which determines the version of open-source application packages installed on the cluster. Release labels are in the form <code>emr-x.x.x</code>, where x.x.x is an Amazon EMR release version such as <code>emr-5.14.0</code>. For more information about Amazon EMR release versions and included application versions and features, see <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/">https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</a>. The release label applies only to Amazon EMR releases version 4.0 and later. Earlier versions use <code>AmiVersion</code>.',
+    }),
+    AutoTerminate: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the cluster should terminate after completing all steps.',
+    }),
+    TerminationProtected: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether Amazon EMR will lock the cluster to prevent the EC2 instances from being terminated by an API call or user intervention, or in the event of a cluster error.',
+    }),
+    VisibleToAllUsers: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the cluster is visible to IAM principals in the Amazon Web Services account associated with the cluster. When <code>true</code>, IAM principals in the Amazon Web Services account can perform EMR cluster actions on the cluster that their IAM policies allow. When <code>false</code>, only the IAM principal that created the cluster and the Amazon Web Services account root user can perform EMR actions, regardless of IAM permissions policies attached to other IAM principals.</p> <p>The default value is <code>true</code> if a value is not provided when creating a cluster using the EMR API <a>RunJobFlow</a> command, the CLI <a href="https://docs.aws.amazon.com/cli/latest/reference/emr/create-cluster.html">create-cluster</a> command, or the Amazon Web Services Management Console.</p>',
+    }),
+    Applications: ApplicationListSchema.exactOptional().openapi({
+      description: 'The applications installed on this cluster.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tags associated with a cluster.',
+    }),
+    ServiceRole: StringSchema.exactOptional().openapi({
+      description:
+        'The IAM role that Amazon EMR assumes in order to access Amazon Web Services resources on your behalf.',
+    }),
+    NormalizedInstanceHours: IntegerSchema.exactOptional().openapi({
+      description:
+        'An approximation of the cost of the cluster, represented in m1.small/hours. This value is incremented one time for every hour an m1.small instance runs. Larger instances are weighted more, so an EC2 instance that is roughly four times more expensive would result in the normalized instance hours being incremented by four. This result is only an approximation and does not reflect the actual billing rate.',
+    }),
+    MasterPublicDnsName: StringSchema.exactOptional().openapi({
+      description:
+        'The DNS name of the master node. If the cluster is on a private subnet, this is the private DNS name. On a public subnet, this is the public DNS name.',
+    }),
+    Configurations: ConfigurationListSchema.exactOptional().openapi({
+      description:
+        'Applies only to Amazon EMR releases 4.x and later. The list of Configurations supplied to the EMR cluster.',
+    }),
+    SecurityConfiguration: XmlStringSchema.exactOptional().openapi({
+      description: 'The name of the security configuration applied to the cluster.',
+    }),
+    AutoScalingRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        'An IAM role for automatic scaling policies. The default role is <code>EMR_AutoScaling_DefaultRole</code>. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate EC2 instances in an instance group.',
+    }),
+    ScaleDownBehavior: ScaleDownBehaviorSchema.exactOptional().openapi({
+      description:
+        'The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> is available only in Amazon EMR version 4.1.0 and later, and is the default for versions of Amazon EMR earlier than 5.1.0.',
+    }),
+    CustomAmiId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'Available only in Amazon EMR version 5.7.0 and later. The ID of a custom Amazon EBS-backed Linux AMI if the cluster uses a custom AMI.',
+    }),
+    EbsRootVolumeSize: IntegerSchema.exactOptional().openapi({
+      description:
+        'The size, in GiB, of the Amazon EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later.',
+    }),
+    RepoUpgradeOnBoot: RepoUpgradeOnBootSchema.exactOptional().openapi({
+      description:
+        'Applies only when <code>CustomAmiID</code> is used. Specifies the type of updates that are applied from the Amazon Linux AMI package repositories when an instance boots using the AMI.',
+    }),
+    KerberosAttributes: KerberosAttributesSchema.exactOptional().openapi({
+      description:
+        'Attributes for Kerberos configuration when Kerberos authentication is enabled using a security configuration. For more information see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-kerberos.html">Use Kerberos Authentication</a> in the <i>Amazon EMR Management Guide</i>.',
+    }),
+    ClusterArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the cluster.',
+    }),
+    OutpostArn: OptionalArnTypeSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the Outpost where the cluster is launched. ',
+    }),
+    StepConcurrencyLevel: IntegerSchema.exactOptional().openapi({
+      description: 'Specifies the number of steps that can be executed concurrently.',
+    }),
+    PlacementGroups: PlacementGroupConfigListSchema.exactOptional().openapi({
+      description: 'Placement group configured for an Amazon EMR cluster.',
+    }),
+    OSReleaseLabel: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Linux release specified in a cluster launch RunJobFlow request. If no Amazon Linux release was specified, the default Amazon Linux release is shown in the response.',
+    }),
   })
   .openapi({ description: 'The detailed description of the cluster.', required: [] })
   .openapi('Cluster')
 
 const DescribeClusterOutputSchema = z
   .object({
-    Cluster: ClusterSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This output contains the details for the requested cluster.' }),
-    ).exactOptional(),
+    Cluster: ClusterSchema.exactOptional().openapi({
+      description: 'This output contains the details for the requested cluster.',
+    }),
   })
   .openapi({ description: 'This output contains the description of the cluster.', required: [] })
   .openapi('DescribeClusterOutput')
 
 const DescribeClusterInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the cluster to describe.' }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description: 'The identifier of the cluster to describe.',
+    }),
   })
   .openapi({
     required: ['ClusterId'],
@@ -2091,442 +2635,11 @@ const DescribeClusterInputSchema = z
   })
   .openapi('DescribeClusterInput')
 
-const JobFlowExecutionStateSchema = z
-  .enum([
-    'STARTING',
-    'BOOTSTRAPPING',
-    'RUNNING',
-    'WAITING',
-    'SHUTTING_DOWN',
-    'TERMINATED',
-    'COMPLETED',
-    'FAILED',
-  ])
-  .openapi({ description: 'The type of instance.' })
-  .openapi('JobFlowExecutionState')
-
-const JobFlowExecutionStatusDetailSchema = z
+const DescribeJobFlowsOutputSchema: z.ZodType<DescribeJobFlowsOutputType> = z
   .object({
-    State: JobFlowExecutionStateSchema.and(
-      z.any().openapi({ description: 'The state of the job flow.' }),
-    ),
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The creation date and time of the job flow.' }),
-    ),
-    StartDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The start date and time of the job flow.' }),
-    ).exactOptional(),
-    ReadyDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the job flow was ready to start running bootstrap actions.',
-        }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The completion date and time of the job flow.' }),
-    ).exactOptional(),
-    LastStateChangeReason: XmlStringSchema.and(
-      z.any().openapi({ description: 'Description of the job flow last changed state.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['State', 'CreationDateTime'],
-    description: 'Describes the status of the cluster (job flow).',
-  })
-  .openapi('JobFlowExecutionStatusDetail')
-
-const InstanceGroupStateSchema = z
-  .enum([
-    'PROVISIONING',
-    'BOOTSTRAPPING',
-    'RUNNING',
-    'RECONFIGURING',
-    'RESIZING',
-    'SUSPENDED',
-    'TERMINATING',
-    'TERMINATED',
-    'ARRESTED',
-    'SHUTTING_DOWN',
-    'ENDED',
-  ])
-  .openapi('InstanceGroupState')
-
-const InstanceGroupDetailSchema = z
-  .object({
-    InstanceGroupId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'Unique identifier for the instance group.' }),
-    ).exactOptional(),
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'Friendly name for the instance group.' }),
-    ).exactOptional(),
-    Market: MarketTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Market type of the EC2 instances used to create a cluster node.',
-        }),
-    ),
-    InstanceRole: InstanceRoleTypeSchema.and(
-      z.any().openapi({ description: 'Instance group role in the cluster' }),
-    ),
-    BidPrice: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.',
-        }),
-    ).exactOptional(),
-    InstanceType: InstanceTypeSchema.and(z.any().openapi({ description: 'EC2 instance type.' })),
-    InstanceRequestCount: IntegerSchema.and(
-      z.any().openapi({ description: 'Target number of instances to run in the instance group.' }),
-    ),
-    InstanceRunningCount: IntegerSchema.and(
-      z.any().openapi({ description: 'Actual count of running instances.' }),
-    ),
-    State: InstanceGroupStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'State of instance group. The following values are no longer supported: STARTING, TERMINATED, and FAILED.',
-        }),
-    ),
-    LastStateChangeReason: XmlStringSchema.and(
-      z.any().openapi({ description: 'Details regarding the state of the instance group.' }),
-    ).exactOptional(),
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date/time the instance group was created.' }),
-    ),
-    StartDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date/time the instance group was started.' }),
-    ).exactOptional(),
-    ReadyDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date/time the instance group was available to the cluster.' }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date/time the instance group was terminated.' }),
-    ).exactOptional(),
-    CustomAmiId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The custom AMI ID to use for the provisioned instance group.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: [
-      'Market',
-      'InstanceRole',
-      'InstanceType',
-      'InstanceRequestCount',
-      'InstanceRunningCount',
-      'State',
-      'CreationDateTime',
-    ],
-    description: 'Detailed information about an instance group.',
-  })
-  .openapi('InstanceGroupDetail')
-
-const InstanceGroupDetailListSchema = z
-  .array(InstanceGroupDetailSchema)
-  .openapi('InstanceGroupDetailList')
-
-const PlacementTypeSchema = z
-  .object({
-    AvailabilityZone: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EC2 Availability Zone for the cluster. <code>AvailabilityZone</code> is used for uniform instance groups, while <code>AvailabilityZones</code> (plural) is used for instance fleets.',
-        }),
-    ).exactOptional(),
-    AvailabilityZones: XmlStringMaxLen256ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances in the optimal Availability Zone. <code>AvailabilityZones</code> is used for instance fleets, while <code>AvailabilityZone</code> (singular) is used for uniform instance groups.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The Amazon EC2 Availability Zone configuration of the cluster (job flow).',
-    required: [],
-  })
-  .openapi('PlacementType')
-
-const JobFlowInstancesDetailSchema = z
-  .object({
-    MasterInstanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon EC2 master node instance type.' }),
-    ),
-    MasterPublicDnsName: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DNS name of the master node. If the cluster is on a private subnet, this is the private DNS name. On a public subnet, this is the public DNS name.',
-        }),
-    ).exactOptional(),
-    MasterInstanceId: XmlStringSchema.and(
-      z.any().openapi({ description: 'The Amazon EC2 instance identifier of the master node.' }),
-    ).exactOptional(),
-    SlaveInstanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon EC2 core and task node instance type.' }),
-    ),
-    InstanceCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon EC2 instances in the cluster. If the value is 1, the same instance serves as both the master and core and task node. If the value is greater than 1, one instance is the master node and all others are core and task nodes.',
-        }),
-    ),
-    InstanceGroups: InstanceGroupDetailListSchema.and(
-      z.any().openapi({ description: 'Details about the instance groups in a cluster.' }),
-    ).exactOptional(),
-    NormalizedInstanceHours: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An approximation of the cost of the cluster, represented in m1.small/hours. This value is increased one time for every hour that an m1.small instance runs. Larger instances are weighted more heavily, so an Amazon EC2 instance that is roughly four times more expensive would result in the normalized instance hours being increased incrementally four times. This result is only an approximation and does not reflect the actual billing rate.',
-        }),
-    ).exactOptional(),
-    Ec2KeyName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Amazon EC2 key pair that can be used to connect to the master node using SSH.',
-        }),
-    ).exactOptional(),
-    Ec2SubnetId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For clusters launched within Amazon Virtual Private Cloud, this is the identifier of the subnet where the cluster was launched.',
-        }),
-    ).exactOptional(),
-    Placement: PlacementTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon EC2 Availability Zone for the cluster.' }),
-    ).exactOptional(),
-    KeepJobFlowAliveWhenNoSteps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the cluster should remain available after completing all steps.',
-        }),
-    ).exactOptional(),
-    TerminationProtected: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the Amazon EC2 instances in the cluster are protected from termination by API calls, user intervention, or in the event of a job-flow error.',
-        }),
-    ).exactOptional(),
-    HadoopVersion: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The Hadoop version for the cluster.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['MasterInstanceType', 'SlaveInstanceType', 'InstanceCount'],
-    description: 'Specify the type of Amazon EC2 instances that the cluster (job flow) runs on.',
-  })
-  .openapi('JobFlowInstancesDetail')
-
-const StepExecutionStateSchema = z
-  .enum(['PENDING', 'RUNNING', 'CONTINUE', 'COMPLETED', 'CANCELLED', 'FAILED', 'INTERRUPTED'])
-  .openapi('StepExecutionState')
-
-const StepExecutionStatusDetailSchema = z
-  .object({
-    State: StepExecutionStateSchema.and(z.any().openapi({ description: 'The state of the step.' })),
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The creation date and time of the step.' }),
-    ),
-    StartDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The start date and time of the step.' }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The completion date and time of the step.' }),
-    ).exactOptional(),
-    LastStateChangeReason: XmlStringSchema.and(
-      z.any().openapi({ description: "A description of the step's current state." }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['State', 'CreationDateTime'],
-    description: 'The execution state of a step.',
-  })
-  .openapi('StepExecutionStatusDetail')
-
-const StepDetailSchema = z
-  .object({
-    StepConfig: StepConfigSchema.and(z.any().openapi({ description: 'The step configuration.' })),
-    ExecutionStatusDetail: StepExecutionStatusDetailSchema.and(
-      z.any().openapi({ description: 'The description of the step status.' }),
-    ),
-  })
-  .openapi({
-    required: ['StepConfig', 'ExecutionStatusDetail'],
-    description: 'Combines the execution state and configuration of a step.',
-  })
-  .openapi('StepDetail')
-
-const StepDetailListSchema = z.array(StepDetailSchema).openapi('StepDetailList')
-
-const BootstrapActionConfigSchema: z.ZodType<BootstrapActionConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        Name: XmlStringMaxLen256Schema.and(
-          z.any().openapi({ description: 'The name of the bootstrap action.' }),
-        ),
-        ScriptBootstrapAction: ScriptBootstrapActionConfigSchema.and(
-          z.any().openapi({ description: 'The script run by the bootstrap action.' }),
-        ),
-      })
-      .openapi({
-        required: ['Name', 'ScriptBootstrapAction'],
-        description: 'Configuration of a bootstrap action.',
-      }),
-  )
-  .openapi('BootstrapActionConfig')
-
-const BootstrapActionDetailSchema = z
-  .object({
-    BootstrapActionConfig: BootstrapActionConfigSchema.and(
-      z.any().openapi({ description: 'A description of the bootstrap action.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Reports the configuration of a bootstrap action in a cluster (job flow).',
-    required: [],
-  })
-  .openapi('BootstrapActionDetail')
-
-const BootstrapActionDetailListSchema = z
-  .array(BootstrapActionDetailSchema)
-  .openapi('BootstrapActionDetailList')
-
-const SupportedProductsListSchema = z
-  .array(XmlStringMaxLen256Schema)
-  .openapi('SupportedProductsList')
-
-const JobFlowDetailSchema = z
-  .object({
-    JobFlowId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The job flow identifier.' }),
-    ),
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The name of the job flow.' }),
-    ),
-    LogUri: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The location in Amazon S3 where log files for the job are stored.',
-        }),
-    ).exactOptional(),
-    LogEncryptionKmsKeyId: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key used for encrypting log files. This attribute is only available with EMR version 5.30.0 and later, excluding EMR 6.0.0.',
-        }),
-    ).exactOptional(),
-    AmiVersion: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and later, <code>ReleaseLabel</code> is used. To specify a custom AMI, use <code>CustomAmiID</code>.',
-        }),
-    ).exactOptional(),
-    ExecutionStatusDetail: JobFlowExecutionStatusDetailSchema.and(
-      z.any().openapi({ description: 'Describes the execution status of the job flow.' }),
-    ),
-    Instances: JobFlowInstancesDetailSchema.and(
-      z.any().openapi({ description: 'Describes the Amazon EC2 instances of the job flow.' }),
-    ),
-    Steps: StepDetailListSchema.and(
-      z.any().openapi({ description: 'A list of steps run by the job flow.' }),
-    ).exactOptional(),
-    BootstrapActions: BootstrapActionDetailListSchema.and(
-      z.any().openapi({ description: 'A list of the bootstrap actions run by the job flow.' }),
-    ).exactOptional(),
-    SupportedProducts: SupportedProductsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of strings set by third-party software when the job flow is launched. If you are not using third-party software to manage the job flow, this value is empty.',
-        }),
-    ).exactOptional(),
-    VisibleToAllUsers: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the cluster is visible to IAM principals in the Amazon Web Services account associated with the cluster. When <code>true</code>, IAM principals in the Amazon Web Services account can perform EMR cluster actions that their IAM policies allow. When <code>false</code>, only the IAM principal that created the cluster and the Amazon Web Services account root user can perform EMR actions, regardless of IAM permissions policies attached to other IAM principals.</p> <p>The default value is <code>true</code> if a value is not provided when creating a cluster using the EMR API <a>RunJobFlow</a> command, the CLI <a href="https://docs.aws.amazon.com/cli/latest/reference/emr/create-cluster.html">create-cluster</a> command, or the Amazon Web Services Management Console.</p>',
-        }),
-    ).exactOptional(),
-    JobFlowRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that was specified when the job flow was launched. The EC2 instances of the job flow assume this role.',
-        }),
-    ).exactOptional(),
-    ServiceRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that is assumed by the Amazon EMR service to access Amazon Web Services resources on your behalf.',
-        }),
-    ).exactOptional(),
-    AutoScalingRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role for automatic scaling policies. The default role is <code>EMR_AutoScaling_DefaultRole</code>. The IAM role provides a way for the automatic scaling feature to get the required permissions it needs to launch and terminate EC2 instances in an instance group.',
-        }),
-    ).exactOptional(),
-    ScaleDownBehavior: ScaleDownBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> available only in Amazon EMR version 4.1.0 and later, and is the default for versions of Amazon EMR earlier than 5.1.0.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['JobFlowId', 'Name', 'ExecutionStatusDetail', 'Instances'],
-    description: 'A description of a cluster (job flow).',
-  })
-  .openapi('JobFlowDetail')
-
-const JobFlowDetailListSchema = z.array(JobFlowDetailSchema).openapi('JobFlowDetailList')
-
-const DescribeJobFlowsOutputSchema = z
-  .object({
-    JobFlows: JobFlowDetailListSchema.and(
-      z.any().openapi({ description: 'A list of job flows matching the parameters supplied.' }),
-    ).exactOptional(),
+    JobFlows: JobFlowDetailListSchema.exactOptional().openapi({
+      description: 'A list of job flows matching the parameters supplied.',
+    }),
   })
   .openapi({ description: ' The output for the <a>DescribeJobFlows</a> operation. ', required: [] })
   .openapi('DescribeJobFlowsOutput')
@@ -2537,24 +2650,18 @@ const JobFlowExecutionStateListSchema = z
 
 const DescribeJobFlowsInputSchema = z
   .object({
-    CreatedAfter: DateSchema.and(
-      z.any().openapi({ description: 'Return only job flows created after this date and time.' }),
-    ).exactOptional(),
-    CreatedBefore: DateSchema.and(
-      z.any().openapi({ description: 'Return only job flows created before this date and time.' }),
-    ).exactOptional(),
-    JobFlowIds: XmlStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Return only job flows whose job flow ID is contained in this list.',
-        }),
-    ).exactOptional(),
-    JobFlowStates: JobFlowExecutionStateListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Return only job flows whose state is contained in this list.' }),
-    ).exactOptional(),
+    CreatedAfter: DateSchema.exactOptional().openapi({
+      description: 'Return only job flows created after this date and time.',
+    }),
+    CreatedBefore: DateSchema.exactOptional().openapi({
+      description: 'Return only job flows created before this date and time.',
+    }),
+    JobFlowIds: XmlStringListSchema.exactOptional().openapi({
+      description: 'Return only job flows whose job flow ID is contained in this list.',
+    }),
+    JobFlowStates: JobFlowExecutionStateListSchema.exactOptional().openapi({
+      description: 'Return only job flows whose state is contained in this list.',
+    }),
   })
   .openapi({
     title: 'DescribeJobFlowsInput',
@@ -2567,30 +2674,18 @@ const ExecutionEngineTypeSchema = z.literal('EMR').openapi('ExecutionEngineType'
 
 const ExecutionEngineConfigSchema = z
   .object({
-    Id: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the execution engine. For an EMR cluster, this is the cluster ID.',
-        }),
-    ),
-    Type: ExecutionEngineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of execution engine. A value of <code>EMR</code> specifies an EMR cluster.',
-        }),
-    ).exactOptional(),
-    MasterInstanceSecurityGroupId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional unique ID of an EC2 security group to associate with the master instance of the EMR cluster for this notebook execution. For more information see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-managed-notebooks-security-groups.html">Specifying EC2 Security Groups for EMR Notebooks</a> in the <i>EMR Management Guide</i>.',
-        }),
-    ).exactOptional(),
+    Id: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The unique identifier of the execution engine. For an EMR cluster, this is the cluster ID.',
+    }),
+    Type: ExecutionEngineTypeSchema.exactOptional().openapi({
+      description:
+        'The type of execution engine. A value of <code>EMR</code> specifies an EMR cluster.',
+    }),
+    MasterInstanceSecurityGroupId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'An optional unique ID of an EC2 security group to associate with the master instance of the EMR cluster for this notebook execution. For more information see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-managed-notebooks-security-groups.html">Specifying EC2 Security Groups for EMR Notebooks</a> in the <i>EMR Management Guide</i>.',
+    }),
   })
   .openapi({
     required: ['Id'],
@@ -2616,83 +2711,51 @@ const NotebookExecutionStatusSchema = z
 
 const NotebookExecutionSchema = z
   .object({
-    NotebookExecutionId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique identifier of a notebook execution.' }),
-    ).exactOptional(),
-    EditorId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the EMR Notebook that is used for the notebook execution.',
-        }),
-    ).exactOptional(),
-    ExecutionEngine: ExecutionEngineConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The execution engine, such as an EMR cluster, used to run the EMR notebook and perform the notebook execution.',
-        }),
-    ).exactOptional(),
-    NotebookExecutionName: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'A name for the notebook execution.' }),
-    ).exactOptional(),
-    NotebookParams: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Input parameters in JSON format passed to the EMR Notebook at runtime for execution.',
-        }),
-    ).exactOptional(),
-    Status: NotebookExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the notebook execution.</p> <ul> <li> <p> <code>START_PENDING</code> indicates that the cluster has received the execution request but execution has not begun.</p> </li> <li> <p> <code>STARTING</code> indicates that the execution is starting on the cluster.</p> </li> <li> <p> <code>RUNNING</code> indicates that the execution is being processed by the cluster.</p> </li> <li> <p> <code>FINISHING</code> indicates that execution processing is in the final stages.</p> </li> <li> <p> <code>FINISHED</code> indicates that the execution has completed without error.</p> </li> <li> <p> <code>FAILING</code> indicates that the execution is failing and will not finish successfully.</p> </li> <li> <p> <code>FAILED</code> indicates that the execution failed.</p> </li> <li> <p> <code>STOP_PENDING</code> indicates that the cluster has received a <code>StopNotebookExecution</code> request and the stop is pending.</p> </li> <li> <p> <code>STOPPING</code> indicates that the cluster is in the process of stopping the execution as a result of a <code>StopNotebookExecution</code> request.</p> </li> <li> <p> <code>STOPPED</code> indicates that the execution stopped because of a <code>StopNotebookExecution</code> request.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StartTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp when notebook execution started.' }),
-    ).exactOptional(),
-    EndTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp when notebook execution ended.' }),
-    ).exactOptional(),
-    Arn: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the notebook execution.' }),
-    ).exactOptional(),
-    OutputNotebookURI: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The location of the notebook execution's output file in Amazon S3.",
-        }),
-    ).exactOptional(),
-    LastStateChangeReason: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason for the latest status change of the notebook execution.',
-        }),
-    ).exactOptional(),
-    NotebookInstanceSecurityGroupId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the EC2 security group associated with the EMR Notebook instance. For more information see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-managed-notebooks-security-groups.html">Specifying EC2 Security Groups for EMR Notebooks</a> in the <i>EMR Management Guide</i>.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags associated with a notebook execution. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters and an optional value string with a maximum of 256 characters.',
-        }),
-    ).exactOptional(),
+    NotebookExecutionId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The unique identifier of a notebook execution.',
+    }),
+    EditorId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The unique identifier of the EMR Notebook that is used for the notebook execution.',
+    }),
+    ExecutionEngine: ExecutionEngineConfigSchema.exactOptional().openapi({
+      description:
+        'The execution engine, such as an EMR cluster, used to run the EMR notebook and perform the notebook execution.',
+    }),
+    NotebookExecutionName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'A name for the notebook execution.',
+    }),
+    NotebookParams: XmlStringSchema.exactOptional().openapi({
+      description:
+        'Input parameters in JSON format passed to the EMR Notebook at runtime for execution.',
+    }),
+    Status: NotebookExecutionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the notebook execution.</p> <ul> <li> <p> <code>START_PENDING</code> indicates that the cluster has received the execution request but execution has not begun.</p> </li> <li> <p> <code>STARTING</code> indicates that the execution is starting on the cluster.</p> </li> <li> <p> <code>RUNNING</code> indicates that the execution is being processed by the cluster.</p> </li> <li> <p> <code>FINISHING</code> indicates that execution processing is in the final stages.</p> </li> <li> <p> <code>FINISHED</code> indicates that the execution has completed without error.</p> </li> <li> <p> <code>FAILING</code> indicates that the execution is failing and will not finish successfully.</p> </li> <li> <p> <code>FAILED</code> indicates that the execution failed.</p> </li> <li> <p> <code>STOP_PENDING</code> indicates that the cluster has received a <code>StopNotebookExecution</code> request and the stop is pending.</p> </li> <li> <p> <code>STOPPING</code> indicates that the cluster is in the process of stopping the execution as a result of a <code>StopNotebookExecution</code> request.</p> </li> <li> <p> <code>STOPPED</code> indicates that the execution stopped because of a <code>StopNotebookExecution</code> request.</p> </li> </ul>',
+    }),
+    StartTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp when notebook execution started.',
+    }),
+    EndTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp when notebook execution ended.',
+    }),
+    Arn: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the notebook execution.',
+    }),
+    OutputNotebookURI: XmlStringSchema.exactOptional().openapi({
+      description: "The location of the notebook execution's output file in Amazon S3.",
+    }),
+    LastStateChangeReason: XmlStringSchema.exactOptional().openapi({
+      description: 'The reason for the latest status change of the notebook execution.',
+    }),
+    NotebookInstanceSecurityGroupId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The unique identifier of the EC2 security group associated with the EMR Notebook instance. For more information see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-managed-notebooks-security-groups.html">Specifying EC2 Security Groups for EMR Notebooks</a> in the <i>EMR Management Guide</i>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags associated with a notebook execution. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters and an optional value string with a maximum of 256 characters.',
+    }),
   })
   .openapi({
     description:
@@ -2703,40 +2766,31 @@ const NotebookExecutionSchema = z
 
 const DescribeNotebookExecutionOutputSchema = z
   .object({
-    NotebookExecution: NotebookExecutionSchema.and(
-      z.any().openapi({ description: 'Properties of the notebook execution.' }),
-    ).exactOptional(),
+    NotebookExecution: NotebookExecutionSchema.exactOptional().openapi({
+      description: 'Properties of the notebook execution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeNotebookExecutionOutput')
 
 const DescribeNotebookExecutionInputSchema = z
   .object({
-    NotebookExecutionId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique identifier of the notebook execution.' }),
-    ),
+    NotebookExecutionId: XmlStringMaxLen256Schema.openapi({
+      description: 'The unique identifier of the notebook execution.',
+    }),
   })
   .openapi({ required: ['NotebookExecutionId'], title: 'DescribeNotebookExecutionInput' })
   .openapi('DescribeNotebookExecutionInput')
 
 const SimplifiedApplicationSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The returned release label application name. For example, <code>hadoop</code>.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The returned release label application version. For example, <code>3.2.1</code>.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The returned release label application name. For example, <code>hadoop</code>.',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description:
+        'The returned release label application version. For example, <code>3.2.1</code>.',
+    }),
   })
   .openapi({
     description: 'The returned release label application names or versions.',
@@ -2750,14 +2804,10 @@ const SimplifiedApplicationListSchema = z
 
 const OSReleaseSchema = z
   .object({
-    Label: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Linux release specified for a cluster in the RunJobFlow request. The format is as shown in <a href="https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-20220218.html"> <i>Amazon Linux 2 Release Notes</i> </a>. For example, 2.0.20220218.1.',
-        }),
-    ).exactOptional(),
+    Label: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Linux release specified for a cluster in the RunJobFlow request. The format is as shown in <a href="https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-20220218.html"> <i>Amazon Linux 2 Release Notes</i> </a>. For example, 2.0.20220218.1.',
+    }),
   })
   .openapi({
     description: 'The Amazon Linux release specified for a cluster in the RunJobFlow request.',
@@ -2769,32 +2819,20 @@ const OSReleaseListSchema = z.array(OSReleaseSchema).openapi('OSReleaseList')
 
 const DescribeReleaseLabelOutputSchema = z
   .object({
-    ReleaseLabel: StringSchema.and(
-      z.any().openapi({ description: 'The target release label described in the response.' }),
-    ).exactOptional(),
-    Applications: SimplifiedApplicationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of applications available for the target release label. <code>Name</code> is the name of the application. <code>Version</code> is the concise version of the application.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token. Reserved for future use. Currently set to null.',
-        }),
-    ).exactOptional(),
-    AvailableOSReleases: OSReleaseListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of available Amazon Linux release versions for an Amazon EMR release. Contains a Label field that is formatted as shown in <a href="https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-al2.html"> <i>Amazon Linux 2 Release Notes</i> </a>. For example, <a href="https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-20220218.html">2.0.20220218.1</a>.',
-        }),
-    ).exactOptional(),
+    ReleaseLabel: StringSchema.exactOptional().openapi({
+      description: 'The target release label described in the response.',
+    }),
+    Applications: SimplifiedApplicationListSchema.exactOptional().openapi({
+      description:
+        'The list of applications available for the target release label. <code>Name</code> is the name of the application. <code>Version</code> is the concise version of the application.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The pagination token. Reserved for future use. Currently set to null.',
+    }),
+    AvailableOSReleases: OSReleaseListSchema.exactOptional().openapi({
+      description:
+        'The list of available Amazon Linux release versions for an Amazon EMR release. Contains a Label field that is formatted as shown in <a href="https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-al2.html"> <i>Amazon Linux 2 Release Notes</i> </a>. For example, <a href="https://docs.aws.amazon.com/AL2/latest/relnotes/relnotes-20220218.html">2.0.20220218.1</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReleaseLabelOutput')
@@ -2803,76 +2841,58 @@ const MaxResultsNumberSchema = z.int().min(1).max(100).openapi('MaxResultsNumber
 
 const DescribeReleaseLabelInputSchema = z
   .object({
-    ReleaseLabel: StringSchema.and(
-      z.any().openapi({ description: 'The target release label to be described.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token. Reserved for future use. Currently set to null.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsNumberSchema.and(
-      z.any().openapi({ description: 'Reserved for future use. Currently set to null.' }),
-    ).exactOptional(),
+    ReleaseLabel: StringSchema.exactOptional().openapi({
+      description: 'The target release label to be described.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The pagination token. Reserved for future use. Currently set to null.',
+    }),
+    MaxResults: MaxResultsNumberSchema.exactOptional().openapi({
+      description: 'Reserved for future use. Currently set to null.',
+    }),
   })
   .openapi({ title: 'DescribeReleaseLabelInput', required: [] })
   .openapi('DescribeReleaseLabelInput')
 
 const DescribeSecurityConfigurationOutputSchema = z
   .object({
-    Name: XmlStringSchema.and(
-      z.any().openapi({ description: 'The name of the security configuration.' }),
-    ).exactOptional(),
-    SecurityConfiguration: StringSchema.and(
-      z.any().openapi({ description: 'The security configuration details in JSON format.' }),
-    ).exactOptional(),
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time the security configuration was created' }),
-    ).exactOptional(),
+    Name: XmlStringSchema.exactOptional().openapi({
+      description: 'The name of the security configuration.',
+    }),
+    SecurityConfiguration: StringSchema.exactOptional().openapi({
+      description: 'The security configuration details in JSON format.',
+    }),
+    CreationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time the security configuration was created',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSecurityConfigurationOutput')
 
 const DescribeSecurityConfigurationInputSchema = z
   .object({
-    Name: XmlStringSchema.and(
-      z.any().openapi({ description: 'The name of the security configuration.' }),
-    ),
+    Name: XmlStringSchema.openapi({ description: 'The name of the security configuration.' }),
   })
   .openapi({ required: ['Name'], title: 'DescribeSecurityConfigurationInput' })
   .openapi('DescribeSecurityConfigurationInput')
 
 const HadoopStepConfigSchema = z
   .object({
-    Jar: StringSchema.and(
-      z.any().openapi({ description: 'The path to the JAR file that runs during the step.' }),
-    ).exactOptional(),
-    Properties: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of Java properties that are set when the step runs. You can use these properties to pass key-value pairs to your main function.',
-        }),
-    ).exactOptional(),
-    MainClass: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the main class in the specified Java file. If not specified, the JAR file should specify a main class in its manifest file.',
-        }),
-    ).exactOptional(),
-    Args: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The list of command line arguments to pass to the JAR file's main function for execution.",
-        }),
-    ).exactOptional(),
+    Jar: StringSchema.exactOptional().openapi({
+      description: 'The path to the JAR file that runs during the step.',
+    }),
+    Properties: StringMapSchema.exactOptional().openapi({
+      description:
+        'The list of Java properties that are set when the step runs. You can use these properties to pass key-value pairs to your main function.',
+    }),
+    MainClass: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the main class in the specified Java file. If not specified, the JAR file should specify a main class in its manifest file.',
+    }),
+    Args: StringListSchema.exactOptional().openapi({
+      description:
+        "The list of command line arguments to pass to the JAR file's main function for execution.",
+    }),
   })
   .openapi({
     description:
@@ -2889,47 +2909,31 @@ const StepStateChangeReasonCodeSchema = z.literal('NONE').openapi('StepStateChan
 
 const StepStateChangeReasonSchema = z
   .object({
-    Code: StepStateChangeReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The programmable code for the state change reason. Note: Currently, the service provides no code for the state change.',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The descriptive message for the state change reason.' }),
-    ).exactOptional(),
+    Code: StepStateChangeReasonCodeSchema.exactOptional().openapi({
+      description:
+        'The programmable code for the state change reason. Note: Currently, the service provides no code for the state change.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'The descriptive message for the state change reason.',
+    }),
   })
   .openapi({ description: 'The details of the step state change reason.', required: [] })
   .openapi('StepStateChangeReason')
 
 const FailureDetailsSchema = z
   .object({
-    Reason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason for the step failure. In the case where the service cannot successfully determine the root cause of the failure, it returns "Unknown Error" as a reason.',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The descriptive message including the error the Amazon EMR service has identified as the cause of step failure. This is text from an error log that describes the root cause of the failure.',
-        }),
-    ).exactOptional(),
-    LogFile: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the log file where the step failure root cause was originally recorded.',
-        }),
-    ).exactOptional(),
+    Reason: StringSchema.exactOptional().openapi({
+      description:
+        'The reason for the step failure. In the case where the service cannot successfully determine the root cause of the failure, it returns "Unknown Error" as a reason.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description:
+        'The descriptive message including the error the Amazon EMR service has identified as the cause of step failure. This is text from an error log that describes the root cause of the failure.',
+    }),
+    LogFile: StringSchema.exactOptional().openapi({
+      description:
+        'The path to the log file where the step failure root cause was originally recorded.',
+    }),
   })
   .openapi({
     description:
@@ -2940,87 +2944,67 @@ const FailureDetailsSchema = z
 
 const StepTimelineSchema = z
   .object({
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the cluster step was created.' }),
-    ).exactOptional(),
-    StartDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the cluster step execution started.' }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the cluster step execution completed or failed.',
-        }),
-    ).exactOptional(),
+    CreationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the cluster step was created.',
+    }),
+    StartDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the cluster step execution started.',
+    }),
+    EndDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the cluster step execution completed or failed.',
+    }),
   })
   .openapi({ description: 'The timeline of the cluster step lifecycle.', required: [] })
   .openapi('StepTimeline')
 
 const StepStatusSchema = z
   .object({
-    State: StepStateSchema.and(
-      z.any().openapi({ description: 'The execution state of the cluster step.' }),
-    ).exactOptional(),
-    StateChangeReason: StepStateChangeReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the step execution status change.' }),
-    ).exactOptional(),
-    FailureDetails: FailureDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details for the step failure including reason, message, and log file path where the root cause was identified.',
-        }),
-    ).exactOptional(),
-    Timeline: StepTimelineSchema.and(
-      z.any().openapi({ description: 'The timeline of the cluster step status over time.' }),
-    ).exactOptional(),
+    State: StepStateSchema.exactOptional().openapi({
+      description: 'The execution state of the cluster step.',
+    }),
+    StateChangeReason: StepStateChangeReasonSchema.exactOptional().openapi({
+      description: 'The reason for the step execution status change.',
+    }),
+    FailureDetails: FailureDetailsSchema.exactOptional().openapi({
+      description:
+        'The details for the step failure including reason, message, and log file path where the root cause was identified.',
+    }),
+    Timeline: StepTimelineSchema.exactOptional().openapi({
+      description: 'The timeline of the cluster step status over time.',
+    }),
   })
   .openapi({ description: 'The execution status details of the cluster step.', required: [] })
   .openapi('StepStatus')
 
 const StepSchema = z
   .object({
-    Id: StepIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the cluster step.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster step.' }),
-    ).exactOptional(),
-    Config: HadoopStepConfigSchema.and(
-      z.any().openapi({ description: 'The Hadoop job configuration of the cluster step.' }),
-    ).exactOptional(),
-    ActionOnFailure: ActionOnFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The action to take when the cluster step fails. Possible values are <code>TERMINATE_CLUSTER</code>, <code>CANCEL_AND_WAIT</code>, and <code>CONTINUE</code>. <code>TERMINATE_JOB_FLOW</code> is provided for backward compatibility. We recommend using <code>TERMINATE_CLUSTER</code> instead.</p> <p>If a cluster's <code>StepConcurrencyLevel</code> is greater than <code>1</code>, do not use <code>AddJobFlowSteps</code> to submit a step with this parameter set to <code>CANCEL_AND_WAIT</code> or <code>TERMINATE_CLUSTER</code>. The step is not submitted and the action fails with a message that the <code>ActionOnFailure</code> setting is not valid.</p> <p>If you change a cluster's <code>StepConcurrencyLevel</code> to be greater than 1 while a step is running, the <code>ActionOnFailure</code> parameter may not behave as you expect. In this case, for a step that fails with this parameter set to <code>CANCEL_AND_WAIT</code>, pending steps and the running step are not canceled; for a step that fails with this parameter set to <code>TERMINATE_CLUSTER</code>, the cluster does not terminate.</p>",
-        }),
-    ).exactOptional(),
-    Status: StepStatusSchema.and(
-      z.any().openapi({ description: 'The current execution status details of the cluster step.' }),
-    ).exactOptional(),
-    ExecutionRoleArn: OptionalArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>. </p> <p>For example, <code>arn:aws:iam::1234567890:role/ReadOnly</code> is a correctly formatted runtime role ARN.</p>',
-        }),
-    ).exactOptional(),
+    Id: StepIdSchema.exactOptional().openapi({
+      description: 'The identifier of the cluster step.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the cluster step.' }),
+    Config: HadoopStepConfigSchema.exactOptional().openapi({
+      description: 'The Hadoop job configuration of the cluster step.',
+    }),
+    ActionOnFailure: ActionOnFailureSchema.exactOptional().openapi({
+      description:
+        "<p>The action to take when the cluster step fails. Possible values are <code>TERMINATE_CLUSTER</code>, <code>CANCEL_AND_WAIT</code>, and <code>CONTINUE</code>. <code>TERMINATE_JOB_FLOW</code> is provided for backward compatibility. We recommend using <code>TERMINATE_CLUSTER</code> instead.</p> <p>If a cluster's <code>StepConcurrencyLevel</code> is greater than <code>1</code>, do not use <code>AddJobFlowSteps</code> to submit a step with this parameter set to <code>CANCEL_AND_WAIT</code> or <code>TERMINATE_CLUSTER</code>. The step is not submitted and the action fails with a message that the <code>ActionOnFailure</code> setting is not valid.</p> <p>If you change a cluster's <code>StepConcurrencyLevel</code> to be greater than 1 while a step is running, the <code>ActionOnFailure</code> parameter may not behave as you expect. In this case, for a step that fails with this parameter set to <code>CANCEL_AND_WAIT</code>, pending steps and the running step are not canceled; for a step that fails with this parameter set to <code>TERMINATE_CLUSTER</code>, the cluster does not terminate.</p>",
+    }),
+    Status: StepStatusSchema.exactOptional().openapi({
+      description: 'The current execution status details of the cluster step.',
+    }),
+    ExecutionRoleArn: OptionalArnTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>. </p> <p>For example, <code>arn:aws:iam::1234567890:role/ReadOnly</code> is a correctly formatted runtime role ARN.</p>',
+    }),
   })
   .openapi({ description: 'This represents a step in a cluster.', required: [] })
   .openapi('Step')
 
 const DescribeStepOutputSchema = z
   .object({
-    Step: StepSchema.and(
-      z.any().openapi({ description: 'The step details for the requested step identifier.' }),
-    ).exactOptional(),
+    Step: StepSchema.exactOptional().openapi({
+      description: 'The step details for the requested step identifier.',
+    }),
   })
   .openapi({
     description: 'This output contains the description of the cluster step.',
@@ -3030,12 +3014,10 @@ const DescribeStepOutputSchema = z
 
 const DescribeStepInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the cluster with steps to describe.' }),
-    ),
-    StepId: StepIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the step to describe.' }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description: 'The identifier of the cluster with steps to describe.',
+    }),
+    StepId: StepIdSchema.openapi({ description: 'The identifier of the step to describe.' }),
   })
   .openapi({
     required: ['ClusterId', 'StepId'],
@@ -3046,97 +3028,63 @@ const DescribeStepInputSchema = z
 
 const StudioSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    StudioArn: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The name of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    Description: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The detailed description of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    AuthMode: AuthModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the Amazon EMR Studio authenticates users using IAM or IAM Identity Center.',
-        }),
-    ).exactOptional(),
-    VpcId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the VPC associated with the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of IDs of the subnets associated with the Amazon EMR Studio.',
-        }),
-    ).exactOptional(),
-    ServiceRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the IAM role assumed by the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    UserRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IAM role assumed by users logged in to the Amazon EMR Studio. A Studio only requires a <code>UserRole</code> when you use IAM authentication.',
-        }),
-    ).exactOptional(),
-    WorkspaceSecurityGroupId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Workspace security group associated with the Amazon EMR Studio. The Workspace security group allows outbound network traffic to resources in the Engine security group and to the internet.',
-        }),
-    ).exactOptional(),
-    EngineSecurityGroupId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Engine security group associated with the Amazon EMR Studio. The Engine security group allows inbound network traffic from resources in the Workspace security group.',
-        }),
-    ).exactOptional(),
-    Url: XmlStringSchema.and(
-      z.any().openapi({ description: 'The unique access URL of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time the Amazon EMR Studio was created.' }),
-    ).exactOptional(),
-    DefaultS3Location: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location to back up Amazon EMR Studio Workspaces and notebook files.',
-        }),
-    ).exactOptional(),
-    IdpAuthUrl: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Your identity provider's authentication endpoint. Amazon EMR Studio redirects federated users to this endpoint for authentication when logging in to a Studio with the Studio URL.",
-        }),
-    ).exactOptional(),
-    IdpRelayStateParameterName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of your identity provider's <code>RelayState</code> parameter.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tags associated with the Amazon EMR Studio.' }),
-    ).exactOptional(),
+    StudioId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon EMR Studio.',
+    }),
+    StudioArn: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Amazon EMR Studio.',
+    }),
+    Name: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The name of the Amazon EMR Studio.',
+    }),
+    Description: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The detailed description of the Amazon EMR Studio.',
+    }),
+    AuthMode: AuthModeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the Amazon EMR Studio authenticates users using IAM or IAM Identity Center.',
+    }),
+    VpcId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The ID of the VPC associated with the Amazon EMR Studio.',
+    }),
+    SubnetIds: SubnetIdListSchema.exactOptional().openapi({
+      description: 'The list of IDs of the subnets associated with the Amazon EMR Studio.',
+    }),
+    ServiceRole: XmlStringSchema.exactOptional().openapi({
+      description: 'The name of the IAM role assumed by the Amazon EMR Studio.',
+    }),
+    UserRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The name of the IAM role assumed by users logged in to the Amazon EMR Studio. A Studio only requires a <code>UserRole</code> when you use IAM authentication.',
+    }),
+    WorkspaceSecurityGroupId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The ID of the Workspace security group associated with the Amazon EMR Studio. The Workspace security group allows outbound network traffic to resources in the Engine security group and to the internet.',
+    }),
+    EngineSecurityGroupId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The ID of the Engine security group associated with the Amazon EMR Studio. The Engine security group allows inbound network traffic from resources in the Workspace security group.',
+    }),
+    Url: XmlStringSchema.exactOptional().openapi({
+      description: 'The unique access URL of the Amazon EMR Studio.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time the Amazon EMR Studio was created.',
+    }),
+    DefaultS3Location: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 location to back up Amazon EMR Studio Workspaces and notebook files.',
+    }),
+    IdpAuthUrl: XmlStringSchema.exactOptional().openapi({
+      description:
+        "Your identity provider's authentication endpoint. Amazon EMR Studio redirects federated users to this endpoint for authentication when logging in to a Studio with the Studio URL.",
+    }),
+    IdpRelayStateParameterName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: "The name of your identity provider's <code>RelayState</code> parameter.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tags associated with the Amazon EMR Studio.',
+    }),
   })
   .openapi({
     description: 'Details for an Amazon EMR Studio including ID, creation time, name, and so on.',
@@ -3146,66 +3094,34 @@ const StudioSchema = z
 
 const DescribeStudioOutputSchema = z
   .object({
-    Studio: StudioSchema.and(
-      z.any().openapi({ description: 'The Amazon EMR Studio details.' }),
-    ).exactOptional(),
+    Studio: StudioSchema.exactOptional().openapi({ description: 'The Amazon EMR Studio details.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStudioOutput')
 
 const DescribeStudioInputSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The Amazon EMR Studio ID.' }),
-    ),
+    StudioId: XmlStringMaxLen256Schema.openapi({ description: 'The Amazon EMR Studio ID.' }),
   })
   .openapi({ required: ['StudioId'], title: 'DescribeStudioInput' })
   .openapi('DescribeStudioInput')
 
-const LongSchema = z.int().openapi('Long')
-
-const AutoTerminationPolicySchema = z
-  .object({
-    IdleTimeout: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the amount of idle time in seconds after which the cluster automatically terminates. You can specify a minimum of 60 seconds and a maximum of 604800 seconds (seven days).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An auto-termination policy for an Amazon EMR cluster. An auto-termination policy defines the amount of idle time in seconds after which a cluster automatically terminates. For alternative cluster termination options, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-termination.html">Control cluster termination</a>.',
-    required: [],
-  })
-  .openapi('AutoTerminationPolicy')
-
 const GetAutoTerminationPolicyOutputSchema = z
   .object({
-    AutoTerminationPolicy: AutoTerminationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the auto-termination policy that is attached to an Amazon EMR cluster. ',
-        }),
-    ).exactOptional(),
+    AutoTerminationPolicy: AutoTerminationPolicySchema.exactOptional().openapi({
+      description:
+        'Specifies the auto-termination policy that is attached to an Amazon EMR cluster. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAutoTerminationPolicyOutput')
 
 const GetAutoTerminationPolicyInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of the Amazon EMR cluster for which the auto-termination policy will be fetched.',
-        }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'Specifies the ID of the Amazon EMR cluster for which the auto-termination policy will be fetched.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'GetAutoTerminationPolicyInput' })
   .openapi('GetAutoTerminationPolicyInput')
@@ -3214,16 +3130,12 @@ const PortSchema = z.int().min(-1).max(65535).openapi('Port')
 
 const PortRangeSchema = z
   .object({
-    MinRange: PortSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The smallest port number in a specified range of port numbers.' }),
-    ),
-    MaxRange: PortSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The smallest port number in a specified range of port numbers.' }),
-    ).exactOptional(),
+    MinRange: PortSchema.openapi({
+      description: 'The smallest port number in a specified range of port numbers.',
+    }),
+    MaxRange: PortSchema.exactOptional().openapi({
+      description: 'The smallest port number in a specified range of port numbers.',
+    }),
   })
   .openapi({
     required: ['MinRange'],
@@ -3236,22 +3148,14 @@ const PortRangesSchema = z.array(PortRangeSchema).openapi('PortRanges')
 
 const BlockPublicAccessConfigurationSchema = z
   .object({
-    BlockPublicSecurityGroupRules: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether Amazon EMR block public access is enabled (<code>true</code>) or disabled (<code>false</code>). By default, the value is <code>false</code> for accounts that have created EMR clusters before July 2019. For accounts created after this, the default is <code>true</code>.',
-        }),
-    ),
-    PermittedPublicSecurityGroupRuleRanges: PortRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies ports and port ranges that are permitted to have security group rules that allow inbound traffic from all public sources. For example, if Port 23 (Telnet) is specified for <code>PermittedPublicSecurityGroupRuleRanges</code>, Amazon EMR allows cluster creation if a security group associated with the cluster has a rule that allows inbound traffic on Port 23 from IPv4 0.0.0.0/0 or IPv6 port ::/0 as the source.</p> <p>By default, Port 22, which is used for SSH access to the cluster EC2 instances, is in the list of <code>PermittedPublicSecurityGroupRuleRanges</code>.</p>',
-        }),
-    ).exactOptional(),
+    BlockPublicSecurityGroupRules: BooleanSchema.openapi({
+      description:
+        'Indicates whether Amazon EMR block public access is enabled (<code>true</code>) or disabled (<code>false</code>). By default, the value is <code>false</code> for accounts that have created EMR clusters before July 2019. For accounts created after this, the default is <code>true</code>.',
+    }),
+    PermittedPublicSecurityGroupRuleRanges: PortRangesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies ports and port ranges that are permitted to have security group rules that allow inbound traffic from all public sources. For example, if Port 23 (Telnet) is specified for <code>PermittedPublicSecurityGroupRuleRanges</code>, Amazon EMR allows cluster creation if a security group associated with the cluster has a rule that allows inbound traffic on Port 23 from IPv4 0.0.0.0/0 or IPv6 port ::/0 as the source.</p> <p>By default, Port 22, which is used for SSH access to the cluster EC2 instances, is in the list of <code>PermittedPublicSecurityGroupRuleRanges</code>.</p>',
+    }),
   })
   .openapi({
     required: ['BlockPublicSecurityGroupRules'],
@@ -3262,16 +3166,12 @@ const BlockPublicAccessConfigurationSchema = z
 
 const BlockPublicAccessConfigurationMetadataSchema = z
   .object({
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the configuration was created.' }),
-    ),
-    CreatedByArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name that created or last modified the configuration.',
-        }),
-    ),
+    CreationDateTime: DateSchema.openapi({
+      description: 'The date and time that the configuration was created.',
+    }),
+    CreatedByArn: ArnTypeSchema.openapi({
+      description: 'The Amazon Resource Name that created or last modified the configuration.',
+    }),
   })
   .openapi({
     required: ['CreationDateTime', 'CreatedByArn'],
@@ -3282,22 +3182,14 @@ const BlockPublicAccessConfigurationMetadataSchema = z
 
 const GetBlockPublicAccessConfigurationOutputSchema = z
   .object({
-    BlockPublicAccessConfiguration: BlockPublicAccessConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A configuration for Amazon EMR block public access. The configuration applies to all clusters created in your account for the current Region. The configuration specifies whether block public access is enabled. If block public access is enabled, security groups associated with the cluster cannot have rules that allow inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using <code>PermittedPublicSecurityGroupRuleRanges</code> in the <code>BlockPublicAccessConfiguration</code>. By default, Port 22 (SSH) is an exception, and public access is allowed on this port. You can change this by updating the block public access configuration to remove the exception.</p> <note> <p>For accounts that created clusters in a Region before November 25, 2019, block public access is disabled by default in that Region. To use this feature, you must manually enable and configure it. For accounts that did not create an EMR cluster in a Region before this date, block public access is enabled by default in that Region.</p> </note>',
-        }),
-    ),
-    BlockPublicAccessConfigurationMetadata: BlockPublicAccessConfigurationMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Properties that describe the Amazon Web Services principal that created the <code>BlockPublicAccessConfiguration</code> using the <code>PutBlockPublicAccessConfiguration</code> action as well as the date and time that the configuration was created. Each time a configuration for block public access is updated, Amazon EMR updates this metadata.',
-        }),
-    ),
+    BlockPublicAccessConfiguration: BlockPublicAccessConfigurationSchema.openapi({
+      description:
+        '<p>A configuration for Amazon EMR block public access. The configuration applies to all clusters created in your account for the current Region. The configuration specifies whether block public access is enabled. If block public access is enabled, security groups associated with the cluster cannot have rules that allow inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using <code>PermittedPublicSecurityGroupRuleRanges</code> in the <code>BlockPublicAccessConfiguration</code>. By default, Port 22 (SSH) is an exception, and public access is allowed on this port. You can change this by updating the block public access configuration to remove the exception.</p> <note> <p>For accounts that created clusters in a Region before November 25, 2019, block public access is disabled by default in that Region. To use this feature, you must manually enable and configure it. For accounts that did not create an EMR cluster in a Region before this date, block public access is enabled by default in that Region.</p> </note>',
+    }),
+    BlockPublicAccessConfigurationMetadata: BlockPublicAccessConfigurationMetadataSchema.openapi({
+      description:
+        'Properties that describe the Amazon Web Services principal that created the <code>BlockPublicAccessConfiguration</code> using the <code>PutBlockPublicAccessConfiguration</code> action as well as the date and time that the configuration was created. Each time a configuration for block public access is updated, Amazon EMR updates this metadata.',
+    }),
   })
   .openapi({
     required: ['BlockPublicAccessConfiguration', 'BlockPublicAccessConfigurationMetadata'],
@@ -3305,28 +3197,20 @@ const GetBlockPublicAccessConfigurationOutputSchema = z
   .openapi('GetBlockPublicAccessConfigurationOutput')
 
 const GetBlockPublicAccessConfigurationInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBlockPublicAccessConfigurationInput' })
   .openapi('GetBlockPublicAccessConfigurationInput')
 
 const UsernamePasswordSchema = z
   .object({
-    Username: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The username associated with the temporary credentials that you use to connect to cluster endpoints.',
-        }),
-    ).exactOptional(),
-    Password: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The password associated with the temporary credentials that you use to connect to cluster endpoints.',
-        }),
-    ).exactOptional(),
+    Username: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The username associated with the temporary credentials that you use to connect to cluster endpoints.',
+    }),
+    Password: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The password associated with the temporary credentials that you use to connect to cluster endpoints.',
+    }),
   })
   .openapi({
     description: 'The username and password that you use to connect to cluster endpoints.',
@@ -3336,13 +3220,9 @@ const UsernamePasswordSchema = z
 
 const CredentialsSchema = z
   .object({
-    UsernamePassword: UsernamePasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The username and password that you use to connect to cluster endpoints.',
-        }),
-    ).exactOptional(),
+    UsernamePassword: UsernamePasswordSchema.exactOptional().openapi({
+      description: 'The username and password that you use to connect to cluster endpoints.',
+    }),
   })
   .openapi({
     description:
@@ -3353,39 +3233,27 @@ const CredentialsSchema = z
 
 const GetClusterSessionCredentialsOutputSchema = z
   .object({
-    Credentials: CredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The credentials that you can use to connect to cluster endpoints that support username and password authentication.',
-        }),
-    ).exactOptional(),
-    ExpiresAt: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the credentials that are returned by the <code>GetClusterSessionCredentials</code> API expire.',
-        }),
-    ).exactOptional(),
+    Credentials: CredentialsSchema.exactOptional().openapi({
+      description:
+        'The credentials that you can use to connect to cluster endpoints that support username and password authentication.',
+    }),
+    ExpiresAt: DateSchema.exactOptional().openapi({
+      description:
+        'The time when the credentials that are returned by the <code>GetClusterSessionCredentials</code> API expire.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetClusterSessionCredentialsOutput')
 
 const GetClusterSessionCredentialsInputSchema = z
   .object({
-    ClusterId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique identifier of the cluster.' }),
-    ),
-    ExecutionRoleArn: ArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the runtime role for interactive workload submission on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>.',
-        }),
-    ),
+    ClusterId: XmlStringMaxLen256Schema.openapi({
+      description: 'The unique identifier of the cluster.',
+    }),
+    ExecutionRoleArn: ArnTypeSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the runtime role for interactive workload submission on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>.',
+    }),
   })
   .openapi({
     required: ['ClusterId', 'ExecutionRoleArn'],
@@ -3393,143 +3261,52 @@ const GetClusterSessionCredentialsInputSchema = z
   })
   .openapi('GetClusterSessionCredentialsInput')
 
-const ComputeLimitsUnitTypeSchema = z
-  .enum(['InstanceFleetUnits', 'Instances', 'VCPU'])
-  .openapi('ComputeLimitsUnitType')
-
-const ComputeLimitsSchema = z
-  .object({
-    UnitType: ComputeLimitsUnitTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The unit type used for specifying a managed scaling policy. ' }),
-    ),
-    MinimumCapacityUnits: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The lower boundary of EC2 units. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. Managed scaling activities are not allowed beyond this boundary. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration. ',
-        }),
-    ),
-    MaximumCapacityUnits: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The upper boundary of EC2 units. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. Managed scaling activities are not allowed beyond this boundary. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration. ',
-        }),
-    ),
-    MaximumOnDemandCapacityUnits: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The upper boundary of On-Demand EC2 units. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. The On-Demand units are not allowed to scale beyond this boundary. The parameter is used to split capacity allocation between On-Demand and Spot Instances. ',
-        }),
-    ).exactOptional(),
-    MaximumCoreCapacityUnits: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The upper boundary of EC2 units for core node type in a cluster. It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. The core units are not allowed to scale beyond this boundary. The parameter is used to split capacity allocation between core and task nodes. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['UnitType', 'MinimumCapacityUnits', 'MaximumCapacityUnits'],
-    description:
-      ' The EC2 unit limits for a managed scaling policy. The managed scaling activity of a cluster can not be above or below these limits. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration. ',
-  })
-  .openapi('ComputeLimits')
-
-const ManagedScalingPolicySchema = z
-  .object({
-    ComputeLimits: ComputeLimitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The EC2 unit limits for a managed scaling policy. The managed scaling activity of a cluster is not allowed to go above or below these limits. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' Managed scaling policy for an Amazon EMR cluster. The policy specifies the limits for resources that can be added or terminated from a cluster. The policy only applies to the core and task nodes. The master node cannot be scaled after initial configuration. ',
-    required: [],
-  })
-  .openapi('ManagedScalingPolicy')
-
 const GetManagedScalingPolicyOutputSchema = z
   .object({
-    ManagedScalingPolicy: ManagedScalingPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the managed scaling policy that is attached to an Amazon EMR cluster. ',
-        }),
-    ).exactOptional(),
+    ManagedScalingPolicy: ManagedScalingPolicySchema.exactOptional().openapi({
+      description:
+        'Specifies the managed scaling policy that is attached to an Amazon EMR cluster. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetManagedScalingPolicyOutput')
 
 const GetManagedScalingPolicyInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of the cluster for which the managed scaling policy will be fetched. ',
-        }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'Specifies the ID of the cluster for which the managed scaling policy will be fetched. ',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'GetManagedScalingPolicyInput' })
   .openapi('GetManagedScalingPolicyInput')
 
 const SessionMappingDetailSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    IdentityId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The globally unique identifier (GUID) of the user or group.' }),
-    ).exactOptional(),
-    IdentityName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>.',
-        }),
-    ).exactOptional(),
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the identity mapped to the Amazon EMR Studio is a user or a group.',
-        }),
-    ).exactOptional(),
-    SessionPolicyArn: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the session policy associated with the user or group.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time the session mapping was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time the session mapping was last modified.' }),
-    ).exactOptional(),
+    StudioId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon EMR Studio.',
+    }),
+    IdentityId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The globally unique identifier (GUID) of the user or group.',
+    }),
+    IdentityName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>.',
+    }),
+    IdentityType: IdentityTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the identity mapped to the Amazon EMR Studio is a user or a group.',
+    }),
+    SessionPolicyArn: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the session policy associated with the user or group.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time the session mapping was created.',
+    }),
+    LastModifiedTime: DateSchema.exactOptional().openapi({
+      description: 'The time the session mapping was last modified.',
+    }),
   })
   .openapi({
     description:
@@ -3540,61 +3317,41 @@ const SessionMappingDetailSchema = z
 
 const GetStudioSessionMappingOutputSchema = z
   .object({
-    SessionMapping: SessionMappingDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session mapping details for the specified Amazon EMR Studio and identity, including session policy ARN and creation time.',
-        }),
-    ).exactOptional(),
+    SessionMapping: SessionMappingDetailSchema.exactOptional().openapi({
+      description:
+        'The session mapping details for the specified Amazon EMR Studio and identity, including session policy ARN and creation time.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStudioSessionMappingOutput')
 
 const GetStudioSessionMappingInputSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ),
-    IdentityId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier (GUID) of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId">UserId</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId">GroupId</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
-        }),
-    ).exactOptional(),
-    IdentityName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the user or group to fetch. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
-        }),
-    ).exactOptional(),
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies whether the identity to fetch is a user or a group.' }),
-    ),
+    StudioId: XmlStringMaxLen256Schema.openapi({ description: 'The ID of the Amazon EMR Studio.' }),
+    IdentityId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The globally unique identifier (GUID) of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId">UserId</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId">GroupId</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
+    }),
+    IdentityName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name of the user or group to fetch. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
+    }),
+    IdentityType: IdentityTypeSchema.openapi({
+      description: 'Specifies whether the identity to fetch is a user or a group.',
+    }),
   })
   .openapi({ required: ['StudioId', 'IdentityType'], title: 'GetStudioSessionMappingInput' })
   .openapi('GetStudioSessionMappingInput')
 
 const CommandSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the command.' }),
-    ).exactOptional(),
-    ScriptPath: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of the command script.' }),
-    ).exactOptional(),
-    Args: StringListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Arguments for Amazon EMR to pass to the command for execution.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the command.' }),
+    ScriptPath: StringSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of the command script.',
+    }),
+    Args: StringListSchema.exactOptional().openapi({
+      description: 'Arguments for Amazon EMR to pass to the command for execution.',
+    }),
   })
   .openapi({
     description: 'An entity describing an executable that runs on a cluster.',
@@ -3604,36 +3361,26 @@ const CommandSchema = z
 
 const CommandListSchema = z.array(CommandSchema).openapi('CommandList')
 
-const MarkerSchema = z.string().openapi('Marker')
-
 const ListBootstrapActionsOutputSchema = z
   .object({
-    BootstrapActions: CommandListSchema.and(
-      z.any().openapi({ description: 'The bootstrap actions associated with the cluster.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    BootstrapActions: CommandListSchema.exactOptional().openapi({
+      description: 'The bootstrap actions associated with the cluster.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({ description: 'This output contains the bootstrap actions detail.', required: [] })
   .openapi('ListBootstrapActionsOutput')
 
 const ListBootstrapActionsInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The cluster identifier for the bootstrap actions to list.' }),
-    ),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description: 'The cluster identifier for the bootstrap actions to list.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     required: ['ClusterId'],
@@ -3642,58 +3389,14 @@ const ListBootstrapActionsInputSchema = z
   })
   .openapi('ListBootstrapActionsInput')
 
-const ClusterSummarySchema = z
+const ListClustersOutputSchema: z.ZodType<ListClustersOutputType> = z
   .object({
-    Id: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the cluster.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster.' }),
-    ).exactOptional(),
-    Status: ClusterStatusSchema.and(
-      z.any().openapi({ description: 'The details about the current status of the cluster.' }),
-    ).exactOptional(),
-    NormalizedInstanceHours: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An approximation of the cost of the cluster, represented in m1.small/hours. This value is incremented one time for every hour an m1.small instance runs. Larger instances are weighted more, so an EC2 instance that is roughly four times more expensive would result in the normalized instance hours being incremented by four. This result is only an approximation and does not reflect the actual billing rate.',
-        }),
-    ).exactOptional(),
-    ClusterArn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the cluster.' }),
-    ).exactOptional(),
-    OutpostArn: OptionalArnTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the Outpost where the cluster is launched. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The summary description of the cluster.', required: [] })
-  .openapi('ClusterSummary')
-
-const ClusterSummaryListSchema = z.array(ClusterSummarySchema).openapi('ClusterSummaryList')
-
-const ListClustersOutputSchema = z
-  .object({
-    Clusters: ClusterSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of clusters for the account based on the given filters.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    Clusters: ClusterSummaryListSchema.exactOptional().openapi({
+      description: 'The list of clusters for the account based on the given filters.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     description:
@@ -3706,35 +3409,19 @@ const ClusterStateListSchema = z.array(ClusterStateSchema).openapi('ClusterState
 
 const ListClustersInputSchema = z
   .object({
-    CreatedAfter: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The creation date and time beginning value filter for listing clusters.',
-        }),
-    ).exactOptional(),
-    CreatedBefore: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The creation date and time end value filter for listing clusters.',
-        }),
-    ).exactOptional(),
-    ClusterStates: ClusterStateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster state filters to apply when listing clusters. Clusters that change state while this action runs may be not be returned as expected in the list of clusters.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    CreatedAfter: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time beginning value filter for listing clusters.',
+    }),
+    CreatedBefore: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time end value filter for listing clusters.',
+    }),
+    ClusterStates: ClusterStateListSchema.exactOptional().openapi({
+      description:
+        'The cluster state filters to apply when listing clusters. Clusters that change state while this action runs may be not be returned as expected in the list of clusters.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     title: 'ListClustersInput',
@@ -3744,628 +3431,36 @@ const ListClustersInputSchema = z
   })
   .openapi('ListClustersInput')
 
-const InstanceFleetStateSchema = z
-  .enum([
-    'PROVISIONING',
-    'BOOTSTRAPPING',
-    'RUNNING',
-    'RESIZING',
-    'SUSPENDED',
-    'TERMINATING',
-    'TERMINATED',
-  ])
-  .openapi('InstanceFleetState')
-
-const InstanceFleetStateChangeReasonCodeSchema = z
-  .enum(['INTERNAL_ERROR', 'VALIDATION_ERROR', 'INSTANCE_FAILURE', 'CLUSTER_TERMINATED'])
-  .openapi('InstanceFleetStateChangeReasonCode')
-
-const InstanceFleetStateChangeReasonSchema = z
+const ListInstanceFleetsOutputSchema: z.ZodType<ListInstanceFleetsOutputType> = z
   .object({
-    Code: InstanceFleetStateChangeReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A code corresponding to the reason the state change occurred.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'An explanatory message.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Provides status change reason details for the instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
-    required: [],
-  })
-  .openapi('InstanceFleetStateChangeReason')
-
-const InstanceFleetTimelineSchema = z
-  .object({
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time and date the instance fleet was created.' }),
-    ).exactOptional(),
-    ReadyDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time and date the instance fleet was ready to run jobs.' }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time and date the instance fleet terminated.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Provides historical timestamps for the instance fleet, including the time of creation, the time it became ready to run jobs, and the time of termination.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
-    required: [],
-  })
-  .openapi('InstanceFleetTimeline')
-
-const InstanceFleetStatusSchema = z
-  .object({
-    State: InstanceFleetStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A code representing the instance fleet status.</p> <ul> <li> <p> <code>PROVISIONING</code>—The instance fleet is provisioning EC2 resources and is not yet ready to run jobs.</p> </li> <li> <p> <code>BOOTSTRAPPING</code>—EC2 instances and other resources have been provisioned and the bootstrap actions specified for the instances are underway.</p> </li> <li> <p> <code>RUNNING</code>—EC2 instances and other resources are running. They are either executing jobs or waiting to execute jobs.</p> </li> <li> <p> <code>RESIZING</code>—A resize operation is underway. EC2 instances are either being added or removed.</p> </li> <li> <p> <code>SUSPENDED</code>—A resize operation could not complete. Existing EC2 instances are running, but instances can't be added or removed.</p> </li> <li> <p> <code>TERMINATING</code>—The instance fleet is terminating EC2 instances.</p> </li> <li> <p> <code>TERMINATED</code>—The instance fleet is no longer active, and all EC2 instances have been terminated.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    StateChangeReason: InstanceFleetStateChangeReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides status change reason details for the instance fleet.' }),
-    ).exactOptional(),
-    Timeline: InstanceFleetTimelineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides historical timestamps for the instance fleet, including the time of creation, the time it became ready to run jobs, and the time of termination.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The status of the instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
-    required: [],
-  })
-  .openapi('InstanceFleetStatus')
-
-const EbsBlockDeviceSchema = z
-  .object({
-    VolumeSpecification: VolumeSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'EBS volume specifications such as volume type, IOPS, size (GiB) and throughput (MiB/s) that are requested for the EBS volume attached to an EC2 instance in the cluster.',
-        }),
-    ).exactOptional(),
-    Device: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device name that is exposed to the instance, such as /dev/sdh.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Configuration of requested EBS block device associated with the instance group.',
-    required: [],
-  })
-  .openapi('EbsBlockDevice')
-
-const EbsBlockDeviceListSchema = z.array(EbsBlockDeviceSchema).openapi('EbsBlockDeviceList')
-
-const InstanceTypeSpecificationSchema = z
-  .object({
-    InstanceType: InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The EC2 instance type, for example <code>m3.xlarge</code>.' }),
-    ).exactOptional(),
-    WeightedCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of units that a provisioned instance of this type provides toward fulfilling the target capacities defined in <a>InstanceFleetConfig</a>. Capacity values represent performance characteristics such as vCPUs, memory, or I/O. If not specified, the default value is 1.',
-        }),
-    ).exactOptional(),
-    BidPrice: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bid price for each EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD.',
-        }),
-    ).exactOptional(),
-    BidPriceAsPercentageOfOnDemandPrice: NonNegativeDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bid price, as a percentage of On-Demand price, for each EC2 Spot Instance as defined by <code>InstanceType</code>. Expressed as a number (for example, 20 specifies 20%).',
-        }),
-    ).exactOptional(),
-    Configurations: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A configuration classification that applies when provisioning cluster instances, which can include configurations for applications and software bundled with Amazon EMR.',
-        }),
-    ).exactOptional(),
-    EbsBlockDevices: EbsBlockDeviceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration of Amazon Elastic Block Store (Amazon EBS) attached to each instance as defined by <code>InstanceType</code>.',
-        }),
-    ).exactOptional(),
-    EbsOptimized: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Evaluates to <code>TRUE</code> when the specified <code>InstanceType</code> is EBS-optimized.',
-        }),
-    ).exactOptional(),
-    CustomAmiId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The custom AMI ID to use for the instance type.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The configuration specification for each instance type in an instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
-    required: [],
-  })
-  .openapi('InstanceTypeSpecification')
-
-const InstanceTypeSpecificationListSchema = z
-  .array(InstanceTypeSpecificationSchema)
-  .openapi('InstanceTypeSpecificationList')
-
-const InstanceFleetSchema = z
-  .object({
-    Id: InstanceFleetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the instance fleet.' }),
-    ).exactOptional(),
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'A friendly name for the instance fleet.' }),
-    ).exactOptional(),
-    Status: InstanceFleetStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the instance fleet. ' }),
-    ).exactOptional(),
-    InstanceFleetType: InstanceFleetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The node type that the instance fleet hosts. Valid values are MASTER, CORE, or TASK. ',
-        }),
-    ).exactOptional(),
-    TargetOnDemandCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target capacity of On-Demand units for the instance fleet, which determines how many On-Demand Instances to provision. When the instance fleet launches, Amazon EMR tries to provision On-Demand Instances as specified by <a>InstanceTypeConfig</a>. Each instance configuration has a specified <code>WeightedCapacity</code>. When an On-Demand Instance is provisioned, the <code>WeightedCapacity</code> units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a <code>WeightedCapacity</code> of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units. You can use <a>InstanceFleet$ProvisionedOnDemandCapacity</a> to determine the Spot capacity units that have been provisioned for the instance fleet.</p> <note> <p>If not specified or set to 0, only Spot Instances are provisioned for the instance fleet using <code>TargetSpotCapacity</code>. At least one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> should be greater than 0. For a master instance fleet, only one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> can be specified, and its value must be 1.</p> </note>',
-        }),
-    ).exactOptional(),
-    TargetSpotCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target capacity of Spot units for the instance fleet, which determines how many Spot Instances to provision. When the instance fleet launches, Amazon EMR tries to provision Spot Instances as specified by <a>InstanceTypeConfig</a>. Each instance configuration has a specified <code>WeightedCapacity</code>. When a Spot instance is provisioned, the <code>WeightedCapacity</code> units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a <code>WeightedCapacity</code> of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units. You can use <a>InstanceFleet$ProvisionedSpotCapacity</a> to determine the Spot capacity units that have been provisioned for the instance fleet.</p> <note> <p>If not specified or set to 0, only On-Demand Instances are provisioned for the instance fleet. At least one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> should be greater than 0. For a master instance fleet, only one of <code>TargetSpotCapacity</code> and <code>TargetOnDemandCapacity</code> can be specified, and its value must be 1.</p> </note>',
-        }),
-    ).exactOptional(),
-    ProvisionedOnDemandCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of On-Demand units that have been provisioned for the instance fleet to fulfill <code>TargetOnDemandCapacity</code>. This provisioned capacity might be less than or greater than <code>TargetOnDemandCapacity</code>.',
-        }),
-    ).exactOptional(),
-    ProvisionedSpotCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Spot units that have been provisioned for this instance fleet to fulfill <code>TargetSpotCapacity</code>. This provisioned capacity might be less than or greater than <code>TargetSpotCapacity</code>.',
-        }),
-    ).exactOptional(),
-    InstanceTypeSpecifications: InstanceTypeSpecificationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of specifications for the instance types that comprise an instance fleet.',
-        }),
-    ).exactOptional(),
-    LaunchSpecifications: InstanceFleetProvisioningSpecificationsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the launch specification for an instance fleet. ' }),
-    ).exactOptional(),
-    ResizeSpecifications: InstanceFleetResizingSpecificationsSchema.and(
-      z.any().openapi({ description: 'The resize specification for the instance fleet.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes an instance fleet, which is a group of EC2 instances that host a particular node type (master, core, or task) in an Amazon EMR cluster. Instance fleets can consist of a mix of instance types and On-Demand and Spot Instances, which are provisioned to meet a defined target capacity. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
-    required: [],
-  })
-  .openapi('InstanceFleet')
-
-const InstanceFleetListSchema = z.array(InstanceFleetSchema).openapi('InstanceFleetList')
-
-const ListInstanceFleetsOutputSchema = z
-  .object({
-    InstanceFleets: InstanceFleetListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of instance fleets for the cluster and given filters.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    InstanceFleets: InstanceFleetListSchema.exactOptional().openapi({
+      description: 'The list of instance fleets for the cluster and given filters.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInstanceFleetsOutput')
 
 const ListInstanceFleetsInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the cluster.' }),
-    ),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({ description: 'The unique identifier of the cluster.' }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'ListInstanceFleetsInput' })
   .openapi('ListInstanceFleetsInput')
 
-const InstanceGroupIdSchema = z.string().openapi('InstanceGroupId')
-
-const InstanceGroupTypeSchema = z.enum(['MASTER', 'CORE', 'TASK']).openapi('InstanceGroupType')
-
-const InstanceGroupStateChangeReasonCodeSchema = z
-  .enum(['INTERNAL_ERROR', 'VALIDATION_ERROR', 'INSTANCE_FAILURE', 'CLUSTER_TERMINATED'])
-  .openapi('InstanceGroupStateChangeReasonCode')
-
-const InstanceGroupStateChangeReasonSchema = z
+const ListInstanceGroupsOutputSchema: z.ZodType<ListInstanceGroupsOutputType> = z
   .object({
-    Code: InstanceGroupStateChangeReasonCodeSchema.and(
-      z.any().openapi({ description: 'The programmable code for the state change reason.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The status change reason description.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The status change reason details for the instance group.',
-    required: [],
-  })
-  .openapi('InstanceGroupStateChangeReason')
-
-const InstanceGroupTimelineSchema = z
-  .object({
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The creation date and time of the instance group.' }),
-    ).exactOptional(),
-    ReadyDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the instance group became ready to perform tasks.',
-        }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the instance group terminated.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The timeline of the instance group lifecycle.', required: [] })
-  .openapi('InstanceGroupTimeline')
-
-const InstanceGroupStatusSchema = z
-  .object({
-    State: InstanceGroupStateSchema.and(
-      z.any().openapi({ description: 'The current state of the instance group.' }),
-    ).exactOptional(),
-    StateChangeReason: InstanceGroupStateChangeReasonSchema.and(
-      z.any().openapi({ description: 'The status change reason details for the instance group.' }),
-    ).exactOptional(),
-    Timeline: InstanceGroupTimelineSchema.and(
-      z.any().openapi({ description: 'The timeline of the instance group status over time.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The details of the instance group status.', required: [] })
-  .openapi('InstanceGroupStatus')
-
-const InstanceIdSchema = z.string().openapi('InstanceId')
-
-const EC2InstanceIdsListSchema = z.array(InstanceIdSchema).openapi('EC2InstanceIdsList')
-
-const InstanceResizePolicySchema = z
-  .object({
-    InstancesToTerminate: EC2InstanceIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specific list of instances to be terminated when shrinking an instance group.',
-        }),
-    ).exactOptional(),
-    InstancesToProtect: EC2InstanceIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specific list of instances to be protected when shrinking an instance group.',
-        }),
-    ).exactOptional(),
-    InstanceTerminationTimeout: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Decommissioning timeout override for the specific list of instances to be terminated.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Custom policy for requesting termination protection or termination of specific instances when shrinking an instance group.',
-    required: [],
-  })
-  .openapi('InstanceResizePolicy')
-
-const ShrinkPolicySchema = z
-  .object({
-    DecommissionTimeout: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The desired timeout for decommissioning an instance. Overrides the default YARN decommissioning timeout.',
-        }),
-    ).exactOptional(),
-    InstanceResizePolicy: InstanceResizePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom policy for requesting termination protection or termination of specific instances when shrinking an instance group.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Policy for customizing shrink operations. Allows configuration of decommissioning timeout and targeted instance shrinking.',
-    required: [],
-  })
-  .openapi('ShrinkPolicy')
-
-const AutoScalingPolicyStateSchema = z
-  .enum(['PENDING', 'ATTACHING', 'ATTACHED', 'DETACHING', 'DETACHED', 'FAILED'])
-  .openapi('AutoScalingPolicyState')
-
-const AutoScalingPolicyStateChangeReasonCodeSchema = z
-  .enum(['USER_REQUEST', 'PROVISION_FAILURE', 'CLEANUP_FAILURE'])
-  .openapi('AutoScalingPolicyStateChangeReasonCode')
-
-const AutoScalingPolicyStateChangeReasonSchema = z
-  .object({
-    Code: AutoScalingPolicyStateChangeReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code indicating the reason for the change in status.<code>USER_REQUEST</code> indicates that the scaling policy status was changed by a user. <code>PROVISION_FAILURE</code> indicates that the status change was because the policy failed to provision. <code>CLEANUP_FAILURE</code> indicates an error.',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly, more verbose message that accompanies an automatic scaling policy state change.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The reason for an <a>AutoScalingPolicyStatus</a> change.',
-    required: [],
-  })
-  .openapi('AutoScalingPolicyStateChangeReason')
-
-const AutoScalingPolicyStatusSchema = z
-  .object({
-    State: AutoScalingPolicyStateSchema.and(
-      z.any().openapi({ description: 'Indicates the status of the automatic scaling policy.' }),
-    ).exactOptional(),
-    StateChangeReason: AutoScalingPolicyStateChangeReasonSchema.and(
-      z.any().openapi({ description: 'The reason for a change in status.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The status of an automatic scaling policy. ', required: [] })
-  .openapi('AutoScalingPolicyStatus')
-
-const AutoScalingPolicyDescriptionSchema = z
-  .object({
-    Status: AutoScalingPolicyStatusSchema.and(
-      z.any().openapi({ description: 'The status of an automatic scaling policy. ' }),
-    ).exactOptional(),
-    Constraints: ScalingConstraintsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upper and lower EC2 instance limits for an automatic scaling policy. Automatic scaling activity will not cause an instance group to grow above or below these limits.',
-        }),
-    ).exactOptional(),
-    Rules: ScalingRuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scale-in and scale-out rules that comprise the automatic scaling policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates EC2 instances in response to the value of a CloudWatch metric. See <a>PutAutoScalingPolicy</a>.',
-    required: [],
-  })
-  .openapi('AutoScalingPolicyDescription')
-
-const InstanceGroupSchema = z
-  .object({
-    Id: InstanceGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the instance group.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the instance group.' }),
-    ).exactOptional(),
-    Market: MarketTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marketplace to provision instances for this group. Valid values are ON_DEMAND or SPOT.',
-        }),
-    ).exactOptional(),
-    InstanceGroupType: InstanceGroupTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the instance group. Valid values are MASTER, CORE or TASK.',
-        }),
-    ).exactOptional(),
-    BidPrice: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.',
-        }),
-    ).exactOptional(),
-    InstanceType: InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The EC2 instance type for all instances in the instance group.' }),
-    ).exactOptional(),
-    RequestedInstanceCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The target number of instances for the instance group.' }),
-    ).exactOptional(),
-    RunningInstanceCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of instances currently running in this instance group.',
-        }),
-    ).exactOptional(),
-    Status: InstanceGroupStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the instance group.' }),
-    ).exactOptional(),
-    Configurations: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>The list of configurations supplied for an Amazon EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).</p>',
-        }),
-    ).exactOptional(),
-    ConfigurationsVersion: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the requested configuration specification for this instance group.',
-        }),
-    ).exactOptional(),
-    LastSuccessfullyAppliedConfigurations: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of configurations that were successfully applied for an instance group last time.',
-        }),
-    ).exactOptional(),
-    LastSuccessfullyAppliedConfigurationsVersion: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of a configuration specification that was successfully applied for an instance group last time. ',
-        }),
-    ).exactOptional(),
-    EbsBlockDevices: EbsBlockDeviceListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The EBS block devices that are mapped to this instance group.' }),
-    ).exactOptional(),
-    EbsOptimized: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the instance group is EBS-optimized. An Amazon EBS-optimized instance uses an optimized configuration stack and provides additional, dedicated capacity for Amazon EBS I/O.',
-        }),
-    ).exactOptional(),
-    ShrinkPolicy: ShrinkPolicySchema.and(
-      z.any().openapi({ description: 'Policy for customizing shrink operations.' }),
-    ).exactOptional(),
-    AutoScalingPolicy: AutoScalingPolicyDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An automatic scaling policy for a core instance group or task instance group in an Amazon EMR cluster. The automatic scaling policy defines how an instance group dynamically adds and terminates EC2 instances in response to the value of a CloudWatch metric. See PutAutoScalingPolicy.',
-        }),
-    ).exactOptional(),
-    CustomAmiId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The custom AMI ID to use for the provisioned instance group.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'This entity represents an instance group, which is a group of instances that have common purpose. For example, CORE instance group is used for HDFS.',
-    required: [],
-  })
-  .openapi('InstanceGroup')
-
-const InstanceGroupListSchema = z.array(InstanceGroupSchema).openapi('InstanceGroupList')
-
-const ListInstanceGroupsOutputSchema = z
-  .object({
-    InstanceGroups: InstanceGroupListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of instance groups for the cluster and given filters.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    InstanceGroups: InstanceGroupListSchema.exactOptional().openapi({
+      description: 'The list of instance groups for the cluster and given filters.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     description: 'This input determines which instance groups to retrieve.',
@@ -4375,20 +3470,12 @@ const ListInstanceGroupsOutputSchema = z
 
 const ListInstanceGroupsInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the cluster for which to list the instance groups.',
-        }),
-    ),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description: 'The identifier of the cluster for which to list the instance groups.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     required: ['ClusterId'],
@@ -4397,145 +3484,45 @@ const ListInstanceGroupsInputSchema = z
   })
   .openapi('ListInstanceGroupsInput')
 
-const InstanceStateSchema = z
-  .enum(['AWAITING_FULFILLMENT', 'PROVISIONING', 'BOOTSTRAPPING', 'RUNNING', 'TERMINATED'])
-  .openapi('InstanceState')
-
-const InstanceStateChangeReasonCodeSchema = z
-  .enum([
-    'INTERNAL_ERROR',
-    'VALIDATION_ERROR',
-    'INSTANCE_FAILURE',
-    'BOOTSTRAP_FAILURE',
-    'CLUSTER_TERMINATED',
-  ])
-  .openapi('InstanceStateChangeReasonCode')
-
-const InstanceStateChangeReasonSchema = z
-  .object({
-    Code: InstanceStateChangeReasonCodeSchema.and(
-      z.any().openapi({ description: 'The programmable code for the state change reason.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The status change reason description.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The details of the status change reason for the instance.',
-    required: [],
-  })
-  .openapi('InstanceStateChangeReason')
-
-const InstanceTimelineSchema = z
-  .object({
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The creation date and time of the instance.' }),
-    ).exactOptional(),
-    ReadyDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the instance was ready to perform tasks.',
-        }),
-    ).exactOptional(),
-    EndDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the instance was terminated.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The timeline of the instance lifecycle.', required: [] })
-  .openapi('InstanceTimeline')
-
-const InstanceStatusSchema = z
-  .object({
-    State: InstanceStateSchema.and(
-      z.any().openapi({ description: 'The current state of the instance.' }),
-    ).exactOptional(),
-    StateChangeReason: InstanceStateChangeReasonSchema.and(
-      z.any().openapi({ description: 'The details of the status change reason for the instance.' }),
-    ).exactOptional(),
-    Timeline: InstanceTimelineSchema.and(
-      z.any().openapi({ description: 'The timeline of the instance status over time.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The instance status details.', required: [] })
-  .openapi('InstanceStatus')
-
-const EbsVolumeSchema = z
-  .object({
-    Device: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device name that is exposed to the instance, such as /dev/sdh.',
-        }),
-    ).exactOptional(),
-    VolumeId: StringSchema.and(
-      z.any().openapi({ description: 'The volume identifier of the EBS volume.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: "EBS block device that's attached to an EC2 instance.", required: [] })
-  .openapi('EbsVolume')
-
-const EbsVolumeListSchema = z.array(EbsVolumeSchema).openapi('EbsVolumeList')
-
 const InstanceSchema = z
   .object({
-    Id: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the instance in Amazon EMR.' }),
-    ).exactOptional(),
-    Ec2InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the instance in Amazon EC2.' }),
-    ).exactOptional(),
-    PublicDnsName: StringSchema.and(
-      z.any().openapi({ description: 'The public DNS name of the instance.' }),
-    ).exactOptional(),
-    PublicIpAddress: StringSchema.and(
-      z.any().openapi({ description: 'The public IP address of the instance.' }),
-    ).exactOptional(),
-    PrivateDnsName: StringSchema.and(
-      z.any().openapi({ description: 'The private DNS name of the instance.' }),
-    ).exactOptional(),
-    PrivateIpAddress: StringSchema.and(
-      z.any().openapi({ description: 'The private IP address of the instance.' }),
-    ).exactOptional(),
-    Status: InstanceStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the instance.' }),
-    ).exactOptional(),
-    InstanceGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the instance group to which this instance belongs.',
-        }),
-    ).exactOptional(),
-    InstanceFleetId: InstanceFleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the instance fleet to which an EC2 instance belongs.',
-        }),
-    ).exactOptional(),
-    Market: MarketTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance purchasing option. Valid values are <code>ON_DEMAND</code> or <code>SPOT</code>. ',
-        }),
-    ).exactOptional(),
-    InstanceType: InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The EC2 instance type, for example <code>m3.xlarge</code>.' }),
-    ).exactOptional(),
-    EbsVolumes: EbsVolumeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of Amazon EBS volumes that are attached to this instance.',
-        }),
-    ).exactOptional(),
+    Id: InstanceIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the instance in Amazon EMR.',
+    }),
+    Ec2InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the instance in Amazon EC2.',
+    }),
+    PublicDnsName: StringSchema.exactOptional().openapi({
+      description: 'The public DNS name of the instance.',
+    }),
+    PublicIpAddress: StringSchema.exactOptional().openapi({
+      description: 'The public IP address of the instance.',
+    }),
+    PrivateDnsName: StringSchema.exactOptional().openapi({
+      description: 'The private DNS name of the instance.',
+    }),
+    PrivateIpAddress: StringSchema.exactOptional().openapi({
+      description: 'The private IP address of the instance.',
+    }),
+    Status: InstanceStatusSchema.exactOptional().openapi({
+      description: 'The current status of the instance.',
+    }),
+    InstanceGroupId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the instance group to which this instance belongs.',
+    }),
+    InstanceFleetId: InstanceFleetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the instance fleet to which an EC2 instance belongs.',
+    }),
+    Market: MarketTypeSchema.exactOptional().openapi({
+      description:
+        'The instance purchasing option. Valid values are <code>ON_DEMAND</code> or <code>SPOT</code>. ',
+    }),
+    InstanceType: InstanceTypeSchema.exactOptional().openapi({
+      description: 'The EC2 instance type, for example <code>m3.xlarge</code>.',
+    }),
+    EbsVolumes: EbsVolumeListSchema.exactOptional().openapi({
+      description: 'The list of Amazon EBS volumes that are attached to this instance.',
+    }),
   })
   .openapi({
     description: 'Represents an EC2 instance provisioned as part of cluster.',
@@ -4547,16 +3534,12 @@ const InstanceListSchema = z.array(InstanceSchema).openapi('InstanceList')
 
 const ListInstancesOutputSchema = z
   .object({
-    Instances: InstanceListSchema.and(
-      z.any().openapi({ description: 'The list of instances for the cluster and given filters.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    Instances: InstanceListSchema.exactOptional().openapi({
+      description: 'The list of instances for the cluster and given filters.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({ description: 'This output contains the list of instances.', required: [] })
   .openapi('ListInstancesOutput')
@@ -4569,48 +3552,28 @@ const InstanceStateListSchema = z.array(InstanceStateSchema).openapi('InstanceSt
 
 const ListInstancesInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the cluster for which to list the instances.' }),
-    ),
-    InstanceGroupId: InstanceGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the instance group for which to list the instances.',
-        }),
-    ).exactOptional(),
-    InstanceGroupTypes: InstanceGroupTypeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of instance group for which to list the instances.' }),
-    ).exactOptional(),
-    InstanceFleetId: InstanceFleetIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the instance fleet.' }),
-    ).exactOptional(),
-    InstanceFleetType: InstanceFleetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The node type of the instance fleet. For example MASTER, CORE, or TASK.',
-        }),
-    ).exactOptional(),
-    InstanceStates: InstanceStateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of instance states that will filter the instances returned with this request.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description: 'The identifier of the cluster for which to list the instances.',
+    }),
+    InstanceGroupId: InstanceGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the instance group for which to list the instances.',
+    }),
+    InstanceGroupTypes: InstanceGroupTypeListSchema.exactOptional().openapi({
+      description: 'The type of instance group for which to list the instances.',
+    }),
+    InstanceFleetId: InstanceFleetIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the instance fleet.',
+    }),
+    InstanceFleetType: InstanceFleetTypeSchema.exactOptional().openapi({
+      description: 'The node type of the instance fleet. For example MASTER, CORE, or TASK.',
+    }),
+    InstanceStates: InstanceStateListSchema.exactOptional().openapi({
+      description:
+        'A list of instance states that will filter the instances returned with this request.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     required: ['ClusterId'],
@@ -4621,34 +3584,25 @@ const ListInstancesInputSchema = z
 
 const NotebookExecutionSummarySchema = z
   .object({
-    NotebookExecutionId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique identifier of the notebook execution.' }),
-    ).exactOptional(),
-    EditorId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the editor associated with the notebook execution.',
-        }),
-    ).exactOptional(),
-    NotebookExecutionName: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The name of the notebook execution.' }),
-    ).exactOptional(),
-    Status: NotebookExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the notebook execution.</p> <ul> <li> <p> <code>START_PENDING</code> indicates that the cluster has received the execution request but execution has not begun.</p> </li> <li> <p> <code>STARTING</code> indicates that the execution is starting on the cluster.</p> </li> <li> <p> <code>RUNNING</code> indicates that the execution is being processed by the cluster.</p> </li> <li> <p> <code>FINISHING</code> indicates that execution processing is in the final stages.</p> </li> <li> <p> <code>FINISHED</code> indicates that the execution has completed without error.</p> </li> <li> <p> <code>FAILING</code> indicates that the execution is failing and will not finish successfully.</p> </li> <li> <p> <code>FAILED</code> indicates that the execution failed.</p> </li> <li> <p> <code>STOP_PENDING</code> indicates that the cluster has received a <code>StopNotebookExecution</code> request and the stop is pending.</p> </li> <li> <p> <code>STOPPING</code> indicates that the cluster is in the process of stopping the execution as a result of a <code>StopNotebookExecution</code> request.</p> </li> <li> <p> <code>STOPPED</code> indicates that the execution stopped because of a <code>StopNotebookExecution</code> request.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StartTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp when notebook execution started.' }),
-    ).exactOptional(),
-    EndTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp when notebook execution started.' }),
-    ).exactOptional(),
+    NotebookExecutionId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The unique identifier of the notebook execution.',
+    }),
+    EditorId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The unique identifier of the editor associated with the notebook execution.',
+    }),
+    NotebookExecutionName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The name of the notebook execution.',
+    }),
+    Status: NotebookExecutionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the notebook execution.</p> <ul> <li> <p> <code>START_PENDING</code> indicates that the cluster has received the execution request but execution has not begun.</p> </li> <li> <p> <code>STARTING</code> indicates that the execution is starting on the cluster.</p> </li> <li> <p> <code>RUNNING</code> indicates that the execution is being processed by the cluster.</p> </li> <li> <p> <code>FINISHING</code> indicates that execution processing is in the final stages.</p> </li> <li> <p> <code>FINISHED</code> indicates that the execution has completed without error.</p> </li> <li> <p> <code>FAILING</code> indicates that the execution is failing and will not finish successfully.</p> </li> <li> <p> <code>FAILED</code> indicates that the execution failed.</p> </li> <li> <p> <code>STOP_PENDING</code> indicates that the cluster has received a <code>StopNotebookExecution</code> request and the stop is pending.</p> </li> <li> <p> <code>STOPPING</code> indicates that the cluster is in the process of stopping the execution as a result of a <code>StopNotebookExecution</code> request.</p> </li> <li> <p> <code>STOPPED</code> indicates that the execution stopped because of a <code>StopNotebookExecution</code> request.</p> </li> </ul>',
+    }),
+    StartTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp when notebook execution started.',
+    }),
+    EndTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp when notebook execution started.',
+    }),
   })
   .openapi({
     description:
@@ -4663,101 +3617,64 @@ const NotebookExecutionSummaryListSchema = z
 
 const ListNotebookExecutionsOutputSchema = z
   .object({
-    NotebookExecutions: NotebookExecutionSummaryListSchema.and(
-      z.any().openapi({ description: 'A list of notebook executions.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token that a subsequent <code>ListNotebookExecutions</code> can use to determine the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    NotebookExecutions: NotebookExecutionSummaryListSchema.exactOptional().openapi({
+      description: 'A list of notebook executions.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'A pagination token that a subsequent <code>ListNotebookExecutions</code> can use to determine the next set of results to retrieve.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListNotebookExecutionsOutput')
 
 const ListNotebookExecutionsInputSchema = z
   .object({
-    EditorId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique ID of the editor associated with the notebook execution.',
-        }),
-    ).exactOptional(),
-    Status: NotebookExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status filter for listing notebook executions.</p> <ul> <li> <p> <code>START_PENDING</code> indicates that the cluster has received the execution request but execution has not begun.</p> </li> <li> <p> <code>STARTING</code> indicates that the execution is starting on the cluster.</p> </li> <li> <p> <code>RUNNING</code> indicates that the execution is being processed by the cluster.</p> </li> <li> <p> <code>FINISHING</code> indicates that execution processing is in the final stages.</p> </li> <li> <p> <code>FINISHED</code> indicates that the execution has completed without error.</p> </li> <li> <p> <code>FAILING</code> indicates that the execution is failing and will not finish successfully.</p> </li> <li> <p> <code>FAILED</code> indicates that the execution failed.</p> </li> <li> <p> <code>STOP_PENDING</code> indicates that the cluster has received a <code>StopNotebookExecution</code> request and the stop is pending.</p> </li> <li> <p> <code>STOPPING</code> indicates that the cluster is in the process of stopping the execution as a result of a <code>StopNotebookExecution</code> request.</p> </li> <li> <p> <code>STOPPED</code> indicates that the execution stopped because of a <code>StopNotebookExecution</code> request.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    From: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The beginning of time range filter for listing notebook executions. The default is the timestamp of 30 days ago.',
-        }),
-    ).exactOptional(),
-    To: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of time range filter for listing notebook executions. The default is the current timestamp.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token, returned by a previous <code>ListNotebookExecutions</code> call, that indicates the start of the list for this <code>ListNotebookExecutions</code> call.',
-        }),
-    ).exactOptional(),
+    EditorId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The unique ID of the editor associated with the notebook execution.',
+    }),
+    Status: NotebookExecutionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status filter for listing notebook executions.</p> <ul> <li> <p> <code>START_PENDING</code> indicates that the cluster has received the execution request but execution has not begun.</p> </li> <li> <p> <code>STARTING</code> indicates that the execution is starting on the cluster.</p> </li> <li> <p> <code>RUNNING</code> indicates that the execution is being processed by the cluster.</p> </li> <li> <p> <code>FINISHING</code> indicates that execution processing is in the final stages.</p> </li> <li> <p> <code>FINISHED</code> indicates that the execution has completed without error.</p> </li> <li> <p> <code>FAILING</code> indicates that the execution is failing and will not finish successfully.</p> </li> <li> <p> <code>FAILED</code> indicates that the execution failed.</p> </li> <li> <p> <code>STOP_PENDING</code> indicates that the cluster has received a <code>StopNotebookExecution</code> request and the stop is pending.</p> </li> <li> <p> <code>STOPPING</code> indicates that the cluster is in the process of stopping the execution as a result of a <code>StopNotebookExecution</code> request.</p> </li> <li> <p> <code>STOPPED</code> indicates that the execution stopped because of a <code>StopNotebookExecution</code> request.</p> </li> </ul>',
+    }),
+    From: DateSchema.exactOptional().openapi({
+      description:
+        'The beginning of time range filter for listing notebook executions. The default is the timestamp of 30 days ago.',
+    }),
+    To: DateSchema.exactOptional().openapi({
+      description:
+        'The end of time range filter for listing notebook executions. The default is the current timestamp.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The pagination token, returned by a previous <code>ListNotebookExecutions</code> call, that indicates the start of the list for this <code>ListNotebookExecutions</code> call.',
+    }),
   })
   .openapi({ title: 'ListNotebookExecutionsInput', required: [] })
   .openapi('ListNotebookExecutionsInput')
 
 const ListReleaseLabelsOutputSchema = z
   .object({
-    ReleaseLabels: StringListSchema.and(
-      z.any().openapi({ description: 'The returned release labels.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to paginate the next page of results if specified in the next <code>ListReleaseLabels</code> request.',
-        }),
-    ).exactOptional(),
+    ReleaseLabels: StringListSchema.exactOptional().openapi({
+      description: 'The returned release labels.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Used to paginate the next page of results if specified in the next <code>ListReleaseLabels</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReleaseLabelsOutput')
 
 const ReleaseLabelFilterSchema = z
   .object({
-    Prefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional release label version prefix filter. For example, <code>emr-5</code>.',
-        }),
-    ).exactOptional(),
-    Application: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional release label application filter. For example, <code>spark@2.1.0</code>.',
-        }),
-    ).exactOptional(),
+    Prefix: StringSchema.exactOptional().openapi({
+      description: 'Optional release label version prefix filter. For example, <code>emr-5</code>.',
+    }),
+    Application: StringSchema.exactOptional().openapi({
+      description:
+        'Optional release label application filter. For example, <code>spark@2.1.0</code>.',
+    }),
   })
   .openapi({
     description: 'The release label filters by application or version prefix.',
@@ -4767,42 +3684,30 @@ const ReleaseLabelFilterSchema = z
 
 const ListReleaseLabelsInputSchema = z
   .object({
-    Filters: ReleaseLabelFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the results of the request. <code>Prefix</code> specifies the prefix of release labels to return. <code>Application</code> specifies the application (with/without version) of release labels to return.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the next page of results. If <code>NextToken</code> is not specified, which is usually the case for the first request of ListReleaseLabels, the first page of results are determined by other filtering parameters or by the latest version. The <code>ListReleaseLabels</code> request fails if the identity (Amazon Web Services account ID) and all filtering parameters are different from the original request, or if the <code>NextToken</code> is expired or tampered with.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the maximum number of release labels to return in a single response. The default is <code>100</code>.',
-        }),
-    ).exactOptional(),
+    Filters: ReleaseLabelFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the results of the request. <code>Prefix</code> specifies the prefix of release labels to return. <code>Application</code> specifies the application (with/without version) of release labels to return.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the next page of results. If <code>NextToken</code> is not specified, which is usually the case for the first request of ListReleaseLabels, the first page of results are determined by other filtering parameters or by the latest version. The <code>ListReleaseLabels</code> request fails if the identity (Amazon Web Services account ID) and all filtering parameters are different from the original request, or if the <code>NextToken</code> is expired or tampered with.',
+    }),
+    MaxResults: MaxResultsNumberSchema.exactOptional().openapi({
+      description:
+        'Defines the maximum number of release labels to return in a single response. The default is <code>100</code>.',
+    }),
   })
   .openapi({ title: 'ListReleaseLabelsInput', required: [] })
   .openapi('ListReleaseLabelsInput')
 
 const SecurityConfigurationSummarySchema = z
   .object({
-    Name: XmlStringSchema.and(
-      z.any().openapi({ description: 'The name of the security configuration.' }),
-    ).exactOptional(),
-    CreationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The date and time the security configuration was created.' }),
-    ).exactOptional(),
+    Name: XmlStringSchema.exactOptional().openapi({
+      description: 'The name of the security configuration.',
+    }),
+    CreationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time the security configuration was created.',
+    }),
   })
   .openapi({
     description: 'The creation date and time, and name, of a security configuration.',
@@ -4816,60 +3721,42 @@ const SecurityConfigurationListSchema = z
 
 const ListSecurityConfigurationsOutputSchema = z
   .object({
-    SecurityConfigurations: SecurityConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The creation date and time, and name, of each security configuration.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token that indicates the next set of results to retrieve. Include the marker in the next ListSecurityConfiguration call to retrieve the next page of results, if required.',
-        }),
-    ).exactOptional(),
+    SecurityConfigurations: SecurityConfigurationListSchema.exactOptional().openapi({
+      description: 'The creation date and time, and name, of each security configuration.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'A pagination token that indicates the next set of results to retrieve. Include the marker in the next ListSecurityConfiguration call to retrieve the next page of results, if required.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSecurityConfigurationsOutput')
 
 const ListSecurityConfigurationsInputSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the set of results to retrieve.',
+    }),
   })
   .openapi({ title: 'ListSecurityConfigurationsInput', required: [] })
   .openapi('ListSecurityConfigurationsInput')
 
 const StepSummarySchema = z
   .object({
-    Id: StepIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the cluster step.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cluster step.' }),
-    ).exactOptional(),
-    Config: HadoopStepConfigSchema.and(
-      z.any().openapi({ description: 'The Hadoop job configuration of the cluster step.' }),
-    ).exactOptional(),
-    ActionOnFailure: ActionOnFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action to take when the cluster step fails. Possible values are TERMINATE_CLUSTER, CANCEL_AND_WAIT, and CONTINUE. TERMINATE_JOB_FLOW is available for backward compatibility.',
-        }),
-    ).exactOptional(),
-    Status: StepStatusSchema.and(
-      z.any().openapi({ description: 'The current execution status details of the cluster step.' }),
-    ).exactOptional(),
+    Id: StepIdSchema.exactOptional().openapi({
+      description: 'The identifier of the cluster step.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the cluster step.' }),
+    Config: HadoopStepConfigSchema.exactOptional().openapi({
+      description: 'The Hadoop job configuration of the cluster step.',
+    }),
+    ActionOnFailure: ActionOnFailureSchema.exactOptional().openapi({
+      description:
+        'The action to take when the cluster step fails. Possible values are TERMINATE_CLUSTER, CANCEL_AND_WAIT, and CONTINUE. TERMINATE_JOB_FLOW is available for backward compatibility.',
+    }),
+    Status: StepStatusSchema.exactOptional().openapi({
+      description: 'The current execution status details of the cluster step.',
+    }),
   })
   .openapi({ description: 'The summary of the cluster step.', required: [] })
   .openapi('StepSummary')
@@ -4878,17 +3765,13 @@ const StepSummaryListSchema = z.array(StepSummarySchema).openapi('StepSummaryLis
 
 const ListStepsOutputSchema = z
   .object({
-    Steps: StepSummaryListSchema.and(
-      z.any().openapi({ description: 'The filtered list of steps for the cluster.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of steps that a single <code>ListSteps</code> action returns is 50. To return a longer list of steps, use multiple <code>ListSteps</code> actions along with the <code>Marker</code> parameter, which is a pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    Steps: StepSummaryListSchema.exactOptional().openapi({
+      description: 'The filtered list of steps for the cluster.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of steps that a single <code>ListSteps</code> action returns is 50. To return a longer list of steps, use multiple <code>ListSteps</code> actions along with the <code>Marker</code> parameter, which is a pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     description:
@@ -4901,32 +3784,20 @@ const StepStateListSchema = z.array(StepStateSchema).openapi('StepStateList')
 
 const ListStepsInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the cluster for which to list the steps.' }),
-    ),
-    StepStates: StepStateListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The filter to limit the step list based on certain states.' }),
-    ).exactOptional(),
-    StepIds: XmlStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filter to limit the step list based on the identifier of the steps. You can specify a maximum of ten Step IDs. The character constraint applies to the overall length of the array.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of steps that a single <code>ListSteps</code> action returns is 50. To return a longer list of steps, use multiple <code>ListSteps</code> actions along with the <code>Marker</code> parameter, which is a pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description: 'The identifier of the cluster for which to list the steps.',
+    }),
+    StepStates: StepStateListSchema.exactOptional().openapi({
+      description: 'The filter to limit the step list based on certain states.',
+    }),
+    StepIds: XmlStringListSchema.exactOptional().openapi({
+      description:
+        'The filter to limit the step list based on the identifier of the steps. You can specify a maximum of ten Step IDs. The character constraint applies to the overall length of the array.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of steps that a single <code>ListSteps</code> action returns is 50. To return a longer list of steps, use multiple <code>ListSteps</code> actions along with the <code>Marker</code> parameter, which is a pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     required: ['ClusterId'],
@@ -4937,44 +3808,28 @@ const ListStepsInputSchema = z
 
 const SessionMappingSummarySchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    IdentityId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier (GUID) of the user or group from the IAM Identity Center Identity Store.',
-        }),
-    ).exactOptional(),
-    IdentityName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>.',
-        }),
-    ).exactOptional(),
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the identity mapped to the Amazon EMR Studio is a user or a group.',
-        }),
-    ).exactOptional(),
-    SessionPolicyArn: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the session policy associated with the user or group.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time the session mapping was created.' }),
-    ).exactOptional(),
+    StudioId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon EMR Studio.',
+    }),
+    IdentityId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The globally unique identifier (GUID) of the user or group from the IAM Identity Center Identity Store.',
+    }),
+    IdentityName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>.',
+    }),
+    IdentityType: IdentityTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the identity mapped to the Amazon EMR Studio is a user or a group.',
+    }),
+    SessionPolicyArn: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the session policy associated with the user or group.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time the session mapping was created.',
+    }),
   })
   .openapi({
     description:
@@ -4989,82 +3844,58 @@ const SessionMappingSummaryListSchema = z
 
 const ListStudioSessionMappingsOutputSchema = z
   .object({
-    SessionMappings: SessionMappingSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of session mapping summary objects. Each object includes session mapping details such as creation time, identity type (user or group), and Amazon EMR Studio ID.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    SessionMappings: SessionMappingSummaryListSchema.exactOptional().openapi({
+      description:
+        'A list of session mapping summary objects. Each object includes session mapping details such as creation time, identity type (user or group), and Amazon EMR Studio ID.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStudioSessionMappingsOutput')
 
 const ListStudioSessionMappingsInputSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to return session mappings for users or groups. If not specified, the results include session mapping details for both users and groups.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    StudioId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon EMR Studio.',
+    }),
+    IdentityType: IdentityTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether to return session mappings for users or groups. If not specified, the results include session mapping details for both users and groups.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the set of results to retrieve.',
+    }),
   })
   .openapi({ title: 'ListStudioSessionMappingsInput', required: [] })
   .openapi('ListStudioSessionMappingsInput')
 
 const StudioSummarySchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The name of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    VpcId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Virtual Private Cloud (Amazon VPC) associated with the Amazon EMR Studio.',
-        }),
-    ).exactOptional(),
-    Description: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The detailed description of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    Url: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique access URL of the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    AuthMode: AuthModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the Studio authenticates users using IAM or IAM Identity Center.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the Amazon EMR Studio was created.' }),
-    ).exactOptional(),
+    StudioId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon EMR Studio.',
+    }),
+    Name: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The name of the Amazon EMR Studio.',
+    }),
+    VpcId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The ID of the Virtual Private Cloud (Amazon VPC) associated with the Amazon EMR Studio.',
+    }),
+    Description: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The detailed description of the Amazon EMR Studio.',
+    }),
+    Url: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The unique access URL of the Amazon EMR Studio.',
+    }),
+    AuthMode: AuthModeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the Studio authenticates users using IAM or IAM Identity Center.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Amazon EMR Studio was created.',
+    }),
   })
   .openapi({
     description:
@@ -5077,83 +3908,61 @@ const StudioSummaryListSchema = z.array(StudioSummarySchema).openapi('StudioSumm
 
 const ListStudiosOutputSchema = z
   .object({
-    Studios: StudioSummaryListSchema.and(
-      z.any().openapi({ description: 'The list of Studio summary objects.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    Studios: StudioSummaryListSchema.exactOptional().openapi({
+      description: 'The list of Studio summary objects.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStudiosOutput')
 
 const ListStudiosInputSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the set of results to retrieve.',
+    }),
   })
   .openapi({ title: 'ListStudiosInput', required: [] })
   .openapi('ListStudiosInput')
 
 const ModifyClusterOutputSchema = z
   .object({
-    StepConcurrencyLevel: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of steps that can be executed concurrently.' }),
-    ).exactOptional(),
+    StepConcurrencyLevel: IntegerSchema.exactOptional().openapi({
+      description: 'The number of steps that can be executed concurrently.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ModifyClusterOutput')
 
 const ModifyClusterInputSchema = z
   .object({
-    ClusterId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the cluster.' }),
-    ),
-    StepConcurrencyLevel: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of steps that can be executed concurrently. You can specify a minimum of 1 step and a maximum of 256 steps. We recommend that you do not change this parameter while steps are running or the <code>ActionOnFailure</code> setting may not behave as expected. For more information see <a>Step$ActionOnFailure</a>.',
-        }),
-    ).exactOptional(),
+    ClusterId: StringSchema.openapi({ description: 'The unique identifier of the cluster.' }),
+    StepConcurrencyLevel: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of steps that can be executed concurrently. You can specify a minimum of 1 step and a maximum of 256 steps. We recommend that you do not change this parameter while steps are running or the <code>ActionOnFailure</code> setting may not behave as expected. For more information see <a>Step$ActionOnFailure</a>.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'ModifyClusterInput' })
   .openapi('ModifyClusterInput')
 
 const InstanceFleetModifyConfigSchema = z
   .object({
-    InstanceFleetId: InstanceFleetIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the instance fleet.' }),
-    ),
-    TargetOnDemandCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target capacity of On-Demand units for the instance fleet. For more information see <a>InstanceFleetConfig$TargetOnDemandCapacity</a>.',
-        }),
-    ).exactOptional(),
-    TargetSpotCapacity: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target capacity of Spot units for the instance fleet. For more information, see <a>InstanceFleetConfig$TargetSpotCapacity</a>.',
-        }),
-    ).exactOptional(),
-    ResizeSpecifications: InstanceFleetResizingSpecificationsSchema.and(
-      z.any().openapi({ description: 'The resize specification for the instance fleet.' }),
-    ).exactOptional(),
+    InstanceFleetId: InstanceFleetIdSchema.openapi({
+      description: 'A unique identifier for the instance fleet.',
+    }),
+    TargetOnDemandCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The target capacity of On-Demand units for the instance fleet. For more information see <a>InstanceFleetConfig$TargetOnDemandCapacity</a>.',
+    }),
+    TargetSpotCapacity: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The target capacity of Spot units for the instance fleet. For more information, see <a>InstanceFleetConfig$TargetSpotCapacity</a>.',
+    }),
+    ResizeSpecifications: InstanceFleetResizingSpecificationsSchema.exactOptional().openapi({
+      description: 'The resize specification for the instance fleet.',
+    }),
   })
   .openapi({
     required: ['InstanceFleetId'],
@@ -5164,12 +3973,10 @@ const InstanceFleetModifyConfigSchema = z
 
 const ModifyInstanceFleetInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the cluster.' }),
-    ),
-    InstanceFleet: InstanceFleetModifyConfigSchema.and(
-      z.any().openapi({ description: 'The configuration parameters of the instance fleet.' }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({ description: 'The unique identifier of the cluster.' }),
+    InstanceFleet: InstanceFleetModifyConfigSchema.openapi({
+      description: 'The configuration parameters of the instance fleet.',
+    }),
   })
   .openapi({ required: ['ClusterId', 'InstanceFleet'], title: 'ModifyInstanceFleetInput' })
   .openapi('ModifyInstanceFleetInput')
@@ -5182,37 +3989,25 @@ const ReconfigurationTypeSchema = z.enum(['OVERWRITE', 'MERGE']).openapi('Reconf
 
 const InstanceGroupModifyConfigSchema = z
   .object({
-    InstanceGroupId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'Unique ID of the instance group to modify.' }),
-    ),
-    InstanceCount: IntegerSchema.and(
-      z.any().openapi({ description: 'Target size for the instance group.' }),
-    ).exactOptional(),
-    EC2InstanceIdsToTerminate: EC2InstanceIdsToTerminateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The EC2 InstanceIds to terminate. After you terminate the instances, the instance group will not return to its original requested size.',
-        }),
-    ).exactOptional(),
-    ShrinkPolicy: ShrinkPolicySchema.and(
-      z.any().openapi({ description: 'Policy for customizing shrink operations.' }),
-    ).exactOptional(),
-    ReconfigurationType: ReconfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Type of reconfiguration requested. Valid values are MERGE and OVERWRITE.',
-        }),
-    ).exactOptional(),
-    Configurations: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of new or modified configurations to apply for an instance group.',
-        }),
-    ).exactOptional(),
+    InstanceGroupId: XmlStringMaxLen256Schema.openapi({
+      description: 'Unique ID of the instance group to modify.',
+    }),
+    InstanceCount: IntegerSchema.exactOptional().openapi({
+      description: 'Target size for the instance group.',
+    }),
+    EC2InstanceIdsToTerminate: EC2InstanceIdsToTerminateListSchema.exactOptional().openapi({
+      description:
+        'The EC2 InstanceIds to terminate. After you terminate the instances, the instance group will not return to its original requested size.',
+    }),
+    ShrinkPolicy: ShrinkPolicySchema.exactOptional().openapi({
+      description: 'Policy for customizing shrink operations.',
+    }),
+    ReconfigurationType: ReconfigurationTypeSchema.exactOptional().openapi({
+      description: 'Type of reconfiguration requested. Valid values are MERGE and OVERWRITE.',
+    }),
+    Configurations: ConfigurationListSchema.exactOptional().openapi({
+      description: 'A list of new or modified configurations to apply for an instance group.',
+    }),
   })
   .openapi({
     required: ['InstanceGroupId'],
@@ -5226,14 +4021,12 @@ const InstanceGroupModifyConfigListSchema = z
 
 const ModifyInstanceGroupsInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the cluster to which the instance group belongs.' }),
-    ).exactOptional(),
-    InstanceGroups: InstanceGroupModifyConfigListSchema.and(
-      z.any().openapi({ description: 'Instance groups to change.' }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.exactOptional().openapi({
+      description: 'The ID of the cluster to which the instance group belongs.',
+    }),
+    InstanceGroups: InstanceGroupModifyConfigListSchema.exactOptional().openapi({
+      description: 'Instance groups to change.',
+    }),
   })
   .openapi({
     title: 'ModifyInstanceGroupsInput',
@@ -5242,55 +4035,38 @@ const ModifyInstanceGroupsInputSchema = z
   })
   .openapi('ModifyInstanceGroupsInput')
 
-const PutAutoScalingPolicyOutputSchema = z
+const PutAutoScalingPolicyOutputSchema: z.ZodType<PutAutoScalingPolicyOutputType> = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of a cluster. The instance group to which the automatic scaling policy is applied is within this cluster.',
-        }),
-    ).exactOptional(),
-    InstanceGroupId: InstanceGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of the instance group to which the scaling policy is applied.',
-        }),
-    ).exactOptional(),
-    AutoScalingPolicy: AutoScalingPolicyDescriptionSchema.and(
-      z.any().openapi({ description: 'The automatic scaling policy definition.' }),
-    ).exactOptional(),
-    ClusterArn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the cluster.' }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.exactOptional().openapi({
+      description:
+        'Specifies the ID of a cluster. The instance group to which the automatic scaling policy is applied is within this cluster.',
+    }),
+    InstanceGroupId: InstanceGroupIdSchema.exactOptional().openapi({
+      description: 'Specifies the ID of the instance group to which the scaling policy is applied.',
+    }),
+    AutoScalingPolicy: AutoScalingPolicyDescriptionSchema.exactOptional().openapi({
+      description: 'The automatic scaling policy definition.',
+    }),
+    ClusterArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the cluster.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutAutoScalingPolicyOutput')
 
-const PutAutoScalingPolicyInputSchema = z
+const PutAutoScalingPolicyInputSchema: z.ZodType<PutAutoScalingPolicyInputType> = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of a cluster. The instance group to which the automatic scaling policy is applied is within this cluster.',
-        }),
-    ),
-    InstanceGroupId: InstanceGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of the instance group to which the automatic scaling policy is applied.',
-        }),
-    ),
-    AutoScalingPolicy: AutoScalingPolicySchema.and(
-      z.any().openapi({ description: 'Specifies the definition of the automatic scaling policy.' }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'Specifies the ID of a cluster. The instance group to which the automatic scaling policy is applied is within this cluster.',
+    }),
+    InstanceGroupId: InstanceGroupIdSchema.openapi({
+      description:
+        'Specifies the ID of the instance group to which the automatic scaling policy is applied.',
+    }),
+    AutoScalingPolicy: AutoScalingPolicySchema.openapi({
+      description: 'Specifies the definition of the automatic scaling policy.',
+    }),
   })
   .openapi({
     required: ['ClusterId', 'InstanceGroupId', 'AutoScalingPolicy'],
@@ -5298,43 +4074,33 @@ const PutAutoScalingPolicyInputSchema = z
   })
   .openapi('PutAutoScalingPolicyInput')
 
-const PutAutoTerminationPolicyOutputSchema = z.object({}).openapi('PutAutoTerminationPolicyOutput')
+const PutAutoTerminationPolicyOutputSchema = z
+  .looseObject({})
+  .openapi('PutAutoTerminationPolicyOutput')
 
 const PutAutoTerminationPolicyInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of the Amazon EMR cluster to which the auto-termination policy will be attached.',
-        }),
-    ),
-    AutoTerminationPolicy: AutoTerminationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the auto-termination policy to attach to the cluster.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'Specifies the ID of the Amazon EMR cluster to which the auto-termination policy will be attached.',
+    }),
+    AutoTerminationPolicy: AutoTerminationPolicySchema.exactOptional().openapi({
+      description: 'Specifies the auto-termination policy to attach to the cluster.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'PutAutoTerminationPolicyInput' })
   .openapi('PutAutoTerminationPolicyInput')
 
 const PutBlockPublicAccessConfigurationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutBlockPublicAccessConfigurationOutput')
 
 const PutBlockPublicAccessConfigurationInputSchema = z
   .object({
-    BlockPublicAccessConfiguration: BlockPublicAccessConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A configuration for Amazon EMR block public access. The configuration applies to all clusters created in your account for the current Region. The configuration specifies whether block public access is enabled. If block public access is enabled, security groups associated with the cluster cannot have rules that allow inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using <code>PermittedPublicSecurityGroupRuleRanges</code> in the <code>BlockPublicAccessConfiguration</code>. By default, Port 22 (SSH) is an exception, and public access is allowed on this port. You can change this by updating <code>BlockPublicSecurityGroupRules</code> to remove the exception.</p> <note> <p>For accounts that created clusters in a Region before November 25, 2019, block public access is disabled by default in that Region. To use this feature, you must manually enable and configure it. For accounts that did not create an EMR cluster in a Region before this date, block public access is enabled by default in that Region.</p> </note>',
-        }),
-    ),
+    BlockPublicAccessConfiguration: BlockPublicAccessConfigurationSchema.openapi({
+      description:
+        '<p>A configuration for Amazon EMR block public access. The configuration applies to all clusters created in your account for the current Region. The configuration specifies whether block public access is enabled. If block public access is enabled, security groups associated with the cluster cannot have rules that allow inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using <code>PermittedPublicSecurityGroupRuleRanges</code> in the <code>BlockPublicAccessConfiguration</code>. By default, Port 22 (SSH) is an exception, and public access is allowed on this port. You can change this by updating <code>BlockPublicSecurityGroupRules</code> to remove the exception.</p> <note> <p>For accounts that created clusters in a Region before November 25, 2019, block public access is disabled by default in that Region. To use this feature, you must manually enable and configure it. For accounts that did not create an EMR cluster in a Region before this date, block public access is enabled by default in that Region.</p> </note>',
+    }),
   })
   .openapi({
     required: ['BlockPublicAccessConfiguration'],
@@ -5342,23 +4108,19 @@ const PutBlockPublicAccessConfigurationInputSchema = z
   })
   .openapi('PutBlockPublicAccessConfigurationInput')
 
-const PutManagedScalingPolicyOutputSchema = z.object({}).openapi('PutManagedScalingPolicyOutput')
+const PutManagedScalingPolicyOutputSchema = z
+  .looseObject({})
+  .openapi('PutManagedScalingPolicyOutput')
 
 const PutManagedScalingPolicyInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of an EMR cluster where the managed scaling policy is attached. ',
-        }),
-    ),
-    ManagedScalingPolicy: ManagedScalingPolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the constraints for the managed scaling policy. ' }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'Specifies the ID of an EMR cluster where the managed scaling policy is attached. ',
+    }),
+    ManagedScalingPolicy: ManagedScalingPolicySchema.openapi({
+      description: 'Specifies the constraints for the managed scaling policy. ',
+    }),
   })
   .openapi({
     required: ['ClusterId', 'ManagedScalingPolicy'],
@@ -5366,84 +4128,65 @@ const PutManagedScalingPolicyInputSchema = z
   })
   .openapi('PutManagedScalingPolicyInput')
 
-const RemoveAutoScalingPolicyOutputSchema = z.object({}).openapi('RemoveAutoScalingPolicyOutput')
+const RemoveAutoScalingPolicyOutputSchema = z
+  .looseObject({})
+  .openapi('RemoveAutoScalingPolicyOutput')
 
 const RemoveAutoScalingPolicyInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of a cluster. The instance group to which the automatic scaling policy is applied is within this cluster.',
-        }),
-    ),
-    InstanceGroupId: InstanceGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of the instance group to which the scaling policy is applied.',
-        }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'Specifies the ID of a cluster. The instance group to which the automatic scaling policy is applied is within this cluster.',
+    }),
+    InstanceGroupId: InstanceGroupIdSchema.openapi({
+      description: 'Specifies the ID of the instance group to which the scaling policy is applied.',
+    }),
   })
   .openapi({ required: ['ClusterId', 'InstanceGroupId'], title: 'RemoveAutoScalingPolicyInput' })
   .openapi('RemoveAutoScalingPolicyInput')
 
 const RemoveAutoTerminationPolicyOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RemoveAutoTerminationPolicyOutput')
 
 const RemoveAutoTerminationPolicyInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of the Amazon EMR cluster from which the auto-termination policy will be removed.',
-        }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'Specifies the ID of the Amazon EMR cluster from which the auto-termination policy will be removed.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'RemoveAutoTerminationPolicyInput' })
   .openapi('RemoveAutoTerminationPolicyInput')
 
 const RemoveManagedScalingPolicyOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RemoveManagedScalingPolicyOutput')
 
 const RemoveManagedScalingPolicyInputSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the ID of the cluster from which the managed scaling policy will be removed. ',
-        }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        ' Specifies the ID of the cluster from which the managed scaling policy will be removed. ',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'RemoveManagedScalingPolicyInput' })
   .openapi('RemoveManagedScalingPolicyInput')
 
 const RemoveTagsOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'This output indicates the result of removing tags from the resource.' })
   .openapi('RemoveTagsOutput')
 
 const RemoveTagsInputSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EMR resource identifier from which tags will be removed. For example, a cluster identifier or an Amazon EMR Studio ID.',
-        }),
-    ),
-    TagKeys: StringListSchema.and(
-      z.any().openapi({ description: 'A list of tag keys to remove from the resource.' }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        'The Amazon EMR resource identifier from which tags will be removed. For example, a cluster identifier or an Amazon EMR Studio ID.',
+    }),
+    TagKeys: StringListSchema.openapi({
+      description: 'A list of tag keys to remove from the resource.',
+    }),
   })
   .openapi({
     required: ['ResourceId', 'TagKeys'],
@@ -5454,372 +4197,119 @@ const RemoveTagsInputSchema = z
 
 const RunJobFlowOutputSchema = z
   .object({
-    JobFlowId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'A unique identifier for the job flow.' }),
-    ).exactOptional(),
-    ClusterArn: ArnTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the cluster.' }),
-    ).exactOptional(),
+    JobFlowId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'A unique identifier for the job flow.',
+    }),
+    ClusterArn: ArnTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the cluster.',
+    }),
   })
   .openapi({ description: ' The result of the <a>RunJobFlow</a> operation. ', required: [] })
   .openapi('RunJobFlowOutput')
 
-const InstanceFleetConfigListSchema = z
-  .array(InstanceFleetConfigSchema)
-  .openapi('InstanceFleetConfigList')
-
-const SecurityGroupsListSchema = z.array(XmlStringMaxLen256Schema).openapi('SecurityGroupsList')
-
-const JobFlowInstancesConfigSchema = z
+const RunJobFlowInputSchema: z.ZodType<RunJobFlowInputType> = z
   .object({
-    MasterInstanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'The EC2 instance type of the master node.' }),
-    ).exactOptional(),
-    SlaveInstanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'The EC2 instance type of the core and task nodes.' }),
-    ).exactOptional(),
-    InstanceCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of EC2 instances in the cluster.' }),
-    ).exactOptional(),
-    InstanceGroups: InstanceGroupConfigListSchema.and(
-      z.any().openapi({ description: 'Configuration for the instance groups in a cluster.' }),
-    ).exactOptional(),
-    InstanceFleets: InstanceFleetConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note> <p>Describes the EC2 instances and instance configurations for clusters that use the instance fleet configuration.</p>',
-        }),
-    ).exactOptional(),
-    Ec2KeyName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the EC2 key pair that can be used to connect to the master node using SSH as the user called "hadoop."',
-        }),
-    ).exactOptional(),
-    Placement: PlacementTypeSchema.and(
-      z.any().openapi({ description: 'The Availability Zone in which the cluster runs.' }),
-    ).exactOptional(),
-    KeepJobFlowAliveWhenNoSteps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the cluster should remain available after completing all steps. Defaults to <code>true</code>. For more information about configuring cluster termination, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-termination.html">Control Cluster Termination</a> in the <i>EMR Management Guide</i>.',
-        }),
-    ).exactOptional(),
-    TerminationProtected: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to lock the cluster to prevent the Amazon EC2 instances from being terminated by API call, user intervention, or in the event of a job-flow error.',
-        }),
-    ).exactOptional(),
-    HadoopVersion: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies only to Amazon EMR release versions earlier than 4.0. The Hadoop version for the cluster. Valid inputs are "0.18" (no longer maintained), "0.20" (no longer maintained), "0.20.205" (no longer maintained), "1.0.3", "2.2.0", or "2.4.0". If you do not set this value, the default of 0.18 is used, unless the <code>AmiVersion</code> parameter is set in the RunJobFlow call, in which case the default version of Hadoop for that AMI version is used.',
-        }),
-    ).exactOptional(),
-    Ec2SubnetId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies to clusters that use the uniform instance group configuration. To launch the cluster in Amazon Virtual Private Cloud (Amazon VPC), set this parameter to the identifier of the Amazon VPC subnet where you want the cluster to launch. If you do not specify this value and your account supports EC2-Classic, the cluster launches in EC2-Classic.',
-        }),
-    ).exactOptional(),
-    Ec2SubnetIds: XmlStringMaxLen256ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Applies to clusters that use the instance fleet configuration. When multiple EC2 subnet IDs are specified, Amazon EMR evaluates them and launches instances in the optimal subnet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>',
-        }),
-    ).exactOptional(),
-    EmrManagedMasterSecurityGroup: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon EC2 security group for the master node. If you specify <code>EmrManagedMasterSecurityGroup</code>, you must also specify <code>EmrManagedSlaveSecurityGroup</code>.',
-        }),
-    ).exactOptional(),
-    EmrManagedSlaveSecurityGroup: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon EC2 security group for the core and task nodes. If you specify <code>EmrManagedSlaveSecurityGroup</code>, you must also specify <code>EmrManagedMasterSecurityGroup</code>.',
-        }),
-    ).exactOptional(),
-    ServiceAccessSecurityGroup: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon EC2 security group for the Amazon EMR service to access clusters in VPC private subnets.',
-        }),
-    ).exactOptional(),
-    AdditionalMasterSecurityGroups: SecurityGroupsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of additional Amazon EC2 security group IDs for the master node.',
-        }),
-    ).exactOptional(),
-    AdditionalSlaveSecurityGroups: SecurityGroupsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of additional Amazon EC2 security group IDs for the core and task nodes.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "A description of the Amazon EC2 instance on which the cluster (job flow) runs. A valid JobFlowInstancesConfig must contain either InstanceGroups or InstanceFleets. They cannot be used together. You may also have MasterInstanceType, SlaveInstanceType, and InstanceCount (all three must be present), but we don't recommend this configuration.",
-    required: [],
-  })
-  .openapi('JobFlowInstancesConfig')
-
-const BootstrapActionConfigListSchema = z
-  .array(BootstrapActionConfigSchema)
-  .openapi('BootstrapActionConfigList')
-
-const SupportedProductConfigSchema = z
-  .object({
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The name of the product configuration.' }),
-    ).exactOptional(),
-    Args: XmlStringListSchema.and(
-      z.any().openapi({ description: 'The list of user-supplied arguments.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The list of supported product configurations that allow user-supplied arguments. EMR accepts these arguments and forwards them to the corresponding installation script as bootstrap action arguments.',
-    required: [],
-  })
-  .openapi('SupportedProductConfig')
-
-const NewSupportedProductsListSchema = z
-  .array(SupportedProductConfigSchema)
-  .openapi('NewSupportedProductsList')
-
-const RunJobFlowInputSchema = z
-  .object({
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The name of the job flow.' }),
-    ),
-    LogUri: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location in Amazon S3 to write the log files of the job flow. If a value is not provided, logs are not created.',
-        }),
-    ).exactOptional(),
-    LogEncryptionKmsKeyId: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key used for encrypting log files. If a value is not provided, the logs remain encrypted by AES-256. This attribute is only available with Amazon EMR version 5.30.0 and later, excluding Amazon EMR 6.0.0.',
-        }),
-    ).exactOptional(),
-    AdditionalInfo: XmlStringSchema.and(
-      z.any().openapi({ description: 'A JSON string for selecting additional features.' }),
-    ).exactOptional(),
-    AmiVersion: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and later, <code>ReleaseLabel</code> is used. To specify a custom AMI, use <code>CustomAmiID</code>.',
-        }),
-    ).exactOptional(),
-    ReleaseLabel: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EMR release label, which determines the version of open-source application packages installed on the cluster. Release labels are in the form <code>emr-x.x.x</code>, where x.x.x is an Amazon EMR release version such as <code>emr-5.14.0</code>. For more information about Amazon EMR release versions and included application versions and features, see <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/">https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</a>. The release label applies only to Amazon EMR releases version 4.0 and later. Earlier versions use <code>AmiVersion</code>.',
-        }),
-    ).exactOptional(),
-    Instances: JobFlowInstancesConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A specification of the number and type of Amazon EC2 instances.',
-        }),
-    ),
-    Steps: StepConfigListSchema.and(
-      z.any().openapi({ description: 'A list of steps to run.' }),
-    ).exactOptional(),
-    BootstrapActions: BootstrapActionConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of bootstrap actions to run before Hadoop starts on the cluster nodes.',
-        }),
-    ).exactOptional(),
-    SupportedProducts: SupportedProductsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>For Amazon EMR releases 3.x and 2.x. For Amazon EMR releases 4.x and later, use Applications.</p> </note> <p>A list of strings that indicates third-party software to use. For more information, see the <a href="https://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf">Amazon EMR Developer Guide</a>. Currently supported values are:</p> <ul> <li> <p>"mapr-m3" - launch the job flow using MapR M3 Edition.</p> </li> <li> <p>"mapr-m5" - launch the job flow using MapR M5 Edition.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NewSupportedProducts: NewSupportedProductsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>For Amazon EMR releases 3.x and 2.x. For Amazon EMR releases 4.x and later, use Applications.</p> </note> <p>A list of strings that indicates third-party software to use with the job flow that accepts a user argument list. EMR accepts and forwards the argument list to the corresponding installation script as bootstrap action arguments. For more information, see "Launch a Job Flow on the MapR Distribution for Hadoop" in the <a href="https://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf">Amazon EMR Developer Guide</a>. Supported values are:</p> <ul> <li> <p>"mapr-m3" - launch the cluster using MapR M3 Edition.</p> </li> <li> <p>"mapr-m5" - launch the cluster using MapR M5 Edition.</p> </li> <li> <p>"mapr" with the user arguments specifying "--edition,m3" or "--edition,m5" - launch the job flow using MapR M3 or M5 Edition respectively.</p> </li> <li> <p>"mapr-m7" - launch the cluster using MapR M7 Edition.</p> </li> <li> <p>"hunk" - launch the cluster with the Hunk Big Data Analytics Platform.</p> </li> <li> <p>"hue"- launch the cluster with Hue installed.</p> </li> <li> <p>"spark" - launch the cluster with Apache Spark installed.</p> </li> <li> <p>"ganglia" - launch the cluster with the Ganglia Monitoring System installed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Applications: ApplicationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies to Amazon EMR releases 4.0 and later. A case-insensitive list of applications for Amazon EMR to install and configure when launching the cluster. For a list of applications available for each Amazon EMR release version, see the <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/">Amazon EMRRelease Guide</a>.',
-        }),
-    ).exactOptional(),
-    Configurations: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For Amazon EMR releases 4.0 and later. The list of configurations supplied for the EMR cluster you are creating.',
-        }),
-    ).exactOptional(),
-    VisibleToAllUsers: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<important> <p>The VisibleToAllUsers parameter is no longer supported. By default, the value is set to <code>true</code>. Setting it to <code>false</code> now has no effect.</p> </important> <p>Set this value to <code>true</code> so that IAM principals in the Amazon Web Services account associated with the cluster can perform EMR actions on the cluster that their IAM policies allow. This value defaults to <code>true</code> for clusters created using the EMR API or the CLI <a href="https://docs.aws.amazon.com/cli/latest/reference/emr/create-cluster.html">create-cluster</a> command.</p> <p>When set to <code>false</code>, only the IAM principal that created the cluster and the Amazon Web Services account root user can perform EMR actions for the cluster, regardless of the IAM permissions policies attached to other IAM principals. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/security_iam_emr-with-iam.html#security_set_visible_to_all_users">Understanding the EMR Cluster VisibleToAllUsers Setting</a> in the <i>Amazon EMRManagement Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    JobFlowRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Also called instance profile and EC2 role. An IAM role for an EMR cluster. The EC2 instances of the cluster assume this role. The default role is <code>EMR_EC2_DefaultRole</code>. In order to use the default role, you must have already created it using the CLI or console.',
-        }),
-    ).exactOptional(),
-    ServiceRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The IAM role that Amazon EMR assumes in order to access Amazon Web Services resources on your behalf. If you've created a custom service role path, you must specify it for the service role when you launch your cluster.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to associate with a cluster and propagate to Amazon EC2 instances.',
-        }),
-    ).exactOptional(),
-    SecurityConfiguration: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of a security configuration to apply to the cluster.' }),
-    ).exactOptional(),
-    AutoScalingRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role for automatic scaling policies. The default role is <code>EMR_AutoScaling_DefaultRole</code>. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate EC2 instances in an instance group.',
-        }),
-    ).exactOptional(),
-    ScaleDownBehavior: ScaleDownBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> available only in Amazon EMR version 4.1.0 and later, and is the default for versions of Amazon EMR earlier than 5.1.0.',
-        }),
-    ).exactOptional(),
-    CustomAmiId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Available only in Amazon EMR version 5.7.0 and later. The ID of a custom Amazon EBS-backed Linux AMI. If specified, Amazon EMR uses this AMI when it launches cluster EC2 instances. For more information about custom AMIs in Amazon EMR, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-custom-ami.html">Using a Custom AMI</a> in the <i>Amazon EMR Management Guide</i>. If omitted, the cluster uses the base Linux AMI for the <code>ReleaseLabel</code> specified. For Amazon EMR versions 2.x and 3.x, use <code>AmiVersion</code> instead.</p> <p>For information about creating a custom AMI, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html">Creating an Amazon EBS-Backed Linux AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>. For information about finding an AMI ID, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html">Finding a Linux AMI</a>. </p>',
-        }),
-    ).exactOptional(),
-    EbsRootVolumeSize: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size, in GiB, of the Amazon EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later.',
-        }),
-    ).exactOptional(),
-    RepoUpgradeOnBoot: RepoUpgradeOnBootSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies only when <code>CustomAmiID</code> is used. Specifies which updates from the Amazon Linux AMI package repositories to apply automatically when the instance boots using the AMI. If omitted, the default is <code>SECURITY</code>, which indicates that only security updates are applied. If <code>NONE</code> is specified, no updates are applied, and all updates must be applied manually.',
-        }),
-    ).exactOptional(),
-    KerberosAttributes: KerberosAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Attributes for Kerberos configuration when Kerberos authentication is enabled using a security configuration. For more information see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-kerberos.html">Use Kerberos Authentication</a> in the <i>Amazon EMR Management Guide</i>.',
-        }),
-    ).exactOptional(),
-    StepConcurrencyLevel: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of steps that can be executed concurrently. The default value is <code>1</code>. The maximum value is <code>256</code>.',
-        }),
-    ).exactOptional(),
-    ManagedScalingPolicy: ManagedScalingPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The specified managed scaling policy for an Amazon EMR cluster. ',
-        }),
-    ).exactOptional(),
-    PlacementGroupConfigs: PlacementGroupConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specified placement group configuration for an Amazon EMR cluster.',
-        }),
-    ).exactOptional(),
+    Name: XmlStringMaxLen256Schema.openapi({ description: 'The name of the job flow.' }),
+    LogUri: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The location in Amazon S3 to write the log files of the job flow. If a value is not provided, logs are not created.',
+    }),
+    LogEncryptionKmsKeyId: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The KMS key used for encrypting log files. If a value is not provided, the logs remain encrypted by AES-256. This attribute is only available with Amazon EMR version 5.30.0 and later, excluding Amazon EMR 6.0.0.',
+    }),
+    AdditionalInfo: XmlStringSchema.exactOptional().openapi({
+      description: 'A JSON string for selecting additional features.',
+    }),
+    AmiVersion: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and later, <code>ReleaseLabel</code> is used. To specify a custom AMI, use <code>CustomAmiID</code>.',
+    }),
+    ReleaseLabel: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The Amazon EMR release label, which determines the version of open-source application packages installed on the cluster. Release labels are in the form <code>emr-x.x.x</code>, where x.x.x is an Amazon EMR release version such as <code>emr-5.14.0</code>. For more information about Amazon EMR release versions and included application versions and features, see <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/">https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</a>. The release label applies only to Amazon EMR releases version 4.0 and later. Earlier versions use <code>AmiVersion</code>.',
+    }),
+    Instances: JobFlowInstancesConfigSchema.openapi({
+      description: 'A specification of the number and type of Amazon EC2 instances.',
+    }),
+    Steps: StepConfigListSchema.exactOptional().openapi({ description: 'A list of steps to run.' }),
+    BootstrapActions: BootstrapActionConfigListSchema.exactOptional().openapi({
+      description: 'A list of bootstrap actions to run before Hadoop starts on the cluster nodes.',
+    }),
+    SupportedProducts: SupportedProductsListSchema.exactOptional().openapi({
+      description:
+        '<note> <p>For Amazon EMR releases 3.x and 2.x. For Amazon EMR releases 4.x and later, use Applications.</p> </note> <p>A list of strings that indicates third-party software to use. For more information, see the <a href="https://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf">Amazon EMR Developer Guide</a>. Currently supported values are:</p> <ul> <li> <p>"mapr-m3" - launch the job flow using MapR M3 Edition.</p> </li> <li> <p>"mapr-m5" - launch the job flow using MapR M5 Edition.</p> </li> </ul>',
+    }),
+    NewSupportedProducts: NewSupportedProductsListSchema.exactOptional().openapi({
+      description:
+        '<note> <p>For Amazon EMR releases 3.x and 2.x. For Amazon EMR releases 4.x and later, use Applications.</p> </note> <p>A list of strings that indicates third-party software to use with the job flow that accepts a user argument list. EMR accepts and forwards the argument list to the corresponding installation script as bootstrap action arguments. For more information, see "Launch a Job Flow on the MapR Distribution for Hadoop" in the <a href="https://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf">Amazon EMR Developer Guide</a>. Supported values are:</p> <ul> <li> <p>"mapr-m3" - launch the cluster using MapR M3 Edition.</p> </li> <li> <p>"mapr-m5" - launch the cluster using MapR M5 Edition.</p> </li> <li> <p>"mapr" with the user arguments specifying "--edition,m3" or "--edition,m5" - launch the job flow using MapR M3 or M5 Edition respectively.</p> </li> <li> <p>"mapr-m7" - launch the cluster using MapR M7 Edition.</p> </li> <li> <p>"hunk" - launch the cluster with the Hunk Big Data Analytics Platform.</p> </li> <li> <p>"hue"- launch the cluster with Hue installed.</p> </li> <li> <p>"spark" - launch the cluster with Apache Spark installed.</p> </li> <li> <p>"ganglia" - launch the cluster with the Ganglia Monitoring System installed.</p> </li> </ul>',
+    }),
+    Applications: ApplicationListSchema.exactOptional().openapi({
+      description:
+        'Applies to Amazon EMR releases 4.0 and later. A case-insensitive list of applications for Amazon EMR to install and configure when launching the cluster. For a list of applications available for each Amazon EMR release version, see the <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/">Amazon EMRRelease Guide</a>.',
+    }),
+    Configurations: ConfigurationListSchema.exactOptional().openapi({
+      description:
+        'For Amazon EMR releases 4.0 and later. The list of configurations supplied for the EMR cluster you are creating.',
+    }),
+    VisibleToAllUsers: BooleanSchema.exactOptional().openapi({
+      description:
+        '<important> <p>The VisibleToAllUsers parameter is no longer supported. By default, the value is set to <code>true</code>. Setting it to <code>false</code> now has no effect.</p> </important> <p>Set this value to <code>true</code> so that IAM principals in the Amazon Web Services account associated with the cluster can perform EMR actions on the cluster that their IAM policies allow. This value defaults to <code>true</code> for clusters created using the EMR API or the CLI <a href="https://docs.aws.amazon.com/cli/latest/reference/emr/create-cluster.html">create-cluster</a> command.</p> <p>When set to <code>false</code>, only the IAM principal that created the cluster and the Amazon Web Services account root user can perform EMR actions for the cluster, regardless of the IAM permissions policies attached to other IAM principals. For more information, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/security_iam_emr-with-iam.html#security_set_visible_to_all_users">Understanding the EMR Cluster VisibleToAllUsers Setting</a> in the <i>Amazon EMRManagement Guide</i>.</p>',
+    }),
+    JobFlowRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        'Also called instance profile and EC2 role. An IAM role for an EMR cluster. The EC2 instances of the cluster assume this role. The default role is <code>EMR_EC2_DefaultRole</code>. In order to use the default role, you must have already created it using the CLI or console.',
+    }),
+    ServiceRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        "The IAM role that Amazon EMR assumes in order to access Amazon Web Services resources on your behalf. If you've created a custom service role path, you must specify it for the service role when you launch your cluster.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to associate with a cluster and propagate to Amazon EC2 instances.',
+    }),
+    SecurityConfiguration: XmlStringSchema.exactOptional().openapi({
+      description: 'The name of a security configuration to apply to the cluster.',
+    }),
+    AutoScalingRole: XmlStringSchema.exactOptional().openapi({
+      description:
+        'An IAM role for automatic scaling policies. The default role is <code>EMR_AutoScaling_DefaultRole</code>. The IAM role provides permissions that the automatic scaling feature requires to launch and terminate EC2 instances in an instance group.',
+    }),
+    ScaleDownBehavior: ScaleDownBehaviorSchema.exactOptional().openapi({
+      description:
+        'Specifies the way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> available only in Amazon EMR version 4.1.0 and later, and is the default for versions of Amazon EMR earlier than 5.1.0.',
+    }),
+    CustomAmiId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        '<p>Available only in Amazon EMR version 5.7.0 and later. The ID of a custom Amazon EBS-backed Linux AMI. If specified, Amazon EMR uses this AMI when it launches cluster EC2 instances. For more information about custom AMIs in Amazon EMR, see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-custom-ami.html">Using a Custom AMI</a> in the <i>Amazon EMR Management Guide</i>. If omitted, the cluster uses the base Linux AMI for the <code>ReleaseLabel</code> specified. For Amazon EMR versions 2.x and 3.x, use <code>AmiVersion</code> instead.</p> <p>For information about creating a custom AMI, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html">Creating an Amazon EBS-Backed Linux AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>. For information about finding an AMI ID, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html">Finding a Linux AMI</a>. </p>',
+    }),
+    EbsRootVolumeSize: IntegerSchema.exactOptional().openapi({
+      description:
+        'The size, in GiB, of the Amazon EBS root device volume of the Linux AMI that is used for each EC2 instance. Available in Amazon EMR version 4.x and later.',
+    }),
+    RepoUpgradeOnBoot: RepoUpgradeOnBootSchema.exactOptional().openapi({
+      description:
+        'Applies only when <code>CustomAmiID</code> is used. Specifies which updates from the Amazon Linux AMI package repositories to apply automatically when the instance boots using the AMI. If omitted, the default is <code>SECURITY</code>, which indicates that only security updates are applied. If <code>NONE</code> is specified, no updates are applied, and all updates must be applied manually.',
+    }),
+    KerberosAttributes: KerberosAttributesSchema.exactOptional().openapi({
+      description:
+        'Attributes for Kerberos configuration when Kerberos authentication is enabled using a security configuration. For more information see <a href="https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-kerberos.html">Use Kerberos Authentication</a> in the <i>Amazon EMR Management Guide</i>.',
+    }),
+    StepConcurrencyLevel: IntegerSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of steps that can be executed concurrently. The default value is <code>1</code>. The maximum value is <code>256</code>.',
+    }),
+    ManagedScalingPolicy: ManagedScalingPolicySchema.exactOptional().openapi({
+      description: ' The specified managed scaling policy for an Amazon EMR cluster. ',
+    }),
+    PlacementGroupConfigs: PlacementGroupConfigListSchema.exactOptional().openapi({
+      description: 'The specified placement group configuration for an Amazon EMR cluster.',
+    }),
     AutoTerminationPolicy: AutoTerminationPolicySchema.exactOptional(),
-    OSReleaseLabel: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a particular Amazon Linux release for all nodes in a cluster launch RunJobFlow request. If a release is not specified, Amazon EMR uses the latest validated Amazon Linux release for cluster launch.',
-        }),
-    ).exactOptional(),
+    OSReleaseLabel: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'Specifies a particular Amazon Linux release for all nodes in a cluster launch RunJobFlow request. If a release is not specified, Amazon EMR uses the latest validated Amazon Linux release for cluster launch.',
+    }),
   })
   .openapi({
     required: ['Name', 'Instances'],
@@ -5830,22 +4320,14 @@ const RunJobFlowInputSchema = z
 
 const SetTerminationProtectionInputSchema = z
   .object({
-    JobFlowIds: XmlStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of strings that uniquely identify the clusters to protect. This identifier is returned by <a>RunJobFlow</a> and can also be obtained from <a>DescribeJobFlows</a> . ',
-        }),
-    ),
-    TerminationProtected: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean that indicates whether to protect the cluster and prevent the Amazon EC2 instances in the cluster from shutting down due to API calls, user intervention, or job-flow error.',
-        }),
-    ),
+    JobFlowIds: XmlStringListSchema.openapi({
+      description:
+        ' A list of strings that uniquely identify the clusters to protect. This identifier is returned by <a>RunJobFlow</a> and can also be obtained from <a>DescribeJobFlows</a> . ',
+    }),
+    TerminationProtected: BooleanSchema.openapi({
+      description:
+        'A Boolean that indicates whether to protect the cluster and prevent the Amazon EC2 instances in the cluster from shutting down due to API calls, user intervention, or job-flow error.',
+    }),
   })
   .openapi({
     required: ['JobFlowIds', 'TerminationProtected'],
@@ -5856,17 +4338,13 @@ const SetTerminationProtectionInputSchema = z
 
 const SetVisibleToAllUsersInputSchema = z
   .object({
-    JobFlowIds: XmlStringListSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the job flow (cluster).' }),
-    ),
-    VisibleToAllUsers: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value of <code>true</code> indicates that an IAM principal in the Amazon Web Services account can perform EMR actions on the cluster that the IAM policies attached to the principal allow. A value of <code>false</code> indicates that only the IAM principal that created the cluster and the Amazon Web Services root user can perform EMR actions on the cluster.',
-        }),
-    ),
+    JobFlowIds: XmlStringListSchema.openapi({
+      description: 'The unique identifier of the job flow (cluster).',
+    }),
+    VisibleToAllUsers: BooleanSchema.openapi({
+      description:
+        'A value of <code>true</code> indicates that an IAM principal in the Amazon Web Services account can perform EMR actions on the cluster that the IAM policies attached to the principal allow. A value of <code>false</code> indicates that only the IAM principal that created the cluster and the Amazon Web Services root user can perform EMR actions on the cluster.',
+    }),
   })
   .openapi({
     required: ['JobFlowIds', 'VisibleToAllUsers'],
@@ -5877,72 +4355,44 @@ const SetVisibleToAllUsersInputSchema = z
 
 const StartNotebookExecutionOutputSchema = z
   .object({
-    NotebookExecutionId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique identifier of the notebook execution.' }),
-    ).exactOptional(),
+    NotebookExecutionId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'The unique identifier of the notebook execution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartNotebookExecutionOutput')
 
 const StartNotebookExecutionInputSchema = z
   .object({
-    EditorId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the EMR Notebook to use for notebook execution.',
-        }),
-    ),
-    RelativePath: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path and file name of the notebook file for this execution, relative to the path specified for the EMR Notebook. For example, if you specify a path of <code>s3://MyBucket/MyNotebooks</code> when you create an EMR Notebook for a notebook with an ID of <code>e-ABCDEFGHIJK1234567890ABCD</code> (the <code>EditorID</code> of this request), and you specify a <code>RelativePath</code> of <code>my_notebook_executions/notebook_execution.ipynb</code>, the location of the file for the notebook execution is <code>s3://MyBucket/MyNotebooks/e-ABCDEFGHIJK1234567890ABCD/my_notebook_executions/notebook_execution.ipynb</code>.',
-        }),
-    ),
-    NotebookExecutionName: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'An optional name for the notebook execution.' }),
-    ).exactOptional(),
-    NotebookParams: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Input parameters in JSON format passed to the EMR Notebook at runtime for execution.',
-        }),
-    ).exactOptional(),
-    ExecutionEngine: ExecutionEngineConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the execution engine (cluster) that runs the notebook execution.',
-        }),
-    ),
-    ServiceRole: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the IAM role that is used as the service role for Amazon EMR (the EMR role) for the notebook execution.',
-        }),
-    ),
-    NotebookInstanceSecurityGroupId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the Amazon EC2 security group to associate with the EMR Notebook for this notebook execution.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags associated with a notebook execution. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters and an optional value string with a maximum of 256 characters.',
-        }),
-    ).exactOptional(),
+    EditorId: XmlStringMaxLen256Schema.openapi({
+      description: 'The unique identifier of the EMR Notebook to use for notebook execution.',
+    }),
+    RelativePath: XmlStringSchema.openapi({
+      description:
+        'The path and file name of the notebook file for this execution, relative to the path specified for the EMR Notebook. For example, if you specify a path of <code>s3://MyBucket/MyNotebooks</code> when you create an EMR Notebook for a notebook with an ID of <code>e-ABCDEFGHIJK1234567890ABCD</code> (the <code>EditorID</code> of this request), and you specify a <code>RelativePath</code> of <code>my_notebook_executions/notebook_execution.ipynb</code>, the location of the file for the notebook execution is <code>s3://MyBucket/MyNotebooks/e-ABCDEFGHIJK1234567890ABCD/my_notebook_executions/notebook_execution.ipynb</code>.',
+    }),
+    NotebookExecutionName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'An optional name for the notebook execution.',
+    }),
+    NotebookParams: XmlStringSchema.exactOptional().openapi({
+      description:
+        'Input parameters in JSON format passed to the EMR Notebook at runtime for execution.',
+    }),
+    ExecutionEngine: ExecutionEngineConfigSchema.openapi({
+      description: 'Specifies the execution engine (cluster) that runs the notebook execution.',
+    }),
+    ServiceRole: XmlStringSchema.openapi({
+      description:
+        'The name or ARN of the IAM role that is used as the service role for Amazon EMR (the EMR role) for the notebook execution.',
+    }),
+    NotebookInstanceSecurityGroupId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The unique identifier of the Amazon EC2 security group to associate with the EMR Notebook for this notebook execution.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags associated with a notebook execution. Tags are user-defined key-value pairs that consist of a required key string with a maximum of 128 characters and an optional value string with a maximum of 256 characters.',
+    }),
   })
   .openapi({
     required: ['EditorId', 'RelativePath', 'ExecutionEngine', 'ServiceRole'],
@@ -5952,18 +4402,18 @@ const StartNotebookExecutionInputSchema = z
 
 const StopNotebookExecutionInputSchema = z
   .object({
-    NotebookExecutionId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The unique identifier of the notebook execution.' }),
-    ),
+    NotebookExecutionId: XmlStringMaxLen256Schema.openapi({
+      description: 'The unique identifier of the notebook execution.',
+    }),
   })
   .openapi({ required: ['NotebookExecutionId'], title: 'StopNotebookExecutionInput' })
   .openapi('StopNotebookExecutionInput')
 
 const TerminateJobFlowsInputSchema = z
   .object({
-    JobFlowIds: XmlStringListSchema.and(
-      z.any().openapi({ description: 'A list of job flows to be shut down.' }),
-    ),
+    JobFlowIds: XmlStringListSchema.openapi({
+      description: 'A list of job flows to be shut down.',
+    }),
   })
   .openapi({
     required: ['JobFlowIds'],
@@ -5974,71 +4424,45 @@ const TerminateJobFlowsInputSchema = z
 
 const UpdateStudioInputSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio to update.' }),
-    ),
-    Name: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'A descriptive name for the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    Description: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'A detailed description to assign to the Amazon EMR Studio.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of subnet IDs to associate with the Amazon EMR Studio. The list can include new subnet IDs, but must also include all of the subnet IDs previously associated with the Studio. The list order does not matter. A Studio can have a maximum of 5 subnets. The subnets must belong to the same VPC as the Studio. ',
-        }),
-    ).exactOptional(),
-    DefaultS3Location: XmlStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location to back up Workspaces and notebook files for the Amazon EMR Studio.',
-        }),
-    ).exactOptional(),
+    StudioId: XmlStringMaxLen256Schema.openapi({
+      description: 'The ID of the Amazon EMR Studio to update.',
+    }),
+    Name: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'A descriptive name for the Amazon EMR Studio.',
+    }),
+    Description: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description: 'A detailed description to assign to the Amazon EMR Studio.',
+    }),
+    SubnetIds: SubnetIdListSchema.exactOptional().openapi({
+      description:
+        'A list of subnet IDs to associate with the Amazon EMR Studio. The list can include new subnet IDs, but must also include all of the subnet IDs previously associated with the Studio. The list order does not matter. A Studio can have a maximum of 5 subnets. The subnets must belong to the same VPC as the Studio. ',
+    }),
+    DefaultS3Location: XmlStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 location to back up Workspaces and notebook files for the Amazon EMR Studio.',
+    }),
   })
   .openapi({ required: ['StudioId'], title: 'UpdateStudioInput' })
   .openapi('UpdateStudioInput')
 
 const UpdateStudioSessionMappingInputSchema = z
   .object({
-    StudioId: XmlStringMaxLen256Schema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EMR Studio.' }),
-    ),
-    IdentityId: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The globally unique identifier (GUID) of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId">UserId</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId">GroupId</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
-        }),
-    ).exactOptional(),
-    IdentityName: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the user or group to update. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
-        }),
-    ).exactOptional(),
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies whether the identity to update is a user or a group.' }),
-    ),
-    SessionPolicyArn: XmlStringMaxLen256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the session policy to associate with the specified user or group.',
-        }),
-    ),
+    StudioId: XmlStringMaxLen256Schema.openapi({ description: 'The ID of the Amazon EMR Studio.' }),
+    IdentityId: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The globally unique identifier (GUID) of the user or group. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserId">UserId</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-GroupId">GroupId</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
+    }),
+    IdentityName: XmlStringMaxLen256Schema.exactOptional().openapi({
+      description:
+        'The name of the user or group to update. For more information, see <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_User.html#singlesignon-Type-User-UserName">UserName</a> and <a href="https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_Group.html#singlesignon-Type-Group-DisplayName">DisplayName</a> in the <i>IAM Identity Center Identity Store API Reference</i>. Either <code>IdentityName</code> or <code>IdentityId</code> must be specified.',
+    }),
+    IdentityType: IdentityTypeSchema.openapi({
+      description: 'Specifies whether the identity to update is a user or a group.',
+    }),
+    SessionPolicyArn: XmlStringMaxLen256Schema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the session policy to associate with the specified user or group.',
+    }),
   })
   .openapi({
     required: ['StudioId', 'IdentityType', 'SessionPolicyArn'],

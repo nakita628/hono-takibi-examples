@@ -32,95 +32,6 @@ const LocalizedStringBundleSchema = z
   .openapi({ description: 'A localized string bundle resource.', required: [] })
   .openapi('LocalizedStringBundle')
 
-const AchievementConfigurationDetailSchema = z
-  .object({
-    description: LocalizedStringBundleSchema.exactOptional().openapi({
-      description: 'Localized strings for the achievement description.',
-    }),
-    iconUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The icon url of this achievement. Writes to this field are ignored.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#achievementConfigurationDetail`.',
-      }),
-    name: LocalizedStringBundleSchema.exactOptional().openapi({
-      description: 'Localized strings for the achievement name.',
-    }),
-    pointValue: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Point value for the achievement.' }),
-    sortRank: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The sort rank of this achievement. Writes to this field are ignored.',
-      }),
-  })
-  .openapi({ description: 'An achievement configuration detail.', required: [] })
-  .openapi('AchievementConfigurationDetail')
-
-const AchievementConfigurationSchema = z
-  .object({
-    achievementType: z
-      .enum(['ACHIEVEMENT_TYPE_UNSPECIFIED', 'STANDARD', 'INCREMENTAL'])
-      .exactOptional()
-      .openapi({ description: 'The type of the achievement.' }),
-    draft: AchievementConfigurationDetailSchema.exactOptional().openapi({
-      description: 'The draft data of the achievement.',
-    }),
-    id: z.string().exactOptional().openapi({ description: 'The ID of the achievement.' }),
-    initialState: z
-      .enum(['INITIAL_STATE_UNSPECIFIED', 'HIDDEN', 'REVEALED'])
-      .exactOptional()
-      .openapi({ description: 'The initial state of the achievement.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#achievementConfiguration`.',
-      }),
-    published: AchievementConfigurationDetailSchema.exactOptional().openapi({
-      description: 'The read-only published data of the achievement.',
-    }),
-    stepsToUnlock: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Steps to unlock. Only applicable to incremental achievements.' }),
-    token: z.string().exactOptional().openapi({ description: 'The token for this resource.' }),
-  })
-  .openapi({ description: 'An achievement configuration resource.', required: [] })
-  .openapi('AchievementConfiguration')
-
-const AchievementConfigurationListResponseSchema = z
-  .object({
-    items: z
-      .array(AchievementConfigurationSchema)
-      .exactOptional()
-      .openapi({ description: 'The achievement configurations.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#achievementConfigurationListResponse`.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The pagination token for the next page of results.' }),
-  })
-  .openapi({ description: 'A ListConfigurations response.', required: [] })
-  .openapi('AchievementConfigurationListResponse')
-
 const GamesNumberAffixConfigurationSchema = z
   .object({
     few: LocalizedStringBundleSchema.exactOptional().openapi({
@@ -237,18 +148,92 @@ const LeaderboardConfigurationSchema = z
   .openapi({ description: 'An leaderboard configuration resource.', required: [] })
   .openapi('LeaderboardConfiguration')
 
-const LeaderboardConfigurationListResponseSchema = z
+type LeaderboardConfigurationListResponseType = {
+  items?: z.infer<typeof LeaderboardConfigurationSchema>[]
+  kind?: string
+  nextPageToken?: string
+}
+
+const AchievementConfigurationDetailSchema = z
   .object({
-    items: z
-      .array(LeaderboardConfigurationSchema)
+    description: LocalizedStringBundleSchema.exactOptional().openapi({
+      description: 'Localized strings for the achievement description.',
+    }),
+    iconUrl: z
+      .string()
       .exactOptional()
-      .openapi({ description: 'The leaderboard configurations.' }),
+      .openapi({
+        description: 'The icon url of this achievement. Writes to this field are ignored.',
+      }),
     kind: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#leaderboardConfigurationListResponse`.',
+          'Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#achievementConfigurationDetail`.',
+      }),
+    name: LocalizedStringBundleSchema.exactOptional().openapi({
+      description: 'Localized strings for the achievement name.',
+    }),
+    pointValue: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Point value for the achievement.' }),
+    sortRank: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The sort rank of this achievement. Writes to this field are ignored.',
+      }),
+  })
+  .openapi({ description: 'An achievement configuration detail.', required: [] })
+  .openapi('AchievementConfigurationDetail')
+
+const AchievementConfigurationSchema = z
+  .object({
+    achievementType: z
+      .enum(['ACHIEVEMENT_TYPE_UNSPECIFIED', 'STANDARD', 'INCREMENTAL'])
+      .exactOptional()
+      .openapi({ description: 'The type of the achievement.' }),
+    draft: AchievementConfigurationDetailSchema.exactOptional().openapi({
+      description: 'The draft data of the achievement.',
+    }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the achievement.' }),
+    initialState: z
+      .enum(['INITIAL_STATE_UNSPECIFIED', 'HIDDEN', 'REVEALED'])
+      .exactOptional()
+      .openapi({ description: 'The initial state of the achievement.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#achievementConfiguration`.',
+      }),
+    published: AchievementConfigurationDetailSchema.exactOptional().openapi({
+      description: 'The read-only published data of the achievement.',
+    }),
+    stepsToUnlock: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Steps to unlock. Only applicable to incremental achievements.' }),
+    token: z.string().exactOptional().openapi({ description: 'The token for this resource.' }),
+  })
+  .openapi({ description: 'An achievement configuration resource.', required: [] })
+  .openapi('AchievementConfiguration')
+
+const AchievementConfigurationListResponseSchema = z
+  .object({
+    items: z
+      .array(AchievementConfigurationSchema)
+      .exactOptional()
+      .openapi({ description: 'The achievement configurations.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#achievementConfigurationListResponse`.',
       }),
     nextPageToken: z
       .string()
@@ -256,7 +241,29 @@ const LeaderboardConfigurationListResponseSchema = z
       .openapi({ description: 'The pagination token for the next page of results.' }),
   })
   .openapi({ description: 'A ListConfigurations response.', required: [] })
-  .openapi('LeaderboardConfigurationListResponse')
+  .openapi('AchievementConfigurationListResponse')
+
+const LeaderboardConfigurationListResponseSchema: z.ZodType<LeaderboardConfigurationListResponseType> =
+  z
+    .object({
+      items: z
+        .array(LeaderboardConfigurationSchema)
+        .exactOptional()
+        .openapi({ description: 'The leaderboard configurations.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#leaderboardConfigurationListResponse`.',
+        }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The pagination token for the next page of results.' }),
+    })
+    .openapi({ description: 'A ListConfigurations response.', required: [] })
+    .openapi('LeaderboardConfigurationListResponse')
 
 const XgafvParamsSchema = z
   .enum(['1', '2'])

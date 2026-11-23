@@ -412,7 +412,7 @@ const ApiResponseObjectSchema = z
   .object({
     Errors: z.array(z.string()).exactOptional(),
     PagingInfo: PagingInfoSchema.exactOptional(),
-    Response: z.object({}).exactOptional(),
+    Response: z.looseObject({}).exactOptional(),
     StatusCode: z
       .enum([
         'Continue',

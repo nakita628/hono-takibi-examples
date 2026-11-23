@@ -1,0 +1,70 @@
+import { injectMutation, mutationOptions } from '@tanstack/angular-query-experimental'
+import type {
+  CreateMutationOptions,
+  DefaultError,
+  InjectQueryOptions,
+  InjectInfiniteQueryOptions,
+  InjectMutationOptions,
+} from '@tanstack/angular-query-experimental'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getPancrKey() {
+  return ['pancr'] as const
+}
+
+export function getPostPancrCertificateMutationKey() {
+  return ['pancr', '/pancr/certificate', 'POST'] as const
+}
+
+export function getPostPancrCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.pancr.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.pancr.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostPancrCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.pancr.certificate.$post>) {
+      return parseResponse(client.pancr.certificate.$post(args, options))
+    },
+  })
+}
+
+export function injectPostPancrCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.pancr.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.pancr.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  injectOptions?: InjectMutationOptions,
+) {
+  return injectMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostPancrCertificateMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, injectOptions)
+}

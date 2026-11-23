@@ -158,7 +158,7 @@ const InitialStateSchema = z
     type: z.string(),
     name: z.string(),
     key: z.string(),
-    value: z.object({}),
+    value: z.looseObject({}),
   })
   .openapi({ required: ['id', 'appid', 'type', 'name', 'key', 'value'] })
   .openapi('InitialState')
@@ -228,9 +228,9 @@ const OccCommandSchema = z
         z.int64(),
       )
       .openapi({ type: 'integer', format: 'int64' }),
-    arguments: z.array(z.object({})),
-    options: z.array(z.object({})),
-    usages: z.array(z.object({})),
+    arguments: z.array(z.looseObject({})),
+    options: z.array(z.looseObject({})),
+    usages: z.array(z.looseObject({})),
     execute_handler: z.string(),
   })
   .openapi({
@@ -851,7 +851,7 @@ export const postOcsV2PhpAppsAppApiApiV1ExAppConfigRoute = createRoute({
           schema: z
             .object({
               configKey: z.string().openapi({ description: 'Configuration key' }),
-              configValue: z.object({}).openapi({ description: 'Configuration value' }),
+              configValue: z.looseObject({}).openapi({ description: 'Configuration value' }),
               sensitive: z
                 .preprocess(
                   (val) =>
@@ -1110,7 +1110,7 @@ export const postOcsV2PhpAppsAppApiApiV1ExAppPreferenceRoute = createRoute({
           schema: z
             .object({
               configKey: z.string().openapi({ description: 'Preference key' }),
-              configValue: z.object({}).openapi({ description: 'Preference value' }),
+              configValue: z.looseObject({}).openapi({ description: 'Preference value' }),
               sensitive: z
                 .preprocess(
                   (val) =>
@@ -1380,7 +1380,7 @@ export const postOcsV2PhpAppsAppApiApiV1NotificationRoute = createRoute({
           schema: z
             .object({
               params: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .openapi({ description: 'Notification parameters' }),
             })
             .openapi({ required: ['params'] }),
@@ -1553,17 +1553,17 @@ export const postOcsV2PhpAppsAppApiApiV1OccCommandRoute = createRoute({
                   description: 'Whether the command is hidden from the command list (1) or not (0)',
                 }),
               arguments: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .default([])
                 .exactOptional()
                 .openapi({ description: 'Command argument definitions' }),
               options: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .default([])
                 .exactOptional()
                 .openapi({ description: 'Command option definitions' }),
               usages: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .default([])
                 .exactOptional()
                 .openapi({ description: 'Example usages of the command' }),
@@ -2726,7 +2726,7 @@ export const postOcsV2PhpAppsAppApiApiV1UiInitialStateRoute = createRoute({
               name: z.string().openapi({ description: 'Name of the page' }),
               key: z.string().openapi({ description: 'Initial state key' }),
               value: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .openapi({ description: 'Initial state value' }),
             })
             .openapi({ required: ['type', 'name', 'key', 'value'] }),
@@ -3452,7 +3452,7 @@ export const getOcsV2PhpAppsAppApiApiV1UiSettingsRoute = createRoute({
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.record(z.string(), z.object({})) })
+                .object({ meta: OCSMetaSchema, data: z.record(z.string(), z.looseObject({})) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -3510,7 +3510,7 @@ export const postOcsV2PhpAppsAppApiApiV1UiSettingsRoute = createRoute({
           schema: z
             .object({
               formScheme: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .openapi({ description: 'Declarative settings form scheme' }),
             })
             .openapi({ required: ['formScheme'] }),
@@ -3733,10 +3733,10 @@ export const postOcsV2PhpAppsAppApiApiV1AiProviderTaskProcessingRoute = createRo
           schema: z
             .object({
               provider: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .openapi({ description: 'Task Processing provider definition' }),
               customTaskType: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Custom task type definition, or null' }),

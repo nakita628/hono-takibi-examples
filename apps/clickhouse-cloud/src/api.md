@@ -7,11 +7,13 @@ Base URLs:
 * <a href="https://api.clickhouse.cloud">https://api.clickhouse.cloud</a>
 
 Email: <a href="mailto:support@clickhouse.com">ClickHouse Support</a> 
-Web: <a href="https://clickhouse.com/docs/en/cloud/manage/openapi?referrer=openapi-1312017">ClickHouse Support</a> 
+Web: <a href="https://clickhouse.com/docs/en/cloud/manage/openapi?referrer=openapi-1513344">ClickHouse Support</a> 
 
 # Authentication
 
 - HTTP Authentication, scheme: basic Use key ID and key secret obtained in ClickHouse Cloud console: https://clickhouse.com/docs/cloud/manage/openapi
+
+- HTTP Authentication, scheme: bearer ClickHouse Cloud user access token, sent as `Authorization: Bearer <JWT>`. API keys are rejected. The token audience must be one of the `x-jwt-audiences` listed on the operation.
 
 <h1 id="openapi-spec-for-clickhouse-cloud-organization">Organization</h1>
 
@@ -67,13 +69,16 @@ Returns the organizations available to the caller, oldest first. An API key reso
           "accountName": "string",
           "regionId": "ap-northeast-1",
           "cloudProvider": "gcp",
-          "displayName": "string"
+          "displayName": "string",
+          "accessModel": "standard"
         }
       ],
       "enableCoreDumps": true,
       "capabilities": {
         "snapshots": true
-      }
+      },
+      "knowledgeBasedAiSupportEnabled": true,
+      "aiDataUseForProductImprovementEnabled": true
     }
   ],
   "limit": 0,
@@ -192,13 +197,16 @@ Returns details of a single organization. In order to get the details, the auth 
         "accountName": "string",
         "regionId": "ap-northeast-1",
         "cloudProvider": "gcp",
-        "displayName": "string"
+        "displayName": "string",
+        "accessModel": "standard"
       }
     ],
     "enableCoreDumps": true,
     "capabilities": {
       "snapshots": true
-    }
+    },
+    "knowledgeBasedAiSupportEnabled": true,
+    "aiDataUseForProductImprovementEnabled": true
   }
 }
 ```
@@ -367,13 +375,16 @@ Updates organization fields. Requires ADMIN auth key role.
         "accountName": "string",
         "regionId": "ap-northeast-1",
         "cloudProvider": "gcp",
-        "displayName": "string"
+        "displayName": "string",
+        "accessModel": "standard"
       }
     ],
     "enableCoreDumps": true,
     "capabilities": {
       "snapshots": true
-    }
+    },
+    "knowledgeBasedAiSupportEnabled": true,
+    "aiDataUseForProductImprovementEnabled": true
   }
 }
 ```
@@ -642,6 +653,224 @@ To perform this operation, you must be authenticated by means of one of the foll
 basicAuth
 </aside>
 
+## Get list of organization preview features
+
+<a id="opIdorganizationPublicPreviewsGetList"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/previews \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v1/organizations/{organizationId}/previews`
+
+**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns the preview features offered to the organization, with whether each one is on and whether the caller can switch it.
+
+<h3 id="get-list-of-organization-preview-features-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the requested organization.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": [
+    {
+      "id": "preview-id",
+      "name": "string",
+      "description": "string",
+      "docsUrl": "https://clickhouse.com/docs",
+      "enabled": true,
+      "canToggle": true
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="get-list-of-organization-preview-features-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="get-list-of-organization-preview-features-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[[PublicPreview](#schemapublicpreview)]|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Update organization preview feature
+
+<a id="opIdorganizationPublicPreviewPatch"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/previews/string \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "enabled": true
+  }'
+```
+
+`PATCH /v1/organizations/{organizationId}/previews/{previewId}`
+
+**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Switches a preview feature on or off for the organization. Use an ID returned by the list endpoint; an unknown ID returns 404. Only previews offered to the organization can be switched on, otherwise the request returns 403; switching off is always allowed.
+
+> Body parameter
+
+```json
+{
+  "enabled": true
+}
+```
+
+<h3 id="update-organization-preview-feature-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the requested organization.|
+|previewId|path|string|true|ID of the requested preview feature.|
+|body|body|[PublicPreviewPatchRequest](#schemapublicpreviewpatchrequest)|false|none|
+|» enabled|body|boolean|true|Whether the preview feature should be on.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "id": "preview-id",
+    "name": "string",
+    "description": "string",
+    "docsUrl": "https://clickhouse.com/docs",
+    "enabled": true,
+    "canToggle": true
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="update-organization-preview-feature-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="update-organization-preview-feature-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[PublicPreview](#schemapublicpreview)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
 ## List of organization activities
 
 <a id="opIdactivityGetList"></a>
@@ -678,7 +907,7 @@ Returns a list of all organization activities.
     {
       "id": "string",
       "createdAt": "1970-01-01T00:00:00Z",
-      "type": "create_organization",
+      "type": "service_create",
       "actorType": "user",
       "actorId": "string",
       "actorDetails": "string",
@@ -699,7 +928,8 @@ Returns a list of all organization activities.
       ],
       "targetResourceIds": [
         "string"
-      ]
+      ],
+      "deletionProtectionBypassed": true
     }
   ]
 }
@@ -798,7 +1028,7 @@ Returns a single organization activity by ID.
   "result": {
     "id": "string",
     "createdAt": "1970-01-01T00:00:00Z",
-    "type": "create_organization",
+    "type": "service_create",
     "actorType": "user",
     "actorId": "string",
     "actorDetails": "string",
@@ -819,7 +1049,8 @@ Returns a single organization activity by ID.
     ],
     "targetResourceIds": [
       "string"
-    ]
+    ],
+    "deletionProtectionBypassed": true
   }
 }
 ```
@@ -1021,6 +1252,28 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       "property1": "string",
       "property2": "string"
     },
+    "accessModel": "string",
+    "restrictedFacts": {
+      "clusterName": "string",
+      "platformNodeGroup": "string",
+      "availabilityZones": [
+        "string"
+      ],
+      "namespacePrefix": "string",
+      "executorRoleArn": "string",
+      "nodeRoleArns": [
+        "string"
+      ],
+      "imageMode": "bundle",
+      "imageRegistry": "string",
+      "dataBucket": "string",
+      "backupBucket": "string",
+      "storageRoleArn": "string",
+      "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+      "enableMonitoring": true,
+      "enableSnapshotController": true,
+      "enableAutoscaler": true
+    },
     "displayName": "string"
   }'
 ```
@@ -1057,6 +1310,28 @@ Create a new BYOC Infrastructure in the organization. Returns the configuration 
     "property1": "string",
     "property2": "string"
   },
+  "accessModel": "string",
+  "restrictedFacts": {
+    "clusterName": "string",
+    "platformNodeGroup": "string",
+    "availabilityZones": [
+      "string"
+    ],
+    "namespacePrefix": "string",
+    "executorRoleArn": "string",
+    "nodeRoleArns": [
+      "string"
+    ],
+    "imageMode": "bundle",
+    "imageRegistry": "string",
+    "dataBucket": "string",
+    "backupBucket": "string",
+    "storageRoleArn": "string",
+    "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+    "enableMonitoring": true,
+    "enableSnapshotController": true,
+    "enableAutoscaler": true
+  },
   "displayName": "string"
 }
 ```
@@ -1080,6 +1355,8 @@ Create a new BYOC Infrastructure in the organization. Returns the configuration 
 |» gcpPodCidrRangeNames|body|[string]|false|GCP BYO-VPC only: secondary IP range names on the subnet to use for pod IPs. Omitted: all secondary ranges are used|
 |» gcpSharedVpcHostProjectId|body|string|false|GCP BYO-VPC only: Shared VPC host project owning the VPC and subnet, when different from `accountId`|
 |» tags|body|[ByocInfrastructureTags](#schemabyocinfrastructuretags)|false|none|
+|» accessModel|body|string|false|How ClickHouse reaches the infrastructure. `standard` (default) provisions it through a management role in your account; `restricted` registers a cluster you own, reached only through the connector you install. `restricted` is AWS only and requires `restrictedFacts`|
+|» restrictedFacts|body|[ByocRestrictedFacts](#schemabyocrestrictedfacts)|false|none|
 |» displayName|body|string|false|Human readable name for infrastructure|
 
 #### Enumerated Values
@@ -1132,7 +1409,8 @@ Create a new BYOC Infrastructure in the organization. Returns the configuration 
     "accountName": "string",
     "regionId": "ap-northeast-1",
     "cloudProvider": "gcp",
-    "displayName": "string"
+    "displayName": "string",
+    "accessModel": "standard"
   }
 }
 ```
@@ -1232,6 +1510,28 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "tags": {
       "property1": "string",
       "property2": "string"
+    },
+    "accessModel": "string",
+    "restrictedFacts": {
+      "clusterName": "string",
+      "platformNodeGroup": "string",
+      "availabilityZones": [
+        "string"
+      ],
+      "namespacePrefix": "string",
+      "executorRoleArn": "string",
+      "nodeRoleArns": [
+        "string"
+      ],
+      "imageMode": "bundle",
+      "imageRegistry": "string",
+      "dataBucket": "string",
+      "backupBucket": "string",
+      "storageRoleArn": "string",
+      "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+      "enableMonitoring": true,
+      "enableSnapshotController": true,
+      "enableAutoscaler": true
     }
   }'
 ```
@@ -1267,6 +1567,28 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
   "tags": {
     "property1": "string",
     "property2": "string"
+  },
+  "accessModel": "string",
+  "restrictedFacts": {
+    "clusterName": "string",
+    "platformNodeGroup": "string",
+    "availabilityZones": [
+      "string"
+    ],
+    "namespacePrefix": "string",
+    "executorRoleArn": "string",
+    "nodeRoleArns": [
+      "string"
+    ],
+    "imageMode": "bundle",
+    "imageRegistry": "string",
+    "dataBucket": "string",
+    "backupBucket": "string",
+    "storageRoleArn": "string",
+    "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+    "enableMonitoring": true,
+    "enableSnapshotController": true,
+    "enableAutoscaler": true
   }
 }
 ```
@@ -1290,6 +1612,8 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |» gcpPodCidrRangeNames|body|[string]|false|GCP BYO-VPC only: secondary IP range names on the subnet to use for pod IPs. Omitted: all secondary ranges are used|
 |» gcpSharedVpcHostProjectId|body|string|false|GCP BYO-VPC only: Shared VPC host project owning the VPC and subnet, when different from `accountId`|
 |» tags|body|[ByocInfrastructureTags](#schemabyocinfrastructuretags)|false|none|
+|» accessModel|body|string|false|How ClickHouse reaches the infrastructure. `standard` (default) provisions it through a management role in your account; `restricted` registers a cluster you own, reached only through the connector you install. `restricted` is AWS only and requires `restrictedFacts`|
+|» restrictedFacts|body|[ByocRestrictedFacts](#schemabyocrestrictedfacts)|false|none|
 
 #### Enumerated Values
 
@@ -1411,6 +1735,118 @@ To perform this operation, you must be authenticated by means of one of the foll
 basicAuth
 </aside>
 
+## Create BYOC infrastructure enrollment token
+
+<a id="opIdorganizationByocInfrastructureEnrollmentTokenCreate"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/byocInfrastructure/497f6eca-6276-4993-bfeb-53cbbbba6f08/enrollmentToken \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "ttlSeconds": 3600
+  }'
+```
+
+`POST /v1/organizations/{organizationId}/byocInfrastructure/{byocInfrastructureId}/enrollmentToken`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Restricted access only. Mints a token the connector enrolls the infrastructure with. Every call mints a new token; earlier tokens stay valid until they expire. Answers 409 until ClickHouse has admitted the roles the infrastructure registered, which follows creation within minutes.
+
+> Body parameter
+
+```json
+{
+  "ttlSeconds": 3600
+}
+```
+
+<h3 id="create-byoc-infrastructure-enrollment-token-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the requested organization.|
+|byocInfrastructureId|path|string(uuid)|true|ID of the requested BYOC Infrastructure|
+|body|body|[ByocInfrastructureEnrollmentTokenPostRequest](#schemabyocinfrastructureenrollmenttokenpostrequest)|false|none|
+|» ttlSeconds|body|integer|false|Lifetime of the token in seconds: whole minutes between 3600 and 86400. Omitted: four hours|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "token": "string",
+    "expiresAt": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="create-byoc-infrastructure-enrollment-token-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="create-byoc-infrastructure-enrollment-token-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[ByocInfrastructureEnrollmentToken](#schemabyocinfrastructureenrollmenttoken)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
 ## Get BYOC infrastructure details
 
 <a id="opIdorganizationByocInfrastructureGet"></a>
@@ -1467,7 +1903,42 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       "string"
     ],
     "byoVpcSharedVpcHostProjectId": "string",
-    "gcpPscSubnetId": "string"
+    "gcpPscSubnetId": "string",
+    "accessModel": "standard",
+    "restrictedFacts": {
+      "clusterName": "string",
+      "platformNodeGroup": "string",
+      "availabilityZones": [
+        "string"
+      ],
+      "namespacePrefix": "string",
+      "executorRoleArn": "string",
+      "nodeRoleArns": [
+        "string"
+      ],
+      "imageMode": "bundle",
+      "imageRegistry": "string",
+      "dataBucket": "string",
+      "backupBucket": "string",
+      "storageRoleArn": "string",
+      "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+      "enableMonitoring": true,
+      "enableSnapshotController": true,
+      "enableAutoscaler": true
+    },
+    "connector": {
+      "lastHeartbeatAt": "1970-01-01T00:00:00Z",
+      "components": [
+        {
+          "name": "scraper",
+          "state": "string",
+          "version": "string",
+          "lastHeartbeatAt": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "platformState": "string",
+      "platformDetail": "string"
+    }
   }
 }
 ```
@@ -1698,7 +2169,8 @@ Update configuration of the BYOC infrastructure: rename it, toggle private link 
     "accountName": "string",
     "regionId": "ap-northeast-1",
     "cloudProvider": "gcp",
-    "displayName": "string"
+    "displayName": "string",
+    "accessModel": "standard"
   }
 }
 ```
@@ -2067,6 +2539,227 @@ To perform this operation, you must be authenticated by means of one of the foll
 basicAuth
 </aside>
 
+## Get BYOC infrastructure customer-authorized access
+
+<a id="opIdorganizationByocInfrastructureCustomerAuthorizedAccessGet"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/byocInfrastructure/497f6eca-6276-4993-bfeb-53cbbbba6f08/customerAuthorizedAccess \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v1/organizations/{organizationId}/byocInfrastructure/{byocInfrastructureId}/customerAuthorizedAccess`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns the customer setting that controls when ClickHouse personnel may access the BYOC infrastructure, together with the data plane verdict at the time of the request.
+
+<h3 id="get-byoc-infrastructure-customer-authorized-access-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the BYOC infrastructure.|
+|byocInfrastructureId|path|string(uuid)|true|ID of the BYOC infrastructure.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "mode": "window",
+    "startTimestamp": "1970-01-01T00:00:00Z",
+    "durationSeconds": 14400,
+    "allowed": true,
+    "windowEndTimestamp": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="get-byoc-infrastructure-customer-authorized-access-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="get-byoc-infrastructure-customer-authorized-access-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[ByocCustomerAuthorizedAccess](#schemabyoccustomerauthorizedaccess)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Update BYOC infrastructure customer-authorized access
+
+<a id="opIdorganizationByocInfrastructureCustomerAuthorizedAccessUpdate"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/byocInfrastructure/497f6eca-6276-4993-bfeb-53cbbbba6f08/customerAuthorizedAccess \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "mode": "window",
+    "startTimestamp": "1970-01-01T00:00:00Z",
+    "durationSeconds": 14400
+  }'
+```
+
+`PATCH /v1/organizations/{organizationId}/byocInfrastructure/{byocInfrastructureId}/customerAuthorizedAccess`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Replaces the customer setting that controls when ClickHouse personnel may access the BYOC infrastructure. Allow access with `mode: always`, deny it with `mode: never`, or allow it for a single window with `mode: window`, `startTimestamp` and `durationSeconds`. Returns the stored setting together with the data plane verdict.
+
+> Body parameter
+
+```json
+{
+  "mode": "window",
+  "startTimestamp": "1970-01-01T00:00:00Z",
+  "durationSeconds": 14400
+}
+```
+
+<h3 id="update-byoc-infrastructure-customer-authorized-access-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the BYOC infrastructure.|
+|byocInfrastructureId|path|string(uuid)|true|ID of the BYOC infrastructure.|
+|body|body|[ByocCustomerAuthorizedAccessPatchRequest](#schemabyoccustomerauthorizedaccesspatchrequest)|false|none|
+|» mode|body|string|true|When ClickHouse personnel may access the infrastructure. Current values: always, never, window. New values may be added over time. `always` allows access, `never` denies it, and `window` allows it during a single time window described by `startTimestamp` and `durationSeconds`|
+|» startTimestamp|body|string(date-time)|false|Start of the access window. ISO-8601. Required when `mode` is `window`, not allowed otherwise|
+|» durationSeconds|body|integer|false|Length of the access window in seconds, from 1 to 172800 (48 hours). Required when `mode` is `window`, not allowed otherwise|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "mode": "window",
+    "startTimestamp": "1970-01-01T00:00:00Z",
+    "durationSeconds": 14400,
+    "allowed": true,
+    "windowEndTimestamp": "1970-01-01T00:00:00Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="update-byoc-infrastructure-customer-authorized-access-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="update-byoc-infrastructure-customer-authorized-access-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[ByocCustomerAuthorizedAccess](#schemabyoccustomerauthorizedaccess)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
 <h1 id="openapi-spec-for-clickhouse-cloud-notifications">Notifications</h1>
 
 ## List of organization notifications
@@ -2268,6 +2961,264 @@ Status Code **200**
 |status|number|false|none|HTTP status code.|
 |requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
 |result|[[NotificationType](#schemanotificationtype)]|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## List a member's notification settings
+
+<a id="opIdmemberNotificationSettingsGetList"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/members/497f6eca-6276-4993-bfeb-53cbbbba6f08/notificationSettings \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v1/organizations/{organizationId}/members/{userId}/notificationSettings`
+
+**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns the notification settings an organization member has explicitly chosen. A member who has never changed a setting has none, so an empty list means every notification follows the platform default for their role — it does not mean notifications are off. Settings for notification types the member cannot use are omitted, which depends on their permissions rather than the caller's. Slack is configured for the whole organization and never appears here. A page holds at most `limit` settings (default 100, maximum 250; a larger value is clamped) and the server may return fewer. Every response carries `limit` and `nextCursor`; pass `nextCursor` as the `cursor` query parameter to fetch the next page, repeating until it is null.
+
+<h3 id="list-a-members-notification-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization the member belongs to.|
+|userId|path|string(uuid)|true|ID of the member whose settings are returned.|
+|limit|query|integer|false|Maximum number of results to return.|
+|cursor|query|string|false|Opaque cursor from a previous response's `nextCursor`, marking where to resume the list.|
+|type|query|string|false|Filter to settings for this notification type.|
+|resource_id|query|string|false|Filter to settings for this resource.|
+|resource_type|query|string|false|Filter to settings for resources of this kind. One of 'service', 'organization', 'clickpipe', 'postgres'.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": [
+    {
+      "type": "service_backup_failed",
+      "resourceType": "service",
+      "resourceId": "string",
+      "channelType": "email",
+      "effect": "disabled"
+    }
+  ],
+  "limit": 0,
+  "nextCursor": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="list-a-members-notification-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="list-a-members-notification-settings-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[[NotificationSetting](#schemanotificationsetting)]|false|none|none|
+|limit|integer|false|none|Maximum number of results returned in this page.|
+|nextCursor|string \| null|false|none|Cursor for the next page, to be sent as the `cursor` query parameter. Null on the last page.|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Update a member's notification settings
+
+<a id="opIdmemberNotificationSettingsUpdate"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/members/497f6eca-6276-4993-bfeb-53cbbbba6f08/notificationSettings \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "rules": [
+      {
+        "effect": "enabled",
+        "notifications": [
+          "service_backup_failed"
+        ],
+        "resources": [
+          "string"
+        ],
+        "channels": [
+          "ui",
+          "email"
+        ]
+      }
+    ]
+  }'
+```
+
+`PATCH /v1/organizations/{organizationId}/members/{userId}/notificationSettings`
+
+**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Sets the notification settings an organization member has explicitly chosen. Each rule names notification types, resources and channels, and applies one effect to every combination of them. A notification type no rule names keeps the setting it had, so this endpoint never has to carry a member's whole configuration. Three effects: 'enabled' and 'disabled' store an explicit choice, and 'inherit' removes the stored setting so the notification follows the platform default again. Sending the same body twice changes nothing the second time. The request either applies completely or changes nothing: a rule naming a notification type that does not exist, that the member cannot configure, or a resource the caller cannot access is rejected whole, as is a request that names the same type, resource and channel twice. A request carries at most 100 rules, addressing at most 1000 settings in total.
+
+> Body parameter
+
+```json
+{
+  "rules": [
+    {
+      "effect": "enabled",
+      "notifications": [
+        "service_backup_failed"
+      ],
+      "resources": [
+        "string"
+      ],
+      "channels": [
+        "ui",
+        "email"
+      ]
+    }
+  ]
+}
+```
+
+<h3 id="update-a-members-notification-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization the member belongs to.|
+|userId|path|string(uuid)|true|ID of the member whose settings are updated.|
+|body|body|[MemberNotificationSettingsPatchRequest](#schemamembernotificationsettingspatchrequest)|false|none|
+|» rules|body|[[NotificationSettingRule](#schemanotificationsettingrule)]|true|Rules to apply. Every rule is applied, in the order given.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "settings": [
+      {
+        "type": "service_backup_failed",
+        "resourceType": "service",
+        "resourceId": "string",
+        "channelType": "email",
+        "effect": "disabled"
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="update-a-members-notification-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="update-a-members-notification-settings-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[MemberNotificationSettingsPatchResponse](#schemamembernotificationsettingspatchresponse)|false|none|none|
 
 Status Code **400**
 
@@ -3404,6 +4355,121 @@ To perform this operation, you must be authenticated by means of one of the foll
 basicAuth
 </aside>
 
+## Get organization AI inference usage costs
+
+<a id="opIdinferenceUsageCostGet"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/inferenceUsageCost?from_date=1970-01-01&to_date=1970-01-01' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v1/organizations/{organizationId}/inferenceUsageCost`
+
+**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns a grand total and a list of daily AI inference usage cost records for the organization in the queried time period (maximum 31 days). There is one record per day, provider and model. Each record lists the tokens used, the average price and the cost for each metric, such as input, output, cache read and each cache write duration. All costs are at list price. All days in both the request and the response are evaluated based on the UTC timezone.
+
+<h3 id="get-organization-ai-inference-usage-costs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the requested organization.|
+|from_date|query|string(date)|true|Start date for the report, e.g. 2024-12-19.|
+|to_date|query|string(date)|true|End date (inclusive) for the report, e.g. 2024-12-20. This date cannot be more than 30 days after from_date (for a maximum queried period of 31 days).|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "grandTotalCHC": 0,
+    "costs": [
+      {
+        "date": "2026-10-01",
+        "provider": "anthropic",
+        "model": "claude-opus-4-8",
+        "modelName": "Claude Opus 4.8",
+        "metrics": [
+          {
+            "metric": "cache_write_5m",
+            "tokensMillions": 0,
+            "pricePerMillionTokensCHC": 0,
+            "totalCHC": 0
+          }
+        ],
+        "totalCHC": 0,
+        "locked": true
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="get-organization-ai-inference-usage-costs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="get-organization-ai-inference-usage-costs-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[InferenceUsageCost](#schemainferenceusagecost)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
 ## Get organization active prepaid balances
 
 <a id="opIdactiveBalancesGet"></a>
@@ -3637,13 +4703,15 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/roles`
 
-Returns all available roles (system + custom) for an organization.
+Returns available roles (system + custom) for an organization, ordered by unique role ID ascending. Results are capped at `limit` (default and maximum 250) per page. Pass `nextCursor` as the `cursor` query parameter to fetch the next page until it is null.
 
 <h3 id="list-all-available-roles-for-an-organization-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |organizationId|path|string(uuid)|true|ID of the requested organization.|
+|limit|query|integer|false|Maximum number of results to return.|
+|cursor|query|string|false|Opaque cursor from a previous response's `nextCursor`, marking where to resume the list.|
 
 > Example responses
 
@@ -3686,7 +4754,9 @@ Returns all available roles (system + custom) for an organization.
       "createdAt": "1970-01-01T00:00:00Z",
       "updatedAt": "1970-01-01T00:00:00Z"
     }
-  ]
+  ],
+  "limit": 0,
+  "nextCursor": "string"
 }
 ```
 
@@ -3727,6 +4797,8 @@ Status Code **200**
 |status|number|false|none|HTTP status code.|
 |requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
 |result|[[RBACRole](#schemarbacrole)]|false|none|none|
+|limit|integer|false|none|Maximum number of results returned in this page.|
+|nextCursor|string \| null|false|none|Cursor for the next page, to be sent as the `cursor` query parameter. Null on the last page.|
 
 Status Code **400**
 
@@ -4346,7 +5418,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/serviceProfiles`
 
-Returns the custom instance profiles the organization can use in a region. Pass byoc_id to list the profiles configured for a BYOC infrastructure; the region is then taken from the infrastructure and region_id may be omitted. The list is empty when the organization tier does not include custom hardware profiles.
+Returns the custom instance profiles the organization can use in a region. Pass byoc_id to list the profiles configured for a BYOC infrastructure; the region is then taken from the infrastructure and region_id may be omitted. v2-default (Gen 2 hardware) is listed for organizations with Gen 2 enabled and included in their plan (SCALE or ENTERPRISE) or settings, in AWS regions where Gen 2 is available, and never for BYOC infrastructure. Some other profiles have their own availability rules; every other profile, v1-default included, is listed only when the organization has custom hardware profiles (through its plan or a per-organization override).
 
 <h3 id="list-available-service-profiles-parameters">Parameters</h3>
 
@@ -4525,6 +5597,7 @@ Returns a list of all services in the organization.
         }
       ],
       "enableCoreDumps": true,
+      "deletionProtection": true,
       "scalingSchedule": {
         "entries": [
           {
@@ -4698,7 +5771,8 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
         "value": "staging"
       }
     ],
-    "enableCoreDumps": true
+    "enableCoreDumps": true,
+    "deletionProtection": true
   }'
 ```
 
@@ -4765,7 +5839,8 @@ Creates a new service in the organization, and returns the current service state
       "value": "staging"
     }
   ],
-  "enableCoreDumps": true
+  "enableCoreDumps": true,
+  "deletionProtection": true
 }
 ```
 
@@ -4797,13 +5872,14 @@ Creates a new service in the organization, and returns the current service state
 |» privateEndpointIds|body|[string]|false|**Deprecated.** DEPRECATED. To associate the service with private endpoints, first create the service, then use the `Update Service Basic Details` endpoint with the `privateEndpointIds` field to modify private endpoints.|
 |» privatePreviewTermsChecked|body|boolean|false|Accept the private preview terms and conditions. It is only needed when creating the first service in the organization in case of a private preview|
 |» releaseChannel|body|string|false|Select fast if you want to get new ClickHouse releases as soon as they are available. You'll get new features faster, but with a higher risk of bugs. Select slow if you would like to defer releases to give yourself more time to test. This feature is only available for production services. default is the regular release channel.|
-|» byocId|body|string|false|This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and the maxReplicaGb parameters are required too, with values included among the following sizes: 48, 116, 172, 232.|
+|» byocId|body|string|false|This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and maxReplicaMemoryGb parameters are required too. With a BYOC profile, both must equal that profile's memory size. Without a profile, equal values must be one of the following sizes: 48, 116, 172, 232. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb, without a profile, creates a service that scales vertically between the two. Both values must be memory sizes listed by the serviceProfiles endpoint, and the service reports the profile 'v1-default'.|
 |» hasTransparentDataEncryption|body|boolean|false|True if the service should have the Transparent Data Encryption (TDE) enabled. TDE is only available for ENTERPRISE organizations tiers and can only be enabled at service creation.|
 |» endpoints|body|[[ServiceEndpointChange](#schemaserviceendpointchange)]|false|List of service endpoints to enable or disable|
-|» profile|body|string|false|Custom instance profile. Only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. Use the serviceProfiles endpoint to list the profiles available to the organization.|
+|» profile|body|string|false|Custom instance profile. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. 'v2-default' is Gen 2 hardware. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. A BYOC service that scales vertically within a memory range has no BYOC profile and reports 'v1-default'. Use the serviceProfiles endpoint to list the profiles available to the organization. Creating a 'v2-default' service needs Gen 2 enabled for the organization and included in its plan (SCALE or ENTERPRISE) or settings, an AWS region where Gen 2 is available, and no byocId (BYOC infrastructure is not supported). Gen 2 services use a fixed size: minReplicaMemoryGb must equal maxReplicaMemoryGb and the replica count is fixed (numReplicas, or equal minReplicas and maxReplicas). Gen 2 services cannot idle: send idleScaling as false, since it defaults to true.|
 |» complianceType|body|string|false|Type of regulatory compliance for service.|
 |» tags|body|[[ResourceTagsV1](#schemaresourcetagsv1)]|false|Tags associated with the service.|
 |» enableCoreDumps|body|boolean|false|Enables the underlying infra for collecting core dumps. Default is enabled.|
+|» deletionProtection|body|boolean|false|When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off. Default is false. Setting it to true requires the `control-plane:service:delete` permission granted for all services in the organization (not service by service), in addition to `control-plane:organization:create-service`.|
 
 #### Enumerated Values
 
@@ -4915,6 +5991,7 @@ Creates a new service in the organization, and returns the current service state
         }
       ],
       "enableCoreDumps": true,
+      "deletionProtection": true,
       "scalingSchedule": {
         "entries": [
           {
@@ -5112,6 +6189,7 @@ Returns a service that belongs to the organization
       }
     ],
     "enableCoreDumps": true,
+    "deletionProtection": true,
     "scalingSchedule": {
       "entries": [
         {
@@ -5231,7 +6309,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `DELETE /v1/organizations/{organizationId}/services/{serviceId}`
 
-Deletes the service. The service must be in stopped state and is deleted asynchronously after this method call.
+Deletes the service. The service must be in stopped state and is deleted asynchronously after this method call. Returns 409 if deletion protection is enabled for the service.
 
 <h3 id="delete-service-parameters">Parameters</h3>
 
@@ -5367,7 +6445,8 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
         }
       ]
     },
-    "enableCoreDumps": true
+    "enableCoreDumps": true,
+    "deletionProtection": true
   }'
 ```
 
@@ -5424,7 +6503,8 @@ Updates basic service details like service name or IP access list.
       }
     ]
   },
-  "enableCoreDumps": true
+  "enableCoreDumps": true,
+  "deletionProtection": true
 }
 ```
 
@@ -5443,6 +6523,7 @@ Updates basic service details like service name or IP access list.
 |» transparentDataEncryptionKeyId|body|string|false|The id of the key to rotate|
 |» tags|body|[InstanceTagsPatch](#schemainstancetagspatch)|false|none|
 |» enableCoreDumps|body|boolean|false|If true, the underlying infra is enabled for collecting core dumps.|
+|» deletionProtection|body|boolean|false|When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off. Changing it in either direction requires the `control-plane:service:delete` permission on the service, in addition to `control-plane:service:manage`; sending the current value changes nothing and needs no extra permission. ClickStack services can't be updated through the API; manage their deletion protection in the console.|
 
 #### Enumerated Values
 
@@ -5520,6 +6601,7 @@ Updates basic service details like service name or IP access list.
       }
     ],
     "enableCoreDumps": true,
+    "deletionProtection": true,
     "scalingSchedule": {
       "entries": [
         {
@@ -6170,6 +7252,7 @@ Starts, stops, or wakes a service. The `start` and `stop` commands require the `
       }
     ],
     "enableCoreDumps": true,
+    "deletionProtection": true,
     "scalingSchedule": {
       "entries": [
         {
@@ -6301,7 +7384,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 This operation is deprecated
 </aside>
 
-Updates minimum and maximum total memory limits and idle mode scaling behavior for the service. The memory settings are available only for "production" services and must be a multiple of 12 starting from 24GB. Please contact support to enable adjustment of numReplicas.
+Updates minimum and maximum total memory limits and idle mode scaling behavior for the service. The memory settings are available only for "production" services and must be a multiple of 12 starting from 24GB. Gen 2 (v2-default) services use a fixed size and cannot idle: minTotalMemoryGb must equal maxTotalMemoryGb and idleScaling cannot be true.
 
 > Body parameter
 
@@ -6324,7 +7407,7 @@ Updates minimum and maximum total memory limits and idle mode scaling behavior f
 |body|body|[ServiceScalingPatchRequest](#schemaservicescalingpatchrequest)|false|none|
 |» minTotalMemoryGb|body|number|false|**Deprecated.** DEPRECATED - inaccurate for services with non-default numbers of replicas. Use `minReplicaMemoryGb` instead. Minimum memory of three workers during auto-scaling in Gb. Available only for 'production' services. Must be a multiple of 12 and greater than or equal to 24. Always absent for horizontal-autoscaling services (replica count is variable).|
 |» maxTotalMemoryGb|body|number|false|**Deprecated.** DEPRECATED - inaccurate for services with non-default numbers of replicas. Use `maxReplicaMemoryGb` instead. Maximum memory of three workers during auto-scaling in Gb. Available only for 'production' services. Must be a multiple of 12 and lower than or equal to 360 for non paid services or 1068 for paid services. Always absent for horizontal-autoscaling services (replica count is variable).|
-|» numReplicas|body|integer|false|Number of replicas for the service. The number of replicas must be between 2 and 50 for the first service in a warehouse. Services that are created in an existing warehouse can have a number of replicas as low as 1. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers.|
+|» numReplicas|body|integer|false|Number of replicas for the service. The number of replicas must be between 1 and 50. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers.|
 |» idleScaling|body|boolean|false|When set to true the service is allowed to scale down to zero when idle. True by default.|
 |» idleTimeoutMinutes|body|number|false|Set minimum idling timeout (in minutes). Must be >= 5 minutes.|
 
@@ -6396,6 +7479,7 @@ Updates minimum and maximum total memory limits and idle mode scaling behavior f
       }
     ],
     "enableCoreDumps": true,
+    "deletionProtection": true,
     "scalingSchedule": {
       "entries": [
         {
@@ -6520,13 +7604,14 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "minReplicas": 1,
     "maxReplicas": 5,
     "idleScaling": true,
-    "idleTimeoutMinutes": 0
+    "idleTimeoutMinutes": 0,
+    "profile": "string"
   }'
 ```
 
 `PATCH /v1/organizations/{organizationId}/services/{serviceId}/replicaScaling`
 
-Updates minimum and maximum memory limits per replica and idle mode scaling behavior for the service. Supports both vertical autoscaling (fixed replica count, variable memory) and horizontal autoscaling (variable replica count, fixed memory). The memory settings are available only for "production" services and must be a multiple of 4 starting from 8GB. For vertical autoscaling, please contact support to enable adjustment of numReplicas. For horizontal autoscaling (autoscalingMode "horizontal" with minReplicas/maxReplicas), contact support to enable the feature for your organization.
+Updates minimum and maximum memory limits per replica and idle mode scaling behavior for the service. Supports both vertical autoscaling (fixed replica count, variable memory) and horizontal autoscaling (variable replica count, fixed memory). The memory settings are available only for "production" services and must be a multiple of 4 starting from 8GB. For horizontal autoscaling (autoscalingMode "horizontal" with minReplicas/maxReplicas), contact support to enable the feature for your organization. An optional profile changes the custom instance profile in place. Omit it to keep the current profile. On a BYOC service, equal memory values without a profile must be one of the following sizes: 48, 116, 172, 232; send a BYOC profile to pin a size from the infrastructure's catalogue. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb scales the service vertically between sizes listed by the serviceProfiles endpoint; this unpins any BYOC profile, and the service then reports 'v1-default'. Gen 2 (v2-default) services use a fixed size and cannot idle: minReplicaMemoryGb must equal maxReplicaMemoryGb, the replica count is fixed (numReplicas, or equal minReplicas and maxReplicas in either mode), and idleScaling cannot be true.
 
 > Body parameter
 
@@ -6539,7 +7624,8 @@ Updates minimum and maximum memory limits per replica and idle mode scaling beha
   "minReplicas": 1,
   "maxReplicas": 5,
   "idleScaling": true,
-  "idleTimeoutMinutes": 0
+  "idleTimeoutMinutes": 0,
+  "profile": "string"
 }
 ```
 
@@ -6553,11 +7639,12 @@ Updates minimum and maximum memory limits per replica and idle mode scaling beha
 |» minReplicaMemoryGb|body|number|false|Minimum auto-scaling memory in Gb for a single replica. Available only for 'production' services. Must be a multiple of 4 and greater than or equal to 8. A range in vertical autoscaling; equal to maxReplicaMemoryGb in horizontal.|
 |» maxReplicaMemoryGb|body|number|false|Maximum auto-scaling memory in Gb for a single replica. Available only for 'production' services. Must be a multiple of 4 and lower than or equal to 120 for non paid services or 356 for paid services. A range in vertical autoscaling; equal to minReplicaMemoryGb in horizontal.|
 |» autoscalingMode|body|string|false|Target autoscaling mode. Omit to keep the service on its current mode. "vertical" runs a fixed replica count while memory scales between minReplicaMemoryGb and maxReplicaMemoryGb; "horizontal" scales the replica count between minReplicas and maxReplicas at a fixed per-replica memory (minReplicaMemoryGb equal to maxReplicaMemoryGb). Switching to horizontal requires the feature to be enabled for the organization.|
-|» numReplicas|body|integer|false|Fixed replica count for vertical autoscaling (autoscalingMode "vertical"). Mutually exclusive with minReplicas/maxReplicas. When switching to vertical (autoscalingMode "vertical") with numReplicas and no memory, the service's stored baseline per-replica memory is kept as the new vertical range. Please contact support to enable adjustment of numReplicas.|
+|» numReplicas|body|integer|false|Fixed replica count for vertical autoscaling (autoscalingMode "vertical"). Mutually exclusive with minReplicas/maxReplicas. When switching to vertical (autoscalingMode "vertical") with numReplicas and no memory, the service's stored baseline per-replica memory is kept as the new vertical range.|
 |» minReplicas|body|integer|false|Minimum number of replicas. A minReplicas/maxReplicas band scales the replica count in horizontal autoscaling (autoscalingMode "horizontal"). Must be provided together with maxReplicas. Mutually exclusive with numReplicas. Requires horizontal autoscaling to be enabled for the service, unless autoscalingMode is omitted or "vertical" and minReplicas equals maxReplicas (an equal band is then an accepted vertical fixed count and needs no horizontal entitlement).|
 |» maxReplicas|body|integer|false|Maximum number of replicas. A minReplicas/maxReplicas band scales the replica count in horizontal autoscaling (autoscalingMode "horizontal"). Must be provided together with minReplicas. Mutually exclusive with numReplicas. Requires horizontal autoscaling to be enabled for the service, unless autoscalingMode is omitted or "vertical" and minReplicas equals maxReplicas (an equal band is then an accepted vertical fixed count and needs no horizontal entitlement).|
 |» idleScaling|body|boolean|false|When set to true the service is allowed to scale down to zero when idle. True by default.|
 |» idleTimeoutMinutes|body|number|false|Set minimum idling timeout (in minutes). Must be >= 5 minutes.|
+|» profile|body|string|false|Custom instance profile. Omit to leave the current profile unchanged. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. A BYOC profile (e.g. 'v1-standard-byoc-16') is a pin: minReplicaMemoryGb and maxReplicaMemoryGb must both be sent and equal that profile's memory size, and a memory range cannot be combined with it. To move a pinned BYOC service to a memory range, send the range without a profile, or with 'v1-default'. A non-BYOC custom profile other than v2-default cannot be combined with a memory change; send the profile alone to change only the name. The profile cannot switch a service between Gen 1 and Gen 2 hardware (to or from 'v2-default'): the request is rejected with a 400 error; contact support to move it. While a schedule entry is active the new profile is stored on the schedule base config and the running service keeps the entry profile until the window ends. Use the serviceProfiles endpoint to list the profiles available to the organization.|
 
 #### Enumerated Values
 
@@ -6634,6 +7721,7 @@ Updates minimum and maximum memory limits per replica and idle mode scaling beha
       }
     ],
     "enableCoreDumps": true,
+    "deletionProtection": true,
     "scalingSchedule": {
       "entries": [
         {
@@ -6983,7 +8071,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/services/{serviceId}/scalingSchedule`
 
-Returns the autoscaling schedule for a service. Returns 404 if no schedule has been configured or if the schedule was cleared. Requires the scheduled autoscaling feature to be enabled for the organization.
+Returns the autoscaling schedule for a service. Returns 404 if no schedule has been configured or if the schedule was cleared. Requires the scheduled autoscaling feature to be enabled for the organization. On a Gen 2 (v2-default) service, no entry has a memory range, a replica range or idling on; fields an entry leaves to the base config are omitted.
 
 <h3 id="get-service-autoscaling-schedule-parameters">Parameters</h3>
 
@@ -7133,7 +8221,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `POST /v1/organizations/{organizationId}/services/{serviceId}/scalingSchedule`
 
-Creates or fully replaces the autoscaling schedule for a service. Pass an empty `entries` array to clear the schedule — a subsequent GET will return 404, and the response will contain an empty `baseConfig` (all fields absent). The base scaling config (applied when no entry is active) is managed separately via the `replicaScaling` endpoint. Requires the scheduled autoscaling feature to be enabled for the organization.
+Creates or fully replaces the autoscaling schedule for a service. Pass an empty `entries` array to clear the schedule — a subsequent GET will return 404, and the response will contain an empty `baseConfig` (all fields absent). The base scaling config (applied when no entry is active) is managed separately via the `replicaScaling` endpoint. Requires the scheduled autoscaling feature to be enabled for the organization. Gen 2 (v2-default) services use a fixed size and cannot idle. An entry may leave out fields it takes from the base config, but each entry combined with those fields must have equal minReplicaMemoryGb and maxReplicaMemoryGb, a fixed replica count (numReplicas, or equal minReplicas and maxReplicas), and idling off; otherwise the request is rejected.
 
 > Body parameter
 
@@ -7700,6 +8788,585 @@ To perform this operation, you must be authenticated by means of one of the foll
 basicAuth
 </aside>
 
+## List service JWT providers
+
+<a id="opIdjwtProviderGetList"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/services/497f6eca-6276-4993-bfeb-53cbbbba6f08/jwtProviders \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v1/organizations/{organizationId}/services/{serviceId}/jwtProviders`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns the JWT authentication providers configured on the service. A service has at most 5 providers.
+
+Errors:
+- 401: missing, invalid, or disabled API key.
+- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).
+- 404: service does not exist or is not visible to the caller.
+
+<h3 id="list-service-jwt-providers-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the service.|
+|serviceId|path|string(uuid)|true|ID of the service.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": [
+    {
+      "name": "my-oidc-provider",
+      "issuer": "https://auth.example.com",
+      "audience": "my-clickhouse-service",
+      "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+      "rolesClaim": "clickhouse:roles"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="list-service-jwt-providers-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="list-service-jwt-providers-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[[JwtProvider](#schemajwtprovider)]|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Create service JWT provider
+
+<a id="opIdjwtProviderCreate"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/services/497f6eca-6276-4993-bfeb-53cbbbba6f08/jwtProviders \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "name": "my-oidc-provider",
+    "issuer": "https://auth.example.com",
+    "audience": "my-clickhouse-service",
+    "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+    "rolesClaim": "clickhouse:roles"
+  }'
+```
+
+`POST /v1/organizations/{organizationId}/services/{serviceId}/jwtProviders`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Adds a JWT authentication provider to the service. Users can then connect to the service with a JWT issued by the provider; they are signed in as the `default` user and receive the roles listed in the roles claim. The JWKS URL is fetched and validated before the provider is saved. If the service already has a provider with this name and the same configuration, the request succeeds without changing it, so it is safe to retry.
+
+Errors:
+- 400: invalid field values, the JWKS URL is unreachable or does not return a key set with a supported signing key, or the service already has 5 providers.
+- 401: missing, invalid, or disabled API key.
+- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).
+- 404: service does not exist or is not visible to the caller.
+- 409: the service already has a provider with this name and a different configuration.
+
+> Body parameter
+
+```json
+{
+  "name": "my-oidc-provider",
+  "issuer": "https://auth.example.com",
+  "audience": "my-clickhouse-service",
+  "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+  "rolesClaim": "clickhouse:roles"
+}
+```
+
+<h3 id="create-service-jwt-provider-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the service.|
+|serviceId|path|string(uuid)|true|ID of the service.|
+|body|body|[JwtProviderPostRequest](#schemajwtproviderpostrequest)|false|none|
+|» name|body|string|true|Name of the JWT provider, unique within the service. Lowercase letters, digits and hyphens, at most 59 characters. Cannot be one of, or start with one of followed by a hyphen: `cloud`, `clickhouse`, `ch`, `internal`, `system`, `default`.|
+|» issuer|body|string|true|Expected `iss` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|» audience|body|string|true|Expected `aud` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|» jwksUrl|body|string|true|Public `https://` URL of the JSON Web Key Set used to verify token signatures, at most 256 characters. The key set must contain at least one supported signing key: RS256 (RSA), or on ClickHouse 26.8 and later also ES256, ES384 or ES512 (EC); it is fetched and validated when the provider is created or updated.|
+|» rolesClaim|body|string|false|Name of the token claim that lists the ClickHouse roles to grant the user. Printable ASCII without whitespace, at most 256 characters, and not a registered JWT claim (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`). Omit to configure no roles claim.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "name": "my-oidc-provider",
+    "issuer": "https://auth.example.com",
+    "audience": "my-clickhouse-service",
+    "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+    "rolesClaim": "clickhouse:roles"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="create-service-jwt-provider-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="create-service-jwt-provider-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[JwtProvider](#schemajwtprovider)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Get service JWT provider
+
+<a id="opIdjwtProviderGet"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/services/497f6eca-6276-4993-bfeb-53cbbbba6f08/jwtProviders/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v1/organizations/{organizationId}/services/{serviceId}/jwtProviders/{jwtProviderName}`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns a single JWT authentication provider of the service.
+
+Errors:
+- 400: invalid provider name.
+- 401: missing, invalid, or disabled API key.
+- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).
+- 404: service does not exist, is not visible to the caller, or has no provider with this name.
+
+<h3 id="get-service-jwt-provider-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the service.|
+|serviceId|path|string(uuid)|true|ID of the service.|
+|jwtProviderName|path|string|true|Name of the JWT authentication provider.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "name": "my-oidc-provider",
+    "issuer": "https://auth.example.com",
+    "audience": "my-clickhouse-service",
+    "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+    "rolesClaim": "clickhouse:roles"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="get-service-jwt-provider-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="get-service-jwt-provider-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[JwtProvider](#schemajwtprovider)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Update service JWT provider
+
+<a id="opIdjwtProviderUpdate"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/services/497f6eca-6276-4993-bfeb-53cbbbba6f08/jwtProviders/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "issuer": "https://auth.example.com",
+    "audience": "my-clickhouse-service",
+    "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+    "rolesClaim": "clickhouse:roles"
+  }'
+```
+
+`PUT /v1/organizations/{organizationId}/services/{serviceId}/jwtProviders/{jwtProviderName}`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Replaces the configuration of a JWT authentication provider. The JWKS URL is fetched and validated before the change is saved.
+
+Errors:
+- 400: invalid provider name or field values, or the JWKS URL is unreachable or does not return a key set with a supported signing key.
+- 401: missing, invalid, or disabled API key.
+- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).
+- 404: service does not exist, is not visible to the caller, or has no provider with this name.
+
+> Body parameter
+
+```json
+{
+  "issuer": "https://auth.example.com",
+  "audience": "my-clickhouse-service",
+  "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+  "rolesClaim": "clickhouse:roles"
+}
+```
+
+<h3 id="update-service-jwt-provider-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the service.|
+|serviceId|path|string(uuid)|true|ID of the service.|
+|jwtProviderName|path|string|true|Name of the JWT authentication provider.|
+|body|body|[JwtProviderPutRequest](#schemajwtproviderputrequest)|false|none|
+|» issuer|body|string|true|Expected `iss` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|» audience|body|string|true|Expected `aud` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|» jwksUrl|body|string|true|Public `https://` URL of the JSON Web Key Set used to verify token signatures, at most 256 characters. The key set must contain at least one supported signing key: RS256 (RSA), or on ClickHouse 26.8 and later also ES256, ES384 or ES512 (EC); it is fetched and validated when the provider is created or updated.|
+|» rolesClaim|body|string|false|Name of the token claim that lists the ClickHouse roles to grant the user. Printable ASCII without whitespace, at most 256 characters, and not a registered JWT claim (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`). The request replaces the whole provider configuration, so omitting this field removes an existing roles claim.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "name": "my-oidc-provider",
+    "issuer": "https://auth.example.com",
+    "audience": "my-clickhouse-service",
+    "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+    "rolesClaim": "clickhouse:roles"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="update-service-jwt-provider-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="update-service-jwt-provider-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[JwtProvider](#schemajwtprovider)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Delete service JWT provider
+
+<a id="opIdjwtProviderDelete"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/services/497f6eca-6276-4993-bfeb-53cbbbba6f08/jwtProviders/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`DELETE /v1/organizations/{organizationId}/services/{serviceId}/jwtProviders/{jwtProviderName}`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Removes a JWT authentication provider from the service. Tokens issued by the provider are no longer accepted.
+
+Errors:
+- 400: invalid provider name.
+- 401: missing, invalid, or disabled API key.
+- 403: caller lacks `control-plane:service:manage` on the service, or the organization does not have the JWT authentication providers feature (Enterprise tier).
+- 404: service does not exist, is not visible to the caller, or has no provider with this name.
+
+<h3 id="delete-service-jwt-provider-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the service.|
+|serviceId|path|string(uuid)|true|ID of the service.|
+|jwtProviderName|path|string|true|Name of the JWT authentication provider.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="delete-service-jwt-provider-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="delete-service-jwt-provider-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
 ## List ClickHouse settings
 
 <a id="opIdserviceClickhouseSettingsListGet"></a>
@@ -8149,7 +9816,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `DELETE /v1/organizations/{organizationId}/services/{serviceId}/clickhouseSettings/{settingName}`
 
-**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Removes a previously-configured ClickHouse setting, reverting its effective value to the platform default. Settings under `spec.extraConfig.server.*` (e.g. `keep_alive_timeout`, `shared_merge_tree_disable_merges_and_mutations_assignment`) trigger a ClickHouse server rollout restart; other settings propagate to all replicas after a short delay. Deleting a setting that was never configured is a no-op (200 OK).
+**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Removes a previously-configured ClickHouse setting, reverting its effective value to the platform default. The reset is applied before this endpoint responds, so the response `warnings` describe what happens next and cannot prevent it. To find out beforehand, check the setting's `warning` field in the [schema endpoint](#tag/Service/operation/serviceClickhouseSettingsSchemaGet) (`GET /v1/organizations/{organizationId}/services/{serviceId}/clickhouseSettings/schema`, one entry per setting in `settings`). It says whether changing or resetting the setting triggers a ClickHouse server rollout restart (e.g. `compatibility`, `keep_alive_timeout`, `mark_cache_ram_ratio`) or takes effect after a short delay. When the setting was configured, the response `warnings` repeat that same message. Deleting a setting that was never configured is a no-op (200 OK) and returns no warnings.
 
 <h3 id="reset-clickhouse-setting-to-default-parameters">Parameters</h3>
 
@@ -8166,7 +9833,15 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 ```json
 {
   "status": 200,
-  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "warnings": [
+      {
+        "name": "compatibility",
+        "message": "Changing the compatibility version without comprehensive testing can cause query failures or instability."
+      }
+    ]
+  }
 }
 ```
 
@@ -8206,6 +9881,7 @@ Status Code **200**
 |---|---|---|---|---|
 |status|number|false|none|HTTP status code.|
 |requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[ServiceClickhouseSettingDeleteResponse](#schemaserviceclickhousesettingdeleteresponse)|false|none|none|
 
 Status Code **400**
 
@@ -9684,7 +11360,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `PATCH /v1/organizations/{organizationId}/services/{serviceId}/snapshotConfiguration`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Updates the service snapshot configuration. Requires ADMIN auth key role. Enables or disables scheduled snapshots and sets the cadence; when enabled, gap and timeFrame (in minutes) must together be one of the supported (gap, timeFrame) pairs: (30, 1440), (60, 2880). Provide at least one of enabled, gap, timeFrame; omit a field to leave it unchanged (null is not accepted). Enabling snapshots or changing the cadence requires an eligible organization (see the organization's capabilities.snapshots).
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Updates the service snapshot configuration. Requires ADMIN auth key role. Enables or disables scheduled snapshots and sets the cadence; when enabled, the resulting configuration (in minutes) must satisfy: gap must be one of 10, 20, 30, 60; timeFrame must be a whole number of days (a multiple of 1440), at least 1440; and timeFrame / gap (the number of snapshots the configuration keeps) must not exceed 300. Provide at least one of enabled, gap, timeFrame; omit a field to leave it unchanged (null is not accepted). Gap or timeFrame may be changed on its own; the rules are checked against the configuration that results from merging the request into the stored one. After a change to gap or timeFrame, snapshots taken under the previous configuration expire by the new timeFrame, and cleanup also deletes the oldest snapshots beyond the limit of 300, including ones still inside the new timeFrame. Enabling snapshots or changing the cadence requires an eligible organization (see the organization's capabilities.snapshots).
 
 > Body parameter
 
@@ -9704,8 +11380,8 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |serviceId|path|string(uuid)|true|ID of the service.|
 |body|body|[SnapshotConfigurationPatchRequest](#schemasnapshotconfigurationpatchrequest)|false|none|
 |» enabled|body|boolean|false|Whether scheduled snapshots are enabled for the service.|
-|» gap|body|number|false|Interval between snapshots, in minutes. Set together with timeFrame; only supported preset pairs are accepted.|
-|» timeFrame|body|number|false|Retention window the snapshots cover, in minutes. Set together with gap; only supported preset pairs are accepted.|
+|» gap|body|number|false|Interval between snapshots, in minutes. One of 10, 20, 30, 60. Validated when an enabled configuration is saved; stored values are not re-validated on read.|
+|» timeFrame|body|number|false|Retention window the snapshots cover, in minutes. A whole number of days (a multiple of 1440), at least 1440; timeFrame / gap must not exceed 300 snapshots. Validated when an enabled configuration is saved; stored values are not re-validated on read.|
 
 > Example responses
 
@@ -10779,7 +12455,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/postgres/prometheus`
 
-**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns Prometheus metrics for all PostgreSQL services in an organization. Maximum 100 services supported.
+Returns Prometheus metrics for all PostgreSQL services in an organization. Maximum 100 services supported.
 
 <h3 id="get-organization-postgresql-metrics-parameters">Parameters</h3>
 
@@ -10854,7 +12530,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}/prometheus`
 
-**Disclaimer:** This beta endpoint is evolving; the API contract may change. <br /><br /> Returns Prometheus metrics for a PostgreSQL service.
+Returns Prometheus metrics for a PostgreSQL service.
 
 <h3 id="get-postgresql-service-metrics-parameters">Parameters</h3>
 
@@ -10932,7 +12608,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/services/{serviceId}/clickpipes`
 
-Returns a list of ClickPipes.
+Returns the ClickPipes in the specified service. If neither `limit` nor `cursor` is provided, returns all ClickPipes. In this case, `limit` and `totalCount` both equal the number of ClickPipes, and `nextCursor` is `null`. To paginate results, provide `limit` or `cursor`. Paginated results are sorted by creation date in descending order. Use `limit` to set the page size (default: 50). The server caps `limit` at its maximum page size and may return fewer results. Each response includes `limit`, `totalCount`, and `nextCursor`. To retrieve the next page, pass `nextCursor` as the `cursor` query parameter. Continue until `nextCursor` is `null`.
 
 <h3 id="list-clickpipes-parameters">Parameters</h3>
 
@@ -10940,6 +12616,8 @@ Returns a list of ClickPipes.
 |---|---|---|---|---|
 |organizationId|path|string(uuid)|true|ID of the organization that owns the service.|
 |serviceId|path|string(uuid)|true|ID of the service that owns the ClickPipe.|
+|limit|query|integer|false|Maximum number of results to return.|
+|cursor|query|string|false|Opaque cursor from a previous response's `nextCursor`, marking where to resume the list.|
 
 > Example responses
 
@@ -10978,7 +12656,10 @@ Returns a list of ClickPipes.
             "type": "confluent",
             "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
             "authentication": "PLAIN",
-            "caCertificate": "string"
+            "caCertificate": "string",
+            "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+            "scope": "schema_registry",
+            "audience": "https://schema-registry.example.com"
           },
           "caCertificate": "string",
           "reversePrivateEndpointIds": [
@@ -10992,6 +12673,7 @@ Returns a list of ClickPipes.
           "format": "JSONEachRow",
           "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
           "delimiter": ",",
+          "skipFirstLines": 1,
           "compression": "auto",
           "isContinuous": true,
           "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -11048,11 +12730,12 @@ Returns a list of ClickPipes.
             "replicationMode": "cdc",
             "replicationSlotName": "clickpipes_slot",
             "allowNullableColumns": false,
-            "initialLoadParallelism": 1,
+            "initialLoadParallelism": 4,
             "snapshotNumRowsPerPartition": 100000,
             "snapshotNumberOfParallelTables": 1,
             "enableFailoverSlots": false,
-            "deleteOnMerge": false
+            "deleteOnMerge": false,
+            "useJsonNativeFormat": false
           },
           "tableMappings": [
             {
@@ -11092,10 +12775,11 @@ Returns a list of ClickPipes.
             "replicationMechanism": "GTID",
             "useCompression": false,
             "allowNullableColumns": false,
-            "initialLoadParallelism": 1,
+            "initialLoadParallelism": 4,
             "snapshotNumRowsPerPartition": 100000,
             "snapshotNumberOfParallelTables": 1,
-            "deleteOnMerge": false
+            "deleteOnMerge": false,
+            "useJsonNativeFormat": false
           },
           "tableMappings": [
             {
@@ -11128,9 +12812,9 @@ Returns a list of ClickPipes.
             "pullWindowSizeSeconds": 86400,
             "syncCron": "0 * * * *",
             "allowNullableColumns": true,
-            "initialLoadParallelism": 0,
+            "initialLoadParallelism": 1,
             "snapshotNumRowsPerPartition": 0,
-            "snapshotNumberOfParallelTables": 0
+            "snapshotNumberOfParallelTables": 1
           },
           "tableMappings": [
             {
@@ -11163,7 +12847,7 @@ Returns a list of ClickPipes.
             "syncIntervalSeconds": 60,
             "pullBatchSize": 100000,
             "replicationMode": "cdc",
-            "initialLoadParallelism": 1,
+            "initialLoadParallelism": 4,
             "snapshotNumRowsPerPartition": 100000,
             "snapshotNumberOfParallelTables": 1,
             "deleteOnMerge": false,
@@ -11238,6 +12922,7 @@ Returns a list of ClickPipes.
         "object_storage_polling_interval_ms": 30000,
         "object_storage_max_insert_bytes": 10737418240,
         "object_storage_max_file_count": 100,
+        "object_storage_max_file_size": 10737418240,
         "clickhouse_max_threads": 8,
         "clickhouse_max_insert_threads": 1,
         "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -11250,7 +12935,10 @@ Returns a list of ClickPipes.
       "createdAt": "1970-01-01T00:00:00Z",
       "updatedAt": "1970-01-01T00:00:00Z"
     }
-  ]
+  ],
+  "limit": 0,
+  "totalCount": 0,
+  "nextCursor": "string"
 }
 ```
 
@@ -11291,6 +12979,9 @@ Status Code **200**
 |status|number|false|none|HTTP status code.|
 |requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
 |result|[[ClickPipe](#schemaclickpipe)]|false|none|none|
+|limit|integer|false|none|Maximum number of results returned in this page.|
+|totalCount|integer \| null|false|none|Total number of results across all pages. It has only informative value, thus is not guaranteed and it is provided on a best-effort basis. Null if the total count is unknown.|
+|nextCursor|string \| null|false|none|Cursor for the next page, to be sent as the `cursor` query parameter. Null on the last page.|
 
 Status Code **400**
 
@@ -11345,6 +13036,9 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
           "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
           "authentication": "PLAIN",
           "caCertificate": "string",
+          "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+          "scope": "schema_registry",
+          "audience": "https://schema-registry.example.com",
           "credentials": {
             "username": "string",
             "password": "string"
@@ -11367,6 +13061,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
         "format": "JSONEachRow",
         "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
         "delimiter": ",",
+        "skipFirstLines": 1,
         "compression": "auto",
         "isContinuous": true,
         "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -11434,11 +13129,12 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
           "replicationMode": "cdc",
           "replicationSlotName": "clickpipes_slot",
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "enableFailoverSlots": false,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "authentication": "IAM_ROLE",
         "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -11481,10 +13177,11 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
           "replicationMechanism": "GTID",
           "useCompression": false,
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "authentication": "basic",
         "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -11524,9 +13221,9 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
           "pullWindowSizeSeconds": 86400,
           "syncCron": "0 * * * *",
           "allowNullableColumns": true,
-          "initialLoadParallelism": 0,
+          "initialLoadParallelism": 1,
           "snapshotNumRowsPerPartition": 0,
-          "snapshotNumberOfParallelTables": 0
+          "snapshotNumberOfParallelTables": 1
         },
         "tableMappings": [
           {
@@ -11566,7 +13263,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
           "syncIntervalSeconds": 60,
           "pullBatchSize": 100000,
           "replicationMode": "cdc",
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "deleteOnMerge": false,
@@ -11651,6 +13348,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       "object_storage_polling_interval_ms": 30000,
       "object_storage_max_insert_bytes": 10737418240,
       "object_storage_max_file_count": 100,
+      "object_storage_max_file_size": 10737418240,
       "clickhouse_max_threads": 8,
       "clickhouse_max_insert_threads": 1,
       "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -11691,6 +13389,9 @@ Create a new ClickPipe.
         "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
         "authentication": "PLAIN",
         "caCertificate": "string",
+        "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+        "scope": "schema_registry",
+        "audience": "https://schema-registry.example.com",
         "credentials": {
           "username": "string",
           "password": "string"
@@ -11713,6 +13414,7 @@ Create a new ClickPipe.
       "format": "JSONEachRow",
       "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
       "delimiter": ",",
+      "skipFirstLines": 1,
       "compression": "auto",
       "isContinuous": true,
       "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -11780,11 +13482,12 @@ Create a new ClickPipe.
         "replicationMode": "cdc",
         "replicationSlotName": "clickpipes_slot",
         "allowNullableColumns": false,
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
         "enableFailoverSlots": false,
-        "deleteOnMerge": false
+        "deleteOnMerge": false,
+        "useJsonNativeFormat": false
       },
       "authentication": "IAM_ROLE",
       "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -11827,10 +13530,11 @@ Create a new ClickPipe.
         "replicationMechanism": "GTID",
         "useCompression": false,
         "allowNullableColumns": false,
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
-        "deleteOnMerge": false
+        "deleteOnMerge": false,
+        "useJsonNativeFormat": false
       },
       "authentication": "basic",
       "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -11870,9 +13574,9 @@ Create a new ClickPipe.
         "pullWindowSizeSeconds": 86400,
         "syncCron": "0 * * * *",
         "allowNullableColumns": true,
-        "initialLoadParallelism": 0,
+        "initialLoadParallelism": 1,
         "snapshotNumRowsPerPartition": 0,
-        "snapshotNumberOfParallelTables": 0
+        "snapshotNumberOfParallelTables": 1
       },
       "tableMappings": [
         {
@@ -11912,7 +13616,7 @@ Create a new ClickPipe.
         "syncIntervalSeconds": 60,
         "pullBatchSize": 100000,
         "replicationMode": "cdc",
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
         "deleteOnMerge": false,
@@ -11997,6 +13701,7 @@ Create a new ClickPipe.
     "object_storage_polling_interval_ms": 30000,
     "object_storage_max_insert_bytes": 10737418240,
     "object_storage_max_file_count": 100,
+    "object_storage_max_file_size": 10737418240,
     "clickhouse_max_threads": 8,
     "clickhouse_max_insert_threads": 1,
     "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -12022,7 +13727,7 @@ Create a new ClickPipe.
 |» destination|body|[ClickPipeMutateDestination](#schemaclickpipemutatedestination)|true|none|
 |» fieldMappings|body|[[ClickPipeFieldMapping](#schemaclickpipefieldmapping)]|false|Field mappings of the ClickPipe. Note that all destination columns must be included in the mappings.|
 |» scaling|body|[ClickPipeScaling](#schemaclickpipescaling)|false|none|
-|» settings|body|[ClickPipeSettings](#schemaclickpipesettings)|false|none|
+|» settings|body|[ClickPipeSettingsPutRequest](#schemaclickpipesettingsputrequest)|false|none|
 |» startPaused|body|boolean|false|Create the ClickPipe in the Stopped state instead of starting ingestion immediately. Start it later with the state endpoint. Not supported for database ClickPipes.|
 
 > Example responses
@@ -12061,7 +13766,10 @@ Create a new ClickPipe.
           "type": "confluent",
           "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
           "authentication": "PLAIN",
-          "caCertificate": "string"
+          "caCertificate": "string",
+          "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+          "scope": "schema_registry",
+          "audience": "https://schema-registry.example.com"
         },
         "caCertificate": "string",
         "reversePrivateEndpointIds": [
@@ -12075,6 +13783,7 @@ Create a new ClickPipe.
         "format": "JSONEachRow",
         "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
         "delimiter": ",",
+        "skipFirstLines": 1,
         "compression": "auto",
         "isContinuous": true,
         "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -12131,11 +13840,12 @@ Create a new ClickPipe.
           "replicationMode": "cdc",
           "replicationSlotName": "clickpipes_slot",
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "enableFailoverSlots": false,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -12175,10 +13885,11 @@ Create a new ClickPipe.
           "replicationMechanism": "GTID",
           "useCompression": false,
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -12211,9 +13922,9 @@ Create a new ClickPipe.
           "pullWindowSizeSeconds": 86400,
           "syncCron": "0 * * * *",
           "allowNullableColumns": true,
-          "initialLoadParallelism": 0,
+          "initialLoadParallelism": 1,
           "snapshotNumRowsPerPartition": 0,
-          "snapshotNumberOfParallelTables": 0
+          "snapshotNumberOfParallelTables": 1
         },
         "tableMappings": [
           {
@@ -12246,7 +13957,7 @@ Create a new ClickPipe.
           "syncIntervalSeconds": 60,
           "pullBatchSize": 100000,
           "replicationMode": "cdc",
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "deleteOnMerge": false,
@@ -12321,6 +14032,7 @@ Create a new ClickPipe.
       "object_storage_polling_interval_ms": 30000,
       "object_storage_max_insert_bytes": 10737418240,
       "object_storage_max_file_count": 100,
+      "object_storage_max_file_size": 10737418240,
       "clickhouse_max_threads": 8,
       "clickhouse_max_insert_threads": 1,
       "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -12409,7 +14121,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/services/{serviceId}/clickpipes/context`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns service-level ClickPipes capabilities and Private Preview workload identity context, including the GCP service account to grant access to customer source resources.
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns service-level ClickPipes capabilities and Beta workload identity context, including the GCP service account to grant access to customer source resources.
 
 <h3 id="get-clickpipes-service-context-parameters">Parameters</h3>
 
@@ -12555,7 +14267,10 @@ Returns the specified ClickPipe.
           "type": "confluent",
           "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
           "authentication": "PLAIN",
-          "caCertificate": "string"
+          "caCertificate": "string",
+          "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+          "scope": "schema_registry",
+          "audience": "https://schema-registry.example.com"
         },
         "caCertificate": "string",
         "reversePrivateEndpointIds": [
@@ -12569,6 +14284,7 @@ Returns the specified ClickPipe.
         "format": "JSONEachRow",
         "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
         "delimiter": ",",
+        "skipFirstLines": 1,
         "compression": "auto",
         "isContinuous": true,
         "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -12625,11 +14341,12 @@ Returns the specified ClickPipe.
           "replicationMode": "cdc",
           "replicationSlotName": "clickpipes_slot",
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "enableFailoverSlots": false,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -12669,10 +14386,11 @@ Returns the specified ClickPipe.
           "replicationMechanism": "GTID",
           "useCompression": false,
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -12705,9 +14423,9 @@ Returns the specified ClickPipe.
           "pullWindowSizeSeconds": 86400,
           "syncCron": "0 * * * *",
           "allowNullableColumns": true,
-          "initialLoadParallelism": 0,
+          "initialLoadParallelism": 1,
           "snapshotNumRowsPerPartition": 0,
-          "snapshotNumberOfParallelTables": 0
+          "snapshotNumberOfParallelTables": 1
         },
         "tableMappings": [
           {
@@ -12740,7 +14458,7 @@ Returns the specified ClickPipe.
           "syncIntervalSeconds": 60,
           "pullBatchSize": 100000,
           "replicationMode": "cdc",
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "deleteOnMerge": false,
@@ -12815,6 +14533,7 @@ Returns the specified ClickPipe.
       "object_storage_polling_interval_ms": 30000,
       "object_storage_max_insert_bytes": 10737418240,
       "object_storage_max_file_count": 100,
+      "object_storage_max_file_size": 10737418240,
       "clickhouse_max_threads": 8,
       "clickhouse_max_insert_threads": 1,
       "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -13209,6 +14928,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       "object_storage_polling_interval_ms": 30000,
       "object_storage_max_insert_bytes": 10737418240,
       "object_storage_max_file_count": 100,
+      "object_storage_max_file_size": 10737418240,
       "clickhouse_max_threads": 8,
       "clickhouse_max_insert_threads": 1,
       "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -13442,6 +15162,7 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
     "object_storage_polling_interval_ms": 30000,
     "object_storage_max_insert_bytes": 10737418240,
     "object_storage_max_file_count": 100,
+    "object_storage_max_file_size": 10737418240,
     "clickhouse_max_threads": 8,
     "clickhouse_max_insert_threads": 1,
     "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -13466,7 +15187,7 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
 |» source|body|[ClickPipePatchSource](#schemaclickpipepatchsource)|false|none|
 |» destination|body|[ClickPipePatchDestination](#schemaclickpipepatchdestination)|false|none|
 |» fieldMappings|body|[[ClickPipeFieldMapping](#schemaclickpipefieldmapping)]|false|Field mappings of the ClickPipe. This will not update the table schema, only the ClickPipe configuration.|
-|» settings|body|[ClickPipeSettings](#schemaclickpipesettings)|false|none|
+|» settings|body|[ClickPipeSettingsPutRequest](#schemaclickpipesettingsputrequest)|false|none|
 
 > Example responses
 
@@ -13504,7 +15225,10 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
           "type": "confluent",
           "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
           "authentication": "PLAIN",
-          "caCertificate": "string"
+          "caCertificate": "string",
+          "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+          "scope": "schema_registry",
+          "audience": "https://schema-registry.example.com"
         },
         "caCertificate": "string",
         "reversePrivateEndpointIds": [
@@ -13518,6 +15242,7 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
         "format": "JSONEachRow",
         "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
         "delimiter": ",",
+        "skipFirstLines": 1,
         "compression": "auto",
         "isContinuous": true,
         "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -13574,11 +15299,12 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
           "replicationMode": "cdc",
           "replicationSlotName": "clickpipes_slot",
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "enableFailoverSlots": false,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -13618,10 +15344,11 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
           "replicationMechanism": "GTID",
           "useCompression": false,
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -13654,9 +15381,9 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
           "pullWindowSizeSeconds": 86400,
           "syncCron": "0 * * * *",
           "allowNullableColumns": true,
-          "initialLoadParallelism": 0,
+          "initialLoadParallelism": 1,
           "snapshotNumRowsPerPartition": 0,
-          "snapshotNumberOfParallelTables": 0
+          "snapshotNumberOfParallelTables": 1
         },
         "tableMappings": [
           {
@@ -13689,7 +15416,7 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
           "syncIntervalSeconds": 60,
           "pullBatchSize": 100000,
           "replicationMode": "cdc",
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "deleteOnMerge": false,
@@ -13764,6 +15491,7 @@ Update the specified ClickPipe. Source fields not present in the per-source upda
       "object_storage_polling_interval_ms": 30000,
       "object_storage_max_insert_bytes": 10737418240,
       "object_storage_max_file_count": 100,
+      "object_storage_max_file_size": 10737418240,
       "clickhouse_max_threads": 8,
       "clickhouse_max_insert_threads": 1,
       "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -13876,6 +15604,7 @@ Returns the advanced settings for the specified ClickPipe.
     "object_storage_polling_interval_ms": 30000,
     "object_storage_max_insert_bytes": 10737418240,
     "object_storage_max_file_count": 100,
+    "object_storage_max_file_size": 10737418240,
     "clickhouse_max_threads": 8,
     "clickhouse_max_insert_threads": 1,
     "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -13965,6 +15694,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "object_storage_polling_interval_ms": 30000,
     "object_storage_max_insert_bytes": 10737418240,
     "object_storage_max_file_count": 100,
+    "object_storage_max_file_size": 10737418240,
     "clickhouse_max_threads": 8,
     "clickhouse_max_insert_threads": 1,
     "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -13978,7 +15708,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `PUT /v1/organizations/{organizationId}/services/{serviceId}/clickpipes/{clickPipeId}/settings`
 
-Update the advanced settings for the specified ClickPipe. Send key-value pairs where values can be strings, numbers, or booleans.
+Update the advanced settings for the specified ClickPipe. Send key-value pairs where values can be strings, numbers, or booleans. Omitted keys keep their current value. `null` is not accepted; to reset a setting, send its default value.
 
 > Body parameter
 
@@ -13989,6 +15719,7 @@ Update the advanced settings for the specified ClickPipe. Send key-value pairs w
   "object_storage_polling_interval_ms": 30000,
   "object_storage_max_insert_bytes": 10737418240,
   "object_storage_max_file_count": 100,
+  "object_storage_max_file_size": 10737418240,
   "clickhouse_max_threads": 8,
   "clickhouse_max_insert_threads": 1,
   "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -14013,6 +15744,7 @@ Update the advanced settings for the specified ClickPipe. Send key-value pairs w
 |» object_storage_polling_interval_ms|body|integer|false|Object storage polling interval. Configures the refresh interval for querying continuous ingest for new object storage data|
 |» object_storage_max_insert_bytes|body|integer|false|Max insert bytes. Number of bytes to process in a single insert batch|
 |» object_storage_max_file_count|body|integer|false|Max file count. Maximum number of files to process in a single insert batch|
+|» object_storage_max_file_size|body|integer|false|Max file size. Files larger than this are skipped and not retried. Can only lower the limit. Private preview. Contact support to enable it for your organization.|
 |» clickhouse_max_threads|body|integer|false|Max threads. Maximum number of concurrent threads for file processing|
 |» clickhouse_max_insert_threads|body|integer|false|Max insert threads. Maximum number of concurrent insert threads|
 |» clickhouse_min_insert_block_size_bytes|body|integer|false|Min insert block size bytes. Minimum size of data block for insert (in bytes)|
@@ -14036,6 +15768,7 @@ Update the advanced settings for the specified ClickPipe. Send key-value pairs w
     "object_storage_polling_interval_ms": 30000,
     "object_storage_max_insert_bytes": 10737418240,
     "object_storage_max_file_count": 100,
+    "object_storage_max_file_size": 10737418240,
     "clickhouse_max_threads": 8,
     "clickhouse_max_insert_threads": 1,
     "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -14138,6 +15871,9 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
           "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
           "authentication": "PLAIN",
           "caCertificate": "string",
+          "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+          "scope": "schema_registry",
+          "audience": "https://schema-registry.example.com",
           "credentials": {
             "username": "string",
             "password": "string"
@@ -14195,6 +15931,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
         "format": "JSONEachRow",
         "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
         "delimiter": ",",
+        "skipFirstLines": 1,
         "compression": "auto",
         "isContinuous": true,
         "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -14241,6 +15978,9 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
         "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
         "authentication": "PLAIN",
         "caCertificate": "string",
+        "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+        "scope": "schema_registry",
+        "audience": "https://schema-registry.example.com",
         "credentials": {
           "username": "string",
           "password": "string"
@@ -14298,6 +16038,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       "format": "JSONEachRow",
       "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
       "delimiter": ",",
+      "skipFirstLines": 1,
       "compression": "auto",
       "isContinuous": true,
       "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -14340,7 +16081,9 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       {
         "name": "user_id",
         "type": "Int64",
-        "optional": true
+        "optional": true,
+        "isVirtual": true,
+        "isVirtualDisabledDefault": true
       }
     ],
     "meta": {
@@ -14496,7 +16239,10 @@ Change scaling settings for the specified ClickPipe. This endpoint supports Kafk
           "type": "confluent",
           "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
           "authentication": "PLAIN",
-          "caCertificate": "string"
+          "caCertificate": "string",
+          "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+          "scope": "schema_registry",
+          "audience": "https://schema-registry.example.com"
         },
         "caCertificate": "string",
         "reversePrivateEndpointIds": [
@@ -14510,6 +16256,7 @@ Change scaling settings for the specified ClickPipe. This endpoint supports Kafk
         "format": "JSONEachRow",
         "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
         "delimiter": ",",
+        "skipFirstLines": 1,
         "compression": "auto",
         "isContinuous": true,
         "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -14566,11 +16313,12 @@ Change scaling settings for the specified ClickPipe. This endpoint supports Kafk
           "replicationMode": "cdc",
           "replicationSlotName": "clickpipes_slot",
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "enableFailoverSlots": false,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -14610,10 +16358,11 @@ Change scaling settings for the specified ClickPipe. This endpoint supports Kafk
           "replicationMechanism": "GTID",
           "useCompression": false,
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -14646,9 +16395,9 @@ Change scaling settings for the specified ClickPipe. This endpoint supports Kafk
           "pullWindowSizeSeconds": 86400,
           "syncCron": "0 * * * *",
           "allowNullableColumns": true,
-          "initialLoadParallelism": 0,
+          "initialLoadParallelism": 1,
           "snapshotNumRowsPerPartition": 0,
-          "snapshotNumberOfParallelTables": 0
+          "snapshotNumberOfParallelTables": 1
         },
         "tableMappings": [
           {
@@ -14681,7 +16430,7 @@ Change scaling settings for the specified ClickPipe. This endpoint supports Kafk
           "syncIntervalSeconds": 60,
           "pullBatchSize": 100000,
           "replicationMode": "cdc",
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "deleteOnMerge": false,
@@ -14756,6 +16505,7 @@ Change scaling settings for the specified ClickPipe. This endpoint supports Kafk
       "object_storage_polling_interval_ms": 30000,
       "object_storage_max_insert_bytes": 10737418240,
       "object_storage_max_file_count": 100,
+      "object_storage_max_file_size": 10737418240,
       "clickhouse_max_threads": 8,
       "clickhouse_max_insert_threads": 1,
       "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -14913,7 +16663,10 @@ Start, stop or resync ClickPipe. Stopping a ClickPipe will stop the ingestion pr
           "type": "confluent",
           "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
           "authentication": "PLAIN",
-          "caCertificate": "string"
+          "caCertificate": "string",
+          "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+          "scope": "schema_registry",
+          "audience": "https://schema-registry.example.com"
         },
         "caCertificate": "string",
         "reversePrivateEndpointIds": [
@@ -14927,6 +16680,7 @@ Start, stop or resync ClickPipe. Stopping a ClickPipe will stop the ingestion pr
         "format": "JSONEachRow",
         "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
         "delimiter": ",",
+        "skipFirstLines": 1,
         "compression": "auto",
         "isContinuous": true,
         "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -14983,11 +16737,12 @@ Start, stop or resync ClickPipe. Stopping a ClickPipe will stop the ingestion pr
           "replicationMode": "cdc",
           "replicationSlotName": "clickpipes_slot",
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "enableFailoverSlots": false,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -15027,10 +16782,11 @@ Start, stop or resync ClickPipe. Stopping a ClickPipe will stop the ingestion pr
           "replicationMechanism": "GTID",
           "useCompression": false,
           "allowNullableColumns": false,
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
-          "deleteOnMerge": false
+          "deleteOnMerge": false,
+          "useJsonNativeFormat": false
         },
         "tableMappings": [
           {
@@ -15063,9 +16819,9 @@ Start, stop or resync ClickPipe. Stopping a ClickPipe will stop the ingestion pr
           "pullWindowSizeSeconds": 86400,
           "syncCron": "0 * * * *",
           "allowNullableColumns": true,
-          "initialLoadParallelism": 0,
+          "initialLoadParallelism": 1,
           "snapshotNumRowsPerPartition": 0,
-          "snapshotNumberOfParallelTables": 0
+          "snapshotNumberOfParallelTables": 1
         },
         "tableMappings": [
           {
@@ -15098,7 +16854,7 @@ Start, stop or resync ClickPipe. Stopping a ClickPipe will stop the ingestion pr
           "syncIntervalSeconds": 60,
           "pullBatchSize": 100000,
           "replicationMode": "cdc",
-          "initialLoadParallelism": 1,
+          "initialLoadParallelism": 4,
           "snapshotNumRowsPerPartition": 100000,
           "snapshotNumberOfParallelTables": 1,
           "deleteOnMerge": false,
@@ -15173,6 +16929,7 @@ Start, stop or resync ClickPipe. Stopping a ClickPipe will stop the ingestion pr
       "object_storage_polling_interval_ms": 30000,
       "object_storage_max_insert_bytes": 10737418240,
       "object_storage_max_file_count": 100,
+      "object_storage_max_file_size": 10737418240,
       "clickhouse_max_threads": 8,
       "clickhouse_max_insert_threads": 1,
       "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -18324,7 +20081,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/services/{serviceId}/clickstack/alerts`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Retrieves alerts for the authenticated team (paginated). Results are capped at `limit` (default and maximum 1000). When `totalCount` exceeds the number of returned items, page with `limit`/`offset` to retrieve them all.
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Retrieves alerts for the authenticated team (paginated). Results are capped at `limit` (default and maximum 1000). When `totalCount` exceeds the number of returned items, page with `limit`/`offset` to retrieve them all. Optional filters narrow the result set, and `totalCount` counts only the matching alerts.
 
 <h3 id="clickstack-list-alerts-parameters">Parameters</h3>
 
@@ -18334,6 +20091,23 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |serviceId|path|string(uuid)|true|ID of the ClickStack service.|
 |limit|query|integer|false|Maximum number of results to return.|
 |offset|query|integer|false|Number of results to skip before returning.|
+|tag|query|[string]|false|Only return alerts that have any of the given tags. Repeat the parameter to pass several tags. Matches the tags stored on the alert, not tags inherited from the linked dashboard or saved search.|
+|search|query|string|false|Only return alerts whose display name contains this text (case-insensitive). Matches the display name stored on the alert, not a name derived from the linked dashboard or saved search.|
+|source|query|[string]|false|Only return alerts of any of the given sources. Repeat the parameter to pass several sources.|
+|state|query|[string]|false|Only return alerts in any of the given states. Repeat the parameter to pass several states.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|source|saved_search|
+|source|tile|
+|source|inline|
+|state|ALERT|
+|state|OK|
+|state|INSUFFICIENT_DATA|
+|state|DISABLED|
+|state|PENDING|
 
 > Example responses
 
@@ -19082,7 +20856,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       "spanIdExpression": "SpanId",
       "implicitColumnExpression": "Body",
       "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+      "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
       "useTextIndexForImplicitColumn": "auto",
+      "mapKeyIndexMaxParts": 20,
+      "mapKeyIndexPartSelection": "median",
       "highlightedTraceAttributeExpressions": [
         {
           "sqlExpression": "SpanAttributes['http.status_code']",
@@ -19242,7 +21019,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "spanIdExpression": "SpanId",
     "implicitColumnExpression": "Body",
     "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+    "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
     "useTextIndexForImplicitColumn": "auto",
+    "mapKeyIndexMaxParts": 20,
+    "mapKeyIndexPartSelection": "median",
     "highlightedTraceAttributeExpressions": [
       {
         "sqlExpression": "SpanAttributes['\''http.status_code'\'']",
@@ -19336,7 +21116,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
   "spanIdExpression": "SpanId",
   "implicitColumnExpression": "Body",
   "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+  "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
   "useTextIndexForImplicitColumn": "auto",
+  "mapKeyIndexMaxParts": 20,
+  "mapKeyIndexPartSelection": "median",
   "highlightedTraceAttributeExpressions": [
     {
       "sqlExpression": "SpanAttributes['http.status_code']",
@@ -19444,7 +21227,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "spanIdExpression": "SpanId",
     "implicitColumnExpression": "Body",
     "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+    "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
     "useTextIndexForImplicitColumn": "auto",
+    "mapKeyIndexMaxParts": 20,
+    "mapKeyIndexPartSelection": "median",
     "highlightedTraceAttributeExpressions": [
       {
         "sqlExpression": "SpanAttributes['http.status_code']",
@@ -19623,7 +21409,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "spanIdExpression": "SpanId",
     "implicitColumnExpression": "Body",
     "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+    "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
     "useTextIndexForImplicitColumn": "auto",
+    "mapKeyIndexMaxParts": 20,
+    "mapKeyIndexPartSelection": "median",
     "highlightedTraceAttributeExpressions": [
       {
         "sqlExpression": "SpanAttributes['http.status_code']",
@@ -19782,7 +21571,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "spanIdExpression": "SpanId",
     "implicitColumnExpression": "Body",
     "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+    "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
     "useTextIndexForImplicitColumn": "auto",
+    "mapKeyIndexMaxParts": 20,
+    "mapKeyIndexPartSelection": "median",
     "highlightedTraceAttributeExpressions": [
       {
         "sqlExpression": "SpanAttributes['\''http.status_code'\'']",
@@ -19876,7 +21668,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
   "spanIdExpression": "SpanId",
   "implicitColumnExpression": "Body",
   "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+  "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
   "useTextIndexForImplicitColumn": "auto",
+  "mapKeyIndexMaxParts": 20,
+  "mapKeyIndexPartSelection": "median",
   "highlightedTraceAttributeExpressions": [
     {
       "sqlExpression": "SpanAttributes['http.status_code']",
@@ -19985,7 +21780,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "spanIdExpression": "SpanId",
     "implicitColumnExpression": "Body",
     "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+    "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
     "useTextIndexForImplicitColumn": "auto",
+    "mapKeyIndexMaxParts": 20,
+    "mapKeyIndexPartSelection": "median",
     "highlightedTraceAttributeExpressions": [
       {
         "sqlExpression": "SpanAttributes['http.status_code']",
@@ -20935,6 +22733,330 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
 
 <h3 id="clickstack-delete-alert-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## ClickStack: Silence Alert
+
+<a id="opIdclickStackSilenceAlert"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/services/497f6eca-6276-4993-bfeb-53cbbbba6f08/clickstack/alerts/string/silenced \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "mutedUntil": "2026-01-01T00:00:00.000Z"
+  }'
+```
+
+`POST /v1/organizations/{organizationId}/services/{serviceId}/clickstack/alerts/{clickStackAlertId}/silenced`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Silences an alert until the given time. Notifications are suppressed while the alert is silenced.
+
+> Body parameter
+
+```json
+{
+  "mutedUntil": "2026-01-01T00:00:00.000Z"
+}
+```
+
+<h3 id="clickstack-silence-alert-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the service.|
+|serviceId|path|string(uuid)|true|ID of the ClickStack service.|
+|clickStackAlertId|path|string|true|ClickStack Alert ID|
+|body|body|[ClickStackSilenceAlertRequest](#schemaclickstacksilencealertrequest)|false|none|
+|» mutedUntil|body|string(date-time)|true|ISO 8601 timestamp, in the future, until which the alert is silenced.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "dashboardId": "65f5e4a3b9e77c001a567890",
+    "tileId": "65f5e4a3b9e77c001a901234",
+    "savedSearchId": "65f5e4a3b9e77c001a345678",
+    "groupBy": "ServiceName",
+    "chartConfig": {
+      "displayType": "line",
+      "sourceId": "65f5e4a3b9e77c001a111111",
+      "select": [
+        {
+          "aggFn": "count",
+          "valueExpression": "Duration",
+          "alias": "Request Duration",
+          "level": 0,
+          "where": "service:api",
+          "whereLanguage": "sql",
+          "metricName": "http.server.duration",
+          "metricType": "sum",
+          "periodAggFn": "delta",
+          "numberFormat": {
+            "output": "number",
+            "mantissa": 2,
+            "thousandSeparated": true,
+            "average": false,
+            "decimalBytes": false,
+            "factor": 1,
+            "currencySymbol": "$",
+            "numericUnit": "bytes_iec",
+            "unit": "ms"
+          }
+        }
+      ],
+      "groupBy": "host",
+      "asRatio": true,
+      "alignDateRangeToGranularity": true,
+      "fillNulls": true,
+      "fitYAxisToData": true,
+      "lineInterpolation": "step",
+      "numberFormat": {
+        "output": "number",
+        "mantissa": 2,
+        "thousandSeparated": true,
+        "average": false,
+        "decimalBytes": false,
+        "factor": 1,
+        "currencySymbol": "$",
+        "numericUnit": "bytes_iec",
+        "unit": "ms"
+      },
+      "compareToPreviousPeriod": true,
+      "seriesLimit": 5,
+      "formulas": [
+        {
+          "expression": "A / (A + B) * 100",
+          "alias": "Success rate %",
+          "numberFormat": {
+            "output": "number",
+            "mantissa": 2,
+            "thousandSeparated": true,
+            "average": false,
+            "decimalBytes": false,
+            "factor": 1,
+            "currencySymbol": "$",
+            "numericUnit": "bytes_iec",
+            "unit": "ms"
+          }
+        }
+      ],
+      "showOperandSeries": true,
+      "name": "Error Rate Query",
+      "where": "ServiceName:api",
+      "whereLanguage": "sql"
+    },
+    "threshold": 100,
+    "thresholdMax": 500,
+    "interval": "1h",
+    "scheduleOffsetMinutes": 2,
+    "scheduleStartAt": "2026-02-08T10:00:00.000Z",
+    "source": "tile",
+    "thresholdType": "above",
+    "channel": {
+      "type": "webhook",
+      "emailRecipients": [
+        "string"
+      ]
+    },
+    "channels": [
+      {
+        "type": "webhook",
+        "emailRecipients": [
+          "string"
+        ]
+      }
+    ],
+    "name": "Errors for {{group}} hit {{value}}",
+    "message": "Test Alert Message",
+    "note": "Threshold raised from 50 to 100 on 2026-01-15. See [runbook](https://wiki.example.com/runbook).",
+    "numConsecutiveWindows": 3,
+    "displayName": "Checkout error spike",
+    "tags": [
+      "checkout",
+      "p1"
+    ],
+    "id": "65f5e4a3b9e77c001a123456",
+    "state": "ALERT",
+    "teamId": "65f5e4a3b9e77c001a345678",
+    "silenced": {
+      "by": "65f5e4a3b9e77c001a234567",
+      "at": "2026-03-19T08:00:00.000Z",
+      "until": "2026-03-20T08:00:00.000Z"
+    },
+    "executionErrors": [
+      {
+        "timestamp": "2026-04-17T12:00:00.000Z",
+        "type": "QUERY_ERROR",
+        "message": "Query timed out after 30s"
+      }
+    ],
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="clickstack-silence-alert-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="clickstack-silence-alert-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[ClickStackAlertResponse](#schemaclickstackalertresponse)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## ClickStack: Unsilence Alert
+
+<a id="opIdclickStackUnsilenceAlert"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/services/497f6eca-6276-4993-bfeb-53cbbbba6f08/clickstack/alerts/string/silenced \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`DELETE /v1/organizations/{organizationId}/services/{serviceId}/clickstack/alerts/{clickStackAlertId}/silenced`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> ClickStack: Clears the silence on an alert so notifications resume
+
+<h3 id="clickstack-unsilence-alert-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the service.|
+|serviceId|path|string(uuid)|true|ID of the ClickStack service.|
+|clickStackAlertId|path|string|true|ClickStack Alert ID|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="clickstack-unsilence-alert-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="clickstack-unsilence-alert-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -22961,7 +25083,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/postgres`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns a list of all Postgres services in the organization.
+Returns a list of all Postgres services in the organization.
 
 <h3 id="list-of-organization-postgres-services-parameters">Parameters</h3>
 
@@ -22982,9 +25104,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       "name": "string",
       "provider": "aws",
       "region": "string",
-      "postgresVersion": "18",
+      "postgresVersion": "19",
       "size": "c6gd.large",
       "haType": "none",
+      "standbyCount": 0,
       "tags": [
         {
           "key": "Environment",
@@ -22994,7 +25117,8 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
       "id": "f71df78e-ddad-82d0-8dfa-abbec741b82e",
       "state": "creating",
       "createdAt": "2026-03-26T20:51:16.384Z",
-      "isPrimary": false
+      "isPrimary": false,
+      "deletionProtection": true
     }
   ]
 }
@@ -23075,9 +25199,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "name": "string",
     "provider": "aws",
     "region": "string",
-    "postgresVersion": "18",
+    "postgresVersion": "19",
     "size": "c6gd.large",
     "haType": "none",
+    "standbyCount": 0,
     "tags": [
       {
         "key": "Environment",
@@ -23112,9 +25237,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
   "name": "string",
   "provider": "aws",
   "region": "string",
-  "postgresVersion": "18",
+  "postgresVersion": "19",
   "size": "c6gd.large",
   "haType": "none",
+  "standbyCount": 0,
   "tags": [
     {
       "key": "Environment",
@@ -23149,7 +25275,8 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |» region|body|[pgRegion](#schemapgregion)|true|The cloud region for a Postgres service.|
 |» postgresVersion|body|[pgVersion](#schemapgversion)|false|none|
 |» size|body|[pgSize](#schemapgsize)|true|The VM size for a Postgres service.|
-|» haType|body|[pgHaType](#schemapghatype)|false|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.|
+|» haType|body|[pgHaType](#schemapghatype)|false|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).|
+|» standbyCount|body|[pgStandbyCount](#schemapgstandbycount)|false|Number of hot standby instances. Accepted values and defaults depend on `haType`:<br>- “none”: 0 (default)<br>- “async”: 1 (default)<br>- “sync”: 1, or 2 (default)<br><br>When `haType` is updated without `standbyCount`, the default for the new `haType` applies.|
 |» tags|body|[pgTags](#schemapgtags)|false|Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.|
 |» ipAccessList|body|[[PostgresIpAccessListEntry](#schemapostgresipaccesslistentry)]|false|IPv4 TCP access rules to apply when creating the service. Omit to allow all IPv4 and IPv6 addresses on Postgres (5432) and PgBouncer (6432). Provide an empty list to block public access. When provided, only these rules are allowed; include separate rules for each required port.|
 |» pgConfig|body|[pgConfig](#schemapgconfig)|false|Postgres [runtime configuration](https://www.postgresql.org/docs/current/runtime-config.html) configuration.|
@@ -23161,6 +25288,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |---|---|
 |» provider|aws|
 |» provider|gcp|
+|» postgresVersion|19|
 |» postgresVersion|18|
 |» postgresVersion|17|
 |» size|c6gd.large|
@@ -23295,6 +25423,26 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |» size|c4d-standard-lssd-96|
 |» size|c4d-standard-lssd-192|
 |» size|c4d-standard-lssd-384|
+|» size|c3-standard-lssd-4|
+|» size|c3-standard-lssd-8|
+|» size|c3-standard-lssd-22|
+|» size|c3-standard-lssd-44|
+|» size|c3-standard-lssd-88|
+|» size|c3-standard-lssd-176|
+|» size|c3d-highmem-lssd-8|
+|» size|c3d-highmem-lssd-16|
+|» size|c3d-highmem-lssd-30|
+|» size|c3d-highmem-lssd-60|
+|» size|c3d-highmem-lssd-90|
+|» size|c3d-highmem-lssd-180|
+|» size|c3d-highmem-lssd-360|
+|» size|c3d-standard-lssd-8|
+|» size|c3d-standard-lssd-16|
+|» size|c3d-standard-lssd-30|
+|» size|c3d-standard-lssd-60|
+|» size|c3d-standard-lssd-90|
+|» size|c3d-standard-lssd-180|
+|» size|c3d-standard-lssd-360|
 |» size|z3-highmem-highlssd-8|
 |» size|z3-highmem-highlssd-16|
 |» size|z3-highmem-highlssd-22|
@@ -23306,9 +25454,41 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |» size|z3-highmem-standardlssd-44|
 |» size|z3-highmem-standardlssd-88|
 |» size|z3-highmem-standardlssd-176|
+|» size|n2-highmem-2xlssd-4|
+|» size|n2-highmem-2xlssd-8|
+|» size|n2-highmem-2xlssd-16|
+|» size|n2-highmem-2xlssd-32|
+|» size|n2-highmem-2xlssd-48|
+|» size|n2-highmem-2xlssd-64|
+|» size|n2-highmem-2xlssd-96|
+|» size|n2-standard-2xlssd-4|
+|» size|n2-standard-2xlssd-8|
+|» size|n2-standard-2xlssd-16|
+|» size|n2-standard-2xlssd-32|
+|» size|n2-standard-2xlssd-48|
+|» size|n2-standard-2xlssd-64|
+|» size|n2-standard-2xlssd-96|
+|» size|n2-highmem-4xlssd-2|
+|» size|n2-highmem-4xlssd-4|
+|» size|n2-highmem-4xlssd-8|
+|» size|n2-highmem-4xlssd-16|
+|» size|n2-highmem-4xlssd-32|
+|» size|n2-highmem-4xlssd-48|
+|» size|n2-highmem-8xlssd-2|
+|» size|n2-highmem-8xlssd-4|
+|» size|n2-highmem-8xlssd-8|
+|» size|n2-highmem-8xlssd-16|
+|» size|n2-highmem-8xlssd-32|
+|» size|n2-highmem-16xlssd-2|
+|» size|n2-highmem-16xlssd-4|
+|» size|n2-highmem-16xlssd-8|
+|» size|n2-highmem-16xlssd-16|
 |» haType|none|
 |» haType|async|
 |» haType|sync|
+|» standbyCount|0|
+|» standbyCount|1|
+|» standbyCount|2|
 
 > Example responses
 
@@ -23322,9 +25502,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "name": "string",
     "provider": "aws",
     "region": "string",
-    "postgresVersion": "18",
+    "postgresVersion": "19",
     "size": "c6gd.large",
     "haType": "none",
+    "standbyCount": 0,
     "tags": [
       {
         "key": "Environment",
@@ -23348,6 +25529,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "username": "string",
     "password": "string",
     "hostname": "string",
+    "deletionProtection": true,
     "earliestRestoreTime": "1970-01-01T00:00:00Z"
   }
 }
@@ -23426,7 +25608,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns a Postgres service that belongs to the organization
+Returns a Postgres service that belongs to the organization
 
 <h3 id="get-postgresql-service-details-parameters">Parameters</h3>
 
@@ -23447,9 +25629,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "name": "string",
     "provider": "aws",
     "region": "string",
-    "postgresVersion": "18",
+    "postgresVersion": "19",
     "size": "c6gd.large",
     "haType": "none",
+    "standbyCount": 0,
     "tags": [
       {
         "key": "Environment",
@@ -23473,6 +25656,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "username": "string",
     "password": "string",
     "hostname": "string",
+    "deletionProtection": true,
     "earliestRestoreTime": "1970-01-01T00:00:00Z"
   }
 }
@@ -23552,7 +25736,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `DELETE /v1/organizations/{organizationId}/postgres/{postgresId}`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Deletes a Postgres service that belongs to the organization
+Deletes a Postgres service that belongs to the organization. Returns 409 if deletion protection is enabled for the service.
 
 <h3 id="delete-a-postgresql-service-parameters">Parameters</h3>
 
@@ -23661,18 +25845,20 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "name": "string",
     "size": "c6gd.large",
     "haType": "none",
+    "standbyCount": 0,
     "tags": [
       {
         "key": "Environment",
         "value": "staging"
       }
-    ]
+    ],
+    "deletionProtection": true
   }'
 ```
 
 `PATCH /v1/organizations/{organizationId}/postgres/{postgresId}`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Update a Postgres service that belongs to the organization. **WARNING:** Changing the name also updates the host name and certificates for the service.
+Update a Postgres service that belongs to the organization. **WARNING:** Changing the name also updates the host name and certificates for the service.
 
 > Body parameter
 
@@ -23696,12 +25882,14 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
   "name": "string",
   "size": "c6gd.large",
   "haType": "none",
+  "standbyCount": 0,
   "tags": [
     {
       "key": "Environment",
       "value": "staging"
     }
-  ]
+  ],
+  "deletionProtection": true
 }
 ```
 
@@ -23715,8 +25903,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |» ipAccessList|body|[PostgresIpAccessListPatch](#schemapostgresipaccesslistpatch)|false|none|
 |» name|body|[pgNameProperty](#schemapgnameproperty)|false|Name of the Postgres service. Alphanumerical string with whitespaces up to 50 characters.|
 |» size|body|[pgSize](#schemapgsize)|false|The VM size for a Postgres service.|
-|» haType|body|[pgHaType](#schemapghatype)|false|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.|
+|» haType|body|[pgHaType](#schemapghatype)|false|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).|
+|» standbyCount|body|[pgStandbyCount](#schemapgstandbycount)|false|Number of hot standby instances. Accepted values and defaults depend on `haType`:<br>- “none”: 0 (default)<br>- “async”: 1 (default)<br>- “sync”: 1, or 2 (default)<br><br>When `haType` is updated without `standbyCount`, the default for the new `haType` applies.|
 |» tags|body|[pgTags](#schemapgtags)|false|Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.|
+|» deletionProtection|body|[pgDeletionProtectionProperty](#schemapgdeletionprotectionproperty)|false|When true, the service cannot be deleted until deletion protection is turned off. Only available for organizations with deletion protection enabled.|
 
 #### Enumerated Values
 
@@ -23854,6 +26044,26 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |» size|c4d-standard-lssd-96|
 |» size|c4d-standard-lssd-192|
 |» size|c4d-standard-lssd-384|
+|» size|c3-standard-lssd-4|
+|» size|c3-standard-lssd-8|
+|» size|c3-standard-lssd-22|
+|» size|c3-standard-lssd-44|
+|» size|c3-standard-lssd-88|
+|» size|c3-standard-lssd-176|
+|» size|c3d-highmem-lssd-8|
+|» size|c3d-highmem-lssd-16|
+|» size|c3d-highmem-lssd-30|
+|» size|c3d-highmem-lssd-60|
+|» size|c3d-highmem-lssd-90|
+|» size|c3d-highmem-lssd-180|
+|» size|c3d-highmem-lssd-360|
+|» size|c3d-standard-lssd-8|
+|» size|c3d-standard-lssd-16|
+|» size|c3d-standard-lssd-30|
+|» size|c3d-standard-lssd-60|
+|» size|c3d-standard-lssd-90|
+|» size|c3d-standard-lssd-180|
+|» size|c3d-standard-lssd-360|
 |» size|z3-highmem-highlssd-8|
 |» size|z3-highmem-highlssd-16|
 |» size|z3-highmem-highlssd-22|
@@ -23865,9 +26075,41 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 |» size|z3-highmem-standardlssd-44|
 |» size|z3-highmem-standardlssd-88|
 |» size|z3-highmem-standardlssd-176|
+|» size|n2-highmem-2xlssd-4|
+|» size|n2-highmem-2xlssd-8|
+|» size|n2-highmem-2xlssd-16|
+|» size|n2-highmem-2xlssd-32|
+|» size|n2-highmem-2xlssd-48|
+|» size|n2-highmem-2xlssd-64|
+|» size|n2-highmem-2xlssd-96|
+|» size|n2-standard-2xlssd-4|
+|» size|n2-standard-2xlssd-8|
+|» size|n2-standard-2xlssd-16|
+|» size|n2-standard-2xlssd-32|
+|» size|n2-standard-2xlssd-48|
+|» size|n2-standard-2xlssd-64|
+|» size|n2-standard-2xlssd-96|
+|» size|n2-highmem-4xlssd-2|
+|» size|n2-highmem-4xlssd-4|
+|» size|n2-highmem-4xlssd-8|
+|» size|n2-highmem-4xlssd-16|
+|» size|n2-highmem-4xlssd-32|
+|» size|n2-highmem-4xlssd-48|
+|» size|n2-highmem-8xlssd-2|
+|» size|n2-highmem-8xlssd-4|
+|» size|n2-highmem-8xlssd-8|
+|» size|n2-highmem-8xlssd-16|
+|» size|n2-highmem-8xlssd-32|
+|» size|n2-highmem-16xlssd-2|
+|» size|n2-highmem-16xlssd-4|
+|» size|n2-highmem-16xlssd-8|
+|» size|n2-highmem-16xlssd-16|
 |» haType|none|
 |» haType|async|
 |» haType|sync|
+|» standbyCount|0|
+|» standbyCount|1|
+|» standbyCount|2|
 
 > Example responses
 
@@ -23881,9 +26123,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "name": "string",
     "provider": "aws",
     "region": "string",
-    "postgresVersion": "18",
+    "postgresVersion": "19",
     "size": "c6gd.large",
     "haType": "none",
+    "standbyCount": 0,
     "tags": [
       {
         "key": "Environment",
@@ -23907,6 +26150,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "username": "string",
     "password": "string",
     "hostname": "string",
+    "deletionProtection": true,
     "earliestRestoreTime": "1970-01-01T00:00:00Z"
   }
 }
@@ -23985,7 +26229,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}/caCertificates`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Download CA certificates for a PostgreSQL service
+Download CA certificates for a PostgreSQL service
 
 <h3 id="get-postgres-ca-certs-parameters">Parameters</h3>
 
@@ -24085,7 +26329,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `POST /v1/organizations/{organizationId}/postgres/{postgresId}/restoredService`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Restore a Postgres database from continuous backup, optionally at a specific point in time.
+Restore a Postgres database from continuous backup, optionally at a specific point in time.
 
 > Body parameter
 
@@ -24133,9 +26377,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "name": "string",
     "provider": "aws",
     "region": "string",
-    "postgresVersion": "18",
+    "postgresVersion": "19",
     "size": "c6gd.large",
     "haType": "none",
+    "standbyCount": 0,
     "tags": [
       {
         "key": "Environment",
@@ -24159,6 +26404,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "username": "string",
     "password": "string",
     "hostname": "string",
+    "deletionProtection": true,
     "earliestRestoreTime": "1970-01-01T00:00:00Z"
   }
 }
@@ -24242,7 +26488,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `PATCH /v1/organizations/{organizationId}/postgres/{postgresId}/password`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Sets a new password for a Postgres service's superuser account.
+Sets a new password for a Postgres service's superuser account.
 
 > Body parameter
 
@@ -24353,10 +26599,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `PATCH /v1/organizations/{organizationId}/postgres/{postgresId}/state`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Initiate a process for a Postgres service:
+Initiate a process for a Postgres service:
 * restart: Initiates a service restart
 * promote: Promotes a read replica to primary
-* switchover: Switch a primary over to a standby
+* switchover: Switch a primary over to a standby. If there is no standby, replace the primary with a newly provisioned server and switch over to it.
 
 
 > Body parameter
@@ -24396,9 +26642,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "name": "string",
     "provider": "aws",
     "region": "string",
-    "postgresVersion": "18",
+    "postgresVersion": "19",
     "size": "c6gd.large",
     "haType": "none",
+    "standbyCount": 0,
     "tags": [
       {
         "key": "Environment",
@@ -24422,6 +26669,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "username": "string",
     "password": "string",
     "hostname": "string",
+    "deletionProtection": true,
     "earliestRestoreTime": "1970-01-01T00:00:00Z"
   }
 }
@@ -24517,7 +26765,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `POST /v1/organizations/{organizationId}/postgres/{postgresId}/readReplica`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Initiate the process to create a new read replica for a Postgres service.
+Initiate the process to create a new read replica for a Postgres service.
 
 > Body parameter
 
@@ -24563,9 +26811,10 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "name": "string",
     "provider": "aws",
     "region": "string",
-    "postgresVersion": "18",
+    "postgresVersion": "19",
     "size": "c6gd.large",
     "haType": "none",
+    "standbyCount": 0,
     "tags": [
       {
         "key": "Environment",
@@ -24589,6 +26838,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
     "username": "string",
     "password": "string",
     "hostname": "string",
+    "deletionProtection": true,
     "earliestRestoreTime": "1970-01-01T00:00:00Z"
   }
 }
@@ -24667,7 +26917,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}/config`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns the configuration data for a Postgres service and its PgBouncer service.
+Returns the configuration data for a Postgres service and its PgBouncer service.
 
 <h3 id="get-postgresql-service-configuration-parameters">Parameters</h3>
 
@@ -24778,7 +27028,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `POST /v1/organizations/{organizationId}/postgres/{postgresId}/config`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Replace the existing Postgres service and pgBouncer configuration.
+Replace the existing Postgres service and pgBouncer configuration.
 
 > Body parameter
 
@@ -24906,7 +27156,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `PATCH /v1/organizations/{organizationId}/postgres/{postgresId}/config`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Update the existing Postgres service and pgBouncer configuration.
+Update the existing Postgres service and pgBouncer configuration.
 
 > Body parameter
 
@@ -25024,7 +27274,7 @@ curl 'https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}/metrics`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns bucketed time-series metrics for a PostgreSQL service over the requested window (CPU, memory, disk, network, connections, cache hit ratio, throughput, transactions, wait events, lock waits, and more). Use this to chart or analyze how a service behaved over time.
+Returns bucketed time-series metrics for a PostgreSQL service over the requested window (CPU, memory, disk, network, connections, cache hit ratio, throughput, transactions, wait events, lock waits, and more). Use this to chart or analyze how a service behaved over time.
 
 <h3 id="get-postgres-time-series-metrics-parameters">Parameters</h3>
 
@@ -25127,6 +27377,501 @@ To perform this operation, you must be authenticated by means of one of the foll
 basicAuth
 </aside>
 
+## Get the PostgreSQL private endpoint
+
+<a id="opIdpostgresPrivateEndpointGet"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/postgres/497f6eca-6276-4993-bfeb-53cbbbba6f08/privateEndpoint \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v1/organizations/{organizationId}/postgres/{postgresId}/privateEndpoint`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns the AWS private endpoint service of a Postgres service, or 404 if it has not been created. Private endpoints are available only for AWS Postgres services, and only for organizations with the feature enabled.
+
+<h3 id="get-the-postgresql-private-endpoint-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the Postgres service.|
+|postgresId|path|string(uuid)|true|ID of the Postgres service.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "state": "available",
+    "endpointServiceName": "com.amazonaws.vpce.us-east-1.vpce-svc-0123456789abcdef0",
+    "endpointServiceId": "vpce-svc-0123456789abcdef0",
+    "privateHostname": "string",
+    "privateDnsName": "string",
+    "privateDnsVerificationState": "string",
+    "ipAddressType": "dual",
+    "ports": [
+      {
+        "port": 5432,
+        "targetPort": 5432
+      }
+    ],
+    "supportedRegions": [
+      "us-west-2"
+    ],
+    "allowedVpcEndpoints": [
+      {
+        "vpcEndpointId": "vpce-0123456789abcdef0",
+        "description": "Production VPC"
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="get-the-postgresql-private-endpoint-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="get-the-postgresql-private-endpoint-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[PostgresPrivateEndpoint](#schemapostgresprivateendpoint)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Create the PostgreSQL private endpoint
+
+<a id="opIdpostgresPrivateEndpointPost"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/postgres/497f6eca-6276-4993-bfeb-53cbbbba6f08/privateEndpoint \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "supportedRegions": [
+      "us-west-2"
+    ]
+  }'
+```
+
+`POST /v1/organizations/{organizationId}/postgres/{postgresId}/privateEndpoint`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Creates the AWS private endpoint service of a Postgres service. Creation takes about 5 to 10 minutes: `state` is `creating` until the service is `available`. A VPC endpoint can connect only after its ID is approved with the update endpoint. Returns 409 if the service already has a private endpoint. Private endpoints are available only for AWS Postgres services, and only for organizations with the feature enabled.
+
+> Body parameter
+
+```json
+{
+  "supportedRegions": [
+    "us-west-2"
+  ]
+}
+```
+
+<h3 id="create-the-postgresql-private-endpoint-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the Postgres service.|
+|postgresId|path|string(uuid)|true|ID of the Postgres service.|
+|body|body|[PostgresPrivateEndpointPostRequest](#schemapostgresprivateendpointpostrequest)|false|none|
+|» supportedRegions|body|[string]|false|AWS region IDs, other than the service region, from which VPC endpoints can connect, such as `us-west-2`. The service region is always supported and must not be listed. Requires cross-region private endpoints to be enabled for the organization.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "state": "available",
+    "endpointServiceName": "com.amazonaws.vpce.us-east-1.vpce-svc-0123456789abcdef0",
+    "endpointServiceId": "vpce-svc-0123456789abcdef0",
+    "privateHostname": "string",
+    "privateDnsName": "string",
+    "privateDnsVerificationState": "string",
+    "ipAddressType": "dual",
+    "ports": [
+      {
+        "port": 5432,
+        "targetPort": 5432
+      }
+    ],
+    "supportedRegions": [
+      "us-west-2"
+    ],
+    "allowedVpcEndpoints": [
+      {
+        "vpcEndpointId": "vpce-0123456789abcdef0",
+        "description": "Production VPC"
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="create-the-postgresql-private-endpoint-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="create-the-postgresql-private-endpoint-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[PostgresPrivateEndpoint](#schemapostgresprivateendpoint)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Delete the PostgreSQL private endpoint
+
+<a id="opIdpostgresPrivateEndpointDelete"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/postgres/497f6eca-6276-4993-bfeb-53cbbbba6f08/privateEndpoint \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`DELETE /v1/organizations/{organizationId}/postgres/{postgresId}/privateEndpoint`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Deletes the AWS private endpoint service of a Postgres service. Connections through approved VPC endpoints stop working. Private endpoints are available only for AWS Postgres services, and only for organizations with the feature enabled.
+
+<h3 id="delete-the-postgresql-private-endpoint-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the Postgres service.|
+|postgresId|path|string(uuid)|true|ID of the Postgres service.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="delete-the-postgresql-private-endpoint-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="delete-the-postgresql-private-endpoint-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
+## Update the PostgreSQL private endpoint
+
+<a id="opIdpostgresPrivateEndpointPatch"></a>
+
+> Code samples
+
+```bash
+curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/postgres/497f6eca-6276-4993-bfeb-53cbbbba6f08/privateEndpoint \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "allowedVpcEndpoints": [
+      {
+        "vpcEndpointId": "vpce-0123456789abcdef0",
+        "description": "Production VPC"
+      }
+    ],
+    "supportedRegions": [
+      "us-west-2"
+    ]
+  }'
+```
+
+`PATCH /v1/organizations/{organizationId}/postgres/{postgresId}/privateEndpoint`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Approves VPC endpoints by ID and sets the supported regions. At least one of `allowedVpcEndpoints` and `supportedRegions` is required, and each one provided replaces the existing list in full, so include every entry to keep. Private endpoints are available only for AWS Postgres services, and only for organizations with the feature enabled.
+
+> Body parameter
+
+```json
+{
+  "allowedVpcEndpoints": [
+    {
+      "vpcEndpointId": "vpce-0123456789abcdef0",
+      "description": "Production VPC"
+    }
+  ],
+  "supportedRegions": [
+    "us-west-2"
+  ]
+}
+```
+
+<h3 id="update-the-postgresql-private-endpoint-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the Postgres service.|
+|postgresId|path|string(uuid)|true|ID of the Postgres service.|
+|body|body|[PostgresPrivateEndpointPatchRequest](#schemapostgresprivateendpointpatchrequest)|false|none|
+|» allowedVpcEndpoints|body|[[PostgresPrivateEndpointVpcEndpoint](#schemapostgresprivateendpointvpcendpoint)]|false|Full replacement of the approved VPC endpoints: endpoints not listed are no longer allowed to connect. Each endpoint ID must be unique.|
+|» supportedRegions|body|[string]|false|Full replacement of the supported regions. AWS region IDs, other than the service region, from which VPC endpoints can connect, such as `us-west-2`. The service region is always supported and must not be listed. Requires cross-region private endpoints to be enabled for the organization.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": {
+    "state": "available",
+    "endpointServiceName": "com.amazonaws.vpce.us-east-1.vpce-svc-0123456789abcdef0",
+    "endpointServiceId": "vpce-svc-0123456789abcdef0",
+    "privateHostname": "string",
+    "privateDnsName": "string",
+    "privateDnsVerificationState": "string",
+    "ipAddressType": "dual",
+    "ports": [
+      {
+        "port": 5432,
+        "targetPort": 5432
+      }
+    ],
+    "supportedRegions": [
+      "us-west-2"
+    ],
+    "allowedVpcEndpoints": [
+      {
+        "vpcEndpointId": "vpce-0123456789abcdef0",
+        "description": "Production VPC"
+      }
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="update-the-postgresql-private-endpoint-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="update-the-postgresql-private-endpoint-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[PostgresPrivateEndpoint](#schemapostgresprivateendpoint)|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
 ## List of Postgres service backups
 
 <a id="opIdpostgresServiceBackupGetList"></a>
@@ -25141,7 +27886,7 @@ curl https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}/backups`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns a list of the base backups retained for a Postgres service, ordered by last modified date, newest first. Results are capped at `limit` (default and maximum 100) per page. Every response carries `limit`, `totalCount` and `nextCursor`; pass `nextCursor` as the `cursor` query parameter to fetch the next page, repeating until it is null. A Postgres service is recovered to a point in time rather than to a single backup, so restore it with the restore endpoint and a timestamp between the service's `earliestRestoreTime` and now, rather than with a backup key from this list.
+Returns a list of the base backups retained for a Postgres service, ordered by last modified date, newest first. Results are capped at `limit` (default and maximum 100) per page. Every response carries `limit`, `totalCount` and `nextCursor`; pass `nextCursor` as the `cursor` query parameter to fetch the next page, repeating until it is null. A Postgres service is recovered to a point in time rather than to a single backup, so restore it with the restore endpoint and a timestamp between the service's `earliestRestoreTime` and now, rather than with a backup key from this list.
 
 <h3 id="list-of-postgres-service-backups-parameters">Parameters</h3>
 
@@ -25249,7 +27994,7 @@ curl 'https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}/slowQueryPatterns`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns aggregate metrics for the slowest query patterns observed on a Postgres service during the given time window. Use this to discover which queries dominate total execution time, CPU, I/O, or WAL generation.
+Returns aggregate metrics for the slowest query patterns observed on a Postgres service during the given time window. Use this to discover which queries dominate total execution time, CPU, I/O, or WAL generation.
 
 <h3 id="list-postgres-slow-query-patterns-parameters">Parameters</h3>
 
@@ -25395,7 +28140,7 @@ curl 'https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}/slowQueryPatterns/{queryId}`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns aggregate metrics for a single slow query pattern together with its most recent individual executions.
+Returns aggregate metrics for a single slow query pattern together with its most recent individual executions.
 
 <h3 id="get-a-postgres-slow-query-pattern-with-recent-executions-parameters">Parameters</h3>
 
@@ -25550,6 +28295,146 @@ To perform this operation, you must be authenticated by means of one of the foll
 basicAuth
 </aside>
 
+## List Postgres blocking queries
+
+<a id="opIdpostgresBlockingQueriesGetList"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cbbbba6f08/postgres/497f6eca-6276-4993-bfeb-53cbbbba6f08/blockingQueries?from_date=1970-01-01T00%3A00%3A00Z&to_date=1970-01-01T00%3A00%3A00Z' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /v1/organizations/{organizationId}/postgres/{postgresId}/blockingQueries`
+
+**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns which queries waited on locks held by other queries on a Postgres service during the given time window. Each item groups one waiting query with one direct blocker, most-sampled first. Groups come only from periods when blocking query collection was on for the service; turn it on in the console. Results are paginated with `limit`/`offset` and include `totalCount`. The time range must not exceed 31 days, and `to_date` must be after `from_date`.
+
+<h3 id="list-postgres-blocking-queries-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string(uuid)|true|ID of the organization that owns the Postgres service.|
+|postgresId|path|string(uuid)|true|ID of the requested Postgres service.|
+|from_date|query|string(date-time)|true|Inclusive start of the time window (RFC 3339 date-time).|
+|to_date|query|string(date-time)|true|Inclusive end of the time window (RFC 3339 date-time).|
+|db_name|query|string|false|Filter to groups whose waiting sessions used this database.|
+|db_user|query|string|false|Filter to groups whose waiting sessions ran as this database user.|
+|app|query|string|false|Filter to groups whose waiting sessions had this `application_name`. An empty value matches sessions with no application name.|
+|limit|query|integer|false|Maximum number of results to return.|
+|offset|query|integer|false|Number of results to skip before returning.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": 200,
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "result": [
+    {
+      "database": "string",
+      "blockedQueryId": "string",
+      "blockedQuery": "string",
+      "blockedUsers": [
+        "string"
+      ],
+      "blockedApps": [
+        "string"
+      ],
+      "blockedPids": [
+        0
+      ],
+      "lockType": "transactionid",
+      "blockedMode": "ShareLock",
+      "blockingDatabase": "string",
+      "blockingQueryId": "string",
+      "blockingQuery": "string",
+      "blockingUsers": [
+        "string"
+      ],
+      "blockingApps": [
+        "string"
+      ],
+      "blockingPids": [
+        0
+      ],
+      "blockingPrepared": true,
+      "blockingInternal": true,
+      "latestBlockingState": "idle in transaction",
+      "latestBlockingXactSeconds": 0,
+      "latestBlockingBackendType": "client backend",
+      "blockingSeenWaiting": true,
+      "sessions": 0,
+      "samples": 0,
+      "longestWaitSeconds": 0,
+      "lastSeen": "2026-04-22T14:06:00Z"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "status": 400,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "status": 500,
+  "error": "string",
+  "requestId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="list-postgres-blocking-queries-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Successful response|Inline|
+|400|Bad Request|The request cannot be processed due to a client error. Please verify your request parameters and try again.|Inline|
+|500|Internal Server Error|An internal server error has occurred. If this issue persists, please contact ClickHouse Cloud support for assistance.|Inline|
+
+<h3 id="list-postgres-blocking-queries-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+|result|[[PostgresBlockingQuery](#schemapostgresblockingquery)]|false|none|none|
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|number|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+Status Code **500**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|integer|false|none|HTTP status code.|
+|error|string|false|none|Detailed error description.|
+|requestId|string(uuid)|false|none|Unique id assigned to every request. UUIDv4|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+basicAuth
+</aside>
+
 ## List Postgres server logs
 
 <a id="opIdpostgresLogsGetList"></a>
@@ -25564,7 +28449,7 @@ curl 'https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cb
 
 `GET /v1/organizations/{organizationId}/postgres/{postgresId}/logs`
 
-**This endpoint is in beta.** API contract is stable, and no breaking changes are expected in the future. <br /><br /> Returns PostgreSQL server log entries for a Postgres service within the given time window, most recent first by default (override with `sort_order`). Results are paginated with `limit`/`offset`; advance `offset` until a page returns fewer than `limit` entries to read the full window. The time range must not exceed 30 days, and `to_date` must be after `from_date`.
+Returns PostgreSQL server log entries for a Postgres service within the given time window, most recent first by default (override with `sort_order`). Results are paginated with `limit`/`offset`; advance `offset` until a page returns fewer than `limit` entries to read the full window. The time range must not exceed 30 days, and `to_date` must be after `from_date`.
 
 <h3 id="list-postgres-server-logs-parameters">Parameters</h3>
 
@@ -25575,7 +28460,7 @@ curl 'https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cb
 |from_date|query|string(date-time)|true|Inclusive start of the time window (RFC 3339 date-time).|
 |to_date|query|string(date-time)|true|Inclusive end of the time window (RFC 3339 date-time).|
 |body_contains|query|string|false|Case-sensitive substring the log body must contain.|
-|severity|query|string|false|Filter to log entries with this PostgreSQL severity (for example, ERROR, WARNING, LOG).|
+|severity|query|string|false|Filter to log entries with this PostgreSQL severity. Case-sensitive; an empty value applies no filter.|
 |sort_order|query|string|false|Sort order. One of `asc` or `desc`.|
 |limit|query|integer|false|Maximum number of results to return.|
 |offset|query|integer|false|Number of results to skip before returning.|
@@ -25584,6 +28469,14 @@ curl 'https://api.clickhouse.cloud/v1/organizations/497f6eca-6276-4993-bfeb-53cb
 
 |Parameter|Value|
 |---|---|
+|severity|DEBUG|
+|severity|LOG|
+|severity|INFO|
+|severity|NOTICE|
+|severity|WARNING|
+|severity|ERROR|
+|severity|FATAL|
+|severity|PANIC|
 |sort_order|asc|
 |sort_order|desc|
 
@@ -29742,7 +32635,7 @@ basicAuth
 |maxReplicaMemoryGb|number|false|none|Maximum memory per replica (Gb) during this window. A range in vertical; in horizontal it equals minReplicaMemoryGb (memory is fixed while the replica count scales).|
 |minReplicas|integer|false|none|Minimum number of replicas during this window. For a horizontal entry the replica count scales between minReplicas and maxReplicas; for a vertical entry minReplicas and maxReplicas are equal and report the fixed replica count (both omitted when the entry stored no count).|
 |maxReplicas|integer|false|none|Maximum number of replicas during this window. For a horizontal entry the replica count scales between minReplicas and maxReplicas; for a vertical entry minReplicas and maxReplicas are equal and report the fixed replica count (both omitted when the entry stored no count).|
-|idleScaling|boolean|false|none|Whether idle scaling is enabled during this window.|
+|idleScaling|boolean|false|none|Whether idle scaling is enabled during this window. Never true on a Gen 2 (v2-default) service.|
 |idleTimeoutMinutes|integer|false|none|Idle timeout in minutes during this window.|
 |isActiveNow|boolean|true|none|Whether this entry is currently active. Scheduled times are indicative — actions are applied on a best-effort basis and may be delayed by a few minutes.|
 
@@ -29884,7 +32777,7 @@ basicAuth
 |numReplicas|integer|false|none|Fixed replica count for a vertical entry (autoscalingMode "vertical" or omitted). Mutually exclusive with minReplicas/maxReplicas. The per-service replica maximum is variable (tier-dependent, configurable per service) and enforced when the entry is applied, not at request time.|
 |minReplicas|integer|false|none|Minimum number of replicas. A minReplicas/maxReplicas band scales the replica count in a horizontal entry (autoscalingMode "horizontal"); when autoscalingMode is omitted or "vertical", an equal band (minReplicas === maxReplicas) is instead an accepted vertical fixed count and needs no horizontal entitlement. Must be provided together with maxReplicas. The per-service replica maximum is variable (tier-dependent, configurable per service) and enforced when the entry is applied, not at request time.|
 |maxReplicas|integer|false|none|Maximum number of replicas. A minReplicas/maxReplicas band scales the replica count in a horizontal entry (autoscalingMode "horizontal"); when autoscalingMode is omitted or "vertical", an equal band (minReplicas === maxReplicas) is instead an accepted vertical fixed count and needs no horizontal entitlement. Must be provided together with minReplicas. The per-service replica maximum is variable (tier-dependent, configurable per service) and enforced when the entry is applied, not at request time.|
-|idleScaling|boolean|false|none|Whether idle scaling is enabled during this window.|
+|idleScaling|boolean|false|none|Whether idle scaling is enabled during this window. Cannot be true on a Gen 2 (v2-default) service.|
 |idleTimeoutMinutes|integer|false|none|Idle timeout in minutes during this window.|
 
 #### Enumerated Values
@@ -30096,6 +32989,7 @@ basicAuth
     }
   ],
   "enableCoreDumps": true,
+  "deletionProtection": true,
   "scalingSchedule": {
     "entries": [
       {
@@ -30156,7 +33050,7 @@ basicAuth
 |maxTotalMemoryGb|number|false|none|**Deprecated.** DEPRECATED - inaccurate for services with non-default numbers of replicas. Use `maxReplicaMemoryGb` instead. Maximum memory of three workers during auto-scaling in Gb. Available only for 'production' services. Must be a multiple of 12 and lower than or equal to 360 for non paid services or 1068 for paid services. Always absent for horizontal-autoscaling services (replica count is variable).|
 |minReplicaMemoryGb|number|false|none|Minimum total memory of each replica during auto-scaling in Gb. A range in vertical autoscaling; equal to maxReplicaMemoryGb in horizontal (memory is fixed while the replica count scales). Must be a multiple of 4 and greater than or equal to 8.|
 |maxReplicaMemoryGb|number|false|none|Maximum total memory of each replica during auto-scaling in Gb. A range in vertical autoscaling; equal to minReplicaMemoryGb in horizontal (memory is fixed while the replica count scales). Must be a multiple of 4 and lower than or equal to 120* for non paid services or 356* for paid services.* - maximum replica size subject to cloud provider hardware availability in your selected region. |
-|numReplicas|integer|false|none|Number of replicas for the service. The number of replicas must be between 2 and 50 for the first service in a warehouse. Services that are created in an existing warehouse can have a number of replicas as low as 1. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers. Present only when the service uses vertical autoscaling. For horizontal autoscaling, use minReplicas and maxReplicas instead.|
+|numReplicas|integer|false|none|Number of replicas for the service. The number of replicas must be between 1 and 50. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers. Present only when the service uses vertical autoscaling. For horizontal autoscaling, use minReplicas and maxReplicas instead.|
 |minReplicas|integer|false|none|Minimum number of replicas for horizontal autoscaling. Present only when the service uses horizontal autoscaling.|
 |maxReplicas|integer|false|none|Maximum number of replicas for horizontal autoscaling. Present only when the service uses horizontal autoscaling.|
 |autoscalingMode|string|true|none|Configured autoscaling mode. "vertical" runs a fixed replica count while memory scales between minReplicaMemoryGb and maxReplicaMemoryGb; "horizontal" scales the replica count between minReplicas and maxReplicas at a fixed per-replica memory. This is the baseline configuration; the mode currently applied (which may differ while a schedule entry is active) is currentScaling.effectiveAutoscalingMode.|
@@ -30174,14 +33068,15 @@ basicAuth
 |isPrimary|boolean|false|none|True if this service is the primary service in the data warehouse|
 |isReadonly|boolean|false|none|True if this service is read-only. It can only be read-only if a dataWarehouseId is provided.|
 |releaseChannel|string|false|none|Select fast if you want to get new ClickHouse releases as soon as they are available. You'll get new features faster, but with a higher risk of bugs. Select slow if you would like to defer releases to give yourself more time to test. This feature is only available for production services. default is the regular release channel.|
-|byocId|string|false|none|This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and the maxReplicaGb parameters are required too, with values included among the following sizes: 48, 116, 172, 232.|
+|byocId|string|false|none|This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and maxReplicaMemoryGb parameters are required too. With a BYOC profile, both must equal that profile's memory size. Without a profile, equal values must be one of the following sizes: 48, 116, 172, 232. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb, without a profile, creates a service that scales vertically between the two. Both values must be memory sizes listed by the serviceProfiles endpoint, and the service reports the profile 'v1-default'.|
 |hasTransparentDataEncryption|boolean|false|none|True if the service should have the Transparent Data Encryption (TDE) enabled. TDE is only available for ENTERPRISE organizations tiers and can only be enabled at service creation.|
-|profile|string|false|none|Custom instance profile. Only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. Use the serviceProfiles endpoint to list the profiles available to the organization.|
+|profile|string|false|none|Custom instance profile. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. 'v2-default' is Gen 2 hardware. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. A BYOC service that scales vertically within a memory range has no BYOC profile and reports 'v1-default'. Use the serviceProfiles endpoint to list the profiles available to the organization.|
 |transparentDataEncryptionKeyId|string|false|none|The ID of the Transparent Data Encryption key used for the service. This is only available if hasTransparentDataEncryption is true.|
 |encryptionRoleId|string|false|none|The ID of the IAM role used for encryption. This is only available if hasTransparentDataEncryption is true.|
 |complianceType|string|false|none|Type of regulatory compliance for service.|
 |tags|[[ResourceTagsV1](#schemaresourcetagsv1)]|false|none|Tags associated with the service.|
 |enableCoreDumps|boolean|false|none|True if the service's underline infra is enabled for collecting core dumps. This is an experimental feature|
+|deletionProtection|boolean|false|none|When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off.|
 |scalingSchedule|[ScalingSchedule](#schemascalingschedule)|false|none|none|
 |currentScaling|[CurrentScaling](#schemacurrentscaling)|true|none|none|
 
@@ -30574,7 +33469,8 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "accountName": "string",
   "regionId": "ap-northeast-1",
   "cloudProvider": "gcp",
-  "displayName": "string"
+  "displayName": "string",
+  "accessModel": "standard"
 }
 ```
 
@@ -30583,23 +33479,18 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|false|none|Unique identifier of the BYOC configuration|
-|state|string|false|none|State of the infrastructure|
+|state|string|false|none|State of the infrastructure. Current values: 'infra-provisioning', 'infra-terminated', 'infra-terminating', 'infra-ready', 'infra-degraded', 'infra-upgrading', 'infra-awaiting-connector'. New states may be added; treat an unknown state as not ready|
 |accountId|string|false|none|Cloud account ID the BYOC infrastructure is bound to: AWS account ID, GCP project ID, or Azure subscription ID|
 |accountName|string|false|none|**Deprecated.** DEPRECATED. Use `accountId` instead. Cloud account ID the BYOC infrastructure is bound to|
 |regionId|string|false|none|Region for which the BYOC has been configured and where it is possible to create services|
 |cloudProvider|string|false|none|Cloud provider of the region|
 |displayName|string|false|none|Human readable name for infrastructure|
+|accessModel|string|false|none|How ClickHouse reaches the infrastructure: `standard` through a management role in your account, or `restricted` through a connector you install in a cluster you own|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
-|state|infra-provisioning|
-|state|infra-terminated|
-|state|infra-terminating|
-|state|infra-ready|
-|state|infra-degraded|
-|state|infra-upgrading|
 |regionId|ap-northeast-1|
 |regionId|ap-northeast-2|
 |regionId|ap-south-1|
@@ -30627,6 +33518,135 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |cloudProvider|gcp|
 |cloudProvider|aws|
 |cloudProvider|azure|
+
+<h2 id="tocS_ByocRestrictedFacts">ByocRestrictedFacts</h2>
+<!-- backwards compatibility -->
+<a id="schemabyocrestrictedfacts"></a>
+<a id="schema_ByocRestrictedFacts"></a>
+<a id="tocSbyocrestrictedfacts"></a>
+<a id="tocsbyocrestrictedfacts"></a>
+
+```json
+{
+  "clusterName": "string",
+  "platformNodeGroup": "string",
+  "availabilityZones": [
+    "string"
+  ],
+  "namespacePrefix": "string",
+  "executorRoleArn": "string",
+  "nodeRoleArns": [
+    "string"
+  ],
+  "imageMode": "bundle",
+  "imageRegistry": "string",
+  "dataBucket": "string",
+  "backupBucket": "string",
+  "storageRoleArn": "string",
+  "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+  "enableMonitoring": true,
+  "enableSnapshotController": true,
+  "enableAutoscaler": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clusterName|string|true|none|Name of the EKS cluster the connector runs in|
+|platformNodeGroup|string|false|none|Node group the platform components run on. Omitted: `system`|
+|availabilityZones|[string]|false|none|At least three distinct availability zones of the region. Omitted: the region default|
+|namespacePrefix|string|false|none|Prefix of the namespace each service runs in. Must match the executor configuration. Omitted: `ns-`|
+|executorRoleArn|string|false|none|Direct image mode only (required there): IAM role of the connector executor, in `accountId`|
+|nodeRoleArns|[string]|false|none|Direct image mode only (required there): IAM roles of the cluster nodes, in `accountId`|
+|imageMode|string|true|none|How the connector pulls platform images: `direct` from the ClickHouse registry, or `bundle` from `imageRegistry`|
+|imageRegistry|string|false|none|Bundle image mode only (required there): OCI repository root holding the platform images|
+|dataBucket|string|true|none|S3 bucket services store data in|
+|backupBucket|string|true|none|S3 bucket services store backups in|
+|storageRoleArn|string|true|none|IAM role services assume to reach the buckets, in `accountId`|
+|scraperEndpoint|string|false|none|Remote-write URL of the connector scraper. Required unless `enableMonitoring` is false|
+|enableMonitoring|boolean|false|none|Install the monitoring components. Default true|
+|enableSnapshotController|boolean|false|none|Install the volume snapshot controller. Default true|
+|enableAutoscaler|boolean|false|none|Install the ClickHouse autoscaler. Default false|
+
+<h2 id="tocS_ByocConnectorComponent">ByocConnectorComponent</h2>
+<!-- backwards compatibility -->
+<a id="schemabyocconnectorcomponent"></a>
+<a id="schema_ByocConnectorComponent"></a>
+<a id="tocSbyocconnectorcomponent"></a>
+<a id="tocsbyocconnectorcomponent"></a>
+
+```json
+{
+  "name": "scraper",
+  "state": "string",
+  "version": "string",
+  "lastHeartbeatAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|false|none|Connector component, e.g. scraper, executor or troubleshooter|
+|state|string|false|none|State the component last reported|
+|version|string|false|none|Version the component last reported|
+|lastHeartbeatAt|string(date-time)|false|none|Last heartbeat of the component. ISO-8601|
+
+<h2 id="tocS_ByocConnector">ByocConnector</h2>
+<!-- backwards compatibility -->
+<a id="schemabyocconnector"></a>
+<a id="schema_ByocConnector"></a>
+<a id="tocSbyocconnector"></a>
+<a id="tocsbyocconnector"></a>
+
+```json
+{
+  "lastHeartbeatAt": "1970-01-01T00:00:00Z",
+  "components": [
+    {
+      "name": "scraper",
+      "state": "string",
+      "version": "string",
+      "lastHeartbeatAt": "1970-01-01T00:00:00Z"
+    }
+  ],
+  "platformState": "string",
+  "platformDetail": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|lastHeartbeatAt|string(date-time)|false|none|Last heartbeat of the connector. ISO-8601. Absent until the connector first reports|
+|components|[[ByocConnectorComponent](#schemabyocconnectorcomponent)]|false|none|Components the connector reports on|
+|platformState|string|false|none|State of the platform layer the connector installs|
+|platformDetail|string|false|none|What you need to do when the platform layer waits on you|
+
+<h2 id="tocS_ByocInfrastructureEnrollmentToken">ByocInfrastructureEnrollmentToken</h2>
+<!-- backwards compatibility -->
+<a id="schemabyocinfrastructureenrollmenttoken"></a>
+<a id="schema_ByocInfrastructureEnrollmentToken"></a>
+<a id="tocSbyocinfrastructureenrollmenttoken"></a>
+<a id="tocsbyocinfrastructureenrollmenttoken"></a>
+
+```json
+{
+  "token": "string",
+  "expiresAt": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|token|string|true|none|One-time token the connector enrolls with. It cannot be read again after this response|
+|expiresAt|string(date-time)|true|none|When the token expires. ISO-8601|
 
 <h2 id="tocS_OrganizationCapabilities">OrganizationCapabilities</h2>
 <!-- backwards compatibility -->
@@ -30675,13 +33695,16 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "accountName": "string",
       "regionId": "ap-northeast-1",
       "cloudProvider": "gcp",
-      "displayName": "string"
+      "displayName": "string",
+      "accessModel": "standard"
     }
   ],
   "enableCoreDumps": true,
   "capabilities": {
     "snapshots": true
-  }
+  },
+  "knowledgeBasedAiSupportEnabled": true,
+  "aiDataUseForProductImprovementEnabled": true
 }
 ```
 
@@ -30696,6 +33719,8 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |byocConfig|[[ByocConfig](#schemabyocconfig)]|false|none|BYOC configuration for the organization|
 |enableCoreDumps|boolean|false|none|Whether crash reports (core dumps) collection is enabled for services in the organization. When disabled at the organization level, individual services cannot enable crash reports.|
 |capabilities|[OrganizationCapabilities](#schemaorganizationcapabilities)|false|none|none|
+|knowledgeBasedAiSupportEnabled|boolean|false|read-only|Whether knowledge-based AI support, which answers support questions with an AI model trained on public documentation, is turned on in the organization's settings. Read-only.|
+|aiDataUseForProductImprovementEnabled|boolean|false|read-only|Whether the organization's settings allow AI inputs, outputs and related metadata to be used for product improvement and support. Read-only.|
 
 <h2 id="tocS_OrganizationCloudRegionPrivateEndpointConfig">OrganizationCloudRegionPrivateEndpointConfig</h2>
 <!-- backwards compatibility -->
@@ -31044,7 +34069,42 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "string"
   ],
   "byoVpcSharedVpcHostProjectId": "string",
-  "gcpPscSubnetId": "string"
+  "gcpPscSubnetId": "string",
+  "accessModel": "standard",
+  "restrictedFacts": {
+    "clusterName": "string",
+    "platformNodeGroup": "string",
+    "availabilityZones": [
+      "string"
+    ],
+    "namespacePrefix": "string",
+    "executorRoleArn": "string",
+    "nodeRoleArns": [
+      "string"
+    ],
+    "imageMode": "bundle",
+    "imageRegistry": "string",
+    "dataBucket": "string",
+    "backupBucket": "string",
+    "storageRoleArn": "string",
+    "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+    "enableMonitoring": true,
+    "enableSnapshotController": true,
+    "enableAutoscaler": true
+  },
+  "connector": {
+    "lastHeartbeatAt": "1970-01-01T00:00:00Z",
+    "components": [
+      {
+        "name": "scraper",
+        "state": "string",
+        "version": "string",
+        "lastHeartbeatAt": "1970-01-01T00:00:00Z"
+      }
+    ],
+    "platformState": "string",
+    "platformDetail": "string"
+  }
 }
 ```
 
@@ -31053,7 +34113,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|false|none|Unique identifier of the BYOC infrastructure|
-|state|string|false|none|State of the infrastructure|
+|state|string|false|none|State of the infrastructure. Current values: 'infra-provisioning', 'infra-terminated', 'infra-terminating', 'infra-ready', 'infra-degraded', 'infra-upgrading', 'infra-awaiting-connector'. New states may be added; treat an unknown state as not ready|
 |accountId|string|false|none|Cloud account ID the BYOC infrastructure is bound to: AWS account ID, GCP project ID, or Azure subscription ID|
 |regionId|string|false|none|Region the BYOC infrastructure is located in|
 |cloudProvider|string|false|none|Cloud provider of the region|
@@ -31069,17 +34129,14 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |byoVpcPodCidrRangeNames|[string]|false|none|Secondary IP range names pinned for pod IPs (GCP BYO-VPC only). Absent when all secondary ranges are used|
 |byoVpcSharedVpcHostProjectId|string|false|none|Shared VPC host project owning the VPC and subnet (GCP BYO-VPC only). Absent when the VPC lives in the service project|
 |gcpPscSubnetId|string|false|none|Customer-provided Private Service Connect NAT subnet name configured for private link (GCP BYO-VPC only)|
+|accessModel|string|false|none|Access model of the infrastructure: `standard` or `restricted`. With `restricted`, private link, load balancer and VPC fields are false or absent|
+|restrictedFacts|[ByocRestrictedFacts](#schemabyocrestrictedfacts)|false|none|none|
+|connector|[ByocConnector](#schemabyocconnector)|false|none|none|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
-|state|infra-provisioning|
-|state|infra-terminated|
-|state|infra-terminating|
-|state|infra-ready|
-|state|infra-degraded|
-|state|infra-upgrading|
 |regionId|ap-northeast-1|
 |regionId|ap-northeast-2|
 |regionId|ap-south-1|
@@ -31619,7 +34676,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |privateDnsName|string|false|none|Optional private DNS names for Reverse Private Endpoint. Can be used as data source destination address. Must be unique across the ClickHouse service.<br>Generally available for Google Private Service Connect (PSC). For AWS PrivateLink (VPC endpoint service and VPC resource), available in Private Preview; contact ClickHouse support to enable it for your service. Not supported for MSK multi-VPC.<br>Supports exact names and leading wildcard names such as *.example.com|
-|targetId|string|false|none|Optional DNS target ID. Supported only for VPC_RESOURCE, where it is the CHILD resource configuration ID (rcfg-…), or the configuration ID for a single resource. Set it at create time to route a custom DNS name to that resource. If the target is not reported in dnsTargets yet, the mapping is not served until it appears; it does not fall back to the default target. If omitted, the default target is used. Once dnsTargets is non-empty, adding or changing a targetId requires an ID in that list; unchanged target IDs are not re-checked.|
+|targetId|string|false|none|Optional DNS target ID. For VPC_RESOURCE, it is the CHILD resource configuration ID (rcfg-…), or the configuration ID for a single resource. For VPC_ENDPOINT_SERVICE, it is an AWS availability zone ID (for example use1-az1, not the zone name us-east-1a) that the endpoint service offers and ClickPipes supports in the region; if the endpoint is not in that zone yet, ClickPipes adds the zone to the endpoint. Cross-region VPC endpoint services reject targetId. Not supported for other endpoint types. Set it at create time to route a custom DNS name to that target. If the target is not reported in dnsTargets yet, the mapping is not served until it appears; it does not fall back to the default target. If omitted, the default target is used. For VPC_RESOURCE, once dnsTargets is non-empty, adding or changing a targetId requires an ID in that list; unchanged target IDs are not re-checked.|
 
 <h2 id="tocS_ReversePrivateEndpointPrivateDnsMapping">ReversePrivateEndpointPrivateDnsMapping</h2>
 <!-- backwards compatibility -->
@@ -31661,15 +34718,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|DNS target ID. For VPC_RESOURCE, the associated CHILD resource configuration ID, or the configuration ID for a single resource.|
-|kind|string|false|none|DNS target kind.|
+|id|string|false|none|DNS target ID. For VPC_RESOURCE, the associated CHILD resource configuration ID, or the configuration ID for a single resource. For VPC_ENDPOINT_SERVICE, the AWS availability zone ID of the zonal endpoint DNS name.|
+|kind|string|false|none|DNS target kind. Current values: 'RESOURCE_CONFIGURATION', 'AVAILABILITY_ZONE'. RESOURCE_CONFIGURATION is used for VPC_RESOURCE targets and AVAILABILITY_ZONE for VPC_ENDPOINT_SERVICE zonal targets. New kinds may be added, so clients must accept unknown values.|
 |internalDnsName|string|false|none|Internal DNS name currently reported for this target. To select a target for a custom private DNS mapping, use its id as targetId.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|kind|RESOURCE_CONFIGURATION|
 
 <h2 id="tocS_CreateReversePrivateEndpoint">CreateReversePrivateEndpoint</h2>
 <!-- backwards compatibility -->
@@ -31820,7 +34871,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |dnsNames|[string]|false|none|Reverse private endpoint internal DNS names.|
 |privateDnsNames|[string]|false|none|Reverse private endpoint private DNS names.|
 |privateDnsMappings|[[ReversePrivateEndpointPrivateDnsMapping](#schemareverseprivateendpointprivatednsmapping)]|false|none|Read-only provider private DNS names and their internal DNS targets reported by the Reverse Private Endpoint. For VPC_RESOURCE, this list can be empty when CHILD resources have no provider private DNS.|
-|dnsTargets|[[ReversePrivateEndpointDnsTarget](#schemareverseprivateendpointdnstarget)]|false|none|Read-only DNS targets the Reverse Private Endpoint currently reports. For VPC_RESOURCE, there is one RESOURCE_CONFIGURATION target per resource configuration association, identified by its CHILD resource configuration ID, or the configuration ID for a single resource. Other endpoint types report an empty list. Targets can appear over time; a custom mapping with a targetId that is not reported yet is not served until it appears.|
+|dnsTargets|[[ReversePrivateEndpointDnsTarget](#schemareverseprivateendpointdnstarget)]|false|none|Read-only DNS targets the Reverse Private Endpoint currently reports. For VPC_RESOURCE, there is one RESOURCE_CONFIGURATION target per resource configuration association, identified by its CHILD resource configuration ID, or the configuration ID for a single resource. For VPC_ENDPOINT_SERVICE, there is one AVAILABILITY_ZONE target per zonal endpoint DNS name, identified by its AWS availability zone ID; the regional DNS name is the default target and is not listed. Cross-region VPC endpoint services report no AVAILABILITY_ZONE targets. Other endpoint types report an empty list. Targets can appear over time; a custom mapping with a targetId that is not reported yet is not served until it appears.|
 |status|string|false|none|Reverse private endpoint status.|
 
 #### Enumerated Values
@@ -31944,7 +34995,10 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "type": "confluent",
   "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
   "authentication": "PLAIN",
-  "caCertificate": "string"
+  "caCertificate": "string",
+  "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+  "scope": "schema_registry",
+  "audience": "https://schema-registry.example.com"
 }
 ```
 
@@ -31954,15 +35008,17 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |---|---|---|---|---|
 |type|string|false|none|Type of the schema registry. Defaults to 'confluent' (a Confluent-compatible REST registry).|
 |url|string|true|none|Schema URL. HTTPS required.|
-|authentication|string|false|none|Authentication type of the schema registry.|
+|authentication|string|false|none|Authentication type of the schema registry. One of 'PLAIN', 'CLIENT_CREDENTIALS'. PLAIN uses a username and password. CLIENT_CREDENTIALS uses the OAuth2 client credentials flow.|
 |caCertificate|string \| null|false|none|PEM encoded CA certificates to validate the schema registry's certificate.|
+|tokenUrl|string \| null|false|none|OAuth2 token endpoint. HTTPS required. Required when authentication is CLIENT_CREDENTIALS.|
+|scope|string \| null|false|none|Space-separated OAuth2 scopes to request. Only used when authentication is CLIENT_CREDENTIALS.|
+|audience|string \| null|false|none|OAuth2 audience to request. Only used when authentication is CLIENT_CREDENTIALS.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |type|confluent|
-|authentication|PLAIN|
 
 <h2 id="tocS_ClickPipeKafkaGlueSchemaRegistry">ClickPipeKafkaGlueSchemaRegistry</h2>
 <!-- backwards compatibility -->
@@ -32007,7 +35063,10 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "type": "confluent",
   "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
   "authentication": "PLAIN",
-  "caCertificate": "string"
+  "caCertificate": "string",
+  "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+  "scope": "schema_registry",
+  "audience": "https://schema-registry.example.com"
 }
 ```
 
@@ -32036,8 +35095,29 @@ Accepted only for organizations enrolled in the private preview, and only when t
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|username|string|false|none|Username for the schema registry.|
-|password|string|false|none|Password for the schema registry.|
+|username|string|true|none|Username for the schema registry.|
+|password|string|true|none|Password for the schema registry.|
+
+<h2 id="tocS_ClickPipeKafkaSchemaRegistryClientCredentials">ClickPipeKafkaSchemaRegistryClientCredentials</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickpipekafkaschemaregistryclientcredentials"></a>
+<a id="schema_ClickPipeKafkaSchemaRegistryClientCredentials"></a>
+<a id="tocSclickpipekafkaschemaregistryclientcredentials"></a>
+<a id="tocsclickpipekafkaschemaregistryclientcredentials"></a>
+
+```json
+{
+  "clientId": "string",
+  "clientSecret": "password"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clientId|string|true|none|OAuth2 client ID for the schema registry.|
+|clientSecret|string(password)|true|none|OAuth2 client secret for the schema registry.|
 
 <h2 id="tocS_ClickPipeMutateKafkaConfluentSchemaRegistry">ClickPipeMutateKafkaConfluentSchemaRegistry</h2>
 <!-- backwards compatibility -->
@@ -32052,6 +35132,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
   "authentication": "PLAIN",
   "caCertificate": "string",
+  "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+  "scope": "schema_registry",
+  "audience": "https://schema-registry.example.com",
   "credentials": {
     "username": "string",
     "password": "string"
@@ -32065,16 +35148,18 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |---|---|---|---|---|
 |type|string|false|none|Type of the schema registry. Defaults to 'confluent' (a Confluent-compatible REST registry).|
 |url|string|true|none|Schema URL. HTTPS required.|
-|authentication|string|true|none|Authentication type of the schema registry.|
+|authentication|string|true|none|Authentication type of the schema registry. One of 'PLAIN', 'CLIENT_CREDENTIALS'. PLAIN uses a username and password. CLIENT_CREDENTIALS uses the OAuth2 client credentials flow.|
 |caCertificate|string \| null|false|none|PEM encoded CA certificates to validate the schema registry's certificate.|
-|credentials|[ClickPipeKafkaSchemaRegistryCredentials](#schemaclickpipekafkaschemaregistrycredentials)|true|none|none|
+|tokenUrl|string \| null|false|none|OAuth2 token endpoint. HTTPS required. Required when authentication is CLIENT_CREDENTIALS.|
+|scope|string \| null|false|none|Space-separated OAuth2 scopes to request. Only used when authentication is CLIENT_CREDENTIALS.|
+|audience|string \| null|false|none|OAuth2 audience to request. Only used when authentication is CLIENT_CREDENTIALS.|
+|credentials|[ClickPipeKafkaSchemaRegistryCredentials](#schemaclickpipekafkaschemaregistrycredentials) \| [ClickPipeKafkaSchemaRegistryClientCredentials](#schemaclickpipekafkaschemaregistryclientcredentials)|true|none|Credentials for the schema registry. Use a username and password for PLAIN, or a client ID and secret for CLIENT_CREDENTIALS.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |type|confluent|
-|authentication|PLAIN|
 
 <h2 id="tocS_ClickPipeMutateKafkaSchemaRegistry">ClickPipeMutateKafkaSchemaRegistry</h2>
 <!-- backwards compatibility -->
@@ -32089,6 +35174,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
   "authentication": "PLAIN",
   "caCertificate": "string",
+  "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+  "scope": "schema_registry",
+  "audience": "https://schema-registry.example.com",
   "credentials": {
     "username": "string",
     "password": "string"
@@ -32167,7 +35255,10 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "type": "confluent",
     "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
     "authentication": "PLAIN",
-    "caCertificate": "string"
+    "caCertificate": "string",
+    "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+    "scope": "schema_registry",
+    "audience": "https://schema-registry.example.com"
   },
   "caCertificate": "string",
   "reversePrivateEndpointIds": [
@@ -32187,7 +35278,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |brokers|string|false|none|Brokers of the Kafka source.|
 |topics|string|false|none|One or more Kafka topics as a comma-separated string. All topics must have the same schema and are ingested into the same destination table by a single ClickPipe.|
 |consumerGroup|string \| null|false|none|Consumer group of the Kafka source. If not provided "clickpipes-<<ID>>" will be used.|
-|authentication|string|false|none|Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS|
+|authentication|string|false|none|Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, SCRAM-SHA-512, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS|
 |iamRole|string \| null|false|none|IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam|
 |offset|[ClickPipeKafkaOffset](#schemaclickpipekafkaoffset) \| null|false|none|none|
 |schemaRegistry|[ClickPipeKafkaSchemaRegistry](#schemaclickpipekafkaschemaregistry) \| null|false|none|none|
@@ -32247,6 +35338,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
     "authentication": "PLAIN",
     "caCertificate": "string",
+    "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+    "scope": "schema_registry",
+    "audience": "https://schema-registry.example.com",
     "credentials": {
       "username": "string",
       "password": "string"
@@ -32270,12 +35364,12 @@ Accepted only for organizations enrolled in the private preview, and only when t
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|type|string|false|none|Type of the Kafka source.|
-|format|string|false|none|Format of the Kafka source.|
-|brokers|string|false|none|Brokers of the Kafka source.|
-|topics|string|false|none|One or more Kafka topics as a comma-separated string. All topics must have the same schema and are ingested into the same destination table by a single ClickPipe.|
+|type|string|true|none|Type of the Kafka source.|
+|format|string|true|none|Format of the Kafka source.|
+|brokers|string|true|none|Brokers of the Kafka source.|
+|topics|string|true|none|One or more Kafka topics as a comma-separated string. All topics must have the same schema and are ingested into the same destination table by a single ClickPipe.|
 |consumerGroup|string \| null|false|none|Consumer group of the Kafka source. If not provided "clickpipes-<<ID>>" will be used.|
-|authentication|string|false|none|Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS|
+|authentication|string|true|none|Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, SCRAM-SHA-512, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS|
 |iamRole|string \| null|false|none|IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam|
 |offset|[ClickPipeKafkaOffset](#schemaclickpipekafkaoffset) \| null|false|none|none|
 |schemaRegistry|[ClickPipeMutateKafkaSchemaRegistry](#schemaclickpipemutatekafkaschemaregistry) \| null|false|none|none|
@@ -32338,7 +35432,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|authentication|string \| null|false|none|Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS|
+|authentication|string \| null|false|none|Authentication method of the Kafka source. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. Supported authentication methods: kafka: PLAIN, SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, msk: SCRAM-SHA-512, IAM_ROLE, IAM_USER, MUTUAL_TLS, gcmk: PLAIN, MUTUAL_TLS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY, confluent: PLAIN, SCRAM-SHA-512, MUTUAL_TLS, warpstream: PLAIN, azureeventhub: PLAIN, redpanda: SCRAM-SHA-256, SCRAM-SHA-512, MUTUAL_TLS, dokafka: SCRAM-SHA-256, MUTUAL_TLS|
 |iamRole|string \| null|false|none|IAM role for the Kafka source. Use with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/kafka#iam|
 |caCertificate|string \| null|false|none|PEM encoded CA certificates to validate the broker's certificate.|
 |reversePrivateEndpointIds|[string]|false|none|Reverse private endpoint UUIDs used for a secure private connection to the Kafka source.|
@@ -32548,6 +35642,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "format": "JSONEachRow",
   "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
   "delimiter": ",",
+  "skipFirstLines": 1,
   "compression": "auto",
   "isContinuous": true,
   "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -32569,12 +35664,13 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |format|string|false|none|Format of the files.|
 |url|string|false|none|Provide a path to the file(s) you want to ingest. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations|
 |delimiter|string \| null|false|none|Delimiter used in the files.|
+|skipFirstLines|integer|false|none|Number of lines to skip at the start of each file. Only for TabSeparated and TabSeparatedWithNames formats. Can only be set at pipe creation.|
 |compression|string \| null|false|none|Compression algorithm used for the files.|
 |isContinuous|boolean \| null|false|none|If set to true, the pipe will continuously read new files from the source. If set to false, the pipe will read the files only once. New files have to be uploaded lexically order.|
 |queueUrl|string \| null|false|none|Queue URL for event-based continuous ingestion. For S3, provide an SQS queue URL. For GCS, provide a Pub/Sub subscription (e.g. projects/{project}/subscriptions/{name}). When provided, files are ingested based on event notifications rather than lexicographical order. Only applicable when isContinuous is true and authentication is not public.|
 |skipInitialLoad|boolean \| null|false|none|If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.|
 |startAfter|string \| null|false|none|Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.|
-|authentication|string \| null|false|none|Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.|
+|authentication|string \| null|false|none|Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.|
 |iamRole|string \| null|false|none|IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication|
 |connectionString|string \| null|false|none|Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.|
 |path|string \| null|false|none|Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations|
@@ -32626,6 +35722,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "format": "JSONEachRow",
   "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
   "delimiter": ",",
+  "skipFirstLines": 1,
   "compression": "auto",
   "isContinuous": true,
   "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -32652,12 +35749,13 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |format|string|false|none|Format of the files.|
 |url|string|false|none|Provide a path to the file(s) you want to ingest. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations|
 |delimiter|string \| null|false|none|Delimiter used in the files.|
+|skipFirstLines|integer|false|none|Number of lines to skip at the start of each file. Only for TabSeparated and TabSeparatedWithNames formats. Can only be set at pipe creation.|
 |compression|string \| null|false|none|Compression algorithm used for the files.|
 |isContinuous|boolean \| null|false|none|If set to true, the pipe will continuously read new files from the source. If set to false, the pipe will read the files only once. New files have to be uploaded lexically order.|
 |queueUrl|string \| null|false|none|Queue URL for event-based continuous ingestion. For S3, provide an SQS queue URL. For GCS, provide a Pub/Sub subscription (e.g. projects/{project}/subscriptions/{name}). When provided, files are ingested based on event notifications rather than lexicographical order. Only applicable when isContinuous is true and authentication is not public.|
 |skipInitialLoad|boolean \| null|false|none|If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.|
 |startAfter|string \| null|false|none|Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.|
-|authentication|string \| null|false|none|Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.|
+|authentication|string \| null|false|none|Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.|
 |iamRole|string \| null|false|none|IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication|
 |connectionString|string \| null|false|none|Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.|
 |path|string \| null|false|none|Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations|
@@ -32728,7 +35826,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |---|---|---|---|---|
 |skipInitialLoad|boolean \| null|false|none|If set to true, skips the initial load and only ingests files delivered by queue notifications. Only applicable when queueUrl is provided.|
 |startAfter|string \| null|false|none|Skip all files up to and including this object key during the initial load. Cannot be provided when skipInitialLoad is true.|
-|authentication|string \| null|false|none|Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.|
+|authentication|string \| null|false|none|Authentication method. IAM_USER is for S3, GCS, and DigitalOcean Spaces. IAM_ROLE is for S3 only. SERVICE_ACCOUNT is for GCS only. For GCS, SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources. CONNECTION_STRING is for Azure Blob Storage. PUBLIC uses no authentication.|
 |iamRole|string \| null|false|none|IAM role to be used with IAM role authentication. Read more in ClickPipes documentation: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#authentication|
 |connectionString|string \| null|false|none|Connection string for Azure Blob Storage authentication. Required when authentication is CONNECTION_STRING.|
 |path|string \| null|false|none|Path to the file(s) within the Azure container. Used for Azure Blob Storage sources. You can specify multiple files using bash-like wildcards. For more information, see the documentation on using wildcards in path: https://clickhouse.com/docs/en/integrations/clickpipes/object-storage#limitations|
@@ -32761,11 +35859,12 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "replicationMode": "cdc",
   "replicationSlotName": "clickpipes_slot",
   "allowNullableColumns": false,
-  "initialLoadParallelism": 1,
+  "initialLoadParallelism": 4,
   "snapshotNumRowsPerPartition": 100000,
   "snapshotNumberOfParallelTables": 1,
   "enableFailoverSlots": false,
-  "deleteOnMerge": false
+  "deleteOnMerge": false,
+  "useJsonNativeFormat": false
 }
 ```
 
@@ -32784,6 +35883,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |snapshotNumberOfParallelTables|integer|false|none|Number of tables to snapshot in parallel during the initial load phase.|
 |enableFailoverSlots|boolean|false|none|Enable failover support for the replication slot on PG17 and newer. Only applicable when ClickPipes creates the replication slot (i.e., replicationSlotName is NOT provided).|
 |deleteOnMerge|boolean|false|none|Enable hard delete behavior in ReplacingMergeTree for PostgreSQL DELETE operations.|
+|useJsonNativeFormat|boolean|false|none|Store json and jsonb columns in native ClickHouse JSON format (requires ClickHouse 25.3+). Non-object values are wrapped as {"_value": ...}, and json[]/jsonb[] become Array(JSON). When disabled, JSON data is stored as String. Can only be set at creation. Must be enabled for your organization.|
 
 #### Enumerated Values
 
@@ -32926,11 +36026,12 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "replicationMode": "cdc",
     "replicationSlotName": "clickpipes_slot",
     "allowNullableColumns": false,
-    "initialLoadParallelism": 1,
+    "initialLoadParallelism": 4,
     "snapshotNumRowsPerPartition": 100000,
     "snapshotNumberOfParallelTables": 1,
     "enableFailoverSlots": false,
-    "deleteOnMerge": false
+    "deleteOnMerge": false,
+    "useJsonNativeFormat": false
   },
   "tableMappings": [
     {
@@ -33014,11 +36115,12 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "replicationMode": "cdc",
     "replicationSlotName": "clickpipes_slot",
     "allowNullableColumns": false,
-    "initialLoadParallelism": 1,
+    "initialLoadParallelism": 4,
     "snapshotNumRowsPerPartition": 100000,
     "snapshotNumberOfParallelTables": 1,
     "enableFailoverSlots": false,
-    "deleteOnMerge": false
+    "deleteOnMerge": false,
+    "useJsonNativeFormat": false
   },
   "authentication": "IAM_ROLE",
   "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -33172,10 +36274,11 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "replicationMechanism": "GTID",
   "useCompression": false,
   "allowNullableColumns": false,
-  "initialLoadParallelism": 1,
+  "initialLoadParallelism": 4,
   "snapshotNumRowsPerPartition": 100000,
   "snapshotNumberOfParallelTables": 1,
-  "deleteOnMerge": false
+  "deleteOnMerge": false,
+  "useJsonNativeFormat": false
 }
 ```
 
@@ -33193,6 +36296,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |snapshotNumRowsPerPartition|integer|false|none|Number of rows per partition during the snapshot phase.|
 |snapshotNumberOfParallelTables|integer|false|none|Number of tables to snapshot in parallel during the initial load phase.|
 |deleteOnMerge|boolean|false|none|Enable hard delete behavior in ReplacingMergeTree for MySQL DELETE operations.|
+|useJsonNativeFormat|boolean|false|none|Store JSON columns in native ClickHouse JSON format (requires ClickHouse 25.3+). Non-object values are wrapped as {"_value": ...}. When disabled, JSON data is stored as String. Can only be set at creation. Must be enabled for your organization.|
 
 #### Enumerated Values
 
@@ -33339,10 +36443,11 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "replicationMechanism": "GTID",
     "useCompression": false,
     "allowNullableColumns": false,
-    "initialLoadParallelism": 1,
+    "initialLoadParallelism": 4,
     "snapshotNumRowsPerPartition": 100000,
     "snapshotNumberOfParallelTables": 1,
-    "deleteOnMerge": false
+    "deleteOnMerge": false,
+    "useJsonNativeFormat": false
   },
   "tableMappings": [
     {
@@ -33420,10 +36525,11 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "replicationMechanism": "GTID",
     "useCompression": false,
     "allowNullableColumns": false,
-    "initialLoadParallelism": 1,
+    "initialLoadParallelism": 4,
     "snapshotNumRowsPerPartition": 100000,
     "snapshotNumberOfParallelTables": 1,
-    "deleteOnMerge": false
+    "deleteOnMerge": false,
+    "useJsonNativeFormat": false
   },
   "authentication": "basic",
   "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -33588,9 +36694,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "pullWindowSizeSeconds": 86400,
   "syncCron": "0 * * * *",
   "allowNullableColumns": true,
-  "initialLoadParallelism": 0,
+  "initialLoadParallelism": 1,
   "snapshotNumRowsPerPartition": 0,
-  "snapshotNumberOfParallelTables": 0
+  "snapshotNumberOfParallelTables": 1
 }
 ```
 
@@ -33606,9 +36712,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |pullWindowSizeSeconds|integer|false|none|Maximum amount of time one pull (query) can cover. Applies when the pipe has fallen behind, e.g. on the first CDC sync or when resuming after a pause: with a 6 hour limit, a pipe that is 3 days behind catches up in 12 smaller pulls instead of one large query. If a pull fails, only that pull is retried. Not allowed for "snapshot" replication mode.|
 |syncCron|string|false|none|Standard 5-field cron expression (or a descriptor such as "@hourly") that schedules CDC syncs, e.g. "0 * * * *" to sync every hour sharp. Evaluated in UTC unless prefixed with "CRON_TZ=<zone>". Must not fire more than once a minute. Syncs run on this schedule instead of every syncIntervalSeconds, so the two cannot both be set. Not allowed for "snapshot" replication mode.|
 |allowNullableColumns|boolean|false|none|Allow nullable columns in the destination table.|
-|initialLoadParallelism|number|false|none|Number of parallel workers during initial load.|
+|initialLoadParallelism|integer|false|none|Number of parallel workers during initial load.|
 |snapshotNumRowsPerPartition|number|false|none|Number of rows to snapshot per partition.|
-|snapshotNumberOfParallelTables|number|false|none|Number of parallel tables to snapshot.|
+|snapshotNumberOfParallelTables|integer|false|none|Number of parallel tables to snapshot.|
 
 <h2 id="tocS_ClickPipeBigQueryPipeTableMapping">ClickPipeBigQueryPipeTableMapping</h2>
 <!-- backwards compatibility -->
@@ -33676,9 +36782,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "pullWindowSizeSeconds": 86400,
     "syncCron": "0 * * * *",
     "allowNullableColumns": true,
-    "initialLoadParallelism": 0,
+    "initialLoadParallelism": 1,
     "snapshotNumRowsPerPartition": 0,
-    "snapshotNumberOfParallelTables": 0
+    "snapshotNumberOfParallelTables": 1
   },
   "tableMappings": [
     {
@@ -33737,9 +36843,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "pullWindowSizeSeconds": 86400,
     "syncCron": "0 * * * *",
     "allowNullableColumns": true,
-    "initialLoadParallelism": 0,
+    "initialLoadParallelism": 1,
     "snapshotNumRowsPerPartition": 0,
-    "snapshotNumberOfParallelTables": 0
+    "snapshotNumberOfParallelTables": 1
   },
   "tableMappings": [
     {
@@ -33770,7 +36876,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |snapshotStagingPath|string|true|none|GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.|
 |settings|[ClickPipeBigQueryPipeSettings](#schemaclickpipebigquerypipesettings)|true|none|none|
 |tableMappings|[[ClickPipeBigQueryPipeTableMapping](#schemaclickpipebigquerypipetablemapping)]|true|none|Table mappings for BigQuery pipe.|
-|authentication|string|true|none|Authenticated with the ClickPipes service tenant identity. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
+|authentication|string|true|none|Authenticated with the ClickPipes service tenant identity. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
 |projectId|string|false|none|GCP project ID that owns the BigQuery resources. Older pipes created outside OpenAPI may omit this field.|
 
 #### Enumerated Values
@@ -33798,9 +36904,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "pullWindowSizeSeconds": 86400,
     "syncCron": "0 * * * *",
     "allowNullableColumns": true,
-    "initialLoadParallelism": 0,
+    "initialLoadParallelism": 1,
     "snapshotNumRowsPerPartition": 0,
-    "snapshotNumberOfParallelTables": 0
+    "snapshotNumberOfParallelTables": 1
   },
   "tableMappings": [
     {
@@ -33850,9 +36956,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "pullWindowSizeSeconds": 86400,
     "syncCron": "0 * * * *",
     "allowNullableColumns": true,
-    "initialLoadParallelism": 0,
+    "initialLoadParallelism": 1,
     "snapshotNumRowsPerPartition": 0,
-    "snapshotNumberOfParallelTables": 0
+    "snapshotNumberOfParallelTables": 1
   },
   "tableMappings": [
     {
@@ -33915,9 +37021,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "pullWindowSizeSeconds": 86400,
     "syncCron": "0 * * * *",
     "allowNullableColumns": true,
-    "initialLoadParallelism": 0,
+    "initialLoadParallelism": 1,
     "snapshotNumRowsPerPartition": 0,
-    "snapshotNumberOfParallelTables": 0
+    "snapshotNumberOfParallelTables": 1
   },
   "tableMappings": [
     {
@@ -33948,7 +37054,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |snapshotStagingPath|string|true|none|GCS bucket path for staging snapshot data (e.g., gs://my-bucket/staging/). Data will be automatically cleaned up after initial load.|
 |settings|[ClickPipeBigQueryPipeSettings](#schemaclickpipebigquerypipesettings)|true|none|none|
 |tableMappings|[[ClickPipeBigQueryPipeTableMapping](#schemaclickpipebigquerypipetablemapping)]|true|none|Table mappings for BigQuery pipe.|
-|authentication|string|true|none|Authenticate with the ClickPipes service tenant identity. Customer credentials must not be provided. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
+|authentication|string|true|none|Authenticate with the ClickPipes service tenant identity. Customer credentials must not be provided. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
 |projectId|string|true|none|GCP project ID that owns the BigQuery resources.|
 
 #### Enumerated Values
@@ -33976,9 +37082,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "pullWindowSizeSeconds": 86400,
     "syncCron": "0 * * * *",
     "allowNullableColumns": true,
-    "initialLoadParallelism": 0,
+    "initialLoadParallelism": 1,
     "snapshotNumRowsPerPartition": 0,
-    "snapshotNumberOfParallelTables": 0
+    "snapshotNumberOfParallelTables": 1
   },
   "tableMappings": [
     {
@@ -34024,7 +37130,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "syncIntervalSeconds": 60,
   "pullBatchSize": 100000,
   "replicationMode": "cdc",
-  "initialLoadParallelism": 1,
+  "initialLoadParallelism": 4,
   "snapshotNumRowsPerPartition": 100000,
   "snapshotNumberOfParallelTables": 1,
   "deleteOnMerge": false,
@@ -34261,7 +37367,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "syncIntervalSeconds": 60,
     "pullBatchSize": 100000,
     "replicationMode": "cdc",
-    "initialLoadParallelism": 1,
+    "initialLoadParallelism": 4,
     "snapshotNumRowsPerPartition": 100000,
     "snapshotNumberOfParallelTables": 1,
     "deleteOnMerge": false,
@@ -34345,7 +37451,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "syncIntervalSeconds": 60,
     "pullBatchSize": 100000,
     "replicationMode": "cdc",
-    "initialLoadParallelism": 1,
+    "initialLoadParallelism": 4,
     "snapshotNumRowsPerPartition": 100000,
     "snapshotNumberOfParallelTables": 1,
     "deleteOnMerge": false,
@@ -34523,7 +37629,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |format|string|true|none|Format of messages in the Pub/Sub topic. GCP Pub/Sub ClickPipes are in private preview — contact support to enable this feature for your organization.|
 |projectId|string|true|none|GCP project ID that owns the Pub/Sub topic.|
 |topic|string|true|none|Pub/Sub topic name (not the fully-qualified path).|
-|authentication|string|true|none|Authentication method to use with GCP Pub/Sub. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
+|authentication|string|true|none|Authentication method to use with GCP Pub/Sub. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
 |seekType|string|true|none|Starting position strategy for consuming the subscription. The seekTimestamp companion is required only when seekType is "timestamp"; setting it for a mismatched seek type is rejected.|
 |seekTimestamp|string \| null(date-time)|false|none|RFC 3339 / ISO 8601 timestamp to seek to. Required when seekType is "timestamp"; must be omitted otherwise.|
 |filter|string \| null|false|none|Optional Pub/Sub subscription filter expression (CEL). Maximum 256 characters.|
@@ -34622,7 +37728,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |format|string|true|none|Format of messages in the Pub/Sub topic. GCP Pub/Sub ClickPipes are in private preview — contact support to enable this feature for your organization.|
 |projectId|string|true|none|GCP project ID that owns the Pub/Sub topic.|
 |topic|string|true|none|Pub/Sub topic name (not the fully-qualified path).|
-|authentication|string|true|none|SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
+|authentication|string|true|none|SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
 |seekType|string|true|none|Starting position strategy for consuming the subscription. The seekTimestamp companion is required only when seekType is "timestamp"; setting it for a mismatched seek type is rejected.|
 |seekTimestamp|string \| null(date-time)|false|none|RFC 3339 / ISO 8601 timestamp to seek to. Required when seekType is "timestamp"; must be omitted otherwise.|
 |filter|string \| null|false|none|Optional Pub/Sub subscription filter expression (CEL). Maximum 256 characters.|
@@ -34693,7 +37799,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|authentication|string \| null|true|none|Authentication method to use with GCP Pub/Sub. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Private Preview. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
+|authentication|string \| null|true|none|Authentication method to use with GCP Pub/Sub. SERVICE_ACCOUNT_WORKLOAD_IDENTITY is in Beta. ClickPipes uses the GCP service account returned in gcpWorkloadIdentity.principal by the operation with operationId clickPipesServiceContextGet; grant it access to the source resources.|
 |ackDeadline|integer \| null|false|none|Acknowledgement deadline for messages, in seconds. Must be between 10 and 600.|
 |serviceAccountKey|[ServiceAccount](#schemaserviceaccount) \| null|false|none|none|
 
@@ -34723,7 +37829,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|supported|boolean|false|none|Whether the ClickPipes deployment supports GCP workload identity, which is in Private Preview. The principal field identifies the GCP service account used for source access.|
+|supported|boolean|false|none|Whether the ClickPipes deployment supports GCP workload identity, which is in Beta. The principal field identifies the GCP service account used for source access.|
 |ready|boolean \| null|false|none|Whether the service tenant identity is ready for workload identity authentication.|
 |principal|string \| null|false|none|GCP service account used by ClickPipes for workload identity authentication. Grant this service account access to customer source resources.|
 
@@ -34800,7 +37906,10 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "type": "confluent",
       "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
       "authentication": "PLAIN",
-      "caCertificate": "string"
+      "caCertificate": "string",
+      "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+      "scope": "schema_registry",
+      "audience": "https://schema-registry.example.com"
     },
     "caCertificate": "string",
     "reversePrivateEndpointIds": [
@@ -34814,6 +37923,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "format": "JSONEachRow",
     "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
     "delimiter": ",",
+    "skipFirstLines": 1,
     "compression": "auto",
     "isContinuous": true,
     "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -34870,11 +37980,12 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "replicationMode": "cdc",
       "replicationSlotName": "clickpipes_slot",
       "allowNullableColumns": false,
-      "initialLoadParallelism": 1,
+      "initialLoadParallelism": 4,
       "snapshotNumRowsPerPartition": 100000,
       "snapshotNumberOfParallelTables": 1,
       "enableFailoverSlots": false,
-      "deleteOnMerge": false
+      "deleteOnMerge": false,
+      "useJsonNativeFormat": false
     },
     "tableMappings": [
       {
@@ -34914,10 +38025,11 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "replicationMechanism": "GTID",
       "useCompression": false,
       "allowNullableColumns": false,
-      "initialLoadParallelism": 1,
+      "initialLoadParallelism": 4,
       "snapshotNumRowsPerPartition": 100000,
       "snapshotNumberOfParallelTables": 1,
-      "deleteOnMerge": false
+      "deleteOnMerge": false,
+      "useJsonNativeFormat": false
     },
     "tableMappings": [
       {
@@ -34950,9 +38062,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "pullWindowSizeSeconds": 86400,
       "syncCron": "0 * * * *",
       "allowNullableColumns": true,
-      "initialLoadParallelism": 0,
+      "initialLoadParallelism": 1,
       "snapshotNumRowsPerPartition": 0,
-      "snapshotNumberOfParallelTables": 0
+      "snapshotNumberOfParallelTables": 1
     },
     "tableMappings": [
       {
@@ -34985,7 +38097,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "syncIntervalSeconds": 60,
       "pullBatchSize": 100000,
       "replicationMode": "cdc",
-      "initialLoadParallelism": 1,
+      "initialLoadParallelism": 4,
       "snapshotNumRowsPerPartition": 100000,
       "snapshotNumberOfParallelTables": 1,
       "deleteOnMerge": false,
@@ -35208,6 +38320,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
   "object_storage_polling_interval_ms": 30000,
   "object_storage_max_insert_bytes": 10737418240,
   "object_storage_max_file_count": 100,
+  "object_storage_max_file_size": 10737418240,
   "clickhouse_max_threads": 8,
   "clickhouse_max_insert_threads": 1,
   "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -35228,6 +38341,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |object_storage_polling_interval_ms|integer \| null|false|none|Object storage polling interval. Configures the refresh interval for querying continuous ingest for new object storage data|
 |object_storage_max_insert_bytes|integer \| null|false|none|Max insert bytes. Number of bytes to process in a single insert batch|
 |object_storage_max_file_count|integer \| null|false|none|Max file count. Maximum number of files to process in a single insert batch|
+|object_storage_max_file_size|integer|false|none|Max file size. Files larger than this are skipped and not retried. Can only lower the limit. Private preview. Contact support to enable it for your organization.|
 |clickhouse_max_threads|integer \| null|false|none|Max threads. Maximum number of concurrent threads for file processing|
 |clickhouse_max_insert_threads|integer \| null|false|none|Max insert threads. Maximum number of concurrent insert threads|
 |clickhouse_min_insert_block_size_bytes|integer \| null|false|none|Min insert block size bytes. Minimum size of data block for insert (in bytes)|
@@ -35273,7 +38387,10 @@ Accepted only for organizations enrolled in the private preview, and only when t
         "type": "confluent",
         "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
         "authentication": "PLAIN",
-        "caCertificate": "string"
+        "caCertificate": "string",
+        "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+        "scope": "schema_registry",
+        "audience": "https://schema-registry.example.com"
       },
       "caCertificate": "string",
       "reversePrivateEndpointIds": [
@@ -35287,6 +38404,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "format": "JSONEachRow",
       "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
       "delimiter": ",",
+      "skipFirstLines": 1,
       "compression": "auto",
       "isContinuous": true,
       "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -35343,11 +38461,12 @@ Accepted only for organizations enrolled in the private preview, and only when t
         "replicationMode": "cdc",
         "replicationSlotName": "clickpipes_slot",
         "allowNullableColumns": false,
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
         "enableFailoverSlots": false,
-        "deleteOnMerge": false
+        "deleteOnMerge": false,
+        "useJsonNativeFormat": false
       },
       "tableMappings": [
         {
@@ -35387,10 +38506,11 @@ Accepted only for organizations enrolled in the private preview, and only when t
         "replicationMechanism": "GTID",
         "useCompression": false,
         "allowNullableColumns": false,
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
-        "deleteOnMerge": false
+        "deleteOnMerge": false,
+        "useJsonNativeFormat": false
       },
       "tableMappings": [
         {
@@ -35423,9 +38543,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
         "pullWindowSizeSeconds": 86400,
         "syncCron": "0 * * * *",
         "allowNullableColumns": true,
-        "initialLoadParallelism": 0,
+        "initialLoadParallelism": 1,
         "snapshotNumRowsPerPartition": 0,
-        "snapshotNumberOfParallelTables": 0
+        "snapshotNumberOfParallelTables": 1
       },
       "tableMappings": [
         {
@@ -35458,7 +38578,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
         "syncIntervalSeconds": 60,
         "pullBatchSize": 100000,
         "replicationMode": "cdc",
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
         "deleteOnMerge": false,
@@ -35533,6 +38653,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "object_storage_polling_interval_ms": 30000,
     "object_storage_max_insert_bytes": 10737418240,
     "object_storage_max_file_count": 100,
+    "object_storage_max_file_size": 10737418240,
     "clickhouse_max_threads": 8,
     "clickhouse_max_insert_threads": 1,
     "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -35609,6 +38730,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
       "authentication": "PLAIN",
       "caCertificate": "string",
+      "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+      "scope": "schema_registry",
+      "audience": "https://schema-registry.example.com",
       "credentials": {
         "username": "string",
         "password": "string"
@@ -35631,6 +38755,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "format": "JSONEachRow",
     "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
     "delimiter": ",",
+    "skipFirstLines": 1,
     "compression": "auto",
     "isContinuous": true,
     "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -35698,11 +38823,12 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "replicationMode": "cdc",
       "replicationSlotName": "clickpipes_slot",
       "allowNullableColumns": false,
-      "initialLoadParallelism": 1,
+      "initialLoadParallelism": 4,
       "snapshotNumRowsPerPartition": 100000,
       "snapshotNumberOfParallelTables": 1,
       "enableFailoverSlots": false,
-      "deleteOnMerge": false
+      "deleteOnMerge": false,
+      "useJsonNativeFormat": false
     },
     "authentication": "IAM_ROLE",
     "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -35745,10 +38871,11 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "replicationMechanism": "GTID",
       "useCompression": false,
       "allowNullableColumns": false,
-      "initialLoadParallelism": 1,
+      "initialLoadParallelism": 4,
       "snapshotNumRowsPerPartition": 100000,
       "snapshotNumberOfParallelTables": 1,
-      "deleteOnMerge": false
+      "deleteOnMerge": false,
+      "useJsonNativeFormat": false
     },
     "authentication": "basic",
     "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -35788,9 +38915,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "pullWindowSizeSeconds": 86400,
       "syncCron": "0 * * * *",
       "allowNullableColumns": true,
-      "initialLoadParallelism": 0,
+      "initialLoadParallelism": 1,
       "snapshotNumRowsPerPartition": 0,
-      "snapshotNumberOfParallelTables": 0
+      "snapshotNumberOfParallelTables": 1
     },
     "tableMappings": [
       {
@@ -35830,7 +38957,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "syncIntervalSeconds": 60,
       "pullBatchSize": 100000,
       "replicationMode": "cdc",
-      "initialLoadParallelism": 1,
+      "initialLoadParallelism": 4,
       "snapshotNumRowsPerPartition": 100000,
       "snapshotNumberOfParallelTables": 1,
       "deleteOnMerge": false,
@@ -36149,6 +39276,51 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |columns|[[ClickPipeDestinationColumn](#schemaclickpipedestinationcolumn)]|false|none|Columns of the destination table. Required field for all pipe types except database pipes (Postgres, MySQL, BigQuery).|
 |roles|[string]|false|none|Optional. Roles to grant to the ClickHouse user that ClickPipe creates. If omitted, the user is granted the default role (`default_role`). Add your custom roles here if required. The role names `clickpipes` and `clickpipes_system` are reserved for internal use and cannot be assigned.|
 
+<h2 id="tocS_ClickPipeSettingsPutRequest">ClickPipeSettingsPutRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickpipesettingsputrequest"></a>
+<a id="schema_ClickPipeSettingsPutRequest"></a>
+<a id="tocSclickpipesettingsputrequest"></a>
+<a id="tocsclickpipesettingsputrequest"></a>
+
+```json
+{
+  "streaming_max_insert_wait_ms": 5000,
+  "object_storage_concurrency": 1,
+  "object_storage_polling_interval_ms": 30000,
+  "object_storage_max_insert_bytes": 10737418240,
+  "object_storage_max_file_count": 100,
+  "object_storage_max_file_size": 10737418240,
+  "clickhouse_max_threads": 8,
+  "clickhouse_max_insert_threads": 1,
+  "clickhouse_min_insert_block_size_bytes": 1073741824,
+  "clickhouse_max_download_threads": 4,
+  "clickhouse_parallel_distributed_insert_select": 2,
+  "kafka_read_committed": false,
+  "object_storage_use_cluster_function": true,
+  "clickhouse_parallel_view_processing": false
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|streaming_max_insert_wait_ms|integer|false|none|Streaming max insert wait time. Configures the max wait period before inserting data into the ClickHouse.|
+|object_storage_concurrency|integer|false|none|Object storage concurrency. Number of concurrent file processing threads|
+|object_storage_polling_interval_ms|integer|false|none|Object storage polling interval. Configures the refresh interval for querying continuous ingest for new object storage data|
+|object_storage_max_insert_bytes|integer|false|none|Max insert bytes. Number of bytes to process in a single insert batch|
+|object_storage_max_file_count|integer|false|none|Max file count. Maximum number of files to process in a single insert batch|
+|object_storage_max_file_size|integer|false|none|Max file size. Files larger than this are skipped and not retried. Can only lower the limit. Private preview. Contact support to enable it for your organization.|
+|clickhouse_max_threads|integer|false|none|Max threads. Maximum number of concurrent threads for file processing|
+|clickhouse_max_insert_threads|integer|false|none|Max insert threads. Maximum number of concurrent insert threads|
+|clickhouse_min_insert_block_size_bytes|integer|false|none|Min insert block size bytes. Minimum size of data block for insert (in bytes)|
+|clickhouse_max_download_threads|integer|false|none|Max download threads. Maximum number of concurrent download threads|
+|clickhouse_parallel_distributed_insert_select|integer|false|none|Parallel distributed insert select. Only applies when object_storage_use_cluster_function is enabled. When disabled, this setting is ignored and the effective value is 0.|
+|kafka_read_committed|boolean|false|none|Kafka Read Committed. Whether Kafka consumers read only committed messages|
+|object_storage_use_cluster_function|boolean|false|none|use cluster function. Whether to use ClickHouse cluster function for distributed processing|
+|clickhouse_parallel_view_processing|boolean|false|none|parallel view processing. Whether to enable pushing to attached views concurrently instead of sequentially|
+
 <h2 id="tocS_ClickPipePatchDestination">ClickPipePatchDestination</h2>
 <!-- backwards compatibility -->
 <a id="schemaclickpipepatchdestination"></a>
@@ -36194,49 +39366,6 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |replicaCpuMillicores|integer|false|none|CPU in millicores for DB ClickPipes.|
 |replicaMemoryGb|number|false|none|Memory in GiB for DB ClickPipes. Must be 4× the CPU core count.|
 
-<h2 id="tocS_ClickPipeSettingsPutRequest">ClickPipeSettingsPutRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaclickpipesettingsputrequest"></a>
-<a id="schema_ClickPipeSettingsPutRequest"></a>
-<a id="tocSclickpipesettingsputrequest"></a>
-<a id="tocsclickpipesettingsputrequest"></a>
-
-```json
-{
-  "streaming_max_insert_wait_ms": 5000,
-  "object_storage_concurrency": 1,
-  "object_storage_polling_interval_ms": 30000,
-  "object_storage_max_insert_bytes": 10737418240,
-  "object_storage_max_file_count": 100,
-  "clickhouse_max_threads": 8,
-  "clickhouse_max_insert_threads": 1,
-  "clickhouse_min_insert_block_size_bytes": 1073741824,
-  "clickhouse_max_download_threads": 4,
-  "clickhouse_parallel_distributed_insert_select": 2,
-  "kafka_read_committed": false,
-  "object_storage_use_cluster_function": true,
-  "clickhouse_parallel_view_processing": false
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|streaming_max_insert_wait_ms|integer|false|none|Streaming max insert wait time. Configures the max wait period before inserting data into the ClickHouse.|
-|object_storage_concurrency|integer|false|none|Object storage concurrency. Number of concurrent file processing threads|
-|object_storage_polling_interval_ms|integer|false|none|Object storage polling interval. Configures the refresh interval for querying continuous ingest for new object storage data|
-|object_storage_max_insert_bytes|integer|false|none|Max insert bytes. Number of bytes to process in a single insert batch|
-|object_storage_max_file_count|integer|false|none|Max file count. Maximum number of files to process in a single insert batch|
-|clickhouse_max_threads|integer|false|none|Max threads. Maximum number of concurrent threads for file processing|
-|clickhouse_max_insert_threads|integer|false|none|Max insert threads. Maximum number of concurrent insert threads|
-|clickhouse_min_insert_block_size_bytes|integer|false|none|Min insert block size bytes. Minimum size of data block for insert (in bytes)|
-|clickhouse_max_download_threads|integer|false|none|Max download threads. Maximum number of concurrent download threads|
-|clickhouse_parallel_distributed_insert_select|integer|false|none|Parallel distributed insert select. Only applies when object_storage_use_cluster_function is enabled. When disabled, this setting is ignored and the effective value is 0.|
-|kafka_read_committed|boolean|false|none|Kafka Read Committed. Whether Kafka consumers read only committed messages|
-|object_storage_use_cluster_function|boolean|false|none|use cluster function. Whether to use ClickHouse cluster function for distributed processing|
-|clickhouse_parallel_view_processing|boolean|false|none|parallel view processing. Whether to enable pushing to attached views concurrently instead of sequentially|
-
 <h2 id="tocS_ClickPipeSchemaDiscoverySource">ClickPipeSchemaDiscoverySource</h2>
 <!-- backwards compatibility -->
 <a id="schemaclickpipeschemadiscoverysource"></a>
@@ -36263,6 +39392,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
       "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
       "authentication": "PLAIN",
       "caCertificate": "string",
+      "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+      "scope": "schema_registry",
+      "audience": "https://schema-registry.example.com",
       "credentials": {
         "username": "string",
         "password": "string"
@@ -36320,6 +39452,7 @@ Accepted only for organizations enrolled in the private preview, and only when t
     "format": "JSONEachRow",
     "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
     "delimiter": ",",
+    "skipFirstLines": 1,
     "compression": "auto",
     "isContinuous": true,
     "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -36359,7 +39492,9 @@ Accepted only for organizations enrolled in the private preview, and only when t
 {
   "name": "user_id",
   "type": "Int64",
-  "optional": true
+  "optional": true,
+  "isVirtual": true,
+  "isVirtualDisabledDefault": true
 }
 ```
 
@@ -36370,6 +39505,8 @@ Accepted only for organizations enrolled in the private preview, and only when t
 |name|string|false|none|Name of the inferred field.|
 |type|string|false|none|Inferred ClickHouse data type of the field.|
 |optional|boolean \| null|false|none|Whether the field is optional (nullable) in the source.|
+|isVirtual|boolean \| null|false|none|Whether the field is metadata added by ClickPipes (for example `_topic` or `_path`) rather than part of the source data.|
+|isVirtualDisabledDefault|boolean \| null|false|none|Whether this metadata field is left unselected by default when building destination columns.|
 
 <h2 id="tocS_ClickPipeSchemaDiscoveryMeta">ClickPipeSchemaDiscoveryMeta</h2>
 <!-- backwards compatibility -->
@@ -36406,7 +39543,9 @@ Source-specific schema discovery metadata.
     {
       "name": "user_id",
       "type": "Int64",
-      "optional": true
+      "optional": true,
+      "isVirtual": true,
+      "isVirtualDisabledDefault": true
     }
   ],
   "meta": {
@@ -36434,7 +39573,7 @@ Source-specific schema discovery metadata.
 {
   "id": "string",
   "createdAt": "1970-01-01T00:00:00Z",
-  "type": "create_organization",
+  "type": "service_create",
   "actorType": "user",
   "actorId": "string",
   "actorDetails": "string",
@@ -36455,7 +39594,8 @@ Source-specific schema discovery metadata.
   ],
   "targetResourceIds": [
     "string"
-  ]
+  ],
+  "deletionProtectionBypassed": true
 }
 ```
 
@@ -36465,7 +39605,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |id|string|false|none|Unique activity ID.|
 |createdAt|string(date-time)|false|none|Timestamp of the activity. ISO-8601.|
-|type|string|false|none|Type of the activity.|
+|type|string|false|none|Type of the activity. One of 'create_organization', 'delete_organization', 'organization_update_name', 'transfer_service_in', 'transfer_service_out', 'save_payment_method', 'marketplace_subscription', 'migrate_marketplace_billing_details_in', 'migrate_marketplace_billing_details_out', 'organization_update_tier', 'organization_invite_create', 'organization_invite_delete', 'organization_member_join', 'organization_member_add', 'organization_member_leave', 'organization_member_delete', 'organization_member_update_role', 'organization_member_update_roles', 'organization_member_update_mfa_method', 'organization_saml_connection_create', 'organization_saml_connection_update', 'user_login', 'user_login_failed', 'user_logout', 'key_create', 'key_delete', 'openapi_key_update', 'service_create', 'service_start', 'service_stop', 'service_awaken', 'service_idle', 'service_running', 'service_partially_running', 'service_delete', 'service_update_name', 'service_update_ip_access_list', 'service_update_autoscaling_memory', 'service_update_autoscaling_idling', 'service_update_password', 'service_update_autoscaling_replicas', 'service_update_max_allowable_replicas', 'service_update_backup_configuration', 'service_restore_backup', 'service_update_release_channel', 'service_update_gpt_usage_consent', 'service_update_private_endpoints', 'service_import_to_organization', 'service_export_from_organization', 'service_maintenance_start', 'service_maintenance_end', 'service_update_core_dump', 'service_update_deletion_protection', 'service_update_autoscaling_schedule', 'service_update_query_endpoints', 'service_update_direct_connection', 'service_update_sql_console_jwt_auth', 'service_update_snapshot_configuration', 'service_update_collector_ip_access_list', 'service_update_mysql_interface', 'service_update_upgrade_window', 'service_delete_upgrade_window', 'service_trigger_failover', 'service_trigger_recovery', 'service_mcp_enabled', 'service_mcp_disabled', 'service_upgrade', 'service_scaled_down_for_tier_change', 'service_encryption_key_check_failed', 'service_encryption_key_rotation_failed', 'service_encryption_key_rotated', 'service_stop_encryption_key_inaccessible', 'service_restart_encryption_key_rotation', 'backup_delete', 'backup_bucket_create', 'backup_bucket_update', 'backup_bucket_delete', 'backup_bucket_archive', 'warehouse_update_name', 'warehouse_update_release_channel', 'role_create', 'role_update', 'role_delete', 'role_resources_delete', 'organization_member_remove_roles', 'scim_user_profile_update', 'scim_group_create', 'scim_group_update', 'scim_group_delete', 'organization_saml_connection_delete', 'organization_update_saml_query_ownership_migration', 'organization_approved_domain_verify', 'organization_approved_domain_update', 'organization_approved_domain_delete', 'organization_approved_domain_auto_join', 'organization_approved_domain_auto_invite', 'datadog_integration_create', 'datadog_integration_delete', 'organization_update_spend_alert', 'organization_update_core_dumps', 'organization_update_ai_support', 'organization_update_ai_data_sharing', 'organization_update_private_endpoints', 'organization_update_pci_compliance', 'organization_update_hipaa_status', 'organization_security_contact_add', 'organization_security_contact_remove', 'organization_security_contact_replace', 'organization_update_public_preview', 'byoc_infrastructure_update_customer_authorized_access', 'transfer_credits_in', 'transfer_credits_out', 'promo_code_claim', 'schema_advisor_seed', 'schema_advisor_generate_plan', 'schema_advisor_approve_plan', 'schema_advisor_start_deployment', 'schema_advisor_start_benchmark', 'schema_advisor_run_benchmark', 'schema_advisor_start_promotion', 'schema_advisor_exchange_tables', 'schema_advisor_drop_sandbox', 'udf_create', 'udf_update', 'udf_delete', 'udf_version_create', 'udf_version_delete', 'udf_attach', 'udf_detach', 'udf_update_services', 'udf_redeploy', 'udf_rebuild', 'postgres_action'. New values may be added; treat unknown values as valid.|
 |actorType|string|false|none|Type of the actor: 'user', 'support', 'system', 'api'.|
 |actorId|string|false|none|Unique actor ID.|
 |actorDetails|string|false|none|Additional information about the actor.|
@@ -36479,140 +39619,12 @@ Source-specific schema discovery metadata.
 |targetRoleNames|[string]|false|none|For role and actor-role activities: names of the affected roles, when recorded.|
 |targetActorIds|[string]|false|none|For 'organization_member_update_roles' and 'organization_member_remove_roles' activities: IDs of the affected actors (e.g. 'user/<id>').|
 |targetResourceIds|[string]|false|none|For 'role_resources_delete' activities: IDs of the deleted resources the roles referenced.|
+|deletionProtectionBypassed|boolean|false|none|For 'service_delete' activities: true when a deletion protection override was recorded for the delete. Omitted when none was recorded.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
-|type|create_organization|
-|type|delete_organization|
-|type|organization_update_name|
-|type|transfer_service_in|
-|type|transfer_service_out|
-|type|save_payment_method|
-|type|marketplace_subscription|
-|type|migrate_marketplace_billing_details_in|
-|type|migrate_marketplace_billing_details_out|
-|type|organization_update_tier|
-|type|organization_invite_create|
-|type|organization_invite_delete|
-|type|organization_member_join|
-|type|organization_member_add|
-|type|organization_member_leave|
-|type|organization_member_delete|
-|type|organization_member_update_role|
-|type|organization_member_update_roles|
-|type|organization_member_update_mfa_method|
-|type|organization_saml_connection_create|
-|type|organization_saml_connection_update|
-|type|user_login|
-|type|user_login_failed|
-|type|user_logout|
-|type|key_create|
-|type|key_delete|
-|type|openapi_key_update|
-|type|service_create|
-|type|service_start|
-|type|service_stop|
-|type|service_awaken|
-|type|service_idle|
-|type|service_running|
-|type|service_partially_running|
-|type|service_delete|
-|type|service_update_name|
-|type|service_update_ip_access_list|
-|type|service_update_autoscaling_memory|
-|type|service_update_autoscaling_idling|
-|type|service_update_password|
-|type|service_update_autoscaling_replicas|
-|type|service_update_max_allowable_replicas|
-|type|service_update_backup_configuration|
-|type|service_restore_backup|
-|type|service_update_release_channel|
-|type|service_update_gpt_usage_consent|
-|type|service_update_private_endpoints|
-|type|service_import_to_organization|
-|type|service_export_from_organization|
-|type|service_maintenance_start|
-|type|service_maintenance_end|
-|type|service_update_core_dump|
-|type|service_update_autoscaling_schedule|
-|type|service_update_query_endpoints|
-|type|service_update_direct_connection|
-|type|service_update_sql_console_jwt_auth|
-|type|service_update_snapshot_configuration|
-|type|service_update_collector_ip_access_list|
-|type|service_update_mysql_interface|
-|type|service_update_upgrade_window|
-|type|service_delete_upgrade_window|
-|type|service_trigger_failover|
-|type|service_trigger_recovery|
-|type|service_mcp_enabled|
-|type|service_mcp_disabled|
-|type|service_upgrade|
-|type|service_scaled_down_for_tier_change|
-|type|service_encryption_key_check_failed|
-|type|service_encryption_key_rotation_failed|
-|type|service_encryption_key_rotated|
-|type|service_stop_encryption_key_inaccessible|
-|type|service_restart_encryption_key_rotation|
-|type|backup_delete|
-|type|backup_bucket_create|
-|type|backup_bucket_update|
-|type|backup_bucket_delete|
-|type|backup_bucket_archive|
-|type|warehouse_update_name|
-|type|warehouse_update_release_channel|
-|type|role_create|
-|type|role_update|
-|type|role_delete|
-|type|role_resources_delete|
-|type|organization_member_remove_roles|
-|type|scim_user_profile_update|
-|type|scim_group_create|
-|type|scim_group_update|
-|type|scim_group_delete|
-|type|organization_saml_connection_delete|
-|type|organization_update_saml_query_ownership_migration|
-|type|organization_approved_domain_verify|
-|type|organization_approved_domain_update|
-|type|organization_approved_domain_delete|
-|type|organization_approved_domain_auto_join|
-|type|organization_approved_domain_auto_invite|
-|type|datadog_integration_create|
-|type|datadog_integration_delete|
-|type|organization_update_spend_alert|
-|type|organization_update_core_dumps|
-|type|organization_update_private_endpoints|
-|type|organization_update_pci_compliance|
-|type|organization_update_hipaa_status|
-|type|organization_security_contact_add|
-|type|organization_security_contact_remove|
-|type|organization_security_contact_replace|
-|type|organization_update_public_preview|
-|type|transfer_credits_in|
-|type|transfer_credits_out|
-|type|promo_code_claim|
-|type|schema_advisor_seed|
-|type|schema_advisor_generate_plan|
-|type|schema_advisor_approve_plan|
-|type|schema_advisor_start_deployment|
-|type|schema_advisor_start_benchmark|
-|type|schema_advisor_run_benchmark|
-|type|schema_advisor_start_promotion|
-|type|schema_advisor_exchange_tables|
-|type|schema_advisor_drop_sandbox|
-|type|udf_create|
-|type|udf_update|
-|type|udf_delete|
-|type|udf_version_create|
-|type|udf_version_delete|
-|type|udf_attach|
-|type|udf_detach|
-|type|udf_update_services|
-|type|udf_redeploy|
-|type|udf_rebuild|
-|type|postgres_action|
 |actorType|user|
 |actorType|support|
 |actorType|system|
@@ -37284,8 +40296,8 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |enabled|boolean|false|none|Whether scheduled snapshots are enabled for the service.|
-|gap|number|false|none|Interval between snapshots, in minutes. Set together with timeFrame; only supported preset pairs are accepted.|
-|timeFrame|number|false|none|Retention window the snapshots cover, in minutes. Set together with gap; only supported preset pairs are accepted.|
+|gap|number|false|none|Interval between snapshots, in minutes. One of 10, 20, 30, 60. Validated when an enabled configuration is saved; stored values are not re-validated on read.|
+|timeFrame|number|false|none|Retention window the snapshots cover, in minutes. A whole number of days (a multiple of 1440), at least 1440; timeFrame / gap must not exceed 300 snapshots. Validated when an enabled configuration is saved; stored values are not re-validated on read.|
 
 <h2 id="tocS_ReplicaAwareRouting">ReplicaAwareRouting</h2>
 <!-- backwards compatibility -->
@@ -37639,7 +40651,7 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "line" for line charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|One or more aggregated values to plot. When asRatio is true, exactly two select items are required.|
 |groupBy|string|false|none|Field expression to group results by (creates separate lines per group value).|
 |asRatio|boolean|false|none|Plot select[0] / select[1] as a ratio. Requires exactly two select items.|
@@ -37700,9 +40712,9 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a line time-series chart.|
 |compareToPreviousPeriod|boolean|false|none|Overlay the equivalent previous time period for comparison.|
@@ -37716,6 +40728,93 @@ Source-specific schema discovery metadata.
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|line|
+|lineInterpolation|smooth|
+|lineInterpolation|linear|
+|lineInterpolation|step|
+
+<h2 id="tocS_ClickStackPromqlRangeExpression">ClickStackPromqlRangeExpression</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackpromqlrangeexpression"></a>
+<a id="schema_ClickStackPromqlRangeExpression"></a>
+<a id="tocSclickstackpromqlrangeexpression"></a>
+<a id="tocsclickstackpromqlrangeexpression"></a>
+
+```json
+{
+  "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+  "alias": "Requests"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|expression|string|true|none|PromQL expression. Supports dashboard variables and the $__interval, $__rate_interval, and $__range macros.|
+|alias|string|false|none|Prefixed to every series name this expression produces.|
+
+<h2 id="tocS_ClickStackLinePromqlChartConfig">ClickStackLinePromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstacklinepromqlchartconfig"></a>
+<a id="schema_ClickStackLinePromqlChartConfig"></a>
+<a id="tocSclickstacklinepromqlchartconfig"></a>
+<a id="tocsclickstacklinepromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests"
+    }
+  ],
+  "legendTemplate": "{{job}} - {{instance}}",
+  "fillNulls": true,
+  "alignDateRangeToGranularity": true,
+  "seriesLimit": 5,
+  "displayType": "line",
+  "compareToPreviousPeriod": true,
+  "lineInterpolation": "step"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|expressions|[[ClickStackPromqlRangeExpression](#schemaclickstackpromqlrangeexpression)]|true|none|PromQL expressions to plot.|
+|legendTemplate|string|false|none|Template for series names, using the series' Prometheus labels in double braces.|
+|fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
+|alignDateRangeToGranularity|boolean|false|none|Expand date range boundaries to the query granularity interval.|
+|seriesLimit|integer|false|none|Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.|
+|displayType|string|true|none|Display as a line time-series chart.|
+|compareToPreviousPeriod|boolean|false|none|Overlay the equivalent previous time period for comparison.|
+|lineInterpolation|string|false|none|How points are connected. Defaults to "smooth" when omitted.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|line|
 |lineInterpolation|smooth|
 |lineInterpolation|linear|
@@ -37802,6 +40901,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |*oneOf*|[ClickStackLineBuilderChartConfig](#schemaclickstacklinebuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackLineRawSqlChartConfig](#schemaclickstacklinerawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackLinePromqlChartConfig](#schemaclickstacklinepromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackAlertLineBuilderChartConfig">ClickStackAlertLineBuilderChartConfig</h2>
 <!-- backwards compatibility -->
@@ -37886,7 +40986,7 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "line" for line charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|One or more aggregated values to plot. When asRatio is true, exactly two select items are required.|
 |groupBy|string|false|none|Field expression to group results by (creates separate lines per group value).|
 |asRatio|boolean|false|none|Plot select[0] / select[1] as a ratio. Requires exactly two select items.|
@@ -37955,9 +41055,9 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a line time-series chart.|
 |compareToPreviousPeriod|boolean|false|none|Overlay the equivalent previous time period for comparison.|
@@ -37974,6 +41074,80 @@ Source-specific schema discovery metadata.
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|line|
+|lineInterpolation|smooth|
+|lineInterpolation|linear|
+|lineInterpolation|step|
+|whereLanguage|sql|
+|whereLanguage|lucene|
+
+<h2 id="tocS_ClickStackAlertLinePromqlChartConfig">ClickStackAlertLinePromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackalertlinepromqlchartconfig"></a>
+<a id="schema_ClickStackAlertLinePromqlChartConfig"></a>
+<a id="tocSclickstackalertlinepromqlchartconfig"></a>
+<a id="tocsclickstackalertlinepromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests"
+    }
+  ],
+  "legendTemplate": "{{job}} - {{instance}}",
+  "fillNulls": true,
+  "alignDateRangeToGranularity": true,
+  "seriesLimit": 5,
+  "displayType": "line",
+  "compareToPreviousPeriod": true,
+  "lineInterpolation": "step",
+  "name": "Error Rate Query",
+  "where": "ServiceName:api",
+  "whereLanguage": "sql"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|expressions|[[ClickStackPromqlRangeExpression](#schemaclickstackpromqlrangeexpression)]|true|none|PromQL expressions to plot.|
+|legendTemplate|string|false|none|Template for series names, using the series' Prometheus labels in double braces.|
+|fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
+|alignDateRangeToGranularity|boolean|false|none|Expand date range boundaries to the query granularity interval.|
+|seriesLimit|integer|false|none|Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.|
+|displayType|string|true|none|Display as a line time-series chart.|
+|compareToPreviousPeriod|boolean|false|none|Overlay the equivalent previous time period for comparison.|
+|lineInterpolation|string|false|none|How points are connected. Defaults to "smooth" when omitted.|
+|name|string|false|none|Display name for the alert query. Used in notification titles and as an alert-name fallback when the alert itself has no name.|
+|where|string|false|none|Chart-level filter applied on top of every select item's own "where" (combined via AND). Builder variants only; rejected on Raw SQL variants (filter inside the sqlTemplate instead).|
+|whereLanguage|string|false|none|Language of the chart-level "where" filter.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|line|
 |lineInterpolation|smooth|
 |lineInterpolation|linear|
@@ -38065,6 +41239,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |*oneOf*|[ClickStackAlertLineBuilderChartConfig](#schemaclickstackalertlinebuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackAlertLineRawSqlChartConfig](#schemaclickstackalertlinerawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackAlertLinePromqlChartConfig](#schemaclickstackalertlinepromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackBarBuilderChartConfig">ClickStackBarBuilderChartConfig</h2>
 <!-- backwards compatibility -->
@@ -38143,7 +41318,7 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "stacked_bar" for stacked-bar charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|One or more aggregated values to plot. When asRatio is true, exactly two select items are required.|
 |groupBy|string|false|none|Field expression to group results by (creates separate bars segments per group value).|
 |asRatio|boolean|false|none|Plot select[0] / select[1] as a ratio. Requires exactly two select items.|
@@ -38195,9 +41370,9 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a stacked-bar time-series chart.|
 |fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
@@ -38208,6 +41383,65 @@ Source-specific schema discovery metadata.
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|stacked_bar|
+
+<h2 id="tocS_ClickStackBarPromqlChartConfig">ClickStackBarPromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackbarpromqlchartconfig"></a>
+<a id="schema_ClickStackBarPromqlChartConfig"></a>
+<a id="tocSclickstackbarpromqlchartconfig"></a>
+<a id="tocsclickstackbarpromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests"
+    }
+  ],
+  "legendTemplate": "{{job}} - {{instance}}",
+  "fillNulls": true,
+  "alignDateRangeToGranularity": true,
+  "seriesLimit": 5,
+  "displayType": "stacked_bar"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|expressions|[[ClickStackPromqlRangeExpression](#schemaclickstackpromqlrangeexpression)]|true|none|PromQL expressions to plot.|
+|legendTemplate|string|false|none|Template for series names, using the series' Prometheus labels in double braces.|
+|fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
+|alignDateRangeToGranularity|boolean|false|none|Expand date range boundaries to the query granularity interval.|
+|seriesLimit|integer|false|none|Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.|
+|displayType|string|true|none|Display as a stacked-bar time-series chart.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|stacked_bar|
 
 <h2 id="tocS_ClickStackBarChartConfig">ClickStackBarChartConfig</h2>
@@ -38288,6 +41522,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |*oneOf*|[ClickStackBarBuilderChartConfig](#schemaclickstackbarbuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackBarRawSqlChartConfig](#schemaclickstackbarrawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackBarPromqlChartConfig](#schemaclickstackbarpromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackAlertBarBuilderChartConfig">ClickStackAlertBarBuilderChartConfig</h2>
 <!-- backwards compatibility -->
@@ -38369,7 +41604,7 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "stacked_bar" for stacked-bar charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|One or more aggregated values to plot. When asRatio is true, exactly two select items are required.|
 |groupBy|string|false|none|Field expression to group results by (creates separate bars segments per group value).|
 |asRatio|boolean|false|none|Plot select[0] / select[1] as a ratio. Requires exactly two select items.|
@@ -38429,9 +41664,9 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a stacked-bar time-series chart.|
 |fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
@@ -38445,6 +41680,73 @@ Source-specific schema discovery metadata.
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|stacked_bar|
+|whereLanguage|sql|
+|whereLanguage|lucene|
+
+<h2 id="tocS_ClickStackAlertBarPromqlChartConfig">ClickStackAlertBarPromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackalertbarpromqlchartconfig"></a>
+<a id="schema_ClickStackAlertBarPromqlChartConfig"></a>
+<a id="tocSclickstackalertbarpromqlchartconfig"></a>
+<a id="tocsclickstackalertbarpromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests"
+    }
+  ],
+  "legendTemplate": "{{job}} - {{instance}}",
+  "fillNulls": true,
+  "alignDateRangeToGranularity": true,
+  "seriesLimit": 5,
+  "displayType": "stacked_bar",
+  "name": "Error Rate Query",
+  "where": "ServiceName:api",
+  "whereLanguage": "sql"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|expressions|[[ClickStackPromqlRangeExpression](#schemaclickstackpromqlrangeexpression)]|true|none|PromQL expressions to plot.|
+|legendTemplate|string|false|none|Template for series names, using the series' Prometheus labels in double braces.|
+|fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
+|alignDateRangeToGranularity|boolean|false|none|Expand date range boundaries to the query granularity interval.|
+|seriesLimit|integer|false|none|Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.|
+|displayType|string|true|none|Display as a stacked-bar time-series chart.|
+|name|string|false|none|Display name for the alert query. Used in notification titles and as an alert-name fallback when the alert itself has no name.|
+|where|string|false|none|Chart-level filter applied on top of every select item's own "where" (combined via AND). Builder variants only; rejected on Raw SQL variants (filter inside the sqlTemplate instead).|
+|whereLanguage|string|false|none|Language of the chart-level "where" filter.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|stacked_bar|
 |whereLanguage|sql|
 |whereLanguage|lucene|
@@ -38530,6 +41832,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |*oneOf*|[ClickStackAlertBarBuilderChartConfig](#schemaclickstackalertbarbuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackAlertBarRawSqlChartConfig](#schemaclickstackalertbarrawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackAlertBarPromqlChartConfig](#schemaclickstackalertbarpromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackStackedLineBuilderChartConfig">ClickStackStackedLineBuilderChartConfig</h2>
 <!-- backwards compatibility -->
@@ -38609,7 +41912,7 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "stacked_line" for stacked-line charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|One or more aggregated values to plot. When asRatio is true, exactly two select items are required.|
 |groupBy|string|false|none|Field expression to group results by (creates separate stacked bands per group value).|
 |asRatio|boolean|false|none|Plot select[0] / select[1] as a ratio. Requires exactly two select items.|
@@ -38666,9 +41969,9 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a stacked-line time-series chart.|
 |fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
@@ -38680,6 +41983,70 @@ Source-specific schema discovery metadata.
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|stacked_line|
+|lineInterpolation|smooth|
+|lineInterpolation|linear|
+|lineInterpolation|step|
+
+<h2 id="tocS_ClickStackStackedLinePromqlChartConfig">ClickStackStackedLinePromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackstackedlinepromqlchartconfig"></a>
+<a id="schema_ClickStackStackedLinePromqlChartConfig"></a>
+<a id="tocSclickstackstackedlinepromqlchartconfig"></a>
+<a id="tocsclickstackstackedlinepromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests"
+    }
+  ],
+  "legendTemplate": "{{job}} - {{instance}}",
+  "fillNulls": true,
+  "alignDateRangeToGranularity": true,
+  "seriesLimit": 5,
+  "displayType": "stacked_line",
+  "lineInterpolation": "step"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|expressions|[[ClickStackPromqlRangeExpression](#schemaclickstackpromqlrangeexpression)]|true|none|PromQL expressions to plot.|
+|legendTemplate|string|false|none|Template for series names, using the series' Prometheus labels in double braces.|
+|fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
+|alignDateRangeToGranularity|boolean|false|none|Expand date range boundaries to the query granularity interval.|
+|seriesLimit|integer|false|none|Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.|
+|displayType|string|true|none|Display as a stacked-line time-series chart.|
+|lineInterpolation|string|false|none|How points are connected. Defaults to "linear" when omitted.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|stacked_line|
 |lineInterpolation|smooth|
 |lineInterpolation|linear|
@@ -38764,6 +42131,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |*oneOf*|[ClickStackStackedLineBuilderChartConfig](#schemaclickstackstackedlinebuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackStackedLineRawSqlChartConfig](#schemaclickstackstackedlinerawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackStackedLinePromqlChartConfig](#schemaclickstackstackedlinepromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackAlertStackedLineBuilderChartConfig">ClickStackAlertStackedLineBuilderChartConfig</h2>
 <!-- backwards compatibility -->
@@ -38846,7 +42214,7 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "stacked_line" for stacked-line charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|One or more aggregated values to plot. When asRatio is true, exactly two select items are required.|
 |groupBy|string|false|none|Field expression to group results by (creates separate stacked bands per group value).|
 |asRatio|boolean|false|none|Plot select[0] / select[1] as a ratio. Requires exactly two select items.|
@@ -38911,9 +42279,9 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a stacked-line time-series chart.|
 |fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
@@ -38928,6 +42296,78 @@ Source-specific schema discovery metadata.
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|stacked_line|
+|lineInterpolation|smooth|
+|lineInterpolation|linear|
+|lineInterpolation|step|
+|whereLanguage|sql|
+|whereLanguage|lucene|
+
+<h2 id="tocS_ClickStackAlertStackedLinePromqlChartConfig">ClickStackAlertStackedLinePromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackalertstackedlinepromqlchartconfig"></a>
+<a id="schema_ClickStackAlertStackedLinePromqlChartConfig"></a>
+<a id="tocSclickstackalertstackedlinepromqlchartconfig"></a>
+<a id="tocsclickstackalertstackedlinepromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests"
+    }
+  ],
+  "legendTemplate": "{{job}} - {{instance}}",
+  "fillNulls": true,
+  "alignDateRangeToGranularity": true,
+  "seriesLimit": 5,
+  "displayType": "stacked_line",
+  "lineInterpolation": "step",
+  "name": "Error Rate Query",
+  "where": "ServiceName:api",
+  "whereLanguage": "sql"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|expressions|[[ClickStackPromqlRangeExpression](#schemaclickstackpromqlrangeexpression)]|true|none|PromQL expressions to plot.|
+|legendTemplate|string|false|none|Template for series names, using the series' Prometheus labels in double braces.|
+|fillNulls|boolean|false|none|Fill missing time buckets with zero instead of leaving gaps.|
+|alignDateRangeToGranularity|boolean|false|none|Expand date range boundaries to the query granularity interval.|
+|seriesLimit|integer|false|none|Maximum number of series rendered (top-N by value). Omit to use the default render cap, set 0 for unlimited, or a positive N to keep the top N series.|
+|displayType|string|true|none|Display as a stacked-line time-series chart.|
+|lineInterpolation|string|false|none|How points are connected. Defaults to "linear" when omitted.|
+|name|string|false|none|Display name for the alert query. Used in notification titles and as an alert-name fallback when the alert itself has no name.|
+|where|string|false|none|Chart-level filter applied on top of every select item's own "where" (combined via AND). Builder variants only; rejected on Raw SQL variants (filter inside the sqlTemplate instead).|
+|whereLanguage|string|false|none|Language of the chart-level "where" filter.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|stacked_line|
 |lineInterpolation|smooth|
 |lineInterpolation|linear|
@@ -39017,6 +42457,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |*oneOf*|[ClickStackAlertStackedLineBuilderChartConfig](#schemaclickstackalertstackedlinebuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackAlertStackedLineRawSqlChartConfig](#schemaclickstackalertstackedlinerawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackAlertStackedLinePromqlChartConfig](#schemaclickstackalertstackedlinepromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackNumericColorCondition">ClickStackNumericColorCondition</h2>
 <!-- backwards compatibility -->
@@ -39306,7 +42747,7 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "number" for single big-number charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|Exactly one aggregated value to display as a single number — unless "formulas" is set, in which case the select items are the formula's operands and the (single) formula value is displayed instead.|
 |formulas|[[ClickStackFormula](#schemaclickstackformula)]|false|none|A single derived value computed from the select items via letter-ref arithmetic ("A" = select[0], "B" = select[1], ...). Metric, log, and trace sources only. Number tiles display the formula value and always hide the operand series.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
@@ -39375,9 +42816,9 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a single big-number chart.|
 |color|string|false|none|Optional static color applied to the displayed number.|
@@ -39388,6 +42829,156 @@ Source-specific schema discovery metadata.
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|number|
+|color|chart-blue|
+|color|chart-orange|
+|color|chart-red|
+|color|chart-cyan|
+|color|chart-green|
+|color|chart-pink|
+|color|chart-purple|
+|color|chart-light-blue|
+|color|chart-brown|
+|color|chart-gray|
+|color|chart-success|
+|color|chart-warning|
+|color|chart-error|
+
+<h2 id="tocS_ClickStackPromqlInstantExpression">ClickStackPromqlInstantExpression</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackpromqlinstantexpression"></a>
+<a id="schema_ClickStackPromqlInstantExpression"></a>
+<a id="tocSclickstackpromqlinstantexpression"></a>
+<a id="tocsclickstackpromqlinstantexpression"></a>
+
+```json
+{
+  "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+  "alias": "Requests",
+  "queryType": "instant"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|expression|string|true|none|PromQL expression. Supports dashboard variables and the $__interval, $__rate_interval, and $__range macros.|
+|alias|string|false|none|Prefixed to every series name this expression produces.|
+|queryType|string|false|none|Whether to evaluate over the time range or at its end. Defaults to "range" when omitted.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|queryType|range|
+|queryType|instant|
+
+<h2 id="tocS_ClickStackPromqlReducibleExpression">ClickStackPromqlReducibleExpression</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackpromqlreducibleexpression"></a>
+<a id="schema_ClickStackPromqlReducibleExpression"></a>
+<a id="tocSclickstackpromqlreducibleexpression"></a>
+<a id="tocsclickstackpromqlreducibleexpression"></a>
+
+```json
+{
+  "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+  "alias": "Requests",
+  "queryType": "instant",
+  "reducer": "max"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|expression|string|true|none|PromQL expression. Supports dashboard variables and the $__interval, $__rate_interval, and $__range macros.|
+|alias|string|false|none|Prefixed to every series name this expression produces.|
+|queryType|string|false|none|Whether to evaluate over the time range or at its end. Defaults to "range" when omitted.|
+|reducer|string|false|none|How each series' samples are reduced to one value. Defaults to "lastNotNull" when omitted. It also applies to instant queries, where each series has a single sample, so e.g. "count" turns every value into 1.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|queryType|range|
+|queryType|instant|
+|reducer|lastNotNull|
+|reducer|min|
+|reducer|max|
+|reducer|mean|
+|reducer|sum|
+|reducer|count|
+
+<h2 id="tocS_ClickStackNumberPromqlChartConfig">ClickStackNumberPromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstacknumberpromqlchartconfig"></a>
+<a id="schema_ClickStackNumberPromqlChartConfig"></a>
+<a id="tocSclickstacknumberpromqlchartconfig"></a>
+<a id="tocsclickstacknumberpromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "displayType": "number",
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests",
+      "queryType": "instant",
+      "reducer": "max"
+    }
+  ],
+  "color": "chart-blue",
+  "colorRules": [
+    {
+      "operator": "gt",
+      "value": 100,
+      "color": "chart-blue",
+      "label": "High"
+    }
+  ],
+  "backgroundChart": {
+    "type": "line",
+    "color": "chart-blue"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|displayType|string|true|none|Display as a single big-number chart.|
+|expressions|[[ClickStackPromqlReducibleExpression](#schemaclickstackpromqlreducibleexpression)]|true|none|PromQL expressions. Only the first is queried; the rest are kept but ignored. The tile displays the first value.|
+|color|string|false|none|Optional static color applied to the displayed number.|
+|colorRules|[[ClickStackNumberTileColorCondition](#schemaclickstacknumbertilecolorcondition)]|false|none|Ordered conditional color rules evaluated against the displayed value (last match wins). Falls back to color, then the default text color when no rule matches.|
+|backgroundChart|[ClickStackBackgroundChart](#schemaclickstackbackgroundchart)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|number|
 |color|chart-blue|
 |color|chart-orange|
@@ -39488,6 +43079,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |*oneOf*|[ClickStackNumberBuilderChartConfig](#schemaclickstacknumberbuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackNumberRawSqlChartConfig](#schemaclickstacknumberrawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackNumberPromqlChartConfig](#schemaclickstacknumberpromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackAlertNumberBuilderChartConfig">ClickStackAlertNumberBuilderChartConfig</h2>
 <!-- backwards compatibility -->
@@ -39576,7 +43168,7 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "number" for single big-number charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|Exactly one aggregated value to display as a single number — unless "formulas" is set, in which case the select items are the formula's operands and the (single) formula value is displayed instead.|
 |formulas|[[ClickStackFormula](#schemaclickstackformula)]|false|none|A single derived value computed from the select items via letter-ref arithmetic ("A" = select[0], "B" = select[1], ...). Metric, log, and trace sources only. Number tiles display the formula value and always hide the operand series.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
@@ -39653,9 +43245,9 @@ Source-specific schema discovery metadata.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a single big-number chart.|
 |color|string|false|none|Optional static color applied to the displayed number.|
@@ -39669,6 +43261,96 @@ Source-specific schema discovery metadata.
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|number|
+|color|chart-blue|
+|color|chart-orange|
+|color|chart-red|
+|color|chart-cyan|
+|color|chart-green|
+|color|chart-pink|
+|color|chart-purple|
+|color|chart-light-blue|
+|color|chart-brown|
+|color|chart-gray|
+|color|chart-success|
+|color|chart-warning|
+|color|chart-error|
+|whereLanguage|sql|
+|whereLanguage|lucene|
+
+<h2 id="tocS_ClickStackAlertNumberPromqlChartConfig">ClickStackAlertNumberPromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackalertnumberpromqlchartconfig"></a>
+<a id="schema_ClickStackAlertNumberPromqlChartConfig"></a>
+<a id="tocSclickstackalertnumberpromqlchartconfig"></a>
+<a id="tocsclickstackalertnumberpromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "displayType": "number",
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests",
+      "queryType": "instant",
+      "reducer": "max"
+    }
+  ],
+  "color": "chart-blue",
+  "colorRules": [
+    {
+      "operator": "gt",
+      "value": 100,
+      "color": "chart-blue",
+      "label": "High"
+    }
+  ],
+  "backgroundChart": {
+    "type": "line",
+    "color": "chart-blue"
+  },
+  "name": "Error Rate Query",
+  "where": "ServiceName:api",
+  "whereLanguage": "sql"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|displayType|string|true|none|Display as a single big-number chart.|
+|expressions|[[ClickStackPromqlReducibleExpression](#schemaclickstackpromqlreducibleexpression)]|true|none|PromQL expressions. Only the first is queried; the rest are kept but ignored. The tile displays the first value.|
+|color|string|false|none|Optional static color applied to the displayed number.|
+|colorRules|[[ClickStackNumberTileColorCondition](#schemaclickstacknumbertilecolorcondition)]|false|none|Ordered conditional color rules evaluated against the displayed value (last match wins). Falls back to color, then the default text color when no rule matches.|
+|backgroundChart|[ClickStackBackgroundChart](#schemaclickstackbackgroundchart)|false|none|none|
+|name|string|false|none|Display name for the alert query. Used in notification titles and as an alert-name fallback when the alert itself has no name.|
+|where|string|false|none|Chart-level filter applied on top of every select item's own "where" (combined via AND). Builder variants only; rejected on Raw SQL variants (filter inside the sqlTemplate instead).|
+|whereLanguage|string|false|none|Language of the chart-level "where" filter.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|number|
 |color|chart-blue|
 |color|chart-orange|
@@ -39774,6 +43456,7 @@ Source-specific schema discovery metadata.
 |---|---|---|---|---|
 |*oneOf*|[ClickStackAlertNumberBuilderChartConfig](#schemaclickstackalertnumberbuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackAlertNumberRawSqlChartConfig](#schemaclickstackalertnumberrawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackAlertNumberPromqlChartConfig](#schemaclickstackalertnumberpromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackAlertChartConfig">ClickStackAlertChartConfig</h2>
 <!-- backwards compatibility -->
@@ -40610,6 +44293,64 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|
 |type|variable|
 
+<h2 id="tocS_ClickStackAdhocFilterCondition">ClickStackAdhocFilterCondition</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackadhocfiltercondition"></a>
+<a id="schema_ClickStackAdhocFilterCondition"></a>
+<a id="tocSclickstackadhocfiltercondition"></a>
+<a id="tocsclickstackadhocfiltercondition"></a>
+
+```json
+{
+  "key": "ServiceName",
+  "operator": "=",
+  "value": "api"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|A SQL expression (column or map access) for sql filters, or a label name for promql filters.|
+|operator|string|true|none|Comparison operator. =~ and !~ match a regular expression. IN takes one value per condition. LIKE and NOT LIKE apply to sql filters only; a condition its filter's sourceType can't express is not applied. Allowed values: '=', '!=', '=~', '!~', 'LIKE', 'NOT LIKE', 'IN'.|
+|value|string|true|none|Value, pattern, or regular expression to compare against.|
+
+<h2 id="tocS_ClickStackAdhocSavedFilterValue">ClickStackAdhocSavedFilterValue</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackadhocsavedfiltervalue"></a>
+<a id="schema_ClickStackAdhocSavedFilterValue"></a>
+<a id="tocSclickstackadhocsavedfiltervalue"></a>
+<a id="tocsclickstackadhocsavedfiltervalue"></a>
+
+```json
+{
+  "type": "adhoc",
+  "name": "conditions",
+  "conditions": [
+    {
+      "key": "ServiceName",
+      "operator": "=",
+      "value": "api"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Filter type.|
+|name|string|true|none|The variableName of the ADHOC filter these conditions belong to.|
+|conditions|[[ClickStackAdhocFilterCondition](#schemaclickstackadhocfiltercondition)]|true|none|The filter's conditions.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|adhoc|
+
 <h2 id="tocS_ClickStackSavedFilterValue">ClickStackSavedFilterValue</h2>
 <!-- backwards compatibility -->
 <a id="schemaclickstacksavedfiltervalue"></a>
@@ -40630,6 +44371,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|---|---|---|
 |*oneOf*|[ClickStackSqlSavedFilterValue](#schemaclickstacksqlsavedfiltervalue)|false|none|none|
 |*oneOf*|[ClickStackVariableSavedFilterValue](#schemaclickstackvariablesavedfiltervalue)|false|none|none|
+|*oneOf*|[ClickStackAdhocSavedFilterValue](#schemaclickstackadhocsavedfiltervalue)|false|none|none|
 
 <h2 id="tocS_ClickStackTimeChartSeries">ClickStackTimeChartSeries</h2>
 <!-- backwards compatibility -->
@@ -41323,7 +45065,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "table" for table charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|One or more aggregated values to display as table columns. When asRatio is true, exactly two select items are required.|
 |groupBy|string|false|none|Field expression to group results by (one row per group value).|
 |having|string|false|none|Post-aggregation SQL HAVING condition.|
@@ -41398,7 +45140,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "pie" for pie charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|Exactly one aggregated value used to size each pie slice.|
 |groupBy|string|false|none|Field expression to group results by (one slice per group value).|
 |orderBy|string|false|none|Optional custom SQL ORDER BY expression (raw SQL). Overrides the default value-descending ordering and, when combined with "limit", controls which slices are kept.|
@@ -41468,7 +45210,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "bar" for categorical bar charts.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|Exactly one aggregated value used to size each bar.|
 |groupBy|string|false|none|Field expression to group results by (one bar per group value).|
 |orderBy|string|false|none|Optional custom SQL ORDER BY expression (raw SQL). Overrides the default value-descending ordering and, when combined with "limit", controls which bars are kept.|
@@ -41552,7 +45294,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "heatmap" for heatmap tiles.|
 |heatmapMode|string|false|none|Heatmap mode. "distribution" is the default when omitted.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackHeatmapSelectItem](#schemaclickstackheatmapselectitem)]|true|none|Exactly one heatmap select item.|
 |where|string|false|none|Row-level filter (syntax depends on whereLanguage).|
 |whereLanguage|string|false|none|Query language for the where clause.|
@@ -41624,7 +45366,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "heatmap" for heatmap tiles.|
 |heatmapMode|string|true|none|Heatmap mode. Must be "series" for series heatmaps.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|[[ClickStackSelectItem](#schemaclickstackselectitem)]|true|none|Exactly one aggregated value used to color each cell.|
 |groupBy|string|false|none|Field expression to group results by (one row per group value).|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
@@ -41635,6 +45377,68 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|
 |displayType|heatmap|
 |heatmapMode|series|
+
+<h2 id="tocS_ClickStackHeatmapPromqlChartConfig">ClickStackHeatmapPromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackheatmappromqlchartconfig"></a>
+<a id="schema_ClickStackHeatmapPromqlChartConfig"></a>
+<a id="tocSclickstackheatmappromqlchartconfig"></a>
+<a id="tocsclickstackheatmappromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "displayType": "heatmap",
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests"
+    }
+  ],
+  "heatmapMode": "histogram",
+  "heatmapScaleType": "log",
+  "legendTemplate": "{{job}}"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|displayType|string|true|none|Display as a heatmap.|
+|expressions|[[ClickStackPromqlRangeExpression](#schemaclickstackpromqlrangeexpression)]|true|none|PromQL expressions. Only the first is queried; the rest are kept but ignored.|
+|heatmapMode|string|false|none|"distribution" buckets the values of all series over time, "series" draws one row per series, and "histogram" draws one row per Prometheus histogram bucket (series need an "le" label). Defaults to "distribution" when omitted.|
+|heatmapScaleType|string|false|none|Y-axis scale of a distribution heatmap.|
+|legendTemplate|string|false|none|Template for row names of a series heatmap, using the series' Prometheus labels in double braces.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
+|displayType|heatmap|
+|heatmapMode|distribution|
+|heatmapMode|series|
+|heatmapMode|histogram|
+|heatmapScaleType|log|
+|heatmapScaleType|linear|
 
 <h2 id="tocS_ClickStackHeatmapChartConfig">ClickStackHeatmapChartConfig</h2>
 <!-- backwards compatibility -->
@@ -41677,6 +45481,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|---|---|---|
 |*oneOf*|[ClickStackHeatmapDistributionChartConfig](#schemaclickstackheatmapdistributionchartconfig)|false|none|none|
 |*oneOf*|[ClickStackHeatmapSeriesChartConfig](#schemaclickstackheatmapserieschartconfig)|false|none|none|
+|*oneOf*|[ClickStackHeatmapPromqlChartConfig](#schemaclickstackheatmappromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackSearchChartConfig">ClickStackSearchChartConfig</h2>
 <!-- backwards compatibility -->
@@ -41700,7 +45505,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "search" for search/log viewer tiles.|
-|sourceId|string|true|none|ID of the data source to query.|
+|sourceId|string|true|none|ID of the data source to query, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|string|true|none|Comma-separated list of expressions to display.|
 |where|string|false|none|Filter condition for the search (syntax depends on whereLanguage).|
 |whereLanguage|string|true|none|Query language for the where clause.|
@@ -41735,7 +45540,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |displayType|string|true|none|Display type discriminator. Must be "event_patterns" for pattern mining tiles.|
-|sourceId|string|true|none|ID of the data source to mine patterns from.|
+|sourceId|string|true|none|ID of the data source to mine patterns from, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard.|
 |select|string|false|none|Column or expression to mine patterns from. Leave empty to use the source default (Body for logs, SpanName for traces).|
 |where|string|false|none|Filter condition for the pattern mining query (syntax depends on whereLanguage).|
 |whereLanguage|string|false|none|Query language for the where clause.|
@@ -41824,9 +45629,9 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a table chart.|
 |onClick|[ClickStackOnClick](#schemaclickstackonclick)|false|none|none|
@@ -41871,9 +45676,9 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a pie chart.|
 
@@ -41917,9 +45722,9 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |configType|string|true|none|Must be "sql" to use the Raw SQL chart config variant.|
-|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against.|
+|connectionId|string|true|none|ID of the ClickHouse connection to execute the query against, or `$connectionVariable` of a CONNECTION filter on the dashboard.|
 |sqlTemplate|string|true|none|SQL query template to execute. Supports HyperDX template variables.|
-|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart. Used for applying dashboard filters.|
+|sourceId|string|false|none|Optional ID of the data source associated with this Raw SQL chart, or `$sourceVariable` of a DATA_SOURCE filter on the dashboard. Used for applying dashboard filters.|
 |numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
 |displayType|string|true|none|Display as a categorical bar chart.|
 
@@ -41928,6 +45733,172 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Property|Value|
 |---|---|
 |configType|sql|
+|displayType|bar|
+
+<h2 id="tocS_ClickStackTablePromqlChartConfig">ClickStackTablePromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstacktablepromqlchartconfig"></a>
+<a id="schema_ClickStackTablePromqlChartConfig"></a>
+<a id="tocSclickstacktablepromqlchartconfig"></a>
+<a id="tocsclickstacktablepromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "displayType": "table",
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests",
+      "queryType": "instant"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|displayType|string|true|none|Display as a table chart.|
+|expressions|[[ClickStackPromqlInstantExpression](#schemaclickstackpromqlinstantexpression)]|true|none|PromQL expressions. Only the first is queried; the rest are kept but ignored.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
+|displayType|table|
+
+<h2 id="tocS_ClickStackPiePromqlChartConfig">ClickStackPiePromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackpiepromqlchartconfig"></a>
+<a id="schema_ClickStackPiePromqlChartConfig"></a>
+<a id="tocSclickstackpiepromqlchartconfig"></a>
+<a id="tocsclickstackpiepromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "displayType": "pie",
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests",
+      "queryType": "instant",
+      "reducer": "max"
+    }
+  ],
+  "legendTemplate": "{{job}}",
+  "limit": 10
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|displayType|string|true|none|Display as a pie chart.|
+|expressions|[[ClickStackPromqlReducibleExpression](#schemaclickstackpromqlreducibleexpression)]|true|none|PromQL expressions. Only the first is queried; the rest are kept but ignored.|
+|legendTemplate|string|false|none|Template for slice names, using the series' Prometheus labels in double braces.|
+|limit|integer|false|none|Maximum number of slices (top-N by value), at most 500. Omit or set 0 to show up to 500.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
+|displayType|pie|
+
+<h2 id="tocS_ClickStackCategoricalBarPromqlChartConfig">ClickStackCategoricalBarPromqlChartConfig</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackcategoricalbarpromqlchartconfig"></a>
+<a id="schema_ClickStackCategoricalBarPromqlChartConfig"></a>
+<a id="tocSclickstackcategoricalbarpromqlchartconfig"></a>
+<a id="tocsclickstackcategoricalbarpromqlchartconfig"></a>
+
+```json
+{
+  "configType": "promql",
+  "sourceId": "65f5e4a3b9e77c001a333333",
+  "granularity": "5 minute",
+  "numberFormat": {
+    "output": "number",
+    "mantissa": 2,
+    "thousandSeparated": true,
+    "average": false,
+    "decimalBytes": false,
+    "factor": 1,
+    "currencySymbol": "$",
+    "numericUnit": "bytes_iec",
+    "unit": "ms"
+  },
+  "displayType": "bar",
+  "expressions": [
+    {
+      "expression": "sum by (job) (rate(http_requests_total[$__rate_interval]))",
+      "alias": "Requests",
+      "queryType": "instant",
+      "reducer": "max"
+    }
+  ],
+  "legendTemplate": "{{job}}",
+  "limit": 10
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configType|string|true|none|Must be "promql" to use the PromQL chart config variant.|
+|sourceId|string|true|none|ID of the PromQL source to query. Must be a source of kind "promql".|
+|granularity|string|false|none|Resolution of range queries, used as the Prometheus step and the $__interval macro. Defaults to "auto", which picks one from the time range.|
+|numberFormat|[ClickStackNumberFormat](#schemaclickstacknumberformat)|false|none|none|
+|displayType|string|true|none|Display as a categorical bar chart.|
+|expressions|[[ClickStackPromqlReducibleExpression](#schemaclickstackpromqlreducibleexpression)]|true|none|PromQL expressions. Only the first is queried; the rest are kept but ignored.|
+|legendTemplate|string|false|none|Template for bar names, using the series' Prometheus labels in double braces.|
+|limit|integer|false|none|Maximum number of bars (top-N by value), at most 500. Omit or set 0 to show up to 500.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|configType|promql|
 |displayType|bar|
 
 <h2 id="tocS_ClickStackTableChartConfig">ClickStackTableChartConfig</h2>
@@ -42024,6 +45995,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|---|---|---|
 |*oneOf*|[ClickStackTableBuilderChartConfig](#schemaclickstacktablebuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackTableRawSqlChartConfig](#schemaclickstacktablerawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackTablePromqlChartConfig](#schemaclickstacktablepromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackPieChartConfig">ClickStackPieChartConfig</h2>
 <!-- backwards compatibility -->
@@ -42083,6 +46055,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|---|---|---|
 |*oneOf*|[ClickStackPieBuilderChartConfig](#schemaclickstackpiebuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackPieRawSqlChartConfig](#schemaclickstackpierawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackPiePromqlChartConfig](#schemaclickstackpiepromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackCategoricalBarChartConfig">ClickStackCategoricalBarChartConfig</h2>
 <!-- backwards compatibility -->
@@ -42142,6 +46115,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|---|---|---|
 |*oneOf*|[ClickStackCategoricalBarBuilderChartConfig](#schemaclickstackcategoricalbarbuilderchartconfig)|false|none|none|
 |*oneOf*|[ClickStackCategoricalBarRawSqlChartConfig](#schemaclickstackcategoricalbarrawsqlchartconfig)|false|none|none|
+|*oneOf*|[ClickStackCategoricalBarPromqlChartConfig](#schemaclickstackcategoricalbarpromqlchartconfig)|false|none|none|
 
 <h2 id="tocS_ClickStackTileConfig">ClickStackTileConfig</h2>
 <!-- backwards compatibility -->
@@ -42558,7 +46532,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |type|string|true|none|Filter type discriminator. Must be "QUERY_EXPRESSION".|
 |name|string|true|none|Display name for the dashboard filter key|
 |expression|string|true|none|SQL expression used when querying values for this filter, and when applying this dashboard filter to tiles.|
-|sourceId|string|true|none|Source ID this dashboard filter key applies to|
+|sourceId|string|true|none|Source ID this dashboard filter key applies to, or `$name` of a DATA_SOURCE filter on the dashboard|
 |sourceMetricType|string|false|none|Metric type when source is metrics|
 |where|string|false|none|Optional WHERE condition to scope which rows this filter key reads values from|
 |whereLanguage|string|false|none|Language of the where condition|
@@ -42732,6 +46706,189 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |minSelections|1|
 |maxSelections|1|
 
+<h2 id="tocS_ClickStackDataSourceFilterInput">ClickStackDataSourceFilterInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackdatasourcefilterinput"></a>
+<a id="schema_ClickStackDataSourceFilterInput"></a>
+<a id="tocSclickstackdatasourcefilterinput"></a>
+<a id="tocsclickstackdatasourcefilterinput"></a>
+
+```json
+{
+  "type": "DATA_SOURCE",
+  "name": "Logs source",
+  "variableName": "logs",
+  "isGlobalRequirement": true,
+  "minSelections": 1,
+  "maxSelections": 1,
+  "isBroadcastEnabled": false,
+  "isVariableEnabled": true,
+  "allowedSourceKinds": [
+    "log"
+  ],
+  "connectionId": "$conn"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Filter type discriminator. Must be "DATA_SOURCE".|
+|name|string|true|none|Display name of the variable's dropdown|
+|variableName|string|false|none|Token tiles and filters reference the selected source by, as `$variableName`.|
+|isGlobalRequirement|boolean|false|none|Blocks every tile on the dashboard until a value is selected. False (the default) blocks only the tiles that reference the variable.|
+|minSelections|integer|false|none|Must be 1 if provided. The variable always requires a selection.|
+|maxSelections|integer|false|none|Must be 1 if provided. The variable is always single-select.|
+|isBroadcastEnabled|boolean|false|none|Must be false or omitted. Allowed values: false.|
+|isVariableEnabled|boolean|false|none|Must be true if provided, and is true when omitted. Allowed values: true.|
+|allowedSourceKinds|[string]|true|none|Kinds of sources offered. A field can reference the variable if it accepts at least one listed kind. A tile whose selected source is a kind it cannot use shows an error instead of running.|
+|connectionId|string|false|none|Optional connection the offered sources are limited to: a connection ID, or `$name` of a CONNECTION filter on the dashboard.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|DATA_SOURCE|
+|minSelections|1|
+|maxSelections|1|
+
+<h2 id="tocS_ClickStackConnectionFilterInput">ClickStackConnectionFilterInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackconnectionfilterinput"></a>
+<a id="schema_ClickStackConnectionFilterInput"></a>
+<a id="tocSclickstackconnectionfilterinput"></a>
+<a id="tocsclickstackconnectionfilterinput"></a>
+
+```json
+{
+  "type": "CONNECTION",
+  "name": "Connection",
+  "variableName": "conn",
+  "isGlobalRequirement": true,
+  "minSelections": 1,
+  "maxSelections": 1,
+  "isBroadcastEnabled": false,
+  "isVariableEnabled": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Filter type discriminator. Must be "CONNECTION".|
+|name|string|true|none|Display name of the variable's dropdown|
+|variableName|string|false|none|Token raw SQL tiles reference the selected connection by, as `$variableName`.|
+|isGlobalRequirement|boolean|false|none|Blocks every tile on the dashboard until a value is selected. False (the default) blocks only the tiles that reference the variable.|
+|minSelections|integer|false|none|Must be 1 if provided. The variable always requires a selection.|
+|maxSelections|integer|false|none|Must be 1 if provided. The variable is always single-select.|
+|isBroadcastEnabled|boolean|false|none|Must be false or omitted. Allowed values: false.|
+|isVariableEnabled|boolean|false|none|Must be true if provided, and is true when omitted. Allowed values: true.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|CONNECTION|
+|minSelections|1|
+|maxSelections|1|
+
+<h2 id="tocS_ClickStackSqlQueryFilterInput">ClickStackSqlQueryFilterInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstacksqlqueryfilterinput"></a>
+<a id="schema_ClickStackSqlQueryFilterInput"></a>
+<a id="tocSclickstacksqlqueryfilterinput"></a>
+<a id="tocsclickstacksqlqueryfilterinput"></a>
+
+```json
+{
+  "type": "SQL_QUERY",
+  "name": "Environment",
+  "connectionId": "65f5e4a3b9e77c001a567890",
+  "sourceId": "65f5e4a3b9e77c001a345678",
+  "sqlTemplate": "SELECT DISTINCT env FROM default.envs ORDER BY env",
+  "isBroadcastEnabled": false,
+  "isVariableEnabled": true,
+  "variableName": "env",
+  "minSelections": 1,
+  "isGlobalRequirement": true,
+  "maxSelections": 1
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Discriminator. Must be "SQL_QUERY".|
+|name|string|true|none|Display name for the dashboard filter|
+|connectionId|string|true|none|ClickHouse connection the query runs on: a connection ID, or `$name` of a CONNECTION filter on the dashboard.|
+|sourceId|string|false|none|Optional Log, Trace, Session, or Metric source on the same connection, or `$name` of a DATA_SOURCE filter on this dashboard. Lets `sqlTemplate` use `$__sourceTable` and `$__filters`.|
+|sqlTemplate|string|true|none|Query whose first column populates the dropdown. May use the time macros and other filters' variables. `$__sourceTable` and `$__filters` need a `sourceId`; `$__filters` expands to the dashboard's broadcast filter selections for that source.|
+|isBroadcastEnabled|boolean|false|none|Must be false or omitted. Allowed values: false.|
+|isVariableEnabled|boolean|false|none|Must be true if provided, and is true when omitted. Tiles reference the selection as `$variableName`. Allowed values: true.|
+|variableName|string|false|none|Token that tiles reference this filter's selected value by, as `$variableName`. Defaults to the display name with whitespace replaced by underscores and remaining illegal characters removed. Must be unique across a dashboard's variable-enabled filters.|
+|minSelections|integer|false|none|Set to 1 to make the filter required.|
+|isGlobalRequirement|boolean|false|none|Widens a required filter's block to every tile on the dashboard. Ignored unless minSelections is 1.|
+|maxSelections|integer|false|none|Set to 1 to make the filter single-select.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|SQL_QUERY|
+|minSelections|0|
+|minSelections|1|
+|maxSelections|1|
+
+<h2 id="tocS_ClickStackAdhocFilterInput">ClickStackAdhocFilterInput</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackadhocfilterinput"></a>
+<a id="schema_ClickStackAdhocFilterInput"></a>
+<a id="tocSclickstackadhocfilterinput"></a>
+<a id="tocsclickstackadhocfilterinput"></a>
+
+```json
+{
+  "type": "ADHOC",
+  "name": "Conditions",
+  "sourceType": "sql",
+  "sources": [
+    "65f5e4a3b9e77c001a111111"
+  ],
+  "where": "ServiceName:api",
+  "whereLanguage": "lucene",
+  "appliesToSourceIds": [
+    "65f5e4a3b9e77c001a111111"
+  ],
+  "isBroadcastEnabled": true,
+  "isVariableEnabled": true,
+  "variableName": "conditions"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Discriminator. Must be "ADHOC".|
+|name|string|true|none|Display name for the dashboard filter|
+|sourceType|string|true|none|The kind of sources the filter reads keys from and applies to: Log, Trace, or Session sources for sql, PromQL sources for promql. Allowed values: 'sql', 'promql'.|
+|sources|[string]|true|none|IDs of the sources whose keys and values the filter suggests, all of sourceType, or `$name` of data source variables.|
+|where|string|false|none|Optional condition narrowing the rows keys and values are suggested from. Never applied to tiles. May reference the dashboard's variables. sql filters only: rejected when sourceType is promql.|
+|whereLanguage|string|false|none|Language of the where condition. Rejected when sourceType is promql. Allowed values: 'sql', 'lucene'.|
+|appliesToSourceIds|[string]|false|none|IDs of the sources whose tiles the conditions apply to, all of sourceType, or `$name` of data source variables. Omit or send an empty array to apply to the tiles of the filter's sources.|
+|isBroadcastEnabled|boolean|false|none|Must be true or omitted. Allowed values: true.|
+|isVariableEnabled|boolean|false|none|Must be true or omitted. Allowed values: true.|
+|variableName|string|false|none|Unique name the filter's conditions are saved under, in savedFilterValues and the dashboard URL. Tiles can't reference it as a variable. Defaults to the display name with whitespace replaced by underscores and remaining illegal characters removed. Must be unique across a dashboard's variable-enabled filters.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|ADHOC|
+
 <h2 id="tocS_ClickStackFilterInput">ClickStackFilterInput</h2>
 <!-- backwards compatibility -->
 <a id="schemaclickstackfilterinput"></a>
@@ -42768,6 +46925,10 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |*oneOf*|[ClickStackStaticListFilterInput](#schemaclickstackstaticlistfilterinput)|false|none|none|
 |*oneOf*|[ClickStackPrometheusLabelFilterInput](#schemaclickstackprometheuslabelfilterinput)|false|none|none|
 |*oneOf*|[ClickStackSourceFilterInput](#schemaclickstacksourcefilterinput)|false|none|none|
+|*oneOf*|[ClickStackDataSourceFilterInput](#schemaclickstackdatasourcefilterinput)|false|none|none|
+|*oneOf*|[ClickStackConnectionFilterInput](#schemaclickstackconnectionfilterinput)|false|none|none|
+|*oneOf*|[ClickStackSqlQueryFilterInput](#schemaclickstacksqlqueryfilterinput)|false|none|none|
+|*oneOf*|[ClickStackAdhocFilterInput](#schemaclickstackadhocfilterinput)|false|none|none|
 
 <h2 id="tocS_ClickStackQueryExpressionFilter">ClickStackQueryExpressionFilter</h2>
 <!-- backwards compatibility -->
@@ -42805,7 +46966,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |type|string|true|none|Filter type discriminator. Must be "QUERY_EXPRESSION".|
 |name|string|true|none|Display name for the dashboard filter key|
 |expression|string|true|none|SQL expression used when querying values for this filter, and when applying this dashboard filter to tiles.|
-|sourceId|string|true|none|Source ID this dashboard filter key applies to|
+|sourceId|string|true|none|Source ID this dashboard filter key applies to, or `$name` of a DATA_SOURCE filter on the dashboard|
 |sourceMetricType|string|false|none|Metric type when source is metrics|
 |where|string|false|none|Optional WHERE condition to scope which rows this filter key reads values from|
 |whereLanguage|string|false|none|Language of the where condition|
@@ -42986,6 +47147,197 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |minSelections|1|
 |maxSelections|1|
 
+<h2 id="tocS_ClickStackDataSourceFilter">ClickStackDataSourceFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackdatasourcefilter"></a>
+<a id="schema_ClickStackDataSourceFilter"></a>
+<a id="tocSclickstackdatasourcefilter"></a>
+<a id="tocsclickstackdatasourcefilter"></a>
+
+```json
+{
+  "type": "DATA_SOURCE",
+  "name": "Logs source",
+  "variableName": "logs",
+  "isGlobalRequirement": true,
+  "minSelections": 1,
+  "maxSelections": 1,
+  "isBroadcastEnabled": false,
+  "isVariableEnabled": true,
+  "allowedSourceKinds": [
+    "log"
+  ],
+  "connectionId": "$conn",
+  "id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Filter type discriminator. Must be "DATA_SOURCE".|
+|name|string|true|none|Display name of the variable's dropdown|
+|variableName|string|false|none|Token tiles and filters reference the selected source by, as `$variableName`.|
+|isGlobalRequirement|boolean|false|none|Blocks every tile on the dashboard until a value is selected. False (the default) blocks only the tiles that reference the variable.|
+|minSelections|integer|false|none|Must be 1 if provided. The variable always requires a selection.|
+|maxSelections|integer|false|none|Must be 1 if provided. The variable is always single-select.|
+|isBroadcastEnabled|boolean|false|none|Must be false or omitted. Allowed values: false.|
+|isVariableEnabled|boolean|false|none|Must be true if provided, and is true when omitted. Allowed values: true.|
+|allowedSourceKinds|[string]|true|none|Kinds of sources offered. A field can reference the variable if it accepts at least one listed kind. A tile whose selected source is a kind it cannot use shows an error instead of running.|
+|connectionId|string|false|none|Optional connection the offered sources are limited to: a connection ID, or `$name` of a CONNECTION filter on the dashboard.|
+|id|string|true|none|Unique dashboard filter key ID|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|DATA_SOURCE|
+|minSelections|1|
+|maxSelections|1|
+
+<h2 id="tocS_ClickStackConnectionFilter">ClickStackConnectionFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackconnectionfilter"></a>
+<a id="schema_ClickStackConnectionFilter"></a>
+<a id="tocSclickstackconnectionfilter"></a>
+<a id="tocsclickstackconnectionfilter"></a>
+
+```json
+{
+  "type": "CONNECTION",
+  "name": "Connection",
+  "variableName": "conn",
+  "isGlobalRequirement": true,
+  "minSelections": 1,
+  "maxSelections": 1,
+  "isBroadcastEnabled": false,
+  "isVariableEnabled": true,
+  "id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Filter type discriminator. Must be "CONNECTION".|
+|name|string|true|none|Display name of the variable's dropdown|
+|variableName|string|false|none|Token raw SQL tiles reference the selected connection by, as `$variableName`.|
+|isGlobalRequirement|boolean|false|none|Blocks every tile on the dashboard until a value is selected. False (the default) blocks only the tiles that reference the variable.|
+|minSelections|integer|false|none|Must be 1 if provided. The variable always requires a selection.|
+|maxSelections|integer|false|none|Must be 1 if provided. The variable is always single-select.|
+|isBroadcastEnabled|boolean|false|none|Must be false or omitted. Allowed values: false.|
+|isVariableEnabled|boolean|false|none|Must be true if provided, and is true when omitted. Allowed values: true.|
+|id|string|true|none|Unique dashboard filter key ID|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|CONNECTION|
+|minSelections|1|
+|maxSelections|1|
+
+<h2 id="tocS_ClickStackSqlQueryFilter">ClickStackSqlQueryFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstacksqlqueryfilter"></a>
+<a id="schema_ClickStackSqlQueryFilter"></a>
+<a id="tocSclickstacksqlqueryfilter"></a>
+<a id="tocsclickstacksqlqueryfilter"></a>
+
+```json
+{
+  "type": "SQL_QUERY",
+  "name": "Environment",
+  "connectionId": "65f5e4a3b9e77c001a567890",
+  "sourceId": "65f5e4a3b9e77c001a345678",
+  "sqlTemplate": "SELECT DISTINCT env FROM default.envs ORDER BY env",
+  "isBroadcastEnabled": false,
+  "isVariableEnabled": true,
+  "variableName": "env",
+  "minSelections": 1,
+  "isGlobalRequirement": true,
+  "maxSelections": 1,
+  "id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Discriminator. Must be "SQL_QUERY".|
+|name|string|true|none|Display name for the dashboard filter|
+|connectionId|string|true|none|ClickHouse connection the query runs on: a connection ID, or `$name` of a CONNECTION filter on the dashboard.|
+|sourceId|string|false|none|Optional Log, Trace, Session, or Metric source on the same connection, or `$name` of a DATA_SOURCE filter on this dashboard. Lets `sqlTemplate` use `$__sourceTable` and `$__filters`.|
+|sqlTemplate|string|true|none|Query whose first column populates the dropdown. May use the time macros and other filters' variables. `$__sourceTable` and `$__filters` need a `sourceId`; `$__filters` expands to the dashboard's broadcast filter selections for that source.|
+|isBroadcastEnabled|boolean|false|none|Must be false or omitted. Allowed values: false.|
+|isVariableEnabled|boolean|false|none|Must be true if provided, and is true when omitted. Tiles reference the selection as `$variableName`. Allowed values: true.|
+|variableName|string|false|none|Token that tiles reference this filter's selected value by, as `$variableName`. Defaults to the display name with whitespace replaced by underscores and remaining illegal characters removed. Must be unique across a dashboard's variable-enabled filters.|
+|minSelections|integer|false|none|Set to 1 to make the filter required.|
+|isGlobalRequirement|boolean|false|none|Widens a required filter's block to every tile on the dashboard. Ignored unless minSelections is 1.|
+|maxSelections|integer|false|none|Set to 1 to make the filter single-select.|
+|id|string|true|none|Unique dashboard filter key ID|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|SQL_QUERY|
+|minSelections|0|
+|minSelections|1|
+|maxSelections|1|
+
+<h2 id="tocS_ClickStackAdhocFilter">ClickStackAdhocFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstackadhocfilter"></a>
+<a id="schema_ClickStackAdhocFilter"></a>
+<a id="tocSclickstackadhocfilter"></a>
+<a id="tocsclickstackadhocfilter"></a>
+
+```json
+{
+  "type": "ADHOC",
+  "name": "Conditions",
+  "sourceType": "sql",
+  "sources": [
+    "65f5e4a3b9e77c001a111111"
+  ],
+  "where": "ServiceName:api",
+  "whereLanguage": "lucene",
+  "appliesToSourceIds": [
+    "65f5e4a3b9e77c001a111111"
+  ],
+  "isBroadcastEnabled": true,
+  "isVariableEnabled": true,
+  "variableName": "conditions",
+  "id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Discriminator. Must be "ADHOC".|
+|name|string|true|none|Display name for the dashboard filter|
+|sourceType|string|true|none|The kind of sources the filter reads keys from and applies to: Log, Trace, or Session sources for sql, PromQL sources for promql. Allowed values: 'sql', 'promql'.|
+|sources|[string]|true|none|IDs of the sources whose keys and values the filter suggests, all of sourceType, or `$name` of data source variables.|
+|where|string|false|none|Optional condition narrowing the rows keys and values are suggested from. Never applied to tiles. May reference the dashboard's variables. sql filters only: rejected when sourceType is promql.|
+|whereLanguage|string|false|none|Language of the where condition. Rejected when sourceType is promql. Allowed values: 'sql', 'lucene'.|
+|appliesToSourceIds|[string]|false|none|IDs of the sources whose tiles the conditions apply to, all of sourceType, or `$name` of data source variables. Omit or send an empty array to apply to the tiles of the filter's sources.|
+|isBroadcastEnabled|boolean|false|none|Must be true or omitted. Allowed values: true.|
+|isVariableEnabled|boolean|false|none|Must be true or omitted. Allowed values: true.|
+|variableName|string|false|none|Unique name the filter's conditions are saved under, in savedFilterValues and the dashboard URL. Tiles can't reference it as a variable. Defaults to the display name with whitespace replaced by underscores and remaining illegal characters removed. Must be unique across a dashboard's variable-enabled filters.|
+|id|string|true|none|Unique dashboard filter key ID|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|ADHOC|
+
 <h2 id="tocS_ClickStackFilter">ClickStackFilter</h2>
 <!-- backwards compatibility -->
 <a id="schemaclickstackfilter"></a>
@@ -43023,6 +47375,10 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |*oneOf*|[ClickStackStaticListFilter](#schemaclickstackstaticlistfilter)|false|none|none|
 |*oneOf*|[ClickStackPrometheusLabelFilter](#schemaclickstackprometheuslabelfilter)|false|none|none|
 |*oneOf*|[ClickStackSourceFilter](#schemaclickstacksourcefilter)|false|none|none|
+|*oneOf*|[ClickStackDataSourceFilter](#schemaclickstackdatasourcefilter)|false|none|none|
+|*oneOf*|[ClickStackConnectionFilter](#schemaclickstackconnectionfilter)|false|none|none|
+|*oneOf*|[ClickStackSqlQueryFilter](#schemaclickstacksqlqueryfilter)|false|none|none|
+|*oneOf*|[ClickStackAdhocFilter](#schemaclickstackadhocfilter)|false|none|none|
 
 <h2 id="tocS_ClickStackCreateDashboardRequest">ClickStackCreateDashboardRequest</h2>
 <!-- backwards compatibility -->
@@ -43695,6 +48051,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |subject|Role|
 |subject|Notebook|
 |subject|SchemaMigration|
+|subject|App|
 |subject|all|
 |integration|mongodb|
 
@@ -43813,6 +48170,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |subject|Role|
 |subject|Notebook|
 |subject|SchemaMigration|
+|subject|App|
 |subject|all|
 |integration|clickhouse|
 
@@ -44396,7 +48754,10 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
   "spanIdExpression": "SpanId",
   "implicitColumnExpression": "Body",
   "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+  "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
   "useTextIndexForImplicitColumn": "auto",
+  "mapKeyIndexMaxParts": 20,
+  "mapKeyIndexPartSelection": "median",
   "highlightedTraceAttributeExpressions": [
     {
       "sqlExpression": "SpanAttributes['http.status_code']",
@@ -44467,7 +48828,10 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |spanIdExpression|string \| null|false|none|Expression to extract the span ID for correlating logs with traces.|
 |implicitColumnExpression|string \| null|false|none|Column used for full text search if no property is specified in a Lucene-based search. Typically the message body of a log.|
 |knownColumnsListExpression|string \| null|false|none|For Distributed table sources whose target tables have non-matching column sets. A list of columns supported across all target tables, used instead of SELECT * when fetching full row data. Leave blank to select all columns.|
+|rowKeyExpression|string \| null|false|none|Comma-separated expressions that together identify one row, e.g. the partition key, primary key, _block_number and _block_offset. When set, row details are looked up by these columns only. Leave blank to detect keys from table metadata.|
 |useTextIndexForImplicitColumn|string \| null|false|none|Controls whether lucene rendering uses ClickHouse text indices via hasAllTokens() against the implicit column. "auto" detects a covering index at query time, "enabled" forces text index usage, "disabled" forces a LIKE/hasToken fallback.|
+|mapKeyIndexMaxParts|integer \| null|false|none|How many data parts are read from text indexes to discover attribute keys and filter values, chosen by mapKeyIndexPartSelection. Raise it if keys or values are missing from filters; lower it if they load slowly. Defaults to 20.|
+|mapKeyIndexPartSelection|string \| null|false|none|Which data parts, by row count, are read from text indexes to discover attribute keys and filter values. "median" (the default) balances coverage and cost, "smallest" reads the newest unmerged parts, "largest" reads the most merged data. Allowed values: 'median', 'smallest', 'largest'.|
 |highlightedTraceAttributeExpressions|[[ClickStackHighlightedAttributeExpression](#schemaclickstackhighlightedattributeexpression)]|false|none|Expressions defining trace-level attributes which are displayed in the trace view for the selected trace.|
 |highlightedRowAttributeExpressions|[[ClickStackHighlightedAttributeExpression](#schemaclickstackhighlightedattributeexpression)]|false|none|Expressions defining row-level attributes which are displayed in the row side panel for the selected row.|
 |materializedViews|[[ClickStackMaterializedView](#schemaclickstackmaterializedview)]|false|none|Configure materialized views for query optimization. These pre-aggregated views can significantly improve query performance on aggregation queries.|
@@ -44565,7 +48929,10 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
   "spanLinksValueExpression": "Links",
   "implicitColumnExpression": "SpanName",
   "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+  "rowKeyExpression": "toDate(Timestamp), SpanName, Timestamp, _block_number, _block_offset",
   "useTextIndexForImplicitColumn": "auto",
+  "mapKeyIndexMaxParts": 20,
+  "mapKeyIndexPartSelection": "median",
   "highlightedTraceAttributeExpressions": [
     {
       "sqlExpression": "SpanAttributes['http.status_code']",
@@ -44643,7 +49010,10 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |spanLinksValueExpression|string|false|none|Expression to extract span links. Used to capture links from a span to spans in other traces. Expected to be Nested ( TraceId String, SpanId String, TraceState String, Attributes Map(LowCardinality(String), String) )|
 |implicitColumnExpression|string \| null|false|none|Column used for full text search if no property is specified in a Lucene-based search. Typically the message body of a log.|
 |knownColumnsListExpression|string \| null|false|none|For Distributed table sources whose target tables have non-matching column sets. A list of columns supported across all target tables, used instead of SELECT * when fetching full row data. Leave blank to select all columns.|
+|rowKeyExpression|string \| null|false|none|Comma-separated expressions that together identify one row, e.g. the partition key, primary key, _block_number and _block_offset. When set, row details are looked up by these columns only. Leave blank to detect keys from table metadata.|
 |useTextIndexForImplicitColumn|string \| null|false|none|Controls whether lucene rendering uses ClickHouse text indices via hasAllTokens() against the implicit column. "auto" detects a covering index at query time, "enabled" forces text index usage, "disabled" forces a LIKE/hasToken fallback.|
+|mapKeyIndexMaxParts|integer \| null|false|none|How many data parts are read from text indexes to discover attribute keys and filter values, chosen by mapKeyIndexPartSelection. Raise it if keys or values are missing from filters; lower it if they load slowly. Defaults to 20.|
+|mapKeyIndexPartSelection|string \| null|false|none|Which data parts, by row count, are read from text indexes to discover attribute keys and filter values. "median" (the default) balances coverage and cost, "smallest" reads the newest unmerged parts, "largest" reads the most merged data. Allowed values: 'median', 'smallest', 'largest'.|
 |highlightedTraceAttributeExpressions|[[ClickStackHighlightedAttributeExpression](#schemaclickstackhighlightedattributeexpression)]|false|none|Expressions defining trace-level attributes which are displayed in the trace view for the selected trace.|
 |highlightedRowAttributeExpressions|[[ClickStackHighlightedAttributeExpression](#schemaclickstackhighlightedattributeexpression)]|false|none|Expressions defining row-level attributes which are displayed in the row side panel for the selected row|
 |displayedTimestampValueExpression|string|false|none|This DateTime column is used to display and order search results.|
@@ -44694,7 +49064,8 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
   },
   "timestampValueExpression": "TimeUnix",
   "resourceAttributesExpression": "ResourceAttributes",
-  "logSourceId": "507f1f77bcf86cd799439011"
+  "logSourceId": "507f1f77bcf86cd799439011",
+  "minAutoGranularity": "1 minute"
 }
 ```
 
@@ -44714,6 +49085,7 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |timestampValueExpression|string|true|none|DateTime column or expression that is part of your table's primary key.|
 |resourceAttributesExpression|string|true|none|Column containing resource attributes for metrics|
 |logSourceId|string \| null|false|none|HyperDX Source for logs associated with metrics. Optional|
+|minAutoGranularity|string|false|none|Floor for the auto-inferred chart granularity. Set it to the scrape/report interval of the metrics so a short time range does not produce buckets smaller than that interval (sparse, steppy series). Only constrains "Auto" granularity; an explicit granularity picked on a tile is never overridden. Omit for no minimum. Uses the SQL interval format (a positive integer followed by second, minute, hour, or day), not the short form of the materialized view granularity fields.|
 
 #### Enumerated Values
 
@@ -44799,7 +49171,9 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
       "value": "4"
     }
   ],
-  "timestampValueExpression": "timestamp"
+  "timestampValueExpression": "timestamp",
+  "minAutoGranularity": "1 minute",
+  "promqlBackend": "auto"
 }
 ```
 
@@ -44812,16 +49186,21 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |section|string|false|none|Optional grouping label used to organize sources in the source selector. Sources that share a section value are displayed together.|
 |disabled|boolean \| null|false|none|When true, the source is hidden from source selectors in the UI. Defaults to false.|
 |kind|string|true|none|Source kind discriminator. Must be "promql" for PromQL sources.|
-|connection|string|true|none|ID of the connection used by this source. Should reference a Prometheus-compatible connection.|
+|connection|string|true|none|ID of the connection used by this source. Either a ClickHouse connection holding the TimeSeries table, or a Prometheus-compatible connection.|
 |from|[ClickStackSourceFrom](#schemaclickstacksourcefrom)|true|none|none|
 |querySettings|[[ClickStackQuerySetting](#schemaclickstackquerysetting)]|false|none|Optional ClickHouse query settings applied when querying this source.|
-|timestampValueExpression|string|true|none|Required by the API for all source kinds; not used when querying a Prometheus endpoint.|
+|timestampValueExpression|string|true|none|Required by the API for all source kinds; not used by PromQL queries.|
+|minAutoGranularity|string|false|none|Floor for the auto-inferred chart granularity, and the scrape interval that `$__rate_interval` is computed from. Set it to the Prometheus scrape interval so a short time range does not produce buckets smaller than that interval. Only constrains "Auto" granularity; an explicit granularity picked on a tile is never overridden. Omit for no minimum. Uses the SQL interval format (a positive integer followed by second, minute, hour, or day), not the short form of the materialized view granularity fields.|
+|promqlBackend|string|false|none|How PromQL is evaluated on a ClickHouse connection. "clickhouse-http" uses ClickHouse's Prometheus HTTP API, which needs ClickHouse 26.6+ with the prometheus_api_v1 handler configured; queries fail with an error when the server does not serve it. "table-function" uses the prometheusQuery table functions. "auto" (the default when omitted) checks the server and prefers the HTTP API. Ignored when the connection is a Prometheus-compatible endpoint.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |kind|promql|
+|promqlBackend|auto|
+|promqlBackend|clickhouse-http|
+|promqlBackend|table-function|
 
 <h2 id="tocS_ClickStackSource">ClickStackSource</h2>
 <!-- backwards compatibility -->
@@ -44878,7 +49257,10 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
   "spanIdExpression": "SpanId",
   "implicitColumnExpression": "Body",
   "knownColumnsListExpression": "Timestamp, Body, ServiceName",
+  "rowKeyExpression": "toDate(Timestamp), ServiceName, Timestamp, _block_number, _block_offset",
   "useTextIndexForImplicitColumn": "auto",
+  "mapKeyIndexMaxParts": 20,
+  "mapKeyIndexPartSelection": "median",
   "highlightedTraceAttributeExpressions": [
     {
       "sqlExpression": "SpanAttributes['http.status_code']",
@@ -45228,6 +49610,25 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |service|slack|
 |service|incidentio|
 |service|generic|
+
+<h2 id="tocS_ClickStackSilenceAlertRequest">ClickStackSilenceAlertRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaclickstacksilencealertrequest"></a>
+<a id="schema_ClickStackSilenceAlertRequest"></a>
+<a id="tocSclickstacksilencealertrequest"></a>
+<a id="tocsclickstacksilencealertrequest"></a>
+
+```json
+{
+  "mutedUntil": "2026-01-01T00:00:00.000Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mutedUntil|string(date-time)|true|none|ISO 8601 timestamp, in the future, until which the alert is silenced.|
 
 <h2 id="tocS_ClickStackValidateWebhookResponseErrorsItem">ClickStackValidateWebhookResponseErrorsItem</h2>
 <!-- backwards compatibility -->
@@ -47261,6 +51662,56 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |keyIdSuffix|string|false|none|Last 4 digits of the key ID. Algorithm: echo -n "yourpassword" \| sha256sum \| tr -d '-' \| xxd -r -p \| base64|
 |keySecretHash|string|false|none|Hash of the key secret. Algorithm: echo -n "yourpassword" \| sha256sum \| tr -d '-' \| xxd -r -p \| base64|
 
+<h2 id="tocS_ByocCustomerAuthorizedAccess">ByocCustomerAuthorizedAccess</h2>
+<!-- backwards compatibility -->
+<a id="schemabyoccustomerauthorizedaccess"></a>
+<a id="schema_ByocCustomerAuthorizedAccess"></a>
+<a id="tocSbyoccustomerauthorizedaccess"></a>
+<a id="tocsbyoccustomerauthorizedaccess"></a>
+
+```json
+{
+  "mode": "window",
+  "startTimestamp": "1970-01-01T00:00:00Z",
+  "durationSeconds": 14400,
+  "allowed": true,
+  "windowEndTimestamp": "1970-01-01T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mode|string|true|none|When ClickHouse personnel may access the infrastructure. Current values: always, never, window. New values may be added over time. When the setting has never been configured this is `always`, the data plane default|
+|startTimestamp|string(date-time)|false|none|Start of the access window. ISO-8601. Present only when `mode` is `window`|
+|durationSeconds|integer|false|none|Length of the access window in seconds, counted from `startTimestamp`. Present only when `mode` is `window`|
+|allowed|boolean|true|none|Whether the data plane currently allows ClickHouse personnel access, evaluated at the time of the request|
+|windowEndTimestamp|string(date-time)|false|none|End of the current access window. ISO-8601. Present only while access is allowed until a deadline|
+
+<h2 id="tocS_ByocCustomerAuthorizedAccessPatchRequest">ByocCustomerAuthorizedAccessPatchRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemabyoccustomerauthorizedaccesspatchrequest"></a>
+<a id="schema_ByocCustomerAuthorizedAccessPatchRequest"></a>
+<a id="tocSbyoccustomerauthorizedaccesspatchrequest"></a>
+<a id="tocsbyoccustomerauthorizedaccesspatchrequest"></a>
+
+```json
+{
+  "mode": "window",
+  "startTimestamp": "1970-01-01T00:00:00Z",
+  "durationSeconds": 14400
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mode|string|true|none|When ClickHouse personnel may access the infrastructure. Current values: always, never, window. New values may be added over time. `always` allows access, `never` denies it, and `window` allows it during a single time window described by `startTimestamp` and `durationSeconds`|
+|startTimestamp|string(date-time)|false|none|Start of the access window. ISO-8601. Required when `mode` is `window`, not allowed otherwise|
+|durationSeconds|integer|false|none|Length of the access window in seconds, from 1 to 172800 (48 hours). Required when `mode` is `window`, not allowed otherwise|
+
 <h2 id="tocS_WhoamiOrganization">WhoamiOrganization</h2>
 <!-- backwards compatibility -->
 <a id="schemawhoamiorganization"></a>
@@ -47368,6 +51819,92 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |*oneOf*|[WhoamiUser](#schemawhoamiuser)|false|none|none|
 |*oneOf*|[WhoamiApiKey](#schemawhoamiapikey)|false|none|none|
 
+<h2 id="tocS_NotificationSetting">NotificationSetting</h2>
+<!-- backwards compatibility -->
+<a id="schemanotificationsetting"></a>
+<a id="schema_NotificationSetting"></a>
+<a id="tocSnotificationsetting"></a>
+<a id="tocsnotificationsetting"></a>
+
+```json
+{
+  "type": "service_backup_failed",
+  "resourceType": "service",
+  "resourceId": "string",
+  "channelType": "email",
+  "effect": "disabled"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|Notification type the setting applies to, named as in [List notification types](#tag/Notifications/operation/notificationTypesGetList). New types are added over time, so treat this as an open set.|
+|resourceType|string|true|none|Kind of resource `resourceId` identifies. Current values: service, organization, clickpipe, postgres. New values may be added over time. [List notification types](#tag/Notifications/operation/notificationTypesGetList) reports the same value for every notification of a given type.|
+|resourceId|string|true|none|ID of the resource the setting applies to, of the kind `resourceType` gives. Settings that apply to the organization itself, such as billing notifications, carry the organization ID.|
+|channelType|string|true|none|Delivery channel the setting applies to. One of 'ui', 'email'.|
+|effect|string|true|none|Whether the member receives this notification on this channel for this resource. One of 'enabled', 'disabled'.|
+
+<h2 id="tocS_NotificationSettingRule">NotificationSettingRule</h2>
+<!-- backwards compatibility -->
+<a id="schemanotificationsettingrule"></a>
+<a id="schema_NotificationSettingRule"></a>
+<a id="tocSnotificationsettingrule"></a>
+<a id="tocsnotificationsettingrule"></a>
+
+```json
+{
+  "effect": "enabled",
+  "notifications": [
+    "service_backup_failed"
+  ],
+  "resources": [
+    "string"
+  ],
+  "channels": [
+    "ui",
+    "email"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|effect|string|true|none|What the rule does to the settings it names. One of 'enabled', 'disabled', 'inherit'. 'inherit' removes the setting, so the notification follows the platform default for the member's role again, whoever set it.|
+|notifications|[string]|true|none|Notification types the rule applies to, named as in [List notification types](#tag/Notifications/operation/notificationTypesGetList).|
+|resources|[string]|true|none|IDs of the resources the rule applies to, of the kind each notification type reports as its `resourceType`. Name every ID: there are no wildcards, and a rule covers no resource created afterwards. Notification types that apply to the organization itself, such as billing, take the organization ID.|
+|channels|[string]|false|none|Delivery channels the rule applies to. One of 'ui', 'email'. Omit to apply the rule to every channel.|
+
+<h2 id="tocS_MemberNotificationSettingsPatchResponse">MemberNotificationSettingsPatchResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemamembernotificationsettingspatchresponse"></a>
+<a id="schema_MemberNotificationSettingsPatchResponse"></a>
+<a id="tocSmembernotificationsettingspatchresponse"></a>
+<a id="tocsmembernotificationsettingspatchresponse"></a>
+
+```json
+{
+  "settings": [
+    {
+      "type": "service_backup_failed",
+      "resourceType": "service",
+      "resourceId": "string",
+      "channelType": "email",
+      "effect": "disabled"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|settings|[[NotificationSetting](#schemanotificationsetting)]|true|none|The member's settings for what the request addressed, after the change. A setting the request set to 'inherit' is absent, because it no longer exists.|
+
 <h2 id="tocS_NotificationType">NotificationType</h2>
 <!-- backwards compatibility -->
 <a id="schemanotificationtype"></a>
@@ -47408,6 +51945,35 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |severity|info|
 |severity|warning|
 |severity|critical|
+
+<h2 id="tocS_PublicPreview">PublicPreview</h2>
+<!-- backwards compatibility -->
+<a id="schemapublicpreview"></a>
+<a id="schema_PublicPreview"></a>
+<a id="tocSpublicpreview"></a>
+<a id="tocspublicpreview"></a>
+
+```json
+{
+  "id": "preview-id",
+  "name": "string",
+  "description": "string",
+  "docsUrl": "https://clickhouse.com/docs",
+  "enabled": true,
+  "canToggle": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Stable identifier of the preview feature.|
+|name|string|true|none|Name of the preview feature.|
+|description|string|true|none|What the preview feature does.|
+|docsUrl|string|true|none|Link to the documentation of the preview feature.|
+|enabled|boolean|true|none|Whether the preview feature is on for the organization.|
+|canToggle|boolean|true|none|Whether the caller may switch the preview feature on or off.|
 
 <h2 id="tocS_OrganizationQuota">OrganizationQuota</h2>
 <!-- backwards compatibility -->
@@ -47471,8 +52037,8 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |profile|string|false|none|Profile name to pass as `profile` when creating a service (e.g. 'v1-standard-byoc-4').|
-|cpuCores|number|false|none|Number of vCPUs per replica.|
-|memoryGi|number|false|none|Memory per replica in GiB. When creating a BYOC service with this profile, minReplicaMemoryGb and maxReplicaMemoryGb must both equal this value.|
+|cpuCores|number|false|none|Number of vCPUs per replica. For v2-default, ignore this value: a Gen 2 service's size is set by the minReplicaMemoryGb and maxReplicaMemoryGb you send when creating or scaling it, not by the profile.|
+|memoryGi|number|false|none|Memory per replica in GiB. A BYOC service pinned to this profile must send minReplicaMemoryGb and maxReplicaMemoryGb equal to this value. A BYOC service that scales vertically (no profile, minReplicaMemoryGb lower than maxReplicaMemoryGb) takes both bounds from the memoryGi values in this list. For v2-default, ignore this value: a Gen 2 service's size is set by the minReplicaMemoryGb and maxReplicaMemoryGb you send when creating or scaling it, not by the profile.|
 
 <h2 id="tocS_ActiveBalance">ActiveBalance</h2>
 <!-- backwards compatibility -->
@@ -47601,6 +52167,107 @@ Notification channels to trigger when the alert fires or resolves. Between 1 and
 |---|---|---|---|---|
 |totalRemainingCredits|number|false|none|Total remaining credits across all active balances, in ClickHouse Credits (CHCs).|
 |balances|[[CreditBalance](#schemacreditbalance)]|false|none|List of active balances for the organization. Empty when the organization has none.|
+
+<h2 id="tocS_InferenceUsageCostMetric">InferenceUsageCostMetric</h2>
+<!-- backwards compatibility -->
+<a id="schemainferenceusagecostmetric"></a>
+<a id="schema_InferenceUsageCostMetric"></a>
+<a id="tocSinferenceusagecostmetric"></a>
+<a id="tocsinferenceusagecostmetric"></a>
+
+```json
+{
+  "metric": "cache_write_5m",
+  "tokensMillions": 0,
+  "pricePerMillionTokensCHC": 0,
+  "totalCHC": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|metric|string|false|none|Name of the metric: `input`, `output`, `cache_read`, `cache_write_5m`, `cache_write_30m` or `cache_write_1h`. New values can appear.|
+|tokensMillions|number|false|none|Number of tokens used, in millions. For example, 1.5 means 1,500,000 tokens.|
+|pricePerMillionTokensCHC|number|false|none|Average price per million tokens in ClickHouse Credits (CHCs): `totalCHC` divided by `tokensMillions`. It is an average because one model can have more than one price. Zero when no tokens were used.|
+|totalCHC|number|false|none|Cost of the tokens used in ClickHouse Credits (CHCs).|
+
+<h2 id="tocS_InferenceUsageCostRecord">InferenceUsageCostRecord</h2>
+<!-- backwards compatibility -->
+<a id="schemainferenceusagecostrecord"></a>
+<a id="schema_InferenceUsageCostRecord"></a>
+<a id="tocSinferenceusagecostrecord"></a>
+<a id="tocsinferenceusagecostrecord"></a>
+
+```json
+{
+  "date": "2026-10-01",
+  "provider": "anthropic",
+  "model": "claude-opus-4-8",
+  "modelName": "Claude Opus 4.8",
+  "metrics": [
+    {
+      "metric": "cache_write_5m",
+      "tokensMillions": 0,
+      "pricePerMillionTokensCHC": 0,
+      "totalCHC": 0
+    }
+  ],
+  "totalCHC": 0,
+  "locked": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|date|string(date)|false|none|Date of the usage. ISO-8601 date, based on the UTC timezone.|
+|provider|string|false|none|Provider of the model.|
+|model|string|false|none|ID of the model. This is the raw model ID; `modelName` has the display name.|
+|modelName|string|false|none|Display name of the model, as the usage page and the usage statement CSV show it.|
+|metrics|[[InferenceUsageCostMetric](#schemainferenceusagecostmetric)]|false|none|Usage and cost for each metric that has usage. The costs add up to `totalCHC`.|
+|totalCHC|number|false|none|Total cost of usage in ClickHouse Credits (CHCs) for this model on this date.|
+|locked|boolean|false|none|When true, the record is immutable. Unlocked records are subject to change until locked.|
+
+<h2 id="tocS_InferenceUsageCost">InferenceUsageCost</h2>
+<!-- backwards compatibility -->
+<a id="schemainferenceusagecost"></a>
+<a id="schema_InferenceUsageCost"></a>
+<a id="tocSinferenceusagecost"></a>
+<a id="tocsinferenceusagecost"></a>
+
+```json
+{
+  "grandTotalCHC": 0,
+  "costs": [
+    {
+      "date": "2026-10-01",
+      "provider": "anthropic",
+      "model": "claude-opus-4-8",
+      "modelName": "Claude Opus 4.8",
+      "metrics": [
+        {
+          "metric": "cache_write_5m",
+          "tokensMillions": 0,
+          "pricePerMillionTokensCHC": 0,
+          "totalCHC": 0
+        }
+      ],
+      "totalCHC": 0,
+      "locked": true
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|grandTotalCHC|number|false|none|Grand total cost of AI inference usage in ClickHouse Credits (CHCs).|
+|costs|[[InferenceUsageCostRecord](#schemainferenceusagecostrecord)]|false|none|List of AI inference usage cost records, one per day, provider and model. Empty when the organization has no usage.|
 
 <h2 id="tocS_ServiceClickhouseSettingValue">ServiceClickhouseSettingValue</h2>
 <!-- backwards compatibility -->
@@ -47739,6 +52406,30 @@ Nonempty object mapping configurable setting names to their values. Use DELETE t
 |settings|[ServiceClickhouseSettingsMap](#schemaserviceclickhousesettingsmap)|false|none|Nonempty object mapping configurable setting names to their values. Use DELETE to reset a setting.|
 |warnings|[[ServiceClickhouseSettingWarning](#schemaserviceclickhousesettingwarning)]|false|none|Warnings for settings that may have disruptive effects.|
 
+<h2 id="tocS_ServiceClickhouseSettingDeleteResponse">ServiceClickhouseSettingDeleteResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaserviceclickhousesettingdeleteresponse"></a>
+<a id="schema_ServiceClickhouseSettingDeleteResponse"></a>
+<a id="tocSserviceclickhousesettingdeleteresponse"></a>
+<a id="tocsserviceclickhousesettingdeleteresponse"></a>
+
+```json
+{
+  "warnings": [
+    {
+      "name": "compatibility",
+      "message": "Changing the compatibility version without comprehensive testing can cause query failures or instability."
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|warnings|[[ServiceClickhouseSettingWarning](#schemaserviceclickhousesettingwarning)]|false|none|Warnings about how the reset takes effect, such as a ClickHouse server rollout restart. Omitted when the setting was not configured.|
+
 <h2 id="tocS_ServiceClickhouseSettingSchemaEntry">ServiceClickhouseSettingSchemaEntry</h2>
 <!-- backwards compatibility -->
 <a id="schemaserviceclickhousesettingschemaentry"></a>
@@ -47769,7 +52460,7 @@ Nonempty object mapping configurable setting names to their values. Use DELETE t
 |type|string|false|none|Data type of the setting value.|
 |description|string|false|none|Description of the setting.|
 |enum|[integer]|false|none|List of allowed values, if the setting is an enum.|
-|warning|string|false|none|Warning message about potential disruptive effects of changing this setting.|
+|warning|string|false|none|Warning message about potential disruptive effects of changing or resetting this setting.|
 |deprecationNotice|string|false|none|Deprecation notice, if applicable.|
 |example|string|false|none|Example value for the setting.|
 
@@ -47918,8 +52609,10 @@ Postgres [runtime configuration](https://www.postgresql.org/docs/current/runtime
 |hash_mem_multiplier|string \| integer|false|none|Multiple of work_mem that hash-based operations may use.|
 |enable_parallel_hash|string|false|none|Enables the planner's use of parallel hash plans.|
 |maintenance_io_concurrency|string \| integer|false|none|Number of concurrent disk I/O operations used for maintenance work such as vacuum.|
-|io_method|string|false|none|Selects the method used to perform asynchronous I/O.|
-|io_workers|string \| integer|false|none|Number of I/O worker processes used when io_method is worker.|
+|io_method|string|false|none|Selects the method used to perform asynchronous I/O. Postgres 18 and later.|
+|io_workers|string \| integer|false|none|Number of I/O worker processes used when io_method is worker. Postgres 18 only.|
+|io_min_workers|string \| integer|false|none|Minimum number of I/O worker processes kept running when io_method is worker. Postgres 19 and later.|
+|io_max_workers|string \| integer|false|none|Maximum number of I/O worker processes started when io_method is worker. Postgres 19 and later.|
 |bgwriter_delay|string \| integer|false|none|Sleep time between background writer activity rounds.|
 |bgwriter_flush_after|string \| integer|false|none|Amount of data written by the background writer after which the OS is asked to flush it to disk.|
 |bgwriter_lru_maxpages|string \| integer|false|none|Maximum number of buffers the background writer writes per round.|
@@ -47940,9 +52633,11 @@ Postgres [runtime configuration](https://www.postgresql.org/docs/current/runtime
 |max_replication_slots|string \| integer|false|none|Maximum number of replication slots. Standbys and logical replication each use slots.|
 |max_wal_senders|string \| integer|false|none|Maximum number of simultaneously running WAL sender processes.|
 |max_logical_replication_workers|string \| integer|false|none|Maximum number of logical replication workers for subscriptions on this server.|
+|max_repack_replication_slots|string \| integer|false|none|Replication slots reserved for REPACK CONCURRENTLY, separate from max_replication_slots. Postgres 19 and later.|
 |max_sync_workers_per_subscription|string \| integer|false|none|Maximum number of table synchronization workers per subscription.|
 |logical_decoding_work_mem|string \| integer|false|none|Maximum memory used for logical decoding before changes spill to disk.|
 |autovacuum_max_workers|string \| integer|false|none|Maximum number of autovacuum worker processes that can run at the same time. Workers share a single cost-limit budget, so raising this alone may not speed up vacuuming.|
+|autovacuum_max_parallel_workers|string \| integer|false|none|Maximum number of parallel workers a single autovacuum worker can use. 0 (the default) turns parallel autovacuum off. Postgres 19 and later.|
 |autovacuum_naptime|string \| integer|false|none|Minimum delay between autovacuum runs. Lower values make autovacuum check for work more frequently.|
 |autovacuum_work_mem|string \| integer|false|none|Maximum memory each autovacuum worker uses to track dead tuples. Higher values reduce repeated index-vacuum passes on large tables. Use -1 to fall back to maintenance_work_mem.|
 |autovacuum_vacuum_scale_factor|string \| number|false|none|Fraction of a table's rows that must change before autovacuum runs. Lower values vacuum large tables more frequently.|
@@ -48044,7 +52739,25 @@ The VM size for a Postgres service.
 "none"
 ```
 
-Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.
+Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).
+
+<h2 id="tocS_pgStandbyCount">pgStandbyCount</h2>
+<!-- backwards compatibility -->
+<a id="schemapgstandbycount"></a>
+<a id="schema_pgStandbyCount"></a>
+<a id="tocSpgstandbycount"></a>
+<a id="tocspgstandbycount"></a>
+
+```json
+0
+```
+
+Number of hot standby instances. Accepted values and defaults depend on `haType`:
+- “none”: 0 (default)
+- “async”: 1 (default)
+- “sync”: 1, or 2 (default)
+
+When `haType` is updated without `standbyCount`, the default for the new `haType` applies.
 
 <h2 id="tocS_pgProvider">pgProvider</h2>
 <!-- backwards compatibility -->
@@ -48080,7 +52793,7 @@ The cloud region for a Postgres service.
 <a id="tocspgversion"></a>
 
 ```json
-"18"
+"19"
 ```
 
 <h2 id="tocS_pgTags">pgTags</h2>
@@ -48100,6 +52813,19 @@ The cloud region for a Postgres service.
 ```
 
 Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.
+
+<h2 id="tocS_pgDeletionProtectionProperty">pgDeletionProtectionProperty</h2>
+<!-- backwards compatibility -->
+<a id="schemapgdeletionprotectionproperty"></a>
+<a id="schema_pgDeletionProtectionProperty"></a>
+<a id="tocSpgdeletionprotectionproperty"></a>
+<a id="tocspgdeletionprotectionproperty"></a>
+
+```json
+true
+```
+
+When true, the service cannot be deleted until deletion protection is turned off. Only available for organizations with deletion protection enabled.
 
 <h2 id="tocS_pgNameProperty">pgNameProperty</h2>
 <!-- backwards compatibility -->
@@ -48174,9 +52900,10 @@ True if this service is the primary service in the data warehouse
   "name": "string",
   "provider": "aws",
   "region": "string",
-  "postgresVersion": "18",
+  "postgresVersion": "19",
   "size": "c6gd.large",
   "haType": "none",
+  "standbyCount": 0,
   "tags": [
     {
       "key": "Environment",
@@ -48195,7 +52922,8 @@ True if this service is the primary service in the data warehouse
 |region|[pgRegion](#schemapgregion)|false|none|The cloud region for a Postgres service.|
 |postgresVersion|[pgVersion](#schemapgversion)|false|none|none|
 |size|[pgSize](#schemapgsize)|false|none|The VM size for a Postgres service.|
-|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.|
+|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).|
+|standbyCount|[pgStandbyCount](#schemapgstandbycount)|false|none|Number of hot standby instances. Accepted values and defaults depend on `haType`:<br>- “none”: 0 (default)<br>- “async”: 1 (default)<br>- “sync”: 1, or 2 (default)<br><br>When `haType` is updated without `standbyCount`, the default for the new `haType` applies.|
 |tags|[pgTags](#schemapgtags)|false|none|Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.|
 
 #### Enumerated Values
@@ -48204,6 +52932,7 @@ True if this service is the primary service in the data warehouse
 |---|---|
 |provider|aws|
 |provider|gcp|
+|postgresVersion|19|
 |postgresVersion|18|
 |postgresVersion|17|
 |size|c6gd.large|
@@ -48338,6 +53067,26 @@ True if this service is the primary service in the data warehouse
 |size|c4d-standard-lssd-96|
 |size|c4d-standard-lssd-192|
 |size|c4d-standard-lssd-384|
+|size|c3-standard-lssd-4|
+|size|c3-standard-lssd-8|
+|size|c3-standard-lssd-22|
+|size|c3-standard-lssd-44|
+|size|c3-standard-lssd-88|
+|size|c3-standard-lssd-176|
+|size|c3d-highmem-lssd-8|
+|size|c3d-highmem-lssd-16|
+|size|c3d-highmem-lssd-30|
+|size|c3d-highmem-lssd-60|
+|size|c3d-highmem-lssd-90|
+|size|c3d-highmem-lssd-180|
+|size|c3d-highmem-lssd-360|
+|size|c3d-standard-lssd-8|
+|size|c3d-standard-lssd-16|
+|size|c3d-standard-lssd-30|
+|size|c3d-standard-lssd-60|
+|size|c3d-standard-lssd-90|
+|size|c3d-standard-lssd-180|
+|size|c3d-standard-lssd-360|
 |size|z3-highmem-highlssd-8|
 |size|z3-highmem-highlssd-16|
 |size|z3-highmem-highlssd-22|
@@ -48349,9 +53098,41 @@ True if this service is the primary service in the data warehouse
 |size|z3-highmem-standardlssd-44|
 |size|z3-highmem-standardlssd-88|
 |size|z3-highmem-standardlssd-176|
+|size|n2-highmem-2xlssd-4|
+|size|n2-highmem-2xlssd-8|
+|size|n2-highmem-2xlssd-16|
+|size|n2-highmem-2xlssd-32|
+|size|n2-highmem-2xlssd-48|
+|size|n2-highmem-2xlssd-64|
+|size|n2-highmem-2xlssd-96|
+|size|n2-standard-2xlssd-4|
+|size|n2-standard-2xlssd-8|
+|size|n2-standard-2xlssd-16|
+|size|n2-standard-2xlssd-32|
+|size|n2-standard-2xlssd-48|
+|size|n2-standard-2xlssd-64|
+|size|n2-standard-2xlssd-96|
+|size|n2-highmem-4xlssd-2|
+|size|n2-highmem-4xlssd-4|
+|size|n2-highmem-4xlssd-8|
+|size|n2-highmem-4xlssd-16|
+|size|n2-highmem-4xlssd-32|
+|size|n2-highmem-4xlssd-48|
+|size|n2-highmem-8xlssd-2|
+|size|n2-highmem-8xlssd-4|
+|size|n2-highmem-8xlssd-8|
+|size|n2-highmem-8xlssd-16|
+|size|n2-highmem-8xlssd-32|
+|size|n2-highmem-16xlssd-2|
+|size|n2-highmem-16xlssd-4|
+|size|n2-highmem-16xlssd-8|
+|size|n2-highmem-16xlssd-16|
 |haType|none|
 |haType|async|
 |haType|sync|
+|standbyCount|0|
+|standbyCount|1|
+|standbyCount|2|
 
 <h2 id="tocS_PostgresService">PostgresService</h2>
 <!-- backwards compatibility -->
@@ -48365,9 +53146,10 @@ True if this service is the primary service in the data warehouse
   "name": "string",
   "provider": "aws",
   "region": "string",
-  "postgresVersion": "18",
+  "postgresVersion": "19",
   "size": "c6gd.large",
   "haType": "none",
+  "standbyCount": 0,
   "tags": [
     {
       "key": "Environment",
@@ -48391,6 +53173,7 @@ True if this service is the primary service in the data warehouse
   "username": "string",
   "password": "string",
   "hostname": "string",
+  "deletionProtection": true,
   "earliestRestoreTime": "1970-01-01T00:00:00Z"
 }
 ```
@@ -48404,7 +53187,8 @@ True if this service is the primary service in the data warehouse
 |region|[pgRegion](#schemapgregion)|false|none|The cloud region for a Postgres service.|
 |postgresVersion|[pgVersion](#schemapgversion)|false|none|none|
 |size|[pgSize](#schemapgsize)|false|none|The VM size for a Postgres service.|
-|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.|
+|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).|
+|standbyCount|[pgStandbyCount](#schemapgstandbycount)|false|none|Number of hot standby instances. Accepted values and defaults depend on `haType`:<br>- “none”: 0 (default)<br>- “async”: 1 (default)<br>- “sync”: 1, or 2 (default)<br><br>When `haType` is updated without `standbyCount`, the default for the new `haType` applies.|
 |tags|[pgTags](#schemapgtags)|false|none|Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.|
 |ipAccessList|[[PostgresIpAccessListEntry](#schemapostgresipaccesslistentry)]|false|none|IPv4 access rules shown in the console. IPv6 rules are not included. Returned when reading or configuring access; omitted from other service updates.|
 |id|[pgIdProperty](#schemapgidproperty)|false|none|none|
@@ -48416,6 +53200,7 @@ True if this service is the primary service in the data warehouse
 |username|string|false|none|Username for the Postgres service|
 |password|string|false|none|Password for the Postgres service. Only returned when the service is created or its password is reset. Omitted from every other response when Postgres credential redaction is enabled for the organization. Not guaranteed to be present — treat as optional.|
 |hostname|string|false|none|Hostname for the Postgres service|
+|deletionProtection|[pgDeletionProtectionProperty](#schemapgdeletionprotectionproperty)|false|none|When true, the service cannot be deleted until deletion protection is turned off. Only available for organizations with deletion protection enabled.|
 |earliestRestoreTime|string(date-time)|false|none|Earliest point in time the service can be restored to with the restore endpoint. ISO-8601. Only present for a primary service once its first backup has completed.|
 
 #### Enumerated Values
@@ -48424,6 +53209,7 @@ True if this service is the primary service in the data warehouse
 |---|---|
 |provider|aws|
 |provider|gcp|
+|postgresVersion|19|
 |postgresVersion|18|
 |postgresVersion|17|
 |size|c6gd.large|
@@ -48558,6 +53344,26 @@ True if this service is the primary service in the data warehouse
 |size|c4d-standard-lssd-96|
 |size|c4d-standard-lssd-192|
 |size|c4d-standard-lssd-384|
+|size|c3-standard-lssd-4|
+|size|c3-standard-lssd-8|
+|size|c3-standard-lssd-22|
+|size|c3-standard-lssd-44|
+|size|c3-standard-lssd-88|
+|size|c3-standard-lssd-176|
+|size|c3d-highmem-lssd-8|
+|size|c3d-highmem-lssd-16|
+|size|c3d-highmem-lssd-30|
+|size|c3d-highmem-lssd-60|
+|size|c3d-highmem-lssd-90|
+|size|c3d-highmem-lssd-180|
+|size|c3d-highmem-lssd-360|
+|size|c3d-standard-lssd-8|
+|size|c3d-standard-lssd-16|
+|size|c3d-standard-lssd-30|
+|size|c3d-standard-lssd-60|
+|size|c3d-standard-lssd-90|
+|size|c3d-standard-lssd-180|
+|size|c3d-standard-lssd-360|
 |size|z3-highmem-highlssd-8|
 |size|z3-highmem-highlssd-16|
 |size|z3-highmem-highlssd-22|
@@ -48569,9 +53375,41 @@ True if this service is the primary service in the data warehouse
 |size|z3-highmem-standardlssd-44|
 |size|z3-highmem-standardlssd-88|
 |size|z3-highmem-standardlssd-176|
+|size|n2-highmem-2xlssd-4|
+|size|n2-highmem-2xlssd-8|
+|size|n2-highmem-2xlssd-16|
+|size|n2-highmem-2xlssd-32|
+|size|n2-highmem-2xlssd-48|
+|size|n2-highmem-2xlssd-64|
+|size|n2-highmem-2xlssd-96|
+|size|n2-standard-2xlssd-4|
+|size|n2-standard-2xlssd-8|
+|size|n2-standard-2xlssd-16|
+|size|n2-standard-2xlssd-32|
+|size|n2-standard-2xlssd-48|
+|size|n2-standard-2xlssd-64|
+|size|n2-standard-2xlssd-96|
+|size|n2-highmem-4xlssd-2|
+|size|n2-highmem-4xlssd-4|
+|size|n2-highmem-4xlssd-8|
+|size|n2-highmem-4xlssd-16|
+|size|n2-highmem-4xlssd-32|
+|size|n2-highmem-4xlssd-48|
+|size|n2-highmem-8xlssd-2|
+|size|n2-highmem-8xlssd-4|
+|size|n2-highmem-8xlssd-8|
+|size|n2-highmem-8xlssd-16|
+|size|n2-highmem-8xlssd-32|
+|size|n2-highmem-16xlssd-2|
+|size|n2-highmem-16xlssd-4|
+|size|n2-highmem-16xlssd-8|
+|size|n2-highmem-16xlssd-16|
 |haType|none|
 |haType|async|
 |haType|sync|
+|standbyCount|0|
+|standbyCount|1|
+|standbyCount|2|
 |state|creating|
 |state|restarting|
 |state|running|
@@ -48594,9 +53432,10 @@ True if this service is the primary service in the data warehouse
   "name": "string",
   "provider": "aws",
   "region": "string",
-  "postgresVersion": "18",
+  "postgresVersion": "19",
   "size": "c6gd.large",
   "haType": "none",
+  "standbyCount": 0,
   "tags": [
     {
       "key": "Environment",
@@ -48629,7 +53468,8 @@ True if this service is the primary service in the data warehouse
 |region|[pgRegion](#schemapgregion)|true|none|The cloud region for a Postgres service.|
 |postgresVersion|[pgVersion](#schemapgversion)|false|none|none|
 |size|[pgSize](#schemapgsize)|true|none|The VM size for a Postgres service.|
-|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.|
+|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).|
+|standbyCount|[pgStandbyCount](#schemapgstandbycount)|false|none|Number of hot standby instances. Accepted values and defaults depend on `haType`:<br>- “none”: 0 (default)<br>- “async”: 1 (default)<br>- “sync”: 1, or 2 (default)<br><br>When `haType` is updated without `standbyCount`, the default for the new `haType` applies.|
 |tags|[pgTags](#schemapgtags)|false|none|Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.|
 |ipAccessList|[[PostgresIpAccessListEntry](#schemapostgresipaccesslistentry)]|false|none|IPv4 TCP access rules to apply when creating the service. Omit to allow all IPv4 and IPv6 addresses on Postgres (5432) and PgBouncer (6432). Provide an empty list to block public access. When provided, only these rules are allowed; include separate rules for each required port.|
 |pgConfig|[pgConfig](#schemapgconfig)|false|none|Postgres [runtime configuration](https://www.postgresql.org/docs/current/runtime-config.html) configuration.|
@@ -48641,6 +53481,7 @@ True if this service is the primary service in the data warehouse
 |---|---|
 |provider|aws|
 |provider|gcp|
+|postgresVersion|19|
 |postgresVersion|18|
 |postgresVersion|17|
 |size|c6gd.large|
@@ -48775,6 +53616,26 @@ True if this service is the primary service in the data warehouse
 |size|c4d-standard-lssd-96|
 |size|c4d-standard-lssd-192|
 |size|c4d-standard-lssd-384|
+|size|c3-standard-lssd-4|
+|size|c3-standard-lssd-8|
+|size|c3-standard-lssd-22|
+|size|c3-standard-lssd-44|
+|size|c3-standard-lssd-88|
+|size|c3-standard-lssd-176|
+|size|c3d-highmem-lssd-8|
+|size|c3d-highmem-lssd-16|
+|size|c3d-highmem-lssd-30|
+|size|c3d-highmem-lssd-60|
+|size|c3d-highmem-lssd-90|
+|size|c3d-highmem-lssd-180|
+|size|c3d-highmem-lssd-360|
+|size|c3d-standard-lssd-8|
+|size|c3d-standard-lssd-16|
+|size|c3d-standard-lssd-30|
+|size|c3d-standard-lssd-60|
+|size|c3d-standard-lssd-90|
+|size|c3d-standard-lssd-180|
+|size|c3d-standard-lssd-360|
 |size|z3-highmem-highlssd-8|
 |size|z3-highmem-highlssd-16|
 |size|z3-highmem-highlssd-22|
@@ -48786,9 +53647,41 @@ True if this service is the primary service in the data warehouse
 |size|z3-highmem-standardlssd-44|
 |size|z3-highmem-standardlssd-88|
 |size|z3-highmem-standardlssd-176|
+|size|n2-highmem-2xlssd-4|
+|size|n2-highmem-2xlssd-8|
+|size|n2-highmem-2xlssd-16|
+|size|n2-highmem-2xlssd-32|
+|size|n2-highmem-2xlssd-48|
+|size|n2-highmem-2xlssd-64|
+|size|n2-highmem-2xlssd-96|
+|size|n2-standard-2xlssd-4|
+|size|n2-standard-2xlssd-8|
+|size|n2-standard-2xlssd-16|
+|size|n2-standard-2xlssd-32|
+|size|n2-standard-2xlssd-48|
+|size|n2-standard-2xlssd-64|
+|size|n2-standard-2xlssd-96|
+|size|n2-highmem-4xlssd-2|
+|size|n2-highmem-4xlssd-4|
+|size|n2-highmem-4xlssd-8|
+|size|n2-highmem-4xlssd-16|
+|size|n2-highmem-4xlssd-32|
+|size|n2-highmem-4xlssd-48|
+|size|n2-highmem-8xlssd-2|
+|size|n2-highmem-8xlssd-4|
+|size|n2-highmem-8xlssd-8|
+|size|n2-highmem-8xlssd-16|
+|size|n2-highmem-8xlssd-32|
+|size|n2-highmem-16xlssd-2|
+|size|n2-highmem-16xlssd-4|
+|size|n2-highmem-16xlssd-8|
+|size|n2-highmem-16xlssd-16|
 |haType|none|
 |haType|async|
 |haType|sync|
+|standbyCount|0|
+|standbyCount|1|
+|standbyCount|2|
 
 <h2 id="tocS_PostgresServicePatchRequest">PostgresServicePatchRequest</h2>
 <!-- backwards compatibility -->
@@ -48817,12 +53710,14 @@ True if this service is the primary service in the data warehouse
   "name": "string",
   "size": "c6gd.large",
   "haType": "none",
+  "standbyCount": 0,
   "tags": [
     {
       "key": "Environment",
       "value": "staging"
     }
-  ]
+  ],
+  "deletionProtection": true
 }
 ```
 
@@ -48833,8 +53728,10 @@ True if this service is the primary service in the data warehouse
 |ipAccessList|[PostgresIpAccessListPatch](#schemapostgresipaccesslistpatch)|false|none|none|
 |name|[pgNameProperty](#schemapgnameproperty)|false|none|Name of the Postgres service. Alphanumerical string with whitespaces up to 50 characters.|
 |size|[pgSize](#schemapgsize)|false|none|The VM size for a Postgres service.|
-|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.|
+|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).|
+|standbyCount|[pgStandbyCount](#schemapgstandbycount)|false|none|Number of hot standby instances. Accepted values and defaults depend on `haType`:<br>- “none”: 0 (default)<br>- “async”: 1 (default)<br>- “sync”: 1, or 2 (default)<br><br>When `haType` is updated without `standbyCount`, the default for the new `haType` applies.|
 |tags|[pgTags](#schemapgtags)|false|none|Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.|
+|deletionProtection|[pgDeletionProtectionProperty](#schemapgdeletionprotectionproperty)|false|none|When true, the service cannot be deleted until deletion protection is turned off. Only available for organizations with deletion protection enabled.|
 
 #### Enumerated Values
 
@@ -48972,6 +53869,26 @@ True if this service is the primary service in the data warehouse
 |size|c4d-standard-lssd-96|
 |size|c4d-standard-lssd-192|
 |size|c4d-standard-lssd-384|
+|size|c3-standard-lssd-4|
+|size|c3-standard-lssd-8|
+|size|c3-standard-lssd-22|
+|size|c3-standard-lssd-44|
+|size|c3-standard-lssd-88|
+|size|c3-standard-lssd-176|
+|size|c3d-highmem-lssd-8|
+|size|c3d-highmem-lssd-16|
+|size|c3d-highmem-lssd-30|
+|size|c3d-highmem-lssd-60|
+|size|c3d-highmem-lssd-90|
+|size|c3d-highmem-lssd-180|
+|size|c3d-highmem-lssd-360|
+|size|c3d-standard-lssd-8|
+|size|c3d-standard-lssd-16|
+|size|c3d-standard-lssd-30|
+|size|c3d-standard-lssd-60|
+|size|c3d-standard-lssd-90|
+|size|c3d-standard-lssd-180|
+|size|c3d-standard-lssd-360|
 |size|z3-highmem-highlssd-8|
 |size|z3-highmem-highlssd-16|
 |size|z3-highmem-highlssd-22|
@@ -48983,9 +53900,41 @@ True if this service is the primary service in the data warehouse
 |size|z3-highmem-standardlssd-44|
 |size|z3-highmem-standardlssd-88|
 |size|z3-highmem-standardlssd-176|
+|size|n2-highmem-2xlssd-4|
+|size|n2-highmem-2xlssd-8|
+|size|n2-highmem-2xlssd-16|
+|size|n2-highmem-2xlssd-32|
+|size|n2-highmem-2xlssd-48|
+|size|n2-highmem-2xlssd-64|
+|size|n2-highmem-2xlssd-96|
+|size|n2-standard-2xlssd-4|
+|size|n2-standard-2xlssd-8|
+|size|n2-standard-2xlssd-16|
+|size|n2-standard-2xlssd-32|
+|size|n2-standard-2xlssd-48|
+|size|n2-standard-2xlssd-64|
+|size|n2-standard-2xlssd-96|
+|size|n2-highmem-4xlssd-2|
+|size|n2-highmem-4xlssd-4|
+|size|n2-highmem-4xlssd-8|
+|size|n2-highmem-4xlssd-16|
+|size|n2-highmem-4xlssd-32|
+|size|n2-highmem-4xlssd-48|
+|size|n2-highmem-8xlssd-2|
+|size|n2-highmem-8xlssd-4|
+|size|n2-highmem-8xlssd-8|
+|size|n2-highmem-8xlssd-16|
+|size|n2-highmem-8xlssd-32|
+|size|n2-highmem-16xlssd-2|
+|size|n2-highmem-16xlssd-4|
+|size|n2-highmem-16xlssd-8|
+|size|n2-highmem-16xlssd-16|
 |haType|none|
 |haType|async|
 |haType|sync|
+|standbyCount|0|
+|standbyCount|1|
+|standbyCount|2|
 
 <h2 id="tocS_pgPitrRestoreTargetProperty">pgPitrRestoreTargetProperty</h2>
 <!-- backwards compatibility -->
@@ -49103,9 +54052,10 @@ Optional password. If not provided a new password is generated and provided in t
   "name": "string",
   "provider": "aws",
   "region": "string",
-  "postgresVersion": "18",
+  "postgresVersion": "19",
   "size": "c6gd.large",
   "haType": "none",
+  "standbyCount": 0,
   "tags": [
     {
       "key": "Environment",
@@ -49115,7 +54065,8 @@ Optional password. If not provided a new password is generated and provided in t
   "id": "f71df78e-ddad-82d0-8dfa-abbec741b82e",
   "state": "creating",
   "createdAt": "2026-03-26T20:51:16.384Z",
-  "isPrimary": false
+  "isPrimary": false,
+  "deletionProtection": true
 }
 ```
 
@@ -49128,12 +54079,14 @@ Optional password. If not provided a new password is generated and provided in t
 |region|[pgRegion](#schemapgregion)|false|none|The cloud region for a Postgres service.|
 |postgresVersion|[pgVersion](#schemapgversion)|false|none|none|
 |size|[pgSize](#schemapgsize)|false|none|The VM size for a Postgres service.|
-|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to two standbys.|
+|haType|[pgHaType](#schemapghatype)|false|none|Type of high availability: “none” for no replication, “async” for asynchronous replication to a single standby, and “sync” for synchronous replication to the number of standbys in `standbyCount` (two by default).|
+|standbyCount|[pgStandbyCount](#schemapgstandbycount)|false|none|Number of hot standby instances. Accepted values and defaults depend on `haType`:<br>- “none”: 0 (default)<br>- “async”: 1 (default)<br>- “sync”: 1, or 2 (default)<br><br>When `haType` is updated without `standbyCount`, the default for the new `haType` applies.|
 |tags|[pgTags](#schemapgtags)|false|none|Tags associated with the Postgres service. Tag keys starting with “chc_” are reserved for internal use.|
 |id|[pgIdProperty](#schemapgidproperty)|false|none|none|
 |state|[pgStateProperty](#schemapgstateproperty)|false|none|Current state of the service|
 |createdAt|[pgCreatedAtProperty](#schemapgcreatedatproperty)|false|none|none|
 |isPrimary|[pgIsPrimaryProperty](#schemapgisprimaryproperty)|false|none|True if this service is the primary service in the data warehouse|
+|deletionProtection|[pgDeletionProtectionProperty](#schemapgdeletionprotectionproperty)|false|none|When true, the service cannot be deleted until deletion protection is turned off. Only available for organizations with deletion protection enabled.|
 
 #### Enumerated Values
 
@@ -49141,6 +54094,7 @@ Optional password. If not provided a new password is generated and provided in t
 |---|---|
 |provider|aws|
 |provider|gcp|
+|postgresVersion|19|
 |postgresVersion|18|
 |postgresVersion|17|
 |size|c6gd.large|
@@ -49275,6 +54229,26 @@ Optional password. If not provided a new password is generated and provided in t
 |size|c4d-standard-lssd-96|
 |size|c4d-standard-lssd-192|
 |size|c4d-standard-lssd-384|
+|size|c3-standard-lssd-4|
+|size|c3-standard-lssd-8|
+|size|c3-standard-lssd-22|
+|size|c3-standard-lssd-44|
+|size|c3-standard-lssd-88|
+|size|c3-standard-lssd-176|
+|size|c3d-highmem-lssd-8|
+|size|c3d-highmem-lssd-16|
+|size|c3d-highmem-lssd-30|
+|size|c3d-highmem-lssd-60|
+|size|c3d-highmem-lssd-90|
+|size|c3d-highmem-lssd-180|
+|size|c3d-highmem-lssd-360|
+|size|c3d-standard-lssd-8|
+|size|c3d-standard-lssd-16|
+|size|c3d-standard-lssd-30|
+|size|c3d-standard-lssd-60|
+|size|c3d-standard-lssd-90|
+|size|c3d-standard-lssd-180|
+|size|c3d-standard-lssd-360|
 |size|z3-highmem-highlssd-8|
 |size|z3-highmem-highlssd-16|
 |size|z3-highmem-highlssd-22|
@@ -49286,9 +54260,41 @@ Optional password. If not provided a new password is generated and provided in t
 |size|z3-highmem-standardlssd-44|
 |size|z3-highmem-standardlssd-88|
 |size|z3-highmem-standardlssd-176|
+|size|n2-highmem-2xlssd-4|
+|size|n2-highmem-2xlssd-8|
+|size|n2-highmem-2xlssd-16|
+|size|n2-highmem-2xlssd-32|
+|size|n2-highmem-2xlssd-48|
+|size|n2-highmem-2xlssd-64|
+|size|n2-highmem-2xlssd-96|
+|size|n2-standard-2xlssd-4|
+|size|n2-standard-2xlssd-8|
+|size|n2-standard-2xlssd-16|
+|size|n2-standard-2xlssd-32|
+|size|n2-standard-2xlssd-48|
+|size|n2-standard-2xlssd-64|
+|size|n2-standard-2xlssd-96|
+|size|n2-highmem-4xlssd-2|
+|size|n2-highmem-4xlssd-4|
+|size|n2-highmem-4xlssd-8|
+|size|n2-highmem-4xlssd-16|
+|size|n2-highmem-4xlssd-32|
+|size|n2-highmem-4xlssd-48|
+|size|n2-highmem-8xlssd-2|
+|size|n2-highmem-8xlssd-4|
+|size|n2-highmem-8xlssd-8|
+|size|n2-highmem-8xlssd-16|
+|size|n2-highmem-8xlssd-32|
+|size|n2-highmem-16xlssd-2|
+|size|n2-highmem-16xlssd-4|
+|size|n2-highmem-16xlssd-8|
+|size|n2-highmem-16xlssd-16|
 |haType|none|
 |haType|async|
 |haType|sync|
+|standbyCount|0|
+|standbyCount|1|
+|standbyCount|2|
 |state|creating|
 |state|restarting|
 |state|running|
@@ -49411,6 +54417,146 @@ Optional password. If not provided a new password is generated and provided in t
 |pgConfig|[pgConfig](#schemapgconfig)|true|none|Postgres [runtime configuration](https://www.postgresql.org/docs/current/runtime-config.html) configuration.|
 |pgBouncerConfig|[pgBouncerConfig](#schemapgbouncerconfig)|true|none|PgBouncer [runtime configuration](https://www.pgbouncer.org/config.html) configuration.|
 |message|string|false|none|Informational message about the configuration update, such as restart requirements.|
+
+<h2 id="tocS_PostgresPrivateEndpointVpcEndpoint">PostgresPrivateEndpointVpcEndpoint</h2>
+<!-- backwards compatibility -->
+<a id="schemapostgresprivateendpointvpcendpoint"></a>
+<a id="schema_PostgresPrivateEndpointVpcEndpoint"></a>
+<a id="tocSpostgresprivateendpointvpcendpoint"></a>
+<a id="tocspostgresprivateendpointvpcendpoint"></a>
+
+```json
+{
+  "vpcEndpointId": "vpce-0123456789abcdef0",
+  "description": "Production VPC"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|vpcEndpointId|string|true|none|ID of the AWS VPC endpoint that is allowed to connect.|
+|description|string|false|none|Optional description of the VPC endpoint.|
+
+<h2 id="tocS_PostgresPrivateEndpointPort">PostgresPrivateEndpointPort</h2>
+<!-- backwards compatibility -->
+<a id="schemapostgresprivateendpointport"></a>
+<a id="schema_PostgresPrivateEndpointPort"></a>
+<a id="tocSpostgresprivateendpointport"></a>
+<a id="tocspostgresprivateendpointport"></a>
+
+```json
+{
+  "port": 5432,
+  "targetPort": 5432
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|port|integer|true|none|Port exposed by the endpoint service.|
+|targetPort|integer|true|none|Port on the Postgres service it forwards to.|
+
+<h2 id="tocS_PostgresPrivateEndpoint">PostgresPrivateEndpoint</h2>
+<!-- backwards compatibility -->
+<a id="schemapostgresprivateendpoint"></a>
+<a id="schema_PostgresPrivateEndpoint"></a>
+<a id="tocSpostgresprivateendpoint"></a>
+<a id="tocspostgresprivateendpoint"></a>
+
+```json
+{
+  "state": "available",
+  "endpointServiceName": "com.amazonaws.vpce.us-east-1.vpce-svc-0123456789abcdef0",
+  "endpointServiceId": "vpce-svc-0123456789abcdef0",
+  "privateHostname": "string",
+  "privateDnsName": "string",
+  "privateDnsVerificationState": "string",
+  "ipAddressType": "dual",
+  "ports": [
+    {
+      "port": 5432,
+      "targetPort": 5432
+    }
+  ],
+  "supportedRegions": [
+    "us-west-2"
+  ],
+  "allowedVpcEndpoints": [
+    {
+      "vpcEndpointId": "vpce-0123456789abcdef0",
+      "description": "Production VPC"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|state|string|true|none|State of the private endpoint service: one of 'creating', 'available', 'deleting'. More states may be added. It is `creating` for about 5 to 10 minutes after creation, then `available`.|
+|endpointServiceName|string|false|none|Name of the AWS endpoint service. Use it as the service name when creating a VPC endpoint. Omitted until the service is created.|
+|endpointServiceId|string|false|none|ID of the AWS endpoint service. Omitted until the service is created.|
+|privateHostname|string|false|none|Hostname that resolves to the Postgres service from an approved VPC endpoint. Omitted until the service is available.|
+|privateDnsName|string|false|none|Private DNS name of the endpoint service. Omitted until it is assigned.|
+|privateDnsVerificationState|string|false|none|Verification state of the private DNS name. Omitted until it is assigned.|
+|ipAddressType|string|true|none|IP address type of the endpoint service.|
+|ports|[[PostgresPrivateEndpointPort](#schemapostgresprivateendpointport)]|true|none|Ports the endpoint service forwards.|
+|supportedRegions|[string]|true|none|AWS region IDs, other than the service region, from which VPC endpoints can connect, such as `us-west-2`. The service region is always supported and must not be listed. Requires cross-region private endpoints to be enabled for the organization.|
+|allowedVpcEndpoints|[[PostgresPrivateEndpointVpcEndpoint](#schemapostgresprivateendpointvpcendpoint)]|true|none|VPC endpoints approved to connect.|
+
+<h2 id="tocS_PostgresPrivateEndpointPostRequest">PostgresPrivateEndpointPostRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapostgresprivateendpointpostrequest"></a>
+<a id="schema_PostgresPrivateEndpointPostRequest"></a>
+<a id="tocSpostgresprivateendpointpostrequest"></a>
+<a id="tocspostgresprivateendpointpostrequest"></a>
+
+```json
+{
+  "supportedRegions": [
+    "us-west-2"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|supportedRegions|[string]|false|none|AWS region IDs, other than the service region, from which VPC endpoints can connect, such as `us-west-2`. The service region is always supported and must not be listed. Requires cross-region private endpoints to be enabled for the organization.|
+
+<h2 id="tocS_PostgresPrivateEndpointPatchRequest">PostgresPrivateEndpointPatchRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapostgresprivateendpointpatchrequest"></a>
+<a id="schema_PostgresPrivateEndpointPatchRequest"></a>
+<a id="tocSpostgresprivateendpointpatchrequest"></a>
+<a id="tocspostgresprivateendpointpatchrequest"></a>
+
+```json
+{
+  "allowedVpcEndpoints": [
+    {
+      "vpcEndpointId": "vpce-0123456789abcdef0",
+      "description": "Production VPC"
+    }
+  ],
+  "supportedRegions": [
+    "us-west-2"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allowedVpcEndpoints|[[PostgresPrivateEndpointVpcEndpoint](#schemapostgresprivateendpointvpcendpoint)]|false|none|Full replacement of the approved VPC endpoints: endpoints not listed are no longer allowed to connect. Each endpoint ID must be unique.|
+|supportedRegions|[string]|false|none|Full replacement of the supported regions. AWS region IDs, other than the service region, from which VPC endpoints can connect, such as `us-west-2`. The service region is always supported and must not be listed. Requires cross-region private endpoints to be enabled for the organization.|
 
 <h2 id="tocS_PostgresBackup">PostgresBackup</h2>
 <!-- backwards compatibility -->
@@ -49600,11 +54746,11 @@ Optional password. If not provided a new password is generated and provided in t
 |callCount|integer|true|none|Number of times the pattern executed in the window.|
 |errorCount|integer|true|none|Number of executions of the pattern that raised an error.|
 |totalDurationUs|integer|true|none|Total execution time across all calls, in microseconds.|
-|avgDurationUs|integer|true|none|Average execution time per call, in microseconds.|
+|avgDurationUs|number|true|none|Average execution time per call, in microseconds.|
 |maxDurationUs|integer|true|none|Maximum execution time of any call, in microseconds.|
-|p50DurationUs|integer|true|none|50th percentile execution time, in microseconds.|
-|p95DurationUs|integer|true|none|95th percentile execution time, in microseconds.|
-|p99DurationUs|integer|true|none|99th percentile execution time, in microseconds.|
+|p50DurationUs|number|true|none|50th percentile execution time, in microseconds.|
+|p95DurationUs|number|true|none|95th percentile execution time, in microseconds.|
+|p99DurationUs|number|true|none|99th percentile execution time, in microseconds.|
 |totalRows|integer|true|none|Total number of rows returned or affected across all calls.|
 |totalSharedBlksRead|integer|true|none|Total shared buffer blocks read from disk (cache misses) across all calls.|
 |totalSharedBlksHit|integer|true|none|Total shared buffer blocks hit (cache hits) across all calls.|
@@ -49824,6 +54970,83 @@ Optional password. If not provided a new password is generated and provided in t
 |severity|string|true|none|PostgreSQL severity of the entry (for example, LOG, WARNING, ERROR, FATAL, PANIC).|
 |body|string|true|none|Raw log entry body as emitted by PostgreSQL. Structured bodies are returned as a JSON-encoded string.|
 
+<h2 id="tocS_PostgresBlockingQuery">PostgresBlockingQuery</h2>
+<!-- backwards compatibility -->
+<a id="schemapostgresblockingquery"></a>
+<a id="schema_PostgresBlockingQuery"></a>
+<a id="tocSpostgresblockingquery"></a>
+<a id="tocspostgresblockingquery"></a>
+
+```json
+{
+  "database": "string",
+  "blockedQueryId": "string",
+  "blockedQuery": "string",
+  "blockedUsers": [
+    "string"
+  ],
+  "blockedApps": [
+    "string"
+  ],
+  "blockedPids": [
+    0
+  ],
+  "lockType": "transactionid",
+  "blockedMode": "ShareLock",
+  "blockingDatabase": "string",
+  "blockingQueryId": "string",
+  "blockingQuery": "string",
+  "blockingUsers": [
+    "string"
+  ],
+  "blockingApps": [
+    "string"
+  ],
+  "blockingPids": [
+    0
+  ],
+  "blockingPrepared": true,
+  "blockingInternal": true,
+  "latestBlockingState": "idle in transaction",
+  "latestBlockingXactSeconds": 0,
+  "latestBlockingBackendType": "client backend",
+  "blockingSeenWaiting": true,
+  "sessions": 0,
+  "samples": 0,
+  "longestWaitSeconds": 0,
+  "lastSeen": "2026-04-22T14:06:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|database|string|true|none|Database of the waiting sessions.|
+|blockedQueryId|string|true|none|Query ID of the waiting statement, as in slow query patterns. Empty when Postgres had none yet; the group is then a single waiting session.|
+|blockedQuery|string|true|none|Normalized text of the waiting statement from Query Insights. Empty when no text is available.|
+|blockedUsers|[string]|true|none|Database users of the waiting sessions (up to 10).|
+|blockedApps|[string]|true|none|Non-empty `application_name` values of the waiting sessions (up to 10).|
+|blockedPids|[integer]|true|none|Process IDs of the waiting sessions, most recently seen first (up to 10).|
+|lockType|string|true|none|Postgres lock type waited on at the latest sample (for example, relation, tuple, transactionid, advisory).|
+|blockedMode|string|true|none|Lock mode requested by the waiting session at the latest sample (for example, ShareLock).|
+|blockingDatabase|string|true|none|Database of the blocking session. Empty for a prepared transaction.|
+|blockingQueryId|string|true|none|Query ID of the blocking statement. Empty when the blocker had none; the group is then a single blocking session.|
+|blockingQuery|string|true|none|Normalized text of the blocking statement from Query Insights. Empty when no text is available.|
+|blockingUsers|[string]|true|none|Database users of the blocking sessions (up to 10).|
+|blockingApps|[string]|true|none|Non-empty `application_name` values of the blocking sessions (up to 10).|
+|blockingPids|[integer]|true|none|Process IDs of the blocking sessions, most recently seen first (up to 10). A prepared transaction reports 0.|
+|blockingPrepared|boolean|true|none|True when the blocker is a prepared transaction, which has no session.|
+|blockingInternal|boolean|true|none|True when the blocker is a session the service uses internally, for example for monitoring or replication. Its query text is not returned.|
+|latestBlockingState|string|true|none|State of the blocking session at the latest sample (for example, active, idle in transaction).|
+|latestBlockingXactSeconds|number \| null|true|none|Age of the blocking transaction at the latest sample, in seconds. `null` when not reported, as for a prepared transaction.|
+|latestBlockingBackendType|string|true|none|Postgres backend type of the blocker at the latest sample (for example, client backend, autovacuum worker).|
+|blockingSeenWaiting|boolean|true|none|True when the blocker was itself waiting on a lock in at least one sample.|
+|sessions|integer|true|none|Number of distinct waiting sessions in the group.|
+|samples|integer|true|none|Number of samples in which the group was seen.|
+|longestWaitSeconds|number \| null|true|none|Longest observed wait of a waiting session, in seconds. `null` when no sample reported how long the session had waited.|
+|lastSeen|string(date-time)|true|none|Time of the latest sample (RFC 3339).|
+
 <h2 id="tocS_UpgradeWindow">UpgradeWindow</h2>
 <!-- backwards compatibility -->
 <a id="schemaupgradewindow"></a>
@@ -49887,6 +55110,85 @@ Optional password. If not provided a new password is generated and provided in t
 |startHourUtc|12|
 |startHourUtc|18|
 
+<h2 id="tocS_JwtProvider">JwtProvider</h2>
+<!-- backwards compatibility -->
+<a id="schemajwtprovider"></a>
+<a id="schema_JwtProvider"></a>
+<a id="tocSjwtprovider"></a>
+<a id="tocsjwtprovider"></a>
+
+```json
+{
+  "name": "my-oidc-provider",
+  "issuer": "https://auth.example.com",
+  "audience": "my-clickhouse-service",
+  "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+  "rolesClaim": "clickhouse:roles"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Name of the JWT provider, unique within the service. Lowercase letters, digits and hyphens, at most 59 characters. Cannot be one of, or start with one of followed by a hyphen: `cloud`, `clickhouse`, `ch`, `internal`, `system`, `default`.|
+|issuer|string|true|none|Expected `iss` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|audience|string|true|none|Expected `aud` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|jwksUrl|string|true|none|Public `https://` URL of the JSON Web Key Set used to verify token signatures, at most 256 characters. The key set must contain at least one supported signing key: RS256 (RSA), or on ClickHouse 26.8 and later also ES256, ES384 or ES512 (EC); it is fetched and validated when the provider is created or updated.|
+|rolesClaim|string|false|none|Name of the token claim that lists the ClickHouse roles to grant the user. Printable ASCII without whitespace, at most 256 characters, and not a registered JWT claim (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`). Absent when no roles claim is configured.|
+
+<h2 id="tocS_JwtProviderPostRequest">JwtProviderPostRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemajwtproviderpostrequest"></a>
+<a id="schema_JwtProviderPostRequest"></a>
+<a id="tocSjwtproviderpostrequest"></a>
+<a id="tocsjwtproviderpostrequest"></a>
+
+```json
+{
+  "name": "my-oidc-provider",
+  "issuer": "https://auth.example.com",
+  "audience": "my-clickhouse-service",
+  "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+  "rolesClaim": "clickhouse:roles"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Name of the JWT provider, unique within the service. Lowercase letters, digits and hyphens, at most 59 characters. Cannot be one of, or start with one of followed by a hyphen: `cloud`, `clickhouse`, `ch`, `internal`, `system`, `default`.|
+|issuer|string|true|none|Expected `iss` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|audience|string|true|none|Expected `aud` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|jwksUrl|string|true|none|Public `https://` URL of the JSON Web Key Set used to verify token signatures, at most 256 characters. The key set must contain at least one supported signing key: RS256 (RSA), or on ClickHouse 26.8 and later also ES256, ES384 or ES512 (EC); it is fetched and validated when the provider is created or updated.|
+|rolesClaim|string|false|none|Name of the token claim that lists the ClickHouse roles to grant the user. Printable ASCII without whitespace, at most 256 characters, and not a registered JWT claim (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`). Omit to configure no roles claim.|
+
+<h2 id="tocS_JwtProviderPutRequest">JwtProviderPutRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemajwtproviderputrequest"></a>
+<a id="schema_JwtProviderPutRequest"></a>
+<a id="tocSjwtproviderputrequest"></a>
+<a id="tocsjwtproviderputrequest"></a>
+
+```json
+{
+  "issuer": "https://auth.example.com",
+  "audience": "my-clickhouse-service",
+  "jwksUrl": "https://auth.example.com/.well-known/jwks.json",
+  "rolesClaim": "clickhouse:roles"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|issuer|string|true|none|Expected `iss` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|audience|string|true|none|Expected `aud` claim of the tokens. Printable ASCII without whitespace, at most 256 characters.|
+|jwksUrl|string|true|none|Public `https://` URL of the JSON Web Key Set used to verify token signatures, at most 256 characters. The key set must contain at least one supported signing key: RS256 (RSA), or on ClickHouse 26.8 and later also ES256, ES384 or ES512 (EC); it is fetched and validated when the provider is created or updated.|
+|rolesClaim|string|false|none|Name of the token claim that lists the ClickHouse roles to grant the user. Printable ASCII without whitespace, at most 256 characters, and not a registered JWT claim (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`). The request replaces the whole provider configuration, so omitting this field removes an existing roles claim.|
+
 <h2 id="tocS_OrganizationPatchRequest">OrganizationPatchRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemaorganizationpatchrequest"></a>
@@ -49926,6 +55228,25 @@ Optional password. If not provided a new password is generated and provided in t
 |name|string|false|none|Name of the organization.|
 |privateEndpoints|[OrganizationPrivateEndpointsPatch](#schemaorganizationprivateendpointspatch)|false|none|none|
 |enableCoreDumps|boolean|false|none|Whether crash reports (core dumps) collection is enabled for services in the organization. When disabled at the organization level, individual services cannot enable crash reports.|
+
+<h2 id="tocS_PublicPreviewPatchRequest">PublicPreviewPatchRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemapublicpreviewpatchrequest"></a>
+<a id="schema_PublicPreviewPatchRequest"></a>
+<a id="tocSpublicpreviewpatchrequest"></a>
+<a id="tocspublicpreviewpatchrequest"></a>
+
+```json
+{
+  "enabled": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|enabled|boolean|true|none|Whether the preview feature should be on.|
 
 <h2 id="tocS_InstanceServiceQueryApiEndpointsPostRequest">InstanceServiceQueryApiEndpointsPostRequest</h2>
 <!-- backwards compatibility -->
@@ -50030,6 +55351,7 @@ Optional password. If not provided a new password is generated and provided in t
       }
     ],
     "enableCoreDumps": true,
+    "deletionProtection": true,
     "scalingSchedule": {
       "entries": [
         {
@@ -50147,7 +55469,8 @@ Optional password. If not provided a new password is generated and provided in t
       "value": "staging"
     }
   ],
-  "enableCoreDumps": true
+  "enableCoreDumps": true,
+  "deletionProtection": true
 }
 ```
 
@@ -50177,13 +55500,14 @@ Optional password. If not provided a new password is generated and provided in t
 |privateEndpointIds|[string]|false|none|**Deprecated.** DEPRECATED. To associate the service with private endpoints, first create the service, then use the `Update Service Basic Details` endpoint with the `privateEndpointIds` field to modify private endpoints.|
 |privatePreviewTermsChecked|boolean|false|none|Accept the private preview terms and conditions. It is only needed when creating the first service in the organization in case of a private preview|
 |releaseChannel|string|false|none|Select fast if you want to get new ClickHouse releases as soon as they are available. You'll get new features faster, but with a higher risk of bugs. Select slow if you would like to defer releases to give yourself more time to test. This feature is only available for production services. default is the regular release channel.|
-|byocId|string|false|none|This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and the maxReplicaGb parameters are required too, with values included among the following sizes: 48, 116, 172, 232.|
+|byocId|string|false|none|This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and maxReplicaMemoryGb parameters are required too. With a BYOC profile, both must equal that profile's memory size. Without a profile, equal values must be one of the following sizes: 48, 116, 172, 232. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb, without a profile, creates a service that scales vertically between the two. Both values must be memory sizes listed by the serviceProfiles endpoint, and the service reports the profile 'v1-default'.|
 |hasTransparentDataEncryption|boolean|false|none|True if the service should have the Transparent Data Encryption (TDE) enabled. TDE is only available for ENTERPRISE organizations tiers and can only be enabled at service creation.|
 |endpoints|[[ServiceEndpointChange](#schemaserviceendpointchange)]|false|none|List of service endpoints to enable or disable|
-|profile|string|false|none|Custom instance profile. Only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. Use the serviceProfiles endpoint to list the profiles available to the organization.|
+|profile|string|false|none|Custom instance profile. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. 'v2-default' is Gen 2 hardware. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. A BYOC service that scales vertically within a memory range has no BYOC profile and reports 'v1-default'. Use the serviceProfiles endpoint to list the profiles available to the organization. Creating a 'v2-default' service needs Gen 2 enabled for the organization and included in its plan (SCALE or ENTERPRISE) or settings, an AWS region where Gen 2 is available, and no byocId (BYOC infrastructure is not supported). Gen 2 services use a fixed size: minReplicaMemoryGb must equal maxReplicaMemoryGb and the replica count is fixed (numReplicas, or equal minReplicas and maxReplicas). Gen 2 services cannot idle: send idleScaling as false, since it defaults to true.|
 |complianceType|string|false|none|Type of regulatory compliance for service.|
 |tags|[[ResourceTagsV1](#schemaresourcetagsv1)]|false|none|Tags associated with the service.|
 |enableCoreDumps|boolean|false|none|Enables the underlying infra for collecting core dumps. Default is enabled.|
+|deletionProtection|boolean|false|none|When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off. Default is false. Setting it to true requires the `control-plane:service:delete` permission granted for all services in the organization (not service by service), in addition to `control-plane:organization:create-service`.|
 
 #### Enumerated Values
 
@@ -50280,7 +55604,8 @@ Optional password. If not provided a new password is generated and provided in t
       }
     ]
   },
-  "enableCoreDumps": true
+  "enableCoreDumps": true,
+  "deletionProtection": true
 }
 ```
 
@@ -50296,6 +55621,7 @@ Optional password. If not provided a new password is generated and provided in t
 |transparentDataEncryptionKeyId|string|false|none|The id of the key to rotate|
 |tags|[InstanceTagsPatch](#schemainstancetagspatch)|false|none|none|
 |enableCoreDumps|boolean|false|none|If true, the underlying infra is enabled for collecting core dumps.|
+|deletionProtection|boolean|false|none|When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off. Changing it in either direction requires the `control-plane:service:delete` permission on the service, in addition to `control-plane:service:manage`; sending the current value changes nothing and needs no extra permission. ClickStack services can't be updated through the API; manage their deletion protection in the console.|
 
 #### Enumerated Values
 
@@ -50355,7 +55681,7 @@ Optional password. If not provided a new password is generated and provided in t
 |---|---|---|---|---|
 |minTotalMemoryGb|number|false|none|**Deprecated.** DEPRECATED - inaccurate for services with non-default numbers of replicas. Use `minReplicaMemoryGb` instead. Minimum memory of three workers during auto-scaling in Gb. Available only for 'production' services. Must be a multiple of 12 and greater than or equal to 24. Always absent for horizontal-autoscaling services (replica count is variable).|
 |maxTotalMemoryGb|number|false|none|**Deprecated.** DEPRECATED - inaccurate for services with non-default numbers of replicas. Use `maxReplicaMemoryGb` instead. Maximum memory of three workers during auto-scaling in Gb. Available only for 'production' services. Must be a multiple of 12 and lower than or equal to 360 for non paid services or 1068 for paid services. Always absent for horizontal-autoscaling services (replica count is variable).|
-|numReplicas|integer|false|none|Number of replicas for the service. The number of replicas must be between 2 and 50 for the first service in a warehouse. Services that are created in an existing warehouse can have a number of replicas as low as 1. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers.|
+|numReplicas|integer|false|none|Number of replicas for the service. The number of replicas must be between 1 and 50. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers.|
 |idleScaling|boolean|false|none|When set to true the service is allowed to scale down to zero when idle. True by default.|
 |idleTimeoutMinutes|number|false|none|Set minimum idling timeout (in minutes). Must be >= 5 minutes.|
 
@@ -50427,6 +55753,7 @@ Optional password. If not provided a new password is generated and provided in t
     }
   ],
   "enableCoreDumps": true,
+  "deletionProtection": true,
   "scalingSchedule": {
     "entries": [
       {
@@ -50487,7 +55814,7 @@ Optional password. If not provided a new password is generated and provided in t
 |maxTotalMemoryGb|number|false|none|**Deprecated.** DEPRECATED - inaccurate for services with non-default numbers of replicas. Use `maxReplicaMemoryGb` instead. Maximum memory of three workers during auto-scaling in Gb. Available only for 'production' services. Must be a multiple of 12 and lower than or equal to 360 for non paid services or 1068 for paid services. Always absent for horizontal-autoscaling services (replica count is variable).|
 |minReplicaMemoryGb|number|false|none|Minimum auto-scaling memory in Gb for a single replica. Available only for 'production' services. Must be a multiple of 4 and greater than or equal to 8. A range in vertical autoscaling; equal to maxReplicaMemoryGb in horizontal (memory is fixed while the replica count scales).|
 |maxReplicaMemoryGb|number|false|none|Maximum auto-scaling memory in Gb for a single replica. Available only for 'production' services. Must be a multiple of 4 and lower than or equal to 120 for non paid services or 356 for paid services. A range in vertical autoscaling; equal to minReplicaMemoryGb in horizontal (memory is fixed while the replica count scales).|
-|numReplicas|integer|false|none|Number of replicas for the service. The number of replicas must be between 2 and 50 for the first service in a warehouse. Services that are created in an existing warehouse can have a number of replicas as low as 1. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers. Present only when the service uses vertical autoscaling. For horizontal autoscaling, use minReplicas and maxReplicas instead.|
+|numReplicas|integer|false|none|Number of replicas for the service. The number of replicas must be between 1 and 50. Further restrictions may apply based on your organization's tier and its per-warehouse replica limit. It defaults to 1 for the BASIC tier and 3 for the SCALE and ENTERPRISE tiers. Present only when the service uses vertical autoscaling. For horizontal autoscaling, use minReplicas and maxReplicas instead.|
 |minReplicas|integer|false|none|Minimum number of replicas for horizontal autoscaling. Present only when the service uses horizontal autoscaling.|
 |maxReplicas|integer|false|none|Maximum number of replicas for horizontal autoscaling. Present only when the service uses horizontal autoscaling.|
 |autoscalingMode|string|true|none|Configured autoscaling mode. "vertical" runs a fixed replica count while memory scales between minReplicaMemoryGb and maxReplicaMemoryGb; "horizontal" scales the replica count between minReplicas and maxReplicas at a fixed per-replica memory. This is the baseline configuration; the mode currently applied (which may differ while a schedule entry is active) is currentScaling.effectiveAutoscalingMode.|
@@ -50505,14 +55832,15 @@ Optional password. If not provided a new password is generated and provided in t
 |isPrimary|boolean|false|none|True if this service is the primary service in the data warehouse|
 |isReadonly|boolean|false|none|True if this service is read-only. It can only be read-only if a dataWarehouseId is provided.|
 |releaseChannel|string|false|none|Select fast if you want to get new ClickHouse releases as soon as they are available. You'll get new features faster, but with a higher risk of bugs. Select slow if you would like to defer releases to give yourself more time to test. This feature is only available for production services. default is the regular release channel.|
-|byocId|string|false|none|This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and the maxReplicaGb parameters are required too, with values included among the following sizes: 48, 116, 172, 232.|
+|byocId|string|false|none|This is the ID returned after setting up a region for Bring Your Own Cloud (BYOC). When the byocId parameter is specified, the minReplicaMemoryGb and maxReplicaMemoryGb parameters are required too. With a BYOC profile, both must equal that profile's memory size. Without a profile, equal values must be one of the following sizes: 48, 116, 172, 232. When BYOC vertical autoscaling is enabled for the organization (contact support), a minReplicaMemoryGb lower than maxReplicaMemoryGb, without a profile, creates a service that scales vertically between the two. Both values must be memory sizes listed by the serviceProfiles endpoint, and the service reports the profile 'v1-default'.|
 |hasTransparentDataEncryption|boolean|false|none|True if the service should have the Transparent Data Encryption (TDE) enabled. TDE is only available for ENTERPRISE organizations tiers and can only be enabled at service creation.|
-|profile|string|false|none|Custom instance profile. Only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. Use the serviceProfiles endpoint to list the profiles available to the organization.|
+|profile|string|false|none|Custom instance profile. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. 'v2-default' is Gen 2 hardware. BYOC services may instead use a dynamic BYOC profile configured for their infrastructure (e.g. 'v1-standard-byoc-4'); it requires byocId, and minReplicaMemoryGb and maxReplicaMemoryGb must both equal the profile's memory size. A BYOC service that scales vertically within a memory range has no BYOC profile and reports 'v1-default'. Use the serviceProfiles endpoint to list the profiles available to the organization.|
 |transparentDataEncryptionKeyId|string|false|none|The ID of the Transparent Data Encryption key used for the service. This is only available if hasTransparentDataEncryption is true.|
 |encryptionRoleId|string|false|none|The ID of the IAM role used for encryption. This is only available if hasTransparentDataEncryption is true.|
 |complianceType|string|false|none|Type of regulatory compliance for service.|
 |tags|[[ResourceTagsV1](#schemaresourcetagsv1)]|false|none|Tags associated with the service.|
 |enableCoreDumps|boolean|false|none|True if the service's underline infra is enabled for collecting core dumps. This is an experimental feature|
+|deletionProtection|boolean|false|none|When true, the service cannot be deleted: the delete endpoint returns 409 until deletion protection is turned off.|
 |scalingSchedule|[ScalingSchedule](#schemascalingschedule)|false|none|none|
 |currentScaling|[CurrentScaling](#schemacurrentscaling)|true|none|none|
 
@@ -50596,7 +55924,8 @@ Optional password. If not provided a new password is generated and provided in t
   "minReplicas": 1,
   "maxReplicas": 5,
   "idleScaling": true,
-  "idleTimeoutMinutes": 0
+  "idleTimeoutMinutes": 0,
+  "profile": "string"
 }
 ```
 
@@ -50607,11 +55936,12 @@ Optional password. If not provided a new password is generated and provided in t
 |minReplicaMemoryGb|number|false|none|Minimum auto-scaling memory in Gb for a single replica. Available only for 'production' services. Must be a multiple of 4 and greater than or equal to 8. A range in vertical autoscaling; equal to maxReplicaMemoryGb in horizontal.|
 |maxReplicaMemoryGb|number|false|none|Maximum auto-scaling memory in Gb for a single replica. Available only for 'production' services. Must be a multiple of 4 and lower than or equal to 120 for non paid services or 356 for paid services. A range in vertical autoscaling; equal to minReplicaMemoryGb in horizontal.|
 |autoscalingMode|string|false|none|Target autoscaling mode. Omit to keep the service on its current mode. "vertical" runs a fixed replica count while memory scales between minReplicaMemoryGb and maxReplicaMemoryGb; "horizontal" scales the replica count between minReplicas and maxReplicas at a fixed per-replica memory (minReplicaMemoryGb equal to maxReplicaMemoryGb). Switching to horizontal requires the feature to be enabled for the organization.|
-|numReplicas|integer|false|none|Fixed replica count for vertical autoscaling (autoscalingMode "vertical"). Mutually exclusive with minReplicas/maxReplicas. When switching to vertical (autoscalingMode "vertical") with numReplicas and no memory, the service's stored baseline per-replica memory is kept as the new vertical range. Please contact support to enable adjustment of numReplicas.|
+|numReplicas|integer|false|none|Fixed replica count for vertical autoscaling (autoscalingMode "vertical"). Mutually exclusive with minReplicas/maxReplicas. When switching to vertical (autoscalingMode "vertical") with numReplicas and no memory, the service's stored baseline per-replica memory is kept as the new vertical range.|
 |minReplicas|integer|false|none|Minimum number of replicas. A minReplicas/maxReplicas band scales the replica count in horizontal autoscaling (autoscalingMode "horizontal"). Must be provided together with maxReplicas. Mutually exclusive with numReplicas. Requires horizontal autoscaling to be enabled for the service, unless autoscalingMode is omitted or "vertical" and minReplicas equals maxReplicas (an equal band is then an accepted vertical fixed count and needs no horizontal entitlement).|
 |maxReplicas|integer|false|none|Maximum number of replicas. A minReplicas/maxReplicas band scales the replica count in horizontal autoscaling (autoscalingMode "horizontal"). Must be provided together with minReplicas. Mutually exclusive with numReplicas. Requires horizontal autoscaling to be enabled for the service, unless autoscalingMode is omitted or "vertical" and minReplicas equals maxReplicas (an equal band is then an accepted vertical fixed count and needs no horizontal entitlement).|
 |idleScaling|boolean|false|none|When set to true the service is allowed to scale down to zero when idle. True by default.|
 |idleTimeoutMinutes|number|false|none|Set minimum idling timeout (in minutes). Must be >= 5 minutes.|
+|profile|string|false|none|Custom instance profile. Omit to leave the current profile unchanged. Profiles other than v1-default and v2-default are only available for ENTERPRISE and BYOC organization tiers. Standard values: 'v1-default', 'v2-default', 'v1-highmem-xs', 'v1-highmem-s', 'v1-highmem-m', 'v1-highmem-l', 'v1-highmem-xl'. A BYOC profile (e.g. 'v1-standard-byoc-16') is a pin: minReplicaMemoryGb and maxReplicaMemoryGb must both be sent and equal that profile's memory size, and a memory range cannot be combined with it. To move a pinned BYOC service to a memory range, send the range without a profile, or with 'v1-default'. A non-BYOC custom profile other than v2-default cannot be combined with a memory change; send the profile alone to change only the name. The profile cannot switch a service between Gen 1 and Gen 2 hardware (to or from 'v2-default'): the request is rejected with a 400 error; contact support to move it. While a schedule entry is active the new profile is stored on the schedule base config and the running service keeps the entry profile until the window ends. Use the serviceProfiles endpoint to list the profiles available to the organization.|
 
 #### Enumerated Values
 
@@ -50746,8 +56076,8 @@ Optional password. If not provided a new password is generated and provided in t
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |enabled|boolean|false|none|Whether scheduled snapshots are enabled for the service.|
-|gap|number|false|none|Interval between snapshots, in minutes. Set together with timeFrame; only supported preset pairs are accepted.|
-|timeFrame|number|false|none|Retention window the snapshots cover, in minutes. Set together with gap; only supported preset pairs are accepted.|
+|gap|number|false|none|Interval between snapshots, in minutes. One of 10, 20, 30, 60. Validated when an enabled configuration is saved; stored values are not re-validated on read.|
+|timeFrame|number|false|none|Retention window the snapshots cover, in minutes. A whole number of days (a multiple of 1440), at least 1440; timeFrame / gap must not exceed 300 snapshots. Validated when an enabled configuration is saved; stored values are not re-validated on read.|
 
 <h2 id="tocS_ApiKeyPostResponse">ApiKeyPostResponse</h2>
 <!-- backwards compatibility -->
@@ -50960,6 +56290,39 @@ Optional password. If not provided a new password is generated and provided in t
 |role|admin|
 |role|developer|
 
+<h2 id="tocS_MemberNotificationSettingsPatchRequest">MemberNotificationSettingsPatchRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemamembernotificationsettingspatchrequest"></a>
+<a id="schema_MemberNotificationSettingsPatchRequest"></a>
+<a id="tocSmembernotificationsettingspatchrequest"></a>
+<a id="tocsmembernotificationsettingspatchrequest"></a>
+
+```json
+{
+  "rules": [
+    {
+      "effect": "enabled",
+      "notifications": [
+        "service_backup_failed"
+      ],
+      "resources": [
+        "string"
+      ],
+      "channels": [
+        "ui",
+        "email"
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|rules|[[NotificationSettingRule](#schemanotificationsettingrule)]|true|none|Rules to apply. Every rule is applied, in the order given.|
+
 <h2 id="tocS_ClickPipePostRequest">ClickPipePostRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemaclickpipepostrequest"></a>
@@ -50988,6 +56351,9 @@ Optional password. If not provided a new password is generated and provided in t
         "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
         "authentication": "PLAIN",
         "caCertificate": "string",
+        "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+        "scope": "schema_registry",
+        "audience": "https://schema-registry.example.com",
         "credentials": {
           "username": "string",
           "password": "string"
@@ -51010,6 +56376,7 @@ Optional password. If not provided a new password is generated and provided in t
       "format": "JSONEachRow",
       "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
       "delimiter": ",",
+      "skipFirstLines": 1,
       "compression": "auto",
       "isContinuous": true,
       "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -51077,11 +56444,12 @@ Optional password. If not provided a new password is generated and provided in t
         "replicationMode": "cdc",
         "replicationSlotName": "clickpipes_slot",
         "allowNullableColumns": false,
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
         "enableFailoverSlots": false,
-        "deleteOnMerge": false
+        "deleteOnMerge": false,
+        "useJsonNativeFormat": false
       },
       "authentication": "IAM_ROLE",
       "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -51124,10 +56492,11 @@ Optional password. If not provided a new password is generated and provided in t
         "replicationMechanism": "GTID",
         "useCompression": false,
         "allowNullableColumns": false,
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
-        "deleteOnMerge": false
+        "deleteOnMerge": false,
+        "useJsonNativeFormat": false
       },
       "authentication": "basic",
       "iamRole": "arn:aws:iam::123456789012:role/MyApplicationRole",
@@ -51167,9 +56536,9 @@ Optional password. If not provided a new password is generated and provided in t
         "pullWindowSizeSeconds": 86400,
         "syncCron": "0 * * * *",
         "allowNullableColumns": true,
-        "initialLoadParallelism": 0,
+        "initialLoadParallelism": 1,
         "snapshotNumRowsPerPartition": 0,
-        "snapshotNumberOfParallelTables": 0
+        "snapshotNumberOfParallelTables": 1
       },
       "tableMappings": [
         {
@@ -51209,7 +56578,7 @@ Optional password. If not provided a new password is generated and provided in t
         "syncIntervalSeconds": 60,
         "pullBatchSize": 100000,
         "replicationMode": "cdc",
-        "initialLoadParallelism": 1,
+        "initialLoadParallelism": 4,
         "snapshotNumRowsPerPartition": 100000,
         "snapshotNumberOfParallelTables": 1,
         "deleteOnMerge": false,
@@ -51294,6 +56663,7 @@ Optional password. If not provided a new password is generated and provided in t
     "object_storage_polling_interval_ms": 30000,
     "object_storage_max_insert_bytes": 10737418240,
     "object_storage_max_file_count": 100,
+    "object_storage_max_file_size": 10737418240,
     "clickhouse_max_threads": 8,
     "clickhouse_max_insert_threads": 1,
     "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -51316,7 +56686,7 @@ Optional password. If not provided a new password is generated and provided in t
 |destination|[ClickPipeMutateDestination](#schemaclickpipemutatedestination)|true|none|none|
 |fieldMappings|[[ClickPipeFieldMapping](#schemaclickpipefieldmapping)]|false|none|Field mappings of the ClickPipe. Note that all destination columns must be included in the mappings.|
 |scaling|[ClickPipeScaling](#schemaclickpipescaling)|false|none|none|
-|settings|[ClickPipeSettings](#schemaclickpipesettings)|false|none|none|
+|settings|[ClickPipeSettingsPutRequest](#schemaclickpipesettingsputrequest)|false|none|none|
 |startPaused|boolean|false|none|Create the ClickPipe in the Stopped state instead of starting ingestion immediately. Start it later with the state endpoint. Not supported for database ClickPipes.|
 
 <h2 id="tocS_ClickPipeSchemaDiscoveryRequest">ClickPipeSchemaDiscoveryRequest</h2>
@@ -51346,6 +56716,9 @@ Optional password. If not provided a new password is generated and provided in t
         "url": "https://psrc-aa00.us-east-2.aws.confluent.cloud/schemas/ids/100004",
         "authentication": "PLAIN",
         "caCertificate": "string",
+        "tokenUrl": "https://auth.example.com/oauth2/v1/token",
+        "scope": "schema_registry",
+        "audience": "https://schema-registry.example.com",
         "credentials": {
           "username": "string",
           "password": "string"
@@ -51403,6 +56776,7 @@ Optional password. If not provided a new password is generated and provided in t
       "format": "JSONEachRow",
       "url": "https://datasets-documentation.s3.eu-west-3.amazonaws.com/http/**.ndjson.gz",
       "delimiter": ",",
+      "skipFirstLines": 1,
       "compression": "auto",
       "isContinuous": true,
       "queueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue",
@@ -51651,6 +57025,7 @@ Optional password. If not provided a new password is generated and provided in t
     "object_storage_polling_interval_ms": 30000,
     "object_storage_max_insert_bytes": 10737418240,
     "object_storage_max_file_count": 100,
+    "object_storage_max_file_size": 10737418240,
     "clickhouse_max_threads": 8,
     "clickhouse_max_insert_threads": 1,
     "clickhouse_min_insert_block_size_bytes": 1073741824,
@@ -51671,7 +57046,7 @@ Optional password. If not provided a new password is generated and provided in t
 |source|[ClickPipePatchSource](#schemaclickpipepatchsource)|false|none|none|
 |destination|[ClickPipePatchDestination](#schemaclickpipepatchdestination)|false|none|none|
 |fieldMappings|[[ClickPipeFieldMapping](#schemaclickpipefieldmapping)]|false|none|Field mappings of the ClickPipe. This will not update the table schema, only the ClickPipe configuration.|
-|settings|[ClickPipeSettings](#schemaclickpipesettings)|false|none|none|
+|settings|[ClickPipeSettingsPutRequest](#schemaclickpipesettingsputrequest)|false|none|none|
 
 <h2 id="tocS_ClickPipeScalingPatchRequest">ClickPipeScalingPatchRequest</h2>
 <!-- backwards compatibility -->
@@ -51779,6 +57154,28 @@ Optional password. If not provided a new password is generated and provided in t
     "property1": "string",
     "property2": "string"
   },
+  "accessModel": "string",
+  "restrictedFacts": {
+    "clusterName": "string",
+    "platformNodeGroup": "string",
+    "availabilityZones": [
+      "string"
+    ],
+    "namespacePrefix": "string",
+    "executorRoleArn": "string",
+    "nodeRoleArns": [
+      "string"
+    ],
+    "imageMode": "bundle",
+    "imageRegistry": "string",
+    "dataBucket": "string",
+    "backupBucket": "string",
+    "storageRoleArn": "string",
+    "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+    "enableMonitoring": true,
+    "enableSnapshotController": true,
+    "enableAutoscaler": true
+  },
   "displayName": "string"
 }
 ```
@@ -51800,6 +57197,8 @@ Optional password. If not provided a new password is generated and provided in t
 |gcpPodCidrRangeNames|[string]|false|none|GCP BYO-VPC only: secondary IP range names on the subnet to use for pod IPs. Omitted: all secondary ranges are used|
 |gcpSharedVpcHostProjectId|string|false|none|GCP BYO-VPC only: Shared VPC host project owning the VPC and subnet, when different from `accountId`|
 |tags|[ByocInfrastructureTags](#schemabyocinfrastructuretags)|false|none|none|
+|accessModel|string|false|none|How ClickHouse reaches the infrastructure. `standard` (default) provisions it through a management role in your account; `restricted` registers a cluster you own, reached only through the connector you install. `restricted` is AWS only and requires `restrictedFacts`|
+|restrictedFacts|[ByocRestrictedFacts](#schemabyocrestrictedfacts)|false|none|none|
 |displayName|string|false|none|Human readable name for infrastructure|
 
 #### Enumerated Values
@@ -51869,6 +57268,28 @@ Optional password. If not provided a new password is generated and provided in t
   "tags": {
     "property1": "string",
     "property2": "string"
+  },
+  "accessModel": "string",
+  "restrictedFacts": {
+    "clusterName": "string",
+    "platformNodeGroup": "string",
+    "availabilityZones": [
+      "string"
+    ],
+    "namespacePrefix": "string",
+    "executorRoleArn": "string",
+    "nodeRoleArns": [
+      "string"
+    ],
+    "imageMode": "bundle",
+    "imageRegistry": "string",
+    "dataBucket": "string",
+    "backupBucket": "string",
+    "storageRoleArn": "string",
+    "scraperEndpoint": "http://clicklink-connector-scraper.clicklink.svc.cluster.local:9093/api/v1/write",
+    "enableMonitoring": true,
+    "enableSnapshotController": true,
+    "enableAutoscaler": true
   }
 }
 ```
@@ -51890,6 +57311,8 @@ Optional password. If not provided a new password is generated and provided in t
 |gcpPodCidrRangeNames|[string]|false|none|GCP BYO-VPC only: secondary IP range names on the subnet to use for pod IPs. Omitted: all secondary ranges are used|
 |gcpSharedVpcHostProjectId|string|false|none|GCP BYO-VPC only: Shared VPC host project owning the VPC and subnet, when different from `accountId`|
 |tags|[ByocInfrastructureTags](#schemabyocinfrastructuretags)|false|none|none|
+|accessModel|string|false|none|How ClickHouse reaches the infrastructure. `standard` (default) provisions it through a management role in your account; `restricted` registers a cluster you own, reached only through the connector you install. `restricted` is AWS only and requires `restrictedFacts`|
+|restrictedFacts|[ByocRestrictedFacts](#schemabyocrestrictedfacts)|false|none|none|
 
 #### Enumerated Values
 
@@ -51925,6 +57348,25 @@ Optional password. If not provided a new password is generated and provided in t
 |availabilityZoneSuffixes|d|
 |availabilityZoneSuffixes|e|
 |availabilityZoneSuffixes|f|
+
+<h2 id="tocS_ByocInfrastructureEnrollmentTokenPostRequest">ByocInfrastructureEnrollmentTokenPostRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemabyocinfrastructureenrollmenttokenpostrequest"></a>
+<a id="schema_ByocInfrastructureEnrollmentTokenPostRequest"></a>
+<a id="tocSbyocinfrastructureenrollmenttokenpostrequest"></a>
+<a id="tocsbyocinfrastructureenrollmenttokenpostrequest"></a>
+
+```json
+{
+  "ttlSeconds": 3600
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|ttlSeconds|integer|false|none|Lifetime of the token in seconds: whole minutes between 3600 and 86400. Omitted: four hours|
 
 <h2 id="tocS_ByocInfrastructurePatchRequest">ByocInfrastructurePatchRequest</h2>
 <!-- backwards compatibility -->

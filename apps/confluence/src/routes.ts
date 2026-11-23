@@ -1,323 +1,11 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type ContainerType = { [key: string]: unknown } | null
+type LabelType = { prefix: string; name: string; id: string; label: string }
 
-const SpaceSchema: z.ZodType<SpaceType> = z
-  .lazy(() =>
-    z
-      .object({
-        id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        key: z.string(),
-        alias: z.string().exactOptional(),
-        name: z.string(),
-        icon: IconSchema.exactOptional(),
-        description: z
-          .object({
-            plain: SpaceDescriptionSchema.exactOptional(),
-            view: SpaceDescriptionSchema.exactOptional(),
-            _expandable: z
-              .object({ view: z.string().exactOptional(), plain: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        homepage: ContentSchema.exactOptional(),
-        type: z.string(),
-        metadata: z
-          .object({
-            labels: LabelArraySchema.exactOptional(),
-            _expandable: z.object({}).exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        operations: z.array(OperationCheckResultSchema).exactOptional(),
-        permissions: z.array(SpacePermissionSchema).exactOptional(),
-        status: z.string(),
-        settings: SpaceSettingsSchema.exactOptional(),
-        theme: ThemeSchema.exactOptional(),
-        lookAndFeel: LookAndFeelSchema.exactOptional(),
-        history: z
-          .object({
-            createdDate: z.iso.datetime({ offset: true }),
-            createdBy: UserSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: ['createdDate'] }),
-        _expandable: z
-          .object({
-            settings: z.string().exactOptional(),
-            metadata: z.string().exactOptional(),
-            operations: z.string().exactOptional(),
-            lookAndFeel: z.string().exactOptional(),
-            permissions: z.string().exactOptional(),
-            icon: z.string().exactOptional(),
-            description: z.string().exactOptional(),
-            theme: z.string().exactOptional(),
-            history: z.string().exactOptional(),
-            homepage: z.string().exactOptional(),
-            identifiers: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-        _links: GenericLinksSchema,
-      })
-      .nullable()
-      .openapi({ required: ['_expandable', '_links', 'key', 'name', 'status', 'type'] }),
-  )
-  .openapi('Space')
-
-const ContentHistorySchema: z.ZodType<ContentHistoryType> = z
-  .lazy(() =>
-    z
-      .object({
-        latest: z.boolean(),
-        createdBy: UserSchema.exactOptional(),
-        ownedBy: UserSchema.exactOptional(),
-        lastOwnedBy: UserSchema.exactOptional(),
-        createdDate: z.iso.datetime({ offset: true }).exactOptional(),
-        lastUpdated: VersionSchema.exactOptional(),
-        previousVersion: VersionSchema.exactOptional(),
-        contributors: z
-          .object({ publishers: UsersUserKeysSchema.exactOptional() })
-          .exactOptional()
-          .openapi({ required: [] }),
-        nextVersion: VersionSchema.exactOptional(),
-        _expandable: z
-          .object({
-            lastUpdated: z.string().exactOptional(),
-            previousVersion: z.string().exactOptional(),
-            contributors: z.string().exactOptional(),
-            nextVersion: z.string().exactOptional(),
-            ownedBy: z.string().exactOptional(),
-            lastOwnedBy: z.string().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        _links: GenericLinksSchema.exactOptional(),
-      })
-      .nullable()
-      .openapi({ required: ['latest'] }),
-  )
-  .openapi('ContentHistory')
-
-const VersionSchema: z.ZodType<VersionType> = z
-  .lazy(() =>
-    z
-      .looseObject({
-        by: UserSchema.exactOptional(),
-        when: z.iso.datetime({ offset: true }).nullable(),
-        friendlyWhen: z.string().nullable().exactOptional(),
-        message: z.string().nullable().exactOptional(),
-        number: z
-          .int32()
-          .openapi({ description: 'Set this to the current version number incremented by one' }),
-        minorEdit: z
-          .boolean()
-          .openapi({
-            description:
-              "If `minorEdit` is set to 'true', no notification email or activity\nstream will be generated for the change.",
-          }),
-        content: ContentSchema.exactOptional(),
-        collaborators: UsersUserKeysSchema.exactOptional(),
-        _expandable: z
-          .object({
-            content: z.string().exactOptional(),
-            collaborators: z.string().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        _links: GenericLinksSchema.exactOptional(),
-        contentTypeModified: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'True if content type is modifed in this version (e.g. page to blog)',
-          }),
-        confRev: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The revision id provided by confluence to be used as a revision in Synchrony',
-          }),
-        syncRev: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The revision id provided by Synchrony' }),
-        syncRevSource: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Source of the synchrony revision' }),
-      })
-      .nullable()
-      .openapi({ required: ['minorEdit', 'number', 'when'] }),
-  )
-  .openapi('Version')
-
-type OperationCheckResultType = {
-  operation:
-    | 'administer'
-    | 'archive'
-    | 'clear_permissions'
-    | 'copy'
-    | 'create'
-    | 'create_space'
-    | 'delete'
-    | 'export'
-    | 'move'
-    | 'purge'
-    | 'purge_version'
-    | 'read'
-    | 'restore'
-    | 'restrict_content'
-    | 'update'
-    | 'use'
-  targetType: string
-}
-
-const OperationCheckResultSchema: z.ZodType<OperationCheckResultType> = z
-  .object({
-    operation: z
-      .enum([
-        'administer',
-        'archive',
-        'clear_permissions',
-        'copy',
-        'create',
-        'create_space',
-        'delete',
-        'export',
-        'move',
-        'purge',
-        'purge_version',
-        'read',
-        'restore',
-        'restrict_content',
-        'update',
-        'use',
-      ])
-      .openapi({ description: 'The operation itself.' }),
-    targetType: z
-      .string()
-      .openapi({
-        description:
-          'The space or content type that the operation applies to. Could be one of- - application - page - blogpost - comment - attachment - space',
-      }),
-  })
-  .openapi({
-    required: ['operation', 'targetType'],
-    description: 'An operation and the target entity that it applies to, e.g. create page.',
-  })
-  .openapi('OperationCheckResult')
-
-const ContentChildrenSchema: z.ZodType<ContentChildrenType> = z
-  .lazy(() =>
-    z
-      .looseObject({
-        attachment: ContentArraySchema.exactOptional(),
-        comment: ContentArraySchema.exactOptional(),
-        page: ContentArraySchema.exactOptional(),
-        whiteboard: ContentArraySchema.exactOptional(),
-        database: ContentArraySchema.exactOptional(),
-        embed: ContentArraySchema.exactOptional(),
-        folder: ContentArraySchema.exactOptional(),
-        _expandable: z
-          .looseObject({
-            attachment: z.string().exactOptional(),
-            comment: z.string().exactOptional(),
-            page: z.string().exactOptional(),
-            whiteboard: z.string().exactOptional(),
-            database: z.string().exactOptional(),
-            embed: z.string().exactOptional(),
-            folder: z.string().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        _links: GenericLinksSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('ContentChildren')
-
-type GenericLinksType = { [key: string]: { [key: string]: unknown } | string }
-
-const GenericLinksSchema: z.ZodType<GenericLinksType> = z
-  .record(z.string(), z.xor([z.looseObject({}), z.string()]))
-  .openapi('GenericLinks')
-
-type ContentChildTypeType = {
-  attachment?: { value: boolean; _links: z.infer<typeof GenericLinksSchema> }
-  comment?: { value: boolean; _links: z.infer<typeof GenericLinksSchema> }
-  page?: { value: boolean; _links: z.infer<typeof GenericLinksSchema> }
-  _expandable?: {
-    all?: string
-    attachment?: string
-    comment?: string
-    page?: string
-    whiteboard?: string
-    database?: string
-    embed?: string
-    folder?: string
-  }
-}
-
-const ContentChildTypeSchema: z.ZodType<ContentChildTypeType> = z
-  .looseObject({
-    attachment: z
-      .object({ value: z.boolean(), _links: GenericLinksSchema })
-      .exactOptional()
-      .openapi({ required: ['_links', 'value'] }),
-    comment: z
-      .object({ value: z.boolean(), _links: GenericLinksSchema })
-      .exactOptional()
-      .openapi({ required: ['_links', 'value'] }),
-    page: z
-      .object({ value: z.boolean(), _links: GenericLinksSchema })
-      .exactOptional()
-      .openapi({ required: ['_links', 'value'] }),
-    _expandable: z
-      .object({
-        all: z.string().exactOptional(),
-        attachment: z.string().exactOptional(),
-        comment: z.string().exactOptional(),
-        page: z.string().exactOptional(),
-        whiteboard: z.string().exactOptional(),
-        database: z.string().exactOptional(),
-        embed: z.string().exactOptional(),
-        folder: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    description:
-      "Shows whether a piece of content has attachments, comments, or child pages/whiteboards.\nNote, this doesn't actually contain the child objects.",
-    required: [],
-  })
-  .openapi('ContentChildType')
-
-const ContainerSchema: z.ZodType<ContainerType> = z
-  .looseObject({})
-  .nullable()
-  .openapi({
-    description:
-      'Container for content. This can be either a space (containing a page or blogpost)\nor a page/blog post (containing an attachment or comment)',
-  })
-  .openapi('Container')
+const LabelSchema: z.ZodType<LabelType> = z
+  .object({ prefix: z.string(), name: z.string(), id: z.string(), label: z.string() })
+  .openapi({ required: ['id', 'label', 'name', 'prefix'] })
+  .openapi('Label')
 
 const EmbeddableSchema = z.looseObject({}).openapi('Embeddable')
 
@@ -404,6 +92,12 @@ const WebResourceDependenciesSchema = z
   .openapi({ required: [] })
   .openapi('WebResourceDependencies')
 
+type GenericLinksType = { [key: string]: { [key: string]: unknown } | string }
+
+const GenericLinksSchema: z.ZodType<GenericLinksType> = z
+  .record(z.string(), z.xor([z.looseObject({}), z.string()]))
+  .openapi('GenericLinks')
+
 type ContentBodyType = {
   value: string
   representation:
@@ -475,6 +169,391 @@ const ContentBodySchema: z.ZodType<ContentBodyType> = z
   })
   .openapi({ required: ['representation', 'value'] })
   .openapi('ContentBody')
+
+const ContentTemplateBodySchema = z
+  .object({
+    view: ContentBodySchema.exactOptional(),
+    export_view: ContentBodySchema.exactOptional(),
+    styled_view: ContentBodySchema.exactOptional(),
+    storage: ContentBodySchema.exactOptional(),
+    editor: ContentBodySchema.exactOptional(),
+    editor2: ContentBodySchema.exactOptional(),
+    wiki: ContentBodySchema.exactOptional(),
+    atlas_doc_format: ContentBodySchema.exactOptional(),
+    anonymous_export_view: ContentBodySchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The body of the new content. Does not apply to attachments.\nOnly one body format should be specified as the property for\nthis object, e.g. `storage`.\n\nNote, `editor2` format is used by Atlassian only. `anonymous_export_view` is\nthe same as `export_view` format but only content viewable by an anonymous\nuser is included.',
+    required: [],
+  })
+  .openapi('ContentTemplateBody')
+
+const BlueprintTemplateSchema = z
+  .object({
+    templateId: z.string(),
+    originalTemplate: z
+      .object({ pluginKey: z.string(), moduleKey: z.string() })
+      .openapi({ required: ['moduleKey', 'pluginKey'] }),
+    referencingBlueprint: z.string(),
+    name: z.string(),
+    description: z.string(),
+    space: z.looseObject({}).exactOptional(),
+    labels: z.array(LabelSchema),
+    templateType: z.string(),
+    editorVersion: z.string().exactOptional(),
+    body: ContentTemplateBodySchema.exactOptional(),
+    _expandable: z
+      .object({ body: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    _links: GenericLinksSchema,
+  })
+  .openapi({
+    required: [
+      '_links',
+      'description',
+      'labels',
+      'name',
+      'originalTemplate',
+      'referencingBlueprint',
+      'templateId',
+      'templateType',
+    ],
+  })
+  .openapi('BlueprintTemplate')
+
+type BlueprintTemplateArrayType = {
+  results: z.infer<typeof BlueprintTemplateSchema>[]
+  start: number
+  limit: number
+  size: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+type ContainerType = { [key: string]: unknown } | null
+
+const ContainerSchema: z.ZodType<ContainerType> = z
+  .looseObject({})
+  .nullable()
+  .openapi({
+    description:
+      'Container for content. This can be either a space (containing a page or blogpost)\nor a page/blog post (containing an attachment or comment)',
+  })
+  .openapi('Container')
+
+const VersionSchema: z.ZodType<VersionType> = z
+  .lazy(() =>
+    z
+      .looseObject({
+        by: UserSchema.exactOptional(),
+        when: z.iso.datetime({ offset: true }).nullable(),
+        friendlyWhen: z.string().nullable().exactOptional(),
+        message: z.string().nullable().exactOptional(),
+        number: z
+          .int32()
+          .openapi({ description: 'Set this to the current version number incremented by one' }),
+        minorEdit: z
+          .boolean()
+          .openapi({
+            description:
+              "If `minorEdit` is set to 'true', no notification email or activity\nstream will be generated for the change.",
+          }),
+        content: ContentSchema.exactOptional(),
+        collaborators: UsersUserKeysSchema.exactOptional(),
+        _expandable: z
+          .object({
+            content: z.string().exactOptional(),
+            collaborators: z.string().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        _links: GenericLinksSchema.exactOptional(),
+        contentTypeModified: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'True if content type is modifed in this version (e.g. page to blog)',
+          }),
+        confRev: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The revision id provided by confluence to be used as a revision in Synchrony',
+          }),
+        syncRev: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The revision id provided by Synchrony' }),
+        syncRevSource: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Source of the synchrony revision' }),
+      })
+      .nullable()
+      .openapi({ required: ['minorEdit', 'number', 'when'] }),
+  )
+  .openapi('Version')
+
+type AttachmentPropertiesUpdateBodyType = {
+  id: string
+  type: string
+  status?: string
+  title?: string
+  container?: z.infer<typeof ContainerSchema>
+  metadata?: { mediaType?: string }
+  extensions?: { [key: string]: unknown }
+  version: z.infer<typeof VersionSchema>
+}
+
+const SpaceSchema: z.ZodType<SpaceType> = z
+  .lazy(() =>
+    z
+      .object({
+        id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        key: z.string(),
+        alias: z.string().exactOptional(),
+        name: z.string(),
+        icon: IconSchema.exactOptional(),
+        description: z
+          .object({
+            plain: SpaceDescriptionSchema.exactOptional(),
+            view: SpaceDescriptionSchema.exactOptional(),
+            _expandable: z
+              .object({ view: z.string().exactOptional(), plain: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        homepage: ContentSchema.exactOptional(),
+        type: z.string(),
+        metadata: z
+          .object({
+            labels: LabelArraySchema.exactOptional(),
+            _expandable: z.looseObject({}).exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        operations: z.array(OperationCheckResultSchema).exactOptional(),
+        permissions: z.array(SpacePermissionSchema).exactOptional(),
+        status: z.string(),
+        settings: SpaceSettingsSchema.exactOptional(),
+        theme: ThemeSchema.exactOptional(),
+        lookAndFeel: LookAndFeelSchema.exactOptional(),
+        history: z
+          .object({
+            createdDate: z.iso.datetime({ offset: true }),
+            createdBy: UserSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: ['createdDate'] }),
+        _expandable: z
+          .object({
+            settings: z.string().exactOptional(),
+            metadata: z.string().exactOptional(),
+            operations: z.string().exactOptional(),
+            lookAndFeel: z.string().exactOptional(),
+            permissions: z.string().exactOptional(),
+            icon: z.string().exactOptional(),
+            description: z.string().exactOptional(),
+            theme: z.string().exactOptional(),
+            history: z.string().exactOptional(),
+            homepage: z.string().exactOptional(),
+            identifiers: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+        _links: GenericLinksSchema,
+      })
+      .nullable()
+      .openapi({ required: ['_expandable', '_links', 'key', 'name', 'status', 'type'] }),
+  )
+  .openapi('Space')
+
+const ContentHistorySchema: z.ZodType<ContentHistoryType> = z
+  .lazy(() =>
+    z
+      .object({
+        latest: z.boolean(),
+        createdBy: UserSchema.exactOptional(),
+        ownedBy: UserSchema.exactOptional(),
+        lastOwnedBy: UserSchema.exactOptional(),
+        createdDate: z.iso.datetime({ offset: true }).exactOptional(),
+        lastUpdated: VersionSchema.exactOptional(),
+        previousVersion: VersionSchema.exactOptional(),
+        contributors: z
+          .object({ publishers: UsersUserKeysSchema.exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        nextVersion: VersionSchema.exactOptional(),
+        _expandable: z
+          .object({
+            lastUpdated: z.string().exactOptional(),
+            previousVersion: z.string().exactOptional(),
+            contributors: z.string().exactOptional(),
+            nextVersion: z.string().exactOptional(),
+            ownedBy: z.string().exactOptional(),
+            lastOwnedBy: z.string().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        _links: GenericLinksSchema.exactOptional(),
+      })
+      .nullable()
+      .openapi({ required: ['latest'] }),
+  )
+  .openapi('ContentHistory')
+
+type OperationCheckResultType = {
+  operation:
+    | 'administer'
+    | 'archive'
+    | 'clear_permissions'
+    | 'copy'
+    | 'create'
+    | 'create_space'
+    | 'delete'
+    | 'export'
+    | 'move'
+    | 'purge'
+    | 'purge_version'
+    | 'read'
+    | 'restore'
+    | 'restrict_content'
+    | 'update'
+    | 'use'
+  targetType: string
+}
+
+const OperationCheckResultSchema: z.ZodType<OperationCheckResultType> = z
+  .object({
+    operation: z
+      .enum([
+        'administer',
+        'archive',
+        'clear_permissions',
+        'copy',
+        'create',
+        'create_space',
+        'delete',
+        'export',
+        'move',
+        'purge',
+        'purge_version',
+        'read',
+        'restore',
+        'restrict_content',
+        'update',
+        'use',
+      ])
+      .openapi({ description: 'The operation itself.' }),
+    targetType: z
+      .string()
+      .openapi({
+        description:
+          'The space or content type that the operation applies to. Could be one of- - application - page - blogpost - comment - attachment - space',
+      }),
+  })
+  .openapi({
+    required: ['operation', 'targetType'],
+    description: 'An operation and the target entity that it applies to, e.g. create page.',
+  })
+  .openapi('OperationCheckResult')
+
+const ContentChildrenSchema: z.ZodType<ContentChildrenType> = z
+  .lazy(() =>
+    z
+      .looseObject({
+        attachment: ContentArraySchema.exactOptional(),
+        comment: ContentArraySchema.exactOptional(),
+        page: ContentArraySchema.exactOptional(),
+        whiteboard: ContentArraySchema.exactOptional(),
+        database: ContentArraySchema.exactOptional(),
+        embed: ContentArraySchema.exactOptional(),
+        folder: ContentArraySchema.exactOptional(),
+        _expandable: z
+          .looseObject({
+            attachment: z.string().exactOptional(),
+            comment: z.string().exactOptional(),
+            page: z.string().exactOptional(),
+            whiteboard: z.string().exactOptional(),
+            database: z.string().exactOptional(),
+            embed: z.string().exactOptional(),
+            folder: z.string().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        _links: GenericLinksSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('ContentChildren')
+
+type ContentChildTypeType = {
+  attachment?: { value: boolean; _links: z.infer<typeof GenericLinksSchema> }
+  comment?: { value: boolean; _links: z.infer<typeof GenericLinksSchema> }
+  page?: { value: boolean; _links: z.infer<typeof GenericLinksSchema> }
+  _expandable?: {
+    all?: string
+    attachment?: string
+    comment?: string
+    page?: string
+    whiteboard?: string
+    database?: string
+    embed?: string
+    folder?: string
+  }
+}
+
+const ContentChildTypeSchema: z.ZodType<ContentChildTypeType> = z
+  .looseObject({
+    attachment: z
+      .object({ value: z.boolean(), _links: GenericLinksSchema })
+      .exactOptional()
+      .openapi({ required: ['_links', 'value'] }),
+    comment: z
+      .object({ value: z.boolean(), _links: GenericLinksSchema })
+      .exactOptional()
+      .openapi({ required: ['_links', 'value'] }),
+    page: z
+      .object({ value: z.boolean(), _links: GenericLinksSchema })
+      .exactOptional()
+      .openapi({ required: ['_links', 'value'] }),
+    _expandable: z
+      .object({
+        all: z.string().exactOptional(),
+        attachment: z.string().exactOptional(),
+        comment: z.string().exactOptional(),
+        page: z.string().exactOptional(),
+        whiteboard: z.string().exactOptional(),
+        database: z.string().exactOptional(),
+        embed: z.string().exactOptional(),
+        folder: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    description:
+      "Shows whether a piece of content has attachments, comments, or child pages/whiteboards.\nNote, this doesn't actually contain the child objects.",
+    required: [],
+  })
+  .openapi('ContentChildType')
 
 const ContentRestrictionSchema: z.ZodType<ContentRestrictionType> = z
   .lazy(() =>
@@ -549,7 +628,7 @@ const ContentMetadataSchema: z.ZodType<ContentMetadataType> = z
               })
               .exactOptional()
               .openapi({ required: [] }),
-            scheduled: z.object({}).exactOptional(),
+            scheduled: z.looseObject({}).exactOptional(),
             _expandable: z
               .object({
                 favourited: z.string().exactOptional(),
@@ -708,8 +787,8 @@ const ContentSchema: z.ZodType<ContentType> = z
           .exactOptional()
           .openapi({ required: [] }),
         metadata: ContentMetadataSchema.exactOptional(),
-        macroRenderedOutput: z.record(z.string(), z.object({})).exactOptional(),
-        extensions: z.object({}).exactOptional(),
+        macroRenderedOutput: z.record(z.string(), z.looseObject({})).exactOptional(),
+        extensions: z.looseObject({}).exactOptional(),
         _expandable: z
           .object({
             childTypes: z.string().exactOptional(),
@@ -743,6 +822,11 @@ type ContentArrayType = {
   start?: number
   limit?: number
   size: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+type ContentBlogpostType = z.infer<typeof ContentSchema> & {
+  metadata: z.infer<typeof ContentMetadataSchema>
   _links: z.infer<typeof GenericLinksSchema>
 }
 
@@ -780,128 +864,38 @@ type ContentChildrenType = {
   _links?: z.infer<typeof GenericLinksSchema>
 }
 
-const UserSchema: z.ZodType<UserType> = z
-  .lazy(() =>
-    z
-      .looseObject({
-        type: z.enum(['known', 'unknown', 'anonymous', 'user']),
-        username: GenericUserNameSchema.exactOptional(),
-        userKey: GenericUserKeySchema.exactOptional(),
-        accountId: GenericAccountIdSchema.exactOptional(),
-        accountType: z
-          .enum(['atlassian', 'app', ''])
-          .exactOptional()
-          .openapi({
-            description:
-              'The account type of the user, may return empty string if unavailable. App is if the user is a bot user created on behalf of an Atlassian app.',
-          }),
-        email: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The email address of the user. Depending on the user's privacy setting, this may return an empty string.",
-          }),
-        publicName: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The public name or nickname of the user. Will always contain a value.',
-          }),
-        profilePicture: IconSchema.exactOptional(),
-        displayName: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "The displays name of the user. Depending on the user's privacy setting, this may be the same as publicName.",
-          }),
-        timeZone: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              "This displays user time zone. Depending on the user's privacy setting, this may return null.",
-          }),
-        externalCollaborator: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'This is deprecated. Use `isGuest` instead to find out whether the user is a guest user.',
-          }),
-        isExternalCollaborator: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'This is deprecated. Use `isGuest` instead to find out whether the user is a guest user.',
-          }),
-        isGuest: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether the user is a guest user' }),
-        operations: z.array(OperationCheckResultSchema).nullable().exactOptional(),
-        details: UserDetailsSchema.exactOptional(),
-        personalSpace: SpaceSchema.exactOptional(),
-        _expandable: z
-          .object({
-            operations: z.string().exactOptional(),
-            details: z.string().exactOptional(),
-            personalSpace: z.string().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        _links: GenericLinksSchema.exactOptional(),
-      })
-      .nullable()
-      .openapi({ required: ['type'] }),
-  )
-  .openapi('User')
+type IconType = { path: string; width: number; height: number; isDefault: boolean } | null
 
-const UsersUserKeysSchema: z.ZodType<UsersUserKeysType> = z
-  .lazy(() =>
-    z
-      .looseObject({
-        users: z.array(UserSchema).exactOptional(),
-        userKeys: z.array(z.string()).exactOptional(),
-        _links: GenericLinksSchema.exactOptional(),
-      })
-      .nullable()
-      .openapi({ required: ['userAccountIds'] }),
-  )
-  .openapi('UsersUserKeys')
+const IconSchema: z.ZodType<IconType> = z
+  .object({ path: z.string(), width: z.int32(), height: z.int32(), isDefault: z.boolean() })
+  .nullable()
+  .openapi({
+    required: ['height', 'isDefault', 'path', 'width'],
+    description:
+      "This object represents an icon. If used as a profilePicture, this may be returned as null, depending on the user's privacy setting.",
+  })
+  .openapi('Icon')
 
-type ContentHistoryType = {
-  latest: boolean
-  createdBy?: z.infer<typeof UserSchema>
-  ownedBy?: z.infer<typeof UserSchema>
-  lastOwnedBy?: z.infer<typeof UserSchema>
-  createdDate?: string
-  lastUpdated?: z.infer<typeof VersionSchema>
-  previousVersion?: z.infer<typeof VersionSchema>
-  contributors?: { publishers?: z.infer<typeof UsersUserKeysSchema> }
-  nextVersion?: z.infer<typeof VersionSchema>
-  _expandable?: {
-    lastUpdated?: string
-    previousVersion?: string
-    contributors?: string
-    nextVersion?: string
-    ownedBy?: string
-    lastOwnedBy?: string
-  }
-  _links?: z.infer<typeof GenericLinksSchema>
-} | null
+const GlobalSpaceIdentifierSchema = z
+  .object({ spaceIdentifier: z.string() })
+  .nullable()
+  .openapi({ required: ['spaceIdentifier'] })
+  .openapi('GlobalSpaceIdentifier')
 
-type LabelType = { prefix: string; name: string; id: string; label: string }
+type SpaceDescriptionType = {
+  value: string
+  representation: 'plain' | 'view'
+  embeddedContent: { [key: string]: unknown }[]
+}
 
-const LabelSchema: z.ZodType<LabelType> = z
-  .object({ prefix: z.string(), name: z.string(), id: z.string(), label: z.string() })
-  .openapi({ required: ['id', 'label', 'name', 'prefix'] })
-  .openapi('Label')
+const SpaceDescriptionSchema: z.ZodType<SpaceDescriptionType> = z
+  .looseObject({
+    value: z.string(),
+    representation: z.enum(['plain', 'view']),
+    embeddedContent: z.array(z.looseObject({})),
+  })
+  .openapi({ required: ['embeddedContent', 'representation', 'value'] })
+  .openapi('SpaceDescription')
 
 type LabelArrayType = {
   results: z.infer<typeof LabelSchema>[]
@@ -922,35 +916,11 @@ const LabelArraySchema: z.ZodType<LabelArrayType> = z
   .openapi({ required: ['results', 'size'] })
   .openapi('LabelArray')
 
-type ContentMetadataType = {
-  currentuser?: {
-    favourited?: { isFavourite?: boolean; favouritedDate?: string }
-    lastmodified?: { version?: z.infer<typeof VersionSchema>; friendlyLastModified?: string }
-    lastcontributed?: { status?: string; when?: string }
-    viewed?: { lastSeen?: string; friendlyLastSeen?: string }
-    scheduled?: { [key: string]: unknown }
-    _expandable?: {
-      favourited?: string
-      lastmodified?: string
-      lastcontributed?: string
-      viewed?: string
-      scheduled?: string
-    }
-  }
-  properties?: z.infer<typeof GenericLinksSchema>
-  frontend?: { [key: string]: unknown }
-  labels?: z.infer<typeof LabelArraySchema> | z.infer<typeof LabelSchema>[]
-}
-
-const UserArraySchema: z.ZodType<UserArrayType> = z
+const SpacePermissionSchema: z.ZodType<SpacePermissionType> = z
   .lazy(() =>
     z
       .object({
-        results: z.array(UserSchema),
-        start: z.int32().exactOptional(),
-        limit: z.int32().exactOptional(),
-        size: z.int32().exactOptional(),
-        totalSize: z
+        id: z
           .preprocess(
             (val) =>
               typeof val === 'number' && Number.isSafeInteger(val)
@@ -960,99 +930,112 @@ const UserArraySchema: z.ZodType<UserArrayType> = z
                   : val,
             z.int64(),
           )
-          .default(0n)
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+        subjects: z
+          .object({
+            user: z
+              .object({
+                results: z.array(UserSchema),
+                size: z.int32(),
+                start: z.int32().exactOptional(),
+                limit: z.int32().exactOptional(),
+              })
+              .exactOptional()
+              .openapi({ required: ['results', 'size'] }),
+            group: z
+              .object({
+                results: z.array(GroupSchema),
+                size: z.int32(),
+                start: z.int32().exactOptional(),
+                limit: z.int32().exactOptional(),
+              })
+              .exactOptional()
+              .openapi({ required: ['results', 'size'] }),
+            _expandable: z
+              .object({ user: z.string().exactOptional(), group: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
           .exactOptional()
           .openapi({
-            type: 'integer',
-            format: 'int64',
-            default: 0,
-            description:
-              'This property will return total count of the objects before pagination is applied.\nThis value is returned if `shouldReturnTotalSize` is set to `true`.',
+            description: 'The users and/or groups that the permission applies to.',
+            required: [],
           }),
-        _links: GenericLinksSchema.exactOptional(),
+        operation: OperationCheckResultSchema,
+        anonymousAccess: z
+          .boolean()
+          .default(false)
+          .openapi({ description: 'Grant anonymous users permission to use the operation.' }),
+        unlicensedAccess: z
+          .boolean()
+          .default(false)
+          .openapi({
+            description:
+              "Grants access to unlicensed users from JIRA Service Desk when used\nwith the 'read space' operation.",
+          }),
       })
-      .openapi({ required: ['results'] }),
+      .openapi({
+        required: ['anonymousAccess', 'operation', 'unlicensedAccess'],
+        description:
+          "This object represents a permission for given space. Permissions consist of\nat least one operation object with an accompanying subjects object.\n\nThe following combinations of `operation` and `targetType` values are\nvalid for the `operation` object:\n\n  - 'create': 'page', 'blogpost', 'comment', 'attachment'\n  - 'read': 'space'\n  - 'delete': 'page', 'blogpost', 'comment', 'attachment'\n  - 'export': 'space'\n  - 'administer': 'space'",
+      }),
   )
-  .openapi('UserArray')
+  .openapi('SpacePermission')
 
-type GroupType = {
-  type: 'group'
-  name: string
-  id: string
-  usageType?: 'USERBASE_GROUP' | 'TEAM_COLLABORATION'
-  managedBy?: 'ADMINS' | 'EXTERNAL' | 'TEAM_MEMBERS' | 'OPEN'
+type SpaceSettingsType = {
+  routeOverrideEnabled: boolean
+  editor?: { page: string; blogpost: string; default: string }
+  contentMode?: 'standard' | 'compact' | null
+  spaceKey?: string
+  _links: z.infer<typeof GenericLinksSchema>
+} | null
+
+const SpaceSettingsSchema: z.ZodType<SpaceSettingsType> = z
+  .object({
+    routeOverrideEnabled: z
+      .boolean()
+      .openapi({
+        description:
+          'Defines whether an override for the space home should be used. This is\nused in conjunction with a space theme provided by an app. For\nexample, if this property is set to true, a theme can display a page\nother than the space homepage when users visit the root URL for a\nspace. This property allows apps to provide content-only theming\nwithout overriding the space home.',
+      }),
+    editor: z
+      .object({ page: z.string(), blogpost: z.string(), default: z.string() })
+      .exactOptional()
+      .openapi({ required: ['page', 'blogpost', 'default'] }),
+    contentMode: z
+      .enum(['standard', 'compact'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content rendering mode for the space. Controls spacing and typography\nin the editor and renderer. Valid values are "standard" and "compact".\nWhen set to "compact", content is rendered more densely with smaller\nspacing and typography.',
+      }),
+    spaceKey: z.string().exactOptional(),
+    _links: GenericLinksSchema,
+  })
+  .nullable()
+  .openapi({ required: ['_links', 'routeOverrideEnabled'] })
+  .openapi('SpaceSettings')
+
+type ThemeType = {
+  themeKey: string
+  name?: string
+  description?: string
+  icon?: z.infer<typeof IconSchema>
   _links?: z.infer<typeof GenericLinksSchema>
 }
 
-const GroupSchema: z.ZodType<GroupType> = z
+const ThemeSchema: z.ZodType<ThemeType> = z
   .object({
-    type: z.literal('group').default('group'),
-    name: z.string(),
-    id: z.string(),
-    usageType: z
-      .enum(['USERBASE_GROUP', 'TEAM_COLLABORATION'])
-      .default('USERBASE_GROUP')
-      .exactOptional()
-      .openapi({
-        description:
-          'This property represents how this collection of users is used:\n  - `USERBASE_GROUP`: This value indicates that the collection of users is used as a group.\n  - `TEAM_COLLABORATION`: This value indicates that the collection of users is used as a team.',
-      }),
-    managedBy: z
-      .enum(['ADMINS', 'EXTERNAL', 'TEAM_MEMBERS', 'OPEN'])
-      .default('ADMINS')
-      .exactOptional()
-      .openapi({
-        description:
-          'This property represents how this collection of users is managed:\n  - `ADMINS`: This value indicates that the collection of users is managed by org, site or product admins.\n  - `EXTERNAL`: This value indicates that the collection of users is managed externally (through SCIM, HRIS, etc.).\n  - `TEAM_MEMBERS`: This value indicates that the collection of users is managed by its members.\n  - `OPEN`: This value indicates that the collection of users is not actively managed by any users.',
-      }),
+    themeKey: z.string(),
+    name: z.string().exactOptional(),
+    description: z.string().exactOptional(),
+    icon: IconSchema.exactOptional(),
     _links: GenericLinksSchema.exactOptional(),
   })
-  .openapi({ required: ['name', 'type', 'id'] })
-  .openapi('Group')
-
-type GroupArrayType = {
-  results: z.infer<typeof GroupSchema>[]
-  start: number
-  limit: number
-  size: number
-}
-
-const GroupArraySchema: z.ZodType<GroupArrayType> = z
-  .object({ results: z.array(GroupSchema), start: z.int32(), limit: z.int32(), size: z.int32() })
-  .openapi({ required: ['limit', 'results', 'size', 'start'] })
-  .openapi('GroupArray')
-
-type ContentRestrictionType = {
-  operation:
-    | 'administer'
-    | 'copy'
-    | 'create'
-    | 'delete'
-    | 'export'
-    | 'move'
-    | 'purge'
-    | 'purge_version'
-    | 'read'
-    | 'restore'
-    | 'update'
-    | 'use'
-  restrictions?: {
-    user?: z.infer<typeof UserArraySchema>
-    group?: z.infer<typeof GroupArraySchema>
-    _expandable?: { user?: string; group?: string }
-  }
-  content?: z.infer<typeof ContentSchema>
-  _expandable: { restrictions?: string; content?: string }
-  _links: z.infer<typeof GenericLinksSchema>
-}
-
-type GenericAccountIdType = string | null
-
-type GenericUserNameType = string | null
-
-type GenericUserKeyType = string | null
-
-type IconType = { path: string; width: number; height: number; isDefault: boolean } | null
+  .openapi({ required: ['themeKey'] })
+  .openapi('Theme')
 
 const MenusLookAndFeelSchema = z
   .object({
@@ -1198,36 +1181,241 @@ type LookAndFeelType = {
   spaceReference?: { [key: string]: unknown } | null
 }
 
-const IconSchema: z.ZodType<IconType> = z
-  .object({ path: z.string(), width: z.int32(), height: z.int32(), isDefault: z.boolean() })
-  .nullable()
-  .openapi({
-    required: ['height', 'isDefault', 'path', 'width'],
-    description:
-      "This object represents an icon. If used as a profilePicture, this may be returned as null, depending on the user's privacy setting.",
+const LookAndFeelSchema: z.ZodType<LookAndFeelType> = z
+  .object({
+    headings: z.object({ color: z.string() }).openapi({ required: ['color'] }),
+    links: z.object({ color: z.string() }).openapi({ required: ['color'] }),
+    menus: MenusLookAndFeelSchema,
+    header: HeaderLookAndFeelSchema,
+    horizontalHeader: HorizontalHeaderLookAndFeelSchema.exactOptional(),
+    content: ContentLookAndFeelSchema,
+    bordersAndDividers: z.object({ color: z.string() }).openapi({ required: ['color'] }),
+    spaceReference: z.looseObject({}).nullable().exactOptional(),
   })
-  .openapi('Icon')
+  .openapi({ required: ['bordersAndDividers', 'content', 'header', 'headings', 'links', 'menus'] })
+  .openapi('LookAndFeel')
 
-type SpaceDescriptionType = {
-  value: string
-  representation: 'plain' | 'view'
-  embeddedContent: { [key: string]: unknown }[]
+const UserSchema: z.ZodType<UserType> = z
+  .lazy(() =>
+    z
+      .looseObject({
+        type: z.enum(['known', 'unknown', 'anonymous', 'user']),
+        username: GenericUserNameSchema.exactOptional(),
+        userKey: GenericUserKeySchema.exactOptional(),
+        accountId: GenericAccountIdSchema.exactOptional(),
+        accountType: z
+          .enum(['atlassian', 'app', ''])
+          .exactOptional()
+          .openapi({
+            description:
+              'The account type of the user, may return empty string if unavailable. App is if the user is a bot user created on behalf of an Atlassian app.',
+          }),
+        email: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The email address of the user. Depending on the user's privacy setting, this may return an empty string.",
+          }),
+        publicName: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The public name or nickname of the user. Will always contain a value.',
+          }),
+        profilePicture: IconSchema.exactOptional(),
+        displayName: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The displays name of the user. Depending on the user's privacy setting, this may be the same as publicName.",
+          }),
+        timeZone: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "This displays user time zone. Depending on the user's privacy setting, this may return null.",
+          }),
+        externalCollaborator: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'This is deprecated. Use `isGuest` instead to find out whether the user is a guest user.',
+          }),
+        isExternalCollaborator: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'This is deprecated. Use `isGuest` instead to find out whether the user is a guest user.',
+          }),
+        isGuest: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether the user is a guest user' }),
+        operations: z.array(OperationCheckResultSchema).nullable().exactOptional(),
+        details: UserDetailsSchema.exactOptional(),
+        personalSpace: SpaceSchema.exactOptional(),
+        _expandable: z
+          .object({
+            operations: z.string().exactOptional(),
+            details: z.string().exactOptional(),
+            personalSpace: z.string().exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        _links: GenericLinksSchema.exactOptional(),
+      })
+      .nullable()
+      .openapi({ required: ['type'] }),
+  )
+  .openapi('User')
+
+const ContentBodyCreateSchema = z
+  .looseObject({
+    value: z.string().openapi({ description: 'The body of the content in the relevant format.' }),
+    representation: z
+      .enum([
+        'view',
+        'export_view',
+        'styled_view',
+        'storage',
+        'editor',
+        'editor2',
+        'anonymous_export_view',
+        'wiki',
+        'atlas_doc_format',
+        'plain',
+        'raw',
+      ])
+      .openapi({
+        description:
+          "The content format type. Set the value of this property to\nthe name of the format being used, e.g. 'storage'.",
+      }),
+  })
+  .openapi({
+    required: ['representation', 'value'],
+    description: 'This object is used when creating or updating content.',
+  })
+  .openapi('ContentBodyCreate')
+
+type ContentCreateType = {
+  id?: string | null
+  title?: string | null
+  type: string
+  space?: {
+    id?: bigint | null
+    name?: string | null
+    icon?: z.infer<typeof IconSchema>
+    identifiers?: z.infer<typeof GlobalSpaceIdentifierSchema>
+    description?: {
+      plain?: z.infer<typeof SpaceDescriptionSchema>
+      view?: z.infer<typeof SpaceDescriptionSchema>
+      _expandable?: { view?: string; plain?: string }
+    } | null
+    homepage?: z.infer<typeof ContentSchema>
+    type?: string | null
+    metadata?: {
+      labels?: z.infer<typeof LabelArraySchema>
+      _expandable?: { [key: string]: unknown }
+    } | null
+    operations?: z.infer<typeof OperationCheckResultSchema>[] | null
+    permissions?: z.infer<typeof SpacePermissionSchema>[] | null
+    status?: string | null
+    settings?: z.infer<typeof SpaceSettingsSchema>
+    theme?: z.infer<typeof ThemeSchema>
+    lookAndFeel?: z.infer<typeof LookAndFeelSchema>
+    history?: { createdDate: string; createdBy?: z.infer<typeof UserSchema> }
+    key: string
+    links?: { [key: string]: unknown } | null
+  } | null
+  status?: 'current' | 'deleted' | 'historical' | 'draft'
+  container?: { id: number | string; type: string } | null
+  ancestors?: { id: string }[] | null
+  body?: {
+    view?: z.infer<typeof ContentBodyCreateSchema>
+    export_view?: z.infer<typeof ContentBodyCreateSchema>
+    styled_view?: z.infer<typeof ContentBodyCreateSchema>
+    storage?: z.infer<typeof ContentBodyCreateSchema>
+    editor?: z.infer<typeof ContentBodyCreateSchema>
+    editor2?: z.infer<typeof ContentBodyCreateSchema>
+    wiki?: z.infer<typeof ContentBodyCreateSchema>
+    anonymous_export_view?: z.infer<typeof ContentBodyCreateSchema>
+    plain?: z.infer<typeof ContentBodyCreateSchema>
+    atlas_doc_format?: z.infer<typeof ContentBodyCreateSchema>
+    raw?: z.infer<typeof ContentBodyCreateSchema>
+  }
+} | null
+
+const UsersUserKeysSchema: z.ZodType<UsersUserKeysType> = z
+  .lazy(() =>
+    z
+      .looseObject({
+        users: z.array(UserSchema).exactOptional(),
+        userKeys: z.array(z.string()).exactOptional(),
+        _links: GenericLinksSchema.exactOptional(),
+      })
+      .nullable()
+      .openapi({ required: ['userAccountIds'] }),
+  )
+  .openapi('UsersUserKeys')
+
+type ContentHistoryType = {
+  latest: boolean
+  createdBy?: z.infer<typeof UserSchema>
+  ownedBy?: z.infer<typeof UserSchema>
+  lastOwnedBy?: z.infer<typeof UserSchema>
+  createdDate?: string
+  lastUpdated?: z.infer<typeof VersionSchema>
+  previousVersion?: z.infer<typeof VersionSchema>
+  contributors?: { publishers?: z.infer<typeof UsersUserKeysSchema> }
+  nextVersion?: z.infer<typeof VersionSchema>
+  _expandable?: {
+    lastUpdated?: string
+    previousVersion?: string
+    contributors?: string
+    nextVersion?: string
+    ownedBy?: string
+    lastOwnedBy?: string
+  }
+  _links?: z.infer<typeof GenericLinksSchema>
+} | null
+
+type ContentMetadataType = {
+  currentuser?: {
+    favourited?: { isFavourite?: boolean; favouritedDate?: string }
+    lastmodified?: { version?: z.infer<typeof VersionSchema>; friendlyLastModified?: string }
+    lastcontributed?: { status?: string; when?: string }
+    viewed?: { lastSeen?: string; friendlyLastSeen?: string }
+    scheduled?: { [key: string]: unknown }
+    _expandable?: {
+      favourited?: string
+      lastmodified?: string
+      lastcontributed?: string
+      viewed?: string
+      scheduled?: string
+    }
+  }
+  properties?: z.infer<typeof GenericLinksSchema>
+  frontend?: { [key: string]: unknown }
+  labels?: z.infer<typeof LabelArraySchema> | z.infer<typeof LabelSchema>[]
 }
 
-const SpaceDescriptionSchema: z.ZodType<SpaceDescriptionType> = z
-  .looseObject({
-    value: z.string(),
-    representation: z.enum(['plain', 'view']),
-    embeddedContent: z.array(z.object({})),
-  })
-  .openapi({ required: ['embeddedContent', 'representation', 'value'] })
-  .openapi('SpaceDescription')
-
-const SpacePermissionSchema: z.ZodType<SpacePermissionType> = z
+const UserArraySchema: z.ZodType<UserArrayType> = z
   .lazy(() =>
     z
       .object({
-        id: z
+        results: z.array(UserSchema),
+        start: z.int32().exactOptional(),
+        limit: z.int32().exactOptional(),
+        size: z.int32().exactOptional(),
+        totalSize: z
           .preprocess(
             (val) =>
               typeof val === 'number' && Number.isSafeInteger(val)
@@ -1237,180 +1425,145 @@ const SpacePermissionSchema: z.ZodType<SpacePermissionType> = z
                   : val,
             z.int64(),
           )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64' }),
-        subjects: z
-          .object({
-            user: z
-              .object({
-                results: z.array(UserSchema),
-                size: z.int32(),
-                start: z.int32().exactOptional(),
-                limit: z.int32().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: ['results', 'size'] }),
-            group: z
-              .object({
-                results: z.array(GroupSchema),
-                size: z.int32(),
-                start: z.int32().exactOptional(),
-                limit: z.int32().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: ['results', 'size'] }),
-            _expandable: z
-              .object({ user: z.string().exactOptional(), group: z.string().exactOptional() })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
+          .default(0n)
           .exactOptional()
           .openapi({
-            description: 'The users and/or groups that the permission applies to.',
-            required: [],
-          }),
-        operation: OperationCheckResultSchema,
-        anonymousAccess: z
-          .boolean()
-          .default(false)
-          .openapi({ description: 'Grant anonymous users permission to use the operation.' }),
-        unlicensedAccess: z
-          .boolean()
-          .default(false)
-          .openapi({
+            type: 'integer',
+            format: 'int64',
+            default: 0,
             description:
-              "Grants access to unlicensed users from JIRA Service Desk when used\nwith the 'read space' operation.",
+              'This property will return total count of the objects before pagination is applied.\nThis value is returned if `shouldReturnTotalSize` is set to `true`.',
           }),
+        _links: GenericLinksSchema.exactOptional(),
       })
-      .openapi({
-        required: ['anonymousAccess', 'operation', 'unlicensedAccess'],
-        description:
-          "This object represents a permission for given space. Permissions consist of\nat least one operation object with an accompanying subjects object.\n\nThe following combinations of `operation` and `targetType` values are\nvalid for the `operation` object:\n\n  - 'create': 'page', 'blogpost', 'comment', 'attachment'\n  - 'read': 'space'\n  - 'delete': 'page', 'blogpost', 'comment', 'attachment'\n  - 'export': 'space'\n  - 'administer': 'space'",
-      }),
+      .openapi({ required: ['results'] }),
   )
-  .openapi('SpacePermission')
+  .openapi('UserArray')
 
-type SpaceSettingsType = {
-  routeOverrideEnabled: boolean
-  editor?: { page: string; blogpost: string; default: string }
-  contentMode?: 'standard' | 'compact' | null
-  spaceKey?: string
-  _links: z.infer<typeof GenericLinksSchema>
-} | null
-
-const SpaceSettingsSchema: z.ZodType<SpaceSettingsType> = z
-  .object({
-    routeOverrideEnabled: z
-      .boolean()
-      .openapi({
-        description:
-          'Defines whether an override for the space home should be used. This is\nused in conjunction with a space theme provided by an app. For\nexample, if this property is set to true, a theme can display a page\nother than the space homepage when users visit the root URL for a\nspace. This property allows apps to provide content-only theming\nwithout overriding the space home.',
-      }),
-    editor: z
-      .object({ page: z.string(), blogpost: z.string(), default: z.string() })
-      .exactOptional()
-      .openapi({ required: ['page', 'blogpost', 'default'] }),
-    contentMode: z
-      .enum(['standard', 'compact'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content rendering mode for the space. Controls spacing and typography\nin the editor and renderer. Valid values are "standard" and "compact".\nWhen set to "compact", content is rendered more densely with smaller\nspacing and typography.',
-      }),
-    spaceKey: z.string().exactOptional(),
-    _links: GenericLinksSchema,
-  })
-  .nullable()
-  .openapi({ required: ['_links', 'routeOverrideEnabled'] })
-  .openapi('SpaceSettings')
-
-type ThemeType = {
-  themeKey: string
-  name?: string
-  description?: string
-  icon?: z.infer<typeof IconSchema>
+type GroupType = {
+  type: 'group'
+  name: string
+  id: string
+  usageType?: 'USERBASE_GROUP' | 'TEAM_COLLABORATION'
+  managedBy?: 'ADMINS' | 'EXTERNAL' | 'TEAM_MEMBERS' | 'OPEN'
   _links?: z.infer<typeof GenericLinksSchema>
 }
 
-const ThemeSchema: z.ZodType<ThemeType> = z
+const GroupSchema: z.ZodType<GroupType> = z
   .object({
-    themeKey: z.string(),
-    name: z.string().exactOptional(),
-    description: z.string().exactOptional(),
-    icon: IconSchema.exactOptional(),
+    type: z.literal('group').default('group'),
+    name: z.string(),
+    id: z.string(),
+    usageType: z
+      .enum(['USERBASE_GROUP', 'TEAM_COLLABORATION'])
+      .default('USERBASE_GROUP')
+      .exactOptional()
+      .openapi({
+        description:
+          'This property represents how this collection of users is used:\n  - `USERBASE_GROUP`: This value indicates that the collection of users is used as a group.\n  - `TEAM_COLLABORATION`: This value indicates that the collection of users is used as a team.',
+      }),
+    managedBy: z
+      .enum(['ADMINS', 'EXTERNAL', 'TEAM_MEMBERS', 'OPEN'])
+      .default('ADMINS')
+      .exactOptional()
+      .openapi({
+        description:
+          'This property represents how this collection of users is managed:\n  - `ADMINS`: This value indicates that the collection of users is managed by org, site or product admins.\n  - `EXTERNAL`: This value indicates that the collection of users is managed externally (through SCIM, HRIS, etc.).\n  - `TEAM_MEMBERS`: This value indicates that the collection of users is managed by its members.\n  - `OPEN`: This value indicates that the collection of users is not actively managed by any users.',
+      }),
     _links: GenericLinksSchema.exactOptional(),
   })
-  .openapi({ required: ['themeKey'] })
-  .openapi('Theme')
+  .openapi({ required: ['name', 'type', 'id'] })
+  .openapi('Group')
 
-const LookAndFeelSchema: z.ZodType<LookAndFeelType> = z
-  .lazy(() =>
-    z
-      .object({
-        headings: z.object({ color: z.string() }).openapi({ required: ['color'] }),
-        links: z.object({ color: z.string() }).openapi({ required: ['color'] }),
-        menus: MenusLookAndFeelSchema,
-        header: HeaderLookAndFeelSchema,
-        horizontalHeader: HorizontalHeaderLookAndFeelSchema.exactOptional(),
-        content: ContentLookAndFeelSchema,
-        bordersAndDividers: z.object({ color: z.string() }).openapi({ required: ['color'] }),
-        spaceReference: z.object({}).nullable().exactOptional(),
-      })
-      .openapi({
-        required: ['bordersAndDividers', 'content', 'header', 'headings', 'links', 'menus'],
-      }),
-  )
-  .openapi('LookAndFeel')
+type GroupArrayType = {
+  results: z.infer<typeof GroupSchema>[]
+  start: number
+  limit: number
+  size: number
+}
 
-type SpaceType = {
-  id?: bigint
-  key: string
-  alias?: string
-  name: string
-  icon?: z.infer<typeof IconSchema>
-  description?: {
-    plain?: z.infer<typeof SpaceDescriptionSchema>
-    view?: z.infer<typeof SpaceDescriptionSchema>
-    _expandable?: { view?: string; plain?: string }
-  }
-  homepage?: z.infer<typeof ContentSchema>
-  type: string
-  metadata?: { labels?: z.infer<typeof LabelArraySchema>; _expandable?: { [key: string]: unknown } }
-  operations?: z.infer<typeof OperationCheckResultSchema>[]
-  permissions?: z.infer<typeof SpacePermissionSchema>[]
-  status: string
-  settings?: z.infer<typeof SpaceSettingsSchema>
-  theme?: z.infer<typeof ThemeSchema>
-  lookAndFeel?: z.infer<typeof LookAndFeelSchema>
-  history?: { createdDate: string; createdBy?: z.infer<typeof UserSchema> }
-  _expandable: {
-    settings?: string
-    metadata?: string
-    operations?: string
-    lookAndFeel?: string
-    permissions?: string
-    icon?: string
-    description?: string
-    theme?: string
-    history?: string
-    homepage?: string
-    identifiers?: string
-  }
-  _links: z.infer<typeof GenericLinksSchema>
-} | null
+const GroupArraySchema: z.ZodType<GroupArrayType> = z
+  .object({ results: z.array(GroupSchema), start: z.int32(), limit: z.int32(), size: z.int32() })
+  .openapi({ required: ['limit', 'results', 'size', 'start'] })
+  .openapi('GroupArray')
 
-type SpacePermissionType = {
-  id?: bigint
-  subjects?: {
-    user?: { results: z.infer<typeof UserSchema>[]; size: number; start?: number; limit?: number }
-    group?: { results: z.infer<typeof GroupSchema>[]; size: number; start?: number; limit?: number }
+type ContentRestrictionType = {
+  operation:
+    | 'administer'
+    | 'copy'
+    | 'create'
+    | 'delete'
+    | 'export'
+    | 'move'
+    | 'purge'
+    | 'purge_version'
+    | 'read'
+    | 'restore'
+    | 'update'
+    | 'use'
+  restrictions?: {
+    user?: z.infer<typeof UserArraySchema>
+    group?: z.infer<typeof GroupArraySchema>
     _expandable?: { user?: string; group?: string }
   }
-  operation: z.infer<typeof OperationCheckResultSchema>
-  anonymousAccess: boolean
-  unlicensedAccess: boolean
+  content?: z.infer<typeof ContentSchema>
+  _expandable: { restrictions?: string; content?: string }
+  _links: z.infer<typeof GenericLinksSchema>
 }
+
+type ContentRestrictionArrayType = {
+  results: z.infer<typeof ContentRestrictionSchema>[]
+  start: number
+  limit: number
+  size: number
+  restrictionsHash: string
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+type ContentPageResponseType = {
+  results: z.infer<typeof ContentSchema>[]
+  start: number
+  limit: number
+  size: number
+}
+
+const ContentTemplateSchema = z
+  .object({
+    templateId: z.string(),
+    originalTemplate: z
+      .object({ pluginKey: z.string().exactOptional(), moduleKey: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    referencingBlueprint: z.string().exactOptional(),
+    name: z.string(),
+    description: z.string(),
+    space: z.looseObject({}).exactOptional(),
+    labels: z.array(LabelSchema),
+    templateType: z.string(),
+    editorVersion: z.string().exactOptional(),
+    body: ContentTemplateBodySchema.exactOptional(),
+    _expandable: z
+      .object({ body: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    _links: GenericLinksSchema,
+  })
+  .openapi({ required: ['_links', 'description', 'labels', 'name', 'templateId', 'templateType'] })
+  .openapi('ContentTemplate')
+
+type ContentTemplateArrayType = {
+  results: z.infer<typeof ContentTemplateSchema>[]
+  start: number
+  limit: number
+  size: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+type GenericAccountIdType = string | null
+
+type GenericUserNameType = string | null
+
+type GenericUserKeyType = string | null
 
 const GenericUserNameSchema: z.ZodType<GenericUserNameType> = z
   .string()
@@ -1509,6 +1662,404 @@ const UserDetailsSchema: z.ZodType<UserDetailsType> = z
   .openapi({ required: [] })
   .openapi('UserDetails')
 
+type BulkUserLookupType = {
+  type: 'known' | 'unknown' | 'anonymous' | 'user'
+  username?: z.infer<typeof GenericUserNameSchema>
+  userKey?: z.infer<typeof GenericUserKeySchema>
+  accountId: z.infer<typeof GenericAccountIdSchema>
+  accountType: string
+  email: string
+  publicName: string
+  profilePicture: z.infer<typeof IconSchema>
+  displayName: string
+  timeZone?: string | null
+  isExternalCollaborator?: boolean
+  isGuest?: boolean
+  operations?: z.infer<typeof OperationCheckResultSchema>[]
+  details?: z.infer<typeof UserDetailsSchema>
+  personalSpace?: z.infer<typeof SpaceSchema>
+  _expandable: { operations?: string; details?: string; personalSpace?: string }
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+const BulkUserLookupSchema: z.ZodType<BulkUserLookupType> = z
+  .object({
+    type: z.enum(['known', 'unknown', 'anonymous', 'user']),
+    username: GenericUserNameSchema.exactOptional(),
+    userKey: GenericUserKeySchema.exactOptional(),
+    accountId: GenericAccountIdSchema,
+    accountType: z
+      .string()
+      .openapi({
+        description: 'The account type of the user, may return empty string if unavailable.',
+      }),
+    email: z
+      .string()
+      .openapi({
+        description:
+          "The email address of the user. Depending on the user's privacy setting, this may return an empty string.",
+      }),
+    publicName: z
+      .string()
+      .openapi({
+        description: 'The public name or nickname of the user. Will always contain a value.',
+      }),
+    profilePicture: IconSchema,
+    displayName: z
+      .string()
+      .openapi({
+        description:
+          "The displays name of the user. Depending on the user's privacy setting, this may be the same as publicName.",
+      }),
+    timeZone: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "This displays user time zone. Depending on the user's privacy setting, this may return null.",
+      }),
+    isExternalCollaborator: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is deprecated. Use `isGuest` instead to find out whether the user is a guest user.',
+      }),
+    isGuest: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the user is a guest user' }),
+    operations: z.array(OperationCheckResultSchema).exactOptional(),
+    details: UserDetailsSchema.exactOptional(),
+    personalSpace: SpaceSchema.exactOptional(),
+    _expandable: z
+      .object({
+        operations: z.string().exactOptional(),
+        details: z.string().exactOptional(),
+        personalSpace: z.string().exactOptional(),
+      })
+      .openapi({ required: [] }),
+    _links: GenericLinksSchema,
+  })
+  .openapi({
+    required: [
+      '_expandable',
+      '_links',
+      'accountId',
+      'accountType',
+      'displayName',
+      'email',
+      'profilePicture',
+      'publicName',
+      'type',
+    ],
+  })
+  .openapi('BulkUserLookup')
+
+type BulkUserLookupArrayType = {
+  results: z.infer<typeof BulkUserLookupSchema>[]
+  start: number
+  limit: number
+  size: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+type RelationDataType = {
+  createdBy?: z.infer<typeof UserSchema>
+  createdDate?: string
+  friendlyCreatedDate?: string
+}
+
+const RelationDataSchema: z.ZodType<RelationDataType> = z
+  .object({
+    createdBy: UserSchema.exactOptional(),
+    createdDate: z.iso.datetime({ offset: true }).exactOptional(),
+    friendlyCreatedDate: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RelationData')
+
+type RelationType = {
+  name: string
+  relationData?: z.infer<typeof RelationDataSchema>
+  source?: z.infer<typeof ContentSchema> | z.infer<typeof UserSchema> | z.infer<typeof SpaceSchema>
+  target?: z.infer<typeof ContentSchema> | z.infer<typeof UserSchema> | z.infer<typeof SpaceSchema>
+  _expandable?: { relationData?: string; source?: string; target?: string }
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+const RelationSchema: z.ZodType<RelationType> = z
+  .object({
+    name: z.string(),
+    relationData: RelationDataSchema.exactOptional(),
+    source: z.xor([ContentSchema, UserSchema, SpaceSchema]).exactOptional(),
+    target: z.xor([ContentSchema, UserSchema, SpaceSchema]).exactOptional(),
+    _expandable: z
+      .object({
+        relationData: z.string().exactOptional(),
+        source: z.string().exactOptional(),
+        target: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    _links: GenericLinksSchema,
+  })
+  .openapi({ required: ['_links', 'name'] })
+  .openapi('Relation')
+
+type RelationArrayType = {
+  results: z.infer<typeof RelationSchema>[]
+  start: number
+  limit: number
+  size: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+const ContainerSummarySchema = z
+  .object({ title: z.string(), displayUrl: z.string() })
+  .openapi({ required: ['displayUrl', 'title'] })
+  .openapi('ContainerSummary')
+
+const BreadcrumbSchema = z
+  .object({ label: z.string(), url: z.string(), separator: z.string() })
+  .openapi({ required: ['label', 'separator', 'url'] })
+  .openapi('Breadcrumb')
+
+type SearchResultType = {
+  content?: z.infer<typeof ContentSchema>
+  user?: z.infer<typeof UserSchema>
+  space?: z.infer<typeof SpaceSchema>
+  title: string
+  excerpt: string
+  url: string
+  resultParentContainer?: z.infer<typeof ContainerSummarySchema>
+  resultGlobalContainer?: z.infer<typeof ContainerSummarySchema>
+  breadcrumbs: z.infer<typeof BreadcrumbSchema>[]
+  entityType: string
+  iconCssClass: string
+  lastModified: string
+  friendlyLastModified?: string
+  score?: number
+}
+
+const SearchResultSchema: z.ZodType<SearchResultType> = z
+  .object({
+    content: ContentSchema.exactOptional(),
+    user: UserSchema.exactOptional(),
+    space: SpaceSchema.exactOptional(),
+    title: z.string(),
+    excerpt: z.string(),
+    url: z.string(),
+    resultParentContainer: ContainerSummarySchema.exactOptional(),
+    resultGlobalContainer: ContainerSummarySchema.exactOptional(),
+    breadcrumbs: z.array(BreadcrumbSchema),
+    entityType: z.string(),
+    iconCssClass: z.string(),
+    lastModified: z.iso.datetime({ offset: true }),
+    friendlyLastModified: z.string().exactOptional(),
+    score: z.number().exactOptional(),
+  })
+  .openapi({
+    required: [
+      'breadcrumbs',
+      'entityType',
+      'excerpt',
+      'iconCssClass',
+      'lastModified',
+      'title',
+      'url',
+    ],
+  })
+  .openapi('SearchResult')
+
+type SearchPageResponseSearchResultType = {
+  results: z.infer<typeof SearchResultSchema>[]
+  start: number
+  limit: number
+  size: number
+  totalSize: number
+  cqlQuery: string
+  searchDuration: number
+  archivedResultCount?: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+type SpaceType = {
+  id?: bigint
+  key: string
+  alias?: string
+  name: string
+  icon?: z.infer<typeof IconSchema>
+  description?: {
+    plain?: z.infer<typeof SpaceDescriptionSchema>
+    view?: z.infer<typeof SpaceDescriptionSchema>
+    _expandable?: { view?: string; plain?: string }
+  }
+  homepage?: z.infer<typeof ContentSchema>
+  type: string
+  metadata?: { labels?: z.infer<typeof LabelArraySchema>; _expandable?: { [key: string]: unknown } }
+  operations?: z.infer<typeof OperationCheckResultSchema>[]
+  permissions?: z.infer<typeof SpacePermissionSchema>[]
+  status: string
+  settings?: z.infer<typeof SpaceSettingsSchema>
+  theme?: z.infer<typeof ThemeSchema>
+  lookAndFeel?: z.infer<typeof LookAndFeelSchema>
+  history?: { createdDate: string; createdBy?: z.infer<typeof UserSchema> }
+  _expandable: {
+    settings?: string
+    metadata?: string
+    operations?: string
+    lookAndFeel?: string
+    permissions?: string
+    icon?: string
+    description?: string
+    theme?: string
+    history?: string
+    homepage?: string
+    identifiers?: string
+  }
+  _links: z.infer<typeof GenericLinksSchema>
+} | null
+
+type SpaceArrayType = {
+  results: z.infer<typeof SpaceSchema>[]
+  start: number
+  limit: number
+  size: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+const SpaceDescriptionCreateSchema = z
+  .object({
+    plain: z
+      .looseObject({
+        value: z.string().exactOptional().openapi({ description: 'The space description.' }),
+        representation: z.string().exactOptional().openapi({ description: "Set to 'plain'." }),
+      })
+      .openapi({ required: [] }),
+  })
+  .nullable()
+  .openapi({
+    required: ['plain'],
+    description:
+      "The description of the new/updated space. Note, only the 'plain' representation\ncan be used for the description when creating or updating a space.",
+  })
+  .openapi('SpaceDescriptionCreate')
+
+const GroupCreateSchema = z
+  .looseObject({ type: z.literal('group').default('group'), id: z.string().exactOptional() })
+  .openapi({ required: ['type'] })
+  .openapi('GroupCreate')
+
+type SpacePermissionCreateType = {
+  subjects?: {
+    user?: { results: z.infer<typeof UserSchema>[]; size: number }
+    group?: { results: z.infer<typeof GroupCreateSchema>[]; size: number }
+  }
+  operation: z.infer<typeof OperationCheckResultSchema>
+  anonymousAccess: boolean
+  unlicensedAccess: boolean
+}
+
+const SpacePermissionCreateSchema: z.ZodType<SpacePermissionCreateType> = z
+  .looseObject({
+    subjects: z
+      .object({
+        user: z
+          .object({ results: z.array(UserSchema), size: z.int32() })
+          .exactOptional()
+          .openapi({ required: ['results', 'size'] }),
+        group: z
+          .object({ results: z.array(GroupCreateSchema), size: z.int32() })
+          .exactOptional()
+          .openapi({ required: ['results', 'size'] }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The users and/or groups that the permission applies to.',
+        required: [],
+      }),
+    operation: OperationCheckResultSchema,
+    anonymousAccess: z
+      .boolean()
+      .default(false)
+      .openapi({ description: 'Grant anonymous users permission to use the operation.' }),
+    unlicensedAccess: z
+      .boolean()
+      .default(false)
+      .openapi({
+        description:
+          "Grants access to unlicensed users from JIRA Service Desk when used\nwith the 'read space' operation.",
+      }),
+  })
+  .openapi({
+    required: ['anonymousAccess', 'operation', 'unlicensedAccess'],
+    description:
+      "This object represents a permission for given space. Permissions consist of\nat least one operation object with an accompanying subjects object.\n\nThe following combinations of `operation` and `targetType` values are\nvalid for the `operation` object:\n\n  - 'create': 'page', 'blogpost', 'comment', 'attachment'\n  - 'read': 'space'\n  - 'delete': 'page', 'blogpost', 'comment', 'attachment'\n  - 'export': 'space'\n  - 'administer': 'space'",
+  })
+  .openapi('SpacePermissionCreate')
+
+type SpaceCreateType = {
+  name: string
+  key?: string
+  alias?: string
+  description?: z.infer<typeof SpaceDescriptionCreateSchema>
+  permissions?: z.infer<typeof SpacePermissionCreateSchema>[] | null
+}
+
+type SpacePermissionType = {
+  id?: bigint
+  subjects?: {
+    user?: { results: z.infer<typeof UserSchema>[]; size: number; start?: number; limit?: number }
+    group?: { results: z.infer<typeof GroupSchema>[]; size: number; start?: number; limit?: number }
+    _expandable?: { user?: string; group?: string }
+  }
+  operation: z.infer<typeof OperationCheckResultSchema>
+  anonymousAccess: boolean
+  unlicensedAccess: boolean
+}
+
+type SpacePropertyType = {
+  id: string
+  key: string
+  value: string[] | boolean | { [key: string]: unknown } | string
+  version?: z.infer<typeof VersionSchema>
+  space?: z.infer<typeof SpaceSchema>
+  _links?: z.infer<typeof GenericLinksSchema>
+  _expandable: { version?: string; space?: string }
+}
+
+const SpacePropertySchema: z.ZodType<SpacePropertyType> = z
+  .object({
+    id: z.string(),
+    key: z.string(),
+    value: z.xor([z.array(z.string()), z.boolean(), z.looseObject({}), z.string()]),
+    version: VersionSchema.exactOptional(),
+    space: SpaceSchema.exactOptional(),
+    _links: GenericLinksSchema.exactOptional(),
+    _expandable: z
+      .object({ version: z.string().exactOptional(), space: z.string().exactOptional() })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['_expandable', 'id', 'key', 'value'] })
+  .openapi('SpaceProperty')
+
+type SpacePropertyArrayType = {
+  results: z.infer<typeof SpacePropertySchema>[]
+  start: number
+  limit: number
+  size: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
+
+type SpacePropertyUpdateType = {
+  key?: string
+  value: string[] | boolean | { [key: string]: unknown } | string
+  version: z.infer<typeof VersionSchema>
+  space?: { key?: string }
+}
+
 type UserType = {
   type: 'known' | 'unknown' | 'anonymous' | 'user'
   username?: z.infer<typeof GenericUserNameSchema>
@@ -1561,6 +2112,14 @@ type VersionType = {
   syncRev?: string | null
   syncRevSource?: string | null
 } | null
+
+type VersionArrayType = {
+  results: z.infer<typeof VersionSchema>[]
+  start: number
+  limit: number
+  size: number
+  _links: z.infer<typeof GenericLinksSchema>
+}
 
 const AccountIdSchema = z
   .object({ accountId: z.string() })
@@ -1864,60 +2423,7 @@ const AvailableContentStatesSchema = z
   .openapi({ required: ['spaceContentStates', 'customContentStates'] })
   .openapi('AvailableContentStates')
 
-const ContentTemplateBodySchema = z
-  .object({
-    view: ContentBodySchema.exactOptional(),
-    export_view: ContentBodySchema.exactOptional(),
-    styled_view: ContentBodySchema.exactOptional(),
-    storage: ContentBodySchema.exactOptional(),
-    editor: ContentBodySchema.exactOptional(),
-    editor2: ContentBodySchema.exactOptional(),
-    wiki: ContentBodySchema.exactOptional(),
-    atlas_doc_format: ContentBodySchema.exactOptional(),
-    anonymous_export_view: ContentBodySchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'The body of the new content. Does not apply to attachments.\nOnly one body format should be specified as the property for\nthis object, e.g. `storage`.\n\nNote, `editor2` format is used by Atlassian only. `anonymous_export_view` is\nthe same as `export_view` format but only content viewable by an anonymous\nuser is included.',
-    required: [],
-  })
-  .openapi('ContentTemplateBody')
-
-const BlueprintTemplateSchema = z
-  .object({
-    templateId: z.string(),
-    originalTemplate: z
-      .object({ pluginKey: z.string(), moduleKey: z.string() })
-      .openapi({ required: ['moduleKey', 'pluginKey'] }),
-    referencingBlueprint: z.string(),
-    name: z.string(),
-    description: z.string(),
-    space: z.looseObject({}).exactOptional(),
-    labels: z.array(LabelSchema),
-    templateType: z.string(),
-    editorVersion: z.string().exactOptional(),
-    body: ContentTemplateBodySchema.exactOptional(),
-    _expandable: z
-      .object({ body: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    _links: GenericLinksSchema,
-  })
-  .openapi({
-    required: [
-      '_links',
-      'description',
-      'labels',
-      'name',
-      'originalTemplate',
-      'referencingBlueprint',
-      'templateId',
-      'templateType',
-    ],
-  })
-  .openapi('BlueprintTemplate')
-
-const BlueprintTemplateArraySchema = z
+const BlueprintTemplateArraySchema: z.ZodType<BlueprintTemplateArrayType> = z
   .object({
     results: z.array(BlueprintTemplateSchema),
     start: z.int32(),
@@ -1928,13 +2434,8 @@ const BlueprintTemplateArraySchema = z
   .openapi({ required: ['_links', 'limit', 'results', 'size', 'start'] })
   .openapi('BlueprintTemplateArray')
 
-const BreadcrumbSchema = z
-  .object({ label: z.string(), url: z.string(), separator: z.string() })
-  .openapi({ required: ['label', 'separator', 'url'] })
-  .openapi('Breadcrumb')
-
 const ConnectModuleSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A [Connect module](https://developer.atlassian.com/cloud/confluence/modules/admin-page/) in the same format as in the\n[app descriptor](https://developer.atlassian.com/cloud/confluence/app-descriptor/).',
@@ -1974,12 +2475,7 @@ const ConnectModulesSchema = z
   })
   .openapi('ConnectModules')
 
-const ContainerSummarySchema = z
-  .object({ title: z.string(), displayUrl: z.string() })
-  .openapi({ required: ['displayUrl', 'title'] })
-  .openapi('ContainerSummary')
-
-const AttachmentPropertiesUpdateBodySchema = z
+const AttachmentPropertiesUpdateBodySchema: z.ZodType<AttachmentPropertiesUpdateBodyType> = z
   .looseObject({
     id: z.string(),
     type: z.string().openapi({ description: 'Set this to "attachment"' }),
@@ -1990,13 +2486,13 @@ const AttachmentPropertiesUpdateBodySchema = z
       .object({ mediaType: z.string().exactOptional() })
       .exactOptional()
       .openapi({ required: [] }),
-    extensions: z.object({}).exactOptional(),
+    extensions: z.looseObject({}).exactOptional(),
     version: VersionSchema,
   })
   .openapi({ required: ['id', 'type', 'version'] })
   .openapi('AttachmentPropertiesUpdateBody')
 
-const ContentBlogpostSchema = ContentSchema.and(
+const ContentBlogpostSchema: z.ZodType<ContentBlogpostType> = ContentSchema.and(
   z
     .object({ metadata: ContentMetadataSchema, _links: GenericLinksSchema })
     .openapi({ required: ['_links', 'metadata'] }),
@@ -2099,34 +2595,6 @@ const AsyncContentBodySchema = z
 
 const AsyncContentBodyArraySchema = z.array(AsyncContentBodySchema).openapi('AsyncContentBodyArray')
 
-const ContentBodyCreateSchema = z
-  .looseObject({
-    value: z.string().openapi({ description: 'The body of the content in the relevant format.' }),
-    representation: z
-      .enum([
-        'view',
-        'export_view',
-        'styled_view',
-        'storage',
-        'editor',
-        'editor2',
-        'anonymous_export_view',
-        'wiki',
-        'atlas_doc_format',
-        'plain',
-        'raw',
-      ])
-      .openapi({
-        description:
-          "The content format type. Set the value of this property to\nthe name of the format being used, e.g. 'storage'.",
-      }),
-  })
-  .openapi({
-    required: ['representation', 'value'],
-    description: 'This object is used when creating or updating content.',
-  })
-  .openapi('ContentBodyCreate')
-
 const ContentBodyCreateStorageSchema = z
   .looseObject({
     value: z.string().openapi({ description: 'The body of the content in the relevant format.' }),
@@ -2153,13 +2621,7 @@ const ContentBodyCreateStorageSchema = z
   })
   .openapi('ContentBodyCreateStorage')
 
-const GlobalSpaceIdentifierSchema = z
-  .object({ spaceIdentifier: z.string() })
-  .nullable()
-  .openapi({ required: ['spaceIdentifier'] })
-  .openapi('GlobalSpaceIdentifier')
-
-const ContentCreateSchema = z
+const ContentCreateSchema: z.ZodType<ContentCreateType> = z
   .looseObject({
     id: z
       .string()
@@ -2208,7 +2670,7 @@ const ContentCreateSchema = z
         metadata: z
           .object({
             labels: LabelArraySchema.exactOptional(),
-            _expandable: z.object({}).exactOptional(),
+            _expandable: z.looseObject({}).exactOptional(),
           })
           .nullable()
           .exactOptional()
@@ -2393,7 +2855,7 @@ const ContentPropertyUpdateSchema = z
   .openapi({ required: ['value', 'version'] })
   .openapi('ContentPropertyUpdate')
 
-const ContentRestrictionArraySchema = z
+const ContentRestrictionArraySchema: z.ZodType<ContentRestrictionArrayType> = z
   .object({
     results: z.array(ContentRestrictionSchema),
     start: z.int32(),
@@ -2580,7 +3042,7 @@ const AddContentRestrictionUpdateArraySchema = z
   .array(AddContentRestrictionSchema)
   .openapi('AddContentRestrictionUpdateArray')
 
-const ContentPageResponseSchema = z
+const ContentPageResponseSchema: z.ZodType<ContentPageResponseType> = z
   .object({ results: z.array(ContentSchema), start: z.int32(), limit: z.int32(), size: z.int32() })
   .openapi({ required: ['limit', 'results', 'size', 'start'] })
   .openapi('ContentPageResponse')
@@ -2653,31 +3115,7 @@ const ContentStateSettingsSchema = z
   })
   .openapi('ContentStateSettings')
 
-const ContentTemplateSchema = z
-  .object({
-    templateId: z.string(),
-    originalTemplate: z
-      .object({ pluginKey: z.string().exactOptional(), moduleKey: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    referencingBlueprint: z.string().exactOptional(),
-    name: z.string(),
-    description: z.string(),
-    space: z.looseObject({}).exactOptional(),
-    labels: z.array(LabelSchema),
-    templateType: z.string(),
-    editorVersion: z.string().exactOptional(),
-    body: ContentTemplateBodySchema.exactOptional(),
-    _expandable: z
-      .object({ body: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ required: [] }),
-    _links: GenericLinksSchema,
-  })
-  .openapi({ required: ['_links', 'description', 'labels', 'name', 'templateId', 'templateType'] })
-  .openapi('ContentTemplate')
-
-const ContentTemplateArraySchema = z
+const ContentTemplateArraySchema: z.ZodType<ContentTemplateArrayType> = z
   .object({
     results: z.array(ContentTemplateSchema),
     start: z.int32(),
@@ -3069,11 +3507,6 @@ const DynamicModulesErrorMessageSchema = z
   })
   .openapi('DynamicModulesErrorMessage')
 
-const GroupCreateSchema = z
-  .looseObject({ type: z.literal('group').default('group'), id: z.string().exactOptional() })
-  .openapi({ required: ['type'] })
-  .openapi('GroupCreate')
-
 const GroupArrayWithLinksSchema = z
   .object({
     results: z.array(GroupSchema),
@@ -3230,7 +3663,7 @@ const LongTaskStatusSchema = z
       .openapi({ description: 'the ARI for the long task, based on its ID' }),
     id: z.string(),
     name: z
-      .object({ key: z.string(), args: z.array(z.object({})) })
+      .object({ key: z.string(), args: z.array(z.looseObject({})) })
       .openapi({ required: ['args', 'key'] }),
     elapsedTime: z
       .preprocess(
@@ -3293,7 +3726,7 @@ const LongTaskStatusWithLinksSchema = z
       .openapi({ description: 'the ARI for the long task, based on its ID' }),
     id: z.string(),
     name: z
-      .object({ key: z.string(), args: z.array(z.object({})) })
+      .object({ key: z.string(), args: z.array(z.looseObject({})) })
       .openapi({ required: ['args', 'key'] }),
     elapsedTime: z
       .preprocess(
@@ -3343,88 +3776,13 @@ const MacroInstanceSchema = z
   .object({
     name: z.string().exactOptional(),
     body: z.string().exactOptional(),
-    parameters: z.object({}).exactOptional(),
+    parameters: z.looseObject({}).exactOptional(),
     _links: GenericLinksSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('MacroInstance')
 
-const BulkUserLookupSchema = z
-  .object({
-    type: z.enum(['known', 'unknown', 'anonymous', 'user']),
-    username: GenericUserNameSchema.exactOptional(),
-    userKey: GenericUserKeySchema.exactOptional(),
-    accountId: GenericAccountIdSchema,
-    accountType: z
-      .string()
-      .openapi({
-        description: 'The account type of the user, may return empty string if unavailable.',
-      }),
-    email: z
-      .string()
-      .openapi({
-        description:
-          "The email address of the user. Depending on the user's privacy setting, this may return an empty string.",
-      }),
-    publicName: z
-      .string()
-      .openapi({
-        description: 'The public name or nickname of the user. Will always contain a value.',
-      }),
-    profilePicture: IconSchema,
-    displayName: z
-      .string()
-      .openapi({
-        description:
-          "The displays name of the user. Depending on the user's privacy setting, this may be the same as publicName.",
-      }),
-    timeZone: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "This displays user time zone. Depending on the user's privacy setting, this may return null.",
-      }),
-    isExternalCollaborator: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is deprecated. Use `isGuest` instead to find out whether the user is a guest user.',
-      }),
-    isGuest: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the user is a guest user' }),
-    operations: z.array(OperationCheckResultSchema).exactOptional(),
-    details: UserDetailsSchema.exactOptional(),
-    personalSpace: SpaceSchema.exactOptional(),
-    _expandable: z
-      .object({
-        operations: z.string().exactOptional(),
-        details: z.string().exactOptional(),
-        personalSpace: z.string().exactOptional(),
-      })
-      .openapi({ required: [] }),
-    _links: GenericLinksSchema,
-  })
-  .openapi({
-    required: [
-      '_expandable',
-      '_links',
-      'accountId',
-      'accountType',
-      'displayName',
-      'email',
-      'profilePicture',
-      'publicName',
-      'type',
-    ],
-  })
-  .openapi('BulkUserLookup')
-
-const BulkUserLookupArraySchema = z
+const BulkUserLookupArraySchema: z.ZodType<BulkUserLookupArrayType> = z
   .object({
     results: z.array(BulkUserLookupSchema),
     start: z.int32(),
@@ -3443,35 +3801,7 @@ const PropertyValueSchema = z
   })
   .openapi('PropertyValue')
 
-const RelationDataSchema = z
-  .object({
-    createdBy: UserSchema.exactOptional(),
-    createdDate: z.iso.datetime({ offset: true }).exactOptional(),
-    friendlyCreatedDate: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RelationData')
-
-const RelationSchema = z
-  .object({
-    name: z.string(),
-    relationData: RelationDataSchema.exactOptional(),
-    source: z.xor([ContentSchema, UserSchema, SpaceSchema]).exactOptional(),
-    target: z.xor([ContentSchema, UserSchema, SpaceSchema]).exactOptional(),
-    _expandable: z
-      .object({
-        relationData: z.string().exactOptional(),
-        source: z.string().exactOptional(),
-        target: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    _links: GenericLinksSchema,
-  })
-  .openapi({ required: ['_links', 'name'] })
-  .openapi('Relation')
-
-const RelationArraySchema = z
+const RelationArraySchema: z.ZodType<RelationArrayType> = z
   .object({
     results: z.array(RelationSchema),
     start: z.int32(),
@@ -3509,37 +3839,7 @@ const RetentionPeriodSchema = z
   .openapi({ required: ['number', 'units'] })
   .openapi('RetentionPeriod')
 
-const SearchResultSchema = z
-  .object({
-    content: ContentSchema.exactOptional(),
-    user: UserSchema.exactOptional(),
-    space: SpaceSchema.exactOptional(),
-    title: z.string(),
-    excerpt: z.string(),
-    url: z.string(),
-    resultParentContainer: ContainerSummarySchema.exactOptional(),
-    resultGlobalContainer: ContainerSummarySchema.exactOptional(),
-    breadcrumbs: z.array(BreadcrumbSchema),
-    entityType: z.string(),
-    iconCssClass: z.string(),
-    lastModified: z.iso.datetime({ offset: true }),
-    friendlyLastModified: z.string().exactOptional(),
-    score: z.number().exactOptional(),
-  })
-  .openapi({
-    required: [
-      'breadcrumbs',
-      'entityType',
-      'excerpt',
-      'iconCssClass',
-      'lastModified',
-      'title',
-      'url',
-    ],
-  })
-  .openapi('SearchResult')
-
-const SearchPageResponseSearchResultSchema = z
+const SearchPageResponseSearchResultSchema: z.ZodType<SearchPageResponseSearchResultType> = z
   .object({
     results: z.array(SearchResultSchema),
     start: z.int32(),
@@ -3565,7 +3865,7 @@ const SearchPageResponseSearchResultSchema = z
   })
   .openapi('SearchPageResponseSearchResult')
 
-const SpaceArraySchema = z
+const SpaceArraySchema: z.ZodType<SpaceArrayType> = z
   .object({
     results: z.array(SpaceSchema),
     start: z.int32(),
@@ -3576,62 +3876,7 @@ const SpaceArraySchema = z
   .openapi({ required: ['_links', 'limit', 'results', 'size', 'start'] })
   .openapi('SpaceArray')
 
-const SpaceDescriptionCreateSchema = z
-  .object({
-    plain: z
-      .looseObject({
-        value: z.string().exactOptional().openapi({ description: 'The space description.' }),
-        representation: z.string().exactOptional().openapi({ description: "Set to 'plain'." }),
-      })
-      .openapi({ required: [] }),
-  })
-  .nullable()
-  .openapi({
-    required: ['plain'],
-    description:
-      "The description of the new/updated space. Note, only the 'plain' representation\ncan be used for the description when creating or updating a space.",
-  })
-  .openapi('SpaceDescriptionCreate')
-
-const SpacePermissionCreateSchema = z
-  .looseObject({
-    subjects: z
-      .object({
-        user: z
-          .object({ results: z.array(UserSchema), size: z.int32() })
-          .exactOptional()
-          .openapi({ required: ['results', 'size'] }),
-        group: z
-          .object({ results: z.array(GroupCreateSchema), size: z.int32() })
-          .exactOptional()
-          .openapi({ required: ['results', 'size'] }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The users and/or groups that the permission applies to.',
-        required: [],
-      }),
-    operation: OperationCheckResultSchema,
-    anonymousAccess: z
-      .boolean()
-      .default(false)
-      .openapi({ description: 'Grant anonymous users permission to use the operation.' }),
-    unlicensedAccess: z
-      .boolean()
-      .default(false)
-      .openapi({
-        description:
-          "Grants access to unlicensed users from JIRA Service Desk when used\nwith the 'read space' operation.",
-      }),
-  })
-  .openapi({
-    required: ['anonymousAccess', 'operation', 'unlicensedAccess'],
-    description:
-      "This object represents a permission for given space. Permissions consist of\nat least one operation object with an accompanying subjects object.\n\nThe following combinations of `operation` and `targetType` values are\nvalid for the `operation` object:\n\n  - 'create': 'page', 'blogpost', 'comment', 'attachment'\n  - 'read': 'space'\n  - 'delete': 'page', 'blogpost', 'comment', 'attachment'\n  - 'export': 'space'\n  - 'administer': 'space'",
-  })
-  .openapi('SpacePermissionCreate')
-
-const SpaceCreateSchema = z
+const SpaceCreateSchema: z.ZodType<SpaceCreateType> = z
   .looseObject({
     name: z.string().max(200).openapi({ description: 'The name of the new space.' }),
     key: z
@@ -3674,7 +3919,7 @@ const SpaceUpdateSchema = z
       .openapi({ description: 'The updated name of the space.' }),
     description: SpaceDescriptionCreateSchema.exactOptional(),
     homepage: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The updated homepage for this space' }),
@@ -3688,22 +3933,7 @@ const SpaceUpdateSchema = z
   .openapi({ description: 'The properties of a space that can be updated.', required: [] })
   .openapi('SpaceUpdate')
 
-const SpacePropertySchema = z
-  .object({
-    id: z.string(),
-    key: z.string(),
-    value: z.xor([z.array(z.string()), z.boolean(), z.looseObject({}), z.string()]),
-    version: VersionSchema.exactOptional(),
-    space: SpaceSchema.exactOptional(),
-    _links: GenericLinksSchema.exactOptional(),
-    _expandable: z
-      .object({ version: z.string().exactOptional(), space: z.string().exactOptional() })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['_expandable', 'id', 'key', 'value'] })
-  .openapi('SpaceProperty')
-
-const SpacePropertyArraySchema = z
+const SpacePropertyArraySchema: z.ZodType<SpacePropertyArrayType> = z
   .object({
     results: z.array(SpacePropertySchema),
     start: z.int32(),
@@ -3733,7 +3963,7 @@ const SpacePropertyCreateNoKeySchema = z
   .openapi({ required: ['value'] })
   .openapi('SpacePropertyCreateNoKey')
 
-const SpacePropertyUpdateSchema = z
+const SpacePropertyUpdateSchema: z.ZodType<SpacePropertyUpdateType> = z
   .object({
     key: z.string().exactOptional(),
     value: z.xor([z.array(z.string()), z.boolean(), z.looseObject({}), z.string()]),
@@ -3786,7 +4016,7 @@ const WatchUserSchema = z
     accountType: z.string(),
     email: z.string(),
     publicName: z.string(),
-    personalSpace: z.object({}).nullable(),
+    personalSpace: z.looseObject({}).nullable(),
   })
   .openapi({
     required: [
@@ -4049,7 +4279,7 @@ const UserWatchSchema = z
   .openapi({ required: ['watching'] })
   .openapi('UserWatch')
 
-const VersionArraySchema = z
+const VersionArraySchema: z.ZodType<VersionArrayType> = z
   .object({
     results: z.array(VersionSchema),
     start: z.int32(),
@@ -4872,6 +5102,7 @@ export const getWikiRestApiAuditSinceRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 3 },
             required: false,
           },
+          default: 3,
         }),
       units: z
         .enum([

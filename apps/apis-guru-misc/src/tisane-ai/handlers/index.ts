@@ -1,0 +1,6 @@
+export * from './hypernyms'
+export * from './hyponyms'
+export * from './inflections'
+export * from './lm'
+export * from './senses'
+export * from './values'

@@ -1,0 +1,1894 @@
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRoute,
+  deleteEducationClassesEducationClassIdAssignmentDefaultsRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  deleteEducationClassesEducationClassIdAssignmentSettingsRoute,
+  deleteEducationClassesEducationClassIdMembersEducationUserIdRefRoute,
+  deleteEducationClassesEducationClassIdRoute,
+  deleteEducationClassesEducationClassIdTeachersEducationUserIdRefRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdRubricRefRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdRubricRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  deleteEducationMeRoute,
+  deleteEducationMeRubricsEducationRubricIdRoute,
+  deleteEducationSchoolsEducationSchoolIdClassesEducationClassIdRefRoute,
+  deleteEducationSchoolsEducationSchoolIdRoute,
+  deleteEducationSchoolsEducationSchoolIdUsersEducationUserIdRefRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  deleteEducationUsersEducationUserIdRoute,
+  deleteEducationUsersEducationUserIdRubricsEducationRubricIdRoute,
+  getEducationClassesCountRoute,
+  getEducationClassesEducationClassIdAssignmentCategoriesCountRoute,
+  getEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRoute,
+  getEducationClassesEducationClassIdAssignmentCategoriesMicrosoftGraphDeltaRoute,
+  getEducationClassesEducationClassIdAssignmentCategoriesRoute,
+  getEducationClassesEducationClassIdAssignmentDefaultsRoute,
+  getEducationClassesEducationClassIdAssignmentsCountRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesCountRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRefRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesCountRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsCountRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute,
+  getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsRoute,
+  getEducationClassesEducationClassIdAssignmentSettingsRoute,
+  getEducationClassesEducationClassIdAssignmentsMicrosoftGraphDeltaRoute,
+  getEducationClassesEducationClassIdAssignmentsRoute,
+  getEducationClassesEducationClassIdGroupRoute,
+  getEducationClassesEducationClassIdMembersCountRoute,
+  getEducationClassesEducationClassIdMembersRefRoute,
+  getEducationClassesEducationClassIdMembersRoute,
+  getEducationClassesEducationClassIdRoute,
+  getEducationClassesEducationClassIdSchoolsCountRoute,
+  getEducationClassesEducationClassIdSchoolsEducationSchoolIdRoute,
+  getEducationClassesEducationClassIdSchoolsRoute,
+  getEducationClassesEducationClassIdTeachersCountRoute,
+  getEducationClassesEducationClassIdTeachersRefRoute,
+  getEducationClassesEducationClassIdTeachersRoute,
+  getEducationClassesMicrosoftGraphDeltaRoute,
+  getEducationClassesRoute,
+  getEducationMeAssignmentsCountRoute,
+  getEducationMeAssignmentsEducationAssignmentIdCategoriesCountRoute,
+  getEducationMeAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRoute,
+  getEducationMeAssignmentsEducationAssignmentIdCategoriesRefRoute,
+  getEducationMeAssignmentsEducationAssignmentIdCategoriesRoute,
+  getEducationMeAssignmentsEducationAssignmentIdResourcesCountRoute,
+  getEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  getEducationMeAssignmentsEducationAssignmentIdResourcesRoute,
+  getEducationMeAssignmentsEducationAssignmentIdRoute,
+  getEducationMeAssignmentsEducationAssignmentIdRubricRefRoute,
+  getEducationMeAssignmentsEducationAssignmentIdRubricRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsCountRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute,
+  getEducationMeAssignmentsEducationAssignmentIdSubmissionsRoute,
+  getEducationMeAssignmentsMicrosoftGraphDeltaRoute,
+  getEducationMeAssignmentsRoute,
+  getEducationMeClassesCountRoute,
+  getEducationMeClassesEducationClassIdRoute,
+  getEducationMeClassesRoute,
+  getEducationMeRoute,
+  getEducationMeRubricsCountRoute,
+  getEducationMeRubricsEducationRubricIdRoute,
+  getEducationMeRubricsRoute,
+  getEducationMeSchoolsCountRoute,
+  getEducationMeSchoolsEducationSchoolIdRoute,
+  getEducationMeSchoolsRoute,
+  getEducationMeTaughtClassesCountRoute,
+  getEducationMeTaughtClassesEducationClassIdRoute,
+  getEducationMeTaughtClassesRoute,
+  getEducationMeUserRoute,
+  getEducationRoute,
+  getEducationSchoolsCountRoute,
+  getEducationSchoolsEducationSchoolIdAdministrativeUnitRoute,
+  getEducationSchoolsEducationSchoolIdClassesCountRoute,
+  getEducationSchoolsEducationSchoolIdClassesRefRoute,
+  getEducationSchoolsEducationSchoolIdClassesRoute,
+  getEducationSchoolsEducationSchoolIdRoute,
+  getEducationSchoolsEducationSchoolIdUsersCountRoute,
+  getEducationSchoolsEducationSchoolIdUsersRefRoute,
+  getEducationSchoolsEducationSchoolIdUsersRoute,
+  getEducationSchoolsMicrosoftGraphDeltaRoute,
+  getEducationSchoolsRoute,
+  getEducationUsersCountRoute,
+  getEducationUsersEducationUserIdAssignmentsCountRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesCountRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRefRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesCountRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsCountRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute,
+  getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsRoute,
+  getEducationUsersEducationUserIdAssignmentsMicrosoftGraphDeltaRoute,
+  getEducationUsersEducationUserIdAssignmentsRoute,
+  getEducationUsersEducationUserIdClassesCountRoute,
+  getEducationUsersEducationUserIdClassesEducationClassIdRoute,
+  getEducationUsersEducationUserIdClassesRoute,
+  getEducationUsersEducationUserIdRoute,
+  getEducationUsersEducationUserIdRubricsCountRoute,
+  getEducationUsersEducationUserIdRubricsEducationRubricIdRoute,
+  getEducationUsersEducationUserIdRubricsRoute,
+  getEducationUsersEducationUserIdSchoolsCountRoute,
+  getEducationUsersEducationUserIdSchoolsEducationSchoolIdRoute,
+  getEducationUsersEducationUserIdSchoolsRoute,
+  getEducationUsersEducationUserIdTaughtClassesCountRoute,
+  getEducationUsersEducationUserIdTaughtClassesEducationClassIdRoute,
+  getEducationUsersEducationUserIdTaughtClassesRoute,
+  getEducationUsersEducationUserIdUserRoute,
+  getEducationUsersMicrosoftGraphDeltaRoute,
+  getEducationUsersRoute,
+  patchEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRoute,
+  patchEducationClassesEducationClassIdAssignmentDefaultsRoute,
+  patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRoute,
+  patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRoute,
+  patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  patchEducationClassesEducationClassIdAssignmentSettingsRoute,
+  patchEducationClassesEducationClassIdRoute,
+  patchEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  patchEducationMeAssignmentsEducationAssignmentIdRoute,
+  patchEducationMeAssignmentsEducationAssignmentIdRubricRoute,
+  patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  patchEducationMeRoute,
+  patchEducationMeRubricsEducationRubricIdRoute,
+  patchEducationRoute,
+  patchEducationSchoolsEducationSchoolIdAdministrativeUnitRoute,
+  patchEducationSchoolsEducationSchoolIdRoute,
+  patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute,
+  patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRoute,
+  patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRoute,
+  patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute,
+  patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute,
+  patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute,
+  patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute,
+  patchEducationUsersEducationUserIdRoute,
+  patchEducationUsersEducationUserIdRubricsEducationRubricIdRoute,
+  postEducationClassesEducationClassIdAssignmentCategoriesRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRefRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphPublishRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute,
+  postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsRoute,
+  postEducationClassesEducationClassIdAssignmentsRoute,
+  postEducationClassesEducationClassIdMembersRefRoute,
+  postEducationClassesEducationClassIdTeachersRefRoute,
+  postEducationClassesRoute,
+  postEducationMeAssignmentsEducationAssignmentIdCategoriesRefRoute,
+  postEducationMeAssignmentsEducationAssignmentIdCategoriesRoute,
+  postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphPublishRoute,
+  postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRoute,
+  postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRoute,
+  postEducationMeAssignmentsEducationAssignmentIdResourcesRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute,
+  postEducationMeAssignmentsEducationAssignmentIdSubmissionsRoute,
+  postEducationMeAssignmentsRoute,
+  postEducationMeRubricsRoute,
+  postEducationSchoolsEducationSchoolIdClassesRefRoute,
+  postEducationSchoolsEducationSchoolIdUsersRefRoute,
+  postEducationSchoolsRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRefRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphPublishRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute,
+  postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsRoute,
+  postEducationUsersEducationUserIdAssignmentsRoute,
+  postEducationUsersEducationUserIdRubricsRoute,
+  postEducationUsersRoute,
+  putEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRoute,
+  putEducationMeAssignmentsEducationAssignmentIdRubricRefRoute,
+  putEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRoute,
+} from '../routes'
+
+export const getEducationRouteHandler: RouteHandler<typeof getEducationRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationRouteHandler: RouteHandler<typeof patchEducationRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesRouteHandler: RouteHandler<
+  typeof getEducationClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesRouteHandler: RouteHandler<
+  typeof postEducationClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesCountRouteHandler: RouteHandler<
+  typeof getEducationClassesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationClassesMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentCategoriesRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentCategoriesRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentCategoriesCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentCategoriesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentCategoriesMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentCategoriesMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentCategoriesEducationCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentDefaultsRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentDefaultsRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentDefaultsRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentSettingsRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentSettingsRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentSettingsRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRefRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRefRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphPublishRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof putEducationClassesEducationClassIdAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationClassesEducationClassIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdGroupRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdMembersRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdMembersCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdMembersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdMembersRefRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdMembersRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdMembersRefRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdMembersRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdMembersEducationUserIdRefRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdMembersEducationUserIdRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdSchoolsRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdSchoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdSchoolsCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdSchoolsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdSchoolsEducationSchoolIdRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdSchoolsEducationSchoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdTeachersRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdTeachersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdTeachersCountRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdTeachersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationClassesEducationClassIdTeachersRefRouteHandler: RouteHandler<
+  typeof getEducationClassesEducationClassIdTeachersRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationClassesEducationClassIdTeachersRefRouteHandler: RouteHandler<
+  typeof postEducationClassesEducationClassIdTeachersRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationClassesEducationClassIdTeachersEducationUserIdRefRouteHandler: RouteHandler<
+  typeof deleteEducationClassesEducationClassIdTeachersEducationUserIdRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeRouteHandler: RouteHandler<typeof deleteEducationMeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeRouteHandler: RouteHandler<typeof getEducationMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeRouteHandler: RouteHandler<typeof patchEducationMeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsCountRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof patchEducationMeAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdCategoriesRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdCategoriesRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdCategoriesCountRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdCategoriesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdCategoriesRefRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdCategoriesRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdCategoriesRefRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdCategoriesRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphPublishRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdResourcesRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdResourcesRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationMeAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof patchEducationMeAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEducationMeAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof putEducationMeAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsCountRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRouteHandler: RouteHandler<
+  typeof postEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof getEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationMeAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeClassesRouteHandler: RouteHandler<
+  typeof getEducationMeClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeClassesCountRouteHandler: RouteHandler<
+  typeof getEducationMeClassesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeClassesEducationClassIdRouteHandler: RouteHandler<
+  typeof getEducationMeClassesEducationClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeRubricsRouteHandler: RouteHandler<
+  typeof getEducationMeRubricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationMeRubricsRouteHandler: RouteHandler<
+  typeof postEducationMeRubricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeRubricsCountRouteHandler: RouteHandler<
+  typeof getEducationMeRubricsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationMeRubricsEducationRubricIdRouteHandler: RouteHandler<
+  typeof deleteEducationMeRubricsEducationRubricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeRubricsEducationRubricIdRouteHandler: RouteHandler<
+  typeof getEducationMeRubricsEducationRubricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationMeRubricsEducationRubricIdRouteHandler: RouteHandler<
+  typeof patchEducationMeRubricsEducationRubricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeSchoolsRouteHandler: RouteHandler<
+  typeof getEducationMeSchoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeSchoolsCountRouteHandler: RouteHandler<
+  typeof getEducationMeSchoolsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeSchoolsEducationSchoolIdRouteHandler: RouteHandler<
+  typeof getEducationMeSchoolsEducationSchoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeTaughtClassesRouteHandler: RouteHandler<
+  typeof getEducationMeTaughtClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeTaughtClassesCountRouteHandler: RouteHandler<
+  typeof getEducationMeTaughtClassesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeTaughtClassesEducationClassIdRouteHandler: RouteHandler<
+  typeof getEducationMeTaughtClassesEducationClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationMeUserRouteHandler: RouteHandler<typeof getEducationMeUserRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsRouteHandler: RouteHandler<
+  typeof getEducationSchoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationSchoolsRouteHandler: RouteHandler<
+  typeof postEducationSchoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsCountRouteHandler: RouteHandler<
+  typeof getEducationSchoolsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationSchoolsMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationSchoolsEducationSchoolIdRouteHandler: RouteHandler<
+  typeof deleteEducationSchoolsEducationSchoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsEducationSchoolIdRouteHandler: RouteHandler<
+  typeof getEducationSchoolsEducationSchoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationSchoolsEducationSchoolIdRouteHandler: RouteHandler<
+  typeof patchEducationSchoolsEducationSchoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsEducationSchoolIdAdministrativeUnitRouteHandler: RouteHandler<
+  typeof getEducationSchoolsEducationSchoolIdAdministrativeUnitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationSchoolsEducationSchoolIdAdministrativeUnitRouteHandler: RouteHandler<
+  typeof patchEducationSchoolsEducationSchoolIdAdministrativeUnitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsEducationSchoolIdClassesRouteHandler: RouteHandler<
+  typeof getEducationSchoolsEducationSchoolIdClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsEducationSchoolIdClassesCountRouteHandler: RouteHandler<
+  typeof getEducationSchoolsEducationSchoolIdClassesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsEducationSchoolIdClassesRefRouteHandler: RouteHandler<
+  typeof getEducationSchoolsEducationSchoolIdClassesRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationSchoolsEducationSchoolIdClassesRefRouteHandler: RouteHandler<
+  typeof postEducationSchoolsEducationSchoolIdClassesRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationSchoolsEducationSchoolIdClassesEducationClassIdRefRouteHandler: RouteHandler<
+  typeof deleteEducationSchoolsEducationSchoolIdClassesEducationClassIdRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsEducationSchoolIdUsersRouteHandler: RouteHandler<
+  typeof getEducationSchoolsEducationSchoolIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsEducationSchoolIdUsersCountRouteHandler: RouteHandler<
+  typeof getEducationSchoolsEducationSchoolIdUsersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationSchoolsEducationSchoolIdUsersRefRouteHandler: RouteHandler<
+  typeof getEducationSchoolsEducationSchoolIdUsersRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationSchoolsEducationSchoolIdUsersRefRouteHandler: RouteHandler<
+  typeof postEducationSchoolsEducationSchoolIdUsersRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationSchoolsEducationSchoolIdUsersEducationUserIdRefRouteHandler: RouteHandler<
+  typeof deleteEducationSchoolsEducationSchoolIdUsersEducationUserIdRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersRouteHandler: RouteHandler<typeof getEducationUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersRouteHandler: RouteHandler<typeof postEducationUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersCountRouteHandler: RouteHandler<
+  typeof getEducationUsersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationUsersMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRefRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRefRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesMicrosoftGraphDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdCategoriesEducationCategoryIdRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphPublishRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpFeedbackResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdMicrosoftGraphSetUpResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdResourcesEducationAssignmentResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRouteHandler: RouteHandler<
+  typeof putEducationUsersEducationUserIdAssignmentsEducationAssignmentIdRubricRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReassignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSetUpResourcesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdMicrosoftGraphUnsubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdOutcomesEducationOutcomeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdAssignmentsEducationAssignmentIdSubmissionsEducationSubmissionIdSubmittedResourcesEducationSubmissionResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdClassesRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdClassesCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdClassesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdClassesEducationClassIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdClassesEducationClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdRubricsRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdRubricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEducationUsersEducationUserIdRubricsRouteHandler: RouteHandler<
+  typeof postEducationUsersEducationUserIdRubricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdRubricsCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdRubricsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEducationUsersEducationUserIdRubricsEducationRubricIdRouteHandler: RouteHandler<
+  typeof deleteEducationUsersEducationUserIdRubricsEducationRubricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdRubricsEducationRubricIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdRubricsEducationRubricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEducationUsersEducationUserIdRubricsEducationRubricIdRouteHandler: RouteHandler<
+  typeof patchEducationUsersEducationUserIdRubricsEducationRubricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdSchoolsRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdSchoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdSchoolsCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdSchoolsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdSchoolsEducationSchoolIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdSchoolsEducationSchoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdTaughtClassesRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdTaughtClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdTaughtClassesCountRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdTaughtClassesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdTaughtClassesEducationClassIdRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdTaughtClassesEducationClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEducationUsersEducationUserIdUserRouteHandler: RouteHandler<
+  typeof getEducationUsersEducationUserIdUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

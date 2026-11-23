@@ -1,37 +1,842 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ServerSideEncryptionSchema = z
-  .enum(['AES256', 'aws:kms', 'aws:kms:dsse'])
-  .openapi('ServerSideEncryption')
+const RoleSchema = z.string().openapi('Role')
 
-const SSEKMSKeyIdSchema = z.string().openapi('SSEKMSKeyId')
+const IDSchema = z.string().openapi('ID')
 
-const KMSContextSchema = z.string().openapi('KMSContext')
+const PrioritySchema = z.int().openapi('Priority')
 
-type EncryptionType = {
-  EncryptionType: z.infer<typeof ServerSideEncryptionSchema> & { [key: string]: unknown }
-  KMSKeyId?: z.infer<typeof SSEKMSKeyIdSchema> & { [key: string]: unknown }
-  KMSContext?: z.infer<typeof KMSContextSchema> & { [key: string]: unknown }
+const PrefixSchema = z.string().openapi('Prefix')
+
+const ObjectKeySchema = z.string().min(1).openapi('ObjectKey')
+
+const ValueSchema = z.string().openapi('Value')
+
+const TagSchema = z
+  .object({
+    Key: ObjectKeySchema.openapi({ description: 'Name of the object key.' }),
+    Value: ValueSchema.openapi({ description: 'Value of the tag.' }),
+  })
+  .openapi({ required: ['Key', 'Value'], description: 'A container of a key value name pair.' })
+  .openapi('Tag')
+
+const TagSetSchema = z.array(TagSchema.openapi({ xml: { name: 'Tag' } })).openapi('TagSet')
+
+const ReplicationRuleAndOperatorSchema = z
+  .object({
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        'An object key name prefix that identifies the subset of objects to which the rule applies.',
+    }),
+    Tags: TagSetSchema.exactOptional().openapi({
+      xml: { name: 'Tag' },
+      description: 'An array of tags containing key and value pairs.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. </p> <p>For example:</p> <ul> <li> <p>If you specify both a <code>Prefix</code> and a <code>Tag</code> filter, wrap these filters in an <code>And</code> tag. </p> </li> <li> <p>If you specify a filter based on multiple tags, wrap the <code>Tag</code> elements in an <code>And</code> tag.</p> </li> </ul>',
+    xml: { wrapped: false },
+    required: [],
+  })
+  .openapi('ReplicationRuleAndOperator')
+
+const ReplicationRuleFilterSchema = z
+  .object({
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        '<p>An object key name prefix that identifies the subset of objects to which the rule applies.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
+    Tag: TagSchema.exactOptional().openapi({
+      description:
+        '<p>A container for specifying a tag key and value. </p> <p>The rule applies only to objects that have the tag in their tag set.</p>',
+    }),
+    And: ReplicationRuleAndOperatorSchema.exactOptional().openapi({
+      description:
+        '<p>A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. For example: </p> <ul> <li> <p>If you specify both a <code>Prefix</code> and a <code>Tag</code> filter, wrap these filters in an <code>And</code> tag.</p> </li> <li> <p>If you specify a filter based on multiple tags, wrap the <code>Tag</code> elements in an <code>And</code> tag.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    description:
+      'A filter that identifies the subset of objects to which the replication rule applies. A <code>Filter</code> must specify exactly one <code>Prefix</code>, <code>Tag</code>, or an <code>And</code> child element.',
+    required: [],
+  })
+  .openapi('ReplicationRuleFilter')
+
+const ReplicationRuleStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('ReplicationRuleStatus')
+
+const SseKmsEncryptedObjectsStatusSchema = z
+  .enum(['Enabled', 'Disabled'])
+  .openapi('SseKmsEncryptedObjectsStatus')
+
+const SseKmsEncryptedObjectsSchema = z
+  .object({
+    Status: SseKmsEncryptedObjectsStatusSchema.openapi({
+      description:
+        'Specifies whether Amazon S3 replicates objects created with server-side encryption using an Amazon Web Services KMS key stored in Amazon Web Services Key Management Service.',
+    }),
+  })
+  .openapi({
+    required: ['Status'],
+    description:
+      'A container for filter information for the selection of S3 objects encrypted with Amazon Web Services KMS.',
+  })
+  .openapi('SseKmsEncryptedObjects')
+
+const ReplicaModificationsStatusSchema = z
+  .enum(['Enabled', 'Disabled'])
+  .openapi('ReplicaModificationsStatus')
+
+const ReplicaModificationsSchema = z
+  .object({
+    Status: ReplicaModificationsStatusSchema.openapi({
+      description: 'Specifies whether Amazon S3 replicates modifications on replicas.',
+    }),
+  })
+  .openapi({
+    required: ['Status'],
+    description:
+      "<p>A filter that you can specify for selection for modifications on replicas. Amazon S3 doesn't replicate replica modifications by default. In the latest version of replication configuration (when <code>Filter</code> is specified), you can specify this element and set the status to <code>Enabled</code> to replicate modifications on replicas. </p> <note> <p> If you don't specify the <code>Filter</code> element, Amazon S3 assumes that the replication configuration is the earlier version, V1. In the earlier version, this element is not allowed.</p> </note>",
+  })
+  .openapi('ReplicaModifications')
+
+const SourceSelectionCriteriaSchema = z
+  .object({
+    SseKmsEncryptedObjects: SseKmsEncryptedObjectsSchema.exactOptional().openapi({
+      description:
+        ' A container for filter information for the selection of Amazon S3 objects encrypted with Amazon Web Services KMS. If you include <code>SourceSelectionCriteria</code> in the replication configuration, this element is required. ',
+    }),
+    ReplicaModifications: ReplicaModificationsSchema.exactOptional().openapi({
+      description:
+        "<p>A filter that you can specify for selections for modifications on replicas. Amazon S3 doesn't replicate replica modifications by default. In the latest version of replication configuration (when <code>Filter</code> is specified), you can specify this element and set the status to <code>Enabled</code> to replicate modifications on replicas. </p> <note> <p> If you don't specify the <code>Filter</code> element, Amazon S3 assumes that the replication configuration is the earlier version, V1. In the earlier version, this element is not allowed</p> </note>",
+    }),
+  })
+  .openapi({
+    description:
+      'A container that describes additional filters for identifying the source objects that you want to replicate. You can choose to enable or disable the replication of these objects. Currently, Amazon S3 supports only the filter that you can specify for objects created with server-side encryption using a customer managed key stored in Amazon Web Services Key Management Service (SSE-KMS).',
+    required: [],
+  })
+  .openapi('SourceSelectionCriteria')
+
+const ExistingObjectReplicationStatusSchema = z
+  .enum(['Enabled', 'Disabled'])
+  .openapi('ExistingObjectReplicationStatus')
+
+const ExistingObjectReplicationSchema = z
+  .object({
+    Status: ExistingObjectReplicationStatusSchema.openapi({
+      description: 'Specifies whether Amazon S3 replicates existing source bucket objects. ',
+    }),
+  })
+  .openapi({
+    required: ['Status'],
+    description:
+      'Optional configuration to replicate existing source bucket objects. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication">Replicating Existing Objects</a> in the <i>Amazon S3 User Guide</i>. ',
+  })
+  .openapi('ExistingObjectReplication')
+
+const BucketNameSchema = z.string().openapi('BucketName')
+
+const AccountIdSchema = z.string().openapi('AccountId')
+
+const StorageClassSchema = z
+  .enum([
+    'STANDARD',
+    'REDUCED_REDUNDANCY',
+    'STANDARD_IA',
+    'ONEZONE_IA',
+    'INTELLIGENT_TIERING',
+    'GLACIER',
+    'DEEP_ARCHIVE',
+    'OUTPOSTS',
+    'GLACIER_IR',
+    'SNOW',
+  ])
+  .openapi('StorageClass')
+
+const OwnerOverrideSchema = z.literal('Destination').openapi('OwnerOverride')
+
+const AccessControlTranslationSchema = z
+  .object({
+    Owner: OwnerOverrideSchema.openapi({
+      description:
+        'Specifies the replica ownership. For default and valid values, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html">PUT bucket replication</a> in the <i>Amazon S3 API Reference</i>.',
+    }),
+  })
+  .openapi({
+    required: ['Owner'],
+    description: 'A container for information about access control for replicas.',
+  })
+  .openapi('AccessControlTranslation')
+
+const ReplicaKmsKeyIDSchema = z.string().openapi('ReplicaKmsKeyID')
+
+const EncryptionConfigurationSchema = z
+  .object({
+    ReplicaKmsKeyID: ReplicaKmsKeyIDSchema.exactOptional().openapi({
+      description:
+        'Specifies the ID (Key ARN or Alias ARN) of the customer managed Amazon Web Services KMS key stored in Amazon Web Services Key Management Service (KMS) for the destination bucket. Amazon S3 uses this key to encrypt replica objects. Amazon S3 only supports symmetric encryption KMS keys. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Asymmetric keys in Amazon Web Services KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies encryption-related information for an Amazon S3 bucket that is a destination for replicated objects.',
+    required: [],
+  })
+  .openapi('EncryptionConfiguration')
+
+const ReplicationTimeStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('ReplicationTimeStatus')
+
+const MinutesSchema = z.int().openapi('Minutes')
+
+const ReplicationTimeValueSchema = z
+  .object({
+    Minutes: MinutesSchema.exactOptional().openapi({
+      description:
+        '<p> Contains an integer specifying time in minutes. </p> <p> Valid value: 15</p>',
+    }),
+  })
+  .openapi({
+    description:
+      ' A container specifying the time value for S3 Replication Time Control (S3 RTC) and replication metrics <code>EventThreshold</code>. ',
+    required: [],
+  })
+  .openapi('ReplicationTimeValue')
+
+const ReplicationTimeSchema = z
+  .object({
+    Status: ReplicationTimeStatusSchema.openapi({
+      description: ' Specifies whether the replication time is enabled. ',
+    }),
+    Time: ReplicationTimeValueSchema.openapi({
+      description:
+        ' A container specifying the time by which replication should be complete for all objects and operations on objects. ',
+    }),
+  })
+  .openapi({
+    required: ['Status', 'Time'],
+    description:
+      ' A container specifying S3 Replication Time Control (S3 RTC) related information, including whether S3 RTC is enabled and the time when all objects and operations on objects must be replicated. Must be specified together with a <code>Metrics</code> block. ',
+  })
+  .openapi('ReplicationTime')
+
+const MetricsStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('MetricsStatus')
+
+const MetricsSchema = z
+  .object({
+    Status: MetricsStatusSchema.openapi({
+      description: ' Specifies whether the replication metrics are enabled. ',
+    }),
+    EventThreshold: ReplicationTimeValueSchema.exactOptional().openapi({
+      description:
+        ' A container specifying the time threshold for emitting the <code>s3:Replication:OperationMissedThreshold</code> event. ',
+    }),
+  })
+  .openapi({
+    required: ['Status'],
+    description:
+      ' A container specifying replication metrics-related settings enabling replication metrics and events.',
+  })
+  .openapi('Metrics')
+
+const DestinationSchema = z
+  .object({
+    Bucket: BucketNameSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of the bucket where you want Amazon S3 to store the results.',
+    }),
+    Account: AccountIdSchema.exactOptional().openapi({
+      description:
+        'Destination bucket owner account ID. In a cross-account scenario, if you direct Amazon S3 to change replica ownership to the Amazon Web Services account that owns the destination bucket by specifying the <code>AccessControlTranslation</code> property, this is the account ID of the destination bucket owner. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-change-owner.html">Replication Additional Configuration: Changing the Replica Owner</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    StorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        '<p> The storage class to use when replicating objects, such as S3 Standard or reduced redundancy. By default, Amazon S3 uses the storage class of the source object to create the object replica. </p> <p>For valid values, see the <code>StorageClass</code> element of the <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html">PUT Bucket replication</a> action in the <i>Amazon S3 API Reference</i>.</p>',
+    }),
+    AccessControlTranslation: AccessControlTranslationSchema.exactOptional().openapi({
+      description:
+        'Specify this only in a cross-account scenario (where source and destination bucket owners are not the same), and you want to change replica ownership to the Amazon Web Services account that owns the destination bucket. If this is not specified in the replication configuration, the replicas are owned by same Amazon Web Services account that owns the source object.',
+    }),
+    EncryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description:
+        'A container that provides information about encryption. If <code>SourceSelectionCriteria</code> is specified, you must specify this element.',
+    }),
+    ReplicationTime: ReplicationTimeSchema.exactOptional().openapi({
+      description:
+        ' A container specifying S3 Replication Time Control (S3 RTC), including whether S3 RTC is enabled and the time when all objects and operations on objects must be replicated. Must be specified together with a <code>Metrics</code> block. ',
+    }),
+    Metrics: MetricsSchema.exactOptional().openapi({
+      description:
+        ' A container specifying replication metrics-related settings enabling replication metrics and events. ',
+    }),
+  })
+  .openapi({
+    required: ['Bucket'],
+    description:
+      'Specifies information about where to publish analysis or configuration results for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).',
+  })
+  .openapi('Destination')
+
+const DeleteMarkerReplicationStatusSchema = z
+  .enum(['Enabled', 'Disabled'])
+  .openapi('DeleteMarkerReplicationStatus')
+
+const DeleteMarkerReplicationSchema = z
+  .object({
+    Status: DeleteMarkerReplicationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to replicate delete markers.</p> <note> <p>Indicates whether to replicate delete markers.</p> </note>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Specifies whether Amazon S3 replicates delete markers. If you specify a <code>Filter</code> in your replication configuration, you must also include a <code>DeleteMarkerReplication</code> element. If your <code>Filter</code> includes a <code>Tag</code> element, the <code>DeleteMarkerReplication</code> <code>Status</code> must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config">Basic Rule Configuration</a>. </p> <p>For more information about delete marker replication, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html">Basic Rule Configuration</a>. </p> <note> <p>If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations">Backward Compatibility</a>.</p> </note>',
+    required: [],
+  })
+  .openapi('DeleteMarkerReplication')
+
+const ReplicationRuleSchema = z
+  .object({
+    ID: IDSchema.exactOptional().openapi({
+      description: 'A unique identifier for the rule. The maximum value is 255 characters.',
+    }),
+    Priority: PrioritySchema.exactOptional().openapi({
+      description:
+        '<p>The priority indicates which rule has precedence whenever two or more replication rules conflict. Amazon S3 will attempt to replicate objects according to all replication rules. However, if there are two or more rules with the same destination bucket, then objects will be replicated according to the rule with the highest priority. The higher the number, the higher the priority. </p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication.html">Replication</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    }),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>An object key name prefix that identifies the object or objects to which the rule applies. The maximum prefix length is 1,024 characters. To include all objects in a bucket, specify an empty string. </p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
+    Filter: ReplicationRuleFilterSchema.exactOptional(),
+    Status: ReplicationRuleStatusSchema.openapi({
+      description: 'Specifies whether the rule is enabled.',
+    }),
+    SourceSelectionCriteria: SourceSelectionCriteriaSchema.exactOptional().openapi({
+      description:
+        'A container that describes additional filters for identifying the source objects that you want to replicate. You can choose to enable or disable the replication of these objects. Currently, Amazon S3 supports only the filter that you can specify for objects created with server-side encryption using a customer managed key stored in Amazon Web Services Key Management Service (SSE-KMS).',
+    }),
+    ExistingObjectReplication: ExistingObjectReplicationSchema.exactOptional().openapi({
+      description:
+        'Optional configuration to replicate existing source bucket objects. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication">Replicating Existing Objects</a> in the <i>Amazon S3 User Guide</i>. ',
+    }),
+    Destination: DestinationSchema.openapi({
+      description:
+        'A container for information about the replication destination and its configurations including enabling the S3 Replication Time Control (S3 RTC).',
+    }),
+    DeleteMarkerReplication: DeleteMarkerReplicationSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['Status', 'Destination'],
+    description: 'Specifies which Amazon S3 objects to replicate and where to store the replicas.',
+  })
+  .openapi('ReplicationRule')
+
+const ReplicationRulesSchema = z
+  .array(ReplicationRuleSchema)
+  .openapi({ xml: { wrapped: false } })
+  .openapi('ReplicationRules')
+
+const ReplicationConfigurationSchema = z
+  .object({
+    Role: RoleSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that Amazon S3 assumes when replicating objects. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-how-setup.html">How to Set Up Replication</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    Rules: ReplicationRulesSchema.openapi({
+      xml: { name: 'Rule' },
+      description:
+        'A container for one or more replication rules. A replication configuration must have at least one rule and can contain a maximum of 1,000 rules. ',
+    }),
+  })
+  .openapi({
+    required: ['Role', 'Rules'],
+    description:
+      'A container for replication rules. You can add up to 1,000 rules. The maximum size of a replication configuration is 2 MB.',
+  })
+  .openapi('ReplicationConfiguration')
+
+type GetBucketReplicationOutputType = {
+  ReplicationConfiguration?: z.infer<typeof ReplicationConfigurationSchema>
 }
 
-const EnableRequestProgressSchema = z.boolean().openapi('EnableRequestProgress')
+const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
 
-type RequestProgressType = {
-  Enabled?: z.infer<typeof EnableRequestProgressSchema> & { [key: string]: unknown }
+const DaysSchema = z.int().openapi('Days')
+
+const ExpiredObjectDeleteMarkerSchema = z.boolean().openapi('ExpiredObjectDeleteMarker')
+
+const LifecycleExpirationSchema = z
+  .object({
+    Date: DateSchema.exactOptional().openapi({
+      description:
+        'Indicates at what date the object is to be moved or deleted. The date value must conform to the ISO 8601 format. The time is always midnight UTC.',
+    }),
+    Days: DaysSchema.exactOptional().openapi({
+      description:
+        'Indicates the lifetime, in days, of the objects that are subject to the rule. The value must be a non-zero positive integer.',
+    }),
+    ExpiredObjectDeleteMarker: ExpiredObjectDeleteMarkerSchema.exactOptional().openapi({
+      description:
+        'Indicates whether Amazon S3 will remove a delete marker with no noncurrent versions. If set to true, the delete marker will be expired; if set to false the policy takes no action. This cannot be specified with Days or Date in a Lifecycle Expiration Policy.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Container for the expiration for the lifecycle of the object.</p> <p>For more information see, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html">Managing your storage lifecycle</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    required: [],
+  })
+  .openapi('LifecycleExpiration')
+
+const ObjectSizeGreaterThanBytesSchema = z.int().openapi('ObjectSizeGreaterThanBytes')
+
+const ObjectSizeLessThanBytesSchema = z.int().openapi('ObjectSizeLessThanBytes')
+
+const LifecycleRuleAndOperatorSchema = z
+  .object({
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'Prefix identifying one or more objects to which the rule applies.',
+    }),
+    Tags: TagSetSchema.exactOptional().openapi({
+      xml: { name: 'Tag' },
+      description:
+        "All of these tags must exist in the object's tag set in order for the rule to apply.",
+    }),
+    ObjectSizeGreaterThan: ObjectSizeGreaterThanBytesSchema.exactOptional().openapi({
+      description: 'Minimum object size to which the rule applies.',
+    }),
+    ObjectSizeLessThan: ObjectSizeLessThanBytesSchema.exactOptional().openapi({
+      description: 'Maximum object size to which the rule applies.',
+    }),
+  })
+  .openapi({
+    description:
+      'This is used in a Lifecycle Rule Filter to apply a logical AND to two or more predicates. The Lifecycle Rule will apply to any object matching all of the predicates configured inside the And operator.',
+    xml: { wrapped: false },
+    required: [],
+  })
+  .openapi('LifecycleRuleAndOperator')
+
+const LifecycleRuleFilterSchema = z
+  .object({
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        '<p>Prefix identifying one or more objects to which the rule applies.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
+    Tag: TagSchema.exactOptional().openapi({
+      description: "This tag must exist in the object's tag set in order for the rule to apply.",
+    }),
+    ObjectSizeGreaterThan: ObjectSizeGreaterThanBytesSchema.exactOptional().openapi({
+      description: 'Minimum object size to which the rule applies.',
+    }),
+    ObjectSizeLessThan: ObjectSizeLessThanBytesSchema.exactOptional().openapi({
+      description: 'Maximum object size to which the rule applies.',
+    }),
+    And: LifecycleRuleAndOperatorSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The <code>Filter</code> is used to identify objects that a Lifecycle Rule applies to. A <code>Filter</code> must have exactly one of <code>Prefix</code>, <code>Tag</code>, or <code>And</code> specified.',
+    required: [],
+  })
+  .openapi('LifecycleRuleFilter')
+
+const ExpirationStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('ExpirationStatus')
+
+const TransitionStorageClassSchema = z
+  .enum([
+    'GLACIER',
+    'STANDARD_IA',
+    'ONEZONE_IA',
+    'INTELLIGENT_TIERING',
+    'DEEP_ARCHIVE',
+    'GLACIER_IR',
+  ])
+  .openapi('TransitionStorageClass')
+
+const TransitionSchema = z
+  .object({
+    Date: DateSchema.exactOptional().openapi({
+      description:
+        'Indicates when objects are transitioned to the specified storage class. The date value must be in ISO 8601 format. The time is always midnight UTC.',
+    }),
+    Days: DaysSchema.exactOptional().openapi({
+      description:
+        'Indicates the number of days after creation when objects are transitioned to the specified storage class. The value must be a positive integer.',
+    }),
+    StorageClass: TransitionStorageClassSchema.exactOptional().openapi({
+      description: 'The storage class to which you want the object to transition.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies when an object transitions to a specified storage class. For more information about Amazon S3 lifecycle configuration rules, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/lifecycle-transition-general-considerations.html">Transitioning Objects Using Amazon S3 Lifecycle</a> in the <i>Amazon S3 User Guide</i>.',
+    required: [],
+  })
+  .openapi('Transition')
+
+const TransitionListSchema = z
+  .array(TransitionSchema)
+  .openapi({ xml: { wrapped: false } })
+  .openapi('TransitionList')
+
+const VersionCountSchema = z.int().openapi('VersionCount')
+
+const NoncurrentVersionTransitionSchema = z
+  .object({
+    NoncurrentDays: DaysSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action. For information about the noncurrent days calculations, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#non-current-days-calculations">How Amazon S3 Calculates How Long an Object Has Been Noncurrent</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    StorageClass: TransitionStorageClassSchema.exactOptional().openapi({
+      description: 'The class of storage used to store the object.',
+    }),
+    NewerNoncurrentVersions: VersionCountSchema.exactOptional().openapi({
+      description:
+        'Specifies how many noncurrent versions Amazon S3 will retain. If there are this many more recent noncurrent versions, Amazon S3 will take the associated action. For more information about noncurrent versions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/intro-lifecycle-rules.html">Lifecycle configuration elements</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+  })
+  .openapi({
+    description:
+      "Container for the transition rule that describes when noncurrent objects transition to the <code>STANDARD_IA</code>, <code>ONEZONE_IA</code>, <code>INTELLIGENT_TIERING</code>, <code>GLACIER_IR</code>, <code>GLACIER</code>, or <code>DEEP_ARCHIVE</code> storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to the <code>STANDARD_IA</code>, <code>ONEZONE_IA</code>, <code>INTELLIGENT_TIERING</code>, <code>GLACIER_IR</code>, <code>GLACIER</code>, or <code>DEEP_ARCHIVE</code> storage class at a specific period in the object's lifetime.",
+    required: [],
+  })
+  .openapi('NoncurrentVersionTransition')
+
+const NoncurrentVersionTransitionListSchema = z
+  .array(NoncurrentVersionTransitionSchema)
+  .openapi({ xml: { wrapped: false } })
+  .openapi('NoncurrentVersionTransitionList')
+
+const NoncurrentVersionExpirationSchema = z
+  .object({
+    NoncurrentDays: DaysSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action. The value must be a non-zero positive integer. For information about the noncurrent days calculations, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#non-current-days-calculations">How Amazon S3 Calculates When an Object Became Noncurrent</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    NewerNoncurrentVersions: VersionCountSchema.exactOptional().openapi({
+      description:
+        'Specifies how many noncurrent versions Amazon S3 will retain. If there are this many more recent noncurrent versions, Amazon S3 will take the associated action. For more information about noncurrent versions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/intro-lifecycle-rules.html">Lifecycle configuration elements</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+  })
+  .openapi({
+    description:
+      "Specifies when noncurrent object versions expire. Upon expiration, Amazon S3 permanently deletes the noncurrent object versions. You set this lifecycle configuration action on a bucket that has versioning enabled (or suspended) to request that Amazon S3 delete noncurrent object versions at a specific period in the object's lifetime.",
+    required: [],
+  })
+  .openapi('NoncurrentVersionExpiration')
+
+const DaysAfterInitiationSchema = z.int().openapi('DaysAfterInitiation')
+
+const AbortIncompleteMultipartUploadSchema = z
+  .object({
+    DaysAfterInitiation: DaysAfterInitiationSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of days after which Amazon S3 aborts an incomplete multipart upload.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config"> Aborting Incomplete Multipart Uploads Using a Bucket Lifecycle Configuration</a> in the <i>Amazon S3 User Guide</i>.',
+    required: [],
+  })
+  .openapi('AbortIncompleteMultipartUpload')
+
+const LifecycleRuleSchema = z
+  .object({
+    Expiration: LifecycleExpirationSchema.exactOptional().openapi({
+      description:
+        'Specifies the expiration for the lifecycle of the object in the form of date, days and, whether the object has a delete marker.',
+    }),
+    ID: IDSchema.exactOptional().openapi({
+      description:
+        'Unique identifier for the rule. The value cannot be longer than 255 characters.',
+    }),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>Prefix identifying one or more objects to which the rule applies. This is no longer used; use <code>Filter</code> instead.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
+    Filter: LifecycleRuleFilterSchema.exactOptional().openapi({
+      description:
+        'The <code>Filter</code> is used to identify objects that a Lifecycle Rule applies to. A <code>Filter</code> must have exactly one of <code>Prefix</code>, <code>Tag</code>, or <code>And</code> specified. <code>Filter</code> is required if the <code>LifecycleRule</code> does not contain a <code>Prefix</code> element.',
+    }),
+    Status: ExpirationStatusSchema.openapi({
+      description:
+        "If 'Enabled', the rule is currently being applied. If 'Disabled', the rule is not currently being applied.",
+    }),
+    Transitions: TransitionListSchema.exactOptional().openapi({
+      xml: { name: 'Transition' },
+      description: 'Specifies when an Amazon S3 object transitions to a specified storage class.',
+    }),
+    NoncurrentVersionTransitions: NoncurrentVersionTransitionListSchema.exactOptional().openapi({
+      xml: { name: 'NoncurrentVersionTransition' },
+      description:
+        " Specifies the transition rule for the lifecycle rule that describes when noncurrent objects transition to a specific storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to a specific storage class at a set period in the object's lifetime. ",
+    }),
+    NoncurrentVersionExpiration: NoncurrentVersionExpirationSchema.exactOptional(),
+    AbortIncompleteMultipartUpload: AbortIncompleteMultipartUploadSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['Status'],
+    description:
+      '<p>A lifecycle rule for individual objects in an Amazon S3 bucket.</p> <p>For more information see, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html">Managing your storage lifecycle</a> in the <i>Amazon S3 User Guide</i>.</p>',
+  })
+  .openapi('LifecycleRule')
+
+const LifecycleRulesSchema = z
+  .array(LifecycleRuleSchema)
+  .openapi({ xml: { wrapped: false } })
+  .openapi('LifecycleRules')
+
+const BucketLifecycleConfigurationSchema = z
+  .object({
+    Rules: LifecycleRulesSchema.openapi({
+      xml: { name: 'Rule' },
+      description: 'A lifecycle rule for individual objects in an Amazon S3 bucket.',
+    }),
+  })
+  .openapi({
+    required: ['Rules'],
+    description:
+      'Specifies the lifecycle configuration for objects in an Amazon S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lifecycle-mgmt.html">Object Lifecycle Management</a> in the <i>Amazon S3 User Guide</i>.',
+  })
+  .openapi('BucketLifecycleConfiguration')
+
+type PutBucketLifecycleConfigurationRequestType = {
+  LifecycleConfiguration?: z.infer<typeof BucketLifecycleConfigurationSchema> & unknown
+}
+
+const NotificationIdSchema = z
+  .string()
+  .openapi({
+    description:
+      "An optional unique identifier for configurations in a notification configuration. If you don't provide one, Amazon S3 will assign an ID.",
+  })
+  .openapi('NotificationId')
+
+const TopicArnSchema = z.string().openapi('TopicArn')
+
+const EventSchema = z
+  .enum([
+    's3:ReducedRedundancyLostObject',
+    's3:ObjectCreated:*',
+    's3:ObjectCreated:Put',
+    's3:ObjectCreated:Post',
+    's3:ObjectCreated:Copy',
+    's3:ObjectCreated:CompleteMultipartUpload',
+    's3:ObjectRemoved:*',
+    's3:ObjectRemoved:Delete',
+    's3:ObjectRemoved:DeleteMarkerCreated',
+    's3:ObjectRestore:*',
+    's3:ObjectRestore:Post',
+    's3:ObjectRestore:Completed',
+    's3:Replication:*',
+    's3:Replication:OperationFailedReplication',
+    's3:Replication:OperationNotTracked',
+    's3:Replication:OperationMissedThreshold',
+    's3:Replication:OperationReplicatedAfterThreshold',
+    's3:ObjectRestore:Delete',
+    's3:LifecycleTransition',
+    's3:IntelligentTiering',
+    's3:ObjectAcl:Put',
+    's3:LifecycleExpiration:*',
+    's3:LifecycleExpiration:Delete',
+    's3:LifecycleExpiration:DeleteMarkerCreated',
+    's3:ObjectTagging:*',
+    's3:ObjectTagging:Put',
+    's3:ObjectTagging:Delete',
+  ])
+  .openapi({ description: 'The bucket event for which to send notifications.' })
+  .openapi('Event')
+
+const EventListSchema = z
+  .array(EventSchema)
+  .openapi({ xml: { wrapped: false } })
+  .openapi('EventList')
+
+const FilterRuleNameSchema = z.enum(['prefix', 'suffix']).openapi('FilterRuleName')
+
+const FilterRuleValueSchema = z.string().openapi('FilterRuleValue')
+
+const FilterRuleSchema = z
+  .object({
+    Name: FilterRuleNameSchema.exactOptional().openapi({
+      description:
+        'The object key name prefix or suffix identifying one or more objects to which the filtering rule applies. The maximum length is 1,024 characters. Overlapping prefixes and suffixes are not supported. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html">Configuring Event Notifications</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    Value: FilterRuleValueSchema.exactOptional().openapi({
+      description: 'The value that the filter searches for in object key names.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies the Amazon S3 object key name to filter on and whether to filter on the suffix or prefix of the key name.',
+    required: [],
+  })
+  .openapi('FilterRule')
+
+const FilterRuleListSchema = z
+  .array(FilterRuleSchema)
+  .openapi({
+    description:
+      'A list of containers for the key-value pair that defines the criteria for the filter rule.',
+    xml: { wrapped: false },
+  })
+  .openapi('FilterRuleList')
+
+const S3KeyFilterSchema = z
+  .object({
+    FilterRules: FilterRuleListSchema.exactOptional().openapi({ xml: { name: 'FilterRule' } }),
+  })
+  .openapi({
+    description: 'A container for object key name prefix and suffix filtering rules.',
+    required: [],
+  })
+  .openapi('S3KeyFilter')
+
+const NotificationConfigurationFilterSchema = z
+  .object({ Key: S3KeyFilterSchema.exactOptional().openapi({ xml: { name: 'S3Key' } }) })
+  .openapi({
+    description:
+      'Specifies object key name filtering rules. For information about key name filtering, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-how-to-filtering.html">Configuring event notifications using object key name filtering</a> in the <i>Amazon S3 User Guide</i>.',
+    required: [],
+  })
+  .openapi('NotificationConfigurationFilter')
+
+const TopicConfigurationSchema = z
+  .object({
+    Id: NotificationIdSchema.exactOptional(),
+    TopicArn: TopicArnSchema.openapi({
+      xml: { name: 'Topic' },
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic to which Amazon S3 publishes a message when it detects events of the specified type.',
+    }),
+    Events: EventListSchema.openapi({
+      xml: { name: 'Event' },
+      description:
+        'The Amazon S3 bucket event about which to send notifications. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html">Supported Event Types</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    Filter: NotificationConfigurationFilterSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['TopicArn', 'Events'],
+    description:
+      'A container for specifying the configuration for publication of messages to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3 detects specified events.',
+  })
+  .openapi('TopicConfiguration')
+
+const TopicConfigurationListSchema = z
+  .array(TopicConfigurationSchema)
+  .openapi({ xml: { wrapped: false } })
+  .openapi('TopicConfigurationList')
+
+const QueueArnSchema = z.string().openapi('QueueArn')
+
+const QueueConfigurationSchema = z
+  .object({
+    Id: NotificationIdSchema.exactOptional(),
+    QueueArn: QueueArnSchema.openapi({
+      xml: { name: 'Queue' },
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SQS queue to which Amazon S3 publishes a message when it detects events of the specified type.',
+    }),
+    Events: EventListSchema.openapi({
+      xml: { name: 'Event' },
+      description: 'A collection of bucket events for which to send notifications',
+    }),
+    Filter: NotificationConfigurationFilterSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['QueueArn', 'Events'],
+    description:
+      'Specifies the configuration for publishing messages to an Amazon Simple Queue Service (Amazon SQS) queue when Amazon S3 detects specified events.',
+  })
+  .openapi('QueueConfiguration')
+
+const QueueConfigurationListSchema = z
+  .array(QueueConfigurationSchema)
+  .openapi({ xml: { wrapped: false } })
+  .openapi('QueueConfigurationList')
+
+const LambdaFunctionArnSchema = z.string().openapi('LambdaFunctionArn')
+
+const LambdaFunctionConfigurationSchema = z
+  .object({
+    Id: NotificationIdSchema.exactOptional(),
+    LambdaFunctionArn: LambdaFunctionArnSchema.openapi({
+      xml: { name: 'CloudFunction' },
+      description:
+        'The Amazon Resource Name (ARN) of the Lambda function that Amazon S3 invokes when the specified event type occurs.',
+    }),
+    Events: EventListSchema.openapi({
+      xml: { name: 'Event' },
+      description:
+        'The Amazon S3 bucket event for which to invoke the Lambda function. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html">Supported Event Types</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    Filter: NotificationConfigurationFilterSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['LambdaFunctionArn', 'Events'],
+    description: 'A container for specifying the configuration for Lambda notifications.',
+  })
+  .openapi('LambdaFunctionConfiguration')
+
+const LambdaFunctionConfigurationListSchema = z
+  .array(LambdaFunctionConfigurationSchema)
+  .openapi({ xml: { wrapped: false } })
+  .openapi('LambdaFunctionConfigurationList')
+
+const EventBridgeConfigurationSchema = z
+  .looseObject({})
+  .openapi({ description: 'A container for specifying the configuration for Amazon EventBridge.' })
+  .openapi('EventBridgeConfiguration')
+
+const NotificationConfigurationSchema = z
+  .object({
+    TopicConfigurations: TopicConfigurationListSchema.exactOptional().openapi({
+      xml: { name: 'TopicConfiguration' },
+      description:
+        'The topic to which notifications are sent and the events for which notifications are generated.',
+    }),
+    QueueConfigurations: QueueConfigurationListSchema.exactOptional().openapi({
+      xml: { name: 'QueueConfiguration' },
+      description:
+        'The Amazon Simple Queue Service queues to publish messages to and the events for which to publish messages.',
+    }),
+    LambdaFunctionConfigurations: LambdaFunctionConfigurationListSchema.exactOptional().openapi({
+      xml: { name: 'CloudFunctionConfiguration' },
+      description:
+        'Describes the Lambda functions to invoke and the events for which to invoke them.',
+    }),
+    EventBridgeConfiguration: EventBridgeConfigurationSchema.exactOptional().openapi({
+      description: 'Enables delivery of events to Amazon EventBridge.',
+    }),
+  })
+  .openapi({
+    description:
+      'A container for specifying the notification configuration of the bucket. If this element is empty, notifications are turned off for the bucket.',
+    required: [],
+  })
+  .openapi('NotificationConfiguration')
+
+type PutBucketNotificationConfigurationRequestType = {
+  NotificationConfiguration: z.infer<typeof NotificationConfigurationSchema>
+}
+
+type PutBucketReplicationRequestType = {
+  ReplicationConfiguration: z.infer<typeof ReplicationConfigurationSchema>
 }
 
 const AbortMultipartUploadOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('AbortMultipartUploadOutput')
 
 const NoSuchUploadSchema = z.any().openapi('NoSuchUpload')
 
 const LocationSchema = z.string().openapi('Location')
-
-const BucketNameSchema = z.string().openapi('BucketName')
-
-const ObjectKeySchema = z.string().min(1).openapi('ObjectKey')
 
 const ETagSchema = z.string().openapi('ETag')
 
@@ -45,60 +850,36 @@ const ChecksumSHA256Schema = z.string().openapi('ChecksumSHA256')
 
 const CompleteMultipartUploadOutputSchema = z
   .object({
-    Location: LocationSchema.and(
-      z.any().openapi({ description: 'The URI that identifies the newly created object.' }),
-    ).exactOptional(),
-    Bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the bucket that contains the newly created object. Does not return the access point ARN or access point alias if used.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html">What is S3 on Outposts?</a> in the <i>Amazon S3 User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Key: ObjectKeySchema.and(
-      z.any().openapi({ description: 'The object key of the newly created object.' }),
-    ).exactOptional(),
-    ETag: ETagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Entity tag that identifies the newly created object\'s data. Objects with different object data will have different entity tags. The entity tag is an opaque string. The entity tag may or may not be an MD5 digest of the object data. If the entity tag is not an MD5 digest of the object data, it will contain one or more nonhexadecimal characters and/or will consist of less than 32 or more than 32 hexadecimal digits. For more information about how the entity tag is calculated, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumCRC32: ChecksumCRC32Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumCRC32C: ChecksumCRC32CSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA1: ChecksumSHA1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA256: ChecksumSHA256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Location: LocationSchema.exactOptional().openapi({
+      description: 'The URI that identifies the newly created object.',
+    }),
+    Bucket: BucketNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the bucket that contains the newly created object. Does not return the access point ARN or access point alias if used.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html">What is S3 on Outposts?</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    }),
+    Key: ObjectKeySchema.exactOptional().openapi({
+      description: 'The object key of the newly created object.',
+    }),
+    ETag: ETagSchema.exactOptional().openapi({
+      description:
+        'Entity tag that identifies the newly created object\'s data. Objects with different object data will have different entity tags. The entity tag is an opaque string. The entity tag may or may not be an MD5 digest of the object data. If the entity tag is not an MD5 digest of the object data, it will contain one or more nonhexadecimal characters and/or will consist of less than 32 or more than 32 hexadecimal digits. For more information about how the entity tag is calculated, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumCRC32: ChecksumCRC32Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumCRC32C: ChecksumCRC32CSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA1: ChecksumSHA1Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA256: ChecksumSHA256Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({
     example: {
@@ -115,49 +896,29 @@ const PartNumberSchema = z.int().openapi('PartNumber')
 
 const CompletedPartSchema = z
   .object({
-    ETag: ETagSchema.and(
-      z.any().openapi({ description: 'Entity tag returned when the part was uploaded.' }),
-    ).exactOptional(),
-    ChecksumCRC32: ChecksumCRC32Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumCRC32C: ChecksumCRC32CSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA1: ChecksumSHA1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA256: ChecksumSHA256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    PartNumber: PartNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part number that identifies the part. This is a positive integer between 1 and 10,000.',
-        }),
-    ).exactOptional(),
+    ETag: ETagSchema.exactOptional().openapi({
+      description: 'Entity tag returned when the part was uploaded.',
+    }),
+    ChecksumCRC32: ChecksumCRC32Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumCRC32C: ChecksumCRC32CSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA1: ChecksumSHA1Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA256: ChecksumSHA256Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    PartNumber: PartNumberSchema.exactOptional().openapi({
+      description:
+        'Part number that identifies the part. This is a positive integer between 1 and 10,000.',
+    }),
   })
   .openapi({ description: 'Details of the parts that were uploaded.', required: [] })
   .openapi('CompletedPart')
@@ -171,58 +932,38 @@ const LastModifiedSchema = z.iso.datetime({ offset: true }).openapi('LastModifie
 
 const CopyObjectResultSchema = z
   .object({
-    ETag: ETagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the ETag of the new object. The ETag reflects only changes to the contents of an object, not its metadata.',
-        }),
-    ).exactOptional(),
-    LastModified: LastModifiedSchema.and(
-      z.any().openapi({ description: 'Creation date of the object.' }),
-    ).exactOptional(),
-    ChecksumCRC32: ChecksumCRC32Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumCRC32C: ChecksumCRC32CSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA1: ChecksumSHA1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA256: ChecksumSHA256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    ETag: ETagSchema.exactOptional().openapi({
+      description:
+        'Returns the ETag of the new object. The ETag reflects only changes to the contents of an object, not its metadata.',
+    }),
+    LastModified: LastModifiedSchema.exactOptional().openapi({
+      description: 'Creation date of the object.',
+    }),
+    ChecksumCRC32: ChecksumCRC32Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumCRC32C: ChecksumCRC32CSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA1: ChecksumSHA1Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA256: ChecksumSHA256Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({ description: 'Container for all response elements.', required: [] })
   .openapi('CopyObjectResult')
 
 const CopyObjectOutputSchema = z
   .object({
-    CopyObjectResult: CopyObjectResultSchema.and(
-      z.any().openapi({ description: 'Container for all response elements.' }),
-    ).exactOptional(),
+    CopyObjectResult: CopyObjectResultSchema.exactOptional().openapi({
+      description: 'Container for all response elements.',
+    }),
   })
   .openapi({
     example: {
@@ -240,7 +981,7 @@ const MetadataValueSchema = z.string().openapi('MetadataValue')
 const ObjectNotInActiveTierErrorSchema = z.any().openapi('ObjectNotInActiveTierError')
 
 const CreateBucketOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: { Location: '/examplebucket' } })
   .openapi('CreateBucketOutput')
 
@@ -285,20 +1026,16 @@ const MultipartUploadIdSchema = z.string().openapi('MultipartUploadId')
 
 const CreateMultipartUploadOutputSchema = z
   .object({
-    Bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the bucket to which the multipart upload was initiated. Does not return the access point ARN or access point alias if used.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html">What is S3 on Outposts?</a> in the <i>Amazon S3 User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Key: ObjectKeySchema.and(
-      z.any().openapi({ description: 'Object key for which the multipart upload was initiated.' }),
-    ).exactOptional(),
-    UploadId: MultipartUploadIdSchema.and(
-      z.any().openapi({ description: 'ID for the initiated multipart upload.' }),
-    ).exactOptional(),
+    Bucket: BucketNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the bucket to which the multipart upload was initiated. Does not return the access point ARN or access point alias if used.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html">What is S3 on Outposts?</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    }),
+    Key: ObjectKeySchema.exactOptional().openapi({
+      description: 'Object key for which the multipart upload was initiated.',
+    }),
+    UploadId: MultipartUploadIdSchema.exactOptional().openapi({
+      description: 'ID for the initiated multipart upload.',
+    }),
   })
   .openapi({
     example: {
@@ -311,10 +1048,13 @@ const CreateMultipartUploadOutputSchema = z
   })
   .openapi('CreateMultipartUploadOutput')
 
-const DeleteObjectOutputSchema = z.object({}).openapi({ example: {} }).openapi('DeleteObjectOutput')
+const DeleteObjectOutputSchema = z
+  .looseObject({})
+  .openapi({ example: {} })
+  .openapi('DeleteObjectOutput')
 
 const DeleteObjectTaggingOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: { VersionId: 'ydlaNkwWm0SfKJR.T1b1fIdPRbldTYRI' } })
   .openapi('DeleteObjectTaggingOutput')
 
@@ -326,28 +1066,20 @@ const DeleteMarkerVersionIdSchema = z.string().openapi('DeleteMarkerVersionId')
 
 const DeletedObjectSchema = z
   .object({
-    Key: ObjectKeySchema.and(
-      z.any().openapi({ description: 'The name of the deleted object.' }),
-    ).exactOptional(),
-    VersionId: ObjectVersionIdSchema.and(
-      z.any().openapi({ description: 'The version ID of the deleted object.' }),
-    ).exactOptional(),
-    DeleteMarker: DeleteMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the versioned object that was permanently deleted was (true) or was not (false) a delete marker. In a simple DELETE, this header indicates whether (true) or not (false) a delete marker was created.',
-        }),
-    ).exactOptional(),
-    DeleteMarkerVersionId: DeleteMarkerVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID of the delete marker created as a result of the DELETE operation. If you delete a specific object version, the value returned by this header is the version ID of the object version deleted.',
-        }),
-    ).exactOptional(),
+    Key: ObjectKeySchema.exactOptional().openapi({
+      description: 'The name of the deleted object.',
+    }),
+    VersionId: ObjectVersionIdSchema.exactOptional().openapi({
+      description: 'The version ID of the deleted object.',
+    }),
+    DeleteMarker: DeleteMarkerSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the versioned object that was permanently deleted was (true) or was not (false) a delete marker. In a simple DELETE, this header indicates whether (true) or not (false) a delete marker was created.',
+    }),
+    DeleteMarkerVersionId: DeleteMarkerVersionIdSchema.exactOptional().openapi({
+      description:
+        'The version ID of the delete marker created as a result of the DELETE operation. If you delete a specific object version, the value returned by this header is the version ID of the object version deleted.',
+    }),
   })
   .openapi({ description: 'Information about the deleted object.', required: [] })
   .openapi('DeletedObject')
@@ -363,26 +1095,18 @@ const MessageSchema = z.string().openapi('Message')
 
 const ErrorSchema = z
   .object({
-    Key: ObjectKeySchema.and(z.any().openapi({ description: 'The error key.' })).exactOptional(),
-    VersionId: ObjectVersionIdSchema.and(
-      z.any().openapi({ description: 'The version ID of the error.' }),
-    ).exactOptional(),
-    Code: CodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The error code is a string that uniquely identifies an error condition. It is meant to be read and understood by programs that detect and handle errors by type. The following is a list of Amazon S3 error codes. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html">Error responses</a>.</p> <ul> <li> <ul> <li> <p> <i>Code:</i> AccessDenied </p> </li> <li> <p> <i>Description:</i> Access Denied</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> AccountProblem</p> </li> <li> <p> <i>Description:</i> There is a problem with your Amazon Web Services account that prevents the action from completing successfully. Contact Amazon Web Services Support for further assistance.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> AllAccessDisabled</p> </li> <li> <p> <i>Description:</i> All access to this Amazon S3 resource has been disabled. Contact Amazon Web Services Support for further assistance.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> AmbiguousGrantByEmailAddress</p> </li> <li> <p> <i>Description:</i> The email address you provided is associated with more than one account.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> AuthorizationHeaderMalformed</p> </li> <li> <p> <i>Description:</i> The authorization header you provided is invalid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>HTTP Status Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> BadDigest</p> </li> <li> <p> <i>Description:</i> The Content-MD5 you specified did not match what we received.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> BucketAlreadyExists</p> </li> <li> <p> <i>Description:</i> The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> BucketAlreadyOwnedByYou</p> </li> <li> <p> <i>Description:</i> The bucket you tried to create already exists, and you own it. Amazon S3 returns this error in all Amazon Web Services Regions except in the North Virginia Region. For legacy compatibility, if you re-create an existing bucket that you already own in the North Virginia Region, Amazon S3 returns 200 OK and resets the bucket access control lists (ACLs).</p> </li> <li> <p> <i>Code:</i> 409 Conflict (in all Regions except the North Virginia Region) </p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> BucketNotEmpty</p> </li> <li> <p> <i>Description:</i> The bucket you tried to delete is not empty.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> CredentialsNotSupported</p> </li> <li> <p> <i>Description:</i> This request does not support credentials.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> CrossLocationLoggingProhibited</p> </li> <li> <p> <i>Description:</i> Cross-location logging not allowed. Buckets in one geographic location cannot log information to a bucket in another location.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> EntityTooSmall</p> </li> <li> <p> <i>Description:</i> Your proposed upload is smaller than the minimum allowed object size.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> EntityTooLarge</p> </li> <li> <p> <i>Description:</i> Your proposed upload exceeds the maximum allowed object size.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> ExpiredToken</p> </li> <li> <p> <i>Description:</i> The provided token has expired.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> IllegalVersioningConfigurationException </p> </li> <li> <p> <i>Description:</i> Indicates that the versioning configuration specified in the request is invalid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> IncompleteBody</p> </li> <li> <p> <i>Description:</i> You did not provide the number of bytes specified by the Content-Length HTTP header</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> IncorrectNumberOfFilesInPostRequest</p> </li> <li> <p> <i>Description:</i> POST requires exactly one file upload per request.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InlineDataTooLarge</p> </li> <li> <p> <i>Description:</i> Inline data exceeds the maximum allowed size.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InternalError</p> </li> <li> <p> <i>Description:</i> We encountered an internal error. Please try again.</p> </li> <li> <p> <i>HTTP Status Code:</i> 500 Internal Server Error</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Server</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidAccessKeyId</p> </li> <li> <p> <i>Description:</i> The Amazon Web Services access key ID you provided does not exist in our records.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidAddressingHeader</p> </li> <li> <p> <i>Description:</i> You must specify the Anonymous role.</p> </li> <li> <p> <i>HTTP Status Code:</i> N/A</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidArgument</p> </li> <li> <p> <i>Description:</i> Invalid Argument</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidBucketName</p> </li> <li> <p> <i>Description:</i> The specified bucket is not valid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidBucketState</p> </li> <li> <p> <i>Description:</i> The request is not valid with the current state of the bucket.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidDigest</p> </li> <li> <p> <i>Description:</i> The Content-MD5 you specified is not valid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidEncryptionAlgorithmError</p> </li> <li> <p> <i>Description:</i> The encryption request you specified is not valid. The valid value is AES256.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidLocationConstraint</p> </li> <li> <p> <i>Description:</i> The specified location constraint is not valid. For more information about Regions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro">How to Select a Region for Your Buckets</a>. </p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidObjectState</p> </li> <li> <p> <i>Description:</i> The action is not valid for the current state of the object.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidPart</p> </li> <li> <p> <i>Description:</i> One or more of the specified parts could not be found. The part might not have been uploaded, or the specified entity tag might not have matched the part\'s entity tag.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidPartOrder</p> </li> <li> <p> <i>Description:</i> The list of parts was not in ascending order. Parts list must be specified in order by part number.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidPayer</p> </li> <li> <p> <i>Description:</i> All access to this object has been disabled. Please contact Amazon Web Services Support for further assistance.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidPolicyDocument</p> </li> <li> <p> <i>Description:</i> The content of the form does not meet the conditions specified in the policy document.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRange</p> </li> <li> <p> <i>Description:</i> The requested range cannot be satisfied.</p> </li> <li> <p> <i>HTTP Status Code:</i> 416 Requested Range Not Satisfiable</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Please use <code>AWS4-HMAC-SHA256</code>.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> SOAP requests must be made over an HTTPS connection.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Acceleration is not supported for buckets with non-DNS compliant names.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Acceleration is not supported for buckets with periods (.) in their names.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Accelerate endpoint only supports virtual style requests.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Accelerate is not configured on this bucket.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Accelerate is disabled on this bucket.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Acceleration is not supported on this bucket. Contact Amazon Web Services Support for more information.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Acceleration cannot be enabled on this bucket. Contact Amazon Web Services Support for more information.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidSecurity</p> </li> <li> <p> <i>Description:</i> The provided security credentials are not valid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidSOAPRequest</p> </li> <li> <p> <i>Description:</i> The SOAP request body is invalid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidStorageClass</p> </li> <li> <p> <i>Description:</i> The storage class you specified is not valid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidTargetBucketForLogging</p> </li> <li> <p> <i>Description:</i> The target bucket for logging does not exist, is not owned by you, or does not have the appropriate grants for the log-delivery group. </p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidToken</p> </li> <li> <p> <i>Description:</i> The provided token is malformed or otherwise invalid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidURI</p> </li> <li> <p> <i>Description:</i> Couldn\'t parse the specified URI.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> KeyTooLongError</p> </li> <li> <p> <i>Description:</i> Your key is too long.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MalformedACLError</p> </li> <li> <p> <i>Description:</i> The XML you provided was not well-formed or did not validate against our published schema.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MalformedPOSTRequest </p> </li> <li> <p> <i>Description:</i> The body of your POST request is not well-formed multipart/form-data.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MalformedXML</p> </li> <li> <p> <i>Description:</i> This happens when the user sends malformed XML (XML that doesn\'t conform to the published XSD) for the configuration. The error message is, "The XML you provided was not well-formed or did not validate against our published schema." </p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MaxMessageLengthExceeded</p> </li> <li> <p> <i>Description:</i> Your request was too big.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MaxPostPreDataLengthExceededError</p> </li> <li> <p> <i>Description:</i> Your POST request fields preceding the upload file were too large.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MetadataTooLarge</p> </li> <li> <p> <i>Description:</i> Your metadata headers exceed the maximum allowed metadata size.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MethodNotAllowed</p> </li> <li> <p> <i>Description:</i> The specified method is not allowed against this resource.</p> </li> <li> <p> <i>HTTP Status Code:</i> 405 Method Not Allowed</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingAttachment</p> </li> <li> <p> <i>Description:</i> A SOAP attachment was expected, but none were found.</p> </li> <li> <p> <i>HTTP Status Code:</i> N/A</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingContentLength</p> </li> <li> <p> <i>Description:</i> You must provide the Content-Length HTTP header.</p> </li> <li> <p> <i>HTTP Status Code:</i> 411 Length Required</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingRequestBodyError</p> </li> <li> <p> <i>Description:</i> This happens when the user sends an empty XML document as a request. The error message is, "Request body is empty." </p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingSecurityElement</p> </li> <li> <p> <i>Description:</i> The SOAP 1.1 request is missing a security element.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingSecurityHeader</p> </li> <li> <p> <i>Description:</i> Your request is missing a required header.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoLoggingStatusForKey</p> </li> <li> <p> <i>Description:</i> There is no such thing as a logging status subresource for a key.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchBucket</p> </li> <li> <p> <i>Description:</i> The specified bucket does not exist.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchBucketPolicy</p> </li> <li> <p> <i>Description:</i> The specified bucket does not have a bucket policy.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchKey</p> </li> <li> <p> <i>Description:</i> The specified key does not exist.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchLifecycleConfiguration</p> </li> <li> <p> <i>Description:</i> The lifecycle configuration does not exist. </p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchUpload</p> </li> <li> <p> <i>Description:</i> The specified multipart upload does not exist. The upload ID might be invalid, or the multipart upload might have been aborted or completed.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchVersion </p> </li> <li> <p> <i>Description:</i> Indicates that the version ID specified in the request does not match an existing version.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NotImplemented</p> </li> <li> <p> <i>Description:</i> A header you provided implies functionality that is not implemented.</p> </li> <li> <p> <i>HTTP Status Code:</i> 501 Not Implemented</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Server</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NotSignedUp</p> </li> <li> <p> <i>Description:</i> Your account is not signed up for the Amazon S3 service. You must sign up before you can use Amazon S3. You can sign up at the following URL: <a href="http://aws.amazon.com/s3">Amazon S3</a> </p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> OperationAborted</p> </li> <li> <p> <i>Description:</i> A conflicting conditional action is currently in progress against this resource. Try again.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> PermanentRedirect</p> </li> <li> <p> <i>Description:</i> The bucket you are attempting to access must be addressed using the specified endpoint. Send all future requests to this endpoint.</p> </li> <li> <p> <i>HTTP Status Code:</i> 301 Moved Permanently</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> PreconditionFailed</p> </li> <li> <p> <i>Description:</i> At least one of the preconditions you specified did not hold.</p> </li> <li> <p> <i>HTTP Status Code:</i> 412 Precondition Failed</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> Redirect</p> </li> <li> <p> <i>Description:</i> Temporary redirect.</p> </li> <li> <p> <i>HTTP Status Code:</i> 307 Moved Temporarily</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RestoreAlreadyInProgress</p> </li> <li> <p> <i>Description:</i> Object restore is already in progress.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RequestIsNotMultiPartContent</p> </li> <li> <p> <i>Description:</i> Bucket POST must be of the enclosure-type multipart/form-data.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RequestTimeout</p> </li> <li> <p> <i>Description:</i> Your socket connection to the server was not read from or written to within the timeout period.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RequestTimeTooSkewed</p> </li> <li> <p> <i>Description:</i> The difference between the request time and the server\'s time is too large.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RequestTorrentOfBucketError</p> </li> <li> <p> <i>Description:</i> Requesting the torrent file of a bucket is not permitted.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> SignatureDoesNotMatch</p> </li> <li> <p> <i>Description:</i> The request signature we calculated does not match the signature you provided. Check your Amazon Web Services secret access key and signing method. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html">REST Authentication</a> and <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/SOAPAuthentication.html">SOAP Authentication</a> for details.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> ServiceUnavailable</p> </li> <li> <p> <i>Description:</i> Service is unable to handle request.</p> </li> <li> <p> <i>HTTP Status Code:</i> 503 Service Unavailable</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Server</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> SlowDown</p> </li> <li> <p> <i>Description:</i> Reduce your request rate.</p> </li> <li> <p> <i>HTTP Status Code:</i> 503 Slow Down</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Server</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> TemporaryRedirect</p> </li> <li> <p> <i>Description:</i> You are being redirected to the bucket while DNS updates.</p> </li> <li> <p> <i>HTTP Status Code:</i> 307 Moved Temporarily</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> TokenRefreshRequired</p> </li> <li> <p> <i>Description:</i> The provided token must be refreshed.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> TooManyBuckets</p> </li> <li> <p> <i>Description:</i> You have attempted to create more buckets than allowed.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> UnexpectedContent</p> </li> <li> <p> <i>Description:</i> This request does not support content.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> UnresolvableGrantByEmailAddress</p> </li> <li> <p> <i>Description:</i> The email address you provided does not match any account on record.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> UserKeyMustBeSpecified</p> </li> <li> <p> <i>Description:</i> The bucket POST must contain the specified field name. If it is specified, check the order of the fields.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> </ul> <p/>',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The error message contains a generic description of the error condition in English. It is intended for a human audience. Simple programs display the message directly to the end user if they encounter an error condition they don't know how or don't care to handle. Sophisticated programs with more exhaustive error handling and proper internationalization are more likely to ignore the error message.",
-        }),
-    ).exactOptional(),
+    Key: ObjectKeySchema.exactOptional().openapi({ description: 'The error key.' }),
+    VersionId: ObjectVersionIdSchema.exactOptional().openapi({
+      description: 'The version ID of the error.',
+    }),
+    Code: CodeSchema.exactOptional().openapi({
+      description:
+        '<p>The error code is a string that uniquely identifies an error condition. It is meant to be read and understood by programs that detect and handle errors by type. The following is a list of Amazon S3 error codes. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html">Error responses</a>.</p> <ul> <li> <ul> <li> <p> <i>Code:</i> AccessDenied </p> </li> <li> <p> <i>Description:</i> Access Denied</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> AccountProblem</p> </li> <li> <p> <i>Description:</i> There is a problem with your Amazon Web Services account that prevents the action from completing successfully. Contact Amazon Web Services Support for further assistance.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> AllAccessDisabled</p> </li> <li> <p> <i>Description:</i> All access to this Amazon S3 resource has been disabled. Contact Amazon Web Services Support for further assistance.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> AmbiguousGrantByEmailAddress</p> </li> <li> <p> <i>Description:</i> The email address you provided is associated with more than one account.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> AuthorizationHeaderMalformed</p> </li> <li> <p> <i>Description:</i> The authorization header you provided is invalid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>HTTP Status Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> BadDigest</p> </li> <li> <p> <i>Description:</i> The Content-MD5 you specified did not match what we received.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> BucketAlreadyExists</p> </li> <li> <p> <i>Description:</i> The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> BucketAlreadyOwnedByYou</p> </li> <li> <p> <i>Description:</i> The bucket you tried to create already exists, and you own it. Amazon S3 returns this error in all Amazon Web Services Regions except in the North Virginia Region. For legacy compatibility, if you re-create an existing bucket that you already own in the North Virginia Region, Amazon S3 returns 200 OK and resets the bucket access control lists (ACLs).</p> </li> <li> <p> <i>Code:</i> 409 Conflict (in all Regions except the North Virginia Region) </p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> BucketNotEmpty</p> </li> <li> <p> <i>Description:</i> The bucket you tried to delete is not empty.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> CredentialsNotSupported</p> </li> <li> <p> <i>Description:</i> This request does not support credentials.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> CrossLocationLoggingProhibited</p> </li> <li> <p> <i>Description:</i> Cross-location logging not allowed. Buckets in one geographic location cannot log information to a bucket in another location.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> EntityTooSmall</p> </li> <li> <p> <i>Description:</i> Your proposed upload is smaller than the minimum allowed object size.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> EntityTooLarge</p> </li> <li> <p> <i>Description:</i> Your proposed upload exceeds the maximum allowed object size.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> ExpiredToken</p> </li> <li> <p> <i>Description:</i> The provided token has expired.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> IllegalVersioningConfigurationException </p> </li> <li> <p> <i>Description:</i> Indicates that the versioning configuration specified in the request is invalid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> IncompleteBody</p> </li> <li> <p> <i>Description:</i> You did not provide the number of bytes specified by the Content-Length HTTP header</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> IncorrectNumberOfFilesInPostRequest</p> </li> <li> <p> <i>Description:</i> POST requires exactly one file upload per request.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InlineDataTooLarge</p> </li> <li> <p> <i>Description:</i> Inline data exceeds the maximum allowed size.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InternalError</p> </li> <li> <p> <i>Description:</i> We encountered an internal error. Please try again.</p> </li> <li> <p> <i>HTTP Status Code:</i> 500 Internal Server Error</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Server</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidAccessKeyId</p> </li> <li> <p> <i>Description:</i> The Amazon Web Services access key ID you provided does not exist in our records.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidAddressingHeader</p> </li> <li> <p> <i>Description:</i> You must specify the Anonymous role.</p> </li> <li> <p> <i>HTTP Status Code:</i> N/A</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidArgument</p> </li> <li> <p> <i>Description:</i> Invalid Argument</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidBucketName</p> </li> <li> <p> <i>Description:</i> The specified bucket is not valid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidBucketState</p> </li> <li> <p> <i>Description:</i> The request is not valid with the current state of the bucket.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidDigest</p> </li> <li> <p> <i>Description:</i> The Content-MD5 you specified is not valid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidEncryptionAlgorithmError</p> </li> <li> <p> <i>Description:</i> The encryption request you specified is not valid. The valid value is AES256.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidLocationConstraint</p> </li> <li> <p> <i>Description:</i> The specified location constraint is not valid. For more information about Regions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro">How to Select a Region for Your Buckets</a>. </p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidObjectState</p> </li> <li> <p> <i>Description:</i> The action is not valid for the current state of the object.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidPart</p> </li> <li> <p> <i>Description:</i> One or more of the specified parts could not be found. The part might not have been uploaded, or the specified entity tag might not have matched the part\'s entity tag.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidPartOrder</p> </li> <li> <p> <i>Description:</i> The list of parts was not in ascending order. Parts list must be specified in order by part number.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidPayer</p> </li> <li> <p> <i>Description:</i> All access to this object has been disabled. Please contact Amazon Web Services Support for further assistance.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidPolicyDocument</p> </li> <li> <p> <i>Description:</i> The content of the form does not meet the conditions specified in the policy document.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRange</p> </li> <li> <p> <i>Description:</i> The requested range cannot be satisfied.</p> </li> <li> <p> <i>HTTP Status Code:</i> 416 Requested Range Not Satisfiable</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Please use <code>AWS4-HMAC-SHA256</code>.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> SOAP requests must be made over an HTTPS connection.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Acceleration is not supported for buckets with non-DNS compliant names.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Acceleration is not supported for buckets with periods (.) in their names.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Accelerate endpoint only supports virtual style requests.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Accelerate is not configured on this bucket.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Accelerate is disabled on this bucket.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Acceleration is not supported on this bucket. Contact Amazon Web Services Support for more information.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidRequest</p> </li> <li> <p> <i>Description:</i> Amazon S3 Transfer Acceleration cannot be enabled on this bucket. Contact Amazon Web Services Support for more information.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>Code:</i> N/A</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidSecurity</p> </li> <li> <p> <i>Description:</i> The provided security credentials are not valid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidSOAPRequest</p> </li> <li> <p> <i>Description:</i> The SOAP request body is invalid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidStorageClass</p> </li> <li> <p> <i>Description:</i> The storage class you specified is not valid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidTargetBucketForLogging</p> </li> <li> <p> <i>Description:</i> The target bucket for logging does not exist, is not owned by you, or does not have the appropriate grants for the log-delivery group. </p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidToken</p> </li> <li> <p> <i>Description:</i> The provided token is malformed or otherwise invalid.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> InvalidURI</p> </li> <li> <p> <i>Description:</i> Couldn\'t parse the specified URI.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> KeyTooLongError</p> </li> <li> <p> <i>Description:</i> Your key is too long.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MalformedACLError</p> </li> <li> <p> <i>Description:</i> The XML you provided was not well-formed or did not validate against our published schema.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MalformedPOSTRequest </p> </li> <li> <p> <i>Description:</i> The body of your POST request is not well-formed multipart/form-data.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MalformedXML</p> </li> <li> <p> <i>Description:</i> This happens when the user sends malformed XML (XML that doesn\'t conform to the published XSD) for the configuration. The error message is, "The XML you provided was not well-formed or did not validate against our published schema." </p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MaxMessageLengthExceeded</p> </li> <li> <p> <i>Description:</i> Your request was too big.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MaxPostPreDataLengthExceededError</p> </li> <li> <p> <i>Description:</i> Your POST request fields preceding the upload file were too large.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MetadataTooLarge</p> </li> <li> <p> <i>Description:</i> Your metadata headers exceed the maximum allowed metadata size.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MethodNotAllowed</p> </li> <li> <p> <i>Description:</i> The specified method is not allowed against this resource.</p> </li> <li> <p> <i>HTTP Status Code:</i> 405 Method Not Allowed</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingAttachment</p> </li> <li> <p> <i>Description:</i> A SOAP attachment was expected, but none were found.</p> </li> <li> <p> <i>HTTP Status Code:</i> N/A</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingContentLength</p> </li> <li> <p> <i>Description:</i> You must provide the Content-Length HTTP header.</p> </li> <li> <p> <i>HTTP Status Code:</i> 411 Length Required</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingRequestBodyError</p> </li> <li> <p> <i>Description:</i> This happens when the user sends an empty XML document as a request. The error message is, "Request body is empty." </p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingSecurityElement</p> </li> <li> <p> <i>Description:</i> The SOAP 1.1 request is missing a security element.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> MissingSecurityHeader</p> </li> <li> <p> <i>Description:</i> Your request is missing a required header.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoLoggingStatusForKey</p> </li> <li> <p> <i>Description:</i> There is no such thing as a logging status subresource for a key.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchBucket</p> </li> <li> <p> <i>Description:</i> The specified bucket does not exist.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchBucketPolicy</p> </li> <li> <p> <i>Description:</i> The specified bucket does not have a bucket policy.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchKey</p> </li> <li> <p> <i>Description:</i> The specified key does not exist.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchLifecycleConfiguration</p> </li> <li> <p> <i>Description:</i> The lifecycle configuration does not exist. </p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchUpload</p> </li> <li> <p> <i>Description:</i> The specified multipart upload does not exist. The upload ID might be invalid, or the multipart upload might have been aborted or completed.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NoSuchVersion </p> </li> <li> <p> <i>Description:</i> Indicates that the version ID specified in the request does not match an existing version.</p> </li> <li> <p> <i>HTTP Status Code:</i> 404 Not Found</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NotImplemented</p> </li> <li> <p> <i>Description:</i> A header you provided implies functionality that is not implemented.</p> </li> <li> <p> <i>HTTP Status Code:</i> 501 Not Implemented</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Server</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> NotSignedUp</p> </li> <li> <p> <i>Description:</i> Your account is not signed up for the Amazon S3 service. You must sign up before you can use Amazon S3. You can sign up at the following URL: <a href="http://aws.amazon.com/s3">Amazon S3</a> </p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> OperationAborted</p> </li> <li> <p> <i>Description:</i> A conflicting conditional action is currently in progress against this resource. Try again.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> PermanentRedirect</p> </li> <li> <p> <i>Description:</i> The bucket you are attempting to access must be addressed using the specified endpoint. Send all future requests to this endpoint.</p> </li> <li> <p> <i>HTTP Status Code:</i> 301 Moved Permanently</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> PreconditionFailed</p> </li> <li> <p> <i>Description:</i> At least one of the preconditions you specified did not hold.</p> </li> <li> <p> <i>HTTP Status Code:</i> 412 Precondition Failed</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> Redirect</p> </li> <li> <p> <i>Description:</i> Temporary redirect.</p> </li> <li> <p> <i>HTTP Status Code:</i> 307 Moved Temporarily</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RestoreAlreadyInProgress</p> </li> <li> <p> <i>Description:</i> Object restore is already in progress.</p> </li> <li> <p> <i>HTTP Status Code:</i> 409 Conflict</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RequestIsNotMultiPartContent</p> </li> <li> <p> <i>Description:</i> Bucket POST must be of the enclosure-type multipart/form-data.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RequestTimeout</p> </li> <li> <p> <i>Description:</i> Your socket connection to the server was not read from or written to within the timeout period.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RequestTimeTooSkewed</p> </li> <li> <p> <i>Description:</i> The difference between the request time and the server\'s time is too large.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> RequestTorrentOfBucketError</p> </li> <li> <p> <i>Description:</i> Requesting the torrent file of a bucket is not permitted.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> SignatureDoesNotMatch</p> </li> <li> <p> <i>Description:</i> The request signature we calculated does not match the signature you provided. Check your Amazon Web Services secret access key and signing method. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html">REST Authentication</a> and <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/SOAPAuthentication.html">SOAP Authentication</a> for details.</p> </li> <li> <p> <i>HTTP Status Code:</i> 403 Forbidden</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> ServiceUnavailable</p> </li> <li> <p> <i>Description:</i> Service is unable to handle request.</p> </li> <li> <p> <i>HTTP Status Code:</i> 503 Service Unavailable</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Server</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> SlowDown</p> </li> <li> <p> <i>Description:</i> Reduce your request rate.</p> </li> <li> <p> <i>HTTP Status Code:</i> 503 Slow Down</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Server</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> TemporaryRedirect</p> </li> <li> <p> <i>Description:</i> You are being redirected to the bucket while DNS updates.</p> </li> <li> <p> <i>HTTP Status Code:</i> 307 Moved Temporarily</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> TokenRefreshRequired</p> </li> <li> <p> <i>Description:</i> The provided token must be refreshed.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> TooManyBuckets</p> </li> <li> <p> <i>Description:</i> You have attempted to create more buckets than allowed.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> UnexpectedContent</p> </li> <li> <p> <i>Description:</i> This request does not support content.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> UnresolvableGrantByEmailAddress</p> </li> <li> <p> <i>Description:</i> The email address you provided does not match any account on record.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> <li> <ul> <li> <p> <i>Code:</i> UserKeyMustBeSpecified</p> </li> <li> <p> <i>Description:</i> The bucket POST must contain the specified field name. If it is specified, check the order of the fields.</p> </li> <li> <p> <i>HTTP Status Code:</i> 400 Bad Request</p> </li> <li> <p> <i>SOAP Fault Code Prefix:</i> Client</p> </li> </ul> </li> </ul> <p/>',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        "The error message contains a generic description of the error condition in English. It is intended for a human audience. Simple programs display the message directly to the end user if they encounter an error condition they don't know how or don't care to handle. Sophisticated programs with more exhaustive error handling and proper internationalization are more likely to ignore the error message.",
+    }),
   })
   .openapi({ description: 'Container for all error elements.', required: [] })
   .openapi('Error')
@@ -394,23 +1118,15 @@ const ErrorsSchema = z
 
 const DeleteObjectsOutputSchema = z
   .object({
-    Deleted: DeletedObjectsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Container element for a successful delete. It identifies the object that was successfully deleted.',
-        }),
-    ).exactOptional(),
-    Errors: ErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Error' },
-          description:
-            'Container for a failed delete action that describes the object that Amazon S3 attempted to delete and the error it encountered.',
-        }),
-    ).exactOptional(),
+    Deleted: DeletedObjectsSchema.exactOptional().openapi({
+      description:
+        'Container element for a successful delete. It identifies the object that was successfully deleted.',
+    }),
+    Errors: ErrorsSchema.exactOptional().openapi({
+      xml: { name: 'Error' },
+      description:
+        'Container for a failed delete action that describes the object that Amazon S3 attempted to delete and the error it encountered.',
+    }),
   })
   .openapi({
     example: {
@@ -425,19 +1141,13 @@ const DeleteObjectsOutputSchema = z
 
 const ObjectIdentifierSchema = z
   .object({
-    Key: ObjectKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Key name of the object.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ),
-    VersionId: ObjectVersionIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'VersionId for the specific version of the object to delete.' }),
-    ).exactOptional(),
+    Key: ObjectKeySchema.openapi({
+      description:
+        '<p>Key name of the object.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
+    VersionId: ObjectVersionIdSchema.exactOptional().openapi({
+      description: 'VersionId for the specific version of the object to delete.',
+    }),
   })
   .openapi({
     required: ['Key'],
@@ -458,30 +1168,22 @@ const BucketAccelerateStatusSchema = z
 
 const GetBucketAccelerateConfigurationOutputSchema = z
   .object({
-    Status: BucketAccelerateStatusSchema.and(
-      z.any().openapi({ description: 'The accelerate configuration of the bucket.' }),
-    ).exactOptional(),
+    Status: BucketAccelerateStatusSchema.exactOptional().openapi({
+      description: 'The accelerate configuration of the bucket.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketAccelerateConfigurationOutput')
 
 const DisplayNameSchema = z.string().openapi('DisplayName')
 
-const IDSchema = z.string().openapi('ID')
-
 const OwnerSchema = z
   .object({
-    DisplayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Container for the display name of the owner. This value is only supported in the following Amazon Web Services Regions:</p> <ul> <li> <p>US East (N. Virginia)</p> </li> <li> <p>US West (N. California)</p> </li> <li> <p>US West (Oregon)</p> </li> <li> <p>Asia Pacific (Singapore)</p> </li> <li> <p>Asia Pacific (Sydney)</p> </li> <li> <p>Asia Pacific (Tokyo)</p> </li> <li> <p>Europe (Ireland)</p> </li> <li> <p>South America (São Paulo)</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ID: IDSchema.and(
-      z.any().openapi({ description: 'Container for the ID of the owner.' }),
-    ).exactOptional(),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description:
+        '<p>Container for the display name of the owner. This value is only supported in the following Amazon Web Services Regions:</p> <ul> <li> <p>US East (N. Virginia)</p> </li> <li> <p>US West (N. California)</p> </li> <li> <p>US West (Oregon)</p> </li> <li> <p>Asia Pacific (Singapore)</p> </li> <li> <p>Asia Pacific (Sydney)</p> </li> <li> <p>Asia Pacific (Tokyo)</p> </li> <li> <p>Europe (Ireland)</p> </li> <li> <p>South America (São Paulo)</p> </li> </ul>',
+    }),
+    ID: IDSchema.exactOptional().openapi({ description: 'Container for the ID of the owner.' }),
   })
   .openapi({ description: "Container for the owner's display name and ID.", required: [] })
   .openapi('Owner')
@@ -494,26 +1196,16 @@ const URISchema = z.string().openapi('URI')
 
 const GranteeSchema = z
   .object({
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'Screen name of the grantee.' }),
-    ).exactOptional(),
-    EmailAddress: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Email address of the grantee.</p> <note> <p>Using email addresses to specify a grantee is only supported in the following Amazon Web Services Regions: </p> <ul> <li> <p>US East (N. Virginia)</p> </li> <li> <p>US West (N. California)</p> </li> <li> <p> US West (Oregon)</p> </li> <li> <p> Asia Pacific (Singapore)</p> </li> <li> <p>Asia Pacific (Sydney)</p> </li> <li> <p>Asia Pacific (Tokyo)</p> </li> <li> <p>Europe (Ireland)</p> </li> <li> <p>South America (São Paulo)</p> </li> </ul> <p>For a list of all the Amazon S3 supported Regions and endpoints, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions and Endpoints</a> in the Amazon Web Services General Reference.</p> </note>',
-        }),
-    ).exactOptional(),
-    ID: IDSchema.and(
-      z.any().openapi({ description: 'The canonical user ID of the grantee.' }),
-    ).exactOptional(),
-    Type: TypeSchema.and(
-      z.any().openapi({ xml: { name: 'xsi:type' }, description: 'Type of grantee' }),
-    ),
-    URI: URISchema.and(
-      z.any().openapi({ description: 'URI of the grantee group.' }),
-    ).exactOptional(),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'Screen name of the grantee.',
+    }),
+    EmailAddress: EmailAddressSchema.exactOptional().openapi({
+      description:
+        '<p>Email address of the grantee.</p> <note> <p>Using email addresses to specify a grantee is only supported in the following Amazon Web Services Regions: </p> <ul> <li> <p>US East (N. Virginia)</p> </li> <li> <p>US West (N. California)</p> </li> <li> <p> US West (Oregon)</p> </li> <li> <p> Asia Pacific (Singapore)</p> </li> <li> <p>Asia Pacific (Sydney)</p> </li> <li> <p>Asia Pacific (Tokyo)</p> </li> <li> <p>Europe (Ireland)</p> </li> <li> <p>South America (São Paulo)</p> </li> </ul> <p>For a list of all the Amazon S3 supported Regions and endpoints, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions and Endpoints</a> in the Amazon Web Services General Reference.</p> </note>',
+    }),
+    ID: IDSchema.exactOptional().openapi({ description: 'The canonical user ID of the grantee.' }),
+    Type: TypeSchema.openapi({ xml: { name: 'xsi:type' }, description: 'Type of grantee' }),
+    URI: URISchema.exactOptional().openapi({ description: 'URI of the grantee group.' }),
   })
   .openapi({
     required: ['Type'],
@@ -528,68 +1220,43 @@ const PermissionSchema = z
 
 const GrantSchema = z
   .object({
-    Grantee: GranteeSchema.and(
-      z.any().openapi({ description: 'The person being granted permissions.' }),
-    ).exactOptional(),
-    Permission: PermissionSchema.and(
-      z.any().openapi({ description: 'Specifies the permission given to the grantee.' }),
-    ).exactOptional(),
+    Grantee: GranteeSchema.exactOptional().openapi({
+      description: 'The person being granted permissions.',
+    }),
+    Permission: PermissionSchema.exactOptional().openapi({
+      description: 'Specifies the permission given to the grantee.',
+    }),
   })
   .openapi({ description: 'Container for grant information.', required: [] })
   .openapi('Grant')
 
-const GrantsSchema = z
-  .array(GrantSchema.and(z.any().openapi({ xml: { name: 'Grant' } })))
-  .openapi('Grants')
+const GrantsSchema = z.array(GrantSchema.openapi({ xml: { name: 'Grant' } })).openapi('Grants')
 
 const GetBucketAclOutputSchema = z
   .object({
-    Owner: OwnerSchema.and(
-      z.any().openapi({ description: "Container for the bucket owner's display name and ID." }),
-    ).exactOptional(),
-    Grants: GrantsSchema.and(
-      z.any().openapi({ xml: { name: 'AccessControlList' }, description: 'A list of grants.' }),
-    ).exactOptional(),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description: "Container for the bucket owner's display name and ID.",
+    }),
+    Grants: GrantsSchema.exactOptional().openapi({
+      xml: { name: 'AccessControlList' },
+      description: 'A list of grants.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketAclOutput')
 
 const AnalyticsIdSchema = z.string().openapi('AnalyticsId')
 
-const PrefixSchema = z.string().openapi('Prefix')
-
-const ValueSchema = z.string().openapi('Value')
-
-const TagSchema = z
-  .object({
-    Key: ObjectKeySchema.and(z.any().openapi({ description: 'Name of the object key.' })),
-    Value: ValueSchema.and(z.any().openapi({ description: 'Value of the tag.' })),
-  })
-  .openapi({ required: ['Key', 'Value'], description: 'A container of a key value name pair.' })
-  .openapi('Tag')
-
-const TagSetSchema = z
-  .array(TagSchema.and(z.any().openapi({ xml: { name: 'Tag' } })))
-  .openapi('TagSet')
-
 const AnalyticsAndOperatorSchema = z
   .object({
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix to use when evaluating an AND predicate: The prefix that an object must have to be included in the metrics results.',
-        }),
-    ).exactOptional(),
-    Tags: TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Tag' },
-          description: 'The list of tags to use when evaluating an AND predicate.',
-        }),
-    ).exactOptional(),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        'The prefix to use when evaluating an AND predicate: The prefix that an object must have to be included in the metrics results.',
+    }),
+    Tags: TagSetSchema.exactOptional().openapi({
+      xml: { name: 'Tag' },
+      description: 'The list of tags to use when evaluating an AND predicate.',
+    }),
   })
   .openapi({
     description:
@@ -601,20 +1268,16 @@ const AnalyticsAndOperatorSchema = z
 
 const AnalyticsFilterSchema = z
   .object({
-    Prefix: PrefixSchema.and(
-      z.any().openapi({ description: 'The prefix to use when evaluating an analytics filter.' }),
-    ).exactOptional(),
-    Tag: TagSchema.and(
-      z.any().openapi({ description: 'The tag to use when evaluating an analytics filter.' }),
-    ).exactOptional(),
-    And: AnalyticsAndOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A conjunction (logical AND) of predicates, which is used in evaluating an analytics filter. The operator must have at least two predicates.',
-        }),
-    ).exactOptional(),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'The prefix to use when evaluating an analytics filter.',
+    }),
+    Tag: TagSchema.exactOptional().openapi({
+      description: 'The tag to use when evaluating an analytics filter.',
+    }),
+    And: AnalyticsAndOperatorSchema.exactOptional().openapi({
+      description:
+        'A conjunction (logical AND) of predicates, which is used in evaluating an analytics filter. The operator must have at least two predicates.',
+    }),
   })
   .openapi({
     description:
@@ -629,40 +1292,21 @@ const StorageClassAnalysisSchemaVersionSchema = z
 
 const AnalyticsS3ExportFileFormatSchema = z.literal('CSV').openapi('AnalyticsS3ExportFileFormat')
 
-const AccountIdSchema = z.string().openapi('AccountId')
-
 const AnalyticsS3BucketDestinationSchema = z
   .object({
-    Format: AnalyticsS3ExportFileFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the file format used when exporting data to Amazon S3.',
-        }),
-    ),
-    BucketAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The account ID that owns the destination S3 bucket. If no account ID is provided, the owner is not validated before exporting data.</p> <note> <p> Although this value is optional, we strongly recommend that you set it to help prevent problems if the destination bucket ownership changes. </p> </note>',
-        }),
-    ).exactOptional(),
-    Bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the bucket to which data is exported.',
-        }),
-    ),
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix to use when exporting data. The prefix is prepended to all results.',
-        }),
-    ).exactOptional(),
+    Format: AnalyticsS3ExportFileFormatSchema.openapi({
+      description: 'Specifies the file format used when exporting data to Amazon S3.',
+    }),
+    BucketAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        '<p>The account ID that owns the destination S3 bucket. If no account ID is provided, the owner is not validated before exporting data.</p> <note> <p> Although this value is optional, we strongly recommend that you set it to help prevent problems if the destination bucket ownership changes. </p> </note>',
+    }),
+    Bucket: BucketNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the bucket to which data is exported.',
+    }),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'The prefix to use when exporting data. The prefix is prepended to all results.',
+    }),
   })
   .openapi({
     required: ['Format', 'Bucket'],
@@ -672,9 +1316,9 @@ const AnalyticsS3BucketDestinationSchema = z
 
 const AnalyticsExportDestinationSchema = z
   .object({
-    S3BucketDestination: AnalyticsS3BucketDestinationSchema.and(
-      z.any().openapi({ description: 'A destination signifying output to an S3 bucket.' }),
-    ),
+    S3BucketDestination: AnalyticsS3BucketDestinationSchema.openapi({
+      description: 'A destination signifying output to an S3 bucket.',
+    }),
   })
   .openapi({
     required: ['S3BucketDestination'],
@@ -684,17 +1328,13 @@ const AnalyticsExportDestinationSchema = z
 
 const StorageClassAnalysisDataExportSchema = z
   .object({
-    OutputSchemaVersion: StorageClassAnalysisSchemaVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the output schema to use when exporting data. Must be <code>V_1</code>.',
-        }),
-    ),
-    Destination: AnalyticsExportDestinationSchema.and(
-      z.any().openapi({ description: 'The place to store the data for an analysis.' }),
-    ),
+    OutputSchemaVersion: StorageClassAnalysisSchemaVersionSchema.openapi({
+      description:
+        'The version of the output schema to use when exporting data. Must be <code>V_1</code>.',
+    }),
+    Destination: AnalyticsExportDestinationSchema.openapi({
+      description: 'The place to store the data for an analysis.',
+    }),
   })
   .openapi({
     required: ['OutputSchemaVersion', 'Destination'],
@@ -705,14 +1345,10 @@ const StorageClassAnalysisDataExportSchema = z
 
 const StorageClassAnalysisSchema = z
   .object({
-    DataExport: StorageClassAnalysisDataExportSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how data related to the storage class analysis for an Amazon S3 bucket should be exported.',
-        }),
-    ).exactOptional(),
+    DataExport: StorageClassAnalysisDataExportSchema.exactOptional().openapi({
+      description:
+        'Specifies how data related to the storage class analysis for an Amazon S3 bucket should be exported.',
+    }),
   })
   .openapi({
     description:
@@ -723,25 +1359,17 @@ const StorageClassAnalysisSchema = z
 
 const AnalyticsConfigurationSchema = z
   .object({
-    Id: AnalyticsIdSchema.and(
-      z.any().openapi({ description: 'The ID that identifies the analytics configuration.' }),
-    ),
-    Filter: AnalyticsFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filter used to describe a set of objects for analyses. A filter must have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator). If no filter is provided, all objects will be considered in any analysis.',
-        }),
-    ).exactOptional(),
-    StorageClassAnalysis: StorageClassAnalysisSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains data related to access patterns to be collected and made available to analyze the tradeoffs between different storage classes. ',
-        }),
-    ),
+    Id: AnalyticsIdSchema.openapi({
+      description: 'The ID that identifies the analytics configuration.',
+    }),
+    Filter: AnalyticsFilterSchema.exactOptional().openapi({
+      description:
+        'The filter used to describe a set of objects for analyses. A filter must have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator). If no filter is provided, all objects will be considered in any analysis.',
+    }),
+    StorageClassAnalysis: StorageClassAnalysisSchema.openapi({
+      description:
+        ' Contains data related to access patterns to be collected and made available to analyze the tradeoffs between different storage classes. ',
+    }),
   })
   .openapi({
     required: ['Id', 'StorageClassAnalysis'],
@@ -752,11 +1380,9 @@ const AnalyticsConfigurationSchema = z
 
 const GetBucketAnalyticsConfigurationOutputSchema = z
   .object({
-    AnalyticsConfiguration: AnalyticsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration and any analyses for the analytics filter.' }),
-    ).exactOptional(),
+    AnalyticsConfiguration: AnalyticsConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration and any analyses for the analytics filter.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketAnalyticsConfigurationOutput')
@@ -793,58 +1419,33 @@ const MaxAgeSecondsSchema = z.int().openapi('MaxAgeSeconds')
 
 const CORSRuleSchema = z
   .object({
-    ID: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier for the rule. The value cannot be longer than 255 characters.',
-        }),
-    ).exactOptional(),
-    AllowedHeaders: AllowedHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'AllowedHeader' },
-          description:
-            'Headers that are specified in the <code>Access-Control-Request-Headers</code> header. These headers are allowed in a preflight OPTIONS request. In response to any preflight OPTIONS request, Amazon S3 returns any requested headers that are allowed.',
-        }),
-    ).exactOptional(),
-    AllowedMethods: AllowedMethodsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'AllowedMethod' },
-          description:
-            'An HTTP method that you allow the origin to execute. Valid values are <code>GET</code>, <code>PUT</code>, <code>HEAD</code>, <code>POST</code>, and <code>DELETE</code>.',
-        }),
-    ),
-    AllowedOrigins: AllowedOriginsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'AllowedOrigin' },
-          description:
-            'One or more origins you want customers to be able to access the bucket from.',
-        }),
-    ),
-    ExposeHeaders: ExposeHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ExposeHeader' },
-          description:
-            'One or more headers in the response that you want customers to be able to access from their applications (for example, from a JavaScript <code>XMLHttpRequest</code> object).',
-        }),
-    ).exactOptional(),
-    MaxAgeSeconds: MaxAgeSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time in seconds that your browser is to cache the preflight response for the specified resource.',
-        }),
-    ).exactOptional(),
+    ID: IDSchema.exactOptional().openapi({
+      description:
+        'Unique identifier for the rule. The value cannot be longer than 255 characters.',
+    }),
+    AllowedHeaders: AllowedHeadersSchema.exactOptional().openapi({
+      xml: { name: 'AllowedHeader' },
+      description:
+        'Headers that are specified in the <code>Access-Control-Request-Headers</code> header. These headers are allowed in a preflight OPTIONS request. In response to any preflight OPTIONS request, Amazon S3 returns any requested headers that are allowed.',
+    }),
+    AllowedMethods: AllowedMethodsSchema.openapi({
+      xml: { name: 'AllowedMethod' },
+      description:
+        'An HTTP method that you allow the origin to execute. Valid values are <code>GET</code>, <code>PUT</code>, <code>HEAD</code>, <code>POST</code>, and <code>DELETE</code>.',
+    }),
+    AllowedOrigins: AllowedOriginsSchema.openapi({
+      xml: { name: 'AllowedOrigin' },
+      description: 'One or more origins you want customers to be able to access the bucket from.',
+    }),
+    ExposeHeaders: ExposeHeadersSchema.exactOptional().openapi({
+      xml: { name: 'ExposeHeader' },
+      description:
+        'One or more headers in the response that you want customers to be able to access from their applications (for example, from a JavaScript <code>XMLHttpRequest</code> object).',
+    }),
+    MaxAgeSeconds: MaxAgeSecondsSchema.exactOptional().openapi({
+      description:
+        'The time in seconds that your browser is to cache the preflight response for the specified resource.',
+    }),
   })
   .openapi({
     required: ['AllowedMethods', 'AllowedOrigins'],
@@ -859,15 +1460,11 @@ const CORSRulesSchema = z
 
 const GetBucketCorsOutputSchema = z
   .object({
-    CORSRules: CORSRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'CORSRule' },
-          description:
-            'A set of origins and methods (cross-origin access that you want to allow). You can add up to 100 rules to the configuration.',
-        }),
-    ).exactOptional(),
+    CORSRules: CORSRulesSchema.exactOptional().openapi({
+      xml: { name: 'CORSRule' },
+      description:
+        'A set of origins and methods (cross-origin access that you want to allow). You can add up to 100 rules to the configuration.',
+    }),
   })
   .openapi({
     example: {
@@ -884,23 +1481,21 @@ const GetBucketCorsOutputSchema = z
   })
   .openapi('GetBucketCorsOutput')
 
+const ServerSideEncryptionSchema = z
+  .enum(['AES256', 'aws:kms', 'aws:kms:dsse'])
+  .openapi('ServerSideEncryption')
+
+const SSEKMSKeyIdSchema = z.string().openapi('SSEKMSKeyId')
+
 const ServerSideEncryptionByDefaultSchema = z
   .object({
-    SSEAlgorithm: ServerSideEncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Server-side encryption algorithm to use for the default encryption.',
-        }),
-    ),
-    KMSMasterKeyID: SSEKMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Amazon Web Services Key Management Service (KMS) customer Amazon Web Services KMS key ID to use for the default encryption. This parameter is allowed if and only if <code>SSEAlgorithm</code> is set to <code>aws:kms</code>.</p> <p>You can specify the key ID or the Amazon Resource Name (ARN) of the KMS key. If you use a key ID, you can run into a LogDestination undeliverable error when creating a VPC flow log. </p> <p>If you are using encryption with cross-account or Amazon Web Services service operations you must use a fully qualified KMS key ARN. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html#bucket-encryption-update-bucket-policy">Using encryption for cross-account operations</a>. </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> </ul> <important> <p>Amazon S3 only supports symmetric encryption KMS keys. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Asymmetric keys in Amazon Web Services KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> </important>',
-        }),
-    ).exactOptional(),
+    SSEAlgorithm: ServerSideEncryptionSchema.openapi({
+      description: 'Server-side encryption algorithm to use for the default encryption.',
+    }),
+    KMSMasterKeyID: SSEKMSKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>Amazon Web Services Key Management Service (KMS) customer Amazon Web Services KMS key ID to use for the default encryption. This parameter is allowed if and only if <code>SSEAlgorithm</code> is set to <code>aws:kms</code>.</p> <p>You can specify the key ID or the Amazon Resource Name (ARN) of the KMS key. If you use a key ID, you can run into a LogDestination undeliverable error when creating a VPC flow log. </p> <p>If you are using encryption with cross-account or Amazon Web Services service operations you must use a fully qualified KMS key ARN. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html#bucket-encryption-update-bucket-policy">Using encryption for cross-account operations</a>. </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> </ul> <important> <p>Amazon S3 only supports symmetric encryption KMS keys. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Asymmetric keys in Amazon Web Services KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> </important>',
+    }),
   })
   .openapi({
     required: ['SSEAlgorithm'],
@@ -913,22 +1508,16 @@ const BucketKeyEnabledSchema = z.boolean().openapi('BucketKeyEnabled')
 
 const ServerSideEncryptionRuleSchema = z
   .object({
-    ApplyServerSideEncryptionByDefault: ServerSideEncryptionByDefaultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the default server-side encryption to apply to new objects in the bucket. If a PUT Object request doesn't specify any server-side encryption, this default encryption will be applied.",
-        }),
-    ).exactOptional(),
-    BucketKeyEnabled: BucketKeyEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether Amazon S3 should use an S3 Bucket Key with server-side encryption using KMS (SSE-KMS) for new objects in the bucket. Existing objects are not affected. Setting the <code>BucketKeyEnabled</code> element to <code>true</code> causes Amazon S3 to use an S3 Bucket Key. By default, S3 Bucket Key is not enabled.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-key.html">Amazon S3 Bucket Keys</a> in the <i>Amazon S3 User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    ApplyServerSideEncryptionByDefault: ServerSideEncryptionByDefaultSchema.exactOptional().openapi(
+      {
+        description:
+          "Specifies the default server-side encryption to apply to new objects in the bucket. If a PUT Object request doesn't specify any server-side encryption, this default encryption will be applied.",
+      },
+    ),
+    BucketKeyEnabled: BucketKeyEnabledSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether Amazon S3 should use an S3 Bucket Key with server-side encryption using KMS (SSE-KMS) for new objects in the bucket. Existing objects are not affected. Setting the <code>BucketKeyEnabled</code> element to <code>true</code> causes Amazon S3 to use an S3 Bucket Key. By default, S3 Bucket Key is not enabled.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-key.html">Amazon S3 Bucket Keys</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    }),
   })
   .openapi({
     description: 'Specifies the default server-side encryption configuration.',
@@ -943,15 +1532,11 @@ const ServerSideEncryptionRulesSchema = z
 
 const ServerSideEncryptionConfigurationSchema = z
   .object({
-    Rules: ServerSideEncryptionRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Rule' },
-          description:
-            'Container for information about a particular server-side encryption configuration rule.',
-        }),
-    ),
+    Rules: ServerSideEncryptionRulesSchema.openapi({
+      xml: { name: 'Rule' },
+      description:
+        'Container for information about a particular server-side encryption configuration rule.',
+    }),
   })
   .openapi({
     required: ['Rules'],
@@ -970,23 +1555,15 @@ const IntelligentTieringIdSchema = z.string().openapi('IntelligentTieringId')
 
 const IntelligentTieringAndOperatorSchema = z
   .object({
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object key name prefix that identifies the subset of objects to which the configuration applies.',
-        }),
-    ).exactOptional(),
-    Tags: TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Tag' },
-          description:
-            "All of these tags must exist in the object's tag set in order for the configuration to apply.",
-        }),
-    ).exactOptional(),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        'An object key name prefix that identifies the subset of objects to which the configuration applies.',
+    }),
+    Tags: TagSetSchema.exactOptional().openapi({
+      xml: { name: 'Tag' },
+      description:
+        "All of these tags must exist in the object's tag set in order for the configuration to apply.",
+    }),
   })
   .openapi({
     description:
@@ -998,23 +1575,15 @@ const IntelligentTieringAndOperatorSchema = z
 
 const IntelligentTieringFilterSchema = z
   .object({
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object key name prefix that identifies the subset of objects to which the rule applies.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ).exactOptional(),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        '<p>An object key name prefix that identifies the subset of objects to which the rule applies.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
     Tag: TagSchema.exactOptional(),
-    And: IntelligentTieringAndOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates, and an object must match all of the predicates in order for the filter to apply.',
-        }),
-    ).exactOptional(),
+    And: IntelligentTieringAndOperatorSchema.exactOptional().openapi({
+      description:
+        'A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates, and an object must match all of the predicates in order for the filter to apply.',
+    }),
   })
   .openapi({
     description:
@@ -1035,22 +1604,14 @@ const IntelligentTieringAccessTierSchema = z
 
 const TieringSchema = z
   .object({
-    Days: IntelligentTieringDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive days of no access after which an object will be eligible to be transitioned to the corresponding tier. The minimum number of days specified for Archive Access tier must be at least 90 days and Deep Archive Access tier must be at least 180 days. The maximum can be up to 2 years (730 days).',
-        }),
-    ),
-    AccessTier: IntelligentTieringAccessTierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'S3 Intelligent-Tiering access tier. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access">Storage class for automatically optimizing frequently and infrequently accessed objects</a> for a list of access tiers in the S3 Intelligent-Tiering storage class.',
-        }),
-    ),
+    Days: IntelligentTieringDaysSchema.openapi({
+      description:
+        'The number of consecutive days of no access after which an object will be eligible to be transitioned to the corresponding tier. The minimum number of days specified for Archive Access tier must be at least 90 days and Deep Archive Access tier must be at least 180 days. The maximum can be up to 2 years (730 days).',
+    }),
+    AccessTier: IntelligentTieringAccessTierSchema.openapi({
+      description:
+        'S3 Intelligent-Tiering access tier. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access">Storage class for automatically optimizing frequently and infrequently accessed objects</a> for a list of access tiers in the S3 Intelligent-Tiering storage class.',
+    }),
   })
   .openapi({
     required: ['Days', 'AccessTier'],
@@ -1066,33 +1627,20 @@ const TieringListSchema = z
 
 const IntelligentTieringConfigurationSchema = z
   .object({
-    Id: IntelligentTieringIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID used to identify the S3 Intelligent-Tiering configuration.',
-        }),
-    ),
-    Filter: IntelligentTieringFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies a bucket filter. The configuration only includes objects that meet the filter's criteria.",
-        }),
-    ).exactOptional(),
-    Status: IntelligentTieringStatusSchema.and(
-      z.any().openapi({ description: 'Specifies the status of the configuration.' }),
-    ),
-    Tierings: TieringListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Tiering' },
-          description:
-            'Specifies the S3 Intelligent-Tiering storage class tier of the configuration.',
-        }),
-    ),
+    Id: IntelligentTieringIdSchema.openapi({
+      description: 'The ID used to identify the S3 Intelligent-Tiering configuration.',
+    }),
+    Filter: IntelligentTieringFilterSchema.exactOptional().openapi({
+      description:
+        "Specifies a bucket filter. The configuration only includes objects that meet the filter's criteria.",
+    }),
+    Status: IntelligentTieringStatusSchema.openapi({
+      description: 'Specifies the status of the configuration.',
+    }),
+    Tierings: TieringListSchema.openapi({
+      xml: { name: 'Tiering' },
+      description: 'Specifies the S3 Intelligent-Tiering storage class tier of the configuration.',
+    }),
   })
   .openapi({
     required: ['Id', 'Status', 'Tierings'],
@@ -1103,9 +1651,9 @@ const IntelligentTieringConfigurationSchema = z
 
 const GetBucketIntelligentTieringConfigurationOutputSchema = z
   .object({
-    IntelligentTieringConfiguration: IntelligentTieringConfigurationSchema.and(
-      z.any().openapi({ description: 'Container for S3 Intelligent-Tiering configuration.' }),
-    ).exactOptional(),
+    IntelligentTieringConfiguration: IntelligentTieringConfigurationSchema.exactOptional().openapi({
+      description: 'Container for S3 Intelligent-Tiering configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketIntelligentTieringConfigurationOutput')
@@ -1113,20 +1661,16 @@ const GetBucketIntelligentTieringConfigurationOutputSchema = z
 const InventoryFormatSchema = z.enum(['CSV', 'ORC', 'Parquet']).openapi('InventoryFormat')
 
 const SSES3Schema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Specifies the use of SSE-S3 to encrypt delivered inventory reports.' })
   .openapi('SSES3')
 
 const SSEKMSSchema = z
   .object({
-    KeyId: SSEKMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID of the Key Management Service (KMS) symmetric encryption customer managed key to use for encrypting inventory reports.',
-        }),
-    ),
+    KeyId: SSEKMSKeyIdSchema.openapi({
+      description:
+        'Specifies the ID of the Key Management Service (KMS) symmetric encryption customer managed key to use for encrypting inventory reports.',
+    }),
   })
   .openapi({
     required: ['KeyId'],
@@ -1136,22 +1680,14 @@ const SSEKMSSchema = z
 
 const InventoryEncryptionSchema = z
   .object({
-    SSES3: SSES3Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'SSE-S3' },
-          description: 'Specifies the use of SSE-S3 to encrypt delivered inventory reports.',
-        }),
-    ).exactOptional(),
-    SSEKMS: SSEKMSSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'SSE-KMS' },
-          description: 'Specifies the use of SSE-KMS to encrypt delivered inventory reports.',
-        }),
-    ).exactOptional(),
+    SSES3: SSES3Schema.exactOptional().openapi({
+      xml: { name: 'SSE-S3' },
+      description: 'Specifies the use of SSE-S3 to encrypt delivered inventory reports.',
+    }),
+    SSEKMS: SSEKMSSchema.exactOptional().openapi({
+      xml: { name: 'SSE-KMS' },
+      description: 'Specifies the use of SSE-KMS to encrypt delivered inventory reports.',
+    }),
   })
   .openapi({
     description:
@@ -1162,36 +1698,24 @@ const InventoryEncryptionSchema = z
 
 const InventoryS3BucketDestinationSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The account ID that owns the destination S3 bucket. If no account ID is provided, the owner is not validated before exporting data. </p> <note> <p> Although this value is optional, we strongly recommend that you set it to help prevent problems if the destination bucket ownership changes. </p> </note>',
-        }),
-    ).exactOptional(),
-    Bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the bucket where inventory results will be published.',
-        }),
-    ),
-    Format: InventoryFormatSchema.and(
-      z.any().openapi({ description: 'Specifies the output format of the inventory results.' }),
-    ),
-    Prefix: PrefixSchema.and(
-      z.any().openapi({ description: 'The prefix that is prepended to all inventory results.' }),
-    ).exactOptional(),
-    Encryption: InventoryEncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the type of server-side encryption used to encrypt the inventory results.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        '<p>The account ID that owns the destination S3 bucket. If no account ID is provided, the owner is not validated before exporting data. </p> <note> <p> Although this value is optional, we strongly recommend that you set it to help prevent problems if the destination bucket ownership changes. </p> </note>',
+    }),
+    Bucket: BucketNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the bucket where inventory results will be published.',
+    }),
+    Format: InventoryFormatSchema.openapi({
+      description: 'Specifies the output format of the inventory results.',
+    }),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'The prefix that is prepended to all inventory results.',
+    }),
+    Encryption: InventoryEncryptionSchema.exactOptional().openapi({
+      description:
+        'Contains the type of server-side encryption used to encrypt the inventory results.',
+    }),
   })
   .openapi({
     required: ['Bucket', 'Format'],
@@ -1202,14 +1726,10 @@ const InventoryS3BucketDestinationSchema = z
 
 const InventoryDestinationSchema = z
   .object({
-    S3BucketDestination: InventoryS3BucketDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where inventory results are published.',
-        }),
-    ),
+    S3BucketDestination: InventoryS3BucketDestinationSchema.openapi({
+      description:
+        'Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where inventory results are published.',
+    }),
   })
   .openapi({
     required: ['S3BucketDestination'],
@@ -1221,14 +1741,9 @@ const IsEnabledSchema = z.boolean().openapi('IsEnabled')
 
 const InventoryFilterSchema = z
   .object({
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix that an object must have to be included in the inventory results.',
-        }),
-    ),
+    Prefix: PrefixSchema.openapi({
+      description: 'The prefix that an object must have to be included in the inventory results.',
+    }),
   })
   .openapi({
     required: ['Prefix'],
@@ -1264,16 +1779,16 @@ const InventoryOptionalFieldSchema = z
   .openapi('InventoryOptionalField')
 
 const InventoryOptionalFieldsSchema = z
-  .array(InventoryOptionalFieldSchema.and(z.any().openapi({ xml: { name: 'Field' } })))
+  .array(InventoryOptionalFieldSchema.openapi({ xml: { name: 'Field' } }))
   .openapi('InventoryOptionalFields')
 
 const InventoryFrequencySchema = z.enum(['Daily', 'Weekly']).openapi('InventoryFrequency')
 
 const InventoryScheduleSchema = z
   .object({
-    Frequency: InventoryFrequencySchema.and(
-      z.any().openapi({ description: 'Specifies how frequently inventory results are produced.' }),
-    ),
+    Frequency: InventoryFrequencySchema.openapi({
+      description: 'Specifies how frequently inventory results are produced.',
+    }),
   })
   .openapi({
     required: ['Frequency'],
@@ -1283,50 +1798,30 @@ const InventoryScheduleSchema = z
 
 const InventoryConfigurationSchema = z
   .object({
-    Destination: InventoryDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains information about where to publish the inventory results.',
-        }),
-    ),
-    IsEnabled: IsEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the inventory is enabled or disabled. If set to <code>True</code>, an inventory list is generated. If set to <code>False</code>, no inventory list is generated.',
-        }),
-    ),
-    Filter: InventoryFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies an inventory filter. The inventory only includes objects that meet the filter's criteria.",
-        }),
-    ).exactOptional(),
-    Id: InventoryIdSchema.and(
-      z.any().openapi({ description: 'The ID used to identify the inventory configuration.' }),
-    ),
-    IncludedObjectVersions: InventoryIncludedObjectVersionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Object versions to include in the inventory list. If set to <code>All</code>, the list includes all the object versions, which adds the version-related fields <code>VersionId</code>, <code>IsLatest</code>, and <code>DeleteMarker</code> to the list. If set to <code>Current</code>, the list does not contain these version-related fields.',
-        }),
-    ),
-    OptionalFields: InventoryOptionalFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the optional fields that are included in the inventory results.',
-        }),
-    ).exactOptional(),
-    Schedule: InventoryScheduleSchema.and(
-      z.any().openapi({ description: 'Specifies the schedule for generating inventory results.' }),
-    ),
+    Destination: InventoryDestinationSchema.openapi({
+      description: 'Contains information about where to publish the inventory results.',
+    }),
+    IsEnabled: IsEnabledSchema.openapi({
+      description:
+        'Specifies whether the inventory is enabled or disabled. If set to <code>True</code>, an inventory list is generated. If set to <code>False</code>, no inventory list is generated.',
+    }),
+    Filter: InventoryFilterSchema.exactOptional().openapi({
+      description:
+        "Specifies an inventory filter. The inventory only includes objects that meet the filter's criteria.",
+    }),
+    Id: InventoryIdSchema.openapi({
+      description: 'The ID used to identify the inventory configuration.',
+    }),
+    IncludedObjectVersions: InventoryIncludedObjectVersionsSchema.openapi({
+      description:
+        'Object versions to include in the inventory list. If set to <code>All</code>, the list includes all the object versions, which adds the version-related fields <code>VersionId</code>, <code>IsLatest</code>, and <code>DeleteMarker</code> to the list. If set to <code>Current</code>, the list does not contain these version-related fields.',
+    }),
+    OptionalFields: InventoryOptionalFieldsSchema.exactOptional().openapi({
+      description: 'Contains the optional fields that are included in the inventory results.',
+    }),
+    Schedule: InventoryScheduleSchema.openapi({
+      description: 'Specifies the schedule for generating inventory results.',
+    }),
   })
   .openapi({
     required: ['Destination', 'IsEnabled', 'Id', 'IncludedObjectVersions', 'Schedule'],
@@ -1337,211 +1832,33 @@ const InventoryConfigurationSchema = z
 
 const GetBucketInventoryConfigurationOutputSchema = z
   .object({
-    InventoryConfiguration: InventoryConfigurationSchema.and(
-      z.any().openapi({ description: 'Specifies the inventory configuration.' }),
-    ).exactOptional(),
+    InventoryConfiguration: InventoryConfigurationSchema.exactOptional().openapi({
+      description: 'Specifies the inventory configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketInventoryConfigurationOutput')
 
-const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
-
-const DaysSchema = z.int().openapi('Days')
-
-const ExpiredObjectDeleteMarkerSchema = z.boolean().openapi('ExpiredObjectDeleteMarker')
-
-const LifecycleExpirationSchema = z
-  .object({
-    Date: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates at what date the object is to be moved or deleted. The date value must conform to the ISO 8601 format. The time is always midnight UTC.',
-        }),
-    ).exactOptional(),
-    Days: DaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the lifetime, in days, of the objects that are subject to the rule. The value must be a non-zero positive integer.',
-        }),
-    ).exactOptional(),
-    ExpiredObjectDeleteMarker: ExpiredObjectDeleteMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether Amazon S3 will remove a delete marker with no noncurrent versions. If set to true, the delete marker will be expired; if set to false the policy takes no action. This cannot be specified with Days or Date in a Lifecycle Expiration Policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Container for the expiration for the lifecycle of the object.</p> <p>For more information see, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html">Managing your storage lifecycle</a> in the <i>Amazon S3 User Guide</i>.</p>',
-    required: [],
-  })
-  .openapi('LifecycleExpiration')
-
-const ExpirationStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('ExpirationStatus')
-
-const TransitionStorageClassSchema = z
-  .enum([
-    'GLACIER',
-    'STANDARD_IA',
-    'ONEZONE_IA',
-    'INTELLIGENT_TIERING',
-    'DEEP_ARCHIVE',
-    'GLACIER_IR',
-  ])
-  .openapi('TransitionStorageClass')
-
-const TransitionSchema = z
-  .object({
-    Date: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates when objects are transitioned to the specified storage class. The date value must be in ISO 8601 format. The time is always midnight UTC.',
-        }),
-    ).exactOptional(),
-    Days: DaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the number of days after creation when objects are transitioned to the specified storage class. The value must be a positive integer.',
-        }),
-    ).exactOptional(),
-    StorageClass: TransitionStorageClassSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The storage class to which you want the object to transition.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies when an object transitions to a specified storage class. For more information about Amazon S3 lifecycle configuration rules, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/lifecycle-transition-general-considerations.html">Transitioning Objects Using Amazon S3 Lifecycle</a> in the <i>Amazon S3 User Guide</i>.',
-    required: [],
-  })
-  .openapi('Transition')
-
-const VersionCountSchema = z.int().openapi('VersionCount')
-
-const NoncurrentVersionTransitionSchema = z
-  .object({
-    NoncurrentDays: DaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action. For information about the noncurrent days calculations, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#non-current-days-calculations">How Amazon S3 Calculates How Long an Object Has Been Noncurrent</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    StorageClass: TransitionStorageClassSchema.and(
-      z.any().openapi({ description: 'The class of storage used to store the object.' }),
-    ).exactOptional(),
-    NewerNoncurrentVersions: VersionCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how many noncurrent versions Amazon S3 will retain. If there are this many more recent noncurrent versions, Amazon S3 will take the associated action. For more information about noncurrent versions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/intro-lifecycle-rules.html">Lifecycle configuration elements</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Container for the transition rule that describes when noncurrent objects transition to the <code>STANDARD_IA</code>, <code>ONEZONE_IA</code>, <code>INTELLIGENT_TIERING</code>, <code>GLACIER_IR</code>, <code>GLACIER</code>, or <code>DEEP_ARCHIVE</code> storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to the <code>STANDARD_IA</code>, <code>ONEZONE_IA</code>, <code>INTELLIGENT_TIERING</code>, <code>GLACIER_IR</code>, <code>GLACIER</code>, or <code>DEEP_ARCHIVE</code> storage class at a specific period in the object's lifetime.",
-    required: [],
-  })
-  .openapi('NoncurrentVersionTransition')
-
-const NoncurrentVersionExpirationSchema = z
-  .object({
-    NoncurrentDays: DaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action. The value must be a non-zero positive integer. For information about the noncurrent days calculations, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#non-current-days-calculations">How Amazon S3 Calculates When an Object Became Noncurrent</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    NewerNoncurrentVersions: VersionCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how many noncurrent versions Amazon S3 will retain. If there are this many more recent noncurrent versions, Amazon S3 will take the associated action. For more information about noncurrent versions, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/intro-lifecycle-rules.html">Lifecycle configuration elements</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Specifies when noncurrent object versions expire. Upon expiration, Amazon S3 permanently deletes the noncurrent object versions. You set this lifecycle configuration action on a bucket that has versioning enabled (or suspended) to request that Amazon S3 delete noncurrent object versions at a specific period in the object's lifetime.",
-    required: [],
-  })
-  .openapi('NoncurrentVersionExpiration')
-
-const DaysAfterInitiationSchema = z.int().openapi('DaysAfterInitiation')
-
-const AbortIncompleteMultipartUploadSchema = z
-  .object({
-    DaysAfterInitiation: DaysAfterInitiationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of days after which Amazon S3 aborts an incomplete multipart upload.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config"> Aborting Incomplete Multipart Uploads Using a Bucket Lifecycle Configuration</a> in the <i>Amazon S3 User Guide</i>.',
-    required: [],
-  })
-  .openapi('AbortIncompleteMultipartUpload')
-
 const RuleSchema = z
   .object({
-    Expiration: LifecycleExpirationSchema.and(
-      z.any().openapi({ description: 'Specifies the expiration for the lifecycle of the object.' }),
-    ).exactOptional(),
-    ID: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Unique identifier for the rule. The value can't be longer than 255 characters.",
-        }),
-    ).exactOptional(),
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Object key prefix that identifies one or more objects to which this rule applies.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ),
-    Status: ExpirationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>Enabled</code>, the rule is currently being applied. If <code>Disabled</code>, the rule is not currently being applied.',
-        }),
-    ),
-    Transition: TransitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies when an object transitions to a specified storage class. For more information about Amazon S3 lifecycle configuration rules, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/lifecycle-transition-general-considerations.html">Transitioning Objects Using Amazon S3 Lifecycle</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Expiration: LifecycleExpirationSchema.exactOptional().openapi({
+      description: 'Specifies the expiration for the lifecycle of the object.',
+    }),
+    ID: IDSchema.exactOptional().openapi({
+      description: "Unique identifier for the rule. The value can't be longer than 255 characters.",
+    }),
+    Prefix: PrefixSchema.openapi({
+      description:
+        '<p>Object key prefix that identifies one or more objects to which this rule applies.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
+    Status: ExpirationStatusSchema.openapi({
+      description:
+        'If <code>Enabled</code>, the rule is currently being applied. If <code>Disabled</code>, the rule is not currently being applied.',
+    }),
+    Transition: TransitionSchema.exactOptional().openapi({
+      description:
+        'Specifies when an object transitions to a specified storage class. For more information about Amazon S3 lifecycle configuration rules, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/lifecycle-transition-general-considerations.html">Transitioning Objects Using Amazon S3 Lifecycle</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
     NoncurrentVersionTransition: NoncurrentVersionTransitionSchema.exactOptional(),
     NoncurrentVersionExpiration: NoncurrentVersionExpirationSchema.exactOptional(),
     AbortIncompleteMultipartUpload: AbortIncompleteMultipartUploadSchema.exactOptional(),
@@ -1560,9 +1877,10 @@ const RulesSchema = z
 
 const GetBucketLifecycleOutputSchema = z
   .object({
-    Rules: RulesSchema.and(
-      z.any().openapi({ xml: { name: 'Rule' }, description: 'Container for a lifecycle rule.' }),
-    ).exactOptional(),
+    Rules: RulesSchema.exactOptional().openapi({
+      xml: { name: 'Rule' },
+      description: 'Container for a lifecycle rule.',
+    }),
   })
   .openapi({
     example: {
@@ -1572,167 +1890,12 @@ const GetBucketLifecycleOutputSchema = z
   })
   .openapi('GetBucketLifecycleOutput')
 
-const ObjectSizeGreaterThanBytesSchema = z.int().openapi('ObjectSizeGreaterThanBytes')
-
-const ObjectSizeLessThanBytesSchema = z.int().openapi('ObjectSizeLessThanBytes')
-
-const LifecycleRuleAndOperatorSchema = z
-  .object({
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Prefix identifying one or more objects to which the rule applies.',
-        }),
-    ).exactOptional(),
-    Tags: TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Tag' },
-          description:
-            "All of these tags must exist in the object's tag set in order for the rule to apply.",
-        }),
-    ).exactOptional(),
-    ObjectSizeGreaterThan: ObjectSizeGreaterThanBytesSchema.and(
-      z.any().openapi({ description: 'Minimum object size to which the rule applies.' }),
-    ).exactOptional(),
-    ObjectSizeLessThan: ObjectSizeLessThanBytesSchema.and(
-      z.any().openapi({ description: 'Maximum object size to which the rule applies.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'This is used in a Lifecycle Rule Filter to apply a logical AND to two or more predicates. The Lifecycle Rule will apply to any object matching all of the predicates configured inside the And operator.',
-    xml: { wrapped: false },
-    required: [],
-  })
-  .openapi('LifecycleRuleAndOperator')
-
-const LifecycleRuleFilterSchema = z
-  .object({
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Prefix identifying one or more objects to which the rule applies.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ).exactOptional(),
-    Tag: TagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "This tag must exist in the object's tag set in order for the rule to apply.",
-        }),
-    ).exactOptional(),
-    ObjectSizeGreaterThan: ObjectSizeGreaterThanBytesSchema.and(
-      z.any().openapi({ description: 'Minimum object size to which the rule applies.' }),
-    ).exactOptional(),
-    ObjectSizeLessThan: ObjectSizeLessThanBytesSchema.and(
-      z.any().openapi({ description: 'Maximum object size to which the rule applies.' }),
-    ).exactOptional(),
-    And: LifecycleRuleAndOperatorSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'The <code>Filter</code> is used to identify objects that a Lifecycle Rule applies to. A <code>Filter</code> must have exactly one of <code>Prefix</code>, <code>Tag</code>, or <code>And</code> specified.',
-    required: [],
-  })
-  .openapi('LifecycleRuleFilter')
-
-const TransitionListSchema = z
-  .array(TransitionSchema)
-  .openapi({ xml: { wrapped: false } })
-  .openapi('TransitionList')
-
-const NoncurrentVersionTransitionListSchema = z
-  .array(NoncurrentVersionTransitionSchema)
-  .openapi({ xml: { wrapped: false } })
-  .openapi('NoncurrentVersionTransitionList')
-
-const LifecycleRuleSchema = z
-  .object({
-    Expiration: LifecycleExpirationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the expiration for the lifecycle of the object in the form of date, days and, whether the object has a delete marker.',
-        }),
-    ).exactOptional(),
-    ID: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier for the rule. The value cannot be longer than 255 characters.',
-        }),
-    ).exactOptional(),
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>Prefix identifying one or more objects to which the rule applies. This is no longer used; use <code>Filter</code> instead.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ).exactOptional(),
-    Filter: LifecycleRuleFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>Filter</code> is used to identify objects that a Lifecycle Rule applies to. A <code>Filter</code> must have exactly one of <code>Prefix</code>, <code>Tag</code>, or <code>And</code> specified. <code>Filter</code> is required if the <code>LifecycleRule</code> does not contain a <code>Prefix</code> element.',
-        }),
-    ).exactOptional(),
-    Status: ExpirationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If 'Enabled', the rule is currently being applied. If 'Disabled', the rule is not currently being applied.",
-        }),
-    ),
-    Transitions: TransitionListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Transition' },
-          description:
-            'Specifies when an Amazon S3 object transitions to a specified storage class.',
-        }),
-    ).exactOptional(),
-    NoncurrentVersionTransitions: NoncurrentVersionTransitionListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'NoncurrentVersionTransition' },
-          description:
-            " Specifies the transition rule for the lifecycle rule that describes when noncurrent objects transition to a specific storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to a specific storage class at a set period in the object's lifetime. ",
-        }),
-    ).exactOptional(),
-    NoncurrentVersionExpiration: NoncurrentVersionExpirationSchema.exactOptional(),
-    AbortIncompleteMultipartUpload: AbortIncompleteMultipartUploadSchema.exactOptional(),
-  })
-  .openapi({
-    required: ['Status'],
-    description:
-      '<p>A lifecycle rule for individual objects in an Amazon S3 bucket.</p> <p>For more information see, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html">Managing your storage lifecycle</a> in the <i>Amazon S3 User Guide</i>.</p>',
-  })
-  .openapi('LifecycleRule')
-
-const LifecycleRulesSchema = z
-  .array(LifecycleRuleSchema)
-  .openapi({ xml: { wrapped: false } })
-  .openapi('LifecycleRules')
-
 const GetBucketLifecycleConfigurationOutputSchema = z
   .object({
-    Rules: LifecycleRulesSchema.and(
-      z.any().openapi({ xml: { name: 'Rule' }, description: 'Container for a lifecycle rule.' }),
-    ).exactOptional(),
+    Rules: LifecycleRulesSchema.exactOptional().openapi({
+      xml: { name: 'Rule' },
+      description: 'Container for a lifecycle rule.',
+    }),
   })
   .openapi({
     example: {
@@ -1751,14 +1914,10 @@ const GetBucketLifecycleConfigurationOutputSchema = z
 
 const GetBucketLocationOutputSchema = z
   .object({
-    LocationConstraint: BucketLocationConstraintSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the Region where the bucket resides. For a list of all the Amazon S3 supported location constraints by Region, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions and Endpoints</a>. Buckets in Region <code>us-east-1</code> have a LocationConstraint of <code>null</code>.',
-        }),
-    ).exactOptional(),
+    LocationConstraint: BucketLocationConstraintSchema.exactOptional().openapi({
+      description:
+        'Specifies the Region where the bucket resides. For a list of all the Amazon S3 supported location constraints by Region, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions and Endpoints</a>. Buckets in Region <code>us-east-1</code> have a LocationConstraint of <code>null</code>.',
+    }),
   })
   .openapi({ example: { LocationConstraint: 'us-west-2' }, required: [] })
   .openapi('GetBucketLocationOutput')
@@ -1771,14 +1930,12 @@ const BucketLogsPermissionSchema = z
 
 const TargetGrantSchema = z
   .object({
-    Grantee: GranteeSchema.and(
-      z.any().openapi({ description: 'Container for the person being granted permissions.' }),
-    ).exactOptional(),
-    Permission: BucketLogsPermissionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Logging permissions assigned to the grantee for the bucket.' }),
-    ).exactOptional(),
+    Grantee: GranteeSchema.exactOptional().openapi({
+      description: 'Container for the person being granted permissions.',
+    }),
+    Permission: BucketLogsPermissionSchema.exactOptional().openapi({
+      description: 'Logging permissions assigned to the grantee for the bucket.',
+    }),
   })
   .openapi({
     description:
@@ -1788,37 +1945,25 @@ const TargetGrantSchema = z
   .openapi('TargetGrant')
 
 const TargetGrantsSchema = z
-  .array(TargetGrantSchema.and(z.any().openapi({ xml: { name: 'Grant' } })))
+  .array(TargetGrantSchema.openapi({ xml: { name: 'Grant' } }))
   .openapi('TargetGrants')
 
 const TargetPrefixSchema = z.string().openapi('TargetPrefix')
 
 const LoggingEnabledSchema = z
   .object({
-    TargetBucket: TargetBucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the bucket where you want Amazon S3 to store server access logs. You can have your logs delivered to any bucket that you own, including the same bucket that is being logged. You can also configure multiple buckets to deliver their logs to the same target bucket. In this case, you should choose a different <code>TargetPrefix</code> for each source bucket so that the delivered log files can be distinguished by key.',
-        }),
-    ),
-    TargetGrants: TargetGrantsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Container for granting information.</p> <p>Buckets that use the bucket owner enforced setting for Object Ownership don\'t support target grants. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general">Permissions for server access log delivery</a> in the <i>Amazon S3 User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    TargetPrefix: TargetPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A prefix for all log object keys. If you store log files from multiple Amazon S3 buckets in a single bucket, you can use a prefix to distinguish which log files came from which bucket.',
-        }),
-    ),
+    TargetBucket: TargetBucketSchema.openapi({
+      description:
+        'Specifies the bucket where you want Amazon S3 to store server access logs. You can have your logs delivered to any bucket that you own, including the same bucket that is being logged. You can also configure multiple buckets to deliver their logs to the same target bucket. In this case, you should choose a different <code>TargetPrefix</code> for each source bucket so that the delivered log files can be distinguished by key.',
+    }),
+    TargetGrants: TargetGrantsSchema.exactOptional().openapi({
+      description:
+        '<p>Container for granting information.</p> <p>Buckets that use the bucket owner enforced setting for Object Ownership don\'t support target grants. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general">Permissions for server access log delivery</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    }),
+    TargetPrefix: TargetPrefixSchema.openapi({
+      description:
+        'A prefix for all log object keys. If you store log files from multiple Amazon S3 buckets in a single bucket, you can use a prefix to distinguish which log files came from which bucket.',
+    }),
   })
   .openapi({
     required: ['TargetBucket', 'TargetPrefix'],
@@ -1838,24 +1983,16 @@ const AccessPointArnSchema = z.string().openapi('AccessPointArn')
 
 const MetricsAndOperatorSchema = z
   .object({
-    Prefix: PrefixSchema.and(
-      z.any().openapi({ description: 'The prefix used when evaluating an AND predicate.' }),
-    ).exactOptional(),
-    Tags: TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Tag' },
-          description: 'The list of tags used when evaluating an AND predicate.',
-        }),
-    ).exactOptional(),
-    AccessPointArn: AccessPointArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The access point ARN used when evaluating an <code>AND</code> predicate.',
-        }),
-    ).exactOptional(),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'The prefix used when evaluating an AND predicate.',
+    }),
+    Tags: TagSetSchema.exactOptional().openapi({
+      xml: { name: 'Tag' },
+      description: 'The list of tags used when evaluating an AND predicate.',
+    }),
+    AccessPointArn: AccessPointArnSchema.exactOptional().openapi({
+      description: 'The access point ARN used when evaluating an <code>AND</code> predicate.',
+    }),
   })
   .openapi({
     description:
@@ -1867,25 +2004,19 @@ const MetricsAndOperatorSchema = z
 
 const MetricsFilterSchema = z
   .object({
-    Prefix: PrefixSchema.and(
-      z.any().openapi({ description: 'The prefix used when evaluating a metrics filter.' }),
-    ).exactOptional(),
-    Tag: TagSchema.and(
-      z.any().openapi({ description: 'The tag used when evaluating a metrics filter.' }),
-    ).exactOptional(),
-    AccessPointArn: AccessPointArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The access point ARN used when evaluating a metrics filter.' }),
-    ).exactOptional(),
-    And: MetricsAndOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates, and an object must match all of the predicates in order for the filter to apply.',
-        }),
-    ).exactOptional(),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'The prefix used when evaluating a metrics filter.',
+    }),
+    Tag: TagSchema.exactOptional().openapi({
+      description: 'The tag used when evaluating a metrics filter.',
+    }),
+    AccessPointArn: AccessPointArnSchema.exactOptional().openapi({
+      description: 'The access point ARN used when evaluating a metrics filter.',
+    }),
+    And: MetricsAndOperatorSchema.exactOptional().openapi({
+      description:
+        'A conjunction (logical AND) of predicates, which is used in evaluating a metrics filter. The operator must have at least two predicates, and an object must match all of the predicates in order for the filter to apply.',
+    }),
   })
   .openapi({
     description:
@@ -1896,22 +2027,14 @@ const MetricsFilterSchema = z
 
 const MetricsConfigurationSchema = z
   .object({
-    Id: MetricsIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID used to identify the metrics configuration. The ID has a 64 character limit and can only contain letters, numbers, periods, dashes, and underscores.',
-        }),
-    ),
-    Filter: MetricsFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies a metrics configuration filter. The metrics configuration will only include objects that meet the filter's criteria. A filter must be a prefix, an object tag, an access point ARN, or a conjunction (MetricsAndOperator).",
-        }),
-    ).exactOptional(),
+    Id: MetricsIdSchema.openapi({
+      description:
+        'The ID used to identify the metrics configuration. The ID has a 64 character limit and can only contain letters, numbers, periods, dashes, and underscores.',
+    }),
+    Filter: MetricsFilterSchema.exactOptional().openapi({
+      description:
+        "Specifies a metrics configuration filter. The metrics configuration will only include objects that meet the filter's criteria. A filter must be a prefix, an object tag, an access point ARN, or a conjunction (MetricsAndOperator).",
+    }),
   })
   .openapi({
     required: ['Id'],
@@ -1922,88 +2045,28 @@ const MetricsConfigurationSchema = z
 
 const GetBucketMetricsConfigurationOutputSchema = z
   .object({
-    MetricsConfiguration: MetricsConfigurationSchema.and(
-      z.any().openapi({ description: 'Specifies the metrics configuration.' }),
-    ).exactOptional(),
+    MetricsConfiguration: MetricsConfigurationSchema.exactOptional().openapi({
+      description: 'Specifies the metrics configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketMetricsConfigurationOutput')
 
-const NotificationIdSchema = z
-  .string()
-  .openapi({
-    description:
-      "An optional unique identifier for configurations in a notification configuration. If you don't provide one, Amazon S3 will assign an ID.",
-  })
-  .openapi('NotificationId')
-
-const EventSchema = z
-  .enum([
-    's3:ReducedRedundancyLostObject',
-    's3:ObjectCreated:*',
-    's3:ObjectCreated:Put',
-    's3:ObjectCreated:Post',
-    's3:ObjectCreated:Copy',
-    's3:ObjectCreated:CompleteMultipartUpload',
-    's3:ObjectRemoved:*',
-    's3:ObjectRemoved:Delete',
-    's3:ObjectRemoved:DeleteMarkerCreated',
-    's3:ObjectRestore:*',
-    's3:ObjectRestore:Post',
-    's3:ObjectRestore:Completed',
-    's3:Replication:*',
-    's3:Replication:OperationFailedReplication',
-    's3:Replication:OperationNotTracked',
-    's3:Replication:OperationMissedThreshold',
-    's3:Replication:OperationReplicatedAfterThreshold',
-    's3:ObjectRestore:Delete',
-    's3:LifecycleTransition',
-    's3:IntelligentTiering',
-    's3:ObjectAcl:Put',
-    's3:LifecycleExpiration:*',
-    's3:LifecycleExpiration:Delete',
-    's3:LifecycleExpiration:DeleteMarkerCreated',
-    's3:ObjectTagging:*',
-    's3:ObjectTagging:Put',
-    's3:ObjectTagging:Delete',
-  ])
-  .openapi({ description: 'The bucket event for which to send notifications.' })
-  .openapi('Event')
-
-const EventListSchema = z
-  .array(EventSchema)
-  .openapi({ xml: { wrapped: false } })
-  .openapi('EventList')
-
-const TopicArnSchema = z.string().openapi('TopicArn')
-
 const TopicConfigurationDeprecatedSchema = z
   .object({
     Id: NotificationIdSchema.exactOptional(),
-    Events: EventListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Event' },
-          description: 'A collection of events related to objects',
-        }),
-    ).exactOptional(),
-    Event: EventSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'Bucket event for which to send notifications.',
-        }),
-    ).exactOptional(),
-    Topic: TopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon SNS topic to which Amazon S3 will publish a message to report the specified events for the bucket.',
-        }),
-    ).exactOptional(),
+    Events: EventListSchema.exactOptional().openapi({
+      xml: { name: 'Event' },
+      description: 'A collection of events related to objects',
+    }),
+    Event: EventSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Bucket event for which to send notifications.',
+    }),
+    Topic: TopicArnSchema.exactOptional().openapi({
+      description:
+        'Amazon SNS topic to which Amazon S3 will publish a message to report the specified events for the bucket.',
+    }),
   })
   .openapi({
     description:
@@ -2012,28 +2075,18 @@ const TopicConfigurationDeprecatedSchema = z
   })
   .openapi('TopicConfigurationDeprecated')
 
-const QueueArnSchema = z.string().openapi('QueueArn')
-
 const QueueConfigurationDeprecatedSchema = z
   .object({
     Id: NotificationIdSchema.exactOptional(),
-    Event: EventSchema.and(z.any().openapi({ deprecated: true })).exactOptional(),
-    Events: EventListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Event' },
-          description: 'A collection of bucket events for which to send notifications.',
-        }),
-    ).exactOptional(),
-    Queue: QueueArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SQS queue to which Amazon S3 publishes a message when it detects events of the specified type. ',
-        }),
-    ).exactOptional(),
+    Event: EventSchema.exactOptional().openapi({ deprecated: true }),
+    Events: EventListSchema.exactOptional().openapi({
+      xml: { name: 'Event' },
+      description: 'A collection of bucket events for which to send notifications.',
+    }),
+    Queue: QueueArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SQS queue to which Amazon S3 publishes a message when it detects events of the specified type. ',
+    }),
   })
   .openapi({
     description:
@@ -2049,26 +2102,18 @@ const CloudFunctionInvocationRoleSchema = z.string().openapi('CloudFunctionInvoc
 const CloudFunctionConfigurationSchema = z
   .object({
     Id: NotificationIdSchema.exactOptional(),
-    Event: EventSchema.and(z.any().openapi({ deprecated: true })).exactOptional(),
-    Events: EventListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Event' },
-          description: 'Bucket events for which to send notifications.',
-        }),
-    ).exactOptional(),
-    CloudFunction: CloudFunctionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lambda cloud function ARN that Amazon S3 can invoke when it detects events of the specified type.',
-        }),
-    ).exactOptional(),
-    InvocationRole: CloudFunctionInvocationRoleSchema.and(
-      z.any().openapi({ description: 'The role supporting the invocation of the Lambda function' }),
-    ).exactOptional(),
+    Event: EventSchema.exactOptional().openapi({ deprecated: true }),
+    Events: EventListSchema.exactOptional().openapi({
+      xml: { name: 'Event' },
+      description: 'Bucket events for which to send notifications.',
+    }),
+    CloudFunction: CloudFunctionSchema.exactOptional().openapi({
+      description:
+        'Lambda cloud function ARN that Amazon S3 can invoke when it detects events of the specified type.',
+    }),
+    InvocationRole: CloudFunctionInvocationRoleSchema.exactOptional().openapi({
+      description: 'The role supporting the invocation of the Lambda function',
+    }),
   })
   .openapi({
     description: 'Container for specifying the Lambda notification configuration.',
@@ -2078,29 +2123,17 @@ const CloudFunctionConfigurationSchema = z
 
 const NotificationConfigurationDeprecatedSchema = z
   .object({
-    TopicConfiguration: TopicConfigurationDeprecatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This data type is deprecated. A container for specifying the configuration for publication of messages to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3 detects specified events. ',
-        }),
-    ).exactOptional(),
-    QueueConfiguration: QueueConfigurationDeprecatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This data type is deprecated. This data type specifies the configuration for publishing messages to an Amazon Simple Queue Service (Amazon SQS) queue when Amazon S3 detects specified events. ',
-        }),
-    ).exactOptional(),
-    CloudFunctionConfiguration: CloudFunctionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Container for specifying the Lambda notification configuration.',
-        }),
-    ).exactOptional(),
+    TopicConfiguration: TopicConfigurationDeprecatedSchema.exactOptional().openapi({
+      description:
+        'This data type is deprecated. A container for specifying the configuration for publication of messages to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3 detects specified events. ',
+    }),
+    QueueConfiguration: QueueConfigurationDeprecatedSchema.exactOptional().openapi({
+      description:
+        'This data type is deprecated. This data type specifies the configuration for publishing messages to an Amazon Simple Queue Service (Amazon SQS) queue when Amazon S3 detects specified events. ',
+    }),
+    CloudFunctionConfiguration: CloudFunctionConfigurationSchema.exactOptional().openapi({
+      description: 'Container for specifying the Lambda notification configuration.',
+    }),
   })
   .openapi({
     example: {
@@ -2120,215 +2153,6 @@ const NotificationConfigurationDeprecatedSchema = z
     required: [],
   })
   .openapi('NotificationConfigurationDeprecated')
-
-const FilterRuleNameSchema = z.enum(['prefix', 'suffix']).openapi('FilterRuleName')
-
-const FilterRuleValueSchema = z.string().openapi('FilterRuleValue')
-
-const FilterRuleSchema = z
-  .object({
-    Name: FilterRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The object key name prefix or suffix identifying one or more objects to which the filtering rule applies. The maximum length is 1,024 characters. Overlapping prefixes and suffixes are not supported. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html">Configuring Event Notifications</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Value: FilterRuleValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value that the filter searches for in object key names.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies the Amazon S3 object key name to filter on and whether to filter on the suffix or prefix of the key name.',
-    required: [],
-  })
-  .openapi('FilterRule')
-
-const FilterRuleListSchema = z
-  .array(FilterRuleSchema)
-  .openapi({
-    description:
-      'A list of containers for the key-value pair that defines the criteria for the filter rule.',
-    xml: { wrapped: false },
-  })
-  .openapi('FilterRuleList')
-
-const S3KeyFilterSchema = z
-  .object({
-    FilterRules: FilterRuleListSchema.and(
-      z.any().openapi({ xml: { name: 'FilterRule' } }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A container for object key name prefix and suffix filtering rules.',
-    required: [],
-  })
-  .openapi('S3KeyFilter')
-
-const NotificationConfigurationFilterSchema = z
-  .object({
-    Key: S3KeyFilterSchema.and(z.any().openapi({ xml: { name: 'S3Key' } })).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies object key name filtering rules. For information about key name filtering, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-how-to-filtering.html">Configuring event notifications using object key name filtering</a> in the <i>Amazon S3 User Guide</i>.',
-    required: [],
-  })
-  .openapi('NotificationConfigurationFilter')
-
-const TopicConfigurationSchema = z
-  .object({
-    Id: NotificationIdSchema.exactOptional(),
-    TopicArn: TopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Topic' },
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic to which Amazon S3 publishes a message when it detects events of the specified type.',
-        }),
-    ),
-    Events: EventListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Event' },
-          description:
-            'The Amazon S3 bucket event about which to send notifications. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html">Supported Event Types</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ),
-    Filter: NotificationConfigurationFilterSchema.exactOptional(),
-  })
-  .openapi({
-    required: ['TopicArn', 'Events'],
-    description:
-      'A container for specifying the configuration for publication of messages to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3 detects specified events.',
-  })
-  .openapi('TopicConfiguration')
-
-const TopicConfigurationListSchema = z
-  .array(TopicConfigurationSchema)
-  .openapi({ xml: { wrapped: false } })
-  .openapi('TopicConfigurationList')
-
-const QueueConfigurationSchema = z
-  .object({
-    Id: NotificationIdSchema.exactOptional(),
-    QueueArn: QueueArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Queue' },
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SQS queue to which Amazon S3 publishes a message when it detects events of the specified type.',
-        }),
-    ),
-    Events: EventListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Event' },
-          description: 'A collection of bucket events for which to send notifications',
-        }),
-    ),
-    Filter: NotificationConfigurationFilterSchema.exactOptional(),
-  })
-  .openapi({
-    required: ['QueueArn', 'Events'],
-    description:
-      'Specifies the configuration for publishing messages to an Amazon Simple Queue Service (Amazon SQS) queue when Amazon S3 detects specified events.',
-  })
-  .openapi('QueueConfiguration')
-
-const QueueConfigurationListSchema = z
-  .array(QueueConfigurationSchema)
-  .openapi({ xml: { wrapped: false } })
-  .openapi('QueueConfigurationList')
-
-const LambdaFunctionArnSchema = z.string().openapi('LambdaFunctionArn')
-
-const LambdaFunctionConfigurationSchema = z
-  .object({
-    Id: NotificationIdSchema.exactOptional(),
-    LambdaFunctionArn: LambdaFunctionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'CloudFunction' },
-          description:
-            'The Amazon Resource Name (ARN) of the Lambda function that Amazon S3 invokes when the specified event type occurs.',
-        }),
-    ),
-    Events: EventListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Event' },
-          description:
-            'The Amazon S3 bucket event for which to invoke the Lambda function. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html">Supported Event Types</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ),
-    Filter: NotificationConfigurationFilterSchema.exactOptional(),
-  })
-  .openapi({
-    required: ['LambdaFunctionArn', 'Events'],
-    description: 'A container for specifying the configuration for Lambda notifications.',
-  })
-  .openapi('LambdaFunctionConfiguration')
-
-const LambdaFunctionConfigurationListSchema = z
-  .array(LambdaFunctionConfigurationSchema)
-  .openapi({ xml: { wrapped: false } })
-  .openapi('LambdaFunctionConfigurationList')
-
-const EventBridgeConfigurationSchema = z
-  .object({})
-  .openapi({ description: 'A container for specifying the configuration for Amazon EventBridge.' })
-  .openapi('EventBridgeConfiguration')
-
-const NotificationConfigurationSchema = z
-  .object({
-    TopicConfigurations: TopicConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'TopicConfiguration' },
-          description:
-            'The topic to which notifications are sent and the events for which notifications are generated.',
-        }),
-    ).exactOptional(),
-    QueueConfigurations: QueueConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'QueueConfiguration' },
-          description:
-            'The Amazon Simple Queue Service queues to publish messages to and the events for which to publish messages.',
-        }),
-    ).exactOptional(),
-    LambdaFunctionConfigurations: LambdaFunctionConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'CloudFunctionConfiguration' },
-          description:
-            'Describes the Lambda functions to invoke and the events for which to invoke them.',
-        }),
-    ).exactOptional(),
-    EventBridgeConfiguration: EventBridgeConfigurationSchema.and(
-      z.any().openapi({ description: 'Enables delivery of events to Amazon EventBridge.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A container for specifying the notification configuration of the bucket. If this element is empty, notifications are turned off for the bucket.',
-    required: [],
-  })
-  .openapi('NotificationConfiguration')
 
 const ObjectOwnershipSchema = z
   .enum(['BucketOwnerPreferred', 'ObjectWriter', 'BucketOwnerEnforced'])
@@ -2353,14 +2177,10 @@ const OwnershipControlsRulesSchema = z
 
 const OwnershipControlsSchema = z
   .object({
-    Rules: OwnershipControlsRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Rule' },
-          description: 'The container element for an ownership control rule.',
-        }),
-    ),
+    Rules: OwnershipControlsRulesSchema.openapi({
+      xml: { name: 'Rule' },
+      description: 'The container element for an ownership control rule.',
+    }),
   })
   .openapi({
     required: ['Rules'],
@@ -2370,14 +2190,10 @@ const OwnershipControlsSchema = z
 
 const GetBucketOwnershipControlsOutputSchema = z
   .object({
-    OwnershipControls: OwnershipControlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>OwnershipControls</code> (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter) currently in effect for this Amazon S3 bucket.',
-        }),
-    ).exactOptional(),
+    OwnershipControls: OwnershipControlsSchema.exactOptional().openapi({
+      description:
+        'The <code>OwnershipControls</code> (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter) currently in effect for this Amazon S3 bucket.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketOwnershipControlsOutput')
@@ -2386,9 +2202,9 @@ const PolicySchema = z.string().openapi('Policy')
 
 const GetBucketPolicyOutputSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z.any().openapi({ description: 'The bucket policy as a JSON document.' }),
-    ).exactOptional(),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'The bucket policy as a JSON document.',
+    }),
   })
   .openapi({
     example: {
@@ -2403,487 +2219,24 @@ const IsPublicSchema = z.boolean().openapi('IsPublic')
 
 const PolicyStatusSchema = z
   .object({
-    IsPublic: IsPublicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy status for this bucket. <code>TRUE</code> indicates that this bucket is public. <code>FALSE</code> indicates that the bucket is not public.',
-        }),
-    ).exactOptional(),
+    IsPublic: IsPublicSchema.exactOptional().openapi({
+      description:
+        'The policy status for this bucket. <code>TRUE</code> indicates that this bucket is public. <code>FALSE</code> indicates that the bucket is not public.',
+    }),
   })
   .openapi({ description: "The container element for a bucket's policy status.", required: [] })
   .openapi('PolicyStatus')
 
 const GetBucketPolicyStatusOutputSchema = z
   .object({
-    PolicyStatus: PolicyStatusSchema.and(
-      z.any().openapi({ description: 'The policy status for the specified bucket.' }),
-    ).exactOptional(),
+    PolicyStatus: PolicyStatusSchema.exactOptional().openapi({
+      description: 'The policy status for the specified bucket.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketPolicyStatusOutput')
 
-const RoleSchema = z.string().openapi('Role')
-
-const PrioritySchema = z.int().openapi('Priority')
-
-const ReplicationRuleAndOperatorSchema = z
-  .object({
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object key name prefix that identifies the subset of objects to which the rule applies.',
-        }),
-    ).exactOptional(),
-    Tags: TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Tag' },
-          description: 'An array of tags containing key and value pairs.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. </p> <p>For example:</p> <ul> <li> <p>If you specify both a <code>Prefix</code> and a <code>Tag</code> filter, wrap these filters in an <code>And</code> tag. </p> </li> <li> <p>If you specify a filter based on multiple tags, wrap the <code>Tag</code> elements in an <code>And</code> tag.</p> </li> </ul>',
-    xml: { wrapped: false },
-    required: [],
-  })
-  .openapi('ReplicationRuleAndOperator')
-
-const ReplicationRuleFilterSchema = z
-  .object({
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object key name prefix that identifies the subset of objects to which the rule applies.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ).exactOptional(),
-    Tag: TagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A container for specifying a tag key and value. </p> <p>The rule applies only to objects that have the tag in their tag set.</p>',
-        }),
-    ).exactOptional(),
-    And: ReplicationRuleAndOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. For example: </p> <ul> <li> <p>If you specify both a <code>Prefix</code> and a <code>Tag</code> filter, wrap these filters in an <code>And</code> tag.</p> </li> <li> <p>If you specify a filter based on multiple tags, wrap the <code>Tag</code> elements in an <code>And</code> tag.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A filter that identifies the subset of objects to which the replication rule applies. A <code>Filter</code> must specify exactly one <code>Prefix</code>, <code>Tag</code>, or an <code>And</code> child element.',
-    required: [],
-  })
-  .openapi('ReplicationRuleFilter')
-
-const ReplicationRuleStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('ReplicationRuleStatus')
-
-const SseKmsEncryptedObjectsStatusSchema = z
-  .enum(['Enabled', 'Disabled'])
-  .openapi('SseKmsEncryptedObjectsStatus')
-
-const SseKmsEncryptedObjectsSchema = z
-  .object({
-    Status: SseKmsEncryptedObjectsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether Amazon S3 replicates objects created with server-side encryption using an Amazon Web Services KMS key stored in Amazon Web Services Key Management Service.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Status'],
-    description:
-      'A container for filter information for the selection of S3 objects encrypted with Amazon Web Services KMS.',
-  })
-  .openapi('SseKmsEncryptedObjects')
-
-const ReplicaModificationsStatusSchema = z
-  .enum(['Enabled', 'Disabled'])
-  .openapi('ReplicaModificationsStatus')
-
-const ReplicaModificationsSchema = z
-  .object({
-    Status: ReplicaModificationsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether Amazon S3 replicates modifications on replicas.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Status'],
-    description:
-      "<p>A filter that you can specify for selection for modifications on replicas. Amazon S3 doesn't replicate replica modifications by default. In the latest version of replication configuration (when <code>Filter</code> is specified), you can specify this element and set the status to <code>Enabled</code> to replicate modifications on replicas. </p> <note> <p> If you don't specify the <code>Filter</code> element, Amazon S3 assumes that the replication configuration is the earlier version, V1. In the earlier version, this element is not allowed.</p> </note>",
-  })
-  .openapi('ReplicaModifications')
-
-const SourceSelectionCriteriaSchema = z
-  .object({
-    SseKmsEncryptedObjects: SseKmsEncryptedObjectsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A container for filter information for the selection of Amazon S3 objects encrypted with Amazon Web Services KMS. If you include <code>SourceSelectionCriteria</code> in the replication configuration, this element is required. ',
-        }),
-    ).exactOptional(),
-    ReplicaModifications: ReplicaModificationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A filter that you can specify for selections for modifications on replicas. Amazon S3 doesn't replicate replica modifications by default. In the latest version of replication configuration (when <code>Filter</code> is specified), you can specify this element and set the status to <code>Enabled</code> to replicate modifications on replicas. </p> <note> <p> If you don't specify the <code>Filter</code> element, Amazon S3 assumes that the replication configuration is the earlier version, V1. In the earlier version, this element is not allowed</p> </note>",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A container that describes additional filters for identifying the source objects that you want to replicate. You can choose to enable or disable the replication of these objects. Currently, Amazon S3 supports only the filter that you can specify for objects created with server-side encryption using a customer managed key stored in Amazon Web Services Key Management Service (SSE-KMS).',
-    required: [],
-  })
-  .openapi('SourceSelectionCriteria')
-
-const ExistingObjectReplicationStatusSchema = z
-  .enum(['Enabled', 'Disabled'])
-  .openapi('ExistingObjectReplicationStatus')
-
-const ExistingObjectReplicationSchema = z
-  .object({
-    Status: ExistingObjectReplicationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether Amazon S3 replicates existing source bucket objects. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Status'],
-    description:
-      'Optional configuration to replicate existing source bucket objects. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication">Replicating Existing Objects</a> in the <i>Amazon S3 User Guide</i>. ',
-  })
-  .openapi('ExistingObjectReplication')
-
-const StorageClassSchema = z
-  .enum([
-    'STANDARD',
-    'REDUCED_REDUNDANCY',
-    'STANDARD_IA',
-    'ONEZONE_IA',
-    'INTELLIGENT_TIERING',
-    'GLACIER',
-    'DEEP_ARCHIVE',
-    'OUTPOSTS',
-    'GLACIER_IR',
-    'SNOW',
-  ])
-  .openapi('StorageClass')
-
-const OwnerOverrideSchema = z.literal('Destination').openapi('OwnerOverride')
-
-const AccessControlTranslationSchema = z
-  .object({
-    Owner: OwnerOverrideSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the replica ownership. For default and valid values, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html">PUT bucket replication</a> in the <i>Amazon S3 API Reference</i>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Owner'],
-    description: 'A container for information about access control for replicas.',
-  })
-  .openapi('AccessControlTranslation')
-
-const ReplicaKmsKeyIDSchema = z.string().openapi('ReplicaKmsKeyID')
-
-const EncryptionConfigurationSchema = z
-  .object({
-    ReplicaKmsKeyID: ReplicaKmsKeyIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID (Key ARN or Alias ARN) of the customer managed Amazon Web Services KMS key stored in Amazon Web Services Key Management Service (KMS) for the destination bucket. Amazon S3 uses this key to encrypt replica objects. Amazon S3 only supports symmetric encryption KMS keys. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Asymmetric keys in Amazon Web Services KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies encryption-related information for an Amazon S3 bucket that is a destination for replicated objects.',
-    required: [],
-  })
-  .openapi('EncryptionConfiguration')
-
-const ReplicationTimeStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('ReplicationTimeStatus')
-
-const MinutesSchema = z.int().openapi('Minutes')
-
-const ReplicationTimeValueSchema = z
-  .object({
-    Minutes: MinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Contains an integer specifying time in minutes. </p> <p> Valid value: 15</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' A container specifying the time value for S3 Replication Time Control (S3 RTC) and replication metrics <code>EventThreshold</code>. ',
-    required: [],
-  })
-  .openapi('ReplicationTimeValue')
-
-const ReplicationTimeSchema = z
-  .object({
-    Status: ReplicationTimeStatusSchema.and(
-      z.any().openapi({ description: ' Specifies whether the replication time is enabled. ' }),
-    ),
-    Time: ReplicationTimeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A container specifying the time by which replication should be complete for all objects and operations on objects. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Status', 'Time'],
-    description:
-      ' A container specifying S3 Replication Time Control (S3 RTC) related information, including whether S3 RTC is enabled and the time when all objects and operations on objects must be replicated. Must be specified together with a <code>Metrics</code> block. ',
-  })
-  .openapi('ReplicationTime')
-
-const MetricsStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('MetricsStatus')
-
-const MetricsSchema = z
-  .object({
-    Status: MetricsStatusSchema.and(
-      z.any().openapi({ description: ' Specifies whether the replication metrics are enabled. ' }),
-    ),
-    EventThreshold: ReplicationTimeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A container specifying the time threshold for emitting the <code>s3:Replication:OperationMissedThreshold</code> event. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Status'],
-    description:
-      ' A container specifying replication metrics-related settings enabling replication metrics and events.',
-  })
-  .openapi('Metrics')
-
-const DestinationSchema = z
-  .object({
-    Bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of the bucket where you want Amazon S3 to store the results.',
-        }),
-    ),
-    Account: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Destination bucket owner account ID. In a cross-account scenario, if you direct Amazon S3 to change replica ownership to the Amazon Web Services account that owns the destination bucket by specifying the <code>AccessControlTranslation</code> property, this is the account ID of the destination bucket owner. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-change-owner.html">Replication Additional Configuration: Changing the Replica Owner</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    StorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The storage class to use when replicating objects, such as S3 Standard or reduced redundancy. By default, Amazon S3 uses the storage class of the source object to create the object replica. </p> <p>For valid values, see the <code>StorageClass</code> element of the <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html">PUT Bucket replication</a> action in the <i>Amazon S3 API Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    AccessControlTranslation: AccessControlTranslationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this only in a cross-account scenario (where source and destination bucket owners are not the same), and you want to change replica ownership to the Amazon Web Services account that owns the destination bucket. If this is not specified in the replication configuration, the replicas are owned by same Amazon Web Services account that owns the source object.',
-        }),
-    ).exactOptional(),
-    EncryptionConfiguration: EncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A container that provides information about encryption. If <code>SourceSelectionCriteria</code> is specified, you must specify this element.',
-        }),
-    ).exactOptional(),
-    ReplicationTime: ReplicationTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A container specifying S3 Replication Time Control (S3 RTC), including whether S3 RTC is enabled and the time when all objects and operations on objects must be replicated. Must be specified together with a <code>Metrics</code> block. ',
-        }),
-    ).exactOptional(),
-    Metrics: MetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A container specifying replication metrics-related settings enabling replication metrics and events. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Bucket'],
-    description:
-      'Specifies information about where to publish analysis or configuration results for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).',
-  })
-  .openapi('Destination')
-
-const DeleteMarkerReplicationStatusSchema = z
-  .enum(['Enabled', 'Disabled'])
-  .openapi('DeleteMarkerReplicationStatus')
-
-const DeleteMarkerReplicationSchema = z
-  .object({
-    Status: DeleteMarkerReplicationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to replicate delete markers.</p> <note> <p>Indicates whether to replicate delete markers.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Specifies whether Amazon S3 replicates delete markers. If you specify a <code>Filter</code> in your replication configuration, you must also include a <code>DeleteMarkerReplication</code> element. If your <code>Filter</code> includes a <code>Tag</code> element, the <code>DeleteMarkerReplication</code> <code>Status</code> must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config">Basic Rule Configuration</a>. </p> <p>For more information about delete marker replication, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html">Basic Rule Configuration</a>. </p> <note> <p>If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations">Backward Compatibility</a>.</p> </note>',
-    required: [],
-  })
-  .openapi('DeleteMarkerReplication')
-
-const ReplicationRuleSchema = z
-  .object({
-    ID: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the rule. The maximum value is 255 characters.',
-        }),
-    ).exactOptional(),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The priority indicates which rule has precedence whenever two or more replication rules conflict. Amazon S3 will attempt to replicate objects according to all replication rules. However, if there are two or more rules with the same destination bucket, then objects will be replicated according to the rule with the highest priority. The higher the number, the higher the priority. </p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication.html">Replication</a> in the <i>Amazon S3 User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>An object key name prefix that identifies the object or objects to which the rule applies. The maximum prefix length is 1,024 characters. To include all objects in a bucket, specify an empty string. </p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ).exactOptional(),
-    Filter: ReplicationRuleFilterSchema.exactOptional(),
-    Status: ReplicationRuleStatusSchema.and(
-      z.any().openapi({ description: 'Specifies whether the rule is enabled.' }),
-    ),
-    SourceSelectionCriteria: SourceSelectionCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A container that describes additional filters for identifying the source objects that you want to replicate. You can choose to enable or disable the replication of these objects. Currently, Amazon S3 supports only the filter that you can specify for objects created with server-side encryption using a customer managed key stored in Amazon Web Services Key Management Service (SSE-KMS).',
-        }),
-    ).exactOptional(),
-    ExistingObjectReplication: ExistingObjectReplicationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional configuration to replicate existing source bucket objects. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication">Replicating Existing Objects</a> in the <i>Amazon S3 User Guide</i>. ',
-        }),
-    ).exactOptional(),
-    Destination: DestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A container for information about the replication destination and its configurations including enabling the S3 Replication Time Control (S3 RTC).',
-        }),
-    ),
-    DeleteMarkerReplication: DeleteMarkerReplicationSchema.exactOptional(),
-  })
-  .openapi({
-    required: ['Status', 'Destination'],
-    description: 'Specifies which Amazon S3 objects to replicate and where to store the replicas.',
-  })
-  .openapi('ReplicationRule')
-
-const ReplicationRulesSchema = z
-  .array(ReplicationRuleSchema)
-  .openapi({ xml: { wrapped: false } })
-  .openapi('ReplicationRules')
-
-const ReplicationConfigurationSchema = z
-  .object({
-    Role: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that Amazon S3 assumes when replicating objects. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-how-setup.html">How to Set Up Replication</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ),
-    Rules: ReplicationRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Rule' },
-          description:
-            'A container for one or more replication rules. A replication configuration must have at least one rule and can contain a maximum of 1,000 rules. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Role', 'Rules'],
-    description:
-      'A container for replication rules. You can add up to 1,000 rules. The maximum size of a replication configuration is 2 MB.',
-  })
-  .openapi('ReplicationConfiguration')
-
-const GetBucketReplicationOutputSchema = z
+const GetBucketReplicationOutputSchema: z.ZodType<GetBucketReplicationOutputType> = z
   .object({ ReplicationConfiguration: ReplicationConfigurationSchema.exactOptional() })
   .openapi({
     example: {
@@ -2907,15 +2260,15 @@ const PayerSchema = z.enum(['Requester', 'BucketOwner']).openapi('Payer')
 
 const GetBucketRequestPaymentOutputSchema = z
   .object({
-    Payer: PayerSchema.and(
-      z.any().openapi({ description: 'Specifies who pays for the download and request fees.' }),
-    ).exactOptional(),
+    Payer: PayerSchema.exactOptional().openapi({
+      description: 'Specifies who pays for the download and request fees.',
+    }),
   })
   .openapi({ example: { Payer: 'BucketOwner' }, required: [] })
   .openapi('GetBucketRequestPaymentOutput')
 
 const GetBucketTaggingOutputSchema = z
-  .object({ TagSet: TagSetSchema.and(z.any().openapi({ description: 'Contains the tag set.' })) })
+  .object({ TagSet: TagSetSchema.openapi({ description: 'Contains the tag set.' }) })
   .openapi({
     required: ['TagSet'],
     example: {
@@ -2935,18 +2288,14 @@ const MFADeleteStatusSchema = z.enum(['Enabled', 'Disabled']).openapi('MFADelete
 
 const GetBucketVersioningOutputSchema = z
   .object({
-    Status: BucketVersioningStatusSchema.and(
-      z.any().openapi({ description: 'The versioning state of the bucket.' }),
-    ).exactOptional(),
-    MFADelete: MFADeleteStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'MfaDelete' },
-          description:
-            'Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned.',
-        }),
-    ).exactOptional(),
+    Status: BucketVersioningStatusSchema.exactOptional().openapi({
+      description: 'The versioning state of the bucket.',
+    }),
+    MFADelete: MFADeleteStatusSchema.exactOptional().openapi({
+      xml: { name: 'MfaDelete' },
+      description:
+        'Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned.',
+    }),
   })
   .openapi({ example: { MFADelete: 'Disabled', Status: 'Enabled' }, required: [] })
   .openapi('GetBucketVersioningOutput')
@@ -2957,17 +2306,13 @@ const ProtocolSchema = z.enum(['http', 'https']).openapi('Protocol')
 
 const RedirectAllRequestsToSchema = z
   .object({
-    HostName: HostNameSchema.and(
-      z.any().openapi({ description: 'Name of the host where requests are redirected.' }),
-    ),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Protocol to use when redirecting requests. The default is the protocol that is used in the original request.',
-        }),
-    ).exactOptional(),
+    HostName: HostNameSchema.openapi({
+      description: 'Name of the host where requests are redirected.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      description:
+        'Protocol to use when redirecting requests. The default is the protocol that is used in the original request.',
+    }),
   })
   .openapi({
     required: ['HostName'],
@@ -2980,28 +2325,20 @@ const SuffixSchema = z.string().openapi('Suffix')
 
 const IndexDocumentSchema = z
   .object({
-    Suffix: SuffixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A suffix that is appended to a request that is for a directory on the website endpoint (for example,if the suffix is index.html and you make a request to samplebucket/images/ the data that is returned will be for the object with the key name images/index.html) The suffix must not be empty and must not include a slash character.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ),
+    Suffix: SuffixSchema.openapi({
+      description:
+        '<p>A suffix that is appended to a request that is for a directory on the website endpoint (for example,if the suffix is index.html and you make a request to samplebucket/images/ the data that is returned will be for the object with the key name images/index.html) The suffix must not be empty and must not include a slash character.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
   })
   .openapi({ required: ['Suffix'], description: 'Container for the <code>Suffix</code> element.' })
   .openapi('IndexDocument')
 
 const ErrorDocumentSchema = z
   .object({
-    Key: ObjectKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The object key name to use when a 4XX class error occurs.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ),
+    Key: ObjectKeySchema.openapi({
+      description:
+        '<p>The object key name to use when a 4XX class error occurs.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
   })
   .openapi({ required: ['Key'], description: 'The error information.' })
   .openapi('ErrorDocument')
@@ -3012,22 +2349,14 @@ const KeyPrefixEqualsSchema = z.string().openapi('KeyPrefixEquals')
 
 const ConditionSchema = z
   .object({
-    HttpErrorCodeReturnedEquals: HttpErrorCodeReturnedEqualsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP error code when the redirect is applied. In the event of an error, if the error code equals this value, then the specified redirect is applied. Required when parent element <code>Condition</code> is specified and sibling <code>KeyPrefixEquals</code> is not specified. If both are specified, then both must be true for the redirect to be applied.',
-        }),
-    ).exactOptional(),
-    KeyPrefixEquals: KeyPrefixEqualsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The object key name prefix when the redirect is applied. For example, to redirect requests for <code>ExamplePage.html</code>, the key prefix will be <code>ExamplePage.html</code>. To redirect request for all pages with the prefix <code>docs/</code>, the key prefix will be <code>/docs</code>, which identifies all objects in the <code>docs/</code> folder. Required when the parent element <code>Condition</code> is specified and sibling <code>HttpErrorCodeReturnedEquals</code> is not specified. If both conditions are specified, both must be true for the redirect to be applied.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ).exactOptional(),
+    HttpErrorCodeReturnedEquals: HttpErrorCodeReturnedEqualsSchema.exactOptional().openapi({
+      description:
+        'The HTTP error code when the redirect is applied. In the event of an error, if the error code equals this value, then the specified redirect is applied. Required when parent element <code>Condition</code> is specified and sibling <code>KeyPrefixEquals</code> is not specified. If both are specified, then both must be true for the redirect to be applied.',
+    }),
+    KeyPrefixEquals: KeyPrefixEqualsSchema.exactOptional().openapi({
+      description:
+        '<p>The object key name prefix when the redirect is applied. For example, to redirect requests for <code>ExamplePage.html</code>, the key prefix will be <code>ExamplePage.html</code>. To redirect request for all pages with the prefix <code>docs/</code>, the key prefix will be <code>/docs</code>, which identifies all objects in the <code>docs/</code> folder. Required when the parent element <code>Condition</code> is specified and sibling <code>HttpErrorCodeReturnedEquals</code> is not specified. If both conditions are specified, both must be true for the redirect to be applied.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
   })
   .openapi({
     description:
@@ -3044,41 +2373,25 @@ const ReplaceKeyWithSchema = z.string().openapi('ReplaceKeyWith')
 
 const RedirectSchema = z
   .object({
-    HostName: HostNameSchema.and(
-      z.any().openapi({ description: 'The host name to use in the redirect request.' }),
-    ).exactOptional(),
-    HttpRedirectCode: HttpRedirectCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP redirect code to use on the response. Not required if one of the siblings is present.',
-        }),
-    ).exactOptional(),
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Protocol to use when redirecting requests. The default is the protocol that is used in the original request.',
-        }),
-    ).exactOptional(),
-    ReplaceKeyPrefixWith: ReplaceKeyPrefixWithSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The object key prefix to use in the redirect request. For example, to redirect requests for all pages with prefix <code>docs/</code> (objects in the <code>docs/</code> folder) to <code>documents/</code>, you can set a condition block with <code>KeyPrefixEquals</code> set to <code>docs/</code> and in the Redirect set <code>ReplaceKeyPrefixWith</code> to <code>/documents</code>. Not required if one of the siblings is present. Can be present only if <code>ReplaceKeyWith</code> is not provided.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ).exactOptional(),
-    ReplaceKeyWith: ReplaceKeyWithSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The specific object key to use in the redirect request. For example, redirect request to <code>error.html</code>. Not required if one of the siblings is present. Can be present only if <code>ReplaceKeyPrefixWith</code> is not provided.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
-        }),
-    ).exactOptional(),
+    HostName: HostNameSchema.exactOptional().openapi({
+      description: 'The host name to use in the redirect request.',
+    }),
+    HttpRedirectCode: HttpRedirectCodeSchema.exactOptional().openapi({
+      description:
+        'The HTTP redirect code to use on the response. Not required if one of the siblings is present.',
+    }),
+    Protocol: ProtocolSchema.exactOptional().openapi({
+      description:
+        'Protocol to use when redirecting requests. The default is the protocol that is used in the original request.',
+    }),
+    ReplaceKeyPrefixWith: ReplaceKeyPrefixWithSchema.exactOptional().openapi({
+      description:
+        '<p>The object key prefix to use in the redirect request. For example, to redirect requests for all pages with prefix <code>docs/</code> (objects in the <code>docs/</code> folder) to <code>documents/</code>, you can set a condition block with <code>KeyPrefixEquals</code> set to <code>docs/</code> and in the Redirect set <code>ReplaceKeyPrefixWith</code> to <code>/documents</code>. Not required if one of the siblings is present. Can be present only if <code>ReplaceKeyWith</code> is not provided.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
+    ReplaceKeyWith: ReplaceKeyWithSchema.exactOptional().openapi({
+      description:
+        '<p>The specific object key to use in the redirect request. For example, redirect request to <code>error.html</code>. Not required if one of the siblings is present. Can be present only if <code>ReplaceKeyPrefixWith</code> is not provided.</p> <important> <p>Replacement must be made for object keys containing special characters (such as carriage returns) when using XML requests. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-xml-related-constraints"> XML related object key constraints</a>.</p> </important>',
+    }),
   })
   .openapi({
     description:
@@ -3089,22 +2402,14 @@ const RedirectSchema = z
 
 const RoutingRuleSchema = z
   .object({
-    Condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A container for describing a condition that must be met for the specified redirect to apply. For example, 1. If request is for pages in the <code>/docs</code> folder, redirect to the <code>/documents</code> folder. 2. If request results in HTTP error 4xx, redirect request to another host where you might process the error.',
-        }),
-    ).exactOptional(),
-    Redirect: RedirectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Container for redirect information. You can redirect requests to another host, to another page, or with another protocol. In the event of an error, you can specify a different error code to return.',
-        }),
-    ),
+    Condition: ConditionSchema.exactOptional().openapi({
+      description:
+        'A container for describing a condition that must be met for the specified redirect to apply. For example, 1. If request is for pages in the <code>/docs</code> folder, redirect to the <code>/documents</code> folder. 2. If request results in HTTP error 4xx, redirect request to another host where you might process the error.',
+    }),
+    Redirect: RedirectSchema.openapi({
+      description:
+        'Container for redirect information. You can redirect requests to another host, to another page, or with another protocol. In the event of an error, you can specify a different error code to return.',
+    }),
   })
   .openapi({
     required: ['Redirect'],
@@ -3114,42 +2419,25 @@ const RoutingRuleSchema = z
   .openapi('RoutingRule')
 
 const RoutingRulesSchema = z
-  .array(RoutingRuleSchema.and(z.any().openapi({ xml: { name: 'RoutingRule' } })))
+  .array(RoutingRuleSchema.openapi({ xml: { name: 'RoutingRule' } }))
   .openapi('RoutingRules')
 
 const GetBucketWebsiteOutputSchema = z
   .object({
-    RedirectAllRequestsTo: RedirectAllRequestsToSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the redirect behavior of all requests to a website endpoint of an Amazon S3 bucket.',
-        }),
-    ).exactOptional(),
-    IndexDocument: IndexDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the index document for the website (for example <code>index.html</code>).',
-        }),
-    ).exactOptional(),
-    ErrorDocument: ErrorDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The object key name of the website error document to use for 4XX class errors.',
-        }),
-    ).exactOptional(),
-    RoutingRules: RoutingRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Rules that define when a redirect is applied and the redirect behavior.',
-        }),
-    ).exactOptional(),
+    RedirectAllRequestsTo: RedirectAllRequestsToSchema.exactOptional().openapi({
+      description:
+        'Specifies the redirect behavior of all requests to a website endpoint of an Amazon S3 bucket.',
+    }),
+    IndexDocument: IndexDocumentSchema.exactOptional().openapi({
+      description:
+        'The name of the index document for the website (for example <code>index.html</code>).',
+    }),
+    ErrorDocument: ErrorDocumentSchema.exactOptional().openapi({
+      description: 'The object key name of the website error document to use for 4XX class errors.',
+    }),
+    RoutingRules: RoutingRulesSchema.exactOptional().openapi({
+      description: 'Rules that define when a redirect is applied and the redirect behavior.',
+    }),
   })
   .openapi({
     example: { ErrorDocument: { Key: 'error.html' }, IndexDocument: { Suffix: 'index.html' } },
@@ -3163,15 +2451,11 @@ const MetadataSchema = z.record(z.string(), MetadataValueSchema).openapi('Metada
 
 const GetObjectOutputSchema = z
   .object({
-    Body: BodySchema.and(z.any().openapi({ description: 'Object data.' })).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'x-amz-meta-' },
-          description: 'A map of metadata to store with the object in S3.',
-        }),
-    ).exactOptional(),
+    Body: BodySchema.exactOptional().openapi({ description: 'Object data.' }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      xml: { name: 'x-amz-meta-' },
+      description: 'A map of metadata to store with the object in S3.',
+    }),
   })
   .openapi({
     example: {
@@ -3194,12 +2478,13 @@ const InvalidObjectStateSchema = z.any().openapi('InvalidObjectState')
 
 const GetObjectAclOutputSchema = z
   .object({
-    Owner: OwnerSchema.and(
-      z.any().openapi({ description: " Container for the bucket owner's display name and ID." }),
-    ).exactOptional(),
-    Grants: GrantsSchema.and(
-      z.any().openapi({ xml: { name: 'AccessControlList' }, description: 'A list of grants.' }),
-    ).exactOptional(),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description: " Container for the bucket owner's display name and ID.",
+    }),
+    Grants: GrantsSchema.exactOptional().openapi({
+      xml: { name: 'AccessControlList' },
+      description: 'A list of grants.',
+    }),
   })
   .openapi({
     example: {
@@ -3248,38 +2533,22 @@ const GetObjectAclOutputSchema = z
 
 const ChecksumSchema = z
   .object({
-    ChecksumCRC32: ChecksumCRC32Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumCRC32C: ChecksumCRC32CSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA1: ChecksumSHA1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA256: ChecksumSHA256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    ChecksumCRC32: ChecksumCRC32Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumCRC32C: ChecksumCRC32CSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA1: ChecksumSHA1Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA256: ChecksumSHA256Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({
     description: 'Contains all the possible checksum or digest values for an object.',
@@ -3301,49 +2570,29 @@ const SizeSchema = z.int().openapi('Size')
 
 const ObjectPartSchema = z
   .object({
-    PartNumber: PartNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The part number identifying the part. This value is a positive integer between 1 and 10,000.',
-        }),
-    ).exactOptional(),
-    Size: SizeSchema.and(
-      z.any().openapi({ description: 'The size of the uploaded part in bytes.' }),
-    ).exactOptional(),
-    ChecksumCRC32: ChecksumCRC32Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumCRC32C: ChecksumCRC32CSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA1: ChecksumSHA1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA256: ChecksumSHA256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    PartNumber: PartNumberSchema.exactOptional().openapi({
+      description:
+        'The part number identifying the part. This value is a positive integer between 1 and 10,000.',
+    }),
+    Size: SizeSchema.exactOptional().openapi({
+      description: 'The size of the uploaded part in bytes.',
+    }),
+    ChecksumCRC32: ChecksumCRC32Schema.exactOptional().openapi({
+      description:
+        'This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumCRC32C: ChecksumCRC32CSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA1: ChecksumSHA1Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA256: ChecksumSHA256Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({ description: 'A container for elements related to an individual part.', required: [] })
   .openapi('ObjectPart')
@@ -3355,40 +2604,29 @@ const PartsListSchema = z
 
 const GetObjectAttributesPartsSchema = z
   .object({
-    TotalPartsCount: PartsCountSchema.and(
-      z.any().openapi({ xml: { name: 'PartsCount' }, description: 'The total number of parts.' }),
-    ).exactOptional(),
-    PartNumberMarker: PartNumberMarkerSchema.and(
-      z.any().openapi({ description: 'The marker for the current part.' }),
-    ).exactOptional(),
-    NextPartNumberMarker: NextPartNumberMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When a list is truncated, this element specifies the last part in the list, as well as the value to use for the <code>PartNumberMarker</code> request parameter in a subsequent request.',
-        }),
-    ).exactOptional(),
-    MaxParts: MaxPartsSchema.and(
-      z.any().openapi({ description: 'The maximum number of parts allowed in the response.' }),
-    ).exactOptional(),
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the returned list of parts is truncated. A value of <code>true</code> indicates that the list was truncated. A list can be truncated if the number of parts exceeds the limit returned in the <code>MaxParts</code> element.',
-        }),
-    ).exactOptional(),
-    Parts: PartsListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Part' },
-          description:
-            'A container for elements related to a particular part. A response can contain zero or more <code>Parts</code> elements.',
-        }),
-    ).exactOptional(),
+    TotalPartsCount: PartsCountSchema.exactOptional().openapi({
+      xml: { name: 'PartsCount' },
+      description: 'The total number of parts.',
+    }),
+    PartNumberMarker: PartNumberMarkerSchema.exactOptional().openapi({
+      description: 'The marker for the current part.',
+    }),
+    NextPartNumberMarker: NextPartNumberMarkerSchema.exactOptional().openapi({
+      description:
+        'When a list is truncated, this element specifies the last part in the list, as well as the value to use for the <code>PartNumberMarker</code> request parameter in a subsequent request.',
+    }),
+    MaxParts: MaxPartsSchema.exactOptional().openapi({
+      description: 'The maximum number of parts allowed in the response.',
+    }),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the returned list of parts is truncated. A value of <code>true</code> indicates that the list was truncated. A list can be truncated if the number of parts exceeds the limit returned in the <code>MaxParts</code> element.',
+    }),
+    Parts: PartsListSchema.exactOptional().openapi({
+      xml: { name: 'Part' },
+      description:
+        'A container for elements related to a particular part. A response can contain zero or more <code>Parts</code> elements.',
+    }),
   })
   .openapi({
     description: 'A collection of parts associated with a multipart upload.',
@@ -3400,31 +2638,23 @@ const ObjectSizeSchema = z.int().openapi('ObjectSize')
 
 const GetObjectAttributesOutputSchema = z
   .object({
-    ETag: ETagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ETag is an opaque identifier assigned by a web server to a specific version of a resource found at a URL.',
-        }),
-    ).exactOptional(),
-    Checksum: ChecksumSchema.and(
-      z.any().openapi({ description: 'The checksum or digest of the object.' }),
-    ).exactOptional(),
-    ObjectParts: GetObjectAttributesPartsSchema.and(
-      z.any().openapi({ description: 'A collection of parts associated with a multipart upload.' }),
-    ).exactOptional(),
-    StorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the storage class information of the object. Amazon S3 returns this header for all objects except for S3 Standard storage class objects.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html">Storage Classes</a>.</p>',
-        }),
-    ).exactOptional(),
-    ObjectSize: ObjectSizeSchema.and(
-      z.any().openapi({ description: 'The size of the object in bytes.' }),
-    ).exactOptional(),
+    ETag: ETagSchema.exactOptional().openapi({
+      description:
+        'An ETag is an opaque identifier assigned by a web server to a specific version of a resource found at a URL.',
+    }),
+    Checksum: ChecksumSchema.exactOptional().openapi({
+      description: 'The checksum or digest of the object.',
+    }),
+    ObjectParts: GetObjectAttributesPartsSchema.exactOptional().openapi({
+      description: 'A collection of parts associated with a multipart upload.',
+    }),
+    StorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the storage class information of the object. Amazon S3 returns this header for all objects except for S3 Standard storage class objects.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html">Storage Classes</a>.</p>',
+    }),
+    ObjectSize: ObjectSizeSchema.exactOptional().openapi({
+      description: 'The size of the object in bytes.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetObjectAttributesOutput')
@@ -3437,22 +2667,18 @@ const ObjectLockLegalHoldStatusSchema = z.enum(['ON', 'OFF']).openapi('ObjectLoc
 
 const ObjectLockLegalHoldSchema = z
   .object({
-    Status: ObjectLockLegalHoldStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the specified object has a legal hold in place.',
-        }),
-    ).exactOptional(),
+    Status: ObjectLockLegalHoldStatusSchema.exactOptional().openapi({
+      description: 'Indicates whether the specified object has a legal hold in place.',
+    }),
   })
   .openapi({ description: 'A legal hold configuration for an object.', required: [] })
   .openapi('ObjectLockLegalHold')
 
 const GetObjectLegalHoldOutputSchema = z
   .object({
-    LegalHold: ObjectLockLegalHoldSchema.and(
-      z.any().openapi({ description: 'The current legal hold status for the specified object.' }),
-    ).exactOptional(),
+    LegalHold: ObjectLockLegalHoldSchema.exactOptional().openapi({
+      description: 'The current legal hold status for the specified object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetObjectLegalHoldOutput')
@@ -3467,30 +2693,18 @@ const YearsSchema = z.int().openapi('Years')
 
 const DefaultRetentionSchema = z
   .object({
-    Mode: ObjectLockRetentionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default Object Lock retention mode you want to apply to new objects placed in the specified bucket. Must be used with either <code>Days</code> or <code>Years</code>.',
-        }),
-    ).exactOptional(),
-    Days: DaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days that you want to specify for the default retention period. Must be used with <code>Mode</code>.',
-        }),
-    ).exactOptional(),
-    Years: YearsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of years that you want to specify for the default retention period. Must be used with <code>Mode</code>.',
-        }),
-    ).exactOptional(),
+    Mode: ObjectLockRetentionModeSchema.exactOptional().openapi({
+      description:
+        'The default Object Lock retention mode you want to apply to new objects placed in the specified bucket. Must be used with either <code>Days</code> or <code>Years</code>.',
+    }),
+    Days: DaysSchema.exactOptional().openapi({
+      description:
+        'The number of days that you want to specify for the default retention period. Must be used with <code>Mode</code>.',
+    }),
+    Years: YearsSchema.exactOptional().openapi({
+      description:
+        'The number of years that you want to specify for the default retention period. Must be used with <code>Mode</code>.',
+    }),
   })
   .openapi({
     description:
@@ -3501,36 +2715,24 @@ const DefaultRetentionSchema = z
 
 const ObjectLockRuleSchema = z
   .object({
-    DefaultRetention: DefaultRetentionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default Object Lock retention mode and period that you want to apply to new objects placed in the specified bucket. Bucket settings require both a mode and a period. The period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.',
-        }),
-    ).exactOptional(),
+    DefaultRetention: DefaultRetentionSchema.exactOptional().openapi({
+      description:
+        'The default Object Lock retention mode and period that you want to apply to new objects placed in the specified bucket. Bucket settings require both a mode and a period. The period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.',
+    }),
   })
   .openapi({ description: 'The container element for an Object Lock rule.', required: [] })
   .openapi('ObjectLockRule')
 
 const ObjectLockConfigurationSchema = z
   .object({
-    ObjectLockEnabled: ObjectLockEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether this bucket has an Object Lock configuration enabled. Enable <code>ObjectLockEnabled</code> when you apply <code>ObjectLockConfiguration</code> to a bucket. ',
-        }),
-    ).exactOptional(),
-    Rule: ObjectLockRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the Object Lock rule for the specified object. Enable the this rule when you apply <code>ObjectLockConfiguration</code> to a bucket. Bucket settings require both a mode and a period. The period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.',
-        }),
-    ).exactOptional(),
+    ObjectLockEnabled: ObjectLockEnabledSchema.exactOptional().openapi({
+      description:
+        'Indicates whether this bucket has an Object Lock configuration enabled. Enable <code>ObjectLockEnabled</code> when you apply <code>ObjectLockConfiguration</code> to a bucket. ',
+    }),
+    Rule: ObjectLockRuleSchema.exactOptional().openapi({
+      description:
+        'Specifies the Object Lock rule for the specified object. Enable the this rule when you apply <code>ObjectLockConfiguration</code> to a bucket. Bucket settings require both a mode and a period. The period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.',
+    }),
   })
   .openapi({
     description: 'The container element for Object Lock configuration parameters.',
@@ -3540,36 +2742,36 @@ const ObjectLockConfigurationSchema = z
 
 const GetObjectLockConfigurationOutputSchema = z
   .object({
-    ObjectLockConfiguration: ObjectLockConfigurationSchema.and(
-      z.any().openapi({ description: "The specified bucket's Object Lock configuration." }),
-    ).exactOptional(),
+    ObjectLockConfiguration: ObjectLockConfigurationSchema.exactOptional().openapi({
+      description: "The specified bucket's Object Lock configuration.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetObjectLockConfigurationOutput')
 
 const ObjectLockRetentionSchema = z
   .object({
-    Mode: ObjectLockRetentionModeSchema.and(
-      z.any().openapi({ description: 'Indicates the Retention mode for the specified object.' }),
-    ).exactOptional(),
-    RetainUntilDate: DateSchema.and(
-      z.any().openapi({ description: 'The date on which this Object Lock Retention will expire.' }),
-    ).exactOptional(),
+    Mode: ObjectLockRetentionModeSchema.exactOptional().openapi({
+      description: 'Indicates the Retention mode for the specified object.',
+    }),
+    RetainUntilDate: DateSchema.exactOptional().openapi({
+      description: 'The date on which this Object Lock Retention will expire.',
+    }),
   })
   .openapi({ description: 'A Retention configuration for an object.', required: [] })
   .openapi('ObjectLockRetention')
 
 const GetObjectRetentionOutputSchema = z
   .object({
-    Retention: ObjectLockRetentionSchema.and(
-      z.any().openapi({ description: "The container element for an object's retention settings." }),
-    ).exactOptional(),
+    Retention: ObjectLockRetentionSchema.exactOptional().openapi({
+      description: "The container element for an object's retention settings.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetObjectRetentionOutput')
 
 const GetObjectTaggingOutputSchema = z
-  .object({ TagSet: TagSetSchema.and(z.any().openapi({ description: 'Contains the tag set.' })) })
+  .object({ TagSet: TagSetSchema.openapi({ description: 'Contains the tag set.' }) })
   .openapi({
     required: ['TagSet'],
     example: {
@@ -3584,13 +2786,9 @@ const GetObjectTaggingOutputSchema = z
 
 const GetObjectTorrentOutputSchema = z
   .object({
-    Body: BodySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Bencoded dictionary as defined by the BitTorrent specification',
-        }),
-    ).exactOptional(),
+    Body: BodySchema.exactOptional().openapi({
+      description: 'A Bencoded dictionary as defined by the BitTorrent specification',
+    }),
   })
   .openapi({ example: {}, required: [] })
   .openapi('GetObjectTorrentOutput')
@@ -3599,38 +2797,22 @@ const SettingSchema = z.boolean().openapi('Setting')
 
 const PublicAccessBlockConfigurationSchema = z
   .object({
-    BlockPublicAcls: SettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies whether Amazon S3 should block public access control lists (ACLs) for this bucket and objects in this bucket. Setting this element to <code>TRUE</code> causes the following behavior:</p> <ul> <li> <p>PUT Bucket ACL and PUT Object ACL calls fail if the specified ACL is public.</p> </li> <li> <p>PUT Object calls fail if the request includes a public ACL.</p> </li> <li> <p>PUT Bucket calls fail if the request includes a public ACL.</p> </li> </ul> <p>Enabling this setting doesn't affect existing policies or ACLs.</p>",
-        }),
-    ).exactOptional(),
-    IgnorePublicAcls: SettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies whether Amazon S3 should ignore public ACLs for this bucket and objects in this bucket. Setting this element to <code>TRUE</code> causes Amazon S3 to ignore all public ACLs on this bucket and objects in this bucket.</p> <p>Enabling this setting doesn't affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set.</p>",
-        }),
-    ).exactOptional(),
-    BlockPublicPolicy: SettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies whether Amazon S3 should block public bucket policies for this bucket. Setting this element to <code>TRUE</code> causes Amazon S3 to reject calls to PUT Bucket policy if the specified bucket policy allows public access. </p> <p>Enabling this setting doesn't affect existing bucket policies.</p>",
-        }),
-    ).exactOptional(),
-    RestrictPublicBuckets: SettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies whether Amazon S3 should restrict public bucket policies for this bucket. Setting this element to <code>TRUE</code> restricts access to this bucket to only Amazon Web Service principals and authorized users within this account if the bucket has a public policy.</p> <p>Enabling this setting doesn't affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked.</p>",
-        }),
-    ).exactOptional(),
+    BlockPublicAcls: SettingSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies whether Amazon S3 should block public access control lists (ACLs) for this bucket and objects in this bucket. Setting this element to <code>TRUE</code> causes the following behavior:</p> <ul> <li> <p>PUT Bucket ACL and PUT Object ACL calls fail if the specified ACL is public.</p> </li> <li> <p>PUT Object calls fail if the request includes a public ACL.</p> </li> <li> <p>PUT Bucket calls fail if the request includes a public ACL.</p> </li> </ul> <p>Enabling this setting doesn't affect existing policies or ACLs.</p>",
+    }),
+    IgnorePublicAcls: SettingSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies whether Amazon S3 should ignore public ACLs for this bucket and objects in this bucket. Setting this element to <code>TRUE</code> causes Amazon S3 to ignore all public ACLs on this bucket and objects in this bucket.</p> <p>Enabling this setting doesn't affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set.</p>",
+    }),
+    BlockPublicPolicy: SettingSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies whether Amazon S3 should block public bucket policies for this bucket. Setting this element to <code>TRUE</code> causes Amazon S3 to reject calls to PUT Bucket policy if the specified bucket policy allows public access. </p> <p>Enabling this setting doesn't affect existing bucket policies.</p>",
+    }),
+    RestrictPublicBuckets: SettingSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies whether Amazon S3 should restrict public bucket policies for this bucket. Setting this element to <code>TRUE</code> restricts access to this bucket to only Amazon Web Service principals and authorized users within this account if the bucket has a public policy.</p> <p>Enabling this setting doesn't affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked.</p>",
+    }),
   })
   .openapi({
     description:
@@ -3641,14 +2823,10 @@ const PublicAccessBlockConfigurationSchema = z
 
 const GetPublicAccessBlockOutputSchema = z
   .object({
-    PublicAccessBlockConfiguration: PublicAccessBlockConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>PublicAccessBlock</code> configuration currently in effect for this Amazon S3 bucket.',
-        }),
-    ).exactOptional(),
+    PublicAccessBlockConfiguration: PublicAccessBlockConfigurationSchema.exactOptional().openapi({
+      description:
+        'The <code>PublicAccessBlock</code> configuration currently in effect for this Amazon S3 bucket.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPublicAccessBlockOutput')
@@ -3657,14 +2835,10 @@ const NoSuchBucketSchema = z.any().openapi('NoSuchBucket')
 
 const HeadObjectOutputSchema = z
   .object({
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'x-amz-meta-' },
-          description: 'A map of metadata to store with the object in S3.',
-        }),
-    ).exactOptional(),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      xml: { name: 'x-amz-meta-' },
+      description: 'A map of metadata to store with the object in S3.',
+    }),
   })
   .openapi({
     example: {
@@ -3691,38 +2865,22 @@ const AnalyticsConfigurationListSchema = z
 
 const ListBucketAnalyticsConfigurationsOutputSchema = z
   .object({
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the returned list of analytics configurations is complete. A value of true indicates that the list is not complete and the NextContinuationToken will be provided for a subsequent request.',
-        }),
-    ).exactOptional(),
-    ContinuationToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker that is used as a starting point for this analytics configuration list response. This value is present if it was sent in the request.',
-        }),
-    ).exactOptional(),
-    NextContinuationToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>NextContinuationToken</code> is sent when <code>isTruncated</code> is true, which indicates that there are more analytics configurations to list. The next request must include this <code>NextContinuationToken</code>. The token is obfuscated and is not a usable value.',
-        }),
-    ).exactOptional(),
-    AnalyticsConfigurationList: AnalyticsConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'AnalyticsConfiguration' },
-          description: 'The list of analytics configurations for a bucket.',
-        }),
-    ).exactOptional(),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the returned list of analytics configurations is complete. A value of true indicates that the list is not complete and the NextContinuationToken will be provided for a subsequent request.',
+    }),
+    ContinuationToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The marker that is used as a starting point for this analytics configuration list response. This value is present if it was sent in the request.',
+    }),
+    NextContinuationToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' <code>NextContinuationToken</code> is sent when <code>isTruncated</code> is true, which indicates that there are more analytics configurations to list. The next request must include this <code>NextContinuationToken</code>. The token is obfuscated and is not a usable value.',
+    }),
+    AnalyticsConfigurationList: AnalyticsConfigurationListSchema.exactOptional().openapi({
+      xml: { name: 'AnalyticsConfiguration' },
+      description: 'The list of analytics configurations for a bucket.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBucketAnalyticsConfigurationsOutput')
@@ -3734,38 +2892,23 @@ const IntelligentTieringConfigurationListSchema = z
 
 const ListBucketIntelligentTieringConfigurationsOutputSchema = z
   .object({
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the returned list of analytics configurations is complete. A value of <code>true</code> indicates that the list is not complete and the <code>NextContinuationToken</code> will be provided for a subsequent request.',
-        }),
-    ).exactOptional(),
-    ContinuationToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ContinuationToken</code> that represents a placeholder from where this request should begin.',
-        }),
-    ).exactOptional(),
-    NextContinuationToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker used to continue this inventory configuration listing. Use the <code>NextContinuationToken</code> from this response to continue the listing in a subsequent request. The continuation token is an opaque value that Amazon S3 understands.',
-        }),
-    ).exactOptional(),
-    IntelligentTieringConfigurationList: IntelligentTieringConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'IntelligentTieringConfiguration' },
-          description: 'The list of S3 Intelligent-Tiering configurations for a bucket.',
-        }),
-    ).exactOptional(),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the returned list of analytics configurations is complete. A value of <code>true</code> indicates that the list is not complete and the <code>NextContinuationToken</code> will be provided for a subsequent request.',
+    }),
+    ContinuationToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ContinuationToken</code> that represents a placeholder from where this request should begin.',
+    }),
+    NextContinuationToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The marker used to continue this inventory configuration listing. Use the <code>NextContinuationToken</code> from this response to continue the listing in a subsequent request. The continuation token is an opaque value that Amazon S3 understands.',
+    }),
+    IntelligentTieringConfigurationList:
+      IntelligentTieringConfigurationListSchema.exactOptional().openapi({
+        xml: { name: 'IntelligentTieringConfiguration' },
+        description: 'The list of S3 Intelligent-Tiering configurations for a bucket.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListBucketIntelligentTieringConfigurationsOutput')
@@ -3777,38 +2920,22 @@ const InventoryConfigurationListSchema = z
 
 const ListBucketInventoryConfigurationsOutputSchema = z
   .object({
-    ContinuationToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If sent in the request, the marker that is used as a starting point for this inventory configuration list response.',
-        }),
-    ).exactOptional(),
-    InventoryConfigurationList: InventoryConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'InventoryConfiguration' },
-          description: 'The list of inventory configurations for a bucket.',
-        }),
-    ).exactOptional(),
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tells whether the returned list of inventory configurations is complete. A value of true indicates that the list is not complete and the NextContinuationToken is provided for a subsequent request.',
-        }),
-    ).exactOptional(),
-    NextContinuationToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker used to continue this inventory configuration listing. Use the <code>NextContinuationToken</code> from this response to continue the listing in a subsequent request. The continuation token is an opaque value that Amazon S3 understands.',
-        }),
-    ).exactOptional(),
+    ContinuationToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If sent in the request, the marker that is used as a starting point for this inventory configuration list response.',
+    }),
+    InventoryConfigurationList: InventoryConfigurationListSchema.exactOptional().openapi({
+      xml: { name: 'InventoryConfiguration' },
+      description: 'The list of inventory configurations for a bucket.',
+    }),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'Tells whether the returned list of inventory configurations is complete. A value of true indicates that the list is not complete and the NextContinuationToken is provided for a subsequent request.',
+    }),
+    NextContinuationToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The marker used to continue this inventory configuration listing. Use the <code>NextContinuationToken</code> from this response to continue the listing in a subsequent request. The continuation token is an opaque value that Amazon S3 understands.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBucketInventoryConfigurationsOutput')
@@ -3820,38 +2947,22 @@ const MetricsConfigurationListSchema = z
 
 const ListBucketMetricsConfigurationsOutputSchema = z
   .object({
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the returned list of metrics configurations is complete. A value of true indicates that the list is not complete and the NextContinuationToken will be provided for a subsequent request.',
-        }),
-    ).exactOptional(),
-    ContinuationToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker that is used as a starting point for this metrics configuration list response. This value is present if it was sent in the request.',
-        }),
-    ).exactOptional(),
-    NextContinuationToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker used to continue a metrics configuration listing that has been truncated. Use the <code>NextContinuationToken</code> from a previously truncated list response to continue the listing. The continuation token is an opaque value that Amazon S3 understands.',
-        }),
-    ).exactOptional(),
-    MetricsConfigurationList: MetricsConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'MetricsConfiguration' },
-          description: 'The list of metrics configurations for a bucket.',
-        }),
-    ).exactOptional(),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the returned list of metrics configurations is complete. A value of true indicates that the list is not complete and the NextContinuationToken will be provided for a subsequent request.',
+    }),
+    ContinuationToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The marker that is used as a starting point for this metrics configuration list response. This value is present if it was sent in the request.',
+    }),
+    NextContinuationToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The marker used to continue a metrics configuration listing that has been truncated. Use the <code>NextContinuationToken</code> from a previously truncated list response to continue the listing. The continuation token is an opaque value that Amazon S3 understands.',
+    }),
+    MetricsConfigurationList: MetricsConfigurationListSchema.exactOptional().openapi({
+      xml: { name: 'MetricsConfiguration' },
+      description: 'The list of metrics configurations for a bucket.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBucketMetricsConfigurationsOutput')
@@ -3860,17 +2971,11 @@ const CreationDateSchema = z.iso.datetime({ offset: true }).openapi('CreationDat
 
 const BucketSchema = z
   .object({
-    Name: BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the bucket.' }),
-    ).exactOptional(),
-    CreationDate: CreationDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Date the bucket was created. This date can change when making changes to your bucket, such as editing its bucket policy.',
-        }),
-    ).exactOptional(),
+    Name: BucketNameSchema.exactOptional().openapi({ description: 'The name of the bucket.' }),
+    CreationDate: CreationDateSchema.exactOptional().openapi({
+      description:
+        'Date the bucket was created. This date can change when making changes to your bucket, such as editing its bucket policy.',
+    }),
   })
   .openapi({
     description:
@@ -3879,18 +2984,14 @@ const BucketSchema = z
   })
   .openapi('Bucket')
 
-const BucketsSchema = z
-  .array(BucketSchema.and(z.any().openapi({ xml: { name: 'Bucket' } })))
-  .openapi('Buckets')
+const BucketsSchema = z.array(BucketSchema.openapi({ xml: { name: 'Bucket' } })).openapi('Buckets')
 
 const ListBucketsOutputSchema = z
   .object({
-    Buckets: BucketsSchema.and(
-      z.any().openapi({ description: 'The list of buckets owned by the requester.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z.any().openapi({ description: 'The owner of the buckets listed.' }),
-    ).exactOptional(),
+    Buckets: BucketsSchema.exactOptional().openapi({
+      description: 'The list of buckets owned by the requester.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({ description: 'The owner of the buckets listed.' }),
   })
   .openapi({
     example: {
@@ -3924,17 +3025,13 @@ const InitiatedSchema = z.iso.datetime({ offset: true }).openapi('Initiated')
 
 const InitiatorSchema = z
   .object({
-    ID: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the principal is an Amazon Web Services account, it provides the Canonical User ID. If the principal is an IAM User, it provides a user ARN value.',
-        }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'Name of the Principal.' }),
-    ).exactOptional(),
+    ID: IDSchema.exactOptional().openapi({
+      description:
+        'If the principal is an Amazon Web Services account, it provides the Canonical User ID. If the principal is an IAM User, it provides a user ARN value.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'Name of the Principal.',
+    }),
   })
   .openapi({
     description: 'Container element that identifies who initiated the multipart upload. ',
@@ -3948,41 +3045,27 @@ const ChecksumAlgorithmSchema = z
 
 const MultipartUploadSchema = z
   .object({
-    UploadId: MultipartUploadIdSchema.and(
-      z.any().openapi({ description: 'Upload ID that identifies the multipart upload.' }),
-    ).exactOptional(),
-    Key: ObjectKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Key of the object for which the multipart upload was initiated.',
-        }),
-    ).exactOptional(),
-    Initiated: InitiatedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Date and time at which the multipart upload was initiated.' }),
-    ).exactOptional(),
-    StorageClass: StorageClassSchema.and(
-      z.any().openapi({ description: 'The class of storage used to store the object.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the owner of the object that is part of the multipart upload. ',
-        }),
-    ).exactOptional(),
-    Initiator: InitiatorSchema.and(
-      z.any().openapi({ description: 'Identifies who initiated the multipart upload.' }),
-    ).exactOptional(),
-    ChecksumAlgorithm: ChecksumAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The algorithm that was used to create a checksum of the object.',
-        }),
-    ).exactOptional(),
+    UploadId: MultipartUploadIdSchema.exactOptional().openapi({
+      description: 'Upload ID that identifies the multipart upload.',
+    }),
+    Key: ObjectKeySchema.exactOptional().openapi({
+      description: 'Key of the object for which the multipart upload was initiated.',
+    }),
+    Initiated: InitiatedSchema.exactOptional().openapi({
+      description: 'Date and time at which the multipart upload was initiated.',
+    }),
+    StorageClass: StorageClassSchema.exactOptional().openapi({
+      description: 'The class of storage used to store the object.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description: 'Specifies the owner of the object that is part of the multipart upload. ',
+    }),
+    Initiator: InitiatorSchema.exactOptional().openapi({
+      description: 'Identifies who initiated the multipart upload.',
+    }),
+    ChecksumAlgorithm: ChecksumAlgorithmSchema.exactOptional().openapi({
+      description: 'The algorithm that was used to create a checksum of the object.',
+    }),
   })
   .openapi({
     description: 'Container for the <code>MultipartUpload</code> for the Amazon S3 object.',
@@ -3997,9 +3080,9 @@ const MultipartUploadListSchema = z
 
 const CommonPrefixSchema = z
   .object({
-    Prefix: PrefixSchema.and(
-      z.any().openapi({ description: 'Container for the specified common prefix.' }),
-    ).exactOptional(),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'Container for the specified common prefix.',
+    }),
   })
   .openapi({
     description:
@@ -4023,93 +3106,53 @@ const EncodingTypeSchema = z
 
 const ListMultipartUploadsOutputSchema = z
   .object({
-    Bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the bucket to which the multipart upload was initiated. Does not return the access point ARN or access point alias if used.',
-        }),
-    ).exactOptional(),
-    KeyMarker: KeyMarkerSchema.and(
-      z.any().openapi({ description: 'The key at or after which the listing began.' }),
-    ).exactOptional(),
-    UploadIdMarker: UploadIdMarkerSchema.and(
-      z.any().openapi({ description: 'Upload ID after which listing began.' }),
-    ).exactOptional(),
-    NextKeyMarker: NextKeyMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When a list is truncated, this element specifies the value that should be used for the key-marker request parameter in a subsequent request.',
-        }),
-    ).exactOptional(),
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When a prefix is provided in the request, this field contains the specified prefix. The result contains only keys starting with the specified prefix.',
-        }),
-    ).exactOptional(),
-    Delimiter: DelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Contains the delimiter you specified in the request. If you don't specify a delimiter in your request, this element is absent from the response.",
-        }),
-    ).exactOptional(),
-    NextUploadIdMarker: NextUploadIdMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When a list is truncated, this element specifies the value that should be used for the <code>upload-id-marker</code> request parameter in a subsequent request.',
-        }),
-    ).exactOptional(),
-    MaxUploads: MaxUploadsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of multipart uploads that could have been included in the response.',
-        }),
-    ).exactOptional(),
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the returned list of multipart uploads is truncated. A value of true indicates that the list was truncated. The list can be truncated if the number of multipart uploads exceeds the limit allowed or specified by max uploads.',
-        }),
-    ).exactOptional(),
-    Uploads: MultipartUploadListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Upload' },
-          description:
-            'Container for elements related to a particular multipart upload. A response can contain zero or more <code>Upload</code> elements.',
-        }),
-    ).exactOptional(),
-    CommonPrefixes: CommonPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a delimiter in the request, then the result returns each distinct key prefix containing the delimiter in a <code>CommonPrefixes</code> element. The distinct key prefixes are returned in the <code>Prefix</code> child element.',
-        }),
-    ).exactOptional(),
-    EncodingType: EncodingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Encoding type used by Amazon S3 to encode object keys in the response.</p> <p>If you specify the <code>encoding-type</code> request parameter, Amazon S3 includes this element in the response, and returns encoded key name values in the following response elements:</p> <p> <code>Delimiter</code>, <code>KeyMarker</code>, <code>Prefix</code>, <code>NextKeyMarker</code>, <code>Key</code>.</p>',
-        }),
-    ).exactOptional(),
+    Bucket: BucketNameSchema.exactOptional().openapi({
+      description:
+        'The name of the bucket to which the multipart upload was initiated. Does not return the access point ARN or access point alias if used.',
+    }),
+    KeyMarker: KeyMarkerSchema.exactOptional().openapi({
+      description: 'The key at or after which the listing began.',
+    }),
+    UploadIdMarker: UploadIdMarkerSchema.exactOptional().openapi({
+      description: 'Upload ID after which listing began.',
+    }),
+    NextKeyMarker: NextKeyMarkerSchema.exactOptional().openapi({
+      description:
+        'When a list is truncated, this element specifies the value that should be used for the key-marker request parameter in a subsequent request.',
+    }),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        'When a prefix is provided in the request, this field contains the specified prefix. The result contains only keys starting with the specified prefix.',
+    }),
+    Delimiter: DelimiterSchema.exactOptional().openapi({
+      description:
+        "Contains the delimiter you specified in the request. If you don't specify a delimiter in your request, this element is absent from the response.",
+    }),
+    NextUploadIdMarker: NextUploadIdMarkerSchema.exactOptional().openapi({
+      description:
+        'When a list is truncated, this element specifies the value that should be used for the <code>upload-id-marker</code> request parameter in a subsequent request.',
+    }),
+    MaxUploads: MaxUploadsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of multipart uploads that could have been included in the response.',
+    }),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the returned list of multipart uploads is truncated. A value of true indicates that the list was truncated. The list can be truncated if the number of multipart uploads exceeds the limit allowed or specified by max uploads.',
+    }),
+    Uploads: MultipartUploadListSchema.exactOptional().openapi({
+      xml: { name: 'Upload' },
+      description:
+        'Container for elements related to a particular multipart upload. A response can contain zero or more <code>Upload</code> elements.',
+    }),
+    CommonPrefixes: CommonPrefixListSchema.exactOptional().openapi({
+      description:
+        'If you specify a delimiter in the request, then the result returns each distinct key prefix containing the delimiter in a <code>CommonPrefixes</code> element. The distinct key prefixes are returned in the <code>Prefix</code> child element.',
+    }),
+    EncodingType: EncodingTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Encoding type used by Amazon S3 to encode object keys in the response.</p> <p>If you specify the <code>encoding-type</code> request parameter, Amazon S3 includes this element in the response, and returns encoded key name values in the following response elements:</p> <p> <code>Delimiter</code>, <code>KeyMarker</code>, <code>Prefix</code>, <code>NextKeyMarker</code>, <code>Key</code>.</p>',
+    }),
   })
   .openapi({
     example: {
@@ -4177,22 +3220,14 @@ const RestoreExpiryDateSchema = z.iso.datetime({ offset: true }).openapi('Restor
 
 const RestoreStatusSchema = z
   .object({
-    IsRestoreInProgress: IsRestoreInProgressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the object is currently being restored. If the object restoration is in progress, the header returns the value <code>TRUE</code>. For example:</p> <p> <code>x-amz-optional-object-attributes: IsRestoreInProgress="true"</code> </p> <p>If the object restoration has completed, the header returns the value <code>FALSE</code>. For example:</p> <p> <code>x-amz-optional-object-attributes: IsRestoreInProgress="false", RestoreExpiryDate="2012-12-21T00:00:00.000Z"</code> </p> <p>If the object hasn\'t been restored, there is no header response.</p>',
-        }),
-    ).exactOptional(),
-    RestoreExpiryDate: RestoreExpiryDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates when the restored copy will expire. This value is populated only if the object has already been restored. For example:</p> <p> <code>x-amz-optional-object-attributes: IsRestoreInProgress="false", RestoreExpiryDate="2012-12-21T00:00:00.000Z"</code> </p>',
-        }),
-    ).exactOptional(),
+    IsRestoreInProgress: IsRestoreInProgressSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the object is currently being restored. If the object restoration is in progress, the header returns the value <code>TRUE</code>. For example:</p> <p> <code>x-amz-optional-object-attributes: IsRestoreInProgress="true"</code> </p> <p>If the object restoration has completed, the header returns the value <code>FALSE</code>. For example:</p> <p> <code>x-amz-optional-object-attributes: IsRestoreInProgress="false", RestoreExpiryDate="2012-12-21T00:00:00.000Z"</code> </p> <p>If the object hasn\'t been restored, there is no header response.</p>',
+    }),
+    RestoreExpiryDate: RestoreExpiryDateSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates when the restored copy will expire. This value is populated only if the object has already been restored. For example:</p> <p> <code>x-amz-optional-object-attributes: IsRestoreInProgress="false", RestoreExpiryDate="2012-12-21T00:00:00.000Z"</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -4203,50 +3238,34 @@ const RestoreStatusSchema = z
 
 const ObjectVersionSchema = z
   .object({
-    ETag: ETagSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The entity tag is an MD5 hash of that version of the object.' }),
-    ).exactOptional(),
-    ChecksumAlgorithm: ChecksumAlgorithmListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The algorithm that was used to create a checksum of the object.',
-        }),
-    ).exactOptional(),
-    Size: SizeSchema.and(
-      z.any().openapi({ description: 'Size in bytes of the object.' }),
-    ).exactOptional(),
-    StorageClass: ObjectVersionStorageClassSchema.and(
-      z.any().openapi({ description: 'The class of storage used to store the object.' }),
-    ).exactOptional(),
-    Key: ObjectKeySchema.and(z.any().openapi({ description: 'The object key.' })).exactOptional(),
-    VersionId: ObjectVersionIdSchema.and(
-      z.any().openapi({ description: 'Version ID of an object.' }),
-    ).exactOptional(),
-    IsLatest: IsLatestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the object is (true) or is not (false) the latest version of an object.',
-        }),
-    ).exactOptional(),
-    LastModified: LastModifiedSchema.and(
-      z.any().openapi({ description: 'Date and time the object was last modified.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z.any().openapi({ description: 'Specifies the owner of the object.' }),
-    ).exactOptional(),
-    RestoreStatus: RestoreStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the restoration status of an object. Objects in certain storage classes must be restored before they can be retrieved. For more information about these storage classes and how to work with archived objects, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/archived-objects.html"> Working with archived objects</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    ETag: ETagSchema.exactOptional().openapi({
+      description: 'The entity tag is an MD5 hash of that version of the object.',
+    }),
+    ChecksumAlgorithm: ChecksumAlgorithmListSchema.exactOptional().openapi({
+      description: 'The algorithm that was used to create a checksum of the object.',
+    }),
+    Size: SizeSchema.exactOptional().openapi({ description: 'Size in bytes of the object.' }),
+    StorageClass: ObjectVersionStorageClassSchema.exactOptional().openapi({
+      description: 'The class of storage used to store the object.',
+    }),
+    Key: ObjectKeySchema.exactOptional().openapi({ description: 'The object key.' }),
+    VersionId: ObjectVersionIdSchema.exactOptional().openapi({
+      description: 'Version ID of an object.',
+    }),
+    IsLatest: IsLatestSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the object is (true) or is not (false) the latest version of an object.',
+    }),
+    LastModified: LastModifiedSchema.exactOptional().openapi({
+      description: 'Date and time the object was last modified.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description: 'Specifies the owner of the object.',
+    }),
+    RestoreStatus: RestoreStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the restoration status of an object. Objects in certain storage classes must be restored before they can be retrieved. For more information about these storage classes and how to work with archived objects, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/archived-objects.html"> Working with archived objects</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({ description: 'The version of an object.', required: [] })
   .openapi('ObjectVersion')
@@ -4258,24 +3277,20 @@ const ObjectVersionListSchema = z
 
 const DeleteMarkerEntrySchema = z
   .object({
-    Owner: OwnerSchema.and(
-      z.any().openapi({ description: 'The account that created the delete marker.&gt;' }),
-    ).exactOptional(),
-    Key: ObjectKeySchema.and(z.any().openapi({ description: 'The object key.' })).exactOptional(),
-    VersionId: ObjectVersionIdSchema.and(
-      z.any().openapi({ description: 'Version ID of an object.' }),
-    ).exactOptional(),
-    IsLatest: IsLatestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the object is (true) or is not (false) the latest version of an object.',
-        }),
-    ).exactOptional(),
-    LastModified: LastModifiedSchema.and(
-      z.any().openapi({ description: 'Date and time the object was last modified.' }),
-    ).exactOptional(),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description: 'The account that created the delete marker.&gt;',
+    }),
+    Key: ObjectKeySchema.exactOptional().openapi({ description: 'The object key.' }),
+    VersionId: ObjectVersionIdSchema.exactOptional().openapi({
+      description: 'Version ID of an object.',
+    }),
+    IsLatest: IsLatestSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the object is (true) or is not (false) the latest version of an object.',
+    }),
+    LastModified: LastModifiedSchema.exactOptional().openapi({
+      description: 'Date and time the object was last modified.',
+    }),
   })
   .openapi({ description: 'Information about the delete marker.', required: [] })
   .openapi('DeleteMarkerEntry')
@@ -4289,90 +3304,51 @@ const MaxKeysSchema = z.int().openapi('MaxKeys')
 
 const ListObjectVersionsOutputSchema = z
   .object({
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether Amazon S3 returned all of the results that satisfied the search criteria. If your results were truncated, you can make a follow-up paginated request by using the <code>NextKeyMarker</code> and <code>NextVersionIdMarker</code> response parameters as a starting place in another request to return the rest of the results.',
-        }),
-    ).exactOptional(),
-    KeyMarker: KeyMarkerSchema.and(
-      z.any().openapi({ description: 'Marks the last key returned in a truncated response.' }),
-    ).exactOptional(),
-    VersionIdMarker: VersionIdMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Marks the last version of the key returned in a truncated response.',
-        }),
-    ).exactOptional(),
-    NextKeyMarker: NextKeyMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the number of responses exceeds the value of <code>MaxKeys</code>, <code>NextKeyMarker</code> specifies the first key not returned that satisfies the search criteria. Use this value for the key-marker request parameter in a subsequent request.',
-        }),
-    ).exactOptional(),
-    NextVersionIdMarker: NextVersionIdMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the number of responses exceeds the value of <code>MaxKeys</code>, <code>NextVersionIdMarker</code> specifies the first object version not returned that satisfies the search criteria. Use this value for the <code>version-id-marker</code> request parameter in a subsequent request.',
-        }),
-    ).exactOptional(),
-    Versions: ObjectVersionListSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'Version' }, description: 'Container for version information.' }),
-    ).exactOptional(),
-    DeleteMarkers: DeleteMarkersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'DeleteMarker' },
-          description: 'Container for an object that is a delete marker.',
-        }),
-    ).exactOptional(),
-    Name: BucketNameSchema.and(
-      z.any().openapi({ description: 'The bucket name.' }),
-    ).exactOptional(),
-    Prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Selects objects that start with the value supplied by this parameter.',
-        }),
-    ).exactOptional(),
-    Delimiter: DelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The delimiter grouping the included keys. A delimiter is a character that you specify to group keys. All keys that contain the same string between the prefix and the first occurrence of the delimiter are grouped under a single result element in <code>CommonPrefixes</code>. These groups are counted as one result against the <code>max-keys</code> limitation. These keys are not returned elsewhere in the response.',
-        }),
-    ).exactOptional(),
-    MaxKeys: MaxKeysSchema.and(
-      z.any().openapi({ description: 'Specifies the maximum number of objects to return.' }),
-    ).exactOptional(),
-    CommonPrefixes: CommonPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'All of the keys rolled up into a common prefix count as a single return when calculating the number of returns.',
-        }),
-    ).exactOptional(),
-    EncodingType: EncodingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Encoding type used by Amazon S3 to encode object key names in the XML response.</p> <p>If you specify the <code>encoding-type</code> request parameter, Amazon S3 includes this element in the response, and returns encoded key name values in the following response elements:</p> <p> <code>KeyMarker, NextKeyMarker, Prefix, Key</code>, and <code>Delimiter</code>.</p>',
-        }),
-    ).exactOptional(),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether Amazon S3 returned all of the results that satisfied the search criteria. If your results were truncated, you can make a follow-up paginated request by using the <code>NextKeyMarker</code> and <code>NextVersionIdMarker</code> response parameters as a starting place in another request to return the rest of the results.',
+    }),
+    KeyMarker: KeyMarkerSchema.exactOptional().openapi({
+      description: 'Marks the last key returned in a truncated response.',
+    }),
+    VersionIdMarker: VersionIdMarkerSchema.exactOptional().openapi({
+      description: 'Marks the last version of the key returned in a truncated response.',
+    }),
+    NextKeyMarker: NextKeyMarkerSchema.exactOptional().openapi({
+      description:
+        'When the number of responses exceeds the value of <code>MaxKeys</code>, <code>NextKeyMarker</code> specifies the first key not returned that satisfies the search criteria. Use this value for the key-marker request parameter in a subsequent request.',
+    }),
+    NextVersionIdMarker: NextVersionIdMarkerSchema.exactOptional().openapi({
+      description:
+        'When the number of responses exceeds the value of <code>MaxKeys</code>, <code>NextVersionIdMarker</code> specifies the first object version not returned that satisfies the search criteria. Use this value for the <code>version-id-marker</code> request parameter in a subsequent request.',
+    }),
+    Versions: ObjectVersionListSchema.exactOptional().openapi({
+      xml: { name: 'Version' },
+      description: 'Container for version information.',
+    }),
+    DeleteMarkers: DeleteMarkersSchema.exactOptional().openapi({
+      xml: { name: 'DeleteMarker' },
+      description: 'Container for an object that is a delete marker.',
+    }),
+    Name: BucketNameSchema.exactOptional().openapi({ description: 'The bucket name.' }),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'Selects objects that start with the value supplied by this parameter.',
+    }),
+    Delimiter: DelimiterSchema.exactOptional().openapi({
+      description:
+        'The delimiter grouping the included keys. A delimiter is a character that you specify to group keys. All keys that contain the same string between the prefix and the first occurrence of the delimiter are grouped under a single result element in <code>CommonPrefixes</code>. These groups are counted as one result against the <code>max-keys</code> limitation. These keys are not returned elsewhere in the response.',
+    }),
+    MaxKeys: MaxKeysSchema.exactOptional().openapi({
+      description: 'Specifies the maximum number of objects to return.',
+    }),
+    CommonPrefixes: CommonPrefixListSchema.exactOptional().openapi({
+      description:
+        'All of the keys rolled up into a common prefix count as a single return when calculating the number of returns.',
+    }),
+    EncodingType: EncodingTypeSchema.exactOptional().openapi({
+      description:
+        '<p> Encoding type used by Amazon S3 to encode object key names in the XML response.</p> <p>If you specify the <code>encoding-type</code> request parameter, Amazon S3 includes this element in the response, and returns encoded key name values in the following response elements:</p> <p> <code>KeyMarker, NextKeyMarker, Prefix, Key</code>, and <code>Delimiter</code>.</p>',
+    }),
   })
   .openapi({
     example: {
@@ -4434,49 +3410,29 @@ const ObjectStorageClassSchema = z
 
 const ObjectSchema = z
   .object({
-    Key: ObjectKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that you assign to an object. You use the object key to retrieve the object.',
-        }),
-    ).exactOptional(),
-    LastModified: LastModifiedSchema.and(
-      z.any().openapi({ description: 'Creation date of the object.' }),
-    ).exactOptional(),
-    ETag: ETagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The entity tag is a hash of the object. The ETag reflects changes only to the contents of an object, not its metadata. The ETag may or may not be an MD5 digest of the object data. Whether or not it is depends on how the object was created and how it is encrypted as described below:</p> <ul> <li> <p>Objects created by the PUT Object, POST Object, or Copy operation, or through the Amazon Web Services Management Console, and are encrypted by SSE-S3 or plaintext, have ETags that are an MD5 digest of their object data.</p> </li> <li> <p>Objects created by the PUT Object, POST Object, or Copy operation, or through the Amazon Web Services Management Console, and are encrypted by SSE-C or SSE-KMS, have ETags that are not an MD5 digest of their object data.</p> </li> <li> <p>If an object is created by either the Multipart Upload or Part Copy operation, the ETag is not an MD5 digest, regardless of the method of encryption. If an object is larger than 16 MB, the Amazon Web Services Management Console will upload or copy that object as a Multipart Upload, and therefore the ETag will not be an MD5 digest.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ChecksumAlgorithm: ChecksumAlgorithmListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The algorithm that was used to create a checksum of the object.',
-        }),
-    ).exactOptional(),
-    Size: SizeSchema.and(
-      z.any().openapi({ description: 'Size in bytes of the object' }),
-    ).exactOptional(),
-    StorageClass: ObjectStorageClassSchema.and(
-      z.any().openapi({ description: 'The class of storage used to store the object.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z.any().openapi({ description: 'The owner of the object' }),
-    ).exactOptional(),
-    RestoreStatus: RestoreStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the restoration status of an object. Objects in certain storage classes must be restored before they can be retrieved. For more information about these storage classes and how to work with archived objects, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/archived-objects.html"> Working with archived objects</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Key: ObjectKeySchema.exactOptional().openapi({
+      description:
+        'The name that you assign to an object. You use the object key to retrieve the object.',
+    }),
+    LastModified: LastModifiedSchema.exactOptional().openapi({
+      description: 'Creation date of the object.',
+    }),
+    ETag: ETagSchema.exactOptional().openapi({
+      description:
+        '<p>The entity tag is a hash of the object. The ETag reflects changes only to the contents of an object, not its metadata. The ETag may or may not be an MD5 digest of the object data. Whether or not it is depends on how the object was created and how it is encrypted as described below:</p> <ul> <li> <p>Objects created by the PUT Object, POST Object, or Copy operation, or through the Amazon Web Services Management Console, and are encrypted by SSE-S3 or plaintext, have ETags that are an MD5 digest of their object data.</p> </li> <li> <p>Objects created by the PUT Object, POST Object, or Copy operation, or through the Amazon Web Services Management Console, and are encrypted by SSE-C or SSE-KMS, have ETags that are not an MD5 digest of their object data.</p> </li> <li> <p>If an object is created by either the Multipart Upload or Part Copy operation, the ETag is not an MD5 digest, regardless of the method of encryption. If an object is larger than 16 MB, the Amazon Web Services Management Console will upload or copy that object as a Multipart Upload, and therefore the ETag will not be an MD5 digest.</p> </li> </ul>',
+    }),
+    ChecksumAlgorithm: ChecksumAlgorithmListSchema.exactOptional().openapi({
+      description: 'The algorithm that was used to create a checksum of the object.',
+    }),
+    Size: SizeSchema.exactOptional().openapi({ description: 'Size in bytes of the object' }),
+    StorageClass: ObjectStorageClassSchema.exactOptional().openapi({
+      description: 'The class of storage used to store the object.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({ description: 'The owner of the object' }),
+    RestoreStatus: RestoreStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the restoration status of an object. Objects in certain storage classes must be restored before they can be retrieved. For more information about these storage classes and how to work with archived objects, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/archived-objects.html"> Working with archived objects</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({
     description: 'An object consists of data and its descriptive metadata.',
@@ -4491,65 +3447,39 @@ const ObjectListSchema = z
 
 const ListObjectsOutputSchema = z
   .object({
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether Amazon S3 returned all of the results that satisfied the search criteria.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates where in the bucket listing begins. Marker is included in the response if it was sent with the request.',
-        }),
-    ).exactOptional(),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When the response is truncated (the <code>IsTruncated</code> element value in the response is <code>true</code>), you can use the key name in this field as the <code>marker</code> parameter in the subsequent request to get the next set of objects. Amazon S3 lists objects in alphabetical order. </p> <note> <p>This element is returned only if you have the <code>delimiter</code> request parameter specified. If the response does not include the <code>NextMarker</code> element and it is truncated, you can use the value of the last <code>Key</code> element in the response as the <code>marker</code> parameter in the subsequent request to get the next set of object keys.</p> </note>',
-        }),
-    ).exactOptional(),
-    Contents: ObjectListSchema.and(
-      z.any().openapi({ description: 'Metadata about each object returned.' }),
-    ).exactOptional(),
-    Name: BucketNameSchema.and(
-      z.any().openapi({ description: 'The bucket name.' }),
-    ).exactOptional(),
-    Prefix: PrefixSchema.and(
-      z.any().openapi({ description: 'Keys that begin with the indicated prefix.' }),
-    ).exactOptional(),
-    Delimiter: DelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Causes keys that contain the same string between the prefix and the first occurrence of the delimiter to be rolled up into a single result element in the <code>CommonPrefixes</code> collection. These rolled-up keys are not returned elsewhere in the response. Each rolled-up result counts as only one return against the <code>MaxKeys</code> value.',
-        }),
-    ).exactOptional(),
-    MaxKeys: MaxKeysSchema.and(
-      z.any().openapi({ description: 'The maximum number of keys returned in the response body.' }),
-    ).exactOptional(),
-    CommonPrefixes: CommonPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>All of the keys (up to 1,000) rolled up in a common prefix count as a single return when calculating the number of returns. </p> <p>A response can contain <code>CommonPrefixes</code> only if you specify a delimiter.</p> <p> <code>CommonPrefixes</code> contains all (if there are any) keys between <code>Prefix</code> and the next occurrence of the string specified by the delimiter.</p> <p> <code>CommonPrefixes</code> lists keys that act like subdirectories in the directory specified by <code>Prefix</code>.</p> <p>For example, if the prefix is <code>notes/</code> and the delimiter is a slash (<code>/</code>), as in <code>notes/summer/july</code>, the common prefix is <code>notes/summer/</code>. All of the keys that roll up into a common prefix count as a single return when calculating the number of returns.</p>',
-        }),
-    ).exactOptional(),
-    EncodingType: EncodingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Encoding type used by Amazon S3 to encode object keys in the response.',
-        }),
-    ).exactOptional(),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether Amazon S3 returned all of the results that satisfied the search criteria.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'Indicates where in the bucket listing begins. Marker is included in the response if it was sent with the request.',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        '<p>When the response is truncated (the <code>IsTruncated</code> element value in the response is <code>true</code>), you can use the key name in this field as the <code>marker</code> parameter in the subsequent request to get the next set of objects. Amazon S3 lists objects in alphabetical order. </p> <note> <p>This element is returned only if you have the <code>delimiter</code> request parameter specified. If the response does not include the <code>NextMarker</code> element and it is truncated, you can use the value of the last <code>Key</code> element in the response as the <code>marker</code> parameter in the subsequent request to get the next set of object keys.</p> </note>',
+    }),
+    Contents: ObjectListSchema.exactOptional().openapi({
+      description: 'Metadata about each object returned.',
+    }),
+    Name: BucketNameSchema.exactOptional().openapi({ description: 'The bucket name.' }),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: 'Keys that begin with the indicated prefix.',
+    }),
+    Delimiter: DelimiterSchema.exactOptional().openapi({
+      description:
+        'Causes keys that contain the same string between the prefix and the first occurrence of the delimiter to be rolled up into a single result element in the <code>CommonPrefixes</code> collection. These rolled-up keys are not returned elsewhere in the response. Each rolled-up result counts as only one return against the <code>MaxKeys</code> value.',
+    }),
+    MaxKeys: MaxKeysSchema.exactOptional().openapi({
+      description: 'The maximum number of keys returned in the response body.',
+    }),
+    CommonPrefixes: CommonPrefixListSchema.exactOptional().openapi({
+      description:
+        '<p>All of the keys (up to 1,000) rolled up in a common prefix count as a single return when calculating the number of returns. </p> <p>A response can contain <code>CommonPrefixes</code> only if you specify a delimiter.</p> <p> <code>CommonPrefixes</code> contains all (if there are any) keys between <code>Prefix</code> and the next occurrence of the string specified by the delimiter.</p> <p> <code>CommonPrefixes</code> lists keys that act like subdirectories in the directory specified by <code>Prefix</code>.</p> <p>For example, if the prefix is <code>notes/</code> and the delimiter is a slash (<code>/</code>), as in <code>notes/summer/july</code>, the common prefix is <code>notes/summer/</code>. All of the keys that roll up into a common prefix count as a single return when calculating the number of returns.</p>',
+    }),
+    EncodingType: EncodingTypeSchema.exactOptional().openapi({
+      description: 'Encoding type used by Amazon S3 to encode object keys in the response.',
+    }),
   })
   .openapi({
     example: {
@@ -4589,91 +3519,51 @@ const StartAfterSchema = z.string().openapi('StartAfter')
 
 const ListObjectsV2OutputSchema = z
   .object({
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>false</code> if all of the results were returned. Set to <code>true</code> if more keys are available to return. If the number of results exceeds that specified by <code>MaxKeys</code>, all of the results might not be returned.',
-        }),
-    ).exactOptional(),
-    Contents: ObjectListSchema.and(
-      z.any().openapi({ description: 'Metadata about each object returned.' }),
-    ).exactOptional(),
-    Name: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The bucket name.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html">What is S3 on Outposts?</a> in the <i>Amazon S3 User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Prefix: PrefixSchema.and(
-      z.any().openapi({ description: ' Keys that begin with the indicated prefix.' }),
-    ).exactOptional(),
-    Delimiter: DelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Causes keys that contain the same string between the <code>prefix</code> and the first occurrence of the delimiter to be rolled up into a single result element in the <code>CommonPrefixes</code> collection. These rolled-up keys are not returned elsewhere in the response. Each rolled-up result counts as only one return against the <code>MaxKeys</code> value.',
-        }),
-    ).exactOptional(),
-    MaxKeys: MaxKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the maximum number of keys returned in the response. By default, the action returns up to 1,000 key names. The response might contain fewer keys but will never contain more.',
-        }),
-    ).exactOptional(),
-    CommonPrefixes: CommonPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>All of the keys (up to 1,000) rolled up into a common prefix count as a single return when calculating the number of returns.</p> <p>A response can contain <code>CommonPrefixes</code> only if you specify a delimiter.</p> <p> <code>CommonPrefixes</code> contains all (if there are any) keys between <code>Prefix</code> and the next occurrence of the string specified by a delimiter.</p> <p> <code>CommonPrefixes</code> lists keys that act like subdirectories in the directory specified by <code>Prefix</code>.</p> <p>For example, if the prefix is <code>notes/</code> and the delimiter is a slash (<code>/</code>) as in <code>notes/summer/july</code>, the common prefix is <code>notes/summer/</code>. All of the keys that roll up into a common prefix count as a single return when calculating the number of returns. </p>',
-        }),
-    ).exactOptional(),
-    EncodingType: EncodingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Encoding type used by Amazon S3 to encode object key names in the XML response.</p> <p>If you specify the <code>encoding-type</code> request parameter, Amazon S3 includes this element in the response, and returns encoded key name values in the following response elements:</p> <p> <code>Delimiter, Prefix, Key,</code> and <code>StartAfter</code>.</p>',
-        }),
-    ).exactOptional(),
-    KeyCount: KeyCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>KeyCount</code> is the number of keys returned with this request. <code>KeyCount</code> will always be less than or equal to the <code>MaxKeys</code> field. For example, if you ask for 50 keys, your result will include 50 keys or fewer.',
-        }),
-    ).exactOptional(),
-    ContinuationToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If <code>ContinuationToken</code> was sent with the request, it is included in the response.',
-        }),
-    ).exactOptional(),
-    NextContinuationToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>NextContinuationToken</code> is sent when <code>isTruncated</code> is true, which means there are more keys in the bucket that can be listed. The next list requests to Amazon S3 can be continued with this <code>NextContinuationToken</code>. <code>NextContinuationToken</code> is obfuscated and is not a real key',
-        }),
-    ).exactOptional(),
-    StartAfter: StartAfterSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If StartAfter was sent with the request, it is included in the response.',
-        }),
-    ).exactOptional(),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        'Set to <code>false</code> if all of the results were returned. Set to <code>true</code> if more keys are available to return. If the number of results exceeds that specified by <code>MaxKeys</code>, all of the results might not be returned.',
+    }),
+    Contents: ObjectListSchema.exactOptional().openapi({
+      description: 'Metadata about each object returned.',
+    }),
+    Name: BucketNameSchema.exactOptional().openapi({
+      description:
+        '<p>The bucket name.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html">What is S3 on Outposts?</a> in the <i>Amazon S3 User Guide</i>.</p>',
+    }),
+    Prefix: PrefixSchema.exactOptional().openapi({
+      description: ' Keys that begin with the indicated prefix.',
+    }),
+    Delimiter: DelimiterSchema.exactOptional().openapi({
+      description:
+        'Causes keys that contain the same string between the <code>prefix</code> and the first occurrence of the delimiter to be rolled up into a single result element in the <code>CommonPrefixes</code> collection. These rolled-up keys are not returned elsewhere in the response. Each rolled-up result counts as only one return against the <code>MaxKeys</code> value.',
+    }),
+    MaxKeys: MaxKeysSchema.exactOptional().openapi({
+      description:
+        'Sets the maximum number of keys returned in the response. By default, the action returns up to 1,000 key names. The response might contain fewer keys but will never contain more.',
+    }),
+    CommonPrefixes: CommonPrefixListSchema.exactOptional().openapi({
+      description:
+        '<p>All of the keys (up to 1,000) rolled up into a common prefix count as a single return when calculating the number of returns.</p> <p>A response can contain <code>CommonPrefixes</code> only if you specify a delimiter.</p> <p> <code>CommonPrefixes</code> contains all (if there are any) keys between <code>Prefix</code> and the next occurrence of the string specified by a delimiter.</p> <p> <code>CommonPrefixes</code> lists keys that act like subdirectories in the directory specified by <code>Prefix</code>.</p> <p>For example, if the prefix is <code>notes/</code> and the delimiter is a slash (<code>/</code>) as in <code>notes/summer/july</code>, the common prefix is <code>notes/summer/</code>. All of the keys that roll up into a common prefix count as a single return when calculating the number of returns. </p>',
+    }),
+    EncodingType: EncodingTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Encoding type used by Amazon S3 to encode object key names in the XML response.</p> <p>If you specify the <code>encoding-type</code> request parameter, Amazon S3 includes this element in the response, and returns encoded key name values in the following response elements:</p> <p> <code>Delimiter, Prefix, Key,</code> and <code>StartAfter</code>.</p>',
+    }),
+    KeyCount: KeyCountSchema.exactOptional().openapi({
+      description:
+        ' <code>KeyCount</code> is the number of keys returned with this request. <code>KeyCount</code> will always be less than or equal to the <code>MaxKeys</code> field. For example, if you ask for 50 keys, your result will include 50 keys or fewer.',
+    }),
+    ContinuationToken: TokenSchema.exactOptional().openapi({
+      description:
+        ' If <code>ContinuationToken</code> was sent with the request, it is included in the response.',
+    }),
+    NextContinuationToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' <code>NextContinuationToken</code> is sent when <code>isTruncated</code> is true, which means there are more keys in the bucket that can be listed. The next list requests to Amazon S3 can be continued with this <code>NextContinuationToken</code>. <code>NextContinuationToken</code> is obfuscated and is not a real key',
+    }),
+    StartAfter: StartAfterSchema.exactOptional().openapi({
+      description: 'If StartAfter was sent with the request, it is included in the response.',
+    }),
   })
   .openapi({
     example: {
@@ -4706,55 +3596,35 @@ const ListObjectsV2OutputSchema = z
 
 const PartSchema = z
   .object({
-    PartNumber: PartNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part number identifying the part. This is a positive integer between 1 and 10,000.',
-        }),
-    ).exactOptional(),
-    LastModified: LastModifiedSchema.and(
-      z.any().openapi({ description: 'Date and time at which the part was uploaded.' }),
-    ).exactOptional(),
-    ETag: ETagSchema.and(
-      z.any().openapi({ description: 'Entity tag returned when the part was uploaded.' }),
-    ).exactOptional(),
-    Size: SizeSchema.and(
-      z.any().openapi({ description: 'Size in bytes of the uploaded part data.' }),
-    ).exactOptional(),
-    ChecksumCRC32: ChecksumCRC32Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumCRC32C: ChecksumCRC32CSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA1: ChecksumSHA1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA256: ChecksumSHA256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 256-bit SHA-256 digest of the object. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    PartNumber: PartNumberSchema.exactOptional().openapi({
+      description:
+        'Part number identifying the part. This is a positive integer between 1 and 10,000.',
+    }),
+    LastModified: LastModifiedSchema.exactOptional().openapi({
+      description: 'Date and time at which the part was uploaded.',
+    }),
+    ETag: ETagSchema.exactOptional().openapi({
+      description: 'Entity tag returned when the part was uploaded.',
+    }),
+    Size: SizeSchema.exactOptional().openapi({
+      description: 'Size in bytes of the uploaded part data.',
+    }),
+    ChecksumCRC32: ChecksumCRC32Schema.exactOptional().openapi({
+      description:
+        'This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 32-bit CRC32 checksum of the object. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumCRC32C: ChecksumCRC32CSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA1: ChecksumSHA1Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA256: ChecksumSHA256Schema.exactOptional().openapi({
+      description:
+        'This header can be used as a data integrity check to verify that the data received is the same data that was originally sent. This header specifies the base64-encoded, 256-bit SHA-256 digest of the object. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html">Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({ description: 'Container for elements related to a part.', required: [] })
   .openapi('Part')
@@ -4766,93 +3636,51 @@ const PartsSchema = z
 
 const ListPartsOutputSchema = z
   .object({
-    Bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the bucket to which the multipart upload was initiated. Does not return the access point ARN or access point alias if used.',
-        }),
-    ).exactOptional(),
-    Key: ObjectKeySchema.and(
-      z.any().openapi({ description: 'Object key for which the multipart upload was initiated.' }),
-    ).exactOptional(),
-    UploadId: MultipartUploadIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Upload ID identifying the multipart upload whose parts are being listed.',
-        }),
-    ).exactOptional(),
-    PartNumberMarker: PartNumberMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When a list is truncated, this element specifies the last part in the list, as well as the value to use for the part-number-marker request parameter in a subsequent request.',
-        }),
-    ).exactOptional(),
-    NextPartNumberMarker: NextPartNumberMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When a list is truncated, this element specifies the last part in the list, as well as the value to use for the <code>part-number-marker</code> request parameter in a subsequent request.',
-        }),
-    ).exactOptional(),
-    MaxParts: MaxPartsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Maximum number of parts that were allowed in the response.' }),
-    ).exactOptional(),
-    IsTruncated: IsTruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether the returned list of parts is truncated. A true value indicates that the list was truncated. A list can be truncated if the number of parts exceeds the limit returned in the MaxParts element.',
-        }),
-    ).exactOptional(),
-    Parts: PartsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Part' },
-          description:
-            ' Container for elements related to a particular part. A response can contain zero or more <code>Part</code> elements.',
-        }),
-    ).exactOptional(),
-    Initiator: InitiatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Container element that identifies who initiated the multipart upload. If the initiator is an Amazon Web Services account, this element provides the same information as the <code>Owner</code> element. If the initiator is an IAM User, this element provides the user ARN and display name.',
-        }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Container element that identifies the object owner, after the object is created. If multipart upload is initiated by an IAM user, this element provides the parent account ID and display name.',
-        }),
-    ).exactOptional(),
-    StorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Class of storage (STANDARD or REDUCED_REDUNDANCY) used to store the uploaded object.',
-        }),
-    ).exactOptional(),
-    ChecksumAlgorithm: ChecksumAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The algorithm that was used to create a checksum of the object.',
-        }),
-    ).exactOptional(),
+    Bucket: BucketNameSchema.exactOptional().openapi({
+      description:
+        'The name of the bucket to which the multipart upload was initiated. Does not return the access point ARN or access point alias if used.',
+    }),
+    Key: ObjectKeySchema.exactOptional().openapi({
+      description: 'Object key for which the multipart upload was initiated.',
+    }),
+    UploadId: MultipartUploadIdSchema.exactOptional().openapi({
+      description: 'Upload ID identifying the multipart upload whose parts are being listed.',
+    }),
+    PartNumberMarker: PartNumberMarkerSchema.exactOptional().openapi({
+      description:
+        'When a list is truncated, this element specifies the last part in the list, as well as the value to use for the part-number-marker request parameter in a subsequent request.',
+    }),
+    NextPartNumberMarker: NextPartNumberMarkerSchema.exactOptional().openapi({
+      description:
+        'When a list is truncated, this element specifies the last part in the list, as well as the value to use for the <code>part-number-marker</code> request parameter in a subsequent request.',
+    }),
+    MaxParts: MaxPartsSchema.exactOptional().openapi({
+      description: 'Maximum number of parts that were allowed in the response.',
+    }),
+    IsTruncated: IsTruncatedSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether the returned list of parts is truncated. A true value indicates that the list was truncated. A list can be truncated if the number of parts exceeds the limit returned in the MaxParts element.',
+    }),
+    Parts: PartsSchema.exactOptional().openapi({
+      xml: { name: 'Part' },
+      description:
+        ' Container for elements related to a particular part. A response can contain zero or more <code>Part</code> elements.',
+    }),
+    Initiator: InitiatorSchema.exactOptional().openapi({
+      description:
+        'Container element that identifies who initiated the multipart upload. If the initiator is an Amazon Web Services account, this element provides the same information as the <code>Owner</code> element. If the initiator is an IAM User, this element provides the user ARN and display name.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description:
+        ' Container element that identifies the object owner, after the object is created. If multipart upload is initiated by an IAM user, this element provides the parent account ID and display name.',
+    }),
+    StorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        'Class of storage (STANDARD or REDUCED_REDUNDANCY) used to store the uploaded object.',
+    }),
+    ChecksumAlgorithm: ChecksumAlgorithmSchema.exactOptional().openapi({
+      description: 'The algorithm that was used to create a checksum of the object.',
+    }),
   })
   .openapi({
     example: {
@@ -4887,7 +3715,7 @@ const ListPartsOutputSchema = z
 const MFADeleteSchema = z.enum(['Enabled', 'Disabled']).openapi('MFADelete')
 
 const PutObjectOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: {
       ETag: '"6805f2cfc46c0f04559748bb039d69ae"',
@@ -4896,23 +3724,26 @@ const PutObjectOutputSchema = z
   })
   .openapi('PutObjectOutput')
 
-const PutObjectAclOutputSchema = z.object({}).openapi({ example: {} }).openapi('PutObjectAclOutput')
+const PutObjectAclOutputSchema = z
+  .looseObject({})
+  .openapi({ example: {} })
+  .openapi('PutObjectAclOutput')
 
-const PutObjectLegalHoldOutputSchema = z.object({}).openapi('PutObjectLegalHoldOutput')
+const PutObjectLegalHoldOutputSchema = z.looseObject({}).openapi('PutObjectLegalHoldOutput')
 
 const PutObjectLockConfigurationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutObjectLockConfigurationOutput')
 
-const PutObjectRetentionOutputSchema = z.object({}).openapi('PutObjectRetentionOutput')
+const PutObjectRetentionOutputSchema = z.looseObject({}).openapi('PutObjectRetentionOutput')
 
 const PutObjectTaggingOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: { VersionId: 'null' } })
   .openapi('PutObjectTaggingOutput')
 
 const RestoreObjectOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('RestoreObjectOutput')
 
@@ -4920,9 +3751,9 @@ const TierSchema = z.enum(['Standard', 'Bulk', 'Expedited']).openapi('Tier')
 
 const GlacierJobParametersSchema = z
   .object({
-    Tier: TierSchema.and(
-      z.any().openapi({ description: 'Retrieval tier at which the restore will be processed.' }),
-    ),
+    Tier: TierSchema.openapi({
+      description: 'Retrieval tier at which the restore will be processed.',
+    }),
   })
   .openapi({ required: ['Tier'], description: 'Container for S3 Glacier job parameters.' })
   .openapi('GlacierJobParameters')
@@ -4947,62 +3778,34 @@ const AllowQuotedRecordDelimiterSchema = z.boolean().openapi('AllowQuotedRecordD
 
 const CSVInputSchema = z
   .object({
-    FileHeaderInfo: FileHeaderInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the first line of input. Valid values are:</p> <ul> <li> <p> <code>NONE</code>: First line is not a header.</p> </li> <li> <p> <code>IGNORE</code>: First line is a header, but you can\'t use the header values to indicate the column in an expression. You can use column position (such as _1, _2, …) to indicate the column (<code>SELECT s._1 FROM OBJECT s</code>).</p> </li> <li> <p> <code>Use</code>: First line is a header, and you can use the header value to identify a column in an expression (<code>SELECT "name" FROM OBJECT</code>). </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Comments: CommentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A single character used to indicate that a row should be ignored when the character is present at the start of that row. You can specify any character to indicate a comment line. The default character is <code>#</code>.</p> <p>Default: <code>#</code> </p>',
-        }),
-    ).exactOptional(),
-    QuoteEscapeCharacter: QuoteEscapeCharacterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character used for escaping the quotation mark character inside an already escaped value. For example, the value <code>""" a , b """</code> is parsed as <code>" a , b "</code>.',
-        }),
-    ).exactOptional(),
-    RecordDelimiter: RecordDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character used to separate individual records in the input. Instead of the default value, you can specify an arbitrary delimiter.',
-        }),
-    ).exactOptional(),
-    FieldDelimiter: FieldDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character used to separate individual fields in a record. You can specify an arbitrary delimiter.',
-        }),
-    ).exactOptional(),
-    QuoteCharacter: QuoteCharacterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A single character used for escaping when the field delimiter is part of the value. For example, if the value is <code>a, b</code>, Amazon S3 wraps this field value in quotation marks, as follows: <code>" a , b "</code>.</p> <p>Type: String</p> <p>Default: <code>"</code> </p> <p>Ancestors: <code>CSV</code> </p>',
-        }),
-    ).exactOptional(),
-    AllowQuotedRecordDelimiter: AllowQuotedRecordDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that CSV field values may contain quoted record delimiters and such records should be allowed. Default value is FALSE. Setting this value to TRUE may lower performance.',
-        }),
-    ).exactOptional(),
+    FileHeaderInfo: FileHeaderInfoSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the first line of input. Valid values are:</p> <ul> <li> <p> <code>NONE</code>: First line is not a header.</p> </li> <li> <p> <code>IGNORE</code>: First line is a header, but you can\'t use the header values to indicate the column in an expression. You can use column position (such as _1, _2, …) to indicate the column (<code>SELECT s._1 FROM OBJECT s</code>).</p> </li> <li> <p> <code>Use</code>: First line is a header, and you can use the header value to identify a column in an expression (<code>SELECT "name" FROM OBJECT</code>). </p> </li> </ul>',
+    }),
+    Comments: CommentsSchema.exactOptional().openapi({
+      description:
+        '<p>A single character used to indicate that a row should be ignored when the character is present at the start of that row. You can specify any character to indicate a comment line. The default character is <code>#</code>.</p> <p>Default: <code>#</code> </p>',
+    }),
+    QuoteEscapeCharacter: QuoteEscapeCharacterSchema.exactOptional().openapi({
+      description:
+        'A single character used for escaping the quotation mark character inside an already escaped value. For example, the value <code>""" a , b """</code> is parsed as <code>" a , b "</code>.',
+    }),
+    RecordDelimiter: RecordDelimiterSchema.exactOptional().openapi({
+      description:
+        'A single character used to separate individual records in the input. Instead of the default value, you can specify an arbitrary delimiter.',
+    }),
+    FieldDelimiter: FieldDelimiterSchema.exactOptional().openapi({
+      description:
+        'A single character used to separate individual fields in a record. You can specify an arbitrary delimiter.',
+    }),
+    QuoteCharacter: QuoteCharacterSchema.exactOptional().openapi({
+      description:
+        '<p>A single character used for escaping when the field delimiter is part of the value. For example, if the value is <code>a, b</code>, Amazon S3 wraps this field value in quotation marks, as follows: <code>" a , b "</code>.</p> <p>Type: String</p> <p>Default: <code>"</code> </p> <p>Ancestors: <code>CSV</code> </p>',
+    }),
+    AllowQuotedRecordDelimiter: AllowQuotedRecordDelimiterSchema.exactOptional().openapi({
+      description:
+        'Specifies that CSV field values may contain quoted record delimiters and such records should be allowed. Default value is FALSE. Setting this value to TRUE may lower performance.',
+    }),
   })
   .openapi({
     description:
@@ -5017,37 +3820,33 @@ const JSONTypeSchema = z.enum(['DOCUMENT', 'LINES']).openapi('JSONType')
 
 const JSONInputSchema = z
   .object({
-    Type: JSONTypeSchema.and(
-      z.any().openapi({ description: 'The type of JSON. Valid values: Document, Lines.' }),
-    ).exactOptional(),
+    Type: JSONTypeSchema.exactOptional().openapi({
+      description: 'The type of JSON. Valid values: Document, Lines.',
+    }),
   })
   .openapi({ description: "Specifies JSON as object's input serialization format.", required: [] })
   .openapi('JSONInput')
 
 const ParquetInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Container for Parquet.' })
   .openapi('ParquetInput')
 
 const InputSerializationSchema = z
   .object({
-    CSV: CSVInputSchema.and(
-      z.any().openapi({ description: 'Describes the serialization of a CSV-encoded object.' }),
-    ).exactOptional(),
-    CompressionType: CompressionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies object's compression format. Valid values: NONE, GZIP, BZIP2. Default Value: NONE.",
-        }),
-    ).exactOptional(),
-    JSON: JSONInputSchema.and(
-      z.any().openapi({ description: "Specifies JSON as object's input serialization format." }),
-    ).exactOptional(),
-    Parquet: ParquetInputSchema.and(
-      z.any().openapi({ description: "Specifies Parquet as object's input serialization format." }),
-    ).exactOptional(),
+    CSV: CSVInputSchema.exactOptional().openapi({
+      description: 'Describes the serialization of a CSV-encoded object.',
+    }),
+    CompressionType: CompressionTypeSchema.exactOptional().openapi({
+      description:
+        "Specifies object's compression format. Valid values: NONE, GZIP, BZIP2. Default Value: NONE.",
+    }),
+    JSON: JSONInputSchema.exactOptional().openapi({
+      description: "Specifies JSON as object's input serialization format.",
+    }),
+    Parquet: ParquetInputSchema.exactOptional().openapi({
+      description: "Specifies Parquet as object's input serialization format.",
+    }),
   })
   .openapi({ description: 'Describes the serialization format of the object.', required: [] })
   .openapi('InputSerialization')
@@ -5060,46 +3859,26 @@ const QuoteFieldsSchema = z.enum(['ALWAYS', 'ASNEEDED']).openapi('QuoteFields')
 
 const CSVOutputSchema = z
   .object({
-    QuoteFields: QuoteFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to use quotation marks around output fields. </p> <ul> <li> <p> <code>ALWAYS</code>: Always use quotation marks for output fields.</p> </li> <li> <p> <code>ASNEEDED</code>: Use quotation marks for output fields when needed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    QuoteEscapeCharacter: QuoteEscapeCharacterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The single character used for escaping the quote character inside an already escaped value.',
-        }),
-    ).exactOptional(),
-    RecordDelimiter: RecordDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character used to separate individual records in the output. Instead of the default value, you can specify an arbitrary delimiter.',
-        }),
-    ).exactOptional(),
-    FieldDelimiter: FieldDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value used to separate individual fields in a record. You can specify an arbitrary delimiter.',
-        }),
-    ).exactOptional(),
-    QuoteCharacter: QuoteCharacterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character used for escaping when the field delimiter is part of the value. For example, if the value is <code>a, b</code>, Amazon S3 wraps this field value in quotation marks, as follows: <code>" a , b "</code>.',
-        }),
-    ).exactOptional(),
+    QuoteFields: QuoteFieldsSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to use quotation marks around output fields. </p> <ul> <li> <p> <code>ALWAYS</code>: Always use quotation marks for output fields.</p> </li> <li> <p> <code>ASNEEDED</code>: Use quotation marks for output fields when needed.</p> </li> </ul>',
+    }),
+    QuoteEscapeCharacter: QuoteEscapeCharacterSchema.exactOptional().openapi({
+      description:
+        'The single character used for escaping the quote character inside an already escaped value.',
+    }),
+    RecordDelimiter: RecordDelimiterSchema.exactOptional().openapi({
+      description:
+        'A single character used to separate individual records in the output. Instead of the default value, you can specify an arbitrary delimiter.',
+    }),
+    FieldDelimiter: FieldDelimiterSchema.exactOptional().openapi({
+      description:
+        'The value used to separate individual fields in a record. You can specify an arbitrary delimiter.',
+    }),
+    QuoteCharacter: QuoteCharacterSchema.exactOptional().openapi({
+      description:
+        'A single character used for escaping when the field delimiter is part of the value. For example, if the value is <code>a, b</code>, Amazon S3 wraps this field value in quotation marks, as follows: <code>" a , b "</code>.',
+    }),
   })
   .openapi({
     description:
@@ -5110,14 +3889,10 @@ const CSVOutputSchema = z
 
 const JSONOutputSchema = z
   .object({
-    RecordDelimiter: RecordDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The value used to separate individual records in the output. If no value is specified, Amazon S3 uses a newline character ('\\n').",
-        }),
-    ).exactOptional(),
+    RecordDelimiter: RecordDelimiterSchema.exactOptional().openapi({
+      description:
+        "The value used to separate individual records in the output. If no value is specified, Amazon S3 uses a newline character ('\\n').",
+    }),
   })
   .openapi({
     description: "Specifies JSON as request's output serialization format.",
@@ -5127,34 +3902,30 @@ const JSONOutputSchema = z
 
 const OutputSerializationSchema = z
   .object({
-    CSV: CSVOutputSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the serialization of CSV-encoded Select results.' }),
-    ).exactOptional(),
-    JSON: JSONOutputSchema.and(
-      z.any().openapi({ description: "Specifies JSON as request's output serialization format." }),
-    ).exactOptional(),
+    CSV: CSVOutputSchema.exactOptional().openapi({
+      description: 'Describes the serialization of CSV-encoded Select results.',
+    }),
+    JSON: JSONOutputSchema.exactOptional().openapi({
+      description: "Specifies JSON as request's output serialization format.",
+    }),
   })
   .openapi({ description: 'Describes how results of the Select job are serialized.', required: [] })
   .openapi('OutputSerialization')
 
 const SelectParametersSchema = z
   .object({
-    InputSerialization: InputSerializationSchema.and(
-      z.any().openapi({ description: 'Describes the serialization format of the object.' }),
-    ),
-    ExpressionType: ExpressionTypeSchema.and(
-      z.any().openapi({ description: 'The type of the provided expression (for example, SQL).' }),
-    ),
-    Expression: ExpressionSchema.and(
-      z.any().openapi({ description: 'The expression that is used to query the object.' }),
-    ),
-    OutputSerialization: OutputSerializationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes how the results of the Select job are serialized.' }),
-    ),
+    InputSerialization: InputSerializationSchema.openapi({
+      description: 'Describes the serialization format of the object.',
+    }),
+    ExpressionType: ExpressionTypeSchema.openapi({
+      description: 'The type of the provided expression (for example, SQL).',
+    }),
+    Expression: ExpressionSchema.openapi({
+      description: 'The expression that is used to query the object.',
+    }),
+    OutputSerialization: OutputSerializationSchema.openapi({
+      description: 'Describes how the results of the Select job are serialized.',
+    }),
   })
   .openapi({
     required: ['InputSerialization', 'ExpressionType', 'Expression', 'OutputSerialization'],
@@ -5164,40 +3935,27 @@ const SelectParametersSchema = z
 
 const LocationPrefixSchema = z.string().openapi('LocationPrefix')
 
-const EncryptionSchema: z.ZodType<EncryptionType> = z
-  .lazy(() =>
-    z
-      .object({
-        EncryptionType: ServerSideEncryptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The server-side encryption algorithm used when storing job results in Amazon S3 (for example, AES256, <code>aws:kms</code>).',
-            }),
-        ),
-        KMSKeyId: SSEKMSKeyIdSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'If the encryption type is <code>aws:kms</code>, this optional value specifies the ID of the symmetric encryption customer managed key to use for encryption of job results. Amazon S3 only supports symmetric encryption KMS keys. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Asymmetric keys in KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.',
-            }),
-        ).exactOptional(),
-        KMSContext: KMSContextSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'If the encryption type is <code>aws:kms</code>, this optional value can be used to specify the encryption context for the restore results.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['EncryptionType'],
-        description: 'Contains the type of server-side encryption used.',
-      }),
-  )
+const KMSContextSchema = z.string().openapi('KMSContext')
+
+const EncryptionSchema = z
+  .object({
+    EncryptionType: ServerSideEncryptionSchema.openapi({
+      description:
+        'The server-side encryption algorithm used when storing job results in Amazon S3 (for example, AES256, <code>aws:kms</code>).',
+    }),
+    KMSKeyId: SSEKMSKeyIdSchema.exactOptional().openapi({
+      description:
+        'If the encryption type is <code>aws:kms</code>, this optional value specifies the ID of the symmetric encryption customer managed key to use for encryption of job results. Amazon S3 only supports symmetric encryption KMS keys. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Asymmetric keys in KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.',
+    }),
+    KMSContext: KMSContextSchema.exactOptional().openapi({
+      description:
+        'If the encryption type is <code>aws:kms</code>, this optional value can be used to specify the encryption context for the restore results.',
+    }),
+  })
+  .openapi({
+    required: ['EncryptionType'],
+    description: 'Contains the type of server-side encryption used.',
+  })
   .openapi('Encryption')
 
 const ObjectCannedACLSchema = z
@@ -5213,9 +3971,7 @@ const ObjectCannedACLSchema = z
   .openapi('ObjectCannedACL')
 
 const TaggingSchema = z
-  .object({
-    TagSet: TagSetSchema.and(z.any().openapi({ description: 'A collection for a set of tags' })),
-  })
+  .object({ TagSet: TagSetSchema.openapi({ description: 'A collection for a set of tags' }) })
   .openapi({ required: ['TagSet'], description: 'Container for <code>TagSet</code> elements.' })
   .openapi('Tagging')
 
@@ -5223,56 +3979,40 @@ const MetadataKeySchema = z.string().openapi('MetadataKey')
 
 const MetadataEntrySchema = z
   .object({
-    Name: MetadataKeySchema.and(
-      z.any().openapi({ description: 'Name of the object.' }),
-    ).exactOptional(),
-    Value: MetadataValueSchema.and(
-      z.any().openapi({ description: 'Value of the object.' }),
-    ).exactOptional(),
+    Name: MetadataKeySchema.exactOptional().openapi({ description: 'Name of the object.' }),
+    Value: MetadataValueSchema.exactOptional().openapi({ description: 'Value of the object.' }),
   })
   .openapi({ description: 'A metadata key-value pair to store with an object.', required: [] })
   .openapi('MetadataEntry')
 
 const UserMetadataSchema = z
-  .array(MetadataEntrySchema.and(z.any().openapi({ xml: { name: 'MetadataEntry' } })))
+  .array(MetadataEntrySchema.openapi({ xml: { name: 'MetadataEntry' } }))
   .openapi('UserMetadata')
 
 const S3LocationSchema = z
   .object({
-    BucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the bucket where the restore results will be placed.',
-        }),
-    ),
-    Prefix: LocationPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The prefix that is prepended to the restore results for this request.',
-        }),
-    ),
+    BucketName: BucketNameSchema.openapi({
+      description: 'The name of the bucket where the restore results will be placed.',
+    }),
+    Prefix: LocationPrefixSchema.openapi({
+      description: 'The prefix that is prepended to the restore results for this request.',
+    }),
     Encryption: EncryptionSchema.exactOptional(),
-    CannedACL: ObjectCannedACLSchema.and(
-      z.any().openapi({ description: 'The canned ACL to apply to the restore results.' }),
-    ).exactOptional(),
-    AccessControlList: GrantsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of grants that control access to the staged results.' }),
-    ).exactOptional(),
-    Tagging: TaggingSchema.and(
-      z.any().openapi({ description: 'The tag-set that is applied to the restore results.' }),
-    ).exactOptional(),
-    UserMetadata: UserMetadataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of metadata to store with the restore results in S3.' }),
-    ).exactOptional(),
-    StorageClass: StorageClassSchema.and(
-      z.any().openapi({ description: 'The class of storage used to store the restore results.' }),
-    ).exactOptional(),
+    CannedACL: ObjectCannedACLSchema.exactOptional().openapi({
+      description: 'The canned ACL to apply to the restore results.',
+    }),
+    AccessControlList: GrantsSchema.exactOptional().openapi({
+      description: 'A list of grants that control access to the staged results.',
+    }),
+    Tagging: TaggingSchema.exactOptional().openapi({
+      description: 'The tag-set that is applied to the restore results.',
+    }),
+    UserMetadata: UserMetadataSchema.exactOptional().openapi({
+      description: 'A list of metadata to store with the restore results in S3.',
+    }),
+    StorageClass: StorageClassSchema.exactOptional().openapi({
+      description: 'The class of storage used to store the restore results.',
+    }),
   })
   .openapi({
     required: ['BucketName', 'Prefix'],
@@ -5283,14 +4023,9 @@ const S3LocationSchema = z
 
 const OutputLocationSchema = z
   .object({
-    S3: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes an S3 location that will receive the results of the restore request.',
-        }),
-    ).exactOptional(),
+    S3: S3LocationSchema.exactOptional().openapi({
+      description: 'Describes an S3 location that will receive the results of the restore request.',
+    }),
   })
   .openapi({
     description: "Describes the location where the restore job's output is stored.",
@@ -5302,9 +4037,9 @@ const ObjectAlreadyInActiveTierErrorSchema = z.any().openapi('ObjectAlreadyInAct
 
 const RecordsEventSchema = z
   .object({
-    Payload: BodySchema.and(
-      z.any().openapi({ description: 'The byte array of partial, one or more result records.' }),
-    ).exactOptional(),
+    Payload: BodySchema.exactOptional().openapi({
+      description: 'The byte array of partial, one or more result records.',
+    }),
   })
   .openapi({ description: 'The container for the records event.', required: [] })
   .openapi('RecordsEvent')
@@ -5317,45 +4052,37 @@ const BytesReturnedSchema = z.int().openapi('BytesReturned')
 
 const StatsSchema = z
   .object({
-    BytesScanned: BytesScannedSchema.and(
-      z.any().openapi({ description: 'The total number of object bytes scanned.' }),
-    ).exactOptional(),
-    BytesProcessed: BytesProcessedSchema.and(
-      z.any().openapi({ description: 'The total number of uncompressed object bytes processed.' }),
-    ).exactOptional(),
-    BytesReturned: BytesReturnedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The total number of bytes of records payload data returned.' }),
-    ).exactOptional(),
+    BytesScanned: BytesScannedSchema.exactOptional().openapi({
+      description: 'The total number of object bytes scanned.',
+    }),
+    BytesProcessed: BytesProcessedSchema.exactOptional().openapi({
+      description: 'The total number of uncompressed object bytes processed.',
+    }),
+    BytesReturned: BytesReturnedSchema.exactOptional().openapi({
+      description: 'The total number of bytes of records payload data returned.',
+    }),
   })
   .openapi({ description: 'Container for the stats details.', required: [] })
   .openapi('Stats')
 
 const StatsEventSchema = z
   .object({
-    Details: StatsSchema.and(
-      z.any().openapi({ description: 'The Stats event details.' }),
-    ).exactOptional(),
+    Details: StatsSchema.exactOptional().openapi({ description: 'The Stats event details.' }),
   })
   .openapi({ description: 'Container for the Stats Event.', required: [] })
   .openapi('StatsEvent')
 
 const ProgressSchema = z
   .object({
-    BytesScanned: BytesScannedSchema.and(
-      z.any().openapi({ description: 'The current number of object bytes scanned.' }),
-    ).exactOptional(),
-    BytesProcessed: BytesProcessedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current number of uncompressed object bytes processed.' }),
-    ).exactOptional(),
-    BytesReturned: BytesReturnedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current number of bytes of records payload data returned.' }),
-    ).exactOptional(),
+    BytesScanned: BytesScannedSchema.exactOptional().openapi({
+      description: 'The current number of object bytes scanned.',
+    }),
+    BytesProcessed: BytesProcessedSchema.exactOptional().openapi({
+      description: 'The current number of uncompressed object bytes processed.',
+    }),
+    BytesReturned: BytesReturnedSchema.exactOptional().openapi({
+      description: 'The current number of bytes of records payload data returned.',
+    }),
   })
   .openapi({
     description: 'This data type contains information about progress of an operation.',
@@ -5365,9 +4092,7 @@ const ProgressSchema = z
 
 const ProgressEventSchema = z
   .object({
-    Details: ProgressSchema.and(
-      z.any().openapi({ description: 'The Progress event details.' }),
-    ).exactOptional(),
+    Details: ProgressSchema.exactOptional().openapi({ description: 'The Progress event details.' }),
   })
   .openapi({
     description: 'This data type contains information about the progress event of an operation.',
@@ -5376,12 +4101,12 @@ const ProgressEventSchema = z
   .openapi('ProgressEvent')
 
 const ContinuationEventSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '<p/>' })
   .openapi('ContinuationEvent')
 
 const EndEventSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A message that indicates the request is complete and no more messages will be sent. You should not assume that the request is complete until the client receives an <code>EndEvent</code>.',
@@ -5390,19 +4115,13 @@ const EndEventSchema = z
 
 const SelectObjectContentEventStreamSchema = z
   .object({
-    Records: RecordsEventSchema.and(
-      z.any().openapi({ description: 'The Records Event.' }),
-    ).exactOptional(),
-    Stats: StatsEventSchema.and(
-      z.any().openapi({ description: 'The Stats Event.' }),
-    ).exactOptional(),
-    Progress: ProgressEventSchema.and(
-      z.any().openapi({ description: 'The Progress Event.' }),
-    ).exactOptional(),
-    Cont: ContinuationEventSchema.and(
-      z.any().openapi({ description: 'The Continuation Event.' }),
-    ).exactOptional(),
-    End: EndEventSchema.and(z.any().openapi({ description: 'The End Event.' })).exactOptional(),
+    Records: RecordsEventSchema.exactOptional().openapi({ description: 'The Records Event.' }),
+    Stats: StatsEventSchema.exactOptional().openapi({ description: 'The Stats Event.' }),
+    Progress: ProgressEventSchema.exactOptional().openapi({ description: 'The Progress Event.' }),
+    Cont: ContinuationEventSchema.exactOptional().openapi({
+      description: 'The Continuation Event.',
+    }),
+    End: EndEventSchema.exactOptional().openapi({ description: 'The End Event.' }),
   })
   .openapi({
     description: 'The container for selecting objects from a content event stream.',
@@ -5412,71 +4131,55 @@ const SelectObjectContentEventStreamSchema = z
 
 const SelectObjectContentOutputSchema = z
   .object({
-    Payload: SelectObjectContentEventStreamSchema.and(
-      z.any().openapi({ description: 'The array of results.' }),
-    ).exactOptional(),
+    Payload: SelectObjectContentEventStreamSchema.exactOptional().openapi({
+      description: 'The array of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SelectObjectContentOutput')
+
+const EnableRequestProgressSchema = z.boolean().openapi('EnableRequestProgress')
 
 const StartSchema = z.int().openapi('Start')
 
 const EndSchema = z.int().openapi('End')
 
 const UploadPartOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: { ETag: '"d8c2eafd90c266e19ab9dcacc479f8af"' } })
   .openapi('UploadPartOutput')
 
 const CopyPartResultSchema = z
   .object({
-    ETag: ETagSchema.and(
-      z.any().openapi({ description: 'Entity tag of the object.' }),
-    ).exactOptional(),
-    LastModified: LastModifiedSchema.and(
-      z.any().openapi({ description: 'Date and time at which the object was uploaded.' }),
-    ).exactOptional(),
-    ChecksumCRC32: ChecksumCRC32Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumCRC32C: ChecksumCRC32CSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA1: ChecksumSHA1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ChecksumSHA256: ChecksumSHA256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ).exactOptional(),
+    ETag: ETagSchema.exactOptional().openapi({ description: 'Entity tag of the object.' }),
+    LastModified: LastModifiedSchema.exactOptional().openapi({
+      description: 'Date and time at which the object was uploaded.',
+    }),
+    ChecksumCRC32: ChecksumCRC32Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32 checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumCRC32C: ChecksumCRC32CSchema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 32-bit CRC32C checksum of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA1: ChecksumSHA1Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 160-bit SHA-1 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
+    ChecksumSHA256: ChecksumSHA256Schema.exactOptional().openapi({
+      description:
+        'The base64-encoded, 256-bit SHA-256 digest of the object. This will only be present if it was uploaded with the object. With multipart uploads, this may not be a checksum value of the object. For more information about how checksums are calculated with multipart uploads, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html#large-object-checksums"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({ description: 'Container for all response elements.', required: [] })
   .openapi('CopyPartResult')
 
 const UploadPartCopyOutputSchema = z
   .object({
-    CopyPartResult: CopyPartResultSchema.and(
-      z.any().openapi({ description: 'Container for all response elements.' }),
-    ).exactOptional(),
+    CopyPartResult: CopyPartResultSchema.exactOptional().openapi({
+      description: 'Container for all response elements.',
+    }),
   })
   .openapi({
     example: {
@@ -5508,7 +4211,7 @@ const RequestPayerSchema = z
   .openapi('RequestPayer')
 
 const AbortMultipartUploadRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'AbortMultipartUploadRequest' })
   .openapi('AbortMultipartUploadRequest')
 
@@ -5516,9 +4219,9 @@ const AbortRuleIdSchema = z.string().openapi('AbortRuleId')
 
 const AccelerateConfigurationSchema = z
   .object({
-    Status: BucketAccelerateStatusSchema.and(
-      z.any().openapi({ description: 'Specifies the transfer acceleration status of the bucket.' }),
-    ).exactOptional(),
+    Status: BucketAccelerateStatusSchema.exactOptional().openapi({
+      description: 'Specifies the transfer acceleration status of the bucket.',
+    }),
   })
   .openapi({
     description:
@@ -5531,12 +4234,13 @@ const AcceptRangesSchema = z.string().openapi('AcceptRanges')
 
 const AccessControlPolicySchema = z
   .object({
-    Grants: GrantsSchema.and(
-      z.any().openapi({ xml: { name: 'AccessControlList' }, description: 'A list of grants.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z.any().openapi({ description: "Container for the bucket owner's display name and ID." }),
-    ).exactOptional(),
+    Grants: GrantsSchema.exactOptional().openapi({
+      xml: { name: 'AccessControlList' },
+      description: 'A list of grants.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description: "Container for the bucket owner's display name and ID.",
+    }),
   })
   .openapi({
     description: 'Contains the elements that set the ACL permissions for an object per grantee.',
@@ -5552,24 +4256,6 @@ const BucketCannedACLSchema = z
   .enum(['private', 'public-read', 'public-read-write', 'authenticated-read'])
   .openapi('BucketCannedACL')
 
-const BucketLifecycleConfigurationSchema = z
-  .object({
-    Rules: LifecycleRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Rule' },
-          description: 'A lifecycle rule for individual objects in an Amazon S3 bucket.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Rules'],
-    description:
-      'Specifies the lifecycle configuration for objects in an Amazon S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lifecycle-mgmt.html">Object Lifecycle Management</a> in the <i>Amazon S3 User Guide</i>.',
-  })
-  .openapi('BucketLifecycleConfiguration')
-
 const BucketLoggingStatusSchema = z
   .object({ LoggingEnabled: LoggingEnabledSchema.exactOptional() })
   .openapi({ description: 'Container for logging status information.', required: [] })
@@ -5579,15 +4265,11 @@ const BypassGovernanceRetentionSchema = z.boolean().openapi('BypassGovernanceRet
 
 const CORSConfigurationSchema = z
   .object({
-    CORSRules: CORSRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'CORSRule' },
-          description:
-            'A set of origins and methods (cross-origin access that you want to allow). You can add up to 100 rules to the configuration.',
-        }),
-    ),
+    CORSRules: CORSRulesSchema.openapi({
+      xml: { name: 'CORSRule' },
+      description:
+        'A set of origins and methods (cross-origin access that you want to allow). You can add up to 100 rules to the configuration.',
+    }),
   })
   .openapi({
     required: ['CORSRules'],
@@ -5604,15 +4286,11 @@ const ExpirationSchema = z.string().openapi('Expiration')
 
 const CompletedMultipartUploadSchema = z
   .object({
-    Parts: CompletedPartListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Part' },
-          description:
-            '<p>Array of CompletedPart data types.</p> <p>If you do not supply a valid <code>Part</code> with your request, the service sends back an HTTP 400 response.</p>',
-        }),
-    ).exactOptional(),
+    Parts: CompletedPartListSchema.exactOptional().openapi({
+      xml: { name: 'Part' },
+      description:
+        '<p>Array of CompletedPart data types.</p> <p>If you do not supply a valid <code>Part</code> with your request, the service sends back an HTTP 400 response.</p>',
+    }),
   })
   .openapi({
     description: 'The container for the completed multipart upload details.',
@@ -5628,14 +4306,10 @@ const SSECustomerKeyMD5Schema = z.string().openapi('SSECustomerKeyMD5')
 
 const CompleteMultipartUploadRequestSchema = z
   .object({
-    MultipartUpload: CompletedMultipartUploadSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'CompleteMultipartUpload' },
-          description: 'The container for the multipart upload request information.',
-        }),
-    ).exactOptional(),
+    MultipartUpload: CompletedMultipartUploadSchema.exactOptional().openapi({
+      xml: { name: 'CompleteMultipartUpload' },
+      description: 'The container for the multipart upload request information.',
+    }),
   })
   .openapi({
     title: 'CompleteMultipartUploadRequest',
@@ -5713,14 +4387,10 @@ const ObjectLockRetainUntilDateSchema = z.iso
 
 const CopyObjectRequestSchema = z
   .object({
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'x-amz-meta-' },
-          description: 'A map of metadata to store with the object in S3.',
-        }),
-    ).exactOptional(),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      xml: { name: 'x-amz-meta-' },
+      description: 'A map of metadata to store with the object in S3.',
+    }),
   })
   .openapi({ title: 'CopyObjectRequest', required: [] })
   .openapi('CopyObjectRequest')
@@ -5729,14 +4399,10 @@ const CopySourceRangeSchema = z.string().openapi('CopySourceRange')
 
 const CreateBucketConfigurationSchema = z
   .object({
-    LocationConstraint: BucketLocationConstraintSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the Region where the bucket will be created. If you don't specify a Region, the bucket is created in the US East (N. Virginia) Region (us-east-1).",
-        }),
-    ).exactOptional(),
+    LocationConstraint: BucketLocationConstraintSchema.exactOptional().openapi({
+      description:
+        "Specifies the Region where the bucket will be created. If you don't specify a Region, the bucket is created in the US East (N. Virginia) Region (us-east-1).",
+    }),
   })
   .openapi({ description: 'The configuration information for the bucket.', required: [] })
   .openapi('CreateBucketConfiguration')
@@ -5747,9 +4413,9 @@ const ObjectLockEnabledForBucketSchema = z.boolean().openapi('ObjectLockEnabledF
 
 const CreateBucketRequestSchema = z
   .object({
-    CreateBucketConfiguration: CreateBucketConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration information for the bucket.' }),
-    ).exactOptional(),
+    CreateBucketConfiguration: CreateBucketConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration information for the bucket.',
+    }),
   })
   .openapi({
     title: 'CreateBucketRequest',
@@ -5760,116 +4426,107 @@ const CreateBucketRequestSchema = z
 
 const CreateMultipartUploadRequestSchema = z
   .object({
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'x-amz-meta-' },
-          description: 'A map of metadata to store with the object in S3.',
-        }),
-    ).exactOptional(),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      xml: { name: 'x-amz-meta-' },
+      description: 'A map of metadata to store with the object in S3.',
+    }),
   })
   .openapi({ title: 'CreateMultipartUploadRequest', required: [] })
   .openapi('CreateMultipartUploadRequest')
 
 const DeleteSchema = z
   .object({
-    Objects: ObjectIdentifierListSchema.and(
-      z.any().openapi({ xml: { name: 'Object' }, description: 'The object to delete.' }),
-    ),
-    Quiet: QuietSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Element to enable quiet mode for the request. When you add this element, you must set its value to true.',
-        }),
-    ).exactOptional(),
+    Objects: ObjectIdentifierListSchema.openapi({
+      xml: { name: 'Object' },
+      description: 'The object to delete.',
+    }),
+    Quiet: QuietSchema.exactOptional().openapi({
+      description:
+        'Element to enable quiet mode for the request. When you add this element, you must set its value to true.',
+    }),
   })
   .openapi({ required: ['Objects'], description: 'Container for the objects to delete.' })
   .openapi('Delete')
 
 const DeleteBucketAnalyticsConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketAnalyticsConfigurationRequest' })
   .openapi('DeleteBucketAnalyticsConfigurationRequest')
 
 const DeleteBucketCorsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketCorsRequest' })
   .openapi('DeleteBucketCorsRequest')
 
 const DeleteBucketEncryptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketEncryptionRequest' })
   .openapi('DeleteBucketEncryptionRequest')
 
 const DeleteBucketIntelligentTieringConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketIntelligentTieringConfigurationRequest' })
   .openapi('DeleteBucketIntelligentTieringConfigurationRequest')
 
 const DeleteBucketInventoryConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketInventoryConfigurationRequest' })
   .openapi('DeleteBucketInventoryConfigurationRequest')
 
 const DeleteBucketLifecycleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketLifecycleRequest' })
   .openapi('DeleteBucketLifecycleRequest')
 
 const DeleteBucketMetricsConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketMetricsConfigurationRequest' })
   .openapi('DeleteBucketMetricsConfigurationRequest')
 
 const DeleteBucketOwnershipControlsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketOwnershipControlsRequest' })
   .openapi('DeleteBucketOwnershipControlsRequest')
 
 const DeleteBucketPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketPolicyRequest' })
   .openapi('DeleteBucketPolicyRequest')
 
 const DeleteBucketReplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketReplicationRequest' })
   .openapi('DeleteBucketReplicationRequest')
 
 const DeleteBucketRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketRequest' })
   .openapi('DeleteBucketRequest')
 
 const DeleteBucketTaggingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketTaggingRequest' })
   .openapi('DeleteBucketTaggingRequest')
 
 const DeleteBucketWebsiteRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBucketWebsiteRequest' })
   .openapi('DeleteBucketWebsiteRequest')
 
 const MFASchema = z.string().openapi('MFA')
 
 const DeleteObjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteObjectRequest' })
   .openapi('DeleteObjectRequest')
 
 const DeleteObjectTaggingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteObjectTaggingRequest' })
   .openapi('DeleteObjectTaggingRequest')
 
 const DeleteObjectsRequestSchema = z
-  .object({
-    Delete: DeleteSchema.and(z.any().openapi({ description: 'Container for the request.' })),
-  })
+  .object({ Delete: DeleteSchema.openapi({ description: 'Container for the request.' }) })
   .openapi({
     required: ['Delete'],
     title: 'DeleteObjectsRequest',
@@ -5878,7 +4535,7 @@ const DeleteObjectsRequestSchema = z
   .openapi('DeleteObjectsRequest')
 
 const DeletePublicAccessBlockRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePublicAccessBlockRequest' })
   .openapi('DeletePublicAccessBlockRequest')
 
@@ -5889,129 +4546,129 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 const FetchOwnerSchema = z.boolean().openapi('FetchOwner')
 
 const GetBucketAccelerateConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketAccelerateConfigurationRequest' })
   .openapi('GetBucketAccelerateConfigurationRequest')
 
 const GetBucketAclRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketAclRequest' })
   .openapi('GetBucketAclRequest')
 
 const GetBucketAnalyticsConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketAnalyticsConfigurationRequest' })
   .openapi('GetBucketAnalyticsConfigurationRequest')
 
 const GetBucketCorsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketCorsRequest' })
   .openapi('GetBucketCorsRequest')
 
 const GetBucketEncryptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketEncryptionRequest' })
   .openapi('GetBucketEncryptionRequest')
 
 const GetBucketIntelligentTieringConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketIntelligentTieringConfigurationRequest' })
   .openapi('GetBucketIntelligentTieringConfigurationRequest')
 
 const GetBucketInventoryConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketInventoryConfigurationRequest' })
   .openapi('GetBucketInventoryConfigurationRequest')
 
 const GetBucketLifecycleConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketLifecycleConfigurationRequest' })
   .openapi('GetBucketLifecycleConfigurationRequest')
 
 const GetBucketLifecycleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketLifecycleRequest' })
   .openapi('GetBucketLifecycleRequest')
 
 const GetBucketLocationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketLocationRequest' })
   .openapi('GetBucketLocationRequest')
 
 const GetBucketLoggingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketLoggingRequest' })
   .openapi('GetBucketLoggingRequest')
 
 const GetBucketMetricsConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketMetricsConfigurationRequest' })
   .openapi('GetBucketMetricsConfigurationRequest')
 
 const GetBucketNotificationConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketNotificationConfigurationRequest' })
   .openapi('GetBucketNotificationConfigurationRequest')
 
 const GetBucketOwnershipControlsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketOwnershipControlsRequest' })
   .openapi('GetBucketOwnershipControlsRequest')
 
 const GetBucketPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketPolicyRequest' })
   .openapi('GetBucketPolicyRequest')
 
 const GetBucketPolicyStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketPolicyStatusRequest' })
   .openapi('GetBucketPolicyStatusRequest')
 
 const GetBucketReplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketReplicationRequest' })
   .openapi('GetBucketReplicationRequest')
 
 const GetBucketRequestPaymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketRequestPaymentRequest' })
   .openapi('GetBucketRequestPaymentRequest')
 
 const GetBucketTaggingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketTaggingRequest' })
   .openapi('GetBucketTaggingRequest')
 
 const GetBucketVersioningRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketVersioningRequest' })
   .openapi('GetBucketVersioningRequest')
 
 const GetBucketWebsiteRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBucketWebsiteRequest' })
   .openapi('GetBucketWebsiteRequest')
 
 const GetObjectAclRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectAclRequest' })
   .openapi('GetObjectAclRequest')
 
 const ObjectAttributesListSchema = z.array(ObjectAttributesSchema).openapi('ObjectAttributesList')
 
 const GetObjectAttributesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectAttributesRequest' })
   .openapi('GetObjectAttributesRequest')
 
 const GetObjectLegalHoldRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectLegalHoldRequest' })
   .openapi('GetObjectLegalHoldRequest')
 
 const GetObjectLockConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectLockConfigurationRequest' })
   .openapi('GetObjectLockConfigurationRequest')
 
@@ -6048,52 +4705,48 @@ const ResponseContentTypeSchema = z.string().openapi('ResponseContentType')
 const ResponseExpiresSchema = z.iso.datetime({ offset: true }).openapi('ResponseExpires')
 
 const GetObjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectRequest' })
   .openapi('GetObjectRequest')
 
 const GetObjectResponseStatusCodeSchema = z.int().openapi('GetObjectResponseStatusCode')
 
 const GetObjectRetentionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectRetentionRequest' })
   .openapi('GetObjectRetentionRequest')
 
 const GetObjectTaggingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectTaggingRequest' })
   .openapi('GetObjectTaggingRequest')
 
 const GetObjectTorrentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectTorrentRequest' })
   .openapi('GetObjectTorrentRequest')
 
 const GetPublicAccessBlockRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPublicAccessBlockRequest' })
   .openapi('GetPublicAccessBlockRequest')
 
 const HeadBucketRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'HeadBucketRequest' })
   .openapi('HeadBucketRequest')
 
 const HeadObjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'HeadObjectRequest' })
   .openapi('HeadObjectRequest')
 
 const LifecycleConfigurationSchema = z
   .object({
-    Rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Rule' },
-          description: 'Specifies lifecycle configuration rules for an Amazon S3 bucket. ',
-        }),
-    ),
+    Rules: RulesSchema.openapi({
+      xml: { name: 'Rule' },
+      description: 'Specifies lifecycle configuration rules for an Amazon S3 bucket. ',
+    }),
   })
   .openapi({
     required: ['Rules'],
@@ -6103,27 +4756,27 @@ const LifecycleConfigurationSchema = z
   .openapi('LifecycleConfiguration')
 
 const ListBucketAnalyticsConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBucketAnalyticsConfigurationsRequest' })
   .openapi('ListBucketAnalyticsConfigurationsRequest')
 
 const ListBucketIntelligentTieringConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBucketIntelligentTieringConfigurationsRequest' })
   .openapi('ListBucketIntelligentTieringConfigurationsRequest')
 
 const ListBucketInventoryConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBucketInventoryConfigurationsRequest' })
   .openapi('ListBucketInventoryConfigurationsRequest')
 
 const ListBucketMetricsConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBucketMetricsConfigurationsRequest' })
   .openapi('ListBucketMetricsConfigurationsRequest')
 
 const ListMultipartUploadsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMultipartUploadsRequest' })
   .openapi('ListMultipartUploadsRequest')
 
@@ -6132,22 +4785,22 @@ const OptionalObjectAttributesListSchema = z
   .openapi('OptionalObjectAttributesList')
 
 const ListObjectVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListObjectVersionsRequest' })
   .openapi('ListObjectVersionsRequest')
 
 const ListObjectsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListObjectsRequest' })
   .openapi('ListObjectsRequest')
 
 const ListObjectsV2RequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListObjectsV2Request' })
   .openapi('ListObjectsV2Request')
 
 const ListPartsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPartsRequest' })
   .openapi('ListPartsRequest')
 
@@ -6155,9 +4808,9 @@ const ObjectLockTokenSchema = z.string().openapi('ObjectLockToken')
 
 const PutBucketAccelerateConfigurationRequestSchema = z
   .object({
-    AccelerateConfiguration: AccelerateConfigurationSchema.and(
-      z.any().openapi({ description: 'Container for setting the transfer acceleration state.' }),
-    ),
+    AccelerateConfiguration: AccelerateConfigurationSchema.openapi({
+      description: 'Container for setting the transfer acceleration state.',
+    }),
   })
   .openapi({
     required: ['AccelerateConfiguration'],
@@ -6168,14 +4821,9 @@ const PutBucketAccelerateConfigurationRequestSchema = z
 
 const PutBucketAclRequestSchema = z
   .object({
-    AccessControlPolicy: AccessControlPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the elements that set the ACL permissions for an object per grantee.',
-        }),
-    ).exactOptional(),
+    AccessControlPolicy: AccessControlPolicySchema.exactOptional().openapi({
+      description: 'Contains the elements that set the ACL permissions for an object per grantee.',
+    }),
   })
   .openapi({
     title: 'PutBucketAclRequest',
@@ -6186,11 +4834,9 @@ const PutBucketAclRequestSchema = z
 
 const PutBucketAnalyticsConfigurationRequestSchema = z
   .object({
-    AnalyticsConfiguration: AnalyticsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration and any analyses for the analytics filter.' }),
-    ),
+    AnalyticsConfiguration: AnalyticsConfigurationSchema.openapi({
+      description: 'The configuration and any analyses for the analytics filter.',
+    }),
   })
   .openapi({
     required: ['AnalyticsConfiguration'],
@@ -6201,14 +4847,10 @@ const PutBucketAnalyticsConfigurationRequestSchema = z
 
 const PutBucketCorsRequestSchema = z
   .object({
-    CORSConfiguration: CORSConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the cross-origin access configuration for objects in an Amazon S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html">Enabling Cross-Origin Resource Sharing</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ),
+    CORSConfiguration: CORSConfigurationSchema.openapi({
+      description:
+        'Describes the cross-origin access configuration for objects in an Amazon S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html">Enabling Cross-Origin Resource Sharing</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['CORSConfiguration'],
@@ -6228,9 +4870,9 @@ const PutBucketEncryptionRequestSchema = z
 
 const PutBucketIntelligentTieringConfigurationRequestSchema = z
   .object({
-    IntelligentTieringConfiguration: IntelligentTieringConfigurationSchema.and(
-      z.any().openapi({ description: 'Container for S3 Intelligent-Tiering configuration.' }),
-    ),
+    IntelligentTieringConfiguration: IntelligentTieringConfigurationSchema.openapi({
+      description: 'Container for S3 Intelligent-Tiering configuration.',
+    }),
   })
   .openapi({
     required: ['IntelligentTieringConfiguration'],
@@ -6241,9 +4883,9 @@ const PutBucketIntelligentTieringConfigurationRequestSchema = z
 
 const PutBucketInventoryConfigurationRequestSchema = z
   .object({
-    InventoryConfiguration: InventoryConfigurationSchema.and(
-      z.any().openapi({ description: 'Specifies the inventory configuration.' }),
-    ),
+    InventoryConfiguration: InventoryConfigurationSchema.openapi({
+      description: 'Specifies the inventory configuration.',
+    }),
   })
   .openapi({
     required: ['InventoryConfiguration'],
@@ -6252,28 +4894,25 @@ const PutBucketInventoryConfigurationRequestSchema = z
   })
   .openapi('PutBucketInventoryConfigurationRequest')
 
-const PutBucketLifecycleConfigurationRequestSchema = z
-  .object({
-    LifecycleConfiguration: BucketLifecycleConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Container for lifecycle rules. You can add as many as 1,000 rules.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    title: 'PutBucketLifecycleConfigurationRequest',
-    xml: { namespace: 'http://s3.amazonaws.com/doc/2006-03-01/' },
-    required: [],
-  })
-  .openapi('PutBucketLifecycleConfigurationRequest')
+const PutBucketLifecycleConfigurationRequestSchema: z.ZodType<PutBucketLifecycleConfigurationRequestType> =
+  z
+    .object({
+      LifecycleConfiguration: BucketLifecycleConfigurationSchema.exactOptional().openapi({
+        description: 'Container for lifecycle rules. You can add as many as 1,000 rules.',
+      }),
+    })
+    .openapi({
+      title: 'PutBucketLifecycleConfigurationRequest',
+      xml: { namespace: 'http://s3.amazonaws.com/doc/2006-03-01/' },
+      required: [],
+    })
+    .openapi('PutBucketLifecycleConfigurationRequest')
 
 const PutBucketLifecycleRequestSchema = z
   .object({
-    LifecycleConfiguration: LifecycleConfigurationSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    LifecycleConfiguration: LifecycleConfigurationSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
   })
   .openapi({
     title: 'PutBucketLifecycleRequest',
@@ -6284,9 +4923,9 @@ const PutBucketLifecycleRequestSchema = z
 
 const PutBucketLoggingRequestSchema = z
   .object({
-    BucketLoggingStatus: BucketLoggingStatusSchema.and(
-      z.any().openapi({ description: 'Container for logging status information.' }),
-    ),
+    BucketLoggingStatus: BucketLoggingStatusSchema.openapi({
+      description: 'Container for logging status information.',
+    }),
   })
   .openapi({
     required: ['BucketLoggingStatus'],
@@ -6297,9 +4936,9 @@ const PutBucketLoggingRequestSchema = z
 
 const PutBucketMetricsConfigurationRequestSchema = z
   .object({
-    MetricsConfiguration: MetricsConfigurationSchema.and(
-      z.any().openapi({ description: 'Specifies the metrics configuration.' }),
-    ),
+    MetricsConfiguration: MetricsConfigurationSchema.openapi({
+      description: 'Specifies the metrics configuration.',
+    }),
   })
   .openapi({
     required: ['MetricsConfiguration'],
@@ -6310,20 +4949,21 @@ const PutBucketMetricsConfigurationRequestSchema = z
 
 const SkipValidationSchema = z.boolean().openapi('SkipValidation')
 
-const PutBucketNotificationConfigurationRequestSchema = z
-  .object({ NotificationConfiguration: NotificationConfigurationSchema })
-  .openapi({
-    required: ['NotificationConfiguration'],
-    title: 'PutBucketNotificationConfigurationRequest',
-    xml: { namespace: 'http://s3.amazonaws.com/doc/2006-03-01/' },
-  })
-  .openapi('PutBucketNotificationConfigurationRequest')
+const PutBucketNotificationConfigurationRequestSchema: z.ZodType<PutBucketNotificationConfigurationRequestType> =
+  z
+    .object({ NotificationConfiguration: NotificationConfigurationSchema })
+    .openapi({
+      required: ['NotificationConfiguration'],
+      title: 'PutBucketNotificationConfigurationRequest',
+      xml: { namespace: 'http://s3.amazonaws.com/doc/2006-03-01/' },
+    })
+    .openapi('PutBucketNotificationConfigurationRequest')
 
 const PutBucketNotificationRequestSchema = z
   .object({
-    NotificationConfiguration: NotificationConfigurationDeprecatedSchema.and(
-      z.any().openapi({ description: 'The container for the configuration.' }),
-    ),
+    NotificationConfiguration: NotificationConfigurationDeprecatedSchema.openapi({
+      description: 'The container for the configuration.',
+    }),
   })
   .openapi({
     required: ['NotificationConfiguration'],
@@ -6334,14 +4974,10 @@ const PutBucketNotificationRequestSchema = z
 
 const PutBucketOwnershipControlsRequestSchema = z
   .object({
-    OwnershipControls: OwnershipControlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>OwnershipControls</code> (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter) that you want to apply to this Amazon S3 bucket.',
-        }),
-    ),
+    OwnershipControls: OwnershipControlsSchema.openapi({
+      description:
+        'The <code>OwnershipControls</code> (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter) that you want to apply to this Amazon S3 bucket.',
+    }),
   })
   .openapi({
     required: ['OwnershipControls'],
@@ -6352,14 +4988,12 @@ const PutBucketOwnershipControlsRequestSchema = z
 
 const PutBucketPolicyRequestSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z.any().openapi({ description: 'The bucket policy as a JSON document.' }),
-    ),
+    Policy: PolicySchema.openapi({ description: 'The bucket policy as a JSON document.' }),
   })
   .openapi({ required: ['Policy'], title: 'PutBucketPolicyRequest' })
   .openapi('PutBucketPolicyRequest')
 
-const PutBucketReplicationRequestSchema = z
+const PutBucketReplicationRequestSchema: z.ZodType<PutBucketReplicationRequestType> = z
   .object({ ReplicationConfiguration: ReplicationConfigurationSchema })
   .openapi({
     required: ['ReplicationConfiguration'],
@@ -6370,18 +5004,18 @@ const PutBucketReplicationRequestSchema = z
 
 const RequestPaymentConfigurationSchema = z
   .object({
-    Payer: PayerSchema.and(
-      z.any().openapi({ description: 'Specifies who pays for the download and request fees.' }),
-    ),
+    Payer: PayerSchema.openapi({
+      description: 'Specifies who pays for the download and request fees.',
+    }),
   })
   .openapi({ required: ['Payer'], description: 'Container for Payer.' })
   .openapi('RequestPaymentConfiguration')
 
 const PutBucketRequestPaymentRequestSchema = z
   .object({
-    RequestPaymentConfiguration: RequestPaymentConfigurationSchema.and(
-      z.any().openapi({ description: 'Container for Payer.' }),
-    ),
+    RequestPaymentConfiguration: RequestPaymentConfigurationSchema.openapi({
+      description: 'Container for Payer.',
+    }),
   })
   .openapi({
     required: ['RequestPaymentConfiguration'],
@@ -6392,13 +5026,9 @@ const PutBucketRequestPaymentRequestSchema = z
 
 const PutBucketTaggingRequestSchema = z
   .object({
-    Tagging: TaggingSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Container for the <code>TagSet</code> and <code>Tag</code> elements.',
-        }),
-    ),
+    Tagging: TaggingSchema.openapi({
+      description: 'Container for the <code>TagSet</code> and <code>Tag</code> elements.',
+    }),
   })
   .openapi({
     required: ['Tagging'],
@@ -6409,18 +5039,14 @@ const PutBucketTaggingRequestSchema = z
 
 const VersioningConfigurationSchema = z
   .object({
-    MFADelete: MFADeleteSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'MfaDelete' },
-          description:
-            'Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned.',
-        }),
-    ).exactOptional(),
-    Status: BucketVersioningStatusSchema.and(
-      z.any().openapi({ description: 'The versioning state of the bucket.' }),
-    ).exactOptional(),
+    MFADelete: MFADeleteSchema.exactOptional().openapi({
+      xml: { name: 'MfaDelete' },
+      description:
+        'Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned.',
+    }),
+    Status: BucketVersioningStatusSchema.exactOptional().openapi({
+      description: 'The versioning state of the bucket.',
+    }),
   })
   .openapi({
     description:
@@ -6431,9 +5057,9 @@ const VersioningConfigurationSchema = z
 
 const PutBucketVersioningRequestSchema = z
   .object({
-    VersioningConfiguration: VersioningConfigurationSchema.and(
-      z.any().openapi({ description: 'Container for setting the versioning state.' }),
-    ),
+    VersioningConfiguration: VersioningConfigurationSchema.openapi({
+      description: 'Container for setting the versioning state.',
+    }),
   })
   .openapi({
     required: ['VersioningConfiguration'],
@@ -6444,27 +5070,19 @@ const PutBucketVersioningRequestSchema = z
 
 const WebsiteConfigurationSchema = z
   .object({
-    ErrorDocument: ErrorDocumentSchema.and(
-      z.any().openapi({ description: 'The name of the error document for the website.' }),
-    ).exactOptional(),
-    IndexDocument: IndexDocumentSchema.and(
-      z.any().openapi({ description: 'The name of the index document for the website.' }),
-    ).exactOptional(),
-    RedirectAllRequestsTo: RedirectAllRequestsToSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The redirect behavior for every request to this bucket's website endpoint.</p> <important> <p>If you specify this property, you can't specify any other property.</p> </important>",
-        }),
-    ).exactOptional(),
-    RoutingRules: RoutingRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Rules that define when a redirect is applied and the redirect behavior.',
-        }),
-    ).exactOptional(),
+    ErrorDocument: ErrorDocumentSchema.exactOptional().openapi({
+      description: 'The name of the error document for the website.',
+    }),
+    IndexDocument: IndexDocumentSchema.exactOptional().openapi({
+      description: 'The name of the index document for the website.',
+    }),
+    RedirectAllRequestsTo: RedirectAllRequestsToSchema.exactOptional().openapi({
+      description:
+        "<p>The redirect behavior for every request to this bucket's website endpoint.</p> <important> <p>If you specify this property, you can't specify any other property.</p> </important>",
+    }),
+    RoutingRules: RoutingRulesSchema.exactOptional().openapi({
+      description: 'Rules that define when a redirect is applied and the redirect behavior.',
+    }),
   })
   .openapi({
     description: 'Specifies website configuration parameters for an Amazon S3 bucket.',
@@ -6474,9 +5092,9 @@ const WebsiteConfigurationSchema = z
 
 const PutBucketWebsiteRequestSchema = z
   .object({
-    WebsiteConfiguration: WebsiteConfigurationSchema.and(
-      z.any().openapi({ description: 'Container for the request.' }),
-    ),
+    WebsiteConfiguration: WebsiteConfigurationSchema.openapi({
+      description: 'Container for the request.',
+    }),
   })
   .openapi({
     required: ['WebsiteConfiguration'],
@@ -6487,14 +5105,9 @@ const PutBucketWebsiteRequestSchema = z
 
 const PutObjectAclRequestSchema = z
   .object({
-    AccessControlPolicy: AccessControlPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the elements that set the ACL permissions for an object per grantee.',
-        }),
-    ).exactOptional(),
+    AccessControlPolicy: AccessControlPolicySchema.exactOptional().openapi({
+      description: 'Contains the elements that set the ACL permissions for an object per grantee.',
+    }),
   })
   .openapi({
     title: 'PutObjectAclRequest',
@@ -6505,14 +5118,10 @@ const PutObjectAclRequestSchema = z
 
 const PutObjectLegalHoldRequestSchema = z
   .object({
-    LegalHold: ObjectLockLegalHoldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Container element for the legal hold configuration you want to apply to the specified object.',
-        }),
-    ).exactOptional(),
+    LegalHold: ObjectLockLegalHoldSchema.exactOptional().openapi({
+      description:
+        'Container element for the legal hold configuration you want to apply to the specified object.',
+    }),
   })
   .openapi({
     title: 'PutObjectLegalHoldRequest',
@@ -6523,14 +5132,9 @@ const PutObjectLegalHoldRequestSchema = z
 
 const PutObjectLockConfigurationRequestSchema = z
   .object({
-    ObjectLockConfiguration: ObjectLockConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Object Lock configuration that you want to apply to the specified bucket.',
-        }),
-    ).exactOptional(),
+    ObjectLockConfiguration: ObjectLockConfigurationSchema.exactOptional().openapi({
+      description: 'The Object Lock configuration that you want to apply to the specified bucket.',
+    }),
   })
   .openapi({
     title: 'PutObjectLockConfigurationRequest',
@@ -6541,26 +5145,20 @@ const PutObjectLockConfigurationRequestSchema = z
 
 const PutObjectRequestSchema = z
   .object({
-    Body: BodySchema.and(z.any().openapi({ description: 'Object data.' })).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'x-amz-meta-' },
-          description: 'A map of metadata to store with the object in S3.',
-        }),
-    ).exactOptional(),
+    Body: BodySchema.exactOptional().openapi({ description: 'Object data.' }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      xml: { name: 'x-amz-meta-' },
+      description: 'A map of metadata to store with the object in S3.',
+    }),
   })
   .openapi({ title: 'PutObjectRequest', required: [] })
   .openapi('PutObjectRequest')
 
 const PutObjectRetentionRequestSchema = z
   .object({
-    Retention: ObjectLockRetentionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The container element for the Object Retention configuration.' }),
-    ).exactOptional(),
+    Retention: ObjectLockRetentionSchema.exactOptional().openapi({
+      description: 'The container element for the Object Retention configuration.',
+    }),
   })
   .openapi({
     title: 'PutObjectRetentionRequest',
@@ -6571,13 +5169,9 @@ const PutObjectRetentionRequestSchema = z
 
 const PutObjectTaggingRequestSchema = z
   .object({
-    Tagging: TaggingSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Container for the <code>TagSet</code> and <code>Tag</code> elements',
-        }),
-    ),
+    Tagging: TaggingSchema.openapi({
+      description: 'Container for the <code>TagSet</code> and <code>Tag</code> elements',
+    }),
   })
   .openapi({
     required: ['Tagging'],
@@ -6588,14 +5182,10 @@ const PutObjectTaggingRequestSchema = z
 
 const PutPublicAccessBlockRequestSchema = z
   .object({
-    PublicAccessBlockConfiguration: PublicAccessBlockConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>PublicAccessBlock</code> configuration that you want to apply to this Amazon S3 bucket. You can enable the configuration options in any combination. For more information about when Amazon S3 considers a bucket or object public, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-policy-status">The Meaning of "Public"</a> in the <i>Amazon S3 User Guide</i>.',
-        }),
-    ),
+    PublicAccessBlockConfiguration: PublicAccessBlockConfigurationSchema.openapi({
+      description:
+        'The <code>PublicAccessBlock</code> configuration that you want to apply to this Amazon S3 bucket. You can enable the configuration options in any combination. For more information about when Amazon S3 considers a bucket or object public, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-policy-status">The Meaning of "Public"</a> in the <i>Amazon S3 User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['PublicAccessBlockConfiguration'],
@@ -6604,25 +5194,18 @@ const PutPublicAccessBlockRequestSchema = z
   })
   .openapi('PutPublicAccessBlockRequest')
 
-const RequestProgressSchema: z.ZodType<RequestProgressType> = z
-  .lazy(() =>
-    z
-      .object({
-        Enabled: EnableRequestProgressSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Specifies whether periodic QueryProgress frames should be sent. Valid values: TRUE, FALSE. Default value: FALSE.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Container for specifying if periodic <code>QueryProgress</code> messages should be sent.',
-        required: [],
-      }),
-  )
+const RequestProgressSchema = z
+  .object({
+    Enabled: EnableRequestProgressSchema.exactOptional().openapi({
+      description:
+        'Specifies whether periodic QueryProgress frames should be sent. Valid values: TRUE, FALSE. Default value: FALSE.',
+    }),
+  })
+  .openapi({
+    description:
+      'Container for specifying if periodic <code>QueryProgress</code> messages should be sent.',
+    required: [],
+  })
   .openapi('RequestProgress')
 
 const RequestRouteSchema = z.string().openapi('RequestRoute')
@@ -6633,41 +5216,29 @@ const RestoreOutputPathSchema = z.string().openapi('RestoreOutputPath')
 
 const RestoreRequestSchema = z
   .object({
-    Days: DaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Lifetime of the active copy in days. Do not use with restores that specify <code>OutputLocation</code>.</p> <p>The Days element is required for regular restores, and must not be provided for select requests.</p>',
-        }),
-    ).exactOptional(),
-    GlacierJobParameters: GlacierJobParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'S3 Glacier related parameters pertaining to this job. Do not use with restores that specify <code>OutputLocation</code>.',
-        }),
-    ).exactOptional(),
-    Type: RestoreRequestTypeSchema.and(
-      z.any().openapi({ description: 'Type of restore request.' }),
-    ).exactOptional(),
-    Tier: TierSchema.and(
-      z.any().openapi({ description: 'Retrieval tier at which the restore will be processed.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the job.' }),
-    ).exactOptional(),
-    SelectParameters: SelectParametersSchema.and(
-      z.any().openapi({ description: 'Describes the parameters for Select job types.' }),
-    ).exactOptional(),
-    OutputLocation: OutputLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "Describes the location where the restore job's output is stored.",
-        }),
-    ).exactOptional(),
+    Days: DaysSchema.exactOptional().openapi({
+      description:
+        '<p>Lifetime of the active copy in days. Do not use with restores that specify <code>OutputLocation</code>.</p> <p>The Days element is required for regular restores, and must not be provided for select requests.</p>',
+    }),
+    GlacierJobParameters: GlacierJobParametersSchema.exactOptional().openapi({
+      description:
+        'S3 Glacier related parameters pertaining to this job. Do not use with restores that specify <code>OutputLocation</code>.',
+    }),
+    Type: RestoreRequestTypeSchema.exactOptional().openapi({
+      description: 'Type of restore request.',
+    }),
+    Tier: TierSchema.exactOptional().openapi({
+      description: 'Retrieval tier at which the restore will be processed.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The optional description for the job.',
+    }),
+    SelectParameters: SelectParametersSchema.exactOptional().openapi({
+      description: 'Describes the parameters for Select job types.',
+    }),
+    OutputLocation: OutputLocationSchema.exactOptional().openapi({
+      description: "Describes the location where the restore job's output is stored.",
+    }),
   })
   .openapi({ description: 'Container for restore job parameters.', required: [] })
   .openapi('RestoreRequest')
@@ -6683,22 +5254,14 @@ const RestoreObjectRequestSchema = z
 
 const ScanRangeSchema = z
   .object({
-    Start: StartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the start of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is 0. If only <code>start</code> is supplied, it means scan from that point to the end of the file. For example, <code>&lt;scanrange&gt;&lt;start&gt;50&lt;/start&gt;&lt;/scanrange&gt;</code> means scan from byte 50 until the end of the file.',
-        }),
-    ).exactOptional(),
-    End: EndSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the end of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is one less than the size of the object being queried. If only the End parameter is supplied, it is interpreted to mean scan the last N bytes of the file. For example, <code>&lt;scanrange&gt;&lt;end&gt;50&lt;/end&gt;&lt;/scanrange&gt;</code> means scan the last 50 bytes.',
-        }),
-    ).exactOptional(),
+    Start: StartSchema.exactOptional().openapi({
+      description:
+        'Specifies the start of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is 0. If only <code>start</code> is supplied, it means scan from that point to the end of the file. For example, <code>&lt;scanrange&gt;&lt;start&gt;50&lt;/start&gt;&lt;/scanrange&gt;</code> means scan from byte 50 until the end of the file.',
+    }),
+    End: EndSchema.exactOptional().openapi({
+      description:
+        'Specifies the end of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is one less than the size of the object being queried. If only the End parameter is supplied, it is interpreted to mean scan the last N bytes of the file. For example, <code>&lt;scanrange&gt;&lt;end&gt;50&lt;/end&gt;&lt;/scanrange&gt;</code> means scan the last 50 bytes.',
+    }),
   })
   .openapi({
     description:
@@ -6709,42 +5272,26 @@ const ScanRangeSchema = z
 
 const SelectObjectContentRequestSchema = z
   .object({
-    Expression: ExpressionSchema.and(
-      z.any().openapi({ description: 'The expression that is used to query the object.' }),
-    ),
-    ExpressionType: ExpressionTypeSchema.and(
-      z.any().openapi({ description: 'The type of the provided expression (for example, SQL).' }),
-    ),
-    RequestProgress: RequestProgressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies if periodic request progress information should be enabled.',
-        }),
-    ).exactOptional(),
-    InputSerialization: InputSerializationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the format of the data in the object that is being queried.',
-        }),
-    ),
-    OutputSerialization: OutputSerializationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the format of the data that you want Amazon S3 to return in response.',
-        }),
-    ),
-    ScanRange: ScanRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the byte range of the object to get the records from. A record is processed when its first byte is contained by the range. This parameter is optional, but when specified, it must not be empty. See RFC 2616, Section 14.35.1 about how to specify the start and end of the range.</p> <p> <code>ScanRange</code>may be used in the following ways:</p> <ul> <li> <p> <code>&lt;scanrange&gt;&lt;start&gt;50&lt;/start&gt;&lt;end&gt;100&lt;/end&gt;&lt;/scanrange&gt;</code> - process only the records starting between the bytes 50 and 100 (inclusive, counting from zero)</p> </li> <li> <p> <code>&lt;scanrange&gt;&lt;start&gt;50&lt;/start&gt;&lt;/scanrange&gt;</code> - process only the records starting after the byte 50</p> </li> <li> <p> <code>&lt;scanrange&gt;&lt;end&gt;50&lt;/end&gt;&lt;/scanrange&gt;</code> - process only the records within the last 50 bytes of the file.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Expression: ExpressionSchema.openapi({
+      description: 'The expression that is used to query the object.',
+    }),
+    ExpressionType: ExpressionTypeSchema.openapi({
+      description: 'The type of the provided expression (for example, SQL).',
+    }),
+    RequestProgress: RequestProgressSchema.exactOptional().openapi({
+      description: 'Specifies if periodic request progress information should be enabled.',
+    }),
+    InputSerialization: InputSerializationSchema.openapi({
+      description: 'Describes the format of the data in the object that is being queried.',
+    }),
+    OutputSerialization: OutputSerializationSchema.openapi({
+      description:
+        'Describes the format of the data that you want Amazon S3 to return in response.',
+    }),
+    ScanRange: ScanRangeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the byte range of the object to get the records from. A record is processed when its first byte is contained by the range. This parameter is optional, but when specified, it must not be empty. See RFC 2616, Section 14.35.1 about how to specify the start and end of the range.</p> <p> <code>ScanRange</code>may be used in the following ways:</p> <ul> <li> <p> <code>&lt;scanrange&gt;&lt;start&gt;50&lt;/start&gt;&lt;end&gt;100&lt;/end&gt;&lt;/scanrange&gt;</code> - process only the records starting between the bytes 50 and 100 (inclusive, counting from zero)</p> </li> <li> <p> <code>&lt;scanrange&gt;&lt;start&gt;50&lt;/start&gt;&lt;/scanrange&gt;</code> - process only the records starting after the byte 50</p> </li> <li> <p> <code>&lt;scanrange&gt;&lt;end&gt;50&lt;/end&gt;&lt;/scanrange&gt;</code> - process only the records within the last 50 bytes of the file.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Expression', 'ExpressionType', 'InputSerialization', 'OutputSerialization'],
@@ -6755,28 +5302,22 @@ const SelectObjectContentRequestSchema = z
   .openapi('SelectObjectContentRequest')
 
 const UploadPartCopyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UploadPartCopyRequest' })
   .openapi('UploadPartCopyRequest')
 
 const UploadPartRequestSchema = z
-  .object({
-    Body: BodySchema.and(z.any().openapi({ description: 'Object data.' })).exactOptional(),
-  })
+  .object({ Body: BodySchema.exactOptional().openapi({ description: 'Object data.' }) })
   .openapi({ title: 'UploadPartRequest', required: [] })
   .openapi('UploadPartRequest')
 
 const WriteGetObjectResponseRequestSchema = z
   .object({
-    Body: BodySchema.and(z.any().openapi({ description: 'The object data.' })).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'x-amz-meta-' },
-          description: 'A map of metadata to store with the object in S3.',
-        }),
-    ).exactOptional(),
+    Body: BodySchema.exactOptional().openapi({ description: 'The object data.' }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      xml: { name: 'x-amz-meta-' },
+      description: 'A map of metadata to store with the object in S3.',
+    }),
   })
   .openapi({ title: 'WriteGetObjectResponseRequest', required: [] })
   .openapi('WriteGetObjectResponseRequest')
@@ -7177,15 +5718,11 @@ export const postBucketKeyUploadIdRoute = createRoute({
             .object({
               CompleteMultipartUpload: z
                 .object({
-                  Parts: CompletedPartListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'Part' },
-                        description:
-                          '<p>Array of CompletedPart data types.</p> <p>If you do not supply a valid <code>Part</code> with your request, the service sends back an HTTP 400 response.</p>',
-                      }),
-                  ).exactOptional(),
+                  Parts: CompletedPartListSchema.exactOptional().openapi({
+                    xml: { name: 'Part' },
+                    description:
+                      '<p>Array of CompletedPart data types.</p> <p>If you do not supply a valid <code>Part</code> with your request, the service sends back an HTTP 400 response.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -8229,14 +6766,10 @@ export const putBucketRoute = createRoute({
             .object({
               CreateBucketConfiguration: z
                 .object({
-                  LocationConstraint: BucketLocationConstraintSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the Region where the bucket will be created. If you don't specify a Region, the bucket is created in the US East (N. Virginia) Region (us-east-1).",
-                      }),
-                  ).exactOptional(),
+                  LocationConstraint: BucketLocationConstraintSchema.exactOptional().openapi({
+                    description:
+                      "Specifies the Region where the bucket will be created. If you don't specify a Region, the bucket is created in the US East (N. Virginia) Region (us-east-1).",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -8960,29 +7493,17 @@ export const putBucketAnalyticsIdRoute = createRoute({
             .object({
               AnalyticsConfiguration: z
                 .object({
-                  Id: AnalyticsIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID that identifies the analytics configuration.',
-                      }),
-                  ).exactOptional(),
-                  Filter: AnalyticsFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The filter used to describe a set of objects for analyses. A filter must have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator). If no filter is provided, all objects will be considered in any analysis.',
-                      }),
-                  ).exactOptional(),
-                  StorageClassAnalysis: StorageClassAnalysisSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Contains data related to access patterns to be collected and made available to analyze the tradeoffs between different storage classes. ',
-                      }),
-                  ).exactOptional(),
+                  Id: AnalyticsIdSchema.exactOptional().openapi({
+                    description: 'The ID that identifies the analytics configuration.',
+                  }),
+                  Filter: AnalyticsFilterSchema.exactOptional().openapi({
+                    description:
+                      'The filter used to describe a set of objects for analyses. A filter must have exactly one prefix, one tag, or one conjunction (AnalyticsAndOperator). If no filter is provided, all objects will be considered in any analysis.',
+                  }),
+                  StorageClassAnalysis: StorageClassAnalysisSchema.exactOptional().openapi({
+                    description:
+                      ' Contains data related to access patterns to be collected and made available to analyze the tradeoffs between different storage classes. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -9207,15 +7728,11 @@ export const putBucketCorsRoute = createRoute({
             .object({
               CORSConfiguration: z
                 .object({
-                  CORSRules: CORSRulesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'CORSRule' },
-                        description:
-                          'A set of origins and methods (cross-origin access that you want to allow). You can add up to 100 rules to the configuration.',
-                      }),
-                  ).exactOptional(),
+                  CORSRules: CORSRulesSchema.exactOptional().openapi({
+                    xml: { name: 'CORSRule' },
+                    description:
+                      'A set of origins and methods (cross-origin access that you want to allow). You can add up to 100 rules to the configuration.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -9431,15 +7948,11 @@ export const putBucketEncryptionRoute = createRoute({
             .object({
               ServerSideEncryptionConfiguration: z
                 .object({
-                  Rules: ServerSideEncryptionRulesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'Rule' },
-                        description:
-                          'Container for information about a particular server-side encryption configuration rule.',
-                      }),
-                  ).exactOptional(),
+                  Rules: ServerSideEncryptionRulesSchema.exactOptional().openapi({
+                    xml: { name: 'Rule' },
+                    description:
+                      'Container for information about a particular server-side encryption configuration rule.',
+                  }),
                 })
                 .openapi({
                   description: 'Specifies the default server-side-encryption configuration.',
@@ -9617,34 +8130,22 @@ export const putBucketIntelligentTieringIdRoute = createRoute({
             .object({
               IntelligentTieringConfiguration: z
                 .object({
-                  Id: IntelligentTieringIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID used to identify the S3 Intelligent-Tiering configuration.',
-                      }),
-                  ).exactOptional(),
-                  Filter: IntelligentTieringFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies a bucket filter. The configuration only includes objects that meet the filter's criteria.",
-                      }),
-                  ).exactOptional(),
-                  Status: IntelligentTieringStatusSchema.and(
-                    z.any().openapi({ description: 'Specifies the status of the configuration.' }),
-                  ).exactOptional(),
-                  Tierings: TieringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'Tiering' },
-                        description:
-                          'Specifies the S3 Intelligent-Tiering storage class tier of the configuration.',
-                      }),
-                  ).exactOptional(),
+                  Id: IntelligentTieringIdSchema.exactOptional().openapi({
+                    description:
+                      'The ID used to identify the S3 Intelligent-Tiering configuration.',
+                  }),
+                  Filter: IntelligentTieringFilterSchema.exactOptional().openapi({
+                    description:
+                      "Specifies a bucket filter. The configuration only includes objects that meet the filter's criteria.",
+                  }),
+                  Status: IntelligentTieringStatusSchema.exactOptional().openapi({
+                    description: 'Specifies the status of the configuration.',
+                  }),
+                  Tierings: TieringListSchema.exactOptional().openapi({
+                    xml: { name: 'Tiering' },
+                    description:
+                      'Specifies the S3 Intelligent-Tiering storage class tier of the configuration.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -9848,60 +8349,33 @@ export const putBucketInventoryIdRoute = createRoute({
             .object({
               InventoryConfiguration: z
                 .object({
-                  Destination: InventoryDestinationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains information about where to publish the inventory results.',
-                      }),
-                  ).exactOptional(),
-                  IsEnabled: IsEnabledSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies whether the inventory is enabled or disabled. If set to <code>True</code>, an inventory list is generated. If set to <code>False</code>, no inventory list is generated.',
-                      }),
-                  ).exactOptional(),
-                  Filter: InventoryFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies an inventory filter. The inventory only includes objects that meet the filter's criteria.",
-                      }),
-                  ).exactOptional(),
-                  Id: InventoryIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID used to identify the inventory configuration.',
-                      }),
-                  ).exactOptional(),
-                  IncludedObjectVersions: InventoryIncludedObjectVersionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Object versions to include in the inventory list. If set to <code>All</code>, the list includes all the object versions, which adds the version-related fields <code>VersionId</code>, <code>IsLatest</code>, and <code>DeleteMarker</code> to the list. If set to <code>Current</code>, the list does not contain these version-related fields.',
-                      }),
-                  ).exactOptional(),
-                  OptionalFields: InventoryOptionalFieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains the optional fields that are included in the inventory results.',
-                      }),
-                  ).exactOptional(),
-                  Schedule: InventoryScheduleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies the schedule for generating inventory results.',
-                      }),
-                  ).exactOptional(),
+                  Destination: InventoryDestinationSchema.exactOptional().openapi({
+                    description:
+                      'Contains information about where to publish the inventory results.',
+                  }),
+                  IsEnabled: IsEnabledSchema.exactOptional().openapi({
+                    description:
+                      'Specifies whether the inventory is enabled or disabled. If set to <code>True</code>, an inventory list is generated. If set to <code>False</code>, no inventory list is generated.',
+                  }),
+                  Filter: InventoryFilterSchema.exactOptional().openapi({
+                    description:
+                      "Specifies an inventory filter. The inventory only includes objects that meet the filter's criteria.",
+                  }),
+                  Id: InventoryIdSchema.exactOptional().openapi({
+                    description: 'The ID used to identify the inventory configuration.',
+                  }),
+                  IncludedObjectVersions:
+                    InventoryIncludedObjectVersionsSchema.exactOptional().openapi({
+                      description:
+                        'Object versions to include in the inventory list. If set to <code>All</code>, the list includes all the object versions, which adds the version-related fields <code>VersionId</code>, <code>IsLatest</code>, and <code>DeleteMarker</code> to the list. If set to <code>Current</code>, the list does not contain these version-related fields.',
+                    }),
+                  OptionalFields: InventoryOptionalFieldsSchema.exactOptional().openapi({
+                    description:
+                      'Contains the optional fields that are included in the inventory results.',
+                  }),
+                  Schedule: InventoryScheduleSchema.exactOptional().openapi({
+                    description: 'Specifies the schedule for generating inventory results.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -10109,15 +8583,10 @@ export const putBucketLifecycleRoute = createRoute({
             .object({
               LifecycleConfiguration: z
                 .object({
-                  Rules: LifecycleRulesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'Rule' },
-                        description:
-                          'A lifecycle rule for individual objects in an Amazon S3 bucket.',
-                      }),
-                  ).exactOptional(),
+                  Rules: LifecycleRulesSchema.exactOptional().openapi({
+                    xml: { name: 'Rule' },
+                    description: 'A lifecycle rule for individual objects in an Amazon S3 bucket.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10329,22 +8798,14 @@ export const putBucketMetricsIdRoute = createRoute({
             .object({
               MetricsConfiguration: z
                 .object({
-                  Id: MetricsIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID used to identify the metrics configuration. The ID has a 64 character limit and can only contain letters, numbers, periods, dashes, and underscores.',
-                      }),
-                  ).exactOptional(),
-                  Filter: MetricsFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies a metrics configuration filter. The metrics configuration will only include objects that meet the filter's criteria. A filter must be a prefix, an object tag, an access point ARN, or a conjunction (MetricsAndOperator).",
-                      }),
-                  ).exactOptional(),
+                  Id: MetricsIdSchema.exactOptional().openapi({
+                    description:
+                      'The ID used to identify the metrics configuration. The ID has a 64 character limit and can only contain letters, numbers, periods, dashes, and underscores.',
+                  }),
+                  Filter: MetricsFilterSchema.exactOptional().openapi({
+                    description:
+                      "Specifies a metrics configuration filter. The metrics configuration will only include objects that meet the filter's criteria. A filter must be a prefix, an object tag, an access point ARN, or a conjunction (MetricsAndOperator).",
+                  }),
                 })
                 .openapi({
                   description:
@@ -10555,14 +9016,10 @@ export const putBucketOwnershipControlsRoute = createRoute({
             .object({
               OwnershipControls: z
                 .object({
-                  Rules: OwnershipControlsRulesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'Rule' },
-                        description: 'The container element for an ownership control rule.',
-                      }),
-                  ).exactOptional(),
+                  Rules: OwnershipControlsRulesSchema.exactOptional().openapi({
+                    xml: { name: 'Rule' },
+                    description: 'The container element for an ownership control rule.',
+                  }),
                 })
                 .openapi({
                   description: "The container element for a bucket's ownership controls.",
@@ -11009,23 +9466,15 @@ export const putBucketReplicationRoute = createRoute({
             .object({
               ReplicationConfiguration: z
                 .object({
-                  Role: RoleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that Amazon S3 assumes when replicating objects. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-how-setup.html">How to Set Up Replication</a> in the <i>Amazon S3 User Guide</i>.',
-                      }),
-                  ).exactOptional(),
-                  Rules: ReplicationRulesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'Rule' },
-                        description:
-                          'A container for one or more replication rules. A replication configuration must have at least one rule and can contain a maximum of 1,000 rules. ',
-                      }),
-                  ).exactOptional(),
+                  Role: RoleSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that Amazon S3 assumes when replicating objects. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-how-setup.html">How to Set Up Replication</a> in the <i>Amazon S3 User Guide</i>.',
+                  }),
+                  Rules: ReplicationRulesSchema.exactOptional().openapi({
+                    xml: { name: 'Rule' },
+                    description:
+                      'A container for one or more replication rules. A replication configuration must have at least one rule and can contain a maximum of 1,000 rules. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -11241,9 +9690,9 @@ export const putBucketTaggingRoute = createRoute({
             .object({
               Tagging: z
                 .object({
-                  TagSet: TagSetSchema.and(
-                    z.any().openapi({ description: 'A collection for a set of tags' }),
-                  ).exactOptional(),
+                  TagSet: TagSetSchema.exactOptional().openapi({
+                    description: 'A collection for a set of tags',
+                  }),
                 })
                 .openapi({
                   description: 'Container for <code>TagSet</code> elements.',
@@ -11461,32 +9910,20 @@ export const putBucketWebsiteRoute = createRoute({
             .object({
               WebsiteConfiguration: z
                 .object({
-                  ErrorDocument: ErrorDocumentSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The name of the error document for the website.' }),
-                  ).exactOptional(),
-                  IndexDocument: IndexDocumentSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The name of the index document for the website.' }),
-                  ).exactOptional(),
-                  RedirectAllRequestsTo: RedirectAllRequestsToSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>The redirect behavior for every request to this bucket's website endpoint.</p> <important> <p>If you specify this property, you can't specify any other property.</p> </important>",
-                      }),
-                  ).exactOptional(),
-                  RoutingRules: RoutingRulesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Rules that define when a redirect is applied and the redirect behavior.',
-                      }),
-                  ).exactOptional(),
+                  ErrorDocument: ErrorDocumentSchema.exactOptional().openapi({
+                    description: 'The name of the error document for the website.',
+                  }),
+                  IndexDocument: IndexDocumentSchema.exactOptional().openapi({
+                    description: 'The name of the index document for the website.',
+                  }),
+                  RedirectAllRequestsTo: RedirectAllRequestsToSchema.exactOptional().openapi({
+                    description:
+                      "<p>The redirect behavior for every request to this bucket's website endpoint.</p> <important> <p>If you specify this property, you can't specify any other property.</p> </important>",
+                  }),
+                  RoutingRules: RoutingRulesSchema.exactOptional().openapi({
+                    description:
+                      'Rules that define when a redirect is applied and the redirect behavior.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -12981,9 +11418,9 @@ export const putBucketKeyTaggingRoute = createRoute({
             .object({
               Tagging: z
                 .object({
-                  TagSet: TagSetSchema.and(
-                    z.any().openapi({ description: 'A collection for a set of tags' }),
-                  ).exactOptional(),
+                  TagSet: TagSetSchema.exactOptional().openapi({
+                    description: 'A collection for a set of tags',
+                  }),
                 })
                 .openapi({
                   description: 'Container for <code>TagSet</code> elements.',
@@ -13206,19 +11643,14 @@ export const postBucketDeleteRoute = createRoute({
             .object({
               Delete: z
                 .object({
-                  Objects: ObjectIdentifierListSchema.and(
-                    z
-                      .any()
-                      .openapi({ xml: { name: 'Object' }, description: 'The object to delete.' }),
-                  ).exactOptional(),
-                  Quiet: QuietSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Element to enable quiet mode for the request. When you add this element, you must set its value to true.',
-                      }),
-                  ).exactOptional(),
+                  Objects: ObjectIdentifierListSchema.exactOptional().openapi({
+                    xml: { name: 'Object' },
+                    description: 'The object to delete.',
+                  }),
+                  Quiet: QuietSchema.exactOptional().openapi({
+                    description:
+                      'Element to enable quiet mode for the request. When you add this element, you must set its value to true.',
+                  }),
                 })
                 .openapi({ description: 'Container for the objects to delete.', required: [] }),
             })
@@ -13375,38 +11807,22 @@ export const putBucketPublicAccessBlockRoute = createRoute({
             .object({
               PublicAccessBlockConfiguration: z
                 .object({
-                  BlockPublicAcls: SettingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>Specifies whether Amazon S3 should block public access control lists (ACLs) for this bucket and objects in this bucket. Setting this element to <code>TRUE</code> causes the following behavior:</p> <ul> <li> <p>PUT Bucket ACL and PUT Object ACL calls fail if the specified ACL is public.</p> </li> <li> <p>PUT Object calls fail if the request includes a public ACL.</p> </li> <li> <p>PUT Bucket calls fail if the request includes a public ACL.</p> </li> </ul> <p>Enabling this setting doesn't affect existing policies or ACLs.</p>",
-                      }),
-                  ).exactOptional(),
-                  IgnorePublicAcls: SettingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>Specifies whether Amazon S3 should ignore public ACLs for this bucket and objects in this bucket. Setting this element to <code>TRUE</code> causes Amazon S3 to ignore all public ACLs on this bucket and objects in this bucket.</p> <p>Enabling this setting doesn't affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set.</p>",
-                      }),
-                  ).exactOptional(),
-                  BlockPublicPolicy: SettingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>Specifies whether Amazon S3 should block public bucket policies for this bucket. Setting this element to <code>TRUE</code> causes Amazon S3 to reject calls to PUT Bucket policy if the specified bucket policy allows public access. </p> <p>Enabling this setting doesn't affect existing bucket policies.</p>",
-                      }),
-                  ).exactOptional(),
-                  RestrictPublicBuckets: SettingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>Specifies whether Amazon S3 should restrict public bucket policies for this bucket. Setting this element to <code>TRUE</code> restricts access to this bucket to only Amazon Web Service principals and authorized users within this account if the bucket has a public policy.</p> <p>Enabling this setting doesn't affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked.</p>",
-                      }),
-                  ).exactOptional(),
+                  BlockPublicAcls: SettingSchema.exactOptional().openapi({
+                    description:
+                      "<p>Specifies whether Amazon S3 should block public access control lists (ACLs) for this bucket and objects in this bucket. Setting this element to <code>TRUE</code> causes the following behavior:</p> <ul> <li> <p>PUT Bucket ACL and PUT Object ACL calls fail if the specified ACL is public.</p> </li> <li> <p>PUT Object calls fail if the request includes a public ACL.</p> </li> <li> <p>PUT Bucket calls fail if the request includes a public ACL.</p> </li> </ul> <p>Enabling this setting doesn't affect existing policies or ACLs.</p>",
+                  }),
+                  IgnorePublicAcls: SettingSchema.exactOptional().openapi({
+                    description:
+                      "<p>Specifies whether Amazon S3 should ignore public ACLs for this bucket and objects in this bucket. Setting this element to <code>TRUE</code> causes Amazon S3 to ignore all public ACLs on this bucket and objects in this bucket.</p> <p>Enabling this setting doesn't affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set.</p>",
+                  }),
+                  BlockPublicPolicy: SettingSchema.exactOptional().openapi({
+                    description:
+                      "<p>Specifies whether Amazon S3 should block public bucket policies for this bucket. Setting this element to <code>TRUE</code> causes Amazon S3 to reject calls to PUT Bucket policy if the specified bucket policy allows public access. </p> <p>Enabling this setting doesn't affect existing bucket policies.</p>",
+                  }),
+                  RestrictPublicBuckets: SettingSchema.exactOptional().openapi({
+                    description:
+                      "<p>Specifies whether Amazon S3 should restrict public bucket policies for this bucket. Setting this element to <code>TRUE</code> restricts access to this bucket to only Amazon Web Service principals and authorized users within this account if the bucket has a public policy.</p> <p>Enabling this setting doesn't affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked.</p>",
+                  }),
                 })
                 .openapi({
                   description:
@@ -13624,13 +12040,9 @@ export const putBucketAccelerateRoute = createRoute({
             .object({
               AccelerateConfiguration: z
                 .object({
-                  Status: BucketAccelerateStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies the transfer acceleration status of the bucket.',
-                      }),
-                  ).exactOptional(),
+                  Status: BucketAccelerateStatusSchema.exactOptional().openapi({
+                    description: 'Specifies the transfer acceleration status of the bucket.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -13868,21 +12280,13 @@ export const putBucketAclRoute = createRoute({
             .object({
               AccessControlPolicy: z
                 .object({
-                  Grants: GrantsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'AccessControlList' },
-                        description: 'A list of grants.',
-                      }),
-                  ).exactOptional(),
-                  Owner: OwnerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: "Container for the bucket owner's display name and ID.",
-                      }),
-                  ).exactOptional(),
+                  Grants: GrantsSchema.exactOptional().openapi({
+                    xml: { name: 'AccessControlList' },
+                    description: 'A list of grants.',
+                  }),
+                  Owner: OwnerSchema.exactOptional().openapi({
+                    description: "Container for the bucket owner's display name and ID.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -14047,15 +12451,11 @@ export const putBucketLifecycleDeprecatedRoute = createRoute({
             .object({
               LifecycleConfiguration: z
                 .object({
-                  Rules: RulesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'Rule' },
-                        description:
-                          'Specifies lifecycle configuration rules for an Amazon S3 bucket. ',
-                      }),
-                  ).exactOptional(),
+                  Rules: RulesSchema.exactOptional().openapi({
+                    xml: { name: 'Rule' },
+                    description:
+                      'Specifies lifecycle configuration rules for an Amazon S3 bucket. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -14424,40 +12824,25 @@ export const putBucketNotificationRoute = createRoute({
             .object({
               NotificationConfiguration: z
                 .object({
-                  TopicConfigurations: TopicConfigurationListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'TopicConfiguration' },
-                        description:
-                          'The topic to which notifications are sent and the events for which notifications are generated.',
-                      }),
-                  ).exactOptional(),
-                  QueueConfigurations: QueueConfigurationListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'QueueConfiguration' },
-                        description:
-                          'The Amazon Simple Queue Service queues to publish messages to and the events for which to publish messages.',
-                      }),
-                  ).exactOptional(),
-                  LambdaFunctionConfigurations: LambdaFunctionConfigurationListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'CloudFunctionConfiguration' },
-                        description:
-                          'Describes the Lambda functions to invoke and the events for which to invoke them.',
-                      }),
-                  ).exactOptional(),
-                  EventBridgeConfiguration: EventBridgeConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Enables delivery of events to Amazon EventBridge.',
-                      }),
-                  ).exactOptional(),
+                  TopicConfigurations: TopicConfigurationListSchema.exactOptional().openapi({
+                    xml: { name: 'TopicConfiguration' },
+                    description:
+                      'The topic to which notifications are sent and the events for which notifications are generated.',
+                  }),
+                  QueueConfigurations: QueueConfigurationListSchema.exactOptional().openapi({
+                    xml: { name: 'QueueConfiguration' },
+                    description:
+                      'The Amazon Simple Queue Service queues to publish messages to and the events for which to publish messages.',
+                  }),
+                  LambdaFunctionConfigurations:
+                    LambdaFunctionConfigurationListSchema.exactOptional().openapi({
+                      xml: { name: 'CloudFunctionConfiguration' },
+                      description:
+                        'Describes the Lambda functions to invoke and the events for which to invoke them.',
+                    }),
+                  EventBridgeConfiguration: EventBridgeConfigurationSchema.exactOptional().openapi({
+                    description: 'Enables delivery of events to Amazon EventBridge.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -14622,30 +13007,19 @@ export const putBucketNotificationDeprecatedRoute = createRoute({
             .object({
               NotificationConfiguration: z
                 .object({
-                  TopicConfiguration: TopicConfigurationDeprecatedSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'This data type is deprecated. A container for specifying the configuration for publication of messages to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3 detects specified events. ',
-                      }),
-                  ).exactOptional(),
-                  QueueConfiguration: QueueConfigurationDeprecatedSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'This data type is deprecated. This data type specifies the configuration for publishing messages to an Amazon Simple Queue Service (Amazon SQS) queue when Amazon S3 detects specified events. ',
-                      }),
-                  ).exactOptional(),
-                  CloudFunctionConfiguration: CloudFunctionConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Container for specifying the Lambda notification configuration.',
-                      }),
-                  ).exactOptional(),
+                  TopicConfiguration: TopicConfigurationDeprecatedSchema.exactOptional().openapi({
+                    description:
+                      'This data type is deprecated. A container for specifying the configuration for publication of messages to an Amazon Simple Notification Service (Amazon SNS) topic when Amazon S3 detects specified events. ',
+                  }),
+                  QueueConfiguration: QueueConfigurationDeprecatedSchema.exactOptional().openapi({
+                    description:
+                      'This data type is deprecated. This data type specifies the configuration for publishing messages to an Amazon Simple Queue Service (Amazon SQS) queue when Amazon S3 detects specified events. ',
+                  }),
+                  CloudFunctionConfiguration:
+                    CloudFunctionConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'Container for specifying the Lambda notification configuration.',
+                    }),
                 })
                 .openapi({
                   description: 'The container for the configuration.',
@@ -14882,13 +13256,9 @@ export const putBucketRequestPaymentRoute = createRoute({
             .object({
               RequestPaymentConfiguration: z
                 .object({
-                  Payer: PayerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies who pays for the download and request fees.',
-                      }),
-                  ).exactOptional(),
+                  Payer: PayerSchema.exactOptional().openapi({
+                    description: 'Specifies who pays for the download and request fees.',
+                  }),
                 })
                 .openapi({ description: 'Container for Payer.', required: [] }),
             })
@@ -15060,18 +13430,14 @@ export const putBucketVersioningRoute = createRoute({
             .object({
               VersioningConfiguration: z
                 .object({
-                  MFADelete: MFADeleteSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'MfaDelete' },
-                        description:
-                          'Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned.',
-                      }),
-                  ).exactOptional(),
-                  Status: BucketVersioningStatusSchema.and(
-                    z.any().openapi({ description: 'The versioning state of the bucket.' }),
-                  ).exactOptional(),
+                  MFADelete: MFADeleteSchema.exactOptional().openapi({
+                    xml: { name: 'MfaDelete' },
+                    description:
+                      'Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned.',
+                  }),
+                  Status: BucketVersioningStatusSchema.exactOptional().openapi({
+                    description: 'The versioning state of the bucket.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -15418,21 +13784,13 @@ export const putBucketKeyAclRoute = createRoute({
             .object({
               AccessControlPolicy: z
                 .object({
-                  Grants: GrantsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'AccessControlList' },
-                        description: 'A list of grants.',
-                      }),
-                  ).exactOptional(),
-                  Owner: OwnerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: "Container for the bucket owner's display name and ID.",
-                      }),
-                  ).exactOptional(),
+                  Grants: GrantsSchema.exactOptional().openapi({
+                    xml: { name: 'AccessControlList' },
+                    description: 'A list of grants.',
+                  }),
+                  Owner: OwnerSchema.exactOptional().openapi({
+                    description: "Container for the bucket owner's display name and ID.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -15886,14 +14244,10 @@ export const putBucketKeyLegalHoldRoute = createRoute({
             .object({
               LegalHold: z
                 .object({
-                  Status: ObjectLockLegalHoldStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Indicates whether the specified object has a legal hold in place.',
-                      }),
-                  ).exactOptional(),
+                  Status: ObjectLockLegalHoldStatusSchema.exactOptional().openapi({
+                    description:
+                      'Indicates whether the specified object has a legal hold in place.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -16088,22 +14442,14 @@ export const putBucketObjectLockRoute = createRoute({
             .object({
               ObjectLockConfiguration: z
                 .object({
-                  ObjectLockEnabled: ObjectLockEnabledSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Indicates whether this bucket has an Object Lock configuration enabled. Enable <code>ObjectLockEnabled</code> when you apply <code>ObjectLockConfiguration</code> to a bucket. ',
-                      }),
-                  ).exactOptional(),
-                  Rule: ObjectLockRuleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the Object Lock rule for the specified object. Enable the this rule when you apply <code>ObjectLockConfiguration</code> to a bucket. Bucket settings require both a mode and a period. The period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.',
-                      }),
-                  ).exactOptional(),
+                  ObjectLockEnabled: ObjectLockEnabledSchema.exactOptional().openapi({
+                    description:
+                      'Indicates whether this bucket has an Object Lock configuration enabled. Enable <code>ObjectLockEnabled</code> when you apply <code>ObjectLockConfiguration</code> to a bucket. ',
+                  }),
+                  Rule: ObjectLockRuleSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the Object Lock rule for the specified object. Enable the this rule when you apply <code>ObjectLockConfiguration</code> to a bucket. Bucket settings require both a mode and a period. The period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -16370,20 +14716,12 @@ export const putBucketKeyRetentionRoute = createRoute({
             .object({
               Retention: z
                 .object({
-                  Mode: ObjectLockRetentionModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Indicates the Retention mode for the specified object.',
-                      }),
-                  ).exactOptional(),
-                  RetainUntilDate: DateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The date on which this Object Lock Retention will expire.',
-                      }),
-                  ).exactOptional(),
+                  Mode: ObjectLockRetentionModeSchema.exactOptional().openapi({
+                    description: 'Indicates the Retention mode for the specified object.',
+                  }),
+                  RetainUntilDate: DateSchema.exactOptional().openapi({
+                    description: 'The date on which this Object Lock Retention will expire.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'A Retention configuration for an object.', required: [] }),
@@ -17565,48 +15903,29 @@ export const postBucketKeyRestoreRoute = createRoute({
             .object({
               RestoreRequest: z
                 .object({
-                  Days: DaysSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Lifetime of the active copy in days. Do not use with restores that specify <code>OutputLocation</code>.</p> <p>The Days element is required for regular restores, and must not be provided for select requests.</p>',
-                      }),
-                  ).exactOptional(),
-                  GlacierJobParameters: GlacierJobParametersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'S3 Glacier related parameters pertaining to this job. Do not use with restores that specify <code>OutputLocation</code>.',
-                      }),
-                  ).exactOptional(),
-                  Type: RestoreRequestTypeSchema.and(
-                    z.any().openapi({ description: 'Type of restore request.' }),
-                  ).exactOptional(),
-                  Tier: TierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Retrieval tier at which the restore will be processed.',
-                      }),
-                  ).exactOptional(),
-                  Description: DescriptionSchema.and(
-                    z.any().openapi({ description: 'The optional description for the job.' }),
-                  ).exactOptional(),
-                  SelectParameters: SelectParametersSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Describes the parameters for Select job types.' }),
-                  ).exactOptional(),
-                  OutputLocation: OutputLocationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Describes the location where the restore job's output is stored.",
-                      }),
-                  ).exactOptional(),
+                  Days: DaysSchema.exactOptional().openapi({
+                    description:
+                      '<p>Lifetime of the active copy in days. Do not use with restores that specify <code>OutputLocation</code>.</p> <p>The Days element is required for regular restores, and must not be provided for select requests.</p>',
+                  }),
+                  GlacierJobParameters: GlacierJobParametersSchema.exactOptional().openapi({
+                    description:
+                      'S3 Glacier related parameters pertaining to this job. Do not use with restores that specify <code>OutputLocation</code>.',
+                  }),
+                  Type: RestoreRequestTypeSchema.exactOptional().openapi({
+                    description: 'Type of restore request.',
+                  }),
+                  Tier: TierSchema.exactOptional().openapi({
+                    description: 'Retrieval tier at which the restore will be processed.',
+                  }),
+                  Description: DescriptionSchema.exactOptional().openapi({
+                    description: 'The optional description for the job.',
+                  }),
+                  SelectParameters: SelectParametersSchema.exactOptional().openapi({
+                    description: 'Describes the parameters for Select job types.',
+                  }),
+                  OutputLocation: OutputLocationSchema.exactOptional().openapi({
+                    description: "Describes the location where the restore job's output is stored.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Container for restore job parameters.', required: [] }),
@@ -17751,14 +16070,10 @@ export const postBucketKeySelectSelectType2Route = createRoute({
                 }),
               RequestProgress: z
                 .object({
-                  Enabled: EnableRequestProgressSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies whether periodic QueryProgress frames should be sent. Valid values: TRUE, FALSE. Default value: FALSE.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: EnableRequestProgressSchema.exactOptional().openapi({
+                    description:
+                      'Specifies whether periodic QueryProgress frames should be sent. Valid values: TRUE, FALSE. Default value: FALSE.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -17768,35 +16083,19 @@ export const postBucketKeySelectSelectType2Route = createRoute({
                 }),
               InputSerialization: z
                 .object({
-                  CSV: CSVInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Describes the serialization of a CSV-encoded object.',
-                      }),
-                  ).exactOptional(),
-                  CompressionType: CompressionTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies object's compression format. Valid values: NONE, GZIP, BZIP2. Default Value: NONE.",
-                      }),
-                  ).exactOptional(),
-                  JSON: JSONInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: "Specifies JSON as object's input serialization format.",
-                      }),
-                  ).exactOptional(),
-                  Parquet: ParquetInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: "Specifies Parquet as object's input serialization format.",
-                      }),
-                  ).exactOptional(),
+                  CSV: CSVInputSchema.exactOptional().openapi({
+                    description: 'Describes the serialization of a CSV-encoded object.',
+                  }),
+                  CompressionType: CompressionTypeSchema.exactOptional().openapi({
+                    description:
+                      "Specifies object's compression format. Valid values: NONE, GZIP, BZIP2. Default Value: NONE.",
+                  }),
+                  JSON: JSONInputSchema.exactOptional().openapi({
+                    description: "Specifies JSON as object's input serialization format.",
+                  }),
+                  Parquet: ParquetInputSchema.exactOptional().openapi({
+                    description: "Specifies Parquet as object's input serialization format.",
+                  }),
                 })
                 .openapi({
                   description: 'Describes the serialization format of the object.',
@@ -17804,20 +16103,12 @@ export const postBucketKeySelectSelectType2Route = createRoute({
                 }),
               OutputSerialization: z
                 .object({
-                  CSV: CSVOutputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Describes the serialization of CSV-encoded Select results.',
-                      }),
-                  ).exactOptional(),
-                  JSON: JSONOutputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: "Specifies JSON as request's output serialization format.",
-                      }),
-                  ).exactOptional(),
+                  CSV: CSVOutputSchema.exactOptional().openapi({
+                    description: 'Describes the serialization of CSV-encoded Select results.',
+                  }),
+                  JSON: JSONOutputSchema.exactOptional().openapi({
+                    description: "Specifies JSON as request's output serialization format.",
+                  }),
                 })
                 .openapi({
                   description: 'Describes how results of the Select job are serialized.',
@@ -17825,22 +16116,14 @@ export const postBucketKeySelectSelectType2Route = createRoute({
                 }),
               ScanRange: z
                 .object({
-                  Start: StartSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the start of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is 0. If only <code>start</code> is supplied, it means scan from that point to the end of the file. For example, <code>&lt;scanrange&gt;&lt;start&gt;50&lt;/start&gt;&lt;/scanrange&gt;</code> means scan from byte 50 until the end of the file.',
-                      }),
-                  ).exactOptional(),
-                  End: EndSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the end of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is one less than the size of the object being queried. If only the End parameter is supplied, it is interpreted to mean scan the last N bytes of the file. For example, <code>&lt;scanrange&gt;&lt;end&gt;50&lt;/end&gt;&lt;/scanrange&gt;</code> means scan the last 50 bytes.',
-                      }),
-                  ).exactOptional(),
+                  Start: StartSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the start of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is 0. If only <code>start</code> is supplied, it means scan from that point to the end of the file. For example, <code>&lt;scanrange&gt;&lt;start&gt;50&lt;/start&gt;&lt;/scanrange&gt;</code> means scan from byte 50 until the end of the file.',
+                  }),
+                  End: EndSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the end of the byte range. This parameter is optional. Valid values: non-negative integers. The default value is one less than the size of the object being queried. If only the End parameter is supplied, it is interpreted to mean scan the last N bytes of the file. For example, <code>&lt;scanrange&gt;&lt;end&gt;50&lt;/end&gt;&lt;/scanrange&gt;</code> means scan the last 50 bytes.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

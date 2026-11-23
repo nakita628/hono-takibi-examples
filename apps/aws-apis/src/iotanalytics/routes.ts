@@ -1,5 +1,14 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const DatasetNameSchema = z
+  .string()
+  .regex(/(^(?!_{2}))(^[a-zA-Z0-9_]+$)/)
+  .min(1)
+  .max(128)
+  .openapi('DatasetName')
+
+const DatasetArnSchema = z.string().openapi('DatasetArn')
+
 const DatasetActionNameSchema = z
   .string()
   .regex(/^[a-zA-Z0-9_]+$/)
@@ -15,22 +24,14 @@ const TimeExpressionSchema = z.string().openapi('TimeExpression')
 
 const DeltaTimeSchema = z
   .object({
-    offsetSeconds: OffsetSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of seconds of estimated in-flight lag time of message data. When you create dataset contents using message data from a specified timeframe, some message data might still be in flight when processing begins, and so do not arrive in time to be processed. Use this field to make allowances for the in flight time of your message data, so that data not processed from a previous timeframe is included with the next timeframe. Otherwise, missed message data would be excluded from processing during the next timeframe too, because its timestamp places it within the previous timeframe.',
-        }),
-    ),
-    timeExpression: TimeExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An expression by which the time of the message data might be determined. This can be the name of a timestamp field or a SQL expression that is used to derive the time the message data was generated.',
-        }),
-    ),
+    offsetSeconds: OffsetSecondsSchema.openapi({
+      description:
+        'The number of seconds of estimated in-flight lag time of message data. When you create dataset contents using message data from a specified timeframe, some message data might still be in flight when processing begins, and so do not arrive in time to be processed. Use this field to make allowances for the in flight time of your message data, so that data not processed from a previous timeframe is included with the next timeframe. Otherwise, missed message data would be excluded from processing during the next timeframe too, because its timestamp places it within the previous timeframe.',
+    }),
+    timeExpression: TimeExpressionSchema.openapi({
+      description:
+        'An expression by which the time of the message data might be determined. This can be the name of a timestamp field or a SQL expression that is used to derive the time the message data was generated.',
+    }),
   })
   .openapi({
     required: ['offsetSeconds', 'timeExpression'],
@@ -41,14 +42,10 @@ const DeltaTimeSchema = z
 
 const QueryFilterSchema = z
   .object({
-    deltaTime: DeltaTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to limit data to that which has arrived since the last execution of the action.',
-        }),
-    ).exactOptional(),
+    deltaTime: DeltaTimeSchema.exactOptional().openapi({
+      description:
+        'Used to limit data to that which has arrived since the last execution of the action.',
+    }),
   })
   .openapi({
     description:
@@ -61,10 +58,10 @@ const QueryFiltersSchema = z.array(QueryFilterSchema).min(0).max(1).openapi('Que
 
 const SqlQueryDatasetActionSchema = z
   .object({
-    sqlQuery: SqlQuerySchema.and(z.any().openapi({ description: 'A SQL query string.' })),
-    filters: QueryFiltersSchema.and(
-      z.any().openapi({ description: 'Prefilters applied to message data.' }),
-    ).exactOptional(),
+    sqlQuery: SqlQuerySchema.openapi({ description: 'A SQL query string.' }),
+    filters: QueryFiltersSchema.exactOptional().openapi({
+      description: 'Prefilters applied to message data.',
+    }),
   })
   .openapi({ required: ['sqlQuery'], description: 'The SQL query to modify the message.' })
   .openapi('SqlQueryDatasetAction')
@@ -79,22 +76,14 @@ const VolumeSizeInGBSchema = z.int().min(1).max(50).openapi('VolumeSizeInGB')
 
 const ResourceConfigurationSchema = z
   .object({
-    computeType: ComputeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the compute resource used to execute the <code>containerAction</code>. Possible values are: <code>ACU_1</code> (vCPU=4, memory=16 GiB) or <code>ACU_2</code> (vCPU=8, memory=32 GiB).',
-        }),
-    ),
-    volumeSizeInGB: VolumeSizeInGBSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size, in GB, of the persistent storage available to the resource instance used to execute the <code>containerAction</code> (min: 1, max: 50).',
-        }),
-    ),
+    computeType: ComputeTypeSchema.openapi({
+      description:
+        'The type of the compute resource used to execute the <code>containerAction</code>. Possible values are: <code>ACU_1</code> (vCPU=4, memory=16 GiB) or <code>ACU_2</code> (vCPU=8, memory=32 GiB).',
+    }),
+    volumeSizeInGB: VolumeSizeInGBSchema.openapi({
+      description:
+        'The size, in GB, of the persistent storage available to the resource instance used to execute the <code>containerAction</code> (min: 1, max: 50).',
+    }),
   })
   .openapi({
     required: ['computeType', 'volumeSizeInGB'],
@@ -109,23 +98,12 @@ const StringValueSchema = z.string().min(0).max(1024).openapi('StringValue')
 
 const DoubleValueSchema = z.float64().openapi('DoubleValue')
 
-const DatasetNameSchema = z
-  .string()
-  .regex(/(^(?!_{2}))(^[a-zA-Z0-9_]+$)/)
-  .min(1)
-  .max(128)
-  .openapi('DatasetName')
-
 const DatasetContentVersionValueSchema = z
   .object({
-    datasetName: DatasetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the dataset whose latest contents are used as input to the notebook or application.',
-        }),
-    ),
+    datasetName: DatasetNameSchema.openapi({
+      description:
+        'The name of the dataset whose latest contents are used as input to the notebook or application.',
+    }),
   })
   .openapi({
     required: ['datasetName'],
@@ -141,14 +119,10 @@ const OutputFileNameSchema = z
 
 const OutputFileUriValueSchema = z
   .object({
-    fileName: OutputFileNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI of the location where dataset contents are stored, usually the URI of a file in an S3 bucket.',
-        }),
-    ),
+    fileName: OutputFileNameSchema.openapi({
+      description:
+        'The URI of the location where dataset contents are stored, usually the URI of a file in an S3 bucket.',
+    }),
   })
   .openapi({
     required: ['fileName'],
@@ -158,29 +132,20 @@ const OutputFileUriValueSchema = z
 
 const VariableSchema = z
   .object({
-    name: VariableNameSchema.and(z.any().openapi({ description: 'The name of the variable.' })),
-    stringValue: StringValueSchema.and(
-      z.any().openapi({ description: 'The value of the variable as a string.' }),
-    ).exactOptional(),
-    doubleValue: DoubleValueSchema.and(
-      z.any().openapi({ description: 'The value of the variable as a double (numeric).' }),
-    ).exactOptional(),
-    datasetContentVersionValue: DatasetContentVersionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the variable as a structure that specifies a dataset content version.',
-        }),
-    ).exactOptional(),
-    outputFileUriValue: OutputFileUriValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the variable as a structure that specifies an output file URI.',
-        }),
-    ).exactOptional(),
+    name: VariableNameSchema.openapi({ description: 'The name of the variable.' }),
+    stringValue: StringValueSchema.exactOptional().openapi({
+      description: 'The value of the variable as a string.',
+    }),
+    doubleValue: DoubleValueSchema.exactOptional().openapi({
+      description: 'The value of the variable as a double (numeric).',
+    }),
+    datasetContentVersionValue: DatasetContentVersionValueSchema.exactOptional().openapi({
+      description:
+        'The value of the variable as a structure that specifies a dataset content version.',
+    }),
+    outputFileUriValue: OutputFileUriValueSchema.exactOptional().openapi({
+      description: 'The value of the variable as a structure that specifies an output file URI.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -193,38 +158,21 @@ const VariablesSchema = z.array(VariableSchema).min(0).max(50).openapi('Variable
 
 const ContainerDatasetActionSchema = z
   .object({
-    image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Docker container stored in your account. The Docker container contains an application and required support libraries and is used to generate dataset contents.',
-        }),
-    ),
-    executionRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that gives permission to the system to access required resources to run the <code>containerAction</code>. This includes, at minimum, permission to retrieve the dataset contents that are the input to the containerized application.',
-        }),
-    ),
-    resourceConfiguration: ResourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration of the resource that executes the <code>containerAction</code>.',
-        }),
-    ),
-    variables: VariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The values of variables used in the context of the execution of the containerized application (basically, parameters passed to the application). Each variable must have a name and a value given by one of <code>stringValue</code>, <code>datasetContentVersionValue</code>, or <code>outputFileUriValue</code>.',
-        }),
-    ).exactOptional(),
+    image: ImageSchema.openapi({
+      description:
+        'The ARN of the Docker container stored in your account. The Docker container contains an application and required support libraries and is used to generate dataset contents.',
+    }),
+    executionRoleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the role that gives permission to the system to access required resources to run the <code>containerAction</code>. This includes, at minimum, permission to retrieve the dataset contents that are the input to the containerized application.',
+    }),
+    resourceConfiguration: ResourceConfigurationSchema.openapi({
+      description: 'Configuration of the resource that executes the <code>containerAction</code>.',
+    }),
+    variables: VariablesSchema.exactOptional().openapi({
+      description:
+        'The values of variables used in the context of the execution of the containerized application (basically, parameters passed to the application). Each variable must have a name and a value given by one of <code>stringValue</code>, <code>datasetContentVersionValue</code>, or <code>outputFileUriValue</code>.',
+    }),
   })
   .openapi({
     required: ['image', 'executionRoleArn', 'resourceConfiguration'],
@@ -233,322 +181,48 @@ const ContainerDatasetActionSchema = z
   })
   .openapi('ContainerDatasetAction')
 
-type DatasetActionType = {
-  actionName?: z.infer<typeof DatasetActionNameSchema> & { [key: string]: unknown }
-  queryAction?: z.infer<typeof SqlQueryDatasetActionSchema> & { [key: string]: unknown }
-  containerAction?: z.infer<typeof ContainerDatasetActionSchema> & { [key: string]: unknown }
-}
-
-const UnlimitedRetentionPeriodSchema = z.boolean().openapi('UnlimitedRetentionPeriod')
-
-const RetentionPeriodInDaysSchema = z.int().min(1).openapi('RetentionPeriodInDays')
-
-type RetentionPeriodType = {
-  unlimited?: z.infer<typeof UnlimitedRetentionPeriodSchema> & { [key: string]: unknown }
-  numberOfDays?: z.infer<typeof RetentionPeriodInDaysSchema> & { [key: string]: unknown }
-}
-
-const S3PathChannelMessageSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9\/_!'(){}\*\s\.\-\=\:]+$/)
-  .min(1)
-  .max(1024)
-  .openapi('S3PathChannelMessage')
-
-const S3PathChannelMessagesSchema = z
-  .array(S3PathChannelMessageSchema)
-  .min(1)
-  .max(100)
-  .openapi('S3PathChannelMessages')
-
-type ChannelMessagesType = {
-  s3Paths?: z.infer<typeof S3PathChannelMessagesSchema> & { [key: string]: unknown }
-}
-
-const MessageIdSchema = z
-  .string()
-  .regex(/\p{ASCII}*/u)
-  .min(1)
-  .max(128)
-  .openapi('MessageId')
-
-const ErrorCodeSchema = z.string().openapi('ErrorCode')
-
-const ErrorMessageSchema = z.string().openapi('ErrorMessage')
-
-const BatchPutMessageErrorEntrySchema = z
+const DatasetActionSchema = z
   .object({
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the message that caused the error. See the value corresponding to the <code>messageId</code> key in the message object.',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The code associated with the error.' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The message associated with the error.' }),
-    ).exactOptional(),
+    actionName: DatasetActionNameSchema.exactOptional().openapi({
+      description:
+        'The name of the dataset action by which dataset contents are automatically created.',
+    }),
+    queryAction: SqlQueryDatasetActionSchema.exactOptional().openapi({
+      description:
+        'An <code>SqlQueryDatasetAction</code> object that uses an SQL query to automatically create dataset contents.',
+    }),
+    containerAction: ContainerDatasetActionSchema.exactOptional().openapi({
+      description:
+        'Information that allows the system to run a containerized application to create the dataset contents. The application must be in a Docker container along with any required support libraries.',
+    }),
   })
-  .openapi({ description: 'Contains informations about errors.', required: [] })
-  .openapi('BatchPutMessageErrorEntry')
-
-const BatchPutMessageErrorEntriesSchema = z
-  .array(BatchPutMessageErrorEntrySchema)
-  .openapi('BatchPutMessageErrorEntries')
-
-const BatchPutMessageResponseSchema = z
-  .object({
-    batchPutMessageErrorEntries: BatchPutMessageErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of any errors encountered when sending the messages to the channel.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchPutMessageResponse')
-
-const MessagePayloadSchema = z.string().openapi('MessagePayload')
-
-const MessageSchema = z
-  .object({
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID you want to assign to the message. Each <code>messageId</code> must be unique within each batch sent.',
-        }),
-    ),
-    payload: MessagePayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The payload of the message. This can be a JSON string or a base64-encoded string representing binary data, in which case you must decode it by means of a pipeline activity.',
-        }),
-    ),
-  })
-  .openapi({ required: ['messageId', 'payload'], description: 'Information about a message.' })
-  .openapi('Message')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
-
-const InternalFailureExceptionSchema = z.any().openapi('InternalFailureException')
-
-const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
-
-const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
-
-const CancelPipelineReprocessingResponseSchema = z
-  .object({})
-  .openapi('CancelPipelineReprocessingResponse')
-
-const ChannelNameSchema = z
-  .string()
-  .regex(/(^(?!_{2}))(^[a-zA-Z0-9_]+$)/)
-  .min(1)
-  .max(128)
-  .openapi('ChannelName')
-
-const ChannelArnSchema = z.string().openapi('ChannelArn')
-
-const RetentionPeriodSchema: z.ZodType<RetentionPeriodType> = z
-  .lazy(() =>
-    z
-      .object({
-        unlimited: UnlimitedRetentionPeriodSchema.and(
-          z.any().openapi({ description: 'If true, message data is kept indefinitely.' }),
-        ).exactOptional(),
-        numberOfDays: RetentionPeriodInDaysSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'How long, in days, message data is kept.', required: [] }),
-  )
-  .openapi('RetentionPeriod')
-
-const CreateChannelResponseSchema = z
-  .object({
-    channelName: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    channelArn: ChannelArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z.any().openapi({ description: 'How long, in days, message data is kept for the channel.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateChannelResponse')
-
-const ServiceManagedChannelS3StorageSchema = z
-  .object({})
   .openapi({
     description:
-      "Used to store channel data in an S3 bucket managed by IoT Analytics. You can't change the choice of S3 storage after the data store is created.",
+      'A <code>DatasetAction</code> object that specifies how dataset contents are automatically created.',
+    required: [],
   })
-  .openapi('ServiceManagedChannelS3Storage')
-
-const BucketNameSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9.\-_]*$/)
-  .min(3)
-  .max(255)
-  .openapi('BucketName')
-
-const S3KeyPrefixSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9!_.*'()\/{}:-]*\/$/)
-  .min(1)
-  .max(255)
-  .openapi('S3KeyPrefix')
-
-const CustomerManagedChannelS3StorageSchema = z
-  .object({
-    bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the S3 bucket in which channel data is stored.' }),
-    ),
-    keyPrefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The prefix used to create the keys of the channel data objects. Each object in an S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/).',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 resources.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['bucket', 'roleArn'],
-    description:
-      "Used to store channel data in an S3 bucket that you manage. If customer-managed storage is selected, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of S3 storage after the data store is created.",
-  })
-  .openapi('CustomerManagedChannelS3Storage')
-
-const TagKeySchema = z.string().min(1).max(256).openapi('TagKey')
-
-const TagValueSchema = z.string().min(1).max(256).openapi('TagValue')
-
-const TagSchema = z
-  .object({
-    key: TagKeySchema.and(z.any().openapi({ description: "The tag's key." })),
-    value: TagValueSchema.and(z.any().openapi({ description: "The tag's value." })),
-  })
-  .openapi({
-    required: ['key', 'value'],
-    description: 'A set of key-value pairs that are used to manage the resource.',
-  })
-  .openapi('Tag')
-
-const ResourceAlreadyExistsExceptionSchema = z.any().openapi('ResourceAlreadyExistsException')
-
-const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
-
-const DatasetArnSchema = z.string().openapi('DatasetArn')
-
-const CreateDatasetResponseSchema = z
-  .object({
-    datasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ).exactOptional(),
-    datasetArn: DatasetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset.' }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({ description: 'How long, in days, dataset contents are kept for the dataset.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateDatasetResponse')
-
-const DatasetActionSchema: z.ZodType<DatasetActionType> = z
-  .lazy(() =>
-    z
-      .object({
-        actionName: DatasetActionNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The name of the dataset action by which dataset contents are automatically created.',
-            }),
-        ).exactOptional(),
-        queryAction: SqlQueryDatasetActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'An <code>SqlQueryDatasetAction</code> object that uses an SQL query to automatically create dataset contents.',
-            }),
-        ).exactOptional(),
-        containerAction: ContainerDatasetActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Information that allows the system to run a containerized application to create the dataset contents. The application must be in a Docker container along with any required support libraries.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'A <code>DatasetAction</code> object that specifies how dataset contents are automatically created.',
-        required: [],
-      }),
-  )
   .openapi('DatasetAction')
+
+const DatasetActionsSchema = z.array(DatasetActionSchema).length(1).openapi('DatasetActions')
 
 const ScheduleExpressionSchema = z.string().openapi('ScheduleExpression')
 
 const ScheduleSchema = z
   .object({
-    expression: ScheduleExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The expression that defines when to trigger an update. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html">Schedule Expressions for Rules</a> in the <i>Amazon CloudWatch Events User Guide</i>.',
-        }),
-    ).exactOptional(),
+    expression: ScheduleExpressionSchema.exactOptional().openapi({
+      description:
+        'The expression that defines when to trigger an update. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html">Schedule Expressions for Rules</a> in the <i>Amazon CloudWatch Events User Guide</i>.',
+    }),
   })
   .openapi({ description: 'The schedule for when to trigger an update.', required: [] })
   .openapi('Schedule')
 
 const TriggeringDatasetSchema = z
   .object({
-    name: DatasetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the dataset whose content generation triggers the new dataset content generation.',
-        }),
-    ),
+    name: DatasetNameSchema.openapi({
+      description:
+        'The name of the dataset whose content generation triggers the new dataset content generation.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -559,17 +233,13 @@ const TriggeringDatasetSchema = z
 
 const DatasetTriggerSchema = z
   .object({
-    schedule: ScheduleSchema.and(
-      z.any().openapi({ description: 'The Schedule when the trigger is initiated.' }),
-    ).exactOptional(),
-    dataset: TriggeringDatasetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The dataset whose content creation triggers the creation of this dataset's contents.",
-        }),
-    ).exactOptional(),
+    schedule: ScheduleSchema.exactOptional().openapi({
+      description: 'The Schedule when the trigger is initiated.',
+    }),
+    dataset: TriggeringDatasetSchema.exactOptional().openapi({
+      description:
+        "The dataset whose content creation triggers the creation of this dataset's contents.",
+    }),
   })
   .openapi({
     description:
@@ -577,6 +247,8 @@ const DatasetTriggerSchema = z
     required: [],
   })
   .openapi('DatasetTrigger')
+
+const DatasetTriggersSchema = z.array(DatasetTriggerSchema).min(0).max(5).openapi('DatasetTriggers')
 
 const EntryNameSchema = z.string().openapi('EntryName')
 
@@ -589,27 +261,26 @@ const IotEventsInputNameSchema = z
 
 const IotEventsDestinationConfigurationSchema = z
   .object({
-    inputName: IotEventsInputNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IoT Events input to which dataset contents are delivered.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT Analytics permission to deliver dataset contents to an IoT Events input.',
-        }),
-    ),
+    inputName: IotEventsInputNameSchema.openapi({
+      description: 'The name of the IoT Events input to which dataset contents are delivered.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the role that grants IoT Analytics permission to deliver dataset contents to an IoT Events input.',
+    }),
   })
   .openapi({
     required: ['inputName', 'roleArn'],
     description: 'Configuration information for delivery of dataset contents to IoT Events.',
   })
   .openapi('IotEventsDestinationConfiguration')
+
+const BucketNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9.\-_]*$/)
+  .min(3)
+  .max(255)
+  .openapi('BucketName')
 
 const BucketKeyExpressionSchema = z
   .string()
@@ -634,22 +305,14 @@ const GlueDatabaseNameSchema = z
 
 const GlueConfigurationSchema = z
   .object({
-    tableName: GlueTableNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the table in your Glue Data Catalog that is used to perform the ETL operations. An Glue Data Catalog table contains partitioned data and descriptions of data sources and targets.',
-        }),
-    ),
-    databaseName: GlueDatabaseNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the database in your Glue Data Catalog in which the table is located. An Glue Data Catalog database contains metadata tables.',
-        }),
-    ),
+    tableName: GlueTableNameSchema.openapi({
+      description:
+        'The name of the table in your Glue Data Catalog that is used to perform the ETL operations. An Glue Data Catalog table contains partitioned data and descriptions of data sources and targets.',
+    }),
+    databaseName: GlueDatabaseNameSchema.openapi({
+      description:
+        'The name of the database in your Glue Data Catalog in which the table is located. An Glue Data Catalog database contains metadata tables.',
+    }),
   })
   .openapi({
     required: ['tableName', 'databaseName'],
@@ -660,37 +323,21 @@ const GlueConfigurationSchema = z
 
 const S3DestinationConfigurationSchema = z
   .object({
-    bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the S3 bucket to which dataset contents are delivered.',
-        }),
-    ),
-    key: BucketKeyExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The key of the dataset contents object in an S3 bucket. Each object has a key that is a unique identifier. Each object has exactly one key.</p> <p>You can create a unique key with the following options:</p> <ul> <li> <p>Use <code>!{iotanalytics:scheduleTime}</code> to insert the time of a scheduled SQL query run.</p> </li> <li> <p>Use <code>!{iotanalytics:versionId}</code> to insert a unique hash that identifies a dataset content.</p> </li> <li> <p>Use <code>!{iotanalytics:creationTime}</code> to insert the creation time of a dataset content.</p> </li> </ul> <p>The following example creates a unique key for a CSV file: <code>dataset/mydataset/!{iotanalytics:scheduleTime}/!{iotanalytics:versionId}.csv</code> </p> <note> <p>If you don't use <code>!{iotanalytics:versionId}</code> to specify the key, you might get duplicate keys. For example, you might have two dataset contents with the same <code>scheduleTime</code> but different <code>versionId</code>s. This means that one dataset content overwrites the other. </p> </note>",
-        }),
-    ),
-    glueConfiguration: GlueConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration information for coordination with Glue, a fully managed extract, transform and load (ETL) service.',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 and Glue resources.',
-        }),
-    ),
+    bucket: BucketNameSchema.openapi({
+      description: 'The name of the S3 bucket to which dataset contents are delivered.',
+    }),
+    key: BucketKeyExpressionSchema.openapi({
+      description:
+        "<p>The key of the dataset contents object in an S3 bucket. Each object has a key that is a unique identifier. Each object has exactly one key.</p> <p>You can create a unique key with the following options:</p> <ul> <li> <p>Use <code>!{iotanalytics:scheduleTime}</code> to insert the time of a scheduled SQL query run.</p> </li> <li> <p>Use <code>!{iotanalytics:versionId}</code> to insert a unique hash that identifies a dataset content.</p> </li> <li> <p>Use <code>!{iotanalytics:creationTime}</code> to insert the creation time of a dataset content.</p> </li> </ul> <p>The following example creates a unique key for a CSV file: <code>dataset/mydataset/!{iotanalytics:scheduleTime}/!{iotanalytics:versionId}.csv</code> </p> <note> <p>If you don't use <code>!{iotanalytics:versionId}</code> to specify the key, you might get duplicate keys. For example, you might have two dataset contents with the same <code>scheduleTime</code> but different <code>versionId</code>s. This means that one dataset content overwrites the other. </p> </note>",
+    }),
+    glueConfiguration: GlueConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration information for coordination with Glue, a fully managed extract, transform and load (ETL) service.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 and Glue resources.',
+    }),
   })
   .openapi({
     required: ['bucket', 'key', 'roleArn'],
@@ -701,20 +348,13 @@ const S3DestinationConfigurationSchema = z
 
 const DatasetContentDeliveryDestinationSchema = z
   .object({
-    iotEventsDestinationConfiguration: IotEventsDestinationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration information for delivery of dataset contents to IoT Events.',
-        }),
-    ).exactOptional(),
-    s3DestinationConfiguration: S3DestinationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration information for delivery of dataset contents to Amazon S3.',
-        }),
-    ).exactOptional(),
+    iotEventsDestinationConfiguration:
+      IotEventsDestinationConfigurationSchema.exactOptional().openapi({
+        description: 'Configuration information for delivery of dataset contents to IoT Events.',
+      }),
+    s3DestinationConfiguration: S3DestinationConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration information for delivery of dataset contents to Amazon S3.',
+    }),
   })
   .openapi({
     description: 'The destination to which dataset contents are delivered.',
@@ -724,12 +364,12 @@ const DatasetContentDeliveryDestinationSchema = z
 
 const DatasetContentDeliveryRuleSchema = z
   .object({
-    entryName: EntryNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset content delivery rules entry.' }),
-    ).exactOptional(),
-    destination: DatasetContentDeliveryDestinationSchema.and(
-      z.any().openapi({ description: 'The destination to which dataset contents are delivered.' }),
-    ),
+    entryName: EntryNameSchema.exactOptional().openapi({
+      description: 'The name of the dataset content delivery rules entry.',
+    }),
+    destination: DatasetContentDeliveryDestinationSchema.openapi({
+      description: 'The destination to which dataset contents are delivered.',
+    }),
   })
   .openapi({
     required: ['destination'],
@@ -738,9 +378,49 @@ const DatasetContentDeliveryRuleSchema = z
   })
   .openapi('DatasetContentDeliveryRule')
 
+const DatasetContentDeliveryRulesSchema = z
+  .array(DatasetContentDeliveryRuleSchema)
+  .min(0)
+  .max(20)
+  .openapi('DatasetContentDeliveryRules')
+
+const DatasetStatusSchema = z.enum(['CREATING', 'ACTIVE', 'DELETING']).openapi('DatasetStatus')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const UnlimitedRetentionPeriodSchema = z.boolean().openapi('UnlimitedRetentionPeriod')
+
+const RetentionPeriodInDaysSchema = z.int().min(1).openapi('RetentionPeriodInDays')
+
+const RetentionPeriodSchema = z
+  .object({
+    unlimited: UnlimitedRetentionPeriodSchema.exactOptional().openapi({
+      description: 'If true, message data is kept indefinitely.',
+    }),
+    numberOfDays: RetentionPeriodInDaysSchema.exactOptional().openapi({
+      description:
+        'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
+    }),
+  })
+  .openapi({ description: 'How long, in days, message data is kept.', required: [] })
+  .openapi('RetentionPeriod')
+
 const UnlimitedVersioningSchema = z.boolean().openapi('UnlimitedVersioning')
 
 const MaxVersionsSchema = z.int().min(1).max(1000).openapi('MaxVersions')
+
+const VersioningConfigurationSchema = z
+  .object({
+    unlimited: UnlimitedVersioningSchema.exactOptional().openapi({
+      description: 'If true, unlimited versions of dataset contents are kept.',
+    }),
+    maxVersions: MaxVersionsSchema.exactOptional().openapi({
+      description:
+        'How many versions of dataset contents are kept. The <code>unlimited</code> parameter must be <code>false</code>.',
+    }),
+  })
+  .openapi({ description: 'Information about the versioning of dataset contents.', required: [] })
+  .openapi('VersioningConfiguration')
 
 const LateDataRuleNameSchema = z
   .string()
@@ -753,14 +433,10 @@ const SessionTimeoutInMinutesSchema = z.int().min(1).max(60).openapi('SessionTim
 
 const DeltaTimeSessionWindowConfigurationSchema = z
   .object({
-    timeoutInMinutes: SessionTimeoutInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A time interval. You can use <code>timeoutInMinutes</code> so that IoT Analytics can batch up late data notifications that have been generated since the last execution. IoT Analytics sends one batch of notifications to Amazon CloudWatch Events at one time.</p> <p>For more information about how to write a timestamp expression, see <a href="https://prestodb.io/docs/0.172/functions/datetime.html">Date and Time Functions and Operators</a>, in the <i>Presto 0.172 Documentation</i>.</p>',
-        }),
-    ),
+    timeoutInMinutes: SessionTimeoutInMinutesSchema.openapi({
+      description:
+        '<p>A time interval. You can use <code>timeoutInMinutes</code> so that IoT Analytics can batch up late data notifications that have been generated since the last execution. IoT Analytics sends one batch of notifications to Amazon CloudWatch Events at one time.</p> <p>For more information about how to write a timestamp expression, see <a href="https://prestodb.io/docs/0.172/functions/datetime.html">Date and Time Functions and Operators</a>, in the <i>Presto 0.172 Documentation</i>.</p>',
+    }),
   })
   .openapi({
     required: ['timeoutInMinutes'],
@@ -771,13 +447,10 @@ const DeltaTimeSessionWindowConfigurationSchema = z
 
 const LateDataRuleConfigurationSchema = z
   .object({
-    deltaTimeSessionWindowConfiguration: DeltaTimeSessionWindowConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The information needed to configure a delta time session window.',
-        }),
-    ).exactOptional(),
+    deltaTimeSessionWindowConfiguration:
+      DeltaTimeSessionWindowConfigurationSchema.exactOptional().openapi({
+        description: 'The information needed to configure a delta time session window.',
+      }),
   })
   .openapi({
     description: 'The information needed to configure a delta time session window.',
@@ -787,12 +460,12 @@ const LateDataRuleConfigurationSchema = z
 
 const LateDataRuleSchema = z
   .object({
-    ruleName: LateDataRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the late data rule.' }),
-    ).exactOptional(),
-    ruleConfiguration: LateDataRuleConfigurationSchema.and(
-      z.any().openapi({ description: 'The information needed to configure the late data rule.' }),
-    ),
+    ruleName: LateDataRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the late data rule.',
+    }),
+    ruleConfiguration: LateDataRuleConfigurationSchema.openapi({
+      description: 'The information needed to configure the late data rule.',
+    }),
   })
   .openapi({
     required: ['ruleConfiguration'],
@@ -801,15 +474,221 @@ const LateDataRuleSchema = z
   })
   .openapi('LateDataRule')
 
+const LateDataRulesSchema = z.array(LateDataRuleSchema).length(1).openapi('LateDataRules')
+
+const DatasetSchema = z
+  .object({
+    name: DatasetNameSchema.exactOptional().openapi({ description: 'The name of the dataset.' }),
+    arn: DatasetArnSchema.exactOptional().openapi({ description: 'The ARN of the dataset.' }),
+    actions: DatasetActionsSchema.exactOptional().openapi({
+      description:
+        'The <code>DatasetAction</code> objects that automatically create the dataset contents.',
+    }),
+    triggers: DatasetTriggersSchema.exactOptional().openapi({
+      description:
+        'The <code>DatasetTrigger</code> objects that specify when the dataset is automatically updated.',
+    }),
+    contentDeliveryRules: DatasetContentDeliveryRulesSchema.exactOptional().openapi({
+      description:
+        'When dataset contents are created they are delivered to destinations specified here.',
+    }),
+    status: DatasetStatusSchema.exactOptional().openapi({
+      description: 'The status of the dataset.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the dataset was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the dataset was updated.',
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description: 'Optional. How long, in days, message data is kept for the dataset.',
+    }),
+    versioningConfiguration: VersioningConfigurationSchema.exactOptional().openapi({
+      description:
+        'Optional. How many versions of dataset contents are kept. If not specified or set to null, only the latest version plus the latest succeeded version (if they are different) are kept for the time period specified by the <code>retentionPeriod</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/iotanalytics/latest/userguide/getting-started.html#aws-iot-analytics-dataset-versions"> Keeping Multiple Versions of IoT Analytics datasets</a> in the <i>IoT Analytics User Guide</i>.',
+    }),
+    lateDataRules: LateDataRulesSchema.exactOptional().openapi({
+      description:
+        'A list of data rules that send notifications to CloudWatch, when data arrives late. To specify <code>lateDataRules</code>, the dataset must use a <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DeltaTime.html">DeltaTimer</a> filter.',
+    }),
+  })
+  .openapi({ description: 'Information about a dataset.', required: [] })
+  .openapi('Dataset')
+
+type DescribeDatasetResponseType = { dataset?: z.infer<typeof DatasetSchema> & unknown }
+
+const MessageIdSchema = z
+  .string()
+  .regex(/\p{ASCII}*/u)
+  .min(1)
+  .max(128)
+  .openapi('MessageId')
+
+const ErrorCodeSchema = z.string().openapi('ErrorCode')
+
+const ErrorMessageSchema = z.string().openapi('ErrorMessage')
+
+const BatchPutMessageErrorEntrySchema = z
+  .object({
+    messageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the message that caused the error. See the value corresponding to the <code>messageId</code> key in the message object.',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The code associated with the error.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The message associated with the error.',
+    }),
+  })
+  .openapi({ description: 'Contains informations about errors.', required: [] })
+  .openapi('BatchPutMessageErrorEntry')
+
+const BatchPutMessageErrorEntriesSchema = z
+  .array(BatchPutMessageErrorEntrySchema)
+  .openapi('BatchPutMessageErrorEntries')
+
+const BatchPutMessageResponseSchema = z
+  .object({
+    batchPutMessageErrorEntries: BatchPutMessageErrorEntriesSchema.exactOptional().openapi({
+      description: 'A list of any errors encountered when sending the messages to the channel.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchPutMessageResponse')
+
+const MessagePayloadSchema = z.string().openapi('MessagePayload')
+
+const MessageSchema = z
+  .object({
+    messageId: MessageIdSchema.openapi({
+      description:
+        'The ID you want to assign to the message. Each <code>messageId</code> must be unique within each batch sent.',
+    }),
+    payload: MessagePayloadSchema.openapi({
+      description:
+        'The payload of the message. This can be a JSON string or a base64-encoded string representing binary data, in which case you must decode it by means of a pipeline activity.',
+    }),
+  })
+  .openapi({ required: ['messageId', 'payload'], description: 'Information about a message.' })
+  .openapi('Message')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
+
+const InternalFailureExceptionSchema = z.any().openapi('InternalFailureException')
+
+const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
+
+const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
+
+const CancelPipelineReprocessingResponseSchema = z
+  .looseObject({})
+  .openapi('CancelPipelineReprocessingResponse')
+
+const ChannelNameSchema = z
+  .string()
+  .regex(/(^(?!_{2}))(^[a-zA-Z0-9_]+$)/)
+  .min(1)
+  .max(128)
+  .openapi('ChannelName')
+
+const ChannelArnSchema = z.string().openapi('ChannelArn')
+
+const CreateChannelResponseSchema = z
+  .object({
+    channelName: ChannelNameSchema.exactOptional().openapi({
+      description: 'The name of the channel.',
+    }),
+    channelArn: ChannelArnSchema.exactOptional().openapi({
+      description: 'The ARN of the channel.',
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description: 'How long, in days, message data is kept for the channel.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateChannelResponse')
+
+const ServiceManagedChannelS3StorageSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      "Used to store channel data in an S3 bucket managed by IoT Analytics. You can't change the choice of S3 storage after the data store is created.",
+  })
+  .openapi('ServiceManagedChannelS3Storage')
+
+const S3KeyPrefixSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9!_.*'()\/{}:-]*\/$/)
+  .min(1)
+  .max(255)
+  .openapi('S3KeyPrefix')
+
+const CustomerManagedChannelS3StorageSchema = z
+  .object({
+    bucket: BucketNameSchema.openapi({
+      description: 'The name of the S3 bucket in which channel data is stored.',
+    }),
+    keyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        '(Optional) The prefix used to create the keys of the channel data objects. Each object in an S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/).',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 resources.',
+    }),
+  })
+  .openapi({
+    required: ['bucket', 'roleArn'],
+    description:
+      "Used to store channel data in an S3 bucket that you manage. If customer-managed storage is selected, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of S3 storage after the data store is created.",
+  })
+  .openapi('CustomerManagedChannelS3Storage')
+
+const TagKeySchema = z.string().min(1).max(256).openapi('TagKey')
+
+const TagValueSchema = z.string().min(1).max(256).openapi('TagValue')
+
+const TagSchema = z
+  .object({
+    key: TagKeySchema.openapi({ description: "The tag's key." }),
+    value: TagValueSchema.openapi({ description: "The tag's value." }),
+  })
+  .openapi({
+    required: ['key', 'value'],
+    description: 'A set of key-value pairs that are used to manage the resource.',
+  })
+  .openapi('Tag')
+
+const ResourceAlreadyExistsExceptionSchema = z.any().openapi('ResourceAlreadyExistsException')
+
+const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
+
+const CreateDatasetResponseSchema = z
+  .object({
+    datasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'The name of the dataset.',
+    }),
+    datasetArn: DatasetArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset.',
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description: 'How long, in days, dataset contents are kept for the dataset.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateDatasetResponse')
+
 const DatasetContentVersionSchema = z.string().min(7).max(36).openapi('DatasetContentVersion')
 
 const CreateDatasetContentResponseSchema = z
   .object({
-    versionId: DatasetContentVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version ID of the dataset contents that are being created.' }),
-    ).exactOptional(),
+    versionId: DatasetContentVersionSchema.exactOptional().openapi({
+      description: 'The version ID of the dataset contents that are being created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetContentResponse')
@@ -825,23 +704,21 @@ const DatastoreArnSchema = z.string().openapi('DatastoreArn')
 
 const CreateDatastoreResponseSchema = z
   .object({
-    datastoreName: DatastoreNameSchema.and(
-      z.any().openapi({ description: 'The name of the data store.' }),
-    ).exactOptional(),
-    datastoreArn: DatastoreArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the data store.' }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({ description: 'How long, in days, message data is kept for the data store.' }),
-    ).exactOptional(),
+    datastoreName: DatastoreNameSchema.exactOptional().openapi({
+      description: 'The name of the data store.',
+    }),
+    datastoreArn: DatastoreArnSchema.exactOptional().openapi({
+      description: 'The ARN of the data store.',
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description: 'How long, in days, message data is kept for the data store.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatastoreResponse')
 
 const ServiceManagedDatastoreS3StorageSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "Used to store data in an Amazon S3 bucket managed by IoT Analytics. You can't change the choice of Amazon S3 storage after your data store is created. ",
@@ -850,27 +727,17 @@ const ServiceManagedDatastoreS3StorageSchema = z
 
 const CustomerManagedDatastoreS3StorageSchema = z
   .object({
-    bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Amazon S3 bucket where your data is stored.' }),
-    ),
-    keyPrefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The prefix used to create the keys of the data store data objects. Each object in an Amazon S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/).',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 resources.',
-        }),
-    ),
+    bucket: BucketNameSchema.openapi({
+      description: 'The name of the Amazon S3 bucket where your data is stored.',
+    }),
+    keyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        '(Optional) The prefix used to create the keys of the data store data objects. Each object in an Amazon S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/).',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 resources.',
+    }),
   })
   .openapi({
     required: ['bucket', 'roleArn'],
@@ -881,19 +748,13 @@ const CustomerManagedDatastoreS3StorageSchema = z
 
 const IotSiteWiseCustomerManagedDatastoreS3StorageSchema = z
   .object({
-    bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The name of the Amazon S3 bucket where your data is stored. ' }),
-    ),
-    keyPrefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' (Optional) The prefix used to create the keys of the data store data objects. Each object in an Amazon S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). ',
-        }),
-    ).exactOptional(),
+    bucket: BucketNameSchema.openapi({
+      description: ' The name of the Amazon S3 bucket where your data is stored. ',
+    }),
+    keyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        ' (Optional) The prefix used to create the keys of the data store data objects. Each object in an Amazon S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). ',
+    }),
   })
   .openapi({
     required: ['bucket'],
@@ -904,14 +765,10 @@ const IotSiteWiseCustomerManagedDatastoreS3StorageSchema = z
 
 const DatastoreIotSiteWiseMultiLayerStorageSchema = z
   .object({
-    customerManagedS3Storage: IotSiteWiseCustomerManagedDatastoreS3StorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. ',
-        }),
-    ),
+    customerManagedS3Storage: IotSiteWiseCustomerManagedDatastoreS3StorageSchema.openapi({
+      description:
+        ' Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. ',
+    }),
   })
   .openapi({
     required: ['customerManagedS3Storage'],
@@ -921,7 +778,7 @@ const DatastoreIotSiteWiseMultiLayerStorageSchema = z
   .openapi('DatastoreIotSiteWiseMultiLayerStorage')
 
 const JsonConfigurationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the configuration information of the JSON format.' })
   .openapi('JsonConfiguration')
 
@@ -941,15 +798,11 @@ const ColumnDataTypeSchema = z
 
 const ColumnSchema = z
   .object({
-    name: ColumnNameSchema.and(z.any().openapi({ description: 'The name of the column.' })),
-    type: ColumnDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of data. For more information about the supported data types, see <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-common.html">Common data types</a> in the <i>Glue Developer Guide</i>.',
-        }),
-    ),
+    name: ColumnNameSchema.openapi({ description: 'The name of the column.' }),
+    type: ColumnDataTypeSchema.openapi({
+      description:
+        'The type of data. For more information about the supported data types, see <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-common.html">Common data types</a> in the <i>Glue Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['name', 'type'],
@@ -961,23 +814,19 @@ const ColumnsSchema = z.array(ColumnSchema).openapi('Columns')
 
 const SchemaDefinitionSchema = z
   .object({
-    columns: ColumnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies one or more columns that store your data.</p> <p>Each schema can have up to 100 columns. Each column can have up to 100 nested types.</p>',
-        }),
-    ).exactOptional(),
+    columns: ColumnsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies one or more columns that store your data.</p> <p>Each schema can have up to 100 columns. Each column can have up to 100 nested types.</p>',
+    }),
   })
   .openapi({ description: 'Information needed to define a schema.', required: [] })
   .openapi('SchemaDefinition')
 
 const ParquetConfigurationSchema = z
   .object({
-    schemaDefinition: SchemaDefinitionSchema.and(
-      z.any().openapi({ description: 'Information needed to define a schema.' }),
-    ).exactOptional(),
+    schemaDefinition: SchemaDefinitionSchema.exactOptional().openapi({
+      description: 'Information needed to define a schema.',
+    }),
   })
   .openapi({
     description: 'Contains the configuration information of the Parquet format.',
@@ -994,13 +843,9 @@ const PartitionAttributeNameSchema = z
 
 const PartitionSchema = z
   .object({
-    attributeName: PartitionAttributeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the attribute that defines a partition dimension. ',
-        }),
-    ),
+    attributeName: PartitionAttributeNameSchema.openapi({
+      description: ' The name of the attribute that defines a partition dimension. ',
+    }),
   })
   .openapi({
     required: ['attributeName'],
@@ -1017,19 +862,13 @@ const TimestampFormatSchema = z
 
 const TimestampPartitionSchema = z
   .object({
-    attributeName: PartitionAttributeNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The attribute name of the partition defined by a timestamp. ' }),
-    ),
-    timestampFormat: TimestampFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The timestamp format of a partition defined by a timestamp. The default format is seconds since epoch (January 1, 1970 at midnight UTC time). ',
-        }),
-    ).exactOptional(),
+    attributeName: PartitionAttributeNameSchema.openapi({
+      description: ' The attribute name of the partition defined by a timestamp. ',
+    }),
+    timestampFormat: TimestampFormatSchema.exactOptional().openapi({
+      description:
+        ' The timestamp format of a partition defined by a timestamp. The default format is seconds since epoch (January 1, 1970 at midnight UTC time). ',
+    }),
   })
   .openapi({
     required: ['attributeName'],
@@ -1039,16 +878,12 @@ const TimestampPartitionSchema = z
 
 const DatastorePartitionSchema = z
   .object({
-    attributePartition: PartitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A partition dimension defined by an <code>attributeName</code>. ',
-        }),
-    ).exactOptional(),
-    timestampPartition: TimestampPartitionSchema.and(
-      z.any().openapi({ description: ' A partition dimension defined by a timestamp attribute. ' }),
-    ).exactOptional(),
+    attributePartition: PartitionSchema.exactOptional().openapi({
+      description: ' A partition dimension defined by an <code>attributeName</code>. ',
+    }),
+    timestampPartition: TimestampPartitionSchema.exactOptional().openapi({
+      description: ' A partition dimension defined by a timestamp attribute. ',
+    }),
   })
   .openapi({
     description:
@@ -1070,12 +905,12 @@ const PipelineArnSchema = z.string().openapi('PipelineArn')
 
 const CreatePipelineResponseSchema = z
   .object({
-    pipelineName: PipelineNameSchema.and(
-      z.any().openapi({ description: 'The name of the pipeline.' }),
-    ).exactOptional(),
-    pipelineArn: PipelineArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the pipeline.' }),
-    ).exactOptional(),
+    pipelineName: PipelineNameSchema.exactOptional().openapi({
+      description: 'The name of the pipeline.',
+    }),
+    pipelineArn: PipelineArnSchema.exactOptional().openapi({
+      description: 'The ARN of the pipeline.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePipelineResponse')
@@ -1084,17 +919,13 @@ const ActivityNameSchema = z.string().min(1).max(128).openapi('ActivityName')
 
 const ChannelActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel activity.' }),
-    ),
-    channelName: ChannelNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the channel from which the messages are processed.' }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({ description: 'The name of the channel activity.' }),
+    channelName: ChannelNameSchema.openapi({
+      description: 'The name of the channel from which the messages are processed.',
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'channelName'],
@@ -1113,25 +944,17 @@ const ActivityBatchSizeSchema = z.int().min(1).max(1000).openapi('ActivityBatchS
 
 const LambdaActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the lambda activity.' }),
-    ),
-    lambdaName: LambdaNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Lambda function that is run on the message.' }),
-    ),
-    batchSize: ActivityBatchSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of messages passed to the Lambda function for processing.</p> <p>The Lambda function must be able to process all of these messages within five minutes, which is the maximum timeout duration for Lambda functions.</p>',
-        }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({ description: 'The name of the lambda activity.' }),
+    lambdaName: LambdaNameSchema.openapi({
+      description: 'The name of the Lambda function that is run on the message.',
+    }),
+    batchSize: ActivityBatchSizeSchema.openapi({
+      description:
+        '<p>The number of messages passed to the Lambda function for processing.</p> <p>The Lambda function must be able to process all of these messages within five minutes, which is the maximum timeout duration for Lambda functions.</p>',
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'lambdaName', 'batchSize'],
@@ -1141,16 +964,10 @@ const LambdaActivitySchema = z
 
 const DatastoreActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the datastore activity.' }),
-    ),
-    datastoreName: DatastoreNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the data store where processed messages are stored.',
-        }),
-    ),
+    name: ActivityNameSchema.openapi({ description: 'The name of the datastore activity.' }),
+    datastoreName: DatastoreNameSchema.openapi({
+      description: 'The name of the data store where processed messages are stored.',
+    }),
   })
   .openapi({
     required: ['name', 'datastoreName'],
@@ -1168,20 +985,14 @@ const AttributeNameMappingSchema = z
 
 const AddAttributesActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the addAttributes activity.' }),
-    ),
-    attributes: AttributeNameMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of 1-50 <code>AttributeNameMapping</code> objects that map an existing attribute to a new attribute.</p> <note> <p>The existing attributes remain in the message, so if you want to remove the originals, use <code>RemoveAttributeActivity</code>.</p> </note>',
-        }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({ description: 'The name of the addAttributes activity.' }),
+    attributes: AttributeNameMappingSchema.openapi({
+      description:
+        '<p>A list of 1-50 <code>AttributeNameMapping</code> objects that map an existing attribute to a new attribute.</p> <note> <p>The existing attributes remain in the message, so if you want to remove the originals, use <code>RemoveAttributeActivity</code>.</p> </note>',
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'attributes'],
@@ -1194,15 +1005,15 @@ const AttributeNamesSchema = z.array(AttributeNameSchema).min(1).max(50).openapi
 
 const RemoveAttributesActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code>removeAttributes</code> activity.' }),
-    ),
-    attributes: AttributeNamesSchema.and(
-      z.any().openapi({ description: 'A list of 1-50 attributes to remove from the message.' }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({
+      description: 'The name of the <code>removeAttributes</code> activity.',
+    }),
+    attributes: AttributeNamesSchema.openapi({
+      description: 'A list of 1-50 attributes to remove from the message.',
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'attributes'],
@@ -1212,15 +1023,15 @@ const RemoveAttributesActivitySchema = z
 
 const SelectAttributesActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code>selectAttributes</code> activity.' }),
-    ),
-    attributes: AttributeNamesSchema.and(
-      z.any().openapi({ description: 'A list of the attributes to select from the message.' }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({
+      description: 'The name of the <code>selectAttributes</code> activity.',
+    }),
+    attributes: AttributeNamesSchema.openapi({
+      description: 'A list of the attributes to select from the message.',
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'attributes'],
@@ -1233,20 +1044,14 @@ const FilterExpressionSchema = z.string().min(1).max(256).openapi('FilterExpress
 
 const FilterActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the filter activity.' }),
-    ),
-    filter: FilterExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An expression that looks like a SQL WHERE clause that must return a Boolean value. Messages that satisfy the condition are passed to the next activity. ',
-        }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({ description: 'The name of the filter activity.' }),
+    filter: FilterExpressionSchema.openapi({
+      description:
+        'An expression that looks like a SQL WHERE clause that must return a Boolean value. Messages that satisfy the condition are passed to the next activity. ',
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'filter'],
@@ -1258,27 +1063,17 @@ const MathExpressionSchema = z.string().min(1).max(256).openapi('MathExpression'
 
 const MathActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the math activity.' }),
-    ),
-    attribute: AttributeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the attribute that contains the result of the math operation.',
-        }),
-    ),
-    math: MathExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An expression that uses one or more existing attributes and must return an integer value.',
-        }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({ description: 'The name of the math activity.' }),
+    attribute: AttributeNameSchema.openapi({
+      description: 'The name of the attribute that contains the result of the math operation.',
+    }),
+    math: MathExpressionSchema.openapi({
+      description:
+        'An expression that uses one or more existing attributes and must return an integer value.',
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'attribute', 'math'],
@@ -1289,33 +1084,21 @@ const MathActivitySchema = z
 
 const DeviceRegistryEnrichActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the <code>deviceRegistryEnrich</code> activity.' }),
-    ),
-    attribute: AttributeNameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute that is added to the message.' }),
-    ),
-    thingName: AttributeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IoT device whose registry information is added to the message.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN of the role that allows access to the device's registry information.",
-        }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({
+      description: 'The name of the <code>deviceRegistryEnrich</code> activity.',
+    }),
+    attribute: AttributeNameSchema.openapi({
+      description: 'The name of the attribute that is added to the message.',
+    }),
+    thingName: AttributeNameSchema.openapi({
+      description: 'The name of the IoT device whose registry information is added to the message.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description: "The ARN of the role that allows access to the device's registry information.",
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'attribute', 'thingName', 'roleArn'],
@@ -1325,28 +1108,21 @@ const DeviceRegistryEnrichActivitySchema = z
 
 const DeviceShadowEnrichActivitySchema = z
   .object({
-    name: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code>deviceShadowEnrich</code> activity.' }),
-    ),
-    attribute: AttributeNameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute that is added to the message.' }),
-    ),
-    thingName: AttributeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IoT device whose shadow information is added to the message.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({ description: "The ARN of the role that allows access to the device's shadow." }),
-    ),
-    next: ActivityNameSchema.and(
-      z.any().openapi({ description: 'The next activity in the pipeline.' }),
-    ).exactOptional(),
+    name: ActivityNameSchema.openapi({
+      description: 'The name of the <code>deviceShadowEnrich</code> activity.',
+    }),
+    attribute: AttributeNameSchema.openapi({
+      description: 'The name of the attribute that is added to the message.',
+    }),
+    thingName: AttributeNameSchema.openapi({
+      description: 'The name of the IoT device whose shadow information is added to the message.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description: "The ARN of the role that allows access to the device's shadow.",
+    }),
+    next: ActivityNameSchema.exactOptional().openapi({
+      description: 'The next activity in the pipeline.',
+    }),
   })
   .openapi({
     required: ['name', 'attribute', 'thingName', 'roleArn'],
@@ -1357,54 +1133,38 @@ const DeviceShadowEnrichActivitySchema = z
 
 const PipelineActivitySchema = z
   .object({
-    channel: ChannelActivitySchema.and(
-      z.any().openapi({ description: 'Determines the source of the messages to be processed.' }),
-    ).exactOptional(),
-    lambda: LambdaActivitySchema.and(
-      z.any().openapi({ description: 'Runs a Lambda function to modify the message.' }),
-    ).exactOptional(),
-    datastore: DatastoreActivitySchema.and(
-      z.any().openapi({ description: 'Specifies where to store the processed message data.' }),
-    ).exactOptional(),
-    addAttributes: AddAttributesActivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Adds other attributes based on existing attributes in the message.',
-        }),
-    ).exactOptional(),
-    removeAttributes: RemoveAttributesActivitySchema.and(
-      z.any().openapi({ description: 'Removes attributes from a message.' }),
-    ).exactOptional(),
-    selectAttributes: SelectAttributesActivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to create a new message using only the specified attributes from the original message. ',
-        }),
-    ).exactOptional(),
-    filter: FilterActivitySchema.and(
-      z.any().openapi({ description: 'Filters a message based on its attributes.' }),
-    ).exactOptional(),
-    math: MathActivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Computes an arithmetic expression using the message's attributes and adds it to the message.",
-        }),
-    ).exactOptional(),
-    deviceRegistryEnrich: DeviceRegistryEnrichActivitySchema.and(
-      z.any().openapi({ description: 'Adds data from the IoT device registry to your message.' }),
-    ).exactOptional(),
-    deviceShadowEnrich: DeviceShadowEnrichActivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Adds information from the IoT Device Shadow service to a message.',
-        }),
-    ).exactOptional(),
+    channel: ChannelActivitySchema.exactOptional().openapi({
+      description: 'Determines the source of the messages to be processed.',
+    }),
+    lambda: LambdaActivitySchema.exactOptional().openapi({
+      description: 'Runs a Lambda function to modify the message.',
+    }),
+    datastore: DatastoreActivitySchema.exactOptional().openapi({
+      description: 'Specifies where to store the processed message data.',
+    }),
+    addAttributes: AddAttributesActivitySchema.exactOptional().openapi({
+      description: 'Adds other attributes based on existing attributes in the message.',
+    }),
+    removeAttributes: RemoveAttributesActivitySchema.exactOptional().openapi({
+      description: 'Removes attributes from a message.',
+    }),
+    selectAttributes: SelectAttributesActivitySchema.exactOptional().openapi({
+      description:
+        'Used to create a new message using only the specified attributes from the original message. ',
+    }),
+    filter: FilterActivitySchema.exactOptional().openapi({
+      description: 'Filters a message based on its attributes.',
+    }),
+    math: MathActivitySchema.exactOptional().openapi({
+      description:
+        "Computes an arithmetic expression using the message's attributes and adds it to the message.",
+    }),
+    deviceRegistryEnrich: DeviceRegistryEnrichActivitySchema.exactOptional().openapi({
+      description: 'Adds data from the IoT device registry to your message.',
+    }),
+    deviceShadowEnrich: DeviceShadowEnrichActivitySchema.exactOptional().openapi({
+      description: 'Adds information from the IoT Device Shadow service to a message.',
+    }),
   })
   .openapi({
     description: 'An activity that performs a transformation on a message.',
@@ -1414,22 +1174,14 @@ const PipelineActivitySchema = z
 
 const ChannelStorageSchema = z
   .object({
-    serviceManagedS3: ServiceManagedChannelS3StorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Used to store channel data in an S3 bucket managed by IoT Analytics. You can't change the choice of S3 storage after the data store is created.",
-        }),
-    ).exactOptional(),
-    customerManagedS3: CustomerManagedChannelS3StorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Used to store channel data in an S3 bucket that you manage. If customer managed storage is selected, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of S3 storage after the data store is created.",
-        }),
-    ).exactOptional(),
+    serviceManagedS3: ServiceManagedChannelS3StorageSchema.exactOptional().openapi({
+      description:
+        "Used to store channel data in an S3 bucket managed by IoT Analytics. You can't change the choice of S3 storage after the data store is created.",
+    }),
+    customerManagedS3: CustomerManagedChannelS3StorageSchema.exactOptional().openapi({
+      description:
+        "Used to store channel data in an S3 bucket that you manage. If customer managed storage is selected, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of S3 storage after the data store is created.",
+    }),
   })
   .openapi({
     description:
@@ -1440,44 +1192,30 @@ const ChannelStorageSchema = z
 
 const ChannelStatusSchema = z.enum(['CREATING', 'ACTIVE', 'DELETING']).openapi('ChannelStatus')
 
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
 const ChannelSchema = z
   .object({
-    name: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    storage: ChannelStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Where channel data is stored. You can choose one of <code>serviceManagedS3</code> or <code>customerManagedS3</code> storage. If not specified, the default is <code>serviceManagedS3</code>. You can't change this storage option after the channel is created.",
-        }),
-    ).exactOptional(),
-    arn: ChannelArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    status: ChannelStatusSchema.and(
-      z.any().openapi({ description: 'The status of the channel.' }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z.any().openapi({ description: 'How long, in days, message data is kept for the channel.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the channel was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the channel was last updated.' }),
-    ).exactOptional(),
-    lastMessageArrivalTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time when a new message arrived in the channel.</p> <p>IoT Analytics updates this value at most once per minute for one channel. Hence, the <code>lastMessageArrivalTime</code> value is an approximation.</p> <p>This feature only applies to messages that arrived in the data store after October 23, 2020. </p>',
-        }),
-    ).exactOptional(),
+    name: ChannelNameSchema.exactOptional().openapi({ description: 'The name of the channel.' }),
+    storage: ChannelStorageSchema.exactOptional().openapi({
+      description:
+        "Where channel data is stored. You can choose one of <code>serviceManagedS3</code> or <code>customerManagedS3</code> storage. If not specified, the default is <code>serviceManagedS3</code>. You can't change this storage option after the channel is created.",
+    }),
+    arn: ChannelArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    status: ChannelStatusSchema.exactOptional().openapi({
+      description: 'The status of the channel.',
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description: 'How long, in days, message data is kept for the channel.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the channel was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the channel was last updated.',
+    }),
+    lastMessageArrivalTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time when a new message arrived in the channel.</p> <p>IoT Analytics updates this value at most once per minute for one channel. Hence, the <code>lastMessageArrivalTime</code> value is an approximation.</p> <p>This feature only applies to messages that arrived in the data store after October 23, 2020. </p>',
+    }),
   })
   .openapi({
     description:
@@ -1490,180 +1228,62 @@ const SizeInBytesSchema = z.float64().openapi('SizeInBytes')
 
 const EstimatedResourceSizeSchema = z
   .object({
-    estimatedSizeInBytes: SizeInBytesSchema.and(
-      z.any().openapi({ description: 'The estimated size of the resource, in bytes.' }),
-    ).exactOptional(),
-    estimatedOn: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the estimate of the size of the resource was made.',
-        }),
-    ).exactOptional(),
+    estimatedSizeInBytes: SizeInBytesSchema.exactOptional().openapi({
+      description: 'The estimated size of the resource, in bytes.',
+    }),
+    estimatedOn: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the estimate of the size of the resource was made.',
+    }),
   })
   .openapi({ description: 'The estimated size of the resource.', required: [] })
   .openapi('EstimatedResourceSize')
 
 const ChannelStatisticsSchema = z
   .object({
-    size: EstimatedResourceSizeSchema.and(
-      z.any().openapi({ description: 'The estimated size of the channel.' }),
-    ).exactOptional(),
+    size: EstimatedResourceSizeSchema.exactOptional().openapi({
+      description: 'The estimated size of the channel.',
+    }),
   })
   .openapi({ description: 'Statistics information about the channel.', required: [] })
   .openapi('ChannelStatistics')
 
 const DescribeChannelResponseSchema = z
   .object({
-    channel: ChannelSchema.and(
-      z.any().openapi({ description: 'An object that contains information about the channel.' }),
-    ).exactOptional(),
-    statistics: ChannelStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Statistics about the channel. Included if the <code>includeStatistics</code> parameter is set to <code>true</code> in the request.',
-        }),
-    ).exactOptional(),
+    channel: ChannelSchema.exactOptional().openapi({
+      description: 'An object that contains information about the channel.',
+    }),
+    statistics: ChannelStatisticsSchema.exactOptional().openapi({
+      description:
+        'Statistics about the channel. Included if the <code>includeStatistics</code> parameter is set to <code>true</code> in the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChannelResponse')
 
-const DatasetActionsSchema = z.array(DatasetActionSchema).length(1).openapi('DatasetActions')
-
-const DatasetTriggersSchema = z.array(DatasetTriggerSchema).min(0).max(5).openapi('DatasetTriggers')
-
-const DatasetContentDeliveryRulesSchema = z
-  .array(DatasetContentDeliveryRuleSchema)
-  .min(0)
-  .max(20)
-  .openapi('DatasetContentDeliveryRules')
-
-const DatasetStatusSchema = z.enum(['CREATING', 'ACTIVE', 'DELETING']).openapi('DatasetStatus')
-
-const VersioningConfigurationSchema = z
+const DescribeDatasetResponseSchema: z.ZodType<DescribeDatasetResponseType> = z
   .object({
-    unlimited: UnlimitedVersioningSchema.and(
-      z.any().openapi({ description: 'If true, unlimited versions of dataset contents are kept.' }),
-    ).exactOptional(),
-    maxVersions: MaxVersionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How many versions of dataset contents are kept. The <code>unlimited</code> parameter must be <code>false</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about the versioning of dataset contents.', required: [] })
-  .openapi('VersioningConfiguration')
-
-const LateDataRulesSchema = z.array(LateDataRuleSchema).length(1).openapi('LateDataRules')
-
-const DatasetSchema = z
-  .object({
-    name: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ).exactOptional(),
-    arn: DatasetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset.' }),
-    ).exactOptional(),
-    actions: DatasetActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DatasetAction</code> objects that automatically create the dataset contents.',
-        }),
-    ).exactOptional(),
-    triggers: DatasetTriggersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DatasetTrigger</code> objects that specify when the dataset is automatically updated.',
-        }),
-    ).exactOptional(),
-    contentDeliveryRules: DatasetContentDeliveryRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When dataset contents are created they are delivered to destinations specified here.',
-        }),
-    ).exactOptional(),
-    status: DatasetStatusSchema.and(
-      z.any().openapi({ description: 'The status of the dataset.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the dataset was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the dataset was updated.' }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Optional. How long, in days, message data is kept for the dataset.',
-        }),
-    ).exactOptional(),
-    versioningConfiguration: VersioningConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. How many versions of dataset contents are kept. If not specified or set to null, only the latest version plus the latest succeeded version (if they are different) are kept for the time period specified by the <code>retentionPeriod</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/iotanalytics/latest/userguide/getting-started.html#aws-iot-analytics-dataset-versions"> Keeping Multiple Versions of IoT Analytics datasets</a> in the <i>IoT Analytics User Guide</i>.',
-        }),
-    ).exactOptional(),
-    lateDataRules: LateDataRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of data rules that send notifications to CloudWatch, when data arrives late. To specify <code>lateDataRules</code>, the dataset must use a <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DeltaTime.html">DeltaTimer</a> filter.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about a dataset.', required: [] })
-  .openapi('Dataset')
-
-const DescribeDatasetResponseSchema = z
-  .object({
-    dataset: DatasetSchema.and(
-      z.any().openapi({ description: 'An object that contains information about the dataset.' }),
-    ).exactOptional(),
+    dataset: DatasetSchema.exactOptional().openapi({
+      description: 'An object that contains information about the dataset.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetResponse')
 
 const DatastoreStorageSchema = z
   .object({
-    serviceManagedS3: ServiceManagedDatastoreS3StorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Used to store data in an Amazon S3 bucket managed by IoT Analytics. You can't change the choice of Amazon S3 storage after your data store is created. ",
-        }),
-    ).exactOptional(),
-    customerManagedS3: CustomerManagedDatastoreS3StorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "S3-customer-managed; When you choose customer-managed storage, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of Amazon S3 storage after your data store is created. ",
-        }),
-    ).exactOptional(),
-    iotSiteWiseMultiLayerStorage: DatastoreIotSiteWiseMultiLayerStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. You can't change the choice of Amazon S3 storage after your data store is created. ",
-        }),
-    ).exactOptional(),
+    serviceManagedS3: ServiceManagedDatastoreS3StorageSchema.exactOptional().openapi({
+      description:
+        "Used to store data in an Amazon S3 bucket managed by IoT Analytics. You can't change the choice of Amazon S3 storage after your data store is created. ",
+    }),
+    customerManagedS3: CustomerManagedDatastoreS3StorageSchema.exactOptional().openapi({
+      description:
+        "S3-customer-managed; When you choose customer-managed storage, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of Amazon S3 storage after your data store is created. ",
+    }),
+    iotSiteWiseMultiLayerStorage:
+      DatastoreIotSiteWiseMultiLayerStorageSchema.exactOptional().openapi({
+        description:
+          " Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. You can't change the choice of Amazon S3 storage after your data store is created. ",
+      }),
   })
   .openapi({
     description:
@@ -1676,16 +1296,12 @@ const DatastoreStatusSchema = z.enum(['CREATING', 'ACTIVE', 'DELETING']).openapi
 
 const FileFormatConfigurationSchema = z
   .object({
-    jsonConfiguration: JsonConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of the JSON format.' }),
-    ).exactOptional(),
-    parquetConfiguration: ParquetConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of the Parquet format.' }),
-    ).exactOptional(),
+    jsonConfiguration: JsonConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of the JSON format.',
+    }),
+    parquetConfiguration: ParquetConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of the Parquet format.',
+    }),
   })
   .openapi({
     description:
@@ -1696,9 +1312,9 @@ const FileFormatConfigurationSchema = z
 
 const DatastorePartitionsSchema = z
   .object({
-    partitions: PartitionsSchema.and(
-      z.any().openapi({ description: ' A list of partition dimensions in a data store. ' }),
-    ).exactOptional(),
+    partitions: PartitionsSchema.exactOptional().openapi({
+      description: ' A list of partition dimensions in a data store. ',
+    }),
   })
   .openapi({
     description: ' Contains information about the partition dimensions in a data store. ',
@@ -1708,91 +1324,61 @@ const DatastorePartitionsSchema = z
 
 const DatastoreSchema = z
   .object({
-    name: DatastoreNameSchema.and(
-      z.any().openapi({ description: 'The name of the data store.' }),
-    ).exactOptional(),
-    storage: DatastoreStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Where data in a data store is stored.. You can choose <code>serviceManagedS3</code> storage, <code>customerManagedS3</code> storage, or <code>iotSiteWiseMultiLayerStorage</code> storage. The default is <code>serviceManagedS3</code>. You can't change the choice of Amazon S3 storage after your data store is created. ",
-        }),
-    ).exactOptional(),
-    arn: DatastoreArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the data store.' }),
-    ).exactOptional(),
-    status: DatastoreStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of a data store:</p> <dl> <dt>CREATING</dt> <dd> <p>The data store is being created.</p> </dd> <dt>ACTIVE</dt> <dd> <p>The data store has been created and can be used.</p> </dd> <dt>DELETING</dt> <dd> <p>The data store is being deleted.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long, in days, message data is kept for the data store. When <code>customerManagedS3</code> storage is selected, this parameter is ignored.',
-        }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the data store was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the data store was updated.' }),
-    ).exactOptional(),
-    lastMessageArrivalTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time when a new message arrived in the data store.</p> <p>IoT Analytics updates this value at most once per minute for Amazon Simple Storage Service one data store. Hence, the <code>lastMessageArrivalTime</code> value is an approximation.</p> <p>This feature only applies to messages that arrived in the data store after October 23, 2020. </p>',
-        }),
-    ).exactOptional(),
-    fileFormatConfiguration: FileFormatConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the configuration information of file formats. IoT Analytics data stores support JSON and <a href="https://parquet.apache.org/">Parquet</a>.</p> <p>The default file format is JSON. You can specify only one format.</p> <p>You can\'t change the file format after you create the data store.</p>',
-        }),
-    ).exactOptional(),
-    datastorePartitions: DatastorePartitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Contains information about the partition dimensions in a data store. ',
-        }),
-    ).exactOptional(),
+    name: DatastoreNameSchema.exactOptional().openapi({
+      description: 'The name of the data store.',
+    }),
+    storage: DatastoreStorageSchema.exactOptional().openapi({
+      description:
+        "Where data in a data store is stored.. You can choose <code>serviceManagedS3</code> storage, <code>customerManagedS3</code> storage, or <code>iotSiteWiseMultiLayerStorage</code> storage. The default is <code>serviceManagedS3</code>. You can't change the choice of Amazon S3 storage after your data store is created. ",
+    }),
+    arn: DatastoreArnSchema.exactOptional().openapi({ description: 'The ARN of the data store.' }),
+    status: DatastoreStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of a data store:</p> <dl> <dt>CREATING</dt> <dd> <p>The data store is being created.</p> </dd> <dt>ACTIVE</dt> <dd> <p>The data store has been created and can be used.</p> </dd> <dt>DELETING</dt> <dd> <p>The data store is being deleted.</p> </dd> </dl>',
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description:
+        'How long, in days, message data is kept for the data store. When <code>customerManagedS3</code> storage is selected, this parameter is ignored.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the data store was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the data store was updated.',
+    }),
+    lastMessageArrivalTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time when a new message arrived in the data store.</p> <p>IoT Analytics updates this value at most once per minute for Amazon Simple Storage Service one data store. Hence, the <code>lastMessageArrivalTime</code> value is an approximation.</p> <p>This feature only applies to messages that arrived in the data store after October 23, 2020. </p>',
+    }),
+    fileFormatConfiguration: FileFormatConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the configuration information of file formats. IoT Analytics data stores support JSON and <a href="https://parquet.apache.org/">Parquet</a>.</p> <p>The default file format is JSON. You can specify only one format.</p> <p>You can\'t change the file format after you create the data store.</p>',
+    }),
+    datastorePartitions: DatastorePartitionsSchema.exactOptional().openapi({
+      description: ' Contains information about the partition dimensions in a data store. ',
+    }),
   })
   .openapi({ description: 'Information about a data store.', required: [] })
   .openapi('Datastore')
 
 const DatastoreStatisticsSchema = z
   .object({
-    size: EstimatedResourceSizeSchema.and(
-      z.any().openapi({ description: 'The estimated size of the data store.' }),
-    ).exactOptional(),
+    size: EstimatedResourceSizeSchema.exactOptional().openapi({
+      description: 'The estimated size of the data store.',
+    }),
   })
   .openapi({ description: 'Statistical information about the data store.', required: [] })
   .openapi('DatastoreStatistics')
 
 const DescribeDatastoreResponseSchema = z
   .object({
-    datastore: DatastoreSchema.and(
-      z.any().openapi({ description: 'Information about the data store.' }),
-    ).exactOptional(),
-    statistics: DatastoreStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional statistical information about the data store. Included if the <code>includeStatistics</code> parameter is set to <code>true</code> in the request.',
-        }),
-    ).exactOptional(),
+    datastore: DatastoreSchema.exactOptional().openapi({
+      description: 'Information about the data store.',
+    }),
+    statistics: DatastoreStatisticsSchema.exactOptional().openapi({
+      description:
+        'Additional statistical information about the data store. Included if the <code>includeStatistics</code> parameter is set to <code>true</code> in the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatastoreResponse')
@@ -1803,20 +1389,16 @@ const LoggingEnabledSchema = z.boolean().openapi('LoggingEnabled')
 
 const LoggingOptionsSchema = z
   .object({
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants permission to IoT Analytics to perform logging.',
-        }),
-    ),
-    level: LoggingLevelSchema.and(
-      z.any().openapi({ description: 'The logging level. Currently, only ERROR is supported.' }),
-    ),
-    enabled: LoggingEnabledSchema.and(
-      z.any().openapi({ description: 'If true, logging is enabled for IoT Analytics.' }),
-    ),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the role that grants permission to IoT Analytics to perform logging.',
+    }),
+    level: LoggingLevelSchema.openapi({
+      description: 'The logging level. Currently, only ERROR is supported.',
+    }),
+    enabled: LoggingEnabledSchema.openapi({
+      description: 'If true, logging is enabled for IoT Analytics.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'level', 'enabled'],
@@ -1826,11 +1408,9 @@ const LoggingOptionsSchema = z
 
 const DescribeLoggingOptionsResponseSchema = z
   .object({
-    loggingOptions: LoggingOptionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current settings of the IoT Analytics logging options.' }),
-    ).exactOptional(),
+    loggingOptions: LoggingOptionsSchema.exactOptional().openapi({
+      description: 'The current settings of the IoT Analytics logging options.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeLoggingOptionsResponse')
@@ -1849,20 +1429,16 @@ const ReprocessingStatusSchema = z
 
 const ReprocessingSummarySchema = z
   .object({
-    id: ReprocessingIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>reprocessingId</code> returned by <code>StartPipelineReprocessing</code>.',
-        }),
-    ).exactOptional(),
-    status: ReprocessingStatusSchema.and(
-      z.any().openapi({ description: 'The status of the pipeline reprocessing.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the pipeline reprocessing was created.' }),
-    ).exactOptional(),
+    id: ReprocessingIdSchema.exactOptional().openapi({
+      description:
+        'The <code>reprocessingId</code> returned by <code>StartPipelineReprocessing</code>.',
+    }),
+    status: ReprocessingStatusSchema.exactOptional().openapi({
+      description: 'The status of the pipeline reprocessing.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the pipeline reprocessing was created.',
+    }),
   })
   .openapi({ description: 'Information about pipeline reprocessing.', required: [] })
   .openapi('ReprocessingSummary')
@@ -1873,40 +1449,29 @@ const ReprocessingSummariesSchema = z
 
 const PipelineSchema = z
   .object({
-    name: PipelineNameSchema.and(
-      z.any().openapi({ description: 'The name of the pipeline.' }),
-    ).exactOptional(),
-    arn: PipelineArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the pipeline.' }),
-    ).exactOptional(),
-    activities: PipelineActivitiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The activities that perform transformations on the messages.' }),
-    ).exactOptional(),
-    reprocessingSummaries: ReprocessingSummariesSchema.and(
-      z.any().openapi({ description: 'A summary of information about the pipeline reprocessing.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the pipeline was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the pipeline was updated.' }),
-    ).exactOptional(),
+    name: PipelineNameSchema.exactOptional().openapi({ description: 'The name of the pipeline.' }),
+    arn: PipelineArnSchema.exactOptional().openapi({ description: 'The ARN of the pipeline.' }),
+    activities: PipelineActivitiesSchema.exactOptional().openapi({
+      description: 'The activities that perform transformations on the messages.',
+    }),
+    reprocessingSummaries: ReprocessingSummariesSchema.exactOptional().openapi({
+      description: 'A summary of information about the pipeline reprocessing.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the pipeline was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the pipeline was updated.',
+    }),
   })
   .openapi({ description: 'Contains information about a pipeline.', required: [] })
   .openapi('Pipeline')
 
 const DescribePipelineResponseSchema = z
   .object({
-    pipeline: PipelineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>Pipeline</code> object that contains information about the pipeline.',
-        }),
-    ).exactOptional(),
+    pipeline: PipelineSchema.exactOptional().openapi({
+      description: 'A <code>Pipeline</code> object that contains information about the pipeline.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePipelineResponse')
@@ -1915,12 +1480,12 @@ const PresignedURISchema = z.string().openapi('PresignedURI')
 
 const DatasetEntrySchema = z
   .object({
-    entryName: EntryNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset item.' }),
-    ).exactOptional(),
-    dataURI: PresignedURISchema.and(
-      z.any().openapi({ description: 'The presigned URI of the dataset item.' }),
-    ).exactOptional(),
+    entryName: EntryNameSchema.exactOptional().openapi({
+      description: 'The name of the dataset item.',
+    }),
+    dataURI: PresignedURISchema.exactOptional().openapi({
+      description: 'The presigned URI of the dataset item.',
+    }),
   })
   .openapi({ description: 'The reference to a dataset entry.', required: [] })
   .openapi('DatasetEntry')
@@ -1935,17 +1500,13 @@ const ReasonSchema = z.string().openapi('Reason')
 
 const DatasetContentStatusSchema = z
   .object({
-    state: DatasetContentStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the dataset contents. Can be one of READY, CREATING, SUCCEEDED, or FAILED.',
-        }),
-    ).exactOptional(),
-    reason: ReasonSchema.and(
-      z.any().openapi({ description: 'The reason the dataset contents are in this state.' }),
-    ).exactOptional(),
+    state: DatasetContentStateSchema.exactOptional().openapi({
+      description:
+        'The state of the dataset contents. Can be one of READY, CREATING, SUCCEEDED, or FAILED.',
+    }),
+    reason: ReasonSchema.exactOptional().openapi({
+      description: 'The reason the dataset contents are in this state.',
+    }),
   })
   .openapi({
     description: 'The state of the dataset contents and the reason they are in this state.',
@@ -1955,47 +1516,37 @@ const DatasetContentStatusSchema = z
 
 const GetDatasetContentResponseSchema = z
   .object({
-    entries: DatasetEntriesSchema.and(
-      z.any().openapi({ description: 'A list of <code>DatasetEntry</code> objects.' }),
-    ).exactOptional(),
-    timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the request was made.' }),
-    ).exactOptional(),
-    status: DatasetContentStatusSchema.and(
-      z.any().openapi({ description: 'The status of the dataset content.' }),
-    ).exactOptional(),
+    entries: DatasetEntriesSchema.exactOptional().openapi({
+      description: 'A list of <code>DatasetEntry</code> objects.',
+    }),
+    timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the request was made.',
+    }),
+    status: DatasetContentStatusSchema.exactOptional().openapi({
+      description: 'The status of the dataset content.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDatasetContentResponse')
 
 const ServiceManagedChannelS3StorageSummarySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Used to store channel data in an S3 bucket managed by IoT Analytics.' })
   .openapi('ServiceManagedChannelS3StorageSummary')
 
 const CustomerManagedChannelS3StorageSummarySchema = z
   .object({
-    bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the S3 bucket in which channel data is stored.' }),
-    ).exactOptional(),
-    keyPrefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The prefix used to create the keys of the channel data objects. Each object in an S3 bucket has a key that is its unique identifier within the bucket (each object in a bucket has exactly one key). The prefix must end with a forward slash (/).',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 resources.',
-        }),
-    ).exactOptional(),
+    bucket: BucketNameSchema.exactOptional().openapi({
+      description: 'The name of the S3 bucket in which channel data is stored.',
+    }),
+    keyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        '(Optional) The prefix used to create the keys of the channel data objects. Each object in an S3 bucket has a key that is its unique identifier within the bucket (each object in a bucket has exactly one key). The prefix must end with a forward slash (/).',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 resources.',
+    }),
   })
   .openapi({
     description: 'Used to store channel data in an S3 bucket that you manage.',
@@ -2005,47 +1556,37 @@ const CustomerManagedChannelS3StorageSummarySchema = z
 
 const ChannelStorageSummarySchema = z
   .object({
-    serviceManagedS3: ServiceManagedChannelS3StorageSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Used to store channel data in an S3 bucket managed by IoT Analytics.',
-        }),
-    ).exactOptional(),
-    customerManagedS3: CustomerManagedChannelS3StorageSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Used to store channel data in an S3 bucket that you manage.' }),
-    ).exactOptional(),
+    serviceManagedS3: ServiceManagedChannelS3StorageSummarySchema.exactOptional().openapi({
+      description: 'Used to store channel data in an S3 bucket managed by IoT Analytics.',
+    }),
+    customerManagedS3: CustomerManagedChannelS3StorageSummarySchema.exactOptional().openapi({
+      description: 'Used to store channel data in an S3 bucket that you manage.',
+    }),
   })
   .openapi({ description: 'Where channel data is stored.', required: [] })
   .openapi('ChannelStorageSummary')
 
 const ChannelSummarySchema = z
   .object({
-    channelName: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    channelStorage: ChannelStorageSummarySchema.and(
-      z.any().openapi({ description: 'Where channel data is stored.' }),
-    ).exactOptional(),
-    status: ChannelStatusSchema.and(
-      z.any().openapi({ description: 'The status of the channel.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the channel was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the channel was updated.' }),
-    ).exactOptional(),
-    lastMessageArrivalTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time when a new message arrived in the channel.</p> <p>IoT Analytics updates this value at most once per minute for one channel. Hence, the <code>lastMessageArrivalTime</code> value is an approximation.</p> <p>This feature only applies to messages that arrived in the data store after October 23, 2020. </p>',
-        }),
-    ).exactOptional(),
+    channelName: ChannelNameSchema.exactOptional().openapi({
+      description: 'The name of the channel.',
+    }),
+    channelStorage: ChannelStorageSummarySchema.exactOptional().openapi({
+      description: 'Where channel data is stored.',
+    }),
+    status: ChannelStatusSchema.exactOptional().openapi({
+      description: 'The status of the channel.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the channel was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the channel was updated.',
+    }),
+    lastMessageArrivalTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time when a new message arrived in the channel.</p> <p>IoT Analytics updates this value at most once per minute for one channel. Hence, the <code>lastMessageArrivalTime</code> value is an approximation.</p> <p>This feature only applies to messages that arrived in the data store after October 23, 2020. </p>',
+    }),
   })
   .openapi({ description: 'A summary of information about a channel.', required: [] })
   .openapi('ChannelSummary')
@@ -2056,50 +1597,34 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const ListChannelsResponseSchema = z
   .object({
-    channelSummaries: ChannelSummariesSchema.and(
-      z.any().openapi({ description: 'A list of <code>ChannelSummary</code> objects.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    channelSummaries: ChannelSummariesSchema.exactOptional().openapi({
+      description: 'A list of <code>ChannelSummary</code> objects.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelsResponse')
 
 const DatasetContentSummarySchema = z
   .object({
-    version: DatasetContentVersionSchema.and(
-      z.any().openapi({ description: 'The version of the dataset contents.' }),
-    ).exactOptional(),
-    status: DatasetContentStatusSchema.and(
-      z.any().openapi({ description: 'The status of the dataset contents.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The actual time the creation of the dataset contents was started.',
-        }),
-    ).exactOptional(),
-    scheduleTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the creation of the dataset contents was scheduled to start.',
-        }),
-    ).exactOptional(),
-    completionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the dataset content status was updated to SUCCEEDED or FAILED.',
-        }),
-    ).exactOptional(),
+    version: DatasetContentVersionSchema.exactOptional().openapi({
+      description: 'The version of the dataset contents.',
+    }),
+    status: DatasetContentStatusSchema.exactOptional().openapi({
+      description: 'The status of the dataset contents.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The actual time the creation of the dataset contents was started.',
+    }),
+    scheduleTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the creation of the dataset contents was scheduled to start.',
+    }),
+    completionTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the dataset content status was updated to SUCCEEDED or FAILED.',
+    }),
   })
   .openapi({ description: 'Summary information about dataset contents.', required: [] })
   .openapi('DatasetContentSummary')
@@ -2110,21 +1635,13 @@ const DatasetContentSummariesSchema = z
 
 const ListDatasetContentsResponseSchema = z
   .object({
-    datasetContentSummaries: DatasetContentSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Summary information about dataset contents that have been created.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    datasetContentSummaries: DatasetContentSummariesSchema.exactOptional().openapi({
+      description: 'Summary information about dataset contents that have been created.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetContentsResponse')
@@ -2133,21 +1650,12 @@ const DatasetActionTypeSchema = z.enum(['QUERY', 'CONTAINER']).openapi('DatasetA
 
 const DatasetActionSummarySchema = z
   .object({
-    actionName: DatasetActionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of the action that automatically creates the dataset's contents.",
-        }),
-    ).exactOptional(),
-    actionType: DatasetActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The type of action by which the dataset's contents are automatically created.",
-        }),
-    ).exactOptional(),
+    actionName: DatasetActionNameSchema.exactOptional().openapi({
+      description: "The name of the action that automatically creates the dataset's contents.",
+    }),
+    actionType: DatasetActionTypeSchema.exactOptional().openapi({
+      description: "The type of action by which the dataset's contents are automatically created.",
+    }),
   })
   .openapi({
     description: "Information about the action that automatically creates the dataset's contents.",
@@ -2162,29 +1670,25 @@ const DatasetActionSummariesSchema = z
 
 const DatasetSummarySchema = z
   .object({
-    datasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ).exactOptional(),
-    status: DatasetStatusSchema.and(
-      z.any().openapi({ description: 'The status of the dataset.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the dataset was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the dataset was updated.' }),
-    ).exactOptional(),
-    triggers: DatasetTriggersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of triggers. A trigger causes dataset content to be populated at a specified time interval or when another dataset is populated. The list of triggers can be empty or contain up to five <code>DataSetTrigger</code> objects',
-        }),
-    ).exactOptional(),
-    actions: DatasetActionSummariesSchema.and(
-      z.any().openapi({ description: 'A list of <code>DataActionSummary</code> objects.' }),
-    ).exactOptional(),
+    datasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'The name of the dataset.',
+    }),
+    status: DatasetStatusSchema.exactOptional().openapi({
+      description: 'The status of the dataset.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the dataset was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the dataset was updated.',
+    }),
+    triggers: DatasetTriggersSchema.exactOptional().openapi({
+      description:
+        'A list of triggers. A trigger causes dataset content to be populated at a specified time interval or when another dataset is populated. The list of triggers can be empty or contain up to five <code>DataSetTrigger</code> objects',
+    }),
+    actions: DatasetActionSummariesSchema.exactOptional().openapi({
+      description: 'A list of <code>DataActionSummary</code> objects.',
+    }),
   })
   .openapi({ description: 'A summary of information about a dataset.', required: [] })
   .openapi('DatasetSummary')
@@ -2193,23 +1697,19 @@ const DatasetSummariesSchema = z.array(DatasetSummarySchema).openapi('DatasetSum
 
 const ListDatasetsResponseSchema = z
   .object({
-    datasetSummaries: DatasetSummariesSchema.and(
-      z.any().openapi({ description: 'A list of <code>DatasetSummary</code> objects.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    datasetSummaries: DatasetSummariesSchema.exactOptional().openapi({
+      description: 'A list of <code>DatasetSummary</code> objects.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetsResponse')
 
 const ServiceManagedDatastoreS3StorageSummarySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Contains information about the data store that is managed by IoT Analytics.',
   })
@@ -2217,27 +1717,17 @@ const ServiceManagedDatastoreS3StorageSummarySchema = z
 
 const CustomerManagedDatastoreS3StorageSummarySchema = z
   .object({
-    bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Amazon S3 bucket where your data is stored.' }),
-    ).exactOptional(),
-    keyPrefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The prefix used to create the keys of the data store data objects. Each object in an Amazon S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/).',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 resources.',
-        }),
-    ).exactOptional(),
+    bucket: BucketNameSchema.exactOptional().openapi({
+      description: 'The name of the Amazon S3 bucket where your data is stored.',
+    }),
+    keyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        '(Optional) The prefix used to create the keys of the data store data objects. Each object in an Amazon S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/).',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role that grants IoT Analytics permission to interact with your Amazon S3 resources.',
+    }),
   })
   .openapi({
     description: 'Contains information about the data store that you manage.',
@@ -2247,19 +1737,13 @@ const CustomerManagedDatastoreS3StorageSummarySchema = z
 
 const IotSiteWiseCustomerManagedDatastoreS3StorageSummarySchema = z
   .object({
-    bucket: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The name of the Amazon S3 bucket where your data is stored. ' }),
-    ).exactOptional(),
-    keyPrefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' (Optional) The prefix used to create the keys of the data store data objects. Each object in an Amazon S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). ',
-        }),
-    ).exactOptional(),
+    bucket: BucketNameSchema.exactOptional().openapi({
+      description: ' The name of the Amazon S3 bucket where your data is stored. ',
+    }),
+    keyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        ' (Optional) The prefix used to create the keys of the data store data objects. Each object in an Amazon S3 bucket has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). ',
+    }),
   })
   .openapi({
     description:
@@ -2270,14 +1754,11 @@ const IotSiteWiseCustomerManagedDatastoreS3StorageSummarySchema = z
 
 const DatastoreIotSiteWiseMultiLayerStorageSummarySchema = z
   .object({
-    customerManagedS3Storage: IotSiteWiseCustomerManagedDatastoreS3StorageSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage.',
-        }),
-    ).exactOptional(),
+    customerManagedS3Storage:
+      IotSiteWiseCustomerManagedDatastoreS3StorageSummarySchema.exactOptional().openapi({
+        description:
+          'Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage.',
+      }),
   })
   .openapi({
     description:
@@ -2288,28 +1769,17 @@ const DatastoreIotSiteWiseMultiLayerStorageSummarySchema = z
 
 const DatastoreStorageSummarySchema = z
   .object({
-    serviceManagedS3: ServiceManagedDatastoreS3StorageSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Used to store data in an Amazon S3 bucket managed by IoT Analytics.',
-        }),
-    ).exactOptional(),
-    customerManagedS3: CustomerManagedDatastoreS3StorageSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Used to store data in an Amazon S3 bucket managed by IoT Analytics.',
-        }),
-    ).exactOptional(),
-    iotSiteWiseMultiLayerStorage: DatastoreIotSiteWiseMultiLayerStorageSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. ',
-        }),
-    ).exactOptional(),
+    serviceManagedS3: ServiceManagedDatastoreS3StorageSummarySchema.exactOptional().openapi({
+      description: 'Used to store data in an Amazon S3 bucket managed by IoT Analytics.',
+    }),
+    customerManagedS3: CustomerManagedDatastoreS3StorageSummarySchema.exactOptional().openapi({
+      description: 'Used to store data in an Amazon S3 bucket managed by IoT Analytics.',
+    }),
+    iotSiteWiseMultiLayerStorage:
+      DatastoreIotSiteWiseMultiLayerStorageSummarySchema.exactOptional().openapi({
+        description:
+          ' Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. ',
+      }),
   })
   .openapi({ description: 'Contains information about your data store.', required: [] })
   .openapi('DatastoreStorageSummary')
@@ -2318,39 +1788,31 @@ const FileFormatTypeSchema = z.enum(['JSON', 'PARQUET']).openapi('FileFormatType
 
 const DatastoreSummarySchema = z
   .object({
-    datastoreName: DatastoreNameSchema.and(
-      z.any().openapi({ description: 'The name of the data store.' }),
-    ).exactOptional(),
-    datastoreStorage: DatastoreStorageSummarySchema.and(
-      z.any().openapi({ description: 'Where data in a data store is stored.' }),
-    ).exactOptional(),
-    status: DatastoreStatusSchema.and(
-      z.any().openapi({ description: 'The status of the data store.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the data store was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the data store was updated.' }),
-    ).exactOptional(),
-    lastMessageArrivalTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time when a new message arrived in the data store.</p> <p>IoT Analytics updates this value at most once per minute for Amazon Simple Storage Service one data store. Hence, the <code>lastMessageArrivalTime</code> value is an approximation.</p> <p>This feature only applies to messages that arrived in the data store after October 23, 2020. </p>',
-        }),
-    ).exactOptional(),
-    fileFormatType: FileFormatTypeSchema.and(
-      z.any().openapi({ description: 'The file format of the data in the data store.' }),
-    ).exactOptional(),
-    datastorePartitions: DatastorePartitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Contains information about the partition dimensions in a data store. ',
-        }),
-    ).exactOptional(),
+    datastoreName: DatastoreNameSchema.exactOptional().openapi({
+      description: 'The name of the data store.',
+    }),
+    datastoreStorage: DatastoreStorageSummarySchema.exactOptional().openapi({
+      description: 'Where data in a data store is stored.',
+    }),
+    status: DatastoreStatusSchema.exactOptional().openapi({
+      description: 'The status of the data store.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the data store was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the data store was updated.',
+    }),
+    lastMessageArrivalTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time when a new message arrived in the data store.</p> <p>IoT Analytics updates this value at most once per minute for Amazon Simple Storage Service one data store. Hence, the <code>lastMessageArrivalTime</code> value is an approximation.</p> <p>This feature only applies to messages that arrived in the data store after October 23, 2020. </p>',
+    }),
+    fileFormatType: FileFormatTypeSchema.exactOptional().openapi({
+      description: 'The file format of the data in the data store.',
+    }),
+    datastorePartitions: DatastorePartitionsSchema.exactOptional().openapi({
+      description: ' Contains information about the partition dimensions in a data store. ',
+    }),
   })
   .openapi({ description: 'A summary of information about a data store.', required: [] })
   .openapi('DatastoreSummary')
@@ -2359,35 +1821,31 @@ const DatastoreSummariesSchema = z.array(DatastoreSummarySchema).openapi('Datast
 
 const ListDatastoresResponseSchema = z
   .object({
-    datastoreSummaries: DatastoreSummariesSchema.and(
-      z.any().openapi({ description: 'A list of <code>DatastoreSummary</code> objects.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    datastoreSummaries: DatastoreSummariesSchema.exactOptional().openapi({
+      description: 'A list of <code>DatastoreSummary</code> objects.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatastoresResponse')
 
 const PipelineSummarySchema = z
   .object({
-    pipelineName: PipelineNameSchema.and(
-      z.any().openapi({ description: 'The name of the pipeline.' }),
-    ).exactOptional(),
-    reprocessingSummaries: ReprocessingSummariesSchema.and(
-      z.any().openapi({ description: 'A summary of information about the pipeline reprocessing.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the pipeline was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the pipeline was last updated.' }),
-    ).exactOptional(),
+    pipelineName: PipelineNameSchema.exactOptional().openapi({
+      description: 'The name of the pipeline.',
+    }),
+    reprocessingSummaries: ReprocessingSummariesSchema.exactOptional().openapi({
+      description: 'A summary of information about the pipeline reprocessing.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the pipeline was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the pipeline was last updated.',
+    }),
   })
   .openapi({ description: 'A summary of information about a pipeline.', required: [] })
   .openapi('PipelineSummary')
@@ -2396,17 +1854,13 @@ const PipelineSummariesSchema = z.array(PipelineSummarySchema).openapi('Pipeline
 
 const ListPipelinesResponseSchema = z
   .object({
-    pipelineSummaries: PipelineSummariesSchema.and(
-      z.any().openapi({ description: 'A list of <code>PipelineSummary</code> objects.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    pipelineSummaries: PipelineSummariesSchema.exactOptional().openapi({
+      description: 'A list of <code>PipelineSummary</code> objects.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to retrieve the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPipelinesResponse')
@@ -2415,11 +1869,9 @@ const TagListSchema = z.array(TagSchema).min(1).max(50).openapi('TagList')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags (metadata) that you have assigned to the resource.' }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags (metadata) that you have assigned to the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -2434,345 +1886,273 @@ const LogResultSchema = z.string().openapi('LogResult')
 
 const RunPipelineActivityResponseSchema = z
   .object({
-    payloads: MessagePayloadsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The enriched or transformed sample message payloads as base64-encoded strings. (The results of running the pipeline activity on each input sample message payload, encoded in base64.)',
-        }),
-    ).exactOptional(),
-    logResult: LogResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'In case the pipeline activity fails, the log message that is generated.',
-        }),
-    ).exactOptional(),
+    payloads: MessagePayloadsSchema.exactOptional().openapi({
+      description:
+        'The enriched or transformed sample message payloads as base64-encoded strings. (The results of running the pipeline activity on each input sample message payload, encoded in base64.)',
+    }),
+    logResult: LogResultSchema.exactOptional().openapi({
+      description: 'In case the pipeline activity fails, the log message that is generated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RunPipelineActivityResponse')
 
 const SampleChannelDataResponseSchema = z
   .object({
-    payloads: MessagePayloadsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of message samples. Each sample message is returned as a base64-encoded string.',
-        }),
-    ).exactOptional(),
+    payloads: MessagePayloadsSchema.exactOptional().openapi({
+      description:
+        'The list of message samples. Each sample message is returned as a base64-encoded string.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SampleChannelDataResponse')
 
 const StartPipelineReprocessingResponseSchema = z
   .object({
-    reprocessingId: ReprocessingIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the pipeline reprocessing activity that was started.' }),
-    ).exactOptional(),
+    reprocessingId: ReprocessingIdSchema.exactOptional().openapi({
+      description: 'The ID of the pipeline reprocessing activity that was started.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartPipelineReprocessingResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const S3PathChannelMessageSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9\/_!'(){}\*\s\.\-\=\:]+$/)
+  .min(1)
+  .max(1024)
+  .openapi('S3PathChannelMessage')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const S3PathChannelMessagesSchema = z
+  .array(S3PathChannelMessageSchema)
+  .min(1)
+  .max(100)
+  .openapi('S3PathChannelMessages')
+
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
+
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const MessagesSchema = z.array(MessageSchema).openapi('Messages')
 
 const BatchPutMessageRequestSchema = z
   .object({
-    channelName: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel where the messages are sent.' }),
-    ),
-    messages: MessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of messages to be sent. Each message has the format: { "messageId": "string", "payload": "string"}.</p> <p>The field names of message payloads (data) that you send to IoT Analytics:</p> <ul> <li> <p>Must contain only alphanumeric characters and undescores (_). No other special characters are allowed.</p> </li> <li> <p>Must begin with an alphabetic character or single underscore (_).</p> </li> <li> <p>Cannot contain hyphens (-).</p> </li> <li> <p>In regular expression terms: "^[A-Za-z_]([A-Za-z0-9]*|[A-Za-z0-9][A-Za-z0-9_]*)$". </p> </li> <li> <p>Cannot be more than 255 characters.</p> </li> <li> <p>Are case insensitive. (Fields named foo and FOO in the same payload are considered duplicates.)</p> </li> </ul> <p>For example, {"temp_01": 29} or {"_temp_01": 29} are valid, but {"temp-01": 29}, {"01_temp": 29} or {"__temp_01": 29} are invalid in message payloads. </p>',
-        }),
-    ),
+    channelName: ChannelNameSchema.openapi({
+      description: 'The name of the channel where the messages are sent.',
+    }),
+    messages: MessagesSchema.openapi({
+      description:
+        '<p>The list of messages to be sent. Each message has the format: { "messageId": "string", "payload": "string"}.</p> <p>The field names of message payloads (data) that you send to IoT Analytics:</p> <ul> <li> <p>Must contain only alphanumeric characters and undescores (_). No other special characters are allowed.</p> </li> <li> <p>Must begin with an alphabetic character or single underscore (_).</p> </li> <li> <p>Cannot contain hyphens (-).</p> </li> <li> <p>In regular expression terms: "^[A-Za-z_]([A-Za-z0-9]*|[A-Za-z0-9][A-Za-z0-9_]*)$". </p> </li> <li> <p>Cannot be more than 255 characters.</p> </li> <li> <p>Are case insensitive. (Fields named foo and FOO in the same payload are considered duplicates.)</p> </li> </ul> <p>For example, {"temp_01": 29} or {"_temp_01": 29} are valid, but {"temp-01": 29}, {"01_temp": 29} or {"__temp_01": 29} are invalid in message payloads. </p>',
+    }),
   })
   .openapi({ required: ['channelName', 'messages'], title: 'BatchPutMessageRequest' })
   .openapi('BatchPutMessageRequest')
 
 const CancelPipelineReprocessingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelPipelineReprocessingRequest' })
   .openapi('CancelPipelineReprocessingRequest')
 
-const ChannelMessagesSchema: z.ZodType<ChannelMessagesType> = z
-  .lazy(() =>
-    z
-      .object({
-        s3Paths: S3PathChannelMessagesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>Specifies one or more keys that identify the Amazon Simple Storage Service (Amazon S3) objects that save your channel messages.</p> <p>You must use the full path for the key.</p> <p>Example path: <code>channel/mychannel/__dt=2020-02-29 00:00:00/1582940490000_1582940520000_123456789012_mychannel_0_2118.0.json.gz</code> </p>',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Specifies one or more sets of channel messages.', required: [] }),
-  )
+const ChannelMessagesSchema = z
+  .object({
+    s3Paths: S3PathChannelMessagesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies one or more keys that identify the Amazon Simple Storage Service (Amazon S3) objects that save your channel messages.</p> <p>You must use the full path for the key.</p> <p>Example path: <code>channel/mychannel/__dt=2020-02-29 00:00:00/1582940490000_1582940520000_123456789012_mychannel_0_2118.0.json.gz</code> </p>',
+    }),
+  })
+  .openapi({ description: 'Specifies one or more sets of channel messages.', required: [] })
   .openapi('ChannelMessages')
 
 const CreateChannelRequestSchema = z
   .object({
-    channelName: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ),
-    channelStorage: ChannelStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Where channel data is stored. You can choose one of <code>serviceManagedS3</code> or <code>customerManagedS3</code> storage. If not specified, the default is <code>serviceManagedS3</code>. You can't change this storage option after the channel is created.",
-        }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long, in days, message data is kept for the channel. When <code>customerManagedS3</code> storage is selected, this parameter is ignored.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage the channel.' }),
-    ).exactOptional(),
+    channelName: ChannelNameSchema.openapi({ description: 'The name of the channel.' }),
+    channelStorage: ChannelStorageSchema.exactOptional().openapi({
+      description:
+        "Where channel data is stored. You can choose one of <code>serviceManagedS3</code> or <code>customerManagedS3</code> storage. If not specified, the default is <code>serviceManagedS3</code>. You can't change this storage option after the channel is created.",
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description:
+        'How long, in days, message data is kept for the channel. When <code>customerManagedS3</code> storage is selected, this parameter is ignored.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the channel.',
+    }),
   })
   .openapi({ required: ['channelName'], title: 'CreateChannelRequest' })
   .openapi('CreateChannelRequest')
 
 const CreateDatasetContentRequestSchema = z
   .object({
-    versionId: DatasetContentVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID of the dataset content. To specify <code>versionId</code> for a dataset content, the dataset must use a <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DeltaTime.html">DeltaTimer</a> filter.',
-        }),
-    ).exactOptional(),
+    versionId: DatasetContentVersionSchema.exactOptional().openapi({
+      description:
+        'The version ID of the dataset content. To specify <code>versionId</code> for a dataset content, the dataset must use a <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DeltaTime.html">DeltaTimer</a> filter.',
+    }),
   })
   .openapi({ title: 'CreateDatasetContentRequest', required: [] })
   .openapi('CreateDatasetContentRequest')
 
 const CreateDatasetRequestSchema = z
   .object({
-    datasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ),
-    actions: DatasetActionsSchema.and(
-      z.any().openapi({ description: 'A list of actions that create the dataset contents.' }),
-    ),
-    triggers: DatasetTriggersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of triggers. A trigger causes dataset contents to be populated at a specified time interval or when another dataset's contents are created. The list of triggers can be empty or contain up to five <code>DataSetTrigger</code> objects.",
-        }),
-    ).exactOptional(),
-    contentDeliveryRules: DatasetContentDeliveryRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When dataset contents are created, they are delivered to destinations specified here.',
-        }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. How long, in days, versions of dataset contents are kept for the dataset. If not specified or set to <code>null</code>, versions of dataset contents are retained for at most 90 days. The number of versions of dataset contents retained is determined by the <code>versioningConfiguration</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/iotanalytics/latest/userguide/getting-started.html#aws-iot-analytics-dataset-versions"> Keeping Multiple Versions of IoT Analytics datasets</a> in the <i>IoT Analytics User Guide</i>.',
-        }),
-    ).exactOptional(),
-    versioningConfiguration: VersioningConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. How many versions of dataset contents are kept. If not specified or set to null, only the latest version plus the latest succeeded version (if they are different) are kept for the time period specified by the <code>retentionPeriod</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/iotanalytics/latest/userguide/getting-started.html#aws-iot-analytics-dataset-versions">Keeping Multiple Versions of IoT Analytics datasets</a> in the <i>IoT Analytics User Guide</i>.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage the dataset.' }),
-    ).exactOptional(),
-    lateDataRules: LateDataRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of data rules that send notifications to CloudWatch, when data arrives late. To specify <code>lateDataRules</code>, the dataset must use a <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DeltaTime.html">DeltaTimer</a> filter.',
-        }),
-    ).exactOptional(),
+    datasetName: DatasetNameSchema.openapi({ description: 'The name of the dataset.' }),
+    actions: DatasetActionsSchema.openapi({
+      description: 'A list of actions that create the dataset contents.',
+    }),
+    triggers: DatasetTriggersSchema.exactOptional().openapi({
+      description:
+        "A list of triggers. A trigger causes dataset contents to be populated at a specified time interval or when another dataset's contents are created. The list of triggers can be empty or contain up to five <code>DataSetTrigger</code> objects.",
+    }),
+    contentDeliveryRules: DatasetContentDeliveryRulesSchema.exactOptional().openapi({
+      description:
+        'When dataset contents are created, they are delivered to destinations specified here.',
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description:
+        'Optional. How long, in days, versions of dataset contents are kept for the dataset. If not specified or set to <code>null</code>, versions of dataset contents are retained for at most 90 days. The number of versions of dataset contents retained is determined by the <code>versioningConfiguration</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/iotanalytics/latest/userguide/getting-started.html#aws-iot-analytics-dataset-versions"> Keeping Multiple Versions of IoT Analytics datasets</a> in the <i>IoT Analytics User Guide</i>.',
+    }),
+    versioningConfiguration: VersioningConfigurationSchema.exactOptional().openapi({
+      description:
+        'Optional. How many versions of dataset contents are kept. If not specified or set to null, only the latest version plus the latest succeeded version (if they are different) are kept for the time period specified by the <code>retentionPeriod</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/iotanalytics/latest/userguide/getting-started.html#aws-iot-analytics-dataset-versions">Keeping Multiple Versions of IoT Analytics datasets</a> in the <i>IoT Analytics User Guide</i>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the dataset.',
+    }),
+    lateDataRules: LateDataRulesSchema.exactOptional().openapi({
+      description:
+        'A list of data rules that send notifications to CloudWatch, when data arrives late. To specify <code>lateDataRules</code>, the dataset must use a <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DeltaTime.html">DeltaTimer</a> filter.',
+    }),
   })
   .openapi({ required: ['datasetName', 'actions'], title: 'CreateDatasetRequest' })
   .openapi('CreateDatasetRequest')
 
 const CreateDatastoreRequestSchema = z
   .object({
-    datastoreName: DatastoreNameSchema.and(
-      z.any().openapi({ description: 'The name of the data store.' }),
-    ),
-    datastoreStorage: DatastoreStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Where data in a data store is stored.. You can choose <code>serviceManagedS3</code> storage, <code>customerManagedS3</code> storage, or <code>iotSiteWiseMultiLayerStorage</code> storage. The default is <code>serviceManagedS3</code>. You can't change the choice of Amazon S3 storage after your data store is created. ",
-        }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long, in days, message data is kept for the data store. When <code>customerManagedS3</code> storage is selected, this parameter is ignored.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage the data store.' }),
-    ).exactOptional(),
-    fileFormatConfiguration: FileFormatConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the configuration information of file formats. IoT Analytics data stores support JSON and <a href="https://parquet.apache.org/">Parquet</a>.</p> <p>The default file format is JSON. You can specify only one format.</p> <p>You can\'t change the file format after you create the data store.</p>',
-        }),
-    ).exactOptional(),
-    datastorePartitions: DatastorePartitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Contains information about the partition dimensions in a data store. ',
-        }),
-    ).exactOptional(),
+    datastoreName: DatastoreNameSchema.openapi({ description: 'The name of the data store.' }),
+    datastoreStorage: DatastoreStorageSchema.exactOptional().openapi({
+      description:
+        "Where data in a data store is stored.. You can choose <code>serviceManagedS3</code> storage, <code>customerManagedS3</code> storage, or <code>iotSiteWiseMultiLayerStorage</code> storage. The default is <code>serviceManagedS3</code>. You can't change the choice of Amazon S3 storage after your data store is created. ",
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description:
+        'How long, in days, message data is kept for the data store. When <code>customerManagedS3</code> storage is selected, this parameter is ignored.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the data store.',
+    }),
+    fileFormatConfiguration: FileFormatConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the configuration information of file formats. IoT Analytics data stores support JSON and <a href="https://parquet.apache.org/">Parquet</a>.</p> <p>The default file format is JSON. You can specify only one format.</p> <p>You can\'t change the file format after you create the data store.</p>',
+    }),
+    datastorePartitions: DatastorePartitionsSchema.exactOptional().openapi({
+      description: ' Contains information about the partition dimensions in a data store. ',
+    }),
   })
   .openapi({ required: ['datastoreName'], title: 'CreateDatastoreRequest' })
   .openapi('CreateDatastoreRequest')
 
 const CreatePipelineRequestSchema = z
   .object({
-    pipelineName: PipelineNameSchema.and(
-      z.any().openapi({ description: 'The name of the pipeline.' }),
-    ),
-    pipelineActivities: PipelineActivitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of <code>PipelineActivity</code> objects. Activities perform transformations on your messages, such as removing, renaming or adding message attributes; filtering messages based on attribute values; invoking your Lambda unctions on messages for advanced processing; or performing mathematical transformations to normalize device data.</p> <p>The list can be 2-25 <code>PipelineActivity</code> objects and must contain both a <code>channel</code> and a <code>datastore</code> activity. Each entry in the list must contain only one activity. For example:</p> <p> <code>pipelineActivities = [ { "channel": { ... } }, { "lambda": { ... } }, ... ]</code> </p>',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage the pipeline.' }),
-    ).exactOptional(),
+    pipelineName: PipelineNameSchema.openapi({ description: 'The name of the pipeline.' }),
+    pipelineActivities: PipelineActivitiesSchema.openapi({
+      description:
+        '<p>A list of <code>PipelineActivity</code> objects. Activities perform transformations on your messages, such as removing, renaming or adding message attributes; filtering messages based on attribute values; invoking your Lambda unctions on messages for advanced processing; or performing mathematical transformations to normalize device data.</p> <p>The list can be 2-25 <code>PipelineActivity</code> objects and must contain both a <code>channel</code> and a <code>datastore</code> activity. Each entry in the list must contain only one activity. For example:</p> <p> <code>pipelineActivities = [ { "channel": { ... } }, { "lambda": { ... } }, ... ]</code> </p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the pipeline.',
+    }),
   })
   .openapi({ required: ['pipelineName', 'pipelineActivities'], title: 'CreatePipelineRequest' })
   .openapi('CreatePipelineRequest')
 
 const DeleteChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelRequest' })
   .openapi('DeleteChannelRequest')
 
 const DeleteDatasetContentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDatasetContentRequest' })
   .openapi('DeleteDatasetContentRequest')
 
 const DeleteDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDatasetRequest' })
   .openapi('DeleteDatasetRequest')
 
 const DeleteDatastoreRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDatastoreRequest' })
   .openapi('DeleteDatastoreRequest')
 
 const DeletePipelineRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePipelineRequest' })
   .openapi('DeletePipelineRequest')
 
 const IncludeStatisticsFlagSchema = z.boolean().openapi('IncludeStatisticsFlag')
 
 const DescribeChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelRequest' })
   .openapi('DescribeChannelRequest')
 
 const DescribeDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDatasetRequest' })
   .openapi('DescribeDatasetRequest')
 
 const DescribeDatastoreRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDatastoreRequest' })
   .openapi('DescribeDatastoreRequest')
 
 const DescribeLoggingOptionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeLoggingOptionsRequest' })
   .openapi('DescribeLoggingOptionsRequest')
 
 const DescribePipelineRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePipelineRequest' })
   .openapi('DescribePipelineRequest')
 
 const EndTimeSchema = z.iso.datetime({ offset: true }).openapi('EndTime')
 
 const GetDatasetContentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDatasetContentRequest' })
   .openapi('GetDatasetContentRequest')
 
 const MaxResultsSchema = z.int().min(1).max(250).openapi('MaxResults')
 
 const ListChannelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelsRequest' })
   .openapi('ListChannelsRequest')
 
 const ListDatasetContentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDatasetContentsRequest' })
   .openapi('ListDatasetContentsRequest')
 
 const ListDatasetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDatasetsRequest' })
   .openapi('ListDatasetsRequest')
 
 const ListDatastoresRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDatastoresRequest' })
   .openapi('ListDatastoresRequest')
 
 const ListPipelinesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPipelinesRequest' })
   .openapi('ListPipelinesRequest')
 
 const ResourceArnSchema = z.string().min(20).max(2048).openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -2780,30 +2160,22 @@ const MaxMessagesSchema = z.int().min(1).max(10).openapi('MaxMessages')
 
 const PutLoggingOptionsRequestSchema = z
   .object({
-    loggingOptions: LoggingOptionsSchema.and(
-      z.any().openapi({ description: 'The new values of the IoT Analytics logging options.' }),
-    ),
+    loggingOptions: LoggingOptionsSchema.openapi({
+      description: 'The new values of the IoT Analytics logging options.',
+    }),
   })
   .openapi({ required: ['loggingOptions'], title: 'PutLoggingOptionsRequest' })
   .openapi('PutLoggingOptionsRequest')
 
 const RunPipelineActivityRequestSchema = z
   .object({
-    pipelineActivity: PipelineActivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pipeline activity that is run. This must not be a channel activity or a data store activity because these activities are used in a pipeline only to load the original message and to store the (possibly) transformed message. If a Lambda activity is specified, only short-running Lambda functions (those with a timeout of less than 30 seconds or less) can be used.',
-        }),
-    ),
-    payloads: MessagePayloadsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sample message payloads on which the pipeline activity is run.',
-        }),
-    ),
+    pipelineActivity: PipelineActivitySchema.openapi({
+      description:
+        'The pipeline activity that is run. This must not be a channel activity or a data store activity because these activities are used in a pipeline only to load the original message and to store the (possibly) transformed message. If a Lambda activity is specified, only short-running Lambda functions (those with a timeout of less than 30 seconds or less) can be used.',
+    }),
+    payloads: MessagePayloadsSchema.openapi({
+      description: 'The sample message payloads on which the pipeline activity is run.',
+    }),
   })
   .openapi({ required: ['pipelineActivity', 'payloads'], title: 'RunPipelineActivityRequest' })
   .openapi('RunPipelineActivityRequest')
@@ -2811,36 +2183,24 @@ const RunPipelineActivityRequestSchema = z
 const StartTimeSchema = z.iso.datetime({ offset: true }).openapi('StartTime')
 
 const SampleChannelDataRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'SampleChannelDataRequest' })
   .openapi('SampleChannelDataRequest')
 
 const StartPipelineReprocessingRequestSchema = z
   .object({
-    startTime: StartTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The start time (inclusive) of raw message data that is reprocessed.</p> <p>If you specify a value for the <code>startTime</code> parameter, you must not use the <code>channelMessages</code> object.</p>',
-        }),
-    ).exactOptional(),
-    endTime: EndTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end time (exclusive) of raw message data that is reprocessed.</p> <p>If you specify a value for the <code>endTime</code> parameter, you must not use the <code>channelMessages</code> object.</p>',
-        }),
-    ).exactOptional(),
-    channelMessages: ChannelMessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies one or more sets of channel messages that you want to reprocess.</p> <p>If you use the <code>channelMessages</code> object, you must not specify a value for <code>startTime</code> and <code>endTime</code>.</p>',
-        }),
-    ).exactOptional(),
+    startTime: StartTimeSchema.exactOptional().openapi({
+      description:
+        '<p>The start time (inclusive) of raw message data that is reprocessed.</p> <p>If you specify a value for the <code>startTime</code> parameter, you must not use the <code>channelMessages</code> object.</p>',
+    }),
+    endTime: EndTimeSchema.exactOptional().openapi({
+      description:
+        '<p>The end time (exclusive) of raw message data that is reprocessed.</p> <p>If you specify a value for the <code>endTime</code> parameter, you must not use the <code>channelMessages</code> object.</p>',
+    }),
+    channelMessages: ChannelMessagesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies one or more sets of channel messages that you want to reprocess.</p> <p>If you use the <code>channelMessages</code> object, you must not specify a value for <code>startTime</code> and <code>endTime</code>.</p>',
+    }),
   })
   .openapi({ title: 'StartPipelineReprocessingRequest', required: [] })
   .openapi('StartPipelineReprocessingRequest')
@@ -2849,126 +2209,82 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The new or modified tags for the resource.' }),
-    ),
+    tags: TagListSchema.openapi({ description: 'The new or modified tags for the resource.' }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateChannelRequestSchema = z
   .object({
-    channelStorage: ChannelStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Where channel data is stored. You can choose one of <code>serviceManagedS3</code> or <code>customerManagedS3</code> storage. If not specified, the default is <code>serviceManagedS3</code>. You can't change this storage option after the channel is created.",
-        }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "How long, in days, message data is kept for the channel. The retention period can't be updated if the channel's Amazon S3 storage is customer-managed.",
-        }),
-    ).exactOptional(),
+    channelStorage: ChannelStorageSchema.exactOptional().openapi({
+      description:
+        "Where channel data is stored. You can choose one of <code>serviceManagedS3</code> or <code>customerManagedS3</code> storage. If not specified, the default is <code>serviceManagedS3</code>. You can't change this storage option after the channel is created.",
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description:
+        "How long, in days, message data is kept for the channel. The retention period can't be updated if the channel's Amazon S3 storage is customer-managed.",
+    }),
   })
   .openapi({ title: 'UpdateChannelRequest', required: [] })
   .openapi('UpdateChannelRequest')
 
 const UpdateDatasetRequestSchema = z
   .object({
-    actions: DatasetActionsSchema.and(
-      z.any().openapi({ description: 'A list of <code>DatasetAction</code> objects.' }),
-    ),
-    triggers: DatasetTriggersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>DatasetTrigger</code> objects. The list can be empty or can contain up to five <code>DatasetTrigger</code> objects.',
-        }),
-    ).exactOptional(),
-    contentDeliveryRules: DatasetContentDeliveryRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When dataset contents are created, they are delivered to destinations specified here.',
-        }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({ description: 'How long, in days, dataset contents are kept for the dataset.' }),
-    ).exactOptional(),
-    versioningConfiguration: VersioningConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. How many versions of dataset contents are kept. If not specified or set to null, only the latest version plus the latest succeeded version (if they are different) are kept for the time period specified by the <code>retentionPeriod</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/iotanalytics/latest/userguide/getting-started.html#aws-iot-analytics-dataset-versions">Keeping Multiple Versions of IoT Analytics datasets</a> in the <i>IoT Analytics User Guide</i>.',
-        }),
-    ).exactOptional(),
-    lateDataRules: LateDataRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of data rules that send notifications to CloudWatch, when data arrives late. To specify <code>lateDataRules</code>, the dataset must use a <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DeltaTime.html">DeltaTimer</a> filter.',
-        }),
-    ).exactOptional(),
+    actions: DatasetActionsSchema.openapi({
+      description: 'A list of <code>DatasetAction</code> objects.',
+    }),
+    triggers: DatasetTriggersSchema.exactOptional().openapi({
+      description:
+        'A list of <code>DatasetTrigger</code> objects. The list can be empty or can contain up to five <code>DatasetTrigger</code> objects.',
+    }),
+    contentDeliveryRules: DatasetContentDeliveryRulesSchema.exactOptional().openapi({
+      description:
+        'When dataset contents are created, they are delivered to destinations specified here.',
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description: 'How long, in days, dataset contents are kept for the dataset.',
+    }),
+    versioningConfiguration: VersioningConfigurationSchema.exactOptional().openapi({
+      description:
+        'Optional. How many versions of dataset contents are kept. If not specified or set to null, only the latest version plus the latest succeeded version (if they are different) are kept for the time period specified by the <code>retentionPeriod</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/iotanalytics/latest/userguide/getting-started.html#aws-iot-analytics-dataset-versions">Keeping Multiple Versions of IoT Analytics datasets</a> in the <i>IoT Analytics User Guide</i>.',
+    }),
+    lateDataRules: LateDataRulesSchema.exactOptional().openapi({
+      description:
+        'A list of data rules that send notifications to CloudWatch, when data arrives late. To specify <code>lateDataRules</code>, the dataset must use a <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DeltaTime.html">DeltaTimer</a> filter.',
+    }),
   })
   .openapi({ required: ['actions'], title: 'UpdateDatasetRequest' })
   .openapi('UpdateDatasetRequest')
 
 const UpdateDatastoreRequestSchema = z
   .object({
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "How long, in days, message data is kept for the data store. The retention period can't be updated if the data store's Amazon S3 storage is customer-managed.",
-        }),
-    ).exactOptional(),
-    datastoreStorage: DatastoreStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Where data in a data store is stored.. You can choose <code>serviceManagedS3</code> storage, <code>customerManagedS3</code> storage, or <code>iotSiteWiseMultiLayerStorage</code> storage. The default is <code>serviceManagedS3</code>. You can't change the choice of Amazon S3 storage after your data store is created. ",
-        }),
-    ).exactOptional(),
-    fileFormatConfiguration: FileFormatConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the configuration information of file formats. IoT Analytics data stores support JSON and <a href="https://parquet.apache.org/">Parquet</a>.</p> <p>The default file format is JSON. You can specify only one format.</p> <p>You can\'t change the file format after you create the data store.</p>',
-        }),
-    ).exactOptional(),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description:
+        "How long, in days, message data is kept for the data store. The retention period can't be updated if the data store's Amazon S3 storage is customer-managed.",
+    }),
+    datastoreStorage: DatastoreStorageSchema.exactOptional().openapi({
+      description:
+        "Where data in a data store is stored.. You can choose <code>serviceManagedS3</code> storage, <code>customerManagedS3</code> storage, or <code>iotSiteWiseMultiLayerStorage</code> storage. The default is <code>serviceManagedS3</code>. You can't change the choice of Amazon S3 storage after your data store is created. ",
+    }),
+    fileFormatConfiguration: FileFormatConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the configuration information of file formats. IoT Analytics data stores support JSON and <a href="https://parquet.apache.org/">Parquet</a>.</p> <p>The default file format is JSON. You can specify only one format.</p> <p>You can\'t change the file format after you create the data store.</p>',
+    }),
   })
   .openapi({ title: 'UpdateDatastoreRequest', required: [] })
   .openapi('UpdateDatastoreRequest')
 
 const UpdatePipelineRequestSchema = z
   .object({
-    pipelineActivities: PipelineActivitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of <code>PipelineActivity</code> objects. Activities perform transformations on your messages, such as removing, renaming or adding message attributes; filtering messages based on attribute values; invoking your Lambda functions on messages for advanced processing; or performing mathematical transformations to normalize device data.</p> <p>The list can be 2-25 <code>PipelineActivity</code> objects and must contain both a <code>channel</code> and a <code>datastore</code> activity. Each entry in the list must contain only one activity. For example:</p> <p> <code>pipelineActivities = [ { "channel": { ... } }, { "lambda": { ... } }, ... ]</code> </p>',
-        }),
-    ),
+    pipelineActivities: PipelineActivitiesSchema.openapi({
+      description:
+        '<p>A list of <code>PipelineActivity</code> objects. Activities perform transformations on your messages, such as removing, renaming or adding message attributes; filtering messages based on attribute values; invoking your Lambda functions on messages for advanced processing; or performing mathematical transformations to normalize device data.</p> <p>The list can be 2-25 <code>PipelineActivity</code> objects and must contain both a <code>channel</code> and a <code>datastore</code> activity. Each entry in the list must contain only one activity. For example:</p> <p> <code>pipelineActivities = [ { "channel": { ... } }, { "lambda": { ... } }, ... ]</code> </p>',
+    }),
   })
   .openapi({ required: ['pipelineActivities'], title: 'UpdatePipelineRequest' })
   .openapi('UpdatePipelineRequest')
@@ -3293,22 +2609,14 @@ export const postChannelsRoute = createRoute({
                 .openapi({ description: 'The name of the channel.' }),
               channelStorage: z
                 .object({
-                  serviceManagedS3: ServiceManagedChannelS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Used to store channel data in an S3 bucket managed by IoT Analytics. You can't change the choice of S3 storage after the data store is created.",
-                      }),
-                  ).exactOptional(),
-                  customerManagedS3: CustomerManagedChannelS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Used to store channel data in an S3 bucket that you manage. If customer managed storage is selected, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of S3 storage after the data store is created.",
-                      }),
-                  ).exactOptional(),
+                  serviceManagedS3: ServiceManagedChannelS3StorageSchema.exactOptional().openapi({
+                    description:
+                      "Used to store channel data in an S3 bucket managed by IoT Analytics. You can't change the choice of S3 storage after the data store is created.",
+                  }),
+                  customerManagedS3: CustomerManagedChannelS3StorageSchema.exactOptional().openapi({
+                    description:
+                      "Used to store channel data in an S3 bucket that you manage. If customer managed storage is selected, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of S3 storage after the data store is created.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3318,17 +2626,13 @@ export const postChannelsRoute = createRoute({
                 }),
               retentionPeriod: z
                 .object({
-                  unlimited: UnlimitedRetentionPeriodSchema.and(
-                    z.any().openapi({ description: 'If true, message data is kept indefinitely.' }),
-                  ).exactOptional(),
-                  numberOfDays: RetentionPeriodInDaysSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
-                      }),
-                  ).exactOptional(),
+                  unlimited: UnlimitedRetentionPeriodSchema.exactOptional().openapi({
+                    description: 'If true, message data is kept indefinitely.',
+                  }),
+                  numberOfDays: RetentionPeriodInDaysSchema.exactOptional().openapi({
+                    description:
+                      'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'How long, in days, message data is kept.', required: [] }),
@@ -3503,37 +2807,25 @@ export const postDatasetsRoute = createRoute({
                 }),
               retentionPeriod: z
                 .object({
-                  unlimited: UnlimitedRetentionPeriodSchema.and(
-                    z.any().openapi({ description: 'If true, message data is kept indefinitely.' }),
-                  ).exactOptional(),
-                  numberOfDays: RetentionPeriodInDaysSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
-                      }),
-                  ).exactOptional(),
+                  unlimited: UnlimitedRetentionPeriodSchema.exactOptional().openapi({
+                    description: 'If true, message data is kept indefinitely.',
+                  }),
+                  numberOfDays: RetentionPeriodInDaysSchema.exactOptional().openapi({
+                    description:
+                      'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'How long, in days, message data is kept.', required: [] }),
               versioningConfiguration: z
                 .object({
-                  unlimited: UnlimitedVersioningSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'If true, unlimited versions of dataset contents are kept.',
-                      }),
-                  ).exactOptional(),
-                  maxVersions: MaxVersionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'How many versions of dataset contents are kept. The <code>unlimited</code> parameter must be <code>false</code>.',
-                      }),
-                  ).exactOptional(),
+                  unlimited: UnlimitedVersioningSchema.exactOptional().openapi({
+                    description: 'If true, unlimited versions of dataset contents are kept.',
+                  }),
+                  maxVersions: MaxVersionsSchema.exactOptional().openapi({
+                    description:
+                      'How many versions of dataset contents are kept. The <code>unlimited</code> parameter must be <code>false</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3943,30 +3235,20 @@ export const postDatastoresRoute = createRoute({
                 .openapi({ description: 'The name of the data store.' }),
               datastoreStorage: z
                 .object({
-                  serviceManagedS3: ServiceManagedDatastoreS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Used to store data in an Amazon S3 bucket managed by IoT Analytics. You can't change the choice of Amazon S3 storage after your data store is created. ",
-                      }),
-                  ).exactOptional(),
-                  customerManagedS3: CustomerManagedDatastoreS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "S3-customer-managed; When you choose customer-managed storage, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of Amazon S3 storage after your data store is created. ",
-                      }),
-                  ).exactOptional(),
-                  iotSiteWiseMultiLayerStorage: DatastoreIotSiteWiseMultiLayerStorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          " Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. You can't change the choice of Amazon S3 storage after your data store is created. ",
-                      }),
-                  ).exactOptional(),
+                  serviceManagedS3: ServiceManagedDatastoreS3StorageSchema.exactOptional().openapi({
+                    description:
+                      "Used to store data in an Amazon S3 bucket managed by IoT Analytics. You can't change the choice of Amazon S3 storage after your data store is created. ",
+                  }),
+                  customerManagedS3:
+                    CustomerManagedDatastoreS3StorageSchema.exactOptional().openapi({
+                      description:
+                        "S3-customer-managed; When you choose customer-managed storage, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of Amazon S3 storage after your data store is created. ",
+                    }),
+                  iotSiteWiseMultiLayerStorage:
+                    DatastoreIotSiteWiseMultiLayerStorageSchema.exactOptional().openapi({
+                      description:
+                        " Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. You can't change the choice of Amazon S3 storage after your data store is created. ",
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3976,17 +3258,13 @@ export const postDatastoresRoute = createRoute({
                 }),
               retentionPeriod: z
                 .object({
-                  unlimited: UnlimitedRetentionPeriodSchema.and(
-                    z.any().openapi({ description: 'If true, message data is kept indefinitely.' }),
-                  ).exactOptional(),
-                  numberOfDays: RetentionPeriodInDaysSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
-                      }),
-                  ).exactOptional(),
+                  unlimited: UnlimitedRetentionPeriodSchema.exactOptional().openapi({
+                    description: 'If true, message data is kept indefinitely.',
+                  }),
+                  numberOfDays: RetentionPeriodInDaysSchema.exactOptional().openapi({
+                    description:
+                      'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'How long, in days, message data is kept.', required: [] }),
@@ -3998,21 +3276,12 @@ export const postDatastoresRoute = createRoute({
                 .openapi({ description: 'Metadata which can be used to manage the data store.' }),
               fileFormatConfiguration: z
                 .object({
-                  jsonConfiguration: JsonConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Contains the configuration information of the JSON format.',
-                      }),
-                  ).exactOptional(),
-                  parquetConfiguration: ParquetConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains the configuration information of the Parquet format.',
-                      }),
-                  ).exactOptional(),
+                  jsonConfiguration: JsonConfigurationSchema.exactOptional().openapi({
+                    description: 'Contains the configuration information of the JSON format.',
+                  }),
+                  parquetConfiguration: ParquetConfigurationSchema.exactOptional().openapi({
+                    description: 'Contains the configuration information of the Parquet format.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4022,13 +3291,9 @@ export const postDatastoresRoute = createRoute({
                 }),
               datastorePartitions: z
                 .object({
-                  partitions: PartitionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' A list of partition dimensions in a data store. ',
-                      }),
-                  ).exactOptional(),
+                  partitions: PartitionsSchema.exactOptional().openapi({
+                    description: ' A list of partition dimensions in a data store. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4353,22 +3618,14 @@ export const putChannelsChannelNameRoute = createRoute({
             .object({
               channelStorage: z
                 .object({
-                  serviceManagedS3: ServiceManagedChannelS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Used to store channel data in an S3 bucket managed by IoT Analytics. You can't change the choice of S3 storage after the data store is created.",
-                      }),
-                  ).exactOptional(),
-                  customerManagedS3: CustomerManagedChannelS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Used to store channel data in an S3 bucket that you manage. If customer managed storage is selected, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of S3 storage after the data store is created.",
-                      }),
-                  ).exactOptional(),
+                  serviceManagedS3: ServiceManagedChannelS3StorageSchema.exactOptional().openapi({
+                    description:
+                      "Used to store channel data in an S3 bucket managed by IoT Analytics. You can't change the choice of S3 storage after the data store is created.",
+                  }),
+                  customerManagedS3: CustomerManagedChannelS3StorageSchema.exactOptional().openapi({
+                    description:
+                      "Used to store channel data in an S3 bucket that you manage. If customer managed storage is selected, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of S3 storage after the data store is created.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4378,17 +3635,13 @@ export const putChannelsChannelNameRoute = createRoute({
                 }),
               retentionPeriod: z
                 .object({
-                  unlimited: UnlimitedRetentionPeriodSchema.and(
-                    z.any().openapi({ description: 'If true, message data is kept indefinitely.' }),
-                  ).exactOptional(),
-                  numberOfDays: RetentionPeriodInDaysSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
-                      }),
-                  ).exactOptional(),
+                  unlimited: UnlimitedRetentionPeriodSchema.exactOptional().openapi({
+                    description: 'If true, message data is kept indefinitely.',
+                  }),
+                  numberOfDays: RetentionPeriodInDaysSchema.exactOptional().openapi({
+                    description:
+                      'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'How long, in days, message data is kept.', required: [] }),
@@ -4616,37 +3869,25 @@ export const putDatasetsDatasetNameRoute = createRoute({
                 }),
               retentionPeriod: z
                 .object({
-                  unlimited: UnlimitedRetentionPeriodSchema.and(
-                    z.any().openapi({ description: 'If true, message data is kept indefinitely.' }),
-                  ).exactOptional(),
-                  numberOfDays: RetentionPeriodInDaysSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
-                      }),
-                  ).exactOptional(),
+                  unlimited: UnlimitedRetentionPeriodSchema.exactOptional().openapi({
+                    description: 'If true, message data is kept indefinitely.',
+                  }),
+                  numberOfDays: RetentionPeriodInDaysSchema.exactOptional().openapi({
+                    description:
+                      'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'How long, in days, message data is kept.', required: [] }),
               versioningConfiguration: z
                 .object({
-                  unlimited: UnlimitedVersioningSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'If true, unlimited versions of dataset contents are kept.',
-                      }),
-                  ).exactOptional(),
-                  maxVersions: MaxVersionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'How many versions of dataset contents are kept. The <code>unlimited</code> parameter must be <code>false</code>.',
-                      }),
-                  ).exactOptional(),
+                  unlimited: UnlimitedVersioningSchema.exactOptional().openapi({
+                    description: 'If true, unlimited versions of dataset contents are kept.',
+                  }),
+                  maxVersions: MaxVersionsSchema.exactOptional().openapi({
+                    description:
+                      'How many versions of dataset contents are kept. The <code>unlimited</code> parameter must be <code>false</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4879,46 +4120,32 @@ export const putDatastoresDatastoreNameRoute = createRoute({
             .object({
               retentionPeriod: z
                 .object({
-                  unlimited: UnlimitedRetentionPeriodSchema.and(
-                    z.any().openapi({ description: 'If true, message data is kept indefinitely.' }),
-                  ).exactOptional(),
-                  numberOfDays: RetentionPeriodInDaysSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
-                      }),
-                  ).exactOptional(),
+                  unlimited: UnlimitedRetentionPeriodSchema.exactOptional().openapi({
+                    description: 'If true, message data is kept indefinitely.',
+                  }),
+                  numberOfDays: RetentionPeriodInDaysSchema.exactOptional().openapi({
+                    description:
+                      'The number of days that message data is kept. The <code>unlimited</code> parameter must be false.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'How long, in days, message data is kept.', required: [] }),
               datastoreStorage: z
                 .object({
-                  serviceManagedS3: ServiceManagedDatastoreS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Used to store data in an Amazon S3 bucket managed by IoT Analytics. You can't change the choice of Amazon S3 storage after your data store is created. ",
-                      }),
-                  ).exactOptional(),
-                  customerManagedS3: CustomerManagedDatastoreS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "S3-customer-managed; When you choose customer-managed storage, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of Amazon S3 storage after your data store is created. ",
-                      }),
-                  ).exactOptional(),
-                  iotSiteWiseMultiLayerStorage: DatastoreIotSiteWiseMultiLayerStorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          " Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. You can't change the choice of Amazon S3 storage after your data store is created. ",
-                      }),
-                  ).exactOptional(),
+                  serviceManagedS3: ServiceManagedDatastoreS3StorageSchema.exactOptional().openapi({
+                    description:
+                      "Used to store data in an Amazon S3 bucket managed by IoT Analytics. You can't change the choice of Amazon S3 storage after your data store is created. ",
+                  }),
+                  customerManagedS3:
+                    CustomerManagedDatastoreS3StorageSchema.exactOptional().openapi({
+                      description:
+                        "S3-customer-managed; When you choose customer-managed storage, the <code>retentionPeriod</code> parameter is ignored. You can't change the choice of Amazon S3 storage after your data store is created. ",
+                    }),
+                  iotSiteWiseMultiLayerStorage:
+                    DatastoreIotSiteWiseMultiLayerStorageSchema.exactOptional().openapi({
+                      description:
+                        " Used to store data used by IoT SiteWise in an Amazon S3 bucket that you manage. You can't change the choice of Amazon S3 storage after your data store is created. ",
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4928,21 +4155,12 @@ export const putDatastoresDatastoreNameRoute = createRoute({
                 }),
               fileFormatConfiguration: z
                 .object({
-                  jsonConfiguration: JsonConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Contains the configuration information of the JSON format.',
-                      }),
-                  ).exactOptional(),
-                  parquetConfiguration: ParquetConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains the configuration information of the Parquet format.',
-                      }),
-                  ).exactOptional(),
+                  jsonConfiguration: JsonConfigurationSchema.exactOptional().openapi({
+                    description: 'Contains the configuration information of the JSON format.',
+                  }),
+                  parquetConfiguration: ParquetConfigurationSchema.exactOptional().openapi({
+                    description: 'Contains the configuration information of the Parquet format.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5324,26 +4542,16 @@ export const putLoggingRoute = createRoute({
             .object({
               loggingOptions: z
                 .object({
-                  roleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role that grants permission to IoT Analytics to perform logging.',
-                      }),
-                  ).exactOptional(),
-                  level: LoggingLevelSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The logging level. Currently, only ERROR is supported.',
-                      }),
-                  ).exactOptional(),
-                  enabled: LoggingEnabledSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'If true, logging is enabled for IoT Analytics.' }),
-                  ).exactOptional(),
+                  roleArn: RoleArnSchema.exactOptional().openapi({
+                    description:
+                      'The ARN of the role that grants permission to IoT Analytics to perform logging.',
+                  }),
+                  level: LoggingLevelSchema.exactOptional().openapi({
+                    description: 'The logging level. Currently, only ERROR is supported.',
+                  }),
+                  enabled: LoggingEnabledSchema.exactOptional().openapi({
+                    description: 'If true, logging is enabled for IoT Analytics.',
+                  }),
                 })
                 .openapi({ description: 'Information about logging options.', required: [] }),
             })
@@ -5664,70 +4872,40 @@ export const postPipelineactivitiesRunRoute = createRoute({
             .object({
               pipelineActivity: z
                 .object({
-                  channel: ChannelActivitySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Determines the source of the messages to be processed.',
-                      }),
-                  ).exactOptional(),
-                  lambda: LambdaActivitySchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Runs a Lambda function to modify the message.' }),
-                  ).exactOptional(),
-                  datastore: DatastoreActivitySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies where to store the processed message data.',
-                      }),
-                  ).exactOptional(),
-                  addAttributes: AddAttributesActivitySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Adds other attributes based on existing attributes in the message.',
-                      }),
-                  ).exactOptional(),
-                  removeAttributes: RemoveAttributesActivitySchema.and(
-                    z.any().openapi({ description: 'Removes attributes from a message.' }),
-                  ).exactOptional(),
-                  selectAttributes: SelectAttributesActivitySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Used to create a new message using only the specified attributes from the original message. ',
-                      }),
-                  ).exactOptional(),
-                  filter: FilterActivitySchema.and(
-                    z.any().openapi({ description: 'Filters a message based on its attributes.' }),
-                  ).exactOptional(),
-                  math: MathActivitySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Computes an arithmetic expression using the message's attributes and adds it to the message.",
-                      }),
-                  ).exactOptional(),
-                  deviceRegistryEnrich: DeviceRegistryEnrichActivitySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Adds data from the IoT device registry to your message.',
-                      }),
-                  ).exactOptional(),
-                  deviceShadowEnrich: DeviceShadowEnrichActivitySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Adds information from the IoT Device Shadow service to a message.',
-                      }),
-                  ).exactOptional(),
+                  channel: ChannelActivitySchema.exactOptional().openapi({
+                    description: 'Determines the source of the messages to be processed.',
+                  }),
+                  lambda: LambdaActivitySchema.exactOptional().openapi({
+                    description: 'Runs a Lambda function to modify the message.',
+                  }),
+                  datastore: DatastoreActivitySchema.exactOptional().openapi({
+                    description: 'Specifies where to store the processed message data.',
+                  }),
+                  addAttributes: AddAttributesActivitySchema.exactOptional().openapi({
+                    description:
+                      'Adds other attributes based on existing attributes in the message.',
+                  }),
+                  removeAttributes: RemoveAttributesActivitySchema.exactOptional().openapi({
+                    description: 'Removes attributes from a message.',
+                  }),
+                  selectAttributes: SelectAttributesActivitySchema.exactOptional().openapi({
+                    description:
+                      'Used to create a new message using only the specified attributes from the original message. ',
+                  }),
+                  filter: FilterActivitySchema.exactOptional().openapi({
+                    description: 'Filters a message based on its attributes.',
+                  }),
+                  math: MathActivitySchema.exactOptional().openapi({
+                    description:
+                      "Computes an arithmetic expression using the message's attributes and adds it to the message.",
+                  }),
+                  deviceRegistryEnrich: DeviceRegistryEnrichActivitySchema.exactOptional().openapi({
+                    description: 'Adds data from the IoT device registry to your message.',
+                  }),
+                  deviceShadowEnrich: DeviceShadowEnrichActivitySchema.exactOptional().openapi({
+                    description:
+                      'Adds information from the IoT Device Shadow service to a message.',
+                  }),
                 })
                 .openapi({
                   description: 'An activity that performs a transformation on a message.',
@@ -5941,14 +5119,10 @@ export const postPipelinesPipelineNameReprocessingRoute = createRoute({
                 }),
               channelMessages: z
                 .object({
-                  s3Paths: S3PathChannelMessagesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies one or more keys that identify the Amazon Simple Storage Service (Amazon S3) objects that save your channel messages.</p> <p>You must use the full path for the key.</p> <p>Example path: <code>channel/mychannel/__dt=2020-02-29 00:00:00/1582940490000_1582940520000_123456789012_mychannel_0_2118.0.json.gz</code> </p>',
-                      }),
-                  ).exactOptional(),
+                  s3Paths: S3PathChannelMessagesSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies one or more keys that identify the Amazon Simple Storage Service (Amazon S3) objects that save your channel messages.</p> <p>You must use the full path for the key.</p> <p>Example path: <code>channel/mychannel/__dt=2020-02-29 00:00:00/1582940490000_1582940520000_123456789012_mychannel_0_2118.0.json.gz</code> </p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

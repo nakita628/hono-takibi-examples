@@ -1,5 +1,689 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type ReportJournalsJournalType = {
+  id: bigint
+  deal_id: bigint | null
+  txn_date: string
+  txn_number: string | null
+  adjustment: boolean
+  approval_status: 'none' | 'in_progress' | 'approved'
+  create_user_id: bigint
+  last_approver_user_id: bigint | null
+  current_approver_user_ids: bigint[]
+  ref_number: string | null
+  deal_origin_name: string | null
+  created_at: string
+  updated_at: string
+  receipt_ids: bigint[]
+  debit: {
+    id: bigint | null
+    line_type: 'detail' | 'tax'
+    account_item_id: bigint
+    amount: bigint
+    net_amount: bigint | null
+    vat: bigint | null
+    tax_code: number | null
+    partner_id: bigint | null
+    item_id: bigint | null
+    section_id: bigint | null
+    segment_tag_1_id: bigint | null
+    segment_tag_2_id: bigint | null
+    segment_tag_3_id: bigint | null
+    memo_tag_ids: bigint[]
+    description: string | null
+  }[]
+  credit: ReportJournalsJournalType[]
+}
+
+type TrialPlSectionsResponseType = {
+  trial_pl_sections: {
+    company_id: bigint
+    section_ids: string
+    fiscal_year?: bigint
+    start_month?: bigint
+    end_month?: bigint
+    start_date?: string
+    end_date?: string
+    account_item_display_type?: 'account_item' | 'group'
+    breakdown_display_type?:
+      | 'partner'
+      | 'item'
+      | 'account_item'
+      | 'segment_1_tag'
+      | 'segment_2_tag'
+      | 'segment_3_tag'
+    partner_id?: bigint
+    partner_code?: string
+    item_id?: bigint
+    adjustment?: 'only' | 'without'
+    cost_allocation?: 'only' | 'without'
+    approval_flow_status?: 'without_in_progress' | 'all'
+    created_at?: string
+    balances: {
+      account_item_id?: bigint
+      account_item_name?: string
+      account_group_name?: string
+      sections?: {
+        id: bigint
+        name?: string
+        closing_balance?: bigint
+        partners?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        items?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        segment_1_tags?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        segment_2_tags?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        segment_3_tags?: { id: bigint; name?: string; closing_balance?: bigint }[]
+      }[]
+      account_category_name?: string
+      total_line?: boolean
+      hierarchy_level?: bigint
+      parent_account_category_name?: string
+      closing_balance?: bigint
+    }[]
+  }
+  up_to_date: boolean
+  up_to_date_reasons?: {
+    code: 'depreciation_creating' | 'depreciation_create_error'
+    message: string
+  }[]
+}
+
+type TrialPlSegment_1TagsResponseType = {
+  trial_pl_segment_1_tags: {
+    company_id: bigint
+    segment_1_tag_ids: string
+    fiscal_year?: bigint
+    start_month?: bigint
+    end_month?: bigint
+    start_date?: string
+    end_date?: string
+    account_item_display_type?: 'account_item' | 'group'
+    breakdown_display_type?: 'partner' | 'item' | 'section' | 'account_item'
+    partner_id?: bigint
+    partner_code?: string
+    item_id?: bigint
+    section_id?: bigint
+    adjustment?: 'only' | 'without'
+    cost_allocation?: 'only' | 'without'
+    approval_flow_status?: 'without_in_progress' | 'all'
+    created_at?: string
+    balances: {
+      account_item_id?: bigint
+      account_item_name?: string
+      account_group_name?: string
+      segment_1_tags?: {
+        id: bigint
+        name?: string
+        closing_balance?: bigint
+        partners?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        items?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        sections?: { id: bigint; name?: string; closing_balance?: bigint }[]
+      }[]
+      account_category_name?: string
+      total_line?: boolean
+      hierarchy_level?: bigint
+      parent_account_category_name?: string
+      closing_balance?: bigint
+    }[]
+  }
+  up_to_date: boolean
+  up_to_date_reasons?: {
+    code: 'depreciation_creating' | 'depreciation_create_error'
+    message: string
+  }[]
+}
+
+type TrialPlSegment_2TagsResponseType = {
+  trial_pl_segment_2_tags: {
+    company_id: bigint
+    segment_2_tag_ids: string
+    fiscal_year?: bigint
+    start_month?: bigint
+    end_month?: bigint
+    start_date?: string
+    end_date?: string
+    account_item_display_type?: 'account_item' | 'group'
+    breakdown_display_type?: 'partner' | 'item' | 'section' | 'account_item'
+    partner_id?: bigint
+    partner_code?: string
+    item_id?: bigint
+    section_id?: bigint
+    adjustment?: 'only' | 'without'
+    cost_allocation?: 'only' | 'without'
+    approval_flow_status?: 'without_in_progress' | 'all'
+    created_at?: string
+    balances: {
+      account_item_id?: bigint
+      account_item_name?: string
+      account_group_name?: string
+      segment_2_tags?: {
+        id: bigint
+        name?: string
+        closing_balance?: bigint
+        partners?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        items?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        sections?: { id: bigint; name?: string; closing_balance?: bigint }[]
+      }[]
+      account_category_name?: string
+      total_line?: boolean
+      hierarchy_level?: bigint
+      parent_account_category_name?: string
+      closing_balance?: bigint
+    }[]
+  }
+  up_to_date: boolean
+  up_to_date_reasons?: {
+    code: 'depreciation_creating' | 'depreciation_create_error'
+    message: string
+  }[]
+}
+
+type TrialPlSegment_3TagsResponseType = {
+  trial_pl_segment_3_tags: {
+    company_id: bigint
+    segment_3_tag_ids: string
+    fiscal_year?: bigint
+    start_month?: bigint
+    end_month?: bigint
+    start_date?: string
+    end_date?: string
+    account_item_display_type?: 'account_item' | 'group'
+    breakdown_display_type?: 'partner' | 'item' | 'section' | 'account_item'
+    partner_id?: bigint
+    partner_code?: string
+    item_id?: bigint
+    section_id?: bigint
+    adjustment?: 'only' | 'without'
+    cost_allocation?: 'only' | 'without'
+    approval_flow_status?: 'without_in_progress' | 'all'
+    created_at?: string
+    balances: {
+      account_item_id?: bigint
+      account_item_name?: string
+      account_group_name?: string
+      segment_3_tags?: {
+        id: bigint
+        name?: string
+        closing_balance?: bigint
+        partners?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        items?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        sections?: { id: bigint; name?: string; closing_balance?: bigint }[]
+      }[]
+      account_category_name?: string
+      total_line?: boolean
+      hierarchy_level?: bigint
+      parent_account_category_name?: string
+      closing_balance?: bigint
+    }[]
+  }
+  up_to_date: boolean
+  up_to_date_reasons?: {
+    code: 'depreciation_creating' | 'depreciation_create_error'
+    message: string
+  }[]
+}
+
+type TrialCrSectionsResponseType = {
+  trial_cr_sections: {
+    company_id: bigint
+    section_ids: string
+    fiscal_year?: bigint
+    start_month?: bigint
+    end_month?: bigint
+    start_date?: string
+    end_date?: string
+    account_item_display_type?: 'account_item' | 'group'
+    breakdown_display_type?:
+      | 'partner'
+      | 'item'
+      | 'account_item'
+      | 'segment_1_tag'
+      | 'segment_2_tag'
+      | 'segment_3_tag'
+    partner_id?: bigint
+    partner_code?: string
+    item_id?: bigint
+    adjustment?: 'only' | 'without'
+    cost_allocation?: 'only' | 'without'
+    approval_flow_status?: 'without_in_progress' | 'all'
+    created_at?: string
+    balances: {
+      account_item_id?: bigint
+      account_item_name?: string
+      account_group_name?: string
+      sections?: {
+        id: bigint
+        name?: string
+        closing_balance?: bigint
+        partners?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        items?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        segment_1_tags?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        segment_2_tags?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        segment_3_tags?: { id: bigint; name?: string; closing_balance?: bigint }[]
+      }[]
+      account_category_name?: string
+      total_line?: boolean
+      hierarchy_level?: bigint
+      parent_account_category_name?: string
+      closing_balance?: bigint
+    }[]
+  }
+  up_to_date: boolean
+  up_to_date_reasons?: {
+    code: 'depreciation_creating' | 'depreciation_create_error'
+    message: string
+  }[]
+}
+
+type TrialCrSegment_1TagsResponseType = {
+  trial_cr_segment_1_tags: {
+    company_id: bigint
+    segment_1_tag_ids: string
+    fiscal_year?: bigint
+    start_month?: bigint
+    end_month?: bigint
+    start_date?: string
+    end_date?: string
+    account_item_display_type?: 'account_item' | 'group'
+    breakdown_display_type?: 'partner' | 'item' | 'section' | 'account_item'
+    partner_id?: bigint
+    partner_code?: string
+    item_id?: bigint
+    section_id?: bigint
+    adjustment?: 'only' | 'without'
+    cost_allocation?: 'only' | 'without'
+    approval_flow_status?: 'without_in_progress' | 'all'
+    created_at?: string
+    balances: {
+      account_item_id?: bigint
+      account_item_name?: string
+      account_group_name?: string
+      segment_1_tags?: {
+        id: bigint
+        name?: string
+        closing_balance?: bigint
+        partners?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        items?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        sections?: { id: bigint; name?: string; closing_balance?: bigint }[]
+      }[]
+      account_category_name?: string
+      total_line?: boolean
+      hierarchy_level?: bigint
+      parent_account_category_name?: string
+      closing_balance?: bigint
+    }[]
+  }
+  up_to_date: boolean
+  up_to_date_reasons?: {
+    code: 'depreciation_creating' | 'depreciation_create_error'
+    message: string
+  }[]
+}
+
+type TrialCrSegment_2TagsResponseType = {
+  trial_cr_segment_2_tags: {
+    company_id: bigint
+    segment_2_tag_ids: string
+    fiscal_year?: bigint
+    start_month?: bigint
+    end_month?: bigint
+    start_date?: string
+    end_date?: string
+    account_item_display_type?: 'account_item' | 'group'
+    breakdown_display_type?: 'partner' | 'item' | 'section' | 'account_item'
+    partner_id?: bigint
+    partner_code?: string
+    item_id?: bigint
+    section_id?: bigint
+    adjustment?: 'only' | 'without'
+    cost_allocation?: 'only' | 'without'
+    approval_flow_status?: 'without_in_progress' | 'all'
+    created_at?: string
+    balances: {
+      account_item_id?: bigint
+      account_item_name?: string
+      account_group_name?: string
+      segment_2_tags?: {
+        id: bigint
+        name?: string
+        closing_balance?: bigint
+        partners?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        items?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        sections?: { id: bigint; name?: string; closing_balance?: bigint }[]
+      }[]
+      account_category_name?: string
+      total_line?: boolean
+      hierarchy_level?: bigint
+      parent_account_category_name?: string
+      closing_balance?: bigint
+    }[]
+  }
+  up_to_date: boolean
+  up_to_date_reasons?: {
+    code: 'depreciation_creating' | 'depreciation_create_error'
+    message: string
+  }[]
+}
+
+type TrialCrSegment_3TagsResponseType = {
+  trial_cr_segment_3_tags: {
+    company_id: bigint
+    segment_3_tag_ids: string
+    fiscal_year?: bigint
+    start_month?: bigint
+    end_month?: bigint
+    start_date?: string
+    end_date?: string
+    account_item_display_type?: 'account_item' | 'group'
+    breakdown_display_type?: 'partner' | 'item' | 'section' | 'account_item'
+    partner_id?: bigint
+    partner_code?: string
+    item_id?: bigint
+    section_id?: bigint
+    adjustment?: 'only' | 'without'
+    cost_allocation?: 'only' | 'without'
+    approval_flow_status?: 'without_in_progress' | 'all'
+    created_at?: string
+    balances: {
+      account_item_id?: bigint
+      account_item_name?: string
+      account_group_name?: string
+      segment_3_tags?: {
+        id: bigint
+        name?: string
+        closing_balance?: bigint
+        partners?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        items?: { id: bigint; name?: string; closing_balance?: bigint }[]
+        sections?: { id: bigint; name?: string; closing_balance?: bigint }[]
+      }[]
+      account_category_name?: string
+      total_line?: boolean
+      hierarchy_level?: bigint
+      parent_account_category_name?: string
+      closing_balance?: bigint
+    }[]
+  }
+  up_to_date: boolean
+  up_to_date_reasons?: {
+    code: 'depreciation_creating' | 'depreciation_create_error'
+    message: string
+  }[]
+}
+
+type ExpenseApplicationsIndexResponseType = {
+  expense_applications: {
+    id: bigint
+    company_id: bigint
+    title: string
+    issue_date: string
+    description?: string
+    total_amount?: bigint
+    status: 'draft' | 'in_progress' | 'approved' | 'rejected' | 'feedback'
+    section_id?: bigint | null
+    tag_ids?: bigint[]
+    purchase_lines?: {
+      id: bigint
+      transaction_date?: string | null
+      receipt_id?: bigint | null
+      sub_receipt_ids?: bigint[]
+      use_currency?: boolean
+      expense_application_purchase_line_currency?: {
+        currency_id?: bigint
+        currency_code?: string
+        exchange_rate?: string | null
+      } | null
+      expense_application_lines?: {
+        id: bigint
+        description?: string | null
+        amount?: bigint
+        expense_application_line_template_id?: bigint | null
+        expense_application_line_currency_amount?: {
+          currency_amount?: string | null
+          system_calc_amount?: bigint
+        } | null
+        tag_assignment?: 'application' | 'line'
+        section_id?: bigint | null
+        tag_ids?: bigint[]
+        segment_1_tag_id?: bigint | null
+        segment_2_tag_id?: bigint | null
+        segment_3_tag_id?: bigint | null
+      }[]
+    }[]
+    deal_id: bigint | null
+    deal_status: 'settled' | 'unsettled' | null
+    applicant_id: bigint
+    proxy_applicant_id?: bigint | null
+    application_number: string
+    current_step_id?: bigint | null
+    current_round?: bigint
+    segment_1_tag_id?: bigint | null
+    segment_2_tag_id?: bigint | null
+    segment_3_tag_id?: bigint | null
+  }[]
+}
+
+const ExpenseApplicationLineTemplateAmountCalculationConditionSchema = z
+  .discriminatedUnion('type', [
+    z
+      .strictObject({
+        type: z
+          .literal('applicant_position')
+          .openapi({
+            description: '条件の種類 (applicant_position: 申請者の役職による条件)',
+            example: 'applicant_position',
+          }),
+        match: z
+          .enum(['any_of', 'none_of'])
+          .openapi({
+            description: '役職の比較方法 (any_of: いずれかに一致, none_of: いずれにも一致しない)',
+            example: 'any_of',
+          }),
+        position_ids: z
+          .array(
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64().min(1n),
+              )
+              .openapi({ type: 'integer', format: 'int64', minimum: 1 }),
+          )
+          .min(1)
+          .openapi({
+            description:
+              '条件に使用する役職IDの配列 (1件以上)。役職IDは人事労務の役職から取得します',
+            example: [3, 7],
+          }),
+      })
+      .openapi({
+        description: '申請者の役職による条件',
+        required: ['type', 'match', 'position_ids'],
+      }),
+    z
+      .strictObject({
+        type: z
+          .literal('unsupported')
+          .openapi({
+            description: '条件の種類 (unsupported: 本APIで表現できない条件)',
+            example: 'unsupported',
+          }),
+      })
+      .openapi({
+        description: '本APIで表現できない条件。レスポンス専用で、リクエストには指定できません',
+        required: ['type'],
+      }),
+  ])
+  .openapi({
+    description:
+      'ルールの適用条件。typeで条件の種類を表します。\n- applicant_position: 申請者の役職による条件。match と position_ids を持ちます\n- unsupported: 本APIで表現できない条件 (Web版freee会計の旧設定で作成された条件式)。レスポンス専用で、リクエストには指定できません。条件を変更する場合は applicant_position の条件で送り直してください',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        applicant_position:
+          '#/components/schemas/expenseApplicationLineTemplateApplicantPositionCondition',
+        unsupported: '#/components/schemas/expenseApplicationLineTemplateUnsupportedCondition',
+      },
+    },
+  })
+  .openapi('ExpenseApplicationLineTemplateAmountCalculationCondition')
+
+type ExpenseApplicationResponseType = {
+  expense_application: {
+    id: bigint
+    company_id: bigint
+    title: string
+    issue_date: string
+    description?: string | null
+    total_amount?: bigint
+    status: 'draft' | 'in_progress' | 'approved' | 'rejected' | 'feedback'
+    section_id?: bigint | null
+    tag_ids?: bigint[]
+    purchase_lines?: {
+      id: bigint
+      transaction_date?: string | null
+      receipt_id?: bigint | null
+      sub_receipt_ids?: bigint[]
+      use_currency?: boolean
+      expense_application_purchase_line_currency?: {
+        currency_id?: bigint
+        currency_code?: string
+        exchange_rate?: string | null
+      } | null
+      expense_application_lines?: {
+        id: bigint
+        description?: string | null
+        amount?: bigint
+        expense_application_line_template_id?: bigint | null
+        expense_application_line_currency_amount?: {
+          currency_amount?: string | null
+          system_calc_amount?: bigint
+        } | null
+        custom_values?: {
+          key: string
+          type:
+            | 'single_line_string'
+            | 'multi_line_string'
+            | 'date'
+            | 'date_range'
+            | 'datetime'
+            | 'pulldown'
+            | 'radio_button'
+            | 'checkbox'
+            | 'number'
+          value: unknown | null
+        }[]
+        amount_calculate_result?: {
+          calculated_amount: bigint
+          applied_rule: {
+            condition: z.infer<
+              typeof ExpenseApplicationLineTemplateAmountCalculationConditionSchema
+            >
+            formula: string
+          }
+          evaluated_as: { group_id: bigint | null; position_id: bigint | null }
+        } | null
+        tag_assignment?: 'application' | 'line'
+        section_id?: bigint | null
+        tag_ids?: bigint[]
+        segment_1_tag_id?: bigint | null
+        segment_2_tag_id?: bigint | null
+        segment_3_tag_id?: bigint | null
+      }[]
+    }[]
+    deal_id: bigint | null
+    deal_status: 'settled' | 'unsettled' | null
+    applicant_id: bigint
+    proxy_applicant_id?: bigint | null
+    approvers: {
+      step_id: bigint
+      user_id: bigint | null
+      status: 'initial' | 'approved' | 'rejected' | 'feedback'
+      is_force_action: boolean
+      resource_type:
+        | 'predefined_user'
+        | 'selected_user'
+        | 'unspecified'
+        | 'and_resource'
+        | 'or_resource'
+        | 'and_position'
+        | 'or_position'
+        | 'switchable'
+    }[]
+    application_number: string
+    approval_flow_route_id: bigint
+    comments: { comment: string; user_id: bigint; posted_at: string }[]
+    approval_flow_logs: {
+      action: 'apply' | 'approve' | 'force_approve' | 'cancel' | 'reject' | 'feedback'
+      user_id: bigint
+      updated_at: string
+    }[]
+    current_step_id: bigint | null
+    current_round: bigint
+    parent_id?: bigint | null
+    parent_type?: 'ApprovalRequest' | 'PurchaseRequest' | null
+    segment_1_tag_id?: bigint | null
+    segment_2_tag_id?: bigint | null
+    segment_3_tag_id?: bigint | null
+  }
+}
+
+type ApprovalFlowRouteResponseType = {
+  approval_flow_route: {
+    id: bigint
+    name: string
+    description: string
+    user_id: bigint | null
+    definition_system: boolean
+    first_step_id: bigint
+    usages: (
+      | 'TxnApproval'
+      | 'ExpenseApplication'
+      | 'PaymentRequest'
+      | 'ApprovalRequest'
+      | 'DocApproval'
+      | 'PurchaseRequest'
+    )[]
+    request_form_ids: bigint[]
+    steps: {
+      id: bigint
+      next_step_id: bigint | null
+      resource_type:
+        | 'predefined_user'
+        | 'selected_user'
+        | 'unspecified'
+        | 'and_resource'
+        | 'or_resource'
+        | 'and_position'
+        | 'or_position'
+        | 'switchable'
+      users_ids: bigint[]
+      approver_determination_type?: 'applicant_group' | null
+      group?: { id: bigint; name: string } | null
+      position_types?: { id: bigint; name: string }[]
+      switching_rules?: {
+        next_step_id: bigint
+        conditions: {
+          switch_evaluation_key?:
+            | 'total_amount_jpy'
+            | 'applicant_position_type'
+            | 'no_approver_present'
+            | null
+          operator:
+            | 'greater_than_or_equal'
+            | 'less_than_or_equal'
+            | 'contains'
+            | 'not_contains'
+            | 'of'
+          values: string[]
+        }[]
+      }[]
+    }[]
+  }
+}
+
 const PaymentParamsSchema = z
   .object({
     company_id: z
@@ -52,7 +736,7 @@ const PaymentParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(1n).max(9223372036854776000n),
+        z.int64().min(1n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -179,7 +863,7 @@ const DealCreateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -405,7 +1089,7 @@ const DealCreateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -610,7 +1294,7 @@ const DealUpdateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -899,7 +1583,7 @@ const ManualJournalCreateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(1n).max(9223372036854776000n),
+                z.int64().min(1n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -1267,7 +1951,7 @@ const ManualJournalUpdateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(1n).max(9223372036854776000n),
+                z.int64().min(1n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -1800,7 +2484,7 @@ const TransferParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -2018,7 +2702,7 @@ const TransferParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -2210,7 +2894,7 @@ const WalletTxnParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -2271,7 +2955,7 @@ const WalletTxnParamsSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -2372,6 +3056,7 @@ const WalletTxnReconcileAdjustmentDealSchema = z
                 description:
                   '金額（税込。単位: 円）。0以外の符号付きの整数で指定します。明細の入出金区分（entry_side）と符号から借方・貸方が決まります。',
                 example: 1100,
+                not: { enum: [0] },
               }),
             vat: z
               .preprocess(
@@ -2572,6 +3257,7 @@ const WalletTxnDealLineSchema = z
         description:
           '金額（税込。単位: 円）。0以外の符号付きの整数で指定します。明細の入出金区分（entry_side）と符号から借方・貸方が決まります。',
         example: 1100,
+        not: { enum: [0] },
       }),
     vat: z
       .preprocess(
@@ -3735,6 +4421,114 @@ const ExpenseApplicationCreateParamsSchema = z
                         description:
                           'カスタム申請項目の値一覧（配列）<br>\n経費科目に設定されたカスタム申請項目に対する入力値を指定します。カスタム申請項目の一覧は経費科目APIから取得してください。<br>\n金額の自動計算が設定された経費科目では、custom_valuesから計算した金額とamountが一致しない場合は400エラーになります（サーバー側の計算結果でamountを上書きすることはありません）。',
                       }),
+                    tag_assignment: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '明細行の部門・メモタグ・セグメントの付与先<br>\n<ul>\n  <li>application: 申請全体に付与（画面の「申請全体に合わせる」）。申請全体のsection_id・tag_ids・segment_1〜3_tag_idを明細行に適用します。明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定しても無視します。</li>\n  <li>line: 明細に個別付与（画面の「個別付与」）。明細行のsection_id・tag_ids・segment_1〜3_tag_idを明細行に設定します。</li>\n</ul>\n未指定またはnullの場合は申請全体に付与（application）として作成します。<br>\n明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定する場合は、lineを指定してください。tag_assignmentを指定せずにこれらを指定すると400エラーになります。<br>\n上記以外の値を指定すると400エラーになります。',
+                        example: 'line',
+                      }),
+                    section_id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64().min(1n),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        type: ['integer', 'null'],
+                        format: 'int64',
+                        minimum: 1,
+                        description:
+                          '明細行の部門ID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合は部門なしになります。<br>\n存在しない部門や、申請者が利用できない部門を指定すると400エラーになります。',
+                        example: 101,
+                      }),
+                    tag_ids: z
+                      .array(
+                        z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'number' && Number.isSafeInteger(val)
+                                ? BigInt(val)
+                                : typeof val === 'string' && /^-?\d+$/.test(val)
+                                  ? BigInt(val)
+                                  : val,
+                            z.int64().min(1n),
+                          )
+                          .openapi({ type: 'integer', format: 'int64', minimum: 1, example: 202 }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '明細行のメモタグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定の場合はメモタグなしになります。<br>\n存在しないメモタグを指定すると400エラーになります。',
+                      }),
+                    segment_1_tag_id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64().min(1n),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        type: ['integer', 'null'],
+                        format: 'int64',
+                        minimum: 1,
+                        description:
+                          '明細行のセグメント１タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント１タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント１が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                        example: 1,
+                      }),
+                    segment_2_tag_id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64().min(1n),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        type: ['integer', 'null'],
+                        format: 'int64',
+                        minimum: 1,
+                        description:
+                          '明細行のセグメント２タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント２タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント２が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                        example: 2,
+                      }),
+                    segment_3_tag_id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64().min(1n),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        type: ['integer', 'null'],
+                        format: 'int64',
+                        minimum: 1,
+                        description:
+                          '明細行のセグメント３タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント３タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント３が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                        example: 3,
+                      }),
                   })
                   .openapi({ required: [] }),
               )
@@ -3969,7 +4763,8 @@ const ExpenseApplicationUpdateParamsSchema = z
         type: 'integer',
         format: 'int64',
         minimum: 1,
-        description: '部門ID<br>\n未指定の場合は部門なしで更新されます。',
+        description:
+          '部門ID<br>\n未指定の場合は部門なしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。',
         example: 101,
       }),
     tag_ids: z
@@ -3987,7 +4782,10 @@ const ExpenseApplicationUpdateParamsSchema = z
           .openapi({ type: 'integer', format: 'int64', minimum: 1, example: 202 }),
       )
       .exactOptional()
-      .openapi({ description: 'メモタグID<br>\n未指定の場合はメモタグなしで更新されます。' }),
+      .openapi({
+        description:
+          'メモタグID<br>\n未指定の場合はメモタグなしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。',
+      }),
     purchase_lines: z
       .array(
         z
@@ -4236,6 +5034,114 @@ const ExpenseApplicationUpdateParamsSchema = z
                         description:
                           'カスタム申請項目の値一覧（配列）<br>\n経費科目に設定されたカスタム申請項目に対する入力値を指定します。カスタム申請項目の一覧は経費科目APIから取得してください。<br>\n明細行のカスタム申請項目の値は、指定したcustom_valuesの内容で置き換えられます。custom_valuesに含まれない既存の値は削除されるため、更新後も残したい値は必ずcustom_valuesに含めてください。<br>\n金額の自動計算が設定された経費科目では、custom_valuesから計算した金額とamountが一致しない場合は400エラーになります（サーバー側の計算結果でamountを上書きすることはありません）。',
                       }),
+                    tag_assignment: z
+                      .string()
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '明細行の部門・メモタグ・セグメントの付与先<br>\n<ul>\n  <li>application: 申請全体に付与（画面の「申請全体に合わせる」）。申請全体のsection_id・tag_ids・segment_1〜3_tag_idを明細行に適用します。明細に個別付与した部門・メモタグ・セグメントは削除されます。明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定しても無視します。</li>\n  <li>line: 明細に個別付与（画面の「個別付与」）。明細行の部門・メモタグ・セグメントを、明細行のsection_id・tag_ids・segment_1〜3_tag_idの内容で置き換えます。指定しなかった項目は空になるため、更新後も残したい値は必ず指定してください。</li>\n</ul>\n未指定またはnullの場合、既存の明細行の部門・メモタグ・セグメントと付与先は変更しません（申請全体のsection_id・tag_ids・segment_1〜3_tag_idと異なり、省略しても削除されません）。新規に追加する明細行は申請全体に付与（application）として作成します。<br>\nただし未指定またはnullの場合、経費科目の利用可否は明細行の部門ではなく申請全体のsection_idで判定します。個別付与した明細行で部門の利用制限がある経費科目を使っている場合に申請中（draft: false）にするときは、lineを指定し、明細行のsection_id・tag_ids・segment_1〜3_tag_idも指定してください。<br>\n個別付与した明細行を申請全体に合わせるには、applicationを指定してください。<br>\n明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定する場合は、lineを指定してください。tag_assignmentを指定せずにこれらを指定すると400エラーになります。<br>\n上記以外の値を指定すると400エラーになります。',
+                        example: 'line',
+                      }),
+                    section_id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64().min(1n),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        type: ['integer', 'null'],
+                        format: 'int64',
+                        minimum: 1,
+                        description:
+                          '明細行の部門ID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合は部門なしになります。<br>\n存在しない部門や、申請者が利用できない部門を指定すると400エラーになります。',
+                        example: 101,
+                      }),
+                    tag_ids: z
+                      .array(
+                        z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'number' && Number.isSafeInteger(val)
+                                ? BigInt(val)
+                                : typeof val === 'string' && /^-?\d+$/.test(val)
+                                  ? BigInt(val)
+                                  : val,
+                            z.int64().min(1n),
+                          )
+                          .openapi({ type: 'integer', format: 'int64', minimum: 1, example: 202 }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '明細行のメモタグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定の場合はメモタグなしになります。<br>\n存在しないメモタグを指定すると400エラーになります。',
+                      }),
+                    segment_1_tag_id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64().min(1n),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        type: ['integer', 'null'],
+                        format: 'int64',
+                        minimum: 1,
+                        description:
+                          '明細行のセグメント１タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント１タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント１が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                        example: 1,
+                      }),
+                    segment_2_tag_id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64().min(1n),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        type: ['integer', 'null'],
+                        format: 'int64',
+                        minimum: 1,
+                        description:
+                          '明細行のセグメント２タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント２タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント２が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                        example: 2,
+                      }),
+                    segment_3_tag_id: z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64().min(1n),
+                      )
+                      .nullable()
+                      .exactOptional()
+                      .openapi({
+                        type: ['integer', 'null'],
+                        format: 'int64',
+                        minimum: 1,
+                        description:
+                          '明細行のセグメント３タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント３タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント３が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                        example: 3,
+                      }),
                   })
                   .openapi({ required: [] }),
               )
@@ -4376,7 +5282,7 @@ const ExpenseApplicationUpdateParamsSchema = z
         format: 'int64',
         minimum: 1,
         description:
-          'セグメント１タグID<br>\n未指定の場合はセグメント１タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+          'セグメント１タグID<br>\n未指定の場合はセグメント１タグなしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
         example: 1,
       }),
     segment_2_tag_id: z
@@ -4395,7 +5301,7 @@ const ExpenseApplicationUpdateParamsSchema = z
         format: 'int64',
         minimum: 1,
         description:
-          'セグメント２タグID<br>\n未指定の場合はセグメント２タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+          'セグメント２タグID<br>\n未指定の場合はセグメント２タグなしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
         example: 2,
       }),
     segment_3_tag_id: z
@@ -4414,7 +5320,7 @@ const ExpenseApplicationUpdateParamsSchema = z
         format: 'int64',
         minimum: 1,
         description:
-          'セグメント３タグID<br>\n未指定の場合はセグメント３タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+          'セグメント３タグID<br>\n未指定の場合はセグメント３タグなしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
         example: 3,
       }),
   })
@@ -6948,7 +7854,7 @@ const AccountItemsResponseSchema = z
             .openapi({ type: 'integer', format: 'int64', description: '税区分コード', example: 1 }),
           shortcut: z
             .string()
-            .max(20)
+            .max(255)
             .nullable()
             .openapi({
               description: 'ショートカット1 (20文字以内)。未設定の場合はnullが返ります。',
@@ -6956,7 +7862,7 @@ const AccountItemsResponseSchema = z
             }),
           shortcut_num: z
             .string()
-            .max(20)
+            .max(255)
             .nullable()
             .openapi({
               description: 'ショートカット2 (20文字以内)。未設定の場合はnullが返ります。',
@@ -7215,7 +8121,7 @@ const AccountItemResponseSchema = z
           }),
         shortcut: z
           .string()
-          .max(20)
+          .max(255)
           .nullable()
           .openapi({
             description: 'ショートカット1 (20文字以内)。未設定の場合はnullが返ります。',
@@ -7223,7 +8129,7 @@ const AccountItemResponseSchema = z
           }),
         shortcut_num: z
           .string()
-          .max(20)
+          .max(255)
           .nullable()
           .openapi({
             description: 'ショートカット2 (20文字以内)。未設定の場合はnullが返ります。',
@@ -7929,6 +8835,678 @@ const JournalsResponseSchema = z
   })
   .openapi({ required: ['journals'] })
   .openapi('JournalsResponse')
+
+const ReportJournalsJournalSchema: z.ZodType<ReportJournalsJournalType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', description: '仕訳ID。' }),
+        deal_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            description: '取引ID。取引に紐づかない仕訳 (振替伝票のみ等) では null。',
+          }),
+        txn_date: z.iso.date().openapi({ description: '発生日 (YYYY-MM-DD)。' }),
+        txn_number: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              '仕訳番号。仕訳番号を使用しない設定の事業所では常に null。英数字形式があるため文字列。',
+          }),
+        adjustment: z.boolean().openapi({ description: '決算整理仕訳フラグ。' }),
+        approval_status: z
+          .enum(['none', 'in_progress', 'approved'])
+          .openapi({ description: '仕訳の承認ステータス' })
+          .openapi({ description: '承認ステータス。' }),
+        create_user_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64', description: '作成者ユーザーID。' }),
+        last_approver_user_id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            description: '最終承認者ユーザーID。未承認は null。',
+          }),
+        current_approver_user_ids: z
+          .array(
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+          )
+          .openapi({
+            description:
+              '現在の承認待ちユーザーIDのリスト。承認済み・フローなしは空配列。会計のロールを持たないユーザーは含まない。',
+          }),
+        ref_number: z.string().nullable().openapi({ description: '管理番号 (ref_number)。' }),
+        deal_origin_name: z
+          .string()
+          .nullable()
+          .openapi({
+            description: '取引の登録元表示ラベル (「手動」「自動で経理」「freee請求書」など)。',
+          }),
+        created_at: z.iso.datetime({ offset: true }).openapi({ description: '仕訳の作成日時。' }),
+        updated_at: z.iso
+          .datetime({ offset: true })
+          .openapi({ description: '仕訳の最終更新日時。' }),
+        receipt_ids: z
+          .array(
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+          )
+          .openapi({ description: '紐づく証憑IDのリスト。閲覧権限がない場合は空配列。' }),
+        debit: z
+          .array(
+            z
+              .strictObject({
+                id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description: '明細行ID。消費税行では null。',
+                  }),
+                line_type: z
+                  .enum(['detail', 'tax'])
+                  .openapi({
+                    description:
+                      '仕訳明細行の種別。detail は通常明細、tax は税抜経理事業所の消費税行。',
+                  })
+                  .openapi({
+                    description: '行種別。detail は通常明細、tax は税抜経理事業所の消費税行。',
+                  }),
+                account_item_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .openapi({
+                    type: 'integer',
+                    format: 'int64',
+                    description: '勘定科目ID。消費税行では仮払/仮受消費税勘定を指す。',
+                  }),
+                amount: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .openapi({
+                    type: 'integer',
+                    format: 'int64',
+                    description:
+                      '表示金額。税込経理では税込金額、税抜経理では税抜金額。消費税行では集約された税額そのものが入る。',
+                  }),
+                net_amount: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description:
+                      '税抜金額。経理方式によらず、その明細の税込金額から消費税額を引いた値。消費税行では null。',
+                  }),
+                vat: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description: '消費税額。通常明細ではその明細の税額、消費税行では null。',
+                  }),
+                tax_code: z.int32().nullable().openapi({ description: '税区分コード。' }),
+                partner_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description: '取引先ID。',
+                  }),
+                item_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description: '品目ID。消費税行では null。',
+                  }),
+                section_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description:
+                      '部門ID。消費税行では、部門必須設定が「全科目」の事業所のときのみ集約キーとして設定される。',
+                  }),
+                segment_tag_1_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description: 'セグメント1タグID。消費税行では null。',
+                  }),
+                segment_tag_2_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description: 'セグメント2タグID。消費税行では null。',
+                  }),
+                segment_tag_3_id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64(),
+                  )
+                  .nullable()
+                  .openapi({
+                    type: ['integer', 'null'],
+                    format: 'int64',
+                    description: 'セグメント3タグID。消費税行では null。',
+                  }),
+                memo_tag_ids: z
+                  .array(
+                    z
+                      .preprocess(
+                        (val) =>
+                          typeof val === 'number' && Number.isSafeInteger(val)
+                            ? BigInt(val)
+                            : typeof val === 'string' && /^-?\d+$/.test(val)
+                              ? BigInt(val)
+                              : val,
+                        z.int64(),
+                      )
+                      .openapi({ type: 'integer', format: 'int64' }),
+                  )
+                  .openapi({
+                    description:
+                      'メモタグIDのリスト。常に配列を返し、null は返さない。消費税行では空配列。',
+                  }),
+                description: z
+                  .string()
+                  .nullable()
+                  .openapi({
+                    description: '行の備考。逆仕訳の確認等で利用可能。消費税行では null。',
+                  }),
+              })
+              .openapi({
+                required: [
+                  'id',
+                  'line_type',
+                  'account_item_id',
+                  'amount',
+                  'net_amount',
+                  'vat',
+                  'tax_code',
+                  'partner_id',
+                  'item_id',
+                  'section_id',
+                  'segment_tag_1_id',
+                  'segment_tag_2_id',
+                  'segment_tag_3_id',
+                  'memo_tag_ids',
+                  'description',
+                ],
+                description:
+                  '仕訳の借方または貸方の 1 行。通常明細 (detail) と消費税行 (tax) が同じスキーマで返る。',
+              }),
+          )
+          .openapi({
+            description:
+              '借方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。',
+          }),
+        credit: z
+          .array(z.lazy(() => ReportJournalsJournalSchema))
+          .openapi({
+            description:
+              '貸方行のリスト。配列順が表示順。税抜経理事業所では消費税行 (line_type: tax) が末尾に付与されることがある。',
+          }),
+      })
+      .openapi({
+        required: [
+          'id',
+          'deal_id',
+          'txn_date',
+          'txn_number',
+          'adjustment',
+          'approval_status',
+          'create_user_id',
+          'last_approver_user_id',
+          'current_approver_user_ids',
+          'ref_number',
+          'deal_origin_name',
+          'created_at',
+          'updated_at',
+          'receipt_ids',
+          'debit',
+          'credit',
+        ],
+        description: '仕訳 (Transaction) 単位のレスポンス。',
+      }),
+  )
+  .openapi('ReportJournalsJournal')
+
+const ReportJournalsJournalLineSchema = z
+  .strictObject({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '明細行ID。消費税行では null。',
+      }),
+    line_type: z
+      .enum(['detail', 'tax'])
+      .openapi({
+        description: '仕訳明細行の種別。detail は通常明細、tax は税抜経理事業所の消費税行。',
+      })
+      .openapi({ description: '行種別。detail は通常明細、tax は税抜経理事業所の消費税行。' }),
+    account_item_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: '勘定科目ID。消費税行では仮払/仮受消費税勘定を指す。',
+      }),
+    amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          '表示金額。税込経理では税込金額、税抜経理では税抜金額。消費税行では集約された税額そのものが入る。',
+      }),
+    net_amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '税抜金額。経理方式によらず、その明細の税込金額から消費税額を引いた値。消費税行では null。',
+      }),
+    vat: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '消費税額。通常明細ではその明細の税額、消費税行では null。',
+      }),
+    tax_code: z.int32().nullable().openapi({ description: '税区分コード。' }),
+    partner_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({ type: ['integer', 'null'], format: 'int64', description: '取引先ID。' }),
+    item_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '品目ID。消費税行では null。',
+      }),
+    section_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '部門ID。消費税行では、部門必須設定が「全科目」の事業所のときのみ集約キーとして設定される。',
+      }),
+    segment_tag_1_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'セグメント1タグID。消費税行では null。',
+      }),
+    segment_tag_2_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'セグメント2タグID。消費税行では null。',
+      }),
+    segment_tag_3_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'セグメント3タグID。消費税行では null。',
+      }),
+    memo_tag_ids: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .openapi({
+        description: 'メモタグIDのリスト。常に配列を返し、null は返さない。消費税行では空配列。',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: '行の備考。逆仕訳の確認等で利用可能。消費税行では null。' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'line_type',
+      'account_item_id',
+      'amount',
+      'net_amount',
+      'vat',
+      'tax_code',
+      'partner_id',
+      'item_id',
+      'section_id',
+      'segment_tag_1_id',
+      'segment_tag_2_id',
+      'segment_tag_3_id',
+      'memo_tag_ids',
+      'description',
+    ],
+    description:
+      '仕訳の借方または貸方の 1 行。通常明細 (detail) と消費税行 (tax) が同じスキーマで返る。',
+  })
+  .openapi('ReportJournalsJournalLine')
+
+const ReportJournalsLineTypeSchema = z
+  .enum(['detail', 'tax'])
+  .openapi({ description: '仕訳明細行の種別。detail は通常明細、tax は税抜経理事業所の消費税行。' })
+  .openapi('ReportJournalsLineType')
+
+const ReportJournalsApprovalStatusSchema = z
+  .enum(['none', 'in_progress', 'approved'])
+  .openapi({ description: '仕訳の承認ステータス' })
+  .openapi('ReportJournalsApprovalStatus')
+
+const ReportJournalsDetailAmountBasisSchema = z
+  .enum(['auto', 'tax_included'])
+  .openapi({
+    description:
+      '明細金額絞り込みの基準。auto は検索期間に重なる全会計年度が税込経理のときのみ税込基準、それ以外は税抜基準。',
+  })
+  .openapi('ReportJournalsDetailAmountBasis')
+
+const ReportJournalsAdjustmentOptionSchema = z
+  .enum(['only', 'without'])
+  .openapi({ description: '決算整理仕訳による絞り込み' })
+  .openapi('ReportJournalsAdjustmentOption')
+
+const ReportJournalsReceiptsOptionSchema = z
+  .enum(['only', 'without'])
+  .openapi({ description: '証憑 (レシート) 添付有無による絞り込み' })
+  .openapi('ReportJournalsReceiptsOption')
+
+const ReportJournalsCostAllocationOptionSchema = z
+  .enum(['only', 'without'])
+  .openapi({
+    description: '配賦仕訳による絞り込み。事業所で配賦機能が無効な場合に指定すると 400。',
+  })
+  .openapi('ReportJournalsCostAllocationOption')
+
+const ReportJournalsReverseJournalOptionSchema = z
+  .enum(['reverse', 'not_reverse', 'base', 'not_base', 'both', 'neither'])
+  .openapi({
+    description: '逆仕訳・元仕訳による絞り込み。事業所で逆仕訳機能が無効な場合に指定すると 400。',
+  })
+  .openapi('ReportJournalsReverseJournalOption')
+
+const ReportJournalsCommentStatusOptionSchema = z
+  .enum(['posted', 'raised', 'resolved'])
+  .openapi({ description: 'コメントステータスによる絞り込み' })
+  .openapi('ReportJournalsCommentStatusOption')
+
+const ReportJournalsOrderByOptionSchema = z
+  .enum(['txn_date', 'created_at'])
+  .openapi({ description: '並び順のキー。値はレスポンスのフィールド名と揃えている。' })
+  .openapi('ReportJournalsOrderByOption')
+
+const ReportJournalsDirectionOptionSchema = z
+  .enum(['asc', 'desc'])
+  .openapi({ description: '並び順の方向' })
+  .openapi('ReportJournalsDirectionOption')
 
 const JournalStatusResponseSchema = z
   .object({
@@ -13864,7 +15442,7 @@ const TrialPlThreeYearsResponseSchema = z
   .openapi({ required: ['trial_pl_three_years', 'up_to_date'] })
   .openapi('TrialPlThreeYearsResponse')
 
-const TrialPlSectionsResponseSchema = z
+const TrialPlSectionsResponseSchema: z.ZodType<TrialPlSectionsResponseType> = z
   .object({
     trial_pl_sections: z
       .object({
@@ -14531,7 +16109,7 @@ const TrialPlSectionsResponseSchema = z
   .openapi({ required: ['trial_pl_sections', 'up_to_date'] })
   .openapi('TrialPlSectionsResponse')
 
-const TrialPlSegment_1TagsResponseSchema = z
+const TrialPlSegment_1TagsResponseSchema: z.ZodType<TrialPlSegment_1TagsResponseType> = z
   .object({
     trial_pl_segment_1_tags: z
       .object({
@@ -15099,7 +16677,7 @@ const TrialPlSegment_1TagsResponseSchema = z
   .openapi({ required: ['trial_pl_segment_1_tags', 'up_to_date'] })
   .openapi('TrialPlSegment_1TagsResponse')
 
-const TrialPlSegment_2TagsResponseSchema = z
+const TrialPlSegment_2TagsResponseSchema: z.ZodType<TrialPlSegment_2TagsResponseType> = z
   .object({
     trial_pl_segment_2_tags: z
       .object({
@@ -15667,7 +17245,7 @@ const TrialPlSegment_2TagsResponseSchema = z
   .openapi({ required: ['trial_pl_segment_2_tags', 'up_to_date'] })
   .openapi('TrialPlSegment_2TagsResponse')
 
-const TrialPlSegment_3TagsResponseSchema = z
+const TrialPlSegment_3TagsResponseSchema: z.ZodType<TrialPlSegment_3TagsResponseType> = z
   .object({
     trial_pl_segment_3_tags: z
       .object({
@@ -19148,7 +20726,7 @@ const TrialCrThreeYearsResponseSchema = z
   .openapi({ required: ['trial_cr_three_years', 'up_to_date'] })
   .openapi('TrialCrThreeYearsResponse')
 
-const TrialCrSectionsResponseSchema = z
+const TrialCrSectionsResponseSchema: z.ZodType<TrialCrSectionsResponseType> = z
   .object({
     trial_cr_sections: z
       .object({
@@ -19815,7 +21393,7 @@ const TrialCrSectionsResponseSchema = z
   .openapi({ required: ['trial_cr_sections', 'up_to_date'] })
   .openapi('TrialCrSectionsResponse')
 
-const TrialCrSegment_1TagsResponseSchema = z
+const TrialCrSegment_1TagsResponseSchema: z.ZodType<TrialCrSegment_1TagsResponseType> = z
   .object({
     trial_cr_segment_1_tags: z
       .object({
@@ -20383,7 +21961,7 @@ const TrialCrSegment_1TagsResponseSchema = z
   .openapi({ required: ['trial_cr_segment_1_tags', 'up_to_date'] })
   .openapi('TrialCrSegment_1TagsResponse')
 
-const TrialCrSegment_2TagsResponseSchema = z
+const TrialCrSegment_2TagsResponseSchema: z.ZodType<TrialCrSegment_2TagsResponseType> = z
   .object({
     trial_cr_segment_2_tags: z
       .object({
@@ -20951,7 +22529,7 @@ const TrialCrSegment_2TagsResponseSchema = z
   .openapi({ required: ['trial_cr_segment_2_tags', 'up_to_date'] })
   .openapi('TrialCrSegment_2TagsResponse')
 
-const TrialCrSegment_3TagsResponseSchema = z
+const TrialCrSegment_3TagsResponseSchema: z.ZodType<TrialCrSegment_3TagsResponseType> = z
   .object({
     trial_cr_segment_3_tags: z
       .object({
@@ -21814,7 +23392,7 @@ const DealCreateResponseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+            z.int64().min(-9223372036854775808n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -22154,7 +23732,7 @@ const DealCreateResponseSchema = z
                         : typeof val === 'string' && /^-?\d+$/.test(val)
                           ? BigInt(val)
                           : val,
-                    z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                    z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                   )
                   .openapi({
                     type: 'integer',
@@ -22255,7 +23833,7 @@ const DealCreateResponseSchema = z
                         : typeof val === 'string' && /^-?\d+$/.test(val)
                           ? BigInt(val)
                           : val,
-                    z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                    z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                   )
                   .openapi({
                     type: 'integer',
@@ -22623,7 +24201,7 @@ const DealCreateResponseSchema = z
                             : typeof val === 'string' && /^-?\d+$/.test(val)
                               ? BigInt(val)
                               : val,
-                        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                       )
                       .nullable()
                       .exactOptional()
@@ -22708,7 +24286,7 @@ const DealSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -23037,7 +24615,7 @@ const DealSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -23220,7 +24798,7 @@ const DealSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -23569,7 +25147,7 @@ const DealSchema = z
                             : typeof val === 'string' && /^-?\d+$/.test(val)
                               ? BigInt(val)
                               : val,
-                        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                       )
                       .openapi({
                         type: 'integer',
@@ -23679,7 +25257,7 @@ const DealSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -24038,7 +25616,7 @@ const DealSchema = z
                         : typeof val === 'string' && /^-?\d+$/.test(val)
                           ? BigInt(val)
                           : val,
-                    z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                    z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                   )
                   .nullable()
                   .exactOptional()
@@ -25923,13 +27501,13 @@ const ManualJournalSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(1n).max(2147483647n),
+                z.int64().min(1n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
                 format: 'int64',
                 minimum: 1,
-                maximum: 2147483647,
+                maximum: 9223372036854776000,
                 description: '取引金額（税込・円）',
                 example: 108000,
               }),
@@ -28549,7 +30127,7 @@ const WalletTxnSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -28726,7 +30304,7 @@ const TransferSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
       )
       .openapi({
         type: 'integer',
@@ -29011,7 +30589,7 @@ const TransferSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -29735,6 +31313,7 @@ const ReceiptSchema = z
           .exactOptional()
           .openapi({ description: '表示名', example: 'フリー太郎' }),
       })
+      .nullable()
       .openapi({ description: 'ファイルをアップロードしたユーザー', required: ['email', 'id'] }),
     receipt_metadatum: z
       .object({
@@ -29757,7 +31336,7 @@ const ReceiptSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+            z.int64().min(-9223372036854775808n).max(9223372036854775807n),
           )
           .nullable()
           .exactOptional()
@@ -29814,7 +31393,7 @@ const ReceiptResponseSchema = z
   .openapi({ required: ['receipt'] })
   .openapi('ReceiptResponse')
 
-const ExpenseApplicationsIndexResponseSchema = z
+const ExpenseApplicationsIndexResponseSchema: z.ZodType<ExpenseApplicationsIndexResponseType> = z
   .object({
     expense_applications: z.array(
       z
@@ -30126,6 +31705,118 @@ const ExpenseApplicationsIndexResponseSchema = z
                                 '明細行の外貨額。外貨を利用していない場合はnullになります。',
                               required: [],
                             }),
+                          tag_assignment: z
+                            .enum(['application', 'line'])
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                '明細行の部門・メモタグ・セグメントの付与先\n* `application` - 申請全体に付与（画面の「申請全体に合わせる」）\n* `line` - 明細に個別付与（画面の「個別付与」）',
+                              example: 'line',
+                            }),
+                          section_id: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64().min(1n),
+                            )
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              type: ['integer', 'null'],
+                              format: 'int64',
+                              minimum: 1,
+                              description:
+                                '明細行の部門ID\ntag_assignmentがapplicationの場合は申請全体のsection_idと同じ値を返します。部門が設定されていない場合はnullになります。',
+                              example: 101,
+                            }),
+                          tag_ids: z
+                            .array(
+                              z
+                                .preprocess(
+                                  (val) =>
+                                    typeof val === 'number' && Number.isSafeInteger(val)
+                                      ? BigInt(val)
+                                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                                        ? BigInt(val)
+                                        : val,
+                                  z.int64().min(1n),
+                                )
+                                .openapi({
+                                  type: 'integer',
+                                  format: 'int64',
+                                  minimum: 1,
+                                  example: 202,
+                                }),
+                            )
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                '明細行のメモタグID\ntag_assignmentがapplicationの場合は申請全体のtag_idsと同じ値を返します。',
+                            }),
+                          segment_1_tag_id: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64().min(1n),
+                            )
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              type: ['integer', 'null'],
+                              format: 'int64',
+                              minimum: 1,
+                              description:
+                                '明細行のセグメント１タグID\ntag_assignmentがapplicationの場合は申請全体のsegment_1_tag_idと同じ値を返します。タグが設定されていない場合はnullになります。',
+                              example: 1,
+                            }),
+                          segment_2_tag_id: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64().min(1n),
+                            )
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              type: ['integer', 'null'],
+                              format: 'int64',
+                              minimum: 1,
+                              description:
+                                '明細行のセグメント２タグID\ntag_assignmentがapplicationの場合は申請全体のsegment_2_tag_idと同じ値を返します。タグが設定されていない場合はnullになります。',
+                              example: 2,
+                            }),
+                          segment_3_tag_id: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64().min(1n),
+                            )
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              type: ['integer', 'null'],
+                              format: 'int64',
+                              minimum: 1,
+                              description:
+                                '明細行のセグメント３タグID\ntag_assignmentがapplicationの場合は申請全体のsegment_3_tag_idと同じ値を返します。タグが設定されていない場合はnullになります。',
+                              example: 3,
+                            }),
                         })
                         .openapi({ required: ['id'] }),
                     )
@@ -30316,76 +32007,7 @@ const ExpenseApplicationsIndexResponseSchema = z
   .openapi({ required: ['expense_applications'] })
   .openapi('ExpenseApplicationsIndexResponse')
 
-const ExpenseApplicationLineTemplateAmountCalculationConditionSchema = z
-  .discriminatedUnion('type', [
-    z
-      .strictObject({
-        type: z
-          .literal('applicant_position')
-          .openapi({
-            description: '条件の種類 (applicant_position: 申請者の役職による条件)',
-            example: 'applicant_position',
-          }),
-        match: z
-          .enum(['any_of', 'none_of'])
-          .openapi({
-            description: '役職の比較方法 (any_of: いずれかに一致, none_of: いずれにも一致しない)',
-            example: 'any_of',
-          }),
-        position_ids: z
-          .array(
-            z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64().min(1n),
-              )
-              .openapi({ type: 'integer', format: 'int64', minimum: 1 }),
-          )
-          .min(1)
-          .openapi({
-            description:
-              '条件に使用する役職IDの配列 (1件以上)。役職IDは人事労務の役職から取得します',
-            example: [3, 7],
-          }),
-      })
-      .openapi({
-        description: '申請者の役職による条件',
-        required: ['type', 'match', 'position_ids'],
-      }),
-    z
-      .strictObject({
-        type: z
-          .literal('unsupported')
-          .openapi({
-            description: '条件の種類 (unsupported: 本APIで表現できない条件)',
-            example: 'unsupported',
-          }),
-      })
-      .openapi({
-        description: '本APIで表現できない条件。レスポンス専用で、リクエストには指定できません',
-        required: ['type'],
-      }),
-  ])
-  .openapi({
-    description:
-      'ルールの適用条件。typeで条件の種類を表します。\n- applicant_position: 申請者の役職による条件。match と position_ids を持ちます\n- unsupported: 本APIで表現できない条件 (Web版freee会計の旧設定で作成された条件式)。レスポンス専用で、リクエストには指定できません。条件を変更する場合は applicant_position の条件で送り直してください',
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        applicant_position:
-          '#/components/schemas/expenseApplicationLineTemplateApplicantPositionCondition',
-        unsupported: '#/components/schemas/expenseApplicationLineTemplateUnsupportedCondition',
-      },
-    },
-  })
-  .openapi('ExpenseApplicationLineTemplateAmountCalculationCondition')
-
-const ExpenseApplicationResponseSchema = z
+const ExpenseApplicationResponseSchema: z.ZodType<ExpenseApplicationResponseType> = z
   .object({
     expense_application: z
       .object({
@@ -30826,6 +32448,118 @@ const ExpenseApplicationResponseSchema = z
                             description:
                               '金額計算方法による計算結果\n経費科目に金額計算方法が設定されている明細行のみ値が入ります。設定されていない場合はnullになります。',
                             required: ['calculated_amount', 'applied_rule', 'evaluated_as'],
+                          }),
+                        tag_assignment: z
+                          .enum(['application', 'line'])
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              '明細行の部門・メモタグ・セグメントの付与先\n* `application` - 申請全体に付与（画面の「申請全体に合わせる」）\n* `line` - 明細に個別付与（画面の「個別付与」）',
+                            example: 'line',
+                          }),
+                        section_id: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'number' && Number.isSafeInteger(val)
+                                ? BigInt(val)
+                                : typeof val === 'string' && /^-?\d+$/.test(val)
+                                  ? BigInt(val)
+                                  : val,
+                            z.int64().min(1n),
+                          )
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            type: ['integer', 'null'],
+                            format: 'int64',
+                            minimum: 1,
+                            description:
+                              '明細行の部門ID\ntag_assignmentがapplicationの場合は申請全体のsection_idと同じ値を返します。部門が設定されていない場合はnullになります。',
+                            example: 101,
+                          }),
+                        tag_ids: z
+                          .array(
+                            z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'number' && Number.isSafeInteger(val)
+                                    ? BigInt(val)
+                                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                                      ? BigInt(val)
+                                      : val,
+                                z.int64().min(1n),
+                              )
+                              .openapi({
+                                type: 'integer',
+                                format: 'int64',
+                                minimum: 1,
+                                example: 202,
+                              }),
+                          )
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              '明細行のメモタグID\ntag_assignmentがapplicationの場合は申請全体のtag_idsと同じ値を返します。',
+                          }),
+                        segment_1_tag_id: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'number' && Number.isSafeInteger(val)
+                                ? BigInt(val)
+                                : typeof val === 'string' && /^-?\d+$/.test(val)
+                                  ? BigInt(val)
+                                  : val,
+                            z.int64().min(1n),
+                          )
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            type: ['integer', 'null'],
+                            format: 'int64',
+                            minimum: 1,
+                            description:
+                              '明細行のセグメント１タグID\ntag_assignmentがapplicationの場合は申請全体のsegment_1_tag_idと同じ値を返します。タグが設定されていない場合はnullになります。',
+                            example: 1,
+                          }),
+                        segment_2_tag_id: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'number' && Number.isSafeInteger(val)
+                                ? BigInt(val)
+                                : typeof val === 'string' && /^-?\d+$/.test(val)
+                                  ? BigInt(val)
+                                  : val,
+                            z.int64().min(1n),
+                          )
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            type: ['integer', 'null'],
+                            format: 'int64',
+                            minimum: 1,
+                            description:
+                              '明細行のセグメント２タグID\ntag_assignmentがapplicationの場合は申請全体のsegment_2_tag_idと同じ値を返します。タグが設定されていない場合はnullになります。',
+                            example: 2,
+                          }),
+                        segment_3_tag_id: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'number' && Number.isSafeInteger(val)
+                                ? BigInt(val)
+                                : typeof val === 'string' && /^-?\d+$/.test(val)
+                                  ? BigInt(val)
+                                  : val,
+                            z.int64().min(1n),
+                          )
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            type: ['integer', 'null'],
+                            format: 'int64',
+                            minimum: 1,
+                            description:
+                              '明細行のセグメント３タグID\ntag_assignmentがapplicationの場合は申請全体のsegment_3_tag_idと同じ値を返します。タグが設定されていない場合はnullになります。',
+                            example: 3,
                           }),
                       })
                       .openapi({ required: ['id'] }),
@@ -33687,7 +35421,7 @@ const RenewCreateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -33706,7 +35440,7 @@ const RenewCreateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .exactOptional()
               .openapi({
@@ -33921,7 +35655,7 @@ const RenewUpdateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -33940,7 +35674,7 @@ const RenewUpdateParamsSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                z.int64().min(-9223372036854775808n).max(9223372036854775807n),
               )
               .exactOptional()
               .openapi({
@@ -34419,6 +36153,25 @@ const ExpenseApplicationFormSchema = z
           'デフォルトで選択する申請経路のID (未設定の場合は null)。申請経路一覧の取得API (`/api/1/approval_flow_routes`) のレスポンス id と同じ値です。',
         example: 101,
       }),
+    traffic_line_template_src_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '交通経路・交通系ICカードから作成した明細にデフォルトで選択する経費科目の source_line_template_id (未設定の場合は null)。経費科目一覧の取得API (`/api/1/expense_application_line_templates`) のレスポンス source_line_template_id と同じ値です。削除済みの経費科目を指していることがあります。更新では null と 0 のどちらも未設定に戻す指示になります。更新で省略した場合は現在の設定を変更しません。ただし更新で line_template_setting に disable を指定した場合は、省略しても未設定に戻します。',
+        example: 1,
+      }),
     observer_addition: z
       .enum(['disable', 'enable'])
       .openapi({
@@ -34573,6 +36326,25 @@ const ExpenseApplicationFormParamsSchema = z
         description:
           'デフォルトで選択する申請経路のID (未設定の場合は null)。申請経路一覧の取得API (`/api/1/approval_flow_routes`) のレスポンス id と同じ値です。',
         example: 101,
+      }),
+    traffic_line_template_src_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .exactOptional()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '交通経路・交通系ICカードから作成した明細にデフォルトで選択する経費科目の source_line_template_id (未設定の場合は null)。経費科目一覧の取得API (`/api/1/expense_application_line_templates`) のレスポンス source_line_template_id と同じ値です。削除済みの経費科目を指していることがあります。更新では null と 0 のどちらも未設定に戻す指示になります。更新で省略した場合は現在の設定を変更しません。ただし更新で line_template_setting に disable を指定した場合は、省略しても未設定に戻します。',
+        example: 1,
       }),
     observer_addition: z
       .enum(['disable', 'enable'])
@@ -35631,10 +37403,11 @@ const ApprovalRequestsIndexResponseSchema = z
                       'section',
                       'partner',
                       'ninja_sign_document',
+                      'freee_sign_document',
                     ])
                     .openapi({
                       description:
-                        '項目タイプ(title: 申請タイトル, single_line: 自由記述形式 1行, multi_line: 自由記述形式 複数行, select: プルダウン, checkbox: 複数選択, date: 日付, amount: 金額, receipt: 添付ファイル, section: 部門ID, partner: 取引先ID, ninja_sign_document: 契約書（freeeサイン連携）)',
+                        '項目タイプ(title: 申請タイトル, single_line: 自由記述形式 1行, multi_line: 自由記述形式 複数行, select: プルダウン, checkbox: 複数選択, date: 日付, amount: 金額, receipt: 添付ファイル, section: 部門ID, partner: 取引先ID, ninja_sign_document: 契約書（freeeサイン連携・旧方式）, freee_sign_document: 契約書（freeeサイン連携）)',
                       example: 'single_line',
                     }),
                   value: z
@@ -35942,10 +37715,11 @@ const ApprovalRequestResponseSchema = z
                     'section',
                     'partner',
                     'ninja_sign_document',
+                    'freee_sign_document',
                   ])
                   .openapi({
                     description:
-                      '項目タイプ(title: 申請タイトル, single_line: 自由記述形式 1行, multi_line: 自由記述形式 複数行, select: プルダウン, checkbox: 複数選択, date: 日付, amount: 金額, receipt: 添付ファイル, section: 部門ID, partner: 取引先ID, ninja_sign_document: 契約書（freeeサイン連携）)',
+                      '項目タイプ(title: 申請タイトル, single_line: 自由記述形式 1行, multi_line: 自由記述形式 複数行, select: プルダウン, checkbox: 複数選択, date: 日付, amount: 金額, receipt: 添付ファイル, section: 部門ID, partner: 取引先ID, ninja_sign_document: 契約書（freeeサイン連携・旧方式）, freee_sign_document: 契約書（freeeサイン連携）)',
                     example: 'single_line',
                   }),
                 value: z
@@ -36153,11 +37927,12 @@ const ApprovalRequestResponseSchema = z
                         'section',
                         'partner',
                         'ninja_sign_document',
+                        'freee_sign_document',
                       ])
                       .exactOptional()
                       .openapi({
                         description:
-                          '項目種別 (title: 申請タイトル, single_line: 自由記述形式 1行, multi_line: 自由記述形式 複数行, select: プルダウン, checkbox: 複数選択, date: 日付, amount: 金額, receipt: 添付ファイル, section: 部門ID, partner: 取引先ID, ninja_sign_document: 契約書（freeeサイン連携）)',
+                          '項目種別 (title: 申請タイトル, single_line: 自由記述形式 1行, multi_line: 自由記述形式 複数行, select: プルダウン, checkbox: 複数選択, date: 日付, amount: 金額, receipt: 添付ファイル, section: 部門ID, partner: 取引先ID, ninja_sign_document: 契約書（freeeサイン連携・旧方式）, freee_sign_document: 契約書（freeeサイン連携）)',
                         example: 'single_line',
                       }),
                     label: z
@@ -36561,11 +38336,12 @@ const ApprovalRequestFormResponseSchema = z
                     'section',
                     'partner',
                     'ninja_sign_document',
+                    'freee_sign_document',
                   ])
                   .exactOptional()
                   .openapi({
                     description:
-                      '項目種別 (title: 申請タイトル, single_line: 自由記述形式 1行, multi_line: 自由記述形式 複数行, select: プルダウン, checkbox: 複数選択, date: 日付, amount: 金額, receipt: 添付ファイル, section: 部門ID, partner: 取引先ID, ninja_sign_document: 契約書（freeeサイン連携）)',
+                      '項目種別 (title: 申請タイトル, single_line: 自由記述形式 1行, multi_line: 自由記述形式 複数行, select: プルダウン, checkbox: 複数選択, date: 日付, amount: 金額, receipt: 添付ファイル, section: 部門ID, partner: 取引先ID, ninja_sign_document: 契約書（freeeサイン連携・旧方式）, freee_sign_document: 契約書（freeeサイン連携）)',
                     example: 'single_line',
                   }),
                 label: z
@@ -37463,6 +39239,7 @@ const PurchaseRequestFormIndexResponseSchema = z
             .openapi({ description: '申請フォームの名前', example: '申請フォームの名前' }),
           description: z
             .string()
+            .nullable()
             .openapi({ description: '申請フォームの説明', example: '申請フォームの説明' }),
           status: z
             .enum(['draft', 'active', 'deleted'])
@@ -37875,7 +39652,7 @@ const PurchaseRequestFormDetailResponseSchema = z
                       'single_line_string, multi_line_string, number, single_date, date_range, pulldown, checkbox, radio_button のいずれか',
                   }),
                 default_value: z
-                  .object({})
+                  .looseObject({})
                   .nullable()
                   .exactOptional()
                   .openapi({ description: '項目の初期値（type_name により構造が異なる）' }),
@@ -39057,6 +40834,206 @@ const PurchaseRequestUpdateParamsSchema = z
   .openapi({ required: ['company_id', 'status', 'purchase_request_form_id'] })
   .openapi('PurchaseRequestUpdateParams')
 
+const PurchaseRequestPurchaseBudgetResponseSchema = z
+  .strictObject({
+    tracking_status: z
+      .enum(['in_progress', 'approved', 'not_tracked'])
+      .openapi({
+        description:
+          '予算追跡状態 (in_progress: 申請中, approved: 承認済み, not_tracked: 追跡対象外)',
+        example: 'approved',
+      }),
+    purchase_request_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description: '対象の購買申請ID',
+        example: 2001,
+      }),
+    purchase_budget_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        minimum: 1,
+        description: '購買予算ID。tracking_status が not_tracked の場合は null です',
+        example: 1001,
+      }),
+    budget_amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: '購買予算額（円）。tracking_status が not_tracked の場合は null です',
+        example: 100000,
+      }),
+    consumed_amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '購買予算全体の税込消化額（円）。tracking_status が not_tracked の場合は null です',
+        example: 65000,
+      }),
+    consumed_tax_excluded_amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '購買予算全体の税抜消化額（円）。tracking_status が not_tracked の場合は null です',
+        example: 59091,
+      }),
+    consumed_tax_amount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description:
+          '購買予算全体の消費税額（円）。tracking_status が not_tracked の場合は null です',
+        example: 5909,
+      }),
+    budget_consumptions: z
+      .array(
+        z
+          .strictObject({
+            amount: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({
+                type: 'integer',
+                format: 'int64',
+                description: '税込消化額（円）。取消や調整により負数になり得ます',
+                example: 40000,
+              }),
+            source: z
+              .strictObject({
+                type: z
+                  .enum([
+                    'expense_application',
+                    'payment_request',
+                    'freee_card_statement_line',
+                    'sweeep_document',
+                    'sweeep_invoice',
+                    'deal',
+                  ])
+                  .openapi({
+                    description:
+                      '消化元リソースの種別 (expense_application: 経費申請, payment_request: 支払依頼, freee_card_statement_line: freeeカード明細, sweeep_document: sweeep v2 の支払依頼, sweeep_invoice: sweeep v2 の請求書, deal: 取引)',
+                    example: 'expense_application',
+                  }),
+                id: z
+                  .string()
+                  .nullable()
+                  .openapi({
+                    description:
+                      '消化元サービスにおけるリソースID。リソース間で型が異なるため文字列で返します。取得できない場合は null です',
+                    example: '3001',
+                  }),
+                display_name: z
+                  .string()
+                  .nullable()
+                  .openapi({
+                    description: '消化元を人が識別するための表示名。取得できない場合は null です',
+                    example: '備品購入の立替精算',
+                  }),
+                workflow_status: z
+                  .enum(['in_progress', 'approved', 'feedback'])
+                  .nullable()
+                  .openapi({
+                    description:
+                      'ワークフローを持つ消化元の状態 (in_progress: 申請中, approved: 承認済み, feedback: 差戻し)。対象外または取得できない場合は null です',
+                    example: 'approved',
+                  }),
+              })
+              .openapi({
+                description:
+                  '予算を消化した業務リソースの参照情報。表示名と状態は予算消化時点のスナップショットです',
+                required: ['type', 'id', 'display_name', 'workflow_status'],
+              }),
+          })
+          .openapi({ description: '購買予算を消化した一件の明細', required: ['amount', 'source'] }),
+      )
+      .openapi({ description: '予算消化。tracking_status が not_tracked の場合は空配列です' }),
+  })
+  .openapi({
+    description: '購買申請に対する購買予算、および予算消化',
+    required: [
+      'tracking_status',
+      'purchase_request_id',
+      'purchase_budget_id',
+      'budget_amount',
+      'consumed_amount',
+      'consumed_tax_excluded_amount',
+      'consumed_tax_amount',
+      'budget_consumptions',
+    ],
+  })
+  .openapi('PurchaseRequestPurchaseBudgetResponse')
+
 const ApprovalFlowRoutesIndexResponseSchema = z
   .object({
     approval_flow_routes: z
@@ -39198,7 +41175,7 @@ const ApprovalFlowRoutesIndexResponseSchema = z
   .openapi({ required: ['approval_flow_routes'] })
   .openapi('ApprovalFlowRoutesIndexResponse')
 
-const ApprovalFlowRouteResponseSchema = z
+const ApprovalFlowRouteResponseSchema: z.ZodType<ApprovalFlowRouteResponseType> = z
   .object({
     approval_flow_route: z
       .object({
@@ -39894,10 +41871,13 @@ const InvoiceIndexResponseSchema = z
               'printing',
               'canceled',
               'posted',
+              'cancel',
+              'ordering',
+              'bounced',
             ])
             .openapi({
               description:
-                '郵送ステータス(unrequested: リクエスト前, preview_registered: プレビュー登録, preview_failed: プレビュー登録失敗, ordered: 注文中, order_failed: 注文失敗, printing: 印刷中, canceled: キャンセル, posted: 投函済み)',
+                '郵送ステータス(unrequested: リクエスト前, preview_registered: プレビュー登録, preview_failed: プレビュー登録失敗, ordered: 注文中, order_failed: 注文失敗, printing: 印刷中, canceled: キャンセル, posted: 投函済み, cancel: 注文前キャンセル, ordering: 注文処理中, bounced: 郵送不達)',
               example: 'unrequested',
             }),
           partner_name: z
@@ -40108,7 +42088,7 @@ const InvoiceIndexResponseSchema = z
                           : typeof val === 'string' && /^-?\d+$/.test(val)
                             ? BigInt(val)
                             : val,
-                      z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                      z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                     )
                     .openapi({
                       type: 'integer',
@@ -40360,7 +42340,7 @@ const InvoiceIndexResponseSchema = z
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().max(9223372036854776000n),
+                  z.int64().max(9223372036854775807n),
                 )
                 .openapi({
                   type: 'integer',
@@ -40377,7 +42357,7 @@ const InvoiceIndexResponseSchema = z
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().max(9223372036854776000n),
+                  z.int64().max(9223372036854775807n),
                 )
                 .openapi({
                   type: 'integer',
@@ -40394,7 +42374,7 @@ const InvoiceIndexResponseSchema = z
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().max(9223372036854776000n),
+                  z.int64().max(9223372036854775807n),
                 )
                 .openapi({
                   type: 'integer',
@@ -40411,7 +42391,7 @@ const InvoiceIndexResponseSchema = z
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().max(9223372036854776000n),
+                  z.int64().max(9223372036854775807n),
                 )
                 .openapi({
                   type: 'integer',
@@ -40644,10 +42624,13 @@ const InvoiceResponseSchema = z
             'printing',
             'canceled',
             'posted',
+            'cancel',
+            'ordering',
+            'bounced',
           ])
           .openapi({
             description:
-              '郵送ステータス(unrequested: リクエスト前, preview_registered: プレビュー登録, preview_failed: プレビュー登録失敗, ordered: 注文中, order_failed: 注文失敗, printing: 印刷中, canceled: キャンセル, posted: 投函済み)',
+              '郵送ステータス(unrequested: リクエスト前, preview_registered: プレビュー登録, preview_failed: プレビュー登録失敗, ordered: 注文中, order_failed: 注文失敗, printing: 印刷中, canceled: キャンセル, posted: 投函済み, cancel: 注文前キャンセル, ordering: 注文処理中, bounced: 郵送不達)',
             example: 'unrequested',
           }),
         partner_name: z
@@ -40855,7 +42838,7 @@ const InvoiceResponseSchema = z
                         : typeof val === 'string' && /^-?\d+$/.test(val)
                           ? BigInt(val)
                           : val,
-                    z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                    z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                   )
                   .openapi({
                     type: 'integer',
@@ -41107,7 +43090,7 @@ const InvoiceResponseSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().max(9223372036854776000n),
+                z.int64().max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -41124,7 +43107,7 @@ const InvoiceResponseSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().max(9223372036854776000n),
+                z.int64().max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -41141,7 +43124,7 @@ const InvoiceResponseSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().max(9223372036854776000n),
+                z.int64().max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -41158,7 +43141,7 @@ const InvoiceResponseSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().max(9223372036854776000n),
+                z.int64().max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -42760,7 +44743,7 @@ const QuotationIndexResponseSchema = z
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().max(9223372036854776000n),
+                  z.int64().max(9223372036854775807n),
                 )
                 .openapi({
                   type: 'integer',
@@ -42777,7 +44760,7 @@ const QuotationIndexResponseSchema = z
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().max(9223372036854776000n),
+                  z.int64().max(9223372036854775807n),
                 )
                 .openapi({
                   type: 'integer',
@@ -42794,7 +44777,7 @@ const QuotationIndexResponseSchema = z
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().max(9223372036854776000n),
+                  z.int64().max(9223372036854775807n),
                 )
                 .openapi({
                   type: 'integer',
@@ -42811,7 +44794,7 @@ const QuotationIndexResponseSchema = z
                       : typeof val === 'string' && /^-?\d+$/.test(val)
                         ? BigInt(val)
                         : val,
-                  z.int64().max(9223372036854776000n),
+                  z.int64().max(9223372036854775807n),
                 )
                 .openapi({
                   type: 'integer',
@@ -43418,7 +45401,7 @@ const QuotationResponseSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().max(9223372036854776000n),
+                z.int64().max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -43435,7 +45418,7 @@ const QuotationResponseSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().max(9223372036854776000n),
+                z.int64().max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -43452,7 +45435,7 @@ const QuotationResponseSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().max(9223372036854776000n),
+                z.int64().max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -43469,7 +45452,7 @@ const QuotationResponseSchema = z
                     : typeof val === 'string' && /^-?\d+$/.test(val)
                       ? BigInt(val)
                       : val,
-                z.int64().max(9223372036854776000n),
+                z.int64().max(9223372036854775807n),
               )
               .openapi({
                 type: 'integer',
@@ -45157,7 +47140,7 @@ export const getApi1PartnersRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -50939,7 +52922,7 @@ export const getApi1InvoicesRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -51179,7 +53162,7 @@ export const getApi1QuotationsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -51299,7 +53282,7 @@ export const getApi1DealsRoute = createRoute({
   tags: ['Deals'],
   summary: '取引（収入・支出）一覧の取得',
   description:
-    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）一覧を取得する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>details : 取引の明細行</p>\n</li>\n<li>\n<p>accruals : 取引の債権債務行</p>\n</li>\n<li>\n<p>renews : 取引の+更新行</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>\n<h2 id="_3">注意点</h2>\n<ul>\n<li>セグメントタグ情報は法人アドバンスプラン（および旧法人プロフェッショナルプラン）以上で利用可能です。利用可能なセグメントの数は、法人アドバンスプラン（および旧法人プロフェッショナルプラン）の場合は1つ、法人エンタープライズプランの場合は3つです。</li>\n<li>partner_codeを利用するには、事業所の設定から取引先コードの利用を有効にする必要があります。またpartner_codeとpartner_idは同時に指定することはできません。</li>\n</ul>',
+    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）一覧を取得する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>details : 取引の明細行</p>\n</li>\n<li>\n<p>accruals : 取引の債権債務行</p>\n</li>\n<li>\n<p>renews : 取引の+更新行</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>\n<h2 id="_3">注意点</h2>\n<ul>\n<li>セグメントタグ情報は法人アドバンスプラン（および旧法人プロフェッショナルプラン）以上で利用可能です。利用可能なセグメントの数は、法人アドバンスプラン（および旧法人プロフェッショナルプラン）の場合は1つ、法人エンタープライズプランの場合は3つです。</li>\n<li>partner_codeを利用するには、事業所の設定から取引先コードの利用を有効にする必要があります。またpartner_codeとpartner_idは同時に指定することはできません。</li>\n</ul>',
   operationId: 'get_deals',
   request: {
     query: z.object({
@@ -51471,7 +53454,7 @@ export const getApi1DealsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -51490,7 +53473,7 @@ export const getApi1DealsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -51588,7 +53571,7 @@ export const postApi1DealsRoute = createRoute({
   tags: ['Deals'],
   summary: '取引（収入・支出）の作成',
   description:
-    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）を作成する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>ref_number : 管理番号</p>\n</li>\n<li>\n<p>details : 取引の明細行(最大100行)</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>receipt_ids : ファイルボックス（証憑ファイル）ID</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>\n<h2 id="_3">注意点</h2>\n<ul>\n    <li><p>本APIでは+更新行(renews)の操作ができません。取引（収入・支出）の+更新の作成APIをご利用ください。</p></li>\n    <li><p>セグメントタグ情報は法人アドバンスプラン（および旧法人プロフェッショナルプラン）以上で利用可能です。利用可能なセグメントの数は、法人アドバンスプラン（および旧法人プロフェッショナルプラン）の場合は1つ、法人エンタープライズプランの場合は3つです。</p></li>\n    <li>\n        <p>partner_codeを利用するには、事業所の設定から取引先コードの利用を有効にする必要があります。またpartner_codeとpartner_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>account_item_codeを利用するには、事業所の設定から勘定科目コードの利用を有効にする必要があります。またaccount_item_codeとaccount_item_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>item_codeを利用するには、事業所の設定から品目コードの利用を有効にする必要があります。またitem_codeとitem_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>section_codeを利用するには、事業所の設定から部門コードの利用を有効にする必要があります。またsection_codeとsection_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>segment_1_tag_codeを利用するには、事業所の設定からセグメントタグコードの利用を有効にする必要があります。またsegment_1_tag_codeとsegment_1_tag_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>segment_2_tag_codeを利用するには、事業所の設定からセグメントタグコードの利用を有効にする必要があります。またsegment_2_tag_codeとsegment_2_tag_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>segment_3_tag_codeを利用するには、事業所の設定からセグメントタグコードの利用を有効にする必要があります。またsegment_3_tag_codeとsegment_3_tag_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>本APIでは取引の明細行(details)は、最大100行までになります。</p>\n    </li>\n</ul>\n',
+    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）を作成する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>ref_number : 管理番号</p>\n</li>\n<li>\n<p>details : 取引の明細行(最大100行)</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>receipt_ids : ファイルボックス（証憑ファイル）ID</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>\n<h2 id="_3">注意点</h2>\n<ul>\n    <li><p>本APIでは+更新行(renews)の操作ができません。取引（収入・支出）の+更新の作成APIをご利用ください。</p></li>\n    <li><p>セグメントタグ情報は法人アドバンスプラン（および旧法人プロフェッショナルプラン）以上で利用可能です。利用可能なセグメントの数は、法人アドバンスプラン（および旧法人プロフェッショナルプラン）の場合は1つ、法人エンタープライズプランの場合は3つです。</p></li>\n    <li>\n        <p>partner_codeを利用するには、事業所の設定から取引先コードの利用を有効にする必要があります。またpartner_codeとpartner_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>account_item_codeを利用するには、事業所の設定から勘定科目コードの利用を有効にする必要があります。またaccount_item_codeとaccount_item_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>item_codeを利用するには、事業所の設定から品目コードの利用を有効にする必要があります。またitem_codeとitem_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>section_codeを利用するには、事業所の設定から部門コードの利用を有効にする必要があります。またsection_codeとsection_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>segment_1_tag_codeを利用するには、事業所の設定からセグメントタグコードの利用を有効にする必要があります。またsegment_1_tag_codeとsegment_1_tag_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>segment_2_tag_codeを利用するには、事業所の設定からセグメントタグコードの利用を有効にする必要があります。またsegment_2_tag_codeとsegment_2_tag_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>segment_3_tag_codeを利用するには、事業所の設定からセグメントタグコードの利用を有効にする必要があります。またsegment_3_tag_codeとsegment_3_tag_idは同時に指定することはできません。</p></li>\n    <li>\n        <p>本APIでは取引の明細行(details)は、最大100行までになります。</p>\n    </li>\n</ul>\n',
   operationId: 'create_deal',
   request: {
     body: {
@@ -51722,7 +53705,7 @@ export const postApi1DealsRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                          }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                           .openapi({
                             type: 'integer',
                             format: 'int64',
@@ -51972,7 +53955,7 @@ export const postApi1DealsRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                          }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                           .openapi({
                             type: 'integer',
                             format: 'int64',
@@ -52091,7 +54074,7 @@ export const getApi1DealsIdRoute = createRoute({
   tags: ['Deals'],
   summary: '取引（収入・支出）の取得',
   description:
-    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）を取得する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>details : 取引の明細行</p>\n</li>\n<li>\n<p>accruals : 取引の債権債務行</p>\n</li>\n<li>\n<p>renews : 取引の+更新行</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>\n<h2 id="_3">注意点</h2>\n<ul>\n<li>セグメントタグ情報は法人アドバンスプラン（および旧法人プロフェッショナルプラン）以上で利用可能です。利用可能なセグメントの数は、法人アドバンスプラン（および旧法人プロフェッショナルプラン）の場合は1つ、法人エンタープライズプランの場合は3つです。</li>\n</ul>',
+    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）を取得する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>details : 取引の明細行</p>\n</li>\n<li>\n<p>accruals : 取引の債権債務行</p>\n</li>\n<li>\n<p>renews : 取引の+更新行</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>\n<h2 id="_3">注意点</h2>\n<ul>\n<li>セグメントタグ情報は法人アドバンスプラン（および旧法人プロフェッショナルプラン）以上で利用可能です。利用可能なセグメントの数は、法人アドバンスプラン（および旧法人プロフェッショナルプラン）の場合は1つ、法人エンタープライズプランの場合は3つです。</li>\n</ul>',
   operationId: 'get_deal',
   request: {
     query: z.object({
@@ -52168,7 +54151,7 @@ export const putApi1DealsIdRoute = createRoute({
   tags: ['Deals'],
   summary: '取引（収入・支出）の更新',
   description:
-    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）を更新する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>details : 取引の明細行(最大100行)</p>\n</li>\n<li>\n<p>renews : 取引の+更新行</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n<li>\n<p>receipt_ids : ファイルボックス（証憑ファイル）ID</p>\n</li>\n</ul>\n<h2 id="_3">注意点</h2>\n<ul>\n    <li><p>本APIでは支払行(payments)の操作ができません。取引（収入・支出）の支払行の作成・更新・削除APIをご利用ください。</p></li>\n    <li><p>本APIでは+更新行(renews)の操作ができません。取引（収入・支出）の+更新の作成・更新・削除APIをご利用ください。</p></li>\n    <li><p>本APIでは収入／支出の切替えができません。既存の取引を削除後、再度作成してください。</p></li>\n    <li><p>本APIで取引を更新すると、消費税の計算方法は必ず内税方式が選択されます。</p></li>\n    <li><p>セグメントタグ情報は法人アドバンスプラン（および旧法人プロフェッショナルプラン）以上で利用可能です。利用可能なセグメントの数は、法人アドバンスプラン（および旧法人プロフェッショナルプラン）の場合は1つ、法人エンタープライズプランの場合は3つです。</p></li>\n    <li><p>partner_codeを利用するには、事業所の設定から取引先コードの利用を有効にする必要があります。またpartner_codeとpartner_idは同時に指定することはできません。</p></li>\n    <li><p>freee請求書から登録された取引は品目・部門・メモタグ・セグメント1、2、3のみ更新可能です。</p></li>\n    <li>\n        <p>本APIでは取引の明細行(details)は、最大100行までになります。</p>\n    </li>\n</ul>',
+    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）を更新する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>details : 取引の明細行(最大100行)</p>\n</li>\n<li>\n<p>renews : 取引の+更新行</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n<li>\n<p>receipt_ids : ファイルボックス（証憑ファイル）ID</p>\n</li>\n</ul>\n<h2 id="_3">注意点</h2>\n<ul>\n    <li><p>本APIでは支払行(payments)の操作ができません。取引（収入・支出）の支払行の作成・更新・削除APIをご利用ください。</p></li>\n    <li><p>本APIでは+更新行(renews)の操作ができません。取引（収入・支出）の+更新の作成・更新・削除APIをご利用ください。</p></li>\n    <li><p>本APIでは収入／支出の切替えができません。既存の取引を削除後、再度作成してください。</p></li>\n    <li><p>本APIで取引を更新すると、消費税の計算方法は必ず内税方式が選択されます。</p></li>\n    <li><p>セグメントタグ情報は法人アドバンスプラン（および旧法人プロフェッショナルプラン）以上で利用可能です。利用可能なセグメントの数は、法人アドバンスプラン（および旧法人プロフェッショナルプラン）の場合は1つ、法人エンタープライズプランの場合は3つです。</p></li>\n    <li><p>partner_codeを利用するには、事業所の設定から取引先コードの利用を有効にする必要があります。またpartner_codeとpartner_idは同時に指定することはできません。</p></li>\n    <li><p>freee請求書から登録された取引は品目・部門・メモタグ・セグメント1、2、3のみ更新可能です。</p></li>\n    <li>\n        <p>本APIでは取引の明細行(details)は、最大100行までになります。</p>\n    </li>\n</ul>',
   operationId: 'update_deal',
   request: {
     params: z.object({
@@ -52331,7 +54314,7 @@ export const putApi1DealsIdRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                          }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                           .openapi({
                             type: 'integer',
                             format: 'int64',
@@ -52638,7 +54621,7 @@ export const postApi1DealsIdRenewsRoute = createRoute({
   tags: ['Renews'],
   summary: '取引（収入・支出）の+更新の作成',
   description:
-    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）の+更新を作成する</p>\n<h2 id="_2">定義</h2>\n<ul> <li> <p>issue_date : 発生日</p> </li>\n<li> <p>due_date : 支払期日</p> </li>\n<li> <p>amount : 金額</p> </li>\n<li> <p>due_amount : 支払残額</p> </li>\n<li> <p>type</p>\n<ul> <li>income : 収入</li>\n<li>expense : 支出</li> </ul> </li>\n<li> <p>details : 取引の明細行</p> </li>\n<li> <p>accruals : 取引の債権債務行</p> </li>\n<li> <p>renews : 取引の+更新行</p> </li>\n<li> <p>payments : 取引の支払行</p> </li>\n<li> <p>from_walletable_type</p>\n<ul> <li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul> </li> </ul>\n<h2 id="_3">注意点</h2>\n<ul> <li>本APIではdetails(取引の明細行)、accruals(債権債務行)、renewsのdetails(+更新の明細行)のみ操作可能です。</li>\n<li>本APIで取引を更新すると、消費税の計算方法は必ず内税方式が選択されます。</li> </ul>\n',
+    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）の+更新を作成する</p>\n<h2 id="_2">定義</h2>\n<ul> <li> <p>issue_date : 発生日</p> </li>\n<li> <p>due_date : 支払期日</p> </li>\n<li> <p>amount : 金額</p> </li>\n<li> <p>due_amount : 支払残額</p> </li>\n<li> <p>type</p>\n<ul> <li>income : 収入</li>\n<li>expense : 支出</li> </ul> </li>\n<li> <p>details : 取引の明細行</p> </li>\n<li> <p>accruals : 取引の債権債務行</p> </li>\n<li> <p>renews : 取引の+更新行</p> </li>\n<li> <p>payments : 取引の支払行</p> </li>\n<li> <p>from_walletable_type</p>\n<ul> <li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul> </li> </ul>\n<h2 id="_3">注意点</h2>\n<ul> <li>本APIではdetails(取引の明細行)、accruals(債権債務行)、renewsのdetails(+更新の明細行)のみ操作可能です。</li>\n<li>本APIで取引を更新すると、消費税の計算方法は必ず内税方式が選択されます。</li> </ul>\n',
   operationId: 'create_deal_renew',
   request: {
     params: z.object({
@@ -52759,7 +54742,7 @@ export const postApi1DealsIdRenewsRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                          }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                           .openapi({
                             type: 'integer',
                             format: 'int64',
@@ -52779,7 +54762,7 @@ export const postApi1DealsIdRenewsRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                          }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                           .exactOptional()
                           .openapi({
                             type: 'integer',
@@ -52966,7 +54949,7 @@ export const putApi1DealsIdRenewsRenewIdRoute = createRoute({
   tags: ['Renews'],
   summary: '取引（収入・支出）の+更新の更新',
   description:
-    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）の+更新を更新する</p>\n<h2 id="_2">定義</h2>\n<ul> <li> <p>issue_date : 発生日</p> </li>\n<li> <p>due_date : 支払期日</p> </li>\n<li> <p>amount : 金額</p> </li>\n<li> <p>due_amount : 支払残額</p> </li>\n<li> <p>type</p>\n<ul> <li>income : 収入</li>\n<li>expense : 支出</li> </ul> </li>\n<li> <p>details : 取引の明細行</p> </li>\n<li> <p>accruals : 取引の債権債務行</p> </li>\n<li> <p>renews : 取引の+更新行</p> </li>\n<li> <p>payments : 取引の支払行</p> </li>\n<li> <p>from_walletable_type</p>\n<ul> <li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul> </li> </ul>\n<h2 id="_3">注意点</h2>\n<ul> <li>本APIでは+更新の更新のみ可能です。取引や支払行に対する更新はできません。</li> <li>renew_idにはrenewsのid(+更新ID)を指定してください。renewsのdetailsのid(+更新の明細行ID)を指定できません。</li> <li>月締めされている仕訳に紐づく＋更新行の編集・削除はできません。</li> <li>承認済み仕訳に紐づく＋更新行の編集・削除は管理者権限のユーザーのみ可能です。</li>\n<li>本APIで取引を更新すると、消費税の計算方法は必ず内税方式が選択されます。</li> </ul>\n',
+    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）の+更新を更新する</p>\n<h2 id="_2">定義</h2>\n<ul> <li> <p>issue_date : 発生日</p> </li>\n<li> <p>due_date : 支払期日</p> </li>\n<li> <p>amount : 金額</p> </li>\n<li> <p>due_amount : 支払残額</p> </li>\n<li> <p>type</p>\n<ul> <li>income : 収入</li>\n<li>expense : 支出</li> </ul> </li>\n<li> <p>details : 取引の明細行</p> </li>\n<li> <p>accruals : 取引の債権債務行</p> </li>\n<li> <p>renews : 取引の+更新行</p> </li>\n<li> <p>payments : 取引の支払行</p> </li>\n<li> <p>from_walletable_type</p>\n<ul> <li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul> </li> </ul>\n<h2 id="_3">注意点</h2>\n<ul> <li>本APIでは+更新の更新のみ可能です。取引や支払行に対する更新はできません。</li> <li>renew_idにはrenewsのid(+更新ID)を指定してください。renewsのdetailsのid(+更新の明細行ID)を指定できません。</li> <li>月締めされている仕訳に紐づく＋更新行の編集・削除はできません。</li> <li>承認済み仕訳に紐づく＋更新行の編集・削除は管理者権限のユーザーのみ可能です。</li>\n<li>本APIで取引を更新すると、消費税の計算方法は必ず内税方式が選択されます。</li> </ul>\n',
   operationId: 'update_deal_renew',
   request: {
     params: z.object({
@@ -53085,7 +55068,7 @@ export const putApi1DealsIdRenewsRenewIdRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                          }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                           .openapi({
                             type: 'integer',
                             format: 'int64',
@@ -53105,7 +55088,7 @@ export const putApi1DealsIdRenewsRenewIdRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                          }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                           .exactOptional()
                           .openapi({
                             type: 'integer',
@@ -53373,7 +55356,7 @@ export const postApi1DealsIdPaymentsRoute = createRoute({
   tags: ['Payments'],
   summary: '取引（収入・支出）の支払行の作成',
   description:
-    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）の支払行を作成する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li> <p>details : 取引の明細行</p> </li>\n<li> <p>renews : 取引の+更新行</p> </li>\n<li> <p>payments : 取引の支払行</p> </li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>',
+    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）の支払行を作成する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li> <p>details : 取引の明細行</p> </li>\n<li> <p>renews : 取引の+更新行</p> </li>\n<li> <p>payments : 取引の支払行</p> </li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>',
   operationId: 'create_deal_payment',
   request: {
     params: z.object({
@@ -53458,7 +55441,7 @@ export const postApi1DealsIdPaymentsRoute = createRoute({
                   if (/^-?\d+$/.test(val)) return BigInt(val)
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
-                }, z.int64().min(1n).max(9223372036854776000n))
+                }, z.int64().min(1n).max(9223372036854775807n))
                 .openapi({
                   type: 'integer',
                   format: 'int64',
@@ -53504,7 +55487,7 @@ export const putApi1DealsIdPaymentsPaymentIdRoute = createRoute({
   tags: ['Payments'],
   summary: '取引（収入・支出）の支払行の更新',
   description:
-    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）の支払行を更新する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>details : 取引の明細行</p>\n</li>\n<li>\n<p>renews : 取引の+更新行</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員借入金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>',
+    '<h2 id="">概要</h2>\n<p>指定した事業所の取引（収入・支出）の支払行を更新する</p>\n<h2 id="_2">定義</h2>\n<ul>\n<li>\n<p>issue_date : 発生日</p>\n</li>\n<li>\n<p>due_date : 支払期日</p>\n</li>\n<li>\n<p>amount : 金額</p>\n</li>\n<li>\n<p>due_amount : 支払残額</p>\n</li>\n<li>\n<p>type</p>\n<ul>\n<li>income : 収入</li>\n<li>expense : 支出</li>\n</ul>\n</li>\n<li>\n<p>details : 取引の明細行</p>\n</li>\n<li>\n<p>renews : 取引の+更新行</p>\n</li>\n<li>\n<p>payments : 取引の支払行</p>\n</li>\n<li>\n<p>from_walletable_type</p>\n<ul>\n<li>bank_account : 銀行口座</li>\n<li>credit_card : クレジットカード</li>\n<li>wallet : 現金</li>\n<li>private_account_item : プライベート資金（法人の場合は役員貸付金もしくは役員借入金、個人の場合は事業主貸もしくは事業主借）</li>\n</ul>\n</li>\n</ul>',
   operationId: 'update_deal_payment',
   request: {
     params: z.object({
@@ -53606,7 +55589,7 @@ export const putApi1DealsIdPaymentsPaymentIdRoute = createRoute({
                   if (/^-?\d+$/.test(val)) return BigInt(val)
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
-                }, z.int64().min(1n).max(9223372036854776000n))
+                }, z.int64().min(1n).max(9223372036854775807n))
                 .openapi({
                   type: 'integer',
                   format: 'int64',
@@ -53820,7 +55803,7 @@ export const getApi1ManualJournalsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+        }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -53844,7 +55827,7 @@ export const getApi1ManualJournalsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+        }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -54083,7 +56066,7 @@ export const getApi1ManualJournalsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -54265,7 +56248,7 @@ export const postApi1ManualJournalsRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(1n).max(9223372036854776000n))
+                          }, z.int64().min(1n).max(9223372036854775807n))
                           .openapi({
                             type: 'integer',
                             format: 'int64',
@@ -54801,7 +56784,7 @@ export const putApi1ManualJournalsIdRoute = createRoute({
                             if (/^-?\d+$/.test(val)) return BigInt(val)
                             const num = Number(val)
                             return Number.isSafeInteger(num) ? BigInt(num) : val
-                          }, z.int64().min(1n).max(9223372036854776000n))
+                          }, z.int64().min(1n).max(9223372036854775807n))
                           .openapi({
                             type: 'integer',
                             format: 'int64',
@@ -55193,6 +57176,7 @@ export const getApi1UsersRoute = createRoute({
             example: 50,
             required: false,
           },
+          default: 50,
         }),
     }),
   },
@@ -55342,7 +57326,7 @@ export const getApi1UsersCapabilitiesRoute = createRoute({
   responses: {
     200: {
       description:
-        '<p>レスポンスの各キーは以下の項目と対応しています。</p>\n<p>詳細は <a href="https://support.freee.co.jp/hc/ja/articles/210265673">https://support.freee.co.jp/hc/ja/articles/210265673</a> を参照してください。</p>\n<table>\n  <thead>\n    <tr>\n      <th style="padding: 5px">キー</th>\n      <th style="padding: 5px">対応する項目</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td style="padding: 5px">wallet_txns</td>\n      <td style="padding: 5px">自動で経理 / 取得した明細</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">deals</td>\n      <td style="padding: 5px">取引</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">deal_linkage</td>\n      <td style="padding: 5px">取引連携（freee請求書など、freee会計以外から連携させる取引）</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">transfers</td>\n      <td style="padding: 5px">口座振替</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">docs</td>\n      <td style="padding: 5px">見積書・納品書・請求書・領収書・発注書</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">doc_postings</td>\n      <td style="padding: 5px">(請求書の)郵送</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">receipts</td>\n      <td style="padding: 5px">ファイルボックス</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">receipt_stream_editor</td>\n      <td style="padding: 5px">連続取引登録</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">spreadsheets</td>\n      <td style="padding: 5px">エクセルインポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">expense_applications</td>\n      <td style="padding: 5px">経費精算</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">expense_application_sync_payroll</td>\n      <td style="padding: 5px">経費精算の給与連携</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">manage_bulk_expense_application_approvals</td>\n      <td style="padding: 5px">経費精算の一括承認</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">payment_requests</td>\n      <td style="padding: 5px">支払依頼</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">payment_request_templates</td>\n      <td style="padding: 5px">支払テンプレート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">approval_requests</td>\n      <td style="padding: 5px">各種申請</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">purchase_requests</td>\n      <td style="padding: 5px">購買申請</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">suspense_payments</td>\n      <td style="padding: 5px">仮払金</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports</td>\n      <td style="padding: 5px">収益 / 費用レポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_income_expense</td>\n      <td style="padding: 5px">損益レポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_receivables</td>\n      <td style="padding: 5px">入金管理レポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_payables</td>\n      <td style="padding: 5px">支払管理レポート(一括振込ファイルを含む)</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_purchase_budgets</td>\n      <td style="padding: 5px">購買進捗モニター</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_cash_balance</td>\n      <td style="padding: 5px">現預金レポート/資金繰りレポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_managements_planning</td>\n      <td style="padding: 5px">経営プランニング</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_managements_navigation</td>\n      <td style="padding: 5px">経営ナビゲーション</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_managements_introduction</td>\n      <td style="padding: 5px">経営プランニング・経営ナビゲーションの紹介ページ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_custom_reports_aggregate</td>\n      <td style="padding: 5px">カスタムレポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_pl</td>\n      <td style="padding: 5px">損益計算書(月次推移/試算表)</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_bs</td>\n      <td style="padding: 5px">貸借対照表(月次推移/試算表)</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_general_ledgers</td>\n      <td style="padding: 5px">総勘定元帳</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_journals</td>\n      <td style="padding: 5px">仕訳帳</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">manual_journals</td>\n      <td style="padding: 5px">振替伝票</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">fixed_assets</td>\n      <td style="padding: 5px">固定資産台帳</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">inventory_refreshes</td>\n      <td style="padding: 5px">在庫棚卸</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">biz_allocations</td>\n      <td style="padding: 5px">家事按分</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">payment_records</td>\n      <td style="padding: 5px">支払調書</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">annual_reports</td>\n      <td style="padding: 5px">決算書、確定申告書類</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">consolidation</td>\n      <td style="padding: 5px">連結会計</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">tax_reports</td>\n      <td style="padding: 5px">消費税区分別表・消費税集計表</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">consumption_entries</td>\n      <td style="padding: 5px">消費税申告書</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">tax_return</td>\n      <td style="padding: 5px">連携用データ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">account_item_statements</td>\n      <td style="padding: 5px">勘定科目内訳明細書</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">month_end</td>\n      <td style="padding: 5px">月締め</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">year_end</td>\n      <td style="padding: 5px">年度締め</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">walletables</td>\n      <td style="padding: 5px">口座 / 口座の同期</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">companies</td>\n      <td style="padding: 5px">事業所の設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">invitations</td>\n      <td style="padding: 5px">メンバー招待</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">access_controls</td>\n      <td style="padding: 5px">権限管理</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">sign_in_logs</td>\n      <td style="padding: 5px">ログイン履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">user_attribute_logs</td>\n      <td style="padding: 5px">ユーザー更新履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">app_role_logs</td>\n      <td style="padding: 5px">権限変更履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">txn_relationship_logs</td>\n      <td style="padding: 5px">仕訳関連履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">backups</td>\n      <td style="padding: 5px">バックアップ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">opening_balances</td>\n      <td style="padding: 5px">開始残高の設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">system_conversion</td>\n      <td style="padding: 5px">乗り換え設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">resets</td>\n      <td style="padding: 5px">リセット</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">partners</td>\n      <td style="padding: 5px">取引先</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">items</td>\n      <td style="padding: 5px">品目</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">sections</td>\n      <td style="padding: 5px">部門</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">tags</td>\n      <td style="padding: 5px">メモタグ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">account_items</td>\n      <td style="padding: 5px">勘定科目</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">taxes</td>\n      <td style="padding: 5px">税区分</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">payroll_item_sets</td>\n      <td style="padding: 5px">給与連携の設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">user_matchers</td>\n      <td style="padding: 5px">自動登録ルール</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">deal_templates</td>\n      <td style="padding: 5px">取引テンプレート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">manual_journal_templates</td>\n      <td style="padding: 5px">振替伝票テンプレート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">cost_allocations</td>\n      <td style="padding: 5px">部門配賦</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">approval_flow_routes</td>\n      <td style="padding: 5px">承認経路</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">expense_application_templates</td>\n      <td style="padding: 5px">経費科目</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">request_forms</td>\n      <td style="padding: 5px">申請フォーム</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">system_messages_for_admin</td>\n      <td style="padding: 5px">管理者向けお知らせ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">company_internal_announcements</td>\n      <td style="padding: 5px"><a href="https://support.freee.co.jp/hc/ja/articles/900002322383#:~:text=%E7%A4%BE%E5%86%85%E5%90%91%E3%81%91%E3%81%AE%E3%82%A2%E3%83%8A%E3%82%A6%E3%83%B3%E3%82%B9%E3%82%92%E6%8E%B2%E7%A4%BA%E3%81%A7%E3%81%8D%E3%82%8B%E6%A9%9F%E8%83%BD%E3%81%A7%E3%81%99%E3%80%82" target="_blank">アナウンス</a></td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">doc_change_logs</td>\n      <td style="padding: 5px">受発注書類変更履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">entries_reviews</td>\n      <td style="padding: 5px">記帳レビュー</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">freee_cards_stream</td>\n      <td style="padding: 5px">freeeカードで経理</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">proxy_application_settings</td>\n      <td style="padding: 5px">代理申請の設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">workflows</td>\n      <td style="padding: 5px">仕訳承認</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">oauth_applications</td>\n      <td style="padding: 5px">アプリ利用</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">oauth_authorizations</td>\n      <td style="padding: 5px">アプリ認可</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">division_tag_1</td>\n      <td style="padding: 5px">セグメント1</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">division_tag_2</td>\n      <td style="padding: 5px">セグメント2</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">division_tag_3</td>\n      <td style="padding: 5px">セグメント3</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">currencies</td>\n      <td style="padding: 5px">外貨（通貨の設定）</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">bank_accountant_staff_users</td>\n      <td style="padding: 5px">アドバイザー事業所内でのメンバー管理</td>\n    </tr>\n  </tbody>\n</table>\n',
+        '<p>レスポンスの各キーは以下の項目と対応しています。</p>\n<p>詳細は <a href="https://support.freee.co.jp/hc/ja/articles/210265673">https://support.freee.co.jp/hc/ja/articles/210265673</a> を参照してください。</p>\n<table>\n  <thead>\n    <tr>\n      <th style="padding: 5px">キー</th>\n      <th style="padding: 5px">対応する項目</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td style="padding: 5px">wallet_txns</td>\n      <td style="padding: 5px">自動で経理 / 取得した明細</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">deals</td>\n      <td style="padding: 5px">取引</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">deal_linkage</td>\n      <td style="padding: 5px">取引連携（freee請求書など、freee会計以外から連携させる取引）</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">transfers</td>\n      <td style="padding: 5px">口座振替</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">docs</td>\n      <td style="padding: 5px">見積書・納品書・請求書・領収書・発注書</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">receipts</td>\n      <td style="padding: 5px">ファイルボックス</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">receipt_stream_editor</td>\n      <td style="padding: 5px">連続取引登録</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">spreadsheets</td>\n      <td style="padding: 5px">エクセルインポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">expense_applications</td>\n      <td style="padding: 5px">経費精算</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">expense_application_sync_payroll</td>\n      <td style="padding: 5px">経費精算の給与連携</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">manage_bulk_expense_application_approvals</td>\n      <td style="padding: 5px">経費精算の一括承認</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">payment_requests</td>\n      <td style="padding: 5px">支払依頼</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">payment_request_templates</td>\n      <td style="padding: 5px">支払テンプレート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">approval_requests</td>\n      <td style="padding: 5px">各種申請</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">purchase_requests</td>\n      <td style="padding: 5px">購買申請</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">suspense_payments</td>\n      <td style="padding: 5px">仮払金</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports</td>\n      <td style="padding: 5px">収益 / 費用レポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_income_expense</td>\n      <td style="padding: 5px">損益レポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_receivables</td>\n      <td style="padding: 5px">入金管理レポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_payables</td>\n      <td style="padding: 5px">支払管理レポート(一括振込ファイルを含む)</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_purchase_budgets</td>\n      <td style="padding: 5px">購買進捗モニター</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_cash_balance</td>\n      <td style="padding: 5px">現預金レポート/資金繰りレポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_managements_planning</td>\n      <td style="padding: 5px">経営プランニング</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_managements_navigation</td>\n      <td style="padding: 5px">経営ナビゲーション</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_managements_introduction</td>\n      <td style="padding: 5px">経営プランニング・経営ナビゲーションの紹介ページ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_custom_reports_aggregate</td>\n      <td style="padding: 5px">カスタムレポート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_pl</td>\n      <td style="padding: 5px">損益計算書(月次推移/試算表)</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_bs</td>\n      <td style="padding: 5px">貸借対照表(月次推移/試算表)</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_general_ledgers</td>\n      <td style="padding: 5px">総勘定元帳</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">reports_journals</td>\n      <td style="padding: 5px">仕訳帳</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">manual_journals</td>\n      <td style="padding: 5px">振替伝票</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">fixed_assets</td>\n      <td style="padding: 5px">固定資産台帳</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">inventory_refreshes</td>\n      <td style="padding: 5px">在庫棚卸</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">biz_allocations</td>\n      <td style="padding: 5px">家事按分</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">payment_records</td>\n      <td style="padding: 5px">支払調書</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">annual_reports</td>\n      <td style="padding: 5px">決算書、確定申告書類</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">consolidation</td>\n      <td style="padding: 5px">連結会計</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">tax_reports</td>\n      <td style="padding: 5px">消費税区分別表・消費税集計表</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">consumption_entries</td>\n      <td style="padding: 5px">消費税申告書</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">tax_return</td>\n      <td style="padding: 5px">連携用データ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">account_item_statements</td>\n      <td style="padding: 5px">勘定科目内訳明細書</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">month_end</td>\n      <td style="padding: 5px">月締め</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">year_end</td>\n      <td style="padding: 5px">年度締め</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">walletables</td>\n      <td style="padding: 5px">口座 / 口座の同期</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">companies</td>\n      <td style="padding: 5px">事業所の設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">invitations</td>\n      <td style="padding: 5px">メンバー招待</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">access_controls</td>\n      <td style="padding: 5px">権限管理</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">sign_in_logs</td>\n      <td style="padding: 5px">ログイン履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">user_attribute_logs</td>\n      <td style="padding: 5px">ユーザー更新履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">app_role_logs</td>\n      <td style="padding: 5px">権限変更履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">txn_relationship_logs</td>\n      <td style="padding: 5px">仕訳関連履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">backups</td>\n      <td style="padding: 5px">バックアップ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">opening_balances</td>\n      <td style="padding: 5px">開始残高の設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">system_conversion</td>\n      <td style="padding: 5px">乗り換え設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">resets</td>\n      <td style="padding: 5px">リセット</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">partners</td>\n      <td style="padding: 5px">取引先</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">items</td>\n      <td style="padding: 5px">品目</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">sections</td>\n      <td style="padding: 5px">部門</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">tags</td>\n      <td style="padding: 5px">メモタグ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">account_items</td>\n      <td style="padding: 5px">勘定科目</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">taxes</td>\n      <td style="padding: 5px">税区分</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">payroll_item_sets</td>\n      <td style="padding: 5px">給与連携の設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">user_matchers</td>\n      <td style="padding: 5px">自動登録ルール</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">deal_templates</td>\n      <td style="padding: 5px">取引テンプレート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">manual_journal_templates</td>\n      <td style="padding: 5px">振替伝票テンプレート</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">cost_allocations</td>\n      <td style="padding: 5px">部門配賦</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">approval_flow_routes</td>\n      <td style="padding: 5px">承認経路</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">expense_application_templates</td>\n      <td style="padding: 5px">経費科目</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">request_forms</td>\n      <td style="padding: 5px">申請フォーム</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">system_messages_for_admin</td>\n      <td style="padding: 5px">管理者向けお知らせ</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">company_internal_announcements</td>\n      <td style="padding: 5px"><a href="https://support.freee.co.jp/hc/ja/articles/900002322383#:~:text=%E7%A4%BE%E5%86%85%E5%90%91%E3%81%91%E3%81%AE%E3%82%A2%E3%83%8A%E3%82%A6%E3%83%B3%E3%82%B9%E3%82%92%E6%8E%B2%E7%A4%BA%E3%81%A7%E3%81%8D%E3%82%8B%E6%A9%9F%E8%83%BD%E3%81%A7%E3%81%99%E3%80%82" target="_blank">アナウンス</a></td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">doc_change_logs</td>\n      <td style="padding: 5px">受発注書類変更履歴</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">entries_reviews</td>\n      <td style="padding: 5px">記帳レビュー</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">freee_cards_stream</td>\n      <td style="padding: 5px">freeeカードで経理</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">proxy_application_settings</td>\n      <td style="padding: 5px">代理申請の設定</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">workflows</td>\n      <td style="padding: 5px">仕訳承認</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">oauth_applications</td>\n      <td style="padding: 5px">アプリ利用</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">oauth_authorizations</td>\n      <td style="padding: 5px">アプリ認可</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">division_tag_1</td>\n      <td style="padding: 5px">セグメント1</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">division_tag_2</td>\n      <td style="padding: 5px">セグメント2</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">division_tag_3</td>\n      <td style="padding: 5px">セグメント3</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">currencies</td>\n      <td style="padding: 5px">外貨（通貨の設定）</td>\n    </tr>\n    <tr>\n      <td style="padding: 5px">bank_accountant_staff_users</td>\n      <td style="padding: 5px">アドバイザー事業所内でのメンバー管理</td>\n    </tr>\n  </tbody>\n</table>\n',
       content: {
         'application/json': {
           schema: z
@@ -55352,7 +57336,6 @@ export const getApi1UsersCapabilitiesRoute = createRoute({
               deal_linkage: UserCapabilitySchema,
               transfers: UserCapabilityWithSelfOnlySchema,
               docs: UserCapabilityWithSelfOnlySchema,
-              doc_postings: UserCapabilityJustCreateSchema,
               receipts: UserCapabilityWithSelfOnlySchema,
               receipt_folders: UserCapabilityJustReadWriteSchema,
               receipt_stream_editor: UserCapabilityJustReadSchema,
@@ -55458,7 +57441,6 @@ export const getApi1UsersCapabilitiesRoute = createRoute({
                 'division_tag_2',
                 'division_tag_3',
                 'doc_change_logs',
-                'doc_postings',
                 'docs',
                 'entries_reviews',
                 'expense_application_sync_payroll',
@@ -57291,7 +59273,7 @@ export const getApi1BanksRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -57466,7 +59448,7 @@ export const getApi1TransfersRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -57603,7 +59585,7 @@ export const postApi1TransfersRoute = createRoute({
                   if (/^-?\d+$/.test(val)) return BigInt(val)
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
-                }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                 .exactOptional()
                 .openapi({
                   type: 'integer',
@@ -57867,7 +59849,7 @@ export const postApi1TransfersRoute = createRoute({
                               if (/^-?\d+$/.test(val)) return BigInt(val)
                               const num = Number(val)
                               return Number.isSafeInteger(num) ? BigInt(num) : val
-                            }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                            }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                             .openapi({
                               type: 'integer',
                               format: 'int64',
@@ -58264,7 +60246,7 @@ export const putApi1TransfersIdRoute = createRoute({
                   if (/^-?\d+$/.test(val)) return BigInt(val)
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
-                }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                 .exactOptional()
                 .openapi({
                   type: 'integer',
@@ -58528,7 +60510,7 @@ export const putApi1TransfersIdRoute = createRoute({
                               if (/^-?\d+$/.test(val)) return BigInt(val)
                               const num = Number(val)
                               return Number.isSafeInteger(num) ? BigInt(num) : val
-                            }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                            }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                             .openapi({
                               type: 'integer',
                               format: 'int64',
@@ -58945,7 +60927,7 @@ export const getApi1WalletTxnsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -59037,7 +61019,7 @@ export const postApi1WalletTxnsRoute = createRoute({
                   if (/^-?\d+$/.test(val)) return BigInt(val)
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
-                }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                 .openapi({
                   type: 'integer',
                   format: 'int64',
@@ -59103,7 +61085,7 @@ export const postApi1WalletTxnsRoute = createRoute({
                   if (/^-?\d+$/.test(val)) return BigInt(val)
                   const num = Number(val)
                   return Number.isSafeInteger(num) ? BigInt(num) : val
-                }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                 .exactOptional()
                 .openapi({
                   type: 'integer',
@@ -60280,6 +62262,439 @@ export const getApi1JournalsReportsIdDownloadRoute = createRoute({
     },
     500: {
       description: '',
+      content: { 'application/json': { schema: InternalServerErrorSchema } },
+    },
+  },
+})
+
+export const postApi1JournalsSearchRoute = createRoute({
+  method: 'post',
+  path: '/api/1/journals/search',
+  tags: ['Journals'],
+  summary: '仕訳帳の仕訳一覧の取得',
+  description:
+    '## 概要\n\n指定した事業所の仕訳を、仕訳帳と同じ検索条件で絞り込んで取得します。検索条件はリクエストボディで指定します。\n\n## 定義\n\n- `debit` / `credit`: 仕訳の借方行・貸方行。配列の順が表示順です。\n- 消費税行 (`line_type: tax`): 税抜経理の期間に、仮払消費税等・仮受消費税等を取引先・税区分・貸借ごと (部門必須設定が「全科目」の事業所ではさらに部門ごと) にまとめた行です。`debit` / `credit` の末尾に付きます。明細としては存在しないため、`id` など一部の項目は `null` になります。\n\n## 検索条件の判定\n\n複数の条件を指定したときは、次の単位で判定します。\n\n- 仕訳単位: `start_issue_date` / `end_issue_date` / `deal_ids` / `start_created_date` / `end_created_date` / `adjustment` / `approval_status` / `current_approver_user_id` / `last_approver_user_id` / `create_user_id` / `receipts` / `receipt_partner_name` / `ref_number` / `txn_number` / `cost_allocation` / `reverse_journal` / `description` / `wallet_txn_description`。仕訳がそれぞれの条件を満たせばヒットします。\n- 明細行単位: `account_item_id` / `tax_code` / `partner_id` / `item_id` / `section_id` / `memo_tag_id` / `segment_tag_1_id` / `segment_tag_2_id` / `segment_tag_3_id` / `detail_amount_min` / `detail_amount_max`。同じ 1 つの明細行がすべての条件を満たす必要があります。\n- コメント単位: `comment_status` / `comment_important` / `comment_details` / `comment_poster_user_id` / `comment_recipient_user_id`。同じ 1 つのコメントがすべての条件を満たす必要があります。\n\n`account_item_id` に次の勘定科目を指定した場合は例外です。\n\n- 口座に紐づく勘定科目 (現金・普通預金など)、事業主借・事業主貸・役員借入金・役員貸付金: 勘定科目とそれ以外の明細行条件を別々に判定します。それぞれを満たす行が同じ仕訳の中にあればヒットします。\n- 仮払消費税等・仮受消費税等: 税抜経理の期間は、消費税行の元になる明細行 (税額があるもの) も検索対象に含めます。\n\n## 注意点\n\n- `start_issue_date` / `end_issue_date` と `deal_ids` のどちらも指定しない場合は 400 を返します。\n- 経理方式 (税込 / 税抜) は、仕訳の発生日が属する会計年度の設定で決まります。検索期間が複数の会計年度にまたがる場合は、仕訳ごとに経理方式が異なることがあります。\n- レスポンスにマスタの名称 (勘定科目名・部門名・取引先名など) は含まれません。名称は各マスタ API (`/api/1/account_items`、`/api/1/sections`、`/api/1/partners` など) で取得してください。\n- 存在しないマスタ ID (他の事業所のものを含む) を指定した場合は 400 を返します。ユーザー ID は事業所への所属を検証しないため、所属していないユーザーの ID を指定しても 0 件を返します。\n- `next_page_token` が `null` のレスポンスが最終ページです。トークンの中身には依存しないでください。ページを取得する間に仕訳が登録・更新・削除されると、重複や欠落が起きることがあります。\n- 検索結果への反映は非同期のため、登録・更新した直後の仕訳は含まれないことがあります。',
+  operationId: 'search_report_journals',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              company_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n),
+                )
+                .openapi({ type: 'integer', format: 'int64', minimum: 1, description: '事業所ID' }),
+              start_issue_date: z.iso
+                .date()
+                .exactOptional()
+                .openapi({
+                  description:
+                    '発生日 開始 (YYYY-MM-DD、両端含む)。deal_ids が指定されていない場合は必須。',
+                }),
+              end_issue_date: z.iso
+                .date()
+                .exactOptional()
+                .openapi({
+                  description:
+                    '発生日 終了 (YYYY-MM-DD、両端含む)。deal_ids が指定されていない場合は必須。',
+                }),
+              deal_ids: z
+                .array(
+                  z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64(),
+                    )
+                    .openapi({ type: 'integer', format: 'int64' }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    '取引ID配列。最大 500 件で、超えた場合は 400。複数指定は OR。指定時は発生日範囲を省略可能。両方指定した場合は取引の仕訳のうち発生日範囲内のものだけが返る。',
+                }),
+              start_created_date: z.iso
+                .date()
+                .exactOptional()
+                .openapi({
+                  description:
+                    '作成日 開始 (YYYY-MM-DD、両端含む)。仕訳の作成日時 (created_at) を日付単位で絞り込む。',
+                }),
+              end_created_date: z.iso
+                .date()
+                .exactOptional()
+                .openapi({
+                  description:
+                    '作成日 終了 (YYYY-MM-DD、両端含む)。仕訳の作成日時 (created_at) を日付単位で絞り込む。',
+                }),
+              account_item_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    '勘定科目ID (単数)。仕訳帳画面と同様に単数指定のみ。指定した勘定科目が仮払消費税等 / 仮受消費税等の場合、税抜経理の期間は消費税行の元になる明細行 (税額があるもの) も検索対象に含まれます。',
+                }),
+              partner_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({ type: 'integer', format: 'int64', description: '取引先ID (単数)。' }),
+              item_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({ type: 'integer', format: 'int64', description: '品目ID (単数)。' }),
+              section_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    '部門ID (単数)。指定した部門が事業所に存在しない場合は 400。閲覧不可な部門を指定した場合は 0 件を返す。',
+                }),
+              memo_tag_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({ type: 'integer', format: 'int64', description: 'メモタグID (単数)。' }),
+              segment_tag_1_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'セグメント1タグID (単数)。事業所で当該セグメントが未契約の場合に指定すると 400。',
+                }),
+              segment_tag_2_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'セグメント2タグID (単数)。事業所で当該セグメントが未契約の場合に指定すると 400。',
+                }),
+              segment_tag_3_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description:
+                    'セグメント3タグID (単数)。事業所で当該セグメントが未契約の場合に指定すると 400。',
+                }),
+              tax_code: z
+                .int32()
+                .exactOptional()
+                .openapi({
+                  description:
+                    '税区分コード。仕訳内のいずれかの明細行がこの税区分に一致する仕訳を返す。',
+                }),
+              detail_amount_min: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description: '明細金額の下限。基準は detail_amount_basis で指定。',
+                }),
+              detail_amount_max: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description: '明細金額の上限。基準は detail_amount_basis で指定。',
+                }),
+              detail_amount_basis: ReportJournalsDetailAmountBasisSchema.exactOptional().openapi({
+                description: '明細金額絞り込みの基準。既定 auto。',
+              }),
+              adjustment: ReportJournalsAdjustmentOptionSchema.exactOptional().openapi({
+                description: '決算整理仕訳による絞り込み。',
+              }),
+              approval_status: ReportJournalsApprovalStatusSchema.exactOptional().openapi({
+                description: '承認ステータスによる絞り込み。',
+              }),
+              receipts: ReportJournalsReceiptsOptionSchema.exactOptional().openapi({
+                description: '証憑 (レシート) 添付有無による絞り込み。',
+              }),
+              cost_allocation: ReportJournalsCostAllocationOptionSchema.exactOptional().openapi({
+                description: '配賦仕訳による絞り込み。',
+              }),
+              reverse_journal: ReportJournalsReverseJournalOptionSchema.exactOptional().openapi({
+                description: '逆仕訳・元仕訳による絞り込み。',
+              }),
+              create_user_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({ type: 'integer', format: 'int64', description: '作成者ユーザーID。' }),
+              current_approver_user_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description: '現在の承認待ちユーザーID (承認申請中のものが対象)。',
+                }),
+              last_approver_user_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description: '最終承認者ユーザーID (承認済みのものが対象)。',
+                }),
+              comment_status: ReportJournalsCommentStatusOptionSchema.exactOptional().openapi({
+                description: 'コメントステータスによる絞り込み。',
+              }),
+              comment_important: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    '重要コメントで絞り込む。true のときのみ意味を持つ。false は指定なしと同義。',
+                }),
+              comment_details: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'コメント本文の部分一致検索。' }),
+              comment_poster_user_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description: 'コメント投稿者ユーザーID。',
+                }),
+              comment_recipient_user_id: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .exactOptional()
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  description: 'コメント宛先ユーザーID。',
+                }),
+              receipt_partner_name: z
+                .string()
+                .exactOptional()
+                .openapi({ description: '証憑の発行元名で検索 (部分一致)。' }),
+              ref_number: z
+                .string()
+                .exactOptional()
+                .openapi({ description: '管理番号 (ref_number) による前方一致検索。' }),
+              txn_number: z
+                .string()
+                .exactOptional()
+                .openapi({ description: '仕訳番号 (txn_number) による完全一致検索。' }),
+              description: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: '明細行の備考による部分一致検索。行単位ではなく仕訳単位で返る。',
+                }),
+              wallet_txn_description: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    '口座明細の取引内容による部分一致検索。口座明細から作られた仕訳のみが対象。',
+                }),
+              order_by: ReportJournalsOrderByOptionSchema.exactOptional().openapi({
+                description: '並び順のキー。既定は txn_date。',
+              }),
+              direction: ReportJournalsDirectionOptionSchema.exactOptional().openapi({
+                description: '並び順の方向。既定は asc。',
+              }),
+              page_size: z
+                .int32()
+                .min(1)
+                .max(1000)
+                .exactOptional()
+                .openapi({ description: '最大取得件数。既定 100、範囲 1〜1000。' }),
+              page_token: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'ページネーションのトークン。前レスポンスの next_page_token をそのまま渡す。不透明文字列。',
+                }),
+            })
+            .openapi({ required: ['company_id'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: '仕訳帳の仕訳一覧取得レスポンス',
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              data: z.array(ReportJournalsJournalSchema).openapi({ description: '仕訳のリスト。' }),
+              next_page_token: z
+                .string()
+                .nullable()
+                .openapi({
+                  description: '次ページ取得のためのトークン。null の場合が最終ページ。',
+                }),
+            })
+            .openapi({ required: ['data', 'next_page_token'] }),
+        },
+      },
+    },
+    400: {
+      description: 'クライアントエラー',
+      content: { 'application/json': { schema: BadRequestErrorSchema } },
+    },
+    401: {
+      description: '未認証',
+      content: { 'application/json': { schema: UnauthorizedErrorSchema } },
+    },
+    403: {
+      description: '未認可',
+      content: { 'application/json': { schema: ForbiddenErrorSchema } },
+    },
+    404: {
+      description: 'リソースが存在しない',
+      content: { 'application/json': { schema: BadRequestNotFoundErrorSchema } },
+    },
+    500: {
+      description: 'サーバーエラー',
       content: { 'application/json': { schema: InternalServerErrorSchema } },
     },
   },
@@ -65745,7 +68160,7 @@ export const getApi1ReceiptsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -66501,7 +68916,7 @@ export const getApi1ExpenseApplicationsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -66553,7 +68968,7 @@ export const postApi1ExpenseApplicationsRoute = createRoute({
   tags: ['Expense applications'],
   summary: '経費申請の作成',
   description:
-    '\n<h2 id="_1">概要</h2>\n\n<p>指定した事業所の経費申請を作成する</p>\n\n<p>経費精算APIの使い方については、<a href="https://developer.freee.co.jp/tips/accounting-expense-applications" target="_blank">freee会計経費精算APIの使い方</a>をご参照ください</p>\n\n<h2 id="_2">注意点</h2>\n<ul>\n  <li>\n    申請ステータス(下書き、申請中)の指定と変更、及び承認操作（承認する、却下する、申請者へ差し戻す、特権承認する、承認済み・却下済みを取り消す）は以下を参考にして行ってください。\n    <ul>\n      <li>\n        承認操作は申請ステータスが申請中、承認済み、却下のものだけが対象です。\n        <ul>\n          <li>\n            初回申請の場合\n            <ul><li>申請の作成（POST）</li></ul>\n          </li>\n          <li>\n            作成済みの申請の申請ステータス変更・更新する場合\n            <ul><li>申請の更新（PUT）</li></ul>\n          </li>\n          <li>\n            申請中、承認済み、却下の申請の承認操作を行う場合\n            <ul><li>承認操作の実行（POST）</li></ul>\n          </li>\n        </ul>\n      </li>\n      <li>申請の削除（DELETE）が可能なのは申請ステータスが下書き、差戻しの場合のみです</li>\n    </ul>\n  </li>\n  <li>\n    承認者の指定に部門役職データ連携を活用した、以下のいずれかの承認ステップを含む申請経路にも対応しています。\n    <ul>\n      <li>役職指定（申請者の所属部門）</li>\n      <li>役職指定（申請時に部門指定）</li>\n      <li>部門および役職指定</li>\n    </ul>\n    申請者がどの所属部門として申請するかは applicant_group_id で指定します。申請者が複数の部門に所属している場合は必須です。1段階目の承認ステップが部門選択型の場合は approval_flow_group_id を指定してください。\n  </li>\n  <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>\n  <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は作成できません。</li>\n  <li>本APIは条件分岐を含む申請経路にも対応しています。</li>\n</ul>',
+    '\n<h2 id="_1">概要</h2>\n\n<p>指定した事業所の経費申請を作成する</p>\n\n<p>経費精算APIの使い方については、<a href="https://developer.freee.co.jp/tips/accounting-expense-applications" target="_blank">freee会計経費精算APIの使い方</a>をご参照ください</p>\n\n<h2 id="_2">注意点</h2>\n<ul>\n  <li>\n    申請ステータス(下書き、申請中)の指定と変更、及び承認操作（承認する、却下する、申請者へ差し戻す、特権承認する、承認済み・却下済みを取り消す）は以下を参考にして行ってください。\n    <ul>\n      <li>\n        承認操作は申請ステータスが申請中、承認済み、却下のものだけが対象です。\n        <ul>\n          <li>\n            初回申請の場合\n            <ul><li>申請の作成（POST）</li></ul>\n          </li>\n          <li>\n            作成済みの申請の申請ステータス変更・更新する場合\n            <ul><li>申請の更新（PUT）</li></ul>\n          </li>\n          <li>\n            申請中、承認済み、却下の申請の承認操作を行う場合\n            <ul><li>承認操作の実行（POST）</li></ul>\n          </li>\n        </ul>\n      </li>\n      <li>申請の削除（DELETE）が可能なのは申請ステータスが下書き、差戻しの場合のみです</li>\n    </ul>\n  </li>\n  <li>\n    承認者の指定に部門役職データ連携を活用した、以下のいずれかの承認ステップを含む申請経路にも対応しています。\n    <ul>\n      <li>役職指定（申請者の所属部門）</li>\n      <li>役職指定（申請時に部門指定）</li>\n      <li>部門および役職指定</li>\n    </ul>\n    申請者がどの所属部門として申請するかは applicant_group_id で指定します。申請者が複数の部門に所属している場合は必須です。1段階目の承認ステップが部門選択型の場合は approval_flow_group_id を指定してください。\n  </li>\n  <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>\n  <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は作成できません。</li>\n  <li>\n    明細行ごとに部門・メモタグ・セグメントを設定するには、明細行のtag_assignmentにline（明細に個別付与）を指定し、明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定してください。\n    tag_assignmentを指定しない明細行には、申請全体のsection_id・tag_ids・segment_1〜3_tag_idが適用されます（application: 申請全体に付与）。\n  </li>\n  <li>本APIは条件分岐を含む申請経路にも対応しています。</li>\n</ul>',
   operationId: 'create_expense_application',
   request: {
     body: {
@@ -66891,6 +69306,144 @@ export const postApi1ExpenseApplicationsRoute = createRoute({
                                       description:
                                         'カスタム申請項目の値一覧（配列）<br>\n経費科目に設定されたカスタム申請項目に対する入力値を指定します。カスタム申請項目の一覧は経費科目APIから取得してください。<br>\n金額の自動計算が設定された経費科目では、custom_valuesから計算した金額とamountが一致しない場合は400エラーになります（サーバー側の計算結果でamountを上書きすることはありません）。',
                                     }),
+                                  tag_assignment: z
+                                    .string()
+                                    .nullable()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        '明細行の部門・メモタグ・セグメントの付与先<br>\n<ul>\n  <li>application: 申請全体に付与（画面の「申請全体に合わせる」）。申請全体のsection_id・tag_ids・segment_1〜3_tag_idを明細行に適用します。明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定しても無視します。</li>\n  <li>line: 明細に個別付与（画面の「個別付与」）。明細行のsection_id・tag_ids・segment_1〜3_tag_idを明細行に設定します。</li>\n</ul>\n未指定またはnullの場合は申請全体に付与（application）として作成します。<br>\n明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定する場合は、lineを指定してください。tag_assignmentを指定せずにこれらを指定すると400エラーになります。<br>\n上記以外の値を指定すると400エラーになります。',
+                                      example: 'line',
+                                    }),
+                                  section_id: z
+                                    .preprocess(
+                                      (val) => (val === 'null' ? null : val),
+                                      z
+                                        .preprocess((val) => {
+                                          if (
+                                            typeof val !== 'string' ||
+                                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                          )
+                                            return val
+                                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                                          const num = Number(val)
+                                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                                        }, z.int64().min(1n))
+                                        .nullable(),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      type: ['integer', 'null'],
+                                      format: 'int64',
+                                      minimum: 1,
+                                      description:
+                                        '明細行の部門ID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合は部門なしになります。<br>\n存在しない部門や、申請者が利用できない部門を指定すると400エラーになります。',
+                                      example: 101,
+                                    }),
+                                  tag_ids: z
+                                    .preprocess(
+                                      (val) =>
+                                        val === undefined || Array.isArray(val) ? val : [val],
+                                      z.array(
+                                        z
+                                          .preprocess((val) => {
+                                            if (
+                                              typeof val !== 'string' ||
+                                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                            )
+                                              return val
+                                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                                            const num = Number(val)
+                                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                                          }, z.int64().min(1n))
+                                          .openapi({
+                                            type: 'integer',
+                                            format: 'int64',
+                                            minimum: 1,
+                                            example: 202,
+                                          }),
+                                      ),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        '明細行のメモタグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定の場合はメモタグなしになります。<br>\n存在しないメモタグを指定すると400エラーになります。',
+                                    }),
+                                  segment_1_tag_id: z
+                                    .preprocess(
+                                      (val) => (val === 'null' ? null : val),
+                                      z
+                                        .preprocess((val) => {
+                                          if (
+                                            typeof val !== 'string' ||
+                                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                          )
+                                            return val
+                                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                                          const num = Number(val)
+                                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                                        }, z.int64().min(1n))
+                                        .nullable(),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      type: ['integer', 'null'],
+                                      format: 'int64',
+                                      minimum: 1,
+                                      description:
+                                        '明細行のセグメント１タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント１タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント１が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                                      example: 1,
+                                    }),
+                                  segment_2_tag_id: z
+                                    .preprocess(
+                                      (val) => (val === 'null' ? null : val),
+                                      z
+                                        .preprocess((val) => {
+                                          if (
+                                            typeof val !== 'string' ||
+                                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                          )
+                                            return val
+                                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                                          const num = Number(val)
+                                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                                        }, z.int64().min(1n))
+                                        .nullable(),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      type: ['integer', 'null'],
+                                      format: 'int64',
+                                      minimum: 1,
+                                      description:
+                                        '明細行のセグメント２タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント２タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント２が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                                      example: 2,
+                                    }),
+                                  segment_3_tag_id: z
+                                    .preprocess(
+                                      (val) => (val === 'null' ? null : val),
+                                      z
+                                        .preprocess((val) => {
+                                          if (
+                                            typeof val !== 'string' ||
+                                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                          )
+                                            return val
+                                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                                          const num = Number(val)
+                                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                                        }, z.int64().min(1n))
+                                        .nullable(),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      type: ['integer', 'null'],
+                                      format: 'int64',
+                                      minimum: 1,
+                                      description:
+                                        '明細行のセグメント３タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント３タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント３が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                                      example: 3,
+                                    }),
                                 })
                                 .openapi({ required: [] }),
                             ),
@@ -67189,7 +69742,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
   tags: ['Expense applications'],
   summary: '経費申請の更新',
   description:
-    '\n<h2 id="">概要</h2>\n\n<p>指定した事業所の経費申請を更新する</p>\n\n<p>経費精算APIの使い方については、<a href="https://developer.freee.co.jp/tips/accounting-expense-applications" target="_blank">freee会計経費精算APIの使い方</a>をご参照ください</p>\n\n<h2 id="_2">注意点</h2>\n<ul>\n  <li>本APIでは、経費申請を更新することができます。</li>\n  <li>本APIでは、status(申請ステータス): draft:下書き, feedback:差戻しのみ更新可能です。</li>\n  <li>\n    申請ステータス(下書き、申請中)の指定と変更、及び承認操作（承認する、却下する、申請者へ差し戻す、特権承認する、承認済み・却下済みを取り消す）は以下を参考にして行ってください。\n    <ul>\n      <li>\n        承認操作は申請ステータスが申請中、承認済み、却下のものだけが対象です。\n        <ul>\n          <li>\n            初回申請の場合\n            <ul><li>申請の作成（POST）</li></ul>\n          </li>\n          <li>\n            作成済みの申請の申請ステータス変更・更新する場合\n            <ul><li>申請の更新（PUT）</li></ul>\n          </li>\n          <li>\n            申請中、承認済み、却下の申請の承認操作を行う場合\n            <ul><li>承認操作の実行（POST）</li></ul>\n          </li>\n        </ul>\n      </li>\n      <li>申請の削除（DELETE）が可能なのは申請ステータスが下書き、差戻しの場合のみです</li>\n    </ul>\n  </li>\n  <li>\n    承認者の指定に部門役職データ連携を活用した、以下のいずれかの承認ステップを含む申請経路にも対応しています。\n    <ul>\n      <li>役職指定（申請者の所属部門）</li>\n      <li>役職指定（申請時に部門指定）</li>\n      <li>部門および役職指定</li>\n    </ul>\n    申請者がどの所属部門として申請するかは applicant_group_id で指定します。申請者が複数の部門に所属している場合は必須です。1段階目の承認ステップが部門選択型の場合は approval_flow_group_id を指定してください。\n  </li>\n  <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>\n  <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は更新できません。</li>\n  <li>申請全体のsection_id・tag_ids・segment_1〜3_tag_idは、指定した内容で置き換えられます。未指定の項目は削除されます。</li>\n  <li>本APIは条件分岐を含む申請経路にも対応しています。</li>\n</ul>',
+    '\n<h2 id="">概要</h2>\n\n<p>指定した事業所の経費申請を更新する</p>\n\n<p>経費精算APIの使い方については、<a href="https://developer.freee.co.jp/tips/accounting-expense-applications" target="_blank">freee会計経費精算APIの使い方</a>をご参照ください</p>\n\n<h2 id="_2">注意点</h2>\n<ul>\n  <li>本APIでは、経費申請を更新することができます。</li>\n  <li>本APIでは、status(申請ステータス): draft:下書き, feedback:差戻しのみ更新可能です。</li>\n  <li>\n    申請ステータス(下書き、申請中)の指定と変更、及び承認操作（承認する、却下する、申請者へ差し戻す、特権承認する、承認済み・却下済みを取り消す）は以下を参考にして行ってください。\n    <ul>\n      <li>\n        承認操作は申請ステータスが申請中、承認済み、却下のものだけが対象です。\n        <ul>\n          <li>\n            初回申請の場合\n            <ul><li>申請の作成（POST）</li></ul>\n          </li>\n          <li>\n            作成済みの申請の申請ステータス変更・更新する場合\n            <ul><li>申請の更新（PUT）</li></ul>\n          </li>\n          <li>\n            申請中、承認済み、却下の申請の承認操作を行う場合\n            <ul><li>承認操作の実行（POST）</li></ul>\n          </li>\n        </ul>\n      </li>\n      <li>申請の削除（DELETE）が可能なのは申請ステータスが下書き、差戻しの場合のみです</li>\n    </ul>\n  </li>\n  <li>\n    承認者の指定に部門役職データ連携を活用した、以下のいずれかの承認ステップを含む申請経路にも対応しています。\n    <ul>\n      <li>役職指定（申請者の所属部門）</li>\n      <li>役職指定（申請時に部門指定）</li>\n      <li>部門および役職指定</li>\n    </ul>\n    申請者がどの所属部門として申請するかは applicant_group_id で指定します。申請者が複数の部門に所属している場合は必須です。1段階目の承認ステップが部門選択型の場合は approval_flow_group_id を指定してください。\n  </li>\n  <li>申請時には、申請タイトル(title)に加え、項目行については金額(amount)、日付(transaction_date)、内容(description)が必須項目となります。申請時の業務効率化のため、API入力をお勧めします。</li>\n  <li>本APIは駅すぱあと連携 (出発駅と到着駅から金額を自動入力する機能)には非対応です。駅すぱあと連携を使用した経費申請は更新できません。</li>\n  <li>\n    部門・メモタグ・セグメントの更新について\n    <ul>\n      <li>申請全体のsection_id・tag_ids・segment_1〜3_tag_idは、指定した内容で置き換えられます。未指定の項目は削除され、tag_assignmentがapplication（申請全体に付与）の明細行の値も空になります。</li>\n      <li>明細行の部門・メモタグ・セグメントは、明細行のtag_assignmentを指定した場合のみ更新されます。tag_assignmentを指定しない既存の明細行は、部門・メモタグ・セグメントと付与先が変更されません。</li>\n      <li>tag_assignmentにline（明細に個別付与）を指定すると、明細行のsection_id・tag_ids・segment_1〜3_tag_idの内容で置き換えられます。指定しなかった項目は空になります。</li>\n      <li>tag_assignmentにapplication（申請全体に付与）を指定すると、明細に個別付与した値を削除して申請全体の値を適用します。明細行のsection_id・tag_ids・segment_1〜3_tag_idは無視されるため、明細行ごとに値を変えたい場合はlineを指定してください。</li>\n    </ul>\n  </li>\n  <li>本APIは条件分岐を含む申請経路にも対応しています。</li>\n</ul>',
   operationId: 'update_expense_application',
   request: {
     params: z.object({
@@ -67268,7 +69821,8 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   type: 'integer',
                   format: 'int64',
                   minimum: 1,
-                  description: '部門ID<br>\n未指定の場合は部門なしで更新されます。',
+                  description:
+                    '部門ID<br>\n未指定の場合は部門なしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。',
                   example: 101,
                 }),
               tag_ids: z
@@ -67291,7 +69845,8 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                 )
                 .exactOptional()
                 .openapi({
-                  description: 'メモタグID<br>\n未指定の場合はメモタグなしで更新されます。',
+                  description:
+                    'メモタグID<br>\n未指定の場合はメモタグなしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。',
                 }),
               purchase_lines: z
                 .preprocess(
@@ -67588,6 +70143,144 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                                       description:
                                         'カスタム申請項目の値一覧（配列）<br>\n経費科目に設定されたカスタム申請項目に対する入力値を指定します。カスタム申請項目の一覧は経費科目APIから取得してください。<br>\n明細行のカスタム申請項目の値は、指定したcustom_valuesの内容で置き換えられます。custom_valuesに含まれない既存の値は削除されるため、更新後も残したい値は必ずcustom_valuesに含めてください。<br>\n金額の自動計算が設定された経費科目では、custom_valuesから計算した金額とamountが一致しない場合は400エラーになります（サーバー側の計算結果でamountを上書きすることはありません）。',
                                     }),
+                                  tag_assignment: z
+                                    .string()
+                                    .nullable()
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        '明細行の部門・メモタグ・セグメントの付与先<br>\n<ul>\n  <li>application: 申請全体に付与（画面の「申請全体に合わせる」）。申請全体のsection_id・tag_ids・segment_1〜3_tag_idを明細行に適用します。明細に個別付与した部門・メモタグ・セグメントは削除されます。明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定しても無視します。</li>\n  <li>line: 明細に個別付与（画面の「個別付与」）。明細行の部門・メモタグ・セグメントを、明細行のsection_id・tag_ids・segment_1〜3_tag_idの内容で置き換えます。指定しなかった項目は空になるため、更新後も残したい値は必ず指定してください。</li>\n</ul>\n未指定またはnullの場合、既存の明細行の部門・メモタグ・セグメントと付与先は変更しません（申請全体のsection_id・tag_ids・segment_1〜3_tag_idと異なり、省略しても削除されません）。新規に追加する明細行は申請全体に付与（application）として作成します。<br>\nただし未指定またはnullの場合、経費科目の利用可否は明細行の部門ではなく申請全体のsection_idで判定します。個別付与した明細行で部門の利用制限がある経費科目を使っている場合に申請中（draft: false）にするときは、lineを指定し、明細行のsection_id・tag_ids・segment_1〜3_tag_idも指定してください。<br>\n個別付与した明細行を申請全体に合わせるには、applicationを指定してください。<br>\n明細行のsection_id・tag_ids・segment_1〜3_tag_idを指定する場合は、lineを指定してください。tag_assignmentを指定せずにこれらを指定すると400エラーになります。<br>\n上記以外の値を指定すると400エラーになります。',
+                                      example: 'line',
+                                    }),
+                                  section_id: z
+                                    .preprocess(
+                                      (val) => (val === 'null' ? null : val),
+                                      z
+                                        .preprocess((val) => {
+                                          if (
+                                            typeof val !== 'string' ||
+                                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                          )
+                                            return val
+                                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                                          const num = Number(val)
+                                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                                        }, z.int64().min(1n))
+                                        .nullable(),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      type: ['integer', 'null'],
+                                      format: 'int64',
+                                      minimum: 1,
+                                      description:
+                                        '明細行の部門ID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合は部門なしになります。<br>\n存在しない部門や、申請者が利用できない部門を指定すると400エラーになります。',
+                                      example: 101,
+                                    }),
+                                  tag_ids: z
+                                    .preprocess(
+                                      (val) =>
+                                        val === undefined || Array.isArray(val) ? val : [val],
+                                      z.array(
+                                        z
+                                          .preprocess((val) => {
+                                            if (
+                                              typeof val !== 'string' ||
+                                              !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                            )
+                                              return val
+                                            if (/^-?\d+$/.test(val)) return BigInt(val)
+                                            const num = Number(val)
+                                            return Number.isSafeInteger(num) ? BigInt(num) : val
+                                          }, z.int64().min(1n))
+                                          .openapi({
+                                            type: 'integer',
+                                            format: 'int64',
+                                            minimum: 1,
+                                            example: 202,
+                                          }),
+                                      ),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      description:
+                                        '明細行のメモタグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定の場合はメモタグなしになります。<br>\n存在しないメモタグを指定すると400エラーになります。',
+                                    }),
+                                  segment_1_tag_id: z
+                                    .preprocess(
+                                      (val) => (val === 'null' ? null : val),
+                                      z
+                                        .preprocess((val) => {
+                                          if (
+                                            typeof val !== 'string' ||
+                                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                          )
+                                            return val
+                                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                                          const num = Number(val)
+                                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                                        }, z.int64().min(1n))
+                                        .nullable(),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      type: ['integer', 'null'],
+                                      format: 'int64',
+                                      minimum: 1,
+                                      description:
+                                        '明細行のセグメント１タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント１タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント１が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                                      example: 1,
+                                    }),
+                                  segment_2_tag_id: z
+                                    .preprocess(
+                                      (val) => (val === 'null' ? null : val),
+                                      z
+                                        .preprocess((val) => {
+                                          if (
+                                            typeof val !== 'string' ||
+                                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                          )
+                                            return val
+                                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                                          const num = Number(val)
+                                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                                        }, z.int64().min(1n))
+                                        .nullable(),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      type: ['integer', 'null'],
+                                      format: 'int64',
+                                      minimum: 1,
+                                      description:
+                                        '明細行のセグメント２タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント２タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント２が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                                      example: 2,
+                                    }),
+                                  segment_3_tag_id: z
+                                    .preprocess(
+                                      (val) => (val === 'null' ? null : val),
+                                      z
+                                        .preprocess((val) => {
+                                          if (
+                                            typeof val !== 'string' ||
+                                            !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)
+                                          )
+                                            return val
+                                          if (/^-?\d+$/.test(val)) return BigInt(val)
+                                          const num = Number(val)
+                                          return Number.isSafeInteger(num) ? BigInt(num) : val
+                                        }, z.int64().min(1n))
+                                        .nullable(),
+                                    )
+                                    .exactOptional()
+                                    .openapi({
+                                      type: ['integer', 'null'],
+                                      format: 'int64',
+                                      minimum: 1,
+                                      description:
+                                        '明細行のセグメント３タグID<br>\ntag_assignmentにlineを指定した場合のみ有効です。未指定またはnullの場合はセグメント３タグなしになります。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。事業所でセグメント３が利用可能なプラン契約・設定になっている必要があります。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a>',
+                                      example: 3,
+                                    }),
                                 })
                                 .openapi({ required: [] }),
                             ),
@@ -67754,7 +70447,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   format: 'int64',
                   minimum: 1,
                   description:
-                    'セグメント１タグID<br>\n未指定の場合はセグメント１タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+                    'セグメント１タグID<br>\n未指定の場合はセグメント１タグなしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
                   example: 1,
                 }),
               segment_2_tag_id: z
@@ -67774,7 +70467,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   format: 'int64',
                   minimum: 1,
                   description:
-                    'セグメント２タグID<br>\n未指定の場合はセグメント２タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+                    'セグメント２タグID<br>\n未指定の場合はセグメント２タグなしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
                   example: 2,
                 }),
               segment_3_tag_id: z
@@ -67794,7 +70487,7 @@ export const putApi1ExpenseApplicationsIdRoute = createRoute({
                   format: 'int64',
                   minimum: 1,
                   description:
-                    'セグメント３タグID<br>\n未指定の場合はセグメント３タグなしで更新されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
+                    'セグメント３タグID<br>\n未指定の場合はセグメント３タグなしで更新されます。<br>\n明細行のtag_assignmentがapplication（申請全体に付与）の明細行にも同じ値が適用されます。<br>\nセグメントタグ一覧の取得APIを利用して取得してください。<br>\n<a href="https://support.freee.co.jp/hc/ja/articles/360020679611" target="_blank">セグメント（分析用タグ）の設定</a><br>\n',
                   example: 3,
                 }),
             })
@@ -68583,7 +71276,7 @@ export const getApi1ExpenseApplicationLineTemplatesRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -70004,7 +72697,7 @@ export const getApi1PaymentRequestsRoute = createRoute({
   tags: ['Payment requests'],
   summary: '支払依頼一覧の取得',
   description:
-    '\n<h2 id="_1">概要</h2>\n\n<p>指定した事業所の支払依頼一覧を取得する</p>\n\n<p>支払依頼APIの使い方については、<a href="https://developer.freee.co.jp/tips/accounting-payment-requests" target="_blank">freee会計支払依頼APIの使い方</a>をご参照ください</p>\n\n<h2 id="_2">注意点</h2>\n<ul>\n  <li>本APIでは、支払依頼の一覧を取得することができます。</li>\n</ul>',
+    '\n<h2 id="_1">概要</h2>\n\n<p>指定した事業所の支払依頼一覧を取得する</p>\n\n<p>支払依頼APIの使い方については、<a href="https://developer.freee.co.jp/tips/accounting-payment-requests" target="_blank">freee会計支払依頼APIの使い方</a>をご参照ください</p>\n\n<h2 id="_2">注意点</h2>\n<ul>\n  <li>本APIでは、支払依頼の一覧を取得することができます。</li>\n  <li>パラメータ status を指定しない場合、ステータスでは絞り込まず、すべてのステータスの支払依頼を返します。</li>\n  <li>\n    パラメータ status には申請ステータスと取引ステータスのどちらかを指定します。レスポンスでは申請ステータスを status、取引ステータスを deal_status として返します。\n    <ul>\n      <li>パラメータ status に <code>approved</code> を指定した場合は、取引が登録されていない承認済の支払依頼のみを返します。取引が登録された承認済の支払依頼は、<code>unsettled</code> または <code>settled</code> を指定すると取得できます。レスポンスの status は取引の有無に関わらず <code>approved</code> です。</li>\n      <li>例: パラメータ status に <code>settled</code> を指定した場合、レスポンスの status が <code>approved</code>、deal_status が <code>settled</code> の支払依頼を返します。</li>\n    </ul>\n  </li>\n  <li>後続の支払依頼が存在する場合でも、取得件数が limit より少なくなることがあります。</li>\n</ul>',
   operationId: 'get_payment_requests',
   request: {
     query: z.object({
@@ -70071,6 +72764,34 @@ export const getApi1PaymentRequestsRoute = createRoute({
             name: 'end_application_date',
             in: 'query',
             description: '申請日で絞込：終了日(yyyy-mm-dd)',
+            schema: { type: 'string' },
+            example: '2019-12-17',
+            required: false,
+          },
+        }),
+      start_last_approval_date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'start_last_approval_date',
+            in: 'query',
+            description:
+              '最新の承認日で絞込：開始日(yyyy-mm-dd)\n最新の承認日は、支払依頼に対して行われた承認（特権承認を含む）のうち最も新しい承認の日付で、申請が承認済になった日とは限りません。そのため、承認済以外の支払依頼も対象になります。\n* 承認経路の途中のステップのみ承認された支払依頼は、そのステップの承認日\n* 承認後に差戻し・却下された支払依頼は、差戻し・却下前の承認日\n* 差戻し後に再度承認された支払依頼は、再承認日\n* 一度も承認されていない支払依頼は対象外\n\n2026年10月20日以降に承認または更新された支払依頼のみが対象です。',
+            schema: { type: 'string' },
+            example: '2019-12-17',
+            required: false,
+          },
+        }),
+      end_last_approval_date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'end_last_approval_date',
+            in: 'query',
+            description:
+              '最新の承認日で絞込：終了日(yyyy-mm-dd)\n最新の承認日は、支払依頼に対して行われた承認（特権承認を含む）のうち最も新しい承認の日付で、申請が承認済になった日とは限りません。そのため、承認済以外の支払依頼も対象になります。\n* 承認経路の途中のステップのみ承認された支払依頼は、そのステップの承認日\n* 承認後に差戻し・却下された支払依頼は、差戻し・却下前の承認日\n* 差戻し後に再度承認された支払依頼は、再承認日\n* 一度も承認されていない支払依頼は対象外\n\n2026年10月20日以降に承認または更新された支払依頼のみが対象です。',
             schema: { type: 'string' },
             example: '2019-12-17',
             required: false,
@@ -70386,7 +73107,7 @@ export const getApi1PaymentRequestsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -72147,7 +74868,7 @@ export const getApi1ApprovalRequestsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+        }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -72170,7 +74891,7 @@ export const getApi1ApprovalRequestsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+        }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -75110,6 +77831,77 @@ export const postApi1PurchaseRequestsIdActionsRoute = createRoute({
   },
 })
 
+export const getApi1PurchaseRequestsPurchaseRequestIdPurchaseBudgetRoute = createRoute({
+  method: 'get',
+  path: '/api/1/purchase_requests/{purchase_request_id}/purchase_budget',
+  tags: ['Purchase requests'],
+  summary: '購買申請の購買予算と予算消化の取得',
+  description:
+    '<h2 id="_1">概要</h2>\n\n<p>指定した購買申請に対する購買予算額と予算消化を取得します。</p>\n\n<h2 id="_2">金額</h2>\n\n<ul>\n  <li>金額の単位は円です。</li>\n  <li>consumed_amount は購買予算全体の税込消化額です。</li>\n  <li>budget_consumptions は予算を消化した全明細です。</li>\n</ul>\n\n<h2 id="_3">予算追跡状態</h2>\n\n<ul>\n  <li>in_progress と approved は購買予算の状態です。</li>\n  <li>下書き・差戻し・却下などの予算追跡対象外の場合は not_tracked です。</li>\n</ul>\n\n<h2 id="_4">権限</h2>\n\n<ul>\n  <li>対象購買申請の閲覧権限が必要です。</li>\n  <li>閲覧できない購買申請は存在しないものとして 404 を返します。</li>\n</ul>',
+  operationId: 'get_purchase_request_purchase_budget',
+  request: {
+    params: z.object({
+      purchase_request_id: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64().min(1n))
+        .openapi({
+          param: {
+            name: 'purchase_request_id',
+            in: 'path',
+            description: '購買申請ID',
+            required: true,
+            schema: { type: 'integer', format: 'int64', minimum: 1 },
+          },
+        }),
+    }),
+    query: z.object({
+      company_id: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64().min(1n))
+        .openapi({
+          param: {
+            name: 'company_id',
+            in: 'query',
+            description: '事業所ID',
+            required: true,
+            schema: { type: 'integer', format: 'int64', minimum: 1 },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: PurchaseRequestPurchaseBudgetResponseSchema } },
+    },
+    400: { description: '', content: { 'application/json': { schema: BadRequestErrorSchema } } },
+    401: { description: '', content: { 'application/json': { schema: UnauthorizedErrorSchema } } },
+    403: { description: '', content: { 'application/json': { schema: ForbiddenErrorSchema } } },
+    404: {
+      description: '',
+      content: { 'application/json': { schema: BadRequestNotFoundErrorSchema } },
+    },
+    500: {
+      description: '',
+      content: { 'application/json': { schema: InternalServerErrorSchema } },
+    },
+    503: {
+      description: '',
+      content: { 'application/json': { schema: ServiceUnavailableErrorSchema } },
+    },
+  },
+})
+
 export const getApi1ApprovalFlowRoutesRoute = createRoute({
   method: 'get',
   path: '/api/1/approval_flow_routes',
@@ -75332,7 +78124,7 @@ export const getApi1SegmentsSegmentIdTagsRoute = createRoute({
           if (/^-?\d+$/.test(val)) return BigInt(val)
           const num = Number(val)
           return Number.isSafeInteger(num) ? BigInt(num) : val
-        }, z.int64().min(0n).max(9223372036854776000n))
+        }, z.int64().min(0n).max(9223372036854775807n))
         .exactOptional()
         .openapi({
           param: {
@@ -76244,6 +79036,7 @@ export const getApi1UserMatchersRoute = createRoute({
             example: 50,
             required: false,
           },
+          default: 30,
         }),
       offset: z
         .preprocess((val) => {
@@ -76265,6 +79058,7 @@ export const getApi1UserMatchersRoute = createRoute({
             example: 30,
             required: false,
           },
+          default: 0,
         }),
       walletable: z
         .string()
@@ -76598,6 +79392,7 @@ export const getApi1UserMatchersRoute = createRoute({
                       }),
                     description: z
                       .string()
+                      .nullable()
                       .openapi({
                         description:
                           '説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。',
@@ -77130,6 +79925,7 @@ export const postApi1UserMatchersRoute = createRoute({
                 }),
               description: z
                 .string()
+                .nullable()
                 .openapi({
                   description:
                     '説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。',
@@ -77248,6 +80044,7 @@ export const postApi1UserMatchersRoute = createRoute({
                 .openapi({ description: '元取引コード', example: 12 }),
               last_updated_user_id: z
                 .int()
+                .nullable()
                 .openapi({
                   description: '最終更新ユーザーID\n* 0: freeeシステムによる更新\n',
                   example: 1,
@@ -77513,6 +80310,7 @@ export const getApi1UserMatchersIdRoute = createRoute({
                 }),
               description: z
                 .string()
+                .nullable()
                 .openapi({
                   description:
                     '説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。',
@@ -77631,6 +80429,7 @@ export const getApi1UserMatchersIdRoute = createRoute({
                 .openapi({ description: '元取引コード', example: 12 }),
               last_updated_user_id: z
                 .int()
+                .nullable()
                 .openapi({
                   description: '最終更新ユーザーID\n* 0: freeeシステムによる更新\n',
                   example: 1,
@@ -78101,6 +80900,7 @@ export const putApi1UserMatchersIdRoute = createRoute({
                 }),
               description: z
                 .string()
+                .nullable()
                 .openapi({
                   description:
                     '説明文。明細の取引内容とのマッチングに使用される文字列です。condition=4(指定なし)の場合は空文字列が返ります。',
@@ -78219,6 +81019,7 @@ export const putApi1UserMatchersIdRoute = createRoute({
                 .openapi({ description: '元取引コード', example: 12 }),
               last_updated_user_id: z
                 .int()
+                .nullable()
                 .openapi({
                   description: '最終更新ユーザーID\n* 0: freeeシステムによる更新\n',
                   example: 1,

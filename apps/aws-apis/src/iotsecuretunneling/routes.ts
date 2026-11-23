@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CloseTunnelResponseSchema = z.object({}).openapi('CloseTunnelResponse')
+const CloseTunnelResponseSchema = z.looseObject({}).openapi('CloseTunnelResponse')
 
 const TunnelIdSchema = z
   .string()
@@ -11,17 +11,10 @@ const DeleteFlagSchema = z.boolean().openapi('DeleteFlag')
 
 const CloseTunnelRequestSchema = z
   .object({
-    tunnelId: TunnelIdSchema.and(
-      z.any().openapi({ description: 'The ID of the tunnel to close.' }),
-    ),
-    delete: DeleteFlagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to true, IoT Secure Tunneling deletes the tunnel data immediately.',
-        }),
-    ).exactOptional(),
+    tunnelId: TunnelIdSchema.openapi({ description: 'The ID of the tunnel to close.' }),
+    delete: DeleteFlagSchema.exactOptional().openapi({
+      description: 'When set to true, IoT Secure Tunneling deletes the tunnel data immediately.',
+    }),
   })
   .openapi({ required: ['tunnelId'], title: 'CloseTunnelRequest' })
   .openapi('CloseTunnelRequest')
@@ -38,17 +31,13 @@ const DateTypeSchema = z.iso.datetime({ offset: true }).openapi('DateType')
 
 const ConnectionStateSchema = z
   .object({
-    status: ConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The connection status of the tunnel. Valid values are <code>CONNECTED</code> and <code>DISCONNECTED</code>.',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: DateTypeSchema.and(
-      z.any().openapi({ description: 'The last time the connection status was updated.' }),
-    ).exactOptional(),
+    status: ConnectionStatusSchema.exactOptional().openapi({
+      description:
+        'The connection status of the tunnel. Valid values are <code>CONNECTED</code> and <code>DISCONNECTED</code>.',
+    }),
+    lastUpdatedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The last time the connection status was updated.',
+    }),
   })
   .openapi({ description: 'The state of a connection.', required: [] })
   .openapi('ConnectionState')
@@ -76,17 +65,13 @@ const ServiceListSchema = z.array(ServiceSchema).min(1).openapi('ServiceList')
 
 const DestinationConfigSchema = z
   .object({
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the IoT thing to which you want to connect.' }),
-    ).exactOptional(),
-    services: ServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of service names that identify the target application. The IoT client running on the destination device reads this value and uses it to look up a port or an IP address and a port. The IoT client instantiates the local proxy, which uses this information to connect to the destination application.',
-        }),
-    ),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The name of the IoT thing to which you want to connect.',
+    }),
+    services: ServiceListSchema.openapi({
+      description:
+        'A list of service names that identify the target application. The IoT client running on the destination device reads this value and uses it to look up a port or an IP address and a port. The IoT client instantiates the local proxy, which uses this information to connect to the destination application.',
+    }),
   })
   .openapi({ required: ['services'], description: 'The destination configuration.' })
   .openapi('DestinationConfig')
@@ -95,14 +80,10 @@ const TimeoutInMinSchema = z.int().min(1).max(720).openapi('TimeoutInMin')
 
 const TimeoutConfigSchema = z
   .object({
-    maxLifetimeTimeoutMinutes: TimeoutInMinSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of time (in minutes) a tunnel can remain open. If not specified, maxLifetimeTimeoutMinutes defaults to 720 minutes. Valid values are from 1 minute to 12 hours (720 minutes) ',
-        }),
-    ).exactOptional(),
+    maxLifetimeTimeoutMinutes: TimeoutInMinSchema.exactOptional().openapi({
+      description:
+        'The maximum amount of time (in minutes) a tunnel can remain open. If not specified, maxLifetimeTimeoutMinutes defaults to 720 minutes. Valid values are from 1 minute to 12 hours (720 minutes) ',
+    }),
   })
   .openapi({ description: 'Tunnel timeout configuration.', required: [] })
   .openapi('TimeoutConfig')
@@ -123,8 +104,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })),
-    value: TagValueSchema.and(z.any().openapi({ description: 'The value of the tag.' })),
+    key: TagKeySchema.openapi({ description: 'The key of the tag.' }),
+    value: TagValueSchema.openapi({ description: 'The value of the tag.' }),
   })
   .openapi({
     required: ['key', 'value'],
@@ -137,46 +118,40 @@ const TagListSchema = z.array(TagSchema).min(1).max(200).openapi('TagList')
 
 const TunnelSchema = z
   .object({
-    tunnelId: TunnelIdSchema.and(
-      z.any().openapi({ description: 'A unique alpha-numeric ID that identifies a tunnel.' }),
-    ).exactOptional(),
-    tunnelArn: TunnelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of a tunnel.' }),
-    ).exactOptional(),
-    status: TunnelStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status of a tunnel. Valid values are: Open and Closed.' }),
-    ).exactOptional(),
-    sourceConnectionState: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The connection state of the source application.' }),
-    ).exactOptional(),
-    destinationConnectionState: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The connection state of the destination application.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the tunnel.' }),
-    ).exactOptional(),
-    destinationConfig: DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination configuration that specifies the thing name of the destination device and a service name that the local proxy uses to connect to the destination application.',
-        }),
-    ).exactOptional(),
-    timeoutConfig: TimeoutConfigSchema.and(
-      z.any().openapi({ description: 'Timeout configuration for the tunnel.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag metadata associated with the secure tunnel.' }),
-    ).exactOptional(),
-    createdAt: DateTypeSchema.and(
-      z.any().openapi({ description: 'The time when the tunnel was created.' }),
-    ).exactOptional(),
-    lastUpdatedAt: DateTypeSchema.and(
-      z.any().openapi({ description: 'The last time the tunnel was updated.' }),
-    ).exactOptional(),
+    tunnelId: TunnelIdSchema.exactOptional().openapi({
+      description: 'A unique alpha-numeric ID that identifies a tunnel.',
+    }),
+    tunnelArn: TunnelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of a tunnel.',
+    }),
+    status: TunnelStatusSchema.exactOptional().openapi({
+      description: 'The status of a tunnel. Valid values are: Open and Closed.',
+    }),
+    sourceConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The connection state of the source application.',
+    }),
+    destinationConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The connection state of the destination application.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the tunnel.',
+    }),
+    destinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description:
+        'The destination configuration that specifies the thing name of the destination device and a service name that the local proxy uses to connect to the destination application.',
+    }),
+    timeoutConfig: TimeoutConfigSchema.exactOptional().openapi({
+      description: 'Timeout configuration for the tunnel.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tag metadata associated with the secure tunnel.',
+    }),
+    createdAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time when the tunnel was created.',
+    }),
+    lastUpdatedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The last time the tunnel was updated.',
+    }),
   })
   .openapi({
     description: 'A connection between a source computer and a destination device.',
@@ -186,25 +161,21 @@ const TunnelSchema = z
 
 const DescribeTunnelResponseSchema = z
   .object({
-    tunnel: TunnelSchema.and(
-      z.any().openapi({ description: 'The tunnel being described.' }),
-    ).exactOptional(),
+    tunnel: TunnelSchema.exactOptional().openapi({ description: 'The tunnel being described.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTunnelResponse')
 
 const DescribeTunnelRequestSchema = z
-  .object({
-    tunnelId: TunnelIdSchema.and(z.any().openapi({ description: 'The tunnel to describe.' })),
-  })
+  .object({ tunnelId: TunnelIdSchema.openapi({ description: 'The tunnel to describe.' }) })
   .openapi({ required: ['tunnelId'], title: 'DescribeTunnelRequest' })
   .openapi('DescribeTunnelRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the specified resource.' }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags for the specified resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -212,36 +183,30 @@ const ListTagsForResourceResponseSchema = z
 const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonResourceName')
 
 const ListTagsForResourceRequestSchema = z
-  .object({
-    resourceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The resource ARN.' }),
-    ),
-  })
+  .object({ resourceArn: AmazonResourceNameSchema.openapi({ description: 'The resource ARN.' }) })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const TunnelSummarySchema = z
   .object({
-    tunnelId: TunnelIdSchema.and(
-      z.any().openapi({ description: 'The unique alpha-numeric identifier for the tunnel.' }),
-    ).exactOptional(),
-    tunnelArn: TunnelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the tunnel. ' }),
-    ).exactOptional(),
-    status: TunnelStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status of a tunnel. Valid values are: Open and Closed.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the tunnel.' }),
-    ).exactOptional(),
-    createdAt: DateTypeSchema.and(
-      z.any().openapi({ description: 'The time the tunnel was created.' }),
-    ).exactOptional(),
-    lastUpdatedAt: DateTypeSchema.and(
-      z.any().openapi({ description: 'The time the tunnel was last updated.' }),
-    ).exactOptional(),
+    tunnelId: TunnelIdSchema.exactOptional().openapi({
+      description: 'The unique alpha-numeric identifier for the tunnel.',
+    }),
+    tunnelArn: TunnelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the tunnel. ',
+    }),
+    status: TunnelStatusSchema.exactOptional().openapi({
+      description: 'The status of a tunnel. Valid values are: Open and Closed.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the tunnel.',
+    }),
+    createdAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time the tunnel was created.',
+    }),
+    lastUpdatedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time the tunnel was last updated.',
+    }),
   })
   .openapi({ description: 'Information about the tunnel.', required: [] })
   .openapi('TunnelSummary')
@@ -255,21 +220,13 @@ const NextTokenSchema = z
 
 const ListTunnelsResponseSchema = z
   .object({
-    tunnelSummaries: TunnelSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A short description of the tunnels in an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    tunnelSummaries: TunnelSummaryListSchema.exactOptional().openapi({
+      description: 'A short description of the tunnels in an Amazon Web Services account.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTunnelsResponse')
@@ -278,24 +235,16 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListTunnelsRequestSchema = z
   .object({
-    thingName: ThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IoT thing associated with the destination device.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return at once.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.',
-        }),
-    ).exactOptional(),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The name of the IoT thing associated with the destination device.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return at once.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'To retrieve the next set of results, the nextToken value from a previous response; otherwise null to receive the first set of results.',
+    }),
   })
   .openapi({ title: 'ListTunnelsRequest', required: [] })
   .openapi('ListTunnelsRequest')
@@ -304,46 +253,36 @@ const ClientAccessTokenSchema = z.string().openapi('ClientAccessToken')
 
 const OpenTunnelResponseSchema = z
   .object({
-    tunnelId: TunnelIdSchema.and(
-      z.any().openapi({ description: 'A unique alpha-numeric tunnel ID.' }),
-    ).exactOptional(),
-    tunnelArn: TunnelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name for the tunnel.' }),
-    ).exactOptional(),
-    sourceAccessToken: ClientAccessTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access token the source local proxy uses to connect to IoT Secure Tunneling.',
-        }),
-    ).exactOptional(),
-    destinationAccessToken: ClientAccessTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access token the destination local proxy uses to connect to IoT Secure Tunneling.',
-        }),
-    ).exactOptional(),
+    tunnelId: TunnelIdSchema.exactOptional().openapi({
+      description: 'A unique alpha-numeric tunnel ID.',
+    }),
+    tunnelArn: TunnelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name for the tunnel.',
+    }),
+    sourceAccessToken: ClientAccessTokenSchema.exactOptional().openapi({
+      description:
+        'The access token the source local proxy uses to connect to IoT Secure Tunneling.',
+    }),
+    destinationAccessToken: ClientAccessTokenSchema.exactOptional().openapi({
+      description:
+        'The access token the destination local proxy uses to connect to IoT Secure Tunneling.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('OpenTunnelResponse')
 
 const OpenTunnelRequestSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A short text description of the tunnel. ' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'A collection of tag metadata.' }),
-    ).exactOptional(),
-    destinationConfig: DestinationConfigSchema.and(
-      z.any().openapi({ description: 'The destination configuration for the OpenTunnel request.' }),
-    ).exactOptional(),
-    timeoutConfig: TimeoutConfigSchema.and(
-      z.any().openapi({ description: 'Timeout configuration for a tunnel.' }),
-    ).exactOptional(),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A short text description of the tunnel. ',
+    }),
+    tags: TagListSchema.exactOptional().openapi({ description: 'A collection of tag metadata.' }),
+    destinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description: 'The destination configuration for the OpenTunnel request.',
+    }),
+    timeoutConfig: TimeoutConfigSchema.exactOptional().openapi({
+      description: 'Timeout configuration for a tunnel.',
+    }),
   })
   .openapi({ title: 'OpenTunnelRequest', required: [] })
   .openapi('OpenTunnelRequest')
@@ -352,25 +291,17 @@ const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const RotateTunnelAccessTokenResponseSchema = z
   .object({
-    tunnelArn: TunnelArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name for the tunnel.' }),
-    ).exactOptional(),
-    sourceAccessToken: ClientAccessTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The client access token that the source local proxy uses to connect to IoT Secure Tunneling.',
-        }),
-    ).exactOptional(),
-    destinationAccessToken: ClientAccessTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The client access token that the destination local proxy uses to connect to IoT Secure Tunneling.',
-        }),
-    ).exactOptional(),
+    tunnelArn: TunnelArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name for the tunnel.',
+    }),
+    sourceAccessToken: ClientAccessTokenSchema.exactOptional().openapi({
+      description:
+        'The client access token that the source local proxy uses to connect to IoT Secure Tunneling.',
+    }),
+    destinationAccessToken: ClientAccessTokenSchema.exactOptional().openapi({
+      description:
+        'The client access token that the destination local proxy uses to connect to IoT Secure Tunneling.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RotateTunnelAccessTokenResponse')
@@ -379,48 +310,36 @@ const ClientModeSchema = z.enum(['SOURCE', 'DESTINATION', 'ALL']).openapi('Clien
 
 const RotateTunnelAccessTokenRequestSchema = z
   .object({
-    tunnelId: TunnelIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tunnel for which you want to rotate the access tokens.' }),
-    ),
-    clientMode: ClientModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mode of the client that will use the client token, which can be either the source or destination, or both source and destination.',
-        }),
-    ),
+    tunnelId: TunnelIdSchema.openapi({
+      description: 'The tunnel for which you want to rotate the access tokens.',
+    }),
+    clientMode: ClientModeSchema.openapi({
+      description:
+        'The mode of the client that will use the client token, which can be either the source or destination, or both source and destination.',
+    }),
     destinationConfig: DestinationConfigSchema.exactOptional(),
   })
   .openapi({ required: ['tunnelId', 'clientMode'], title: 'RotateTunnelAccessTokenRequest' })
   .openapi('RotateTunnelAccessTokenRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ),
-    tags: TagListSchema.and(z.any().openapi({ description: 'The tags for the resource.' })),
+    resourceArn: AmazonResourceNameSchema.openapi({ description: 'The ARN of the resource.' }),
+    tags: TagListSchema.openapi({ description: 'The tags for the resource.' }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceArn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The resource ARN.' }),
-    ),
-    tagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to remove.' }),
-    ),
+    resourceArn: AmazonResourceNameSchema.openapi({ description: 'The resource ARN.' }),
+    tagKeys: TagKeyListSchema.openapi({ description: 'The keys of the tags to remove.' }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')

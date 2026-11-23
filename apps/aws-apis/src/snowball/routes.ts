@@ -1,368 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GSTINSchema = z
-  .string()
-  .regex(/\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/)
-  .length(15)
-  .openapi('GSTIN')
-
-const INDTaxDocumentsSchema = z
-  .object({
-    GSTIN: GSTINSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Goods and Services Tax (GST) documents required in Amazon Web Services Region in India.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The tax documents required in Amazon Web Services Region in India.',
-    required: [],
-  })
-  .openapi('INDTaxDocuments')
-
-type TaxDocumentsType = { IND?: z.infer<typeof INDTaxDocumentsSchema> }
-
-const StorageLimitSchema = z.int().min(0).openapi('StorageLimit')
-
-const StorageUnitSchema = z.literal('TB').openapi('StorageUnit')
-
-const NFSOnDeviceServiceConfigurationSchema = z
-  .object({
-    StorageLimit: StorageLimitSchema.and(
-      z.any().openapi({ description: 'The maximum NFS storage for one Snow Family device.' }),
-    ).exactOptional(),
-    StorageUnit: StorageUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scale unit of the NFS storage on the device.</p> <p>Valid values: TB.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object that represents the metadata and configuration settings for the NFS (Network File System) service on an Amazon Web Services Snow Family device.',
-    required: [],
-  })
-  .openapi('NFSOnDeviceServiceConfiguration')
-
-const TGWOnDeviceServiceConfigurationSchema = z
-  .object({
-    StorageLimit: StorageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of virtual tapes to store on one Snow Family device. Due to physical resource limitations, this value must be set to 80 for Snowball Edge.',
-        }),
-    ).exactOptional(),
-    StorageUnit: StorageUnitSchema.and(
-      z.any().openapi({ description: 'The scale unit of the virtual tapes on the device.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object that represents the metadata and configuration settings for the Storage Gateway service Tape Gateway type on an Amazon Web Services Snow Family device.',
-    required: [],
-  })
-  .openapi('TGWOnDeviceServiceConfiguration')
-
 const StringSchema = z.string().regex(/.*/).min(1).max(1024).openapi('String')
-
-const EKSOnDeviceServiceConfigurationSchema = z
-  .object({
-    KubernetesVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Kubernetes version for EKS Anywhere on the Snow Family device.',
-        }),
-    ).exactOptional(),
-    EKSAnywhereVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version of EKS Anywhere on the Snow Family device.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object representing the metadata and configuration settings of EKS Anywhere on the Snow Family device.',
-    required: [],
-  })
-  .openapi('EKSOnDeviceServiceConfiguration')
-
-const S3StorageLimitSchema = z.float64().min(0).openapi('S3StorageLimit')
-
-const ServiceSizeSchema = z.int().min(3).max(16).openapi('ServiceSize')
-
-const NodeFaultToleranceSchema = z.int().min(1).max(4).openapi('NodeFaultTolerance')
-
-const S3OnDeviceServiceConfigurationSchema = z
-  .object({
-    StorageLimit: S3StorageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the specified storage limit value matches storage limit of one of the defined configurations, that configuration will be used. If the specified storage limit value does not match any defined configuration, the request will fail. If more than one configuration has the same storage limit as specified, the other input need to be provided.',
-        }),
-    ).exactOptional(),
-    StorageUnit: StorageUnitSchema.and(
-      z.any().openapi({ description: 'Storage unit. Currently the only supported unit is TB.' }),
-    ).exactOptional(),
-    ServiceSize: ServiceSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applicable when creating a cluster. Specifies how many nodes are needed for Amazon S3 compatible storage on Snow family devices. If specified, the other input can be omitted.',
-        }),
-    ).exactOptional(),
-    FaultTolerance: NodeFaultToleranceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '&gt;Fault tolerance level of the cluster. This indicates the number of nodes that can go down without degrading the performance of the cluster. This additional input helps when the specified <code>StorageLimit</code> matches more than one Amazon S3 compatible storage on Snow family devices service configuration.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Amazon S3 compatible storage on Snow family devices configuration items.',
-    required: [],
-  })
-  .openapi('S3OnDeviceServiceConfiguration')
-
-type OnDeviceServiceConfigurationType = {
-  NFSOnDeviceService?: z.infer<typeof NFSOnDeviceServiceConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  TGWOnDeviceService?: z.infer<typeof TGWOnDeviceServiceConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  EKSOnDeviceService?: z.infer<typeof EKSOnDeviceServiceConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  S3OnDeviceService?: z.infer<typeof S3OnDeviceServiceConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const WirelessConnectionSchema = z
-  .object({
-    IsWifiEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Enables the Wi-Fi adapter on an Snowcone device.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Configures the wireless connection on an Snowcone device.',
-    required: [],
-  })
-  .openapi('WirelessConnection')
-
-const SnowconeDeviceConfigurationSchema = z
-  .object({
-    WirelessConnection: WirelessConnectionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Configures the wireless connection for the Snowcone device.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Specifies the device configuration for an Snowcone job.', required: [] })
-  .openapi('SnowconeDeviceConfiguration')
-
-type DeviceConfigurationType = {
-  SnowconeDeviceConfiguration?: z.infer<typeof SnowconeDeviceConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const CancelClusterResultSchema = z.object({}).openapi('CancelClusterResult')
-
-const ClusterIdSchema = z
-  .string()
-  .regex(/CID[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
-  .length(39)
-  .openapi('ClusterId')
-
-const CancelClusterRequestSchema = z
-  .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 39-character ID for the cluster that you want to cancel, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
-  })
-  .openapi({ required: ['ClusterId'], title: 'CancelClusterRequest' })
-  .openapi('CancelClusterRequest')
-
-const KMSRequestFailedExceptionSchema = z.any().openapi('KMSRequestFailedException')
-
-const InvalidJobStateExceptionSchema = z.any().openapi('InvalidJobStateException')
-
-const InvalidResourceExceptionSchema = z.any().openapi('InvalidResourceException')
-
-const CancelJobResultSchema = z.object({}).openapi('CancelJobResult')
-
-const JobIdSchema = z
-  .string()
-  .regex(/(M|J)ID[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
-  .length(39)
-  .openapi('JobId')
-
-const CancelJobRequestSchema = z
-  .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 39-character job ID for the job that you want to cancel, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
-  })
-  .openapi({ required: ['JobId'], title: 'CancelJobRequest' })
-  .openapi('CancelJobRequest')
-
-const CreateAddressResultSchema = z
-  .object({
-    AddressId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The automatically generated ID for a specific address. You'll use this ID when you create a job to specify which address you want the Snow device for that job shipped to.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ example: { AddressId: 'ADID1234ab12-3eec-4eb3-9be6-9374c10eb51b' }, required: [] })
-  .openapi('CreateAddressResult')
-
-const AddressIdSchema = z
-  .string()
-  .regex(/ADID[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
-  .length(40)
-  .openapi('AddressId')
-
-const AddressSchema = z
-  .object({
-    AddressId: AddressIdSchema.and(
-      z.any().openapi({ description: 'The unique ID for an address.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of a person to receive a Snow device at an address.' }),
-    ).exactOptional(),
-    Company: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the company to receive a Snow device at an address.',
-        }),
-    ).exactOptional(),
-    Street1: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The first line in a street address that a Snow device is to be delivered to.',
-        }),
-    ).exactOptional(),
-    Street2: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The second line in a street address that a Snow device is to be delivered to.',
-        }),
-    ).exactOptional(),
-    Street3: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The third line in a street address that a Snow device is to be delivered to.',
-        }),
-    ).exactOptional(),
-    City: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The city in an address that a Snow device is to be delivered to.',
-        }),
-    ).exactOptional(),
-    StateOrProvince: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state or province in an address that a Snow device is to be delivered to.',
-        }),
-    ).exactOptional(),
-    PrefectureOrDistrict: StringSchema.and(
-      z.any().openapi({ description: 'This field is no longer used and the value is ignored.' }),
-    ).exactOptional(),
-    Landmark: StringSchema.and(
-      z.any().openapi({ description: 'This field is no longer used and the value is ignored.' }),
-    ).exactOptional(),
-    Country: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The country in an address that a Snow device is to be delivered to.',
-        }),
-    ).exactOptional(),
-    PostalCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The postal code in an address that a Snow device is to be delivered to.',
-        }),
-    ).exactOptional(),
-    PhoneNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number associated with an address that a Snow device is to be delivered to.',
-        }),
-    ).exactOptional(),
-    IsRestricted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the address you are creating is a primary address, then set this option to true. This field is not supported in most regions.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The address that you want the Snow device(s) associated with a specific job to be shipped to. Addresses are validated at the time of creation. The address you provide must be located within the serviceable area of your region. Although no individual elements of the <code>Address</code> are required, if the address is invalid or unsupported, then an exception is thrown.',
-    required: [],
-  })
-  .openapi('Address')
-
-const CreateAddressRequestSchema = z
-  .object({
-    Address: AddressSchema.and(
-      z.any().openapi({ description: 'The address that you want the Snow device shipped to.' }),
-    ),
-  })
-  .openapi({ required: ['Address'], title: 'CreateAddressRequest' })
-  .openapi('CreateAddressRequest')
-
-const InvalidAddressExceptionSchema = z.any().openapi('InvalidAddressException')
-
-const UnsupportedAddressExceptionSchema = z.any().openapi('UnsupportedAddressException')
 
 const JobStateSchema = z
   .enum([
@@ -400,71 +38,6 @@ const SnowballTypeSchema = z
 
 const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
-const JobListEntrySchema = z
-  .object({
-    JobId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ).exactOptional(),
-    JobState: JobStateSchema.and(
-      z.any().openapi({ description: 'The current state of this job.' }),
-    ).exactOptional(),
-    IsMaster: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value that indicates that this job is a main job. A main job represents a successful request to create an export job. Main jobs aren't associated with any Snowballs. Instead, each main job will have at least one job part, and each job part is associated with a Snowball. It might take some time before the job parts associated with a particular main job are listed, because they are created after the main job is created.",
-        }),
-    ).exactOptional(),
-    JobType: JobTypeSchema.and(
-      z.any().openapi({ description: 'The type of job.' }),
-    ).exactOptional(),
-    SnowballType: SnowballTypeSchema.and(
-      z.any().openapi({ description: 'The type of device used with this job.' }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation date for this job.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional description of this specific job, for example <code>Important Photos 2016-08-11</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Each <code>JobListEntry</code> object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of an export job.",
-    required: [],
-  })
-  .openapi('JobListEntry')
-
-const JobListEntryListSchema = z.array(JobListEntrySchema).openapi('JobListEntryList')
-
-const CreateClusterResultSchema = z
-  .object({
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The automatically generated ID for a cluster.' }),
-    ).exactOptional(),
-    JobListEntries: JobListEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of jobs created for this cluster. For syntax, see <a href="https://docs.aws.amazon.com/snowball/latest/api-reference/API_ListJobs.html#API_ListJobs_ResponseSyntax">ListJobsResult$JobListEntries</a> in this guide.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ example: { ClusterId: 'CID123e4567-e89b-12d3-a456-426655440000' }, required: [] })
-  .openapi('CreateClusterResult')
-
 const ResourceARNSchema = z
   .string()
   .regex(/arn:aws.*:*/)
@@ -473,22 +46,14 @@ const ResourceARNSchema = z
 
 const KeyRangeSchema = z
   .object({
-    BeginMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key that starts an optional key range for an export job. Ranges are inclusive and UTF-8 binary sorted.',
-        }),
-    ).exactOptional(),
-    EndMarker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key that ends an optional key range for an export job. Ranges are inclusive and UTF-8 binary sorted.',
-        }),
-    ).exactOptional(),
+    BeginMarker: StringSchema.exactOptional().openapi({
+      description:
+        'The key that starts an optional key range for an export job. Ranges are inclusive and UTF-8 binary sorted.',
+    }),
+    EndMarker: StringSchema.exactOptional().openapi({
+      description:
+        'The key that ends an optional key range for an export job. Ranges are inclusive and UTF-8 binary sorted.',
+    }),
   })
   .openapi({
     description:
@@ -505,22 +70,14 @@ const TransferOptionSchema = z.enum(['IMPORT', 'EXPORT', 'LOCAL_USE']).openapi('
 
 const TargetOnDeviceServiceSchema = z
   .object({
-    ServiceName: DeviceServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the service on the Snow Family device that your transferred data will be exported from or imported into.',
-        }),
-    ).exactOptional(),
-    TransferOption: TransferOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the data is being imported or exported. You can import or export the data, or use it locally on the device.',
-        }),
-    ).exactOptional(),
+    ServiceName: DeviceServiceNameSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the service on the Snow Family device that your transferred data will be exported from or imported into.',
+    }),
+    TransferOption: TransferOptionSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the data is being imported or exported. You can import or export the data, or use it locally on the device.',
+    }),
   })
   .openapi({
     description:
@@ -535,25 +92,17 @@ const TargetOnDeviceServiceListSchema = z
 
 const S3ResourceSchema = z
   .object({
-    BucketArn: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of an Amazon S3 bucket.' }),
-    ).exactOptional(),
-    KeyRange: KeyRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For export jobs, you can provide an optional <code>KeyRange</code> within a specific Amazon S3 bucket. The length of the range is defined at job creation, and has either an inclusive <code>BeginMarker</code>, an inclusive <code>EndMarker</code>, or both. Ranges are UTF-8 binary sorted.',
-        }),
-    ).exactOptional(),
-    TargetOnDeviceServices: TargetOnDeviceServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family supports Amazon S3 and NFS (Network File System).',
-        }),
-    ).exactOptional(),
+    BucketArn: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of an Amazon S3 bucket.',
+    }),
+    KeyRange: KeyRangeSchema.exactOptional().openapi({
+      description:
+        'For export jobs, you can provide an optional <code>KeyRange</code> within a specific Amazon S3 bucket. The length of the range is defined at job creation, and has either an inclusive <code>BeginMarker</code>, an inclusive <code>EndMarker</code>, or both. Ranges are UTF-8 binary sorted.',
+    }),
+    TargetOnDeviceServices: TargetOnDeviceServiceListSchema.exactOptional().openapi({
+      description:
+        'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family supports Amazon S3 and NFS (Network File System).',
+    }),
   })
   .openapi({
     description:
@@ -566,14 +115,10 @@ const S3ResourceListSchema = z.array(S3ResourceSchema).openapi('S3ResourceList')
 
 const EventTriggerDefinitionSchema = z
   .object({
-    EventResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) for any local Amazon S3 resource that is an Lambda function's event trigger associated with this job.",
-        }),
-    ).exactOptional(),
+    EventResourceARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) for any local Amazon S3 resource that is an Lambda function's event trigger associated with this job.",
+    }),
   })
   .openapi({
     description: 'The container for the <a>EventTriggerDefinition$EventResourceARN</a>.',
@@ -587,22 +132,14 @@ const EventTriggerDefinitionListSchema = z
 
 const LambdaResourceSchema = z
   .object({
-    LambdaArn: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) that represents an Lambda function to be triggered by PUT object actions on the associated local Amazon S3 resource.',
-        }),
-    ).exactOptional(),
-    EventTriggers: EventTriggerDefinitionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of ARNs for <a>S3Resource</a> objects to trigger the <a>LambdaResource</a> objects associated with this job.',
-        }),
-    ).exactOptional(),
+    LambdaArn: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) that represents an Lambda function to be triggered by PUT object actions on the associated local Amazon S3 resource.',
+    }),
+    EventTriggers: EventTriggerDefinitionListSchema.exactOptional().openapi({
+      description:
+        'The array of ARNs for <a>S3Resource</a> objects to trigger the <a>LambdaResource</a> objects associated with this job.',
+    }),
   })
   .openapi({ description: 'Identifies ', required: [] })
   .openapi('LambdaResource')
@@ -618,10 +155,10 @@ const AmiIdSchema = z
 
 const Ec2AmiResourceSchema = z
   .object({
-    AmiId: AmiIdSchema.and(z.any().openapi({ description: 'The ID of the AMI in Amazon EC2.' })),
-    SnowballAmiId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the AMI on the Snow device.' }),
-    ).exactOptional(),
+    AmiId: AmiIdSchema.openapi({ description: 'The ID of the AMI in Amazon EC2.' }),
+    SnowballAmiId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the AMI on the Snow device.',
+    }),
   })
   .openapi({
     required: ['AmiId'],
@@ -634,17 +171,15 @@ const Ec2AmiResourceListSchema = z.array(Ec2AmiResourceSchema).openapi('Ec2AmiRe
 
 const JobResourceSchema = z
   .object({
-    S3Resources: S3ResourceListSchema.and(
-      z.any().openapi({ description: 'An array of <code>S3Resource</code> objects.' }),
-    ).exactOptional(),
-    LambdaResources: LambdaResourceListSchema.and(
-      z.any().openapi({ description: 'The Python-language Lambda functions for this job.' }),
-    ).exactOptional(),
-    Ec2AmiResources: Ec2AmiResourceListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Machine Images (AMIs) associated with this job.' }),
-    ).exactOptional(),
+    S3Resources: S3ResourceListSchema.exactOptional().openapi({
+      description: 'An array of <code>S3Resource</code> objects.',
+    }),
+    LambdaResources: LambdaResourceListSchema.exactOptional().openapi({
+      description: 'The Python-language Lambda functions for this job.',
+    }),
+    Ec2AmiResources: Ec2AmiResourceListSchema.exactOptional().openapi({
+      description: 'The Amazon Machine Images (AMIs) associated with this job.',
+    }),
   })
   .openapi({
     description:
@@ -652,49 +187,6 @@ const JobResourceSchema = z
     required: [],
   })
   .openapi('JobResource')
-
-const OnDeviceServiceConfigurationSchema: z.ZodType<OnDeviceServiceConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        NFSOnDeviceService: NFSOnDeviceServiceConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Represents the NFS (Network File System) service on a Snow Family device.',
-            }),
-        ).exactOptional(),
-        TGWOnDeviceService: TGWOnDeviceServiceConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Represents the Storage Gateway service Tape Gateway type on a Snow Family device.',
-            }),
-        ).exactOptional(),
-        EKSOnDeviceService: EKSOnDeviceServiceConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The configuration of EKS Anywhere on the Snow Family device.',
-            }),
-        ).exactOptional(),
-        S3OnDeviceService: S3OnDeviceServiceConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Configuration for Amazon S3 compatible storage on Snow family devices.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'An object that represents the metadata and configuration settings for services on an Amazon Web Services Snow Family device.',
-        required: [],
-      }),
-  )
-  .openapi('OnDeviceServiceConfiguration')
 
 const KmsKeyARNSchema = z
   .string()
@@ -708,9 +200,58 @@ const RoleARNSchema = z
   .max(255)
   .openapi('RoleARN')
 
+const AddressIdSchema = z
+  .string()
+  .regex(/ADID[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
+  .length(40)
+  .openapi('AddressId')
+
 const ShippingOptionSchema = z
   .enum(['SECOND_DAY', 'NEXT_DAY', 'EXPRESS', 'STANDARD'])
   .openapi('ShippingOption')
+
+const ShipmentSchema = z
+  .object({
+    Status: StringSchema.exactOptional().openapi({
+      description: 'Status information for a shipment.',
+    }),
+    TrackingNumber: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The tracking number for this job. Using this tracking number with your region's carrier's website, you can track a Snow device as the carrier transports it.</p> <p>For India, the carrier is Amazon Logistics. For all other regions, UPS is the carrier.</p>",
+    }),
+  })
+  .openapi({
+    description:
+      'The <code>Status</code> and <code>TrackingNumber</code> information for an inbound or outbound shipment.',
+    required: [],
+  })
+  .openapi('Shipment')
+
+const ShippingDetailsSchema = z
+  .object({
+    ShippingOption: ShippingOptionSchema.exactOptional().openapi({
+      description:
+        "<p>The shipping speed for a particular job. This speed doesn't dictate how soon you'll get the Snow device from the job's creation date. This speed represents how quickly it moves to its destination while in transit. Regional shipping speeds are as follows:</p> <ul> <li> <p>In Australia, you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the United States of America (US), you have access to one-day shipping and two-day shipping.</p> </li> </ul>",
+    }),
+    InboundShipment: ShipmentSchema.exactOptional().openapi({
+      description:
+        'The <code>Status</code> and <code>TrackingNumber</code> values for a Snow device being returned to Amazon Web Services for a particular job.',
+    }),
+    OutboundShipment: ShipmentSchema.exactOptional().openapi({
+      description:
+        'The <code>Status</code> and <code>TrackingNumber</code> values for a Snow device being delivered to the address that you specified for a particular job.',
+    }),
+  })
+  .openapi({
+    description:
+      "A job's shipping information, including inbound and outbound tracking numbers and shipping speed options.",
+    required: [],
+  })
+  .openapi('ShippingDetails')
+
+const SnowballCapacitySchema = z
+  .enum(['T50', 'T80', 'T100', 'T42', 'T98', 'T8', 'T14', 'T32', 'NoPreference', 'T240'])
+  .openapi('SnowballCapacity')
 
 const SnsTopicARNSchema = z
   .string()
@@ -720,30 +261,20 @@ const SnsTopicARNSchema = z
 
 const JobStateListSchema = z.array(JobStateSchema).openapi('JobStateList')
 
+const BooleanSchema = z.boolean().openapi('Boolean')
+
 const NotificationSchema = z
   .object({
-    SnsTopicARN: SnsTopicARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new SNS <code>TopicArn</code> that you want to associate with this job. You can create Amazon Resource Names (ARNs) for topics by using the <a href="https://docs.aws.amazon.com/sns/latest/api/API_CreateTopic.html">CreateTopic</a> Amazon SNS API action.</p> <p>You can subscribe email addresses to an Amazon SNS topic through the Amazon Web Services Management Console, or by using the <a href="https://docs.aws.amazon.com/sns/latest/api/API_Subscribe.html">Subscribe</a> Amazon Simple Notification Service (Amazon SNS) API action.</p>',
-        }),
-    ).exactOptional(),
-    JobStatesToNotify: JobStateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of job states that will trigger a notification for this job.',
-        }),
-    ).exactOptional(),
-    NotifyAll: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Any change in job state will trigger a notification for this job.',
-        }),
-    ).exactOptional(),
+    SnsTopicARN: SnsTopicARNSchema.exactOptional().openapi({
+      description:
+        '<p>The new SNS <code>TopicArn</code> that you want to associate with this job. You can create Amazon Resource Names (ARNs) for topics by using the <a href="https://docs.aws.amazon.com/sns/latest/api/API_CreateTopic.html">CreateTopic</a> Amazon SNS API action.</p> <p>You can subscribe email addresses to an Amazon SNS topic through the Amazon Web Services Management Console, or by using the <a href="https://docs.aws.amazon.com/sns/latest/api/API_Subscribe.html">Subscribe</a> Amazon Simple Notification Service (Amazon SNS) API action.</p>',
+    }),
+    JobStatesToNotify: JobStateListSchema.exactOptional().openapi({
+      description: 'The list of job states that will trigger a notification for this job.',
+    }),
+    NotifyAll: BooleanSchema.exactOptional().openapi({
+      description: 'Any change in job state will trigger a notification for this job.',
+    }),
   })
   .openapi({
     description:
@@ -752,22 +283,115 @@ const NotificationSchema = z
   })
   .openapi('Notification')
 
-const TaxDocumentsSchema: z.ZodType<TaxDocumentsType> = z
-  .lazy(() =>
-    z
-      .object({ IND: INDTaxDocumentsSchema.exactOptional() })
-      .openapi({
-        description: 'The tax documents required in your Amazon Web Services Region.',
-        required: [],
-      }),
-  )
+const LongSchema = z.int().openapi('Long')
+
+const DataTransferSchema = z
+  .object({
+    BytesTransferred: LongSchema.exactOptional().openapi({
+      description: 'The number of bytes transferred between a Snow device and Amazon S3.',
+    }),
+    ObjectsTransferred: LongSchema.exactOptional().openapi({
+      description: 'The number of objects transferred between a Snow device and Amazon S3.',
+    }),
+    TotalBytes: LongSchema.exactOptional().openapi({
+      description:
+        'The total bytes of data for a transfer between a Snow device and Amazon S3. This value is set to 0 (zero) until all the keys that will be transferred have been listed.',
+    }),
+    TotalObjects: LongSchema.exactOptional().openapi({
+      description:
+        'The total number of objects for a transfer between a Snow device and Amazon S3. This value is set to 0 (zero) until all the keys that will be transferred have been listed.',
+    }),
+  })
+  .openapi({
+    description:
+      "Defines the real-time status of a Snow device's data transfer while the device is at Amazon Web Services. This data is only available while a job has a <code>JobState</code> value of <code>InProgress</code>, for both import and export jobs.",
+    required: [],
+  })
+  .openapi('DataTransfer')
+
+const JobLogsSchema = z
+  .object({
+    JobCompletionReportURI: StringSchema.exactOptional().openapi({
+      description:
+        'A link to an Amazon S3 presigned URL where the job completion report is located.',
+    }),
+    JobSuccessLogURI: StringSchema.exactOptional().openapi({
+      description: 'A link to an Amazon S3 presigned URL where the job success log is located.',
+    }),
+    JobFailureLogURI: StringSchema.exactOptional().openapi({
+      description: 'A link to an Amazon S3 presigned URL where the job failure log is located.',
+    }),
+  })
+  .openapi({
+    description:
+      "<p>Contains job logs. Whenever a Snow device is used to import data into or export data out of Amazon S3, you'll have the option of downloading a PDF job report. Job logs are returned as a part of the response syntax of the <code>DescribeJob</code> action in the <code>JobMetadata</code> data type. The job logs can be accessed for up to 60 minutes after this request has been made. To access any of the job logs after 60 minutes have passed, you'll have to make another call to the <code>DescribeJob</code> action.</p> <p>For import jobs, the PDF job report becomes available at the end of the import process. For export jobs, your job report typically becomes available while the Snow device for your job part is being delivered to you.</p> <p>The job report provides you insight into the state of your Amazon S3 data transfer. The report includes details about your job or job part for your records.</p> <p>For deeper visibility into the status of your transferred objects, you can look at the two associated logs: a success log and a failure log. The logs are saved in comma-separated value (CSV) format, and the name of each log includes the ID of the job or job part that the log describes.</p>",
+    required: [],
+  })
+  .openapi('JobLogs')
+
+const GSTINSchema = z
+  .string()
+  .regex(/\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/)
+  .length(15)
+  .openapi('GSTIN')
+
+const INDTaxDocumentsSchema = z
+  .object({
+    GSTIN: GSTINSchema.exactOptional().openapi({
+      description:
+        'The Goods and Services Tax (GST) documents required in Amazon Web Services Region in India.',
+    }),
+  })
+  .openapi({
+    description: 'The tax documents required in Amazon Web Services Region in India.',
+    required: [],
+  })
+  .openapi('INDTaxDocuments')
+
+const TaxDocumentsSchema = z
+  .object({ IND: INDTaxDocumentsSchema.exactOptional() })
+  .openapi({
+    description: 'The tax documents required in your Amazon Web Services Region.',
+    required: [],
+  })
   .openapi('TaxDocuments')
+
+const WirelessConnectionSchema = z
+  .object({
+    IsWifiEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Enables the Wi-Fi adapter on an Snowcone device.',
+    }),
+  })
+  .openapi({
+    description: 'Configures the wireless connection on an Snowcone device.',
+    required: [],
+  })
+  .openapi('WirelessConnection')
+
+const SnowconeDeviceConfigurationSchema = z
+  .object({
+    WirelessConnection: WirelessConnectionSchema.exactOptional().openapi({
+      description: 'Configures the wireless connection for the Snowcone device.',
+    }),
+  })
+  .openapi({ description: 'Specifies the device configuration for an Snowcone job.', required: [] })
+  .openapi('SnowconeDeviceConfiguration')
+
+const DeviceConfigurationSchema = z
+  .object({
+    SnowconeDeviceConfiguration: SnowconeDeviceConfigurationSchema.exactOptional().openapi({
+      description: 'Returns information about the device configuration for an Snowcone job.',
+    }),
+  })
+  .openapi({
+    description: 'The container for <code>SnowconeDeviceConfiguration</code>. ',
+    required: [],
+  })
+  .openapi('DeviceConfiguration')
 
 const RemoteManagementSchema = z
   .enum(['INSTALLED_ONLY', 'INSTALLED_AUTOSTART'])
   .openapi('RemoteManagement')
-
-const InitialClusterSizeSchema = z.int().min(0).max(16).openapi('InitialClusterSize')
 
 const LongTermPricingIdSchema = z
   .string()
@@ -775,146 +399,446 @@ const LongTermPricingIdSchema = z
   .length(41)
   .openapi('LongTermPricingId')
 
+const StorageLimitSchema = z.int().min(0).openapi('StorageLimit')
+
+const StorageUnitSchema = z.literal('TB').openapi('StorageUnit')
+
+const NFSOnDeviceServiceConfigurationSchema = z
+  .object({
+    StorageLimit: StorageLimitSchema.exactOptional().openapi({
+      description: 'The maximum NFS storage for one Snow Family device.',
+    }),
+    StorageUnit: StorageUnitSchema.exactOptional().openapi({
+      description:
+        '<p>The scale unit of the NFS storage on the device.</p> <p>Valid values: TB.</p>',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that represents the metadata and configuration settings for the NFS (Network File System) service on an Amazon Web Services Snow Family device.',
+    required: [],
+  })
+  .openapi('NFSOnDeviceServiceConfiguration')
+
+const TGWOnDeviceServiceConfigurationSchema = z
+  .object({
+    StorageLimit: StorageLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of virtual tapes to store on one Snow Family device. Due to physical resource limitations, this value must be set to 80 for Snowball Edge.',
+    }),
+    StorageUnit: StorageUnitSchema.exactOptional().openapi({
+      description: 'The scale unit of the virtual tapes on the device.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that represents the metadata and configuration settings for the Storage Gateway service Tape Gateway type on an Amazon Web Services Snow Family device.',
+    required: [],
+  })
+  .openapi('TGWOnDeviceServiceConfiguration')
+
+const EKSOnDeviceServiceConfigurationSchema = z
+  .object({
+    KubernetesVersion: StringSchema.exactOptional().openapi({
+      description: 'The Kubernetes version for EKS Anywhere on the Snow Family device.',
+    }),
+    EKSAnywhereVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of EKS Anywhere on the Snow Family device.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object representing the metadata and configuration settings of EKS Anywhere on the Snow Family device.',
+    required: [],
+  })
+  .openapi('EKSOnDeviceServiceConfiguration')
+
+const S3StorageLimitSchema = z.float64().min(0).openapi('S3StorageLimit')
+
+const ServiceSizeSchema = z.int().min(3).max(16).openapi('ServiceSize')
+
+const NodeFaultToleranceSchema = z.int().min(1).max(4).openapi('NodeFaultTolerance')
+
+const S3OnDeviceServiceConfigurationSchema = z
+  .object({
+    StorageLimit: S3StorageLimitSchema.exactOptional().openapi({
+      description:
+        'If the specified storage limit value matches storage limit of one of the defined configurations, that configuration will be used. If the specified storage limit value does not match any defined configuration, the request will fail. If more than one configuration has the same storage limit as specified, the other input need to be provided.',
+    }),
+    StorageUnit: StorageUnitSchema.exactOptional().openapi({
+      description: 'Storage unit. Currently the only supported unit is TB.',
+    }),
+    ServiceSize: ServiceSizeSchema.exactOptional().openapi({
+      description:
+        'Applicable when creating a cluster. Specifies how many nodes are needed for Amazon S3 compatible storage on Snow family devices. If specified, the other input can be omitted.',
+    }),
+    FaultTolerance: NodeFaultToleranceSchema.exactOptional().openapi({
+      description:
+        '&gt;Fault tolerance level of the cluster. This indicates the number of nodes that can go down without degrading the performance of the cluster. This additional input helps when the specified <code>StorageLimit</code> matches more than one Amazon S3 compatible storage on Snow family devices service configuration.',
+    }),
+  })
+  .openapi({
+    description: 'Amazon S3 compatible storage on Snow family devices configuration items.',
+    required: [],
+  })
+  .openapi('S3OnDeviceServiceConfiguration')
+
+const OnDeviceServiceConfigurationSchema = z
+  .object({
+    NFSOnDeviceService: NFSOnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description: 'Represents the NFS (Network File System) service on a Snow Family device.',
+    }),
+    TGWOnDeviceService: TGWOnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description:
+        'Represents the Storage Gateway service Tape Gateway type on a Snow Family device.',
+    }),
+    EKSOnDeviceService: EKSOnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of EKS Anywhere on the Snow Family device.',
+    }),
+    S3OnDeviceService: S3OnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration for Amazon S3 compatible storage on Snow family devices.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that represents the metadata and configuration settings for services on an Amazon Web Services Snow Family device.',
+    required: [],
+  })
+  .openapi('OnDeviceServiceConfiguration')
+
+const JobMetadataSchema = z
+  .object({
+    JobId: StringSchema.exactOptional().openapi({
+      description:
+        'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    JobState: JobStateSchema.exactOptional().openapi({
+      description: 'The current status of the jobs.',
+    }),
+    JobType: JobTypeSchema.exactOptional().openapi({ description: 'The type of job.' }),
+    SnowballType: SnowballTypeSchema.exactOptional().openapi({
+      description: 'The type of device used with this job.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The creation date for this job.',
+    }),
+    Resources: JobResourceSchema.exactOptional().openapi({
+      description:
+        'An array of <code>S3Resource</code> objects. Each <code>S3Resource</code> object represents an Amazon S3 bucket that your transferred data will be exported from or imported into.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the job, provided at job creation.',
+    }),
+    KmsKeyARN: KmsKeyARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the Key Management Service (KMS) key associated with this job. This ARN was created using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> API action in KMS.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        'The role ARN associated with this job. This ARN was created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> API action in Identity and Access Management.',
+    }),
+    AddressId: AddressIdSchema.exactOptional().openapi({
+      description: 'The ID for the address that you want the Snow device shipped to.',
+    }),
+    ShippingDetails: ShippingDetailsSchema.exactOptional().openapi({
+      description:
+        "A job's shipping information, including inbound and outbound tracking numbers and shipping speed options.",
+    }),
+    SnowballCapacityPreference: SnowballCapacitySchema.exactOptional().openapi({
+      description:
+        '<p>The Snow device capacity preference for this job, specified at job creation. In US regions, you can choose between 50 TB and 80 TB Snowballs. All other regions use 80 TB capacity Snowballs.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
+    }),
+    Notification: NotificationSchema.exactOptional().openapi({
+      description:
+        'The Amazon Simple Notification Service (Amazon SNS) notification settings associated with a specific job. The <code>Notification</code> object is returned as a part of the response syntax of the <code>DescribeJob</code> action in the <code>JobMetadata</code> data type.',
+    }),
+    DataTransferProgress: DataTransferSchema.exactOptional().openapi({
+      description:
+        "A value that defines the real-time status of a Snow device's data transfer while the device is at Amazon Web Services. This data is only available while a job has a <code>JobState</code> value of <code>InProgress</code>, for both import and export jobs.",
+    }),
+    JobLogInfo: JobLogsSchema.exactOptional().openapi({
+      description:
+        'Links to Amazon S3 presigned URLs for the job report and logs. For import jobs, the PDF job report becomes available at the end of the import process. For export jobs, your job report typically becomes available while the Snow device for your job part is being delivered to you.',
+    }),
+    ClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'The 39-character ID for the cluster, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    ForwardingAddressId: AddressIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the address that you want a job shipped to, after it will be shipped to its primary address. This field is not supported in most regions.',
+    }),
+    TaxDocuments: TaxDocumentsSchema.exactOptional().openapi({
+      description:
+        'The metadata associated with the tax documents required in your Amazon Web Services Region.',
+    }),
+    DeviceConfiguration: DeviceConfigurationSchema.exactOptional(),
+    RemoteManagement: RemoteManagementSchema.exactOptional().openapi({
+      description:
+        'Allows you to securely operate and manage Snowcone devices remotely from outside of your internal network. When set to <code>INSTALLED_AUTOSTART</code>, remote management will automatically be available when the device arrives at your location. Otherwise, you need to use the Snowball Client to manage the device.',
+    }),
+    LongTermPricingId: LongTermPricingIdSchema.exactOptional().openapi({
+      description: 'The ID of the long-term pricing type for the device.',
+    }),
+    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description:
+        'Represents metadata and configuration settings for services on an Amazon Web Services Snow Family device.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains information about a specific job including shipping information, job status, and other important metadata. This information is returned as a part of the response syntax of the <code>DescribeJob</code> action.',
+    required: [],
+  })
+  .openapi('JobMetadata')
+
+const JobMetadataListSchema = z.array(JobMetadataSchema).openapi('JobMetadataList')
+
+type DescribeJobResultType = {
+  JobMetadata?: z.infer<typeof JobMetadataSchema> & unknown
+  SubJobMetadata?: z.infer<typeof JobMetadataListSchema> & unknown
+}
+
+const CancelClusterResultSchema = z.looseObject({}).openapi('CancelClusterResult')
+
+const ClusterIdSchema = z
+  .string()
+  .regex(/CID[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
+  .length(39)
+  .openapi('ClusterId')
+
+const CancelClusterRequestSchema = z
+  .object({
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'The 39-character ID for the cluster that you want to cancel, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+  })
+  .openapi({ required: ['ClusterId'], title: 'CancelClusterRequest' })
+  .openapi('CancelClusterRequest')
+
+const KMSRequestFailedExceptionSchema = z.any().openapi('KMSRequestFailedException')
+
+const InvalidJobStateExceptionSchema = z.any().openapi('InvalidJobStateException')
+
+const InvalidResourceExceptionSchema = z.any().openapi('InvalidResourceException')
+
+const CancelJobResultSchema = z.looseObject({}).openapi('CancelJobResult')
+
+const JobIdSchema = z
+  .string()
+  .regex(/(M|J)ID[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
+  .length(39)
+  .openapi('JobId')
+
+const CancelJobRequestSchema = z
+  .object({
+    JobId: JobIdSchema.openapi({
+      description:
+        'The 39-character job ID for the job that you want to cancel, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+  })
+  .openapi({ required: ['JobId'], title: 'CancelJobRequest' })
+  .openapi('CancelJobRequest')
+
+const CreateAddressResultSchema = z
+  .object({
+    AddressId: StringSchema.exactOptional().openapi({
+      description:
+        "The automatically generated ID for a specific address. You'll use this ID when you create a job to specify which address you want the Snow device for that job shipped to.",
+    }),
+  })
+  .openapi({ example: { AddressId: 'ADID1234ab12-3eec-4eb3-9be6-9374c10eb51b' }, required: [] })
+  .openapi('CreateAddressResult')
+
+const AddressSchema = z
+  .object({
+    AddressId: AddressIdSchema.exactOptional().openapi({
+      description: 'The unique ID for an address.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of a person to receive a Snow device at an address.',
+    }),
+    Company: StringSchema.exactOptional().openapi({
+      description: 'The name of the company to receive a Snow device at an address.',
+    }),
+    Street1: StringSchema.exactOptional().openapi({
+      description: 'The first line in a street address that a Snow device is to be delivered to.',
+    }),
+    Street2: StringSchema.exactOptional().openapi({
+      description: 'The second line in a street address that a Snow device is to be delivered to.',
+    }),
+    Street3: StringSchema.exactOptional().openapi({
+      description: 'The third line in a street address that a Snow device is to be delivered to.',
+    }),
+    City: StringSchema.exactOptional().openapi({
+      description: 'The city in an address that a Snow device is to be delivered to.',
+    }),
+    StateOrProvince: StringSchema.exactOptional().openapi({
+      description: 'The state or province in an address that a Snow device is to be delivered to.',
+    }),
+    PrefectureOrDistrict: StringSchema.exactOptional().openapi({
+      description: 'This field is no longer used and the value is ignored.',
+    }),
+    Landmark: StringSchema.exactOptional().openapi({
+      description: 'This field is no longer used and the value is ignored.',
+    }),
+    Country: StringSchema.exactOptional().openapi({
+      description: 'The country in an address that a Snow device is to be delivered to.',
+    }),
+    PostalCode: StringSchema.exactOptional().openapi({
+      description: 'The postal code in an address that a Snow device is to be delivered to.',
+    }),
+    PhoneNumber: StringSchema.exactOptional().openapi({
+      description:
+        'The phone number associated with an address that a Snow device is to be delivered to.',
+    }),
+    IsRestricted: BooleanSchema.exactOptional().openapi({
+      description:
+        'If the address you are creating is a primary address, then set this option to true. This field is not supported in most regions.',
+    }),
+  })
+  .openapi({
+    description:
+      'The address that you want the Snow device(s) associated with a specific job to be shipped to. Addresses are validated at the time of creation. The address you provide must be located within the serviceable area of your region. Although no individual elements of the <code>Address</code> are required, if the address is invalid or unsupported, then an exception is thrown.',
+    required: [],
+  })
+  .openapi('Address')
+
+const CreateAddressRequestSchema = z
+  .object({
+    Address: AddressSchema.openapi({
+      description: 'The address that you want the Snow device shipped to.',
+    }),
+  })
+  .openapi({ required: ['Address'], title: 'CreateAddressRequest' })
+  .openapi('CreateAddressRequest')
+
+const InvalidAddressExceptionSchema = z.any().openapi('InvalidAddressException')
+
+const UnsupportedAddressExceptionSchema = z.any().openapi('UnsupportedAddressException')
+
+const JobListEntrySchema = z
+  .object({
+    JobId: StringSchema.exactOptional().openapi({
+      description:
+        'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    JobState: JobStateSchema.exactOptional().openapi({
+      description: 'The current state of this job.',
+    }),
+    IsMaster: BooleanSchema.exactOptional().openapi({
+      description:
+        "A value that indicates that this job is a main job. A main job represents a successful request to create an export job. Main jobs aren't associated with any Snowballs. Instead, each main job will have at least one job part, and each job part is associated with a Snowball. It might take some time before the job parts associated with a particular main job are listed, because they are created after the main job is created.",
+    }),
+    JobType: JobTypeSchema.exactOptional().openapi({ description: 'The type of job.' }),
+    SnowballType: SnowballTypeSchema.exactOptional().openapi({
+      description: 'The type of device used with this job.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The creation date for this job.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description:
+        'The optional description of this specific job, for example <code>Important Photos 2016-08-11</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      "Each <code>JobListEntry</code> object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of an export job.",
+    required: [],
+  })
+  .openapi('JobListEntry')
+
+const JobListEntryListSchema = z.array(JobListEntrySchema).openapi('JobListEntryList')
+
+const CreateClusterResultSchema = z
+  .object({
+    ClusterId: ClusterIdSchema.exactOptional().openapi({
+      description: 'The automatically generated ID for a cluster.',
+    }),
+    JobListEntries: JobListEntryListSchema.exactOptional().openapi({
+      description:
+        'List of jobs created for this cluster. For syntax, see <a href="https://docs.aws.amazon.com/snowball/latest/api-reference/API_ListJobs.html#API_ListJobs_ResponseSyntax">ListJobsResult$JobListEntries</a> in this guide.',
+    }),
+  })
+  .openapi({ example: { ClusterId: 'CID123e4567-e89b-12d3-a456-426655440000' }, required: [] })
+  .openapi('CreateClusterResult')
+
+const InitialClusterSizeSchema = z.int().min(0).max(16).openapi('InitialClusterSize')
+
 const LongTermPricingIdListSchema = z
   .array(LongTermPricingIdSchema)
   .openapi('LongTermPricingIdList')
 
-const SnowballCapacitySchema = z
-  .enum(['T50', 'T80', 'T100', 'T42', 'T98', 'T8', 'T14', 'T32', 'NoPreference', 'T240'])
-  .openapi('SnowballCapacity')
-
 const CreateClusterRequestSchema = z
   .object({
-    JobType: JobTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of job for this cluster. Currently, the only job type supported for clusters is <code>LOCAL_USE</code>.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
-        }),
-    ),
-    Resources: JobResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resources associated with the cluster job. These resources include Amazon S3 buckets and optional Lambda functions written in the Python language. ',
-        }),
-    ).exactOptional(),
-    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family device clusters support Amazon S3 and NFS (Network File System).',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional description of this specific cluster, for example <code>Environmental Data Cluster-01</code>.',
-        }),
-    ).exactOptional(),
-    AddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID for the address that you want the cluster shipped to.' }),
-    ),
-    KmsKeyARN: KmsKeyARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>KmsKeyARN</code> value that you want to associate with this cluster. <code>KmsKeyARN</code> values are created by using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> API action in Key Management Service (KMS). ',
-        }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RoleARN</code> that you want to associate with this cluster. <code>RoleArn</code> values are created by using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> API action in Identity and Access Management (IAM).',
-        }),
-    ).exactOptional(),
-    SnowballType: SnowballTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of Snow Family devices to use for this cluster. </p> <note> <p>For cluster jobs, Amazon Web Services Snow Family currently supports only the <code>EDGE</code> device type.</p> </note> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
-        }),
-    ),
-    ShippingOption: ShippingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The shipping speed for each node in this cluster. This speed doesn't dictate how soon you'll get each Snowball Edge device, rather it represents how quickly each device moves to its destination while in transit. Regional shipping speeds are as follows: </p> <ul> <li> <p>In Australia, you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the United States of America (US), you have access to one-day shipping and two-day shipping.</p> </li> </ul> <ul> <li> <p>In Australia, you have access to express shipping. Typically, devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the US, you have access to one-day shipping and two-day shipping.</p> </li> </ul>",
-        }),
-    ),
-    Notification: NotificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Simple Notification Service (Amazon SNS) notification settings for this cluster.',
-        }),
-    ).exactOptional(),
-    ForwardingAddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forwarding address ID for a cluster. This field is not supported in most regions.',
-        }),
-    ).exactOptional(),
-    TaxDocuments: TaxDocumentsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tax documents required in your Amazon Web Services Region.' }),
-    ).exactOptional(),
-    RemoteManagement: RemoteManagementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows you to securely operate and manage Snow devices in a cluster remotely from outside of your internal network. When set to <code>INSTALLED_AUTOSTART</code>, remote management will automatically be available when the device arrives at your location. Otherwise, you need to use the Snowball Client to manage the device.',
-        }),
-    ).exactOptional(),
-    InitialClusterSize: InitialClusterSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If provided, each job will be automatically created and associated with the new cluster. If not provided, will be treated as 0.',
-        }),
-    ).exactOptional(),
-    ForceCreateJobs: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Force to create cluster when user attempts to overprovision or underprovision a cluster. A cluster is overprovisioned or underprovisioned if the initial size of the cluster is more (overprovisioned) or less (underprovisioned) than what needed to meet capacity requirement specified with <code>OnDeviceServiceConfiguration</code>.',
-        }),
-    ).exactOptional(),
-    LongTermPricingIds: LongTermPricingIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists long-term pricing id that will be used to associate with jobs automatically created for the new cluster.',
-        }),
-    ).exactOptional(),
-    SnowballCapacityPreference: SnowballCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If your job is being created in one of the US regions, you have the option of specifying what size Snow device you\'d like for this job. In all other regions, Snowballs come with 80 TB in storage capacity.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    JobType: JobTypeSchema.openapi({
+      description:
+        '<p>The type of job for this cluster. Currently, the only job type supported for clusters is <code>LOCAL_USE</code>.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
+    }),
+    Resources: JobResourceSchema.exactOptional().openapi({
+      description:
+        'The resources associated with the cluster job. These resources include Amazon S3 buckets and optional Lambda functions written in the Python language. ',
+    }),
+    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family device clusters support Amazon S3 and NFS (Network File System).',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description:
+        'An optional description of this specific cluster, for example <code>Environmental Data Cluster-01</code>.',
+    }),
+    AddressId: AddressIdSchema.openapi({
+      description: 'The ID for the address that you want the cluster shipped to.',
+    }),
+    KmsKeyARN: KmsKeyARNSchema.exactOptional().openapi({
+      description:
+        'The <code>KmsKeyARN</code> value that you want to associate with this cluster. <code>KmsKeyARN</code> values are created by using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> API action in Key Management Service (KMS). ',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        'The <code>RoleARN</code> that you want to associate with this cluster. <code>RoleArn</code> values are created by using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> API action in Identity and Access Management (IAM).',
+    }),
+    SnowballType: SnowballTypeSchema.openapi({
+      description:
+        '<p>The type of Snow Family devices to use for this cluster. </p> <note> <p>For cluster jobs, Amazon Web Services Snow Family currently supports only the <code>EDGE</code> device type.</p> </note> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
+    }),
+    ShippingOption: ShippingOptionSchema.openapi({
+      description:
+        "<p>The shipping speed for each node in this cluster. This speed doesn't dictate how soon you'll get each Snowball Edge device, rather it represents how quickly each device moves to its destination while in transit. Regional shipping speeds are as follows: </p> <ul> <li> <p>In Australia, you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the United States of America (US), you have access to one-day shipping and two-day shipping.</p> </li> </ul> <ul> <li> <p>In Australia, you have access to express shipping. Typically, devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the US, you have access to one-day shipping and two-day shipping.</p> </li> </ul>",
+    }),
+    Notification: NotificationSchema.exactOptional().openapi({
+      description:
+        'The Amazon Simple Notification Service (Amazon SNS) notification settings for this cluster.',
+    }),
+    ForwardingAddressId: AddressIdSchema.exactOptional().openapi({
+      description:
+        'The forwarding address ID for a cluster. This field is not supported in most regions.',
+    }),
+    TaxDocuments: TaxDocumentsSchema.exactOptional().openapi({
+      description: 'The tax documents required in your Amazon Web Services Region.',
+    }),
+    RemoteManagement: RemoteManagementSchema.exactOptional().openapi({
+      description:
+        'Allows you to securely operate and manage Snow devices in a cluster remotely from outside of your internal network. When set to <code>INSTALLED_AUTOSTART</code>, remote management will automatically be available when the device arrives at your location. Otherwise, you need to use the Snowball Client to manage the device.',
+    }),
+    InitialClusterSize: InitialClusterSizeSchema.exactOptional().openapi({
+      description:
+        'If provided, each job will be automatically created and associated with the new cluster. If not provided, will be treated as 0.',
+    }),
+    ForceCreateJobs: BooleanSchema.exactOptional().openapi({
+      description:
+        'Force to create cluster when user attempts to overprovision or underprovision a cluster. A cluster is overprovisioned or underprovisioned if the initial size of the cluster is more (overprovisioned) or less (underprovisioned) than what needed to meet capacity requirement specified with <code>OnDeviceServiceConfiguration</code>.',
+    }),
+    LongTermPricingIds: LongTermPricingIdListSchema.exactOptional().openapi({
+      description:
+        'Lists long-term pricing id that will be used to associate with jobs automatically created for the new cluster.',
+    }),
+    SnowballCapacityPreference: SnowballCapacitySchema.exactOptional().openapi({
+      description:
+        '<p>If your job is being created in one of the US regions, you have the option of specifying what size Snow device you\'d like for this job. In all other regions, Snowballs come with 80 TB in storage capacity.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['JobType', 'AddressId', 'SnowballType', 'ShippingOption'],
@@ -928,162 +852,80 @@ const Ec2RequestFailedExceptionSchema = z.any().openapi('Ec2RequestFailedExcepti
 
 const CreateJobResultSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
   })
   .openapi({ example: { JobId: 'JID123e4567-e89b-12d3-a456-426655440000' }, required: [] })
   .openapi('CreateJobResult')
 
-const DeviceConfigurationSchema: z.ZodType<DeviceConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        SnowconeDeviceConfiguration: SnowconeDeviceConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Returns information about the device configuration for an Snowcone job.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'The container for <code>SnowconeDeviceConfiguration</code>. ',
-        required: [],
-      }),
-  )
-  .openapi('DeviceConfiguration')
-
 const CreateJobRequestSchema = z
   .object({
-    JobType: JobTypeSchema.and(
-      z.any().openapi({ description: "Defines the type of job that you're creating. " }),
-    ).exactOptional(),
-    Resources: JobResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines the Amazon S3 buckets associated with this job.</p> <p>With <code>IMPORT</code> jobs, you specify the bucket or buckets that your transferred data will be imported into.</p> <p>With <code>EXPORT</code> jobs, you specify the bucket or buckets that your transferred data will be exported from. Optionally, you can also specify a <code>KeyRange</code> value. If you choose to export a range, you define the length of the range by providing either an inclusive <code>BeginMarker</code> value, an inclusive <code>EndMarker</code> value, or both. Ranges are UTF-8 binary sorted.</p>',
-        }),
-    ).exactOptional(),
-    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family supports Amazon S3 and NFS (Network File System) and the Amazon Web Services Storage Gateway service Tape Gateway type.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines an optional description of this specific job, for example <code>Important Photos 2016-08-11</code>.',
-        }),
-    ).exactOptional(),
-    AddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID for the address that you want the Snow device shipped to.',
-        }),
-    ).exactOptional(),
-    KmsKeyARN: KmsKeyARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>KmsKeyARN</code> that you want to associate with this job. <code>KmsKeyARN</code>s are created using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> Key Management Service (KMS) API action.',
-        }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RoleARN</code> that you want to associate with this job. <code>RoleArn</code>s are created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> Identity and Access Management (IAM) API action.',
-        }),
-    ).exactOptional(),
-    SnowballCapacityPreference: SnowballCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If your job is being created in one of the US regions, you have the option of specifying what size Snow device you\'d like for this job. In all other regions, Snowballs come with 80 TB in storage capacity.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ShippingOption: ShippingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The shipping speed for this job. This speed doesn't dictate how soon you'll get the Snow device, rather it represents how quickly the Snow device moves to its destination while in transit. Regional shipping speeds are as follows:</p> <ul> <li> <p>In Australia, you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the US, you have access to one-day shipping and two-day shipping.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Notification: NotificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the Amazon Simple Notification Service (Amazon SNS) notification settings for this job.',
-        }),
-    ).exactOptional(),
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of a cluster. If you're creating a job for a node in a cluster, you need to provide only this <code>clusterId</code> value. The other job attributes are inherited from the cluster.",
-        }),
-    ).exactOptional(),
-    SnowballType: SnowballTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of Snow Family devices to use for this job. </p> <note> <p>For cluster jobs, Amazon Web Services Snow Family currently supports only the <code>EDGE</code> device type.</p> </note> <p>The type of Amazon Web Services Snow device to use for this job. Currently, the only supported device type for cluster jobs is <code>EDGE</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/snowball/latest/developer-guide/device-differences.html">Snowball Edge Device Options</a> in the Snowball Edge Developer Guide.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ForwardingAddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forwarding address ID for a job. This field is not supported in most Regions.',
-        }),
-    ).exactOptional(),
-    TaxDocuments: TaxDocumentsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tax documents required in your Amazon Web Services Region.' }),
-    ).exactOptional(),
-    DeviceConfiguration: DeviceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines the device configuration for an Snowcone job.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    RemoteManagement: RemoteManagementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows you to securely operate and manage Snowcone devices remotely from outside of your internal network. When set to <code>INSTALLED_AUTOSTART</code>, remote management will automatically be available when the device arrives at your location. Otherwise, you need to use the Snowball Client to manage the device.',
-        }),
-    ).exactOptional(),
-    LongTermPricingId: LongTermPricingIdSchema.and(
-      z.any().openapi({ description: 'The ID of the long-term pricing type for the device.' }),
-    ).exactOptional(),
+    JobType: JobTypeSchema.exactOptional().openapi({
+      description: "Defines the type of job that you're creating. ",
+    }),
+    Resources: JobResourceSchema.exactOptional().openapi({
+      description:
+        '<p>Defines the Amazon S3 buckets associated with this job.</p> <p>With <code>IMPORT</code> jobs, you specify the bucket or buckets that your transferred data will be imported into.</p> <p>With <code>EXPORT</code> jobs, you specify the bucket or buckets that your transferred data will be exported from. Optionally, you can also specify a <code>KeyRange</code> value. If you choose to export a range, you define the length of the range by providing either an inclusive <code>BeginMarker</code> value, an inclusive <code>EndMarker</code> value, or both. Ranges are UTF-8 binary sorted.</p>',
+    }),
+    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family supports Amazon S3 and NFS (Network File System) and the Amazon Web Services Storage Gateway service Tape Gateway type.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description:
+        'Defines an optional description of this specific job, for example <code>Important Photos 2016-08-11</code>.',
+    }),
+    AddressId: AddressIdSchema.exactOptional().openapi({
+      description: 'The ID for the address that you want the Snow device shipped to.',
+    }),
+    KmsKeyARN: KmsKeyARNSchema.exactOptional().openapi({
+      description:
+        'The <code>KmsKeyARN</code> that you want to associate with this job. <code>KmsKeyARN</code>s are created using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> Key Management Service (KMS) API action.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        'The <code>RoleARN</code> that you want to associate with this job. <code>RoleArn</code>s are created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> Identity and Access Management (IAM) API action.',
+    }),
+    SnowballCapacityPreference: SnowballCapacitySchema.exactOptional().openapi({
+      description:
+        '<p>If your job is being created in one of the US regions, you have the option of specifying what size Snow device you\'d like for this job. In all other regions, Snowballs come with 80 TB in storage capacity.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
+    }),
+    ShippingOption: ShippingOptionSchema.exactOptional().openapi({
+      description:
+        "<p>The shipping speed for this job. This speed doesn't dictate how soon you'll get the Snow device, rather it represents how quickly the Snow device moves to its destination while in transit. Regional shipping speeds are as follows:</p> <ul> <li> <p>In Australia, you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the US, you have access to one-day shipping and two-day shipping.</p> </li> </ul>",
+    }),
+    Notification: NotificationSchema.exactOptional().openapi({
+      description:
+        'Defines the Amazon Simple Notification Service (Amazon SNS) notification settings for this job.',
+    }),
+    ClusterId: ClusterIdSchema.exactOptional().openapi({
+      description:
+        "The ID of a cluster. If you're creating a job for a node in a cluster, you need to provide only this <code>clusterId</code> value. The other job attributes are inherited from the cluster.",
+    }),
+    SnowballType: SnowballTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of Snow Family devices to use for this job. </p> <note> <p>For cluster jobs, Amazon Web Services Snow Family currently supports only the <code>EDGE</code> device type.</p> </note> <p>The type of Amazon Web Services Snow device to use for this job. Currently, the only supported device type for cluster jobs is <code>EDGE</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/snowball/latest/developer-guide/device-differences.html">Snowball Edge Device Options</a> in the Snowball Edge Developer Guide.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
+    }),
+    ForwardingAddressId: AddressIdSchema.exactOptional().openapi({
+      description:
+        'The forwarding address ID for a job. This field is not supported in most Regions.',
+    }),
+    TaxDocuments: TaxDocumentsSchema.exactOptional().openapi({
+      description: 'The tax documents required in your Amazon Web Services Region.',
+    }),
+    DeviceConfiguration: DeviceConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Defines the device configuration for an Snowcone job.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
+    }),
+    RemoteManagement: RemoteManagementSchema.exactOptional().openapi({
+      description:
+        'Allows you to securely operate and manage Snowcone devices remotely from outside of your internal network. When set to <code>INSTALLED_AUTOSTART</code>, remote management will automatically be available when the device arrives at your location. Otherwise, you need to use the Snowball Client to manage the device.',
+    }),
+    LongTermPricingId: LongTermPricingIdSchema.exactOptional().openapi({
+      description: 'The ID of the long-term pricing type for the device.',
+    }),
   })
   .openapi({ title: 'CreateJobRequest', required: [] })
   .openapi('CreateJobRequest')
@@ -1092,9 +934,9 @@ const ClusterLimitExceededExceptionSchema = z.any().openapi('ClusterLimitExceede
 
 const CreateLongTermPricingResultSchema = z
   .object({
-    LongTermPricingId: LongTermPricingIdSchema.and(
-      z.any().openapi({ description: 'The ID of the long-term pricing type for the device.' }),
-    ).exactOptional(),
+    LongTermPricingId: LongTermPricingIdSchema.exactOptional().openapi({
+      description: 'The ID of the long-term pricing type for the device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLongTermPricingResult')
@@ -1107,29 +949,17 @@ const JavaBooleanSchema = z.boolean().openapi('JavaBoolean')
 
 const CreateLongTermPricingRequestSchema = z
   .object({
-    LongTermPricingType: LongTermPricingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of long-term pricing option you want for the device, either 1-year or 3-year long-term pricing.',
-        }),
-    ),
-    IsLongTermPricingAutoRenew: JavaBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the current long-term pricing type for the device should be renewed.',
-        }),
-    ).exactOptional(),
-    SnowballType: SnowballTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of Snow Family devices to use for the long-term pricing job.',
-        }),
-    ).exactOptional(),
+    LongTermPricingType: LongTermPricingTypeSchema.openapi({
+      description:
+        'The type of long-term pricing option you want for the device, either 1-year or 3-year long-term pricing.',
+    }),
+    IsLongTermPricingAutoRenew: JavaBooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the current long-term pricing type for the device should be renewed.',
+    }),
+    SnowballType: SnowballTypeSchema.exactOptional().openapi({
+      description: 'The type of Snow Family devices to use for the long-term pricing job.',
+    }),
   })
   .openapi({ required: ['LongTermPricingType'], title: 'CreateLongTermPricingRequest' })
   .openapi('CreateLongTermPricingRequest')
@@ -1140,36 +970,24 @@ const ShippingLabelStatusSchema = z
 
 const CreateReturnShippingLabelResultSchema = z
   .object({
-    Status: ShippingLabelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status information of the task on a Snow device that is being returned to Amazon Web Services.',
-        }),
-    ).exactOptional(),
+    Status: ShippingLabelStatusSchema.exactOptional().openapi({
+      description:
+        'The status information of the task on a Snow device that is being returned to Amazon Web Services.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateReturnShippingLabelResult')
 
 const CreateReturnShippingLabelRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID for a job that you want to create the return shipping label for; for example, <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
-    ShippingOption: ShippingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The shipping speed for a particular job. This speed doesn't dictate how soon the device is returned to Amazon Web Services. This speed represents how quickly it moves to its destination while in transit. Regional shipping speeds are as follows:",
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The ID for a job that you want to create the return shipping label for; for example, <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    ShippingOption: ShippingOptionSchema.exactOptional().openapi({
+      description:
+        "The shipping speed for a particular job. This speed doesn't dictate how soon the device is returned to Amazon Web Services. This speed represents how quickly it moves to its destination while in transit. Regional shipping speeds are as follows:",
+    }),
   })
   .openapi({ required: ['JobId'], title: 'CreateReturnShippingLabelRequest' })
   .openapi('CreateReturnShippingLabelRequest')
@@ -1182,14 +1000,10 @@ const ReturnShippingLabelAlreadyExistsExceptionSchema = z
 
 const DescribeAddressResultSchema = z
   .object({
-    Address: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address that you want the Snow device(s) associated with a specific job to be shipped to.',
-        }),
-    ).exactOptional(),
+    Address: AddressSchema.exactOptional().openapi({
+      description:
+        'The address that you want the Snow device(s) associated with a specific job to be shipped to.',
+    }),
   })
   .openapi({
     example: {
@@ -1211,9 +1025,9 @@ const DescribeAddressResultSchema = z
 
 const DescribeAddressRequestSchema = z
   .object({
-    AddressId: AddressIdSchema.and(
-      z.any().openapi({ description: 'The automatically generated ID for a specific address.' }),
-    ),
+    AddressId: AddressIdSchema.openapi({
+      description: 'The automatically generated ID for a specific address.',
+    }),
   })
   .openapi({ required: ['AddressId'], title: 'DescribeAddressRequest' })
   .openapi('DescribeAddressRequest')
@@ -1222,21 +1036,13 @@ const AddressListSchema = z.array(AddressSchema).openapi('AddressList')
 
 const DescribeAddressesResultSchema = z
   .object({
-    Addresses: AddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Snow device shipping addresses that were created for this account.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. If you use the automatically generated <code>NextToken</code> value in your next <code>DescribeAddresses</code> call, your list of returned addresses will start from this point in the array.',
-        }),
-    ).exactOptional(),
+    Addresses: AddressListSchema.exactOptional().openapi({
+      description: 'The Snow device shipping addresses that were created for this account.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. If you use the automatically generated <code>NextToken</code> value in your next <code>DescribeAddresses</code> call, your list of returned addresses will start from this point in the array.',
+    }),
   })
   .openapi({
     example: {
@@ -1262,17 +1068,13 @@ const ListLimitSchema = z.int().min(0).max(100).openapi('ListLimit')
 
 const DescribeAddressesRequestSchema = z
   .object({
-    MaxResults: ListLimitSchema.and(
-      z.any().openapi({ description: 'The number of <code>ADDRESS</code> objects to return.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. To identify what object comes "next" in the list of <code>ADDRESS</code> objects, you have the option of specifying a value for <code>NextToken</code> as the starting point for your list of returned addresses.',
-        }),
-    ).exactOptional(),
+    MaxResults: ListLimitSchema.exactOptional().openapi({
+      description: 'The number of <code>ADDRESS</code> objects to return.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. To identify what object comes "next" in the list of <code>ADDRESS</code> objects, you have the option of specifying a value for <code>NextToken</code> as the starting point for your list of returned addresses.',
+    }),
   })
   .openapi({ title: 'DescribeAddressesRequest', required: [] })
   .openapi('DescribeAddressesRequest')
@@ -1285,112 +1087,70 @@ const ClusterStateSchema = z
 
 const ClusterMetadataSchema = z
   .object({
-    ClusterId: StringSchema.and(
-      z.any().openapi({ description: 'The automatically generated ID for a cluster.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The optional description of the cluster.' }),
-    ).exactOptional(),
-    KmsKeyARN: KmsKeyARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>KmsKeyARN</code> Amazon Resource Name (ARN) associated with this cluster. This ARN was created using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> API action in Key Management Service (KMS.',
-        }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role ARN associated with this cluster. This ARN was created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> API action in Identity and Access Management (IAM).',
-        }),
-    ).exactOptional(),
-    ClusterState: ClusterStateSchema.and(
-      z.any().openapi({ description: 'The current status of the cluster.' }),
-    ).exactOptional(),
-    JobType: JobTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of job for this cluster. Currently, the only job type supported for clusters is <code>LOCAL_USE</code>.',
-        }),
-    ).exactOptional(),
-    SnowballType: SnowballTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of Snowcone device to use for this cluster. </p> <note> <p>For cluster jobs, Amazon Web Services Snow Family currently supports only the <code>EDGE</code> device type.</p> </note>',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation date for this cluster.' }),
-    ).exactOptional(),
-    Resources: JobResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The arrays of <a>JobResource</a> objects that can include updated <a>S3Resource</a> objects or <a>LambdaResource</a> objects.',
-        }),
-    ).exactOptional(),
-    AddressId: AddressIdSchema.and(
-      z.any().openapi({ description: 'The automatically generated ID for a specific address.' }),
-    ).exactOptional(),
-    ShippingOption: ShippingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The shipping speed for each node in this cluster. This speed doesn't dictate how soon you'll get each device, rather it represents how quickly each device moves to its destination while in transit. Regional shipping speeds are as follows:</p> <ul> <li> <p>In Australia, you have access to express shipping. Typically, devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the US, you have access to one-day shipping and two-day shipping.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Notification: NotificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Simple Notification Service (Amazon SNS) notification settings for this cluster.',
-        }),
-    ).exactOptional(),
-    ForwardingAddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the address that you want a cluster shipped to, after it will be shipped to its primary address. This field is not supported in most regions.',
-        }),
-    ).exactOptional(),
-    TaxDocuments: TaxDocumentsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tax documents required in your Amazon Web Services Region.' }),
-    ).exactOptional(),
-    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents metadata and configuration settings for services on an Amazon Web Services Snow Family device.',
-        }),
-    ).exactOptional(),
+    ClusterId: StringSchema.exactOptional().openapi({
+      description: 'The automatically generated ID for a cluster.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The optional description of the cluster.',
+    }),
+    KmsKeyARN: KmsKeyARNSchema.exactOptional().openapi({
+      description:
+        'The <code>KmsKeyARN</code> Amazon Resource Name (ARN) associated with this cluster. This ARN was created using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> API action in Key Management Service (KMS.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        'The role ARN associated with this cluster. This ARN was created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> API action in Identity and Access Management (IAM).',
+    }),
+    ClusterState: ClusterStateSchema.exactOptional().openapi({
+      description: 'The current status of the cluster.',
+    }),
+    JobType: JobTypeSchema.exactOptional().openapi({
+      description:
+        'The type of job for this cluster. Currently, the only job type supported for clusters is <code>LOCAL_USE</code>.',
+    }),
+    SnowballType: SnowballTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of Snowcone device to use for this cluster. </p> <note> <p>For cluster jobs, Amazon Web Services Snow Family currently supports only the <code>EDGE</code> device type.</p> </note>',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The creation date for this cluster.',
+    }),
+    Resources: JobResourceSchema.exactOptional().openapi({
+      description:
+        'The arrays of <a>JobResource</a> objects that can include updated <a>S3Resource</a> objects or <a>LambdaResource</a> objects.',
+    }),
+    AddressId: AddressIdSchema.exactOptional().openapi({
+      description: 'The automatically generated ID for a specific address.',
+    }),
+    ShippingOption: ShippingOptionSchema.exactOptional().openapi({
+      description:
+        "<p>The shipping speed for each node in this cluster. This speed doesn't dictate how soon you'll get each device, rather it represents how quickly each device moves to its destination while in transit. Regional shipping speeds are as follows:</p> <ul> <li> <p>In Australia, you have access to express shipping. Typically, devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the US, you have access to one-day shipping and two-day shipping.</p> </li> </ul>",
+    }),
+    Notification: NotificationSchema.exactOptional().openapi({
+      description:
+        'The Amazon Simple Notification Service (Amazon SNS) notification settings for this cluster.',
+    }),
+    ForwardingAddressId: AddressIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the address that you want a cluster shipped to, after it will be shipped to its primary address. This field is not supported in most regions.',
+    }),
+    TaxDocuments: TaxDocumentsSchema.exactOptional().openapi({
+      description: 'The tax documents required in your Amazon Web Services Region.',
+    }),
+    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description:
+        'Represents metadata and configuration settings for services on an Amazon Web Services Snow Family device.',
+    }),
   })
   .openapi({ description: 'Contains metadata about a specific cluster.', required: [] })
   .openapi('ClusterMetadata')
 
 const DescribeClusterResultSchema = z
   .object({
-    ClusterMetadata: ClusterMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a specific cluster, including shipping information, cluster status, and other important metadata.',
-        }),
-    ).exactOptional(),
+    ClusterMetadata: ClusterMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a specific cluster, including shipping information, cluster status, and other important metadata.',
+    }),
   })
   .openapi({
     example: {
@@ -1414,310 +1174,23 @@ const DescribeClusterResultSchema = z
 
 const DescribeClusterRequestSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The automatically generated ID for a cluster.' }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description: 'The automatically generated ID for a cluster.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'DescribeClusterRequest' })
   .openapi('DescribeClusterRequest')
 
-const ShipmentSchema = z
+const DescribeJobResultSchema: z.ZodType<DescribeJobResultType> = z
   .object({
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'Status information for a shipment.' }),
-    ).exactOptional(),
-    TrackingNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tracking number for this job. Using this tracking number with your region's carrier's website, you can track a Snow device as the carrier transports it.</p> <p>For India, the carrier is Amazon Logistics. For all other regions, UPS is the carrier.</p>",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The <code>Status</code> and <code>TrackingNumber</code> information for an inbound or outbound shipment.',
-    required: [],
-  })
-  .openapi('Shipment')
-
-const ShippingDetailsSchema = z
-  .object({
-    ShippingOption: ShippingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The shipping speed for a particular job. This speed doesn't dictate how soon you'll get the Snow device from the job's creation date. This speed represents how quickly it moves to its destination while in transit. Regional shipping speeds are as follows:</p> <ul> <li> <p>In Australia, you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day.</p> </li> <li> <p>In the European Union (EU), you have access to express shipping. Typically, Snow devices shipped express are delivered in about a day. In addition, most countries in the EU have access to standard shipping, which typically takes less than a week, one way.</p> </li> <li> <p>In India, Snow devices are delivered in one to seven days.</p> </li> <li> <p>In the United States of America (US), you have access to one-day shipping and two-day shipping.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    InboundShipment: ShipmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>Status</code> and <code>TrackingNumber</code> values for a Snow device being returned to Amazon Web Services for a particular job.',
-        }),
-    ).exactOptional(),
-    OutboundShipment: ShipmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>Status</code> and <code>TrackingNumber</code> values for a Snow device being delivered to the address that you specified for a particular job.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "A job's shipping information, including inbound and outbound tracking numbers and shipping speed options.",
-    required: [],
-  })
-  .openapi('ShippingDetails')
-
-const LongSchema = z.int().openapi('Long')
-
-const DataTransferSchema = z
-  .object({
-    BytesTransferred: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of bytes transferred between a Snow device and Amazon S3.',
-        }),
-    ).exactOptional(),
-    ObjectsTransferred: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of objects transferred between a Snow device and Amazon S3.',
-        }),
-    ).exactOptional(),
-    TotalBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total bytes of data for a transfer between a Snow device and Amazon S3. This value is set to 0 (zero) until all the keys that will be transferred have been listed.',
-        }),
-    ).exactOptional(),
-    TotalObjects: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of objects for a transfer between a Snow device and Amazon S3. This value is set to 0 (zero) until all the keys that will be transferred have been listed.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Defines the real-time status of a Snow device's data transfer while the device is at Amazon Web Services. This data is only available while a job has a <code>JobState</code> value of <code>InProgress</code>, for both import and export jobs.",
-    required: [],
-  })
-  .openapi('DataTransfer')
-
-const JobLogsSchema = z
-  .object({
-    JobCompletionReportURI: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A link to an Amazon S3 presigned URL where the job completion report is located.',
-        }),
-    ).exactOptional(),
-    JobSuccessLogURI: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A link to an Amazon S3 presigned URL where the job success log is located.',
-        }),
-    ).exactOptional(),
-    JobFailureLogURI: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A link to an Amazon S3 presigned URL where the job failure log is located.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "<p>Contains job logs. Whenever a Snow device is used to import data into or export data out of Amazon S3, you'll have the option of downloading a PDF job report. Job logs are returned as a part of the response syntax of the <code>DescribeJob</code> action in the <code>JobMetadata</code> data type. The job logs can be accessed for up to 60 minutes after this request has been made. To access any of the job logs after 60 minutes have passed, you'll have to make another call to the <code>DescribeJob</code> action.</p> <p>For import jobs, the PDF job report becomes available at the end of the import process. For export jobs, your job report typically becomes available while the Snow device for your job part is being delivered to you.</p> <p>The job report provides you insight into the state of your Amazon S3 data transfer. The report includes details about your job or job part for your records.</p> <p>For deeper visibility into the status of your transferred objects, you can look at the two associated logs: a success log and a failure log. The logs are saved in comma-separated value (CSV) format, and the name of each log includes the ID of the job or job part that the log describes.</p>",
-    required: [],
-  })
-  .openapi('JobLogs')
-
-const JobMetadataSchema = z
-  .object({
-    JobId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ).exactOptional(),
-    JobState: JobStateSchema.and(
-      z.any().openapi({ description: 'The current status of the jobs.' }),
-    ).exactOptional(),
-    JobType: JobTypeSchema.and(
-      z.any().openapi({ description: 'The type of job.' }),
-    ).exactOptional(),
-    SnowballType: SnowballTypeSchema.and(
-      z.any().openapi({ description: 'The type of device used with this job.' }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation date for this job.' }),
-    ).exactOptional(),
-    Resources: JobResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>S3Resource</code> objects. Each <code>S3Resource</code> object represents an Amazon S3 bucket that your transferred data will be exported from or imported into.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the job, provided at job creation.' }),
-    ).exactOptional(),
-    KmsKeyARN: KmsKeyARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the Key Management Service (KMS) key associated with this job. This ARN was created using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> API action in KMS.',
-        }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role ARN associated with this job. This ARN was created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> API action in Identity and Access Management.',
-        }),
-    ).exactOptional(),
-    AddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID for the address that you want the Snow device shipped to.',
-        }),
-    ).exactOptional(),
-    ShippingDetails: ShippingDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A job's shipping information, including inbound and outbound tracking numbers and shipping speed options.",
-        }),
-    ).exactOptional(),
-    SnowballCapacityPreference: SnowballCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Snow device capacity preference for this job, specified at job creation. In US regions, you can choose between 50 TB and 80 TB Snowballs. All other regions use 80 TB capacity Snowballs.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Notification: NotificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Simple Notification Service (Amazon SNS) notification settings associated with a specific job. The <code>Notification</code> object is returned as a part of the response syntax of the <code>DescribeJob</code> action in the <code>JobMetadata</code> data type.',
-        }),
-    ).exactOptional(),
-    DataTransferProgress: DataTransferSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value that defines the real-time status of a Snow device's data transfer while the device is at Amazon Web Services. This data is only available while a job has a <code>JobState</code> value of <code>InProgress</code>, for both import and export jobs.",
-        }),
-    ).exactOptional(),
-    JobLogInfo: JobLogsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Links to Amazon S3 presigned URLs for the job report and logs. For import jobs, the PDF job report becomes available at the end of the import process. For export jobs, your job report typically becomes available while the Snow device for your job part is being delivered to you.',
-        }),
-    ).exactOptional(),
-    ClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 39-character ID for the cluster, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ).exactOptional(),
-    ForwardingAddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the address that you want a job shipped to, after it will be shipped to its primary address. This field is not supported in most regions.',
-        }),
-    ).exactOptional(),
-    TaxDocuments: TaxDocumentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata associated with the tax documents required in your Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    DeviceConfiguration: DeviceConfigurationSchema.exactOptional(),
-    RemoteManagement: RemoteManagementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows you to securely operate and manage Snowcone devices remotely from outside of your internal network. When set to <code>INSTALLED_AUTOSTART</code>, remote management will automatically be available when the device arrives at your location. Otherwise, you need to use the Snowball Client to manage the device.',
-        }),
-    ).exactOptional(),
-    LongTermPricingId: LongTermPricingIdSchema.and(
-      z.any().openapi({ description: 'The ID of the long-term pricing type for the device.' }),
-    ).exactOptional(),
-    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents metadata and configuration settings for services on an Amazon Web Services Snow Family device.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains information about a specific job including shipping information, job status, and other important metadata. This information is returned as a part of the response syntax of the <code>DescribeJob</code> action.',
-    required: [],
-  })
-  .openapi('JobMetadata')
-
-const JobMetadataListSchema = z.array(JobMetadataSchema).openapi('JobMetadataList')
-
-const DescribeJobResultSchema = z
-  .object({
-    JobMetadata: JobMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a specific job, including shipping information, job status, and other important metadata.',
-        }),
-    ).exactOptional(),
-    SubJobMetadata: JobMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a specific job part (in the case of an export job), including shipping information, job status, and other important metadata.',
-        }),
-    ).exactOptional(),
+    JobMetadata: JobMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a specific job, including shipping information, job status, and other important metadata.',
+    }),
+    SubJobMetadata: JobMetadataListSchema.exactOptional().openapi({
+      description:
+        'Information about a specific job part (in the case of an export job), including shipping information, job status, and other important metadata.',
+    }),
   })
   .openapi({
     example: {
@@ -1743,66 +1216,46 @@ const DescribeJobResultSchema = z
 
 const DescribeJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeJobRequest' })
   .openapi('DescribeJobRequest')
 
 const DescribeReturnShippingLabelResultSchema = z
   .object({
-    Status: ShippingLabelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status information of the task on a Snow device that is being returned to Amazon Web Services.',
-        }),
-    ).exactOptional(),
-    ExpirationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The expiration date of the current return shipping label.' }),
-    ).exactOptional(),
-    ReturnShippingLabelURI: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pre-signed Amazon S3 URI used to download the return shipping label.',
-        }),
-    ).exactOptional(),
+    Status: ShippingLabelStatusSchema.exactOptional().openapi({
+      description:
+        'The status information of the task on a Snow device that is being returned to Amazon Web Services.',
+    }),
+    ExpirationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The expiration date of the current return shipping label.',
+    }),
+    ReturnShippingLabelURI: StringSchema.exactOptional().openapi({
+      description: 'The pre-signed Amazon S3 URI used to download the return shipping label.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReturnShippingLabelResult')
 
 const DescribeReturnShippingLabelRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The automatically generated ID for a job, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'DescribeReturnShippingLabelRequest' })
   .openapi('DescribeReturnShippingLabelRequest')
 
 const GetJobManifestResultSchema = z
   .object({
-    ManifestURI: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 presigned URL for the manifest file associated with the specified <code>JobId</code> value.',
-        }),
-    ).exactOptional(),
+    ManifestURI: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 presigned URL for the manifest file associated with the specified <code>JobId</code> value.',
+    }),
   })
   .openapi({
     example: {
@@ -1815,42 +1268,30 @@ const GetJobManifestResultSchema = z
 
 const GetJobManifestRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID for a job that you want to get the manifest file for, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The ID for a job that you want to get the manifest file for, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetJobManifestRequest' })
   .openapi('GetJobManifestRequest')
 
 const GetJobUnlockCodeResultSchema = z
   .object({
-    UnlockCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>UnlockCode</code> value for the specified job. The <code>UnlockCode</code> value can be accessed for up to 360 days after the job has been created.',
-        }),
-    ).exactOptional(),
+    UnlockCode: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>UnlockCode</code> value for the specified job. The <code>UnlockCode</code> value can be accessed for up to 360 days after the job has been created.',
+    }),
   })
   .openapi({ example: { UnlockCode: '12345-abcde-56789-fghij-01234' }, required: [] })
   .openapi('GetJobUnlockCodeResult')
 
 const GetJobUnlockCodeRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID for the job that you want to get the <code>UnlockCode</code> value for, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The ID for the job that you want to get the <code>UnlockCode</code> value for, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetJobUnlockCodeRequest' })
   .openapi('GetJobUnlockCodeRequest')
@@ -1859,76 +1300,52 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const GetSnowballUsageResultSchema = z
   .object({
-    SnowballLimit: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service limit for number of Snow devices this account can have at once. The default service limit is 1 (one).',
-        }),
-    ).exactOptional(),
-    SnowballsInUse: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of Snow devices that this account is currently using.',
-        }),
-    ).exactOptional(),
+    SnowballLimit: IntegerSchema.exactOptional().openapi({
+      description:
+        'The service limit for number of Snow devices this account can have at once. The default service limit is 1 (one).',
+    }),
+    SnowballsInUse: IntegerSchema.exactOptional().openapi({
+      description: 'The number of Snow devices that this account is currently using.',
+    }),
   })
   .openapi({ example: { SnowballLimit: 1, SnowballsInUse: 0 }, required: [] })
   .openapi('GetSnowballUsageResult')
 
 const GetSnowballUsageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSnowballUsageRequest' })
   .openapi('GetSnowballUsageRequest')
 
 const GetSoftwareUpdatesResultSchema = z
   .object({
-    UpdatesURI: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon S3 presigned URL for the update file associated with the specified <code>JobId</code> value. The software update will be available for 2 days after this request is made. To access an update after the 2 days have passed, you'll have to make another call to <code>GetSoftwareUpdates</code>.",
-        }),
-    ).exactOptional(),
+    UpdatesURI: StringSchema.exactOptional().openapi({
+      description:
+        "The Amazon S3 presigned URL for the update file associated with the specified <code>JobId</code> value. The software update will be available for 2 days after this request is made. To access an update after the 2 days have passed, you'll have to make another call to <code>GetSoftwareUpdates</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSoftwareUpdatesResult')
 
 const GetSoftwareUpdatesRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID for a job that you want to get the software update file for, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The ID for a job that you want to get the software update file for, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetSoftwareUpdatesRequest' })
   .openapi('GetSoftwareUpdatesRequest')
 
 const ListClusterJobsResultSchema = z
   .object({
-    JobListEntries: JobListEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Each <code>JobListEntry</code> object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of export jobs. ",
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. If you use the automatically generated <code>NextToken</code> value in your next <code>ListClusterJobsResult</code> call, your list of returned jobs will start from this point in the array.',
-        }),
-    ).exactOptional(),
+    JobListEntries: JobListEntryListSchema.exactOptional().openapi({
+      description:
+        "Each <code>JobListEntry</code> object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of export jobs. ",
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. If you use the automatically generated <code>NextToken</code> value in your next <code>ListClusterJobsResult</code> call, your list of returned jobs will start from this point in the array.',
+    }),
   })
   .openapi({
     example: {
@@ -1986,60 +1403,38 @@ const ListClusterJobsResultSchema = z
 
 const ListClusterJobsRequestSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 39-character ID for the cluster that you want to list, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
-    MaxResults: ListLimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of <code>JobListEntry</code> objects to return.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. To identify what object comes "next" in the list of <code>JobListEntry</code> objects, you have the option of specifying <code>NextToken</code> as the starting point for your returned list.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'The 39-character ID for the cluster that you want to list, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    MaxResults: ListLimitSchema.exactOptional().openapi({
+      description: 'The number of <code>JobListEntry</code> objects to return.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. To identify what object comes "next" in the list of <code>JobListEntry</code> objects, you have the option of specifying <code>NextToken</code> as the starting point for your returned list.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'ListClusterJobsRequest' })
   .openapi('ListClusterJobsRequest')
 
 const ClusterListEntrySchema = z
   .object({
-    ClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 39-character ID for the cluster that you want to list, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ).exactOptional(),
-    ClusterState: ClusterStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of this cluster. For information about the state of a specific node, see <a>JobListEntry$JobState</a>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation date for this cluster.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines an optional description of the cluster, for example <code>Environmental Data Cluster-01</code>.',
-        }),
-    ).exactOptional(),
+    ClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'The 39-character ID for the cluster that you want to list, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    ClusterState: ClusterStateSchema.exactOptional().openapi({
+      description:
+        'The current state of this cluster. For information about the state of a specific node, see <a>JobListEntry$JobState</a>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The creation date for this cluster.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description:
+        'Defines an optional description of the cluster, for example <code>Environmental Data Cluster-01</code>.',
+    }),
   })
   .openapi({
     description: "Contains a cluster's state, a cluster's ID, and other important information.",
@@ -2051,22 +1446,14 @@ const ClusterListEntryListSchema = z.array(ClusterListEntrySchema).openapi('Clus
 
 const ListClustersResultSchema = z
   .object({
-    ClusterListEntries: ClusterListEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Each <code>ClusterListEntry</code> object contains a cluster's state, a cluster's ID, and other important status information.",
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. If you use the automatically generated <code>NextToken</code> value in your next <code>ClusterListEntry</code> call, your list of returned clusters will start from this point in the array.',
-        }),
-    ).exactOptional(),
+    ClusterListEntries: ClusterListEntryListSchema.exactOptional().openapi({
+      description:
+        "Each <code>ClusterListEntry</code> object contains a cluster's state, a cluster's ID, and other important status information.",
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. If you use the automatically generated <code>NextToken</code> value in your next <code>ClusterListEntry</code> call, your list of returned clusters will start from this point in the array.',
+    }),
   })
   .openapi({
     example: {
@@ -2085,31 +1472,25 @@ const ListClustersResultSchema = z
 
 const ListClustersRequestSchema = z
   .object({
-    MaxResults: ListLimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of <code>ClusterListEntry</code> objects to return.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. To identify what object comes "next" in the list of <code>ClusterListEntry</code> objects, you have the option of specifying <code>NextToken</code> as the starting point for your returned list.',
-        }),
-    ).exactOptional(),
+    MaxResults: ListLimitSchema.exactOptional().openapi({
+      description: 'The number of <code>ClusterListEntry</code> objects to return.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. To identify what object comes "next" in the list of <code>ClusterListEntry</code> objects, you have the option of specifying <code>NextToken</code> as the starting point for your returned list.',
+    }),
   })
   .openapi({ title: 'ListClustersRequest', required: [] })
   .openapi('ListClustersRequest')
 
 const CompatibleImageSchema = z
   .object({
-    AmiId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for an individual Snow device AMI.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The optional name of a compatible image.' }),
-    ).exactOptional(),
+    AmiId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier for an individual Snow device AMI.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The optional name of a compatible image.',
+    }),
   })
   .openapi({
     description:
@@ -2122,66 +1503,42 @@ const CompatibleImageListSchema = z.array(CompatibleImageSchema).openapi('Compat
 
 const ListCompatibleImagesResultSchema = z
   .object({
-    CompatibleImages: CompatibleImageListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON-formatted object that describes a compatible AMI, including the ID and name for a Snow device AMI.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Because HTTP requests are stateless, this is the starting point for your next list of returned images.',
-        }),
-    ).exactOptional(),
+    CompatibleImages: CompatibleImageListSchema.exactOptional().openapi({
+      description:
+        'A JSON-formatted object that describes a compatible AMI, including the ID and name for a Snow device AMI.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Because HTTP requests are stateless, this is the starting point for your next list of returned images.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCompatibleImagesResult')
 
 const ListCompatibleImagesRequestSchema = z
   .object({
-    MaxResults: ListLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results for the list of compatible images. Currently, a Snowball Edge device can store 10 AMIs.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. To identify what object comes "next" in the list of compatible images, you can specify a value for <code>NextToken</code> as the starting point for your list of returned images.',
-        }),
-    ).exactOptional(),
+    MaxResults: ListLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results for the list of compatible images. Currently, a Snowball Edge device can store 10 AMIs.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. To identify what object comes "next" in the list of compatible images, you can specify a value for <code>NextToken</code> as the starting point for your list of returned images.',
+    }),
   })
   .openapi({ title: 'ListCompatibleImagesRequest', required: [] })
   .openapi('ListCompatibleImagesRequest')
 
 const ListJobsResultSchema = z
   .object({
-    JobListEntries: JobListEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Each <code>JobListEntry</code> object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of export jobs. ",
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. If you use this automatically generated <code>NextToken</code> value in your next <code>ListJobs</code> call, your returned <code>JobListEntry</code> objects will start from this point in the array.',
-        }),
-    ).exactOptional(),
+    JobListEntries: JobListEntryListSchema.exactOptional().openapi({
+      description:
+        "Each <code>JobListEntry</code> object contains a job's state, a job's ID, and a value that indicates whether the job is a job part, in the case of export jobs. ",
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. If you use this automatically generated <code>NextToken</code> value in your next <code>ListJobs</code> call, your returned <code>JobListEntry</code> objects will start from this point in the array.',
+    }),
   })
   .openapi({
     example: {
@@ -2203,19 +1560,13 @@ const ListJobsResultSchema = z
 
 const ListJobsRequestSchema = z
   .object({
-    MaxResults: ListLimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of <code>JobListEntry</code> objects to return.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'HTTP requests are stateless. To identify what object comes "next" in the list of <code>JobListEntry</code> objects, you have the option of specifying <code>NextToken</code> as the starting point for your returned list.',
-        }),
-    ).exactOptional(),
+    MaxResults: ListLimitSchema.exactOptional().openapi({
+      description: 'The number of <code>JobListEntry</code> objects to return.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'HTTP requests are stateless. To identify what object comes "next" in the list of <code>JobListEntry</code> objects, you have the option of specifying <code>NextToken</code> as the starting point for your returned list.',
+    }),
   })
   .openapi({ title: 'ListJobsRequest', required: [] })
   .openapi('ListJobsRequest')
@@ -2226,63 +1577,37 @@ const LongTermPricingAssociatedJobIdListSchema = z
 
 const LongTermPricingListEntrySchema = z
   .object({
-    LongTermPricingId: LongTermPricingIdSchema.and(
-      z.any().openapi({ description: 'The ID of the long-term pricing type for the device.' }),
-    ).exactOptional(),
-    LongTermPricingEndDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The end date the long-term pricing contract.' }),
-    ).exactOptional(),
-    LongTermPricingStartDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The start date of the long-term pricing contract.' }),
-    ).exactOptional(),
-    LongTermPricingType: LongTermPricingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of long-term pricing that was selected for the device.',
-        }),
-    ).exactOptional(),
-    CurrentActiveJob: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current active jobs on the device the long-term pricing type.',
-        }),
-    ).exactOptional(),
-    ReplacementJob: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A new device that replaces a device that is ordered with long-term pricing.',
-        }),
-    ).exactOptional(),
-    IsLongTermPricingAutoRenew: JavaBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, specifies that the current long-term pricing type for the device should be automatically renewed before the long-term pricing contract expires.',
-        }),
-    ).exactOptional(),
-    LongTermPricingStatus: StringSchema.and(
-      z.any().openapi({ description: 'The status of the long-term pricing type.' }),
-    ).exactOptional(),
-    SnowballType: SnowballTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of Snow Family devices associated with this long-term pricing job.',
-        }),
-    ).exactOptional(),
-    JobIds: LongTermPricingAssociatedJobIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IDs of the jobs that are associated with a long-term pricing type.',
-        }),
-    ).exactOptional(),
+    LongTermPricingId: LongTermPricingIdSchema.exactOptional().openapi({
+      description: 'The ID of the long-term pricing type for the device.',
+    }),
+    LongTermPricingEndDate: TimestampSchema.exactOptional().openapi({
+      description: 'The end date the long-term pricing contract.',
+    }),
+    LongTermPricingStartDate: TimestampSchema.exactOptional().openapi({
+      description: 'The start date of the long-term pricing contract.',
+    }),
+    LongTermPricingType: LongTermPricingTypeSchema.exactOptional().openapi({
+      description: 'The type of long-term pricing that was selected for the device.',
+    }),
+    CurrentActiveJob: JobIdSchema.exactOptional().openapi({
+      description: 'The current active jobs on the device the long-term pricing type.',
+    }),
+    ReplacementJob: JobIdSchema.exactOptional().openapi({
+      description: 'A new device that replaces a device that is ordered with long-term pricing.',
+    }),
+    IsLongTermPricingAutoRenew: JavaBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to <code>true</code>, specifies that the current long-term pricing type for the device should be automatically renewed before the long-term pricing contract expires.',
+    }),
+    LongTermPricingStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of the long-term pricing type.',
+    }),
+    SnowballType: SnowballTypeSchema.exactOptional().openapi({
+      description: 'The type of Snow Family devices associated with this long-term pricing job.',
+    }),
+    JobIds: LongTermPricingAssociatedJobIdListSchema.exactOptional().openapi({
+      description: 'The IDs of the jobs that are associated with a long-term pricing type.',
+    }),
   })
   .openapi({
     description:
@@ -2297,52 +1622,36 @@ const LongTermPricingEntryListSchema = z
 
 const ListLongTermPricingResultSchema = z
   .object({
-    LongTermPricingEntries: LongTermPricingEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each <code>LongTermPricingEntry</code> object contains a status, ID, and other information about the <code>LongTermPricing</code> type. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Because HTTP requests are stateless, this is the starting point for your next list of returned <code>ListLongTermPricing</code> list.',
-        }),
-    ).exactOptional(),
+    LongTermPricingEntries: LongTermPricingEntryListSchema.exactOptional().openapi({
+      description:
+        'Each <code>LongTermPricingEntry</code> object contains a status, ID, and other information about the <code>LongTermPricing</code> type. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Because HTTP requests are stateless, this is the starting point for your next list of returned <code>ListLongTermPricing</code> list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLongTermPricingResult')
 
 const ListLongTermPricingRequestSchema = z
   .object({
-    MaxResults: ListLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of <code>ListLongTermPricing</code> objects to return.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Because HTTP requests are stateless, this is the starting point for your next list of <code>ListLongTermPricing</code> to return.',
-        }),
-    ).exactOptional(),
+    MaxResults: ListLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of <code>ListLongTermPricing</code> objects to return.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Because HTTP requests are stateless, this is the starting point for your next list of <code>ListLongTermPricing</code> to return.',
+    }),
   })
   .openapi({ title: 'ListLongTermPricingRequest', required: [] })
   .openapi('ListLongTermPricingRequest')
 
 const ServiceVersionSchema = z
   .object({
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the requested service.' }),
-    ).exactOptional(),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version number of the requested service.',
+    }),
   })
   .openapi({ description: 'The version of the requested service.', required: [] })
   .openapi('ServiceVersion')
@@ -2353,12 +1662,12 @@ const ServiceNameSchema = z.enum(['KUBERNETES', 'EKS_ANYWHERE']).openapi('Servic
 
 const DependentServiceSchema = z
   .object({
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the dependent service.' }),
-    ).exactOptional(),
-    ServiceVersion: ServiceVersionSchema.and(
-      z.any().openapi({ description: 'The version of the dependent service.' }),
-    ).exactOptional(),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({
+      description: 'The name of the dependent service.',
+    }),
+    ServiceVersion: ServiceVersionSchema.exactOptional().openapi({
+      description: 'The version of the dependent service.',
+    }),
   })
   .openapi({
     description: 'The name and version of the service dependant on the requested service.',
@@ -2370,263 +1679,161 @@ const DependentServiceListSchema = z.array(DependentServiceSchema).openapi('Depe
 
 const ListServiceVersionsResultSchema = z
   .object({
-    ServiceVersions: ServiceVersionListSchema.and(
-      z.any().openapi({ description: 'A list of supported versions.' }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service for which the system provided supported versions.',
-        }),
-    ),
-    DependentServices: DependentServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of names and versions of dependant services of the service for which the system provided supported versions.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Because HTTP requests are stateless, this is the starting point of the next list of returned <code>ListServiceVersionsResult</code> results.',
-        }),
-    ).exactOptional(),
+    ServiceVersions: ServiceVersionListSchema.openapi({
+      description: 'A list of supported versions.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      description: 'The name of the service for which the system provided supported versions.',
+    }),
+    DependentServices: DependentServiceListSchema.exactOptional().openapi({
+      description:
+        'A list of names and versions of dependant services of the service for which the system provided supported versions.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Because HTTP requests are stateless, this is the starting point of the next list of returned <code>ListServiceVersionsResult</code> results.',
+    }),
   })
   .openapi({ required: ['ServiceVersions', 'ServiceName'] })
   .openapi('ListServiceVersionsResult')
 
 const ListServiceVersionsRequestSchema = z
   .object({
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of the service for which you're requesting supported versions.",
-        }),
-    ),
-    DependentServices: DependentServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of names and versions of dependant services of the requested service.',
-        }),
-    ).exactOptional(),
-    MaxResults: ListLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of <code>ListServiceVersions</code> objects to return.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Because HTTP requests are stateless, this is the starting point for the next list of returned <code>ListServiceVersionsRequest</code> versions.',
-        }),
-    ).exactOptional(),
+    ServiceName: ServiceNameSchema.openapi({
+      description: "The name of the service for which you're requesting supported versions.",
+    }),
+    DependentServices: DependentServiceListSchema.exactOptional().openapi({
+      description: 'A list of names and versions of dependant services of the requested service.',
+    }),
+    MaxResults: ListLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of <code>ListServiceVersions</code> objects to return.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Because HTTP requests are stateless, this is the starting point for the next list of returned <code>ListServiceVersionsRequest</code> versions.',
+    }),
   })
   .openapi({ required: ['ServiceName'], title: 'ListServiceVersionsRequest' })
   .openapi('ListServiceVersionsRequest')
 
-const UpdateClusterResultSchema = z.object({}).openapi('UpdateClusterResult')
+const UpdateClusterResultSchema = z.looseObject({}).openapi('UpdateClusterResult')
 
 const UpdateClusterRequestSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster ID of the cluster that you want to update, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new role Amazon Resource Name (ARN) that you want to associate with this cluster. To create a role ARN, use the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> API action in Identity and Access Management (IAM).',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The updated description of this cluster.' }),
-    ).exactOptional(),
-    Resources: JobResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated arrays of <a>JobResource</a> objects that can include updated <a>S3Resource</a> objects or <a>LambdaResource</a> objects.',
-        }),
-    ).exactOptional(),
-    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family device clusters support Amazon S3 and NFS (Network File System).',
-        }),
-    ).exactOptional(),
-    AddressId: AddressIdSchema.and(
-      z.any().openapi({ description: 'The ID of the updated <a>Address</a> object.' }),
-    ).exactOptional(),
-    ShippingOption: ShippingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The updated shipping option value of this cluster's <a>ShippingDetails</a> object.",
-        }),
-    ).exactOptional(),
-    Notification: NotificationSchema.and(
-      z.any().openapi({ description: 'The new or updated <a>Notification</a> object.' }),
-    ).exactOptional(),
-    ForwardingAddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated ID for the forwarding address for a cluster. This field is not supported in most regions.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'The cluster ID of the cluster that you want to update, for example <code>CID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        'The new role Amazon Resource Name (ARN) that you want to associate with this cluster. To create a role ARN, use the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a> API action in Identity and Access Management (IAM).',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The updated description of this cluster.',
+    }),
+    Resources: JobResourceSchema.exactOptional().openapi({
+      description:
+        'The updated arrays of <a>JobResource</a> objects that can include updated <a>S3Resource</a> objects or <a>LambdaResource</a> objects.',
+    }),
+    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family device clusters support Amazon S3 and NFS (Network File System).',
+    }),
+    AddressId: AddressIdSchema.exactOptional().openapi({
+      description: 'The ID of the updated <a>Address</a> object.',
+    }),
+    ShippingOption: ShippingOptionSchema.exactOptional().openapi({
+      description:
+        "The updated shipping option value of this cluster's <a>ShippingDetails</a> object.",
+    }),
+    Notification: NotificationSchema.exactOptional().openapi({
+      description: 'The new or updated <a>Notification</a> object.',
+    }),
+    ForwardingAddressId: AddressIdSchema.exactOptional().openapi({
+      description:
+        'The updated ID for the forwarding address for a cluster. This field is not supported in most regions.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'UpdateClusterRequest' })
   .openapi('UpdateClusterRequest')
 
-const UpdateJobResultSchema = z.object({}).openapi('UpdateJobResult')
+const UpdateJobResultSchema = z.looseObject({}).openapi('UpdateJobResult')
 
 const UpdateJobRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job ID of the job that you want to update, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new role Amazon Resource Name (ARN) that you want to associate with this job. To create a role ARN, use the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a>Identity and Access Management (IAM) API action.',
-        }),
-    ).exactOptional(),
-    Notification: NotificationSchema.and(
-      z.any().openapi({ description: 'The new or updated <a>Notification</a> object.' }),
-    ).exactOptional(),
-    Resources: JobResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated <code>JobResource</code> object, or the updated <a>JobResource</a> object. ',
-        }),
-    ).exactOptional(),
-    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family supports Amazon S3 and NFS (Network File System) and the Amazon Web Services Storage Gateway service Tape Gateway type.',
-        }),
-    ).exactOptional(),
-    AddressId: AddressIdSchema.and(
-      z.any().openapi({ description: 'The ID of the updated <a>Address</a> object.' }),
-    ).exactOptional(),
-    ShippingOption: ShippingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The updated shipping option value of this job's <a>ShippingDetails</a> object.",
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The updated description of this job's <a>JobMetadata</a> object.",
-        }),
-    ).exactOptional(),
-    SnowballCapacityPreference: SnowballCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The updated <code>SnowballCapacityPreference</code> of this job\'s <a>JobMetadata</a> object. The 50 TB Snowballs are only available in the US regions.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ForwardingAddressId: AddressIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated ID for the forwarding address for a job. This field is not supported in most regions.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The job ID of the job that you want to update, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        'The new role Amazon Resource Name (ARN) that you want to associate with this job. To create a role ARN, use the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html">CreateRole</a>Identity and Access Management (IAM) API action.',
+    }),
+    Notification: NotificationSchema.exactOptional().openapi({
+      description: 'The new or updated <a>Notification</a> object.',
+    }),
+    Resources: JobResourceSchema.exactOptional().openapi({
+      description:
+        'The updated <code>JobResource</code> object, or the updated <a>JobResource</a> object. ',
+    }),
+    OnDeviceServiceConfiguration: OnDeviceServiceConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies the service or services on the Snow Family device that your transferred data will be exported from or imported into. Amazon Web Services Snow Family supports Amazon S3 and NFS (Network File System) and the Amazon Web Services Storage Gateway service Tape Gateway type.',
+    }),
+    AddressId: AddressIdSchema.exactOptional().openapi({
+      description: 'The ID of the updated <a>Address</a> object.',
+    }),
+    ShippingOption: ShippingOptionSchema.exactOptional().openapi({
+      description: "The updated shipping option value of this job's <a>ShippingDetails</a> object.",
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: "The updated description of this job's <a>JobMetadata</a> object.",
+    }),
+    SnowballCapacityPreference: SnowballCapacitySchema.exactOptional().openapi({
+      description:
+        '<p>The updated <code>SnowballCapacityPreference</code> of this job\'s <a>JobMetadata</a> object. The 50 TB Snowballs are only available in the US regions.</p> <p>For more information, see "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i> or "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html" (Snow Family Devices and Capacity) in the <i>Snowcone User Guide</i>.</p>',
+    }),
+    ForwardingAddressId: AddressIdSchema.exactOptional().openapi({
+      description:
+        'The updated ID for the forwarding address for a job. This field is not supported in most regions.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'UpdateJobRequest' })
   .openapi('UpdateJobRequest')
 
-const UpdateJobShipmentStateResultSchema = z.object({}).openapi('UpdateJobShipmentStateResult')
+const UpdateJobShipmentStateResultSchema = z.looseObject({}).openapi('UpdateJobShipmentStateResult')
 
 const ShipmentStateSchema = z.enum(['RECEIVED', 'RETURNED']).openapi('ShipmentState')
 
 const UpdateJobShipmentStateRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job ID of the job whose shipment date you want to update, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
-        }),
-    ),
-    ShipmentState: ShipmentStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of a device when it is being shipped. </p> <p>Set to <code>RECEIVED</code> when the device arrives at your location.</p> <p>Set to <code>RETURNED</code> when you have returned the device to Amazon Web Services.</p>',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The job ID of the job whose shipment date you want to update, for example <code>JID123e4567-e89b-12d3-a456-426655440000</code>.',
+    }),
+    ShipmentState: ShipmentStateSchema.openapi({
+      description:
+        '<p>The state of a device when it is being shipped. </p> <p>Set to <code>RECEIVED</code> when the device arrives at your location.</p> <p>Set to <code>RETURNED</code> when you have returned the device to Amazon Web Services.</p>',
+    }),
   })
   .openapi({ required: ['JobId', 'ShipmentState'], title: 'UpdateJobShipmentStateRequest' })
   .openapi('UpdateJobShipmentStateRequest')
 
-const UpdateLongTermPricingResultSchema = z.object({}).openapi('UpdateLongTermPricingResult')
+const UpdateLongTermPricingResultSchema = z.looseObject({}).openapi('UpdateLongTermPricingResult')
 
 const UpdateLongTermPricingRequestSchema = z
   .object({
-    LongTermPricingId: LongTermPricingIdSchema.and(
-      z.any().openapi({ description: 'The ID of the long-term pricing type for the device.' }),
-    ),
-    ReplacementJob: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that a device that is ordered with long-term pricing should be replaced with a new device.',
-        }),
-    ).exactOptional(),
-    IsLongTermPricingAutoRenew: JavaBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, specifies that the current long-term pricing type for the device should be automatically renewed before the long-term pricing contract expires.',
-        }),
-    ).exactOptional(),
+    LongTermPricingId: LongTermPricingIdSchema.openapi({
+      description: 'The ID of the long-term pricing type for the device.',
+    }),
+    ReplacementJob: JobIdSchema.exactOptional().openapi({
+      description:
+        'Specifies that a device that is ordered with long-term pricing should be replaced with a new device.',
+    }),
+    IsLongTermPricingAutoRenew: JavaBooleanSchema.exactOptional().openapi({
+      description:
+        'If set to <code>true</code>, specifies that the current long-term pricing type for the device should be automatically renewed before the long-term pricing contract expires.',
+    }),
   })
   .openapi({ required: ['LongTermPricingId'], title: 'UpdateLongTermPricingRequest' })
   .openapi('UpdateLongTermPricingRequest')

@@ -32,6 +32,7 @@ scopes listed for a security scheme are required.
 |accounts:write|Accounts write scope.|
 |ai_agents:chat|Ai agents chat scope.|
 |ai_agents:list|Ai agents list scope.|
+|ai_agents:search|Ai agents search scope.|
 |any_channel:write|Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only.|
 |apps:read|View installed apps and their settings. Includes a list of installed apps and each app's settings.|
 |apps:write|Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages.|
@@ -100,7 +101,7 @@ scopes listed for a security scheme are required.
 ```bash
 curl https://example.zendesk.com/api/v2/attachments/498483 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/attachments/{attachment_id}`
@@ -147,7 +148,7 @@ in the list has an `attachments` list that specifies an `id` for each attachment
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_attachments:read )
 </aside>
 
 ## Update Attachment for Malware
@@ -161,7 +162,7 @@ curl https://example.zendesk.com/api/v2/attachments/498483 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "attachment": {
       "malware_access_override": true
@@ -222,7 +223,7 @@ Toggles enabling or restricting agent access to attachments with detected malwar
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_attachments:write )
 </aside>
 
 ## Delete Attachment
@@ -234,7 +235,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/attachments/498483 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/attachments/{attachment_id}`
@@ -260,7 +261,7 @@ Deletes the attachment.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_attachments:write )
 </aside>
 
 ## Redact Comment Attachment
@@ -273,7 +274,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/tickets/123456/comments/654321/attachments/498483/redact \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/tickets/{ticket_id}/comments/{comment_id}/attachments/{attachment_id}/redact`
@@ -325,7 +326,7 @@ Also, if you want to redact an inline attachment, you can use the `include_inlin
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_attachments:write )
 </aside>
 
 ## Upload Files
@@ -338,7 +339,7 @@ basicAuth
 curl 'https://example.zendesk.com/api/v2/uploads?filename=my_document.pdf' \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/uploads`
@@ -414,7 +415,7 @@ Adding multiple files to the same upload is handled by splitting requests and pa
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write ), oauth2 ( Scopes: ticket_attachments:write )
 </aside>
 
 ## Delete Upload
@@ -426,7 +427,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/uploads/6bk3gql82em5nmf \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/uploads/{token}`
@@ -450,7 +451,7 @@ curl https://example.zendesk.com/api/v2/uploads/6bk3gql82em5nmf \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write ), oauth2 ( Scopes: ticket_attachments:write )
 </aside>
 
 <h1 id="support-api-sessions">Sessions</h1>
@@ -464,7 +465,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/sessions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/sessions`
@@ -515,7 +516,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## List Sessions for User
@@ -527,7 +528,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/sessions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/sessions`
@@ -578,7 +579,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Bulk Delete Sessions
@@ -590,7 +591,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/sessions \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/{user_id}/sessions`
@@ -616,7 +617,7 @@ Deletes all the sessions for a user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show Session
@@ -628,7 +629,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/sessions/14 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/sessions/{session_id}`
@@ -671,7 +672,7 @@ curl https://example.zendesk.com/api/v2/users/35436/sessions/14 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Delete Session
@@ -683,7 +684,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/sessions/14 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/{user_id}/sessions/{session_id}`
@@ -708,7 +709,7 @@ curl https://example.zendesk.com/api/v2/users/35436/sessions/14 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Delete the Authenticated Session
@@ -720,7 +721,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/me/logout \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/me/logout`
@@ -741,7 +742,7 @@ made from a Zendesk app. When using OAuth or basic authentication, you don't hav
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show the Currently Authenticated Session
@@ -753,7 +754,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/me/session \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/me/session`
@@ -789,7 +790,7 @@ curl https://example.zendesk.com/api/v2/users/me/session \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Renew the current session
@@ -801,7 +802,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/me/session/renew \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/me/session/renew`
@@ -829,7 +830,7 @@ curl https://example.zendesk.com/api/v2/users/me/session/renew \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 <h1 id="support-api-trigger-categories">Trigger Categories</h1>
@@ -843,7 +844,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/trigger_categories \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/trigger_categories`
@@ -970,7 +971,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## Create Ticket Trigger Category
@@ -984,7 +985,7 @@ curl https://example.zendesk.com/api/v2/trigger_categories \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "trigger_category": {
       "name": "All Notification Triggers",
@@ -1073,7 +1074,7 @@ Creates a ticket trigger category.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## Show Ticket Trigger Category
@@ -1085,7 +1086,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/trigger_categories/10001 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/trigger_categories/{trigger_category_id}`
@@ -1136,7 +1137,7 @@ Returns the ticket trigger category with the specified ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## Delete Ticket Trigger Category
@@ -1149,7 +1150,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/trigger_categories/10001 \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/trigger_categories/{trigger_category_id}`
@@ -1200,7 +1201,7 @@ Deletes the ticket trigger category with the specified ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## Update Ticket Trigger Category
@@ -1214,7 +1215,7 @@ curl https://example.zendesk.com/api/v2/trigger_categories/10001 \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "trigger_category": {
       "name": "All Notification Triggers Updated",
@@ -1298,7 +1299,7 @@ Updates the ticket trigger category with the specified ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## Create Batch Job for Ticket Trigger Categories
@@ -1312,7 +1313,7 @@ curl https://example.zendesk.com/api/v2/trigger_categories/jobs \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "job": {
       "action": "patch",
@@ -1487,7 +1488,7 @@ Creates a job that performs a batch operation for the given ticket trigger categ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 <h1 id="support-api-tags">Tags</h1>
@@ -1501,7 +1502,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/autocomplete/tags \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/autocomplete/tags`
@@ -1557,7 +1558,7 @@ See [Using Offset Pagination](/api-reference/introduction/pagination/#using-offs
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read ), oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Search Tags by Request Body
@@ -1571,7 +1572,7 @@ curl https://example.zendesk.com/api/v2/autocomplete/tags \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "name": "att"
   }'
@@ -1636,7 +1637,7 @@ Autocomplete returns up to 15 suggestions from the most commonly used ticket tag
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read ), oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Organization Tags
@@ -2546,7 +2547,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/targets \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/targets`
@@ -2582,7 +2583,7 @@ curl https://example.zendesk.com/api/v2/targets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: targets:read )
 </aside>
 
 ## Create Target
@@ -2595,7 +2596,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/targets \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/targets`
@@ -2630,7 +2631,7 @@ curl https://example.zendesk.com/api/v2/targets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: targets:write )
 </aside>
 
 ## Show Target
@@ -2642,7 +2643,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/targets/211 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/targets/{target_id}`
@@ -2682,7 +2683,7 @@ curl https://example.zendesk.com/api/v2/targets/211 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: targets:read )
 </aside>
 
 ## Update Target
@@ -2695,7 +2696,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/targets/211 \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/targets/{target_id}`
@@ -2735,7 +2736,7 @@ curl https://example.zendesk.com/api/v2/targets/211 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: targets:write )
 </aside>
 
 ## Delete Target
@@ -2747,7 +2748,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/targets/211 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/targets/{target_id}`
@@ -2770,7 +2771,7 @@ curl https://example.zendesk.com/api/v2/targets/211 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: targets:write )
 </aside>
 
 <h1 id="support-api-target-failures">Target Failures</h1>
@@ -2784,7 +2785,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/target_failures \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/target_failures`
@@ -2829,7 +2830,7 @@ Returns the 25 most recent target failures, per target.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: targets:read )
 </aside>
 
 ## Show Target Failure
@@ -2841,7 +2842,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/target_failures/1 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/target_failures/{target_failure_id}`
@@ -2885,7 +2886,7 @@ curl https://example.zendesk.com/api/v2/target_failures/1 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: targets:read )
 </aside>
 
 <h1 id="support-api-job-statuses">Job Statuses</h1>
@@ -2899,7 +2900,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/job_statuses \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/job_statuses`
@@ -2950,7 +2951,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Show Job Status
@@ -2962,7 +2963,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/job_statuses/8b726e606741012ffc2d782bcb7848fe \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/job_statuses/{job_status_id}`
@@ -3013,7 +3014,7 @@ Shows the status of a background job.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Show Many Job Statuses
@@ -3025,7 +3026,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/job_statuses/show_many?ids=8b726e606741012ffc2d782bcb7848fe%2Ce7665094164c498781ebe4c8db6d2af5' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/job_statuses/show_many`
@@ -3070,7 +3071,7 @@ Accepts a comma-separated list of job status ids.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 <h1 id="support-api-automations">Automations</h1>
@@ -3084,7 +3085,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/automations \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/automations`
@@ -3236,7 +3237,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:read ), basicAuth
 </aside>
 
 ## Create Automation
@@ -3250,7 +3251,7 @@ curl https://example.zendesk.com/api/v2/automations \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "automation": {
       "actions": [
@@ -3372,7 +3373,7 @@ The request must include the following conditions in the `all` array:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:write ), basicAuth
 </aside>
 
 ## Show Automation
@@ -3384,7 +3385,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/automations/25 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/automations/{automation_id}`
@@ -3455,7 +3456,7 @@ curl https://example.zendesk.com/api/v2/automations/25 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:read ), basicAuth
 </aside>
 
 ## Update Automation
@@ -3469,7 +3470,7 @@ curl https://example.zendesk.com/api/v2/automations/25 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "automation": {
       "title": "Roger Wilco II"
@@ -3568,7 +3569,7 @@ The request must include the following conditions in the `all` array:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:write ), basicAuth
 </aside>
 
 ## Delete Automation
@@ -3580,7 +3581,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/automations/25 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/automations/{automation_id}`
@@ -3606,7 +3607,7 @@ curl https://example.zendesk.com/api/v2/automations/25 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:write ), basicAuth
 </aside>
 
 ## List Active Automations
@@ -3618,7 +3619,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/automations/active \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/automations/active`
@@ -3750,7 +3751,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:read ), basicAuth
 </aside>
 
 ## Bulk Delete Automations
@@ -3762,7 +3763,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/automations/destroy_many \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/automations/destroy_many`
@@ -3806,7 +3807,7 @@ The DELETE request takes one parameter, an `ids` object that lists the automatio
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:write ), basicAuth
 </aside>
 
 ## Search Automations
@@ -3818,7 +3819,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/automations/search?query=close' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/automations/search`
@@ -3955,7 +3956,7 @@ The following sideloads are supported. For more information, see [Side-loading](
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:read ), basicAuth
 </aside>
 
 ## Update Many Automations
@@ -3969,7 +3970,7 @@ curl https://example.zendesk.com/api/v2/automations/update_many \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "automations": [
       {
@@ -4140,7 +4141,7 @@ Each automation may have the following properties:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: automations:write ), basicAuth
 </aside>
 
 <h1 id="support-api-tickets">Tickets</h1>
@@ -4154,7 +4155,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/deleted_tickets \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/deleted_tickets`
@@ -4250,7 +4251,7 @@ The rate limiting mechanism behaves as described in
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Delete Ticket Permanently
@@ -4263,7 +4264,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/deleted_tickets/123456 \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/deleted_tickets/{ticket_id}`
@@ -4314,7 +4315,7 @@ Use the [Show Job Status](/api-reference/ticketing/ticket-management/job_statuse
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Restore a Previously Deleted Ticket
@@ -4327,7 +4328,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/deleted_tickets/123456/restore \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/deleted_tickets/{ticket_id}/restore`
@@ -4358,7 +4359,7 @@ curl https://example.zendesk.com/api/v2/deleted_tickets/123456/restore \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Multiple Tickets Permanently
@@ -4371,7 +4372,7 @@ basicAuth
 curl 'https://example.zendesk.com/api/v2/deleted_tickets/destroy_many?ids=35436%2C35437' \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/deleted_tickets/destroy_many`
@@ -4423,7 +4424,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Restore Previously Deleted Tickets in Bulk
@@ -4436,7 +4437,7 @@ basicAuth
 curl 'https://example.zendesk.com/api/v2/deleted_tickets/restore_many?ids=35436%2C35437' \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/deleted_tickets/restore_many`
@@ -4467,7 +4468,7 @@ curl 'https://example.zendesk.com/api/v2/deleted_tickets/restore_many?ids=35436%
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Organization Tickets
@@ -4479,7 +4480,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/tickets \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/tickets`
@@ -4581,7 +4582,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Count Organization Tickets
@@ -4593,7 +4594,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/tickets/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/tickets/count`
@@ -4646,7 +4647,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List Ticket Problems
@@ -4658,7 +4659,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/problems \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/problems`
@@ -4719,7 +4720,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Autocomplete Problems
@@ -4733,7 +4734,7 @@ curl https://example.zendesk.com/api/v2/problems/autocomplete \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "text": "fire"
   }'
@@ -4800,7 +4801,7 @@ You can specify the `text` parameter in the request body rather than the query s
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read ), oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Tickets
@@ -4812,7 +4813,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets`
@@ -4926,7 +4927,7 @@ curl https://example.zendesk.com/api/v2/tickets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Ticket
@@ -4940,7 +4941,7 @@ curl https://example.zendesk.com/api/v2/tickets \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket": {
       "brand_id": 123,
@@ -5061,7 +5062,7 @@ curl https://example.zendesk.com/api/v2/tickets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show Ticket
@@ -5073,7 +5074,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}`
@@ -5168,7 +5169,7 @@ Returns a number of ticket properties, but doesn't include the full comment thre
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Update Ticket
@@ -5182,7 +5183,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket": {
       "brand_id": 123,
@@ -5277,7 +5278,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Ticket
@@ -5289,7 +5290,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/tickets/{ticket_id}`
@@ -5325,7 +5326,7 @@ To delete many tickets, you may use [Bulk Delete Tickets](/api-reference/ticketi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Collaborators for a Ticket
@@ -5517,7 +5518,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/incidents \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/incidents`
@@ -5569,7 +5570,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Mark Ticket as Spam and Suspend Requester
@@ -5582,7 +5583,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/tickets/123456/mark_as_spam \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/tickets/{ticket_id}/mark_as_spam`
@@ -5613,7 +5614,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/mark_as_spam \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Merge Tickets into Target Ticket
@@ -5627,7 +5628,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/merge \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ids": [
       123,
@@ -5743,7 +5744,7 @@ In any other case, comments default to private but can be modified with the comm
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Ticket Related Information
@@ -5755,7 +5756,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/related \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/related`
@@ -5802,7 +5803,7 @@ The request returns a data object with the following properties:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Autocomplete Tickets
@@ -5814,7 +5815,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/autocomplete \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/autocomplete`
@@ -5912,7 +5913,7 @@ parameter.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Count Tickets
@@ -5924,7 +5925,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/count`
@@ -5972,7 +5973,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Many Tickets
@@ -5986,7 +5987,7 @@ curl https://example.zendesk.com/api/v2/tickets/create_many \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "tickets": [
       {
@@ -6085,7 +6086,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Bulk Delete Tickets
@@ -6098,7 +6099,7 @@ basicAuth
 curl 'https://example.zendesk.com/api/v2/tickets/destroy_many?ids=35436%2C35437' \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/tickets/destroy_many`
@@ -6161,7 +6162,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Bulk Mark Tickets as Spam
@@ -6174,7 +6175,7 @@ basicAuth
 curl 'https://example.zendesk.com/api/v2/tickets/mark_many_as_spam?ids=35436%2C35437' \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/tickets/mark_many_as_spam`
@@ -6232,7 +6233,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show Ticket by Messaging Conversation ID
@@ -6244,7 +6245,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/messaging/conversations/f82db38d3dbf67fe2d1e1233/ticket \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/messaging/conversations/{conversation_id}/ticket`
@@ -6343,7 +6344,7 @@ A ticket becomes inactive when any of the following occur:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List Recent Tickets
@@ -6355,7 +6356,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/recent \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/recent`
@@ -6442,7 +6443,7 @@ Lists up to five tickets that the requesting agent recently viewed or created in
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Multiple Tickets
@@ -6454,7 +6455,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/tickets/show_many?ids=35436%2C35437' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/show_many`
@@ -6550,7 +6551,7 @@ This endpoint will return up to 100 tickets records.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Update Many Tickets
@@ -6564,7 +6565,7 @@ curl https://example.zendesk.com/api/v2/tickets/update_many \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "tickets": [
       {
@@ -7018,7 +7019,7 @@ Accepts an array of up to 100 ticket objects, or a comma-separated list of up to
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List User Assigned Tickets
@@ -7030,7 +7031,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/tickets/assigned \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/tickets/assigned`
@@ -7120,7 +7121,7 @@ Lists tickets assigned to the specified user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Count User Assigned Tickets
@@ -7132,7 +7133,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/tickets/assigned/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/tickets/assigned/count`
@@ -7184,7 +7185,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List User CCD Tickets
@@ -7196,7 +7197,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/tickets/ccd \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/tickets/ccd`
@@ -7286,7 +7287,7 @@ Lists tickets where the specified user is CC'd.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Count User CCD Tickets
@@ -7298,7 +7299,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/tickets/ccd/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/tickets/ccd/count`
@@ -7350,7 +7351,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List User Followed Tickets
@@ -7362,7 +7363,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/tickets/followed \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/tickets/followed`
@@ -7475,7 +7476,7 @@ Lists tickets the specified user is following.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List User Requested Tickets
@@ -7487,7 +7488,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/tickets/requested \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/tickets/requested`
@@ -7600,7 +7601,7 @@ curl https://example.zendesk.com/api/v2/users/35436/tickets/requested \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-email-notifications">Email Notifications</h1>
@@ -7614,7 +7615,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/email_notifications?filter%5Bcomment_id%5D=782407' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/email_notifications`
@@ -7758,7 +7759,7 @@ By default, email notifications are sorted by creation time (newest first). The 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Email Notification
@@ -7770,7 +7771,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/email_notifications/7824075373693 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/email_notifications/{notification_id}`
@@ -7830,7 +7831,7 @@ Deleted and archived tickets are not included in the response. See
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Many Email Notifications
@@ -7842,7 +7843,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/email_notifications/show_many \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/email_notifications/show_many`
@@ -7976,7 +7977,7 @@ Deleted and archived tickets are not included in the response. See
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-lookup-relationships">Lookup Relationships</h1>
@@ -7990,7 +7991,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/zen%3Acustom_object%3Aapartment/1234/relationship_fields/1234/zen%3Acustom_object%3Aapartment \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/{target_type}/{target_id}/relationship_fields/{field_id}/{source_type}`
@@ -8056,7 +8057,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Filter Definitions
@@ -8068,7 +8069,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/relationships/definitions/zen%3Acustom_object%3Aapartment \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/relationships/definitions/{target_type}`
@@ -8283,7 +8284,7 @@ The returned filter definitions are the options that you can use to build a cust
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 <h1 id="support-api-dynamic-content">Dynamic Content</h1>
@@ -8297,7 +8298,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/dynamic_content/items \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/dynamic_content/items`
@@ -8366,7 +8367,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:read )
 </aside>
 
 ## Create Item
@@ -8380,7 +8381,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "item": {
       "default_locale_id": 16,
@@ -8493,7 +8494,7 @@ The `default_locale_id` and variant `locale_id` values must be one of the locale
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:write )
 </aside>
 
 ## Show Item
@@ -8505,7 +8506,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/dynamic_content/items/47 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/dynamic_content/items/{dynamic_content_item_id}`
@@ -8572,7 +8573,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:read )
 </aside>
 
 ## Update Item
@@ -8586,7 +8587,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "item": {
       "name": "New name"
@@ -8674,7 +8675,7 @@ To add a variant to the item, or to update or delete the variants of the item, u
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:write )
 </aside>
 
 ## Delete Item
@@ -8686,7 +8687,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/dynamic_content/items/47 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/dynamic_content/items/{dynamic_content_item_id}`
@@ -8710,7 +8711,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:write )
 </aside>
 
 ## Show Many Items
@@ -8722,7 +8723,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/dynamic_content/items/show_many \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/dynamic_content/items/show_many`
@@ -8784,7 +8785,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/show_many \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:read )
 </aside>
 
 <h1 id="support-api-dynamic-content-item-variants">Dynamic Content Item Variants</h1>
@@ -8798,7 +8799,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/dynamic_content/items/{dynamic_content_item_id}/variants`
@@ -8867,7 +8868,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:read )
 </aside>
 
 ## Create Variant
@@ -8881,7 +8882,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "variant": {
       "active": true,
@@ -8950,7 +8951,7 @@ You can only create one variant for each locale id. If a locale variant already 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:write )
 </aside>
 
 ## Show Variant
@@ -8962,7 +8963,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/23 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/dynamic_content/items/{dynamic_content_item_id}/variants/{dynamic_content_variant_id}`
@@ -9007,7 +9008,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/23 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:read )
 </aside>
 
 ## Update Variant
@@ -9021,7 +9022,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/23 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "variant": {
       "active": false,
@@ -9093,7 +9094,7 @@ You can't switch the active state of the default variant of an item. Similarly, 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:write )
 </aside>
 
 ## Delete Variant
@@ -9105,7 +9106,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/23 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/dynamic_content/items/{dynamic_content_item_id}/variants/{dynamic_content_variant_id}`
@@ -9130,7 +9131,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/23 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:write )
 </aside>
 
 ## Create Many Variants
@@ -9144,7 +9145,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/create
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "variants": [
       {
@@ -9240,7 +9241,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/create
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:write )
 </aside>
 
 ## Update Many Variants
@@ -9254,7 +9255,7 @@ curl https://example.zendesk.com/api/v2/dynamic_content/items/47/variants/update
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "variants": [
       {
@@ -9354,7 +9355,7 @@ You must specify the variants by id in the body. To get the variant ids, see [Li
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: dynamic_content:write )
 </aside>
 
 <h1 id="support-api-push-notification-devices">Push Notification Devices</h1>
@@ -9370,7 +9371,7 @@ curl https://example.zendesk.com/api/v2/push_notification_devices/destroy_many \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "push_notification_devices": [
       "token1",
@@ -9421,7 +9422,7 @@ Unregisters the mobile devices that are receiving push notifications. Specify th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 <h1 id="support-api-channel-framework">Channel Framework</h1>
@@ -9436,7 +9437,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/any_channel/channelback/report_error \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/any_channel/channelback/report_error`
@@ -9479,7 +9480,7 @@ The response does not include a response body
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: any_channel:write )
 </aside>
 
 ## Push Content to Support
@@ -9492,7 +9493,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/any_channel/push \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/any_channel/push`
@@ -9617,7 +9618,7 @@ same order.  For example, if you call `push` with 3 external resources, a succes
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: any_channel:write )
 </aside>
 
 ## Validate Token
@@ -9630,7 +9631,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/any_channel/validate_token \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/any_channel/validate_token`
@@ -9669,7 +9670,7 @@ The response body is empty.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: any_channel:write )
 </aside>
 
 <h1 id="support-api-countries">Countries</h1>
@@ -10029,7 +10030,7 @@ WhatsApp message templates synced from SunCo.
 ```bash
 curl https://example.zendesk.com/api/v2/channels/whatsapp_templates \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/channels/whatsapp_templates`
@@ -10147,7 +10148,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Toggle WhatsApp Template
@@ -10161,7 +10162,7 @@ curl https://example.zendesk.com/api/v2/channels/whatsapp_templates/1234567890/t
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "is_active": true
   }'
@@ -10292,7 +10293,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## List WhatsApp Template Languages
@@ -10304,7 +10305,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/channels/whatsapp_templates/languages \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/channels/whatsapp_templates/languages`
@@ -10374,7 +10375,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Bulk Toggle WhatsApp Templates
@@ -10388,7 +10389,7 @@ curl https://example.zendesk.com/api/v2/channels/whatsapp_templates/toggle_many 
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "is_active": false,
     "template_ids": [
@@ -10546,7 +10547,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 <h1 id="support-api-organizations">Organizations</h1>
@@ -10560,7 +10561,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_merges/01HPZM6206BF4G63783E5349AD \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organization_merges/{organization_merge_id}`
@@ -10604,7 +10605,7 @@ This endpoint can be used to determine if a merge is still in progress, has comp
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## List Organizations
@@ -10616,7 +10617,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations`
@@ -10718,7 +10719,7 @@ If the agent has a custom agent role that restricts their access to only users i
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Create Organization
@@ -10732,7 +10733,7 @@ curl https://example.zendesk.com/api/v2/organizations \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization": {
       "name": "My Organization"
@@ -10806,7 +10807,7 @@ organization names.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Show Organization
@@ -10818,7 +10819,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}`
@@ -10880,7 +10881,7 @@ curl https://example.zendesk.com/api/v2/organizations/16 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Update Organization
@@ -10894,7 +10895,7 @@ curl https://example.zendesk.com/api/v2/organizations/16 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization": {
       "notes": "Something interesting"
@@ -10998,7 +10999,7 @@ Agents with no permissions restrictions can only update "notes" on organizations
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Delete Organization
@@ -11010,7 +11011,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/organizations/{organization_id}`
@@ -11035,7 +11036,7 @@ curl https://example.zendesk.com/api/v2/organizations/16 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Merge Organization With Another Organization
@@ -11049,7 +11050,7 @@ curl https://example.zendesk.com/api/v2/organizations/16/merge \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization_merge": {
       "winner_id": 54321
@@ -11124,7 +11125,7 @@ Merges two organizations by moving all users, tickets, and domain names from the
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## List Organization Merges
@@ -11136,7 +11137,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/merges \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/merges`
@@ -11189,7 +11190,7 @@ See [Pagination](/api-reference/introduction/pagination/) for more details.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Show Organization's Related Information
@@ -11201,7 +11202,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/related \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/related`
@@ -11238,7 +11239,7 @@ curl https://example.zendesk.com/api/v2/organizations/16/related \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Autocomplete Organizations
@@ -11250,7 +11251,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/organizations/autocomplete?name=imp' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/autocomplete`
@@ -11378,7 +11379,7 @@ See [Using Offset Pagination](/api-reference/introduction/pagination/#using-offs
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Count Organizations
@@ -11390,7 +11391,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/count`
@@ -11439,7 +11440,7 @@ updated in the background and the `value` property of the `count` object is limi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Create Many Organizations
@@ -11452,7 +11453,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/organizations/create_many \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/organizations/create_many`
@@ -11501,7 +11502,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Create Or Update Organization
@@ -11515,7 +11516,7 @@ curl https://example.zendesk.com/api/v2/organizations/create_or_update \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization": {
       "id": "123",
@@ -11613,7 +11614,7 @@ not available as a matching criteria.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Bulk Delete Organizations
@@ -11626,7 +11627,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/organizations/destroy_many \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/organizations/destroy_many`
@@ -11689,7 +11690,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Search Organizations
@@ -11701,7 +11702,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/search \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/search`
@@ -11804,7 +11805,7 @@ See [Creating custom agent roles](https://support.zendesk.com/hc/en-us/articles/
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Show Many Organizations
@@ -11816,7 +11817,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/show_many \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/show_many`
@@ -11907,7 +11908,7 @@ Accepts a comma-separated list of up to 100 organization ids or external ids.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Update Many Organizations
@@ -11921,7 +11922,7 @@ curl https://example.zendesk.com/api/v2/organizations/update_many \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organizations": [
       {
@@ -12041,7 +12042,7 @@ Agents with no permissions restrictions can only update "notes" on organizations
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## List User Organizations
@@ -12053,7 +12054,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/organizations \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/organizations`
@@ -12190,7 +12191,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Count User's Organizations
@@ -12202,7 +12203,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/organizations/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/organizations/count`
@@ -12250,7 +12251,7 @@ updated in the background and the `value` property of the `count` object is limi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 <h1 id="support-api-triggers">Triggers</h1>
@@ -12264,7 +12265,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/triggers`
@@ -12387,7 +12388,7 @@ The following sideloads are supported. The usage sideloads are only supported on
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## Create Trigger
@@ -12401,7 +12402,7 @@ curl https://example.zendesk.com/api/v2/triggers \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "trigger": {
       "actions": [
@@ -12506,7 +12507,7 @@ curl https://example.zendesk.com/api/v2/triggers \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## Show Ticket Trigger
@@ -12518,7 +12519,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers/198 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/triggers/{trigger_id}`
@@ -12567,7 +12568,7 @@ The Via Type value is a number instead of a text string. See [Via types referenc
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## Update Ticket Trigger
@@ -12581,7 +12582,7 @@ curl https://example.zendesk.com/api/v2/triggers/198 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "trigger": {
       "category_id": "10026",
@@ -12653,7 +12654,7 @@ and actions when updating any condition or action.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## Delete Ticket Trigger
@@ -12665,7 +12666,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers/198 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/triggers/{trigger_id}`
@@ -12689,7 +12690,7 @@ curl https://example.zendesk.com/api/v2/triggers/198 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## List Ticket Trigger Revisions
@@ -12701,7 +12702,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers/198/revisions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/triggers/{trigger_id}/revisions`
@@ -12910,7 +12911,7 @@ no `limit` parameter is supplied, it will default to 1,000.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## Show Ticket Trigger Revision
@@ -12922,7 +12923,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers/198/revisions/1 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/triggers/{trigger_id}/revisions/{trigger_revision_id}`
@@ -13034,7 +13035,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## List Active Ticket Triggers
@@ -13046,7 +13047,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers/active \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/triggers/active`
@@ -13156,7 +13157,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## List Ticket Trigger Action and Condition Definitions
@@ -13168,7 +13169,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/triggers/definitions`
@@ -13369,7 +13370,7 @@ For a list of supported conditions, see the [Conditions reference](/documentatio
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## Bulk Delete Ticket Triggers
@@ -13381,7 +13382,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/triggers/destroy_many?ids=131%2C178%2C938' \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/triggers/destroy_many`
@@ -13424,7 +13425,7 @@ ticket triggers to delete.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## Show Ticket Trigger Limits
@@ -13436,7 +13437,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers/limits \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/triggers/limits`
@@ -13467,7 +13468,7 @@ Returns the number of active ticket triggers on the account and the maximum numb
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## Reorder Ticket Triggers
@@ -13480,7 +13481,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/triggers/reorder \
   -X PUT \
   -H 'Content-Type: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "trigger_ids": [
       324376,
@@ -13533,7 +13534,7 @@ ticket trigger category, the endpoint will return a `LimitOneCategory` error.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## Search Ticket Triggers
@@ -13545,7 +13546,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/triggers/search \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/triggers/search`
@@ -13663,7 +13664,7 @@ Use the `filter` query parameter to filter a ticket trigger search by one or mor
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:read ), basicAuth
 </aside>
 
 ## Update Many Ticket Triggers
@@ -13677,7 +13678,7 @@ curl https://example.zendesk.com/api/v2/triggers/update_many \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "triggers": [
       {
@@ -13837,7 +13838,7 @@ Each ticket trigger may have the following properties:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 ## Validate Ticket Trigger
@@ -13851,7 +13852,7 @@ curl https://example.zendesk.com/api/v2/triggers/validate \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "trigger": {
       "actions": [
@@ -13937,7 +13938,7 @@ This endpoint applies create-time validation, so the body must include the requi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: triggers:write ), basicAuth
 </aside>
 
 <h1 id="support-api-object-triggers">Object Triggers</h1>
@@ -13951,7 +13952,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/triggers \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/triggers`
@@ -14027,7 +14028,7 @@ Lists all triggers for the specified custom object.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Create Object Trigger
@@ -14041,7 +14042,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/triggers \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "trigger": {
       "actions": [
@@ -14157,7 +14158,7 @@ Creates a new object trigger for a specified object.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Object Trigger
@@ -14169,7 +14170,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/triggers/198 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/triggers/{trigger_id}`
@@ -14230,7 +14231,7 @@ Returns details of a specific object trigger.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Update Object Trigger
@@ -14244,7 +14245,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/triggers/198 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "trigger": {
       "active": true
@@ -14335,7 +14336,7 @@ and actions when updating any condition or action.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Delete Object Trigger
@@ -14347,7 +14348,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/triggers/198 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_objects/{custom_object_key}/triggers/{trigger_id}`
@@ -14375,7 +14376,7 @@ Deletes a specified object trigger.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## List Active Object Triggers
@@ -14387,7 +14388,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/triggers/active \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/triggers/active`
@@ -14452,7 +14453,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## List Object Trigger Action and Condition Definitions
@@ -14464,7 +14465,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/triggers/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/triggers/definitions`
@@ -15012,7 +15013,7 @@ Lists the conditions and actions of all triggers for the specified custom object
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Delete Many Object Triggers
@@ -15024,7 +15025,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/custom_objects/car/triggers/destroy_many?ids=131%2C178%2C938' \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_objects/{custom_object_key}/triggers/destroy_many`
@@ -15071,7 +15072,7 @@ object triggers to delete. All of the specified object trigger `ids` must be ass
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Search Object Triggers
@@ -15083,7 +15084,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/triggers/search \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/triggers/search`
@@ -15175,7 +15176,7 @@ Use the `filter` query parameter to filter an object trigger search by one or mo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Update Many Object Triggers
@@ -15189,7 +15190,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/triggers/update_many 
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "triggers": [
       {
@@ -15322,7 +15323,7 @@ You can specify the following properties for each object trigger you're updating
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 <h1 id="support-api-custom-roles">Custom Roles</h1>
@@ -15336,7 +15337,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_roles \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_roles`
@@ -15362,6 +15363,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
         "assign_tickets_to_any_group": false,
         "capacity_rules_access": "all",
         "chat_access": true,
+        "delete_brands": false,
         "end_user_list_access": "full",
         "end_user_profile_access": "readonly",
         "explore_access": "edit",
@@ -15371,6 +15373,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
         "group_access": true,
         "light_agent": false,
         "macro_access": "full",
+        "manage_brands": "none",
         "manage_business_rules": true,
         "manage_contextual_workspaces": false,
         "manage_dynamic_content": false,
@@ -15378,6 +15381,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
         "manage_extensions_and_channels": true,
         "manage_facebook": false,
         "manage_organization_fields": false,
+        "manage_support_apps": false,
         "manage_ticket_fields": false,
         "manage_ticket_forms": false,
         "manage_ticket_settings": false,
@@ -15419,6 +15423,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
         "assign_tickets_to_any_group": false,
         "capacity_rules_access": "view-and-assign",
         "chat_access": true,
+        "delete_brands": false,
         "end_user_list_access": "full",
         "end_user_profile_access": "readonly",
         "explore_access": "edit",
@@ -15428,6 +15433,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
         "group_access": true,
         "light_agent": false,
         "macro_access": "full",
+        "manage_brands": "none",
         "manage_business_rules": true,
         "manage_contextual_workspaces": false,
         "manage_dynamic_content": false,
@@ -15435,6 +15441,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
         "manage_extensions_and_channels": true,
         "manage_facebook": false,
         "manage_organization_fields": false,
+        "manage_support_apps": false,
         "manage_ticket_fields": false,
         "manage_ticket_forms": false,
         "manage_ticket_settings": false,
@@ -15483,7 +15490,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Create Custom Role
@@ -15496,7 +15503,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/custom_roles \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/custom_roles`
@@ -15523,6 +15530,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
       "assign_tickets_to_any_group": false,
       "capacity_rules_access": "view-and-assign",
       "chat_access": true,
+      "delete_brands": false,
       "end_user_list_access": "full",
       "end_user_profile_access": "readonly",
       "explore_access": "edit",
@@ -15531,12 +15539,14 @@ curl https://example.zendesk.com/api/v2/custom_roles \
       "group_access": true,
       "light_agent": false,
       "macro_access": "full",
+      "manage_brands": "none",
       "manage_business_rules": true,
       "manage_contextual_workspaces": false,
       "manage_dynamic_content": false,
       "manage_extensions_and_channels": true,
       "manage_facebook": false,
       "manage_organization_fields": false,
+      "manage_support_apps": false,
       "manage_ticket_fields": false,
       "manage_ticket_forms": false,
       "manage_user_fields": false,
@@ -15577,7 +15587,7 @@ curl https://example.zendesk.com/api/v2/custom_roles \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show Custom Role
@@ -15589,7 +15599,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_roles/10127 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_roles/{custom_role_id}`
@@ -15621,6 +15631,7 @@ curl https://example.zendesk.com/api/v2/custom_roles/10127 \
       "assign_tickets_to_any_group": false,
       "capacity_rules_access": "view-and-assign",
       "chat_access": true,
+      "delete_brands": false,
       "end_user_list_access": "full",
       "end_user_profile_access": "readonly",
       "explore_access": "edit",
@@ -15629,12 +15640,14 @@ curl https://example.zendesk.com/api/v2/custom_roles/10127 \
       "group_access": true,
       "light_agent": false,
       "macro_access": "full",
+      "manage_brands": "none",
       "manage_business_rules": true,
       "manage_contextual_workspaces": false,
       "manage_dynamic_content": false,
       "manage_extensions_and_channels": true,
       "manage_facebook": false,
       "manage_organization_fields": false,
+      "manage_support_apps": false,
       "manage_ticket_fields": false,
       "manage_ticket_forms": false,
       "manage_user_fields": false,
@@ -15675,7 +15688,7 @@ curl https://example.zendesk.com/api/v2/custom_roles/10127 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Update Custom Role
@@ -15688,7 +15701,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/custom_roles/10127 \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/custom_roles/{custom_role_id}`
@@ -15721,6 +15734,7 @@ Agents with the `manage_roles` permission
       "assign_tickets_to_any_group": false,
       "capacity_rules_access": "view-and-assign",
       "chat_access": true,
+      "delete_brands": false,
       "end_user_list_access": "full",
       "end_user_profile_access": "readonly",
       "explore_access": "edit",
@@ -15729,12 +15743,14 @@ Agents with the `manage_roles` permission
       "group_access": true,
       "light_agent": false,
       "macro_access": "full",
+      "manage_brands": "none",
       "manage_business_rules": true,
       "manage_contextual_workspaces": false,
       "manage_dynamic_content": false,
       "manage_extensions_and_channels": true,
       "manage_facebook": false,
       "manage_organization_fields": false,
+      "manage_support_apps": false,
       "manage_ticket_fields": false,
       "manage_ticket_forms": false,
       "manage_user_fields": false,
@@ -15775,7 +15791,7 @@ Agents with the `manage_roles` permission
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Delete Custom Role
@@ -15787,7 +15803,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_roles/10127 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_roles/{custom_role_id}`
@@ -15816,7 +15832,7 @@ curl https://example.zendesk.com/api/v2/custom_roles/10127 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 <h1 id="support-api-incremental-export">Incremental Export</h1>
@@ -15945,7 +15961,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/incremental/organizations?start_time=1332034771' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/organizations`
@@ -16014,7 +16030,7 @@ See [Organizations sideloads](/documentation/ticketing/using-the-zendesk-api/sid
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Incremental Ticket Event Export
@@ -16026,7 +16042,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/incremental/ticket_events?start_time=1332034771' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/ticket_events`
@@ -16121,7 +16137,7 @@ update is listed as an object in the event's `child_events` array. Example:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Incremental Ticket Export, Time Based
@@ -16133,7 +16149,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/incremental/tickets?start_time=1332034771' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/tickets`
@@ -16253,7 +16269,7 @@ See [Tickets sideloads](/documentation/ticketing/using-the-zendesk-api/side_load
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Incremental Ticket Export, Cursor Based
@@ -16265,7 +16281,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/incremental/tickets/cursor \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/tickets/cursor`
@@ -16378,7 +16394,7 @@ See [Tickets sideloads](/documentation/ticketing/using-the-zendesk-api/side_load
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Incremental User Export, Time Based
@@ -16390,7 +16406,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/incremental/users?start_time=1332034771' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/users`
@@ -16490,7 +16506,7 @@ See [Users sideloads](/documentation/ticketing/using-the-zendesk-api/side_loadin
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Incremental User Export, Cursor Based
@@ -16502,7 +16518,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/incremental/users/cursor \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/users/cursor`
@@ -16604,7 +16620,7 @@ See [Users sideloads](/documentation/ticketing/using-the-zendesk-api/side_loadin
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 <h1 id="support-api-account-settings">Account Settings</h1>
@@ -16796,7 +16812,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/account/settings \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/account/settings`
@@ -16840,7 +16856,7 @@ Shows the settings that are available for the account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Update Account Settings
@@ -16854,7 +16870,7 @@ curl https://example.zendesk.com/api/v2/account/settings \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "settings": {
       "active_features": {
@@ -16935,7 +16951,7 @@ Updates settings for the account. See [JSON Format](#json-format) above for the 
 |» » » api_password_access_end_users|body|boolean|false|none|
 |» » » api_token_access|body|boolean|false|none|
 |» » approvals|body|object|false|none|
-|» » » slack_workspace|body|string|false|Rejected with a 422 ("Approvals Slack integration is not enabled for this<br>account") unless the account has `has_approvals_slack_notifications?`<br>(`validate_approvals_slack_workspace`, `settings_controller.rb`).<br>|
+|» » » slack_workspace|body|string|false|Slack workspace identifier for the Approvals Slack integration.<br>|
 |» » automatic_answers|body|object|false|none|
 |» » » threshold|body|string|false|Must resolve via `Zendesk::Types::PredictionThresholdType.find`; a value<br>that does not resolve is silently ignored rather than rejected<br>(`update_automatic_answers_settings`, `settings_controller_support.rb`).<br>|
 |» » branding|body|object|false|none|
@@ -16959,6 +16975,14 @@ Updates settings for the account. See [JSON Format](#json-format) above for the 
 |» » email|body|object|false|none|
 |» » » accept_wildcard_emails|body|boolean|false|none|
 |» » » custom_dkim_domain|body|boolean|false|none|
+|» » » email_category_outcome_overrides|body|object|false|Whether emails that match given categories follow the default outcome or experience overrides to accept or suspend. Only present when the feature is available for the account.|
+|» » » » adult_content|body|string|false|none|
+|» » » » blocklisted|body|string|false|none|
+|» » » » marketing|body|string|false|none|
+|» » » » phishing|body|string|false|none|
+|» » » » scam|body|string|false|none|
+|» » » » slightly_spam|body|string|false|none|
+|» » » » spam|body|string|false|none|
 |» » » email_hc_ai_agent_comments|body|boolean|false|Deleted from the request before processing unless the account has<br>`has_email_ai_agent_comment_notifications?` (`settings_controller.rb#update`).<br>|
 |» » » email_sender_authentication|body|boolean|false|none|
 |» » » email_sender_authentication_profile|body|string|false|none|
@@ -17198,6 +17222,27 @@ Updates settings for the account. See [JSON Format](#json-format) above for the 
 |Parameter|Value|
 |---|---|
 |» » » accepted_api_agreement|true|
+|» » » » adult_content|default|
+|» » » » adult_content|accept|
+|» » » » adult_content|suspend|
+|» » » » blocklisted|default|
+|» » » » blocklisted|accept|
+|» » » » blocklisted|suspend|
+|» » » » marketing|default|
+|» » » » marketing|accept|
+|» » » » marketing|suspend|
+|» » » » phishing|default|
+|» » » » phishing|accept|
+|» » » » phishing|suspend|
+|» » » » scam|default|
+|» » » » scam|accept|
+|» » » » scam|suspend|
+|» » » » slightly_spam|default|
+|» » » » slightly_spam|accept|
+|» » » » slightly_spam|suspend|
+|» » » » spam|default|
+|» » » » spam|accept|
+|» » » » spam|suspend|
 |» » » email_sender_authentication_profile|default|
 |» » » email_sender_authentication_profile|enhanced|
 |» » » email_sender_authentication_profile|enhancedAllTraffic|
@@ -17241,7 +17286,7 @@ Updates settings for the account. See [JSON Format](#json-format) above for the 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 <h1 id="support-api-ticket-metrics">Ticket Metrics</h1>
@@ -17255,7 +17300,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_metrics \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_metrics`
@@ -17401,7 +17446,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Ticket Metrics
@@ -17413,7 +17458,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_metrics/10001 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_metrics/{ticket_metric_id}`
@@ -17502,7 +17547,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Ticket Metrics By Ticket
@@ -17514,7 +17559,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/metrics \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/metrics`
@@ -17594,7 +17639,7 @@ Returns the metrics for a specific ticket.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-groups">Groups</h1>
@@ -17608,7 +17653,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups`
@@ -17673,7 +17718,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Create Group
@@ -17687,7 +17732,7 @@ curl https://example.zendesk.com/api/v2/groups \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "group": {
       "name": "My Group"
@@ -17747,7 +17792,7 @@ curl https://example.zendesk.com/api/v2/groups \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:write )
 </aside>
 
 ## Show Group
@@ -17759,7 +17804,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/122 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/{group_id}`
@@ -17801,7 +17846,7 @@ curl https://example.zendesk.com/api/v2/groups/122 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Update Group
@@ -17815,7 +17860,7 @@ curl https://example.zendesk.com/api/v2/groups/122 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "group": {
       "description": "This group handles all support tickets",
@@ -17877,7 +17922,7 @@ curl https://example.zendesk.com/api/v2/groups/122 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:write )
 </aside>
 
 ## Delete Group
@@ -17889,7 +17934,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/122 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/groups/{group_id}`
@@ -17914,7 +17959,7 @@ curl https://example.zendesk.com/api/v2/groups/122 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:write )
 </aside>
 
 ## List Assignable Groups
@@ -17926,7 +17971,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/assignable \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/assignable`
@@ -17979,7 +18024,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Autocomplete Groups
@@ -17991,7 +18036,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/groups/autocomplete?name=Support' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/autocomplete`
@@ -18047,7 +18092,7 @@ Returns an array of groups whose name starts with the value specified in the `na
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 ## List Available Agents
@@ -18059,7 +18104,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/available_agents \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/available_agents`
@@ -18165,7 +18210,7 @@ Status Code **403**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Count Groups
@@ -18177,7 +18222,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/count`
@@ -18215,7 +18260,7 @@ The `refreshed_at` property of the `count` object is a timestamp that indicates 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Show Default Group
@@ -18227,7 +18272,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/default \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/default`
@@ -18263,7 +18308,7 @@ curl https://example.zendesk.com/api/v2/groups/default \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 ## List User Groups
@@ -18275,7 +18320,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/groups \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/groups`
@@ -18342,7 +18387,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Count User Groups
@@ -18354,7 +18399,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/groups/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/groups/count`
@@ -18398,7 +18443,7 @@ The `refreshed_at` property of the `count` object is a timestamp that indicates 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: groups:read )
 </aside>
 
 <h1 id="support-api-group-memberships">Group Memberships</h1>
@@ -18412,7 +18457,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/group_memberships \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/group_memberships`
@@ -18475,7 +18520,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Create Membership
@@ -18489,7 +18534,7 @@ curl https://example.zendesk.com/api/v2/group_memberships \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "group_membership": {
       "group_id": 88,
@@ -18554,7 +18599,7 @@ Assigns an agent to a given group.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: groups:write )
 </aside>
 
 ## Show Membership
@@ -18566,7 +18611,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/group_memberships/4 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/group_memberships/{group_membership_id}`
@@ -18609,7 +18654,7 @@ The 'id' is the group membership id, not a group id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Delete Membership
@@ -18621,7 +18666,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/group_memberships/4 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/group_memberships/{group_membership_id}`
@@ -18648,7 +18693,7 @@ Immediately removes a user from a group and schedules a job to unassign all work
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: groups:write )
 </aside>
 
 ## List Assignable Memberships
@@ -18660,7 +18705,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/group_memberships/assignable \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/group_memberships/assignable`
@@ -18716,7 +18761,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Bulk Create Memberships
@@ -18730,7 +18775,7 @@ curl https://example.zendesk.com/api/v2/group_memberships/create_many \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "group_memberships": [
       {
@@ -18825,7 +18870,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: groups:write )
 </aside>
 
 ## Bulk Delete Memberships
@@ -18838,7 +18883,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/group_memberships/destroy_many \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/group_memberships/destroy_many`
@@ -18896,7 +18941,7 @@ Immediately removes users from groups and schedules a job to unassign all workin
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: groups:write )
 </aside>
 
 ## List Memberships By Group
@@ -18908,7 +18953,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/122/memberships \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/{group_id}/memberships`
@@ -18970,7 +19015,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: groups:read )
 </aside>
 
 ## List Assignable Memberships By Group
@@ -18982,7 +19027,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/122/memberships/assignable \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/{group_id}/memberships/assignable`
@@ -19044,7 +19089,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: groups:read )
 </aside>
 
 ## List Group Memberships by User
@@ -19056,7 +19101,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/group_memberships \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/group_memberships`
@@ -19119,7 +19164,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Create Group Membership for User
@@ -19133,7 +19178,7 @@ curl https://example.zendesk.com/api/v2/users/35436/group_memberships \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "group_membership": {
       "group_id": 88
@@ -19196,7 +19241,7 @@ Assigns an agent to a given group.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: groups:write )
 </aside>
 
 ## Show User's Group Membership
@@ -19208,7 +19253,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/group_memberships/4 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/group_memberships/{group_membership_id}`
@@ -19252,7 +19297,7 @@ Returns a specific group membership for a user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: groups:read )
 </aside>
 
 ## Delete User's Group Membership
@@ -19264,7 +19309,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/group_memberships/4 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/{user_id}/group_memberships/{group_membership_id}`
@@ -19292,7 +19337,7 @@ Immediately removes a user from a group and schedules a job to unassign all work
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: groups:write )
 </aside>
 
 ## Set Membership as Default
@@ -19305,7 +19350,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/group_memberships/4/make_default \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/users/{user_id}/group_memberships/{group_membership_id}/make_default`
@@ -19357,7 +19402,7 @@ curl https://example.zendesk.com/api/v2/users/35436/group_memberships/4/make_def
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: groups:write )
 </aside>
 
 <h1 id="support-api-incremental-skill-based-routing">Incremental Skill Based Routing</h1>
@@ -19371,7 +19416,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/incremental/routing/attribute_values \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/routing/attribute_values`
@@ -19420,7 +19465,7 @@ Optional
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Incremental Attributes Export
@@ -19432,7 +19477,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/incremental/routing/attributes \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/routing/attributes`
@@ -19481,7 +19526,7 @@ Optional
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Incremental Instance Values Export
@@ -19493,7 +19538,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/incremental/routing/instance_values \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/routing/instance_values`
@@ -19557,7 +19602,7 @@ Optional
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-organization-memberships">Organization Memberships</h1>
@@ -19571,7 +19616,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_memberships \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organization_memberships`
@@ -19643,7 +19688,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Create Membership
@@ -19657,7 +19702,7 @@ curl https://example.zendesk.com/api/v2/organization_memberships \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization_membership": {
       "organization_id": 88,
@@ -19721,7 +19766,7 @@ Assigns a user to a given organization. Returns an error with status 422 if the 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Show Membership
@@ -19733,7 +19778,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_memberships/4 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organization_memberships/{organization_membership_id}`
@@ -19774,7 +19819,7 @@ curl https://example.zendesk.com/api/v2/organization_memberships/4 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Delete Membership
@@ -19786,7 +19831,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_memberships/4 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/organization_memberships/{organization_membership_id}`
@@ -19813,7 +19858,7 @@ Immediately removes a user from an organization and schedules a job to unassign 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Create Many Memberships
@@ -19827,7 +19872,7 @@ curl https://example.zendesk.com/api/v2/organization_memberships/create_many \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization_memberships": [
       {
@@ -19910,7 +19955,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Bulk Delete Memberships
@@ -19923,7 +19968,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/organization_memberships/destroy_many \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/organization_memberships/destroy_many`
@@ -19984,7 +20029,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## List Organization Memberships by Organization
@@ -19996,7 +20041,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/organization_memberships \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/organization_memberships`
@@ -20065,7 +20110,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## List Organization Memberships by User
@@ -20077,7 +20122,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/organization_memberships \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/organization_memberships`
@@ -20147,7 +20192,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Create Organization Membership for User
@@ -20161,7 +20206,7 @@ curl https://example.zendesk.com/api/v2/users/35436/organization_memberships \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization_membership": {
       "organization_id": 88
@@ -20222,7 +20267,7 @@ Assigns a user to a given organization. Returns an error with status 422 if the 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Show Organization Membership by User
@@ -20234,7 +20279,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/organization_memberships/4 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/organization_memberships/{organization_membership_id}`
@@ -20276,7 +20321,7 @@ curl https://example.zendesk.com/api/v2/users/35436/organization_memberships/4 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Delete Organization Membership for User
@@ -20288,7 +20333,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/organization_memberships/4 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/{user_id}/organization_memberships/{organization_membership_id}`
@@ -20316,7 +20361,7 @@ Immediately removes a user from an organization and schedules a job to unassign 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Set Membership as Default
@@ -20329,7 +20374,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/organization_memberships/4/make_default \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/users/{user_id}/organization_memberships/{organization_membership_id}/make_default`
@@ -20388,7 +20433,7 @@ Sets the default organization membership of a given user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Unassign Organization
@@ -20400,7 +20445,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/organizations/16 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/{user_id}/organizations/{organization_id}`
@@ -20427,7 +20472,7 @@ Immediately removes a user from an organization and schedules a job to unassign 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Set Organization as Default
@@ -20440,7 +20485,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/organizations/16/make_default \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/users/{user_id}/organizations/{organization_id}/make_default`
@@ -20484,7 +20529,7 @@ Sets the default organization membership of a given user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: organizations:write )
 </aside>
 
 <h1 id="support-api-sharing-agreements">Sharing Agreements</h1>
@@ -20498,7 +20543,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/sharing_agreements \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/sharing_agreements`
@@ -20537,7 +20582,7 @@ curl https://example.zendesk.com/api/v2/sharing_agreements \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Sharing Agreement
@@ -20551,7 +20596,7 @@ curl https://example.zendesk.com/api/v2/sharing_agreements \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "sharing_agreement": {
       "remote_subdomain": "Foo"
@@ -20611,7 +20656,7 @@ curl https://example.zendesk.com/api/v2/sharing_agreements \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show a Sharing Agreement
@@ -20623,7 +20668,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/sharing_agreements/1 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/sharing_agreements/{sharing_agreement_id}`
@@ -20669,7 +20714,7 @@ Returns a sharing agreement for your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Update a Sharing Agreement
@@ -20683,7 +20728,7 @@ curl https://example.zendesk.com/api/v2/sharing_agreements/1 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "sharing_agreement": {
       "status": "accepted"
@@ -20746,7 +20791,7 @@ Returns an updated sharing agreement. Only `status` is allowed to be updated.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete a Sharing Agreement
@@ -20758,7 +20803,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/sharing_agreements/1 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/sharing_agreements/{sharing_agreement_id}`
@@ -20784,7 +20829,7 @@ Deletes a sharing agreement.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 <h1 id="support-api-search">Search</h1>
@@ -20798,7 +20843,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/search?query=https%3A%2F%2Fsubdomain.zendesk.com%2Fapi%2Fv2%2Fsearch%3Fquery%3Dtype%3Aticket%20status%3Aclosed%26sort_by%3Dstatus%26sort_order%3Ddesc' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/search`
@@ -20850,7 +20895,7 @@ Errors are represented as JSON objects which have the following keys:
 |query|query|string|true|The search query. See [Query basics](#query-basics) above. For details on the query syntax, see the [Zendesk Support search reference](https://support.zendesk.com/hc/en-us/articles/4408886879258)|
 |sort_by|query|string|false|One of `updated_at`, `created_at`, `priority`, `status`, or `ticket_type`. Defaults to sorting by relevance|
 |sort_order|query|string|false|One of `asc` or `desc`.  Defaults to `desc`|
-|brand_id|query|string \| integer(int64)|false|When brand separation is enabled, scopes user results to the specified brand.<br>This parameter applies only when the account has brand separation enabled<br>(`brand_user_separation_eap`). Non-user document types are unaffected.<br><br>Accepted values:<br><br>* "all" — apply no brand scoping.<br>* 0 — return only account-scoped (brand-less) end users; all agents and admins remain visible.<br>* A numeric brand id — if the brand has user separation enabled, return that<br>  brand's end users plus the agents with membership in that brand and all admins.<br>  If the brand does not have user separation enabled, the request falls back to<br>  account scope (0). A brand id that does not exist on the account matches no users.<br><br>Any other value returns 400 Bad Request, whether or not brand separation is enabled.<br><br>The query keyword form (`query=type:user brand_id:{brand_id}`) continues to work. It<br>matches the brand id as indexed on every document type, so admins match only through<br>their brand memberships, and it does not apply the account-scope fallback for brands<br>without user separation.<br>|
+|brand_id|query|string \| integer(int64)|false|When brand separation is enabled, scopes user results to the specified brand.<br>This parameter applies only when the account has brand separation enabled<br>(`brand_user_separation_eap`). Non-user document types are unaffected.<br><br>Accepted values:<br><br>* "all" — apply no brand scoping.<br>* 0 — return only account-scoped (brand-less) end users; all agents and admins remain visible.<br>* A numeric brand id — if the brand has user separation enabled, return that<br>  brand's end users plus the agents with membership in that brand and all admins.<br>  If the brand's users are account-scoped, return the account-scoped end users, any end<br>  users still indexed with the brand, and all agents and admins. A brand id that does<br>  not exist on the account matches no users.<br><br>Any other value returns 400 Bad Request, whether or not brand separation is enabled.<br><br>Omitting `brand_id` applies no brand scoping; this endpoint does not fall back to the<br>account's default brand_id behavior. Use the users search and autocomplete endpoints<br>for that fallback.<br><br>The query keyword forms (`query=type:user brand_id:{brand_id}` and `brand:{brand_id}`)<br>continue to work. They match the brand id as indexed on every document type, so agents<br>and admins match only through their brand memberships. When brand separation is enabled<br>and the brand's users are account-scoped, they also match every account-scoped end user,<br>and a negated keyword (`-brand_id:{brand_id}`) excludes those end users too.<br>|
 |include|query|string|false|Sideloads to include in the response. Accepts a comma-separated list of values.<br>The available sideloads depend on the search result types.<br>|
 
 > Example responses
@@ -20892,7 +20937,7 @@ Errors are represented as JSON objects which have the following keys:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Show Results Count
@@ -20904,7 +20949,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/search/count?query=https%3A%2F%2Fsubdomain.zendesk.com%2Fapi%2Fv2%2Fsearch%3Fquery%3Dtype%3Aticket%20status%3Aclosed' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/search/count`
@@ -20941,7 +20986,7 @@ Returns the number of items matching the query rather than the items. The search
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Export Search Results
@@ -20953,7 +20998,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/search/export?query=https%3A%2F%2Fsubdomain.zendesk.com%2Fapi%2Fv2%2Fsearch%3Fquery%3Dtype%3Aticket%20status%3Aclosed%26sort_by%3Dstatus%26sort_order%3Ddesc&filter%5Btype%5D=ticket' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/search/export`
@@ -21046,7 +21091,7 @@ There's no `count` property.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 <h1 id="support-api-workspaces">Workspaces</h1>
@@ -21060,7 +21105,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/workspaces \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/workspaces`
@@ -21150,7 +21195,7 @@ curl https://example.zendesk.com/api/v2/workspaces \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Create Workspace
@@ -21164,7 +21209,7 @@ curl https://example.zendesk.com/api/v2/workspaces \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "workspace": {
       "conditions": {
@@ -21303,7 +21348,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show Workspace
@@ -21315,7 +21360,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/workspaces/3133 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/workspaces/{workspace_id}`
@@ -21407,7 +21452,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Update Workspace
@@ -21421,7 +21466,7 @@ curl https://example.zendesk.com/api/v2/workspaces/3133 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "workspace": {
       "conditions": {
@@ -21559,7 +21604,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Delete Workspace
@@ -21571,7 +21616,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/workspaces/3133 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/workspaces/{workspace_id}`
@@ -21594,7 +21639,7 @@ curl https://example.zendesk.com/api/v2/workspaces/3133 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Bulk Delete Workspaces
@@ -21607,7 +21652,7 @@ basicAuth
 curl 'https://example.zendesk.com/api/v2/workspaces/destroy_many?ids=1&ids=2&ids=3' \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/workspaces/destroy_many`
@@ -21638,7 +21683,7 @@ curl 'https://example.zendesk.com/api/v2/workspaces/destroy_many?ids=1&ids=2&ids
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Reorder Workspaces
@@ -21652,7 +21697,7 @@ curl https://example.zendesk.com/api/v2/workspaces/reorder \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ids": [
       12,
@@ -21705,7 +21750,7 @@ curl https://example.zendesk.com/api/v2/workspaces/reorder \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 <h1 id="support-api-security-settings">Security Settings</h1>
@@ -21719,7 +21764,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/security_settings \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/security_settings`
@@ -21813,7 +21858,7 @@ curl https://example.zendesk.com/api/v2/security_settings \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: security:read )
 </aside>
 
 <h1 id="support-api-skill-based-routing">Skill Based Routing</h1>
@@ -21827,7 +21872,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/agents/35436/instance_values \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/agents/{user_id}/instance_values`
@@ -21873,7 +21918,7 @@ Returns an attribute value.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Set Agent Attribute Values
@@ -21887,7 +21932,7 @@ curl https://example.zendesk.com/api/v2/routing/agents/35436/instance_values \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "attribute_value_ids": [
       "b376b35a-e38b-11e8-a292-e3b6377c5575"
@@ -21949,7 +21994,7 @@ Adds the specified attributes if no attributes exists, or replaces all existing 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## List Attribute Values for Many Agents
@@ -21961,7 +22006,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/routing/agents/instance_values?filter%5Bagent_ids%5D=224%2C225' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/agents/instance_values`
@@ -22040,7 +22085,7 @@ Note: `page[before]` and `page[after]` can't be used together in the same reques
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Bulk Set Agent Attribute Values Jobs
@@ -22054,7 +22099,7 @@ curl https://example.zendesk.com/api/v2/routing/agents/instance_values/jobs \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "job": {
       "action": "upsert",
@@ -22167,7 +22212,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## List Account Attributes
@@ -22179,7 +22224,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/attributes \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/attributes`
@@ -22234,7 +22279,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Attribute
@@ -22247,7 +22292,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/routing/attributes \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/routing/attributes`
@@ -22284,7 +22329,7 @@ Creates an attribute.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show Attribute
@@ -22296,7 +22341,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/attributes/{attribute_id}`
@@ -22339,7 +22384,7 @@ Returns an attribute.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Update Attribute
@@ -22352,7 +22397,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75 \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/routing/attributes/{attribute_id}`
@@ -22395,7 +22440,7 @@ Updates an attribute.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Attribute
@@ -22407,7 +22452,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/routing/attributes/{attribute_id}`
@@ -22434,7 +22479,7 @@ Deletes an attribute.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Attribute Values for an Attribute
@@ -22446,7 +22491,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75/values \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/attributes/{attribute_id}/values`
@@ -22491,7 +22536,7 @@ Returns a list of attribute values for a provided attribute.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Attribute Value
@@ -22504,7 +22549,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75/values \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/routing/attributes/{attribute_id}/values`
@@ -22547,7 +22592,7 @@ Creates an attribute value.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show Attribute Value
@@ -22559,7 +22604,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75/values/b376b35a-e38b-11e8-a292-e3b6377c5575 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/attributes/{attribute_id}/values/{attribute_value_id}`
@@ -22603,7 +22648,7 @@ Returns an attribute value.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Update Attribute Value
@@ -22616,7 +22661,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75/values/b376b35a-e38b-11e8-a292-e3b6377c5575 \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/routing/attributes/{attribute_id}/values/{attribute_value_id}`
@@ -22660,7 +22705,7 @@ Updates the name and ticket conditions of a skill. When a ticket is created, the
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Attribute Value
@@ -22672,7 +22717,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75/values/b376b35a-e38b-11e8-a292-e3b6377c5575 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/routing/attributes/{attribute_id}/values/{attribute_value_id}`
@@ -22700,7 +22745,7 @@ Deletes an attribute value.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Update Attribute Value
@@ -22713,7 +22758,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/routing/attributes/6e279587-e930-11e8-a292-09cfcdea1b75/values/b376b35a-e38b-11e8-a292-e3b6377c5575 \
   -X PATCH \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PATCH /api/v2/routing/attributes/{attribute_id}/values/{attribute_value_id}`
@@ -22757,7 +22802,7 @@ Updates the name and ticket conditions of a skill. When a ticket is created, the
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Routing Attribute Definitions
@@ -22769,7 +22814,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/attributes/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/attributes/definitions`
@@ -22813,7 +22858,7 @@ Returns the condition definitions that can be configured to apply attributes to 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List Tickets Fulfilled by a User
@@ -22825,7 +22870,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/routing/requirements/fulfilled?ticket_ids=1' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/requirements/fulfilled`
@@ -22865,7 +22910,7 @@ Returns a list of ticket ids that contain attributes matching the current user's
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List Ticket Attribute Values
@@ -22877,7 +22922,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/tickets/123456/instance_values \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/routing/tickets/{ticket_id}/instance_values`
@@ -22922,7 +22967,7 @@ Returns a list of attributes values for the ticket.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Set Ticket Attribute Values
@@ -22934,15 +22979,21 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/routing/tickets/123456/instance_values \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "attribute_value_ids": [
+      "fa1131e2-d6cd-11e7-a492-dbdd5500c7e3"
+    ]
+  }'
 ```
 
 `POST /api/v2/routing/tickets/{ticket_id}/instance_values`
 
 Adds the specified attributes if no attributes exists, or replaces all existing attributes with the specified attributes.
 
-Invalid or deleted attributes are ignored.
+Attribute value ids that are valid UUIDs but unknown or deleted are ignored; a malformed id causes a 422 response.
 
 #### Allowed For
 
@@ -22951,11 +23002,23 @@ Invalid or deleted attributes are ignored.
 * Agents, when the account setting for editing ticket skills is enabled for all agents
 
 
+> Body parameter
+
+```json
+{
+  "attribute_value_ids": [
+    "fa1131e2-d6cd-11e7-a492-dbdd5500c7e3"
+  ]
+}
+```
+
 <h3 id="set-ticket-attribute-values-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |ticket_id|path|integer(int64)|true|The ID of the ticket|
+|body|body|[SkillBasedRoutingAttributeValueIdsRequest](#schemaskillbasedroutingattributevalueidsrequest)|false|none|
+|» attribute_value_ids|body|[string]|false|The ids of the attribute values to assign. Each id must be a valid UUID. Sending `null`,<br>`[]`, or omitting this field entirely clears every attribute value<br>currently assigned. There is no way to leave the existing set unchanged while calling this endpoint<br>|
 
 > Example responses
 
@@ -22975,15 +23038,91 @@ Invalid or deleted attributes are ignored.
 }
 ```
 
+> 400 Response
+
+```json
+{
+  "error": {
+    "message": "You passed an invalid value for the attribute_value_ids attribute. must be an array",
+    "title": "Invalid attribute"
+  }
+}
+```
+
+> 403 Response
+
+```json
+{
+  "error": {
+    "message": "You do not have access to this page. Please contact the account owner of this help desk for further help.",
+    "title": "Forbidden"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "description": "Not found",
+  "error": "RecordNotFound"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "description": "Skills cannot be modified on change management tickets",
+  "error": "ChangeManagementTicket"
+}
+```
+
 <h3 id="set-ticket-attribute-values-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Success response|[SkillBasedRoutingAttributeValuesResponse](#schemaskillbasedroutingattributevaluesresponse)|
+|400|Bad Request|Bad request. The `attribute_value_ids` parameter is invalid: it must be<br>an array of strings (attribute value IDs).<br>|Inline|
+|403|Forbidden|Forbidden. The authenticated user is not allowed to edit ticket skills.<br>Only admins, agents in a custom role with permission to manage skills,<br>or agents when the account setting for editing ticket skills is enabled<br>for all agents can set a ticket's attribute values.<br>|Inline|
+|404|Not Found|Not found. Either the skill-based ticket routing feature is not enabled<br>for the account (empty response body), or no ticket with the given id<br>exists.<br>|Inline|
+|422|Unprocessable Entity|Unprocessable Entity. Either an attribute value id in the request body is<br>malformed (fails the UUID shape check; empty response body), or the ticket<br>is a change management ticket, whose skills cannot be modified (JSON body<br>with an `error` code of "ChangeManagementTicket").<br>|Inline|
+
+<h3 id="set-ticket-attribute-values-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|object|false|none|none|
+|» message|string|false|none|none|
+|» title|string|false|none|none|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|error|object|false|none|none|
+|» message|string|false|none|none|
+|» title|string|false|none|none|
+
+Status Code **404**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|none|
+|error|string|false|none|none|
+
+Status Code **422**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|none|
+|error|string|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 <h1 id="support-api-remote-authentications">Remote Authentications</h1>
@@ -22997,7 +23136,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/remote_authentications \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/remote_authentications`
@@ -23099,7 +23238,7 @@ curl https://example.zendesk.com/api/v2/remote_authentications \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: security:read )
 </aside>
 
 <h1 id="support-api-resource-collections">Resource Collections</h1>
@@ -23113,7 +23252,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/resource_collections \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/resource_collections`
@@ -23185,7 +23324,7 @@ Lists resource collections for the account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: apps:read )
 </aside>
 
 ## Create Resource Collection
@@ -23198,7 +23337,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/resource_collections \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/resource_collections`
@@ -23239,7 +23378,7 @@ status](/api-reference/ticketing/ticket-management/job_statuses/) for creation o
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: apps:write )
 </aside>
 
 ## Show Resource Collection
@@ -23251,7 +23390,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/resource_collections/10002 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/resource_collections/{resource_collection_id}`
@@ -23305,7 +23444,7 @@ Retrieves details for a specified resource collection.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: apps:read )
 </aside>
 
 ## Update Resource Collection
@@ -23318,7 +23457,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/resource_collections/10002 \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/resource_collections/{resource_collection_id}`
@@ -23365,7 +23504,7 @@ status](/api-reference/ticketing/ticket-management/job_statuses/) for the resour
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: apps:write )
 </aside>
 
 ## Delete Resource Collection
@@ -23378,7 +23517,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/resource_collections/10002 \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/resource_collections/{resource_collection_id}`
@@ -23425,7 +23564,7 @@ status](/api-reference/ticketing/ticket-management/job_statuses/) for deletion o
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: apps:write )
 </aside>
 
 <h1 id="support-api-macros">Macros</h1>
@@ -23439,7 +23578,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros`
@@ -23514,7 +23653,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Create Macro
@@ -23528,7 +23667,7 @@ curl https://example.zendesk.com/api/v2/macros \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "macro": {
       "actions": [
@@ -23632,7 +23771,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:write )
 </aside>
 
 ## Show Macro
@@ -23644,7 +23783,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/25 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/{macro_id}`
@@ -23685,7 +23824,7 @@ curl https://example.zendesk.com/api/v2/macros/25 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Update Macro
@@ -23699,7 +23838,7 @@ curl https://example.zendesk.com/api/v2/macros/25 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "macro": {
       "actions": [
@@ -23782,7 +23921,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:write )
 </aside>
 
 ## Delete Macro
@@ -23794,7 +23933,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/25 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/macros/{macro_id}`
@@ -23817,7 +23956,7 @@ curl https://example.zendesk.com/api/v2/macros/25 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:write )
 </aside>
 
 ## Show Changes to Ticket
@@ -23829,7 +23968,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/25/apply \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/{macro_id}/apply`
@@ -23900,7 +24039,7 @@ see [Show Ticket After Changes](#show-ticket-after-changes).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## List Macro Attachments
@@ -23912,7 +24051,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/25/attachments \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/{macro_id}/attachments`
@@ -23964,7 +24103,7 @@ Lists the attachments associated with a macro.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Create Macro Attachment
@@ -23977,7 +24116,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/macros/25/attachments \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/macros/{macro_id}/attachments`
@@ -24022,7 +24161,7 @@ Allows an attachment to be uploaded and associated with a macro at the same time
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:write )
 </aside>
 
 ## List Supported Actions for Macros
@@ -24034,7 +24173,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/actions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/actions`
@@ -24161,7 +24300,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## List Active Macros
@@ -24173,7 +24312,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/active \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/active`
@@ -24237,7 +24376,7 @@ Lists all active shared and personal macros available to the current user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Create Unassociated Macro Attachment
@@ -24250,7 +24389,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/macros/attachments \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/macros/attachments`
@@ -24289,7 +24428,7 @@ Allows an attachment to be uploaded that can be associated with a macro at a lat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:write )
 </aside>
 
 ## Show Macro Attachment
@@ -24301,7 +24440,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/attachments/498483 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/attachments/{attachment_id}`
@@ -24343,7 +24482,7 @@ Shows the properties of the specified macro attachment.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Download Macro Attachment
@@ -24354,7 +24493,7 @@ basicAuth
 
 ```bash
 curl https://example.zendesk.com/api/v2/macros/attachments/498483/content \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/attachments/{attachment_id}/content`
@@ -24381,7 +24520,7 @@ The response `Content-Type` matches the attachment's content type.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## List Macro Categories
@@ -24393,7 +24532,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/categories \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/categories`
@@ -24425,7 +24564,7 @@ Lists all macro categories available to the current user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## List Macro Action Definitions
@@ -24437,7 +24576,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/definitions`
@@ -24512,7 +24651,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Bulk Delete Macros
@@ -24524,7 +24663,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/macros/destroy_many?ids=1&ids=2&ids=3' \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/macros/destroy_many`
@@ -24549,7 +24688,7 @@ Deletes the macros corresponding to the provided comma-separated list of IDs.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:write )
 </aside>
 
 ## List Macro Groups
@@ -24561,7 +24700,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/groups \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/groups`
@@ -24620,7 +24759,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## List Most Used Macros
@@ -24632,7 +24771,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/macros/most_used \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/most_used`
@@ -24686,7 +24825,7 @@ When there are no most used macros, an empty array is returned.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Show Macro Replica
@@ -24698,7 +24837,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/macros/new?macro_id=25&ticket_id=35436' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/new`
@@ -24744,7 +24883,7 @@ The endpoint takes one of the following query parameters: `macro_id` or `ticket_
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Search Macros
@@ -24756,7 +24895,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/macros/search?query=close' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/macros/search`
@@ -24824,7 +24963,7 @@ See [Using Offset Pagination](/api-reference/introduction/pagination/#using-offs
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 ## Update Many Macros
@@ -24838,7 +24977,7 @@ curl https://example.zendesk.com/api/v2/macros/update_many \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "macros": [
       {
@@ -24927,7 +25066,7 @@ Updates the provided macros with the specified changes.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:write )
 </aside>
 
 ## Show Ticket After Changes
@@ -24939,7 +25078,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/35436/macros/25/apply \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/macros/{macro_id}/apply`
@@ -25010,7 +25149,7 @@ see [Show Changes to Ticket](#show-changes-to-ticket).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: macros:read )
 </aside>
 
 <h1 id="support-api-organization-subscriptions">Organization Subscriptions</h1>
@@ -25024,7 +25163,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_subscriptions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organization_subscriptions`
@@ -25076,7 +25215,7 @@ For end users, the response will only list the subscriptions created by the requ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Create Organization Subscription
@@ -25090,7 +25229,7 @@ curl https://example.zendesk.com/api/v2/organization_subscriptions \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization_subscription": {
       "organization_id": 32,
@@ -25149,7 +25288,7 @@ End users can only subscribe to shared organizations in which they're members.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## Show Organization Subscription
@@ -25161,7 +25300,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_subscriptions/35436 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organization_subscriptions/{organization_subscription_id}`
@@ -25202,7 +25341,7 @@ For end users, the response will only list the subscriptions created by the requ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## Delete Organization Subscription
@@ -25214,7 +25353,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_subscriptions/35436 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/organization_subscriptions/{organization_subscription_id}`
@@ -25238,7 +25377,7 @@ curl https://example.zendesk.com/api/v2/organization_subscriptions/35436 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:write )
 </aside>
 
 ## List Subscriptions By Organization
@@ -25250,7 +25389,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/subscriptions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/subscriptions`
@@ -25310,7 +25449,7 @@ For end users, the response will only list the subscriptions created by the requ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 ## List User's Organization Subscriptions
@@ -25322,7 +25461,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/organization_subscriptions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/organization_subscriptions`
@@ -25382,7 +25521,7 @@ For end users, the response will only list the subscriptions created by the requ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: organizations:read )
 </aside>
 
 <h1 id="support-api-support-addresses">Support Addresses</h1>
@@ -25396,7 +25535,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/recipient_addresses \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/recipient_addresses`
@@ -25472,7 +25611,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Create Support Address
@@ -25485,7 +25624,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/recipient_addresses \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/recipient_addresses`
@@ -25532,7 +25671,7 @@ To add an external email address such as help@omniwearshop.com, the email must a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show Support Address
@@ -25544,7 +25683,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/recipient_addresses/33 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/recipient_addresses/{support_address_id}`
@@ -25590,7 +25729,7 @@ curl https://example.zendesk.com/api/v2/recipient_addresses/33 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Update Support Address
@@ -25603,7 +25742,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/recipient_addresses/33 \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/recipient_addresses/{support_address_id}`
@@ -25653,7 +25792,7 @@ Address](#create-support-address) endpoint.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Delete Support Address
@@ -25665,7 +25804,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/recipient_addresses/33 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/recipient_addresses/{support_address_id}`
@@ -25692,7 +25831,7 @@ Deletes a support address.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Verify Support Address Forwarding
@@ -25705,7 +25844,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/recipient_addresses/33/verify \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/recipient_addresses/{support_address_id}/verify`
@@ -25754,7 +25893,7 @@ When calling the endpoint with `type` set to "dns", it runs checks on your CNAME
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 <h1 id="support-api-user-passwords">User Passwords</h1>
@@ -25769,7 +25908,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/password \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/users/{user_id}/password`
@@ -25805,7 +25944,7 @@ You can only change your own password. Nobody can change the password of another
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Set a User's Password
@@ -25818,7 +25957,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/password \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/users/{user_id}/password`
@@ -25852,7 +25991,7 @@ An admin can set a user's password only if the setting is enabled in Zendesk Sup
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## List password requirements
@@ -25864,7 +26003,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/password/requirements \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/password/requirements`
@@ -25902,7 +26041,7 @@ curl https://example.zendesk.com/api/v2/users/35436/password/requirements \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 <h1 id="support-api-user-identities">User Identities</h1>
@@ -25916,7 +26055,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/end_users/35436/identities \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/end_users/{user_id}/identities`
@@ -26005,7 +26144,7 @@ Returns a maximum of 100 records per page for cursor pagination.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Create End User Identity
@@ -26019,7 +26158,7 @@ curl https://example.zendesk.com/api/v2/end_users/35436/identities \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "identity": {
       "type": "email",
@@ -26100,7 +26239,7 @@ Supported identity types for end users:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show End User Identity
@@ -26112,7 +26251,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/end_users/35436/identities/77938 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/end_users/{user_id}/identities/{user_identity_id}`
@@ -26160,7 +26299,7 @@ End users can only view email or phone number identity.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Delete End User Identity
@@ -26172,7 +26311,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/end_users/35436/identities/77938 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/end_users/{user_id}/identities/{user_identity_id}`
@@ -26201,7 +26340,7 @@ In certain cases, a phone number associated with an identity is still visible on
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Make End User Identity Primary
@@ -26214,7 +26353,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/end_users/35436/identities/77938/make_primary \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/end_users/{user_id}/identities/{user_identity_id}/make_primary`
@@ -26287,7 +26426,7 @@ An end user can only make an email identity primary if the email is verified.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Request End User Verification
@@ -26300,7 +26439,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/end_users/35436/identities/77938/request_verification \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/end_users/{user_id}/identities/{user_identity_id}/request_verification`
@@ -26335,7 +26474,7 @@ Sends the end user a verification email with a link to verify ownership of the e
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## List Identities
@@ -26347,7 +26486,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/identities \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/identities`
@@ -26449,7 +26588,7 @@ Returns a maximum of 100 records per page for cursor pagination.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Create Identity
@@ -26463,11 +26602,12 @@ curl https://example.zendesk.com/api/v2/users/35436/identities \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "identity": {
+      "auto_ownership": true,
       "type": "email",
-      "value": "foo@bar.com"
+      "value": "household@example.com"
     }
   }'
 ```
@@ -26499,8 +26639,9 @@ To create an identity without sending out a verification email, include a `"skip
 ```json
 {
   "identity": {
+    "auto_ownership": true,
     "type": "email",
-    "value": "foo@bar.com"
+    "value": "household@example.com"
   }
 }
 ```
@@ -26542,7 +26683,7 @@ To create an identity without sending out a verification email, include a `"skip
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show Identity
@@ -26554,7 +26695,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/identities/77938 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/identities/{user_identity_id}`
@@ -26603,7 +26744,7 @@ Use the first endpoint if authenticating as an agent. Use the second if authenti
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Update Identity
@@ -26617,7 +26758,7 @@ curl https://example.zendesk.com/api/v2/users/35436/identities/77938 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "identity": {
       "value": "foo@bar.com"
@@ -26696,7 +26837,7 @@ You can't change an identity's `primary` attribute with this endpoint. You must 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Delete Identity
@@ -26708,7 +26849,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/identities/77938 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/{user_id}/identities/{user_identity_id}`
@@ -26737,7 +26878,7 @@ Deleting identities with type `messaging` could break messaging functionality. F
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Make Identity Primary
@@ -26750,7 +26891,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/identities/77938/make_primary \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/users/{user_id}/identities/{user_identity_id}/make_primary`
@@ -26824,7 +26965,7 @@ The first endpoint is the preferred option if authenticating as an agent. If aut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Request User Verification
@@ -26837,7 +26978,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/identities/77938/request_verification \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/users/{user_id}/identities/{user_identity_id}/request_verification`
@@ -26873,7 +27014,7 @@ Sends the user a verification email with a link to verify ownership of the email
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Verify Identity
@@ -26886,7 +27027,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/identities/77938/verify \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/users/{user_id}/identities/{user_identity_id}/verify`
@@ -26936,7 +27077,7 @@ If [automatic mapping of users to organizations using the email domain](https://
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 <h1 id="support-api-activity-stream">Activity Stream</h1>
@@ -26950,7 +27091,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/activities \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/activities`
@@ -27263,7 +27404,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Activity
@@ -27275,7 +27416,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/activities/29183462 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/activities/{activity_id}`
@@ -27447,7 +27588,7 @@ Lists a specific activity.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Count Activities
@@ -27459,7 +27600,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/activities/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/activities/count`
@@ -27495,7 +27636,7 @@ This indicates that the count is being updated in the background, and `count[val
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-group-sla-policies">Group SLA Policies</h1>
@@ -27509,7 +27650,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/group_slas/policies \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/group_slas/policies`
@@ -27615,7 +27756,7 @@ Status Code **403**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:read )
 </aside>
 
 ## Create Group SLA Policy
@@ -27629,7 +27770,7 @@ curl https://example.zendesk.com/api/v2/group_slas/policies \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "group_sla_policy": {
       "description": "Tier 1 Group SLA",
@@ -27764,7 +27905,7 @@ curl https://example.zendesk.com/api/v2/group_slas/policies \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:write )
 </aside>
 
 ## Show Group SLA Policy
@@ -27776,7 +27917,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/group_slas/policies/01G7ZF5XCJJEBZRCG9V5BVJZCY \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/group_slas/policies/{group_sla_policy_id}`
@@ -27903,7 +28044,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:read )
 </aside>
 
 ## Update Group SLA Policy
@@ -27917,7 +28058,7 @@ curl https://example.zendesk.com/api/v2/group_slas/policies/01G7ZF5XCJJEBZRCG9V5
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "group_sla_policy": {
       "description": "Tier 1 Group SLA",
@@ -28050,7 +28191,7 @@ Updates the specified policy.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:write )
 </aside>
 
 ## Delete Group SLA Policy
@@ -28062,7 +28203,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/group_slas/policies/01G7ZF5XCJJEBZRCG9V5BVJZCY \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/group_slas/policies/{group_sla_policy_id}`
@@ -28086,7 +28227,7 @@ curl https://example.zendesk.com/api/v2/group_slas/policies/01G7ZF5XCJJEBZRCG9V5
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:write )
 </aside>
 
 ## Retrieve Supported Filter Definition Items
@@ -28098,7 +28239,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/group_slas/policies/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/group_slas/policies/definitions`
@@ -28185,7 +28326,7 @@ curl https://example.zendesk.com/api/v2/group_slas/policies/definitions \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:read )
 </aside>
 
 ## Reorder Group SLA Policies
@@ -28199,7 +28340,7 @@ curl https://example.zendesk.com/api/v2/group_slas/policies/reorder \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "group_sla_policy_ids": [
       "01GBNW21N2XR7DKHRSRZW0FR97",
@@ -28303,7 +28444,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:write )
 </aside>
 
 ## List Ticket Group SLA Policy Metrics
@@ -28315,7 +28456,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/group_slas/policy_metrics \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/group_slas/policy_metrics`
@@ -28376,7 +28517,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:read )
 </aside>
 
 <h1 id="support-api-sla-policies">SLA Policies</h1>
@@ -28390,7 +28531,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/slas/policies \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/slas/policies`
@@ -28456,7 +28597,7 @@ curl https://example.zendesk.com/api/v2/slas/policies \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:read )
 </aside>
 
 ## Create SLA Policy
@@ -28470,7 +28611,7 @@ curl https://example.zendesk.com/api/v2/slas/policies \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "sla_policy": {
       "description": "For urgent incidents, we will respond to tickets in 10 minutes",
@@ -28678,7 +28819,7 @@ curl https://example.zendesk.com/api/v2/slas/policies \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:write )
 </aside>
 
 ## Show SLA Policy
@@ -28690,7 +28831,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/slas/policies/36 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/slas/policies/{sla_policy_id}`
@@ -28757,7 +28898,7 @@ curl https://example.zendesk.com/api/v2/slas/policies/36 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:read )
 </aside>
 
 ## Update SLA Policy
@@ -28771,7 +28912,7 @@ curl https://example.zendesk.com/api/v2/slas/policies/36 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "sla_policy": {
       "description": "For urgent incidents, we will resolve the ticket within 2 hours",
@@ -28982,7 +29123,7 @@ Updates the specified policy.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:write )
 </aside>
 
 ## Delete SLA Policy
@@ -28994,7 +29135,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/slas/policies/36 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/slas/policies/{sla_policy_id}`
@@ -29022,7 +29163,7 @@ curl https://example.zendesk.com/api/v2/slas/policies/36 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:write )
 </aside>
 
 ## Retrieve Supported Filter Definition Items
@@ -29034,7 +29175,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/slas/policies/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/slas/policies/definitions`
@@ -29121,7 +29262,7 @@ curl https://example.zendesk.com/api/v2/slas/policies/definitions \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:read )
 </aside>
 
 ## Reorder SLA Policies
@@ -29135,7 +29276,7 @@ curl https://example.zendesk.com/api/v2/slas/policies/reorder \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "sla_policy_ids": [
       12,
@@ -29191,7 +29332,7 @@ Reorders the SLA policies. The new order is set in a `sla_policy_ids` array in t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:write )
 </aside>
 
 ## List Ticket SLA Policy Metrics
@@ -29203,7 +29344,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/slas/policy_metrics \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/slas/policy_metrics`
@@ -29264,7 +29405,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: sla_policies:read )
 </aside>
 
 <h1 id="support-api-ticket-audits">Ticket Audits</h1>
@@ -29278,7 +29419,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_audits \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_audits`
@@ -29370,7 +29511,7 @@ This endpoint should not be used for capturing change data. When continually cha
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List Audits for a Ticket
@@ -29382,7 +29523,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/audits \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/audits`
@@ -29510,7 +29651,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Audit
@@ -29522,7 +29663,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/audits/2127301143 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/audits/{ticket_audit_id}`
@@ -29619,7 +29760,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/audits/2127301143 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Change a Comment From Public To Private
@@ -29632,7 +29773,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/tickets/123456/audits/2127301143/make_private \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/tickets/{ticket_id}/audits/{ticket_audit_id}/make_private`
@@ -29665,7 +29806,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/audits/2127301143/make_pr
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Count Audits for a Ticket
@@ -29677,7 +29818,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/audits/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/audits/count`
@@ -29720,7 +29861,7 @@ The `count[refreshed_at]` property is a timestamp that indicates when the count 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-ticket-metric-events">Ticket Metric Events</h1>
@@ -29734,7 +29875,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/incremental/ticket_metric_events?start_time=1332034771' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/ticket_metric_events`
@@ -29834,7 +29975,7 @@ Status Code **403**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List Ticket Metric Events by Ticket
@@ -29846,7 +29987,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/metric_events \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/metric_events`
@@ -29914,7 +30055,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-conversation-log">Conversation Log</h1>
@@ -29928,7 +30069,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/conversation_log \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/conversation_log`
@@ -30041,7 +30182,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-brands">Brands</h1>
@@ -30055,7 +30196,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brands \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brands`
@@ -30191,7 +30332,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:read )
 </aside>
 
 ## Create Brand
@@ -30205,7 +30346,7 @@ curl https://example.zendesk.com/api/v2/brands \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "brand": {
       "name": "Brand 1",
@@ -30221,6 +30362,7 @@ Creates a brand. To attach a logo, make a follow-up request to
 
 #### Allowed for
 - Admins
+- Agents with `manage_brands` set to "all" or "member", when brand-based ticket access is enabled on the account
 
 > Body parameter
 
@@ -30295,7 +30437,7 @@ Creates a brand. To attach a logo, make a follow-up request to
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:write )
 </aside>
 
 ## Show a Brand
@@ -30307,7 +30449,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brands/360002783572 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brands/{brand_id}`
@@ -30382,7 +30524,7 @@ Returns a brand for your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:read )
 </aside>
 
 ## Update a Brand
@@ -30396,7 +30538,7 @@ curl https://example.zendesk.com/api/v2/brands/360002783572 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "brand": {
       "active": true,
@@ -30413,6 +30555,8 @@ Returns an updated brand.
 
 #### Allowed for
 * Admins
+* Agents with `manage_brands` set to "all"
+* Agents with `manage_brands` set to "member", for brands they belong to
 
 #### Updating a Brand's Image
 Use `PUT /api/v2/brands/{brand_id}/logo` to set or replace the brand logo,
@@ -30496,7 +30640,7 @@ and `DELETE /api/v2/brands/{brand_id}/logo` to remove it.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:write )
 </aside>
 
 ## Delete a Brand
@@ -30508,7 +30652,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brands/360002783572 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/brands/{brand_id}`
@@ -30517,6 +30661,8 @@ Deletes a brand.
 
 #### Allowed for
 - Admins
+- Agents with `delete_brands` enabled and `manage_brands` set to "all"
+- Agents with `delete_brands` enabled and `manage_brands` set to "member", for brands they belong to
 
 <h3 id="delete-a-brand-parameters">Parameters</h3>
 
@@ -30532,7 +30678,7 @@ Deletes a brand.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:write )
 </aside>
 
 ## Check Host Mapping Validity for an Existing Brand
@@ -30544,7 +30690,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brands/360002783572/check_host_mapping \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brands/{brand_id}/check_host_mapping`
@@ -30579,7 +30725,7 @@ Returns a JSON object determining whether a host mapping is valid for the given 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:read )
 </aside>
 
 ## Update a Brand Logo
@@ -30592,7 +30738,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/brands/360002783572/logo \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -F 'brand[logo][uploaded_data]=@/path/to/file'
 ```
 
@@ -30682,7 +30828,7 @@ Sets or replaces the logo on a brand using a multipart file upload.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:write )
 </aside>
 
 ## Delete a Brand Logo
@@ -30694,7 +30840,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brands/360002783572/logo \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/brands/{brand_id}/logo`
@@ -30718,7 +30864,7 @@ Removes the logo from a brand. Returns 204 even if the brand had no logo.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:write )
 </aside>
 
 ## Check Host Mapping Validity
@@ -30730,7 +30876,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/brands/check_host_mapping?host_mapping=brand1.com&subdomain=Brand1' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brands/check_host_mapping`
@@ -30740,6 +30886,7 @@ Returns a JSON object determining whether a host mapping is valid for a given su
 #### Allowed for
 
 * Admins
+* Agents with `manage_brands` set to "all" or "member"
 
 <h3 id="check-host-mapping-validity-parameters">Parameters</h3>
 
@@ -30767,7 +30914,7 @@ Returns a JSON object determining whether a host mapping is valid for a given su
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:read )
 </aside>
 
 <h1 id="support-api-brand-agents">Brand Agents</h1>
@@ -30781,7 +30928,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brand_agents \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brand_agents`
@@ -30844,7 +30991,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: brands:read )
 </aside>
 
 ## Create Brand Agent Membership
@@ -30858,7 +31005,7 @@ curl https://example.zendesk.com/api/v2/brand_agents \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "brand_agent": {
       "brand_id": 88,
@@ -30924,7 +31071,7 @@ account, or a membership for the same user and brand already exists.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: brands:write )
 </aside>
 
 ## Show Brand Agent Membership
@@ -30936,7 +31083,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brand_agents/123ABC \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brand_agents/{brand_agent_id}`
@@ -30979,7 +31126,7 @@ Returns a brand agent membership for your account.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: brands:read )
 </aside>
 
 ## Delete Brand Agent Membership
@@ -30991,7 +31138,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brand_agents/123ABC \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/brand_agents/{brand_agent_id}`
@@ -31022,7 +31169,7 @@ the list and show endpoints, not the id of the brand or the user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write ), oauth2 ( Scopes: brands:write )
 </aside>
 
 ## List Agents By Brand
@@ -31034,7 +31181,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brands/360002783572/agents \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brands/{brand_id}/agents`
@@ -31094,7 +31241,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: brands:read )
 </aside>
 
 ## List Brand Agent Memberships By User
@@ -31106,7 +31253,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/brand_agents \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/brand_agents`
@@ -31166,7 +31313,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: brands:read )
 </aside>
 
 ## Show Brand Agent Membership By User
@@ -31178,7 +31325,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/brand_agents/123ABC \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/brand_agents/{brand_agent_id}`
@@ -31221,7 +31368,7 @@ Returns a specific brand agent membership for a user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: brands:read )
 </aside>
 
 <h1 id="support-api-brand-user-migrations">Brand User Migrations</h1>
@@ -31235,7 +31382,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/brands/360002783572/user_migrations \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brands/{brand_id}/user_migrations`
@@ -31333,7 +31480,7 @@ Available on accounts with Department Spaces.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:read )
 </aside>
 
 ## Create Brand User Migration
@@ -31347,7 +31494,7 @@ curl https://example.zendesk.com/api/v2/brands/360002783572/user_migrations \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user_migration": {
       "direction": {
@@ -31462,20 +31609,18 @@ Available on accounts with Department Spaces.
 
 ```json
 {
-  "description": "string",
+  "description": "Record validation errors",
   "details": {
-    "property1": [
+    "base": [
       {
-        "description": "string"
-      }
-    ],
-    "property2": [
+        "description": "Brand migration direction from and to must differ."
+      },
       {
-        "description": "string"
+        "description": "Brand migration direction from must match brand user separation value."
       }
     ]
   },
-  "error": "string"
+  "error": "RecordInvalid"
 }
 ```
 
@@ -31508,7 +31653,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:write )
 </aside>
 
 ## Show Brand User Migration
@@ -31518,9 +31663,9 @@ basicAuth
 > Code samples
 
 ```bash
-curl https://example.zendesk.com/api/v2/brands/360002783572/user_migrations/string \
+curl https://example.zendesk.com/api/v2/brands/360002783572/user_migrations/01ARZ3NDEKTSV4RRFFQ69G5FAV \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/brands/{brand_id}/user_migrations/{migration_id}`
@@ -31585,144 +31730,7 @@ Available on accounts with Department Spaces.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
-</aside>
-
-## Update Brand User Migration
-
-<a id="opIdUpdateBrandUserMigration"></a>
-
-> Code samples
-
-```bash
-curl https://example.zendesk.com/api/v2/brands/360002783572/user_migrations/string \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
-  -d '{
-    "user_migration": {
-      "status": "validating"
-    }
-  }'
-```
-
-`PUT /api/v2/brands/{brand_id}/user_migrations/{migration_id}`
-
-Updates the status of a brand user migration.
-
-#### Allowed For
-
-* Admins
-
-#### Availability
-
-Available on accounts with Department Spaces.
-
-
-> Body parameter
-
-```json
-{
-  "user_migration": {
-    "status": "validating"
-  }
-}
-```
-
-<h3 id="update-brand-user-migration-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|brand_id|path|integer(int64)|true|The ID of the brand|
-|migration_id|path|string|true|ULID of the brand user migration|
-|body|body|[BrandUserMigrationUpdateRequest](#schemabrandusermigrationupdaterequest)|true|none|
-|» user_migration|body|object|true|none|
-|» » status|body|string|true|Desired status to set on the migration|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » status|validating|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "user_migration": {
-    "account_id": 1234567,
-    "active": true,
-    "brand_id": 360002783572,
-    "completed_at": null,
-    "direction": {
-      "from": {
-        "scope": "account"
-      },
-      "to": {
-        "scope": "brand"
-      }
-    },
-    "id": "01J8X4Q3Z9K7M2N5P8R6T0V1WY",
-    "jobs": [
-      {
-        "id": "V3-validation",
-        "type": "validation"
-      }
-    ],
-    "mode": "manual",
-    "status": "in_progress",
-    "updated_at": "2025-09-15T10:30:00Z",
-    "url": "https://example.zendesk.com/api/v2/brands/360002783572/user_migrations/01J8X4Q3Z9K7M2N5P8R6T0V1WY"
-  }
-}
-```
-
-> 422 Response
-
-```json
-{
-  "description": "string",
-  "details": {
-    "property1": [
-      {
-        "description": "string"
-      }
-    ],
-    "property2": [
-      {
-        "description": "string"
-      }
-    ]
-  },
-  "error": "string"
-}
-```
-
-<h3 id="update-brand-user-migration-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|Migration updated|[BrandUserMigrationResponse](#schemabrandusermigrationresponse)|
-|422|Unprocessable Entity|Validation failed. Only an `in_progress` migration can be moved to<br>`validating`; updating a completed or aborted migration returns 422.<br>|Inline|
-
-<h3 id="update-brand-user-migration-responseschema">Response Schema</h3>
-
-Status Code **422**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|description|string|false|none|none|
-|details|object|false|none|none|
-|» **additionalProperties**|[object]|false|none|none|
-|» » description|string|false|none|none|
-|error|string|false|none|none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: brands:read )
 </aside>
 
 <h1 id="support-api-users">Users</h1>
@@ -31736,7 +31744,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/deleted_users \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/deleted_users`
@@ -31841,7 +31849,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Show Deleted User
@@ -31853,7 +31861,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/deleted_users/35436 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/deleted_users/{deleted_user_id}`
@@ -31909,7 +31917,7 @@ Returns users that have been deleted but not permanently yet. See [Permanently D
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Permanently Delete User
@@ -31922,7 +31930,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/deleted_users/35436 \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/deleted_users/{deleted_user_id}`
@@ -31987,7 +31995,7 @@ Zendesk recommends that you obey the Retry-After header values.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Count Deleted Users
@@ -31999,7 +32007,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/deleted_users/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/deleted_users/count`
@@ -32037,7 +32045,7 @@ This indicates that the count is being updated in the background, and `count[val
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## List Users By Group
@@ -32049,7 +32057,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/122/users \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/{group_id}/users`
@@ -32105,7 +32113,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Count Users By Group
@@ -32117,7 +32125,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/groups/122/users/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/groups/{group_id}/users/count`
@@ -32164,7 +32172,7 @@ This indicates that the count is being updated in the background. The `count` ob
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## List Organization Users
@@ -32176,7 +32184,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/users \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/users`
@@ -32249,7 +32257,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Count Organization Users
@@ -32261,7 +32269,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/users/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/users/count`
@@ -32308,7 +32316,7 @@ This indicates that the count is being updated in the background. The `count` ob
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## List Users
@@ -32320,7 +32328,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users`
@@ -32390,7 +32398,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Create User
@@ -32404,7 +32412,7 @@ curl https://example.zendesk.com/api/v2/users \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user": {
       "agent_brand_ids": [
@@ -32503,7 +32511,7 @@ curl https://example.zendesk.com/api/v2/users \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show User
@@ -32515,7 +32523,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}`
@@ -32557,7 +32565,7 @@ curl https://example.zendesk.com/api/v2/users/35436 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Update User
@@ -32571,7 +32579,7 @@ curl https://example.zendesk.com/api/v2/users/35436 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user": {
       "name": "Roger Wilco II"
@@ -32624,7 +32632,7 @@ curl https://example.zendesk.com/api/v2/users/35436 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Delete User
@@ -32637,7 +32645,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436 \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/{user_id}`
@@ -32688,7 +32696,7 @@ To comply with GDPR, a further step is needed. See [Permanently Delete User](/ap
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show Compliance Deletion Statuses
@@ -32700,7 +32708,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/compliance_deletion_statuses \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/compliance_deletion_statuses`
@@ -32787,7 +32795,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Get Full User Entitlements
@@ -32799,7 +32807,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/entitlements/full \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/entitlements/full`
@@ -32890,7 +32898,7 @@ Status Code **503**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Merge End Users
@@ -32904,7 +32912,7 @@ curl https://example.zendesk.com/api/v2/users/35436/merge \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user": {
       "id": 35436
@@ -32972,7 +32980,7 @@ For more information about how user data is merged, see [Merging a user's duplic
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show User Related Information
@@ -32984,7 +32992,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/related \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/related`
@@ -33018,7 +33026,7 @@ curl https://example.zendesk.com/api/v2/users/35436/related \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Show a User's Suspension
@@ -33030,7 +33038,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/suspension \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/suspension`
@@ -33107,7 +33115,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Update a User's Suspension
@@ -33121,7 +33129,7 @@ curl https://example.zendesk.com/api/v2/users/35436/suspension \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "suspension": {
       "additional_comments": "Updated comments",
@@ -33275,7 +33283,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Create a User Suspension
@@ -33289,7 +33297,7 @@ curl https://example.zendesk.com/api/v2/users/35436/suspension \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "suspension": {
       "additional_comments": "User was impersonating other users",
@@ -33438,7 +33446,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Delete the User Suspension
@@ -33451,7 +33459,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/35436/suspension \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/{user_id}/suspension`
@@ -33520,7 +33528,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Autocomplete Users
@@ -33532,7 +33540,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/autocomplete \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/autocomplete`
@@ -33618,7 +33626,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Autocomplete Users by Request Body
@@ -33632,7 +33640,7 @@ curl https://example.zendesk.com/api/v2/users/autocomplete \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "name": "gil"
   }'
@@ -33758,7 +33766,7 @@ Status Code **500**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Count Users
@@ -33770,7 +33778,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/count`
@@ -33817,7 +33825,7 @@ This indicates that the count is being updated in the background. The `count` ob
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Create Many Users
@@ -33831,7 +33839,7 @@ curl https://example.zendesk.com/api/v2/users/create_many \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "users": [
       {
@@ -33946,7 +33954,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Create Or Update User
@@ -33960,7 +33968,7 @@ curl https://example.zendesk.com/api/v2/users/create_or_update \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user": {
       "agent_brand_ids": [
@@ -34115,7 +34123,7 @@ Example response:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Create Or Update Many Users
@@ -34129,7 +34137,7 @@ curl https://example.zendesk.com/api/v2/users/create_or_update_many \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "users": [
       {
@@ -34268,7 +34276,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Bulk Delete Users
@@ -34281,7 +34289,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/destroy_many \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/users/destroy_many`
@@ -34346,7 +34354,7 @@ This endpoint returns a `job_status` [JSON object](/api-reference/ticketing/tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Logout many users
@@ -34359,7 +34367,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/users/logout_many \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/users/logout_many`
@@ -34393,7 +34401,7 @@ Accepts a comma-separated list of up to 100 user ids.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show Self
@@ -34519,7 +34527,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/me/settings \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/me/settings`
@@ -34563,7 +34571,7 @@ Returns the settings for the currently authenticated user. This includes UI pref
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Update Current User Settings
@@ -34577,7 +34585,7 @@ curl https://example.zendesk.com/api/v2/users/me/settings \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "settings": {
       "admin_center": {
@@ -34718,7 +34726,7 @@ Status Code **401**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Request User Create
@@ -34732,7 +34740,7 @@ curl https://example.zendesk.com/api/v2/users/request_create \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user": {
       "email": "roge@example.org",
@@ -34784,7 +34792,7 @@ Sends the owner a reminder email to update their subscription so more agents can
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Search Users
@@ -34796,7 +34804,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/search \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/search`
@@ -34863,7 +34871,7 @@ See [Using Offset Pagination](/api-reference/introduction/pagination/#using-offs
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read ), oauth2 ( Scopes: users:write )
 </aside>
 
 ## Show Many Users
@@ -34875,7 +34883,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/show_many \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/show_many`
@@ -34949,7 +34957,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:read )
 </aside>
 
 ## Update Many Users
@@ -34963,7 +34971,7 @@ curl https://example.zendesk.com/api/v2/users/update_many \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user": {
       "organization_id": 1
@@ -35033,7 +35041,7 @@ curl https://example.zendesk.com/api/v2/users/update_many \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 <h1 id="support-api-satisfaction-reasons">Satisfaction Reasons</h1>
@@ -35047,7 +35055,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/satisfaction_reasons \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/satisfaction_reasons`
@@ -35096,7 +35104,7 @@ List all reasons for an account
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: satisfaction_ratings:read )
 </aside>
 
 ## Show Reason for Satisfaction Rating
@@ -35108,7 +35116,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/satisfaction_reasons/35121 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/satisfaction_reasons/{satisfaction_reason_id}`
@@ -35152,7 +35160,7 @@ curl https://example.zendesk.com/api/v2/satisfaction_reasons/35121 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: satisfaction_ratings:read )
 </aside>
 
 <h1 id="support-api-ticket-content-pins">Ticket Content Pins</h1>
@@ -35166,7 +35174,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_content_pins \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_content_pins`
@@ -35223,7 +35231,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Ticket Content Pin
@@ -35237,7 +35245,7 @@ curl https://example.zendesk.com/api/v2/ticket_content_pins \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_content_pin": {
       "content_id": "01HFS51MMTVW7CMVEV5V51NYV5",
@@ -35371,7 +35379,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Content Pin from Ticket
@@ -35384,7 +35392,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/ticket_content_pins/01HFS51MMTVW7CMVEV5V51NYV5 \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/ticket_content_pins/{content_pin_id}`
@@ -35454,7 +35462,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 <h1 id="support-api-ticket-forms">Ticket Forms</h1>
@@ -35468,7 +35476,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_forms \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_forms`
@@ -35627,7 +35635,7 @@ Returns a list of all ticket forms for your account if accessed as an admin or a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Ticket Form
@@ -35641,7 +35649,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_form": {
       "active": true,
@@ -35980,7 +35988,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show Ticket Form
@@ -35992,7 +36000,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_forms/47 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_forms/{ticket_form_id}`
@@ -36129,7 +36137,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/47 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Update Ticket Form
@@ -36143,7 +36151,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/47 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_form": {
       "agent_conditions": [],
@@ -36229,7 +36237,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/47 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Ticket Form
@@ -36241,7 +36249,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_forms/47 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/ticket_forms/{ticket_form_id}`
@@ -36264,7 +36272,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/47 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Clone an Already Existing Ticket Form
@@ -36278,7 +36286,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/47/clone \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "prepend_clone_title": true
   }'
@@ -36428,7 +36436,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/47/clone \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Ticket Form Statuses of a Ticket Form
@@ -36440,7 +36448,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_forms/47/ticket_form_statuses \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_forms/{ticket_form_id}/ticket_form_statuses`
@@ -36482,7 +36490,7 @@ Fetches all of the associated ticket form statuses of a ticket form.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Bulk Update Ticket Form Statuses of a Ticket Form
@@ -36496,7 +36504,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/47/ticket_form_statuses \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_form_status": [
       {
@@ -36567,7 +36575,7 @@ Updates or deletes ticket form status associations. This is a bulk operation tha
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Create Ticket Form Statuses
@@ -36581,7 +36589,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/47/ticket_form_statuses \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_form_status": [
       {
@@ -36650,7 +36658,7 @@ Creates one or many ticket form status associations
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Update Ticket Form Status By Id
@@ -36740,7 +36748,7 @@ curl https://example.zendesk.com/api/v2/ticket_forms/reorder \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_form_ids": [
       2,
@@ -36908,7 +36916,7 @@ You can pass in the following parameter in the payload:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Many Ticket Forms
@@ -37081,7 +37089,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_form_statuses \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_form_statuses`
@@ -37127,7 +37135,7 @@ Supports filtering by ticket form ID and other criteria using query parameters.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Many Ticket Form Statuses
@@ -37139,7 +37147,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/ticket_form_statuses/show_many?ids=abc%2Cdef%2Cghi' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_form_statuses/show_many`
@@ -37181,7 +37189,7 @@ Fetches all of the ticket form statuses specified by a comma separated list of i
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Delete Ticket Form Statuses
@@ -37194,7 +37202,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/ticket_forms/47/ticket_form_statuses \
   -X DELETE \
   -H 'Content-Type: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "id": [
       "abc",
@@ -37242,7 +37250,7 @@ Deletes all of of the ticket form statuses by id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Ticket Form Status By Id
@@ -37254,7 +37262,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_forms/47/ticket_form_statuses/abcdef \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/ticket_forms/{ticket_form_id}/ticket_form_statuses/{ticket_form_status_id}`
@@ -37281,7 +37289,7 @@ Deletes a ticket form status by id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 <h1 id="support-api-suspended-tickets">Suspended Tickets</h1>
@@ -37295,7 +37303,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/suspended_tickets \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/suspended_tickets`
@@ -37414,7 +37422,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Show Suspended Ticket
@@ -37426,7 +37434,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/suspended_tickets/35436 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/suspended_tickets/{id}`
@@ -37480,7 +37488,7 @@ curl https://example.zendesk.com/api/v2/suspended_tickets/35436 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Delete Suspended Ticket
@@ -37492,7 +37500,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/suspended_tickets/35436 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/suspended_tickets/{id}`
@@ -37516,7 +37524,7 @@ curl https://example.zendesk.com/api/v2/suspended_tickets/35436 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Recover Suspended Ticket
@@ -37529,7 +37537,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/suspended_tickets/35436/recover \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/suspended_tickets/{id}/recover`
@@ -37628,7 +37636,7 @@ This endpoint does not queue an asynchronous job that can be tracked from [Job S
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Suspended Ticket Attachments
@@ -37699,7 +37707,7 @@ curl 'https://example.zendesk.com/api/v2/suspended_tickets/bulk_recover?ids=1%2C
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "author": {
       "email": "user@example.com",
@@ -37784,7 +37792,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Multiple Suspended Tickets
@@ -37796,7 +37804,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/suspended_tickets/destroy_many?ids=94%2C141' \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/suspended_tickets/destroy_many`
@@ -37823,7 +37831,7 @@ Accepts up to 100 ids (the auto-generated id, not the ticket id.)
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Export Suspended Tickets
@@ -37836,7 +37844,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/suspended_tickets/export \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/suspended_tickets/export`
@@ -37875,7 +37883,7 @@ Exports a list of suspended tickets for the Zendesk Support instance. To export 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Recover Multiple Suspended Tickets
@@ -37888,7 +37896,7 @@ basicAuth
 curl 'https://example.zendesk.com/api/v2/suspended_tickets/recover_many?ids=14%2C77' \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/suspended_tickets/recover_many`
@@ -38042,7 +38050,7 @@ Accepts up to 100 ids (the auto-generated id, not the ticket id.) Note that susp
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 <h1 id="support-api-satisfaction-ratings">Satisfaction Ratings</h1>
@@ -38056,10 +38064,12 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/satisfaction_ratings \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/satisfaction_ratings`
+
+Returns all rating changes and states over the lifetime of a ticket, not just the ticket's final rating. For example, if a survey is offered to a user, the user rates it "bad", and later updates it to "good", the endpoint returns three separate entries for that ticket ("offered", "bad", and "good"). To filter tickets by their current, final rating, use the [Search API](/api-reference/ticketing/ticket-management/search/) instead.
 
 #### Allowed For
 * Admins
@@ -38139,7 +38149,7 @@ Examples:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: satisfaction_ratings:read )
 </aside>
 
 ## Show Satisfaction Rating
@@ -38151,7 +38161,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/satisfaction_ratings/35436 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/satisfaction_ratings/{satisfaction_rating_id}`
@@ -38176,20 +38186,18 @@ the [List Satisfaction Ratings](#list-satisfaction-ratings) endpoint.
 
 ```json
 {
-  "satisfaction_rating": [
-    {
-      "assignee_id": 135,
-      "comment": "Awesome support!",
-      "created_at": "2011-07-20T22:55:29Z",
-      "group_id": 44,
-      "id": 35436,
-      "requester_id": 7881,
-      "score": "good",
-      "ticket_id": 208,
-      "updated_at": "2011-07-20T22:55:29Z",
-      "url": "https://example.zendesk.com/api/v2/satisfaction_ratings/35436"
-    }
-  ]
+  "satisfaction_rating": {
+    "assignee_id": 135,
+    "comment": "Awesome support!",
+    "created_at": "2011-07-20T22:55:29Z",
+    "group_id": 44,
+    "id": 35436,
+    "requester_id": 7881,
+    "score": "good",
+    "ticket_id": 208,
+    "updated_at": "2011-07-20T22:55:29Z",
+    "url": "https://example.zendesk.com/api/v2/satisfaction_ratings/35436"
+  }
 }
 ```
 
@@ -38201,7 +38209,7 @@ the [List Satisfaction Ratings](#list-satisfaction-ratings) endpoint.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: satisfaction_ratings:read )
 </aside>
 
 ## Count Satisfaction Ratings
@@ -38213,7 +38221,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/satisfaction_ratings/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/satisfaction_ratings/count`
@@ -38249,7 +38257,7 @@ This indicates that the count is being updated in the background, and `count[val
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: satisfaction_ratings:read )
 </aside>
 
 ## Create a Satisfaction Rating
@@ -38263,7 +38271,7 @@ curl https://example.zendesk.com/api/v2/tickets/35436/satisfaction_rating \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "satisfaction_rating": {
       "comment": "Awesome support.",
@@ -38313,20 +38321,18 @@ The end user must be a verified user.
 
 ```json
 {
-  "satisfaction_rating": [
-    {
-      "assignee_id": 135,
-      "comment": "Awesome support!",
-      "created_at": "2011-07-20T22:55:29Z",
-      "group_id": 44,
-      "id": 35436,
-      "requester_id": 7881,
-      "score": "good",
-      "ticket_id": 208,
-      "updated_at": "2011-07-20T22:55:29Z",
-      "url": "https://example.zendesk.com/api/v2/satisfaction_ratings/35436"
-    }
-  ]
+  "satisfaction_rating": {
+    "assignee_id": 135,
+    "comment": "Awesome support!",
+    "created_at": "2011-07-20T22:55:29Z",
+    "group_id": 44,
+    "id": 35436,
+    "requester_id": 7881,
+    "score": "good",
+    "ticket_id": 208,
+    "updated_at": "2011-07-20T22:55:29Z",
+    "url": "https://example.zendesk.com/api/v2/satisfaction_ratings/35436"
+  }
 }
 ```
 
@@ -38338,7 +38344,7 @@ The end user must be a verified user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: satisfaction_ratings:write )
 </aside>
 
 <h1 id="support-api-ticket-comments">Ticket Comments</h1>
@@ -38354,7 +38360,7 @@ curl https://example.zendesk.com/api/v2/chat_file_redactions/123456 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "chat_id": "2109.10502823.Sjuj2YrBpXwei",
     "chat_indexes": [
@@ -38478,7 +38484,7 @@ Status 200 OK
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Redact Chat Comment
@@ -38492,7 +38498,7 @@ curl https://example.zendesk.com/api/v2/chat_redactions/123456 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "chat_id": "2109.10502823.Sjuj2YrBpXwei",
     "chat_index": 0,
@@ -38634,7 +38640,7 @@ Status 200 OK
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Redact Ticket Comment In Agent Workspace
@@ -38648,7 +38654,7 @@ curl https://example.zendesk.com/api/v2/comment_redactions/35436 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "html_body": "<div class=\"zd-comment\" dir=\"auto\">My ID number is <redact>847564</redact>!</div>",
     "ticket_id": 100
@@ -38797,7 +38803,7 @@ Status Code **429**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Comments
@@ -38809,7 +38815,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/comments \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/comments`
@@ -38924,7 +38930,7 @@ When using offset pagination, use the following parameters to change the sort or
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Make Comment Private
@@ -38937,7 +38943,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/tickets/123456/comments/35436/make_private \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/tickets/{ticket_id}/comments/{ticket_comment_id}/make_private`
@@ -38970,7 +38976,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/comments/35436/make_priva
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Redact String in Comment
@@ -38984,7 +38990,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/comments/35436/redact \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "text": "987-65-4320"
   }'
@@ -39047,7 +39053,7 @@ To use this endpoint, the "Agents can delete tickets" option must be enabled in 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Count Ticket Comments
@@ -39059,7 +39065,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/comments/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/comments/count`
@@ -39101,7 +39107,7 @@ This indicates that the count is being updated in the background, and `count[val
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-requests">Requests</h1>
@@ -39115,7 +39121,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organizations/16/requests \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organizations/{organization_id}/requests`
@@ -39175,7 +39181,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## List Requests
@@ -39187,7 +39193,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/requests \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/requests`
@@ -39254,7 +39260,7 @@ Requesting a large number of tickets may return intermittent "503 Service Unavai
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## Create Request
@@ -39268,7 +39274,7 @@ curl https://example.zendesk.com/api/v2/requests \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "request": {
       "comment": {
@@ -39353,7 +39359,7 @@ Once a ticket is closed (as distinct from solved), it can't be reopened. However
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:write )
 </aside>
 
 ## Show Request
@@ -39365,7 +39371,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/requests/33 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/requests/{request_id}`
@@ -39413,7 +39419,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## Update Request
@@ -39427,7 +39433,7 @@ curl https://example.zendesk.com/api/v2/requests/33 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "request": {
       "comment": {
@@ -39499,7 +39505,7 @@ This endpoint can only update the following properties in the request.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:write )
 </aside>
 
 ## Listing Comments
@@ -39511,7 +39517,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/requests/33/comments \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/requests/{request_id}/comments`
@@ -39576,7 +39582,7 @@ When using offset pagination, use the following parameters to change the sort or
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## Getting Comments
@@ -39588,7 +39594,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/requests/33/comments/35436 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/requests/{request_id}/comments/{ticket_comment_id}`
@@ -39626,7 +39632,7 @@ curl https://example.zendesk.com/api/v2/requests/33/comments/35436 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## List CCD Requests
@@ -39638,7 +39644,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/requests/ccd \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/requests/ccd`
@@ -39697,7 +39703,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## List Open Requests
@@ -39709,7 +39715,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/requests/open \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/requests/open`
@@ -39768,7 +39774,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## Search Requests
@@ -39780,7 +39786,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/requests/search \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/requests/search`
@@ -39846,7 +39852,7 @@ The Search Requests endpoint returns up to 1,000 results per query, with a maxim
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## List Solved Requests
@@ -39858,7 +39864,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/requests/solved \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/requests/solved`
@@ -39917,7 +39923,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 ## List User Requests
@@ -39929,7 +39935,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/requests \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/requests`
@@ -39983,7 +39989,7 @@ Lists requests for the specified user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: requests:read )
 </aside>
 
 <h1 id="support-api-audit-logs">Audit Logs</h1>
@@ -39997,7 +40003,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/audit_logs \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/audit_logs`
@@ -40071,7 +40077,7 @@ To filter by multiple values for the same field, repeat the filter parameter and
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: auditlogs:read )
 </aside>
 
 ## Show Audit Log
@@ -40083,7 +40089,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/audit_logs/498483 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/audit_logs/{audit_log_id}`
@@ -40129,7 +40135,7 @@ curl https://example.zendesk.com/api/v2/audit_logs/498483 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: auditlogs:read )
 </aside>
 
 ## Export Audit Logs
@@ -40142,7 +40148,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/audit_logs/export \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/audit_logs/export`
@@ -40195,7 +40201,7 @@ The rate limit is one request per minute per account. If you exceed this, you'll
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: auditlogs:read )
 </aside>
 
 <h1 id="support-api-views">Views</h1>
@@ -40209,7 +40215,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views`
@@ -40294,7 +40300,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Create View
@@ -40307,7 +40313,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/views \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/views`
@@ -40471,7 +40477,7 @@ You can group and sort items in the view by adding items to the `output` paramet
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:write )
 </aside>
 
 ## Show View
@@ -40483,7 +40489,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/25 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/{view_id}`
@@ -40531,7 +40537,7 @@ corresponding built-in views.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Update View
@@ -40544,7 +40550,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/views/25 \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/views/{view_id}`
@@ -40638,7 +40644,7 @@ You can also update how items are sorted and grouped. See [View sorting](#view-s
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:write )
 </aside>
 
 ## Delete View
@@ -40650,7 +40656,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/25 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/views/{view_id}`
@@ -40673,7 +40679,7 @@ curl https://example.zendesk.com/api/v2/views/25 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:write )
 </aside>
 
 ## Count Tickets in View
@@ -40685,7 +40691,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/25/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/{view_id}/count`
@@ -40755,7 +40761,7 @@ View counts are represented as JSON objects with the following attributes:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Execute View
@@ -40767,7 +40773,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/25/execute \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/{view_id}/execute`
@@ -40850,7 +40856,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Export View
@@ -40862,7 +40868,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/25/export \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/{view_id}/export`
@@ -40901,7 +40907,7 @@ Returns the csv attachment of the specified view if possible. Enqueues a job to 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## List Tickets From a View
@@ -40913,7 +40919,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/25/tickets \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/{view_id}/tickets`
@@ -40966,7 +40972,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## List Active Views
@@ -40978,7 +40984,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/active \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/active`
@@ -41058,7 +41064,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## List Views - Compact
@@ -41070,7 +41076,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/compact \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/compact`
@@ -41124,7 +41130,7 @@ A compacted list of shared and personal views available to the current user. Thi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Count Views
@@ -41136,7 +41142,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/count`
@@ -41172,7 +41178,7 @@ This indicates that the count is being updated in the background, and `count[val
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Count Tickets in Views
@@ -41184,7 +41190,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/views/count_many?ids=1%2C2%2C3' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/count_many`
@@ -41259,7 +41265,7 @@ This endpoint is rate limited to 6 requests every 1 minute.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## List View Filter Definitions
@@ -41271,7 +41277,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/views/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/definitions`
@@ -41399,7 +41405,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Bulk Delete Views
@@ -41411,7 +41417,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/views/destroy_many?ids=1%2C2%2C3' \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/views/destroy_many`
@@ -41436,7 +41442,7 @@ Deletes the views corresponding to the provided list of IDs.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:write )
 </aside>
 
 ## Preview Views
@@ -41450,7 +41456,7 @@ curl https://example.zendesk.com/api/v2/views/preview \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "view": {
       "all": [
@@ -41558,7 +41564,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Preview Ticket Count
@@ -41571,7 +41577,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/views/preview/count \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/views/preview/count`
@@ -41607,7 +41613,7 @@ Returns the ticket count for a single preview.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Search Views
@@ -41619,7 +41625,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/views/search?query=sales%26group_id%3D25789188' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/search`
@@ -41698,7 +41704,7 @@ The following sideloads are supported. For more information, see [Side-loading](
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## List Views By ID
@@ -41710,7 +41716,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/views/show_many?ids=1%2C2%2C3' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/views/show_many`
@@ -41778,7 +41784,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:read )
 </aside>
 
 ## Update Many Views
@@ -41791,7 +41797,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/views/update_many \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/views/update_many`
@@ -41855,7 +41861,7 @@ Each view may have the following properties:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: ticket_views:write )
 </aside>
 
 <h1 id="support-api-ticket-import">Ticket Import</h1>
@@ -41871,7 +41877,7 @@ curl https://example.zendesk.com/api/v2/imports/tickets \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket": {
       "assignee_id": 19,
@@ -42019,7 +42025,7 @@ curl https://example.zendesk.com/api/v2/imports/tickets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Ticket Bulk Import
@@ -42033,7 +42039,7 @@ curl https://example.zendesk.com/api/v2/imports/tickets/create_many \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "tickets": [
       {
@@ -42196,7 +42202,7 @@ Accepts an array of up to 100 ticket objects.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 <h1 id="support-api-organization-fields">Organization Fields</h1>
@@ -42210,7 +42216,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_fields \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organization_fields`
@@ -42275,7 +42281,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Create Organization Field
@@ -42289,7 +42295,7 @@ curl https://example.zendesk.com/api/v2/organization_fields \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization_field": {
       "active": true,
@@ -42378,7 +42384,7 @@ See [About custom field types](https://support.zendesk.com/hc/en-us/articles/440
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show Organization Field
@@ -42390,7 +42396,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_fields/my_text_field \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/organization_fields/{organization_field_id}`
@@ -42438,7 +42444,7 @@ curl https://example.zendesk.com/api/v2/organization_fields/my_text_field \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Update Organization Field
@@ -42452,7 +42458,7 @@ curl https://example.zendesk.com/api/v2/organization_fields/my_text_field \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization_field": {
       "title": "Support description"
@@ -42535,7 +42541,7 @@ curl https://{subdomain}.zendesk.com/api/v2/organization_fields/{organization_fi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Delete Organization Field
@@ -42547,7 +42553,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/organization_fields/my_text_field \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/organization_fields/{organization_field_id}`
@@ -42571,7 +42577,7 @@ curl https://example.zendesk.com/api/v2/organization_fields/my_text_field \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Reorder Organization Field
@@ -42585,7 +42591,7 @@ curl https://example.zendesk.com/api/v2/organization_fields/reorder \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "organization_field_ids": [
       3,
@@ -42637,7 +42643,7 @@ curl https://example.zendesk.com/api/v2/organization_fields/reorder \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 <h1 id="support-api-user-fields">User Fields</h1>
@@ -42651,7 +42657,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/user_fields \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/user_fields`
@@ -42716,7 +42722,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Create User Field
@@ -42730,7 +42736,7 @@ curl https://example.zendesk.com/api/v2/user_fields \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user_field": {
       "active": true,
@@ -42820,7 +42826,7 @@ See [About custom field types](https://support.zendesk.com/hc/en-us/articles/440
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show User Field
@@ -42832,7 +42838,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/user_fields/my_text_field \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/user_fields/{user_field_id}`
@@ -42880,7 +42886,7 @@ curl https://example.zendesk.com/api/v2/user_fields/my_text_field \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Update User Field
@@ -42894,7 +42900,7 @@ curl https://example.zendesk.com/api/v2/user_fields/my_text_field \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user_field": {
       "title": "Support description"
@@ -42978,7 +42984,7 @@ curl https://{subdomain}.zendesk.com/api/v2/user_fields/{user_field_id} \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Delete User Field
@@ -42990,7 +42996,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/user_fields/my_text_field \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/user_fields/{user_field_id}`
@@ -43014,7 +43020,7 @@ curl https://example.zendesk.com/api/v2/user_fields/my_text_field \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## List User Field Options
@@ -43026,7 +43032,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/user_fields/my_text_field/options \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/user_fields/{user_field_id}/options`
@@ -43091,7 +43097,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Create or Update a User Field Option
@@ -43105,7 +43111,7 @@ curl https://example.zendesk.com/api/v2/user_fields/my_text_field/options \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_field_option": {
       "name": "Grapes",
@@ -43194,7 +43200,7 @@ Returns one of the following status codes:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show a User Field Option
@@ -43206,7 +43212,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/user_fields/my_text_field/options/10001 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/user_fields/{user_field_id}/options/{user_field_option_id}`
@@ -43247,7 +43253,7 @@ curl https://example.zendesk.com/api/v2/user_fields/my_text_field/options/10001 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Delete User Field Option
@@ -43259,7 +43265,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/user_fields/my_text_field/options/10001 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/user_fields/{user_field_id}/options/{user_field_option_id}`
@@ -43283,7 +43289,7 @@ curl https://example.zendesk.com/api/v2/user_fields/my_text_field/options/10001 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Reorder User Field
@@ -43297,7 +43303,7 @@ curl https://example.zendesk.com/api/v2/user_fields/reorder \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "user_field_ids": [
       3,
@@ -43347,7 +43353,7 @@ curl https://example.zendesk.com/api/v2/user_fields/reorder \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show Many User Fields
@@ -43359,7 +43365,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/user_fields/show_many \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/user_fields/show_many`
@@ -43414,7 +43420,7 @@ Returns multiple user fields by their keys.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 <h1 id="support-api-ticket-fields">Ticket Fields</h1>
@@ -43428,7 +43434,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_fields`
@@ -43479,6 +43485,7 @@ The following sideloads are supported:
 |creator|query|boolean|false|Displays the `creator_user_id` and `creator_app_name` properties. If the ticket field is created<br> by an app, `creator_app_name` is the name of the app and `creator_user_id` is `-1`. If the ticket field<br> is not created by an app, `creator_app_name` is null<br>|
 |active_forms_count|query|boolean|false|If true, includes the count of active ticket forms associated with each ticket field in the response.<br>|
 |only_system_fields|query|boolean|false|If true, returns only system ticket fields.<br>|
+|include_anonymous_availability|query|boolean|false|If true, includes the `relationship_target_publicly_listable` property on each lookup and multi-lookup field that targets a custom object. The property is true when anonymous users can read the target custom object's records. See [Anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access).<br>|
 |page|query|object|false|Cursor-based pagination parameters (JSON:API style).<br><br>Supports nested parameters:<br>- `page[size]` - Number of records per page (default varies by endpoint, typically 100)<br>- `page[after]` - Cursor token to fetch records after this position<br>- `page[before]` - Cursor token to fetch records before this position<br><br>Example: `?page[size]=50&page[after]=eyJvIjoiaWQiLCJ2IjoiYVFFPSJ9`<br>|
 |sort|query|string|false|Field to sort results by. Prefix with `-` for descending order.<br><br>When used with cursor pagination, this determines the cursor ordering.<br><br>Example: `?sort=name` or `?sort=-created_at`<br>|
 |include_boundary_indicators|query|boolean|false|When true, includes `has_more` indicator in the cursor pagination response meta.<br><br>Only valid with cursor pagination (page[size], page[after], page[before]).<br>|
@@ -43526,7 +43533,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Create Ticket Field
@@ -43540,7 +43547,7 @@ curl https://example.zendesk.com/api/v2/ticket_fields \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_field": {
       "active": true,
@@ -43686,7 +43693,7 @@ The following field types have their own limits, enforced on creation:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show Ticket Field
@@ -43698,7 +43705,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/34 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_fields/{ticket_field_id}`
@@ -43763,7 +43770,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Update Ticket Field
@@ -43777,7 +43784,7 @@ curl https://example.zendesk.com/api/v2/ticket_fields/34 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_field": {
       "custom_field_options": [
@@ -43926,7 +43933,7 @@ Status: 200 OK
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Delete Ticket Field
@@ -43938,7 +43945,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/34 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/ticket_fields/{ticket_field_id}`
@@ -43963,7 +43970,7 @@ curl https://example.zendesk.com/api/v2/ticket_fields/34 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## List Ticket Field Options
@@ -43975,7 +43982,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/34/options \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_fields/{ticket_field_id}/options`
@@ -44040,7 +44047,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Create or Update Ticket Field Option
@@ -44053,7 +44060,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/ticket_fields/34/options \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/ticket_fields/{ticket_field_id}/options`
@@ -44136,7 +44143,7 @@ The rate limiting mechanism behaves as described in
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show Ticket Field Option
@@ -44148,7 +44155,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/34/options/10001 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_fields/{ticket_field_id}/options/{ticket_field_option_id}`
@@ -44190,7 +44197,7 @@ curl https://example.zendesk.com/api/v2/ticket_fields/34/options/10001 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Delete Ticket Field Option
@@ -44202,7 +44209,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/34/options/10001 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/ticket_fields/{ticket_field_id}/options/{ticket_field_option_id}`
@@ -44226,7 +44233,7 @@ curl https://example.zendesk.com/api/v2/ticket_fields/34/options/10001 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Count Ticket Fields
@@ -44238,7 +44245,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_fields/count`
@@ -44274,7 +44281,7 @@ This indicates that the count is being updated in the background, and `count[val
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 ## Reorder Ticket Fields
@@ -44287,7 +44294,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/ticket_fields/reorder \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/ticket_fields/reorder`
@@ -44320,7 +44327,7 @@ You can pass in the following parameter in the payload:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:write )
 </aside>
 
 ## Show Many Ticket Fields
@@ -44332,7 +44339,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/ticket_fields/show_many \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/ticket_fields/show_many`
@@ -44437,7 +44444,7 @@ The following sideloads are supported:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: account_settings:read )
 </aside>
 
 <h1 id="support-api-ticket-skips">Ticket Skips</h1>
@@ -44451,7 +44458,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/skips \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/skips`
@@ -44637,7 +44644,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Record a New Skip for the Current User
@@ -44651,7 +44658,7 @@ curl https://example.zendesk.com/api/v2/skips \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "skip": {
       "reason": "I have no idea.",
@@ -44779,7 +44786,7 @@ Record a new ticket skip for the current user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Ticket Skips By Ticket
@@ -44791,7 +44798,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/skips \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/skips`
@@ -44980,7 +44987,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## List Ticket Skips
@@ -44992,7 +44999,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/35436/skips \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/{user_id}/skips`
@@ -45179,7 +45186,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-bookmarks">Bookmarks</h1>
@@ -45193,7 +45200,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/bookmarks \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/bookmarks`
@@ -45252,7 +45259,7 @@ Archived tickets are not included in the response. See
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Bookmark
@@ -45266,7 +45273,7 @@ curl https://example.zendesk.com/api/v2/bookmarks \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "bookmark": {
       "ticket_id": 113
@@ -45347,7 +45354,7 @@ curl https://example.zendesk.com/api/v2/bookmarks \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Bookmark
@@ -45359,7 +45366,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/bookmarks/900000001111 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/bookmarks/{bookmark_id}`
@@ -45383,7 +45390,7 @@ If the bookmark already exists with a specified ticket id, the response status w
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 <h1 id="support-api-saved-searches">Saved Searches</h1>
@@ -45761,7 +45768,7 @@ curl https://example.zendesk.com/api/v2/accounts \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "account": {
       "help_desk_size": "Large group",
@@ -45901,7 +45908,7 @@ curl https://example.zendesk.com/api/v2/accounts \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: accounts:write )
 </aside>
 
 ## Verify Subdomain Availability
@@ -45913,7 +45920,7 @@ basicAuth
 ```bash
 curl 'https://example.zendesk.com/api/v2/accounts/available?subdomain=z3ndesk' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/accounts/available`
@@ -45955,7 +45962,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: accounts:read )
 </aside>
 
 <h1 id="support-api-basics">Basics</h1>
@@ -45970,7 +45977,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/channels/voice/agents/385473779372/tickets/123456/display \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/channels/voice/agents/{agent_id}/tickets/{ticket_id}/display`
@@ -46022,7 +46029,7 @@ Status: 404 Not Found
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Open a User's Profile in an Agent's Browser
@@ -46035,7 +46042,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/channels/voice/agents/385473779372/users/35436/display \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/channels/voice/agents/{agent_id}/users/{user_id}/display`
@@ -46087,7 +46094,7 @@ Status: 404 Not Found
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: users:write )
 </aside>
 
 ## Create Ticket or Voicemail Ticket
@@ -46101,7 +46108,7 @@ curl https://example.zendesk.com/api/v2/channels/voice/tickets \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "display_to_agent": 1234,
     "ticket": {
@@ -46485,7 +46492,7 @@ The ticket must have a `voice_comment` with the following values:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 <h1 id="support-api-custom-ticket-statuses">Custom Ticket Statuses</h1>
@@ -46501,7 +46508,7 @@ curl https://example.zendesk.com/api/v2/custom_status/default \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ids": "1234567,1234577"
   }'
@@ -46547,7 +46554,7 @@ Updates the default values for many custom ticket statuses at once.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Custom Ticket Statuses
@@ -46559,7 +46566,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_statuses \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_statuses`
@@ -46614,7 +46621,7 @@ Lists all undeleted custom ticket statuses for the account. No pagination is pro
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Custom Ticket Status
@@ -46628,7 +46635,7 @@ curl https://example.zendesk.com/api/v2/custom_statuses \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_status": {
       "active": true,
@@ -46705,7 +46712,7 @@ Takes a `custom_status` object that specifies the custom ticket status propertie
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show Custom Ticket Status
@@ -46717,7 +46724,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_statuses/1234567 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_statuses/{custom_status_id}`
@@ -46768,7 +46775,7 @@ Returns the custom ticket status object.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Update Custom Ticket Status
@@ -46782,7 +46789,7 @@ curl https://example.zendesk.com/api/v2/custom_statuses/1234567 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_status": {
       "active": true,
@@ -46858,7 +46865,7 @@ Takes a `custom_status` object that specifies the properties to update.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Custom Ticket Status
@@ -46870,7 +46877,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_statuses/1234567 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_statuses/{custom_status_id}`
@@ -46897,7 +46904,7 @@ from all active (non-closed) tickets before it can be deleted.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Create Ticket Form Statuses for a Custom Status
@@ -46911,7 +46918,7 @@ curl https://example.zendesk.com/api/v2/custom_statuses/1234567/ticket_form_stat
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "ticket_form_status": [
       {
@@ -46987,7 +46994,7 @@ Creates one or many tickets form status associations for a custom status.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show Many Custom Ticket Statuses
@@ -46999,7 +47006,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_statuses/show_many \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_statuses/show_many`
@@ -47055,7 +47062,7 @@ The response payload matches the [List Custom Ticket Statuses](#list-custom-tick
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 <h1 id="support-api-locales">Locales</h1>
@@ -47399,7 +47406,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects`
@@ -47463,7 +47470,7 @@ Lists all undeleted custom objects for the account
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:read )
 </aside>
 
 ## Create Custom Object
@@ -47477,7 +47484,7 @@ curl https://example.zendesk.com/api/v2/custom_objects \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object": {
       "key": "apartment",
@@ -47545,7 +47552,7 @@ Creates an object describing all the properties required to create a custom obje
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:write )
 </aside>
 
 ## Show Custom Object
@@ -47557,7 +47564,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}`
@@ -47607,7 +47614,7 @@ Returns an object with the specified key
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:read )
 </aside>
 
 ## Delete Custom Object
@@ -47619,7 +47626,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_objects/{custom_object_key}`
@@ -47642,7 +47649,7 @@ Permanently deletes the custom object with the specified key
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:write )
 </aside>
 
 ## Update Custom Object
@@ -47656,7 +47663,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object": {
       "title": "Electric Car",
@@ -47724,7 +47731,7 @@ Updates an individual custom object. The updating rules are as follows:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:write )
 </aside>
 
 ## Custom Objects Limit
@@ -47736,7 +47743,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/limits/object_limit \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/limits/object_limit`
@@ -47764,7 +47771,7 @@ List the current count and the limit for custom objects
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:read )
 </aside>
 
 <h1 id="support-api-custom-object-permissions">Custom Object Permissions</h1>
@@ -47778,7 +47785,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/access_rules \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/access_rules`
@@ -47837,7 +47844,7 @@ Access rules define conditions that restrict which custom object records a role 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Create Access Rule
@@ -47851,7 +47858,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/access_rules \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "access_rule": {
       "conditions": {
@@ -47964,7 +47971,7 @@ Access rules define conditions that restrict which records a role can access bas
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Access Rule
@@ -47976,7 +47983,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/access_rules/6862342718335 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/access_rules/{id}`
@@ -48033,7 +48040,7 @@ Returns a specific access rule for a custom object.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Delete Access Rule
@@ -48045,7 +48052,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/access_rules/6862342718335 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_objects/{custom_object_key}/access_rules/{id}`
@@ -48070,7 +48077,7 @@ Permanently deletes an access rule for a custom object.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Update Access Rule
@@ -48084,7 +48091,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/access_rules/68623427
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "access_rule": {
       "conditions": {
@@ -48183,7 +48190,7 @@ Updates an existing access rule for a custom object.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## List Access Rule Definitions
@@ -48195,7 +48202,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/access_rules/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/access_rules/definitions`
@@ -48492,7 +48499,7 @@ This endpoint helps you understand what fields are available for filtering and w
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## List Permission Policies
@@ -48504,13 +48511,14 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/permission_policies \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/permission_policies`
 
 Returns a list of permission policies for a custom object.
 Permission policies define what actions (create, read, update, delete) different roles can perform on custom object records.
+The list also includes an `anonymous` policy that controls whether unauthenticated users can read the object's records. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).
 #### Allowed For
 * Admins
 
@@ -48571,6 +48579,27 @@ Permission policies define what actions (create, read, update, delete) different
         }
       },
       "role_name": "End User"
+    },
+    {
+      "id": "anonymous",
+      "records": {
+        "create": {
+          "allowed": false,
+          "rule_id": null
+        },
+        "delete": {
+          "allowed": false,
+          "rule_id": null
+        },
+        "read": {
+          "allowed": true,
+          "rule_id": null
+        },
+        "update": {
+          "allowed": false,
+          "rule_id": null
+        }
+      }
     }
   ]
 }
@@ -48584,7 +48613,7 @@ Permission policies define what actions (create, read, update, delete) different
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Show Permission Policy
@@ -48596,7 +48625,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/permission_policies/custom-role-6678128886399 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/permission_policies/{id}`
@@ -48605,6 +48634,7 @@ Returns a permission policy for a specific role on a custom object.
 The policy ID can be:
 - `custom-role-{custom_role_id}` for custom roles
 - `end-user` for the end user system role
+- `anonymous` for unauthenticated users. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).
 #### Allowed For
 * Admins
 
@@ -48614,7 +48644,7 @@ The policy ID can be:
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |custom_object_key|path|string|true|The key of a custom object|
-|id|path|string|true|The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles or `end-user` for the end user system role.<br>|
+|id|path|string|true|The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles, `end-user` for the end user system role, or `anonymous` for unauthenticated users.<br>|
 
 > Example responses
 
@@ -48655,7 +48685,7 @@ The policy ID can be:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Update Permission Policy
@@ -48669,7 +48699,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/permission_policies/c
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "policy": {
       "records": {
@@ -48698,6 +48728,13 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/permission_policies/c
 
 Updates a permission policy for a specific role on a custom object.
 Define what actions (create, read, update, delete) the role can perform and optionally specify access rules.
+
+For the `anonymous` policy, only the `read` scope can be set: `records.read.allowed` turns anonymous read access on or off, and `rule_id` has no effect. Allowing a write scope returns `400 Bad Request`. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).
+
+While anonymous reads are allowed, every role has object-level read access, but read access rules still limit the records that each role, and anonymous users through the `end-user` policy, can read. A request that changes the `read` scope of any other policy returns `422 Unprocessable Entity`.
+
+While anonymous reads are allowed, allowing a write scope on a policy other than `anonymous` also grants that policy full read access if its `read` scope doesn't allow it. A full write scope replaces a rule-scoped read with full read. The read access stays if you later remove the write scopes or turn off anonymous access.
+
 #### Allowed For
 * Admins
 
@@ -48734,7 +48771,7 @@ Define what actions (create, read, update, delete) the role can perform and opti
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |custom_object_key|path|string|true|The key of a custom object|
-|id|path|string|true|The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles or `end-user` for the end user system role.<br>|
+|id|path|string|true|The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles, `end-user` for the end user system role, or `anonymous` for unauthenticated users.<br>|
 |body|body|[PermissionPolicyUpdateRequest](#schemapermissionpolicyupdaterequest)|true|none|
 |» policy|body|object|false|none|
 |» » records|body|object|false|Permission settings for different record operations|
@@ -48779,10 +48816,12 @@ Define what actions (create, read, update, delete) the role can perform and opti
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Updated Permission Policy|[PermissionPolicyResponse](#schemapermissionpolicyresponse)|
+|400|Bad Request|Bad Request. For example, a write scope was allowed on the `anonymous` policy.|None|
+|422|Unprocessable Entity|Unprocessable Entity. The `read` scope of a policy other than `anonymous` can't be changed while anonymous reads are allowed.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 <h1 id="support-api-custom-object-fields">Custom Object Fields</h1>
@@ -48796,7 +48835,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/fields \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/fields`
@@ -48896,7 +48935,7 @@ See [Pagination](/api-reference/introduction/pagination/).
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Create Custom Object Field
@@ -48910,7 +48949,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/fields \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_field": {
       "key": "color",
@@ -49002,7 +49041,7 @@ See [About custom field types](https://support.zendesk.com/hc/en-us/articles/440
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Custom Object Field
@@ -49014,7 +49053,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/fields/make \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/fields/{custom_object_field_key_or_id}`
@@ -49066,7 +49105,7 @@ Returns a custom field for a specific object using a provided key or id of the f
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Delete Custom Object Field
@@ -49078,7 +49117,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/fields/make \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_objects/{custom_object_key}/fields/{custom_object_field_key_or_id}`
@@ -49102,7 +49141,7 @@ Deletes a field with the specified key. Note: You can't delete standard fields.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Update Custom Object Field
@@ -49116,7 +49155,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/fields/make \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_field": {
       "title": "Primary Color"
@@ -49221,7 +49260,7 @@ curl https://{subdomain}.zendesk.com/api/v2/custom_objects/{custom_object_key}/f
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Reorder Custom Fields of an Object
@@ -49235,7 +49274,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/fields/reorder \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_field_ids": [
       "4398096843007",
@@ -49287,7 +49326,7 @@ Sets a preferred order of custom fields for a specific object by providing field
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Custom Object Fields Limit
@@ -49299,7 +49338,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/limits/field_limit \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/limits/field_limit`
@@ -49333,7 +49372,7 @@ List the current count and the limit for a custom object's fields
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 <h1 id="support-api-custom-object-records">Custom Object Records</h1>
@@ -49349,7 +49388,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/jobs \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "job": {
       "action": "create",
@@ -49513,7 +49552,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## List Custom Object Records
@@ -49525,7 +49564,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/records`
@@ -49539,6 +49578,8 @@ If the object has a parent field with `cascade_permissions_enabled`, non-admin a
 * [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.
 #### Allowed For
 * Agents
+* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)
+* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)
 
 <h3 id="list-custom-object-records-parameters">Parameters</h3>
 
@@ -49607,10 +49648,12 @@ If the object has a parent field with `cascade_permissions_enabled`, non-admin a
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Success response|[CustomObjectRecordsResponse](#schemacustomobjectrecordsresponse)|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.|None|
+|429|Too Many Requests|Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read ), basicAuth
 </aside>
 
 ## Create Custom Object Record
@@ -49624,7 +49667,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/records \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_record": {
       "custom_object_fields": {
@@ -49707,7 +49750,7 @@ If the custom object has a parent relationship field, the parent field is requir
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Delete Custom Object Record by External Id Or Name
@@ -49719,7 +49762,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_objects/{custom_object_key}/records`
@@ -49751,7 +49794,7 @@ If the record is a parent in a parent-child relationship, all associated child r
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Create or Update Custom Object Record
@@ -49765,7 +49808,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/records \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_record": {
       "custom_object_fields": {
@@ -49844,7 +49887,7 @@ Creates or updates a custom object record based on the provided external id, nam
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Custom Object Record
@@ -49856,7 +49899,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVSC80GYDH7E93Q6 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/records/{custom_object_record_id}`
@@ -49864,6 +49907,8 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVS
 Returns a custom record for a specific object using a provided id.
 #### Allowed For
 * Agents
+* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)
+* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)
 
 
 <h3 id="show-custom-object-record-parameters">Parameters</h3>
@@ -49910,10 +49955,12 @@ Returns a custom record for a specific object using a provided id.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Custom Object Record|[CustomObjectRecordResponse](#schemacustomobjectrecordresponse)|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.|None|
+|429|Too Many Requests|Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read ), basicAuth
 </aside>
 
 ## Delete Custom Object Record
@@ -49925,7 +49972,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVSC80GYDH7E93Q6 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_objects/{custom_object_key}/records/{custom_object_record_id}`
@@ -49952,7 +49999,7 @@ If the record is a parent in a parent-child relationship, all associated child r
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Update Custom Object Record
@@ -49966,7 +50013,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVS
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_record": {
       "custom_object_fields": {
@@ -50049,7 +50096,7 @@ Updates an individual custom object record. The updating rules are as follows:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Autocomplete Custom Object Record Search
@@ -50061,7 +50108,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/autocomplete \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/records/autocomplete`
@@ -50076,6 +50123,8 @@ If the object has a parent field with `cascade_permissions_enabled`, the request
 * Returns the first 10,000 records sorted by relevancy with page limits.
 #### Allowed For
 * Agents
+* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)
+* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)
 
 <h3 id="autocomplete-custom-object-record-search-parameters">Parameters</h3>
 
@@ -50149,10 +50198,12 @@ If the object has a parent field with `cascade_permissions_enabled`, the request
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Success response|[CustomObjectRecordsResponse](#schemacustomobjectrecordsresponse)|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.|None|
+|429|Too Many Requests|Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read ), basicAuth
 </aside>
 
 ## Count Custom Object Records
@@ -50164,7 +50215,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/count \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/records/count`
@@ -50175,6 +50226,7 @@ If the object has a parent field with `cascade_permissions_enabled`, non-admin a
 
 #### Allowed For
 * Agents
+* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)
 
 <h3 id="count-custom-object-records-parameters">Parameters</h3>
 
@@ -50200,6 +50252,7 @@ If the object has a parent field with `cascade_permissions_enabled`, non-admin a
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Success response|Inline|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller; this endpoint doesn't allow anonymous access.|None|
 
 <h3 id="count-custom-object-records-responseschema">Response Schema</h3>
 
@@ -50214,7 +50267,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read ), basicAuth
 </aside>
 
 ## Search Custom Object Records
@@ -50226,7 +50279,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/search \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/records/search`
@@ -50241,6 +50294,8 @@ If the object has a parent field with `cascade_permissions_enabled`, non-admin a
 * Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.
 #### Allowed For
 * Agents
+* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)
+* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)
 
 <h3 id="search-custom-object-records-parameters">Parameters</h3>
 
@@ -50309,10 +50364,12 @@ If the object has a parent field with `cascade_permissions_enabled`, non-admin a
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Success response|[CustomObjectRecordsResponse](#schemacustomobjectrecordsresponse)|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.|None|
+|429|Too Many Requests|Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read ), basicAuth
 </aside>
 
 ## Filtered Search of Custom Object Records
@@ -50326,7 +50383,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/records/search \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "filter": {
       "$and": [
@@ -50439,6 +50496,7 @@ A comparison object is a JSON object that has the following properties:
 
 * Agents
 * End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)
+* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)
 
 > Body parameter
 
@@ -50543,10 +50601,12 @@ A comparison object is a JSON object that has the following properties:
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Success response|[CustomObjectRecordsResponse](#schemacustomobjectrecordsresponse)|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.|None|
+|429|Too Many Requests|Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read ), basicAuth
 </aside>
 
 ## Show Custom Object Record by Unique Identifier
@@ -50558,7 +50618,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/show_by_unique_identifier \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/records/show_by_unique_identifier`
@@ -50571,6 +50631,8 @@ Returns a custom object record identified by its external id, its name, or the v
 Returns a `400 Bad Request` if more than one identifier is sent, if `name` is sent and the name field isn't unique, or if no identifier is sent. A parameter that isn't the key of a unique field doesn't count as an identifier. Returns a `404 Not Found` if no record matches.
 #### Allowed For
 * Agents
+* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)
+* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)
 
 
 <h3 id="show-custom-object-record-by-unique-identifier-parameters">Parameters</h3>
@@ -50619,10 +50681,12 @@ Returns a `400 Bad Request` if more than one identifier is sent, if `name` is se
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Custom Object Record|[CustomObjectRecordResponse](#schemacustomobjectrecordresponse)|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.|None|
+|429|Too Many Requests|Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read ), basicAuth
 </aside>
 
 ## Update Custom Object Record by Unique Identifier (PUT)
@@ -50636,7 +50700,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/records/update_by_uni
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_record": {
       "custom_object_fields": {
@@ -50719,7 +50783,7 @@ Same as [Update Custom Object Record by Unique Identifier](#update-custom-object
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Update Custom Object Record by Unique Identifier
@@ -50733,7 +50797,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/records/update_by_uni
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_record": {
       "custom_object_fields": {
@@ -50825,7 +50889,7 @@ Returns a `400 Bad Request` if more than one identifier is sent, if `name` is se
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Custom Object Records Limit
@@ -50837,7 +50901,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/limits/record_limit \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/limits/record_limit`
@@ -50865,7 +50929,7 @@ List the current count and the limit for custom object records
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Incremental Custom Object Record Export, Cursor Based
@@ -50877,7 +50941,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/incremental/custom_objects/apartment/cursor \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/incremental/custom_objects/{custom_object_key}/cursor`
@@ -51127,7 +51191,7 @@ Status Code **429**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 <h1 id="support-api-custom-object-record-attachments">Custom Object Record Attachments</h1>
@@ -51141,7 +51205,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVSC80GYDH7E93Q6/attachments \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/records/{record_id}/attachments`
@@ -51150,6 +51214,7 @@ Lists all attachments associated with a custom object record.
 
 #### Allowed For
 * Agents
+* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)
 
 <h3 id="list-custom-object-record-attachments-parameters">Parameters</h3>
 
@@ -51209,6 +51274,8 @@ Lists all attachments associated with a custom object record.
 |---|---|---|---|
 |200|OK|Success response|[CustomObjectRecordAttachmentsResponse](#schemacustomobjectrecordattachmentsresponse)|
 |400|Bad Request|Bad Request - Attachments not allowed for custom object|Inline|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.|None|
+|429|Too Many Requests|Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.|None|
 
 <h3 id="list-custom-object-record-attachments-responseschema">Response Schema</h3>
 
@@ -51220,7 +51287,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:read ), basicAuth
 </aside>
 
 ## Create Custom Object Record Attachment
@@ -51233,7 +51300,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVSC80GYDH7E93Q6/attachments \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -F 'uploaded_data=@/path/to/file'
 ```
 
@@ -51307,7 +51374,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:write )
 </aside>
 
 ## Update Custom Object Record Attachment for Malware
@@ -51321,7 +51388,7 @@ curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVS
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "custom_object_record_attachment": {
       "malware_access_override": true
@@ -51405,7 +51472,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:write )
 </aside>
 
 ## Delete Custom Object Record Attachment
@@ -51418,7 +51485,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVSC80GYDH7E93Q6/attachments/01HQ2Z3X4Y5T6R7S8P9Q0W1E2 \
   -X DELETE \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/custom_objects/{custom_object_key}/records/{record_id}/attachments/{id}`
@@ -51464,7 +51531,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:write )
 </aside>
 
 ## Download Custom Object Record Attachment
@@ -51476,7 +51543,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/custom_objects/car/records/01GCSJW391QVSC80GYDH7E93Q6/attachments/01HQ2Z3X4Y5T6R7S8P9Q0W1E2/download \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/custom_objects/{custom_object_key}/records/{record_id}/attachments/{id}/download`
@@ -51486,6 +51553,7 @@ Access to malicious attachments is controlled by the `malware_access_override` s
 
 #### Allowed For
 * Agents
+* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)
 
 
 <h3 id="download-custom-object-record-attachment-parameters">Parameters</h3>
@@ -51513,6 +51581,8 @@ Access to malicious attachments is controlled by the `malware_access_override` s
 |---|---|---|---|
 |200|OK|Successful download of attachment content|Inline|
 |400|Bad Request|Bad Request - Attachments not allowed for custom object|Inline|
+|401|Unauthorized|Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object.|None|
+|429|Too Many Requests|Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address.|None|
 
 <h3 id="download-custom-object-record-attachment-responseschema">Response Schema</h3>
 
@@ -51524,7 +51594,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: custom_objects:read ), basicAuth
 </aside>
 
 <h1 id="support-api-omnichannel-routing-queues">Omnichannel Routing Queues</h1>
@@ -52039,7 +52109,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/queues/definitions \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/queues/definitions`
@@ -52121,7 +52191,7 @@ as well as the possible operators.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Reorder Queues
@@ -52134,7 +52204,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/queues/order \
   -X PATCH \
   -H 'Content-Type: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "queue_ids": [
       "01HE5HE5RCZMCEVAVV60VTHA2G",
@@ -52181,7 +52251,7 @@ You must include every queue id in your account to reorder the OCR queues. If no
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 <h1 id="support-api-deletion-schedules">Deletion Schedules</h1>
@@ -52195,7 +52265,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/deletion_schedules \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/deletion_schedules`
@@ -52254,7 +52324,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: deletion_schedules:read )
 </aside>
 
 ## Create Deletion Schedule
@@ -52268,7 +52338,7 @@ curl https://example.zendesk.com/api/v2/deletion_schedules \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "deletion_schedule": {
       "active": true,
@@ -52371,7 +52441,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: deletion_schedules:write )
 </aside>
 
 ## Get Deletion Schedule
@@ -52383,7 +52453,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/deletion_schedules/132828 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/deletion_schedules/{deletion_schedule_id}`
@@ -52446,7 +52516,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: deletion_schedules:read )
 </aside>
 
 ## Update Deletion Schedule
@@ -52460,7 +52530,7 @@ curl https://example.zendesk.com/api/v2/deletion_schedules/132828 \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "deletion_schedule": {
       "active": true,
@@ -52564,7 +52634,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: deletion_schedules:write )
 </aside>
 
 ## Delete Deletion Schedule
@@ -52576,7 +52646,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/deletion_schedules/132828 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/deletion_schedules/{deletion_schedule_id}`
@@ -52602,7 +52672,7 @@ Deletes a deletion schedule by its id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: deletion_schedules:write )
 </aside>
 
 <h1 id="support-api-oauth-clients">OAuth Clients</h1>
@@ -52618,7 +52688,7 @@ OAuth clients represent third-party applications that access the Zendesk API on 
 ```bash
 curl https://example.zendesk.com/api/v2/oauth/clients \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/oauth/clients`
@@ -52693,7 +52763,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Create Client
@@ -52706,7 +52776,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/oauth/clients \
   -X POST \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `POST /api/v2/oauth/clients`
@@ -52760,7 +52830,7 @@ For the full list of valid scope values, see [Scopes](/api-reference/ticketing/o
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Client
@@ -52772,7 +52842,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/oauth/clients/223443 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/oauth/clients/{oauth_client_id}`
@@ -52820,7 +52890,7 @@ curl https://example.zendesk.com/api/v2/oauth/clients/223443 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Update Client
@@ -52833,7 +52903,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/oauth/clients/223443 \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/oauth/clients/{oauth_client_id}`
@@ -52881,7 +52951,7 @@ curl https://example.zendesk.com/api/v2/oauth/clients/223443 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Delete Client
@@ -52893,7 +52963,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/oauth/clients/223443 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/oauth/clients/{oauth_client_id}`
@@ -52917,7 +52987,7 @@ curl https://example.zendesk.com/api/v2/oauth/clients/223443 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Generate Secret
@@ -52930,7 +53000,7 @@ basicAuth
 curl https://example.zendesk.com/api/v2/oauth/clients/223443/generate_secret \
   -X PUT \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `PUT /api/v2/oauth/clients/{oauth_client_id}/generate_secret`
@@ -52978,7 +53048,7 @@ curl https://example.zendesk.com/api/v2/oauth/clients/223443/generate_secret \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## List Current User's Clients
@@ -52990,7 +53060,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/users/me/oauth/clients \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/users/me/oauth/clients`
@@ -53061,7 +53131,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 <h1 id="support-api-oauth-tokens">OAuth Tokens</h1>
@@ -53080,7 +53150,7 @@ OAuth tokens are credentials used to authenticate API requests on behalf of user
 ```bash
 curl https://example.zendesk.com/api/v2/oauth/tokens \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/oauth/tokens`
@@ -53158,7 +53228,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Show Token
@@ -53170,7 +53240,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/oauth/tokens/223443 \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/oauth/tokens/{oauth_token_id}`
@@ -53229,7 +53299,7 @@ curl https://{subdomain}.zendesk.com/api/v2/oauth/tokens/current \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Revoke Token
@@ -53276,7 +53346,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/oauth/tokens/current \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/oauth/tokens/current`
@@ -53322,7 +53392,7 @@ For security reasons, only the first 10 characters of the access token are inclu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Revoke Current Token
@@ -53855,6 +53925,7 @@ Returns an OAuth access token in exchange for one of the following:
 - an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)
 - a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)
 - a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)
+- a [device code](https://datatracker.ietf.org/doc/html/rfc8628) obtained from [Start a device authorization grant](#oauth-device-authorization) (not yet generally available)
 
 **Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.
 
@@ -53862,11 +53933,13 @@ To revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oau
 
 #### Request parameters
 
-The POST request takes the following parameters, which must be formatted as JSON:
+The POST request takes the following parameters. Send them in the request body as JSON or URL-encoded form data:
 
 | Name                     | Description
 | ------------------------ | --------------------------------------------------
-| grant_type               | "authorization_code", "refresh_token", or "client_credentials"
+| grant_type               | "authorization_code", "refresh_token", "client_credentials",  "urn:ietf:params:oauth:grant-type:device_code" (not yet generally available), or "urn:ietf:params:oauth:grant-type:jwt-bearer"
+| assertion                 | ID-JAG grant only. A valid identity assertion JWT of type "oauth-id-jag+jwt" from the identity provider. Required for the ID-JAG grant
+| device_code              | Device grant flow only. The device verification code received from [Start a device authorization grant](#oauth-device-authorization). Required for the device grant type
 | code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user's authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help
 | client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)
 | client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)
@@ -53929,6 +54002,24 @@ const tokenResponse = await axios.post(
 );
 ```
 
+**Device grant example**
+
+```javascript
+// Poll after starting the flow at POST /oauth/device_authorization.
+// While the end user has not yet approved: 400 authorization_pending.
+// If polling faster than the advertised interval: 400 slow_down.
+const tokenResponse = await axios.post(
+  "https://{subdomain}.zendesk.com/oauth/tokens",
+  {
+    grant_type: "urn:ietf:params:oauth:grant-type:device_code",
+    device_code: DEVICE_CODE,
+    client_id: ZENDESK_CLIENT_ID,
+    client_secret: ZENDESK_CLIENT_SECRET
+  },
+  { headers: { "Content-Type": "application/json" } }
+);
+```
+
 #### Scope
 
 You must specify a scope to control the app's access to Zendesk resources. The "read" scope gives access to GET endpoints and includes permission to sideload related resources. The "write" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.
@@ -53983,6 +54074,7 @@ There are two distinct scope-related error cases to be aware of:
 | `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |
 | `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |
 | `ai_agents:list` | List AI agents. Includes listing the AI agents configured on the account via the Zendesk Developers API. |
+| `ai_agents:search` | Search AI agent knowledge. Includes searching the knowledge sources of the AI agents configured on the account via the Zendesk Developers API. |
 | `apps:read` | View installed apps and their settings. Includes which apps are installed and each app's settings. |
 | `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |
 | `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |
@@ -54069,7 +54161,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/oauth/global_clients \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/oauth/global_clients`
@@ -54135,7 +54227,7 @@ Returns a maximum of 100 records per page.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Show Global OAuth Client
@@ -54277,7 +54369,7 @@ curl https://example.zendesk.com/api/v2/approval_clarification_flow_messages \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "approval_request_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
     "message": "Can you clarify the budget line?"
@@ -54293,8 +54385,7 @@ full, updated thread.
 
 * The approval request's assignee or creator, the ticket assignee, or a member of the
   assigned group
-* Any user who can view the ticket when the `approvals_allow_comments_from_ticket_viewers`
-  feature is enabled
+* Any user who can view the ticket
 
 
 > Body parameter
@@ -54430,7 +54521,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Approval Clarification Flow Messages
@@ -54442,7 +54533,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/approval_clarification_flow_messages/01ARZ3NDEKTSV4RRFFQ69G5FAV \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/approval_clarification_flow_messages/{approval_request_id}`
@@ -54531,7 +54622,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## List Approval Requests
@@ -54543,7 +54634,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/approval_requests \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/approval_requests`
@@ -54558,7 +54649,7 @@ Lists all approval requests for the current account with optional filtering by s
 
 | Name                      | Type   | Description
 |---------------------------|--------|--------------------------------------------------------------------------------------------
-| filter[status]            | string | Filter by a comma-separated list of one or more approval statuses. Values: active, approved, rejected, withdrawn
+| filter[status]            | string | Filter by a comma-separated list of one or more approval statuses. Values: active, approved, rejected, withdrawn. Case-insensitive
 | filter[assignee_user_id]  | string | Filter by a comma-separated list of assigned user ids. Maximum 100 ids
 | filter[assignee_group_id] | string | Filter by a comma-separated list of assigned group ids. Maximum 100 ids
 | include                   | string | Comma-separated list of extra fields to sideload. Supports `deeplinks` — adds a `deeplink` field to each approval request, resolving to that request's agent-facing or Help Center decision page. Omitting `include` leaves the response unchanged.
@@ -54581,7 +54672,7 @@ This endpoint supports cursor-based pagination. Use `after_cursor` and `before_c
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|filter[status]|query|string|false|Filter by a comma-separated list of one or more approval statuses. Allowed values are active, approved, rejected, withdrawn. Maximum 100 values.|
+|filter[status]|query|string|false|Filter by a comma-separated list of one or more approval statuses. Allowed values are active, approved, rejected, withdrawn. Case-insensitive. Maximum 100 values.|
 |filter[assignee_user_id]|query|string|false|Filter by a comma-separated list of assigned user ids. Maximum 100 ids.|
 |filter[assignee_group_id]|query|string|false|Filter by a comma-separated list of assigned group ids. Maximum 100 ids.|
 |before_cursor|query|string|false|Cursor for pagination. Fetch records before this cursor|
@@ -54707,7 +54798,7 @@ This endpoint supports cursor-based pagination. Use `after_cursor` and `before_c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Create Approval Request
@@ -54721,7 +54812,7 @@ curl https://example.zendesk.com/api/v2/approval_requests \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "assignee_group_id": 789,
     "message": "Please approve this request for new office equipment for the support team",
@@ -54820,6 +54911,7 @@ Example response:
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[ApprovalRequestCreateRequest](#schemaapprovalrequestcreaterequest)|true|none|
+|» approval_attachment_tokens|body|[string]|false|Optional. Staged upload tokens returned when uploading files for the approval request.<br>Each token is consumed once to attach its staged file to the approval request at<br>creation time. Maximum five tokens, matching the attachments limit.<br>|
 |» approval_requests|body|[object]|false|Parallel approval requests only. One entry per approval request to create, up to five. Each entry must<br>specify exactly one of `assignee_user_id` or `assignee_group_id`.  Can't be used with a top-level `assignee_user_id` or `assignee_group_id`.<br>|
 |» » assignee_group_id|body|integer(int64) \| null|false|The id of the group assigned to review and approve the request|
 |» » assignee_user_id|body|integer(int64) \| null|false|The id of the user assigned to review and approve the request|
@@ -54876,7 +54968,7 @@ Example response:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Approval Request
@@ -54888,7 +54980,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/approval_workflow_instances/01KFP3S9EVXF9CKAYY080NV98D/approval_requests/01KFP3S9EVXF9CKAYY080NV98C \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/approval_workflow_instances/{workflow_instance_id}/approval_requests/{id}`
@@ -54998,7 +55090,7 @@ Status Code **404**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Decide Approval Request
@@ -55012,7 +55104,7 @@ curl https://example.zendesk.com/api/v2/approval_workflow_instances/01KFP3S9EVXF
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "notes": "Looks good, approved",
     "status": "approved"
@@ -55048,17 +55140,7 @@ allowed to decide on it, even when they are also the assignee.
 |id|path|string|true|The id of the approval request to decide on|
 |body|body|object|true|none|
 |» notes|body|string|false|Optional notes to record with the decision|
-|» status|body|string|true|The decision to record|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» status|pending|
-|» status|active|
-|» status|approved|
-|» status|rejected|
-|» status|withdrawn|
+|» status|body|string|true|The decision to record. Case-insensitive; the server normalizes the value. Canonical values are pending, active, approved, rejected, withdrawn.|
 
 > Example responses
 
@@ -55201,7 +55283,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Withdraw Approval Workflow Instance
@@ -55215,7 +55297,7 @@ curl https://example.zendesk.com/api/v2/approval_workflow_instances/01KFP3S9EVXF
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "withdrawn_reason": "No longer needed"
   }'
@@ -55366,7 +55448,7 @@ Status Code **422**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 <h1 id="support-api-itam-assets">ITAM Assets</h1>
@@ -55380,7 +55462,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/it_asset_management/assets \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/it_asset_management/assets`
@@ -55541,7 +55623,7 @@ Status Code **400**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Create Asset
@@ -56244,7 +56326,7 @@ curl https://example.zendesk.com/api/v2/it_asset_management/assets/search \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "filter": {
       "$and": [
@@ -56476,7 +56558,7 @@ A comparison object is a JSON object that has the following properties:
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 <h1 id="support-api-itam-asset-types">ITAM Asset Types</h1>
@@ -58320,7 +58402,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/task_list_templates \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/task_list_templates`
@@ -58382,7 +58464,7 @@ Lists all task list templates. The template's tasks aren't included in the respo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Create Task List Template
@@ -58396,7 +58478,7 @@ curl https://example.zendesk.com/api/v2/task_list_templates \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "task_list_template": {
       "description": "Complete HR, IT, and payroll setup for new employees.",
@@ -58501,7 +58583,7 @@ Creates a task list template.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Show Task List Template
@@ -58513,7 +58595,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/task_list_templates/01K205PG0J2ET0B8AFHA106C1E \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/task_list_templates/{task_list_template_id}`
@@ -58559,7 +58641,7 @@ Returns the task list template with the specified id. The template's tasks aren'
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: read )
 </aside>
 
 ## Update Task List Template
@@ -58573,7 +58655,7 @@ curl https://example.zendesk.com/api/v2/task_list_templates/01K205PG0J2ET0B8AFHA
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "task_list_template": {
       "name": "Updating a task list template",
@@ -58708,7 +58790,7 @@ Creates, modifies, or deletes tasks in a task list template. Only the tasks incl
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Delete Task List Template
@@ -58720,7 +58802,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/task_list_templates/01K205PG0J2ET0B8AFHA106C1E \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/task_list_templates/{task_list_template_id}`
@@ -58745,7 +58827,7 @@ Deletes a task list template with the specified id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## Get Tasks by Task List Template Id
@@ -58829,7 +58911,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/task_lists/01KFGZJGMQ3NA9DNX34Y5YGGYM \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/task_lists/{task_list_id}`
@@ -58875,7 +58957,7 @@ Returns the task list with the specified id. The response includes `is_completed
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Update Custom Task List
@@ -58889,7 +58971,7 @@ curl https://example.zendesk.com/api/v2/task_lists/01KFGZJGMQ3NA9DNX34Y5YGGYM \
   -X PUT \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "task_list": {
       "description": "Updated description",
@@ -58955,7 +59037,7 @@ Updates the name or description of a custom task list. Only custom task lists (t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Delete Task List
@@ -58967,7 +59049,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/task_lists/01KFGZJGMQ3NA9DNX34Y5YGGYM \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/task_lists/{task_list_id}`
@@ -58992,7 +59074,7 @@ Deletes the task list with the specified id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## List Task Items
@@ -59330,7 +59412,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/parent_ticket_tasks \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/parent_ticket_tasks`
@@ -59378,7 +59460,7 @@ Returns parent tickets and task items that link to the specified subticket. If t
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Subticket
@@ -59392,7 +59474,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/task_items/01KH2TPNQR5WB7
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "subticket": {
       "comment": {
@@ -59491,7 +59573,7 @@ Creates a ticket and links it to the specified task item as a subticket. The par
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 ## List Linked Tickets
@@ -59503,7 +59585,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/task_items/01KH2TPNQR5WB7MV9XEJD0FZHS/task_links \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/task_items/{task_item_id}/task_links`
@@ -59558,7 +59640,7 @@ Returns tickets linked to the specified task item.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Link Existing Ticket
@@ -59572,7 +59654,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/task_items/01KH2TPNQR5WB7
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "link": {
       "linked_object_id": "456",
@@ -59652,7 +59734,7 @@ Links an existing ticket to the specified task item. A task item can have one li
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Unlink Ticket
@@ -59664,7 +59746,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/task_items/01KH2TPNQR5WB7MV9XEJD0FZHS/task_links/01KH2Y95EFXWNA0BVXD4R2JH22 \
   -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /api/v2/tickets/{ticket_id}/task_items/{task_item_id}/task_links/{task_object_link_id}`
@@ -59691,7 +59773,7 @@ Deletes the link between the specified task item and ticket. This does not delet
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:write )
 </aside>
 
 ## Show Task Lists for Ticket
@@ -59703,7 +59785,7 @@ basicAuth
 ```bash
 curl https://example.zendesk.com/api/v2/tickets/123456/task_lists \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /api/v2/tickets/{ticket_id}/task_lists`
@@ -59765,7 +59847,7 @@ Returns the task lists attached to the specified ticket. A ticket can have zero,
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: tickets:read )
 </aside>
 
 ## Create Task List
@@ -59779,7 +59861,7 @@ curl https://example.zendesk.com/api/v2/tickets/123456/task_lists \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "task_list": {
       "description": "Custom task list for this ticket",
@@ -59869,7 +59951,7 @@ A ticket can hold more than one task list, up to the account's task list limit. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-basicAuth
+oauth2 ( Scopes: write )
 </aside>
 
 # Schemas
@@ -60705,7 +60787,7 @@ Approvals integration settings. See `settings_controller_support.rb`
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|slack_workspace|string|false|none|Rejected with a 422 ("Approvals Slack integration is not enabled for this<br>account") unless the account has `has_approvals_slack_notifications?`<br>(`validate_approvals_slack_workspace`, `settings_controller.rb`).<br>|
+|slack_workspace|string|false|none|Slack workspace identifier for the Approvals Slack integration.<br>|
 
 <h2 id="tocS_AccountSettingsAppsObject">AccountSettingsAppsObject</h2>
 <!-- backwards compatibility -->
@@ -61094,6 +61176,15 @@ End user device settings. See [Device Metadata](#device-metadata)
 {
   "accept_wildcard_emails": true,
   "custom_dkim_domain": true,
+  "email_category_outcome_overrides": {
+    "adult_content": "default",
+    "blocklisted": "default",
+    "marketing": "default",
+    "phishing": "default",
+    "scam": "default",
+    "slightly_spam": "default",
+    "spam": "default"
+  },
   "email_hc_ai_agent_comments": true,
   "email_sender_authentication": true,
   "email_sender_authentication_profile": "default",
@@ -61125,6 +61216,7 @@ Email settings. See `settings_controller_support.rb`
 |---|---|---|---|---|
 |accept_wildcard_emails|boolean|false|none|none|
 |custom_dkim_domain|boolean|false|none|none|
+|email_category_outcome_overrides|object|false|none|Whether emails that match given categories follow the default outcome or experience overrides to accept or suspend. Only present when the feature is available for the account.|
 |email_hc_ai_agent_comments|boolean|false|none|Deleted from the request before processing unless the account has<br>`has_email_ai_agent_comment_notifications?` (`settings_controller.rb#update`).<br>|
 |email_sender_authentication|boolean|false|none|none|
 |email_sender_authentication_profile|string|false|none|none|
@@ -61163,6 +61255,15 @@ Email settings. See `settings_controller_support.rb`
 {
   "accept_wildcard_emails": true,
   "custom_dkim_domain": true,
+  "email_category_outcome_overrides": {
+    "adult_content": "default",
+    "blocklisted": "default",
+    "marketing": "default",
+    "phishing": "default",
+    "scam": "default",
+    "slightly_spam": "default",
+    "spam": "default"
+  },
   "email_hc_ai_agent_comments": true,
   "email_sender_authentication": true,
   "email_sender_authentication_profile": "default",
@@ -61192,6 +61293,7 @@ Email settings
 |---|---|---|---|---|
 |accept_wildcard_emails|boolean|false|none|none|
 |custom_dkim_domain|boolean|false|none|none|
+|email_category_outcome_overrides|object|false|none|Whether emails that match given categories follow the default outcome or experience overrides to accept or suspend. Only present when the feature is available for the account.|
 |email_hc_ai_agent_comments|boolean|false|none|Whether AI agent comments are included in email notifications for Help Center tickets. Only present when the feature is available for the account.|
 |email_sender_authentication|boolean|false|none|**Deprecated.** Whether incoming email is subjected to sender authentication checks (SPF, DKIM). This setting is deprecated and will be removed soon. It can still be turned on, but after it's on you can't turn it off|
 |email_sender_authentication_profile|string|false|none|The sender authentication profile in use.|
@@ -63202,6 +63304,15 @@ X (formerly Twitter) settings. See [X](#x-formerly-twitter)
   "email": {
     "accept_wildcard_emails": true,
     "custom_dkim_domain": true,
+    "email_category_outcome_overrides": {
+      "adult_content": "default",
+      "blocklisted": "default",
+      "marketing": "default",
+      "phishing": "default",
+      "scam": "default",
+      "slightly_spam": "default",
+      "spam": "default"
+    },
     "email_hc_ai_agent_comments": true,
     "email_sender_authentication": true,
     "email_sender_authentication_profile": "default",
@@ -63625,6 +63736,15 @@ expressed as a schema constraint here — see the property descriptions on
     "email": {
       "accept_wildcard_emails": true,
       "custom_dkim_domain": true,
+      "email_category_outcome_overrides": {
+        "adult_content": "default",
+        "blocklisted": "default",
+        "marketing": "default",
+        "phishing": "default",
+        "scam": "default",
+        "slightly_spam": "default",
+        "spam": "default"
+      },
       "email_hc_ai_agent_comments": true,
       "email_sender_authentication": true,
       "email_sender_authentication_profile": "default",
@@ -65442,7 +65562,7 @@ The code of a security setting that can be acknowledged
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ai_agent_profile|object|true|none|`name`, `service`, and `avatar_upload_id` are each optional, and at least one must be present.<br>Send null to store that field as null. Omit `avatar_upload_id` or send null to create the profile without an avatar.<br>An empty object is rejected.<br>|
+|ai_agent_profile|object|true|none|`name` and `avatar_upload_id` are each optional. `service` is deprecated and ignored. At least one field must be present.<br>Send null to store that field as null. Omit `avatar_upload_id` or send null to create the profile without an avatar.<br>An empty object is rejected.<br>|
 
 <h2 id="tocS_AiAgentProfileMessageError">AiAgentProfileMessageError</h2>
 <!-- backwards compatibility -->
@@ -65517,7 +65637,7 @@ The code of a security setting that can be acknowledged
 |created_at|string(date-time)|false|read-only|When this profile was created|
 |id|string|false|read-only|Id of the profile. Assigned when the profile is created.|
 |name|string \| null|false|none|Display name of the AI agent profile|
-|service|string \| null|false|none|Name of the service that owns this profile. Known values are "commerce_agent_engine", "ultimate", and "voice".<br>Stored and returned as given. The list endpoint can filter on an exact match.<br>|
+|service|string \| null|false|none|Name of the service that owns this profile. Set from the authenticated system user when the profile is created, and never changed afterwards.<br>Callers only see profiles owned by their own service.<br>|
 |updated_at|string(date-time)|false|read-only|When this profile was last updated|
 |url|string(uri)|false|read-only|The API URL of this AI agent profile|
 
@@ -65621,7 +65741,7 @@ The code of a security setting that can be acknowledged
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ai_agent_profile|object|true|none|Omitted `name`, `service`, and `avatar_upload_id` values stay as they are.<br>Send null to clear a field. Send a new `avatar_upload_id` to replace the stored upload id, or null to remove the avatar.<br>At least one field must be present. An empty object is rejected.<br>|
+|ai_agent_profile|object|true|none|Omitted `name` and `avatar_upload_id` values stay as they are. `service` is deprecated and ignored.<br>Send null to clear a field. Send a new `avatar_upload_id` to replace the stored upload id, or null to remove the avatar.<br>At least one field must be present. An empty object is rejected.<br>|
 
 <h2 id="tocS_AiAgentProfilesResponse">AiAgentProfilesResponse</h2>
 <!-- backwards compatibility -->
@@ -65868,6 +65988,10 @@ Response for showing the clarification flow thread for an approval request
 
 ```json
 {
+  "approval_attachment_tokens": [
+    "01JAR7ZK3M9Q2VX8B5C4D6E7F8",
+    "01JAR7ZK3M9Q2VX8B5C4D6E7F9"
+  ],
   "approval_requests": [
     {
       "assignee_user_id": 101
@@ -65899,6 +66023,7 @@ Request body for approval requests. Two mutually exclusive shapes are supported:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|approval_attachment_tokens|[string]|false|none|Optional. Staged upload tokens returned when uploading files for the approval request.<br>Each token is consumed once to attach its staged file to the approval request at<br>creation time. Maximum five tokens, matching the attachments limit.<br>|
 |approval_requests|[object]|false|none|Parallel approval requests only. One entry per approval request to create, up to five. Each entry must<br>specify exactly one of `assignee_user_id` or `assignee_group_id`.  Can't be used with a top-level `assignee_user_id` or `assignee_group_id`.<br>|
 |assignee_group_id|integer(int64) \| null|false|none|Single approval request only. The id of the group assigned to review and approve the request. Can't be used with an `approval_requests` array.|
 |assignee_user_id|integer(int64) \| null|false|none|Single approval request only. The id of the user assigned to review and approve the request. Can't be used with an `approval_requests` array.|
@@ -68335,7 +68460,6 @@ What the current user can do with a brand when requested with `include=permissio
 |mode|manual|
 |mode|auto|
 |status|in_progress|
-|status|validating|
 |status|reconciling|
 |status|aborted|
 |status|completed|
@@ -68436,27 +68560,6 @@ What the current user can do with a brand when requested with `include=permissio
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |user_migration|[BrandUserMigration](#schemabrandusermigration)|false|none|none|
-
-<h2 id="tocS_BrandUserMigrationUpdateRequest">BrandUserMigrationUpdateRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemabrandusermigrationupdaterequest"></a>
-<a id="schema_BrandUserMigrationUpdateRequest"></a>
-<a id="tocSbrandusermigrationupdaterequest"></a>
-<a id="tocsbrandusermigrationupdaterequest"></a>
-
-```json
-{
-  "user_migration": {
-    "status": "validating"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|user_migration|object|true|none|none|
 
 <h2 id="tocS_BrandUserMigrationsResponse">BrandUserMigrationsResponse</h2>
 <!-- backwards compatibility -->
@@ -68817,8 +68920,8 @@ The status of the import for the indicated resource
 |---|---|---|---|---|
 |count|integer|true|none|Number of matching identities found|
 |identities|[object]|true|none|Array of matching identities (may be empty if data is masked due to insufficient permissions)|
-|role|string|true|none|The role of the user (staff or end-user), empty if identity does not exist|
-|status|string|true|none|Whether the identity exists|
+|role|string|true|none|The role of the user (staff or end-user), empty if the identity does not exist or is reserved as a Support address|
+|status|string|true|none|Whether the identity exists, or whether it is reserved as a Support address and cannot be used for a new user|
 |type|string|true|none|The identity type that was checked|
 |value|string|true|none|The identity value that was checked|
 
@@ -68828,6 +68931,7 @@ The status of the import for the indicated resource
 |---|---|
 |status|EXISTS|
 |status|DOES_NOT_EXIST|
+|status|RESERVED_SUPPORT_ADDRESS|
 
 <h2 id="tocS_CloneTicketFormRequest">CloneTicketFormRequest</h2>
 <!-- backwards compatibility -->
@@ -70613,13 +70717,13 @@ A file attachment associated with a custom object record
 |content_type|string|false|read-only|The content type of the file|
 |content_url|string|false|read-only|A full URL where the attachment file can be downloaded. The file may be hosted externally so take care not to inadvertently send Zendesk authentication credentials.|
 |created_at|string(date-time)|false|read-only|The date and time when the attachment was created|
-|created_by|string|false|read-only|The name of the user who created the attachment|
+|created_by|string|false|read-only|The name of the user who created the attachment. Omitted from responses to anonymous requests.|
 |custom_object_record_id|string|false|read-only|The ID of the custom object record this attachment belongs to|
 |filename|string|false|read-only|The name of the attachment file|
 |id|string|false|read-only|Automatically assigned when created|
-|malware_access_override|boolean|false|read-only|If true, you can download an attachment flagged as malware. If false, you can't download such an attachment.|
-|malware_scan_completed_at|string(date-time) \| null|false|read-only|The date and time when the malware scan was completed|
-|malware_scan_status|string|false|read-only|The result of the malware scan. There is a delay between the time the attachment is uploaded and when the malware scan is completed.|
+|malware_access_override|boolean|false|read-only|If true, you can download an attachment flagged as malware. If false, you can't download such an attachment. Omitted from responses to anonymous requests.|
+|malware_scan_completed_at|string(date-time) \| null|false|read-only|The date and time when the malware scan was completed. Omitted from responses to anonymous requests.|
+|malware_scan_status|string|false|read-only|The result of the malware scan. There is a delay between the time the attachment is uploaded and when the malware scan is completed. Omitted from responses to anonymous requests.|
 |size|integer|false|read-only|The size of the file in bytes|
 
 #### Enumerated Values
@@ -71428,12 +71532,34 @@ object, so an omitted property is left unchanged. `key` is accepted by the param
   "ai_agents": {
     "role": "string"
   },
+  "analytics": {
+    "access": "string",
+    "brands_ticket_access": "string",
+    "export_analytics_data": true,
+    "groups_ticket_access": "string",
+    "manage_custom_alerts": true,
+    "manage_custom_datasets": true,
+    "ticket_access_selected_brands": [
+      "string"
+    ],
+    "ticket_access_selected_groups": [
+      "string"
+    ],
+    "use_ai_dashboard_builder": true,
+    "use_ai_dataset_builder": true,
+    "use_analyst_copilot": true,
+    "use_conversational_assistant": true,
+    "use_deep_exploration": true,
+    "view_zra_anomaly_detection": true,
+    "view_zra_trending_topics": true
+  },
   "assign_agent_statuses": true,
   "assign_tickets_to_any_group": true,
   "brands_ticket_access": "string",
   "capacity_rules_access": "string",
   "change_management_access": "string",
   "chat_access": true,
+  "delete_brands": true,
   "end_user_list_access": "string",
   "end_user_profile_access": "string",
   "execute_it_asset_management_actions": true,
@@ -71447,6 +71573,8 @@ object, so an omitted property is left unchanged. `key` is accepted by the param
   "light_agent": true,
   "macro_access": "string",
   "manage_api_credentials": true,
+  "manage_approval_requests": true,
+  "manage_brands": "string",
   "manage_business_rules": true,
   "manage_change_management_configuration": true,
   "manage_contextual_workspaces": true,
@@ -71509,12 +71637,14 @@ Configuration settings for the role. See [Configuration](#configuration)
 |---|---|---|---|---|
 |actions_access|string|false|none|What level of actions access the agent has. Allowed values: "none", "workflows_and_zendesk", "all"|
 |ai_agents|object|false|none|The agent's level of access to AI agents|
+|analytics|object|false|none|The agent's access to analytics. Only available to accounts with agentic analytics permissions enabled|
 |assign_agent_statuses|boolean|false|none|Whether or not the agent can assign agent statuses|
 |assign_tickets_to_any_group|boolean|false|read-only|Whether or not the agent can assign tickets to any group|
 |brands_ticket_access|string|false|none|What kind of ticket brands the agent can access. Allowed values: "all", "within-brands", "selected-brands"|
 |capacity_rules_access|string|false|none|What the agent can do with capacity rules. Allowed values: "none", "all", "view-and-assign"|
 |change_management_access|string|false|none|What level of access the agent has to change management. Allowed values: "none", "view", "full"|
 |chat_access|boolean|false|read-only|Whether or not the agent has access to Chat|
+|delete_brands|boolean|false|none|Whether or not the agent can delete brands. Deletion is limited by the scope of `manage_brands`: "all" allows any brand, "member" only brands the agent belongs to, and "none" disables deletion regardless of this value|
 |end_user_list_access|string|false|none|Whether or not the agent can view lists of user profiles. Allowed values: "full", "none"|
 |end_user_profile_access|string|false|none|What the agent can do with end-user profiles. Allowed values: "edit", "edit-within-org", "full", "readonly"|
 |execute_it_asset_management_actions|boolean|false|none|Whether or not the agent can execute IT asset management actions|
@@ -71528,6 +71658,8 @@ Configuration settings for the role. See [Configuration](#configuration)
 |light_agent|boolean|false|read-only|Whether or not the agent is a light agent|
 |macro_access|string|false|none|What the agent can do with macros. Allowed values: "full", "manage-group", "manage-personal", "readonly"|
 |manage_api_credentials|boolean|false|none|Whether the agent can manage API credentials|
+|manage_approval_requests|boolean|false|none|Whether the agent can create and manage approval requests|
+|manage_brands|string|false|none|Which brands the agent can create and update. "all" covers every brand and brand settings. "member" covers only brands the agent belongs to. Allowed values: "all", "member", "none"|
 |manage_business_rules|boolean|false|none|Whether or not the agent can manage business rules|
 |manage_change_management_configuration|boolean|false|none|Whether or not the agent can manage change management configuration|
 |manage_contextual_workspaces|boolean|false|none|Whether or not the agent can view, add, and edit contextual workspaces|
@@ -71541,7 +71673,7 @@ Configuration settings for the role. See [Configuration](#configuration)
 |manage_macro_content_suggestions|boolean|false|none|Whether or not the agent can manage macro content suggestions|
 |manage_malicious_attachments|boolean|false|none|Whether or not the agent can manage malicious attachments|
 |manage_organization_fields|boolean|false|none|Whether or not the agent can create and manage organization fields|
-|manage_support_apps|boolean|false|none|Whether or not the agent can manage support apps|
+|manage_support_apps|boolean|false|none|Whether or not the agent can manage Zendesk Support apps. Defaults to false for custom roles.|
 |manage_ticket_fields|boolean|false|none|Whether or not the agent can create and manage ticket fields|
 |manage_ticket_forms|boolean|false|none|Whether or not the agent can create and manage ticket forms|
 |manage_ticket_settings|boolean|false|none|Whether or not the agent can manage ticket settings such as comments, attachments, followers, assignments, and notifications|
@@ -71594,12 +71726,34 @@ Configuration settings for the role. See [Configuration](#configuration)
     "ai_agents": {
       "role": "string"
     },
+    "analytics": {
+      "access": "string",
+      "brands_ticket_access": "string",
+      "export_analytics_data": true,
+      "groups_ticket_access": "string",
+      "manage_custom_alerts": true,
+      "manage_custom_datasets": true,
+      "ticket_access_selected_brands": [
+        "string"
+      ],
+      "ticket_access_selected_groups": [
+        "string"
+      ],
+      "use_ai_dashboard_builder": true,
+      "use_ai_dataset_builder": true,
+      "use_analyst_copilot": true,
+      "use_conversational_assistant": true,
+      "use_deep_exploration": true,
+      "view_zra_anomaly_detection": true,
+      "view_zra_trending_topics": true
+    },
     "assign_agent_statuses": true,
     "assign_tickets_to_any_group": true,
     "brands_ticket_access": "string",
     "capacity_rules_access": "string",
     "change_management_access": "string",
     "chat_access": true,
+    "delete_brands": true,
     "end_user_list_access": "string",
     "end_user_profile_access": "string",
     "execute_it_asset_management_actions": true,
@@ -71613,6 +71767,8 @@ Configuration settings for the role. See [Configuration](#configuration)
     "light_agent": true,
     "macro_access": "string",
     "manage_api_credentials": true,
+    "manage_approval_requests": true,
+    "manage_brands": "string",
     "manage_business_rules": true,
     "manage_change_management_configuration": true,
     "manage_contextual_workspaces": true,
@@ -71703,12 +71859,34 @@ Configuration settings for the role. See [Configuration](#configuration)
       "ai_agents": {
         "role": "string"
       },
+      "analytics": {
+        "access": "string",
+        "brands_ticket_access": "string",
+        "export_analytics_data": true,
+        "groups_ticket_access": "string",
+        "manage_custom_alerts": true,
+        "manage_custom_datasets": true,
+        "ticket_access_selected_brands": [
+          "string"
+        ],
+        "ticket_access_selected_groups": [
+          "string"
+        ],
+        "use_ai_dashboard_builder": true,
+        "use_ai_dataset_builder": true,
+        "use_analyst_copilot": true,
+        "use_conversational_assistant": true,
+        "use_deep_exploration": true,
+        "view_zra_anomaly_detection": true,
+        "view_zra_trending_topics": true
+      },
       "assign_agent_statuses": true,
       "assign_tickets_to_any_group": true,
       "brands_ticket_access": "string",
       "capacity_rules_access": "string",
       "change_management_access": "string",
       "chat_access": true,
+      "delete_brands": true,
       "end_user_list_access": "string",
       "end_user_profile_access": "string",
       "execute_it_asset_management_actions": true,
@@ -71722,6 +71900,8 @@ Configuration settings for the role. See [Configuration](#configuration)
       "light_agent": true,
       "macro_access": "string",
       "manage_api_credentials": true,
+      "manage_approval_requests": true,
+      "manage_brands": "string",
       "manage_business_rules": true,
       "manage_change_management_configuration": true,
       "manage_contextual_workspaces": true,
@@ -71807,12 +71987,34 @@ Configuration settings for the role. See [Configuration](#configuration)
         "ai_agents": {
           "role": "string"
         },
+        "analytics": {
+          "access": "string",
+          "brands_ticket_access": "string",
+          "export_analytics_data": true,
+          "groups_ticket_access": "string",
+          "manage_custom_alerts": true,
+          "manage_custom_datasets": true,
+          "ticket_access_selected_brands": [
+            "string"
+          ],
+          "ticket_access_selected_groups": [
+            "string"
+          ],
+          "use_ai_dashboard_builder": true,
+          "use_ai_dataset_builder": true,
+          "use_analyst_copilot": true,
+          "use_conversational_assistant": true,
+          "use_deep_exploration": true,
+          "view_zra_anomaly_detection": true,
+          "view_zra_trending_topics": true
+        },
         "assign_agent_statuses": true,
         "assign_tickets_to_any_group": true,
         "brands_ticket_access": "string",
         "capacity_rules_access": "string",
         "change_management_access": "string",
         "chat_access": true,
+        "delete_brands": true,
         "end_user_list_access": "string",
         "end_user_profile_access": "string",
         "execute_it_asset_management_actions": true,
@@ -71826,6 +72028,8 @@ Configuration settings for the role. See [Configuration](#configuration)
         "light_agent": true,
         "macro_access": "string",
         "manage_api_credentials": true,
+        "manage_approval_requests": true,
+        "manage_brands": "string",
         "manage_business_rules": true,
         "manage_change_management_configuration": true,
         "manage_contextual_workspaces": true,
@@ -73293,6 +73497,8 @@ creation, and sending it has no effect
 |brand_ids|[string]|false|none|Active brand ids assigned to this template, returned as strings.<br>A brand can belong to only one template. The default template is not assigned to brands.<br>|
 |created_at|string(date-time)|false|read-only|When this template was created|
 |default|boolean|false|read-only|Whether this template is the account default|
+|default_body|string|false|read-only|The built-in default email body, before any customization. Present only on the default template.<br>Use it to pre-fill a new template.<br>|
+|default_subject|string|false|read-only|The built-in default email subject, before any customization. Present only on the default template.<br>Use it to pre-fill a new template.<br>|
 |id|string|false|read-only|The template id. The unsaved account default uses 0.<br>After the default is saved, requests to id 0 still address that template, and the response id is the saved template's id.<br>|
 |subject|string|false|none|Email subject. Maximum 255 characters. May include Zendesk placeholders.|
 |template_name|string|false|none|Display name of the template|
@@ -73503,6 +73709,15 @@ creation, and sending it has no effect
     "email": {
       "accept_wildcard_emails": true,
       "custom_dkim_domain": true,
+      "email_category_outcome_overrides": {
+        "adult_content": "default",
+        "blocklisted": "default",
+        "marketing": "default",
+        "phishing": "default",
+        "scam": "default",
+        "slightly_spam": "default",
+        "spam": "default"
+      },
       "email_hc_ai_agent_comments": true,
       "email_sender_authentication": true,
       "email_sender_authentication_profile": "default",
@@ -73555,8 +73770,8 @@ creation, and sending it has no effect
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|auto_ownership|boolean \| null|false|none|Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to `google` identities - an ownership conflict for a Google-backed email identity is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.|
-|ownership|string \| null|false|none|Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to `owned`. `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected outright for `google` identities (a Google-backed email identity can only be owned), and is subject to a per-brand cap on shared identities per address (100 by default; past the cap the request fails with `LimitExceeded`). A create that will send a verification email for a shared address is rate-limited and can be rejected with `429 Too Many Requests`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.|
+|auto_ownership|boolean \| null|false|none|When true, creates the email identity as "owned", or as "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
+|ownership|string \| null|false|none|Sets the email identity to "owned" or "shared". Defaults to "owned". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
 |primary|boolean \| null|false|none|Makes the new identity the primary one. null is accepted and ignored. Only takes effect for `email` identities. For a verified<br>email identity (`verified: true` or `verification_method: low`) the identity becomes primary<br>immediately; for an unverified one the promotion is deferred - the verification email link carries<br>`make_primary=true`, so the identity becomes primary (and the former primary is removed) when the<br>recipient verifies. Ignored for non-email identity types, including `google`.<br><br>To promote an identity that already exists, use the<br>[Make Identity Primary](#make-identity-primary) endpoint instead.<br>|
 |type|string|true|none|The type of identity to create.<br><br>Only the types listed here can be created through this endpoint. The remaining identity types<br>(`any_channel`, `foreign`, `sdk`, `microsoft`) are created by internal systems only, and a request<br>for one of them is rejected with a `400`.<br><br>`messaging` and `slack` back internal channel integrations. `slack` additionally requires the<br>Slack identity feature to be enabled on the account.<br>|
 |value|string|true|none|The identifier for this identity. An email address for `email` and `google`, the screen name for<br>`twitter`, the Facebook user id for `facebook`, and an E.164 phone number for `phone_number` and<br>`agent_forwarding`. Phone numbers are validated unless the account has phone number validation<br>turned off.<br>|
@@ -77538,6 +77753,58 @@ Authentication and access failures use a nested error object; authentication mid
 |---|---|---|---|---|
 |account|object \| null|true|none|none|
 
+<h2 id="tocS_LotusConversationResponse">LotusConversationResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalotusconversationresponse"></a>
+<a id="schema_LotusConversationResponse"></a>
+<a id="tocSlotusconversationresponse"></a>
+<a id="tocslotusconversationresponse"></a>
+
+```json
+{
+  "conversation_item": {
+    "created_at": "1970-01-01T00:00:00Z",
+    "id": 0,
+    "metadata": {},
+    "type": "string",
+    "via": {
+      "channel": "string",
+      "source": {
+        "from": {
+          "address": "string",
+          "id": 0,
+          "name": "string",
+          "title": "string"
+        },
+        "rel": "string",
+        "to": {
+          "address": "string",
+          "name": "string"
+        }
+      }
+    }
+  },
+  "users": [
+    {
+      "email": "string",
+      "id": 0,
+      "is_billing_admin": true,
+      "name": "string",
+      "role": "string"
+    }
+  ]
+}
+```
+
+A single mixed audit event serialized by the same event-specific presenters as the conversations collection. Comment bodies and attachments depend on the event type. Users are optionally sideloaded with include=users.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|conversation_item|object|true|none|Mixed audit events serialized by the event-specific presenters. Additional fields depend on the event type; comment bodies and attachments are not shared by every event.|
+|users|[object]|false|none|none|
+
 <h2 id="tocS_LotusConversationStateResponse">LotusConversationStateResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemalotusconversationstateresponse"></a>
@@ -79463,6 +79730,35 @@ Settings for a mobile SDK app as returned by the private mobile API
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |clients|[[OAuthClientObject](#schemaoauthclientobject)]|false|none|none|
+
+<h2 id="tocS_OAuthDeviceAuthorizationResponse">OAuthDeviceAuthorizationResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaoauthdeviceauthorizationresponse"></a>
+<a id="schema_OAuthDeviceAuthorizationResponse"></a>
+<a id="tocSoauthdeviceauthorizationresponse"></a>
+<a id="tocsoauthdeviceauthorizationresponse"></a>
+
+```json
+{
+  "device_code": "string",
+  "expires_in": 0,
+  "interval": 0,
+  "user_code": "string",
+  "verification_uri": "string",
+  "verification_uri_complete": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|device_code|string|true|read-only|The device verification code. The device sends it to the token endpoint as the `device_code` parameter when polling for the access token. The device must treat it like a password.|
+|expires_in|integer|true|read-only|Number of seconds the device_code and user_code remain valid (300 = 5 minutes). Both codes share a single lifetime.|
+|interval|integer|false|read-only|Minimum number of seconds the device must wait between polling requests to the token endpoint. Polling faster returns the `slow_down` error, which requires adding 5 seconds to the interval.|
+|user_code|string|true|read-only|The end-user verification code to display on the device. The user enters it at the verification_uri, where Dashes are for display only and can be omitted on entry.|
+|verification_uri|string|true|read-only|The URL the end user visits on a browser-equipped device to enter the user_code and approve or deny the request.|
+|verification_uri_complete|string|false|read-only|The verification_uri with the user_code pre-filled. Devices that can display it should direct the end user to this URL instead.|
 
 <h2 id="tocS_OAuthTokenForGrantTypesObject">OAuthTokenForGrantTypesObject</h2>
 <!-- backwards compatibility -->
@@ -81955,7 +82251,7 @@ Organization attributes to update. Every property is optional and omitting one l
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|The policy ID (e.g., 'custom-role-123' or 'end-user')|
+|id|string|false|none|The policy ID (e.g., 'custom-role-123', 'end-user', or 'anonymous')|
 |records|object|false|none|Permission settings for different record operations|
 |role_name|string|false|none|The name of the role this policy applies to|
 
@@ -84947,19 +85243,17 @@ A sandbox of the current account
 
 ```json
 {
-  "satisfaction_rating": [
-    {
-      "assignee_id": 135,
-      "created_at": "2011-07-20T22:55:29Z",
-      "group_id": 44,
-      "id": 35436,
-      "requester_id": 7881,
-      "score": "good",
-      "ticket_id": 208,
-      "updated_at": "2011-07-20T22:55:29Z",
-      "url": "https://company.zendesk.com/api/v2/satisfaction_ratings/62"
-    }
-  ]
+  "satisfaction_rating": {
+    "assignee_id": 135,
+    "created_at": "2011-07-20T22:55:29Z",
+    "group_id": 44,
+    "id": 35436,
+    "requester_id": 7881,
+    "score": "good",
+    "ticket_id": 208,
+    "updated_at": "2011-07-20T22:55:29Z",
+    "url": "https://company.zendesk.com/api/v2/satisfaction_ratings/62"
+  }
 }
 ```
 
@@ -84967,7 +85261,7 @@ A sandbox of the current account
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|satisfaction_rating|[[SatisfactionRatingObject](#schemasatisfactionratingobject)]|false|none|none|
+|satisfaction_rating|[SatisfactionRatingObject](#schemasatisfactionratingobject)|false|none|none|
 
 <h2 id="tocS_SatisfactionRatingsCountResponse">SatisfactionRatingsCountResponse</h2>
 <!-- backwards compatibility -->
@@ -86462,6 +86756,31 @@ so the rejections described under `status` can apply even to a request that chan
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |attribute|[SkillBasedRoutingAttributeObject](#schemaskillbasedroutingattributeobject)|false|none|none|
+
+<h2 id="tocS_SkillBasedRoutingAttributeValueIdsRequest">SkillBasedRoutingAttributeValueIdsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaskillbasedroutingattributevalueidsrequest"></a>
+<a id="schema_SkillBasedRoutingAttributeValueIdsRequest"></a>
+<a id="tocSskillbasedroutingattributevalueidsrequest"></a>
+<a id="tocsskillbasedroutingattributevalueidsrequest"></a>
+
+```json
+{
+  "attribute_value_ids": [
+    "string"
+  ]
+}
+```
+
+Replaces the full set of attribute values (skills) assigned to the ticket. Ids that are valid UUIDs but
+unknown or deleted are ignored. Every id that resolves is added if missing and kept if already present,
+and every existing attribute value not named here is removed. A malformed id causes a 422 response
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attribute_value_ids|[string]|false|none|The ids of the attribute values to assign. Each id must be a valid UUID. Sending `null`,<br>`[]`, or omitting this field entirely clears every attribute value<br>currently assigned. There is no way to leave the existing set unchanged while calling this endpoint<br>|
 
 <h2 id="tocS_SkillBasedRoutingAttributeValueObject">SkillBasedRoutingAttributeValueObject</h2>
 <!-- backwards compatibility -->
@@ -90416,6 +90735,7 @@ The writable attributes accepted when creating a ticket field.
 |raw_title_in_portal|string|false|none|The dynamic content placeholder if present, or the "title_in_portal" value if not. See [Dynamic Content](/api-reference/ticketing/ticket-management/dynamic_content/)|
 |regexp_for_validation|string \| null|false|none|For "regexp" fields only. The validation pattern for a field value to be deemed valid|
 |relationship_filter|object|false|none|A filter definition that allows your autocomplete to filter down results|
+|relationship_target_publicly_listable|boolean|false|read-only|Present for "lookup" and "multi_lookup" fields that target a custom object, and only when the `include_anonymous_availability` query parameter is true. True if anonymous users can read the target custom object's records. See [Anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access).|
 |relationship_target_type|string|false|none|Present for "lookup" and "multi_lookup" fields. A representation of what type of object the field references. Options are "zen:user", "zen:organization", "zen:ticket", or "zen:custom_object:{key}", where key is a custom object key. For example, "zen:custom_object:apartment".|
 |removable|boolean|false|read-only|If false, this field is a system field that must be present on all tickets|
 |required|boolean|false|none|If true, agents must enter a value in the field to change the ticket status to solved|
@@ -95740,6 +96060,15 @@ Error response for the X (Twitter) events webhook.
     "email": {
       "accept_wildcard_emails": true,
       "custom_dkim_domain": true,
+      "email_category_outcome_overrides": {
+        "adult_content": "default",
+        "blocklisted": "default",
+        "marketing": "default",
+        "phishing": "default",
+        "scam": "default",
+        "slightly_spam": "default",
+        "spam": "default"
+      },
       "email_hc_ai_agent_comments": true,
       "email_sender_authentication": true,
       "email_sender_authentication_profile": "default",
@@ -95978,7 +96307,7 @@ Error response for the X (Twitter) events webhook.
 |active_brand_id|integer(int64) \| null|false|none|The id of the brand to assign to the user|
 |agent_brand_ids|[integer(int64)]|false|none|none|
 |alias|string \| null|false|none|An alias displayed to end users|
-|auto_ownership|boolean|false|write-only|Write-only ownership control for the Shared Email EAP. When true, automatic ownership is applied only to the identity created from `email`. Ignored unless the account has the Shared Email EAP enabled.|
+|auto_ownership|boolean|false|write-only|When true, creates the identity specified by `email` as "owned", or as "shared" if another user owns the address. Does not apply to `identities[]`. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
 |custom_role_id|integer(int64) \| null|false|none|A custom role if the user is an agent on the Enterprise plan or above|
 |default_group_id|integer(int64) \| null|false|none|The id of the user's default group|
 |details|string \| null|false|none|Any details you want to store about the user, such as an address|
@@ -96956,8 +97285,8 @@ validation.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|auto_ownership|boolean \| null|false|none|Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to `google` identities - an ownership conflict for a Google-backed email identity is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.|
-|ownership|string \| null|false|none|Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to `owned`. `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected outright for `google` identities (a Google-backed email identity can only be owned), and is subject to a per-brand cap on shared identities per address (100 by default; past the cap the request fails with `LimitExceeded`). A create that will send a verification email for a shared address is rate-limited and can be rejected with `429 Too Many Requests`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.|
+|auto_ownership|boolean \| null|false|write-only|When true, creates the email identity as "owned", or as "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
+|ownership|string \| null|false|write-only|Sets the email identity to "owned" or "shared". Defaults to "owned". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
 |primary|boolean \| null|false|none|Makes the new identity the primary one. null is accepted and ignored. Only takes effect for `email` identities. For a verified<br>email identity (`verified: true` or `verification_method: low`) the identity becomes primary<br>immediately; for an unverified one the promotion is deferred - the verification email link carries<br>`make_primary=true`, so the identity becomes primary (and the former primary is removed) when the<br>recipient verifies. Ignored for non-email identity types, including `google`.<br><br>To promote an identity that already exists, use the<br>[Make Identity Primary](#make-identity-primary) endpoint instead.<br>|
 |skip_verify_email|boolean \| null|false|none|Suppresses the verification or welcome email for the new identity. null is accepted and treated<br>exactly like `false`. Only effective when an agent<br>creates an identity for a different user - it is ignored when adding an identity to your own<br>profile.<br>|
 |type|string|true|none|The type of identity to create.<br><br>Only the types listed here can be created through this endpoint. The remaining identity types<br>(`any_channel`, `foreign`, `sdk`, `microsoft`) are created by internal systems only, and a request<br>for one of them is rejected with a `400`. The deprecated `phone` alias is likewise rejected<br>here - use `phone_number`.<br><br>`messaging` and `slack` back internal channel integrations. `slack` additionally requires the<br>Slack identity feature to be enabled on the account.<br>|
@@ -97035,8 +97364,8 @@ validation.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|auto_ownership|boolean|false|none|Write-only ownership control for the Shared Email EAP. When true, attempts `owned` first and falls back to `shared` on an ownership conflict. Ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.|
-|ownership|string|false|none|Write-only ownership control for the Shared Email EAP. Ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.|
+|auto_ownership|boolean|false|write-only|When true, creates the email identity as "owned", or as "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
+|ownership|string|false|write-only|Sets the email identity to "owned" or "shared". Defaults to "owned". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
 |primary|boolean|false|none|If the identity is the primary identity. Writable only when creating, not when updating.|
 |type|string|true|none|none|
 |value|string|true|none|none|
@@ -97097,7 +97426,7 @@ validation.
 |created_at|string(date-time)|false|read-only|The time the identity was created|
 |deliverable_state|string|false|read-only|Email identity type only. Indicates if Zendesk sends notifications to the email address. See [Deliverable state](#deliverable-state)|
 |id|integer(int64)|false|read-only|Automatically assigned on creation|
-|ownership|string|false|read-only|Indicates whether the identity is owned or shared. Only returned to non-end-user callers.|
+|ownership|string|false|read-only|Indicates whether the email identity is "owned" or "shared". Only returned to non-end-user callers. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
 |primary|boolean|false|none|If the identity is the primary identity. *Writable only when creating, not when updating. Use the [Make Identity Primary](#make-identity-primary) endpoint instead|
 |type|string|true|read-only|The type of this identity|
 |undeliverable_count|integer|false|read-only|The number of times a soft-bounce response was received at that address|
@@ -97195,9 +97524,9 @@ email identity cannot be updated at all.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|auto_ownership|boolean \| null|false|none|Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The `shared` fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to Google-backed identities - a conflict for one is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.|
+|auto_ownership|boolean \| null|false|write-only|When true, sets the email identity to "owned", or to "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
 |deliverable_state|string \| null|false|none|Clears the undeliverable state of an email identity, so that Zendesk resumes sending to it. `deliverable` is the only value that has any effect, and only on an `email` identity that is currently undeliverable. Every other value, including null, is ignored.|
-|ownership|string \| null|false|none|Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to the identity's current ownership, so it changes nothing. Setting `owned` on a shared identity promotes it to owned and demotes the identity that currently owns the address to shared in the same transaction, instead of failing with an ownership conflict. Demoting an owned identity to `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected for Google-backed identities, and is subject to the per-brand cap on shared identities per address (100 by default, `LimitExceeded` past it) when the request also changes `value`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.|
+|ownership|string \| null|false|write-only|Sets the email identity to "owned" or "shared". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
 |value|string \| null|false|none|The new identifier for this identity.<br><br>Changing the value resets `verification_method` to `none`, so the identity becomes unverified<br>unless the same request also sets `verified` or `verification_method`.<br><br>null is accepted and ignored - the current value is kept. It does not clear the value.<br>|
 |verification_method|string \| null|false|none|Verifies (`low`) or unverifies (`none`) the identity. Only `none` and `low` are accepted here; the<br>higher methods (`sso`, `embed`, `full`) are set by the corresponding authentication flows.<br><br>Ignored for identities that belong to the account owner. `phone_number` and `agent_forwarding`<br>identities are re-verified on every save, so `none` has no effect on them.<br><br>null is **not** ignored here: it is treated like `none` and unverifies the identity. Because this<br>property wins over `verified`, sending `verified: true` alongside `verification_method: null`<br>unverifies it.<br>|
 |verified|boolean \| null|false|none|**Deprecated.** Verifies (`true`) or unverifies (`false`) the identity. null is **not** ignored here: it is<br>treated like `false` and unverifies the identity. Equivalent to setting<br>`verification_method` to `low` or `none`. Deprecated - use `verification_method` instead. Ignored<br>when `verification_method` is also sent - that property wins.<br><br>Ignored for identities that belong to the account owner. `phone_number` and `agent_forwarding`<br>identities are re-verified on every save, so they cannot be unverified through this endpoint.<br>|
@@ -98013,7 +98342,7 @@ the fields you want to update.
 |---|---|---|---|---|
 |agent_brand_ids|[integer(int64)]|false|none|The IDs of the brands the agent is assigned to|
 |alias|string \| null|false|none|An alias displayed to end users|
-|auto_ownership|boolean|false|write-only|Write-only ownership control for the Shared Email EAP. When true, automatic ownership is applied only to the identity created from `email`. Ignored unless the account has the Shared Email EAP enabled.|
+|auto_ownership|boolean|false|write-only|When true, creates the identity specified by `email` as "owned", or as "shared" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).|
 |custom_role_id|integer(int64) \| null|false|none|A custom role if the user is an agent on the Enterprise plan or above|
 |default_group_id|integer(int64) \| null|false|none|The id of the user's default group|
 |details|string \| null|false|none|Any details you want to store about the user, such as an address|

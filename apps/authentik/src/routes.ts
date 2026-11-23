@@ -1,60 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ErrorReportingConfigSchema = z
-  .object({
-    enabled: z.boolean().openapi({ readOnly: true }),
-    sentry_dsn: z.string().openapi({ readOnly: true }),
-    environment: z.string().openapi({ readOnly: true }),
-    send_pii: z.boolean().openapi({ readOnly: true }),
-    traces_sample_rate: z.float64().openapi({ readOnly: true }),
-  })
-  .openapi({
-    description: 'Config for error reporting',
-    required: ['enabled', 'environment', 'send_pii', 'sentry_dsn', 'traces_sample_rate'],
-  })
-  .openapi('ErrorReportingConfig')
-
-const CapabilitiesEnumSchema = z
-  .enum([
-    'can_save_media',
-    'can_save_reports',
-    'can_geo_ip',
-    'can_asn',
-    'can_impersonate',
-    'can_debug',
-    'is_enterprise',
-    'can_request',
-    'can_agent_self_service',
-  ])
-  .openapi('CapabilitiesEnum')
-
-type ConfigType = {
-  error_reporting: z.infer<typeof ErrorReportingConfigSchema>
-  capabilities: z.infer<typeof CapabilitiesEnumSchema>[]
-  cache_timeout: number
-  cache_timeout_flows: number
-  cache_timeout_policies: number
-  cache_timeout_brands: number
-  cache_timeout_system_settings: number
-}
-
-const RelatedGroupSchema = z
-  .object({
-    pk: z.uuid().openapi({ readOnly: true, title: 'Group uuid' }),
-    name: z.string(),
-    is_superuser: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Users added to this group will be superusers.' }),
-    attributes: z.record(z.string(), z.any()).exactOptional(),
-    group_uuid: z.uuid().openapi({ readOnly: true }),
-  })
-  .openapi({
-    description: 'Stripped down group serializer to show relevant children/parents for groups',
-    required: ['group_uuid', 'name', 'pk'],
-  })
-  .openapi('RelatedGroup')
-
 const PartialUserSchema = z
   .object({
     pk: z.int().openapi({ readOnly: true, title: 'ID' }),
@@ -85,27 +30,81 @@ const PartialUserSchema = z
   })
   .openapi('PartialUser')
 
-const RoleSchema = z
-  .object({ pk: z.uuid().openapi({ readOnly: true, title: 'Uuid' }), name: z.string() })
-  .openapi({ description: 'Role serializer', required: ['name', 'pk'] })
-  .openapi('Role')
+const RequestStatusSchema = z
+  .enum(['created', 'approved', 'denied', 'revoked'])
+  .openapi('RequestStatus')
 
-type GroupType = {
-  pk: string
-  num_pk: number
-  name: string
-  is_superuser?: boolean
-  parents?: string[]
-  parents_obj: z.infer<typeof RelatedGroupSchema>[] | null
-  users?: number[]
-  users_obj: z.infer<typeof PartialUserSchema>[] | null
-  attributes?: { [key: string]: unknown }
-  roles?: string[]
-  roles_obj: z.infer<typeof RoleSchema>[]
-  inherited_roles_obj: z.infer<typeof RoleSchema>[] | null
-  children: string[]
-  children_obj: z.infer<typeof RelatedGroupSchema>[] | null
-}
+const ProviderSchema = z
+  .object({
+    pk: z.int().openapi({ readOnly: true, title: 'ID' }),
+    name: z.string(),
+    authentication_flow: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Flow used for authentication when the associated application is accessed by an un-authenticated user.',
+      }),
+    authorization_flow: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Flow used when authorizing this provider.' }),
+    invalidation_flow: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Flow used ending the session from a provider.' }),
+    property_mappings: z.array(z.uuid()).exactOptional(),
+    component: z
+      .string()
+      .openapi({
+        description: 'Get object component so that we know how to edit the object',
+        readOnly: true,
+      }),
+    assigned_application_slug: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Internal application name, used in URLs.', readOnly: true }),
+    assigned_application_name: z
+      .string()
+      .nullable()
+      .openapi({ description: "Application's display Name.", readOnly: true }),
+    assigned_backchannel_application_slug: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Internal application name, used in URLs.', readOnly: true }),
+    assigned_backchannel_application_name: z
+      .string()
+      .nullable()
+      .openapi({ description: "Application's display Name.", readOnly: true }),
+    verbose_name: z
+      .string()
+      .openapi({ description: "Return object's verbose_name", readOnly: true }),
+    verbose_name_plural: z
+      .string()
+      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
+    meta_model_name: z
+      .string()
+      .openapi({ description: 'Return internal model name', readOnly: true }),
+  })
+  .openapi({
+    description: 'Provider Serializer',
+    required: [
+      'assigned_application_name',
+      'assigned_application_slug',
+      'assigned_backchannel_application_name',
+      'assigned_backchannel_application_slug',
+      'component',
+      'meta_model_name',
+      'name',
+      'pk',
+      'verbose_name',
+      'verbose_name_plural',
+    ],
+  })
+  .openapi('Provider')
 
 const ThemedUrlsSchema = z
   .object({
@@ -117,6 +116,538 @@ const ThemedUrlsSchema = z
     required: [],
   })
   .openapi('ThemedUrls')
+
+const PolicyEngineModeSchema = z.enum(['all', 'any']).openapi('PolicyEngineMode')
+
+const ApplicationSchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true, title: 'Pbm uuid' }),
+    pbm_uuid: z.uuid().openapi({ readOnly: true }),
+    name: z.string().openapi({ description: "Application's display Name." }),
+    slug: z
+      .string()
+      .regex(/^[-a-zA-Z0-9_]+$/)
+      .openapi({ description: 'Internal application name, used in URLs.' }),
+    provider: z.int().nullable().exactOptional(),
+    provider_obj: ProviderSchema.nullable().openapi({ readOnly: true }),
+    backchannel_providers: z.array(z.int()).exactOptional(),
+    backchannel_providers_obj: z.array(ProviderSchema).openapi({ readOnly: true }),
+    launch_url: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Format the launch URL for the user given as `for_user` in the context, or else the\nrequesting user',
+        readOnly: true,
+      }),
+    open_in_new_tab: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Open launch URL in a new browser tab or window.' }),
+    meta_launch_url: z.url().exactOptional(),
+    meta_icon: z.string().exactOptional(),
+    meta_icon_url: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Get the URL to the App Icon image', readOnly: true }),
+    meta_icon_themed_urls: ThemedUrlsSchema.nullable().openapi({ readOnly: true }),
+    meta_description: z.string().exactOptional(),
+    meta_publisher: z.string().exactOptional(),
+    policy_engine_mode: PolicyEngineModeSchema.exactOptional(),
+    group: z.string().exactOptional(),
+    meta_hide: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "Hide this application from the user's My applications page." }),
+  })
+  .openapi({
+    description: 'Application Serializer',
+    required: [
+      'backchannel_providers_obj',
+      'launch_url',
+      'meta_icon_themed_urls',
+      'meta_icon_url',
+      'name',
+      'pbm_uuid',
+      'pk',
+      'provider_obj',
+      'slug',
+    ],
+  })
+  .openapi('Application')
+
+const RequestableTargetSchema = z
+  .object({
+    verbose_name: z
+      .string()
+      .openapi({ description: "Return object's verbose_name", readOnly: true }),
+    verbose_name_plural: z
+      .string()
+      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
+    meta_model_name: z
+      .string()
+      .openapi({ description: 'Return internal model name', readOnly: true }),
+    pbm_uuid: z.string().openapi({ readOnly: true }),
+    label: z.string().openapi({ readOnly: true }),
+    parent: ApplicationSchema.nullable().openapi({ readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Generic representation of a single request target: whatever was actually\nrequested (an Application, an Application Entitlement, ...), always paired with the\nparent it belongs to, so the UI/audit trail has that context even when the\nrequest itself was scoped narrower than the whole app.',
+    required: [
+      'label',
+      'meta_model_name',
+      'parent',
+      'pbm_uuid',
+      'verbose_name',
+      'verbose_name_plural',
+    ],
+  })
+  .openapi('RequestableTarget')
+
+const GrantRequestSchema = z
+  .object({
+    created: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
+    created_by: PartialUserSchema.openapi({ readOnly: true }),
+    requester_data: z.record(z.string(), z.any()).exactOptional(),
+    fulfiller_data: z.record(z.string(), z.any()).exactOptional(),
+    revoked_by: PartialUserSchema.nullable().openapi({ readOnly: true }),
+    agent_owner: PartialUserSchema.nullable().openapi({ readOnly: true }),
+    is_active: z.boolean().openapi({ readOnly: true }),
+    expires: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    status: RequestStatusSchema.openapi({ readOnly: true }),
+    targets: z.array(z.uuid()).openapi({ readOnly: true }),
+    target_objs: z.array(RequestableTargetSchema).openapi({ readOnly: true }),
+    uuid: z.uuid().exactOptional(),
+  })
+  .openapi({
+    description:
+      'Mixin to validate that a valid enterprise license\nexists before allowing to save the object',
+    required: [
+      'agent_owner',
+      'created',
+      'created_by',
+      'is_active',
+      'revoked_by',
+      'status',
+      'target_objs',
+      'targets',
+    ],
+  })
+  .openapi('GrantRequest')
+
+type AgentGrantRequestCreatedType = {
+  grant_request: z.infer<typeof GrantRequestSchema>
+  fulfill_url: string
+}
+
+const DeviceAccessGroupSchema = z
+  .object({
+    pbm_uuid: z.uuid().openapi({ readOnly: true }),
+    name: z.string(),
+    attributes: z.record(z.string(), z.any()).exactOptional(),
+  })
+  .openapi({ required: ['name', 'pbm_uuid'] })
+  .openapi('DeviceAccessGroup')
+
+const DeviceFactsOSFamilySchema = z
+  .enum(['linux', 'unix', 'bsd', 'windows', 'mac_os', 'android', 'i_os', 'other'])
+  .openapi('DeviceFactsOSFamily')
+
+const OperatingSystemSchema = z
+  .object({
+    family: DeviceFactsOSFamilySchema,
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Operating System name, such as 'Server 2022' or 'Ubuntu'" }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Operating System version, must always be the version number but may contain build name',
+      }),
+    arch: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'For example:\n{"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}\n{"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}\n{"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}\n{"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}',
+    required: ['family'],
+  })
+  .openapi('OperatingSystem')
+
+const DiskSchema = z
+  .object({
+    name: z.string(),
+    mountpoint: z.string(),
+    label: z.string().exactOptional(),
+    capacity_total_bytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    capacity_used_bytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    encryption_enabled: z.boolean().default(false).exactOptional(),
+  })
+  .openapi({ required: ['mountpoint', 'name'] })
+  .openapi('Disk')
+
+const NetworkInterfaceSchema = z
+  .object({
+    name: z.string(),
+    hardware_address: z.string(),
+    ip_addresses: z.array(z.string()).exactOptional(),
+    dns_servers: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: ['hardware_address', 'name'] })
+  .openapi('NetworkInterface')
+
+const NetworkSchema = z
+  .object({
+    hostname: z.string(),
+    firewall_enabled: z.boolean().exactOptional(),
+    interfaces: z.array(NetworkInterfaceSchema),
+    gateway: z.string().exactOptional(),
+  })
+  .openapi({ required: ['hostname', 'interfaces'] })
+  .openapi('Network')
+
+const HardwareSchema = z
+  .object({
+    model: z.string().exactOptional(),
+    manufacturer: z.string().exactOptional(),
+    serial: z.string(),
+    cpu_name: z.string().exactOptional(),
+    cpu_count: z.int().exactOptional(),
+    memory_bytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: ['serial'] })
+  .openapi('Hardware')
+
+const SoftwareSchema = z
+  .object({
+    name: z.string(),
+    version: z.string().exactOptional(),
+    source: z.string(),
+    path: z.string().exactOptional(),
+  })
+  .openapi({ required: ['name', 'source'] })
+  .openapi('Software')
+
+const ProcessSchema = z
+  .object({ id: z.int(), name: z.string(), user: z.string().exactOptional() })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('Process')
+
+const DeviceUserSchema = z
+  .object({
+    id: z.string(),
+    username: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    home: z.string().exactOptional(),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('DeviceUser')
+
+const DeviceGroupSchema = z
+  .object({ id: z.string(), name: z.string().exactOptional() })
+  .openapi({ required: ['id'] })
+  .openapi('DeviceGroup')
+
+const DeviceFactsSchema = z
+  .object({
+    os: OperatingSystemSchema.nullable().exactOptional(),
+    disks: z.array(DiskSchema).nullable().exactOptional(),
+    network: NetworkSchema.nullable().exactOptional(),
+    hardware: HardwareSchema.nullable().exactOptional(),
+    software: z.array(SoftwareSchema).nullable().exactOptional(),
+    processes: z.array(ProcessSchema).nullable().exactOptional(),
+    users: z.array(DeviceUserSchema).nullable().exactOptional(),
+    groups: z.array(DeviceGroupSchema).nullable().exactOptional(),
+    vendor: z.record(z.string(), z.any()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DeviceFacts')
+
+const VendorEnumSchema = z
+  .enum([
+    'goauthentik.io/@merged',
+    'goauthentik.io/platform',
+    'fleetdm.com',
+    'chrome.google.com',
+    'intune.microsoft.com',
+  ])
+  .openapi('VendorEnum')
+
+const DeviceFactSnapshotSchema = z
+  .object({
+    data: DeviceFactsSchema,
+    connection: z.uuid(),
+    created: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
+    expires: z.iso.datetime({ offset: true }).nullable().openapi({ readOnly: true }),
+    vendor: VendorEnumSchema.openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['connection', 'created', 'data', 'expires', 'vendor'] })
+  .openapi('DeviceFactSnapshot')
+
+const PolicySchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true, title: 'Policy uuid' }),
+    name: z.string(),
+    execution_logging: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.',
+      }),
+    component: z
+      .string()
+      .openapi({
+        description: 'Get object component so that we know how to edit the object',
+        readOnly: true,
+      }),
+    verbose_name: z
+      .string()
+      .openapi({ description: "Return object's verbose_name", readOnly: true }),
+    verbose_name_plural: z
+      .string()
+      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
+    meta_model_name: z
+      .string()
+      .openapi({ description: 'Return internal model name', readOnly: true }),
+    bound_to: z.int().openapi({ description: 'Return objects policy is bound to', readOnly: true }),
+    last_updated: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
+    created: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: 'Policy Serializer',
+    required: [
+      'bound_to',
+      'component',
+      'created',
+      'last_updated',
+      'meta_model_name',
+      'name',
+      'pk',
+      'verbose_name',
+      'verbose_name_plural',
+    ],
+  })
+  .openapi('Policy')
+
+const PartialGroupSchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true, title: 'Group uuid' }),
+    num_pk: z
+      .int()
+      .openapi({ description: 'Get a numerical, int32 ID for the group', readOnly: true }),
+    name: z.string(),
+    is_superuser: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Users added to this group will be superusers.' }),
+    attributes: z.record(z.string(), z.any()).exactOptional(),
+  })
+  .openapi({
+    description: 'Partial Group Serializer, does not include child relations.',
+    required: ['name', 'num_pk', 'pk'],
+  })
+  .openapi('PartialGroup')
+
+const ConnectorSchema = z
+  .object({
+    connector_uuid: z.uuid().exactOptional(),
+    name: z.string(),
+    enabled: z.boolean().exactOptional(),
+    component: z
+      .string()
+      .openapi({
+        description: 'Get object component so that we know how to edit the object',
+        readOnly: true,
+      }),
+    verbose_name: z
+      .string()
+      .openapi({ description: "Return object's verbose_name", readOnly: true }),
+    verbose_name_plural: z
+      .string()
+      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
+    meta_model_name: z
+      .string()
+      .openapi({ description: 'Return internal model name', readOnly: true }),
+  })
+  .openapi({
+    required: ['component', 'meta_model_name', 'name', 'verbose_name', 'verbose_name_plural'],
+  })
+  .openapi('Connector')
+
+const DeviceUserBindingSchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true, title: 'Policy binding uuid' }),
+    policy: z.uuid().nullable().exactOptional(),
+    group: z.uuid().nullable().exactOptional(),
+    user: z.int().nullable().exactOptional(),
+    policy_obj: PolicySchema.nullable().openapi({ readOnly: true }),
+    group_obj: PartialGroupSchema.nullable().openapi({ readOnly: true }),
+    user_obj: PartialUserSchema.nullable().openapi({ readOnly: true }),
+    target: z.uuid(),
+    negate: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Negates the outcome of the policy. Messages are unaffected.' }),
+    enabled: z.boolean().exactOptional(),
+    dry_run: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Execute the policy but ignore its result.' }),
+    order: z.int().min(-2147483648).max(2147483647),
+    timeout: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({ description: 'Timeout after which Policy execution is terminated.' }),
+    failure_result: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Result if the Policy execution fails.' }),
+    expires: z.iso.datetime({ offset: true }).nullable().openapi({ readOnly: true }),
+    expiring: z.boolean().openapi({ readOnly: true }),
+    is_primary: z.boolean().exactOptional(),
+    connector: z.uuid().nullable().openapi({ readOnly: true }),
+    connector_obj: ConnectorSchema.openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: 'PolicyBinding Serializer',
+    required: [
+      'connector',
+      'connector_obj',
+      'expires',
+      'expiring',
+      'group_obj',
+      'order',
+      'pk',
+      'policy_obj',
+      'target',
+      'user_obj',
+    ],
+  })
+  .openapi('DeviceUserBinding')
+
+const ProtocolEnumSchema = z.enum(['rdp', 'vnc', 'ssh']).openapi('ProtocolEnum')
+
+const RACConnectionOverrideSchema = z
+  .object({
+    host: z
+      .string()
+      .openapi({ description: 'Hostname/IP to connect to. Optionally specify the port.' }),
+    protocol: ProtocolEnumSchema,
+  })
+  .openapi({ description: 'RACConnectionOverride Serializer', required: ['host', 'protocol'] })
+  .openapi('RACConnectionOverride')
+
+const DeviceConnectionSchema = z
+  .object({
+    device: z.uuid(),
+    connector: z.uuid(),
+    connector_obj: ConnectorSchema.openapi({ readOnly: true }),
+    latest_snapshot: DeviceFactSnapshotSchema.nullable().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['connector', 'connector_obj', 'device', 'latest_snapshot'] })
+  .openapi('DeviceConnection')
+
+type EndpointDeviceDetailsType = {
+  device_uuid?: string
+  pbm_uuid: string
+  name: string
+  access_group?: string | null
+  access_group_obj?: z.infer<typeof DeviceAccessGroupSchema>
+  expiring?: boolean
+  expires?: string | null
+  facts: z.infer<typeof DeviceFactSnapshotSchema> | null
+  attributes?: { [key: string]: unknown }
+  primary_binding_obj: z.infer<typeof DeviceUserBindingSchema> | null
+  rac: z.infer<typeof RACConnectionOverrideSchema> | null
+  connections_obj: z.infer<typeof DeviceConnectionSchema>[]
+  policies: string[]
+  connections: string[]
+}
+
+const PaginationSchema = z
+  .object({
+    next: z.number(),
+    previous: z.number(),
+    count: z.number(),
+    current: z.number(),
+    total_pages: z.number(),
+    start_index: z.number(),
+    end_index: z.number(),
+  })
+  .openapi({
+    required: ['count', 'current', 'end_index', 'next', 'previous', 'start_index', 'total_pages'],
+  })
+  .openapi('Pagination')
+
+const EndpointDeviceSchema = z
+  .object({
+    device_uuid: z.uuid().exactOptional(),
+    pbm_uuid: z.uuid().openapi({ readOnly: true }),
+    name: z.string(),
+    access_group: z.uuid().nullable().exactOptional(),
+    access_group_obj: DeviceAccessGroupSchema.exactOptional(),
+    expiring: z.boolean().exactOptional(),
+    expires: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    facts: DeviceFactSnapshotSchema.nullable().openapi({ readOnly: true }),
+    attributes: z.record(z.string(), z.any()).exactOptional(),
+    primary_binding_obj: DeviceUserBindingSchema.nullable().openapi({ readOnly: true }),
+    rac: RACConnectionOverrideSchema.nullable(),
+  })
+  .openapi({ required: ['facts', 'name', 'pbm_uuid', 'primary_binding_obj', 'rac'] })
+  .openapi('EndpointDevice')
+
+const AutocompleteSchema = z.record(z.string(), z.any()).openapi('Autocomplete')
+
+type PaginatedEndpointDeviceListType = {
+  pagination: z.infer<typeof PaginationSchema>
+  results: z.infer<typeof EndpointDeviceSchema>[]
+  autocomplete: z.infer<typeof AutocompleteSchema>
+}
+
+type PaginatedGrantRequestListType = {
+  pagination: z.infer<typeof PaginationSchema>
+  results: z.infer<typeof GrantRequestSchema>[]
+  autocomplete: z.infer<typeof AutocompleteSchema>
+}
 
 const ContextualFlowInfoLayoutEnumSchema = z
   .enum([
@@ -191,8 +722,6 @@ const FlowDesignationEnumSchema = z
     'stage_configuration',
   ])
   .openapi('FlowDesignationEnum')
-
-const PolicyEngineModeSchema = z.enum(['all', 'any']).openapi('PolicyEngineMode')
 
 const FlowLayoutEnumSchema = z
   .enum([
@@ -352,6 +881,10 @@ const AccountLockdownStageRequestSchema = z
   .openapi({ description: 'AccountLockdownStage Serializer', required: ['name'] })
   .openapi('AccountLockdownStageRequest')
 
+const ActivityBasisEnumSchema = z
+  .enum(['last_login', 'successful_events'])
+  .openapi('ActivityBasisEnum')
+
 const PolicyBehaviorEnumSchema = z.enum(['mirror', 'copy', 'none']).openapi('PolicyBehaviorEnum')
 
 const AgentSchema = z
@@ -415,31 +948,56 @@ const AgentAuthenticationResponseSchema = z
   })
   .openapi('AgentAuthenticationResponse')
 
-const ConfigSchema: z.ZodType<ConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        error_reporting: ErrorReportingConfigSchema,
-        capabilities: z.array(CapabilitiesEnumSchema),
-        cache_timeout: z.int(),
-        cache_timeout_flows: z.int(),
-        cache_timeout_policies: z.int(),
-        cache_timeout_brands: z.int(),
-        cache_timeout_system_settings: z.int(),
-      })
-      .openapi({
-        description: 'Serialize authentik Config into DRF Object',
-        required: [
-          'cache_timeout',
-          'cache_timeout_brands',
-          'cache_timeout_flows',
-          'cache_timeout_policies',
-          'cache_timeout_system_settings',
-          'capabilities',
-          'error_reporting',
-        ],
-      }),
-  )
+const ErrorReportingConfigSchema = z
+  .object({
+    enabled: z.boolean().openapi({ readOnly: true }),
+    sentry_dsn: z.string().openapi({ readOnly: true }),
+    environment: z.string().openapi({ readOnly: true }),
+    send_pii: z.boolean().openapi({ readOnly: true }),
+    traces_sample_rate: z.float64().openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: 'Config for error reporting',
+    required: ['enabled', 'environment', 'send_pii', 'sentry_dsn', 'traces_sample_rate'],
+  })
+  .openapi('ErrorReportingConfig')
+
+const CapabilitiesEnumSchema = z
+  .enum([
+    'can_save_media',
+    'can_save_reports',
+    'can_geo_ip',
+    'can_asn',
+    'can_impersonate',
+    'can_debug',
+    'is_enterprise',
+    'can_request',
+    'can_agent_self_service',
+  ])
+  .openapi('CapabilitiesEnum')
+
+const ConfigSchema = z
+  .object({
+    error_reporting: ErrorReportingConfigSchema,
+    capabilities: z.array(CapabilitiesEnumSchema),
+    cache_timeout: z.int(),
+    cache_timeout_flows: z.int(),
+    cache_timeout_policies: z.int(),
+    cache_timeout_brands: z.int(),
+    cache_timeout_system_settings: z.int(),
+  })
+  .openapi({
+    description: 'Serialize authentik Config into DRF Object',
+    required: [
+      'cache_timeout',
+      'cache_timeout_brands',
+      'cache_timeout_flows',
+      'cache_timeout_policies',
+      'cache_timeout_system_settings',
+      'capabilities',
+      'error_reporting',
+    ],
+  })
   .openapi('Config')
 
 const LicenseStatusEnumSchema = z
@@ -576,196 +1134,7 @@ const AgentGrantRequestCreateRequestSchema = z
   })
   .openapi('AgentGrantRequestCreateRequest')
 
-const RequestStatusSchema = z
-  .enum(['created', 'approved', 'denied', 'revoked'])
-  .openapi('RequestStatus')
-
-const ProviderSchema = z
-  .object({
-    pk: z.int().openapi({ readOnly: true, title: 'ID' }),
-    name: z.string(),
-    authentication_flow: z
-      .uuid()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Flow used for authentication when the associated application is accessed by an un-authenticated user.',
-      }),
-    authorization_flow: z
-      .uuid()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Flow used when authorizing this provider.' }),
-    invalidation_flow: z
-      .uuid()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Flow used ending the session from a provider.' }),
-    property_mappings: z.array(z.uuid()).exactOptional(),
-    component: z
-      .string()
-      .openapi({
-        description: 'Get object component so that we know how to edit the object',
-        readOnly: true,
-      }),
-    assigned_application_slug: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Internal application name, used in URLs.', readOnly: true }),
-    assigned_application_name: z
-      .string()
-      .nullable()
-      .openapi({ description: "Application's display Name.", readOnly: true }),
-    assigned_backchannel_application_slug: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Internal application name, used in URLs.', readOnly: true }),
-    assigned_backchannel_application_name: z
-      .string()
-      .nullable()
-      .openapi({ description: "Application's display Name.", readOnly: true }),
-    verbose_name: z
-      .string()
-      .openapi({ description: "Return object's verbose_name", readOnly: true }),
-    verbose_name_plural: z
-      .string()
-      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
-    meta_model_name: z
-      .string()
-      .openapi({ description: 'Return internal model name', readOnly: true }),
-  })
-  .openapi({
-    description: 'Provider Serializer',
-    required: [
-      'assigned_application_name',
-      'assigned_application_slug',
-      'assigned_backchannel_application_name',
-      'assigned_backchannel_application_slug',
-      'component',
-      'meta_model_name',
-      'name',
-      'pk',
-      'verbose_name',
-      'verbose_name_plural',
-    ],
-  })
-  .openapi('Provider')
-
-const ApplicationSchema = z
-  .object({
-    pk: z.uuid().openapi({ readOnly: true, title: 'Pbm uuid' }),
-    pbm_uuid: z.uuid().openapi({ readOnly: true }),
-    name: z.string().openapi({ description: "Application's display Name." }),
-    slug: z
-      .string()
-      .regex(/^[-a-zA-Z0-9_]+$/)
-      .openapi({ description: 'Internal application name, used in URLs.' }),
-    provider: z.int().nullable().exactOptional(),
-    provider_obj: ProviderSchema.nullable().openapi({ readOnly: true }),
-    backchannel_providers: z.array(z.int()).exactOptional(),
-    backchannel_providers_obj: z.array(ProviderSchema).openapi({ readOnly: true }),
-    launch_url: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Allow formatting of launch URL', readOnly: true }),
-    open_in_new_tab: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Open launch URL in a new browser tab or window.' }),
-    meta_launch_url: z.url().exactOptional(),
-    meta_icon: z.string().exactOptional(),
-    meta_icon_url: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Get the URL to the App Icon image', readOnly: true }),
-    meta_icon_themed_urls: ThemedUrlsSchema.nullable().openapi({ readOnly: true }),
-    meta_description: z.string().exactOptional(),
-    meta_publisher: z.string().exactOptional(),
-    policy_engine_mode: PolicyEngineModeSchema.exactOptional(),
-    group: z.string().exactOptional(),
-    meta_hide: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "Hide this application from the user's My applications page." }),
-  })
-  .openapi({
-    description: 'Application Serializer',
-    required: [
-      'backchannel_providers_obj',
-      'launch_url',
-      'meta_icon_themed_urls',
-      'meta_icon_url',
-      'name',
-      'pbm_uuid',
-      'pk',
-      'provider_obj',
-      'slug',
-    ],
-  })
-  .openapi('Application')
-
-const RequestableTargetSchema = z
-  .object({
-    verbose_name: z
-      .string()
-      .openapi({ description: "Return object's verbose_name", readOnly: true }),
-    verbose_name_plural: z
-      .string()
-      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
-    meta_model_name: z
-      .string()
-      .openapi({ description: 'Return internal model name', readOnly: true }),
-    pbm_uuid: z.string().openapi({ readOnly: true }),
-    label: z.string().openapi({ readOnly: true }),
-    parent: ApplicationSchema.nullable().openapi({ readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Generic representation of a single request target: whatever was actually\nrequested (an Application, an Application Entitlement, ...), always paired with the\nparent it belongs to, so the UI/audit trail has that context even when the\nrequest itself was scoped narrower than the whole app.',
-    required: [
-      'label',
-      'meta_model_name',
-      'parent',
-      'pbm_uuid',
-      'verbose_name',
-      'verbose_name_plural',
-    ],
-  })
-  .openapi('RequestableTarget')
-
-const GrantRequestSchema = z
-  .object({
-    created: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
-    created_by: PartialUserSchema.openapi({ readOnly: true }),
-    requester_data: z.record(z.string(), z.any()).exactOptional(),
-    fulfiller_data: z.record(z.string(), z.any()).exactOptional(),
-    revoked_by: PartialUserSchema.nullable().openapi({ readOnly: true }),
-    agent_owner: PartialUserSchema.nullable().openapi({ readOnly: true }),
-    is_active: z.boolean().openapi({ readOnly: true }),
-    expires: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    status: RequestStatusSchema.openapi({ readOnly: true }),
-    targets: z.array(z.uuid()).openapi({ readOnly: true }),
-    target_objs: z.array(RequestableTargetSchema).openapi({ readOnly: true }),
-    uuid: z.uuid().exactOptional(),
-  })
-  .openapi({
-    description:
-      'Mixin to validate that a valid enterprise license\nexists before allowing to save the object',
-    required: [
-      'agent_owner',
-      'created',
-      'created_by',
-      'is_active',
-      'revoked_by',
-      'status',
-      'target_objs',
-      'targets',
-    ],
-  })
-  .openapi('GrantRequest')
-
-const AgentGrantRequestCreatedSchema = z
+const AgentGrantRequestCreatedSchema: z.ZodType<AgentGrantRequestCreatedType> = z
   .object({
     grant_request: GrantRequestSchema.openapi({ readOnly: true }),
     fulfill_url: z.string().openapi({ readOnly: true }),
@@ -813,6 +1182,28 @@ const AgentPSSODeviceRegistrationResponseSchema = z
     ],
   })
   .openapi('AgentPSSODeviceRegistrationResponse')
+
+const AgentPSSODeviceStateUserSchema = z
+  .object({ username: z.string(), enclave_key_id: z.string() })
+  .openapi({
+    description: 'A user currently registered for Platform SSO on this device',
+    required: ['enclave_key_id', 'username'],
+  })
+  .openapi('AgentPSSODeviceStateUser')
+
+const AgentPSSODeviceStateSchema = z
+  .object({
+    device_registered: z.boolean(),
+    sign_key_id: z.string(),
+    enc_key_id: z.string(),
+    users: z.array(AgentPSSODeviceStateUserSchema),
+  })
+  .openapi({
+    description:
+      "What authentik currently has stored for this device's Platform SSO\nregistration, so the client can detect drift and repair it",
+    required: ['device_registered', 'enc_key_id', 'sign_key_id', 'users'],
+  })
+  .openapi('AgentPSSODeviceState')
 
 const AgentPSSOUserRegistrationRequestSchema = z
   .object({
@@ -945,6 +1336,7 @@ const AppEnumSchema = z
     'authentik.enterprise.endpoints.connectors.agent',
     'authentik.enterprise.endpoints.connectors.fleet',
     'authentik.enterprise.endpoints.connectors.google_chrome',
+    'authentik.enterprise.endpoints.connectors.microsoft_intune',
     'authentik.enterprise.lifecycle',
     'authentik.enterprise.policies.unique_password',
     'authentik.enterprise.providers.google_workspace',
@@ -1015,11 +1407,15 @@ const ApplicationEntitlementSchema = z
     pbm_uuid: z.uuid().openapi({ readOnly: true }),
     name: z.string(),
     app: z.uuid(),
+    app_name: z.string().openapi({ description: "Application's display Name.", readOnly: true }),
+    app_slug: z
+      .string()
+      .openapi({ description: 'Internal application name, used in URLs.', readOnly: true }),
     attributes: z.record(z.string(), z.any()).exactOptional(),
   })
   .openapi({
     description: 'ApplicationEntitlement Serializer',
-    required: ['app', 'name', 'pbm_uuid'],
+    required: ['app', 'app_name', 'app_slug', 'name', 'pbm_uuid'],
   })
   .openapi('ApplicationEntitlement')
 
@@ -1848,6 +2244,12 @@ const AuthenticatorValidateStageSchema = z
       description: 'Enforce user verification for WebAuthn devices.',
     }),
     webauthn_hints: z.array(WebAuthnHintEnumSchema).exactOptional(),
+    webauthn_additional_accepted_origins: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Additional trusted origins for WebAuthn authentication. Matched exactly.',
+      }),
     webauthn_allowed_device_types: z.array(z.uuid()).exactOptional(),
     webauthn_allowed_device_types_obj: z
       .array(WebAuthnDeviceTypeSchema)
@@ -1899,6 +2301,12 @@ const AuthenticatorValidateStageRequestSchema = z
       description: 'Enforce user verification for WebAuthn devices.',
     }),
     webauthn_hints: z.array(WebAuthnHintEnumSchema).exactOptional(),
+    webauthn_additional_accepted_origins: z
+      .array(z.string().min(1))
+      .exactOptional()
+      .openapi({
+        description: 'Additional trusted origins for WebAuthn authentication. Matched exactly.',
+      }),
     webauthn_allowed_device_types: z.array(z.uuid()).exactOptional(),
     email_otp_throttling_factor: z.float64().exactOptional(),
     sms_otp_throttling_factor: z.float64().exactOptional(),
@@ -2029,6 +2437,12 @@ const AuthenticatorWebAuthnStageSchema = z
     authenticator_attachment: AuthenticatorAttachmentEnumSchema.nullable().exactOptional(),
     resident_key_requirement: UserVerificationEnumSchema.exactOptional(),
     hints: z.array(WebAuthnHintEnumSchema).exactOptional(),
+    additional_accepted_origins: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Additional trusted origins for WebAuthn registration. Matched exactly.',
+      }),
     device_type_restrictions: z.array(z.uuid()).exactOptional(),
     device_type_restrictions_obj: z.array(WebAuthnDeviceTypeSchema).openapi({ readOnly: true }),
     max_attempts: z.int().min(0).max(2147483647).exactOptional(),
@@ -2064,6 +2478,12 @@ const AuthenticatorWebAuthnStageRequestSchema = z
     authenticator_attachment: AuthenticatorAttachmentEnumSchema.nullable().exactOptional(),
     resident_key_requirement: UserVerificationEnumSchema.exactOptional(),
     hints: z.array(WebAuthnHintEnumSchema).exactOptional(),
+    additional_accepted_origins: z
+      .array(z.string().min(1))
+      .exactOptional()
+      .openapi({
+        description: 'Additional trusted origins for WebAuthn registration. Matched exactly.',
+      }),
     device_type_restrictions: z.array(z.uuid()).exactOptional(),
     max_attempts: z.int().min(0).max(2147483647).exactOptional(),
   })
@@ -2078,8 +2498,6 @@ const AutoSubmitChallengeResponseRequestSchema = z
   .object({ component: z.string().min(1).default('ak-stage-autosubmit').exactOptional() })
   .openapi({ description: 'Pseudo class for autosubmit response', required: [] })
   .openapi('AutoSubmitChallengeResponseRequest')
-
-const AutocompleteSchema = z.record(z.string(), z.any()).openapi('Autocomplete')
 
 const AutosubmitChallengeSchema = z
   .object({
@@ -2692,6 +3110,7 @@ const LoginSourceSchema = z
   .object({
     name: z.string(),
     icon_url: z.string().nullable().exactOptional(),
+    icon_themed_urls: ThemedUrlsSchema.nullable().exactOptional(),
     promoted: z.boolean().default(false).exactOptional(),
     challenge: LoginChallengeTypesSchema,
   })
@@ -3126,32 +3545,6 @@ const ConnectionTokenRequestSchema = z
   .openapi({ description: 'ConnectionToken Serializer', required: ['device', 'provider'] })
   .openapi('ConnectionTokenRequest')
 
-const ConnectorSchema = z
-  .object({
-    connector_uuid: z.uuid().exactOptional(),
-    name: z.string(),
-    enabled: z.boolean().exactOptional(),
-    component: z
-      .string()
-      .openapi({
-        description: 'Get object component so that we know how to edit the object',
-        readOnly: true,
-      }),
-    verbose_name: z
-      .string()
-      .openapi({ description: "Return object's verbose_name", readOnly: true }),
-    verbose_name_plural: z
-      .string()
-      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
-    meta_model_name: z
-      .string()
-      .openapi({ description: 'Return internal model name', readOnly: true }),
-  })
-  .openapi({
-    required: ['component', 'meta_model_name', 'name', 'verbose_name', 'verbose_name_plural'],
-  })
-  .openapi('Connector')
-
 const ConsentChallengeResponseRequestSchema = z
   .object({
     component: z.string().min(1).default('ak-stage-consent').exactOptional(),
@@ -3559,6 +3952,26 @@ const CurrentBrandSchema = z
   })
   .openapi('CurrentBrand')
 
+const CustomPermissionSchema = z
+  .object({
+    pk: z.int().openapi({ readOnly: true, title: 'ID' }),
+    codename: z.string().max(100),
+    name: z.string().max(255),
+    model: z.string(),
+    permission: z.string().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['codename', 'model', 'name', 'permission', 'pk'] })
+  .openapi('CustomPermission')
+
+const CustomPermissionRequestSchema = z
+  .object({
+    codename: z.string().min(1).max(100),
+    name: z.string().min(1).max(255),
+    model: z.string().min(1),
+  })
+  .openapi({ required: ['codename', 'model', 'name'] })
+  .openapi('CustomPermissionRequest')
+
 const DataExportSchema = z
   .object({
     id: z.uuid().openapi({ readOnly: true }),
@@ -3685,193 +4098,10 @@ const DeviceSchema = z
   })
   .openapi('Device')
 
-const DeviceAccessGroupSchema = z
-  .object({
-    pbm_uuid: z.uuid().openapi({ readOnly: true }),
-    name: z.string(),
-    attributes: z.record(z.string(), z.any()).exactOptional(),
-  })
-  .openapi({ required: ['name', 'pbm_uuid'] })
-  .openapi('DeviceAccessGroup')
-
 const DeviceAccessGroupRequestSchema = z
   .object({ name: z.string().min(1), attributes: z.record(z.string(), z.any()).exactOptional() })
   .openapi({ required: ['name'] })
   .openapi('DeviceAccessGroupRequest')
-
-const DeviceFactsOSFamilySchema = z
-  .enum(['linux', 'unix', 'bsd', 'windows', 'mac_os', 'android', 'i_os', 'other'])
-  .openapi('DeviceFactsOSFamily')
-
-const OperatingSystemSchema = z
-  .object({
-    family: DeviceFactsOSFamilySchema,
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Operating System name, such as 'Server 2022' or 'Ubuntu'" }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Operating System version, must always be the version number but may contain build name',
-      }),
-    arch: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'For example:\n{"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}\n{"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}\n{"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}\n{"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}',
-    required: ['family'],
-  })
-  .openapi('OperatingSystem')
-
-const DiskSchema = z
-  .object({
-    name: z.string(),
-    mountpoint: z.string(),
-    label: z.string().exactOptional(),
-    capacity_total_bytes: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    capacity_used_bytes: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    encryption_enabled: z.boolean().default(false).exactOptional(),
-  })
-  .openapi({ required: ['mountpoint', 'name'] })
-  .openapi('Disk')
-
-const NetworkInterfaceSchema = z
-  .object({
-    name: z.string(),
-    hardware_address: z.string(),
-    ip_addresses: z.array(z.string()).exactOptional(),
-    dns_servers: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: ['hardware_address', 'name'] })
-  .openapi('NetworkInterface')
-
-const NetworkSchema = z
-  .object({
-    hostname: z.string(),
-    firewall_enabled: z.boolean().exactOptional(),
-    interfaces: z.array(NetworkInterfaceSchema),
-    gateway: z.string().exactOptional(),
-  })
-  .openapi({ required: ['hostname', 'interfaces'] })
-  .openapi('Network')
-
-const HardwareSchema = z
-  .object({
-    model: z.string().exactOptional(),
-    manufacturer: z.string().exactOptional(),
-    serial: z.string(),
-    cpu_name: z.string().exactOptional(),
-    cpu_count: z.int().exactOptional(),
-    memory_bytes: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: ['serial'] })
-  .openapi('Hardware')
-
-const SoftwareSchema = z
-  .object({
-    name: z.string(),
-    version: z.string().exactOptional(),
-    source: z.string(),
-    path: z.string().exactOptional(),
-  })
-  .openapi({ required: ['name', 'source'] })
-  .openapi('Software')
-
-const ProcessSchema = z
-  .object({ id: z.int(), name: z.string(), user: z.string().exactOptional() })
-  .openapi({ required: ['id', 'name'] })
-  .openapi('Process')
-
-const DeviceUserSchema = z
-  .object({
-    id: z.string(),
-    username: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    home: z.string().exactOptional(),
-  })
-  .openapi({ required: ['id'] })
-  .openapi('DeviceUser')
-
-const DeviceGroupSchema = z
-  .object({ id: z.string(), name: z.string().exactOptional() })
-  .openapi({ required: ['id'] })
-  .openapi('DeviceGroup')
-
-const DeviceFactsSchema = z
-  .object({
-    os: OperatingSystemSchema.nullable().exactOptional(),
-    disks: z.array(DiskSchema).nullable().exactOptional(),
-    network: NetworkSchema.nullable().exactOptional(),
-    hardware: HardwareSchema.nullable().exactOptional(),
-    software: z.array(SoftwareSchema).nullable().exactOptional(),
-    processes: z.array(ProcessSchema).nullable().exactOptional(),
-    users: z.array(DeviceUserSchema).nullable().exactOptional(),
-    groups: z.array(DeviceGroupSchema).nullable().exactOptional(),
-    vendor: z.record(z.string(), z.any()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DeviceFacts')
-
-const VendorEnumSchema = z
-  .enum(['goauthentik.io/@merged', 'goauthentik.io/platform', 'fleetdm.com', 'chrome.google.com'])
-  .openapi('VendorEnum')
-
-const DeviceFactSnapshotSchema = z
-  .object({
-    data: DeviceFactsSchema,
-    connection: z.uuid(),
-    created: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
-    expires: z.iso.datetime({ offset: true }).nullable().openapi({ readOnly: true }),
-    vendor: VendorEnumSchema.openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['connection', 'created', 'data', 'expires', 'vendor'] })
-  .openapi('DeviceFactSnapshot')
-
-const DeviceConnectionSchema = z
-  .object({
-    device: z.uuid(),
-    connector: z.uuid(),
-    connector_obj: ConnectorSchema.openapi({ readOnly: true }),
-    latest_snapshot: DeviceFactSnapshotSchema.nullable().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['connector', 'connector_obj', 'device', 'latest_snapshot'] })
-  .openapi('DeviceConnection')
 
 const OperatingSystemRequestSchema = z
   .object({
@@ -4027,124 +4257,6 @@ const DeviceSummarySchema = z
     required: ['outdated_agent_count', 'total_count', 'unreachable_count'],
   })
   .openapi('DeviceSummary')
-
-const PolicySchema = z
-  .object({
-    pk: z.uuid().openapi({ readOnly: true, title: 'Policy uuid' }),
-    name: z.string(),
-    execution_logging: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.',
-      }),
-    component: z
-      .string()
-      .openapi({
-        description: 'Get object component so that we know how to edit the object',
-        readOnly: true,
-      }),
-    verbose_name: z
-      .string()
-      .openapi({ description: "Return object's verbose_name", readOnly: true }),
-    verbose_name_plural: z
-      .string()
-      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
-    meta_model_name: z
-      .string()
-      .openapi({ description: 'Return internal model name', readOnly: true }),
-    bound_to: z.int().openapi({ description: 'Return objects policy is bound to', readOnly: true }),
-    last_updated: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
-    created: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
-  })
-  .openapi({
-    description: 'Policy Serializer',
-    required: [
-      'bound_to',
-      'component',
-      'created',
-      'last_updated',
-      'meta_model_name',
-      'name',
-      'pk',
-      'verbose_name',
-      'verbose_name_plural',
-    ],
-  })
-  .openapi('Policy')
-
-const PartialGroupSchema = z
-  .object({
-    pk: z.uuid().openapi({ readOnly: true, title: 'Group uuid' }),
-    num_pk: z
-      .int()
-      .openapi({ description: 'Get a numerical, int32 ID for the group', readOnly: true }),
-    name: z.string(),
-    is_superuser: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Users added to this group will be superusers.' }),
-    attributes: z.record(z.string(), z.any()).exactOptional(),
-  })
-  .openapi({
-    description: 'Partial Group Serializer, does not include child relations.',
-    required: ['name', 'num_pk', 'pk'],
-  })
-  .openapi('PartialGroup')
-
-const DeviceUserBindingSchema = z
-  .object({
-    pk: z.uuid().openapi({ readOnly: true, title: 'Policy binding uuid' }),
-    policy: z.uuid().nullable().exactOptional(),
-    group: z.uuid().nullable().exactOptional(),
-    user: z.int().nullable().exactOptional(),
-    policy_obj: PolicySchema.nullable().openapi({ readOnly: true }),
-    group_obj: PartialGroupSchema.nullable().openapi({ readOnly: true }),
-    user_obj: PartialUserSchema.nullable().openapi({ readOnly: true }),
-    target: z.uuid(),
-    negate: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Negates the outcome of the policy. Messages are unaffected.' }),
-    enabled: z.boolean().exactOptional(),
-    dry_run: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Execute the policy but ignore its result.' }),
-    order: z.int().min(-2147483648).max(2147483647),
-    timeout: z
-      .int()
-      .min(0)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({ description: 'Timeout after which Policy execution is terminated.' }),
-    failure_result: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Result if the Policy execution fails.' }),
-    expires: z.iso.datetime({ offset: true }).nullable().openapi({ readOnly: true }),
-    expiring: z.boolean().openapi({ readOnly: true }),
-    is_primary: z.boolean().exactOptional(),
-    connector: z.uuid().nullable().openapi({ readOnly: true }),
-    connector_obj: ConnectorSchema.openapi({ readOnly: true }),
-  })
-  .openapi({
-    description: 'PolicyBinding Serializer',
-    required: [
-      'connector',
-      'connector_obj',
-      'expires',
-      'expiring',
-      'group_obj',
-      'order',
-      'pk',
-      'policy_obj',
-      'target',
-      'user_obj',
-    ],
-  })
-  .openapi('DeviceUserBinding')
 
 const DeviceUserBindingRequestSchema = z
   .object({
@@ -4642,6 +4754,14 @@ const EncryptionAlgorithmEnumSchema = z
   ])
   .openapi('EncryptionAlgorithmEnum')
 
+const EndpointSchema = z
+  .object({ id: z.string(), functions: z.array(z.string()) })
+  .openapi({
+    description: "Base serializer class which doesn't implement create/update methods",
+    required: ['functions', 'id'],
+  })
+  .openapi('Endpoint')
+
 const EndpointAgentChallengeResponseRequestSchema = z
   .object({
     component: z.string().min(1).default('ak-stage-endpoint-agent').exactOptional(),
@@ -4650,36 +4770,7 @@ const EndpointAgentChallengeResponseRequestSchema = z
   .openapi({ description: 'Response to signed challenge', required: [] })
   .openapi('EndpointAgentChallengeResponseRequest')
 
-const ProtocolEnumSchema = z.enum(['rdp', 'vnc', 'ssh']).openapi('ProtocolEnum')
-
-const RACConnectionOverrideSchema = z
-  .object({
-    host: z
-      .string()
-      .openapi({ description: 'Hostname/IP to connect to. Optionally specify the port.' }),
-    protocol: ProtocolEnumSchema,
-  })
-  .openapi({ description: 'RACConnectionOverride Serializer', required: ['host', 'protocol'] })
-  .openapi('RACConnectionOverride')
-
-const EndpointDeviceSchema = z
-  .object({
-    device_uuid: z.uuid().exactOptional(),
-    pbm_uuid: z.uuid().openapi({ readOnly: true }),
-    name: z.string(),
-    access_group: z.uuid().nullable().exactOptional(),
-    access_group_obj: DeviceAccessGroupSchema.exactOptional(),
-    expiring: z.boolean().exactOptional(),
-    expires: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    facts: DeviceFactSnapshotSchema.nullable().openapi({ readOnly: true }),
-    attributes: z.record(z.string(), z.any()).exactOptional(),
-    primary_binding_obj: DeviceUserBindingSchema.nullable().openapi({ readOnly: true }),
-    rac: RACConnectionOverrideSchema.nullable(),
-  })
-  .openapi({ required: ['facts', 'name', 'pbm_uuid', 'primary_binding_obj', 'rac'] })
-  .openapi('EndpointDevice')
-
-const EndpointDeviceDetailsSchema = z
+const EndpointDeviceDetailsSchema: z.ZodType<EndpointDeviceDetailsType> = z
   .object({
     device_uuid: z.uuid().exactOptional(),
     pbm_uuid: z.uuid().openapi({ readOnly: true }),
@@ -4825,8 +4916,12 @@ const EventActionsSchema = z
     'logout',
     'user_write',
     'user_offboarded',
+    'user_expiration_warning',
     'suspicious_request',
     'password_set',
+    'authenticator_locked',
+    'authenticator_unlocked',
+    'required_action_completed',
     'secret_view',
     'secret_rotate',
     'invitation_used',
@@ -4926,6 +5021,8 @@ const ModelEnumSchema = z
     'authentik_providers_scim.scimmapping',
     'authentik_rbac.role',
     'authentik_rbac.initialpermissions',
+    'authentik_rbac.custompermission',
+    'authentik_rbac.permissioncheck',
     'authentik_sources_kerberos.kerberossource',
     'authentik_sources_kerberos.kerberossourcepropertymapping',
     'authentik_sources_kerberos.userkerberossourceconnection',
@@ -4987,10 +5084,12 @@ const ModelEnumSchema = z
     'authentik_agents.agent',
     'authentik_endpoints_connectors_fleet.fleetconnector',
     'authentik_endpoints_connectors_google_chrome.googlechromeconnector',
+    'authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector',
     'authentik_lifecycle.lifecyclerule',
     'authentik_lifecycle.lifecycleiteration',
     'authentik_lifecycle.review',
     'authentik_lifecycle.useroffboarding',
+    'authentik_lifecycle.userexpirationrule',
     'authentik_policies_unique_password.uniquepasswordpolicy',
     'authentik_providers_google_workspace.googleworkspaceprovider',
     'authentik_providers_google_workspace.googleworkspaceprovidermapping',
@@ -5180,6 +5279,11 @@ const EventsRequestedEnumSchema = z
   ])
   .openapi('EventsRequestedEnum')
 
+const RoleSchema = z
+  .object({ pk: z.uuid().openapi({ readOnly: true, title: 'Uuid' }), name: z.string() })
+  .openapi({ description: 'Role serializer', required: ['name', 'pk'] })
+  .openapi('Role')
+
 const UserTypeEnumSchema = z
   .enum(['internal', 'external', 'service_account', 'internal_service_account'])
   .openapi('UserTypeEnum')
@@ -5217,6 +5321,13 @@ const UserSchema = z
     type: UserTypeEnumSchema.exactOptional(),
     uuid: z.uuid().openapi({ readOnly: true }),
     password_change_date: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
+    password_locked: z
+      .boolean()
+      .openapi({
+        description: "Whether the user's password currently refuses authentication.",
+        readOnly: true,
+      }),
+    password_device: z.int().nullable().openapi({ readOnly: true }),
     last_updated: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
   })
   .openapi({
@@ -5229,6 +5340,8 @@ const UserSchema = z
       'last_updated',
       'name',
       'password_change_date',
+      'password_device',
+      'password_locked',
       'pk',
       'roles_obj',
       'uid',
@@ -5574,7 +5687,10 @@ const PlexAuthenticationChallengeResponseRequestSchema = z
 const PromptChallengeResponseRequestSchema = z
   .object({ component: z.string().min(1).default('ak-stage-prompt').exactOptional() })
   .catchall(z.any())
-  .openapi({ description: 'Validate response, fields are dynamically created based\non the stage' })
+  .openapi({
+    description: 'Validate response, fields are dynamically created based\non the stage',
+    required: [],
+  })
   .openapi('PromptChallengeResponseRequest')
 
 const RedirectChallengeResponseRequestSchema = z
@@ -5905,7 +6021,7 @@ const GeoIPPolicySchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(0n).max(9223372036854776000n),
+        z.int64().min(0n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 9223372036854776000 }),
@@ -5953,7 +6069,7 @@ const GeoIPPolicyRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(0n).max(9223372036854776000n),
+        z.int64().min(0n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 9223372036854776000 }),
@@ -6347,43 +6463,57 @@ const GrantTypeEnumSchema = z
   ])
   .openapi('GrantTypeEnum')
 
-const GroupSchema: z.ZodType<GroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        pk: z.uuid().openapi({ readOnly: true, title: 'Group uuid' }),
-        num_pk: z.int().openapi({ readOnly: true }),
-        name: z.string(),
-        is_superuser: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Users added to this group will be superusers.' }),
-        parents: z.array(z.uuid()).exactOptional(),
-        parents_obj: z.array(RelatedGroupSchema).nullable().openapi({ readOnly: true }),
-        users: z.array(z.int()).exactOptional(),
-        users_obj: z.array(PartialUserSchema).nullable().openapi({ readOnly: true }),
-        attributes: z.record(z.string(), z.any()).exactOptional(),
-        roles: z.array(z.uuid()).exactOptional(),
-        roles_obj: z.array(RoleSchema).openapi({ readOnly: true }),
-        inherited_roles_obj: z.array(RoleSchema).nullable().openapi({ readOnly: true }),
-        children: z.array(z.uuid()).openapi({ readOnly: true }),
-        children_obj: z.array(RelatedGroupSchema).nullable().openapi({ readOnly: true }),
-      })
-      .openapi({
-        description: 'Group Serializer',
-        required: [
-          'children',
-          'children_obj',
-          'inherited_roles_obj',
-          'name',
-          'num_pk',
-          'parents_obj',
-          'pk',
-          'roles_obj',
-          'users_obj',
-        ],
-      }),
-  )
+const RelatedGroupSchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true, title: 'Group uuid' }),
+    name: z.string(),
+    is_superuser: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Users added to this group will be superusers.' }),
+    attributes: z.record(z.string(), z.any()).exactOptional(),
+    group_uuid: z.uuid().openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: 'Stripped down group serializer to show relevant children/parents for groups',
+    required: ['group_uuid', 'name', 'pk'],
+  })
+  .openapi('RelatedGroup')
+
+const GroupSchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true, title: 'Group uuid' }),
+    num_pk: z.int().openapi({ readOnly: true }),
+    name: z.string(),
+    is_superuser: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Users added to this group will be superusers.' }),
+    parents: z.array(z.uuid()).exactOptional(),
+    parents_obj: z.array(RelatedGroupSchema).nullable().openapi({ readOnly: true }),
+    users: z.array(z.int()).exactOptional(),
+    users_obj: z.array(PartialUserSchema).nullable().openapi({ readOnly: true }),
+    attributes: z.record(z.string(), z.any()).exactOptional(),
+    roles: z.array(z.uuid()).exactOptional(),
+    roles_obj: z.array(RoleSchema).openapi({ readOnly: true }),
+    inherited_roles_obj: z.array(RoleSchema).nullable().openapi({ readOnly: true }),
+    children: z.array(z.uuid()).openapi({ readOnly: true }),
+    children_obj: z.array(RelatedGroupSchema).nullable().openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: 'Group Serializer',
+    required: [
+      'children',
+      'children_obj',
+      'inherited_roles_obj',
+      'name',
+      'num_pk',
+      'parents_obj',
+      'pk',
+      'roles_obj',
+      'users_obj',
+    ],
+  })
   .openapi('Group')
 
 const UserMatchingModeEnumSchema = z
@@ -8649,6 +8779,72 @@ const MicrosoftEntraProviderUserRequestSchema = z
   })
   .openapi('MicrosoftEntraProviderUserRequest')
 
+const MicrosoftIntuneConnectorSchema = z
+  .object({
+    connector_uuid: z.uuid().exactOptional(),
+    name: z.string(),
+    enabled: z.boolean().exactOptional(),
+    component: z
+      .string()
+      .openapi({
+        description: 'Get object component so that we know how to edit the object',
+        readOnly: true,
+      }),
+    verbose_name: z
+      .string()
+      .openapi({ description: "Return object's verbose_name", readOnly: true }),
+    verbose_name_plural: z
+      .string()
+      .openapi({ description: "Return object's plural verbose_name", readOnly: true }),
+    meta_model_name: z
+      .string()
+      .openapi({ description: 'Return internal model name', readOnly: true }),
+    client_id: z.string(),
+    tenant_id: z.string(),
+    certificate_authorities: z
+      .array(z.uuid())
+      .exactOptional()
+      .openapi({
+        description:
+          'Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.',
+      }),
+  })
+  .openapi({
+    description: 'MicrosoftIntuneConnector Serializer',
+    required: [
+      'client_id',
+      'component',
+      'meta_model_name',
+      'name',
+      'tenant_id',
+      'verbose_name',
+      'verbose_name_plural',
+    ],
+  })
+  .openapi('MicrosoftIntuneConnector')
+
+const MicrosoftIntuneConnectorRequestSchema = z
+  .object({
+    connector_uuid: z.uuid().exactOptional(),
+    name: z.string().min(1),
+    enabled: z.boolean().exactOptional(),
+    client_id: z.string().min(1),
+    client_secret: z.string().min(1).openapi({ writeOnly: true }),
+    tenant_id: z.string().min(1),
+    certificate_authorities: z
+      .array(z.uuid())
+      .exactOptional()
+      .openapi({
+        description:
+          'Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.',
+      }),
+  })
+  .openapi({
+    description: 'MicrosoftIntuneConnector Serializer',
+    required: ['client_id', 'client_secret', 'name', 'tenant_id'],
+  })
+  .openapi('MicrosoftIntuneConnectorRequest')
+
 const UserAttributeEnumSchema = z.enum(['username', 'email']).openapi('UserAttributeEnum')
 
 const MutualTLSStageSchema = z
@@ -9929,21 +10125,6 @@ const OutpostRequestSchema = z
   .openapi({ description: 'Outpost Serializer', required: ['config', 'name', 'providers', 'type'] })
   .openapi('OutpostRequest')
 
-const PaginationSchema = z
-  .object({
-    next: z.number(),
-    previous: z.number(),
-    count: z.number(),
-    current: z.number(),
-    total_pages: z.number(),
-    start_index: z.number(),
-    end_index: z.number(),
-  })
-  .openapi({
-    required: ['count', 'current', 'end_index', 'next', 'previous', 'start_index', 'total_pages'],
-  })
-  .openapi('Pagination')
-
 const PaginatedAccountLockdownStageListSchema = z
   .object({
     pagination: PaginationSchema,
@@ -10142,6 +10323,15 @@ const PaginatedConsentStageListSchema = z
   .openapi({ required: ['autocomplete', 'pagination', 'results'] })
   .openapi('PaginatedConsentStageList')
 
+const PaginatedCustomPermissionListSchema = z
+  .object({
+    pagination: PaginationSchema,
+    results: z.array(CustomPermissionSchema),
+    autocomplete: AutocompleteSchema,
+  })
+  .openapi({ required: ['autocomplete', 'pagination', 'results'] })
+  .openapi('PaginatedCustomPermissionList')
+
 const PaginatedDataExportListSchema = z
   .object({
     pagination: PaginationSchema,
@@ -10232,7 +10422,7 @@ const PaginatedEmailStageListSchema = z
   .openapi({ required: ['autocomplete', 'pagination', 'results'] })
   .openapi('PaginatedEmailStageList')
 
-const PaginatedEndpointDeviceListSchema = z
+const PaginatedEndpointDeviceListSchema: z.ZodType<PaginatedEndpointDeviceListType> = z
   .object({
     pagination: PaginationSchema,
     results: z.array(EndpointDeviceSchema),
@@ -10394,7 +10584,7 @@ const PaginatedGoogleWorkspaceProviderUserListSchema = z
   .openapi({ required: ['autocomplete', 'pagination', 'results'] })
   .openapi('PaginatedGoogleWorkspaceProviderUserList')
 
-const PaginatedGrantRequestListSchema = z
+const PaginatedGrantRequestListSchema: z.ZodType<PaginatedGrantRequestListType> = z
   .object({
     pagination: PaginationSchema,
     results: z.array(GrantRequestSchema),
@@ -10636,6 +10826,15 @@ const PaginatedMicrosoftEntraProviderUserListSchema = z
   })
   .openapi({ required: ['autocomplete', 'pagination', 'results'] })
   .openapi('PaginatedMicrosoftEntraProviderUserList')
+
+const PaginatedMicrosoftIntuneConnectorListSchema = z
+  .object({
+    pagination: PaginationSchema,
+    results: z.array(MicrosoftIntuneConnectorSchema),
+    autocomplete: AutocompleteSchema,
+  })
+  .openapi({ required: ['autocomplete', 'pagination', 'results'] })
+  .openapi('PaginatedMicrosoftIntuneConnectorList')
 
 const PaginatedMutualTLSStageListSchema = z
   .object({
@@ -10919,7 +11118,30 @@ const PasswordStageSchema = z
       .exactOptional()
       .openapi({
         description:
-          'How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.',
+          "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.",
+      }),
+    failed_attempts_before_lockout: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          "How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.",
+      }),
+    last_attempt_warning_message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Warning shown when the user has one password attempt remaining. Leave blank to show no warning.',
+      }),
+    lockout_message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Message shown when the user's password has been locked. Leave blank to show a generic authentication error.",
       }),
     allow_show_password: z
       .boolean()
@@ -10952,6 +11174,29 @@ const PaginatedPasswordStageListSchema = z
   })
   .openapi({ required: ['autocomplete', 'pagination', 'results'] })
   .openapi('PaginatedPasswordStageList')
+
+const PermissionCheckSchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true, title: 'Check uuid' }),
+    name: z.string(),
+    expression: z.string(),
+    endpoints: z.array(z.string()),
+    unknown_endpoints: z.array(z.string()).openapi({ readOnly: true }),
+    unknown_fields: z.record(z.string(), z.array(z.string())).openapi({ readOnly: true }),
+  })
+  .openapi({
+    required: ['endpoints', 'expression', 'name', 'pk', 'unknown_endpoints', 'unknown_fields'],
+  })
+  .openapi('PermissionCheck')
+
+const PaginatedPermissionCheckListSchema = z
+  .object({
+    pagination: PaginationSchema,
+    results: z.array(PermissionCheckSchema),
+    autocomplete: AutocompleteSchema,
+  })
+  .openapi({ required: ['autocomplete', 'pagination', 'results'] })
+  .openapi('PaginatedPermissionCheckList')
 
 const PaginatedPermissionListSchema = z
   .object({
@@ -11967,7 +12212,7 @@ const ReputationSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -12450,6 +12695,13 @@ const SAMLProviderSchema = z
     sign_response: z.boolean().exactOptional(),
     sign_logout_request: z.boolean().exactOptional(),
     sign_logout_response: z.boolean().exactOptional(),
+    ignore_force_authn: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.',
+      }),
     sp_binding: SAMLBindingsEnumSchema.exactOptional().openapi({
       title: 'Service Provider Binding',
       description: 'This determines how authentik sends the response back to the Service Provider.',
@@ -12628,7 +12880,8 @@ const SAMLSourceSchema = z
           'When enabled, the IdP will re-authenticate the user even if a session exists.',
       }),
     name_id_policy: SAMLNameIDPolicyEnumSchema.exactOptional().openapi({
-      description: 'NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.',
+      description:
+        'Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.',
     }),
     binding_type: BindingTypeEnumSchema.exactOptional(),
     verification_kp: z
@@ -13574,7 +13827,7 @@ const TaskSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(0n).max(9223372036854776000n),
+        z.int64().min(0n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({
@@ -13941,6 +14194,85 @@ const PaginatedUserDeleteStageListSchema = z
   .openapi({ required: ['autocomplete', 'pagination', 'results'] })
   .openapi('PaginatedUserDeleteStageList')
 
+const UserExpirationRuleGroupSchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true }),
+    name: z.string().openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: "Base serializer class which doesn't implement create/update methods",
+    required: ['name', 'pk'],
+  })
+  .openapi('UserExpirationRuleGroup')
+
+const UserExpirationRuleSchema = z
+  .object({
+    pk: z.uuid().exactOptional().openapi({ title: 'Id' }),
+    pbm_uuid: z.uuid().openapi({ readOnly: true }),
+    name: z.string(),
+    enabled: z.boolean().exactOptional(),
+    activity_basis: ActivityBasisEnumSchema.exactOptional().openapi({
+      description: 'Measure inactivity from the last login or successful user activity.',
+    }),
+    group: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only expire members of this group (including descendant groups). Leave empty to apply to every user.',
+      }),
+    group_obj: UserExpirationRuleGroupSchema.openapi({ readOnly: true }),
+    user_types: z
+      .array(UserTypeEnumSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Only expire users of these types. Service accounts are excluded by default.',
+      }),
+    inactivity_duration: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'How long a user may be inactive before they are expired.' }),
+    action: OffboardingActionEnumSchema.exactOptional(),
+    revoke_sessions: z.boolean().exactOptional(),
+    revoke_tokens: z.boolean().exactOptional(),
+    warn_before: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.',
+      }),
+    notification_transports: z
+      .array(z.uuid())
+      .exactOptional()
+      .openapi({
+        description:
+          'Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.',
+      }),
+    exclude_superusers: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Never expire members of a superuser group.' }),
+    policy_engine_mode: PolicyEngineModeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Mixin to validate that a valid enterprise license\nexists before allowing to save the object',
+    required: ['group_obj', 'name', 'pbm_uuid'],
+  })
+  .openapi('UserExpirationRule')
+
+const PaginatedUserExpirationRuleListSchema = z
+  .object({
+    pagination: PaginationSchema,
+    results: z.array(UserExpirationRuleSchema),
+    autocomplete: AutocompleteSchema,
+  })
+  .openapi({ required: ['autocomplete', 'pagination', 'results'] })
+  .openapi('PaginatedUserExpirationRuleList')
+
 const UserKerberosSourceConnectionSchema = z
   .object({
     pk: z.int().openapi({ readOnly: true, title: 'ID' }),
@@ -14155,6 +14487,17 @@ const PaginatedUserOAuthSourceConnectionListSchema = z
   .openapi({ required: ['autocomplete', 'pagination', 'results'] })
   .openapi('PaginatedUserOAuthSourceConnectionList')
 
+const PartialUserExpirationRuleSchema = z
+  .object({
+    pk: z.uuid().openapi({ readOnly: true }),
+    name: z.string().openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: "Base serializer class which doesn't implement create/update methods",
+    required: ['name', 'pk'],
+  })
+  .openapi('PartialUserExpirationRule')
+
 const UserOffboardingSchema = z
   .object({
     id: z.uuid().openapi({ readOnly: true }),
@@ -14176,6 +14519,9 @@ const UserOffboardingSchema = z
     created_by_obj: PartialUserSchema.openapi({ readOnly: true }),
     created_at: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
     executed_at: z.iso.datetime({ offset: true }).nullable().openapi({ readOnly: true }),
+    rule: z.uuid().nullable().openapi({ readOnly: true }),
+    rule_obj: PartialUserExpirationRuleSchema.openapi({ readOnly: true }),
+    generated: z.boolean().openapi({ readOnly: true }),
   })
   .openapi({
     description:
@@ -14184,7 +14530,10 @@ const UserOffboardingSchema = z
       'created_at',
       'created_by_obj',
       'executed_at',
+      'generated',
       'id',
+      'rule',
+      'rule_obj',
       'scheduled_at',
       'status',
       'user',
@@ -14640,7 +14989,30 @@ const PasswordStageRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.',
+          "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.",
+      }),
+    failed_attempts_before_lockout: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          "How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.",
+      }),
+    last_attempt_warning_message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Warning shown when the user has one password attempt remaining. Leave blank to show no warning.',
+      }),
+    lockout_message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Message shown when the user's password has been locked. Leave blank to show a generic authentication error.",
       }),
     allow_show_password: z
       .boolean()
@@ -14963,6 +15335,12 @@ const PatchedAuthenticatorValidateStageRequestSchema = z
       description: 'Enforce user verification for WebAuthn devices.',
     }),
     webauthn_hints: z.array(WebAuthnHintEnumSchema).exactOptional(),
+    webauthn_additional_accepted_origins: z
+      .array(z.string().min(1))
+      .exactOptional()
+      .openapi({
+        description: 'Additional trusted origins for WebAuthn authentication. Matched exactly.',
+      }),
     webauthn_allowed_device_types: z.array(z.uuid()).exactOptional(),
     email_otp_throttling_factor: z.float64().exactOptional(),
     sms_otp_throttling_factor: z.float64().exactOptional(),
@@ -14988,6 +15366,12 @@ const PatchedAuthenticatorWebAuthnStageRequestSchema = z
     authenticator_attachment: AuthenticatorAttachmentEnumSchema.nullable().exactOptional(),
     resident_key_requirement: UserVerificationEnumSchema.exactOptional(),
     hints: z.array(WebAuthnHintEnumSchema).exactOptional(),
+    additional_accepted_origins: z
+      .array(z.string().min(1))
+      .exactOptional()
+      .openapi({
+        description: 'Additional trusted origins for WebAuthn registration. Matched exactly.',
+      }),
     device_type_restrictions: z.array(z.uuid()).exactOptional(),
     max_attempts: z.int().min(0).max(2147483647).exactOptional(),
   })
@@ -15133,6 +15517,15 @@ const PatchedConsentStageRequestSchema = z
   })
   .openapi({ description: 'ConsentStage Serializer', required: [] })
   .openapi('PatchedConsentStageRequest')
+
+const PatchedCustomPermissionRequestSchema = z
+  .object({
+    codename: z.string().min(1).max(100).exactOptional(),
+    name: z.string().min(1).max(255).exactOptional(),
+    model: z.string().min(1).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PatchedCustomPermissionRequest')
 
 const PatchedDenyStageRequestSchema = z
   .object({ name: z.string().min(1).exactOptional(), deny_message: z.string().exactOptional() })
@@ -15515,7 +15908,7 @@ const PatchedGeoIPPolicyRequestSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(0n).max(9223372036854776000n),
+        z.int64().min(0n).max(9223372036854775807n),
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 9223372036854776000 }),
@@ -16275,6 +16668,25 @@ const PatchedMicrosoftEntraProviderRequestSchema = z
   .openapi({ description: 'MicrosoftEntraProvider Serializer', required: [] })
   .openapi('PatchedMicrosoftEntraProviderRequest')
 
+const PatchedMicrosoftIntuneConnectorRequestSchema = z
+  .object({
+    connector_uuid: z.uuid().exactOptional(),
+    name: z.string().min(1).exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    client_id: z.string().min(1).exactOptional(),
+    client_secret: z.string().min(1).exactOptional().openapi({ writeOnly: true }),
+    tenant_id: z.string().min(1).exactOptional(),
+    certificate_authorities: z
+      .array(z.uuid())
+      .exactOptional()
+      .openapi({
+        description:
+          'Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. This option has a higher priority than the `client_certificate` option on `Brand`.',
+      }),
+  })
+  .openapi({ description: 'MicrosoftIntuneConnector Serializer', required: [] })
+  .openapi('PatchedMicrosoftIntuneConnectorRequest')
+
 const PatchedMutualTLSStageRequestSchema = z
   .object({
     name: z.string().min(1).exactOptional(),
@@ -16769,7 +17181,30 @@ const PatchedPasswordStageRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.',
+          "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.",
+      }),
+    failed_attempts_before_lockout: z
+      .int()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          "How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.",
+      }),
+    last_attempt_warning_message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Warning shown when the user has one password attempt remaining. Leave blank to show no warning.',
+      }),
+    lockout_message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Message shown when the user's password has been locked. Leave blank to show a generic authentication error.",
       }),
     allow_show_password: z
       .boolean()
@@ -16790,6 +17225,15 @@ const PatchedPermissionAssignRequestSchema = z
   })
   .openapi({ description: 'Request to assign a new permission', required: [] })
   .openapi('PatchedPermissionAssignRequest')
+
+const PatchedPermissionCheckRequestSchema = z
+  .object({
+    name: z.string().min(1).exactOptional(),
+    expression: z.string().min(1).exactOptional(),
+    endpoints: z.array(z.string().min(1)).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PatchedPermissionCheckRequest')
 
 const PatchedPlexSourcePropertyMappingRequestSchema = z
   .object({
@@ -17410,6 +17854,13 @@ const PatchedSAMLProviderRequestSchema = z
     sign_response: z.boolean().exactOptional(),
     sign_logout_request: z.boolean().exactOptional(),
     sign_logout_response: z.boolean().exactOptional(),
+    ignore_force_authn: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.',
+      }),
     sp_binding: SAMLBindingsEnumSchema.exactOptional().openapi({
       title: 'Service Provider Binding',
       description: 'This determines how authentik sends the response back to the Service Provider.',
@@ -17529,7 +17980,8 @@ const PatchedSAMLSourceRequestSchema = z
           'When enabled, the IdP will re-authenticate the user even if a session exists.',
       }),
     name_id_policy: SAMLNameIDPolicyEnumSchema.exactOptional().openapi({
-      description: 'NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.',
+      description:
+        'Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.',
     }),
     binding_type: BindingTypeEnumSchema.exactOptional(),
     verification_kp: z
@@ -17908,6 +18360,12 @@ const PatchedSettingsRequestSchema = z
             description:
               'Upon successful authentication, re-start authentication in other open tabs.',
           }),
+        rbac_custom_permissions: z
+          .boolean()
+          .openapi({
+            description:
+              'Let permission checks decide API access. While enabled, every API request costs an additional database query.',
+          }),
       })
       .exactOptional()
       .openapi({
@@ -17915,6 +18373,7 @@ const PatchedSettingsRequestSchema = z
           'core_default_app_access',
           'enterprise_audit_include_expanded_diff',
           'flows_continuous_login',
+          'rbac_custom_permissions',
         ],
       }),
   })
@@ -18101,6 +18560,64 @@ const PatchedUserDeleteStageRequestSchema = z
   .object({ name: z.string().min(1).exactOptional() })
   .openapi({ description: 'UserDeleteStage Serializer', required: [] })
   .openapi('PatchedUserDeleteStageRequest')
+
+const PatchedUserExpirationRuleRequestSchema = z
+  .object({
+    pk: z.uuid().exactOptional().openapi({ title: 'Id' }),
+    name: z.string().min(1).exactOptional(),
+    enabled: z.boolean().exactOptional(),
+    activity_basis: ActivityBasisEnumSchema.exactOptional().openapi({
+      description: 'Measure inactivity from the last login or successful user activity.',
+    }),
+    group: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only expire members of this group (including descendant groups). Leave empty to apply to every user.',
+      }),
+    user_types: z
+      .array(UserTypeEnumSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Only expire users of these types. Service accounts are excluded by default.',
+      }),
+    inactivity_duration: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'How long a user may be inactive before they are expired.' }),
+    action: OffboardingActionEnumSchema.exactOptional(),
+    revoke_sessions: z.boolean().exactOptional(),
+    revoke_tokens: z.boolean().exactOptional(),
+    warn_before: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.',
+      }),
+    notification_transports: z
+      .array(z.uuid())
+      .exactOptional()
+      .openapi({
+        description:
+          'Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.',
+      }),
+    exclude_superusers: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Never expire members of a superuser group.' }),
+    policy_engine_mode: PolicyEngineModeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Mixin to validate that a valid enterprise license\nexists before allowing to save the object',
+    required: [],
+  })
+  .openapi('PatchedUserExpirationRuleRequest')
 
 const PatchedUserKerberosSourceConnectionRequestSchema = z
   .object({ source: z.uuid().exactOptional(), identifier: z.string().min(1).exactOptional() })
@@ -18349,6 +18866,15 @@ const PermissionAssignResultSchema = z
   .object({ id: z.string() })
   .openapi({ description: 'Result from assigning permissions to a user/role', required: ['id'] })
   .openapi('PermissionAssignResult')
+
+const PermissionCheckRequestSchema = z
+  .object({
+    name: z.string().min(1),
+    expression: z.string().min(1),
+    endpoints: z.array(z.string().min(1)),
+  })
+  .openapi({ required: ['endpoints', 'expression', 'name'] })
+  .openapi('PermissionCheckRequest')
 
 const PlexSourcePropertyMappingRequestSchema = z
   .object({
@@ -19057,6 +19583,13 @@ const SAMLProviderRequestSchema = z
     sign_response: z.boolean().exactOptional(),
     sign_logout_request: z.boolean().exactOptional(),
     sign_logout_response: z.boolean().exactOptional(),
+    ignore_force_authn: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.',
+      }),
     sp_binding: SAMLBindingsEnumSchema.exactOptional().openapi({
       title: 'Service Provider Binding',
       description: 'This determines how authentik sends the response back to the Service Provider.',
@@ -19177,7 +19710,8 @@ const SAMLSourceRequestSchema = z
           'When enabled, the IdP will re-authenticate the user even if a session exists.',
       }),
     name_id_policy: SAMLNameIDPolicyEnumSchema.exactOptional().openapi({
-      description: 'NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.',
+      description:
+        'Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.',
     }),
     binding_type: BindingTypeEnumSchema.exactOptional(),
     verification_kp: z
@@ -19687,12 +20221,19 @@ const SettingsSchema = z
             description:
               'Upon successful authentication, re-start authentication in other open tabs.',
           }),
+        rbac_custom_permissions: z
+          .boolean()
+          .openapi({
+            description:
+              'Let permission checks decide API access. While enabled, every API request costs an additional database query.',
+          }),
       })
       .openapi({
         required: [
           'core_default_app_access',
           'enterprise_audit_include_expanded_diff',
           'flows_continuous_login',
+          'rbac_custom_permissions',
         ],
       }),
   })
@@ -19810,12 +20351,19 @@ const SettingsRequestSchema = z
             description:
               'Upon successful authentication, re-start authentication in other open tabs.',
           }),
+        rbac_custom_permissions: z
+          .boolean()
+          .openapi({
+            description:
+              'Let permission checks decide API access. While enabled, every API request costs an additional database query.',
+          }),
       })
       .openapi({
         required: [
           'core_default_app_access',
           'enterprise_audit_include_expanded_diff',
           'flows_continuous_login',
+          'rbac_custom_permissions',
         ],
       }),
   })
@@ -20286,6 +20834,7 @@ const TypeCreateSchema = z
     component: z.string(),
     model_name: z.string(),
     icon_url: z.string().exactOptional(),
+    icon_themed_urls: ThemedUrlsSchema.nullable().exactOptional(),
     requires_enterprise: z.boolean().default(false).exactOptional(),
     deprecated: z.boolean().default(false).exactOptional(),
   })
@@ -20392,6 +20941,131 @@ const UserDeleteStageRequestSchema = z
   .object({ name: z.string().min(1) })
   .openapi({ description: 'UserDeleteStage Serializer', required: ['name'] })
   .openapi('UserDeleteStageRequest')
+
+const UserExpirationRuleUserSchema = z
+  .object({
+    pk: z.int().openapi({ readOnly: true }),
+    username: z.string().openapi({ readOnly: true }),
+    name: z.string().openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: "Base serializer class which doesn't implement create/update methods",
+    required: ['name', 'pk', 'username'],
+  })
+  .openapi('UserExpirationRuleUser')
+
+const UserExpirationRulePendingPreviewSchema = z
+  .object({
+    id: z.uuid().openapi({ readOnly: true }),
+    user: UserExpirationRuleUserSchema.openapi({ readOnly: true }),
+    previous_action: OffboardingActionEnumSchema.openapi({ readOnly: true }),
+    action: OffboardingActionEnumSchema.nullable().openapi({ readOnly: true }),
+    previous_scheduled_at: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
+    scheduled_at: z.iso.datetime({ offset: true }).nullable().openapi({ readOnly: true }),
+    previous_revoke_sessions: z.boolean().openapi({ readOnly: true }),
+    revoke_sessions: z.boolean().nullable().openapi({ readOnly: true }),
+    previous_revoke_tokens: z.boolean().openapi({ readOnly: true }),
+    revoke_tokens: z.boolean().nullable().openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: "Base serializer class which doesn't implement create/update methods",
+    required: [
+      'action',
+      'id',
+      'previous_action',
+      'previous_revoke_sessions',
+      'previous_revoke_tokens',
+      'previous_scheduled_at',
+      'revoke_sessions',
+      'revoke_tokens',
+      'scheduled_at',
+      'user',
+    ],
+  })
+  .openapi('UserExpirationRulePendingPreview')
+
+const UserExpirationRulePendingPreviewGroupSchema = z
+  .object({
+    count: z.int().openapi({ readOnly: true }),
+    offboardings: z.array(UserExpirationRulePendingPreviewSchema).openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: "Base serializer class which doesn't implement create/update methods",
+    required: ['count', 'offboardings'],
+  })
+  .openapi('UserExpirationRulePendingPreviewGroup')
+
+const UserExpirationRulePreviewSchema = z
+  .object({
+    count: z.int().openapi({ readOnly: true }),
+    users: z.array(UserExpirationRuleUserSchema).openapi({ readOnly: true }),
+    updated: UserExpirationRulePendingPreviewGroupSchema.openapi({ readOnly: true }),
+    taken_over: UserExpirationRulePendingPreviewGroupSchema.openapi({ readOnly: true }),
+    removed: UserExpirationRulePendingPreviewGroupSchema.openapi({ readOnly: true }),
+  })
+  .openapi({
+    description: "Base serializer class which doesn't implement create/update methods",
+    required: ['count', 'removed', 'taken_over', 'updated', 'users'],
+  })
+  .openapi('UserExpirationRulePreview')
+
+const UserExpirationRuleRequestSchema = z
+  .object({
+    pk: z.uuid().exactOptional().openapi({ title: 'Id' }),
+    name: z.string().min(1),
+    enabled: z.boolean().exactOptional(),
+    activity_basis: ActivityBasisEnumSchema.exactOptional().openapi({
+      description: 'Measure inactivity from the last login or successful user activity.',
+    }),
+    group: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only expire members of this group (including descendant groups). Leave empty to apply to every user.',
+      }),
+    user_types: z
+      .array(UserTypeEnumSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Only expire users of these types. Service accounts are excluded by default.',
+      }),
+    inactivity_duration: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'How long a user may be inactive before they are expired.' }),
+    action: OffboardingActionEnumSchema.exactOptional(),
+    revoke_sessions: z.boolean().exactOptional(),
+    revoke_tokens: z.boolean().exactOptional(),
+    warn_before: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Schedule the offboarding and notify the user this long before they expire. Leave empty to expire users without warning.',
+      }),
+    notification_transports: z
+      .array(z.uuid())
+      .exactOptional()
+      .openapi({
+        description:
+          'Select which transports should be used to warn the user. If none are selected, the notification will only be shown in the authentik UI.',
+      }),
+    exclude_superusers: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Never expire members of a superuser group.' }),
+    policy_engine_mode: PolicyEngineModeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Mixin to validate that a valid enterprise license\nexists before allowing to save the object',
+    required: ['name'],
+  })
+  .openapi('UserExpirationRuleRequest')
 
 const UserKerberosSourceConnectionRequestSchema = z
   .object({ source: z.uuid(), identifier: z.string().min(1) })
@@ -20594,6 +21268,7 @@ const UserSettingSchema = z
     title: z.string(),
     configure_url: z.string().exactOptional(),
     icon_url: z.string().exactOptional(),
+    icon_themed_urls: ThemedUrlsSchema.nullable().exactOptional(),
   })
   .openapi({
     description: 'Serializer for User settings for stages and sources',
@@ -20654,7 +21329,7 @@ const ValidationErrorSchema = z
     code: z.string().exactOptional(),
   })
   .catchall(z.any())
-  .openapi({ description: 'Validation Error' })
+  .openapi({ description: 'Validation Error', required: [] })
   .openapi('ValidationError')
 
 const VersionSchema = z
@@ -23227,6 +23902,80 @@ export const getAuthenticatorsEndpointUuidUsedByIndexRoute = createRoute({
   security: [{ authentik: [] }],
 })
 
+export const postAuthenticatorsPasswordIdLockIndexRoute = createRoute({
+  method: 'post',
+  path: '/authenticators/password/{id}/lock/',
+  tags: ['authenticators'],
+  description: 'Prevent a password authenticator from authenticating.',
+  operationId: 'authenticators_password_lock_create',
+  request: {
+    params: z.object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'integer' },
+            description: 'A unique integer value identifying this Password Device.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Successfully locked authenticator' },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const postAuthenticatorsPasswordIdUnlockIndexRoute = createRoute({
+  method: 'post',
+  path: '/authenticators/password/{id}/unlock/',
+  tags: ['authenticators'],
+  description: 'Allow a locked password authenticator to authenticate again.',
+  operationId: 'authenticators_password_unlock_create',
+  request: {
+    params: z.object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'integer' },
+            description: 'A unique integer value identifying this Password Device.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Successfully unlocked authenticator' },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
 export const getAuthenticatorsSmsIndexRoute = createRoute({
   method: 'get',
   path: '/authenticators/sms/',
@@ -24105,13 +24854,21 @@ export const getCoreApplicationEntitlementsIndexRoute = createRoute({
           },
         }),
       for_user: z
-        .string()
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
         .exactOptional()
         .openapi({
           param: {
             in: 'query',
             name: 'for_user',
-            schema: { type: 'string' },
+            schema: { type: 'integer' },
             description:
               "Entitlements assigned to this user, directly or through a group, regardless of the user's access to the application.",
             required: false,
@@ -24350,13 +25107,21 @@ export const getCoreApplicationEntitlementsRequestableIndexRoute = createRoute({
           },
         }),
       for_user: z
-        .string()
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
         .exactOptional()
         .openapi({
           param: {
             in: 'query',
             name: 'for_user',
-            schema: { type: 'string' },
+            schema: { type: 'integer' },
             description:
               "Entitlements assigned to this user, directly or through a group, regardless of the user's access to the application.",
             required: false,
@@ -28704,6 +29469,22 @@ export const getEndpointsAgentsPssoIseUuidUsedByIndexRoute = createRoute({
   security: [{ authentik: [] }],
 })
 
+export const getEndpointsAgentsPssoRegisterDeviceIndexRoute = createRoute({
+  method: 'get',
+  path: '/endpoints/agents/psso/register/device/',
+  tags: ['endpoints'],
+  operationId: 'endpoints_agents_psso_register_device_retrieve',
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: AgentPSSODeviceStateSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik_device_auth: [] }],
+})
+
 export const postEndpointsAgentsPssoRegisterDeviceIndexRoute = createRoute({
   method: 'post',
   path: '/endpoints/agents/psso/register/device/',
@@ -28720,6 +29501,21 @@ export const postEndpointsAgentsPssoRegisterDeviceIndexRoute = createRoute({
       description: '',
       content: { 'application/json': { schema: AgentPSSODeviceRegistrationResponseSchema } },
     },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik_device_auth: [] }],
+})
+
+export const deleteEndpointsAgentsPssoRegisterDeviceIndexRoute = createRoute({
+  method: 'delete',
+  path: '/endpoints/agents/psso/register/device/',
+  tags: ['endpoints'],
+  description:
+    "Clear this device's Platform SSO registration, used when the configuration\nprofile is removed from the device. The device stays enrolled otherwise.",
+  operationId: 'endpoints_agents_psso_register_device_destroy',
+  responses: {
+    204: { description: 'No response body' },
     400: ValidationErrorResponseResponse,
     403: GenericErrorResponseResponse,
   },
@@ -29971,6 +30767,216 @@ export const getEndpointsGoogleChromeConnectorsConnectorUuidUsedByIndexRoute = c
             name: 'connector_uuid',
             schema: { type: 'string', format: 'uuid' },
             description: 'A UUID string identifying this Google Device Trust Connector.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: z.array(UsedBySchema) } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getEndpointsMicrosoftIntuneConnectorsIndexRoute = createRoute({
+  method: 'get',
+  path: '/endpoints/microsoft_intune/connectors/',
+  tags: ['endpoints'],
+  description: 'MicrosoftIntuneConnector Viewset',
+  operationId: 'endpoints_microsoft_intune_connectors_list',
+  request: {
+    query: z.object({
+      name: QueryNameParamsSchema,
+      ordering: QueryPaginationOrderingParamsSchema,
+      page: QueryPaginationPageParamsSchema,
+      page_size: QueryPaginationPageSizeParamsSchema,
+      search: QuerySearchParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: PaginatedMicrosoftIntuneConnectorListSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const postEndpointsMicrosoftIntuneConnectorsIndexRoute = createRoute({
+  method: 'post',
+  path: '/endpoints/microsoft_intune/connectors/',
+  tags: ['endpoints'],
+  description: 'MicrosoftIntuneConnector Viewset',
+  operationId: 'endpoints_microsoft_intune_connectors_create',
+  request: {
+    body: {
+      content: { 'application/json': { schema: MicrosoftIntuneConnectorRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: '',
+      content: { 'application/json': { schema: MicrosoftIntuneConnectorSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute = createRoute({
+  method: 'get',
+  path: '/endpoints/microsoft_intune/connectors/{connector_uuid}/',
+  tags: ['endpoints'],
+  description: 'MicrosoftIntuneConnector Viewset',
+  operationId: 'endpoints_microsoft_intune_connectors_retrieve',
+  request: {
+    params: z.object({
+      connector_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'connector_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Microsoft Intune Connector.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: MicrosoftIntuneConnectorSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const putEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute = createRoute({
+  method: 'put',
+  path: '/endpoints/microsoft_intune/connectors/{connector_uuid}/',
+  tags: ['endpoints'],
+  description: 'MicrosoftIntuneConnector Viewset',
+  operationId: 'endpoints_microsoft_intune_connectors_update',
+  request: {
+    params: z.object({
+      connector_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'connector_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Microsoft Intune Connector.',
+            required: true,
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: MicrosoftIntuneConnectorRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: MicrosoftIntuneConnectorSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const deleteEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute = createRoute({
+  method: 'delete',
+  path: '/endpoints/microsoft_intune/connectors/{connector_uuid}/',
+  tags: ['endpoints'],
+  description: 'MicrosoftIntuneConnector Viewset',
+  operationId: 'endpoints_microsoft_intune_connectors_destroy',
+  request: {
+    params: z.object({
+      connector_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'connector_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Microsoft Intune Connector.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No response body' },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const patchEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute = createRoute({
+  method: 'patch',
+  path: '/endpoints/microsoft_intune/connectors/{connector_uuid}/',
+  tags: ['endpoints'],
+  description: 'MicrosoftIntuneConnector Viewset',
+  operationId: 'endpoints_microsoft_intune_connectors_partial_update',
+  request: {
+    params: z.object({
+      connector_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'connector_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Microsoft Intune Connector.',
+            required: true,
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: PatchedMicrosoftIntuneConnectorRequestSchema } },
+    },
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: MicrosoftIntuneConnectorSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getEndpointsMicrosoftIntuneConnectorsConnectorUuidUsedByIndexRoute = createRoute({
+  method: 'get',
+  path: '/endpoints/microsoft_intune/connectors/{connector_uuid}/used_by/',
+  tags: ['endpoints'],
+  description: 'Get a list of all objects that use this object',
+  operationId: 'endpoints_microsoft_intune_connectors_used_by_list',
+  request: {
+    params: z.object({
+      connector_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'connector_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Microsoft Intune Connector.',
             required: true,
           },
         }),
@@ -32934,6 +33940,307 @@ export const patchLifecycleRulesIdIndexRoute = createRoute({
   security: [{ authentik: [] }],
 })
 
+export const getLifecycleUserExpirationRulesIndexRoute = createRoute({
+  method: 'get',
+  path: '/lifecycle/user_expiration_rules/',
+  tags: ['lifecycle'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'lifecycle_user_expiration_rules_list',
+  request: {
+    query: z.object({
+      action: OffboardingActionEnumSchema.openapi({
+        param: {
+          in: 'query',
+          name: 'action',
+          schema: { $ref: '#/components/schemas/OffboardingActionEnum' },
+          required: false,
+        },
+      }).exactOptional(),
+      enabled: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: { in: 'query', name: 'enabled', schema: { type: 'boolean' }, required: false },
+        }),
+      group: z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'group',
+            schema: { type: 'string', format: 'uuid' },
+            required: false,
+          },
+        }),
+      ordering: QueryPaginationOrderingParamsSchema,
+      page: QueryPaginationPageParamsSchema,
+      page_size: QueryPaginationPageSizeParamsSchema,
+      pbm_uuid: z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'pbm_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            required: false,
+          },
+        }),
+      search: QuerySearchParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: PaginatedUserExpirationRuleListSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const postLifecycleUserExpirationRulesIndexRoute = createRoute({
+  method: 'post',
+  path: '/lifecycle/user_expiration_rules/',
+  tags: ['lifecycle'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'lifecycle_user_expiration_rules_create',
+  request: {
+    body: {
+      content: { 'application/json': { schema: UserExpirationRuleRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: { description: '', content: { 'application/json': { schema: UserExpirationRuleSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getLifecycleUserExpirationRulesIdIndexRoute = createRoute({
+  method: 'get',
+  path: '/lifecycle/user_expiration_rules/{id}/',
+  tags: ['lifecycle'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'lifecycle_user_expiration_rules_retrieve',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this User Expiration Rule.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: UserExpirationRuleSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const putLifecycleUserExpirationRulesIdIndexRoute = createRoute({
+  method: 'put',
+  path: '/lifecycle/user_expiration_rules/{id}/',
+  tags: ['lifecycle'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'lifecycle_user_expiration_rules_update',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this User Expiration Rule.',
+            required: true,
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: UserExpirationRuleRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: UserExpirationRuleSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const deleteLifecycleUserExpirationRulesIdIndexRoute = createRoute({
+  method: 'delete',
+  path: '/lifecycle/user_expiration_rules/{id}/',
+  tags: ['lifecycle'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'lifecycle_user_expiration_rules_destroy',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this User Expiration Rule.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No response body' },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const patchLifecycleUserExpirationRulesIdIndexRoute = createRoute({
+  method: 'patch',
+  path: '/lifecycle/user_expiration_rules/{id}/',
+  tags: ['lifecycle'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'lifecycle_user_expiration_rules_partial_update',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this User Expiration Rule.',
+            required: true,
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: PatchedUserExpirationRuleRequestSchema } } },
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: UserExpirationRuleSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getLifecycleUserExpirationRulesIdPreviewIndexRoute = createRoute({
+  method: 'get',
+  path: '/lifecycle/user_expiration_rules/{id}/preview/',
+  tags: ['lifecycle'],
+  description:
+    'Preview new offboardings and changes to pending rows if this rule is enabled.\n\nPOST accepts unsaved edits to the rule. Neither method saves the rule, changes\noffboardings, or sends warnings. Existing policy bindings still apply.',
+  operationId: 'lifecycle_user_expiration_rules_preview_retrieve',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this User Expiration Rule.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: UserExpirationRulePreviewSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const postLifecycleUserExpirationRulesIdPreviewIndexRoute = createRoute({
+  method: 'post',
+  path: '/lifecycle/user_expiration_rules/{id}/preview/',
+  tags: ['lifecycle'],
+  description:
+    'Preview new offboardings and changes to pending rows if this rule is enabled.\n\nPOST accepts unsaved edits to the rule. Neither method saves the rule, changes\noffboardings, or sends warnings. Existing policy bindings still apply.',
+  operationId: 'lifecycle_user_expiration_rules_preview_create',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this User Expiration Rule.',
+            required: true,
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: UserExpirationRuleRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: UserExpirationRulePreviewSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getLifecycleUserExpirationRulesIdUsedByIndexRoute = createRoute({
+  method: 'get',
+  path: '/lifecycle/user_expiration_rules/{id}/used_by/',
+  tags: ['lifecycle'],
+  description: 'Get a list of all objects that use this object',
+  operationId: 'lifecycle_user_expiration_rules_used_by_list',
+  request: {
+    params: z.object({
+      id: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this User Expiration Rule.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: z.array(UsedBySchema) } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
 export const getLifecycleUserOffboardingIndexRoute = createRoute({
   method: 'get',
   path: '/lifecycle/user_offboarding/',
@@ -32949,9 +34256,37 @@ export const getLifecycleUserOffboardingIndexRoute = createRoute({
           required: false,
         },
       }).exactOptional(),
+      generated: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: { in: 'query', name: 'generated', schema: { type: 'boolean' }, required: false },
+        }),
       ordering: QueryPaginationOrderingParamsSchema,
       page: QueryPaginationPageParamsSchema,
       page_size: QueryPaginationPageSizeParamsSchema,
+      rule: z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'rule',
+            schema: { type: 'string', format: 'uuid' },
+            required: false,
+          },
+        }),
+      rule__isnull: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'rule__isnull',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
       search: QuerySearchParamsSchema,
       status: OffboardingStatusEnumSchema.openapi({
         param: {
@@ -45384,6 +46719,17 @@ export const getProvidersSamlIndexRoute = createRoute({
             required: false,
           },
         }),
+      ignore_force_authn: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'ignore_force_authn',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
       invalidation_flow: z
         .uuid()
         .exactOptional()
@@ -47039,6 +48385,17 @@ export const getProvidersWsfedIndexRoute = createRoute({
             required: false,
           },
         }),
+      ignore_force_authn: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'ignore_force_authn',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
       invalidation_flow: z
         .uuid()
         .exactOptional()
@@ -47881,6 +49238,223 @@ export const getRacDevicesIndexRoute = createRoute({
   security: [{ authentik: [] }],
 })
 
+export const getRbacCustomPermissionsIndexRoute = createRoute({
+  method: 'get',
+  path: '/rbac/custom_permissions/',
+  tags: ['rbac'],
+  description: 'Custom permissions',
+  operationId: 'rbac_custom_permissions_list',
+  request: {
+    query: z.object({
+      codename: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: { in: 'query', name: 'codename', schema: { type: 'string' }, required: false },
+        }),
+      ordering: QueryPaginationOrderingParamsSchema,
+      page: QueryPaginationPageParamsSchema,
+      page_size: QueryPaginationPageSizeParamsSchema,
+      search: QuerySearchParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: PaginatedCustomPermissionListSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const postRbacCustomPermissionsIndexRoute = createRoute({
+  method: 'post',
+  path: '/rbac/custom_permissions/',
+  tags: ['rbac'],
+  description: 'Custom permissions',
+  operationId: 'rbac_custom_permissions_create',
+  request: {
+    body: {
+      content: { 'application/json': { schema: CustomPermissionRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: { description: '', content: { 'application/json': { schema: CustomPermissionSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getRbacCustomPermissionsIdIndexRoute = createRoute({
+  method: 'get',
+  path: '/rbac/custom_permissions/{id}/',
+  tags: ['rbac'],
+  description: 'Custom permissions',
+  operationId: 'rbac_custom_permissions_retrieve',
+  request: {
+    params: z.object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'integer' },
+            description: 'A unique integer value identifying this Custom permission.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: CustomPermissionSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const putRbacCustomPermissionsIdIndexRoute = createRoute({
+  method: 'put',
+  path: '/rbac/custom_permissions/{id}/',
+  tags: ['rbac'],
+  description: 'Custom permissions',
+  operationId: 'rbac_custom_permissions_update',
+  request: {
+    params: z.object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'integer' },
+            description: 'A unique integer value identifying this Custom permission.',
+            required: true,
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: CustomPermissionRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: CustomPermissionSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const deleteRbacCustomPermissionsIdIndexRoute = createRoute({
+  method: 'delete',
+  path: '/rbac/custom_permissions/{id}/',
+  tags: ['rbac'],
+  description: 'Custom permissions',
+  operationId: 'rbac_custom_permissions_destroy',
+  request: {
+    params: z.object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'integer' },
+            description: 'A unique integer value identifying this Custom permission.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No response body' },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const patchRbacCustomPermissionsIdIndexRoute = createRoute({
+  method: 'patch',
+  path: '/rbac/custom_permissions/{id}/',
+  tags: ['rbac'],
+  description: 'Custom permissions',
+  operationId: 'rbac_custom_permissions_partial_update',
+  request: {
+    params: z.object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'id',
+            schema: { type: 'integer' },
+            description: 'A unique integer value identifying this Custom permission.',
+            required: true,
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: PatchedCustomPermissionRequestSchema } } },
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: CustomPermissionSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getRbacEndpointsIndexRoute = createRoute({
+  method: 'get',
+  path: '/rbac/endpoints/',
+  tags: ['rbac'],
+  operationId: 'rbac_endpoints_list',
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: z.array(EndpointSchema) } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
 export const getRbacInitialPermissionsIndexRoute = createRoute({
   method: 'get',
   path: '/rbac/initial_permissions/',
@@ -48104,6 +49678,202 @@ export const getRbacInitialPermissionsIdUsedByIndexRoute = createRoute({
             name: 'id',
             schema: { type: 'integer' },
             description: 'A unique integer value identifying this Initial Permissions.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: z.array(UsedBySchema) } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getRbacPermissionChecksIndexRoute = createRoute({
+  method: 'get',
+  path: '/rbac/permission_checks/',
+  tags: ['rbac'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'rbac_permission_checks_list',
+  request: {
+    query: z.object({
+      name: QueryNameParamsSchema,
+      ordering: QueryPaginationOrderingParamsSchema,
+      page: QueryPaginationPageParamsSchema,
+      page_size: QueryPaginationPageSizeParamsSchema,
+      search: QuerySearchParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: '',
+      content: { 'application/json': { schema: PaginatedPermissionCheckListSchema } },
+    },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const postRbacPermissionChecksIndexRoute = createRoute({
+  method: 'post',
+  path: '/rbac/permission_checks/',
+  tags: ['rbac'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'rbac_permission_checks_create',
+  request: {
+    body: {
+      content: { 'application/json': { schema: PermissionCheckRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: { description: '', content: { 'application/json': { schema: PermissionCheckSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getRbacPermissionChecksCheckUuidIndexRoute = createRoute({
+  method: 'get',
+  path: '/rbac/permission_checks/{check_uuid}/',
+  tags: ['rbac'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'rbac_permission_checks_retrieve',
+  request: {
+    params: z.object({
+      check_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'check_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Permission check.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: PermissionCheckSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const putRbacPermissionChecksCheckUuidIndexRoute = createRoute({
+  method: 'put',
+  path: '/rbac/permission_checks/{check_uuid}/',
+  tags: ['rbac'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'rbac_permission_checks_update',
+  request: {
+    params: z.object({
+      check_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'check_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Permission check.',
+            required: true,
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: PermissionCheckRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: PermissionCheckSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const deleteRbacPermissionChecksCheckUuidIndexRoute = createRoute({
+  method: 'delete',
+  path: '/rbac/permission_checks/{check_uuid}/',
+  tags: ['rbac'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'rbac_permission_checks_destroy',
+  request: {
+    params: z.object({
+      check_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'check_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Permission check.',
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No response body' },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const patchRbacPermissionChecksCheckUuidIndexRoute = createRoute({
+  method: 'patch',
+  path: '/rbac/permission_checks/{check_uuid}/',
+  tags: ['rbac'],
+  description: 'Mixin to add a used_by endpoint to return a list of all objects using this object',
+  operationId: 'rbac_permission_checks_partial_update',
+  request: {
+    params: z.object({
+      check_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'check_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Permission check.',
+            required: true,
+          },
+        }),
+    }),
+    body: { content: { 'application/json': { schema: PatchedPermissionCheckRequestSchema } } },
+  },
+  responses: {
+    200: { description: '', content: { 'application/json': { schema: PermissionCheckSchema } } },
+    400: ValidationErrorResponseResponse,
+    403: GenericErrorResponseResponse,
+  },
+  security: [{ authentik: [] }],
+})
+
+export const getRbacPermissionChecksCheckUuidUsedByIndexRoute = createRoute({
+  method: 'get',
+  path: '/rbac/permission_checks/{check_uuid}/used_by/',
+  tags: ['rbac'],
+  description: 'Get a list of all objects that use this object',
+  operationId: 'rbac_permission_checks_used_by_list',
+  request: {
+    params: z.object({
+      check_uuid: z
+        .uuid()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'check_uuid',
+            schema: { type: 'string', format: 'uuid' },
+            description: 'A UUID string identifying this Permission check.',
             required: true,
           },
         }),
@@ -53407,7 +55177,7 @@ export const getSourcesSamlIndexRoute = createRoute({
           schema: {
             allOf: [{ $ref: '#/components/schemas/SAMLNameIDPolicyEnum' }],
             description:
-              'NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.\n\n',
+              'Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.\n\n',
           },
           required: false,
         },
@@ -61855,6 +63625,25 @@ export const getStagesPasswordIndexRoute = createRoute({
           param: {
             in: 'query',
             name: 'failed_attempts_before_cancel',
+            schema: { type: 'integer' },
+            required: false,
+          },
+        }),
+      failed_attempts_before_lockout: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'failed_attempts_before_lockout',
             schema: { type: 'integer' },
             required: false,
           },

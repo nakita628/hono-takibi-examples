@@ -1,8 +1,8 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const V2ObjectSchema = z.object({}).openapi('V2Object')
+const V2ObjectSchema = z.looseObject({}).openapi('V2Object')
 
-const V2VoidSchema = z.object({}).openapi('V2Void')
+const V2VoidSchema = z.looseObject({}).openapi('V2Void')
 
 const V3StopDepartureRequestRouteDirectionSchema = z
   .object({

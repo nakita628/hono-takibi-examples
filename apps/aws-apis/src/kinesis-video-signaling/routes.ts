@@ -22,28 +22,20 @@ const TtlSchema = z.int().min(30).max(86400).openapi('Ttl')
 
 const IceServerSchema = z
   .object({
-    Uris: UrisSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of URIs, in the form specified in the <a href="https://tools.ietf.org/html/draft-petithuguenin-behave-turn-uris-03">I-D.petithuguenin-behave-turn-uris</a> spec. These URIs provide the different addresses and/or protocols that can be used to reach the TURN server.',
-        }),
-    ).exactOptional(),
-    Username: UsernameSchema.and(
-      z.any().openapi({ description: 'A username to login to the ICE server.' }),
-    ).exactOptional(),
-    Password: PasswordSchema.and(
-      z.any().openapi({ description: 'A password to login to the ICE server.' }),
-    ).exactOptional(),
-    Ttl: TtlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The period of time, in seconds, during which the username and password are valid.',
-        }),
-    ).exactOptional(),
+    Uris: UrisSchema.exactOptional().openapi({
+      description:
+        'An array of URIs, in the form specified in the <a href="https://tools.ietf.org/html/draft-petithuguenin-behave-turn-uris-03">I-D.petithuguenin-behave-turn-uris</a> spec. These URIs provide the different addresses and/or protocols that can be used to reach the TURN server.',
+    }),
+    Username: UsernameSchema.exactOptional().openapi({
+      description: 'A username to login to the ICE server.',
+    }),
+    Password: PasswordSchema.exactOptional().openapi({
+      description: 'A password to login to the ICE server.',
+    }),
+    Ttl: TtlSchema.exactOptional().openapi({
+      description:
+        'The period of time, in seconds, during which the username and password are valid.',
+    }),
   })
   .openapi({ description: 'A structure for the ICE server connection data.', required: [] })
   .openapi('IceServer')
@@ -52,9 +44,9 @@ const IceServerListSchema = z.array(IceServerSchema).openapi('IceServerList')
 
 const GetIceServerConfigResponseSchema = z
   .object({
-    IceServerList: IceServerListSchema.and(
-      z.any().openapi({ description: 'The list of ICE server information objects.' }),
-    ).exactOptional(),
+    IceServerList: IceServerListSchema.exactOptional().openapi({
+      description: 'The list of ICE server information objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetIceServerConfigResponse')
@@ -75,9 +67,9 @@ const AnswerSchema = z.string().min(1).max(10000).openapi('Answer')
 
 const SendAlexaOfferToMasterResponseSchema = z
   .object({
-    Answer: AnswerSchema.and(
-      z.any().openapi({ description: 'The base64-encoded SDP answer content.' }),
-    ).exactOptional(),
+    Answer: AnswerSchema.exactOptional().openapi({
+      description: 'The base64-encoded SDP answer content.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendAlexaOfferToMasterResponse')
@@ -100,35 +92,20 @@ const ServiceSchema = z.literal('TURN').openapi('Service')
 
 const GetIceServerConfigRequestSchema = z
   .object({
-    ChannelARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the signaling channel to be used for the peer-to-peer connection between configured peers. ',
-        }),
-    ),
-    ClientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier for the viewer. Must be unique within the signaling channel.',
-        }),
-    ).exactOptional(),
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the desired service. Currently, <code>TURN</code> is the only valid value.',
-        }),
-    ).exactOptional(),
-    Username: UsernameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An optional user ID to be associated with the credentials.' }),
-    ).exactOptional(),
+    ChannelARN: ResourceARNSchema.openapi({
+      description:
+        'The ARN of the signaling channel to be used for the peer-to-peer connection between configured peers. ',
+    }),
+    ClientId: ClientIdSchema.exactOptional().openapi({
+      description: 'Unique identifier for the viewer. Must be unique within the signaling channel.',
+    }),
+    Service: ServiceSchema.exactOptional().openapi({
+      description:
+        'Specifies the desired service. Currently, <code>TURN</code> is the only valid value.',
+    }),
+    Username: UsernameSchema.exactOptional().openapi({
+      description: 'An optional user ID to be associated with the credentials.',
+    }),
   })
   .openapi({ required: ['ChannelARN'], title: 'GetIceServerConfigRequest' })
   .openapi('GetIceServerConfigRequest')
@@ -142,20 +119,16 @@ const MessagePayloadSchema = z
 
 const SendAlexaOfferToMasterRequestSchema = z
   .object({
-    ChannelARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the signaling channel by which Alexa and the master peer communicate.',
-        }),
-    ),
-    SenderClientId: ClientIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the sender client.' }),
-    ),
-    MessagePayload: MessagePayloadSchema.and(
-      z.any().openapi({ description: 'The base64-encoded SDP offer content.' }),
-    ),
+    ChannelARN: ResourceARNSchema.openapi({
+      description:
+        'The ARN of the signaling channel by which Alexa and the master peer communicate.',
+    }),
+    SenderClientId: ClientIdSchema.openapi({
+      description: 'The unique identifier for the sender client.',
+    }),
+    MessagePayload: MessagePayloadSchema.openapi({
+      description: 'The base64-encoded SDP offer content.',
+    }),
   })
   .openapi({
     required: ['ChannelARN', 'SenderClientId', 'MessagePayload'],

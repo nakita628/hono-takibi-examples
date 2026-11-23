@@ -14,22 +14,14 @@ const AttributeGroupArnSchema = z
 
 const AssociateAttributeGroupResponseSchema = z
   .object({
-    applicationArn: ApplicationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) of the application that was augmented with attributes.',
-        }),
-    ).exactOptional(),
-    attributeGroupArn: AttributeGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon resource name (ARN) of the attribute group that contains the application's new attributes.",
-        }),
-    ).exactOptional(),
+    applicationArn: ApplicationArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon resource name (ARN) of the application that was augmented with attributes.',
+    }),
+    attributeGroupArn: AttributeGroupArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon resource name (ARN) of the attribute group that contains the application's new attributes.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateAttributeGroupResponse')
@@ -53,19 +45,13 @@ const ArnSchema = z
 
 const AssociateResourceResponseSchema = z
   .object({
-    applicationArn: ApplicationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) of the application that was augmented with attributes.',
-        }),
-    ).exactOptional(),
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon resource name (ARN) that specifies the resource.' }),
-    ).exactOptional(),
+    applicationArn: ApplicationArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon resource name (ARN) of the application that was augmented with attributes.',
+    }),
+    resourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateResourceResponse')
@@ -103,49 +89,30 @@ const TagsSchema = z
 
 const ApplicationSchema = z
   .object({
-    id: ApplicationIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the application.' }),
-    ).exactOptional(),
-    arn: ApplicationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) that specifies the application across services.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application. The name must be unique in the region in which you are creating the application.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment when the application was created.',
-        }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ISO-8601 formatted timestamp of the moment when the application was last updated.',
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Key-value pairs you can use to associate with the application.' }),
-    ).exactOptional(),
+    id: ApplicationIdSchema.exactOptional().openapi({
+      description: 'The identifier of the application.',
+    }),
+    arn: ApplicationArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the application across services.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the application. The name must be unique in the region in which you are creating the application.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment when the application was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The ISO-8601 formatted timestamp of the moment when the application was last updated.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Key-value pairs you can use to associate with the application.',
+    }),
   })
   .openapi({
     description:
@@ -156,9 +123,9 @@ const ApplicationSchema = z
 
 const CreateApplicationResponseSchema = z
   .object({
-    application: ApplicationSchema.and(
-      z.any().openapi({ description: 'Information about the application.' }),
-    ).exactOptional(),
+    application: ApplicationSchema.exactOptional().openapi({
+      description: 'Information about the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApplicationResponse')
@@ -172,52 +139,28 @@ const AttributeGroupIdSchema = z
 
 const AttributeGroupSchema = z
   .object({
-    id: AttributeGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The globally unique attribute group identifier of the attribute group.',
-        }),
-    ).exactOptional(),
-    arn: AttributeGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) that specifies the attribute group across services.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute group.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the attribute group that the user provides.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment the attribute group was created.',
-        }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment the attribute group was last updated. This time is the same as the creationTime for a newly created attribute group.',
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Key-value pairs you can use to associate with the attribute group.',
-        }),
-    ).exactOptional(),
+    id: AttributeGroupIdSchema.exactOptional().openapi({
+      description: 'The globally unique attribute group identifier of the attribute group.',
+    }),
+    arn: AttributeGroupArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon resource name (ARN) that specifies the attribute group across services.',
+    }),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the attribute group.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the attribute group that the user provides.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment the attribute group was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment the attribute group was last updated. This time is the same as the creationTime for a newly created attribute group.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Key-value pairs you can use to associate with the attribute group.',
+    }),
   })
   .openapi({
     description:
@@ -228,53 +171,36 @@ const AttributeGroupSchema = z
 
 const CreateAttributeGroupResponseSchema = z
   .object({
-    attributeGroup: AttributeGroupSchema.and(
-      z.any().openapi({ description: 'Information about the attribute group.' }),
-    ).exactOptional(),
+    attributeGroup: AttributeGroupSchema.exactOptional().openapi({
+      description: 'Information about the attribute group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAttributeGroupResponse')
 
 const ApplicationSummarySchema = z
   .object({
-    id: ApplicationIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the application.' }),
-    ).exactOptional(),
-    arn: ApplicationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) that specifies the application across services.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application. The name must be unique in the region in which you are creating the application.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment when the application was created.',
-        }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ISO-8601 formatted timestamp of the moment when the application was last updated.',
-        }),
-    ).exactOptional(),
+    id: ApplicationIdSchema.exactOptional().openapi({
+      description: 'The identifier of the application.',
+    }),
+    arn: ApplicationArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the application across services.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the application. The name must be unique in the region in which you are creating the application.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment when the application was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The ISO-8601 formatted timestamp of the moment when the application was last updated.',
+    }),
   })
   .openapi({
     description: 'Summary of a Amazon Web Services Service Catalog AppRegistry application.',
@@ -284,9 +210,9 @@ const ApplicationSummarySchema = z
 
 const DeleteApplicationResponseSchema = z
   .object({
-    application: ApplicationSummarySchema.and(
-      z.any().openapi({ description: 'Information about the deleted application.' }),
-    ).exactOptional(),
+    application: ApplicationSummarySchema.exactOptional().openapi({
+      description: 'Information about the deleted application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteApplicationResponse')
@@ -300,48 +226,28 @@ const CreatedBySchema = z
 
 const AttributeGroupSummarySchema = z
   .object({
-    id: AttributeGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The globally unique attribute group identifier of the attribute group.',
-        }),
-    ).exactOptional(),
-    arn: AttributeGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) that specifies the attribute group across services.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute group.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the attribute group that the user provides.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment the attribute group was created.',
-        }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment the attribute group was last updated. This time is the same as the creationTime for a newly created attribute group.',
-        }),
-    ).exactOptional(),
-    createdBy: CreatedBySchema.and(
-      z.any().openapi({ description: 'The service principal that created the attribute group.' }),
-    ).exactOptional(),
+    id: AttributeGroupIdSchema.exactOptional().openapi({
+      description: 'The globally unique attribute group identifier of the attribute group.',
+    }),
+    arn: AttributeGroupArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon resource name (ARN) that specifies the attribute group across services.',
+    }),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the attribute group.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the attribute group that the user provides.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment the attribute group was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment the attribute group was last updated. This time is the same as the creationTime for a newly created attribute group.',
+    }),
+    createdBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The service principal that created the attribute group.',
+    }),
   })
   .openapi({
     description: 'Summary of a Amazon Web Services Service Catalog AppRegistry attribute group.',
@@ -351,43 +257,33 @@ const AttributeGroupSummarySchema = z
 
 const DeleteAttributeGroupResponseSchema = z
   .object({
-    attributeGroup: AttributeGroupSummarySchema.and(
-      z.any().openapi({ description: 'Information about the deleted attribute group.' }),
-    ).exactOptional(),
+    attributeGroup: AttributeGroupSummarySchema.exactOptional().openapi({
+      description: 'Information about the deleted attribute group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteAttributeGroupResponse')
 
 const DisassociateAttributeGroupResponseSchema = z
   .object({
-    applicationArn: ApplicationArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon resource name (ARN) that specifies the application.' }),
-    ).exactOptional(),
-    attributeGroupArn: AttributeGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon resource name (ARN) that specifies the attribute group.',
-        }),
-    ).exactOptional(),
+    applicationArn: ApplicationArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the application.',
+    }),
+    attributeGroupArn: AttributeGroupArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the attribute group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateAttributeGroupResponse')
 
 const DisassociateResourceResponseSchema = z
   .object({
-    applicationArn: ApplicationArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon resource name (ARN) that specifies the application.' }),
-    ).exactOptional(),
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon resource name (ARN) that specifies the resource.' }),
-    ).exactOptional(),
+    applicationArn: ApplicationArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the application.',
+    }),
+    resourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateResourceResponse')
@@ -409,97 +305,64 @@ const StringSchema = z.string().openapi('String')
 
 const ResourceGroupSchema = z
   .object({
-    state: ResourceGroupStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the propagation process for the resource group. The states includes:</p> <p> <code>CREATING </code>if the resource group is in the process of being created.</p> <p> <code>CREATE_COMPLETE</code> if the resource group was created successfully.</p> <p> <code>CREATE_FAILED</code> if the resource group failed to be created.</p> <p> <code>UPDATING</code> if the resource group is in the process of being updated.</p> <p> <code>UPDATE_COMPLETE</code> if the resource group updated successfully.</p> <p> <code>UPDATE_FAILED</code> if the resource group could not update successfully.</p>',
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon resource name (ARN) of the resource group.' }),
-    ).exactOptional(),
-    errorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error message that generates when the propagation process for the resource group fails.',
-        }),
-    ).exactOptional(),
+    state: ResourceGroupStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the propagation process for the resource group. The states includes:</p> <p> <code>CREATING </code>if the resource group is in the process of being created.</p> <p> <code>CREATE_COMPLETE</code> if the resource group was created successfully.</p> <p> <code>CREATE_FAILED</code> if the resource group failed to be created.</p> <p> <code>UPDATING</code> if the resource group is in the process of being updated.</p> <p> <code>UPDATE_COMPLETE</code> if the resource group updated successfully.</p> <p> <code>UPDATE_FAILED</code> if the resource group could not update successfully.</p>',
+    }),
+    arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) of the resource group.',
+    }),
+    errorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'The error message that generates when the propagation process for the resource group fails.',
+    }),
   })
   .openapi({ description: 'The information about the resource group integration.', required: [] })
   .openapi('ResourceGroup')
 
 const IntegrationsSchema = z
   .object({
-    resourceGroup: ResourceGroupSchema.and(
-      z.any().openapi({ description: ' The information about the resource group integration.' }),
-    ).exactOptional(),
+    resourceGroup: ResourceGroupSchema.exactOptional().openapi({
+      description: ' The information about the resource group integration.',
+    }),
   })
   .openapi({ description: ' The information about the service integration.', required: [] })
   .openapi('Integrations')
 
 const GetApplicationResponseSchema = z
   .object({
-    id: ApplicationIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the application.' }),
-    ).exactOptional(),
-    arn: ApplicationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) that specifies the application across services.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application. The name must be unique in the region in which you are creating the application.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment when the application was created.',
-        }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment when the application was last updated.',
-        }),
-    ).exactOptional(),
-    associatedResourceCount: AssociationCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of top-level resources that were registered as part of this application.',
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Key-value pairs associated with the application.' }),
-    ).exactOptional(),
-    integrations: IntegrationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The information about the integration of the application with other services, such as Resource Groups. ',
-        }),
-    ).exactOptional(),
+    id: ApplicationIdSchema.exactOptional().openapi({
+      description: 'The identifier of the application.',
+    }),
+    arn: ApplicationArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the application across services.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the application. The name must be unique in the region in which you are creating the application.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment when the application was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment when the application was last updated.',
+    }),
+    associatedResourceCount: AssociationCountSchema.exactOptional().openapi({
+      description:
+        'The number of top-level resources that were registered as part of this application.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Key-value pairs associated with the application.',
+    }),
+    integrations: IntegrationsSchema.exactOptional().openapi({
+      description:
+        ' The information about the integration of the application with other services, such as Resource Groups. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetApplicationResponse')
@@ -515,38 +378,36 @@ const StackArnSchema = z
 
 const ResourceIntegrationsSchema = z
   .object({
-    resourceGroup: ResourceGroupSchema.and(
-      z.any().openapi({ description: 'The information about the integration of Resource Groups.' }),
-    ).exactOptional(),
+    resourceGroup: ResourceGroupSchema.exactOptional().openapi({
+      description: 'The information about the integration of Resource Groups.',
+    }),
   })
   .openapi({ description: 'The service integration information about the resource.', required: [] })
   .openapi('ResourceIntegrations')
 
 const ResourceSchema = z
   .object({
-    name: ResourceSpecifierSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    arn: StackArnSchema.and(
-      z.any().openapi({ description: 'The Amazon resource name (ARN) of the resource.' }),
-    ).exactOptional(),
-    associationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time the resource was associated with the application.' }),
-    ).exactOptional(),
-    integrations: ResourceIntegrationsSchema.and(
-      z.any().openapi({ description: 'The service integration information about the resource. ' }),
-    ).exactOptional(),
+    name: ResourceSpecifierSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    arn: StackArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) of the resource.',
+    }),
+    associationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the resource was associated with the application.',
+    }),
+    integrations: ResourceIntegrationsSchema.exactOptional().openapi({
+      description: 'The service integration information about the resource. ',
+    }),
   })
   .openapi({ description: ' The information about the resource.', required: [] })
   .openapi('Resource')
 
 const GetAssociatedResourceResponseSchema = z
   .object({
-    resource: ResourceSchema.and(
-      z.any().openapi({ description: 'The resource associated with the application.' }),
-    ).exactOptional(),
+    resource: ResourceSchema.exactOptional().openapi({
+      description: 'The resource associated with the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAssociatedResourceResponse')
@@ -560,55 +421,35 @@ const AttributesSchema = z
 
 const GetAttributeGroupResponseSchema = z
   .object({
-    id: AttributeGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the attribute group.' }),
-    ).exactOptional(),
-    arn: AttributeGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) that specifies the attribute group across services.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute group.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the attribute group that the user provides.' }),
-    ).exactOptional(),
-    attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON string in the form of nested key-value pairs that represent the attributes in the group and describes an application and its components.',
-        }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment the attribute group was created.',
-        }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ISO-8601 formatted timestamp of the moment the attribute group was last updated. This time is the same as the creationTime for a newly created attribute group.',
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Key-value pairs associated with the attribute group.' }),
-    ).exactOptional(),
-    createdBy: CreatedBySchema.and(
-      z.any().openapi({ description: 'The service principal that created the attribute group.' }),
-    ).exactOptional(),
+    id: AttributeGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the attribute group.',
+    }),
+    arn: AttributeGroupArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon resource name (ARN) that specifies the attribute group across services.',
+    }),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the attribute group.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the attribute group that the user provides.',
+    }),
+    attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        'A JSON string in the form of nested key-value pairs that represent the attributes in the group and describes an application and its components.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment the attribute group was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ISO-8601 formatted timestamp of the moment the attribute group was last updated. This time is the same as the creationTime for a newly created attribute group.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Key-value pairs associated with the attribute group.',
+    }),
+    createdBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The service principal that created the attribute group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAttributeGroupResponse')
@@ -622,13 +463,9 @@ const TagKeyConfigSchema = z
 
 const TagQueryConfigurationSchema = z
   .object({
-    tagKey: TagKeyConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Condition in the IAM policy that associates resources to an application. ',
-        }),
-    ).exactOptional(),
+    tagKey: TagKeyConfigSchema.exactOptional().openapi({
+      description: ' Condition in the IAM policy that associates resources to an application. ',
+    }),
   })
   .openapi({
     description:
@@ -639,20 +476,18 @@ const TagQueryConfigurationSchema = z
 
 const AppRegistryConfigurationSchema = z
   .object({
-    tagQueryConfiguration: TagQueryConfigurationSchema.and(
-      z.any().openapi({ description: ' Includes the definition of a <code>tagQuery</code>. ' }),
-    ).exactOptional(),
+    tagQueryConfiguration: TagQueryConfigurationSchema.exactOptional().openapi({
+      description: ' Includes the definition of a <code>tagQuery</code>. ',
+    }),
   })
   .openapi({ description: ' Includes all of the AppRegistry settings. ', required: [] })
   .openapi('AppRegistryConfiguration')
 
 const GetConfigurationResponseSchema = z
   .object({
-    configuration: AppRegistryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Retrieves <code>TagKey</code> configuration from an account. ' }),
-    ).exactOptional(),
+    configuration: AppRegistryConfigurationSchema.exactOptional().openapi({
+      description: ' Retrieves <code>TagKey</code> configuration from an account. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConfigurationResponse')
@@ -668,17 +503,12 @@ const NextTokenSchema = z
 
 const ListApplicationsResponseSchema = z
   .object({
-    applications: ApplicationSummariesSchema.and(
-      z.any().openapi({ description: 'This list of applications.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next page of results after a previous API call. ',
-        }),
-    ).exactOptional(),
+    applications: ApplicationSummariesSchema.exactOptional().openapi({
+      description: 'This list of applications.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use to get the next page of results after a previous API call. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationsResponse')
@@ -687,17 +517,12 @@ const AttributeGroupIdsSchema = z.array(AttributeGroupIdSchema).openapi('Attribu
 
 const ListAssociatedAttributeGroupsResponseSchema = z
   .object({
-    attributeGroups: AttributeGroupIdsSchema.and(
-      z.any().openapi({ description: 'A list of attribute group IDs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next page of results after a previous API call. ',
-        }),
-    ).exactOptional(),
+    attributeGroups: AttributeGroupIdsSchema.exactOptional().openapi({
+      description: 'A list of attribute group IDs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use to get the next page of results after a previous API call. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssociatedAttributeGroupsResponse')
@@ -706,37 +531,25 @@ const ResourceTypeSchema = z.enum(['CFN_STACK', 'RESOURCE_TAG_VALUE']).openapi('
 
 const ResourceDetailsSchema = z
   .object({
-    tagValue: TagValueSchema.and(
-      z.any().openapi({ description: 'The value of the tag.' }),
-    ).exactOptional(),
+    tagValue: TagValueSchema.exactOptional().openapi({ description: 'The value of the tag.' }),
   })
   .openapi({ description: ' The details related to the resource. ', required: [] })
   .openapi('ResourceDetails')
 
 const ResourceInfoSchema = z
   .object({
-    name: ResourceSpecifierSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) that specifies the resource across services.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Provides information about the Service Catalog App Registry resource type. ',
-        }),
-    ).exactOptional(),
-    resourceDetails: ResourceDetailsSchema.and(
-      z.any().openapi({ description: ' The details related to the resource. ' }),
-    ).exactOptional(),
+    name: ResourceSpecifierSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the resource across services.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: ' Provides information about the Service Catalog App Registry resource type. ',
+    }),
+    resourceDetails: ResourceDetailsSchema.exactOptional().openapi({
+      description: ' The details related to the resource. ',
+    }),
   })
   .openapi({ description: 'The information about the resource.', required: [] })
   .openapi('ResourceInfo')
@@ -745,17 +558,12 @@ const ResourcesSchema = z.array(ResourceInfoSchema).openapi('Resources')
 
 const ListAssociatedResourcesResponseSchema = z
   .object({
-    resources: ResourcesSchema.and(
-      z.any().openapi({ description: 'Information about the resources.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next page of results after a previous API call. ',
-        }),
-    ).exactOptional(),
+    resources: ResourcesSchema.exactOptional().openapi({
+      description: 'Information about the resources.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use to get the next page of results after a previous API call. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssociatedResourcesResponse')
@@ -766,45 +574,32 @@ const AttributeGroupSummariesSchema = z
 
 const ListAttributeGroupsResponseSchema = z
   .object({
-    attributeGroups: AttributeGroupSummariesSchema.and(
-      z.any().openapi({ description: 'This list of attribute groups.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next page of results after a previous API call. ',
-        }),
-    ).exactOptional(),
+    attributeGroups: AttributeGroupSummariesSchema.exactOptional().openapi({
+      description: 'This list of attribute groups.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use to get the next page of results after a previous API call. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAttributeGroupsResponse')
 
 const AttributeGroupDetailsSchema = z
   .object({
-    id: AttributeGroupIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the attribute group.' }),
-    ).exactOptional(),
-    arn: AttributeGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon resource name (ARN) that specifies the attribute group.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<important> <p> This field is no longer supported. We recommend you don't use the field when using <code>ListAttributeGroupsForApplication</code>. </p> </important> <p> The name of the attribute group. </p>This field is deprecated. We recommend not using the field when using ListAttributeGroupsForApplication.",
-        }),
-    ).exactOptional(),
-    createdBy: CreatedBySchema.and(
-      z.any().openapi({ description: 'The service principal that created the attribute group.' }),
-    ).exactOptional(),
+    id: AttributeGroupIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the attribute group.',
+    }),
+    arn: AttributeGroupArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the attribute group.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<important> <p> This field is no longer supported. We recommend you don't use the field when using <code>ListAttributeGroupsForApplication</code>. </p> </important> <p> The name of the attribute group. </p>This field is deprecated. We recommend not using the field when using ListAttributeGroupsForApplication.",
+    }),
+    createdBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The service principal that created the attribute group.',
+    }),
   })
   .openapi({ description: ' The details related to a specific AttributeGroup. ', required: [] })
   .openapi('AttributeGroupDetails')
@@ -815,26 +610,19 @@ const AttributeGroupDetailsListSchema = z
 
 const ListAttributeGroupsForApplicationResponseSchema = z
   .object({
-    attributeGroupsDetails: AttributeGroupDetailsListSchema.and(
-      z.any().openapi({ description: ' The details related to a specific attribute group. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next page of results after a previous API call.',
-        }),
-    ).exactOptional(),
+    attributeGroupsDetails: AttributeGroupDetailsListSchema.exactOptional().openapi({
+      description: ' The details related to a specific attribute group. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use to get the next page of results after a previous API call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAttributeGroupsForApplicationResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags on the resource.' }),
-    ).exactOptional(),
+    tags: TagsSchema.exactOptional().openapi({ description: 'The tags on the resource.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -843,31 +631,23 @@ const SyncActionSchema = z.enum(['START_SYNC', 'NO_ACTION']).openapi('SyncAction
 
 const SyncResourceResponseSchema = z
   .object({
-    applicationArn: ApplicationArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon resource name (ARN) that specifies the application.' }),
-    ).exactOptional(),
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon resource name (ARN) that specifies the resource.' }),
-    ).exactOptional(),
-    actionTaken: SyncActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The results of the output if an application is associated with an ARN value, which could be <code>syncStarted</code> or None.',
-        }),
-    ).exactOptional(),
+    applicationArn: ApplicationArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the application.',
+    }),
+    resourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon resource name (ARN) that specifies the resource.',
+    }),
+    actionTaken: SyncActionSchema.exactOptional().openapi({
+      description:
+        'The results of the output if an application is associated with an ARN value, which could be <code>syncStarted</code> or None.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SyncResourceResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -878,18 +658,18 @@ const TagKeySchema = z
 
 const UpdateApplicationResponseSchema = z
   .object({
-    application: ApplicationSchema.and(
-      z.any().openapi({ description: 'The updated information of the application.' }),
-    ).exactOptional(),
+    application: ApplicationSchema.exactOptional().openapi({
+      description: 'The updated information of the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateApplicationResponse')
 
 const UpdateAttributeGroupResponseSchema = z
   .object({
-    attributeGroup: AttributeGroupSchema.and(
-      z.any().openapi({ description: 'The updated information of the attribute group.' }),
-    ).exactOptional(),
+    attributeGroup: AttributeGroupSchema.exactOptional().openapi({
+      description: 'The updated information of the attribute group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAttributeGroupResponse')
@@ -913,12 +693,12 @@ const AttributeGroupSpecifierSchema = z
   .openapi('AttributeGroupSpecifier')
 
 const AssociateAttributeGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'AssociateAttributeGroupRequest' })
   .openapi('AssociateAttributeGroupRequest')
 
 const AssociateResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'AssociateResourceRequest' })
   .openapi('AssociateResourceRequest')
 
@@ -931,65 +711,41 @@ const ClientTokenSchema = z
 
 const CreateApplicationRequestSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application. The name must be unique in the region in which you are creating the application.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Key-value pairs you can use to associate with the application.' }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, the retry fails.',
-        }),
-    ),
+    name: NameSchema.openapi({
+      description:
+        'The name of the application. The name must be unique in the region in which you are creating the application.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Key-value pairs you can use to associate with the application.',
+    }),
+    clientToken: ClientTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, the retry fails.',
+    }),
   })
   .openapi({ required: ['name', 'clientToken'], title: 'CreateApplicationRequest' })
   .openapi('CreateApplicationRequest')
 
 const CreateAttributeGroupRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the attribute group.' })),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the attribute group that the user provides.' }),
-    ).exactOptional(),
-    attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON string in the form of nested key-value pairs that represent the attributes in the group and describes an application and its components.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Key-value pairs you can use to associate with the attribute group.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, the retry fails.',
-        }),
-    ),
+    name: NameSchema.openapi({ description: 'The name of the attribute group.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the attribute group that the user provides.',
+    }),
+    attributes: AttributesSchema.openapi({
+      description:
+        'A JSON string in the form of nested key-value pairs that represent the attributes in the group and describes an application and its components.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Key-value pairs you can use to associate with the attribute group.',
+    }),
+    clientToken: ClientTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, the retry fails.',
+    }),
   })
   .openapi({
     required: ['name', 'attributes', 'clientToken'],
@@ -998,87 +754,83 @@ const CreateAttributeGroupRequestSchema = z
   .openapi('CreateAttributeGroupRequest')
 
 const DeleteApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteApplicationRequest' })
   .openapi('DeleteApplicationRequest')
 
 const DeleteAttributeGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAttributeGroupRequest' })
   .openapi('DeleteAttributeGroupRequest')
 
 const DisassociateAttributeGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateAttributeGroupRequest' })
   .openapi('DisassociateAttributeGroupRequest')
 
 const DisassociateResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateResourceRequest' })
   .openapi('DisassociateResourceRequest')
 
 const GetApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetApplicationRequest' })
   .openapi('GetApplicationRequest')
 
 const GetAssociatedResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssociatedResourceRequest' })
   .openapi('GetAssociatedResourceRequest')
 
 const GetAttributeGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAttributeGroupRequest' })
   .openapi('GetAttributeGroupRequest')
 
 const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListApplicationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListApplicationsRequest' })
   .openapi('ListApplicationsRequest')
 
 const ListAssociatedAttributeGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssociatedAttributeGroupsRequest' })
   .openapi('ListAssociatedAttributeGroupsRequest')
 
 const ListAssociatedResourcesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssociatedResourcesRequest' })
   .openapi('ListAssociatedResourcesRequest')
 
 const ListAttributeGroupsForApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAttributeGroupsForApplicationRequest' })
   .openapi('ListAttributeGroupsForApplicationRequest')
 
 const ListAttributeGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAttributeGroupsRequest' })
   .openapi('ListAttributeGroupsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutConfigurationRequestSchema = z
   .object({
-    configuration: AppRegistryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Associates a <code>TagKey</code> configuration to an account. ',
-        }),
-    ),
+    configuration: AppRegistryConfigurationSchema.openapi({
+      description: ' Associates a <code>TagKey</code> configuration to an account. ',
+    }),
   })
   .openapi({ required: ['configuration'], title: 'PutConfigurationRequest' })
   .openapi('PutConfigurationRequest')
 
 const SyncResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'SyncResourceRequest' })
   .openapi('SyncResourceRequest')
 
@@ -1086,60 +838,44 @@ const TagKeysSchema = z.array(TagKeySchema).min(0).max(50).openapi('TagKeys')
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The new or modified tags for the resource.' }),
-    ),
+    tags: TagsSchema.openapi({ description: 'The new or modified tags for the resource.' }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateApplicationRequestSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'Deprecated: The new name of the application. The name must be unique in the region in which you are updating the application. Please do not use this field as we have stopped supporting name updates.Name update for application is deprecated.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The new description of the application.' }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Deprecated: The new name of the application. The name must be unique in the region in which you are updating the application. Please do not use this field as we have stopped supporting name updates.Name update for application is deprecated.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The new description of the application.',
+    }),
   })
   .openapi({ title: 'UpdateApplicationRequest', required: [] })
   .openapi('UpdateApplicationRequest')
 
 const UpdateAttributeGroupRequestSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'Deprecated: The new name of the attribute group. The name must be unique in the region in which you are updating the attribute group. Please do not use this field as we have stopped supporting name updates.Name update for attribute group is deprecated.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the attribute group that the user provides.' }),
-    ).exactOptional(),
-    attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON string in the form of nested key-value pairs that represent the attributes in the group and describes an application and its components.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Deprecated: The new name of the attribute group. The name must be unique in the region in which you are updating the attribute group. Please do not use this field as we have stopped supporting name updates.Name update for attribute group is deprecated.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the attribute group that the user provides.',
+    }),
+    attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        'A JSON string in the form of nested key-value pairs that represent the attributes in the group and describes an application and its components.',
+    }),
   })
   .openapi({ title: 'UpdateAttributeGroupRequest', required: [] })
   .openapi('UpdateAttributeGroupRequest')
@@ -2487,13 +2223,9 @@ export const putConfigurationRoute = createRoute({
             .object({
               configuration: z
                 .object({
-                  tagQueryConfiguration: TagQueryConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Includes the definition of a <code>tagQuery</code>. ',
-                      }),
-                  ).exactOptional(),
+                  tagQueryConfiguration: TagQueryConfigurationSchema.exactOptional().openapi({
+                    description: ' Includes the definition of a <code>tagQuery</code>. ',
+                  }),
                 })
                 .openapi({
                   description: ' Includes all of the AppRegistry settings. ',

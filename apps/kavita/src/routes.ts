@@ -297,7 +297,6 @@ const SeriesCharacterSchema: z.ZodType<SeriesCharacterType> = z
 
 type RatingDtoType = {
   averageScore?: number
-  favoriteCount?: number
   provider?: z.infer<typeof ScrobbleProviderSchema>
   authority?: z.infer<typeof RatingAuthoritySchema>
   providerUrl?: string | null
@@ -306,7 +305,6 @@ type RatingDtoType = {
 const RatingDtoSchema: z.ZodType<RatingDtoType> = z
   .strictObject({
     averageScore: z.int32().exactOptional(),
-    favoriteCount: z.int32().exactOptional().openapi({ deprecated: true }),
     provider: ScrobbleProviderSchema.exactOptional(),
     authority: RatingAuthoritySchema.exactOptional(),
     providerUrl: z.string().nullable().exactOptional(),
@@ -385,7 +383,424 @@ type ExternalSeriesDetailDtoType = {
 
 type MetadataProviderType = 2 | 3 | 4
 
+const MetadataProviderSchema: z.ZodType<MetadataProviderType> = z
+  .union([z.literal(2), z.literal(3), z.literal(4)])
+  .openapi({
+    description: 'Members:\n- `2` — Hardcover\n- `3` — Mangabaka\n- `4` — ComicBookRoundup',
+    'x-enum-varnames': ['Hardcover', 'Mangabaka', 'ComicBookRoundup'],
+    'x-enum-descriptions': ['Hardcover', 'Mangabaka', 'ComicBookRoundup'],
+  })
+  .openapi('MetadataProvider')
+
+const ExternalSeriesDetailDtoSchema: z.ZodType<ExternalSeriesDetailDtoType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        name: z.string().nullable().exactOptional(),
+        titles: ALMediaTitleSchema.exactOptional(),
+        localizedTitles: z
+          .record(z.string(), z.array(LocalizedTitleDtoSchema))
+          .nullable()
+          .exactOptional(),
+        aniListId: z.int32().nullable().exactOptional(),
+        malId: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({ type: ['integer', 'null'], format: 'int64' }),
+        cbrId: z.int32().nullable().exactOptional(),
+        hardcoverId: z.int32().nullable().exactOptional(),
+        isStandAlone: z.boolean().exactOptional(),
+        mangabakaId: z.int32().nullable().exactOptional(),
+        synonyms: z.array(z.string()).nullable().exactOptional(),
+        plusMediaFormat: PlusMediaFormatSchema.exactOptional(),
+        siteUrl: z.string().nullable().exactOptional(),
+        coverUrl: z.string().nullable().exactOptional(),
+        genres: z.array(z.string()).nullable().exactOptional(),
+        staff: z.array(SeriesStaffDtoSchema).nullable().exactOptional(),
+        tags: z.array(MetadataTagDtoSchema).nullable().exactOptional(),
+        summary: z.string().nullable().exactOptional(),
+        ageRating: AgeRatingSchema.exactOptional(),
+        ageRatingRaw: z.string().nullable().exactOptional(),
+        provider: ScrobbleProviderSchema.exactOptional(),
+        startDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        endDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        averageScore: z.int32().exactOptional(),
+        chapters: z.int32().exactOptional(),
+        volumes: z.int32().exactOptional(),
+        relations: z.array(SeriesRelationshipSchema).nullable().exactOptional(),
+        characters: z.array(SeriesCharacterSchema).nullable().exactOptional(),
+        ratings: z.array(RatingDtoSchema).nullable().exactOptional(),
+        publisher: z.string().nullable().exactOptional(),
+        chapterDtos: z.array(ExternalChapterDtoSchema).nullable().exactOptional(),
+        editions: z.array(ExternalEditionDtoSchema).nullable().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('ExternalSeriesDetailDto')
+
+const ExternalSeriesMatchDtoSchema = z
+  .strictObject({
+    series: ExternalSeriesDetailDtoSchema.exactOptional(),
+    matchRating: z.float32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ExternalSeriesMatchDto')
+
+type MatchSeriesResultDtoType = {
+  provider?: z.infer<typeof MetadataProviderSchema>
+  matches?: z.infer<typeof ExternalSeriesMatchDtoSchema>[] | null
+}
+
 type RelationKindType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 16
+
+const MangaFormatSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+  .openapi({
+    description:
+      'Members:\n- `0` — Image\n- `1` — Archive\n- `2` — Unknown\n- `3` — EPUB (Epub)\n- `4` — PDF (Pdf)',
+    'x-enum-varnames': ['Image', 'Archive', 'Unknown', 'Epub', 'Pdf'],
+    'x-enum-descriptions': ['Image', 'Archive', 'Unknown', 'EPUB', 'PDF'],
+  })
+  .openapi('MangaFormat')
+
+const MangaFileDtoSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    filePath: z.string().nullable().exactOptional(),
+    pages: z.int32().exactOptional(),
+    bytes: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    format: MangaFormatSchema.exactOptional(),
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    extension: z.string().nullable().exactOptional(),
+    koreaderHash: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MangaFileDto')
+
+const PersonRoleSchema = z
+  .union([
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+    z.literal(6),
+    z.literal(7),
+    z.literal(8),
+    z.literal(9),
+    z.literal(10),
+    z.literal(11),
+    z.literal(12),
+    z.literal(13),
+    z.literal(14),
+    z.literal(15),
+  ])
+  .openapi({
+    description:
+      'Members:\n- `3` — Writer\n- `4` — Penciller\n- `5` — Inker\n- `6` — Colorist\n- `7` — Letterer\n- `8` — CoverArtist\n- `9` — Editor\n- `10` — Publisher\n- `11` — Character\n- `12` — Translator\n- `13` — Imprint\n- `14` — Team\n- `15` — Location',
+    'x-enum-varnames': [
+      'Writer',
+      'Penciller',
+      'Inker',
+      'Colorist',
+      'Letterer',
+      'CoverArtist',
+      'Editor',
+      'Publisher',
+      'Character',
+      'Translator',
+      'Imprint',
+      'Team',
+      'Location',
+    ],
+    'x-enum-descriptions': [
+      'Writer',
+      'Penciller',
+      'Inker',
+      'Colorist',
+      'Letterer',
+      'CoverArtist',
+      'Editor',
+      'Publisher',
+      'Character',
+      'Translator',
+      'Imprint',
+      'Team',
+      'Location',
+    ],
+  })
+  .openapi('PersonRole')
+
+const PersonDtoSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    name: z.string().nullable(),
+    hasCoverImage: z.boolean().exactOptional(),
+    coverImageLocked: z.boolean().exactOptional(),
+    aliases: z.array(z.string()).nullable().exactOptional(),
+    description: z.string().nullable().exactOptional(),
+    asin: z.string().nullable().exactOptional(),
+    aniListId: z.int32().exactOptional(),
+    malId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    hardcoverId: z.string().nullable().exactOptional(),
+    webLinks: z.array(z.string()).nullable().exactOptional(),
+    roles: z.array(PersonRoleSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('PersonDto')
+
+const GenreTagDtoSchema = z
+  .strictObject({ id: z.int32().exactOptional(), title: z.string().nullable() })
+  .openapi({ required: ['title'] })
+  .openapi('GenreTagDto')
+
+const TagDtoSchema = z
+  .strictObject({ id: z.int32().exactOptional(), title: z.string().nullable() })
+  .openapi({ required: ['title'] })
+  .openapi('TagDto')
+
+const PublicationStatusSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+  .openapi({
+    description:
+      'Members:\n- `0` — Ongoing (OnGoing)\n- `1` — Hiatus\n- `2` — Completed\n- `3` — Cancelled\n- `4` — Ended',
+    'x-enum-varnames': ['OnGoing', 'Hiatus', 'Completed', 'Cancelled', 'Ended'],
+    'x-enum-descriptions': ['Ongoing', 'Hiatus', 'Completed', 'Cancelled', 'Ended'],
+  })
+  .openapi('PublicationStatus')
+
+const ChapterDtoSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    range: z.string().nullable().exactOptional(),
+    number: z.string().nullable().exactOptional().openapi({ deprecated: true }),
+    minNumber: z.float32().exactOptional(),
+    maxNumber: z.float32().exactOptional(),
+    sortOrder: z.float32().exactOptional(),
+    pages: z.int32().exactOptional(),
+    isSpecial: z.boolean().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    files: z.array(MangaFileDtoSchema).nullable().exactOptional(),
+    pagesRead: z.int32().exactOptional(),
+    totalReads: z.int32().exactOptional(),
+    lastReadingProgressUtc: z.iso.datetime({ offset: true }).exactOptional(),
+    lastReadingProgress: z.iso.datetime({ offset: true }).exactOptional(),
+    coverImageLocked: z.boolean().exactOptional(),
+    volumeId: z.int32().exactOptional(),
+    createdUtc: z.iso.datetime({ offset: true }).exactOptional(),
+    lastModifiedUtc: z.iso.datetime({ offset: true }).exactOptional(),
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    releaseDate: z.iso.datetime({ offset: true }).exactOptional(),
+    titleName: z.string().nullable().exactOptional(),
+    summary: z.string().nullable().exactOptional(),
+    ageRating: AgeRatingSchema.exactOptional(),
+    wordCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    volumeTitle: z.string().nullable().exactOptional(),
+    minHoursToRead: z.int32().exactOptional(),
+    maxHoursToRead: z.int32().exactOptional(),
+    avgHoursToRead: z.float32().exactOptional(),
+    webLinks: z.string().nullable().exactOptional(),
+    isbn: z.string().nullable().exactOptional(),
+    writers: z.array(PersonDtoSchema).nullable().exactOptional(),
+    coverArtists: z.array(PersonDtoSchema).nullable().exactOptional(),
+    publishers: z.array(PersonDtoSchema).nullable().exactOptional(),
+    characters: z.array(PersonDtoSchema).nullable().exactOptional(),
+    pencillers: z.array(PersonDtoSchema).nullable().exactOptional(),
+    inkers: z.array(PersonDtoSchema).nullable().exactOptional(),
+    imprints: z.array(PersonDtoSchema).nullable().exactOptional(),
+    colorists: z.array(PersonDtoSchema).nullable().exactOptional(),
+    letterers: z.array(PersonDtoSchema).nullable().exactOptional(),
+    editors: z.array(PersonDtoSchema).nullable().exactOptional(),
+    translators: z.array(PersonDtoSchema).nullable().exactOptional(),
+    teams: z.array(PersonDtoSchema).nullable().exactOptional(),
+    locations: z.array(PersonDtoSchema).nullable().exactOptional(),
+    genres: z.array(GenreTagDtoSchema).nullable().exactOptional(),
+    tags: z.array(TagDtoSchema).nullable().exactOptional(),
+    publicationStatus: PublicationStatusSchema.exactOptional(),
+    language: z.string().nullable().exactOptional(),
+    count: z.int32().exactOptional(),
+    totalCount: z.int32().exactOptional(),
+    languageLocked: z.boolean().exactOptional(),
+    summaryLocked: z.boolean().exactOptional(),
+    ageRatingLocked: z.boolean().exactOptional(),
+    publicationStatusLocked: z.boolean().exactOptional(),
+    genresLocked: z.boolean().exactOptional(),
+    tagsLocked: z.boolean().exactOptional(),
+    writerLocked: z.boolean().exactOptional(),
+    characterLocked: z.boolean().exactOptional(),
+    coloristLocked: z.boolean().exactOptional(),
+    editorLocked: z.boolean().exactOptional(),
+    inkerLocked: z.boolean().exactOptional(),
+    imprintLocked: z.boolean().exactOptional(),
+    lettererLocked: z.boolean().exactOptional(),
+    pencillerLocked: z.boolean().exactOptional(),
+    publisherLocked: z.boolean().exactOptional(),
+    translatorLocked: z.boolean().exactOptional(),
+    teamLocked: z.boolean().exactOptional(),
+    locationLocked: z.boolean().exactOptional(),
+    coverArtistLocked: z.boolean().exactOptional(),
+    releaseDateLocked: z.boolean().exactOptional(),
+    titleNameLocked: z.boolean().exactOptional(),
+    sortOrderLocked: z.boolean().exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
+    format: MangaFormatSchema.exactOptional(),
+    aniListId: z.int32().exactOptional(),
+    malId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    hardcoverId: z.int32().exactOptional(),
+    metronId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    comicVineId: z.string().nullable().exactOptional(),
+    mangaBakaId: z.int32().exactOptional(),
+    cbrId: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ChapterDto')
+
+const VolumeDtoSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    minNumber: z.float32().exactOptional(),
+    maxNumber: z.float32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    number: z.int32().exactOptional().openapi({ deprecated: true }),
+    pages: z.int32().exactOptional(),
+    pagesRead: z.int32().exactOptional(),
+    lastModifiedUtc: z.iso.datetime({ offset: true }).exactOptional(),
+    createdUtc: z.iso.datetime({ offset: true }).exactOptional(),
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    lastModified: z.iso.datetime({ offset: true }).exactOptional(),
+    seriesId: z.int32().exactOptional(),
+    chapters: z.array(ChapterDtoSchema).nullable().exactOptional(),
+    minHoursToRead: z.int32().exactOptional(),
+    maxHoursToRead: z.int32().exactOptional(),
+    avgHoursToRead: z.float32().exactOptional(),
+    wordCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    coverImageLocked: z.boolean().exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
+    aniListId: z.int32().exactOptional(),
+    malId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    hardcoverId: z.int32().exactOptional(),
+    metronId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    comicVineId: z.string().nullable().exactOptional(),
+    mangaBakaId: z.int32().exactOptional(),
+    cbrId: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('VolumeDto')
+
+const LibraryTypeSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)])
+  .openapi({
+    description:
+      'Members:\n- `0` — Manga\n- `1` — Comic (Flexible) (Comic)\n- `2` — Book\n- `3` — Image\n- `4` — Light Novel (LightNovel)\n- `5` — Comic (ComicVine)',
+    'x-enum-varnames': ['Manga', 'Comic', 'Book', 'Image', 'LightNovel', 'ComicVine'],
+    'x-enum-descriptions': ['Manga', 'Comic (Flexible)', 'Book', 'Image', 'Light Novel', 'Comic'],
+  })
+  .openapi('LibraryType')
+
+type SeriesDetailDtoType = {
+  specials?: z.infer<typeof ChapterDtoSchema>[] | null
+  chapters?: z.infer<typeof ChapterDtoSchema>[] | null
+  volumes?: z.infer<typeof VolumeDtoSchema>[] | null
+  storylineChapters?: z.infer<typeof ChapterDtoSchema>[] | null
+  libraryType?: z.infer<typeof LibraryTypeSchema>
+  unreadCount?: number
+  totalCount?: number
+}
 
 const RelationKindSchema: z.ZodType<RelationKindType> = z
   .union([
@@ -444,70 +859,6 @@ const RelationKindSchema: z.ZodType<RelationKindType> = z
     ],
   })
   .openapi('RelationKind')
-
-const ExternalSeriesDetailDtoSchema: z.ZodType<ExternalSeriesDetailDtoType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        name: z.string().nullable().exactOptional(),
-        titles: ALMediaTitleSchema.exactOptional(),
-        localizedTitles: z
-          .record(z.string(), z.array(LocalizedTitleDtoSchema))
-          .nullable()
-          .exactOptional(),
-        aniListId: z.int32().nullable().exactOptional(),
-        malId: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .nullable()
-          .exactOptional()
-          .openapi({ type: ['integer', 'null'], format: 'int64' }),
-        cbrId: z.int32().nullable().exactOptional(),
-        hardcoverId: z.int32().nullable().exactOptional(),
-        isStandAlone: z.boolean().exactOptional(),
-        mangabakaId: z.int32().nullable().exactOptional(),
-        synonyms: z.array(z.string()).nullable().exactOptional(),
-        plusMediaFormat: PlusMediaFormatSchema.exactOptional(),
-        siteUrl: z.string().nullable().exactOptional(),
-        coverUrl: z.string().nullable().exactOptional(),
-        genres: z.array(z.string()).nullable().exactOptional(),
-        staff: z.array(SeriesStaffDtoSchema).nullable().exactOptional(),
-        tags: z.array(MetadataTagDtoSchema).nullable().exactOptional(),
-        summary: z.string().nullable().exactOptional(),
-        ageRating: AgeRatingSchema.exactOptional(),
-        ageRatingRaw: z.string().nullable().exactOptional(),
-        provider: ScrobbleProviderSchema.exactOptional(),
-        startDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        endDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        averageScore: z.int32().exactOptional(),
-        chapters: z.int32().exactOptional(),
-        volumes: z.int32().exactOptional(),
-        relations: z.array(SeriesRelationshipSchema).nullable().exactOptional(),
-        characters: z.array(SeriesCharacterSchema).nullable().exactOptional(),
-        ratings: z.array(RatingDtoSchema).nullable().exactOptional(),
-        publisher: z.string().nullable().exactOptional(),
-        chapterDtos: z.array(ExternalChapterDtoSchema).nullable().exactOptional(),
-        editions: z.array(ExternalEditionDtoSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('ExternalSeriesDetailDto')
-
-const MetadataProviderSchema: z.ZodType<MetadataProviderType> = z
-  .union([z.literal(2), z.literal(3), z.literal(4)])
-  .openapi({
-    description: 'Members:\n- `2` — Hardcover\n- `3` — Mangabaka\n- `4` — ComicBookRoundup',
-    'x-enum-varnames': ['Hardcover', 'Mangabaka', 'ComicBookRoundup'],
-    'x-enum-descriptions': ['Hardcover', 'Mangabaka', 'ComicBookRoundup'],
-  })
-  .openapi('MetadataProvider')
 
 type SeriesRelationshipType = {
   aniListId?: number
@@ -591,10 +942,11 @@ const MediaErrorReasonSchema = z
     z.literal(10),
     z.literal(11),
     z.literal(12),
+    z.literal(13),
   ])
   .openapi({
     description:
-      'Members:\n- `0` — Unknown\n- `1` — Parse Failed (ParseFailed)\n- `2` — No Series Name (NoSeriesName)\n- `3` — Unreadable Archive (UnreadableArchive)\n- `5` — Corrupt Epub (CorruptEpub)\n- `6` — No Pages (NoPages)\n- `7` — Cover Failed (CoverFailed)\n- `8` — Word Count Failed (WordCountFailed)\n- `9` — I/O Error (IoError)\n- `10` — Metadata Unreadable (MetadataUnreadable)\n- `11` — Epub Not Strict (EpubNotStrict)\n- `12` — Ambiguous Series (AmbiguousSeries)',
+      'Members:\n- `0` — Unknown\n- `1` — Parse Failed (ParseFailed)\n- `2` — No Series Name (NoSeriesName)\n- `3` — Unreadable Archive (UnreadableArchive)\n- `5` — Corrupt Epub (CorruptEpub)\n- `6` — No Pages (NoPages)\n- `7` — Cover Failed (CoverFailed)\n- `8` — Word Count Failed (WordCountFailed)\n- `9` — I/O Error (IoError)\n- `10` — Metadata Unreadable (MetadataUnreadable)\n- `11` — Epub Not Strict (EpubNotStrict)\n- `12` — Ambiguous Series (AmbiguousSeries)\n- `13` — Kepub Conversion Failed (KepubConversionFailed)',
     'x-enum-varnames': [
       'Unknown',
       'ParseFailed',
@@ -608,6 +960,7 @@ const MediaErrorReasonSchema = z
       'MetadataUnreadable',
       'EpubNotStrict',
       'AmbiguousSeries',
+      'KepubConversionFailed',
     ],
     'x-enum-descriptions': [
       'Unknown',
@@ -622,6 +975,7 @@ const MediaErrorReasonSchema = z
       'Metadata Unreadable',
       'Epub Not Strict',
       'Ambiguous Series',
+      'Kepub Conversion Failed',
     ],
   })
   .openapi('MediaErrorReason')
@@ -982,10 +1336,6 @@ const AppUserCollectionDtoSchema = z
     summary: z.string().nullable().exactOptional(),
     promoted: z.boolean().exactOptional(),
     ageRating: AgeRatingSchema.exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
-    coverImageLocked: z.boolean().exactOptional(),
     itemCount: z.int32().exactOptional(),
     owner: z.string().nullable().exactOptional(),
     lastSyncUtc: z.iso.datetime({ offset: true }).exactOptional(),
@@ -993,9 +1343,27 @@ const AppUserCollectionDtoSchema = z
     sourceUrl: z.string().nullable().exactOptional(),
     totalSourceCount: z.int32().exactOptional(),
     missingSeriesFromSource: z.string().nullable().exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
+    coverImageLocked: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('AppUserCollectionDto')
+
+const AppUserKoboSyncPreferencesSchema = z
+  .strictObject({
+    syncItemLimit: z.int32().min(25).max(100).exactOptional(),
+    forwardToKoboStore: z.boolean().exactOptional(),
+    librarySyncEnabled: z.boolean().exactOptional(),
+    syncLibraries: z.array(z.int32()).nullable().exactOptional(),
+    readingListSyncEnabled: z.boolean().exactOptional(),
+    syncReadingLists: z.array(z.int32()).nullable().exactOptional(),
+    collectionSyncEnabled: z.boolean().exactOptional(),
+    syncCollections: z.array(z.int32()).nullable().exactOptional(),
+    managedCollection: z.int32().exactOptional(),
+    hasManagedCollection: z.boolean().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('AppUserKoboSyncPreferences')
 
 const AppUserOpdsPreferencesSchema = z
   .strictObject({
@@ -1099,11 +1467,12 @@ const AuthKeyExpiresAtDtoSchema = z
   .openapi('AuthKeyExpiresAtDto')
 
 const AuthenticationTypeSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
   .openapi({
-    description: 'Members:\n- `0` — Unknown\n- `1` — JWT\n- `2` — AuthKey\n- `3` — OIDC',
-    'x-enum-varnames': ['Unknown', 'JWT', 'AuthKey', 'OIDC'],
-    'x-enum-descriptions': ['Unknown', 'JWT', 'AuthKey', 'OIDC'],
+    description:
+      'Members:\n- `0` — Unknown\n- `1` — JWT\n- `2` — AuthKey\n- `3` — OIDC\n- `4` — KoboDevice',
+    'x-enum-varnames': ['Unknown', 'JWT', 'AuthKey', 'OIDC', 'KoboDevice'],
+    'x-enum-descriptions': ['Unknown', 'JWT', 'AuthKey', 'OIDC', 'KoboDevice'],
   })
   .openapi('AuthenticationType')
 
@@ -1151,16 +1520,6 @@ const BookChapterItemSchema: z.ZodType<BookChapterItemType> = z
   )
   .openapi('BookChapterItem')
 
-const MangaFormatSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-  .openapi({
-    description:
-      'Members:\n- `0` — Image\n- `1` — Archive\n- `2` — Unknown\n- `3` — EPUB (Epub)\n- `4` — PDF (Pdf)',
-    'x-enum-varnames': ['Image', 'Archive', 'Unknown', 'Epub', 'Pdf'],
-    'x-enum-descriptions': ['Image', 'Archive', 'Unknown', 'EPUB', 'PDF'],
-  })
-  .openapi('MangaFormat')
-
 const BookInfoDtoSchema = z
   .strictObject({
     bookTitle: z.string().nullable().exactOptional(),
@@ -1174,6 +1533,7 @@ const BookInfoDtoSchema = z
     pages: z.int32().exactOptional(),
     isSpecial: z.boolean().exactOptional(),
     chapterTitle: z.string().nullable().exactOptional(),
+    seriesPublicationStatus: PublicationStatusSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('BookInfoDto')
@@ -1229,13 +1589,11 @@ const SeriesDtoSchema = z
     folderPath: z.string().nullable().exactOptional(),
     lowestFolderPath: z.string().nullable().exactOptional(),
     lastFolderScanned: z.iso.datetime({ offset: true }).exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
     dontMatch: z.boolean().exactOptional(),
     isBlacklisted: z.boolean().exactOptional(),
     isStandAlone: z.boolean().exactOptional(),
     metadataProviderOverride: MetadataProviderSchema.exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
     aniListId: z.int32().exactOptional(),
     malId: z
       .preprocess(
@@ -1284,16 +1642,6 @@ const BookmarkDtoSchema = z
   })
   .openapi({ required: ['chapterId', 'page', 'seriesId', 'volumeId'] })
   .openapi('BookmarkDto')
-
-const LibraryTypeSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)])
-  .openapi({
-    description:
-      'Members:\n- `0` — Manga\n- `1` — Comic (Flexible) (Comic)\n- `2` — Book\n- `3` — Image\n- `4` — Light Novel (LightNovel)\n- `5` — Comic (ComicVine)',
-    'x-enum-varnames': ['Manga', 'Comic', 'Book', 'Image', 'LightNovel', 'ComicVine'],
-    'x-enum-descriptions': ['Manga', 'Comic (Flexible)', 'Book', 'Image', 'Light Novel', 'Comic'],
-  })
-  .openapi('LibraryType')
 
 const FileDimensionDtoSchema = z
   .strictObject({
@@ -1351,66 +1699,12 @@ const BrowseGenreDtoSchema = z
   .openapi({ required: ['title'] })
   .openapi('BrowseGenreDto')
 
-const PersonRoleSchema = z
-  .union([
-    z.literal(3),
-    z.literal(4),
-    z.literal(5),
-    z.literal(6),
-    z.literal(7),
-    z.literal(8),
-    z.literal(9),
-    z.literal(10),
-    z.literal(11),
-    z.literal(12),
-    z.literal(13),
-    z.literal(14),
-    z.literal(15),
-  ])
-  .openapi({
-    description:
-      'Members:\n- `3` — Writer\n- `4` — Penciller\n- `5` — Inker\n- `6` — Colorist\n- `7` — Letterer\n- `8` — CoverArtist\n- `9` — Editor\n- `10` — Publisher\n- `11` — Character\n- `12` — Translator\n- `13` — Imprint\n- `14` — Team\n- `15` — Location',
-    'x-enum-varnames': [
-      'Writer',
-      'Penciller',
-      'Inker',
-      'Colorist',
-      'Letterer',
-      'CoverArtist',
-      'Editor',
-      'Publisher',
-      'Character',
-      'Translator',
-      'Imprint',
-      'Team',
-      'Location',
-    ],
-    'x-enum-descriptions': [
-      'Writer',
-      'Penciller',
-      'Inker',
-      'Colorist',
-      'Letterer',
-      'CoverArtist',
-      'Editor',
-      'Publisher',
-      'Character',
-      'Translator',
-      'Imprint',
-      'Team',
-      'Location',
-    ],
-  })
-  .openapi('PersonRole')
-
 const BrowsePersonDtoSchema = z
   .strictObject({
     id: z.int32().exactOptional(),
     name: z.string().nullable(),
+    hasCoverImage: z.boolean().exactOptional(),
     coverImageLocked: z.boolean().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
     aliases: z.array(z.string()).nullable().exactOptional(),
     description: z.string().nullable().exactOptional(),
     asin: z.string().nullable().exactOptional(),
@@ -1762,203 +2056,6 @@ const ChapterDetailPlusDtoSchema = z
   .openapi({ required: [] })
   .openapi('ChapterDetailPlusDto')
 
-const MangaFileDtoSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    filePath: z.string().nullable().exactOptional(),
-    pages: z.int32().exactOptional(),
-    bytes: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    format: MangaFormatSchema.exactOptional(),
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    extension: z.string().nullable().exactOptional(),
-    koreaderHash: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MangaFileDto')
-
-const PersonDtoSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    name: z.string().nullable(),
-    coverImageLocked: z.boolean().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
-    aliases: z.array(z.string()).nullable().exactOptional(),
-    description: z.string().nullable().exactOptional(),
-    asin: z.string().nullable().exactOptional(),
-    aniListId: z.int32().exactOptional(),
-    malId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    hardcoverId: z.string().nullable().exactOptional(),
-    webLinks: z.array(z.string()).nullable().exactOptional(),
-    roles: z.array(PersonRoleSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: ['name'] })
-  .openapi('PersonDto')
-
-const GenreTagDtoSchema = z
-  .strictObject({ id: z.int32().exactOptional(), title: z.string().nullable() })
-  .openapi({ required: ['title'] })
-  .openapi('GenreTagDto')
-
-const TagDtoSchema = z
-  .strictObject({ id: z.int32().exactOptional(), title: z.string().nullable() })
-  .openapi({ required: ['title'] })
-  .openapi('TagDto')
-
-const PublicationStatusSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-  .openapi({
-    description:
-      'Members:\n- `0` — Ongoing (OnGoing)\n- `1` — Hiatus\n- `2` — Completed\n- `3` — Cancelled\n- `4` — Ended',
-    'x-enum-varnames': ['OnGoing', 'Hiatus', 'Completed', 'Cancelled', 'Ended'],
-    'x-enum-descriptions': ['Ongoing', 'Hiatus', 'Completed', 'Cancelled', 'Ended'],
-  })
-  .openapi('PublicationStatus')
-
-const ChapterDtoSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    range: z.string().nullable().exactOptional(),
-    number: z.string().nullable().exactOptional().openapi({ deprecated: true }),
-    minNumber: z.float32().exactOptional(),
-    maxNumber: z.float32().exactOptional(),
-    sortOrder: z.float32().exactOptional(),
-    pages: z.int32().exactOptional(),
-    isSpecial: z.boolean().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    files: z.array(MangaFileDtoSchema).nullable().exactOptional(),
-    pagesRead: z.int32().exactOptional(),
-    totalReads: z.int32().exactOptional(),
-    lastReadingProgressUtc: z.iso.datetime({ offset: true }).exactOptional(),
-    lastReadingProgress: z.iso.datetime({ offset: true }).exactOptional(),
-    coverImageLocked: z.boolean().exactOptional(),
-    volumeId: z.int32().exactOptional(),
-    createdUtc: z.iso.datetime({ offset: true }).exactOptional(),
-    lastModifiedUtc: z.iso.datetime({ offset: true }).exactOptional(),
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    releaseDate: z.iso.datetime({ offset: true }).exactOptional(),
-    titleName: z.string().nullable().exactOptional(),
-    summary: z.string().nullable().exactOptional(),
-    ageRating: AgeRatingSchema.exactOptional(),
-    wordCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    volumeTitle: z.string().nullable().exactOptional(),
-    minHoursToRead: z.int32().exactOptional(),
-    maxHoursToRead: z.int32().exactOptional(),
-    avgHoursToRead: z.float32().exactOptional(),
-    webLinks: z.string().nullable().exactOptional(),
-    isbn: z.string().nullable().exactOptional(),
-    writers: z.array(PersonDtoSchema).nullable().exactOptional(),
-    coverArtists: z.array(PersonDtoSchema).nullable().exactOptional(),
-    publishers: z.array(PersonDtoSchema).nullable().exactOptional(),
-    characters: z.array(PersonDtoSchema).nullable().exactOptional(),
-    pencillers: z.array(PersonDtoSchema).nullable().exactOptional(),
-    inkers: z.array(PersonDtoSchema).nullable().exactOptional(),
-    imprints: z.array(PersonDtoSchema).nullable().exactOptional(),
-    colorists: z.array(PersonDtoSchema).nullable().exactOptional(),
-    letterers: z.array(PersonDtoSchema).nullable().exactOptional(),
-    editors: z.array(PersonDtoSchema).nullable().exactOptional(),
-    translators: z.array(PersonDtoSchema).nullable().exactOptional(),
-    teams: z.array(PersonDtoSchema).nullable().exactOptional(),
-    locations: z.array(PersonDtoSchema).nullable().exactOptional(),
-    genres: z.array(GenreTagDtoSchema).nullable().exactOptional(),
-    tags: z.array(TagDtoSchema).nullable().exactOptional(),
-    publicationStatus: PublicationStatusSchema.exactOptional(),
-    language: z.string().nullable().exactOptional(),
-    count: z.int32().exactOptional(),
-    totalCount: z.int32().exactOptional(),
-    languageLocked: z.boolean().exactOptional(),
-    summaryLocked: z.boolean().exactOptional(),
-    ageRatingLocked: z.boolean().exactOptional(),
-    publicationStatusLocked: z.boolean().exactOptional(),
-    genresLocked: z.boolean().exactOptional(),
-    tagsLocked: z.boolean().exactOptional(),
-    writerLocked: z.boolean().exactOptional(),
-    characterLocked: z.boolean().exactOptional(),
-    coloristLocked: z.boolean().exactOptional(),
-    editorLocked: z.boolean().exactOptional(),
-    inkerLocked: z.boolean().exactOptional(),
-    imprintLocked: z.boolean().exactOptional(),
-    lettererLocked: z.boolean().exactOptional(),
-    pencillerLocked: z.boolean().exactOptional(),
-    publisherLocked: z.boolean().exactOptional(),
-    translatorLocked: z.boolean().exactOptional(),
-    teamLocked: z.boolean().exactOptional(),
-    locationLocked: z.boolean().exactOptional(),
-    coverArtistLocked: z.boolean().exactOptional(),
-    releaseDateLocked: z.boolean().exactOptional(),
-    titleNameLocked: z.boolean().exactOptional(),
-    sortOrderLocked: z.boolean().exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
-    format: MangaFormatSchema.exactOptional(),
-    aniListId: z.int32().exactOptional(),
-    malId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    hardcoverId: z.int32().exactOptional(),
-    metronId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    comicVineId: z.string().nullable().exactOptional(),
-    mangaBakaId: z.int32().exactOptional(),
-    cbrId: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ChapterDto')
-
 const ChapterInfoDtoSchema = z
   .strictObject({
     chapterNumber: z.string().nullable().exactOptional(),
@@ -1984,6 +2081,17 @@ const ChapterInfoDtoSchema = z
   .openapi({ required: [] })
   .openapi('ChapterInfoDto')
 
+const ChapterRestoreInfoDtoSchema = z
+  .strictObject({
+    chapterId: z.int32().exactOptional(),
+    seriesId: z.int32().exactOptional(),
+    seriesTitle: z.string().nullable().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    removedAtUtc: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ChapterRestoreInfoDto')
+
 const CheckForFilesInFolderRootsDtoSchema = z
   .strictObject({ roots: z.array(z.string()).nullable().exactOptional() })
   .openapi({ required: [] })
@@ -1998,10 +2106,11 @@ const ClientDeviceTypeSchema = z
     z.literal(4),
     z.literal(5),
     z.literal(6),
+    z.literal(7),
   ])
   .openapi({
     description:
-      'Members:\n- `0` — Unknown\n- `1` — Web Browser (WebBrowser)\n- `2` — Web App (WebApp)\n- `3` — KOReader (KoReader)\n- `4` — Panels\n- `5` — Librera\n- `6` — OPDS Client (OpdsClient)',
+      'Members:\n- `0` — Unknown\n- `1` — Web Browser (WebBrowser)\n- `2` — Web App (WebApp)\n- `3` — KOReader (KoReader)\n- `4` — Panels\n- `5` — Librera\n- `6` — OPDS Client (OpdsClient)\n- `7` — Kobo',
     'x-enum-varnames': [
       'Unknown',
       'WebBrowser',
@@ -2010,6 +2119,7 @@ const ClientDeviceTypeSchema = z
       'Panels',
       'Librera',
       'OpdsClient',
+      'Kobo',
     ],
     'x-enum-descriptions': [
       'Unknown',
@@ -2019,6 +2129,7 @@ const ClientDeviceTypeSchema = z
       'Panels',
       'Librera',
       'OPDS Client',
+      'Kobo',
     ],
   })
   .openapi('ClientDeviceType')
@@ -2413,11 +2524,11 @@ const EmailTestResultDtoSchema = z
   .openapi('EmailTestResultDto')
 
 const EncodeFormatSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2)])
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
   .openapi({
-    description: 'Members:\n- `0` — PNG\n- `1` — WebP (WEBP)\n- `2` — AVIF',
-    'x-enum-varnames': ['PNG', 'WEBP', 'AVIF'],
-    'x-enum-descriptions': ['PNG', 'WebP', 'AVIF'],
+    description: 'Members:\n- `0` — PNG\n- `1` — WebP (WEBP)\n- `2` — AVIF\n- `3` — JPEG',
+    'x-enum-varnames': ['PNG', 'WEBP', 'AVIF', 'JPEG'],
+    'x-enum-descriptions': ['PNG', 'WebP', 'AVIF', 'JPEG'],
   })
   .openapi('EncodeFormat')
 
@@ -2559,14 +2670,6 @@ const ExternalSeriesDtoSchema = z
   })
   .openapi({ required: ['coverUrl', 'name', 'url'] })
   .openapi('ExternalSeriesDto')
-
-const ExternalSeriesMatchDtoSchema = z
-  .strictObject({
-    series: ExternalSeriesDetailDtoSchema.exactOptional(),
-    matchRating: z.float32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ExternalSeriesMatchDto')
 
 const ExternalSourceDtoSchema = z
   .strictObject({
@@ -3577,6 +3680,44 @@ const KavitaPlusSubscriptionStateSchema = z
   })
   .openapi('KavitaPlusSubscriptionState')
 
+const KepubifyCheckStatusSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2)])
+  .openapi({
+    description: 'Members:\n- `0` — Checking\n- `1` — Supported\n- `2` — NotSupported',
+    'x-enum-varnames': ['Checking', 'Supported', 'NotSupported'],
+    'x-enum-descriptions': ['Checking', 'Supported', 'NotSupported'],
+  })
+  .openapi('KepubifyCheckStatus')
+
+const KepubifyOffReasonSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
+  .openapi({
+    description:
+      'Members:\n- `0` — Disabled\n- `1` — FileMissing\n- `2` — HashMismatch\n- `3` — VersionCheckFailed',
+    'x-enum-varnames': ['Disabled', 'FileMissing', 'HashMismatch', 'VersionCheckFailed'],
+    'x-enum-descriptions': ['Disabled', 'FileMissing', 'HashMismatch', 'VersionCheckFailed'],
+  })
+  .openapi('KepubifyOffReason')
+
+const KepubifySourceSchema = z
+  .union([z.literal(0), z.literal(1)])
+  .openapi({
+    description: 'Members:\n- `0` — Shipped\n- `1` — Custom',
+    'x-enum-varnames': ['Shipped', 'Custom'],
+    'x-enum-descriptions': ['Shipped', 'Custom'],
+  })
+  .openapi('KepubifySource')
+
+const KepubifyStatusDtoSchema = z
+  .strictObject({
+    status: KepubifyCheckStatusSchema.exactOptional(),
+    source: KepubifySourceSchema.exactOptional(),
+    path: z.string().nullable().exactOptional(),
+    reason: KepubifyOffReasonSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('KepubifyStatusDto')
+
 const KeyBindSchema = z
   .strictObject({
     key: z.string().nullable(),
@@ -3588,6 +3729,16 @@ const KeyBindSchema = z
   })
   .openapi({ required: ['key'] })
   .openapi('KeyBind')
+
+const KoboSyncPointDtoSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    deviceId: z.string().nullable().exactOptional(),
+    removedChapterCount: z.int32().exactOptional(),
+    lastSync: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('KoboSyncPointDto')
 
 const KoreaderBookDtoSchema = z
   .strictObject({
@@ -3641,7 +3792,6 @@ const LibraryDtoSchema = z
     name: z.string().nullable().exactOptional(),
     type: LibraryTypeSchema.exactOptional(),
     lastScanned: z.iso.datetime({ offset: true }).exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
     folderWatchMode: FolderWatchModeSchema.exactOptional(),
     includeInDashboard: z.boolean().exactOptional(),
     includeInRecommended: z.boolean().exactOptional(),
@@ -3659,6 +3809,7 @@ const LibraryDtoSchema = z
     inheritWebLinksFromFirstChapter: z.boolean().exactOptional(),
     defaultLanguage: z.string().nullable().exactOptional(),
     metadataProvider: MetadataProviderSchema.exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('LibraryDto')
@@ -3871,7 +4022,7 @@ const MatchSeriesInfoDtoSchema = z
   .openapi({ required: [] })
   .openapi('MatchSeriesInfoDto')
 
-const MatchSeriesResultDtoSchema = z
+const MatchSeriesResultDtoSchema: z.ZodType<MatchSeriesResultDtoType> = z
   .strictObject({
     provider: MetadataProviderSchema.exactOptional(),
     matches: z.array(ExternalSeriesMatchDtoSchema).nullable().exactOptional(),
@@ -3890,11 +4041,12 @@ const MatchedExternalSeriesCountDtoSchema = z
   .openapi('MatchedExternalSeriesCountDto')
 
 const MediaErrorProducerSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2)])
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
   .openapi({
-    description: 'Members:\n- `0` — BookService\n- `1` — ArchiveService\n- `2` — Scanner',
-    'x-enum-varnames': ['BookService', 'ArchiveService', 'Scanner'],
-    'x-enum-descriptions': ['BookService', 'ArchiveService', 'Scanner'],
+    description:
+      'Members:\n- `0` — BookService\n- `1` — ArchiveService\n- `2` — Scanner\n- `3` — Kepubify',
+    'x-enum-varnames': ['BookService', 'ArchiveService', 'Scanner', 'Kepubify'],
+    'x-enum-descriptions': ['BookService', 'ArchiveService', 'Scanner', 'Kepubify'],
   })
   .openapi('MediaErrorProducer')
 
@@ -3941,7 +4093,6 @@ const MemberInfoDtoSchema = z
     username: z.string().nullable().exactOptional(),
     created: z.iso.datetime({ offset: true }).exactOptional(),
     createdUtc: z.iso.datetime({ offset: true }).exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('MemberInfoDto')
@@ -4205,6 +4356,7 @@ const ProgressDtoSchema = z
     seriesId: z.int32(),
     libraryId: z.int32(),
     bookScrollId: z.string().nullable().exactOptional(),
+    koboSpan: z.string().nullable().exactOptional(),
     lastModifiedUtc: z.iso.datetime({ offset: true }).exactOptional(),
   })
   .openapi({ required: ['chapterId', 'libraryId', 'pageNum', 'seriesId', 'volumeId'] })
@@ -4379,9 +4531,6 @@ const ReadingListDtoSchema = z
     summary: z.string().nullable().exactOptional(),
     promoted: z.boolean().exactOptional(),
     coverImageLocked: z.boolean().exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
     itemCount: z.int32().exactOptional(),
     startingYear: z.int32().exactOptional(),
     startingMonth: z.int32().exactOptional(),
@@ -4398,6 +4547,7 @@ const ReadingListDtoSchema = z
     totalItemsAtImport: z.int32().exactOptional(),
     tags: z.array(ReadingListTagDtoSchema).nullable().exactOptional(),
     canSync: z.boolean().exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
   })
   .openapi({ required: ['ageRating'] })
   .openapi('ReadingListDto')
@@ -4963,74 +5113,7 @@ const SeriesByIdsDtoSchema = z
   .openapi({ required: [] })
   .openapi('SeriesByIdsDto')
 
-const VolumeDtoSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    minNumber: z.float32().exactOptional(),
-    maxNumber: z.float32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    number: z.int32().exactOptional().openapi({ deprecated: true }),
-    pages: z.int32().exactOptional(),
-    pagesRead: z.int32().exactOptional(),
-    lastModifiedUtc: z.iso.datetime({ offset: true }).exactOptional(),
-    createdUtc: z.iso.datetime({ offset: true }).exactOptional(),
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    lastModified: z.iso.datetime({ offset: true }).exactOptional(),
-    seriesId: z.int32().exactOptional(),
-    chapters: z.array(ChapterDtoSchema).nullable().exactOptional(),
-    minHoursToRead: z.int32().exactOptional(),
-    maxHoursToRead: z.int32().exactOptional(),
-    avgHoursToRead: z.float32().exactOptional(),
-    wordCount: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    coverImage: z.string().nullable().exactOptional(),
-    coverImageLocked: z.boolean().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
-    aniListId: z.int32().exactOptional(),
-    malId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    hardcoverId: z.int32().exactOptional(),
-    metronId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    comicVineId: z.string().nullable().exactOptional(),
-    mangaBakaId: z.int32().exactOptional(),
-    cbrId: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('VolumeDto')
-
-const SeriesDetailDtoSchema = z
+const SeriesDetailDtoSchema: z.ZodType<SeriesDetailDtoType> = z
   .strictObject({
     specials: z.array(ChapterDtoSchema).nullable().exactOptional(),
     chapters: z.array(ChapterDtoSchema).nullable().exactOptional(),
@@ -5350,6 +5433,7 @@ const ServerSettingDtoSchema = z
     taskBackup: z.string().nullable().exactOptional(),
     taskCleanup: z.string().nullable().exactOptional(),
     taskCblSync: z.string().nullable().exactOptional(),
+    taskCompositeCovers: z.string().nullable().exactOptional(),
     loggingLevel: z.string().nullable().exactOptional(),
     port: z.int32().exactOptional(),
     ipAddresses: z.string().nullable().exactOptional(),
@@ -5382,6 +5466,8 @@ const ServerSettingDtoSchema = z
     pdfRenderResolution: PdfRenderResolutionSchema.exactOptional(),
     smtpConfig: SmtpConfigDtoSchema.exactOptional(),
     oidcConfig: OidcConfigDtoSchema.exactOptional(),
+    enableKobo: z.boolean().exactOptional(),
+    enableKepubify: z.boolean().exactOptional(),
     firstInstallDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
     firstInstallVersion: z.string().nullable().exactOptional(),
     statsApiHits: z.int32().exactOptional(),
@@ -5699,9 +5785,7 @@ const StandaloneChapterDtoSchema = z
     releaseDateLocked: z.boolean().exactOptional(),
     titleNameLocked: z.boolean().exactOptional(),
     sortOrderLocked: z.boolean().exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
     format: MangaFormatSchema.exactOptional(),
     aniListId: z.int32().exactOptional(),
     malId: z
@@ -5852,9 +5936,7 @@ const TachiyomiChapterDtoSchema = z
     releaseDateLocked: z.boolean().exactOptional(),
     titleNameLocked: z.boolean().exactOptional(),
     sortOrderLocked: z.boolean().exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
     format: MangaFormatSchema.exactOptional(),
     aniListId: z.int32().exactOptional(),
     malId: z
@@ -5935,6 +6017,14 @@ const TopReadDtoSchema = z
   })
   .openapi({ required: [] })
   .openapi('TopReadDto')
+
+const UndoKoboRemoveBookDtoSchema = z
+  .strictObject({
+    syncPointId: z.int32().exactOptional(),
+    undoBookIds: z.array(z.int32()).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('UndoKoboRemoveBookDto')
 
 const UpdateAgeRestrictionDtoSchema = z
   .strictObject({ ageRating: AgeRatingSchema, includeUnknowns: z.boolean() })
@@ -6054,6 +6144,11 @@ const UpdateEmailDtoSchema = z
   })
   .openapi({ required: [] })
   .openapi('UpdateEmailDto')
+
+const UpdateKepubifyDtoSchema = z
+  .strictObject({ enabled: z.boolean().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('UpdateKepubifyDto')
 
 const UpdateLibraryDtoSchema = z
   .strictObject({
@@ -6494,6 +6589,7 @@ const UserPreferencesDtoSchema = z
     bookReaderHighlightSlots: z.array(HighlightSlotSchema),
     socialPreferences: AppUserSocialPreferencesSchema,
     opdsPreferences: AppUserOpdsPreferencesSchema,
+    koboSyncPreferences: AppUserKoboSyncPreferencesSchema,
   })
   .openapi({
     required: [
@@ -6503,6 +6599,7 @@ const UserPreferencesDtoSchema = z
       'colorScapeEnabled',
       'customKeyBinds',
       'dataSaver',
+      'koboSyncPreferences',
       'locale',
       'noTransitions',
       'onDeckProgressDays',
@@ -6533,9 +6630,7 @@ const UserDtoSchema = z
     created: z.iso.datetime({ offset: true }).exactOptional(),
     createdUtc: z.iso.datetime({ offset: true }).exactOptional(),
     authKeys: z.array(AuthKeyDtoSchema).nullable().exactOptional(),
-    coverImage: z.string().nullable().exactOptional(),
-    primaryColor: z.string().nullable().exactOptional(),
-    secondaryColor: z.string().nullable().exactOptional(),
+    hasCoverImage: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('UserDto')
@@ -8593,6 +8688,47 @@ export const deleteApiChapterRoute = createRoute({
   },
 })
 
+export const getApiChapterRestoreInfoRoute = createRoute({
+  method: 'get',
+  path: '/api/Chapter/restore-info',
+  tags: ['Chapter'],
+  summary: 'Returns information to restore chapters in the Kobo Sync UI',
+  request: {
+    query: z.object({
+      syncPointId: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'syncPointId',
+            in: 'query',
+            description: '',
+            schema: { type: 'integer', format: 'int32' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'text/plain': { schema: z.array(ChapterRestoreInfoDtoSchema) },
+        'application/json': { schema: z.array(ChapterRestoreInfoDtoSchema) },
+        'text/json': { schema: z.array(ChapterRestoreInfoDtoSchema) },
+      },
+    },
+  },
+})
+
 export const postApiChapterDeleteMultipleRoute = createRoute({
   method: 'post',
   path: '/api/Chapter/delete-multiple',
@@ -9063,7 +9199,7 @@ export const getApiColorScapeSeriesRoute = createRoute({
   summary: 'Returns the color scape for a series',
   request: {
     query: z.object({
-      id: z
+      seriesId: z
         .preprocess(
           (val) =>
             typeof val === 'string' &&
@@ -9076,9 +9212,8 @@ export const getApiColorScapeSeriesRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'id',
+            name: 'seriesId',
             in: 'query',
-            description: '',
             schema: { type: 'integer', format: 'int32' },
             required: false,
           },
@@ -9104,7 +9239,7 @@ export const getApiColorScapeVolumeRoute = createRoute({
   summary: 'Returns the color scape for a volume',
   request: {
     query: z.object({
-      id: z
+      volumeId: z
         .preprocess(
           (val) =>
             typeof val === 'string' &&
@@ -9117,9 +9252,8 @@ export const getApiColorScapeVolumeRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'id',
+            name: 'volumeId',
             in: 'query',
-            description: '',
             schema: { type: 'integer', format: 'int32' },
             required: false,
           },
@@ -9145,7 +9279,7 @@ export const getApiColorScapeChapterRoute = createRoute({
   summary: 'Returns the color scape for a chapter',
   request: {
     query: z.object({
-      id: z
+      chapterId: z
         .preprocess(
           (val) =>
             typeof val === 'string' &&
@@ -9158,9 +9292,128 @@ export const getApiColorScapeChapterRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
-            name: 'id',
+            name: 'chapterId',
             in: 'query',
-            description: '',
+            schema: { type: 'integer', format: 'int32' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'text/plain': { schema: ColorScapeDtoSchema },
+        'application/json': { schema: ColorScapeDtoSchema },
+        'text/json': { schema: ColorScapeDtoSchema },
+      },
+    },
+  },
+})
+
+export const getApiColorScapePersonRoute = createRoute({
+  method: 'get',
+  path: '/api/ColorScape/person',
+  tags: ['ColorScape'],
+  summary: 'Returns the color scape for a person',
+  request: {
+    query: z.object({
+      personId: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'personId',
+            in: 'query',
+            schema: { type: 'integer', format: 'int32' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'text/plain': { schema: ColorScapeDtoSchema },
+        'application/json': { schema: ColorScapeDtoSchema },
+        'text/json': { schema: ColorScapeDtoSchema },
+      },
+    },
+  },
+})
+
+export const getApiColorScapeReadingListRoute = createRoute({
+  method: 'get',
+  path: '/api/ColorScape/reading-list',
+  tags: ['ColorScape'],
+  summary: 'Returns the color scape for a reading list',
+  request: {
+    query: z.object({
+      readingListId: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'readingListId',
+            in: 'query',
+            schema: { type: 'integer', format: 'int32' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'text/plain': { schema: ColorScapeDtoSchema },
+        'application/json': { schema: ColorScapeDtoSchema },
+        'text/json': { schema: ColorScapeDtoSchema },
+      },
+    },
+  },
+})
+
+export const getApiColorScapeCollectionRoute = createRoute({
+  method: 'get',
+  path: '/api/ColorScape/collection',
+  tags: ['ColorScape'],
+  summary: 'Returns the color scape for a collection',
+  request: {
+    query: z.object({
+      collectionId: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'collectionId',
+            in: 'query',
             schema: { type: 'integer', format: 'int32' },
             required: false,
           },
@@ -10561,7 +10814,7 @@ export const deleteApiFontRoute = createRoute({
   path: '/api/Font',
   tags: ['Font'],
   summary:
-    'Removes a font family from the system. The family is validated for in-use server side and only removed when\nit is not selected by a user, or when an admin forces the deletion.',
+    'Removes a font family from the system. The family is validated for in-use server side and only removed when\nit is not selected by a user, or when force is true.',
   request: {
     query: z.object({
       fontId: z
@@ -10593,7 +10846,7 @@ export const deleteApiFontRoute = createRoute({
             name: 'force',
             in: 'query',
             description:
-              'If the family is in use and an admin wants it deleted, they must confirm to force delete it. This is prompted in the UI.',
+              'True to force deletion if the font is in use. This is prompted in the UI.',
             schema: { type: 'boolean', default: false },
             required: false,
           },
@@ -11468,6 +11721,745 @@ export const getApiKavitaPlusAuditFailedScrobbleEventsRoute = createRoute({
       },
     },
   },
+})
+
+export const getKoboApiKeyV1InitializationRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/initialization',
+  tags: ['Kobo'],
+  summary:
+    'First request when starting the sync flow. Returns all config for the Kobo to make request. We inject some\nredirect to the Kavita instance\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1LibrarySyncRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/library/sync',
+  tags: ['Kobo'],
+  summary:
+    'Returns changes since last sync\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1LibraryBookIdMetadataRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/library/{bookId}/metadata',
+  tags: ['Kobo'],
+  summary:
+    'Metadata for the given book. Called when opening information, and sometimes during sync but not always\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1LibraryBookIdStateRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/library/{bookId}/state',
+  tags: ['Kobo'],
+  summary:
+    'Gets progress. Called on book open to sync\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const putKoboApiKeyV1LibraryBookIdStateRoute = createRoute({
+  method: 'put',
+  path: '/Kobo/{apiKey}/v1/library/{bookId}/state',
+  tags: ['Kobo'],
+  summary:
+    'Updates progress. Call on book close and when switching chapters via ToC while connected to the internet.\nOtherwise, during sync\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1LibraryBookIdFileEpubRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/library/{bookId}/file/epub',
+  tags: ['Kobo'],
+  summary: 'Gets the (k)epub file\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32(),
+        )
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'integer', format: 'int32' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+    query: z.object({
+      convert: z
+        .stringbool()
+        .default(true)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'convert',
+            in: 'query',
+            description: '',
+            schema: { type: 'boolean', default: true },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1BooksThumbnailIdThumbnailWidthHeightIsGreyScaleImageJpgRoute =
+  createRoute({
+    method: 'get',
+    path: '/Kobo/{apiKey}/v1/books/{thumbnailId}/thumbnail/{width}/{height}/{isGreyScale}/image.jpg',
+    tags: ['Kobo'],
+    summary:
+      'Gets the cover. Called during sync, and on extra info when missing\n            \nNot intended for use beyond Kobo devices',
+    request: {
+      params: z.object({
+        thumbnailId: z
+          .string()
+          .openapi({
+            param: {
+              name: 'thumbnailId',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+        width: z
+          .string()
+          .openapi({
+            param: {
+              name: 'width',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+        height: z
+          .string()
+          .openapi({
+            param: {
+              name: 'height',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+        isGreyScale: z
+          .stringbool()
+          .default(false)
+          .openapi({
+            param: {
+              name: 'isGreyScale',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'boolean', default: false },
+            },
+          }),
+        apiKey: z
+          .string()
+          .openapi({
+            param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+          }),
+      }),
+    },
+    responses: { 200: { description: 'OK' } },
+  })
+
+export const getKoboApiKeyV1BooksThumbnailIdThumbnailWidthHeightQualityIsGreyScaleImageJpgRoute =
+  createRoute({
+    method: 'get',
+    path: '/Kobo/{apiKey}/v1/books/{thumbnailId}/thumbnail/{width}/{height}/{quality}/{isGreyScale}/image.jpg',
+    tags: ['Kobo'],
+    summary:
+      'Gets the cover. Called during sync, and on extra info when missing\n            \nNot intended for use beyond Kobo devices',
+    request: {
+      params: z.object({
+        thumbnailId: z
+          .string()
+          .openapi({
+            param: {
+              name: 'thumbnailId',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+        width: z
+          .string()
+          .openapi({
+            param: {
+              name: 'width',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+        height: z
+          .string()
+          .openapi({
+            param: {
+              name: 'height',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+        quality: z
+          .string()
+          .openapi({
+            param: {
+              name: 'quality',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'string' },
+            },
+          }),
+        isGreyScale: z
+          .stringbool()
+          .default(false)
+          .openapi({
+            param: {
+              name: 'isGreyScale',
+              in: 'path',
+              description: '',
+              required: true,
+              schema: { type: 'boolean', default: false },
+            },
+          }),
+        apiKey: z
+          .string()
+          .openapi({
+            param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+          }),
+      }),
+    },
+    responses: { 200: { description: 'OK' } },
+  })
+
+export const postKoboApiKeyV1LibraryBookIdRoute = createRoute({
+  method: 'post',
+  path: '/Kobo/{apiKey}/v1/library/{bookId}',
+  tags: ['Kobo'],
+  summary:
+    'Called when clicking on a recommendation. Adds the series to the Kobo sync collection if enabled\nOtherwise No-Op\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const deleteKoboApiKeyV1LibraryBookIdRoute = createRoute({
+  method: 'delete',
+  path: '/Kobo/{apiKey}/v1/library/{bookId}',
+  tags: ['Kobo'],
+  summary:
+    'Called when a book is deleted from the Kobo. Will no longer be synced to the Kobo. Can be restored in the UI\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1ProductsBookIdReviewsRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/products/{bookId}/reviews',
+  tags: ['Kobo'],
+  summary:
+    'Returns reviews for the book. Implemented to reduce upstream bad requests.\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const putKoboApiKeyV1ProductsBookIdReviewsRoute = createRoute({
+  method: 'put',
+  path: '/Kobo/{apiKey}/v1/products/{bookId}/reviews',
+  tags: ['Kobo'],
+  summary:
+    "Updates review for a book. Doesn't work 100%. Reviews are a bit weird on Kobo, needs more work\n            \nNot intended for use beyond Kobo devices",
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1ProductsBookIdRecommendationsRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/products/{bookId}/recommendations',
+  tags: ['Kobo'],
+  summary:
+    "Returns the first books in a series that's recommended to the series the book belongs to\nRequires Kavita+ and Collection Sync\n            \nNot intended for use beyond Kobo devices",
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1ProductsBooksBookIdRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/products/books/{bookId}',
+  tags: ['Kobo'],
+  summary:
+    'Book metadata when viewing recommendations\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1ProductsBookIdNextreadRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/products/{bookId}/nextread',
+  tags: ['Kobo'],
+  summary:
+    'Implemented to reduce upstream bad requests. Called during sync, and sometimes otherwise\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1ProductsBooksSeriesBookIdRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/products/books/series/{bookId}',
+  tags: ['Kobo'],
+  summary:
+    'Implemented to reduce upstream bad requests. Called during sync, and sometimes otherwise\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1ProductsBookIdsPricesRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/products/{bookIds}/prices',
+  tags: ['Kobo'],
+  summary:
+    'Implemented to reduce upstream bad requests. Always returns FREE\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookIds: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookIds',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1UserReviewsRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/user/reviews',
+  tags: ['Kobo'],
+  summary: 'Returns a list of reviews\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    query: z.object({
+      ProductIds: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ProductIds',
+            in: 'query',
+            description: '',
+            schema: { type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+    }),
+    params: z.object({
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1UserWishlistRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/user/wishlist',
+  tags: ['Kobo'],
+  summary:
+    'Dummy implementation to reduce failure when forward is off. Returns an empty pagination response\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getKoboApiKeyV1AnalyticsGettestsRoute = createRoute({
+  method: 'get',
+  path: '/Kobo/{apiKey}/v1/analytics/gettests',
+  tags: ['Kobo'],
+  summary: 'Dummy implementation\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const postKoboApiKeyV1AnalyticsGettestsRoute = createRoute({
+  method: 'post',
+  path: '/Kobo/{apiKey}/v1/analytics/gettests',
+  tags: ['Kobo'],
+  summary: 'Dummy implementation\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      apiKey: z
+        .string()
+        .openapi({
+          param: { name: 'apiKey', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getApiV3ContentBookIdAnnotationsRoute = createRoute({
+  method: 'get',
+  path: '/api/v3/content/{bookId}/annotations',
+  tags: ['KoboAnnotation'],
+  summary:
+    'Returns annotations for the given book\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32(),
+        )
+        .default(100)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            description: '',
+            schema: { type: 'integer', format: 'int32', default: 100 },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const patchApiV3ContentBookIdAnnotationsRoute = createRoute({
+  method: 'patch',
+  path: '/api/v3/content/{bookId}/annotations',
+  tags: ['KoboAnnotation'],
+  summary: 'Update an annotation\n            \nNot intended for use beyond Kobo devices',
+  request: {
+    params: z.object({
+      bookId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'bookId',
+            in: 'path',
+            description: '',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const postApiV3ContentCheckforchangesRoute = createRoute({
+  method: 'post',
+  path: '/api/v3/content/checkforchanges',
+  tags: ['KoboAnnotation'],
+  summary:
+    'Check if the given books have had any changes since their last ETag\n            \nNot intended for use beyond Kobo devices',
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getApiKoreaderApiKeyUsersAuthRoute = createRoute({
@@ -21168,7 +22160,7 @@ export const postApiServerConvertMediaRoute = createRoute({
   path: '/api/Server/convert-media',
   tags: ['Server'],
   summary:
-    'Triggers the scheduling of the convert media job. This will convert all media to the target encoding (except for PNG). Only one job will run at a time.',
+    'Triggers the scheduling of the convert media job. This will convert all media to the target encoding. Only one job will run at a time.',
   responses: { 200: { description: 'OK' } },
 })
 
@@ -21177,6 +22169,38 @@ export const getApiServerLogsRoute = createRoute({
   path: '/api/Server/logs',
   tags: ['Server'],
   summary: 'Downloads all the log files via a zip',
+  responses: { 200: { description: 'OK' } },
+})
+
+export const postApiServerDebugExportRoute = createRoute({
+  method: 'post',
+  path: '/api/Server/debug-export',
+  tags: ['Server'],
+  summary:
+    'Starts building a scrubbed debug export. Admins get `DebugExportReady` with the export id when it is done',
+  responses: { 200: { description: 'OK' } },
+})
+
+export const getApiServerDebugExportExportIdRoute = createRoute({
+  method: 'get',
+  path: '/api/Server/debug-export/{exportId}',
+  tags: ['Server'],
+  summary: 'Downloads a finished debug export',
+  request: {
+    params: z.object({
+      exportId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'exportId',
+            in: 'path',
+            description: 'From the `DebugExportReady` event',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
   responses: { 200: { description: 'OK' } },
 })
 
@@ -21705,6 +22729,65 @@ export const getApiSettingsOpdsEnabledRoute = createRoute({
         'text/plain': { schema: z.boolean() },
         'application/json': { schema: z.boolean() },
         'text/json': { schema: z.boolean() },
+      },
+    },
+  },
+})
+
+export const getApiSettingsKoboEnabledRoute = createRoute({
+  method: 'get',
+  path: '/api/Settings/kobo-enabled',
+  tags: ['Settings'],
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'text/plain': { schema: z.boolean() },
+        'application/json': { schema: z.boolean() },
+        'text/json': { schema: z.boolean() },
+      },
+    },
+  },
+})
+
+export const getApiSettingsKepubifySupportedRoute = createRoute({
+  method: 'get',
+  path: '/api/Settings/kepubify-supported',
+  tags: ['Settings'],
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'text/plain': { schema: KepubifyStatusDtoSchema },
+        'application/json': { schema: KepubifyStatusDtoSchema },
+        'text/json': { schema: KepubifyStatusDtoSchema },
+      },
+    },
+  },
+})
+
+export const postApiSettingsKepubifyRoute = createRoute({
+  method: 'post',
+  path: '/api/Settings/kepubify',
+  tags: ['Settings'],
+  summary:
+    'Saves EnableKepubify and queues the check. Returns Checking, the result comes as a kepubify-checked event',
+  request: {
+    body: {
+      content: {
+        'application/json': { schema: UpdateKepubifyDtoSchema },
+        'text/json': { schema: UpdateKepubifyDtoSchema },
+        'application/*+json': { schema: UpdateKepubifyDtoSchema },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'text/plain': { schema: KepubifyStatusDtoSchema },
+        'application/json': { schema: KepubifyStatusDtoSchema },
+        'text/json': { schema: KepubifyStatusDtoSchema },
       },
     },
   },
@@ -25097,6 +26180,73 @@ export const getApiUsersGetPreferencesRoute = createRoute({
       },
     },
   },
+})
+
+export const getApiUsersKoboSyncPointsRoute = createRoute({
+  method: 'get',
+  path: '/api/Users/kobo-sync-points',
+  tags: ['Users'],
+  summary: 'Returns all sync points for the currently active user',
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'text/plain': { schema: z.array(KoboSyncPointDtoSchema) },
+        'application/json': { schema: z.array(KoboSyncPointDtoSchema) },
+        'text/json': { schema: z.array(KoboSyncPointDtoSchema) },
+      },
+    },
+  },
+})
+
+export const deleteApiUsersKoboSyncPointRoute = createRoute({
+  method: 'delete',
+  path: '/api/Users/kobo-sync-point',
+  tags: ['Users'],
+  summary: 'Delete a kobo sync point. By id',
+  request: {
+    query: z.object({
+      syncPointId: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32(),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'syncPointId',
+            in: 'query',
+            description: '',
+            schema: { type: 'integer', format: 'int32' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: { 200: { description: 'OK' } },
+})
+
+export const postApiUsersKoboSyncPointUndoRemoveBooksRoute = createRoute({
+  method: 'post',
+  path: '/api/Users/kobo-sync-point/undo-remove-books',
+  tags: ['Users'],
+  summary: 'Undo removal of books for the given sync point',
+  request: {
+    body: {
+      description: '',
+      content: {
+        'application/json': { schema: UndoKoboRemoveBookDtoSchema },
+        'text/json': { schema: UndoKoboRemoveBookDtoSchema },
+        'application/*+json': { schema: UndoKoboRemoveBookDtoSchema },
+      },
+    },
+  },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getApiUsersNamesRoute = createRoute({

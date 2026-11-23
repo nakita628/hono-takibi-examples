@@ -232,7 +232,7 @@ export const getOcsV2PhpAppsUpdatenotificationApiApiVersionChangelogAppIdRoute =
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.object({}) })
+                .object({ meta: OCSMetaSchema, data: z.looseObject({}) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),
@@ -274,7 +274,7 @@ export const getOcsV2PhpAppsUpdatenotificationApiApiVersionChangelogAppIdRoute =
           schema: z
             .object({
               ocs: z
-                .object({ meta: OCSMetaSchema, data: z.object({}) })
+                .object({ meta: OCSMetaSchema, data: z.looseObject({}) })
                 .openapi({ required: ['meta', 'data'] }),
             })
             .openapi({ required: ['ocs'] }),

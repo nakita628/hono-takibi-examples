@@ -43,26 +43,18 @@ const WebAssetSchema = z
   .openapi({ description: 'Describes a web asset.', required: [] })
   .openapi('WebAsset')
 
-type AssetType = {
-  androidApp?: z.infer<typeof AndroidAppAssetSchema>
-  web?: z.infer<typeof WebAssetSchema>
-}
-
-const AssetSchema: z.ZodType<AssetType> = z
-  .lazy(() =>
-    z
-      .object({
-        androidApp: AndroidAppAssetSchema.exactOptional().openapi({
-          description: 'Set if this is an Android App asset.',
-        }),
-        web: WebAssetSchema.exactOptional().openapi({ description: 'Set if this is a web asset.' }),
-      })
-      .openapi({
-        description:
-          'Uniquely identifies an asset. A digital asset is an identifiable and addressable online entity that typically provides some service or content. Examples of assets are websites, Android apps, Twitter feeds, and Plus Pages.',
-        required: [],
-      }),
-  )
+const AssetSchema = z
+  .object({
+    androidApp: AndroidAppAssetSchema.exactOptional().openapi({
+      description: 'Set if this is an Android App asset.',
+    }),
+    web: WebAssetSchema.exactOptional().openapi({ description: 'Set if this is a web asset.' }),
+  })
+  .openapi({
+    description:
+      'Uniquely identifies an asset. A digital asset is an identifiable and addressable online entity that typically provides some service or content. Examples of assets are websites, Android apps, Twitter feeds, and Plus Pages.',
+    required: [],
+  })
   .openapi('Asset')
 
 const StatementTemplateSchema = z

@@ -1,20 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  deleteOrgsOrgTeamsTeamSlugMembershipsUsernameRoute,
-  deleteOrgsOrgTeamsTeamSlugReposOwnerRepoRoute,
-  deleteOrgsOrgTeamsTeamSlugRoute,
   deleteTeamsTeamIdMembershipsUsernameRoute,
   deleteTeamsTeamIdMembersUsernameRoute,
   deleteTeamsTeamIdReposOwnerRepoRoute,
   deleteTeamsTeamIdRoute,
-  getOrgsOrgTeamsRoute,
-  getOrgsOrgTeamsTeamSlugInvitationsRoute,
-  getOrgsOrgTeamsTeamSlugMembershipsUsernameRoute,
-  getOrgsOrgTeamsTeamSlugMembersRoute,
-  getOrgsOrgTeamsTeamSlugReposOwnerRepoRoute,
-  getOrgsOrgTeamsTeamSlugReposRoute,
-  getOrgsOrgTeamsTeamSlugRoute,
-  getOrgsOrgTeamsTeamSlugTeamsRoute,
   getTeamsTeamIdInvitationsRoute,
   getTeamsTeamIdMembershipsUsernameRoute,
   getTeamsTeamIdMembersRoute,
@@ -23,12 +12,7 @@ import {
   getTeamsTeamIdReposRoute,
   getTeamsTeamIdRoute,
   getTeamsTeamIdTeamsRoute,
-  getUserTeamsRoute,
-  patchOrgsOrgTeamsTeamSlugRoute,
   patchTeamsTeamIdRoute,
-  postOrgsOrgTeamsRoute,
-  putOrgsOrgTeamsTeamSlugMembershipsUsernameRoute,
-  putOrgsOrgTeamsTeamSlugReposOwnerRepoRoute,
   putTeamsTeamIdMembershipsUsernameRoute,
   putTeamsTeamIdMembersUsernameRoute,
   putTeamsTeamIdReposOwnerRepoRoute,
@@ -37,51 +21,6 @@ import {
 const app = new OpenAPIHono()
 
 export const teamsHandler = app
-  .openapi(getOrgsOrgTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrgsOrgTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrgsOrgTeamsTeamSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOrgsOrgTeamsTeamSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrgsOrgTeamsTeamSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrgsOrgTeamsTeamSlugInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrgsOrgTeamsTeamSlugMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrgsOrgTeamsTeamSlugMembershipsUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOrgsOrgTeamsTeamSlugMembershipsUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrgsOrgTeamsTeamSlugMembershipsUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrgsOrgTeamsTeamSlugReposRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrgsOrgTeamsTeamSlugReposOwnerRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOrgsOrgTeamsTeamSlugReposOwnerRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrgsOrgTeamsTeamSlugReposOwnerRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrgsOrgTeamsTeamSlugTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
   .openapi(getTeamsTeamIdRoute, (c) => {
     throw new Error('Not implemented')
   })
@@ -128,8 +67,5 @@ export const teamsHandler = app
     throw new Error('Not implemented')
   })
   .openapi(getTeamsTeamIdTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserTeamsRoute, (c) => {
     throw new Error('Not implemented')
   })

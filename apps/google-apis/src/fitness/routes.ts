@@ -107,7 +107,15 @@ const DataPointSchema = z
   })
   .openapi('DataPoint')
 
-const DatasetSchema = z
+type DatasetType = {
+  dataSourceId?: string
+  maxEndTimeNs?: string
+  minStartTimeNs?: string
+  nextPageToken?: string
+  point?: z.infer<typeof DataPointSchema>[]
+}
+
+const DatasetSchema: z.ZodType<DatasetType> = z
   .object({
     dataSourceId: z
       .string()
@@ -236,7 +244,16 @@ const SessionSchema = z
   })
   .openapi('Session')
 
-const AggregateBucketSchema = z
+type AggregateBucketType = {
+  activity?: number
+  dataset?: z.infer<typeof DatasetSchema>[]
+  endTimeMillis?: string
+  session?: z.infer<typeof SessionSchema>
+  startTimeMillis?: string
+  type?: 'unknown' | 'time' | 'session' | 'activityType' | 'activitySegment'
+}
+
+const AggregateBucketSchema: z.ZodType<AggregateBucketType> = z
   .object({
     activity: z
       .int32()
@@ -275,6 +292,15 @@ const AggregateBucketSchema = z
   })
   .openapi({ required: [] })
   .openapi('AggregateBucket')
+
+type AggregateResponseType = { bucket?: z.infer<typeof AggregateBucketSchema>[] }
+
+type ListDataPointChangesResponseType = {
+  dataSourceId?: string
+  deletedDataPoint?: z.infer<typeof DataPointSchema>[]
+  insertedDataPoint?: z.infer<typeof DataPointSchema>[]
+  nextPageToken?: string
+}
 
 const AggregateBySchema = z
   .object({
@@ -415,7 +441,7 @@ const AggregateRequestSchema = z
   .openapi({ description: 'Next id: 10', required: [] })
   .openapi('AggregateRequest')
 
-const AggregateResponseSchema = z
+const AggregateResponseSchema: z.ZodType<AggregateResponseType> = z
   .object({
     bucket: z
       .array(AggregateBucketSchema)
@@ -572,7 +598,7 @@ const DataSourceSchema = z
   })
   .openapi('DataSource')
 
-const ListDataPointChangesResponseSchema = z
+const ListDataPointChangesResponseSchema: z.ZodType<ListDataPointChangesResponseType> = z
   .object({
     dataSourceId: z
       .string()

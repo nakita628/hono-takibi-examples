@@ -237,7 +237,7 @@ export const getCargoGetRouteOriginDestinationFromDateProductCodeRoute = createR
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -292,7 +292,7 @@ export const getCargoShipmentTrackingAWBPrefixAWBNumberRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -374,7 +374,7 @@ export const getOffersLoungesLocationRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -461,7 +461,7 @@ export const getOffersSeatmapsFlightNumberOriginDestinationDateCabinClassRoute =
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -542,7 +542,7 @@ export const getOperationsFlightstatusArrivalsAirportCodeFromDateTimeRoute = cre
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -624,7 +624,7 @@ export const getOperationsFlightstatusDeparturesAirportCodeFromDateTimeRoute = c
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -715,7 +715,7 @@ export const getOperationsFlightstatusRouteOriginDestinationDateRoute = createRo
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -796,7 +796,7 @@ export const getOperationsFlightstatusFlightNumberDateRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -900,7 +900,7 @@ export const getOperationsSchedulesOriginDestinationFromDateTimeRoute = createRo
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -972,7 +972,7 @@ export const getReferencesAircraftAircraftCodeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -1044,7 +1044,7 @@ export const getReferencesAirlinesAirlineCodeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -1128,7 +1128,7 @@ export const getReferencesAirportsNearestLatitudeLongitudeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -1311,7 +1311,7 @@ export const getReferencesCitiesCityCodeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })
@@ -1396,7 +1396,7 @@ export const getReferencesCountriesCountryCodeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ auth: [] }],
 })

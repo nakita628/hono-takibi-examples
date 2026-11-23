@@ -1,0 +1,7 @@
+export * from './well-known'
+export * from './admin'
+export * from './health'
+export * from './schemas'
+export * from './self-service'
+export * from './sessions'
+export * from './version'

@@ -148,7 +148,7 @@ const SubscriptionSchema = z
 const ProblemDetailsSchema = z
   .object({
     detail: z.string().exactOptional(),
-    extensions: z.object({}).exactOptional(),
+    extensions: z.looseObject({}).exactOptional(),
     instance: z.string().exactOptional(),
     status: z.int().exactOptional(),
     title: z.string().exactOptional(),

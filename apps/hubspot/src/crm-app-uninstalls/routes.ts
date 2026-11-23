@@ -113,14 +113,13 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: {},
+      scopes: { oauth: '' },
     },
   },
+  'x-hubspot-app-availability': {
+    oauth: { portal: ['public', 'private'], user: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const deleteAppinstalls202609ExternalInstallRoute = createRoute({
   method: 'delete',
@@ -131,5 +130,5 @@ export const deleteAppinstalls202609ExternalInstallRoute = createRoute({
     "Use this endpoint to uninstall your app from a customer's HubSpot account. If successful, this endpoint will return a 204 and the customer will receive an email notification that the developer has uninstall the app from their account.",
   operationId: 'delete-/appinstalls/2026-09/external-install',
   responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
-  security: [],
+  security: [{ oauth2: ['oauth'] }],
 })

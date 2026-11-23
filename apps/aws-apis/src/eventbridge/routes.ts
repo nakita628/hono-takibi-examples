@@ -9,9 +9,9 @@ const EventSourceNameSchema = z
 
 const ActivateEventSourceRequestSchema = z
   .object({
-    Name: EventSourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the partner event source to activate.' }),
-    ),
+    Name: EventSourceNameSchema.openapi({
+      description: 'The name of the partner event source to activate.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'ActivateEventSourceRequest' })
   .openapi('ActivateEventSourceRequest')
@@ -41,15 +41,15 @@ const ReplayStateReasonSchema = z.string().regex(/.*/).max(512).openapi('ReplayS
 
 const CancelReplayResponseSchema = z
   .object({
-    ReplayArn: ReplayArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the replay to cancel.' }),
-    ).exactOptional(),
-    State: ReplayStateSchema.and(
-      z.any().openapi({ description: 'The current state of the replay.' }),
-    ).exactOptional(),
-    StateReason: ReplayStateReasonSchema.and(
-      z.any().openapi({ description: 'The reason that the replay is in the current state.' }),
-    ).exactOptional(),
+    ReplayArn: ReplayArnSchema.exactOptional().openapi({
+      description: 'The ARN of the replay to cancel.',
+    }),
+    State: ReplayStateSchema.exactOptional().openapi({
+      description: 'The current state of the replay.',
+    }),
+    StateReason: ReplayStateReasonSchema.exactOptional().openapi({
+      description: 'The reason that the replay is in the current state.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CancelReplayResponse')
@@ -63,9 +63,7 @@ const ReplayNameSchema = z
 
 const CancelReplayRequestSchema = z
   .object({
-    ReplayName: ReplayNameSchema.and(
-      z.any().openapi({ description: 'The name of the replay to cancel.' }),
-    ),
+    ReplayName: ReplayNameSchema.openapi({ description: 'The name of the replay to cancel.' }),
   })
   .openapi({ required: ['ReplayName'], title: 'CancelReplayRequest' })
   .openapi('CancelReplayRequest')
@@ -87,35 +85,18 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const CreateApiDestinationResponseSchema = z
   .object({
-    ApiDestinationArn: ApiDestinationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the API destination that was created by the request.',
-        }),
-    ).exactOptional(),
-    ApiDestinationState: ApiDestinationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state of the API destination that was created by the request.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp indicating the time that the API destination was created.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating the time that the API destination was last modified.',
-        }),
-    ).exactOptional(),
+    ApiDestinationArn: ApiDestinationArnSchema.exactOptional().openapi({
+      description: 'The ARN of the API destination that was created by the request.',
+    }),
+    ApiDestinationState: ApiDestinationStateSchema.exactOptional().openapi({
+      description: 'The state of the API destination that was created by the request.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp indicating the time that the API destination was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp indicating the time that the API destination was last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApiDestinationResponse')
@@ -160,42 +141,27 @@ const ApiDestinationInvocationRateLimitPerSecondSchema = z
 
 const CreateApiDestinationRequestSchema = z
   .object({
-    Name: ApiDestinationNameSchema.and(
-      z.any().openapi({ description: 'The name for the API destination to create.' }),
-    ),
-    Description: ApiDestinationDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the API destination to create.' }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the connection to use for the API destination. The destination endpoint must support the authorization type specified for the connection.',
-        }),
-    ),
-    InvocationEndpoint: HttpsEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URL to the HTTP invocation endpoint for the API destination.',
-        }),
-    ),
-    HttpMethod: ApiDestinationHttpMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The method to use for the request to the HTTP invocation endpoint.',
-        }),
-    ),
-    InvocationRateLimitPerSecond: ApiDestinationInvocationRateLimitPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of requests per second to send to the HTTP invocation endpoint.',
-        }),
-    ).exactOptional(),
+    Name: ApiDestinationNameSchema.openapi({
+      description: 'The name for the API destination to create.',
+    }),
+    Description: ApiDestinationDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the API destination to create.',
+    }),
+    ConnectionArn: ConnectionArnSchema.openapi({
+      description:
+        'The ARN of the connection to use for the API destination. The destination endpoint must support the authorization type specified for the connection.',
+    }),
+    InvocationEndpoint: HttpsEndpointSchema.openapi({
+      description: 'The URL to the HTTP invocation endpoint for the API destination.',
+    }),
+    HttpMethod: ApiDestinationHttpMethodSchema.openapi({
+      description: 'The method to use for the request to the HTTP invocation endpoint.',
+    }),
+    InvocationRateLimitPerSecond:
+      ApiDestinationInvocationRateLimitPerSecondSchema.exactOptional().openapi({
+        description:
+          'The maximum number of requests per second to send to the HTTP invocation endpoint.',
+      }),
   })
   .openapi({
     required: ['Name', 'ConnectionArn', 'InvocationEndpoint', 'HttpMethod'],
@@ -222,18 +188,18 @@ const ArchiveStateReasonSchema = z.string().regex(/.*/).max(512).openapi('Archiv
 
 const CreateArchiveResponseSchema = z
   .object({
-    ArchiveArn: ArchiveArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the archive that was created.' }),
-    ).exactOptional(),
-    State: ArchiveStateSchema.and(
-      z.any().openapi({ description: 'The state of the archive that was created.' }),
-    ).exactOptional(),
-    StateReason: ArchiveStateReasonSchema.and(
-      z.any().openapi({ description: 'The reason that the archive is in the state.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the archive was created.' }),
-    ).exactOptional(),
+    ArchiveArn: ArchiveArnSchema.exactOptional().openapi({
+      description: 'The ARN of the archive that was created.',
+    }),
+    State: ArchiveStateSchema.exactOptional().openapi({
+      description: 'The state of the archive that was created.',
+    }),
+    StateReason: ArchiveStateReasonSchema.exactOptional().openapi({
+      description: 'The reason that the archive is in the state.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the archive was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateArchiveResponse')
@@ -255,30 +221,20 @@ const RetentionDaysSchema = z.int().min(0).openapi('RetentionDays')
 
 const CreateArchiveRequestSchema = z
   .object({
-    ArchiveName: ArchiveNameSchema.and(
-      z.any().openapi({ description: 'The name for the archive to create.' }),
-    ),
-    EventSourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the event bus that sends events to the archive.' }),
-    ),
-    Description: ArchiveDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the archive.' }),
-    ).exactOptional(),
-    EventPattern: EventPatternSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An event pattern to use to filter events sent to the archive.' }),
-    ).exactOptional(),
-    RetentionDays: RetentionDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days to retain events for. Default value is 0. If set to 0, events are retained indefinitely',
-        }),
-    ).exactOptional(),
+    ArchiveName: ArchiveNameSchema.openapi({ description: 'The name for the archive to create.' }),
+    EventSourceArn: ArnSchema.openapi({
+      description: 'The ARN of the event bus that sends events to the archive.',
+    }),
+    Description: ArchiveDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the archive.',
+    }),
+    EventPattern: EventPatternSchema.exactOptional().openapi({
+      description: 'An event pattern to use to filter events sent to the archive.',
+    }),
+    RetentionDays: RetentionDaysSchema.exactOptional().openapi({
+      description:
+        'The number of days to retain events for. Default value is 0. If set to 0, events are retained indefinitely',
+    }),
   })
   .openapi({ required: ['ArchiveName', 'EventSourceArn'], title: 'CreateArchiveRequest' })
   .openapi('CreateArchiveRequest')
@@ -299,28 +255,18 @@ const ConnectionStateSchema = z
 
 const CreateConnectionResponseSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the connection that was created by the request.' }),
-    ).exactOptional(),
-    ConnectionState: ConnectionStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The state of the connection that was created by the request.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A time stamp for the time that the connection was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last updated.',
-        }),
-    ).exactOptional(),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection that was created by the request.',
+    }),
+    ConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The state of the connection that was created by the request.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConnectionResponse')
@@ -347,16 +293,12 @@ const AuthHeaderParametersSchema = z
 
 const CreateConnectionBasicAuthRequestParametersSchema = z
   .object({
-    Username: AuthHeaderParametersSchema.and(
-      z.any().openapi({ description: 'The user name to use for Basic authorization.' }),
-    ),
-    Password: AuthHeaderParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The password associated with the user name to use for Basic authorization.',
-        }),
-    ),
+    Username: AuthHeaderParametersSchema.openapi({
+      description: 'The user name to use for Basic authorization.',
+    }),
+    Password: AuthHeaderParametersSchema.openapi({
+      description: 'The password associated with the user name to use for Basic authorization.',
+    }),
   })
   .openapi({
     required: ['Username', 'Password'],
@@ -366,21 +308,13 @@ const CreateConnectionBasicAuthRequestParametersSchema = z
 
 const CreateConnectionOAuthClientRequestParametersSchema = z
   .object({
-    ClientID: AuthHeaderParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The client ID to use for OAuth authorization for the connection.',
-        }),
-    ),
-    ClientSecret: AuthHeaderParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The client secret associated with the client ID to use for OAuth authorization for the connection.',
-        }),
-    ),
+    ClientID: AuthHeaderParametersSchema.openapi({
+      description: 'The client ID to use for OAuth authorization for the connection.',
+    }),
+    ClientSecret: AuthHeaderParametersSchema.openapi({
+      description:
+        'The client secret associated with the client ID to use for OAuth authorization for the connection.',
+    }),
   })
   .openapi({
     required: ['ClientID', 'ClientSecret'],
@@ -408,15 +342,13 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const ConnectionHeaderParameterSchema = z
   .object({
-    Key: HeaderKeySchema.and(
-      z.any().openapi({ description: 'The key for the parameter.' }),
-    ).exactOptional(),
-    Value: HeaderValueSchema.and(
-      z.any().openapi({ description: 'The value associated with the key.' }),
-    ).exactOptional(),
-    IsValueSecret: BooleanSchema.and(
-      z.any().openapi({ description: 'Specified whether the value is a secret.' }),
-    ).exactOptional(),
+    Key: HeaderKeySchema.exactOptional().openapi({ description: 'The key for the parameter.' }),
+    Value: HeaderValueSchema.exactOptional().openapi({
+      description: 'The value associated with the key.',
+    }),
+    IsValueSecret: BooleanSchema.exactOptional().openapi({
+      description: 'Specified whether the value is a secret.',
+    }),
   })
   .openapi({
     description:
@@ -445,19 +377,15 @@ const QueryStringValueSchema = z
 
 const ConnectionQueryStringParameterSchema = z
   .object({
-    Key: QueryStringKeySchema.and(
-      z.any().openapi({ description: 'The key for a query string parameter.' }),
-    ).exactOptional(),
-    Value: QueryStringValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value associated with the key for the query string parameter.',
-        }),
-    ).exactOptional(),
-    IsValueSecret: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether the value is secret.' }),
-    ).exactOptional(),
+    Key: QueryStringKeySchema.exactOptional().openapi({
+      description: 'The key for a query string parameter.',
+    }),
+    Value: QueryStringValueSchema.exactOptional().openapi({
+      description: 'The value associated with the key for the query string parameter.',
+    }),
+    IsValueSecret: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the value is secret.',
+    }),
   })
   .openapi({
     description:
@@ -476,15 +404,13 @@ const StringSchema = z.string().openapi('String')
 
 const ConnectionBodyParameterSchema = z
   .object({
-    Key: StringSchema.and(
-      z.any().openapi({ description: 'The key for the parameter.' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The value associated with the key.' }),
-    ).exactOptional(),
-    IsValueSecret: BooleanSchema.and(
-      z.any().openapi({ description: 'Specified whether the value is secret.' }),
-    ).exactOptional(),
+    Key: StringSchema.exactOptional().openapi({ description: 'The key for the parameter.' }),
+    Value: StringSchema.exactOptional().openapi({
+      description: 'The value associated with the key.',
+    }),
+    IsValueSecret: BooleanSchema.exactOptional().openapi({
+      description: 'Specified whether the value is secret.',
+    }),
   })
   .openapi({
     description:
@@ -501,54 +427,36 @@ const ConnectionBodyParametersListSchema = z
 
 const ConnectionHttpParametersSchema = z
   .object({
-    HeaderParameters: ConnectionHeaderParametersListSchema.and(
-      z.any().openapi({ description: 'Contains additional header parameters for the connection.' }),
-    ).exactOptional(),
-    QueryStringParameters: ConnectionQueryStringParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains additional query string parameters for the connection.',
-        }),
-    ).exactOptional(),
-    BodyParameters: ConnectionBodyParametersListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains additional body string parameters for the connection.' }),
-    ).exactOptional(),
+    HeaderParameters: ConnectionHeaderParametersListSchema.exactOptional().openapi({
+      description: 'Contains additional header parameters for the connection.',
+    }),
+    QueryStringParameters: ConnectionQueryStringParametersListSchema.exactOptional().openapi({
+      description: 'Contains additional query string parameters for the connection.',
+    }),
+    BodyParameters: ConnectionBodyParametersListSchema.exactOptional().openapi({
+      description: 'Contains additional body string parameters for the connection.',
+    }),
   })
   .openapi({ description: 'Contains additional parameters for the connection.', required: [] })
   .openapi('ConnectionHttpParameters')
 
 const CreateConnectionOAuthRequestParametersSchema = z
   .object({
-    ClientParameters: CreateConnectionOAuthClientRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CreateConnectionOAuthClientRequestParameters</code> object that contains the client parameters for OAuth authorization.',
-        }),
-    ),
-    AuthorizationEndpoint: HttpsEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL to the authorization endpoint when OAuth is specified as the authorization type.',
-        }),
-    ),
-    HttpMethod: ConnectionOAuthHttpMethodSchema.and(
-      z.any().openapi({ description: 'The method to use for the authorization request.' }),
-    ),
-    OAuthHttpParameters: ConnectionHttpParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ConnectionHttpParameters</code> object that contains details about the additional parameters to use for the connection.',
-        }),
-    ).exactOptional(),
+    ClientParameters: CreateConnectionOAuthClientRequestParametersSchema.openapi({
+      description:
+        'A <code>CreateConnectionOAuthClientRequestParameters</code> object that contains the client parameters for OAuth authorization.',
+    }),
+    AuthorizationEndpoint: HttpsEndpointSchema.openapi({
+      description:
+        'The URL to the authorization endpoint when OAuth is specified as the authorization type.',
+    }),
+    HttpMethod: ConnectionOAuthHttpMethodSchema.openapi({
+      description: 'The method to use for the authorization request.',
+    }),
+    OAuthHttpParameters: ConnectionHttpParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>ConnectionHttpParameters</code> object that contains details about the additional parameters to use for the connection.',
+    }),
   })
   .openapi({
     required: ['ClientParameters', 'AuthorizationEndpoint', 'HttpMethod'],
@@ -558,12 +466,12 @@ const CreateConnectionOAuthRequestParametersSchema = z
 
 const CreateConnectionApiKeyAuthRequestParametersSchema = z
   .object({
-    ApiKeyName: AuthHeaderParametersSchema.and(
-      z.any().openapi({ description: 'The name of the API key to use for authorization.' }),
-    ),
-    ApiKeyValue: AuthHeaderParametersSchema.and(
-      z.any().openapi({ description: 'The value for the API key to use for authorization.' }),
-    ),
+    ApiKeyName: AuthHeaderParametersSchema.openapi({
+      description: 'The name of the API key to use for authorization.',
+    }),
+    ApiKeyValue: AuthHeaderParametersSchema.openapi({
+      description: 'The value for the API key to use for authorization.',
+    }),
   })
   .openapi({
     required: ['ApiKeyName', 'ApiKeyValue'],
@@ -573,38 +481,24 @@ const CreateConnectionApiKeyAuthRequestParametersSchema = z
 
 const CreateConnectionAuthRequestParametersSchema = z
   .object({
-    BasicAuthParameters: CreateConnectionBasicAuthRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CreateConnectionBasicAuthRequestParameters</code> object that contains the Basic authorization parameters to use for the connection.',
-        }),
-    ).exactOptional(),
-    OAuthParameters: CreateConnectionOAuthRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CreateConnectionOAuthRequestParameters</code> object that contains the OAuth authorization parameters to use for the connection.',
-        }),
-    ).exactOptional(),
-    ApiKeyAuthParameters: CreateConnectionApiKeyAuthRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CreateConnectionApiKeyAuthRequestParameters</code> object that contains the API key authorization parameters to use for the connection.',
-        }),
-    ).exactOptional(),
-    InvocationHttpParameters: ConnectionHttpParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ConnectionHttpParameters</code> object that contains the API key authorization parameters to use for the connection. Note that if you include additional parameters for the target of a rule via <code>HttpParameters</code>, including query strings, the parameters added for the connection take precedence.',
-        }),
-    ).exactOptional(),
+    BasicAuthParameters: CreateConnectionBasicAuthRequestParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>CreateConnectionBasicAuthRequestParameters</code> object that contains the Basic authorization parameters to use for the connection.',
+    }),
+    OAuthParameters: CreateConnectionOAuthRequestParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>CreateConnectionOAuthRequestParameters</code> object that contains the OAuth authorization parameters to use for the connection.',
+    }),
+    ApiKeyAuthParameters: CreateConnectionApiKeyAuthRequestParametersSchema.exactOptional().openapi(
+      {
+        description:
+          'A <code>CreateConnectionApiKeyAuthRequestParameters</code> object that contains the API key authorization parameters to use for the connection.',
+      },
+    ),
+    InvocationHttpParameters: ConnectionHttpParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>ConnectionHttpParameters</code> object that contains the API key authorization parameters to use for the connection. Note that if you include additional parameters for the target of a rule via <code>HttpParameters</code>, including query strings, the parameters added for the connection take precedence.',
+    }),
   })
   .openapi({
     description: 'Contains the authorization parameters for the connection.',
@@ -614,28 +508,18 @@ const CreateConnectionAuthRequestParametersSchema = z
 
 const CreateConnectionRequestSchema = z
   .object({
-    Name: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name for the connection to create.' }),
-    ),
-    Description: ConnectionDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the connection to create.' }),
-    ).exactOptional(),
-    AuthorizationType: ConnectionAuthorizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of authorization to use for the connection.</p> <note> <p>OAUTH tokens are refreshed when a 401 or 407 response is returned.</p> </note>',
-        }),
-    ),
-    AuthParameters: CreateConnectionAuthRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CreateConnectionAuthRequestParameters</code> object that contains the authorization parameters to use to authorize with the endpoint. ',
-        }),
-    ),
+    Name: ConnectionNameSchema.openapi({ description: 'The name for the connection to create.' }),
+    Description: ConnectionDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the connection to create.',
+    }),
+    AuthorizationType: ConnectionAuthorizationTypeSchema.openapi({
+      description:
+        '<p>The type of authorization to use for the connection.</p> <note> <p>OAUTH tokens are refreshed when a 401 or 407 response is returned.</p> </note>',
+    }),
+    AuthParameters: CreateConnectionAuthRequestParametersSchema.openapi({
+      description:
+        'A <code>CreateConnectionAuthRequestParameters</code> object that contains the authorization parameters to use to authorize with the endpoint. ',
+    }),
   })
   .openapi({
     required: ['Name', 'AuthorizationType', 'AuthParameters'],
@@ -666,14 +550,10 @@ const HealthCheckSchema = z
 
 const PrimarySchema = z
   .object({
-    HealthCheck: HealthCheckSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the health check used by the endpoint to determine whether failover is triggered.',
-        }),
-    ),
+    HealthCheck: HealthCheckSchema.openapi({
+      description:
+        'The ARN of the health check used by the endpoint to determine whether failover is triggered.',
+    }),
   })
   .openapi({ required: ['HealthCheck'], description: 'The primary Region of the endpoint.' })
   .openapi('Primary')
@@ -686,9 +566,7 @@ const RouteSchema = z
   .openapi('Route')
 
 const SecondarySchema = z
-  .object({
-    Route: RouteSchema.and(z.any().openapi({ description: 'Defines the secondary Region.' })),
-  })
+  .object({ Route: RouteSchema.openapi({ description: 'Defines the secondary Region.' }) })
   .openapi({
     required: ['Route'],
     description:
@@ -698,17 +576,11 @@ const SecondarySchema = z
 
 const FailoverConfigSchema = z
   .object({
-    Primary: PrimarySchema.and(
-      z.any().openapi({ description: 'The main Region of the endpoint.' }),
-    ),
-    Secondary: SecondarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Region that events are routed to when failover is triggered or event replication is enabled.',
-        }),
-    ),
+    Primary: PrimarySchema.openapi({ description: 'The main Region of the endpoint.' }),
+    Secondary: SecondarySchema.openapi({
+      description:
+        'The Region that events are routed to when failover is triggered or event replication is enabled.',
+    }),
   })
   .openapi({
     required: ['Primary', 'Secondary'],
@@ -719,14 +591,10 @@ const FailoverConfigSchema = z
 
 const RoutingConfigSchema = z
   .object({
-    FailoverConfig: FailoverConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The failover configuration for an endpoint. This includes what triggers failover and what happens when it's triggered.",
-        }),
-    ),
+    FailoverConfig: FailoverConfigSchema.openapi({
+      description:
+        "The failover configuration for an endpoint. This includes what triggers failover and what happens when it's triggered.",
+    }),
   })
   .openapi({
     required: ['FailoverConfig'],
@@ -738,9 +606,9 @@ const ReplicationStateSchema = z.enum(['ENABLED', 'DISABLED']).openapi('Replicat
 
 const ReplicationConfigSchema = z
   .object({
-    State: ReplicationStateSchema.and(
-      z.any().openapi({ description: 'The state of event replication.' }),
-    ).exactOptional(),
+    State: ReplicationStateSchema.exactOptional().openapi({
+      description: 'The state of event replication.',
+    }),
   })
   .openapi({
     description: 'Endpoints can replicate all events to the secondary Region.',
@@ -757,9 +625,9 @@ const NonPartnerEventBusArnSchema = z
 
 const EndpointEventBusSchema = z
   .object({
-    EventBusArn: NonPartnerEventBusArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the event bus the endpoint is associated with.' }),
-    ),
+    EventBusArn: NonPartnerEventBusArnSchema.openapi({
+      description: 'The ARN of the event bus the endpoint is associated with.',
+    }),
   })
   .openapi({
     required: ['EventBusArn'],
@@ -793,39 +661,27 @@ const EndpointStateSchema = z
 
 const CreateEndpointResponseSchema = z
   .object({
-    Name: EndpointNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the endpoint that was created by this request.' }),
-    ).exactOptional(),
-    Arn: EndpointArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the endpoint that was created by this request.' }),
-    ).exactOptional(),
-    RoutingConfig: RoutingConfigSchema.and(
-      z.any().openapi({ description: 'The routing configuration defined by this request.' }),
-    ).exactOptional(),
-    ReplicationConfig: ReplicationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether event replication was enabled or disabled by this request.',
-        }),
-    ).exactOptional(),
-    EventBuses: EndpointEventBusListSchema.and(
-      z.any().openapi({ description: 'The event buses used by this request.' }),
-    ).exactOptional(),
-    RoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the role used by event replication for this request.',
-        }),
-    ).exactOptional(),
-    State: EndpointStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The state of the endpoint that was created by this request.' }),
-    ).exactOptional(),
+    Name: EndpointNameSchema.exactOptional().openapi({
+      description: 'The name of the endpoint that was created by this request.',
+    }),
+    Arn: EndpointArnSchema.exactOptional().openapi({
+      description: 'The ARN of the endpoint that was created by this request.',
+    }),
+    RoutingConfig: RoutingConfigSchema.exactOptional().openapi({
+      description: 'The routing configuration defined by this request.',
+    }),
+    ReplicationConfig: ReplicationConfigSchema.exactOptional().openapi({
+      description: 'Whether event replication was enabled or disabled by this request.',
+    }),
+    EventBuses: EndpointEventBusListSchema.exactOptional().openapi({
+      description: 'The event buses used by this request.',
+    }),
+    RoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role used by event replication for this request.',
+    }),
+    State: EndpointStateSchema.exactOptional().openapi({
+      description: 'The state of the endpoint that was created by this request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEndpointResponse')
@@ -834,53 +690,37 @@ const EndpointDescriptionSchema = z.string().regex(/.*/).max(512).openapi('Endpo
 
 const CreateEndpointRequestSchema = z
   .object({
-    Name: EndpointNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the global endpoint. For example, <code>"Name":"us-east-2-custom_bus_A-endpoint"</code>.',
-        }),
-    ),
-    Description: EndpointDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the global endpoint.' }),
-    ).exactOptional(),
-    RoutingConfig: RoutingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configure the routing policy, including the health check and secondary Region..',
-        }),
-    ),
-    ReplicationConfig: ReplicationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Enable or disable event replication. The default state is <code>ENABLED</code> which means you must supply a <code>RoleArn</code>. If you don't have a <code>RoleArn</code> or you don't want event replication enabled, set the state to <code>DISABLED</code>.",
-        }),
-    ).exactOptional(),
-    EventBuses: EndpointEventBusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Define the event buses used. </p> <important> <p>The names of the event buses must be identical in each Region.</p> </important>',
-        }),
-    ),
-    RoleArn: IamRoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the role used for replication.' }),
-    ).exactOptional(),
+    Name: EndpointNameSchema.openapi({
+      description:
+        'The name of the global endpoint. For example, <code>"Name":"us-east-2-custom_bus_A-endpoint"</code>.',
+    }),
+    Description: EndpointDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the global endpoint.',
+    }),
+    RoutingConfig: RoutingConfigSchema.openapi({
+      description:
+        'Configure the routing policy, including the health check and secondary Region..',
+    }),
+    ReplicationConfig: ReplicationConfigSchema.exactOptional().openapi({
+      description:
+        "Enable or disable event replication. The default state is <code>ENABLED</code> which means you must supply a <code>RoleArn</code>. If you don't have a <code>RoleArn</code> or you don't want event replication enabled, set the state to <code>DISABLED</code>.",
+    }),
+    EventBuses: EndpointEventBusListSchema.openapi({
+      description:
+        '<p>Define the event buses used. </p> <important> <p>The names of the event buses must be identical in each Region.</p> </important>',
+    }),
+    RoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role used for replication.',
+    }),
   })
   .openapi({ required: ['Name', 'RoutingConfig', 'EventBuses'], title: 'CreateEndpointRequest' })
   .openapi('CreateEndpointRequest')
 
 const CreateEventBusResponseSchema = z
   .object({
-    EventBusArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the new event bus.' }),
-    ).exactOptional(),
+    EventBusArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the new event bus.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEventBusResponse')
@@ -898,17 +738,11 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value for the specified tag key.' }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'A string you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.',
+    }),
+    Value: TagValueSchema.openapi({ description: 'The value for the specified tag key.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -921,34 +755,26 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const CreateEventBusRequestSchema = z
   .object({
-    Name: EventBusNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the new event bus. </p> <p>Custom event bus names can't contain the <code>/</code> character, but you can use the <code>/</code> character in partner event bus names. In addition, for partner event buses, the name must exactly match the name of the partner event source that this event bus is matched to.</p> <p>You can't use the name <code>default</code> for a custom event bus, as this name is already used for your account's default event bus.</p>",
-        }),
-    ),
-    EventSourceName: EventSourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you are creating a partner event bus, this specifies the partner event source that the new event bus will be matched with.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags to associate with the event bus.' }),
-    ).exactOptional(),
+    Name: EventBusNameSchema.openapi({
+      description:
+        "<p>The name of the new event bus. </p> <p>Custom event bus names can't contain the <code>/</code> character, but you can use the <code>/</code> character in partner event bus names. In addition, for partner event buses, the name must exactly match the name of the partner event source that this event bus is matched to.</p> <p>You can't use the name <code>default</code> for a custom event bus, as this name is already used for your account's default event bus.</p>",
+    }),
+    EventSourceName: EventSourceNameSchema.exactOptional().openapi({
+      description:
+        'If you are creating a partner event bus, this specifies the partner event source that the new event bus will be matched with.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Tags to associate with the event bus.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateEventBusRequest' })
   .openapi('CreateEventBusRequest')
 
 const CreatePartnerEventSourceResponseSchema = z
   .object({
-    EventSourceArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the partner event source.' }),
-    ).exactOptional(),
+    EventSourceArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the partner event source.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePartnerEventSourceResponse')
@@ -961,179 +787,133 @@ const AccountIdSchema = z
 
 const CreatePartnerEventSourceRequestSchema = z
   .object({
-    Name: EventSourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the partner event source. This name must be unique and must be in the format <code> <i>partner_name</i>/<i>event_namespace</i>/<i>event_name</i> </code>. The Amazon Web Services account that wants to use this partner event source must create a partner event bus with a name that matches the name of the partner event source.',
-        }),
-    ),
-    Account: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID that is permitted to create a matching partner event bus for this partner event source.',
-        }),
-    ),
+    Name: EventSourceNameSchema.openapi({
+      description:
+        'The name of the partner event source. This name must be unique and must be in the format <code> <i>partner_name</i>/<i>event_namespace</i>/<i>event_name</i> </code>. The Amazon Web Services account that wants to use this partner event source must create a partner event bus with a name that matches the name of the partner event source.',
+    }),
+    Account: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services account ID that is permitted to create a matching partner event bus for this partner event source.',
+    }),
   })
   .openapi({ required: ['Name', 'Account'], title: 'CreatePartnerEventSourceRequest' })
   .openapi('CreatePartnerEventSourceRequest')
 
 const DeactivateEventSourceRequestSchema = z
   .object({
-    Name: EventSourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the partner event source to deactivate.' }),
-    ),
+    Name: EventSourceNameSchema.openapi({
+      description: 'The name of the partner event source to deactivate.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeactivateEventSourceRequest' })
   .openapi('DeactivateEventSourceRequest')
 
 const DeauthorizeConnectionResponseSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the connection that authorization was removed from.' }),
-    ).exactOptional(),
-    ConnectionState: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The state of the connection.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A time stamp for the time that the connection was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last updated.',
-        }),
-    ).exactOptional(),
-    LastAuthorizedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last authorized.',
-        }),
-    ).exactOptional(),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection that authorization was removed from.',
+    }),
+    ConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The state of the connection.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last updated.',
+    }),
+    LastAuthorizedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last authorized.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeauthorizeConnectionResponse')
 
 const DeauthorizeConnectionRequestSchema = z
   .object({
-    Name: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection to remove authorization from.' }),
-    ),
+    Name: ConnectionNameSchema.openapi({
+      description: 'The name of the connection to remove authorization from.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeauthorizeConnectionRequest' })
   .openapi('DeauthorizeConnectionRequest')
 
-const DeleteApiDestinationResponseSchema = z.object({}).openapi('DeleteApiDestinationResponse')
+const DeleteApiDestinationResponseSchema = z.looseObject({}).openapi('DeleteApiDestinationResponse')
 
 const DeleteApiDestinationRequestSchema = z
   .object({
-    Name: ApiDestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the destination to delete.' }),
-    ),
+    Name: ApiDestinationNameSchema.openapi({
+      description: 'The name of the destination to delete.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteApiDestinationRequest' })
   .openapi('DeleteApiDestinationRequest')
 
-const DeleteArchiveResponseSchema = z.object({}).openapi('DeleteArchiveResponse')
+const DeleteArchiveResponseSchema = z.looseObject({}).openapi('DeleteArchiveResponse')
 
 const DeleteArchiveRequestSchema = z
   .object({
-    ArchiveName: ArchiveNameSchema.and(
-      z.any().openapi({ description: 'The name of the archive to delete.' }),
-    ),
+    ArchiveName: ArchiveNameSchema.openapi({ description: 'The name of the archive to delete.' }),
   })
   .openapi({ required: ['ArchiveName'], title: 'DeleteArchiveRequest' })
   .openapi('DeleteArchiveRequest')
 
 const DeleteConnectionResponseSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the connection that was deleted.' }),
-    ).exactOptional(),
-    ConnectionState: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The state of the connection before it was deleted.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A time stamp for the time that the connection was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp for the time that the connection was last modified before it was deleted.',
-        }),
-    ).exactOptional(),
-    LastAuthorizedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp for the time that the connection was last authorized before it wa deleted.',
-        }),
-    ).exactOptional(),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection that was deleted.',
+    }),
+    ConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The state of the connection before it was deleted.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp for the time that the connection was last modified before it was deleted.',
+    }),
+    LastAuthorizedTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp for the time that the connection was last authorized before it wa deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteConnectionResponse')
 
 const DeleteConnectionRequestSchema = z
   .object({
-    Name: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection to delete.' }),
-    ),
+    Name: ConnectionNameSchema.openapi({ description: 'The name of the connection to delete.' }),
   })
   .openapi({ required: ['Name'], title: 'DeleteConnectionRequest' })
   .openapi('DeleteConnectionRequest')
 
-const DeleteEndpointResponseSchema = z.object({}).openapi('DeleteEndpointResponse')
+const DeleteEndpointResponseSchema = z.looseObject({}).openapi('DeleteEndpointResponse')
 
 const DeleteEndpointRequestSchema = z
   .object({
-    Name: EndpointNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the endpoint you want to delete. For example, <code>"Name":"us-east-2-custom_bus_A-endpoint"</code>..',
-        }),
-    ),
+    Name: EndpointNameSchema.openapi({
+      description:
+        'The name of the endpoint you want to delete. For example, <code>"Name":"us-east-2-custom_bus_A-endpoint"</code>..',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteEndpointRequest' })
   .openapi('DeleteEndpointRequest')
 
 const DeleteEventBusRequestSchema = z
   .object({
-    Name: EventBusNameSchema.and(
-      z.any().openapi({ description: 'The name of the event bus to delete.' }),
-    ),
+    Name: EventBusNameSchema.openapi({ description: 'The name of the event bus to delete.' }),
   })
   .openapi({ required: ['Name'], title: 'DeleteEventBusRequest' })
   .openapi('DeleteEventBusRequest')
 
 const DeletePartnerEventSourceRequestSchema = z
   .object({
-    Name: EventSourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the event source to delete.' }),
-    ),
-    Account: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID of the Amazon Web Services customer that the event source was created for.',
-        }),
-    ),
+    Name: EventSourceNameSchema.openapi({ description: 'The name of the event source to delete.' }),
+    Account: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services account ID of the Amazon Web Services customer that the event source was created for.',
+    }),
   })
   .openapi({ required: ['Name', 'Account'], title: 'DeletePartnerEventSourceRequest' })
   .openapi('DeletePartnerEventSourceRequest')
@@ -1154,23 +934,15 @@ const EventBusNameOrArnSchema = z
 
 const DeleteRuleRequestSchema = z
   .object({
-    Name: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
-    Force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this is a managed rule, created by an Amazon Web Services service on your behalf, you must specify <code>Force</code> as <code>True</code> to delete the rule. This parameter is ignored for rules that are not managed rules. You can check whether a rule is a managed rule by using <code>DescribeRule</code> or <code>ListRules</code> and checking the <code>ManagedBy</code> field of the response.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
+    Force: BooleanSchema.exactOptional().openapi({
+      description:
+        'If this is a managed rule, created by an Amazon Web Services service on your behalf, you must specify <code>Force</code> as <code>True</code> to delete the rule. This parameter is ignored for rules that are not managed rules. You can check whether a rule is a managed rule by using <code>DescribeRule</code> or <code>ListRules</code> and checking the <code>ManagedBy</code> field of the response.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteRuleRequest' })
   .openapi('DeleteRuleRequest')
@@ -1179,62 +951,47 @@ const ManagedRuleExceptionSchema = z.any().openapi('ManagedRuleException')
 
 const DescribeApiDestinationResponseSchema = z
   .object({
-    ApiDestinationArn: ApiDestinationArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the API destination retrieved.' }),
-    ).exactOptional(),
-    Name: ApiDestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the API destination retrieved.' }),
-    ).exactOptional(),
-    Description: ApiDestinationDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the API destination retrieved.' }),
-    ).exactOptional(),
-    ApiDestinationState: ApiDestinationStateSchema.and(
-      z.any().openapi({ description: 'The state of the API destination retrieved.' }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the connection specified for the API destination retrieved.',
-        }),
-    ).exactOptional(),
-    InvocationEndpoint: HttpsEndpointSchema.and(
-      z.any().openapi({ description: 'The URL to use to connect to the HTTP endpoint.' }),
-    ).exactOptional(),
-    HttpMethod: ApiDestinationHttpMethodSchema.and(
-      z.any().openapi({ description: 'The method to use to connect to the HTTP endpoint.' }),
-    ).exactOptional(),
-    InvocationRateLimitPerSecond: ApiDestinationInvocationRateLimitPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of invocations per second to specified for the API destination. Note that if you set the invocation rate maximum to a value lower the rate necessary to send all events received on to the destination HTTP endpoint, some events may not be delivered within the 24-hour retry window. If you plan to set the rate lower than the rate necessary to deliver all events, consider using a dead-letter queue to catch events that are not delivered within 24 hours.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the API destination was created.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the API destination was last modified.',
-        }),
-    ).exactOptional(),
+    ApiDestinationArn: ApiDestinationArnSchema.exactOptional().openapi({
+      description: 'The ARN of the API destination retrieved.',
+    }),
+    Name: ApiDestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the API destination retrieved.',
+    }),
+    Description: ApiDestinationDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the API destination retrieved.',
+    }),
+    ApiDestinationState: ApiDestinationStateSchema.exactOptional().openapi({
+      description: 'The state of the API destination retrieved.',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection specified for the API destination retrieved.',
+    }),
+    InvocationEndpoint: HttpsEndpointSchema.exactOptional().openapi({
+      description: 'The URL to use to connect to the HTTP endpoint.',
+    }),
+    HttpMethod: ApiDestinationHttpMethodSchema.exactOptional().openapi({
+      description: 'The method to use to connect to the HTTP endpoint.',
+    }),
+    InvocationRateLimitPerSecond:
+      ApiDestinationInvocationRateLimitPerSecondSchema.exactOptional().openapi({
+        description:
+          'The maximum number of invocations per second to specified for the API destination. Note that if you set the invocation rate maximum to a value lower the rate necessary to send all events received on to the destination HTTP endpoint, some events may not be delivered within the 24-hour retry window. If you plan to set the rate lower than the rate necessary to deliver all events, consider using a dead-letter queue to catch events that are not delivered within 24 hours.',
+      }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the API destination was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the API destination was last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeApiDestinationResponse')
 
 const DescribeApiDestinationRequestSchema = z
   .object({
-    Name: ApiDestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the API destination to retrieve.' }),
-    ),
+    Name: ApiDestinationNameSchema.openapi({
+      description: 'The name of the API destination to retrieve.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DescribeApiDestinationRequest' })
   .openapi('DescribeApiDestinationRequest')
@@ -1243,50 +1000,44 @@ const LongSchema = z.int().openapi('Long')
 
 const DescribeArchiveResponseSchema = z
   .object({
-    ArchiveArn: ArchiveArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the archive.' }),
-    ).exactOptional(),
-    ArchiveName: ArchiveNameSchema.and(
-      z.any().openapi({ description: 'The name of the archive.' }),
-    ).exactOptional(),
-    EventSourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the event source associated with the archive.' }),
-    ).exactOptional(),
-    Description: ArchiveDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the archive.' }),
-    ).exactOptional(),
-    EventPattern: EventPatternSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The event pattern used to filter events sent to the archive.' }),
-    ).exactOptional(),
-    State: ArchiveStateSchema.and(
-      z.any().openapi({ description: 'The state of the archive.' }),
-    ).exactOptional(),
-    StateReason: ArchiveStateReasonSchema.and(
-      z.any().openapi({ description: 'The reason that the archive is in the state.' }),
-    ).exactOptional(),
-    RetentionDays: RetentionDaysSchema.and(
-      z.any().openapi({ description: 'The number of days to retain events for in the archive.' }),
-    ).exactOptional(),
-    SizeBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size of the archive in bytes.' }),
-    ).exactOptional(),
-    EventCount: LongSchema.and(
-      z.any().openapi({ description: 'The number of events in the archive.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the archive was created.' }),
-    ).exactOptional(),
+    ArchiveArn: ArchiveArnSchema.exactOptional().openapi({
+      description: 'The ARN of the archive.',
+    }),
+    ArchiveName: ArchiveNameSchema.exactOptional().openapi({
+      description: 'The name of the archive.',
+    }),
+    EventSourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the event source associated with the archive.',
+    }),
+    Description: ArchiveDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the archive.',
+    }),
+    EventPattern: EventPatternSchema.exactOptional().openapi({
+      description: 'The event pattern used to filter events sent to the archive.',
+    }),
+    State: ArchiveStateSchema.exactOptional().openapi({ description: 'The state of the archive.' }),
+    StateReason: ArchiveStateReasonSchema.exactOptional().openapi({
+      description: 'The reason that the archive is in the state.',
+    }),
+    RetentionDays: RetentionDaysSchema.exactOptional().openapi({
+      description: 'The number of days to retain events for in the archive.',
+    }),
+    SizeBytes: LongSchema.exactOptional().openapi({
+      description: 'The size of the archive in bytes.',
+    }),
+    EventCount: LongSchema.exactOptional().openapi({
+      description: 'The number of events in the archive.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the archive was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeArchiveResponse')
 
 const DescribeArchiveRequestSchema = z
   .object({
-    ArchiveName: ArchiveNameSchema.and(
-      z.any().openapi({ description: 'The name of the archive to retrieve.' }),
-    ),
+    ArchiveName: ArchiveNameSchema.openapi({ description: 'The name of the archive to retrieve.' }),
   })
   .openapi({ required: ['ArchiveName'], title: 'DescribeArchiveRequest' })
   .openapi('DescribeArchiveRequest')
@@ -1304,9 +1055,9 @@ const SecretsManagerSecretArnSchema = z
 
 const ConnectionBasicAuthResponseParametersSchema = z
   .object({
-    Username: AuthHeaderParametersSchema.and(
-      z.any().openapi({ description: 'The user name to use for Basic authorization.' }),
-    ).exactOptional(),
+    Username: AuthHeaderParametersSchema.exactOptional().openapi({
+      description: 'The user name to use for Basic authorization.',
+    }),
   })
   .openapi({
     description:
@@ -1317,13 +1068,9 @@ const ConnectionBasicAuthResponseParametersSchema = z
 
 const ConnectionOAuthClientResponseParametersSchema = z
   .object({
-    ClientID: AuthHeaderParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The client ID associated with the response to the connection request.',
-        }),
-    ).exactOptional(),
+    ClientID: AuthHeaderParametersSchema.exactOptional().openapi({
+      description: 'The client ID associated with the response to the connection request.',
+    }),
   })
   .openapi({
     description:
@@ -1334,27 +1081,19 @@ const ConnectionOAuthClientResponseParametersSchema = z
 
 const ConnectionOAuthResponseParametersSchema = z
   .object({
-    ClientParameters: ConnectionOAuthClientResponseParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ConnectionOAuthClientResponseParameters</code> object that contains details about the client parameters returned when OAuth is specified as the authorization type.',
-        }),
-    ).exactOptional(),
-    AuthorizationEndpoint: HttpsEndpointSchema.and(
-      z.any().openapi({ description: 'The URL to the HTTP endpoint that authorized the request.' }),
-    ).exactOptional(),
-    HttpMethod: ConnectionOAuthHttpMethodSchema.and(
-      z.any().openapi({ description: 'The method used to connect to the HTTP endpoint.' }),
-    ).exactOptional(),
-    OAuthHttpParameters: ConnectionHttpParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The additional HTTP parameters used for the OAuth authorization request.',
-        }),
-    ).exactOptional(),
+    ClientParameters: ConnectionOAuthClientResponseParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>ConnectionOAuthClientResponseParameters</code> object that contains details about the client parameters returned when OAuth is specified as the authorization type.',
+    }),
+    AuthorizationEndpoint: HttpsEndpointSchema.exactOptional().openapi({
+      description: 'The URL to the HTTP endpoint that authorized the request.',
+    }),
+    HttpMethod: ConnectionOAuthHttpMethodSchema.exactOptional().openapi({
+      description: 'The method used to connect to the HTTP endpoint.',
+    }),
+    OAuthHttpParameters: ConnectionHttpParametersSchema.exactOptional().openapi({
+      description: 'The additional HTTP parameters used for the OAuth authorization request.',
+    }),
   })
   .openapi({
     description:
@@ -1365,14 +1104,10 @@ const ConnectionOAuthResponseParametersSchema = z
 
 const ConnectionApiKeyAuthResponseParametersSchema = z
   .object({
-    ApiKeyName: AuthHeaderParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the header to use for the <code>APIKeyValue</code> used for authorization.',
-        }),
-    ).exactOptional(),
+    ApiKeyName: AuthHeaderParametersSchema.exactOptional().openapi({
+      description:
+        'The name of the header to use for the <code>APIKeyValue</code> used for authorization.',
+    }),
   })
   .openapi({
     description:
@@ -1383,23 +1118,19 @@ const ConnectionApiKeyAuthResponseParametersSchema = z
 
 const ConnectionAuthResponseParametersSchema = z
   .object({
-    BasicAuthParameters: ConnectionBasicAuthResponseParametersSchema.and(
-      z.any().openapi({ description: 'The authorization parameters for Basic authorization.' }),
-    ).exactOptional(),
-    OAuthParameters: ConnectionOAuthResponseParametersSchema.and(
-      z.any().openapi({ description: 'The OAuth parameters to use for authorization.' }),
-    ).exactOptional(),
-    ApiKeyAuthParameters: ConnectionApiKeyAuthResponseParametersSchema.and(
-      z.any().openapi({ description: 'The API Key parameters to use for authorization.' }),
-    ).exactOptional(),
-    InvocationHttpParameters: ConnectionHttpParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional parameters for the connection that are passed through with every invocation to the HTTP endpoint.',
-        }),
-    ).exactOptional(),
+    BasicAuthParameters: ConnectionBasicAuthResponseParametersSchema.exactOptional().openapi({
+      description: 'The authorization parameters for Basic authorization.',
+    }),
+    OAuthParameters: ConnectionOAuthResponseParametersSchema.exactOptional().openapi({
+      description: 'The OAuth parameters to use for authorization.',
+    }),
+    ApiKeyAuthParameters: ConnectionApiKeyAuthResponseParametersSchema.exactOptional().openapi({
+      description: 'The API Key parameters to use for authorization.',
+    }),
+    InvocationHttpParameters: ConnectionHttpParametersSchema.exactOptional().openapi({
+      description:
+        'Additional parameters for the connection that are passed through with every invocation to the HTTP endpoint.',
+    }),
   })
   .openapi({
     description: 'Contains the authorization parameters to use for the connection.',
@@ -1409,69 +1140,47 @@ const ConnectionAuthResponseParametersSchema = z
 
 const DescribeConnectionResponseSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the connection retrieved.' }),
-    ).exactOptional(),
-    Name: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection retrieved.' }),
-    ).exactOptional(),
-    Description: ConnectionDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the connection retrieved.' }),
-    ).exactOptional(),
-    ConnectionState: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The state of the connection retrieved.' }),
-    ).exactOptional(),
-    StateReason: ConnectionStateReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason that the connection is in the current connection state.',
-        }),
-    ).exactOptional(),
-    AuthorizationType: ConnectionAuthorizationTypeSchema.and(
-      z.any().openapi({ description: 'The type of authorization specified for the connection.' }),
-    ).exactOptional(),
-    SecretArn: SecretsManagerSecretArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the secret created from the authorization parameters specified for the connection.',
-        }),
-    ).exactOptional(),
-    AuthParameters: ConnectionAuthResponseParametersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The parameters to use for authorization for the connection.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A time stamp for the time that the connection was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last modified.',
-        }),
-    ).exactOptional(),
-    LastAuthorizedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last authorized.',
-        }),
-    ).exactOptional(),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection retrieved.',
+    }),
+    Name: ConnectionNameSchema.exactOptional().openapi({
+      description: 'The name of the connection retrieved.',
+    }),
+    Description: ConnectionDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the connection retrieved.',
+    }),
+    ConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The state of the connection retrieved.',
+    }),
+    StateReason: ConnectionStateReasonSchema.exactOptional().openapi({
+      description: 'The reason that the connection is in the current connection state.',
+    }),
+    AuthorizationType: ConnectionAuthorizationTypeSchema.exactOptional().openapi({
+      description: 'The type of authorization specified for the connection.',
+    }),
+    SecretArn: SecretsManagerSecretArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the secret created from the authorization parameters specified for the connection.',
+    }),
+    AuthParameters: ConnectionAuthResponseParametersSchema.exactOptional().openapi({
+      description: 'The parameters to use for authorization for the connection.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last modified.',
+    }),
+    LastAuthorizedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last authorized.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConnectionResponse')
 
 const DescribeConnectionRequestSchema = z
   .object({
-    Name: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection to retrieve.' }),
-    ),
+    Name: ConnectionNameSchema.openapi({ description: 'The name of the connection to retrieve.' }),
   })
   .openapi({ required: ['Name'], title: 'DescribeConnectionRequest' })
   .openapi('DescribeConnectionRequest')
@@ -1499,84 +1208,47 @@ const EndpointStateReasonSchema = z
 
 const DescribeEndpointResponseSchema = z
   .object({
-    Name: EndpointNameSchema.and(
-      z.any().openapi({ description: 'The name of the endpoint you asked for information about.' }),
-    ).exactOptional(),
-    Description: EndpointDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of the endpoint you asked for information about.',
-        }),
-    ).exactOptional(),
-    Arn: EndpointArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the endpoint you asked for information about.' }),
-    ).exactOptional(),
-    RoutingConfig: RoutingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The routing configuration of the endpoint you asked for information about.',
-        }),
-    ).exactOptional(),
-    ReplicationConfig: ReplicationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether replication is enabled or disabled for the endpoint you asked for information about.',
-        }),
-    ).exactOptional(),
-    EventBuses: EndpointEventBusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event buses being used by the endpoint you asked for information about.',
-        }),
-    ).exactOptional(),
-    RoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the role used by the endpoint you asked for information about.',
-        }),
-    ).exactOptional(),
-    EndpointId: EndpointIdSchema.and(
-      z.any().openapi({ description: 'The ID of the endpoint you asked for information about.' }),
-    ).exactOptional(),
-    EndpointUrl: EndpointUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the endpoint you asked for information about.' }),
-    ).exactOptional(),
-    State: EndpointStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current state of the endpoint you asked for information about.',
-        }),
-    ).exactOptional(),
-    StateReason: EndpointStateReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason the endpoint you asked for information about is in its current state.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the endpoint you asked for information about was created.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The last time the endpoint you asked for information about was modified.',
-        }),
-    ).exactOptional(),
+    Name: EndpointNameSchema.exactOptional().openapi({
+      description: 'The name of the endpoint you asked for information about.',
+    }),
+    Description: EndpointDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the endpoint you asked for information about.',
+    }),
+    Arn: EndpointArnSchema.exactOptional().openapi({
+      description: 'The ARN of the endpoint you asked for information about.',
+    }),
+    RoutingConfig: RoutingConfigSchema.exactOptional().openapi({
+      description: 'The routing configuration of the endpoint you asked for information about.',
+    }),
+    ReplicationConfig: ReplicationConfigSchema.exactOptional().openapi({
+      description:
+        'Whether replication is enabled or disabled for the endpoint you asked for information about.',
+    }),
+    EventBuses: EndpointEventBusListSchema.exactOptional().openapi({
+      description: 'The event buses being used by the endpoint you asked for information about.',
+    }),
+    RoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role used by the endpoint you asked for information about.',
+    }),
+    EndpointId: EndpointIdSchema.exactOptional().openapi({
+      description: 'The ID of the endpoint you asked for information about.',
+    }),
+    EndpointUrl: EndpointUrlSchema.exactOptional().openapi({
+      description: 'The URL of the endpoint you asked for information about.',
+    }),
+    State: EndpointStateSchema.exactOptional().openapi({
+      description: 'The current state of the endpoint you asked for information about.',
+    }),
+    StateReason: EndpointStateReasonSchema.exactOptional().openapi({
+      description:
+        'The reason the endpoint you asked for information about is in its current state.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the endpoint you asked for information about was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the endpoint you asked for information about was modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEndpointResponse')
@@ -1590,65 +1262,40 @@ const HomeRegionSchema = z
 
 const DescribeEndpointRequestSchema = z
   .object({
-    Name: EndpointNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the endpoint you want to get information about. For example, <code>"Name":"us-east-2-custom_bus_A-endpoint"</code>.',
-        }),
-    ),
-    HomeRegion: HomeRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The primary Region of the endpoint you want to get information about. For example <code>"HomeRegion": "us-east-1"</code>.',
-        }),
-    ).exactOptional(),
+    Name: EndpointNameSchema.openapi({
+      description:
+        'The name of the endpoint you want to get information about. For example, <code>"Name":"us-east-2-custom_bus_A-endpoint"</code>.',
+    }),
+    HomeRegion: HomeRegionSchema.exactOptional().openapi({
+      description:
+        'The primary Region of the endpoint you want to get information about. For example <code>"HomeRegion": "us-east-1"</code>.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DescribeEndpointRequest' })
   .openapi('DescribeEndpointRequest')
 
 const DescribeEventBusResponseSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the event bus. Currently, this is always <code>default</code>.',
-        }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the account permitted to write events to the current account.',
-        }),
-    ).exactOptional(),
-    Policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy that enables the external account to send events to your account.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the event bus. Currently, this is always <code>default</code>.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the account permitted to write events to the current account.',
+    }),
+    Policy: StringSchema.exactOptional().openapi({
+      description: 'The policy that enables the external account to send events to your account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventBusResponse')
 
 const DescribeEventBusRequestSchema = z
   .object({
-    Name: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus to show details for. If you omit this, the default event bus is displayed.',
-        }),
-    ).exactOptional(),
+    Name: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus to show details for. If you omit this, the default event bus is displayed.',
+    }),
   })
   .openapi({ title: 'DescribeEventBusRequest', required: [] })
   .openapi('DescribeEventBusRequest')
@@ -1657,70 +1304,52 @@ const EventSourceStateSchema = z.enum(['PENDING', 'ACTIVE', 'DELETED']).openapi(
 
 const DescribeEventSourceResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the partner event source.' }),
-    ).exactOptional(),
-    CreatedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the SaaS partner that created the event source.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the event source was created.' }),
-    ).exactOptional(),
-    ExpirationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the event source will expire if you do not create a matching event bus.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the partner event source.' }),
-    ).exactOptional(),
-    State: EventSourceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The state of the event source. If it is ACTIVE, you have already created a matching event bus for this event source, and that event bus is active. If it is PENDING, either you haven't yet created a matching event bus, or that event bus is deactivated. If it is DELETED, you have created a matching event bus, but the event source has since been deleted.",
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the partner event source.',
+    }),
+    CreatedBy: StringSchema.exactOptional().openapi({
+      description: 'The name of the SaaS partner that created the event source.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the event source was created.',
+    }),
+    ExpirationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the event source will expire if you do not create a matching event bus.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the partner event source.',
+    }),
+    State: EventSourceStateSchema.exactOptional().openapi({
+      description:
+        "The state of the event source. If it is ACTIVE, you have already created a matching event bus for this event source, and that event bus is active. If it is PENDING, either you haven't yet created a matching event bus, or that event bus is deactivated. If it is DELETED, you have created a matching event bus, but the event source has since been deleted.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventSourceResponse')
 
 const DescribeEventSourceRequestSchema = z
   .object({
-    Name: EventSourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the partner event source to display the details of.',
-        }),
-    ),
+    Name: EventSourceNameSchema.openapi({
+      description: 'The name of the partner event source to display the details of.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DescribeEventSourceRequest' })
   .openapi('DescribeEventSourceRequest')
 
 const DescribePartnerEventSourceResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the event source.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the event source.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the event source.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the event source.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribePartnerEventSourceResponse')
 
 const DescribePartnerEventSourceRequestSchema = z
   .object({
-    Name: EventSourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the event source to display.' }),
-    ),
+    Name: EventSourceNameSchema.openapi({
+      description: 'The name of the event source to display.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DescribePartnerEventSourceRequest' })
   .openapi('DescribePartnerEventSourceRequest')
@@ -1731,17 +1360,13 @@ const ReplayDestinationFiltersSchema = z.array(ArnSchema).openapi('ReplayDestina
 
 const ReplayDestinationSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the event bus to replay event to. You can replay events only to the event bus specified to create the archive.',
-        }),
-    ),
-    FilterArns: ReplayDestinationFiltersSchema.and(
-      z.any().openapi({ description: 'A list of ARNs for rules to replay events to.' }),
-    ).exactOptional(),
+    Arn: ArnSchema.openapi({
+      description:
+        'The ARN of the event bus to replay event to. You can replay events only to the event bus specified to create the archive.',
+    }),
+    FilterArns: ReplayDestinationFiltersSchema.exactOptional().openapi({
+      description: 'A list of ARNs for rules to replay events to.',
+    }),
   })
   .openapi({
     required: ['Arn'],
@@ -1751,64 +1376,48 @@ const ReplayDestinationSchema = z
 
 const DescribeReplayResponseSchema = z
   .object({
-    ReplayName: ReplayNameSchema.and(
-      z.any().openapi({ description: 'The name of the replay.' }),
-    ).exactOptional(),
-    ReplayArn: ReplayArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the replay.' }),
-    ).exactOptional(),
-    Description: ReplayDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the replay.' }),
-    ).exactOptional(),
-    State: ReplayStateSchema.and(
-      z.any().openapi({ description: 'The current state of the replay.' }),
-    ).exactOptional(),
-    StateReason: ReplayStateReasonSchema.and(
-      z.any().openapi({ description: 'The reason that the replay is in the current state.' }),
-    ).exactOptional(),
-    EventSourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the archive events were replayed from.' }),
-    ).exactOptional(),
-    Destination: ReplayDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ReplayDestination</code> object that contains details about the replay.',
-        }),
-    ).exactOptional(),
-    EventStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time stamp of the first event that was last replayed from the archive.',
-        }),
-    ).exactOptional(),
-    EventEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time stamp for the last event that was replayed from the archive.',
-        }),
-    ).exactOptional(),
-    EventLastReplayedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the event was last replayed.' }),
-    ).exactOptional(),
-    ReplayStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'A time stamp for the time that the replay started.' }),
-    ).exactOptional(),
-    ReplayEndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'A time stamp for the time that the replay stopped.' }),
-    ).exactOptional(),
+    ReplayName: ReplayNameSchema.exactOptional().openapi({
+      description: 'The name of the replay.',
+    }),
+    ReplayArn: ReplayArnSchema.exactOptional().openapi({ description: 'The ARN of the replay.' }),
+    Description: ReplayDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the replay.',
+    }),
+    State: ReplayStateSchema.exactOptional().openapi({
+      description: 'The current state of the replay.',
+    }),
+    StateReason: ReplayStateReasonSchema.exactOptional().openapi({
+      description: 'The reason that the replay is in the current state.',
+    }),
+    EventSourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the archive events were replayed from.',
+    }),
+    Destination: ReplayDestinationSchema.exactOptional().openapi({
+      description:
+        'A <code>ReplayDestination</code> object that contains details about the replay.',
+    }),
+    EventStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time stamp of the first event that was last replayed from the archive.',
+    }),
+    EventEndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time stamp for the last event that was replayed from the archive.',
+    }),
+    EventLastReplayedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the event was last replayed.',
+    }),
+    ReplayStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the replay started.',
+    }),
+    ReplayEndTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the replay stopped.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReplayResponse')
 
 const DescribeReplayRequestSchema = z
   .object({
-    ReplayName: ReplayNameSchema.and(
-      z.any().openapi({ description: 'The name of the replay to retrieve.' }),
-    ),
+    ReplayName: ReplayNameSchema.openapi({ description: 'The name of the replay to retrieve.' }),
   })
   .openapi({ required: ['ReplayName'], title: 'DescribeReplayRequest' })
   .openapi('DescribeReplayRequest')
@@ -1829,152 +1438,105 @@ const CreatedBySchema = z.string().min(1).max(128).openapi('CreatedBy')
 
 const DescribeRuleResponseSchema = z
   .object({
-    Name: RuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule.' }),
-    ).exactOptional(),
-    Arn: RuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
-    ).exactOptional(),
-    EventPattern: EventPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event pattern. For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ScheduleExpression: ScheduleExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scheduling expression. For example, "cron(0 20 * * ? *)", "rate(5 minutes)".',
-        }),
-    ).exactOptional(),
-    State: RuleStateSchema.and(
-      z.any().openapi({ description: 'Specifies whether the rule is enabled or disabled.' }),
-    ).exactOptional(),
-    Description: RuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the rule.' }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the IAM role associated with the rule.',
-        }),
-    ).exactOptional(),
-    ManagedBy: ManagedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this is a managed rule, created by an Amazon Web Services service on your behalf, this field displays the principal name of the Amazon Web Services service that created the rule.',
-        }),
-    ).exactOptional(),
-    EventBusName: EventBusNameSchema.and(
-      z.any().openapi({ description: 'The name of the event bus associated with the rule.' }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account ID of the user that created the rule. If you use <code>PutRule</code> to put a rule on an event bus in another account, the other account is the owner of the rule, and the rule ARN includes the account ID for that account. However, the value for <code>CreatedBy</code> is the account ID as the account that created the rule in the other account.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.exactOptional().openapi({ description: 'The name of the rule.' }),
+    Arn: RuleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the rule.',
+    }),
+    EventPattern: EventPatternSchema.exactOptional().openapi({
+      description:
+        'The event pattern. For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.',
+    }),
+    ScheduleExpression: ScheduleExpressionSchema.exactOptional().openapi({
+      description:
+        'The scheduling expression. For example, "cron(0 20 * * ? *)", "rate(5 minutes)".',
+    }),
+    State: RuleStateSchema.exactOptional().openapi({
+      description: 'Specifies whether the rule is enabled or disabled.',
+    }),
+    Description: RuleDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the rule.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the IAM role associated with the rule.',
+    }),
+    ManagedBy: ManagedBySchema.exactOptional().openapi({
+      description:
+        'If this is a managed rule, created by an Amazon Web Services service on your behalf, this field displays the principal name of the Amazon Web Services service that created the rule.',
+    }),
+    EventBusName: EventBusNameSchema.exactOptional().openapi({
+      description: 'The name of the event bus associated with the rule.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description:
+        'The account ID of the user that created the rule. If you use <code>PutRule</code> to put a rule on an event bus in another account, the other account is the owner of the rule, and the rule ARN includes the account ID for that account. However, the value for <code>CreatedBy</code> is the account ID as the account that created the rule in the other account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRuleResponse')
 
 const DescribeRuleRequestSchema = z
   .object({
-    Name: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DescribeRuleRequest' })
   .openapi('DescribeRuleRequest')
 
 const DisableRuleRequestSchema = z
   .object({
-    Name: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DisableRuleRequest' })
   .openapi('DisableRuleRequest')
 
 const EnableRuleRequestSchema = z
   .object({
-    Name: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'EnableRuleRequest' })
   .openapi('EnableRuleRequest')
 
 const ApiDestinationSchema = z
   .object({
-    ApiDestinationArn: ApiDestinationArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the API destination.' }),
-    ).exactOptional(),
-    Name: ApiDestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the API destination.' }),
-    ).exactOptional(),
-    ApiDestinationState: ApiDestinationStateSchema.and(
-      z.any().openapi({ description: 'The state of the API destination.' }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the connection specified for the API destination.' }),
-    ).exactOptional(),
-    InvocationEndpoint: HttpsEndpointSchema.and(
-      z.any().openapi({ description: 'The URL to the endpoint for the API destination.' }),
-    ).exactOptional(),
-    HttpMethod: ApiDestinationHttpMethodSchema.and(
-      z.any().openapi({ description: 'The method to use to connect to the HTTP endpoint.' }),
-    ).exactOptional(),
-    InvocationRateLimitPerSecond: ApiDestinationInvocationRateLimitPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of invocations per second to send to the HTTP endpoint.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the API destination was created.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the API destination was last modified.',
-        }),
-    ).exactOptional(),
+    ApiDestinationArn: ApiDestinationArnSchema.exactOptional().openapi({
+      description: 'The ARN of the API destination.',
+    }),
+    Name: ApiDestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the API destination.',
+    }),
+    ApiDestinationState: ApiDestinationStateSchema.exactOptional().openapi({
+      description: 'The state of the API destination.',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection specified for the API destination.',
+    }),
+    InvocationEndpoint: HttpsEndpointSchema.exactOptional().openapi({
+      description: 'The URL to the endpoint for the API destination.',
+    }),
+    HttpMethod: ApiDestinationHttpMethodSchema.exactOptional().openapi({
+      description: 'The method to use to connect to the HTTP endpoint.',
+    }),
+    InvocationRateLimitPerSecond:
+      ApiDestinationInvocationRateLimitPerSecondSchema.exactOptional().openapi({
+        description: 'The maximum number of invocations per second to send to the HTTP endpoint.',
+      }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the API destination was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the API destination was last modified.',
+    }),
   })
   .openapi({ description: 'Contains details about an API destination.', required: [] })
   .openapi('ApiDestination')
@@ -1987,22 +1549,14 @@ const NextTokenSchema = z.string().min(1).max(2048).openapi('NextToken')
 
 const ListApiDestinationsResponseSchema = z
   .object({
-    ApiDestinations: ApiDestinationResponseListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>ApiDestination</code> objects that include information about an API destination.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token you can use in a subsequent request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    ApiDestinations: ApiDestinationResponseListSchema.exactOptional().openapi({
+      description:
+        'An array of <code>ApiDestination</code> objects that include information about an API destination.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token you can use in a subsequent request to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApiDestinationsResponse')
@@ -2011,77 +1565,50 @@ const LimitMax100Schema = z.int().min(1).max(100).openapi('LimitMax100')
 
 const ListApiDestinationsRequestSchema = z
   .object({
-    NamePrefix: ApiDestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name prefix to filter results returned. Only API destinations with a name that starts with the prefix are returned.',
-        }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the connection specified for the API destination.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of API destinations to include in the response.',
-        }),
-    ).exactOptional(),
+    NamePrefix: ApiDestinationNameSchema.exactOptional().openapi({
+      description:
+        'A name prefix to filter results returned. Only API destinations with a name that starts with the prefix are returned.',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection specified for the API destination.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of API destinations to include in the response.',
+    }),
   })
   .openapi({ title: 'ListApiDestinationsRequest', required: [] })
   .openapi('ListApiDestinationsRequest')
 
 const ArchiveSchema = z
   .object({
-    ArchiveName: ArchiveNameSchema.and(
-      z.any().openapi({ description: 'The name of the archive.' }),
-    ).exactOptional(),
-    EventSourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the event bus associated with the archive. Only events from this event bus are sent to the archive.',
-        }),
-    ).exactOptional(),
-    State: ArchiveStateSchema.and(
-      z.any().openapi({ description: 'The current state of the archive.' }),
-    ).exactOptional(),
-    StateReason: ArchiveStateReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description for the reason that the archive is in the current state.',
-        }),
-    ).exactOptional(),
-    RetentionDays: RetentionDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days to retain events in the archive before they are deleted.',
-        }),
-    ).exactOptional(),
-    SizeBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size of the archive, in bytes.' }),
-    ).exactOptional(),
-    EventCount: LongSchema.and(
-      z.any().openapi({ description: 'The number of events in the archive.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time stamp for the time that the archive was created.' }),
-    ).exactOptional(),
+    ArchiveName: ArchiveNameSchema.exactOptional().openapi({
+      description: 'The name of the archive.',
+    }),
+    EventSourceArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the event bus associated with the archive. Only events from this event bus are sent to the archive.',
+    }),
+    State: ArchiveStateSchema.exactOptional().openapi({
+      description: 'The current state of the archive.',
+    }),
+    StateReason: ArchiveStateReasonSchema.exactOptional().openapi({
+      description: 'A description for the reason that the archive is in the current state.',
+    }),
+    RetentionDays: RetentionDaysSchema.exactOptional().openapi({
+      description: 'The number of days to retain events in the archive before they are deleted.',
+    }),
+    SizeBytes: LongSchema.exactOptional().openapi({
+      description: 'The size of the archive, in bytes.',
+    }),
+    EventCount: LongSchema.exactOptional().openapi({
+      description: 'The number of events in the archive.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time stamp for the time that the archive was created.',
+    }),
   })
   .openapi({
     description: 'An <code>Archive</code> object that contains details about an archive.',
@@ -2093,98 +1620,64 @@ const ArchiveResponseListSchema = z.array(ArchiveSchema).openapi('ArchiveRespons
 
 const ListArchivesResponseSchema = z
   .object({
-    Archives: ArchiveResponseListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>Archive</code> objects that include details about an archive.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Archives: ArchiveResponseListSchema.exactOptional().openapi({
+      description:
+        'An array of <code>Archive</code> objects that include details about an archive.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListArchivesResponse')
 
 const ListArchivesRequestSchema = z
   .object({
-    NamePrefix: ArchiveNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name prefix to filter the archives returned. Only archives with name that match the prefix are returned.',
-        }),
-    ).exactOptional(),
-    EventSourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the event source associated with the archive.' }),
-    ).exactOptional(),
-    State: ArchiveStateSchema.and(
-      z.any().openapi({ description: 'The state of the archive.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    NamePrefix: ArchiveNameSchema.exactOptional().openapi({
+      description:
+        'A name prefix to filter the archives returned. Only archives with name that match the prefix are returned.',
+    }),
+    EventSourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the event source associated with the archive.',
+    }),
+    State: ArchiveStateSchema.exactOptional().openapi({ description: 'The state of the archive.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ title: 'ListArchivesRequest', required: [] })
   .openapi('ListArchivesRequest')
 
 const ConnectionSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the connection.' }),
-    ).exactOptional(),
-    Name: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection.' }),
-    ).exactOptional(),
-    ConnectionState: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The state of the connection.' }),
-    ).exactOptional(),
-    StateReason: ConnectionStateReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The reason that the connection is in the connection state.' }),
-    ).exactOptional(),
-    AuthorizationType: ConnectionAuthorizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The authorization type specified for the connection.</p> <note> <p>OAUTH tokens are refreshed when a 401 or 407 response is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A time stamp for the time that the connection was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last modified.',
-        }),
-    ).exactOptional(),
-    LastAuthorizedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last authorized.',
-        }),
-    ).exactOptional(),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection.',
+    }),
+    Name: ConnectionNameSchema.exactOptional().openapi({
+      description: 'The name of the connection.',
+    }),
+    ConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The state of the connection.',
+    }),
+    StateReason: ConnectionStateReasonSchema.exactOptional().openapi({
+      description: 'The reason that the connection is in the connection state.',
+    }),
+    AuthorizationType: ConnectionAuthorizationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The authorization type specified for the connection.</p> <note> <p>OAUTH tokens are refreshed when a 401 or 407 response is returned.</p> </note>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last modified.',
+    }),
+    LastAuthorizedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last authorized.',
+    }),
   })
   .openapi({ description: 'Contains information about a connection.', required: [] })
   .openapi('Connection')
@@ -2193,108 +1686,75 @@ const ConnectionResponseListSchema = z.array(ConnectionSchema).openapi('Connecti
 
 const ListConnectionsResponseSchema = z
   .object({
-    Connections: ConnectionResponseListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of connections objects that include details about the connections.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token you can use in a subsequent request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Connections: ConnectionResponseListSchema.exactOptional().openapi({
+      description: 'An array of connections objects that include details about the connections.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token you can use in a subsequent request to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConnectionsResponse')
 
 const ListConnectionsRequestSchema = z
   .object({
-    NamePrefix: ConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name prefix to filter results returned. Only connections with a name that starts with the prefix are returned.',
-        }),
-    ).exactOptional(),
-    ConnectionState: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The state of the connection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of connections to return.' }),
-    ).exactOptional(),
+    NamePrefix: ConnectionNameSchema.exactOptional().openapi({
+      description:
+        'A name prefix to filter results returned. Only connections with a name that starts with the prefix are returned.',
+    }),
+    ConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The state of the connection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of connections to return.',
+    }),
   })
   .openapi({ title: 'ListConnectionsRequest', required: [] })
   .openapi('ListConnectionsRequest')
 
 const EndpointSchema = z
   .object({
-    Name: EndpointNameSchema.and(
-      z.any().openapi({ description: 'The name of the endpoint.' }),
-    ).exactOptional(),
-    Description: EndpointDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the endpoint.' }),
-    ).exactOptional(),
-    Arn: EndpointArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the endpoint.' }),
-    ).exactOptional(),
-    RoutingConfig: RoutingConfigSchema.and(
-      z.any().openapi({ description: 'The routing configuration of the endpoint.' }),
-    ).exactOptional(),
-    ReplicationConfig: ReplicationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Whether event replication was enabled or disabled for this endpoint. The default state is <code>ENABLED</code> which means you must supply a <code>RoleArn</code>. If you don't have a <code>RoleArn</code> or you don't want event replication enabled, set the state to <code>DISABLED</code>.",
-        }),
-    ).exactOptional(),
-    EventBuses: EndpointEventBusListSchema.and(
-      z.any().openapi({ description: 'The event buses being used by the endpoint.' }),
-    ).exactOptional(),
-    RoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the role used by event replication for the endpoint.',
-        }),
-    ).exactOptional(),
-    EndpointId: EndpointIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL subdomain of the endpoint. For example, if the URL for Endpoint is https://abcde.veo.endpoints.event.amazonaws.com, then the EndpointId is <code>abcde.veo</code>.',
-        }),
-    ).exactOptional(),
-    EndpointUrl: EndpointUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the endpoint.' }),
-    ).exactOptional(),
-    State: EndpointStateSchema.and(
-      z.any().openapi({ description: 'The current state of the endpoint.' }),
-    ).exactOptional(),
-    StateReason: EndpointStateReasonSchema.and(
-      z.any().openapi({ description: 'The reason the endpoint is in its current state.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the endpoint was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time the endpoint was modified.' }),
-    ).exactOptional(),
+    Name: EndpointNameSchema.exactOptional().openapi({ description: 'The name of the endpoint.' }),
+    Description: EndpointDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the endpoint.',
+    }),
+    Arn: EndpointArnSchema.exactOptional().openapi({ description: 'The ARN of the endpoint.' }),
+    RoutingConfig: RoutingConfigSchema.exactOptional().openapi({
+      description: 'The routing configuration of the endpoint.',
+    }),
+    ReplicationConfig: ReplicationConfigSchema.exactOptional().openapi({
+      description:
+        "Whether event replication was enabled or disabled for this endpoint. The default state is <code>ENABLED</code> which means you must supply a <code>RoleArn</code>. If you don't have a <code>RoleArn</code> or you don't want event replication enabled, set the state to <code>DISABLED</code>.",
+    }),
+    EventBuses: EndpointEventBusListSchema.exactOptional().openapi({
+      description: 'The event buses being used by the endpoint.',
+    }),
+    RoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role used by event replication for the endpoint.',
+    }),
+    EndpointId: EndpointIdSchema.exactOptional().openapi({
+      description:
+        'The URL subdomain of the endpoint. For example, if the URL for Endpoint is https://abcde.veo.endpoints.event.amazonaws.com, then the EndpointId is <code>abcde.veo</code>.',
+    }),
+    EndpointUrl: EndpointUrlSchema.exactOptional().openapi({
+      description: 'The URL of the endpoint.',
+    }),
+    State: EndpointStateSchema.exactOptional().openapi({
+      description: 'The current state of the endpoint.',
+    }),
+    StateReason: EndpointStateReasonSchema.exactOptional().openapi({
+      description: 'The reason the endpoint is in its current state.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the endpoint was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time the endpoint was modified.',
+    }),
   })
   .openapi({
     description:
@@ -2307,70 +1767,46 @@ const EndpointListSchema = z.array(EndpointSchema).openapi('EndpointList')
 
 const ListEndpointsResponseSchema = z
   .object({
-    Endpoints: EndpointListSchema.and(
-      z.any().openapi({ description: 'The endpoints returned by the call.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.',
-        }),
-    ).exactOptional(),
+    Endpoints: EndpointListSchema.exactOptional().openapi({
+      description: 'The endpoints returned by the call.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEndpointsResponse')
 
 const ListEndpointsRequestSchema = z
   .object({
-    NamePrefix: EndpointNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that will return a subset of the endpoints associated with this account. For example, <code>"NamePrefix": "ABC"</code> will return all endpoints with "ABC" in the name.',
-        }),
-    ).exactOptional(),
-    HomeRegion: HomeRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The primary Region of the endpoints associated with this account. For example <code>"HomeRegion": "us-east-1"</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.',
-        }),
-    ).exactOptional(),
-    MaxResults: LimitMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results returned by the call.' }),
-    ).exactOptional(),
+    NamePrefix: EndpointNameSchema.exactOptional().openapi({
+      description:
+        'A value that will return a subset of the endpoints associated with this account. For example, <code>"NamePrefix": "ABC"</code> will return all endpoints with "ABC" in the name.',
+    }),
+    HomeRegion: HomeRegionSchema.exactOptional().openapi({
+      description:
+        'The primary Region of the endpoints associated with this account. For example <code>"HomeRegion": "us-east-1"</code>.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.',
+    }),
+    MaxResults: LimitMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of results returned by the call.',
+    }),
   })
   .openapi({ title: 'ListEndpointsRequest', required: [] })
   .openapi('ListEndpointsRequest')
 
 const EventBusSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the event bus.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the event bus.' }),
-    ).exactOptional(),
-    Policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions policy of the event bus, describing which other Amazon Web Services accounts can write events to this event bus.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the event bus.' }),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the event bus.' }),
+    Policy: StringSchema.exactOptional().openapi({
+      description:
+        'The permissions policy of the event bus, describing which other Amazon Web Services accounts can write events to this event bus.',
+    }),
   })
   .openapi({
     description:
@@ -2383,80 +1819,52 @@ const EventBusListSchema = z.array(EventBusSchema).openapi('EventBusList')
 
 const ListEventBusesResponseSchema = z
   .object({
-    EventBuses: EventBusListSchema.and(
-      z.any().openapi({ description: 'This list of event buses.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    EventBuses: EventBusListSchema.exactOptional().openapi({
+      description: 'This list of event buses.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventBusesResponse')
 
 const ListEventBusesRequestSchema = z
   .object({
-    NamePrefix: EventBusNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifying this limits the results to only those event buses with names that start with the specified prefix.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    NamePrefix: EventBusNameSchema.exactOptional().openapi({
+      description:
+        'Specifying this limits the results to only those event buses with names that start with the specified prefix.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description:
+        'Specifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ title: 'ListEventBusesRequest', required: [] })
   .openapi('ListEventBusesRequest')
 
 const EventSourceSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the event source.' }),
-    ).exactOptional(),
-    CreatedBy: StringSchema.and(
-      z.any().openapi({ description: 'The name of the partner that created the event source.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the event source was created.' }),
-    ).exactOptional(),
-    ExpirationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The date and time that the event source will expire, if the Amazon Web Services account doesn't create a matching event bus for it.",
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the event source.' }),
-    ).exactOptional(),
-    State: EventSourceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The state of the event source. If it is ACTIVE, you have already created a matching event bus for this event source, and that event bus is active. If it is PENDING, either you haven't yet created a matching event bus, or that event bus is deactivated. If it is DELETED, you have created a matching event bus, but the event source has since been deleted.",
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the event source.' }),
+    CreatedBy: StringSchema.exactOptional().openapi({
+      description: 'The name of the partner that created the event source.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the event source was created.',
+    }),
+    ExpirationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        "The date and time that the event source will expire, if the Amazon Web Services account doesn't create a matching event bus for it.",
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the event source.' }),
+    State: EventSourceStateSchema.exactOptional().openapi({
+      description:
+        "The state of the event source. If it is ACTIVE, you have already created a matching event bus for this event source, and that event bus is active. If it is PENDING, either you haven't yet created a matching event bus, or that event bus is deactivated. If it is DELETED, you have created a matching event bus, but the event source has since been deleted.",
+    }),
   })
   .openapi({
     description:
@@ -2469,17 +1877,13 @@ const EventSourceListSchema = z.array(EventSourceSchema).openapi('EventSourceLis
 
 const ListEventSourcesResponseSchema = z
   .object({
-    EventSources: EventSourceListSchema.and(
-      z.any().openapi({ description: 'The list of event sources.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    EventSources: EventSourceListSchema.exactOptional().openapi({
+      description: 'The list of event sources.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventSourcesResponse')
@@ -2493,62 +1897,38 @@ const EventSourceNamePrefixSchema = z
 
 const ListEventSourcesRequestSchema = z
   .object({
-    NamePrefix: EventSourceNamePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifying this limits the results to only those partner event sources with names that start with the specified prefix.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    NamePrefix: EventSourceNamePrefixSchema.exactOptional().openapi({
+      description:
+        'Specifying this limits the results to only those partner event sources with names that start with the specified prefix.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description:
+        'Specifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ title: 'ListEventSourcesRequest', required: [] })
   .openapi('ListEventSourcesRequest')
 
 const PartnerEventSourceAccountSchema = z
   .object({
-    Account: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID that the partner event source was offered to.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the event source was created.' }),
-    ).exactOptional(),
-    ExpirationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The date and time that the event source will expire, if the Amazon Web Services account doesn't create a matching event bus for it.",
-        }),
-    ).exactOptional(),
-    State: EventSourceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The state of the event source. If it is ACTIVE, you have already created a matching event bus for this event source, and that event bus is active. If it is PENDING, either you haven't yet created a matching event bus, or that event bus is deactivated. If it is DELETED, you have created a matching event bus, but the event source has since been deleted.",
-        }),
-    ).exactOptional(),
+    Account: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID that the partner event source was offered to.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the event source was created.',
+    }),
+    ExpirationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        "The date and time that the event source will expire, if the Amazon Web Services account doesn't create a matching event bus for it.",
+    }),
+    State: EventSourceStateSchema.exactOptional().openapi({
+      description:
+        "The state of the event source. If it is ACTIVE, you have already created a matching event bus for this event source, and that event bus is active. If it is PENDING, either you haven't yet created a matching event bus, or that event bus is deactivated. If it is DELETED, you have created a matching event bus, but the event source has since been deleted.",
+    }),
   })
   .openapi({
     description: 'The Amazon Web Services account that a partner event source has been offered to.',
@@ -2562,60 +1942,42 @@ const PartnerEventSourceAccountListSchema = z
 
 const ListPartnerEventSourceAccountsResponseSchema = z
   .object({
-    PartnerEventSourceAccounts: PartnerEventSourceAccountListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of partner event sources returned by the operation.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    PartnerEventSourceAccounts: PartnerEventSourceAccountListSchema.exactOptional().openapi({
+      description: 'The list of partner event sources returned by the operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPartnerEventSourceAccountsResponse')
 
 const ListPartnerEventSourceAccountsRequestSchema = z
   .object({
-    EventSourceName: EventSourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the partner event source to display account information about.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned by a previous call to this operation. Specifying this retrieves the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    EventSourceName: EventSourceNameSchema.openapi({
+      description: 'The name of the partner event source to display account information about.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned by a previous call to this operation. Specifying this retrieves the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description:
+        'Specifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['EventSourceName'], title: 'ListPartnerEventSourceAccountsRequest' })
   .openapi('ListPartnerEventSourceAccountsRequest')
 
 const PartnerEventSourceSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the partner event source.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the partner event source.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the partner event source.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the partner event source.',
+    }),
   })
   .openapi({
     description:
@@ -2630,19 +1992,13 @@ const PartnerEventSourceListSchema = z
 
 const ListPartnerEventSourcesResponseSchema = z
   .object({
-    PartnerEventSources: PartnerEventSourceListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of partner event sources returned by the operation.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    PartnerEventSources: PartnerEventSourceListSchema.exactOptional().openapi({
+      description: 'The list of partner event sources returned by the operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPartnerEventSourcesResponse')
@@ -2656,75 +2012,53 @@ const PartnerEventSourceNamePrefixSchema = z
 
 const ListPartnerEventSourcesRequestSchema = z
   .object({
-    NamePrefix: PartnerEventSourceNamePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify this, the results are limited to only those partner event sources that start with the string you specify.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned by a previous call to this operation. Specifying this retrieves the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'pecifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    NamePrefix: PartnerEventSourceNamePrefixSchema.openapi({
+      description:
+        'If you specify this, the results are limited to only those partner event sources that start with the string you specify.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned by a previous call to this operation. Specifying this retrieves the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description:
+        'pecifying this limits the number of results returned by this operation. The operation also returns a NextToken which you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['NamePrefix'], title: 'ListPartnerEventSourcesRequest' })
   .openapi('ListPartnerEventSourcesRequest')
 
 const ReplaySchema = z
   .object({
-    ReplayName: ReplayNameSchema.and(
-      z.any().openapi({ description: 'The name of the replay.' }),
-    ).exactOptional(),
-    EventSourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the archive to replay event from.' }),
-    ).exactOptional(),
-    State: ReplayStateSchema.and(
-      z.any().openapi({ description: 'The current state of the replay.' }),
-    ).exactOptional(),
-    StateReason: ReplayStateReasonSchema.and(
-      z.any().openapi({ description: 'A description of why the replay is in the current state.' }),
-    ).exactOptional(),
-    EventStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp for the time to start replaying events. This is determined by the time in the event as described in <a href="https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutEventsRequestEntry.html#eventbridge-Type-PutEventsRequestEntry-Time">Time</a>.',
-        }),
-    ).exactOptional(),
-    EventEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp for the time to start replaying events. Any event with a creation time prior to the <code>EventEndTime</code> specified is replayed.',
-        }),
-    ).exactOptional(),
-    EventLastReplayedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A time stamp for the time that the last event was replayed.' }),
-    ).exactOptional(),
-    ReplayStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'A time stamp for the time that the replay started.' }),
-    ).exactOptional(),
-    ReplayEndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'A time stamp for the time that the replay completed.' }),
-    ).exactOptional(),
+    ReplayName: ReplayNameSchema.exactOptional().openapi({
+      description: 'The name of the replay.',
+    }),
+    EventSourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the archive to replay event from.',
+    }),
+    State: ReplayStateSchema.exactOptional().openapi({
+      description: 'The current state of the replay.',
+    }),
+    StateReason: ReplayStateReasonSchema.exactOptional().openapi({
+      description: 'A description of why the replay is in the current state.',
+    }),
+    EventStartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp for the time to start replaying events. This is determined by the time in the event as described in <a href="https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutEventsRequestEntry.html#eventbridge-Type-PutEventsRequestEntry-Time">Time</a>.',
+    }),
+    EventEndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp for the time to start replaying events. Any event with a creation time prior to the <code>EventEndTime</code> specified is replayed.',
+    }),
+    EventLastReplayedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the last event was replayed.',
+    }),
+    ReplayStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the replay started.',
+    }),
+    ReplayEndTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the replay completed.',
+    }),
   })
   .openapi({
     description: 'A <code>Replay</code> object that contains details about a replay.',
@@ -2736,53 +2070,33 @@ const ReplayListSchema = z.array(ReplaySchema).openapi('ReplayList')
 
 const ListReplaysResponseSchema = z
   .object({
-    Replays: ReplayListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>Replay</code> objects that contain information about the replay.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Replays: ReplayListSchema.exactOptional().openapi({
+      description:
+        'An array of <code>Replay</code> objects that contain information about the replay.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReplaysResponse')
 
 const ListReplaysRequestSchema = z
   .object({
-    NamePrefix: ReplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name prefix to filter the replays returned. Only replays with name that match the prefix are returned.',
-        }),
-    ).exactOptional(),
-    State: ReplayStateSchema.and(
-      z.any().openapi({ description: 'The state of the replay.' }),
-    ).exactOptional(),
-    EventSourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the archive from which the events are replayed.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of replays to retrieve.' }),
-    ).exactOptional(),
+    NamePrefix: ReplayNameSchema.exactOptional().openapi({
+      description:
+        'A name prefix to filter the replays returned. Only replays with name that match the prefix are returned.',
+    }),
+    State: ReplayStateSchema.exactOptional().openapi({ description: 'The state of the replay.' }),
+    EventSourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the archive from which the events are replayed.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of replays to retrieve.',
+    }),
   })
   .openapi({ title: 'ListReplaysRequest', required: [] })
   .openapi('ListReplaysRequest')
@@ -2791,17 +2105,13 @@ const RuleNameListSchema = z.array(RuleNameSchema).openapi('RuleNameList')
 
 const ListRuleNamesByTargetResponseSchema = z
   .object({
-    RuleNames: RuleNameListSchema.and(
-      z.any().openapi({ description: 'The names of the rules that can invoke the given target.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether there are additional results to retrieve. If there are no more results, the value is null.',
-        }),
-    ).exactOptional(),
+    RuleNames: RuleNameListSchema.exactOptional().openapi({
+      description: 'The names of the rules that can invoke the given target.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Indicates whether there are additional results to retrieve. If there are no more results, the value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRuleNamesByTargetResponse')
@@ -2810,85 +2120,53 @@ const TargetArnSchema = z.string().min(1).max(1600).openapi('TargetArn')
 
 const ListRuleNamesByTargetRequestSchema = z
   .object({
-    TargetArn: TargetArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the target resource.' }),
-    ),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus to list rules for. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    TargetArn: TargetArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the target resource.',
+    }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus to list rules for. If you omit this, the default event bus is used.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ required: ['TargetArn'], title: 'ListRuleNamesByTargetRequest' })
   .openapi('ListRuleNamesByTargetRequest')
 
 const RuleSchema = z
   .object({
-    Name: RuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule.' }),
-    ).exactOptional(),
-    Arn: RuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
-    ).exactOptional(),
-    EventPattern: EventPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event pattern of the rule. For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.',
-        }),
-    ).exactOptional(),
-    State: RuleStateSchema.and(
-      z.any().openapi({ description: 'The state of the rule.' }),
-    ).exactOptional(),
-    Description: RuleDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the rule.' }),
-    ).exactOptional(),
-    ScheduleExpression: ScheduleExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scheduling expression. For example, "cron(0 20 * * ? *)", "rate(5 minutes)". For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-rule-schedule.html">Creating an Amazon EventBridge rule that runs on a schedule</a>.',
-        }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of the role that is used for target invocation.</p> <p>If you're setting an event bus in another account as the target and that account granted permission to your account through an organization instead of directly by the account ID, you must specify a <code>RoleArn</code> with proper permissions in the <code>Target</code> structure, instead of here in this parameter.</p>",
-        }),
-    ).exactOptional(),
-    ManagedBy: ManagedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the rule was created on behalf of your account by an Amazon Web Services service, this field displays the principal name of the service that created the rule.',
-        }),
-    ).exactOptional(),
-    EventBusName: EventBusNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.exactOptional().openapi({ description: 'The name of the rule.' }),
+    Arn: RuleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the rule.',
+    }),
+    EventPattern: EventPatternSchema.exactOptional().openapi({
+      description:
+        'The event pattern of the rule. For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.',
+    }),
+    State: RuleStateSchema.exactOptional().openapi({ description: 'The state of the rule.' }),
+    Description: RuleDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the rule.',
+    }),
+    ScheduleExpression: ScheduleExpressionSchema.exactOptional().openapi({
+      description:
+        'The scheduling expression. For example, "cron(0 20 * * ? *)", "rate(5 minutes)". For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-rule-schedule.html">Creating an Amazon EventBridge rule that runs on a schedule</a>.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of the role that is used for target invocation.</p> <p>If you're setting an event bus in another account as the target and that account granted permission to your account through an organization instead of directly by the account ID, you must specify a <code>RoleArn</code> with proper permissions in the <code>Target</code> structure, instead of here in this parameter.</p>",
+    }),
+    ManagedBy: ManagedBySchema.exactOptional().openapi({
+      description:
+        'If the rule was created on behalf of your account by an Amazon Web Services service, this field displays the principal name of the service that created the rule.',
+    }),
+    EventBusName: EventBusNameSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
   })
   .openapi({
     description: 'Contains information about a rule in Amazon EventBridge.',
@@ -2900,70 +2178,50 @@ const RuleResponseListSchema = z.array(RuleSchema).openapi('RuleResponseList')
 
 const ListRulesResponseSchema = z
   .object({
-    Rules: RuleResponseListSchema.and(
-      z.any().openapi({ description: 'The rules that match the specified criteria.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether there are additional results to retrieve. If there are no more results, the value is null.',
-        }),
-    ).exactOptional(),
+    Rules: RuleResponseListSchema.exactOptional().openapi({
+      description: 'The rules that match the specified criteria.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Indicates whether there are additional results to retrieve. If there are no more results, the value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRulesResponse')
 
 const ListRulesRequestSchema = z
   .object({
-    NamePrefix: RuleNameSchema.and(
-      z.any().openapi({ description: 'The prefix matching the rule name.' }),
-    ).exactOptional(),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus to list the rules for. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    NamePrefix: RuleNameSchema.exactOptional().openapi({
+      description: 'The prefix matching the rule name.',
+    }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus to list the rules for. If you omit this, the default event bus is used.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ title: 'ListRulesRequest', required: [] })
   .openapi('ListRulesRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of tag keys and values associated with the resource you specified',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tag keys and values associated with the resource you specified',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the EventBridge resource for which you want to view tags.',
-        }),
-    ),
+    ResourceARN: ArnSchema.openapi({
+      description: 'The ARN of the EventBridge resource for which you want to view tags.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -2988,22 +2246,14 @@ const TransformerInputSchema = z.string().min(1).max(8192).openapi('TransformerI
 
 const InputTransformerSchema = z
   .object({
-    InputPathsMap: TransformerPathsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Map of JSON paths to be extracted from the event. You can then insert these in the template in <code>InputTemplate</code> to produce the output you want to be sent to the target.</p> <p> <code>InputPathsMap</code> is an array key-value pairs, where each value is a valid JSON path. You can have as many as 100 key-value pairs. You must use JSON dot notation, not bracket notation.</p> <p>The keys cannot start with "Amazon Web Services." </p>',
-        }),
-    ).exactOptional(),
-    InputTemplate: TransformerInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Input template where you specify placeholders that will be filled with the values of the keys from <code>InputPathsMap</code> to customize the data sent to the target. Enclose each <code>InputPathsMaps</code> value in brackets: &lt;<i>value</i>&gt; </p> <p>If <code>InputTemplate</code> is a JSON object (surrounded by curly braces), the following restrictions apply:</p> <ul> <li> <p>The placeholder cannot be used as an object key.</p> </li> </ul> <p>The following example shows the syntax for using <code>InputPathsMap</code> and <code>InputTemplate</code>.</p> <p> <code> "InputTransformer":</code> </p> <p> <code>{</code> </p> <p> <code>"InputPathsMap": {"instance": "$.detail.instance","status": "$.detail.status"},</code> </p> <p> <code>"InputTemplate": "&lt;instance&gt; is in state &lt;status&gt;"</code> </p> <p> <code>}</code> </p> <p>To have the <code>InputTemplate</code> include quote marks within a JSON string, escape each quote marks with a slash, as in the following example:</p> <p> <code> "InputTransformer":</code> </p> <p> <code>{</code> </p> <p> <code>"InputPathsMap": {"instance": "$.detail.instance","status": "$.detail.status"},</code> </p> <p> <code>"InputTemplate": "&lt;instance&gt; is in state \\"&lt;status&gt;\\""</code> </p> <p> <code>}</code> </p> <p>The <code>InputTemplate</code> can also be valid JSON with varibles in quotes or out, as in the following example:</p> <p> <code> "InputTransformer":</code> </p> <p> <code>{</code> </p> <p> <code>"InputPathsMap": {"instance": "$.detail.instance","status": "$.detail.status"},</code> </p> <p> <code>"InputTemplate": \'{"myInstance": &lt;instance&gt;,"myStatus": "&lt;instance&gt; is in state \\"&lt;status&gt;\\""}\'</code> </p> <p> <code>}</code> </p>',
-        }),
-    ),
+    InputPathsMap: TransformerPathsSchema.exactOptional().openapi({
+      description:
+        '<p>Map of JSON paths to be extracted from the event. You can then insert these in the template in <code>InputTemplate</code> to produce the output you want to be sent to the target.</p> <p> <code>InputPathsMap</code> is an array key-value pairs, where each value is a valid JSON path. You can have as many as 100 key-value pairs. You must use JSON dot notation, not bracket notation.</p> <p>The keys cannot start with "Amazon Web Services." </p>',
+    }),
+    InputTemplate: TransformerInputSchema.openapi({
+      description:
+        '<p>Input template where you specify placeholders that will be filled with the values of the keys from <code>InputPathsMap</code> to customize the data sent to the target. Enclose each <code>InputPathsMaps</code> value in brackets: &lt;<i>value</i>&gt; </p> <p>If <code>InputTemplate</code> is a JSON object (surrounded by curly braces), the following restrictions apply:</p> <ul> <li> <p>The placeholder cannot be used as an object key.</p> </li> </ul> <p>The following example shows the syntax for using <code>InputPathsMap</code> and <code>InputTemplate</code>.</p> <p> <code> "InputTransformer":</code> </p> <p> <code>{</code> </p> <p> <code>"InputPathsMap": {"instance": "$.detail.instance","status": "$.detail.status"},</code> </p> <p> <code>"InputTemplate": "&lt;instance&gt; is in state &lt;status&gt;"</code> </p> <p> <code>}</code> </p> <p>To have the <code>InputTemplate</code> include quote marks within a JSON string, escape each quote marks with a slash, as in the following example:</p> <p> <code> "InputTransformer":</code> </p> <p> <code>{</code> </p> <p> <code>"InputPathsMap": {"instance": "$.detail.instance","status": "$.detail.status"},</code> </p> <p> <code>"InputTemplate": "&lt;instance&gt; is in state \\"&lt;status&gt;\\""</code> </p> <p> <code>}</code> </p> <p>The <code>InputTemplate</code> can also be valid JSON with varibles in quotes or out, as in the following example:</p> <p> <code> "InputTransformer":</code> </p> <p> <code>{</code> </p> <p> <code>"InputPathsMap": {"instance": "$.detail.instance","status": "$.detail.status"},</code> </p> <p> <code>"InputTemplate": \'{"myInstance": &lt;instance&gt;,"myStatus": "&lt;instance&gt; is in state \\"&lt;status&gt;\\""}\'</code> </p> <p> <code>}</code> </p>',
+    }),
   })
   .openapi({
     required: ['InputTemplate'],
@@ -3016,14 +2266,10 @@ const TargetPartitionKeyPathSchema = z.string().max(256).openapi('TargetPartitio
 
 const KinesisParametersSchema = z
   .object({
-    PartitionKeyPath: TargetPartitionKeyPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON path to be extracted from the event and used as the partition key. For more information, see <a href="https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html#partition-key">Amazon Kinesis Streams Key Concepts</a> in the <i>Amazon Kinesis Streams Developer Guide</i>.',
-        }),
-    ),
+    PartitionKeyPath: TargetPartitionKeyPathSchema.openapi({
+      description:
+        'The JSON path to be extracted from the event and used as the partition key. For more information, see <a href="https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html#partition-key">Amazon Kinesis Streams Key Concepts</a> in the <i>Amazon Kinesis Streams Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['PartitionKeyPath'],
@@ -3049,22 +2295,13 @@ const RunCommandTargetValuesSchema = z
 
 const RunCommandTargetSchema = z
   .object({
-    Key: RunCommandTargetKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Can be either <code>tag:</code> <i>tag-key</i> or <code>InstanceIds</code>.',
-        }),
-    ),
-    Values: RunCommandTargetValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>Key</code> is <code>tag:</code> <i>tag-key</i>, <code>Values</code> is a list of tag values. If <code>Key</code> is <code>InstanceIds</code>, <code>Values</code> is a list of Amazon EC2 instance IDs.',
-        }),
-    ),
+    Key: RunCommandTargetKeySchema.openapi({
+      description: 'Can be either <code>tag:</code> <i>tag-key</i> or <code>InstanceIds</code>.',
+    }),
+    Values: RunCommandTargetValuesSchema.openapi({
+      description:
+        'If <code>Key</code> is <code>tag:</code> <i>tag-key</i>, <code>Values</code> is a list of tag values. If <code>Key</code> is <code>InstanceIds</code>, <code>Values</code> is a list of Amazon EC2 instance IDs.',
+    }),
   })
   .openapi({
     required: ['Key', 'Values'],
@@ -3081,14 +2318,10 @@ const RunCommandTargetsSchema = z
 
 const RunCommandParametersSchema = z
   .object({
-    RunCommandTargets: RunCommandTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Currently, we support including only one RunCommandTarget block, which specifies either an array of InstanceIds or a tag.',
-        }),
-    ),
+    RunCommandTargets: RunCommandTargetsSchema.openapi({
+      description:
+        'Currently, we support including only one RunCommandTarget block, which specifies either an array of InstanceIds or a tag.',
+    }),
   })
   .openapi({
     required: ['RunCommandTargets'],
@@ -3107,30 +2340,18 @@ const AssignPublicIpSchema = z.enum(['ENABLED', 'DISABLED']).openapi('AssignPubl
 
 const AwsVpcConfigurationSchema = z
   .object({
-    Subnets: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the subnets associated with the task. These subnets must all be in the same VPC. You can specify as many as 16 subnets.',
-        }),
-    ),
-    SecurityGroups: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the security groups associated with the task. These security groups must all be in the same VPC. You can specify as many as five security groups. If you do not specify a security group, the default security group for the VPC is used.',
-        }),
-    ).exactOptional(),
-    AssignPublicIp: AssignPublicIpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether the task's elastic network interface receives a public IP address. You can specify <code>ENABLED</code> only when <code>LaunchType</code> in <code>EcsParameters</code> is set to <code>FARGATE</code>.",
-        }),
-    ).exactOptional(),
+    Subnets: StringListSchema.openapi({
+      description:
+        'Specifies the subnets associated with the task. These subnets must all be in the same VPC. You can specify as many as 16 subnets.',
+    }),
+    SecurityGroups: StringListSchema.exactOptional().openapi({
+      description:
+        'Specifies the security groups associated with the task. These security groups must all be in the same VPC. You can specify as many as five security groups. If you do not specify a security group, the default security group for the VPC is used.',
+    }),
+    AssignPublicIp: AssignPublicIpSchema.exactOptional().openapi({
+      description:
+        "Specifies whether the task's elastic network interface receives a public IP address. You can specify <code>ENABLED</code> only when <code>LaunchType</code> in <code>EcsParameters</code> is set to <code>FARGATE</code>.",
+    }),
   })
   .openapi({
     required: ['Subnets'],
@@ -3141,14 +2362,10 @@ const AwsVpcConfigurationSchema = z
 
 const NetworkConfigurationSchema = z
   .object({
-    awsvpcConfiguration: AwsVpcConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this structure to specify the VPC subnets and security groups for the task, and whether a public IP address is to be used. This structure is relevant only for ECS tasks that use the <code>awsvpc</code> network mode.',
-        }),
-    ).exactOptional(),
+    awsvpcConfiguration: AwsVpcConfigurationSchema.exactOptional().openapi({
+      description:
+        'Use this structure to specify the VPC subnets and security groups for the task, and whether a public IP address is to be used. This structure is relevant only for ECS tasks that use the <code>awsvpc</code> network mode.',
+    }),
   })
   .openapi({
     description: 'This structure specifies the network configuration for an ECS task.',
@@ -3172,25 +2389,17 @@ const CapacityProviderStrategyItemBaseSchema = z
 
 const CapacityProviderStrategyItemSchema = z
   .object({
-    capacityProvider: CapacityProviderSchema.and(
-      z.any().openapi({ description: 'The short name of the capacity provider.' }),
-    ),
-    weight: CapacityProviderStrategyItemWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The weight value designates the relative percentage of the total number of tasks launched that should use the specified capacity provider. The weight value is taken into consideration after the base value, if defined, is satisfied.',
-        }),
-    ).exactOptional(),
-    base: CapacityProviderStrategyItemBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base value designates how many tasks, at a minimum, to run on the specified capacity provider. Only one capacity provider in a capacity provider strategy can have a base defined. If no value is specified, the default value of 0 is used. ',
-        }),
-    ).exactOptional(),
+    capacityProvider: CapacityProviderSchema.openapi({
+      description: 'The short name of the capacity provider.',
+    }),
+    weight: CapacityProviderStrategyItemWeightSchema.exactOptional().openapi({
+      description:
+        'The weight value designates the relative percentage of the total number of tasks launched that should use the specified capacity provider. The weight value is taken into consideration after the base value, if defined, is satisfied.',
+    }),
+    base: CapacityProviderStrategyItemBaseSchema.exactOptional().openapi({
+      description:
+        'The base value designates how many tasks, at a minimum, to run on the specified capacity provider. Only one capacity provider in a capacity provider strategy can have a base defined. If no value is specified, the default value of 0 is used. ',
+    }),
   })
   .openapi({
     required: ['capacityProvider'],
@@ -3215,22 +2424,14 @@ const PlacementConstraintExpressionSchema = z
 
 const PlacementConstraintSchema = z
   .object({
-    type: PlacementConstraintTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of constraint. Use distinctInstance to ensure that each task in a particular group is running on a different container instance. Use memberOf to restrict the selection to a group of valid candidates. ',
-        }),
-    ).exactOptional(),
-    expression: PlacementConstraintExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A cluster query language expression to apply to the constraint. You cannot specify an expression if the constraint type is <code>distinctInstance</code>. To learn more, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html">Cluster Query Language</a> in the Amazon Elastic Container Service Developer Guide. ',
-        }),
-    ).exactOptional(),
+    type: PlacementConstraintTypeSchema.exactOptional().openapi({
+      description:
+        'The type of constraint. Use distinctInstance to ensure that each task in a particular group is running on a different container instance. Use memberOf to restrict the selection to a group of valid candidates. ',
+    }),
+    expression: PlacementConstraintExpressionSchema.exactOptional().openapi({
+      description:
+        'A cluster query language expression to apply to the constraint. You cannot specify an expression if the constraint type is <code>distinctInstance</code>. To learn more, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html">Cluster Query Language</a> in the Amazon Elastic Container Service Developer Guide. ',
+    }),
   })
   .openapi({
     description:
@@ -3252,22 +2453,14 @@ const PlacementStrategyFieldSchema = z.string().max(255).openapi('PlacementStrat
 
 const PlacementStrategySchema = z
   .object({
-    type: PlacementStrategyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of placement strategy. The random placement strategy randomly places tasks on available candidates. The spread placement strategy spreads placement across available candidates evenly based on the field parameter. The binpack strategy places tasks on available candidates that have the least available amount of the resource that is specified with the field parameter. For example, if you binpack on memory, a task is placed on the instance with the least amount of remaining memory (but still enough to run the task). ',
-        }),
-    ).exactOptional(),
-    field: PlacementStrategyFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The field to apply the placement strategy against. For the spread placement strategy, valid values are instanceId (or host, which has the same effect), or any platform or custom attribute that is applied to a container instance, such as attribute:ecs.availability-zone. For the binpack placement strategy, valid values are cpu and memory. For the random placement strategy, this field is not used. ',
-        }),
-    ).exactOptional(),
+    type: PlacementStrategyTypeSchema.exactOptional().openapi({
+      description:
+        'The type of placement strategy. The random placement strategy randomly places tasks on available candidates. The spread placement strategy spreads placement across available candidates evenly based on the field parameter. The binpack strategy places tasks on available candidates that have the least available amount of the resource that is specified with the field parameter. For example, if you binpack on memory, a task is placed on the instance with the least amount of remaining memory (but still enough to run the task). ',
+    }),
+    field: PlacementStrategyFieldSchema.exactOptional().openapi({
+      description:
+        'The field to apply the placement strategy against. For the spread placement strategy, valid values are instanceId (or host, which has the same effect), or any platform or custom attribute that is applied to a container instance, such as attribute:ecs.availability-zone. For the binpack placement strategy, valid values are cpu and memory. For the random placement strategy, this field is not used. ',
+    }),
   })
   .openapi({
     description:
@@ -3287,113 +2480,61 @@ const ReferenceIdSchema = z.string().max(1024).openapi('ReferenceId')
 
 const EcsParametersSchema = z
   .object({
-    TaskDefinitionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the task definition to use if the event target is an Amazon ECS task. ',
-        }),
-    ),
-    TaskCount: LimitMin1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of tasks to create based on <code>TaskDefinition</code>. The default is 1.',
-        }),
-    ).exactOptional(),
-    LaunchType: LaunchTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the launch type on which your task is running. The launch type that you specify here must match one of the launch type (compatibilities) of the target task. The <code>FARGATE</code> value is supported only in the Regions where Fargate with Amazon ECS is supported. For more information, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS-Fargate.html">Fargate on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    NetworkConfiguration: NetworkConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this structure if the Amazon ECS task uses the <code>awsvpc</code> network mode. This structure specifies the VPC subnets and security groups associated with the task, and whether a public IP address is to be used. This structure is required if <code>LaunchType</code> is <code>FARGATE</code> because the <code>awsvpc</code> mode is required for Fargate tasks.</p> <p>If you specify <code>NetworkConfiguration</code> when the target ECS task does not use the <code>awsvpc</code> network mode, the task fails.</p>',
-        }),
-    ).exactOptional(),
-    PlatformVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the platform version for the task. Specify only the numeric portion of the platform version, such as <code>1.1.0</code>.</p> <p>This structure is used only if <code>LaunchType</code> is <code>FARGATE</code>. For more information about valid platform versions, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html">Fargate Platform Versions</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Group: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies an ECS task group for the task. The maximum length is 255 characters.',
-        }),
-    ).exactOptional(),
-    CapacityProviderStrategy: CapacityProviderStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The capacity provider strategy to use for the task.</p> <p>If a <code>capacityProviderStrategy</code> is specified, the <code>launchType</code> parameter must be omitted. If no <code>capacityProviderStrategy</code> or launchType is specified, the <code>defaultCapacityProviderStrategy</code> for the cluster is used. </p>',
-        }),
-    ).exactOptional(),
-    EnableECSManagedTags: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to enable Amazon ECS managed tags for the task. For more information, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html">Tagging Your Amazon ECS Resources</a> in the Amazon Elastic Container Service Developer Guide. ',
-        }),
-    ).exactOptional(),
-    EnableExecuteCommand: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether or not to enable the execute command functionality for the containers in this task. If true, this enables execute command functionality on all containers in the task.',
-        }),
-    ).exactOptional(),
-    PlacementConstraints: PlacementConstraintsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of placement constraint objects to use for the task. You can specify up to 10 constraints per task (including constraints in the task definition and those specified at runtime).',
-        }),
-    ).exactOptional(),
-    PlacementStrategy: PlacementStrategiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The placement strategy objects to use for the task. You can specify a maximum of five strategy rules per task. ',
-        }),
-    ).exactOptional(),
-    PropagateTags: PropagateTagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to propagate the tags from the task definition to the task. If no value is specified, the tags are not propagated. Tags can only be propagated to the task during task creation. To add tags to a task after task creation, use the TagResource API action. ',
-        }),
-    ).exactOptional(),
-    ReferenceId: ReferenceIdSchema.and(
-      z.any().openapi({ description: 'The reference ID to use for the task.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata that you apply to the task to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. To learn more, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_RunTask.html#ECS-RunTask-request-tags">RunTask</a> in the Amazon ECS API Reference.',
-        }),
-    ).exactOptional(),
+    TaskDefinitionArn: ArnSchema.openapi({
+      description:
+        'The ARN of the task definition to use if the event target is an Amazon ECS task. ',
+    }),
+    TaskCount: LimitMin1Schema.exactOptional().openapi({
+      description:
+        'The number of tasks to create based on <code>TaskDefinition</code>. The default is 1.',
+    }),
+    LaunchType: LaunchTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies the launch type on which your task is running. The launch type that you specify here must match one of the launch type (compatibilities) of the target task. The <code>FARGATE</code> value is supported only in the Regions where Fargate with Amazon ECS is supported. For more information, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS-Fargate.html">Fargate on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.',
+    }),
+    NetworkConfiguration: NetworkConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Use this structure if the Amazon ECS task uses the <code>awsvpc</code> network mode. This structure specifies the VPC subnets and security groups associated with the task, and whether a public IP address is to be used. This structure is required if <code>LaunchType</code> is <code>FARGATE</code> because the <code>awsvpc</code> mode is required for Fargate tasks.</p> <p>If you specify <code>NetworkConfiguration</code> when the target ECS task does not use the <code>awsvpc</code> network mode, the task fails.</p>',
+    }),
+    PlatformVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the platform version for the task. Specify only the numeric portion of the platform version, such as <code>1.1.0</code>.</p> <p>This structure is used only if <code>LaunchType</code> is <code>FARGATE</code>. For more information about valid platform versions, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html">Fargate Platform Versions</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>',
+    }),
+    Group: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies an ECS task group for the task. The maximum length is 255 characters.',
+    }),
+    CapacityProviderStrategy: CapacityProviderStrategySchema.exactOptional().openapi({
+      description:
+        '<p>The capacity provider strategy to use for the task.</p> <p>If a <code>capacityProviderStrategy</code> is specified, the <code>launchType</code> parameter must be omitted. If no <code>capacityProviderStrategy</code> or launchType is specified, the <code>defaultCapacityProviderStrategy</code> for the cluster is used. </p>',
+    }),
+    EnableECSManagedTags: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether to enable Amazon ECS managed tags for the task. For more information, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html">Tagging Your Amazon ECS Resources</a> in the Amazon Elastic Container Service Developer Guide. ',
+    }),
+    EnableExecuteCommand: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether or not to enable the execute command functionality for the containers in this task. If true, this enables execute command functionality on all containers in the task.',
+    }),
+    PlacementConstraints: PlacementConstraintsSchema.exactOptional().openapi({
+      description:
+        'An array of placement constraint objects to use for the task. You can specify up to 10 constraints per task (including constraints in the task definition and those specified at runtime).',
+    }),
+    PlacementStrategy: PlacementStrategiesSchema.exactOptional().openapi({
+      description:
+        'The placement strategy objects to use for the task. You can specify a maximum of five strategy rules per task. ',
+    }),
+    PropagateTags: PropagateTagsSchema.exactOptional().openapi({
+      description:
+        'Specifies whether to propagate the tags from the task definition to the task. If no value is specified, the tags are not propagated. Tags can only be propagated to the task during task creation. To add tags to a task after task creation, use the TagResource API action. ',
+    }),
+    ReferenceId: ReferenceIdSchema.exactOptional().openapi({
+      description: 'The reference ID to use for the task.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The metadata that you apply to the task to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. To learn more, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_RunTask.html#ECS-RunTask-request-tags">RunTask</a> in the Amazon ECS API Reference.',
+    }),
   })
   .openapi({
     required: ['TaskDefinitionArn'],
@@ -3405,14 +2546,10 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const BatchArrayPropertiesSchema = z
   .object({
-    Size: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the array, if this is an array batch job. Valid values are integers between 2 and 10,000.',
-        }),
-    ).exactOptional(),
+    Size: IntegerSchema.exactOptional().openapi({
+      description:
+        'The size of the array, if this is an array batch job. Valid values are integers between 2 and 10,000.',
+    }),
   })
   .openapi({
     description:
@@ -3423,14 +2560,10 @@ const BatchArrayPropertiesSchema = z
 
 const BatchRetryStrategySchema = z
   .object({
-    Attempts: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of times to attempt to retry, if the job fails. Valid values are 1–10.',
-        }),
-    ).exactOptional(),
+    Attempts: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of times to attempt to retry, if the job fails. Valid values are 1–10.',
+    }),
   })
   .openapi({
     description:
@@ -3441,38 +2574,21 @@ const BatchRetryStrategySchema = z
 
 const BatchParametersSchema = z
   .object({
-    JobDefinition: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN or name of the job definition to use if the event target is an Batch job. This job definition must already exist.',
-        }),
-    ),
-    JobName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name to use for this execution of the job, if the target is an Batch job.',
-        }),
-    ),
-    ArrayProperties: BatchArrayPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array properties for the submitted job, such as the size of the array. The array size can be between 2 and 10,000. If you specify array properties for a job, it becomes an array job. This parameter is used only if the target is an Batch job.',
-        }),
-    ).exactOptional(),
-    RetryStrategy: BatchRetryStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The retry strategy to use for failed jobs, if the target is an Batch job. The retry strategy is the number of times to retry the failed job execution. Valid values are 1–10. When you specify a retry strategy here, it overrides the retry strategy defined in the job definition.',
-        }),
-    ).exactOptional(),
+    JobDefinition: StringSchema.openapi({
+      description:
+        'The ARN or name of the job definition to use if the event target is an Batch job. This job definition must already exist.',
+    }),
+    JobName: StringSchema.openapi({
+      description: 'The name to use for this execution of the job, if the target is an Batch job.',
+    }),
+    ArrayProperties: BatchArrayPropertiesSchema.exactOptional().openapi({
+      description:
+        'The array properties for the submitted job, such as the size of the array. The array size can be between 2 and 10,000. If you specify array properties for a job, it becomes an array job. This parameter is used only if the target is an Batch job.',
+    }),
+    RetryStrategy: BatchRetryStrategySchema.exactOptional().openapi({
+      description:
+        'The retry strategy to use for failed jobs, if the target is an Batch job. The retry strategy is the number of times to retry the failed job execution. Valid values are 1–10. When you specify a retry strategy here, it overrides the retry strategy defined in the job definition.',
+    }),
   })
   .openapi({
     required: ['JobDefinition', 'JobName'],
@@ -3484,9 +2600,9 @@ const MessageGroupIdSchema = z.string().max(100).openapi('MessageGroupId')
 
 const SqsParametersSchema = z
   .object({
-    MessageGroupId: MessageGroupIdSchema.and(
-      z.any().openapi({ description: 'The FIFO message group ID to use as the target.' }),
-    ).exactOptional(),
+    MessageGroupId: MessageGroupIdSchema.exactOptional().openapi({
+      description: 'The FIFO message group ID to use as the target.',
+    }),
   })
   .openapi({
     description:
@@ -3512,30 +2628,18 @@ const QueryStringParametersMapSchema = z
 
 const HttpParametersSchema = z
   .object({
-    PathParameterValues: PathParameterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path parameter values to be used to populate API Gateway API or EventBridge ApiDestination path wildcards ("*").',
-        }),
-    ).exactOptional(),
-    HeaderParameters: HeaderParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The headers that need to be sent as part of request invoking the API Gateway API or EventBridge ApiDestination.',
-        }),
-    ).exactOptional(),
-    QueryStringParameters: QueryStringParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The query string keys/values that need to be sent as part of request invoking the API Gateway API or EventBridge ApiDestination.',
-        }),
-    ).exactOptional(),
+    PathParameterValues: PathParameterListSchema.exactOptional().openapi({
+      description:
+        'The path parameter values to be used to populate API Gateway API or EventBridge ApiDestination path wildcards ("*").',
+    }),
+    HeaderParameters: HeaderParametersMapSchema.exactOptional().openapi({
+      description:
+        'The headers that need to be sent as part of request invoking the API Gateway API or EventBridge ApiDestination.',
+    }),
+    QueryStringParameters: QueryStringParametersMapSchema.exactOptional().openapi({
+      description:
+        'The query string keys/values that need to be sent as part of request invoking the API Gateway API or EventBridge ApiDestination.',
+    }),
   })
   .openapi({
     description:
@@ -3592,49 +2696,27 @@ const SqlsSchema = z
 
 const RedshiftDataParametersSchema = z
   .object({
-    SecretManagerArn: RedshiftSecretManagerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the secret that enables access to the database. Required when authenticating using Amazon Web Services Secrets Manager.',
-        }),
-    ).exactOptional(),
-    Database: DatabaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the database. Required when authenticating using temporary credentials.',
-        }),
-    ),
-    DbUser: DbUserSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The database user name. Required when authenticating using temporary credentials.</p> <p>Do not provide this parameter when connecting to a Redshift Serverless workgroup.</p>',
-        }),
-    ).exactOptional(),
-    Sql: SqlSchema.and(
-      z.any().openapi({ description: 'The SQL statement text to run.' }),
-    ).exactOptional(),
-    StatementName: StatementNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the SQL statement. You can name the SQL statement when you create it to identify the query.',
-        }),
-    ).exactOptional(),
-    WithEvent: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to send an event back to EventBridge after the SQL statement runs.',
-        }),
-    ).exactOptional(),
+    SecretManagerArn: RedshiftSecretManagerArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the secret that enables access to the database. Required when authenticating using Amazon Web Services Secrets Manager.',
+    }),
+    Database: DatabaseSchema.openapi({
+      description:
+        'The name of the database. Required when authenticating using temporary credentials.',
+    }),
+    DbUser: DbUserSchema.exactOptional().openapi({
+      description:
+        '<p>The database user name. Required when authenticating using temporary credentials.</p> <p>Do not provide this parameter when connecting to a Redshift Serverless workgroup.</p>',
+    }),
+    Sql: SqlSchema.exactOptional().openapi({ description: 'The SQL statement text to run.' }),
+    StatementName: StatementNameSchema.exactOptional().openapi({
+      description:
+        'The name of the SQL statement. You can name the SQL statement when you create it to identify the query.',
+    }),
+    WithEvent: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to send an event back to EventBridge after the SQL statement runs.',
+    }),
     Sqls: SqlsSchema.exactOptional(),
   })
   .openapi({
@@ -3658,22 +2740,12 @@ const SageMakerPipelineParameterValueSchema = z
 
 const SageMakerPipelineParameterSchema = z
   .object({
-    Name: SageMakerPipelineParameterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of parameter to start execution of a SageMaker Model Building Pipeline.',
-        }),
-    ),
-    Value: SageMakerPipelineParameterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Value of parameter to start execution of a SageMaker Model Building Pipeline.',
-        }),
-    ),
+    Name: SageMakerPipelineParameterNameSchema.openapi({
+      description: 'Name of parameter to start execution of a SageMaker Model Building Pipeline.',
+    }),
+    Value: SageMakerPipelineParameterValueSchema.openapi({
+      description: 'Value of parameter to start execution of a SageMaker Model Building Pipeline.',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -3690,14 +2762,10 @@ const SageMakerPipelineParameterListSchema = z
 
 const SageMakerPipelineParametersSchema = z
   .object({
-    PipelineParameterList: SageMakerPipelineParameterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of Parameter names and values for SageMaker Model Building Pipeline execution.',
-        }),
-    ).exactOptional(),
+    PipelineParameterList: SageMakerPipelineParameterListSchema.exactOptional().openapi({
+      description:
+        'List of Parameter names and values for SageMaker Model Building Pipeline execution.',
+    }),
   })
   .openapi({
     description:
@@ -3710,14 +2778,9 @@ const ResourceArnSchema = z.string().min(1).max(1600).openapi('ResourceArn')
 
 const DeadLetterConfigSchema = z
   .object({
-    Arn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the SQS queue specified as the target for the dead-letter queue.',
-        }),
-    ).exactOptional(),
+    Arn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the SQS queue specified as the target for the dead-letter queue.',
+    }),
   })
   .openapi({
     description:
@@ -3736,22 +2799,13 @@ const MaximumEventAgeInSecondsSchema = z
 
 const RetryPolicySchema = z
   .object({
-    MaximumRetryAttempts: MaximumRetryAttemptsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of retry attempts to make before the request fails. Retry attempts continue until either the maximum number of attempts is made or until the duration of the <code>MaximumEventAgeInSeconds</code> is met.',
-        }),
-    ).exactOptional(),
-    MaximumEventAgeInSeconds: MaximumEventAgeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of time, in seconds, to continue to make retry attempts.',
-        }),
-    ).exactOptional(),
+    MaximumRetryAttempts: MaximumRetryAttemptsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of retry attempts to make before the request fails. Retry attempts continue until either the maximum number of attempts is made or until the duration of the <code>MaximumEventAgeInSeconds</code> is met.',
+    }),
+    MaximumEventAgeInSeconds: MaximumEventAgeInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum amount of time, in seconds, to continue to make retry attempts.',
+    }),
   })
   .openapi({
     description:
@@ -3762,129 +2816,66 @@ const RetryPolicySchema = z
 
 const TargetSchema = z
   .object({
-    Id: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the target within the specified rule. Use this ID to reference the target when updating the rule. We recommend using a memorable and unique string.',
-        }),
-    ),
-    Arn: TargetArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the target.' }),
-    ),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role to be used for this target when the rule is triggered. If one rule triggers multiple targets, you can use a different IAM role for each target.',
-        }),
-    ).exactOptional(),
-    Input: TargetInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Valid JSON text passed to the target. In this case, nothing from the event itself is passed to the target. For more information, see <a href="http://www.rfc-editor.org/rfc/rfc7159.txt">The JavaScript Object Notation (JSON) Data Interchange Format</a>.',
-        }),
-    ).exactOptional(),
-    InputPath: TargetInputPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the JSONPath that is used for extracting part of the matched event when passing it to the target. You may use JSON dot notation or bracket notation. For more information about JSON paths, see <a href="http://goessner.net/articles/JsonPath/">JSONPath</a>.',
-        }),
-    ).exactOptional(),
-    InputTransformer: InputTransformerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Settings to enable you to provide custom input to a target based on certain event data. You can extract one or more key-value pairs from the event and then use that data to send customized input to the target.',
-        }),
-    ).exactOptional(),
-    KinesisParameters: KinesisParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The custom parameter you can use to control the shard assignment, when the target is a Kinesis data stream. If you do not include this parameter, the default is to use the <code>eventId</code> as the partition key.',
-        }),
-    ).exactOptional(),
-    RunCommandParameters: RunCommandParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters used when you are using the rule to invoke Amazon EC2 Run Command.',
-        }),
-    ).exactOptional(),
-    EcsParameters: EcsParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the Amazon ECS task definition and task count to be used, if the event target is an Amazon ECS task. For more information about Amazon ECS tasks, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_defintions.html">Task Definitions </a> in the <i>Amazon EC2 Container Service Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    BatchParameters: BatchParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the event target is an Batch job, this contains the job definition, job name, and other parameters. For more information, see <a href="https://docs.aws.amazon.com/batch/latest/userguide/jobs.html">Jobs</a> in the <i>Batch User Guide</i>.',
-        }),
-    ).exactOptional(),
-    SqsParameters: SqsParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the message group ID to use when the target is a FIFO queue.</p> <p>If you specify an SQS FIFO queue as a target, the queue must have content-based deduplication enabled.</p>',
-        }),
-    ).exactOptional(),
-    HttpParameters: HttpParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Contains the HTTP parameters to use when the target is a API Gateway endpoint or EventBridge ApiDestination.</p> <p>If you specify an API Gateway API or EventBridge ApiDestination as a target, you can use this parameter to specify headers, path parameters, and query string keys/values as part of your target invoking request. If you're using ApiDestinations, the corresponding Connection can also have these values configured. In case of any conflicting keys, values from the Connection take precedence.</p>",
-        }),
-    ).exactOptional(),
-    RedshiftDataParameters: RedshiftDataParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the Amazon Redshift Data API parameters to use when the target is a Amazon Redshift cluster.</p> <p>If you specify a Amazon Redshift Cluster as a Target, you can use this to specify parameters to invoke the Amazon Redshift Data API ExecuteStatement based on EventBridge events.</p>',
-        }),
-    ).exactOptional(),
-    SageMakerPipelineParameters: SageMakerPipelineParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the SageMaker Model Building Pipeline parameters to start execution of a SageMaker Model Building Pipeline.</p> <p>If you specify a SageMaker Model Building Pipeline as a target, you can use this to specify parameters to start a pipeline execution based on EventBridge events.</p>',
-        }),
-    ).exactOptional(),
-    DeadLetterConfig: DeadLetterConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>DeadLetterConfig</code> that defines the target queue to send dead-letter queue events to.',
-        }),
-    ).exactOptional(),
-    RetryPolicy: RetryPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RetryPolicy</code> object that contains the retry policy configuration to use for the dead-letter queue.',
-        }),
-    ).exactOptional(),
+    Id: TargetIdSchema.openapi({
+      description:
+        'The ID of the target within the specified rule. Use this ID to reference the target when updating the rule. We recommend using a memorable and unique string.',
+    }),
+    Arn: TargetArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the target.' }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role to be used for this target when the rule is triggered. If one rule triggers multiple targets, you can use a different IAM role for each target.',
+    }),
+    Input: TargetInputSchema.exactOptional().openapi({
+      description:
+        'Valid JSON text passed to the target. In this case, nothing from the event itself is passed to the target. For more information, see <a href="http://www.rfc-editor.org/rfc/rfc7159.txt">The JavaScript Object Notation (JSON) Data Interchange Format</a>.',
+    }),
+    InputPath: TargetInputPathSchema.exactOptional().openapi({
+      description:
+        'The value of the JSONPath that is used for extracting part of the matched event when passing it to the target. You may use JSON dot notation or bracket notation. For more information about JSON paths, see <a href="http://goessner.net/articles/JsonPath/">JSONPath</a>.',
+    }),
+    InputTransformer: InputTransformerSchema.exactOptional().openapi({
+      description:
+        'Settings to enable you to provide custom input to a target based on certain event data. You can extract one or more key-value pairs from the event and then use that data to send customized input to the target.',
+    }),
+    KinesisParameters: KinesisParametersSchema.exactOptional().openapi({
+      description:
+        'The custom parameter you can use to control the shard assignment, when the target is a Kinesis data stream. If you do not include this parameter, the default is to use the <code>eventId</code> as the partition key.',
+    }),
+    RunCommandParameters: RunCommandParametersSchema.exactOptional().openapi({
+      description: 'Parameters used when you are using the rule to invoke Amazon EC2 Run Command.',
+    }),
+    EcsParameters: EcsParametersSchema.exactOptional().openapi({
+      description:
+        'Contains the Amazon ECS task definition and task count to be used, if the event target is an Amazon ECS task. For more information about Amazon ECS tasks, see <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_defintions.html">Task Definitions </a> in the <i>Amazon EC2 Container Service Developer Guide</i>.',
+    }),
+    BatchParameters: BatchParametersSchema.exactOptional().openapi({
+      description:
+        'If the event target is an Batch job, this contains the job definition, job name, and other parameters. For more information, see <a href="https://docs.aws.amazon.com/batch/latest/userguide/jobs.html">Jobs</a> in the <i>Batch User Guide</i>.',
+    }),
+    SqsParameters: SqsParametersSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the message group ID to use when the target is a FIFO queue.</p> <p>If you specify an SQS FIFO queue as a target, the queue must have content-based deduplication enabled.</p>',
+    }),
+    HttpParameters: HttpParametersSchema.exactOptional().openapi({
+      description:
+        "<p>Contains the HTTP parameters to use when the target is a API Gateway endpoint or EventBridge ApiDestination.</p> <p>If you specify an API Gateway API or EventBridge ApiDestination as a target, you can use this parameter to specify headers, path parameters, and query string keys/values as part of your target invoking request. If you're using ApiDestinations, the corresponding Connection can also have these values configured. In case of any conflicting keys, values from the Connection take precedence.</p>",
+    }),
+    RedshiftDataParameters: RedshiftDataParametersSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the Amazon Redshift Data API parameters to use when the target is a Amazon Redshift cluster.</p> <p>If you specify a Amazon Redshift Cluster as a Target, you can use this to specify parameters to invoke the Amazon Redshift Data API ExecuteStatement based on EventBridge events.</p>',
+    }),
+    SageMakerPipelineParameters: SageMakerPipelineParametersSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the SageMaker Model Building Pipeline parameters to start execution of a SageMaker Model Building Pipeline.</p> <p>If you specify a SageMaker Model Building Pipeline as a target, you can use this to specify parameters to start a pipeline execution based on EventBridge events.</p>',
+    }),
+    DeadLetterConfig: DeadLetterConfigSchema.exactOptional().openapi({
+      description:
+        'The <code>DeadLetterConfig</code> that defines the target queue to send dead-letter queue events to.',
+    }),
+    RetryPolicy: RetryPolicySchema.exactOptional().openapi({
+      description:
+        'The <code>RetryPolicy</code> object that contains the retry policy configuration to use for the dead-letter queue.',
+    }),
   })
   .openapi({
     required: ['Id', 'Arn'],
@@ -3897,42 +2888,30 @@ const TargetListSchema = z.array(TargetSchema).min(1).max(100).openapi('TargetLi
 
 const ListTargetsByRuleResponseSchema = z
   .object({
-    Targets: TargetListSchema.and(
-      z.any().openapi({ description: 'The targets assigned to the rule.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether there are additional results to retrieve. If there are no more results, the value is null.',
-        }),
-    ).exactOptional(),
+    Targets: TargetListSchema.exactOptional().openapi({
+      description: 'The targets assigned to the rule.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Indicates whether there are additional results to retrieve. If there are no more results, the value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTargetsByRuleResponse')
 
 const ListTargetsByRuleRequestSchema = z
   .object({
-    Rule: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned by a previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Limit: LimitMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    Rule: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned by a previous call to retrieve the next set of results.',
+    }),
+    Limit: LimitMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ required: ['Rule'], title: 'ListTargetsByRuleRequest' })
   .openapi('ListTargetsByRuleRequest')
@@ -3945,21 +2924,13 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const PutEventsResultEntrySchema = z
   .object({
-    EventId: EventIdSchema.and(
-      z.any().openapi({ description: 'The ID of the event.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error code that indicates why the event submission failed.' }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error message that explains why the event submission failed.',
-        }),
-    ).exactOptional(),
+    EventId: EventIdSchema.exactOptional().openapi({ description: 'The ID of the event.' }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code that indicates why the event submission failed.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The error message that explains why the event submission failed.',
+    }),
   })
   .openapi({
     description:
@@ -3974,17 +2945,13 @@ const PutEventsResultEntryListSchema = z
 
 const PutEventsResponseSchema = z
   .object({
-    FailedEntryCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of failed entries.' }),
-    ).exactOptional(),
-    Entries: PutEventsResultEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The successfully and unsuccessfully ingested events results. If the ingestion was successful, the entry has the event ID in it. Otherwise, you can use the error code and error message to identify the problem with the entry.</p> <p>For each record, the index of the response element is the same as the index in the request array.</p>',
-        }),
-    ).exactOptional(),
+    FailedEntryCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of failed entries.',
+    }),
+    Entries: PutEventsResultEntryListSchema.exactOptional().openapi({
+      description:
+        '<p>The successfully and unsuccessfully ingested events results. If the ingestion was successful, the entry has the event ID in it. Otherwise, you can use the error code and error message to identify the problem with the entry.</p> <p>For each record, the index of the response element is the same as the index in the request array.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutEventsResponse')
@@ -4006,57 +2973,31 @@ const TraceHeaderSchema = z.string().min(1).max(500).openapi('TraceHeader')
 
 const PutEventsRequestEntrySchema = z
   .object({
-    Time: EventTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time stamp of the event, per <a href="https://www.rfc-editor.org/rfc/rfc3339.txt">RFC3339</a>. If no time stamp is provided, the time stamp of the <a href="https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutEvents.html">PutEvents</a> call is used.',
-        }),
-    ).exactOptional(),
-    Source: StringSchema.and(
-      z.any().openapi({ description: 'The source of the event.' }),
-    ).exactOptional(),
-    Resources: EventResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Web Services resources, identified by Amazon Resource Name (ARN), which the event primarily concerns. Any number, including zero, may be present.',
-        }),
-    ).exactOptional(),
-    DetailType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.',
-        }),
-    ).exactOptional(),
-    Detail: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid JSON object. There is no other schema imposed. The JSON object may contain fields and nested subobjects.',
-        }),
-    ).exactOptional(),
-    EventBusName: NonPartnerEventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or ARN of the event bus to receive the event. Only the rules that are associated with this event bus are used to match the event. If you omit this, the default event bus is used.</p> <note> <p>If you're using a global endpoint with a custom bus, you must enter the name, not the ARN, of the event bus in either the primary or secondary Region here and the corresponding event bus in the other Region will be determined based on the endpoint referenced by the <code>EndpointId</code>.</p> </note>",
-        }),
-    ).exactOptional(),
-    TraceHeader: TraceHeaderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An X-Ray trace header, which is an http header (X-Amzn-Trace-Id) that contains the trace-id associated with the event.</p> <p>To learn more about X-Ray trace headers, see <a href="https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader">Tracing header</a> in the X-Ray Developer Guide.</p>',
-        }),
-    ).exactOptional(),
+    Time: EventTimeSchema.exactOptional().openapi({
+      description:
+        'The time stamp of the event, per <a href="https://www.rfc-editor.org/rfc/rfc3339.txt">RFC3339</a>. If no time stamp is provided, the time stamp of the <a href="https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutEvents.html">PutEvents</a> call is used.',
+    }),
+    Source: StringSchema.exactOptional().openapi({ description: 'The source of the event.' }),
+    Resources: EventResourceListSchema.exactOptional().openapi({
+      description:
+        'Amazon Web Services resources, identified by Amazon Resource Name (ARN), which the event primarily concerns. Any number, including zero, may be present.',
+    }),
+    DetailType: StringSchema.exactOptional().openapi({
+      description:
+        'Free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.',
+    }),
+    Detail: StringSchema.exactOptional().openapi({
+      description:
+        'A valid JSON object. There is no other schema imposed. The JSON object may contain fields and nested subobjects.',
+    }),
+    EventBusName: NonPartnerEventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        "<p>The name or ARN of the event bus to receive the event. Only the rules that are associated with this event bus are used to match the event. If you omit this, the default event bus is used.</p> <note> <p>If you're using a global endpoint with a custom bus, you must enter the name, not the ARN, of the event bus in either the primary or secondary Region here and the corresponding event bus in the other Region will be determined based on the endpoint referenced by the <code>EndpointId</code>.</p> </note>",
+    }),
+    TraceHeader: TraceHeaderSchema.exactOptional().openapi({
+      description:
+        '<p>An X-Ray trace header, which is an http header (X-Amzn-Trace-Id) that contains the trace-id associated with the event.</p> <p>To learn more about X-Ray trace headers, see <a href="https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader">Tracing header</a> in the X-Ray Developer Guide.</p>',
+    }),
   })
   .openapi({ description: 'Represents an event to be submitted.', required: [] })
   .openapi('PutEventsRequestEntry')
@@ -4069,43 +3010,27 @@ const PutEventsRequestEntryListSchema = z
 
 const PutEventsRequestSchema = z
   .object({
-    Entries: PutEventsRequestEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The entry that defines an event in your system. You can specify several parameters for the entry such as the source and type of the event, resources associated with the event, and so on.',
-        }),
-    ),
-    EndpointId: EndpointIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The URL subdomain of the endpoint. For example, if the URL for Endpoint is https://abcde.veo.endpoints.event.amazonaws.com, then the EndpointId is <code>abcde.veo</code>.</p> <important> <p>When using Java, you must include <code>auth-crt</code> on the class path.</p> </important>',
-        }),
-    ).exactOptional(),
+    Entries: PutEventsRequestEntryListSchema.openapi({
+      description:
+        'The entry that defines an event in your system. You can specify several parameters for the entry such as the source and type of the event, resources associated with the event, and so on.',
+    }),
+    EndpointId: EndpointIdSchema.exactOptional().openapi({
+      description:
+        '<p>The URL subdomain of the endpoint. For example, if the URL for Endpoint is https://abcde.veo.endpoints.event.amazonaws.com, then the EndpointId is <code>abcde.veo</code>.</p> <important> <p>When using Java, you must include <code>auth-crt</code> on the class path.</p> </important>',
+    }),
   })
   .openapi({ required: ['Entries'], title: 'PutEventsRequest' })
   .openapi('PutEventsRequest')
 
 const PutPartnerEventsResultEntrySchema = z
   .object({
-    EventId: EventIdSchema.and(
-      z.any().openapi({ description: 'The ID of the event.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error code that indicates why the event submission failed.' }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error message that explains why the event submission failed.',
-        }),
-    ).exactOptional(),
+    EventId: EventIdSchema.exactOptional().openapi({ description: 'The ID of the event.' }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code that indicates why the event submission failed.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The error message that explains why the event submission failed.',
+    }),
   })
   .openapi({
     description: 'Represents an event that a partner tried to generate, but failed.',
@@ -4119,58 +3044,38 @@ const PutPartnerEventsResultEntryListSchema = z
 
 const PutPartnerEventsResponseSchema = z
   .object({
-    FailedEntryCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of events from this operation that could not be written to the partner event bus.',
-        }),
-    ).exactOptional(),
-    Entries: PutPartnerEventsResultEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of events from this operation that were successfully written to the partner event bus.',
-        }),
-    ).exactOptional(),
+    FailedEntryCount: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of events from this operation that could not be written to the partner event bus.',
+    }),
+    Entries: PutPartnerEventsResultEntryListSchema.exactOptional().openapi({
+      description:
+        'The list of events from this operation that were successfully written to the partner event bus.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutPartnerEventsResponse')
 
 const PutPartnerEventsRequestEntrySchema = z
   .object({
-    Time: EventTimeSchema.and(
-      z.any().openapi({ description: 'The date and time of the event.' }),
-    ).exactOptional(),
-    Source: EventSourceNameSchema.and(
-      z.any().openapi({ description: 'The event source that is generating the entry.' }),
-    ).exactOptional(),
-    Resources: EventResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Web Services resources, identified by Amazon Resource Name (ARN), which the event primarily concerns. Any number, including zero, may be present.',
-        }),
-    ).exactOptional(),
-    DetailType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.',
-        }),
-    ).exactOptional(),
-    Detail: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A valid JSON string. There is no other schema imposed. The JSON string may contain fields and nested subobjects.',
-        }),
-    ).exactOptional(),
+    Time: EventTimeSchema.exactOptional().openapi({
+      description: 'The date and time of the event.',
+    }),
+    Source: EventSourceNameSchema.exactOptional().openapi({
+      description: 'The event source that is generating the entry.',
+    }),
+    Resources: EventResourceListSchema.exactOptional().openapi({
+      description:
+        'Amazon Web Services resources, identified by Amazon Resource Name (ARN), which the event primarily concerns. Any number, including zero, may be present.',
+    }),
+    DetailType: StringSchema.exactOptional().openapi({
+      description:
+        'A free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.',
+    }),
+    Detail: StringSchema.exactOptional().openapi({
+      description:
+        'A valid JSON string. There is no other schema imposed. The JSON string may contain fields and nested subobjects.',
+    }),
   })
   .openapi({
     description: 'The details about an event generated by an SaaS partner.',
@@ -4186,9 +3091,9 @@ const PutPartnerEventsRequestEntryListSchema = z
 
 const PutPartnerEventsRequestSchema = z
   .object({
-    Entries: PutPartnerEventsRequestEntryListSchema.and(
-      z.any().openapi({ description: 'The list of events to write to the event bus.' }),
-    ),
+    Entries: PutPartnerEventsRequestEntryListSchema.openapi({
+      description: 'The list of events to write to the event bus.',
+    }),
   })
   .openapi({ required: ['Entries'], title: 'PutPartnerEventsRequest' })
   .openapi('PutPartnerEventsRequest')
@@ -4223,30 +3128,18 @@ const StatementIdSchema = z
 
 const ConditionSchema = z
   .object({
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of condition. Currently the only supported value is <code>StringEquals</code>.',
-        }),
-    ),
-    Key: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the key for the condition. Currently the only supported key is <code>aws:PrincipalOrgID</code>.',
-        }),
-    ),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the value for the key. Currently, this must be the ID of the organization.',
-        }),
-    ),
+    Type: StringSchema.openapi({
+      description:
+        'Specifies the type of condition. Currently the only supported value is <code>StringEquals</code>.',
+    }),
+    Key: StringSchema.openapi({
+      description:
+        'Specifies the key for the condition. Currently the only supported key is <code>aws:PrincipalOrgID</code>.',
+    }),
+    Value: StringSchema.openapi({
+      description:
+        'Specifies the value for the key. Currently, this must be the ID of the organization.',
+    }),
   })
   .openapi({
     required: ['Type', 'Key', 'Value'],
@@ -4257,51 +3150,29 @@ const ConditionSchema = z
 
 const PutPermissionRequestSchema = z
   .object({
-    EventBusName: NonPartnerEventBusNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The action that you are enabling the other account to perform.' }),
-    ).exactOptional(),
-    Principal: PrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The 12-digit Amazon Web Services account ID that you are permitting to put events to your default event bus. Specify "*" to permit any account to put events to your default event bus.</p> <p>If you specify "*" without specifying <code>Condition</code>, avoid creating rules that may match undesirable events. To create more secure rules, make sure that the event pattern for each rule contains an <code>account</code> field with a specific account ID from which to receive events. Rules with an account field do not match any events sent from other accounts.</p>',
-        }),
-    ).exactOptional(),
-    StatementId: StatementIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An identifier string for the external account that you are granting permissions to. If you later want to revoke the permission for this external account, specify this <code>StatementId</code> when you run <a href="https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_RemovePermission.html">RemovePermission</a>.</p> <note> <p>Each <code>StatementId</code> must be unique.</p> </note>',
-        }),
-    ).exactOptional(),
-    Condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter enables you to limit the permission to accounts that fulfill a certain condition, such as being a member of a certain Amazon Web Services organization. For more information about Amazon Web Services Organizations, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html">What Is Amazon Web Services Organizations</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p> <p>If you specify <code>Condition</code> with an Amazon Web Services organization ID, and specify "*" as the value for <code>Principal</code>, you grant permission to all the accounts in the named organization.</p> <p>The <code>Condition</code> is a JSON string which must contain <code>Type</code>, <code>Key</code>, and <code>Value</code> fields.</p>',
-        }),
-    ).exactOptional(),
-    Policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON string that describes the permission policy statement. You can include a <code>Policy</code> parameter in the request instead of using the <code>StatementId</code>, <code>Action</code>, <code>Principal</code>, or <code>Condition</code> parameters.',
-        }),
-    ).exactOptional(),
+    EventBusName: NonPartnerEventBusNameSchema.exactOptional().openapi({
+      description:
+        'The name of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
+    Action: ActionSchema.exactOptional().openapi({
+      description: 'The action that you are enabling the other account to perform.',
+    }),
+    Principal: PrincipalSchema.exactOptional().openapi({
+      description:
+        '<p>The 12-digit Amazon Web Services account ID that you are permitting to put events to your default event bus. Specify "*" to permit any account to put events to your default event bus.</p> <p>If you specify "*" without specifying <code>Condition</code>, avoid creating rules that may match undesirable events. To create more secure rules, make sure that the event pattern for each rule contains an <code>account</code> field with a specific account ID from which to receive events. Rules with an account field do not match any events sent from other accounts.</p>',
+    }),
+    StatementId: StatementIdSchema.exactOptional().openapi({
+      description:
+        '<p>An identifier string for the external account that you are granting permissions to. If you later want to revoke the permission for this external account, specify this <code>StatementId</code> when you run <a href="https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_RemovePermission.html">RemovePermission</a>.</p> <note> <p>Each <code>StatementId</code> must be unique.</p> </note>',
+    }),
+    Condition: ConditionSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter enables you to limit the permission to accounts that fulfill a certain condition, such as being a member of a certain Amazon Web Services organization. For more information about Amazon Web Services Organizations, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html">What Is Amazon Web Services Organizations</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p> <p>If you specify <code>Condition</code> with an Amazon Web Services organization ID, and specify "*" as the value for <code>Principal</code>, you grant permission to all the accounts in the named organization.</p> <p>The <code>Condition</code> is a JSON string which must contain <code>Type</code>, <code>Key</code>, and <code>Value</code> fields.</p>',
+    }),
+    Policy: StringSchema.exactOptional().openapi({
+      description:
+        'A JSON string that describes the permission policy statement. You can include a <code>Policy</code> parameter in the request instead of using the <code>StatementId</code>, <code>Action</code>, <code>Principal</code>, or <code>Condition</code> parameters.',
+    }),
   })
   .openapi({ title: 'PutPermissionRequest', required: [] })
   .openapi('PutPermissionRequest')
@@ -4310,83 +3181,57 @@ const PolicyLengthExceededExceptionSchema = z.any().openapi('PolicyLengthExceede
 
 const PutRuleResponseSchema = z
   .object({
-    RuleArn: RuleArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the rule.' }),
-    ).exactOptional(),
+    RuleArn: RuleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the rule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutRuleResponse')
 
 const PutRuleRequestSchema = z
   .object({
-    Name: RuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule that you are creating or updating.' }),
-    ),
-    ScheduleExpression: ScheduleExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scheduling expression. For example, "cron(0 20 * * ? *)" or "rate(5 minutes)".',
-        }),
-    ).exactOptional(),
-    EventPattern: EventPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event pattern. For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html">Amazon EventBridge event patterns</a> in the <i>Amazon EventBridge User Guide</i>.',
-        }),
-    ).exactOptional(),
-    State: RuleStateSchema.and(
-      z.any().openapi({ description: 'Indicates whether the rule is enabled or disabled.' }),
-    ).exactOptional(),
-    Description: RuleDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the rule.' }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of the IAM role associated with the rule.</p> <p>If you're setting an event bus in another account as the target and that account granted permission to your account through an organization instead of directly by the account ID, you must specify a <code>RoleArn</code> with proper permissions in the <code>Target</code> structure, instead of here in this parameter.</p>",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of key-value pairs to associate with the rule.' }),
-    ).exactOptional(),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus to associate with this rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.openapi({
+      description: 'The name of the rule that you are creating or updating.',
+    }),
+    ScheduleExpression: ScheduleExpressionSchema.exactOptional().openapi({
+      description:
+        'The scheduling expression. For example, "cron(0 20 * * ? *)" or "rate(5 minutes)".',
+    }),
+    EventPattern: EventPatternSchema.exactOptional().openapi({
+      description:
+        'The event pattern. For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html">Amazon EventBridge event patterns</a> in the <i>Amazon EventBridge User Guide</i>.',
+    }),
+    State: RuleStateSchema.exactOptional().openapi({
+      description: 'Indicates whether the rule is enabled or disabled.',
+    }),
+    Description: RuleDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the rule.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of the IAM role associated with the rule.</p> <p>If you're setting an event bus in another account as the target and that account granted permission to your account through an organization instead of directly by the account ID, you must specify a <code>RoleArn</code> with proper permissions in the <code>Target</code> structure, instead of here in this parameter.</p>",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value pairs to associate with the rule.',
+    }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus to associate with this rule. If you omit this, the default event bus is used.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'PutRuleRequest' })
   .openapi('PutRuleRequest')
 
 const PutTargetsResultEntrySchema = z
   .object({
-    TargetId: TargetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the target.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code that indicates why the target addition failed. If the value is <code>ConcurrentModificationException</code>, too many requests were made at the same time.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error message that explains why the target addition failed.',
-        }),
-    ).exactOptional(),
+    TargetId: TargetIdSchema.exactOptional().openapi({ description: 'The ID of the target.' }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The error code that indicates why the target addition failed. If the value is <code>ConcurrentModificationException</code>, too many requests were made at the same time.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The error message that explains why the target addition failed.',
+    }),
   })
   .openapi({ description: 'Represents a target that failed to be added to a rule.', required: [] })
   .openapi('PutTargetsResultEntry')
@@ -4397,77 +3242,55 @@ const PutTargetsResultEntryListSchema = z
 
 const PutTargetsResponseSchema = z
   .object({
-    FailedEntryCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of failed entries.' }),
-    ).exactOptional(),
-    FailedEntries: PutTargetsResultEntryListSchema.and(
-      z.any().openapi({ description: 'The failed target entries.' }),
-    ).exactOptional(),
+    FailedEntryCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of failed entries.',
+    }),
+    FailedEntries: PutTargetsResultEntryListSchema.exactOptional().openapi({
+      description: 'The failed target entries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutTargetsResponse')
 
 const PutTargetsRequestSchema = z
   .object({
-    Rule: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
-    Targets: TargetListSchema.and(
-      z.any().openapi({ description: 'The targets to update or add to the rule.' }),
-    ),
+    Rule: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
+    Targets: TargetListSchema.openapi({ description: 'The targets to update or add to the rule.' }),
   })
   .openapi({ required: ['Rule', 'Targets'], title: 'PutTargetsRequest' })
   .openapi('PutTargetsRequest')
 
 const RemovePermissionRequestSchema = z
   .object({
-    StatementId: StatementIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The statement ID corresponding to the account that is no longer allowed to put events to the default event bus.',
-        }),
-    ).exactOptional(),
-    RemoveAllPermissions: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether to remove all permissions.' }),
-    ).exactOptional(),
-    EventBusName: NonPartnerEventBusNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the event bus to revoke permissions for. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
+    StatementId: StatementIdSchema.exactOptional().openapi({
+      description:
+        'The statement ID corresponding to the account that is no longer allowed to put events to the default event bus.',
+    }),
+    RemoveAllPermissions: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether to remove all permissions.',
+    }),
+    EventBusName: NonPartnerEventBusNameSchema.exactOptional().openapi({
+      description:
+        'The name of the event bus to revoke permissions for. If you omit this, the default event bus is used.',
+    }),
   })
   .openapi({ title: 'RemovePermissionRequest', required: [] })
   .openapi('RemovePermissionRequest')
 
 const RemoveTargetsResultEntrySchema = z
   .object({
-    TargetId: TargetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the target.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code that indicates why the target removal failed. If the value is <code>ConcurrentModificationException</code>, too many requests were made at the same time.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error message that explains why the target removal failed.' }),
-    ).exactOptional(),
+    TargetId: TargetIdSchema.exactOptional().openapi({ description: 'The ID of the target.' }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The error code that indicates why the target removal failed. If the value is <code>ConcurrentModificationException</code>, too many requests were made at the same time.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The error message that explains why the target removal failed.',
+    }),
   })
   .openapi({
     description: 'Represents a target that failed to be removed from a rule.',
@@ -4481,12 +3304,12 @@ const RemoveTargetsResultEntryListSchema = z
 
 const RemoveTargetsResponseSchema = z
   .object({
-    FailedEntryCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of failed entries.' }),
-    ).exactOptional(),
-    FailedEntries: RemoveTargetsResultEntryListSchema.and(
-      z.any().openapi({ description: 'The failed target entries.' }),
-    ).exactOptional(),
+    FailedEntryCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of failed entries.',
+    }),
+    FailedEntries: RemoveTargetsResultEntryListSchema.exactOptional().openapi({
+      description: 'The failed target entries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveTargetsResponse')
@@ -4495,83 +3318,57 @@ const TargetIdListSchema = z.array(TargetIdSchema).min(1).max(100).openapi('Targ
 
 const RemoveTargetsRequestSchema = z
   .object({
-    Rule: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    EventBusName: EventBusNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
-        }),
-    ).exactOptional(),
-    Ids: TargetIdListSchema.and(
-      z.any().openapi({ description: 'The IDs of the targets to remove from the rule.' }),
-    ),
-    Force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this is a managed rule, created by an Amazon Web Services service on your behalf, you must specify <code>Force</code> as <code>True</code> to remove targets. This parameter is ignored for rules that are not managed rules. You can check whether a rule is a managed rule by using <code>DescribeRule</code> or <code>ListRules</code> and checking the <code>ManagedBy</code> field of the response.',
-        }),
-    ).exactOptional(),
+    Rule: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    EventBusName: EventBusNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used.',
+    }),
+    Ids: TargetIdListSchema.openapi({
+      description: 'The IDs of the targets to remove from the rule.',
+    }),
+    Force: BooleanSchema.exactOptional().openapi({
+      description:
+        'If this is a managed rule, created by an Amazon Web Services service on your behalf, you must specify <code>Force</code> as <code>True</code> to remove targets. This parameter is ignored for rules that are not managed rules. You can check whether a rule is a managed rule by using <code>DescribeRule</code> or <code>ListRules</code> and checking the <code>ManagedBy</code> field of the response.',
+    }),
   })
   .openapi({ required: ['Rule', 'Ids'], title: 'RemoveTargetsRequest' })
   .openapi('RemoveTargetsRequest')
 
 const StartReplayResponseSchema = z
   .object({
-    ReplayArn: ReplayArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the replay.' }),
-    ).exactOptional(),
-    State: ReplayStateSchema.and(
-      z.any().openapi({ description: 'The state of the replay.' }),
-    ).exactOptional(),
-    StateReason: ReplayStateReasonSchema.and(
-      z.any().openapi({ description: 'The reason that the replay is in the state.' }),
-    ).exactOptional(),
-    ReplayStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the replay started.' }),
-    ).exactOptional(),
+    ReplayArn: ReplayArnSchema.exactOptional().openapi({ description: 'The ARN of the replay.' }),
+    State: ReplayStateSchema.exactOptional().openapi({ description: 'The state of the replay.' }),
+    StateReason: ReplayStateReasonSchema.exactOptional().openapi({
+      description: 'The reason that the replay is in the state.',
+    }),
+    ReplayStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the replay started.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartReplayResponse')
 
 const StartReplayRequestSchema = z
   .object({
-    ReplayName: ReplayNameSchema.and(
-      z.any().openapi({ description: 'The name of the replay to start.' }),
-    ),
-    Description: ReplayDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the replay to start.' }),
-    ).exactOptional(),
-    EventSourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the archive to replay events from.' }),
-    ),
-    EventStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp for the time to start replaying events. Only events that occurred between the <code>EventStartTime</code> and <code>EventEndTime</code> are replayed.',
-        }),
-    ),
-    EventEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp for the time to stop replaying events. Only events that occurred between the <code>EventStartTime</code> and <code>EventEndTime</code> are replayed.',
-        }),
-    ),
-    Destination: ReplayDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ReplayDestination</code> object that includes details about the destination for the replay.',
-        }),
-    ),
+    ReplayName: ReplayNameSchema.openapi({ description: 'The name of the replay to start.' }),
+    Description: ReplayDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the replay to start.',
+    }),
+    EventSourceArn: ArnSchema.openapi({
+      description: 'The ARN of the archive to replay events from.',
+    }),
+    EventStartTime: TimestampSchema.openapi({
+      description:
+        'A time stamp for the time to start replaying events. Only events that occurred between the <code>EventStartTime</code> and <code>EventEndTime</code> are replayed.',
+    }),
+    EventEndTime: TimestampSchema.openapi({
+      description:
+        'A time stamp for the time to stop replaying events. Only events that occurred between the <code>EventStartTime</code> and <code>EventEndTime</code> are replayed.',
+    }),
+    Destination: ReplayDestinationSchema.openapi({
+      description:
+        'A <code>ReplayDestination</code> object that includes details about the destination for the replay.',
+    }),
   })
   .openapi({
     required: ['ReplayName', 'EventSourceArn', 'EventStartTime', 'EventEndTime', 'Destination'],
@@ -4579,213 +3376,163 @@ const StartReplayRequestSchema = z
   })
   .openapi('StartReplayRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The ARN of the EventBridge resource that you're adding tags to.",
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of key-value pairs to associate with the resource.' }),
-    ),
+    ResourceARN: ArnSchema.openapi({
+      description: "The ARN of the EventBridge resource that you're adding tags to.",
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The list of key-value pairs to associate with the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const TestEventPatternResponseSchema = z
   .object({
-    Result: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether the event matches the event pattern.' }),
-    ).exactOptional(),
+    Result: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the event matches the event pattern.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestEventPatternResponse')
 
 const TestEventPatternRequestSchema = z
   .object({
-    EventPattern: EventPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event pattern. For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.',
-        }),
-    ),
-    Event: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The event, in JSON format, to test against the event pattern. The JSON must follow the format specified in <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/aws-events.html">Amazon Web Services Events</a>, and the following fields are mandatory:</p> <ul> <li> <p> <code>id</code> </p> </li> <li> <p> <code>account</code> </p> </li> <li> <p> <code>source</code> </p> </li> <li> <p> <code>time</code> </p> </li> <li> <p> <code>region</code> </p> </li> <li> <p> <code>resources</code> </p> </li> <li> <p> <code>detail-type</code> </p> </li> </ul>',
-        }),
-    ),
+    EventPattern: EventPatternSchema.openapi({
+      description:
+        'The event pattern. For more information, see <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.',
+    }),
+    Event: StringSchema.openapi({
+      description:
+        '<p>The event, in JSON format, to test against the event pattern. The JSON must follow the format specified in <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/aws-events.html">Amazon Web Services Events</a>, and the following fields are mandatory:</p> <ul> <li> <p> <code>id</code> </p> </li> <li> <p> <code>account</code> </p> </li> <li> <p> <code>source</code> </p> </li> <li> <p> <code>time</code> </p> </li> <li> <p> <code>region</code> </p> </li> <li> <p> <code>resources</code> </p> </li> <li> <p> <code>detail-type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['EventPattern', 'Event'], title: 'TestEventPatternRequest' })
   .openapi('TestEventPatternRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the EventBridge resource from which you are removing tags.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The list of tag keys to remove from the resource.' }),
-    ),
+    ResourceARN: ArnSchema.openapi({
+      description: 'The ARN of the EventBridge resource from which you are removing tags.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The list of tag keys to remove from the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateApiDestinationResponseSchema = z
   .object({
-    ApiDestinationArn: ApiDestinationArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the API destination that was updated.' }),
-    ).exactOptional(),
-    ApiDestinationState: ApiDestinationStateSchema.and(
-      z.any().openapi({ description: 'The state of the API destination that was updated.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the API destination was created.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the API destination was last modified.',
-        }),
-    ).exactOptional(),
+    ApiDestinationArn: ApiDestinationArnSchema.exactOptional().openapi({
+      description: 'The ARN of the API destination that was updated.',
+    }),
+    ApiDestinationState: ApiDestinationStateSchema.exactOptional().openapi({
+      description: 'The state of the API destination that was updated.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the API destination was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the API destination was last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateApiDestinationResponse')
 
 const UpdateApiDestinationRequestSchema = z
   .object({
-    Name: ApiDestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the API destination to update.' }),
-    ),
-    Description: ApiDestinationDescriptionSchema.and(
-      z.any().openapi({ description: 'The name of the API destination to update.' }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the connection to use for the API destination.' }),
-    ).exactOptional(),
-    InvocationEndpoint: HttpsEndpointSchema.and(
-      z.any().openapi({ description: 'The URL to the endpoint to use for the API destination.' }),
-    ).exactOptional(),
-    HttpMethod: ApiDestinationHttpMethodSchema.and(
-      z.any().openapi({ description: 'The method to use for the API destination.' }),
-    ).exactOptional(),
-    InvocationRateLimitPerSecond: ApiDestinationInvocationRateLimitPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of invocations per second to send to the API destination.',
-        }),
-    ).exactOptional(),
+    Name: ApiDestinationNameSchema.openapi({
+      description: 'The name of the API destination to update.',
+    }),
+    Description: ApiDestinationDescriptionSchema.exactOptional().openapi({
+      description: 'The name of the API destination to update.',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection to use for the API destination.',
+    }),
+    InvocationEndpoint: HttpsEndpointSchema.exactOptional().openapi({
+      description: 'The URL to the endpoint to use for the API destination.',
+    }),
+    HttpMethod: ApiDestinationHttpMethodSchema.exactOptional().openapi({
+      description: 'The method to use for the API destination.',
+    }),
+    InvocationRateLimitPerSecond:
+      ApiDestinationInvocationRateLimitPerSecondSchema.exactOptional().openapi({
+        description: 'The maximum number of invocations per second to send to the API destination.',
+      }),
   })
   .openapi({ required: ['Name'], title: 'UpdateApiDestinationRequest' })
   .openapi('UpdateApiDestinationRequest')
 
 const UpdateArchiveResponseSchema = z
   .object({
-    ArchiveArn: ArchiveArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the archive.' }),
-    ).exactOptional(),
-    State: ArchiveStateSchema.and(
-      z.any().openapi({ description: 'The state of the archive.' }),
-    ).exactOptional(),
-    StateReason: ArchiveStateReasonSchema.and(
-      z.any().openapi({ description: 'The reason that the archive is in the current state.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the archive was updated.' }),
-    ).exactOptional(),
+    ArchiveArn: ArchiveArnSchema.exactOptional().openapi({
+      description: 'The ARN of the archive.',
+    }),
+    State: ArchiveStateSchema.exactOptional().openapi({ description: 'The state of the archive.' }),
+    StateReason: ArchiveStateReasonSchema.exactOptional().openapi({
+      description: 'The reason that the archive is in the current state.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the archive was updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateArchiveResponse')
 
 const UpdateArchiveRequestSchema = z
   .object({
-    ArchiveName: ArchiveNameSchema.and(
-      z.any().openapi({ description: 'The name of the archive to update.' }),
-    ),
-    Description: ArchiveDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the archive.' }),
-    ).exactOptional(),
-    EventPattern: EventPatternSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The event pattern to use to filter events sent to the archive.' }),
-    ).exactOptional(),
-    RetentionDays: RetentionDaysSchema.and(
-      z.any().openapi({ description: 'The number of days to retain events in the archive.' }),
-    ).exactOptional(),
+    ArchiveName: ArchiveNameSchema.openapi({ description: 'The name of the archive to update.' }),
+    Description: ArchiveDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the archive.',
+    }),
+    EventPattern: EventPatternSchema.exactOptional().openapi({
+      description: 'The event pattern to use to filter events sent to the archive.',
+    }),
+    RetentionDays: RetentionDaysSchema.exactOptional().openapi({
+      description: 'The number of days to retain events in the archive.',
+    }),
   })
   .openapi({ required: ['ArchiveName'], title: 'UpdateArchiveRequest' })
   .openapi('UpdateArchiveRequest')
 
 const UpdateConnectionResponseSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the connection that was updated.' }),
-    ).exactOptional(),
-    ConnectionState: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The state of the connection that was updated.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A time stamp for the time that the connection was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last modified.',
-        }),
-    ).exactOptional(),
-    LastAuthorizedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A time stamp for the time that the connection was last authorized.',
-        }),
-    ).exactOptional(),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the connection that was updated.',
+    }),
+    ConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The state of the connection that was updated.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last modified.',
+    }),
+    LastAuthorizedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A time stamp for the time that the connection was last authorized.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateConnectionResponse')
 
 const UpdateConnectionBasicAuthRequestParametersSchema = z
   .object({
-    Username: AuthHeaderParametersSchema.and(
-      z.any().openapi({ description: 'The user name to use for Basic authorization.' }),
-    ).exactOptional(),
-    Password: AuthHeaderParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The password associated with the user name to use for Basic authorization.',
-        }),
-    ).exactOptional(),
+    Username: AuthHeaderParametersSchema.exactOptional().openapi({
+      description: 'The user name to use for Basic authorization.',
+    }),
+    Password: AuthHeaderParametersSchema.exactOptional().openapi({
+      description: 'The password associated with the user name to use for Basic authorization.',
+    }),
   })
   .openapi({
     description: 'Contains the Basic authorization parameters for the connection.',
@@ -4795,17 +3542,12 @@ const UpdateConnectionBasicAuthRequestParametersSchema = z
 
 const UpdateConnectionOAuthClientRequestParametersSchema = z
   .object({
-    ClientID: AuthHeaderParametersSchema.and(
-      z.any().openapi({ description: 'The client ID to use for OAuth authorization.' }),
-    ).exactOptional(),
-    ClientSecret: AuthHeaderParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The client secret assciated with the client ID to use for OAuth authorization.',
-        }),
-    ).exactOptional(),
+    ClientID: AuthHeaderParametersSchema.exactOptional().openapi({
+      description: 'The client ID to use for OAuth authorization.',
+    }),
+    ClientSecret: AuthHeaderParametersSchema.exactOptional().openapi({
+      description: 'The client secret assciated with the client ID to use for OAuth authorization.',
+    }),
   })
   .openapi({
     description: 'Contains the OAuth authorization parameters to use for the connection.',
@@ -4815,32 +3557,20 @@ const UpdateConnectionOAuthClientRequestParametersSchema = z
 
 const UpdateConnectionOAuthRequestParametersSchema = z
   .object({
-    ClientParameters: UpdateConnectionOAuthClientRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>UpdateConnectionOAuthClientRequestParameters</code> object that contains the client parameters to use for the connection when OAuth is specified as the authorization type.',
-        }),
-    ).exactOptional(),
-    AuthorizationEndpoint: HttpsEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL to the authorization endpoint when OAuth is specified as the authorization type.',
-        }),
-    ).exactOptional(),
-    HttpMethod: ConnectionOAuthHttpMethodSchema.and(
-      z.any().openapi({ description: 'The method used to connect to the HTTP endpoint.' }),
-    ).exactOptional(),
-    OAuthHttpParameters: ConnectionHttpParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The additional HTTP parameters used for the OAuth authorization request.',
-        }),
-    ).exactOptional(),
+    ClientParameters: UpdateConnectionOAuthClientRequestParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>UpdateConnectionOAuthClientRequestParameters</code> object that contains the client parameters to use for the connection when OAuth is specified as the authorization type.',
+    }),
+    AuthorizationEndpoint: HttpsEndpointSchema.exactOptional().openapi({
+      description:
+        'The URL to the authorization endpoint when OAuth is specified as the authorization type.',
+    }),
+    HttpMethod: ConnectionOAuthHttpMethodSchema.exactOptional().openapi({
+      description: 'The method used to connect to the HTTP endpoint.',
+    }),
+    OAuthHttpParameters: ConnectionHttpParametersSchema.exactOptional().openapi({
+      description: 'The additional HTTP parameters used for the OAuth authorization request.',
+    }),
   })
   .openapi({
     description: 'Contains the OAuth request parameters to use for the connection.',
@@ -4850,16 +3580,12 @@ const UpdateConnectionOAuthRequestParametersSchema = z
 
 const UpdateConnectionApiKeyAuthRequestParametersSchema = z
   .object({
-    ApiKeyName: AuthHeaderParametersSchema.and(
-      z.any().openapi({ description: 'The name of the API key to use for authorization.' }),
-    ).exactOptional(),
-    ApiKeyValue: AuthHeaderParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value associated with teh API key to use for authorization.',
-        }),
-    ).exactOptional(),
+    ApiKeyName: AuthHeaderParametersSchema.exactOptional().openapi({
+      description: 'The name of the API key to use for authorization.',
+    }),
+    ApiKeyValue: AuthHeaderParametersSchema.exactOptional().openapi({
+      description: 'The value associated with teh API key to use for authorization.',
+    }),
   })
   .openapi({
     description: 'Contains the API key authorization parameters to use to update the connection.',
@@ -4869,38 +3595,24 @@ const UpdateConnectionApiKeyAuthRequestParametersSchema = z
 
 const UpdateConnectionAuthRequestParametersSchema = z
   .object({
-    BasicAuthParameters: UpdateConnectionBasicAuthRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>UpdateConnectionBasicAuthRequestParameters</code> object that contains the authorization parameters for Basic authorization.',
-        }),
-    ).exactOptional(),
-    OAuthParameters: UpdateConnectionOAuthRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>UpdateConnectionOAuthRequestParameters</code> object that contains the authorization parameters for OAuth authorization.',
-        }),
-    ).exactOptional(),
-    ApiKeyAuthParameters: UpdateConnectionApiKeyAuthRequestParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>UpdateConnectionApiKeyAuthRequestParameters</code> object that contains the authorization parameters for API key authorization.',
-        }),
-    ).exactOptional(),
-    InvocationHttpParameters: ConnectionHttpParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ConnectionHttpParameters</code> object that contains the additional parameters to use for the connection.',
-        }),
-    ).exactOptional(),
+    BasicAuthParameters: UpdateConnectionBasicAuthRequestParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>UpdateConnectionBasicAuthRequestParameters</code> object that contains the authorization parameters for Basic authorization.',
+    }),
+    OAuthParameters: UpdateConnectionOAuthRequestParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>UpdateConnectionOAuthRequestParameters</code> object that contains the authorization parameters for OAuth authorization.',
+    }),
+    ApiKeyAuthParameters: UpdateConnectionApiKeyAuthRequestParametersSchema.exactOptional().openapi(
+      {
+        description:
+          'A <code>UpdateConnectionApiKeyAuthRequestParameters</code> object that contains the authorization parameters for API key authorization.',
+      },
+    ),
+    InvocationHttpParameters: ConnectionHttpParametersSchema.exactOptional().openapi({
+      description:
+        'A <code>ConnectionHttpParameters</code> object that contains the additional parameters to use for the connection.',
+    }),
   })
   .openapi({
     description: 'Contains the additional parameters to use for the connection.',
@@ -4910,103 +3622,76 @@ const UpdateConnectionAuthRequestParametersSchema = z
 
 const UpdateConnectionRequestSchema = z
   .object({
-    Name: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection to update.' }),
-    ),
-    Description: ConnectionDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the connection.' }),
-    ).exactOptional(),
-    AuthorizationType: ConnectionAuthorizationTypeSchema.and(
-      z.any().openapi({ description: 'The type of authorization to use for the connection.' }),
-    ).exactOptional(),
-    AuthParameters: UpdateConnectionAuthRequestParametersSchema.and(
-      z.any().openapi({ description: 'The authorization parameters to use for the connection.' }),
-    ).exactOptional(),
+    Name: ConnectionNameSchema.openapi({ description: 'The name of the connection to update.' }),
+    Description: ConnectionDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the connection.',
+    }),
+    AuthorizationType: ConnectionAuthorizationTypeSchema.exactOptional().openapi({
+      description: 'The type of authorization to use for the connection.',
+    }),
+    AuthParameters: UpdateConnectionAuthRequestParametersSchema.exactOptional().openapi({
+      description: 'The authorization parameters to use for the connection.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateConnectionRequest' })
   .openapi('UpdateConnectionRequest')
 
 const UpdateEndpointResponseSchema = z
   .object({
-    Name: EndpointNameSchema.and(
-      z.any().openapi({ description: 'The name of the endpoint you updated in this request.' }),
-    ).exactOptional(),
-    Arn: EndpointArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the endpoint you updated in this request.' }),
-    ).exactOptional(),
-    RoutingConfig: RoutingConfigSchema.and(
-      z.any().openapi({ description: 'The routing configuration you updated in this request.' }),
-    ).exactOptional(),
-    ReplicationConfig: ReplicationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether event replication was enabled or disabled for the endpoint you updated in this request.',
-        }),
-    ).exactOptional(),
-    EventBuses: EndpointEventBusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event buses used for replication for the endpoint you updated in this request.',
-        }),
-    ).exactOptional(),
-    RoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role used by event replication for the endpoint you updated in this request.',
-        }),
-    ).exactOptional(),
-    EndpointId: EndpointIdSchema.and(
-      z.any().openapi({ description: 'The ID of the endpoint you updated in this request.' }),
-    ).exactOptional(),
-    EndpointUrl: EndpointUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the endpoint you updated in this request.' }),
-    ).exactOptional(),
-    State: EndpointStateSchema.and(
-      z.any().openapi({ description: 'The state of the endpoint you updated in this request.' }),
-    ).exactOptional(),
+    Name: EndpointNameSchema.exactOptional().openapi({
+      description: 'The name of the endpoint you updated in this request.',
+    }),
+    Arn: EndpointArnSchema.exactOptional().openapi({
+      description: 'The ARN of the endpoint you updated in this request.',
+    }),
+    RoutingConfig: RoutingConfigSchema.exactOptional().openapi({
+      description: 'The routing configuration you updated in this request.',
+    }),
+    ReplicationConfig: ReplicationConfigSchema.exactOptional().openapi({
+      description:
+        'Whether event replication was enabled or disabled for the endpoint you updated in this request.',
+    }),
+    EventBuses: EndpointEventBusListSchema.exactOptional().openapi({
+      description:
+        'The event buses used for replication for the endpoint you updated in this request.',
+    }),
+    RoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role used by event replication for the endpoint you updated in this request.',
+    }),
+    EndpointId: EndpointIdSchema.exactOptional().openapi({
+      description: 'The ID of the endpoint you updated in this request.',
+    }),
+    EndpointUrl: EndpointUrlSchema.exactOptional().openapi({
+      description: 'The URL of the endpoint you updated in this request.',
+    }),
+    State: EndpointStateSchema.exactOptional().openapi({
+      description: 'The state of the endpoint you updated in this request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateEndpointResponse')
 
 const UpdateEndpointRequestSchema = z
   .object({
-    Name: EndpointNameSchema.and(
-      z.any().openapi({ description: 'The name of the endpoint you want to update.' }),
-    ),
-    Description: EndpointDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the endpoint.' }),
-    ).exactOptional(),
-    RoutingConfig: RoutingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configure the routing policy, including the health check and secondary Region.',
-        }),
-    ).exactOptional(),
-    ReplicationConfig: ReplicationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether event replication was enabled or disabled by this request.',
-        }),
-    ).exactOptional(),
-    EventBuses: EndpointEventBusListSchema.and(
-      z.any().openapi({ description: 'Define event buses used for replication.' }),
-    ).exactOptional(),
-    RoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the role used by event replication for this request.',
-        }),
-    ).exactOptional(),
+    Name: EndpointNameSchema.openapi({
+      description: 'The name of the endpoint you want to update.',
+    }),
+    Description: EndpointDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the endpoint.',
+    }),
+    RoutingConfig: RoutingConfigSchema.exactOptional().openapi({
+      description: 'Configure the routing policy, including the health check and secondary Region.',
+    }),
+    ReplicationConfig: ReplicationConfigSchema.exactOptional().openapi({
+      description: 'Whether event replication was enabled or disabled by this request.',
+    }),
+    EventBuses: EndpointEventBusListSchema.exactOptional().openapi({
+      description: 'Define event buses used for replication.',
+    }),
+    RoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role used by event replication for this request.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateEndpointRequest' })
   .openapi('UpdateEndpointRequest')

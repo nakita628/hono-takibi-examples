@@ -1,164 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const UserSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A plain text displayable name for this user.' }),
-    emailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The email address of the user. This may not be present in certain contexts if the user has not made their email address visible to the requester.',
-      }),
-    kind: z
-      .string()
-      .default('drive#user')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "drive#user".',
-      }),
-    me: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this user is the requesting user.' }),
-    permissionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The user's ID as visible in Permission resources." }),
-    photoLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "A link to the user's profile photo, if available." }),
-  })
-  .openapi({ description: 'Information about a Drive user.', required: [] })
-  .openapi('User')
-
-const AboutSchema = z
-  .object({
-    appInstalled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the user has installed the requesting app.' }),
-    canCreateDrives: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the user can create shared drives.' }),
-    canCreateTeamDrives: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Deprecated - use canCreateDrives instead.' }),
-    driveThemes: z
-      .array(
-        z
-          .object({
-            backgroundImageLink: z
-              .string()
-              .exactOptional()
-              .openapi({ description: "A link to this theme's background image." }),
-            colorRgb: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The color of this theme as an RGB hex string.' }),
-            id: z.string().exactOptional().openapi({ description: 'The ID of the theme.' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'A list of themes that are supported for shared drives.' }),
-    exportFormats: z
-      .record(z.string(), z.array(z.string()))
-      .exactOptional()
-      .openapi({
-        description: 'A map of source MIME type to possible targets for all supported exports.',
-      }),
-    folderColorPalette: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The currently supported folder colors as RGB hex strings.' }),
-    importFormats: z
-      .record(z.string(), z.array(z.string()))
-      .exactOptional()
-      .openapi({
-        description: 'A map of source MIME type to possible targets for all supported imports.',
-      }),
-    kind: z
-      .string()
-      .default('drive#about')
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "drive#about".',
-      }),
-    maxImportSizes: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'A map of maximum import sizes by MIME type, in bytes.' }),
-    maxUploadSize: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The maximum upload size in bytes.' }),
-    storageQuota: z
-      .object({
-        limit: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The usage limit, if applicable. This will not be present if the user has unlimited storage.',
-          }),
-        usage: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The total usage across all services.' }),
-        usageInDrive: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The usage by all files in Google Drive.' }),
-        usageInDriveTrash: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The usage by trashed files in Google Drive.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: "The user's storage quota limits and usage. All fields are measured in bytes.",
-        required: [],
-      }),
-    teamDriveThemes: z
-      .array(
-        z
-          .object({
-            backgroundImageLink: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Deprecated - use driveThemes/backgroundImageLink instead.',
-              }),
-            colorRgb: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Deprecated - use driveThemes/colorRgb instead.' }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Deprecated - use driveThemes/id instead.' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Deprecated - use driveThemes instead.' }),
-    user: UserSchema.exactOptional().openapi({ description: 'The authenticated user.' }),
-  })
-  .openapi({
-    description: "Information about the user, the user's Drive, and system capabilities.",
-    required: [],
-  })
-  .openapi('About')
-
 const DriveSchema = z
   .object({
     backgroundImageFile: z
@@ -434,6 +275,43 @@ const DriveSchema = z
   .openapi({ description: 'Representation of a shared drive.', required: [] })
   .openapi('Drive')
 
+const UserSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A plain text displayable name for this user.' }),
+    emailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address of the user. This may not be present in certain contexts if the user has not made their email address visible to the requester.',
+      }),
+    kind: z
+      .string()
+      .default('drive#user')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "drive#user".',
+      }),
+    me: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this user is the requesting user.' }),
+    permissionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The user's ID as visible in Permission resources." }),
+    photoLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A link to the user's profile photo, if available." }),
+  })
+  .openapi({ description: 'Information about a Drive user.', required: [] })
+  .openapi('User')
+
 const ContentRestrictionSchema = z
   .object({
     readOnly: z
@@ -701,7 +579,133 @@ const PermissionSchema = z
   })
   .openapi('Permission')
 
-const FileSchema = z
+type FileType = {
+  appProperties?: { [key: string]: string }
+  capabilities?: {
+    canAcceptOwnership?: boolean
+    canAddChildren?: boolean
+    canAddFolderFromAnotherDrive?: boolean
+    canAddMyDriveParent?: boolean
+    canChangeCopyRequiresWriterPermission?: boolean
+    canChangeSecurityUpdateEnabled?: boolean
+    canChangeViewersCanCopyContent?: boolean
+    canComment?: boolean
+    canCopy?: boolean
+    canDelete?: boolean
+    canDeleteChildren?: boolean
+    canDownload?: boolean
+    canEdit?: boolean
+    canListChildren?: boolean
+    canModifyContent?: boolean
+    canModifyContentRestriction?: boolean
+    canModifyLabels?: boolean
+    canMoveChildrenOutOfDrive?: boolean
+    canMoveChildrenOutOfTeamDrive?: boolean
+    canMoveChildrenWithinDrive?: boolean
+    canMoveChildrenWithinTeamDrive?: boolean
+    canMoveItemIntoTeamDrive?: boolean
+    canMoveItemOutOfDrive?: boolean
+    canMoveItemOutOfTeamDrive?: boolean
+    canMoveItemWithinDrive?: boolean
+    canMoveItemWithinTeamDrive?: boolean
+    canMoveTeamDriveItem?: boolean
+    canReadDrive?: boolean
+    canReadLabels?: boolean
+    canReadRevisions?: boolean
+    canReadTeamDrive?: boolean
+    canRemoveChildren?: boolean
+    canRemoveMyDriveParent?: boolean
+    canRename?: boolean
+    canShare?: boolean
+    canTrash?: boolean
+    canTrashChildren?: boolean
+    canUntrash?: boolean
+  }
+  contentHints?: { indexableText?: string; thumbnail?: { image?: string; mimeType?: string } }
+  contentRestrictions?: z.infer<typeof ContentRestrictionSchema>[]
+  copyRequiresWriterPermission?: boolean
+  createdTime?: string
+  description?: string
+  driveId?: string
+  explicitlyTrashed?: boolean
+  exportLinks?: { [key: string]: string }
+  fileExtension?: string
+  folderColorRgb?: string
+  fullFileExtension?: string
+  hasAugmentedPermissions?: boolean
+  hasThumbnail?: boolean
+  headRevisionId?: string
+  iconLink?: string
+  id?: string
+  imageMediaMetadata?: {
+    aperture?: number
+    cameraMake?: string
+    cameraModel?: string
+    colorSpace?: string
+    exposureBias?: number
+    exposureMode?: string
+    exposureTime?: number
+    flashUsed?: boolean
+    focalLength?: number
+    height?: number
+    isoSpeed?: number
+    lens?: string
+    location?: { altitude?: number; latitude?: number; longitude?: number }
+    maxApertureValue?: number
+    meteringMode?: string
+    rotation?: number
+    sensor?: string
+    subjectDistance?: number
+    time?: string
+    whiteBalance?: string
+    width?: number
+  }
+  isAppAuthorized?: boolean
+  kind?: string
+  labelInfo?: { labels?: z.infer<typeof LabelSchema>[] }
+  lastModifyingUser?: z.infer<typeof UserSchema>
+  linkShareMetadata?: { securityUpdateEligible?: boolean; securityUpdateEnabled?: boolean }
+  md5Checksum?: string
+  mimeType?: string
+  modifiedByMe?: boolean
+  modifiedByMeTime?: string
+  modifiedTime?: string
+  name?: string
+  originalFilename?: string
+  ownedByMe?: boolean
+  owners?: z.infer<typeof UserSchema>[]
+  parents?: string[]
+  permissionIds?: string[]
+  permissions?: z.infer<typeof PermissionSchema>[]
+  properties?: { [key: string]: string }
+  quotaBytesUsed?: string
+  resourceKey?: string
+  sha1Checksum?: string
+  sha256Checksum?: string
+  shared?: boolean
+  sharedWithMeTime?: string
+  sharingUser?: z.infer<typeof UserSchema>
+  shortcutDetails?: { targetId?: string; targetMimeType?: string; targetResourceKey?: string }
+  size?: string
+  spaces?: string[]
+  starred?: boolean
+  teamDriveId?: string
+  thumbnailLink?: string
+  thumbnailVersion?: string
+  trashed?: boolean
+  trashedTime?: string
+  trashingUser?: z.infer<typeof UserSchema>
+  version?: string
+  videoMediaMetadata?: { durationMillis?: string; height?: number; width?: number }
+  viewedByMe?: boolean
+  viewedByMeTime?: string
+  viewersCanCopyContent?: boolean
+  webContentLink?: string
+  webViewLink?: string
+  writersCanShare?: boolean
+}
+
+const FileSchema: z.ZodType<FileType> = z
   .object({
     appProperties: z
       .record(z.string(), z.string())
@@ -1759,7 +1763,21 @@ const TeamDriveSchema = z
   .openapi({ description: 'Deprecated: use the drive collection instead.', required: [] })
   .openapi('TeamDrive')
 
-const ChangeSchema = z
+type ChangeType = {
+  changeType?: string
+  drive?: z.infer<typeof DriveSchema>
+  driveId?: string
+  file?: z.infer<typeof FileSchema>
+  fileId?: string
+  kind?: string
+  removed?: boolean
+  teamDrive?: z.infer<typeof TeamDriveSchema>
+  teamDriveId?: string
+  time?: string
+  type?: string
+}
+
+const ChangeSchema: z.ZodType<ChangeType> = z
   .object({
     changeType: z
       .string()
@@ -1815,7 +1833,143 @@ const ChangeSchema = z
   .openapi({ description: 'A change to a file or shared drive.', required: [] })
   .openapi('Change')
 
-const ChangeListSchema = z
+type ChangeListType = {
+  changes?: z.infer<typeof ChangeSchema>[]
+  kind?: string
+  newStartPageToken?: string
+  nextPageToken?: string
+}
+
+type FileListType = {
+  files?: z.infer<typeof FileSchema>[]
+  incompleteSearch?: boolean
+  kind?: string
+  nextPageToken?: string
+}
+
+const AboutSchema = z
+  .object({
+    appInstalled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the user has installed the requesting app.' }),
+    canCreateDrives: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the user can create shared drives.' }),
+    canCreateTeamDrives: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Deprecated - use canCreateDrives instead.' }),
+    driveThemes: z
+      .array(
+        z
+          .object({
+            backgroundImageLink: z
+              .string()
+              .exactOptional()
+              .openapi({ description: "A link to this theme's background image." }),
+            colorRgb: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The color of this theme as an RGB hex string.' }),
+            id: z.string().exactOptional().openapi({ description: 'The ID of the theme.' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'A list of themes that are supported for shared drives.' }),
+    exportFormats: z
+      .record(z.string(), z.array(z.string()))
+      .exactOptional()
+      .openapi({
+        description: 'A map of source MIME type to possible targets for all supported exports.',
+      }),
+    folderColorPalette: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The currently supported folder colors as RGB hex strings.' }),
+    importFormats: z
+      .record(z.string(), z.array(z.string()))
+      .exactOptional()
+      .openapi({
+        description: 'A map of source MIME type to possible targets for all supported imports.',
+      }),
+    kind: z
+      .string()
+      .default('drive#about')
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "drive#about".',
+      }),
+    maxImportSizes: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'A map of maximum import sizes by MIME type, in bytes.' }),
+    maxUploadSize: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The maximum upload size in bytes.' }),
+    storageQuota: z
+      .object({
+        limit: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The usage limit, if applicable. This will not be present if the user has unlimited storage.',
+          }),
+        usage: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The total usage across all services.' }),
+        usageInDrive: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The usage by all files in Google Drive.' }),
+        usageInDriveTrash: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The usage by trashed files in Google Drive.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: "The user's storage quota limits and usage. All fields are measured in bytes.",
+        required: [],
+      }),
+    teamDriveThemes: z
+      .array(
+        z
+          .object({
+            backgroundImageLink: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'Deprecated - use driveThemes/backgroundImageLink instead.',
+              }),
+            colorRgb: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Deprecated - use driveThemes/colorRgb instead.' }),
+            id: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'Deprecated - use driveThemes/id instead.' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Deprecated - use driveThemes instead.' }),
+    user: UserSchema.exactOptional().openapi({ description: 'The authenticated user.' }),
+  })
+  .openapi({
+    description: "Information about the user, the user's Drive, and system capabilities.",
+    required: [],
+  })
+  .openapi('About')
+
+const ChangeListSchema: z.ZodType<ChangeListType> = z
   .object({
     changes: z
       .array(ChangeSchema)
@@ -2106,7 +2260,7 @@ const DriveListSchema = z
   .openapi({ description: 'A list of shared drives.', required: [] })
   .openapi('DriveList')
 
-const FileListSchema = z
+const FileListSchema: z.ZodType<FileListType> = z
   .object({
     files: z
       .array(FileSchema)

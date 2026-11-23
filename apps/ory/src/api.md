@@ -14627,7 +14627,7 @@ An [identity](https://www.ory.com/docs/kratos/concepts/identity-user-model) repr
 |schema_id|string|true|none|SchemaID is the ID of the JSON Schema to be used for validating the identity's traits.|
 |schema_url|string|true|none|SchemaURL is the URL of the endpoint where the identity's traits schema can be fetched from.<br><br>format: url|
 |state|string|false|none|State is the identity's state.<br><br>This value has currently no effect.<br>active StateActive<br>inactive StateInactive|
-|state_changed_at|[nullTime](#schemanulltime-1)|false|none|none|
+|state_changed_at|[nullTime2](#schemanulltime2)|false|none|none|
 |traits|[identityTraits](#schemaidentitytraits)|true|none|Traits represent an identity's traits. The identity is able to create, modify, and delete traits<br>in a self-service manner. The input will always be validated against the JSON Schema defined<br>in `schema_url`.|
 |updated_at|string(date-time)|false|none|UpdatedAt is a helper struct field for gobuffalo.pop.|
 |verifiable_addresses|[[verifiableIdentityAddress](#schemaverifiableidentityaddress)]|false|none|VerifiableAddresses contains all the addresses that can be verified by the user.|
@@ -14766,7 +14766,7 @@ Recovery codes can be used once and are invalidated after use.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |code|string|false|none|A recovery code|
-|used_at|[nullTime](#schemanulltime-1)|false|none|none|
+|used_at|[nullTime2](#schemanulltime2)|false|none|none|
 
 <h2 id="tocS_identityCredentialsOidc">identityCredentialsOidc</h2>
 <!-- backwards compatibility -->
@@ -16838,12 +16838,12 @@ null
 
 NullJSONRawMessage represents a json.RawMessage that works well with JSON, SQL, and Swagger and is NULLable-
 
-<h2 id="tocS_nullTime">nullTime</h2>
+<h2 id="tocS_nullTime2">nullTime2</h2>
 <!-- backwards compatibility -->
-<a id="schemanulltime-1"></a>
-<a id="schema_nullTime"></a>
-<a id="tocSnulltime-1"></a>
-<a id="tocsnulltime-1"></a>
+<a id="schemanulltime2"></a>
+<a id="schema_nullTime2"></a>
+<a id="tocSnulltime2"></a>
+<a id="tocsnulltime2"></a>
 
 ```json
 "1970-01-01T00:00:00Z"
@@ -20345,7 +20345,7 @@ VerifiableAddress is an identity's verifiable address
 |updated_at|string(date-time)|false|none|When this entry was last updated|
 |value|string|true|none|The address value<br><br>example foo@user.com|
 |verified|boolean|true|none|Indicates if the address has already been verified|
-|verified_at|[nullTime](#schemanulltime-1)|false|none|none|
+|verified_at|[nullTime2](#schemanulltime2)|false|none|none|
 |via|string|true|none|The delivery method|
 
 #### Enumerated Values

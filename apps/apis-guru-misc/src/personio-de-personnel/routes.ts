@@ -11,7 +11,7 @@ type AbsenceEntitlementType = {
 type AttributeType = { label: string; value: { [key: string]: unknown } }
 
 const AttributeSchema: z.ZodType<AttributeType> = z
-  .object({ label: z.string(), value: z.object({}) })
+  .object({ label: z.string(), value: z.looseObject({}) })
   .openapi({ required: ['label', 'value'] })
   .openapi('Attribute')
 
@@ -218,14 +218,64 @@ type EmployeeType = {
   type: string
 }
 
-type SupervisorType = z.infer<typeof AttributeSchema>
-
-const AbsencePeriodResponseSchema = z.object({}).openapi('AbsencePeriodResponse')
-
 const ResponseSchema = z
-  .object({ data: z.object({}), success: z.boolean() })
+  .object({ data: z.looseObject({}), success: z.boolean() })
   .openapi({ required: ['success', 'data'], title: 'Default response object' })
   .openapi('Response')
+
+const EmployeeSchema: z.ZodType<EmployeeType> = z
+  .lazy(() =>
+    z
+      .object({
+        attributes: z.array(
+          z
+            .object({
+              absence_entitlement: AbsenceEntitlementSchema.exactOptional(),
+              contract_end_date: AttributeSchema.exactOptional(),
+              cost_centers: CostCentersSchema.exactOptional(),
+              created_at: AttributeSchema.exactOptional(),
+              department: DepartmentSchema.exactOptional(),
+              email: AttributeSchema.exactOptional(),
+              employment_type: AttributeSchema.exactOptional(),
+              first_name: AttributeSchema.exactOptional(),
+              fix_salary: AttributeSchema.exactOptional(),
+              gender: AttributeSchema.exactOptional(),
+              hire_date: AttributeSchema.exactOptional(),
+              holiday_calendar: HolidayCalendarSchema.exactOptional(),
+              hourly_salary: AttributeSchema.exactOptional(),
+              id: AttributeSchema.exactOptional(),
+              last_name: AttributeSchema.exactOptional(),
+              office: OfficeSchema.exactOptional(),
+              position: AttributeSchema.exactOptional(),
+              probation_period_end: AttributeSchema.exactOptional(),
+              status: AttributeSchema.exactOptional(),
+              supervisor: SupervisorSchema.exactOptional(),
+              termination_date: AttributeSchema.exactOptional(),
+              termination_reason: AttributeSchema.exactOptional(),
+              termination_type: AttributeSchema.exactOptional(),
+              vacation_day_balance: AttributeSchema.exactOptional(),
+              weekly_working_hours: AttributeSchema.exactOptional(),
+              work_schedule: WorkScheduleSchema.exactOptional(),
+            })
+            .openapi({ required: [] }),
+        ),
+        type: z.string(),
+      })
+      .openapi({ required: ['type', 'attributes'] }),
+  )
+  .openapi('Employee')
+
+type EmployeeResponseType = z.infer<typeof ResponseSchema> & {
+  data?: z.infer<typeof EmployeeSchema>
+}
+
+type EmployeesResponseType = z.infer<typeof ResponseSchema> & {
+  data?: z.infer<typeof EmployeeSchema>[]
+}
+
+type SupervisorType = z.infer<typeof AttributeSchema>
+
+const AbsencePeriodResponseSchema = z.looseObject({}).openapi('AbsencePeriodResponse')
 
 const AbsencePeriodsResponseSchema = ResponseSchema.and(
   z
@@ -458,55 +508,13 @@ const DetailedErrorResponseSchema = z
   .openapi({ required: ['success', 'error'], title: 'Default error response' })
   .openapi('DetailedErrorResponse')
 
-const EmployeeSchema: z.ZodType<EmployeeType> = z
-  .lazy(() =>
-    z
-      .object({
-        attributes: z.array(
-          z
-            .object({
-              absence_entitlement: AbsenceEntitlementSchema.exactOptional(),
-              contract_end_date: AttributeSchema.exactOptional(),
-              cost_centers: CostCentersSchema.exactOptional(),
-              created_at: AttributeSchema.exactOptional(),
-              department: DepartmentSchema.exactOptional(),
-              email: AttributeSchema.exactOptional(),
-              employment_type: AttributeSchema.exactOptional(),
-              first_name: AttributeSchema.exactOptional(),
-              fix_salary: AttributeSchema.exactOptional(),
-              gender: AttributeSchema.exactOptional(),
-              hire_date: AttributeSchema.exactOptional(),
-              holiday_calendar: HolidayCalendarSchema.exactOptional(),
-              hourly_salary: AttributeSchema.exactOptional(),
-              id: AttributeSchema.exactOptional(),
-              last_name: AttributeSchema.exactOptional(),
-              office: OfficeSchema.exactOptional(),
-              position: AttributeSchema.exactOptional(),
-              probation_period_end: AttributeSchema.exactOptional(),
-              status: AttributeSchema.exactOptional(),
-              supervisor: SupervisorSchema.exactOptional(),
-              termination_date: AttributeSchema.exactOptional(),
-              termination_reason: AttributeSchema.exactOptional(),
-              termination_type: AttributeSchema.exactOptional(),
-              vacation_day_balance: AttributeSchema.exactOptional(),
-              weekly_working_hours: AttributeSchema.exactOptional(),
-              work_schedule: WorkScheduleSchema.exactOptional(),
-            })
-            .openapi({ required: [] }),
-        ),
-        type: z.string(),
-      })
-      .openapi({ required: ['type', 'attributes'] }),
-  )
-  .openapi('Employee')
-
-const EmployeeResponseSchema = ResponseSchema.and(
+const EmployeeResponseSchema: z.ZodType<EmployeeResponseType> = ResponseSchema.and(
   z.object({ data: EmployeeSchema.exactOptional() }).openapi({ required: [] }),
 )
   .openapi({ title: 'Employee' })
   .openapi('EmployeeResponse')
 
-const EmployeesResponseSchema = ResponseSchema.and(
+const EmployeesResponseSchema: z.ZodType<EmployeesResponseType> = ResponseSchema.and(
   z.object({ data: z.array(EmployeeSchema).exactOptional() }).openapi({ required: [] }),
 )
   .openapi({ title: 'List of Employees' })

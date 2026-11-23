@@ -326,7 +326,7 @@ const BucketOptionsSchema = z
   .openapi('BucketOptions')
 
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
 
@@ -591,7 +591,7 @@ const DeleteLinkRequestSchema = z
   .openapi('DeleteLinkRequest')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); } ',
@@ -2381,7 +2381,7 @@ const TailLogEntriesResponseSchema = z
   .openapi('TailLogEntriesResponse')
 
 const UndeleteBucketRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The parameters to UndeleteBucket.' })
   .openapi('UndeleteBucketRequest')
 
@@ -2431,7 +2431,7 @@ const WriteLogEntriesRequestSchema = z
   .openapi('WriteLogEntriesRequest')
 
 const WriteLogEntriesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Result returned from WriteLogEntries.' })
   .openapi('WriteLogEntriesResponse')
 

@@ -66,493 +66,20 @@ const ChatToolMessageSchema = z
   })
   .openapi('ChatToolMessage')
 
-type MessageType = z.infer<typeof ChatMessageSchema> | z.infer<typeof ChatToolMessageSchema>
-
-const ResponseFormatTypeSchema = z
-  .enum(['text', 'json_object'])
+const MessageSchema = z
+  .xor([ChatMessageSchema, ChatToolMessageSchema])
   .openapi({
-    'x-fern-audiences': ['public'],
-    description:
-      'Defaults to `"text"`.\n\nWhen set to `"json_object"`, the model\'s output will be a valid JSON Object.\n',
-    'x-fern-type-name': 'ResponseFormatType',
+    discriminator: {
+      propertyName: 'role',
+      mapping: {
+        CHATBOT: '#/components/schemas/ChatMessage',
+        SYSTEM: '#/components/schemas/ChatMessage',
+        USER: '#/components/schemas/ChatMessage',
+        TOOL: '#/components/schemas/ChatToolMessage',
+      },
+    },
+    'x-fern-type-name': 'Message',
   })
-  .openapi('ResponseFormatType')
-
-const ChatTextResponseFormatSchema = z
-  .object({ type: ResponseFormatTypeSchema })
-  .openapi({
-    'x-fern-audiences': ['public'],
-    title: 'Text Response',
-    required: ['type'],
-    'x-fern-type-name': 'ChatTextResponseFormat',
-  })
-  .openapi('ChatTextResponseFormat')
-
-const JSONResponseFormatSchema = z
-  .object({
-    type: ResponseFormatTypeSchema,
-    schema: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        'x-fern-availability': 'beta',
-        description:
-          'A JSON schema object that the output will adhere to. There are some restrictions we have on the schema, refer to [our guide](https://docs.cohere.com/docs/structured-outputs-json#schema-constraints) for more information.\nExample (required name and age object):\n```json\n{\n  "type": "object",\n  "properties": {\n    "name": {"type": "string"},\n    "age": {"type": "integer"}\n  },\n  "required": ["name", "age"]\n}\n```\n\n**Note**: This field must not be specified when the `type` is set to `"text"`.\n',
-        'x-fern-type-name': 'JSONResponseFormat-g7xopi',
-      }),
-  })
-  .openapi({
-    'x-fern-audiences': ['public'],
-    title: 'JSON Object Response',
-    required: ['type'],
-    'x-fern-type-name': 'JSONResponseFormat',
-  })
-  .openapi('JSONResponseFormat')
-
-type ResponseFormatType =
-  | z.infer<typeof ChatTextResponseFormatSchema>
-  | z.infer<typeof JSONResponseFormatSchema>
-
-const ChatTextContentSchema = z
-  .object({ type: z.literal('text'), text: z.string() })
-  .openapi({
-    description: 'Text content of the message.',
-    required: ['type', 'text'],
-    'x-fern-type-name': 'ChatTextContent',
-  })
-  .openapi('ChatTextContent')
-
-const ContentTypeSchema = z
-  .enum(['text', 'image_url'])
-  .openapi({
-    'x-fern-audiences': ['public'],
-    description: 'Type of message content\n',
-    'x-fern-type-name': 'ContentType',
-  })
-  .openapi('ContentType')
-
-const ImageUrlSchema = z
-  .object({
-    url: z
-      .string()
-      .openapi({ description: 'URL of an image. Can be either a base64 data URI or a web URL.\n' }),
-    detail: z
-      .enum(['auto', 'low', 'high'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Controls the level of detail in image processing. `"auto"` is the default and lets the system choose, `"low"` is faster but less detailed, and `"high"` preserves maximum detail. You can save tokens and speed up responses by using detail: `"low"`.\n',
-      }),
-  })
-  .openapi({ required: ['url'], 'x-fern-type-name': 'ImageUrl' })
-  .openapi('ImageUrl')
-
-const ImageContentSchema = z
-  .object({ type: ContentTypeSchema, image_url: ImageUrlSchema })
-  .openapi({
-    description: 'Image content of the message.',
-    required: ['type', 'image_url'],
-    'x-fern-type-name': 'ImageContent',
-  })
-  .openapi('ImageContent')
-
-type ContentType = z.infer<typeof ChatTextContentSchema> | z.infer<typeof ImageContentSchema>
-
-const ChatToolSourceSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the document' }),
-    tool_output: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ 'x-fern-type-name': 'ChatToolSource-z53ra6' }),
-  })
-  .openapi({ title: 'Tool Output', 'x-fern-type-name': 'ChatToolSource', required: [] })
-  .openapi('ChatToolSource')
-
-const ChatDocumentSourceSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier of the document' }),
-    document: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({ 'x-fern-type-name': 'ChatDocumentSource-w70a62' }),
-  })
-  .openapi({
-    description:
-      'A document source object containing the unique identifier of the document and the document itself.',
-    'x-fern-type-name': 'ChatDocumentSource',
-    required: [],
-  })
-  .openapi('ChatDocumentSource')
-
-type SourceType = z.infer<typeof ChatToolSourceSchema> | z.infer<typeof ChatDocumentSourceSchema>
-
-const ResponseFormatTypeV2Schema = z
-  .enum(['text', 'json_object'])
-  .openapi({
-    'x-fern-audiences': ['public'],
-    description:
-      'Defaults to `"text"`.\n\nWhen set to `"json_object"`, the model\'s output will be a valid JSON Object.\n',
-    'x-fern-type-name': 'ResponseFormatTypeV2',
-  })
-  .openapi('ResponseFormatTypeV2')
-
-const ChatTextResponseFormatV2Schema = z
-  .object({ type: ResponseFormatTypeV2Schema })
-  .openapi({
-    'x-fern-audiences': ['public'],
-    required: ['type'],
-    'x-fern-type-name': 'ChatTextResponseFormatV2',
-  })
-  .openapi('ChatTextResponseFormatV2')
-
-const JsonResponseFormatV2Schema = z
-  .object({
-    type: ResponseFormatTypeV2Schema,
-    json_schema: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description:
-          'A [JSON schema](https://json-schema.org/overview/what-is-jsonschema) object that the output will adhere to. There are some restrictions we have on the schema, refer to [our guide](https://docs.cohere.com/docs/structured-outputs-json#schema-constraints) for more information.\nExample (required name and age object):\n```json\n{\n  "type": "object",\n  "properties": {\n    "name": {"type": "string"},\n    "age": {"type": "integer"}\n  },\n  "required": ["name", "age"]\n}\n```\n\n**Note**: This field must not be specified when the `type` is set to `"text"`.\n',
-        'x-fern-type-name': 'JsonResponseFormatV2-uu9wid',
-      }),
-  })
-  .openapi({
-    'x-fern-audiences': ['public'],
-    required: ['type'],
-    'x-fern-type-name': 'JsonResponseFormatV2',
-  })
-  .openapi('JsonResponseFormatV2')
-
-type ResponseFormatV2Type =
-  | z.infer<typeof ChatTextResponseFormatV2Schema>
-  | z.infer<typeof JsonResponseFormatV2Schema>
-
-const SingleGenerationSchema = z
-  .object({
-    id: z.string().openapi({ 'x-fern-audiences': ['public'] }),
-    text: z.string().openapi({ 'x-fern-audiences': ['public'] }),
-    index: z
-      .int()
-      .exactOptional()
-      .openapi({
-        'x-fern-audiences': ['public'],
-        description:
-          'Refers to the nth generation. Only present when `num_generations` is greater than zero.',
-      }),
-    likelihood: z
-      .number()
-      .exactOptional()
-      .openapi({ 'x-fern-audiences': ['public'] }),
-    token_likelihoods: z
-      .array(
-        z
-          .object({
-            token: z.string().openapi({ 'x-fern-audiences': ['public'] }),
-            likelihood: z.number().openapi({ 'x-fern-audiences': ['public'] }),
-          })
-          .openapi({
-            'x-fern-audiences': ['public'],
-            required: ['id', 'token', 'likelihood'],
-            'x-fern-type-name': 'SingleGenerationTokenLikelihoodsItem',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        'x-fern-audiences': ['public'],
-        description:
-          "Only returned if `return_likelihoods` is set to `GENERATION` or `ALL`. The likelihood refers to the average log-likelihood of the entire specified string, which is useful for [evaluating the performance of your model](likelihood-eval), especially if you've created a [custom model](https://docs.cohere.com/docs/training-custom-models). Individual token likelihoods provide the log-likelihood of each token. The first token will not have a likelihood.",
-      }),
-  })
-  .openapi({ required: ['text', 'id'], 'x-fern-type-name': 'SingleGeneration' })
-  .openapi('SingleGeneration')
-
-const ApiMetaSchema = z
-  .object({
-    api_version: z
-      .object({
-        version: z.string().openapi({ 'x-fern-audiences': ['public'] }),
-        is_deprecated: z
-          .boolean()
-          .exactOptional()
-          .openapi({ 'x-fern-audiences': ['public'] }),
-        is_experimental: z
-          .boolean()
-          .exactOptional()
-          .openapi({ 'x-fern-audiences': ['public'] }),
-      })
-      .exactOptional()
-      .openapi({
-        'x-fern-audiences': ['public'],
-        required: ['version'],
-        'x-fern-type-name': 'ApiMetaApiVersion',
-      }),
-    billed_units: z
-      .object({
-        images: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of billed images.\n',
-          }),
-        input_tokens: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of billed input tokens.\n',
-          }),
-        image_tokens: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of billed image tokens.\n',
-          }),
-        output_tokens: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of billed output tokens.\n',
-          }),
-        search_units: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of billed search units.\n',
-          }),
-        classifications: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of billed classifications units.\n',
-          }),
-        pages: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of billed pages parsed.\n',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        'x-fern-audiences': ['public'],
-        'x-fern-type-name': 'ApiMetaBilledUnits',
-        required: [],
-      }),
-    tokens: z
-      .object({
-        input_tokens: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of tokens used as input to the model.\n',
-          }),
-        output_tokens: z
-          .number()
-          .exactOptional()
-          .openapi({
-            'x-fern-audiences': ['public'],
-            description: 'The number of tokens produced by the model.\n',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        'x-fern-audiences': ['public'],
-        'x-fern-type-name': 'ApiMetaTokens',
-        required: [],
-      }),
-    cached_tokens: z
-      .number()
-      .exactOptional()
-      .openapi({
-        'x-fern-audiences': ['public'],
-        description: 'The number of prompt tokens that hit the inference cache.\n',
-      }),
-    warnings: z
-      .array(z.string().openapi({ 'x-fern-audiences': ['public'] }))
-      .exactOptional()
-      .openapi({ 'x-fern-audiences': ['public'] }),
-  })
-  .openapi({ 'x-fern-type-name': 'ApiMeta', required: [] })
-  .openapi('ApiMeta')
-
-type GenerationType = {
-  id: string
-  prompt?: string
-  generations: z.infer<typeof SingleGenerationSchema>[]
-  meta?: z.infer<typeof ApiMetaSchema>
-}
-
-const RerankerDataMetricsSchema = z
-  .object({
-    num_train_queries: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The number of training queries.', 'x-fern-audiences': ['public'] }),
-    num_train_relevant_passages: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The sum of all relevant passages of valid training examples.',
-        'x-fern-audiences': ['public'],
-      }),
-    num_train_hard_negatives: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The sum of all hard negatives of valid training examples.',
-        'x-fern-audiences': ['public'],
-      }),
-    num_eval_queries: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The number of evaluation queries.',
-        'x-fern-audiences': ['public'],
-      }),
-    num_eval_relevant_passages: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The sum of all relevant passages of valid eval examples.',
-        'x-fern-audiences': ['public'],
-      }),
-    num_eval_hard_negatives: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The sum of all hard negatives of valid eval examples.',
-        'x-fern-audiences': ['public'],
-      }),
-  })
-  .openapi({ 'x-fern-type-name': 'RerankerDataMetrics', required: [] })
-  .openapi('RerankerDataMetrics')
-
-const ChatDataMetricsSchema = z
-  .object({
-    num_train_turns: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The sum of all turns of valid train examples.',
-        'x-fern-audiences': ['public'],
-      }),
-    num_eval_turns: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The sum of all turns of valid eval examples.',
-        'x-fern-audiences': ['public'],
-      }),
-    preamble: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The preamble of this dataset.', 'x-fern-audiences': ['public'] }),
-  })
-  .openapi({ 'x-fern-type-name': 'ChatDataMetrics', required: [] })
-  .openapi('ChatDataMetrics')
-
-const LabelMetricSchema = z
-  .object({
-    total_examples: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Total number of examples for this label',
-        'x-fern-audiences': ['public'],
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'value of the label', 'x-fern-audiences': ['public'] }),
-    samples: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'samples for this label', 'x-fern-audiences': ['public'] }),
-  })
-  .openapi({ 'x-fern-type-name': 'LabelMetric', required: [] })
-  .openapi('LabelMetric')
-
-const ClassifyDataMetricsSchema = z
-  .object({ label_metrics: z.array(LabelMetricSchema).exactOptional() })
-  .openapi({ 'x-fern-type-name': 'ClassifyDataMetrics', required: [] })
-  .openapi('ClassifyDataMetrics')
-
-const FinetuneDatasetMetricsSchema = z
-  .object({
-    trainable_token_count: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The number of tokens of valid examples that can be used for training.',
-        'x-fern-audiences': ['public'],
-      }),
-    total_examples: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The overall number of examples.', 'x-fern-audiences': ['public'] }),
-    train_examples: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The number of training examples.', 'x-fern-audiences': ['public'] }),
-    train_size_bytes: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The size in bytes of all training examples.',
-        'x-fern-audiences': ['public'],
-      }),
-    eval_examples: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Number of evaluation examples.', 'x-fern-audiences': ['public'] }),
-    eval_size_bytes: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'The size in bytes of all eval examples.',
-        'x-fern-audiences': ['public'],
-      }),
-    reranker_data_metrics: RerankerDataMetricsSchema.exactOptional(),
-    chat_data_metrics: ChatDataMetricsSchema.exactOptional(),
-    classify_data_metrics: ClassifyDataMetricsSchema.exactOptional(),
-  })
-  .openapi({ 'x-fern-type-name': 'FinetuneDatasetMetrics', required: [] })
-  .openapi('FinetuneDatasetMetrics')
-
-type MetricsType = { finetune_dataset_metrics?: z.infer<typeof FinetuneDatasetMetricsSchema> }
-
-const MessageSchema: z.ZodType<MessageType> = z
-  .lazy(() =>
-    z
-      .xor([ChatMessageSchema, ChatToolMessageSchema])
-      .openapi({
-        discriminator: {
-          propertyName: 'role',
-          mapping: {
-            CHATBOT: '#/components/schemas/ChatMessage',
-            SYSTEM: '#/components/schemas/ChatMessage',
-            USER: '#/components/schemas/ChatMessage',
-            TOOL: '#/components/schemas/ChatToolMessage',
-          },
-        },
-        'x-fern-type-name': 'Message',
-      }),
-  )
   .openapi('Message')
 
 const ChatConnectorSchema = z
@@ -581,7 +108,7 @@ const ChatConnectorSchema = z
         'x-fern-audiences': ['public'],
       }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -613,6 +140,7 @@ const ChatDocumentSchema = z
       'Relevant information that could be used by the model to generate a more accurate reply.\nThe contents of each document are generally short (under 300 words), and are passed in the form of a\ndictionary of strings. Some suggested keys are "text", "author", "date". Both the key name and the value will be\npassed to the model.\n',
     'x-fern-type': 'map<string, string>',
     'x-fern-type-name': 'ChatDocument',
+    required: [],
   })
   .openapi('ChatDocument')
 
@@ -665,23 +193,61 @@ const ToolSchema = z
   .openapi({ required: ['name', 'description'], 'x-fern-type-name': 'Tool' })
   .openapi('Tool')
 
-const ResponseFormatSchema: z.ZodType<ResponseFormatType> = z
-  .lazy(() =>
-    z
-      .xor([ChatTextResponseFormatSchema, JSONResponseFormatSchema])
+const ResponseFormatTypeSchema = z
+  .enum(['text', 'json_object'])
+  .openapi({
+    'x-fern-audiences': ['public'],
+    description:
+      'Defaults to `"text"`.\n\nWhen set to `"json_object"`, the model\'s output will be a valid JSON Object.\n',
+    'x-fern-type-name': 'ResponseFormatType',
+  })
+  .openapi('ResponseFormatType')
+
+const ChatTextResponseFormatSchema = z
+  .object({ type: ResponseFormatTypeSchema })
+  .openapi({
+    'x-fern-audiences': ['public'],
+    title: 'Text Response',
+    required: ['type'],
+    'x-fern-type-name': 'ChatTextResponseFormat',
+  })
+  .openapi('ChatTextResponseFormat')
+
+const JSONResponseFormatSchema = z
+  .object({
+    type: ResponseFormatTypeSchema,
+    schema: z
+      .looseObject({})
+      .exactOptional()
       .openapi({
+        'x-fern-availability': 'beta',
         description:
-          'Configuration for forcing the model output to adhere to the specified format. Supported on [Command R 03-2024](https://docs.cohere.com/docs/command-r), [Command R+ 04-2024](https://docs.cohere.com/docs/command-r-plus) and newer models.\n\nThe model can be forced into outputting JSON objects (with up to 5 levels of nesting) by setting `{ "type": "json_object" }`.\n\nA [JSON Schema](https://json-schema.org/) can optionally be provided, to ensure a specific structure.\n\n**Note**: When using  `{ "type": "json_object" }` your `message` should always explicitly instruct the model to generate a JSON (eg: _"Generate a JSON ..."_) . Otherwise the model may end up getting stuck generating an infinite stream of characters and eventually run out of context length.\n**Limitation**: The parameter is not supported in RAG mode (when any of `connectors`, `documents`, `tools`, `tool_results` are provided).\n',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            text: '#/components/schemas/ChatTextResponseFormat',
-            json_object: '#/components/schemas/JSONResponseFormat',
-          },
-        },
-        'x-fern-type-name': 'ResponseFormat',
+          'A JSON schema object that the output will adhere to. There are some restrictions we have on the schema, refer to [our guide](https://docs.cohere.com/docs/structured-outputs-json#schema-constraints) for more information.\nExample (required name and age object):\n```json\n{\n  "type": "object",\n  "properties": {\n    "name": {"type": "string"},\n    "age": {"type": "integer"}\n  },\n  "required": ["name", "age"]\n}\n```\n\n**Note**: This field must not be specified when the `type` is set to `"text"`.\n',
+        'x-fern-type-name': 'JSONResponseFormat-g7xopi',
       }),
-  )
+  })
+  .openapi({
+    'x-fern-audiences': ['public'],
+    title: 'JSON Object Response',
+    required: ['type'],
+    'x-fern-type-name': 'JSONResponseFormat',
+  })
+  .openapi('JSONResponseFormat')
+
+const ResponseFormatSchema = z
+  .xor([ChatTextResponseFormatSchema, JSONResponseFormatSchema])
+  .openapi({
+    description:
+      'Configuration for forcing the model output to adhere to the specified format. Supported on [Command R 03-2024](https://docs.cohere.com/docs/command-r), [Command R+ 04-2024](https://docs.cohere.com/docs/command-r-plus) and newer models.\n\nThe model can be forced into outputting JSON objects (with up to 5 levels of nesting) by setting `{ "type": "json_object" }`.\n\nA [JSON Schema](https://json-schema.org/) can optionally be provided, to ensure a specific structure.\n\n**Note**: When using  `{ "type": "json_object" }` your `message` should always explicitly instruct the model to generate a JSON (eg: _"Generate a JSON ..."_) . Otherwise the model may end up getting stuck generating an infinite stream of characters and eventually run out of context length.\n**Limitation**: The parameter is not supported in RAG mode (when any of `connectors`, `documents`, `tools`, `tool_results` are provided).\n',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        text: '#/components/schemas/ChatTextResponseFormat',
+        json_object: '#/components/schemas/JSONResponseFormat',
+      },
+    },
+    'x-fern-type-name': 'ResponseFormat',
+  })
   .openapi('ResponseFormat')
 
 const ChatCitationSchema = z
@@ -819,6 +385,129 @@ const FinishReasonSchema = z
   ])
   .openapi({ 'x-fern-type-name': 'FinishReason' })
   .openapi('FinishReason')
+
+const ApiMetaSchema = z
+  .object({
+    api_version: z
+      .object({
+        version: z.string().openapi({ 'x-fern-audiences': ['public'] }),
+        is_deprecated: z
+          .boolean()
+          .exactOptional()
+          .openapi({ 'x-fern-audiences': ['public'] }),
+        is_experimental: z
+          .boolean()
+          .exactOptional()
+          .openapi({ 'x-fern-audiences': ['public'] }),
+      })
+      .exactOptional()
+      .openapi({
+        'x-fern-audiences': ['public'],
+        required: ['version'],
+        'x-fern-type-name': 'ApiMetaApiVersion',
+      }),
+    billed_units: z
+      .object({
+        images: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of billed images.\n',
+          }),
+        input_tokens: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of billed input tokens.\n',
+          }),
+        image_tokens: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of billed image tokens.\n',
+          }),
+        text_tokens: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of billed text tokens.\n',
+          }),
+        output_tokens: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of billed output tokens.\n',
+          }),
+        search_units: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of billed search units.\n',
+          }),
+        classifications: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of billed classifications units.\n',
+          }),
+        pages: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of billed pages parsed.\n',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        'x-fern-audiences': ['public'],
+        'x-fern-type-name': 'ApiMetaBilledUnits',
+        required: [],
+      }),
+    tokens: z
+      .object({
+        input_tokens: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of tokens used as input to the model.\n',
+          }),
+        output_tokens: z
+          .number()
+          .exactOptional()
+          .openapi({
+            'x-fern-audiences': ['public'],
+            description: 'The number of tokens produced by the model.\n',
+          }),
+      })
+      .exactOptional()
+      .openapi({
+        'x-fern-audiences': ['public'],
+        'x-fern-type-name': 'ApiMetaTokens',
+        required: [],
+      }),
+    cached_tokens: z
+      .number()
+      .exactOptional()
+      .openapi({
+        'x-fern-audiences': ['public'],
+        description: 'The number of prompt tokens that hit the inference cache.\n',
+      }),
+    warnings: z
+      .array(z.string().openapi({ 'x-fern-audiences': ['public'] }))
+      .exactOptional()
+      .openapi({ 'x-fern-audiences': ['public'] }),
+  })
+  .openapi({ 'x-fern-type-name': 'ApiMeta', required: [] })
+  .openapi('ApiMeta')
 
 const NonStreamedChatResponseSchema = z
   .object({
@@ -1145,23 +834,63 @@ const StreamedChatResponseSchema = z
   })
   .openapi('StreamedChatResponse')
 
-const ContentSchema: z.ZodType<ContentType> = z
-  .lazy(() =>
-    z
-      .xor([ChatTextContentSchema, ImageContentSchema])
+const ChatTextContentSchema = z
+  .object({ type: z.literal('text'), text: z.string() })
+  .openapi({
+    description: 'Text content of the message.',
+    required: ['type', 'text'],
+    'x-fern-type-name': 'ChatTextContent',
+  })
+  .openapi('ChatTextContent')
+
+const ContentTypeSchema = z
+  .enum(['text', 'image_url'])
+  .openapi({
+    'x-fern-audiences': ['public'],
+    description: 'Type of message content\n',
+    'x-fern-type-name': 'ContentType',
+  })
+  .openapi('ContentType')
+
+const ImageUrlSchema = z
+  .object({
+    url: z
+      .string()
+      .openapi({ description: 'URL of an image. Can be either a base64 data URI or a web URL.\n' }),
+    detail: z
+      .enum(['auto', 'low', 'high'])
+      .exactOptional()
       .openapi({
         description:
-          'A Content block which contains information about the content type and the content itself.',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            text: '#/components/schemas/ChatTextContent',
-            image_url: '#/components/schemas/ImageContent',
-          },
-        },
-        'x-fern-type-name': 'Content',
+          'Controls the level of detail in image processing. `"auto"` is the default and lets the system choose, `"low"` is faster but less detailed, and `"high"` preserves maximum detail. You can save tokens and speed up responses by using detail: `"low"`.\n',
       }),
-  )
+  })
+  .openapi({ required: ['url'], 'x-fern-type-name': 'ImageUrl' })
+  .openapi('ImageUrl')
+
+const ImageContentSchema = z
+  .object({ type: ContentTypeSchema, image_url: ImageUrlSchema })
+  .openapi({
+    description: 'Image content of the message.',
+    required: ['type', 'image_url'],
+    'x-fern-type-name': 'ImageContent',
+  })
+  .openapi('ImageContent')
+
+const ContentSchema = z
+  .xor([ChatTextContentSchema, ImageContentSchema])
+  .openapi({
+    description:
+      'A Content block which contains information about the content type and the content itself.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        text: '#/components/schemas/ChatTextContent',
+        image_url: '#/components/schemas/ImageContent',
+      },
+    },
+    'x-fern-type-name': 'Content',
+  })
   .openapi('Content')
 
 const UserMessageV2Schema = z
@@ -1207,22 +936,52 @@ const ChatThinkingContentSchema = z
   })
   .openapi('ChatThinkingContent')
 
-const SourceSchema: z.ZodType<SourceType> = z
-  .lazy(() =>
-    z
-      .xor([ChatToolSourceSchema, ChatDocumentSourceSchema])
-      .openapi({
-        description: 'A source object containing information about the source of the data cited.',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            tool: '#/components/schemas/ChatToolSource',
-            document: '#/components/schemas/ChatDocumentSource',
-          },
-        },
-        'x-fern-type-name': 'Source',
-      }),
-  )
+const ChatToolSourceSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the document' }),
+    tool_output: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ 'x-fern-type-name': 'ChatToolSource-z53ra6' }),
+  })
+  .openapi({ title: 'Tool Output', 'x-fern-type-name': 'ChatToolSource', required: [] })
+  .openapi('ChatToolSource')
+
+const ChatDocumentSourceSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the document' }),
+    document: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ 'x-fern-type-name': 'ChatDocumentSource-w70a62' }),
+  })
+  .openapi({
+    description:
+      'A document source object containing the unique identifier of the document and the document itself.',
+    'x-fern-type-name': 'ChatDocumentSource',
+    required: [],
+  })
+  .openapi('ChatDocumentSource')
+
+const SourceSchema = z
+  .xor([ChatToolSourceSchema, ChatDocumentSourceSchema])
+  .openapi({
+    description: 'A source object containing information about the source of the data cited.',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        tool: '#/components/schemas/ChatToolSource',
+        document: '#/components/schemas/ChatDocumentSource',
+      },
+    },
+    'x-fern-type-name': 'Source',
+  })
   .openapi('Source')
 
 const CitationTypeSchema = z
@@ -1328,7 +1087,7 @@ const SystemMessageV2Schema = z
 const DocumentSchema = z
   .object({
     data: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'A relevant document that the model can cite to generate a more accurate reply. Each document is a string-any dictionary.\n',
@@ -1439,7 +1198,7 @@ const ToolV2Schema = z
           .exactOptional()
           .openapi({ description: 'The description of the function.' }),
         parameters: z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'The parameters of the function as a JSON schema.',
             'x-fern-type-name': 'ToolV2-6eoehf',
@@ -1482,23 +1241,58 @@ const TruncationStrategySchema = z
   })
   .openapi('TruncationStrategy')
 
-const ResponseFormatV2Schema: z.ZodType<ResponseFormatV2Type> = z
-  .lazy(() =>
-    z
-      .xor([ChatTextResponseFormatV2Schema, JsonResponseFormatV2Schema])
+const ResponseFormatTypeV2Schema = z
+  .enum(['text', 'json_object'])
+  .openapi({
+    'x-fern-audiences': ['public'],
+    description:
+      'Defaults to `"text"`.\n\nWhen set to `"json_object"`, the model\'s output will be a valid JSON Object.\n',
+    'x-fern-type-name': 'ResponseFormatTypeV2',
+  })
+  .openapi('ResponseFormatTypeV2')
+
+const ChatTextResponseFormatV2Schema = z
+  .object({ type: ResponseFormatTypeV2Schema })
+  .openapi({
+    'x-fern-audiences': ['public'],
+    required: ['type'],
+    'x-fern-type-name': 'ChatTextResponseFormatV2',
+  })
+  .openapi('ChatTextResponseFormatV2')
+
+const JsonResponseFormatV2Schema = z
+  .object({
+    type: ResponseFormatTypeV2Schema,
+    json_schema: z
+      .looseObject({})
+      .exactOptional()
       .openapi({
         description:
-          'Configuration for forcing the model output to adhere to the specified format. Supported on [Command R](https://docs.cohere.com/v2/docs/command-r), [Command R+](https://docs.cohere.com/v2/docs/command-r-plus) and newer models.\n\nThe model can be forced into outputting JSON objects by setting `{ "type": "json_object" }`.\n\nA [JSON Schema](https://json-schema.org/) can optionally be provided, to ensure a specific structure.\n\n**Note**: When using  `{ "type": "json_object" }` your `message` should always explicitly instruct the model to generate a JSON (eg: _"Generate a JSON ..."_) . Otherwise the model may end up getting stuck generating an infinite stream of characters and eventually run out of context length.\n\n**Note**: When `json_schema` is not specified, the generated object can have up to 5 layers of nesting.\n\n**Limitation**: The parameter is not supported when used in combinations with the `documents` or `tools` parameters.\n',
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            text: '#/components/schemas/ChatTextResponseFormatV2',
-            json_object: '#/components/schemas/JsonResponseFormatV2',
-          },
-        },
-        'x-fern-type-name': 'ResponseFormatV2',
+          'A [JSON schema](https://json-schema.org/overview/what-is-jsonschema) object that the output will adhere to. There are some restrictions we have on the schema, refer to [our guide](https://docs.cohere.com/docs/structured-outputs-json#schema-constraints) for more information.\nExample (required name and age object):\n```json\n{\n  "type": "object",\n  "properties": {\n    "name": {"type": "string"},\n    "age": {"type": "integer"}\n  },\n  "required": ["name", "age"]\n}\n```\n\n**Note**: This field must not be specified when the `type` is set to `"text"`.\n',
+        'x-fern-type-name': 'JsonResponseFormatV2-uu9wid',
       }),
-  )
+  })
+  .openapi({
+    'x-fern-audiences': ['public'],
+    required: ['type'],
+    'x-fern-type-name': 'JsonResponseFormatV2',
+  })
+  .openapi('JsonResponseFormatV2')
+
+const ResponseFormatV2Schema = z
+  .xor([ChatTextResponseFormatV2Schema, JsonResponseFormatV2Schema])
+  .openapi({
+    description:
+      'Configuration for forcing the model output to adhere to the specified format. Supported on [Command R](https://docs.cohere.com/v2/docs/command-r), [Command R+](https://docs.cohere.com/v2/docs/command-r-plus) and newer models.\n\nThe model can be forced into outputting JSON objects by setting `{ "type": "json_object" }`.\n\nA [JSON Schema](https://json-schema.org/) can optionally be provided, to ensure a specific structure.\n\n**Note**: When using  `{ "type": "json_object" }` your `message` should always explicitly instruct the model to generate a JSON (eg: _"Generate a JSON ..."_) . Otherwise the model may end up getting stuck generating an infinite stream of characters and eventually run out of context length.\n\n**Note**: When `json_schema` is not specified, the generated object can have up to 5 layers of nesting.\n\n**Limitation**: The parameter is not supported when used in combinations with the `documents` or `tools` parameters.\n',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        text: '#/components/schemas/ChatTextResponseFormatV2',
+        json_object: '#/components/schemas/JsonResponseFormatV2',
+      },
+    },
+    'x-fern-type-name': 'ResponseFormatV2',
+  })
   .openapi('ResponseFormatV2')
 
 const ThinkingSchema = z
@@ -2244,22 +2038,58 @@ const ParseResponseSchema = z
   })
   .openapi('ParseResponse')
 
-const GenerationSchema: z.ZodType<GenerationType> = z
-  .lazy(() =>
-    z
-      .object({
-        id: z.string().openapi({ 'x-fern-audiences': ['public'] }),
-        prompt: z
-          .string()
-          .exactOptional()
-          .openapi({ 'x-fern-audiences': ['public'], description: 'Prompt used for generations.' }),
-        generations: z
-          .array(SingleGenerationSchema)
-          .openapi({ 'x-fern-audiences': ['public'], description: 'List of generated results' }),
-        meta: ApiMetaSchema.exactOptional().openapi({ 'x-fern-audiences': ['public'] }),
-      })
-      .openapi({ 'x-fern-type-name': 'Generation', required: ['id', 'generations'] }),
-  )
+const SingleGenerationSchema = z
+  .object({
+    id: z.string().openapi({ 'x-fern-audiences': ['public'] }),
+    text: z.string().openapi({ 'x-fern-audiences': ['public'] }),
+    index: z
+      .int()
+      .exactOptional()
+      .openapi({
+        'x-fern-audiences': ['public'],
+        description:
+          'Refers to the nth generation. Only present when `num_generations` is greater than zero.',
+      }),
+    likelihood: z
+      .number()
+      .exactOptional()
+      .openapi({ 'x-fern-audiences': ['public'] }),
+    token_likelihoods: z
+      .array(
+        z
+          .object({
+            token: z.string().openapi({ 'x-fern-audiences': ['public'] }),
+            likelihood: z.number().openapi({ 'x-fern-audiences': ['public'] }),
+          })
+          .openapi({
+            'x-fern-audiences': ['public'],
+            required: ['id', 'token', 'likelihood'],
+            'x-fern-type-name': 'SingleGenerationTokenLikelihoodsItem',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        'x-fern-audiences': ['public'],
+        description:
+          "Only returned if `return_likelihoods` is set to `GENERATION` or `ALL`. The likelihood refers to the average log-likelihood of the entire specified string, which is useful for [evaluating the performance of your model](likelihood-eval), especially if you've created a [custom model](https://docs.cohere.com/docs/training-custom-models). Individual token likelihoods provide the log-likelihood of each token. The first token will not have a likelihood.",
+      }),
+  })
+  .openapi({ required: ['text', 'id'], 'x-fern-type-name': 'SingleGeneration' })
+  .openapi('SingleGeneration')
+
+const GenerationSchema = z
+  .object({
+    id: z.string().openapi({ 'x-fern-audiences': ['public'] }),
+    prompt: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-fern-audiences': ['public'], description: 'Prompt used for generations.' }),
+    generations: z
+      .array(SingleGenerationSchema)
+      .openapi({ 'x-fern-audiences': ['public'], description: 'List of generated results' }),
+    meta: ApiMetaSchema.exactOptional().openapi({ 'x-fern-audiences': ['public'] }),
+  })
+  .openapi({ 'x-fern-type-name': 'Generation', required: ['id', 'generations'] })
   .openapi('Generation')
 
 const GenerateStreamEventSchema = z
@@ -3170,7 +3000,7 @@ const GetBatchResponseSchema = z
   .openapi('GetBatchResponse')
 
 const CancelBatchResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Response to a request to cancel a batch.',
     'x-fern-sdk-group-name': ['batches'],
@@ -3486,12 +3316,146 @@ const ParseInfoSchema = z
   .openapi({ writeOnly: true, 'x-fern-type-name': 'ParseInfo', required: [] })
   .openapi('ParseInfo')
 
-const MetricsSchema: z.ZodType<MetricsType> = z
-  .lazy(() =>
-    z
-      .object({ finetune_dataset_metrics: FinetuneDatasetMetricsSchema.exactOptional() })
-      .openapi({ 'x-fern-type-name': 'Metrics', required: [] }),
-  )
+const RerankerDataMetricsSchema = z
+  .object({
+    num_train_queries: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The number of training queries.', 'x-fern-audiences': ['public'] }),
+    num_train_relevant_passages: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The sum of all relevant passages of valid training examples.',
+        'x-fern-audiences': ['public'],
+      }),
+    num_train_hard_negatives: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The sum of all hard negatives of valid training examples.',
+        'x-fern-audiences': ['public'],
+      }),
+    num_eval_queries: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The number of evaluation queries.',
+        'x-fern-audiences': ['public'],
+      }),
+    num_eval_relevant_passages: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The sum of all relevant passages of valid eval examples.',
+        'x-fern-audiences': ['public'],
+      }),
+    num_eval_hard_negatives: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The sum of all hard negatives of valid eval examples.',
+        'x-fern-audiences': ['public'],
+      }),
+  })
+  .openapi({ 'x-fern-type-name': 'RerankerDataMetrics', required: [] })
+  .openapi('RerankerDataMetrics')
+
+const ChatDataMetricsSchema = z
+  .object({
+    num_train_turns: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The sum of all turns of valid train examples.',
+        'x-fern-audiences': ['public'],
+      }),
+    num_eval_turns: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The sum of all turns of valid eval examples.',
+        'x-fern-audiences': ['public'],
+      }),
+    preamble: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The preamble of this dataset.', 'x-fern-audiences': ['public'] }),
+  })
+  .openapi({ 'x-fern-type-name': 'ChatDataMetrics', required: [] })
+  .openapi('ChatDataMetrics')
+
+const LabelMetricSchema = z
+  .object({
+    total_examples: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Total number of examples for this label',
+        'x-fern-audiences': ['public'],
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'value of the label', 'x-fern-audiences': ['public'] }),
+    samples: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'samples for this label', 'x-fern-audiences': ['public'] }),
+  })
+  .openapi({ 'x-fern-type-name': 'LabelMetric', required: [] })
+  .openapi('LabelMetric')
+
+const ClassifyDataMetricsSchema = z
+  .object({ label_metrics: z.array(LabelMetricSchema).exactOptional() })
+  .openapi({ 'x-fern-type-name': 'ClassifyDataMetrics', required: [] })
+  .openapi('ClassifyDataMetrics')
+
+const FinetuneDatasetMetricsSchema = z
+  .object({
+    trainable_token_count: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The number of tokens of valid examples that can be used for training.',
+        'x-fern-audiences': ['public'],
+      }),
+    total_examples: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The overall number of examples.', 'x-fern-audiences': ['public'] }),
+    train_examples: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The number of training examples.', 'x-fern-audiences': ['public'] }),
+    train_size_bytes: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The size in bytes of all training examples.',
+        'x-fern-audiences': ['public'],
+      }),
+    eval_examples: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Number of evaluation examples.', 'x-fern-audiences': ['public'] }),
+    eval_size_bytes: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'The size in bytes of all eval examples.',
+        'x-fern-audiences': ['public'],
+      }),
+    reranker_data_metrics: RerankerDataMetricsSchema.exactOptional(),
+    chat_data_metrics: ChatDataMetricsSchema.exactOptional(),
+    classify_data_metrics: ClassifyDataMetricsSchema.exactOptional(),
+  })
+  .openapi({ 'x-fern-type-name': 'FinetuneDatasetMetrics', required: [] })
+  .openapi('FinetuneDatasetMetrics')
+
+const MetricsSchema = z
+  .object({ finetune_dataset_metrics: FinetuneDatasetMetricsSchema.exactOptional() })
+  .openapi({ 'x-fern-type-name': 'Metrics', required: [] })
   .openapi('Metrics')
 
 const DatasetSchema = z
@@ -3828,7 +3792,7 @@ const GetConnectorResponseSchema = z
   .openapi('GetConnectorResponse')
 
 const DeleteConnectorResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ 'x-fern-type-name': 'DeleteConnectorResponse' })
   .openapi('DeleteConnectorResponse')
 
@@ -3945,7 +3909,7 @@ const GetConnectorsLogsResponseSchema = z
   .openapi('GetConnectorsLogsResponse')
 
 const FeedbackResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ 'x-fern-type-name': 'FeedbackResponse' })
   .openapi('FeedbackResponse')
 
@@ -4209,14 +4173,14 @@ const UpdateClusterJobRequestSchema = z
       .exactOptional()
       .openapi({ 'x-fern-audiences': ['public'] }),
     input_tracking_metrics: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         'x-fern-audiences': ['public'],
         'x-fern-type-name': 'UpdateClusterJobRequest-yyd5g8',
       }),
     output_tracking_metrics: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         'x-fern-audiences': ['public'],
@@ -4650,7 +4614,7 @@ const GetFinetunedModelResponseSchema = z
   .openapi('GetFinetunedModelResponse')
 
 const DeleteFinetunedModelResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     deprecated: true,
     description: 'Response to request to delete a fine-tuned model.',
@@ -7090,17 +7054,14 @@ export const postV1ClassifyRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-API-Warning': {
-          description: 'Warning description for incorrect usage of the API',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Warning description for incorrect usage of the API',
-              param: { required: false },
-              'x-fern-audiences': ['public'],
-            }),
-        },
+        'X-API-Warning': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Warning description for incorrect usage of the API',
+            param: { required: false },
+            'x-fern-audiences': ['public'],
+          }),
       }),
     },
     400: BadRequestResponse,
@@ -7576,7 +7537,7 @@ export const deleteV1DatasetsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ 'x-fern-audiences': ['public'], 'x-fern-type-name': 'dataset-id-g4eh6t' }),
         },
       },

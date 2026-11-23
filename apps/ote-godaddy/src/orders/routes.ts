@@ -405,7 +405,7 @@ const LineItemPricingSchema = z
           'Price with any discounts and without taxes or fees for given `quantity` and `period`',
       }),
     taxes: z.int().openapi({ description: 'Taxes for given `quantity` and `period`' }),
-    unit: z.object({}).openapi({ description: 'Pricing for a single unit of the given item' }),
+    unit: z.looseObject({}).openapi({ description: 'Pricing for a single unit of the given item' }),
   })
   .openapi({
     required: ['subtotal', 'list', 'savings', 'sale', 'discount', 'taxes', 'fees', 'unit'],

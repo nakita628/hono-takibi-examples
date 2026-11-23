@@ -29,44 +29,26 @@ const ContainerAccessLoggingEnabledSchema = z.boolean().openapi('ContainerAccess
 
 const ContainerSchema = z
   .object({
-    Endpoint: EndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DNS endpoint of the container. Use the endpoint to identify the specific container when sending requests to the data plane. The service assigns this value when the container is created. Once the value has been assigned, it does not change.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimeStampSchema.and(
-      z.any().openapi({ description: 'Unix timestamp.' }),
-    ).exactOptional(),
-    ARN: ContainerARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the container. The ARN has the following format:</p> <p>arn:aws:&lt;region&gt;:&lt;account that owns this container&gt;:container/&lt;name of container&gt; </p> <p>For example: arn:aws:mediastore:us-west-2:111122223333:container/movies </p>',
-        }),
-    ).exactOptional(),
-    Name: ContainerNameSchema.and(
-      z.any().openapi({ description: 'The name of the container.' }),
-    ).exactOptional(),
-    Status: ContainerStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of container creation or deletion. The status is one of the following: <code>CREATING</code>, <code>ACTIVE</code>, or <code>DELETING</code>. While the service is creating the container, the status is <code>CREATING</code>. When the endpoint is available, the status changes to <code>ACTIVE</code>.',
-        }),
-    ).exactOptional(),
-    AccessLoggingEnabled: ContainerAccessLoggingEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of access logging on the container. This value is <code>false</code> by default, indicating that AWS Elemental MediaStore does not send access logs to Amazon CloudWatch Logs. When you enable access logging on the container, MediaStore changes this value to <code>true</code>, indicating that the service delivers access logs for objects stored in that container to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
+    Endpoint: EndpointSchema.exactOptional().openapi({
+      description:
+        'The DNS endpoint of the container. Use the endpoint to identify the specific container when sending requests to the data plane. The service assigns this value when the container is created. Once the value has been assigned, it does not change.',
+    }),
+    CreationTime: TimeStampSchema.exactOptional().openapi({ description: 'Unix timestamp.' }),
+    ARN: ContainerARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the container. The ARN has the following format:</p> <p>arn:aws:&lt;region&gt;:&lt;account that owns this container&gt;:container/&lt;name of container&gt; </p> <p>For example: arn:aws:mediastore:us-west-2:111122223333:container/movies </p>',
+    }),
+    Name: ContainerNameSchema.exactOptional().openapi({
+      description: 'The name of the container.',
+    }),
+    Status: ContainerStatusSchema.exactOptional().openapi({
+      description:
+        'The status of container creation or deletion. The status is one of the following: <code>CREATING</code>, <code>ACTIVE</code>, or <code>DELETING</code>. While the service is creating the container, the status is <code>CREATING</code>. When the endpoint is available, the status changes to <code>ACTIVE</code>.',
+    }),
+    AccessLoggingEnabled: ContainerAccessLoggingEnabledSchema.exactOptional().openapi({
+      description:
+        'The state of access logging on the container. This value is <code>false</code> by default, indicating that AWS Elemental MediaStore does not send access logs to Amazon CloudWatch Logs. When you enable access logging on the container, MediaStore changes this value to <code>true</code>, indicating that the service delivers access logs for objects stored in that container to CloudWatch Logs.',
+    }),
   })
   .openapi({
     description:
@@ -77,14 +59,10 @@ const ContainerSchema = z
 
 const CreateContainerOutputSchema = z
   .object({
-    Container: ContainerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>ContainerARN: The Amazon Resource Name (ARN) of the newly created container. The ARN has the following format: arn:aws:&lt;region&gt;:&lt;account that owns this container&gt;:container/&lt;name of container&gt;. For example: arn:aws:mediastore:us-west-2:111122223333:container/movies </p> <p>ContainerName: The container name as specified in the request.</p> <p>CreationTime: Unix time stamp.</p> <p>Status: The status of container creation or deletion. The status is one of the following: <code>CREATING</code>, <code>ACTIVE</code>, or <code>DELETING</code>. While the service is creating the container, the status is <code>CREATING</code>. When an endpoint is available, the status changes to <code>ACTIVE</code>.</p> <p>The return value does not include the container's endpoint. To make downstream requests, you must obtain this value by using <a>DescribeContainer</a> or <a>ListContainers</a>.</p>",
-        }),
-    ),
+    Container: ContainerSchema.openapi({
+      description:
+        "<p>ContainerARN: The Amazon Resource Name (ARN) of the newly created container. The ARN has the following format: arn:aws:&lt;region&gt;:&lt;account that owns this container&gt;:container/&lt;name of container&gt;. For example: arn:aws:mediastore:us-west-2:111122223333:container/movies </p> <p>ContainerName: The container name as specified in the request.</p> <p>CreationTime: Unix time stamp.</p> <p>Status: The status of container creation or deletion. The status is one of the following: <code>CREATING</code>, <code>ACTIVE</code>, or <code>DELETING</code>. While the service is creating the container, the status is <code>CREATING</code>. When an endpoint is available, the status changes to <code>ACTIVE</code>.</p> <p>The return value does not include the container's endpoint. To make downstream requests, you must obtain this value by using <a>DescribeContainer</a> or <a>ListContainers</a>.</p>",
+    }),
   })
   .openapi({ required: ['Container'] })
   .openapi('CreateContainerOutput')
@@ -105,22 +83,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive.',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.openapi({
+      description:
+        'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description:
+        'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive.',
+    }),
   })
   .openapi({
     required: ['Key'],
@@ -133,22 +103,14 @@ const TagListSchema = z.array(TagSchema).min(1).max(200).openapi('TagList')
 
 const CreateContainerInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the container. The name must be from 1 to 255 characters. Container names must be unique to your AWS account within a specific region. As an example, you could create a container named <code>movies</code> in every region, as long as you don’t have an existing container with that name.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key:value pairs that you define. These values can be anything that you want. Typically, the tag key represents a category (such as "environment") and the tag value represents a specific value within that category (such as "test," "development," or "production"). You can add up to 50 tags to each container. For more information about tagging, including naming and usage conventions, see <a href="https://docs.aws.amazon.com/mediastore/latest/ug/tagging.html">Tagging Resources in MediaStore</a>.',
-        }),
-    ).exactOptional(),
+    ContainerName: ContainerNameSchema.openapi({
+      description:
+        'The name for the container. The name must be from 1 to 255 characters. Container names must be unique to your AWS account within a specific region. As an example, you could create a container named <code>movies</code> in every region, as long as you don’t have an existing container with that name.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array of key:value pairs that you define. These values can be anything that you want. Typically, the tag key represents a category (such as "environment") and the tag value represents a specific value within that category (such as "test," "development," or "production"). You can add up to 50 tags to each container. For more information about tagging, including naming and usage conventions, see <a href="https://docs.aws.amazon.com/mediastore/latest/ug/tagging.html">Tagging Resources in MediaStore</a>.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'CreateContainerInput' })
   .openapi('CreateContainerInput')
@@ -159,90 +121,82 @@ const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const InternalServerErrorSchema = z.any().openapi('InternalServerError')
 
-const DeleteContainerOutputSchema = z.object({}).openapi('DeleteContainerOutput')
+const DeleteContainerOutputSchema = z.looseObject({}).openapi('DeleteContainerOutput')
 
 const DeleteContainerInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z.any().openapi({ description: 'The name of the container to delete. ' }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container to delete. ',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'DeleteContainerInput' })
   .openapi('DeleteContainerInput')
 
 const ContainerNotFoundExceptionSchema = z.any().openapi('ContainerNotFoundException')
 
-const DeleteContainerPolicyOutputSchema = z.object({}).openapi('DeleteContainerPolicyOutput')
+const DeleteContainerPolicyOutputSchema = z.looseObject({}).openapi('DeleteContainerPolicyOutput')
 
 const DeleteContainerPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z.any().openapi({ description: 'The name of the container that holds the policy.' }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that holds the policy.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'DeleteContainerPolicyInput' })
   .openapi('DeleteContainerPolicyInput')
 
 const PolicyNotFoundExceptionSchema = z.any().openapi('PolicyNotFoundException')
 
-const DeleteCorsPolicyOutputSchema = z.object({}).openapi('DeleteCorsPolicyOutput')
+const DeleteCorsPolicyOutputSchema = z.looseObject({}).openapi('DeleteCorsPolicyOutput')
 
 const DeleteCorsPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z.any().openapi({ description: 'The name of the container to remove the policy from.' }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container to remove the policy from.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'DeleteCorsPolicyInput' })
   .openapi('DeleteCorsPolicyInput')
 
 const CorsPolicyNotFoundExceptionSchema = z.any().openapi('CorsPolicyNotFoundException')
 
-const DeleteLifecyclePolicyOutputSchema = z.object({}).openapi('DeleteLifecyclePolicyOutput')
+const DeleteLifecyclePolicyOutputSchema = z.looseObject({}).openapi('DeleteLifecyclePolicyOutput')
 
 const DeleteLifecyclePolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container that holds the object lifecycle policy.',
-        }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that holds the object lifecycle policy.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'DeleteLifecyclePolicyInput' })
   .openapi('DeleteLifecyclePolicyInput')
 
-const DeleteMetricPolicyOutputSchema = z.object({}).openapi('DeleteMetricPolicyOutput')
+const DeleteMetricPolicyOutputSchema = z.looseObject({}).openapi('DeleteMetricPolicyOutput')
 
 const DeleteMetricPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the container that is associated with the metric policy that you want to delete.',
-        }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description:
+        'The name of the container that is associated with the metric policy that you want to delete.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'DeleteMetricPolicyInput' })
   .openapi('DeleteMetricPolicyInput')
 
 const DescribeContainerOutputSchema = z
   .object({
-    Container: ContainerSchema.and(
-      z.any().openapi({ description: 'The name of the queried container.' }),
-    ).exactOptional(),
+    Container: ContainerSchema.exactOptional().openapi({
+      description: 'The name of the queried container.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeContainerOutput')
 
 const DescribeContainerInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z.any().openapi({ description: 'The name of the container to query.' }),
-    ).exactOptional(),
+    ContainerName: ContainerNameSchema.exactOptional().openapi({
+      description: 'The name of the container to query.',
+    }),
   })
   .openapi({ title: 'DescribeContainerInput', required: [] })
   .openapi('DescribeContainerInput')
@@ -256,18 +210,14 @@ const ContainerPolicySchema = z
 
 const GetContainerPolicyOutputSchema = z
   .object({
-    Policy: ContainerPolicySchema.and(
-      z.any().openapi({ description: 'The contents of the access policy.' }),
-    ),
+    Policy: ContainerPolicySchema.openapi({ description: 'The contents of the access policy.' }),
   })
   .openapi({ required: ['Policy'] })
   .openapi('GetContainerPolicyOutput')
 
 const GetContainerPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z.any().openapi({ description: 'The name of the container. ' }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({ description: 'The name of the container. ' }),
   })
   .openapi({ required: ['ContainerName'], title: 'GetContainerPolicyInput' })
   .openapi('GetContainerPolicyInput')
@@ -300,46 +250,26 @@ const ExposeHeadersSchema = z.array(HeaderSchema).min(0).max(100).openapi('Expos
 
 const CorsRuleSchema = z
   .object({
-    AllowedOrigins: AllowedOriginsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more response headers that you want users to be able to access from their applications (for example, from a JavaScript <code>XMLHttpRequest</code> object).</p> <p>Each CORS rule must have at least one <code>AllowedOrigins</code> element. The string value can include only one wildcard character (*), for example, http://*.example.com. Additionally, you can specify only one wildcard character to allow cross-origin access for all origins.</p>',
-        }),
-    ),
-    AllowedMethods: AllowedMethodsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies an HTTP method that the origin that is specified in the rule is allowed to execute.</p> <p>Each CORS rule must contain at least one <code>AllowedMethods</code> and one <code>AllowedOrigins</code> element.</p>',
-        }),
-    ).exactOptional(),
-    AllowedHeaders: AllowedHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies which headers are allowed in a preflight <code>OPTIONS</code> request through the <code>Access-Control-Request-Headers</code> header. Each header name that is specified in <code>Access-Control-Request-Headers</code> must have a corresponding entry in the rule. Only the headers that were requested are sent back. </p> <p>This element can contain only one wildcard character (*).</p>',
-        }),
-    ),
-    MaxAgeSeconds: MaxAgeSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time in seconds that your browser caches the preflight response for the specified resource.</p> <p>A CORS rule can have only one <code>MaxAgeSeconds</code> element.</p>',
-        }),
-    ).exactOptional(),
-    ExposeHeaders: ExposeHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more headers in the response that you want users to be able to access from their applications (for example, from a JavaScript <code>XMLHttpRequest</code> object).</p> <p>This element is optional for each rule.</p>',
-        }),
-    ).exactOptional(),
+    AllowedOrigins: AllowedOriginsSchema.openapi({
+      description:
+        '<p>One or more response headers that you want users to be able to access from their applications (for example, from a JavaScript <code>XMLHttpRequest</code> object).</p> <p>Each CORS rule must have at least one <code>AllowedOrigins</code> element. The string value can include only one wildcard character (*), for example, http://*.example.com. Additionally, you can specify only one wildcard character to allow cross-origin access for all origins.</p>',
+    }),
+    AllowedMethods: AllowedMethodsSchema.exactOptional().openapi({
+      description:
+        '<p>Identifies an HTTP method that the origin that is specified in the rule is allowed to execute.</p> <p>Each CORS rule must contain at least one <code>AllowedMethods</code> and one <code>AllowedOrigins</code> element.</p>',
+    }),
+    AllowedHeaders: AllowedHeadersSchema.openapi({
+      description:
+        '<p>Specifies which headers are allowed in a preflight <code>OPTIONS</code> request through the <code>Access-Control-Request-Headers</code> header. Each header name that is specified in <code>Access-Control-Request-Headers</code> must have a corresponding entry in the rule. Only the headers that were requested are sent back. </p> <p>This element can contain only one wildcard character (*).</p>',
+    }),
+    MaxAgeSeconds: MaxAgeSecondsSchema.exactOptional().openapi({
+      description:
+        '<p>The time in seconds that your browser caches the preflight response for the specified resource.</p> <p>A CORS rule can have only one <code>MaxAgeSeconds</code> element.</p>',
+    }),
+    ExposeHeaders: ExposeHeadersSchema.exactOptional().openapi({
+      description:
+        '<p>One or more headers in the response that you want users to be able to access from their applications (for example, from a JavaScript <code>XMLHttpRequest</code> object).</p> <p>This element is optional for each rule.</p>',
+    }),
   })
   .openapi({
     required: ['AllowedOrigins', 'AllowedHeaders'],
@@ -357,18 +287,18 @@ const CorsPolicySchema = z
 
 const GetCorsPolicyOutputSchema = z
   .object({
-    CorsPolicy: CorsPolicySchema.and(
-      z.any().openapi({ description: 'The CORS policy assigned to the container.' }),
-    ),
+    CorsPolicy: CorsPolicySchema.openapi({
+      description: 'The CORS policy assigned to the container.',
+    }),
   })
   .openapi({ required: ['CorsPolicy'] })
   .openapi('GetCorsPolicyOutput')
 
 const GetCorsPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z.any().openapi({ description: 'The name of the container that the policy is assigned to.' }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that the policy is assigned to.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'GetCorsPolicyInput' })
   .openapi('GetCorsPolicyInput')
@@ -382,24 +312,18 @@ const LifecyclePolicySchema = z
 
 const GetLifecyclePolicyOutputSchema = z
   .object({
-    LifecyclePolicy: LifecyclePolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The object lifecycle policy that is assigned to the container.' }),
-    ),
+    LifecyclePolicy: LifecyclePolicySchema.openapi({
+      description: 'The object lifecycle policy that is assigned to the container.',
+    }),
   })
   .openapi({ required: ['LifecyclePolicy'] })
   .openapi('GetLifecyclePolicyOutput')
 
 const GetLifecyclePolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container that the object lifecycle policy is assigned to.',
-        }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that the object lifecycle policy is assigned to.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'GetLifecyclePolicyInput' })
   .openapi('GetLifecyclePolicyInput')
@@ -422,17 +346,13 @@ const ObjectGroupNameSchema = z
 
 const MetricPolicyRuleSchema = z
   .object({
-    ObjectGroup: ObjectGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A path or file name that defines which objects to include in the group. Wildcards (*) are acceptable.',
-        }),
-    ),
-    ObjectGroupName: ObjectGroupNameSchema.and(
-      z.any().openapi({ description: 'A name that allows you to refer to the object group.' }),
-    ),
+    ObjectGroup: ObjectGroupSchema.openapi({
+      description:
+        'A path or file name that defines which objects to include in the group. Wildcards (*) are acceptable.',
+    }),
+    ObjectGroupName: ObjectGroupNameSchema.openapi({
+      description: 'A name that allows you to refer to the object group.',
+    }),
   })
   .openapi({
     required: ['ObjectGroup', 'ObjectGroupName'],
@@ -449,19 +369,13 @@ const MetricPolicyRulesSchema = z
 
 const MetricPolicySchema = z
   .object({
-    ContainerLevelMetrics: ContainerLevelMetricsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A setting to enable or disable metrics at the container level.' }),
-    ),
-    MetricPolicyRules: MetricPolicyRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A parameter that holds an array of rules that enable metrics at the object level. This parameter is optional, but if you choose to include it, you must also include at least one rule. By default, you can include up to five rules. You can also <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-1#!/services/mediastore/quotas">request a quota increase</a> to allow up to 300 rules per policy.',
-        }),
-    ).exactOptional(),
+    ContainerLevelMetrics: ContainerLevelMetricsSchema.openapi({
+      description: 'A setting to enable or disable metrics at the container level.',
+    }),
+    MetricPolicyRules: MetricPolicyRulesSchema.exactOptional().openapi({
+      description:
+        'A parameter that holds an array of rules that enable metrics at the object level. This parameter is optional, but if you choose to include it, you must also include at least one rule. By default, you can include up to five rules. You can also <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-1#!/services/mediastore/quotas">request a quota increase</a> to allow up to 300 rules per policy.',
+    }),
   })
   .openapi({
     required: ['ContainerLevelMetrics'],
@@ -472,26 +386,18 @@ const MetricPolicySchema = z
 
 const GetMetricPolicyOutputSchema = z
   .object({
-    MetricPolicy: MetricPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The metric policy that is associated with the specific container.',
-        }),
-    ),
+    MetricPolicy: MetricPolicySchema.openapi({
+      description: 'The metric policy that is associated with the specific container.',
+    }),
   })
   .openapi({ required: ['MetricPolicy'] })
   .openapi('GetMetricPolicyOutput')
 
 const GetMetricPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container that is associated with the metric policy.',
-        }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that is associated with the metric policy.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'GetMetricPolicyInput' })
   .openapi('GetMetricPolicyInput')
@@ -507,17 +413,11 @@ const PaginationTokenSchema = z
 
 const ListContainersOutputSchema = z
   .object({
-    Containers: ContainerListSchema.and(
-      z.any().openapi({ description: 'The names of the containers.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>NextToken</code> is the token to use in the next call to <code>ListContainers</code>. This token is returned only if you included the <code>MaxResults</code> tag in the original command, and only if there are still containers to return. ',
-        }),
-    ).exactOptional(),
+    Containers: ContainerListSchema.openapi({ description: 'The names of the containers.' }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' <code>NextToken</code> is the token to use in the next call to <code>ListContainers</code>. This token is returned only if you included the <code>MaxResults</code> tag in the original command, and only if there are still containers to return. ',
+    }),
   })
   .openapi({ required: ['Containers'] })
   .openapi('ListContainersOutput')
@@ -526,193 +426,143 @@ const ContainerListLimitSchema = z.int().min(1).max(100).openapi('ContainerListL
 
 const ListContainersInputSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Only if you used <code>MaxResults</code> in the first command, enter the token (which was included in the previous response) to obtain the next set of containers. This token is included in a response only if there actually are more containers to list.',
-        }),
-    ).exactOptional(),
-    MaxResults: ContainerListLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enter the maximum number of containers in the response. Use from 1 to 255 characters. ',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Only if you used <code>MaxResults</code> in the first command, enter the token (which was included in the previous response) to obtain the next set of containers. This token is included in a response only if there actually are more containers to list.',
+    }),
+    MaxResults: ContainerListLimitSchema.exactOptional().openapi({
+      description:
+        'Enter the maximum number of containers in the response. Use from 1 to 255 characters. ',
+    }),
   })
   .openapi({ title: 'ListContainersInput', required: [] })
   .openapi('ListContainersInput')
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of key:value pairs that are assigned to the container.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'An array of key:value pairs that are assigned to the container.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    Resource: ContainerARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the container.' }),
-    ),
+    Resource: ContainerARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the container.',
+    }),
   })
   .openapi({ required: ['Resource'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
 
-const PutContainerPolicyOutputSchema = z.object({}).openapi('PutContainerPolicyOutput')
+const PutContainerPolicyOutputSchema = z.looseObject({}).openapi('PutContainerPolicyOutput')
 
 const PutContainerPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z.any().openapi({ description: 'The name of the container.' }),
-    ),
-    Policy: ContainerPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contents of the policy, which includes the following: </p> <ul> <li> <p>One <code>Version</code> tag</p> </li> <li> <p>One <code>Statement</code> tag that contains the standard tags for the policy.</p> </li> </ul>',
-        }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({ description: 'The name of the container.' }),
+    Policy: ContainerPolicySchema.openapi({
+      description:
+        '<p>The contents of the policy, which includes the following: </p> <ul> <li> <p>One <code>Version</code> tag</p> </li> <li> <p>One <code>Statement</code> tag that contains the standard tags for the policy.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ContainerName', 'Policy'], title: 'PutContainerPolicyInput' })
   .openapi('PutContainerPolicyInput')
 
-const PutCorsPolicyOutputSchema = z.object({}).openapi('PutCorsPolicyOutput')
+const PutCorsPolicyOutputSchema = z.looseObject({}).openapi('PutCorsPolicyOutput')
 
 const PutCorsPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container that you want to assign the CORS policy to.',
-        }),
-    ),
-    CorsPolicy: CorsPolicySchema.and(
-      z.any().openapi({ description: 'The CORS policy to apply to the container. ' }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that you want to assign the CORS policy to.',
+    }),
+    CorsPolicy: CorsPolicySchema.openapi({
+      description: 'The CORS policy to apply to the container. ',
+    }),
   })
   .openapi({ required: ['ContainerName', 'CorsPolicy'], title: 'PutCorsPolicyInput' })
   .openapi('PutCorsPolicyInput')
 
-const PutLifecyclePolicyOutputSchema = z.object({}).openapi('PutLifecyclePolicyOutput')
+const PutLifecyclePolicyOutputSchema = z.looseObject({}).openapi('PutLifecyclePolicyOutput')
 
 const PutLifecyclePolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the container that you want to assign the object lifecycle policy to.',
-        }),
-    ),
-    LifecyclePolicy: LifecyclePolicySchema.and(
-      z.any().openapi({ description: 'The object lifecycle policy to apply to the container.' }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description:
+        'The name of the container that you want to assign the object lifecycle policy to.',
+    }),
+    LifecyclePolicy: LifecyclePolicySchema.openapi({
+      description: 'The object lifecycle policy to apply to the container.',
+    }),
   })
   .openapi({ required: ['ContainerName', 'LifecyclePolicy'], title: 'PutLifecyclePolicyInput' })
   .openapi('PutLifecyclePolicyInput')
 
-const PutMetricPolicyOutputSchema = z.object({}).openapi('PutMetricPolicyOutput')
+const PutMetricPolicyOutputSchema = z.looseObject({}).openapi('PutMetricPolicyOutput')
 
 const PutMetricPolicyInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container that you want to add the metric policy to.',
-        }),
-    ),
-    MetricPolicy: MetricPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The metric policy that you want to associate with the container. In the policy, you must indicate whether you want MediaStore to send container-level metrics. You can also include up to five rules to define groups of objects that you want MediaStore to send object-level metrics for. If you include rules in the policy, construct each rule with both of the following:</p> <ul> <li> <p>An object group that defines which objects to include in the group. The definition can be a path or a file name, but it can't have more than 900 characters. Valid characters are: a-z, A-Z, 0-9, _ (underscore), = (equal), : (colon), . (period), - (hyphen), ~ (tilde), / (forward slash), and * (asterisk). Wildcards (*) are acceptable.</p> </li> <li> <p>An object group name that allows you to refer to the object group. The name can't have more than 30 characters. Valid characters are: a-z, A-Z, 0-9, and _ (underscore).</p> </li> </ul>",
-        }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that you want to add the metric policy to.',
+    }),
+    MetricPolicy: MetricPolicySchema.openapi({
+      description:
+        "<p>The metric policy that you want to associate with the container. In the policy, you must indicate whether you want MediaStore to send container-level metrics. You can also include up to five rules to define groups of objects that you want MediaStore to send object-level metrics for. If you include rules in the policy, construct each rule with both of the following:</p> <ul> <li> <p>An object group that defines which objects to include in the group. The definition can be a path or a file name, but it can't have more than 900 characters. Valid characters are: a-z, A-Z, 0-9, _ (underscore), = (equal), : (colon), . (period), - (hyphen), ~ (tilde), / (forward slash), and * (asterisk). Wildcards (*) are acceptable.</p> </li> <li> <p>An object group name that allows you to refer to the object group. The name can't have more than 30 characters. Valid characters are: a-z, A-Z, 0-9, and _ (underscore).</p> </li> </ul>",
+    }),
   })
   .openapi({ required: ['ContainerName', 'MetricPolicy'], title: 'PutMetricPolicyInput' })
   .openapi('PutMetricPolicyInput')
 
-const StartAccessLoggingOutputSchema = z.object({}).openapi('StartAccessLoggingOutput')
+const StartAccessLoggingOutputSchema = z.looseObject({}).openapi('StartAccessLoggingOutput')
 
 const StartAccessLoggingInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container that you want to start access logging on.',
-        }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that you want to start access logging on.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'StartAccessLoggingInput' })
   .openapi('StartAccessLoggingInput')
 
-const StopAccessLoggingOutputSchema = z.object({}).openapi('StopAccessLoggingOutput')
+const StopAccessLoggingOutputSchema = z.looseObject({}).openapi('StopAccessLoggingOutput')
 
 const StopAccessLoggingInputSchema = z
   .object({
-    ContainerName: ContainerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the container that you want to stop access logging on.',
-        }),
-    ),
+    ContainerName: ContainerNameSchema.openapi({
+      description: 'The name of the container that you want to stop access logging on.',
+    }),
   })
   .openapi({ required: ['ContainerName'], title: 'StopAccessLoggingInput' })
   .openapi('StopAccessLoggingInput')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
 const TagResourceInputSchema = z
   .object({
-    Resource: ContainerARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the container. ' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key:value pairs that you want to add to the container. You need to specify only the tags that you want to add or update. For example, suppose a container already has two tags (customer:CompanyA and priority:High). You want to change the priority tag and also add a third tag (type:Contract). For TagResource, you specify the following tags: priority:Medium, type:Contract. The result is that your container has three tags: customer:CompanyA, priority:Medium, and type:Contract.',
-        }),
-    ),
+    Resource: ContainerARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the container. ',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'An array of key:value pairs that you want to add to the container. You need to specify only the tags that you want to add or update. For example, suppose a container already has two tags (customer:CompanyA and priority:High). You want to change the priority tag and also add a third tag (type:Contract). For TagResource, you specify the following tags: priority:Medium, type:Contract. The result is that your container has three tags: customer:CompanyA, priority:Medium, and type:Contract.',
+    }),
   })
   .openapi({ required: ['Resource', 'Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceInputSchema = z
   .object({
-    Resource: ContainerARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the container.' }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A comma-separated list of keys for tags that you want to remove from the container. For example, if your container has two tags (customer:CompanyA and priority:High) and you want to remove one of the tags (priority:High), you specify the key for the tag that you want to remove (priority).',
-        }),
-    ),
+    Resource: ContainerARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the container.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'A comma-separated list of keys for tags that you want to remove from the container. For example, if your container has two tags (customer:CompanyA and priority:High) and you want to remove one of the tags (priority:High), you specify the key for the tag that you want to remove (priority).',
+    }),
   })
   .openapi({ required: ['Resource', 'TagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')

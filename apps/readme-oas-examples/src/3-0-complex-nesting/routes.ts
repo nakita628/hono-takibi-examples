@@ -71,7 +71,7 @@ const ObjectOfAdditionalPropertiesObjectPolymorphismSchema = z
         boolean: z.boolean().exactOptional(),
         metadata: z
           .xor([
-            z.object({}).openapi({ title: ' ' }),
+            z.looseObject({}).openapi({ title: ' ' }),
             FlatObjectSchema.openapi({ title: 'Flat object option 1' }),
             FlatObjectSchema.openapi({ title: 'Flat object option 2' }),
             FlatObjectSchema.openapi({ title: 'Flat object option 3' }),
@@ -84,7 +84,16 @@ const ObjectOfAdditionalPropertiesObjectPolymorphismSchema = z
   )
   .openapi('ObjectOfAdditionalPropertiesObjectPolymorphism')
 
-const ObjectOfEverythingSchema = z
+type ObjectOfEverythingType = {
+  objectOfObjectsAndArrays?: z.infer<typeof ObjectOfObjectsAndArraysSchema>
+  arrayOfObjectsOfObjectsAndArrays?: z.infer<typeof ArrayOfObjectsOfObjectsAndArraysSchema>
+  objectOfAdditionalProperties?: z.infer<
+    typeof ObjectOfAdditionalPropertiesObjectPolymorphismSchema
+  >
+  string?: string
+}
+
+const ObjectOfEverythingSchema: z.ZodType<ObjectOfEverythingType> = z
   .object({
     objectOfObjectsAndArrays: ObjectOfObjectsAndArraysSchema.exactOptional().openapi({
       description: 'Object containing objects and arrays',
@@ -103,7 +112,20 @@ const ObjectOfEverythingSchema = z
   .openapi({ required: [] })
   .openapi('ObjectOfEverything')
 
-const MultischemaOfEverythingSchema = z
+type MultischemaOfEverythingType =
+  | (
+      | z.infer<typeof ArrayOfObjectsOfObjectsAndArraysSchema>
+      | {
+          objEverything?: z.infer<typeof ObjectOfEverythingSchema>
+          flatObj?: z.infer<typeof FlatObjectSchema>
+        }
+    )
+  | z.infer<typeof ArrayOfPrimitivesSchema>
+  | z.infer<typeof ArrayOfFlatObjectsSchema>
+  | z.infer<typeof FlatObjectSchema>
+  | z.infer<typeof ObjectOfEverythingSchema>
+
+const MultischemaOfEverythingSchema: z.ZodType<MultischemaOfEverythingType> = z
   .xor([
     z.xor([
       ArrayOfObjectsOfObjectsAndArraysSchema,

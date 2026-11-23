@@ -391,7 +391,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/api/iconsets/v3/latest?term={term}&amount=25&offset=0&platform=ios7&language=en-US' \
+curl 'https://example.com/api/iconsets/v3/latest?term=string&amount=25&offset=0&platform=ios7&language=en-US' \
   -H 'Accept: application/json'
 ```
 
@@ -405,6 +405,7 @@ curl 'https://example.com/api/iconsets/v3/latest?term={term}&amount=25&offset=0&
 |offset|path|number|true|the offset from the first received result|
 |platform|path|string|true|the style of the icons|
 |language|path|string|true|the language code to get localized result|
+|term|path|string|true|none|
 
 #### Enumerated Values
 
@@ -778,7 +779,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/api/iconsets/v4/search?term=home&amount=50&offset=0&platform=all&language=en-US&exact_amount={exact_amount}' \
+curl 'https://example.com/api/iconsets/v4/search?term=home&amount=50&offset=0&platform=all&language=en-US&exact_amount=string' \
   -H 'Accept: application/json'
 ```
 
@@ -793,6 +794,7 @@ curl 'https://example.com/api/iconsets/v4/search?term=home&amount=50&offset=0&pl
 |offset|path|number|true|the offset from the first received result|
 |platform|path|string|true|the style of the icons|
 |language|path|string|true|the language code to get localized result|
+|exact_amount|path|string|true|none|
 
 #### Enumerated Values
 

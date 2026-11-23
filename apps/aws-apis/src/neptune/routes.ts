@@ -1,98 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const StringSchema = z.string().openapi('String')
-
-const TStampSchema = z.iso.datetime({ offset: true }).openapi('TStamp')
-
-const PendingMaintenanceActionSchema = z
-  .object({
-    Action: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of pending maintenance action that is available for the resource.',
-        }),
-    ).exactOptional(),
-    AutoAppliedAfterDate: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date of the maintenance window when the action is applied. The maintenance action is applied to the resource during its first maintenance window after this date. If this date is specified, any <code>next-maintenance</code> opt-in requests are ignored.',
-        }),
-    ).exactOptional(),
-    ForcedApplyDate: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the maintenance action is automatically applied. The maintenance action is applied to the resource on this date regardless of the maintenance window for the resource. If this date is specified, any <code>immediate</code> opt-in requests are ignored.',
-        }),
-    ).exactOptional(),
-    OptInStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the type of opt-in request that has been received for the resource.',
-        }),
-    ).exactOptional(),
-    CurrentApplyDate: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The effective date when the pending maintenance action is applied to the resource. This date takes into account opt-in requests received from the <a>ApplyPendingMaintenanceAction</a> API, the <code>AutoAppliedAfterDate</code>, and the <code>ForcedApplyDate</code>. This value is blank if an opt-in request has not been received and nothing has been specified as <code>AutoAppliedAfterDate</code> or <code>ForcedApplyDate</code>.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description providing more detail about the maintenance action.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Provides information about a pending maintenance action for a resource.',
-    required: [],
-  })
-  .openapi('PendingMaintenanceAction')
-
-const PendingMaintenanceActionDetailsSchema = z
-  .array(
-    PendingMaintenanceActionSchema.and(
-      z.any().openapi({ xml: { name: 'PendingMaintenanceAction' } }),
-    ),
-  )
-  .openapi('PendingMaintenanceActionDetails')
-
-const ResourcePendingMaintenanceActionsSchema = z
-  .object({
-    ResourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the resource that has pending maintenance actions.' }),
-    ).exactOptional(),
-    PendingMaintenanceActionDetails: PendingMaintenanceActionDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that provides details about the pending maintenance actions for the resource.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the pending maintenance actions for a resource.',
-    required: [],
-  })
-  .openapi('ResourcePendingMaintenanceActions')
-
-type PendingMaintenanceActionsType = (z.infer<typeof ResourcePendingMaintenanceActionsSchema> & {
-  [key: string]: unknown
-})[]
-
 const DBClusterNotFoundFaultSchema = z.any().openapi('DBClusterNotFoundFault')
 
 const DBClusterRoleAlreadyExistsFaultSchema = z.any().openapi('DBClusterRoleAlreadyExistsFault')
@@ -101,71 +8,53 @@ const InvalidDBClusterStateFaultSchema = z.any().openapi('InvalidDBClusterStateF
 
 const DBClusterRoleQuotaExceededFaultSchema = z.any().openapi('DBClusterRoleQuotaExceededFault')
 
+const StringSchema = z.string().openapi('String')
+
 const SourceIdsListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'SourceId' } })))
+  .array(StringSchema.openapi({ xml: { name: 'SourceId' } }))
   .openapi('SourceIdsList')
 
 const EventCategoriesListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'EventCategory' } })))
+  .array(StringSchema.openapi({ xml: { name: 'EventCategory' } }))
   .openapi('EventCategoriesList')
 
 const BooleanSchema = z.boolean().openapi('Boolean')
 
 const EventSubscriptionSchema = z
   .object({
-    CustomerAwsId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon customer account associated with the event notification subscription.',
-        }),
-    ).exactOptional(),
-    CustSubscriptionId: StringSchema.and(
-      z.any().openapi({ description: 'The event notification subscription Id.' }),
-    ).exactOptional(),
-    SnsTopicArn: StringSchema.and(
-      z.any().openapi({ description: 'The topic ARN of the event notification subscription.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the event notification subscription.</p> <p>Constraints:</p> <p>Can be one of the following: creating | modifying | deleting | active | no-permission | topic-not-exist</p> <p>The status "no-permission" indicates that Neptune no longer has permission to post to the SNS topic. The status "topic-not-exist" indicates that the topic was deleted after the subscription was created.</p>',
-        }),
-    ).exactOptional(),
-    SubscriptionCreationTime: StringSchema.and(
-      z.any().openapi({ description: 'The time the event notification subscription was created.' }),
-    ).exactOptional(),
-    SourceType: StringSchema.and(
-      z.any().openapi({ description: 'The source type for the event notification subscription.' }),
-    ).exactOptional(),
-    SourceIdsList: SourceIdsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of source IDs for the event notification subscription.' }),
-    ).exactOptional(),
-    EventCategoriesList: EventCategoriesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of event categories for the event notification subscription.',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating if the subscription is enabled. True indicates the subscription is enabled.',
-        }),
-    ).exactOptional(),
-    EventSubscriptionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the event subscription.' }),
-    ).exactOptional(),
+    CustomerAwsId: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon customer account associated with the event notification subscription.',
+    }),
+    CustSubscriptionId: StringSchema.exactOptional().openapi({
+      description: 'The event notification subscription Id.',
+    }),
+    SnsTopicArn: StringSchema.exactOptional().openapi({
+      description: 'The topic ARN of the event notification subscription.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the event notification subscription.</p> <p>Constraints:</p> <p>Can be one of the following: creating | modifying | deleting | active | no-permission | topic-not-exist</p> <p>The status "no-permission" indicates that Neptune no longer has permission to post to the SNS topic. The status "topic-not-exist" indicates that the topic was deleted after the subscription was created.</p>',
+    }),
+    SubscriptionCreationTime: StringSchema.exactOptional().openapi({
+      description: 'The time the event notification subscription was created.',
+    }),
+    SourceType: StringSchema.exactOptional().openapi({
+      description: 'The source type for the event notification subscription.',
+    }),
+    SourceIdsList: SourceIdsListSchema.exactOptional().openapi({
+      description: 'A list of source IDs for the event notification subscription.',
+    }),
+    EventCategoriesList: EventCategoriesListSchema.exactOptional().openapi({
+      description: 'A list of event categories for the event notification subscription.',
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating if the subscription is enabled. True indicates the subscription is enabled.',
+    }),
+    EventSubscriptionArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the event subscription.',
+    }),
   })
   .openapi({
     description:
@@ -185,22 +74,14 @@ const SourceNotFoundFaultSchema = z.any().openapi('SourceNotFoundFault')
 
 const TagSchema = z
   .object({
-    Key: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A key is the required name of the tag. The string value can be from 1 to 128 Unicode characters in length and can't be prefixed with <code>aws:</code> or <code>rds:</code>. The string can only contain the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-]*)$\").",
-        }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value is the optional value of the tag. The string value can be from 1 to 256 Unicode characters in length and can't be prefixed with <code>aws:</code> or <code>rds:</code>. The string can only contain the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-]*)$\").",
-        }),
-    ).exactOptional(),
+    Key: StringSchema.exactOptional().openapi({
+      description:
+        "A key is the required name of the tag. The string value can be from 1 to 128 Unicode characters in length and can't be prefixed with <code>aws:</code> or <code>rds:</code>. The string can only contain the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-]*)$\").",
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      description:
+        "A value is the optional value of the tag. The string value can be from 1 to 256 Unicode characters in length and can't be prefixed with <code>aws:</code> or <code>rds:</code>. The string can only contain the set of Unicode letters, digits, white-space, '_', '.', '/', '=', '+', '-' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-]*)$\").",
+    }),
   })
   .openapi({
     description: 'Metadata assigned to an Amazon Neptune resource consisting of a key-value pair.',
@@ -211,6 +92,58 @@ const TagSchema = z
 const DBInstanceNotFoundFaultSchema = z.any().openapi('DBInstanceNotFoundFault')
 
 const DBSnapshotNotFoundFaultSchema = z.any().openapi('DBSnapshotNotFoundFault')
+
+const TStampSchema = z.iso.datetime({ offset: true }).openapi('TStamp')
+
+const PendingMaintenanceActionSchema = z
+  .object({
+    Action: StringSchema.exactOptional().openapi({
+      description: 'The type of pending maintenance action that is available for the resource.',
+    }),
+    AutoAppliedAfterDate: TStampSchema.exactOptional().openapi({
+      description:
+        'The date of the maintenance window when the action is applied. The maintenance action is applied to the resource during its first maintenance window after this date. If this date is specified, any <code>next-maintenance</code> opt-in requests are ignored.',
+    }),
+    ForcedApplyDate: TStampSchema.exactOptional().openapi({
+      description:
+        'The date when the maintenance action is automatically applied. The maintenance action is applied to the resource on this date regardless of the maintenance window for the resource. If this date is specified, any <code>immediate</code> opt-in requests are ignored.',
+    }),
+    OptInStatus: StringSchema.exactOptional().openapi({
+      description: 'Indicates the type of opt-in request that has been received for the resource.',
+    }),
+    CurrentApplyDate: TStampSchema.exactOptional().openapi({
+      description:
+        'The effective date when the pending maintenance action is applied to the resource. This date takes into account opt-in requests received from the <a>ApplyPendingMaintenanceAction</a> API, the <code>AutoAppliedAfterDate</code>, and the <code>ForcedApplyDate</code>. This value is blank if an opt-in request has not been received and nothing has been specified as <code>AutoAppliedAfterDate</code> or <code>ForcedApplyDate</code>.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A description providing more detail about the maintenance action.',
+    }),
+  })
+  .openapi({
+    description: 'Provides information about a pending maintenance action for a resource.',
+    required: [],
+  })
+  .openapi('PendingMaintenanceAction')
+
+const PendingMaintenanceActionDetailsSchema = z
+  .array(PendingMaintenanceActionSchema.openapi({ xml: { name: 'PendingMaintenanceAction' } }))
+  .openapi('PendingMaintenanceActionDetails')
+
+const ResourcePendingMaintenanceActionsSchema = z
+  .object({
+    ResourceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the resource that has pending maintenance actions.',
+    }),
+    PendingMaintenanceActionDetails: PendingMaintenanceActionDetailsSchema.exactOptional().openapi({
+      description:
+        'A list that provides details about the pending maintenance actions for the resource.',
+    }),
+  })
+  .openapi({
+    description: 'Describes the pending maintenance actions for a resource.',
+    required: [],
+  })
+  .openapi('ResourcePendingMaintenanceActions')
 
 const ApplyPendingMaintenanceActionResultSchema = z
   .object({
@@ -223,32 +156,20 @@ const ResourceNotFoundFaultSchema = z.any().openapi('ResourceNotFoundFault')
 
 const DBClusterParameterGroupSchema = z
   .object({
-    DBClusterParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'Provides the name of the DB cluster parameter group.' }),
-    ).exactOptional(),
-    DBParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the name of the DB parameter group family that this DB cluster parameter group is compatible with.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the customer-specified description for this DB cluster parameter group.',
-        }),
-    ).exactOptional(),
-    DBClusterParameterGroupArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) for the DB cluster parameter group.',
-        }),
-    ).exactOptional(),
+    DBClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'Provides the name of the DB cluster parameter group.',
+    }),
+    DBParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        'Provides the name of the DB parameter group family that this DB cluster parameter group is compatible with.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description:
+        'Provides the customer-specified description for this DB cluster parameter group.',
+    }),
+    DBClusterParameterGroupArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the DB cluster parameter group.',
+    }),
   })
   .openapi({
     description:
@@ -273,134 +194,82 @@ const DBParameterGroupAlreadyExistsFaultSchema = z
   .openapi('DBParameterGroupAlreadyExistsFault')
 
 const AvailabilityZonesSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'AvailabilityZone' } })))
+  .array(StringSchema.openapi({ xml: { name: 'AvailabilityZone' } }))
   .openapi('AvailabilityZones')
 
 const IntegerSchema = z.int().openapi('Integer')
 
 const DBClusterSnapshotSchema = z
   .object({
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the list of EC2 Availability Zones that instances in the DB cluster snapshot can be restored in.',
-        }),
-    ).exactOptional(),
-    DBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the identifier for a DB cluster snapshot. Must match the identifier of an existing snapshot.</p> <p>After you restore a DB cluster using a <code>DBClusterSnapshotIdentifier</code>, you must specify the same <code>DBClusterSnapshotIdentifier</code> for any future updates to the DB cluster. When you specify this property for an update, the DB cluster is not restored from the snapshot again, and the data in the database is not changed.</p> <p>However, if you don't specify the <code>DBClusterSnapshotIdentifier</code>, an empty DB cluster is created, and the original DB cluster is deleted. If you specify a property that is different from the previous snapshot restore property, the DB cluster is restored from the snapshot specified by the <code>DBClusterSnapshotIdentifier</code>, and the original DB cluster is deleted.</p>",
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the DB cluster identifier of the DB cluster that this DB cluster snapshot was created from.',
-        }),
-    ).exactOptional(),
-    SnapshotCreateTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the time when the snapshot was taken, in Universal Coordinated Time (UTC).',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the name of the database engine.' }),
-    ).exactOptional(),
-    AllocatedStorage: IntegerSchema.and(
-      z.any().openapi({ description: 'Specifies the allocated storage size in gibibytes (GiB).' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the status of this DB cluster snapshot.' }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the port that the DB cluster was listening on at the time of the snapshot.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides the VPC ID associated with the DB cluster snapshot.' }),
-    ).exactOptional(),
-    ClusterCreateTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time when the DB cluster was created, in Universal Coordinated Time (UTC).',
-        }),
-    ).exactOptional(),
-    MasterUsername: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the version of the database engine for this DB cluster snapshot.',
-        }),
-    ).exactOptional(),
-    LicenseModel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the license model information for this DB cluster snapshot.',
-        }),
-    ).exactOptional(),
-    SnapshotType: StringSchema.and(
-      z.any().openapi({ description: 'Provides the type of the DB cluster snapshot.' }),
-    ).exactOptional(),
-    PercentProgress: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the percentage of the estimated data that has been transferred.',
-        }),
-    ).exactOptional(),
-    StorageEncrypted: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether the DB cluster snapshot is encrypted.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>StorageEncrypted</code> is true, the Amazon KMS key identifier for the encrypted DB cluster snapshot.',
-        }),
-    ).exactOptional(),
-    DBClusterSnapshotArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the DB cluster snapshot.' }),
-    ).exactOptional(),
-    SourceDBClusterSnapshotArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the DB cluster snapshot was copied from a source DB cluster snapshot, the Amazon Resource Name (ARN) for the source DB cluster snapshot, otherwise, a null value.',
-        }),
-    ).exactOptional(),
-    IAMDatabaseAuthenticationEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if mapping of Amazon Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.',
-        }),
-    ).exactOptional(),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description:
+        'Provides the list of EC2 Availability Zones that instances in the DB cluster snapshot can be restored in.',
+    }),
+    DBClusterSnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the identifier for a DB cluster snapshot. Must match the identifier of an existing snapshot.</p> <p>After you restore a DB cluster using a <code>DBClusterSnapshotIdentifier</code>, you must specify the same <code>DBClusterSnapshotIdentifier</code> for any future updates to the DB cluster. When you specify this property for an update, the DB cluster is not restored from the snapshot again, and the data in the database is not changed.</p> <p>However, if you don't specify the <code>DBClusterSnapshotIdentifier</code>, an empty DB cluster is created, and the original DB cluster is deleted. If you specify a property that is different from the previous snapshot restore property, the DB cluster is restored from the snapshot specified by the <code>DBClusterSnapshotIdentifier</code>, and the original DB cluster is deleted.</p>",
+    }),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the DB cluster identifier of the DB cluster that this DB cluster snapshot was created from.',
+    }),
+    SnapshotCreateTime: TStampSchema.exactOptional().openapi({
+      description:
+        'Provides the time when the snapshot was taken, in Universal Coordinated Time (UTC).',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'Specifies the name of the database engine.',
+    }),
+    AllocatedStorage: IntegerSchema.exactOptional().openapi({
+      description: 'Specifies the allocated storage size in gibibytes (GiB).',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'Specifies the status of this DB cluster snapshot.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      description:
+        'Specifies the port that the DB cluster was listening on at the time of the snapshot.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description: 'Provides the VPC ID associated with the DB cluster snapshot.',
+    }),
+    ClusterCreateTime: TStampSchema.exactOptional().openapi({
+      description:
+        'Specifies the time when the DB cluster was created, in Universal Coordinated Time (UTC).',
+    }),
+    MasterUsername: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'Provides the version of the database engine for this DB cluster snapshot.',
+    }),
+    LicenseModel: StringSchema.exactOptional().openapi({
+      description: 'Provides the license model information for this DB cluster snapshot.',
+    }),
+    SnapshotType: StringSchema.exactOptional().openapi({
+      description: 'Provides the type of the DB cluster snapshot.',
+    }),
+    PercentProgress: IntegerSchema.exactOptional().openapi({
+      description: 'Specifies the percentage of the estimated data that has been transferred.',
+    }),
+    StorageEncrypted: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the DB cluster snapshot is encrypted.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'If <code>StorageEncrypted</code> is true, the Amazon KMS key identifier for the encrypted DB cluster snapshot.',
+    }),
+    DBClusterSnapshotArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the DB cluster snapshot.',
+    }),
+    SourceDBClusterSnapshotArn: StringSchema.exactOptional().openapi({
+      description:
+        'If the DB cluster snapshot was copied from a source DB cluster snapshot, the Amazon Resource Name (ARN) for the source DB cluster snapshot, otherwise, a null value.',
+    }),
+    IAMDatabaseAuthenticationEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if mapping of Amazon Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.',
+    }),
   })
   .openapi({
     description:
@@ -430,29 +299,19 @@ const KMSKeyNotAccessibleFaultSchema = z.any().openapi('KMSKeyNotAccessibleFault
 
 const DBParameterGroupSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'Provides the name of the DB parameter group.' }),
-    ).exactOptional(),
-    DBParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the name of the DB parameter group family that this DB parameter group is compatible with.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the customer-specified description for this DB parameter group.',
-        }),
-    ).exactOptional(),
-    DBParameterGroupArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the DB parameter group.' }),
-    ).exactOptional(),
+    DBParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'Provides the name of the DB parameter group.',
+    }),
+    DBParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        'Provides the name of the DB parameter group family that this DB parameter group is compatible with.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'Provides the customer-specified description for this DB parameter group.',
+    }),
+    DBParameterGroupArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the DB parameter group.',
+    }),
   })
   .openapi({
     description:
@@ -470,61 +329,39 @@ const IntegerOptionalSchema = z.int().openapi('IntegerOptional')
 
 const DBClusterOptionGroupStatusSchema = z
   .object({
-    DBClusterOptionGroupName: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
+    DBClusterOptionGroupName: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    Status: StringSchema.exactOptional().openapi({ description: 'Not supported by Neptune.' }),
   })
   .openapi({ description: 'Not supported by Neptune.', required: [] })
   .openapi('DBClusterOptionGroupStatus')
 
 const DBClusterOptionGroupMembershipsSchema = z
-  .array(
-    DBClusterOptionGroupStatusSchema.and(
-      z.any().openapi({ xml: { name: 'DBClusterOptionGroup' } }),
-    ),
-  )
+  .array(DBClusterOptionGroupStatusSchema.openapi({ xml: { name: 'DBClusterOptionGroup' } }))
   .openapi('DBClusterOptionGroupMemberships')
 
 const ReadReplicaIdentifierListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'ReadReplicaIdentifier' } })))
+  .array(StringSchema.openapi({ xml: { name: 'ReadReplicaIdentifier' } }))
   .openapi('ReadReplicaIdentifierList')
 
 const DBClusterMemberSchema = z
   .object({
-    DBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the instance identifier for this member of the DB cluster.',
-        }),
-    ).exactOptional(),
-    IsClusterWriter: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Value that is <code>true</code> if the cluster member is the primary instance for the DB cluster and <code>false</code> otherwise.',
-        }),
-    ).exactOptional(),
-    DBClusterParameterGroupStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the status of the DB cluster parameter group for this member of the DB cluster.',
-        }),
-    ).exactOptional(),
-    PromotionTier: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that specifies the order in which a Read Replica is promoted to the primary instance after a failure of the existing primary instance.',
-        }),
-    ).exactOptional(),
+    DBInstanceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'Specifies the instance identifier for this member of the DB cluster.',
+    }),
+    IsClusterWriter: BooleanSchema.exactOptional().openapi({
+      description:
+        'Value that is <code>true</code> if the cluster member is the primary instance for the DB cluster and <code>false</code> otherwise.',
+    }),
+    DBClusterParameterGroupStatus: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the status of the DB cluster parameter group for this member of the DB cluster.',
+    }),
+    PromotionTier: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'A value that specifies the order in which a Read Replica is promoted to the primary instance after a failure of the existing primary instance.',
+    }),
   })
   .openapi({
     description: 'Contains information about an instance that is part of a DB cluster.',
@@ -533,17 +370,17 @@ const DBClusterMemberSchema = z
   .openapi('DBClusterMember')
 
 const DBClusterMemberListSchema = z
-  .array(DBClusterMemberSchema.and(z.any().openapi({ xml: { name: 'DBClusterMember' } })))
+  .array(DBClusterMemberSchema.openapi({ xml: { name: 'DBClusterMember' } }))
   .openapi('DBClusterMemberList')
 
 const VpcSecurityGroupMembershipSchema = z
   .object({
-    VpcSecurityGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the VPC security group.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the VPC security group.' }),
-    ).exactOptional(),
+    VpcSecurityGroupId: StringSchema.exactOptional().openapi({
+      description: 'The name of the VPC security group.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the VPC security group.',
+    }),
   })
   .openapi({
     description:
@@ -553,39 +390,23 @@ const VpcSecurityGroupMembershipSchema = z
   .openapi('VpcSecurityGroupMembership')
 
 const VpcSecurityGroupMembershipListSchema = z
-  .array(
-    VpcSecurityGroupMembershipSchema.and(
-      z.any().openapi({ xml: { name: 'VpcSecurityGroupMembership' } }),
-    ),
-  )
+  .array(VpcSecurityGroupMembershipSchema.openapi({ xml: { name: 'VpcSecurityGroupMembership' } }))
   .openapi('VpcSecurityGroupMembershipList')
 
 const DBClusterRoleSchema = z
   .object({
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that is associated with the DB cluster.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the state of association between the IAM role and the DB cluster. The Status property returns one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - the IAM role ARN is associated with the DB cluster and can be used to access other Amazon services on your behalf.</p> </li> <li> <p> <code>PENDING</code> - the IAM role ARN is being associated with the DB cluster.</p> </li> <li> <p> <code>INVALID</code> - the IAM role ARN is associated with the DB cluster, but the DB cluster is unable to assume the IAM role in order to access other Amazon services on your behalf.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FeatureName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the feature associated with the Amazon Identity and Access Management (IAM) role. For the list of supported feature names, see <a href="https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions">DescribeDBEngineVersions</a>. ',
-        }),
-    ).exactOptional(),
+    RoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that is associated with the DB cluster.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the state of association between the IAM role and the DB cluster. The Status property returns one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - the IAM role ARN is associated with the DB cluster and can be used to access other Amazon services on your behalf.</p> </li> <li> <p> <code>PENDING</code> - the IAM role ARN is being associated with the DB cluster.</p> </li> <li> <p> <code>INVALID</code> - the IAM role ARN is associated with the DB cluster, but the DB cluster is unable to assume the IAM role in order to access other Amazon services on your behalf.</p> </li> </ul>',
+    }),
+    FeatureName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the feature associated with the Amazon Identity and Access Management (IAM) role. For the list of supported feature names, see <a href="https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions">DescribeDBEngineVersions</a>. ',
+    }),
   })
   .openapi({
     description:
@@ -595,7 +416,7 @@ const DBClusterRoleSchema = z
   .openapi('DBClusterRole')
 
 const DBClusterRolesSchema = z
-  .array(DBClusterRoleSchema.and(z.any().openapi({ xml: { name: 'DBClusterRole' } })))
+  .array(DBClusterRoleSchema.openapi({ xml: { name: 'DBClusterRole' } }))
   .openapi('DBClusterRoles')
 
 const BooleanOptionalSchema = z.boolean().openapi('BooleanOptional')
@@ -604,22 +425,14 @@ const LogTypeListSchema = z.array(StringSchema).openapi('LogTypeList')
 
 const PendingCloudwatchLogsExportsSchema = z
   .object({
-    LogTypesToEnable: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Log types that are in the process of being deactivated. After they are deactivated, these log types aren't exported to CloudWatch Logs.",
-        }),
-    ).exactOptional(),
-    LogTypesToDisable: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Log types that are in the process of being enabled. After they are enabled, these log types are exported to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
+    LogTypesToEnable: LogTypeListSchema.exactOptional().openapi({
+      description:
+        "Log types that are in the process of being deactivated. After they are deactivated, these log types aren't exported to CloudWatch Logs.",
+    }),
+    LogTypesToDisable: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'Log types that are in the process of being enabled. After they are enabled, these log types are exported to CloudWatch Logs.',
+    }),
   })
   .openapi({
     description:
@@ -630,51 +443,31 @@ const PendingCloudwatchLogsExportsSchema = z
 
 const ClusterPendingModifiedValuesSchema = z
   .object({
-    PendingCloudwatchLogsExports: PendingCloudwatchLogsExportsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This <code>PendingCloudwatchLogsExports</code> structure specifies pending changes to which CloudWatch logs are enabled and which are disabled.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The DBClusterIdentifier value for the DB cluster.' }),
-    ).exactOptional(),
-    IAMDatabaseAuthenticationEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The database engine version.' }),
-    ).exactOptional(),
-    BackupRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of days for which automatic DB snapshots are retained.',
-        }),
-    ).exactOptional(),
-    AllocatedStorage: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The allocated storage size in gibibytes (GiB) for database engines. For Neptune, <code>AllocatedStorage</code> always returns 1, because Neptune DB cluster storage size isn't fixed, but instead automatically adjusts as needed.",
-        }),
-    ).exactOptional(),
-    Iops: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Provisioned IOPS (I/O operations per second) value. This setting is only for non-Aurora Multi-AZ DB clusters.',
-        }),
-    ).exactOptional(),
+    PendingCloudwatchLogsExports: PendingCloudwatchLogsExportsSchema.exactOptional().openapi({
+      description:
+        'This <code>PendingCloudwatchLogsExports</code> structure specifies pending changes to which CloudWatch logs are enabled and which are disabled.',
+    }),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The DBClusterIdentifier value for the DB cluster.',
+    }),
+    IAMDatabaseAuthenticationEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The database engine version.',
+    }),
+    BackupRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The number of days for which automatic DB snapshots are retained.',
+    }),
+    AllocatedStorage: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "The allocated storage size in gibibytes (GiB) for database engines. For Neptune, <code>AllocatedStorage</code> always returns 1, because Neptune DB cluster storage size isn't fixed, but instead automatically adjusts as needed.",
+    }),
+    Iops: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The Provisioned IOPS (I/O operations per second) value. This setting is only for non-Aurora Multi-AZ DB clusters.',
+    }),
   })
   .openapi({
     description:
@@ -687,22 +480,14 @@ const DoubleOptionalSchema = z.float64().openapi('DoubleOptional')
 
 const ServerlessV2ScalingConfigurationInfoSchema = z
   .object({
-    MinCapacity: DoubleOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
-        }),
-    ).exactOptional(),
-    MaxCapacity: DoubleOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
-        }),
-    ).exactOptional(),
+    MinCapacity: DoubleOptionalSchema.exactOptional().openapi({
+      description:
+        'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
+    }),
+    MaxCapacity: DoubleOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
+    }),
   })
   .openapi({
     description:
@@ -720,284 +505,154 @@ const GlobalClusterIdentifierSchema = z
 
 const DBClusterSchema = z
   .object({
-    AllocatedStorage: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>AllocatedStorage</code> always returns 1, because Neptune DB cluster storage size is not fixed, but instead automatically adjusts as needed.',
-        }),
-    ).exactOptional(),
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the list of EC2 Availability Zones that instances in the DB cluster can be created in.',
-        }),
-    ).exactOptional(),
-    BackupRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of days for which automatic DB snapshots are retained.',
-        }),
-    ).exactOptional(),
-    CharacterSetName: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    DatabaseName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the name of the initial database of this DB cluster that was provided at create time, if one was specified when the DB cluster was created. This same name is returned for the life of the DB cluster.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a user-supplied DB cluster identifier. This identifier is the unique key that identifies a DB cluster.',
-        }),
-    ).exactOptional(),
-    DBClusterParameterGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the name of the DB cluster parameter group for the DB cluster.',
-        }),
-    ).exactOptional(),
-    DBSubnetGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies information on the subnet group associated with the DB cluster, including the name, description, and subnets in the subnet group.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the current state of this DB cluster.' }),
-    ).exactOptional(),
-    PercentProgress: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the progress of the operation as a percentage.' }),
-    ).exactOptional(),
-    EarliestRestorableTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the earliest time to which a database can be restored with point-in-time restore.',
-        }),
-    ).exactOptional(),
-    Endpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the connection endpoint for the primary instance of the DB cluster.',
-        }),
-    ).exactOptional(),
-    ReaderEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The reader endpoint for the DB cluster. The reader endpoint for a DB cluster load-balances connections across the Read Replicas that are available in a DB cluster. As clients request new connections to the reader endpoint, Neptune distributes the connection requests among the Read Replicas in the DB cluster. This functionality can help balance your read workload across multiple Read Replicas in your DB cluster.</p> <p>If a failover occurs, and the Read Replica that you are connected to is promoted to be the primary instance, your connection is dropped. To continue sending your read workload to other Read Replicas in the cluster, you can then reconnect to the reader endpoint.</p>',
-        }),
-    ).exactOptional(),
-    MultiAZ: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the DB cluster has instances in multiple Availability Zones.',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the name of the database engine to be used for this DB cluster.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'Indicates the database engine version.' }),
-    ).exactOptional(),
-    LatestRestorableTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the latest time to which a database can be restored with point-in-time restore.',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the port that the database engine is listening on.' }),
-    ).exactOptional(),
-    MasterUsername: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    DBClusterOptionGroupMemberships: DBClusterOptionGroupMembershipsSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    PreferredBackupWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the daily time range during which automated backups are created if automated backups are enabled, as determined by the <code>BackupRetentionPeriod</code>.',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).',
-        }),
-    ).exactOptional(),
-    ReplicationSourceIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    ReadReplicaIdentifiers: ReadReplicaIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains one or more identifiers of the Read Replicas associated with this DB cluster.',
-        }),
-    ).exactOptional(),
-    DBClusterMembers: DBClusterMemberListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides the list of instances that make up the DB cluster.' }),
-    ).exactOptional(),
-    VpcSecurityGroups: VpcSecurityGroupMembershipListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides a list of VPC security groups that the DB cluster belongs to.',
-        }),
-    ).exactOptional(),
-    HostedZoneId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID that Amazon Route 53 assigns when you create a hosted zone.',
-        }),
-    ).exactOptional(),
-    StorageEncrypted: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether the DB cluster is encrypted.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>StorageEncrypted</code> is true, the Amazon KMS key identifier for the encrypted DB cluster.',
-        }),
-    ).exactOptional(),
-    DbClusterResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Region-unique, immutable identifier for the DB cluster. This identifier is found in Amazon CloudTrail log entries whenever the Amazon KMS key for the DB cluster is accessed.',
-        }),
-    ).exactOptional(),
-    DBClusterArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the DB cluster.' }),
-    ).exactOptional(),
-    AssociatedRoles: DBClusterRolesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides a list of the Amazon Identity and Access Management (IAM) roles that are associated with the DB cluster. IAM roles that are associated with a DB cluster grant permission for the DB cluster to access other Amazon services on your behalf.',
-        }),
-    ).exactOptional(),
-    IAMDatabaseAuthenticationEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if mapping of Amazon Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.',
-        }),
-    ).exactOptional(),
-    CloneGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifies the clone group to which the DB cluster is associated.',
-        }),
-    ).exactOptional(),
-    ClusterCreateTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time when the DB cluster was created, in Universal Coordinated Time (UTC).',
-        }),
-    ).exactOptional(),
-    CopyTagsToSnapshot: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>If set to <code>true</code>, tags are copied to any snapshot of the DB cluster that is created.</i> ',
-        }),
-    ).exactOptional(),
-    EnabledCloudwatchLogsExports: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of log types that this DB cluster is configured to export to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    PendingModifiedValues: ClusterPendingModifiedValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.',
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates whether or not the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled.",
-        }),
-    ).exactOptional(),
-    CrossAccountClone: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If set to <code>true</code>, the DB cluster can be cloned across accounts.',
-        }),
-    ).exactOptional(),
-    AutomaticRestartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Time at which the DB cluster will be automatically restarted.' }),
-    ).exactOptional(),
+    AllocatedStorage: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        ' <code>AllocatedStorage</code> always returns 1, because Neptune DB cluster storage size is not fixed, but instead automatically adjusts as needed.',
+    }),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description:
+        'Provides the list of EC2 Availability Zones that instances in the DB cluster can be created in.',
+    }),
+    BackupRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Specifies the number of days for which automatic DB snapshots are retained.',
+    }),
+    CharacterSetName: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    DatabaseName: StringSchema.exactOptional().openapi({
+      description:
+        'Contains the name of the initial database of this DB cluster that was provided at create time, if one was specified when the DB cluster was created. This same name is returned for the life of the DB cluster.',
+    }),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Contains a user-supplied DB cluster identifier. This identifier is the unique key that identifies a DB cluster.',
+    }),
+    DBClusterParameterGroup: StringSchema.exactOptional().openapi({
+      description: 'Specifies the name of the DB cluster parameter group for the DB cluster.',
+    }),
+    DBSubnetGroup: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies information on the subnet group associated with the DB cluster, including the name, description, and subnets in the subnet group.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'Specifies the current state of this DB cluster.',
+    }),
+    PercentProgress: StringSchema.exactOptional().openapi({
+      description: 'Specifies the progress of the operation as a percentage.',
+    }),
+    EarliestRestorableTime: TStampSchema.exactOptional().openapi({
+      description:
+        'Specifies the earliest time to which a database can be restored with point-in-time restore.',
+    }),
+    Endpoint: StringSchema.exactOptional().openapi({
+      description: 'Specifies the connection endpoint for the primary instance of the DB cluster.',
+    }),
+    ReaderEndpoint: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The reader endpoint for the DB cluster. The reader endpoint for a DB cluster load-balances connections across the Read Replicas that are available in a DB cluster. As clients request new connections to the reader endpoint, Neptune distributes the connection requests among the Read Replicas in the DB cluster. This functionality can help balance your read workload across multiple Read Replicas in your DB cluster.</p> <p>If a failover occurs, and the Read Replica that you are connected to is promoted to be the primary instance, your connection is dropped. To continue sending your read workload to other Read Replicas in the cluster, you can then reconnect to the reader endpoint.</p>',
+    }),
+    MultiAZ: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the DB cluster has instances in multiple Availability Zones.',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'Provides the name of the database engine to be used for this DB cluster.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'Indicates the database engine version.',
+    }),
+    LatestRestorableTime: TStampSchema.exactOptional().openapi({
+      description:
+        'Specifies the latest time to which a database can be restored with point-in-time restore.',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Specifies the port that the database engine is listening on.',
+    }),
+    MasterUsername: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    DBClusterOptionGroupMemberships: DBClusterOptionGroupMembershipsSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    PreferredBackupWindow: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the daily time range during which automated backups are created if automated backups are enabled, as determined by the <code>BackupRetentionPeriod</code>.',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).',
+    }),
+    ReplicationSourceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    ReadReplicaIdentifiers: ReadReplicaIdentifierListSchema.exactOptional().openapi({
+      description:
+        'Contains one or more identifiers of the Read Replicas associated with this DB cluster.',
+    }),
+    DBClusterMembers: DBClusterMemberListSchema.exactOptional().openapi({
+      description: 'Provides the list of instances that make up the DB cluster.',
+    }),
+    VpcSecurityGroups: VpcSecurityGroupMembershipListSchema.exactOptional().openapi({
+      description: 'Provides a list of VPC security groups that the DB cluster belongs to.',
+    }),
+    HostedZoneId: StringSchema.exactOptional().openapi({
+      description: 'Specifies the ID that Amazon Route 53 assigns when you create a hosted zone.',
+    }),
+    StorageEncrypted: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether the DB cluster is encrypted.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'If <code>StorageEncrypted</code> is true, the Amazon KMS key identifier for the encrypted DB cluster.',
+    }),
+    DbClusterResourceId: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Region-unique, immutable identifier for the DB cluster. This identifier is found in Amazon CloudTrail log entries whenever the Amazon KMS key for the DB cluster is accessed.',
+    }),
+    DBClusterArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the DB cluster.',
+    }),
+    AssociatedRoles: DBClusterRolesSchema.exactOptional().openapi({
+      description:
+        'Provides a list of the Amazon Identity and Access Management (IAM) roles that are associated with the DB cluster. IAM roles that are associated with a DB cluster grant permission for the DB cluster to access other Amazon services on your behalf.',
+    }),
+    IAMDatabaseAuthenticationEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if mapping of Amazon Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.',
+    }),
+    CloneGroupId: StringSchema.exactOptional().openapi({
+      description: 'Identifies the clone group to which the DB cluster is associated.',
+    }),
+    ClusterCreateTime: TStampSchema.exactOptional().openapi({
+      description:
+        'Specifies the time when the DB cluster was created, in Universal Coordinated Time (UTC).',
+    }),
+    CopyTagsToSnapshot: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' <i>If set to <code>true</code>, tags are copied to any snapshot of the DB cluster that is created.</i> ',
+    }),
+    EnabledCloudwatchLogsExports: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'A list of log types that this DB cluster is configured to export to CloudWatch Logs.',
+    }),
+    PendingModifiedValues: ClusterPendingModifiedValuesSchema.exactOptional().openapi({
+      description:
+        'This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.',
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "Indicates whether or not the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled.",
+    }),
+    CrossAccountClone: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'If set to <code>true</code>, the DB cluster can be cloned across accounts.',
+    }),
+    AutomaticRestartTime: TStampSchema.exactOptional().openapi({
+      description: 'Time at which the DB cluster will be automatically restarted.',
+    }),
     ServerlessV2ScalingConfiguration: ServerlessV2ScalingConfigurationInfoSchema.exactOptional(),
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a user-supplied global database cluster identifier. This identifier is the unique key that identifies a global database.',
-        }),
-    ).exactOptional(),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.exactOptional().openapi({
+      description:
+        'Contains a user-supplied global database cluster identifier. This identifier is the unique key that identifies a global database.',
+    }),
   })
   .openapi({
     description:
@@ -1047,76 +702,43 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const CreateDBClusterEndpointOutputSchema = z
   .object({
-    DBClusterEndpointIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterEndpointResourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique system-generated identifier for an endpoint. It remains the same for the whole life of the endpoint.',
-        }),
-    ).exactOptional(),
-    Endpoint: StringSchema.and(
-      z.any().openapi({ description: 'The DNS address of the endpoint.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the endpoint. One of: <code>creating</code>, <code>available</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. The <code>inactive</code> state applies to an endpoint that cannot be used for a certain kind of cluster, such as a <code>writer</code> endpoint for a read-only secondary cluster in a global database.',
-        }),
-    ).exactOptional(),
-    EndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>CUSTOM</code>.',
-        }),
-    ).exactOptional(),
-    CustomEndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type associated with a custom endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
-        }),
-    ).exactOptional(),
-    StaticMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of DB instance identifiers that are part of the custom endpoint group.',
-        }),
-    ).exactOptional(),
-    ExcludedMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
-        }),
-    ).exactOptional(),
-    DBClusterEndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the endpoint.' }),
-    ).exactOptional(),
+    DBClusterEndpointIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterEndpointResourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'A unique system-generated identifier for an endpoint. It remains the same for the whole life of the endpoint.',
+    }),
+    Endpoint: StringSchema.exactOptional().openapi({
+      description: 'The DNS address of the endpoint.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The current status of the endpoint. One of: <code>creating</code>, <code>available</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. The <code>inactive</code> state applies to an endpoint that cannot be used for a certain kind of cluster, such as a <code>writer</code> endpoint for a read-only secondary cluster in a global database.',
+    }),
+    EndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>CUSTOM</code>.',
+    }),
+    CustomEndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type associated with a custom endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
+    }),
+    StaticMembers: StringListSchema.exactOptional().openapi({
+      description: 'List of DB instance identifiers that are part of the custom endpoint group.',
+    }),
+    ExcludedMembers: StringListSchema.exactOptional().openapi({
+      description:
+        "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
+    }),
+    DBClusterEndpointArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the endpoint.',
+    }),
   })
   .openapi({
     description:
@@ -1145,22 +767,15 @@ const CreateDBClusterSnapshotResultSchema = z
 
 const EndpointSchema = z
   .object({
-    Address: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the DNS address of the DB instance.' }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the port that the database engine is listening on.' }),
-    ).exactOptional(),
-    HostedZoneId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ID that Amazon Route 53 assigns when you create a hosted zone.',
-        }),
-    ).exactOptional(),
+    Address: StringSchema.exactOptional().openapi({
+      description: 'Specifies the DNS address of the DB instance.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      description: 'Specifies the port that the database engine is listening on.',
+    }),
+    HostedZoneId: StringSchema.exactOptional().openapi({
+      description: 'Specifies the ID that Amazon Route 53 assigns when you create a hosted zone.',
+    }),
   })
   .openapi({
     description:
@@ -1171,28 +786,28 @@ const EndpointSchema = z
 
 const DBSecurityGroupMembershipSchema = z
   .object({
-    DBSecurityGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the DB security group.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the DB security group.' }),
-    ).exactOptional(),
+    DBSecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the DB security group.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the DB security group.',
+    }),
   })
   .openapi({ description: 'Specifies membership in a designated DB security group.', required: [] })
   .openapi('DBSecurityGroupMembership')
 
 const DBSecurityGroupMembershipListSchema = z
-  .array(DBSecurityGroupMembershipSchema.and(z.any().openapi({ xml: { name: 'DBSecurityGroup' } })))
+  .array(DBSecurityGroupMembershipSchema.openapi({ xml: { name: 'DBSecurityGroup' } }))
   .openapi('DBSecurityGroupMembershipList')
 
 const DBParameterGroupStatusSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the DP parameter group.' }),
-    ).exactOptional(),
-    ParameterApplyStatus: StringSchema.and(
-      z.any().openapi({ description: 'The status of parameter updates.' }),
-    ).exactOptional(),
+    DBParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the DP parameter group.',
+    }),
+    ParameterApplyStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of parameter updates.',
+    }),
   })
   .openapi({
     description:
@@ -1202,31 +817,29 @@ const DBParameterGroupStatusSchema = z
   .openapi('DBParameterGroupStatus')
 
 const DBParameterGroupStatusListSchema = z
-  .array(DBParameterGroupStatusSchema.and(z.any().openapi({ xml: { name: 'DBParameterGroup' } })))
+  .array(DBParameterGroupStatusSchema.openapi({ xml: { name: 'DBParameterGroup' } }))
   .openapi('DBParameterGroupStatusList')
 
 const AvailabilityZoneSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the availability zone.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the availability zone.',
+    }),
   })
   .openapi({ description: 'Specifies an Availability Zone.', required: [] })
   .openapi('AvailabilityZone')
 
 const SubnetSchema = z
   .object({
-    SubnetIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the identifier of the subnet.' }),
-    ).exactOptional(),
-    SubnetAvailabilityZone: AvailabilityZoneSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the EC2 Availability Zone that the subnet is in.' }),
-    ).exactOptional(),
-    SubnetStatus: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the status of the subnet.' }),
-    ).exactOptional(),
+    SubnetIdentifier: StringSchema.exactOptional().openapi({
+      description: 'Specifies the identifier of the subnet.',
+    }),
+    SubnetAvailabilityZone: AvailabilityZoneSchema.exactOptional().openapi({
+      description: 'Specifies the EC2 Availability Zone that the subnet is in.',
+    }),
+    SubnetStatus: StringSchema.exactOptional().openapi({
+      description: 'Specifies the status of the subnet.',
+    }),
   })
   .openapi({
     description:
@@ -1236,29 +849,29 @@ const SubnetSchema = z
   .openapi('Subnet')
 
 const SubnetListSchema = z
-  .array(SubnetSchema.and(z.any().openapi({ xml: { name: 'Subnet' } })))
+  .array(SubnetSchema.openapi({ xml: { name: 'Subnet' } }))
   .openapi('SubnetList')
 
 const DBSubnetGroupSchema = z
   .object({
-    DBSubnetGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the DB subnet group.' }),
-    ).exactOptional(),
-    DBSubnetGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'Provides the description of the DB subnet group.' }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z.any().openapi({ description: 'Provides the VpcId of the DB subnet group.' }),
-    ).exactOptional(),
-    SubnetGroupStatus: StringSchema.and(
-      z.any().openapi({ description: 'Provides the status of the DB subnet group.' }),
-    ).exactOptional(),
-    Subnets: SubnetListSchema.and(
-      z.any().openapi({ description: ' Contains a list of <a>Subnet</a> elements.' }),
-    ).exactOptional(),
-    DBSubnetGroupArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the DB subnet group.' }),
-    ).exactOptional(),
+    DBSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the DB subnet group.',
+    }),
+    DBSubnetGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'Provides the description of the DB subnet group.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description: 'Provides the VpcId of the DB subnet group.',
+    }),
+    SubnetGroupStatus: StringSchema.exactOptional().openapi({
+      description: 'Provides the status of the DB subnet group.',
+    }),
+    Subnets: SubnetListSchema.exactOptional().openapi({
+      description: ' Contains a list of <a>Subnet</a> elements.',
+    }),
+    DBSubnetGroupArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the DB subnet group.',
+    }),
   })
   .openapi({
     description:
@@ -1269,91 +882,54 @@ const DBSubnetGroupSchema = z
 
 const PendingModifiedValuesSchema = z
   .object({
-    DBInstanceClass: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains the new <code>DBInstanceClass</code> for the DB instance that will be applied or is currently being applied.',
-        }),
-    ).exactOptional(),
-    AllocatedStorage: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains the new <code>AllocatedStorage</code> size for the DB instance that will be applied or is currently being applied.',
-        }),
-    ).exactOptional(),
-    MasterUserPassword: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'Specifies the pending port for the DB instance.' }),
-    ).exactOptional(),
-    BackupRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the pending number of days for which automated backups are retained.',
-        }),
-    ).exactOptional(),
-    MultiAZ: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that the Single-AZ DB instance is to change to a Multi-AZ deployment.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'Indicates the database engine version.' }),
-    ).exactOptional(),
-    LicenseModel: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    Iops: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the new Provisioned IOPS value for the DB instance that will be applied or is currently being applied.',
-        }),
-    ).exactOptional(),
-    DBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains the new <code>DBInstanceIdentifier</code> for the DB instance that will be applied or is currently being applied.',
-        }),
-    ).exactOptional(),
-    StorageType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the storage type to be associated with the DB instance.',
-        }),
-    ).exactOptional(),
-    CACertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the identifier of the CA certificate for the DB instance.',
-        }),
-    ).exactOptional(),
-    DBSubnetGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The new DB subnet group for the DB instance.' }),
-    ).exactOptional(),
-    PendingCloudwatchLogsExports: PendingCloudwatchLogsExportsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This <code>PendingCloudwatchLogsExports</code> structure specifies pending changes to which CloudWatch logs are enabled and which are disabled.',
-        }),
-    ).exactOptional(),
+    DBInstanceClass: StringSchema.exactOptional().openapi({
+      description:
+        ' Contains the new <code>DBInstanceClass</code> for the DB instance that will be applied or is currently being applied.',
+    }),
+    AllocatedStorage: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        ' Contains the new <code>AllocatedStorage</code> size for the DB instance that will be applied or is currently being applied.',
+    }),
+    MasterUserPassword: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Specifies the pending port for the DB instance.',
+    }),
+    BackupRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Specifies the pending number of days for which automated backups are retained.',
+    }),
+    MultiAZ: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Indicates that the Single-AZ DB instance is to change to a Multi-AZ deployment.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'Indicates the database engine version.',
+    }),
+    LicenseModel: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    Iops: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'Specifies the new Provisioned IOPS value for the DB instance that will be applied or is currently being applied.',
+    }),
+    DBInstanceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        ' Contains the new <code>DBInstanceIdentifier</code> for the DB instance that will be applied or is currently being applied.',
+    }),
+    StorageType: StringSchema.exactOptional().openapi({
+      description: 'Specifies the storage type to be associated with the DB instance.',
+    }),
+    CACertificateIdentifier: StringSchema.exactOptional().openapi({
+      description: 'Specifies the identifier of the CA certificate for the DB instance.',
+    }),
+    DBSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The new DB subnet group for the DB instance.',
+    }),
+    PendingCloudwatchLogsExports: PendingCloudwatchLogsExportsSchema.exactOptional().openapi({
+      description:
+        'This <code>PendingCloudwatchLogsExports</code> structure specifies pending changes to which CloudWatch logs are enabled and which are disabled.',
+    }),
   })
   .openapi({
     description:
@@ -1363,60 +939,44 @@ const PendingModifiedValuesSchema = z
   .openapi('PendingModifiedValues')
 
 const ReadReplicaDBInstanceIdentifierListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'ReadReplicaDBInstanceIdentifier' } })))
+  .array(StringSchema.openapi({ xml: { name: 'ReadReplicaDBInstanceIdentifier' } }))
   .openapi('ReadReplicaDBInstanceIdentifierList')
 
 const ReadReplicaDBClusterIdentifierListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'ReadReplicaDBClusterIdentifier' } })))
+  .array(StringSchema.openapi({ xml: { name: 'ReadReplicaDBClusterIdentifier' } }))
   .openapi('ReadReplicaDBClusterIdentifierList')
 
 const OptionGroupMembershipSchema = z
   .object({
-    OptionGroupName: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
+    OptionGroupName: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    Status: StringSchema.exactOptional().openapi({ description: 'Not supported by Neptune.' }),
   })
   .openapi({ description: 'Not supported by Neptune.', required: [] })
   .openapi('OptionGroupMembership')
 
 const OptionGroupMembershipListSchema = z
-  .array(
-    OptionGroupMembershipSchema.and(z.any().openapi({ xml: { name: 'OptionGroupMembership' } })),
-  )
+  .array(OptionGroupMembershipSchema.openapi({ xml: { name: 'OptionGroupMembership' } }))
   .openapi('OptionGroupMembershipList')
 
 const DBInstanceStatusInfoSchema = z
   .object({
-    StatusType: StringSchema.and(
-      z.any().openapi({ description: 'This value is currently "read replication."' }),
-    ).exactOptional(),
-    Normal: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean value that is true if the instance is operating normally, or false if the instance is in an error state.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Status of the DB instance. For a StatusType of read replica, the values can be replicating, error, stopped, or terminated.',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details of the error if there is an error for the instance. If the instance is not in an error state, this value is blank.',
-        }),
-    ).exactOptional(),
+    StatusType: StringSchema.exactOptional().openapi({
+      description: 'This value is currently "read replication."',
+    }),
+    Normal: BooleanSchema.exactOptional().openapi({
+      description:
+        'Boolean value that is true if the instance is operating normally, or false if the instance is in an error state.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'Status of the DB instance. For a StatusType of read replica, the values can be replicating, error, stopped, or terminated.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description:
+        'Details of the error if there is an error for the instance. If the instance is not in an error state, this value is blank.',
+    }),
   })
   .openapi({
     description: 'Provides a list of status information for a DB instance.',
@@ -1425,37 +985,25 @@ const DBInstanceStatusInfoSchema = z
   .openapi('DBInstanceStatusInfo')
 
 const DBInstanceStatusInfoListSchema = z
-  .array(DBInstanceStatusInfoSchema.and(z.any().openapi({ xml: { name: 'DBInstanceStatusInfo' } })))
+  .array(DBInstanceStatusInfoSchema.openapi({ xml: { name: 'DBInstanceStatusInfo' } }))
   .openapi('DBInstanceStatusInfoList')
 
 const DomainMembershipSchema = z
   .object({
-    Domain: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the Active Directory Domain.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the DB instance's Active Directory Domain membership, such as joined, pending-join, failed etc).",
-        }),
-    ).exactOptional(),
-    FQDN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fully qualified domain name of the Active Directory Domain.',
-        }),
-    ).exactOptional(),
-    IAMRoleName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IAM role to be used when making API calls to the Directory Service.',
-        }),
-    ).exactOptional(),
+    Domain: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the Active Directory Domain.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        "The status of the DB instance's Active Directory Domain membership, such as joined, pending-join, failed etc).",
+    }),
+    FQDN: StringSchema.exactOptional().openapi({
+      description: 'The fully qualified domain name of the Active Directory Domain.',
+    }),
+    IAMRoleName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the IAM role to be used when making API calls to the Directory Service.',
+    }),
   })
   .openapi({
     description: 'An Active Directory Domain membership record associated with a DB instance.',
@@ -1464,335 +1012,194 @@ const DomainMembershipSchema = z
   .openapi('DomainMembership')
 
 const DomainMembershipListSchema = z
-  .array(DomainMembershipSchema.and(z.any().openapi({ xml: { name: 'DomainMembership' } })))
+  .array(DomainMembershipSchema.openapi({ xml: { name: 'DomainMembership' } }))
   .openapi('DomainMembershipList')
 
 const DBInstanceSchema = z
   .object({
-    DBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a user-supplied database identifier. This identifier is the unique key that identifies a DB instance.',
-        }),
-    ).exactOptional(),
-    DBInstanceClass: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the name of the compute and memory capacity class of the DB instance.',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the name of the database engine to be used for this DB instance.',
-        }),
-    ).exactOptional(),
-    DBInstanceStatus: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the current state of this database.' }),
-    ).exactOptional(),
-    MasterUsername: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    DBName: StringSchema.and(
-      z.any().openapi({ description: 'The database name.' }),
-    ).exactOptional(),
-    Endpoint: EndpointSchema.and(
-      z.any().openapi({ description: 'Specifies the connection endpoint.' }),
-    ).exactOptional(),
-    AllocatedStorage: IntegerSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    InstanceCreateTime: TStampSchema.and(
-      z.any().openapi({ description: 'Provides the date and time the DB instance was created.' }),
-    ).exactOptional(),
-    PreferredBackupWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the daily time range during which automated backups are created if automated backups are enabled, as determined by the <code>BackupRetentionPeriod</code>.',
-        }),
-    ).exactOptional(),
-    BackupRetentionPeriod: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of days for which automatic DB snapshots are retained.',
-        }),
-    ).exactOptional(),
-    DBSecurityGroups: DBSecurityGroupMembershipListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Provides List of DB security group elements containing only <code>DBSecurityGroup.Name</code> and <code>DBSecurityGroup.Status</code> subelements.',
-        }),
-    ).exactOptional(),
-    VpcSecurityGroups: VpcSecurityGroupMembershipListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides a list of VPC security group elements that the DB instance belongs to.',
-        }),
-    ).exactOptional(),
-    DBParameterGroups: DBParameterGroupStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the list of DB parameter groups applied to this DB instance.',
-        }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the name of the Availability Zone the DB instance is located in.',
-        }),
-    ).exactOptional(),
-    DBSubnetGroup: DBSubnetGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies information on the subnet group associated with the DB instance, including the name, description, and subnets in the subnet group.',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).',
-        }),
-    ).exactOptional(),
-    PendingModifiedValues: PendingModifiedValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that changes to the DB instance are pending. This element is only included when changes are pending. Specific changes are identified by subelements.',
-        }),
-    ).exactOptional(),
-    LatestRestorableTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the latest time to which a database can be restored with point-in-time restore.',
-        }),
-    ).exactOptional(),
-    MultiAZ: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies if the DB instance is a Multi-AZ deployment.' }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'Indicates the database engine version.' }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates that minor version patches are applied automatically.',
-        }),
-    ).exactOptional(),
-    ReadReplicaSourceDBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the identifier of the source DB instance if this DB instance is a Read Replica.',
-        }),
-    ).exactOptional(),
-    ReadReplicaDBInstanceIdentifiers: ReadReplicaDBInstanceIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains one or more identifiers of the Read Replicas associated with this DB instance.',
-        }),
-    ).exactOptional(),
-    ReadReplicaDBClusterIdentifiers: ReadReplicaDBClusterIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains one or more identifiers of DB clusters that are Read Replicas of this DB instance.',
-        }),
-    ).exactOptional(),
-    LicenseModel: StringSchema.and(
-      z.any().openapi({ description: 'License model information for this DB instance.' }),
-    ).exactOptional(),
-    Iops: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the Provisioned IOPS (I/O operations per second) value.',
-        }),
-    ).exactOptional(),
-    OptionGroupMemberships: OptionGroupMembershipListSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    CharacterSetName: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    SecondaryAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, specifies the name of the secondary Availability Zone for a DB instance with multi-AZ support.',
-        }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanSchema.and(
-      z.any().openapi({ deprecated: true, description: 'This flag should no longer be used.' }),
-    ).exactOptional(),
-    StatusInfos: DBInstanceStatusInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of a Read Replica. If the instance is not a Read Replica, this is blank.',
-        }),
-    ).exactOptional(),
-    StorageType: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the storage type associated with DB instance.' }),
-    ).exactOptional(),
-    TdeCredentialArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN from the key store with which the instance is associated for TDE encryption.',
-        }),
-    ).exactOptional(),
-    DbInstancePort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the port that the DB instance listens on. If the DB instance is part of a DB cluster, this can be a different port than the DB cluster port.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the DB instance is a member of a DB cluster, contains the name of the DB cluster that the DB instance is a member of.',
-        }),
-    ).exactOptional(),
-    StorageEncrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Not supported: The encryption for DB instances is managed by the DB cluster.',
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Not supported: The encryption for DB instances is managed by the DB cluster.',
-        }),
-    ).exactOptional(),
-    DbiResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Region-unique, immutable identifier for the DB instance. This identifier is found in Amazon CloudTrail log entries whenever the Amazon KMS key for the DB instance is accessed.',
-        }),
-    ).exactOptional(),
-    CACertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the CA certificate for this DB instance.' }),
-    ).exactOptional(),
-    DomainMemberships: DomainMembershipListSchema.and(
-      z.any().openapi({ description: 'Not supported' }),
-    ).exactOptional(),
-    CopyTagsToSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether tags are copied from the DB instance to snapshots of the DB instance.',
-        }),
-    ).exactOptional(),
-    MonitoringInterval: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance.',
-        }),
-    ).exactOptional(),
-    EnhancedMonitoringResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon CloudWatch Logs log stream that receives the Enhanced Monitoring metrics data for the DB instance.',
-        }),
-    ).exactOptional(),
-    MonitoringRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN for the IAM role that permits Neptune to send Enhanced Monitoring metrics to Amazon CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    PromotionTier: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that specifies the order in which a Read Replica is promoted to the primary instance after a failure of the existing primary instance. ',
-        }),
-    ).exactOptional(),
-    DBInstanceArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the DB instance.' }),
-    ).exactOptional(),
-    Timezone: StringSchema.and(z.any().openapi({ description: 'Not supported.' })).exactOptional(),
-    IAMDatabaseAuthenticationEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if Amazon Identity and Access Management (IAM) authentication is enabled, and otherwise false.',
-        }),
-    ).exactOptional(),
-    PerformanceInsightsEnabled: BooleanOptionalSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    PerformanceInsightsKMSKeyId: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    EnabledCloudwatchLogsExports: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of log types that this DB instance is configured to export to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the DB instance has deletion protection enabled. The instance can\'t be deleted when deletion protection is enabled. See <a href="https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html">Deleting a DB Instance</a>.',
-        }),
-    ).exactOptional(),
+    DBInstanceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Contains a user-supplied database identifier. This identifier is the unique key that identifies a DB instance.',
+    }),
+    DBInstanceClass: StringSchema.exactOptional().openapi({
+      description: 'Contains the name of the compute and memory capacity class of the DB instance.',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'Provides the name of the database engine to be used for this DB instance.',
+    }),
+    DBInstanceStatus: StringSchema.exactOptional().openapi({
+      description: 'Specifies the current state of this database.',
+    }),
+    MasterUsername: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    DBName: StringSchema.exactOptional().openapi({ description: 'The database name.' }),
+    Endpoint: EndpointSchema.exactOptional().openapi({
+      description: 'Specifies the connection endpoint.',
+    }),
+    AllocatedStorage: IntegerSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    InstanceCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'Provides the date and time the DB instance was created.',
+    }),
+    PreferredBackupWindow: StringSchema.exactOptional().openapi({
+      description:
+        ' Specifies the daily time range during which automated backups are created if automated backups are enabled, as determined by the <code>BackupRetentionPeriod</code>.',
+    }),
+    BackupRetentionPeriod: IntegerSchema.exactOptional().openapi({
+      description: 'Specifies the number of days for which automatic DB snapshots are retained.',
+    }),
+    DBSecurityGroups: DBSecurityGroupMembershipListSchema.exactOptional().openapi({
+      description:
+        ' Provides List of DB security group elements containing only <code>DBSecurityGroup.Name</code> and <code>DBSecurityGroup.Status</code> subelements.',
+    }),
+    VpcSecurityGroups: VpcSecurityGroupMembershipListSchema.exactOptional().openapi({
+      description:
+        'Provides a list of VPC security group elements that the DB instance belongs to.',
+    }),
+    DBParameterGroups: DBParameterGroupStatusListSchema.exactOptional().openapi({
+      description: 'Provides the list of DB parameter groups applied to this DB instance.',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'Specifies the name of the Availability Zone the DB instance is located in.',
+    }),
+    DBSubnetGroup: DBSubnetGroupSchema.exactOptional().openapi({
+      description:
+        'Specifies information on the subnet group associated with the DB instance, including the name, description, and subnets in the subnet group.',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).',
+    }),
+    PendingModifiedValues: PendingModifiedValuesSchema.exactOptional().openapi({
+      description:
+        'Specifies that changes to the DB instance are pending. This element is only included when changes are pending. Specific changes are identified by subelements.',
+    }),
+    LatestRestorableTime: TStampSchema.exactOptional().openapi({
+      description:
+        'Specifies the latest time to which a database can be restored with point-in-time restore.',
+    }),
+    MultiAZ: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies if the DB instance is a Multi-AZ deployment.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'Indicates the database engine version.',
+    }),
+    AutoMinorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates that minor version patches are applied automatically.',
+    }),
+    ReadReplicaSourceDBInstanceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'Contains the identifier of the source DB instance if this DB instance is a Read Replica.',
+    }),
+    ReadReplicaDBInstanceIdentifiers:
+      ReadReplicaDBInstanceIdentifierListSchema.exactOptional().openapi({
+        description:
+          'Contains one or more identifiers of the Read Replicas associated with this DB instance.',
+      }),
+    ReadReplicaDBClusterIdentifiers:
+      ReadReplicaDBClusterIdentifierListSchema.exactOptional().openapi({
+        description:
+          'Contains one or more identifiers of DB clusters that are Read Replicas of this DB instance.',
+      }),
+    LicenseModel: StringSchema.exactOptional().openapi({
+      description: 'License model information for this DB instance.',
+    }),
+    Iops: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Specifies the Provisioned IOPS (I/O operations per second) value.',
+    }),
+    OptionGroupMemberships: OptionGroupMembershipListSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    CharacterSetName: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    SecondaryAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'If present, specifies the name of the secondary Availability Zone for a DB instance with multi-AZ support.',
+    }),
+    PubliclyAccessible: BooleanSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'This flag should no longer be used.',
+    }),
+    StatusInfos: DBInstanceStatusInfoListSchema.exactOptional().openapi({
+      description:
+        'The status of a Read Replica. If the instance is not a Read Replica, this is blank.',
+    }),
+    StorageType: StringSchema.exactOptional().openapi({
+      description: 'Specifies the storage type associated with DB instance.',
+    }),
+    TdeCredentialArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN from the key store with which the instance is associated for TDE encryption.',
+    }),
+    DbInstancePort: IntegerSchema.exactOptional().openapi({
+      description:
+        'Specifies the port that the DB instance listens on. If the DB instance is part of a DB cluster, this can be a different port than the DB cluster port.',
+    }),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'If the DB instance is a member of a DB cluster, contains the name of the DB cluster that the DB instance is a member of.',
+    }),
+    StorageEncrypted: BooleanSchema.exactOptional().openapi({
+      description: 'Not supported: The encryption for DB instances is managed by the DB cluster.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description: ' Not supported: The encryption for DB instances is managed by the DB cluster.',
+    }),
+    DbiResourceId: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Region-unique, immutable identifier for the DB instance. This identifier is found in Amazon CloudTrail log entries whenever the Amazon KMS key for the DB instance is accessed.',
+    }),
+    CACertificateIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the CA certificate for this DB instance.',
+    }),
+    DomainMemberships: DomainMembershipListSchema.exactOptional().openapi({
+      description: 'Not supported',
+    }),
+    CopyTagsToSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether tags are copied from the DB instance to snapshots of the DB instance.',
+    }),
+    MonitoringInterval: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance.',
+    }),
+    EnhancedMonitoringResourceArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon CloudWatch Logs log stream that receives the Enhanced Monitoring metrics data for the DB instance.',
+    }),
+    MonitoringRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN for the IAM role that permits Neptune to send Enhanced Monitoring metrics to Amazon CloudWatch Logs.',
+    }),
+    PromotionTier: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'A value that specifies the order in which a Read Replica is promoted to the primary instance after a failure of the existing primary instance. ',
+    }),
+    DBInstanceArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the DB instance.',
+    }),
+    Timezone: StringSchema.exactOptional().openapi({ description: 'Not supported.' }),
+    IAMDatabaseAuthenticationEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if Amazon Identity and Access Management (IAM) authentication is enabled, and otherwise false.',
+    }),
+    PerformanceInsightsEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    PerformanceInsightsKMSKeyId: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    EnabledCloudwatchLogsExports: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'A list of log types that this DB instance is configured to export to CloudWatch Logs.',
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the DB instance has deletion protection enabled. The instance can\'t be deleted when deletion protection is enabled. See <a href="https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html">Deleting a DB Instance</a>.',
+    }),
   })
   .openapi({
     description:
@@ -1867,27 +1274,17 @@ const ReadersArnListSchema = z.array(StringSchema).openapi('ReadersArnList')
 
 const GlobalClusterMemberSchema = z
   .object({
-    DBClusterArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The Amazon Resource Name (ARN) for each Neptune cluster. ' }),
-    ).exactOptional(),
-    Readers: ReadersArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) for each read-only secondary cluster associated with the Neptune global database. ',
-        }),
-    ).exactOptional(),
-    IsWriter: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether the Neptune cluster is the primary cluster (that is, has read-write capability) for the Neptune global database with which it is associated. ',
-        }),
-    ).exactOptional(),
+    DBClusterArn: StringSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) for each Neptune cluster. ',
+    }),
+    Readers: ReadersArnListSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) for each read-only secondary cluster associated with the Neptune global database. ',
+    }),
+    IsWriter: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Specifies whether the Neptune cluster is the primary cluster (that is, has read-write capability) for the Neptune global database with which it is associated. ',
+    }),
   })
   .openapi({
     description:
@@ -1897,58 +1294,42 @@ const GlobalClusterMemberSchema = z
   .openapi('GlobalClusterMember')
 
 const GlobalClusterMemberListSchema = z
-  .array(GlobalClusterMemberSchema.and(z.any().openapi({ xml: { name: 'GlobalClusterMember' } })))
+  .array(GlobalClusterMemberSchema.openapi({ xml: { name: 'GlobalClusterMember' } }))
   .openapi('GlobalClusterMemberList')
 
 const GlobalClusterSchema = z
   .object({
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a user-supplied global database cluster identifier. This identifier is the unique key that identifies a global database.',
-        }),
-    ).exactOptional(),
-    GlobalClusterResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An immutable identifier for the global database that is unique within in all regions. This identifier is found in CloudTrail log entries whenever the KMS key for the DB cluster is accessed.',
-        }),
-    ).exactOptional(),
-    GlobalClusterArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the global database.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the current state of this global database.' }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Neptune database engine used by the global database (<code>"neptune"</code>).',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The Neptune engine version used by the global database.' }),
-    ).exactOptional(),
-    StorageEncrypted: BooleanOptionalSchema.and(
-      z.any().openapi({ description: 'The storage encryption setting for the global database.' }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z.any().openapi({ description: 'The deletion protection setting for the global database.' }),
-    ).exactOptional(),
-    GlobalClusterMembers: GlobalClusterMemberListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cluster ARNs and instance ARNs for all the DB clusters that are part of the global database.',
-        }),
-    ).exactOptional(),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.exactOptional().openapi({
+      description:
+        'Contains a user-supplied global database cluster identifier. This identifier is the unique key that identifies a global database.',
+    }),
+    GlobalClusterResourceId: StringSchema.exactOptional().openapi({
+      description:
+        'An immutable identifier for the global database that is unique within in all regions. This identifier is found in CloudTrail log entries whenever the KMS key for the DB cluster is accessed.',
+    }),
+    GlobalClusterArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the global database.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'Specifies the current state of this global database.',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description:
+        'The Neptune database engine used by the global database (<code>"neptune"</code>).',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The Neptune engine version used by the global database.',
+    }),
+    StorageEncrypted: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'The storage encryption setting for the global database.',
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'The deletion protection setting for the global database.',
+    }),
+    GlobalClusterMembers: GlobalClusterMemberListSchema.exactOptional().openapi({
+      description:
+        'A list of cluster ARNs and instance ARNs for all the DB clusters that are part of the global database.',
+    }),
   })
   .openapi({
     description:
@@ -1973,76 +1354,43 @@ const DeleteDBClusterResultSchema = z
 
 const DeleteDBClusterEndpointOutputSchema = z
   .object({
-    DBClusterEndpointIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterEndpointResourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique system-generated identifier for an endpoint. It remains the same for the whole life of the endpoint.',
-        }),
-    ).exactOptional(),
-    Endpoint: StringSchema.and(
-      z.any().openapi({ description: 'The DNS address of the endpoint.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the endpoint. One of: <code>creating</code>, <code>available</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. The <code>inactive</code> state applies to an endpoint that cannot be used for a certain kind of cluster, such as a <code>writer</code> endpoint for a read-only secondary cluster in a global database.',
-        }),
-    ).exactOptional(),
-    EndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>CUSTOM</code>.',
-        }),
-    ).exactOptional(),
-    CustomEndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type associated with a custom endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
-        }),
-    ).exactOptional(),
-    StaticMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of DB instance identifiers that are part of the custom endpoint group.',
-        }),
-    ).exactOptional(),
-    ExcludedMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
-        }),
-    ).exactOptional(),
-    DBClusterEndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the endpoint.' }),
-    ).exactOptional(),
+    DBClusterEndpointIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterEndpointResourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'A unique system-generated identifier for an endpoint. It remains the same for the whole life of the endpoint.',
+    }),
+    Endpoint: StringSchema.exactOptional().openapi({
+      description: 'The DNS address of the endpoint.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The current status of the endpoint. One of: <code>creating</code>, <code>available</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. The <code>inactive</code> state applies to an endpoint that cannot be used for a certain kind of cluster, such as a <code>writer</code> endpoint for a read-only secondary cluster in a global database.',
+    }),
+    EndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>CUSTOM</code>.',
+    }),
+    CustomEndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type associated with a custom endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
+    }),
+    StaticMembers: StringListSchema.exactOptional().openapi({
+      description: 'List of DB instance identifiers that are part of the custom endpoint group.',
+    }),
+    ExcludedMembers: StringListSchema.exactOptional().openapi({
+      description:
+        "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
+    }),
+    DBClusterEndpointArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the endpoint.',
+    }),
   })
   .openapi({
     description:
@@ -2089,76 +1437,43 @@ const DeleteGlobalClusterResultSchema = z
 
 const DBClusterEndpointSchema = z
   .object({
-    DBClusterEndpointIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterEndpointResourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique system-generated identifier for an endpoint. It remains the same for the whole life of the endpoint.',
-        }),
-    ).exactOptional(),
-    Endpoint: StringSchema.and(
-      z.any().openapi({ description: 'The DNS address of the endpoint.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the endpoint. One of: <code>creating</code>, <code>available</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. The <code>inactive</code> state applies to an endpoint that cannot be used for a certain kind of cluster, such as a <code>writer</code> endpoint for a read-only secondary cluster in a global database.',
-        }),
-    ).exactOptional(),
-    EndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>CUSTOM</code>.',
-        }),
-    ).exactOptional(),
-    CustomEndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type associated with a custom endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
-        }),
-    ).exactOptional(),
-    StaticMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of DB instance identifiers that are part of the custom endpoint group.',
-        }),
-    ).exactOptional(),
-    ExcludedMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
-        }),
-    ).exactOptional(),
-    DBClusterEndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the endpoint.' }),
-    ).exactOptional(),
+    DBClusterEndpointIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterEndpointResourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'A unique system-generated identifier for an endpoint. It remains the same for the whole life of the endpoint.',
+    }),
+    Endpoint: StringSchema.exactOptional().openapi({
+      description: 'The DNS address of the endpoint.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The current status of the endpoint. One of: <code>creating</code>, <code>available</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. The <code>inactive</code> state applies to an endpoint that cannot be used for a certain kind of cluster, such as a <code>writer</code> endpoint for a read-only secondary cluster in a global database.',
+    }),
+    EndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>CUSTOM</code>.',
+    }),
+    CustomEndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type associated with a custom endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
+    }),
+    StaticMembers: StringListSchema.exactOptional().openapi({
+      description: 'List of DB instance identifiers that are part of the custom endpoint group.',
+    }),
+    ExcludedMembers: StringListSchema.exactOptional().openapi({
+      description:
+        "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
+    }),
+    DBClusterEndpointArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the endpoint.',
+    }),
   })
   .openapi({
     description:
@@ -2168,68 +1483,50 @@ const DBClusterEndpointSchema = z
   .openapi('DBClusterEndpoint')
 
 const DBClusterEndpointListSchema = z
-  .array(DBClusterEndpointSchema.and(z.any().openapi({ xml: { name: 'DBClusterEndpointList' } })))
+  .array(DBClusterEndpointSchema.openapi({ xml: { name: 'DBClusterEndpointList' } }))
   .openapi('DBClusterEndpointList')
 
 const DBClusterEndpointMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribeDBClusterEndpoints</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
-        }),
-    ).exactOptional(),
-    DBClusterEndpoints: DBClusterEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the details of the endpoints associated with the cluster and matching any filter conditions.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribeDBClusterEndpoints</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
+    }),
+    DBClusterEndpoints: DBClusterEndpointListSchema.exactOptional().openapi({
+      description:
+        'Contains the details of the endpoints associated with the cluster and matching any filter conditions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBClusterEndpointMessage')
 
 const FilterValueListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'Value' } })))
+  .array(StringSchema.openapi({ xml: { name: 'Value' } }))
   .openapi('FilterValueList')
 
 const FilterSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ),
-    Values: FilterValueListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ),
+    Name: StringSchema.openapi({ description: 'This parameter is not currently supported.' }),
+    Values: FilterValueListSchema.openapi({
+      description: 'This parameter is not currently supported.',
+    }),
   })
   .openapi({ required: ['Name', 'Values'], description: 'This type is not currently supported.' })
   .openapi('Filter')
 
 const DBClusterParameterGroupListSchema = z
-  .array(
-    DBClusterParameterGroupSchema.and(
-      z.any().openapi({ xml: { name: 'DBClusterParameterGroup' } }),
-    ),
-  )
+  .array(DBClusterParameterGroupSchema.openapi({ xml: { name: 'DBClusterParameterGroup' } }))
   .openapi('DBClusterParameterGroupList')
 
 const DBClusterParameterGroupsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribeDBClusterParameterGroups</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    DBClusterParameterGroups: DBClusterParameterGroupListSchema.and(
-      z.any().openapi({ description: 'A list of DB cluster parameter groups.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribeDBClusterParameterGroups</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    DBClusterParameterGroups: DBClusterParameterGroupListSchema.exactOptional().openapi({
+      description: 'A list of DB cluster parameter groups.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBClusterParameterGroupsMessage')
@@ -2238,94 +1535,72 @@ const ApplyMethodSchema = z.enum(['immediate', 'pending-reboot']).openapi('Apply
 
 const ParameterSchema = z
   .object({
-    ParameterName: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the name of the parameter.' }),
-    ).exactOptional(),
-    ParameterValue: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the value of the parameter.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'Provides a description of the parameter.' }),
-    ).exactOptional(),
-    Source: StringSchema.and(
-      z.any().openapi({ description: 'Indicates the source of the parameter value.' }),
-    ).exactOptional(),
-    ApplyType: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the engine specific parameters type.' }),
-    ).exactOptional(),
-    DataType: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the valid data type for the parameter.' }),
-    ).exactOptional(),
-    AllowedValues: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the valid range of values for the parameter.' }),
-    ).exactOptional(),
-    IsModifiable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
-        }),
-    ).exactOptional(),
-    MinimumEngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The earliest engine version to which the parameter can apply.' }),
-    ).exactOptional(),
-    ApplyMethod: ApplyMethodSchema.and(
-      z.any().openapi({ description: 'Indicates when to apply parameter updates.' }),
-    ).exactOptional(),
+    ParameterName: StringSchema.exactOptional().openapi({
+      description: 'Specifies the name of the parameter.',
+    }),
+    ParameterValue: StringSchema.exactOptional().openapi({
+      description: 'Specifies the value of the parameter.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'Provides a description of the parameter.',
+    }),
+    Source: StringSchema.exactOptional().openapi({
+      description: 'Indicates the source of the parameter value.',
+    }),
+    ApplyType: StringSchema.exactOptional().openapi({
+      description: 'Specifies the engine specific parameters type.',
+    }),
+    DataType: StringSchema.exactOptional().openapi({
+      description: 'Specifies the valid data type for the parameter.',
+    }),
+    AllowedValues: StringSchema.exactOptional().openapi({
+      description: 'Specifies the valid range of values for the parameter.',
+    }),
+    IsModifiable: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
+    }),
+    MinimumEngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The earliest engine version to which the parameter can apply.',
+    }),
+    ApplyMethod: ApplyMethodSchema.exactOptional().openapi({
+      description: 'Indicates when to apply parameter updates.',
+    }),
   })
   .openapi({ description: 'Specifies a parameter.', required: [] })
   .openapi('Parameter')
 
 const ParametersListSchema = z
-  .array(ParameterSchema.and(z.any().openapi({ xml: { name: 'Parameter' } })))
+  .array(ParameterSchema.openapi({ xml: { name: 'Parameter' } }))
   .openapi('ParametersList')
 
 const DBClusterParameterGroupDetailsSchema = z
   .object({
-    Parameters: ParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides a list of parameters for the DB cluster parameter group.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous DescribeDBClusterParameters request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
-        }),
-    ).exactOptional(),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description: 'Provides a list of parameters for the DB cluster parameter group.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous DescribeDBClusterParameters request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBClusterParameterGroupDetails')
 
 const AttributeValueListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'AttributeValue' } })))
+  .array(StringSchema.openapi({ xml: { name: 'AttributeValue' } }))
   .openapi('AttributeValueList')
 
 const DBClusterSnapshotAttributeSchema = z
   .object({
-    AttributeName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the manual DB cluster snapshot attribute.</p> <p>The attribute named <code>restore</code> refers to the list of Amazon accounts that have permission to copy or restore the manual DB cluster snapshot. For more information, see the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>',
-        }),
-    ).exactOptional(),
-    AttributeValues: AttributeValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value(s) for the manual DB cluster snapshot attribute.</p> <p>If the <code>AttributeName</code> field is set to <code>restore</code>, then this element returns a list of IDs of the Amazon accounts that are authorized to copy or restore the manual DB cluster snapshot. If a value of <code>all</code> is in the list, then the manual DB cluster snapshot is public and available for any Amazon account to copy or restore.</p>',
-        }),
-    ).exactOptional(),
+    AttributeName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the manual DB cluster snapshot attribute.</p> <p>The attribute named <code>restore</code> refers to the list of Amazon accounts that have permission to copy or restore the manual DB cluster snapshot. For more information, see the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>',
+    }),
+    AttributeValues: AttributeValueListSchema.exactOptional().openapi({
+      description:
+        '<p>The value(s) for the manual DB cluster snapshot attribute.</p> <p>If the <code>AttributeName</code> field is set to <code>restore</code>, then this element returns a list of IDs of the Amazon accounts that are authorized to copy or restore the manual DB cluster snapshot. If a value of <code>all</code> is in the list, then the manual DB cluster snapshot is public and available for any Amazon account to copy or restore.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2335,30 +1610,17 @@ const DBClusterSnapshotAttributeSchema = z
   .openapi('DBClusterSnapshotAttribute')
 
 const DBClusterSnapshotAttributeListSchema = z
-  .array(
-    DBClusterSnapshotAttributeSchema.and(
-      z.any().openapi({ xml: { name: 'DBClusterSnapshotAttribute' } }),
-    ),
-  )
+  .array(DBClusterSnapshotAttributeSchema.openapi({ xml: { name: 'DBClusterSnapshotAttribute' } }))
   .openapi('DBClusterSnapshotAttributeList')
 
 const DBClusterSnapshotAttributesResultSchema = z
   .object({
-    DBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the manual DB cluster snapshot that the attributes apply to.',
-        }),
-    ).exactOptional(),
-    DBClusterSnapshotAttributes: DBClusterSnapshotAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of attributes and values for the manual DB cluster snapshot.',
-        }),
-    ).exactOptional(),
+    DBClusterSnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the manual DB cluster snapshot that the attributes apply to.',
+    }),
+    DBClusterSnapshotAttributes: DBClusterSnapshotAttributeListSchema.exactOptional().openapi({
+      description: 'The list of attributes and values for the manual DB cluster snapshot.',
+    }),
   })
   .openapi({
     description:
@@ -2375,102 +1637,78 @@ const DescribeDBClusterSnapshotAttributesResultSchema = z
   .openapi('DescribeDBClusterSnapshotAttributesResult')
 
 const DBClusterSnapshotListSchema = z
-  .array(DBClusterSnapshotSchema.and(z.any().openapi({ xml: { name: 'DBClusterSnapshot' } })))
+  .array(DBClusterSnapshotSchema.openapi({ xml: { name: 'DBClusterSnapshot' } }))
   .openapi('DBClusterSnapshotList')
 
 const DBClusterSnapshotMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <a>DescribeDBClusterSnapshots</a> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
-        }),
-    ).exactOptional(),
-    DBClusterSnapshots: DBClusterSnapshotListSchema.and(
-      z.any().openapi({ description: 'Provides a list of DB cluster snapshots for the user.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <a>DescribeDBClusterSnapshots</a> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
+    }),
+    DBClusterSnapshots: DBClusterSnapshotListSchema.exactOptional().openapi({
+      description: 'Provides a list of DB cluster snapshots for the user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBClusterSnapshotMessage')
 
 const DBClusterListSchema = z
-  .array(DBClusterSchema.and(z.any().openapi({ xml: { name: 'DBCluster' } })))
+  .array(DBClusterSchema.openapi({ xml: { name: 'DBCluster' } }))
   .openapi('DBClusterList')
 
 const DBClusterMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token that can be used in a subsequent DescribeDBClusters request.',
-        }),
-    ).exactOptional(),
-    DBClusters: DBClusterListSchema.and(
-      z.any().openapi({ description: 'Contains a list of DB clusters for the user.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A pagination token that can be used in a subsequent DescribeDBClusters request.',
+    }),
+    DBClusters: DBClusterListSchema.exactOptional().openapi({
+      description: 'Contains a list of DB clusters for the user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBClusterMessage')
 
 const CharacterSetSchema = z
   .object({
-    CharacterSetName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the character set.' }),
-    ).exactOptional(),
-    CharacterSetDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the character set.' }),
-    ).exactOptional(),
+    CharacterSetName: StringSchema.exactOptional().openapi({
+      description: 'The name of the character set.',
+    }),
+    CharacterSetDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the character set.',
+    }),
   })
   .openapi({ description: 'Specifies a character set.', required: [] })
   .openapi('CharacterSet')
 
 const SupportedCharacterSetsListSchema = z
-  .array(CharacterSetSchema.and(z.any().openapi({ xml: { name: 'CharacterSet' } })))
+  .array(CharacterSetSchema.openapi({ xml: { name: 'CharacterSet' } }))
   .openapi('SupportedCharacterSetsList')
 
 const UpgradeTargetSchema = z
   .object({
-    Engine: StringSchema.and(
-      z.any().openapi({ description: 'The name of the upgrade target database engine.' }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the upgrade target database engine.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the database engine that a DB instance can be upgraded to.',
-        }),
-    ).exactOptional(),
-    AutoUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether the target version is applied to any source DB instances that have AutoMinorVersionUpgrade set to true.',
-        }),
-    ).exactOptional(),
-    IsMajorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether a database engine is upgraded to a major version.',
-        }),
-    ).exactOptional(),
-    SupportsGlobalDatabases: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether you can use Neptune global databases with the target engine version.',
-        }),
-    ).exactOptional(),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'The name of the upgrade target database engine.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the upgrade target database engine.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The version of the database engine that a DB instance can be upgraded to.',
+    }),
+    AutoUpgrade: BooleanSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether the target version is applied to any source DB instances that have AutoMinorVersionUpgrade set to true.',
+    }),
+    IsMajorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether a database engine is upgraded to a major version.',
+    }),
+    SupportsGlobalDatabases: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether you can use Neptune global databases with the target engine version.',
+    }),
   })
   .openapi({
     description: 'The version of the database engine that a DB instance can be upgraded to.',
@@ -2479,96 +1717,68 @@ const UpgradeTargetSchema = z
   .openapi('UpgradeTarget')
 
 const ValidUpgradeTargetListSchema = z
-  .array(UpgradeTargetSchema.and(z.any().openapi({ xml: { name: 'UpgradeTarget' } })))
+  .array(UpgradeTargetSchema.openapi({ xml: { name: 'UpgradeTarget' } }))
   .openapi('ValidUpgradeTargetList')
 
 const TimezoneSchema = z
   .object({
-    TimezoneName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the time zone.' }),
-    ).exactOptional(),
+    TimezoneName: StringSchema.exactOptional().openapi({
+      description: 'The name of the time zone.',
+    }),
   })
   .openapi({ description: 'A time zone associated with a <a>DBInstance</a>.', required: [] })
   .openapi('Timezone')
 
 const SupportedTimezonesListSchema = z
-  .array(TimezoneSchema.and(z.any().openapi({ xml: { name: 'Timezone' } })))
+  .array(TimezoneSchema.openapi({ xml: { name: 'Timezone' } }))
   .openapi('SupportedTimezonesList')
 
 const DBEngineVersionSchema = z
   .object({
-    Engine: StringSchema.and(
-      z.any().openapi({ description: 'The name of the database engine.' }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the database engine.' }),
-    ).exactOptional(),
-    DBParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the DB parameter group family for the database engine.',
-        }),
-    ).exactOptional(),
-    DBEngineDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the database engine.' }),
-    ).exactOptional(),
-    DBEngineVersionDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the database engine version.' }),
-    ).exactOptional(),
-    DefaultCharacterSet: CharacterSetSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    SupportedCharacterSets: SupportedCharacterSetsListSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    ValidUpgradeTarget: ValidUpgradeTargetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of engine versions that this database engine version can be upgraded to.',
-        }),
-    ).exactOptional(),
-    SupportedTimezones: SupportedTimezonesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the time zones supported by this engine for the <code>Timezone</code> parameter of the <code>CreateDBInstance</code> action.',
-        }),
-    ).exactOptional(),
-    ExportableLogTypes: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The types of logs that the database engine has available for export to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    SupportsLogExportsToCloudwatchLogs: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether the engine version supports exporting the log types specified by ExportableLogTypes to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    SupportsReadReplica: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the database engine version supports read replicas.',
-        }),
-    ).exactOptional(),
-    SupportsGlobalDatabases: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether you can use Aurora global databases with a specific DB engine version.',
-        }),
-    ).exactOptional(),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'The name of the database engine.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the database engine.',
+    }),
+    DBParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description: 'The name of the DB parameter group family for the database engine.',
+    }),
+    DBEngineDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the database engine.',
+    }),
+    DBEngineVersionDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the database engine version.',
+    }),
+    DefaultCharacterSet: CharacterSetSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    SupportedCharacterSets: SupportedCharacterSetsListSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    ValidUpgradeTarget: ValidUpgradeTargetListSchema.exactOptional().openapi({
+      description:
+        'A list of engine versions that this database engine version can be upgraded to.',
+    }),
+    SupportedTimezones: SupportedTimezonesListSchema.exactOptional().openapi({
+      description:
+        'A list of the time zones supported by this engine for the <code>Timezone</code> parameter of the <code>CreateDBInstance</code> action.',
+    }),
+    ExportableLogTypes: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'The types of logs that the database engine has available for export to CloudWatch Logs.',
+    }),
+    SupportsLogExportsToCloudwatchLogs: BooleanSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether the engine version supports exporting the log types specified by ExportableLogTypes to CloudWatch Logs.',
+    }),
+    SupportsReadReplica: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the database engine version supports read replicas.',
+    }),
+    SupportsGlobalDatabases: BooleanSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether you can use Aurora global databases with a specific DB engine version.',
+    }),
   })
   .openapi({
     description:
@@ -2578,127 +1788,99 @@ const DBEngineVersionSchema = z
   .openapi('DBEngineVersion')
 
 const DBEngineVersionListSchema = z
-  .array(DBEngineVersionSchema.and(z.any().openapi({ xml: { name: 'DBEngineVersion' } })))
+  .array(DBEngineVersionSchema.openapi({ xml: { name: 'DBEngineVersion' } }))
   .openapi('DBEngineVersionList')
 
 const DBEngineVersionMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    DBEngineVersions: DBEngineVersionListSchema.and(
-      z.any().openapi({ description: ' A list of <code>DBEngineVersion</code> elements.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    DBEngineVersions: DBEngineVersionListSchema.exactOptional().openapi({
+      description: ' A list of <code>DBEngineVersion</code> elements.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBEngineVersionMessage')
 
 const DBInstanceListSchema = z
-  .array(DBInstanceSchema.and(z.any().openapi({ xml: { name: 'DBInstance' } })))
+  .array(DBInstanceSchema.openapi({ xml: { name: 'DBInstance' } }))
   .openapi('DBInstanceList')
 
 const DBInstanceMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
-        }),
-    ).exactOptional(),
-    DBInstances: DBInstanceListSchema.and(
-      z.any().openapi({ description: ' A list of <a>DBInstance</a> instances.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
+    }),
+    DBInstances: DBInstanceListSchema.exactOptional().openapi({
+      description: ' A list of <a>DBInstance</a> instances.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBInstanceMessage')
 
 const DBParameterGroupListSchema = z
-  .array(DBParameterGroupSchema.and(z.any().openapi({ xml: { name: 'DBParameterGroup' } })))
+  .array(DBParameterGroupSchema.openapi({ xml: { name: 'DBParameterGroup' } }))
   .openapi('DBParameterGroupList')
 
 const DBParameterGroupsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    DBParameterGroups: DBParameterGroupListSchema.and(
-      z.any().openapi({ description: 'A list of <a>DBParameterGroup</a> instances.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    DBParameterGroups: DBParameterGroupListSchema.exactOptional().openapi({
+      description: 'A list of <a>DBParameterGroup</a> instances.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBParameterGroupsMessage')
 
 const DBParameterGroupDetailsSchema = z
   .object({
-    Parameters: ParametersListSchema.and(
-      z.any().openapi({ description: 'A list of <a>Parameter</a> values.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description: 'A list of <a>Parameter</a> values.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBParameterGroupDetails')
 
 const DBSubnetGroupsSchema = z
-  .array(DBSubnetGroupSchema.and(z.any().openapi({ xml: { name: 'DBSubnetGroup' } })))
+  .array(DBSubnetGroupSchema.openapi({ xml: { name: 'DBSubnetGroup' } }))
   .openapi('DBSubnetGroups')
 
 const DBSubnetGroupMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    DBSubnetGroups: DBSubnetGroupsSchema.and(
-      z.any().openapi({ description: ' A list of <a>DBSubnetGroup</a> instances.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    DBSubnetGroups: DBSubnetGroupsSchema.exactOptional().openapi({
+      description: ' A list of <a>DBSubnetGroup</a> instances.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBSubnetGroupMessage')
 
 const EngineDefaultsSchema = z
   .object({
-    DBParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name of the DB parameter group family that the engine default parameters apply to.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous EngineDefaults request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersListSchema.and(
-      z.any().openapi({ description: 'Contains a list of engine default parameters.' }),
-    ).exactOptional(),
+    DBParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the name of the DB parameter group family that the engine default parameters apply to.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous EngineDefaults request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
+    }),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description: 'Contains a list of engine default parameters.',
+    }),
   })
   .openapi({
     description:
@@ -2719,12 +1901,12 @@ const DescribeEngineDefaultParametersResultSchema = z
 
 const EventCategoriesMapSchema = z
   .object({
-    SourceType: StringSchema.and(
-      z.any().openapi({ description: 'The source type that the returned categories belong to' }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z.any().openapi({ description: 'The event categories for the specified source type' }),
-    ).exactOptional(),
+    SourceType: StringSchema.exactOptional().openapi({
+      description: 'The source type that the returned categories belong to',
+    }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description: 'The event categories for the specified source type',
+    }),
   })
   .openapi({
     description:
@@ -2734,35 +1916,31 @@ const EventCategoriesMapSchema = z
   .openapi('EventCategoriesMap')
 
 const EventCategoriesMapListSchema = z
-  .array(EventCategoriesMapSchema.and(z.any().openapi({ xml: { name: 'EventCategoriesMap' } })))
+  .array(EventCategoriesMapSchema.openapi({ xml: { name: 'EventCategoriesMap' } }))
   .openapi('EventCategoriesMapList')
 
 const EventCategoriesMessageSchema = z
   .object({
-    EventCategoriesMapList: EventCategoriesMapListSchema.and(
-      z.any().openapi({ description: 'A list of EventCategoriesMap data types.' }),
-    ).exactOptional(),
+    EventCategoriesMapList: EventCategoriesMapListSchema.exactOptional().openapi({
+      description: 'A list of EventCategoriesMap data types.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EventCategoriesMessage')
 
 const EventSubscriptionsListSchema = z
-  .array(EventSubscriptionSchema.and(z.any().openapi({ xml: { name: 'EventSubscription' } })))
+  .array(EventSubscriptionSchema.openapi({ xml: { name: 'EventSubscription' } }))
   .openapi('EventSubscriptionsList')
 
 const EventSubscriptionsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous DescribeOrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    EventSubscriptionsList: EventSubscriptionsListSchema.and(
-      z.any().openapi({ description: 'A list of EventSubscriptions data types.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous DescribeOrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    EventSubscriptionsList: EventSubscriptionsListSchema.exactOptional().openapi({
+      description: 'A list of EventSubscriptions data types.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EventSubscriptionsMessage')
@@ -2780,24 +1958,24 @@ const SourceTypeSchema = z
 
 const EventSchema = z
   .object({
-    SourceIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'Provides the identifier for the source of the event.' }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z.any().openapi({ description: 'Specifies the source type for this event.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'Provides the text of this event.' }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z.any().openapi({ description: 'Specifies the category for the event.' }),
-    ).exactOptional(),
-    Date: TStampSchema.and(
-      z.any().openapi({ description: 'Specifies the date and time of the event.' }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the event.' }),
-    ).exactOptional(),
+    SourceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'Provides the identifier for the source of the event.',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description: 'Specifies the source type for this event.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'Provides the text of this event.',
+    }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description: 'Specifies the category for the event.',
+    }),
+    Date: TStampSchema.exactOptional().openapi({
+      description: 'Specifies the date and time of the event.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the event.',
+    }),
   })
   .openapi({
     description:
@@ -2807,138 +1985,110 @@ const EventSchema = z
   .openapi('Event')
 
 const EventListSchema = z
-  .array(EventSchema.and(z.any().openapi({ xml: { name: 'Event' } })))
+  .array(EventSchema.openapi({ xml: { name: 'Event' } }))
   .openapi('EventList')
 
 const EventsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous Events request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
-        }),
-    ).exactOptional(),
-    Events: EventListSchema.and(
-      z.any().openapi({ description: ' A list of <a>Event</a> instances.' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous Events request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
+    }),
+    Events: EventListSchema.exactOptional().openapi({
+      description: ' A list of <a>Event</a> instances.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EventsMessage')
 
 const GlobalClusterListSchema = z
-  .array(GlobalClusterSchema.and(z.any().openapi({ xml: { name: 'GlobalClusterMember' } })))
+  .array(GlobalClusterSchema.openapi({ xml: { name: 'GlobalClusterMember' } }))
   .openapi('GlobalClusterList')
 
 const GlobalClustersMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token. If this parameter is returned in the response, more records are available, which can be retrieved by one or more additional calls to <code>DescribeGlobalClusters</code>.',
-        }),
-    ).exactOptional(),
-    GlobalClusters: GlobalClusterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of global clusters and instances returned by this request.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'A pagination token. If this parameter is returned in the response, more records are available, which can be retrieved by one or more additional calls to <code>DescribeGlobalClusters</code>.',
+    }),
+    GlobalClusters: GlobalClusterListSchema.exactOptional().openapi({
+      description: 'The list of global clusters and instances returned by this request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GlobalClustersMessage')
 
 const AvailabilityZoneListSchema = z
-  .array(AvailabilityZoneSchema.and(z.any().openapi({ xml: { name: 'AvailabilityZone' } })))
+  .array(AvailabilityZoneSchema.openapi({ xml: { name: 'AvailabilityZone' } }))
   .openapi('AvailabilityZoneList')
 
 const OrderableDBInstanceOptionSchema = z
   .object({
-    Engine: StringSchema.and(
-      z.any().openapi({ description: 'The engine type of a DB instance.' }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The engine version of a DB instance.' }),
-    ).exactOptional(),
-    DBInstanceClass: StringSchema.and(
-      z.any().openapi({ description: 'The DB instance class for a DB instance.' }),
-    ).exactOptional(),
-    LicenseModel: StringSchema.and(
-      z.any().openapi({ description: 'The license model for a DB instance.' }),
-    ).exactOptional(),
-    AvailabilityZones: AvailabilityZoneListSchema.and(
-      z.any().openapi({ description: 'A list of Availability Zones for a DB instance.' }),
-    ).exactOptional(),
-    MultiAZCapable: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether a DB instance is Multi-AZ capable.' }),
-    ).exactOptional(),
-    ReadReplicaCapable: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether a DB instance can have a Read Replica.' }),
-    ).exactOptional(),
-    Vpc: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether a DB instance is in a VPC.' }),
-    ).exactOptional(),
-    SupportsStorageEncryption: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether a DB instance supports encrypted storage.' }),
-    ).exactOptional(),
-    StorageType: StringSchema.and(
-      z.any().openapi({ description: 'Indicates the storage type for a DB instance.' }),
-    ).exactOptional(),
-    SupportsIops: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether a DB instance supports provisioned IOPS.' }),
-    ).exactOptional(),
-    SupportsEnhancedMonitoring: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a DB instance supports Enhanced Monitoring at intervals from 1 to 60 seconds.',
-        }),
-    ).exactOptional(),
-    SupportsIAMDatabaseAuthentication: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether a DB instance supports IAM database authentication.',
-        }),
-    ).exactOptional(),
-    SupportsPerformanceInsights: BooleanSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    MinStorageSize: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'Minimum storage size for a DB instance.' }),
-    ).exactOptional(),
-    MaxStorageSize: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'Maximum storage size for a DB instance.' }),
-    ).exactOptional(),
-    MinIopsPerDbInstance: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'Minimum total provisioned IOPS for a DB instance.' }),
-    ).exactOptional(),
-    MaxIopsPerDbInstance: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'Maximum total provisioned IOPS for a DB instance.' }),
-    ).exactOptional(),
-    MinIopsPerGib: DoubleOptionalSchema.and(
-      z.any().openapi({ description: 'Minimum provisioned IOPS per GiB for a DB instance.' }),
-    ).exactOptional(),
-    MaxIopsPerGib: DoubleOptionalSchema.and(
-      z.any().openapi({ description: 'Maximum provisioned IOPS per GiB for a DB instance.' }),
-    ).exactOptional(),
-    SupportsGlobalDatabases: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether you can use Neptune global databases with a specific combination of other DB engine attributes.',
-        }),
-    ).exactOptional(),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'The engine type of a DB instance.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The engine version of a DB instance.',
+    }),
+    DBInstanceClass: StringSchema.exactOptional().openapi({
+      description: 'The DB instance class for a DB instance.',
+    }),
+    LicenseModel: StringSchema.exactOptional().openapi({
+      description: 'The license model for a DB instance.',
+    }),
+    AvailabilityZones: AvailabilityZoneListSchema.exactOptional().openapi({
+      description: 'A list of Availability Zones for a DB instance.',
+    }),
+    MultiAZCapable: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether a DB instance is Multi-AZ capable.',
+    }),
+    ReadReplicaCapable: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether a DB instance can have a Read Replica.',
+    }),
+    Vpc: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether a DB instance is in a VPC.',
+    }),
+    SupportsStorageEncryption: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether a DB instance supports encrypted storage.',
+    }),
+    StorageType: StringSchema.exactOptional().openapi({
+      description: 'Indicates the storage type for a DB instance.',
+    }),
+    SupportsIops: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether a DB instance supports provisioned IOPS.',
+    }),
+    SupportsEnhancedMonitoring: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a DB instance supports Enhanced Monitoring at intervals from 1 to 60 seconds.',
+    }),
+    SupportsIAMDatabaseAuthentication: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether a DB instance supports IAM database authentication.',
+    }),
+    SupportsPerformanceInsights: BooleanSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    MinStorageSize: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Minimum storage size for a DB instance.',
+    }),
+    MaxStorageSize: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Maximum storage size for a DB instance.',
+    }),
+    MinIopsPerDbInstance: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Minimum total provisioned IOPS for a DB instance.',
+    }),
+    MaxIopsPerDbInstance: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Maximum total provisioned IOPS for a DB instance.',
+    }),
+    MinIopsPerGib: DoubleOptionalSchema.exactOptional().openapi({
+      description: 'Minimum provisioned IOPS per GiB for a DB instance.',
+    }),
+    MaxIopsPerGib: DoubleOptionalSchema.exactOptional().openapi({
+      description: 'Maximum provisioned IOPS per GiB for a DB instance.',
+    }),
+    SupportsGlobalDatabases: BooleanSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether you can use Neptune global databases with a specific combination of other DB engine attributes.',
+    }),
   })
   .openapi({
     description:
@@ -2948,135 +2098,89 @@ const OrderableDBInstanceOptionSchema = z
   .openapi('OrderableDBInstanceOption')
 
 const OrderableDBInstanceOptionsListSchema = z
-  .array(
-    OrderableDBInstanceOptionSchema.and(
-      z.any().openapi({ xml: { name: 'OrderableDBInstanceOption' } }),
-    ),
-  )
+  .array(OrderableDBInstanceOptionSchema.openapi({ xml: { name: 'OrderableDBInstanceOption' } }))
   .openapi('OrderableDBInstanceOptionsList')
 
 const OrderableDBInstanceOptionsMessageSchema = z
   .object({
-    OrderableDBInstanceOptions: OrderableDBInstanceOptionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <a>OrderableDBInstanceOption</a> structure containing information about orderable options for the DB instance.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous OrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
-        }),
-    ).exactOptional(),
+    OrderableDBInstanceOptions: OrderableDBInstanceOptionsListSchema.exactOptional().openapi({
+      description:
+        'An <a>OrderableDBInstanceOption</a> structure containing information about orderable options for the DB instance.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous OrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
+    }),
   })
   .openapi({ required: [] })
   .openapi('OrderableDBInstanceOptionsMessage')
 
-const PendingMaintenanceActionsSchema: z.ZodType<PendingMaintenanceActionsType> = z
-  .lazy(() =>
-    z.array(
-      ResourcePendingMaintenanceActionsSchema.and(
-        z.any().openapi({ xml: { name: 'ResourcePendingMaintenanceActions' } }),
-      ),
-    ),
+const PendingMaintenanceActionsSchema = z
+  .array(
+    ResourcePendingMaintenanceActionsSchema.openapi({
+      xml: { name: 'ResourcePendingMaintenanceActions' },
+    }),
   )
   .openapi('PendingMaintenanceActions')
 
 const PendingMaintenanceActionsMessageSchema = z
   .object({
-    PendingMaintenanceActions: PendingMaintenanceActionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of the pending maintenance actions for the resource.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribePendingMaintenanceActions</code> request. If this parameter is specified, the response includes only records beyond the marker, up to a number of records specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    PendingMaintenanceActions: PendingMaintenanceActionsSchema.exactOptional().openapi({
+      description: 'A list of the pending maintenance actions for the resource.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribePendingMaintenanceActions</code> request. If this parameter is specified, the response includes only records beyond the marker, up to a number of records specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PendingMaintenanceActionsMessage')
 
 const RangeSchema = z
   .object({
-    From: IntegerSchema.and(
-      z.any().openapi({ description: 'The minimum value in the range.' }),
-    ).exactOptional(),
-    To: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum value in the range.' }),
-    ).exactOptional(),
-    Step: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The step value for the range. For example, if you have a range of 5,000 to 10,000, with a step value of 1,000, the valid values start at 5,000 and step up by 1,000. Even though 7,500 is within the range, it isn't a valid value for the range. The valid values are 5,000, 6,000, 7,000, 8,000...",
-        }),
-    ).exactOptional(),
+    From: IntegerSchema.exactOptional().openapi({ description: 'The minimum value in the range.' }),
+    To: IntegerSchema.exactOptional().openapi({ description: 'The maximum value in the range.' }),
+    Step: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "The step value for the range. For example, if you have a range of 5,000 to 10,000, with a step value of 1,000, the valid values start at 5,000 and step up by 1,000. Even though 7,500 is within the range, it isn't a valid value for the range. The valid values are 5,000, 6,000, 7,000, 8,000...",
+    }),
   })
   .openapi({ description: 'A range of integer values.', required: [] })
   .openapi('Range')
 
 const RangeListSchema = z
-  .array(RangeSchema.and(z.any().openapi({ xml: { name: 'Range' } })))
+  .array(RangeSchema.openapi({ xml: { name: 'Range' } }))
   .openapi('RangeList')
 
 const DoubleSchema = z.float64().openapi('Double')
 
 const DoubleRangeSchema = z
   .object({
-    From: DoubleSchema.and(
-      z.any().openapi({ description: 'The minimum value in the range.' }),
-    ).exactOptional(),
-    To: DoubleSchema.and(
-      z.any().openapi({ description: 'The maximum value in the range.' }),
-    ).exactOptional(),
+    From: DoubleSchema.exactOptional().openapi({ description: 'The minimum value in the range.' }),
+    To: DoubleSchema.exactOptional().openapi({ description: 'The maximum value in the range.' }),
   })
   .openapi({ description: 'A range of double values.', required: [] })
   .openapi('DoubleRange')
 
 const DoubleRangeListSchema = z
-  .array(DoubleRangeSchema.and(z.any().openapi({ xml: { name: 'DoubleRange' } })))
+  .array(DoubleRangeSchema.openapi({ xml: { name: 'DoubleRange' } }))
   .openapi('DoubleRangeList')
 
 const ValidStorageOptionsSchema = z
   .object({
-    StorageType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The valid storage types for your DB instance. For example, gp2, io1.',
-        }),
-    ).exactOptional(),
-    StorageSize: RangeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The valid range of storage in gibibytes. For example, 100 to 16384.',
-        }),
-    ).exactOptional(),
-    ProvisionedIops: RangeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The valid range of provisioned IOPS. For example, 1000-20000.' }),
-    ).exactOptional(),
-    IopsToStorageRatio: DoubleRangeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The valid range of Provisioned IOPS to gibibytes of storage multiplier. For example, 3-10, which means that provisioned IOPS can be between 3 and 10 times storage.',
-        }),
-    ).exactOptional(),
+    StorageType: StringSchema.exactOptional().openapi({
+      description: 'The valid storage types for your DB instance. For example, gp2, io1.',
+    }),
+    StorageSize: RangeListSchema.exactOptional().openapi({
+      description: 'The valid range of storage in gibibytes. For example, 100 to 16384.',
+    }),
+    ProvisionedIops: RangeListSchema.exactOptional().openapi({
+      description: 'The valid range of provisioned IOPS. For example, 1000-20000.',
+    }),
+    IopsToStorageRatio: DoubleRangeListSchema.exactOptional().openapi({
+      description:
+        'The valid range of Provisioned IOPS to gibibytes of storage multiplier. For example, 3-10, which means that provisioned IOPS can be between 3 and 10 times storage.',
+    }),
   })
   .openapi({
     description:
@@ -3086,14 +2190,14 @@ const ValidStorageOptionsSchema = z
   .openapi('ValidStorageOptions')
 
 const ValidStorageOptionsListSchema = z
-  .array(ValidStorageOptionsSchema.and(z.any().openapi({ xml: { name: 'ValidStorageOptions' } })))
+  .array(ValidStorageOptionsSchema.openapi({ xml: { name: 'ValidStorageOptions' } }))
   .openapi('ValidStorageOptionsList')
 
 const ValidDBInstanceModificationsMessageSchema = z
   .object({
-    Storage: ValidStorageOptionsListSchema.and(
-      z.any().openapi({ description: 'Valid storage options for your DB instance.' }),
-    ).exactOptional(),
+    Storage: ValidStorageOptionsListSchema.exactOptional().openapi({
+      description: 'Valid storage options for your DB instance.',
+    }),
   })
   .openapi({
     description:
@@ -3119,17 +2223,13 @@ const FailoverGlobalClusterResultSchema = z
   .openapi({ required: [] })
   .openapi('FailoverGlobalClusterResult')
 
-const TagListSchema = z
-  .array(TagSchema.and(z.any().openapi({ xml: { name: 'Tag' } })))
-  .openapi('TagList')
+const TagListSchema = z.array(TagSchema.openapi({ xml: { name: 'Tag' } })).openapi('TagList')
 
 const TagListMessageSchema = z
   .object({
-    TagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'List of tags returned by the ListTagsForResource operation.' }),
-    ).exactOptional(),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'List of tags returned by the ListTagsForResource operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TagListMessage')
@@ -3143,76 +2243,43 @@ const InvalidDBSecurityGroupStateFaultSchema = z.any().openapi('InvalidDBSecurit
 
 const ModifyDBClusterEndpointOutputSchema = z
   .object({
-    DBClusterEndpointIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterEndpointResourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique system-generated identifier for an endpoint. It remains the same for the whole life of the endpoint.',
-        }),
-    ).exactOptional(),
-    Endpoint: StringSchema.and(
-      z.any().openapi({ description: 'The DNS address of the endpoint.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the endpoint. One of: <code>creating</code>, <code>available</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. The <code>inactive</code> state applies to an endpoint that cannot be used for a certain kind of cluster, such as a <code>writer</code> endpoint for a read-only secondary cluster in a global database.',
-        }),
-    ).exactOptional(),
-    EndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>CUSTOM</code>.',
-        }),
-    ).exactOptional(),
-    CustomEndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type associated with a custom endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
-        }),
-    ).exactOptional(),
-    StaticMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of DB instance identifiers that are part of the custom endpoint group.',
-        }),
-    ).exactOptional(),
-    ExcludedMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
-        }),
-    ).exactOptional(),
-    DBClusterEndpointArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the endpoint.' }),
-    ).exactOptional(),
+    DBClusterEndpointIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterEndpointResourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'A unique system-generated identifier for an endpoint. It remains the same for the whole life of the endpoint.',
+    }),
+    Endpoint: StringSchema.exactOptional().openapi({
+      description: 'The DNS address of the endpoint.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The current status of the endpoint. One of: <code>creating</code>, <code>available</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. The <code>inactive</code> state applies to an endpoint that cannot be used for a certain kind of cluster, such as a <code>writer</code> endpoint for a read-only secondary cluster in a global database.',
+    }),
+    EndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>CUSTOM</code>.',
+    }),
+    CustomEndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type associated with a custom endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
+    }),
+    StaticMembers: StringListSchema.exactOptional().openapi({
+      description: 'List of DB instance identifiers that are part of the custom endpoint group.',
+    }),
+    ExcludedMembers: StringListSchema.exactOptional().openapi({
+      description:
+        "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
+    }),
+    DBClusterEndpointArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the endpoint.',
+    }),
   })
   .openapi({
     description:
@@ -3223,14 +2290,10 @@ const ModifyDBClusterEndpointOutputSchema = z
 
 const DBClusterParameterGroupNameMessageSchema = z
   .object({
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters or numbers.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <note> <p>This value is stored as a lowercase string.</p> </note>',
-        }),
-    ).exactOptional(),
+    DBClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the DB cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters or numbers.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <note> <p>This value is stored as a lowercase string.</p> </note>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBClusterParameterGroupNameMessage')
@@ -3255,9 +2318,9 @@ const CertificateNotFoundFaultSchema = z.any().openapi('CertificateNotFoundFault
 
 const DBParameterGroupNameMessageSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'Provides the name of the DB parameter group.' }),
-    ).exactOptional(),
+    DBParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'Provides the name of the DB parameter group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DBParameterGroupNameMessage')
@@ -3331,49 +2394,31 @@ const StopDBClusterResultSchema = z
 
 const AddRoleToDBClusterMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the DB cluster to associate the IAM role with.' }),
-    ),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role to associate with the Neptune DB cluster, for example <code>arn:aws:iam::123456789012:role/NeptuneAccessRole</code>.',
-        }),
-    ),
-    FeatureName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the feature for the Neptune DB cluster that the IAM role is to be associated with. For the list of supported feature names, see <a href="neptune/latest/userguide/api-other-apis.html#DBEngineVersion">DBEngineVersion</a>.',
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.openapi({
+      description: 'The name of the DB cluster to associate the IAM role with.',
+    }),
+    RoleArn: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role to associate with the Neptune DB cluster, for example <code>arn:aws:iam::123456789012:role/NeptuneAccessRole</code>.',
+    }),
+    FeatureName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the feature for the Neptune DB cluster that the IAM role is to be associated with. For the list of supported feature names, see <a href="neptune/latest/userguide/api-other-apis.html#DBEngineVersion">DBEngineVersion</a>.',
+    }),
   })
   .openapi({ required: ['DBClusterIdentifier', 'RoleArn'], title: 'AddRoleToDBClusterMessage' })
   .openapi('AddRoleToDBClusterMessage')
 
 const AddSourceIdentifierToSubscriptionMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the event notification subscription you want to add a source identifier to.',
-        }),
-    ),
-    SourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the event source to be added.</p> <p>Constraints:</p> <ul> <li> <p>If the source type is a DB instance, then a <code>DBInstanceIdentifier</code> must be supplied.</p> </li> <li> <p>If the source type is a DB security group, a <code>DBSecurityGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is a DB parameter group, a <code>DBParameterGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is a DB snapshot, a <code>DBSnapshotIdentifier</code> must be supplied.</p> </li> </ul>',
-        }),
-    ),
+    SubscriptionName: StringSchema.openapi({
+      description:
+        'The name of the event notification subscription you want to add a source identifier to.',
+    }),
+    SourceIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the event source to be added.</p> <p>Constraints:</p> <ul> <li> <p>If the source type is a DB instance, then a <code>DBInstanceIdentifier</code> must be supplied.</p> </li> <li> <p>If the source type is a DB security group, a <code>DBSecurityGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is a DB parameter group, a <code>DBParameterGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is a DB snapshot, a <code>DBSnapshotIdentifier</code> must be supplied.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['SubscriptionName', 'SourceIdentifier'],
@@ -3383,47 +2428,31 @@ const AddSourceIdentifierToSubscriptionMessageSchema = z
 
 const AddTagsToResourceMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Neptune resource that the tags are added to. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the Amazon Neptune resource.' }),
-    ),
+    ResourceName: StringSchema.openapi({
+      description:
+        'The Amazon Neptune resource that the tags are added to. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The tags to be assigned to the Amazon Neptune resource.',
+    }),
   })
   .openapi({ required: ['ResourceName', 'Tags'], title: 'AddTagsToResourceMessage' })
   .openapi('AddTagsToResourceMessage')
 
 const ApplyPendingMaintenanceActionMessageSchema = z
   .object({
-    ResourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that the pending maintenance action applies to. For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.',
-        }),
-    ),
-    ApplyAction: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pending maintenance action to apply to this resource.</p> <p>Valid values: <code>system-update</code>, <code>db-upgrade</code> </p>',
-        }),
-    ),
-    OptInType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A value that specifies the type of opt-in request, or undoes an opt-in request. An opt-in request of type <code>immediate</code> can't be undone.</p> <p>Valid values:</p> <ul> <li> <p> <code>immediate</code> - Apply the maintenance action immediately.</p> </li> <li> <p> <code>next-maintenance</code> - Apply the maintenance action during the next maintenance window for the resource.</p> </li> <li> <p> <code>undo-opt-in</code> - Cancel any existing <code>next-maintenance</code> opt-in requests.</p> </li> </ul>",
-        }),
-    ),
+    ResourceIdentifier: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that the pending maintenance action applies to. For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.',
+    }),
+    ApplyAction: StringSchema.openapi({
+      description:
+        '<p>The pending maintenance action to apply to this resource.</p> <p>Valid values: <code>system-update</code>, <code>db-upgrade</code> </p>',
+    }),
+    OptInType: StringSchema.openapi({
+      description:
+        "<p>A value that specifies the type of opt-in request, or undoes an opt-in request. An opt-in request of type <code>immediate</code> can't be undone.</p> <p>Valid values:</p> <ul> <li> <p> <code>immediate</code> - Apply the maintenance action immediately.</p> </li> <li> <p> <code>next-maintenance</code> - Apply the maintenance action during the next maintenance window for the resource.</p> </li> <li> <p> <code>undo-opt-in</code> - Cancel any existing <code>next-maintenance</code> opt-in requests.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['ResourceIdentifier', 'ApplyAction', 'OptInType'],
@@ -3433,12 +2462,12 @@ const ApplyPendingMaintenanceActionMessageSchema = z
 
 const CloudwatchLogsExportConfigurationSchema = z
   .object({
-    EnableLogTypes: LogTypeListSchema.and(
-      z.any().openapi({ description: 'The list of log types to enable.' }),
-    ).exactOptional(),
-    DisableLogTypes: LogTypeListSchema.and(
-      z.any().openapi({ description: 'The list of log types to disable.' }),
-    ).exactOptional(),
+    EnableLogTypes: LogTypeListSchema.exactOptional().openapi({
+      description: 'The list of log types to enable.',
+    }),
+    DisableLogTypes: LogTypeListSchema.exactOptional().openapi({
+      description: 'The list of log types to disable.',
+    }),
   })
   .openapi({
     description:
@@ -3449,32 +2478,20 @@ const CloudwatchLogsExportConfigurationSchema = z
 
 const CopyDBClusterParameterGroupMessageSchema = z
   .object({
-    SourceDBClusterParameterGroupIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier or Amazon Resource Name (ARN) for the source DB cluster parameter group. For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid DB cluster parameter group.</p> </li> <li> <p>If the source DB cluster parameter group is in the same Amazon Region as the copy, specify a valid DB parameter group identifier, for example <code>my-db-cluster-param-group</code>, or a valid ARN.</p> </li> <li> <p>If the source DB parameter group is in a different Amazon Region than the copy, specify a valid DB cluster parameter group ARN, for example <code>arn:aws:rds:us-east-1:123456789012:cluster-pg:custom-cluster-group1</code>.</p> </li> </ul>',
-        }),
-    ),
-    TargetDBClusterParameterGroupIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the copied DB cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank</p> </li> <li> <p>Must contain from 1 to 255 letters, numbers, or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-cluster-param-group1</code> </p>',
-        }),
-    ),
-    TargetDBClusterParameterGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description for the copied DB cluster parameter group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags to be assigned to the copied DB cluster parameter group.',
-        }),
-    ).exactOptional(),
+    SourceDBClusterParameterGroupIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier or Amazon Resource Name (ARN) for the source DB cluster parameter group. For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid DB cluster parameter group.</p> </li> <li> <p>If the source DB cluster parameter group is in the same Amazon Region as the copy, specify a valid DB parameter group identifier, for example <code>my-db-cluster-param-group</code>, or a valid ARN.</p> </li> <li> <p>If the source DB parameter group is in a different Amazon Region than the copy, specify a valid DB cluster parameter group ARN, for example <code>arn:aws:rds:us-east-1:123456789012:cluster-pg:custom-cluster-group1</code>.</p> </li> </ul>',
+    }),
+    TargetDBClusterParameterGroupIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier for the copied DB cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank</p> </li> <li> <p>Must contain from 1 to 255 letters, numbers, or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-cluster-param-group1</code> </p>',
+    }),
+    TargetDBClusterParameterGroupDescription: StringSchema.openapi({
+      description: 'A description for the copied DB cluster parameter group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the copied DB cluster parameter group.',
+    }),
   })
   .openapi({
     required: [
@@ -3488,44 +2505,26 @@ const CopyDBClusterParameterGroupMessageSchema = z
 
 const CopyDBClusterSnapshotMessageSchema = z
   .object({
-    SourceDBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the DB cluster snapshot to copy. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid system snapshot in the "available" state.</p> </li> <li> <p>Specify a valid DB snapshot identifier.</p> </li> </ul> <p>Example: <code>my-cluster-snapshot1</code> </p>',
-        }),
-    ),
-    TargetDBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the new DB cluster snapshot to create from the source DB cluster snapshot. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>my-cluster-snapshot2</code> </p>',
-        }),
-    ),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Amazon KMS key ID for an encrypted DB cluster snapshot. The KMS key ID is the Amazon Resource Name (ARN), KMS key identifier, or the KMS key alias for the KMS encryption key.</p> <p>If you copy an encrypted DB cluster snapshot from your Amazon account, you can specify a value for <code>KmsKeyId</code> to encrypt the copy with a new KMS encryption key. If you don't specify a value for <code>KmsKeyId</code>, then the copy of the DB cluster snapshot is encrypted with the same KMS key as the source DB cluster snapshot.</p> <p>If you copy an encrypted DB cluster snapshot that is shared from another Amazon account, then you must specify a value for <code>KmsKeyId</code>.</p> <p> KMS encryption keys are specific to the Amazon Region that they are created in, and you can't use encryption keys from one Amazon Region in another Amazon Region.</p> <p>You cannot encrypt an unencrypted DB cluster snapshot when you copy it. If you try to copy an unencrypted DB cluster snapshot and specify a value for the KmsKeyId parameter, an error is returned.</p>",
-        }),
-    ).exactOptional(),
-    PreSignedUrl: StringSchema.and(
-      z.any().openapi({ description: 'Not currently supported.' }),
-    ).exactOptional(),
-    CopyTags: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True to copy all tags from the source DB cluster snapshot to the target DB cluster snapshot, and otherwise false. The default is false.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to assign to the new DB cluster snapshot copy.' }),
-    ).exactOptional(),
+    SourceDBClusterSnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the DB cluster snapshot to copy. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid system snapshot in the "available" state.</p> </li> <li> <p>Specify a valid DB snapshot identifier.</p> </li> </ul> <p>Example: <code>my-cluster-snapshot1</code> </p>',
+    }),
+    TargetDBClusterSnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the new DB cluster snapshot to create from the source DB cluster snapshot. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>my-cluster-snapshot2</code> </p>',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Amazon KMS key ID for an encrypted DB cluster snapshot. The KMS key ID is the Amazon Resource Name (ARN), KMS key identifier, or the KMS key alias for the KMS encryption key.</p> <p>If you copy an encrypted DB cluster snapshot from your Amazon account, you can specify a value for <code>KmsKeyId</code> to encrypt the copy with a new KMS encryption key. If you don't specify a value for <code>KmsKeyId</code>, then the copy of the DB cluster snapshot is encrypted with the same KMS key as the source DB cluster snapshot.</p> <p>If you copy an encrypted DB cluster snapshot that is shared from another Amazon account, then you must specify a value for <code>KmsKeyId</code>.</p> <p> KMS encryption keys are specific to the Amazon Region that they are created in, and you can't use encryption keys from one Amazon Region in another Amazon Region.</p> <p>You cannot encrypt an unencrypted DB cluster snapshot when you copy it. If you try to copy an unencrypted DB cluster snapshot and specify a value for the KmsKeyId parameter, an error is returned.</p>",
+    }),
+    PreSignedUrl: StringSchema.exactOptional().openapi({ description: 'Not currently supported.' }),
+    CopyTags: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'True to copy all tags from the source DB cluster snapshot to the target DB cluster snapshot, and otherwise false. The default is false.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to assign to the new DB cluster snapshot copy.',
+    }),
   })
   .openapi({
     required: ['SourceDBClusterSnapshotIdentifier', 'TargetDBClusterSnapshotIdentifier'],
@@ -3535,28 +2534,20 @@ const CopyDBClusterSnapshotMessageSchema = z
 
 const CopyDBParameterGroupMessageSchema = z
   .object({
-    SourceDBParameterGroupIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier or ARN for the source DB parameter group. For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid DB parameter group.</p> </li> <li> <p>Must specify a valid DB parameter group identifier, for example <code>my-db-param-group</code>, or a valid ARN.</p> </li> </ul>',
-        }),
-    ),
-    TargetDBParameterGroupIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the copied DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank.</p> </li> <li> <p>Must contain from 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>my-db-parameter-group</code> </p>',
-        }),
-    ),
-    TargetDBParameterGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description for the copied DB parameter group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the copied DB parameter group.' }),
-    ).exactOptional(),
+    SourceDBParameterGroupIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier or ARN for the source DB parameter group. For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid DB parameter group.</p> </li> <li> <p>Must specify a valid DB parameter group identifier, for example <code>my-db-param-group</code>, or a valid ARN.</p> </li> </ul>',
+    }),
+    TargetDBParameterGroupIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier for the copied DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be null, empty, or blank.</p> </li> <li> <p>Must contain from 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>my-db-parameter-group</code> </p>',
+    }),
+    TargetDBParameterGroupDescription: StringSchema.openapi({
+      description: 'A description for the copied DB parameter group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the copied DB parameter group.',
+    }),
   })
   .openapi({
     required: [
@@ -3570,49 +2561,28 @@ const CopyDBParameterGroupMessageSchema = z
 
 const CreateDBClusterEndpointMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ),
-    DBClusterEndpointIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier to use for the new endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ),
-    EndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
-        }),
-    ),
-    StaticMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of DB instance identifiers that are part of the custom endpoint group.',
-        }),
-    ).exactOptional(),
-    ExcludedMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the Amazon Neptune resource.' }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterEndpointIdentifier: StringSchema.openapi({
+      description:
+        'The identifier to use for the new endpoint. This parameter is stored as a lowercase string.',
+    }),
+    EndpointType: StringSchema.openapi({
+      description:
+        'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
+    }),
+    StaticMembers: StringListSchema.exactOptional().openapi({
+      description: 'List of DB instance identifiers that are part of the custom endpoint group.',
+    }),
+    ExcludedMembers: StringListSchema.exactOptional().openapi({
+      description:
+        "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the Amazon Neptune resource.',
+    }),
   })
   .openapi({
     required: ['DBClusterIdentifier', 'DBClusterEndpointIdentifier', 'EndpointType'],
@@ -3621,27 +2591,19 @@ const CreateDBClusterEndpointMessageSchema = z
   .openapi('CreateDBClusterEndpointMessage')
 
 const VpcSecurityGroupIdListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'VpcSecurityGroupId' } })))
+  .array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } }))
   .openapi('VpcSecurityGroupIdList')
 
 const ServerlessV2ScalingConfigurationSchema = z
   .object({
-    MinCapacity: DoubleOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
-        }),
-    ).exactOptional(),
-    MaxCapacity: DoubleOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
-        }),
-    ).exactOptional(),
+    MinCapacity: DoubleOptionalSchema.exactOptional().openapi({
+      description:
+        'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
+    }),
+    MaxCapacity: DoubleOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
+    }),
   })
   .openapi({
     description:
@@ -3652,209 +2614,123 @@ const ServerlessV2ScalingConfigurationSchema = z
 
 const CreateDBClusterMessageSchema = z
   .object({
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of EC2 Availability Zones that instances in the DB cluster can be created in.',
-        }),
-    ).exactOptional(),
-    BackupRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which automated backups are retained. You must specify a minimum value of 1.</p> <p>Default: 1</p> <p>Constraints:</p> <ul> <li> <p>Must be a value from 1 to 35</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CharacterSetName: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    CopyTagsToSnapshot: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>If set to <code>true</code>, tags are copied to any snapshot of the DB cluster that is created.</i> ',
-        }),
-    ).exactOptional(),
-    DatabaseName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for your database of up to 64 alpha-numeric characters. If you do not provide a name, Amazon Neptune will not create a database in the DB cluster you are creating.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DB cluster identifier. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>my-cluster1</code> </p>',
-        }),
-    ),
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The name of the DB cluster parameter group to associate with this DB cluster. If this argument is omitted, the default is used.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of EC2 VPC security groups to associate with this DB cluster.',
-        }),
-    ).exactOptional(),
-    DBSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A DB subnet group to associate with this DB cluster.</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the database engine to be used for this DB cluster.</p> <p>Valid Values: <code>neptune</code> </p>',
-        }),
-    ),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version number of the database engine to use for the new DB cluster.</p> <p>Example: <code>1.0.2.1</code> </p>',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port number on which the instances in the DB cluster accept connections.</p> <p> Default: <code>8182</code> </p>',
-        }),
-    ).exactOptional(),
-    MasterUsername: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    MasterUserPassword: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    OptionGroupName: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    PreferredBackupWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range during which automated backups are created if automated backups are enabled using the <code>BackupRetentionPeriod</code> parameter.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region. To see the time blocks available, see <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AdjustingTheMaintenanceWindow.html"> Adjusting the Preferred Maintenance Window</a> in the <i>Amazon Neptune User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Must be in the format <code>hh24:mi-hh24:mi</code>.</p> </li> <li> <p>Must be in Universal Coordinated Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).</p> <p>Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region, occurring on a random day of the week. To see the time blocks available, see <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AdjustingTheMaintenanceWindow.html"> Adjusting the Preferred Maintenance Window</a> in the <i>Amazon Neptune User Guide.</i> </p> <p>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> <p>Constraints: Minimum 30-minute window.</p>',
-        }),
-    ).exactOptional(),
-    ReplicationSourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the source DB instance or DB cluster if this DB cluster is created as a Read Replica.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to assign to the new DB cluster.' }),
-    ).exactOptional(),
-    StorageEncrypted: BooleanOptionalSchema.and(
-      z.any().openapi({ description: 'Specifies whether the DB cluster is encrypted.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon KMS key identifier for an encrypted DB cluster.</p> <p>The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you are creating a DB cluster with the same Amazon account that owns the KMS encryption key used to encrypt the new DB cluster, then you can use the KMS key alias instead of the ARN for the KMS encryption key.</p> <p>If an encryption key is not specified in <code>KmsKeyId</code>:</p> <ul> <li> <p>If <code>ReplicationSourceIdentifier</code> identifies an encrypted source, then Amazon Neptune will use the encryption key used to encrypt the source. Otherwise, Amazon Neptune will use your default encryption key.</p> </li> <li> <p>If the <code>StorageEncrypted</code> parameter is true and <code>ReplicationSourceIdentifier</code> is not specified, then Amazon Neptune will use your default encryption key.</p> </li> </ul> <p>Amazon KMS creates the default encryption key for your Amazon account. Your Amazon account has a different default encryption key for each Amazon Region.</p> <p>If you create a Read Replica of an encrypted DB cluster in another Amazon Region, you must set <code>KmsKeyId</code> to a KMS key ID that is valid in the destination Amazon Region. This key is used to encrypt the Read Replica in that Amazon Region.</p>',
-        }),
-    ).exactOptional(),
-    PreSignedUrl: StringSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set to <code>true</code>, enables Amazon Identity and Access Management (IAM) authentication for the entire DB cluster (this cannot be set at an instance level).</p> <p>Default: <code>false</code>.</p>',
-        }),
-    ).exactOptional(),
-    EnableCloudwatchLogsExports: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of log types that need to be enabled for exporting to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is enabled.",
-        }),
-    ).exactOptional(),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description:
+        'A list of EC2 Availability Zones that instances in the DB cluster can be created in.',
+    }),
+    BackupRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which automated backups are retained. You must specify a minimum value of 1.</p> <p>Default: 1</p> <p>Constraints:</p> <ul> <li> <p>Must be a value from 1 to 35</p> </li> </ul>',
+    }),
+    CharacterSetName: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    CopyTagsToSnapshot: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' <i>If set to <code>true</code>, tags are copied to any snapshot of the DB cluster that is created.</i> ',
+    }),
+    DatabaseName: StringSchema.exactOptional().openapi({
+      description:
+        'The name for your database of up to 64 alpha-numeric characters. If you do not provide a name, Amazon Neptune will not create a database in the DB cluster you are creating.',
+    }),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The DB cluster identifier. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>my-cluster1</code> </p>',
+    }),
+    DBClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The name of the DB cluster parameter group to associate with this DB cluster. If this argument is omitted, the default is used.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'A list of EC2 VPC security groups to associate with this DB cluster.',
+    }),
+    DBSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A DB subnet group to associate with this DB cluster.</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>',
+    }),
+    Engine: StringSchema.openapi({
+      description:
+        '<p>The name of the database engine to be used for this DB cluster.</p> <p>Valid Values: <code>neptune</code> </p>',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The version number of the database engine to use for the new DB cluster.</p> <p>Example: <code>1.0.2.1</code> </p>',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The port number on which the instances in the DB cluster accept connections.</p> <p> Default: <code>8182</code> </p>',
+    }),
+    MasterUsername: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    MasterUserPassword: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    OptionGroupName: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    PreferredBackupWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range during which automated backups are created if automated backups are enabled using the <code>BackupRetentionPeriod</code> parameter.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region. To see the time blocks available, see <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AdjustingTheMaintenanceWindow.html"> Adjusting the Preferred Maintenance Window</a> in the <i>Amazon Neptune User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Must be in the format <code>hh24:mi-hh24:mi</code>.</p> </li> <li> <p>Must be in Universal Coordinated Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).</p> <p>Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region, occurring on a random day of the week. To see the time blocks available, see <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AdjustingTheMaintenanceWindow.html"> Adjusting the Preferred Maintenance Window</a> in the <i>Amazon Neptune User Guide.</i> </p> <p>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> <p>Constraints: Minimum 30-minute window.</p>',
+    }),
+    ReplicationSourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the source DB instance or DB cluster if this DB cluster is created as a Read Replica.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to assign to the new DB cluster.',
+    }),
+    StorageEncrypted: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'Specifies whether the DB cluster is encrypted.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon KMS key identifier for an encrypted DB cluster.</p> <p>The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you are creating a DB cluster with the same Amazon account that owns the KMS encryption key used to encrypt the new DB cluster, then you can use the KMS key alias instead of the ARN for the KMS encryption key.</p> <p>If an encryption key is not specified in <code>KmsKeyId</code>:</p> <ul> <li> <p>If <code>ReplicationSourceIdentifier</code> identifies an encrypted source, then Amazon Neptune will use the encryption key used to encrypt the source. Otherwise, Amazon Neptune will use your default encryption key.</p> </li> <li> <p>If the <code>StorageEncrypted</code> parameter is true and <code>ReplicationSourceIdentifier</code> is not specified, then Amazon Neptune will use your default encryption key.</p> </li> </ul> <p>Amazon KMS creates the default encryption key for your Amazon account. Your Amazon account has a different default encryption key for each Amazon Region.</p> <p>If you create a Read Replica of an encrypted DB cluster in another Amazon Region, you must set <code>KmsKeyId</code> to a KMS key ID that is valid in the destination Amazon Region. This key is used to encrypt the Read Replica in that Amazon Region.</p>',
+    }),
+    PreSignedUrl: StringSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set to <code>true</code>, enables Amazon Identity and Access Management (IAM) authentication for the entire DB cluster (this cannot be set at an instance level).</p> <p>Default: <code>false</code>.</p>',
+    }),
+    EnableCloudwatchLogsExports: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'The list of log types that need to be enabled for exporting to CloudWatch Logs.',
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is enabled.",
+    }),
     ServerlessV2ScalingConfiguration: ServerlessV2ScalingConfigurationSchema.exactOptional(),
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Neptune global database to which this new DB cluster should be added.',
-        }),
-    ).exactOptional(),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.exactOptional().openapi({
+      description:
+        'The ID of the Neptune global database to which this new DB cluster should be added.',
+    }),
   })
   .openapi({ required: ['DBClusterIdentifier', 'Engine'], title: 'CreateDBClusterMessage' })
   .openapi('CreateDBClusterMessage')
 
 const CreateDBClusterParameterGroupMessageSchema = z
   .object({
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DBClusterParameterGroup.</p> </li> </ul> <note> <p>This value is stored as a lowercase string.</p> </note>',
-        }),
-    ),
-    DBParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster parameter group family name. A DB cluster parameter group can be associated with one and only one DB cluster parameter group family, and can be applied only to a DB cluster running a database engine and engine version compatible with that DB cluster parameter group family.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description for the DB cluster parameter group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags to be assigned to the new DB cluster parameter group.' }),
-    ).exactOptional(),
+    DBClusterParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the DB cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DBClusterParameterGroup.</p> </li> </ul> <note> <p>This value is stored as a lowercase string.</p> </note>',
+    }),
+    DBParameterGroupFamily: StringSchema.openapi({
+      description:
+        'The DB cluster parameter group family name. A DB cluster parameter group can be associated with one and only one DB cluster parameter group family, and can be applied only to a DB cluster running a database engine and engine version compatible with that DB cluster parameter group family.',
+    }),
+    Description: StringSchema.openapi({
+      description: 'The description for the DB cluster parameter group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the new DB cluster parameter group.',
+    }),
   })
   .openapi({
     required: ['DBClusterParameterGroupName', 'DBParameterGroupFamily', 'Description'],
@@ -3864,25 +2740,17 @@ const CreateDBClusterParameterGroupMessageSchema = z
 
 const CreateDBClusterSnapshotMessageSchema = z
   .object({
-    DBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the DB cluster snapshot. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>my-cluster1-snapshot1</code> </p>',
-        }),
-    ),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the DB cluster to create a snapshot for. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul> <p>Example: <code>my-cluster1</code> </p>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the DB cluster snapshot.' }),
-    ).exactOptional(),
+    DBClusterSnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the DB cluster snapshot. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>my-cluster1-snapshot1</code> </p>',
+    }),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the DB cluster to create a snapshot for. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul> <p>Example: <code>my-cluster1</code> </p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the DB cluster snapshot.',
+    }),
   })
   .openapi({
     required: ['DBClusterSnapshotIdentifier', 'DBClusterIdentifier'],
@@ -3891,290 +2759,169 @@ const CreateDBClusterSnapshotMessageSchema = z
   .openapi('CreateDBClusterSnapshotMessage')
 
 const DBSecurityGroupNameListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'DBSecurityGroupName' } })))
+  .array(StringSchema.openapi({ xml: { name: 'DBSecurityGroupName' } }))
   .openapi('DBSecurityGroupNameList')
 
 const CreateDBInstanceMessageSchema = z
   .object({
-    DBName: StringSchema.and(z.any().openapi({ description: 'Not supported.' })).exactOptional(),
-    DBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DB instance identifier. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>mydbinstance</code> </p>',
-        }),
-    ),
-    AllocatedStorage: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    DBInstanceClass: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compute and memory capacity of the DB instance, for example, <code>db.m4.large</code>. Not all DB instance classes are available in all Amazon Regions.',
-        }),
-    ),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the database engine to be used for this instance.</p> <p>Valid Values: <code>neptune</code> </p>',
-        }),
-    ),
-    MasterUsername: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    MasterUserPassword: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    DBSecurityGroups: DBSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of DB security groups to associate with this DB instance.</p> <p>Default: The default DB security group for the database engine.</p>',
-        }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of EC2 VPC security groups to associate with this DB instance.</p> <p>Not applicable. The associated list of EC2 VPC security groups is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p>Default: The default EC2 VPC security group for the DB subnet group's VPC.</p>",
-        }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The EC2 Availability Zone that the DB instance is created in</p> <p>Default: A random, system-chosen Availability Zone in the endpoint's Amazon Region.</p> <p> Example: <code>us-east-1d</code> </p> <p> Constraint: The AvailabilityZone parameter can't be specified if the MultiAZ parameter is set to <code>true</code>. The specified Availability Zone must be in the same Amazon Region as the current endpoint.</p>",
-        }),
-    ).exactOptional(),
-    DBSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A DB subnet group to associate with this DB instance.</p> <p>If there is no DB subnet group, then it is a non-VPC DB instance.</p>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time range each week during which system maintenance can occur, in Universal Coordinated Time (UTC).</p> <p> Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region, occurring on a random day of the week.</p> <p>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> <p>Constraints: Minimum 30-minute window.</p>',
-        }),
-    ).exactOptional(),
-    DBParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB parameter group to associate with this DB instance. If this argument is omitted, the default DBParameterGroup for the specified engine is used.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    BackupRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which automated backups are retained.</p> <p>Not applicable. The retention period for automated backups is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p>Default: 1</p> <p>Constraints:</p> <ul> <li> <p>Must be a value from 0 to 35</p> </li> <li> <p>Cannot be set to 0 if the DB instance is a source to Read Replicas</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PreferredBackupWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The daily time range during which automated backups are created.</p> <p>Not applicable. The daily time range for creating automated backups is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p>',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port number on which the database accepts connections.</p> <p>Not applicable. The port is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p> Default: <code>8182</code> </p> <p>Type: Integer</p>',
-        }),
-    ).exactOptional(),
-    MultiAZ: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies if the DB instance is a Multi-AZ deployment. You can't set the AvailabilityZone parameter if the MultiAZ parameter is set to true.",
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the database engine to use. Currently, setting this parameter has no effect.',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates that minor engine upgrades are applied automatically to the DB instance during the maintenance window.</p> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    LicenseModel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>License model information for this DB instance.</p> <p> Valid values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code> </p>',
-        }),
-    ).exactOptional(),
-    Iops: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB instance.',
-        }),
-    ).exactOptional(),
-    OptionGroupName: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    CharacterSetName: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanOptionalSchema.and(
-      z.any().openapi({ deprecated: true, description: 'This flag should no longer be used.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to assign to the new instance.' }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the DB cluster that the instance will belong to.</p> <p>For information on creating a DB cluster, see <a>CreateDBCluster</a>.</p> <p>Type: String</p>',
-        }),
-    ),
-    StorageType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the storage type to be associated with the DB instance.</p> <p>Not applicable. Storage is managed by the DB Cluster.</p>',
-        }),
-    ).exactOptional(),
-    TdeCredentialArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN from the key store with which to associate the instance for TDE encryption.',
-        }),
-    ).exactOptional(),
-    TdeCredentialPassword: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The password for the given ARN from the key store in order to access the device.',
-        }),
-    ).exactOptional(),
-    StorageEncrypted: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the DB instance is encrypted.</p> <p>Not applicable. The encryption for DB instances is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon KMS key identifier for an encrypted DB instance.</p> <p>The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you are creating a DB instance with the same Amazon account that owns the KMS encryption key used to encrypt the new DB instance, then you can use the KMS key alias instead of the ARN for the KM encryption key.</p> <p>Not applicable. The KMS key identifier is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p>If the <code>StorageEncrypted</code> parameter is true, and you do not specify a value for the <code>KmsKeyId</code> parameter, then Amazon Neptune will use your default encryption key. Amazon KMS creates the default encryption key for your Amazon account. Your Amazon account has a different default encryption key for each Amazon Region.</p>',
-        }),
-    ).exactOptional(),
-    Domain: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specify the Active Directory Domain to create the instance in.' }),
-    ).exactOptional(),
-    CopyTagsToSnapshot: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True to copy all tags from the DB instance to snapshots of the DB instance, and otherwise false. The default is false.',
-        }),
-    ).exactOptional(),
-    MonitoringInterval: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0.</p> <p>If <code>MonitoringRoleArn</code> is specified, then you must also set <code>MonitoringInterval</code> to a value other than 0.</p> <p>Valid Values: <code>0, 1, 5, 10, 15, 30, 60</code> </p>',
-        }),
-    ).exactOptional(),
-    MonitoringRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN for the IAM role that permits Neptune to send enhanced monitoring metrics to Amazon CloudWatch Logs. For example, <code>arn:aws:iam:123456789012:role/emaccess</code>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than 0, then you must supply a <code>MonitoringRoleArn</code> value.</p>',
-        }),
-    ).exactOptional(),
-    DomainIAMRoleName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the name of the IAM role to be used when making API calls to the Directory Service.',
-        }),
-    ).exactOptional(),
-    PromotionTier: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that specifies the order in which an Read Replica is promoted to the primary instance after a failure of the existing primary instance. </p> <p>Default: 1</p> <p>Valid Values: 0 - 15</p>',
-        }),
-    ).exactOptional(),
-    Timezone: StringSchema.and(
-      z.any().openapi({ description: 'The time zone of the DB instance.' }),
-    ).exactOptional(),
-    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune (ignored).' }),
-    ).exactOptional(),
-    EnablePerformanceInsights: BooleanOptionalSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    PerformanceInsightsKMSKeyId: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    EnableCloudwatchLogsExports: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of log types that need to be enabled for exporting to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that indicates whether the DB instance has deletion protection enabled. The database can\'t be deleted when deletion protection is enabled. By default, deletion protection is disabled. See <a href="https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html">Deleting a DB Instance</a>.</p> <p>DB instances in a DB cluster can be deleted even when deletion protection is enabled in their parent DB cluster.</p>',
-        }),
-    ).exactOptional(),
+    DBName: StringSchema.exactOptional().openapi({ description: 'Not supported.' }),
+    DBInstanceIdentifier: StringSchema.openapi({
+      description:
+        '<p>The DB instance identifier. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>mydbinstance</code> </p>',
+    }),
+    AllocatedStorage: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    DBInstanceClass: StringSchema.openapi({
+      description:
+        'The compute and memory capacity of the DB instance, for example, <code>db.m4.large</code>. Not all DB instance classes are available in all Amazon Regions.',
+    }),
+    Engine: StringSchema.openapi({
+      description:
+        '<p>The name of the database engine to be used for this instance.</p> <p>Valid Values: <code>neptune</code> </p>',
+    }),
+    MasterUsername: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    MasterUserPassword: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    DBSecurityGroups: DBSecurityGroupNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of DB security groups to associate with this DB instance.</p> <p>Default: The default DB security group for the database engine.</p>',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of EC2 VPC security groups to associate with this DB instance.</p> <p>Not applicable. The associated list of EC2 VPC security groups is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p>Default: The default EC2 VPC security group for the DB subnet group's VPC.</p>",
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        "<p> The EC2 Availability Zone that the DB instance is created in</p> <p>Default: A random, system-chosen Availability Zone in the endpoint's Amazon Region.</p> <p> Example: <code>us-east-1d</code> </p> <p> Constraint: The AvailabilityZone parameter can't be specified if the MultiAZ parameter is set to <code>true</code>. The specified Availability Zone must be in the same Amazon Region as the current endpoint.</p>",
+    }),
+    DBSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A DB subnet group to associate with this DB instance.</p> <p>If there is no DB subnet group, then it is a non-VPC DB instance.</p>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The time range each week during which system maintenance can occur, in Universal Coordinated Time (UTC).</p> <p> Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region, occurring on a random day of the week.</p> <p>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> <p>Constraints: Minimum 30-minute window.</p>',
+    }),
+    DBParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the DB parameter group to associate with this DB instance. If this argument is omitted, the default DBParameterGroup for the specified engine is used.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
+    }),
+    BackupRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which automated backups are retained.</p> <p>Not applicable. The retention period for automated backups is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p>Default: 1</p> <p>Constraints:</p> <ul> <li> <p>Must be a value from 0 to 35</p> </li> <li> <p>Cannot be set to 0 if the DB instance is a source to Read Replicas</p> </li> </ul>',
+    }),
+    PreferredBackupWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The daily time range during which automated backups are created.</p> <p>Not applicable. The daily time range for creating automated backups is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p>',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The port number on which the database accepts connections.</p> <p>Not applicable. The port is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p> Default: <code>8182</code> </p> <p>Type: Integer</p>',
+    }),
+    MultiAZ: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "Specifies if the DB instance is a Multi-AZ deployment. You can't set the AvailabilityZone parameter if the MultiAZ parameter is set to true.",
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The version number of the database engine to use. Currently, setting this parameter has no effect.',
+    }),
+    AutoMinorVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates that minor engine upgrades are applied automatically to the DB instance during the maintenance window.</p> <p>Default: <code>true</code> </p>',
+    }),
+    LicenseModel: StringSchema.exactOptional().openapi({
+      description:
+        '<p>License model information for this DB instance.</p> <p> Valid values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code> </p>',
+    }),
+    Iops: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB instance.',
+    }),
+    OptionGroupName: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    CharacterSetName: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    PubliclyAccessible: BooleanOptionalSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'This flag should no longer be used.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to assign to the new instance.',
+    }),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the DB cluster that the instance will belong to.</p> <p>For information on creating a DB cluster, see <a>CreateDBCluster</a>.</p> <p>Type: String</p>',
+    }),
+    StorageType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the storage type to be associated with the DB instance.</p> <p>Not applicable. Storage is managed by the DB Cluster.</p>',
+    }),
+    TdeCredentialArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN from the key store with which to associate the instance for TDE encryption.',
+    }),
+    TdeCredentialPassword: StringSchema.exactOptional().openapi({
+      description:
+        'The password for the given ARN from the key store in order to access the device.',
+    }),
+    StorageEncrypted: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the DB instance is encrypted.</p> <p>Not applicable. The encryption for DB instances is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p>Default: false</p>',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon KMS key identifier for an encrypted DB instance.</p> <p>The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you are creating a DB instance with the same Amazon account that owns the KMS encryption key used to encrypt the new DB instance, then you can use the KMS key alias instead of the ARN for the KM encryption key.</p> <p>Not applicable. The KMS key identifier is managed by the DB cluster. For more information, see <a>CreateDBCluster</a>.</p> <p>If the <code>StorageEncrypted</code> parameter is true, and you do not specify a value for the <code>KmsKeyId</code> parameter, then Amazon Neptune will use your default encryption key. Amazon KMS creates the default encryption key for your Amazon account. Your Amazon account has a different default encryption key for each Amazon Region.</p>',
+    }),
+    Domain: StringSchema.exactOptional().openapi({
+      description: 'Specify the Active Directory Domain to create the instance in.',
+    }),
+    CopyTagsToSnapshot: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'True to copy all tags from the DB instance to snapshots of the DB instance, and otherwise false. The default is false.',
+    }),
+    MonitoringInterval: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0.</p> <p>If <code>MonitoringRoleArn</code> is specified, then you must also set <code>MonitoringInterval</code> to a value other than 0.</p> <p>Valid Values: <code>0, 1, 5, 10, 15, 30, 60</code> </p>',
+    }),
+    MonitoringRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN for the IAM role that permits Neptune to send enhanced monitoring metrics to Amazon CloudWatch Logs. For example, <code>arn:aws:iam:123456789012:role/emaccess</code>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than 0, then you must supply a <code>MonitoringRoleArn</code> value.</p>',
+    }),
+    DomainIAMRoleName: StringSchema.exactOptional().openapi({
+      description:
+        'Specify the name of the IAM role to be used when making API calls to the Directory Service.',
+    }),
+    PromotionTier: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A value that specifies the order in which an Read Replica is promoted to the primary instance after a failure of the existing primary instance. </p> <p>Default: 1</p> <p>Valid Values: 0 - 15</p>',
+    }),
+    Timezone: StringSchema.exactOptional().openapi({
+      description: 'The time zone of the DB instance.',
+    }),
+    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune (ignored).',
+    }),
+    EnablePerformanceInsights: BooleanOptionalSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    PerformanceInsightsKMSKeyId: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    EnableCloudwatchLogsExports: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'The list of log types that need to be enabled for exporting to CloudWatch Logs.',
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A value that indicates whether the DB instance has deletion protection enabled. The database can\'t be deleted when deletion protection is enabled. By default, deletion protection is disabled. See <a href="https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html">Deleting a DB Instance</a>.</p> <p>DB instances in a DB cluster can be deleted even when deletion protection is enabled in their parent DB cluster.</p>',
+    }),
   })
   .openapi({
     required: ['DBInstanceIdentifier', 'DBInstanceClass', 'Engine', 'DBClusterIdentifier'],
@@ -4184,28 +2931,20 @@ const CreateDBInstanceMessageSchema = z
 
 const CreateDBParameterGroupMessageSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <note> <p>This value is stored as a lowercase string.</p> </note>',
-        }),
-    ),
-    DBParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB parameter group family name. A DB parameter group can be associated with one and only one DB parameter group family, and can be applied only to a DB instance running a database engine and engine version compatible with that DB parameter group family.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description for the DB parameter group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the new DB parameter group.' }),
-    ).exactOptional(),
+    DBParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <note> <p>This value is stored as a lowercase string.</p> </note>',
+    }),
+    DBParameterGroupFamily: StringSchema.openapi({
+      description:
+        'The DB parameter group family name. A DB parameter group can be associated with one and only one DB parameter group family, and can be applied only to a DB instance running a database engine and engine version compatible with that DB parameter group family.',
+    }),
+    Description: StringSchema.openapi({
+      description: 'The description for the DB parameter group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the new DB parameter group.',
+    }),
   })
   .openapi({
     required: ['DBParameterGroupName', 'DBParameterGroupFamily', 'Description'],
@@ -4214,28 +2953,24 @@ const CreateDBParameterGroupMessageSchema = z
   .openapi('CreateDBParameterGroupMessage')
 
 const SubnetIdentifierListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'SubnetIdentifier' } })))
+  .array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } }))
   .openapi('SubnetIdentifierList')
 
 const CreateDBSubnetGroupMessageSchema = z
   .object({
-    DBSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the DB subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 letters, numbers, periods, underscores, spaces, or hyphens. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>',
-        }),
-    ),
-    DBSubnetGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description for the DB subnet group.' }),
-    ),
-    SubnetIds: SubnetIdentifierListSchema.and(
-      z.any().openapi({ description: 'The EC2 Subnet IDs for the DB subnet group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the new DB subnet group.' }),
-    ).exactOptional(),
+    DBSubnetGroupName: StringSchema.openapi({
+      description:
+        '<p>The name for the DB subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 letters, numbers, periods, underscores, spaces, or hyphens. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>',
+    }),
+    DBSubnetGroupDescription: StringSchema.openapi({
+      description: 'The description for the DB subnet group.',
+    }),
+    SubnetIds: SubnetIdentifierListSchema.openapi({
+      description: 'The EC2 Subnet IDs for the DB subnet group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the new DB subnet group.',
+    }),
   })
   .openapi({
     required: ['DBSubnetGroupName', 'DBSubnetGroupDescription', 'SubnetIds'],
@@ -4245,57 +2980,33 @@ const CreateDBSubnetGroupMessageSchema = z
 
 const CreateEventSubscriptionMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the subscription.</p> <p>Constraints: The name must be less than 255 characters.</p>',
-        }),
-    ),
-    SnsTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the SNS topic created for event notification. The ARN is created by Amazon SNS when you create a topic and subscribe to it.',
-        }),
-    ),
-    SourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of source that is generating the events. For example, if you want to be notified of events generated by a DB instance, you would set this parameter to db-instance. if this value is not specified, all events are returned.</p> <p>Valid values: <code>db-instance</code> | <code>db-cluster</code> | <code>db-parameter-group</code> | <code>db-security-group</code> | <code>db-snapshot</code> | <code>db-cluster-snapshot</code> </p>',
-        }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of event categories for a SourceType that you want to subscribe to. You can see a list of the categories for a given SourceType by using the <b>DescribeEventCategories</b> action.',
-        }),
-    ).exactOptional(),
-    SourceIds: SourceIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The list of identifiers of the event sources for which events are returned. If not specified, then all sources are included in the response. An identifier must begin with a letter and must contain only ASCII letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive hyphens.</p> <p>Constraints:</p> <ul> <li> <p>If SourceIds are supplied, SourceType must also be provided.</p> </li> <li> <p>If the source type is a DB instance, then a <code>DBInstanceIdentifier</code> must be supplied.</p> </li> <li> <p>If the source type is a DB security group, a <code>DBSecurityGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is a DB parameter group, a <code>DBParameterGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is a DB snapshot, a <code>DBSnapshotIdentifier</code> must be supplied.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Enabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A Boolean value; set to <b>true</b> to activate the subscription, set to <b>false</b> to create the subscription but not active it.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be applied to the new event subscription.' }),
-    ).exactOptional(),
+    SubscriptionName: StringSchema.openapi({
+      description:
+        '<p>The name of the subscription.</p> <p>Constraints: The name must be less than 255 characters.</p>',
+    }),
+    SnsTopicArn: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the SNS topic created for event notification. The ARN is created by Amazon SNS when you create a topic and subscribe to it.',
+    }),
+    SourceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of source that is generating the events. For example, if you want to be notified of events generated by a DB instance, you would set this parameter to db-instance. if this value is not specified, all events are returned.</p> <p>Valid values: <code>db-instance</code> | <code>db-cluster</code> | <code>db-parameter-group</code> | <code>db-security-group</code> | <code>db-snapshot</code> | <code>db-cluster-snapshot</code> </p>',
+    }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description:
+        ' A list of event categories for a SourceType that you want to subscribe to. You can see a list of the categories for a given SourceType by using the <b>DescribeEventCategories</b> action.',
+    }),
+    SourceIds: SourceIdsListSchema.exactOptional().openapi({
+      description:
+        "<p>The list of identifiers of the event sources for which events are returned. If not specified, then all sources are included in the response. An identifier must begin with a letter and must contain only ASCII letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive hyphens.</p> <p>Constraints:</p> <ul> <li> <p>If SourceIds are supplied, SourceType must also be provided.</p> </li> <li> <p>If the source type is a DB instance, then a <code>DBInstanceIdentifier</code> must be supplied.</p> </li> <li> <p>If the source type is a DB security group, a <code>DBSecurityGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is a DB parameter group, a <code>DBParameterGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is a DB snapshot, a <code>DBSnapshotIdentifier</code> must be supplied.</p> </li> </ul>",
+    }),
+    Enabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' A Boolean value; set to <b>true</b> to activate the subscription, set to <b>false</b> to create the subscription but not active it.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be applied to the new event subscription.',
+    }),
   })
   .openapi({
     required: ['SubscriptionName', 'SnsTopicArn'],
@@ -4305,108 +3016,66 @@ const CreateEventSubscriptionMessageSchema = z
 
 const CreateGlobalClusterMessageSchema = z
   .object({
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The cluster identifier of the new global database cluster.' }),
-    ),
-    SourceDBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(<i>Optional</i>) The Amazon Resource Name (ARN) of an existing Neptune DB cluster to use as the primary cluster of the new global database.',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the database engine to be used in the global database.</p> <p>Valid values: <code>neptune</code> </p>',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Neptune engine version to be used by the global database.</p> <p>Valid values: <code>1.2.0.0</code> or above.</p>',
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The deletion protection setting for the new global database. The global database can't be deleted when deletion protection is enabled.",
-        }),
-    ).exactOptional(),
-    StorageEncrypted: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The storage encryption setting for the new global database cluster.',
-        }),
-    ).exactOptional(),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.openapi({
+      description: 'The cluster identifier of the new global database cluster.',
+    }),
+    SourceDBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '(<i>Optional</i>) The Amazon Resource Name (ARN) of an existing Neptune DB cluster to use as the primary cluster of the new global database.',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the database engine to be used in the global database.</p> <p>Valid values: <code>neptune</code> </p>',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Neptune engine version to be used by the global database.</p> <p>Valid values: <code>1.2.0.0</code> or above.</p>',
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "The deletion protection setting for the new global database. The global database can't be deleted when deletion protection is enabled.",
+    }),
+    StorageEncrypted: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'The storage encryption setting for the new global database cluster.',
+    }),
   })
   .openapi({ required: ['GlobalClusterIdentifier'], title: 'CreateGlobalClusterMessage' })
   .openapi('CreateGlobalClusterMessage')
 
 const DeleteDBClusterEndpointMessageSchema = z
   .object({
-    DBClusterEndpointIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier associated with the custom endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ),
+    DBClusterEndpointIdentifier: StringSchema.openapi({
+      description:
+        'The identifier associated with the custom endpoint. This parameter is stored as a lowercase string.',
+    }),
   })
   .openapi({ required: ['DBClusterEndpointIdentifier'], title: 'DeleteDBClusterEndpointMessage' })
   .openapi('DeleteDBClusterEndpointMessage')
 
 const DeleteDBClusterMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The DB cluster identifier for the DB cluster to be deleted. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match an existing DBClusterIdentifier.</p> </li> </ul>",
-        }),
-    ),
-    SkipFinalSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Determines whether a final DB cluster snapshot is created before the DB cluster is deleted. If <code>true</code> is specified, no DB cluster snapshot is created. If <code>false</code> is specified, a DB cluster snapshot is created before the DB cluster is deleted.</p> <note> <p>You must specify a <code>FinalDBSnapshotIdentifier</code> parameter if <code>SkipFinalSnapshot</code> is <code>false</code>.</p> </note> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    FinalDBSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The DB cluster snapshot identifier of the new DB cluster snapshot created when <code>SkipFinalSnapshot</code> is set to <code>false</code>.</p> <note> <p> Specifying this parameter and also setting the <code>SkipFinalShapshot</code> parameter to true results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        "<p>The DB cluster identifier for the DB cluster to be deleted. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match an existing DBClusterIdentifier.</p> </li> </ul>",
+    }),
+    SkipFinalSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p> Determines whether a final DB cluster snapshot is created before the DB cluster is deleted. If <code>true</code> is specified, no DB cluster snapshot is created. If <code>false</code> is specified, a DB cluster snapshot is created before the DB cluster is deleted.</p> <note> <p>You must specify a <code>FinalDBSnapshotIdentifier</code> parameter if <code>SkipFinalSnapshot</code> is <code>false</code>.</p> </note> <p>Default: <code>false</code> </p>',
+    }),
+    FinalDBSnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The DB cluster snapshot identifier of the new DB cluster snapshot created when <code>SkipFinalSnapshot</code> is set to <code>false</code>.</p> <note> <p> Specifying this parameter and also setting the <code>SkipFinalShapshot</code> parameter to true results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['DBClusterIdentifier'], title: 'DeleteDBClusterMessage' })
   .openapi('DeleteDBClusterMessage')
 
 const DeleteDBClusterParameterGroupMessageSchema = z
   .object({
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the DB cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be the name of an existing DB cluster parameter group.</p> </li> <li> <p>You can't delete a default DB cluster parameter group.</p> </li> <li> <p>Cannot be associated with any DB clusters.</p> </li> </ul>",
-        }),
-    ),
+    DBClusterParameterGroupName: StringSchema.openapi({
+      description:
+        "<p>The name of the DB cluster parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be the name of an existing DB cluster parameter group.</p> </li> <li> <p>You can't delete a default DB cluster parameter group.</p> </li> <li> <p>Cannot be associated with any DB clusters.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['DBClusterParameterGroupName'],
@@ -4416,222 +3085,142 @@ const DeleteDBClusterParameterGroupMessageSchema = z
 
 const DeleteDBClusterSnapshotMessageSchema = z
   .object({
-    DBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the DB cluster snapshot to delete.</p> <p>Constraints: Must be the name of an existing DB cluster snapshot in the <code>available</code> state.</p>',
-        }),
-    ),
+    DBClusterSnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the DB cluster snapshot to delete.</p> <p>Constraints: Must be the name of an existing DB cluster snapshot in the <code>available</code> state.</p>',
+    }),
   })
   .openapi({ required: ['DBClusterSnapshotIdentifier'], title: 'DeleteDBClusterSnapshotMessage' })
   .openapi('DeleteDBClusterSnapshotMessage')
 
 const DeleteDBInstanceMessageSchema = z
   .object({
-    DBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The DB instance identifier for the DB instance to be deleted. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DB instance.</p> </li> </ul>",
-        }),
-    ),
-    SkipFinalSnapshot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> Determines whether a final DB snapshot is created before the DB instance is deleted. If <code>true</code> is specified, no DBSnapshot is created. If <code>false</code> is specified, a DB snapshot is created before the DB instance is deleted.</p> <p>Note that when a DB instance is in a failure state and has a status of 'failed', 'incompatible-restore', or 'incompatible-network', it can only be deleted when the SkipFinalSnapshot parameter is set to \"true\".</p> <p>Specify <code>true</code> when deleting a Read Replica.</p> <note> <p>The FinalDBSnapshotIdentifier parameter must be specified if SkipFinalSnapshot is <code>false</code>.</p> </note> <p>Default: <code>false</code> </p>",
-        }),
-    ).exactOptional(),
-    FinalDBSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The DBSnapshotIdentifier of the new DBSnapshot created when SkipFinalSnapshot is set to <code>false</code>.</p> <note> <p>Specifying this parameter and also setting the SkipFinalShapshot parameter to true results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters or numbers.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> <li> <p>Cannot be specified when deleting a Read Replica.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    DBInstanceIdentifier: StringSchema.openapi({
+      description:
+        "<p>The DB instance identifier for the DB instance to be deleted. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DB instance.</p> </li> </ul>",
+    }),
+    SkipFinalSnapshot: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p> Determines whether a final DB snapshot is created before the DB instance is deleted. If <code>true</code> is specified, no DBSnapshot is created. If <code>false</code> is specified, a DB snapshot is created before the DB instance is deleted.</p> <p>Note that when a DB instance is in a failure state and has a status of 'failed', 'incompatible-restore', or 'incompatible-network', it can only be deleted when the SkipFinalSnapshot parameter is set to \"true\".</p> <p>Specify <code>true</code> when deleting a Read Replica.</p> <note> <p>The FinalDBSnapshotIdentifier parameter must be specified if SkipFinalSnapshot is <code>false</code>.</p> </note> <p>Default: <code>false</code> </p>",
+    }),
+    FinalDBSnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The DBSnapshotIdentifier of the new DBSnapshot created when SkipFinalSnapshot is set to <code>false</code>.</p> <note> <p>Specifying this parameter and also setting the SkipFinalShapshot parameter to true results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters or numbers.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> <li> <p>Cannot be specified when deleting a Read Replica.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['DBInstanceIdentifier'], title: 'DeleteDBInstanceMessage' })
   .openapi('DeleteDBInstanceMessage')
 
 const DeleteDBParameterGroupMessageSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be the name of an existing DB parameter group</p> </li> <li> <p>You can't delete a default DB parameter group</p> </li> <li> <p>Cannot be associated with any DB instances</p> </li> </ul>",
-        }),
-    ),
+    DBParameterGroupName: StringSchema.openapi({
+      description:
+        "<p>The name of the DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must be the name of an existing DB parameter group</p> </li> <li> <p>You can't delete a default DB parameter group</p> </li> <li> <p>Cannot be associated with any DB instances</p> </li> </ul>",
+    }),
   })
   .openapi({ required: ['DBParameterGroupName'], title: 'DeleteDBParameterGroupMessage' })
   .openapi('DeleteDBParameterGroupMessage')
 
 const DeleteDBSubnetGroupMessageSchema = z
   .object({
-    DBSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the database subnet group to delete.</p> <note> <p>You can't delete the default subnet group.</p> </note> <p>Constraints:</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>",
-        }),
-    ),
+    DBSubnetGroupName: StringSchema.openapi({
+      description:
+        "<p>The name of the database subnet group to delete.</p> <note> <p>You can't delete the default subnet group.</p> </note> <p>Constraints:</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>",
+    }),
   })
   .openapi({ required: ['DBSubnetGroupName'], title: 'DeleteDBSubnetGroupMessage' })
   .openapi('DeleteDBSubnetGroupMessage')
 
 const DeleteEventSubscriptionMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the event notification subscription you want to delete.',
-        }),
-    ),
+    SubscriptionName: StringSchema.openapi({
+      description: 'The name of the event notification subscription you want to delete.',
+    }),
   })
   .openapi({ required: ['SubscriptionName'], title: 'DeleteEventSubscriptionMessage' })
   .openapi('DeleteEventSubscriptionMessage')
 
 const DeleteGlobalClusterMessageSchema = z
   .object({
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The cluster identifier of the global database cluster being deleted.',
-        }),
-    ),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.openapi({
+      description: 'The cluster identifier of the global database cluster being deleted.',
+    }),
   })
   .openapi({ required: ['GlobalClusterIdentifier'], title: 'DeleteGlobalClusterMessage' })
   .openapi('DeleteGlobalClusterMessage')
 
 const FilterListSchema = z
-  .array(FilterSchema.and(z.any().openapi({ xml: { name: 'Filter' } })))
+  .array(FilterSchema.openapi({ xml: { name: 'Filter' } }))
   .openapi('FilterList')
 
 const DescribeDBClusterEndpointsMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    DBClusterEndpointIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the endpoint to describe. This parameter is stored as a lowercase string.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of name-value pairs that define which endpoints to include in the output. The filters are specified as name-value pairs, in the format <code>Name=<i>endpoint_type</i>,Values=<i>endpoint_type1</i>,<i>endpoint_type2</i>,...</code>. <code>Name</code> can be one of: <code>db-cluster-endpoint-type</code>, <code>db-cluster-endpoint-custom-type</code>, <code>db-cluster-endpoint-id</code>, <code>db-cluster-endpoint-status</code>. <code>Values</code> for the <code> db-cluster-endpoint-type</code> filter can be one or more of: <code>reader</code>, <code>writer</code>, <code>custom</code>. <code>Values</code> for the <code>db-cluster-endpoint-custom-type</code> filter can be one or more of: <code>reader</code>, <code>any</code>. <code>Values</code> for the <code>db-cluster-endpoint-status</code> filter can be one or more of: <code>available</code>, <code>creating</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. ',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results. </p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribeDBClusterEndpoints</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The DB cluster identifier of the DB cluster associated with the endpoint. This parameter is stored as a lowercase string.',
+    }),
+    DBClusterEndpointIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of the endpoint to describe. This parameter is stored as a lowercase string.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'A set of name-value pairs that define which endpoints to include in the output. The filters are specified as name-value pairs, in the format <code>Name=<i>endpoint_type</i>,Values=<i>endpoint_type1</i>,<i>endpoint_type2</i>,...</code>. <code>Name</code> can be one of: <code>db-cluster-endpoint-type</code>, <code>db-cluster-endpoint-custom-type</code>, <code>db-cluster-endpoint-id</code>, <code>db-cluster-endpoint-status</code>. <code>Values</code> for the <code> db-cluster-endpoint-type</code> filter can be one or more of: <code>reader</code>, <code>writer</code>, <code>custom</code>. <code>Values</code> for the <code>db-cluster-endpoint-custom-type</code> filter can be one or more of: <code>reader</code>, <code>any</code>. <code>Values</code> for the <code>db-cluster-endpoint-status</code> filter can be one or more of: <code>available</code>, <code>creating</code>, <code>deleting</code>, <code>inactive</code>, <code>modifying</code>. ',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results. </p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribeDBClusterEndpoints</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
+    }),
   })
   .openapi({ title: 'DescribeDBClusterEndpointsMessage', required: [] })
   .openapi('DescribeDBClusterEndpointsMessage')
 
 const DescribeDBClusterParameterGroupsMessageSchema = z
   .object({
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a specific DB cluster parameter group to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribeDBClusterParameterGroups</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    DBClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a specific DB cluster parameter group to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribeDBClusterParameterGroups</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeDBClusterParameterGroupsMessage', required: [] })
   .openapi('DescribeDBClusterParameterGroupsMessage')
 
 const DescribeDBClusterParametersMessageSchema = z
   .object({
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a specific DB cluster parameter group to return parameter details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
-        }),
-    ),
-    Source: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A value that indicates to return only parameters for a specific source. Parameter sources can be <code>engine</code>, <code>service</code>, or <code>customer</code>.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribeDBClusterParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
-        }),
-    ).exactOptional(),
+    DBClusterParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of a specific DB cluster parameter group to return parameter details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
+    }),
+    Source: StringSchema.exactOptional().openapi({
+      description:
+        ' A value that indicates to return only parameters for a specific source. Parameter sources can be <code>engine</code>, <code>service</code>, or <code>customer</code>.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribeDBClusterParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
+    }),
   })
   .openapi({
     required: ['DBClusterParameterGroupName'],
@@ -4641,13 +3230,9 @@ const DescribeDBClusterParametersMessageSchema = z
 
 const DescribeDBClusterSnapshotAttributesMessageSchema = z
   .object({
-    DBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the DB cluster snapshot to describe the attributes for.',
-        }),
-    ),
+    DBClusterSnapshotIdentifier: StringSchema.openapi({
+      description: 'The identifier for the DB cluster snapshot to describe the attributes for.',
+    }),
   })
   .openapi({
     required: ['DBClusterSnapshotIdentifier'],
@@ -4657,344 +3242,204 @@ const DescribeDBClusterSnapshotAttributesMessageSchema = z
 
 const DescribeDBClusterSnapshotsMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the DB cluster to retrieve the list of DB cluster snapshots for. This parameter can't be used in conjunction with the <code>DBClusterSnapshotIdentifier</code> parameter. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the identifier of an existing DBCluster.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    DBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A specific DB cluster snapshot identifier to describe. This parameter can't be used in conjunction with the <code>DBClusterIdentifier</code> parameter. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the identifier of an existing DBClusterSnapshot.</p> </li> <li> <p>If this identifier is for an automated snapshot, the <code>SnapshotType</code> parameter must also be specified.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    SnapshotType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of DB cluster snapshots to be returned. You can specify one of the following values:</p> <ul> <li> <p> <code>automated</code> - Return all DB cluster snapshots that have been automatically taken by Amazon Neptune for my Amazon account.</p> </li> <li> <p> <code>manual</code> - Return all DB cluster snapshots that have been taken by my Amazon account.</p> </li> <li> <p> <code>shared</code> - Return all manual DB cluster snapshots that have been shared to my Amazon account.</p> </li> <li> <p> <code>public</code> - Return all DB cluster snapshots that have been marked as public.</p> </li> </ul> <p>If you don't specify a <code>SnapshotType</code> value, then both automated and manual DB cluster snapshots are returned. You can include shared DB cluster snapshots with these results by setting the <code>IncludeShared</code> parameter to <code>true</code>. You can include public DB cluster snapshots with these results by setting the <code>IncludePublic</code> parameter to <code>true</code>.</p> <p>The <code>IncludeShared</code> and <code>IncludePublic</code> parameters don't apply for <code>SnapshotType</code> values of <code>manual</code> or <code>automated</code>. The <code>IncludePublic</code> parameter doesn't apply when <code>SnapshotType</code> is set to <code>shared</code>. The <code>IncludeShared</code> parameter doesn't apply when <code>SnapshotType</code> is set to <code>public</code>.</p>",
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeDBClusterSnapshots</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
-        }),
-    ).exactOptional(),
-    IncludeShared: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>True to include shared manual DB cluster snapshots from other Amazon accounts that this Amazon account has been given permission to copy or restore, and otherwise false. The default is <code>false</code>.</p> <p>You can give an Amazon account permission to restore a manual DB cluster snapshot from another Amazon account by the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>',
-        }),
-    ).exactOptional(),
-    IncludePublic: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>True to include manual DB cluster snapshots that are public and can be copied or restored by any Amazon account, and otherwise false. The default is <code>false</code>. The default is false.</p> <p>You can share a manual DB cluster snapshot as public by using the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>',
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the DB cluster to retrieve the list of DB cluster snapshots for. This parameter can't be used in conjunction with the <code>DBClusterSnapshotIdentifier</code> parameter. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the identifier of an existing DBCluster.</p> </li> </ul>",
+    }),
+    DBClusterSnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A specific DB cluster snapshot identifier to describe. This parameter can't be used in conjunction with the <code>DBClusterIdentifier</code> parameter. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the identifier of an existing DBClusterSnapshot.</p> </li> <li> <p>If this identifier is for an automated snapshot, the <code>SnapshotType</code> parameter must also be specified.</p> </li> </ul>",
+    }),
+    SnapshotType: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The type of DB cluster snapshots to be returned. You can specify one of the following values:</p> <ul> <li> <p> <code>automated</code> - Return all DB cluster snapshots that have been automatically taken by Amazon Neptune for my Amazon account.</p> </li> <li> <p> <code>manual</code> - Return all DB cluster snapshots that have been taken by my Amazon account.</p> </li> <li> <p> <code>shared</code> - Return all manual DB cluster snapshots that have been shared to my Amazon account.</p> </li> <li> <p> <code>public</code> - Return all DB cluster snapshots that have been marked as public.</p> </li> </ul> <p>If you don't specify a <code>SnapshotType</code> value, then both automated and manual DB cluster snapshots are returned. You can include shared DB cluster snapshots with these results by setting the <code>IncludeShared</code> parameter to <code>true</code>. You can include public DB cluster snapshots with these results by setting the <code>IncludePublic</code> parameter to <code>true</code>.</p> <p>The <code>IncludeShared</code> and <code>IncludePublic</code> parameters don't apply for <code>SnapshotType</code> values of <code>manual</code> or <code>automated</code>. The <code>IncludePublic</code> parameter doesn't apply when <code>SnapshotType</code> is set to <code>shared</code>. The <code>IncludeShared</code> parameter doesn't apply when <code>SnapshotType</code> is set to <code>public</code>.</p>",
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeDBClusterSnapshots</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
+    }),
+    IncludeShared: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>True to include shared manual DB cluster snapshots from other Amazon accounts that this Amazon account has been given permission to copy or restore, and otherwise false. The default is <code>false</code>.</p> <p>You can give an Amazon account permission to restore a manual DB cluster snapshot from another Amazon account by the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>',
+    }),
+    IncludePublic: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>True to include manual DB cluster snapshots that are public and can be copied or restored by any Amazon account, and otherwise false. The default is <code>false</code>. The default is false.</p> <p>You can share a manual DB cluster snapshot as public by using the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>',
+    }),
   })
   .openapi({ title: 'DescribeDBClusterSnapshotsMessage', required: [] })
   .openapi('DescribeDBClusterSnapshotsMessage')
 
 const DescribeDBClustersMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The user-supplied DB cluster identifier. If this parameter is specified, information from only the specific DB cluster is returned. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing DBClusterIdentifier.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A filter that specifies one or more DB clusters to describe.</p> <p>Supported filters:</p> <ul> <li> <p> <code>db-cluster-id</code> - Accepts DB cluster identifiers and DB cluster Amazon Resource Names (ARNs). The results list will only include information about the DB clusters identified by these ARNs.</p> </li> <li> <p> <code>engine</code> - Accepts an engine name (such as <code>neptune</code>), and restricts the results list to DB clusters created by that engine.</p> </li> </ul> <p>For example, to invoke this API from the Amazon CLI and filter so that only Neptune DB clusters are returned, you could use the following command:</p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <a>DescribeDBClusters</a> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The user-supplied DB cluster identifier. If this parameter is specified, information from only the specific DB cluster is returned. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing DBClusterIdentifier.</p> </li> </ul>",
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>A filter that specifies one or more DB clusters to describe.</p> <p>Supported filters:</p> <ul> <li> <p> <code>db-cluster-id</code> - Accepts DB cluster identifiers and DB cluster Amazon Resource Names (ARNs). The results list will only include information about the DB clusters identified by these ARNs.</p> </li> <li> <p> <code>engine</code> - Accepts an engine name (such as <code>neptune</code>), and restricts the results list to DB clusters created by that engine.</p> </li> </ul> <p>For example, to invoke this API from the Amazon CLI and filter so that only Neptune DB clusters are returned, you could use the following command:</p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <a>DescribeDBClusters</a> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeDBClustersMessage', required: [] })
   .openapi('DescribeDBClustersMessage')
 
 const DescribeDBEngineVersionsMessageSchema = z
   .object({
-    Engine: StringSchema.and(
-      z.any().openapi({ description: 'The database engine to return.' }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The database engine version to return.</p> <p>Example: <code>5.1.49</code> </p>',
-        }),
-    ).exactOptional(),
-    DBParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a specific DB parameter group family to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing DBParameterGroupFamily.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'Not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more than the <code>MaxRecords</code> value is available, a pagination token called a marker is included in the response so that the following results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    DefaultOnly: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that only the default version of the specified engine or engine and major version combination is returned.',
-        }),
-    ).exactOptional(),
-    ListSupportedCharacterSets: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this parameter is specified and the requested engine supports the <code>CharacterSetName</code> parameter for <code>CreateDBInstance</code>, the response includes a list of supported character sets for each engine version.',
-        }),
-    ).exactOptional(),
-    ListSupportedTimezones: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this parameter is specified and the requested engine supports the <code>TimeZone</code> parameter for <code>CreateDBInstance</code>, the response includes a list of supported time zones for each engine version.',
-        }),
-    ).exactOptional(),
+    Engine: StringSchema.exactOptional().openapi({ description: 'The database engine to return.' }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The database engine version to return.</p> <p>Example: <code>5.1.49</code> </p>',
+    }),
+    DBParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a specific DB parameter group family to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing DBParameterGroupFamily.</p> </li> </ul>',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({ description: 'Not currently supported.' }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more than the <code>MaxRecords</code> value is available, a pagination token called a marker is included in the response so that the following results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    DefaultOnly: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates that only the default version of the specified engine or engine and major version combination is returned.',
+    }),
+    ListSupportedCharacterSets: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'If this parameter is specified and the requested engine supports the <code>CharacterSetName</code> parameter for <code>CreateDBInstance</code>, the response includes a list of supported character sets for each engine version.',
+    }),
+    ListSupportedTimezones: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'If this parameter is specified and the requested engine supports the <code>TimeZone</code> parameter for <code>CreateDBInstance</code>, the response includes a list of supported time zones for each engine version.',
+    }),
   })
   .openapi({ title: 'DescribeDBEngineVersionsMessage', required: [] })
   .openapi('DescribeDBEngineVersionsMessage')
 
 const DescribeDBInstancesMessageSchema = z
   .object({
-    DBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The user-supplied instance identifier. If this parameter is specified, information from only the specific DB instance is returned. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the identifier of an existing DBInstance.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A filter that specifies one or more DB instances to describe.</p> <p>Supported filters:</p> <ul> <li> <p> <code>db-cluster-id</code> - Accepts DB cluster identifiers and DB cluster Amazon Resource Names (ARNs). The results list will only include information about the DB instances associated with the DB clusters identified by these ARNs.</p> </li> <li> <p> <code>engine</code> - Accepts an engine name (such as <code>neptune</code>), and restricts the results list to DB instances created by that engine.</p> </li> </ul> <p>For example, to invoke this API from the Amazon CLI and filter so that only Neptune DB instances are returned, you could use the following command:</p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribeDBInstances</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    DBInstanceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The user-supplied instance identifier. If this parameter is specified, information from only the specific DB instance is returned. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the identifier of an existing DBInstance.</p> </li> </ul>",
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>A filter that specifies one or more DB instances to describe.</p> <p>Supported filters:</p> <ul> <li> <p> <code>db-cluster-id</code> - Accepts DB cluster identifiers and DB cluster Amazon Resource Names (ARNs). The results list will only include information about the DB instances associated with the DB clusters identified by these ARNs.</p> </li> <li> <p> <code>engine</code> - Accepts an engine name (such as <code>neptune</code>), and restricts the results list to DB instances created by that engine.</p> </li> </ul> <p>For example, to invoke this API from the Amazon CLI and filter so that only Neptune DB instances are returned, you could use the following command:</p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribeDBInstances</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeDBInstancesMessage', required: [] })
   .openapi('DescribeDBInstancesMessage')
 
 const DescribeDBParameterGroupsMessageSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a specific DB parameter group to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeDBParameterGroups</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    DBParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a specific DB parameter group to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeDBParameterGroups</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeDBParameterGroupsMessage', required: [] })
   .openapi('DescribeDBParameterGroupsMessage')
 
 const DescribeDBParametersMessageSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a specific DB parameter group to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBParameterGroup.</p> </li> </ul>',
-        }),
-    ),
-    Source: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The parameter types to return.</p> <p>Default: All parameter types returned</p> <p>Valid Values: <code>user | system | engine-default</code> </p>',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional pagination token provided by a previous <code>DescribeDBParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    DBParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of a specific DB parameter group to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBParameterGroup.</p> </li> </ul>',
+    }),
+    Source: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The parameter types to return.</p> <p>Default: All parameter types returned</p> <p>Valid Values: <code>user | system | engine-default</code> </p>',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional pagination token provided by a previous <code>DescribeDBParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ required: ['DBParameterGroupName'], title: 'DescribeDBParametersMessage' })
   .openapi('DescribeDBParametersMessage')
 
 const DescribeDBSubnetGroupsMessageSchema = z
   .object({
-    DBSubnetGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the DB subnet group to return details for.' }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous DescribeDBSubnetGroups request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    DBSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the DB subnet group to return details for.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous DescribeDBSubnetGroups request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeDBSubnetGroupsMessage', required: [] })
   .openapi('DescribeDBSubnetGroupsMessage')
 
 const DescribeEngineDefaultClusterParametersMessageSchema = z
   .object({
-    DBParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the DB cluster parameter group family to return engine parameter information for.',
-        }),
-    ),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribeEngineDefaultClusterParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    DBParameterGroupFamily: StringSchema.openapi({
+      description:
+        'The name of the DB cluster parameter group family to return engine parameter information for.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribeEngineDefaultClusterParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     required: ['DBParameterGroupFamily'],
@@ -5004,28 +3449,18 @@ const DescribeEngineDefaultClusterParametersMessageSchema = z
 
 const DescribeEngineDefaultParametersMessageSchema = z
   .object({
-    DBParameterGroupFamily: StringSchema.and(
-      z.any().openapi({ description: 'The name of the DB parameter group family.' }),
-    ),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'Not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribeEngineDefaultParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    DBParameterGroupFamily: StringSchema.openapi({
+      description: 'The name of the DB parameter group family.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({ description: 'Not currently supported.' }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribeEngineDefaultParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     required: ['DBParameterGroupFamily'],
@@ -5035,259 +3470,157 @@ const DescribeEngineDefaultParametersMessageSchema = z
 
 const DescribeEventCategoriesMessageSchema = z
   .object({
-    SourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of source that is generating the events.</p> <p>Valid values: db-instance | db-parameter-group | db-security-group | db-snapshot</p>',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
+    SourceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of source that is generating the events.</p> <p>Valid values: db-instance | db-parameter-group | db-security-group | db-snapshot</p>',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
   })
   .openapi({ title: 'DescribeEventCategoriesMessage', required: [] })
   .openapi('DescribeEventCategoriesMessage')
 
 const DescribeEventSubscriptionsMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the event notification subscription you want to describe.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous DescribeOrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
-        }),
-    ).exactOptional(),
+    SubscriptionName: StringSchema.exactOptional().openapi({
+      description: 'The name of the event notification subscription you want to describe.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous DescribeOrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
+    }),
   })
   .openapi({ title: 'DescribeEventSubscriptionsMessage', required: [] })
   .openapi('DescribeEventSubscriptionsMessage')
 
 const DescribeEventsMessageSchema = z
   .object({
-    SourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the event source for which events are returned. If not specified, then all sources are included in the response.</p> <p>Constraints:</p> <ul> <li> <p>If SourceIdentifier is supplied, SourceType must also be provided.</p> </li> <li> <p>If the source type is <code>DBInstance</code>, then a <code>DBInstanceIdentifier</code> must be supplied.</p> </li> <li> <p>If the source type is <code>DBSecurityGroup</code>, a <code>DBSecurityGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is <code>DBParameterGroup</code>, a <code>DBParameterGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is <code>DBSnapshot</code>, a <code>DBSnapshotIdentifier</code> must be supplied.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event source to retrieve events for. If no value is specified, all events are returned.',
-        }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The beginning of the time interval to retrieve events for, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: 2009-07-08T18:00Z</p>',
-        }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The end of the time interval for which to retrieve events, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: 2009-07-08T18:00Z</p>',
-        }),
-    ).exactOptional(),
-    Duration: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: '<p>The number of minutes to retrieve events for.</p> <p>Default: 60</p>',
-        }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of event categories that trigger notifications for a event notification subscription.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous DescribeEvents request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    SourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the event source for which events are returned. If not specified, then all sources are included in the response.</p> <p>Constraints:</p> <ul> <li> <p>If SourceIdentifier is supplied, SourceType must also be provided.</p> </li> <li> <p>If the source type is <code>DBInstance</code>, then a <code>DBInstanceIdentifier</code> must be supplied.</p> </li> <li> <p>If the source type is <code>DBSecurityGroup</code>, a <code>DBSecurityGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is <code>DBParameterGroup</code>, a <code>DBParameterGroupName</code> must be supplied.</p> </li> <li> <p>If the source type is <code>DBSnapshot</code>, a <code>DBSnapshotIdentifier</code> must be supplied.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description:
+        'The event source to retrieve events for. If no value is specified, all events are returned.',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p> The beginning of the time interval to retrieve events for, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: 2009-07-08T18:00Z</p>',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p> The end of the time interval for which to retrieve events, specified in ISO 8601 format. For more information about ISO 8601, go to the <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601 Wikipedia page.</a> </p> <p>Example: 2009-07-08T18:00Z</p>',
+    }),
+    Duration: IntegerOptionalSchema.exactOptional().openapi({
+      description: '<p>The number of minutes to retrieve events for.</p> <p>Default: 60</p>',
+    }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description:
+        'A list of event categories that trigger notifications for a event notification subscription.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous DescribeEvents request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeEventsMessage', required: [] })
   .openapi('DescribeEventsMessage')
 
 const DescribeGlobalClustersMessageSchema = z
   .object({
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user-supplied DB cluster identifier. If this parameter is specified, only information about the specified DB cluster is returned. This parameter is not case-sensitive.</p> <p>Constraints: If supplied, must match an existing DB cluster identifier.</p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination marker token is included in the response that you can use to retrieve the remaining results.</p> <p>Default: <code>100</code> </p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(<i>Optional</i>) A pagination token returned by a previous call to <code>DescribeGlobalClusters</code>. If this parameter is specified, the response will only include records beyond the marker, up to the number specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.exactOptional().openapi({
+      description:
+        '<p>The user-supplied DB cluster identifier. If this parameter is specified, only information about the specified DB cluster is returned. This parameter is not case-sensitive.</p> <p>Constraints: If supplied, must match an existing DB cluster identifier.</p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination marker token is included in the response that you can use to retrieve the remaining results.</p> <p>Default: <code>100</code> </p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        '(<i>Optional</i>) A pagination token returned by a previous call to <code>DescribeGlobalClusters</code>. If this parameter is specified, the response will only include records beyond the marker, up to the number specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeGlobalClustersMessage', required: [] })
   .openapi('DescribeGlobalClustersMessage')
 
 const DescribeOrderableDBInstanceOptionsMessageSchema = z
   .object({
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the engine to retrieve DB instance options for.' }),
-    ),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The engine version filter value. Specify this parameter to show only the available offerings matching the specified engine version.',
-        }),
-    ).exactOptional(),
-    DBInstanceClass: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB instance class filter value. Specify this parameter to show only the available offerings matching the specified DB instance class.',
-        }),
-    ).exactOptional(),
-    LicenseModel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The license model filter value. Specify this parameter to show only the available offerings matching the specified license model.',
-        }),
-    ).exactOptional(),
-    Vpc: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC filter value. Specify this parameter to show only the available VPC or non-VPC offerings.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous DescribeOrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
-        }),
-    ).exactOptional(),
+    Engine: StringSchema.openapi({
+      description: 'The name of the engine to retrieve DB instance options for.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The engine version filter value. Specify this parameter to show only the available offerings matching the specified engine version.',
+    }),
+    DBInstanceClass: StringSchema.exactOptional().openapi({
+      description:
+        'The DB instance class filter value. Specify this parameter to show only the available offerings matching the specified DB instance class.',
+    }),
+    LicenseModel: StringSchema.exactOptional().openapi({
+      description:
+        'The license model filter value. Specify this parameter to show only the available offerings matching the specified license model.',
+    }),
+    Vpc: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'The VPC filter value. Specify this parameter to show only the available VPC or non-VPC offerings.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous DescribeOrderableDBInstanceOptions request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code> .',
+    }),
   })
   .openapi({ required: ['Engine'], title: 'DescribeOrderableDBInstanceOptionsMessage' })
   .openapi('DescribeOrderableDBInstanceOptionsMessage')
 
 const DescribePendingMaintenanceActionsMessageSchema = z
   .object({
-    ResourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of a resource to return pending maintenance actions for.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A filter that specifies one or more resources to return pending maintenance actions for.</p> <p>Supported filters:</p> <ul> <li> <p> <code>db-cluster-id</code> - Accepts DB cluster identifiers and DB cluster Amazon Resource Names (ARNs). The results list will only include pending maintenance actions for the DB clusters identified by these ARNs.</p> </li> <li> <p> <code>db-instance-id</code> - Accepts DB instance identifiers and DB instance ARNs. The results list will only include pending maintenance actions for the DB instances identified by these ARNs.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional pagination token provided by a previous <code>DescribePendingMaintenanceActions</code> request. If this parameter is specified, the response includes only records beyond the marker, up to a number of records specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
-        }),
-    ).exactOptional(),
+    ResourceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The ARN of a resource to return pending maintenance actions for.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>A filter that specifies one or more resources to return pending maintenance actions for.</p> <p>Supported filters:</p> <ul> <li> <p> <code>db-cluster-id</code> - Accepts DB cluster identifiers and DB cluster Amazon Resource Names (ARNs). The results list will only include pending maintenance actions for the DB clusters identified by these ARNs.</p> </li> <li> <p> <code>db-instance-id</code> - Accepts DB instance identifiers and DB instance ARNs. The results list will only include pending maintenance actions for the DB instances identified by these ARNs.</p> </li> </ul>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An optional pagination token provided by a previous <code>DescribePendingMaintenanceActions</code> request. If this parameter is specified, the response includes only records beyond the marker, up to a number of records specified by <code>MaxRecords</code>.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>',
+    }),
   })
   .openapi({ title: 'DescribePendingMaintenanceActionsMessage', required: [] })
   .openapi('DescribePendingMaintenanceActionsMessage')
 
 const DescribeValidDBInstanceModificationsMessageSchema = z
   .object({
-    DBInstanceIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The customer identifier or the ARN of your DB instance.' }),
-    ),
+    DBInstanceIdentifier: StringSchema.openapi({
+      description: 'The customer identifier or the ARN of your DB instance.',
+    }),
   })
   .openapi({
     required: ['DBInstanceIdentifier'],
@@ -5297,44 +3630,28 @@ const DescribeValidDBInstanceModificationsMessageSchema = z
 
 const FailoverDBClusterMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A DB cluster identifier to force a failover for. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TargetDBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the instance to promote to the primary instance.</p> <p>You must specify the instance identifier for an Read Replica in the DB cluster. For example, <code>mydbcluster-replica1</code>.</p>',
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A DB cluster identifier to force a failover for. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul>',
+    }),
+    TargetDBInstanceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the instance to promote to the primary instance.</p> <p>You must specify the instance identifier for an Read Replica in the DB cluster. For example, <code>mydbcluster-replica1</code>.</p>',
+    }),
   })
   .openapi({ title: 'FailoverDBClusterMessage', required: [] })
   .openapi('FailoverDBClusterMessage')
 
 const FailoverGlobalClusterMessageSchema = z
   .object({
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Identifier of the Neptune global database that should be failed over. The identifier is the unique key assigned by the user when the Neptune global database was created. In other words, it's the name of the global database that you want to fail over.</p> <p>Constraints: Must match the identifier of an existing Neptune global database.</p>",
-        }),
-    ),
-    TargetDbClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the secondary Neptune DB cluster that you want to promote to primary for the global database.',
-        }),
-    ),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.openapi({
+      description:
+        "<p>Identifier of the Neptune global database that should be failed over. The identifier is the unique key assigned by the user when the Neptune global database was created. In other words, it's the name of the global database that you want to fail over.</p> <p>Constraints: Must match the identifier of an existing Neptune global database.</p>",
+    }),
+    TargetDbClusterIdentifier: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the secondary Neptune DB cluster that you want to promote to primary for the global database.',
+    }),
   })
   .openapi({
     required: ['GlobalClusterIdentifier', 'TargetDbClusterIdentifier'],
@@ -5346,193 +3663,109 @@ const KeyListSchema = z.array(StringSchema).openapi('KeyList')
 
 const ListTagsForResourceMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Neptune resource with tags to be listed. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.',
-        }),
-    ),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'This parameter is not currently supported.' }),
-    ).exactOptional(),
+    ResourceName: StringSchema.openapi({
+      description:
+        'The Amazon Neptune resource with tags to be listed. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'This parameter is not currently supported.',
+    }),
   })
   .openapi({ required: ['ResourceName'], title: 'ListTagsForResourceMessage' })
   .openapi('ListTagsForResourceMessage')
 
 const ModifyDBClusterEndpointMessageSchema = z
   .object({
-    DBClusterEndpointIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the endpoint to modify. This parameter is stored as a lowercase string.',
-        }),
-    ),
-    EndpointType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
-        }),
-    ).exactOptional(),
-    StaticMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of DB instance identifiers that are part of the custom endpoint group.',
-        }),
-    ).exactOptional(),
-    ExcludedMembers: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
-        }),
-    ).exactOptional(),
+    DBClusterEndpointIdentifier: StringSchema.openapi({
+      description:
+        'The identifier of the endpoint to modify. This parameter is stored as a lowercase string.',
+    }),
+    EndpointType: StringSchema.exactOptional().openapi({
+      description:
+        'The type of the endpoint. One of: <code>READER</code>, <code>WRITER</code>, <code>ANY</code>.',
+    }),
+    StaticMembers: StringListSchema.exactOptional().openapi({
+      description: 'List of DB instance identifiers that are part of the custom endpoint group.',
+    }),
+    ExcludedMembers: StringListSchema.exactOptional().openapi({
+      description:
+        "List of DB instance identifiers that aren't part of the custom endpoint group. All other eligible instances are reachable through the custom endpoint. Only relevant if the list of static members is empty.",
+    }),
   })
   .openapi({ required: ['DBClusterEndpointIdentifier'], title: 'ModifyDBClusterEndpointMessage' })
   .openapi('ModifyDBClusterEndpointMessage')
 
 const ModifyDBClusterMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DB cluster identifier for the cluster being modified. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul>',
-        }),
-    ),
-    NewDBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new DB cluster identifier for the DB cluster when renaming a DB cluster. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens</p> </li> <li> <p>The first character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-cluster2</code> </p>',
-        }),
-    ).exactOptional(),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that specifies whether the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB cluster. If this parameter is set to <code>false</code>, changes to the DB cluster are applied during the next maintenance window.</p> <p>The <code>ApplyImmediately</code> parameter only affects <code>NewDBClusterIdentifier</code> values. If you set the <code>ApplyImmediately</code> parameter value to false, then changes to <code>NewDBClusterIdentifier</code> values are applied during the next maintenance window. All other changes are applied immediately, regardless of the value of the <code>ApplyImmediately</code> parameter.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    BackupRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which automated backups are retained. You must specify a minimum value of 1.</p> <p>Default: 1</p> <p>Constraints:</p> <ul> <li> <p>Must be a value from 1 to 35</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the DB cluster parameter group to use for the DB cluster.',
-        }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of VPC security groups that the DB cluster will belong to.',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port number on which the DB cluster accepts connections.</p> <p>Constraints: Value must be <code>1150-65535</code> </p> <p>Default: The same port as the original DB cluster.</p>',
-        }),
-    ).exactOptional(),
-    MasterUserPassword: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    OptionGroupName: StringSchema.and(
-      z.any().openapi({ description: ' <i>Not supported by Neptune.</i> ' }),
-    ).exactOptional(),
-    PreferredBackupWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range during which automated backups are created if automated backups are enabled, using the <code>BackupRetentionPeriod</code> parameter.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the format <code>hh24:mi-hh24:mi</code>.</p> </li> <li> <p>Must be in Universal Coordinated Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).</p> <p>Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region, occurring on a random day of the week.</p> <p>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> <p>Constraints: Minimum 30-minute window.</p>',
-        }),
-    ).exactOptional(),
-    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>True to enable mapping of Amazon Identity and Access Management (IAM) accounts to database accounts, and otherwise false.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    CloudwatchLogsExportConfiguration: CloudwatchLogsExportConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB cluster.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version number of the database engine to which you want to upgrade. Changing this parameter results in an outage. The change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to true.</p> <p>For a list of valid engine versions, see <a href="https://docs.aws.amazon.com/neptune/latest/userguide/engine-releases.html">Engine Releases for Amazon Neptune</a>, or call <a href="https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions">DescribeDBEngineVersions</a>.</p>',
-        }),
-    ).exactOptional(),
-    AllowMajorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A value that indicates whether upgrades between different major versions are allowed.</p> <p>Constraints: You must set the allow-major-version-upgrade flag when providing an <code>EngineVersion</code> parameter that uses a different major version than the DB cluster's current version.</p>",
-        }),
-    ).exactOptional(),
-    DBInstanceParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the DB parameter group to apply to all instances of the DB cluster. </p> <note> <p>When you apply a parameter group using <code>DBInstanceParameterGroupName</code>, parameter changes aren't applied during the next maintenance window but instead are applied immediately.</p> </note> <p>Default: The existing name setting</p> <p>Constraints:</p> <ul> <li> <p>The DB parameter group must be in the same DB parameter group family as the target DB cluster version.</p> </li> <li> <p>The <code>DBInstanceParameterGroupName</code> parameter is only valid in combination with the <code>AllowMajorVersionUpgrade</code> parameter.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is disabled.",
-        }),
-    ).exactOptional(),
-    CopyTagsToSnapshot: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>If set to <code>true</code>, tags are copied to any snapshot of the DB cluster that is created.</i> ',
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The DB cluster identifier for the cluster being modified. This parameter is not case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul>',
+    }),
+    NewDBClusterIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The new DB cluster identifier for the DB cluster when renaming a DB cluster. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens</p> </li> <li> <p>The first character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-cluster2</code> </p>',
+    }),
+    ApplyImmediately: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A value that specifies whether the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB cluster. If this parameter is set to <code>false</code>, changes to the DB cluster are applied during the next maintenance window.</p> <p>The <code>ApplyImmediately</code> parameter only affects <code>NewDBClusterIdentifier</code> values. If you set the <code>ApplyImmediately</code> parameter value to false, then changes to <code>NewDBClusterIdentifier</code> values are applied during the next maintenance window. All other changes are applied immediately, regardless of the value of the <code>ApplyImmediately</code> parameter.</p> <p>Default: <code>false</code> </p>',
+    }),
+    BackupRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which automated backups are retained. You must specify a minimum value of 1.</p> <p>Default: 1</p> <p>Constraints:</p> <ul> <li> <p>Must be a value from 1 to 35</p> </li> </ul>',
+    }),
+    DBClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the DB cluster parameter group to use for the DB cluster.',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'A list of VPC security groups that the DB cluster will belong to.',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The port number on which the DB cluster accepts connections.</p> <p>Constraints: Value must be <code>1150-65535</code> </p> <p>Default: The same port as the original DB cluster.</p>',
+    }),
+    MasterUserPassword: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    OptionGroupName: StringSchema.exactOptional().openapi({
+      description: ' <i>Not supported by Neptune.</i> ',
+    }),
+    PreferredBackupWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range during which automated backups are created if automated backups are enabled, using the <code>BackupRetentionPeriod</code> parameter.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the format <code>hh24:mi-hh24:mi</code>.</p> </li> <li> <p>Must be in Universal Coordinated Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).</p> <p>Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region, occurring on a random day of the week.</p> <p>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> <p>Constraints: Minimum 30-minute window.</p>',
+    }),
+    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>True to enable mapping of Amazon Identity and Access Management (IAM) accounts to database accounts, and otherwise false.</p> <p>Default: <code>false</code> </p>',
+    }),
+    CloudwatchLogsExportConfiguration:
+      CloudwatchLogsExportConfigurationSchema.exactOptional().openapi({
+        description:
+          'The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB cluster.',
+      }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The version number of the database engine to which you want to upgrade. Changing this parameter results in an outage. The change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to true.</p> <p>For a list of valid engine versions, see <a href="https://docs.aws.amazon.com/neptune/latest/userguide/engine-releases.html">Engine Releases for Amazon Neptune</a>, or call <a href="https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions">DescribeDBEngineVersions</a>.</p>',
+    }),
+    AllowMajorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>A value that indicates whether upgrades between different major versions are allowed.</p> <p>Constraints: You must set the allow-major-version-upgrade flag when providing an <code>EngineVersion</code> parameter that uses a different major version than the DB cluster's current version.</p>",
+    }),
+    DBInstanceParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the DB parameter group to apply to all instances of the DB cluster. </p> <note> <p>When you apply a parameter group using <code>DBInstanceParameterGroupName</code>, parameter changes aren't applied during the next maintenance window but instead are applied immediately.</p> </note> <p>Default: The existing name setting</p> <p>Constraints:</p> <ul> <li> <p>The DB parameter group must be in the same DB parameter group family as the target DB cluster version.</p> </li> <li> <p>The <code>DBInstanceParameterGroupName</code> parameter is only valid in combination with the <code>AllowMajorVersionUpgrade</code> parameter.</p> </li> </ul>",
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is disabled.",
+    }),
+    CopyTagsToSnapshot: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' <i>If set to <code>true</code>, tags are copied to any snapshot of the DB cluster that is created.</i> ',
+    }),
     ServerlessV2ScalingConfiguration: ServerlessV2ScalingConfigurationSchema.exactOptional(),
   })
   .openapi({ required: ['DBClusterIdentifier'], title: 'ModifyDBClusterMessage' })
@@ -5540,16 +3773,12 @@ const ModifyDBClusterMessageSchema = z
 
 const ModifyDBClusterParameterGroupMessageSchema = z
   .object({
-    DBClusterParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the DB cluster parameter group to modify.' }),
-    ),
-    Parameters: ParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of parameters in the DB cluster parameter group to modify.',
-        }),
-    ),
+    DBClusterParameterGroupName: StringSchema.openapi({
+      description: 'The name of the DB cluster parameter group to modify.',
+    }),
+    Parameters: ParametersListSchema.openapi({
+      description: 'A list of parameters in the DB cluster parameter group to modify.',
+    }),
   })
   .openapi({
     required: ['DBClusterParameterGroupName', 'Parameters'],
@@ -5559,37 +3788,21 @@ const ModifyDBClusterParameterGroupMessageSchema = z
 
 const ModifyDBClusterSnapshotAttributeMessageSchema = z
   .object({
-    DBClusterSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the DB cluster snapshot to modify the attributes for.',
-        }),
-    ),
-    AttributeName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB cluster snapshot attribute to modify.</p> <p>To manage authorization for other Amazon accounts to copy or restore a manual DB cluster snapshot, set this value to <code>restore</code>.</p>',
-        }),
-    ),
-    ValuesToAdd: AttributeValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of DB cluster snapshot attributes to add to the attribute specified by <code>AttributeName</code>.</p> <p>To authorize other Amazon accounts to copy or restore a manual DB cluster snapshot, set this list to include one or more Amazon account IDs, or <code>all</code> to make the manual DB cluster snapshot restorable by any Amazon account. Do not add the <code>all</code> value for any manual DB cluster snapshots that contain private information that you don't want available to all Amazon accounts.</p>",
-        }),
-    ).exactOptional(),
-    ValuesToRemove: AttributeValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of DB cluster snapshot attributes to remove from the attribute specified by <code>AttributeName</code>.</p> <p>To remove authorization for other Amazon accounts to copy or restore a manual DB cluster snapshot, set this list to include one or more Amazon account identifiers, or <code>all</code> to remove authorization for any Amazon account to copy or restore the DB cluster snapshot. If you specify <code>all</code>, an Amazon account whose account ID is explicitly added to the <code>restore</code> attribute can still copy or restore a manual DB cluster snapshot.</p>',
-        }),
-    ).exactOptional(),
+    DBClusterSnapshotIdentifier: StringSchema.openapi({
+      description: 'The identifier for the DB cluster snapshot to modify the attributes for.',
+    }),
+    AttributeName: StringSchema.openapi({
+      description:
+        '<p>The name of the DB cluster snapshot attribute to modify.</p> <p>To manage authorization for other Amazon accounts to copy or restore a manual DB cluster snapshot, set this value to <code>restore</code>.</p>',
+    }),
+    ValuesToAdd: AttributeValueListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of DB cluster snapshot attributes to add to the attribute specified by <code>AttributeName</code>.</p> <p>To authorize other Amazon accounts to copy or restore a manual DB cluster snapshot, set this list to include one or more Amazon account IDs, or <code>all</code> to make the manual DB cluster snapshot restorable by any Amazon account. Do not add the <code>all</code> value for any manual DB cluster snapshots that contain private information that you don't want available to all Amazon accounts.</p>",
+    }),
+    ValuesToRemove: AttributeValueListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of DB cluster snapshot attributes to remove from the attribute specified by <code>AttributeName</code>.</p> <p>To remove authorization for other Amazon accounts to copy or restore a manual DB cluster snapshot, set this list to include one or more Amazon account identifiers, or <code>all</code> to remove authorization for any Amazon account to copy or restore the DB cluster snapshot. If you specify <code>all</code>, an Amazon account whose account ID is explicitly added to the <code>restore</code> attribute can still copy or restore a manual DB cluster snapshot.</p>',
+    }),
   })
   .openapi({
     required: ['DBClusterSnapshotIdentifier', 'AttributeName'],
@@ -5599,271 +3812,153 @@ const ModifyDBClusterSnapshotAttributeMessageSchema = z
 
 const ModifyDBInstanceMessageSchema = z
   .object({
-    DBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DB instance identifier. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBInstance.</p> </li> </ul>',
-        }),
-    ),
-    AllocatedStorage: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    DBInstanceClass: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new compute and memory capacity of the DB instance, for example, <code>db.m4.large</code>. Not all DB instance classes are available in all Amazon Regions.</p> <p>If you modify the DB instance class, an outage occurs during the change. The change is applied during the next maintenance window, unless <code>ApplyImmediately</code> is specified as <code>true</code> for this request.</p> <p>Default: Uses existing setting</p>',
-        }),
-    ).exactOptional(),
-    DBSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new DB subnet group for the DB instance. You can use this parameter to move your DB instance to a different VPC.</p> <p>Changing the subnet group causes an outage during the change. The change is applied during the next maintenance window, unless you specify <code>true</code> for the <code>ApplyImmediately</code> parameter.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetGroup</code> </p>',
-        }),
-    ).exactOptional(),
-    DBSecurityGroups: DBSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of DB security groups to authorize on this DB instance. Changing this setting doesn't result in an outage and the change is asynchronously applied as soon as possible.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match existing DBSecurityGroups.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of EC2 VPC security groups to authorize on this DB instance. This change is asynchronously applied as soon as possible.</p> <p>Not applicable. The associated list of EC2 VPC security groups is managed by the DB cluster. For more information, see <a>ModifyDBCluster</a>.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match existing VpcSecurityGroupIds.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB instance.</p> <p> If this parameter is set to <code>false</code>, changes to the DB instance are applied during the next maintenance window. Some parameter changes can cause an outage and are applied on the next call to <a>RebootDBInstance</a>, or the next failure reboot.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    MasterUserPassword: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    DBParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the DB parameter group to apply to the DB instance. Changing this setting doesn't result in an outage. The parameter group name itself is changed immediately, but the actual parameter changes are not applied until you reboot the instance without failover. The db instance will NOT be rebooted automatically and the parameter changes will NOT be applied during the next maintenance window.</p> <p>Default: Uses existing setting</p> <p>Constraints: The DB parameter group must be in the same DB parameter group family as this DB instance.</p>",
-        }),
-    ).exactOptional(),
-    BackupRetentionPeriod: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Not applicable. The retention period for automated backups is managed by the DB cluster. For more information, see <a>ModifyDBCluster</a>.</p> <p>Default: Uses existing setting</p>',
-        }),
-    ).exactOptional(),
-    PreferredBackupWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The daily time range during which automated backups are created if automated backups are enabled.</p> <p>Not applicable. The daily time range for creating automated backups is managed by the DB cluster. For more information, see <a>ModifyDBCluster</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the format hh24:mi-hh24:mi</p> </li> <li> <p>Must be in Universal Time Coordinated (UTC)</p> </li> <li> <p>Must not conflict with the preferred maintenance window</p> </li> <li> <p>Must be at least 30 minutes</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The weekly time range (in UTC) during which system maintenance can occur, which might result in an outage. Changing this parameter doesn't result in an outage, except in the following situation, and the change is asynchronously applied as soon as possible. If there are pending actions that cause a reboot, and the maintenance window is changed to include the current time, then changing this parameter will cause a reboot of the DB instance. If moving this window to the current time, there must be at least 30 minutes between the current time and end of the window to ensure pending changes are applied.</p> <p>Default: Uses existing setting</p> <p>Format: ddd:hh24:mi-ddd:hh24:mi</p> <p>Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun</p> <p>Constraints: Must be at least 30 minutes</p>",
-        }),
-    ).exactOptional(),
-    MultiAZ: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies if the DB instance is a Multi-AZ deployment. Changing this parameter doesn't result in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request.",
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the database engine to upgrade to. Currently, setting this parameter has no effect. To upgrade your database engine to the most recent release, use the <a>ApplyPendingMaintenanceAction</a> API.',
-        }),
-    ).exactOptional(),
-    AllowMajorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates that major version upgrades are allowed. Changing this parameter doesn't result in an outage and the change is asynchronously applied as soon as possible.",
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Indicates that minor version upgrades are applied automatically to the DB instance during the maintenance window. Changing this parameter doesn't result in an outage except in the following case and the change is asynchronously applied as soon as possible. An outage will result if this parameter is set to <code>true</code> during the maintenance window, and a newer minor version is available, and Neptune has enabled auto patching for that engine version.",
-        }),
-    ).exactOptional(),
-    LicenseModel: StringSchema.and(
-      z.any().openapi({ description: 'Not supported by Neptune.' }),
-    ).exactOptional(),
-    Iops: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The new Provisioned IOPS (I/O operations per second) value for the instance.</p> <p>Changing this setting doesn't result in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request.</p> <p>Default: Uses existing setting</p>",
-        }),
-    ).exactOptional(),
-    OptionGroupName: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    NewDBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The new DB instance identifier for the DB instance when renaming a DB instance. When you change the DB instance identifier, an instance reboot will occur immediately if you set <code>Apply Immediately</code> to true, or will occur during the next maintenance window if <code>Apply Immediately</code> to false. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>mydbinstance</code> </p>',
-        }),
-    ).exactOptional(),
-    StorageType: StringSchema.and(
-      z.any().openapi({ description: 'Not supported.' }),
-    ).exactOptional(),
-    TdeCredentialArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN from the key store with which to associate the instance for TDE encryption.',
-        }),
-    ).exactOptional(),
-    TdeCredentialPassword: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The password for the given ARN from the key store in order to access the device.',
-        }),
-    ).exactOptional(),
-    CACertificateIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates the certificate that needs to be associated with the instance.',
-        }),
-    ).exactOptional(),
-    Domain: StringSchema.and(z.any().openapi({ description: 'Not supported.' })).exactOptional(),
-    CopyTagsToSnapshot: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True to copy all tags from the DB instance to snapshots of the DB instance, and otherwise false. The default is false.',
-        }),
-    ).exactOptional(),
-    MonitoringInterval: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0.</p> <p>If <code>MonitoringRoleArn</code> is specified, then you must also set <code>MonitoringInterval</code> to a value other than 0.</p> <p>Valid Values: <code>0, 1, 5, 10, 15, 30, 60</code> </p>',
-        }),
-    ).exactOptional(),
-    DBPortNumber: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port number on which the database accepts connections.</p> <p>The value of the <code>DBPortNumber</code> parameter must not match any of the port values specified for options in the option group for the DB instance.</p> <p>Your database will restart when you change the <code>DBPortNumber</code> value regardless of the value of the <code>ApplyImmediately</code> parameter.</p> <p> Default: <code>8182</code> </p>',
-        }),
-    ).exactOptional(),
-    PubliclyAccessible: BooleanOptionalSchema.and(
-      z.any().openapi({ deprecated: true, description: 'This flag should no longer be used.' }),
-    ).exactOptional(),
-    MonitoringRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN for the IAM role that permits Neptune to send enhanced monitoring metrics to Amazon CloudWatch Logs. For example, <code>arn:aws:iam:123456789012:role/emaccess</code>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than 0, then you must supply a <code>MonitoringRoleArn</code> value.</p>',
-        }),
-    ).exactOptional(),
-    DomainIAMRoleName: StringSchema.and(
-      z.any().openapi({ description: 'Not supported' }),
-    ).exactOptional(),
-    PromotionTier: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that specifies the order in which a Read Replica is promoted to the primary instance after a failure of the existing primary instance.</p> <p>Default: 1</p> <p>Valid Values: 0 - 15</p>',
-        }),
-    ).exactOptional(),
-    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>True to enable mapping of Amazon Identity and Access Management (IAM) accounts to database accounts, and otherwise false.</p> <p>You can enable IAM database authentication for the following database engines</p> <p>Not applicable. Mapping Amazon IAM accounts to database accounts is managed by the DB cluster. For more information, see <a>ModifyDBCluster</a>.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    EnablePerformanceInsights: BooleanOptionalSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    PerformanceInsightsKMSKeyId: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    CloudwatchLogsExportConfiguration: CloudwatchLogsExportConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB instance or DB cluster.',
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether the DB instance has deletion protection enabled. The database can\'t be deleted when deletion protection is enabled. By default, deletion protection is disabled. See <a href="https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html">Deleting a DB Instance</a>.',
-        }),
-    ).exactOptional(),
+    DBInstanceIdentifier: StringSchema.openapi({
+      description:
+        '<p>The DB instance identifier. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBInstance.</p> </li> </ul>',
+    }),
+    AllocatedStorage: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    DBInstanceClass: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The new compute and memory capacity of the DB instance, for example, <code>db.m4.large</code>. Not all DB instance classes are available in all Amazon Regions.</p> <p>If you modify the DB instance class, an outage occurs during the change. The change is applied during the next maintenance window, unless <code>ApplyImmediately</code> is specified as <code>true</code> for this request.</p> <p>Default: Uses existing setting</p>',
+    }),
+    DBSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The new DB subnet group for the DB instance. You can use this parameter to move your DB instance to a different VPC.</p> <p>Changing the subnet group causes an outage during the change. The change is applied during the next maintenance window, unless you specify <code>true</code> for the <code>ApplyImmediately</code> parameter.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetGroup</code> </p>',
+    }),
+    DBSecurityGroups: DBSecurityGroupNameListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of DB security groups to authorize on this DB instance. Changing this setting doesn't result in an outage and the change is asynchronously applied as soon as possible.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match existing DBSecurityGroups.</p> </li> </ul>",
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of EC2 VPC security groups to authorize on this DB instance. This change is asynchronously applied as soon as possible.</p> <p>Not applicable. The associated list of EC2 VPC security groups is managed by the DB cluster. For more information, see <a>ModifyDBCluster</a>.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match existing VpcSecurityGroupIds.</p> </li> </ul>',
+    }),
+    ApplyImmediately: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB instance.</p> <p> If this parameter is set to <code>false</code>, changes to the DB instance are applied during the next maintenance window. Some parameter changes can cause an outage and are applied on the next call to <a>RebootDBInstance</a>, or the next failure reboot.</p> <p>Default: <code>false</code> </p>',
+    }),
+    MasterUserPassword: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    DBParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the DB parameter group to apply to the DB instance. Changing this setting doesn't result in an outage. The parameter group name itself is changed immediately, but the actual parameter changes are not applied until you reboot the instance without failover. The db instance will NOT be rebooted automatically and the parameter changes will NOT be applied during the next maintenance window.</p> <p>Default: Uses existing setting</p> <p>Constraints: The DB parameter group must be in the same DB parameter group family as this DB instance.</p>",
+    }),
+    BackupRetentionPeriod: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>Not applicable. The retention period for automated backups is managed by the DB cluster. For more information, see <a>ModifyDBCluster</a>.</p> <p>Default: Uses existing setting</p>',
+    }),
+    PreferredBackupWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The daily time range during which automated backups are created if automated backups are enabled.</p> <p>Not applicable. The daily time range for creating automated backups is managed by the DB cluster. For more information, see <a>ModifyDBCluster</a>.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the format hh24:mi-hh24:mi</p> </li> <li> <p>Must be in Universal Time Coordinated (UTC)</p> </li> <li> <p>Must not conflict with the preferred maintenance window</p> </li> <li> <p>Must be at least 30 minutes</p> </li> </ul>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The weekly time range (in UTC) during which system maintenance can occur, which might result in an outage. Changing this parameter doesn't result in an outage, except in the following situation, and the change is asynchronously applied as soon as possible. If there are pending actions that cause a reboot, and the maintenance window is changed to include the current time, then changing this parameter will cause a reboot of the DB instance. If moving this window to the current time, there must be at least 30 minutes between the current time and end of the window to ensure pending changes are applied.</p> <p>Default: Uses existing setting</p> <p>Format: ddd:hh24:mi-ddd:hh24:mi</p> <p>Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun</p> <p>Constraints: Must be at least 30 minutes</p>",
+    }),
+    MultiAZ: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "Specifies if the DB instance is a Multi-AZ deployment. Changing this parameter doesn't result in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request.",
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The version number of the database engine to upgrade to. Currently, setting this parameter has no effect. To upgrade your database engine to the most recent release, use the <a>ApplyPendingMaintenanceAction</a> API.',
+    }),
+    AllowMajorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      description:
+        "Indicates that major version upgrades are allowed. Changing this parameter doesn't result in an outage and the change is asynchronously applied as soon as possible.",
+    }),
+    AutoMinorVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        " Indicates that minor version upgrades are applied automatically to the DB instance during the maintenance window. Changing this parameter doesn't result in an outage except in the following case and the change is asynchronously applied as soon as possible. An outage will result if this parameter is set to <code>true</code> during the maintenance window, and a newer minor version is available, and Neptune has enabled auto patching for that engine version.",
+    }),
+    LicenseModel: StringSchema.exactOptional().openapi({
+      description: 'Not supported by Neptune.',
+    }),
+    Iops: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The new Provisioned IOPS (I/O operations per second) value for the instance.</p> <p>Changing this setting doesn't result in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to <code>true</code> for this request.</p> <p>Default: Uses existing setting</p>",
+    }),
+    OptionGroupName: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    NewDBInstanceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The new DB instance identifier for the DB instance when renaming a DB instance. When you change the DB instance identifier, an instance reboot will occur immediately if you set <code>Apply Immediately</code> to true, or will occur during the next maintenance window if <code>Apply Immediately</code> to false. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>mydbinstance</code> </p>',
+    }),
+    StorageType: StringSchema.exactOptional().openapi({ description: 'Not supported.' }),
+    TdeCredentialArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN from the key store with which to associate the instance for TDE encryption.',
+    }),
+    TdeCredentialPassword: StringSchema.exactOptional().openapi({
+      description:
+        'The password for the given ARN from the key store in order to access the device.',
+    }),
+    CACertificateIdentifier: StringSchema.exactOptional().openapi({
+      description: 'Indicates the certificate that needs to be associated with the instance.',
+    }),
+    Domain: StringSchema.exactOptional().openapi({ description: 'Not supported.' }),
+    CopyTagsToSnapshot: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'True to copy all tags from the DB instance to snapshots of the DB instance, and otherwise false. The default is false.',
+    }),
+    MonitoringInterval: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0.</p> <p>If <code>MonitoringRoleArn</code> is specified, then you must also set <code>MonitoringInterval</code> to a value other than 0.</p> <p>Valid Values: <code>0, 1, 5, 10, 15, 30, 60</code> </p>',
+    }),
+    DBPortNumber: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The port number on which the database accepts connections.</p> <p>The value of the <code>DBPortNumber</code> parameter must not match any of the port values specified for options in the option group for the DB instance.</p> <p>Your database will restart when you change the <code>DBPortNumber</code> value regardless of the value of the <code>ApplyImmediately</code> parameter.</p> <p> Default: <code>8182</code> </p>',
+    }),
+    PubliclyAccessible: BooleanOptionalSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'This flag should no longer be used.',
+    }),
+    MonitoringRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN for the IAM role that permits Neptune to send enhanced monitoring metrics to Amazon CloudWatch Logs. For example, <code>arn:aws:iam:123456789012:role/emaccess</code>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than 0, then you must supply a <code>MonitoringRoleArn</code> value.</p>',
+    }),
+    DomainIAMRoleName: StringSchema.exactOptional().openapi({ description: 'Not supported' }),
+    PromotionTier: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A value that specifies the order in which a Read Replica is promoted to the primary instance after a failure of the existing primary instance.</p> <p>Default: 1</p> <p>Valid Values: 0 - 15</p>',
+    }),
+    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>True to enable mapping of Amazon Identity and Access Management (IAM) accounts to database accounts, and otherwise false.</p> <p>You can enable IAM database authentication for the following database engines</p> <p>Not applicable. Mapping Amazon IAM accounts to database accounts is managed by the DB cluster. For more information, see <a>ModifyDBCluster</a>.</p> <p>Default: <code>false</code> </p>',
+    }),
+    EnablePerformanceInsights: BooleanOptionalSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    PerformanceInsightsKMSKeyId: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    CloudwatchLogsExportConfiguration:
+      CloudwatchLogsExportConfigurationSchema.exactOptional().openapi({
+        description:
+          'The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB instance or DB cluster.',
+      }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether the DB instance has deletion protection enabled. The database can\'t be deleted when deletion protection is enabled. By default, deletion protection is disabled. See <a href="https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html">Deleting a DB Instance</a>.',
+    }),
   })
   .openapi({ required: ['DBInstanceIdentifier'], title: 'ModifyDBInstanceMessage' })
   .openapi('ModifyDBInstanceMessage')
 
 const ModifyDBParameterGroupMessageSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBParameterGroup.</p> </li> </ul>',
-        }),
-    ),
-    Parameters: ParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of parameter names, values, and the apply method for the parameter update. At least one parameter name, value, and apply method must be supplied; subsequent arguments are optional. A maximum of 20 parameters can be modified in a single request.</p> <p>Valid Values (for the application method): <code>immediate | pending-reboot</code> </p> <note> <p>You can use the immediate value with dynamic parameters only. You can use the pending-reboot value for both dynamic and static parameters, and changes are applied when you reboot the DB instance without failover.</p> </note>',
-        }),
-    ),
+    DBParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBParameterGroup.</p> </li> </ul>',
+    }),
+    Parameters: ParametersListSchema.openapi({
+      description:
+        '<p>An array of parameter names, values, and the apply method for the parameter update. At least one parameter name, value, and apply method must be supplied; subsequent arguments are optional. A maximum of 20 parameters can be modified in a single request.</p> <p>Valid Values (for the application method): <code>immediate | pending-reboot</code> </p> <note> <p>You can use the immediate value with dynamic parameters only. You can use the pending-reboot value for both dynamic and static parameters, and changes are applied when you reboot the DB instance without failover.</p> </note>',
+    }),
   })
   .openapi({
     required: ['DBParameterGroupName', 'Parameters'],
@@ -5873,157 +3968,99 @@ const ModifyDBParameterGroupMessageSchema = z
 
 const ModifyDBSubnetGroupMessageSchema = z
   .object({
-    DBSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name for the DB subnet group. This value is stored as a lowercase string. You can't modify the default subnet group.</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>",
-        }),
-    ),
-    DBSubnetGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description for the DB subnet group.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdentifierListSchema.and(
-      z.any().openapi({ description: 'The EC2 subnet IDs for the DB subnet group.' }),
-    ),
+    DBSubnetGroupName: StringSchema.openapi({
+      description:
+        "<p>The name for the DB subnet group. This value is stored as a lowercase string. You can't modify the default subnet group.</p> <p>Constraints: Must match the name of an existing DBSubnetGroup. Must not be default.</p> <p>Example: <code>mySubnetgroup</code> </p>",
+    }),
+    DBSubnetGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'The description for the DB subnet group.',
+    }),
+    SubnetIds: SubnetIdentifierListSchema.openapi({
+      description: 'The EC2 subnet IDs for the DB subnet group.',
+    }),
   })
   .openapi({ required: ['DBSubnetGroupName', 'SubnetIds'], title: 'ModifyDBSubnetGroupMessage' })
   .openapi('ModifyDBSubnetGroupMessage')
 
 const ModifyEventSubscriptionMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the event notification subscription.' }),
-    ),
-    SnsTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the SNS topic created for event notification. The ARN is created by Amazon SNS when you create a topic and subscribe to it.',
-        }),
-    ).exactOptional(),
-    SourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of source that is generating the events. For example, if you want to be notified of events generated by a DB instance, you would set this parameter to db-instance. if this value is not specified, all events are returned.</p> <p>Valid values: db-instance | db-parameter-group | db-security-group | db-snapshot</p>',
-        }),
-    ).exactOptional(),
-    EventCategories: EventCategoriesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of event categories for a SourceType that you want to subscribe to. You can see a list of the categories for a given SourceType by using the <b>DescribeEventCategories</b> action.',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A Boolean value; set to <b>true</b> to activate the subscription.',
-        }),
-    ).exactOptional(),
+    SubscriptionName: StringSchema.openapi({
+      description: 'The name of the event notification subscription.',
+    }),
+    SnsTopicArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the SNS topic created for event notification. The ARN is created by Amazon SNS when you create a topic and subscribe to it.',
+    }),
+    SourceType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of source that is generating the events. For example, if you want to be notified of events generated by a DB instance, you would set this parameter to db-instance. if this value is not specified, all events are returned.</p> <p>Valid values: db-instance | db-parameter-group | db-security-group | db-snapshot</p>',
+    }),
+    EventCategories: EventCategoriesListSchema.exactOptional().openapi({
+      description:
+        ' A list of event categories for a SourceType that you want to subscribe to. You can see a list of the categories for a given SourceType by using the <b>DescribeEventCategories</b> action.',
+    }),
+    Enabled: BooleanOptionalSchema.exactOptional().openapi({
+      description: ' A Boolean value; set to <b>true</b> to activate the subscription.',
+    }),
   })
   .openapi({ required: ['SubscriptionName'], title: 'ModifyEventSubscriptionMessage' })
   .openapi('ModifyEventSubscriptionMessage')
 
 const ModifyGlobalClusterMessageSchema = z
   .object({
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DB cluster identifier for the global cluster being modified. This parameter is not case-sensitive.</p> <p>Constraints: Must match the identifier of an existing global database cluster.</p>',
-        }),
-    ),
-    NewGlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A new cluster identifier to assign to the global database. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-cluster2</code> </p>",
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the global database has deletion protection enabled. The global database cannot be deleted when deletion protection is enabled.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version number of the database engine to which you want to upgrade. Changing this parameter will result in an outage. The change is applied during the next maintenance window unless <code>ApplyImmediately</code> is enabled.</p> <p>To list all of the available Neptune engine versions, use the following command:</p>',
-        }),
-    ).exactOptional(),
-    AllowMajorVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A value that indicates whether major version upgrades are allowed.</p> <p>Constraints: You must allow major version upgrades if you specify a value for the <code>EngineVersion</code> parameter that is a different major version than the DB cluster's current version.</p> <p>If you upgrade the major version of a global database, the cluster and DB instance parameter groups are set to the default parameter groups for the new version, so you will need to apply any custom parameter groups after completing the upgrade.</p>",
-        }),
-    ).exactOptional(),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.openapi({
+      description:
+        '<p>The DB cluster identifier for the global cluster being modified. This parameter is not case-sensitive.</p> <p>Constraints: Must match the identifier of an existing global database cluster.</p>',
+    }),
+    NewGlobalClusterIdentifier: GlobalClusterIdentifierSchema.exactOptional().openapi({
+      description:
+        "<p>A new cluster identifier to assign to the global database. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-cluster2</code> </p>",
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the global database has deletion protection enabled. The global database cannot be deleted when deletion protection is enabled.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The version number of the database engine to which you want to upgrade. Changing this parameter will result in an outage. The change is applied during the next maintenance window unless <code>ApplyImmediately</code> is enabled.</p> <p>To list all of the available Neptune engine versions, use the following command:</p>',
+    }),
+    AllowMajorVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>A value that indicates whether major version upgrades are allowed.</p> <p>Constraints: You must allow major version upgrades if you specify a value for the <code>EngineVersion</code> parameter that is a different major version than the DB cluster's current version.</p> <p>If you upgrade the major version of a global database, the cluster and DB instance parameter groups are set to the default parameter groups for the new version, so you will need to apply any custom parameter groups after completing the upgrade.</p>",
+    }),
   })
   .openapi({ required: ['GlobalClusterIdentifier'], title: 'ModifyGlobalClusterMessage' })
   .openapi('ModifyGlobalClusterMessage')
 
 const PromoteReadReplicaDBClusterMessageSchema = z
-  .object({
-    DBClusterIdentifier: StringSchema.and(z.any().openapi({ description: 'Not supported.' })),
-  })
+  .object({ DBClusterIdentifier: StringSchema.openapi({ description: 'Not supported.' }) })
   .openapi({ required: ['DBClusterIdentifier'], title: 'PromoteReadReplicaDBClusterMessage' })
   .openapi('PromoteReadReplicaDBClusterMessage')
 
 const RebootDBInstanceMessageSchema = z
   .object({
-    DBInstanceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DB instance identifier. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBInstance.</p> </li> </ul>',
-        }),
-    ),
-    ForceFailover: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> When <code>true</code>, the reboot is conducted through a MultiAZ failover.</p> <p>Constraint: You can't specify <code>true</code> if the instance is not configured for MultiAZ.</p>",
-        }),
-    ).exactOptional(),
+    DBInstanceIdentifier: StringSchema.openapi({
+      description:
+        '<p>The DB instance identifier. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBInstance.</p> </li> </ul>',
+    }),
+    ForceFailover: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "<p> When <code>true</code>, the reboot is conducted through a MultiAZ failover.</p> <p>Constraint: You can't specify <code>true</code> if the instance is not configured for MultiAZ.</p>",
+    }),
   })
   .openapi({ required: ['DBInstanceIdentifier'], title: 'RebootDBInstanceMessage' })
   .openapi('RebootDBInstanceMessage')
 
 const RemoveFromGlobalClusterMessageSchema = z
   .object({
-    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Neptune global database from which to detach the specified Neptune DB cluster.',
-        }),
-    ),
-    DbClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) identifying the cluster to be detached from the Neptune global database cluster.',
-        }),
-    ),
+    GlobalClusterIdentifier: GlobalClusterIdentifierSchema.openapi({
+      description:
+        'The identifier of the Neptune global database from which to detach the specified Neptune DB cluster.',
+    }),
+    DbClusterIdentifier: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) identifying the cluster to be detached from the Neptune global database cluster.',
+    }),
   })
   .openapi({
     required: ['GlobalClusterIdentifier', 'DbClusterIdentifier'],
@@ -6033,27 +4070,17 @@ const RemoveFromGlobalClusterMessageSchema = z
 
 const RemoveRoleFromDBClusterMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the DB cluster to disassociate the IAM role from.' }),
-    ),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role to disassociate from the DB cluster, for example <code>arn:aws:iam::123456789012:role/NeptuneAccessRole</code>.',
-        }),
-    ),
-    FeatureName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the feature for the DB cluster that the IAM role is to be disassociated from. For the list of supported feature names, see <a href="https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions">DescribeDBEngineVersions</a>.',
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.openapi({
+      description: 'The name of the DB cluster to disassociate the IAM role from.',
+    }),
+    RoleArn: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role to disassociate from the DB cluster, for example <code>arn:aws:iam::123456789012:role/NeptuneAccessRole</code>.',
+    }),
+    FeatureName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the feature for the DB cluster that the IAM role is to be disassociated from. For the list of supported feature names, see <a href="https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions">DescribeDBEngineVersions</a>.',
+    }),
   })
   .openapi({
     required: ['DBClusterIdentifier', 'RoleArn'],
@@ -6063,22 +4090,14 @@ const RemoveRoleFromDBClusterMessageSchema = z
 
 const RemoveSourceIdentifierFromSubscriptionMessageSchema = z
   .object({
-    SubscriptionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the event notification subscription you want to remove a source identifier from.',
-        }),
-    ),
-    SourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The source identifier to be removed from the subscription, such as the <b>DB instance identifier</b> for a DB instance or the name of a security group.',
-        }),
-    ),
+    SubscriptionName: StringSchema.openapi({
+      description:
+        'The name of the event notification subscription you want to remove a source identifier from.',
+    }),
+    SourceIdentifier: StringSchema.openapi({
+      description:
+        ' The source identifier to be removed from the subscription, such as the <b>DB instance identifier</b> for a DB instance or the name of a security group.',
+    }),
   })
   .openapi({
     required: ['SubscriptionName', 'SourceIdentifier'],
@@ -6088,42 +4107,28 @@ const RemoveSourceIdentifierFromSubscriptionMessageSchema = z
 
 const RemoveTagsFromResourceMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Neptune resource that the tags are removed from. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.',
-        }),
-    ),
-    TagKeys: KeyListSchema.and(
-      z.any().openapi({ description: 'The tag key (name) of the tag to be removed.' }),
-    ),
+    ResourceName: StringSchema.openapi({
+      description:
+        'The Amazon Neptune resource that the tags are removed from. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href="https://docs.aws.amazon.com/neptune/latest/UserGuide/tagging.ARN.html#tagging.ARN.Constructing"> Constructing an Amazon Resource Name (ARN)</a>.',
+    }),
+    TagKeys: KeyListSchema.openapi({ description: 'The tag key (name) of the tag to be removed.' }),
   })
   .openapi({ required: ['ResourceName', 'TagKeys'], title: 'RemoveTagsFromResourceMessage' })
   .openapi('RemoveTagsFromResourceMessage')
 
 const ResetDBClusterParameterGroupMessageSchema = z
   .object({
-    DBClusterParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the DB cluster parameter group to reset.' }),
-    ),
-    ResetAllParameters: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value that is set to <code>true</code> to reset all parameters in the DB cluster parameter group to their default values, and <code>false</code> otherwise. You can't use this parameter if there is a list of parameter names specified for the <code>Parameters</code> parameter.",
-        }),
-    ).exactOptional(),
-    Parameters: ParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of parameter names in the DB cluster parameter group to reset to the default values. You can't use this parameter if the <code>ResetAllParameters</code> parameter is set to <code>true</code>.",
-        }),
-    ).exactOptional(),
+    DBClusterParameterGroupName: StringSchema.openapi({
+      description: 'The name of the DB cluster parameter group to reset.',
+    }),
+    ResetAllParameters: BooleanSchema.exactOptional().openapi({
+      description:
+        "A value that is set to <code>true</code> to reset all parameters in the DB cluster parameter group to their default values, and <code>false</code> otherwise. You can't use this parameter if there is a list of parameter names specified for the <code>Parameters</code> parameter.",
+    }),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description:
+        "A list of parameter names in the DB cluster parameter group to reset to the default values. You can't use this parameter if the <code>ResetAllParameters</code> parameter is set to <code>true</code>.",
+    }),
   })
   .openapi({
     required: ['DBClusterParameterGroupName'],
@@ -6133,155 +4138,85 @@ const ResetDBClusterParameterGroupMessageSchema = z
 
 const ResetDBParameterGroupMessageSchema = z
   .object({
-    DBParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DBParameterGroup.</p> </li> </ul>',
-        }),
-    ),
-    ResetAllParameters: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether (<code>true</code>) or not (<code>false</code>) to reset all parameters in the DB parameter group to default values.</p> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To reset the entire DB parameter group, specify the <code>DBParameterGroup</code> name and <code>ResetAllParameters</code> parameters. To reset specific parameters, provide a list of the following: <code>ParameterName</code> and <code>ApplyMethod</code>. A maximum of 20 parameters can be modified in a single request.</p> <p>Valid Values (for Apply method): <code>pending-reboot</code> </p>',
-        }),
-    ).exactOptional(),
+    DBParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the DB parameter group.</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DBParameterGroup.</p> </li> </ul>',
+    }),
+    ResetAllParameters: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether (<code>true</code>) or not (<code>false</code>) to reset all parameters in the DB parameter group to default values.</p> <p>Default: <code>true</code> </p>',
+    }),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description:
+        '<p>To reset the entire DB parameter group, specify the <code>DBParameterGroup</code> name and <code>ResetAllParameters</code> parameters. To reset specific parameters, provide a list of the following: <code>ParameterName</code> and <code>ApplyMethod</code>. A maximum of 20 parameters can be modified in a single request.</p> <p>Valid Values (for Apply method): <code>pending-reboot</code> </p>',
+    }),
   })
   .openapi({ required: ['DBParameterGroupName'], title: 'ResetDBParameterGroupMessage' })
   .openapi('ResetDBParameterGroupMessage')
 
 const RestoreDBClusterFromSnapshotMessageSchema = z
   .object({
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the list of EC2 Availability Zones that instances in the restored DB cluster can be created in.',
-        }),
-    ).exactOptional(),
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the DB cluster to create from the DB snapshot or DB cluster snapshot. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-snapshot-id</code> </p>",
-        }),
-    ),
-    SnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the DB snapshot or DB cluster snapshot to restore from.</p> <p>You can use either the name or the Amazon Resource Name (ARN) to specify a DB cluster snapshot. However, you can use only the ARN to specify a DB snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing Snapshot.</p> </li> </ul>',
-        }),
-    ),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The database engine to use for the new DB cluster.</p> <p>Default: The same as source</p> <p>Constraint: Must be compatible with the engine of the source</p>',
-        }),
-    ),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the database engine to use for the new DB cluster.',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port number on which the new DB cluster accepts connections.</p> <p>Constraints: Value must be <code>1150-65535</code> </p> <p>Default: The same port as the original DB cluster.</p>',
-        }),
-    ).exactOptional(),
-    DBSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB subnet group to use for the new DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetgroup</code> </p>',
-        }),
-    ).exactOptional(),
-    DatabaseName: StringSchema.and(
-      z.any().openapi({ description: 'Not supported.' }),
-    ).exactOptional(),
-    OptionGroupName: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of VPC security groups that the new DB cluster will belong to.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be assigned to the restored DB cluster.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon KMS key identifier to use when restoring an encrypted DB cluster from a DB snapshot or DB cluster snapshot.</p> <p>The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you are restoring a DB cluster with the same Amazon account that owns the KMS encryption key used to encrypt the new DB cluster, then you can use the KMS key alias instead of the ARN for the KMS encryption key.</p> <p>If you do not specify a value for the <code>KmsKeyId</code> parameter, then the following will occur:</p> <ul> <li> <p>If the DB snapshot or DB cluster snapshot in <code>SnapshotIdentifier</code> is encrypted, then the restored DB cluster is encrypted using the KMS key that was used to encrypt the DB snapshot or DB cluster snapshot.</p> </li> <li> <p>If the DB snapshot or DB cluster snapshot in <code>SnapshotIdentifier</code> is not encrypted, then the restored DB cluster is not encrypted.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>True to enable mapping of Amazon Identity and Access Management (IAM) accounts to database accounts, and otherwise false.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    EnableCloudwatchLogsExports: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of logs that the restored DB cluster is to export to Amazon CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB cluster parameter group to associate with the new DB cluster.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is disabled. ",
-        }),
-    ).exactOptional(),
-    CopyTagsToSnapshot: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>If set to <code>true</code>, tags are copied to any snapshot of the restored DB cluster that is created.</i> ',
-        }),
-    ).exactOptional(),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description:
+        'Provides the list of EC2 Availability Zones that instances in the restored DB cluster can be created in.',
+    }),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        "<p>The name of the DB cluster to create from the DB snapshot or DB cluster snapshot. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul> <p>Example: <code>my-snapshot-id</code> </p>",
+    }),
+    SnapshotIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier for the DB snapshot or DB cluster snapshot to restore from.</p> <p>You can use either the name or the Amazon Resource Name (ARN) to specify a DB cluster snapshot. However, you can use only the ARN to specify a DB snapshot.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing Snapshot.</p> </li> </ul>',
+    }),
+    Engine: StringSchema.openapi({
+      description:
+        '<p>The database engine to use for the new DB cluster.</p> <p>Default: The same as source</p> <p>Constraint: Must be compatible with the engine of the source</p>',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the database engine to use for the new DB cluster.',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The port number on which the new DB cluster accepts connections.</p> <p>Constraints: Value must be <code>1150-65535</code> </p> <p>Default: The same port as the original DB cluster.</p>',
+    }),
+    DBSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the DB subnet group to use for the new DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetgroup</code> </p>',
+    }),
+    DatabaseName: StringSchema.exactOptional().openapi({ description: 'Not supported.' }),
+    OptionGroupName: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'A list of VPC security groups that the new DB cluster will belong to.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be assigned to the restored DB cluster.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon KMS key identifier to use when restoring an encrypted DB cluster from a DB snapshot or DB cluster snapshot.</p> <p>The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you are restoring a DB cluster with the same Amazon account that owns the KMS encryption key used to encrypt the new DB cluster, then you can use the KMS key alias instead of the ARN for the KMS encryption key.</p> <p>If you do not specify a value for the <code>KmsKeyId</code> parameter, then the following will occur:</p> <ul> <li> <p>If the DB snapshot or DB cluster snapshot in <code>SnapshotIdentifier</code> is encrypted, then the restored DB cluster is encrypted using the KMS key that was used to encrypt the DB snapshot or DB cluster snapshot.</p> </li> <li> <p>If the DB snapshot or DB cluster snapshot in <code>SnapshotIdentifier</code> is not encrypted, then the restored DB cluster is not encrypted.</p> </li> </ul>',
+    }),
+    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>True to enable mapping of Amazon Identity and Access Management (IAM) accounts to database accounts, and otherwise false.</p> <p>Default: <code>false</code> </p>',
+    }),
+    EnableCloudwatchLogsExports: LogTypeListSchema.exactOptional().openapi({
+      description:
+        'The list of logs that the restored DB cluster is to export to Amazon CloudWatch Logs.',
+    }),
+    DBClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the DB cluster parameter group to associate with the new DB cluster.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is disabled. ",
+    }),
+    CopyTagsToSnapshot: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' <i>If set to <code>true</code>, tags are copied to any snapshot of the restored DB cluster that is created.</i> ',
+    }),
     ServerlessV2ScalingConfiguration: ServerlessV2ScalingConfigurationSchema.exactOptional(),
   })
   .openapi({
@@ -6292,115 +4227,62 @@ const RestoreDBClusterFromSnapshotMessageSchema = z
 
 const RestoreDBClusterToPointInTimeMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the new DB cluster to be created.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
-        }),
-    ),
-    RestoreType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of restore to be performed. You can specify one of the following values:</p> <ul> <li> <p> <code>full-copy</code> - The new DB cluster is restored as a full copy of the source DB cluster.</p> </li> <li> <p> <code>copy-on-write</code> - The new DB cluster is restored as a clone of the source DB cluster.</p> </li> </ul> <p>If you don't specify a <code>RestoreType</code> value, then the new DB cluster is restored as a full copy of the source DB cluster.</p>",
-        }),
-    ).exactOptional(),
-    SourceDBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the source DB cluster from which to restore.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul>',
-        }),
-    ),
-    RestoreToTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time to restore the DB cluster to.</p> <p>Valid Values: Value must be a time in Universal Coordinated Time (UTC) format</p> <p>Constraints:</p> <ul> <li> <p>Must be before the latest restorable time for the DB instance</p> </li> <li> <p>Must be specified if <code>UseLatestRestorableTime</code> parameter is not provided</p> </li> <li> <p>Cannot be specified if <code>UseLatestRestorableTime</code> parameter is true</p> </li> <li> <p>Cannot be specified if <code>RestoreType</code> parameter is <code>copy-on-write</code> </p> </li> </ul> <p>Example: <code>2015-03-07T23:45:00Z</code> </p>',
-        }),
-    ).exactOptional(),
-    UseLatestRestorableTime: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that is set to <code>true</code> to restore the DB cluster to the latest restorable backup time, and <code>false</code> otherwise.</p> <p>Default: <code>false</code> </p> <p>Constraints: Cannot be specified if <code>RestoreToTime</code> parameter is provided.</p>',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The port number on which the new DB cluster accepts connections.</p> <p>Constraints: Value must be <code>1150-65535</code> </p> <p>Default: The same port as the original DB cluster.</p>',
-        }),
-    ).exactOptional(),
-    DBSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DB subnet group name to use for the new DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetgroup</code> </p>',
-        }),
-    ).exactOptional(),
-    OptionGroupName: StringSchema.and(
-      z.any().openapi({ description: ' <i>(Not supported by Neptune)</i> ' }),
-    ).exactOptional(),
-    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of VPC security groups that the new DB cluster belongs to.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to be applied to the restored DB cluster.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon KMS key identifier to use when restoring an encrypted DB cluster from an encrypted DB cluster.</p> <p>The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you are restoring a DB cluster with the same Amazon account that owns the KMS encryption key used to encrypt the new DB cluster, then you can use the KMS key alias instead of the ARN for the KMS encryption key.</p> <p>You can restore to a new DB cluster and encrypt the new DB cluster with a KMS key that is different than the KMS key used to encrypt the source DB cluster. The new DB cluster is encrypted with the KMS key identified by the <code>KmsKeyId</code> parameter.</p> <p>If you do not specify a value for the <code>KmsKeyId</code> parameter, then the following will occur:</p> <ul> <li> <p>If the DB cluster is encrypted, then the restored DB cluster is encrypted using the KMS key that was used to encrypt the source DB cluster.</p> </li> <li> <p>If the DB cluster is not encrypted, then the restored DB cluster is not encrypted.</p> </li> </ul> <p>If <code>DBClusterIdentifier</code> refers to a DB cluster that is not encrypted, then the restore request is rejected.</p>',
-        }),
-    ).exactOptional(),
-    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>True to enable mapping of Amazon Identity and Access Management (IAM) accounts to database accounts, and otherwise false.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    EnableCloudwatchLogsExports: LogTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of logs that the restored DB cluster is to export to CloudWatch Logs.',
-        }),
-    ).exactOptional(),
-    DBClusterParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the DB cluster parameter group to associate with the new DB cluster.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DeletionProtection: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is disabled. ",
-        }),
-    ).exactOptional(),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The name of the new DB cluster to be created.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
+    }),
+    RestoreType: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The type of restore to be performed. You can specify one of the following values:</p> <ul> <li> <p> <code>full-copy</code> - The new DB cluster is restored as a full copy of the source DB cluster.</p> </li> <li> <p> <code>copy-on-write</code> - The new DB cluster is restored as a clone of the source DB cluster.</p> </li> </ul> <p>If you don't specify a <code>RestoreType</code> value, then the new DB cluster is restored as a full copy of the source DB cluster.</p>",
+    }),
+    SourceDBClusterIdentifier: StringSchema.openapi({
+      description:
+        '<p>The identifier of the source DB cluster from which to restore.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul>',
+    }),
+    RestoreToTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time to restore the DB cluster to.</p> <p>Valid Values: Value must be a time in Universal Coordinated Time (UTC) format</p> <p>Constraints:</p> <ul> <li> <p>Must be before the latest restorable time for the DB instance</p> </li> <li> <p>Must be specified if <code>UseLatestRestorableTime</code> parameter is not provided</p> </li> <li> <p>Cannot be specified if <code>UseLatestRestorableTime</code> parameter is true</p> </li> <li> <p>Cannot be specified if <code>RestoreType</code> parameter is <code>copy-on-write</code> </p> </li> </ul> <p>Example: <code>2015-03-07T23:45:00Z</code> </p>',
+    }),
+    UseLatestRestorableTime: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>A value that is set to <code>true</code> to restore the DB cluster to the latest restorable backup time, and <code>false</code> otherwise.</p> <p>Default: <code>false</code> </p> <p>Constraints: Cannot be specified if <code>RestoreToTime</code> parameter is provided.</p>',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The port number on which the new DB cluster accepts connections.</p> <p>Constraints: Value must be <code>1150-65535</code> </p> <p>Default: The same port as the original DB cluster.</p>',
+    }),
+    DBSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The DB subnet group name to use for the new DB cluster.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mySubnetgroup</code> </p>',
+    }),
+    OptionGroupName: StringSchema.exactOptional().openapi({
+      description: ' <i>(Not supported by Neptune)</i> ',
+    }),
+    VpcSecurityGroupIds: VpcSecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'A list of VPC security groups that the new DB cluster belongs to.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be applied to the restored DB cluster.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon KMS key identifier to use when restoring an encrypted DB cluster from an encrypted DB cluster.</p> <p>The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you are restoring a DB cluster with the same Amazon account that owns the KMS encryption key used to encrypt the new DB cluster, then you can use the KMS key alias instead of the ARN for the KMS encryption key.</p> <p>You can restore to a new DB cluster and encrypt the new DB cluster with a KMS key that is different than the KMS key used to encrypt the source DB cluster. The new DB cluster is encrypted with the KMS key identified by the <code>KmsKeyId</code> parameter.</p> <p>If you do not specify a value for the <code>KmsKeyId</code> parameter, then the following will occur:</p> <ul> <li> <p>If the DB cluster is encrypted, then the restored DB cluster is encrypted using the KMS key that was used to encrypt the source DB cluster.</p> </li> <li> <p>If the DB cluster is not encrypted, then the restored DB cluster is not encrypted.</p> </li> </ul> <p>If <code>DBClusterIdentifier</code> refers to a DB cluster that is not encrypted, then the restore request is rejected.</p>',
+    }),
+    EnableIAMDatabaseAuthentication: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>True to enable mapping of Amazon Identity and Access Management (IAM) accounts to database accounts, and otherwise false.</p> <p>Default: <code>false</code> </p>',
+    }),
+    EnableCloudwatchLogsExports: LogTypeListSchema.exactOptional().openapi({
+      description: 'The list of logs that the restored DB cluster is to export to CloudWatch Logs.',
+    }),
+    DBClusterParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the DB cluster parameter group to associate with the new DB cluster.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBClusterParameterGroup.</p> </li> </ul>',
+    }),
+    DeletionProtection: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        "A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is disabled. ",
+    }),
     ServerlessV2ScalingConfiguration: ServerlessV2ScalingConfigurationSchema.exactOptional(),
   })
   .openapi({
@@ -6411,28 +4293,20 @@ const RestoreDBClusterToPointInTimeMessageSchema = z
 
 const StartDBClusterMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster identifier of the Neptune DB cluster to be started. This parameter is stored as a lowercase string.',
-        }),
-    ),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        'The DB cluster identifier of the Neptune DB cluster to be started. This parameter is stored as a lowercase string.',
+    }),
   })
   .openapi({ required: ['DBClusterIdentifier'], title: 'StartDBClusterMessage' })
   .openapi('StartDBClusterMessage')
 
 const StopDBClusterMessageSchema = z
   .object({
-    DBClusterIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DB cluster identifier of the Neptune DB cluster to be stopped. This parameter is stored as a lowercase string.',
-        }),
-    ),
+    DBClusterIdentifier: StringSchema.openapi({
+      description:
+        'The DB cluster identifier of the Neptune DB cluster to be stopped. This parameter is stored as a lowercase string.',
+    }),
   })
   .openapi({ required: ['DBClusterIdentifier'], title: 'StopDBClusterMessage' })
   .openapi('StopDBClusterMessage')
@@ -6831,14 +4705,7 @@ export const getActionAddTagsToResourceRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .openapi({
           param: {
@@ -7141,14 +5008,7 @@ export const getActionCopyDBClusterParameterGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -7346,14 +5206,7 @@ export const getActionCopyDBClusterSnapshotRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -7548,14 +5401,7 @@ export const getActionCopyDBParameterGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -7720,15 +5566,7 @@ export const getActionCreateDBClusterRoute = createRoute({
           AvailabilityZones: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'AvailabilityZone' } }),
-                ),
-              ),
+              z.array(StringSchema.openapi({ xml: { name: 'AvailabilityZone' } })),
             )
             .exactOptional()
             .openapi({
@@ -7836,15 +5674,7 @@ export const getActionCreateDBClusterRoute = createRoute({
           VpcSecurityGroupIds: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-                ),
-              ),
+              z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
             )
             .exactOptional()
             .openapi({
@@ -8001,15 +5831,7 @@ export const getActionCreateDBClusterRoute = createRoute({
           Tags: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                TagSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'Tag' } }),
-                ),
-              ),
+              z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
             )
             .exactOptional()
             .openapi({
@@ -8117,15 +5939,11 @@ export const getActionCreateDBClusterRoute = createRoute({
                       : val,
                   DoubleOptionalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
+                }),
               MaxCapacity: z
                 .preprocess(
                   (val) =>
@@ -8136,15 +5954,11 @@ export const getActionCreateDBClusterRoute = createRoute({
                       : val,
                   DoubleOptionalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -8500,14 +6314,7 @@ export const getActionCreateDBClusterEndpointRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -8702,14 +6509,7 @@ export const getActionCreateDBClusterParameterGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -8861,14 +6661,7 @@ export const getActionCreateDBClusterSnapshotRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -9111,14 +6904,7 @@ export const getActionCreateDBInstanceRoute = createRoute({
       DBSecurityGroups: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'DBSecurityGroupName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'DBSecurityGroupName' } })),
         )
         .exactOptional()
         .openapi({
@@ -9142,14 +6928,7 @@ export const getActionCreateDBInstanceRoute = createRoute({
       VpcSecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -9389,14 +7168,7 @@ export const getActionCreateDBInstanceRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -9928,14 +7700,7 @@ export const getActionCreateDBParameterGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -10087,14 +7852,7 @@ export const getActionCreateDBSubnetGroupRoute = createRoute({
       SubnetIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SubnetIdentifier' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } })),
         )
         .openapi({
           param: {
@@ -10116,14 +7874,7 @@ export const getActionCreateDBSubnetGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -10307,14 +8058,7 @@ export const getActionCreateEventSubscriptionRoute = createRoute({
       EventCategories: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'EventCategory' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'EventCategory' } })),
         )
         .exactOptional()
         .openapi({
@@ -10338,14 +8082,7 @@ export const getActionCreateEventSubscriptionRoute = createRoute({
       SourceIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SourceId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SourceId' } })),
         )
         .exactOptional()
         .openapi({
@@ -10379,14 +8116,7 @@ export const getActionCreateEventSubscriptionRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -11998,14 +9728,7 @@ export const getActionDescribeDBClusterEndpointsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -12200,14 +9923,7 @@ export const getActionDescribeDBClusterParameterGroupsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -12412,14 +10128,7 @@ export const getActionDescribeDBClusterParametersRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -12753,14 +10462,7 @@ export const getActionDescribeDBClusterSnapshotsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -12980,14 +10682,7 @@ export const getActionDescribeDBClustersRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -13200,14 +10895,7 @@ export const getActionDescribeDBEngineVersionsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -13431,14 +11119,7 @@ export const getActionDescribeDBInstancesRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -13627,14 +11308,7 @@ export const getActionDescribeDBParameterGroupsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -13839,14 +11513,7 @@ export const getActionDescribeDBParametersRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -14038,14 +11705,7 @@ export const getActionDescribeDBSubnetGroupsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -14238,14 +11898,7 @@ export const getActionDescribeEngineDefaultClusterParametersRoute = createRoute(
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -14407,14 +12060,7 @@ export const getActionDescribeEngineDefaultParametersRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -14600,14 +12246,7 @@ export const getActionDescribeEventCategoriesRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -14734,14 +12373,7 @@ export const getActionDescribeEventSubscriptionsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -15011,14 +12643,7 @@ export const getActionDescribeEventsRoute = createRoute({
       EventCategories: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'EventCategory' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'EventCategory' } })),
         )
         .exactOptional()
         .openapi({
@@ -15042,14 +12667,7 @@ export const getActionDescribeEventsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -15460,14 +13078,7 @@ export const getActionDescribeOrderableDBInstanceOptionsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -15651,14 +13262,7 @@ export const getActionDescribePendingMaintenanceActionsRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -16279,14 +13883,7 @@ export const getActionListTagsForResourceRoute = createRoute({
       Filters: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            FilterSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Filter' } }),
-            ),
-          ),
+          z.array(FilterSchema.openapi({ xml: { name: 'Filter' } })),
         )
         .exactOptional()
         .openapi({
@@ -16521,15 +14118,7 @@ export const getActionModifyDBClusterRoute = createRoute({
           VpcSecurityGroupIds: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-                ),
-              ),
+              z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
             )
             .exactOptional()
             .openapi({
@@ -16635,12 +14224,12 @@ export const getActionModifyDBClusterRoute = createRoute({
             }),
           CloudwatchLogsExportConfiguration: z
             .object({
-              EnableLogTypes: LogTypeListSchema.and(
-                z.any().openapi({ description: 'The list of log types to enable.' }),
-              ).exactOptional(),
-              DisableLogTypes: LogTypeListSchema.and(
-                z.any().openapi({ description: 'The list of log types to disable.' }),
-              ).exactOptional(),
+              EnableLogTypes: LogTypeListSchema.exactOptional().openapi({
+                description: 'The list of log types to enable.',
+              }),
+              DisableLogTypes: LogTypeListSchema.exactOptional().openapi({
+                description: 'The list of log types to disable.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -16751,15 +14340,11 @@ export const getActionModifyDBClusterRoute = createRoute({
                       : val,
                   DoubleOptionalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
+                }),
               MaxCapacity: z
                 .preprocess(
                   (val) =>
@@ -16770,15 +14355,11 @@ export const getActionModifyDBClusterRoute = createRoute({
                       : val,
                   DoubleOptionalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -17202,35 +14783,27 @@ export const getActionModifyDBClusterParameterGroupRoute = createRoute({
           z.array(
             z
               .object({
-                ParameterName: StringSchema.and(
-                  z.any().openapi({ description: 'Specifies the name of the parameter.' }),
-                ).exactOptional(),
-                ParameterValue: StringSchema.and(
-                  z.any().openapi({ description: 'Specifies the value of the parameter.' }),
-                ).exactOptional(),
-                Description: StringSchema.and(
-                  z.any().openapi({ description: 'Provides a description of the parameter.' }),
-                ).exactOptional(),
-                Source: StringSchema.and(
-                  z.any().openapi({ description: 'Indicates the source of the parameter value.' }),
-                ).exactOptional(),
-                ApplyType: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'Specifies the engine specific parameters type.' }),
-                ).exactOptional(),
-                DataType: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'Specifies the valid data type for the parameter.' }),
-                ).exactOptional(),
-                AllowedValues: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'Specifies the valid range of values for the parameter.',
-                    }),
-                ).exactOptional(),
+                ParameterName: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the name of the parameter.',
+                }),
+                ParameterValue: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the value of the parameter.',
+                }),
+                Description: StringSchema.exactOptional().openapi({
+                  description: 'Provides a description of the parameter.',
+                }),
+                Source: StringSchema.exactOptional().openapi({
+                  description: 'Indicates the source of the parameter value.',
+                }),
+                ApplyType: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the engine specific parameters type.',
+                }),
+                DataType: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the valid data type for the parameter.',
+                }),
+                AllowedValues: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the valid range of values for the parameter.',
+                }),
                 IsModifiable: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -17239,33 +14812,20 @@ export const getActionModifyDBClusterParameterGroupRoute = createRoute({
                     })(z.stringbool()),
                     BooleanSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
-                      }),
-                  )
-                  .exactOptional(),
-                MinimumEngineVersion: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The earliest engine version to which the parameter can apply.',
-                    }),
-                ).exactOptional(),
-                ApplyMethod: ApplyMethodSchema.and(
-                  z.any().openapi({ description: 'Indicates when to apply parameter updates.' }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
+                  }),
+                MinimumEngineVersion: StringSchema.exactOptional().openapi({
+                  description: 'The earliest engine version to which the parameter can apply.',
+                }),
+                ApplyMethod: ApplyMethodSchema.exactOptional().openapi({
+                  description: 'Indicates when to apply parameter updates.',
+                }),
               })
               .openapi({ description: 'Specifies a parameter.', required: [] })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'Parameter' } }),
-              ),
+              .openapi({ xml: { name: 'Parameter' } }),
           ),
         )
         .openapi({
@@ -17493,14 +15053,7 @@ export const getActionModifyDBClusterSnapshotAttributeRoute = createRoute({
       ValuesToAdd: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'AttributeValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'AttributeValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -17524,14 +15077,7 @@ export const getActionModifyDBClusterSnapshotAttributeRoute = createRoute({
       ValuesToRemove: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'AttributeValue' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'AttributeValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -17761,15 +15307,7 @@ export const getActionModifyDBInstanceRoute = createRoute({
           DBSecurityGroups: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'DBSecurityGroupName' } }),
-                ),
-              ),
+              z.array(StringSchema.openapi({ xml: { name: 'DBSecurityGroupName' } })),
             )
             .exactOptional()
             .openapi({
@@ -17793,15 +15331,7 @@ export const getActionModifyDBInstanceRoute = createRoute({
           VpcSecurityGroupIds: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-                ),
-              ),
+              z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
             )
             .exactOptional()
             .openapi({
@@ -18232,12 +15762,12 @@ export const getActionModifyDBInstanceRoute = createRoute({
             }),
           CloudwatchLogsExportConfiguration: z
             .object({
-              EnableLogTypes: LogTypeListSchema.and(
-                z.any().openapi({ description: 'The list of log types to enable.' }),
-              ).exactOptional(),
-              DisableLogTypes: LogTypeListSchema.and(
-                z.any().openapi({ description: 'The list of log types to disable.' }),
-              ).exactOptional(),
+              EnableLogTypes: LogTypeListSchema.exactOptional().openapi({
+                description: 'The list of log types to enable.',
+              }),
+              DisableLogTypes: LogTypeListSchema.exactOptional().openapi({
+                description: 'The list of log types to disable.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -18526,35 +16056,27 @@ export const getActionModifyDBParameterGroupRoute = createRoute({
           z.array(
             z
               .object({
-                ParameterName: StringSchema.and(
-                  z.any().openapi({ description: 'Specifies the name of the parameter.' }),
-                ).exactOptional(),
-                ParameterValue: StringSchema.and(
-                  z.any().openapi({ description: 'Specifies the value of the parameter.' }),
-                ).exactOptional(),
-                Description: StringSchema.and(
-                  z.any().openapi({ description: 'Provides a description of the parameter.' }),
-                ).exactOptional(),
-                Source: StringSchema.and(
-                  z.any().openapi({ description: 'Indicates the source of the parameter value.' }),
-                ).exactOptional(),
-                ApplyType: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'Specifies the engine specific parameters type.' }),
-                ).exactOptional(),
-                DataType: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'Specifies the valid data type for the parameter.' }),
-                ).exactOptional(),
-                AllowedValues: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'Specifies the valid range of values for the parameter.',
-                    }),
-                ).exactOptional(),
+                ParameterName: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the name of the parameter.',
+                }),
+                ParameterValue: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the value of the parameter.',
+                }),
+                Description: StringSchema.exactOptional().openapi({
+                  description: 'Provides a description of the parameter.',
+                }),
+                Source: StringSchema.exactOptional().openapi({
+                  description: 'Indicates the source of the parameter value.',
+                }),
+                ApplyType: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the engine specific parameters type.',
+                }),
+                DataType: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the valid data type for the parameter.',
+                }),
+                AllowedValues: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the valid range of values for the parameter.',
+                }),
                 IsModifiable: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -18563,33 +16085,20 @@ export const getActionModifyDBParameterGroupRoute = createRoute({
                     })(z.stringbool()),
                     BooleanSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
-                      }),
-                  )
-                  .exactOptional(),
-                MinimumEngineVersion: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The earliest engine version to which the parameter can apply.',
-                    }),
-                ).exactOptional(),
-                ApplyMethod: ApplyMethodSchema.and(
-                  z.any().openapi({ description: 'Indicates when to apply parameter updates.' }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
+                  }),
+                MinimumEngineVersion: StringSchema.exactOptional().openapi({
+                  description: 'The earliest engine version to which the parameter can apply.',
+                }),
+                ApplyMethod: ApplyMethodSchema.exactOptional().openapi({
+                  description: 'Indicates when to apply parameter updates.',
+                }),
               })
               .openapi({ description: 'Specifies a parameter.', required: [] })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'Parameter' } }),
-              ),
+              .openapi({ xml: { name: 'Parameter' } }),
           ),
         )
         .openapi({
@@ -18819,14 +16328,7 @@ export const getActionModifyDBSubnetGroupRoute = createRoute({
       SubnetIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SubnetIdentifier' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } })),
         )
         .openapi({
           param: {
@@ -19014,14 +16516,7 @@ export const getActionModifyEventSubscriptionRoute = createRoute({
       EventCategories: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'EventCategory' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'EventCategory' } })),
         )
         .exactOptional()
         .openapi({
@@ -20244,35 +17739,27 @@ export const getActionResetDBClusterParameterGroupRoute = createRoute({
           z.array(
             z
               .object({
-                ParameterName: StringSchema.and(
-                  z.any().openapi({ description: 'Specifies the name of the parameter.' }),
-                ).exactOptional(),
-                ParameterValue: StringSchema.and(
-                  z.any().openapi({ description: 'Specifies the value of the parameter.' }),
-                ).exactOptional(),
-                Description: StringSchema.and(
-                  z.any().openapi({ description: 'Provides a description of the parameter.' }),
-                ).exactOptional(),
-                Source: StringSchema.and(
-                  z.any().openapi({ description: 'Indicates the source of the parameter value.' }),
-                ).exactOptional(),
-                ApplyType: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'Specifies the engine specific parameters type.' }),
-                ).exactOptional(),
-                DataType: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'Specifies the valid data type for the parameter.' }),
-                ).exactOptional(),
-                AllowedValues: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'Specifies the valid range of values for the parameter.',
-                    }),
-                ).exactOptional(),
+                ParameterName: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the name of the parameter.',
+                }),
+                ParameterValue: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the value of the parameter.',
+                }),
+                Description: StringSchema.exactOptional().openapi({
+                  description: 'Provides a description of the parameter.',
+                }),
+                Source: StringSchema.exactOptional().openapi({
+                  description: 'Indicates the source of the parameter value.',
+                }),
+                ApplyType: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the engine specific parameters type.',
+                }),
+                DataType: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the valid data type for the parameter.',
+                }),
+                AllowedValues: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the valid range of values for the parameter.',
+                }),
                 IsModifiable: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -20281,33 +17768,20 @@ export const getActionResetDBClusterParameterGroupRoute = createRoute({
                     })(z.stringbool()),
                     BooleanSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
-                      }),
-                  )
-                  .exactOptional(),
-                MinimumEngineVersion: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The earliest engine version to which the parameter can apply.',
-                    }),
-                ).exactOptional(),
-                ApplyMethod: ApplyMethodSchema.and(
-                  z.any().openapi({ description: 'Indicates when to apply parameter updates.' }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
+                  }),
+                MinimumEngineVersion: StringSchema.exactOptional().openapi({
+                  description: 'The earliest engine version to which the parameter can apply.',
+                }),
+                ApplyMethod: ApplyMethodSchema.exactOptional().openapi({
+                  description: 'Indicates when to apply parameter updates.',
+                }),
               })
               .openapi({ description: 'Specifies a parameter.', required: [] })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'Parameter' } }),
-              ),
+              .openapi({ xml: { name: 'Parameter' } }),
           ),
         )
         .exactOptional()
@@ -20542,35 +18016,27 @@ export const getActionResetDBParameterGroupRoute = createRoute({
           z.array(
             z
               .object({
-                ParameterName: StringSchema.and(
-                  z.any().openapi({ description: 'Specifies the name of the parameter.' }),
-                ).exactOptional(),
-                ParameterValue: StringSchema.and(
-                  z.any().openapi({ description: 'Specifies the value of the parameter.' }),
-                ).exactOptional(),
-                Description: StringSchema.and(
-                  z.any().openapi({ description: 'Provides a description of the parameter.' }),
-                ).exactOptional(),
-                Source: StringSchema.and(
-                  z.any().openapi({ description: 'Indicates the source of the parameter value.' }),
-                ).exactOptional(),
-                ApplyType: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'Specifies the engine specific parameters type.' }),
-                ).exactOptional(),
-                DataType: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'Specifies the valid data type for the parameter.' }),
-                ).exactOptional(),
-                AllowedValues: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'Specifies the valid range of values for the parameter.',
-                    }),
-                ).exactOptional(),
+                ParameterName: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the name of the parameter.',
+                }),
+                ParameterValue: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the value of the parameter.',
+                }),
+                Description: StringSchema.exactOptional().openapi({
+                  description: 'Provides a description of the parameter.',
+                }),
+                Source: StringSchema.exactOptional().openapi({
+                  description: 'Indicates the source of the parameter value.',
+                }),
+                ApplyType: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the engine specific parameters type.',
+                }),
+                DataType: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the valid data type for the parameter.',
+                }),
+                AllowedValues: StringSchema.exactOptional().openapi({
+                  description: 'Specifies the valid range of values for the parameter.',
+                }),
                 IsModifiable: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -20579,33 +18045,20 @@ export const getActionResetDBParameterGroupRoute = createRoute({
                     })(z.stringbool()),
                     BooleanSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
-                      }),
-                  )
-                  .exactOptional(),
-                MinimumEngineVersion: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The earliest engine version to which the parameter can apply.',
-                    }),
-                ).exactOptional(),
-                ApplyMethod: ApplyMethodSchema.and(
-                  z.any().openapi({ description: 'Indicates when to apply parameter updates.' }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      ' Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
+                  }),
+                MinimumEngineVersion: StringSchema.exactOptional().openapi({
+                  description: 'The earliest engine version to which the parameter can apply.',
+                }),
+                ApplyMethod: ApplyMethodSchema.exactOptional().openapi({
+                  description: 'Indicates when to apply parameter updates.',
+                }),
               })
               .openapi({ description: 'Specifies a parameter.', required: [] })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'Parameter' } }),
-              ),
+              .openapi({ xml: { name: 'Parameter' } }),
           ),
         )
         .exactOptional()
@@ -20841,15 +18294,7 @@ export const getActionRestoreDBClusterFromSnapshotRoute = createRoute({
           AvailabilityZones: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'AvailabilityZone' } }),
-                ),
-              ),
+              z.array(StringSchema.openapi({ xml: { name: 'AvailabilityZone' } })),
             )
             .exactOptional()
             .openapi({
@@ -20979,15 +18424,7 @@ export const getActionRestoreDBClusterFromSnapshotRoute = createRoute({
           VpcSecurityGroupIds: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-                ),
-              ),
+              z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
             )
             .exactOptional()
             .openapi({
@@ -21011,15 +18448,7 @@ export const getActionRestoreDBClusterFromSnapshotRoute = createRoute({
           Tags: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                TagSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'Tag' } }),
-                ),
-              ),
+              z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
             )
             .exactOptional()
             .openapi({
@@ -21129,15 +18558,11 @@ export const getActionRestoreDBClusterFromSnapshotRoute = createRoute({
                       : val,
                   DoubleOptionalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
+                }),
               MaxCapacity: z
                 .preprocess(
                   (val) =>
@@ -21148,15 +18573,11 @@ export const getActionRestoreDBClusterFromSnapshotRoute = createRoute({
                       : val,
                   DoubleOptionalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -21570,15 +18991,7 @@ export const getActionRestoreDBClusterToPointInTimeRoute = createRoute({
           VpcSecurityGroupIds: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'VpcSecurityGroupId' } }),
-                ),
-              ),
+              z.array(StringSchema.openapi({ xml: { name: 'VpcSecurityGroupId' } })),
             )
             .exactOptional()
             .openapi({
@@ -21601,15 +19014,7 @@ export const getActionRestoreDBClusterToPointInTimeRoute = createRoute({
           Tags: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                TagSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'Tag' } }),
-                ),
-              ),
+              z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
             )
             .exactOptional()
             .openapi({
@@ -21706,15 +19111,11 @@ export const getActionRestoreDBClusterToPointInTimeRoute = createRoute({
                       : val,
                   DoubleOptionalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The minimum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 8, 8.5, 9, and so on.',
+                }),
               MaxCapacity: z
                 .preprocess(
                   (val) =>
@@ -21725,15 +19126,11 @@ export const getActionRestoreDBClusterToPointInTimeRoute = createRoute({
                       : val,
                   DoubleOptionalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The maximum number of Neptune capacity units (NCUs) for a DB instance in a Neptune Serverless cluster. You can specify NCU values in half-step increments, such as 40, 40.5, 41, and so on.',
+                }),
             })
             .exactOptional()
             .openapi({

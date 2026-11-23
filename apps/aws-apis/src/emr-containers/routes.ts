@@ -1,93 +1,22 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const EntryPointPathSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(256)
-  .openapi('EntryPointPath')
-
-const EntryPointArgumentSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(10280)
-  .openapi('EntryPointArgument')
-
-const EntryPointArgumentsSchema = z.array(EntryPointArgumentSchema).openapi('EntryPointArguments')
-
-const SparkSubmitParametersSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(102400)
-  .openapi('SparkSubmitParameters')
-
-const SparkSubmitJobDriverSchema = z
-  .object({
-    entryPoint: EntryPointPathSchema.and(
-      z.any().openapi({ description: 'The entry point of job application.' }),
-    ),
-    entryPointArguments: EntryPointArgumentsSchema.and(
-      z.any().openapi({ description: 'The arguments for job application.' }),
-    ).exactOptional(),
-    sparkSubmitParameters: SparkSubmitParametersSchema.and(
-      z.any().openapi({ description: 'The Spark submit parameters that are used for job runs.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['entryPoint'],
-    description: 'The information about job driver for Spark submit.',
-  })
-  .openapi('SparkSubmitJobDriver')
-
-const SparkSqlParametersSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(102400)
-  .openapi('SparkSqlParameters')
-
-const SparkSqlJobDriverSchema = z
-  .object({
-    entryPoint: EntryPointPathSchema.and(
-      z.any().openapi({ description: 'The SQL file to be executed.' }),
-    ).exactOptional(),
-    sparkSqlParameters: SparkSqlParametersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Spark parameters to be included in the Spark SQL command.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The job driver for job type.', required: [] })
-  .openapi('SparkSqlJobDriver')
-
-type JobDriverType = {
-  sparkSubmitJobDriver?: z.infer<typeof SparkSubmitJobDriverSchema> & { [key: string]: unknown }
-  sparkSqlJobDriver?: z.infer<typeof SparkSqlJobDriverSchema> & { [key: string]: unknown }
-}
-
 const ConfigurationSchema: z.ZodType<ConfigurationType> = z
   .lazy(() =>
     z
       .object({
-        classification: String1024Schema.and(
-          z.any().openapi({ description: 'The classification within a configuration.' }),
-        ),
+        classification: String1024Schema.openapi({
+          description: 'The classification within a configuration.',
+        }),
         properties: z
           .any()
           .exactOptional()
           .openapi({
             description: 'A set of properties specified within a configuration classification.',
           }),
-        configurations: ConfigurationListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of additional configurations to apply within a configuration object.',
-            }),
-        ).exactOptional(),
+        configurations: ConfigurationListSchema.exactOptional().openapi({
+          description:
+            'A list of additional configurations to apply within a configuration object.',
+        }),
       })
       .openapi({
         required: ['classification'],
@@ -98,68 +27,6 @@ const ConfigurationSchema: z.ZodType<ConfigurationType> = z
   .openapi('Configuration')
 
 type ConfigurationListType = z.infer<typeof ConfigurationSchema>[]
-
-const PersistentAppUISchema = z.enum(['ENABLED', 'DISABLED']).openapi('PersistentAppUI')
-
-const LogGroupNameSchema = z
-  .string()
-  .regex(/[\.\-_\/#A-Za-z0-9]+/)
-  .min(1)
-  .max(512)
-  .openapi('LogGroupName')
-
-const String256Schema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(256)
-  .openapi('String256')
-
-const CloudWatchMonitoringConfigurationSchema = z
-  .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group for log publishing.' }),
-    ),
-    logStreamNamePrefix: String256Schema.and(
-      z.any().openapi({ description: 'The specified name prefix for log streams.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['logGroupName'],
-    description:
-      'A configuration for CloudWatch monitoring. You can configure your jobs to send log information to CloudWatch Logs.',
-  })
-  .openapi('CloudWatchMonitoringConfiguration')
-
-const UriStringSchema = z
-  .string()
-  .regex(/[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDBFF-\uDC00\uDFFF\r\n\t]*/)
-  .min(1)
-  .max(10280)
-  .openapi('UriString')
-
-const S3MonitoringConfigurationSchema = z
-  .object({
-    logUri: UriStringSchema.and(
-      z.any().openapi({ description: 'Amazon S3 destination URI for log publishing.' }),
-    ),
-  })
-  .openapi({
-    required: ['logUri'],
-    description:
-      ' Amazon S3 configuration for monitoring log publishing. You can configure your jobs to send log information to Amazon S3.',
-  })
-  .openapi('S3MonitoringConfiguration')
-
-type MonitoringConfigurationType = {
-  persistentAppUI?: z.infer<typeof PersistentAppUISchema> & { [key: string]: unknown }
-  cloudWatchMonitoringConfiguration?: z.infer<typeof CloudWatchMonitoringConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  s3MonitoringConfiguration?: z.infer<typeof S3MonitoringConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
 
 type String1024Type = string
 
@@ -175,9 +42,9 @@ const ConfigurationListSchema: z.ZodType<ConfigurationListType> = z
   .openapi('ConfigurationList')
 
 type ConfigurationType = {
-  classification: z.infer<typeof String1024Schema> & { [key: string]: unknown }
-  properties?: { [key: string]: unknown }
-  configurations?: z.infer<typeof ConfigurationListSchema> & { [key: string]: unknown }
+  classification: z.infer<typeof String1024Schema> & unknown
+  properties?: unknown
+  configurations?: z.infer<typeof ConfigurationListSchema> & unknown
 }
 
 const ResourceIdStringSchema = z
@@ -189,17 +56,12 @@ const ResourceIdStringSchema = z
 
 const CancelJobRunResponseSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The output contains the ID of the cancelled job run.' }),
-    ).exactOptional(),
-    virtualClusterId: ResourceIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output contains the virtual cluster ID for which the job run is cancelled.',
-        }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'The output contains the ID of the cancelled job run.',
+    }),
+    virtualClusterId: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'The output contains the virtual cluster ID for which the job run is cancelled.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CancelJobRunResponse')
@@ -226,24 +88,18 @@ const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
 
 const CreateJobTemplateResponseSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'This output display the created job template ID.' }),
-    ).exactOptional(),
-    name: ResourceNameStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This output displays the name of the created job template.' }),
-    ).exactOptional(),
-    arn: JobTemplateArnSchema.and(
-      z.any().openapi({ description: 'This output display the ARN of the created job template.' }),
-    ).exactOptional(),
-    createdAt: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This output displays the date and time when the job template was created.',
-        }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'This output display the created job template ID.',
+    }),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'This output displays the name of the created job template.',
+    }),
+    arn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'This output display the ARN of the created job template.',
+    }),
+    createdAt: DateSchema.exactOptional().openapi({
+      description: 'This output displays the date and time when the job template was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateJobTemplateResponse')
@@ -271,14 +127,21 @@ const TemplateParameterSchema = z
   .max(512)
   .openapi('TemplateParameter')
 
+const String256Schema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(256)
+  .openapi('String256')
+
 const ParametricCloudWatchMonitoringConfigurationSchema = z
   .object({
-    logGroupName: TemplateParameterSchema.and(
-      z.any().openapi({ description: ' The name of the log group for log publishing.' }),
-    ).exactOptional(),
-    logStreamNamePrefix: String256Schema.and(
-      z.any().openapi({ description: ' The specified name prefix for log streams.' }),
-    ).exactOptional(),
+    logGroupName: TemplateParameterSchema.exactOptional().openapi({
+      description: ' The name of the log group for log publishing.',
+    }),
+    logStreamNamePrefix: String256Schema.exactOptional().openapi({
+      description: ' The specified name prefix for log streams.',
+    }),
   })
   .openapi({
     description:
@@ -287,11 +150,18 @@ const ParametricCloudWatchMonitoringConfigurationSchema = z
   })
   .openapi('ParametricCloudWatchMonitoringConfiguration')
 
+const UriStringSchema = z
+  .string()
+  .regex(/[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDBFF-\uDC00\uDFFF\r\n\t]*/)
+  .min(1)
+  .max(10280)
+  .openapi('UriString')
+
 const ParametricS3MonitoringConfigurationSchema = z
   .object({
-    logUri: UriStringSchema.and(
-      z.any().openapi({ description: 'Amazon S3 destination URI for log publishing.' }),
-    ).exactOptional(),
+    logUri: UriStringSchema.exactOptional().openapi({
+      description: 'Amazon S3 destination URI for log publishing.',
+    }),
   })
   .openapi({
     description:
@@ -302,17 +172,16 @@ const ParametricS3MonitoringConfigurationSchema = z
 
 const ParametricMonitoringConfigurationSchema = z
   .object({
-    persistentAppUI: TemplateParameterSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Monitoring configurations for the persistent application UI.' }),
-    ).exactOptional(),
-    cloudWatchMonitoringConfiguration: ParametricCloudWatchMonitoringConfigurationSchema.and(
-      z.any().openapi({ description: ' Monitoring configurations for CloudWatch.' }),
-    ).exactOptional(),
-    s3MonitoringConfiguration: ParametricS3MonitoringConfigurationSchema.and(
-      z.any().openapi({ description: ' Amazon S3 configuration for monitoring log publishing.' }),
-    ).exactOptional(),
+    persistentAppUI: TemplateParameterSchema.exactOptional().openapi({
+      description: ' Monitoring configurations for the persistent application UI.',
+    }),
+    cloudWatchMonitoringConfiguration:
+      ParametricCloudWatchMonitoringConfigurationSchema.exactOptional().openapi({
+        description: ' Monitoring configurations for CloudWatch.',
+      }),
+    s3MonitoringConfiguration: ParametricS3MonitoringConfigurationSchema.exactOptional().openapi({
+      description: ' Amazon S3 configuration for monitoring log publishing.',
+    }),
   })
   .openapi({
     description:
@@ -323,16 +192,12 @@ const ParametricMonitoringConfigurationSchema = z
 
 const ParametricConfigurationOverridesSchema = z
   .object({
-    applicationConfiguration: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The configurations for the application running by the job run.',
-        }),
-    ).exactOptional(),
-    monitoringConfiguration: ParametricMonitoringConfigurationSchema.and(
-      z.any().openapi({ description: ' The configurations for monitoring. ' }),
-    ).exactOptional(),
+    applicationConfiguration: ConfigurationListSchema.exactOptional().openapi({
+      description: ' The configurations for the application running by the job run.',
+    }),
+    monitoringConfiguration: ParametricMonitoringConfigurationSchema.exactOptional().openapi({
+      description: ' The configurations for monitoring. ',
+    }),
   })
   .openapi({
     description:
@@ -341,23 +206,80 @@ const ParametricConfigurationOverridesSchema = z
   })
   .openapi('ParametricConfigurationOverrides')
 
-const JobDriverSchema: z.ZodType<JobDriverType> = z
-  .lazy(() =>
-    z
-      .object({
-        sparkSubmitJobDriver: SparkSubmitJobDriverSchema.and(
-          z.any().openapi({ description: 'The job driver parameters specified for spark submit.' }),
-        ).exactOptional(),
-        sparkSqlJobDriver: SparkSqlJobDriverSchema.and(
-          z.any().openapi({ description: 'The job driver for job type.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Specify the driver that the job runs on. Exactly one of the two available job drivers is required, either sparkSqlJobDriver or sparkSubmitJobDriver.',
-        required: [],
-      }),
-  )
+const EntryPointPathSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(256)
+  .openapi('EntryPointPath')
+
+const EntryPointArgumentSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(10280)
+  .openapi('EntryPointArgument')
+
+const EntryPointArgumentsSchema = z.array(EntryPointArgumentSchema).openapi('EntryPointArguments')
+
+const SparkSubmitParametersSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(102400)
+  .openapi('SparkSubmitParameters')
+
+const SparkSubmitJobDriverSchema = z
+  .object({
+    entryPoint: EntryPointPathSchema.openapi({
+      description: 'The entry point of job application.',
+    }),
+    entryPointArguments: EntryPointArgumentsSchema.exactOptional().openapi({
+      description: 'The arguments for job application.',
+    }),
+    sparkSubmitParameters: SparkSubmitParametersSchema.exactOptional().openapi({
+      description: 'The Spark submit parameters that are used for job runs.',
+    }),
+  })
+  .openapi({
+    required: ['entryPoint'],
+    description: 'The information about job driver for Spark submit.',
+  })
+  .openapi('SparkSubmitJobDriver')
+
+const SparkSqlParametersSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(102400)
+  .openapi('SparkSqlParameters')
+
+const SparkSqlJobDriverSchema = z
+  .object({
+    entryPoint: EntryPointPathSchema.exactOptional().openapi({
+      description: 'The SQL file to be executed.',
+    }),
+    sparkSqlParameters: SparkSqlParametersSchema.exactOptional().openapi({
+      description: 'The Spark parameters to be included in the Spark SQL command.',
+    }),
+  })
+  .openapi({ description: 'The job driver for job type.', required: [] })
+  .openapi('SparkSqlJobDriver')
+
+const JobDriverSchema = z
+  .object({
+    sparkSubmitJobDriver: SparkSubmitJobDriverSchema.exactOptional().openapi({
+      description: 'The job driver parameters specified for spark submit.',
+    }),
+    sparkSqlJobDriver: SparkSqlJobDriverSchema.exactOptional().openapi({
+      description: 'The job driver for job type.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specify the driver that the job runs on. Exactly one of the two available job drivers is required, either sparkSqlJobDriver or sparkSubmitJobDriver.',
+    required: [],
+  })
   .openapi('JobDriver')
 
 const TemplateParameterDataTypeSchema = z
@@ -366,17 +288,13 @@ const TemplateParameterDataTypeSchema = z
 
 const TemplateParameterConfigurationSchema = z
   .object({
-    type: TemplateParameterDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the job template parameter. Allowed values are: ‘STRING’, ‘NUMBER’.',
-        }),
-    ).exactOptional(),
-    defaultValue: String1024Schema.and(
-      z.any().openapi({ description: 'The default value for the job template parameter.' }),
-    ).exactOptional(),
+    type: TemplateParameterDataTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the job template parameter. Allowed values are: ‘STRING’, ‘NUMBER’.',
+    }),
+    defaultValue: String1024Schema.exactOptional().openapi({
+      description: 'The default value for the job template parameter.',
+    }),
   })
   .openapi({ description: 'The configuration of a job template parameter.', required: [] })
   .openapi('TemplateParameterConfiguration')
@@ -412,44 +330,74 @@ const EndpointArnSchema = z
 
 const CreateManagedEndpointResponseSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The output contains the ID of the managed endpoint.' }),
-    ).exactOptional(),
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The output contains the name of the managed endpoint.' }),
-    ).exactOptional(),
-    arn: EndpointArnSchema.and(
-      z.any().openapi({ description: 'The output contains the ARN of the managed endpoint.' }),
-    ).exactOptional(),
-    virtualClusterId: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The output contains the ID of the virtual cluster.' }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'The output contains the ID of the managed endpoint.',
+    }),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'The output contains the name of the managed endpoint.',
+    }),
+    arn: EndpointArnSchema.exactOptional().openapi({
+      description: 'The output contains the ARN of the managed endpoint.',
+    }),
+    virtualClusterId: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'The output contains the ID of the virtual cluster.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateManagedEndpointResponse')
 
-const MonitoringConfigurationSchema: z.ZodType<MonitoringConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        persistentAppUI: PersistentAppUISchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Monitoring configurations for the persistent application UI. ',
-            }),
-        ).exactOptional(),
-        cloudWatchMonitoringConfiguration: CloudWatchMonitoringConfigurationSchema.and(
-          z.any().openapi({ description: 'Monitoring configurations for CloudWatch.' }),
-        ).exactOptional(),
-        s3MonitoringConfiguration: S3MonitoringConfigurationSchema.and(
-          z
-            .any()
-            .openapi({ description: 'Amazon S3 configuration for monitoring log publishing.' }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Configuration setting for monitoring.', required: [] }),
-  )
+const PersistentAppUISchema = z.enum(['ENABLED', 'DISABLED']).openapi('PersistentAppUI')
+
+const LogGroupNameSchema = z
+  .string()
+  .regex(/[\.\-_\/#A-Za-z0-9]+/)
+  .min(1)
+  .max(512)
+  .openapi('LogGroupName')
+
+const CloudWatchMonitoringConfigurationSchema = z
+  .object({
+    logGroupName: LogGroupNameSchema.openapi({
+      description: 'The name of the log group for log publishing.',
+    }),
+    logStreamNamePrefix: String256Schema.exactOptional().openapi({
+      description: 'The specified name prefix for log streams.',
+    }),
+  })
+  .openapi({
+    required: ['logGroupName'],
+    description:
+      'A configuration for CloudWatch monitoring. You can configure your jobs to send log information to CloudWatch Logs.',
+  })
+  .openapi('CloudWatchMonitoringConfiguration')
+
+const S3MonitoringConfigurationSchema = z
+  .object({
+    logUri: UriStringSchema.openapi({
+      description: 'Amazon S3 destination URI for log publishing.',
+    }),
+  })
+  .openapi({
+    required: ['logUri'],
+    description:
+      ' Amazon S3 configuration for monitoring log publishing. You can configure your jobs to send log information to Amazon S3.',
+  })
+  .openapi('S3MonitoringConfiguration')
+
+const MonitoringConfigurationSchema = z
+  .object({
+    persistentAppUI: PersistentAppUISchema.exactOptional().openapi({
+      description: 'Monitoring configurations for the persistent application UI. ',
+    }),
+    cloudWatchMonitoringConfiguration:
+      CloudWatchMonitoringConfigurationSchema.exactOptional().openapi({
+        description: 'Monitoring configurations for CloudWatch.',
+      }),
+    s3MonitoringConfiguration: S3MonitoringConfigurationSchema.exactOptional().openapi({
+      description: 'Amazon S3 configuration for monitoring log publishing.',
+    }),
+  })
+  .openapi({ description: 'Configuration setting for monitoring.', required: [] })
   .openapi('MonitoringConfiguration')
 
 const VirtualClusterArnSchema = z
@@ -461,15 +409,15 @@ const VirtualClusterArnSchema = z
 
 const CreateVirtualClusterResponseSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'This output contains the virtual cluster ID.' }),
-    ).exactOptional(),
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'This output contains the name of the virtual cluster.' }),
-    ).exactOptional(),
-    arn: VirtualClusterArnSchema.and(
-      z.any().openapi({ description: 'This output contains the ARN of virtual cluster.' }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'This output contains the virtual cluster ID.',
+    }),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'This output contains the name of the virtual cluster.',
+    }),
+    arn: VirtualClusterArnSchema.exactOptional().openapi({
+      description: 'This output contains the ARN of virtual cluster.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVirtualClusterResponse')
@@ -492,18 +440,18 @@ const KubernetesNamespaceSchema = z
 
 const EksInfoSchema = z
   .object({
-    namespace: KubernetesNamespaceSchema.and(
-      z.any().openapi({ description: 'The namespaces of the Amazon EKS cluster.' }),
-    ).exactOptional(),
+    namespace: KubernetesNamespaceSchema.exactOptional().openapi({
+      description: 'The namespaces of the Amazon EKS cluster.',
+    }),
   })
   .openapi({ description: 'The information about the Amazon EKS cluster.', required: [] })
   .openapi('EksInfo')
 
 const ContainerInfoSchema = z
   .object({
-    eksInfo: EksInfoSchema.and(
-      z.any().openapi({ description: 'The information about the Amazon EKS cluster.' }),
-    ).exactOptional(),
+    eksInfo: EksInfoSchema.exactOptional().openapi({
+      description: 'The information about the Amazon EKS cluster.',
+    }),
   })
   .openapi({
     description: 'The information about the container used for a job run or a managed endpoint.',
@@ -513,40 +461,30 @@ const ContainerInfoSchema = z
 
 const DeleteJobTemplateResponseSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This output contains the ID of the job template that was deleted.',
-        }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'This output contains the ID of the job template that was deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteJobTemplateResponse')
 
 const DeleteManagedEndpointResponseSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The output displays the ID of the managed endpoint.' }),
-    ).exactOptional(),
-    virtualClusterId: ResourceIdStringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The output displays the ID of the endpoint's virtual cluster." }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'The output displays the ID of the managed endpoint.',
+    }),
+    virtualClusterId: ResourceIdStringSchema.exactOptional().openapi({
+      description: "The output displays the ID of the endpoint's virtual cluster.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteManagedEndpointResponse')
 
 const DeleteVirtualClusterResponseSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This output contains the ID of the virtual cluster that will be deleted. ',
-        }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'This output contains the ID of the virtual cluster that will be deleted. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteVirtualClusterResponse')
@@ -589,16 +527,12 @@ const ReleaseLabelSchema = z
 
 const ConfigurationOverridesSchema = z
   .object({
-    applicationConfiguration: ConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configurations for the application running by the job run. ',
-        }),
-    ).exactOptional(),
-    monitoringConfiguration: MonitoringConfigurationSchema.and(
-      z.any().openapi({ description: 'The configurations for monitoring.' }),
-    ).exactOptional(),
+    applicationConfiguration: ConfigurationListSchema.exactOptional().openapi({
+      description: 'The configurations for the application running by the job run. ',
+    }),
+    monitoringConfiguration: MonitoringConfigurationSchema.exactOptional().openapi({
+      description: 'The configurations for monitoring.',
+    }),
   })
   .openapi({
     description: 'A configuration specification to be used to override existing configurations.',
@@ -621,9 +555,9 @@ const JavaIntegerSchema = z.int().openapi('JavaInteger')
 
 const RetryPolicyConfigurationSchema = z
   .object({
-    maxAttempts: JavaIntegerSchema.and(
-      z.any().openapi({ description: "The maximum number of attempts on the job's driver." }),
-    ),
+    maxAttempts: JavaIntegerSchema.openapi({
+      description: "The maximum number of attempts on the job's driver.",
+    }),
   })
   .openapi({
     required: ['maxAttempts'],
@@ -633,11 +567,9 @@ const RetryPolicyConfigurationSchema = z
 
 const RetryPolicyExecutionSchema = z
   .object({
-    currentAttemptCount: JavaIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current number of attempts made on the driver of the job.' }),
-    ),
+    currentAttemptCount: JavaIntegerSchema.openapi({
+      description: 'The current number of attempts made on the driver of the job.',
+    }),
   })
   .openapi({
     required: ['currentAttemptCount'],
@@ -647,67 +579,54 @@ const RetryPolicyExecutionSchema = z
 
 const JobRunSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the job run.' }),
-    ).exactOptional(),
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the job run.' }),
-    ).exactOptional(),
-    virtualClusterId: ResourceIdStringSchema.and(
-      z.any().openapi({ description: "The ID of the job run's virtual cluster." }),
-    ).exactOptional(),
-    arn: JobArnSchema.and(z.any().openapi({ description: 'The ARN of job run.' })).exactOptional(),
-    state: JobRunStateSchema.and(
-      z.any().openapi({ description: 'The state of the job run. ' }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token used to start a job run.' }),
-    ).exactOptional(),
-    executionRoleArn: IAMRoleArnSchema.and(
-      z.any().openapi({ description: 'The execution role ARN of the job run.' }),
-    ).exactOptional(),
-    releaseLabel: ReleaseLabelSchema.and(
-      z.any().openapi({ description: 'The release version of Amazon EMR.' }),
-    ).exactOptional(),
-    configurationOverrides: ConfigurationOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings that are used to override default configuration.',
-        }),
-    ).exactOptional(),
-    jobDriver: JobDriverSchema.and(
-      z.any().openapi({ description: 'Parameters of job driver for the job run.' }),
-    ).exactOptional(),
-    createdAt: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the job run was created.' }),
-    ).exactOptional(),
-    createdBy: RequestIdentityUserArnSchema.and(
-      z.any().openapi({ description: 'The user who created the job run.' }),
-    ).exactOptional(),
-    finishedAt: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the job run has finished.' }),
-    ).exactOptional(),
-    stateDetails: String256Schema.and(
-      z.any().openapi({ description: 'Additional details of the job run state.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'The reasons why the job run has failed.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The assigned tags of the job run.' }),
-    ).exactOptional(),
-    retryPolicyConfiguration: RetryPolicyConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration of the retry policy that the job runs on.' }),
-    ).exactOptional(),
-    retryPolicyExecution: RetryPolicyExecutionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current status of the retry policy executed on the job.' }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({ description: 'The ID of the job run.' }),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'The name of the job run.',
+    }),
+    virtualClusterId: ResourceIdStringSchema.exactOptional().openapi({
+      description: "The ID of the job run's virtual cluster.",
+    }),
+    arn: JobArnSchema.exactOptional().openapi({ description: 'The ARN of job run.' }),
+    state: JobRunStateSchema.exactOptional().openapi({ description: 'The state of the job run. ' }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token used to start a job run.',
+    }),
+    executionRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description: 'The execution role ARN of the job run.',
+    }),
+    releaseLabel: ReleaseLabelSchema.exactOptional().openapi({
+      description: 'The release version of Amazon EMR.',
+    }),
+    configurationOverrides: ConfigurationOverridesSchema.exactOptional().openapi({
+      description: 'The configuration settings that are used to override default configuration.',
+    }),
+    jobDriver: JobDriverSchema.exactOptional().openapi({
+      description: 'Parameters of job driver for the job run.',
+    }),
+    createdAt: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the job run was created.',
+    }),
+    createdBy: RequestIdentityUserArnSchema.exactOptional().openapi({
+      description: 'The user who created the job run.',
+    }),
+    finishedAt: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the job run has finished.',
+    }),
+    stateDetails: String256Schema.exactOptional().openapi({
+      description: 'Additional details of the job run state.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'The reasons why the job run has failed.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The assigned tags of the job run.',
+    }),
+    retryPolicyConfiguration: RetryPolicyConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of the retry policy that the job runs on.',
+    }),
+    retryPolicyExecution: RetryPolicyExecutionSchema.exactOptional().openapi({
+      description: 'The current status of the retry policy executed on the job.',
+    }),
   })
   .openapi({
     description:
@@ -718,38 +637,31 @@ const JobRunSchema = z
 
 const DescribeJobRunResponseSchema = z
   .object({
-    jobRun: JobRunSchema.and(
-      z.any().openapi({ description: 'The output displays information about a job run.' }),
-    ).exactOptional(),
+    jobRun: JobRunSchema.exactOptional().openapi({
+      description: 'The output displays information about a job run.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeJobRunResponse')
 
 const JobTemplateDataSchema = z
   .object({
-    executionRoleArn: ParametricIAMRoleArnSchema.and(
-      z.any().openapi({ description: 'The execution role ARN of the job run.' }),
-    ),
-    releaseLabel: ParametricReleaseLabelSchema.and(
-      z.any().openapi({ description: ' The release version of Amazon EMR.' }),
-    ),
-    configurationOverrides: ParametricConfigurationOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The configuration settings that are used to override defaults configuration.',
-        }),
-    ).exactOptional(),
+    executionRoleArn: ParametricIAMRoleArnSchema.openapi({
+      description: 'The execution role ARN of the job run.',
+    }),
+    releaseLabel: ParametricReleaseLabelSchema.openapi({
+      description: ' The release version of Amazon EMR.',
+    }),
+    configurationOverrides: ParametricConfigurationOverridesSchema.exactOptional().openapi({
+      description: ' The configuration settings that are used to override defaults configuration.',
+    }),
     jobDriver: JobDriverSchema,
-    parameterConfiguration: TemplateParameterConfigurationMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration of parameters existing in the job template.' }),
-    ).exactOptional(),
-    jobTags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags assigned to jobs started using the job template.' }),
-    ).exactOptional(),
+    parameterConfiguration: TemplateParameterConfigurationMapSchema.exactOptional().openapi({
+      description: 'The configuration of parameters existing in the job template.',
+    }),
+    jobTags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags assigned to jobs started using the job template.',
+    }),
   })
   .openapi({
     required: ['executionRoleArn', 'releaseLabel', 'jobDriver'],
@@ -776,41 +688,33 @@ const String2048Schema = z
 
 const JobTemplateSchema = z
   .object({
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the job template.' }),
-    ).exactOptional(),
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the job template.' }),
-    ).exactOptional(),
-    arn: JobTemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the job template.' }),
-    ).exactOptional(),
-    createdAt: DateSchema.and(
-      z.any().openapi({ description: ' The date and time when the job template was created.' }),
-    ).exactOptional(),
-    createdBy: RequestIdentityUserArnSchema.and(
-      z.any().openapi({ description: ' The user who created the job template.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags assigned to the job template.' }),
-    ).exactOptional(),
-    jobTemplateData: JobTemplateDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The job template data which holds values of StartJobRun API request.',
-        }),
-    ),
-    kmsKeyArn: KmsKeyArnSchema.and(
-      z.any().openapi({ description: ' The KMS key ARN used to encrypt the job template.' }),
-    ).exactOptional(),
-    decryptionError: String2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error message in case the decryption of job template fails.',
-        }),
-    ).exactOptional(),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'The name of the job template.',
+    }),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'The ID of the job template.',
+    }),
+    arn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the job template.',
+    }),
+    createdAt: DateSchema.exactOptional().openapi({
+      description: ' The date and time when the job template was created.',
+    }),
+    createdBy: RequestIdentityUserArnSchema.exactOptional().openapi({
+      description: ' The user who created the job template.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags assigned to the job template.',
+    }),
+    jobTemplateData: JobTemplateDataSchema.openapi({
+      description: 'The job template data which holds values of StartJobRun API request.',
+    }),
+    kmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description: ' The KMS key ARN used to encrypt the job template.',
+    }),
+    decryptionError: String2048Schema.exactOptional().openapi({
+      description: 'The error message in case the decryption of job template fails.',
+    }),
   })
   .openapi({
     required: ['jobTemplateData'],
@@ -821,13 +725,9 @@ const JobTemplateSchema = z
 
 const DescribeJobTemplateResponseSchema = z
   .object({
-    jobTemplate: JobTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This output displays information about the specified job template.',
-        }),
-    ).exactOptional(),
+    jobTemplate: JobTemplateSchema.exactOptional().openapi({
+      description: 'This output displays information about the specified job template.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeJobTemplateResponse')
@@ -858,18 +758,12 @@ const Base64EncodedSchema = z
 
 const CertificateSchema = z
   .object({
-    certificateArn: ACMCertArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the certificate generated for managed endpoint.' }),
-    ).exactOptional(),
-    certificateData: Base64EncodedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The base64 encoded PEM certificate data generated for managed endpoint.',
-        }),
-    ).exactOptional(),
+    certificateArn: ACMCertArnSchema.exactOptional().openapi({
+      description: 'The ARN of the certificate generated for managed endpoint.',
+    }),
+    certificateData: Base64EncodedSchema.exactOptional().openapi({
+      description: 'The base64 encoded PEM certificate data generated for managed endpoint.',
+    }),
   })
   .openapi({
     description: 'The entity representing certificate data generated for managed endpoint.',
@@ -881,76 +775,56 @@ const SubnetIdsSchema = z.array(String256Schema).openapi('SubnetIds')
 
 const EndpointSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the endpoint.' }),
-    ).exactOptional(),
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the endpoint.' }),
-    ).exactOptional(),
-    arn: EndpointArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the endpoint.' }),
-    ).exactOptional(),
-    virtualClusterId: ResourceIdStringSchema.and(
-      z.any().openapi({ description: "The ID of the endpoint's virtual cluster." }),
-    ).exactOptional(),
-    type: EndpointTypeSchema.and(
-      z.any().openapi({ description: 'The type of the endpoint.' }),
-    ).exactOptional(),
-    state: EndpointStateSchema.and(
-      z.any().openapi({ description: 'The state of the endpoint.' }),
-    ).exactOptional(),
-    releaseLabel: ReleaseLabelSchema.and(
-      z.any().openapi({ description: 'The EMR release version to be used for the endpoint.' }),
-    ).exactOptional(),
-    executionRoleArn: IAMRoleArnSchema.and(
-      z.any().openapi({ description: 'The execution role ARN of the endpoint.' }),
-    ).exactOptional(),
-    certificateArn: ACMCertArnSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The certificate ARN of the endpoint. This field is under deprecation and will be removed in future.Customer provided certificate-arn is deprecated and would be removed in future.',
-        }),
-    ).exactOptional(),
-    certificateAuthority: CertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate generated by emr control plane on customer behalf to secure the managed endpoint.',
-        }),
-    ).exactOptional(),
-    configurationOverrides: ConfigurationOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings that are used to override existing configurations for endpoints.',
-        }),
-    ).exactOptional(),
-    serverUrl: UriStringSchema.and(
-      z.any().openapi({ description: 'The server URL of the endpoint.' }),
-    ).exactOptional(),
-    createdAt: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the endpoint was created.' }),
-    ).exactOptional(),
-    securityGroup: String256Schema.and(
-      z.any().openapi({ description: 'The security group configuration of the endpoint. ' }),
-    ).exactOptional(),
-    subnetIds: SubnetIdsSchema.and(
-      z.any().openapi({ description: 'The subnet IDs of the endpoint. ' }),
-    ).exactOptional(),
-    stateDetails: String256Schema.and(
-      z.any().openapi({ description: ' Additional details of the endpoint state. ' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: ' The reasons why the endpoint has failed. ' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of the endpoint. ' }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({ description: 'The ID of the endpoint.' }),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'The name of the endpoint.',
+    }),
+    arn: EndpointArnSchema.exactOptional().openapi({ description: 'The ARN of the endpoint.' }),
+    virtualClusterId: ResourceIdStringSchema.exactOptional().openapi({
+      description: "The ID of the endpoint's virtual cluster.",
+    }),
+    type: EndpointTypeSchema.exactOptional().openapi({ description: 'The type of the endpoint.' }),
+    state: EndpointStateSchema.exactOptional().openapi({
+      description: 'The state of the endpoint.',
+    }),
+    releaseLabel: ReleaseLabelSchema.exactOptional().openapi({
+      description: 'The EMR release version to be used for the endpoint.',
+    }),
+    executionRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description: 'The execution role ARN of the endpoint.',
+    }),
+    certificateArn: ACMCertArnSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The certificate ARN of the endpoint. This field is under deprecation and will be removed in future.Customer provided certificate-arn is deprecated and would be removed in future.',
+    }),
+    certificateAuthority: CertificateSchema.exactOptional().openapi({
+      description:
+        'The certificate generated by emr control plane on customer behalf to secure the managed endpoint.',
+    }),
+    configurationOverrides: ConfigurationOverridesSchema.exactOptional().openapi({
+      description:
+        'The configuration settings that are used to override existing configurations for endpoints.',
+    }),
+    serverUrl: UriStringSchema.exactOptional().openapi({
+      description: 'The server URL of the endpoint.',
+    }),
+    createdAt: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the endpoint was created.',
+    }),
+    securityGroup: String256Schema.exactOptional().openapi({
+      description: 'The security group configuration of the endpoint. ',
+    }),
+    subnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description: 'The subnet IDs of the endpoint. ',
+    }),
+    stateDetails: String256Schema.exactOptional().openapi({
+      description: ' Additional details of the endpoint state. ',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: ' The reasons why the endpoint has failed. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags of the endpoint. ' }),
   })
   .openapi({
     description: 'This entity represents the endpoint that is managed by Amazon EMR on EKS.',
@@ -960,11 +834,9 @@ const EndpointSchema = z
 
 const DescribeManagedEndpointResponseSchema = z
   .object({
-    endpoint: EndpointSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This output displays information about a managed endpoint.' }),
-    ).exactOptional(),
+    endpoint: EndpointSchema.exactOptional().openapi({
+      description: 'This output displays information about a managed endpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeManagedEndpointResponse')
@@ -975,18 +847,14 @@ const VirtualClusterStateSchema = z
 
 const ContainerProviderSchema = z
   .object({
-    type: ContainerProviderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the container provider. Amazon EKS is the only supported type as of now.',
-        }),
-    ),
-    id: ClusterIdSchema.and(z.any().openapi({ description: 'The ID of the container cluster.' })),
-    info: ContainerInfoSchema.and(
-      z.any().openapi({ description: 'The information about the container cluster.' }),
-    ).exactOptional(),
+    type: ContainerProviderTypeSchema.openapi({
+      description:
+        'The type of the container provider. Amazon EKS is the only supported type as of now.',
+    }),
+    id: ClusterIdSchema.openapi({ description: 'The ID of the container cluster.' }),
+    info: ContainerInfoSchema.exactOptional().openapi({
+      description: 'The information about the container cluster.',
+    }),
   })
   .openapi({
     required: ['type', 'id'],
@@ -996,27 +864,27 @@ const ContainerProviderSchema = z
 
 const VirtualClusterSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual cluster.' }),
-    ).exactOptional(),
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the virtual cluster.' }),
-    ).exactOptional(),
-    arn: VirtualClusterArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the virtual cluster.' }),
-    ).exactOptional(),
-    state: VirtualClusterStateSchema.and(
-      z.any().openapi({ description: 'The state of the virtual cluster.' }),
-    ).exactOptional(),
-    containerProvider: ContainerProviderSchema.and(
-      z.any().openapi({ description: 'The container provider of the virtual cluster.' }),
-    ).exactOptional(),
-    createdAt: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the virtual cluster is created.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The assigned tags of the virtual cluster.' }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'The ID of the virtual cluster.',
+    }),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'The name of the virtual cluster.',
+    }),
+    arn: VirtualClusterArnSchema.exactOptional().openapi({
+      description: 'The ARN of the virtual cluster.',
+    }),
+    state: VirtualClusterStateSchema.exactOptional().openapi({
+      description: 'The state of the virtual cluster.',
+    }),
+    containerProvider: ContainerProviderSchema.exactOptional().openapi({
+      description: 'The container provider of the virtual cluster.',
+    }),
+    createdAt: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the virtual cluster is created.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The assigned tags of the virtual cluster.',
+    }),
   })
   .openapi({
     description:
@@ -1027,13 +895,9 @@ const VirtualClusterSchema = z
 
 const DescribeVirtualClusterResponseSchema = z
   .object({
-    virtualCluster: VirtualClusterSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This output displays information about the specified virtual cluster.',
-        }),
-    ).exactOptional(),
+    virtualCluster: VirtualClusterSchema.exactOptional().openapi({
+      description: 'This output displays information about the specified virtual cluster.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeVirtualClusterResponse')
@@ -1049,16 +913,12 @@ const NextTokenSchema = z
 
 const ListJobRunsResponseSchema = z
   .object({
-    jobRuns: JobRunsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This output lists information about the specified job runs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'This output displays the token for the next set of job runs.' }),
-    ).exactOptional(),
+    jobRuns: JobRunsSchema.exactOptional().openapi({
+      description: 'This output lists information about the specified job runs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'This output displays the token for the next set of job runs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListJobRunsResponse')
@@ -1067,20 +927,12 @@ const JobTemplatesSchema = z.array(JobTemplateSchema).openapi('JobTemplates')
 
 const ListJobTemplatesResponseSchema = z
   .object({
-    templates: JobTemplatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This output lists information about the specified job templates.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' This output displays the token for the next set of job templates.',
-        }),
-    ).exactOptional(),
+    templates: JobTemplatesSchema.exactOptional().openapi({
+      description: 'This output lists information about the specified job templates.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: ' This output displays the token for the next set of job templates.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListJobTemplatesResponse')
@@ -1089,21 +941,19 @@ const EndpointsSchema = z.array(EndpointSchema).openapi('Endpoints')
 
 const ListManagedEndpointsResponseSchema = z
   .object({
-    endpoints: EndpointsSchema.and(
-      z.any().openapi({ description: 'The managed endpoints to be listed.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: ' The token for the next set of endpoints to return. ' }),
-    ).exactOptional(),
+    endpoints: EndpointsSchema.exactOptional().openapi({
+      description: 'The managed endpoints to be listed.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: ' The token for the next set of endpoints to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListManagedEndpointsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags assigned to resources.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags assigned to resources.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1112,46 +962,38 @@ const VirtualClustersSchema = z.array(VirtualClusterSchema).openapi('VirtualClus
 
 const ListVirtualClustersResponseSchema = z
   .object({
-    virtualClusters: VirtualClustersSchema.and(
-      z.any().openapi({ description: 'This output lists the specified virtual clusters.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This output displays the token for the next set of virtual clusters.',
-        }),
-    ).exactOptional(),
+    virtualClusters: VirtualClustersSchema.exactOptional().openapi({
+      description: 'This output lists the specified virtual clusters.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'This output displays the token for the next set of virtual clusters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVirtualClustersResponse')
 
 const StartJobRunResponseSchema = z
   .object({
-    id: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'This output displays the started job run ID.' }),
-    ).exactOptional(),
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'This output displays the name of the started job run.' }),
-    ).exactOptional(),
-    arn: JobArnSchema.and(
-      z.any().openapi({ description: 'This output lists the ARN of job run.' }),
-    ).exactOptional(),
-    virtualClusterId: ResourceIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This output displays the virtual cluster ID for which the job run was submitted.',
-        }),
-    ).exactOptional(),
+    id: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'This output displays the started job run ID.',
+    }),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'This output displays the name of the started job run.',
+    }),
+    arn: JobArnSchema.exactOptional().openapi({
+      description: 'This output lists the ARN of job run.',
+    }),
+    virtualClusterId: ResourceIdStringSchema.exactOptional().openapi({
+      description:
+        'This output displays the virtual cluster ID for which the job run was submitted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartJobRunResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const String128Schema = z
   .string()
@@ -1161,31 +1003,27 @@ const String128Schema = z
   .openapi('String128')
 
 const CancelJobRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelJobRunRequest' })
   .openapi('CancelJobRunRequest')
 
 const CreateJobTemplateRequestSchema = z
   .object({
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The specified name of the job template.' }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token of the job template.' }),
-    ),
-    jobTemplateData: JobTemplateDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The job template data which holds values of StartJobRun API request.',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags that are associated with the job template.' }),
-    ).exactOptional(),
-    kmsKeyArn: KmsKeyArnSchema.and(
-      z.any().openapi({ description: 'The KMS key ARN used to encrypt the job template.' }),
-    ).exactOptional(),
+    name: ResourceNameStringSchema.openapi({
+      description: 'The specified name of the job template.',
+    }),
+    clientToken: ClientTokenSchema.openapi({
+      description: 'The client token of the job template.',
+    }),
+    jobTemplateData: JobTemplateDataSchema.openapi({
+      description: 'The job template data which holds values of StartJobRun API request.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags that are associated with the job template.',
+    }),
+    kmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description: 'The KMS key ARN used to encrypt the job template.',
+    }),
   })
   .openapi({
     required: ['name', 'clientToken', 'jobTemplateData'],
@@ -1195,41 +1033,25 @@ const CreateJobTemplateRequestSchema = z
 
 const CreateManagedEndpointRequestSchema = z
   .object({
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the managed endpoint.' }),
-    ),
-    type: EndpointTypeSchema.and(
-      z.any().openapi({ description: 'The type of the managed endpoint.' }),
-    ),
-    releaseLabel: ReleaseLabelSchema.and(
-      z.any().openapi({ description: 'The Amazon EMR release version.' }),
-    ),
-    executionRoleArn: IAMRoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the execution role.' }),
-    ),
-    certificateArn: ACMCertArnSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The certificate ARN provided by users for the managed endpoint. This field is under deprecation and will be removed in future releases.Customer provided certificate-arn is deprecated and would be removed in future.',
-        }),
-    ).exactOptional(),
-    configurationOverrides: ConfigurationOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings that will be used to override existing configurations.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client idempotency token for this create call.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags of the managed endpoint. ' }),
-    ).exactOptional(),
+    name: ResourceNameStringSchema.openapi({ description: 'The name of the managed endpoint.' }),
+    type: EndpointTypeSchema.openapi({ description: 'The type of the managed endpoint.' }),
+    releaseLabel: ReleaseLabelSchema.openapi({ description: 'The Amazon EMR release version.' }),
+    executionRoleArn: IAMRoleArnSchema.openapi({ description: 'The ARN of the execution role.' }),
+    certificateArn: ACMCertArnSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The certificate ARN provided by users for the managed endpoint. This field is under deprecation and will be removed in future releases.Customer provided certificate-arn is deprecated and would be removed in future.',
+    }),
+    configurationOverrides: ConfigurationOverridesSchema.exactOptional().openapi({
+      description:
+        'The configuration settings that will be used to override existing configurations.',
+    }),
+    clientToken: ClientTokenSchema.openapi({
+      description: 'The client idempotency token for this create call.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags of the managed endpoint. ',
+    }),
   })
   .openapi({
     required: ['name', 'type', 'releaseLabel', 'executionRoleArn', 'clientToken'],
@@ -1239,18 +1061,18 @@ const CreateManagedEndpointRequestSchema = z
 
 const CreateVirtualClusterRequestSchema = z
   .object({
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The specified name of the virtual cluster.' }),
-    ),
-    containerProvider: ContainerProviderSchema.and(
-      z.any().openapi({ description: 'The container provider of the virtual cluster.' }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token of the virtual cluster.' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags assigned to the virtual cluster.' }),
-    ).exactOptional(),
+    name: ResourceNameStringSchema.openapi({
+      description: 'The specified name of the virtual cluster.',
+    }),
+    containerProvider: ContainerProviderSchema.openapi({
+      description: 'The container provider of the virtual cluster.',
+    }),
+    clientToken: ClientTokenSchema.openapi({
+      description: 'The client token of the virtual cluster.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags assigned to the virtual cluster.',
+    }),
   })
   .openapi({
     required: ['name', 'containerProvider', 'clientToken'],
@@ -1259,37 +1081,37 @@ const CreateVirtualClusterRequestSchema = z
   .openapi('CreateVirtualClusterRequest')
 
 const DeleteJobTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteJobTemplateRequest' })
   .openapi('DeleteJobTemplateRequest')
 
 const DeleteManagedEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteManagedEndpointRequest' })
   .openapi('DeleteManagedEndpointRequest')
 
 const DeleteVirtualClusterRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVirtualClusterRequest' })
   .openapi('DeleteVirtualClusterRequest')
 
 const DescribeJobRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeJobRunRequest' })
   .openapi('DescribeJobRunRequest')
 
 const DescribeJobTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeJobTemplateRequest' })
   .openapi('DescribeJobTemplateRequest')
 
 const DescribeManagedEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeManagedEndpointRequest' })
   .openapi('DescribeManagedEndpointRequest')
 
 const DescribeVirtualClusterRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeVirtualClusterRequest' })
   .openapi('DescribeVirtualClusterRequest')
 
@@ -1300,17 +1122,17 @@ const EndpointTypesSchema = z.array(EndpointTypeSchema).max(10).openapi('Endpoin
 const JobRunStatesSchema = z.array(JobRunStateSchema).max(10).openapi('JobRunStates')
 
 const ListJobRunsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListJobRunsRequest' })
   .openapi('ListJobRunsRequest')
 
 const ListJobTemplatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListJobTemplatesRequest' })
   .openapi('ListJobTemplatesRequest')
 
 const ListManagedEndpointsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListManagedEndpointsRequest' })
   .openapi('ListManagedEndpointsRequest')
 
@@ -1322,7 +1144,7 @@ const RsiArnSchema = z
   .openapi('RsiArn')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -1332,7 +1154,7 @@ const VirtualClusterStatesSchema = z
   .openapi('VirtualClusterStates')
 
 const ListVirtualClustersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVirtualClustersRequest' })
   .openapi('ListVirtualClustersRequest')
 
@@ -1348,36 +1170,34 @@ const TemplateParameterInputMapSchema = z
 
 const StartJobRunRequestSchema = z
   .object({
-    name: ResourceNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the job run.' }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client idempotency token of the job run request. ' }),
-    ),
-    executionRoleArn: IAMRoleArnSchema.and(
-      z.any().openapi({ description: 'The execution role ARN for the job run.' }),
-    ).exactOptional(),
-    releaseLabel: ReleaseLabelSchema.and(
-      z.any().openapi({ description: 'The Amazon EMR release version to use for the job run.' }),
-    ).exactOptional(),
-    jobDriver: JobDriverSchema.and(
-      z.any().openapi({ description: 'The job driver for the job run.' }),
-    ).exactOptional(),
-    configurationOverrides: ConfigurationOverridesSchema.and(
-      z.any().openapi({ description: 'The configuration overrides for the job run.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags assigned to job runs.' }),
-    ).exactOptional(),
-    jobTemplateId: ResourceIdStringSchema.and(
-      z.any().openapi({ description: 'The job template ID to be used to start the job run.' }),
-    ).exactOptional(),
-    jobTemplateParameters: TemplateParameterInputMapSchema.and(
-      z.any().openapi({ description: 'The values of job template parameters to start a job run.' }),
-    ).exactOptional(),
-    retryPolicyConfiguration: RetryPolicyConfigurationSchema.and(
-      z.any().openapi({ description: 'The retry policy configuration for the job run.' }),
-    ).exactOptional(),
+    name: ResourceNameStringSchema.exactOptional().openapi({
+      description: 'The name of the job run.',
+    }),
+    clientToken: ClientTokenSchema.openapi({
+      description: 'The client idempotency token of the job run request. ',
+    }),
+    executionRoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description: 'The execution role ARN for the job run.',
+    }),
+    releaseLabel: ReleaseLabelSchema.exactOptional().openapi({
+      description: 'The Amazon EMR release version to use for the job run.',
+    }),
+    jobDriver: JobDriverSchema.exactOptional().openapi({
+      description: 'The job driver for the job run.',
+    }),
+    configurationOverrides: ConfigurationOverridesSchema.exactOptional().openapi({
+      description: 'The configuration overrides for the job run.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'The tags assigned to job runs.' }),
+    jobTemplateId: ResourceIdStringSchema.exactOptional().openapi({
+      description: 'The job template ID to be used to start the job run.',
+    }),
+    jobTemplateParameters: TemplateParameterInputMapSchema.exactOptional().openapi({
+      description: 'The values of job template parameters to start a job run.',
+    }),
+    retryPolicyConfiguration: RetryPolicyConfigurationSchema.exactOptional().openapi({
+      description: 'The retry policy configuration for the job run.',
+    }),
   })
   .openapi({ required: ['clientToken'], title: 'StartJobRunRequest' })
   .openapi('StartJobRunRequest')
@@ -1385,9 +1205,7 @@ const StartJobRunRequestSchema = z
 const TagKeyListSchema = z.array(String128Schema).min(0).max(50).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
-  .object({
-    tags: TagMapSchema.and(z.any().openapi({ description: 'The tags assigned to resources.' })),
-  })
+  .object({ tags: TagMapSchema.openapi({ description: 'The tags assigned to resources.' }) })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
@@ -1399,7 +1217,7 @@ const TemplateParameterNameSchema = z
   .openapi('TemplateParameterName')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -1734,36 +1552,25 @@ export const postJobtemplatesRoute = createRoute({
                 .openapi({ description: 'The client token of the job template.' }),
               jobTemplateData: z
                 .object({
-                  executionRoleArn: ParametricIAMRoleArnSchema.and(
-                    z.any().openapi({ description: 'The execution role ARN of the job run.' }),
-                  ).exactOptional(),
-                  releaseLabel: ParametricReleaseLabelSchema.and(
-                    z.any().openapi({ description: ' The release version of Amazon EMR.' }),
-                  ).exactOptional(),
-                  configurationOverrides: ParametricConfigurationOverridesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The configuration settings that are used to override defaults configuration.',
-                      }),
-                  ).exactOptional(),
+                  executionRoleArn: ParametricIAMRoleArnSchema.exactOptional().openapi({
+                    description: 'The execution role ARN of the job run.',
+                  }),
+                  releaseLabel: ParametricReleaseLabelSchema.exactOptional().openapi({
+                    description: ' The release version of Amazon EMR.',
+                  }),
+                  configurationOverrides:
+                    ParametricConfigurationOverridesSchema.exactOptional().openapi({
+                      description:
+                        ' The configuration settings that are used to override defaults configuration.',
+                    }),
                   jobDriver: JobDriverSchema.exactOptional(),
-                  parameterConfiguration: TemplateParameterConfigurationMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration of parameters existing in the job template.',
-                      }),
-                  ).exactOptional(),
-                  jobTags: TagMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The tags assigned to jobs started using the job template.',
-                      }),
-                  ).exactOptional(),
+                  parameterConfiguration:
+                    TemplateParameterConfigurationMapSchema.exactOptional().openapi({
+                      description: 'The configuration of parameters existing in the job template.',
+                    }),
+                  jobTags: TagMapSchema.exactOptional().openapi({
+                    description: 'The tags assigned to jobs started using the job template.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -2035,17 +1842,12 @@ export const postVirtualclustersVirtualClusterIdEndpointsRoute = createRoute({
                 }),
               configurationOverrides: z
                 .object({
-                  applicationConfiguration: ConfigurationListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configurations for the application running by the job run. ',
-                      }),
-                  ).exactOptional(),
-                  monitoringConfiguration: MonitoringConfigurationSchema.and(
-                    z.any().openapi({ description: 'The configurations for monitoring.' }),
-                  ).exactOptional(),
+                  applicationConfiguration: ConfigurationListSchema.exactOptional().openapi({
+                    description: 'The configurations for the application running by the job run. ',
+                  }),
+                  monitoringConfiguration: MonitoringConfigurationSchema.exactOptional().openapi({
+                    description: 'The configurations for monitoring.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2264,22 +2066,16 @@ export const postVirtualclustersRoute = createRoute({
                 .openapi({ description: 'The specified name of the virtual cluster.' }),
               containerProvider: z
                 .object({
-                  type: ContainerProviderTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The type of the container provider. Amazon EKS is the only supported type as of now.',
-                      }),
-                  ).exactOptional(),
-                  id: ClusterIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the container cluster.' }),
-                  ).exactOptional(),
-                  info: ContainerInfoSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The information about the container cluster.' }),
-                  ).exactOptional(),
+                  type: ContainerProviderTypeSchema.exactOptional().openapi({
+                    description:
+                      'The type of the container provider. Amazon EKS is the only supported type as of now.',
+                  }),
+                  id: ClusterIdSchema.exactOptional().openapi({
+                    description: 'The ID of the container cluster.',
+                  }),
+                  info: ContainerInfoSchema.exactOptional().openapi({
+                    description: 'The information about the container cluster.',
+                  }),
                 })
                 .openapi({
                   description: 'The information about the container provider.',
@@ -2875,16 +2671,12 @@ export const postVirtualclustersVirtualClusterIdJobrunsRoute = createRoute({
                 .openapi({ description: 'The Amazon EMR release version to use for the job run.' }),
               jobDriver: z
                 .object({
-                  sparkSubmitJobDriver: SparkSubmitJobDriverSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The job driver parameters specified for spark submit.',
-                      }),
-                  ).exactOptional(),
-                  sparkSqlJobDriver: SparkSqlJobDriverSchema.and(
-                    z.any().openapi({ description: 'The job driver for job type.' }),
-                  ).exactOptional(),
+                  sparkSubmitJobDriver: SparkSubmitJobDriverSchema.exactOptional().openapi({
+                    description: 'The job driver parameters specified for spark submit.',
+                  }),
+                  sparkSqlJobDriver: SparkSqlJobDriverSchema.exactOptional().openapi({
+                    description: 'The job driver for job type.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2894,17 +2686,12 @@ export const postVirtualclustersVirtualClusterIdJobrunsRoute = createRoute({
                 }),
               configurationOverrides: z
                 .object({
-                  applicationConfiguration: ConfigurationListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configurations for the application running by the job run. ',
-                      }),
-                  ).exactOptional(),
-                  monitoringConfiguration: MonitoringConfigurationSchema.and(
-                    z.any().openapi({ description: 'The configurations for monitoring.' }),
-                  ).exactOptional(),
+                  applicationConfiguration: ConfigurationListSchema.exactOptional().openapi({
+                    description: 'The configurations for the application running by the job run. ',
+                  }),
+                  monitoringConfiguration: MonitoringConfigurationSchema.exactOptional().openapi({
+                    description: 'The configurations for monitoring.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2934,13 +2721,9 @@ export const postVirtualclustersVirtualClusterIdJobrunsRoute = createRoute({
                 }),
               retryPolicyConfiguration: z
                 .object({
-                  maxAttempts: JavaIntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: "The maximum number of attempts on the job's driver.",
-                      }),
-                  ).exactOptional(),
+                  maxAttempts: JavaIntegerSchema.exactOptional().openapi({
+                    description: "The maximum number of attempts on the job's driver.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({

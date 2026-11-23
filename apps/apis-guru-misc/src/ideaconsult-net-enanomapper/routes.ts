@@ -2,22 +2,22 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const DatasetSchema = z
   .object({
-    dataEntry: z.object({}).exactOptional(),
-    feature: z.object({}).exactOptional(),
+    dataEntry: z.looseObject({}).exactOptional(),
+    feature: z.looseObject({}).exactOptional(),
     model_uri: z.string().exactOptional(),
-    query: z.object({}).exactOptional(),
+    query: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('Dataset')
 
 const FacetSchema = z
-  .object({ facet: z.object({}).exactOptional() })
+  .object({ facet: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('Facet')
 
 const InvestigationSchema = z
   .object({
-    _childDocuments_: z.object({}).exactOptional(),
+    _childDocuments_: z.looseObject({}).exactOptional(),
     assay: z.string().exactOptional(),
     document_uuid: z.string().exactOptional(),
     effectendpoint: z.string().exactOptional(),
@@ -66,7 +66,7 @@ const SolrResponseSchema = z
   .object({
     response: z
       .object({
-        docs: z.array(z.object({})).exactOptional(),
+        docs: z.array(z.looseObject({})).exactOptional(),
         maxScore: z.number().exactOptional(),
         numFound: z.int().exactOptional(),
         start: z.int().exactOptional(),
@@ -76,7 +76,7 @@ const SolrResponseSchema = z
     responseHeader: z
       .object({
         QTime: z.int().exactOptional(),
-        params: z.object({}).exactOptional(),
+        params: z.looseObject({}).exactOptional(),
         status: z.int().exactOptional(),
         zkConnected: z.boolean().exactOptional(),
       })
@@ -87,22 +87,25 @@ const SolrResponseSchema = z
   .openapi('SolrResponse')
 
 const SubstanceSchema = z
-  .object({ substance: z.object({}).exactOptional() })
+  .object({ substance: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('Substance')
 
 const SubstanceCompositionSchema = z
-  .object({ composition: z.object({}).exactOptional(), feature: z.object({}).exactOptional() })
+  .object({
+    composition: z.looseObject({}).exactOptional(),
+    feature: z.looseObject({}).exactOptional(),
+  })
   .openapi({ required: [] })
   .openapi('SubstanceComposition')
 
 const SubstanceStudySchema = z
-  .object({ study: z.object({}).exactOptional() })
+  .object({ study: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('SubstanceStudy')
 
 const SubstanceStudySummarySchema = z
-  .object({ facet: z.object({}).exactOptional() })
+  .object({ facet: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('SubstanceStudySummary')
 
@@ -151,7 +154,7 @@ const QueryBodyRequestBody = {
     'application/json': {
       schema: z
         .object({
-          facet: z.object({}).exactOptional(),
+          facet: z.looseObject({}).exactOptional(),
           params: z
             .object({ fl: z.array(z.string()).exactOptional(), rows: z.int().exactOptional() })
             .exactOptional()

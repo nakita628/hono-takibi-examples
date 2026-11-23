@@ -1,0 +1,286 @@
+import {
+  injectQuery,
+  injectMutation,
+  queryOptions,
+  mutationOptions,
+} from '@tanstack/angular-query-experimental'
+import type {
+  CreateQueryOptions,
+  CreateMutationOptions,
+  DefaultError,
+  InjectQueryOptions,
+  InjectInfiniteQueryOptions,
+  InjectMutationOptions,
+} from '@tanstack/angular-query-experimental'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getCrmKey() {
+  return ['crm'] as const
+}
+
+export function getCrmObjects202609ObjectTypeQueryKey(
+  args: InferRequestType<(typeof client.crm.objects)['2026-09'][':objectType']['$get']>,
+) {
+  return ['crm', '/crm/objects/2026-09/:objectType', args] as const
+}
+
+export function getCrmObjects202609ObjectTypeQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.crm.objects)['2026-09'][':objectType']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.crm.objects)['2026-09'][':objectType']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.crm.objects)['2026-09'][':objectType']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getCrmObjects202609ObjectTypeQueryKey>
+  >({
+    queryKey: getCrmObjects202609ObjectTypeQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.crm.objects['2026-09'][':objectType'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function injectCrmObjects202609ObjectType<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.crm.objects)['2026-09'][':objectType']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.crm.objects)['2026-09'][':objectType']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.crm.objects)['2026-09'][':objectType']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getCrmObjects202609ObjectTypeQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  injectOptions?: InjectQueryOptions,
+) {
+  return injectQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getCrmObjects202609ObjectTypeQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, injectOptions)
+}
+
+export function getPostCrmObjects202609ObjectTypeBatchReadMutationKey() {
+  return ['crm', '/crm/objects/2026-09/:objectType/batch/read', 'POST'] as const
+}
+
+export function getPostCrmObjects202609ObjectTypeBatchReadMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.crm.objects)['2026-09'][':objectType']['batch']['read']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.crm.objects)['2026-09'][':objectType']['batch']['read']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609ObjectTypeBatchReadMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09'][':objectType']['batch']['read']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.crm.objects['2026-09'][':objectType'].batch.read.$post(args, options),
+      )
+    },
+  })
+}
+
+export function injectPostCrmObjects202609ObjectTypeBatchRead<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.crm.objects)['2026-09'][':objectType']['batch']['read']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.crm.objects)['2026-09'][':objectType']['batch']['read']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  injectOptions?: InjectMutationOptions,
+) {
+  return injectMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostCrmObjects202609ObjectTypeBatchReadMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, injectOptions)
+}
+
+export function getCrmObjects202609ObjectTypeObjectIdQueryKey(
+  args: InferRequestType<
+    (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['$get']
+  >,
+) {
+  return ['crm', '/crm/objects/2026-09/:objectType/:objectId', args] as const
+}
+
+export function getCrmObjects202609ObjectTypeObjectIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getCrmObjects202609ObjectTypeObjectIdQueryKey>
+  >({
+    queryKey: getCrmObjects202609ObjectTypeObjectIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.crm.objects['2026-09'][':objectType'][':objectId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function injectCrmObjects202609ObjectTypeObjectId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getCrmObjects202609ObjectTypeObjectIdQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  injectOptions?: InjectQueryOptions,
+) {
+  return injectQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getCrmObjects202609ObjectTypeObjectIdQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, injectOptions)
+}

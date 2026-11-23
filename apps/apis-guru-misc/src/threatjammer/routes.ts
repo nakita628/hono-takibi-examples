@@ -53,7 +53,7 @@ const V1ModelsTokenSourceOutputSchema = z
 const ActivityOutputSchema = z
   .object({
     created_at: z.int().openapi({ title: 'Created At' }),
-    data: z.object({}).openapi({ title: 'Data' }),
+    data: z.looseObject({}).openapi({ title: 'Data' }),
     description: z.string().openapi({ title: 'Description' }),
     event: z.string().openapi({ title: 'Event' }),
     self: z.string().openapi({ title: 'Self' }),
@@ -686,7 +686,7 @@ const BodyQueryOriginTokenInfoV1OriginTokenPostSchema = z
 const BodyUpdateConfigurationOriginV1OriginPutSchema = z
   .object({
     config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The configuration information to store in the origin.',
@@ -1176,7 +1176,7 @@ const OriginOutputSchema = z
   .object({
     actions: z.string().openapi({ title: 'Actions' }),
     addresses: z.string().openapi({ title: 'Addresses' }),
-    config: z.object({}).openapi({ title: 'Config' }),
+    config: z.looseObject({}).openapi({ title: 'Config' }),
     cookies: z.string().openapi({ title: 'Cookies' }),
     created_at: z.int().openapi({ title: 'Created At' }),
     logs: z.string().openapi({ title: 'Logs' }),
@@ -4609,7 +4609,7 @@ export const putV1OriginRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({ title: 'Response Update Configuration Origin V1 Origin Put' }),
         },
       },

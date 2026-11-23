@@ -35,6 +35,16 @@ const CartSchema = z
     example: {
       discounts: 20,
       grandTotal: 182,
+      items: [
+        {
+          id: '2000002',
+          name: null,
+          price: 200,
+          productId: '2000000',
+          quantity: 1,
+          refId: 'MEV41',
+        },
+      ],
       itemsTotal: 200,
       redemptionCode: null,
       relationName: null,
@@ -107,7 +117,27 @@ const Cart1Schema = z
     taxes: z.int32(),
   })
   .openapi({
-    example: { discounts: 0, grandTotal: 0, itemsTotal: 15, shipping: 0, taxes: 0 },
+    example: {
+      discounts: 0,
+      grandTotal: 0,
+      items: [
+        {
+          discount: 0,
+          id: '2000330',
+          name: 'T-Shirt M',
+          price: 15,
+          priceTags: [],
+          productId: '2000196',
+          quantity: 1,
+          refId: null,
+          shippingDiscount: 0,
+          value: 15,
+        },
+      ],
+      itemsTotal: 15,
+      shipping: 0,
+      taxes: 0,
+    },
     required: ['items', 'grandTotal', 'discounts', 'shipping', 'taxes', 'itemsTotal'],
     title: 'Cart1',
   })
@@ -128,6 +158,16 @@ const Cart2Schema = z
     example: {
       discounts: -20,
       grandTotal: 182,
+      items: [
+        {
+          id: '2000002',
+          name: null,
+          price: 200,
+          productId: '2000000',
+          quantity: 1,
+          refId: 'MEV41',
+        },
+      ],
       itemsTotal: 200,
       redemptionCode: 'FASD-ASDS-ASDA-ASDA',
       relationName: 'loyalty-program',
@@ -275,7 +315,27 @@ const OrderInfoSchema = z
   })
   .openapi({
     example: {
-      cart: { discounts: 0, grandTotal: 0, itemsTotal: 15, shipping: 0, taxes: 0 },
+      cart: {
+        discounts: 0,
+        grandTotal: 0,
+        items: [
+          {
+            discount: 0,
+            id: '2000330',
+            name: 'T-Shirt M',
+            price: 15,
+            priceTags: [],
+            productId: '2000196',
+            quantity: 1,
+            refId: null,
+            shippingDiscount: 0,
+            value: 15,
+          },
+        ],
+        itemsTotal: 15,
+        shipping: 0,
+        taxes: 0,
+      },
       clientProfile: {
         birthDate: '0001-01-01T00:00:00',
         document: '10617764093',
@@ -569,7 +629,7 @@ export const getGiftcardprovidersRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}) } },
+      content: { 'text/plain': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
   },
@@ -674,7 +734,7 @@ export const putGiftcardprovidersGiftCardProviderIDRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}) } },
+      content: { 'text/plain': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
   },
@@ -763,7 +823,7 @@ export const deleteGiftcardprovidersGiftCardProviderIDRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}) } },
+      content: { 'text/plain': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     404: { description: 'O provider não existe.\n' },
@@ -872,7 +932,7 @@ export const postGiftcardprovidersGiftCardProviderIDGiftcardsRoute = createRoute
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}) } },
+      content: { 'text/plain': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
   },
@@ -1009,7 +1069,7 @@ export const postGiftcardprovidersGiftCardProviderIDGiftcardsSearchRoute = creat
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}) } },
+      content: { 'text/plain': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
   },
@@ -1111,7 +1171,7 @@ export const getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDRoute = cr
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}) } },
+      content: { 'text/plain': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
   },
@@ -1214,7 +1274,7 @@ export const getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactio
     responses: {
       200: {
         description: '',
-        content: { 'text/plain': { schema: z.object({}) } },
+        content: { 'text/plain': { schema: z.looseObject({}) } },
         headers: z.object({}),
       },
     },
@@ -1381,7 +1441,7 @@ export const postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransacti
     responses: {
       200: {
         description: '',
-        content: { 'text/plain': { schema: z.object({}) } },
+        content: { 'text/plain': { schema: z.looseObject({}) } },
         headers: z.object({}),
       },
     },
@@ -1498,7 +1558,7 @@ export const getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactio
     responses: {
       200: {
         description: '',
-        content: { 'text/plain': { schema: z.object({}) } },
+        content: { 'text/plain': { schema: z.looseObject({}) } },
         headers: z.object({}),
       },
     },
@@ -1625,7 +1685,7 @@ export const postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransacti
     responses: {
       200: {
         description: '',
-        content: { 'text/plain': { schema: z.object({}) } },
+        content: { 'text/plain': { schema: z.looseObject({}) } },
         headers: z.object({}),
       },
     },
@@ -1742,7 +1802,7 @@ export const getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactio
     responses: {
       200: {
         description: '',
-        content: { 'text/plain': { schema: z.object({}) } },
+        content: { 'text/plain': { schema: z.looseObject({}) } },
         headers: z.object({}),
       },
     },
@@ -1868,7 +1928,7 @@ export const postGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransacti
     responses: {
       200: {
         description: '',
-        content: { 'text/plain': { schema: z.object({}) } },
+        content: { 'text/plain': { schema: z.looseObject({}) } },
         headers: z.object({}),
       },
     },
@@ -1984,7 +2044,7 @@ export const getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactio
     responses: {
       200: {
         description: '',
-        content: { 'text/plain': { schema: z.object({}) } },
+        content: { 'text/plain': { schema: z.looseObject({}) } },
         headers: z.object({}),
       },
     },
@@ -2100,7 +2160,7 @@ export const getGiftcardprovidersGiftCardProviderIDGiftcardsGiftCardIDTransactio
     responses: {
       200: {
         description: '',
-        content: { 'text/plain': { schema: z.object({}) } },
+        content: { 'text/plain': { schema: z.looseObject({}) } },
         headers: z.object({}),
       },
     },
@@ -2189,7 +2249,7 @@ export const getGiftcardprovidersGiftCardProviderIdRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}) } },
+      content: { 'text/plain': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     404: { description: 'O provider não existe.\n' },

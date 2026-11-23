@@ -6,7 +6,7 @@ Publish API
 
 Base URLs:
 
-* <a href="https://api.apis.guru//www.ticketmaster.com/publish/v2">https://api.apis.guru//www.ticketmaster.com/publish/v2</a>
+* <a href="//www.ticketmaster.com/publish/v2">//www.ticketmaster.com/publish/v2</a>
 
 Web: <a href="http://developer.ticketmaster.com/support/contact-us/">http://developer.ticketmaster.com/support/contact-us/</a> 
 

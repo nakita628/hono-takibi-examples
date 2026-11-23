@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DeleteObjectResponseSchema = z.object({}).openapi('DeleteObjectResponse')
+const DeleteObjectResponseSchema = z.looseObject({}).openapi('DeleteObjectResponse')
 
 const ContainerNotFoundExceptionSchema = z.any().openapi('ContainerNotFoundException')
 
@@ -8,7 +8,7 @@ const ObjectNotFoundExceptionSchema = z.any().openapi('ObjectNotFoundException')
 
 const InternalServerErrorSchema = z.any().openapi('InternalServerError')
 
-const DescribeObjectResponseSchema = z.object({}).openapi('DescribeObjectResponse')
+const DescribeObjectResponseSchema = z.looseObject({}).openapi('DescribeObjectResponse')
 
 const PayloadBlobSchema = z.string().openapi('PayloadBlob')
 
@@ -16,17 +16,11 @@ const StatusCodeSchema = z.int().openapi('StatusCode')
 
 const GetObjectResponseSchema = z
   .object({
-    Body: PayloadBlobSchema.and(
-      z.any().openapi({ description: 'The bytes of the object. ' }),
-    ).exactOptional(),
-    StatusCode: StatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTML status code of the request. Status codes ranging from 200 to 299 indicate success. All other status codes indicate the type of error that occurred.',
-        }),
-    ).exactOptional(),
+    Body: PayloadBlobSchema.exactOptional().openapi({ description: 'The bytes of the object. ' }),
+    StatusCode: StatusCodeSchema.exactOptional().openapi({
+      description:
+        'The HTML status code of the request. Status codes ranging from 200 to 299 indicate success. All other status codes indicate the type of error that occurred.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetObjectResponse')
@@ -60,24 +54,22 @@ const NonNegativeLongSchema = z.int().min(0).openapi('NonNegativeLong')
 
 const ItemSchema = z
   .object({
-    Name: ItemNameSchema.and(
-      z.any().openapi({ description: 'The name of the item.' }),
-    ).exactOptional(),
-    Type: ItemTypeSchema.and(
-      z.any().openapi({ description: 'The item type (folder or object).' }),
-    ).exactOptional(),
-    ETag: ETagSchema.and(
-      z.any().openapi({ description: 'The ETag that represents a unique instance of the item.' }),
-    ).exactOptional(),
-    LastModified: TimeStampSchema.and(
-      z.any().openapi({ description: 'The date and time that the item was last modified.' }),
-    ).exactOptional(),
-    ContentType: ContentTypeSchema.and(
-      z.any().openapi({ description: 'The content type of the item.' }),
-    ).exactOptional(),
-    ContentLength: NonNegativeLongSchema.and(
-      z.any().openapi({ description: 'The length of the item in bytes.' }),
-    ).exactOptional(),
+    Name: ItemNameSchema.exactOptional().openapi({ description: 'The name of the item.' }),
+    Type: ItemTypeSchema.exactOptional().openapi({
+      description: 'The item type (folder or object).',
+    }),
+    ETag: ETagSchema.exactOptional().openapi({
+      description: 'The ETag that represents a unique instance of the item.',
+    }),
+    LastModified: TimeStampSchema.exactOptional().openapi({
+      description: 'The date and time that the item was last modified.',
+    }),
+    ContentType: ContentTypeSchema.exactOptional().openapi({
+      description: 'The content type of the item.',
+    }),
+    ContentLength: NonNegativeLongSchema.exactOptional().openapi({
+      description: 'The length of the item in bytes.',
+    }),
   })
   .openapi({ description: 'A metadata entry for a folder or object.', required: [] })
   .openapi('Item')
@@ -88,21 +80,13 @@ const PaginationTokenSchema = z.string().openapi('PaginationToken')
 
 const ListItemsResponseSchema = z
   .object({
-    Items: ItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The metadata entries for the folders and objects at the requested path.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that can be used in a request to view the next set of results. For example, you submit a <code>ListItems</code> request that matches 2,000 items with <code>MaxResults</code> set at 500. The service returns the first batch of results (up to 500) and a <code>NextToken</code> value that can be used to fetch the next batch of results.',
-        }),
-    ).exactOptional(),
+    Items: ItemListSchema.exactOptional().openapi({
+      description: 'The metadata entries for the folders and objects at the requested path.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token that can be used in a request to view the next set of results. For example, you submit a <code>ListItems</code> request that matches 2,000 items with <code>MaxResults</code> set at 500. The service returns the first batch of results (up to 500) and a <code>NextToken</code> value that can be used to fetch the next batch of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListItemsResponse')
@@ -117,20 +101,16 @@ const StorageClassSchema = z.literal('TEMPORAL').openapi('StorageClass')
 
 const PutObjectResponseSchema = z
   .object({
-    ContentSHA256: SHA256HashSchema.and(
-      z.any().openapi({ description: 'The SHA256 digest of the object that is persisted.' }),
-    ).exactOptional(),
-    ETag: ETagSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the object in the container.' }),
-    ).exactOptional(),
-    StorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The storage class where the object was persisted. The class should be “Temporal”.',
-        }),
-    ).exactOptional(),
+    ContentSHA256: SHA256HashSchema.exactOptional().openapi({
+      description: 'The SHA256 digest of the object that is persisted.',
+    }),
+    ETag: ETagSchema.exactOptional().openapi({
+      description: 'Unique identifier of the object in the container.',
+    }),
+    StorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        'The storage class where the object was persisted. The class should be “Temporal”.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutObjectResponse')
@@ -148,12 +128,12 @@ const PathNamingSchema = z
   .openapi('PathNaming')
 
 const DeleteObjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteObjectRequest' })
   .openapi('DeleteObjectRequest')
 
 const DescribeObjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeObjectRequest' })
   .openapi('DescribeObjectRequest')
 
@@ -165,7 +145,7 @@ const RangePatternSchema = z
   .openapi('RangePattern')
 
 const GetObjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetObjectRequest' })
   .openapi('GetObjectRequest')
 
@@ -179,16 +159,14 @@ const ListPathNamingSchema = z
 const ListLimitSchema = z.int().min(1).max(1000).openapi('ListLimit')
 
 const ListItemsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListItemsRequest' })
   .openapi('ListItemsRequest')
 
 const UploadAvailabilitySchema = z.enum(['STANDARD', 'STREAMING']).openapi('UploadAvailability')
 
 const PutObjectRequestSchema = z
-  .object({
-    Body: PayloadBlobSchema.and(z.any().openapi({ description: 'The bytes to be stored. ' })),
-  })
+  .object({ Body: PayloadBlobSchema.openapi({ description: 'The bytes to be stored. ' }) })
   .openapi({ required: ['Body'], title: 'PutObjectRequest' })
   .openapi('PutObjectRequest')
 

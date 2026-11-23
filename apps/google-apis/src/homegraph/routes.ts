@@ -121,7 +121,7 @@ const DeviceSchema = z
   .openapi('Device')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -299,7 +299,7 @@ const RequestSyncDevicesRequestSchema = z
   .openapi('RequestSyncDevicesRequest')
 
 const RequestSyncDevicesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response type for the [`RequestSyncDevices`](#google.home.graph.v1.HomeGraphApiService.RequestSyncDevices) call. Intentionally empty upon success. An HTTP response code is returned with more details upon failure.',

@@ -1,5 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ArrayofstringsSchema = z.array(z.string()).openapi('Arrayofstrings')
+
 const GrammaticalFeaturesListSchema = z
   .array(
     z.strictObject({ text: z.string(), type: z.string() }).openapi({ required: ['text', 'type'] }),
@@ -10,6 +12,568 @@ const GrammaticalFeaturesListSchema = z
       "The different forms are correlated with meanings or functions which we text as 'features'",
   })
   .openapi('GrammaticalFeaturesList')
+
+const CategorizedTextListSchema = z
+  .array(
+    z
+      .strictObject({
+        id: z.string().exactOptional().openapi({ description: 'The identifier of the word' }),
+        text: z.string().openapi({ description: 'A note text' }),
+        type: z.string().openapi({ description: 'The descriptive category of the text' }),
+      })
+      .openapi({ required: ['text', 'type'] }),
+  )
+  .min(1)
+  .openapi({ description: 'various types of notes that appear' })
+  .openapi('CategorizedTextList')
+
+const PronunciationsListSchema = z
+  .array(
+    z
+      .strictObject({
+        audioFile: z.string().exactOptional().openapi({ description: 'The URL of the sound file' }),
+        dialects: ArrayofstringsSchema.exactOptional(),
+        phoneticNotation: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The alphabetic system used to display the phonetic spelling' }),
+        phoneticSpelling: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Phonetic spelling is the representation of vocal sounds which express pronunciations of words. It is a system of spelling in which each letter represents invariably the same spoken sound',
+          }),
+        regions: ArrayofstringsSchema.exactOptional(),
+      })
+      .refine((val) => Object.keys(val).length >= 1)
+      .openapi({ description: 'A grouping of pronunciation information', required: [] }),
+  )
+  .min(1)
+  .openapi({ description: 'A list of possible pronunciations of a word' })
+  .openapi('PronunciationsList')
+
+const SenseSchema: z.ZodType<SenseType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        crossReferenceMarkers: ArrayofstringsSchema.exactOptional(),
+        crossReferences: CrossReferencesListSchema.exactOptional(),
+        definitions: ArrayofstringsSchema.exactOptional(),
+        domains: ArrayofstringsSchema.exactOptional(),
+        examples: ExamplesListSchema.exactOptional(),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The id of the sense that is required for the delete procedure',
+          }),
+        notes: CategorizedTextListSchema.exactOptional(),
+        pronunciations: PronunciationsListSchema.exactOptional(),
+        regions: ArrayofstringsSchema.exactOptional(),
+        registers: ArrayofstringsSchema.exactOptional(),
+        short_definitions: ArrayofstringsSchema.exactOptional(),
+        subsenses: z
+          .array(SenseSchema)
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'Ordered list of subsenses of a sense' }),
+        thesaurusLinks: z
+          .array(ThesaurusLinkSchema)
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'Ordered list of links to the Thesaurus Dictionary' }),
+        translations: TranslationsListSchema.exactOptional(),
+        variantForms: VariantFormsListSchema.exactOptional(),
+      })
+      .refine((val) => Object.keys(val).length >= 1)
+      .openapi({
+        description:
+          'A lexical sense represents the lexical meaning of a lexical entry when interpreted as referring to the corresponding ontology element',
+        required: [],
+      }),
+  )
+  .openapi('Sense')
+
+const VariantFormsListSchema = z
+  .array(
+    z
+      .strictObject({ regions: ArrayofstringsSchema.exactOptional(), text: z.string() })
+      .openapi({ required: ['text'] }),
+  )
+  .min(1)
+  .openapi({
+    description:
+      "Various words that are used interchangeably depending on the context, e.g 'aluminium' and 'aluminum'",
+  })
+  .openapi('VariantFormsList')
+
+type EntryType = {
+  etymologies?: z.infer<typeof ArrayofstringsSchema>
+  grammaticalFeatures?: z.infer<typeof GrammaticalFeaturesListSchema>
+  homographNumber?: string
+  notes?: z.infer<typeof CategorizedTextListSchema>
+  pronunciations?: z.infer<typeof PronunciationsListSchema>
+  senses?: z.infer<typeof SenseSchema>[]
+  variantForms?: z.infer<typeof VariantFormsListSchema>
+}
+
+const ArrayOfRelatedEntriesSchema = z
+  .array(
+    z
+      .strictObject({
+        domains: ArrayofstringsSchema.exactOptional(),
+        id: z.string().openapi({ description: 'The identifier of the word' }),
+        language: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'IANA language code specifying the language of the word' }),
+        regions: ArrayofstringsSchema.exactOptional(),
+        registers: ArrayofstringsSchema.exactOptional(),
+        text: z.string(),
+      })
+      .openapi({ required: ['text', 'id'] }),
+  )
+  .min(1)
+  .openapi({ description: 'A list of written or spoken words' })
+  .openapi('ArrayOfRelatedEntries')
+
+const EntrySchema: z.ZodType<EntryType> = z
+  .strictObject({
+    etymologies: ArrayofstringsSchema.exactOptional(),
+    grammaticalFeatures: GrammaticalFeaturesListSchema.exactOptional(),
+    homographNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies the homograph grouping. The last two digits identify different entries of the same homograph. The first one/two digits identify the homograph number.',
+      }),
+    notes: CategorizedTextListSchema.exactOptional(),
+    pronunciations: PronunciationsListSchema.exactOptional(),
+    senses: z
+      .array(SenseSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'Complete list of senses' }),
+    variantForms: VariantFormsListSchema.exactOptional(),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .openapi({ required: [] })
+  .openapi('Entry')
+
+type LexicalEntryType = {
+  derivativeOf?: z.infer<typeof ArrayOfRelatedEntriesSchema>
+  derivatives?: z.infer<typeof ArrayOfRelatedEntriesSchema>
+  entries?: z.infer<typeof EntrySchema>[]
+  grammaticalFeatures?: z.infer<typeof GrammaticalFeaturesListSchema>
+  language: string
+  lexicalCategory: string
+  notes?: z.infer<typeof CategorizedTextListSchema>
+  pronunciations?: z.infer<typeof PronunciationsListSchema>
+  text: string
+  variantForms?: z.infer<typeof VariantFormsListSchema>
+}
+
+const LexicalEntrySchema: z.ZodType<LexicalEntryType> = z
+  .strictObject({
+    derivativeOf: ArrayOfRelatedEntriesSchema.exactOptional(),
+    derivatives: ArrayOfRelatedEntriesSchema.exactOptional(),
+    entries: z.array(EntrySchema).min(1).exactOptional(),
+    grammaticalFeatures: GrammaticalFeaturesListSchema.exactOptional(),
+    language: z.string().openapi({ description: 'IANA language code' }),
+    lexicalCategory: z
+      .string()
+      .openapi({
+        description:
+          'A linguistic category of words (or more precisely lexical items), generally defined by the syntactic or morphological behaviour of the lexical item in question, such as noun or verb',
+      }),
+    notes: CategorizedTextListSchema.exactOptional(),
+    pronunciations: PronunciationsListSchema.exactOptional(),
+    text: z
+      .string()
+      .openapi({ description: 'A given written or spoken realisation of a an entry.' }),
+    variantForms: VariantFormsListSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Description of an entry for a particular part of speech',
+    required: ['language', 'lexicalCategory', 'text'],
+  })
+  .openapi('LexicalEntry')
+
+type HeadwordEntryType = {
+  id: string
+  language: string
+  lexicalEntries: z.infer<typeof LexicalEntrySchema>[]
+  pronunciations?: z.infer<typeof PronunciationsListSchema>
+  type?: string
+  word: string
+}
+
+const ThesaurusSenseSchema: z.ZodType<ThesaurusSenseType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        antonyms: SynonymsAntonymsSchema.exactOptional(),
+        domains: ArrayofstringsSchema.exactOptional(),
+        examples: ExamplesListSchema.exactOptional(),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The id of the sense that is required for the delete procedure',
+          }),
+        regions: ArrayofstringsSchema.exactOptional(),
+        registers: ArrayofstringsSchema.exactOptional(),
+        subsenses: z
+          .array(ThesaurusSenseSchema)
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'subsenses of word' }),
+        synonyms: SynonymsAntonymsSchema.exactOptional(),
+      })
+      .refine((val) => Object.keys(val).length >= 1)
+      .openapi({
+        description:
+          'A lexical sense represents the lexical meaning of a lexical entry when interpreted as referring to the corresponding ontology element',
+        required: [],
+      }),
+  )
+  .openapi('ThesaurusSense')
+
+type ThesaurusEntryType = {
+  homographNumber?: string
+  senses?: z.infer<typeof ThesaurusSenseSchema>[]
+  variantForms?: z.infer<typeof VariantFormsListSchema>
+}
+
+const ThesaurusEntrySchema: z.ZodType<ThesaurusEntryType> = z
+  .strictObject({
+    homographNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies the homograph grouping. The last two digits identify different entries of the same homograph. The first one/two digits identify the homograph number.',
+      }),
+    senses: z
+      .array(ThesaurusSenseSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'Complete list of senses' }),
+    variantForms: VariantFormsListSchema.exactOptional(),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .openapi({ required: [] })
+  .openapi('ThesaurusEntry')
+
+type ThesaurusLexicalEntryType = {
+  entries?: z.infer<typeof ThesaurusEntrySchema>[]
+  language: string
+  lexicalCategory: string
+  text: string
+  variantForms?: z.infer<typeof VariantFormsListSchema>
+}
+
+const ThesaurusLexicalEntrySchema: z.ZodType<ThesaurusLexicalEntryType> = z
+  .strictObject({
+    entries: z.array(ThesaurusEntrySchema).min(1).exactOptional(),
+    language: z.string().openapi({ description: 'IANA language code' }),
+    lexicalCategory: z
+      .string()
+      .openapi({
+        description:
+          'A linguistic category of words (or more precisely lexical items), generally defined by the syntactic or morphological behaviour of the lexical item in question, such as noun or verb',
+      }),
+    text: z
+      .string()
+      .openapi({ description: 'A given written or spoken realisation of a an entry.' }),
+    variantForms: VariantFormsListSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Description of an entry for a particular part of speech',
+    required: ['language', 'lexicalCategory', 'text'],
+  })
+  .openapi('ThesaurusLexicalEntry')
+
+type HeadwordThesaurusType = {
+  id: string
+  language: string
+  lexicalEntries: z.infer<typeof ThesaurusLexicalEntrySchema>[]
+  type?: string
+  word: string
+}
+
+const HeadwordEntrySchema: z.ZodType<HeadwordEntryType> = z
+  .strictObject({
+    id: z.string().openapi({ description: 'The identifier of a word' }),
+    language: z.string().openapi({ description: 'IANA language code' }),
+    lexicalEntries: z
+      .array(LexicalEntrySchema)
+      .min(1)
+      .openapi({
+        description:
+          'A grouping of various senses in a specific language, and a lexical category that relates to a word',
+      }),
+    pronunciations: PronunciationsListSchema.exactOptional(),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The json object type. Could be 'headword', 'inflection' or 'phrase'",
+      }),
+    word: z
+      .string()
+      .openapi({ description: 'A given written or spoken realisation of a an entry, lowercased.' }),
+  })
+  .openapi({
+    description: 'Description of a word',
+    required: ['id', 'language', 'lexicalEntries', 'word'],
+  })
+  .openapi('HeadwordEntry')
+
+type RetrieveEntryType = {
+  metadata?: { [key: string]: unknown }
+  results?: z.infer<typeof HeadwordEntrySchema>[]
+}
+
+const CrossReferencesListSchema = z
+  .array(
+    z
+      .strictObject({
+        id: z.string().openapi({ description: 'The word id of cooccurrence' }),
+        text: z.string().openapi({ description: 'The word of cooccurrence' }),
+        type: z
+          .string()
+          .openapi({
+            description:
+              "The type of relation between the two words. Possible values are 'close match', 'related', 'see also', 'variant spelling', and 'abbreviation' in case of crossreferences, or 'pre', 'post' in case of collocates.",
+          }),
+      })
+      .openapi({ description: 'cross references of a sense', required: ['id', 'text', 'type'] }),
+  )
+  .min(1)
+  .openapi({
+    description:
+      'A reference to another word that is closely related, might provide additional information about the subject, has a variant spelling or is an abbreviated form of it.',
+  })
+  .openapi('CrossReferencesList')
+
+const TranslationsListSchema = z
+  .array(
+    z
+      .strictObject({
+        domains: ArrayofstringsSchema.exactOptional(),
+        grammaticalFeatures: GrammaticalFeaturesListSchema.exactOptional(),
+        language: z
+          .string()
+          .openapi({
+            description: 'IANA language code specifying the language of the translation',
+          }),
+        notes: CategorizedTextListSchema.exactOptional(),
+        regions: ArrayofstringsSchema.exactOptional(),
+        registers: ArrayofstringsSchema.exactOptional(),
+        text: z.string(),
+      })
+      .openapi({ required: ['text', 'language'] }),
+  )
+  .min(1)
+  .openapi({
+    description:
+      'A list of written or spoken rendering of the meaning of a word or text in another language(s)',
+  })
+  .openapi('TranslationsList')
+
+const ExamplesListSchema = z
+  .array(
+    z
+      .strictObject({
+        definitions: ArrayofstringsSchema.exactOptional(),
+        domains: ArrayofstringsSchema.exactOptional(),
+        notes: CategorizedTextListSchema.exactOptional(),
+        regions: ArrayofstringsSchema.exactOptional(),
+        registers: ArrayofstringsSchema.exactOptional(),
+        senseIds: ArrayofstringsSchema.exactOptional(),
+        text: z.string(),
+        translations: TranslationsListSchema.exactOptional(),
+      })
+      .openapi({ required: ['text'] }),
+  )
+  .min(1)
+  .openapi({
+    description: 'A list of written or spoken rendering of examples of use of a word or text',
+  })
+  .openapi('ExamplesList')
+
+const ThesaurusLinkSchema = z
+  .object({
+    entry_id: z.string().openapi({ description: 'identifier of a word' }),
+    sense_id: z.string().openapi({ description: 'identifier of a sense' }),
+  })
+  .openapi({
+    description: 'Link to a sense of a specific entry in the thesaurus Dictionary',
+    required: ['entry_id', 'sense_id'],
+  })
+  .openapi('ThesaurusLink')
+
+type SenseType = {
+  crossReferenceMarkers?: z.infer<typeof ArrayofstringsSchema>
+  crossReferences?: z.infer<typeof CrossReferencesListSchema>
+  definitions?: z.infer<typeof ArrayofstringsSchema>
+  domains?: z.infer<typeof ArrayofstringsSchema>
+  examples?: z.infer<typeof ExamplesListSchema>
+  id?: string
+  notes?: z.infer<typeof CategorizedTextListSchema>
+  pronunciations?: z.infer<typeof PronunciationsListSchema>
+  regions?: z.infer<typeof ArrayofstringsSchema>
+  registers?: z.infer<typeof ArrayofstringsSchema>
+  short_definitions?: z.infer<typeof ArrayofstringsSchema>
+  subsenses?: SenseType[]
+  thesaurusLinks?: z.infer<typeof ThesaurusLinkSchema>[]
+  translations?: z.infer<typeof TranslationsListSchema>
+  variantForms?: z.infer<typeof VariantFormsListSchema>
+}
+
+const SentencesLexicalEntrySchema = z
+  .strictObject({
+    grammaticalFeatures: GrammaticalFeaturesListSchema.exactOptional(),
+    language: z.string().openapi({ description: 'IANA language code' }),
+    lexicalCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A linguistic category of words (or more precisely lexical items), generally defined by the syntactic or morphological behaviour of the lexical item in question, such as noun or verb',
+      }),
+    sentences: ExamplesListSchema,
+    text: z
+      .string()
+      .openapi({ description: 'A given written or spoken realisation of a an entry.' }),
+  })
+  .openapi({
+    description: 'Description of an entry for a particular part of speech',
+    required: ['language', 'sentences', 'text'],
+  })
+  .openapi('SentencesLexicalEntry')
+
+type SentencesEntryType = {
+  id: string
+  language: string
+  lexicalEntries: z.infer<typeof SentencesLexicalEntrySchema>[]
+  type?: string
+  word: string
+}
+
+const SentencesEntrySchema: z.ZodType<SentencesEntryType> = z
+  .strictObject({
+    id: z.string().openapi({ description: 'The identifier of a word' }),
+    language: z.string().openapi({ description: 'IANA language code' }),
+    lexicalEntries: z
+      .array(SentencesLexicalEntrySchema)
+      .min(1)
+      .openapi({
+        description:
+          'A grouping of various senses in a specific language, and a lexical category that relates to a word',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The json object type. Could be 'headword', 'inflection' or 'phrase'",
+      }),
+    word: z
+      .string()
+      .openapi({ description: 'A given written or spoken realisation of a an entry, lowercased.' }),
+  })
+  .openapi({
+    description: 'Description of a word',
+    required: ['id', 'language', 'lexicalEntries', 'word'],
+  })
+  .openapi('SentencesEntry')
+
+type SentencesResultsType = {
+  metadata?: { [key: string]: unknown }
+  results?: z.infer<typeof SentencesEntrySchema>[]
+}
+
+const HeadwordThesaurusSchema: z.ZodType<HeadwordThesaurusType> = z
+  .strictObject({
+    id: z.string().openapi({ description: 'The identifier of a word' }),
+    language: z.string().openapi({ description: 'IANA language code' }),
+    lexicalEntries: z
+      .array(ThesaurusLexicalEntrySchema)
+      .min(1)
+      .openapi({
+        description:
+          'A grouping of various senses in a specific language, and a lexical category that relates to a word',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The json object type. Could be 'headword', 'inflection' or 'phrase'",
+      }),
+    word: z
+      .string()
+      .openapi({ description: 'A given written or spoken realisation of a an entry, lowercased.' }),
+  })
+  .openapi({
+    description: 'description of thesaurus information of a word',
+    required: ['word', 'id', 'language', 'lexicalEntries'],
+  })
+  .openapi('HeadwordThesaurus')
+
+type ThesaurusType = {
+  metadata?: { [key: string]: unknown }
+  results?: z.infer<typeof HeadwordThesaurusSchema>[]
+}
+
+const SynonymsAntonymsSchema = z
+  .array(
+    z
+      .strictObject({
+        domains: ArrayofstringsSchema.exactOptional(),
+        id: z.string(),
+        language: z.string().exactOptional(),
+        regions: ArrayofstringsSchema.exactOptional(),
+        registers: ArrayofstringsSchema.exactOptional(),
+        text: z.string(),
+      })
+      .openapi({ required: ['id', 'text'] }),
+  )
+  .min(1)
+  .openapi('SynonymsAntonyms')
+
+type ThesaurusSenseType = {
+  antonyms?: z.infer<typeof SynonymsAntonymsSchema>
+  domains?: z.infer<typeof ArrayofstringsSchema>
+  examples?: z.infer<typeof ExamplesListSchema>
+  id?: string
+  regions?: z.infer<typeof ArrayofstringsSchema>
+  registers?: z.infer<typeof ArrayofstringsSchema>
+  subsenses?: ThesaurusSenseType[]
+  synonyms?: z.infer<typeof SynonymsAntonymsSchema>
+}
+
+const FiltersSchema = z
+  .object({
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Additional Information provided by OUP' }),
+    results: z
+      .strictObject({
+        entries: ArrayofstringsSchema.exactOptional(),
+        inflections: ArrayofstringsSchema.exactOptional(),
+        translations: ArrayofstringsSchema.exactOptional(),
+        wordlist: ArrayofstringsSchema.exactOptional(),
+      })
+      .refine((val) => Object.keys(val).length >= 1)
+      .exactOptional()
+      .openapi({ description: 'A mapping of filters available per endpoints.', required: [] }),
+  })
+  .openapi({ description: 'Schema for the Filters endpoint.', required: [] })
+  .openapi('Filters')
 
 const InflectionsListSchema = z
   .array(
@@ -75,458 +639,10 @@ const HeadwordLemmatronSchema = z
   })
   .openapi('HeadwordLemmatron')
 
-type LemmatronType = {
-  metadata?: { [key: string]: unknown }
-  results?: z.infer<typeof HeadwordLemmatronSchema>[]
-}
-
-const ArrayofstringsSchema = z.array(z.string()).openapi('Arrayofstrings')
-
-const CrossReferencesListSchema = z
-  .array(
-    z
-      .strictObject({
-        id: z.string().openapi({ description: 'The word id of cooccurrence' }),
-        text: z.string().openapi({ description: 'The word of cooccurrence' }),
-        type: z
-          .string()
-          .openapi({
-            description:
-              "The type of relation between the two words. Possible values are 'close match', 'related', 'see also', 'variant spelling', and 'abbreviation' in case of crossreferences, or 'pre', 'post' in case of collocates.",
-          }),
-      })
-      .openapi({ description: 'cross references of a sense', required: ['id', 'text', 'type'] }),
-  )
-  .min(1)
-  .openapi({
-    description:
-      'A reference to another word that is closely related, might provide additional information about the subject, has a variant spelling or is an abbreviated form of it.',
-  })
-  .openapi('CrossReferencesList')
-
-const CategorizedTextListSchema = z
-  .array(
-    z
-      .strictObject({
-        id: z.string().exactOptional().openapi({ description: 'The identifier of the word' }),
-        text: z.string().openapi({ description: 'A note text' }),
-        type: z.string().openapi({ description: 'The descriptive category of the text' }),
-      })
-      .openapi({ required: ['text', 'type'] }),
-  )
-  .min(1)
-  .openapi({ description: 'various types of notes that appear' })
-  .openapi('CategorizedTextList')
-
-const TranslationsListSchema = z
-  .array(
-    z
-      .strictObject({
-        domains: ArrayofstringsSchema.exactOptional(),
-        grammaticalFeatures: GrammaticalFeaturesListSchema.exactOptional(),
-        language: z
-          .string()
-          .openapi({
-            description: 'IANA language code specifying the language of the translation',
-          }),
-        notes: CategorizedTextListSchema.exactOptional(),
-        regions: ArrayofstringsSchema.exactOptional(),
-        registers: ArrayofstringsSchema.exactOptional(),
-        text: z.string(),
-      })
-      .openapi({ required: ['text', 'language'] }),
-  )
-  .min(1)
-  .openapi({
-    description:
-      'A list of written or spoken rendering of the meaning of a word or text in another language(s)',
-  })
-  .openapi('TranslationsList')
-
-const ExamplesListSchema = z
-  .array(
-    z
-      .strictObject({
-        definitions: ArrayofstringsSchema.exactOptional(),
-        domains: ArrayofstringsSchema.exactOptional(),
-        notes: CategorizedTextListSchema.exactOptional(),
-        regions: ArrayofstringsSchema.exactOptional(),
-        registers: ArrayofstringsSchema.exactOptional(),
-        senseIds: ArrayofstringsSchema.exactOptional(),
-        text: z.string(),
-        translations: TranslationsListSchema.exactOptional(),
-      })
-      .openapi({ required: ['text'] }),
-  )
-  .min(1)
-  .openapi({
-    description: 'A list of written or spoken rendering of examples of use of a word or text',
-  })
-  .openapi('ExamplesList')
-
-const PronunciationsListSchema = z
-  .array(
-    z
-      .strictObject({
-        audioFile: z.string().exactOptional().openapi({ description: 'The URL of the sound file' }),
-        dialects: ArrayofstringsSchema.exactOptional(),
-        phoneticNotation: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The alphabetic system used to display the phonetic spelling' }),
-        phoneticSpelling: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Phonetic spelling is the representation of vocal sounds which express pronunciations of words. It is a system of spelling in which each letter represents invariably the same spoken sound',
-          }),
-        regions: ArrayofstringsSchema.exactOptional(),
-      })
-      .refine((val) => Object.keys(val).length >= 1)
-      .openapi({ description: 'A grouping of pronunciation information', required: [] }),
-  )
-  .min(1)
-  .openapi({ description: 'A list of possible pronunciations of a word' })
-  .openapi('PronunciationsList')
-
-const ThesaurusLinkSchema = z
-  .object({
-    entry_id: z.string().openapi({ description: 'identifier of a word' }),
-    sense_id: z.string().openapi({ description: 'identifier of a sense' }),
-  })
-  .openapi({
-    description: 'Link to a sense of a specific entry in the thesaurus Dictionary',
-    required: ['entry_id', 'sense_id'],
-  })
-  .openapi('ThesaurusLink')
-
-const VariantFormsListSchema = z
-  .array(
-    z
-      .strictObject({ regions: ArrayofstringsSchema.exactOptional(), text: z.string() })
-      .openapi({ required: ['text'] }),
-  )
-  .min(1)
-  .openapi({
-    description:
-      "Various words that are used interchangeably depending on the context, e.g 'aluminium' and 'aluminum'",
-  })
-  .openapi('VariantFormsList')
-
-type SenseType = {
-  crossReferenceMarkers?: z.infer<typeof ArrayofstringsSchema>
-  crossReferences?: z.infer<typeof CrossReferencesListSchema>
-  definitions?: z.infer<typeof ArrayofstringsSchema>
-  domains?: z.infer<typeof ArrayofstringsSchema>
-  examples?: z.infer<typeof ExamplesListSchema>
-  id?: string
-  notes?: z.infer<typeof CategorizedTextListSchema>
-  pronunciations?: z.infer<typeof PronunciationsListSchema>
-  regions?: z.infer<typeof ArrayofstringsSchema>
-  registers?: z.infer<typeof ArrayofstringsSchema>
-  short_definitions?: z.infer<typeof ArrayofstringsSchema>
-  subsenses?: SenseType[]
-  thesaurusLinks?: z.infer<typeof ThesaurusLinkSchema>[]
-  translations?: z.infer<typeof TranslationsListSchema>
-  variantForms?: z.infer<typeof VariantFormsListSchema>
-}
-
-const ThesaurusSenseSchema: z.ZodType<ThesaurusSenseType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        antonyms: SynonymsAntonymsSchema.exactOptional(),
-        domains: ArrayofstringsSchema.exactOptional(),
-        examples: ExamplesListSchema.exactOptional(),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The id of the sense that is required for the delete procedure',
-          }),
-        regions: ArrayofstringsSchema.exactOptional(),
-        registers: ArrayofstringsSchema.exactOptional(),
-        subsenses: z
-          .array(ThesaurusSenseSchema)
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'subsenses of word' }),
-        synonyms: SynonymsAntonymsSchema.exactOptional(),
-      })
-      .refine((val) => Object.keys(val).length >= 1)
-      .openapi({
-        description:
-          'A lexical sense represents the lexical meaning of a lexical entry when interpreted as referring to the corresponding ontology element',
-        required: [],
-      }),
-  )
-  .openapi('ThesaurusSense')
-
-const ThesaurusEntrySchema = z
-  .strictObject({
-    homographNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies the homograph grouping. The last two digits identify different entries of the same homograph. The first one/two digits identify the homograph number.',
-      }),
-    senses: z
-      .array(ThesaurusSenseSchema)
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'Complete list of senses' }),
-    variantForms: VariantFormsListSchema.exactOptional(),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .openapi({ required: [] })
-  .openapi('ThesaurusEntry')
-
-const ThesaurusLexicalEntrySchema = z
-  .strictObject({
-    entries: z.array(ThesaurusEntrySchema).min(1).exactOptional(),
-    language: z.string().openapi({ description: 'IANA language code' }),
-    lexicalCategory: z
-      .string()
-      .openapi({
-        description:
-          'A linguistic category of words (or more precisely lexical items), generally defined by the syntactic or morphological behaviour of the lexical item in question, such as noun or verb',
-      }),
-    text: z
-      .string()
-      .openapi({ description: 'A given written or spoken realisation of a an entry.' }),
-    variantForms: VariantFormsListSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Description of an entry for a particular part of speech',
-    required: ['language', 'lexicalCategory', 'text'],
-  })
-  .openapi('ThesaurusLexicalEntry')
-
-const HeadwordThesaurusSchema = z
-  .strictObject({
-    id: z.string().openapi({ description: 'The identifier of a word' }),
-    language: z.string().openapi({ description: 'IANA language code' }),
-    lexicalEntries: z
-      .array(ThesaurusLexicalEntrySchema)
-      .min(1)
-      .openapi({
-        description:
-          'A grouping of various senses in a specific language, and a lexical category that relates to a word',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The json object type. Could be 'headword', 'inflection' or 'phrase'",
-      }),
-    word: z
-      .string()
-      .openapi({ description: 'A given written or spoken realisation of a an entry, lowercased.' }),
-  })
-  .openapi({
-    description: 'description of thesaurus information of a word',
-    required: ['word', 'id', 'language', 'lexicalEntries'],
-  })
-  .openapi('HeadwordThesaurus')
-
-type ThesaurusType = {
-  metadata?: { [key: string]: unknown }
-  results?: z.infer<typeof HeadwordThesaurusSchema>[]
-}
-
-const SynonymsAntonymsSchema = z
-  .array(
-    z
-      .strictObject({
-        domains: ArrayofstringsSchema.exactOptional(),
-        id: z.string(),
-        language: z.string().exactOptional(),
-        regions: ArrayofstringsSchema.exactOptional(),
-        registers: ArrayofstringsSchema.exactOptional(),
-        text: z.string(),
-      })
-      .openapi({ required: ['id', 'text'] }),
-  )
-  .min(1)
-  .openapi('SynonymsAntonyms')
-
-type ThesaurusSenseType = {
-  antonyms?: z.infer<typeof SynonymsAntonymsSchema>
-  domains?: z.infer<typeof ArrayofstringsSchema>
-  examples?: z.infer<typeof ExamplesListSchema>
-  id?: string
-  regions?: z.infer<typeof ArrayofstringsSchema>
-  registers?: z.infer<typeof ArrayofstringsSchema>
-  subsenses?: ThesaurusSenseType[]
-  synonyms?: z.infer<typeof SynonymsAntonymsSchema>
-}
-
-const ArrayOfRelatedEntriesSchema = z
-  .array(
-    z
-      .strictObject({
-        domains: ArrayofstringsSchema.exactOptional(),
-        id: z.string().openapi({ description: 'The identifier of the word' }),
-        language: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'IANA language code specifying the language of the word' }),
-        regions: ArrayofstringsSchema.exactOptional(),
-        registers: ArrayofstringsSchema.exactOptional(),
-        text: z.string(),
-      })
-      .openapi({ required: ['text', 'id'] }),
-  )
-  .min(1)
-  .openapi({ description: 'A list of written or spoken words' })
-  .openapi('ArrayOfRelatedEntries')
-
-const SenseSchema: z.ZodType<SenseType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        crossReferenceMarkers: ArrayofstringsSchema.exactOptional(),
-        crossReferences: CrossReferencesListSchema.exactOptional(),
-        definitions: ArrayofstringsSchema.exactOptional(),
-        domains: ArrayofstringsSchema.exactOptional(),
-        examples: ExamplesListSchema.exactOptional(),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The id of the sense that is required for the delete procedure',
-          }),
-        notes: CategorizedTextListSchema.exactOptional(),
-        pronunciations: PronunciationsListSchema.exactOptional(),
-        regions: ArrayofstringsSchema.exactOptional(),
-        registers: ArrayofstringsSchema.exactOptional(),
-        short_definitions: ArrayofstringsSchema.exactOptional(),
-        subsenses: z
-          .array(SenseSchema)
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'Ordered list of subsenses of a sense' }),
-        thesaurusLinks: z
-          .array(ThesaurusLinkSchema)
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'Ordered list of links to the Thesaurus Dictionary' }),
-        translations: TranslationsListSchema.exactOptional(),
-        variantForms: VariantFormsListSchema.exactOptional(),
-      })
-      .refine((val) => Object.keys(val).length >= 1)
-      .openapi({
-        description:
-          'A lexical sense represents the lexical meaning of a lexical entry when interpreted as referring to the corresponding ontology element',
-        required: [],
-      }),
-  )
-  .openapi('Sense')
-
-const EntrySchema = z
-  .strictObject({
-    etymologies: ArrayofstringsSchema.exactOptional(),
-    grammaticalFeatures: GrammaticalFeaturesListSchema.exactOptional(),
-    homographNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies the homograph grouping. The last two digits identify different entries of the same homograph. The first one/two digits identify the homograph number.',
-      }),
-    notes: CategorizedTextListSchema.exactOptional(),
-    pronunciations: PronunciationsListSchema.exactOptional(),
-    senses: z
-      .array(SenseSchema)
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'Complete list of senses' }),
-    variantForms: VariantFormsListSchema.exactOptional(),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .openapi({ required: [] })
-  .openapi('Entry')
-
-const FiltersSchema = z
-  .object({
-    metadata: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Additional Information provided by OUP' }),
-    results: z
-      .strictObject({
-        entries: ArrayofstringsSchema.exactOptional(),
-        inflections: ArrayofstringsSchema.exactOptional(),
-        translations: ArrayofstringsSchema.exactOptional(),
-        wordlist: ArrayofstringsSchema.exactOptional(),
-      })
-      .refine((val) => Object.keys(val).length >= 1)
-      .exactOptional()
-      .openapi({ description: 'A mapping of filters available per endpoints.', required: [] }),
-  })
-  .openapi({ description: 'Schema for the Filters endpoint.', required: [] })
-  .openapi('Filters')
-
-const LexicalEntrySchema = z
-  .strictObject({
-    derivativeOf: ArrayOfRelatedEntriesSchema.exactOptional(),
-    derivatives: ArrayOfRelatedEntriesSchema.exactOptional(),
-    entries: z.array(EntrySchema).min(1).exactOptional(),
-    grammaticalFeatures: GrammaticalFeaturesListSchema.exactOptional(),
-    language: z.string().openapi({ description: 'IANA language code' }),
-    lexicalCategory: z
-      .string()
-      .openapi({
-        description:
-          'A linguistic category of words (or more precisely lexical items), generally defined by the syntactic or morphological behaviour of the lexical item in question, such as noun or verb',
-      }),
-    notes: CategorizedTextListSchema.exactOptional(),
-    pronunciations: PronunciationsListSchema.exactOptional(),
-    text: z
-      .string()
-      .openapi({ description: 'A given written or spoken realisation of a an entry.' }),
-    variantForms: VariantFormsListSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Description of an entry for a particular part of speech',
-    required: ['language', 'lexicalCategory', 'text'],
-  })
-  .openapi('LexicalEntry')
-
-const HeadwordEntrySchema = z
-  .strictObject({
-    id: z.string().openapi({ description: 'The identifier of a word' }),
-    language: z.string().openapi({ description: 'IANA language code' }),
-    lexicalEntries: z
-      .array(LexicalEntrySchema)
-      .min(1)
-      .openapi({
-        description:
-          'A grouping of various senses in a specific language, and a lexical category that relates to a word',
-      }),
-    pronunciations: PronunciationsListSchema.exactOptional(),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The json object type. Could be 'headword', 'inflection' or 'phrase'",
-      }),
-    word: z
-      .string()
-      .openapi({ description: 'A given written or spoken realisation of a an entry, lowercased.' }),
-  })
-  .openapi({
-    description: 'Description of a word',
-    required: ['id', 'language', 'lexicalEntries', 'word'],
-  })
-  .openapi('HeadwordEntry')
-
 const LanguagesSchema = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     results: z
@@ -567,28 +683,25 @@ const LanguagesSchema = z
   .openapi({ description: 'Schema for the languages endpoint.', required: [] })
   .openapi('Languages')
 
-const LemmatronSchema: z.ZodType<LemmatronType> = z
-  .lazy(() =>
-    z
-      .object({
-        metadata: z
-          .object({})
-          .exactOptional()
-          .openapi({ description: 'Additional Information provided by OUP' }),
-        results: z
-          .array(HeadwordLemmatronSchema)
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'A list of inflections matching a given word' }),
-      })
-      .openapi({ description: 'Schema for the inflections endpoint.', required: [] }),
-  )
+const LemmatronSchema = z
+  .object({
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Additional Information provided by OUP' }),
+    results: z
+      .array(HeadwordLemmatronSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'A list of inflections matching a given word' }),
+  })
+  .openapi({ description: 'Schema for the inflections endpoint.', required: [] })
   .openapi('Lemmatron')
 
 const NgramsResultSchema = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     results: z
@@ -618,7 +731,7 @@ const NgramsResultSchema = z
 const RegionsSchema = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     results: z
@@ -629,10 +742,10 @@ const RegionsSchema = z
   .openapi({ description: 'Schema for region endpoint.', required: [] })
   .openapi('Regions')
 
-const RetrieveEntrySchema = z
+const RetrieveEntrySchema: z.ZodType<RetrieveEntryType> = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     results: z
@@ -644,59 +757,10 @@ const RetrieveEntrySchema = z
   .openapi({ description: "Schema for the 'entries' endpoints", required: [] })
   .openapi('RetrieveEntry')
 
-const SentencesLexicalEntrySchema = z
-  .strictObject({
-    grammaticalFeatures: GrammaticalFeaturesListSchema.exactOptional(),
-    language: z.string().openapi({ description: 'IANA language code' }),
-    lexicalCategory: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A linguistic category of words (or more precisely lexical items), generally defined by the syntactic or morphological behaviour of the lexical item in question, such as noun or verb',
-      }),
-    sentences: ExamplesListSchema,
-    text: z
-      .string()
-      .openapi({ description: 'A given written or spoken realisation of a an entry.' }),
-  })
-  .openapi({
-    description: 'Description of an entry for a particular part of speech',
-    required: ['language', 'sentences', 'text'],
-  })
-  .openapi('SentencesLexicalEntry')
-
-const SentencesEntrySchema = z
-  .strictObject({
-    id: z.string().openapi({ description: 'The identifier of a word' }),
-    language: z.string().openapi({ description: 'IANA language code' }),
-    lexicalEntries: z
-      .array(SentencesLexicalEntrySchema)
-      .min(1)
-      .openapi({
-        description:
-          'A grouping of various senses in a specific language, and a lexical category that relates to a word',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The json object type. Could be 'headword', 'inflection' or 'phrase'",
-      }),
-    word: z
-      .string()
-      .openapi({ description: 'A given written or spoken realisation of a an entry, lowercased.' }),
-  })
-  .openapi({
-    description: 'Description of a word',
-    required: ['id', 'language', 'lexicalEntries', 'word'],
-  })
-  .openapi('SentencesEntry')
-
-const SentencesResultsSchema = z
+const SentencesResultsSchema: z.ZodType<SentencesResultsType> = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     results: z
@@ -711,7 +775,7 @@ const SentencesResultsSchema = z
 const StatsWordResultSchema = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     result: z
@@ -771,7 +835,7 @@ const StatsWordResultSchema = z
 const StatsWordResultListSchema = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     results: z
@@ -827,27 +891,24 @@ const StatsWordResultListSchema = z
   .openapi('StatsWordResultList')
 
 const ThesaurusSchema: z.ZodType<ThesaurusType> = z
-  .lazy(() =>
-    z
-      .object({
-        metadata: z
-          .object({})
-          .exactOptional()
-          .openapi({ description: 'Additional Information provided by OUP' }),
-        results: z
-          .array(HeadwordThesaurusSchema)
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'A list of found synonyms or antonyms' }),
-      })
-      .openapi({ description: 'Schema for thesaurus endpoint', required: [] }),
-  )
+  .object({
+    metadata: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Additional Information provided by OUP' }),
+    results: z
+      .array(HeadwordThesaurusSchema)
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'A list of found synonyms or antonyms' }),
+  })
+  .openapi({ description: 'Schema for thesaurus endpoint', required: [] })
   .openapi('Thesaurus')
 
 const UtilityLabelsSchema = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     results: z
@@ -873,7 +934,7 @@ const UtilityLabelsSchema = z
 const WordlistSchema = z
   .object({
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional Information provided by OUP' }),
     results: z
@@ -2000,7 +2061,7 @@ export const getSearchSourceLangRoute = createRoute({
         }),
       prefix: z
         .union([z.literal('false'), z.literal('true')])
-        .default(false)
+        .default('false')
         .exactOptional()
         .openapi({
           param: {
@@ -2121,7 +2182,7 @@ export const getSearchSourceSearchLanguageTranslationsTargetSearchLanguageRoute 
         }),
       prefix: z
         .union([z.literal('false'), z.literal('true')])
-        .default(false)
+        .default('false')
         .exactOptional()
         .openapi({
           param: {
@@ -2407,6 +2468,7 @@ export const getStatsFrequencyNgramsSourceLangCorpusNgramSizeIndexRoute = create
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -2426,6 +2488,7 @@ export const getStatsFrequencyNgramsSourceLangCorpusNgramSizeIndexRoute = create
             required: false,
             schema: { default: 100, format: 'int64', type: 'integer' },
           },
+          default: 100,
         }),
     }),
     headers: z.object({ app_id: AppIdParamsSchema, app_key: AppKeyParamsSchema }),
@@ -2777,6 +2840,7 @@ export const getStatsFrequencyWordsSourceLangIndexRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -2796,6 +2860,7 @@ export const getStatsFrequencyWordsSourceLangIndexRoute = createRoute({
             required: false,
             schema: { default: 100, format: 'int64', type: 'integer' },
           },
+          default: 100,
         }),
     }),
     headers: z.object({ app_id: AppIdParamsSchema, app_key: AppKeyParamsSchema }),
@@ -2920,7 +2985,7 @@ export const getWordlistSourceLangFiltersAdvancedRoute = createRoute({
         }),
       exact: z
         .union([z.literal('false'), z.literal('true')])
-        .default(false)
+        .default('false')
         .exactOptional()
         .openapi({
           param: {

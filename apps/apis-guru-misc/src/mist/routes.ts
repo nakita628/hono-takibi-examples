@@ -1,5 +1,2781 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AcctServerSchema = z
+  .object({
+    host: z.string().openapi({ description: 'ip / hostname of RADIUS server' }),
+    keywrap_enabled: z.boolean().exactOptional(),
+    keywrap_format: z.string().exactOptional(),
+    keywrap_kek: z.string().exactOptional(),
+    keywrap_mack: z.string().exactOptional(),
+    port: z.int().default(1813).openapi({ description: 'Acct port of RADIUS server' }),
+    secret: z.string().openapi({ description: 'secret of RADIUS server' }),
+  })
+  .openapi({ description: '', required: ['host', 'port', 'secret'] })
+  .openapi('AcctServer')
+
+const AuthServerSchema = z
+  .object({
+    host: z.string().openapi({ description: 'ip / hostname of RADIUS server' }),
+    keywrap_enabled: z.boolean().exactOptional(),
+    keywrap_format: z.string().exactOptional(),
+    keywrap_kek: z.string().exactOptional(),
+    keywrap_mack: z.string().exactOptional(),
+    port: z.int().default(1812).openapi({ description: 'Auth port of RADIUS server' }),
+    secret: z.string().openapi({ description: 'secret of RADIUS server' }),
+  })
+  .openapi({ description: 'Authentication Server', required: ['host', 'port', 'secret'] })
+  .openapi('AuthServer')
+
+const JunosRadiusConfigSchema = z
+  .object({
+    acct_interim_interval: z
+      .int()
+      .min(0)
+      .max(65535)
+      .default(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'how frequently should interim accounting be reported, 60-65535. default is 0 (use one specified in Access-Accept request from RADIUS Server). Very frequent messages can affect the performance of the radius server, 600 and up is recommended when enabled',
+      }),
+    acct_servers: z
+      .array(AcctServerSchema)
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    auth_servers: z
+      .array(AuthServerSchema)
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    auth_servers_retries: z
+      .int()
+      .default(3)
+      .exactOptional()
+      .openapi({ description: 'radius auth session retries' }),
+    auth_servers_timeout: z
+      .int()
+      .default(5)
+      .exactOptional()
+      .openapi({ description: 'radius auth session timeout' }),
+    coa_enabled: z.boolean().default(false).exactOptional(),
+    coa_port: z.int().default(3799).exactOptional(),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "use `network`or `source_ip`\nwhich network the RADIUS server resides, if there's static IP for this network, we'd use it as source-ip",
+      }),
+    source_ip: z.string().exactOptional().openapi({ description: 'use `network`or `source_ip`' }),
+  })
+  .openapi({
+    description: 'Junos Radius config',
+    'x-examples': {
+      'example-1': {
+        acct_interim_interval: 0,
+        acct_servers: [{ host: '1.2.3.4', port: 1812, secret: 'testing123' }],
+        auth_servers: [
+          { host: '1.2.3.4', port: 1812, secret: 'testing123' },
+          { host: 'radius.internal', port: 1812, secret: 'testing123' },
+        ],
+        auth_servers_retries: 3,
+        auth_servers_timeout: 5,
+      },
+    },
+    required: [],
+  })
+  .openapi('JunosRadiusConfig')
+
+const RadsecSchema = z
+  .object({
+    enabled: z.boolean().exactOptional(),
+    idle_timeout: z.int().exactOptional(),
+    mxcluster_ids: z
+      .array(z.uuid())
+      .exactOptional()
+      .openapi({
+        description:
+          'To use Org mxedges when this WLAN does not use mxtunnel, specify their mxcluster_ids.\nOrg mxedge(s) identified by mxcluster_ids',
+      }),
+    server_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'name of the server to verify (against the cacerts in Org Setting). Only if not Mist Edge.',
+      }),
+    servers: z
+      .array(
+        z
+          .object({ host: z.string().exactOptional(), port: z.int().exactOptional() })
+          .openapi({ required: [] }),
+      )
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'List of Radsec Servers. Only if not Mist Edge.' }),
+    use_mxedge: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'use mxedge(s) as radsecproxy' }),
+    use_site_mxedge: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'To use Site mxedges when this WLAN does not use mxtunnel' }),
+  })
+  .openapi({ description: 'Radsec settings', required: [] })
+  .openapi('Radsec')
+
+const ApPortConfigSchema = z
+  .object({
+    additional_vlan_ids: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({ description: 'additional VLAN IDs, only valid in mesh base mode' }),
+    disabled: z.boolean().exactOptional(),
+    dynamic_vlan: z
+      .object({
+        default_vlan_id: z.int().exactOptional(),
+        enabled: z.boolean().exactOptional(),
+        type: z.string().exactOptional(),
+        vlans: z.record(z.string(), z.string()).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ description: 'optional dynamic vlan', required: [] }),
+    enable_mac_auth: z.boolean().exactOptional().openapi({ description: '' }),
+    forwarding: z
+      .enum(['all', 'limited', 'wxtunnel', 'mxtunnel', 'site_mxedge'])
+      .default('all')
+      .exactOptional(),
+    mx_tunnel_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'if `forwarding`==`mxtunnel`, vlan_ids comes from mxtunnel' }),
+    mxtunnel_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'if `forwarding`==`site_mxedge`, vlan_ids comes from site_mxedge (`mxtunnels` under site setting)',
+      }),
+    port_auth: z
+      .enum(['none', 'dot1x'])
+      .default('none')
+      .exactOptional()
+      .openapi({ description: 'When doing port auth' }),
+    port_vlan_id: z.int().exactOptional().openapi({ description: 'if `forwrding`==`limited`' }),
+    radius_config: JunosRadiusConfigSchema.exactOptional(),
+    radsec: RadsecSchema.exactOptional(),
+    vlan_id: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'optional to specify the vlan id for a tunnel if forwarding is for `wxtunnel`, `mxtunnel` or `site_mxedge`.\n* if vlan_id is not specified then it will use first one in vlan_ids[] of the mxtunnel.\n* if forwarding == site_mxedge, vlan_ids comes from site_mxedge (`mxtunnels` under site setting)',
+      }),
+    vland_ids: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({ description: 'if `forwrding`==`limited`' }),
+    wxtunnel_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'if `forwarding`==`wxtunnel`, the port is bridged to the vlan of the session',
+      }),
+    wxtunnel_remote_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'if `forwarding`==`wxtunnel`, the port is bridged to the vlan of the session',
+      }),
+  })
+  .openapi({
+    description: '',
+    title: 'ap_port_config',
+    'x-examples': {
+      'example-1': {
+        disabled: true,
+        dynamic_vlan: {
+          default_vlan_id: 1,
+          enabled: true,
+          type: 'string',
+          vlans: { property1: 'string', property2: 'string' },
+        },
+        enable_mac_auth: true,
+        forwarding: 'all',
+        mx_tunnel_id: 'string',
+        mxtunnel_name: 'string',
+        port_auth: 'none',
+        port_vlan_id: 1,
+        radius_config: {
+          acct_interim_interval: 0,
+          acct_servers: [{ host: 'string', port: 0, secret: 'string' }],
+          auth_servers: [{ host: 'string', port: 0, secret: 'string' }],
+          auth_servers_retries: 0,
+          auth_servers_timeout: 0,
+        },
+        radsec: {
+          enabled: true,
+          server_name: 'string',
+          servers: [{ host: 'string', port: 0 }],
+          use_mxedge: true,
+        },
+        vland_ids: [0],
+        wxtunnel_id: 'string',
+        wxtunnel_remote_id: 'string',
+      },
+    },
+    required: [],
+  })
+  .openapi('ApPortConfig')
+
+type AptemplateType = {
+  ap_matching: {
+    enabled?: boolean
+    rules?: {
+      match_model?: string
+      name?: string
+      port_config?: { [key: string]: z.infer<typeof ApPortConfigSchema> }
+    }[]
+  }
+  created_time?: number
+  for_site?: boolean
+  id?: string
+  modified_time?: number
+  org_id?: string
+  site_id?: string
+  wifi?: {
+    cisco_enabled?: boolean
+    disable_11k?: boolean
+    disable_radios_when_power_constrained?: boolean
+    enable_arp_spoof?: boolean
+    enable_shared_radio_scanning?: boolean
+    enabled?: boolean
+    locate_connected?: boolean
+    locate_unconnected?: boolean
+    mesh_allow_dfs?: boolean
+    mesh_enable_crm?: boolean
+    mesh_enabled?: boolean
+    proxy_arp?: boolean
+  }
+}
+
+const JunosDhcpSnoopingSchema = z
+  .object({
+    all_networks: z.boolean().exactOptional(),
+    enable_arp_spoof_check: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enable for dynamic ARP inspection check ' }),
+    enable_ip_source_guard: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enable for check for forging source IP address' }),
+    enabled: z.boolean().exactOptional(),
+    networks: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'if `all_networks`==`false`, list of network with DHCP snooping enabled',
+      }),
+  })
+  .openapi({
+    description: '',
+    'x-examples': {
+      'example-1': {
+        all_networks: false,
+        enable_arp_spoof_check: true,
+        enable_ip_source_guard: true,
+        enabled: true,
+        networks: ['corp'],
+      },
+    },
+    required: [],
+  })
+  .openapi('JunosDhcpSnooping')
+
+const JunosPortUsagesDynamicSchema = z
+  .object({
+    mode: z.literal('dynamic').default('dynamic'),
+    reset_default_when: z
+      .enum(['none', 'link_down'])
+      .default('link_down')
+      .exactOptional()
+      .openapi({
+        description:
+          'Control when the DPC port should be changed to the default port usage\nConfiguring to none will let the DPC port keep at the current port usage.',
+      }),
+    rules: z
+      .array(
+        z
+          .object({
+            equals: z.string().exactOptional(),
+            equals_any: z
+              .array(z.string())
+              .exactOptional()
+              .openapi({ description: 'use `equals_any` to match any item in a list' }),
+            expression: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  '"[0:3]":"abcdef" -> "abc"\n"split(.)[1]": "a.b.c" -> "b"\n"split(-)[1][0:3]: "a1234-b5678-c90" -> "b56"',
+              }),
+            src: z.enum([
+              'lldp_chassis_id',
+              'lldp_system_name',
+              'lldp_serial_number',
+              'lldp_hardware_revision',
+              'lldp_manufacturer_name',
+              'lldp_oui',
+              'radius_username',
+              'radius_usermac',
+              'radius_dynamicfilter',
+              'link_peermac',
+            ]),
+            usage: z.string().exactOptional().openapi({ description: '`port_usage` name' }),
+          })
+          .openapi({ required: ['src'] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      'This is a special mode where the actually usage is determined by a set of rules the port will start with `access` mode and isolated depending on the rules, if resolved, the port will have the resolved usage applied.',
+    required: ['mode'],
+    title: '',
+    'x-examples': {
+      'example-1': {
+        all_networks: true,
+        bypass_auth_when_server_down: true,
+        description: 'string',
+        disable_autoneg: true,
+        disabled: true,
+        duplex: 'half',
+        enable_mac_auth: true,
+        guest_network: 'string',
+        mac_limit: 0,
+        mode: 'access',
+        mtu: 0,
+        networks: ['string'],
+        poe_disabled: true,
+        port_auth: 'string',
+        port_network: 'string',
+        speed: 'string',
+        storm_control: {},
+        stp_edge: true,
+        voip_network: 'string',
+      },
+    },
+  })
+  .openapi('JunosPortUsagesDynamic')
+
+const RemoteSyslogSchema = z
+  .object({
+    archive: z
+      .object({
+        files: z.int().exactOptional().openapi({ example: 111 }),
+        size: z.string().exactOptional().openapi({ example: '5m' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    console: z
+      .object({
+        contents: z
+          .array(
+            z
+              .object({
+                facility: z
+                  .enum([
+                    'any',
+                    'authorization',
+                    'conflict-log',
+                    'change-log',
+                    'daemon',
+                    'dfc',
+                    'kernel',
+                    'interactive-commands',
+                    'ftp',
+                    'firewall',
+                    'external',
+                    'pfe',
+                    'ntp',
+                    'security',
+                    'user',
+                  ])
+                  .exactOptional(),
+                severity: z
+                  .enum([
+                    'any',
+                    'alert',
+                    'emergency',
+                    'critical',
+                    'warning',
+                    'info',
+                    'notice',
+                    'error',
+                  ])
+                  .exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    enabled: z.boolean().default(false).exactOptional(),
+    files: z
+      .array(
+        z
+          .object({
+            archive: z
+              .object({
+                files: z.int().exactOptional().openapi({ example: 10 }),
+                size: z.string().exactOptional().openapi({ example: '5m' }),
+              })
+              .exactOptional()
+              .openapi({ required: [] }),
+            contents: z
+              .array(
+                z
+                  .object({
+                    facility: z
+                      .enum([
+                        'any',
+                        'authorization',
+                        'conflict-log',
+                        'change-log',
+                        'daemon',
+                        'dfc',
+                        'kernel',
+                        'interactive-commands',
+                        'ftp',
+                        'firewall',
+                        'external',
+                        'pfe',
+                        'ntp',
+                        'security',
+                        'user',
+                      ])
+                      .exactOptional(),
+                    severity: z
+                      .enum([
+                        'any',
+                        'alert',
+                        'emergency',
+                        'critical',
+                        'warning',
+                        'info',
+                        'notice',
+                        'error',
+                      ])
+                      .exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional(),
+            explicit_priority: z.boolean().exactOptional(),
+            file: z.string().exactOptional().openapi({ example: 'file-name' }),
+            match: z
+              .string()
+              .exactOptional()
+              .openapi({ example: '!alarm|ntp|errors.crc_error[chan]' }),
+            structured_data: z.boolean().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'if source_address is configured, will use the vlan firstly otherwise use source_ip',
+      }),
+    send_to_all_servers: z.boolean().default(true).exactOptional(),
+    servers: z
+      .array(
+        z
+          .object({
+            contents: z
+              .array(
+                z
+                  .object({
+                    facility: z
+                      .enum([
+                        'any',
+                        'authorization',
+                        'conflict-log',
+                        'change-log',
+                        'daemon',
+                        'dfc',
+                        'kernel',
+                        'interactive-commands',
+                        'ftp',
+                        'firewall',
+                        'external',
+                        'pfe',
+                        'ntp',
+                        'security',
+                        'user',
+                      ])
+                      .exactOptional(),
+                    severity: z
+                      .enum([
+                        'any',
+                        'alert',
+                        'emergency',
+                        'critical',
+                        'warning',
+                        'info',
+                        'notice',
+                        'error',
+                      ])
+                      .exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional(),
+            explicit_priority: z.boolean().exactOptional(),
+            facility: z
+              .enum([
+                'any',
+                'authorization',
+                'conflict-log',
+                'change-log',
+                'daemon',
+                'dfc',
+                'kernel',
+                'interactive-commands',
+                'ftp',
+                'firewall',
+                'external',
+                'pfe',
+                'ntp',
+                'security',
+                'user',
+              ])
+              .exactOptional(),
+            host: z.string().exactOptional().openapi({ example: 'syslogd.internal' }),
+            match: z
+              .string()
+              .exactOptional()
+              .openapi({ example: '!alarm|ntp|errors.crc_error[chan]' }),
+            port: z.int().default(514).exactOptional(),
+            protocol: z.enum(['udp', 'tcp']).default('udp').exactOptional(),
+            routing_instance: z
+              .string()
+              .exactOptional()
+              .openapi({ example: 'routing-instance-name' }),
+            severity: z
+              .enum(['any', 'alert', 'emergency', 'critical', 'warning', 'info', 'notice', 'error'])
+              .exactOptional(),
+            source_address: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'if source_address is configured, will use the vlan firstly otherwise use source_ip',
+              }),
+            structured_data: z.boolean().exactOptional(),
+            tag: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    time_format: z.enum(['millisecond', 'year', 'year millisecond']).exactOptional(),
+    users: z
+      .array(
+        z
+          .object({
+            contents: z
+              .array(
+                z
+                  .object({
+                    facility: z
+                      .enum([
+                        'any',
+                        'authorization',
+                        'conflict-log',
+                        'change-log',
+                        'daemon',
+                        'dfc',
+                        'kernel',
+                        'interactive-commands',
+                        'ftp',
+                        'firewall',
+                        'external',
+                        'pfe',
+                        'ntp',
+                        'security',
+                        'user',
+                      ])
+                      .exactOptional(),
+                    severity: z
+                      .enum([
+                        'any',
+                        'alert',
+                        'emergency',
+                        'critical',
+                        'warning',
+                        'info',
+                        'notice',
+                        'error',
+                      ])
+                      .exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional(),
+            match: z
+              .string()
+              .exactOptional()
+              .openapi({ example: '"!alarm|ntp|errors.crc_error[chan]"' }),
+            user: z.string().exactOptional().openapi({ example: '*' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({
+    'x-examples': {
+      'example-1': {
+        archive: { files: 111, size: '5m' },
+        console: {
+          contents: [
+            {
+              facility:
+                'any | authorization | conflict-log | change-log | daemon | dfc | kernel | interactive-commands | ftp | firewall | external | pfe | ntp | security | user',
+              severity: 'any | alert | emergency | critical | warning | info | notice | error',
+            },
+          ],
+        },
+        enabled: true,
+        files: [
+          {
+            archive: { files: 10, size: '5m' },
+            contents: [
+              {
+                facility:
+                  'any | authorization | conflict-log | change-log | daemon | dfc | kernel | interactive-commands | ftp | firewall | external | pfe | ntp | security | user',
+                severity: 'any | alert | emergency | critical | warning | info | notice | error',
+              },
+            ],
+            explicit_priority: true,
+            file: 'file-name',
+            match: '!alarm|ntp|errors.crc_error[chan]',
+            structured_data: true,
+          },
+        ],
+        network: 'default',
+        send_to_all_servers: true,
+        servers: [
+          {
+            contents: [
+              {
+                facility:
+                  'any | authorization | conflict-log | change-log | daemon | dfc | kernel | interactive-commands | ftp | firewall | external | pfe | ntp | security | user',
+                severity: 'any | alert | emergency | critical | warning | info | notice | error',
+              },
+            ],
+            explicit_priority: true,
+            facility: 'config',
+            host: 'syslogd.internal',
+            match: '!alarm|ntp|errors.crc_error[chan]',
+            port: 514,
+            protocol: 'udp',
+            routing_instance: 'routing-instance-name',
+            severity: 'info',
+            source_address: '192.168.1.1',
+            structured_data: true,
+            tag: '',
+          },
+        ],
+        time_format: 'millisecond | year |  year millisecond',
+        users: [
+          {
+            contents: [
+              {
+                facility:
+                  'any | authorization | conflict-log | change-log | daemon | dfc | kernel | interactive-commands | ftp | firewall | external | pfe | ntp | security | user',
+                severity: 'any | alert | emergency | critical | warning | info | notice | error',
+              },
+            ],
+            match: '!alarm|ntp|errors.crc_error[chan]',
+            user: '*',
+          },
+        ],
+      },
+    },
+    required: [],
+  })
+  .openapi('RemoteSyslog')
+
+const JunosSnmpConfigSchema = z
+  .object({
+    client_list: z
+      .array(
+        z
+          .object({
+            client_list_name: z.string().exactOptional().openapi({ example: 'clist-1' }),
+            clients: z.array(z.string().openapi({ example: '151.140.101.218/32' })).exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    contact: z.string().exactOptional().openapi({ example: 'cns@juniper.net' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'Juniper QFX Series Switch - 1K_5LA' }),
+    enabled: z.boolean().default(true).exactOptional(),
+    engine_id: z
+      .enum(['local', 'engine-id-suffix', 'use-default-ip-address', 'use-mac-address'])
+      .exactOptional(),
+    location: z.string().exactOptional().openapi({ example: 'Las Vegas, NV' }),
+    name: z.string().exactOptional().openapi({ example: 'TGH-1K-QFX10K' }),
+    trap_groups: z
+      .array(
+        z
+          .object({
+            categories: z.array(z.string().openapi({ example: 'authentication' })).exactOptional(),
+            group_name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Categories list can refer to https://www.juniper.net/documentation/software/topics/task/configuration/snmp-trap-groups-configuring-junos-nm.html',
+                example: 'profiler',
+              }),
+            targets: z.array(z.string().openapi({ example: '172.29.158.19' })).exactOptional(),
+            version: z.enum(['v1', 'v2', 'all']).default('v2').exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    v2c_config: z
+      .array(
+        z
+          .object({
+            authorization: z.string().exactOptional().openapi({ example: 'read-only' }),
+            client_list_name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'client_list_name here should refer to client_list above',
+                example: 'clist-1',
+              }),
+            community_name: z.string().exactOptional().openapi({ example: 'abc123' }),
+            view: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'view name here should be defined in views above',
+                example: 'all',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    v3_config: z
+      .object({
+        notify: z
+          .array(
+            z
+              .object({
+                name: z.string().exactOptional(),
+                tag: z.string().exactOptional(),
+                type: z.enum(['trap', 'inform']).exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+        notify_filter: z
+          .array(
+            z
+              .object({
+                contents: z
+                  .array(
+                    z
+                      .object({
+                        include: z.boolean().exactOptional(),
+                        oid: z.string().exactOptional().openapi({ example: '1.3.6.1.4.1' }),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .exactOptional(),
+                profile_name: z.string().exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+        target_address: z
+          .array(
+            z
+              .object({
+                address: z.string().exactOptional(),
+                address_mask: z.string().exactOptional(),
+                port: z.int().default(161).exactOptional(),
+                tag_list: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: '<refer to notify tag, can be multiple with blank' }),
+                target_address_name: z.string().exactOptional(),
+                target_parameters: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'refer to notify target parameters name' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+        target_parameters: z
+          .array(
+            z
+              .object({
+                message_processing_model: z.enum(['v1', 'v2c', 'v3']).exactOptional(),
+                name: z.string().exactOptional(),
+                notify_filter: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'refer to profile-name in notify-filter' }),
+                security_level: z.enum(['authentication', 'none', 'privacy']).exactOptional(),
+                security_model: z.enum(['usm', 'v1', 'v2c']).exactOptional(),
+                security_name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'refer to security_name in usm', example: 'm01620' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+        usm: z
+          .object({
+            'engine-id': z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'required only if `engine_type`==`remote_engine`',
+                example: '00:00:00:0b:00:00:70:10:6f:08:b6:3f',
+              }),
+            engine_type: z.enum(['remote_engine', 'local_engine']).exactOptional(),
+            users: z
+              .array(
+                z
+                  .object({
+                    authentication_password: z
+                      .string()
+                      .min(7)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Not required if `authentication_type`==`authentication-none`\ninclude alphabetic, numeric, and special characters, but it cannot include control characters. ',
+                      }),
+                    authentication_type: z
+                      .enum([
+                        'authentication-md5',
+                        'authentication-sha',
+                        'authentication-sha224',
+                        'authentication-sha256',
+                        'authentication-sha384',
+                        'authentication-sha512',
+                        'authentication-none',
+                      ])
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'sha224, sha256, sha384, sha512 are supported in 21.1 and newer release',
+                      }),
+                    encryption_password: z
+                      .string()
+                      .min(8)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Not required if `encryption_type`==`privacy-none`\ninclude alphabetic, numeric, and special characters, but it cannot include control characters',
+                      }),
+                    encryption_type: z
+                      .enum(['privacy-aes128', 'privacy-des', 'privacy-3des', 'privacy-none'])
+                      .exactOptional(),
+                    name: z.string().exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        vacm: z
+          .object({
+            access: z
+              .array(
+                z
+                  .object({
+                    group_name: z.string().exactOptional(),
+                    prefix_list: z
+                      .array(
+                        z
+                          .object({
+                            context_prefix: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'only required if `type`==`context_prefix`',
+                                example: 'iil',
+                              }),
+                            notify_view: z
+                              .string()
+                              .exactOptional()
+                              .openapi({ description: 'refer to view name', example: 'all' }),
+                            read_view: z
+                              .string()
+                              .exactOptional()
+                              .openapi({ description: 'refer to view name', example: 'all' }),
+                            security_level: z
+                              .enum(['privacy', 'authentication', 'none'])
+                              .exactOptional(),
+                            security_model: z.enum(['any', 'usm', 'v1', 'v2c']).exactOptional(),
+                            type: z.literal('default_context_prefix').exactOptional(),
+                            write_view: z
+                              .string()
+                              .exactOptional()
+                              .openapi({ description: 'refer to view name', example: 'all' }),
+                          })
+                          .openapi({ required: [] }),
+                      )
+                      .exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional(),
+            security_to_group: z
+              .object({
+                content: z
+                  .array(
+                    z
+                      .object({
+                        group: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'refer to group_name under access' }),
+                        security_name: z.string().exactOptional(),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .exactOptional(),
+                security_model: z.enum(['usm', 'v1', 'v2c']).exactOptional(),
+              })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    views: z
+      .object({
+        include: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'if the root oid configured is included' }),
+        oid: z.string().exactOptional().openapi({ example: '1.3.6.1' }),
+        view_name: z.string().exactOptional().openapi({ example: 'all' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    'x-examples': {
+      'example-1': {
+        client_list: [{ client_list_name: 'clist-1', clients: ['151.140.101.218/32'] }],
+        contact: 'cns@juniper.net',
+        description: 'Juniper QFX Series Switch - 1K_5LA',
+        engine_id: 'local',
+        location: 'Las Vegas, NV',
+        name: 'TGH-1K-QFX10K',
+        trap_groups: [
+          {
+            categories: ['authentication'],
+            group_name: 'profiler',
+            targets: ['172.29.158.19'],
+            version: 'v2',
+          },
+        ],
+        v2c_config: [
+          { authorization: 'read-only', client_list_name: 'clist-1', community_name: 'abc123' },
+        ],
+        v3_config: {
+          notify: [{ name: 'string', tag: 'string', type: 'trap' }],
+          notify_filter: [
+            { contents: [{ include: true, oid: '1.3.6.1.4.1' }], profile_name: 'string' },
+          ],
+          target_address: [
+            {
+              address: 'string',
+              address_mask: 'string',
+              port: 161,
+              tag_list: 'string',
+              target_address_name: 'string',
+              target_parameters: 'string',
+            },
+          ],
+          target_parameters: [
+            {
+              message_processing_model: 'v1',
+              name: 'string',
+              notify_filter: 'string',
+              security_level: 'authentication',
+              security_model: 'usm',
+              security_name: 'm01620',
+            },
+          ],
+          usm: {
+            'engine-id': '00:00:00:0b:00:00:70:10:6f:08:b6:3f',
+            engine_type: 'remote_engine',
+            users: [
+              {
+                authentication_password: 'strings',
+                authentication_type: 'authentication-md5',
+                encryption_password: 'stringst',
+                encryption_type: 'privacy-aes128',
+                name: 'string',
+              },
+            ],
+          },
+          vacm: {
+            access: [
+              {
+                group_name: 'string',
+                prefix_list: [
+                  {
+                    context_prefix: 'iil',
+                    notify_view: 'all',
+                    read_view: 'all',
+                    security_level: 'privacy',
+                    security_model: 'any',
+                    type: 'default_context_prefix',
+                    write_view: 'all',
+                  },
+                ],
+              },
+            ],
+            security_to_group: {
+              content: [{ group: 'string', security_name: 'string' }],
+              security_model: 'usm',
+            },
+          },
+        },
+        views: { include: true, oid: '1.3.6.1', view_name: 'all' },
+      },
+    },
+    required: [],
+  })
+  .openapi('JunosSnmpConfig')
+
+const JunosPortConfigSchema = z
+  .object({
+    ae_disable_lacp: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'To disable LACP support for the AE interface' }),
+    ae_idx: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Users could force to use the designated AE name' }),
+    aggregated: z.boolean().default(false).exactOptional(),
+    critical: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'if want to generate port up/down alarm' }),
+    description: z.string().exactOptional(),
+    disable_autoneg: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'if `speed` and `duplex` are specified, whether to disable autonegotiation',
+      }),
+    duplex: z.enum(['auto', 'full', 'half']).default('auto').exactOptional(),
+    dynamic_usage: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Enable dynamic usage for this port. Set to `dynamic` to enable.' }),
+    esilag: z.boolean().exactOptional(),
+    mtu: z
+      .int()
+      .default(1514)
+      .exactOptional()
+      .openapi({
+        description:
+          'media maximum transmission unit (MTU) is the largest data unit that can be forwarded without fragmentation',
+      }),
+    no_local_overwrite: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'prevent helpdesk to override the port config' }),
+    poe_disabled: z.boolean().default(false).exactOptional(),
+    speed: z.enum(['auto', '10m', '100m', '1g', '2.5g', '5g']).default('auto').exactOptional(),
+    usage: z
+      .string()
+      .openapi({
+        description: 'port usage name. \n\nIf EVPN is used, use `evpn_uplink`or `evpn_downlink`',
+      }),
+  })
+  .openapi({
+    description: 'Switch port config',
+    required: ['usage'],
+    'x-examples': {
+      'example-1': {
+        ae_disable_lacp: false,
+        ae_idx: 0,
+        aggregated: true,
+        description: 'to dist-sw-01',
+        usage: 'uplink',
+      },
+      'example-3': { usage: 'ap' },
+      'example-dynamic': { dynamic_usage: 'dynamic', usage: 'default' },
+    },
+  })
+  .openapi('JunosPortConfig')
+
+const TemplateSwitchMatchingSchema = z
+  .object({
+    enable: z.boolean().exactOptional(),
+    rules: z
+      .array(
+        z
+          .object({
+            additional_config_cmds: z.array(z.string()).exactOptional(),
+            match_role: z.string().exactOptional().openapi({ description: 'role to match' }),
+            name: z.string().exactOptional(),
+            port_config: z.record(z.string(), JunosPortConfigSchema).exactOptional(),
+            switch_mgmt: z
+              .object({
+                ap_affinity_threshold: z.string().exactOptional().openapi({ example: '10' }),
+                config_revert_timer: z.int().default(10).exactOptional(),
+                dhcp_option_fqdn: z
+                  .boolean()
+                  .default(false)
+                  .exactOptional()
+                  .openapi({ description: 'Enable to provide the FQDN with DHCP option 81' }),
+                mxedge_proxy_host: z.string().exactOptional(),
+                mxedge_proxy_port: z.int().default(2222).exactOptional(),
+                use_mxedge_proxy: z.boolean().default(false).exactOptional(),
+              })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .catchall(
+            z
+              .string()
+              .openapi({
+                description:
+                  'property key define the type of matching, value is the string to match. e.g: `match_name[0:3]`, `match_name[2:6]`, `match_model`,  `match_model[0-6]`',
+              }),
+          )
+          .openapi({ required: [] }),
+      )
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+  })
+  .openapi({
+    description: 'Switch template',
+    'x-examples': {
+      'example-1': {
+        enable: true,
+        rules: [
+          {
+            additional_config_cmds: ['set snmp community public'],
+            match_model: 'EX4300',
+            'match_name[0:3]': 'abc',
+            name: 'match by name',
+            port_config: {
+              '*': { usage: 'default' },
+              'ge-0/0/0': { usage: 'uplink' },
+              'ge-0/0/8-16,ge-1/0/0-47': { usage: 'ap' },
+            },
+          },
+          {
+            additional_config_cmds: ['set snmp community public2'],
+            match_role: 'access',
+            name: 'match by role',
+            port_config: { 'ge-0/0/0': { usage: 'uplink' } },
+          },
+        ],
+      },
+    },
+    required: [],
+  })
+  .openapi('TemplateSwitchMatching')
+
+type NetworktemplateType = {
+  additional_config_cmds?: string[]
+  created_time?: number
+  dhcp_snooping?: z.infer<typeof JunosDhcpSnoopingSchema>
+  dns_servers?: string[]
+  dns_suffix?: string[]
+  extra_routes?: { [key: string]: { via?: string } }
+  group_tags?: { [key: string]: unknown }
+  id?: string
+  mist_nac?: { enabled?: boolean; network?: string }
+  modified_time?: number
+  name?: string
+  networks?: { [key: string]: { subnet?: string; vlan_id?: number } }
+  ntp_servers?: string[]
+  org_id?: string
+  port_usages?: { dynamic?: z.infer<typeof JunosPortUsagesDynamicSchema> }
+  radius_config?: z.infer<typeof JunosRadiusConfigSchema>
+  remote_syslog?: z.infer<typeof RemoteSyslogSchema>
+  snmp_config?: z.infer<typeof JunosSnmpConfigSchema>
+  switch_matching?: z.infer<typeof TemplateSwitchMatchingSchema>
+  switch_mgmt?: {
+    config_revert?: number
+    protect_re?: { enabled?: boolean }
+    root_password?: string
+    tacacs?: {
+      acct_servers?: { host?: string; port?: string; secret?: string; timeout?: number }[]
+      enabled?: boolean
+      network?: string
+      tacplus_servers?: { host?: string; port?: string; secret?: string; timeout?: number }[]
+    }
+  }
+  vrf_config?: { enabled?: boolean }
+  vrf_instances?: {
+    [key: string]: { extra_routes?: { [key: string]: { via?: string } }; networks?: string[] }
+  }
+}
+
+const AutoPreemptionSchema = z
+  .object({
+    day_of_week: z.enum(['any', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']).exactOptional(),
+    enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'whether auto preemption should happen' }),
+    time_of_day: z
+      .string()
+      .default('any')
+      .exactOptional()
+      .openapi({ description: 'any / HH:MM (24-hour format)' }),
+  })
+  .openapi({
+    description: 'schedule to preempt ap’s which are not connected to preferred peer',
+    'x-examples': { 'example-1': { day_of_week: 'any', enabled: false, time_of_day: 'any' } },
+    required: [],
+  })
+  .openapi('AutoPreemption')
+
+const SiteAutoUpgradeSchema = z
+  .object({
+    custom_versions: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'custom versions for different models. The property key is the model name (e.g. "AP41")',
+      }),
+    day_of_week: z
+      .enum(['any', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', ''])
+      .nullable()
+      .exactOptional(),
+    enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'whether auto upgrade should happen (Note that Mist may auto-upgrade if the version is not supported)',
+      }),
+    time_of_day: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'any / HH:MM (24-hour format), upgrade will happen within up to 1-hour from this time',
+      }),
+    version: z
+      .enum(['beta', 'stable', 'custom'])
+      .default('stable')
+      .exactOptional()
+      .openapi({ description: 'desired version' }),
+  })
+  .openapi({
+    description: 'Auto Upgrade Settings',
+    'x-examples': {
+      'example-1': {
+        custom_versions: { AP21: 'stable', AP41: '0.1.5135', AP61: '0.1.7215' },
+        day_of_week: 'sun',
+        enabled: true,
+        time_of_day: '12:00',
+        version: 'beta',
+      },
+    },
+    required: [],
+  })
+  .openapi('SiteAutoUpgrade')
+
+const ApBleSchema = z
+  .object({
+    beacon_enabled: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'whether Mist beacons is enabled' }),
+    beacon_rate: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'required if `beacon_rate_mode`==`custom`, 1-10, in number-beacons-per-second',
+      }),
+    beacon_rate_mode: z.enum(['default', 'custom']).default('default').exactOptional(),
+    beam_disabled: z
+      .array(z.int())
+      .exactOptional()
+      .openapi({
+        description:
+          'list of AP BLE location beam numbers (1-8) which should be disabled at the AP and not transmit location information (where beam 1 is oriented at the top the AP, growing counter-clock-wise, with 9 being the omni BLE beam)',
+      }),
+    eddystone_uid_adv_power: z
+      .int()
+      .min(-100)
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description: 'advertised TX Power, -100 to 20 (dBm), omit this attribute to use default',
+      }),
+    eddystone_uid_beams: z.string().exactOptional(),
+    eddystone_uid_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'only if `beacon_enabled`==`false`, Whether Eddystone-UID beacon is enabled',
+      }),
+    eddystone_uid_freq_msec: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Frequency (msec) of data emmit by Eddystone-UID beacon' }),
+    eddystone_uid_instance: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Eddystone-UID instance for the device' }),
+    eddystone_uid_namespace: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Eddystone-UID namespace' }),
+    eddystone_url_adv_power: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'advertised TX Power, -100 to 20 (dBm), omit this attribute to use default',
+      }),
+    eddystone_url_beams: z.string().exactOptional(),
+    eddystone_url_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'only if `beacon_enabled`==`false`, Whether Eddystone-URL beacon is enabled',
+      }),
+    eddystone_url_freq_msec: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Frequency (msec) of data emmit by Eddystone-UID beacon' }),
+    eddystone_url_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL pointed by Eddystone-URL beacon' }),
+    ibeacon_adv_power: z
+      .int()
+      .min(-100)
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description: 'advertised TX Power, -100 to 20 (dBm), omit this attribute to use default',
+      }),
+    ibeacon_beams: z.string().exactOptional(),
+    ibeacon_enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'can be enabled if `beacon_enabled`==`true`, whether to send iBeacon',
+      }),
+    ibeacon_freq_msec: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Frequency (msec) of data emmit for iBeacon' }),
+    ibeacon_major: z.int().exactOptional().openapi({ description: 'Major number for iBeacon' }),
+    ibeacon_minor: z.int().exactOptional().openapi({ description: 'Minor number for iBeacon' }),
+    ibeacon_uuid: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description: 'optional, if not specified, the same UUID as the beacon will be used',
+      }),
+    power: z
+      .int()
+      .min(1)
+      .max(10)
+      .default(9)
+      .exactOptional()
+      .openapi({ description: 'required if `power_mode`==`custom`' }),
+    power_mode: z.string().exactOptional().openapi({ description: 'default / custom' }),
+  })
+  .openapi({ description: 'BLE AP settings', required: [] })
+  .openapi('ApBle')
+
+const SiteEngagementSchema = z
+  .object({
+    dwell_tag_names: z
+      .object({
+        bounce: z.string(),
+        engaged: z.string(),
+        passerby: z.string(),
+        stationed: z.string(),
+      })
+      .openapi({ required: ['passerby', 'bounce', 'engaged', 'stationed'] }),
+    dwell_tags: z
+      .object({
+        bounce: z.string().nullable().exactOptional(),
+        engaged: z.string().nullable().exactOptional(),
+        passerby: z.string().nullable().exactOptional(),
+        stationed: z.string().nullable().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'add tags to visits within the duration (in seconds), available tags (passerby, bounce, engaged, stationed)',
+        required: [],
+      }),
+    hours: z
+      .object({
+        fri: z.string().exactOptional(),
+        mon: z.string().exactOptional(),
+        sta: z.string().exactOptional(),
+        sun: z.string().exactOptional(),
+        thu: z.string().exactOptional(),
+        tue: z.string().exactOptional(),
+        wed: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'hours of operation filter, the available days (mon, tue, wed, thu, fri, sat, sun). \n\n**Note**: If the dow is not defined then it’s treated as 00:00-23:59.',
+        required: [],
+      }),
+    max_dwell: z
+      .int()
+      .max(68400)
+      .default(43200)
+      .exactOptional()
+      .openapi({ description: 'max time, default is 43200(12h), max is 68400 (18h)' }),
+    min_dwell: z.int().min(0).exactOptional().openapi({ description: 'min time' }),
+  })
+  .openapi({
+    description:
+      '**Note**: if hours does not exist, it’s treated as everyday of the week, 00:00-23:59. Currently we don’t allow multiple ranges for the same day\n\n**Note**: default values for `dwell_tags`: passerby (1,300) bounce (301, 14400) engaged (14401, 28800) stationed (28801, 42000)\n\n**Note**: default values for `dwell_tag_names`: passerby = “Passerby”, bounce = “Visitor”, engaged = “Associates”, stationed = “Assets”',
+    required: ['dwell_tag_names'],
+    'x-examples': {
+      'example-1': {
+        dwell_tag_names: {
+          bounce: 'Bounce',
+          engaged: 'Engaged',
+          passerby: 'Passer By',
+          stationed: 'Stationed',
+        },
+        dwell_tags: { engaged: '300-14400', stationed: '14400-43200' },
+        hours: { fri: '09:00-17:00', mon: '09:00-17:00' },
+        max_dwell: 43200,
+      },
+    },
+  })
+  .openapi('SiteEngagement')
+
+const JunosEvpnOptionsSchema = z
+  .object({
+    core_as_border: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'optional, for ERB or CLOS, you can either use esilag to upstream routers or to also be the virtual-gateway\nwhen `routed_at` != `core`, whether to do virtual-gateway at core as well',
+      }),
+    overlay: z
+      .object({
+        as: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'optional, these are defaults', example: 65000 }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    per_vlan_vga_v4_mac: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          "by default, JUNOS uses 00-00-5e-00-01-01 as the virtual-gateway-address's v4-mac\nif enabled, 00-00-5e-00-XX-YY will be used (where XX=vlan_id/256, YY=vlan_id%256)",
+      }),
+    routed_at: z
+      .enum(['edge', 'core', 'distribution'])
+      .default('edge')
+      .exactOptional()
+      .openapi({ description: 'optional, where virtual-gateway should reside' }),
+    underlay: z
+      .object({
+        as_base: z.int().exactOptional().openapi({ example: 65001 }),
+        routed_id_prefix: z.string().exactOptional().openapi({ example: '/24' }),
+        subnet: z.string().exactOptional().openapi({ example: '10.255.240.0/20' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ description: 'EVPN Options', required: [] })
+  .openapi('JunosEvpnOptions')
+
+const SiteGatewaySchema = z
+  .object({
+    admin_sshkeys: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'for SSR only, as direct root access is not allowed' }),
+    app_probing: z
+      .object({
+        apps: z.array(z.string()).exactOptional(),
+        custom_apps: z
+          .array(
+            z
+              .object({
+                app_type: z.string().exactOptional(),
+                hostname: z.array(z.string()).exactOptional(),
+                name: z.string().exactOptional(),
+                protocol: z.enum(['http', 'tcp', 'udp']).default('http').exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+        enabled: z.boolean().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    app_usage: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'consumes uplink bandwidth, requires WA license' }),
+    config_revert_timer: z
+      .number()
+      .min(1)
+      .max(30)
+      .default(10)
+      .exactOptional()
+      .openapi({ description: 'he rollback timer for commit confirmed' }),
+    probe_hosts: z.array(z.string()).exactOptional(),
+    root_password: z.string().exactOptional().openapi({ description: 'for SRX only' }),
+    security_log_source_address: z.string().exactOptional(),
+    security_log_source_interface: z.string().exactOptional(),
+  })
+  .openapi({
+    description: 'Gateway Site settings',
+    'x-examples': {
+      'example-1': {
+        app_probing: {
+          apps: ['string'],
+          custom_apps: [
+            { app_type: 'string', hostname: ['string'], name: 'string', protocol: 'http' },
+          ],
+          enabled: true,
+        },
+        app_usage: true,
+        config_revert_timer: 10,
+      },
+    },
+    required: [],
+  })
+  .openapi('SiteGateway')
+
+const ApLedSchema = z
+  .object({ brightness: z.int().exactOptional(), enabled: z.boolean().exactOptional() })
+  .openapi({ description: 'LED AP settings', required: [] })
+  .openapi('ApLed')
+
+const MxedgeDasSchema = z
+  .object({
+    coa_servers: z
+      .array(
+        z
+          .object({
+            disable_event_timestamp_check: z
+              .boolean()
+              .default(false)
+              .exactOptional()
+              .openapi({ description: 'whether to disable Event-Timestamp Check' }),
+            enabled: z.boolean().exactOptional(),
+            host: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'this server configured to send CoA|DM to mist edges' }),
+            port: z
+              .int()
+              .default(3799)
+              .exactOptional()
+              .openapi({ description: 'mist edges will allow this host on this port' }),
+            secret: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'dynamic authorization clients configured to send CoA|DM to mist edges on port 3799',
+      }),
+    enabled: z.boolean().default(false).exactOptional(),
+  })
+  .openapi({
+    description:
+      'configure cloud-assisted dynamic authorization service on this cluster of mist edges',
+    'x-examples': {
+      'example-1': {
+        coa_servers: [
+          {
+            disable_event_timestamp_check: false,
+            enabled: false,
+            host: 'aaa.internal',
+            port: 3799,
+            secret: 'testing456',
+          },
+        ],
+        enabled: true,
+      },
+    },
+    required: [],
+  })
+  .openapi('MxedgeDas')
+
+const MxclusterRadsecSchema = z
+  .object({
+    acct_servers: z
+      .array(
+        z
+          .object({
+            host: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'ip / hostname of RADIUS server' }),
+            port: z
+              .int()
+              .default(1813)
+              .exactOptional()
+              .openapi({ description: 'Acct port of RADIUS server' }),
+            secret: z.string().exactOptional().openapi({ description: 'secret of RADIUS server' }),
+            ssids: z
+              .array(z.string())
+              .exactOptional()
+              .openapi({
+                description:
+                  'list of ssids that will use this server if match_ssid is true and match is found',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'list of RADIUS accounting servers, optional, order matters where the first one is treated as primary',
+      }),
+    auth_servers: z
+      .array(
+        z
+          .object({
+            host: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'ip / hostname of RADIUS server' }),
+            keywrap_enabled: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description: 'if used for Mist APs, enable keywrap algorithm. Default is false',
+              }),
+            keywrap_format: z
+              .enum(['hex', 'ascii'])
+              .exactOptional()
+              .openapi({ description: 'if used for Mist APs' }),
+            keywrap_kek: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'if used for Mist APs, encryption key' }),
+            keywrap_mack: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'if used for Mist APs, Message Authentication Code Key' }),
+            port: z
+              .int()
+              .default(1812)
+              .exactOptional()
+              .openapi({ description: 'Auth port of RADIUS server' }),
+            secret: z.string().exactOptional().openapi({ description: 'secret of RADIUS server' }),
+            ssids: z
+              .array(z.string())
+              .exactOptional()
+              .openapi({
+                description:
+                  'list of ssids that will use this server if match_ssid is true and match is found',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'list of RADIUS authentication servers, order matters where the first one is treated as primary',
+      }),
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'whether to enable service on Mist Edge i.e. RADIUS proxy over TLS',
+      }),
+    match_ssid: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'whether to match ssid in request message to select from a subset of RADIUS servers',
+      }),
+    proxy_hosts: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'hostnames or IPs for Mist AP to use as the TLS Server (i.e. they are reachable from AP) in addition to `tunterm_hosts`',
+      }),
+    server_selection: z
+      .enum(['ordered', 'unordered'])
+      .default('ordered')
+      .exactOptional()
+      .openapi({
+        description:
+          'ordered (default) / unordered. When ordered, Mist Edge will prefer and go back to the first radius server if possible',
+      }),
+    source: z
+      .enum(['tunnel', 'oob', 'any'])
+      .default('any')
+      .exactOptional()
+      .openapi({ description: 'Specify source address to use when connecting to RADIUS servers' }),
+  })
+  .openapi({
+    description: 'MxEdge Radsec Configuration',
+    'x-examples': {
+      'example-1': {
+        acct_servers: [{ host: '1.2.3.4', port: 1812, secret: 'testing123' }],
+        auth_servers: [
+          { host: '1.2.3.4', port: 1812, secret: 'testing123' },
+          { host: 'radius.internal', port: 1812, secret: 'testing123' },
+        ],
+        enabled: true,
+        server_selection: 'ordered',
+      },
+    },
+    required: [],
+  })
+  .openapi('MxclusterRadsec')
+
+const MxedgeMgmtSchema = z
+  .object({ mist_password: z.string().exactOptional(), root_password: z.string().exactOptional() })
+  .openapi({ title: 'mxedge_mgmt', required: [] })
+  .openapi('MxedgeMgmt')
+
+const SiteMxtunnelSchema = z
+  .object({
+    ap_subnets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'list of subnets where we allow AP to establish Mist Tunnels from' }),
+    clusters: z
+      .array(
+        z
+          .object({
+            name: z.string().exactOptional(),
+            tunterm_hosts: z.array(z.string()).exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'for AP, how to connect to tunterm or radsecproxy' }),
+    created_time: z.number().exactOptional().openapi({ readOnly: true }),
+    for_site: z.boolean().exactOptional().openapi({ readOnly: true }),
+    hello_interval: z
+      .int()
+      .min(1)
+      .max(300)
+      .default(60)
+      .exactOptional()
+      .openapi({
+        description:
+          'in seconds, used as heartbeat to detect if a tunnel is alive. AP will try another peer after missing N hellos specified by hello_retries',
+      }),
+    hello_retries: z.int().min(2).max(30).default(7).exactOptional(),
+    hosts: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'hostnames or IPs where a Mist Tunnel will use as the Peer (i.e. they are reachable from AP)',
+      }),
+    id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    modified_time: z.number().exactOptional().openapi({ readOnly: true }),
+    mtu: z
+      .int()
+      .min(0)
+      .max(1500)
+      .default(0)
+      .exactOptional()
+      .openapi({ description: '0 to enable PMTU, 552-1500 to start PMTU with a lower MTU' }),
+    org_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    protocol: z.enum(['udp', 'ip']).exactOptional(),
+    radsec: z
+      .object({
+        acct_servers: z.array(AcctServerSchema).exactOptional(),
+        auth_servers: z.array(AuthServerSchema).exactOptional(),
+        enabled: z.boolean().exactOptional(),
+        use_mxedge: z.boolean().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    site_id: z.uuid().exactOptional().openapi({ readOnly: true }),
+    vlan_ids: z
+      .array(z.union([z.int(), z.string()]))
+      .exactOptional()
+      .openapi({ description: 'list of vlan_ids that will be use' }),
+  })
+  .openapi({
+    description: 'Site MxTunnel',
+    'x-examples': {
+      'example-1': {
+        ap_subnets: '0.0.0.0/0',
+        clusters: [{ name: 'primary', tunterm_hosts: ['mxedge1', 'mxedge2.local'] }],
+        enabled: false,
+        hello_interval: 60,
+        hello_retries: 3,
+        mtu: 1100,
+        protocol: 'udp',
+        radsec: {
+          acct_servers: [{ host: '1.2.3.4', port: 1812, secret: 'testing123' }],
+          auth_servers: [
+            { host: '1.2.3.4', port: 1812, secret: 'testing123' },
+            { host: 'radius.internal', port: 1812, secret: 'testing123' },
+          ],
+          enabled: true,
+          use_mxedge: true,
+        },
+        vlan_ids: [3, 5, 6],
+      },
+    },
+    required: [],
+  })
+  .openapi('SiteMxtunnel')
+
+const JunosNetworksSchema = z
+  .object({
+    dns: z.array(z.string()).exactOptional(),
+    dns_suffix: z.array(z.string()).exactOptional(),
+    gateway: z.string().exactOptional(),
+    ospf_interface_type: z.string().exactOptional(),
+    subnet: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'optional for pure switching, required when L3 / routing features are used',
+      }),
+    vlan_id: z.int(),
+    zone: z.string().exactOptional().openapi({ description: 'used for gateway' }),
+  })
+  .openapi({
+    description:
+      'A network represents a network segment. It can either represent a VLAN (then usually ties to a L3 subnet), optionally associate it with a subnet which can later be used to create addition routes. Used for ports doing `family ethernet-switching`. It can also be a pure L3-subnet that can then be used against a port that with `family inet`.',
+    required: ['vlan_id'],
+    'x-examples': {
+      'example-1': {
+        corp: { subnet: '192.168.70.0/24', vlan_id: 60, zone: 'trust' },
+        dedicated: { ospf_interface_type: 'p2p', subnet: '10.18.14.72/30' },
+        default: { vlan_id: 1, zone: 'trust' },
+        it_mgmt: { subnet: '192.168.70.0/24', zone: 'trust' },
+        wan: { zone: 'untrust' },
+      },
+    },
+  })
+  .openapi('JunosNetworks')
+
+const SiteOccupancyAnalyticsSchema = z
+  .object({
+    assets_enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'indicate whether named BLE assets should be included in the zone occupancy calculation',
+      }),
+    clients_enabled: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({
+        description:
+          'indicate whether connected WiFi clients should be included in the zone occupancy calculation',
+      }),
+    min_duration: z
+      .int()
+      .default(3000)
+      .exactOptional()
+      .openapi({ description: 'minimum duration' }),
+    sdkclients_enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'indicate whether SDK clients should be included in the zone occupancy calculation',
+      }),
+    unconnected_clients_enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'indicate whether unconnected WiFi clients should be included in the zone occupancy calculation',
+      }),
+  })
+  .openapi({
+    description: 'Occupancy Analytics settings',
+    'x-examples': {
+      'example-1': {
+        assets_enabled: true,
+        clients_enabled: true,
+        min_duration: 3000,
+        sdkclients_enabled: true,
+        unconnected_clients_enabled: false,
+      },
+    },
+    required: [],
+  })
+  .openapi('SiteOccupancyAnalytics')
+
+const JunosOspfAreasSchema = z
+  .object({
+    networks: z
+      .record(
+        z.string(),
+        z
+          .object({
+            auth_keys: z
+              .record(z.string(), z.string())
+              .exactOptional()
+              .openapi({
+                description: 'if `auth_type`==`md5`. The property key is the key number',
+              }),
+            auth_password: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'if `auth_type`==`password`, the password, max length is 8',
+              }),
+            auth_type: z
+              .enum(['none', 'md5', 'password'])
+              .default('none')
+              .exactOptional()
+              .openapi({ description: 'auth type' }),
+            dead_interval: z.int().min(1).max(65535).exactOptional(),
+            hello_interval: z.int().min(1).max(255).exactOptional(),
+            interface_type: z
+              .enum(['nbma', 'p2p', 'p2mp'])
+              .default('nbma')
+              .exactOptional()
+              .openapi({ description: 'interface type (nbma = non-broadcast multi-access)' }),
+            passive: z
+              .boolean()
+              .default(false)
+              .exactOptional()
+              .openapi({ description: 'whether to send OSPF-Hello' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'networks to participate in an OSPF area. The property key is the network name',
+      }),
+    type: z
+      .enum(['default', 'stub', 'nssa'])
+      .default('default')
+      .exactOptional()
+      .openapi({ description: 'OSPF type, default (default) / stub / nssa' }),
+  })
+  .openapi({
+    description: 'Junos OSPF areas',
+    'x-examples': {
+      'example-1': {
+        networks: {
+          '{network_name}': {
+            auth_keys: { '{key}': 'string' },
+            auth_password: 'string',
+            auth_type: 'none',
+            interface_type: 'nbma',
+            passive: true,
+          },
+        },
+        type: 'default',
+      },
+    },
+    required: [],
+  })
+  .openapi('JunosOspfAreas')
+
+const ApRadioBandSchema = z
+  .object({
+    allow_rrm_disable: z.boolean().exactOptional(),
+    ant_gain: z.int().nullable().exactOptional(),
+    antenna_mode: z
+      .enum(['default', '1x1', '2x2', '3x3', '4x4'])
+      .default('default')
+      .exactOptional(),
+    bandwidth: z
+      .union([z.literal(20), z.literal(40), z.literal(80)])
+      .exactOptional()
+      .openapi({
+        description:
+          'channel width for the band, 20 / 40 / 80 / 160, 80 is only applicable for band_5 and 160 is only for band_6, ignored if channel is 0',
+      }),
+    channel: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'For Device. (primary) channel for the band, 0 means using the Site Setting',
+      }),
+    channels: z
+      .array(z.int())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'For RFTemplates. List of channels, null or empty array means auto',
+      }),
+    disabled: z.boolean().exactOptional().openapi({ description: 'whether to disable the radio' }),
+    power: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'TX power of the radio. For Devices, 0 mean using the Site Setting',
+      }),
+    power_max: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'when power=0, max tx power to use, HW-specific values will be used if not set',
+      }),
+    power_min: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'when power=0, min tx power to use, HW-specific values will be used if not set',
+      }),
+    preamble: z.enum(['short', 'long', 'auto']).default('short').exactOptional(),
+    usage: z
+      .enum(['24', '5', 'rrm'])
+      .default('24')
+      .exactOptional()
+      .openapi({ description: 'for band_24 radio' }),
+  })
+  .openapi({
+    description: 'Radio Band AP settings',
+    'x-examples': {
+      'example-1': {
+        allow_rrm_disable: true,
+        ant_gain: 0,
+        antenna_mode: 'default',
+        bandwidth: 20,
+        channel: 0,
+        channels: [0],
+        disabled: true,
+        power: 0,
+        power_max: 0,
+        power_min: 0,
+        preamble: 'short',
+        usage: '24',
+      },
+    },
+    required: [],
+  })
+  .openapi('ApRadioBand')
+
+const ApRadioSchema = z
+  .object({
+    allow_rrm_disable: z.boolean().default(false).exactOptional(),
+    ant_gain_24: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'antenna gain for 2.4G - for models with external antenna only' }),
+    ant_gain_5: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'antenna gain for 5G - for models with external antenna only' }),
+    ant_gain_6: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'antenna gain for 6G - for models with external antenna only' }),
+    antenna_mode: z
+      .enum(['default', '1x1', '2x2', '3x3', '4x4'])
+      .default('default')
+      .exactOptional(),
+    band_24: ApRadioBandSchema.exactOptional(),
+    band_24_usage: z
+      .enum(['24', '5', 'auto'])
+      .default('24')
+      .exactOptional()
+      .openapi({
+        description:
+          'if `band_24_usage`==`5`, by default, band_5 properties is used, if specific channel/bandwidth/power/... is desired, use the "band_5_on_24_radio"',
+      }),
+    band_5: ApRadioBandSchema.exactOptional(),
+    band_5_on_24_radio: ApRadioBandSchema.exactOptional(),
+    band_6: ApRadioBandSchema.exactOptional(),
+    scanning_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'whether scanning radio is enabled' }),
+  })
+  .openapi({
+    description: 'Radio AP settings',
+    'x-examples': {
+      'example-1': {
+        ant_gain_24: 0,
+        ant_gain_5: 0,
+        ant_gain_6: 0,
+        band_24: {
+          allow_rrm_disable: true,
+          ant_gain: 0,
+          antenna_mode: 'default',
+          bandwidth: 20,
+          channel: 0,
+          channels: [0],
+          disabled: true,
+          power: 0,
+          power_max: 0,
+          power_min: 0,
+          preamble: 'short',
+          usage: '24',
+        },
+        band_24_usage: '24',
+        band_5: {
+          allow_rrm_disable: true,
+          ant_gain: 0,
+          antenna_mode: 'default',
+          bandwidth: 20,
+          channel: 0,
+          channels: [0],
+          disabled: true,
+          power: 0,
+          power_max: 0,
+          power_min: 0,
+          preamble: 'short',
+          usage: '24',
+        },
+        band_5_on_24_radio: {
+          allow_rrm_disable: true,
+          ant_gain: 0,
+          antenna_mode: 'default',
+          bandwidth: 20,
+          channel: 0,
+          channels: [0],
+          disabled: true,
+          power: 0,
+          power_max: 0,
+          power_min: 0,
+          preamble: 'short',
+          usage: '24',
+        },
+        band_6: {
+          allow_rrm_disable: true,
+          ant_gain: 0,
+          antenna_mode: 'default',
+          bandwidth: 20,
+          channel: 0,
+          channels: [0],
+          disabled: true,
+          power: 0,
+          power_max: 0,
+          power_min: 0,
+          preamble: 'short',
+          usage: '24',
+        },
+        scanning_enabled: true,
+      },
+    },
+    required: [],
+  })
+  .openapi('ApRadio')
+
+const SiteRogueSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'whether or not rogue detection is enabled' }),
+    honeypot_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'whether or not honeypot detection is enabled' }),
+    min_duration: z
+      .int()
+      .max(59)
+      .default(10)
+      .exactOptional()
+      .openapi({ description: 'minimum duration for a bssid to be considered rogue' }),
+    min_rssi: z
+      .int()
+      .min(-85)
+      .default(-80)
+      .exactOptional()
+      .openapi({
+        description: 'minimum RSSI for an AP to be considered rogue (ignoring APs that’s far away)',
+      }),
+    whitelisted_bssids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'list of BSSIDs to whitelist. Ex: "cc-:8e-:6f-:d4-:bf-:16", "cc-8e-6f-d4-bf-16", "cc-73-*", "cc:82:*"',
+      }),
+    whitelisted_ssids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'list of SSIDs to whitelist' }),
+  })
+  .openapi({
+    description: 'Rogue site settings',
+    'x-examples': {
+      'example-1': {
+        enabled: false,
+        honeypot_enabled: true,
+        min_duration: 10,
+        min_rssi: -80,
+        whitelisted_bssids: ['cc-8e-6f-d4-bf-16', 'cc-8e-6f-d4-bf-16'],
+        whitelisted_ssids: ['NeighborSSID'],
+      },
+    },
+    required: [],
+  })
+  .openapi('SiteRogue')
+
+const SimpleAlertSchema = z
+  .object({
+    arp_failure: z
+      .object({
+        client_count: z.int().default(10).exactOptional(),
+        duration: z
+          .int()
+          .min(5)
+          .max(60)
+          .default(20)
+          .exactOptional()
+          .openapi({ description: 'failing within minutes' }),
+        incident_count: z.int().default(10).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    dhcp_failure: z
+      .object({
+        client_count: z.int().default(10).exactOptional(),
+        duration: z
+          .int()
+          .min(5)
+          .max(60)
+          .default(10)
+          .exactOptional()
+          .openapi({ description: 'failing within minutes' }),
+        incident_count: z.int().default(20).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    dns_failure: z
+      .object({
+        client_count: z.int().default(20).exactOptional(),
+        duration: z
+          .int()
+          .min(5)
+          .max(60)
+          .default(10)
+          .exactOptional()
+          .openapi({ description: 'failing within minutes' }),
+        incident_count: z.int().default(30).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    description:
+      'Set of heuristic rules will be enabled when marvis subscription is not available.\nIt triggers when, in a Z minute window, there are more than Y distinct client encountring over X failures',
+    required: [],
+  })
+  .openapi('SimpleAlert')
+
+const SiteSsrSchema = z
+  .object({
+    conductor_hosts: z
+      .array(z.string().openapi({ example: '"1.1.1.1", "2.2.2.2"' }))
+      .exactOptional(),
+    disable_stats: z.boolean().exactOptional(),
+  })
+  .openapi({
+    description: '',
+    'x-examples': {
+      'example-1': { conductor_hosts: ['1.1.1.1', '2.2.2.2'], disable_stats: false },
+    },
+    required: [],
+  })
+  .openapi('SiteSsr')
+
+const SiteSwitchSchema = z
+  .object({
+    ap_affinity_threshold: z
+      .int()
+      .default(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'ap_affinity_threshold ap_affinity_threshold can be added as a field under site/setting. By default this value is set to 12. If the field is set in both site/setting and org/setting, the value from site/setting will be used.',
+      }),
+    config_revert_timer: z
+      .number()
+      .min(1)
+      .max(30)
+      .default(10)
+      .exactOptional()
+      .openapi({ description: 'the rollback timer for commit confirmed' }),
+    dhcp_option_fqdn: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'Enable to provide the FQDN with DHCP option 81' }),
+    mxedge_proxy_host: z.string().exactOptional(),
+    mxedge_proxy_port: z.int().default(2222).exactOptional(),
+    protect_re: z
+      .object({
+        allowed_services: z
+          .array(z.string().openapi({ example: '["snmp", "icmp"]' }))
+          .exactOptional()
+          .openapi({ description: "optionally, services we'll allow" }),
+        custom: z
+          .array(
+            z
+              .object({
+                port_range: z
+                  .string()
+                  .min(0)
+                  .max(6553)
+                  .exactOptional()
+                  .openapi({ description: 'matched dst port, `0` means any' }),
+                protocol: z.enum(['tcp', 'udp', 'icmp', 'any']).default('any').exactOptional(),
+                subnets: z.array(z.string()).exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+        enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'when enabled, all traffic that is not essential to our operation will be dropped\ne.g. ntp / dns / traffic to mist will be allowed by default',
+          }),
+        trusted_hosts: z
+          .array(z.string().openapi({ example: '["10.242.3.0/24"]' }))
+          .exactOptional()
+          .openapi({
+            description:
+              "when `enabled`==`true`, all traffic that is not essential to our operation will be dropped (e.g. if dhcpd is enabled, we'll make sure it works)",
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'restrict inbound-traffic to host  (draft)', required: [] }),
+    root_password: z.string().exactOptional(),
+    use_mxedge_proxy: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'to use mxedge as proxy' }),
+  })
+  .openapi({ description: 'Switch site settings', required: [] })
+  .openapi('SiteSwitch')
+
+const SiteTuntermMonitoringSchema = z
+  .object({
+    host: z
+      .string()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'can be ip, ipv6, hostname', example: '10.2.8.15' }),
+    port: z.int().exactOptional().openapi({ description: 'when `protocol`==`tcp`', example: 80 }),
+    protocol: z.enum(['arp', 'ping', 'tcp']).exactOptional().openapi({ example: 'tcp' }),
+    timeout: z.int().default(300).exactOptional().openapi({ example: 300 }),
+  })
+  .openapi({
+    'x-examples': { 'example-1': { host: '10.2.8.15', port: 80, protocol: 'ping', timeout: 300 } },
+    required: [],
+  })
+  .openapi('SiteTuntermMonitoring')
+
+const JunosVrfInstanceSchema = z
+  .object({
+    extra_routes: z.record(
+      z.string(),
+      z
+        .object({ via: z.ipv4().exactOptional() })
+        .openapi({ description: 'The property key is a CIDR', required: [] }),
+    ),
+    networks: z.array(z.string()),
+  })
+  .openapi({
+    description: '',
+    required: ['networks', 'extra_routes'],
+    'x-examples': {
+      'example-1': {
+        extra_routes: { property1: { via: '192.168.0.1' }, property2: { via: '192.168.0.1' } },
+        networks: ['string'],
+      },
+    },
+  })
+  .openapi('JunosVrfInstance')
+
+const JunosVrrpGroupSchema = z
+  .object({
+    auth_key: z.string().exactOptional().openapi({ description: 'if `auth_type`==`md5`' }),
+    auth_password: z.string().exactOptional().openapi({ description: 'if `auth_type`==`simple`' }),
+    auth_type: z.enum(['md5', 'simple']).default('md5').exactOptional(),
+    networks: z
+      .record(z.string(), z.object({ ip: z.string().exactOptional() }).openapi({ required: [] }))
+      .exactOptional()
+      .openapi({ description: 'The property key is the network name' }),
+  })
+  .openapi({
+    description: 'Junos VRRP group',
+    'x-examples': {
+      'example-1': {
+        auth_key: 'string',
+        auth_password: 'string',
+        auth_type: 'none',
+        networks: { '{network_name}': { ip: 'string' } },
+      },
+    },
+    required: [],
+  })
+  .openapi('JunosVrrpGroup')
+
+const SiteWidsSchema = z
+  .object({
+    repeated_auth_failures: z
+      .object({
+        duration: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description:
+              'window where a trigger will be detected and action to be taken (in seconds)',
+          }),
+        threshold: z.int().exactOptional().openapi({ description: 'count of events to trigger' }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({
+    description: 'WIDS site settings',
+    'x-examples': { 'example-1': { repeated_auth_failures: { duration: 60, threshold: 4 } } },
+    required: [],
+  })
+  .openapi('SiteWids')
+
+const SiteWifiSchema = z
+  .object({
+    cisco_enabled: z.boolean().exactOptional(),
+    disable_11k: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'whether to disable 11k' }),
+    disable_radios_when_power_constrained: z.boolean().exactOptional(),
+    enable_arp_spoof_check: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'when proxy_arp is enabled, check for arp spoofing.' }),
+    enable_channel_144: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: 'whether to enable channel 144 (some older clients may not support it)',
+      }),
+    enable_shared_radio_scanning: z.boolean().exactOptional(),
+    enable_vna: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'enable Virtual Network Assistant (using SUB-VNA license)' }),
+    enabled: z
+      .boolean()
+      .default(true)
+      .exactOptional()
+      .openapi({ description: 'enable WIFI feature (using SUB-MAN license)' }),
+    locate_connected: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'whether to locate connected clients' }),
+    locate_unconnected: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'whether to locate unconnected clients' }),
+    mesh_allow_dfs: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'whether to allow Mesh to use DFS channels. For DFS channels, Remote Mesh AP would have to do CAC when scanning for new Base AP, which is slow and will distrupt the connection. If roaming is desired, keep it disabled.',
+      }),
+    mesh_enable_crm: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'used to enable/disable CRM' }),
+    mesh_enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'whether to enable Mesh feature for the site' }),
+    mesh_psk: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'optional passphrase of mesh networking, default is generated randomly',
+      }),
+    mesh_ssid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'optional ssid of mesh networking, default is based on site_id' }),
+    proxy_arp: z
+      .enum(['default', 'enabled', 'disabled'])
+      .exactOptional()
+      .openapi({ description: 'default / enabled / disabled' }),
+  })
+  .openapi({
+    description: 'Wi-Fi site settings',
+    'x-examples': {
+      'example-1': {
+        cisco_enabled: true,
+        disable_11k: false,
+        disable_radios_when_power_constrained: false,
+        enable_arp_spoof_check: false,
+        enable_shared_radio_scanning: false,
+        enable_vna: false,
+        enabled: true,
+        locate_connected: false,
+        locate_unconnected: false,
+        mesh_enabled: true,
+        proxy_arp: 'default',
+      },
+    },
+    required: [],
+  })
+  .openapi('SiteWifi')
+
+const SiteZoneOccupancyAlertSchema = z
+  .object({
+    email_notifiers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'list of email addresses to send email notifications when the alert threshold is reached',
+      }),
+    enabled: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'indicate whether zone occupancy alert is enabled for the site' }),
+    threshold: z
+      .int()
+      .min(0)
+      .max(30)
+      .default(5)
+      .exactOptional()
+      .openapi({
+        description:
+          'sending zone-occupancy-alert webhook message only if a zone stays non-compliant (i.e. actual occupancy > occupancy_limit) for a minimum duration specified in the threshold, in minutes',
+      }),
+  })
+  .openapi({
+    description: 'Zone Occupancy alert site settings',
+    'x-examples': {
+      'example-1': {
+        email_notifiers: ['foo@juniper.net', 'bar@juniper.net'],
+        enabled: true,
+        threshold: 5,
+      },
+    },
+    required: [],
+  })
+  .openapi('SiteZoneOccupancyAlert')
+
+type SiteSettingType = {
+  additional_config_cmds?: string[]
+  analytic?: { enabled?: boolean }
+  ap_matching?: {
+    enabled?: boolean
+    rules?: {
+      match_model?: string
+      name?: string
+      port_config?: { [key: string]: z.infer<typeof ApPortConfigSchema> }
+    }[]
+  }
+  ap_port_config?: {
+    model_specific?: { [key: string]: { [key: string]: z.infer<typeof ApPortConfigSchema> } }
+  }
+  auto_placement?: { orientation?: number; x?: number; y?: number }
+  auto_preemption?: z.infer<typeof AutoPreemptionSchema>
+  auto_upgrade?: z.infer<typeof SiteAutoUpgradeSchema>
+  blacklist_url?: string
+  ble_config?: z.infer<typeof ApBleSchema>
+  config_auto_revert?: boolean
+  created_time?: number
+  device_updown_threshold?: number
+  dns_servers?: string[]
+  dns_suffix?: string[]
+  enable_channel_144?: boolean
+  engagement?: z.infer<typeof SiteEngagementSchema>
+  evpn_options?: z.infer<typeof JunosEvpnOptionsSchema>
+  flags?: { [key: string]: string }
+  for_site?: boolean
+  gateway_additional_config_cmds?: string[]
+  gateway_mgmt?: z.infer<typeof SiteGatewaySchema>
+  id?: string
+  led?: z.infer<typeof ApLedSchema>
+  modified_time?: number
+  mxedge?: {
+    mist_das?: z.infer<typeof MxedgeDasSchema>
+    radsec?: z.infer<typeof MxclusterRadsecSchema>
+  }
+  mxedge_mgmt?: z.infer<typeof MxedgeMgmtSchema>
+  mxtunnels?: z.infer<typeof SiteMxtunnelSchema>
+  networks?: { [key: string]: z.infer<typeof JunosNetworksSchema> }
+  ntp_servers?: string[]
+  occupancy?: z.infer<typeof SiteOccupancyAnalyticsSchema>
+  org_id?: string
+  ospf_areas?: { [key: string]: z.infer<typeof JunosOspfAreasSchema> }
+  persist_config_on_device?: boolean
+  port_usages?: { dynamic?: z.infer<typeof JunosPortUsagesDynamicSchema> }
+  proxy?: { url?: string }
+  radio_config?: z.infer<typeof ApRadioSchema>
+  radius_config?: z.infer<typeof JunosRadiusConfigSchema>
+  remote_syslog?: z.infer<typeof RemoteSyslogSchema>
+  report_gatt?: boolean
+  rogue?: z.infer<typeof SiteRogueSchema>
+  rtsa?: {
+    app_waking?: boolean
+    disable_dead_reckoning?: boolean
+    disable_pressure_sensor?: boolean
+    enabled?: boolean
+    track_asset?: boolean
+  }
+  simple_alert?: z.infer<typeof SimpleAlertSchema>
+  site_id?: string
+  skyatp?: { enabled?: boolean; send_ip_mac_mapping?: boolean }
+  srx_app?: { enabled?: boolean }
+  ssh_keys?: string[]
+  ssr?: z.infer<typeof SiteSsrSchema>
+  status_portal?: { enabled?: boolean; hostnames?: string[] }
+  switch_matching?: {
+    additional_config_cmds?: string[]
+    enabled?: boolean
+    rules?: {
+      additionalProperty?: string
+      match_model?: string
+      name?: string
+      port_config?: { [key: string]: { usage?: string } }
+    }[]
+  }
+  switch_mgmt?: z.infer<typeof SiteSwitchSchema>
+  track_anonymous_devices?: boolean
+  tunterm_monitoring?: z.infer<typeof SiteTuntermMonitoringSchema>[]
+  tunterm_monitoring_disabled?: boolean
+  vars?: { [key: string]: string }
+  vna?: { enabled?: boolean }
+  vrf_instances?: { [key: string]: z.infer<typeof JunosVrfInstanceSchema> }
+  vrrp_groups?: { [key: string]: z.infer<typeof JunosVrrpGroupSchema> }
+  wan_vna?: { enabled?: boolean }
+  watched_station_url?: string
+  whitelist_url?: string
+  wids?: z.infer<typeof SiteWidsSchema>
+  wifi?: z.infer<typeof SiteWifiSchema>
+  wired_vna?: { enabled?: boolean }
+  zone_occupancy_alert?: z.infer<typeof SiteZoneOccupancyAlertSchema>
+}
+
 const AssetOfInterestSchema = z
   .object({
     _checkpoint_prep: z.number().exactOptional(),
@@ -332,19 +3108,6 @@ const OrgSiteSleWiredResponseSchema = z
     },
   })
   .openapi('OrgSiteSleWiredResponse')
-
-const AcctServerSchema = z
-  .object({
-    host: z.string().openapi({ description: 'ip / hostname of RADIUS server' }),
-    keywrap_enabled: z.boolean().exactOptional(),
-    keywrap_format: z.string().exactOptional(),
-    keywrap_kek: z.string().exactOptional(),
-    keywrap_mack: z.string().exactOptional(),
-    port: z.int().default(1813).openapi({ description: 'Acct port of RADIUS server' }),
-    secret: z.string().openapi({ description: 'secret of RADIUS server' }),
-  })
-  .openapi({ description: '', required: ['host', 'port', 'secret'] })
-  .openapi('AcctServer')
 
 const PrivilegesSchema = z
   .object({
@@ -1051,7 +3814,7 @@ const AlarmtemplateSchema = z
 
 const AnomalySchema = z
   .object({
-    events: z.array(z.object({}).openapi({ readOnly: true })).openapi({ readOnly: true }),
+    events: z.array(z.looseObject({}).openapi({ readOnly: true })).openapi({ readOnly: true }),
     since: z.number().exactOptional().openapi({ readOnly: true }),
     sle_baseline: z.number().openapi({ readOnly: true }),
     sle_deviation: z.number().openapi({ readOnly: true }),
@@ -1098,115 +3861,6 @@ const ApAeroscoutSchema = z
     required: [],
   })
   .openapi('ApAeroscout')
-
-const ApBleSchema = z
-  .object({
-    beacon_enabled: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({ description: 'whether Mist beacons is enabled' }),
-    beacon_rate: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'required if `beacon_rate_mode`==`custom`, 1-10, in number-beacons-per-second',
-      }),
-    beacon_rate_mode: z.enum(['default', 'custom']).default('default').exactOptional(),
-    beam_disabled: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({
-        description:
-          'list of AP BLE location beam numbers (1-8) which should be disabled at the AP and not transmit location information (where beam 1 is oriented at the top the AP, growing counter-clock-wise, with 9 being the omni BLE beam)',
-      }),
-    eddystone_uid_adv_power: z
-      .int()
-      .min(-100)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        description: 'advertised TX Power, -100 to 20 (dBm), omit this attribute to use default',
-      }),
-    eddystone_uid_beams: z.string().exactOptional(),
-    eddystone_uid_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'only if `beacon_enabled`==`false`, Whether Eddystone-UID beacon is enabled',
-      }),
-    eddystone_uid_freq_msec: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Frequency (msec) of data emmit by Eddystone-UID beacon' }),
-    eddystone_uid_instance: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Eddystone-UID instance for the device' }),
-    eddystone_uid_namespace: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Eddystone-UID namespace' }),
-    eddystone_url_adv_power: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'advertised TX Power, -100 to 20 (dBm), omit this attribute to use default',
-      }),
-    eddystone_url_beams: z.string().exactOptional(),
-    eddystone_url_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'only if `beacon_enabled`==`false`, Whether Eddystone-URL beacon is enabled',
-      }),
-    eddystone_url_freq_msec: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Frequency (msec) of data emmit by Eddystone-UID beacon' }),
-    eddystone_url_url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL pointed by Eddystone-URL beacon' }),
-    ibeacon_adv_power: z
-      .int()
-      .min(-100)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        description: 'advertised TX Power, -100 to 20 (dBm), omit this attribute to use default',
-      }),
-    ibeacon_beams: z.string().exactOptional(),
-    ibeacon_enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'can be enabled if `beacon_enabled`==`true`, whether to send iBeacon',
-      }),
-    ibeacon_freq_msec: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Frequency (msec) of data emmit for iBeacon' }),
-    ibeacon_major: z.int().exactOptional().openapi({ description: 'Major number for iBeacon' }),
-    ibeacon_minor: z.int().exactOptional().openapi({ description: 'Minor number for iBeacon' }),
-    ibeacon_uuid: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description: 'optional, if not specified, the same UUID as the beacon will be used',
-      }),
-    power: z
-      .int()
-      .min(1)
-      .max(10)
-      .default(9)
-      .exactOptional()
-      .openapi({ description: 'required if `power_mode`==`custom`' }),
-    power_mode: z.string().exactOptional().openapi({ description: 'default / custom' }),
-  })
-  .openapi({ description: 'BLE AP settings', required: [] })
-  .openapi('ApBle')
 
 const ApClientBridgeSchema = z
   .object({
@@ -1347,11 +4001,6 @@ const ApIpSchema = z
   })
   .openapi('ApIp')
 
-const ApLedSchema = z
-  .object({ brightness: z.int().exactOptional(), enabled: z.boolean().exactOptional() })
-  .openapi({ description: 'LED AP settings', required: [] })
-  .openapi('ApLed')
-
 const ApMeshSchema = z
   .object({
     enabled: z
@@ -1371,434 +4020,6 @@ const ApMeshSchema = z
   })
   .openapi({ description: 'Mesh AP settings', required: [] })
   .openapi('ApMesh')
-
-const AuthServerSchema = z
-  .object({
-    host: z.string().openapi({ description: 'ip / hostname of RADIUS server' }),
-    keywrap_enabled: z.boolean().exactOptional(),
-    keywrap_format: z.string().exactOptional(),
-    keywrap_kek: z.string().exactOptional(),
-    keywrap_mack: z.string().exactOptional(),
-    port: z.int().default(1812).openapi({ description: 'Auth port of RADIUS server' }),
-    secret: z.string().openapi({ description: 'secret of RADIUS server' }),
-  })
-  .openapi({ description: 'Authentication Server', required: ['host', 'port', 'secret'] })
-  .openapi('AuthServer')
-
-const JunosRadiusConfigSchema = z
-  .object({
-    acct_interim_interval: z
-      .int()
-      .min(0)
-      .max(65535)
-      .default(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'how frequently should interim accounting be reported, 60-65535. default is 0 (use one specified in Access-Accept request from RADIUS Server). Very frequent messages can affect the performance of the radius server, 600 and up is recommended when enabled',
-      }),
-    acct_servers: z
-      .array(AcctServerSchema)
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    auth_servers: z
-      .array(AuthServerSchema)
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    auth_servers_retries: z
-      .int()
-      .default(3)
-      .exactOptional()
-      .openapi({ description: 'radius auth session retries' }),
-    auth_servers_timeout: z
-      .int()
-      .default(5)
-      .exactOptional()
-      .openapi({ description: 'radius auth session timeout' }),
-    coa_enabled: z.boolean().default(false).exactOptional(),
-    coa_port: z.int().default(3799).exactOptional(),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "use `network`or `source_ip`\nwhich network the RADIUS server resides, if there's static IP for this network, we'd use it as source-ip",
-      }),
-    source_ip: z.string().exactOptional().openapi({ description: 'use `network`or `source_ip`' }),
-  })
-  .openapi({
-    description: 'Junos Radius config',
-    'x-examples': {
-      'example-1': {
-        acct_interim_interval: 0,
-        acct_servers: [{ host: '1.2.3.4', port: 1812, secret: 'testing123' }],
-        auth_servers: [
-          { host: '1.2.3.4', port: 1812, secret: 'testing123' },
-          { host: 'radius.internal', port: 1812, secret: 'testing123' },
-        ],
-        auth_servers_retries: 3,
-        auth_servers_timeout: 5,
-      },
-    },
-    required: [],
-  })
-  .openapi('JunosRadiusConfig')
-
-const RadsecSchema = z
-  .object({
-    enabled: z.boolean().exactOptional(),
-    idle_timeout: z.int().exactOptional(),
-    mxcluster_ids: z
-      .array(z.uuid())
-      .exactOptional()
-      .openapi({
-        description:
-          'To use Org mxedges when this WLAN does not use mxtunnel, specify their mxcluster_ids.\nOrg mxedge(s) identified by mxcluster_ids',
-      }),
-    server_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'name of the server to verify (against the cacerts in Org Setting). Only if not Mist Edge.',
-      }),
-    servers: z
-      .array(
-        z
-          .object({ host: z.string().exactOptional(), port: z.int().exactOptional() })
-          .openapi({ required: [] }),
-      )
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'List of Radsec Servers. Only if not Mist Edge.' }),
-    use_mxedge: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'use mxedge(s) as radsecproxy' }),
-    use_site_mxedge: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'To use Site mxedges when this WLAN does not use mxtunnel' }),
-  })
-  .openapi({ description: 'Radsec settings', required: [] })
-  .openapi('Radsec')
-
-const ApPortConfigSchema = z
-  .object({
-    additional_vlan_ids: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({ description: 'additional VLAN IDs, only valid in mesh base mode' }),
-    disabled: z.boolean().exactOptional(),
-    dynamic_vlan: z
-      .object({
-        default_vlan_id: z.int().exactOptional(),
-        enabled: z.boolean().exactOptional(),
-        type: z.string().exactOptional(),
-        vlans: z.record(z.string(), z.string()).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ description: 'optional dynamic vlan', required: [] }),
-    enable_mac_auth: z.boolean().exactOptional().openapi({ description: '' }),
-    forwarding: z
-      .enum(['all', 'limited', 'wxtunnel', 'mxtunnel', 'site_mxedge'])
-      .default('all')
-      .exactOptional(),
-    mx_tunnel_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'if `forwarding`==`mxtunnel`, vlan_ids comes from mxtunnel' }),
-    mxtunnel_name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'if `forwarding`==`site_mxedge`, vlan_ids comes from site_mxedge (`mxtunnels` under site setting)',
-      }),
-    port_auth: z
-      .enum(['none', 'dot1x'])
-      .default('none')
-      .exactOptional()
-      .openapi({ description: 'When doing port auth' }),
-    port_vlan_id: z.int().exactOptional().openapi({ description: 'if `forwrding`==`limited`' }),
-    radius_config: JunosRadiusConfigSchema.exactOptional(),
-    radsec: RadsecSchema.exactOptional(),
-    vlan_id: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'optional to specify the vlan id for a tunnel if forwarding is for `wxtunnel`, `mxtunnel` or `site_mxedge`.\n* if vlan_id is not specified then it will use first one in vlan_ids[] of the mxtunnel.\n* if forwarding == site_mxedge, vlan_ids comes from site_mxedge (`mxtunnels` under site setting)',
-      }),
-    vland_ids: z
-      .array(z.int())
-      .exactOptional()
-      .openapi({ description: 'if `forwrding`==`limited`' }),
-    wxtunnel_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'if `forwarding`==`wxtunnel`, the port is bridged to the vlan of the session',
-      }),
-    wxtunnel_remote_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'if `forwarding`==`wxtunnel`, the port is bridged to the vlan of the session',
-      }),
-  })
-  .openapi({
-    description: '',
-    title: 'ap_port_config',
-    'x-examples': {
-      'example-1': {
-        disabled: true,
-        dynamic_vlan: {
-          default_vlan_id: 1,
-          enabled: true,
-          type: 'string',
-          vlans: { property1: 'string', property2: 'string' },
-        },
-        enable_mac_auth: true,
-        forwarding: 'all',
-        mx_tunnel_id: 'string',
-        mxtunnel_name: 'string',
-        port_auth: 'none',
-        port_vlan_id: 1,
-        radius_config: {
-          acct_interim_interval: 0,
-          acct_servers: [{ host: 'string', port: 0, secret: 'string' }],
-          auth_servers: [{ host: 'string', port: 0, secret: 'string' }],
-          auth_servers_retries: 0,
-          auth_servers_timeout: 0,
-        },
-        radsec: {
-          enabled: true,
-          server_name: 'string',
-          servers: [{ host: 'string', port: 0 }],
-          use_mxedge: true,
-        },
-        vland_ids: [0],
-        wxtunnel_id: 'string',
-        wxtunnel_remote_id: 'string',
-      },
-    },
-    required: [],
-  })
-  .openapi('ApPortConfig')
-
-const ApRadioBandSchema = z
-  .object({
-    allow_rrm_disable: z.boolean().exactOptional(),
-    ant_gain: z.int().nullable().exactOptional(),
-    antenna_mode: z
-      .enum(['default', '1x1', '2x2', '3x3', '4x4'])
-      .default('default')
-      .exactOptional(),
-    bandwidth: z
-      .union([z.literal(20), z.literal(40), z.literal(80)])
-      .exactOptional()
-      .openapi({
-        description:
-          'channel width for the band, 20 / 40 / 80 / 160, 80 is only applicable for band_5 and 160 is only for band_6, ignored if channel is 0',
-      }),
-    channel: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'For Device. (primary) channel for the band, 0 means using the Site Setting',
-      }),
-    channels: z
-      .array(z.int())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'For RFTemplates. List of channels, null or empty array means auto',
-      }),
-    disabled: z.boolean().exactOptional().openapi({ description: 'whether to disable the radio' }),
-    power: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'TX power of the radio. For Devices, 0 mean using the Site Setting',
-      }),
-    power_max: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'when power=0, max tx power to use, HW-specific values will be used if not set',
-      }),
-    power_min: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'when power=0, min tx power to use, HW-specific values will be used if not set',
-      }),
-    preamble: z.enum(['short', 'long', 'auto']).default('short').exactOptional(),
-    usage: z
-      .enum(['24', '5', 'rrm'])
-      .default('24')
-      .exactOptional()
-      .openapi({ description: 'for band_24 radio' }),
-  })
-  .openapi({
-    description: 'Radio Band AP settings',
-    'x-examples': {
-      'example-1': {
-        allow_rrm_disable: true,
-        ant_gain: 0,
-        antenna_mode: 'default',
-        bandwidth: 20,
-        channel: 0,
-        channels: [0],
-        disabled: true,
-        power: 0,
-        power_max: 0,
-        power_min: 0,
-        preamble: 'short',
-        usage: '24',
-      },
-    },
-    required: [],
-  })
-  .openapi('ApRadioBand')
-
-const ApRadioSchema = z
-  .object({
-    allow_rrm_disable: z.boolean().default(false).exactOptional(),
-    ant_gain_24: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'antenna gain for 2.4G - for models with external antenna only' }),
-    ant_gain_5: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'antenna gain for 5G - for models with external antenna only' }),
-    ant_gain_6: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'antenna gain for 6G - for models with external antenna only' }),
-    antenna_mode: z
-      .enum(['default', '1x1', '2x2', '3x3', '4x4'])
-      .default('default')
-      .exactOptional(),
-    band_24: ApRadioBandSchema.exactOptional(),
-    band_24_usage: z
-      .enum(['24', '5', 'auto'])
-      .default('24')
-      .exactOptional()
-      .openapi({
-        description:
-          'if `band_24_usage`==`5`, by default, band_5 properties is used, if specific channel/bandwidth/power/... is desired, use the "band_5_on_24_radio"',
-      }),
-    band_5: ApRadioBandSchema.exactOptional(),
-    band_5_on_24_radio: ApRadioBandSchema.exactOptional(),
-    band_6: ApRadioBandSchema.exactOptional(),
-    scanning_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'whether scanning radio is enabled' }),
-  })
-  .openapi({
-    description: 'Radio AP settings',
-    'x-examples': {
-      'example-1': {
-        ant_gain_24: 0,
-        ant_gain_5: 0,
-        ant_gain_6: 0,
-        band_24: {
-          allow_rrm_disable: true,
-          ant_gain: 0,
-          antenna_mode: 'default',
-          bandwidth: 20,
-          channel: 0,
-          channels: [0],
-          disabled: true,
-          power: 0,
-          power_max: 0,
-          power_min: 0,
-          preamble: 'short',
-          usage: '24',
-        },
-        band_24_usage: '24',
-        band_5: {
-          allow_rrm_disable: true,
-          ant_gain: 0,
-          antenna_mode: 'default',
-          bandwidth: 20,
-          channel: 0,
-          channels: [0],
-          disabled: true,
-          power: 0,
-          power_max: 0,
-          power_min: 0,
-          preamble: 'short',
-          usage: '24',
-        },
-        band_5_on_24_radio: {
-          allow_rrm_disable: true,
-          ant_gain: 0,
-          antenna_mode: 'default',
-          bandwidth: 20,
-          channel: 0,
-          channels: [0],
-          disabled: true,
-          power: 0,
-          power_max: 0,
-          power_min: 0,
-          preamble: 'short',
-          usage: '24',
-        },
-        band_6: {
-          allow_rrm_disable: true,
-          ant_gain: 0,
-          antenna_mode: 'default',
-          bandwidth: 20,
-          channel: 0,
-          channels: [0],
-          disabled: true,
-          power: 0,
-          power_max: 0,
-          power_min: 0,
-          preamble: 'short',
-          usage: '24',
-        },
-        scanning_enabled: true,
-      },
-    },
-    required: [],
-  })
-  .openapi('ApRadio')
 
 const ApSwitchSettingSchema = z
   .object({
@@ -1913,7 +4134,7 @@ const ApitokenSchema = z
   })
   .openapi('Apitoken')
 
-const AptemplateSchema = z
+const AptemplateSchema: z.ZodType<AptemplateType> = z
   .object({
     ap_matching: z
       .object({
@@ -2091,27 +4312,6 @@ const AssetFilterSchema = z
     },
   })
   .openapi('AssetFilter')
-
-const AutoPreemptionSchema = z
-  .object({
-    day_of_week: z.enum(['any', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']).exactOptional(),
-    enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'whether auto preemption should happen' }),
-    time_of_day: z
-      .string()
-      .default('any')
-      .exactOptional()
-      .openapi({ description: 'any / HH:MM (24-hour format)' }),
-  })
-  .openapi({
-    description: 'schedule to preempt ap’s which are not connected to preferred peer',
-    'x-examples': { 'example-1': { day_of_week: 'any', enabled: false, time_of_day: 'any' } },
-    required: [],
-  })
-  .openapi('AutoPreemption')
 
 const BeaconSchema = z
   .object({
@@ -2568,7 +4768,7 @@ const CaptureSchema = z
             z
               .object({
                 ports: z
-                  .record(z.string(), z.object({}).nullable())
+                  .record(z.string(), z.looseObject({}).nullable())
                   .exactOptional()
                   .openapi({ description: 'Property key is the interface name' }),
               })
@@ -3192,7 +5392,7 @@ const DeviceApSchema = z
       .openapi({ required: [] }),
     usb_config: ApUsbSchema.exactOptional(),
     vars: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3571,6 +5771,7 @@ const JunosDhcpdSchema = z
         },
       },
     },
+    required: [],
   })
   .openapi('JunosDhcpd')
 
@@ -3684,6 +5885,7 @@ const JunosOobIpConfigSchema = z
         use_mgmt_vrf_for_host_outbound_traffic: false,
       },
     },
+    required: [],
   })
   .openapi('JunosOobIpConfig')
 
@@ -3920,7 +6122,7 @@ const DeviceGatewaySchema = z
       .openapi({ description: 'The property key is the port name or range (e.g. "ge-0/0/0-10")' }),
     site_id: z.uuid().exactOptional().openapi({ readOnly: true }),
     vars: z
-      .object({})
+      .looseObject({})
       .refine((val) => Object.keys(val).length >= 0)
       .exactOptional(),
   })
@@ -4272,40 +6474,6 @@ const JunosAclTagsSchema = z
   })
   .openapi('JunosAclTags')
 
-const JunosDhcpSnoopingSchema = z
-  .object({
-    all_networks: z.boolean().exactOptional(),
-    enable_arp_spoof_check: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enable for dynamic ARP inspection check ' }),
-    enable_ip_source_guard: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enable for check for forging source IP address' }),
-    enabled: z.boolean().exactOptional(),
-    networks: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'if `all_networks`==`false`, list of network with DHCP snooping enabled',
-      }),
-  })
-  .openapi({
-    description: '',
-    'x-examples': {
-      'example-1': {
-        all_networks: false,
-        enable_arp_spoof_check: true,
-        enable_ip_source_guard: true,
-        enabled: true,
-        networks: ['corp'],
-      },
-    },
-    required: [],
-  })
-  .openapi('JunosDhcpSnooping')
-
 const JunosEvpnConfigSchema = z
   .object({
     enabled: z.boolean().exactOptional(),
@@ -4313,37 +6481,6 @@ const JunosEvpnConfigSchema = z
   })
   .openapi({ description: 'EVPN Junos settings', required: [] })
   .openapi('JunosEvpnConfig')
-
-const JunosNetworksSchema = z
-  .object({
-    dns: z.array(z.string()).exactOptional(),
-    dns_suffix: z.array(z.string()).exactOptional(),
-    gateway: z.string().exactOptional(),
-    ospf_interface_type: z.string().exactOptional(),
-    subnet: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'optional for pure switching, required when L3 / routing features are used',
-      }),
-    vlan_id: z.int(),
-    zone: z.string().exactOptional().openapi({ description: 'used for gateway' }),
-  })
-  .openapi({
-    description:
-      'A network represents a network segment. It can either represent a VLAN (then usually ties to a L3 subnet), optionally associate it with a subnet which can later be used to create addition routes. Used for ports doing `family ethernet-switching`. It can also be a pure L3-subnet that can then be used against a port that with `family inet`.',
-    required: ['vlan_id'],
-    'x-examples': {
-      'example-1': {
-        corp: { subnet: '192.168.70.0/24', vlan_id: 60, zone: 'trust' },
-        dedicated: { ospf_interface_type: 'p2p', subnet: '10.18.14.72/30' },
-        default: { vlan_id: 1, zone: 'trust' },
-        it_mgmt: { subnet: '192.168.70.0/24', zone: 'trust' },
-        wan: { zone: 'untrust' },
-      },
-    },
-  })
-  .openapi('JunosNetworks')
 
 const JunosOspfConfigSchema = z
   .object({
@@ -4402,73 +6539,6 @@ const JunosOtherIpConfigsSchema = z
   })
   .openapi('JunosOtherIpConfigs')
 
-const JunosPortConfigSchema = z
-  .object({
-    ae_disable_lacp: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'To disable LACP support for the AE interface' }),
-    ae_idx: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Users could force to use the designated AE name' }),
-    aggregated: z.boolean().default(false).exactOptional(),
-    critical: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'if want to generate port up/down alarm' }),
-    description: z.string().exactOptional(),
-    disable_autoneg: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'if `speed` and `duplex` are specified, whether to disable autonegotiation',
-      }),
-    duplex: z.enum(['auto', 'full', 'half']).default('auto').exactOptional(),
-    dynamic_usage: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Enable dynamic usage for this port. Set to `dynamic` to enable.' }),
-    esilag: z.boolean().exactOptional(),
-    mtu: z
-      .int()
-      .default(1514)
-      .exactOptional()
-      .openapi({
-        description:
-          'media maximum transmission unit (MTU) is the largest data unit that can be forwarded without fragmentation',
-      }),
-    no_local_overwrite: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'prevent helpdesk to override the port config' }),
-    poe_disabled: z.boolean().default(false).exactOptional(),
-    speed: z.enum(['auto', '10m', '100m', '1g', '2.5g', '5g']).default('auto').exactOptional(),
-    usage: z
-      .string()
-      .openapi({
-        description: 'port usage name. \n\nIf EVPN is used, use `evpn_uplink`or `evpn_downlink`',
-      }),
-  })
-  .openapi({
-    description: 'Switch port config',
-    required: ['usage'],
-    'x-examples': {
-      'example-1': {
-        ae_disable_lacp: false,
-        ae_idx: 0,
-        aggregated: true,
-        description: 'to dist-sw-01',
-        usage: 'uplink',
-      },
-      'example-3': { usage: 'ap' },
-      'example-dynamic': { dynamic_usage: 'dynamic', usage: 'default' },
-    },
-  })
-  .openapi('JunosPortConfig')
-
 const JunosPortMirrorSchema = z
   .object({
     egress_port_ids: z
@@ -4478,7 +6548,7 @@ const JunosPortMirrorSchema = z
         description:
           'at least one of `ingress_port_ids`,`egress_port_ids` or `ingress_networks` should be specified',
       }),
-    filter: z.object({}).exactOptional(),
+    filter: z.looseObject({}).exactOptional(),
     ingress_networks: z
       .array(z.string().openapi({ example: 'corp' }))
       .exactOptional()
@@ -4516,82 +6586,6 @@ const JunosPortMirrorSchema = z
     required: [],
   })
   .openapi('JunosPortMirror')
-
-const JunosPortUsagesDynamicSchema = z
-  .object({
-    mode: z.literal('dynamic').default('dynamic'),
-    reset_default_when: z
-      .enum(['none', 'link_down'])
-      .default('link_down')
-      .exactOptional()
-      .openapi({
-        description:
-          'Control when the DPC port should be changed to the default port usage\nConfiguring to none will let the DPC port keep at the current port usage.',
-      }),
-    rules: z
-      .array(
-        z
-          .object({
-            equals: z.string().exactOptional(),
-            equals_any: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({ description: 'use `equals_any` to match any item in a list' }),
-            expression: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  '"[0:3]":"abcdef" -> "abc"\n"split(.)[1]": "a.b.c" -> "b"\n"split(-)[1][0:3]: "a1234-b5678-c90" -> "b56"',
-              }),
-            src: z.enum([
-              'lldp_chassis_id',
-              'lldp_system_name',
-              'lldp_serial_number',
-              'lldp_hardware_revision',
-              'lldp_manufacturer_name',
-              'lldp_oui',
-              'radius_username',
-              'radius_usermac',
-              'radius_dynamicfilter',
-              'link_peermac',
-            ]),
-            usage: z.string().exactOptional().openapi({ description: '`port_usage` name' }),
-          })
-          .openapi({ required: ['src'] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      'This is a special mode where the actually usage is determined by a set of rules the port will start with `access` mode and isolated depending on the rules, if resolved, the port will have the resolved usage applied.',
-    required: ['mode'],
-    title: '',
-    'x-examples': {
-      'example-1': {
-        all_networks: true,
-        bypass_auth_when_server_down: true,
-        description: 'string',
-        disable_autoneg: true,
-        disabled: true,
-        duplex: 'half',
-        enable_mac_auth: true,
-        guest_network: 'string',
-        mac_limit: 0,
-        mode: 'access',
-        mtu: 0,
-        networks: ['string'],
-        poe_disabled: true,
-        port_auth: 'string',
-        port_network: 'string',
-        speed: 'string',
-        storm_control: {},
-        stp_edge: true,
-        voip_network: 'string',
-      },
-    },
-  })
-  .openapi('JunosPortUsagesDynamic')
 
 const JunosStormControlSchema = z
   .object({
@@ -4823,6 +6817,7 @@ const DeviceSwitchSchema = z
       .exactOptional()
       .openapi({
         description: 'ACL Tags to identify traffic source or destination. Key name is the tag name',
+        required: [],
       }),
     additional_config_cmds: z.array(z.string()).exactOptional(),
     created_time: z.number().exactOptional().openapi({ readOnly: true }),
@@ -4906,13 +6901,13 @@ const DeviceSwitchSchema = z
       .object({ dynamic: JunosPortUsagesDynamicSchema.exactOptional() })
       .catchall(JunosPortUsagesSchema)
       .exactOptional()
-      .openapi({ description: 'The property key is the port profile name' }),
+      .openapi({ description: 'The property key is the port profile name', required: [] }),
     radius_config: JunosRadiusConfigSchema.exactOptional(),
     role: z.enum(['access', 'aggregation']).default('access').exactOptional(),
     router_id: z.string().exactOptional().openapi({ description: 'used for OSPF / BGP / EVPN' }),
     site_id: z.uuid().exactOptional().openapi({ readOnly: true }),
     vars: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5305,7 +7300,7 @@ const DeviceUpgradeResponseSchema = z
       .exactOptional()
       .openapi({ description: 'version to upgrade to' }),
     upgrade_plan: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'a dictionary of rrm phase number to devices part of that phase' }),
   })
@@ -5428,7 +7423,7 @@ const DeviceprofileSchema = z
     type: z.enum(['ap', 'switch', 'gateway']).default('ap').exactOptional(),
     usb_config: ApUsbSchema.exactOptional(),
     vars: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5930,7 +7925,8 @@ const TemplateGatewayMatchingSchema = z
                 description:
                   'property key define the type of matchine. e.g: `match_name[0:3]`, `match_model[0-6]` or   `match_role`',
               }),
-          ),
+          )
+          .openapi({ required: [] }),
       )
       .min(1)
       .superRefine((items, ctx) => {
@@ -7441,50 +9437,6 @@ const InventorySchema = z
   })
   .openapi('Inventory')
 
-const JunosEvpnOptionsSchema = z
-  .object({
-    core_as_border: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'optional, for ERB or CLOS, you can either use esilag to upstream routers or to also be the virtual-gateway\nwhen `routed_at` != `core`, whether to do virtual-gateway at core as well',
-      }),
-    overlay: z
-      .object({
-        as: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'optional, these are defaults', example: 65000 }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    per_vlan_vga_v4_mac: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          "by default, JUNOS uses 00-00-5e-00-01-01 as the virtual-gateway-address's v4-mac\nif enabled, 00-00-5e-00-XX-YY will be used (where XX=vlan_id/256, YY=vlan_id%256)",
-      }),
-    routed_at: z
-      .enum(['edge', 'core', 'distribution'])
-      .default('edge')
-      .exactOptional()
-      .openapi({ description: 'optional, where virtual-gateway should reside' }),
-    underlay: z
-      .object({
-        as_base: z.int().exactOptional().openapi({ example: 65001 }),
-        routed_id_prefix: z.string().exactOptional().openapi({ example: '/24' }),
-        subnet: z.string().exactOptional().openapi({ example: '10.255.240.0/20' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ description: 'EVPN Options', required: [] })
-  .openapi('JunosEvpnOptions')
-
 const JunosEvpnTopologySchema = z
   .object({
     id: z.string().exactOptional().openapi({ readOnly: true }),
@@ -7563,484 +9515,6 @@ const JunosEvpnTopologySchema = z
     },
   })
   .openapi('JunosEvpnTopology')
-
-const JunosOspfAreasSchema = z
-  .object({
-    networks: z
-      .record(
-        z.string(),
-        z
-          .object({
-            auth_keys: z
-              .record(z.string(), z.string())
-              .exactOptional()
-              .openapi({
-                description: 'if `auth_type`==`md5`. The property key is the key number',
-              }),
-            auth_password: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'if `auth_type`==`password`, the password, max length is 8',
-              }),
-            auth_type: z
-              .enum(['none', 'md5', 'password'])
-              .default('none')
-              .exactOptional()
-              .openapi({ description: 'auth type' }),
-            dead_interval: z.int().min(1).max(65535).exactOptional(),
-            hello_interval: z.int().min(1).max(255).exactOptional(),
-            interface_type: z
-              .enum(['nbma', 'p2p', 'p2mp'])
-              .default('nbma')
-              .exactOptional()
-              .openapi({ description: 'interface type (nbma = non-broadcast multi-access)' }),
-            passive: z
-              .boolean()
-              .default(false)
-              .exactOptional()
-              .openapi({ description: 'whether to send OSPF-Hello' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'networks to participate in an OSPF area. The property key is the network name',
-      }),
-    type: z
-      .enum(['default', 'stub', 'nssa'])
-      .default('default')
-      .exactOptional()
-      .openapi({ description: 'OSPF type, default (default) / stub / nssa' }),
-  })
-  .openapi({
-    description: 'Junos OSPF areas',
-    'x-examples': {
-      'example-1': {
-        networks: {
-          '{network_name}': {
-            auth_keys: { '{key}': 'string' },
-            auth_password: 'string',
-            auth_type: 'none',
-            interface_type: 'nbma',
-            passive: true,
-          },
-        },
-        type: 'default',
-      },
-    },
-    required: [],
-  })
-  .openapi('JunosOspfAreas')
-
-const JunosSnmpConfigSchema = z
-  .object({
-    client_list: z
-      .array(
-        z
-          .object({
-            client_list_name: z.string().exactOptional().openapi({ example: 'clist-1' }),
-            clients: z.array(z.string().openapi({ example: '151.140.101.218/32' })).exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    contact: z.string().exactOptional().openapi({ example: 'cns@juniper.net' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'Juniper QFX Series Switch - 1K_5LA' }),
-    enabled: z.boolean().default(true).exactOptional(),
-    engine_id: z
-      .enum(['local', 'engine-id-suffix', 'use-default-ip-address', 'use-mac-address'])
-      .exactOptional(),
-    location: z.string().exactOptional().openapi({ example: 'Las Vegas, NV' }),
-    name: z.string().exactOptional().openapi({ example: 'TGH-1K-QFX10K' }),
-    trap_groups: z
-      .array(
-        z
-          .object({
-            categories: z.array(z.string().openapi({ example: 'authentication' })).exactOptional(),
-            group_name: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Categories list can refer to https://www.juniper.net/documentation/software/topics/task/configuration/snmp-trap-groups-configuring-junos-nm.html',
-                example: 'profiler',
-              }),
-            targets: z.array(z.string().openapi({ example: '172.29.158.19' })).exactOptional(),
-            version: z.enum(['v1', 'v2', 'all']).default('v2').exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    v2c_config: z
-      .array(
-        z
-          .object({
-            authorization: z.string().exactOptional().openapi({ example: 'read-only' }),
-            client_list_name: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'client_list_name here should refer to client_list above',
-                example: 'clist-1',
-              }),
-            community_name: z.string().exactOptional().openapi({ example: 'abc123' }),
-            view: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'view name here should be defined in views above',
-                example: 'all',
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    v3_config: z
-      .object({
-        notify: z
-          .array(
-            z
-              .object({
-                name: z.string().exactOptional(),
-                tag: z.string().exactOptional(),
-                type: z.enum(['trap', 'inform']).exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-        notify_filter: z
-          .array(
-            z
-              .object({
-                contents: z
-                  .array(
-                    z
-                      .object({
-                        include: z.boolean().exactOptional(),
-                        oid: z.string().exactOptional().openapi({ example: '1.3.6.1.4.1' }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                profile_name: z.string().exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-        target_address: z
-          .array(
-            z
-              .object({
-                address: z.string().exactOptional(),
-                address_mask: z.string().exactOptional(),
-                port: z.int().default(161).exactOptional(),
-                tag_list: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: '<refer to notify tag, can be multiple with blank' }),
-                target_address_name: z.string().exactOptional(),
-                target_parameters: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'refer to notify target parameters name' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-        target_parameters: z
-          .array(
-            z
-              .object({
-                message_processing_model: z.enum(['v1', 'v2c', 'v3']).exactOptional(),
-                name: z.string().exactOptional(),
-                notify_filter: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'refer to profile-name in notify-filter' }),
-                security_level: z.enum(['authentication', 'none', 'privacy']).exactOptional(),
-                security_model: z.enum(['usm', 'v1', 'v2c']).exactOptional(),
-                security_name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'refer to security_name in usm', example: 'm01620' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-        usm: z
-          .object({
-            'engine-id': z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'required only if `engine_type`==`remote_engine`',
-                example: '00:00:00:0b:00:00:70:10:6f:08:b6:3f',
-              }),
-            engine_type: z.enum(['remote_engine', 'local_engine']).exactOptional(),
-            users: z
-              .array(
-                z
-                  .object({
-                    authentication_password: z
-                      .string()
-                      .min(7)
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Not required if `authentication_type`==`authentication-none`\ninclude alphabetic, numeric, and special characters, but it cannot include control characters. ',
-                      }),
-                    authentication_type: z
-                      .enum([
-                        'authentication-md5',
-                        'authentication-sha',
-                        'authentication-sha224',
-                        'authentication-sha256',
-                        'authentication-sha384',
-                        'authentication-sha512',
-                        'authentication-none',
-                      ])
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'sha224, sha256, sha384, sha512 are supported in 21.1 and newer release',
-                      }),
-                    encryption_password: z
-                      .string()
-                      .min(8)
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Not required if `encryption_type`==`privacy-none`\ninclude alphabetic, numeric, and special characters, but it cannot include control characters',
-                      }),
-                    encryption_type: z
-                      .enum(['privacy-aes128', 'privacy-des', 'privacy-3des', 'privacy-none'])
-                      .exactOptional(),
-                    name: z.string().exactOptional(),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        vacm: z
-          .object({
-            access: z
-              .array(
-                z
-                  .object({
-                    group_name: z.string().exactOptional(),
-                    prefix_list: z
-                      .array(
-                        z
-                          .object({
-                            context_prefix: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'only required if `type`==`context_prefix`',
-                                example: 'iil',
-                              }),
-                            notify_view: z
-                              .string()
-                              .exactOptional()
-                              .openapi({ description: 'refer to view name', example: 'all' }),
-                            read_view: z
-                              .string()
-                              .exactOptional()
-                              .openapi({ description: 'refer to view name', example: 'all' }),
-                            security_level: z
-                              .enum(['privacy', 'authentication', 'none'])
-                              .exactOptional(),
-                            security_model: z.enum(['any', 'usm', 'v1', 'v2c']).exactOptional(),
-                            type: z.literal('default_context_prefix').exactOptional(),
-                            write_view: z
-                              .string()
-                              .exactOptional()
-                              .openapi({ description: 'refer to view name', example: 'all' }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .exactOptional(),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional(),
-            security_to_group: z
-              .object({
-                content: z
-                  .array(
-                    z
-                      .object({
-                        group: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'refer to group_name under access' }),
-                        security_name: z.string().exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                security_model: z.enum(['usm', 'v1', 'v2c']).exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    views: z
-      .object({
-        include: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'if the root oid configured is included' }),
-        oid: z.string().exactOptional().openapi({ example: '1.3.6.1' }),
-        view_name: z.string().exactOptional().openapi({ example: 'all' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    'x-examples': {
-      'example-1': {
-        client_list: [{ client_list_name: 'clist-1', clients: ['151.140.101.218/32'] }],
-        contact: 'cns@juniper.net',
-        description: 'Juniper QFX Series Switch - 1K_5LA',
-        engine_id: 'local',
-        location: 'Las Vegas, NV',
-        name: 'TGH-1K-QFX10K',
-        trap_groups: [
-          {
-            categories: ['authentication'],
-            group_name: 'profiler',
-            targets: ['172.29.158.19'],
-            version: 'v2',
-          },
-        ],
-        v2c_config: [
-          { authorization: 'read-only', client_list_name: 'clist-1', community_name: 'abc123' },
-        ],
-        v3_config: {
-          notify: [{ name: 'string', tag: 'string', type: 'trap' }],
-          notify_filter: [
-            { contents: [{ include: true, oid: '1.3.6.1.4.1' }], profile_name: 'string' },
-          ],
-          target_address: [
-            {
-              address: 'string',
-              address_mask: 'string',
-              port: 161,
-              tag_list: 'string',
-              target_address_name: 'string',
-              target_parameters: 'string',
-            },
-          ],
-          target_parameters: [
-            {
-              message_processing_model: 'v1',
-              name: 'string',
-              notify_filter: 'string',
-              security_level: 'authentication',
-              security_model: 'usm',
-              security_name: 'm01620',
-            },
-          ],
-          usm: {
-            'engine-id': '00:00:00:0b:00:00:70:10:6f:08:b6:3f',
-            engine_type: 'remote_engine',
-            users: [
-              {
-                authentication_password: 'strings',
-                authentication_type: 'authentication-md5',
-                encryption_password: 'stringst',
-                encryption_type: 'privacy-aes128',
-                name: 'string',
-              },
-            ],
-          },
-          vacm: {
-            access: [
-              {
-                group_name: 'string',
-                prefix_list: [
-                  {
-                    context_prefix: 'iil',
-                    notify_view: 'all',
-                    read_view: 'all',
-                    security_level: 'privacy',
-                    security_model: 'any',
-                    type: 'default_context_prefix',
-                    write_view: 'all',
-                  },
-                ],
-              },
-            ],
-            security_to_group: {
-              content: [{ group: 'string', security_name: 'string' }],
-              security_model: 'usm',
-            },
-          },
-        },
-        views: { include: true, oid: '1.3.6.1', view_name: 'all' },
-      },
-    },
-    required: [],
-  })
-  .openapi('JunosSnmpConfig')
-
-const JunosVrfInstanceSchema = z
-  .object({
-    extra_routes: z.record(
-      z.string(),
-      z
-        .object({ via: z.ipv4().exactOptional() })
-        .openapi({ description: 'The property key is a CIDR', required: [] }),
-    ),
-    networks: z.array(z.string()),
-  })
-  .openapi({
-    description: '',
-    required: ['networks', 'extra_routes'],
-    'x-examples': {
-      'example-1': {
-        extra_routes: { property1: { via: '192.168.0.1' }, property2: { via: '192.168.0.1' } },
-        networks: ['string'],
-      },
-    },
-  })
-  .openapi('JunosVrfInstance')
-
-const JunosVrrpGroupSchema = z
-  .object({
-    auth_key: z.string().exactOptional().openapi({ description: 'if `auth_type`==`md5`' }),
-    auth_password: z.string().exactOptional().openapi({ description: 'if `auth_type`==`simple`' }),
-    auth_type: z.enum(['md5', 'simple']).default('md5').exactOptional(),
-    networks: z
-      .record(z.string(), z.object({ ip: z.string().exactOptional() }).openapi({ required: [] }))
-      .exactOptional()
-      .openapi({ description: 'The property key is the network name' }),
-  })
-  .openapi({
-    description: 'Junos VRRP group',
-    'x-examples': {
-      'example-1': {
-        auth_key: 'string',
-        auth_password: 'string',
-        auth_type: 'none',
-        networks: { '{network_name}': { ip: 'string' } },
-      },
-    },
-    required: [],
-  })
-  .openapi('JunosVrrpGroup')
 
 const LicenseSchema = z
   .object({
@@ -8376,7 +9850,7 @@ const MapSchema = z
   .object({
     created_time: z.number().exactOptional().openapi({ readOnly: true }),
     flags: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'name/val pair objects for location engine to use' }),
     for_site: z.boolean().exactOptional().openapi({ readOnly: true }),
@@ -8608,59 +10082,6 @@ const MapSchema = z
   })
   .openapi('Map')
 
-const MxedgeDasSchema = z
-  .object({
-    coa_servers: z
-      .array(
-        z
-          .object({
-            disable_event_timestamp_check: z
-              .boolean()
-              .default(false)
-              .exactOptional()
-              .openapi({ description: 'whether to disable Event-Timestamp Check' }),
-            enabled: z.boolean().exactOptional(),
-            host: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'this server configured to send CoA|DM to mist edges' }),
-            port: z
-              .int()
-              .default(3799)
-              .exactOptional()
-              .openapi({ description: 'mist edges will allow this host on this port' }),
-            secret: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'dynamic authorization clients configured to send CoA|DM to mist edges on port 3799',
-      }),
-    enabled: z.boolean().default(false).exactOptional(),
-  })
-  .openapi({
-    description:
-      'configure cloud-assisted dynamic authorization service on this cluster of mist edges',
-    'x-examples': {
-      'example-1': {
-        coa_servers: [
-          {
-            disable_event_timestamp_check: false,
-            enabled: false,
-            host: 'aaa.internal',
-            port: 3799,
-            secret: 'testing456',
-          },
-        ],
-        enabled: true,
-      },
-    },
-    required: [],
-  })
-  .openapi('MxedgeDas')
-
 const MxclusterNacSchema = z
   .object({
     acct_server_port: z.int().default(1813).exactOptional(),
@@ -8707,168 +10128,6 @@ const MxclusterNacSchema = z
   })
   .openapi('MxclusterNac')
 
-const MxclusterRadsecSchema = z
-  .object({
-    acct_servers: z
-      .array(
-        z
-          .object({
-            host: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'ip / hostname of RADIUS server' }),
-            port: z
-              .int()
-              .default(1813)
-              .exactOptional()
-              .openapi({ description: 'Acct port of RADIUS server' }),
-            secret: z.string().exactOptional().openapi({ description: 'secret of RADIUS server' }),
-            ssids: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({
-                description:
-                  'list of ssids that will use this server if match_ssid is true and match is found',
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'list of RADIUS accounting servers, optional, order matters where the first one is treated as primary',
-      }),
-    auth_servers: z
-      .array(
-        z
-          .object({
-            host: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'ip / hostname of RADIUS server' }),
-            keywrap_enabled: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description: 'if used for Mist APs, enable keywrap algorithm. Default is false',
-              }),
-            keywrap_format: z
-              .enum(['hex', 'ascii'])
-              .exactOptional()
-              .openapi({ description: 'if used for Mist APs' }),
-            keywrap_kek: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'if used for Mist APs, encryption key' }),
-            keywrap_mack: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'if used for Mist APs, Message Authentication Code Key' }),
-            port: z
-              .int()
-              .default(1812)
-              .exactOptional()
-              .openapi({ description: 'Auth port of RADIUS server' }),
-            secret: z.string().exactOptional().openapi({ description: 'secret of RADIUS server' }),
-            ssids: z
-              .array(z.string())
-              .exactOptional()
-              .openapi({
-                description:
-                  'list of ssids that will use this server if match_ssid is true and match is found',
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'list of RADIUS authentication servers, order matters where the first one is treated as primary',
-      }),
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'whether to enable service on Mist Edge i.e. RADIUS proxy over TLS',
-      }),
-    match_ssid: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'whether to match ssid in request message to select from a subset of RADIUS servers',
-      }),
-    proxy_hosts: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'hostnames or IPs for Mist AP to use as the TLS Server (i.e. they are reachable from AP) in addition to `tunterm_hosts`',
-      }),
-    server_selection: z
-      .enum(['ordered', 'unordered'])
-      .default('ordered')
-      .exactOptional()
-      .openapi({
-        description:
-          'ordered (default) / unordered. When ordered, Mist Edge will prefer and go back to the first radius server if possible',
-      }),
-    source: z
-      .enum(['tunnel', 'oob', 'any'])
-      .default('any')
-      .exactOptional()
-      .openapi({ description: 'Specify source address to use when connecting to RADIUS servers' }),
-  })
-  .openapi({
-    description: 'MxEdge Radsec Configuration',
-    'x-examples': {
-      'example-1': {
-        acct_servers: [{ host: '1.2.3.4', port: 1812, secret: 'testing123' }],
-        auth_servers: [
-          { host: '1.2.3.4', port: 1812, secret: 'testing123' },
-          { host: 'radius.internal', port: 1812, secret: 'testing123' },
-        ],
-        enabled: true,
-        server_selection: 'ordered',
-      },
-    },
-    required: [],
-  })
-  .openapi('MxclusterRadsec')
-
-const SiteTuntermMonitoringSchema = z
-  .object({
-    host: z
-      .string()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'can be ip, ipv6, hostname', example: '10.2.8.15' }),
-    port: z.int().exactOptional().openapi({ description: 'when `protocol`==`tcp`', example: 80 }),
-    protocol: z.enum(['arp', 'ping', 'tcp']).exactOptional().openapi({ example: 'tcp' }),
-    timeout: z.int().default(300).exactOptional().openapi({ example: 300 }),
-  })
-  .openapi({
-    'x-examples': { 'example-1': { host: '10.2.8.15', port: 80, protocol: 'ping', timeout: 300 } },
-    required: [],
-  })
-  .openapi('SiteTuntermMonitoring')
-
 const MxclusterSchema = z
   .object({
     created_time: z.number().exactOptional().openapi({ readOnly: true }),
@@ -8914,6 +10173,7 @@ const MxclusterSchema = z
       .openapi({
         description:
           'DHCP server/relay configuration of Mist Tunneled VLANs. The property key is the VLAN ID',
+        required: [],
       }),
     tunterm_extra_routes: z
       .record(z.string(), z.object({ via: z.string().exactOptional() }).openapi({ required: [] }))
@@ -9079,7 +10339,10 @@ const MxedgeSchema = z
           .openapi({ required: [] }),
       )
       .exactOptional()
-      .openapi({ description: 'global and per-VLAN. The property key is the VLAN ID' }),
+      .openapi({
+        description: 'global and per-VLAN. The property key is the VLAN ID',
+        required: [],
+      }),
     tunterm_extra_routes: z
       .record(z.string(), z.object({ via: z.string().exactOptional() }).openapi({ required: [] }))
       .exactOptional()
@@ -9184,7 +10447,7 @@ const MxedgeSchema = z
           .openapi({ required: [] }),
       )
       .exactOptional()
-      .openapi({ description: 'if custom vlan settings are desired' }),
+      .openapi({ description: 'if custom vlan settings are desired', required: [] }),
     versions: z
       .object({ mxagent: z.string().exactOptional(), tuntnerm: z.string().exactOptional() })
       .exactOptional()
@@ -9260,11 +10523,6 @@ const MxedgeSchema = z
   })
   .openapi('Mxedge')
 
-const MxedgeMgmtSchema = z
-  .object({ mist_password: z.string().exactOptional(), root_password: z.string().exactOptional() })
-  .openapi({ title: 'mxedge_mgmt', required: [] })
-  .openapi('MxedgeMgmt')
-
 const MxedgeUpgradeResponseSchema = z
   .object({
     channel: z.string().min(1),
@@ -9274,7 +10532,7 @@ const MxedgeUpgradeResponseSchema = z
     id: z.string().min(1),
     status: z.string().min(1),
     strategy: z.string().min(1),
-    versions: z.object({}),
+    versions: z.looseObject({}),
   })
   .openapi({
     description: '',
@@ -9534,425 +10792,7 @@ const NacTagSchema = z
   })
   .openapi('NacTag')
 
-const RemoteSyslogSchema = z
-  .object({
-    archive: z
-      .object({
-        files: z.int().exactOptional().openapi({ example: 111 }),
-        size: z.string().exactOptional().openapi({ example: '5m' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    console: z
-      .object({
-        contents: z
-          .array(
-            z
-              .object({
-                facility: z
-                  .enum([
-                    'any',
-                    'authorization',
-                    'conflict-log',
-                    'change-log',
-                    'daemon',
-                    'dfc',
-                    'kernel',
-                    'interactive-commands',
-                    'ftp',
-                    'firewall',
-                    'external',
-                    'pfe',
-                    'ntp',
-                    'security',
-                    'user',
-                  ])
-                  .exactOptional(),
-                severity: z
-                  .enum([
-                    'any',
-                    'alert',
-                    'emergency',
-                    'critical',
-                    'warning',
-                    'info',
-                    'notice',
-                    'error',
-                  ])
-                  .exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    enabled: z.boolean().default(false).exactOptional(),
-    files: z
-      .array(
-        z
-          .object({
-            archive: z
-              .object({
-                files: z.int().exactOptional().openapi({ example: 10 }),
-                size: z.string().exactOptional().openapi({ example: '5m' }),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-            contents: z
-              .array(
-                z
-                  .object({
-                    facility: z
-                      .enum([
-                        'any',
-                        'authorization',
-                        'conflict-log',
-                        'change-log',
-                        'daemon',
-                        'dfc',
-                        'kernel',
-                        'interactive-commands',
-                        'ftp',
-                        'firewall',
-                        'external',
-                        'pfe',
-                        'ntp',
-                        'security',
-                        'user',
-                      ])
-                      .exactOptional(),
-                    severity: z
-                      .enum([
-                        'any',
-                        'alert',
-                        'emergency',
-                        'critical',
-                        'warning',
-                        'info',
-                        'notice',
-                        'error',
-                      ])
-                      .exactOptional(),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional(),
-            explicit_priority: z.boolean().exactOptional(),
-            file: z.string().exactOptional().openapi({ example: 'file-name' }),
-            match: z
-              .string()
-              .exactOptional()
-              .openapi({ example: '!alarm|ntp|errors.crc_error[chan]' }),
-            structured_data: z.boolean().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'if source_address is configured, will use the vlan firstly otherwise use source_ip',
-      }),
-    send_to_all_servers: z.boolean().default(true).exactOptional(),
-    servers: z
-      .array(
-        z
-          .object({
-            contents: z
-              .array(
-                z
-                  .object({
-                    facility: z
-                      .enum([
-                        'any',
-                        'authorization',
-                        'conflict-log',
-                        'change-log',
-                        'daemon',
-                        'dfc',
-                        'kernel',
-                        'interactive-commands',
-                        'ftp',
-                        'firewall',
-                        'external',
-                        'pfe',
-                        'ntp',
-                        'security',
-                        'user',
-                      ])
-                      .exactOptional(),
-                    severity: z
-                      .enum([
-                        'any',
-                        'alert',
-                        'emergency',
-                        'critical',
-                        'warning',
-                        'info',
-                        'notice',
-                        'error',
-                      ])
-                      .exactOptional(),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional(),
-            explicit_priority: z.boolean().exactOptional(),
-            facility: z
-              .enum([
-                'any',
-                'authorization',
-                'conflict-log',
-                'change-log',
-                'daemon',
-                'dfc',
-                'kernel',
-                'interactive-commands',
-                'ftp',
-                'firewall',
-                'external',
-                'pfe',
-                'ntp',
-                'security',
-                'user',
-              ])
-              .exactOptional(),
-            host: z.string().exactOptional().openapi({ example: 'syslogd.internal' }),
-            match: z
-              .string()
-              .exactOptional()
-              .openapi({ example: '!alarm|ntp|errors.crc_error[chan]' }),
-            port: z.int().default(514).exactOptional(),
-            protocol: z.enum(['udp', 'tcp']).default('udp').exactOptional(),
-            routing_instance: z
-              .string()
-              .exactOptional()
-              .openapi({ example: 'routing-instance-name' }),
-            severity: z
-              .enum(['any', 'alert', 'emergency', 'critical', 'warning', 'info', 'notice', 'error'])
-              .exactOptional(),
-            source_address: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'if source_address is configured, will use the vlan firstly otherwise use source_ip',
-              }),
-            structured_data: z.boolean().exactOptional(),
-            tag: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    time_format: z.enum(['millisecond', 'year', 'year millisecond']).exactOptional(),
-    users: z
-      .array(
-        z
-          .object({
-            contents: z
-              .array(
-                z
-                  .object({
-                    facility: z
-                      .enum([
-                        'any',
-                        'authorization',
-                        'conflict-log',
-                        'change-log',
-                        'daemon',
-                        'dfc',
-                        'kernel',
-                        'interactive-commands',
-                        'ftp',
-                        'firewall',
-                        'external',
-                        'pfe',
-                        'ntp',
-                        'security',
-                        'user',
-                      ])
-                      .exactOptional(),
-                    severity: z
-                      .enum([
-                        'any',
-                        'alert',
-                        'emergency',
-                        'critical',
-                        'warning',
-                        'info',
-                        'notice',
-                        'error',
-                      ])
-                      .exactOptional(),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional(),
-            match: z
-              .string()
-              .exactOptional()
-              .openapi({ example: '"!alarm|ntp|errors.crc_error[chan]"' }),
-            user: z.string().exactOptional().openapi({ example: '*' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({
-    'x-examples': {
-      'example-1': {
-        archive: { files: 111, size: '5m' },
-        console: {
-          contents: [
-            {
-              facility:
-                'any | authorization | conflict-log | change-log | daemon | dfc | kernel | interactive-commands | ftp | firewall | external | pfe | ntp | security | user',
-              severity: 'any | alert | emergency | critical | warning | info | notice | error',
-            },
-          ],
-        },
-        enabled: true,
-        files: [
-          {
-            archive: { files: 10, size: '5m' },
-            contents: [
-              {
-                facility:
-                  'any | authorization | conflict-log | change-log | daemon | dfc | kernel | interactive-commands | ftp | firewall | external | pfe | ntp | security | user',
-                severity: 'any | alert | emergency | critical | warning | info | notice | error',
-              },
-            ],
-            explicit_priority: true,
-            file: 'file-name',
-            match: '!alarm|ntp|errors.crc_error[chan]',
-            structured_data: true,
-          },
-        ],
-        network: 'default',
-        send_to_all_servers: true,
-        servers: [
-          {
-            contents: [
-              {
-                facility:
-                  'any | authorization | conflict-log | change-log | daemon | dfc | kernel | interactive-commands | ftp | firewall | external | pfe | ntp | security | user',
-                severity: 'any | alert | emergency | critical | warning | info | notice | error',
-              },
-            ],
-            explicit_priority: true,
-            facility: 'config',
-            host: 'syslogd.internal',
-            match: '!alarm|ntp|errors.crc_error[chan]',
-            port: 514,
-            protocol: 'udp',
-            routing_instance: 'routing-instance-name',
-            severity: 'info',
-            source_address: '192.168.1.1',
-            structured_data: true,
-            tag: '',
-          },
-        ],
-        time_format: 'millisecond | year |  year millisecond',
-        users: [
-          {
-            contents: [
-              {
-                facility:
-                  'any | authorization | conflict-log | change-log | daemon | dfc | kernel | interactive-commands | ftp | firewall | external | pfe | ntp | security | user',
-                severity: 'any | alert | emergency | critical | warning | info | notice | error',
-              },
-            ],
-            match: '!alarm|ntp|errors.crc_error[chan]',
-            user: '*',
-          },
-        ],
-      },
-    },
-    required: [],
-  })
-  .openapi('RemoteSyslog')
-
-const TemplateSwitchMatchingSchema = z
-  .object({
-    enable: z.boolean().exactOptional(),
-    rules: z
-      .array(
-        z
-          .object({
-            additional_config_cmds: z.array(z.string()).exactOptional(),
-            match_role: z.string().exactOptional().openapi({ description: 'role to match' }),
-            name: z.string().exactOptional(),
-            port_config: z.record(z.string(), JunosPortConfigSchema).exactOptional(),
-            switch_mgmt: z
-              .object({
-                ap_affinity_threshold: z.string().exactOptional().openapi({ example: '10' }),
-                config_revert_timer: z.int().default(10).exactOptional(),
-                dhcp_option_fqdn: z
-                  .boolean()
-                  .default(false)
-                  .exactOptional()
-                  .openapi({ description: 'Enable to provide the FQDN with DHCP option 81' }),
-                mxedge_proxy_host: z.string().exactOptional(),
-                mxedge_proxy_port: z.int().default(2222).exactOptional(),
-                use_mxedge_proxy: z.boolean().default(false).exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .catchall(
-            z
-              .string()
-              .openapi({
-                description:
-                  'property key define the type of matching, value is the string to match. e.g: `match_name[0:3]`, `match_name[2:6]`, `match_model`,  `match_model[0-6]`',
-              }),
-          ),
-      )
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-  })
-  .openapi({
-    description: 'Switch template',
-    'x-examples': {
-      'example-1': {
-        enable: true,
-        rules: [
-          {
-            additional_config_cmds: ['set snmp community public'],
-            match_model: 'EX4300',
-            'match_name[0:3]': 'abc',
-            name: 'match by name',
-            port_config: {
-              '*': { usage: 'default' },
-              'ge-0/0/0': { usage: 'uplink' },
-              'ge-0/0/8-16,ge-1/0/0-47': { usage: 'ap' },
-            },
-          },
-          {
-            additional_config_cmds: ['set snmp community public2'],
-            match_role: 'access',
-            name: 'match by role',
-            port_config: { 'ge-0/0/0': { usage: 'uplink' } },
-          },
-        ],
-      },
-    },
-    required: [],
-  })
-  .openapi('TemplateSwitchMatching')
-
-const NetworktemplateSchema = z
+const NetworktemplateSchema: z.ZodType<NetworktemplateType> = z
   .object({
     additional_config_cmds: z.array(z.string()).exactOptional(),
     created_time: z.number().exactOptional().openapi({ readOnly: true }),
@@ -9970,7 +10810,7 @@ const NetworktemplateSchema = z
           }),
       )
       .exactOptional(),
-    group_tags: z.object({}).exactOptional(),
+    group_tags: z.looseObject({}).exactOptional(),
     id: z.uuid().exactOptional().openapi({ readOnly: true }),
     mist_nac: z
       .object({ enabled: z.boolean().exactOptional(), network: z.string().exactOptional() })
@@ -9996,7 +10836,7 @@ const NetworktemplateSchema = z
       .object({ dynamic: JunosPortUsagesDynamicSchema.exactOptional() })
       .catchall(JunosPortUsagesSchema)
       .exactOptional()
-      .openapi({ description: 'The property key is the port profile name' }),
+      .openapi({ description: 'The property key is the port profile name', required: [] }),
     radius_config: JunosRadiusConfigSchema.exactOptional(),
     remote_syslog: RemoteSyslogSchema.exactOptional(),
     snmp_config: JunosSnmpConfigSchema.exactOptional(),
@@ -10527,58 +11367,6 @@ const TacacsSchema = z
     required: [],
   })
   .openapi('Tacacs')
-
-const SimpleAlertSchema = z
-  .object({
-    arp_failure: z
-      .object({
-        client_count: z.int().default(10).exactOptional(),
-        duration: z
-          .int()
-          .min(5)
-          .max(60)
-          .default(20)
-          .exactOptional()
-          .openapi({ description: 'failing within minutes' }),
-        incident_count: z.int().default(10).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    dhcp_failure: z
-      .object({
-        client_count: z.int().default(10).exactOptional(),
-        duration: z
-          .int()
-          .min(5)
-          .max(60)
-          .default(10)
-          .exactOptional()
-          .openapi({ description: 'failing within minutes' }),
-        incident_count: z.int().default(20).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    dns_failure: z
-      .object({
-        client_count: z.int().default(20).exactOptional(),
-        duration: z
-          .int()
-          .min(5)
-          .max(60)
-          .default(10)
-          .exactOptional()
-          .openapi({ description: 'failing within minutes' }),
-        incident_count: z.int().default(30).exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    description:
-      'Set of heuristic rules will be enabled when marvis subscription is not available.\nIt triggers when, in a Z minute window, there are more than Y distinct client encountring over X failures',
-    required: [],
-  })
-  .openapi('SimpleAlert')
 
 const OrgSettingSchema = z
   .object({
@@ -13292,7 +14080,7 @@ const WlanSchema = z
     app_limit: z
       .object({
         apps: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -13300,7 +14088,7 @@ const WlanSchema = z
           }),
         enabled: z.boolean().exactOptional(),
         wxtag_ids: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'map from wxtag_id of Hostname Wxlan Tags to bandwidth in kbps',
@@ -13436,7 +14224,7 @@ const WlanSchema = z
       .object({
         enabled: z.boolean().exactOptional(),
         radius_groups: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'map between radius_group and the desired DNS server (IPv4 only)',
@@ -13598,7 +14386,7 @@ const WlanSchema = z
     modified_time: z.number().exactOptional().openapi({ readOnly: true }),
     msp_id: z.uuid().exactOptional().openapi({ readOnly: true }),
     mxtunnel: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -13699,7 +14487,7 @@ const WlanSchema = z
       .object({
         enabled: z.boolean().default(false).exactOptional(),
         hours: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -14478,624 +15266,7 @@ const SiteSchema = z
   })
   .openapi('Site')
 
-const SiteAutoUpgradeSchema = z
-  .object({
-    custom_versions: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'custom versions for different models. The property key is the model name (e.g. "AP41")',
-      }),
-    day_of_week: z
-      .enum(['any', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', ''])
-      .nullable()
-      .exactOptional(),
-    enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'whether auto upgrade should happen (Note that Mist may auto-upgrade if the version is not supported)',
-      }),
-    time_of_day: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'any / HH:MM (24-hour format), upgrade will happen within up to 1-hour from this time',
-      }),
-    version: z
-      .enum(['beta', 'stable', 'custom'])
-      .default('stable')
-      .exactOptional()
-      .openapi({ description: 'desired version' }),
-  })
-  .openapi({
-    description: 'Auto Upgrade Settings',
-    'x-examples': {
-      'example-1': {
-        custom_versions: { AP21: 'stable', AP41: '0.1.5135', AP61: '0.1.7215' },
-        day_of_week: 'sun',
-        enabled: true,
-        time_of_day: '12:00',
-        version: 'beta',
-      },
-    },
-    required: [],
-  })
-  .openapi('SiteAutoUpgrade')
-
-const SiteEngagementSchema = z
-  .object({
-    dwell_tag_names: z
-      .object({
-        bounce: z.string(),
-        engaged: z.string(),
-        passerby: z.string(),
-        stationed: z.string(),
-      })
-      .openapi({ required: ['passerby', 'bounce', 'engaged', 'stationed'] }),
-    dwell_tags: z
-      .object({
-        bounce: z.string().nullable().exactOptional(),
-        engaged: z.string().nullable().exactOptional(),
-        passerby: z.string().nullable().exactOptional(),
-        stationed: z.string().nullable().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'add tags to visits within the duration (in seconds), available tags (passerby, bounce, engaged, stationed)',
-        required: [],
-      }),
-    hours: z
-      .object({
-        fri: z.string().exactOptional(),
-        mon: z.string().exactOptional(),
-        sta: z.string().exactOptional(),
-        sun: z.string().exactOptional(),
-        thu: z.string().exactOptional(),
-        tue: z.string().exactOptional(),
-        wed: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'hours of operation filter, the available days (mon, tue, wed, thu, fri, sat, sun). \n\n**Note**: If the dow is not defined then it’s treated as 00:00-23:59.',
-        required: [],
-      }),
-    max_dwell: z
-      .int()
-      .max(68400)
-      .default(43200)
-      .exactOptional()
-      .openapi({ description: 'max time, default is 43200(12h), max is 68400 (18h)' }),
-    min_dwell: z.int().min(0).exactOptional().openapi({ description: 'min time' }),
-  })
-  .openapi({
-    description:
-      '**Note**: if hours does not exist, it’s treated as everyday of the week, 00:00-23:59. Currently we don’t allow multiple ranges for the same day\n\n**Note**: default values for `dwell_tags`: passerby (1,300) bounce (301, 14400) engaged (14401, 28800) stationed (28801, 42000)\n\n**Note**: default values for `dwell_tag_names`: passerby = “Passerby”, bounce = “Visitor”, engaged = “Associates”, stationed = “Assets”',
-    required: ['dwell_tag_names'],
-    'x-examples': {
-      'example-1': {
-        dwell_tag_names: {
-          bounce: 'Bounce',
-          engaged: 'Engaged',
-          passerby: 'Passer By',
-          stationed: 'Stationed',
-        },
-        dwell_tags: { engaged: '300-14400', stationed: '14400-43200' },
-        hours: { fri: '09:00-17:00', mon: '09:00-17:00' },
-        max_dwell: 43200,
-      },
-    },
-  })
-  .openapi('SiteEngagement')
-
-const SiteGatewaySchema = z
-  .object({
-    admin_sshkeys: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'for SSR only, as direct root access is not allowed' }),
-    app_probing: z
-      .object({
-        apps: z.array(z.string()).exactOptional(),
-        custom_apps: z
-          .array(
-            z
-              .object({
-                app_type: z.string().exactOptional(),
-                hostname: z.array(z.string()).exactOptional(),
-                name: z.string().exactOptional(),
-                protocol: z.enum(['http', 'tcp', 'udp']).default('http').exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-        enabled: z.boolean().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    app_usage: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'consumes uplink bandwidth, requires WA license' }),
-    config_revert_timer: z
-      .number()
-      .min(1)
-      .max(30)
-      .default(10)
-      .exactOptional()
-      .openapi({ description: 'he rollback timer for commit confirmed' }),
-    probe_hosts: z.array(z.string()).exactOptional(),
-    root_password: z.string().exactOptional().openapi({ description: 'for SRX only' }),
-    security_log_source_address: z.string().exactOptional(),
-    security_log_source_interface: z.string().exactOptional(),
-  })
-  .openapi({
-    description: 'Gateway Site settings',
-    'x-examples': {
-      'example-1': {
-        app_probing: {
-          apps: ['string'],
-          custom_apps: [
-            { app_type: 'string', hostname: ['string'], name: 'string', protocol: 'http' },
-          ],
-          enabled: true,
-        },
-        app_usage: true,
-        config_revert_timer: 10,
-      },
-    },
-    required: [],
-  })
-  .openapi('SiteGateway')
-
-const SiteMxtunnelSchema = z
-  .object({
-    ap_subnets: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'list of subnets where we allow AP to establish Mist Tunnels from' }),
-    clusters: z
-      .array(
-        z
-          .object({
-            name: z.string().exactOptional(),
-            tunterm_hosts: z.array(z.string()).exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'for AP, how to connect to tunterm or radsecproxy' }),
-    created_time: z.number().exactOptional().openapi({ readOnly: true }),
-    for_site: z.boolean().exactOptional().openapi({ readOnly: true }),
-    hello_interval: z
-      .int()
-      .min(1)
-      .max(300)
-      .default(60)
-      .exactOptional()
-      .openapi({
-        description:
-          'in seconds, used as heartbeat to detect if a tunnel is alive. AP will try another peer after missing N hellos specified by hello_retries',
-      }),
-    hello_retries: z.int().min(2).max(30).default(7).exactOptional(),
-    hosts: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'hostnames or IPs where a Mist Tunnel will use as the Peer (i.e. they are reachable from AP)',
-      }),
-    id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    modified_time: z.number().exactOptional().openapi({ readOnly: true }),
-    mtu: z
-      .int()
-      .min(0)
-      .max(1500)
-      .default(0)
-      .exactOptional()
-      .openapi({ description: '0 to enable PMTU, 552-1500 to start PMTU with a lower MTU' }),
-    org_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    protocol: z.enum(['udp', 'ip']).exactOptional(),
-    radsec: z
-      .object({
-        acct_servers: z.array(AcctServerSchema).exactOptional(),
-        auth_servers: z.array(AuthServerSchema).exactOptional(),
-        enabled: z.boolean().exactOptional(),
-        use_mxedge: z.boolean().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    site_id: z.uuid().exactOptional().openapi({ readOnly: true }),
-    vlan_ids: z
-      .array(z.union([z.int(), z.string()]))
-      .exactOptional()
-      .openapi({ description: 'list of vlan_ids that will be use' }),
-  })
-  .openapi({
-    description: 'Site MxTunnel',
-    'x-examples': {
-      'example-1': {
-        ap_subnets: '0.0.0.0/0',
-        clusters: [{ name: 'primary', tunterm_hosts: ['mxedge1', 'mxedge2.local'] }],
-        enabled: false,
-        hello_interval: 60,
-        hello_retries: 3,
-        mtu: 1100,
-        protocol: 'udp',
-        radsec: {
-          acct_servers: [{ host: '1.2.3.4', port: 1812, secret: 'testing123' }],
-          auth_servers: [
-            { host: '1.2.3.4', port: 1812, secret: 'testing123' },
-            { host: 'radius.internal', port: 1812, secret: 'testing123' },
-          ],
-          enabled: true,
-          use_mxedge: true,
-        },
-        vlan_ids: [3, 5, 6],
-      },
-    },
-    required: [],
-  })
-  .openapi('SiteMxtunnel')
-
-const SiteOccupancyAnalyticsSchema = z
-  .object({
-    assets_enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'indicate whether named BLE assets should be included in the zone occupancy calculation',
-      }),
-    clients_enabled: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        description:
-          'indicate whether connected WiFi clients should be included in the zone occupancy calculation',
-      }),
-    min_duration: z
-      .int()
-      .default(3000)
-      .exactOptional()
-      .openapi({ description: 'minimum duration' }),
-    sdkclients_enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'indicate whether SDK clients should be included in the zone occupancy calculation',
-      }),
-    unconnected_clients_enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'indicate whether unconnected WiFi clients should be included in the zone occupancy calculation',
-      }),
-  })
-  .openapi({
-    description: 'Occupancy Analytics settings',
-    'x-examples': {
-      'example-1': {
-        assets_enabled: true,
-        clients_enabled: true,
-        min_duration: 3000,
-        sdkclients_enabled: true,
-        unconnected_clients_enabled: false,
-      },
-    },
-    required: [],
-  })
-  .openapi('SiteOccupancyAnalytics')
-
-const SiteRogueSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'whether or not rogue detection is enabled' }),
-    honeypot_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'whether or not honeypot detection is enabled' }),
-    min_duration: z
-      .int()
-      .max(59)
-      .default(10)
-      .exactOptional()
-      .openapi({ description: 'minimum duration for a bssid to be considered rogue' }),
-    min_rssi: z
-      .int()
-      .min(-85)
-      .default(-80)
-      .exactOptional()
-      .openapi({
-        description: 'minimum RSSI for an AP to be considered rogue (ignoring APs that’s far away)',
-      }),
-    whitelisted_bssids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'list of BSSIDs to whitelist. Ex: "cc-:8e-:6f-:d4-:bf-:16", "cc-8e-6f-d4-bf-16", "cc-73-*", "cc:82:*"',
-      }),
-    whitelisted_ssids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'list of SSIDs to whitelist' }),
-  })
-  .openapi({
-    description: 'Rogue site settings',
-    'x-examples': {
-      'example-1': {
-        enabled: false,
-        honeypot_enabled: true,
-        min_duration: 10,
-        min_rssi: -80,
-        whitelisted_bssids: ['cc-8e-6f-d4-bf-16', 'cc-8e-6f-d4-bf-16'],
-        whitelisted_ssids: ['NeighborSSID'],
-      },
-    },
-    required: [],
-  })
-  .openapi('SiteRogue')
-
-const SiteSsrSchema = z
-  .object({
-    conductor_hosts: z
-      .array(z.string().openapi({ example: '"1.1.1.1", "2.2.2.2"' }))
-      .exactOptional(),
-    disable_stats: z.boolean().exactOptional(),
-  })
-  .openapi({
-    description: '',
-    'x-examples': {
-      'example-1': { conductor_hosts: ['1.1.1.1', '2.2.2.2'], disable_stats: false },
-    },
-    required: [],
-  })
-  .openapi('SiteSsr')
-
-const SiteSwitchSchema = z
-  .object({
-    ap_affinity_threshold: z
-      .int()
-      .default(10)
-      .exactOptional()
-      .openapi({
-        description:
-          'ap_affinity_threshold ap_affinity_threshold can be added as a field under site/setting. By default this value is set to 12. If the field is set in both site/setting and org/setting, the value from site/setting will be used.',
-      }),
-    config_revert_timer: z
-      .number()
-      .min(1)
-      .max(30)
-      .default(10)
-      .exactOptional()
-      .openapi({ description: 'the rollback timer for commit confirmed' }),
-    dhcp_option_fqdn: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'Enable to provide the FQDN with DHCP option 81' }),
-    mxedge_proxy_host: z.string().exactOptional(),
-    mxedge_proxy_port: z.int().default(2222).exactOptional(),
-    protect_re: z
-      .object({
-        allowed_services: z
-          .array(z.string().openapi({ example: '["snmp", "icmp"]' }))
-          .exactOptional()
-          .openapi({ description: "optionally, services we'll allow" }),
-        custom: z
-          .array(
-            z
-              .object({
-                port_range: z
-                  .string()
-                  .min(0)
-                  .max(6553)
-                  .exactOptional()
-                  .openapi({ description: 'matched dst port, `0` means any' }),
-                protocol: z.enum(['tcp', 'udp', 'icmp', 'any']).default('any').exactOptional(),
-                subnets: z.array(z.string()).exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-        enabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'when enabled, all traffic that is not essential to our operation will be dropped\ne.g. ntp / dns / traffic to mist will be allowed by default',
-          }),
-        trusted_hosts: z
-          .array(z.string().openapi({ example: '["10.242.3.0/24"]' }))
-          .exactOptional()
-          .openapi({
-            description:
-              "when `enabled`==`true`, all traffic that is not essential to our operation will be dropped (e.g. if dhcpd is enabled, we'll make sure it works)",
-          }),
-      })
-      .exactOptional()
-      .openapi({ description: 'restrict inbound-traffic to host  (draft)', required: [] }),
-    root_password: z.string().exactOptional(),
-    use_mxedge_proxy: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'to use mxedge as proxy' }),
-  })
-  .openapi({ description: 'Switch site settings', required: [] })
-  .openapi('SiteSwitch')
-
-const SiteWidsSchema = z
-  .object({
-    repeated_auth_failures: z
-      .object({
-        duration: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description:
-              'window where a trigger will be detected and action to be taken (in seconds)',
-          }),
-        threshold: z.int().exactOptional().openapi({ description: 'count of events to trigger' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({
-    description: 'WIDS site settings',
-    'x-examples': { 'example-1': { repeated_auth_failures: { duration: 60, threshold: 4 } } },
-    required: [],
-  })
-  .openapi('SiteWids')
-
-const SiteWifiSchema = z
-  .object({
-    cisco_enabled: z.boolean().exactOptional(),
-    disable_11k: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'whether to disable 11k' }),
-    disable_radios_when_power_constrained: z.boolean().exactOptional(),
-    enable_arp_spoof_check: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'when proxy_arp is enabled, check for arp spoofing.' }),
-    enable_channel_144: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'whether to enable channel 144 (some older clients may not support it)',
-      }),
-    enable_shared_radio_scanning: z.boolean().exactOptional(),
-    enable_vna: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'enable Virtual Network Assistant (using SUB-VNA license)' }),
-    enabled: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({ description: 'enable WIFI feature (using SUB-MAN license)' }),
-    locate_connected: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'whether to locate connected clients' }),
-    locate_unconnected: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'whether to locate unconnected clients' }),
-    mesh_allow_dfs: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'whether to allow Mesh to use DFS channels. For DFS channels, Remote Mesh AP would have to do CAC when scanning for new Base AP, which is slow and will distrupt the connection. If roaming is desired, keep it disabled.',
-      }),
-    mesh_enable_crm: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'used to enable/disable CRM' }),
-    mesh_enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'whether to enable Mesh feature for the site' }),
-    mesh_psk: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'optional passphrase of mesh networking, default is generated randomly',
-      }),
-    mesh_ssid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'optional ssid of mesh networking, default is based on site_id' }),
-    proxy_arp: z
-      .enum(['default', 'enabled', 'disabled'])
-      .exactOptional()
-      .openapi({ description: 'default / enabled / disabled' }),
-  })
-  .openapi({
-    description: 'Wi-Fi site settings',
-    'x-examples': {
-      'example-1': {
-        cisco_enabled: true,
-        disable_11k: false,
-        disable_radios_when_power_constrained: false,
-        enable_arp_spoof_check: false,
-        enable_shared_radio_scanning: false,
-        enable_vna: false,
-        enabled: true,
-        locate_connected: false,
-        locate_unconnected: false,
-        mesh_enabled: true,
-        proxy_arp: 'default',
-      },
-    },
-    required: [],
-  })
-  .openapi('SiteWifi')
-
-const SiteZoneOccupancyAlertSchema = z
-  .object({
-    email_notifiers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'list of email addresses to send email notifications when the alert threshold is reached',
-      }),
-    enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'indicate whether zone occupancy alert is enabled for the site' }),
-    threshold: z
-      .int()
-      .min(0)
-      .max(30)
-      .default(5)
-      .exactOptional()
-      .openapi({
-        description:
-          'sending zone-occupancy-alert webhook message only if a zone stays non-compliant (i.e. actual occupancy > occupancy_limit) for a minimum duration specified in the threshold, in minutes',
-      }),
-  })
-  .openapi({
-    description: 'Zone Occupancy alert site settings',
-    'x-examples': {
-      'example-1': {
-        email_notifiers: ['foo@juniper.net', 'bar@juniper.net'],
-        enabled: true,
-        threshold: 5,
-      },
-    },
-    required: [],
-  })
-  .openapi('SiteZoneOccupancyAlert')
-
-const SiteSettingSchema = z
+const SiteSettingSchema: z.ZodType<SiteSettingType> = z
   .object({
     additional_config_cmds: z
       .array(z.string())
@@ -15245,7 +15416,7 @@ const SiteSettingSchema = z
       .object({ dynamic: JunosPortUsagesDynamicSchema.exactOptional() })
       .catchall(JunosPortUsagesSchema)
       .exactOptional()
-      .openapi({ description: 'the property key is the port usage name' }),
+      .openapi({ description: 'the property key is the port usage name', required: [] }),
     proxy: z
       .object({ url: z.string().exactOptional() })
       .exactOptional()
@@ -16201,7 +16372,7 @@ const SleClassifierSummarySchema = z
       })
       .openapi({ required: ['name', 'x_label', 'y_label', 'interval', 'samples', 'impact'] }),
     end: z.number(),
-    failures: z.array(z.object({})),
+    failures: z.array(z.looseObject({})),
     impact: z
       .object({
         num_aps: z.number(),
@@ -17483,7 +17654,7 @@ const SleSummarySchema = z
         }
       }),
     end: z.number(),
-    events: z.array(z.object({})),
+    events: z.array(z.looseObject({})),
     impact: z
       .object({
         num_aps: z.number(),
@@ -18007,7 +18178,7 @@ const SsrUpgradeResponseSchema = z
     id: z.string().min(1),
     status: z.string().min(1),
     strategy: z.string().min(1),
-    versions: z.object({}),
+    versions: z.looseObject({}),
   })
   .openapi({
     description: '',
@@ -19669,7 +19840,7 @@ const StatsDeviceGatewaySchema = z
       .object({
         idle: z.number().exactOptional(),
         interrupt: z.number().exactOptional(),
-        load_avg: z.array(z.object({})).exactOptional(),
+        load_avg: z.array(z.looseObject({})).exactOptional(),
         system: z.number().exactOptional(),
         user: z.number().exactOptional(),
       })
@@ -19679,8 +19850,8 @@ const StatsDeviceGatewaySchema = z
     ip: z.string().exactOptional().openapi({ description: 'IP address' }),
     ip_stat: z
       .object({
-        dns: z.array(z.object({})).exactOptional(),
-        dns_suffix: z.array(z.object({})).exactOptional(),
+        dns: z.array(z.looseObject({})).exactOptional(),
+        dns_suffix: z.array(z.looseObject({})).exactOptional(),
         gateway: z.string().exactOptional(),
         gateway6: z.string().exactOptional(),
         ip: z.string().exactOptional(),
@@ -19909,7 +20080,7 @@ const StatsDeviceOtherSchema = z
     mac: z.string().exactOptional(),
     uptime: z.int().exactOptional(),
     vendor: z.string().exactOptional(),
-    vendor_specific: z.object({}).exactOptional(),
+    vendor_specific: z.looseObject({}).exactOptional(),
     version: z.string().exactOptional(),
   })
   .openapi({
@@ -19941,7 +20112,7 @@ const StatsDeviceSwitchSchema = z
           .exactOptional()
           .openapi({ description: 'Percentage of CPU time being used by interrupts' }),
         load_avg: z
-          .array(z.object({}))
+          .array(z.looseObject({}))
           .exactOptional()
           .openapi({ description: 'Load averages for the last 1, 5, and 15 minutes' }),
         system: z
@@ -19976,8 +20147,8 @@ const StatsDeviceSwitchSchema = z
     ip: z.string().exactOptional(),
     ip_stat: z
       .object({
-        dns: z.array(z.object({})).exactOptional(),
-        dns_suffix: z.array(z.object({})).exactOptional(),
+        dns: z.array(z.looseObject({})).exactOptional(),
+        dns_suffix: z.array(z.looseObject({})).exactOptional(),
         gateway: z.string().exactOptional(),
         gateway6: z.string().exactOptional(),
         ip: z.string().exactOptional(),
@@ -20388,7 +20559,7 @@ const StatsMxedgeSchema = z
           .openapi({ required: [] }),
       )
       .exactOptional(),
-    sensor_stat: z.object({}).exactOptional(),
+    sensor_stat: z.looseObject({}).exactOptional(),
     service_stat: z
       .object({
         mxagent: z
@@ -20458,7 +20629,7 @@ const StatsMxedgeSchema = z
       })
       .exactOptional()
       .openapi({ description: 'stat for each services', required: [] }),
-    services: z.array(z.object({})).exactOptional(),
+    services: z.array(z.looseObject({})).exactOptional(),
     site_id: z.uuid().exactOptional(),
     status: z.string().exactOptional(),
     tunterm_id: z.uuid().exactOptional(),
@@ -20472,9 +20643,9 @@ const StatsMxedgeSchema = z
       .openapi({ required: [] }),
     tunterm_port_config: z
       .object({
-        downstream_ports: z.array(z.object({})).exactOptional(),
+        downstream_ports: z.array(z.looseObject({})).exactOptional(),
         separate_upstream_downstream: z.boolean().exactOptional(),
-        upstream_ports: z.array(z.object({})).exactOptional(),
+        upstream_ports: z.array(z.looseObject({})).exactOptional(),
       })
       .exactOptional()
       .openapi({ required: [] }),
@@ -21187,7 +21358,7 @@ const StatsWxruleSchema = z
     name: z.string(),
     order: z.int(),
     src_wxtags: z.array(z.string()),
-    usage: z.object({}),
+    usage: z.looseObject({}),
   })
   .openapi({
     description: 'Wxrule statistics',
@@ -21588,7 +21759,7 @@ const WebhookSchema = z
       .openapi({ description: 'whether webhook is enabled' }),
     for_site: z.boolean().exactOptional().openapi({ readOnly: true }),
     headers: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -27459,9 +27630,9 @@ const DeviceRadioChannelsResponse = {
       schema: z
         .object({
           band24_40mhz_allowed: z.boolean(),
-          band24_channels: z.object({}),
+          band24_channels: z.looseObject({}),
           band24_enabled: z.boolean(),
-          band5_channels: z.object({}),
+          band5_channels: z.looseObject({}),
           band5_enabled: z.boolean(),
           certified: z.boolean(),
           code: z.int(),
@@ -30316,7 +30487,7 @@ const InsightMetricResponse = {
           end: z.int(),
           interval: z.int(),
           results: z
-            .array(z.object({}))
+            .array(z.looseObject({}))
             .min(1)
             .superRefine((items, ctx) => {
               const seen = new Map()
@@ -30782,11 +30953,11 @@ const LogsSearchResponse = {
                       readOnly: true,
                     }),
                   after: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'field values after the change', readOnly: true }),
                   before: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'field values prior to the change', readOnly: true }),
                   for_site: z.boolean().exactOptional().openapi({ readOnly: true }),
@@ -31065,7 +31236,7 @@ const MlResponse = {
   content: {
     'application/json': {
       schema: z
-        .array(z.object({}))
+        .array(z.looseObject({}))
         .min(1)
         .superRefine((items, ctx) => {
           const seen = new Map()
@@ -32504,7 +32675,10 @@ const NetworktemplatesArrayResponse = {
   },
 }
 
-const OKResponse = { description: 'OK', content: { 'application/json': { schema: z.object({}) } } }
+const OKResponse = {
+  description: 'OK',
+  content: { 'application/json': { schema: z.looseObject({}) } },
+}
 
 const OauthAppLinkStatusResponse = {
   description: 'OK',
@@ -33309,7 +33483,7 @@ const PcapStartResponse = {
           format: z.string().exactOptional(),
           id: z.uuid(),
           include_mcast: z.boolean().exactOptional(),
-          invalid_aps: z.object({}).exactOptional(),
+          invalid_aps: z.looseObject({}).exactOptional(),
           max_pkt_len: z.int().exactOptional(),
           num_packets: z.int().exactOptional(),
           org_id: z.uuid(),
@@ -39685,7 +39859,7 @@ export const getApiV1ConstDeviceEventsRoute = createRoute({
                 .object({
                   description: z.string().min(1).exactOptional(),
                   display: z.string().min(1).exactOptional(),
-                  example: z.object({}).exactOptional(),
+                  example: z.looseObject({}).exactOptional(),
                   key: z.string().min(1),
                 })
                 .openapi({ required: ['key'] }),
@@ -39774,7 +39948,7 @@ export const getApiV1ConstInsightMetricsRoute = createRoute({
                   example: z
                     .array(
                       z.union([
-                        z.object({}).nullable(),
+                        z.looseObject({}).nullable(),
                         z.int().nullable(),
                         z.number().nullable(),
                         z.string().nullable(),
@@ -39913,7 +40087,7 @@ export const getApiV1ConstMxedgeEventsRoute = createRoute({
                 .object({
                   description: z.string().exactOptional(),
                   display: z.string().exactOptional(),
-                  example: z.object({}).exactOptional(),
+                  example: z.looseObject({}).exactOptional(),
                   key: z.string().exactOptional(),
                 })
                 .openapi({ required: [] }),
@@ -40602,7 +40776,7 @@ export const postApiV1InstallerOrgsOrgIdDevicesDeviceMacLocateRoute = createRout
   operationId: 'startInstallerLocateDevice',
   request: {
     params: z.object({ org_id: OrgIdParamsSchema, device_mac: DeviceMacParamsSchema }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: { 200: OKResponse },
 })
@@ -41143,18 +41317,15 @@ export const postApiV1LoginRoute = createRoute({
         },
       },
       headers: z.object({
-        'Set-Cookie': {
-          description: 'Session Cookie if login/password authentication is successful',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Session Cookie if login/password authentication is successful',
-              param: { required: false },
-              example:
-                'csrftoken=vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx; expires=Tue, 15-Mar-2016 19:47:20 GMT; Max-Age=31449600; Path=/',
-            }),
-        },
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Session Cookie if login/password authentication is successful',
+            param: { required: false },
+            example:
+              'csrftoken=vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx; expires=Tue, 15-Mar-2016 19:47:20 GMT; Max-Age=31449600; Path=/',
+          }),
       }),
     },
     400: {
@@ -41336,7 +41507,7 @@ export const postApiV1LoginTwoFactorRoute = createRoute({
   responses: {
     200: {
       description: 'two_factor code is correct',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'two_factor code is incorrect or the user hasn’t login yet' },
@@ -45990,7 +46161,7 @@ export const getApiV1OrgsOrgIdDevicesRadioMacsRoute = createRoute({
           schema: z
             .array(
               z
-                .object({ mac: z.string().min(1), radio_macs: z.array(z.object({})) })
+                .object({ mac: z.string().min(1), radio_macs: z.array(z.looseObject({})) })
                 .openapi({ required: ['mac', 'radio_macs'] }),
             )
             .min(1)
@@ -48297,7 +48468,7 @@ export const postApiV1OrgsOrgIdInventoryRoute = createRoute({
     400: {
       description: 'if none of the entries are valid',
       content: {
-        'application/json': { schema: z.object({}), examples: { 'example-1': { value: {} } } },
+        'application/json': { schema: z.looseObject({}), examples: { 'example-1': { value: {} } } },
       },
     },
   },
@@ -48312,7 +48483,7 @@ export const postApiV1OrgsOrgIdInventoryReevaluateAutoAssignmentRoute = createRo
   operationId: 'reevaluateOrgAutoAssignment',
   request: {
     params: z.object({ org_id: OrgIdParamsSchema }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: { 200: OKResponse },
 })
@@ -51595,7 +51766,7 @@ export const postApiV1OrgsOrgIdPsksPskIdDeleteOldPassphraseRoute = createRoute({
   operationId: 'deleteOrgPskOldPassphrase',
   request: {
     params: z.object({ org_id: OrgIdParamsSchema, psk_id: PskIdParamsSchema }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: { 200: PskResponse },
 })
@@ -53902,7 +54073,7 @@ export const postApiV1OrgsOrgIdSsrUpgradeUpgradeIdCancelRoute = createRoute({
   operationId: 'cancelOrgSsrUpgrade',
   request: {
     params: z.object({ org_id: OrgIdParamsSchema, upgrade_id: UpgradeIdParamsSchema }),
-    body: { content: { 'application/json': { schema: z.object({}) } } },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   responses: { 200: OKResponse },
 })
@@ -57367,16 +57538,14 @@ export const postApiV1RegisterVerifyTokenRoute = createRoute({
         },
       },
       headers: z.object({
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'csrftoken=vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx; expires=Tue, 15-Mar-2016 19:47:20 GMT; Max-Age=31449600; Path=/',
-            }),
-        },
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'csrftoken=vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx; expires=Tue, 15-Mar-2016 19:47:20 GMT; Max-Age=31449600; Path=/',
+          }),
       }),
     },
     400: {
@@ -57830,7 +57999,7 @@ export const postApiV1SelfTwoFactorVerifyRoute = createRoute({
   responses: {
     200: {
       description: 'Response when 2FA verification is successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })
@@ -57882,7 +58051,7 @@ export const getApiV1SelfUpdateVerifyTokenRoute = createRoute({
   responses: {
     200: {
       description: 'With correct verification, the email address of the user will be updated',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: {
       description: 'Bad Request',
@@ -62094,7 +62263,7 @@ export const postApiV1SitesSiteIdDevicesDeviceIdClearArpRoute = createRoute({
     params: z.object({ site_id: SiteIdParamsSchema, device_id: DeviceIdParamsSchema }),
     body: {
       content: {
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'application/xml': {
           schema: z
             .object({
@@ -63621,7 +63790,7 @@ export const deleteApiV1SitesSiteIdGuestsGuestMacRoute = createRoute({
   operationId: 'deleteSiteGuestAuthorization',
   request: { params: z.object({ site_id: SiteIdParamsSchema, guest_mac: GuestMacParamsSchema }) },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 
@@ -64760,7 +64929,7 @@ export const postApiV1SitesSiteIdMapsMapIdReplaceRoute = createRoute({
         'multipart/form-data': {
           schema: z
             .object({
-              file: z.file().min(1).openapi({ type: 'string', format: 'binary' }),
+              file: z.file().min(1).openapi({ type: 'string', format: 'binary', minLength: 1 }),
               json: z
                 .object({
                   transform: z
@@ -68484,7 +68653,7 @@ export const getApiV1SitesSiteIdSsrUpgradeUpgradeIdRoute = createRoute({
                   upgrading: z.array(z.string()),
                 })
                 .openapi({ required: ['queued', 'upgrading', 'success', 'failed'] }),
-              versions: z.object({}),
+              versions: z.looseObject({}),
             })
             .openapi({
               description: '',
@@ -70481,7 +70650,7 @@ export const getApiV1SitesSiteIdStatsDiscoveredSwitchMetricsSearchRoute = create
               results: z.array(
                 z
                   .object({
-                    details: z.object({}).exactOptional(),
+                    details: z.looseObject({}).exactOptional(),
                     org_id: z.string().exactOptional(),
                     scope: z.string().exactOptional(),
                     score: z.int().exactOptional(),
@@ -70677,7 +70846,7 @@ export const getApiV1SitesSiteIdStatsDiscoveredSwitchesMetricsRoute = createRout
           schema: z
             .object({
               inactive_wired_vlans: z
-                .object({ details: z.object({}), score: z.number() })
+                .object({ details: z.looseObject({}), score: z.number() })
                 .openapi({ required: ['score', 'details'] }),
               poe_compliance: z
                 .object({
@@ -73632,7 +73801,7 @@ export const getApiV1SitesSiteIdStatsSwitchesMetricsRoute = createRoute({
                               major_count: z.int().exactOptional(),
                               major_version: z.string().exactOptional(),
                               model: z.string().exactOptional(),
-                              system_names: z.array(z.object({})).exactOptional(),
+                              system_names: z.array(z.looseObject({})).exactOptional(),
                             })
                             .openapi({ required: [] }),
                         )
@@ -74689,7 +74858,7 @@ export const deleteApiV1SitesSiteIdWebhooksWebhookIdRoute = createRoute({
   operationId: 'deleteSiteWebhook',
   request: { params: z.object({ site_id: SiteIdParamsSchema, webhook_id: WebhookIdParamsSchema }) },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 

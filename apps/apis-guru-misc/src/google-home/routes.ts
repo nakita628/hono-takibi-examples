@@ -625,7 +625,7 @@ const ProxySchema = z
 
 const SettingsSchema = z
   .object({
-    closed_caption: z.object({}),
+    closed_caption: z.looseObject({}),
     control_notifications: z.int32(),
     country_code: z.string(),
     locale: z.string(),
@@ -1822,7 +1822,7 @@ export const postBluetoothBondRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },
@@ -1850,7 +1850,7 @@ export const postBluetoothConnectRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },
@@ -1878,7 +1878,7 @@ export const postBluetoothDiscoveryRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },
@@ -1942,7 +1942,7 @@ export const postBluetoothScanRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },
@@ -2366,7 +2366,7 @@ export const postForgetWifiRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },
@@ -2457,7 +2457,7 @@ export const postRebootRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },
@@ -2505,7 +2505,7 @@ export const postScanWifiRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },
@@ -2537,7 +2537,7 @@ export const postSetEurekaInfoRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },
@@ -2660,7 +2660,7 @@ export const postUserEqSetEqualizerRoute = createRoute({
   responses: {
     200: {
       description: '',
-      content: { 'text/plain': { schema: z.object({}).openapi({ 'x-is-dynamic': true }) } },
+      content: { 'text/plain': { schema: z.looseObject({}).openapi({ 'x-is-dynamic': true }) } },
       headers: z.object({}),
     },
   },

@@ -1,0 +1,2190 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  deleteOrganizationsOrganizationIdActionBatchesActionBatchIdRoute,
+  deleteOrganizationsOrganizationIdAdaptivePolicyAclsAclIdRoute,
+  deleteOrganizationsOrganizationIdAdaptivePolicyGroupsIdRoute,
+  deleteOrganizationsOrganizationIdAdaptivePolicyPoliciesIdRoute,
+  deleteOrganizationsOrganizationIdAdminsAdminIdRoute,
+  deleteOrganizationsOrganizationIdAlertsProfilesAlertConfigIdRoute,
+  deleteOrganizationsOrganizationIdApplianceDnsLocalProfilesProfileIdRoute,
+  deleteOrganizationsOrganizationIdApplianceDnsLocalRecordsRecordIdRoute,
+  deleteOrganizationsOrganizationIdApplianceDnsSplitProfilesProfileIdRoute,
+  deleteOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRoute,
+  deleteOrganizationsOrganizationIdApplianceSecurityIntrusionRuleGroupsOverridesOverrideIdRoute,
+  deleteOrganizationsOrganizationIdApplianceSecurityIntrusionRulesOverridesOverrideIdRoute,
+  deleteOrganizationsOrganizationIdAssuranceAlertsProfilesProfileIdRoute,
+  deleteOrganizationsOrganizationIdBrandingPoliciesBrandingPolicyIdRoute,
+  deleteOrganizationsOrganizationIdCameraCustomAnalyticsArtifactsArtifactIdRoute,
+  deleteOrganizationsOrganizationIdCameraRolesRoleIdRoute,
+  deleteOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsAccountIdRoute,
+  deleteOrganizationsOrganizationIdCertificatesAuthoritiesRoute,
+  deleteOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdRoute,
+  deleteOrganizationsOrganizationIdDevicesCellularDataProfilesProfileIdRoute,
+  deleteOrganizationsOrganizationIdDevicesPacketCaptureCapturesCaptureIdRoute,
+  deleteOrganizationsOrganizationIdDevicesPacketCaptureSchedulesScheduleIdRoute,
+  deleteOrganizationsOrganizationIdEarlyAccessFeaturesOptInsOptInIdRoute,
+  deleteOrganizationsOrganizationIdInsightMonitoredMediaServersMonitoredMediaServerIdRoute,
+  deleteOrganizationsOrganizationIdNetworksGroupsGroupIdRoute,
+  deleteOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesetIdRoute,
+  deleteOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesRuleIdRoute,
+  deleteOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsAssignmentIdRoute,
+  deleteOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesPolicyIdRoute,
+  deleteOrganizationsOrganizationIdPolicyObjectsGroupsPolicyObjectGroupIdRoute,
+  deleteOrganizationsOrganizationIdPolicyObjectsPolicyObjectIdRoute,
+  deleteOrganizationsOrganizationIdRoute,
+  deleteOrganizationsOrganizationIdSamlIdpsIdpIdRoute,
+  deleteOrganizationsOrganizationIdSamlRolesSamlRoleIdRoute,
+  deleteOrganizationsOrganizationIdSaseIntegrationsIntegrationIdRoute,
+  deleteOrganizationsOrganizationIdSmAdminsRolesRoleIdRoute,
+  deleteOrganizationsOrganizationIdSplashAssetsIdRoute,
+  deleteOrganizationsOrganizationIdSplashThemesIdRoute,
+  deleteOrganizationsOrganizationIdWirelessDevicesProvisioningDeploymentsDeploymentIdRoute,
+  deleteOrganizationsOrganizationIdWirelessLocationScanningReceiversReceiverIdRoute,
+  deleteOrganizationsOrganizationIdWirelessSsidsFirewallIsolationAllowlistEntriesEntryIdRoute,
+  deleteOrganizationsOrganizationIdWirelessSsidsProfilesAssignmentsRoute,
+  deleteOrganizationsOrganizationIdWirelessSsidsProfilesIdRoute,
+  getOrganizationsOrganizationIdActionBatchesActionBatchIdRoute,
+  getOrganizationsOrganizationIdActionBatchesRoute,
+  getOrganizationsOrganizationIdAdaptivePolicyAclsAclIdRoute,
+  getOrganizationsOrganizationIdAdaptivePolicyAclsRoute,
+  getOrganizationsOrganizationIdAdaptivePolicyGroupsIdRoute,
+  getOrganizationsOrganizationIdAdaptivePolicyGroupsRoute,
+  getOrganizationsOrganizationIdAdaptivePolicyOverviewRoute,
+  getOrganizationsOrganizationIdAdaptivePolicyPoliciesIdRoute,
+  getOrganizationsOrganizationIdAdaptivePolicyPoliciesRoute,
+  getOrganizationsOrganizationIdAdaptivePolicySettingsRoute,
+  getOrganizationsOrganizationIdAdminsRoute,
+  getOrganizationsOrganizationIdAlertsProfilesRoute,
+  getOrganizationsOrganizationIdApiRequestsOverviewResponseCodesByIntervalRoute,
+  getOrganizationsOrganizationIdApiRequestsOverviewRoute,
+  getOrganizationsOrganizationIdApiRequestsRoute,
+  getOrganizationsOrganizationIdApiRestProvisioningPipelinesJobsOverviewsByPipelineRoute,
+  getOrganizationsOrganizationIdApiRestProvisioningPipelinesJobsRoute,
+  getOrganizationsOrganizationIdApiRestProvisioningPipelinesRoute,
+  getOrganizationsOrganizationIdApplianceDevicesInterfacesL3Route,
+  getOrganizationsOrganizationIdApplianceDevicesInterfacesPortsByDeviceRoute,
+  getOrganizationsOrganizationIdApplianceDevicesInterfacesPortsProfilesAssignmentsRoute,
+  getOrganizationsOrganizationIdApplianceDevicesPortsTransceiversReadingsHistoryByDeviceRoute,
+  getOrganizationsOrganizationIdApplianceDevicesRedundancyByNetworkRoute,
+  getOrganizationsOrganizationIdApplianceDnsLocalProfilesAssignmentsRoute,
+  getOrganizationsOrganizationIdApplianceDnsLocalProfilesRoute,
+  getOrganizationsOrganizationIdApplianceDnsLocalRecordsRoute,
+  getOrganizationsOrganizationIdApplianceDnsSplitProfilesAssignmentsRoute,
+  getOrganizationsOrganizationIdApplianceDnsSplitProfilesRoute,
+  getOrganizationsOrganizationIdApplianceFirewallMulticastForwardingByNetworkRoute,
+  getOrganizationsOrganizationIdApplianceInterfacesPacketsOverviewsByDeviceRoute,
+  getOrganizationsOrganizationIdApplianceRoutingVrfsSettingsRoute,
+  getOrganizationsOrganizationIdApplianceSecurityEventsRoute,
+  getOrganizationsOrganizationIdApplianceSecurityHttpsInspectionByNetworkRoute,
+  getOrganizationsOrganizationIdApplianceSecurityHttpsiRoute,
+  getOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesOverviewsRoute,
+  getOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesRoute,
+  getOrganizationsOrganizationIdApplianceSecurityIntrusionRoute,
+  getOrganizationsOrganizationIdApplianceSecurityIntrusionRuleGroupsOverridesRoute,
+  getOrganizationsOrganizationIdApplianceSecurityIntrusionRuleGroupsOverviewsRoute,
+  getOrganizationsOrganizationIdApplianceSecurityIntrusionRuleGroupsRoute,
+  getOrganizationsOrganizationIdApplianceSecurityIntrusionRulesOverridesRoute,
+  getOrganizationsOrganizationIdApplianceSecurityIntrusionRulesRoute,
+  getOrganizationsOrganizationIdApplianceTrafficShapingVpnExclusionsByNetworkRoute,
+  getOrganizationsOrganizationIdApplianceUplinksNatByNetworkRoute,
+  getOrganizationsOrganizationIdApplianceUplinksStatusesOverviewRoute,
+  getOrganizationsOrganizationIdApplianceUplinkStatusesRoute,
+  getOrganizationsOrganizationIdApplianceUplinksUsageByNetworkRoute,
+  getOrganizationsOrganizationIdApplianceVpnSiteToSiteIpsecPeersSlasRoute,
+  getOrganizationsOrganizationIdApplianceVpnStatsRoute,
+  getOrganizationsOrganizationIdApplianceVpnStatusesRoute,
+  getOrganizationsOrganizationIdApplianceVpnThirdPartyVPNPeersRoute,
+  getOrganizationsOrganizationIdApplianceVpnVpnFirewallRulesRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsIdRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsOverviewByNetworkRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsOverviewByTypeRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsOverviewHistoricalRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsOverviewRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsProfilesRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsTaxonomyCategoriesRoute,
+  getOrganizationsOrganizationIdAssuranceAlertsTaxonomyTypesRoute,
+  getOrganizationsOrganizationIdAssuranceImpactedDeviceWirelessByNetworkRoute,
+  getOrganizationsOrganizationIdAssuranceWirelessExperienceSuccessfulConnectionsByNetworkRoute,
+  getOrganizationsOrganizationIdBrandingPoliciesBrandingPolicyIdRoute,
+  getOrganizationsOrganizationIdBrandingPoliciesPrioritiesRoute,
+  getOrganizationsOrganizationIdBrandingPoliciesRoute,
+  getOrganizationsOrganizationIdCameraBoundariesAreasByDeviceRoute,
+  getOrganizationsOrganizationIdCameraBoundariesLinesByDeviceRoute,
+  getOrganizationsOrganizationIdCameraCustomAnalyticsArtifactsArtifactIdRoute,
+  getOrganizationsOrganizationIdCameraCustomAnalyticsArtifactsRoute,
+  getOrganizationsOrganizationIdCameraDetectionsHistoryByBoundaryByIntervalRoute,
+  getOrganizationsOrganizationIdCameraOnboardingStatusesRoute,
+  getOrganizationsOrganizationIdCameraPermissionsPermissionScopeIdRoute,
+  getOrganizationsOrganizationIdCameraPermissionsRoute,
+  getOrganizationsOrganizationIdCameraRolesRoleIdRoute,
+  getOrganizationsOrganizationIdCameraRolesRoute,
+  getOrganizationsOrganizationIdCampusGatewayClientsUsageByNetworkByClusterRoute,
+  getOrganizationsOrganizationIdCampusGatewayClustersFailoverTargetsByClusterRoute,
+  getOrganizationsOrganizationIdCampusGatewayClustersFailoverTargetsRoute,
+  getOrganizationsOrganizationIdCampusGatewayClustersNetworksOverviewsRoute,
+  getOrganizationsOrganizationIdCampusGatewayClustersRoute,
+  getOrganizationsOrganizationIdCampusGatewayClustersSsidsRoute,
+  getOrganizationsOrganizationIdCampusGatewayClustersTunnelableRoute,
+  getOrganizationsOrganizationIdCampusGatewayClustersTunnelingByClusterByNetworkRoute,
+  getOrganizationsOrganizationIdCampusGatewayConnectionsOverviewRoute,
+  getOrganizationsOrganizationIdCampusGatewayConnectionsRoute,
+  getOrganizationsOrganizationIdCampusGatewayDevicesSystemCpuLoadRoute,
+  getOrganizationsOrganizationIdCampusGatewayDevicesUplinksLocalOverridesByDeviceRoute,
+  getOrganizationsOrganizationIdCellularGatewayEsimsInventoryRoute,
+  getOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsCommunicationPlansRoute,
+  getOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsRatePlansRoute,
+  getOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsRoute,
+  getOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersRoute,
+  getOrganizationsOrganizationIdCellularGatewayUplinkStatusesRoute,
+  getOrganizationsOrganizationIdCertificatesAuthoritiesJobsJobIdRoute,
+  getOrganizationsOrganizationIdCertificatesAuthoritiesRoute,
+  getOrganizationsOrganizationIdCertificatesRevocationListsRoute,
+  getOrganizationsOrganizationIdClientsBandwidthUsageHistoryRoute,
+  getOrganizationsOrganizationIdClientsOverviewRoute,
+  getOrganizationsOrganizationIdClientsSearchRoute,
+  getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdRoute,
+  getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitchProfilesProfileIdPortsPortIdRoute,
+  getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitchProfilesProfileIdPortsRoute,
+  getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitchProfilesRoute,
+  getOrganizationsOrganizationIdConfigTemplatesRoute,
+  getOrganizationsOrganizationIdConfigurationChangesRoute,
+  getOrganizationsOrganizationIdDevicesAvailabilitiesChangeHistoryRoute,
+  getOrganizationsOrganizationIdDevicesAvailabilitiesRoute,
+  getOrganizationsOrganizationIdDevicesCellularDataDevicesRoute,
+  getOrganizationsOrganizationIdDevicesCellularDataProfilesAssignmentsRoute,
+  getOrganizationsOrganizationIdDevicesCellularDataProfilesRoute,
+  getOrganizationsOrganizationIdDevicesCellularDataUsageByDeviceRoute,
+  getOrganizationsOrganizationIdDevicesCellularDataUsageHistoryByDeviceByIntervalRoute,
+  getOrganizationsOrganizationIdDevicesCellularGeolocationsRoute,
+  getOrganizationsOrganizationIdDevicesCellularUplinksBandsByDeviceRoute,
+  getOrganizationsOrganizationIdDevicesCellularUplinksTowersByDeviceRoute,
+  getOrganizationsOrganizationIdDevicesCertificatesRoute,
+  getOrganizationsOrganizationIdDevicesControllerMigrationsRoute,
+  getOrganizationsOrganizationIdDevicesOverviewByModelRoute,
+  getOrganizationsOrganizationIdDevicesPacketCaptureCapturesRoute,
+  getOrganizationsOrganizationIdDevicesPacketCaptureSchedulesRoute,
+  getOrganizationsOrganizationIdDevicesPowerModulesStatusesByDeviceRoute,
+  getOrganizationsOrganizationIdDevicesProvisioningStatusesRoute,
+  getOrganizationsOrganizationIdDevicesRoute,
+  getOrganizationsOrganizationIdDevicesStatusesOverviewRoute,
+  getOrganizationsOrganizationIdDevicesStatusesRoute,
+  getOrganizationsOrganizationIdDevicesSyslogServersByNetworkRoute,
+  getOrganizationsOrganizationIdDevicesSyslogServersRolesByNetworkRoute,
+  getOrganizationsOrganizationIdDevicesSystemMemoryUsageHistoryByIntervalRoute,
+  getOrganizationsOrganizationIdDevicesUplinksAddressesByDeviceRoute,
+  getOrganizationsOrganizationIdDevicesUplinksLossAndLatencyRoute,
+  getOrganizationsOrganizationIdEarlyAccessFeaturesOptInsOptInIdRoute,
+  getOrganizationsOrganizationIdEarlyAccessFeaturesOptInsRoute,
+  getOrganizationsOrganizationIdEarlyAccessFeaturesRoute,
+  getOrganizationsOrganizationIdFirmwareUpgradesByDeviceRoute,
+  getOrganizationsOrganizationIdFirmwareUpgradesRoute,
+  getOrganizationsOrganizationIdFloorPlansAutoLocateDevicesRoute,
+  getOrganizationsOrganizationIdFloorPlansAutoLocateStatusesRoute,
+  getOrganizationsOrganizationIdInsightApplicationsRoute,
+  getOrganizationsOrganizationIdInsightMonitoredMediaServersMonitoredMediaServerIdRoute,
+  getOrganizationsOrganizationIdInsightMonitoredMediaServersRoute,
+  getOrganizationsOrganizationIdIntegrationsDeployableRoute,
+  getOrganizationsOrganizationIdIntegrationsDeployedRoute,
+  getOrganizationsOrganizationIdIntegrationsXdrNetworksRoute,
+  getOrganizationsOrganizationIdInventoryDevicesEoxOverviewRoute,
+  getOrganizationsOrganizationIdInventoryDevicesRoute,
+  getOrganizationsOrganizationIdInventoryDevicesSerialRoute,
+  getOrganizationsOrganizationIdInventoryDevicesSwapsBulkIdRoute,
+  getOrganizationsOrganizationIdLicensesLicenseIdRoute,
+  getOrganizationsOrganizationIdLicensesOverviewRoute,
+  getOrganizationsOrganizationIdLicensesRoute,
+  getOrganizationsOrganizationIdLicensingCotermLicensesRoute,
+  getOrganizationsOrganizationIdLoginSecurityRoute,
+  getOrganizationsOrganizationIdNetworksGroupsOverviewByGroupRoute,
+  getOrganizationsOrganizationIdNetworksGroupsRoute,
+  getOrganizationsOrganizationIdNetworksMovesRoute,
+  getOrganizationsOrganizationIdNetworksRoute,
+  getOrganizationsOrganizationIdOpenapiSpecRoute,
+  getOrganizationsOrganizationIdPoliciesAssignmentsByClientRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalFirewallApplicationCategoriesRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesAdaptivePolicyGroupsAssignmentsRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesApplianceVlansAssignmentsByVlanRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesApplianceVlansAssignmentsRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesNetworksAssignmentsRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesNetworksRoute,
+  getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesRoute,
+  getOrganizationsOrganizationIdPolicyObjectsGroupsPolicyObjectGroupIdRoute,
+  getOrganizationsOrganizationIdPolicyObjectsGroupsRoute,
+  getOrganizationsOrganizationIdPolicyObjectsPolicyObjectIdRoute,
+  getOrganizationsOrganizationIdPolicyObjectsRoute,
+  getOrganizationsOrganizationIdRoute,
+  getOrganizationsOrganizationIdSamlIdpsIdpIdRoute,
+  getOrganizationsOrganizationIdSamlIdpsRoute,
+  getOrganizationsOrganizationIdSamlRolesRoute,
+  getOrganizationsOrganizationIdSamlRolesSamlRoleIdRoute,
+  getOrganizationsOrganizationIdSamlRoute,
+  getOrganizationsOrganizationIdSaseConnectorsRoute,
+  getOrganizationsOrganizationIdSaseIntegrationsIntegrationIdRoute,
+  getOrganizationsOrganizationIdSaseNetworksEligibleRoute,
+  getOrganizationsOrganizationIdSaseRegionsRoute,
+  getOrganizationsOrganizationIdSaseSitesConnectivityHistoryBySiteRoute,
+  getOrganizationsOrganizationIdSaseSitesConnectivityOverviewRoute,
+  getOrganizationsOrganizationIdSaseSitesRoute,
+  getOrganizationsOrganizationIdSensorGatewaysConnectionsLatestRoute,
+  getOrganizationsOrganizationIdSensorReadingsHistoryRoute,
+  getOrganizationsOrganizationIdSensorReadingsLatestRoute,
+  getOrganizationsOrganizationIdSmAdminsRolesRoleIdRoute,
+  getOrganizationsOrganizationIdSmAdminsRolesRoute,
+  getOrganizationsOrganizationIdSmApnsCertRoute,
+  getOrganizationsOrganizationIdSmSentryPoliciesAssignmentsByNetworkRoute,
+  getOrganizationsOrganizationIdSmVppAccountsRoute,
+  getOrganizationsOrganizationIdSmVppAccountsVppAccountIdRoute,
+  getOrganizationsOrganizationIdSnmpRoute,
+  getOrganizationsOrganizationIdSpacesIntegrateStatusRoute,
+  getOrganizationsOrganizationIdSplashAssetsIdRoute,
+  getOrganizationsOrganizationIdSplashThemesRoute,
+  getOrganizationsOrganizationIdSummarySustainabilityDailyConsumerMetricsNetworksRoute,
+  getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsDeviceCategoriesAggregatedRoute,
+  getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsDeviceCategoriesRoute,
+  getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsDevicesRoute,
+  getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsNetworksAggregatedRoute,
+  getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsNetworksRoute,
+  getOrganizationsOrganizationIdSummarySwitchPowerHistoryRoute,
+  getOrganizationsOrganizationIdSummaryTopAppliancesByUtilizationRoute,
+  getOrganizationsOrganizationIdSummaryTopApplicationsByUsageRoute,
+  getOrganizationsOrganizationIdSummaryTopApplicationsCategoriesByUsageRoute,
+  getOrganizationsOrganizationIdSummaryTopClientsByUsageRoute,
+  getOrganizationsOrganizationIdSummaryTopClientsManufacturersByUsageRoute,
+  getOrganizationsOrganizationIdSummaryTopDevicesByUsageRoute,
+  getOrganizationsOrganizationIdSummaryTopDevicesModelsByUsageRoute,
+  getOrganizationsOrganizationIdSummaryTopNetworksByStatusRoute,
+  getOrganizationsOrganizationIdSummaryTopSsidsByUsageRoute,
+  getOrganizationsOrganizationIdSummaryTopSwitchesByEnergyUsageRoute,
+  getOrganizationsOrganizationIdSwitchPortsBySwitchRoute,
+  getOrganizationsOrganizationIdSwitchPortsClientsOverviewByDeviceRoute,
+  getOrganizationsOrganizationIdSwitchPortsOverviewRoute,
+  getOrganizationsOrganizationIdSwitchPortsStatusesBySwitchRoute,
+  getOrganizationsOrganizationIdSwitchPortsTopologyDiscoveryByDeviceRoute,
+  getOrganizationsOrganizationIdSwitchPortsUsageHistoryByDeviceByIntervalRoute,
+  getOrganizationsOrganizationIdUplinksStatusesRoute,
+  getOrganizationsOrganizationIdWebhooksAlertTypesRoute,
+  getOrganizationsOrganizationIdWebhooksCallbacksStatusesCallbackIdRoute,
+  getOrganizationsOrganizationIdWebhooksLogsRoute,
+  getOrganizationsOrganizationIdWirelessAirMarshalRulesRoute,
+  getOrganizationsOrganizationIdWirelessAirMarshalSettingsByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessClientsConnectionsImpactedByNetworkBySsidRoute,
+  getOrganizationsOrganizationIdWirelessClientsOverviewByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessClientsUsageByNetworkBySsidRoute,
+  getOrganizationsOrganizationIdWirelessClientsUsageByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessClientsUsageBySsidRoute,
+  getOrganizationsOrganizationIdWirelessControllerAvailabilitiesChangeHistoryRoute,
+  getOrganizationsOrganizationIdWirelessControllerClientsOverviewHistoryByDeviceByIntervalRoute,
+  getOrganizationsOrganizationIdWirelessControllerConnectionsRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL2ByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL2StatusesChangeHistoryByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL2UsageHistoryByIntervalRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL3ByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL3StatusesChangeHistoryByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL3UsageHistoryByIntervalRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesPacketsOverviewByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesUsageHistoryByIntervalRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesRedundancyFailoverHistoryRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesRedundancyStatusesRoute,
+  getOrganizationsOrganizationIdWirelessControllerDevicesSystemUtilizationHistoryByIntervalRoute,
+  getOrganizationsOrganizationIdWirelessControllerOverviewByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessDevicesChannelUtilizationByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessDevicesChannelUtilizationByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessDevicesChannelUtilizationHistoryByDeviceByIntervalRoute,
+  getOrganizationsOrganizationIdWirelessDevicesChannelUtilizationHistoryByNetworkByIntervalRoute,
+  getOrganizationsOrganizationIdWirelessDevicesEthernetStatusesRoute,
+  getOrganizationsOrganizationIdWirelessDevicesPacketLossByClientRoute,
+  getOrganizationsOrganizationIdWirelessDevicesPacketLossByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessDevicesPacketLossByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessDevicesPowerModeHistoryRoute,
+  getOrganizationsOrganizationIdWirelessDevicesProvisioningDeploymentsRoute,
+  getOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesCrlsDeltasRoute,
+  getOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesCrlsRoute,
+  getOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesRoute,
+  getOrganizationsOrganizationIdWirelessDevicesSystemCpuLoadHistoryRoute,
+  getOrganizationsOrganizationIdWirelessDevicesWirelessControllersByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessLocationScanningByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessLocationScanningReceiversRoute,
+  getOrganizationsOrganizationIdWirelessMqttSettingsRoute,
+  getOrganizationsOrganizationIdWirelessRadioOverridesByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessRadioRrmByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessRfProfilesAssignmentsByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessSsidsFirewallIsolationAllowlistEntriesRoute,
+  getOrganizationsOrganizationIdWirelessSsidsOpenRoamingByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessSsidsOweByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessSsidsProfilesAssignmentsByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessSsidsProfilesAssignmentsRoute,
+  getOrganizationsOrganizationIdWirelessSsidsProfilesOverviewsRoute,
+  getOrganizationsOrganizationIdWirelessSsidsProfilesRoute,
+  getOrganizationsOrganizationIdWirelessSsidsStatusesByDeviceRoute,
+  getOrganizationsOrganizationIdWirelessZigbeeByNetworkRoute,
+  getOrganizationsOrganizationIdWirelessZigbeeDevicesRoute,
+  getOrganizationsOrganizationIdWirelessZigbeeDisenrollmentsDisenrollmentIdRoute,
+  getOrganizationsOrganizationIdWirelessZigbeeDoorLocksRoute,
+  getOrganizationsRoute,
+  postOrganizationsOrganizationIdActionBatchesRoute,
+  postOrganizationsOrganizationIdAdaptivePolicyAclsRoute,
+  postOrganizationsOrganizationIdAdaptivePolicyGroupsRoute,
+  postOrganizationsOrganizationIdAdaptivePolicyPoliciesRoute,
+  postOrganizationsOrganizationIdAdminsRoute,
+  postOrganizationsOrganizationIdAlertsProfilesRoute,
+  postOrganizationsOrganizationIdApplianceDnsLocalProfilesAssignmentsBulkCreateRoute,
+  postOrganizationsOrganizationIdApplianceDnsLocalProfilesAssignmentsBulkDeleteRoute,
+  postOrganizationsOrganizationIdApplianceDnsLocalProfilesRoute,
+  postOrganizationsOrganizationIdApplianceDnsLocalRecordsRoute,
+  postOrganizationsOrganizationIdApplianceDnsSplitProfilesAssignmentsBulkCreateRoute,
+  postOrganizationsOrganizationIdApplianceDnsSplitProfilesAssignmentsBulkDeleteRoute,
+  postOrganizationsOrganizationIdApplianceDnsSplitProfilesRoute,
+  postOrganizationsOrganizationIdApplianceSecurityHttpsiCertificatesRoute,
+  postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRuleGroupsOverridesDeclareRoute,
+  postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRuleGroupsRuleGroupIdOverrideRoute,
+  postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRulesOverridesDeclareRoute,
+  postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRulesRuleIdOverrideRoute,
+  postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesRoute,
+  postOrganizationsOrganizationIdAssuranceAlertsDismissRoute,
+  postOrganizationsOrganizationIdAssuranceAlertsProfilesRoute,
+  postOrganizationsOrganizationIdAssuranceAlertsRestoreRoute,
+  postOrganizationsOrganizationIdBrandingPoliciesRoute,
+  postOrganizationsOrganizationIdCameraCustomAnalyticsArtifactsRoute,
+  postOrganizationsOrganizationIdCameraRolesRoute,
+  postOrganizationsOrganizationIdCampusGatewayClustersProvisionRoute,
+  postOrganizationsOrganizationIdCampusGatewayClustersTunnelingBatchUpdateRoute,
+  postOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsRoute,
+  postOrganizationsOrganizationIdCellularGatewayEsimsSwapRoute,
+  postOrganizationsOrganizationIdCertificatesAuthoritiesRevokeRoute,
+  postOrganizationsOrganizationIdCertificatesAuthoritiesRoute,
+  postOrganizationsOrganizationIdClaimRoute,
+  postOrganizationsOrganizationIdCloneRoute,
+  postOrganizationsOrganizationIdConfigTemplatesRoute,
+  postOrganizationsOrganizationIdDevicesCellularDataProfilesAssignmentsBatchCreateRoute,
+  postOrganizationsOrganizationIdDevicesCellularDataProfilesAssignmentsBulkDeleteRoute,
+  postOrganizationsOrganizationIdDevicesCellularDataProfilesRoute,
+  postOrganizationsOrganizationIdDevicesControllerMigrationsRoute,
+  postOrganizationsOrganizationIdDevicesDetailsBulkUpdateRoute,
+  postOrganizationsOrganizationIdDevicesPacketCaptureCapturesBulkCreateRoute,
+  postOrganizationsOrganizationIdDevicesPacketCaptureCapturesBulkDeleteRoute,
+  postOrganizationsOrganizationIdDevicesPacketCaptureCapturesCaptureIdDownloadUrlGenerateRoute,
+  postOrganizationsOrganizationIdDevicesPacketCaptureCapturesCaptureIdStopRoute,
+  postOrganizationsOrganizationIdDevicesPacketCaptureCapturesRoute,
+  postOrganizationsOrganizationIdDevicesPacketCaptureSchedulesReorderRoute,
+  postOrganizationsOrganizationIdDevicesPacketCaptureSchedulesRoute,
+  postOrganizationsOrganizationIdEarlyAccessFeaturesOptInsRoute,
+  postOrganizationsOrganizationIdInsightMonitoredMediaServersRoute,
+  postOrganizationsOrganizationIdIntegrationsXdrNetworksDisableRoute,
+  postOrganizationsOrganizationIdIntegrationsXdrNetworksEnableRoute,
+  postOrganizationsOrganizationIdInventoryClaimRoute,
+  postOrganizationsOrganizationIdInventoryDevicesSwapsBulkRoute,
+  postOrganizationsOrganizationIdInventoryOrdersClaimRoute,
+  postOrganizationsOrganizationIdInventoryOrdersPreviewRoute,
+  postOrganizationsOrganizationIdInventoryReleaseRoute,
+  postOrganizationsOrganizationIdLicensesAssignSeatsRoute,
+  postOrganizationsOrganizationIdLicensesMoveRoute,
+  postOrganizationsOrganizationIdLicensesMoveSeatsRoute,
+  postOrganizationsOrganizationIdLicensesRenewSeatsRoute,
+  postOrganizationsOrganizationIdLicensingCotermLicensesMoveRoute,
+  postOrganizationsOrganizationIdNetworksCombineRoute,
+  postOrganizationsOrganizationIdNetworksGroupsGroupIdBulkAssignRoute,
+  postOrganizationsOrganizationIdNetworksGroupsGroupIdBulkUnassignRoute,
+  postOrganizationsOrganizationIdNetworksGroupsRoute,
+  postOrganizationsOrganizationIdNetworksMovesRoute,
+  postOrganizationsOrganizationIdNetworksRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesAdaptivePolicyGroupsAssignRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesAdaptivePolicyGroupsRemoveRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesApplianceVlansAssignRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesApplianceVlansRemoveRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsCommitRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesNetworksAssignmentsBulkAssignRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesNetworksAssignmentsBulkDeleteRoute,
+  postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesRoute,
+  postOrganizationsOrganizationIdPolicyObjectsGroupsRoute,
+  postOrganizationsOrganizationIdPolicyObjectsRoute,
+  postOrganizationsOrganizationIdSamlIdpsRoute,
+  postOrganizationsOrganizationIdSamlRolesRoute,
+  postOrganizationsOrganizationIdSaseConnectorsBatchDeleteRoute,
+  postOrganizationsOrganizationIdSaseIntegrationsRoute,
+  postOrganizationsOrganizationIdSaseSitesAttachRoute,
+  postOrganizationsOrganizationIdSaseSitesDetachRoute,
+  postOrganizationsOrganizationIdSmAdminsRolesRoute,
+  postOrganizationsOrganizationIdSpacesIntegrationRemoveRoute,
+  postOrganizationsOrganizationIdSplashThemesRoute,
+  postOrganizationsOrganizationIdSplashThemesThemeIdentifierAssetsRoute,
+  postOrganizationsOrganizationIdSwitchDevicesCloneRoute,
+  postOrganizationsOrganizationIdWirelessDevicesProvisioningDeploymentsRoute,
+  postOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesRoute,
+  postOrganizationsOrganizationIdWirelessLocationScanningReceiversRoute,
+  postOrganizationsOrganizationIdWirelessRadioAutoRfChannelsRecalculateRoute,
+  postOrganizationsOrganizationIdWirelessSsidsFirewallIsolationAllowlistEntriesRoute,
+  postOrganizationsOrganizationIdWirelessSsidsProfilesAssignmentsRoute,
+  postOrganizationsOrganizationIdWirelessSsidsProfilesRoute,
+  postOrganizationsOrganizationIdWirelessZigbeeDisenrollmentsRoute,
+  postOrganizationsRoute,
+  putOrganizationsOrganizationIdActionBatchesActionBatchIdRoute,
+  putOrganizationsOrganizationIdAdaptivePolicyAclsAclIdRoute,
+  putOrganizationsOrganizationIdAdaptivePolicyGroupsIdRoute,
+  putOrganizationsOrganizationIdAdaptivePolicyPoliciesIdRoute,
+  putOrganizationsOrganizationIdAdaptivePolicySettingsRoute,
+  putOrganizationsOrganizationIdAdminsAdminIdRoute,
+  putOrganizationsOrganizationIdAlertsProfilesAlertConfigIdRoute,
+  putOrganizationsOrganizationIdApplianceDnsLocalProfilesProfileIdRoute,
+  putOrganizationsOrganizationIdApplianceDnsLocalRecordsRecordIdRoute,
+  putOrganizationsOrganizationIdApplianceDnsSplitProfilesProfileIdRoute,
+  putOrganizationsOrganizationIdApplianceRoutingVrfsSettingsRoute,
+  putOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRoute,
+  putOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRuleGroupsRuleGroupIdOverrideRoute,
+  putOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRulesRuleIdOverrideRoute,
+  putOrganizationsOrganizationIdApplianceSecurityIntrusionRoute,
+  putOrganizationsOrganizationIdApplianceVpnSiteToSiteIpsecPeersSlasRoute,
+  putOrganizationsOrganizationIdApplianceVpnThirdPartyVPNPeersRoute,
+  putOrganizationsOrganizationIdApplianceVpnVpnFirewallRulesRoute,
+  putOrganizationsOrganizationIdAssuranceAlertsProfilesProfileIdRoute,
+  putOrganizationsOrganizationIdBrandingPoliciesBrandingPolicyIdRoute,
+  putOrganizationsOrganizationIdBrandingPoliciesPrioritiesRoute,
+  putOrganizationsOrganizationIdCameraOnboardingStatusesRoute,
+  putOrganizationsOrganizationIdCameraRolesRoleIdRoute,
+  putOrganizationsOrganizationIdCellularGatewayEsimsInventoryIdRoute,
+  putOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsAccountIdRoute,
+  putOrganizationsOrganizationIdCellularGatewayEsimsSwapIdRoute,
+  putOrganizationsOrganizationIdCertificatesAuthoritiesRoute,
+  putOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdRoute,
+  putOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitchProfilesProfileIdPortsPortIdRoute,
+  putOrganizationsOrganizationIdDevicesCellularDataProfilesProfileIdRoute,
+  putOrganizationsOrganizationIdDevicesPacketCaptureSchedulesScheduleIdRoute,
+  putOrganizationsOrganizationIdEarlyAccessFeaturesOptInsOptInIdRoute,
+  putOrganizationsOrganizationIdInsightMonitoredMediaServersMonitoredMediaServerIdRoute,
+  putOrganizationsOrganizationIdLicensesLicenseIdRoute,
+  putOrganizationsOrganizationIdLoginSecurityRoute,
+  putOrganizationsOrganizationIdNetworksGroupsGroupIdRoute,
+  putOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesetIdRoute,
+  putOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesRuleIdRoute,
+  putOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsAssignmentIdRoute,
+  putOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesPolicyIdRoute,
+  putOrganizationsOrganizationIdPolicyObjectsGroupsPolicyObjectGroupIdRoute,
+  putOrganizationsOrganizationIdPolicyObjectsPolicyObjectIdRoute,
+  putOrganizationsOrganizationIdRoute,
+  putOrganizationsOrganizationIdSamlIdpsIdpIdRoute,
+  putOrganizationsOrganizationIdSamlRolesSamlRoleIdRoute,
+  putOrganizationsOrganizationIdSamlRoute,
+  putOrganizationsOrganizationIdSaseSitesSiteIdRoute,
+  putOrganizationsOrganizationIdSmAdminsRolesRoleIdRoute,
+  putOrganizationsOrganizationIdSmSentryPoliciesAssignmentsRoute,
+  putOrganizationsOrganizationIdSnmpRoute,
+  putOrganizationsOrganizationIdWirelessDevicesProvisioningDeploymentsRoute,
+  putOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesRoute,
+  putOrganizationsOrganizationIdWirelessLocationScanningReceiversReceiverIdRoute,
+  putOrganizationsOrganizationIdWirelessMqttSettingsRoute,
+  putOrganizationsOrganizationIdWirelessSsidsFirewallIsolationAllowlistEntriesEntryIdRoute,
+  putOrganizationsOrganizationIdWirelessSsidsProfilesIdRoute,
+  putOrganizationsOrganizationIdWirelessZigbeeDevicesIdRoute,
+  putOrganizationsOrganizationIdWirelessZigbeeDoorLocksDoorLockIdRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const organizationsHandler = app
+  .openapi(getOrganizationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdActionBatchesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdActionBatchesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdActionBatchesActionBatchIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdActionBatchesActionBatchIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdActionBatchesActionBatchIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdaptivePolicyAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdAdaptivePolicyAclsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdaptivePolicyAclsAclIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdAdaptivePolicyAclsAclIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdAdaptivePolicyAclsAclIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdaptivePolicyGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdAdaptivePolicyGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdaptivePolicyGroupsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdAdaptivePolicyGroupsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdAdaptivePolicyGroupsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdaptivePolicyOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdaptivePolicyPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdAdaptivePolicyPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdaptivePolicyPoliciesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdAdaptivePolicyPoliciesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdAdaptivePolicyPoliciesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdaptivePolicySettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdAdaptivePolicySettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAdminsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdAdminsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdAdminsAdminIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdAdminsAdminIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAlertsProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdAlertsProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdAlertsProfilesAlertConfigIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdAlertsProfilesAlertConfigIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApiRestProvisioningPipelinesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApiRestProvisioningPipelinesJobsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdApiRestProvisioningPipelinesJobsOverviewsByPipelineRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdApiRequestsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApiRequestsOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApiRequestsOverviewResponseCodesByIntervalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceDevicesInterfacesL3Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceDevicesInterfacesPortsByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdApplianceDevicesInterfacesPortsProfilesAssignmentsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdApplianceDevicesPortsTransceiversReadingsHistoryByDeviceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdApplianceDevicesRedundancyByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceDnsLocalProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdApplianceDnsLocalProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceDnsLocalProfilesAssignmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postOrganizationsOrganizationIdApplianceDnsLocalProfilesAssignmentsBulkCreateRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdApplianceDnsLocalProfilesAssignmentsBulkDeleteRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(putOrganizationsOrganizationIdApplianceDnsLocalProfilesProfileIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdApplianceDnsLocalProfilesProfileIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceDnsLocalRecordsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdApplianceDnsLocalRecordsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdApplianceDnsLocalRecordsRecordIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdApplianceDnsLocalRecordsRecordIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceDnsSplitProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdApplianceDnsSplitProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceDnsSplitProfilesAssignmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postOrganizationsOrganizationIdApplianceDnsSplitProfilesAssignmentsBulkCreateRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdApplianceDnsSplitProfilesAssignmentsBulkDeleteRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(putOrganizationsOrganizationIdApplianceDnsSplitProfilesProfileIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdApplianceDnsSplitProfilesProfileIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdApplianceFirewallMulticastForwardingByNetworkRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdApplianceInterfacesPacketsOverviewsByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceRoutingVrfsSettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdApplianceRoutingVrfsSettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityEventsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityHttpsInspectionByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityHttpsiRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdApplianceSecurityHttpsiCertificatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityIntrusionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdApplianceSecurityIntrusionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesOverviewsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRuleGroupsOverridesDeclareRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRuleGroupsRuleGroupIdOverrideRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRuleGroupsRuleGroupIdOverrideRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRulesOverridesDeclareRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRulesRuleIdOverrideRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putOrganizationsOrganizationIdApplianceSecurityIntrusionPoliciesPolicyIdRulesRuleIdOverrideRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityIntrusionRuleGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdApplianceSecurityIntrusionRuleGroupsOverridesRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdApplianceSecurityIntrusionRuleGroupsOverridesOverrideIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdApplianceSecurityIntrusionRuleGroupsOverviewsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityIntrusionRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceSecurityIntrusionRulesOverridesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteOrganizationsOrganizationIdApplianceSecurityIntrusionRulesOverridesOverrideIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdApplianceTrafficShapingVpnExclusionsByNetworkRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdApplianceUplinkStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceUplinksNatByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceUplinksStatusesOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceUplinksUsageByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceVpnSiteToSiteIpsecPeersSlasRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdApplianceVpnSiteToSiteIpsecPeersSlasRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceVpnStatsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceVpnStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceVpnThirdPartyVPNPeersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdApplianceVpnThirdPartyVPNPeersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdApplianceVpnVpnFirewallRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdApplianceVpnVpnFirewallRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdAssuranceAlertsDismissRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsOverviewByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsOverviewByTypeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsOverviewHistoricalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdAssuranceAlertsProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdAssuranceAlertsProfilesProfileIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdAssuranceAlertsProfilesProfileIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdAssuranceAlertsRestoreRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsTaxonomyCategoriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsTaxonomyTypesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceAlertsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdAssuranceImpactedDeviceWirelessByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdAssuranceWirelessExperienceSuccessfulConnectionsByNetworkRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdBrandingPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdBrandingPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdBrandingPoliciesPrioritiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdBrandingPoliciesPrioritiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdBrandingPoliciesBrandingPolicyIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdBrandingPoliciesBrandingPolicyIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdBrandingPoliciesBrandingPolicyIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraBoundariesAreasByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraBoundariesLinesByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraCustomAnalyticsArtifactsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdCameraCustomAnalyticsArtifactsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraCustomAnalyticsArtifactsArtifactIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdCameraCustomAnalyticsArtifactsArtifactIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraDetectionsHistoryByBoundaryByIntervalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraOnboardingStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdCameraOnboardingStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraPermissionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraPermissionsPermissionScopeIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraRolesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdCameraRolesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCameraRolesRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdCameraRolesRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdCameraRolesRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCampusGatewayClientsUsageByNetworkByClusterRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCampusGatewayClustersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCampusGatewayClustersFailoverTargetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdCampusGatewayClustersFailoverTargetsByClusterRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdCampusGatewayClustersNetworksOverviewsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdCampusGatewayClustersProvisionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCampusGatewayClustersSsidsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCampusGatewayClustersTunnelableRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdCampusGatewayClustersTunnelingBatchUpdateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdCampusGatewayClustersTunnelingByClusterByNetworkRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdCampusGatewayConnectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCampusGatewayConnectionsOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCampusGatewayDevicesSystemCpuLoadRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdCampusGatewayDevicesUplinksLocalOverridesByDeviceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdCellularGatewayEsimsInventoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdCellularGatewayEsimsInventoryIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsCommunicationPlansRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsRatePlansRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsAccountIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdCellularGatewayEsimsServiceProvidersAccountsAccountIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(postOrganizationsOrganizationIdCellularGatewayEsimsSwapRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdCellularGatewayEsimsSwapIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCellularGatewayUplinkStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCertificatesAuthoritiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdCertificatesAuthoritiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdCertificatesAuthoritiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdCertificatesAuthoritiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCertificatesAuthoritiesJobsJobIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdCertificatesAuthoritiesRevokeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdCertificatesRevocationListsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdClaimRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdClientsBandwidthUsageHistoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdClientsOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdClientsSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdCloneRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdConfigTemplatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdConfigTemplatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitchProfilesRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitchProfilesProfileIdPortsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitchProfilesProfileIdPortsPortIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitchProfilesProfileIdPortsPortIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdConfigurationChangesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesAvailabilitiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesAvailabilitiesChangeHistoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesCellularDataDevicesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesCellularDataProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdDevicesCellularDataProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesCellularDataProfilesAssignmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postOrganizationsOrganizationIdDevicesCellularDataProfilesAssignmentsBatchCreateRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdDevicesCellularDataProfilesAssignmentsBulkDeleteRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(putOrganizationsOrganizationIdDevicesCellularDataProfilesProfileIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdDevicesCellularDataProfilesProfileIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesCellularDataUsageByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdDevicesCellularDataUsageHistoryByDeviceByIntervalRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdDevicesCellularGeolocationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesCellularUplinksBandsByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesCellularUplinksTowersByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesCertificatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdDevicesControllerMigrationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesControllerMigrationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdDevicesDetailsBulkUpdateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesOverviewByModelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesPacketCaptureCapturesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdDevicesPacketCaptureCapturesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdDevicesPacketCaptureCapturesBulkCreateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdDevicesPacketCaptureCapturesBulkDeleteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdDevicesPacketCaptureCapturesCaptureIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postOrganizationsOrganizationIdDevicesPacketCaptureCapturesCaptureIdDownloadUrlGenerateRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(postOrganizationsOrganizationIdDevicesPacketCaptureCapturesCaptureIdStopRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesPacketCaptureSchedulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdDevicesPacketCaptureSchedulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdDevicesPacketCaptureSchedulesReorderRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdDevicesPacketCaptureSchedulesScheduleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdDevicesPacketCaptureSchedulesScheduleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesPowerModulesStatusesByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesProvisioningStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesStatusesOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesSyslogServersByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesSyslogServersRolesByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesSystemMemoryUsageHistoryByIntervalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesUplinksAddressesByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdDevicesUplinksLossAndLatencyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdEarlyAccessFeaturesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdEarlyAccessFeaturesOptInsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdEarlyAccessFeaturesOptInsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdEarlyAccessFeaturesOptInsOptInIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdEarlyAccessFeaturesOptInsOptInIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdEarlyAccessFeaturesOptInsOptInIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdFirmwareUpgradesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdFirmwareUpgradesByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdFloorPlansAutoLocateDevicesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdFloorPlansAutoLocateStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdInsightApplicationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdInsightMonitoredMediaServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdInsightMonitoredMediaServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdInsightMonitoredMediaServersMonitoredMediaServerIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putOrganizationsOrganizationIdInsightMonitoredMediaServersMonitoredMediaServerIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdInsightMonitoredMediaServersMonitoredMediaServerIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdIntegrationsDeployableRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdIntegrationsDeployedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdIntegrationsXdrNetworksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdIntegrationsXdrNetworksDisableRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdIntegrationsXdrNetworksEnableRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdInventoryClaimRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdInventoryDevicesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdInventoryDevicesEoxOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdInventoryDevicesSwapsBulkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdInventoryDevicesSwapsBulkIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdInventoryDevicesSerialRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdInventoryOrdersClaimRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdInventoryOrdersPreviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdInventoryReleaseRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdLicensesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdLicensesAssignSeatsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdLicensesMoveRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdLicensesMoveSeatsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdLicensesOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdLicensesRenewSeatsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdLicensesLicenseIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdLicensesLicenseIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdLicensingCotermLicensesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdLicensingCotermLicensesMoveRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdLoginSecurityRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdLoginSecurityRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdNetworksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdNetworksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdNetworksCombineRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdNetworksGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdNetworksGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdNetworksGroupsOverviewByGroupRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdNetworksGroupsGroupIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdNetworksGroupsGroupIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdNetworksGroupsGroupIdBulkAssignRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdNetworksGroupsGroupIdBulkUnassignRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdNetworksMovesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdNetworksMovesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdOpenapiSpecRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPoliciesAssignmentsByClientRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPoliciesGlobalFirewallApplicationCategoriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesRuleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesRuleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesetIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdPoliciesGlobalFirewallRulesetsRulesetIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesAdaptivePolicyGroupsAssignRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesAdaptivePolicyGroupsAssignmentsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesAdaptivePolicyGroupsRemoveRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesApplianceVlansAssignRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesApplianceVlansAssignmentsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesApplianceVlansAssignmentsByVlanRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesApplianceVlansRemoveRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsCommitRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsAssignmentIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesFirewallRulesetsAssignmentsAssignmentIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesNetworksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesNetworksAssignmentsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesNetworksAssignmentsBulkAssignRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesNetworksAssignmentsBulkDeleteRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(putOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesPolicyIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdPoliciesGlobalGroupPoliciesPolicyIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPolicyObjectsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdPolicyObjectsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPolicyObjectsGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdPolicyObjectsGroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPolicyObjectsGroupsPolicyObjectGroupIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdPolicyObjectsGroupsPolicyObjectGroupIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdPolicyObjectsGroupsPolicyObjectGroupIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdPolicyObjectsPolicyObjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdPolicyObjectsPolicyObjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdPolicyObjectsPolicyObjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSamlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdSamlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSamlIdpsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSamlIdpsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdSamlIdpsIdpIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSamlIdpsIdpIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdSamlIdpsIdpIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSamlRolesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSamlRolesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSamlRolesSamlRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdSamlRolesSamlRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdSamlRolesSamlRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSaseConnectorsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSaseConnectorsBatchDeleteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSaseIntegrationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSaseIntegrationsIntegrationIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdSaseIntegrationsIntegrationIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSaseNetworksEligibleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSaseRegionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSaseSitesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSaseSitesAttachRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSaseSitesConnectivityHistoryBySiteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSaseSitesConnectivityOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSaseSitesDetachRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdSaseSitesSiteIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSensorGatewaysConnectionsLatestRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSensorReadingsHistoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSensorReadingsLatestRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSmAdminsRolesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSmAdminsRolesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSmAdminsRolesRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdSmAdminsRolesRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdSmAdminsRolesRoleIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSmApnsCertRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdSmSentryPoliciesAssignmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSmSentryPoliciesAssignmentsByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSmVppAccountsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSmVppAccountsVppAccountIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSnmpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdSnmpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSpacesIntegrateStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSpacesIntegrationRemoveRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSplashAssetsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdSplashAssetsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSplashThemesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSplashThemesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdSplashThemesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSplashThemesThemeIdentifierAssetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdSummarySustainabilityDailyConsumerMetricsNetworksRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsDeviceCategoriesRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsDeviceCategoriesAggregatedRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsDevicesRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsNetworksRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdSummarySustainabilitySummaryConsumerMetricsNetworksAggregatedRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdSummarySwitchPowerHistoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopAppliancesByUtilizationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopApplicationsByUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopApplicationsCategoriesByUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopClientsByUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopClientsManufacturersByUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopDevicesByUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopDevicesModelsByUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopNetworksByStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopSsidsByUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSummaryTopSwitchesByEnergyUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdSwitchDevicesCloneRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSwitchPortsBySwitchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSwitchPortsClientsOverviewByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSwitchPortsOverviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSwitchPortsStatusesBySwitchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSwitchPortsTopologyDiscoveryByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdSwitchPortsUsageHistoryByDeviceByIntervalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdUplinksStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWebhooksAlertTypesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWebhooksCallbacksStatusesCallbackIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWebhooksLogsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessAirMarshalRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessAirMarshalSettingsByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdWirelessClientsConnectionsImpactedByNetworkBySsidRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessClientsOverviewByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessClientsUsageByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessClientsUsageByNetworkBySsidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessClientsUsageBySsidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesChannelUtilizationByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesChannelUtilizationByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdWirelessDevicesChannelUtilizationHistoryByDeviceByIntervalRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessDevicesChannelUtilizationHistoryByNetworkByIntervalRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesEthernetStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesPacketLossByClientRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesPacketLossByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesPacketLossByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesPowerModeHistoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesProvisioningDeploymentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdWirelessDevicesProvisioningDeploymentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdWirelessDevicesProvisioningDeploymentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteOrganizationsOrganizationIdWirelessDevicesProvisioningDeploymentsDeploymentIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesCrlsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessDevicesRadsecCertificatesAuthoritiesCrlsDeltasRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesSystemCpuLoadHistoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessDevicesWirelessControllersByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessLocationScanningByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessLocationScanningReceiversRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdWirelessLocationScanningReceiversRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdWirelessLocationScanningReceiversReceiverIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteOrganizationsOrganizationIdWirelessLocationScanningReceiversReceiverIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessMqttSettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdWirelessMqttSettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdWirelessRadioAutoRfChannelsRecalculateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessRadioOverridesByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessRadioRrmByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessRfProfilesAssignmentsByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdWirelessSsidsFirewallIsolationAllowlistEntriesRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    postOrganizationsOrganizationIdWirelessSsidsFirewallIsolationAllowlistEntriesRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdWirelessSsidsFirewallIsolationAllowlistEntriesEntryIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    putOrganizationsOrganizationIdWirelessSsidsFirewallIsolationAllowlistEntriesEntryIdRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessSsidsOpenRoamingByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessSsidsOweByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessSsidsProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdWirelessSsidsProfilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessSsidsProfilesAssignmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdWirelessSsidsProfilesAssignmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdWirelessSsidsProfilesAssignmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessSsidsProfilesAssignmentsByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessSsidsProfilesOverviewsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdWirelessSsidsProfilesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteOrganizationsOrganizationIdWirelessSsidsProfilesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessSsidsStatusesByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessZigbeeByNetworkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessZigbeeDevicesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdWirelessZigbeeDevicesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrganizationsOrganizationIdWirelessZigbeeDisenrollmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessZigbeeDisenrollmentsDisenrollmentIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getOrganizationsOrganizationIdWirelessZigbeeDoorLocksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrganizationsOrganizationIdWirelessZigbeeDoorLocksDoorLockIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerAvailabilitiesChangeHistoryRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerClientsOverviewHistoryByDeviceByIntervalRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessControllerConnectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL2ByDeviceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL2StatusesChangeHistoryByDeviceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL2UsageHistoryByIntervalRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL3ByDeviceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL3StatusesChangeHistoryByDeviceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesL3UsageHistoryByIntervalRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesPacketsOverviewByDeviceRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesInterfacesUsageHistoryByIntervalRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesRedundancyFailoverHistoryRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessControllerDevicesRedundancyStatusesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    getOrganizationsOrganizationIdWirelessControllerDevicesSystemUtilizationHistoryByIntervalRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(getOrganizationsOrganizationIdWirelessControllerOverviewByDeviceRoute, (c) => {
+    throw new Error('Not implemented')
+  })

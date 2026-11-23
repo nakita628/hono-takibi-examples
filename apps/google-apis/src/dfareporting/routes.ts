@@ -1,768 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DimensionSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The kind of resource this is, in this case dfareporting#dimension.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The dimension name, e.g. dfa:advertiser' }),
-  })
-  .openapi({ description: 'Represents a dimension.', required: [] })
-  .openapi('Dimension')
-
-const MetricSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The kind of resource this is, in this case dfareporting#metric.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The metric name, e.g. dfa:impressions' }),
-  })
-  .openapi({ description: 'Represents a metric.', required: [] })
-  .openapi('Metric')
-
-const CrossDimensionReachReportCompatibleFieldsSchema = z
-  .object({
-    breakdown: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "breakdown" section of the report.',
-      }),
-    dimensionFilters: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "dimensionFilters" section of the report.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of resource this is, in this case dfareporting#crossDimensionReachReportCompatibleFields.',
-      }),
-    metrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
-      }),
-    overlapMetrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected in the "overlapMetricNames" section of the report.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents fields that are compatible to be selected for a report of type "CROSS_DIMENSION_REACH".',
-    required: [],
-  })
-  .openapi('CrossDimensionReachReportCompatibleFields')
-
-const FloodlightReportCompatibleFieldsSchema = z
-  .object({
-    dimensionFilters: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "dimensionFilters" section of the report.',
-      }),
-    dimensions: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "dimensions" section of the report.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of resource this is, in this case dfareporting#floodlightReportCompatibleFields.',
-      }),
-    metrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents fields that are compatible to be selected for a report of type "FlOODLIGHT".',
-    required: [],
-  })
-  .openapi('FloodlightReportCompatibleFields')
-
-const PathReportCompatibleFieldsSchema = z
-  .object({
-    channelGroupings: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "channelGroupings" section of the report.',
-      }),
-    dimensions: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "dimensions" section of the report.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of resource this is, in this case dfareporting#pathReportCompatibleFields.',
-      }),
-    metrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
-      }),
-    pathFilters: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "pathFilters" section of the report.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents fields that are compatible to be selected for a report of type "PATH".',
-    required: [],
-  })
-  .openapi('PathReportCompatibleFields')
-
-const PathToConversionReportCompatibleFieldsSchema = z
-  .object({
-    conversionDimensions: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Conversion dimensions which are compatible to be selected in the "conversionDimensions" section of the report.',
-      }),
-    customFloodlightVariables: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom floodlight variables which are compatible to be selected in the "customFloodlightVariables" section of the report.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of resource this is, in this case dfareporting#pathToConversionReportCompatibleFields.',
-      }),
-    metrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
-      }),
-    perInteractionDimensions: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Per-interaction dimensions which are compatible to be selected in the "perInteractionDimensions" section of the report.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents fields that are compatible to be selected for a report of type "PATH_TO_CONVERSION".',
-    required: [],
-  })
-  .openapi('PathToConversionReportCompatibleFields')
-
-const ReachReportCompatibleFieldsSchema = z
-  .object({
-    dimensionFilters: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "dimensionFilters" section of the report.',
-      }),
-    dimensions: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "dimensions" section of the report.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of resource this is, in this case dfareporting#reachReportCompatibleFields.',
-      }),
-    metrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
-      }),
-    pivotedActivityMetrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected as activity metrics to pivot on in the "activities" section of the report.',
-      }),
-    reachByFrequencyMetrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected in the "reachByFrequencyMetricNames" section of the report.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents fields that are compatible to be selected for a report of type "REACH".',
-    required: [],
-  })
-  .openapi('ReachReportCompatibleFields')
-
-const ReportCompatibleFieldsSchema = z
-  .object({
-    dimensionFilters: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "dimensionFilters" section of the report.',
-      }),
-    dimensions: z
-      .array(DimensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimensions which are compatible to be selected in the "dimensions" section of the report.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of resource this is, in this case dfareporting#reportCompatibleFields.',
-      }),
-    metrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
-      }),
-    pivotedActivityMetrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics which are compatible to be selected as activity metrics to pivot on in the "activities" section of the report.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents fields that are compatible to be selected for a report of type "STANDARD".',
-    required: [],
-  })
-  .openapi('ReportCompatibleFields')
-
-type CompatibleFieldsType = {
-  crossDimensionReachReportCompatibleFields?: z.infer<
-    typeof CrossDimensionReachReportCompatibleFieldsSchema
-  >
-  floodlightReportCompatibleFields?: z.infer<typeof FloodlightReportCompatibleFieldsSchema>
-  kind?: string
-  pathAttributionReportCompatibleFields?: z.infer<typeof PathReportCompatibleFieldsSchema>
-  pathReportCompatibleFields?: z.infer<typeof PathReportCompatibleFieldsSchema>
-  pathToConversionReportCompatibleFields?: z.infer<
-    typeof PathToConversionReportCompatibleFieldsSchema
-  >
-  reachReportCompatibleFields?: z.infer<typeof ReachReportCompatibleFieldsSchema>
-  reportCompatibleFields?: z.infer<typeof ReportCompatibleFieldsSchema>
-}
-
-const LookbackConfigurationSchema = z
-  .object({
-    clickDuration: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Lookback window, in days, from the last time a given user clicked on one of your ads. If you enter 0, clicks will not be considered as triggering events for floodlight tracking. If you leave this field blank, the default value for your account will be used. Acceptable values are 0 to 90, inclusive.',
-      }),
-    postImpressionActivitiesDuration: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Lookback window, in days, from the last time a given user viewed one of your ads. If you enter 0, impressions will not be considered as triggering events for floodlight tracking. If you leave this field blank, the default value for your account will be used. Acceptable values are 0 to 90, inclusive.',
-      }),
-  })
-  .openapi({ description: 'Lookback configuration settings.', required: [] })
-  .openapi('LookbackConfiguration')
-
-const ReportsConfigurationSchema = z
-  .object({
-    exposureToConversionEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the exposure to conversion report is enabled. This report shows detailed pathway information on up to 10 of the most recent ad exposures seen by a user before converting.',
-      }),
-    lookbackConfiguration: LookbackConfigurationSchema.exactOptional().openapi({
-      description: 'Default lookback windows for new advertisers in this account.',
-    }),
-    reportGenerationTimeZoneId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Report generation time zone ID of this account. This is a required field that can only be changed by a superuser. Acceptable values are: - "1" for "America/New_York" - "2" for "Europe/London" - "3" for "Europe/Paris" - "4" for "Africa/Johannesburg" - "5" for "Asia/Jerusalem" - "6" for "Asia/Shanghai" - "7" for "Asia/Hong_Kong" - "8" for "Asia/Tokyo" - "9" for "Australia/Sydney" - "10" for "Asia/Dubai" - "11" for "America/Los_Angeles" - "12" for "Pacific/Auckland" - "13" for "America/Sao_Paulo" - "16" for "America/Asuncion" - "17" for "America/Chicago" - "18" for "America/Denver" - "19" for "America/St_Johns" - "20" for "Asia/Dhaka" - "21" for "Asia/Jakarta" - "22" for "Asia/Kabul" - "23" for "Asia/Karachi" - "24" for "Asia/Calcutta" - "25" for "Asia/Pyongyang" - "26" for "Asia/Rangoon" - "27" for "Atlantic/Cape_Verde" - "28" for "Atlantic/South_Georgia" - "29" for "Australia/Adelaide" - "30" for "Australia/Lord_Howe" - "31" for "Europe/Moscow" - "32" for "Pacific/Kiritimati" - "35" for "Pacific/Norfolk" - "36" for "Pacific/Tongatapu" ',
-      }),
-  })
-  .openapi({ description: 'Reporting Configuration', required: [] })
-  .openapi('ReportsConfiguration')
-
-const AccountSchema = z
-  .object({
-    accountPermissionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Account permissions assigned to this account.' }),
-    accountProfile: z
-      .enum(['ACCOUNT_PROFILE_BASIC', 'ACCOUNT_PROFILE_STANDARD'])
-      .exactOptional()
-      .openapi({
-        description: 'Profile for this account. This is a read-only field that can be left blank.',
-      }),
-    active: z.boolean().exactOptional().openapi({ description: 'Whether this account is active.' }),
-    activeAdsLimitTier: z
-      .enum([
-        'ACTIVE_ADS_TIER_40K',
-        'ACTIVE_ADS_TIER_75K',
-        'ACTIVE_ADS_TIER_100K',
-        'ACTIVE_ADS_TIER_200K',
-        'ACTIVE_ADS_TIER_300K',
-        'ACTIVE_ADS_TIER_500K',
-        'ACTIVE_ADS_TIER_750K',
-        'ACTIVE_ADS_TIER_1M',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Maximum number of active ads allowed for this account.' }),
-    activeViewOptOut: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to serve creatives with Active View tags. If disabled, viewability data will not be available for any impressions.',
-      }),
-    availablePermissionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'User role permissions available to the user roles of this account.',
-      }),
-    countryId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the country associated with this account.' }),
-    currencyId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of currency associated with this account. This is a required field. Acceptable values are: - "1" for USD - "2" for GBP - "3" for ESP - "4" for SEK - "5" for CAD - "6" for JPY - "7" for DEM - "8" for AUD - "9" for FRF - "10" for ITL - "11" for DKK - "12" for NOK - "13" for FIM - "14" for ZAR - "15" for IEP - "16" for NLG - "17" for EUR - "18" for KRW - "19" for TWD - "20" for SGD - "21" for CNY - "22" for HKD - "23" for NZD - "24" for MYR - "25" for BRL - "26" for PTE - "28" for CLP - "29" for TRY - "30" for ARS - "31" for PEN - "32" for ILS - "33" for CHF - "34" for VEF - "35" for COP - "36" for GTQ - "37" for PLN - "39" for INR - "40" for THB - "41" for IDR - "42" for CZK - "43" for RON - "44" for HUF - "45" for RUB - "46" for AED - "47" for BGN - "48" for HRK - "49" for MXN - "50" for NGN - "51" for EGP ',
-      }),
-    defaultCreativeSizeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Default placement dimensions for this account.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of this account.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of this account. This is a read-only, auto-generated field.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#account".',
-      }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Locale of this account. Acceptable values are: - "cs" (Czech) - "de" (German) - "en" (English) - "en-GB" (English United Kingdom) - "es" (Spanish) - "fr" (French) - "it" (Italian) - "ja" (Japanese) - "ko" (Korean) - "pl" (Polish) - "pt-BR" (Portuguese Brazil) - "ru" (Russian) - "sv" (Swedish) - "tr" (Turkish) - "zh-CN" (Chinese Simplified) - "zh-TW" (Chinese Traditional) ',
-      }),
-    maximumImageSize: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum image size allowed for this account, in kilobytes. Value must be greater than or equal to 1.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of this account. This is a required field, and must be less than 128 characters long and be globally unique.',
-      }),
-    nielsenOcrEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether campaigns created in this account will be enabled for Nielsen OCR reach ratings by default.',
-      }),
-    reportsConfiguration: ReportsConfigurationSchema.exactOptional().openapi({
-      description: 'Reporting configuration of this account.',
-    }),
-    shareReportsWithTwitter: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Share Path to Conversion reports with Twitter.' }),
-    teaserSizeLimit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'File size limit in kilobytes of Rich Media teaser creatives. Acceptable values are 1 to 10240, inclusive.',
-      }),
-  })
-  .openapi({ description: 'Contains properties of a Campaign Manager account.', required: [] })
-  .openapi('Account')
-
-const AccountActiveAdSummarySchema = z
-  .object({
-    accountId: z.string().exactOptional().openapi({ description: 'ID of the account.' }),
-    activeAds: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Ads that have been activated for the account' }),
-    activeAdsLimitTier: z
-      .enum([
-        'ACTIVE_ADS_TIER_40K',
-        'ACTIVE_ADS_TIER_75K',
-        'ACTIVE_ADS_TIER_100K',
-        'ACTIVE_ADS_TIER_200K',
-        'ACTIVE_ADS_TIER_300K',
-        'ACTIVE_ADS_TIER_500K',
-        'ACTIVE_ADS_TIER_750K',
-        'ACTIVE_ADS_TIER_1M',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Maximum number of active ads allowed for the account.' }),
-    availableAds: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Ads that can be activated for the account.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountActiveAdSummary".',
-      }),
-  })
-  .openapi({ description: 'Gets a summary of active ads in an account.', required: [] })
-  .openapi('AccountActiveAdSummary')
-
-const AccountPermissionSchema = z
-  .object({
-    accountProfiles: z
-      .array(z.enum(['ACCOUNT_PROFILE_BASIC', 'ACCOUNT_PROFILE_STANDARD']))
-      .exactOptional()
-      .openapi({
-        description:
-          'Account profiles associated with this account permission. Possible values are: - "ACCOUNT_PROFILE_BASIC" - "ACCOUNT_PROFILE_STANDARD" ',
-      }),
-    id: z.string().exactOptional().openapi({ description: 'ID of this account permission.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountPermission".',
-      }),
-    level: z
-      .enum(['USER', 'ADMINISTRATOR'])
-      .exactOptional()
-      .openapi({ description: 'Administrative level required to enable this account permission.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of this account permission.' }),
-    permissionGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Permission group of this account permission.' }),
-  })
-  .openapi({
-    description:
-      'AccountPermissions contains information about a particular account permission. Some features of Campaign Manager require an account permission to be present in the account.',
-    required: [],
-  })
-  .openapi('AccountPermission')
-
-const AccountPermissionGroupSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'ID of this account permission group.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountPermissionGroup".',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of this account permission group.' }),
-  })
-  .openapi({
-    description:
-      'AccountPermissionGroups contains a mapping of permission group IDs to names. A permission group is a grouping of account permissions.',
-    required: [],
-  })
-  .openapi('AccountPermissionGroup')
-
-const AccountPermissionGroupsListResponseSchema = z
-  .object({
-    accountPermissionGroups: z
-      .array(AccountPermissionGroupSchema)
-      .exactOptional()
-      .openapi({ description: 'Account permission group collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountPermissionGroupsListResponse".',
-      }),
-  })
-  .openapi({ description: 'Account Permission Group List Response', required: [] })
-  .openapi('AccountPermissionGroupsListResponse')
-
-const AccountPermissionsListResponseSchema = z
-  .object({
-    accountPermissions: z
-      .array(AccountPermissionSchema)
-      .exactOptional()
-      .openapi({ description: 'Account permission collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountPermissionsListResponse".',
-      }),
-  })
-  .openapi({ description: 'Account Permission List Response', required: [] })
-  .openapi('AccountPermissionsListResponse')
-
-const ObjectFilterSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#objectFilter".',
-      }),
-    objectIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Applicable when status is ASSIGNED. The user has access to objects with these object IDs.',
-      }),
-    status: z
-      .enum(['NONE', 'ASSIGNED', 'ALL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Status of the filter. NONE means the user has access to none of the objects. ALL means the user has access to all objects. ASSIGNED means the user has access to the objects with IDs in the objectIds list.',
-      }),
-  })
-  .openapi({ description: 'Object Filter.', required: [] })
-  .openapi('ObjectFilter')
-
-const AccountUserProfileSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Account ID of the user profile. This is a read-only field that can be left blank.',
-      }),
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether this user profile is active. This defaults to false, and must be set true on insert for the user profile to be usable.',
-      }),
-    advertiserFilter: ObjectFilterSchema.exactOptional().openapi({
-      description: 'Filter that describes which advertisers are visible to the user profile.',
-    }),
-    campaignFilter: ObjectFilterSchema.exactOptional().openapi({
-      description: 'Filter that describes which campaigns are visible to the user profile.',
-    }),
-    comments: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Comments for this user profile.' }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Email of the user profile. The email addresss must be linked to a Google Account. This field is required on insertion and is read-only after insertion.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of the user profile. This is a read-only, auto-generated field.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountUserProfile".',
-      }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Locale of the user profile. This is a required field. Acceptable values are: - "cs" (Czech) - "de" (German) - "en" (English) - "en-GB" (English United Kingdom) - "es" (Spanish) - "fr" (French) - "it" (Italian) - "ja" (Japanese) - "ko" (Korean) - "pl" (Polish) - "pt-BR" (Portuguese Brazil) - "ru" (Russian) - "sv" (Swedish) - "tr" (Turkish) - "zh-CN" (Chinese Simplified) - "zh-TW" (Chinese Traditional) ',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the user profile. This is a required field. Must be less than 64 characters long, must be globally unique, and cannot contain whitespace or any of the following characters: "&;<>"#%,".',
-      }),
-    siteFilter: ObjectFilterSchema.exactOptional().openapi({
-      description: 'Filter that describes which sites are visible to the user profile.',
-    }),
-    subaccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Subaccount ID of the user profile. This is a read-only field that can be left blank.',
-      }),
-    traffickerType: z
-      .enum(['INTERNAL_NON_TRAFFICKER', 'INTERNAL_TRAFFICKER', 'EXTERNAL_TRAFFICKER'])
-      .exactOptional()
-      .openapi({ description: 'Trafficker type of this user profile. This is a read-only field.' }),
-    userAccessType: z
-      .enum(['NORMAL_USER', 'SUPER_USER', 'INTERNAL_ADMINISTRATOR', 'READ_ONLY_SUPER_USER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'User type of the user profile. This is a read-only field that can be left blank.',
-      }),
-    userRoleFilter: ObjectFilterSchema.exactOptional().openapi({
-      description: 'Filter that describes which user roles are visible to the user profile.',
-    }),
-    userRoleId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User role ID of the user profile. This is a required field.' }),
-  })
-  .openapi({
-    description:
-      'AccountUserProfiles contains properties of a Campaign Manager user profile. This resource is specifically for managing user profiles, whereas UserProfiles is for accessing the API.',
-    required: [],
-  })
-  .openapi('AccountUserProfile')
-
-const AccountUserProfilesListResponseSchema = z
-  .object({
-    accountUserProfiles: z
-      .array(AccountUserProfileSchema)
-      .exactOptional()
-      .openapi({ description: 'Account user profile collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountUserProfilesListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Account User Profile List Response', required: [] })
-  .openapi('AccountUserProfilesListResponse')
-
-const AccountsListResponseSchema = z
-  .object({
-    accounts: z
-      .array(AccountSchema)
-      .exactOptional()
-      .openapi({ description: 'Account collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountsListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Account List Response', required: [] })
-  .openapi('AccountsListResponse')
-
 const DimensionValueSchema = z
   .object({
     dimensionName: z
@@ -794,29 +31,6 @@ const DimensionValueSchema = z
   })
   .openapi({ description: 'Represents a DimensionValue resource.', required: [] })
   .openapi('DimensionValue')
-
-const ActivitiesSchema = z
-  .object({
-    filters: z
-      .array(DimensionValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of activity filters. The dimension values need to be all either of type "dfa:activity" or "dfa:activityGroup".',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The kind of resource this is, in this case dfareporting#activities.',
-      }),
-    metricNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of names of floodlight activity metrics.' }),
-  })
-  .openapi({ description: 'Represents an activity group.', required: [] })
-  .openapi('Activities')
 
 const ClickThroughUrlSchema = z
   .object({
@@ -1941,6 +1155,12 @@ const AdSchema = z
   .openapi({ description: 'Contains properties of a Campaign Manager ad.', required: [] })
   .openapi('Ad')
 
+type AdsListResponseType = {
+  ads?: z.infer<typeof AdSchema>[]
+  kind?: string
+  nextPageToken?: string
+}
+
 const AdBlockingConfigurationSchema = z
   .object({
     clickThroughUrl: z
@@ -1974,446 +1194,6 @@ const AdBlockingConfigurationSchema = z
   })
   .openapi({ description: 'Campaign ad blocking settings.', required: [] })
   .openapi('AdBlockingConfiguration')
-
-const AdSlotSchema = z
-  .object({
-    comment: z.string().exactOptional().openapi({ description: 'Comment for this ad slot.' }),
-    compatibility: z
-      .enum([
-        'DISPLAY',
-        'DISPLAY_INTERSTITIAL',
-        'APP',
-        'APP_INTERSTITIAL',
-        'IN_STREAM_VIDEO',
-        'IN_STREAM_AUDIO',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Ad slot compatibility. DISPLAY and DISPLAY_INTERSTITIAL refer to rendering either on desktop, mobile devices or in mobile apps for regular or interstitial ads respectively. APP and APP_INTERSTITIAL are for rendering in mobile apps. IN_STREAM_VIDEO refers to rendering in in-stream video ads developed with the VAST standard.',
-      }),
-    height: z.string().exactOptional().openapi({ description: 'Height of this ad slot.' }),
-    linkedPlacementId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the placement from an external platform that is linked to this ad slot.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'Name of this ad slot.' }),
-    paymentSourceType: z
-      .enum([
-        'PLANNING_PAYMENT_SOURCE_TYPE_AGENCY_PAID',
-        'PLANNING_PAYMENT_SOURCE_TYPE_PUBLISHER_PAID',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Payment source type of this ad slot.' }),
-    primary: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Primary ad slot of a roadblock inventory item.' }),
-    width: z.string().exactOptional().openapi({ description: 'Width of this ad slot.' }),
-  })
-  .openapi({ description: 'Ad Slot', required: [] })
-  .openapi('AdSlot')
-
-const AdsListResponseSchema = z
-  .object({
-    ads: z.array(AdSchema).exactOptional().openapi({ description: 'Ad collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#adsListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Ad List Response', required: [] })
-  .openapi('AdsListResponse')
-
-const AdvertiserSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Account ID of this advertiser.This is a read-only field that can be left blank.',
-      }),
-    advertiserGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the advertiser group this advertiser belongs to. You can group advertisers for reporting purposes, allowing you to see aggregated information for all advertisers in each group.',
-      }),
-    clickThroughUrlSuffix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Suffix added to click-through URL of ad creative associations under this advertiser. Must be less than 129 characters long.',
-      }),
-    defaultClickThroughEventTagId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "ID of the click-through event tag to apply by default to the landing pages of this advertiser's campaigns.",
-      }),
-    defaultEmail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Default email address used in sender field for tag emails.' }),
-    floodlightConfigurationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Floodlight configuration ID of this advertiser. The floodlight configuration ID will be created automatically, so on insert this field should be left blank. This field can be set to another advertiser's floodlight configuration ID in order to share that advertiser's floodlight configuration with this advertiser, so long as: - This advertiser's original floodlight configuration is not already associated with floodlight activities or floodlight activity groups. - This advertiser's original floodlight configuration is not already shared with another advertiser. ",
-      }),
-    floodlightConfigurationIdDimensionValue: DimensionValueSchema.exactOptional().openapi({
-      description:
-        'Dimension value for the ID of the floodlight configuration. This is a read-only, auto-generated field.',
-    }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of this advertiser. This is a read-only, auto-generated field.',
-      }),
-    idDimensionValue: DimensionValueSchema.exactOptional().openapi({
-      description:
-        'Dimension value for the ID of this advertiser. This is a read-only, auto-generated field.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertiser".',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of this advertiser. This is a required field and must be less than 256 characters long and unique among advertisers of the same account.',
-      }),
-    originalFloodlightConfigurationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Original floodlight configuration before any sharing occurred. Set the floodlightConfigurationId of this advertiser to originalFloodlightConfigurationId to unshare the advertiser's current floodlight configuration. You cannot unshare an advertiser's floodlight configuration if the shared configuration has activities associated with any campaign or placement.",
-      }),
-    status: z
-      .enum(['APPROVED', 'ON_HOLD'])
-      .exactOptional()
-      .openapi({ description: 'Status of this advertiser.' }),
-    subaccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Subaccount ID of this advertiser.This is a read-only field that can be left blank.',
-      }),
-    suspended: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Suspension status of this advertiser.' }),
-  })
-  .openapi({ description: 'Contains properties of a Campaign Manager advertiser.', required: [] })
-  .openapi('Advertiser')
-
-const AdvertiserGroupSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Account ID of this advertiser group. This is a read-only field that can be left blank.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of this advertiser group. This is a read-only, auto-generated field.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertiserGroup".',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of this advertiser group. This is a required field and must be less than 256 characters long and unique among advertiser groups of the same account.',
-      }),
-  })
-  .openapi({
-    description:
-      'Groups advertisers together so that reports can be generated for the entire group at once.',
-    required: [],
-  })
-  .openapi('AdvertiserGroup')
-
-const AdvertiserGroupsListResponseSchema = z
-  .object({
-    advertiserGroups: z
-      .array(AdvertiserGroupSchema)
-      .exactOptional()
-      .openapi({ description: 'Advertiser group collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertiserGroupsListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Advertiser Group List Response', required: [] })
-  .openapi('AdvertiserGroupsListResponse')
-
-const MobileAppSchema = z
-  .object({
-    directory: z
-      .enum([
-        'UNKNOWN',
-        'APPLE_APP_STORE',
-        'GOOGLE_PLAY_STORE',
-        'ROKU_APP_STORE',
-        'AMAZON_FIRETV_APP_STORE',
-        'PLAYSTATION_APP_STORE',
-        'APPLE_TV_APP_STORE',
-        'XBOX_APP_STORE',
-        'SAMSUNG_TV_APP_STORE',
-        'ANDROID_TV_APP_STORE',
-        'GENERIC_CTV_APP_STORE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Mobile app directory.' }),
-    id: z.string().exactOptional().openapi({ description: 'ID of this mobile app.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#mobileApp".',
-      }),
-    publisherName: z.string().exactOptional().openapi({ description: 'Publisher name.' }),
-    title: z.string().exactOptional().openapi({ description: 'Title of this mobile app.' }),
-  })
-  .openapi({
-    description: 'Contains information about a mobile app. Used as a landing page deep link.',
-    required: [],
-  })
-  .openapi('MobileApp')
-
-const DeepLinkSchema = z
-  .object({
-    appUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the mobile app being linked to.' }),
-    fallbackUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fallback URL. This URL will be served to users who do not have the mobile app installed.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#deepLink".',
-      }),
-    mobileApp: MobileAppSchema.exactOptional().openapi({
-      description: 'The mobile app targeted by this deep link.',
-    }),
-    remarketingListIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Ads served to users on these remarketing lists will use this deep link. Applicable when mobileApp.directory is APPLE_APP_STORE.',
-      }),
-  })
-  .openapi({ description: 'Contains information about a landing page deep link.', required: [] })
-  .openapi('DeepLink')
-
-const LandingPageSchema = z
-  .object({
-    advertiserId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Advertiser ID of this landing page. This is a required field.' }),
-    archived: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this landing page has been archived.' }),
-    deepLinks: z
-      .array(DeepLinkSchema)
-      .exactOptional()
-      .openapi({ description: 'Links that will direct the user to a mobile app, if installed.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of this landing page. This is a read-only, auto-generated field.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#landingPage".',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of this landing page. This is a required field. It must be less than 256 characters long.',
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL of this landing page. This is a required field.' }),
-  })
-  .openapi({
-    description:
-      "Contains information about where a user's browser is taken after the user clicks an ad.",
-    required: [],
-  })
-  .openapi('LandingPage')
-
-const AdvertiserLandingPagesListResponseSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertiserLandingPagesListResponse".',
-      }),
-    landingPages: z
-      .array(LandingPageSchema)
-      .exactOptional()
-      .openapi({ description: 'Landing page collection' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Landing Page List Response', required: [] })
-  .openapi('AdvertiserLandingPagesListResponse')
-
-const AdvertisersListResponseSchema = z
-  .object({
-    advertisers: z
-      .array(AdvertiserSchema)
-      .exactOptional()
-      .openapi({ description: 'Advertiser collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertisersListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Advertiser List Response', required: [] })
-  .openapi('AdvertisersListResponse')
-
-const AudienceSegmentSchema = z
-  .object({
-    allocation: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Weight allocated to this segment. The weight assigned will be understood in proportion to the weights assigned to other segments in the same segment group. Acceptable values are 1 to 1000, inclusive.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of this audience segment. This is a read-only, auto-generated field.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of this audience segment. This is a required field and must be less than 65 characters long.',
-      }),
-  })
-  .openapi({ description: 'Audience Segment.', required: [] })
-  .openapi('AudienceSegment')
-
-const AudienceSegmentGroupSchema = z
-  .object({
-    audienceSegments: z
-      .array(AudienceSegmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Audience segments assigned to this group. The number of segments must be between 2 and 100.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of this audience segment group. This is a read-only, auto-generated field.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of this audience segment group. This is a required field and must be less than 65 characters long.',
-      }),
-  })
-  .openapi({ description: 'Audience Segment Group.', required: [] })
-  .openapi('AudienceSegmentGroup')
-
-const BrowsersListResponseSchema = z
-  .object({
-    browsers: z
-      .array(BrowserSchema)
-      .exactOptional()
-      .openapi({ description: 'Browser collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#browsersListResponse".',
-      }),
-  })
-  .openapi({ description: 'Browser List Response', required: [] })
-  .openapi('BrowsersListResponse')
 
 const OptimizationActivitySchema = z
   .object({
@@ -2474,6 +1254,59 @@ const CreativeOptimizationConfigurationSchema = z
   })
   .openapi({ description: 'Creative optimization settings.', required: [] })
   .openapi('CreativeOptimizationConfiguration')
+
+const AudienceSegmentSchema = z
+  .object({
+    allocation: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Weight allocated to this segment. The weight assigned will be understood in proportion to the weights assigned to other segments in the same segment group. Acceptable values are 1 to 1000, inclusive.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of this audience segment. This is a read-only, auto-generated field.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of this audience segment. This is a required field and must be less than 65 characters long.',
+      }),
+  })
+  .openapi({ description: 'Audience Segment.', required: [] })
+  .openapi('AudienceSegment')
+
+const AudienceSegmentGroupSchema = z
+  .object({
+    audienceSegments: z
+      .array(AudienceSegmentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Audience segments assigned to this group. The number of segments must be between 2 and 100.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of this audience segment group. This is a read-only, auto-generated field.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of this audience segment group. This is a required field and must be less than 65 characters long.',
+      }),
+  })
+  .openapi({ description: 'Audience Segment Group.', required: [] })
+  .openapi('AudienceSegmentGroup')
 
 const CampaignSchema = z
   .object({
@@ -2609,173 +1442,11 @@ const CampaignSchema = z
   .openapi({ description: 'Contains properties of a Campaign Manager campaign.', required: [] })
   .openapi('Campaign')
 
-const CampaignCreativeAssociationSchema = z
-  .object({
-    creativeId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of the creative associated with the campaign. This is a required field.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#campaignCreativeAssociation".',
-      }),
-  })
-  .openapi({
-    description: 'Identifies a creative which has been associated with a given campaign.',
-    required: [],
-  })
-  .openapi('CampaignCreativeAssociation')
-
-const CampaignCreativeAssociationsListResponseSchema = z
-  .object({
-    campaignCreativeAssociations: z
-      .array(CampaignCreativeAssociationSchema)
-      .exactOptional()
-      .openapi({ description: 'Campaign creative association collection' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#campaignCreativeAssociationsListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Campaign Creative Association List Response', required: [] })
-  .openapi('CampaignCreativeAssociationsListResponse')
-
-const CampaignManagerIdsSchema = z
-  .object({
-    adId: z.string().exactOptional().openapi({ description: 'Ad ID for Campaign Manager.' }),
-    campaignId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Campaign ID for Campaign Manager.' }),
-    creativeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Creative ID for Campaign Manager.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#campaignManagerIds".',
-      }),
-    placementId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Placement ID for Campaign Manager.' }),
-    siteId: z.string().exactOptional().openapi({ description: 'Site ID for Campaign Manager.' }),
-  })
-  .openapi({ description: 'Campaign Manager IDs related to the custom event.', required: [] })
-  .openapi('CampaignManagerIds')
-
-const CampaignsListResponseSchema = z
-  .object({
-    campaigns: z
-      .array(CampaignSchema)
-      .exactOptional()
-      .openapi({ description: 'Campaign collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#campaignsListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Campaign List Response', required: [] })
-  .openapi('CampaignsListResponse')
-
-const ChangeLogSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Account ID of the modified object.' }),
-    action: z.string().exactOptional().openapi({ description: 'Action which caused the change.' }),
-    changeTime: z.iso.datetime({ offset: true }).exactOptional(),
-    fieldName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Field name of the object which changed.' }),
-    id: z.string().exactOptional().openapi({ description: 'ID of this change log.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#changeLog".',
-      }),
-    newValue: z.string().exactOptional().openapi({ description: 'New value of the object field.' }),
-    objectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the object of this change log. The object could be a campaign, placement, ad, or other type.',
-      }),
-    objectType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Object type of the change log.' }),
-    oldValue: z.string().exactOptional().openapi({ description: 'Old value of the object field.' }),
-    subaccountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Subaccount ID of the modified object.' }),
-    transactionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Transaction ID of this change log. When a single API call results in many changes, each change will have a separate ID in the change log but will share the same transactionId.',
-      }),
-    userProfileId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the user who modified the object.' }),
-    userProfileName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User profile name of the user who modified the object.' }),
-  })
-  .openapi({ description: 'Describes a change that a user has made to a resource.', required: [] })
-  .openapi('ChangeLog')
-
-const ChangeLogsListResponseSchema = z
-  .object({
-    changeLogs: z
-      .array(ChangeLogSchema)
-      .exactOptional()
-      .openapi({ description: 'Change log collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#changeLogsListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Change Log List Response', required: [] })
-  .openapi('ChangeLogsListResponse')
+type CampaignsListResponseType = {
+  campaigns?: z.infer<typeof CampaignSchema>[]
+  kind?: string
+  nextPageToken?: string
+}
 
 const PathReportDimensionValueSchema = z
   .object({
@@ -2864,40 +1535,12 @@ const ChannelGroupingRuleSchema = z
   .openapi({ description: 'Represents a DfaReporting channel grouping rule.', required: [] })
   .openapi('ChannelGroupingRule')
 
-const ChannelGroupingSchema = z
-  .object({
-    fallbackName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ChannelGrouping fallback name.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The kind of resource this is, in this case dfareporting#channelGrouping.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'ChannelGrouping name.' }),
-    rules: z
-      .array(ChannelGroupingRuleSchema)
-      .exactOptional()
-      .openapi({ description: 'The rules contained within this channel grouping.' }),
-  })
-  .openapi({ description: 'Represents a DfaReporting channel grouping.', required: [] })
-  .openapi('ChannelGrouping')
-
-const CitiesListResponseSchema = z
-  .object({
-    cities: z.array(CitySchema).exactOptional().openapi({ description: 'City collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#citiesListResponse".',
-      }),
-  })
-  .openapi({ description: 'City List Response', required: [] })
-  .openapi('CitiesListResponse')
+type ChannelGroupingType = {
+  fallbackName?: string
+  kind?: string
+  name?: string
+  rules?: z.infer<typeof ChannelGroupingRuleSchema>[]
+}
 
 const CreativeClickThroughUrlSchema = z
   .object({
@@ -2923,6 +1566,20 @@ const CreativeClickThroughUrlSchema = z
   .openapi({ description: 'Click-through URL', required: [] })
   .openapi('CreativeClickThroughUrl')
 
+const TargetWindowSchema = z
+  .object({
+    customHtml: z.string().exactOptional().openapi({ description: 'User-entered value.' }),
+    targetWindowOption: z
+      .enum(['NEW_WINDOW', 'CURRENT_WINDOW', 'CUSTOM'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of browser window for which the backup image of the flash creative can be displayed.',
+      }),
+  })
+  .openapi({ description: 'Target Window.', required: [] })
+  .openapi('TargetWindow')
+
 const ClickTagSchema = z
   .object({
     clickThroughUrl: CreativeClickThroughUrlSchema.exactOptional().openapi({
@@ -2946,620 +1603,6 @@ const ClickTagSchema = z
   })
   .openapi({ description: 'Creative Click Tag.', required: [] })
   .openapi('ClickTag')
-
-const CompanionSettingSchema = z
-  .object({
-    companionsDisabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether companions are disabled for this placement.' }),
-    enabledSizes: z
-      .array(SizeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Allowlist of companion sizes to be served to this placement. Set this list to null or empty to serve all companion sizes.',
-      }),
-    imageOnly: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to serve only static images as companions.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#companionSetting".',
-      }),
-  })
-  .openapi({ description: 'Companion Settings', required: [] })
-  .openapi('CompanionSetting')
-
-const CompatibleFieldsSchema: z.ZodType<CompatibleFieldsType> = z
-  .lazy(() =>
-    z
-      .object({
-        crossDimensionReachReportCompatibleFields:
-          CrossDimensionReachReportCompatibleFieldsSchema.exactOptional().openapi({
-            description:
-              'Contains items that are compatible to be selected for a report of type "CROSS_DIMENSION_REACH".',
-          }),
-        floodlightReportCompatibleFields:
-          FloodlightReportCompatibleFieldsSchema.exactOptional().openapi({
-            description:
-              'Contains items that are compatible to be selected for a report of type "FLOODLIGHT".',
-          }),
-        kind: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The kind of resource this is, in this case dfareporting#compatibleFields.',
-          }),
-        pathAttributionReportCompatibleFields:
-          PathReportCompatibleFieldsSchema.exactOptional().openapi({
-            description:
-              'Contains items that are compatible to be selected for a report of type "PATH_ATTRIBUTION".',
-          }),
-        pathReportCompatibleFields: PathReportCompatibleFieldsSchema.exactOptional().openapi({
-          description:
-            'Contains items that are compatible to be selected for a report of type "PATH".',
-        }),
-        pathToConversionReportCompatibleFields:
-          PathToConversionReportCompatibleFieldsSchema.exactOptional().openapi({
-            description:
-              'Contains items that are compatible to be selected for a report of type "PATH_TO_CONVERSION".',
-          }),
-        reachReportCompatibleFields: ReachReportCompatibleFieldsSchema.exactOptional().openapi({
-          description:
-            'Contains items that are compatible to be selected for a report of type "REACH".',
-        }),
-        reportCompatibleFields: ReportCompatibleFieldsSchema.exactOptional().openapi({
-          description:
-            'Contains items that are compatible to be selected for a report of type "STANDARD".',
-        }),
-      })
-      .openapi({
-        description: 'Represents a response to the queryCompatibleFields method.',
-        required: [],
-      }),
-  )
-  .openapi('CompatibleFields')
-
-const ConnectionTypesListResponseSchema = z
-  .object({
-    connectionTypes: z
-      .array(ConnectionTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Collection of connection types such as broadband and mobile.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#connectionTypesListResponse".',
-      }),
-  })
-  .openapi({ description: 'Connection Type List Response', required: [] })
-  .openapi('ConnectionTypesListResponse')
-
-const ContentCategorySchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Account ID of this content category. This is a read-only field that can be left blank.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of this content category. This is a read-only, auto-generated field.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#contentCategory".',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of this content category. This is a required field and must be less than 256 characters long and unique among content categories of the same account.',
-      }),
-  })
-  .openapi({
-    description: 'Organizes placements according to the contents of their associated webpages.',
-    required: [],
-  })
-  .openapi('ContentCategory')
-
-const ContentCategoriesListResponseSchema = z
-  .object({
-    contentCategories: z
-      .array(ContentCategorySchema)
-      .exactOptional()
-      .openapi({ description: 'Content category collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#contentCategoriesListResponse".',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
-  })
-  .openapi({ description: 'Content Category List Response', required: [] })
-  .openapi('ContentCategoriesListResponse')
-
-const CustomFloodlightVariableSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#customFloodlightVariable".',
-      }),
-    type: z
-      .enum([
-        'U1',
-        'U2',
-        'U3',
-        'U4',
-        'U5',
-        'U6',
-        'U7',
-        'U8',
-        'U9',
-        'U10',
-        'U11',
-        'U12',
-        'U13',
-        'U14',
-        'U15',
-        'U16',
-        'U17',
-        'U18',
-        'U19',
-        'U20',
-        'U21',
-        'U22',
-        'U23',
-        'U24',
-        'U25',
-        'U26',
-        'U27',
-        'U28',
-        'U29',
-        'U30',
-        'U31',
-        'U32',
-        'U33',
-        'U34',
-        'U35',
-        'U36',
-        'U37',
-        'U38',
-        'U39',
-        'U40',
-        'U41',
-        'U42',
-        'U43',
-        'U44',
-        'U45',
-        'U46',
-        'U47',
-        'U48',
-        'U49',
-        'U50',
-        'U51',
-        'U52',
-        'U53',
-        'U54',
-        'U55',
-        'U56',
-        'U57',
-        'U58',
-        'U59',
-        'U60',
-        'U61',
-        'U62',
-        'U63',
-        'U64',
-        'U65',
-        'U66',
-        'U67',
-        'U68',
-        'U69',
-        'U70',
-        'U71',
-        'U72',
-        'U73',
-        'U74',
-        'U75',
-        'U76',
-        'U77',
-        'U78',
-        'U79',
-        'U80',
-        'U81',
-        'U82',
-        'U83',
-        'U84',
-        'U85',
-        'U86',
-        'U87',
-        'U88',
-        'U89',
-        'U90',
-        'U91',
-        'U92',
-        'U93',
-        'U94',
-        'U95',
-        'U96',
-        'U97',
-        'U98',
-        'U99',
-        'U100',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of custom floodlight variable to supply a value for. These map to the "u[1-20]=" in the tags.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value of the custom floodlight variable. The length of string must not exceed 100 characters.',
-      }),
-  })
-  .openapi({
-    description:
-      'A custom floodlight variable. This field may only be used when calling batchinsert; it is not supported by batchupdate.',
-    required: [],
-  })
-  .openapi('CustomFloodlightVariable')
-
-const ConversionSchema = z
-  .object({
-    childDirectedTreatment: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether this particular request may come from a user under the age of 13, under COPPA compliance.',
-      }),
-    customVariables: z
-      .array(CustomFloodlightVariableSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Custom floodlight variables. This field may only be used when calling batchinsert; it is not supported by batchupdate.',
-      }),
-    dclid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The display click ID. This field is mutually exclusive with encryptedUserId, encryptedUserIdCandidates[], matchId, mobileDeviceId and gclid. This or encryptedUserId or encryptedUserIdCandidates[] or matchId or mobileDeviceId or gclid is a required field.',
-      }),
-    encryptedUserId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The alphanumeric encrypted user ID. When set, encryptionInfo should also be specified. This field is mutually exclusive with encryptedUserIdCandidates[], matchId, mobileDeviceId, gclid and dclid. This or encryptedUserIdCandidates[] or matchId or mobileDeviceId or gclid or dclid is a required field.',
-      }),
-    encryptedUserIdCandidates: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of the alphanumeric encrypted user IDs. Any user ID with exposure prior to the conversion timestamp will be used in the inserted conversion. If no such user ID is found then the conversion will be rejected with INVALID_ARGUMENT error. When set, encryptionInfo should also be specified. This field may only be used when calling batchinsert; it is not supported by batchupdate. This field is mutually exclusive with encryptedUserId, matchId, mobileDeviceId, gclid and dclid. This or encryptedUserId or matchId or mobileDeviceId or gclid or dclid is a required field.',
-      }),
-    floodlightActivityId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Floodlight Activity ID of this conversion. This is a required field.',
-      }),
-    floodlightConfigurationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Floodlight Configuration ID of this conversion. This is a required field.',
-      }),
-    gclid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Google click ID. This field is mutually exclusive with encryptedUserId, encryptedUserIdCandidates[], matchId, mobileDeviceId and dclid. This or encryptedUserId or encryptedUserIdCandidates[] or matchId or mobileDeviceId or dclid is a required field.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversion".',
-      }),
-    limitAdTracking: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether Limit Ad Tracking is enabled. When set to true, the conversion will be used for reporting but not targeting. This will prevent remarketing.',
-      }),
-    matchId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The match ID field. A match ID is your own first-party identifier that has been synced with Google using the match ID feature in Floodlight. This field is mutually exclusive with encryptedUserId, encryptedUserIdCandidates[],mobileDeviceId, gclid and dclid. This or encryptedUserId or encryptedUserIdCandidates[] or mobileDeviceId or gclid or dclid is a required field.',
-      }),
-    mobileDeviceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The mobile device ID. This field is mutually exclusive with encryptedUserId, encryptedUserIdCandidates[], matchId, gclid and dclid. This or encryptedUserId or encryptedUserIdCandidates[] or matchId or gclid or dclid is a required field.',
-      }),
-    nonPersonalizedAd: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the conversion was for a non personalized ad.' }),
-    ordinal: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ordinal of the conversion. Use this field to control how conversions of the same user and day are de-duplicated. This is a required field.',
-      }),
-    quantity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The quantity of the conversion.' }),
-    timestampMicros: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp of conversion, in Unix epoch micros. This is a required field.',
-      }),
-    treatmentForUnderage: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether this particular request may come from a user under the age of 16 (may differ by country), under compliance with the European Union's General Data Protection Regulation (GDPR).",
-      }),
-    value: z.float64().exactOptional().openapi({ description: 'The value of the conversion.' }),
-  })
-  .openapi({
-    description:
-      'A Conversion represents when a user successfully performs a desired action after seeing an ad.',
-    required: [],
-  })
-  .openapi('Conversion')
-
-const ConversionErrorSchema = z
-  .object({
-    code: z
-      .enum(['INVALID_ARGUMENT', 'INTERNAL', 'PERMISSION_DENIED', 'NOT_FOUND'])
-      .exactOptional()
-      .openapi({ description: 'The error code.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionError".',
-      }),
-    message: z.string().exactOptional().openapi({ description: 'A description of the error.' }),
-  })
-  .openapi({
-    description: 'The error code and description for a conversion that failed to insert or update.',
-    required: [],
-  })
-  .openapi('ConversionError')
-
-const ConversionStatusSchema = z
-  .object({
-    conversion: ConversionSchema.exactOptional().openapi({
-      description: 'The original conversion that was inserted or updated.',
-    }),
-    errors: z
-      .array(ConversionErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of errors related to this conversion.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionStatus".',
-      }),
-  })
-  .openapi({
-    description:
-      'The original conversion that was inserted or updated and whether there were any errors.',
-    required: [],
-  })
-  .openapi('ConversionStatus')
-
-const EncryptionInfoSchema = z
-  .object({
-    encryptionEntityId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The encryption entity ID. This should match the encryption configuration for ad serving or Data Transfer.',
-      }),
-    encryptionEntityType: z
-      .enum([
-        'ENCRYPTION_ENTITY_TYPE_UNKNOWN',
-        'DCM_ACCOUNT',
-        'DCM_ADVERTISER',
-        'DBM_PARTNER',
-        'DBM_ADVERTISER',
-        'ADWORDS_CUSTOMER',
-        'DFP_NETWORK_CODE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The encryption entity type. This should match the encryption configuration for ad serving or Data Transfer.',
-      }),
-    encryptionSource: z
-      .enum(['ENCRYPTION_SCOPE_UNKNOWN', 'AD_SERVING', 'DATA_TRANSFER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Describes whether the encrypted cookie was received from ad serving (the %m macro) or from Data Transfer.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#encryptionInfo".',
-      }),
-  })
-  .openapi({ description: 'A description of how user IDs are encrypted.', required: [] })
-  .openapi('EncryptionInfo')
-
-const ConversionsBatchInsertRequestSchema = z
-  .object({
-    conversions: z
-      .array(ConversionSchema)
-      .exactOptional()
-      .openapi({ description: 'The set of conversions to insert.' }),
-    encryptionInfo: EncryptionInfoSchema.exactOptional().openapi({
-      description:
-        'Describes how encryptedUserId or encryptedUserIdCandidates[] is encrypted. This is a required field if encryptedUserId or encryptedUserIdCandidates[] is used.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionsBatchInsertRequest".',
-      }),
-  })
-  .openapi({ description: 'Insert Conversions Request.', required: [] })
-  .openapi('ConversionsBatchInsertRequest')
-
-const ConversionsBatchInsertResponseSchema = z
-  .object({
-    hasFailures: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates that some or all conversions failed to insert.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionsBatchInsertResponse".',
-      }),
-    status: z
-      .array(ConversionStatusSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The insert status of each conversion. Statuses are returned in the same order that conversions are inserted.',
-      }),
-  })
-  .openapi({ description: 'Insert Conversions Response.', required: [] })
-  .openapi('ConversionsBatchInsertResponse')
-
-const ConversionsBatchUpdateRequestSchema = z
-  .object({
-    conversions: z
-      .array(ConversionSchema)
-      .exactOptional()
-      .openapi({ description: 'The set of conversions to update.' }),
-    encryptionInfo: EncryptionInfoSchema.exactOptional().openapi({
-      description:
-        'Describes how encryptedUserId is encrypted. This is a required field if encryptedUserId is used.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionsBatchUpdateRequest".',
-      }),
-  })
-  .openapi({ description: 'Update Conversions Request.', required: [] })
-  .openapi('ConversionsBatchUpdateRequest')
-
-const ConversionsBatchUpdateResponseSchema = z
-  .object({
-    hasFailures: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates that some or all conversions failed to update.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionsBatchUpdateResponse".',
-      }),
-    status: z
-      .array(ConversionStatusSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The update status of each conversion. Statuses are returned in the same order that conversions are updated.',
-      }),
-  })
-  .openapi({ description: 'Update Conversions Response.', required: [] })
-  .openapi('ConversionsBatchUpdateResponse')
-
-const CountriesListResponseSchema = z
-  .object({
-    countries: z
-      .array(CountrySchema)
-      .exactOptional()
-      .openapi({ description: 'Country collection.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#countriesListResponse".',
-      }),
-  })
-  .openapi({ description: 'Country List Response', required: [] })
-  .openapi('CountriesListResponse')
-
-const TargetWindowSchema = z
-  .object({
-    customHtml: z.string().exactOptional().openapi({ description: 'User-entered value.' }),
-    targetWindowOption: z
-      .enum(['NEW_WINDOW', 'CURRENT_WINDOW', 'CUSTOM'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of browser window for which the backup image of the flash creative can be displayed.',
-      }),
-  })
-  .openapi({ description: 'Target Window.', required: [] })
-  .openapi('TargetWindow')
 
 const OffsetPositionSchema = z
   .object({
@@ -4876,6 +2919,2895 @@ const CreativeSchema = z
   .openapi({ description: 'Contains properties of a Creative.', required: [] })
   .openapi('Creative')
 
+type CreativesListResponseType = {
+  creatives?: z.infer<typeof CreativeSchema>[]
+  kind?: string
+  nextPageToken?: string
+}
+
+const ListPopulationTermSchema = z
+  .object({
+    contains: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Will be true if the term should check if the user is in the list and false if the term should check if the user is not in the list. This field is only relevant when type is set to LIST_MEMBERSHIP_TERM. False by default.',
+      }),
+    negation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to negate the comparison result of this term during rule evaluation. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.',
+      }),
+    operator: z
+      .enum([
+        'NUM_EQUALS',
+        'NUM_LESS_THAN',
+        'NUM_LESS_THAN_EQUAL',
+        'NUM_GREATER_THAN',
+        'NUM_GREATER_THAN_EQUAL',
+        'STRING_EQUALS',
+        'STRING_CONTAINS',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Comparison operator of this term. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.',
+      }),
+    remarketingListId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the list in question. This field is only relevant when type is set to LIST_MEMBERSHIP_TERM.',
+      }),
+    type: z
+      .enum(['CUSTOM_VARIABLE_TERM', 'LIST_MEMBERSHIP_TERM', 'REFERRER_TERM'])
+      .exactOptional()
+      .openapi({
+        description:
+          'List population term type determines the applicable fields in this object. If left unset or set to CUSTOM_VARIABLE_TERM, then variableName, variableFriendlyName, operator, value, and negation are applicable. If set to LIST_MEMBERSHIP_TERM then remarketingListId and contains are applicable. If set to REFERRER_TERM then operator, value, and negation are applicable.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Literal to compare the variable to. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.',
+      }),
+    variableFriendlyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Friendly name of this term's variable. This is a read-only, auto-generated field. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM.",
+      }),
+    variableName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the variable (U1, U2, etc.) being compared in this term. This field is only relevant when type is set to null, CUSTOM_VARIABLE_TERM or REFERRER_TERM.',
+      }),
+  })
+  .openapi({ description: 'Remarketing List Population Rule Term.', required: [] })
+  .openapi('ListPopulationTerm')
+
+const ListPopulationClauseSchema = z
+  .object({
+    terms: z
+      .array(ListPopulationTermSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Terms of this list population clause. Each clause is made up of list population terms representing constraints and are joined by ORs.',
+      }),
+  })
+  .openapi({
+    description:
+      'A group clause made up of list population terms representing constraints joined by ORs.',
+    required: [],
+  })
+  .openapi('ListPopulationClause')
+
+const ListPopulationRuleSchema = z
+  .object({
+    floodlightActivityId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Floodlight activity ID associated with this rule. This field can be left blank.',
+      }),
+    floodlightActivityName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of floodlight activity associated with this rule. This is a read-only, auto-generated field.',
+      }),
+    listPopulationClauses: z
+      .array(ListPopulationClauseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Clauses that make up this list population rule. Clauses are joined by ANDs, and the clauses themselves are made up of list population terms which are joined by ORs.',
+      }),
+  })
+  .openapi({ description: 'Remarketing List Population Rule.', required: [] })
+  .openapi('ListPopulationRule')
+
+const RemarketingListSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Account ID of this remarketing list. This is a read-only, auto-generated field that is only returned in GET requests.',
+      }),
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this remarketing list is active.' }),
+    advertiserId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimension value for the advertiser ID that owns this remarketing list. This is a required field.',
+      }),
+    advertiserIdDimensionValue: DimensionValueSchema.exactOptional().openapi({
+      description:
+        'Dimension value for the ID of the advertiser. This is a read-only, auto-generated field.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Remarketing list description.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Remarketing list ID. This is a read-only, auto-generated field.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#remarketingList".',
+      }),
+    lifeSpan: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of days that a user should remain in the remarketing list without an impression. Acceptable values are 1 to 540, inclusive.',
+      }),
+    listPopulationRule: ListPopulationRuleSchema.exactOptional().openapi({
+      description: 'Rule used to populate the remarketing list with users.',
+    }),
+    listSize: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Number of users currently in the list. This is a read-only field.',
+      }),
+    listSource: z
+      .enum([
+        'REMARKETING_LIST_SOURCE_OTHER',
+        'REMARKETING_LIST_SOURCE_ADX',
+        'REMARKETING_LIST_SOURCE_DFP',
+        'REMARKETING_LIST_SOURCE_XFP',
+        'REMARKETING_LIST_SOURCE_DFA',
+        'REMARKETING_LIST_SOURCE_GA',
+        'REMARKETING_LIST_SOURCE_YOUTUBE',
+        'REMARKETING_LIST_SOURCE_DBM',
+        'REMARKETING_LIST_SOURCE_GPLUS',
+        'REMARKETING_LIST_SOURCE_DMP',
+        'REMARKETING_LIST_SOURCE_PLAY_STORE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Product from which this remarketing list was originated.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the remarketing list. This is a required field. Must be no greater than 128 characters long.',
+      }),
+    subaccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subaccount ID of this remarketing list. This is a read-only, auto-generated field that is only returned in GET requests.',
+      }),
+  })
+  .openapi({
+    description:
+      'Contains properties of a remarketing list. Remarketing enables you to create lists of users who have performed specific actions on a site, then target ads to members of those lists. This resource can be used to manage remarketing lists that are owned by your advertisers. To see all remarketing lists that are visible to your advertisers, including those that are shared to your advertiser or account, use the TargetableRemarketingLists resource.',
+    required: [],
+  })
+  .openapi('RemarketingList')
+
+type RemarketingListsListResponseType = {
+  kind?: string
+  nextPageToken?: string
+  remarketingLists?: z.infer<typeof RemarketingListSchema>[]
+}
+
+const ActivitiesSchema = z
+  .object({
+    filters: z
+      .array(DimensionValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of activity filters. The dimension values need to be all either of type "dfa:activity" or "dfa:activityGroup".',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The kind of resource this is, in this case dfareporting#activities.',
+      }),
+    metricNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of names of floodlight activity metrics.' }),
+  })
+  .openapi({ description: 'Represents an activity group.', required: [] })
+  .openapi('Activities')
+
+const CustomRichMediaEventsSchema = z
+  .object({
+    filteredEventIds: z
+      .array(DimensionValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of custom rich media event IDs. Dimension values must be all of type dfa:richMediaEventTypeIdAndName.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of resource this is, in this case dfareporting#customRichMediaEvents.',
+      }),
+  })
+  .openapi({ description: 'Represents a Custom Rich Media Events group.', required: [] })
+  .openapi('CustomRichMediaEvents')
+
+const DateRangeSchema = z
+  .object({
+    endDate: z.iso.date().exactOptional(),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The kind of resource this is, in this case dfareporting#dateRange.',
+      }),
+    relativeDateRange: z
+      .enum([
+        'TODAY',
+        'YESTERDAY',
+        'WEEK_TO_DATE',
+        'MONTH_TO_DATE',
+        'QUARTER_TO_DATE',
+        'YEAR_TO_DATE',
+        'PREVIOUS_WEEK',
+        'PREVIOUS_MONTH',
+        'PREVIOUS_QUARTER',
+        'PREVIOUS_YEAR',
+        'LAST_7_DAYS',
+        'LAST_30_DAYS',
+        'LAST_90_DAYS',
+        'LAST_365_DAYS',
+        'LAST_24_MONTHS',
+        'LAST_14_DAYS',
+        'LAST_60_DAYS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The date range relative to the date of when the report is run.' }),
+    startDate: z.iso.date().exactOptional(),
+  })
+  .openapi({ description: 'Represents a date range.', required: [] })
+  .openapi('DateRange')
+
+const SortedDimensionSchema = z
+  .object({
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The kind of resource this is, in this case dfareporting#sortedDimension.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the dimension.' }),
+    sortOrder: z
+      .enum(['ASCENDING', 'DESCENDING'])
+      .exactOptional()
+      .openapi({ description: 'An optional sort order for the dimension column.' }),
+  })
+  .openapi({ description: 'Represents a sorted dimension.', required: [] })
+  .openapi('SortedDimension')
+
+const RecipientSchema = z
+  .object({
+    deliveryType: z
+      .enum(['LINK', 'ATTACHMENT'])
+      .exactOptional()
+      .openapi({ description: 'The delivery type for the recipient.' }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The email address of the recipient.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The kind of resource this is, in this case dfareporting#recipient.',
+      }),
+  })
+  .openapi({ description: 'Represents a recipient.', required: [] })
+  .openapi('Recipient')
+
+const ChannelGroupingSchema: z.ZodType<ChannelGroupingType> = z
+  .object({
+    fallbackName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ChannelGrouping fallback name.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The kind of resource this is, in this case dfareporting#channelGrouping.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'ChannelGrouping name.' }),
+    rules: z
+      .array(ChannelGroupingRuleSchema)
+      .exactOptional()
+      .openapi({ description: 'The rules contained within this channel grouping.' }),
+  })
+  .openapi({ description: 'Represents a DfaReporting channel grouping.', required: [] })
+  .openapi('ChannelGrouping')
+
+const PathFilterSchema = z
+  .object({
+    eventFilters: z
+      .array(EventFilterSchema)
+      .exactOptional()
+      .openapi({ description: 'Event filters in path report.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The kind of resource this is, in this case dfareporting#pathFilter.',
+      }),
+    pathMatchPosition: z
+      .enum(['PATH_MATCH_POSITION_UNSPECIFIED', 'ANY', 'FIRST', 'LAST'])
+      .exactOptional()
+      .openapi({
+        description:
+          "Determines how the 'value' field is matched when filtering. If not specified, defaults to EXACT. If set to WILDCARD_EXPRESSION, '*' is allowed as a placeholder for variable length character sequences, and it can be escaped with a backslash. Note, only paid search dimensions ('dfa:paidSearch*') allow a matchType other than EXACT.",
+      }),
+  })
+  .openapi({ description: 'Represents a DfaReporting path filter.', required: [] })
+  .openapi('PathFilter')
+
+type ReportType = {
+  accountId?: string
+  criteria?: {
+    activities?: z.infer<typeof ActivitiesSchema>
+    customRichMediaEvents?: z.infer<typeof CustomRichMediaEventsSchema>
+    dateRange?: z.infer<typeof DateRangeSchema>
+    dimensionFilters?: z.infer<typeof DimensionValueSchema>[]
+    dimensions?: z.infer<typeof SortedDimensionSchema>[]
+    metricNames?: string[]
+  }
+  crossDimensionReachCriteria?: {
+    breakdown?: z.infer<typeof SortedDimensionSchema>[]
+    dateRange?: z.infer<typeof DateRangeSchema>
+    dimension?: 'ADVERTISER' | 'CAMPAIGN' | 'SITE_BY_ADVERTISER' | 'SITE_BY_CAMPAIGN'
+    dimensionFilters?: z.infer<typeof DimensionValueSchema>[]
+    metricNames?: string[]
+    overlapMetricNames?: string[]
+    pivoted?: boolean
+  }
+  delivery?: {
+    emailOwner?: boolean
+    emailOwnerDeliveryType?: 'LINK' | 'ATTACHMENT'
+    message?: string
+    recipients?: z.infer<typeof RecipientSchema>[]
+  }
+  etag?: string
+  fileName?: string
+  floodlightCriteria?: {
+    customRichMediaEvents?: z.infer<typeof DimensionValueSchema>[]
+    dateRange?: z.infer<typeof DateRangeSchema>
+    dimensionFilters?: z.infer<typeof DimensionValueSchema>[]
+    dimensions?: z.infer<typeof SortedDimensionSchema>[]
+    floodlightConfigId?: z.infer<typeof DimensionValueSchema>
+    metricNames?: string[]
+    reportProperties?: {
+      includeAttributedIPConversions?: boolean
+      includeUnattributedCookieConversions?: boolean
+      includeUnattributedIPConversions?: boolean
+    }
+  }
+  format?: 'CSV' | 'EXCEL'
+  id?: string
+  kind?: string
+  lastModifiedTime?: string
+  name?: string
+  ownerProfileId?: string
+  pathAttributionCriteria?: {
+    activityFilters?: z.infer<typeof DimensionValueSchema>[]
+    customChannelGrouping?: z.infer<typeof ChannelGroupingSchema>
+    dateRange?: z.infer<typeof DateRangeSchema>
+    dimensions?: z.infer<typeof SortedDimensionSchema>[]
+    floodlightConfigId?: z.infer<typeof DimensionValueSchema>
+    metricNames?: string[]
+    pathFilters?: z.infer<typeof PathFilterSchema>[]
+  }
+  pathCriteria?: {
+    activityFilters?: z.infer<typeof DimensionValueSchema>[]
+    customChannelGrouping?: z.infer<typeof ChannelGroupingSchema>
+    dateRange?: z.infer<typeof DateRangeSchema>
+    dimensions?: z.infer<typeof SortedDimensionSchema>[]
+    floodlightConfigId?: z.infer<typeof DimensionValueSchema>
+    metricNames?: string[]
+    pathFilters?: z.infer<typeof PathFilterSchema>[]
+  }
+  pathToConversionCriteria?: {
+    activityFilters?: z.infer<typeof DimensionValueSchema>[]
+    conversionDimensions?: z.infer<typeof SortedDimensionSchema>[]
+    customFloodlightVariables?: z.infer<typeof SortedDimensionSchema>[]
+    customRichMediaEvents?: z.infer<typeof DimensionValueSchema>[]
+    dateRange?: z.infer<typeof DateRangeSchema>
+    floodlightConfigId?: z.infer<typeof DimensionValueSchema>
+    metricNames?: string[]
+    perInteractionDimensions?: z.infer<typeof SortedDimensionSchema>[]
+    reportProperties?: {
+      clicksLookbackWindow?: number
+      impressionsLookbackWindow?: number
+      includeAttributedIPConversions?: boolean
+      includeUnattributedCookieConversions?: boolean
+      includeUnattributedIPConversions?: boolean
+      maximumClickInteractions?: number
+      maximumImpressionInteractions?: number
+      maximumInteractionGap?: number
+      pivotOnInteractionPath?: boolean
+    }
+  }
+  reachCriteria?: {
+    activities?: z.infer<typeof ActivitiesSchema>
+    customRichMediaEvents?: z.infer<typeof CustomRichMediaEventsSchema>
+    dateRange?: z.infer<typeof DateRangeSchema>
+    dimensionFilters?: z.infer<typeof DimensionValueSchema>[]
+    dimensions?: z.infer<typeof SortedDimensionSchema>[]
+    enableAllDimensionCombinations?: boolean
+    metricNames?: string[]
+    reachByFrequencyMetricNames?: string[]
+  }
+  schedule?: {
+    active?: boolean
+    every?: number
+    expirationDate?: string
+    repeats?: string
+    repeatsOnWeekDays?: (
+      | 'SUNDAY'
+      | 'MONDAY'
+      | 'TUESDAY'
+      | 'WEDNESDAY'
+      | 'THURSDAY'
+      | 'FRIDAY'
+      | 'SATURDAY'
+    )[]
+    runsOnDayOfMonth?: 'DAY_OF_MONTH' | 'WEEK_OF_MONTH'
+    startDate?: string
+  }
+  subAccountId?: string
+  type?:
+    | 'STANDARD'
+    | 'REACH'
+    | 'PATH_TO_CONVERSION'
+    | 'CROSS_DIMENSION_REACH'
+    | 'FLOODLIGHT'
+    | 'PATH'
+    | 'PATH_ATTRIBUTION'
+}
+
+const ReportSchema: z.ZodType<ReportType> = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The account ID to which this report belongs.' }),
+    criteria: z
+      .object({
+        activities: ActivitiesSchema.exactOptional().openapi({ description: 'Activity group.' }),
+        customRichMediaEvents: CustomRichMediaEventsSchema.exactOptional().openapi({
+          description: 'Custom Rich Media Events group.',
+        }),
+        dateRange: DateRangeSchema.exactOptional().openapi({
+          description: 'The date range for which this report should be run.',
+        }),
+        dimensionFilters: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The list of filters on which dimensions are filtered. Filters for different dimensions are ANDed, filters for the same dimension are grouped together and ORed.',
+          }),
+        dimensions: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of standard dimensions the report should include.' }),
+        metricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'The list of names of metrics the report should include.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The report criteria for a report of type "STANDARD".',
+        required: [],
+      }),
+    crossDimensionReachCriteria: z
+      .object({
+        breakdown: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of dimensions the report should include.' }),
+        dateRange: DateRangeSchema.exactOptional().openapi({
+          description: 'The date range this report should be run for.',
+        }),
+        dimension: z
+          .enum(['ADVERTISER', 'CAMPAIGN', 'SITE_BY_ADVERTISER', 'SITE_BY_CAMPAIGN'])
+          .exactOptional()
+          .openapi({ description: 'The dimension option.' }),
+        dimensionFilters: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of filters on which dimensions are filtered.' }),
+        metricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'The list of names of metrics the report should include.' }),
+        overlapMetricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description: 'The list of names of overlap metrics the report should include.',
+          }),
+        pivoted: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether the report is pivoted or not. Defaults to true.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The report criteria for a report of type "CROSS_DIMENSION_REACH".',
+        required: [],
+      }),
+    delivery: z
+      .object({
+        emailOwner: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether the report should be emailed to the report owner.' }),
+        emailOwnerDeliveryType: z
+          .enum(['LINK', 'ATTACHMENT'])
+          .exactOptional()
+          .openapi({ description: 'The type of delivery for the owner to receive, if enabled.' }),
+        message: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The message to be sent with each email.' }),
+        recipients: z
+          .array(RecipientSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of recipients to which to email the report.' }),
+      })
+      .exactOptional()
+      .openapi({ description: "The report's email delivery settings.", required: [] }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The eTag of this response for caching purposes.' }),
+    fileName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The filename used when generating report files for this report.' }),
+    floodlightCriteria: z
+      .object({
+        customRichMediaEvents: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of custom rich media events to include.' }),
+        dateRange: DateRangeSchema.exactOptional().openapi({
+          description: 'The date range this report should be run for.',
+        }),
+        dimensionFilters: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The list of filters on which dimensions are filtered. Filters for different dimensions are ANDed, filters for the same dimension are grouped together and ORed.',
+          }),
+        dimensions: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of dimensions the report should include.' }),
+        floodlightConfigId: DimensionValueSchema.exactOptional().openapi({
+          description:
+            "The floodlight ID for which to show data in this report. All advertisers associated with that ID will automatically be added. The dimension of the value needs to be 'dfa:floodlightConfigId'.",
+        }),
+        metricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'The list of names of metrics the report should include.' }),
+        reportProperties: z
+          .object({
+            includeAttributedIPConversions: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Include conversions that have no cookie, but do have an exposure path.',
+              }),
+            includeUnattributedCookieConversions: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Include conversions of users with a DoubleClick cookie but without an exposure. That means the user did not click or see an ad from the advertiser within the Floodlight group, or that the interaction happened outside the lookback window.',
+              }),
+            includeUnattributedIPConversions: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Include conversions that have no associated cookies and no exposures. It’s therefore impossible to know how the user was exposed to your ads during the lookback window prior to a conversion.',
+              }),
+          })
+          .exactOptional()
+          .openapi({ description: 'The properties of the report.', required: [] }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The report criteria for a report of type "FLOODLIGHT".',
+        required: [],
+      }),
+    format: z
+      .enum(['CSV', 'EXCEL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The output format of the report. If not specified, default format is "CSV". Note that the actual format in the completed report file might differ if for instance the report\'s size exceeds the format\'s capabilities. "CSV" will then be the fallback format.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique ID identifying this report resource.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The kind of resource this is, in this case dfareporting#report.' }),
+    lastModifiedTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp (in milliseconds since epoch) of when this report was last modified.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the report.' }),
+    ownerProfileId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The user profile id of the owner of this report.' }),
+    pathAttributionCriteria: z
+      .object({
+        activityFilters: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({ description: "The list of 'dfa:activity' values to filter on." }),
+        customChannelGrouping: ChannelGroupingSchema.exactOptional().openapi({
+          description: 'Channel Grouping.',
+        }),
+        dateRange: DateRangeSchema.exactOptional().openapi({
+          description: 'The date range this report should be run for.',
+        }),
+        dimensions: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of dimensions the report should include.' }),
+        floodlightConfigId: DimensionValueSchema.exactOptional().openapi({
+          description:
+            "The floodlight ID for which to show data in this report. All advertisers associated with that ID will automatically be added. The dimension of the value needs to be 'dfa:floodlightConfigId'.",
+        }),
+        metricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'The list of names of metrics the report should include.' }),
+        pathFilters: z
+          .array(PathFilterSchema)
+          .exactOptional()
+          .openapi({ description: 'Path Filters.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The report criteria for a report of type "PATH_ATTRIBUTION".',
+        required: [],
+      }),
+    pathCriteria: z
+      .object({
+        activityFilters: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({ description: "The list of 'dfa:activity' values to filter on." }),
+        customChannelGrouping: ChannelGroupingSchema.exactOptional().openapi({
+          description: 'Channel Grouping.',
+        }),
+        dateRange: DateRangeSchema.exactOptional().openapi({
+          description: 'The date range this report should be run for.',
+        }),
+        dimensions: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of dimensions the report should include.' }),
+        floodlightConfigId: DimensionValueSchema.exactOptional().openapi({
+          description:
+            "The floodlight ID for which to show data in this report. All advertisers associated with that ID will automatically be added. The dimension of the value needs to be 'dfa:floodlightConfigId'.",
+        }),
+        metricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'The list of names of metrics the report should include.' }),
+        pathFilters: z
+          .array(PathFilterSchema)
+          .exactOptional()
+          .openapi({ description: 'Path Filters.' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The report criteria for a report of type "PATH".', required: [] }),
+    pathToConversionCriteria: z
+      .object({
+        activityFilters: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({ description: "The list of 'dfa:activity' values to filter on." }),
+        conversionDimensions: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of conversion dimensions the report should include.' }),
+        customFloodlightVariables: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({
+            description: 'The list of custom floodlight variables the report should include.',
+          }),
+        customRichMediaEvents: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of custom rich media events to include.' }),
+        dateRange: DateRangeSchema.exactOptional().openapi({
+          description: 'The date range this report should be run for.',
+        }),
+        floodlightConfigId: DimensionValueSchema.exactOptional().openapi({
+          description:
+            "The floodlight ID for which to show data in this report. All advertisers associated with that ID will automatically be added. The dimension of the value needs to be 'dfa:floodlightConfigId'.",
+        }),
+        metricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'The list of names of metrics the report should include.' }),
+        perInteractionDimensions: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({
+            description: 'The list of per interaction dimensions the report should include.',
+          }),
+        reportProperties: z
+          .object({
+            clicksLookbackWindow: z
+              .int32()
+              .exactOptional()
+              .openapi({
+                description:
+                  'CM360 checks to see if a click interaction occurred within the specified period of time before a conversion. By default the value is pulled from Floodlight or you can manually enter a custom value. Valid values: 1-90.',
+              }),
+            impressionsLookbackWindow: z
+              .int32()
+              .exactOptional()
+              .openapi({
+                description:
+                  'CM360 checks to see if an impression interaction occurred within the specified period of time before a conversion. By default the value is pulled from Floodlight or you can manually enter a custom value. Valid values: 1-90.',
+              }),
+            includeAttributedIPConversions: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: 'Deprecated: has no effect.' }),
+            includeUnattributedCookieConversions: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Include conversions of users with a DoubleClick cookie but without an exposure. That means the user did not click or see an ad from the advertiser within the Floodlight group, or that the interaction happened outside the lookback window.',
+              }),
+            includeUnattributedIPConversions: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Include conversions that have no associated cookies and no exposures. It’s therefore impossible to know how the user was exposed to your ads during the lookback window prior to a conversion.',
+              }),
+            maximumClickInteractions: z
+              .int32()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The maximum number of click interactions to include in the report. Advertisers currently paying for E2C reports get up to 200 (100 clicks, 100 impressions). If another advertiser in your network is paying for E2C, you can have up to 5 total exposures per report.',
+              }),
+            maximumImpressionInteractions: z
+              .int32()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The maximum number of click interactions to include in the report. Advertisers currently paying for E2C reports get up to 200 (100 clicks, 100 impressions). If another advertiser in your network is paying for E2C, you can have up to 5 total exposures per report.',
+              }),
+            maximumInteractionGap: z
+              .int32()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The maximum amount of time that can take place between interactions (clicks or impressions) by the same user. Valid values: 1-90.',
+              }),
+            pivotOnInteractionPath: z
+              .boolean()
+              .exactOptional()
+              .openapi({ description: 'Enable pivoting on interaction path.' }),
+          })
+          .exactOptional()
+          .openapi({ description: 'The properties of the report.', required: [] }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The report criteria for a report of type "PATH_TO_CONVERSION".',
+        required: [],
+      }),
+    reachCriteria: z
+      .object({
+        activities: ActivitiesSchema.exactOptional().openapi({ description: 'Activity group.' }),
+        customRichMediaEvents: CustomRichMediaEventsSchema.exactOptional().openapi({
+          description: 'Custom Rich Media Events group.',
+        }),
+        dateRange: DateRangeSchema.exactOptional().openapi({
+          description: 'The date range this report should be run for.',
+        }),
+        dimensionFilters: z
+          .array(DimensionValueSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The list of filters on which dimensions are filtered. Filters for different dimensions are ANDed, filters for the same dimension are grouped together and ORed.',
+          }),
+        dimensions: z
+          .array(SortedDimensionSchema)
+          .exactOptional()
+          .openapi({ description: 'The list of dimensions the report should include.' }),
+        enableAllDimensionCombinations: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to enable all reach dimension combinations in the report. Defaults to false. If enabled, the date range of the report should be within the last 42 days.',
+          }),
+        metricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ description: 'The list of names of metrics the report should include.' }),
+        reachByFrequencyMetricNames: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The list of names of Reach By Frequency metrics the report should include.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The report criteria for a report of type "REACH".', required: [] }),
+    schedule: z
+      .object({
+        active: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether the schedule is active or not. Must be set to either true or false.',
+          }),
+        every: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'Defines every how many days, weeks or months the report should be run. Needs to be set when "repeats" is either "DAILY", "WEEKLY" or "MONTHLY".',
+          }),
+        expirationDate: z.iso.date().exactOptional(),
+        repeats: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The interval for which the report is repeated. Note: - "DAILY" also requires field "every" to be set. - "WEEKLY" also requires fields "every" and "repeatsOnWeekDays" to be set. - "MONTHLY" also requires fields "every" and "runsOnDayOfMonth" to be set. ',
+          }),
+        repeatsOnWeekDays: z
+          .array(
+            z.enum(['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']),
+          )
+          .exactOptional()
+          .openapi({
+            description: 'List of week days "WEEKLY" on which scheduled reports should run.',
+          }),
+        runsOnDayOfMonth: z
+          .enum(['DAY_OF_MONTH', 'WEEK_OF_MONTH'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Enum to define for "MONTHLY" scheduled reports whether reports should be repeated on the same day of the month as "startDate" or the same day of the week of the month. Example: If \'startDate\' is Monday, April 2nd 2012 (2012-04-02), "DAY_OF_MONTH" would run subsequent reports on the 2nd of every Month, and "WEEK_OF_MONTH" would run subsequent reports on the first Monday of the month.',
+          }),
+        startDate: z.iso.date().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          "The report's schedule. Can only be set if the report's 'dateRange' is a relative date range and the relative date range is not \"TODAY\".",
+        required: [],
+      }),
+    subAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subaccount ID to which this report belongs if applicable.' }),
+    type: z
+      .enum([
+        'STANDARD',
+        'REACH',
+        'PATH_TO_CONVERSION',
+        'CROSS_DIMENSION_REACH',
+        'FLOODLIGHT',
+        'PATH',
+        'PATH_ATTRIBUTION',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the report.' }),
+  })
+  .openapi({ description: 'Represents a Report resource.', required: [] })
+  .openapi('Report')
+
+type ReportListType = {
+  etag?: string
+  items?: z.infer<typeof ReportSchema>[]
+  kind?: string
+  nextPageToken?: string
+}
+
+const LookbackConfigurationSchema = z
+  .object({
+    clickDuration: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Lookback window, in days, from the last time a given user clicked on one of your ads. If you enter 0, clicks will not be considered as triggering events for floodlight tracking. If you leave this field blank, the default value for your account will be used. Acceptable values are 0 to 90, inclusive.',
+      }),
+    postImpressionActivitiesDuration: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Lookback window, in days, from the last time a given user viewed one of your ads. If you enter 0, impressions will not be considered as triggering events for floodlight tracking. If you leave this field blank, the default value for your account will be used. Acceptable values are 0 to 90, inclusive.',
+      }),
+  })
+  .openapi({ description: 'Lookback configuration settings.', required: [] })
+  .openapi('LookbackConfiguration')
+
+const ReportsConfigurationSchema = z
+  .object({
+    exposureToConversionEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the exposure to conversion report is enabled. This report shows detailed pathway information on up to 10 of the most recent ad exposures seen by a user before converting.',
+      }),
+    lookbackConfiguration: LookbackConfigurationSchema.exactOptional().openapi({
+      description: 'Default lookback windows for new advertisers in this account.',
+    }),
+    reportGenerationTimeZoneId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Report generation time zone ID of this account. This is a required field that can only be changed by a superuser. Acceptable values are: - "1" for "America/New_York" - "2" for "Europe/London" - "3" for "Europe/Paris" - "4" for "Africa/Johannesburg" - "5" for "Asia/Jerusalem" - "6" for "Asia/Shanghai" - "7" for "Asia/Hong_Kong" - "8" for "Asia/Tokyo" - "9" for "Australia/Sydney" - "10" for "Asia/Dubai" - "11" for "America/Los_Angeles" - "12" for "Pacific/Auckland" - "13" for "America/Sao_Paulo" - "16" for "America/Asuncion" - "17" for "America/Chicago" - "18" for "America/Denver" - "19" for "America/St_Johns" - "20" for "Asia/Dhaka" - "21" for "Asia/Jakarta" - "22" for "Asia/Kabul" - "23" for "Asia/Karachi" - "24" for "Asia/Calcutta" - "25" for "Asia/Pyongyang" - "26" for "Asia/Rangoon" - "27" for "Atlantic/Cape_Verde" - "28" for "Atlantic/South_Georgia" - "29" for "Australia/Adelaide" - "30" for "Australia/Lord_Howe" - "31" for "Europe/Moscow" - "32" for "Pacific/Kiritimati" - "35" for "Pacific/Norfolk" - "36" for "Pacific/Tongatapu" ',
+      }),
+  })
+  .openapi({ description: 'Reporting Configuration', required: [] })
+  .openapi('ReportsConfiguration')
+
+const AccountSchema = z
+  .object({
+    accountPermissionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Account permissions assigned to this account.' }),
+    accountProfile: z
+      .enum(['ACCOUNT_PROFILE_BASIC', 'ACCOUNT_PROFILE_STANDARD'])
+      .exactOptional()
+      .openapi({
+        description: 'Profile for this account. This is a read-only field that can be left blank.',
+      }),
+    active: z.boolean().exactOptional().openapi({ description: 'Whether this account is active.' }),
+    activeAdsLimitTier: z
+      .enum([
+        'ACTIVE_ADS_TIER_40K',
+        'ACTIVE_ADS_TIER_75K',
+        'ACTIVE_ADS_TIER_100K',
+        'ACTIVE_ADS_TIER_200K',
+        'ACTIVE_ADS_TIER_300K',
+        'ACTIVE_ADS_TIER_500K',
+        'ACTIVE_ADS_TIER_750K',
+        'ACTIVE_ADS_TIER_1M',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Maximum number of active ads allowed for this account.' }),
+    activeViewOptOut: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to serve creatives with Active View tags. If disabled, viewability data will not be available for any impressions.',
+      }),
+    availablePermissionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'User role permissions available to the user roles of this account.',
+      }),
+    countryId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the country associated with this account.' }),
+    currencyId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of currency associated with this account. This is a required field. Acceptable values are: - "1" for USD - "2" for GBP - "3" for ESP - "4" for SEK - "5" for CAD - "6" for JPY - "7" for DEM - "8" for AUD - "9" for FRF - "10" for ITL - "11" for DKK - "12" for NOK - "13" for FIM - "14" for ZAR - "15" for IEP - "16" for NLG - "17" for EUR - "18" for KRW - "19" for TWD - "20" for SGD - "21" for CNY - "22" for HKD - "23" for NZD - "24" for MYR - "25" for BRL - "26" for PTE - "28" for CLP - "29" for TRY - "30" for ARS - "31" for PEN - "32" for ILS - "33" for CHF - "34" for VEF - "35" for COP - "36" for GTQ - "37" for PLN - "39" for INR - "40" for THB - "41" for IDR - "42" for CZK - "43" for RON - "44" for HUF - "45" for RUB - "46" for AED - "47" for BGN - "48" for HRK - "49" for MXN - "50" for NGN - "51" for EGP ',
+      }),
+    defaultCreativeSizeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Default placement dimensions for this account.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of this account.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of this account. This is a read-only, auto-generated field.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#account".',
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Locale of this account. Acceptable values are: - "cs" (Czech) - "de" (German) - "en" (English) - "en-GB" (English United Kingdom) - "es" (Spanish) - "fr" (French) - "it" (Italian) - "ja" (Japanese) - "ko" (Korean) - "pl" (Polish) - "pt-BR" (Portuguese Brazil) - "ru" (Russian) - "sv" (Swedish) - "tr" (Turkish) - "zh-CN" (Chinese Simplified) - "zh-TW" (Chinese Traditional) ',
+      }),
+    maximumImageSize: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum image size allowed for this account, in kilobytes. Value must be greater than or equal to 1.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of this account. This is a required field, and must be less than 128 characters long and be globally unique.',
+      }),
+    nielsenOcrEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether campaigns created in this account will be enabled for Nielsen OCR reach ratings by default.',
+      }),
+    reportsConfiguration: ReportsConfigurationSchema.exactOptional().openapi({
+      description: 'Reporting configuration of this account.',
+    }),
+    shareReportsWithTwitter: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Share Path to Conversion reports with Twitter.' }),
+    teaserSizeLimit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'File size limit in kilobytes of Rich Media teaser creatives. Acceptable values are 1 to 10240, inclusive.',
+      }),
+  })
+  .openapi({ description: 'Contains properties of a Campaign Manager account.', required: [] })
+  .openapi('Account')
+
+const AccountActiveAdSummarySchema = z
+  .object({
+    accountId: z.string().exactOptional().openapi({ description: 'ID of the account.' }),
+    activeAds: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Ads that have been activated for the account' }),
+    activeAdsLimitTier: z
+      .enum([
+        'ACTIVE_ADS_TIER_40K',
+        'ACTIVE_ADS_TIER_75K',
+        'ACTIVE_ADS_TIER_100K',
+        'ACTIVE_ADS_TIER_200K',
+        'ACTIVE_ADS_TIER_300K',
+        'ACTIVE_ADS_TIER_500K',
+        'ACTIVE_ADS_TIER_750K',
+        'ACTIVE_ADS_TIER_1M',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Maximum number of active ads allowed for the account.' }),
+    availableAds: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Ads that can be activated for the account.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountActiveAdSummary".',
+      }),
+  })
+  .openapi({ description: 'Gets a summary of active ads in an account.', required: [] })
+  .openapi('AccountActiveAdSummary')
+
+const AccountPermissionSchema = z
+  .object({
+    accountProfiles: z
+      .array(z.enum(['ACCOUNT_PROFILE_BASIC', 'ACCOUNT_PROFILE_STANDARD']))
+      .exactOptional()
+      .openapi({
+        description:
+          'Account profiles associated with this account permission. Possible values are: - "ACCOUNT_PROFILE_BASIC" - "ACCOUNT_PROFILE_STANDARD" ',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'ID of this account permission.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountPermission".',
+      }),
+    level: z
+      .enum(['USER', 'ADMINISTRATOR'])
+      .exactOptional()
+      .openapi({ description: 'Administrative level required to enable this account permission.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of this account permission.' }),
+    permissionGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Permission group of this account permission.' }),
+  })
+  .openapi({
+    description:
+      'AccountPermissions contains information about a particular account permission. Some features of Campaign Manager require an account permission to be present in the account.',
+    required: [],
+  })
+  .openapi('AccountPermission')
+
+const AccountPermissionGroupSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'ID of this account permission group.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountPermissionGroup".',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of this account permission group.' }),
+  })
+  .openapi({
+    description:
+      'AccountPermissionGroups contains a mapping of permission group IDs to names. A permission group is a grouping of account permissions.',
+    required: [],
+  })
+  .openapi('AccountPermissionGroup')
+
+const AccountPermissionGroupsListResponseSchema = z
+  .object({
+    accountPermissionGroups: z
+      .array(AccountPermissionGroupSchema)
+      .exactOptional()
+      .openapi({ description: 'Account permission group collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountPermissionGroupsListResponse".',
+      }),
+  })
+  .openapi({ description: 'Account Permission Group List Response', required: [] })
+  .openapi('AccountPermissionGroupsListResponse')
+
+const AccountPermissionsListResponseSchema = z
+  .object({
+    accountPermissions: z
+      .array(AccountPermissionSchema)
+      .exactOptional()
+      .openapi({ description: 'Account permission collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountPermissionsListResponse".',
+      }),
+  })
+  .openapi({ description: 'Account Permission List Response', required: [] })
+  .openapi('AccountPermissionsListResponse')
+
+const ObjectFilterSchema = z
+  .object({
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#objectFilter".',
+      }),
+    objectIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Applicable when status is ASSIGNED. The user has access to objects with these object IDs.',
+      }),
+    status: z
+      .enum(['NONE', 'ASSIGNED', 'ALL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Status of the filter. NONE means the user has access to none of the objects. ALL means the user has access to all objects. ASSIGNED means the user has access to the objects with IDs in the objectIds list.',
+      }),
+  })
+  .openapi({ description: 'Object Filter.', required: [] })
+  .openapi('ObjectFilter')
+
+const AccountUserProfileSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Account ID of the user profile. This is a read-only field that can be left blank.',
+      }),
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this user profile is active. This defaults to false, and must be set true on insert for the user profile to be usable.',
+      }),
+    advertiserFilter: ObjectFilterSchema.exactOptional().openapi({
+      description: 'Filter that describes which advertisers are visible to the user profile.',
+    }),
+    campaignFilter: ObjectFilterSchema.exactOptional().openapi({
+      description: 'Filter that describes which campaigns are visible to the user profile.',
+    }),
+    comments: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Comments for this user profile.' }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Email of the user profile. The email addresss must be linked to a Google Account. This field is required on insertion and is read-only after insertion.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the user profile. This is a read-only, auto-generated field.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountUserProfile".',
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Locale of the user profile. This is a required field. Acceptable values are: - "cs" (Czech) - "de" (German) - "en" (English) - "en-GB" (English United Kingdom) - "es" (Spanish) - "fr" (French) - "it" (Italian) - "ja" (Japanese) - "ko" (Korean) - "pl" (Polish) - "pt-BR" (Portuguese Brazil) - "ru" (Russian) - "sv" (Swedish) - "tr" (Turkish) - "zh-CN" (Chinese Simplified) - "zh-TW" (Chinese Traditional) ',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the user profile. This is a required field. Must be less than 64 characters long, must be globally unique, and cannot contain whitespace or any of the following characters: "&;<>"#%,".',
+      }),
+    siteFilter: ObjectFilterSchema.exactOptional().openapi({
+      description: 'Filter that describes which sites are visible to the user profile.',
+    }),
+    subaccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subaccount ID of the user profile. This is a read-only field that can be left blank.',
+      }),
+    traffickerType: z
+      .enum(['INTERNAL_NON_TRAFFICKER', 'INTERNAL_TRAFFICKER', 'EXTERNAL_TRAFFICKER'])
+      .exactOptional()
+      .openapi({ description: 'Trafficker type of this user profile. This is a read-only field.' }),
+    userAccessType: z
+      .enum(['NORMAL_USER', 'SUPER_USER', 'INTERNAL_ADMINISTRATOR', 'READ_ONLY_SUPER_USER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'User type of the user profile. This is a read-only field that can be left blank.',
+      }),
+    userRoleFilter: ObjectFilterSchema.exactOptional().openapi({
+      description: 'Filter that describes which user roles are visible to the user profile.',
+    }),
+    userRoleId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User role ID of the user profile. This is a required field.' }),
+  })
+  .openapi({
+    description:
+      'AccountUserProfiles contains properties of a Campaign Manager user profile. This resource is specifically for managing user profiles, whereas UserProfiles is for accessing the API.',
+    required: [],
+  })
+  .openapi('AccountUserProfile')
+
+const AccountUserProfilesListResponseSchema = z
+  .object({
+    accountUserProfiles: z
+      .array(AccountUserProfileSchema)
+      .exactOptional()
+      .openapi({ description: 'Account user profile collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountUserProfilesListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Account User Profile List Response', required: [] })
+  .openapi('AccountUserProfilesListResponse')
+
+const AccountsListResponseSchema = z
+  .object({
+    accounts: z
+      .array(AccountSchema)
+      .exactOptional()
+      .openapi({ description: 'Account collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#accountsListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Account List Response', required: [] })
+  .openapi('AccountsListResponse')
+
+const AdSlotSchema = z
+  .object({
+    comment: z.string().exactOptional().openapi({ description: 'Comment for this ad slot.' }),
+    compatibility: z
+      .enum([
+        'DISPLAY',
+        'DISPLAY_INTERSTITIAL',
+        'APP',
+        'APP_INTERSTITIAL',
+        'IN_STREAM_VIDEO',
+        'IN_STREAM_AUDIO',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Ad slot compatibility. DISPLAY and DISPLAY_INTERSTITIAL refer to rendering either on desktop, mobile devices or in mobile apps for regular or interstitial ads respectively. APP and APP_INTERSTITIAL are for rendering in mobile apps. IN_STREAM_VIDEO refers to rendering in in-stream video ads developed with the VAST standard.',
+      }),
+    height: z.string().exactOptional().openapi({ description: 'Height of this ad slot.' }),
+    linkedPlacementId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the placement from an external platform that is linked to this ad slot.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'Name of this ad slot.' }),
+    paymentSourceType: z
+      .enum([
+        'PLANNING_PAYMENT_SOURCE_TYPE_AGENCY_PAID',
+        'PLANNING_PAYMENT_SOURCE_TYPE_PUBLISHER_PAID',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Payment source type of this ad slot.' }),
+    primary: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Primary ad slot of a roadblock inventory item.' }),
+    width: z.string().exactOptional().openapi({ description: 'Width of this ad slot.' }),
+  })
+  .openapi({ description: 'Ad Slot', required: [] })
+  .openapi('AdSlot')
+
+const AdsListResponseSchema: z.ZodType<AdsListResponseType> = z
+  .object({
+    ads: z.array(AdSchema).exactOptional().openapi({ description: 'Ad collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#adsListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Ad List Response', required: [] })
+  .openapi('AdsListResponse')
+
+const AdvertiserSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Account ID of this advertiser.This is a read-only field that can be left blank.',
+      }),
+    advertiserGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the advertiser group this advertiser belongs to. You can group advertisers for reporting purposes, allowing you to see aggregated information for all advertisers in each group.',
+      }),
+    clickThroughUrlSuffix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Suffix added to click-through URL of ad creative associations under this advertiser. Must be less than 129 characters long.',
+      }),
+    defaultClickThroughEventTagId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "ID of the click-through event tag to apply by default to the landing pages of this advertiser's campaigns.",
+      }),
+    defaultEmail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Default email address used in sender field for tag emails.' }),
+    floodlightConfigurationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Floodlight configuration ID of this advertiser. The floodlight configuration ID will be created automatically, so on insert this field should be left blank. This field can be set to another advertiser's floodlight configuration ID in order to share that advertiser's floodlight configuration with this advertiser, so long as: - This advertiser's original floodlight configuration is not already associated with floodlight activities or floodlight activity groups. - This advertiser's original floodlight configuration is not already shared with another advertiser. ",
+      }),
+    floodlightConfigurationIdDimensionValue: DimensionValueSchema.exactOptional().openapi({
+      description:
+        'Dimension value for the ID of the floodlight configuration. This is a read-only, auto-generated field.',
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of this advertiser. This is a read-only, auto-generated field.',
+      }),
+    idDimensionValue: DimensionValueSchema.exactOptional().openapi({
+      description:
+        'Dimension value for the ID of this advertiser. This is a read-only, auto-generated field.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertiser".',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of this advertiser. This is a required field and must be less than 256 characters long and unique among advertisers of the same account.',
+      }),
+    originalFloodlightConfigurationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Original floodlight configuration before any sharing occurred. Set the floodlightConfigurationId of this advertiser to originalFloodlightConfigurationId to unshare the advertiser's current floodlight configuration. You cannot unshare an advertiser's floodlight configuration if the shared configuration has activities associated with any campaign or placement.",
+      }),
+    status: z
+      .enum(['APPROVED', 'ON_HOLD'])
+      .exactOptional()
+      .openapi({ description: 'Status of this advertiser.' }),
+    subaccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Subaccount ID of this advertiser.This is a read-only field that can be left blank.',
+      }),
+    suspended: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Suspension status of this advertiser.' }),
+  })
+  .openapi({ description: 'Contains properties of a Campaign Manager advertiser.', required: [] })
+  .openapi('Advertiser')
+
+const AdvertiserGroupSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Account ID of this advertiser group. This is a read-only field that can be left blank.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of this advertiser group. This is a read-only, auto-generated field.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertiserGroup".',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of this advertiser group. This is a required field and must be less than 256 characters long and unique among advertiser groups of the same account.',
+      }),
+  })
+  .openapi({
+    description:
+      'Groups advertisers together so that reports can be generated for the entire group at once.',
+    required: [],
+  })
+  .openapi('AdvertiserGroup')
+
+const AdvertiserGroupsListResponseSchema = z
+  .object({
+    advertiserGroups: z
+      .array(AdvertiserGroupSchema)
+      .exactOptional()
+      .openapi({ description: 'Advertiser group collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertiserGroupsListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Advertiser Group List Response', required: [] })
+  .openapi('AdvertiserGroupsListResponse')
+
+const MobileAppSchema = z
+  .object({
+    directory: z
+      .enum([
+        'UNKNOWN',
+        'APPLE_APP_STORE',
+        'GOOGLE_PLAY_STORE',
+        'ROKU_APP_STORE',
+        'AMAZON_FIRETV_APP_STORE',
+        'PLAYSTATION_APP_STORE',
+        'APPLE_TV_APP_STORE',
+        'XBOX_APP_STORE',
+        'SAMSUNG_TV_APP_STORE',
+        'ANDROID_TV_APP_STORE',
+        'GENERIC_CTV_APP_STORE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Mobile app directory.' }),
+    id: z.string().exactOptional().openapi({ description: 'ID of this mobile app.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#mobileApp".',
+      }),
+    publisherName: z.string().exactOptional().openapi({ description: 'Publisher name.' }),
+    title: z.string().exactOptional().openapi({ description: 'Title of this mobile app.' }),
+  })
+  .openapi({
+    description: 'Contains information about a mobile app. Used as a landing page deep link.',
+    required: [],
+  })
+  .openapi('MobileApp')
+
+const DeepLinkSchema = z
+  .object({
+    appUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the mobile app being linked to.' }),
+    fallbackUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fallback URL. This URL will be served to users who do not have the mobile app installed.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#deepLink".',
+      }),
+    mobileApp: MobileAppSchema.exactOptional().openapi({
+      description: 'The mobile app targeted by this deep link.',
+    }),
+    remarketingListIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Ads served to users on these remarketing lists will use this deep link. Applicable when mobileApp.directory is APPLE_APP_STORE.',
+      }),
+  })
+  .openapi({ description: 'Contains information about a landing page deep link.', required: [] })
+  .openapi('DeepLink')
+
+const LandingPageSchema = z
+  .object({
+    advertiserId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Advertiser ID of this landing page. This is a required field.' }),
+    archived: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this landing page has been archived.' }),
+    deepLinks: z
+      .array(DeepLinkSchema)
+      .exactOptional()
+      .openapi({ description: 'Links that will direct the user to a mobile app, if installed.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of this landing page. This is a read-only, auto-generated field.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#landingPage".',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of this landing page. This is a required field. It must be less than 256 characters long.',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL of this landing page. This is a required field.' }),
+  })
+  .openapi({
+    description:
+      "Contains information about where a user's browser is taken after the user clicks an ad.",
+    required: [],
+  })
+  .openapi('LandingPage')
+
+const AdvertiserLandingPagesListResponseSchema = z
+  .object({
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertiserLandingPagesListResponse".',
+      }),
+    landingPages: z
+      .array(LandingPageSchema)
+      .exactOptional()
+      .openapi({ description: 'Landing page collection' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Landing Page List Response', required: [] })
+  .openapi('AdvertiserLandingPagesListResponse')
+
+const AdvertisersListResponseSchema = z
+  .object({
+    advertisers: z
+      .array(AdvertiserSchema)
+      .exactOptional()
+      .openapi({ description: 'Advertiser collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#advertisersListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Advertiser List Response', required: [] })
+  .openapi('AdvertisersListResponse')
+
+const BrowsersListResponseSchema = z
+  .object({
+    browsers: z
+      .array(BrowserSchema)
+      .exactOptional()
+      .openapi({ description: 'Browser collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#browsersListResponse".',
+      }),
+  })
+  .openapi({ description: 'Browser List Response', required: [] })
+  .openapi('BrowsersListResponse')
+
+const CampaignCreativeAssociationSchema = z
+  .object({
+    creativeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of the creative associated with the campaign. This is a required field.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#campaignCreativeAssociation".',
+      }),
+  })
+  .openapi({
+    description: 'Identifies a creative which has been associated with a given campaign.',
+    required: [],
+  })
+  .openapi('CampaignCreativeAssociation')
+
+const CampaignCreativeAssociationsListResponseSchema = z
+  .object({
+    campaignCreativeAssociations: z
+      .array(CampaignCreativeAssociationSchema)
+      .exactOptional()
+      .openapi({ description: 'Campaign creative association collection' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#campaignCreativeAssociationsListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Campaign Creative Association List Response', required: [] })
+  .openapi('CampaignCreativeAssociationsListResponse')
+
+const CampaignManagerIdsSchema = z
+  .object({
+    adId: z.string().exactOptional().openapi({ description: 'Ad ID for Campaign Manager.' }),
+    campaignId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Campaign ID for Campaign Manager.' }),
+    creativeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Creative ID for Campaign Manager.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#campaignManagerIds".',
+      }),
+    placementId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Placement ID for Campaign Manager.' }),
+    siteId: z.string().exactOptional().openapi({ description: 'Site ID for Campaign Manager.' }),
+  })
+  .openapi({ description: 'Campaign Manager IDs related to the custom event.', required: [] })
+  .openapi('CampaignManagerIds')
+
+const CampaignsListResponseSchema: z.ZodType<CampaignsListResponseType> = z
+  .object({
+    campaigns: z
+      .array(CampaignSchema)
+      .exactOptional()
+      .openapi({ description: 'Campaign collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#campaignsListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Campaign List Response', required: [] })
+  .openapi('CampaignsListResponse')
+
+const ChangeLogSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Account ID of the modified object.' }),
+    action: z.string().exactOptional().openapi({ description: 'Action which caused the change.' }),
+    changeTime: z.iso.datetime({ offset: true }).exactOptional(),
+    fieldName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Field name of the object which changed.' }),
+    id: z.string().exactOptional().openapi({ description: 'ID of this change log.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#changeLog".',
+      }),
+    newValue: z.string().exactOptional().openapi({ description: 'New value of the object field.' }),
+    objectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the object of this change log. The object could be a campaign, placement, ad, or other type.',
+      }),
+    objectType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Object type of the change log.' }),
+    oldValue: z.string().exactOptional().openapi({ description: 'Old value of the object field.' }),
+    subaccountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Subaccount ID of the modified object.' }),
+    transactionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Transaction ID of this change log. When a single API call results in many changes, each change will have a separate ID in the change log but will share the same transactionId.',
+      }),
+    userProfileId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the user who modified the object.' }),
+    userProfileName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User profile name of the user who modified the object.' }),
+  })
+  .openapi({ description: 'Describes a change that a user has made to a resource.', required: [] })
+  .openapi('ChangeLog')
+
+const ChangeLogsListResponseSchema = z
+  .object({
+    changeLogs: z
+      .array(ChangeLogSchema)
+      .exactOptional()
+      .openapi({ description: 'Change log collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#changeLogsListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Change Log List Response', required: [] })
+  .openapi('ChangeLogsListResponse')
+
+const CitiesListResponseSchema = z
+  .object({
+    cities: z.array(CitySchema).exactOptional().openapi({ description: 'City collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#citiesListResponse".',
+      }),
+  })
+  .openapi({ description: 'City List Response', required: [] })
+  .openapi('CitiesListResponse')
+
+const CompanionSettingSchema = z
+  .object({
+    companionsDisabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether companions are disabled for this placement.' }),
+    enabledSizes: z
+      .array(SizeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Allowlist of companion sizes to be served to this placement. Set this list to null or empty to serve all companion sizes.',
+      }),
+    imageOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to serve only static images as companions.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#companionSetting".',
+      }),
+  })
+  .openapi({ description: 'Companion Settings', required: [] })
+  .openapi('CompanionSetting')
+
+const DimensionSchema = z
+  .object({
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The kind of resource this is, in this case dfareporting#dimension.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The dimension name, e.g. dfa:advertiser' }),
+  })
+  .openapi({ description: 'Represents a dimension.', required: [] })
+  .openapi('Dimension')
+
+const MetricSchema = z
+  .object({
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The kind of resource this is, in this case dfareporting#metric.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The metric name, e.g. dfa:impressions' }),
+  })
+  .openapi({ description: 'Represents a metric.', required: [] })
+  .openapi('Metric')
+
+const CrossDimensionReachReportCompatibleFieldsSchema = z
+  .object({
+    breakdown: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "breakdown" section of the report.',
+      }),
+    dimensionFilters: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "dimensionFilters" section of the report.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of resource this is, in this case dfareporting#crossDimensionReachReportCompatibleFields.',
+      }),
+    metrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
+      }),
+    overlapMetrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected in the "overlapMetricNames" section of the report.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents fields that are compatible to be selected for a report of type "CROSS_DIMENSION_REACH".',
+    required: [],
+  })
+  .openapi('CrossDimensionReachReportCompatibleFields')
+
+const FloodlightReportCompatibleFieldsSchema = z
+  .object({
+    dimensionFilters: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "dimensionFilters" section of the report.',
+      }),
+    dimensions: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "dimensions" section of the report.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of resource this is, in this case dfareporting#floodlightReportCompatibleFields.',
+      }),
+    metrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents fields that are compatible to be selected for a report of type "FlOODLIGHT".',
+    required: [],
+  })
+  .openapi('FloodlightReportCompatibleFields')
+
+const PathReportCompatibleFieldsSchema = z
+  .object({
+    channelGroupings: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "channelGroupings" section of the report.',
+      }),
+    dimensions: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "dimensions" section of the report.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of resource this is, in this case dfareporting#pathReportCompatibleFields.',
+      }),
+    metrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
+      }),
+    pathFilters: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "pathFilters" section of the report.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents fields that are compatible to be selected for a report of type "PATH".',
+    required: [],
+  })
+  .openapi('PathReportCompatibleFields')
+
+const PathToConversionReportCompatibleFieldsSchema = z
+  .object({
+    conversionDimensions: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Conversion dimensions which are compatible to be selected in the "conversionDimensions" section of the report.',
+      }),
+    customFloodlightVariables: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom floodlight variables which are compatible to be selected in the "customFloodlightVariables" section of the report.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of resource this is, in this case dfareporting#pathToConversionReportCompatibleFields.',
+      }),
+    metrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
+      }),
+    perInteractionDimensions: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Per-interaction dimensions which are compatible to be selected in the "perInteractionDimensions" section of the report.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents fields that are compatible to be selected for a report of type "PATH_TO_CONVERSION".',
+    required: [],
+  })
+  .openapi('PathToConversionReportCompatibleFields')
+
+const ReachReportCompatibleFieldsSchema = z
+  .object({
+    dimensionFilters: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "dimensionFilters" section of the report.',
+      }),
+    dimensions: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "dimensions" section of the report.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of resource this is, in this case dfareporting#reachReportCompatibleFields.',
+      }),
+    metrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
+      }),
+    pivotedActivityMetrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected as activity metrics to pivot on in the "activities" section of the report.',
+      }),
+    reachByFrequencyMetrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected in the "reachByFrequencyMetricNames" section of the report.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents fields that are compatible to be selected for a report of type "REACH".',
+    required: [],
+  })
+  .openapi('ReachReportCompatibleFields')
+
+const ReportCompatibleFieldsSchema = z
+  .object({
+    dimensionFilters: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "dimensionFilters" section of the report.',
+      }),
+    dimensions: z
+      .array(DimensionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimensions which are compatible to be selected in the "dimensions" section of the report.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The kind of resource this is, in this case dfareporting#reportCompatibleFields.',
+      }),
+    metrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected in the "metricNames" section of the report.',
+      }),
+    pivotedActivityMetrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics which are compatible to be selected as activity metrics to pivot on in the "activities" section of the report.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents fields that are compatible to be selected for a report of type "STANDARD".',
+    required: [],
+  })
+  .openapi('ReportCompatibleFields')
+
+const CompatibleFieldsSchema = z
+  .object({
+    crossDimensionReachReportCompatibleFields:
+      CrossDimensionReachReportCompatibleFieldsSchema.exactOptional().openapi({
+        description:
+          'Contains items that are compatible to be selected for a report of type "CROSS_DIMENSION_REACH".',
+      }),
+    floodlightReportCompatibleFields:
+      FloodlightReportCompatibleFieldsSchema.exactOptional().openapi({
+        description:
+          'Contains items that are compatible to be selected for a report of type "FLOODLIGHT".',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The kind of resource this is, in this case dfareporting#compatibleFields.',
+      }),
+    pathAttributionReportCompatibleFields: PathReportCompatibleFieldsSchema.exactOptional().openapi(
+      {
+        description:
+          'Contains items that are compatible to be selected for a report of type "PATH_ATTRIBUTION".',
+      },
+    ),
+    pathReportCompatibleFields: PathReportCompatibleFieldsSchema.exactOptional().openapi({
+      description: 'Contains items that are compatible to be selected for a report of type "PATH".',
+    }),
+    pathToConversionReportCompatibleFields:
+      PathToConversionReportCompatibleFieldsSchema.exactOptional().openapi({
+        description:
+          'Contains items that are compatible to be selected for a report of type "PATH_TO_CONVERSION".',
+      }),
+    reachReportCompatibleFields: ReachReportCompatibleFieldsSchema.exactOptional().openapi({
+      description:
+        'Contains items that are compatible to be selected for a report of type "REACH".',
+    }),
+    reportCompatibleFields: ReportCompatibleFieldsSchema.exactOptional().openapi({
+      description:
+        'Contains items that are compatible to be selected for a report of type "STANDARD".',
+    }),
+  })
+  .openapi({
+    description: 'Represents a response to the queryCompatibleFields method.',
+    required: [],
+  })
+  .openapi('CompatibleFields')
+
+const ConnectionTypesListResponseSchema = z
+  .object({
+    connectionTypes: z
+      .array(ConnectionTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'Collection of connection types such as broadband and mobile.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#connectionTypesListResponse".',
+      }),
+  })
+  .openapi({ description: 'Connection Type List Response', required: [] })
+  .openapi('ConnectionTypesListResponse')
+
+const ContentCategorySchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Account ID of this content category. This is a read-only field that can be left blank.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of this content category. This is a read-only, auto-generated field.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#contentCategory".',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of this content category. This is a required field and must be less than 256 characters long and unique among content categories of the same account.',
+      }),
+  })
+  .openapi({
+    description: 'Organizes placements according to the contents of their associated webpages.',
+    required: [],
+  })
+  .openapi('ContentCategory')
+
+const ContentCategoriesListResponseSchema = z
+  .object({
+    contentCategories: z
+      .array(ContentCategorySchema)
+      .exactOptional()
+      .openapi({ description: 'Content category collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#contentCategoriesListResponse".',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pagination token to be used for the next list operation.' }),
+  })
+  .openapi({ description: 'Content Category List Response', required: [] })
+  .openapi('ContentCategoriesListResponse')
+
+const CustomFloodlightVariableSchema = z
+  .object({
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#customFloodlightVariable".',
+      }),
+    type: z
+      .enum([
+        'U1',
+        'U2',
+        'U3',
+        'U4',
+        'U5',
+        'U6',
+        'U7',
+        'U8',
+        'U9',
+        'U10',
+        'U11',
+        'U12',
+        'U13',
+        'U14',
+        'U15',
+        'U16',
+        'U17',
+        'U18',
+        'U19',
+        'U20',
+        'U21',
+        'U22',
+        'U23',
+        'U24',
+        'U25',
+        'U26',
+        'U27',
+        'U28',
+        'U29',
+        'U30',
+        'U31',
+        'U32',
+        'U33',
+        'U34',
+        'U35',
+        'U36',
+        'U37',
+        'U38',
+        'U39',
+        'U40',
+        'U41',
+        'U42',
+        'U43',
+        'U44',
+        'U45',
+        'U46',
+        'U47',
+        'U48',
+        'U49',
+        'U50',
+        'U51',
+        'U52',
+        'U53',
+        'U54',
+        'U55',
+        'U56',
+        'U57',
+        'U58',
+        'U59',
+        'U60',
+        'U61',
+        'U62',
+        'U63',
+        'U64',
+        'U65',
+        'U66',
+        'U67',
+        'U68',
+        'U69',
+        'U70',
+        'U71',
+        'U72',
+        'U73',
+        'U74',
+        'U75',
+        'U76',
+        'U77',
+        'U78',
+        'U79',
+        'U80',
+        'U81',
+        'U82',
+        'U83',
+        'U84',
+        'U85',
+        'U86',
+        'U87',
+        'U88',
+        'U89',
+        'U90',
+        'U91',
+        'U92',
+        'U93',
+        'U94',
+        'U95',
+        'U96',
+        'U97',
+        'U98',
+        'U99',
+        'U100',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of custom floodlight variable to supply a value for. These map to the "u[1-20]=" in the tags.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value of the custom floodlight variable. The length of string must not exceed 100 characters.',
+      }),
+  })
+  .openapi({
+    description:
+      'A custom floodlight variable. This field may only be used when calling batchinsert; it is not supported by batchupdate.',
+    required: [],
+  })
+  .openapi('CustomFloodlightVariable')
+
+const ConversionSchema = z
+  .object({
+    childDirectedTreatment: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether this particular request may come from a user under the age of 13, under COPPA compliance.',
+      }),
+    customVariables: z
+      .array(CustomFloodlightVariableSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Custom floodlight variables. This field may only be used when calling batchinsert; it is not supported by batchupdate.',
+      }),
+    dclid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The display click ID. This field is mutually exclusive with encryptedUserId, encryptedUserIdCandidates[], matchId, mobileDeviceId and gclid. This or encryptedUserId or encryptedUserIdCandidates[] or matchId or mobileDeviceId or gclid is a required field.',
+      }),
+    encryptedUserId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The alphanumeric encrypted user ID. When set, encryptionInfo should also be specified. This field is mutually exclusive with encryptedUserIdCandidates[], matchId, mobileDeviceId, gclid and dclid. This or encryptedUserIdCandidates[] or matchId or mobileDeviceId or gclid or dclid is a required field.',
+      }),
+    encryptedUserIdCandidates: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of the alphanumeric encrypted user IDs. Any user ID with exposure prior to the conversion timestamp will be used in the inserted conversion. If no such user ID is found then the conversion will be rejected with INVALID_ARGUMENT error. When set, encryptionInfo should also be specified. This field may only be used when calling batchinsert; it is not supported by batchupdate. This field is mutually exclusive with encryptedUserId, matchId, mobileDeviceId, gclid and dclid. This or encryptedUserId or matchId or mobileDeviceId or gclid or dclid is a required field.',
+      }),
+    floodlightActivityId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Floodlight Activity ID of this conversion. This is a required field.',
+      }),
+    floodlightConfigurationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Floodlight Configuration ID of this conversion. This is a required field.',
+      }),
+    gclid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Google click ID. This field is mutually exclusive with encryptedUserId, encryptedUserIdCandidates[], matchId, mobileDeviceId and dclid. This or encryptedUserId or encryptedUserIdCandidates[] or matchId or mobileDeviceId or dclid is a required field.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversion".',
+      }),
+    limitAdTracking: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether Limit Ad Tracking is enabled. When set to true, the conversion will be used for reporting but not targeting. This will prevent remarketing.',
+      }),
+    matchId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The match ID field. A match ID is your own first-party identifier that has been synced with Google using the match ID feature in Floodlight. This field is mutually exclusive with encryptedUserId, encryptedUserIdCandidates[],mobileDeviceId, gclid and dclid. This or encryptedUserId or encryptedUserIdCandidates[] or mobileDeviceId or gclid or dclid is a required field.',
+      }),
+    mobileDeviceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The mobile device ID. This field is mutually exclusive with encryptedUserId, encryptedUserIdCandidates[], matchId, gclid and dclid. This or encryptedUserId or encryptedUserIdCandidates[] or matchId or gclid or dclid is a required field.',
+      }),
+    nonPersonalizedAd: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the conversion was for a non personalized ad.' }),
+    ordinal: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ordinal of the conversion. Use this field to control how conversions of the same user and day are de-duplicated. This is a required field.',
+      }),
+    quantity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The quantity of the conversion.' }),
+    timestampMicros: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp of conversion, in Unix epoch micros. This is a required field.',
+      }),
+    treatmentForUnderage: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether this particular request may come from a user under the age of 16 (may differ by country), under compliance with the European Union's General Data Protection Regulation (GDPR).",
+      }),
+    value: z.float64().exactOptional().openapi({ description: 'The value of the conversion.' }),
+  })
+  .openapi({
+    description:
+      'A Conversion represents when a user successfully performs a desired action after seeing an ad.',
+    required: [],
+  })
+  .openapi('Conversion')
+
+const ConversionErrorSchema = z
+  .object({
+    code: z
+      .enum(['INVALID_ARGUMENT', 'INTERNAL', 'PERMISSION_DENIED', 'NOT_FOUND'])
+      .exactOptional()
+      .openapi({ description: 'The error code.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionError".',
+      }),
+    message: z.string().exactOptional().openapi({ description: 'A description of the error.' }),
+  })
+  .openapi({
+    description: 'The error code and description for a conversion that failed to insert or update.',
+    required: [],
+  })
+  .openapi('ConversionError')
+
+const ConversionStatusSchema = z
+  .object({
+    conversion: ConversionSchema.exactOptional().openapi({
+      description: 'The original conversion that was inserted or updated.',
+    }),
+    errors: z
+      .array(ConversionErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of errors related to this conversion.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionStatus".',
+      }),
+  })
+  .openapi({
+    description:
+      'The original conversion that was inserted or updated and whether there were any errors.',
+    required: [],
+  })
+  .openapi('ConversionStatus')
+
+const EncryptionInfoSchema = z
+  .object({
+    encryptionEntityId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The encryption entity ID. This should match the encryption configuration for ad serving or Data Transfer.',
+      }),
+    encryptionEntityType: z
+      .enum([
+        'ENCRYPTION_ENTITY_TYPE_UNKNOWN',
+        'DCM_ACCOUNT',
+        'DCM_ADVERTISER',
+        'DBM_PARTNER',
+        'DBM_ADVERTISER',
+        'ADWORDS_CUSTOMER',
+        'DFP_NETWORK_CODE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The encryption entity type. This should match the encryption configuration for ad serving or Data Transfer.',
+      }),
+    encryptionSource: z
+      .enum(['ENCRYPTION_SCOPE_UNKNOWN', 'AD_SERVING', 'DATA_TRANSFER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Describes whether the encrypted cookie was received from ad serving (the %m macro) or from Data Transfer.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#encryptionInfo".',
+      }),
+  })
+  .openapi({ description: 'A description of how user IDs are encrypted.', required: [] })
+  .openapi('EncryptionInfo')
+
+const ConversionsBatchInsertRequestSchema = z
+  .object({
+    conversions: z
+      .array(ConversionSchema)
+      .exactOptional()
+      .openapi({ description: 'The set of conversions to insert.' }),
+    encryptionInfo: EncryptionInfoSchema.exactOptional().openapi({
+      description:
+        'Describes how encryptedUserId or encryptedUserIdCandidates[] is encrypted. This is a required field if encryptedUserId or encryptedUserIdCandidates[] is used.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionsBatchInsertRequest".',
+      }),
+  })
+  .openapi({ description: 'Insert Conversions Request.', required: [] })
+  .openapi('ConversionsBatchInsertRequest')
+
+const ConversionsBatchInsertResponseSchema = z
+  .object({
+    hasFailures: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates that some or all conversions failed to insert.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionsBatchInsertResponse".',
+      }),
+    status: z
+      .array(ConversionStatusSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The insert status of each conversion. Statuses are returned in the same order that conversions are inserted.',
+      }),
+  })
+  .openapi({ description: 'Insert Conversions Response.', required: [] })
+  .openapi('ConversionsBatchInsertResponse')
+
+const ConversionsBatchUpdateRequestSchema = z
+  .object({
+    conversions: z
+      .array(ConversionSchema)
+      .exactOptional()
+      .openapi({ description: 'The set of conversions to update.' }),
+    encryptionInfo: EncryptionInfoSchema.exactOptional().openapi({
+      description:
+        'Describes how encryptedUserId is encrypted. This is a required field if encryptedUserId is used.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionsBatchUpdateRequest".',
+      }),
+  })
+  .openapi({ description: 'Update Conversions Request.', required: [] })
+  .openapi('ConversionsBatchUpdateRequest')
+
+const ConversionsBatchUpdateResponseSchema = z
+  .object({
+    hasFailures: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates that some or all conversions failed to update.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#conversionsBatchUpdateResponse".',
+      }),
+    status: z
+      .array(ConversionStatusSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The update status of each conversion. Statuses are returned in the same order that conversions are updated.',
+      }),
+  })
+  .openapi({ description: 'Update Conversions Response.', required: [] })
+  .openapi('ConversionsBatchUpdateResponse')
+
+const CountriesListResponseSchema = z
+  .object({
+    countries: z
+      .array(CountrySchema)
+      .exactOptional()
+      .openapi({ description: 'Country collection.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#countriesListResponse".',
+      }),
+  })
+  .openapi({ description: 'Country List Response', required: [] })
+  .openapi('CountriesListResponse')
+
 const CreativeAssetMetadataSchema = z
   .object({
     assetIdentifier: CreativeAssetIdSchema.exactOptional().openapi({
@@ -5249,7 +6181,7 @@ const CreativeGroupsListResponseSchema = z
   .openapi({ description: 'Creative Group List Response', required: [] })
   .openapi('CreativeGroupsListResponse')
 
-const CreativesListResponseSchema = z
+const CreativesListResponseSchema: z.ZodType<CreativesListResponseType> = z
   .object({
     creatives: z
       .array(CreativeSchema)
@@ -5532,26 +6464,6 @@ const CustomEventsBatchInsertResponseSchema = z
   .openapi({ description: 'Insert Custom Events Response.', required: [] })
   .openapi('CustomEventsBatchInsertResponse')
 
-const CustomRichMediaEventsSchema = z
-  .object({
-    filteredEventIds: z
-      .array(DimensionValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of custom rich media event IDs. Dimension values must be all of type dfa:richMediaEventTypeIdAndName.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The kind of resource this is, in this case dfareporting#customRichMediaEvents.',
-      }),
-  })
-  .openapi({ description: 'Represents a Custom Rich Media Events group.', required: [] })
-  .openapi('CustomRichMediaEvents')
-
 const CustomViewabilityMetricConfigurationSchema = z
   .object({
     audible: z
@@ -5600,42 +6512,6 @@ const CustomViewabilityMetricSchema = z
   })
   .openapi({ description: 'Custom Viewability Metric', required: [] })
   .openapi('CustomViewabilityMetric')
-
-const DateRangeSchema = z
-  .object({
-    endDate: z.iso.date().exactOptional(),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The kind of resource this is, in this case dfareporting#dateRange.',
-      }),
-    relativeDateRange: z
-      .enum([
-        'TODAY',
-        'YESTERDAY',
-        'WEEK_TO_DATE',
-        'MONTH_TO_DATE',
-        'QUARTER_TO_DATE',
-        'YEAR_TO_DATE',
-        'PREVIOUS_WEEK',
-        'PREVIOUS_MONTH',
-        'PREVIOUS_QUARTER',
-        'PREVIOUS_YEAR',
-        'LAST_7_DAYS',
-        'LAST_30_DAYS',
-        'LAST_90_DAYS',
-        'LAST_365_DAYS',
-        'LAST_24_MONTHS',
-        'LAST_14_DAYS',
-        'LAST_60_DAYS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The date range relative to the date of when the report is run.' }),
-    startDate: z.iso.date().exactOptional(),
-  })
-  .openapi({ description: 'Represents a date range.', required: [] })
-  .openapi('DateRange')
 
 const DfpSettingsSchema = z
   .object({
@@ -7068,120 +7944,6 @@ const LanguagesListResponseSchema = z
   .openapi({ description: 'Language List Response', required: [] })
   .openapi('LanguagesListResponse')
 
-const ListPopulationTermSchema = z
-  .object({
-    contains: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Will be true if the term should check if the user is in the list and false if the term should check if the user is not in the list. This field is only relevant when type is set to LIST_MEMBERSHIP_TERM. False by default.',
-      }),
-    negation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to negate the comparison result of this term during rule evaluation. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.',
-      }),
-    operator: z
-      .enum([
-        'NUM_EQUALS',
-        'NUM_LESS_THAN',
-        'NUM_LESS_THAN_EQUAL',
-        'NUM_GREATER_THAN',
-        'NUM_GREATER_THAN_EQUAL',
-        'STRING_EQUALS',
-        'STRING_CONTAINS',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Comparison operator of this term. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.',
-      }),
-    remarketingListId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the list in question. This field is only relevant when type is set to LIST_MEMBERSHIP_TERM.',
-      }),
-    type: z
-      .enum(['CUSTOM_VARIABLE_TERM', 'LIST_MEMBERSHIP_TERM', 'REFERRER_TERM'])
-      .exactOptional()
-      .openapi({
-        description:
-          'List population term type determines the applicable fields in this object. If left unset or set to CUSTOM_VARIABLE_TERM, then variableName, variableFriendlyName, operator, value, and negation are applicable. If set to LIST_MEMBERSHIP_TERM then remarketingListId and contains are applicable. If set to REFERRER_TERM then operator, value, and negation are applicable.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Literal to compare the variable to. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.',
-      }),
-    variableFriendlyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Friendly name of this term's variable. This is a read-only, auto-generated field. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM.",
-      }),
-    variableName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the variable (U1, U2, etc.) being compared in this term. This field is only relevant when type is set to null, CUSTOM_VARIABLE_TERM or REFERRER_TERM.',
-      }),
-  })
-  .openapi({ description: 'Remarketing List Population Rule Term.', required: [] })
-  .openapi('ListPopulationTerm')
-
-const ListPopulationClauseSchema = z
-  .object({
-    terms: z
-      .array(ListPopulationTermSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Terms of this list population clause. Each clause is made up of list population terms representing constraints and are joined by ORs.',
-      }),
-  })
-  .openapi({
-    description:
-      'A group clause made up of list population terms representing constraints joined by ORs.',
-    required: [],
-  })
-  .openapi('ListPopulationClause')
-
-const ListPopulationRuleSchema = z
-  .object({
-    floodlightActivityId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Floodlight activity ID associated with this rule. This field can be left blank.',
-      }),
-    floodlightActivityName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of floodlight activity associated with this rule. This is a read-only, auto-generated field.',
-      }),
-    listPopulationClauses: z
-      .array(ListPopulationClauseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Clauses that make up this list population rule. Clauses are joined by ANDs, and the clauses themselves are made up of list population terms which are joined by ORs.',
-      }),
-  })
-  .openapi({ description: 'Remarketing List Population Rule.', required: [] })
-  .openapi('ListPopulationRule')
-
 const MetrosListResponseSchema = z
   .object({
     kind: z
@@ -7478,29 +8240,6 @@ const OrdersListResponseSchema = z
   })
   .openapi({ description: 'Order List Response', required: [] })
   .openapi('OrdersListResponse')
-
-const PathFilterSchema = z
-  .object({
-    eventFilters: z
-      .array(EventFilterSchema)
-      .exactOptional()
-      .openapi({ description: 'Event filters in path report.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The kind of resource this is, in this case dfareporting#pathFilter.',
-      }),
-    pathMatchPosition: z
-      .enum(['PATH_MATCH_POSITION_UNSPECIFIED', 'ANY', 'FIRST', 'LAST'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Determines how the 'value' field is matched when filtering. If not specified, defaults to EXACT. If set to WILDCARD_EXPRESSION, '*' is allowed as a placeholder for variable length character sequences, and it can be escaped with a backslash. Note, only paid search dimensions ('dfa:paidSearch*') allow a matchType other than EXACT.",
-      }),
-  })
-  .openapi({ description: 'Represents a DfaReporting path filter.', required: [] })
-  .openapi('PathFilter')
 
 const PricingSchedulePricingPeriodSchema = z
   .object({
@@ -8396,26 +9135,6 @@ const ProjectsListResponseSchema = z
   .openapi({ description: 'Project List Response', required: [] })
   .openapi('ProjectsListResponse')
 
-const RecipientSchema = z
-  .object({
-    deliveryType: z
-      .enum(['LINK', 'ATTACHMENT'])
-      .exactOptional()
-      .openapi({ description: 'The delivery type for the recipient.' }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The email address of the recipient.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The kind of resource this is, in this case dfareporting#recipient.',
-      }),
-  })
-  .openapi({ description: 'Represents a recipient.', required: [] })
-  .openapi('Recipient')
-
 const RegionsListResponseSchema = z
   .object({
     kind: z
@@ -8429,99 +9148,6 @@ const RegionsListResponseSchema = z
   })
   .openapi({ description: 'Region List Response', required: [] })
   .openapi('RegionsListResponse')
-
-const RemarketingListSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Account ID of this remarketing list. This is a read-only, auto-generated field that is only returned in GET requests.',
-      }),
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this remarketing list is active.' }),
-    advertiserId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimension value for the advertiser ID that owns this remarketing list. This is a required field.',
-      }),
-    advertiserIdDimensionValue: DimensionValueSchema.exactOptional().openapi({
-      description:
-        'Dimension value for the ID of the advertiser. This is a read-only, auto-generated field.',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Remarketing list description.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Remarketing list ID. This is a read-only, auto-generated field.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "dfareporting#remarketingList".',
-      }),
-    lifeSpan: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of days that a user should remain in the remarketing list without an impression. Acceptable values are 1 to 540, inclusive.',
-      }),
-    listPopulationRule: ListPopulationRuleSchema.exactOptional().openapi({
-      description: 'Rule used to populate the remarketing list with users.',
-    }),
-    listSize: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Number of users currently in the list. This is a read-only field.',
-      }),
-    listSource: z
-      .enum([
-        'REMARKETING_LIST_SOURCE_OTHER',
-        'REMARKETING_LIST_SOURCE_ADX',
-        'REMARKETING_LIST_SOURCE_DFP',
-        'REMARKETING_LIST_SOURCE_XFP',
-        'REMARKETING_LIST_SOURCE_DFA',
-        'REMARKETING_LIST_SOURCE_GA',
-        'REMARKETING_LIST_SOURCE_YOUTUBE',
-        'REMARKETING_LIST_SOURCE_DBM',
-        'REMARKETING_LIST_SOURCE_GPLUS',
-        'REMARKETING_LIST_SOURCE_DMP',
-        'REMARKETING_LIST_SOURCE_PLAY_STORE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Product from which this remarketing list was originated.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the remarketing list. This is a required field. Must be no greater than 128 characters long.',
-      }),
-    subaccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Subaccount ID of this remarketing list. This is a read-only, auto-generated field that is only returned in GET requests.',
-      }),
-  })
-  .openapi({
-    description:
-      'Contains properties of a remarketing list. Remarketing enables you to create lists of users who have performed specific actions on a site, then target ads to members of those lists. This resource can be used to manage remarketing lists that are owned by your advertisers. To see all remarketing lists that are visible to your advertisers, including those that are shared to your advertiser or account, use the TargetableRemarketingLists resource.',
-    required: [],
-  })
-  .openapi('RemarketingList')
 
 const RemarketingListShareSchema = z
   .object({
@@ -8552,7 +9178,7 @@ const RemarketingListShareSchema = z
   })
   .openapi('RemarketingListShare')
 
-const RemarketingListsListResponseSchema = z
+const RemarketingListsListResponseSchema: z.ZodType<RemarketingListsListResponseType> = z
   .object({
     kind: z
       .string()
@@ -8573,491 +9199,7 @@ const RemarketingListsListResponseSchema = z
   .openapi({ description: 'Remarketing list response', required: [] })
   .openapi('RemarketingListsListResponse')
 
-const SortedDimensionSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The kind of resource this is, in this case dfareporting#sortedDimension.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the dimension.' }),
-    sortOrder: z
-      .enum(['ASCENDING', 'DESCENDING'])
-      .exactOptional()
-      .openapi({ description: 'An optional sort order for the dimension column.' }),
-  })
-  .openapi({ description: 'Represents a sorted dimension.', required: [] })
-  .openapi('SortedDimension')
-
-const ReportSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The account ID to which this report belongs.' }),
-    criteria: z
-      .object({
-        activities: ActivitiesSchema.exactOptional().openapi({ description: 'Activity group.' }),
-        customRichMediaEvents: CustomRichMediaEventsSchema.exactOptional().openapi({
-          description: 'Custom Rich Media Events group.',
-        }),
-        dateRange: DateRangeSchema.exactOptional().openapi({
-          description: 'The date range for which this report should be run.',
-        }),
-        dimensionFilters: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of filters on which dimensions are filtered. Filters for different dimensions are ANDed, filters for the same dimension are grouped together and ORed.',
-          }),
-        dimensions: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of standard dimensions the report should include.' }),
-        metricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The list of names of metrics the report should include.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The report criteria for a report of type "STANDARD".',
-        required: [],
-      }),
-    crossDimensionReachCriteria: z
-      .object({
-        breakdown: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of dimensions the report should include.' }),
-        dateRange: DateRangeSchema.exactOptional().openapi({
-          description: 'The date range this report should be run for.',
-        }),
-        dimension: z
-          .enum(['ADVERTISER', 'CAMPAIGN', 'SITE_BY_ADVERTISER', 'SITE_BY_CAMPAIGN'])
-          .exactOptional()
-          .openapi({ description: 'The dimension option.' }),
-        dimensionFilters: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of filters on which dimensions are filtered.' }),
-        metricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The list of names of metrics the report should include.' }),
-        overlapMetricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description: 'The list of names of overlap metrics the report should include.',
-          }),
-        pivoted: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether the report is pivoted or not. Defaults to true.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The report criteria for a report of type "CROSS_DIMENSION_REACH".',
-        required: [],
-      }),
-    delivery: z
-      .object({
-        emailOwner: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether the report should be emailed to the report owner.' }),
-        emailOwnerDeliveryType: z
-          .enum(['LINK', 'ATTACHMENT'])
-          .exactOptional()
-          .openapi({ description: 'The type of delivery for the owner to receive, if enabled.' }),
-        message: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The message to be sent with each email.' }),
-        recipients: z
-          .array(RecipientSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of recipients to which to email the report.' }),
-      })
-      .exactOptional()
-      .openapi({ description: "The report's email delivery settings.", required: [] }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The eTag of this response for caching purposes.' }),
-    fileName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The filename used when generating report files for this report.' }),
-    floodlightCriteria: z
-      .object({
-        customRichMediaEvents: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of custom rich media events to include.' }),
-        dateRange: DateRangeSchema.exactOptional().openapi({
-          description: 'The date range this report should be run for.',
-        }),
-        dimensionFilters: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of filters on which dimensions are filtered. Filters for different dimensions are ANDed, filters for the same dimension are grouped together and ORed.',
-          }),
-        dimensions: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of dimensions the report should include.' }),
-        floodlightConfigId: DimensionValueSchema.exactOptional().openapi({
-          description:
-            "The floodlight ID for which to show data in this report. All advertisers associated with that ID will automatically be added. The dimension of the value needs to be 'dfa:floodlightConfigId'.",
-        }),
-        metricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The list of names of metrics the report should include.' }),
-        reportProperties: z
-          .object({
-            includeAttributedIPConversions: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Include conversions that have no cookie, but do have an exposure path.',
-              }),
-            includeUnattributedCookieConversions: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Include conversions of users with a DoubleClick cookie but without an exposure. That means the user did not click or see an ad from the advertiser within the Floodlight group, or that the interaction happened outside the lookback window.',
-              }),
-            includeUnattributedIPConversions: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Include conversions that have no associated cookies and no exposures. It’s therefore impossible to know how the user was exposed to your ads during the lookback window prior to a conversion.',
-              }),
-          })
-          .exactOptional()
-          .openapi({ description: 'The properties of the report.', required: [] }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The report criteria for a report of type "FLOODLIGHT".',
-        required: [],
-      }),
-    format: z
-      .enum(['CSV', 'EXCEL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The output format of the report. If not specified, default format is "CSV". Note that the actual format in the completed report file might differ if for instance the report\'s size exceeds the format\'s capabilities. "CSV" will then be the fallback format.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique ID identifying this report resource.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The kind of resource this is, in this case dfareporting#report.' }),
-    lastModifiedTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp (in milliseconds since epoch) of when this report was last modified.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the report.' }),
-    ownerProfileId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The user profile id of the owner of this report.' }),
-    pathAttributionCriteria: z
-      .object({
-        activityFilters: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({ description: "The list of 'dfa:activity' values to filter on." }),
-        customChannelGrouping: ChannelGroupingSchema.exactOptional().openapi({
-          description: 'Channel Grouping.',
-        }),
-        dateRange: DateRangeSchema.exactOptional().openapi({
-          description: 'The date range this report should be run for.',
-        }),
-        dimensions: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of dimensions the report should include.' }),
-        floodlightConfigId: DimensionValueSchema.exactOptional().openapi({
-          description:
-            "The floodlight ID for which to show data in this report. All advertisers associated with that ID will automatically be added. The dimension of the value needs to be 'dfa:floodlightConfigId'.",
-        }),
-        metricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The list of names of metrics the report should include.' }),
-        pathFilters: z
-          .array(PathFilterSchema)
-          .exactOptional()
-          .openapi({ description: 'Path Filters.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The report criteria for a report of type "PATH_ATTRIBUTION".',
-        required: [],
-      }),
-    pathCriteria: z
-      .object({
-        activityFilters: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({ description: "The list of 'dfa:activity' values to filter on." }),
-        customChannelGrouping: ChannelGroupingSchema.exactOptional().openapi({
-          description: 'Channel Grouping.',
-        }),
-        dateRange: DateRangeSchema.exactOptional().openapi({
-          description: 'The date range this report should be run for.',
-        }),
-        dimensions: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of dimensions the report should include.' }),
-        floodlightConfigId: DimensionValueSchema.exactOptional().openapi({
-          description:
-            "The floodlight ID for which to show data in this report. All advertisers associated with that ID will automatically be added. The dimension of the value needs to be 'dfa:floodlightConfigId'.",
-        }),
-        metricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The list of names of metrics the report should include.' }),
-        pathFilters: z
-          .array(PathFilterSchema)
-          .exactOptional()
-          .openapi({ description: 'Path Filters.' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The report criteria for a report of type "PATH".', required: [] }),
-    pathToConversionCriteria: z
-      .object({
-        activityFilters: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({ description: "The list of 'dfa:activity' values to filter on." }),
-        conversionDimensions: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of conversion dimensions the report should include.' }),
-        customFloodlightVariables: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The list of custom floodlight variables the report should include.',
-          }),
-        customRichMediaEvents: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of custom rich media events to include.' }),
-        dateRange: DateRangeSchema.exactOptional().openapi({
-          description: 'The date range this report should be run for.',
-        }),
-        floodlightConfigId: DimensionValueSchema.exactOptional().openapi({
-          description:
-            "The floodlight ID for which to show data in this report. All advertisers associated with that ID will automatically be added. The dimension of the value needs to be 'dfa:floodlightConfigId'.",
-        }),
-        metricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The list of names of metrics the report should include.' }),
-        perInteractionDimensions: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The list of per interaction dimensions the report should include.',
-          }),
-        reportProperties: z
-          .object({
-            clicksLookbackWindow: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description:
-                  'CM360 checks to see if a click interaction occurred within the specified period of time before a conversion. By default the value is pulled from Floodlight or you can manually enter a custom value. Valid values: 1-90.',
-              }),
-            impressionsLookbackWindow: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description:
-                  'CM360 checks to see if an impression interaction occurred within the specified period of time before a conversion. By default the value is pulled from Floodlight or you can manually enter a custom value. Valid values: 1-90.',
-              }),
-            includeAttributedIPConversions: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Deprecated: has no effect.' }),
-            includeUnattributedCookieConversions: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Include conversions of users with a DoubleClick cookie but without an exposure. That means the user did not click or see an ad from the advertiser within the Floodlight group, or that the interaction happened outside the lookback window.',
-              }),
-            includeUnattributedIPConversions: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Include conversions that have no associated cookies and no exposures. It’s therefore impossible to know how the user was exposed to your ads during the lookback window prior to a conversion.',
-              }),
-            maximumClickInteractions: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The maximum number of click interactions to include in the report. Advertisers currently paying for E2C reports get up to 200 (100 clicks, 100 impressions). If another advertiser in your network is paying for E2C, you can have up to 5 total exposures per report.',
-              }),
-            maximumImpressionInteractions: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The maximum number of click interactions to include in the report. Advertisers currently paying for E2C reports get up to 200 (100 clicks, 100 impressions). If another advertiser in your network is paying for E2C, you can have up to 5 total exposures per report.',
-              }),
-            maximumInteractionGap: z
-              .int32()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The maximum amount of time that can take place between interactions (clicks or impressions) by the same user. Valid values: 1-90.',
-              }),
-            pivotOnInteractionPath: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Enable pivoting on interaction path.' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'The properties of the report.', required: [] }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The report criteria for a report of type "PATH_TO_CONVERSION".',
-        required: [],
-      }),
-    reachCriteria: z
-      .object({
-        activities: ActivitiesSchema.exactOptional().openapi({ description: 'Activity group.' }),
-        customRichMediaEvents: CustomRichMediaEventsSchema.exactOptional().openapi({
-          description: 'Custom Rich Media Events group.',
-        }),
-        dateRange: DateRangeSchema.exactOptional().openapi({
-          description: 'The date range this report should be run for.',
-        }),
-        dimensionFilters: z
-          .array(DimensionValueSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of filters on which dimensions are filtered. Filters for different dimensions are ANDed, filters for the same dimension are grouped together and ORed.',
-          }),
-        dimensions: z
-          .array(SortedDimensionSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of dimensions the report should include.' }),
-        enableAllDimensionCombinations: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether to enable all reach dimension combinations in the report. Defaults to false. If enabled, the date range of the report should be within the last 42 days.',
-          }),
-        metricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The list of names of metrics the report should include.' }),
-        reachByFrequencyMetricNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The list of names of Reach By Frequency metrics the report should include.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The report criteria for a report of type "REACH".', required: [] }),
-    schedule: z
-      .object({
-        active: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the schedule is active or not. Must be set to either true or false.',
-          }),
-        every: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Defines every how many days, weeks or months the report should be run. Needs to be set when "repeats" is either "DAILY", "WEEKLY" or "MONTHLY".',
-          }),
-        expirationDate: z.iso.date().exactOptional(),
-        repeats: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The interval for which the report is repeated. Note: - "DAILY" also requires field "every" to be set. - "WEEKLY" also requires fields "every" and "repeatsOnWeekDays" to be set. - "MONTHLY" also requires fields "every" and "runsOnDayOfMonth" to be set. ',
-          }),
-        repeatsOnWeekDays: z
-          .array(
-            z.enum(['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']),
-          )
-          .exactOptional()
-          .openapi({
-            description: 'List of week days "WEEKLY" on which scheduled reports should run.',
-          }),
-        runsOnDayOfMonth: z
-          .enum(['DAY_OF_MONTH', 'WEEK_OF_MONTH'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Enum to define for "MONTHLY" scheduled reports whether reports should be repeated on the same day of the month as "startDate" or the same day of the week of the month. Example: If \'startDate\' is Monday, April 2nd 2012 (2012-04-02), "DAY_OF_MONTH" would run subsequent reports on the 2nd of every Month, and "WEEK_OF_MONTH" would run subsequent reports on the first Monday of the month.',
-          }),
-        startDate: z.iso.date().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          "The report's schedule. Can only be set if the report's 'dateRange' is a relative date range and the relative date range is not \"TODAY\".",
-        required: [],
-      }),
-    subAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subaccount ID to which this report belongs if applicable.' }),
-    type: z
-      .enum([
-        'STANDARD',
-        'REACH',
-        'PATH_TO_CONVERSION',
-        'CROSS_DIMENSION_REACH',
-        'FLOODLIGHT',
-        'PATH',
-        'PATH_ATTRIBUTION',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the report.' }),
-  })
-  .openapi({ description: 'Represents a Report resource.', required: [] })
-  .openapi('Report')
-
-const ReportListSchema = z
+const ReportListSchema: z.ZodType<ReportListType> = z
   .object({
     etag: z
       .string()

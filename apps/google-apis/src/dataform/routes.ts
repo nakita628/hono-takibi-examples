@@ -1,5 +1,181 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CodeCompilationConfigSchema = z
+  .object({
+    assertionSchema: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The default schema (BigQuery dataset ID) for assertions.',
+      }),
+    databaseSuffix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The suffix that should be appended to all database (Google Cloud project ID) names.',
+      }),
+    defaultDatabase: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The default database (Google Cloud project ID).' }),
+    defaultLocation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The default BigQuery location to use. Defaults to "US". See the BigQuery docs for a full list of locations: https://cloud.google.com/bigquery/docs/locations.',
+      }),
+    defaultSchema: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The default schema (BigQuery dataset ID).' }),
+    schemaSuffix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The suffix that should be appended to all schema (BigQuery dataset ID) names.',
+      }),
+    tablePrefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The prefix that should be prepended to all table names.',
+      }),
+    vars: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. User-defined variables that are made available to project code during compilation.',
+      }),
+  })
+  .openapi({
+    description: 'Configures various aspects of Dataform code compilation.',
+    required: [],
+  })
+  .openapi('CodeCompilationConfig')
+
+const StatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('Status')
+
+const ScheduledReleaseRecordSchema = z
+  .object({
+    compilationResult: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the created compilation result, if one was successfully created. Must be in the format `projects/*/locations/*/repositories/*/compilationResults/*`.',
+      }),
+    errorStatus: StatusSchema.exactOptional().openapi({
+      description:
+        'The error status encountered upon this attempt to create the compilation result, if the attempt was unsuccessful.',
+    }),
+    releaseTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timestamp of this release attempt.' }),
+  })
+  .openapi({
+    description: 'A record of an attempt to create a compilation result for this release config.',
+    required: [],
+  })
+  .openapi('ScheduledReleaseRecord')
+
+const ReleaseConfigSchema = z
+  .object({
+    codeCompilationConfig: CodeCompilationConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. If set, fields of `code_compilation_config` override the default compilation settings that are specified in dataform.json.',
+    }),
+    cronSchedule: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Optional schedule (in cron format) for automatic creation of compilation results.',
+      }),
+    gitCommitish: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Git commit/tag/branch name at which the repository should be compiled. Must exist in the remote repository. Examples: - a commit SHA: `12ade345` - a tag: `tag1` - a branch name: `branch1`',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. The release config's name.", readOnly: true }),
+    recentScheduledReleaseRecords: z
+      .array(ScheduledReleaseRecordSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Records of the 10 most recent scheduled release attempts, ordered in in descending order of `release_time`. Updated whenever automatic creation of a compilation result is triggered by cron_schedule.',
+        readOnly: true,
+      }),
+    releaseCompilationResult: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The name of the currently released compilation result for this release config. This value is updated when a compilation result is created from this release config, or when this resource is updated by API call (perhaps to roll back to an earlier release). The compilation result must have been created using this release config. Must be in the format `projects/*/locations/*/repositories/*/compilationResults/*`.',
+      }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies the time zone to be used when interpreting cron_schedule. Must be a time zone name from the time zone database (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). If left unspecified, the default is UTC.',
+      }),
+  })
+  .openapi({ description: 'Represents a Dataform release configuration.', required: [] })
+  .openapi('ReleaseConfig')
+
+type ListReleaseConfigsResponseType = {
+  nextPageToken?: string
+  releaseConfigs?: z.infer<typeof ReleaseConfigSchema>[]
+  unreachable?: string[]
+}
+
 const TargetSchema = z
   .object({
     database: z
@@ -21,6 +197,116 @@ const TargetSchema = z
     required: [],
   })
   .openapi('Target')
+
+const InvocationConfigSchema = z
+  .object({
+    fullyRefreshIncrementalTablesEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. When set to true, any incremental tables will be fully refreshed.',
+      }),
+    includedTags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Optional. The set of tags to include.' }),
+    includedTargets: z
+      .array(TargetSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional. The set of action identifiers to include.' }),
+    transitiveDependenciesIncluded: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When set to true, transitive dependencies of included actions will be executed.',
+      }),
+    transitiveDependentsIncluded: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When set to true, transitive dependents of included actions will be executed.',
+      }),
+  })
+  .openapi({
+    description:
+      'Includes various configuration options for a workflow invocation. If both `included_targets` and `included_tags` are unset, all actions will be included.',
+    required: [],
+  })
+  .openapi('InvocationConfig')
+
+const ScheduledExecutionRecordSchema = z
+  .object({
+    errorStatus: StatusSchema.exactOptional().openapi({
+      description:
+        'The error status encountered upon this attempt to create the workflow invocation, if the attempt was unsuccessful.',
+    }),
+    executionTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timestamp of this execution attempt.' }),
+    workflowInvocation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the created workflow invocation, if one was successfully created. Must be in the format `projects/*/locations/*/repositories/*/workflowInvocations/*`.',
+      }),
+  })
+  .openapi({
+    description: 'A record of an attempt to create a workflow invocation for this workflow config.',
+    required: [],
+  })
+  .openapi('ScheduledExecutionRecord')
+
+const WorkflowConfigSchema = z
+  .object({
+    cronSchedule: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Optional schedule (in cron format) for automatic execution of this workflow config.',
+      }),
+    invocationConfig: InvocationConfigSchema.exactOptional().openapi({
+      description: 'Optional. If left unset, a default InvocationConfig will be used.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. The workflow config's name.", readOnly: true }),
+    recentScheduledExecutionRecords: z
+      .array(ScheduledExecutionRecordSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Records of the 10 most recent scheduled execution attempts, ordered in in descending order of `execution_time`. Updated whenever automatic creation of a workflow invocation is triggered by cron_schedule.',
+        readOnly: true,
+      }),
+    releaseConfig: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The name of the release config whose release_compilation_result should be executed. Must be in the format `projects/*/locations/*/repositories/*/releaseConfigs/*`.',
+      }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specifies the time zone to be used when interpreting cron_schedule. Must be a time zone name from the time zone database (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). If left unspecified, the default is UTC.',
+      }),
+  })
+  .openapi({ description: 'Represents a Dataform workflow configuration.', required: [] })
+  .openapi('WorkflowConfig')
+
+type ListWorkflowConfigsResponseType = {
+  nextPageToken?: string
+  unreachable?: string[]
+  workflowConfigs?: z.infer<typeof WorkflowConfigSchema>[]
+}
 
 const ColumnDescriptorSchema = z
   .object({
@@ -97,267 +383,6 @@ const AssertionSchema = z
     required: [],
   })
   .openapi('Assertion')
-
-const BigQueryActionSchema = z
-  .object({
-    sqlScript: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The generated BigQuery SQL script that will be executed.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Represents a workflow action that will run against BigQuery.',
-    required: [],
-  })
-  .openapi('BigQueryAction')
-
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-    }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const CancelWorkflowInvocationRequestSchema = z
-  .object({})
-  .openapi({ description: '`CancelWorkflowInvocation` request message.' })
-  .openapi('CancelWorkflowInvocationRequest')
-
-const CodeCompilationConfigSchema = z
-  .object({
-    assertionSchema: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The default schema (BigQuery dataset ID) for assertions.',
-      }),
-    databaseSuffix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The suffix that should be appended to all database (Google Cloud project ID) names.',
-      }),
-    defaultDatabase: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The default database (Google Cloud project ID).' }),
-    defaultLocation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The default BigQuery location to use. Defaults to "US". See the BigQuery docs for a full list of locations: https://cloud.google.com/bigquery/docs/locations.',
-      }),
-    defaultSchema: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The default schema (BigQuery dataset ID).' }),
-    schemaSuffix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The suffix that should be appended to all schema (BigQuery dataset ID) names.',
-      }),
-    tablePrefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The prefix that should be prepended to all table names.',
-      }),
-    vars: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. User-defined variables that are made available to project code during compilation.',
-      }),
-  })
-  .openapi({
-    description: 'Configures various aspects of Dataform code compilation.',
-    required: [],
-  })
-  .openapi('CodeCompilationConfig')
-
-const CommitAuthorSchema = z
-  .object({
-    emailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Required. The commit author's email address." }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Required. The commit author's name." }),
-  })
-  .openapi({ description: 'Represents the author of a Git commit.', required: [] })
-  .openapi('CommitAuthor')
-
-const CommitWorkspaceChangesRequestSchema = z
-  .object({
-    author: CommitAuthorSchema.exactOptional().openapi({
-      description: "Required. The commit's author.",
-    }),
-    commitMessage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Optional. The commit's message." }),
-    paths: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Full file paths to commit including filename, rooted at workspace root. If left empty, all files will be committed.',
-      }),
-  })
-  .openapi({ description: '`CommitWorkspaceChanges` request message.', required: [] })
-  .openapi('CommitWorkspaceChangesRequest')
-
-const CompilationErrorSchema = z
-  .object({
-    actionTarget: TargetSchema.exactOptional().openapi({
-      description:
-        'Output only. The identifier of the action where this error occurred, if available.',
-      readOnly: true,
-    }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. The error's top level message.", readOnly: true }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The path of the file where this error occurred, if available, relative to the project root.',
-        readOnly: true,
-      }),
-    stack: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. The error's full stack trace.", readOnly: true }),
-  })
-  .openapi({
-    description: 'An error encountered when attempting to compile a Dataform project.',
-    required: [],
-  })
-  .openapi('CompilationError')
-
-const CompilationResultSchema = z
-  .object({
-    codeCompilationConfig: CodeCompilationConfigSchema.exactOptional().openapi({
-      description:
-        'Immutable. If set, fields of `code_compilation_config` override the default compilation settings that are specified in dataform.json.',
-    }),
-    compilationErrors: z
-      .array(CompilationErrorSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Errors encountered during project compilation.',
-        readOnly: true,
-      }),
-    dataformCoreVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The version of `@dataform/core` that was used for compilation.',
-        readOnly: true,
-      }),
-    gitCommitish: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. Git commit/tag/branch name at which the repository should be compiled. Must exist in the remote repository. Examples: - a commit SHA: `12ade345` - a tag: `tag1` - a branch name: `branch1`',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. The compilation result's name.", readOnly: true }),
-    releaseConfig: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Immutable. The name of the release config to compile. The release config's 'current_compilation_result' field will be updated to this compilation result. Must be in the format `projects/*/locations/*/repositories/*/releaseConfigs/*`.",
-      }),
-    resolvedGitCommitSha: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The fully resolved Git commit SHA of the code that was compiled. Not set for compilation results whose source is a workspace.',
-        readOnly: true,
-      }),
-    workspace: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The name of the workspace to compile. Must be in the format `projects/*/locations/*/repositories/*/workspaces/*`.',
-      }),
-  })
-  .openapi({ description: 'Represents the result of compiling a Dataform project.', required: [] })
-  .openapi('CompilationResult')
 
 const DeclarationSchema = z
   .object({
@@ -561,6 +586,215 @@ const CompilationResultActionSchema = z
   })
   .openapi('CompilationResultAction')
 
+type QueryCompilationResultActionsResponseType = {
+  compilationResultActions?: z.infer<typeof CompilationResultActionSchema>[]
+  nextPageToken?: string
+}
+
+const BigQueryActionSchema = z
+  .object({
+    sqlScript: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The generated BigQuery SQL script that will be executed.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Represents a workflow action that will run against BigQuery.',
+    required: [],
+  })
+  .openapi('BigQueryAction')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const CancelWorkflowInvocationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: '`CancelWorkflowInvocation` request message.' })
+  .openapi('CancelWorkflowInvocationRequest')
+
+const CommitAuthorSchema = z
+  .object({
+    emailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Required. The commit author's email address." }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Required. The commit author's name." }),
+  })
+  .openapi({ description: 'Represents the author of a Git commit.', required: [] })
+  .openapi('CommitAuthor')
+
+const CommitWorkspaceChangesRequestSchema = z
+  .object({
+    author: CommitAuthorSchema.exactOptional().openapi({
+      description: "Required. The commit's author.",
+    }),
+    commitMessage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Optional. The commit's message." }),
+    paths: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Full file paths to commit including filename, rooted at workspace root. If left empty, all files will be committed.',
+      }),
+  })
+  .openapi({ description: '`CommitWorkspaceChanges` request message.', required: [] })
+  .openapi('CommitWorkspaceChangesRequest')
+
+const CompilationErrorSchema = z
+  .object({
+    actionTarget: TargetSchema.exactOptional().openapi({
+      description:
+        'Output only. The identifier of the action where this error occurred, if available.',
+      readOnly: true,
+    }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. The error's top level message.", readOnly: true }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The path of the file where this error occurred, if available, relative to the project root.',
+        readOnly: true,
+      }),
+    stack: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. The error's full stack trace.", readOnly: true }),
+  })
+  .openapi({
+    description: 'An error encountered when attempting to compile a Dataform project.',
+    required: [],
+  })
+  .openapi('CompilationError')
+
+const CompilationResultSchema = z
+  .object({
+    codeCompilationConfig: CodeCompilationConfigSchema.exactOptional().openapi({
+      description:
+        'Immutable. If set, fields of `code_compilation_config` override the default compilation settings that are specified in dataform.json.',
+    }),
+    compilationErrors: z
+      .array(CompilationErrorSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Errors encountered during project compilation.',
+        readOnly: true,
+      }),
+    dataformCoreVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The version of `@dataform/core` that was used for compilation.',
+        readOnly: true,
+      }),
+    gitCommitish: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. Git commit/tag/branch name at which the repository should be compiled. Must exist in the remote repository. Examples: - a commit SHA: `12ade345` - a tag: `tag1` - a branch name: `branch1`',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. The compilation result's name.", readOnly: true }),
+    releaseConfig: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Immutable. The name of the release config to compile. The release config's 'current_compilation_result' field will be updated to this compilation result. Must be in the format `projects/*/locations/*/repositories/*/releaseConfigs/*`.",
+      }),
+    resolvedGitCommitSha: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The fully resolved Git commit SHA of the code that was compiled. Not set for compilation results whose source is a workspace.',
+        readOnly: true,
+      }),
+    workspace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The name of the workspace to compile. Must be in the format `projects/*/locations/*/repositories/*/workspaces/*`.',
+      }),
+  })
+  .openapi({ description: 'Represents the result of compiling a Dataform project.', required: [] })
+  .openapi('CompilationResult')
+
 const DirectoryEntrySchema = z
   .object({
     directory: z
@@ -573,7 +807,7 @@ const DirectoryEntrySchema = z
   .openapi('DirectoryEntry')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -676,12 +910,12 @@ const GitRemoteSettingsSchema = z
   .openapi('GitRemoteSettings')
 
 const InstallNpmPackagesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '`InstallNpmPackages` request message.' })
   .openapi('InstallNpmPackagesRequest')
 
 const InstallNpmPackagesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '`InstallNpmPackages` response message.' })
   .openapi('InstallNpmPackagesResponse')
 
@@ -708,44 +942,6 @@ const IntervalSchema = z
     required: [],
   })
   .openapi('Interval')
-
-const InvocationConfigSchema = z
-  .object({
-    fullyRefreshIncrementalTablesEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. When set to true, any incremental tables will be fully refreshed.',
-      }),
-    includedTags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Optional. The set of tags to include.' }),
-    includedTargets: z
-      .array(TargetSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. The set of action identifiers to include.' }),
-    transitiveDependenciesIncluded: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When set to true, transitive dependencies of included actions will be executed.',
-      }),
-    transitiveDependentsIncluded: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When set to true, transitive dependents of included actions will be executed.',
-      }),
-  })
-  .openapi({
-    description:
-      'Includes various configuration options for a workflow invocation. If both `included_targets` and `included_tags` are unset, all actions will be included.',
-    required: [],
-  })
-  .openapi('InvocationConfig')
 
 const ListCompilationResultsResponseSchema = z
   .object({
@@ -832,120 +1028,7 @@ const ListLocationsResponseSchema = z
   .openapi({ description: 'The response message for Locations.ListLocations.', required: [] })
   .openapi('ListLocationsResponse')
 
-const StatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('Status')
-
-const ScheduledReleaseRecordSchema = z
-  .object({
-    compilationResult: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the created compilation result, if one was successfully created. Must be in the format `projects/*/locations/*/repositories/*/compilationResults/*`.',
-      }),
-    errorStatus: StatusSchema.exactOptional().openapi({
-      description:
-        'The error status encountered upon this attempt to create the compilation result, if the attempt was unsuccessful.',
-    }),
-    releaseTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timestamp of this release attempt.' }),
-  })
-  .openapi({
-    description: 'A record of an attempt to create a compilation result for this release config.',
-    required: [],
-  })
-  .openapi('ScheduledReleaseRecord')
-
-const ReleaseConfigSchema = z
-  .object({
-    codeCompilationConfig: CodeCompilationConfigSchema.exactOptional().openapi({
-      description:
-        'Optional. If set, fields of `code_compilation_config` override the default compilation settings that are specified in dataform.json.',
-    }),
-    cronSchedule: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Optional schedule (in cron format) for automatic creation of compilation results.',
-      }),
-    gitCommitish: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Git commit/tag/branch name at which the repository should be compiled. Must exist in the remote repository. Examples: - a commit SHA: `12ade345` - a tag: `tag1` - a branch name: `branch1`',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. The release config's name.", readOnly: true }),
-    recentScheduledReleaseRecords: z
-      .array(ScheduledReleaseRecordSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Records of the 10 most recent scheduled release attempts, ordered in in descending order of `release_time`. Updated whenever automatic creation of a compilation result is triggered by cron_schedule.',
-        readOnly: true,
-      }),
-    releaseCompilationResult: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The name of the currently released compilation result for this release config. This value is updated when a compilation result is created from this release config, or when this resource is updated by API call (perhaps to roll back to an earlier release). The compilation result must have been created using this release config. Must be in the format `projects/*/locations/*/repositories/*/compilationResults/*`.',
-      }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies the time zone to be used when interpreting cron_schedule. Must be a time zone name from the time zone database (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). If left unspecified, the default is UTC.',
-      }),
-  })
-  .openapi({ description: 'Represents a Dataform release configuration.', required: [] })
-  .openapi('ReleaseConfig')
-
-const ListReleaseConfigsResponseSchema = z
+const ListReleaseConfigsResponseSchema: z.ZodType<ListReleaseConfigsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1038,73 +1121,7 @@ const ListRepositoriesResponseSchema = z
   .openapi({ description: '`ListRepositories` response message.', required: [] })
   .openapi('ListRepositoriesResponse')
 
-const ScheduledExecutionRecordSchema = z
-  .object({
-    errorStatus: StatusSchema.exactOptional().openapi({
-      description:
-        'The error status encountered upon this attempt to create the workflow invocation, if the attempt was unsuccessful.',
-    }),
-    executionTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timestamp of this execution attempt.' }),
-    workflowInvocation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the created workflow invocation, if one was successfully created. Must be in the format `projects/*/locations/*/repositories/*/workflowInvocations/*`.',
-      }),
-  })
-  .openapi({
-    description: 'A record of an attempt to create a workflow invocation for this workflow config.',
-    required: [],
-  })
-  .openapi('ScheduledExecutionRecord')
-
-const WorkflowConfigSchema = z
-  .object({
-    cronSchedule: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Optional schedule (in cron format) for automatic execution of this workflow config.',
-      }),
-    invocationConfig: InvocationConfigSchema.exactOptional().openapi({
-      description: 'Optional. If left unset, a default InvocationConfig will be used.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. The workflow config's name.", readOnly: true }),
-    recentScheduledExecutionRecords: z
-      .array(ScheduledExecutionRecordSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Records of the 10 most recent scheduled execution attempts, ordered in in descending order of `execution_time`. Updated whenever automatic creation of a workflow invocation is triggered by cron_schedule.',
-        readOnly: true,
-      }),
-    releaseConfig: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The name of the release config whose release_compilation_result should be executed. Must be in the format `projects/*/locations/*/repositories/*/releaseConfigs/*`.',
-      }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Specifies the time zone to be used when interpreting cron_schedule. Must be a time zone name from the time zone database (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). If left unspecified, the default is UTC.',
-      }),
-  })
-  .openapi({ description: 'Represents a Dataform workflow configuration.', required: [] })
-  .openapi('WorkflowConfig')
-
-const ListWorkflowConfigsResponseSchema = z
+const ListWorkflowConfigsResponseSchema: z.ZodType<ListWorkflowConfigsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1229,7 +1246,7 @@ const MakeDirectoryRequestSchema = z
   .openapi('MakeDirectoryRequest')
 
 const MakeDirectoryResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '`MakeDirectory` response message.' })
   .openapi('MakeDirectoryResponse')
 
@@ -1254,7 +1271,7 @@ const MoveDirectoryRequestSchema = z
   .openapi('MoveDirectoryRequest')
 
 const MoveDirectoryResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '`MoveDirectory` response message.' })
   .openapi('MoveDirectoryResponse')
 
@@ -1279,7 +1296,7 @@ const MoveFileRequestSchema = z
   .openapi('MoveFileRequest')
 
 const MoveFileResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '`MoveFile` response message.' })
   .openapi('MoveFileResponse')
 
@@ -1397,22 +1414,23 @@ const PushGitCommitsRequestSchema = z
   .openapi({ description: '`PushGitCommits` request message.', required: [] })
   .openapi('PushGitCommitsRequest')
 
-const QueryCompilationResultActionsResponseSchema = z
-  .object({
-    compilationResultActions: z
-      .array(CompilationResultActionSchema)
-      .exactOptional()
-      .openapi({ description: 'List of compilation result actions.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
-      }),
-  })
-  .openapi({ description: '`QueryCompilationResultActions` response message.', required: [] })
-  .openapi('QueryCompilationResultActionsResponse')
+const QueryCompilationResultActionsResponseSchema: z.ZodType<QueryCompilationResultActionsResponseType> =
+  z
+    .object({
+      compilationResultActions: z
+        .array(CompilationResultActionSchema)
+        .exactOptional()
+        .openapi({ description: 'List of compilation result actions.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
+        }),
+    })
+    .openapi({ description: '`QueryCompilationResultActions` response message.', required: [] })
+    .openapi('QueryCompilationResultActionsResponse')
 
 const QueryDirectoryContentsResponseSchema = z
   .object({
@@ -1578,7 +1596,7 @@ const WriteFileRequestSchema = z
   .openapi('WriteFileRequest')
 
 const WriteFileResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: '`WriteFile` response message.' })
   .openapi('WriteFileResponse')
 

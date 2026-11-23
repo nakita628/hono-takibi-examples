@@ -1,499 +1,32 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const BooksAnnotationsRangeSchema = z
-  .object({
-    endOffset: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The offset from the ending position.' }),
-    endPosition: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ending position for the range.' }),
-    startOffset: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The offset from the starting position.' }),
-    startPosition: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The starting position for the range.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('BooksAnnotationsRange')
+type DictlayerdataType = {
+  common?: { title?: string }
+  dict?: {
+    source?: { attribution?: string; url?: string }
+    words?: {
+      derivatives?: { source?: { attribution?: string; url?: string }; text?: string }[]
+      examples?: { source?: { attribution?: string; url?: string }; text?: string }[]
+      senses?: {
+        conjugations?: { type?: string; value?: string }[]
+        definitions?: {
+          definition?: string
+          examples?: { source?: { attribution?: string; url?: string }; text?: string }[]
+        }[]
+        partOfSpeech?: string
+        pronunciation?: string
+        pronunciationUrl?: string
+        source?: { attribution?: string; url?: string }
+        syllabification?: string
+        synonyms?: { source?: { attribution?: string; url?: string }; text?: string }[]
+      }[]
+      source?: { attribution?: string; url?: string }
+    }[]
+  }
+  kind?: string
+}
 
-const AnnotationSchema = z
-  .object({
-    afterSelectedText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Anchor text after excerpt. For requests, if the user bookmarked a screen that has no flowing text on it, then this field should be empty.',
-      }),
-    beforeSelectedText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Anchor text before excerpt. For requests, if the user bookmarked a screen that has no flowing text on it, then this field should be empty.',
-      }),
-    clientVersionRanges: z
-      .object({
-        cfiRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
-          description: 'Range in CFI format for this annotation sent by client.',
-        }),
-        contentVersion: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Content version the client sent in.' }),
-        gbImageRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
-          description: 'Range in GB image format for this annotation sent by client.',
-        }),
-        gbTextRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
-          description: 'Range in GB text format for this annotation sent by client.',
-        }),
-        imageCfiRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
-          description: 'Range in image CFI format for this annotation sent by client.',
-        }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Selection ranges sent from the client.', required: [] }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Timestamp for the created time of this annotation.' }),
-    currentVersionRanges: z
-      .object({
-        cfiRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
-          description: 'Range in CFI format for this annotation for version above.',
-        }),
-        contentVersion: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Content version applicable to ranges below.' }),
-        gbImageRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
-          description: 'Range in GB image format for this annotation for version above.',
-        }),
-        gbTextRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
-          description: 'Range in GB text format for this annotation for version above.',
-        }),
-        imageCfiRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
-          description: 'Range in image CFI format for this annotation for version above.',
-        }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Selection ranges for the most recent content version.',
-        required: [],
-      }),
-    data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User-created data for this annotation.' }),
-    deleted: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates that this annotation is deleted.' }),
-    highlightStyle: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The highlight style for this annotation.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Id of this annotation, in the form of a GUID.' }),
-    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
-    layerId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The layer this annotation is for.' }),
-    layerSummary: z
-      .object({
-        allowedCharacterCount: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Maximum allowed characters on this layer, especially for the "copy" layer.',
-          }),
-        limitType: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Type of limitation on this layer. "limited" or "unlimited" for the "copy" layer.',
-          }),
-        remainingCharacterCount: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Remaining allowed characters on this layer, especially for the "copy" layer.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    pageIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Pages that this annotation spans.' }),
-    selectedText: z.string().exactOptional().openapi({ description: 'Excerpt from the volume.' }),
-    selfLink: z.string().exactOptional().openapi({ description: 'URL to this resource.' }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Timestamp for the last time this annotation was modified.' }),
-    volumeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The volume that this annotation belongs to.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Annotation')
-
-const AnnotationsSchema = z
-  .object({
-    items: z
-      .array(AnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of annotations.' }),
-    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to pass in for pagination for the next page. This will not be present if this request does not have more results.',
-      }),
-    totalItems: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Total number of annotations found. This may be greater than the number of notes returned in this response if results have been paginated.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Annotations')
-
-const AnnotationsSummarySchema = z
-  .object({
-    kind: z.string().exactOptional(),
-    layers: z
-      .array(
-        z
-          .object({
-            allowedCharacterCount: z.int32().exactOptional(),
-            layerId: z.string().exactOptional(),
-            limitType: z.string().exactOptional(),
-            remainingCharacterCount: z.int32().exactOptional(),
-            updated: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AnnotationsSummary')
-
-const GeolayerdataSchema = z
-  .object({
-    common: z
-      .object({
-        lang: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The language of the information url and description.' }),
-        previewImageUrl: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The URL for the preview image information.' }),
-        snippet: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The description for this location.' }),
-        snippetUrl: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The URL for information for this location. Ex: wikipedia link.',
-          }),
-        title: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The display title and localized canonical name to use when searching for this entity on Google search.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    geo: z
-      .object({
-        boundary: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The boundary of the location as a set of loops containing pairs of latitude, longitude coordinates.',
-          }),
-        cachePolicy: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The cache policy active for this data. EX: UNRESTRICTED, RESTRICTED, NEVER',
-          }),
-        countryCode: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The country code of the location.' }),
-        latitude: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'The latitude of the location.' }),
-        longitude: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'The longitude of the location.' }),
-        mapType: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of map that should be used for this location. EX: HYBRID, ROADMAP, SATELLITE, TERRAIN',
-          }),
-        viewport: z
-          .object({
-            hi: z
-              .object({
-                latitude: z.float64().exactOptional(),
-                longitude: z.float64().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-            lo: z
-              .object({
-                latitude: z.float64().exactOptional(),
-                longitude: z.float64().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'The viewport for showing this location. This is a latitude, longitude rectangle.',
-            required: [],
-          }),
-        zoom: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The Zoom level to use for the map. Zoom levels between 0 (the lowest zoom level, in which the entire world can be seen on one map) to 21+ (down to individual buildings). See: https: //developers.google.com/maps/documentation/staticmaps/#Zoomlevels',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    kind: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Geolayerdata')
-
-const GeoAnnotationdataSchema = z
-  .object({
-    annotationType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of annotation this data is for.' }),
-    data: GeolayerdataSchema.exactOptional().openapi({
-      description:
-        "JSON encoded data for this geo annotation data. Emitted with name 'data' in JSON output. Either this or dict_data will be populated.",
-    }),
-    encodedData: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Base64 encoded data for this annotation data.' }),
-    id: z.string().exactOptional().openapi({ description: 'Unique id for this annotation data.' }),
-    kind: z.string().exactOptional().openapi({ description: 'Resource Type' }),
-    layerId: z.string().exactOptional().openapi({ description: 'The Layer id for this data. *' }),
-    selfLink: z.string().exactOptional().openapi({ description: 'URL for this resource. *' }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp for the last time this data was updated. (RFC 3339 UTC date-time format).',
-      }),
-    volumeId: z.string().exactOptional().openapi({ description: 'The volume id for this data. *' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GeoAnnotationdata')
-
-const AnnotationsdataSchema = z
-  .object({
-    items: z
-      .array(GeoAnnotationdataSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of Annotation Data.' }),
-    kind: z.string().exactOptional().openapi({ description: 'Resource type' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to pass in for pagination for the next page. This will not be present if this request does not have more results.',
-      }),
-    totalItems: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The total number of volume annotations found.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Annotationsdata')
-
-const BooksCloudloadingResourceSchema = z
-  .object({
-    author: z.string().exactOptional(),
-    processingState: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    volumeId: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BooksCloudloadingResource')
-
-const BooksVolumesRecommendedRateResponseSchema = z
-  .object({ consistency_token: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('BooksVolumesRecommendedRateResponse')
-
-const BookshelfSchema = z
-  .object({
-    access: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Whether this bookshelf is PUBLIC or PRIVATE.' }),
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Created time for this bookshelf (formatted UTC timestamp with millisecond resolution).',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of this bookshelf.' }),
-    id: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Id of this bookshelf, only unique by user.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Resource type for bookshelf metadata.' }),
-    selfLink: z.string().exactOptional().openapi({ description: 'URL to this resource.' }),
-    title: z.string().exactOptional().openapi({ description: 'Title of this bookshelf.' }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Last modified time of this bookshelf (formatted UTC timestamp with millisecond resolution).',
-      }),
-    volumeCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of volumes in this bookshelf.' }),
-    volumesLastUpdated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Last time a volume was added or removed from this bookshelf (formatted UTC timestamp with millisecond resolution).',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Bookshelf')
-
-const BookshelvesSchema = z
-  .object({
-    items: z
-      .array(BookshelfSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of bookshelves.' }),
-    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Bookshelves')
-
-const CategorySchema = z
-  .object({
-    items: z
-      .array(
-        z
-          .object({
-            badgeUrl: z.string().exactOptional(),
-            categoryId: z.string().exactOptional(),
-            name: z.string().exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'A list of onboarding categories.' }),
-    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Category')
-
-const ConcurrentAccessRestrictionSchema = z
-  .object({
-    deviceAllowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether access is granted for this (user, device, volume).' }),
-    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
-    maxConcurrentDevices: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The maximum number of concurrent access licenses for this volume.',
-      }),
-    message: z.string().exactOptional().openapi({ description: 'Error/warning message.' }),
-    nonce: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Client nonce for verification. Download access and client-validation only.',
-      }),
-    reasonCode: z.string().exactOptional().openapi({ description: 'Error/warning reason code.' }),
-    restricted: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this volume has any concurrent access restrictions.' }),
-    signature: z.string().exactOptional().openapi({ description: 'Response signature.' }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Client app identifier for verification. Download access and client-validation only.',
-      }),
-    timeWindowSeconds: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Time in seconds for license auto-expiration.' }),
-    volumeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identifies the volume for which this entry applies.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ConcurrentAccessRestriction')
-
-const DictlayerdataSchema = z
+const DictlayerdataSchema: z.ZodType<DictlayerdataType> = z
   .object({
     common: z
       .object({
@@ -645,35 +178,17 @@ const DictlayerdataSchema = z
   .openapi({ required: [] })
   .openapi('Dictlayerdata')
 
-const DictionaryAnnotationdataSchema = z
-  .object({
-    annotationType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of annotation this data is for.' }),
-    data: DictlayerdataSchema.exactOptional().openapi({
-      description:
-        "JSON encoded data for this dictionary annotation data. Emitted with name 'data' in JSON output. Either this or geo_data will be populated.",
-    }),
-    encodedData: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Base64 encoded data for this annotation data.' }),
-    id: z.string().exactOptional().openapi({ description: 'Unique id for this annotation data.' }),
-    kind: z.string().exactOptional().openapi({ description: 'Resource Type' }),
-    layerId: z.string().exactOptional().openapi({ description: 'The Layer id for this data. *' }),
-    selfLink: z.string().exactOptional().openapi({ description: 'URL for this resource. *' }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp for the last time this data was updated. (RFC 3339 UTC date-time format).',
-      }),
-    volumeId: z.string().exactOptional().openapi({ description: 'The volume id for this data. *' }),
-  })
-  .openapi({ required: [] })
-  .openapi('DictionaryAnnotationdata')
+type DictionaryAnnotationdataType = {
+  annotationType?: string
+  data?: z.infer<typeof DictlayerdataSchema>
+  encodedData?: string
+  id?: string
+  kind?: string
+  layerId?: string
+  selfLink?: string
+  updated?: string
+  volumeId?: string
+}
 
 const DownloadAccessRestrictionSchema = z
   .object({
@@ -1564,7 +1079,560 @@ const VolumeSchema = z
   .openapi({ required: [] })
   .openapi('Volume')
 
-const DiscoveryclustersSchema = z
+type DiscoveryclustersType = {
+  clusters?: {
+    banner_with_content_container?: {
+      fillColorArgb?: string
+      imageUrl?: string
+      maskColorArgb?: string
+      moreButtonText?: string
+      moreButtonUrl?: string
+      textColorArgb?: string
+    }
+    subTitle?: string
+    title?: string
+    totalVolumes?: number
+    uid?: string
+    volumes?: z.infer<typeof VolumeSchema>[]
+  }[]
+  kind?: string
+  totalClusters?: number
+}
+
+type SeriesmembershipType = {
+  kind?: string
+  member?: z.infer<typeof VolumeSchema>[]
+  nextPageToken?: string
+}
+
+type Volume2Type = { items?: z.infer<typeof VolumeSchema>[]; kind?: string; nextPageToken?: string }
+
+type VolumesType = { items?: z.infer<typeof VolumeSchema>[]; kind?: string; totalItems?: number }
+
+const BooksAnnotationsRangeSchema = z
+  .object({
+    endOffset: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The offset from the ending position.' }),
+    endPosition: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ending position for the range.' }),
+    startOffset: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The offset from the starting position.' }),
+    startPosition: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The starting position for the range.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BooksAnnotationsRange')
+
+const AnnotationSchema = z
+  .object({
+    afterSelectedText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Anchor text after excerpt. For requests, if the user bookmarked a screen that has no flowing text on it, then this field should be empty.',
+      }),
+    beforeSelectedText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Anchor text before excerpt. For requests, if the user bookmarked a screen that has no flowing text on it, then this field should be empty.',
+      }),
+    clientVersionRanges: z
+      .object({
+        cfiRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
+          description: 'Range in CFI format for this annotation sent by client.',
+        }),
+        contentVersion: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Content version the client sent in.' }),
+        gbImageRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
+          description: 'Range in GB image format for this annotation sent by client.',
+        }),
+        gbTextRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
+          description: 'Range in GB text format for this annotation sent by client.',
+        }),
+        imageCfiRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
+          description: 'Range in image CFI format for this annotation sent by client.',
+        }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Selection ranges sent from the client.', required: [] }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Timestamp for the created time of this annotation.' }),
+    currentVersionRanges: z
+      .object({
+        cfiRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
+          description: 'Range in CFI format for this annotation for version above.',
+        }),
+        contentVersion: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Content version applicable to ranges below.' }),
+        gbImageRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
+          description: 'Range in GB image format for this annotation for version above.',
+        }),
+        gbTextRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
+          description: 'Range in GB text format for this annotation for version above.',
+        }),
+        imageCfiRange: BooksAnnotationsRangeSchema.exactOptional().openapi({
+          description: 'Range in image CFI format for this annotation for version above.',
+        }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'Selection ranges for the most recent content version.',
+        required: [],
+      }),
+    data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User-created data for this annotation.' }),
+    deleted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates that this annotation is deleted.' }),
+    highlightStyle: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The highlight style for this annotation.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Id of this annotation, in the form of a GUID.' }),
+    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
+    layerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The layer this annotation is for.' }),
+    layerSummary: z
+      .object({
+        allowedCharacterCount: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'Maximum allowed characters on this layer, especially for the "copy" layer.',
+          }),
+        limitType: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Type of limitation on this layer. "limited" or "unlimited" for the "copy" layer.',
+          }),
+        remainingCharacterCount: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'Remaining allowed characters on this layer, especially for the "copy" layer.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    pageIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Pages that this annotation spans.' }),
+    selectedText: z.string().exactOptional().openapi({ description: 'Excerpt from the volume.' }),
+    selfLink: z.string().exactOptional().openapi({ description: 'URL to this resource.' }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Timestamp for the last time this annotation was modified.' }),
+    volumeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The volume that this annotation belongs to.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Annotation')
+
+const AnnotationsSchema = z
+  .object({
+    items: z
+      .array(AnnotationSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of annotations.' }),
+    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to pass in for pagination for the next page. This will not be present if this request does not have more results.',
+      }),
+    totalItems: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total number of annotations found. This may be greater than the number of notes returned in this response if results have been paginated.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Annotations')
+
+const AnnotationsSummarySchema = z
+  .object({
+    kind: z.string().exactOptional(),
+    layers: z
+      .array(
+        z
+          .object({
+            allowedCharacterCount: z.int32().exactOptional(),
+            layerId: z.string().exactOptional(),
+            limitType: z.string().exactOptional(),
+            remainingCharacterCount: z.int32().exactOptional(),
+            updated: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AnnotationsSummary')
+
+const GeolayerdataSchema = z
+  .object({
+    common: z
+      .object({
+        lang: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The language of the information url and description.' }),
+        previewImageUrl: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The URL for the preview image information.' }),
+        snippet: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The description for this location.' }),
+        snippetUrl: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The URL for information for this location. Ex: wikipedia link.',
+          }),
+        title: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The display title and localized canonical name to use when searching for this entity on Google search.',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    geo: z
+      .object({
+        boundary: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'The boundary of the location as a set of loops containing pairs of latitude, longitude coordinates.',
+          }),
+        cachePolicy: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The cache policy active for this data. EX: UNRESTRICTED, RESTRICTED, NEVER',
+          }),
+        countryCode: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The country code of the location.' }),
+        latitude: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'The latitude of the location.' }),
+        longitude: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'The longitude of the location.' }),
+        mapType: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The type of map that should be used for this location. EX: HYBRID, ROADMAP, SATELLITE, TERRAIN',
+          }),
+        viewport: z
+          .object({
+            hi: z
+              .object({
+                latitude: z.float64().exactOptional(),
+                longitude: z.float64().exactOptional(),
+              })
+              .exactOptional()
+              .openapi({ required: [] }),
+            lo: z
+              .object({
+                latitude: z.float64().exactOptional(),
+                longitude: z.float64().exactOptional(),
+              })
+              .exactOptional()
+              .openapi({ required: [] }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'The viewport for showing this location. This is a latitude, longitude rectangle.',
+            required: [],
+          }),
+        zoom: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'The Zoom level to use for the map. Zoom levels between 0 (the lowest zoom level, in which the entire world can be seen on one map) to 21+ (down to individual buildings). See: https: //developers.google.com/maps/documentation/staticmaps/#Zoomlevels',
+          }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    kind: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Geolayerdata')
+
+const GeoAnnotationdataSchema = z
+  .object({
+    annotationType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of annotation this data is for.' }),
+    data: GeolayerdataSchema.exactOptional().openapi({
+      description:
+        "JSON encoded data for this geo annotation data. Emitted with name 'data' in JSON output. Either this or dict_data will be populated.",
+    }),
+    encodedData: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Base64 encoded data for this annotation data.' }),
+    id: z.string().exactOptional().openapi({ description: 'Unique id for this annotation data.' }),
+    kind: z.string().exactOptional().openapi({ description: 'Resource Type' }),
+    layerId: z.string().exactOptional().openapi({ description: 'The Layer id for this data. *' }),
+    selfLink: z.string().exactOptional().openapi({ description: 'URL for this resource. *' }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp for the last time this data was updated. (RFC 3339 UTC date-time format).',
+      }),
+    volumeId: z.string().exactOptional().openapi({ description: 'The volume id for this data. *' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GeoAnnotationdata')
+
+const AnnotationsdataSchema = z
+  .object({
+    items: z
+      .array(GeoAnnotationdataSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of Annotation Data.' }),
+    kind: z.string().exactOptional().openapi({ description: 'Resource type' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Token to pass in for pagination for the next page. This will not be present if this request does not have more results.',
+      }),
+    totalItems: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The total number of volume annotations found.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Annotationsdata')
+
+const BooksCloudloadingResourceSchema = z
+  .object({
+    author: z.string().exactOptional(),
+    processingState: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    volumeId: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BooksCloudloadingResource')
+
+const BooksVolumesRecommendedRateResponseSchema = z
+  .object({ consistency_token: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('BooksVolumesRecommendedRateResponse')
+
+const BookshelfSchema = z
+  .object({
+    access: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Whether this bookshelf is PUBLIC or PRIVATE.' }),
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Created time for this bookshelf (formatted UTC timestamp with millisecond resolution).',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of this bookshelf.' }),
+    id: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Id of this bookshelf, only unique by user.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Resource type for bookshelf metadata.' }),
+    selfLink: z.string().exactOptional().openapi({ description: 'URL to this resource.' }),
+    title: z.string().exactOptional().openapi({ description: 'Title of this bookshelf.' }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Last modified time of this bookshelf (formatted UTC timestamp with millisecond resolution).',
+      }),
+    volumeCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of volumes in this bookshelf.' }),
+    volumesLastUpdated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Last time a volume was added or removed from this bookshelf (formatted UTC timestamp with millisecond resolution).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Bookshelf')
+
+const BookshelvesSchema = z
+  .object({
+    items: z
+      .array(BookshelfSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of bookshelves.' }),
+    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Bookshelves')
+
+const CategorySchema = z
+  .object({
+    items: z
+      .array(
+        z
+          .object({
+            badgeUrl: z.string().exactOptional(),
+            categoryId: z.string().exactOptional(),
+            name: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'A list of onboarding categories.' }),
+    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Category')
+
+const ConcurrentAccessRestrictionSchema = z
+  .object({
+    deviceAllowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether access is granted for this (user, device, volume).' }),
+    kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
+    maxConcurrentDevices: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The maximum number of concurrent access licenses for this volume.',
+      }),
+    message: z.string().exactOptional().openapi({ description: 'Error/warning message.' }),
+    nonce: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Client nonce for verification. Download access and client-validation only.',
+      }),
+    reasonCode: z.string().exactOptional().openapi({ description: 'Error/warning reason code.' }),
+    restricted: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this volume has any concurrent access restrictions.' }),
+    signature: z.string().exactOptional().openapi({ description: 'Response signature.' }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Client app identifier for verification. Download access and client-validation only.',
+      }),
+    timeWindowSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Time in seconds for license auto-expiration.' }),
+    volumeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifies the volume for which this entry applies.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ConcurrentAccessRestriction')
+
+const DictionaryAnnotationdataSchema: z.ZodType<DictionaryAnnotationdataType> = z
+  .object({
+    annotationType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of annotation this data is for.' }),
+    data: DictlayerdataSchema.exactOptional().openapi({
+      description:
+        "JSON encoded data for this dictionary annotation data. Emitted with name 'data' in JSON output. Either this or geo_data will be populated.",
+    }),
+    encodedData: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Base64 encoded data for this annotation data.' }),
+    id: z.string().exactOptional().openapi({ description: 'Unique id for this annotation data.' }),
+    kind: z.string().exactOptional().openapi({ description: 'Resource Type' }),
+    layerId: z.string().exactOptional().openapi({ description: 'The Layer id for this data. *' }),
+    selfLink: z.string().exactOptional().openapi({ description: 'URL for this resource. *' }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timestamp for the last time this data was updated. (RFC 3339 UTC date-time format).',
+      }),
+    volumeId: z.string().exactOptional().openapi({ description: 'The volume id for this data. *' }),
+  })
+  .openapi({ required: [] })
+  .openapi('DictionaryAnnotationdata')
+
+const DiscoveryclustersSchema: z.ZodType<DiscoveryclustersType> = z
   .object({
     clusters: z
       .array(
@@ -1608,7 +1676,7 @@ const DownloadAccessesSchema = z
   .openapi('DownloadAccesses')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -1852,7 +1920,7 @@ const SeriesSchema = z
   .openapi({ required: [] })
   .openapi('Series')
 
-const SeriesmembershipSchema = z
+const SeriesmembershipSchema: z.ZodType<SeriesmembershipType> = z
   .object({
     kind: z.string().exactOptional().openapi({ description: 'Resorce type.' }),
     member: z.array(VolumeSchema).exactOptional(),
@@ -1900,7 +1968,7 @@ const UsersettingsSchema = z
   .openapi({ required: [] })
   .openapi('Usersettings')
 
-const Volume2Schema = z
+const Volume2Schema: z.ZodType<Volume2Type> = z
   .object({
     items: z.array(VolumeSchema).exactOptional().openapi({ description: 'A list of volumes.' }),
     kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),
@@ -2002,7 +2070,7 @@ const VolumeannotationsSchema = z
   .openapi({ required: [] })
   .openapi('Volumeannotations')
 
-const VolumesSchema = z
+const VolumesSchema: z.ZodType<VolumesType> = z
   .object({
     items: z.array(VolumeSchema).exactOptional().openapi({ description: 'A list of volumes.' }),
     kind: z.string().exactOptional().openapi({ description: 'Resource type.' }),

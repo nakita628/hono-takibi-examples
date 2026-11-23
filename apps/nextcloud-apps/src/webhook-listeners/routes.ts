@@ -18,11 +18,11 @@ const WebhookInfoSchema = z
     httpMethod: z.string(),
     uri: z.string(),
     event: z.string().exactOptional(),
-    eventFilter: z.record(z.string(), z.object({})).exactOptional(),
+    eventFilter: z.record(z.string(), z.looseObject({})).exactOptional(),
     userIdFilter: z.string().exactOptional(),
     headers: z.record(z.string(), z.string()).exactOptional(),
     authMethod: z.string(),
-    authData: z.record(z.string(), z.object({})).exactOptional(),
+    authData: z.record(z.string(), z.looseObject({})).exactOptional(),
     tokenNeeded: z
       .object({
         user_ids: z.record(z.string(), z.string()).exactOptional(),
@@ -164,7 +164,7 @@ export const postOcsV2PhpAppsWebhookListenersApiV1WebhooksRoute = createRoute({
               uri: z.string().openapi({ description: 'Webhook URI endpoint' }),
               event: z.string().openapi({ description: 'Event class name to listen to' }),
               eventFilter: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -189,7 +189,7 @@ export const postOcsV2PhpAppsWebhookListenersApiV1WebhooksRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Authentication method to use' }),
               authData: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Array of data for authentication' }),
@@ -444,7 +444,7 @@ export const postOcsV2PhpAppsWebhookListenersApiV1WebhooksIdRoute = createRoute(
               uri: z.string().openapi({ description: 'Webhook URI endpoint' }),
               event: z.string().openapi({ description: 'Event class name to listen to' }),
               eventFilter: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -469,7 +469,7 @@ export const postOcsV2PhpAppsWebhookListenersApiV1WebhooksIdRoute = createRoute(
                 .exactOptional()
                 .openapi({ description: 'Authentication method to use' }),
               authData: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'Array of data for authentication' }),

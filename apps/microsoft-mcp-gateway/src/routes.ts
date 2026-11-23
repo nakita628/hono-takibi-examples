@@ -10,9 +10,9 @@ const McpRequestSchema = z
         _meta: z
           .object({
             'io.modelcontextprotocol/protocolVersion': z.literal('2026-07-28'),
-            'io.modelcontextprotocol/clientCapabilities': z.object({}),
+            'io.modelcontextprotocol/clientCapabilities': z.looseObject({}),
             'io.modelcontextprotocol/clientInfo': z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -37,7 +37,7 @@ const AdapterSchema = z
     name: z.string().exactOptional(),
     imageName: z.string().exactOptional(),
     imageVersion: z.string().exactOptional(),
-    environmentVariables: z.object({}).exactOptional(),
+    environmentVariables: z.looseObject({}).exactOptional(),
     replicaCount: z.int().exactOptional(),
     protocol: z.string().exactOptional(),
     connectionType: z.string().exactOptional(),
@@ -166,7 +166,7 @@ const McpResponseResponse = {
   description:
     'JSON-RPC response or an incremental SSE response scoped to this request. Modern results include resultType; complete discovery/list/read results carry ttlMs and cacheScope. A subscription stream stays open until cancelled or completed. No transport session ID is returned.',
   content: {
-    'application/json': { schema: z.object({}) },
+    'application/json': { schema: z.looseObject({}) },
     'text/event-stream': { schema: z.string() },
   },
 }
@@ -174,18 +174,16 @@ const McpResponseResponse = {
 const McpBadRequestResponse = {
   description:
     'Missing/malformed headers or metadata, HeaderMismatch (-32020), MissingRequiredClientCapability (-32021), or UnsupportedProtocolVersion (-32022). Backend status and error body are preserved; no legacy fallback.',
-  content: { 'application/json': { schema: z.object({}) } },
+  content: { 'application/json': { schema: z.looseObject({}) } },
 }
 
 const McpMethodNotAllowedResponse = {
   description: 'MCP endpoints support POST, not standalone GET streams or session DELETE.',
   headers: z.object({
-    Allow: {
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ param: { required: false }, example: 'POST' }),
-    },
+    Allow: z
+      .string()
+      .exactOptional()
+      .openapi({ param: { required: false }, example: 'POST' }),
   }),
 }
 

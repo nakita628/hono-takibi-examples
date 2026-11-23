@@ -1,461 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AgentActorSchema = z
-  .object({
-    avatar: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing the URL to the avatar image of the agent.',
-        example: null,
-      }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string containing the email address of the agent.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'A string that uniquely identifies the agent actor.',
-        example: null,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A string representing the name of the agent.', example: null }),
-    type: z
-      .literal('AGENT')
-      .default('AGENT')
-      .openapi({
-        description:
-          "A string representing the type of actor, which is always 'AGENT' for this component.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
-  .openapi('AgentActor')
-
-const BatchInputStringSchema = z
-  .object({
-    inputs: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An array of strings that are required for the batch operation. Each item in the array is a string.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['inputs'], example: null })
-  .openapi('BatchInputString')
-
-const BotActorSchema = z
-  .object({
-    avatar: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing the URL of the avatar image for the bot actor.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'A string representing the unique identifier for the bot actor.',
-        example: null,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A string representing the name of the bot actor.', example: null }),
-    type: z
-      .literal('BOT')
-      .default('BOT')
-      .openapi({
-        description:
-          "A string indicating the type of actor, which is always 'BOT' for this component.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
-  .openapi('BotActor')
-
-const IntegratorActorSchema = z
-  .object({
-    avatar: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string containing the URL or identifier for the avatar image of the integrator actor.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'A string that uniquely identifies the integrator actor.',
-        example: null,
-      }),
-    name: z
-      .string()
-      .openapi({
-        description: 'A string representing the name of the integrator actor.',
-        example: null,
-      }),
-    type: z
-      .literal('INTEGRATOR')
-      .default('INTEGRATOR')
-      .openapi({
-        description:
-          "A string representing the type of actor, with the default value 'INTEGRATOR'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id', 'name', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
-  .openapi('IntegratorActor')
-
-const SystemActorSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'A string that uniquely identifies the system actor.',
-        example: null,
-      }),
-    type: z
-      .literal('SYSTEM')
-      .default('SYSTEM')
-      .openapi({
-        description:
-          "A string that specifies the type of actor, which is 'SYSTEM' for this component.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
-  .openapi('SystemActor')
-
-const VisitorActorSchema = z
-  .object({
-    avatar: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "A string representing the URL of the visitor's avatar image.",
-        example: null,
-      }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string containing the email address of the visitor.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'A string representing the unique identifier for the visitor actor.',
-        example: null,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A string containing the name of the visitor.', example: null }),
-    type: z
-      .literal('VISITOR')
-      .default('VISITOR')
-      .openapi({
-        description:
-          "A string indicating the type of actor, which is 'VISITOR' for this component.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
-  .openapi('VisitorActor')
-
-const EmailActorSchema = z
-  .object({
-    email: z
-      .string()
-      .openapi({
-        description: 'A string containing the email address associated with the actor.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'A string that uniquely identifies the email actor.',
-        example: null,
-      }),
-    type: z
-      .literal('EMAIL')
-      .default('EMAIL')
-      .openapi({
-        description: "A string representing the type of actor, which defaults to 'EMAIL'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['email', 'id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
-  .openapi('EmailActor')
-
-const LlmActorSchema = z
-  .object({
-    avatar: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing the URL of the avatar image for the LLM actor.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .openapi({
-        description: 'A unique identifier for the LLM actor, represented as a string.',
-        example: null,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the LLM actor, represented as a string.',
-        example: null,
-      }),
-    type: z
-      .literal('LLM')
-      .default('LLM')
-      .openapi({
-        description:
-          "A string indicating the type of actor, which is always 'LLM' for this component.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
-  .openapi('LlmActor')
-
-const PublicActorSchema = z
-  .xor([
-    AgentActorSchema,
-    BotActorSchema,
-    IntegratorActorSchema,
-    SystemActorSchema,
-    VisitorActorSchema,
-    EmailActorSchema,
-    LlmActorSchema,
-  ])
-  .openapi({ example: null })
-  .openapi('PublicActor')
-
-const BatchResponsePublicActorSchema = z
-  .object({
-    completedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the batch operation was completed, in ISO 8601 format.',
-        example: null,
-      }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of link names to their corresponding URIs, which may provide additional information or resources related to the batch operation.',
-        example: null,
-      }),
-    requestedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the batch operation was requested, in ISO 8601 format.',
-        example: null,
-      }),
-    results: z
-      .array(PublicActorSchema)
-      .openapi({
-        description:
-          'An array of PublicActor objects representing the results of the batch operation.',
-        example: null,
-      }),
-    startedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the batch operation started, in ISO 8601 format.',
-        example: null,
-      }),
-    status: z
-      .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
-      .openapi({
-        description:
-          "The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
-  .openapi('BatchResponsePublicActor')
-
-const ErrorDetailSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The status code associated with the error detail.', example: null }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description:
-          'Context about the error condition, represented as an object with additional properties. Each property is an array of strings providing further context.',
-        example: '{missingScopes=[scope1, scope2]}',
-      }),
-    in: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the field or parameter in which the error was found.',
-        example: null,
-      }),
-    message: z
-      .string()
-      .openapi({
-        description:
-          'A human-readable message describing the error along with remediation steps where appropriate. This is a required field.',
-        example: null,
-      }),
-    subCategory: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A specific category that contains more specific detail about the error.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['message'],
-    description:
-      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
-    example: null,
-  })
-  .openapi('ErrorDetail')
-
-const StandardErrorSchema = z
-  .object({
-    category: z
-      .string()
-      .openapi({ description: 'A string indicating the category of the error.', example: null }),
-    context: z
-      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
-      .openapi({
-        description:
-          'An object containing additional context about the error condition, with properties as arrays of strings.',
-        example: null,
-      }),
-    errors: z
-      .array(ErrorDetailSchema)
-      .openapi({
-        description:
-          'An array of ErrorDetail objects, providing further information about the error.',
-        example: null,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A string representing the unique identifier for the error.',
-        example: null,
-      }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'An object mapping link names to associated URIs with documentation about the error or recommended remediation steps.',
-        example: null,
-      }),
-    message: z
-      .string()
-      .openapi({ description: 'A string containing the error message.', example: null }),
-    status: z
-      .string()
-      .openapi({ description: 'The status of the error as a string.', example: null }),
-    subCategory: z
-      .object({})
-      .exactOptional()
-      .openapi({
-        description: 'An object providing more specific details about the error category.',
-        example: null,
-      }),
-  })
-  .openapi({
-    required: ['category', 'context', 'errors', 'links', 'message', 'status'],
-    description: 'Ye olde error',
-    example: null,
-  })
-  .openapi('StandardError')
-
-const BatchResponsePublicActorWithErrorsSchema = z
-  .object({
-    completedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description:
-          'The date and time when the batch operation was completed, in ISO 8601 format.',
-        example: null,
-      }),
-    errors: z
-      .array(StandardErrorSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of StandardError objects detailing any errors encountered during the batch operation.',
-        example: null,
-      }),
-    links: z
-      .record(z.string(), z.string().openapi({ example: null }))
-      .exactOptional()
-      .openapi({
-        description: 'An object containing key-value pairs of link names to their associated URIs.',
-        example: null,
-      }),
-    numErrors: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The number of errors encountered during the batch operation.',
-        example: null,
-      }),
-    requestedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time when the batch operation was requested, in ISO 8601 format.',
-        example: null,
-      }),
-    results: z
-      .array(PublicActorSchema)
-      .openapi({
-        description:
-          'An array of PublicActor objects representing the results of the batch operation.',
-        example: null,
-      }),
-    startedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time when the batch operation started, in ISO 8601 format.',
-        example: null,
-      }),
-    status: z
-      .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
-      .openapi({
-        description:
-          "The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.",
-        example: null,
-      }),
-  })
-  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
-  .openapi('BatchResponsePublicActorWithErrors')
-
 const NextPageSchema = z
   .object({
     after: z
@@ -1880,30 +1424,499 @@ const PublicThreadInboxChangeSchema = z
   })
   .openapi('PublicThreadInboxChange')
 
-const CollectionResponsePublicMessageForwardPagingSchema = z
+type CollectionResponsePublicMessageForwardPagingType = {
+  paging?: z.infer<typeof ForwardPagingSchema>
+  results: (
+    | z.infer<typeof PublicConversationsMessageSchema>
+    | z.infer<typeof PublicCommentSchema>
+    | z.infer<typeof PublicWelcomeMessageSchema>
+    | z.infer<typeof PublicAssignmentMessageSchema>
+    | z.infer<typeof PublicThreadStatusChangeSchema>
+    | z.infer<typeof PublicThreadInboxChangeSchema>
+  )[]
+}
+
+const AgentActorSchema = z
   .object({
-    paging: ForwardPagingSchema.exactOptional(),
-    results: z
-      .array(
-        z
-          .xor([
-            PublicConversationsMessageSchema,
-            PublicCommentSchema,
-            PublicWelcomeMessageSchema,
-            PublicAssignmentMessageSchema,
-            PublicThreadStatusChangeSchema,
-            PublicThreadInboxChangeSchema,
-          ])
-          .openapi({ example: null }),
-      )
+    avatar: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representing the URL to the avatar image of the agent.',
+        example: null,
+      }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string containing the email address of the agent.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'A string that uniquely identifies the agent actor.',
+        example: null,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A string representing the name of the agent.', example: null }),
+    type: z
+      .literal('AGENT')
+      .default('AGENT')
       .openapi({
         description:
-          'An array of public messages, which can include various types such as conversations messages, comments, welcome messages, assignment messages, thread status changes, and thread inbox changes.',
+          "A string representing the type of actor, which is always 'AGENT' for this component.",
         example: null,
       }),
   })
-  .openapi({ required: ['results'], example: null })
-  .openapi('CollectionResponsePublicMessageForwardPaging')
+  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
+  .openapi('AgentActor')
+
+const BatchInputStringSchema = z
+  .object({
+    inputs: z
+      .array(z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An array of strings that are required for the batch operation. Each item in the array is a string.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['inputs'], example: null })
+  .openapi('BatchInputString')
+
+const BotActorSchema = z
+  .object({
+    avatar: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representing the URL of the avatar image for the bot actor.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'A string representing the unique identifier for the bot actor.',
+        example: null,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A string representing the name of the bot actor.', example: null }),
+    type: z
+      .literal('BOT')
+      .default('BOT')
+      .openapi({
+        description:
+          "A string indicating the type of actor, which is always 'BOT' for this component.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
+  .openapi('BotActor')
+
+const IntegratorActorSchema = z
+  .object({
+    avatar: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A string containing the URL or identifier for the avatar image of the integrator actor.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'A string that uniquely identifies the integrator actor.',
+        example: null,
+      }),
+    name: z
+      .string()
+      .openapi({
+        description: 'A string representing the name of the integrator actor.',
+        example: null,
+      }),
+    type: z
+      .literal('INTEGRATOR')
+      .default('INTEGRATOR')
+      .openapi({
+        description:
+          "A string representing the type of actor, with the default value 'INTEGRATOR'.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['id', 'name', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
+  .openapi('IntegratorActor')
+
+const SystemActorSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'A string that uniquely identifies the system actor.',
+        example: null,
+      }),
+    type: z
+      .literal('SYSTEM')
+      .default('SYSTEM')
+      .openapi({
+        description:
+          "A string that specifies the type of actor, which is 'SYSTEM' for this component.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
+  .openapi('SystemActor')
+
+const VisitorActorSchema = z
+  .object({
+    avatar: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "A string representing the URL of the visitor's avatar image.",
+        example: null,
+      }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string containing the email address of the visitor.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'A string representing the unique identifier for the visitor actor.',
+        example: null,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A string containing the name of the visitor.', example: null }),
+    type: z
+      .literal('VISITOR')
+      .default('VISITOR')
+      .openapi({
+        description:
+          "A string indicating the type of actor, which is 'VISITOR' for this component.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
+  .openapi('VisitorActor')
+
+const EmailActorSchema = z
+  .object({
+    email: z
+      .string()
+      .openapi({
+        description: 'A string containing the email address associated with the actor.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'A string that uniquely identifies the email actor.',
+        example: null,
+      }),
+    type: z
+      .literal('EMAIL')
+      .default('EMAIL')
+      .openapi({
+        description: "A string representing the type of actor, which defaults to 'EMAIL'.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['email', 'id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
+  .openapi('EmailActor')
+
+const LlmActorSchema = z
+  .object({
+    avatar: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representing the URL of the avatar image for the LLM actor.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .openapi({
+        description: 'A unique identifier for the LLM actor, represented as a string.',
+        example: null,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the LLM actor, represented as a string.',
+        example: null,
+      }),
+    type: z
+      .literal('LLM')
+      .default('LLM')
+      .openapi({
+        description:
+          "A string indicating the type of actor, which is always 'LLM' for this component.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['id', 'type'], example: null, 'x-hubspot-sub-type-impl': true })
+  .openapi('LlmActor')
+
+const PublicActorSchema = z
+  .xor([
+    AgentActorSchema,
+    BotActorSchema,
+    IntegratorActorSchema,
+    SystemActorSchema,
+    VisitorActorSchema,
+    EmailActorSchema,
+    LlmActorSchema,
+  ])
+  .openapi({ example: null })
+  .openapi('PublicActor')
+
+const BatchResponsePublicActorSchema = z
+  .object({
+    completedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the batch operation was completed, in ISO 8601 format.',
+        example: null,
+      }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description:
+          'A map of link names to their corresponding URIs, which may provide additional information or resources related to the batch operation.',
+        example: null,
+      }),
+    requestedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the batch operation was requested, in ISO 8601 format.',
+        example: null,
+      }),
+    results: z
+      .array(PublicActorSchema)
+      .openapi({
+        description:
+          'An array of PublicActor objects representing the results of the batch operation.',
+        example: null,
+      }),
+    startedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the batch operation started, in ISO 8601 format.',
+        example: null,
+      }),
+    status: z
+      .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
+      .openapi({
+        description:
+          "The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
+  .openapi('BatchResponsePublicActor')
+
+const ErrorDetailSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The status code associated with the error detail.', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description:
+          'Context about the error condition, represented as an object with additional properties. Each property is an array of strings providing further context.',
+        example: '{missingScopes=[scope1, scope2]}',
+      }),
+    in: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the field or parameter in which the error was found.',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({
+        description:
+          'A human-readable message describing the error along with remediation steps where appropriate. This is a required field.',
+        example: null,
+      }),
+    subCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A specific category that contains more specific detail about the error.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['message'],
+    description:
+      'Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.',
+    example: null,
+  })
+  .openapi('ErrorDetail')
+
+const StandardErrorSchema = z
+  .object({
+    category: z
+      .string()
+      .openapi({ description: 'A string indicating the category of the error.', example: null }),
+    context: z
+      .record(z.string(), z.array(z.string().openapi({ example: null })).openapi({ example: null }))
+      .openapi({
+        description:
+          'An object containing additional context about the error condition, with properties as arrays of strings.',
+        example: null,
+      }),
+    errors: z
+      .array(ErrorDetailSchema)
+      .openapi({
+        description:
+          'An array of ErrorDetail objects, providing further information about the error.',
+        example: null,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A string representing the unique identifier for the error.',
+        example: null,
+      }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'An object mapping link names to associated URIs with documentation about the error or recommended remediation steps.',
+        example: null,
+      }),
+    message: z
+      .string()
+      .openapi({ description: 'A string containing the error message.', example: null }),
+    status: z
+      .string()
+      .openapi({ description: 'The status of the error as a string.', example: null }),
+    subCategory: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description: 'An object providing more specific details about the error category.',
+        example: null,
+      }),
+  })
+  .openapi({
+    required: ['category', 'context', 'errors', 'links', 'message', 'status'],
+    description: 'Ye olde error',
+    example: null,
+  })
+  .openapi('StandardError')
+
+const BatchResponsePublicActorWithErrorsSchema = z
+  .object({
+    completedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the batch operation was completed, in ISO 8601 format.',
+        example: null,
+      }),
+    errors: z
+      .array(StandardErrorSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of StandardError objects detailing any errors encountered during the batch operation.',
+        example: null,
+      }),
+    links: z
+      .record(z.string(), z.string().openapi({ example: null }))
+      .exactOptional()
+      .openapi({
+        description: 'An object containing key-value pairs of link names to their associated URIs.',
+        example: null,
+      }),
+    numErrors: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of errors encountered during the batch operation.',
+        example: null,
+      }),
+    requestedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time when the batch operation was requested, in ISO 8601 format.',
+        example: null,
+      }),
+    results: z
+      .array(PublicActorSchema)
+      .openapi({
+        description:
+          'An array of PublicActor objects representing the results of the batch operation.',
+        example: null,
+      }),
+    startedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the batch operation started, in ISO 8601 format.',
+        example: null,
+      }),
+    status: z
+      .enum(['CANCELED', 'COMPLETE', 'PENDING', 'PROCESSING'])
+      .openapi({
+        description:
+          "The current status of the batch operation. Valid values include 'PENDING', 'PROCESSING', 'CANCELED', and 'COMPLETE'.",
+        example: null,
+      }),
+  })
+  .openapi({ required: ['completedAt', 'results', 'startedAt', 'status'], example: null })
+  .openapi('BatchResponsePublicActorWithErrors')
+
+const CollectionResponsePublicMessageForwardPagingSchema: z.ZodType<CollectionResponsePublicMessageForwardPagingType> =
+  z
+    .object({
+      paging: ForwardPagingSchema.exactOptional(),
+      results: z
+        .array(
+          z
+            .xor([
+              PublicConversationsMessageSchema,
+              PublicCommentSchema,
+              PublicWelcomeMessageSchema,
+              PublicAssignmentMessageSchema,
+              PublicThreadStatusChangeSchema,
+              PublicThreadInboxChangeSchema,
+            ])
+            .openapi({ example: null }),
+        )
+        .openapi({
+          description:
+            'An array of public messages, which can include various types such as conversations messages, comments, welcome messages, assignment messages, thread status changes, and thread inbox changes.',
+          example: null,
+        }),
+    })
+    .openapi({ required: ['results'], example: null })
+    .openapi('CollectionResponsePublicMessageForwardPaging')
 
 const PublicThreadAssociationsSchema = z
   .object({
@@ -2656,11 +2669,15 @@ const Oauth2SecurityScheme = {
       scopes: { 'conversations.read': '', 'conversations.write': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'conversations.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'conversations.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postConversationsConversations202609ActorsBatchReadRoute = createRoute({
   method: 'post',
@@ -4070,18 +4087,14 @@ export const postConversationsConversations202609ThreadsThreadIdMessagesRoute = 
       description: 'successful operation',
       content: { 'application/json': { schema: PublicMessageSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

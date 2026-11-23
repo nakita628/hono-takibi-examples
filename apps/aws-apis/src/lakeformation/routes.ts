@@ -1,7 +1,23 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const IdentifierSchema = z.string().min(1).max(255).openapi('Identifier')
+
+const DataLakePrincipalStringSchema = z.string().min(1).max(255).openapi('DataLakePrincipalString')
+
+const DataLakePrincipalSchema = z
+  .object({
+    DataLakePrincipalIdentifier: DataLakePrincipalStringSchema.exactOptional().openapi({
+      description: 'An identifier for the Lake Formation principal.',
+    }),
+  })
+  .openapi({
+    description: 'The Lake Formation principal. Supported principals are IAM users or IAM roles.',
+    required: [],
+  })
+  .openapi('DataLakePrincipal')
+
 const CatalogResourceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A structure for the catalog object.' })
   .openapi('CatalogResource')
 
@@ -21,57 +37,37 @@ const NameStringSchema = z
 
 const DatabaseResourceSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, it is the account ID of the caller.',
-        }),
-    ).exactOptional(),
-    Name: NameStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the database resource. Unique to the Data Catalog.' }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, it is the account ID of the caller.',
+    }),
+    Name: NameStringSchema.openapi({
+      description: 'The name of the database resource. Unique to the Data Catalog.',
+    }),
   })
   .openapi({ required: ['Name'], description: 'A structure for the database object.' })
   .openapi('DatabaseResource')
 
 const TableWildcardSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A wildcard object representing every table under a database.' })
   .openapi('TableWildcard')
 
 const TableResourceSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, it is the account ID of the caller.',
-        }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the database for the table. Unique to a Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal. ',
-        }),
-    ),
-    Name: NameStringSchema.and(
-      z.any().openapi({ description: 'The name of the table.' }),
-    ).exactOptional(),
-    TableWildcard: TableWildcardSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A wildcard object representing every table under a database.</p> <p>At least one of <code>TableResource$Name</code> or <code>TableResource$TableWildcard</code> is required.</p>',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, it is the account ID of the caller.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description:
+        'The name of the database for the table. Unique to a Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal. ',
+    }),
+    Name: NameStringSchema.exactOptional().openapi({ description: 'The name of the table.' }),
+    TableWildcard: TableWildcardSchema.exactOptional().openapi({
+      description:
+        '<p>A wildcard object representing every table under a database.</p> <p>At least one of <code>TableResource$Name</code> or <code>TableResource$TableWildcard</code> is required.</p>',
+    }),
   })
   .openapi({
     required: ['DatabaseName'],
@@ -84,13 +80,9 @@ const ColumnNamesSchema = z.array(NameStringSchema).openapi('ColumnNames')
 
 const ColumnWildcardSchema = z
   .object({
-    ExcludedColumnNames: ColumnNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Excludes column names. Any column with this name will be excluded.',
-        }),
-    ).exactOptional(),
+    ExcludedColumnNames: ColumnNamesSchema.exactOptional().openapi({
+      description: 'Excludes column names. Any column with this name will be excluded.',
+    }),
   })
   .openapi({
     description:
@@ -101,46 +93,26 @@ const ColumnWildcardSchema = z
 
 const TableWithColumnsResourceSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, it is the account ID of the caller.',
-        }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the database for the table with columns resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal. ',
-        }),
-    ),
-    Name: NameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the table resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
-        }),
-    ),
-    ColumnNames: ColumnNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of column names for the table. At least one of <code>ColumnNames</code> or <code>ColumnWildcard</code> is required.',
-        }),
-    ).exactOptional(),
-    ColumnWildcard: ColumnWildcardSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A wildcard specified by a <code>ColumnWildcard</code> object. At least one of <code>ColumnNames</code> or <code>ColumnWildcard</code> is required.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, it is the account ID of the caller.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description:
+        'The name of the database for the table with columns resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal. ',
+    }),
+    Name: NameStringSchema.openapi({
+      description:
+        'The name of the table resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
+    }),
+    ColumnNames: ColumnNamesSchema.exactOptional().openapi({
+      description:
+        'The list of column names for the table. At least one of <code>ColumnNames</code> or <code>ColumnWildcard</code> is required.',
+    }),
+    ColumnWildcard: ColumnWildcardSchema.exactOptional().openapi({
+      description:
+        'A wildcard specified by a <code>ColumnWildcard</code> object. At least one of <code>ColumnNames</code> or <code>ColumnWildcard</code> is required.',
+    }),
   })
   .openapi({
     required: ['DatabaseName', 'Name'],
@@ -153,22 +125,14 @@ const ResourceArnStringSchema = z.string().openapi('ResourceArnString')
 
 const DataLocationResourceSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog where the location is registered with Lake Formation. By default, it is the account ID of the caller.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that uniquely identifies the data location resource.',
-        }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog where the location is registered with Lake Formation. By default, it is the account ID of the caller.',
+    }),
+    ResourceArn: ResourceArnStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that uniquely identifies the data location resource.',
+    }),
   })
   .openapi({
     required: ['ResourceArn'],
@@ -179,18 +143,16 @@ const DataLocationResourceSchema = z
 
 const DataCellsFilterResourceSchema = z
   .object({
-    TableCatalogId: CatalogIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the catalog to which the table belongs.' }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'A database in the Glue Data Catalog.' }),
-    ).exactOptional(),
-    TableName: NameStringSchema.and(
-      z.any().openapi({ description: 'The name of the table.' }),
-    ).exactOptional(),
-    Name: NameStringSchema.and(
-      z.any().openapi({ description: 'The name of the data cells filter. ' }),
-    ).exactOptional(),
+    TableCatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description: 'The ID of the catalog to which the table belongs.',
+    }),
+    DatabaseName: NameStringSchema.exactOptional().openapi({
+      description: 'A database in the Glue Data Catalog.',
+    }),
+    TableName: NameStringSchema.exactOptional().openapi({ description: 'The name of the table.' }),
+    Name: NameStringSchema.exactOptional().openapi({
+      description: 'The name of the data cells filter. ',
+    }),
   })
   .openapi({ description: 'A structure for a data cells filter resource. ', required: [] })
   .openapi('DataCellsFilterResource')
@@ -206,18 +168,14 @@ const TagValueListSchema = z.array(LFTagValueSchema).min(1).max(50).openapi('Tag
 
 const LFTagKeyResourceSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    TagKey: NameStringSchema.and(z.any().openapi({ description: 'The key-name for the LF-tag.' })),
-    TagValues: TagValueListSchema.and(
-      z.any().openapi({ description: 'A list of possible values an attribute can take.' }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    TagKey: NameStringSchema.openapi({ description: 'The key-name for the LF-tag.' }),
+    TagValues: TagValueListSchema.openapi({
+      description: 'A list of possible values an attribute can take.',
+    }),
   })
   .openapi({
     required: ['TagKey', 'TagValues'],
@@ -236,10 +194,10 @@ const LFTagKeySchema = z
 
 const LFTagSchema = z
   .object({
-    TagKey: LFTagKeySchema.and(z.any().openapi({ description: 'The key-name for the LF-tag.' })),
-    TagValues: TagValueListSchema.and(
-      z.any().openapi({ description: 'A list of possible values an attribute can take.' }),
-    ),
+    TagKey: LFTagKeySchema.openapi({ description: 'The key-name for the LF-tag.' }),
+    TagValues: TagValueListSchema.openapi({
+      description: 'A list of possible values an attribute can take.',
+    }),
   })
   .openapi({
     required: ['TagKey', 'TagValues'],
@@ -252,24 +210,16 @@ const ExpressionSchema = z.array(LFTagSchema).openapi('Expression')
 
 const LFTagPolicyResourceSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type for which the LF-tag policy applies.' }),
-    ),
-    Expression: ExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A list of LF-tag conditions that apply to the resource's LF-tag policy.",
-        }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description: 'The resource type for which the LF-tag policy applies.',
+    }),
+    Expression: ExpressionSchema.openapi({
+      description: "A list of LF-tag conditions that apply to the resource's LF-tag policy.",
+    }),
   })
   .openapi({
     required: ['ResourceType', 'Expression'],
@@ -278,37 +228,82 @@ const LFTagPolicyResourceSchema = z
   })
   .openapi('LFTagPolicyResource')
 
-type ResourceType = {
-  Catalog?: z.infer<typeof CatalogResourceSchema> & { [key: string]: unknown }
-  Database?: z.infer<typeof DatabaseResourceSchema> & { [key: string]: unknown }
-  Table?: z.infer<typeof TableResourceSchema> & { [key: string]: unknown }
-  TableWithColumns?: z.infer<typeof TableWithColumnsResourceSchema> & { [key: string]: unknown }
-  DataLocation?: z.infer<typeof DataLocationResourceSchema> & { [key: string]: unknown }
-  DataCellsFilter?: z.infer<typeof DataCellsFilterResourceSchema> & { [key: string]: unknown }
-  LFTag?: z.infer<typeof LFTagKeyResourceSchema> & { [key: string]: unknown }
-  LFTagPolicy?: z.infer<typeof LFTagPolicyResourceSchema> & { [key: string]: unknown }
-}
-
-const LFTagPairSchema = z
+const ResourceSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    TagKey: LFTagKeySchema.and(z.any().openapi({ description: 'The key-name for the LF-tag.' })),
-    TagValues: TagValueListSchema.and(
-      z.any().openapi({ description: 'A list of possible values an attribute can take.' }),
-    ),
+    Catalog: CatalogResourceSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Database: DatabaseResourceSchema.exactOptional().openapi({
+      description:
+        'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
+    }),
+    Table: TableResourceSchema.exactOptional().openapi({
+      description:
+        'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
+    }),
+    TableWithColumns: TableWithColumnsResourceSchema.exactOptional().openapi({
+      description:
+        'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
+    }),
+    DataLocation: DataLocationResourceSchema.exactOptional().openapi({
+      description: 'The location of an Amazon S3 path where permissions are granted or revoked. ',
+    }),
+    DataCellsFilter: DataCellsFilterResourceSchema.exactOptional().openapi({
+      description: 'A data cell filter.',
+    }),
+    LFTag: LFTagKeyResourceSchema.exactOptional().openapi({
+      description: 'The LF-tag key and values attached to a resource.',
+    }),
+    LFTagPolicy: LFTagPolicyResourceSchema.exactOptional().openapi({
+      description: "A list of LF-tag conditions that define a resource's LF-tag policy.",
+    }),
+  })
+  .openapi({ description: 'A structure for the resource.', required: [] })
+  .openapi('Resource')
+
+const PermissionSchema = z
+  .enum([
+    'ALL',
+    'SELECT',
+    'ALTER',
+    'DROP',
+    'DELETE',
+    'INSERT',
+    'DESCRIBE',
+    'CREATE_DATABASE',
+    'CREATE_TABLE',
+    'DATA_LOCATION_ACCESS',
+    'CREATE_TAG',
+    'ASSOCIATE',
+  ])
+  .openapi('Permission')
+
+const PermissionListSchema = z.array(PermissionSchema).openapi('PermissionList')
+
+const BatchPermissionsRequestEntrySchema = z
+  .object({
+    Id: IdentifierSchema.openapi({
+      description: 'A unique identifier for the batch permissions request entry.',
+    }),
+    Principal: DataLakePrincipalSchema.exactOptional().openapi({
+      description: 'The principal to be granted a permission.',
+    }),
+    Resource: ResourceSchema.exactOptional().openapi({
+      description: 'The resource to which the principal is to be granted a permission.',
+    }),
+    Permissions: PermissionListSchema.exactOptional().openapi({
+      description: 'The permissions to be granted.',
+    }),
+    PermissionsWithGrantOption: PermissionListSchema.exactOptional().openapi({
+      description: 'Indicates if the option to pass permissions is granted.',
+    }),
   })
   .openapi({
-    required: ['TagKey', 'TagValues'],
-    description: 'A structure containing an LF-tag key-value pair.',
+    required: ['Id'],
+    description: 'A permission to a resource granted by batch operation to the principal.',
   })
-  .openapi('LFTagPair')
+  .openapi('BatchPermissionsRequestEntry')
 
 const DescriptionStringSchema = z
   .string()
@@ -321,28 +316,183 @@ const DescriptionStringSchema = z
 
 const ErrorDetailSchema = z
   .object({
-    ErrorCode: NameStringSchema.and(
-      z.any().openapi({ description: 'The code associated with this error.' }),
-    ).exactOptional(),
-    ErrorMessage: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'A message describing the error.' }),
-    ).exactOptional(),
+    ErrorCode: NameStringSchema.exactOptional().openapi({
+      description: 'The code associated with this error.',
+    }),
+    ErrorMessage: DescriptionStringSchema.exactOptional().openapi({
+      description: 'A message describing the error.',
+    }),
   })
   .openapi({ description: 'Contains details about an error.', required: [] })
   .openapi('ErrorDetail')
 
+const BatchPermissionsFailureEntrySchema = z
+  .object({
+    RequestEntry: BatchPermissionsRequestEntrySchema.exactOptional().openapi({
+      description: 'An identifier for an entry of the batch request.',
+    }),
+    Error: ErrorDetailSchema.exactOptional().openapi({
+      description: 'An error message that applies to the failure of the entry.',
+    }),
+  })
+  .openapi({
+    description: 'A list of failures when performing a batch grant or batch revoke operation.',
+    required: [],
+  })
+  .openapi('BatchPermissionsFailureEntry')
+
+type BatchPermissionsFailureListType = z.infer<typeof BatchPermissionsFailureEntrySchema>[]
+
+const BatchPermissionsFailureListSchema: z.ZodType<BatchPermissionsFailureListType> = z
+  .array(BatchPermissionsFailureEntrySchema)
+  .openapi('BatchPermissionsFailureList')
+
+type BatchGrantPermissionsResponseType = {
+  Failures?: z.infer<typeof BatchPermissionsFailureListSchema> & unknown
+}
+
+type BatchRevokePermissionsResponseType = {
+  Failures?: z.infer<typeof BatchPermissionsFailureListSchema> & unknown
+}
+
+const RAMResourceShareArnSchema = z.string().openapi('RAMResourceShareArn')
+
+const ResourceShareListSchema = z.array(RAMResourceShareArnSchema).openapi('ResourceShareList')
+
+const DetailsMapSchema = z
+  .object({
+    ResourceShare: ResourceShareListSchema.exactOptional().openapi({
+      description: 'A resource share ARN for a catalog resource shared through RAM.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>A structure containing the additional details to be returned in the <code>AdditionalDetails</code> attribute of <code>PrincipalResourcePermissions</code>.</p> <p>If a catalog resource is shared through Resource Access Manager (RAM), then there will exist a corresponding RAM resource share ARN.</p>',
+    required: [],
+  })
+  .openapi('DetailsMap')
+
+const PrincipalResourcePermissionsSchema = z
+  .object({
+    Principal: DataLakePrincipalSchema.exactOptional().openapi({
+      description: 'The Data Lake principal to be granted or revoked permissions.',
+    }),
+    Resource: ResourceSchema.exactOptional().openapi({
+      description: 'The resource where permissions are to be granted or revoked.',
+    }),
+    Permissions: PermissionListSchema.exactOptional().openapi({
+      description: 'The permissions to be granted or revoked on the resource.',
+    }),
+    PermissionsWithGrantOption: PermissionListSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to grant the ability to grant permissions (as a subset of permissions granted).',
+    }),
+    AdditionalDetails: DetailsMapSchema.exactOptional().openapi({
+      description:
+        'This attribute can be used to return any additional details of <code>PrincipalResourcePermissions</code>. Currently returns only as a RAM resource share ARN.',
+    }),
+  })
+  .openapi({ description: 'The permissions granted or revoked on a resource.', required: [] })
+  .openapi('PrincipalResourcePermissions')
+
+const PrincipalResourcePermissionsListSchema = z
+  .array(PrincipalResourcePermissionsSchema)
+  .openapi('PrincipalResourcePermissionsList')
+
+const TokenSchema = z.string().openapi('Token')
+
+type GetEffectivePermissionsForPathResponseType = {
+  Permissions?: z.infer<typeof PrincipalResourcePermissionsListSchema> & unknown
+  NextToken?: z.infer<typeof TokenSchema> & unknown
+}
+
+type ListPermissionsResponseType = {
+  PrincipalResourcePermissions?: z.infer<typeof PrincipalResourcePermissionsListSchema> & unknown
+  NextToken?: z.infer<typeof TokenSchema> & unknown
+}
+
+const LFTagPairSchema = z
+  .object({
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    TagKey: LFTagKeySchema.openapi({ description: 'The key-name for the LF-tag.' }),
+    TagValues: TagValueListSchema.openapi({
+      description: 'A list of possible values an attribute can take.',
+    }),
+  })
+  .openapi({
+    required: ['TagKey', 'TagValues'],
+    description: 'A structure containing an LF-tag key-value pair.',
+  })
+  .openapi('LFTagPair')
+
+const LFTagsListSchema = z.array(LFTagPairSchema).min(1).max(50).openapi('LFTagsList')
+
+const ColumnLFTagSchema = z
+  .object({
+    Name: NameStringSchema.exactOptional().openapi({
+      description: 'The name of a column resource.',
+    }),
+    LFTags: LFTagsListSchema.exactOptional().openapi({
+      description: 'The LF-tags attached to a column resource.',
+    }),
+  })
+  .openapi({
+    description:
+      'A structure containing the name of a column resource and the LF-tags attached to it.',
+    required: [],
+  })
+  .openapi('ColumnLFTag')
+
+const ColumnLFTagsListSchema = z.array(ColumnLFTagSchema).openapi('ColumnLFTagsList')
+
+const TaggedTableSchema = z
+  .object({
+    Table: TableResourceSchema.exactOptional().openapi({
+      description: 'A table that has LF-tags attached to it.',
+    }),
+    LFTagOnDatabase: LFTagsListSchema.exactOptional().openapi({
+      description: 'A list of LF-tags attached to the database where the table resides.',
+    }),
+    LFTagsOnTable: LFTagsListSchema.exactOptional().openapi({
+      description: 'A list of LF-tags attached to the table.',
+    }),
+    LFTagsOnColumns: ColumnLFTagsListSchema.exactOptional().openapi({
+      description: 'A list of LF-tags attached to columns in the table.',
+    }),
+  })
+  .openapi({ description: 'A structure describing a table resource with LF-tags.', required: [] })
+  .openapi('TaggedTable')
+
+const TableLFTagsListSchema = z.array(TaggedTableSchema).openapi('TableLFTagsList')
+
+type SearchTablesByLFTagsResponseType = {
+  NextToken?: z.infer<typeof TokenSchema> & unknown
+  TableList?: z.infer<typeof TableLFTagsListSchema> & unknown
+}
+
+const BatchPermissionsRequestEntryListSchema = z
+  .array(BatchPermissionsRequestEntrySchema)
+  .openapi('BatchPermissionsRequestEntryList')
+
+type BatchGrantPermissionsRequestType = {
+  CatalogId?: z.infer<typeof CatalogIdStringSchema> & unknown
+  Entries: z.infer<typeof BatchPermissionsRequestEntryListSchema> & unknown
+}
+
+type BatchRevokePermissionsRequestType = {
+  CatalogId?: z.infer<typeof CatalogIdStringSchema> & unknown
+  Entries: z.infer<typeof BatchPermissionsRequestEntryListSchema> & unknown
+}
+
 const LFTagErrorSchema = z
   .object({
-    LFTag: LFTagPairSchema.and(
-      z.any().openapi({ description: 'The key-name of the LF-tag.' }),
-    ).exactOptional(),
-    Error: ErrorDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An error that occurred with the attachment or detachment of the LF-tag.',
-        }),
-    ).exactOptional(),
+    LFTag: LFTagPairSchema.exactOptional().openapi({ description: 'The key-name of the LF-tag.' }),
+    Error: ErrorDetailSchema.exactOptional().openapi({
+      description: 'An error that occurred with the attachment or detachment of the LF-tag.',
+    }),
   })
   .openapi({
     description:
@@ -355,9 +505,9 @@ const LFTagErrorsSchema = z.array(LFTagErrorSchema).openapi('LFTagErrors')
 
 const AddLFTagsToResourceResponseSchema = z
   .object({
-    Failures: LFTagErrorsSchema.and(
-      z.any().openapi({ description: 'A list of failures to tag the resource.' }),
-    ).exactOptional(),
+    Failures: LFTagErrorsSchema.exactOptional().openapi({
+      description: 'A list of failures to tag the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddLFTagsToResourceResponse')
@@ -384,201 +534,43 @@ const ExpirationTimestampSchema = z.iso.datetime({ offset: true }).openapi('Expi
 
 const AssumeDecoratedRoleWithSAMLResponseSchema = z
   .object({
-    AccessKeyId: AccessKeyIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access key ID for the temporary credentials. (The access key consists of an access key ID and a secret key).',
-        }),
-    ).exactOptional(),
-    SecretAccessKey: SecretAccessKeyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secret key for the temporary credentials. (The access key consists of an access key ID and a secret key).',
-        }),
-    ).exactOptional(),
-    SessionToken: SessionTokenStringSchema.and(
-      z.any().openapi({ description: 'The session token for the temporary credentials.' }),
-    ).exactOptional(),
-    Expiration: ExpirationTimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the temporary credentials expire.' }),
-    ).exactOptional(),
+    AccessKeyId: AccessKeyIdStringSchema.exactOptional().openapi({
+      description:
+        'The access key ID for the temporary credentials. (The access key consists of an access key ID and a secret key).',
+    }),
+    SecretAccessKey: SecretAccessKeyStringSchema.exactOptional().openapi({
+      description:
+        'The secret key for the temporary credentials. (The access key consists of an access key ID and a secret key).',
+    }),
+    SessionToken: SessionTokenStringSchema.exactOptional().openapi({
+      description: 'The session token for the temporary credentials.',
+    }),
+    Expiration: ExpirationTimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the temporary credentials expire.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssumeDecoratedRoleWithSAMLResponse')
 
-const IdentifierSchema = z.string().min(1).max(255).openapi('Identifier')
-
-const DataLakePrincipalStringSchema = z.string().min(1).max(255).openapi('DataLakePrincipalString')
-
-const DataLakePrincipalSchema = z
+const BatchGrantPermissionsResponseSchema: z.ZodType<BatchGrantPermissionsResponseType> = z
   .object({
-    DataLakePrincipalIdentifier: DataLakePrincipalStringSchema.and(
-      z.any().openapi({ description: 'An identifier for the Lake Formation principal.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The Lake Formation principal. Supported principals are IAM users or IAM roles.',
-    required: [],
-  })
-  .openapi('DataLakePrincipal')
-
-const ResourceSchema: z.ZodType<ResourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        Catalog: CatalogResourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-            }),
-        ).exactOptional(),
-        Database: DatabaseResourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
-            }),
-        ).exactOptional(),
-        Table: TableResourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
-            }),
-        ).exactOptional(),
-        TableWithColumns: TableWithColumnsResourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
-            }),
-        ).exactOptional(),
-        DataLocation: DataLocationResourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The location of an Amazon S3 path where permissions are granted or revoked. ',
-            }),
-        ).exactOptional(),
-        DataCellsFilter: DataCellsFilterResourceSchema.and(
-          z.any().openapi({ description: 'A data cell filter.' }),
-        ).exactOptional(),
-        LFTag: LFTagKeyResourceSchema.and(
-          z.any().openapi({ description: 'The LF-tag key and values attached to a resource.' }),
-        ).exactOptional(),
-        LFTagPolicy: LFTagPolicyResourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description: "A list of LF-tag conditions that define a resource's LF-tag policy.",
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'A structure for the resource.', required: [] }),
-  )
-  .openapi('Resource')
-
-const PermissionSchema = z
-  .enum([
-    'ALL',
-    'SELECT',
-    'ALTER',
-    'DROP',
-    'DELETE',
-    'INSERT',
-    'DESCRIBE',
-    'CREATE_DATABASE',
-    'CREATE_TABLE',
-    'DATA_LOCATION_ACCESS',
-    'CREATE_TAG',
-    'ASSOCIATE',
-  ])
-  .openapi('Permission')
-
-const PermissionListSchema = z.array(PermissionSchema).openapi('PermissionList')
-
-const BatchPermissionsRequestEntrySchema = z
-  .object({
-    Id: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the batch permissions request entry.' }),
-    ),
-    Principal: DataLakePrincipalSchema.and(
-      z.any().openapi({ description: 'The principal to be granted a permission.' }),
-    ).exactOptional(),
-    Resource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource to which the principal is to be granted a permission.',
-        }),
-    ).exactOptional(),
-    Permissions: PermissionListSchema.and(
-      z.any().openapi({ description: 'The permissions to be granted.' }),
-    ).exactOptional(),
-    PermissionsWithGrantOption: PermissionListSchema.and(
-      z.any().openapi({ description: 'Indicates if the option to pass permissions is granted.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Id'],
-    description: 'A permission to a resource granted by batch operation to the principal.',
-  })
-  .openapi('BatchPermissionsRequestEntry')
-
-const BatchPermissionsFailureEntrySchema = z
-  .object({
-    RequestEntry: BatchPermissionsRequestEntrySchema.and(
-      z.any().openapi({ description: 'An identifier for an entry of the batch request.' }),
-    ).exactOptional(),
-    Error: ErrorDetailSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An error message that applies to the failure of the entry.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A list of failures when performing a batch grant or batch revoke operation.',
-    required: [],
-  })
-  .openapi('BatchPermissionsFailureEntry')
-
-const BatchPermissionsFailureListSchema = z
-  .array(BatchPermissionsFailureEntrySchema)
-  .openapi('BatchPermissionsFailureList')
-
-const BatchGrantPermissionsResponseSchema = z
-  .object({
-    Failures: BatchPermissionsFailureListSchema.and(
-      z.any().openapi({ description: 'A list of failures to grant permissions to the resources.' }),
-    ).exactOptional(),
+    Failures: BatchPermissionsFailureListSchema.exactOptional().openapi({
+      description: 'A list of failures to grant permissions to the resources.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGrantPermissionsResponse')
 
-const BatchRevokePermissionsResponseSchema = z
+const BatchRevokePermissionsResponseSchema: z.ZodType<BatchRevokePermissionsResponseType> = z
   .object({
-    Failures: BatchPermissionsFailureListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of failures to revoke permissions to the resources.' }),
-    ).exactOptional(),
+    Failures: BatchPermissionsFailureListSchema.exactOptional().openapi({
+      description: 'A list of failures to revoke permissions to the resources.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchRevokePermissionsResponse')
 
-const CancelTransactionResponseSchema = z.object({}).openapi('CancelTransactionResponse')
+const CancelTransactionResponseSchema = z.looseObject({}).openapi('CancelTransactionResponse')
 
 const TransactionCommittedExceptionSchema = z.any().openapi('TransactionCommittedException')
 
@@ -592,16 +584,18 @@ const TransactionStatusSchema = z
 
 const CommitTransactionResponseSchema = z
   .object({
-    TransactionStatus: TransactionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the transaction.' }),
-    ).exactOptional(),
+    TransactionStatus: TransactionStatusSchema.exactOptional().openapi({
+      description: 'The status of the transaction.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CommitTransactionResponse')
 
 const TransactionCanceledExceptionSchema = z.any().openapi('TransactionCanceledException')
 
-const CreateDataCellsFilterResponseSchema = z.object({}).openapi('CreateDataCellsFilterResponse')
+const CreateDataCellsFilterResponseSchema = z
+  .looseObject({})
+  .openapi('CreateDataCellsFilterResponse')
 
 const PredicateStringSchema = z
   .string()
@@ -613,18 +607,18 @@ const PredicateStringSchema = z
   .openapi('PredicateString')
 
 const AllRowsWildcardSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A structure that you pass to indicate you want all rows in a filter. ' })
   .openapi('AllRowsWildcard')
 
 const RowFilterSchema = z
   .object({
-    FilterExpression: PredicateStringSchema.and(
-      z.any().openapi({ description: 'A filter expression.' }),
-    ).exactOptional(),
-    AllRowsWildcard: AllRowsWildcardSchema.and(
-      z.any().openapi({ description: 'A wildcard for all rows.' }),
-    ).exactOptional(),
+    FilterExpression: PredicateStringSchema.exactOptional().openapi({
+      description: 'A filter expression.',
+    }),
+    AllRowsWildcard: AllRowsWildcardSchema.exactOptional().openapi({
+      description: 'A wildcard for all rows.',
+    }),
   })
   .openapi({ description: 'A PartiQL predicate.', required: [] })
   .openapi('RowFilter')
@@ -642,13 +636,17 @@ const ResourceNumberLimitExceededExceptionSchema = z
   .any()
   .openapi('ResourceNumberLimitExceededException')
 
-const CreateLFTagResponseSchema = z.object({}).openapi('CreateLFTagResponse')
+const CreateLFTagResponseSchema = z.looseObject({}).openapi('CreateLFTagResponse')
 
-const DeleteDataCellsFilterResponseSchema = z.object({}).openapi('DeleteDataCellsFilterResponse')
+const DeleteDataCellsFilterResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteDataCellsFilterResponse')
 
-const DeleteLFTagResponseSchema = z.object({}).openapi('DeleteLFTagResponse')
+const DeleteLFTagResponseSchema = z.looseObject({}).openapi('DeleteLFTagResponse')
 
-const DeleteObjectsOnCancelResponseSchema = z.object({}).openapi('DeleteObjectsOnCancelResponse')
+const DeleteObjectsOnCancelResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteObjectsOnCancelResponse')
 
 const URISchema = z
   .string()
@@ -668,12 +666,12 @@ const ETagStringSchema = z
 
 const VirtualObjectSchema = z
   .object({
-    Uri: URISchema.and(
-      z.any().openapi({ description: 'The path to the Amazon S3 object. Must start with s3://' }),
-    ),
-    ETag: ETagStringSchema.and(
-      z.any().openapi({ description: 'The ETag of the Amazon S3 object.' }),
-    ).exactOptional(),
+    Uri: URISchema.openapi({
+      description: 'The path to the Amazon S3 object. Must start with s3://',
+    }),
+    ETag: ETagStringSchema.exactOptional().openapi({
+      description: 'The ETag of the Amazon S3 object.',
+    }),
   })
   .openapi({
     required: ['Uri'],
@@ -684,7 +682,7 @@ const VirtualObjectSchema = z
 
 const ResourceNotReadyExceptionSchema = z.any().openapi('ResourceNotReadyException')
 
-const DeregisterResourceResponseSchema = z.object({}).openapi('DeregisterResourceResponse')
+const DeregisterResourceResponseSchema = z.looseObject({}).openapi('DeregisterResourceResponse')
 
 const IAMRoleArnSchema = z
   .string()
@@ -699,18 +697,18 @@ const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
 
 const ResourceInfoSchema = z
   .object({
-    ResourceArn: ResourceArnStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ).exactOptional(),
-    RoleArn: IAMRoleArnSchema.and(
-      z.any().openapi({ description: 'The IAM role that registered a resource.' }),
-    ).exactOptional(),
-    LastModified: LastModifiedTimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the resource was last modified.' }),
-    ).exactOptional(),
-    WithFederation: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'Whether or not the resource is a federated resource.' }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnStringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    RoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description: 'The IAM role that registered a resource.',
+    }),
+    LastModified: LastModifiedTimestampSchema.exactOptional().openapi({
+      description: 'The date and time the resource was last modified.',
+    }),
+    WithFederation: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Whether or not the resource is a federated resource.',
+    }),
   })
   .openapi({
     description: 'A structure containing information about an Lake Formation resource.',
@@ -720,13 +718,9 @@ const ResourceInfoSchema = z
 
 const DescribeResourceResponseSchema = z
   .object({
-    ResourceInfo: ResourceInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure containing information about an Lake Formation resource.',
-        }),
-    ).exactOptional(),
+    ResourceInfo: ResourceInfoSchema.exactOptional().openapi({
+      description: 'A structure containing information about an Lake Formation resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeResourceResponse')
@@ -742,23 +736,19 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const TransactionDescriptionSchema = z
   .object({
-    TransactionId: TransactionIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the transaction.' }),
-    ).exactOptional(),
-    TransactionStatus: TransactionStatusSchema.and(
-      z.any().openapi({ description: 'A status of ACTIVE, COMMITTED, or ABORTED.' }),
-    ).exactOptional(),
-    TransactionStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the transaction started.' }),
-    ).exactOptional(),
-    TransactionEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the transaction committed or aborted, if it is not currently active.',
-        }),
-    ).exactOptional(),
+    TransactionId: TransactionIdStringSchema.exactOptional().openapi({
+      description: 'The ID of the transaction.',
+    }),
+    TransactionStatus: TransactionStatusSchema.exactOptional().openapi({
+      description: 'A status of ACTIVE, COMMITTED, or ABORTED.',
+    }),
+    TransactionStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the transaction started.',
+    }),
+    TransactionEndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time when the transaction committed or aborted, if it is not currently active.',
+    }),
   })
   .openapi({
     description: 'A structure that contains information about a transaction.',
@@ -768,49 +758,37 @@ const TransactionDescriptionSchema = z
 
 const DescribeTransactionResponseSchema = z
   .object({
-    TransactionDescription: TransactionDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a <code>TransactionDescription</code> object containing information about the transaction.',
-        }),
-    ).exactOptional(),
+    TransactionDescription: TransactionDescriptionSchema.exactOptional().openapi({
+      description:
+        'Returns a <code>TransactionDescription</code> object containing information about the transaction.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTransactionResponse')
 
-const ExtendTransactionResponseSchema = z.object({}).openapi('ExtendTransactionResponse')
+const ExtendTransactionResponseSchema = z.looseObject({}).openapi('ExtendTransactionResponse')
 
 const DataCellsFilterSchema = z
   .object({
-    TableCatalogId: CatalogIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the catalog to which the table belongs.' }),
-    ),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'A database in the Glue Data Catalog.' }),
-    ),
-    TableName: NameStringSchema.and(z.any().openapi({ description: 'A table in the database.' })),
-    Name: NameStringSchema.and(
-      z.any().openapi({ description: 'The name given by the user to the data filter cell.' }),
-    ),
-    RowFilter: RowFilterSchema.and(
-      z.any().openapi({ description: 'A PartiQL predicate.' }),
-    ).exactOptional(),
-    ColumnNames: ColumnNamesSchema.and(
-      z.any().openapi({ description: 'A list of column names.' }),
-    ).exactOptional(),
-    ColumnWildcard: ColumnWildcardSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A wildcard with exclusions.</p> <p>You must specify either a <code>ColumnNames</code> list or the <code>ColumnWildCard</code>. </p>',
-        }),
-    ).exactOptional(),
-    VersionId: VersionStringSchema.and(
-      z.any().openapi({ description: 'The ID of the data cells filter version.' }),
-    ).exactOptional(),
+    TableCatalogId: CatalogIdStringSchema.openapi({
+      description: 'The ID of the catalog to which the table belongs.',
+    }),
+    DatabaseName: NameStringSchema.openapi({ description: 'A database in the Glue Data Catalog.' }),
+    TableName: NameStringSchema.openapi({ description: 'A table in the database.' }),
+    Name: NameStringSchema.openapi({
+      description: 'The name given by the user to the data filter cell.',
+    }),
+    RowFilter: RowFilterSchema.exactOptional().openapi({ description: 'A PartiQL predicate.' }),
+    ColumnNames: ColumnNamesSchema.exactOptional().openapi({
+      description: 'A list of column names.',
+    }),
+    ColumnWildcard: ColumnWildcardSchema.exactOptional().openapi({
+      description:
+        '<p>A wildcard with exclusions.</p> <p>You must specify either a <code>ColumnNames</code> list or the <code>ColumnWildCard</code>. </p>',
+    }),
+    VersionId: VersionStringSchema.exactOptional().openapi({
+      description: 'The ID of the data cells filter version.',
+    }),
   })
   .openapi({
     required: ['TableCatalogId', 'DatabaseName', 'TableName', 'Name'],
@@ -820,11 +798,9 @@ const DataCellsFilterSchema = z
 
 const GetDataCellsFilterResponseSchema = z
   .object({
-    DataCellsFilter: DataCellsFilterSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that describes certain columns on certain rows.' }),
-    ).exactOptional(),
+    DataCellsFilter: DataCellsFilterSchema.exactOptional().openapi({
+      description: 'A structure that describes certain columns on certain rows.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDataCellsFilterResponse')
@@ -837,12 +813,12 @@ const DataLakePrincipalListSchema = z
 
 const PrincipalPermissionsSchema = z
   .object({
-    Principal: DataLakePrincipalSchema.and(
-      z.any().openapi({ description: 'The principal who is granted permissions.' }),
-    ).exactOptional(),
-    Permissions: PermissionListSchema.and(
-      z.any().openapi({ description: 'The permissions that are granted to the principal.' }),
-    ).exactOptional(),
+    Principal: DataLakePrincipalSchema.exactOptional().openapi({
+      description: 'The principal who is granted permissions.',
+    }),
+    Permissions: PermissionListSchema.exactOptional().openapi({
+      description: 'The permissions that are granted to the principal.',
+    }),
   })
   .openapi({ description: 'Permissions granted to a principal.', required: [] })
   .openapi('PrincipalPermissions')
@@ -863,70 +839,38 @@ const AuthorizedSessionTagValueListSchema = z
 
 const DataLakeSettingsSchema = z
   .object({
-    DataLakeAdmins: DataLakePrincipalListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Lake Formation principals. Supported principals are IAM users or IAM roles.',
-        }),
-    ).exactOptional(),
-    CreateDatabaseDefaultPermissions: PrincipalPermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether access control on newly created database is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting "Use only IAM access control," and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html">Changing the Default Security Settings for Your Data Lake</a>.</p>',
-        }),
-    ).exactOptional(),
-    CreateTableDefaultPermissions: PrincipalPermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether access control on newly created table is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting "Use only IAM access control," and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html">Changing the Default Security Settings for Your Data Lake</a>.</p>',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value map that provides an additional configuration on your data lake. CrossAccountVersion is the key you can configure in the Parameters field. Accepted values for the CrossAccountVersion key are 1, 2, and 3.',
-        }),
-    ).exactOptional(),
-    TrustedResourceOwners: TrustedResourceOwnersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of the resource-owning account IDs that the caller's account can use to share their user access details (user ARNs). The user ARNs can be logged in the resource owner's CloudTrail log.</p> <p>You may want to specify this property when you are in a high-trust boundary, such as the same team or company. </p>",
-        }),
-    ).exactOptional(),
-    AllowExternalDataFiltering: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to allow Amazon EMR clusters to access data managed by Lake Formation. </p> <p>If true, you allow Amazon EMR clusters to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>If false or null, no Amazon EMR clusters will be able to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>For more information, see <a href="https://docs-aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#emr-switch">(Optional) Allow Data Filtering on Amazon EMR</a>.</p>',
-        }),
-    ).exactOptional(),
-    ExternalDataFilteringAllowList: DataLakePrincipalListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the account IDs of Amazon Web Services accounts with Amazon EMR clusters that are to perform data filtering.&gt;',
-        }),
-    ).exactOptional(),
-    AuthorizedSessionTagValueList: AuthorizedSessionTagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lake Formation relies on a privileged process secured by Amazon EMR or the third party integrator to tag the user\'s role while assuming it. Lake Formation will publish the acceptable key-value pair, for example key = "LakeFormationTrustedCaller" and value = "TRUE" and the third party integrator must properly tag the temporary security credentials that will be used to call Lake Formation\'s administrative APIs.',
-        }),
-    ).exactOptional(),
+    DataLakeAdmins: DataLakePrincipalListSchema.exactOptional().openapi({
+      description:
+        'A list of Lake Formation principals. Supported principals are IAM users or IAM roles.',
+    }),
+    CreateDatabaseDefaultPermissions: PrincipalPermissionsListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether access control on newly created database is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting "Use only IAM access control," and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html">Changing the Default Security Settings for Your Data Lake</a>.</p>',
+    }),
+    CreateTableDefaultPermissions: PrincipalPermissionsListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether access control on newly created table is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting "Use only IAM access control," and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html">Changing the Default Security Settings for Your Data Lake</a>.</p>',
+    }),
+    Parameters: ParametersMapSchema.exactOptional().openapi({
+      description:
+        'A key-value map that provides an additional configuration on your data lake. CrossAccountVersion is the key you can configure in the Parameters field. Accepted values for the CrossAccountVersion key are 1, 2, and 3.',
+    }),
+    TrustedResourceOwners: TrustedResourceOwnersSchema.exactOptional().openapi({
+      description:
+        "<p>A list of the resource-owning account IDs that the caller's account can use to share their user access details (user ARNs). The user ARNs can be logged in the resource owner's CloudTrail log.</p> <p>You may want to specify this property when you are in a high-trust boundary, such as the same team or company. </p>",
+    }),
+    AllowExternalDataFiltering: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to allow Amazon EMR clusters to access data managed by Lake Formation. </p> <p>If true, you allow Amazon EMR clusters to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>If false or null, no Amazon EMR clusters will be able to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>For more information, see <a href="https://docs-aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#emr-switch">(Optional) Allow Data Filtering on Amazon EMR</a>.</p>',
+    }),
+    ExternalDataFilteringAllowList: DataLakePrincipalListSchema.exactOptional().openapi({
+      description:
+        'A list of the account IDs of Amazon Web Services accounts with Amazon EMR clusters that are to perform data filtering.&gt;',
+    }),
+    AuthorizedSessionTagValueList: AuthorizedSessionTagValueListSchema.exactOptional().openapi({
+      description:
+        'Lake Formation relies on a privileged process secured by Amazon EMR or the third party integrator to tag the user\'s role while assuming it. Lake Formation will publish the acceptable key-value pair, for example key = "LakeFormationTrustedCaller" and value = "TRUE" and the third party integrator must properly tag the temporary security credentials that will be used to call Lake Formation\'s administrative APIs.',
+    }),
   })
   .openapi({
     description:
@@ -937,117 +881,38 @@ const DataLakeSettingsSchema = z
 
 const GetDataLakeSettingsResponseSchema = z
   .object({
-    DataLakeSettings: DataLakeSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure representing a list of Lake Formation principals designated as data lake administrators.',
-        }),
-    ).exactOptional(),
+    DataLakeSettings: DataLakeSettingsSchema.exactOptional().openapi({
+      description:
+        'A structure representing a list of Lake Formation principals designated as data lake administrators.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDataLakeSettingsResponse')
 
-const RAMResourceShareArnSchema = z.string().openapi('RAMResourceShareArn')
-
-const ResourceShareListSchema = z.array(RAMResourceShareArnSchema).openapi('ResourceShareList')
-
-const DetailsMapSchema = z
-  .object({
-    ResourceShare: ResourceShareListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A resource share ARN for a catalog resource shared through RAM.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>A structure containing the additional details to be returned in the <code>AdditionalDetails</code> attribute of <code>PrincipalResourcePermissions</code>.</p> <p>If a catalog resource is shared through Resource Access Manager (RAM), then there will exist a corresponding RAM resource share ARN.</p>',
-    required: [],
-  })
-  .openapi('DetailsMap')
-
-const PrincipalResourcePermissionsSchema = z
-  .object({
-    Principal: DataLakePrincipalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Data Lake principal to be granted or revoked permissions.' }),
-    ).exactOptional(),
-    Resource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource where permissions are to be granted or revoked.' }),
-    ).exactOptional(),
-    Permissions: PermissionListSchema.and(
-      z.any().openapi({ description: 'The permissions to be granted or revoked on the resource.' }),
-    ).exactOptional(),
-    PermissionsWithGrantOption: PermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to grant the ability to grant permissions (as a subset of permissions granted).',
-        }),
-    ).exactOptional(),
-    AdditionalDetails: DetailsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This attribute can be used to return any additional details of <code>PrincipalResourcePermissions</code>. Currently returns only as a RAM resource share ARN.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The permissions granted or revoked on a resource.', required: [] })
-  .openapi('PrincipalResourcePermissions')
-
-const PrincipalResourcePermissionsListSchema = z
-  .array(PrincipalResourcePermissionsSchema)
-  .openapi('PrincipalResourcePermissionsList')
-
-const TokenSchema = z.string().openapi('Token')
-
-const GetEffectivePermissionsForPathResponseSchema = z
-  .object({
-    Permissions: PrincipalResourcePermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the permissions for the specified table or database resource located at the path in Amazon S3.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, if this is not the first call to retrieve this list.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetEffectivePermissionsForPathResponse')
+const GetEffectivePermissionsForPathResponseSchema: z.ZodType<GetEffectivePermissionsForPathResponseType> =
+  z
+    .object({
+      Permissions: PrincipalResourcePermissionsListSchema.exactOptional().openapi({
+        description:
+          'A list of the permissions for the specified table or database resource located at the path in Amazon S3.',
+      }),
+      NextToken: TokenSchema.exactOptional().openapi({
+        description: 'A continuation token, if this is not the first call to retrieve this list.',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('GetEffectivePermissionsForPathResponse')
 
 const GetLFTagResponseSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    TagKey: LFTagKeySchema.and(
-      z.any().openapi({ description: 'The key-name for the LF-tag.' }),
-    ).exactOptional(),
-    TagValues: TagValueListSchema.and(
-      z.any().openapi({ description: 'A list of possible values an attribute can take.' }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    TagKey: LFTagKeySchema.exactOptional().openapi({ description: 'The key-name for the LF-tag.' }),
+    TagValues: TagValueListSchema.exactOptional().openapi({
+      description: 'A list of possible values an attribute can take.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLFTagResponse')
@@ -1060,17 +925,13 @@ const QueryStateStringSchema = z
 
 const GetQueryStateResponseSchema = z
   .object({
-    Error: ErrorMessageStringSchema.and(
-      z.any().openapi({ description: 'An error message when the operation fails.' }),
-    ).exactOptional(),
-    State: QueryStateStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of a query previously submitted. The possible states are:</p> <ul> <li> <p>PENDING: the query is pending.</p> </li> <li> <p>WORKUNITS_AVAILABLE: some work units are ready for retrieval and execution.</p> </li> <li> <p>FINISHED: the query planning finished successfully, and all work units are ready for retrieval and execution.</p> </li> <li> <p>ERROR: an error occurred with the query, such as an invalid query ID or a backend error.</p> </li> </ul>',
-        }),
-    ),
+    Error: ErrorMessageStringSchema.exactOptional().openapi({
+      description: 'An error message when the operation fails.',
+    }),
+    State: QueryStateStringSchema.openapi({
+      description:
+        '<p>The state of a query previously submitted. The possible states are:</p> <ul> <li> <p>PENDING: the query is pending.</p> </li> <li> <p>WORKUNITS_AVAILABLE: some work units are ready for retrieval and execution.</p> </li> <li> <p>FINISHED: the query planning finished successfully, and all work units are ready for retrieval and execution.</p> </li> <li> <p>ERROR: an error occurred with the query, such as an invalid query ID or a backend error.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['State'], description: 'A structure for the output.' })
   .openapi('GetQueryStateResponse')
@@ -1083,15 +944,15 @@ const NumberOfItemsSchema = z.int().openapi('NumberOfItems')
 
 const ExecutionStatisticsSchema = z
   .object({
-    AverageExecutionTimeMillis: NumberOfMillisecondsSchema.and(
-      z.any().openapi({ description: 'The average time the request took to be executed.' }),
-    ).exactOptional(),
-    DataScannedBytes: NumberOfBytesSchema.and(
-      z.any().openapi({ description: 'The amount of data that was scanned in bytes.' }),
-    ).exactOptional(),
-    WorkUnitsExecutedCount: NumberOfItemsSchema.and(
-      z.any().openapi({ description: 'The number of work units executed.' }),
-    ).exactOptional(),
+    AverageExecutionTimeMillis: NumberOfMillisecondsSchema.exactOptional().openapi({
+      description: 'The average time the request took to be executed.',
+    }),
+    DataScannedBytes: NumberOfBytesSchema.exactOptional().openapi({
+      description: 'The amount of data that was scanned in bytes.',
+    }),
+    WorkUnitsExecutedCount: NumberOfItemsSchema.exactOptional().openapi({
+      description: 'The number of work units executed.',
+    }),
   })
   .openapi({
     description: 'Statistics related to the processing of a query statement.',
@@ -1101,18 +962,18 @@ const ExecutionStatisticsSchema = z
 
 const PlanningStatisticsSchema = z
   .object({
-    EstimatedDataToScanBytes: NumberOfBytesSchema.and(
-      z.any().openapi({ description: 'An estimate of the data that was scanned in bytes.' }),
-    ).exactOptional(),
-    PlanningTimeMillis: NumberOfMillisecondsSchema.and(
-      z.any().openapi({ description: 'The time that it took to process the request.' }),
-    ).exactOptional(),
-    QueueTimeMillis: NumberOfMillisecondsSchema.and(
-      z.any().openapi({ description: 'The time the request was in queue to be processed.' }),
-    ).exactOptional(),
-    WorkUnitsGeneratedCount: NumberOfItemsSchema.and(
-      z.any().openapi({ description: 'The number of work units generated.' }),
-    ).exactOptional(),
+    EstimatedDataToScanBytes: NumberOfBytesSchema.exactOptional().openapi({
+      description: 'An estimate of the data that was scanned in bytes.',
+    }),
+    PlanningTimeMillis: NumberOfMillisecondsSchema.exactOptional().openapi({
+      description: 'The time that it took to process the request.',
+    }),
+    QueueTimeMillis: NumberOfMillisecondsSchema.exactOptional().openapi({
+      description: 'The time the request was in queue to be processed.',
+    }),
+    WorkUnitsGeneratedCount: NumberOfItemsSchema.exactOptional().openapi({
+      description: 'The number of work units generated.',
+    }),
   })
   .openapi({
     description: 'Statistics related to the processing of a query statement.',
@@ -1124,25 +985,16 @@ const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
 
 const GetQueryStatisticsResponseSchema = z
   .object({
-    ExecutionStatistics: ExecutionStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>ExecutionStatistics</code> structure containing execution statistics.',
-        }),
-    ).exactOptional(),
-    PlanningStatistics: PlanningStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>PlanningStatistics</code> structure containing query planning statistics.',
-        }),
-    ).exactOptional(),
-    QuerySubmissionTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the query was submitted.' }),
-    ).exactOptional(),
+    ExecutionStatistics: ExecutionStatisticsSchema.exactOptional().openapi({
+      description: 'An <code>ExecutionStatistics</code> structure containing execution statistics.',
+    }),
+    PlanningStatistics: PlanningStatisticsSchema.exactOptional().openapi({
+      description:
+        'A <code>PlanningStatistics</code> structure containing query planning statistics.',
+    }),
+    QuerySubmissionTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the query was submitted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetQueryStatisticsResponse')
@@ -1153,37 +1005,17 @@ const ExpiredExceptionSchema = z.any().openapi('ExpiredException')
 
 const ThrottledExceptionSchema = z.any().openapi('ThrottledException')
 
-const LFTagsListSchema = z.array(LFTagPairSchema).min(1).max(50).openapi('LFTagsList')
-
-const ColumnLFTagSchema = z
-  .object({
-    Name: NameStringSchema.and(
-      z.any().openapi({ description: 'The name of a column resource.' }),
-    ).exactOptional(),
-    LFTags: LFTagsListSchema.and(
-      z.any().openapi({ description: 'The LF-tags attached to a column resource.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A structure containing the name of a column resource and the LF-tags attached to it.',
-    required: [],
-  })
-  .openapi('ColumnLFTag')
-
-const ColumnLFTagsListSchema = z.array(ColumnLFTagSchema).openapi('ColumnLFTagsList')
-
 const GetResourceLFTagsResponseSchema = z
   .object({
-    LFTagOnDatabase: LFTagsListSchema.and(
-      z.any().openapi({ description: 'A list of LF-tags applied to a database resource.' }),
-    ).exactOptional(),
-    LFTagsOnTable: LFTagsListSchema.and(
-      z.any().openapi({ description: 'A list of LF-tags applied to a table resource.' }),
-    ).exactOptional(),
-    LFTagsOnColumns: ColumnLFTagsListSchema.and(
-      z.any().openapi({ description: 'A list of LF-tags applied to a column resource.' }),
-    ).exactOptional(),
+    LFTagOnDatabase: LFTagsListSchema.exactOptional().openapi({
+      description: 'A list of LF-tags applied to a database resource.',
+    }),
+    LFTagsOnTable: LFTagsListSchema.exactOptional().openapi({
+      description: 'A list of LF-tags applied to a table resource.',
+    }),
+    LFTagsOnColumns: ColumnLFTagsListSchema.exactOptional().openapi({
+      description: 'A list of LF-tags applied to a column resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourceLFTagsResponse')
@@ -1202,20 +1034,16 @@ const ObjectSizeSchema = z.int().openapi('ObjectSize')
 
 const TableObjectSchema = z
   .object({
-    Uri: URISchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of the object.' }),
-    ).exactOptional(),
-    ETag: ETagStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.',
-        }),
-    ).exactOptional(),
-    Size: ObjectSizeSchema.and(
-      z.any().openapi({ description: 'The size of the Amazon S3 object in bytes.' }),
-    ).exactOptional(),
+    Uri: URISchema.exactOptional().openapi({
+      description: 'The Amazon S3 location of the object.',
+    }),
+    ETag: ETagStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.',
+    }),
+    Size: ObjectSizeSchema.exactOptional().openapi({
+      description: 'The size of the Amazon S3 object in bytes.',
+    }),
   })
   .openapi({ description: 'Specifies the details of a governed table.', required: [] })
   .openapi('TableObject')
@@ -1224,12 +1052,12 @@ const TableObjectListSchema = z.array(TableObjectSchema).openapi('TableObjectLis
 
 const PartitionObjectsSchema = z
   .object({
-    PartitionValues: PartitionValuesListSchema.and(
-      z.any().openapi({ description: 'A list of partition values.' }),
-    ).exactOptional(),
-    Objects: TableObjectListSchema.and(
-      z.any().openapi({ description: 'A list of table objects' }),
-    ).exactOptional(),
+    PartitionValues: PartitionValuesListSchema.exactOptional().openapi({
+      description: 'A list of partition values.',
+    }),
+    Objects: TableObjectListSchema.exactOptional().openapi({
+      description: 'A list of table objects',
+    }),
   })
   .openapi({
     description: 'A structure containing a list of partition values and table objects.',
@@ -1245,34 +1073,30 @@ const TokenStringSchema = z.string().max(4096).openapi('TokenString')
 
 const GetTableObjectsResponseSchema = z
   .object({
-    Objects: PartitionedTableObjectsListSchema.and(
-      z.any().openapi({ description: 'A list of objects organized by partition keys.' }),
-    ).exactOptional(),
-    NextToken: TokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token indicating whether additional data is available.',
-        }),
-    ).exactOptional(),
+    Objects: PartitionedTableObjectsListSchema.exactOptional().openapi({
+      description: 'A list of objects organized by partition keys.',
+    }),
+    NextToken: TokenStringSchema.exactOptional().openapi({
+      description: 'A continuation token indicating whether additional data is available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTableObjectsResponse')
 
 const GetTemporaryGluePartitionCredentialsResponseSchema = z
   .object({
-    AccessKeyId: AccessKeyIdStringSchema.and(
-      z.any().openapi({ description: 'The access key ID for the temporary credentials.' }),
-    ).exactOptional(),
-    SecretAccessKey: SecretAccessKeyStringSchema.and(
-      z.any().openapi({ description: 'The secret key for the temporary credentials.' }),
-    ).exactOptional(),
-    SessionToken: SessionTokenStringSchema.and(
-      z.any().openapi({ description: 'The session token for the temporary credentials.' }),
-    ).exactOptional(),
-    Expiration: ExpirationTimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the temporary credentials expire.' }),
-    ).exactOptional(),
+    AccessKeyId: AccessKeyIdStringSchema.exactOptional().openapi({
+      description: 'The access key ID for the temporary credentials.',
+    }),
+    SecretAccessKey: SecretAccessKeyStringSchema.exactOptional().openapi({
+      description: 'The secret key for the temporary credentials.',
+    }),
+    SessionToken: SessionTokenStringSchema.exactOptional().openapi({
+      description: 'The session token for the temporary credentials.',
+    }),
+    Expiration: ExpirationTimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the temporary credentials expire.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTemporaryGluePartitionCredentialsResponse')
@@ -1296,18 +1120,18 @@ const PermissionTypeMismatchExceptionSchema = z.any().openapi('PermissionTypeMis
 
 const GetTemporaryGlueTableCredentialsResponseSchema = z
   .object({
-    AccessKeyId: AccessKeyIdStringSchema.and(
-      z.any().openapi({ description: 'The access key ID for the temporary credentials.' }),
-    ).exactOptional(),
-    SecretAccessKey: SecretAccessKeyStringSchema.and(
-      z.any().openapi({ description: 'The secret key for the temporary credentials.' }),
-    ).exactOptional(),
-    SessionToken: SessionTokenStringSchema.and(
-      z.any().openapi({ description: 'The session token for the temporary credentials.' }),
-    ).exactOptional(),
-    Expiration: ExpirationTimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the temporary credentials expire.' }),
-    ).exactOptional(),
+    AccessKeyId: AccessKeyIdStringSchema.exactOptional().openapi({
+      description: 'The access key ID for the temporary credentials.',
+    }),
+    SecretAccessKey: SecretAccessKeyStringSchema.exactOptional().openapi({
+      description: 'The secret key for the temporary credentials.',
+    }),
+    SessionToken: SessionTokenStringSchema.exactOptional().openapi({
+      description: 'The session token for the temporary credentials.',
+    }),
+    Expiration: ExpirationTimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the temporary credentials expire.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTemporaryGlueTableCredentialsResponse')
@@ -1316,14 +1140,10 @@ const ResultStreamSchema = z.string().openapi('ResultStream')
 
 const GetWorkUnitResultsResponseSchema = z
   .object({
-    ResultStream: ResultStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Rows returned from the <code>GetWorkUnitResults</code> operation as a stream of Apache Arrow v1.0 messages.',
-        }),
-    ).exactOptional(),
+    ResultStream: ResultStreamSchema.exactOptional().openapi({
+      description:
+        'Rows returned from the <code>GetWorkUnitResults</code> operation as a stream of Apache Arrow v1.0 messages.',
+    }),
   })
   .openapi({ description: 'A structure for the output.', required: [] })
   .openapi('GetWorkUnitResultsResponse')
@@ -1336,20 +1156,15 @@ const WorkUnitTokenStringSchema = z.string().openapi('WorkUnitTokenString')
 
 const WorkUnitRangeSchema = z
   .object({
-    WorkUnitIdMax: WorkUnitIdLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the maximum work unit ID in the range. The maximum value is inclusive.',
-        }),
-    ),
-    WorkUnitIdMin: WorkUnitIdLongSchema.and(
-      z.any().openapi({ description: 'Defines the minimum work unit ID in the range.' }),
-    ),
-    WorkUnitToken: WorkUnitTokenStringSchema.and(
-      z.any().openapi({ description: 'A work token used to query the execution service.' }),
-    ),
+    WorkUnitIdMax: WorkUnitIdLongSchema.openapi({
+      description: 'Defines the maximum work unit ID in the range. The maximum value is inclusive.',
+    }),
+    WorkUnitIdMin: WorkUnitIdLongSchema.openapi({
+      description: 'Defines the minimum work unit ID in the range.',
+    }),
+    WorkUnitToken: WorkUnitTokenStringSchema.openapi({
+      description: 'A work token used to query the execution service.',
+    }),
   })
   .openapi({
     required: ['WorkUnitIdMax', 'WorkUnitIdMin', 'WorkUnitToken'],
@@ -1361,87 +1176,59 @@ const WorkUnitRangeListSchema = z.array(WorkUnitRangeSchema).openapi('WorkUnitRa
 
 const GetWorkUnitsResponseSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.',
-        }),
-    ).exactOptional(),
-    QueryId: QueryIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the plan query operation.' }),
-    ),
-    WorkUnitRanges: WorkUnitRangeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>WorkUnitRangeList</code> object that specifies the valid range of work unit IDs for querying the execution service.',
-        }),
-    ),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.',
+    }),
+    QueryId: QueryIdStringSchema.openapi({ description: 'The ID of the plan query operation.' }),
+    WorkUnitRanges: WorkUnitRangeListSchema.openapi({
+      description:
+        'A <code>WorkUnitRangeList</code> object that specifies the valid range of work unit IDs for querying the execution service.',
+    }),
   })
   .openapi({ required: ['QueryId', 'WorkUnitRanges'], description: 'A structure for the output.' })
   .openapi('GetWorkUnitsResponse')
 
 const WorkUnitsNotReadyYetExceptionSchema = z.any().openapi('WorkUnitsNotReadyYetException')
 
-const GrantPermissionsResponseSchema = z.object({}).openapi('GrantPermissionsResponse')
+const GrantPermissionsResponseSchema = z.looseObject({}).openapi('GrantPermissionsResponse')
 
 const DataCellsFilterListSchema = z.array(DataCellsFilterSchema).openapi('DataCellsFilterList')
 
 const ListDataCellsFilterResponseSchema = z
   .object({
-    DataCellsFilters: DataCellsFilterListSchema.and(
-      z.any().openapi({ description: 'A list of <code>DataCellFilter</code> structures.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A continuation token, if not all requested data cell filters have been returned.',
-        }),
-    ).exactOptional(),
+    DataCellsFilters: DataCellsFilterListSchema.exactOptional().openapi({
+      description: 'A list of <code>DataCellFilter</code> structures.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A continuation token, if not all requested data cell filters have been returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDataCellsFilterResponse')
 
 const ListLFTagsResponseSchema = z
   .object({
-    LFTags: LFTagsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of LF-tags that the requested has permission to view.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, present if the current list segment is not the last.',
-        }),
-    ).exactOptional(),
+    LFTags: LFTagsListSchema.exactOptional().openapi({
+      description: 'A list of LF-tags that the requested has permission to view.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, present if the current list segment is not the last.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLFTagsResponse')
 
-const ListPermissionsResponseSchema = z
+const ListPermissionsResponseSchema: z.ZodType<ListPermissionsResponseType> = z
   .object({
-    PrincipalResourcePermissions: PrincipalResourcePermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of principals and their permissions on the resource for the specified principal and resource types.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, if this is not the first call to retrieve this list.',
-        }),
-    ).exactOptional(),
+    PrincipalResourcePermissions: PrincipalResourcePermissionsListSchema.exactOptional().openapi({
+      description:
+        'A list of principals and their permissions on the resource for the specified principal and resource types.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is not the first call to retrieve this list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPermissionsResponse')
@@ -1450,17 +1237,13 @@ const ResourceInfoListSchema = z.array(ResourceInfoSchema).openapi('ResourceInfo
 
 const ListResourcesResponseSchema = z
   .object({
-    ResourceInfoList: ResourceInfoListSchema.and(
-      z.any().openapi({ description: 'A summary of the data lake resources.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A continuation token, if this is not the first call to retrieve these resources.',
-        }),
-    ).exactOptional(),
+    ResourceInfoList: ResourceInfoListSchema.exactOptional().openapi({
+      description: 'A summary of the data lake resources.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A continuation token, if this is not the first call to retrieve these resources.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourcesResponse')
@@ -1491,17 +1274,15 @@ const StringValueListSchema = z.array(StringValueSchema).openapi('StringValueLis
 
 const FilterConditionSchema = z
   .object({
-    Field: FieldNameStringSchema.and(
-      z.any().openapi({ description: 'The field to filter in the filter condition.' }),
-    ).exactOptional(),
-    ComparisonOperator: ComparisonOperatorSchema.and(
-      z.any().openapi({ description: 'The comparison operator used in the filter condition.' }),
-    ).exactOptional(),
-    StringValueList: StringValueListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A string with values used in evaluating the filter condition.' }),
-    ).exactOptional(),
+    Field: FieldNameStringSchema.exactOptional().openapi({
+      description: 'The field to filter in the filter condition.',
+    }),
+    ComparisonOperator: ComparisonOperatorSchema.exactOptional().openapi({
+      description: 'The comparison operator used in the filter condition.',
+    }),
+    StringValueList: StringValueListSchema.exactOptional().openapi({
+      description: 'A string with values used in evaluating the filter condition.',
+    }),
   })
   .openapi({
     description:
@@ -1524,45 +1305,25 @@ const MessageStringSchema = z.string().openapi('MessageString')
 
 const StorageOptimizerSchema = z
   .object({
-    StorageOptimizerType: OptimizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specific type of storage optimizer. The supported value is <code>compaction</code>.',
-        }),
-    ).exactOptional(),
-    Config: StorageOptimizerConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of the storage optimizer configuration. Currently contains only one key-value pair: <code>is_enabled</code> indicates true or false for acceleration.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: MessageStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A message that contains information about any error (if present).</p> <p>When an acceleration result has an enabled status, the error message is empty.</p> <p>When an acceleration result has a disabled status, the message describes an error or simply indicates "disabled by the user".</p>',
-        }),
-    ).exactOptional(),
-    Warnings: MessageStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message that contains information about any warnings (if present).',
-        }),
-    ).exactOptional(),
-    LastRunDetails: MessageStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When an acceleration result has an enabled status, contains the details of the last job run.',
-        }),
-    ).exactOptional(),
+    StorageOptimizerType: OptimizerTypeSchema.exactOptional().openapi({
+      description:
+        'The specific type of storage optimizer. The supported value is <code>compaction</code>.',
+    }),
+    Config: StorageOptimizerConfigSchema.exactOptional().openapi({
+      description:
+        'A map of the storage optimizer configuration. Currently contains only one key-value pair: <code>is_enabled</code> indicates true or false for acceleration.',
+    }),
+    ErrorMessage: MessageStringSchema.exactOptional().openapi({
+      description:
+        '<p>A message that contains information about any error (if present).</p> <p>When an acceleration result has an enabled status, the error message is empty.</p> <p>When an acceleration result has a disabled status, the message describes an error or simply indicates "disabled by the user".</p>',
+    }),
+    Warnings: MessageStringSchema.exactOptional().openapi({
+      description: 'A message that contains information about any warnings (if present).',
+    }),
+    LastRunDetails: MessageStringSchema.exactOptional().openapi({
+      description:
+        'When an acceleration result has an enabled status, contains the details of the last job run.',
+    }),
   })
   .openapi({
     description: 'A structure describing the configuration and details of a storage optimizer.',
@@ -1574,17 +1335,13 @@ const StorageOptimizerListSchema = z.array(StorageOptimizerSchema).openapi('Stor
 
 const ListTableStorageOptimizersResponseSchema = z
   .object({
-    StorageOptimizerList: StorageOptimizerListSchema.and(
-      z.any().openapi({ description: 'A list of the storage optimizers associated with a table.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.',
-        }),
-    ).exactOptional(),
+    StorageOptimizerList: StorageOptimizerListSchema.exactOptional().openapi({
+      description: 'A list of the storage optimizers associated with a table.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTableStorageOptimizersResponse')
@@ -1595,48 +1352,40 @@ const TransactionDescriptionListSchema = z
 
 const ListTransactionsResponseSchema = z
   .object({
-    Transactions: TransactionDescriptionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of transactions. The record for each transaction is a <code>TransactionDescription</code> object.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token indicating whether additional data is available.',
-        }),
-    ).exactOptional(),
+    Transactions: TransactionDescriptionListSchema.exactOptional().openapi({
+      description:
+        'A list of transactions. The record for each transaction is a <code>TransactionDescription</code> object.',
+    }),
+    NextToken: TokenStringSchema.exactOptional().openapi({
+      description: 'A continuation token indicating whether additional data is available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTransactionsResponse')
 
-const PutDataLakeSettingsResponseSchema = z.object({}).openapi('PutDataLakeSettingsResponse')
+const PutDataLakeSettingsResponseSchema = z.looseObject({}).openapi('PutDataLakeSettingsResponse')
 
-const RegisterResourceResponseSchema = z.object({}).openapi('RegisterResourceResponse')
+const RegisterResourceResponseSchema = z.looseObject({}).openapi('RegisterResourceResponse')
 
 const RemoveLFTagsFromResourceResponseSchema = z
   .object({
-    Failures: LFTagErrorsSchema.and(
-      z.any().openapi({ description: 'A list of failures to untag a resource.' }),
-    ).exactOptional(),
+    Failures: LFTagErrorsSchema.exactOptional().openapi({
+      description: 'A list of failures to untag a resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveLFTagsFromResourceResponse')
 
-const RevokePermissionsResponseSchema = z.object({}).openapi('RevokePermissionsResponse')
+const RevokePermissionsResponseSchema = z.looseObject({}).openapi('RevokePermissionsResponse')
 
 const TaggedDatabaseSchema = z
   .object({
-    Database: DatabaseResourceSchema.and(
-      z.any().openapi({ description: 'A database that has LF-tags attached to it.' }),
-    ).exactOptional(),
-    LFTags: LFTagsListSchema.and(
-      z.any().openapi({ description: 'A list of LF-tags attached to the database.' }),
-    ).exactOptional(),
+    Database: DatabaseResourceSchema.exactOptional().openapi({
+      description: 'A database that has LF-tags attached to it.',
+    }),
+    LFTags: LFTagsListSchema.exactOptional().openapi({
+      description: 'A list of LF-tags attached to the database.',
+    }),
   })
   .openapi({
     description: 'A structure describing a database resource with LF-tags.',
@@ -1648,70 +1397,34 @@ const DatabaseLFTagsListSchema = z.array(TaggedDatabaseSchema).openapi('Database
 
 const SearchDatabasesByLFTagsResponseSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, present if the current list segment is not the last.',
-        }),
-    ).exactOptional(),
-    DatabaseList: DatabaseLFTagsListSchema.and(
-      z.any().openapi({ description: 'A list of databases that meet the LF-tag conditions.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, present if the current list segment is not the last.',
+    }),
+    DatabaseList: DatabaseLFTagsListSchema.exactOptional().openapi({
+      description: 'A list of databases that meet the LF-tag conditions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchDatabasesByLFTagsResponse')
 
-const TaggedTableSchema = z
+const SearchTablesByLFTagsResponseSchema: z.ZodType<SearchTablesByLFTagsResponseType> = z
   .object({
-    Table: TableResourceSchema.and(
-      z.any().openapi({ description: 'A table that has LF-tags attached to it.' }),
-    ).exactOptional(),
-    LFTagOnDatabase: LFTagsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of LF-tags attached to the database where the table resides.',
-        }),
-    ).exactOptional(),
-    LFTagsOnTable: LFTagsListSchema.and(
-      z.any().openapi({ description: 'A list of LF-tags attached to the table.' }),
-    ).exactOptional(),
-    LFTagsOnColumns: ColumnLFTagsListSchema.and(
-      z.any().openapi({ description: 'A list of LF-tags attached to columns in the table.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'A structure describing a table resource with LF-tags.', required: [] })
-  .openapi('TaggedTable')
-
-const TableLFTagsListSchema = z.array(TaggedTableSchema).openapi('TableLFTagsList')
-
-const SearchTablesByLFTagsResponseSchema = z
-  .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, present if the current list segment is not the last.',
-        }),
-    ).exactOptional(),
-    TableList: TableLFTagsListSchema.and(
-      z.any().openapi({ description: 'A list of tables that meet the LF-tag conditions.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, present if the current list segment is not the last.',
+    }),
+    TableList: TableLFTagsListSchema.exactOptional().openapi({
+      description: 'A list of tables that meet the LF-tag conditions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchTablesByLFTagsResponse')
 
 const StartQueryPlanningResponseSchema = z
   .object({
-    QueryId: QueryIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the plan query operation can be used to fetch the actual work unit descriptors that are produced as the result of the operation. The ID is also used to get the query state and as an input to the <code>Execute</code> operation.',
-        }),
-    ),
+    QueryId: QueryIdStringSchema.openapi({
+      description:
+        'The ID of the plan query operation can be used to fetch the actual work unit descriptors that are produced as the result of the operation. The ID is also used to get the query state and as an input to the <code>Execute</code> operation.',
+    }),
   })
   .openapi({ required: ['QueryId'], description: 'A structure for the output.' })
   .openapi('StartQueryPlanningResponse')
@@ -1728,43 +1441,35 @@ const QueryParameterMapSchema = z.record(z.string(), StringSchema).openapi('Quer
 
 const StartTransactionResponseSchema = z
   .object({
-    TransactionId: TransactionIdStringSchema.and(
-      z.any().openapi({ description: 'An opaque identifier for the transaction.' }),
-    ).exactOptional(),
+    TransactionId: TransactionIdStringSchema.exactOptional().openapi({
+      description: 'An opaque identifier for the transaction.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartTransactionResponse')
 
-const UpdateDataCellsFilterResponseSchema = z.object({}).openapi('UpdateDataCellsFilterResponse')
+const UpdateDataCellsFilterResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateDataCellsFilterResponse')
 
-const UpdateLFTagResponseSchema = z.object({}).openapi('UpdateLFTagResponse')
+const UpdateLFTagResponseSchema = z.looseObject({}).openapi('UpdateLFTagResponse')
 
-const UpdateResourceResponseSchema = z.object({}).openapi('UpdateResourceResponse')
+const UpdateResourceResponseSchema = z.looseObject({}).openapi('UpdateResourceResponse')
 
-const UpdateTableObjectsResponseSchema = z.object({}).openapi('UpdateTableObjectsResponse')
+const UpdateTableObjectsResponseSchema = z.looseObject({}).openapi('UpdateTableObjectsResponse')
 
 const AddObjectInputSchema = z
   .object({
-    Uri: URISchema.and(z.any().openapi({ description: 'The Amazon S3 location of the object.' })),
-    ETag: ETagStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.',
-        }),
-    ),
-    Size: ObjectSizeSchema.and(
-      z.any().openapi({ description: 'The size of the Amazon S3 object in bytes.' }),
-    ),
-    PartitionValues: PartitionValuesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of partition values for the object. A value must be specified for each partition key associated with the table.</p> <p>The supported data types are integer, long, date(yyyy-MM-dd), timestamp(yyyy-MM-dd HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss"), string and decimal.</p>',
-        }),
-    ).exactOptional(),
+    Uri: URISchema.openapi({ description: 'The Amazon S3 location of the object.' }),
+    ETag: ETagStringSchema.openapi({
+      description:
+        'The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.',
+    }),
+    Size: ObjectSizeSchema.openapi({ description: 'The size of the Amazon S3 object in bytes.' }),
+    PartitionValues: PartitionValuesListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of partition values for the object. A value must be specified for each partition key associated with the table.</p> <p>The supported data types are integer, long, date(yyyy-MM-dd), timestamp(yyyy-MM-dd HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss"), string and decimal.</p>',
+    }),
   })
   .openapi({
     required: ['Uri', 'ETag', 'Size'],
@@ -1774,37 +1479,27 @@ const AddObjectInputSchema = z
 
 const DeleteObjectInputSchema = z
   .object({
-    Uri: URISchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location of the object to delete.' }),
-    ),
-    ETag: ETagStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.',
-        }),
-    ).exactOptional(),
-    PartitionValues: PartitionValuesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of partition values for the object. A value must be specified for each partition key associated with the governed table.',
-        }),
-    ).exactOptional(),
+    Uri: URISchema.openapi({ description: 'The Amazon S3 location of the object to delete.' }),
+    ETag: ETagStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 ETag of the object. Returned by <code>GetTableObjects</code> for validation and used to identify changes to the underlying data.',
+    }),
+    PartitionValues: PartitionValuesListSchema.exactOptional().openapi({
+      description:
+        'A list of partition values for the object. A value must be specified for each partition key associated with the governed table.',
+    }),
   })
   .openapi({ required: ['Uri'], description: 'An object to delete from the governed table.' })
   .openapi('DeleteObjectInput')
 
 const WriteOperationSchema = z
   .object({
-    AddObject: AddObjectInputSchema.and(
-      z.any().openapi({ description: 'A new object to add to the governed table.' }),
-    ).exactOptional(),
-    DeleteObject: DeleteObjectInputSchema.and(
-      z.any().openapi({ description: 'An object to delete from the governed table.' }),
-    ).exactOptional(),
+    AddObject: AddObjectInputSchema.exactOptional().openapi({
+      description: 'A new object to add to the governed table.',
+    }),
+    DeleteObject: DeleteObjectInputSchema.exactOptional().openapi({
+      description: 'An object to delete from the governed table.',
+    }),
   })
   .openapi({
     description: 'Defines an object to add to or delete from a governed table.',
@@ -1816,35 +1511,23 @@ const ResultSchema = z.string().openapi('Result')
 
 const UpdateTableStorageOptimizerResponseSchema = z
   .object({
-    Result: ResultSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A response indicating the success of failure of the operation.' }),
-    ).exactOptional(),
+    Result: ResultSchema.exactOptional().openapi({
+      description: 'A response indicating the success of failure of the operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTableStorageOptimizerResponse')
 
 const AddLFTagsToResourceRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Resource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The database, table, or column resource to which to attach an LF-tag.',
-        }),
-    ),
-    LFTags: LFTagsListSchema.and(
-      z.any().openapi({ description: 'The LF-tags to attach to the resource.' }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Resource: ResourceSchema.openapi({
+      description: 'The database, table, or column resource to which to attach an LF-tag.',
+    }),
+    LFTags: LFTagsListSchema.openapi({ description: 'The LF-tags to attach to the resource.' }),
   })
   .openapi({ required: ['Resource', 'LFTags'], title: 'AddLFTagsToResourceRequest' })
   .openapi('AddLFTagsToResourceRequest')
@@ -1864,38 +1547,22 @@ const CredentialTimeoutDurationSecondIntegerSchema = z
 
 const AssumeDecoratedRoleWithSAMLRequestSchema = z
   .object({
-    SAMLAssertion: SAMLAssertionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A SAML assertion consisting of an assertion statement for the user who needs temporary credentials. This must match the SAML assertion that was issued to IAM. This must be Base64 encoded.',
-        }),
-    ),
-    RoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role that represents an IAM principal whose scope down policy allows it to call credential vending APIs such as <code>GetTemporaryTableCredentials</code>. The caller must also have iam:PassRole permission on this role. ',
-        }),
-    ),
-    PrincipalArn: IAMSAMLProviderArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the SAML provider in IAM that describes the IdP.',
-        }),
-    ),
-    DurationSeconds: CredentialTimeoutDurationSecondIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time period, between 900 and 43,200 seconds, for the timeout of the temporary credentials.',
-        }),
-    ).exactOptional(),
+    SAMLAssertion: SAMLAssertionStringSchema.openapi({
+      description:
+        'A SAML assertion consisting of an assertion statement for the user who needs temporary credentials. This must match the SAML assertion that was issued to IAM. This must be Base64 encoded.',
+    }),
+    RoleArn: IAMRoleArnSchema.openapi({
+      description:
+        'The role that represents an IAM principal whose scope down policy allows it to call credential vending APIs such as <code>GetTemporaryTableCredentials</code>. The caller must also have iam:PassRole permission on this role. ',
+    }),
+    PrincipalArn: IAMSAMLProviderArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the SAML provider in IAM that describes the IdP.',
+    }),
+    DurationSeconds: CredentialTimeoutDurationSecondIntegerSchema.exactOptional().openapi({
+      description:
+        'The time period, between 900 and 43,200 seconds, for the timeout of the temporary credentials.',
+    }),
   })
   .openapi({
     required: ['SAMLAssertion', 'RoleArn', 'PrincipalArn'],
@@ -1905,14 +1572,10 @@ const AssumeDecoratedRoleWithSAMLRequestSchema = z
 
 const AuditContextSchema = z
   .object({
-    AdditionalAuditContext: AuditContextStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The filter engine can populate the 'AdditionalAuditContext' information with the request ID for you to track. This information will be displayed in CloudTrail log in your account.",
-        }),
-    ).exactOptional(),
+    AdditionalAuditContext: AuditContextStringSchema.exactOptional().openapi({
+      description:
+        "The filter engine can populate the 'AdditionalAuditContext' information with the request ID for you to track. This information will be displayed in CloudTrail log in your account.",
+    }),
   })
   .openapi({
     description: 'A structure used to include auditing information on the privileged API. ',
@@ -1920,50 +1583,30 @@ const AuditContextSchema = z
   })
   .openapi('AuditContext')
 
-const BatchPermissionsRequestEntryListSchema = z
-  .array(BatchPermissionsRequestEntrySchema)
-  .openapi('BatchPermissionsRequestEntryList')
-
-const BatchGrantPermissionsRequestSchema = z
+const BatchGrantPermissionsRequestSchema: z.ZodType<BatchGrantPermissionsRequestType> = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Entries: BatchPermissionsRequestEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 20 entries for resource permissions to be granted by batch operation to the principal.',
-        }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Entries: BatchPermissionsRequestEntryListSchema.openapi({
+      description:
+        'A list of up to 20 entries for resource permissions to be granted by batch operation to the principal.',
+    }),
   })
   .openapi({ required: ['Entries'], title: 'BatchGrantPermissionsRequest' })
   .openapi('BatchGrantPermissionsRequest')
 
-const BatchRevokePermissionsRequestSchema = z
+const BatchRevokePermissionsRequestSchema: z.ZodType<BatchRevokePermissionsRequestType> = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Entries: BatchPermissionsRequestEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 20 entries for resource permissions to be revoked by batch operation to the principal.',
-        }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Entries: BatchPermissionsRequestEntryListSchema.openapi({
+      description:
+        'A list of up to 20 entries for resource permissions to be revoked by batch operation to the principal.',
+    }),
   })
   .openapi({ required: ['Entries'], title: 'BatchRevokePermissionsRequest' })
   .openapi('BatchRevokePermissionsRequest')
@@ -1972,50 +1615,38 @@ const BooleanNullableSchema = z.boolean().openapi('BooleanNullable')
 
 const CancelTransactionRequestSchema = z
   .object({
-    TransactionId: TransactionIdStringSchema.and(
-      z.any().openapi({ description: 'The transaction to cancel.' }),
-    ),
+    TransactionId: TransactionIdStringSchema.openapi({ description: 'The transaction to cancel.' }),
   })
   .openapi({ required: ['TransactionId'], title: 'CancelTransactionRequest' })
   .openapi('CancelTransactionRequest')
 
 const CommitTransactionRequestSchema = z
   .object({
-    TransactionId: TransactionIdStringSchema.and(
-      z.any().openapi({ description: 'The transaction to commit.' }),
-    ),
+    TransactionId: TransactionIdStringSchema.openapi({ description: 'The transaction to commit.' }),
   })
   .openapi({ required: ['TransactionId'], title: 'CommitTransactionRequest' })
   .openapi('CommitTransactionRequest')
 
 const CreateDataCellsFilterRequestSchema = z
   .object({
-    TableData: DataCellsFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>DataCellsFilter</code> structure containing information about the data cells filter.',
-        }),
-    ),
+    TableData: DataCellsFilterSchema.openapi({
+      description:
+        'A <code>DataCellsFilter</code> structure containing information about the data cells filter.',
+    }),
   })
   .openapi({ required: ['TableData'], title: 'CreateDataCellsFilterRequest' })
   .openapi('CreateDataCellsFilterRequest')
 
 const CreateLFTagRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    TagKey: LFTagKeySchema.and(z.any().openapi({ description: 'The key-name for the LF-tag.' })),
-    TagValues: TagValueListSchema.and(
-      z.any().openapi({ description: 'A list of possible values an attribute can take.' }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    TagKey: LFTagKeySchema.openapi({ description: 'The key-name for the LF-tag.' }),
+    TagValues: TagValueListSchema.openapi({
+      description: 'A list of possible values an attribute can take.',
+    }),
   })
   .openapi({ required: ['TagKey', 'TagValues'], title: 'CreateLFTagRequest' })
   .openapi('CreateLFTagRequest')
@@ -2035,35 +1666,29 @@ const DataLakeResourceTypeSchema = z
 
 const DeleteDataCellsFilterRequestSchema = z
   .object({
-    TableCatalogId: CatalogIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the catalog to which the table belongs.' }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'A database in the Glue Data Catalog.' }),
-    ).exactOptional(),
-    TableName: NameStringSchema.and(
-      z.any().openapi({ description: 'A table in the database.' }),
-    ).exactOptional(),
-    Name: NameStringSchema.and(
-      z.any().openapi({ description: 'The name given by the user to the data filter cell.' }),
-    ).exactOptional(),
+    TableCatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description: 'The ID of the catalog to which the table belongs.',
+    }),
+    DatabaseName: NameStringSchema.exactOptional().openapi({
+      description: 'A database in the Glue Data Catalog.',
+    }),
+    TableName: NameStringSchema.exactOptional().openapi({
+      description: 'A table in the database.',
+    }),
+    Name: NameStringSchema.exactOptional().openapi({
+      description: 'The name given by the user to the data filter cell.',
+    }),
   })
   .openapi({ title: 'DeleteDataCellsFilterRequest', required: [] })
   .openapi('DeleteDataCellsFilterRequest')
 
 const DeleteLFTagRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    TagKey: LFTagKeySchema.and(
-      z.any().openapi({ description: 'The key-name for the LF-tag to delete.' }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    TagKey: LFTagKeySchema.openapi({ description: 'The key-name for the LF-tag to delete.' }),
   })
   .openapi({ required: ['TagKey'], title: 'DeleteLFTagRequest' })
   .openapi('DeleteLFTagRequest')
@@ -2076,31 +1701,21 @@ const VirtualObjectListSchema = z
 
 const DeleteObjectsOnCancelRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Glue data catalog that contains the governed table. Defaults to the current account ID.',
-        }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'The database that contains the governed table.' }),
-    ),
-    TableName: NameStringSchema.and(
-      z.any().openapi({ description: 'The name of the governed table.' }),
-    ),
-    TransactionId: TransactionIdStringSchema.and(
-      z.any().openapi({ description: 'ID of the transaction that the writes occur in.' }),
-    ),
-    Objects: VirtualObjectListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of VirtualObject structures, which indicates the Amazon S3 objects to be deleted if the transaction cancels.',
-        }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The Glue data catalog that contains the governed table. Defaults to the current account ID.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description: 'The database that contains the governed table.',
+    }),
+    TableName: NameStringSchema.openapi({ description: 'The name of the governed table.' }),
+    TransactionId: TransactionIdStringSchema.openapi({
+      description: 'ID of the transaction that the writes occur in.',
+    }),
+    Objects: VirtualObjectListSchema.openapi({
+      description:
+        'A list of VirtualObject structures, which indicates the Amazon S3 objects to be deleted if the transaction cancels.',
+    }),
   })
   .openapi({
     required: ['DatabaseName', 'TableName', 'TransactionId', 'Objects'],
@@ -2110,39 +1725,32 @@ const DeleteObjectsOnCancelRequestSchema = z
 
 const DeregisterResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that you want to deregister.',
-        }),
-    ),
+    ResourceArn: ResourceArnStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource that you want to deregister.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DeregisterResourceRequest' })
   .openapi('DeregisterResourceRequest')
 
 const DescribeResourceRequestSchema = z
-  .object({
-    ResourceArn: ResourceArnStringSchema.and(z.any().openapi({ description: 'The resource ARN.' })),
-  })
+  .object({ ResourceArn: ResourceArnStringSchema.openapi({ description: 'The resource ARN.' }) })
   .openapi({ required: ['ResourceArn'], title: 'DescribeResourceRequest' })
   .openapi('DescribeResourceRequest')
 
 const DescribeTransactionRequestSchema = z
   .object({
-    TransactionId: TransactionIdStringSchema.and(
-      z.any().openapi({ description: 'The transaction for which to return status.' }),
-    ),
+    TransactionId: TransactionIdStringSchema.openapi({
+      description: 'The transaction for which to return status.',
+    }),
   })
   .openapi({ required: ['TransactionId'], title: 'DescribeTransactionRequest' })
   .openapi('DescribeTransactionRequest')
 
 const ExtendTransactionRequestSchema = z
   .object({
-    TransactionId: TransactionIdStringSchema.and(
-      z.any().openapi({ description: 'The transaction to extend.' }),
-    ).exactOptional(),
+    TransactionId: TransactionIdStringSchema.exactOptional().openapi({
+      description: 'The transaction to extend.',
+    }),
   })
   .openapi({ title: 'ExtendTransactionRequest', required: [] })
   .openapi('ExtendTransactionRequest')
@@ -2155,16 +1763,14 @@ const FilterConditionListSchema = z
 
 const GetDataCellsFilterRequestSchema = z
   .object({
-    TableCatalogId: CatalogIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the catalog to which the table belongs.' }),
-    ),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'A database in the Glue Data Catalog.' }),
-    ),
-    TableName: NameStringSchema.and(z.any().openapi({ description: 'A table in the database.' })),
-    Name: NameStringSchema.and(
-      z.any().openapi({ description: 'The name given by the user to the data filter cell.' }),
-    ),
+    TableCatalogId: CatalogIdStringSchema.openapi({
+      description: 'The ID of the catalog to which the table belongs.',
+    }),
+    DatabaseName: NameStringSchema.openapi({ description: 'A database in the Glue Data Catalog.' }),
+    TableName: NameStringSchema.openapi({ description: 'A table in the database.' }),
+    Name: NameStringSchema.openapi({
+      description: 'The name given by the user to the data filter cell.',
+    }),
   })
   .openapi({
     required: ['TableCatalogId', 'DatabaseName', 'TableName', 'Name'],
@@ -2174,14 +1780,10 @@ const GetDataCellsFilterRequestSchema = z
 
 const GetDataLakeSettingsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
   })
   .openapi({ title: 'GetDataLakeSettingsRequest', required: [] })
   .openapi('GetDataLakeSettingsRequest')
@@ -2190,47 +1792,31 @@ const PageSizeSchema = z.int().min(1).max(1000).openapi('PageSize')
 
 const GetEffectivePermissionsForPathRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource for which you want to get permissions.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, if this is not the first call to retrieve this list.',
-        }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    ResourceArn: ResourceArnStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource for which you want to get permissions.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is not the first call to retrieve this list.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'GetEffectivePermissionsForPathRequest' })
   .openapi('GetEffectivePermissionsForPathRequest')
 
 const GetLFTagRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    TagKey: LFTagKeySchema.and(z.any().openapi({ description: 'The key-name for the LF-tag.' })),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    TagKey: LFTagKeySchema.openapi({ description: 'The key-name for the LF-tag.' }),
   })
   .openapi({ required: ['TagKey'], title: 'GetLFTagRequest' })
   .openapi('GetLFTagRequest')
@@ -2242,9 +1828,9 @@ const GetQueryStateRequestQueryIdStringSchema = z
 
 const GetQueryStateRequestSchema = z
   .object({
-    QueryId: GetQueryStateRequestQueryIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the plan query operation.' }),
-    ),
+    QueryId: GetQueryStateRequestQueryIdStringSchema.openapi({
+      description: 'The ID of the plan query operation.',
+    }),
   })
   .openapi({ required: ['QueryId'], title: 'GetQueryStateRequest' })
   .openapi('GetQueryStateRequest')
@@ -2256,98 +1842,65 @@ const GetQueryStatisticsRequestQueryIdStringSchema = z
 
 const GetQueryStatisticsRequestSchema = z
   .object({
-    QueryId: GetQueryStatisticsRequestQueryIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the plan query operation.' }),
-    ),
+    QueryId: GetQueryStatisticsRequestQueryIdStringSchema.openapi({
+      description: 'The ID of the plan query operation.',
+    }),
   })
   .openapi({ required: ['QueryId'], title: 'GetQueryStatisticsRequest' })
   .openapi('GetQueryStatisticsRequest')
 
 const GetResourceLFTagsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Resource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The database, table, or column resource for which you want to return LF-tags.',
-        }),
-    ),
-    ShowAssignedLFTags: BooleanNullableSchema.and(
-      z.any().openapi({ description: 'Indicates whether to show the assigned LF-tags.' }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Resource: ResourceSchema.openapi({
+      description: 'The database, table, or column resource for which you want to return LF-tags.',
+    }),
+    ShowAssignedLFTags: BooleanNullableSchema.exactOptional().openapi({
+      description: 'Indicates whether to show the assigned LF-tags.',
+    }),
   })
   .openapi({ required: ['Resource'], title: 'GetResourceLFTagsRequest' })
   .openapi('GetResourceLFTagsRequest')
 
 const GetTableObjectsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The catalog containing the governed table. Defaults to the caller’s account.',
-        }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'The database containing the governed table.' }),
-    ),
-    TableName: NameStringSchema.and(
-      z.any().openapi({ description: 'The governed table for which to retrieve objects.' }),
-    ),
-    TransactionId: TransactionIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The transaction ID at which to read the governed table contents. If this transaction has aborted, an error is returned. If not set, defaults to the most recent committed transaction. Cannot be specified along with <code>QueryAsOfTime</code>.',
-        }),
-    ).exactOptional(),
-    QueryAsOfTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time as of when to read the governed table contents. If not set, the most recent transaction commit time is used. Cannot be specified along with <code>TransactionId</code>.',
-        }),
-    ).exactOptional(),
-    PartitionPredicate: PredicateStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A predicate to filter the objects returned based on the partition keys defined in the governed table.</p> <ul> <li> <p>The comparison operators supported are: =, &gt;, &lt;, &gt;=, &lt;=</p> </li> <li> <p>The logical operators supported are: AND</p> </li> <li> <p>The data types supported are integer, long, date(yyyy-MM-dd), timestamp(yyyy-MM-dd HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss"), string and decimal.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'Specifies how many values to return in a page.' }),
-    ).exactOptional(),
-    NextToken: TokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A continuation token if this is not the first call to retrieve these objects.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description: 'The catalog containing the governed table. Defaults to the caller’s account.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description: 'The database containing the governed table.',
+    }),
+    TableName: NameStringSchema.openapi({
+      description: 'The governed table for which to retrieve objects.',
+    }),
+    TransactionId: TransactionIdStringSchema.exactOptional().openapi({
+      description:
+        'The transaction ID at which to read the governed table contents. If this transaction has aborted, an error is returned. If not set, defaults to the most recent committed transaction. Cannot be specified along with <code>QueryAsOfTime</code>.',
+    }),
+    QueryAsOfTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time as of when to read the governed table contents. If not set, the most recent transaction commit time is used. Cannot be specified along with <code>TransactionId</code>.',
+    }),
+    PartitionPredicate: PredicateStringSchema.exactOptional().openapi({
+      description:
+        '<p>A predicate to filter the objects returned based on the partition keys defined in the governed table.</p> <ul> <li> <p>The comparison operators supported are: =, &gt;, &lt;, &gt;=, &lt;=</p> </li> <li> <p>The logical operators supported are: AND</p> </li> <li> <p>The data types supported are integer, long, date(yyyy-MM-dd), timestamp(yyyy-MM-dd HH:mm:ssXXX or yyyy-MM-dd HH:mm:ss"), string and decimal.</p> </li> </ul>',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'Specifies how many values to return in a page.',
+    }),
+    NextToken: TokenStringSchema.exactOptional().openapi({
+      description: 'A continuation token if this is not the first call to retrieve these objects.',
+    }),
   })
   .openapi({ required: ['DatabaseName', 'TableName'], title: 'GetTableObjectsRequest' })
   .openapi('GetTableObjectsRequest')
 
 const PartitionValueListSchema = z
   .object({
-    Values: ValueStringListSchema.and(
-      z.any().openapi({ description: 'The list of partition values.' }),
-    ),
+    Values: ValueStringListSchema.openapi({ description: 'The list of partition values.' }),
   })
   .openapi({ required: ['Values'], description: 'Contains a list of values defining partitions.' })
   .openapi('PartitionValueList')
@@ -2360,46 +1913,26 @@ const PermissionTypeListSchema = z
 
 const GetTemporaryGluePartitionCredentialsRequestSchema = z
   .object({
-    TableArn: ResourceArnStringSchema.and(
-      z.any().openapi({ description: "The ARN of the partitions' table." }),
-    ),
-    Partition: PartitionValueListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of partition values identifying a single partition.' }),
-    ),
-    Permissions: PermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the request based on the user having been granted a list of specified permissions on the requested resource(s).',
-        }),
-    ).exactOptional(),
-    DurationSeconds: CredentialTimeoutDurationSecondIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time period, between 900 and 21,600 seconds, for the timeout of the temporary credentials.',
-        }),
-    ).exactOptional(),
-    AuditContext: AuditContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure representing context to access a resource (column names, query ID, etc).',
-        }),
-    ).exactOptional(),
-    SupportedPermissionTypes: PermissionTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of supported permission types for the partition. Valid values are <code>COLUMN_PERMISSION</code> and <code>CELL_FILTER_PERMISSION</code>.',
-        }),
-    ),
+    TableArn: ResourceArnStringSchema.openapi({ description: "The ARN of the partitions' table." }),
+    Partition: PartitionValueListSchema.openapi({
+      description: 'A list of partition values identifying a single partition.',
+    }),
+    Permissions: PermissionListSchema.exactOptional().openapi({
+      description:
+        'Filters the request based on the user having been granted a list of specified permissions on the requested resource(s).',
+    }),
+    DurationSeconds: CredentialTimeoutDurationSecondIntegerSchema.exactOptional().openapi({
+      description:
+        'The time period, between 900 and 21,600 seconds, for the timeout of the temporary credentials.',
+    }),
+    AuditContext: AuditContextSchema.exactOptional().openapi({
+      description:
+        'A structure representing context to access a resource (column names, query ID, etc).',
+    }),
+    SupportedPermissionTypes: PermissionTypeListSchema.openapi({
+      description:
+        'A list of supported permission types for the partition. Valid values are <code>COLUMN_PERMISSION</code> and <code>CELL_FILTER_PERMISSION</code>.',
+    }),
   })
   .openapi({
     required: ['TableArn', 'Partition', 'SupportedPermissionTypes'],
@@ -2409,46 +1942,26 @@ const GetTemporaryGluePartitionCredentialsRequestSchema = z
 
 const GetTemporaryGlueTableCredentialsRequestSchema = z
   .object({
-    TableArn: ResourceArnStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN identifying a table in the Data Catalog for the temporary credentials request.',
-        }),
-    ),
-    Permissions: PermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the request based on the user having been granted a list of specified permissions on the requested resource(s).',
-        }),
-    ).exactOptional(),
-    DurationSeconds: CredentialTimeoutDurationSecondIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time period, between 900 and 21,600 seconds, for the timeout of the temporary credentials.',
-        }),
-    ).exactOptional(),
-    AuditContext: AuditContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure representing context to access a resource (column names, query ID, etc).',
-        }),
-    ).exactOptional(),
-    SupportedPermissionTypes: PermissionTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of supported permission types for the table. Valid values are <code>COLUMN_PERMISSION</code> and <code>CELL_FILTER_PERMISSION</code>.',
-        }),
-    ),
+    TableArn: ResourceArnStringSchema.openapi({
+      description:
+        'The ARN identifying a table in the Data Catalog for the temporary credentials request.',
+    }),
+    Permissions: PermissionListSchema.exactOptional().openapi({
+      description:
+        'Filters the request based on the user having been granted a list of specified permissions on the requested resource(s).',
+    }),
+    DurationSeconds: CredentialTimeoutDurationSecondIntegerSchema.exactOptional().openapi({
+      description:
+        'The time period, between 900 and 21,600 seconds, for the timeout of the temporary credentials.',
+    }),
+    AuditContext: AuditContextSchema.exactOptional().openapi({
+      description:
+        'A structure representing context to access a resource (column names, query ID, etc).',
+    }),
+    SupportedPermissionTypes: PermissionTypeListSchema.openapi({
+      description:
+        'A list of supported permission types for the table. Valid values are <code>COLUMN_PERMISSION</code> and <code>CELL_FILTER_PERMISSION</code>.',
+    }),
   })
   .openapi({
     required: ['TableArn', 'SupportedPermissionTypes'],
@@ -2473,27 +1986,17 @@ const SyntheticGetWorkUnitResultsRequestWorkUnitTokenStringSchema = z
 
 const GetWorkUnitResultsRequestSchema = z
   .object({
-    QueryId: GetWorkUnitResultsRequestQueryIdStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the plan query operation for which to get results.' }),
-    ),
-    WorkUnitId: GetWorkUnitResultsRequestWorkUnitIdLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The work unit ID for which to get results. Value generated by enumerating <code>WorkUnitIdMin</code> to <code>WorkUnitIdMax</code> (inclusive) from the <code>WorkUnitRange</code> in the output of <code>GetWorkUnits</code>.',
-        }),
-    ),
-    WorkUnitToken: SyntheticGetWorkUnitResultsRequestWorkUnitTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A work token used to query the execution service. Token output from <code>GetWorkUnits</code>.',
-        }),
-    ),
+    QueryId: GetWorkUnitResultsRequestQueryIdStringSchema.openapi({
+      description: 'The ID of the plan query operation for which to get results.',
+    }),
+    WorkUnitId: GetWorkUnitResultsRequestWorkUnitIdLongSchema.openapi({
+      description:
+        'The work unit ID for which to get results. Value generated by enumerating <code>WorkUnitIdMin</code> to <code>WorkUnitIdMax</code> (inclusive) from the <code>WorkUnitRange</code> in the output of <code>GetWorkUnits</code>.',
+    }),
+    WorkUnitToken: SyntheticGetWorkUnitResultsRequestWorkUnitTokenStringSchema.openapi({
+      description:
+        'A work token used to query the execution service. Token output from <code>GetWorkUnits</code>.',
+    }),
   })
   .openapi({
     required: ['QueryId', 'WorkUnitId', 'WorkUnitToken'],
@@ -2510,66 +2013,42 @@ const GetWorkUnitsRequestQueryIdStringSchema = z
 
 const GetWorkUnitsRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A continuation token, if this is a continuation call.' }),
-    ).exactOptional(),
-    PageSize: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The size of each page to get in the Amazon Web Services service call. This does not affect the number of items returned in the command's output. Setting a smaller page size results in more calls to the Amazon Web Services service, retrieving fewer items in each call. This can help prevent the Amazon Web Services service calls from timing out.",
-        }),
-    ).exactOptional(),
-    QueryId: GetWorkUnitsRequestQueryIdStringSchema.and(
-      z.any().openapi({ description: 'The ID of the plan query operation.' }),
-    ),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is a continuation call.',
+    }),
+    PageSize: IntegerSchema.exactOptional().openapi({
+      description:
+        "The size of each page to get in the Amazon Web Services service call. This does not affect the number of items returned in the command's output. Setting a smaller page size results in more calls to the Amazon Web Services service, retrieving fewer items in each call. This can help prevent the Amazon Web Services service calls from timing out.",
+    }),
+    QueryId: GetWorkUnitsRequestQueryIdStringSchema.openapi({
+      description: 'The ID of the plan query operation.',
+    }),
   })
   .openapi({ required: ['QueryId'], title: 'GetWorkUnitsRequest' })
   .openapi('GetWorkUnitsRequest')
 
 const GrantPermissionsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Principal: DataLakePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The principal to be granted the permissions on the resource. Supported principals are IAM users or IAM roles, and they are defined by their principal type and their ARN.</p> <p>Note that if you define a resource with a particular ARN, then later delete, and recreate a resource with that same ARN, the resource maintains the permissions already granted. </p>',
-        }),
-    ),
-    Resource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource to which permissions are to be granted. Resources in Lake Formation are the Data Catalog, databases, and tables.',
-        }),
-    ),
-    Permissions: PermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions granted to the principal on the resource. Lake Formation defines privileges to grant and revoke access to metadata in the Data Catalog and data organized in underlying data storage such as Amazon S3. Lake Formation requires that each principal be authorized to perform a specific task on Lake Formation resources. ',
-        }),
-    ),
-    PermissionsWithGrantOption: PermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates a list of the granted permissions that the principal may pass to other users. These permissions may only be a subset of the permissions granted in the <code>Privileges</code>.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Principal: DataLakePrincipalSchema.openapi({
+      description:
+        '<p>The principal to be granted the permissions on the resource. Supported principals are IAM users or IAM roles, and they are defined by their principal type and their ARN.</p> <p>Note that if you define a resource with a particular ARN, then later delete, and recreate a resource with that same ARN, the resource maintains the permissions already granted. </p>',
+    }),
+    Resource: ResourceSchema.openapi({
+      description:
+        'The resource to which permissions are to be granted. Resources in Lake Formation are the Data Catalog, databases, and tables.',
+    }),
+    Permissions: PermissionListSchema.openapi({
+      description:
+        'The permissions granted to the principal on the resource. Lake Formation defines privileges to grant and revoke access to metadata in the Data Catalog and data organized in underlying data storage such as Amazon S3. Lake Formation requires that each principal be authorized to perform a specific task on Lake Formation resources. ',
+    }),
+    PermissionsWithGrantOption: PermissionListSchema.exactOptional().openapi({
+      description:
+        'Indicates a list of the granted permissions that the principal may pass to other users. These permissions may only be a subset of the permissions granted in the <code>Privileges</code>.',
+    }),
   })
   .openapi({ required: ['Principal', 'Resource', 'Permissions'], title: 'GrantPermissionsRequest' })
   .openapi('GrantPermissionsRequest')
@@ -2583,15 +2062,15 @@ const KeyStringSchema = z
 
 const ListDataCellsFilterRequestSchema = z
   .object({
-    Table: TableResourceSchema.and(
-      z.any().openapi({ description: 'A table in the Glue Data Catalog.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A continuation token, if this is a continuation call.' }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum size of the response.' }),
-    ).exactOptional(),
+    Table: TableResourceSchema.exactOptional().openapi({
+      description: 'A table in the Glue Data Catalog.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is a continuation call.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum size of the response.',
+    }),
   })
   .openapi({ title: 'ListDataCellsFilterRequest', required: [] })
   .openapi('ListDataCellsFilterRequest')
@@ -2600,32 +2079,20 @@ const ResourceShareTypeSchema = z.enum(['FOREIGN', 'ALL']).openapi('ResourceShar
 
 const ListLFTagsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    ResourceShareType: ResourceShareTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If resource share type is <code>ALL</code>, returns both in-account LF-tags and shared LF-tags that the requester has permission to view. If resource share type is <code>FOREIGN</code>, returns all share LF-tags that the requester can view. If no resource share type is passed, lists LF-tags in the given catalog ID that the requester has permission to view.',
-        }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, if this is not the first call to retrieve this list.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    ResourceShareType: ResourceShareTypeSchema.exactOptional().openapi({
+      description:
+        'If resource share type is <code>ALL</code>, returns both in-account LF-tags and shared LF-tags that the requester has permission to view. If resource share type is <code>FOREIGN</code>, returns all share LF-tags that the requester can view. If no resource share type is passed, lists LF-tags in the given catalog ID that the requester has permission to view.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is not the first call to retrieve this list.',
+    }),
   })
   .openapi({ title: 'ListLFTagsRequest', required: [] })
   .openapi('ListLFTagsRequest')
@@ -2639,99 +2106,69 @@ const TrueFalseStringSchema = z
 
 const ListPermissionsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Principal: DataLakePrincipalSchema.and(
-      z.any().openapi({ description: 'Specifies a principal to filter the permissions returned.' }),
-    ).exactOptional(),
-    ResourceType: DataLakeResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies a resource type to filter the permissions returned.' }),
-    ).exactOptional(),
-    Resource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A resource where you will get a list of the principal permissions.</p> <p>This operation does not support getting privileges on a table with columns. Instead, call this operation on the table, and the operation returns the table and the table w columns.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, if this is not the first call to retrieve this list.',
-        }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
-    IncludeRelated: TrueFalseStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates that related permissions should be included in the results.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Principal: DataLakePrincipalSchema.exactOptional().openapi({
+      description: 'Specifies a principal to filter the permissions returned.',
+    }),
+    ResourceType: DataLakeResourceTypeSchema.exactOptional().openapi({
+      description: 'Specifies a resource type to filter the permissions returned.',
+    }),
+    Resource: ResourceSchema.exactOptional().openapi({
+      description:
+        '<p>A resource where you will get a list of the principal permissions.</p> <p>This operation does not support getting privileges on a table with columns. Instead, call this operation on the table, and the operation returns the table and the table w columns.</p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is not the first call to retrieve this list.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
+    IncludeRelated: TrueFalseStringSchema.exactOptional().openapi({
+      description: 'Indicates that related permissions should be included in the results.',
+    }),
   })
   .openapi({ title: 'ListPermissionsRequest', required: [] })
   .openapi('ListPermissionsRequest')
 
 const ListResourcesRequestSchema = z
   .object({
-    FilterConditionList: FilterConditionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Any applicable row-level and/or column-level filtering conditions for the resources.',
-        }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of resource results.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A continuation token, if this is not the first call to retrieve these resources.',
-        }),
-    ).exactOptional(),
+    FilterConditionList: FilterConditionListSchema.exactOptional().openapi({
+      description:
+        'Any applicable row-level and/or column-level filtering conditions for the resources.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of resource results.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A continuation token, if this is not the first call to retrieve these resources.',
+    }),
   })
   .openapi({ title: 'ListResourcesRequest', required: [] })
   .openapi('ListResourcesRequest')
 
 const ListTableStorageOptimizersRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z.any().openapi({ description: 'The Catalog ID of the table.' }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'Name of the database where the table is present.' }),
-    ),
-    TableName: NameStringSchema.and(z.any().openapi({ description: 'Name of the table.' })),
-    StorageOptimizerType: OptimizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specific type of storage optimizers to list. The supported value is <code>compaction</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'The number of storage optimizers to return on each call.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A continuation token, if this is a continuation call.' }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description: 'The Catalog ID of the table.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description: 'Name of the database where the table is present.',
+    }),
+    TableName: NameStringSchema.openapi({ description: 'Name of the table.' }),
+    StorageOptimizerType: OptimizerTypeSchema.exactOptional().openapi({
+      description:
+        'The specific type of storage optimizers to list. The supported value is <code>compaction</code>.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'The number of storage optimizers to return on each call.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is a continuation call.',
+    }),
   })
   .openapi({ required: ['DatabaseName', 'TableName'], title: 'ListTableStorageOptimizersRequest' })
   .openapi('ListTableStorageOptimizersRequest')
@@ -2742,93 +2179,58 @@ const TransactionStatusFilterSchema = z
 
 const ListTransactionsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The catalog for which to list transactions. Defaults to the account ID of the caller.',
-        }),
-    ).exactOptional(),
-    StatusFilter: TransactionStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A filter indicating the status of transactions to return. Options are ALL | COMPLETED | COMMITTED | ABORTED | ACTIVE. The default is <code>ALL</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of transactions to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: TokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A continuation token if this is not the first call to retrieve transactions.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The catalog for which to list transactions. Defaults to the account ID of the caller.',
+    }),
+    StatusFilter: TransactionStatusFilterSchema.exactOptional().openapi({
+      description:
+        ' A filter indicating the status of transactions to return. Options are ALL | COMPLETED | COMMITTED | ABORTED | ACTIVE. The default is <code>ALL</code>.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of transactions to return in a single call.',
+    }),
+    NextToken: TokenStringSchema.exactOptional().openapi({
+      description: 'A continuation token if this is not the first call to retrieve transactions.',
+    }),
   })
   .openapi({ title: 'ListTransactionsRequest', required: [] })
   .openapi('ListTransactionsRequest')
 
 const PutDataLakeSettingsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    DataLakeSettings: DataLakeSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure representing a list of Lake Formation principals designated as data lake administrators.',
-        }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    DataLakeSettings: DataLakeSettingsSchema.openapi({
+      description:
+        'A structure representing a list of Lake Formation principals designated as data lake administrators.',
+    }),
   })
   .openapi({ required: ['DataLakeSettings'], title: 'PutDataLakeSettingsRequest' })
   .openapi('PutDataLakeSettingsRequest')
 
 const QueryPlanningContextSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Data Catalog where the partition in question resides. If none is provided, the Amazon Web Services account ID is used by default.',
-        }),
-    ).exactOptional(),
-    DatabaseName: QueryPlanningContextDatabaseNameStringSchema.and(
-      z.any().openapi({ description: 'The database containing the table.' }),
-    ),
-    QueryAsOfTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.',
-        }),
-    ).exactOptional(),
-    QueryParameters: QueryParameterMapSchema.and(
-      z.any().openapi({ description: 'A map consisting of key-value pairs.' }),
-    ).exactOptional(),
-    TransactionId: TransactionIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The transaction ID at which to read the table contents. If this transaction is not committed, the read will be treated as part of that transaction and will see its writes. If this transaction has aborted, an error will be returned. If not set, defaults to the most recent committed transaction. Cannot be specified along with <code>QueryAsOfTime</code>.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The ID of the Data Catalog where the partition in question resides. If none is provided, the Amazon Web Services account ID is used by default.',
+    }),
+    DatabaseName: QueryPlanningContextDatabaseNameStringSchema.openapi({
+      description: 'The database containing the table.',
+    }),
+    QueryAsOfTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.',
+    }),
+    QueryParameters: QueryParameterMapSchema.exactOptional().openapi({
+      description: 'A map consisting of key-value pairs.',
+    }),
+    TransactionId: TransactionIdStringSchema.exactOptional().openapi({
+      description:
+        'The transaction ID at which to read the table contents. If this transaction is not committed, the read will be treated as part of that transaction and will see its writes. If this transaction has aborted, an error will be returned. If not set, defaults to the most recent committed transaction. Cannot be specified along with <code>QueryAsOfTime</code>.',
+    }),
   })
   .openapi({
     required: ['DatabaseName'],
@@ -2838,88 +2240,59 @@ const QueryPlanningContextSchema = z
 
 const RegisterResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the resource that you want to register.',
-        }),
-    ),
-    UseServiceLinkedRole: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Designates an Identity and Access Management (IAM) service-linked role by registering this role with the Data Catalog. A service-linked role is a unique type of IAM role that is linked directly to Lake Formation.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/service-linked-roles.html">Using Service-Linked Roles for Lake Formation</a>.</p>',
-        }),
-    ).exactOptional(),
-    RoleArn: IAMRoleArnSchema.and(
-      z.any().openapi({ description: 'The identifier for the role that registers the resource.' }),
-    ).exactOptional(),
-    WithFederation: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'Whether or not the resource is a federated resource.' }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnStringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource that you want to register.',
+    }),
+    UseServiceLinkedRole: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Designates an Identity and Access Management (IAM) service-linked role by registering this role with the Data Catalog. A service-linked role is a unique type of IAM role that is linked directly to Lake Formation.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/service-linked-roles.html">Using Service-Linked Roles for Lake Formation</a>.</p>',
+    }),
+    RoleArn: IAMRoleArnSchema.exactOptional().openapi({
+      description: 'The identifier for the role that registers the resource.',
+    }),
+    WithFederation: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Whether or not the resource is a federated resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'RegisterResourceRequest' })
   .openapi('RegisterResourceRequest')
 
 const RemoveLFTagsFromResourceRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Resource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The database, table, or column resource where you want to remove an LF-tag.',
-        }),
-    ),
-    LFTags: LFTagsListSchema.and(
-      z.any().openapi({ description: 'The LF-tags to be removed from the resource.' }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Resource: ResourceSchema.openapi({
+      description: 'The database, table, or column resource where you want to remove an LF-tag.',
+    }),
+    LFTags: LFTagsListSchema.openapi({
+      description: 'The LF-tags to be removed from the resource.',
+    }),
   })
   .openapi({ required: ['Resource', 'LFTags'], title: 'RemoveLFTagsFromResourceRequest' })
   .openapi('RemoveLFTagsFromResourceRequest')
 
 const RevokePermissionsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Principal: DataLakePrincipalSchema.and(
-      z.any().openapi({ description: 'The principal to be revoked permissions on the resource.' }),
-    ),
-    Resource: ResourceSchema.and(
-      z.any().openapi({ description: 'The resource to which permissions are to be revoked.' }),
-    ),
-    Permissions: PermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions revoked to the principal on the resource. For information about permissions, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html">Security and Access Control to Metadata and Data</a>.',
-        }),
-    ),
-    PermissionsWithGrantOption: PermissionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates a list of permissions for which to revoke the grant option allowing the principal to pass permissions to other principals.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Principal: DataLakePrincipalSchema.openapi({
+      description: 'The principal to be revoked permissions on the resource.',
+    }),
+    Resource: ResourceSchema.openapi({
+      description: 'The resource to which permissions are to be revoked.',
+    }),
+    Permissions: PermissionListSchema.openapi({
+      description:
+        'The permissions revoked to the principal on the resource. For information about permissions, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html">Security and Access Control to Metadata and Data</a>.',
+    }),
+    PermissionsWithGrantOption: PermissionListSchema.exactOptional().openapi({
+      description:
+        'Indicates a list of permissions for which to revoke the grant option allowing the principal to pass permissions to other principals.',
+    }),
   })
   .openapi({
     required: ['Principal', 'Resource', 'Permissions'],
@@ -2931,64 +2304,40 @@ const SearchPageSizeSchema = z.int().min(1).max(100).openapi('SearchPageSize')
 
 const SearchDatabasesByLFTagsRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, if this is not the first call to retrieve this list.',
-        }),
-    ).exactOptional(),
-    MaxResults: SearchPageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Expression: ExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of conditions (<code>LFTag</code> structures) to search for in database resources.',
-        }),
-    ),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is not the first call to retrieve this list.',
+    }),
+    MaxResults: SearchPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Expression: ExpressionSchema.openapi({
+      description:
+        'A list of conditions (<code>LFTag</code> structures) to search for in database resources.',
+    }),
   })
   .openapi({ required: ['Expression'], title: 'SearchDatabasesByLFTagsRequest' })
   .openapi('SearchDatabasesByLFTagsRequest')
 
 const SearchTablesByLFTagsRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A continuation token, if this is not the first call to retrieve this list.',
-        }),
-    ).exactOptional(),
-    MaxResults: SearchPageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    Expression: ExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of conditions (<code>LFTag</code> structures) to search for in table resources.',
-        }),
-    ),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'A continuation token, if this is not the first call to retrieve this list.',
+    }),
+    MaxResults: SearchPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    Expression: ExpressionSchema.openapi({
+      description:
+        'A list of conditions (<code>LFTag</code> structures) to search for in table resources.',
+    }),
   })
   .openapi({ required: ['Expression'], title: 'SearchTablesByLFTagsRequest' })
   .openapi('SearchTablesByLFTagsRequest')
@@ -3000,16 +2349,12 @@ const SyntheticStartQueryPlanningRequestQueryStringSchema = z
 
 const StartQueryPlanningRequestSchema = z
   .object({
-    QueryPlanningContext: QueryPlanningContextSchema.and(
-      z.any().openapi({ description: 'A structure containing information about the query plan.' }),
-    ),
-    QueryString: SyntheticStartQueryPlanningRequestQueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A PartiQL query statement used as an input to the planner service.',
-        }),
-    ),
+    QueryPlanningContext: QueryPlanningContextSchema.openapi({
+      description: 'A structure containing information about the query plan.',
+    }),
+    QueryString: SyntheticStartQueryPlanningRequestQueryStringSchema.openapi({
+      description: 'A PartiQL query statement used as an input to the planner service.',
+    }),
   })
   .openapi({
     required: ['QueryPlanningContext', 'QueryString'],
@@ -3021,14 +2366,10 @@ const TransactionTypeSchema = z.enum(['READ_AND_WRITE', 'READ_ONLY']).openapi('T
 
 const StartTransactionRequestSchema = z
   .object({
-    TransactionType: TransactionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether this transaction should be read only or read and write. Writes made using a read-only transaction ID will be rejected. Read-only transactions do not need to be committed. ',
-        }),
-    ).exactOptional(),
+    TransactionType: TransactionTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether this transaction should be read only or read and write. Writes made using a read-only transaction ID will be rejected. Read-only transactions do not need to be committed. ',
+    }),
   })
   .openapi({ title: 'StartTransactionRequest', required: [] })
   .openapi('StartTransactionRequest')
@@ -3041,56 +2382,42 @@ const StorageOptimizerConfigMapSchema = z
 
 const UpdateDataCellsFilterRequestSchema = z
   .object({
-    TableData: DataCellsFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>DataCellsFilter</code> structure containing information about the data cells filter.',
-        }),
-    ),
+    TableData: DataCellsFilterSchema.openapi({
+      description:
+        'A <code>DataCellsFilter</code> structure containing information about the data cells filter.',
+    }),
   })
   .openapi({ required: ['TableData'], title: 'UpdateDataCellsFilterRequest' })
   .openapi('UpdateDataCellsFilterRequest')
 
 const UpdateLFTagRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-        }),
-    ).exactOptional(),
-    TagKey: LFTagKeySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The key-name for the LF-tag for which to add or delete values.' }),
-    ),
-    TagValuesToDelete: TagValueListSchema.and(
-      z.any().openapi({ description: 'A list of LF-tag values to delete from the LF-tag.' }),
-    ).exactOptional(),
-    TagValuesToAdd: TagValueListSchema.and(
-      z.any().openapi({ description: 'A list of LF-tag values to add from the LF-tag.' }),
-    ).exactOptional(),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+    }),
+    TagKey: LFTagKeySchema.openapi({
+      description: 'The key-name for the LF-tag for which to add or delete values.',
+    }),
+    TagValuesToDelete: TagValueListSchema.exactOptional().openapi({
+      description: 'A list of LF-tag values to delete from the LF-tag.',
+    }),
+    TagValuesToAdd: TagValueListSchema.exactOptional().openapi({
+      description: 'A list of LF-tag values to add from the LF-tag.',
+    }),
   })
   .openapi({ required: ['TagKey'], title: 'UpdateLFTagRequest' })
   .openapi('UpdateLFTagRequest')
 
 const UpdateResourceRequestSchema = z
   .object({
-    RoleArn: IAMRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The new role to use for the given resource registered in Lake Formation.',
-        }),
-    ),
-    ResourceArn: ResourceArnStringSchema.and(z.any().openapi({ description: 'The resource ARN.' })),
-    WithFederation: NullableBooleanSchema.and(
-      z.any().openapi({ description: 'Whether or not the resource is a federated resource.' }),
-    ).exactOptional(),
+    RoleArn: IAMRoleArnSchema.openapi({
+      description: 'The new role to use for the given resource registered in Lake Formation.',
+    }),
+    ResourceArn: ResourceArnStringSchema.openapi({ description: 'The resource ARN.' }),
+    WithFederation: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Whether or not the resource is a federated resource.',
+    }),
   })
   .openapi({ required: ['RoleArn', 'ResourceArn'], title: 'UpdateResourceRequest' })
   .openapi('UpdateResourceRequest')
@@ -3103,31 +2430,21 @@ const WriteOperationListSchema = z
 
 const UpdateTableObjectsRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The catalog containing the governed table to update. Defaults to the caller’s account ID.',
-        }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'The database containing the governed table to update.' }),
-    ),
-    TableName: NameStringSchema.and(
-      z.any().openapi({ description: 'The governed table to update.' }),
-    ),
-    TransactionId: TransactionIdStringSchema.and(
-      z.any().openapi({ description: 'The transaction at which to do the write.' }),
-    ).exactOptional(),
-    WriteOperations: WriteOperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>WriteOperation</code> objects that define an object to add to or delete from the manifest for a governed table.',
-        }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description:
+        'The catalog containing the governed table to update. Defaults to the caller’s account ID.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description: 'The database containing the governed table to update.',
+    }),
+    TableName: NameStringSchema.openapi({ description: 'The governed table to update.' }),
+    TransactionId: TransactionIdStringSchema.exactOptional().openapi({
+      description: 'The transaction at which to do the write.',
+    }),
+    WriteOperations: WriteOperationListSchema.openapi({
+      description:
+        'A list of <code>WriteOperation</code> objects that define an object to add to or delete from the manifest for a governed table.',
+    }),
   })
   .openapi({
     required: ['DatabaseName', 'TableName', 'WriteOperations'],
@@ -3137,22 +2454,18 @@ const UpdateTableObjectsRequestSchema = z
 
 const UpdateTableStorageOptimizerRequestSchema = z
   .object({
-    CatalogId: CatalogIdStringSchema.and(
-      z.any().openapi({ description: 'The Catalog ID of the table.' }),
-    ).exactOptional(),
-    DatabaseName: NameStringSchema.and(
-      z.any().openapi({ description: 'Name of the database where the table is present.' }),
-    ),
-    TableName: NameStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Name of the table for which to enable the storage optimizer.' }),
-    ),
-    StorageOptimizerConfig: StorageOptimizerConfigMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Name of the table for which to enable the storage optimizer.' }),
-    ),
+    CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+      description: 'The Catalog ID of the table.',
+    }),
+    DatabaseName: NameStringSchema.openapi({
+      description: 'Name of the database where the table is present.',
+    }),
+    TableName: NameStringSchema.openapi({
+      description: 'Name of the table for which to enable the storage optimizer.',
+    }),
+    StorageOptimizerConfig: StorageOptimizerConfigMapSchema.openapi({
+      description: 'Name of the table for which to enable the storage optimizer.',
+    }),
   })
   .openapi({
     required: ['DatabaseName', 'TableName', 'StorageOptimizerConfig'],
@@ -3264,64 +2577,36 @@ export const postAddLFTagsToResourceRoute = createRoute({
                 }),
               Resource: z
                 .object({
-                  Catalog: CatalogResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-                      }),
-                  ).exactOptional(),
-                  Database: DatabaseResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  Table: TableResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  TableWithColumns: TableWithColumnsResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  DataLocation: DataLocationResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The location of an Amazon S3 path where permissions are granted or revoked. ',
-                      }),
-                  ).exactOptional(),
-                  DataCellsFilter: DataCellsFilterResourceSchema.and(
-                    z.any().openapi({ description: 'A data cell filter.' }),
-                  ).exactOptional(),
-                  LFTag: LFTagKeyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The LF-tag key and values attached to a resource.',
-                      }),
-                  ).exactOptional(),
-                  LFTagPolicy: LFTagPolicyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A list of LF-tag conditions that define a resource's LF-tag policy.",
-                      }),
-                  ).exactOptional(),
+                  Catalog: CatalogResourceSchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+                  }),
+                  Database: DatabaseResourceSchema.exactOptional().openapi({
+                    description:
+                      'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
+                  }),
+                  Table: TableResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
+                  }),
+                  TableWithColumns: TableWithColumnsResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
+                  }),
+                  DataLocation: DataLocationResourceSchema.exactOptional().openapi({
+                    description:
+                      'The location of an Amazon S3 path where permissions are granted or revoked. ',
+                  }),
+                  DataCellsFilter: DataCellsFilterResourceSchema.exactOptional().openapi({
+                    description: 'A data cell filter.',
+                  }),
+                  LFTag: LFTagKeyResourceSchema.exactOptional().openapi({
+                    description: 'The LF-tag key and values attached to a resource.',
+                  }),
+                  LFTagPolicy: LFTagPolicyResourceSchema.exactOptional().openapi({
+                    description:
+                      "A list of LF-tag conditions that define a resource's LF-tag policy.",
+                  }),
                 })
                 .openapi({ description: 'A structure for the resource.', required: [] }),
               LFTags: z
@@ -3732,43 +3017,31 @@ export const postCreateDataCellsFilterRoute = createRoute({
             .object({
               TableData: z
                 .object({
-                  TableCatalogId: CatalogIdStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the catalog to which the table belongs.',
-                      }),
-                  ).exactOptional(),
-                  DatabaseName: NameStringSchema.and(
-                    z.any().openapi({ description: 'A database in the Glue Data Catalog.' }),
-                  ).exactOptional(),
-                  TableName: NameStringSchema.and(
-                    z.any().openapi({ description: 'A table in the database.' }),
-                  ).exactOptional(),
-                  Name: NameStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The name given by the user to the data filter cell.',
-                      }),
-                  ).exactOptional(),
-                  RowFilter: RowFilterSchema.and(
-                    z.any().openapi({ description: 'A PartiQL predicate.' }),
-                  ).exactOptional(),
-                  ColumnNames: ColumnNamesSchema.and(
-                    z.any().openapi({ description: 'A list of column names.' }),
-                  ).exactOptional(),
-                  ColumnWildcard: ColumnWildcardSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A wildcard with exclusions.</p> <p>You must specify either a <code>ColumnNames</code> list or the <code>ColumnWildCard</code>. </p>',
-                      }),
-                  ).exactOptional(),
-                  VersionId: VersionStringSchema.and(
-                    z.any().openapi({ description: 'The ID of the data cells filter version.' }),
-                  ).exactOptional(),
+                  TableCatalogId: CatalogIdStringSchema.exactOptional().openapi({
+                    description: 'The ID of the catalog to which the table belongs.',
+                  }),
+                  DatabaseName: NameStringSchema.exactOptional().openapi({
+                    description: 'A database in the Glue Data Catalog.',
+                  }),
+                  TableName: NameStringSchema.exactOptional().openapi({
+                    description: 'A table in the database.',
+                  }),
+                  Name: NameStringSchema.exactOptional().openapi({
+                    description: 'The name given by the user to the data filter cell.',
+                  }),
+                  RowFilter: RowFilterSchema.exactOptional().openapi({
+                    description: 'A PartiQL predicate.',
+                  }),
+                  ColumnNames: ColumnNamesSchema.exactOptional().openapi({
+                    description: 'A list of column names.',
+                  }),
+                  ColumnWildcard: ColumnWildcardSchema.exactOptional().openapi({
+                    description:
+                      '<p>A wildcard with exclusions.</p> <p>You must specify either a <code>ColumnNames</code> list or the <code>ColumnWildCard</code>. </p>',
+                  }),
+                  VersionId: VersionStringSchema.exactOptional().openapi({
+                    description: 'The ID of the data cells filter version.',
+                  }),
                 })
                 .openapi({
                   description: 'A structure that describes certain columns on certain rows.',
@@ -4875,64 +4148,36 @@ export const postGetResourceLFTagsRoute = createRoute({
                 }),
               Resource: z
                 .object({
-                  Catalog: CatalogResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-                      }),
-                  ).exactOptional(),
-                  Database: DatabaseResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  Table: TableResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  TableWithColumns: TableWithColumnsResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  DataLocation: DataLocationResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The location of an Amazon S3 path where permissions are granted or revoked. ',
-                      }),
-                  ).exactOptional(),
-                  DataCellsFilter: DataCellsFilterResourceSchema.and(
-                    z.any().openapi({ description: 'A data cell filter.' }),
-                  ).exactOptional(),
-                  LFTag: LFTagKeyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The LF-tag key and values attached to a resource.',
-                      }),
-                  ).exactOptional(),
-                  LFTagPolicy: LFTagPolicyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A list of LF-tag conditions that define a resource's LF-tag policy.",
-                      }),
-                  ).exactOptional(),
+                  Catalog: CatalogResourceSchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+                  }),
+                  Database: DatabaseResourceSchema.exactOptional().openapi({
+                    description:
+                      'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
+                  }),
+                  Table: TableResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
+                  }),
+                  TableWithColumns: TableWithColumnsResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
+                  }),
+                  DataLocation: DataLocationResourceSchema.exactOptional().openapi({
+                    description:
+                      'The location of an Amazon S3 path where permissions are granted or revoked. ',
+                  }),
+                  DataCellsFilter: DataCellsFilterResourceSchema.exactOptional().openapi({
+                    description: 'A data cell filter.',
+                  }),
+                  LFTag: LFTagKeyResourceSchema.exactOptional().openapi({
+                    description: 'The LF-tag key and values attached to a resource.',
+                  }),
+                  LFTagPolicy: LFTagPolicyResourceSchema.exactOptional().openapi({
+                    description:
+                      "A list of LF-tag conditions that define a resource's LF-tag policy.",
+                  }),
                 })
                 .openapi({ description: 'A structure for the resource.', required: [] }),
               ShowAssignedLFTags: z
@@ -5160,9 +4405,9 @@ export const postGetTemporaryGluePartitionCredentialsRoute = createRoute({
               TableArn: z.string().openapi({ description: "The ARN of the partitions' table." }),
               Partition: z
                 .object({
-                  Values: ValueStringListSchema.and(
-                    z.any().openapi({ description: 'The list of partition values.' }),
-                  ).exactOptional(),
+                  Values: ValueStringListSchema.exactOptional().openapi({
+                    description: 'The list of partition values.',
+                  }),
                 })
                 .openapi({
                   description: 'Contains a list of values defining partitions.',
@@ -5186,14 +4431,10 @@ export const postGetTemporaryGluePartitionCredentialsRoute = createRoute({
                 }),
               AuditContext: z
                 .object({
-                  AdditionalAuditContext: AuditContextStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The filter engine can populate the 'AdditionalAuditContext' information with the request ID for you to track. This information will be displayed in CloudTrail log in your account.",
-                      }),
-                  ).exactOptional(),
+                  AdditionalAuditContext: AuditContextStringSchema.exactOptional().openapi({
+                    description:
+                      "The filter engine can populate the 'AdditionalAuditContext' information with the request ID for you to track. This information will be displayed in CloudTrail log in your account.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5295,14 +4536,10 @@ export const postGetTemporaryGlueTableCredentialsRoute = createRoute({
                 }),
               AuditContext: z
                 .object({
-                  AdditionalAuditContext: AuditContextStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The filter engine can populate the 'AdditionalAuditContext' information with the request ID for you to track. This information will be displayed in CloudTrail log in your account.",
-                      }),
-                  ).exactOptional(),
+                  AdditionalAuditContext: AuditContextStringSchema.exactOptional().openapi({
+                    description:
+                      "The filter engine can populate the 'AdditionalAuditContext' information with the request ID for you to track. This information will be displayed in CloudTrail log in your account.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5563,11 +4800,10 @@ export const postGrantPermissionsRoute = createRoute({
                 }),
               Principal: z
                 .object({
-                  DataLakePrincipalIdentifier: DataLakePrincipalStringSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'An identifier for the Lake Formation principal.' }),
-                  ).exactOptional(),
+                  DataLakePrincipalIdentifier:
+                    DataLakePrincipalStringSchema.exactOptional().openapi({
+                      description: 'An identifier for the Lake Formation principal.',
+                    }),
                 })
                 .openapi({
                   description:
@@ -5576,64 +4812,36 @@ export const postGrantPermissionsRoute = createRoute({
                 }),
               Resource: z
                 .object({
-                  Catalog: CatalogResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-                      }),
-                  ).exactOptional(),
-                  Database: DatabaseResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  Table: TableResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  TableWithColumns: TableWithColumnsResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  DataLocation: DataLocationResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The location of an Amazon S3 path where permissions are granted or revoked. ',
-                      }),
-                  ).exactOptional(),
-                  DataCellsFilter: DataCellsFilterResourceSchema.and(
-                    z.any().openapi({ description: 'A data cell filter.' }),
-                  ).exactOptional(),
-                  LFTag: LFTagKeyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The LF-tag key and values attached to a resource.',
-                      }),
-                  ).exactOptional(),
-                  LFTagPolicy: LFTagPolicyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A list of LF-tag conditions that define a resource's LF-tag policy.",
-                      }),
-                  ).exactOptional(),
+                  Catalog: CatalogResourceSchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+                  }),
+                  Database: DatabaseResourceSchema.exactOptional().openapi({
+                    description:
+                      'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
+                  }),
+                  Table: TableResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
+                  }),
+                  TableWithColumns: TableWithColumnsResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
+                  }),
+                  DataLocation: DataLocationResourceSchema.exactOptional().openapi({
+                    description:
+                      'The location of an Amazon S3 path where permissions are granted or revoked. ',
+                  }),
+                  DataCellsFilter: DataCellsFilterResourceSchema.exactOptional().openapi({
+                    description: 'A data cell filter.',
+                  }),
+                  LFTag: LFTagKeyResourceSchema.exactOptional().openapi({
+                    description: 'The LF-tag key and values attached to a resource.',
+                  }),
+                  LFTagPolicy: LFTagPolicyResourceSchema.exactOptional().openapi({
+                    description:
+                      "A list of LF-tag conditions that define a resource's LF-tag policy.",
+                  }),
                 })
                 .openapi({ description: 'A structure for the resource.', required: [] }),
               Permissions: z
@@ -5724,33 +4932,21 @@ export const postListDataCellsFilterRoute = createRoute({
             .object({
               Table: z
                 .object({
-                  CatalogId: CatalogIdStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Data Catalog. By default, it is the account ID of the caller.',
-                      }),
-                  ).exactOptional(),
-                  DatabaseName: NameStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the database for the table. Unique to a Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  Name: NameStringSchema.and(
-                    z.any().openapi({ description: 'The name of the table.' }),
-                  ).exactOptional(),
-                  TableWildcard: TableWildcardSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A wildcard object representing every table under a database.</p> <p>At least one of <code>TableResource$Name</code> or <code>TableResource$TableWildcard</code> is required.</p>',
-                      }),
-                  ).exactOptional(),
+                  CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Data Catalog. By default, it is the account ID of the caller.',
+                  }),
+                  DatabaseName: NameStringSchema.exactOptional().openapi({
+                    description:
+                      'The name of the database for the table. Unique to a Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal. ',
+                  }),
+                  Name: NameStringSchema.exactOptional().openapi({
+                    description: 'The name of the table.',
+                  }),
+                  TableWildcard: TableWildcardSchema.exactOptional().openapi({
+                    description:
+                      '<p>A wildcard object representing every table under a database.</p> <p>At least one of <code>TableResource$Name</code> or <code>TableResource$TableWildcard</code> is required.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5969,11 +5165,10 @@ export const postListPermissionsRoute = createRoute({
                 }),
               Principal: z
                 .object({
-                  DataLakePrincipalIdentifier: DataLakePrincipalStringSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'An identifier for the Lake Formation principal.' }),
-                  ).exactOptional(),
+                  DataLakePrincipalIdentifier:
+                    DataLakePrincipalStringSchema.exactOptional().openapi({
+                      description: 'An identifier for the Lake Formation principal.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5998,64 +5193,36 @@ export const postListPermissionsRoute = createRoute({
                 }),
               Resource: z
                 .object({
-                  Catalog: CatalogResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-                      }),
-                  ).exactOptional(),
-                  Database: DatabaseResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  Table: TableResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  TableWithColumns: TableWithColumnsResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  DataLocation: DataLocationResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The location of an Amazon S3 path where permissions are granted or revoked. ',
-                      }),
-                  ).exactOptional(),
-                  DataCellsFilter: DataCellsFilterResourceSchema.and(
-                    z.any().openapi({ description: 'A data cell filter.' }),
-                  ).exactOptional(),
-                  LFTag: LFTagKeyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The LF-tag key and values attached to a resource.',
-                      }),
-                  ).exactOptional(),
-                  LFTagPolicy: LFTagPolicyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A list of LF-tag conditions that define a resource's LF-tag policy.",
-                      }),
-                  ).exactOptional(),
+                  Catalog: CatalogResourceSchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+                  }),
+                  Database: DatabaseResourceSchema.exactOptional().openapi({
+                    description:
+                      'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
+                  }),
+                  Table: TableResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
+                  }),
+                  TableWithColumns: TableWithColumnsResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
+                  }),
+                  DataLocation: DataLocationResourceSchema.exactOptional().openapi({
+                    description:
+                      'The location of an Amazon S3 path where permissions are granted or revoked. ',
+                  }),
+                  DataCellsFilter: DataCellsFilterResourceSchema.exactOptional().openapi({
+                    description: 'A data cell filter.',
+                  }),
+                  LFTag: LFTagKeyResourceSchema.exactOptional().openapi({
+                    description: 'The LF-tag key and values attached to a resource.',
+                  }),
+                  LFTagPolicy: LFTagPolicyResourceSchema.exactOptional().openapi({
+                    description:
+                      "A list of LF-tag conditions that define a resource's LF-tag policy.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'A structure for the resource.', required: [] }),
@@ -6466,70 +5633,42 @@ export const postPutDataLakeSettingsRoute = createRoute({
                 }),
               DataLakeSettings: z
                 .object({
-                  DataLakeAdmins: DataLakePrincipalListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of Lake Formation principals. Supported principals are IAM users or IAM roles.',
-                      }),
-                  ).exactOptional(),
-                  CreateDatabaseDefaultPermissions: PrincipalPermissionsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies whether access control on newly created database is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting "Use only IAM access control," and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html">Changing the Default Security Settings for Your Data Lake</a>.</p>',
-                      }),
-                  ).exactOptional(),
-                  CreateTableDefaultPermissions: PrincipalPermissionsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies whether access control on newly created table is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting "Use only IAM access control," and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html">Changing the Default Security Settings for Your Data Lake</a>.</p>',
-                      }),
-                  ).exactOptional(),
-                  Parameters: ParametersMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A key-value map that provides an additional configuration on your data lake. CrossAccountVersion is the key you can configure in the Parameters field. Accepted values for the CrossAccountVersion key are 1, 2, and 3.',
-                      }),
-                  ).exactOptional(),
-                  TrustedResourceOwners: TrustedResourceOwnersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>A list of the resource-owning account IDs that the caller's account can use to share their user access details (user ARNs). The user ARNs can be logged in the resource owner's CloudTrail log.</p> <p>You may want to specify this property when you are in a high-trust boundary, such as the same team or company. </p>",
-                      }),
-                  ).exactOptional(),
-                  AllowExternalDataFiltering: NullableBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Whether to allow Amazon EMR clusters to access data managed by Lake Formation. </p> <p>If true, you allow Amazon EMR clusters to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>If false or null, no Amazon EMR clusters will be able to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>For more information, see <a href="https://docs-aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#emr-switch">(Optional) Allow Data Filtering on Amazon EMR</a>.</p>',
-                      }),
-                  ).exactOptional(),
-                  ExternalDataFilteringAllowList: DataLakePrincipalListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of the account IDs of Amazon Web Services accounts with Amazon EMR clusters that are to perform data filtering.&gt;',
-                      }),
-                  ).exactOptional(),
-                  AuthorizedSessionTagValueList: AuthorizedSessionTagValueListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Lake Formation relies on a privileged process secured by Amazon EMR or the third party integrator to tag the user\'s role while assuming it. Lake Formation will publish the acceptable key-value pair, for example key = "LakeFormationTrustedCaller" and value = "TRUE" and the third party integrator must properly tag the temporary security credentials that will be used to call Lake Formation\'s administrative APIs.',
-                      }),
-                  ).exactOptional(),
+                  DataLakeAdmins: DataLakePrincipalListSchema.exactOptional().openapi({
+                    description:
+                      'A list of Lake Formation principals. Supported principals are IAM users or IAM roles.',
+                  }),
+                  CreateDatabaseDefaultPermissions:
+                    PrincipalPermissionsListSchema.exactOptional().openapi({
+                      description:
+                        '<p>Specifies whether access control on newly created database is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting "Use only IAM access control," and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html">Changing the Default Security Settings for Your Data Lake</a>.</p>',
+                    }),
+                  CreateTableDefaultPermissions:
+                    PrincipalPermissionsListSchema.exactOptional().openapi({
+                      description:
+                        '<p>Specifies whether access control on newly created table is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting "Use only IAM access control," and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html">Changing the Default Security Settings for Your Data Lake</a>.</p>',
+                    }),
+                  Parameters: ParametersMapSchema.exactOptional().openapi({
+                    description:
+                      'A key-value map that provides an additional configuration on your data lake. CrossAccountVersion is the key you can configure in the Parameters field. Accepted values for the CrossAccountVersion key are 1, 2, and 3.',
+                  }),
+                  TrustedResourceOwners: TrustedResourceOwnersSchema.exactOptional().openapi({
+                    description:
+                      "<p>A list of the resource-owning account IDs that the caller's account can use to share their user access details (user ARNs). The user ARNs can be logged in the resource owner's CloudTrail log.</p> <p>You may want to specify this property when you are in a high-trust boundary, such as the same team or company. </p>",
+                  }),
+                  AllowExternalDataFiltering: NullableBooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Whether to allow Amazon EMR clusters to access data managed by Lake Formation. </p> <p>If true, you allow Amazon EMR clusters to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>If false or null, no Amazon EMR clusters will be able to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>For more information, see <a href="https://docs-aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#emr-switch">(Optional) Allow Data Filtering on Amazon EMR</a>.</p>',
+                  }),
+                  ExternalDataFilteringAllowList:
+                    DataLakePrincipalListSchema.exactOptional().openapi({
+                      description:
+                        'A list of the account IDs of Amazon Web Services accounts with Amazon EMR clusters that are to perform data filtering.&gt;',
+                    }),
+                  AuthorizedSessionTagValueList:
+                    AuthorizedSessionTagValueListSchema.exactOptional().openapi({
+                      description:
+                        'Lake Formation relies on a privileged process secured by Amazon EMR or the third party integrator to tag the user\'s role while assuming it. Lake Formation will publish the acceptable key-value pair, for example key = "LakeFormationTrustedCaller" and value = "TRUE" and the third party integrator must properly tag the temporary security credentials that will be used to call Lake Formation\'s administrative APIs.',
+                    }),
                 })
                 .openapi({
                   description:
@@ -6680,64 +5819,36 @@ export const postRemoveLFTagsFromResourceRoute = createRoute({
                 }),
               Resource: z
                 .object({
-                  Catalog: CatalogResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-                      }),
-                  ).exactOptional(),
-                  Database: DatabaseResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  Table: TableResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  TableWithColumns: TableWithColumnsResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  DataLocation: DataLocationResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The location of an Amazon S3 path where permissions are granted or revoked. ',
-                      }),
-                  ).exactOptional(),
-                  DataCellsFilter: DataCellsFilterResourceSchema.and(
-                    z.any().openapi({ description: 'A data cell filter.' }),
-                  ).exactOptional(),
-                  LFTag: LFTagKeyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The LF-tag key and values attached to a resource.',
-                      }),
-                  ).exactOptional(),
-                  LFTagPolicy: LFTagPolicyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A list of LF-tag conditions that define a resource's LF-tag policy.",
-                      }),
-                  ).exactOptional(),
+                  Catalog: CatalogResourceSchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+                  }),
+                  Database: DatabaseResourceSchema.exactOptional().openapi({
+                    description:
+                      'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
+                  }),
+                  Table: TableResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
+                  }),
+                  TableWithColumns: TableWithColumnsResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
+                  }),
+                  DataLocation: DataLocationResourceSchema.exactOptional().openapi({
+                    description:
+                      'The location of an Amazon S3 path where permissions are granted or revoked. ',
+                  }),
+                  DataCellsFilter: DataCellsFilterResourceSchema.exactOptional().openapi({
+                    description: 'A data cell filter.',
+                  }),
+                  LFTag: LFTagKeyResourceSchema.exactOptional().openapi({
+                    description: 'The LF-tag key and values attached to a resource.',
+                  }),
+                  LFTagPolicy: LFTagPolicyResourceSchema.exactOptional().openapi({
+                    description:
+                      "A list of LF-tag conditions that define a resource's LF-tag policy.",
+                  }),
                 })
                 .openapi({ description: 'A structure for the resource.', required: [] }),
               LFTags: z
@@ -6821,11 +5932,10 @@ export const postRevokePermissionsRoute = createRoute({
                 }),
               Principal: z
                 .object({
-                  DataLakePrincipalIdentifier: DataLakePrincipalStringSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'An identifier for the Lake Formation principal.' }),
-                  ).exactOptional(),
+                  DataLakePrincipalIdentifier:
+                    DataLakePrincipalStringSchema.exactOptional().openapi({
+                      description: 'An identifier for the Lake Formation principal.',
+                    }),
                 })
                 .openapi({
                   description:
@@ -6834,64 +5944,36 @@ export const postRevokePermissionsRoute = createRoute({
                 }),
               Resource: z
                 .object({
-                  Catalog: CatalogResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
-                      }),
-                  ).exactOptional(),
-                  Database: DatabaseResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  Table: TableResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
-                      }),
-                  ).exactOptional(),
-                  TableWithColumns: TableWithColumnsResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  DataLocation: DataLocationResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The location of an Amazon S3 path where permissions are granted or revoked. ',
-                      }),
-                  ).exactOptional(),
-                  DataCellsFilter: DataCellsFilterResourceSchema.and(
-                    z.any().openapi({ description: 'A data cell filter.' }),
-                  ).exactOptional(),
-                  LFTag: LFTagKeyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The LF-tag key and values attached to a resource.',
-                      }),
-                  ).exactOptional(),
-                  LFTagPolicy: LFTagPolicyResourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A list of LF-tag conditions that define a resource's LF-tag policy.",
-                      }),
-                  ).exactOptional(),
+                  Catalog: CatalogResourceSchema.exactOptional().openapi({
+                    description:
+                      'The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. ',
+                  }),
+                  Database: DatabaseResourceSchema.exactOptional().openapi({
+                    description:
+                      'The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal. ',
+                  }),
+                  Table: TableResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal. ',
+                  }),
+                  TableWithColumns: TableWithColumnsResourceSchema.exactOptional().openapi({
+                    description:
+                      'The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.',
+                  }),
+                  DataLocation: DataLocationResourceSchema.exactOptional().openapi({
+                    description:
+                      'The location of an Amazon S3 path where permissions are granted or revoked. ',
+                  }),
+                  DataCellsFilter: DataCellsFilterResourceSchema.exactOptional().openapi({
+                    description: 'A data cell filter.',
+                  }),
+                  LFTag: LFTagKeyResourceSchema.exactOptional().openapi({
+                    description: 'The LF-tag key and values attached to a resource.',
+                  }),
+                  LFTagPolicy: LFTagPolicyResourceSchema.exactOptional().openapi({
+                    description:
+                      "A list of LF-tag conditions that define a resource's LF-tag policy.",
+                  }),
                 })
                 .openapi({ description: 'A structure for the resource.', required: [] }),
               Permissions: z
@@ -7187,36 +6269,25 @@ export const postStartQueryPlanningRoute = createRoute({
             .object({
               QueryPlanningContext: z
                 .object({
-                  CatalogId: CatalogIdStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the Data Catalog where the partition in question resides. If none is provided, the Amazon Web Services account ID is used by default.',
-                      }),
-                  ).exactOptional(),
-                  DatabaseName: QueryPlanningContextDatabaseNameStringSchema.and(
-                    z.any().openapi({ description: 'The database containing the table.' }),
-                  ).exactOptional(),
-                  QueryAsOfTime: TimestampSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.',
-                      }),
-                  ).exactOptional(),
-                  QueryParameters: QueryParameterMapSchema.and(
-                    z.any().openapi({ description: 'A map consisting of key-value pairs.' }),
-                  ).exactOptional(),
-                  TransactionId: TransactionIdStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The transaction ID at which to read the table contents. If this transaction is not committed, the read will be treated as part of that transaction and will see its writes. If this transaction has aborted, an error will be returned. If not set, defaults to the most recent committed transaction. Cannot be specified along with <code>QueryAsOfTime</code>.',
-                      }),
-                  ).exactOptional(),
+                  CatalogId: CatalogIdStringSchema.exactOptional().openapi({
+                    description:
+                      'The ID of the Data Catalog where the partition in question resides. If none is provided, the Amazon Web Services account ID is used by default.',
+                  }),
+                  DatabaseName:
+                    QueryPlanningContextDatabaseNameStringSchema.exactOptional().openapi({
+                      description: 'The database containing the table.',
+                    }),
+                  QueryAsOfTime: TimestampSchema.exactOptional().openapi({
+                    description:
+                      'The time as of when to read the table contents. If not set, the most recent transaction commit time will be used. Cannot be specified along with <code>TransactionId</code>.',
+                  }),
+                  QueryParameters: QueryParameterMapSchema.exactOptional().openapi({
+                    description: 'A map consisting of key-value pairs.',
+                  }),
+                  TransactionId: TransactionIdStringSchema.exactOptional().openapi({
+                    description:
+                      'The transaction ID at which to read the table contents. If this transaction is not committed, the read will be treated as part of that transaction and will see its writes. If this transaction has aborted, an error will be returned. If not set, defaults to the most recent committed transaction. Cannot be specified along with <code>QueryAsOfTime</code>.',
+                  }),
                 })
                 .openapi({
                   description: 'A structure containing information about the query plan.',
@@ -7332,43 +6403,31 @@ export const postUpdateDataCellsFilterRoute = createRoute({
             .object({
               TableData: z
                 .object({
-                  TableCatalogId: CatalogIdStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the catalog to which the table belongs.',
-                      }),
-                  ).exactOptional(),
-                  DatabaseName: NameStringSchema.and(
-                    z.any().openapi({ description: 'A database in the Glue Data Catalog.' }),
-                  ).exactOptional(),
-                  TableName: NameStringSchema.and(
-                    z.any().openapi({ description: 'A table in the database.' }),
-                  ).exactOptional(),
-                  Name: NameStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The name given by the user to the data filter cell.',
-                      }),
-                  ).exactOptional(),
-                  RowFilter: RowFilterSchema.and(
-                    z.any().openapi({ description: 'A PartiQL predicate.' }),
-                  ).exactOptional(),
-                  ColumnNames: ColumnNamesSchema.and(
-                    z.any().openapi({ description: 'A list of column names.' }),
-                  ).exactOptional(),
-                  ColumnWildcard: ColumnWildcardSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A wildcard with exclusions.</p> <p>You must specify either a <code>ColumnNames</code> list or the <code>ColumnWildCard</code>. </p>',
-                      }),
-                  ).exactOptional(),
-                  VersionId: VersionStringSchema.and(
-                    z.any().openapi({ description: 'The ID of the data cells filter version.' }),
-                  ).exactOptional(),
+                  TableCatalogId: CatalogIdStringSchema.exactOptional().openapi({
+                    description: 'The ID of the catalog to which the table belongs.',
+                  }),
+                  DatabaseName: NameStringSchema.exactOptional().openapi({
+                    description: 'A database in the Glue Data Catalog.',
+                  }),
+                  TableName: NameStringSchema.exactOptional().openapi({
+                    description: 'A table in the database.',
+                  }),
+                  Name: NameStringSchema.exactOptional().openapi({
+                    description: 'The name given by the user to the data filter cell.',
+                  }),
+                  RowFilter: RowFilterSchema.exactOptional().openapi({
+                    description: 'A PartiQL predicate.',
+                  }),
+                  ColumnNames: ColumnNamesSchema.exactOptional().openapi({
+                    description: 'A list of column names.',
+                  }),
+                  ColumnWildcard: ColumnWildcardSchema.exactOptional().openapi({
+                    description:
+                      '<p>A wildcard with exclusions.</p> <p>You must specify either a <code>ColumnNames</code> list or the <code>ColumnWildCard</code>. </p>',
+                  }),
+                  VersionId: VersionStringSchema.exactOptional().openapi({
+                    description: 'The ID of the data cells filter version.',
+                  }),
                 })
                 .openapi({
                   description: 'A structure that describes certain columns on certain rows.',

@@ -5426,7 +5426,7 @@ curl https://api.nango.dev/action/string \
 This operation is deprecated
 </aside>
 
-Retrieves the result of an asynchronous action. See [Asynchronous action documentation](/guides/functions/action-functions#trigger-asynchronously) for more details.
+Retrieves the result of an asynchronous action. See [Asynchronous action documentation](/guides/platform/functions/action-functions#trigger-asynchronously) for more details.
 
 <h3 id="get-action-result-deprecated-parameters">Parameters</h3>
 
@@ -5723,7 +5723,7 @@ Legacy action execution. Use POST /connections/{connectionId}/tools/{name}/calls
 |---|---|---|---|---|
 |Connection-Id|header|string|true|The connection ID used to create the connection.|
 |Provider-Config-Key|header|string|true|The integration ID used to create the connection (aka Unique Key).|
-|X-Async|header|boolean|false|Set to true to trigger the action asynchronously. When true, the response will include a status URL and ID for retrieving the action result later. See [Asynchronous action documentation](/guides/functions/action-functions#trigger-asynchronously) for more details.|
+|X-Async|header|boolean|false|Set to true to trigger the action asynchronously. When true, the response will include a status URL and ID for retrieving the action result later. See [Asynchronous action documentation](/guides/platform/functions/action-functions#trigger-asynchronously) for more details.|
 |X-Max-Retries|header|integer|false|The maximum number of retries in case of failure (between 0 and 5). Only applicable when X-Async is true. Default to 0 if not specified.|
 |body|body|object|true|none|
 |» action_name|body|string|true|The name of the action to trigger.|
@@ -6019,8 +6019,8 @@ Create a new environment
 |» name|body|string|true|Environment name. Lowercase letters, digits, hyphens, and underscores only. Max 255 characters. The reserved name `prod` is always treated as production.|
 |» is_production|body|boolean|false|Whether to mark the environment as production. Defaults to false, except for the reserved name `prod`.|
 |» callback_url|body|string(uri)|false|Custom OAuth callback URL for this environment.|
-|» hmac_key|body|string|false|**Deprecated.** Legacy public-key authorization HMAC key. Use [Connect sessions](/guides/auth/auth-guide#guide) instead.|
-|» hmac_enabled|body|boolean|false|**Deprecated.** Whether legacy public-key authorization HMAC verification is enabled. Use [Connect sessions](/guides/auth/auth-guide#guide) instead.|
+|» hmac_key|body|string|false|**Deprecated.** Legacy public-key authorization HMAC key. Use [Connect sessions](/guides/auth/setup#generate-session-token) instead.|
+|» hmac_enabled|body|boolean|false|**Deprecated.** Whether legacy public-key authorization HMAC verification is enabled. Use [Connect sessions](/guides/auth/setup#generate-session-token) instead.|
 |» slack_notifications|body|boolean|false|Whether Slack notifications are enabled for this environment.|
 |» otlp_endpoint|body|string|false|OpenTelemetry collector endpoint. Requires a plan with OpenTelemetry export. Pass an empty string to set an empty endpoint.|
 |» otlp_headers|body|[object]|false|Headers sent with OpenTelemetry export requests. Requires a plan with OpenTelemetry export. Maximum 100 headers.|
@@ -8726,6 +8726,45 @@ An HTTP-triggered function with resolved input and output schemas.
 |---|---|
 |type|tool|
 
+<h2 id="tocS_ProviderTemplateToolFunction">ProviderTemplateToolFunction</h2>
+<!-- backwards compatibility -->
+<a id="schemaprovidertemplatetoolfunction"></a>
+<a id="schema_ProviderTemplateToolFunction"></a>
+<a id="tocSprovidertemplatetoolfunction"></a>
+<a id="tocsprovidertemplatetoolfunction"></a>
+
+```json
+{
+  "name": "string",
+  "type": "tool",
+  "description": "string",
+  "scopes": [
+    "string"
+  ],
+  "input_json_schema": {},
+  "output_json_schema": {}
+}
+```
+
+A catalog tool definition.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|type|string|true|none|none|
+|description|string|true|none|none|
+|scopes|[string]|false|none|none|
+|input_json_schema|object \| null|true|none|Input JSON Schema with its referenced definitions, or null when absent or unresolved.|
+|output_json_schema|object \| null|true|none|Output JSON Schema with its referenced definitions, or null when absent or unresolved.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|tool|
+
 <h2 id="tocS_ProviderTemplateFunction">ProviderTemplateFunction</h2>
 <!-- backwards compatibility -->
 <a id="schemaprovidertemplatefunction"></a>
@@ -8752,7 +8791,7 @@ An HTTP-triggered function with resolved input and output schemas.
 }
 ```
 
-A sync template or catalog tool definition (no deployment metadata). Catalog tool templates currently use deprecated action definitions.
+A sync template or catalog tool definition (no deployment metadata).
 
 ### Properties
 
@@ -8760,6 +8799,7 @@ A sync template or catalog tool definition (no deployment metadata). Catalog too
 |---|---|---|---|---|
 |*oneOf*|[NangoSyncFunction](#schemanangosyncfunction)|false|none|none|
 |*oneOf*|[NangoActionFunction](#schemanangoactionfunction)|false|none|**Deprecated.** Deprecated action definition format, also used by some catalog tools. Use createTool for new custom implementations.|
+|*oneOf*|[ProviderTemplateToolFunction](#schemaprovidertemplatetoolfunction)|false|none|A catalog tool definition.|
 
 <h2 id="tocS_ListedNangoFunction">ListedNangoFunction</h2>
 <!-- backwards compatibility -->

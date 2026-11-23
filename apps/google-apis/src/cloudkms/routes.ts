@@ -1,5 +1,175 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CertificateSchema = z
+  .object({
+    issuer: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The issuer distinguished name in RFC 2253 format. Only present if parsed is true.',
+        readOnly: true,
+      }),
+    notAfterTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The certificate is not valid after this time. Only present if parsed is true.',
+        readOnly: true,
+      }),
+    notBeforeTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The certificate is not valid before this time. Only present if parsed is true.',
+        readOnly: true,
+      }),
+    parsed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. True if the certificate was parsed successfully.',
+        readOnly: true,
+      }),
+    rawDer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The raw certificate bytes in DER format.' }),
+    serialNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The certificate serial number as a hex string. Only present if parsed is true.',
+        readOnly: true,
+      }),
+    sha256Fingerprint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The SHA-256 certificate fingerprint as a hex string. Only present if parsed is true.',
+        readOnly: true,
+      }),
+    subject: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The subject distinguished name in RFC 2253 format. Only present if parsed is true.',
+        readOnly: true,
+      }),
+    subjectAlternativeDnsNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The subject Alternative DNS names. Only present if parsed is true.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A Certificate represents an X.509 certificate used to authenticate HTTPS connections to EKM replicas.',
+    required: [],
+  })
+  .openapi('Certificate')
+
+const ServiceResolverSchema = z
+  .object({
+    endpointFilter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The filter applied to the endpoints of the resolved service. If no filter is specified, all endpoints will be considered. An endpoint will be chosen arbitrarily from the filtered list for each request. For endpoint filter syntax and examples, see https://cloud.google.com/service-directory/docs/reference/rpc/google.cloud.servicedirectory.v1#resolveservicerequest.',
+      }),
+    hostname: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The hostname of the EKM replica used at TLS and HTTP layers.',
+      }),
+    serverCertificates: z
+      .array(CertificateSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A list of leaf server certificates used to authenticate HTTPS connections to the EKM replica. Currently, a maximum of 10 Certificate is supported.',
+      }),
+    serviceDirectoryService: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The resource name of the Service Directory service pointing to an EKM replica, in the format `projects/*/locations/*/namespaces/*/services/*`.',
+      }),
+  })
+  .openapi({
+    description:
+      'A ServiceResolver represents an EKM replica that can be reached within an EkmConnection.',
+    required: [],
+  })
+  .openapi('ServiceResolver')
+
+const EkmConnectionSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time at which the EkmConnection was created.',
+        readOnly: true,
+      }),
+    cryptoSpacePath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Identifies the EKM Crypto Space that this EkmConnection maps to. Note: This field is required if KeyManagementMode is CLOUD_KMS.',
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Etag of the currently stored EkmConnection.' }),
+    keyManagementMode: z
+      .enum(['KEY_MANAGEMENT_MODE_UNSPECIFIED', 'MANUAL', 'CLOUD_KMS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Describes who can perform control plane operations on the EKM. If unset, this defaults to MANUAL.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The resource name for the EkmConnection in the format `projects/*/locations/*/ekmConnections/*`.',
+        readOnly: true,
+      }),
+    serviceResolvers: z
+      .array(ServiceResolverSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of ServiceResolvers where the EKM can be reached. There should be one ServiceResolver per EKM replica. Currently, only a single ServiceResolver is supported.',
+      }),
+  })
+  .openapi({
+    description:
+      'An EkmConnection represents an individual EKM connection. It can be used for creating CryptoKeys and CryptoKeyVersions with a ProtectionLevel of EXTERNAL_VPC, as well as performing cryptographic operations using keys created within the EkmConnection.',
+    required: [],
+  })
+  .openapi('EkmConnection')
+
+type ListEkmConnectionsResponseType = {
+  ekmConnections?: z.infer<typeof EkmConnectionSchema>[]
+  nextPageToken?: string
+  totalSize?: number
+}
+
 const AsymmetricDecryptRequestSchema = z
   .object({
     ciphertext: z
@@ -253,83 +423,6 @@ const BindingSchema = z
   })
   .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
   .openapi('Binding')
-
-const CertificateSchema = z
-  .object({
-    issuer: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The issuer distinguished name in RFC 2253 format. Only present if parsed is true.',
-        readOnly: true,
-      }),
-    notAfterTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The certificate is not valid after this time. Only present if parsed is true.',
-        readOnly: true,
-      }),
-    notBeforeTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The certificate is not valid before this time. Only present if parsed is true.',
-        readOnly: true,
-      }),
-    parsed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. True if the certificate was parsed successfully.',
-        readOnly: true,
-      }),
-    rawDer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The raw certificate bytes in DER format.' }),
-    serialNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The certificate serial number as a hex string. Only present if parsed is true.',
-        readOnly: true,
-      }),
-    sha256Fingerprint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The SHA-256 certificate fingerprint as a hex string. Only present if parsed is true.',
-        readOnly: true,
-      }),
-    subject: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The subject distinguished name in RFC 2253 format. Only present if parsed is true.',
-        readOnly: true,
-      }),
-    subjectAlternativeDnsNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The subject Alternative DNS names. Only present if parsed is true.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'A Certificate represents an X.509 certificate used to authenticate HTTPS connections to EKM replicas.',
-    required: [],
-  })
-  .openapi('Certificate')
 
 const CertificateChainsSchema = z
   .object({
@@ -772,7 +865,7 @@ const DecryptResponseSchema = z
   .openapi('DecryptResponse')
 
 const DestroyCryptoKeyVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for KeyManagementService.DestroyCryptoKeyVersion.' })
   .openapi('DestroyCryptoKeyVersionRequest')
 
@@ -800,93 +893,6 @@ const EkmConfigSchema = z
     required: [],
   })
   .openapi('EkmConfig')
-
-const ServiceResolverSchema = z
-  .object({
-    endpointFilter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The filter applied to the endpoints of the resolved service. If no filter is specified, all endpoints will be considered. An endpoint will be chosen arbitrarily from the filtered list for each request. For endpoint filter syntax and examples, see https://cloud.google.com/service-directory/docs/reference/rpc/google.cloud.servicedirectory.v1#resolveservicerequest.',
-      }),
-    hostname: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The hostname of the EKM replica used at TLS and HTTP layers.',
-      }),
-    serverCertificates: z
-      .array(CertificateSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A list of leaf server certificates used to authenticate HTTPS connections to the EKM replica. Currently, a maximum of 10 Certificate is supported.',
-      }),
-    serviceDirectoryService: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The resource name of the Service Directory service pointing to an EKM replica, in the format `projects/*/locations/*/namespaces/*/services/*`.',
-      }),
-  })
-  .openapi({
-    description:
-      'A ServiceResolver represents an EKM replica that can be reached within an EkmConnection.',
-    required: [],
-  })
-  .openapi('ServiceResolver')
-
-const EkmConnectionSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time at which the EkmConnection was created.',
-        readOnly: true,
-      }),
-    cryptoSpacePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Identifies the EKM Crypto Space that this EkmConnection maps to. Note: This field is required if KeyManagementMode is CLOUD_KMS.',
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Etag of the currently stored EkmConnection.' }),
-    keyManagementMode: z
-      .enum(['KEY_MANAGEMENT_MODE_UNSPECIFIED', 'MANUAL', 'CLOUD_KMS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Describes who can perform control plane operations on the EKM. If unset, this defaults to MANUAL.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource name for the EkmConnection in the format `projects/*/locations/*/ekmConnections/*`.',
-        readOnly: true,
-      }),
-    serviceResolvers: z
-      .array(ServiceResolverSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of ServiceResolvers where the EKM can be reached. There should be one ServiceResolver per EKM replica. Currently, only a single ServiceResolver is supported.',
-      }),
-  })
-  .openapi({
-    description:
-      'An EkmConnection represents an individual EKM connection. It can be used for creating CryptoKeys and CryptoKeyVersions with a ProtectionLevel of EXTERNAL_VPC, as well as performing cryptographic operations using keys created within the EkmConnection.',
-    required: [],
-  })
-  .openapi('EkmConnection')
 
 const EncryptRequestSchema = z
   .object({
@@ -1248,7 +1254,7 @@ const ListCryptoKeysResponseSchema = z
   })
   .openapi('ListCryptoKeysResponse')
 
-const ListEkmConnectionsResponseSchema = z
+const ListEkmConnectionsResponseSchema: z.ZodType<ListEkmConnectionsResponseType> = z
   .object({
     ekmConnections: z
       .array(EkmConnectionSchema)
@@ -1632,7 +1638,7 @@ const PublicKeySchema = z
   .openapi('PublicKey')
 
 const RestoreCryptoKeyVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for KeyManagementService.RestoreCryptoKeyVersion.' })
   .openapi('RestoreCryptoKeyVersionRequest')
 
@@ -1694,7 +1700,7 @@ const UpdateCryptoKeyPrimaryVersionRequestSchema = z
   .openapi('UpdateCryptoKeyPrimaryVersionRequest')
 
 const VerifyConnectivityResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response message for EkmService.VerifyConnectivity.' })
   .openapi('VerifyConnectivityResponse')
 

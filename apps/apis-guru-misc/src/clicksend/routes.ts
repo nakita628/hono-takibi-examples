@@ -6771,6 +6771,13 @@ export const postUploadsConvertConvertRoute = createRoute({
   summary: 'Upload a file',
   operationId: 'Upload a file',
   request: {
+    params: z.object({
+      convert: z
+        .string()
+        .openapi({
+          param: { name: 'convert', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
     body: {
       content: {
         'application/json': {

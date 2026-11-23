@@ -326,7 +326,7 @@ export const getFoodConverseRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ answerText: z.string().min(1), media: z.array(z.object({})) })
+            .object({ answerText: z.string().min(1), media: z.array(z.looseObject({})) })
             .openapi({
               description: '',
               required: ['answerText', 'media'],
@@ -427,7 +427,7 @@ export const getFoodConverseSuggestRoute = createRoute({
                     }),
                 })
                 .openapi({ required: ['_'] }),
-              words: z.array(z.object({})),
+              words: z.array(z.looseObject({})),
             })
             .openapi({
               description: '',
@@ -2243,7 +2243,7 @@ export const getFoodIngredientsIdInformationRoute = createRoute({
                 .openapi({ required: ['value', 'unit'] }),
               id: z.int(),
               image: z.string().min(1),
-              meta: z.array(z.object({})),
+              meta: z.array(z.looseObject({})),
               name: z.string().min(1),
               nameClean: z.string().min(1),
               nutrition: z
@@ -3404,7 +3404,7 @@ export const getFoodMenuItemsIdNutritionLabelPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -3504,7 +3504,7 @@ export const getFoodMenuItemsIdNutritionWidgetPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -4427,9 +4427,9 @@ export const getFoodProductsUpcUpcComparableRoute = createRoute({
             .object({
               comparableProducts: z
                 .object({
-                  calories: z.array(z.object({})),
-                  likes: z.array(z.object({})),
-                  price: z.array(z.object({})),
+                  calories: z.array(z.looseObject({})),
+                  likes: z.array(z.looseObject({})),
+                  price: z.array(z.looseObject({})),
                   protein: z
                     .array(
                       z
@@ -4470,7 +4470,7 @@ export const getFoodProductsUpcUpcComparableRoute = createRoute({
                         else seen.set(key, i)
                       }
                     }),
-                  sugar: z.array(z.object({})),
+                  sugar: z.array(z.looseObject({})),
                 })
                 .openapi({
                   required: ['calories', 'likes', 'price', 'protein', 'spoonacularScore', 'sugar'],
@@ -5224,7 +5224,7 @@ export const getFoodProductsIdNutritionLabelPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -5326,7 +5326,7 @@ export const getFoodProductsIdNutritionWidgetPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -5643,7 +5643,7 @@ export const getFoodRestaurantsSearchRoute = createRoute({
                       offers_third_party_delivery: z.boolean().exactOptional(),
                       phone_number: z.int().exactOptional(),
                       pickup_enabled: z.boolean().exactOptional(),
-                      store_photos: z.array(z.object({})).exactOptional(),
+                      store_photos: z.array(z.looseObject({})).exactOptional(),
                       type: z.string().exactOptional(),
                       weighted_rating_value: z.number().exactOptional(),
                     })
@@ -6213,7 +6213,7 @@ export const getFoodSiteSearchRoute = createRoute({
                 .array(
                   z
                     .object({
-                      dataPoints: z.array(z.object({})).exactOptional(),
+                      dataPoints: z.array(z.looseObject({})).exactOptional(),
                       image: z.string().min(1),
                       link: z.string().min(1),
                       name: z.string().min(1),
@@ -7674,7 +7674,7 @@ export const deleteMealplannerUsernameDayDateRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -7785,7 +7785,7 @@ export const postMealplannerUsernameItemsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               description: '',
               'x-examples': {
@@ -7883,7 +7883,7 @@ export const deleteMealplannerUsernameItemsIdRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -8001,7 +8001,26 @@ export const getMealplannerUsernameShoppingListRoute = createRoute({
               required: ['aisles', 'cost', 'startDate', 'endDate'],
               'x-examples': {
                 'example-1': {
-                  aisles: [{ aisle: 'Baking' }],
+                  aisles: [
+                    {
+                      aisle: 'Baking',
+                      items: [
+                        {
+                          aisle: 'Baking',
+                          cost: 0.71,
+                          id: 115388,
+                          ingredientId: 18369,
+                          measures: {
+                            metric: { amount: 1, unit: 'pkg' },
+                            original: { amount: 1, unit: 'package' },
+                            us: { amount: 1, unit: 'pkg' },
+                          },
+                          name: 'baking powder',
+                          pantryItem: false,
+                        },
+                      ],
+                    },
+                  ],
                   cost: 1.43,
                   endDate: 1588896000,
                   startDate: 1588291200,
@@ -8190,7 +8209,26 @@ export const postMealplannerUsernameShoppingListItemsRoute = createRoute({
               required: ['aisles', 'cost', 'startDate', 'endDate'],
               'x-examples': {
                 'example-1': {
-                  aisles: [{ aisle: 'Baking' }],
+                  aisles: [
+                    {
+                      aisle: 'Baking',
+                      items: [
+                        {
+                          aisle: 'Baking',
+                          cost: 0.71,
+                          id: 115388,
+                          ingredientId: 18369,
+                          measures: {
+                            metric: { amount: 1, unit: 'pkg' },
+                            original: { amount: 1, unit: 'package' },
+                            us: { amount: 1, unit: 'pkg' },
+                          },
+                          name: 'baking powder',
+                          pantryItem: false,
+                        },
+                      ],
+                    },
+                  ],
                   cost: 0.71,
                   endDate: 1588896000,
                   startDate: 1588291200,
@@ -8310,7 +8348,7 @@ export const deleteMealplannerUsernameShoppingListItemsIdRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -8486,7 +8524,26 @@ export const postMealplannerUsernameShoppingListStartDateEndDateRoute = createRo
               required: ['aisles', 'cost', 'startDate', 'endDate'],
               'x-examples': {
                 'example-1': {
-                  aisles: [{ aisle: 'Baking' }],
+                  aisles: [
+                    {
+                      aisle: 'Baking',
+                      items: [
+                        {
+                          aisle: 'Baking',
+                          cost: 0.71,
+                          id: 115388,
+                          ingredientId: 18369,
+                          measures: {
+                            metric: { amount: 1, unit: 'pkg' },
+                            original: { amount: 1, unit: 'package' },
+                            us: { amount: 1, unit: 'pkg' },
+                          },
+                          name: 'baking powder',
+                          pantryItem: false,
+                        },
+                      ],
+                    },
+                  ],
                   cost: 0.71,
                   endDate: 1588896000,
                   startDate: 1588291200,
@@ -8729,7 +8786,78 @@ export const postMealplannerUsernameTemplatesRoute = createRoute({
               description: '',
               required: ['name', 'items', 'publishAsPublic'],
               'x-examples': {
-                'example-1': { name: 'My new meal plan template', publishAsPublic: false },
+                'example-1': {
+                  items: [
+                    {
+                      day: 1,
+                      position: 0,
+                      slot: 1,
+                      type: 'RECIPE',
+                      value: {
+                        id: 296213,
+                        imageType: 'jpg',
+                        servings: 2,
+                        title: 'Spinach Salad with Roasted Vegetables and Spiced Chickpea',
+                      },
+                    },
+                    {
+                      day: 2,
+                      position: 0,
+                      slot: 1,
+                      type: 'PRODUCT',
+                      value: {
+                        id: 183433,
+                        imageType: 'jpg',
+                        servings: 1,
+                        title: 'Ahold Lasagna with Meat Sauce',
+                      },
+                    },
+                    {
+                      day: 3,
+                      position: 0,
+                      slot: 1,
+                      type: 'MENU_ITEM',
+                      value: {
+                        id: 378557,
+                        imageType: 'png',
+                        servings: 1,
+                        title: 'Pizza 73 BBQ Steak Pizza, 9',
+                      },
+                    },
+                    {
+                      day: 4,
+                      position: 0,
+                      slot: 1,
+                      type: 'CUSTOM_FOOD',
+                      value: {
+                        id: 348,
+                        image: 'https://spoonacular.com/cdn/ingredients_100x100/cashews.jpg',
+                        servings: 1,
+                        title: 'Aldi Spicy Cashews - 30g',
+                      },
+                    },
+                    {
+                      day: 5,
+                      position: 0,
+                      slot: 1,
+                      type: 'INGREDIENTS',
+                      value: {
+                        ingredients: [
+                          { name: '1 banana' },
+                          {
+                            amount: '1',
+                            image:
+                              'https://spoonacular.com/cdn/ingredients_100x100/brewed-coffee.jpg',
+                            name: 'coffee',
+                            unit: 'cup',
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  name: 'My new meal plan template',
+                  publishAsPublic: false,
+                },
               },
             }),
           examples: {
@@ -9042,6 +9170,85 @@ export const getMealplannerUsernameTemplatesIdRoute = createRoute({
                   days: [
                     {
                       day: '1',
+                      items: [
+                        {
+                          id: 2403,
+                          position: 0,
+                          slot: 1,
+                          type: 'RECIPE',
+                          value: {
+                            id: 630657,
+                            imageType: 'jpg',
+                            title: 'Double Chocolate Protein Cookies',
+                          },
+                        },
+                        {
+                          id: 2404,
+                          position: 0,
+                          slot: 1,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image: 'https://spoonacular.com/cdn/ingredients_100x100/orange.jpg',
+                                name: 'orange',
+                                unit: '',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2405,
+                          position: 0,
+                          slot: 2,
+                          type: 'RECIPE',
+                          value: {
+                            id: 296213,
+                            imageType: 'jpg',
+                            title: 'Spinach Salad with Roasted Vegetables and Spiced Chickpea',
+                          },
+                        },
+                        {
+                          id: 2406,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: {
+                            id: 237677,
+                            imageType: 'jpg',
+                            title: 'Chicken Parmesan with Spaghetti',
+                          },
+                        },
+                        {
+                          id: 2407,
+                          position: 0,
+                          slot: 3,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image:
+                                  'https://spoonacular.com/cdn/ingredients_100x100/broccoli.jpg',
+                                name: 'broccoli',
+                                unit: 'cup',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2408,
+                          position: 0,
+                          slot: 3,
+                          type: 'PRODUCT',
+                          value: { id: 146191, imageType: 'jpg', title: 'Lindt Dark Chocolate' },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 1293, name: 'Calories', percentDailyNeeds: 65, unit: 'cal' },
@@ -9077,6 +9284,59 @@ export const getMealplannerUsernameTemplatesIdRoute = createRoute({
                     },
                     {
                       day: '2',
+                      items: [
+                        {
+                          id: 2409,
+                          position: 0,
+                          slot: 1,
+                          type: 'PRODUCT',
+                          value: { id: 101999, imageType: 'jpg', title: 'Greek Gods Yogurt' },
+                        },
+                        {
+                          id: 2410,
+                          position: 0,
+                          slot: 1,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image:
+                                  'https://spoonacular.com/cdn/ingredients_100x100/berries-mixed.jpg',
+                                name: 'berries',
+                                unit: 'cup',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2411,
+                          position: 0,
+                          slot: 2,
+                          type: 'RECIPE',
+                          value: { id: 516377, imageType: 'jpg', title: 'Southwest Quinoa Salad' },
+                        },
+                        {
+                          id: 2412,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: { id: 247683, imageType: 'jpg', title: 'Pesto Caprese Omelette' },
+                        },
+                        {
+                          id: 2413,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: {
+                            id: 484337,
+                            imageType: 'jpg',
+                            title: 'One Ingredient Banana Ice Cream',
+                          },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 1386, name: 'Calories', percentDailyNeeds: 69, unit: 'cal' },
@@ -9112,6 +9372,81 @@ export const getMealplannerUsernameTemplatesIdRoute = createRoute({
                     },
                     {
                       day: '3',
+                      items: [
+                        {
+                          id: 2414,
+                          position: 0,
+                          slot: 1,
+                          type: 'RECIPE',
+                          value: { id: 157259, imageType: 'jpg', title: 'Cocoa Protein Pancakes' },
+                        },
+                        {
+                          id: 2415,
+                          position: 0,
+                          slot: 1,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image: 'https://spoonacular.com/cdn/ingredients_100x100/orange.jpg',
+                                name: 'orange',
+                                unit: '',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2416,
+                          position: 0,
+                          slot: 2,
+                          type: 'RECIPE',
+                          value: { id: 535856, imageType: 'jpg', title: 'BLT Chopped Salad' },
+                        },
+                        {
+                          id: 2417,
+                          position: 0,
+                          slot: 2,
+                          type: 'PRODUCT',
+                          value: {
+                            id: 71144,
+                            imageType: 'jpg',
+                            title:
+                              'Kind Plus Fruit & Nut Bar - Almond Walnut Macadamia with Peanuts Plus Protein',
+                          },
+                        },
+                        {
+                          id: 2418,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: {
+                            id: 519197,
+                            imageType: 'png',
+                            title: 'Zesty Sriracha Shrimp and Quinoa',
+                          },
+                        },
+                        {
+                          id: 2419,
+                          position: 0,
+                          slot: 3,
+                          type: 'PRODUCT',
+                          value: {
+                            id: 163427,
+                            imageType: 'jpg',
+                            title: 'Green Giant Valley Fresh Steamers - Select Sugar Snap Peas',
+                          },
+                        },
+                        {
+                          id: 2420,
+                          position: 0,
+                          slot: 3,
+                          type: 'PRODUCT',
+                          value: { id: 146191, imageType: 'jpg', title: 'Lindt Dark Chocolate' },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 1589, name: 'Calories', percentDailyNeeds: 79, unit: 'cal' },
@@ -9147,6 +9482,63 @@ export const getMealplannerUsernameTemplatesIdRoute = createRoute({
                     },
                     {
                       day: '4',
+                      items: [
+                        {
+                          id: 2421,
+                          position: 0,
+                          slot: 1,
+                          type: 'PRODUCT',
+                          value: { id: 101999, imageType: 'jpg', title: 'Greek Gods Yogurt' },
+                        },
+                        {
+                          id: 2422,
+                          position: 0,
+                          slot: 1,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image:
+                                  'https://spoonacular.com/cdn/ingredients_100x100/berries-mixed.jpg',
+                                name: 'berries',
+                                unit: 'cup',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2423,
+                          position: 0,
+                          slot: 2,
+                          type: 'RECIPE',
+                          value: { id: 535563, imageType: 'jpg', title: 'Black Bean Quinoa Salad' },
+                        },
+                        {
+                          id: 2424,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: {
+                            id: 622598,
+                            imageType: 'jpg',
+                            title: 'Pittata - Pizza Frittata',
+                          },
+                        },
+                        {
+                          id: 2425,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: {
+                            id: 484337,
+                            imageType: 'jpg',
+                            title: 'One Ingredient Banana Ice Cream',
+                          },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 1343, name: 'Calories', percentDailyNeeds: 67, unit: 'cal' },
@@ -9182,6 +9574,68 @@ export const getMealplannerUsernameTemplatesIdRoute = createRoute({
                     },
                     {
                       day: '5',
+                      items: [
+                        {
+                          id: 2426,
+                          position: 0,
+                          slot: 1,
+                          type: 'PRODUCT',
+                          value: {
+                            id: 71144,
+                            imageType: 'jpg',
+                            title:
+                              'Kind Plus Fruit & Nut Bar - Almond Walnut Macadamia with Peanuts Plus Protein',
+                          },
+                        },
+                        {
+                          id: 2427,
+                          position: 0,
+                          slot: 1,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image:
+                                  'https://spoonacular.com/cdn/ingredients_100x100/bananas.jpg',
+                                name: 'banana',
+                                unit: '',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2428,
+                          position: 0,
+                          slot: 2,
+                          type: 'RECIPE',
+                          value: {
+                            id: 296213,
+                            imageType: 'jpg',
+                            title: 'Spinach Salad with Roasted Vegetables and Spiced Chickpea',
+                          },
+                        },
+                        {
+                          id: 2429,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: { id: 497301, imageType: 'jpg', title: 'Shrimp Scampi' },
+                        },
+                        {
+                          id: 2430,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: {
+                            id: 581021,
+                            imageType: 'jpg',
+                            title: 'Black Bean Brownies: Fudgy Fun',
+                          },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 1247, name: 'Calories', percentDailyNeeds: 62, unit: 'cal' },
@@ -9217,6 +9671,90 @@ export const getMealplannerUsernameTemplatesIdRoute = createRoute({
                     },
                     {
                       day: '6',
+                      items: [
+                        {
+                          id: 2431,
+                          position: 0,
+                          slot: 1,
+                          type: 'RECIPE',
+                          value: { id: 157259, imageType: 'jpg', title: 'Cocoa Protein Pancakes' },
+                        },
+                        {
+                          id: 2432,
+                          position: 0,
+                          slot: 1,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image:
+                                  'https://spoonacular.com/cdn/ingredients_100x100/berries-mixed.jpg',
+                                name: 'berries',
+                                unit: 'cup',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2433,
+                          position: 0,
+                          slot: 2,
+                          type: 'RECIPE',
+                          value: { id: 535856, imageType: 'jpg', title: 'BLT Chopped Salad' },
+                        },
+                        {
+                          id: 2434,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: {
+                            id: 149425,
+                            imageType: 'jpg',
+                            title: 'Herb and Cheddar Cordon Bleu',
+                          },
+                        },
+                        {
+                          id: 2435,
+                          position: 0,
+                          slot: 3,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image:
+                                  'https://spoonacular.com/cdn/ingredients_100x100/brussels-sprouts.jpg',
+                                name: 'brussels sprouts',
+                                unit: 'cup',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2436,
+                          position: 0,
+                          slot: 3,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 5,
+                                image:
+                                  'https://spoonacular.com/cdn/ingredients_100x100/white-wine.jpg',
+                                name: 'wine',
+                                unit: 'ounces',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 1683, name: 'Calories', percentDailyNeeds: 84, unit: 'cal' },
@@ -9252,6 +9790,63 @@ export const getMealplannerUsernameTemplatesIdRoute = createRoute({
                     },
                     {
                       day: '7',
+                      items: [
+                        {
+                          id: 2437,
+                          position: 0,
+                          slot: 1,
+                          type: 'RECIPE',
+                          value: {
+                            id: 619085,
+                            imageType: 'jpg',
+                            title:
+                              'Protein Packed Healthy French Toast with Chocolate and Peanut Butter {Super Simple, Whole Wheat}',
+                          },
+                        },
+                        {
+                          id: 2438,
+                          position: 0,
+                          slot: 1,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: 1,
+                                image: 'https://spoonacular.com/cdn/ingredients_100x100/orange.jpg',
+                                name: 'orange',
+                                unit: '',
+                              },
+                            ],
+                            name: '',
+                            servings: '1',
+                          },
+                        },
+                        {
+                          id: 2439,
+                          position: 0,
+                          slot: 2,
+                          type: 'RECIPE',
+                          value: { id: 535563, imageType: 'jpg', title: 'Black Bean Quinoa Salad' },
+                        },
+                        {
+                          id: 2440,
+                          position: 0,
+                          slot: 3,
+                          type: 'RECIPE',
+                          value: {
+                            id: 590570,
+                            imageType: 'jpg',
+                            title: 'Asian Beef Lettuce Wraps',
+                          },
+                        },
+                        {
+                          id: 2441,
+                          position: 0,
+                          slot: 3,
+                          type: 'PRODUCT',
+                          value: { id: 146191, imageType: 'jpg', title: 'Lindt Dark Chocolate' },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 1442, name: 'Calories', percentDailyNeeds: 72, unit: 'cal' },
@@ -10132,7 +10727,7 @@ export const deleteMealplannerUsernameTemplatesIdRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -10359,6 +10954,32 @@ export const getMealplannerUsernameWeekStartDateRoute = createRoute({
                     {
                       date: 1589155200,
                       day: 'Monday',
+                      items: [
+                        {
+                          id: 1976489,
+                          position: 1,
+                          slot: 1,
+                          type: 'RECIPE',
+                          value: {
+                            id: 1023004,
+                            imageType: '',
+                            servings: 2,
+                            title: 'Foolproof Meatloaf',
+                          },
+                        },
+                        {
+                          id: 1976490,
+                          position: 2,
+                          slot: 2,
+                          type: 'CUSTOM_FOOD',
+                          value: {
+                            id: 345,
+                            image: 'https://spoonacular.com/cdn/ingredients_100x100/bratwurst.jpg',
+                            servings: 1,
+                            title: "Denn's Lamb Bratwurst - 1/2 Pkg",
+                          },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 310, name: 'Calories', percentDailyNeeds: 16, unit: 'cal' },
@@ -10395,6 +11016,33 @@ export const getMealplannerUsernameWeekStartDateRoute = createRoute({
                     {
                       date: 1589241600,
                       day: 'Tuesday',
+                      items: [
+                        {
+                          id: 1976491,
+                          position: 3,
+                          slot: 1,
+                          type: 'INGREDIENTS',
+                          value: {
+                            ingredients: [
+                              {
+                                amount: '1',
+                                image: 'https://spoonacular.com/cdn/ingredients_100x100/apple.jpg',
+                                name: 'apple',
+                                unit: '',
+                              },
+                              {
+                                amount: '1',
+                                image:
+                                  'https://spoonacular.com/cdn/ingredients_100x100/bananas.jpg',
+                                name: 'banana',
+                                unit: '',
+                              },
+                            ],
+                            servings: 1,
+                            title: '',
+                          },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 200, name: 'Calories', percentDailyNeeds: 10, unit: 'cal' },
@@ -10431,6 +11079,22 @@ export const getMealplannerUsernameWeekStartDateRoute = createRoute({
                     {
                       date: 1589328000,
                       day: 'Wednesday',
+                      items: [
+                        {
+                          id: 1976492,
+                          position: 4,
+                          slot: 1,
+                          type: 'MENU_ITEM',
+                          value: {
+                            id: 378557,
+                            image:
+                              'https://images.spoonacular.com/file/wximages/378557-312x231.png',
+                            imageType: 'png',
+                            servings: 1,
+                            title: 'BBQ Steak Pizza, 9',
+                          },
+                        },
+                      ],
                       nutritionSummary: {
                         nutrients: [
                           { amount: 180, name: 'Calories', percentDailyNeeds: 9, unit: 'cal' },
@@ -10807,7 +11471,7 @@ export const postRecipesAnalyzeRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -13528,7 +14192,7 @@ export const getRecipesExtractRoute = createRoute({
           schema: z
             .object({
               aggregateLikes: z.int(),
-              analyzedInstructions: z.array(z.object({})),
+              analyzedInstructions: z.array(z.looseObject({})),
               cheap: z.boolean(),
               creditsText: z.string().min(1),
               cuisines: z.array(z.string()),
@@ -14298,7 +14962,7 @@ export const getRecipesFindByIngredientsRoute = createRoute({
                       }
                     }),
                   title: z.string().min(1),
-                  unusedIngredients: z.array(z.object({})).min(0),
+                  unusedIngredients: z.array(z.looseObject({})).min(0),
                   usedIngredientCount: z.number(),
                   usedIngredients: z
                     .array(
@@ -18174,7 +18838,7 @@ export const getRecipesRandomRoute = createRoute({
                   z
                     .object({
                       aggregateLikes: z.number(),
-                      analyzedInstructions: z.array(z.object({})).exactOptional(),
+                      analyzedInstructions: z.array(z.looseObject({})).exactOptional(),
                       cheap: z.boolean(),
                       creditsText: z.string().min(1),
                       cuisines: z.array(z.string()).exactOptional(),
@@ -19528,7 +20192,7 @@ export const getRecipesIdCardRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json': { schema: z.object({}), examples: {} } },
+      content: { 'application/json': { schema: z.looseObject({}), examples: {} } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -19723,7 +20387,7 @@ export const getRecipesIdEquipmentWidgetPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -19779,7 +20443,7 @@ export const getRecipesIdInformationRoute = createRoute({
           schema: z
             .object({
               aggregateLikes: z.int(),
-              analyzedInstructions: z.array(z.object({})),
+              analyzedInstructions: z.array(z.looseObject({})),
               cheap: z.boolean(),
               creditsText: z.string().min(1),
               cuisines: z.array(z.string()),
@@ -20823,7 +21487,7 @@ export const getRecipesIdIngredientWidgetPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -21016,7 +21680,7 @@ export const getRecipesIdNutritionLabelPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -21456,7 +22120,7 @@ export const getRecipesIdNutritionWidgetPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -21817,7 +22481,7 @@ export const getRecipesIdPriceBreakdownWidgetPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -22272,7 +22936,7 @@ export const getRecipesIdTasteWidgetPngRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'image/png': { schema: z.object({}) } },
+      content: { 'image/png': { schema: z.looseObject({}) } },
       headers: z.object({}),
     },
     401: { description: 'Unauthorized' },
@@ -22296,7 +22960,7 @@ export const postUsersConnectRoute = createRoute({
   request: {
     body: {
       content: {
-        '': { schema: z.object({}) },
+        '': { schema: z.looseObject({}) },
         'application/json': {
           schema: z
             .object({

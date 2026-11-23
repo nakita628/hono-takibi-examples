@@ -1,27 +1,13 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ErrorSchema = z
-  .unknown()
-  .superRefine((val, ctx) => {
-    {
-      const ifOk = z
-        .object({ transaction_id: z.string() })
-        .openapi({ required: ['transaction_id'] })
-        .safeParse(val).success
-      if (ifOk) {
-        const Schema = z.object({ parent_id: z.string() }).openapi({ required: ['parent_id'] })
-        if (!Schema.safeParse(val).success) {
-          ctx.addIssue({ code: 'custom' })
-        }
-      }
-    }
-  })
-  .and(
-    z.unknown().superRefine((val, ctx) => {
+const ErrorSchema = (() => {
+  const Schema = z
+    .unknown()
+    .superRefine((val, ctx) => {
       {
         const ifOk = z
-          .object({ trace_id: z.string() })
-          .openapi({ required: ['trace_id'] })
+          .object({ transaction_id: z.string() })
+          .openapi({ required: ['transaction_id'] })
           .safeParse(val).success
         if (ifOk) {
           const Schema = z.object({ parent_id: z.string() }).openapi({ required: ['parent_id'] })
@@ -30,1111 +16,1238 @@ const ErrorSchema = z
           }
         }
       }
-    }),
-  )
-  .and(
-    z.unknown().superRefine((val, ctx) => {
-      {
-        const ifOk = z
-          .object({ transaction_id: z.string() })
-          .openapi({ required: ['transaction_id'] })
-          .safeParse(val).success
-        if (ifOk) {
-          const Schema = z.object({ trace_id: z.string() }).openapi({ required: ['trace_id'] })
-          if (!Schema.safeParse(val).success) {
-            ctx.addIssue({ code: 'custom' })
+    })
+    .and(
+      z.unknown().superRefine((val, ctx) => {
+        {
+          const ifOk = z
+            .object({ trace_id: z.string() })
+            .openapi({ required: ['trace_id'] })
+            .safeParse(val).success
+          if (ifOk) {
+            const Schema = z.object({ parent_id: z.string() }).openapi({ required: ['parent_id'] })
+            if (!Schema.safeParse(val).success) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
         }
-      }
-    }),
-  )
-  .and(
-    z.unknown().superRefine((val, ctx) => {
-      {
-        const ifOk = z
-          .object({ parent_id: z.string() })
-          .openapi({ required: ['parent_id'] })
-          .safeParse(val).success
-        if (ifOk) {
-          const Schema = z.object({ trace_id: z.string() }).openapi({ required: ['trace_id'] })
-          if (!Schema.safeParse(val).success) {
-            ctx.addIssue({ code: 'custom' })
+      }),
+    )
+    .and(
+      z.unknown().superRefine((val, ctx) => {
+        {
+          const ifOk = z
+            .object({ transaction_id: z.string() })
+            .openapi({ required: ['transaction_id'] })
+            .safeParse(val).success
+          if (ifOk) {
+            const Schema = z.object({ trace_id: z.string() }).openapi({ required: ['trace_id'] })
+            if (!Schema.safeParse(val).success) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
         }
-      }
-    }),
-  )
-  .and(
-    z
-      .object({
-        context: z
-          .object({
-            cloud: z
-              .object({
-                origin: z
-                  .object({
-                    account: z
-                      .object({
-                        id: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'The cloud account or organization id used to identify different entities in a multi-tenant environment.',
-                          }),
-                      })
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The cloud account or organization id used to identify different entities in a multi-tenant environment.',
-                        required: [],
-                      }),
-                    provider: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the cloud provider.' }),
-                    region: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description: 'Region in which this host, resource, or service is located.',
-                      }),
-                    service: z
-                      .object({
-                        name: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'The cloud service name is intended to distinguish services running on different platforms within a provider.',
-                          }),
-                      })
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'The cloud service name is intended to distinguish services running on different platforms within a provider.',
-                        required: [],
-                      }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Origin contains the self-nested field groups for cloud.',
-                    required: [],
-                  }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Cloud holds fields related to the cloud or infrastructure the events are coming from.',
-                required: [],
-              }),
-            custom: z
-              .looseObject({})
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Custom can contain additional metadata to be stored with the event. The format is unspecified and can be deeply nested objects. The information will not be indexed or searchable in Elasticsearch.',
-              }),
-            message: z
-              .object({
-                age: z
-                  .object({
-                    ms: z
-                      .int()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Age of the message in milliseconds.' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      "Age of the message. If the monitored messaging framework provides a timestamp for the message, agents may use it. Otherwise, the sending agent can add a timestamp in milliseconds since the Unix epoch to the message's metadata to be retrieved by the receiving agent. If a timestamp is not available, agents should omit this field.",
-                    required: [],
-                  }),
-                body: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Body of the received message, similar to an HTTP request body',
-                  }),
-                headers: z
-                  .strictObject({})
-                  .superRefine((o, ctx) => {
-                    const regex = new RegExp('[.*]*$')
-                    const Schema = z.union([z.array(z.string()), z.string()]).nullable()
-                    for (const [k, val] of Object.entries(o)) {
-                      if (!regex.test(k)) {
-                        continue
+      }),
+    )
+    .and(
+      z.unknown().superRefine((val, ctx) => {
+        {
+          const ifOk = z
+            .object({ parent_id: z.string() })
+            .openapi({ required: ['parent_id'] })
+            .safeParse(val).success
+          if (ifOk) {
+            const Schema = z.object({ trace_id: z.string() }).openapi({ required: ['trace_id'] })
+            if (!Schema.safeParse(val).success) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        }
+      }),
+    )
+    .and(
+      z
+        .object({
+          context: z
+            .object({
+              cloud: z
+                .object({
+                  origin: z
+                    .object({
+                      account: z
+                        .object({
+                          id: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'The cloud account or organization id used to identify different entities in a multi-tenant environment.',
+                            }),
+                        })
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The cloud account or organization id used to identify different entities in a multi-tenant environment.',
+                          required: [],
+                        }),
+                      provider: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the cloud provider.' }),
+                      region: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Region in which this host, resource, or service is located.',
+                        }),
+                      service: z
+                        .object({
+                          name: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'The cloud service name is intended to distinguish services running on different platforms within a provider.',
+                            }),
+                        })
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The cloud service name is intended to distinguish services running on different platforms within a provider.',
+                          required: [],
+                        }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Origin contains the self-nested field groups for cloud.',
+                      required: [],
+                    }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Cloud holds fields related to the cloud or infrastructure the events are coming from.',
+                  required: [],
+                }),
+              custom: z
+                .looseObject({})
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Custom can contain additional metadata to be stored with the event. The format is unspecified and can be deeply nested objects. The information will not be indexed or searchable in Elasticsearch.',
+                }),
+              message: z
+                .object({
+                  age: z
+                    .object({
+                      ms: z
+                        .int()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Age of the message in milliseconds.' }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "Age of the message. If the monitored messaging framework provides a timestamp for the message, agents may use it. Otherwise, the sending agent can add a timestamp in milliseconds since the Unix epoch to the message's metadata to be retrieved by the receiving agent. If a timestamp is not available, agents should omit this field.",
+                      required: [],
+                    }),
+                  body: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Body of the received message, similar to an HTTP request body',
+                    }),
+                  headers: z
+                    .looseObject({})
+                    .superRefine((o, ctx) => {
+                      const keys = Object.keys(o).filter(
+                        (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                      )
+                      if (keys.length > 0) {
+                        ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
                       }
-                      const result = Schema.safeParse(val)
-                      if (!result.success) {
-                        for (const issue of result.error.issues) {
-                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                    })
+                    .superRefine((o, ctx) => {
+                      const regex = new RegExp('[.*]*$')
+                      const Schema = z.union([z.array(z.string()), z.string()]).nullable()
+                      for (const [k, val] of Object.entries(o)) {
+                        if (!regex.test(k)) {
+                          continue
+                        }
+                        const result = Schema.safeParse(val)
+                        if (!result.success) {
+                          for (const issue of result.error.issues) {
+                            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                          }
                         }
                       }
-                    }
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Headers received with the message, similar to HTTP request headers.',
-                  }),
-                queue: z
-                  .object({
-                    name: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Name holds the name of the message queue where the message is received.',
-                      }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Queue holds information about the message queue where the message is received.',
-                    required: [],
-                  }),
-                routing_key: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'RoutingKey holds the optional routing key of the received message as set on the queuing system, such as in RabbitMQ.',
-                  }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Message holds details related to message receiving and publishing if the captured event integrates with a messaging system',
-                required: [],
-              }),
-            page: z
-              .object({
-                referer: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      "Referer holds the URL of the page that 'linked' to the current page.",
-                  }),
-                url: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'URL of the current page' }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Page holds information related to the current page and page referers. It is only sent from RUM agents.',
-                required: [],
-              }),
-            request: z
-              .object({
-                body: z
-                  .union([z.string(), z.looseObject({})])
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Body only contais the request bod, not the query string information. It can either be a dictionary (for standard HTTP requests) or a raw request body.',
-                  }),
-                cookies: z
-                  .looseObject({})
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Cookies used by the request, parsed as key-value objects.',
-                  }),
-                env: z
-                  .looseObject({})
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Env holds environment variable information passed to the monitored service.',
-                  }),
-                headers: z
-                  .strictObject({})
-                  .superRefine((o, ctx) => {
-                    const regex = new RegExp('[.*]*$')
-                    const Schema = z.union([z.array(z.string()), z.string()]).nullable()
-                    for (const [k, val] of Object.entries(o)) {
-                      if (!regex.test(k)) {
-                        continue
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      ...{
+                        patternProperties: {
+                          '[.*]*$': {
+                            type: ['null', 'array', 'string'],
+                            items: { type: 'string' },
+                          },
+                        },
+                      },
+                      additionalProperties: false,
+                      description:
+                        'Headers received with the message, similar to HTTP request headers.',
+                    }),
+                  queue: z
+                    .object({
+                      name: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Name holds the name of the message queue where the message is received.',
+                        }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Queue holds information about the message queue where the message is received.',
+                      required: [],
+                    }),
+                  routing_key: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'RoutingKey holds the optional routing key of the received message as set on the queuing system, such as in RabbitMQ.',
+                    }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Message holds details related to message receiving and publishing if the captured event integrates with a messaging system',
+                  required: [],
+                }),
+              page: z
+                .object({
+                  referer: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "Referer holds the URL of the page that 'linked' to the current page.",
+                    }),
+                  url: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'URL of the current page' }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Page holds information related to the current page and page referers. It is only sent from RUM agents.',
+                  required: [],
+                }),
+              request: z
+                .object({
+                  body: z
+                    .union([z.string(), z.looseObject({})])
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Body only contais the request bod, not the query string information. It can either be a dictionary (for standard HTTP requests) or a raw request body.',
+                    }),
+                  cookies: z
+                    .looseObject({})
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Cookies used by the request, parsed as key-value objects.',
+                    }),
+                  env: z
+                    .looseObject({})
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Env holds environment variable information passed to the monitored service.',
+                    }),
+                  headers: z
+                    .looseObject({})
+                    .superRefine((o, ctx) => {
+                      const keys = Object.keys(o).filter(
+                        (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                      )
+                      if (keys.length > 0) {
+                        ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
                       }
-                      const result = Schema.safeParse(val)
-                      if (!result.success) {
-                        for (const issue of result.error.issues) {
-                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                    })
+                    .superRefine((o, ctx) => {
+                      const regex = new RegExp('[.*]*$')
+                      const Schema = z.union([z.array(z.string()), z.string()]).nullable()
+                      for (const [k, val] of Object.entries(o)) {
+                        if (!regex.test(k)) {
+                          continue
+                        }
+                        const result = Schema.safeParse(val)
+                        if (!result.success) {
+                          for (const issue of result.error.issues) {
+                            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                          }
                         }
                       }
-                    }
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
-                  }),
-                http_version: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'HTTPVersion holds information about the used HTTP version.',
-                  }),
-                method: z
-                  .string()
-                  .max(1024)
-                  .openapi({
-                    description: 'Method holds information about the method of the HTTP request.',
-                  }),
-                socket: z
-                  .object({
-                    encrypted: z
-                      .boolean()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Encrypted indicates whether a request was sent as TLS/HTTPS request. DEPRECATED: this field will be removed in a future release.',
-                      }),
-                    remote_address: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          "RemoteAddress holds the network address sending the request. It should be obtained through standard APIs and not be parsed from any headers like 'Forwarded'.",
-                      }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Socket holds information related to the recorded request, such as whether or not data were encrypted and the remote address.',
-                    required: [],
-                  }),
-                url: z
-                  .object({
-                    full: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Full, possibly agent-assembled URL of the request, e.g. https://example.com:443/search?q=elasticsearch#top.',
-                      }),
-                    hash: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: "Hash of the request URL, e.g. 'top'" }),
-                    hostname: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description: "Hostname information of the request, e.g. 'example.com'.\"",
-                      }),
-                    pathname: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: "Path of the request, e.g. '/search'" }),
-                    port: z
-                      .union([z.string().max(1024), z.int()])
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          "Port of the request, e.g. '443'. Can be sent as string or int.",
-                      }),
-                    protocol: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          "Protocol information for the recorded request, e.g. 'https:'.",
-                      }),
-                    raw: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Raw unparsed URL of the HTTP request line, e.g https://example.com:443/search?q=elasticsearch. This URL may be absolute or relative. For more details, see https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.2.',
-                      }),
-                    search: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Search contains the query string information of the request. It is expected to have values delimited by ampersands.',
-                      }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'URL holds information sucha as the raw URL, scheme, host and path.',
-                    required: [],
-                  }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Request describes the HTTP request information in case the event was created as a result of an HTTP request.',
-                required: ['method'],
-              }),
-            response: z
-              .object({
-                decoded_body_size: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'DecodedBodySize holds the size of the decoded payload.',
-                  }),
-                encoded_body_size: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'EncodedBodySize holds the size of the encoded payload.',
-                  }),
-                finished: z
-                  .boolean()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Finished indicates whether the response was finished or not.',
-                  }),
-                headers: z
-                  .strictObject({})
-                  .superRefine((o, ctx) => {
-                    const regex = new RegExp('[.*]*$')
-                    const Schema = z.union([z.array(z.string()), z.string()]).nullable()
-                    for (const [k, val] of Object.entries(o)) {
-                      if (!regex.test(k)) {
-                        continue
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      ...{
+                        patternProperties: {
+                          '[.*]*$': {
+                            type: ['null', 'array', 'string'],
+                            items: { type: 'string' },
+                          },
+                        },
+                      },
+                      additionalProperties: false,
+                      description:
+                        'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
+                    }),
+                  http_version: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'HTTPVersion holds information about the used HTTP version.',
+                    }),
+                  method: z
+                    .string()
+                    .max(1024)
+                    .openapi({
+                      description: 'Method holds information about the method of the HTTP request.',
+                    }),
+                  socket: z
+                    .object({
+                      encrypted: z
+                        .boolean()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Encrypted indicates whether a request was sent as TLS/HTTPS request. DEPRECATED: this field will be removed in a future release.',
+                        }),
+                      remote_address: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "RemoteAddress holds the network address sending the request. It should be obtained through standard APIs and not be parsed from any headers like 'Forwarded'.",
+                        }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Socket holds information related to the recorded request, such as whether or not data were encrypted and the remote address.',
+                      required: [],
+                    }),
+                  url: z
+                    .object({
+                      full: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Full, possibly agent-assembled URL of the request, e.g. https://example.com:443/search?q=elasticsearch#top.',
+                        }),
+                      hash: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: "Hash of the request URL, e.g. 'top'" }),
+                      hostname: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description: "Hostname information of the request, e.g. 'example.com'.\"",
+                        }),
+                      pathname: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: "Path of the request, e.g. '/search'" }),
+                      port: z
+                        .union([z.string().max(1024), z.int()])
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "Port of the request, e.g. '443'. Can be sent as string or int.",
+                        }),
+                      protocol: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "Protocol information for the recorded request, e.g. 'https:'.",
+                        }),
+                      raw: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Raw unparsed URL of the HTTP request line, e.g https://example.com:443/search?q=elasticsearch. This URL may be absolute or relative. For more details, see https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.2.',
+                        }),
+                      search: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Search contains the query string information of the request. It is expected to have values delimited by ampersands.',
+                        }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'URL holds information sucha as the raw URL, scheme, host and path.',
+                      required: [],
+                    }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Request describes the HTTP request information in case the event was created as a result of an HTTP request.',
+                  required: ['method'],
+                }),
+              response: z
+                .object({
+                  decoded_body_size: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'DecodedBodySize holds the size of the decoded payload.',
+                    }),
+                  encoded_body_size: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'EncodedBodySize holds the size of the encoded payload.',
+                    }),
+                  finished: z
+                    .boolean()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Finished indicates whether the response was finished or not.',
+                    }),
+                  headers: z
+                    .looseObject({})
+                    .superRefine((o, ctx) => {
+                      const keys = Object.keys(o).filter(
+                        (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                      )
+                      if (keys.length > 0) {
+                        ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
                       }
-                      const result = Schema.safeParse(val)
-                      if (!result.success) {
-                        for (const issue of result.error.issues) {
-                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                    })
+                    .superRefine((o, ctx) => {
+                      const regex = new RegExp('[.*]*$')
+                      const Schema = z.union([z.array(z.string()), z.string()]).nullable()
+                      for (const [k, val] of Object.entries(o)) {
+                        if (!regex.test(k)) {
+                          continue
+                        }
+                        const result = Schema.safeParse(val)
+                        if (!result.success) {
+                          for (const issue of result.error.issues) {
+                            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                          }
                         }
                       }
-                    }
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Headers holds the http headers sent in the http response.',
-                  }),
-                headers_sent: z
-                  .boolean()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'HeadersSent indicates whether http headers were sent.',
-                  }),
-                status_code: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'StatusCode sent in the http response.' }),
-                transfer_size: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'TransferSize holds the total size of the payload.' }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Response describes the HTTP response information in case the event was created as a result of an HTTP request.',
-                required: [],
-              }),
-            service: z
-              .object({
-                agent: z
-                  .object({
-                    ephemeral_id: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'EphemeralID is a free format ID used for metrics correlation by agents',
-                      }),
-                    name: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the APM agent capturing information.' }),
-                    version: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Version of the APM agent capturing information.' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Agent holds information about the APM agent capturing the event.',
-                    required: [],
-                  }),
-                environment: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Environment in which the monitored service is running, e.g. `production` or `staging`.',
-                  }),
-                framework: z
-                  .object({
-                    name: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the used framework' }),
-                    version: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Version of the used framework' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Framework holds information about the framework used in the monitored service.',
-                    required: [],
-                  }),
-                id: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'ID holds a unique identifier for the service.' }),
-                language: z
-                  .object({
-                    name: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the used programming language' }),
-                    version: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Version of the used programming language' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Language holds information about the programming language of the monitored service.',
-                    required: [],
-                  }),
-                name: z
-                  .string()
-                  .regex(/^[a-zA-Z0-9 _-]+$/)
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the monitored service.' }),
-                node: z
-                  .object({
-                    configured_name: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the service node' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Node must be a unique meaningful name of the service node.',
-                    required: [],
-                  }),
-                origin: z
-                  .object({
-                    id: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Immutable id of the service emitting this event.' }),
-                    name: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description: 'Immutable name of the service emitting this event.',
-                      }),
-                    version: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description: 'The version of the service the data was collected from.',
-                      }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Origin contains the self-nested field groups for service.',
-                    required: [],
-                  }),
-                runtime: z
-                  .object({
-                    name: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the language runtime' }),
-                    version: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Version of the language runtime' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Runtime holds information about the language runtime running the monitored service',
-                    required: [],
-                  }),
-                target: z
-                  .union([
-                    z.object({ type: z.string() }).openapi({ required: ['type'] }),
-                    z.object({ name: z.string() }).openapi({ required: ['name'] }),
-                  ])
-                  .and(
-                    z
-                      .object({
-                        name: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description: 'Immutable name of the target service for the event',
-                          }),
-                        type: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description: 'Immutable type of the target service for the event',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Target holds information about the outgoing service in case of an outgoing event',
-                  }),
-                version: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Version of the monitored service.' }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Service related information can be sent per event. Information provided here will override the more generic information retrieved from metadata, missing service fields will be retrieved from the metadata information.',
-                required: [],
-              }),
-            tags: z
-              .record(
-                z.string(),
-                z.union([z.string().max(1024), z.boolean(), z.number()]).nullable(),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Tags are a flat mapping of user-defined tags. On the agent side, tags are called labels. Allowed value types are string, boolean and number values. Tags are indexed and searchable.',
-              }),
-            user: z
-              .object({
-                domain: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Domain of the logged in user' }),
-                email: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Email of the user.' }),
-                id: z
-                  .union([z.string().max(1024), z.int()])
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'ID identifies the logged in user, e.g. can be the primary key of the user',
-                  }),
-                username: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the user.' }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "User holds information about the correlated user for this event. If user data are provided here, all user related information from metadata is ignored, otherwise the metadata's user information will be stored with the event.",
-                required: [],
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Context holds arbitrary contextual information for the event.',
-            required: [],
-          }),
-        culprit: z
-          .string()
-          .max(1024)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Culprit identifies the function call which was the primary perpetrator of this event.',
-          }),
-        exception: z
-          .union([
-            z.object({ message: z.string() }).openapi({ required: ['message'] }),
-            z.object({ type: z.string() }).openapi({ required: ['type'] }),
-          ])
-          .and(
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      ...{
+                        patternProperties: {
+                          '[.*]*$': {
+                            type: ['null', 'array', 'string'],
+                            items: { type: 'string' },
+                          },
+                        },
+                      },
+                      additionalProperties: false,
+                      description: 'Headers holds the http headers sent in the http response.',
+                    }),
+                  headers_sent: z
+                    .boolean()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'HeadersSent indicates whether http headers were sent.',
+                    }),
+                  status_code: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'StatusCode sent in the http response.' }),
+                  transfer_size: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'TransferSize holds the total size of the payload.' }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Response describes the HTTP response information in case the event was created as a result of an HTTP request.',
+                  required: [],
+                }),
+              service: z
+                .object({
+                  agent: z
+                    .object({
+                      ephemeral_id: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'EphemeralID is a free format ID used for metrics correlation by agents',
+                        }),
+                      name: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the APM agent capturing information.' }),
+                      version: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description: 'Version of the APM agent capturing information.',
+                        }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Agent holds information about the APM agent capturing the event.',
+                      required: [],
+                    }),
+                  environment: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Environment in which the monitored service is running, e.g. `production` or `staging`.',
+                    }),
+                  framework: z
+                    .object({
+                      name: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the used framework' }),
+                      version: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Version of the used framework' }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Framework holds information about the framework used in the monitored service.',
+                      required: [],
+                    }),
+                  id: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'ID holds a unique identifier for the service.' }),
+                  language: z
+                    .object({
+                      name: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the used programming language' }),
+                      version: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Version of the used programming language' }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Language holds information about the programming language of the monitored service.',
+                      required: [],
+                    }),
+                  name: z
+                    .string()
+                    .regex(/^[a-zA-Z0-9 _-]+$/)
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Name of the monitored service.' }),
+                  node: z
+                    .object({
+                      configured_name: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the service node' }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Node must be a unique meaningful name of the service node.',
+                      required: [],
+                    }),
+                  origin: z
+                    .object({
+                      id: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description: 'Immutable id of the service emitting this event.',
+                        }),
+                      name: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description: 'Immutable name of the service emitting this event.',
+                        }),
+                      version: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description: 'The version of the service the data was collected from.',
+                        }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Origin contains the self-nested field groups for service.',
+                      required: [],
+                    }),
+                  runtime: z
+                    .object({
+                      name: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the language runtime' }),
+                      version: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Version of the language runtime' }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Runtime holds information about the language runtime running the monitored service',
+                      required: [],
+                    }),
+                  target: z
+                    .union([
+                      z.object({ type: z.string() }).openapi({ required: ['type'] }),
+                      z.object({ name: z.string() }).openapi({ required: ['name'] }),
+                    ])
+                    .and(
+                      z
+                        .object({
+                          name: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description: 'Immutable name of the target service for the event',
+                            }),
+                          type: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description: 'Immutable type of the target service for the event',
+                            }),
+                        })
+                        .openapi({ required: [] }),
+                    )
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Target holds information about the outgoing service in case of an outgoing event',
+                    }),
+                  version: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Version of the monitored service.' }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Service related information can be sent per event. Information provided here will override the more generic information retrieved from metadata, missing service fields will be retrieved from the metadata information.',
+                  required: [],
+                }),
+              tags: z
+                .record(
+                  z.string(),
+                  z.union([z.string().max(1024), z.boolean(), z.number()]).nullable(),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Tags are a flat mapping of user-defined tags. On the agent side, tags are called labels. Allowed value types are string, boolean and number values. Tags are indexed and searchable.',
+                }),
+              user: z
+                .object({
+                  domain: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Domain of the logged in user' }),
+                  email: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Email of the user.' }),
+                  id: z
+                    .union([z.string().max(1024), z.int()])
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'ID identifies the logged in user, e.g. can be the primary key of the user',
+                    }),
+                  username: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Name of the user.' }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "User holds information about the correlated user for this event. If user data are provided here, all user related information from metadata is ignored, otherwise the metadata's user information will be stored with the event.",
+                  required: [],
+                }),
+            })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'Context holds arbitrary contextual information for the event.',
+              required: [],
+            }),
+          culprit: z
+            .string()
+            .max(1024)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'Culprit identifies the function call which was the primary perpetrator of this event.',
+            }),
+          exception: z
+            .union([
+              z.object({ message: z.string() }).openapi({ required: ['message'] }),
+              z.object({ type: z.string() }).openapi({ required: ['type'] }),
+            ])
+            .and(
+              z
+                .object({
+                  attributes: z
+                    .looseObject({})
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Attributes of the exception.' }),
+                  cause: z
+                    .array(z.looseObject({}))
+                    .min(0)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Cause can hold a collection of error exceptions representing chained exceptions. The chain starts with the outermost exception, followed by its cause, and so on.',
+                    }),
+                  code: z
+                    .union([z.string().max(1024), z.int()])
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Code that is set when the error happened, e.g. database error code.',
+                    }),
+                  handled: z
+                    .boolean()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Handled indicates whether the error was caught in the code or not.',
+                    }),
+                  message: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Message contains the originally captured error message.',
+                    }),
+                  module: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: "Module describes the exception type's module namespace.",
+                    }),
+                  stacktrace: z
+                    .array(
+                      z
+                        .union([
+                          z.object({ classname: z.string() }).openapi({ required: ['classname'] }),
+                          z.object({ filename: z.string() }).openapi({ required: ['filename'] }),
+                        ])
+                        .and(
+                          z
+                            .object({
+                              abs_path: z
+                                .string()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({
+                                  description: "AbsPath is the absolute path of the frame's file.",
+                                }),
+                              classname: z
+                                .string()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({ description: 'Classname of the frame.' }),
+                              colno: z
+                                .int()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({ description: 'ColumnNumber of the frame.' }),
+                              context_line: z
+                                .string()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({
+                                  description: "ContextLine is the line from the frame's file.",
+                                }),
+                              filename: z
+                                .string()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({
+                                  description: "Filename is the relative name of the frame's file.",
+                                }),
+                              function: z
+                                .string()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({ description: 'Function represented by the frame.' }),
+                              library_frame: z
+                                .boolean()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'LibraryFrame indicates whether the frame is from a third party library.',
+                                }),
+                              lineno: z
+                                .int()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({ description: 'LineNumber of the frame.' }),
+                              module: z
+                                .string()
+                                .nullable()
+                                .exactOptional()
+                                .openapi({ description: 'Module to which the frame belongs to.' }),
+                              post_context: z
+                                .array(z.string())
+                                .min(0)
+                                .nullable()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    "PostContext is a slice of code lines immediately before the line from the frame's file.",
+                                }),
+                              pre_context: z
+                                .array(z.string())
+                                .min(0)
+                                .nullable()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    "PreContext is a slice of code lines immediately after the line from the frame's file.",
+                                }),
+                              vars: z
+                                .looseObject({})
+                                .nullable()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Vars is a flat mapping of local variables of the frame.',
+                                }),
+                            })
+                            .openapi({ required: [] }),
+                        ),
+                    )
+                    .min(0)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Stacktrace information of the captured exception.' }),
+                  type: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Type of the exception.' }),
+                })
+                .openapi({ required: [] }),
+            )
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'Exception holds information about the original error. The information is language specific.',
+            }),
+          id: z
+            .string()
+            .max(1024)
+            .openapi({ description: 'ID holds the hex encoded 128 random bits ID of the event.' }),
+          log: z
+            .object({
+              level: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'Level represents the severity of the recorded log.' }),
+              logger_name: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'LoggerName holds the name of the used logger instance.' }),
+              message: z
+                .string()
+                .openapi({
+                  description:
+                    'Message of the logged error. In case a parameterized message is captured, Message should contain the same information, but with any placeholders being replaced.',
+                }),
+              param_message: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "ParamMessage should contain the same information as Message, but with placeholders where parameters were logged, e.g. 'error connecting to %s'. The string is not interpreted, allowing differnt placeholders per client languange. The information might be used to group errors together.",
+                }),
+              stacktrace: z
+                .array(
+                  z
+                    .union([
+                      z.object({ classname: z.string() }).openapi({ required: ['classname'] }),
+                      z.object({ filename: z.string() }).openapi({ required: ['filename'] }),
+                    ])
+                    .and(
+                      z
+                        .object({
+                          abs_path: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description: "AbsPath is the absolute path of the frame's file.",
+                            }),
+                          classname: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'Classname of the frame.' }),
+                          colno: z
+                            .int()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'ColumnNumber of the frame.' }),
+                          context_line: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description: "ContextLine is the line from the frame's file.",
+                            }),
+                          filename: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description: "Filename is the relative name of the frame's file.",
+                            }),
+                          function: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'Function represented by the frame.' }),
+                          library_frame: z
+                            .boolean()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'LibraryFrame indicates whether the frame is from a third party library.',
+                            }),
+                          lineno: z
+                            .int()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'LineNumber of the frame.' }),
+                          module: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'Module to which the frame belongs to.' }),
+                          post_context: z
+                            .array(z.string())
+                            .min(0)
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                "PostContext is a slice of code lines immediately before the line from the frame's file.",
+                            }),
+                          pre_context: z
+                            .array(z.string())
+                            .min(0)
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                "PreContext is a slice of code lines immediately after the line from the frame's file.",
+                            }),
+                          vars: z
+                            .looseObject({})
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'Vars is a flat mapping of local variables of the frame.',
+                            }),
+                        })
+                        .openapi({ required: [] }),
+                    ),
+                )
+                .min(0)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'Stacktrace information of the captured error.' }),
+            })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'Log holds additional information added when the error is logged.',
+              required: ['message'],
+            }),
+          parent_id: z
+            .string()
+            .max(1024)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'ParentID holds the hex encoded 64 random bits ID of the parent transaction or span.',
+            }),
+          timestamp: z
+            .int()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'Timestamp holds the recorded time of the event, UTC based and formatted as microseconds since Unix epoch.',
+            }),
+          trace_id: z
+            .string()
+            .max(1024)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'TraceID holds the hex encoded 128 random bits ID of the correlated trace.',
+            }),
+          transaction: z
+            .object({
+              name: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Name is the generic designation of a transaction in the scope of a single service, eg: 'GET /users/:id'.",
+                }),
+              sampled: z
+                .boolean()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Sampled indicates whether or not the full information for a transaction is captured. If a transaction is unsampled no spans and less context information will be reported.',
+                }),
+              type: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Type expresses the correlated transaction's type as keyword that has specific relevance within the service's domain, eg: 'request', 'backgroundjob'.",
+                }),
+            })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'Transaction holds information about the correlated transaction.',
+              required: [],
+            }),
+          transaction_id: z
+            .string()
+            .max(1024)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'TransactionID holds the hex encoded 64 random bits ID of the correlated transaction.',
+            }),
+        })
+        .openapi({ required: ['id'] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    const reported = ctx.issues.length
+    try {
+      ;((ctx) => {
+        const val = ctx.value
+        if (
+          !(
             z
-              .object({
-                attributes: z
-                  .looseObject({})
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Attributes of the exception.' }),
-                cause: z
-                  .array(z.looseObject({}))
-                  .min(0)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Cause can hold a collection of error exceptions representing chained exceptions. The chain starts with the outermost exception, followed by its cause, and so on.',
-                  }),
-                code: z
-                  .union([z.string().max(1024), z.int()])
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Code that is set when the error happened, e.g. database error code.',
-                  }),
-                handled: z
-                  .boolean()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Handled indicates whether the error was caught in the code or not.',
-                  }),
-                message: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Message contains the originally captured error message.',
-                  }),
-                module: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: "Module describes the exception type's module namespace.",
-                  }),
-                stacktrace: z
-                  .array(
-                    z
-                      .union([
-                        z.object({ classname: z.string() }).openapi({ required: ['classname'] }),
-                        z.object({ filename: z.string() }).openapi({ required: ['filename'] }),
-                      ])
-                      .and(
-                        z
-                          .object({
-                            abs_path: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description: "AbsPath is the absolute path of the frame's file.",
-                              }),
-                            classname: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ description: 'Classname of the frame.' }),
-                            colno: z
-                              .int()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ description: 'ColumnNumber of the frame.' }),
-                            context_line: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description: "ContextLine is the line from the frame's file.",
-                              }),
-                            filename: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description: "Filename is the relative name of the frame's file.",
-                              }),
-                            function: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ description: 'Function represented by the frame.' }),
-                            library_frame: z
-                              .boolean()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'LibraryFrame indicates whether the frame is from a third party library.',
-                              }),
-                            lineno: z
-                              .int()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ description: 'LineNumber of the frame.' }),
-                            module: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({ description: 'Module to which the frame belongs to.' }),
-                            post_context: z
-                              .array(z.string())
-                              .min(0)
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  "PostContext is a slice of code lines immediately before the line from the frame's file.",
-                              }),
-                            pre_context: z
-                              .array(z.string())
-                              .min(0)
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  "PreContext is a slice of code lines immediately after the line from the frame's file.",
-                              }),
-                            vars: z
-                              .looseObject({})
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Vars is a flat mapping of local variables of the frame.',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      ),
-                  )
-                  .min(0)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Stacktrace information of the captured exception.' }),
-                type: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Type of the exception.' }),
-              })
-              .openapi({ required: [] }),
+              .object({ exception: z.looseObject({}) })
+              .openapi({ required: ['exception'] })
+              .safeParse(val).success ||
+            z
+              .object({ log: z.looseObject({}) })
+              .openapi({ required: ['log'] })
+              .safeParse(val).success
           )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Exception holds information about the original error. The information is language specific.',
-          }),
-        id: z
-          .string()
-          .max(1024)
-          .openapi({ description: 'ID holds the hex encoded 128 random bits ID of the event.' }),
-        log: z
-          .object({
-            level: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Level represents the severity of the recorded log.' }),
-            logger_name: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'LoggerName holds the name of the used logger instance.' }),
-            message: z
-              .string()
-              .openapi({
-                description:
-                  'Message of the logged error. In case a parameterized message is captured, Message should contain the same information, but with any placeholders being replaced.',
-              }),
-            param_message: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "ParamMessage should contain the same information as Message, but with placeholders where parameters were logged, e.g. 'error connecting to %s'. The string is not interpreted, allowing differnt placeholders per client languange. The information might be used to group errors together.",
-              }),
-            stacktrace: z
-              .array(
-                z
-                  .union([
-                    z.object({ classname: z.string() }).openapi({ required: ['classname'] }),
-                    z.object({ filename: z.string() }).openapi({ required: ['filename'] }),
-                  ])
-                  .and(
-                    z
-                      .object({
-                        abs_path: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description: "AbsPath is the absolute path of the frame's file.",
-                          }),
-                        classname: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'Classname of the frame.' }),
-                        colno: z
-                          .int()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'ColumnNumber of the frame.' }),
-                        context_line: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description: "ContextLine is the line from the frame's file.",
-                          }),
-                        filename: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description: "Filename is the relative name of the frame's file.",
-                          }),
-                        function: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'Function represented by the frame.' }),
-                        library_frame: z
-                          .boolean()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'LibraryFrame indicates whether the frame is from a third party library.',
-                          }),
-                        lineno: z
-                          .int()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'LineNumber of the frame.' }),
-                        module: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'Module to which the frame belongs to.' }),
-                        post_context: z
-                          .array(z.string())
-                          .min(0)
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              "PostContext is a slice of code lines immediately before the line from the frame's file.",
-                          }),
-                        pre_context: z
-                          .array(z.string())
-                          .min(0)
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              "PreContext is a slice of code lines immediately after the line from the frame's file.",
-                          }),
-                        vars: z
-                          .looseObject({})
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description: 'Vars is a flat mapping of local variables of the frame.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  ),
-              )
-              .min(0)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Stacktrace information of the captured error.' }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Log holds additional information added when the error is logged.',
-            required: ['message'],
-          }),
-        parent_id: z
-          .string()
-          .max(1024)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'ParentID holds the hex encoded 64 random bits ID of the parent transaction or span.',
-          }),
-        timestamp: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Timestamp holds the recorded time of the event, UTC based and formatted as microseconds since Unix epoch.',
-          }),
-        trace_id: z
-          .string()
-          .max(1024)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'TraceID holds the hex encoded 128 random bits ID of the correlated trace.',
-          }),
-        transaction: z
-          .object({
-            name: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "Name is the generic designation of a transaction in the scope of a single service, eg: 'GET /users/:id'.",
-              }),
-            sampled: z
-              .boolean()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Sampled indicates whether or not the full information for a transaction is captured. If a transaction is unsampled no spans and less context information will be reported.',
-              }),
-            type: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "Type expresses the correlated transaction's type as keyword that has specific relevance within the service's domain, eg: 'request', 'backgroundjob'.",
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Transaction holds information about the correlated transaction.',
-            required: [],
-          }),
-        transaction_id: z
-          .string()
-          .max(1024)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'TransactionID holds the hex encoded 64 random bits ID of the correlated transaction.',
-          }),
-      })
-      .openapi({ required: ['id'] }),
-  )
+        ) {
+          ctx.issues.push({ code: 'custom', input: val })
+        }
+      })(ctx)
+    } catch (error) {
+      if (!(error instanceof z.core.$ZodAsyncError)) throw error
+      ctx.issues.length = reported
+      return (async (ctx) => {
+        const val = ctx.value
+        if (
+          !(
+            (
+              await z
+                .object({ exception: z.looseObject({}) })
+                .openapi({ required: ['exception'] })
+                .safeParseAsync(val)
+            ).success ||
+            (
+              await z
+                .object({ log: z.looseObject({}) })
+                .openapi({ required: ['log'] })
+                .safeParseAsync(val)
+            ).success
+          )
+        ) {
+          ctx.issues.push({ code: 'custom', input: val })
+        }
+      })(ctx).then(() => val)
+    }
+    return val
+  }, Schema)
+})()
+  .openapi({
+    anyOf: [
+      { properties: { exception: { type: 'object' } }, required: ['exception'] },
+      { properties: { log: { type: 'object' } }, required: ['log'] },
+    ],
+  })
   .openapi({
     description:
       'errorEvent represents an error or a logged error message, captured by an APM agent in a monitored service.',
@@ -1687,90 +1800,151 @@ const MetricsetSchema = z
         required: [],
       }),
     samples: z
-      .strictObject({})
+      .looseObject({})
+      .superRefine((o, ctx) => {
+        const keys = Object.keys(o).filter((k) => !['^[^*"]*$'].some((p) => new RegExp(p).test(k)))
+        if (keys.length > 0) {
+          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+        }
+      })
       .superRefine((o, ctx) => {
         const regex = new RegExp('^[^*"]*$')
-        const Schema = z
-          .unknown()
-          .superRefine((val, ctx) => {
-            {
-              const ifOk = z
-                .object({ counts: z.array(z.any()) })
-                .openapi({ required: ['counts'] })
-                .safeParse(val).success
-              if (ifOk) {
-                const Schema = z
-                  .object({ values: z.array(z.any()) })
-                  .openapi({ required: ['values'] })
-                if (!Schema.safeParse(val).success) {
-                  ctx.addIssue({ code: 'custom' })
-                }
-              }
-            }
-          })
-          .and(
-            z.unknown().superRefine((val, ctx) => {
+        const Schema = (() => {
+          const Schema = z
+            .unknown()
+            .superRefine((val, ctx) => {
               {
                 const ifOk = z
-                  .object({ values: z.array(z.any()) })
-                  .openapi({ required: ['values'] })
+                  .object({ counts: z.array(z.any()) })
+                  .openapi({ required: ['counts'] })
                   .safeParse(val).success
                 if (ifOk) {
                   const Schema = z
-                    .object({ counts: z.array(z.any()) })
-                    .openapi({ required: ['counts'] })
+                    .object({ values: z.array(z.any()) })
+                    .openapi({ required: ['values'] })
                   if (!Schema.safeParse(val).success) {
                     ctx.addIssue({ code: 'custom' })
                   }
                 }
               }
-            }),
-          )
-          .and(
-            z
-              .object({
-                counts: z
-                  .array(z.int().min(0))
-                  .min(0)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Counts holds the bucket counts for histogram metrics.  These numbers must be positive or zero.  If Counts is specified, then Values is expected to be specified with the same number of elements, and with the same order.',
-                  }),
-                type: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Type holds an optional metric type: gauge, counter, or histogram.  If Type is unknown, it will be ignored.',
-                  }),
-                unit: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Unit holds an optional unit for the metric.  - "percent" (value is in the range [0,1]) - "byte" - a time unit: "nanos", "micros", "ms", "s", "m", "h", "d"  If Unit is unknown, it will be ignored.',
-                  }),
-                value: z
-                  .number()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Value holds the value of a single metric sample.' }),
-                values: z
-                  .array(z.number())
-                  .min(0)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Values holds the bucket values for histogram metrics.  Values must be provided in ascending order; failure to do so will result in the metric being discarded.',
-                  }),
-              })
-              .openapi({ required: [] }),
-          )
+            })
+            .and(
+              z.unknown().superRefine((val, ctx) => {
+                {
+                  const ifOk = z
+                    .object({ values: z.array(z.any()) })
+                    .openapi({ required: ['values'] })
+                    .safeParse(val).success
+                  if (ifOk) {
+                    const Schema = z
+                      .object({ counts: z.array(z.any()) })
+                      .openapi({ required: ['counts'] })
+                    if (!Schema.safeParse(val).success) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                  }
+                }
+              }),
+            )
+            .and(
+              z
+                .object({
+                  counts: z
+                    .array(z.int().min(0))
+                    .min(0)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Counts holds the bucket counts for histogram metrics.  These numbers must be positive or zero.  If Counts is specified, then Values is expected to be specified with the same number of elements, and with the same order.',
+                    }),
+                  type: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Type holds an optional metric type: gauge, counter, or histogram.  If Type is unknown, it will be ignored.',
+                    }),
+                  unit: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Unit holds an optional unit for the metric.  - "percent" (value is in the range [0,1]) - "byte" - a time unit: "nanos", "micros", "ms", "s", "m", "h", "d"  If Unit is unknown, it will be ignored.',
+                    }),
+                  value: z
+                    .number()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Value holds the value of a single metric sample.' }),
+                  values: z
+                    .array(z.number())
+                    .min(0)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Values holds the bucket values for histogram metrics.  Values must be provided in ascending order; failure to do so will result in the metric being discarded.',
+                    }),
+                })
+                .openapi({ required: [] }),
+            )
+          return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+            const reported = ctx.issues.length
+            try {
+              ;((ctx) => {
+                const val = ctx.value
+                if (
+                  !(
+                    z
+                      .object({ value: z.number() })
+                      .openapi({ required: ['value'] })
+                      .safeParse(val).success ||
+                    z
+                      .object({ values: z.array(z.any()) })
+                      .openapi({ required: ['values'] })
+                      .safeParse(val).success
+                  )
+                ) {
+                  ctx.issues.push({ code: 'custom', input: val })
+                }
+              })(ctx)
+            } catch (error) {
+              if (!(error instanceof z.core.$ZodAsyncError)) throw error
+              ctx.issues.length = reported
+              return (async (ctx) => {
+                const val = ctx.value
+                if (
+                  !(
+                    (
+                      await z
+                        .object({ value: z.number() })
+                        .openapi({ required: ['value'] })
+                        .safeParseAsync(val)
+                    ).success ||
+                    (
+                      await z
+                        .object({ values: z.array(z.any()) })
+                        .openapi({ required: ['values'] })
+                        .safeParseAsync(val)
+                    ).success
+                  )
+                ) {
+                  ctx.issues.push({ code: 'custom', input: val })
+                }
+              })(ctx).then(() => val)
+            }
+            return val
+          }, Schema)
+        })()
+          .openapi({
+            anyOf: [
+              { properties: { value: { type: 'number' } }, required: ['value'] },
+              { properties: { values: { type: 'array' } }, required: ['values'] },
+            ],
+          })
           .nullable()
         for (const [k, val] of Object.entries(o)) {
           if (!regex.test(k)) {
@@ -1784,7 +1958,52 @@ const MetricsetSchema = z
           }
         }
       })
-      .openapi({ description: 'Samples hold application metrics collected from the agent.' }),
+      .openapi({
+        ...{
+          patternProperties: {
+            '^[^*"]*$': {
+              type: ['null', 'object'],
+              properties: {
+                counts: {
+                  description:
+                    'Counts holds the bucket counts for histogram metrics.  These numbers must be positive or zero.  If Counts is specified, then Values is expected to be specified with the same number of elements, and with the same order.',
+                  type: ['null', 'array'],
+                  items: { type: 'integer', minimum: 0 },
+                  minItems: 0,
+                },
+                type: {
+                  description:
+                    'Type holds an optional metric type: gauge, counter, or histogram.  If Type is unknown, it will be ignored.',
+                  type: ['null', 'string'],
+                },
+                unit: {
+                  description:
+                    'Unit holds an optional unit for the metric.  - "percent" (value is in the range [0,1]) - "byte" - a time unit: "nanos", "micros", "ms", "s", "m", "h", "d"  If Unit is unknown, it will be ignored.',
+                  type: ['null', 'string'],
+                },
+                value: {
+                  description: 'Value holds the value of a single metric sample.',
+                  type: ['null', 'number'],
+                },
+                values: {
+                  description:
+                    'Values holds the bucket values for histogram metrics.  Values must be provided in ascending order; failure to do so will result in the metric being discarded.',
+                  type: ['null', 'array'],
+                  items: { type: 'number' },
+                  minItems: 0,
+                },
+              },
+              allOf: [{}, {}],
+              anyOf: [
+                { properties: { value: { type: 'number' } }, required: ['value'] },
+                { properties: { values: { type: 'array' } }, required: ['values'] },
+              ],
+            },
+          },
+        },
+        additionalProperties: false,
+        description: 'Samples hold application metrics collected from the agent.',
+      }),
     service: z
       .object({
         name: z
@@ -2091,7 +2310,15 @@ const SpanSchema = z
                         description: 'EncodedBodySize holds the size of the encoded payload.',
                       }),
                     headers: z
-                      .strictObject({})
+                      .looseObject({})
+                      .superRefine((o, ctx) => {
+                        const keys = Object.keys(o).filter(
+                          (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                        )
+                        if (keys.length > 0) {
+                          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                        }
+                      })
                       .superRefine((o, ctx) => {
                         const regex = new RegExp('[.*]*$')
                         const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -2110,6 +2337,15 @@ const SpanSchema = z
                       .nullable()
                       .exactOptional()
                       .openapi({
+                        ...{
+                          patternProperties: {
+                            '[.*]*$': {
+                              type: ['null', 'array', 'string'],
+                              items: { type: 'string' },
+                            },
+                          },
+                        },
+                        additionalProperties: false,
                         description: 'Headers holds the http headers sent in the http response.',
                       }),
                     status_code: z
@@ -2178,7 +2414,15 @@ const SpanSchema = z
                     description: 'Body of the received message, similar to an HTTP request body',
                   }),
                 headers: z
-                  .strictObject({})
+                  .looseObject({})
+                  .superRefine((o, ctx) => {
+                    const keys = Object.keys(o).filter(
+                      (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                    )
+                    if (keys.length > 0) {
+                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                    }
+                  })
                   .superRefine((o, ctx) => {
                     const regex = new RegExp('[.*]*$')
                     const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -2197,6 +2441,12 @@ const SpanSchema = z
                   .nullable()
                   .exactOptional()
                   .openapi({
+                    ...{
+                      patternProperties: {
+                        '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                      },
+                    },
+                    additionalProperties: false,
                     description:
                       'Headers received with the message, similar to HTTP request headers.',
                   }),
@@ -2814,7 +3064,15 @@ const TransactionSchema = z
                 description: 'Body of the received message, similar to an HTTP request body',
               }),
             headers: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -2833,6 +3091,12 @@ const TransactionSchema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description: 'Headers received with the message, similar to HTTP request headers.',
               }),
             queue: z
@@ -2918,7 +3182,15 @@ const TransactionSchema = z
                   'Env holds environment variable information passed to the monitored service.',
               }),
             headers: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -2937,6 +3209,12 @@ const TransactionSchema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description:
                   'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
               }),
@@ -3079,7 +3357,15 @@ const TransactionSchema = z
                 description: 'Finished indicates whether the response was finished or not.',
               }),
             headers: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -3098,6 +3384,12 @@ const TransactionSchema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description: 'Headers holds the http headers sent in the http response.',
               }),
             headers_sent: z
@@ -3749,28 +4041,14 @@ const TransactionEventSchema = z
   })
   .openapi('TransactionEvent')
 
-const Error_2Schema = z
-  .unknown()
-  .superRefine((val, ctx) => {
-    {
-      const ifOk = z
-        .object({ xid: z.string() })
-        .openapi({ required: ['xid'] })
-        .safeParse(val).success
-      if (ifOk) {
-        const Schema = z.object({ pid: z.string() }).openapi({ required: ['pid'] })
-        if (!Schema.safeParse(val).success) {
-          ctx.addIssue({ code: 'custom' })
-        }
-      }
-    }
-  })
-  .and(
-    z.unknown().superRefine((val, ctx) => {
+const Error_2Schema = (() => {
+  const Schema = z
+    .unknown()
+    .superRefine((val, ctx) => {
       {
         const ifOk = z
-          .object({ tid: z.string() })
-          .openapi({ required: ['tid'] })
+          .object({ xid: z.string() })
+          .openapi({ required: ['xid'] })
           .safeParse(val).success
         if (ifOk) {
           const Schema = z.object({ pid: z.string() }).openapi({ required: ['pid'] })
@@ -3779,694 +4057,800 @@ const Error_2Schema = z
           }
         }
       }
-    }),
-  )
-  .and(
-    z.unknown().superRefine((val, ctx) => {
-      {
-        const ifOk = z
-          .object({ xid: z.string() })
-          .openapi({ required: ['xid'] })
-          .safeParse(val).success
-        if (ifOk) {
-          const Schema = z.object({ tid: z.string() }).openapi({ required: ['tid'] })
-          if (!Schema.safeParse(val).success) {
-            ctx.addIssue({ code: 'custom' })
+    })
+    .and(
+      z.unknown().superRefine((val, ctx) => {
+        {
+          const ifOk = z
+            .object({ tid: z.string() })
+            .openapi({ required: ['tid'] })
+            .safeParse(val).success
+          if (ifOk) {
+            const Schema = z.object({ pid: z.string() }).openapi({ required: ['pid'] })
+            if (!Schema.safeParse(val).success) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
         }
-      }
-    }),
-  )
-  .and(
-    z.unknown().superRefine((val, ctx) => {
-      {
-        const ifOk = z
-          .object({ pid: z.string() })
-          .openapi({ required: ['pid'] })
-          .safeParse(val).success
-        if (ifOk) {
-          const Schema = z.object({ tid: z.string() }).openapi({ required: ['tid'] })
-          if (!Schema.safeParse(val).success) {
-            ctx.addIssue({ code: 'custom' })
+      }),
+    )
+    .and(
+      z.unknown().superRefine((val, ctx) => {
+        {
+          const ifOk = z
+            .object({ xid: z.string() })
+            .openapi({ required: ['xid'] })
+            .safeParse(val).success
+          if (ifOk) {
+            const Schema = z.object({ tid: z.string() }).openapi({ required: ['tid'] })
+            if (!Schema.safeParse(val).success) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
         }
-      }
-    }),
-  )
-  .and(
-    z
-      .object({
-        c: z
-          .object({
-            cu: z
-              .looseObject({})
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Custom can contain additional metadata to be stored with the event. The format is unspecified and can be deeply nested objects. The information will not be indexed or searchable in Elasticsearch.',
-              }),
-            g: z
-              .record(
-                z.string(),
-                z.union([z.string().max(1024), z.boolean(), z.number()]).nullable(),
-              )
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Tags are a flat mapping of user-defined tags. Allowed value types are string, boolean and number values. Tags are indexed and searchable.',
-              }),
-            p: z
-              .object({
-                rf: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      "Referer holds the URL of the page that 'linked' to the current page.",
-                  }),
-                url: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'URL of the current page' }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Page holds information related to the current page and page referers. It is only sent from RUM agents.',
-                required: [],
-              }),
-            q: z
-              .object({
-                en: z
-                  .looseObject({})
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Env holds environment variable information passed to the monitored service.',
-                  }),
-                he: z
-                  .strictObject({})
-                  .superRefine((o, ctx) => {
-                    const regex = new RegExp('[.*]*$')
-                    const Schema = z.union([z.array(z.string()), z.string()]).nullable()
-                    for (const [k, val] of Object.entries(o)) {
-                      if (!regex.test(k)) {
-                        continue
+      }),
+    )
+    .and(
+      z.unknown().superRefine((val, ctx) => {
+        {
+          const ifOk = z
+            .object({ pid: z.string() })
+            .openapi({ required: ['pid'] })
+            .safeParse(val).success
+          if (ifOk) {
+            const Schema = z.object({ tid: z.string() }).openapi({ required: ['tid'] })
+            if (!Schema.safeParse(val).success) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        }
+      }),
+    )
+    .and(
+      z
+        .object({
+          c: z
+            .object({
+              cu: z
+                .looseObject({})
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Custom can contain additional metadata to be stored with the event. The format is unspecified and can be deeply nested objects. The information will not be indexed or searchable in Elasticsearch.',
+                }),
+              g: z
+                .record(
+                  z.string(),
+                  z.union([z.string().max(1024), z.boolean(), z.number()]).nullable(),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Tags are a flat mapping of user-defined tags. Allowed value types are string, boolean and number values. Tags are indexed and searchable.',
+                }),
+              p: z
+                .object({
+                  rf: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "Referer holds the URL of the page that 'linked' to the current page.",
+                    }),
+                  url: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'URL of the current page' }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Page holds information related to the current page and page referers. It is only sent from RUM agents.',
+                  required: [],
+                }),
+              q: z
+                .object({
+                  en: z
+                    .looseObject({})
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Env holds environment variable information passed to the monitored service.',
+                    }),
+                  he: z
+                    .looseObject({})
+                    .superRefine((o, ctx) => {
+                      const keys = Object.keys(o).filter(
+                        (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                      )
+                      if (keys.length > 0) {
+                        ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
                       }
-                      const result = Schema.safeParse(val)
-                      if (!result.success) {
-                        for (const issue of result.error.issues) {
-                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                    })
+                    .superRefine((o, ctx) => {
+                      const regex = new RegExp('[.*]*$')
+                      const Schema = z.union([z.array(z.string()), z.string()]).nullable()
+                      for (const [k, val] of Object.entries(o)) {
+                        if (!regex.test(k)) {
+                          continue
+                        }
+                        const result = Schema.safeParse(val)
+                        if (!result.success) {
+                          for (const issue of result.error.issues) {
+                            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                          }
                         }
                       }
-                    }
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
-                  }),
-                hve: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'HTTPVersion holds information about the used HTTP version.',
-                  }),
-                mt: z
-                  .string()
-                  .max(1024)
-                  .openapi({
-                    description: 'Method holds information about the method of the HTTP request.',
-                  }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Request describes the HTTP request information in case the event was created as a result of an HTTP request.',
-                required: ['mt'],
-              }),
-            r: z
-              .object({
-                dbs: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'DecodedBodySize holds the size of the decoded payload.',
-                  }),
-                ebs: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'EncodedBodySize holds the size of the encoded payload.',
-                  }),
-                he: z
-                  .strictObject({})
-                  .superRefine((o, ctx) => {
-                    const regex = new RegExp('[.*]*$')
-                    const Schema = z.union([z.array(z.string()), z.string()]).nullable()
-                    for (const [k, val] of Object.entries(o)) {
-                      if (!regex.test(k)) {
-                        continue
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      ...{
+                        patternProperties: {
+                          '[.*]*$': {
+                            type: ['null', 'array', 'string'],
+                            items: { type: 'string' },
+                          },
+                        },
+                      },
+                      additionalProperties: false,
+                      description:
+                        'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
+                    }),
+                  hve: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'HTTPVersion holds information about the used HTTP version.',
+                    }),
+                  mt: z
+                    .string()
+                    .max(1024)
+                    .openapi({
+                      description: 'Method holds information about the method of the HTTP request.',
+                    }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Request describes the HTTP request information in case the event was created as a result of an HTTP request.',
+                  required: ['mt'],
+                }),
+              r: z
+                .object({
+                  dbs: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'DecodedBodySize holds the size of the decoded payload.',
+                    }),
+                  ebs: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'EncodedBodySize holds the size of the encoded payload.',
+                    }),
+                  he: z
+                    .looseObject({})
+                    .superRefine((o, ctx) => {
+                      const keys = Object.keys(o).filter(
+                        (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                      )
+                      if (keys.length > 0) {
+                        ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
                       }
-                      const result = Schema.safeParse(val)
-                      if (!result.success) {
-                        for (const issue of result.error.issues) {
-                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                    })
+                    .superRefine((o, ctx) => {
+                      const regex = new RegExp('[.*]*$')
+                      const Schema = z.union([z.array(z.string()), z.string()]).nullable()
+                      for (const [k, val] of Object.entries(o)) {
+                        if (!regex.test(k)) {
+                          continue
+                        }
+                        const result = Schema.safeParse(val)
+                        if (!result.success) {
+                          for (const issue of result.error.issues) {
+                            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                          }
                         }
                       }
-                    }
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Headers holds the http headers sent in the http response.',
-                  }),
-                sc: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'StatusCode sent in the http response.' }),
-                ts: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'TransferSize holds the total size of the payload.' }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Response describes the HTTP response information in case the event was created as a result of an HTTP request.',
-                required: [],
-              }),
-            se: z
-              .object({
-                a: z
-                  .object({
-                    n: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the APM agent capturing information.' }),
-                    ve: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Version of the APM agent capturing information.' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Agent holds information about the APM agent capturing the event.',
-                    required: [],
-                  }),
-                en: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Environment in which the monitored service is running, e.g. `production` or `staging`.',
-                  }),
-                fw: z
-                  .object({
-                    n: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the used framework' }),
-                    ve: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Version of the used framework' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Framework holds information about the framework used in the monitored service.',
-                    required: [],
-                  }),
-                la: z
-                  .object({
-                    n: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the used programming language' }),
-                    ve: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Version of the used programming language' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Language holds information about the programming language of the monitored service.',
-                    required: [],
-                  }),
-                n: z
-                  .string()
-                  .regex(/^[a-zA-Z0-9 _-]+$/)
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the monitored service.' }),
-                ru: z
-                  .object({
-                    n: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Name of the language runtime' }),
-                    ve: z
-                      .string()
-                      .max(1024)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Version of the language runtime' }),
-                  })
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Runtime holds information about the language runtime running the monitored service',
-                    required: [],
-                  }),
-                ve: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Version of the monitored service.' }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Service related information can be sent per event. Information provided here will override the more generic information retrieved from metadata, missing service fields will be retrieved from the metadata information.',
-                required: [],
-              }),
-            u: z
-              .object({
-                em: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Email of the user.' }),
-                id: z
-                  .union([z.string().max(1024), z.int()])
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'ID identifies the logged in user, e.g. can be the primary key of the user',
-                  }),
-                ud: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Domain of the user' }),
-                un: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the user.' }),
-              })
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "User holds information about the correlated user for this event. If user data are provided here, all user related information from metadata is ignored, otherwise the metadata's user information will be stored with the event.",
-                required: [],
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Context holds arbitrary contextual information for the event.',
-            required: [],
-          }),
-        cl: z
-          .string()
-          .max(1024)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Culprit identifies the function call which was the primary perpetrator of this event.',
-          }),
-        ex: z
-          .union([
-            z.object({ mg: z.string() }).openapi({ required: ['mg'] }),
-            z.object({ t: z.string() }).openapi({ required: ['t'] }),
-          ])
-          .and(
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      ...{
+                        patternProperties: {
+                          '[.*]*$': {
+                            type: ['null', 'array', 'string'],
+                            items: { type: 'string' },
+                          },
+                        },
+                      },
+                      additionalProperties: false,
+                      description: 'Headers holds the http headers sent in the http response.',
+                    }),
+                  sc: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'StatusCode sent in the http response.' }),
+                  ts: z
+                    .int()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'TransferSize holds the total size of the payload.' }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Response describes the HTTP response information in case the event was created as a result of an HTTP request.',
+                  required: [],
+                }),
+              se: z
+                .object({
+                  a: z
+                    .object({
+                      n: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the APM agent capturing information.' }),
+                      ve: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description: 'Version of the APM agent capturing information.',
+                        }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Agent holds information about the APM agent capturing the event.',
+                      required: [],
+                    }),
+                  en: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Environment in which the monitored service is running, e.g. `production` or `staging`.',
+                    }),
+                  fw: z
+                    .object({
+                      n: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the used framework' }),
+                      ve: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Version of the used framework' }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Framework holds information about the framework used in the monitored service.',
+                      required: [],
+                    }),
+                  la: z
+                    .object({
+                      n: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the used programming language' }),
+                      ve: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Version of the used programming language' }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Language holds information about the programming language of the monitored service.',
+                      required: [],
+                    }),
+                  n: z
+                    .string()
+                    .regex(/^[a-zA-Z0-9 _-]+$/)
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Name of the monitored service.' }),
+                  ru: z
+                    .object({
+                      n: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Name of the language runtime' }),
+                      ve: z
+                        .string()
+                        .max(1024)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Version of the language runtime' }),
+                    })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Runtime holds information about the language runtime running the monitored service',
+                      required: [],
+                    }),
+                  ve: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Version of the monitored service.' }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Service related information can be sent per event. Information provided here will override the more generic information retrieved from metadata, missing service fields will be retrieved from the metadata information.',
+                  required: [],
+                }),
+              u: z
+                .object({
+                  em: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Email of the user.' }),
+                  id: z
+                    .union([z.string().max(1024), z.int()])
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'ID identifies the logged in user, e.g. can be the primary key of the user',
+                    }),
+                  ud: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Domain of the user' }),
+                  un: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Name of the user.' }),
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "User holds information about the correlated user for this event. If user data are provided here, all user related information from metadata is ignored, otherwise the metadata's user information will be stored with the event.",
+                  required: [],
+                }),
+            })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'Context holds arbitrary contextual information for the event.',
+              required: [],
+            }),
+          cl: z
+            .string()
+            .max(1024)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'Culprit identifies the function call which was the primary perpetrator of this event.',
+            }),
+          ex: z
+            .union([
+              z.object({ mg: z.string() }).openapi({ required: ['mg'] }),
+              z.object({ t: z.string() }).openapi({ required: ['t'] }),
+            ])
+            .and(
+              z
+                .object({
+                  at: z
+                    .looseObject({})
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Attributes of the exception.' }),
+                  ca: z
+                    .array(z.looseObject({}))
+                    .min(0)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Cause can hold a collection of error exceptions representing chained exceptions. The chain starts with the outermost exception, followed by its cause, and so on.',
+                    }),
+                  cd: z
+                    .union([z.string().max(1024), z.int()])
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Code that is set when the error happened, e.g. database error code.',
+                    }),
+                  hd: z
+                    .boolean()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Handled indicates whether the error was caught in the code or not.',
+                    }),
+                  mg: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Message contains the originally captured error message.',
+                    }),
+                  mo: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: "Module describes the exception type's module namespace.",
+                    }),
+                  st: z
+                    .array(
+                      z
+                        .object({
+                          ap: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description: "AbsPath is the absolute path of the frame's file.",
+                            }),
+                          cli: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description: "ContextLine is the line from the frame's file.",
+                            }),
+                          cn: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'Classname of the frame.' }),
+                          co: z
+                            .int()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'ColumnNumber of the frame.' }),
+                          f: z
+                            .string()
+                            .openapi({
+                              description: "Filename is the relative name of the frame's file.",
+                            }),
+                          fn: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'Function represented by the frame.' }),
+                          li: z
+                            .int()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'LineNumber of the frame.' }),
+                          mo: z
+                            .string()
+                            .nullable()
+                            .exactOptional()
+                            .openapi({ description: 'Module to which the frame belongs to.' }),
+                          poc: z
+                            .array(z.string())
+                            .min(0)
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                "PostContext is a slice of code lines immediately before the line from the frame's file.",
+                            }),
+                          prc: z
+                            .array(z.string())
+                            .min(0)
+                            .nullable()
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                "PreContext is a slice of code lines immediately after the line from the frame's file.",
+                            }),
+                        })
+                        .openapi({ required: ['f'] }),
+                    )
+                    .min(0)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Stacktrace information of the captured exception.' }),
+                  t: z
+                    .string()
+                    .max(1024)
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Type of the exception.' }),
+                })
+                .openapi({ required: [] }),
+            )
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'Exception holds information about the original error. The information is language specific.',
+            }),
+          id: z
+            .string()
+            .max(1024)
+            .openapi({ description: 'ID holds the hex encoded 128 random bits ID of the event.' }),
+          log: z
+            .object({
+              ln: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'LoggerName holds the name of the used logger instance.' }),
+              lv: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'Level represents the severity of the recorded log.' }),
+              mg: z
+                .string()
+                .openapi({
+                  description:
+                    'Message of the logged error. In case a parameterized message is captured, Message should contain the same information, but with any placeholders being replaced.',
+                }),
+              pmg: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "ParamMessage should contain the same information as Message, but with placeholders where parameters were logged, e.g. 'error connecting to %s'. The string is not interpreted, allowing differnt placeholders per client languange. The information might be used to group errors together.",
+                }),
+              st: z
+                .array(
+                  z
+                    .object({
+                      ap: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description: "AbsPath is the absolute path of the frame's file.",
+                        }),
+                      cli: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: "ContextLine is the line from the frame's file." }),
+                      cn: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Classname of the frame.' }),
+                      co: z
+                        .int()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'ColumnNumber of the frame.' }),
+                      f: z
+                        .string()
+                        .openapi({
+                          description: "Filename is the relative name of the frame's file.",
+                        }),
+                      fn: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Function represented by the frame.' }),
+                      li: z
+                        .int()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'LineNumber of the frame.' }),
+                      mo: z
+                        .string()
+                        .nullable()
+                        .exactOptional()
+                        .openapi({ description: 'Module to which the frame belongs to.' }),
+                      poc: z
+                        .array(z.string())
+                        .min(0)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "PostContext is a slice of code lines immediately before the line from the frame's file.",
+                        }),
+                      prc: z
+                        .array(z.string())
+                        .min(0)
+                        .nullable()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "PreContext is a slice of code lines immediately after the line from the frame's file.",
+                        }),
+                    })
+                    .openapi({ required: ['f'] }),
+                )
+                .min(0)
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'Stacktrace information of the captured error.' }),
+            })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'Log holds additional information added when the error is logged.',
+              required: ['mg'],
+            }),
+          pid: z
+            .string()
+            .max(1024)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'ParentID holds the hex encoded 64 random bits ID of the parent transaction or span.',
+            }),
+          tid: z
+            .string()
+            .max(1024)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'TraceID holds the hex encoded 128 random bits ID of the correlated trace.',
+            }),
+          timestamp: z
+            .int()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'Timestamp holds the recorded time of the event, UTC based and formatted as microseconds since Unix epoch.',
+            }),
+          x: z
+            .object({
+              n: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Name is the generic designation of a transaction in the scope of a single service, eg: 'GET /users/:id'.",
+                }),
+              sm: z
+                .boolean()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Sampled indicates whether or not the full information for a transaction is captured. If a transaction is unsampled no spans and less context information will be reported.',
+                }),
+              t: z
+                .string()
+                .max(1024)
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "Type expresses the correlated transaction's type as keyword that has specific relevance within the service's domain, eg: 'request', 'backgroundjob'.",
+                }),
+            })
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'Transaction holds information about the correlated transaction.',
+              required: [],
+            }),
+          xid: z
+            .string()
+            .max(1024)
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'TransactionID holds the hex encoded 64 random bits ID of the correlated transaction.',
+            }),
+        })
+        .openapi({ required: ['id'] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    const reported = ctx.issues.length
+    try {
+      ;((ctx) => {
+        const val = ctx.value
+        if (
+          !(
             z
-              .object({
-                at: z
-                  .looseObject({})
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Attributes of the exception.' }),
-                ca: z
-                  .array(z.looseObject({}))
-                  .min(0)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Cause can hold a collection of error exceptions representing chained exceptions. The chain starts with the outermost exception, followed by its cause, and so on.',
-                  }),
-                cd: z
-                  .union([z.string().max(1024), z.int()])
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Code that is set when the error happened, e.g. database error code.',
-                  }),
-                hd: z
-                  .boolean()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Handled indicates whether the error was caught in the code or not.',
-                  }),
-                mg: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Message contains the originally captured error message.',
-                  }),
-                mo: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: "Module describes the exception type's module namespace.",
-                  }),
-                st: z
-                  .array(
-                    z
-                      .object({
-                        ap: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description: "AbsPath is the absolute path of the frame's file.",
-                          }),
-                        cli: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description: "ContextLine is the line from the frame's file.",
-                          }),
-                        cn: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'Classname of the frame.' }),
-                        co: z
-                          .int()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'ColumnNumber of the frame.' }),
-                        f: z
-                          .string()
-                          .openapi({
-                            description: "Filename is the relative name of the frame's file.",
-                          }),
-                        fn: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'Function represented by the frame.' }),
-                        li: z
-                          .int()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'LineNumber of the frame.' }),
-                        mo: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({ description: 'Module to which the frame belongs to.' }),
-                        poc: z
-                          .array(z.string())
-                          .min(0)
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              "PostContext is a slice of code lines immediately before the line from the frame's file.",
-                          }),
-                        prc: z
-                          .array(z.string())
-                          .min(0)
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              "PreContext is a slice of code lines immediately after the line from the frame's file.",
-                          }),
-                      })
-                      .openapi({ required: ['f'] }),
-                  )
-                  .min(0)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Stacktrace information of the captured exception.' }),
-                t: z
-                  .string()
-                  .max(1024)
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'Type of the exception.' }),
-              })
-              .openapi({ required: [] }),
+              .object({ ex: z.looseObject({}) })
+              .openapi({ required: ['ex'] })
+              .safeParse(val).success ||
+            z
+              .object({ log: z.looseObject({}) })
+              .openapi({ required: ['log'] })
+              .safeParse(val).success
           )
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Exception holds information about the original error. The information is language specific.',
-          }),
-        id: z
-          .string()
-          .max(1024)
-          .openapi({ description: 'ID holds the hex encoded 128 random bits ID of the event.' }),
-        log: z
-          .object({
-            ln: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'LoggerName holds the name of the used logger instance.' }),
-            lv: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Level represents the severity of the recorded log.' }),
-            mg: z
-              .string()
-              .openapi({
-                description:
-                  'Message of the logged error. In case a parameterized message is captured, Message should contain the same information, but with any placeholders being replaced.',
-              }),
-            pmg: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "ParamMessage should contain the same information as Message, but with placeholders where parameters were logged, e.g. 'error connecting to %s'. The string is not interpreted, allowing differnt placeholders per client languange. The information might be used to group errors together.",
-              }),
-            st: z
-              .array(
-                z
-                  .object({
-                    ap: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description: "AbsPath is the absolute path of the frame's file.",
-                      }),
-                    cli: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: "ContextLine is the line from the frame's file." }),
-                    cn: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Classname of the frame.' }),
-                    co: z
-                      .int()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'ColumnNumber of the frame.' }),
-                    f: z
-                      .string()
-                      .openapi({
-                        description: "Filename is the relative name of the frame's file.",
-                      }),
-                    fn: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Function represented by the frame.' }),
-                    li: z
-                      .int()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'LineNumber of the frame.' }),
-                    mo: z
-                      .string()
-                      .nullable()
-                      .exactOptional()
-                      .openapi({ description: 'Module to which the frame belongs to.' }),
-                    poc: z
-                      .array(z.string())
-                      .min(0)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          "PostContext is a slice of code lines immediately before the line from the frame's file.",
-                      }),
-                    prc: z
-                      .array(z.string())
-                      .min(0)
-                      .nullable()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          "PreContext is a slice of code lines immediately after the line from the frame's file.",
-                      }),
-                  })
-                  .openapi({ required: ['f'] }),
-              )
-              .min(0)
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'Stacktrace information of the captured error.' }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Log holds additional information added when the error is logged.',
-            required: ['mg'],
-          }),
-        pid: z
-          .string()
-          .max(1024)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'ParentID holds the hex encoded 64 random bits ID of the parent transaction or span.',
-          }),
-        tid: z
-          .string()
-          .max(1024)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'TraceID holds the hex encoded 128 random bits ID of the correlated trace.',
-          }),
-        timestamp: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Timestamp holds the recorded time of the event, UTC based and formatted as microseconds since Unix epoch.',
-          }),
-        x: z
-          .object({
-            n: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "Name is the generic designation of a transaction in the scope of a single service, eg: 'GET /users/:id'.",
-              }),
-            sm: z
-              .boolean()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Sampled indicates whether or not the full information for a transaction is captured. If a transaction is unsampled no spans and less context information will be reported.',
-              }),
-            t: z
-              .string()
-              .max(1024)
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description:
-                  "Type expresses the correlated transaction's type as keyword that has specific relevance within the service's domain, eg: 'request', 'backgroundjob'.",
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'Transaction holds information about the correlated transaction.',
-            required: [],
-          }),
-        xid: z
-          .string()
-          .max(1024)
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'TransactionID holds the hex encoded 64 random bits ID of the correlated transaction.',
-          }),
-      })
-      .openapi({ required: ['id'] }),
-  )
+        ) {
+          ctx.issues.push({ code: 'custom', input: val })
+        }
+      })(ctx)
+    } catch (error) {
+      if (!(error instanceof z.core.$ZodAsyncError)) throw error
+      ctx.issues.length = reported
+      return (async (ctx) => {
+        const val = ctx.value
+        if (
+          !(
+            (
+              await z
+                .object({ ex: z.looseObject({}) })
+                .openapi({ required: ['ex'] })
+                .safeParseAsync(val)
+            ).success ||
+            (
+              await z
+                .object({ log: z.looseObject({}) })
+                .openapi({ required: ['log'] })
+                .safeParseAsync(val)
+            ).success
+          )
+        ) {
+          ctx.issues.push({ code: 'custom', input: val })
+        }
+      })(ctx).then(() => val)
+    }
+    return val
+  }, Schema)
+})()
+  .openapi({
+    anyOf: [
+      { properties: { ex: { type: 'object' } }, required: ['ex'] },
+      { properties: { log: { type: 'object' } }, required: ['log'] },
+    ],
+  })
   .openapi({ required: ['id'] })
   .openapi('Error_2')
 
@@ -5019,7 +5403,15 @@ const Transaction_2Schema = z
                   'Env holds environment variable information passed to the monitored service.',
               }),
             he: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -5038,6 +5430,12 @@ const Transaction_2Schema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description:
                   'Headers includes any HTTP headers sent by the requester. Cookies will be taken by headers if supplied.',
               }),
@@ -5076,7 +5474,15 @@ const Transaction_2Schema = z
               .exactOptional()
               .openapi({ description: 'EncodedBodySize holds the size of the encoded payload.' }),
             he: z
-              .strictObject({})
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) => !['[.*]*$'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
               .superRefine((o, ctx) => {
                 const regex = new RegExp('[.*]*$')
                 const Schema = z.union([z.array(z.string()), z.string()]).nullable()
@@ -5095,6 +5501,12 @@ const Transaction_2Schema = z
               .nullable()
               .exactOptional()
               .openapi({
+                ...{
+                  patternProperties: {
+                    '[.*]*$': { type: ['null', 'array', 'string'], items: { type: 'string' } },
+                  },
+                },
+                additionalProperties: false,
                 description: 'Headers holds the http headers sent in the http response.',
               }),
             sc: z

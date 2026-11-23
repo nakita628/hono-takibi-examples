@@ -1,143 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DevAddrSchema = z
-  .string()
-  .regex(/[a-fA-F0-9]{8}/)
-  .openapi('DevAddr')
-
-const FNwkSIntKeySchema = z
-  .string()
-  .regex(/[a-fA-F0-9]{32}/)
-  .openapi('FNwkSIntKey')
-
-const SNwkSIntKeySchema = z
-  .string()
-  .regex(/[a-fA-F0-9]{32}/)
-  .openapi('SNwkSIntKey')
-
-const NwkSEncKeySchema = z
-  .string()
-  .regex(/[a-fA-F0-9]{32}/)
-  .openapi('NwkSEncKey')
-
-const AppSKeySchema = z
-  .string()
-  .regex(/[a-fA-F0-9]{32}/)
-  .openapi('AppSKey')
-
-const SessionKeysAbpV1_1Schema = z
-  .object({
-    FNwkSIntKey: FNwkSIntKeySchema.and(
-      z.any().openapi({ description: 'The FNwkSIntKey value.' }),
-    ).exactOptional(),
-    SNwkSIntKey: SNwkSIntKeySchema.and(
-      z.any().openapi({ description: 'The SNwkSIntKey value.' }),
-    ).exactOptional(),
-    NwkSEncKey: NwkSEncKeySchema.and(
-      z.any().openapi({ description: 'The NwkSEncKey value.' }),
-    ).exactOptional(),
-    AppSKey: AppSKeySchema.and(
-      z.any().openapi({ description: 'The AppSKey value.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Session keys for ABP v1.1', required: [] })
-  .openapi('SessionKeysAbpV1_1')
-
-const FCntStartSchema = z
-  .int()
-  .min(0)
-  .max(65535)
-  .openapi({ description: 'The FCnt init value.' })
-  .openapi('FCntStart')
-
-type AbpV1_1Type = {
-  DevAddr?: z.infer<typeof DevAddrSchema> & { [key: string]: unknown }
-  SessionKeys?: z.infer<typeof SessionKeysAbpV1_1Schema> & { [key: string]: unknown }
-  FCntStart?: z.infer<typeof FCntStartSchema> & { [key: string]: unknown }
-}
-
-const NwkSKeySchema = z
-  .string()
-  .regex(/[a-fA-F0-9]{32}/)
-  .openapi('NwkSKey')
-
-const SessionKeysAbpV1_0XSchema = z
-  .object({
-    NwkSKey: NwkSKeySchema.and(
-      z.any().openapi({ description: 'The NwkSKey value.' }),
-    ).exactOptional(),
-    AppSKey: AppSKeySchema.and(
-      z.any().openapi({ description: 'The AppSKey value.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Session keys for ABP v1.1', required: [] })
-  .openapi('SessionKeysAbpV1_0X')
-
-type AbpV1_0XType = {
-  DevAddr?: z.infer<typeof DevAddrSchema> & { [key: string]: unknown }
-  SessionKeys?: z.infer<typeof SessionKeysAbpV1_0XSchema> & { [key: string]: unknown }
-  FCntStart?: z.infer<typeof FCntStartSchema> & { [key: string]: unknown }
-}
-
-const HorizontalAccuracySchema = z.float32().min(0).openapi('HorizontalAccuracy')
-
-const VerticalAccuracySchema = z.float32().min(0).openapi('VerticalAccuracy')
-
-type AccuracyType = {
-  HorizontalAccuracy?: z.infer<typeof HorizontalAccuracySchema> & { [key: string]: unknown }
-  VerticalAccuracy?: z.infer<typeof VerticalAccuracySchema> & { [key: string]: unknown }
-}
-
-const EventNotificationTopicStatusSchema = z
-  .enum(['Enabled', 'Disabled'])
-  .openapi('EventNotificationTopicStatus')
-
-const LoRaWANConnectionStatusResourceTypeEventConfigurationSchema = z
-  .object({
-    WirelessGatewayEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the wireless gateway connection status event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Object for LoRaWAN connection status resource type event configuration.',
-    required: [],
-  })
-  .openapi('LoRaWANConnectionStatusResourceTypeEventConfiguration')
-
-type ConnectionStatusResourceTypeEventConfigurationType = {
-  LoRaWAN?: z.infer<typeof LoRaWANConnectionStatusResourceTypeEventConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const LoRaWANJoinResourceTypeEventConfigurationSchema = z
-  .object({
-    WirelessDeviceEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the wireless device join event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Object for LoRaWAN join resource type event configuration.',
-    required: [],
-  })
-  .openapi('LoRaWANJoinResourceTypeEventConfiguration')
-
-type JoinResourceTypeEventConfigurationType = {
-  LoRaWAN?: z.infer<typeof LoRaWANJoinResourceTypeEventConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
-
 const AmazonIdSchema = z
   .string()
   .max(2048)
@@ -153,12 +15,10 @@ const AppServerPrivateKeySchema = z
 
 const SidewalkAccountInfoSchema = z
   .object({
-    AmazonId: AmazonIdSchema.and(
-      z.any().openapi({ description: 'The Sidewalk Amazon ID.' }),
-    ).exactOptional(),
-    AppServerPrivateKey: AppServerPrivateKeySchema.and(
-      z.any().openapi({ description: 'The Sidewalk application server private key.' }),
-    ).exactOptional(),
+    AmazonId: AmazonIdSchema.exactOptional().openapi({ description: 'The Sidewalk Amazon ID.' }),
+    AppServerPrivateKey: AppServerPrivateKeySchema.exactOptional().openapi({
+      description: 'The Sidewalk application server private key.',
+    }),
   })
   .openapi({ description: 'Information about a Sidewalk account.', required: [] })
   .openapi('SidewalkAccountInfo')
@@ -167,12 +27,12 @@ const PartnerAccountArnSchema = z.string().openapi('PartnerAccountArn')
 
 const AssociateAwsAccountWithPartnerAccountResponseSchema = z
   .object({
-    Sidewalk: SidewalkAccountInfoSchema.and(
-      z.any().openapi({ description: 'The Sidewalk account credentials.' }),
-    ).exactOptional(),
-    Arn: PartnerAccountArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
+    Sidewalk: SidewalkAccountInfoSchema.exactOptional().openapi({
+      description: 'The Sidewalk account credentials.',
+    }),
+    Arn: PartnerAccountArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateAwsAccountWithPartnerAccountResponse')
@@ -183,8 +43,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: "The tag's key value." })),
-    Value: TagValueSchema.and(z.any().openapi({ description: "The tag's value." })),
+    Key: TagKeySchema.openapi({ description: "The tag's key value." }),
+    Value: TagValueSchema.openapi({ description: "The tag's value." }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -205,42 +65,38 @@ const ConflictExceptionSchema = z.any().openapi('ConflictException')
 const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
 
 const AssociateMulticastGroupWithFuotaTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateMulticastGroupWithFuotaTaskResponse')
 
 const AssociateWirelessDeviceWithFuotaTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateWirelessDeviceWithFuotaTaskResponse')
 
 const AssociateWirelessDeviceWithMulticastGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateWirelessDeviceWithMulticastGroupResponse')
 
 const AssociateWirelessDeviceWithThingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateWirelessDeviceWithThingResponse')
 
 const IotCertificateIdSchema = z.string().min(1).max(4096).openapi('IotCertificateId')
 
 const AssociateWirelessGatewayWithCertificateResponseSchema = z
   .object({
-    IotCertificateId: IotCertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the certificate associated with the wireless gateway.',
-        }),
-    ).exactOptional(),
+    IotCertificateId: IotCertificateIdSchema.exactOptional().openapi({
+      description: 'The ID of the certificate associated with the wireless gateway.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateWirelessGatewayWithCertificateResponse')
 
 const AssociateWirelessGatewayWithThingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateWirelessGatewayWithThingResponse')
 
 const CancelMulticastGroupSessionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CancelMulticastGroupSessionResponse')
 
 const DestinationArnSchema = z.string().openapi('DestinationArn')
@@ -253,12 +109,12 @@ const DestinationNameSchema = z
 
 const CreateDestinationResponseSchema = z
   .object({
-    Arn: DestinationArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the new resource.' }),
-    ).exactOptional(),
-    Name: DestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the new resource.' }),
-    ).exactOptional(),
+    Arn: DestinationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the new resource.',
+    }),
+    Name: DestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the new resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDestinationResponse')
@@ -269,12 +125,12 @@ const DeviceProfileIdSchema = z.string().max(256).openapi('DeviceProfileId')
 
 const CreateDeviceProfileResponseSchema = z
   .object({
-    Arn: DeviceProfileArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the new resource.' }),
-    ).exactOptional(),
-    Id: DeviceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the new device profile.' }),
-    ).exactOptional(),
+    Arn: DeviceProfileArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the new resource.',
+    }),
+    Id: DeviceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the new device profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDeviceProfileResponse')
@@ -403,9 +259,9 @@ const NetworkAnalyzerConfigurationNameSchema = z
 
 const CreateNetworkAnalyzerConfigurationResponseSchema = z
   .object({
-    Arn: NetworkAnalyzerConfigurationArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the new resource.' }),
-    ).exactOptional(),
+    Arn: NetworkAnalyzerConfigurationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the new resource.',
+    }),
     Name: NetworkAnalyzerConfigurationNameSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -441,12 +297,12 @@ const ServiceProfileIdSchema = z.string().max(256).openapi('ServiceProfileId')
 
 const CreateServiceProfileResponseSchema = z
   .object({
-    Arn: ServiceProfileArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the new resource.' }),
-    ).exactOptional(),
-    Id: ServiceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the new service profile.' }),
-    ).exactOptional(),
+    Arn: ServiceProfileArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the new resource.',
+    }),
+    Id: ServiceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the new service profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateServiceProfileResponse')
@@ -465,12 +321,12 @@ const WirelessDeviceArnSchema = z.string().openapi('WirelessDeviceArn')
 
 const CreateWirelessDeviceResponseSchema = z
   .object({
-    Arn: WirelessDeviceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the new resource.' }),
-    ).exactOptional(),
-    Id: WirelessDeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the new wireless device.' }),
-    ).exactOptional(),
+    Arn: WirelessDeviceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the new resource.',
+    }),
+    Id: WirelessDeviceIdSchema.exactOptional().openapi({
+      description: 'The ID of the new wireless device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWirelessDeviceResponse')
@@ -497,11 +353,9 @@ const JoinEuiSchema = z
 
 const OtaaV1_1Schema = z
   .object({
-    AppKey: AppKeySchema.and(z.any().openapi({ description: 'The AppKey value.' })).exactOptional(),
-    NwkKey: NwkKeySchema.and(z.any().openapi({ description: 'The NwkKey value.' })).exactOptional(),
-    JoinEui: JoinEuiSchema.and(
-      z.any().openapi({ description: 'The JoinEUI value.' }),
-    ).exactOptional(),
+    AppKey: AppKeySchema.exactOptional().openapi({ description: 'The AppKey value.' }),
+    NwkKey: NwkKeySchema.exactOptional().openapi({ description: 'The NwkKey value.' }),
+    JoinEui: JoinEuiSchema.exactOptional().openapi({ description: 'The JoinEUI value.' }),
   })
   .openapi({ description: 'OTAA device object for v1.1', required: [] })
   .openapi('OtaaV1_1')
@@ -518,49 +372,92 @@ const GenAppKeySchema = z
 
 const OtaaV1_0XSchema = z
   .object({
-    AppKey: AppKeySchema.and(z.any().openapi({ description: 'The AppKey value.' })).exactOptional(),
-    AppEui: AppEuiSchema.and(z.any().openapi({ description: 'The AppEUI value.' })).exactOptional(),
-    GenAppKey: GenAppKeySchema.and(
-      z.any().openapi({ description: 'The GenAppKey value.' }),
-    ).exactOptional(),
+    AppKey: AppKeySchema.exactOptional().openapi({ description: 'The AppKey value.' }),
+    AppEui: AppEuiSchema.exactOptional().openapi({ description: 'The AppEUI value.' }),
+    GenAppKey: GenAppKeySchema.exactOptional().openapi({ description: 'The GenAppKey value.' }),
   })
   .openapi({ description: 'OTAA device object for v1.0.x', required: [] })
   .openapi('OtaaV1_0X')
 
-const AbpV1_1Schema: z.ZodType<AbpV1_1Type> = z
-  .lazy(() =>
-    z
-      .object({
-        DevAddr: DevAddrSchema.and(
-          z.any().openapi({ description: 'The DevAddr value.' }),
-        ).exactOptional(),
-        SessionKeys: SessionKeysAbpV1_1Schema.and(
-          z.any().openapi({ description: 'Session keys for ABP v1.1' }),
-        ).exactOptional(),
-        FCntStart: FCntStartSchema.and(
-          z.any().openapi({ description: 'The FCnt init value.' }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'ABP device object for LoRaWAN specification v1.1', required: [] }),
-  )
+const DevAddrSchema = z
+  .string()
+  .regex(/[a-fA-F0-9]{8}/)
+  .openapi('DevAddr')
+
+const FNwkSIntKeySchema = z
+  .string()
+  .regex(/[a-fA-F0-9]{32}/)
+  .openapi('FNwkSIntKey')
+
+const SNwkSIntKeySchema = z
+  .string()
+  .regex(/[a-fA-F0-9]{32}/)
+  .openapi('SNwkSIntKey')
+
+const NwkSEncKeySchema = z
+  .string()
+  .regex(/[a-fA-F0-9]{32}/)
+  .openapi('NwkSEncKey')
+
+const AppSKeySchema = z
+  .string()
+  .regex(/[a-fA-F0-9]{32}/)
+  .openapi('AppSKey')
+
+const SessionKeysAbpV1_1Schema = z
+  .object({
+    FNwkSIntKey: FNwkSIntKeySchema.exactOptional().openapi({
+      description: 'The FNwkSIntKey value.',
+    }),
+    SNwkSIntKey: SNwkSIntKeySchema.exactOptional().openapi({
+      description: 'The SNwkSIntKey value.',
+    }),
+    NwkSEncKey: NwkSEncKeySchema.exactOptional().openapi({ description: 'The NwkSEncKey value.' }),
+    AppSKey: AppSKeySchema.exactOptional().openapi({ description: 'The AppSKey value.' }),
+  })
+  .openapi({ description: 'Session keys for ABP v1.1', required: [] })
+  .openapi('SessionKeysAbpV1_1')
+
+const FCntStartSchema = z
+  .int()
+  .min(0)
+  .max(65535)
+  .openapi({ description: 'The FCnt init value.' })
+  .openapi('FCntStart')
+
+const AbpV1_1Schema = z
+  .object({
+    DevAddr: DevAddrSchema.exactOptional().openapi({ description: 'The DevAddr value.' }),
+    SessionKeys: SessionKeysAbpV1_1Schema.exactOptional().openapi({
+      description: 'Session keys for ABP v1.1',
+    }),
+    FCntStart: FCntStartSchema.exactOptional().openapi({ description: 'The FCnt init value.' }),
+  })
+  .openapi({ description: 'ABP device object for LoRaWAN specification v1.1', required: [] })
   .openapi('AbpV1_1')
 
-const AbpV1_0XSchema: z.ZodType<AbpV1_0XType> = z
-  .lazy(() =>
-    z
-      .object({
-        DevAddr: DevAddrSchema.and(
-          z.any().openapi({ description: 'The DevAddr value.' }),
-        ).exactOptional(),
-        SessionKeys: SessionKeysAbpV1_0XSchema.and(
-          z.any().openapi({ description: 'Session keys for ABP v1.0.x' }),
-        ).exactOptional(),
-        FCntStart: FCntStartSchema.and(
-          z.any().openapi({ description: 'The FCnt init value.' }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'ABP device object for LoRaWAN specification v1.0.x', required: [] }),
-  )
+const NwkSKeySchema = z
+  .string()
+  .regex(/[a-fA-F0-9]{32}/)
+  .openapi('NwkSKey')
+
+const SessionKeysAbpV1_0XSchema = z
+  .object({
+    NwkSKey: NwkSKeySchema.exactOptional().openapi({ description: 'The NwkSKey value.' }),
+    AppSKey: AppSKeySchema.exactOptional().openapi({ description: 'The AppSKey value.' }),
+  })
+  .openapi({ description: 'Session keys for ABP v1.1', required: [] })
+  .openapi('SessionKeysAbpV1_0X')
+
+const AbpV1_0XSchema = z
+  .object({
+    DevAddr: DevAddrSchema.exactOptional().openapi({ description: 'The DevAddr value.' }),
+    SessionKeys: SessionKeysAbpV1_0XSchema.exactOptional().openapi({
+      description: 'Session keys for ABP v1.0.x',
+    }),
+    FCntStart: FCntStartSchema.exactOptional().openapi({ description: 'The FCnt init value.' }),
+  })
+  .openapi({ description: 'ABP device object for LoRaWAN specification v1.0.x', required: [] })
   .openapi('AbpV1_0X')
 
 const FPortSchema = z
@@ -584,22 +481,14 @@ const ApplicationConfigTypeSchema = z.literal('SemtechGeolocation').openapi('App
 const ApplicationConfigSchema = z
   .object({
     FPort: FPortSchema.exactOptional(),
-    Type: ApplicationConfigTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Application type, which can be specified to obtain real-time position information of your LoRaWAN device.',
-        }),
-    ).exactOptional(),
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
-        }),
-    ).exactOptional(),
+    Type: ApplicationConfigTypeSchema.exactOptional().openapi({
+      description:
+        'Application type, which can be specified to obtain real-time position information of your LoRaWAN device.',
+    }),
+    DestinationName: DestinationNameSchema.exactOptional().openapi({
+      description:
+        "The name of the position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
+    }),
   })
   .openapi({
     description: 'LoRaWAN application configuration, which can be used to perform geolocation.',
@@ -614,22 +503,13 @@ const FPortsSchema = z
     Fuota: FPortSchema.exactOptional(),
     Multicast: FPortSchema.exactOptional(),
     ClockSync: FPortSchema.exactOptional(),
-    Positioning: PositioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'FPort values for the GNSS, stream, and ClockSync functions of the positioning information.',
-        }),
-    ).exactOptional(),
-    Applications: ApplicationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional LoRaWAN application information, which can be used for geolocation.',
-        }),
-    ).exactOptional(),
+    Positioning: PositioningSchema.exactOptional().openapi({
+      description:
+        'FPort values for the GNSS, stream, and ClockSync functions of the positioning information.',
+    }),
+    Applications: ApplicationsSchema.exactOptional().openapi({
+      description: 'Optional LoRaWAN application information, which can be used for geolocation.',
+    }),
   })
   .openapi({
     description: 'List of FPort assigned for different LoRaWAN application packages to use',
@@ -641,12 +521,12 @@ const WirelessGatewayArnSchema = z.string().openapi('WirelessGatewayArn')
 
 const CreateWirelessGatewayResponseSchema = z
   .object({
-    Arn: WirelessGatewayArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the new resource.' }),
-    ).exactOptional(),
-    Id: WirelessDeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the new wireless gateway.' }),
-    ).exactOptional(),
+    Arn: WirelessGatewayArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the new resource.',
+    }),
+    Id: WirelessDeviceIdSchema.exactOptional().openapi({
+      description: 'The ID of the new wireless gateway.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWirelessGatewayResponse')
@@ -721,12 +601,12 @@ const BeaconingFrequenciesSchema = z
 
 const BeaconingSchema = z
   .object({
-    DataRate: BeaconingDataRateSchema.and(
-      z.any().openapi({ description: 'The data rate for gateways that are sending the beacons.' }),
-    ).exactOptional(),
-    Frequencies: BeaconingFrequenciesSchema.and(
-      z.any().openapi({ description: 'The frequency list for the gateways to send the beacons.' }),
-    ).exactOptional(),
+    DataRate: BeaconingDataRateSchema.exactOptional().openapi({
+      description: 'The data rate for gateways that are sending the beacons.',
+    }),
+    Frequencies: BeaconingFrequenciesSchema.exactOptional().openapi({
+      description: 'The frequency list for the gateways to send the beacons.',
+    }),
   })
   .openapi({
     description: 'Beaconing parameters for configuring the wireless gateways.',
@@ -748,12 +628,12 @@ const WirelessGatewayTaskStatusSchema = z
 
 const CreateWirelessGatewayTaskResponseSchema = z
   .object({
-    WirelessGatewayTaskDefinitionId: WirelessGatewayTaskDefinitionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the WirelessGatewayTaskDefinition.' }),
-    ).exactOptional(),
-    Status: WirelessGatewayTaskStatusSchema.and(
-      z.any().openapi({ description: 'The status of the request.' }),
-    ).exactOptional(),
+    WirelessGatewayTaskDefinitionId: WirelessGatewayTaskDefinitionIdSchema.exactOptional().openapi({
+      description: 'The ID of the WirelessGatewayTaskDefinition.',
+    }),
+    Status: WirelessGatewayTaskStatusSchema.exactOptional().openapi({
+      description: 'The status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWirelessGatewayTaskResponse')
@@ -764,12 +644,12 @@ const WirelessGatewayTaskDefinitionArnSchema = z
 
 const CreateWirelessGatewayTaskDefinitionResponseSchema = z
   .object({
-    Id: WirelessGatewayTaskDefinitionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the new wireless gateway task definition.' }),
-    ).exactOptional(),
-    Arn: WirelessGatewayTaskDefinitionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
+    Id: WirelessGatewayTaskDefinitionIdSchema.exactOptional().openapi({
+      description: 'The ID of the new wireless gateway task definition.',
+    }),
+    Arn: WirelessGatewayTaskDefinitionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWirelessGatewayTaskDefinitionResponse')
@@ -788,101 +668,101 @@ const StationSchema = z.string().min(1).max(4096).openapi('Station')
 
 const LoRaWANGatewayVersionSchema = z
   .object({
-    PackageVersion: PackageVersionSchema.and(
-      z.any().openapi({ description: 'The version of the wireless gateway firmware.' }),
-    ).exactOptional(),
-    Model: ModelSchema.and(
-      z.any().openapi({ description: 'The model number of the wireless gateway.' }),
-    ).exactOptional(),
-    Station: StationSchema.and(
-      z.any().openapi({ description: 'The basic station version of the wireless gateway.' }),
-    ).exactOptional(),
+    PackageVersion: PackageVersionSchema.exactOptional().openapi({
+      description: 'The version of the wireless gateway firmware.',
+    }),
+    Model: ModelSchema.exactOptional().openapi({
+      description: 'The model number of the wireless gateway.',
+    }),
+    Station: StationSchema.exactOptional().openapi({
+      description: 'The basic station version of the wireless gateway.',
+    }),
   })
   .openapi({ description: 'LoRaWANGatewayVersion object.', required: [] })
   .openapi('LoRaWANGatewayVersion')
 
 const LoRaWANUpdateGatewayTaskCreateSchema = z
   .object({
-    UpdateSignature: UpdateSignatureSchema.and(
-      z.any().openapi({ description: 'The signature used to verify the update firmware.' }),
-    ).exactOptional(),
-    SigKeyCrc: CrcSchema.and(
-      z.any().openapi({ description: 'The CRC of the signature private key to check.' }),
-    ).exactOptional(),
-    CurrentVersion: LoRaWANGatewayVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the gateways that should receive the update.' }),
-    ).exactOptional(),
-    UpdateVersion: LoRaWANGatewayVersionSchema.and(
-      z.any().openapi({ description: 'The firmware version to update the gateway to.' }),
-    ).exactOptional(),
+    UpdateSignature: UpdateSignatureSchema.exactOptional().openapi({
+      description: 'The signature used to verify the update firmware.',
+    }),
+    SigKeyCrc: CrcSchema.exactOptional().openapi({
+      description: 'The CRC of the signature private key to check.',
+    }),
+    CurrentVersion: LoRaWANGatewayVersionSchema.exactOptional().openapi({
+      description: 'The version of the gateways that should receive the update.',
+    }),
+    UpdateVersion: LoRaWANGatewayVersionSchema.exactOptional().openapi({
+      description: 'The firmware version to update the gateway to.',
+    }),
   })
   .openapi({ description: 'LoRaWANUpdateGatewayTaskCreate object.', required: [] })
   .openapi('LoRaWANUpdateGatewayTaskCreate')
 
-const DeleteDestinationResponseSchema = z.object({}).openapi('DeleteDestinationResponse')
+const DeleteDestinationResponseSchema = z.looseObject({}).openapi('DeleteDestinationResponse')
 
-const DeleteDeviceProfileResponseSchema = z.object({}).openapi('DeleteDeviceProfileResponse')
+const DeleteDeviceProfileResponseSchema = z.looseObject({}).openapi('DeleteDeviceProfileResponse')
 
-const DeleteFuotaTaskResponseSchema = z.object({}).openapi('DeleteFuotaTaskResponse')
+const DeleteFuotaTaskResponseSchema = z.looseObject({}).openapi('DeleteFuotaTaskResponse')
 
-const DeleteMulticastGroupResponseSchema = z.object({}).openapi('DeleteMulticastGroupResponse')
+const DeleteMulticastGroupResponseSchema = z.looseObject({}).openapi('DeleteMulticastGroupResponse')
 
 const DeleteNetworkAnalyzerConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteNetworkAnalyzerConfigurationResponse')
 
-const DeleteQueuedMessagesResponseSchema = z.object({}).openapi('DeleteQueuedMessagesResponse')
+const DeleteQueuedMessagesResponseSchema = z.looseObject({}).openapi('DeleteQueuedMessagesResponse')
 
-const DeleteServiceProfileResponseSchema = z.object({}).openapi('DeleteServiceProfileResponse')
+const DeleteServiceProfileResponseSchema = z.looseObject({}).openapi('DeleteServiceProfileResponse')
 
-const DeleteWirelessDeviceResponseSchema = z.object({}).openapi('DeleteWirelessDeviceResponse')
+const DeleteWirelessDeviceResponseSchema = z.looseObject({}).openapi('DeleteWirelessDeviceResponse')
 
 const DeleteWirelessDeviceImportTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteWirelessDeviceImportTaskResponse')
 
-const DeleteWirelessGatewayResponseSchema = z.object({}).openapi('DeleteWirelessGatewayResponse')
+const DeleteWirelessGatewayResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteWirelessGatewayResponse')
 
 const DeleteWirelessGatewayTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteWirelessGatewayTaskResponse')
 
 const DeleteWirelessGatewayTaskDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteWirelessGatewayTaskDefinitionResponse')
 
 const DeregisterWirelessDeviceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeregisterWirelessDeviceResponse')
 
 const DisassociateAwsAccountFromPartnerAccountResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateAwsAccountFromPartnerAccountResponse')
 
 const DisassociateMulticastGroupFromFuotaTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateMulticastGroupFromFuotaTaskResponse')
 
 const DisassociateWirelessDeviceFromFuotaTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateWirelessDeviceFromFuotaTaskResponse')
 
 const DisassociateWirelessDeviceFromMulticastGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateWirelessDeviceFromMulticastGroupResponse')
 
 const DisassociateWirelessDeviceFromThingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateWirelessDeviceFromThingResponse')
 
 const DisassociateWirelessGatewayFromCertificateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateWirelessGatewayFromCertificateResponse')
 
 const DisassociateWirelessGatewayFromThingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateWirelessGatewayFromThingResponse')
 
 const ExpressionSchema = z.string().max(2048).openapi('Expression')
@@ -899,24 +779,24 @@ const RoleArnSchema = z.string().min(20).max(2048).openapi('RoleArn')
 
 const GetDestinationResponseSchema = z
   .object({
-    Arn: DestinationArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    Name: DestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Expression: ExpressionSchema.and(
-      z.any().openapi({ description: 'The rule name or topic rule to send messages to.' }),
-    ).exactOptional(),
-    ExpressionType: ExpressionTypeSchema.and(
-      z.any().openapi({ description: 'The type of value in <code>Expression</code>.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the resource.' }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM Role that authorizes the destination.' }),
-    ).exactOptional(),
+    Arn: DestinationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    Name: DestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Expression: ExpressionSchema.exactOptional().openapi({
+      description: 'The rule name or topic rule to send messages to.',
+    }),
+    ExpressionType: ExpressionTypeSchema.exactOptional().openapi({
+      description: 'The type of value in <code>Expression</code>.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the resource.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM Role that authorizes the destination.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDestinationResponse')
@@ -925,70 +805,56 @@ const DeviceProfileNameSchema = z.string().max(256).openapi('DeviceProfileName')
 
 const LoRaWANDeviceProfileSchema = z
   .object({
-    SupportsClassB: SupportsClassBSchema.and(
-      z.any().openapi({ description: 'The SupportsClassB value.' }),
-    ).exactOptional(),
-    ClassBTimeout: ClassBTimeoutSchema.and(
-      z.any().openapi({ description: 'The ClassBTimeout value.' }),
-    ).exactOptional(),
-    PingSlotPeriod: PingSlotPeriodSchema.and(
-      z.any().openapi({ description: 'The PingSlotPeriod value.' }),
-    ).exactOptional(),
-    PingSlotDr: PingSlotDrSchema.and(
-      z.any().openapi({ description: 'The PingSlotDR value.' }),
-    ).exactOptional(),
-    PingSlotFreq: PingSlotFreqSchema.and(
-      z.any().openapi({ description: 'The PingSlotFreq value.' }),
-    ).exactOptional(),
-    SupportsClassC: SupportsClassCSchema.and(
-      z.any().openapi({ description: 'The SupportsClassC value.' }),
-    ).exactOptional(),
-    ClassCTimeout: ClassCTimeoutSchema.and(
-      z.any().openapi({ description: 'The ClassCTimeout value.' }),
-    ).exactOptional(),
-    MacVersion: MacVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MAC version (such as OTAA 1.1 or OTAA 1.0.3) to use with this device profile.',
-        }),
-    ).exactOptional(),
-    RegParamsRevision: RegParamsRevisionSchema.and(
-      z.any().openapi({ description: 'The version of regional parameters.' }),
-    ).exactOptional(),
-    RxDelay1: RxDelay1Schema.and(
-      z.any().openapi({ description: 'The RXDelay1 value.' }),
-    ).exactOptional(),
-    RxDrOffset1: RxDrOffset1Schema.and(
-      z.any().openapi({ description: 'The RXDROffset1 value.' }),
-    ).exactOptional(),
-    RxDataRate2: RxDataRate2Schema.and(
-      z.any().openapi({ description: 'The RXDataRate2 value.' }),
-    ).exactOptional(),
-    RxFreq2: RxFreq2Schema.and(
-      z.any().openapi({ description: 'The RXFreq2 value.' }),
-    ).exactOptional(),
-    FactoryPresetFreqsList: FactoryPresetFreqsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of values that make up the FactoryPresetFreqs value.' }),
-    ).exactOptional(),
-    MaxEirp: MaxEirpSchema.and(
-      z.any().openapi({ description: 'The MaxEIRP value.' }),
-    ).exactOptional(),
-    MaxDutyCycle: MaxDutyCycleSchema.and(
-      z.any().openapi({ description: 'The MaxDutyCycle value.' }),
-    ).exactOptional(),
-    RfRegion: RfRegionSchema.and(
-      z.any().openapi({ description: 'The frequency band (RFRegion) value.' }),
-    ).exactOptional(),
-    SupportsJoin: SupportsJoinSchema.and(
-      z.any().openapi({ description: 'The SupportsJoin value.' }),
-    ).exactOptional(),
-    Supports32BitFCnt: Supports32BitFCntSchema.and(
-      z.any().openapi({ description: 'The Supports32BitFCnt value.' }),
-    ).exactOptional(),
+    SupportsClassB: SupportsClassBSchema.exactOptional().openapi({
+      description: 'The SupportsClassB value.',
+    }),
+    ClassBTimeout: ClassBTimeoutSchema.exactOptional().openapi({
+      description: 'The ClassBTimeout value.',
+    }),
+    PingSlotPeriod: PingSlotPeriodSchema.exactOptional().openapi({
+      description: 'The PingSlotPeriod value.',
+    }),
+    PingSlotDr: PingSlotDrSchema.exactOptional().openapi({ description: 'The PingSlotDR value.' }),
+    PingSlotFreq: PingSlotFreqSchema.exactOptional().openapi({
+      description: 'The PingSlotFreq value.',
+    }),
+    SupportsClassC: SupportsClassCSchema.exactOptional().openapi({
+      description: 'The SupportsClassC value.',
+    }),
+    ClassCTimeout: ClassCTimeoutSchema.exactOptional().openapi({
+      description: 'The ClassCTimeout value.',
+    }),
+    MacVersion: MacVersionSchema.exactOptional().openapi({
+      description:
+        'The MAC version (such as OTAA 1.1 or OTAA 1.0.3) to use with this device profile.',
+    }),
+    RegParamsRevision: RegParamsRevisionSchema.exactOptional().openapi({
+      description: 'The version of regional parameters.',
+    }),
+    RxDelay1: RxDelay1Schema.exactOptional().openapi({ description: 'The RXDelay1 value.' }),
+    RxDrOffset1: RxDrOffset1Schema.exactOptional().openapi({
+      description: 'The RXDROffset1 value.',
+    }),
+    RxDataRate2: RxDataRate2Schema.exactOptional().openapi({
+      description: 'The RXDataRate2 value.',
+    }),
+    RxFreq2: RxFreq2Schema.exactOptional().openapi({ description: 'The RXFreq2 value.' }),
+    FactoryPresetFreqsList: FactoryPresetFreqsListSchema.exactOptional().openapi({
+      description: 'The list of values that make up the FactoryPresetFreqs value.',
+    }),
+    MaxEirp: MaxEirpSchema.exactOptional().openapi({ description: 'The MaxEIRP value.' }),
+    MaxDutyCycle: MaxDutyCycleSchema.exactOptional().openapi({
+      description: 'The MaxDutyCycle value.',
+    }),
+    RfRegion: RfRegionSchema.exactOptional().openapi({
+      description: 'The frequency band (RFRegion) value.',
+    }),
+    SupportsJoin: SupportsJoinSchema.exactOptional().openapi({
+      description: 'The SupportsJoin value.',
+    }),
+    Supports32BitFCnt: Supports32BitFCntSchema.exactOptional().openapi({
+      description: 'The Supports32BitFCnt value.',
+    }),
   })
   .openapi({ description: 'LoRaWANDeviceProfile object.', required: [] })
   .openapi('LoRaWANDeviceProfile')
@@ -1014,33 +880,23 @@ const DeviceTypeIdSchema = z.string().max(2048).openapi('DeviceTypeId')
 
 const DakCertificateMetadataSchema = z
   .object({
-    CertificateId: DakCertificateIdSchema.and(
-      z.any().openapi({ description: 'The certificate ID for the DAK.' }),
-    ),
-    MaxAllowedSignature: MaxAllowedSignatureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of signatures that the DAK can sign. A value of <code>-1</code> indicates that there's no device limit.",
-        }),
-    ).exactOptional(),
-    FactorySupport: FactorySupportSchema.and(
-      z.any().openapi({ description: 'Whether factory support has been enabled.' }),
-    ).exactOptional(),
-    ApId: ApIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The advertised product ID (APID) that's used for pre-production and production applications.",
-        }),
-    ).exactOptional(),
-    DeviceTypeId: DeviceTypeIdSchema.and(
-      z
-        .any()
-        .openapi({ description: "The device type ID that's used for prototyping applications." }),
-    ).exactOptional(),
+    CertificateId: DakCertificateIdSchema.openapi({
+      description: 'The certificate ID for the DAK.',
+    }),
+    MaxAllowedSignature: MaxAllowedSignatureSchema.exactOptional().openapi({
+      description:
+        "The maximum number of signatures that the DAK can sign. A value of <code>-1</code> indicates that there's no device limit.",
+    }),
+    FactorySupport: FactorySupportSchema.exactOptional().openapi({
+      description: 'Whether factory support has been enabled.',
+    }),
+    ApId: ApIdSchema.exactOptional().openapi({
+      description:
+        "The advertised product ID (APID) that's used for pre-production and production applications.",
+    }),
+    DeviceTypeId: DeviceTypeIdSchema.exactOptional().openapi({
+      description: "The device type ID that's used for prototyping applications.",
+    }),
   })
   .openapi({
     required: ['CertificateId'],
@@ -1054,63 +910,49 @@ const DakCertificateMetadataListSchema = z
 
 const SidewalkGetDeviceProfileSchema = z
   .object({
-    ApplicationServerPublicKey: ApplicationServerPublicKeySchema.and(
-      z.any().openapi({ description: 'The Sidewalk application server public key.' }),
-    ).exactOptional(),
-    QualificationStatus: QualificationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Gets information about the certification status of a Sidewalk device profile.',
-        }),
-    ).exactOptional(),
-    DakCertificateMetadata: DakCertificateMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The DAK certificate information of the Sidewalk device profile.',
-        }),
-    ).exactOptional(),
+    ApplicationServerPublicKey: ApplicationServerPublicKeySchema.exactOptional().openapi({
+      description: 'The Sidewalk application server public key.',
+    }),
+    QualificationStatus: QualificationStatusSchema.exactOptional().openapi({
+      description: 'Gets information about the certification status of a Sidewalk device profile.',
+    }),
+    DakCertificateMetadata: DakCertificateMetadataListSchema.exactOptional().openapi({
+      description: 'The DAK certificate information of the Sidewalk device profile.',
+    }),
   })
   .openapi({ description: 'Gets information about a Sidewalk device profile.', required: [] })
   .openapi('SidewalkGetDeviceProfile')
 
 const GetDeviceProfileResponseSchema = z
   .object({
-    Arn: DeviceProfileArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    Name: DeviceProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Id: DeviceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the device profile.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANDeviceProfileSchema.and(
-      z.any().openapi({ description: 'Information about the device profile.' }),
-    ).exactOptional(),
-    Sidewalk: SidewalkGetDeviceProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the Sidewalk parameters in the device profile.',
-        }),
-    ).exactOptional(),
+    Arn: DeviceProfileArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    Name: DeviceProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Id: DeviceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the device profile.',
+    }),
+    LoRaWAN: LoRaWANDeviceProfileSchema.exactOptional().openapi({
+      description: 'Information about the device profile.',
+    }),
+    Sidewalk: SidewalkGetDeviceProfileSchema.exactOptional().openapi({
+      description: 'Information about the Sidewalk parameters in the device profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeviceProfileResponse')
 
+const EventNotificationTopicStatusSchema = z
+  .enum(['Enabled', 'Disabled'])
+  .openapi('EventNotificationTopicStatus')
+
 const SidewalkResourceTypeEventConfigurationSchema = z
   .object({
-    WirelessDeviceEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the wireless device join event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    WirelessDeviceEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description: 'Denotes whether the wireless device join event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description:
@@ -1121,14 +963,10 @@ const SidewalkResourceTypeEventConfigurationSchema = z
 
 const DeviceRegistrationStateResourceTypeEventConfigurationSchema = z
   .object({
-    Sidewalk: SidewalkResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device registration resource type state event configuration object for enabling or disabling Sidewalk related event topics.',
-        }),
-    ).exactOptional(),
+    Sidewalk: SidewalkResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'Device registration resource type state event configuration object for enabling or disabling Sidewalk related event topics.',
+    }),
   })
   .openapi({
     description:
@@ -1139,14 +977,10 @@ const DeviceRegistrationStateResourceTypeEventConfigurationSchema = z
 
 const ProximityResourceTypeEventConfigurationSchema = z
   .object({
-    Sidewalk: SidewalkResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Proximity resource type event configuration object for enabling and disabling wireless device topic.',
-        }),
-    ).exactOptional(),
+    Sidewalk: SidewalkResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'Proximity resource type event configuration object for enabling and disabling wireless device topic.',
+    }),
   })
   .openapi({
     description:
@@ -1155,49 +989,57 @@ const ProximityResourceTypeEventConfigurationSchema = z
   })
   .openapi('ProximityResourceTypeEventConfiguration')
 
-const JoinResourceTypeEventConfigurationSchema: z.ZodType<JoinResourceTypeEventConfigurationType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          LoRaWAN: LoRaWANJoinResourceTypeEventConfigurationSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'Join resource type event configuration object for enabling or disabling LoRaWAN related event topics.',
-              }),
-          ).exactOptional(),
-        })
-        .openapi({
-          description:
-            'Join resource type event configuration object for enabling or disabling topic.',
-          required: [],
-        }),
-    )
-    .openapi('JoinResourceTypeEventConfiguration')
+const LoRaWANJoinResourceTypeEventConfigurationSchema = z
+  .object({
+    WirelessDeviceEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description: 'Denotes whether the wireless device join event topic is enabled or disabled.',
+    }),
+  })
+  .openapi({
+    description: 'Object for LoRaWAN join resource type event configuration.',
+    required: [],
+  })
+  .openapi('LoRaWANJoinResourceTypeEventConfiguration')
 
-const ConnectionStatusResourceTypeEventConfigurationSchema: z.ZodType<ConnectionStatusResourceTypeEventConfigurationType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          LoRaWAN: LoRaWANConnectionStatusResourceTypeEventConfigurationSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'Connection status resource type event configuration object for enabling or disabling LoRaWAN related event topics.',
-              }),
-          ).exactOptional(),
-        })
-        .openapi({
-          description:
-            'Connection status resource type event configuration object for enabling or disabling topic.',
-          required: [],
-        }),
-    )
-    .openapi('ConnectionStatusResourceTypeEventConfiguration')
+const JoinResourceTypeEventConfigurationSchema = z
+  .object({
+    LoRaWAN: LoRaWANJoinResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'Join resource type event configuration object for enabling or disabling LoRaWAN related event topics.',
+    }),
+  })
+  .openapi({
+    description: 'Join resource type event configuration object for enabling or disabling topic.',
+    required: [],
+  })
+  .openapi('JoinResourceTypeEventConfiguration')
+
+const LoRaWANConnectionStatusResourceTypeEventConfigurationSchema = z
+  .object({
+    WirelessGatewayEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description:
+        'Denotes whether the wireless gateway connection status event topic is enabled or disabled.',
+    }),
+  })
+  .openapi({
+    description: 'Object for LoRaWAN connection status resource type event configuration.',
+    required: [],
+  })
+  .openapi('LoRaWANConnectionStatusResourceTypeEventConfiguration')
+
+const ConnectionStatusResourceTypeEventConfigurationSchema = z
+  .object({
+    LoRaWAN: LoRaWANConnectionStatusResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'Connection status resource type event configuration object for enabling or disabling LoRaWAN related event topics.',
+    }),
+  })
+  .openapi({
+    description:
+      'Connection status resource type event configuration object for enabling or disabling topic.',
+    required: [],
+  })
+  .openapi('ConnectionStatusResourceTypeEventConfiguration')
 
 const MessageDeliveryStatusResourceTypeEventConfigurationSchema = z
   .object({ Sidewalk: SidewalkResourceTypeEventConfigurationSchema.exactOptional() })
@@ -1210,36 +1052,24 @@ const MessageDeliveryStatusResourceTypeEventConfigurationSchema = z
 
 const GetEventConfigurationByResourceTypesResponseSchema = z
   .object({
-    DeviceRegistrationState: DeviceRegistrationStateResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Resource type event configuration for the device registration state event.',
-        }),
-    ).exactOptional(),
-    Proximity: ProximityResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Resource type event configuration for the proximity event.' }),
-    ).exactOptional(),
-    Join: JoinResourceTypeEventConfigurationSchema.and(
-      z.any().openapi({ description: 'Resource type event configuration for the join event.' }),
-    ).exactOptional(),
-    ConnectionStatus: ConnectionStatusResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Resource type event configuration for the connection status event.',
-        }),
-    ).exactOptional(),
-    MessageDeliveryStatus: MessageDeliveryStatusResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Resource type event configuration object for the message delivery status event.',
-        }),
-    ).exactOptional(),
+    DeviceRegistrationState:
+      DeviceRegistrationStateResourceTypeEventConfigurationSchema.exactOptional().openapi({
+        description: 'Resource type event configuration for the device registration state event.',
+      }),
+    Proximity: ProximityResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description: 'Resource type event configuration for the proximity event.',
+    }),
+    Join: JoinResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description: 'Resource type event configuration for the join event.',
+    }),
+    ConnectionStatus: ConnectionStatusResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description: 'Resource type event configuration for the connection status event.',
+    }),
+    MessageDeliveryStatus:
+      MessageDeliveryStatusResourceTypeEventConfigurationSchema.exactOptional().openapi({
+        description:
+          'Resource type event configuration object for the message delivery status event.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetEventConfigurationByResourceTypesResponse')
@@ -1405,9 +1235,7 @@ const WirelessDeviceEventLogOptionListSchema = z
 
 const WirelessDeviceLogOptionSchema = z
   .object({
-    Type: WirelessDeviceTypeSchema.and(
-      z.any().openapi({ description: 'The wireless device type.' }),
-    ),
+    Type: WirelessDeviceTypeSchema.openapi({ description: 'The wireless device type.' }),
     LogLevel: LogLevelSchema,
     Events: WirelessDeviceEventLogOptionListSchema.exactOptional(),
   })
@@ -1515,9 +1343,9 @@ const LoRaWANMulticastSessionSchema = z
     DlFreq: DlFreqSchema.exactOptional(),
     SessionStartTime: SessionStartTimeTimestampSchema.exactOptional(),
     SessionTimeout: SessionTimeoutSchema.exactOptional(),
-    PingSlotPeriod: PingSlotPeriodSchema.and(
-      z.any().openapi({ description: 'The PingSlotPeriod value.' }),
-    ).exactOptional(),
+    PingSlotPeriod: PingSlotPeriodSchema.exactOptional().openapi({
+      description: 'The PingSlotPeriod value.',
+    }),
   })
   .openapi({
     description: 'The LoRaWAN information used with the multicast session.',
@@ -1552,26 +1380,18 @@ const WirelessGatewayListSchema = z.array(WirelessGatewayIdSchema).openapi('Wire
 const GetNetworkAnalyzerConfigurationResponseSchema = z
   .object({
     TraceContent: TraceContentSchema.exactOptional(),
-    WirelessDevices: WirelessDeviceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of wireless gateway resources that have been added to the network analyzer configuration.',
-        }),
-    ).exactOptional(),
-    WirelessGateways: WirelessGatewayListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of wireless gateway resources that have been added to the network analyzer configuration.',
-        }),
-    ).exactOptional(),
+    WirelessDevices: WirelessDeviceListSchema.exactOptional().openapi({
+      description:
+        'List of wireless gateway resources that have been added to the network analyzer configuration.',
+    }),
+    WirelessGateways: WirelessGatewayListSchema.exactOptional().openapi({
+      description:
+        'List of wireless gateway resources that have been added to the network analyzer configuration.',
+    }),
     Description: DescriptionSchema.exactOptional(),
-    Arn: NetworkAnalyzerConfigurationArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the new resource.' }),
-    ).exactOptional(),
+    Arn: NetworkAnalyzerConfigurationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the new resource.',
+    }),
     Name: NetworkAnalyzerConfigurationNameSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1585,19 +1405,13 @@ const FingerprintSchema = z
 
 const SidewalkAccountInfoWithFingerprintSchema = z
   .object({
-    AmazonId: AmazonIdSchema.and(
-      z.any().openapi({ description: 'The Sidewalk Amazon ID.' }),
-    ).exactOptional(),
-    Fingerprint: FingerprintSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fingerprint of the Sidewalk application server private key.',
-        }),
-    ).exactOptional(),
-    Arn: PartnerAccountArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
+    AmazonId: AmazonIdSchema.exactOptional().openapi({ description: 'The Sidewalk Amazon ID.' }),
+    Fingerprint: FingerprintSchema.exactOptional().openapi({
+      description: 'The fingerprint of the Sidewalk application server private key.',
+    }),
+    Arn: PartnerAccountArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
   })
   .openapi({ description: 'Information about a Sidewalk account.', required: [] })
   .openapi('SidewalkAccountInfoWithFingerprint')
@@ -1606,12 +1420,12 @@ const AccountLinkedSchema = z.boolean().openapi('AccountLinked')
 
 const GetPartnerAccountResponseSchema = z
   .object({
-    Sidewalk: SidewalkAccountInfoWithFingerprintSchema.and(
-      z.any().openapi({ description: 'The Sidewalk account credentials.' }),
-    ).exactOptional(),
-    AccountLinked: AccountLinkedSchema.and(
-      z.any().openapi({ description: 'Whether the partner account is linked to the AWS account.' }),
-    ).exactOptional(),
+    Sidewalk: SidewalkAccountInfoWithFingerprintSchema.exactOptional().openapi({
+      description: 'The Sidewalk account credentials.',
+    }),
+    AccountLinked: AccountLinkedSchema.exactOptional().openapi({
+      description: 'Whether the partner account is linked to the AWS account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPartnerAccountResponse')
@@ -1622,33 +1436,26 @@ const PositionCoordinateSchema = z
   .array(PositionCoordinateValueSchema)
   .openapi('PositionCoordinate')
 
-const AccuracySchema: z.ZodType<AccuracyType> = z
-  .lazy(() =>
-    z
-      .object({
-        HorizontalAccuracy: HorizontalAccuracySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The horizontal accuracy of the estimated position, which is the difference between the estimated location and the actual device location.',
-            }),
-        ).exactOptional(),
-        VerticalAccuracy: VerticalAccuracySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The vertical accuracy of the estimated position, which is the difference between the estimated altitude and actual device latitude in meters.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'The accuracy of the estimated position in meters. An empty value indicates that no position data is available. A value of ‘0.0’ value indicates that position data is available. This data corresponds to the position information that you specified instead of the position computed by solver.',
-        required: [],
-      }),
-  )
+const HorizontalAccuracySchema = z.float32().min(0).openapi('HorizontalAccuracy')
+
+const VerticalAccuracySchema = z.float32().min(0).openapi('VerticalAccuracy')
+
+const AccuracySchema = z
+  .object({
+    HorizontalAccuracy: HorizontalAccuracySchema.exactOptional().openapi({
+      description:
+        'The horizontal accuracy of the estimated position, which is the difference between the estimated location and the actual device location.',
+    }),
+    VerticalAccuracy: VerticalAccuracySchema.exactOptional().openapi({
+      description:
+        'The vertical accuracy of the estimated position, which is the difference between the estimated altitude and actual device latitude in meters.',
+    }),
+  })
+  .openapi({
+    description:
+      'The accuracy of the estimated position in meters. An empty value indicates that no position data is available. A value of ‘0.0’ value indicates that position data is available. This data corresponds to the position information that you specified instead of the position computed by solver.',
+    required: [],
+  })
   .openapi('Accuracy')
 
 const PositionSolverTypeSchema = z.literal('GNSS').openapi('PositionSolverType')
@@ -1666,35 +1473,25 @@ const ISODateTimeStringSchema = z
 
 const GetPositionResponseSchema = z
   .object({
-    Position: PositionCoordinateSchema.and(
-      z.any().openapi({ description: 'The position information of the resource.' }),
-    ).exactOptional(),
-    Accuracy: AccuracySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The accuracy of the estimated position in meters. An empty value indicates that no position data is available. A value of ‘0.0’ value indicates that position data is available. This data corresponds to the position information that you specified instead of the position computed by solver.',
-        }),
-    ).exactOptional(),
-    SolverType: PositionSolverTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of solver used to identify the position of the resource.',
-        }),
-    ).exactOptional(),
-    SolverProvider: PositionSolverProviderSchema.and(
-      z.any().openapi({ description: 'The vendor of the positioning solver.' }),
-    ).exactOptional(),
-    SolverVersion: PositionSolverVersionSchema.and(
-      z.any().openapi({ description: 'The version of the positioning solver.' }),
-    ).exactOptional(),
-    Timestamp: ISODateTimeStringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The timestamp at which the device's position was determined." }),
-    ).exactOptional(),
+    Position: PositionCoordinateSchema.exactOptional().openapi({
+      description: 'The position information of the resource.',
+    }),
+    Accuracy: AccuracySchema.exactOptional().openapi({
+      description:
+        'The accuracy of the estimated position in meters. An empty value indicates that no position data is available. A value of ‘0.0’ value indicates that position data is available. This data corresponds to the position information that you specified instead of the position computed by solver.',
+    }),
+    SolverType: PositionSolverTypeSchema.exactOptional().openapi({
+      description: 'The type of solver used to identify the position of the resource.',
+    }),
+    SolverProvider: PositionSolverProviderSchema.exactOptional().openapi({
+      description: 'The vendor of the positioning solver.',
+    }),
+    SolverVersion: PositionSolverVersionSchema.exactOptional().openapi({
+      description: 'The version of the positioning solver.',
+    }),
+    Timestamp: ISODateTimeStringSchema.exactOptional().openapi({
+      description: "The timestamp at which the device's position was determined.",
+    }),
   })
   .openapi({
     deprecated: true,
@@ -1711,44 +1508,40 @@ const PositionConfigurationFecSchema = z.enum(['ROSE', 'NONE']).openapi('Positio
 
 const SemtechGnssDetailSchema = z
   .object({
-    Provider: PositionSolverProviderSchema.and(
-      z.any().openapi({ description: 'The vendor of the solver object.' }),
-    ).exactOptional(),
-    Type: PositionSolverTypeSchema.and(
-      z.any().openapi({ description: 'The type of positioning solver used.' }),
-    ).exactOptional(),
-    Status: PositionConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'The status indicating whether the solver is enabled.' }),
-    ).exactOptional(),
-    Fec: PositionConfigurationFecSchema.and(
-      z.any().openapi({ description: 'Whether forward error correction is enabled.' }),
-    ).exactOptional(),
+    Provider: PositionSolverProviderSchema.exactOptional().openapi({
+      description: 'The vendor of the solver object.',
+    }),
+    Type: PositionSolverTypeSchema.exactOptional().openapi({
+      description: 'The type of positioning solver used.',
+    }),
+    Status: PositionConfigurationStatusSchema.exactOptional().openapi({
+      description: 'The status indicating whether the solver is enabled.',
+    }),
+    Fec: PositionConfigurationFecSchema.exactOptional().openapi({
+      description: 'Whether forward error correction is enabled.',
+    }),
   })
   .openapi({ description: 'Details of the Semtech GNSS solver object.', required: [] })
   .openapi('SemtechGnssDetail')
 
 const PositionSolverDetailsSchema = z
   .object({
-    SemtechGnss: SemtechGnssDetailSchema.and(
-      z.any().openapi({ description: 'The Semtech GNSS solver object details.' }),
-    ).exactOptional(),
+    SemtechGnss: SemtechGnssDetailSchema.exactOptional().openapi({
+      description: 'The Semtech GNSS solver object details.',
+    }),
   })
   .openapi({ description: 'The wrapper for position solver details.', required: [] })
   .openapi('PositionSolverDetails')
 
 const GetPositionConfigurationResponseSchema = z
   .object({
-    Solvers: PositionSolverDetailsSchema.and(
-      z.any().openapi({ description: 'The wrapper for the solver configuration details object.' }),
-    ).exactOptional(),
-    Destination: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
-        }),
-    ).exactOptional(),
+    Solvers: PositionSolverDetailsSchema.exactOptional().openapi({
+      description: 'The wrapper for the solver configuration details object.',
+    }),
+    Destination: DestinationNameSchema.exactOptional().openapi({
+      description:
+        "The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
+    }),
   })
   .openapi({
     deprecated: true,
@@ -1761,14 +1554,10 @@ const GeoJsonPayloadSchema = z.string().openapi('GeoJsonPayload')
 
 const GetPositionEstimateResponseSchema = z
   .object({
-    GeoJsonPayload: GeoJsonPayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that\'s used to encode geographic data structures. For more information, see <a href="https://geojson.org/">GeoJSON</a>.',
-        }),
-    ).exactOptional(),
+    GeoJsonPayload: GeoJsonPayloadSchema.exactOptional().openapi({
+      description:
+        'The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that\'s used to encode geographic data structures. For more information, see <a href="https://geojson.org/">GeoJSON</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPositionEstimateResponse')
@@ -1784,12 +1573,10 @@ const RSSSchema = z.int().min(-128).max(0).openapi('RSS')
 
 const WiFiAccessPointSchema = z
   .object({
-    MacAddress: MacAddressSchema.and(z.any().openapi({ description: 'Wi-Fi MAC Address.' })),
-    Rss: RSSSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Received signal strength (dBm) of the WLAN measurement data.' }),
-    ),
+    MacAddress: MacAddressSchema.openapi({ description: 'Wi-Fi MAC Address.' }),
+    Rss: RSSSchema.openapi({
+      description: 'Received signal strength (dBm) of the WLAN measurement data.',
+    }),
   })
   .openapi({ required: ['MacAddress', 'Rss'], description: 'Wi-Fi access point.' })
   .openapi('WiFiAccessPoint')
@@ -1808,10 +1595,8 @@ const BCCHSchema = z.int().min(0).max(1023).openapi('BCCH')
 
 const GsmLocalIdSchema = z
   .object({
-    Bsic: BSICSchema.and(
-      z.any().openapi({ description: 'GSM base station identity code (BSIC).' }),
-    ),
-    Bcch: BCCHSchema.and(z.any().openapi({ description: 'GSM broadcast control channel.' })),
+    Bsic: BSICSchema.openapi({ description: 'GSM base station identity code (BSIC).' }),
+    Bcch: BCCHSchema.openapi({ description: 'GSM broadcast control channel.' }),
   })
   .openapi({
     required: ['Bsic', 'Bcch'],
@@ -1826,35 +1611,25 @@ const RxLevelSchema = z.int().min(-110).max(-25).openapi('RxLevel')
 
 const GlobalIdentitySchema = z
   .object({
-    Lac: LACSchema.and(
-      z.any().openapi({ description: 'Location area code of the global identity.' }),
-    ),
-    GeranCid: GeranCidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'GERAN (GSM EDGE Radio Access Network) cell global identifier.' }),
-    ),
+    Lac: LACSchema.openapi({ description: 'Location area code of the global identity.' }),
+    GeranCid: GeranCidSchema.openapi({
+      description: 'GERAN (GSM EDGE Radio Access Network) cell global identifier.',
+    }),
   })
   .openapi({ required: ['Lac', 'GeranCid'], description: 'Global identity information.' })
   .openapi('GlobalIdentity')
 
 const GsmNmrObjSchema = z
   .object({
-    Bsic: BSICSchema.and(
-      z.any().openapi({ description: 'GSM base station identity code (BSIC).' }),
-    ),
-    Bcch: BCCHSchema.and(z.any().openapi({ description: 'GSM broadcast control channel.' })),
-    RxLevel: RxLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Rx level, which is the received signal power, measured in dBm (decibel-milliwatts).',
-        }),
-    ).exactOptional(),
-    GlobalIdentity: GlobalIdentitySchema.and(
-      z.any().openapi({ description: 'Global identity information of the GSM object.' }),
-    ).exactOptional(),
+    Bsic: BSICSchema.openapi({ description: 'GSM base station identity code (BSIC).' }),
+    Bcch: BCCHSchema.openapi({ description: 'GSM broadcast control channel.' }),
+    RxLevel: RxLevelSchema.exactOptional().openapi({
+      description:
+        'Rx level, which is the received signal power, measured in dBm (decibel-milliwatts).',
+    }),
+    GlobalIdentity: GlobalIdentitySchema.exactOptional().openapi({
+      description: 'Global identity information of the GSM object.',
+    }),
   })
   .openapi({
     required: ['Bsic', 'Bcch'],
@@ -1866,36 +1641,26 @@ const GsmNmrListSchema = z.array(GsmNmrObjSchema).min(1).max(32).openapi('GsmNmr
 
 const GsmObjSchema = z
   .object({
-    Mcc: MCCSchema.and(z.any().openapi({ description: 'Mobile Country Code.' })),
-    Mnc: MNCSchema.and(z.any().openapi({ description: 'Mobile Network Code.' })),
-    Lac: LACSchema.and(z.any().openapi({ description: 'Location area code.' })),
-    GeranCid: GeranCidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'GERAN (GSM EDGE Radio Access Network) Cell Global Identifier.' }),
-    ),
-    GsmLocalId: GsmLocalIdSchema.and(
-      z.any().openapi({ description: 'GSM local identification (local ID) information.' }),
-    ).exactOptional(),
-    GsmTimingAdvance: GsmTimingAdvanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timing advance value, which corresponds to the length of time a signal takes to reach the base station from a mobile phone.',
-        }),
-    ).exactOptional(),
-    RxLevel: RxLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Rx level, which is the received signal power, measured in dBm (decibel-milliwatts).',
-        }),
-    ).exactOptional(),
-    GsmNmr: GsmNmrListSchema.and(
-      z.any().openapi({ description: 'GSM object for network measurement reports.' }),
-    ).exactOptional(),
+    Mcc: MCCSchema.openapi({ description: 'Mobile Country Code.' }),
+    Mnc: MNCSchema.openapi({ description: 'Mobile Network Code.' }),
+    Lac: LACSchema.openapi({ description: 'Location area code.' }),
+    GeranCid: GeranCidSchema.openapi({
+      description: 'GERAN (GSM EDGE Radio Access Network) Cell Global Identifier.',
+    }),
+    GsmLocalId: GsmLocalIdSchema.exactOptional().openapi({
+      description: 'GSM local identification (local ID) information.',
+    }),
+    GsmTimingAdvance: GsmTimingAdvanceSchema.exactOptional().openapi({
+      description:
+        'Timing advance value, which corresponds to the length of time a signal takes to reach the base station from a mobile phone.',
+    }),
+    RxLevel: RxLevelSchema.exactOptional().openapi({
+      description:
+        'Rx level, which is the received signal power, measured in dBm (decibel-milliwatts).',
+    }),
+    GsmNmr: GsmNmrListSchema.exactOptional().openapi({
+      description: 'GSM object for network measurement reports.',
+    }),
   })
   .openapi({ required: ['Mcc', 'Mnc', 'Lac', 'GeranCid'], description: 'GSM object.' })
   .openapi('GsmObj')
@@ -1910,10 +1675,10 @@ const PSCSchema = z.int().min(0).max(511).openapi('PSC')
 
 const WcdmaLocalIdSchema = z
   .object({
-    Uarfcndl: UARFCNDLSchema.and(
-      z.any().openapi({ description: 'WCDMA UTRA Absolute RF Channel Number downlink.' }),
-    ),
-    Psc: PSCSchema.and(z.any().openapi({ description: 'Primary Scrambling Code.' })),
+    Uarfcndl: UARFCNDLSchema.openapi({
+      description: 'WCDMA UTRA Absolute RF Channel Number downlink.',
+    }),
+    Psc: PSCSchema.openapi({ description: 'Primary Scrambling Code.' }),
   })
   .openapi({
     required: ['Uarfcndl', 'Psc'],
@@ -1927,28 +1692,20 @@ const PathLossSchema = z.int().min(46).max(158).openapi('PathLoss')
 
 const WcdmaNmrObjSchema = z
   .object({
-    Uarfcndl: UARFCNDLSchema.and(
-      z.any().openapi({ description: 'WCDMA UTRA Absolute RF Channel Number downlink.' }),
-    ),
-    Psc: PSCSchema.and(z.any().openapi({ description: 'Primary Scrambling Code.' })),
-    UtranCid: UtranCidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.',
-        }),
-    ),
-    Rscp: RSCPSchema.and(
-      z.any().openapi({ description: 'Received Signal Code Power (signal power) (dBm)' }),
-    ).exactOptional(),
-    PathLoss: PathLossSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.',
-        }),
-    ).exactOptional(),
+    Uarfcndl: UARFCNDLSchema.openapi({
+      description: 'WCDMA UTRA Absolute RF Channel Number downlink.',
+    }),
+    Psc: PSCSchema.openapi({ description: 'Primary Scrambling Code.' }),
+    UtranCid: UtranCidSchema.openapi({
+      description: 'UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.',
+    }),
+    Rscp: RSCPSchema.exactOptional().openapi({
+      description: 'Received Signal Code Power (signal power) (dBm)',
+    }),
+    PathLoss: PathLossSchema.exactOptional().openapi({
+      description:
+        'Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.',
+    }),
   })
   .openapi({
     required: ['Uarfcndl', 'Psc', 'UtranCid'],
@@ -1960,33 +1717,25 @@ const WcdmaNmrListSchema = z.array(WcdmaNmrObjSchema).min(1).max(32).openapi('Wc
 
 const WcdmaObjSchema = z
   .object({
-    Mcc: MCCSchema.and(z.any().openapi({ description: 'Mobile Country Code.' })),
-    Mnc: MNCSchema.and(z.any().openapi({ description: 'Mobile Network Code.' })),
-    Lac: LACSchema.and(z.any().openapi({ description: 'Location Area Code.' })).exactOptional(),
-    UtranCid: UtranCidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.',
-        }),
-    ),
-    WcdmaLocalId: WcdmaLocalIdSchema.and(
-      z.any().openapi({ description: 'WCDMA local ID information.' }),
-    ).exactOptional(),
-    Rscp: RSCPSchema.and(
-      z.any().openapi({ description: 'Received Signal Code Power (signal power) (dBm).' }),
-    ).exactOptional(),
-    PathLoss: PathLossSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.',
-        }),
-    ).exactOptional(),
-    WcdmaNmr: WcdmaNmrListSchema.and(
-      z.any().openapi({ description: 'WCDMA object for network measurement reports.' }),
-    ).exactOptional(),
+    Mcc: MCCSchema.openapi({ description: 'Mobile Country Code.' }),
+    Mnc: MNCSchema.openapi({ description: 'Mobile Network Code.' }),
+    Lac: LACSchema.exactOptional().openapi({ description: 'Location Area Code.' }),
+    UtranCid: UtranCidSchema.openapi({
+      description: 'UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.',
+    }),
+    WcdmaLocalId: WcdmaLocalIdSchema.exactOptional().openapi({
+      description: 'WCDMA local ID information.',
+    }),
+    Rscp: RSCPSchema.exactOptional().openapi({
+      description: 'Received Signal Code Power (signal power) (dBm).',
+    }),
+    PathLoss: PathLossSchema.exactOptional().openapi({
+      description:
+        'Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.',
+    }),
+    WcdmaNmr: WcdmaNmrListSchema.exactOptional().openapi({
+      description: 'WCDMA object for network measurement reports.',
+    }),
   })
   .openapi({ required: ['Mcc', 'Mnc', 'UtranCid'], description: 'WCDMA.' })
   .openapi('WcdmaObj')
@@ -1999,17 +1748,11 @@ const CellParamsSchema = z.int().min(0).max(127).openapi('CellParams')
 
 const TdscdmaLocalIdSchema = z
   .object({
-    Uarfcn: UARFCNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'TD-SCDMA UTRA (Universal Terrestrial Radio Access Network) absolute RF channel number (UARFCN).',
-        }),
-    ),
-    CellParams: CellParamsSchema.and(
-      z.any().openapi({ description: 'Cell parameters for TD-SCDMA.' }),
-    ),
+    Uarfcn: UARFCNSchema.openapi({
+      description:
+        'TD-SCDMA UTRA (Universal Terrestrial Radio Access Network) absolute RF channel number (UARFCN).',
+    }),
+    CellParams: CellParamsSchema.openapi({ description: 'Cell parameters for TD-SCDMA.' }),
   })
   .openapi({
     required: ['Uarfcn', 'CellParams'],
@@ -2021,43 +1764,23 @@ const TdscdmaTimingAdvanceSchema = z.int().min(0).max(1530).openapi('TdscdmaTimi
 
 const TdscdmaNmrObjSchema = z
   .object({
-    Uarfcn: UARFCNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'TD-SCDMA UTRA (Universal Terrestrial Radio Access Network) absolute RF channel number.',
-        }),
-    ),
-    CellParams: CellParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Cell parameters for TD-SCDMA network measurement reports object.',
-        }),
-    ),
-    UtranCid: UtranCidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'UTRAN (UMTS Terrestrial Radio Access Network) cell global identifier.',
-        }),
-    ).exactOptional(),
-    Rscp: RSCPSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Code power of the received signal, measured in decibel-milliwatts (dBm).',
-        }),
-    ).exactOptional(),
-    PathLoss: PathLossSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.',
-        }),
-    ).exactOptional(),
+    Uarfcn: UARFCNSchema.openapi({
+      description:
+        'TD-SCDMA UTRA (Universal Terrestrial Radio Access Network) absolute RF channel number.',
+    }),
+    CellParams: CellParamsSchema.openapi({
+      description: 'Cell parameters for TD-SCDMA network measurement reports object.',
+    }),
+    UtranCid: UtranCidSchema.exactOptional().openapi({
+      description: 'UTRAN (UMTS Terrestrial Radio Access Network) cell global identifier.',
+    }),
+    Rscp: RSCPSchema.exactOptional().openapi({
+      description: 'Code power of the received signal, measured in decibel-milliwatts (dBm).',
+    }),
+    PathLoss: PathLossSchema.exactOptional().openapi({
+      description:
+        'Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.',
+    }),
   })
   .openapi({
     required: ['Uarfcn', 'CellParams'],
@@ -2069,41 +1792,29 @@ const TdscdmaNmrListSchema = z.array(TdscdmaNmrObjSchema).min(1).max(32).openapi
 
 const TdscdmaObjSchema = z
   .object({
-    Mcc: MCCSchema.and(z.any().openapi({ description: 'Mobile Country Code.' })),
-    Mnc: MNCSchema.and(z.any().openapi({ description: 'Mobile Network Code.' })),
-    Lac: LACSchema.and(z.any().openapi({ description: 'Location Area Code.' })).exactOptional(),
-    UtranCid: UtranCidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.',
-        }),
-    ),
-    TdscdmaLocalId: TdscdmaLocalIdSchema.and(
-      z.any().openapi({ description: 'TD-SCDMA local identification (local ID) information.' }),
-    ).exactOptional(),
-    TdscdmaTimingAdvance: TdscdmaTimingAdvanceSchema.and(
-      z.any().openapi({ description: 'TD-SCDMA Timing advance.' }),
-    ).exactOptional(),
-    Rscp: RSCPSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Signal power of the received signal (Received Signal Code Power), measured in decibel-milliwatts (dBm).',
-        }),
-    ).exactOptional(),
-    PathLoss: PathLossSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.',
-        }),
-    ).exactOptional(),
-    TdscdmaNmr: TdscdmaNmrListSchema.and(
-      z.any().openapi({ description: 'TD-SCDMA object for network measurement reports.' }),
-    ).exactOptional(),
+    Mcc: MCCSchema.openapi({ description: 'Mobile Country Code.' }),
+    Mnc: MNCSchema.openapi({ description: 'Mobile Network Code.' }),
+    Lac: LACSchema.exactOptional().openapi({ description: 'Location Area Code.' }),
+    UtranCid: UtranCidSchema.openapi({
+      description: 'UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.',
+    }),
+    TdscdmaLocalId: TdscdmaLocalIdSchema.exactOptional().openapi({
+      description: 'TD-SCDMA local identification (local ID) information.',
+    }),
+    TdscdmaTimingAdvance: TdscdmaTimingAdvanceSchema.exactOptional().openapi({
+      description: 'TD-SCDMA Timing advance.',
+    }),
+    Rscp: RSCPSchema.exactOptional().openapi({
+      description:
+        'Signal power of the received signal (Received Signal Code Power), measured in decibel-milliwatts (dBm).',
+    }),
+    PathLoss: PathLossSchema.exactOptional().openapi({
+      description:
+        'Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.',
+    }),
+    TdscdmaNmr: TdscdmaNmrListSchema.exactOptional().openapi({
+      description: 'TD-SCDMA object for network measurement reports.',
+    }),
   })
   .openapi({ required: ['Mcc', 'Mnc', 'UtranCid'], description: 'TD-SCDMA object.' })
   .openapi('TdscdmaObj')
@@ -2120,15 +1831,11 @@ const EARFCNSchema = z.int().min(0).max(262143).openapi('EARFCN')
 
 const LteLocalIdSchema = z
   .object({
-    Pci: PCISchema.and(z.any().openapi({ description: 'Physical cell ID.' })),
-    Earfcn: EARFCNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Evolved universal terrestrial radio access (E-UTRA) absolute radio frequency channel number (FCN).',
-        }),
-    ),
+    Pci: PCISchema.openapi({ description: 'Physical cell ID.' }),
+    Earfcn: EARFCNSchema.openapi({
+      description:
+        'Evolved universal terrestrial radio access (E-UTRA) absolute radio frequency channel number (FCN).',
+    }),
   })
   .openapi({
     required: ['Pci', 'Earfcn'],
@@ -2146,39 +1853,22 @@ const NRCapableSchema = z.boolean().openapi('NRCapable')
 
 const LteNmrObjSchema = z
   .object({
-    Pci: PCISchema.and(z.any().openapi({ description: 'Physical cell ID.' })),
-    Earfcn: EARFCNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'E-UTRA (Evolved universal terrestrial Radio Access) absolute radio frequency channel Number (EARFCN).',
-        }),
-    ),
-    EutranCid: EutranCidSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'E-UTRAN (Evolved Universal Terrestrial Radio Access Network) cell global identifier (EUTRANCID).',
-        }),
-    ),
-    Rsrp: RSRPSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Signal power of the reference signal received, measured in dBm (decibel-milliwatts).',
-        }),
-    ).exactOptional(),
-    Rsrq: RSRQSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Signal quality of the reference Signal received, measured in decibels (dB).',
-        }),
-    ).exactOptional(),
+    Pci: PCISchema.openapi({ description: 'Physical cell ID.' }),
+    Earfcn: EARFCNSchema.openapi({
+      description:
+        'E-UTRA (Evolved universal terrestrial Radio Access) absolute radio frequency channel Number (EARFCN).',
+    }),
+    EutranCid: EutranCidSchema.openapi({
+      description:
+        'E-UTRAN (Evolved Universal Terrestrial Radio Access Network) cell global identifier (EUTRANCID).',
+    }),
+    Rsrp: RSRPSchema.exactOptional().openapi({
+      description:
+        'Signal power of the reference signal received, measured in dBm (decibel-milliwatts).',
+    }),
+    Rsrq: RSRQSchema.exactOptional().openapi({
+      description: 'Signal quality of the reference Signal received, measured in decibels (dB).',
+    }),
   })
   .openapi({
     required: ['Pci', 'Earfcn', 'EutranCid'],
@@ -2190,50 +1880,33 @@ const LteNmrListSchema = z.array(LteNmrObjSchema).min(1).max(32).openapi('LteNmr
 
 const LteObjSchema = z
   .object({
-    Mcc: MCCSchema.and(z.any().openapi({ description: 'Mobile Country Code.' })),
-    Mnc: MNCSchema.and(z.any().openapi({ description: 'Mobile Network Code.' })),
-    EutranCid: EutranCidSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'E-UTRAN (Evolved Universal Terrestrial Radio Access Network) Cell Global Identifier.',
-        }),
-    ),
-    Tac: TACSchema.and(z.any().openapi({ description: 'LTE tracking area code.' })).exactOptional(),
-    LteLocalId: LteLocalIdSchema.and(
-      z.any().openapi({ description: 'LTE local identification (local ID) information.' }),
-    ).exactOptional(),
-    LteTimingAdvance: LteTimingAdvanceSchema.and(
-      z.any().openapi({ description: 'LTE timing advance.' }),
-    ).exactOptional(),
-    Rsrp: RSRPSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Signal power of the reference signal received, measured in dBm (decibel-milliwatts).',
-        }),
-    ).exactOptional(),
-    Rsrq: RSRQSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Signal quality of the reference Signal received, measured in decibels (dB).',
-        }),
-    ).exactOptional(),
-    NrCapable: NRCapableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameter that determines whether the LTE object is capable of supporting NR (new radio).',
-        }),
-    ).exactOptional(),
-    LteNmr: LteNmrListSchema.and(
-      z.any().openapi({ description: 'LTE object for network measurement reports.' }),
-    ).exactOptional(),
+    Mcc: MCCSchema.openapi({ description: 'Mobile Country Code.' }),
+    Mnc: MNCSchema.openapi({ description: 'Mobile Network Code.' }),
+    EutranCid: EutranCidSchema.openapi({
+      description:
+        'E-UTRAN (Evolved Universal Terrestrial Radio Access Network) Cell Global Identifier.',
+    }),
+    Tac: TACSchema.exactOptional().openapi({ description: 'LTE tracking area code.' }),
+    LteLocalId: LteLocalIdSchema.exactOptional().openapi({
+      description: 'LTE local identification (local ID) information.',
+    }),
+    LteTimingAdvance: LteTimingAdvanceSchema.exactOptional().openapi({
+      description: 'LTE timing advance.',
+    }),
+    Rsrp: RSRPSchema.exactOptional().openapi({
+      description:
+        'Signal power of the reference signal received, measured in dBm (decibel-milliwatts).',
+    }),
+    Rsrq: RSRQSchema.exactOptional().openapi({
+      description: 'Signal quality of the reference Signal received, measured in decibels (dB).',
+    }),
+    NrCapable: NRCapableSchema.exactOptional().openapi({
+      description:
+        'Parameter that determines whether the LTE object is capable of supporting NR (new radio).',
+    }),
+    LteNmr: LteNmrListSchema.exactOptional().openapi({
+      description: 'LTE object for network measurement reports.',
+    }),
   })
   .openapi({ required: ['Mcc', 'Mnc', 'EutranCid'], description: 'LTE object.' })
   .openapi('LteObj')
@@ -2254,17 +1927,11 @@ const CdmaChannelSchema = z.int().min(0).max(4095).openapi('CdmaChannel')
 
 const CdmaLocalIdSchema = z
   .object({
-    PnOffset: PnOffsetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pseudo-noise offset, which is a characteristic of the signal from a cell on a radio tower.',
-        }),
-    ),
-    CdmaChannel: CdmaChannelSchema.and(
-      z.any().openapi({ description: 'CDMA channel information.' }),
-    ),
+    PnOffset: PnOffsetSchema.openapi({
+      description:
+        'Pseudo-noise offset, which is a characteristic of the signal from a cell on a radio tower.',
+    }),
+    CdmaChannel: CdmaChannelSchema.openapi({ description: 'CDMA channel information.' }),
   })
   .openapi({
     required: ['PnOffset', 'CdmaChannel'],
@@ -2281,28 +1948,18 @@ const BaseLngSchema = z.float32().min(-180).max(180).openapi('BaseLng')
 
 const CdmaNmrObjSchema = z
   .object({
-    PnOffset: PnOffsetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pseudo-noise offset, which is a characteristic of the signal from a cell on a radio tower.',
-        }),
-    ),
-    CdmaChannel: CdmaChannelSchema.and(
-      z.any().openapi({ description: 'CDMA channel information.' }),
-    ),
-    PilotPower: PilotPowerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Transmit power level of the pilot signal, measured in dBm (decibel-milliwatts).',
-        }),
-    ).exactOptional(),
-    BaseStationId: BaseStationIdSchema.and(
-      z.any().openapi({ description: 'CDMA base station ID (BSID).' }),
-    ).exactOptional(),
+    PnOffset: PnOffsetSchema.openapi({
+      description:
+        'Pseudo-noise offset, which is a characteristic of the signal from a cell on a radio tower.',
+    }),
+    CdmaChannel: CdmaChannelSchema.openapi({ description: 'CDMA channel information.' }),
+    PilotPower: PilotPowerSchema.exactOptional().openapi({
+      description:
+        'Transmit power level of the pilot signal, measured in dBm (decibel-milliwatts).',
+    }),
+    BaseStationId: BaseStationIdSchema.exactOptional().openapi({
+      description: 'CDMA base station ID (BSID).',
+    }),
   })
   .openapi({
     required: ['PnOffset', 'CdmaChannel'],
@@ -2314,34 +1971,28 @@ const CdmaNmrListSchema = z.array(CdmaNmrObjSchema).min(1).max(32).openapi('Cdma
 
 const CdmaObjSchema = z
   .object({
-    SystemId: SystemIdSchema.and(z.any().openapi({ description: 'CDMA system ID (SID).' })),
-    NetworkId: NetworkIdSchema.and(z.any().openapi({ description: 'CDMA network ID (NID).' })),
-    BaseStationId: BaseStationIdSchema.and(
-      z.any().openapi({ description: 'CDMA base station ID (BSID).' }),
-    ),
-    RegistrationZone: RegistrationZoneSchema.and(
-      z.any().openapi({ description: 'CDMA registration zone (RZ).' }),
-    ).exactOptional(),
-    CdmaLocalId: CdmaLocalIdSchema.and(
-      z.any().openapi({ description: 'CDMA local identification (local ID) parameters.' }),
-    ).exactOptional(),
-    PilotPower: PilotPowerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Transmit power level of the pilot signal, measured in dBm (decibel-milliwatts).',
-        }),
-    ).exactOptional(),
-    BaseLat: BaseLatSchema.and(
-      z.any().openapi({ description: 'CDMA base station latitude in degrees.' }),
-    ).exactOptional(),
-    BaseLng: BaseLngSchema.and(
-      z.any().openapi({ description: 'CDMA base station longitude in degrees.' }),
-    ).exactOptional(),
-    CdmaNmr: CdmaNmrListSchema.and(
-      z.any().openapi({ description: 'CDMA network measurement reports.' }),
-    ).exactOptional(),
+    SystemId: SystemIdSchema.openapi({ description: 'CDMA system ID (SID).' }),
+    NetworkId: NetworkIdSchema.openapi({ description: 'CDMA network ID (NID).' }),
+    BaseStationId: BaseStationIdSchema.openapi({ description: 'CDMA base station ID (BSID).' }),
+    RegistrationZone: RegistrationZoneSchema.exactOptional().openapi({
+      description: 'CDMA registration zone (RZ).',
+    }),
+    CdmaLocalId: CdmaLocalIdSchema.exactOptional().openapi({
+      description: 'CDMA local identification (local ID) parameters.',
+    }),
+    PilotPower: PilotPowerSchema.exactOptional().openapi({
+      description:
+        'Transmit power level of the pilot signal, measured in dBm (decibel-milliwatts).',
+    }),
+    BaseLat: BaseLatSchema.exactOptional().openapi({
+      description: 'CDMA base station latitude in degrees.',
+    }),
+    BaseLng: BaseLngSchema.exactOptional().openapi({
+      description: 'CDMA base station longitude in degrees.',
+    }),
+    CdmaNmr: CdmaNmrListSchema.exactOptional().openapi({
+      description: 'CDMA network measurement reports.',
+    }),
   })
   .openapi({
     required: ['SystemId', 'NetworkId', 'BaseStationId'],
@@ -2367,13 +2018,9 @@ const Use2DSolverSchema = z.boolean().openapi('Use2DSolver')
 
 const SidewalkEventNotificationConfigurationsSchema = z
   .object({
-    AmazonIdEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Denotes whether the Amazon ID event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    AmazonIdEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description: 'Denotes whether the Amazon ID event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description:
@@ -2384,22 +2031,14 @@ const SidewalkEventNotificationConfigurationsSchema = z
 
 const DeviceRegistrationStateEventConfigurationSchema = z
   .object({
-    Sidewalk: SidewalkEventNotificationConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device registration state event configuration object for enabling or disabling Sidewalk related event topics.',
-        }),
-    ).exactOptional(),
-    WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the wireless device ID device registration state event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    Sidewalk: SidewalkEventNotificationConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Device registration state event configuration object for enabling or disabling Sidewalk related event topics.',
+    }),
+    WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description:
+        'Denotes whether the wireless device ID device registration state event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description:
@@ -2410,22 +2049,14 @@ const DeviceRegistrationStateEventConfigurationSchema = z
 
 const ProximityEventConfigurationSchema = z
   .object({
-    Sidewalk: SidewalkEventNotificationConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Proximity event configuration object for enabling or disabling Sidewalk related event topics.',
-        }),
-    ).exactOptional(),
-    WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the wireless device ID proximity event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    Sidewalk: SidewalkEventNotificationConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Proximity event configuration object for enabling or disabling Sidewalk related event topics.',
+    }),
+    WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description:
+        'Denotes whether the wireless device ID proximity event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description: 'Proximity event configuration object for enabling and disabling relevant topics.',
@@ -2435,13 +2066,9 @@ const ProximityEventConfigurationSchema = z
 
 const LoRaWANJoinEventNotificationConfigurationsSchema = z
   .object({
-    DevEuiEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Denotes whether the Dev EUI join event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    DevEuiEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description: 'Denotes whether the Dev EUI join event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description: 'Object for LoRaWAN join resource type event configuration.',
@@ -2451,22 +2078,14 @@ const LoRaWANJoinEventNotificationConfigurationsSchema = z
 
 const JoinEventConfigurationSchema = z
   .object({
-    LoRaWAN: LoRaWANJoinEventNotificationConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Join event configuration object for enabling or disabling LoRaWAN related event topics.',
-        }),
-    ).exactOptional(),
-    WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the wireless device ID join event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    LoRaWAN: LoRaWANJoinEventNotificationConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Join event configuration object for enabling or disabling LoRaWAN related event topics.',
+    }),
+    WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description:
+        'Denotes whether the wireless device ID join event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description: 'Join event configuration object for enabling or disabling topic.',
@@ -2476,14 +2095,10 @@ const JoinEventConfigurationSchema = z
 
 const LoRaWANConnectionStatusEventNotificationConfigurationsSchema = z
   .object({
-    GatewayEuiEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the gateway EUI connection status event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    GatewayEuiEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description:
+        'Denotes whether the gateway EUI connection status event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description: 'Object for LoRaWAN connection status resource type event configuration.',
@@ -2493,22 +2108,14 @@ const LoRaWANConnectionStatusEventNotificationConfigurationsSchema = z
 
 const ConnectionStatusEventConfigurationSchema = z
   .object({
-    LoRaWAN: LoRaWANConnectionStatusEventNotificationConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Connection status event configuration object for enabling or disabling LoRaWAN related event topics.',
-        }),
-    ).exactOptional(),
-    WirelessGatewayIdEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the wireless gateway ID connection status event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    LoRaWAN: LoRaWANConnectionStatusEventNotificationConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Connection status event configuration object for enabling or disabling LoRaWAN related event topics.',
+    }),
+    WirelessGatewayIdEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description:
+        'Denotes whether the wireless gateway ID connection status event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description: 'Connection status event configuration object for enabling or disabling topic.',
@@ -2519,14 +2126,10 @@ const ConnectionStatusEventConfigurationSchema = z
 const MessageDeliveryStatusEventConfigurationSchema = z
   .object({
     Sidewalk: SidewalkEventNotificationConfigurationsSchema.exactOptional(),
-    WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Denotes whether the wireless device ID message delivery status event topic is enabled or disabled.',
-        }),
-    ).exactOptional(),
+    WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.exactOptional().openapi({
+      description:
+        'Denotes whether the wireless device ID message delivery status event topic is enabled or disabled.',
+    }),
   })
   .openapi({
     description:
@@ -2537,25 +2140,22 @@ const MessageDeliveryStatusEventConfigurationSchema = z
 
 const GetResourceEventConfigurationResponseSchema = z
   .object({
-    DeviceRegistrationState: DeviceRegistrationStateEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Event configuration for the device registration state event.' }),
-    ).exactOptional(),
-    Proximity: ProximityEventConfigurationSchema.and(
-      z.any().openapi({ description: 'Event configuration for the proximity event.' }),
-    ).exactOptional(),
-    Join: JoinEventConfigurationSchema.and(
-      z.any().openapi({ description: 'Event configuration for the join event.' }),
-    ).exactOptional(),
-    ConnectionStatus: ConnectionStatusEventConfigurationSchema.and(
-      z.any().openapi({ description: 'Event configuration for the connection status event.' }),
-    ).exactOptional(),
-    MessageDeliveryStatus: MessageDeliveryStatusEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Event configuration for the message delivery status event.' }),
-    ).exactOptional(),
+    DeviceRegistrationState:
+      DeviceRegistrationStateEventConfigurationSchema.exactOptional().openapi({
+        description: 'Event configuration for the device registration state event.',
+      }),
+    Proximity: ProximityEventConfigurationSchema.exactOptional().openapi({
+      description: 'Event configuration for the proximity event.',
+    }),
+    Join: JoinEventConfigurationSchema.exactOptional().openapi({
+      description: 'Event configuration for the join event.',
+    }),
+    ConnectionStatus: ConnectionStatusEventConfigurationSchema.exactOptional().openapi({
+      description: 'Event configuration for the connection status event.',
+    }),
+    MessageDeliveryStatus: MessageDeliveryStatusEventConfigurationSchema.exactOptional().openapi({
+      description: 'Event configuration for the message delivery status event.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourceEventConfigurationResponse')
@@ -2567,14 +2167,10 @@ const GetResourceLogLevelResponseSchema = z
 
 const GetResourcePositionResponseSchema = z
   .object({
-    GeoJsonPayload: GeoJsonPayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that\'s used to encode geographic data structures. For more information, see <a href="https://geojson.org/">GeoJSON</a>.',
-        }),
-    ).exactOptional(),
+    GeoJsonPayload: GeoJsonPayloadSchema.exactOptional().openapi({
+      description:
+        'The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that\'s used to encode geographic data structures. For more information, see <a href="https://geojson.org/">GeoJSON</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourcePositionResponse')
@@ -2594,15 +2190,15 @@ const CertificatePEMSchema = z
 
 const GetServiceEndpointResponseSchema = z
   .object({
-    ServiceType: WirelessGatewayServiceTypeSchema.and(
-      z.any().openapi({ description: "The endpoint's service type." }),
-    ).exactOptional(),
-    ServiceEndpoint: EndPointSchema.and(
-      z.any().openapi({ description: 'The service endpoint value.' }),
-    ).exactOptional(),
-    ServerTrust: CertificatePEMSchema.and(
-      z.any().openapi({ description: 'The Root CA of the server trust certificate.' }),
-    ).exactOptional(),
+    ServiceType: WirelessGatewayServiceTypeSchema.exactOptional().openapi({
+      description: "The endpoint's service type.",
+    }),
+    ServiceEndpoint: EndPointSchema.exactOptional().openapi({
+      description: 'The service endpoint value.',
+    }),
+    ServerTrust: CertificatePEMSchema.exactOptional().openapi({
+      description: 'The Root CA of the server trust certificate.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceEndpointResponse')
@@ -2643,85 +2239,69 @@ const MinGwDiversitySchema = z.int().min(1).max(100).openapi('MinGwDiversity')
 
 const LoRaWANGetServiceProfileInfoSchema = z
   .object({
-    UlRate: UlRateSchema.and(z.any().openapi({ description: 'The ULRate value.' })).exactOptional(),
-    UlBucketSize: UlBucketSizeSchema.and(
-      z.any().openapi({ description: 'The ULBucketSize value.' }),
-    ).exactOptional(),
-    UlRatePolicy: UlRatePolicySchema.and(
-      z.any().openapi({ description: 'The ULRatePolicy value.' }),
-    ).exactOptional(),
-    DlRate: DlRateSchema.and(z.any().openapi({ description: 'The DLRate value.' })).exactOptional(),
-    DlBucketSize: DlBucketSizeSchema.and(
-      z.any().openapi({ description: 'The DLBucketSize value.' }),
-    ).exactOptional(),
-    DlRatePolicy: DlRatePolicySchema.and(
-      z.any().openapi({ description: 'The DLRatePolicy value.' }),
-    ).exactOptional(),
-    AddGwMetadata: AddGwMetadataSchema.and(
-      z.any().openapi({ description: 'The AddGWMetaData value.' }),
-    ).exactOptional(),
-    DevStatusReqFreq: DevStatusReqFreqSchema.and(
-      z.any().openapi({ description: 'The DevStatusReqFreq value.' }),
-    ).exactOptional(),
-    ReportDevStatusBattery: ReportDevStatusBatterySchema.and(
-      z.any().openapi({ description: 'The ReportDevStatusBattery value.' }),
-    ).exactOptional(),
-    ReportDevStatusMargin: ReportDevStatusMarginSchema.and(
-      z.any().openapi({ description: 'The ReportDevStatusMargin value.' }),
-    ).exactOptional(),
-    DrMin: DrMinSchema.and(z.any().openapi({ description: 'The DRMin value.' })).exactOptional(),
-    DrMax: DrMaxSchema.and(z.any().openapi({ description: 'The DRMax value.' })).exactOptional(),
-    ChannelMask: ChannelMaskSchema.and(
-      z.any().openapi({ description: 'The ChannelMask value.' }),
-    ).exactOptional(),
-    PrAllowed: PrAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The PRAllowed value that describes whether passive roaming is allowed.',
-        }),
-    ).exactOptional(),
-    HrAllowed: HrAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The HRAllowed value that describes whether handover roaming is allowed.',
-        }),
-    ).exactOptional(),
-    RaAllowed: RaAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The RAAllowed value that describes whether roaming activation is allowed.',
-        }),
-    ).exactOptional(),
-    NwkGeoLoc: NwkGeoLocSchema.and(
-      z.any().openapi({ description: 'The NwkGeoLoc value.' }),
-    ).exactOptional(),
-    TargetPer: TargetPerSchema.and(
-      z.any().openapi({ description: 'The TargetPER value.' }),
-    ).exactOptional(),
-    MinGwDiversity: MinGwDiversitySchema.and(
-      z.any().openapi({ description: 'The MinGwDiversity value.' }),
-    ).exactOptional(),
+    UlRate: UlRateSchema.exactOptional().openapi({ description: 'The ULRate value.' }),
+    UlBucketSize: UlBucketSizeSchema.exactOptional().openapi({
+      description: 'The ULBucketSize value.',
+    }),
+    UlRatePolicy: UlRatePolicySchema.exactOptional().openapi({
+      description: 'The ULRatePolicy value.',
+    }),
+    DlRate: DlRateSchema.exactOptional().openapi({ description: 'The DLRate value.' }),
+    DlBucketSize: DlBucketSizeSchema.exactOptional().openapi({
+      description: 'The DLBucketSize value.',
+    }),
+    DlRatePolicy: DlRatePolicySchema.exactOptional().openapi({
+      description: 'The DLRatePolicy value.',
+    }),
+    AddGwMetadata: AddGwMetadataSchema.exactOptional().openapi({
+      description: 'The AddGWMetaData value.',
+    }),
+    DevStatusReqFreq: DevStatusReqFreqSchema.exactOptional().openapi({
+      description: 'The DevStatusReqFreq value.',
+    }),
+    ReportDevStatusBattery: ReportDevStatusBatterySchema.exactOptional().openapi({
+      description: 'The ReportDevStatusBattery value.',
+    }),
+    ReportDevStatusMargin: ReportDevStatusMarginSchema.exactOptional().openapi({
+      description: 'The ReportDevStatusMargin value.',
+    }),
+    DrMin: DrMinSchema.exactOptional().openapi({ description: 'The DRMin value.' }),
+    DrMax: DrMaxSchema.exactOptional().openapi({ description: 'The DRMax value.' }),
+    ChannelMask: ChannelMaskSchema.exactOptional().openapi({
+      description: 'The ChannelMask value.',
+    }),
+    PrAllowed: PrAllowedSchema.exactOptional().openapi({
+      description: 'The PRAllowed value that describes whether passive roaming is allowed.',
+    }),
+    HrAllowed: HrAllowedSchema.exactOptional().openapi({
+      description: 'The HRAllowed value that describes whether handover roaming is allowed.',
+    }),
+    RaAllowed: RaAllowedSchema.exactOptional().openapi({
+      description: 'The RAAllowed value that describes whether roaming activation is allowed.',
+    }),
+    NwkGeoLoc: NwkGeoLocSchema.exactOptional().openapi({ description: 'The NwkGeoLoc value.' }),
+    TargetPer: TargetPerSchema.exactOptional().openapi({ description: 'The TargetPER value.' }),
+    MinGwDiversity: MinGwDiversitySchema.exactOptional().openapi({
+      description: 'The MinGwDiversity value.',
+    }),
   })
   .openapi({ description: 'LoRaWANGetServiceProfileInfo object.', required: [] })
   .openapi('LoRaWANGetServiceProfileInfo')
 
 const GetServiceProfileResponseSchema = z
   .object({
-    Arn: ServiceProfileArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    Name: ServiceProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Id: ServiceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the service profile.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANGetServiceProfileInfoSchema.and(
-      z.any().openapi({ description: 'Information about the service profile.' }),
-    ).exactOptional(),
+    Arn: ServiceProfileArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    Name: ServiceProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Id: ServiceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the service profile.',
+    }),
+    LoRaWAN: LoRaWANGetServiceProfileInfoSchema.exactOptional().openapi({
+      description: 'Information about the service profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceProfileResponse')
@@ -2734,25 +2314,25 @@ const ThingArnSchema = z.string().openapi('ThingArn')
 
 const LoRaWANDeviceSchema = z
   .object({
-    DevEui: DevEuiSchema.and(z.any().openapi({ description: 'The DevEUI value.' })).exactOptional(),
-    DeviceProfileId: DeviceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the device profile for the new wireless device.' }),
-    ).exactOptional(),
-    ServiceProfileId: ServiceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the service profile.' }),
-    ).exactOptional(),
-    OtaaV1_1: OtaaV1_1Schema.and(
-      z.any().openapi({ description: 'OTAA device object for v1.1 for create APIs' }),
-    ).exactOptional(),
-    OtaaV1_0_x: OtaaV1_0XSchema.and(
-      z.any().openapi({ description: 'OTAA device object for create APIs for v1.0.x' }),
-    ).exactOptional(),
-    AbpV1_1: AbpV1_1Schema.and(
-      z.any().openapi({ description: 'ABP device object for create APIs for v1.1' }),
-    ).exactOptional(),
-    AbpV1_0_x: AbpV1_0XSchema.and(
-      z.any().openapi({ description: 'LoRaWAN object for create APIs' }),
-    ).exactOptional(),
+    DevEui: DevEuiSchema.exactOptional().openapi({ description: 'The DevEUI value.' }),
+    DeviceProfileId: DeviceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the device profile for the new wireless device.',
+    }),
+    ServiceProfileId: ServiceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the service profile.',
+    }),
+    OtaaV1_1: OtaaV1_1Schema.exactOptional().openapi({
+      description: 'OTAA device object for v1.1 for create APIs',
+    }),
+    OtaaV1_0_x: OtaaV1_0XSchema.exactOptional().openapi({
+      description: 'OTAA device object for create APIs for v1.0.x',
+    }),
+    AbpV1_1: AbpV1_1Schema.exactOptional().openapi({
+      description: 'ABP device object for create APIs for v1.1',
+    }),
+    AbpV1_0_x: AbpV1_0XSchema.exactOptional().openapi({
+      description: 'LoRaWAN object for create APIs',
+    }),
     FPorts: FPortsSchema.exactOptional(),
   })
   .openapi({ description: 'LoRaWAN object for create functions.', required: [] })
@@ -2780,12 +2360,12 @@ const CertificateValueSchema = z
 
 const CertificateListSchema = z
   .object({
-    SigningAlg: SigningAlgSchema.and(
-      z.any().openapi({ description: 'The certificate chain algorithm provided by sidewalk.' }),
-    ),
-    Value: CertificateValueSchema.and(
-      z.any().openapi({ description: 'The value of the chosen sidewalk certificate.' }),
-    ),
+    SigningAlg: SigningAlgSchema.openapi({
+      description: 'The certificate chain algorithm provided by sidewalk.',
+    }),
+    Value: CertificateValueSchema.openapi({
+      description: 'The value of the chosen sidewalk certificate.',
+    }),
   })
   .openapi({ required: ['SigningAlg', 'Value'], description: 'List of sidewalk certificates.' })
   .openapi('CertificateList')
@@ -2804,34 +2384,27 @@ const WirelessDeviceSidewalkStatusSchema = z
 const SidewalkDeviceSchema = z
   .object({
     AmazonId: AmazonIdSchema.exactOptional(),
-    SidewalkId: SidewalkIdSchema.and(
-      z.any().openapi({ description: 'The sidewalk device identification.' }),
-    ).exactOptional(),
-    SidewalkManufacturingSn: SidewalkManufacturingSnSchema.and(
-      z.any().openapi({ description: 'The Sidewalk manufacturing series number.' }),
-    ).exactOptional(),
-    DeviceCertificates: DeviceCertificateListSchema.and(
-      z.any().openapi({ description: 'The sidewalk device certificates for Ed25519 and P256r1.' }),
-    ).exactOptional(),
-    PrivateKeys: PrivateKeysListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Sidewalk device private keys that will be used for onboarding the device.',
-        }),
-    ).exactOptional(),
-    DeviceProfileId: DeviceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Sidewalk device profile.' }),
-    ).exactOptional(),
-    CertificateId: DakCertificateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Sidewalk device profile.' }),
-    ).exactOptional(),
-    Status: WirelessDeviceSidewalkStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Sidewalk device status, such as provisioned or registered.' }),
-    ).exactOptional(),
+    SidewalkId: SidewalkIdSchema.exactOptional().openapi({
+      description: 'The sidewalk device identification.',
+    }),
+    SidewalkManufacturingSn: SidewalkManufacturingSnSchema.exactOptional().openapi({
+      description: 'The Sidewalk manufacturing series number.',
+    }),
+    DeviceCertificates: DeviceCertificateListSchema.exactOptional().openapi({
+      description: 'The sidewalk device certificates for Ed25519 and P256r1.',
+    }),
+    PrivateKeys: PrivateKeysListSchema.exactOptional().openapi({
+      description: 'The Sidewalk device private keys that will be used for onboarding the device.',
+    }),
+    DeviceProfileId: DeviceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the Sidewalk device profile.',
+    }),
+    CertificateId: DakCertificateIdSchema.exactOptional().openapi({
+      description: 'The ID of the Sidewalk device profile.',
+    }),
+    Status: WirelessDeviceSidewalkStatusSchema.exactOptional().openapi({
+      description: 'The Sidewalk device status, such as provisioned or registered.',
+    }),
   })
   .openapi({ description: 'Sidewalk device object.', required: [] })
   .openapi('SidewalkDevice')
@@ -2842,51 +2415,41 @@ const PositioningConfigStatusSchema = z
 
 const GetWirelessDeviceResponseSchema = z
   .object({
-    Type: WirelessDeviceTypeSchema.and(
-      z.any().openapi({ description: 'The wireless device type.' }),
-    ).exactOptional(),
-    Name: WirelessDeviceNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the resource.' }),
-    ).exactOptional(),
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the destination to which the device is assigned.' }),
-    ).exactOptional(),
-    Id: WirelessDeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless device.' }),
-    ).exactOptional(),
-    Arn: WirelessDeviceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    ThingName: ThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the thing associated with the wireless device. The value is empty if a thing isn't associated with the device.",
-        }),
-    ).exactOptional(),
-    ThingArn: ThingArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the thing associated with the wireless device.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANDeviceSchema.and(
-      z.any().openapi({ description: 'Information about the wireless device.' }),
-    ).exactOptional(),
-    Sidewalk: SidewalkDeviceSchema.and(
-      z.any().openapi({ description: 'Sidewalk device object.' }),
-    ).exactOptional(),
-    Positioning: PositioningConfigStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'FPort values for the GNSS, stream, and ClockSync functions of the positioning information.',
-        }),
-    ).exactOptional(),
+    Type: WirelessDeviceTypeSchema.exactOptional().openapi({
+      description: 'The wireless device type.',
+    }),
+    Name: WirelessDeviceNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the resource.',
+    }),
+    DestinationName: DestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the destination to which the device is assigned.',
+    }),
+    Id: WirelessDeviceIdSchema.exactOptional().openapi({
+      description: 'The ID of the wireless device.',
+    }),
+    Arn: WirelessDeviceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    ThingName: ThingNameSchema.exactOptional().openapi({
+      description:
+        "The name of the thing associated with the wireless device. The value is empty if a thing isn't associated with the device.",
+    }),
+    ThingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing associated with the wireless device.',
+    }),
+    LoRaWAN: LoRaWANDeviceSchema.exactOptional().openapi({
+      description: 'Information about the wireless device.',
+    }),
+    Sidewalk: SidewalkDeviceSchema.exactOptional().openapi({
+      description: 'Sidewalk device object.',
+    }),
+    Positioning: PositioningConfigStatusSchema.exactOptional().openapi({
+      description:
+        'FPort values for the GNSS, stream, and ClockSync functions of the positioning information.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessDeviceResponse')
@@ -2905,19 +2468,13 @@ const RoleSchema = z.string().max(2048).openapi('Role')
 
 const SidewalkGetStartImportInfoSchema = z
   .object({
-    DeviceCreationFileList: DeviceCreationFileListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'List of Sidewalk devices that are added to the import task.' }),
-    ).exactOptional(),
-    Role: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.',
-        }),
-    ).exactOptional(),
+    DeviceCreationFileList: DeviceCreationFileListSchema.exactOptional().openapi({
+      description: 'List of Sidewalk devices that are added to the import task.',
+    }),
+    Role: RoleSchema.exactOptional().openapi({
+      description:
+        'The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.',
+    }),
   })
   .openapi({
     description:
@@ -2938,73 +2495,45 @@ const ImportedWirelessDeviceCountSchema = z.int().openapi('ImportedWirelessDevic
 
 const GetWirelessDeviceImportTaskResponseSchema = z
   .object({
-    Id: ImportTaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the import task for which information is retrieved.',
-        }),
-    ).exactOptional(),
-    Arn: ImportTaskArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the import task.' }),
-    ).exactOptional(),
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the destination that's assigned to the wireless devices in the import task.",
-        }),
-    ).exactOptional(),
-    Sidewalk: SidewalkGetStartImportInfoSchema.and(
-      z.any().openapi({ description: 'The Sidewalk-related information about an import task.' }),
-    ).exactOptional(),
-    CreationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time at which the import task was created.' }),
-    ).exactOptional(),
-    Status: ImportTaskStatusSchema.and(
-      z.any().openapi({ description: 'The import task status.' }),
-    ).exactOptional(),
-    StatusReason: StatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason for the provided status information, such as a validation error that causes the import task to fail.',
-        }),
-    ).exactOptional(),
-    InitializedImportedDeviceCount: ImportedWirelessDeviceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of devices in the import task that are waiting for the control log to start processing.',
-        }),
-    ).exactOptional(),
-    PendingImportedDeviceCount: ImportedWirelessDeviceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of devices in the import task that are waiting in the import task queue to be onboarded.',
-        }),
-    ).exactOptional(),
-    OnboardedImportedDeviceCount: ImportedWirelessDeviceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of devices in the import task that have been onboarded to the import task.',
-        }),
-    ).exactOptional(),
-    FailedImportedDeviceCount: ImportedWirelessDeviceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of devices in the import task that failed to onboard to the import task.',
-        }),
-    ).exactOptional(),
+    Id: ImportTaskIdSchema.exactOptional().openapi({
+      description: 'The identifier of the import task for which information is retrieved.',
+    }),
+    Arn: ImportTaskArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the import task.',
+    }),
+    DestinationName: DestinationNameSchema.exactOptional().openapi({
+      description:
+        "The name of the destination that's assigned to the wireless devices in the import task.",
+    }),
+    Sidewalk: SidewalkGetStartImportInfoSchema.exactOptional().openapi({
+      description: 'The Sidewalk-related information about an import task.',
+    }),
+    CreationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The time at which the import task was created.',
+    }),
+    Status: ImportTaskStatusSchema.exactOptional().openapi({
+      description: 'The import task status.',
+    }),
+    StatusReason: StatusReasonSchema.exactOptional().openapi({
+      description:
+        'The reason for the provided status information, such as a validation error that causes the import task to fail.',
+    }),
+    InitializedImportedDeviceCount: ImportedWirelessDeviceCountSchema.exactOptional().openapi({
+      description:
+        'The number of devices in the import task that are waiting for the control log to start processing.',
+    }),
+    PendingImportedDeviceCount: ImportedWirelessDeviceCountSchema.exactOptional().openapi({
+      description:
+        'The number of devices in the import task that are waiting in the import task queue to be onboarded.',
+    }),
+    OnboardedImportedDeviceCount: ImportedWirelessDeviceCountSchema.exactOptional().openapi({
+      description:
+        'The number of devices in the import task that have been onboarded to the import task.',
+    }),
+    FailedImportedDeviceCount: ImportedWirelessDeviceCountSchema.exactOptional().openapi({
+      description:
+        'The number of devices in the import task that failed to onboard to the import task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessDeviceImportTaskResponse')
@@ -3015,11 +2544,11 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const LoRaWANGatewayMetadataSchema = z
   .object({
-    GatewayEui: GatewayEuiSchema.and(
-      z.any().openapi({ description: "The gateway's EUI value." }),
-    ).exactOptional(),
-    Snr: DoubleSchema.and(z.any().openapi({ description: 'The SNR value.' })).exactOptional(),
-    Rssi: DoubleSchema.and(z.any().openapi({ description: 'The RSSI value.' })).exactOptional(),
+    GatewayEui: GatewayEuiSchema.exactOptional().openapi({
+      description: "The gateway's EUI value.",
+    }),
+    Snr: DoubleSchema.exactOptional().openapi({ description: 'The SNR value.' }),
+    Rssi: DoubleSchema.exactOptional().openapi({ description: 'The RSSI value.' }),
   })
   .openapi({ description: 'LoRaWAN gateway metatdata.', required: [] })
   .openapi('LoRaWANGatewayMetadata')
@@ -3030,20 +2559,18 @@ const LoRaWANGatewayMetadataListSchema = z
 
 const LoRaWANDeviceMetadataSchema = z
   .object({
-    DevEui: DevEuiSchema.and(z.any().openapi({ description: 'The DevEUI value.' })).exactOptional(),
-    FPort: IntegerSchema.and(z.any().openapi({ description: 'The FPort value.' })).exactOptional(),
-    DataRate: IntegerSchema.and(
-      z.any().openapi({ description: 'The DataRate value.' }),
-    ).exactOptional(),
-    Frequency: IntegerSchema.and(
-      z.any().openapi({ description: "The device's channel frequency in Hz." }),
-    ).exactOptional(),
-    Timestamp: ISODateTimeStringSchema.and(
-      z.any().openapi({ description: 'The date and time of the metadata.' }),
-    ).exactOptional(),
-    Gateways: LoRaWANGatewayMetadataListSchema.and(
-      z.any().openapi({ description: 'Information about the gateways accessed by the device.' }),
-    ).exactOptional(),
+    DevEui: DevEuiSchema.exactOptional().openapi({ description: 'The DevEUI value.' }),
+    FPort: IntegerSchema.exactOptional().openapi({ description: 'The FPort value.' }),
+    DataRate: IntegerSchema.exactOptional().openapi({ description: 'The DataRate value.' }),
+    Frequency: IntegerSchema.exactOptional().openapi({
+      description: "The device's channel frequency in Hz.",
+    }),
+    Timestamp: ISODateTimeStringSchema.exactOptional().openapi({
+      description: 'The date and time of the metadata.',
+    }),
+    Gateways: LoRaWANGatewayMetadataListSchema.exactOptional().openapi({
+      description: 'Information about the gateways accessed by the device.',
+    }),
   })
   .openapi({ description: 'LoRaWAN device metatdata.', required: [] })
   .openapi('LoRaWANDeviceMetadata')
@@ -3065,38 +2592,34 @@ const DeviceStateSchema = z
 
 const SidewalkDeviceMetadataSchema = z
   .object({
-    Rssi: IntegerSchema.and(z.any().openapi({ description: 'The RSSI value.' })).exactOptional(),
-    BatteryLevel: BatteryLevelSchema.and(
-      z.any().openapi({ description: 'Sidewalk device battery level.' }),
-    ).exactOptional(),
-    Event: EventSchema.and(
-      z.any().openapi({ description: 'Sidewalk device status notification.' }),
-    ).exactOptional(),
-    DeviceState: DeviceStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Device state defines the device status of sidewalk device.' }),
-    ).exactOptional(),
+    Rssi: IntegerSchema.exactOptional().openapi({ description: 'The RSSI value.' }),
+    BatteryLevel: BatteryLevelSchema.exactOptional().openapi({
+      description: 'Sidewalk device battery level.',
+    }),
+    Event: EventSchema.exactOptional().openapi({
+      description: 'Sidewalk device status notification.',
+    }),
+    DeviceState: DeviceStateSchema.exactOptional().openapi({
+      description: 'Device state defines the device status of sidewalk device.',
+    }),
   })
   .openapi({ description: 'MetaData for Sidewalk device.', required: [] })
   .openapi('SidewalkDeviceMetadata')
 
 const GetWirelessDeviceStatisticsResponseSchema = z
   .object({
-    WirelessDeviceId: WirelessDeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless device.' }),
-    ).exactOptional(),
-    LastUplinkReceivedAt: ISODateTimeStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the most recent uplink was received.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANDeviceMetadataSchema.and(
-      z.any().openapi({ description: "Information about the wireless device's operations." }),
-    ).exactOptional(),
-    Sidewalk: SidewalkDeviceMetadataSchema.and(
-      z.any().openapi({ description: 'MetaData for Sidewalk device.' }),
-    ).exactOptional(),
+    WirelessDeviceId: WirelessDeviceIdSchema.exactOptional().openapi({
+      description: 'The ID of the wireless device.',
+    }),
+    LastUplinkReceivedAt: ISODateTimeStringSchema.exactOptional().openapi({
+      description: 'The date and time when the most recent uplink was received.',
+    }),
+    LoRaWAN: LoRaWANDeviceMetadataSchema.exactOptional().openapi({
+      description: "Information about the wireless device's operations.",
+    }),
+    Sidewalk: SidewalkDeviceMetadataSchema.exactOptional().openapi({
+      description: 'MetaData for Sidewalk device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessDeviceStatisticsResponse')
@@ -3105,101 +2628,79 @@ const WirelessGatewayNameSchema = z.string().max(256).openapi('WirelessGatewayNa
 
 const LoRaWANGatewaySchema = z
   .object({
-    GatewayEui: GatewayEuiSchema.and(
-      z.any().openapi({ description: "The gateway's EUI value." }),
-    ).exactOptional(),
-    RfRegion: RfRegionSchema.and(
-      z.any().openapi({ description: 'The frequency band (RFRegion) value.' }),
-    ).exactOptional(),
+    GatewayEui: GatewayEuiSchema.exactOptional().openapi({
+      description: "The gateway's EUI value.",
+    }),
+    RfRegion: RfRegionSchema.exactOptional().openapi({
+      description: 'The frequency band (RFRegion) value.',
+    }),
     JoinEuiFilters: JoinEuiFiltersSchema.exactOptional(),
     NetIdFilters: NetIdFiltersSchema.exactOptional(),
     SubBands: SubBandsSchema.exactOptional(),
-    Beaconing: BeaconingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Beaconing object information, which consists of the data rate and frequency parameters.',
-        }),
-    ).exactOptional(),
-    MaxEirp: GatewayMaxEirpSchema.and(
-      z.any().openapi({ description: 'The MaxEIRP value.' }),
-    ).exactOptional(),
+    Beaconing: BeaconingSchema.exactOptional().openapi({
+      description:
+        'Beaconing object information, which consists of the data rate and frequency parameters.',
+    }),
+    MaxEirp: GatewayMaxEirpSchema.exactOptional().openapi({ description: 'The MaxEIRP value.' }),
   })
   .openapi({ description: 'LoRaWANGateway object.', required: [] })
   .openapi('LoRaWANGateway')
 
 const GetWirelessGatewayResponseSchema = z
   .object({
-    Name: WirelessGatewayNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Id: WirelessGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless gateway.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the resource.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANGatewaySchema.and(
-      z.any().openapi({ description: 'Information about the wireless gateway.' }),
-    ).exactOptional(),
-    Arn: WirelessGatewayArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    ThingName: ThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the thing associated with the wireless gateway. The value is empty if a thing isn't associated with the gateway.",
-        }),
-    ).exactOptional(),
-    ThingArn: ThingArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the thing associated with the wireless gateway.' }),
-    ).exactOptional(),
+    Name: WirelessGatewayNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Id: WirelessGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the wireless gateway.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the resource.',
+    }),
+    LoRaWAN: LoRaWANGatewaySchema.exactOptional().openapi({
+      description: 'Information about the wireless gateway.',
+    }),
+    Arn: WirelessGatewayArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    ThingName: ThingNameSchema.exactOptional().openapi({
+      description:
+        "The name of the thing associated with the wireless gateway. The value is empty if a thing isn't associated with the gateway.",
+    }),
+    ThingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing associated with the wireless gateway.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessGatewayResponse')
 
 const GetWirelessGatewayCertificateResponseSchema = z
   .object({
-    IotCertificateId: IotCertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the certificate associated with the wireless gateway.',
-        }),
-    ).exactOptional(),
-    LoRaWANNetworkServerCertificateId: IotCertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the certificate that is associated with the wireless gateway and used for the LoRaWANNetworkServer endpoint.',
-        }),
-    ).exactOptional(),
+    IotCertificateId: IotCertificateIdSchema.exactOptional().openapi({
+      description: 'The ID of the certificate associated with the wireless gateway.',
+    }),
+    LoRaWANNetworkServerCertificateId: IotCertificateIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the certificate that is associated with the wireless gateway and used for the LoRaWANNetworkServer endpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessGatewayCertificateResponse')
 
 const LoRaWANGatewayCurrentVersionSchema = z
   .object({
-    CurrentVersion: LoRaWANGatewayVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the gateways that should receive the update.' }),
-    ).exactOptional(),
+    CurrentVersion: LoRaWANGatewayVersionSchema.exactOptional().openapi({
+      description: 'The version of the gateways that should receive the update.',
+    }),
   })
   .openapi({ description: 'LoRaWANGatewayCurrentVersion object.', required: [] })
   .openapi('LoRaWANGatewayCurrentVersion')
 
 const GetWirelessGatewayFirmwareInformationResponseSchema = z
   .object({
-    LoRaWAN: LoRaWANGatewayCurrentVersionSchema.and(
-      z.any().openapi({ description: "Information about the wireless gateway's firmware." }),
-    ).exactOptional(),
+    LoRaWAN: LoRaWANGatewayCurrentVersionSchema.exactOptional().openapi({
+      description: "Information about the wireless gateway's firmware.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessGatewayFirmwareInformationResponse')
@@ -3208,40 +2709,36 @@ const ConnectionStatusSchema = z.enum(['Connected', 'Disconnected']).openapi('Co
 
 const GetWirelessGatewayStatisticsResponseSchema = z
   .object({
-    WirelessGatewayId: WirelessGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless gateway.' }),
-    ).exactOptional(),
-    LastUplinkReceivedAt: ISODateTimeStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the most recent uplink was received.' }),
-    ).exactOptional(),
-    ConnectionStatus: ConnectionStatusSchema.and(
-      z.any().openapi({ description: 'The connection status of the wireless gateway.' }),
-    ).exactOptional(),
+    WirelessGatewayId: WirelessGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the wireless gateway.',
+    }),
+    LastUplinkReceivedAt: ISODateTimeStringSchema.exactOptional().openapi({
+      description: 'The date and time when the most recent uplink was received.',
+    }),
+    ConnectionStatus: ConnectionStatusSchema.exactOptional().openapi({
+      description: 'The connection status of the wireless gateway.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessGatewayStatisticsResponse')
 
 const GetWirelessGatewayTaskResponseSchema = z
   .object({
-    WirelessGatewayId: WirelessGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless gateway.' }),
-    ).exactOptional(),
-    WirelessGatewayTaskDefinitionId: WirelessGatewayTaskDefinitionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the WirelessGatewayTask.' }),
-    ).exactOptional(),
-    LastUplinkReceivedAt: ISODateTimeStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the most recent uplink was received.' }),
-    ).exactOptional(),
-    TaskCreatedAt: ISODateTimeStringSchema.and(
-      z.any().openapi({ description: 'The date and time when the task was created.' }),
-    ).exactOptional(),
-    Status: WirelessGatewayTaskStatusSchema.and(
-      z.any().openapi({ description: 'The status of the request.' }),
-    ).exactOptional(),
+    WirelessGatewayId: WirelessGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the wireless gateway.',
+    }),
+    WirelessGatewayTaskDefinitionId: WirelessGatewayTaskDefinitionIdSchema.exactOptional().openapi({
+      description: 'The ID of the WirelessGatewayTask.',
+    }),
+    LastUplinkReceivedAt: ISODateTimeStringSchema.exactOptional().openapi({
+      description: 'The date and time when the most recent uplink was received.',
+    }),
+    TaskCreatedAt: ISODateTimeStringSchema.exactOptional().openapi({
+      description: 'The date and time when the task was created.',
+    }),
+    Status: WirelessGatewayTaskStatusSchema.exactOptional().openapi({
+      description: 'The status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessGatewayTaskResponse')
@@ -3252,40 +2749,34 @@ const WirelessGatewayTaskNameSchema = z.string().min(1).max(2048).openapi('Wirel
 
 const UpdateWirelessGatewayTaskCreateSchema = z
   .object({
-    UpdateDataSource: UpdateDataSourceSchema.and(
-      z.any().openapi({ description: 'The link to the S3 bucket.' }),
-    ).exactOptional(),
-    UpdateDataRole: UpdateDataSourceSchema.and(
-      z.any().openapi({ description: 'The IAM role used to read data from the S3 bucket.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANUpdateGatewayTaskCreateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The properties that relate to the LoRaWAN wireless gateway.' }),
-    ).exactOptional(),
+    UpdateDataSource: UpdateDataSourceSchema.exactOptional().openapi({
+      description: 'The link to the S3 bucket.',
+    }),
+    UpdateDataRole: UpdateDataSourceSchema.exactOptional().openapi({
+      description: 'The IAM role used to read data from the S3 bucket.',
+    }),
+    LoRaWAN: LoRaWANUpdateGatewayTaskCreateSchema.exactOptional().openapi({
+      description: 'The properties that relate to the LoRaWAN wireless gateway.',
+    }),
   })
   .openapi({ description: 'UpdateWirelessGatewayTaskCreate object.', required: [] })
   .openapi('UpdateWirelessGatewayTaskCreate')
 
 const GetWirelessGatewayTaskDefinitionResponseSchema = z
   .object({
-    AutoCreateTasks: AutoCreateTasksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to automatically create tasks using this task definition for all gateways with the specified current version. If <code>false</code>, the task must me created by calling <code>CreateWirelessGatewayTask</code>.',
-        }),
-    ).exactOptional(),
-    Name: WirelessGatewayTaskNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Update: UpdateWirelessGatewayTaskCreateSchema.and(
-      z.any().openapi({ description: 'Information about the gateways to update.' }),
-    ).exactOptional(),
-    Arn: WirelessGatewayTaskDefinitionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
+    AutoCreateTasks: AutoCreateTasksSchema.exactOptional().openapi({
+      description:
+        'Whether to automatically create tasks using this task definition for all gateways with the specified current version. If <code>false</code>, the task must me created by calling <code>CreateWirelessGatewayTask</code>.',
+    }),
+    Name: WirelessGatewayTaskNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Update: UpdateWirelessGatewayTaskCreateSchema.exactOptional().openapi({
+      description: 'Information about the gateways to update.',
+    }),
+    Arn: WirelessGatewayTaskDefinitionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWirelessGatewayTaskDefinitionResponse')
@@ -3294,24 +2785,24 @@ const NextTokenSchema = z.string().max(4096).openapi('NextToken')
 
 const DestinationsSchema = z
   .object({
-    Arn: DestinationArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    Name: DestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    ExpressionType: ExpressionTypeSchema.and(
-      z.any().openapi({ description: 'The type of value in <code>Expression</code>.' }),
-    ).exactOptional(),
-    Expression: ExpressionSchema.and(
-      z.any().openapi({ description: 'The rule name or topic rule to send messages to.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the resource.' }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM Role that authorizes the destination.' }),
-    ).exactOptional(),
+    Arn: DestinationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    Name: DestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    ExpressionType: ExpressionTypeSchema.exactOptional().openapi({
+      description: 'The type of value in <code>Expression</code>.',
+    }),
+    Expression: ExpressionSchema.exactOptional().openapi({
+      description: 'The rule name or topic rule to send messages to.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the resource.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM Role that authorizes the destination.',
+    }),
   })
   .openapi({ description: 'Describes a destination.', required: [] })
   .openapi('Destinations')
@@ -3320,32 +2811,28 @@ const DestinationListSchema = z.array(DestinationsSchema).openapi('DestinationLi
 
 const ListDestinationsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    DestinationList: DestinationListSchema.and(
-      z.any().openapi({ description: 'The list of destinations.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
+    DestinationList: DestinationListSchema.exactOptional().openapi({
+      description: 'The list of destinations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDestinationsResponse')
 
 const DeviceProfileSchema = z
   .object({
-    Arn: DeviceProfileArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    Name: DeviceProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Id: DeviceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the device profile.' }),
-    ).exactOptional(),
+    Arn: DeviceProfileArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    Name: DeviceProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Id: DeviceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the device profile.',
+    }),
   })
   .openapi({ description: 'Describes a device profile.', required: [] })
   .openapi('DeviceProfile')
@@ -3354,17 +2841,13 @@ const DeviceProfileListSchema = z.array(DeviceProfileSchema).openapi('DeviceProf
 
 const ListDeviceProfilesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    DeviceProfileList: DeviceProfileListSchema.and(
-      z.any().openapi({ description: 'The list of device profiles.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
+    DeviceProfileList: DeviceProfileListSchema.exactOptional().openapi({
+      description: 'The list of device profiles.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeviceProfilesResponse')
@@ -3379,32 +2862,18 @@ const LastUpdateTimeSchema = z.iso.datetime({ offset: true }).openapi('LastUpdat
 
 const ImportedSidewalkDeviceSchema = z
   .object({
-    SidewalkManufacturingSn: SidewalkManufacturingSnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Sidewalk manufacturing serial number (SMSN) of the Sidewalk device.',
-        }),
-    ).exactOptional(),
-    OnboardingStatus: OnboardStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The onboarding status of the Sidewalk device in the import task.',
-        }),
-    ).exactOptional(),
-    OnboardingStatusReason: OnboardStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason for the onboarding status information for the Sidewalk device.',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: LastUpdateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time at which the status information was last updated.' }),
-    ).exactOptional(),
+    SidewalkManufacturingSn: SidewalkManufacturingSnSchema.exactOptional().openapi({
+      description: 'The Sidewalk manufacturing serial number (SMSN) of the Sidewalk device.',
+    }),
+    OnboardingStatus: OnboardStatusSchema.exactOptional().openapi({
+      description: 'The onboarding status of the Sidewalk device in the import task.',
+    }),
+    OnboardingStatusReason: OnboardStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason for the onboarding status information for the Sidewalk device.',
+    }),
+    LastUpdateTime: LastUpdateTimeSchema.exactOptional().openapi({
+      description: 'The time at which the status information was last updated.',
+    }),
   })
   .openapi({
     description: 'Information about a Sidewalk device that has been added to an import task.',
@@ -3414,14 +2883,10 @@ const ImportedSidewalkDeviceSchema = z
 
 const ImportedWirelessDeviceSchema = z
   .object({
-    Sidewalk: ImportedSidewalkDeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Sidewalk-related information about a device that has been added to an import task.',
-        }),
-    ).exactOptional(),
+    Sidewalk: ImportedSidewalkDeviceSchema.exactOptional().openapi({
+      description:
+        'The Sidewalk-related information about a device that has been added to an import task.',
+    }),
   })
   .openapi({
     description: 'Information about a wireless device that has been added to an import task.',
@@ -3435,29 +2900,17 @@ const ImportedWirelessDeviceListSchema = z
 
 const ListDevicesForWirelessDeviceImportTaskResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Sidewalk destination that describes the IoT rule to route messages received from devices in an import task that are onboarded to AWS IoT Wireless.',
-        }),
-    ).exactOptional(),
-    ImportedWirelessDeviceList: ImportedWirelessDeviceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of wireless devices in an import task and their onboarding status.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <code>null</code> if there are no additional results.',
+    }),
+    DestinationName: DestinationNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Sidewalk destination that describes the IoT rule to route messages received from devices in an import task that are onboarded to AWS IoT Wireless.',
+    }),
+    ImportedWirelessDeviceList: ImportedWirelessDeviceListSchema.exactOptional().openapi({
+      description: 'List of wireless devices in an import task and their onboarding status.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDevicesForWirelessDeviceImportTaskResponse')
@@ -3474,37 +2927,23 @@ const EventNotificationPartnerTypeSchema = z
 
 const EventNotificationItemConfigurationsSchema = z
   .object({
-    DeviceRegistrationState: DeviceRegistrationStateEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device registration state event configuration for an event configuration item.',
-        }),
-    ).exactOptional(),
-    Proximity: ProximityEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Proximity event configuration for an event configuration item.' }),
-    ).exactOptional(),
-    Join: JoinEventConfigurationSchema.and(
-      z.any().openapi({ description: 'Join event configuration for an event configuration item.' }),
-    ).exactOptional(),
-    ConnectionStatus: ConnectionStatusEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Connection status event configuration for an event configuration item.',
-        }),
-    ).exactOptional(),
-    MessageDeliveryStatus: MessageDeliveryStatusEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Message delivery status event configuration for an event configuration item.',
-        }),
-    ).exactOptional(),
+    DeviceRegistrationState:
+      DeviceRegistrationStateEventConfigurationSchema.exactOptional().openapi({
+        description:
+          'Device registration state event configuration for an event configuration item.',
+      }),
+    Proximity: ProximityEventConfigurationSchema.exactOptional().openapi({
+      description: 'Proximity event configuration for an event configuration item.',
+    }),
+    Join: JoinEventConfigurationSchema.exactOptional().openapi({
+      description: 'Join event configuration for an event configuration item.',
+    }),
+    ConnectionStatus: ConnectionStatusEventConfigurationSchema.exactOptional().openapi({
+      description: 'Connection status event configuration for an event configuration item.',
+    }),
+    MessageDeliveryStatus: MessageDeliveryStatusEventConfigurationSchema.exactOptional().openapi({
+      description: 'Message delivery status event configuration for an event configuration item.',
+    }),
   })
   .openapi({
     description: 'Object of all event configurations and the status of the event topics.',
@@ -3514,24 +2953,15 @@ const EventNotificationItemConfigurationsSchema = z
 
 const EventConfigurationItemSchema = z
   .object({
-    Identifier: IdentifierSchema.and(
-      z.any().openapi({ description: 'Resource identifier opted in for event messaging.' }),
-    ).exactOptional(),
-    IdentifierType: IdentifierTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier type of the particular resource identifier for event configuration.',
-        }),
-    ).exactOptional(),
-    PartnerType: EventNotificationPartnerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Partner type of the resource if the identifier type is PartnerAccountId.',
-        }),
-    ).exactOptional(),
+    Identifier: IdentifierSchema.exactOptional().openapi({
+      description: 'Resource identifier opted in for event messaging.',
+    }),
+    IdentifierType: IdentifierTypeSchema.exactOptional().openapi({
+      description: 'Identifier type of the particular resource identifier for event configuration.',
+    }),
+    PartnerType: EventNotificationPartnerTypeSchema.exactOptional().openapi({
+      description: 'Partner type of the resource if the identifier type is PartnerAccountId.',
+    }),
     Events: EventNotificationItemConfigurationsSchema.exactOptional(),
   })
   .openapi({ description: 'Event configuration object for a single resource.', required: [] })
@@ -3543,17 +2973,13 @@ const EventConfigurationsListSchema = z
 
 const ListEventConfigurationsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
-        }),
-    ).exactOptional(),
-    EventConfigurationsList: EventConfigurationsListSchema.and(
-      z.any().openapi({ description: 'Event configurations of all events for a single resource.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
+    }),
+    EventConfigurationsList: EventConfigurationsListSchema.exactOptional().openapi({
+      description: 'Event configurations of all events for a single resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventConfigurationsResponse')
@@ -3574,14 +3000,10 @@ const FuotaTaskListSchema = z
 
 const ListFuotaTasksResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
+    }),
     FuotaTaskList: FuotaTaskListSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -3603,14 +3025,10 @@ const MulticastGroupListSchema = z
 
 const ListMulticastGroupsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
+    }),
     MulticastGroupList: MulticastGroupListSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -3628,14 +3046,10 @@ const MulticastGroupListByFuotaTaskSchema = z
 
 const ListMulticastGroupsByFuotaTaskResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
+    }),
     MulticastGroupList: MulticastGroupListByFuotaTaskSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -3643,9 +3057,9 @@ const ListMulticastGroupsByFuotaTaskResponseSchema = z
 
 const NetworkAnalyzerConfigurationsSchema = z
   .object({
-    Arn: NetworkAnalyzerConfigurationArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the new resource.' }),
-    ).exactOptional(),
+    Arn: NetworkAnalyzerConfigurationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the new resource.',
+    }),
     Name: NetworkAnalyzerConfigurationNameSchema.exactOptional(),
   })
   .openapi({ description: 'Network analyzer configurations.', required: [] })
@@ -3657,17 +3071,14 @@ const NetworkAnalyzerConfigurationListSchema = z
 
 const ListNetworkAnalyzerConfigurationsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    NetworkAnalyzerConfigurationList: NetworkAnalyzerConfigurationListSchema.and(
-      z.any().openapi({ description: 'The list of network analyzer configurations.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
+    NetworkAnalyzerConfigurationList:
+      NetworkAnalyzerConfigurationListSchema.exactOptional().openapi({
+        description: 'The list of network analyzer configurations.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListNetworkAnalyzerConfigurationsResponse')
@@ -3678,17 +3089,13 @@ const SidewalkAccountListSchema = z
 
 const ListPartnerAccountsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    Sidewalk: SidewalkAccountListSchema.and(
-      z.any().openapi({ description: 'The Sidewalk account credentials.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
+    Sidewalk: SidewalkAccountListSchema.exactOptional().openapi({
+      description: 'The Sidewalk account credentials.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPartnerAccountsResponse')
@@ -3704,29 +3111,19 @@ const PositionResourceTypeSchema = z
 
 const PositionConfigurationItemSchema = z
   .object({
-    ResourceIdentifier: PositionResourceIdentifierSchema.and(
-      z.any().openapi({ description: 'Resource identifier for the position configuration.' }),
-    ).exactOptional(),
-    ResourceType: PositionResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Resource type of the resource for the position configuration.' }),
-    ).exactOptional(),
-    Solvers: PositionSolverDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The details of the positioning solver object used to compute the location.',
-        }),
-    ).exactOptional(),
-    Destination: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
-        }),
-    ).exactOptional(),
+    ResourceIdentifier: PositionResourceIdentifierSchema.exactOptional().openapi({
+      description: 'Resource identifier for the position configuration.',
+    }),
+    ResourceType: PositionResourceTypeSchema.exactOptional().openapi({
+      description: 'Resource type of the resource for the position configuration.',
+    }),
+    Solvers: PositionSolverDetailsSchema.exactOptional().openapi({
+      description: 'The details of the positioning solver object used to compute the location.',
+    }),
+    Destination: DestinationNameSchema.exactOptional().openapi({
+      description:
+        "The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
+    }),
   })
   .openapi({ description: 'The wrapper for a position configuration.', required: [] })
   .openapi('PositionConfigurationItem')
@@ -3737,17 +3134,13 @@ const PositionConfigurationListSchema = z
 
 const ListPositionConfigurationsResponseSchema = z
   .object({
-    PositionConfigurationList: PositionConfigurationListSchema.and(
-      z.any().openapi({ description: 'A list of position configurations.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    PositionConfigurationList: PositionConfigurationListSchema.exactOptional().openapi({
+      description: 'A list of position configurations.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({
     deprecated: true,
@@ -3768,22 +3161,14 @@ const DownlinkFrequencySchema = z.int().min(100000000).max(1000000000).openapi('
 
 const GatewayListItemSchema = z
   .object({
-    GatewayId: WirelessGatewayIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the wireless gateways that you want to add to the list of gateways when sending downlink messages.',
-        }),
-    ),
-    DownlinkFrequency: DownlinkFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The frequency to use for the gateways when sending a downlink message to the wireless device.',
-        }),
-    ),
+    GatewayId: WirelessGatewayIdSchema.openapi({
+      description:
+        'The ID of the wireless gateways that you want to add to the list of gateways when sending downlink messages.',
+    }),
+    DownlinkFrequency: DownlinkFrequencySchema.openapi({
+      description:
+        'The frequency to use for the gateways when sending a downlink message to the wireless device.',
+    }),
   })
   .openapi({
     required: ['GatewayId', 'DownlinkFrequency'],
@@ -3798,30 +3183,18 @@ const TransmissionIntervalSchema = z.int().min(1).max(604800).openapi('Transmiss
 
 const ParticipatingGatewaysSchema = z
   .object({
-    DownlinkMode: DownlinkModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to send the downlink message in sequential mode or concurrent mode, or to use only the chosen gateways from the previous uplink message transmission.',
-        }),
-    ),
-    GatewayList: GatewayListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of gateways that you want to use for sending the downlink data traffic.',
-        }),
-    ),
-    TransmissionInterval: TransmissionIntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The duration of time for which AWS IoT Core for LoRaWAN will wait before transmitting the payload to the next gateway.',
-        }),
-    ),
+    DownlinkMode: DownlinkModeSchema.openapi({
+      description:
+        'Indicates whether to send the downlink message in sequential mode or concurrent mode, or to use only the chosen gateways from the previous uplink message transmission.',
+    }),
+    GatewayList: GatewayListSchema.openapi({
+      description:
+        'The list of gateways that you want to use for sending the downlink data traffic.',
+    }),
+    TransmissionInterval: TransmissionIntervalSchema.openapi({
+      description:
+        'The duration of time for which AWS IoT Core for LoRaWAN will wait before transmitting the payload to the next gateway.',
+    }),
   })
   .openapi({
     required: ['DownlinkMode', 'GatewayList', 'TransmissionInterval'],
@@ -3833,41 +3206,27 @@ const ParticipatingGatewaysSchema = z
 const LoRaWANSendDataToDeviceSchema = z
   .object({
     FPort: FPortSchema.exactOptional(),
-    ParticipatingGateways: ParticipatingGatewaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Choose the gateways that you want to use for the downlink data traffic when the wireless device is running in class B or class C mode.',
-        }),
-    ).exactOptional(),
+    ParticipatingGateways: ParticipatingGatewaysSchema.exactOptional().openapi({
+      description:
+        'Choose the gateways that you want to use for the downlink data traffic when the wireless device is running in class B or class C mode.',
+    }),
   })
   .openapi({ description: 'LoRaWAN router info.', required: [] })
   .openapi('LoRaWANSendDataToDevice')
 
 const DownlinkQueueMessageSchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The message ID assigned by IoT Wireless to each downlink message, which helps identify the message.',
-        }),
-    ).exactOptional(),
-    TransmitMode: TransmitModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The transmit mode to use for sending data to the wireless device. This can be <code>0</code> for UM (unacknowledge mode) or <code>1</code> for AM (acknowledge mode).',
-        }),
-    ).exactOptional(),
-    ReceivedAt: ISODateTimeStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time at which Iot Wireless received the downlink message.' }),
-    ).exactOptional(),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        ' The message ID assigned by IoT Wireless to each downlink message, which helps identify the message.',
+    }),
+    TransmitMode: TransmitModeSchema.exactOptional().openapi({
+      description:
+        'The transmit mode to use for sending data to the wireless device. This can be <code>0</code> for UM (unacknowledge mode) or <code>1</code> for AM (acknowledge mode).',
+    }),
+    ReceivedAt: ISODateTimeStringSchema.exactOptional().openapi({
+      description: 'The time at which Iot Wireless received the downlink message.',
+    }),
     LoRaWAN: LoRaWANSendDataToDeviceSchema.exactOptional(),
   })
   .openapi({ description: 'The message in the downlink queue.', required: [] })
@@ -3879,32 +3238,28 @@ const DownlinkQueueMessagesListSchema = z
 
 const ListQueuedMessagesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
-        }),
-    ).exactOptional(),
-    DownlinkQueueMessagesList: DownlinkQueueMessagesListSchema.and(
-      z.any().openapi({ description: 'The messages in the downlink queue.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.',
+    }),
+    DownlinkQueueMessagesList: DownlinkQueueMessagesListSchema.exactOptional().openapi({
+      description: 'The messages in the downlink queue.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListQueuedMessagesResponse')
 
 const ServiceProfileSchema = z
   .object({
-    Arn: ServiceProfileArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    Name: ServiceProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Id: ServiceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the service profile.' }),
-    ).exactOptional(),
+    Arn: ServiceProfileArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    Name: ServiceProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Id: ServiceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the service profile.',
+    }),
   })
   .openapi({ description: 'Information about a service profile.', required: [] })
   .openapi('ServiceProfile')
@@ -3913,17 +3268,13 @@ const ServiceProfileListSchema = z.array(ServiceProfileSchema).openapi('ServiceP
 
 const ListServiceProfilesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    ServiceProfileList: ServiceProfileListSchema.and(
-      z.any().openapi({ description: 'The list of service profiles.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
+    ServiceProfileList: ServiceProfileListSchema.exactOptional().openapi({
+      description: 'The list of service profiles.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListServiceProfilesResponse')
@@ -3940,93 +3291,54 @@ const TagListSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to attach to the specified resource. Tags are metadata that you can use to manage a resource.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to attach to the specified resource. Tags are metadata that you can use to manage a resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const WirelessDeviceImportTaskSchema = z
   .object({
-    Id: ImportTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless device import task.' }),
-    ).exactOptional(),
-    Arn: ImportTaskArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN (Amazon Resource Name) of the wireless device import task.',
-        }),
-    ).exactOptional(),
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Sidewalk destination that that describes the IoT rule to route messages from the device in the import task that will be onboarded to AWS IoT Wireless',
-        }),
-    ).exactOptional(),
-    Sidewalk: SidewalkGetStartImportInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Sidewalk-related information of the wireless device import task.',
-        }),
-    ).exactOptional(),
-    CreationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time at which the import task was created.' }),
-    ).exactOptional(),
-    Status: ImportTaskStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status information of the wireless device import task.' }),
-    ).exactOptional(),
-    StatusReason: StatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason that provides additional information about the import task status.',
-        }),
-    ).exactOptional(),
-    InitializedImportedDeviceCount: ImportedWirelessDeviceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The summary information of count of wireless devices that are waiting for the control log to be added to an import task.',
-        }),
-    ).exactOptional(),
-    PendingImportedDeviceCount: ImportedWirelessDeviceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The summary information of count of wireless devices in an import task that are waiting in the queue to be onboarded.',
-        }),
-    ).exactOptional(),
-    OnboardedImportedDeviceCount: ImportedWirelessDeviceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The summary information of count of wireless devices in an import task that have been onboarded to the import task.',
-        }),
-    ).exactOptional(),
-    FailedImportedDeviceCount: ImportedWirelessDeviceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The summary information of count of wireless devices in an import task that failed to onboarded to the import task.',
-        }),
-    ).exactOptional(),
+    Id: ImportTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the wireless device import task.',
+    }),
+    Arn: ImportTaskArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the wireless device import task.',
+    }),
+    DestinationName: DestinationNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Sidewalk destination that that describes the IoT rule to route messages from the device in the import task that will be onboarded to AWS IoT Wireless',
+    }),
+    Sidewalk: SidewalkGetStartImportInfoSchema.exactOptional().openapi({
+      description: 'The Sidewalk-related information of the wireless device import task.',
+    }),
+    CreationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The time at which the import task was created.',
+    }),
+    Status: ImportTaskStatusSchema.exactOptional().openapi({
+      description: 'The status information of the wireless device import task.',
+    }),
+    StatusReason: StatusReasonSchema.exactOptional().openapi({
+      description: 'The reason that provides additional information about the import task status.',
+    }),
+    InitializedImportedDeviceCount: ImportedWirelessDeviceCountSchema.exactOptional().openapi({
+      description:
+        'The summary information of count of wireless devices that are waiting for the control log to be added to an import task.',
+    }),
+    PendingImportedDeviceCount: ImportedWirelessDeviceCountSchema.exactOptional().openapi({
+      description:
+        'The summary information of count of wireless devices in an import task that are waiting in the queue to be onboarded.',
+    }),
+    OnboardedImportedDeviceCount: ImportedWirelessDeviceCountSchema.exactOptional().openapi({
+      description:
+        'The summary information of count of wireless devices in an import task that have been onboarded to the import task.',
+    }),
+    FailedImportedDeviceCount: ImportedWirelessDeviceCountSchema.exactOptional().openapi({
+      description:
+        'The summary information of count of wireless devices in an import task that failed to onboarded to the import task.',
+    }),
   })
   .openapi({ description: 'Information about an import task for wireless devices.', required: [] })
   .openapi('WirelessDeviceImportTask')
@@ -4037,57 +3349,41 @@ const WirelessDeviceImportTaskListSchema = z
 
 const ListWirelessDeviceImportTasksResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    WirelessDeviceImportTaskList: WirelessDeviceImportTaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of import tasks and summary information of onboarding status of devices in each import task.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <code>null</code> if there are no additional results.',
+    }),
+    WirelessDeviceImportTaskList: WirelessDeviceImportTaskListSchema.exactOptional().openapi({
+      description:
+        'List of import tasks and summary information of onboarding status of devices in each import task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWirelessDeviceImportTasksResponse')
 
 const LoRaWANListDeviceSchema = z
-  .object({
-    DevEui: DevEuiSchema.and(z.any().openapi({ description: 'The DevEUI value.' })).exactOptional(),
-  })
+  .object({ DevEui: DevEuiSchema.exactOptional().openapi({ description: 'The DevEUI value.' }) })
   .openapi({ description: 'LoRaWAN object for list functions.', required: [] })
   .openapi('LoRaWANListDevice')
 
 const SidewalkListDeviceSchema = z
   .object({
-    AmazonId: AmazonIdSchema.and(
-      z.any().openapi({ description: 'The Sidewalk Amazon ID.' }),
-    ).exactOptional(),
-    SidewalkId: SidewalkIdSchema.and(
-      z.any().openapi({ description: 'The sidewalk device identification.' }),
-    ).exactOptional(),
-    SidewalkManufacturingSn: SidewalkManufacturingSnSchema.and(
-      z.any().openapi({ description: 'The Sidewalk manufacturing series number.' }),
-    ).exactOptional(),
-    DeviceCertificates: DeviceCertificateListSchema.and(
-      z.any().openapi({ description: 'The sidewalk device certificates for Ed25519 and P256r1.' }),
-    ).exactOptional(),
-    DeviceProfileId: DeviceProfileIdSchema.and(
-      z.any().openapi({ description: 'Sidewalk object used by list functions.' }),
-    ).exactOptional(),
-    Status: WirelessDeviceSidewalkStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the Sidewalk devices, such as provisioned or registered.',
-        }),
-    ).exactOptional(),
+    AmazonId: AmazonIdSchema.exactOptional().openapi({ description: 'The Sidewalk Amazon ID.' }),
+    SidewalkId: SidewalkIdSchema.exactOptional().openapi({
+      description: 'The sidewalk device identification.',
+    }),
+    SidewalkManufacturingSn: SidewalkManufacturingSnSchema.exactOptional().openapi({
+      description: 'The Sidewalk manufacturing series number.',
+    }),
+    DeviceCertificates: DeviceCertificateListSchema.exactOptional().openapi({
+      description: 'The sidewalk device certificates for Ed25519 and P256r1.',
+    }),
+    DeviceProfileId: DeviceProfileIdSchema.exactOptional().openapi({
+      description: 'Sidewalk object used by list functions.',
+    }),
+    Status: WirelessDeviceSidewalkStatusSchema.exactOptional().openapi({
+      description: 'The status of the Sidewalk devices, such as provisioned or registered.',
+    }),
   })
   .openapi({ description: 'Sidewalk object used by list functions.', required: [] })
   .openapi('SidewalkListDevice')
@@ -4120,38 +3416,34 @@ const McGroupIdSchema = z
 
 const WirelessDeviceStatisticsSchema = z
   .object({
-    Arn: WirelessDeviceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    Id: WirelessDeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless device reporting the data.' }),
-    ).exactOptional(),
-    Type: WirelessDeviceTypeSchema.and(
-      z.any().openapi({ description: 'The wireless device type.' }),
-    ).exactOptional(),
-    Name: WirelessDeviceNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the destination to which the device is assigned.' }),
-    ).exactOptional(),
-    LastUplinkReceivedAt: ISODateTimeStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the most recent uplink was received.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANListDeviceSchema.and(
-      z.any().openapi({ description: 'LoRaWAN device info.' }),
-    ).exactOptional(),
-    Sidewalk: SidewalkListDeviceSchema.and(
-      z.any().openapi({ description: 'The Sidewalk account credentials.' }),
-    ).exactOptional(),
+    Arn: WirelessDeviceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    Id: WirelessDeviceIdSchema.exactOptional().openapi({
+      description: 'The ID of the wireless device reporting the data.',
+    }),
+    Type: WirelessDeviceTypeSchema.exactOptional().openapi({
+      description: 'The wireless device type.',
+    }),
+    Name: WirelessDeviceNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    DestinationName: DestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the destination to which the device is assigned.',
+    }),
+    LastUplinkReceivedAt: ISODateTimeStringSchema.exactOptional().openapi({
+      description: 'The date and time when the most recent uplink was received.',
+    }),
+    LoRaWAN: LoRaWANListDeviceSchema.exactOptional().openapi({
+      description: 'LoRaWAN device info.',
+    }),
+    Sidewalk: SidewalkListDeviceSchema.exactOptional().openapi({
+      description: 'The Sidewalk account credentials.',
+    }),
     FuotaDeviceStatus: FuotaDeviceStatusSchema.exactOptional(),
-    MulticastDeviceStatus: MulticastDeviceStatusSchema.and(
-      z.any().openapi({ description: 'The status of the wireless device in the multicast group.' }),
-    ).exactOptional(),
+    MulticastDeviceStatus: MulticastDeviceStatusSchema.exactOptional().openapi({
+      description: 'The status of the wireless device in the multicast group.',
+    }),
     McGroupId: McGroupIdSchema.exactOptional(),
   })
   .openapi({ description: "Information about a wireless device's operation.", required: [] })
@@ -4163,48 +3455,40 @@ const WirelessDeviceStatisticsListSchema = z
 
 const ListWirelessDevicesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    WirelessDeviceList: WirelessDeviceStatisticsListSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless device.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
+    WirelessDeviceList: WirelessDeviceStatisticsListSchema.exactOptional().openapi({
+      description: 'The ID of the wireless device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWirelessDevicesResponse')
 
 const LoRaWANUpdateGatewayTaskEntrySchema = z
   .object({
-    CurrentVersion: LoRaWANGatewayVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the gateways that should receive the update.' }),
-    ).exactOptional(),
-    UpdateVersion: LoRaWANGatewayVersionSchema.and(
-      z.any().openapi({ description: 'The firmware version to update the gateway to.' }),
-    ).exactOptional(),
+    CurrentVersion: LoRaWANGatewayVersionSchema.exactOptional().openapi({
+      description: 'The version of the gateways that should receive the update.',
+    }),
+    UpdateVersion: LoRaWANGatewayVersionSchema.exactOptional().openapi({
+      description: 'The firmware version to update the gateway to.',
+    }),
   })
   .openapi({ description: 'LoRaWANUpdateGatewayTaskEntry object.', required: [] })
   .openapi('LoRaWANUpdateGatewayTaskEntry')
 
 const UpdateWirelessGatewayTaskEntrySchema = z
   .object({
-    Id: WirelessGatewayTaskDefinitionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the new wireless gateway task entry.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANUpdateGatewayTaskEntrySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The properties that relate to the LoRaWAN wireless gateway.' }),
-    ).exactOptional(),
-    Arn: WirelessGatewayTaskDefinitionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
+    Id: WirelessGatewayTaskDefinitionIdSchema.exactOptional().openapi({
+      description: 'The ID of the new wireless gateway task entry.',
+    }),
+    LoRaWAN: LoRaWANUpdateGatewayTaskEntrySchema.exactOptional().openapi({
+      description: 'The properties that relate to the LoRaWAN wireless gateway.',
+    }),
+    Arn: WirelessGatewayTaskDefinitionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
   })
   .openapi({ description: 'UpdateWirelessGatewayTaskEntry object.', required: [] })
   .openapi('UpdateWirelessGatewayTaskEntry')
@@ -4215,43 +3499,35 @@ const WirelessGatewayTaskDefinitionListSchema = z
 
 const ListWirelessGatewayTaskDefinitionsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    TaskDefinitions: WirelessGatewayTaskDefinitionListSchema.and(
-      z.any().openapi({ description: 'The list of task definitions.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
+    TaskDefinitions: WirelessGatewayTaskDefinitionListSchema.exactOptional().openapi({
+      description: 'The list of task definitions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWirelessGatewayTaskDefinitionsResponse')
 
 const WirelessGatewayStatisticsSchema = z
   .object({
-    Arn: WirelessGatewayArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name of the resource.' }),
-    ).exactOptional(),
-    Id: WirelessGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless gateway reporting the data.' }),
-    ).exactOptional(),
-    Name: WirelessGatewayNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the resource.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANGatewaySchema.and(
-      z.any().openapi({ description: 'LoRaWAN gateway info.' }),
-    ).exactOptional(),
-    LastUplinkReceivedAt: ISODateTimeStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the most recent uplink was received.' }),
-    ).exactOptional(),
+    Arn: WirelessGatewayArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name of the resource.',
+    }),
+    Id: WirelessGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the wireless gateway reporting the data.',
+    }),
+    Name: WirelessGatewayNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the resource.',
+    }),
+    LoRaWAN: LoRaWANGatewaySchema.exactOptional().openapi({ description: 'LoRaWAN gateway info.' }),
+    LastUplinkReceivedAt: ISODateTimeStringSchema.exactOptional().openapi({
+      description: 'The date and time when the most recent uplink was received.',
+    }),
   })
   .openapi({ description: "Information about a wireless gateway's operation.", required: [] })
   .openapi('WirelessGatewayStatistics')
@@ -4262,34 +3538,30 @@ const WirelessGatewayStatisticsListSchema = z
 
 const ListWirelessGatewaysResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    WirelessGatewayList: WirelessGatewayStatisticsListSchema.and(
-      z.any().openapi({ description: 'The ID of the wireless gateway.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
+    WirelessGatewayList: WirelessGatewayStatisticsListSchema.exactOptional().openapi({
+      description: 'The ID of the wireless gateway.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWirelessGatewaysResponse')
 
 const PutPositionConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ deprecated: true, description: 'This operation is no longer supported.' })
   .openapi('PutPositionConfigurationResponse')
 
 const SemtechGnssConfigurationSchema = z
   .object({
-    Status: PositionConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'The status indicating whether the solver is enabled.' }),
-    ),
-    Fec: PositionConfigurationFecSchema.and(
-      z.any().openapi({ description: 'Whether forward error correction is enabled.' }),
-    ),
+    Status: PositionConfigurationStatusSchema.openapi({
+      description: 'The status indicating whether the solver is enabled.',
+    }),
+    Fec: PositionConfigurationFecSchema.openapi({
+      description: 'Whether forward error correction is enabled.',
+    }),
   })
   .openapi({
     required: ['Status', 'Fec'],
@@ -4297,13 +3569,15 @@ const SemtechGnssConfigurationSchema = z
   })
   .openapi('SemtechGnssConfiguration')
 
-const PutResourceLogLevelResponseSchema = z.object({}).openapi('PutResourceLogLevelResponse')
+const PutResourceLogLevelResponseSchema = z.looseObject({}).openapi('PutResourceLogLevelResponse')
 
 const ResetAllResourceLogLevelsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ResetAllResourceLogLevelsResponse')
 
-const ResetResourceLogLevelResponseSchema = z.object({}).openapi('ResetResourceLogLevelResponse')
+const ResetResourceLogLevelResponseSchema = z
+  .looseObject({})
+  .openapi('ResetResourceLogLevelResponse')
 
 const MulticastGroupMessageIdSchema = z
   .string()
@@ -4326,9 +3600,9 @@ const LoRaWANMulticastMetadataSchema = z
 
 const SendDataToWirelessDeviceResponseSchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'The ID of the message sent to the wireless device.' }),
-    ).exactOptional(),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description: 'The ID of the message sent to the wireless device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendDataToWirelessDeviceResponse')
@@ -4356,54 +3630,50 @@ const AckModeRetryDurationSecsSchema = z
 
 const SidewalkSendDataToDeviceSchema = z
   .object({
-    Seq: SeqSchema.and(z.any().openapi({ description: 'The sequence number.' })).exactOptional(),
+    Seq: SeqSchema.exactOptional().openapi({ description: 'The sequence number.' }),
     MessageType: MessageTypeSchema.exactOptional(),
-    AckModeRetryDurationSecs: AckModeRetryDurationSecsSchema.and(
-      z.any().openapi({ description: 'The duration of time in seconds to retry sending the ACK.' }),
-    ).exactOptional(),
+    AckModeRetryDurationSecs: AckModeRetryDurationSecsSchema.exactOptional().openapi({
+      description: 'The duration of time in seconds to retry sending the ACK.',
+    }),
   })
   .openapi({ description: 'Information about a Sidewalk router.', required: [] })
   .openapi('SidewalkSendDataToDevice')
 
 const StartBulkAssociateWirelessDeviceWithMulticastGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StartBulkAssociateWirelessDeviceWithMulticastGroupResponse')
 
 const StartBulkDisassociateWirelessDeviceFromMulticastGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StartBulkDisassociateWirelessDeviceFromMulticastGroupResponse')
 
-const StartFuotaTaskResponseSchema = z.object({}).openapi('StartFuotaTaskResponse')
+const StartFuotaTaskResponseSchema = z.looseObject({}).openapi('StartFuotaTaskResponse')
 
 const StartMulticastGroupSessionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StartMulticastGroupSessionResponse')
 
 const StartSingleWirelessDeviceImportTaskResponseSchema = z
   .object({
-    Id: ImportTaskIdSchema.and(
-      z.any().openapi({ description: 'The import task ID.' }),
-    ).exactOptional(),
-    Arn: ImportTaskArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the import task.' }),
-    ).exactOptional(),
+    Id: ImportTaskIdSchema.exactOptional().openapi({ description: 'The import task ID.' }),
+    Arn: ImportTaskArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the import task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSingleWirelessDeviceImportTaskResponse')
 
 const StartWirelessDeviceImportTaskResponseSchema = z
   .object({
-    Id: ImportTaskIdSchema.and(
-      z.any().openapi({ description: 'The import task ID.' }),
-    ).exactOptional(),
-    Arn: ImportTaskArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the import task.' }),
-    ).exactOptional(),
+    Id: ImportTaskIdSchema.exactOptional().openapi({ description: 'The import task ID.' }),
+    Arn: ImportTaskArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the import task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartWirelessDeviceImportTaskResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
@@ -4411,92 +3681,84 @@ const ResultSchema = z.string().max(2048).openapi('Result')
 
 const TestWirelessDeviceResponseSchema = z
   .object({
-    Result: ResultSchema.and(
-      z.any().openapi({ description: 'The result returned by the test.' }),
-    ).exactOptional(),
+    Result: ResultSchema.exactOptional().openapi({
+      description: 'The result returned by the test.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestWirelessDeviceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
-const UpdateDestinationResponseSchema = z.object({}).openapi('UpdateDestinationResponse')
+const UpdateDestinationResponseSchema = z.looseObject({}).openapi('UpdateDestinationResponse')
 
 const UpdateEventConfigurationByResourceTypesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateEventConfigurationByResourceTypesResponse')
 
-const UpdateFuotaTaskResponseSchema = z.object({}).openapi('UpdateFuotaTaskResponse')
+const UpdateFuotaTaskResponseSchema = z.looseObject({}).openapi('UpdateFuotaTaskResponse')
 
 const UpdateLogLevelsByResourceTypesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateLogLevelsByResourceTypesResponse')
 
-const UpdateMulticastGroupResponseSchema = z.object({}).openapi('UpdateMulticastGroupResponse')
+const UpdateMulticastGroupResponseSchema = z.looseObject({}).openapi('UpdateMulticastGroupResponse')
 
 const UpdateNetworkAnalyzerConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateNetworkAnalyzerConfigurationResponse')
 
-const UpdatePartnerAccountResponseSchema = z.object({}).openapi('UpdatePartnerAccountResponse')
+const UpdatePartnerAccountResponseSchema = z.looseObject({}).openapi('UpdatePartnerAccountResponse')
 
 const UpdatePositionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ deprecated: true, description: 'This operation is no longer supported.' })
   .openapi('UpdatePositionResponse')
 
 const UpdateResourceEventConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateResourceEventConfigurationResponse')
 
-const UpdateResourcePositionResponseSchema = z.object({}).openapi('UpdateResourcePositionResponse')
+const UpdateResourcePositionResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateResourcePositionResponse')
 
-const UpdateWirelessDeviceResponseSchema = z.object({}).openapi('UpdateWirelessDeviceResponse')
+const UpdateWirelessDeviceResponseSchema = z.looseObject({}).openapi('UpdateWirelessDeviceResponse')
 
 const UpdateAbpV1_1Schema = z
   .object({
-    FCntStart: FCntStartSchema.and(
-      z.any().openapi({ description: 'The FCnt init value.' }),
-    ).exactOptional(),
+    FCntStart: FCntStartSchema.exactOptional().openapi({ description: 'The FCnt init value.' }),
   })
   .openapi({ description: 'ABP device object for LoRaWAN specification v1.1', required: [] })
   .openapi('UpdateAbpV1_1')
 
 const UpdateAbpV1_0XSchema = z
   .object({
-    FCntStart: FCntStartSchema.and(
-      z.any().openapi({ description: 'The FCnt init value.' }),
-    ).exactOptional(),
+    FCntStart: FCntStartSchema.exactOptional().openapi({ description: 'The FCnt init value.' }),
   })
   .openapi({ description: 'ABP device object for LoRaWAN specification v1.0.x', required: [] })
   .openapi('UpdateAbpV1_0X')
 
 const UpdateFPortsSchema = z
   .object({
-    Positioning: PositioningSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Positioning FPorts for the ClockSync, Stream, and GNSS functions.',
-        }),
-    ).exactOptional(),
-    Applications: ApplicationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'LoRaWAN application, which can be used for geolocation by activating positioning.',
-        }),
-    ).exactOptional(),
+    Positioning: PositioningSchema.exactOptional().openapi({
+      description: 'Positioning FPorts for the ClockSync, Stream, and GNSS functions.',
+    }),
+    Applications: ApplicationsSchema.exactOptional().openapi({
+      description:
+        'LoRaWAN application, which can be used for geolocation by activating positioning.',
+    }),
   })
   .openapi({ description: 'Object for updating the FPorts information.', required: [] })
   .openapi('UpdateFPorts')
 
 const UpdateWirelessDeviceImportTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateWirelessDeviceImportTaskResponse')
 
-const UpdateWirelessGatewayResponseSchema = z.object({}).openapi('UpdateWirelessGatewayResponse')
+const UpdateWirelessGatewayResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateWirelessGatewayResponse')
 
 const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonResourceName')
 
@@ -4513,25 +3775,17 @@ const ClientRequestTokenSchema = z
 
 const AssociateAwsAccountWithPartnerAccountRequestSchema = z
   .object({
-    Sidewalk: SidewalkAccountInfoSchema.and(
-      z.any().openapi({ description: 'The Sidewalk account credentials.' }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to attach to the specified resource. Tags are metadata that you can use to manage a resource.',
-        }),
-    ).exactOptional(),
+    Sidewalk: SidewalkAccountInfoSchema.openapi({
+      description: 'The Sidewalk account credentials.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to attach to the specified resource. Tags are metadata that you can use to manage a resource.',
+    }),
   })
   .openapi({ required: ['Sidewalk'], title: 'AssociateAwsAccountWithPartnerAccountRequest' })
   .openapi('AssociateAwsAccountWithPartnerAccountRequest')
@@ -4556,24 +3810,18 @@ const AssociateWirelessDeviceWithMulticastGroupRequestSchema = z
 
 const AssociateWirelessDeviceWithThingRequestSchema = z
   .object({
-    ThingArn: ThingArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the thing to associate with the wireless device.' }),
-    ),
+    ThingArn: ThingArnSchema.openapi({
+      description: 'The ARN of the thing to associate with the wireless device.',
+    }),
   })
   .openapi({ required: ['ThingArn'], title: 'AssociateWirelessDeviceWithThingRequest' })
   .openapi('AssociateWirelessDeviceWithThingRequest')
 
 const AssociateWirelessGatewayWithCertificateRequestSchema = z
   .object({
-    IotCertificateId: IotCertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the certificate to associate with the wireless gateway.',
-        }),
-    ),
+    IotCertificateId: IotCertificateIdSchema.openapi({
+      description: 'The ID of the certificate to associate with the wireless gateway.',
+    }),
   })
   .openapi({
     required: ['IotCertificateId'],
@@ -4583,37 +3831,27 @@ const AssociateWirelessGatewayWithCertificateRequestSchema = z
 
 const AssociateWirelessGatewayWithThingRequestSchema = z
   .object({
-    ThingArn: ThingArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the thing to associate with the wireless gateway.' }),
-    ),
+    ThingArn: ThingArnSchema.openapi({
+      description: 'The ARN of the thing to associate with the wireless gateway.',
+    }),
   })
   .openapi({ required: ['ThingArn'], title: 'AssociateWirelessGatewayWithThingRequest' })
   .openapi('AssociateWirelessGatewayWithThingRequest')
 
 const CancelMulticastGroupSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelMulticastGroupSessionRequest' })
   .openapi('CancelMulticastGroupSessionRequest')
 
 const CellTowersSchema = z
   .object({
-    Gsm: GsmListSchema.and(
-      z.any().openapi({ description: 'GSM object information.' }),
-    ).exactOptional(),
-    Wcdma: WcdmaListSchema.and(
-      z.any().openapi({ description: 'WCDMA object information.' }),
-    ).exactOptional(),
-    Tdscdma: TdscdmaListSchema.and(
-      z.any().openapi({ description: 'TD-SCDMA object information.' }),
-    ).exactOptional(),
-    Lte: LteListSchema.and(
-      z.any().openapi({ description: 'LTE object information.' }),
-    ).exactOptional(),
-    Cdma: CdmaListSchema.and(
-      z.any().openapi({ description: 'CDMA object information.' }),
-    ).exactOptional(),
+    Gsm: GsmListSchema.exactOptional().openapi({ description: 'GSM object information.' }),
+    Wcdma: WcdmaListSchema.exactOptional().openapi({ description: 'WCDMA object information.' }),
+    Tdscdma: TdscdmaListSchema.exactOptional().openapi({
+      description: 'TD-SCDMA object information.',
+    }),
+    Lte: LteListSchema.exactOptional().openapi({ description: 'LTE object information.' }),
+    Cdma: CdmaListSchema.exactOptional().openapi({ description: 'CDMA object information.' }),
   })
   .openapi({
     description: 'The cell towers that were used to perform the measurements.',
@@ -4623,37 +3861,27 @@ const CellTowersSchema = z
 
 const CreateDestinationRequestSchema = z
   .object({
-    Name: DestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the new resource.' }),
-    ),
-    ExpressionType: ExpressionTypeSchema.and(
-      z.any().openapi({ description: 'The type of value in <code>Expression</code>.' }),
-    ),
-    Expression: ExpressionSchema.and(
-      z.any().openapi({ description: 'The rule name or topic rule to send messages to.' }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the new resource.' }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM Role that authorizes the destination.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to attach to the new destination. Tags are metadata that you can use to manage a resource.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
-        }),
-    ).exactOptional(),
+    Name: DestinationNameSchema.openapi({ description: 'The name of the new resource.' }),
+    ExpressionType: ExpressionTypeSchema.openapi({
+      description: 'The type of value in <code>Expression</code>.',
+    }),
+    Expression: ExpressionSchema.openapi({
+      description: 'The rule name or topic rule to send messages to.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the new resource.',
+    }),
+    RoleArn: RoleArnSchema.openapi({
+      description: 'The ARN of the IAM Role that authorizes the destination.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to attach to the new destination. Tags are metadata that you can use to manage a resource.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
+    }),
   })
   .openapi({
     required: ['Name', 'ExpressionType', 'Expression', 'RoleArn'],
@@ -4662,45 +3890,29 @@ const CreateDestinationRequestSchema = z
   .openapi('CreateDestinationRequest')
 
 const SidewalkCreateDeviceProfileSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Sidewalk object for creating a device profile.' })
   .openapi('SidewalkCreateDeviceProfile')
 
 const CreateDeviceProfileRequestSchema = z
   .object({
-    Name: DeviceProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the new resource.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANDeviceProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device profile information to use to create the device profile.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to attach to the new device profile. Tags are metadata that you can use to manage a resource.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
-        }),
-    ).exactOptional(),
-    Sidewalk: SidewalkCreateDeviceProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Sidewalk-related information for creating the Sidewalk device profile.',
-        }),
-    ).exactOptional(),
+    Name: DeviceProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the new resource.',
+    }),
+    LoRaWAN: LoRaWANDeviceProfileSchema.exactOptional().openapi({
+      description: 'The device profile information to use to create the device profile.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to attach to the new device profile. Tags are metadata that you can use to manage a resource.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
+    }),
+    Sidewalk: SidewalkCreateDeviceProfileSchema.exactOptional().openapi({
+      description: 'The Sidewalk-related information for creating the Sidewalk device profile.',
+    }),
   })
   .openapi({ title: 'CreateDeviceProfileRequest', required: [] })
   .openapi('CreateDeviceProfileRequest')
@@ -4743,17 +3955,13 @@ const LoRaWANMulticastSchema = z
 const CreateMulticastGroupRequestSchema = z
   .object({
     Name: MulticastGroupNameSchema.exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the multicast group.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
-        }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the multicast group.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
+    }),
     LoRaWAN: LoRaWANMulticastSchema,
     Tags: TagListSchema.exactOptional(),
   })
@@ -4764,22 +3972,14 @@ const CreateNetworkAnalyzerConfigurationRequestSchema = z
   .object({
     Name: NetworkAnalyzerConfigurationNameSchema,
     TraceContent: TraceContentSchema.exactOptional(),
-    WirelessDevices: WirelessDeviceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Wireless device resources to add to the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resource to add in the input array.',
-        }),
-    ).exactOptional(),
-    WirelessGateways: WirelessGatewayListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Wireless gateway resources to add to the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resource to add in the input array.',
-        }),
-    ).exactOptional(),
+    WirelessDevices: WirelessDeviceListSchema.exactOptional().openapi({
+      description:
+        'Wireless device resources to add to the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resource to add in the input array.',
+    }),
+    WirelessGateways: WirelessGatewayListSchema.exactOptional().openapi({
+      description:
+        'Wireless gateway resources to add to the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resource to add in the input array.',
+    }),
     Description: DescriptionSchema.exactOptional(),
     Tags: TagListSchema.exactOptional(),
     ClientRequestToken: ClientRequestTokenSchema.exactOptional(),
@@ -4789,207 +3989,136 @@ const CreateNetworkAnalyzerConfigurationRequestSchema = z
 
 const LoRaWANServiceProfileSchema = z
   .object({
-    AddGwMetadata: AddGwMetadataSchema.and(
-      z.any().openapi({ description: 'The AddGWMetaData value.' }),
-    ).exactOptional(),
-    DrMin: DrMinBoxSchema.and(z.any().openapi({ description: 'The DrMin value.' })).exactOptional(),
-    DrMax: DrMaxBoxSchema.and(z.any().openapi({ description: 'The DrMax value.' })).exactOptional(),
-    PrAllowed: PrAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The PRAllowed value that describes whether passive roaming is allowed.',
-        }),
-    ).exactOptional(),
-    RaAllowed: RaAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The RAAllowed value that describes whether roaming activation is allowed.',
-        }),
-    ).exactOptional(),
+    AddGwMetadata: AddGwMetadataSchema.exactOptional().openapi({
+      description: 'The AddGWMetaData value.',
+    }),
+    DrMin: DrMinBoxSchema.exactOptional().openapi({ description: 'The DrMin value.' }),
+    DrMax: DrMaxBoxSchema.exactOptional().openapi({ description: 'The DrMax value.' }),
+    PrAllowed: PrAllowedSchema.exactOptional().openapi({
+      description: 'The PRAllowed value that describes whether passive roaming is allowed.',
+    }),
+    RaAllowed: RaAllowedSchema.exactOptional().openapi({
+      description: 'The RAAllowed value that describes whether roaming activation is allowed.',
+    }),
   })
   .openapi({ description: 'LoRaWANServiceProfile object.', required: [] })
   .openapi('LoRaWANServiceProfile')
 
 const CreateServiceProfileRequestSchema = z
   .object({
-    Name: ServiceProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the new resource.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANServiceProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service profile information to use to create the service profile.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to attach to the new service profile. Tags are metadata that you can use to manage a resource.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
-        }),
-    ).exactOptional(),
+    Name: ServiceProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the new resource.',
+    }),
+    LoRaWAN: LoRaWANServiceProfileSchema.exactOptional().openapi({
+      description: 'The service profile information to use to create the service profile.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to attach to the new service profile. Tags are metadata that you can use to manage a resource.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
+    }),
   })
   .openapi({ title: 'CreateServiceProfileRequest', required: [] })
   .openapi('CreateServiceProfileRequest')
 
 const SidewalkCreateWirelessDeviceSchema = z
   .object({
-    DeviceProfileId: DeviceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Sidewalk device profile.' }),
-    ).exactOptional(),
+    DeviceProfileId: DeviceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the Sidewalk device profile.',
+    }),
   })
   .openapi({ description: 'Sidewalk object for creating a wireless device.', required: [] })
   .openapi('SidewalkCreateWirelessDevice')
 
 const CreateWirelessDeviceRequestSchema = z
   .object({
-    Type: WirelessDeviceTypeSchema.and(
-      z.any().openapi({ description: 'The wireless device type.' }),
-    ),
-    Name: WirelessDeviceNameSchema.and(
-      z.any().openapi({ description: 'The name of the new resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the new resource.' }),
-    ).exactOptional(),
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the destination to assign to the new wireless device.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
-        }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANDeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device configuration information to use to create the wireless device.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to attach to the new wireless device. Tags are metadata that you can use to manage a resource.',
-        }),
-    ).exactOptional(),
-    Positioning: PositioningConfigStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'FPort values for the GNSS, stream, and ClockSync functions of the positioning information.',
-        }),
-    ).exactOptional(),
-    Sidewalk: SidewalkCreateWirelessDeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device configuration information to use to create the Sidewalk device.',
-        }),
-    ).exactOptional(),
+    Type: WirelessDeviceTypeSchema.openapi({ description: 'The wireless device type.' }),
+    Name: WirelessDeviceNameSchema.exactOptional().openapi({
+      description: 'The name of the new resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the new resource.',
+    }),
+    DestinationName: DestinationNameSchema.openapi({
+      description: 'The name of the destination to assign to the new wireless device.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
+    }),
+    LoRaWAN: LoRaWANDeviceSchema.exactOptional().openapi({
+      description: 'The device configuration information to use to create the wireless device.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to attach to the new wireless device. Tags are metadata that you can use to manage a resource.',
+    }),
+    Positioning: PositioningConfigStatusSchema.exactOptional().openapi({
+      description:
+        'FPort values for the GNSS, stream, and ClockSync functions of the positioning information.',
+    }),
+    Sidewalk: SidewalkCreateWirelessDeviceSchema.exactOptional().openapi({
+      description: 'The device configuration information to use to create the Sidewalk device.',
+    }),
   })
   .openapi({ required: ['Type', 'DestinationName'], title: 'CreateWirelessDeviceRequest' })
   .openapi('CreateWirelessDeviceRequest')
 
 const CreateWirelessGatewayRequestSchema = z
   .object({
-    Name: WirelessGatewayNameSchema.and(
-      z.any().openapi({ description: 'The name of the new resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the new resource.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANGatewaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The gateway configuration information to use to create the wireless gateway.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to attach to the new wireless gateway. Tags are metadata that you can use to manage a resource.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
-        }),
-    ).exactOptional(),
+    Name: WirelessGatewayNameSchema.exactOptional().openapi({
+      description: 'The name of the new resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the new resource.',
+    }),
+    LoRaWAN: LoRaWANGatewaySchema.openapi({
+      description: 'The gateway configuration information to use to create the wireless gateway.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to attach to the new wireless gateway. Tags are metadata that you can use to manage a resource.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
+    }),
   })
   .openapi({ required: ['LoRaWAN'], title: 'CreateWirelessGatewayRequest' })
   .openapi('CreateWirelessGatewayRequest')
 
 const CreateWirelessGatewayTaskDefinitionRequestSchema = z
   .object({
-    AutoCreateTasks: AutoCreateTasksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to automatically create tasks using this task definition for all gateways with the specified current version. If <code>false</code>, the task must me created by calling <code>CreateWirelessGatewayTask</code>.',
-        }),
-    ),
-    Name: WirelessGatewayTaskNameSchema.and(
-      z.any().openapi({ description: 'The name of the new resource.' }),
-    ).exactOptional(),
-    Update: UpdateWirelessGatewayTaskCreateSchema.and(
-      z.any().openapi({ description: 'Information about the gateways to update.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to attach to the specified resource. Tags are metadata that you can use to manage a resource.',
-        }),
-    ).exactOptional(),
+    AutoCreateTasks: AutoCreateTasksSchema.openapi({
+      description:
+        'Whether to automatically create tasks using this task definition for all gateways with the specified current version. If <code>false</code>, the task must me created by calling <code>CreateWirelessGatewayTask</code>.',
+    }),
+    Name: WirelessGatewayTaskNameSchema.exactOptional().openapi({
+      description: 'The name of the new resource.',
+    }),
+    Update: UpdateWirelessGatewayTaskCreateSchema.exactOptional().openapi({
+      description: 'Information about the gateways to update.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags to attach to the specified resource. Tags are metadata that you can use to manage a resource.',
+    }),
   })
   .openapi({ required: ['AutoCreateTasks'], title: 'CreateWirelessGatewayTaskDefinitionRequest' })
   .openapi('CreateWirelessGatewayTaskDefinitionRequest')
 
 const CreateWirelessGatewayTaskRequestSchema = z
   .object({
-    WirelessGatewayTaskDefinitionId: WirelessGatewayTaskDefinitionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the WirelessGatewayTaskDefinition.' }),
-    ),
+    WirelessGatewayTaskDefinitionId: WirelessGatewayTaskDefinitionIdSchema.openapi({
+      description: 'The ID of the WirelessGatewayTaskDefinition.',
+    }),
   })
   .openapi({
     required: ['WirelessGatewayTaskDefinitionId'],
@@ -5000,67 +4129,67 @@ const CreateWirelessGatewayTaskRequestSchema = z
 const CreationDateSchema = z.iso.datetime({ offset: true }).openapi('CreationDate')
 
 const DeleteDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDestinationRequest' })
   .openapi('DeleteDestinationRequest')
 
 const DeleteDeviceProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDeviceProfileRequest' })
   .openapi('DeleteDeviceProfileRequest')
 
 const DeleteFuotaTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFuotaTaskRequest' })
   .openapi('DeleteFuotaTaskRequest')
 
 const DeleteMulticastGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteMulticastGroupRequest' })
   .openapi('DeleteMulticastGroupRequest')
 
 const DeleteNetworkAnalyzerConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteNetworkAnalyzerConfigurationRequest' })
   .openapi('DeleteNetworkAnalyzerConfigurationRequest')
 
 const DeleteQueuedMessagesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteQueuedMessagesRequest' })
   .openapi('DeleteQueuedMessagesRequest')
 
 const DeleteServiceProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteServiceProfileRequest' })
   .openapi('DeleteServiceProfileRequest')
 
 const DeleteWirelessDeviceImportTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteWirelessDeviceImportTaskRequest' })
   .openapi('DeleteWirelessDeviceImportTaskRequest')
 
 const DeleteWirelessDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteWirelessDeviceRequest' })
   .openapi('DeleteWirelessDeviceRequest')
 
 const DeleteWirelessGatewayRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteWirelessGatewayRequest' })
   .openapi('DeleteWirelessGatewayRequest')
 
 const DeleteWirelessGatewayTaskDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteWirelessGatewayTaskDefinitionRequest' })
   .openapi('DeleteWirelessGatewayTaskDefinitionRequest')
 
 const DeleteWirelessGatewayTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteWirelessGatewayTaskRequest' })
   .openapi('DeleteWirelessGatewayTaskRequest')
 
 const DeregisterWirelessDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeregisterWirelessDeviceRequest' })
   .openapi('DeregisterWirelessDeviceRequest')
 
@@ -5073,37 +4202,37 @@ const PartnerAccountIdSchema = z.string().max(256).openapi('PartnerAccountId')
 const PartnerTypeSchema = z.literal('Sidewalk').openapi('PartnerType')
 
 const DisassociateAwsAccountFromPartnerAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateAwsAccountFromPartnerAccountRequest' })
   .openapi('DisassociateAwsAccountFromPartnerAccountRequest')
 
 const DisassociateMulticastGroupFromFuotaTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateMulticastGroupFromFuotaTaskRequest' })
   .openapi('DisassociateMulticastGroupFromFuotaTaskRequest')
 
 const DisassociateWirelessDeviceFromFuotaTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateWirelessDeviceFromFuotaTaskRequest' })
   .openapi('DisassociateWirelessDeviceFromFuotaTaskRequest')
 
 const DisassociateWirelessDeviceFromMulticastGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateWirelessDeviceFromMulticastGroupRequest' })
   .openapi('DisassociateWirelessDeviceFromMulticastGroupRequest')
 
 const DisassociateWirelessDeviceFromThingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateWirelessDeviceFromThingRequest' })
   .openapi('DisassociateWirelessDeviceFromThingRequest')
 
 const DisassociateWirelessGatewayFromCertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateWirelessGatewayFromCertificateRequest' })
   .openapi('DisassociateWirelessGatewayFromCertificateRequest')
 
 const DisassociateWirelessGatewayFromThingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateWirelessGatewayFromThingRequest' })
   .openapi('DisassociateWirelessGatewayFromThingRequest')
 
@@ -5112,52 +4241,52 @@ const EventNotificationResourceTypeSchema = z
   .openapi('EventNotificationResourceType')
 
 const GetDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDestinationRequest' })
   .openapi('GetDestinationRequest')
 
 const GetDeviceProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeviceProfileRequest' })
   .openapi('GetDeviceProfileRequest')
 
 const GetEventConfigurationByResourceTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEventConfigurationByResourceTypesRequest' })
   .openapi('GetEventConfigurationByResourceTypesRequest')
 
 const GetFuotaTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFuotaTaskRequest' })
   .openapi('GetFuotaTaskRequest')
 
 const GetLogLevelsByResourceTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLogLevelsByResourceTypesRequest' })
   .openapi('GetLogLevelsByResourceTypesRequest')
 
 const GetMulticastGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMulticastGroupRequest' })
   .openapi('GetMulticastGroupRequest')
 
 const GetMulticastGroupSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMulticastGroupSessionRequest' })
   .openapi('GetMulticastGroupSessionRequest')
 
 const GetNetworkAnalyzerConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetNetworkAnalyzerConfigurationRequest' })
   .openapi('GetNetworkAnalyzerConfigurationRequest')
 
 const GetPartnerAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPartnerAccountRequest' })
   .openapi('GetPartnerAccountRequest')
 
 const GetPositionConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     deprecated: true,
     title: 'GetPositionConfigurationRequest',
@@ -5168,9 +4297,7 @@ const GetPositionConfigurationRequestSchema = z
 const WiFiAccessPointsSchema = z.array(WiFiAccessPointSchema).openapi('WiFiAccessPoints')
 
 const IpSchema = z
-  .object({
-    IpAddress: IPAddressSchema.and(z.any().openapi({ description: 'IP address information.' })),
-  })
+  .object({ IpAddress: IPAddressSchema.openapi({ description: 'IP address information.' }) })
   .openapi({
     required: ['IpAddress'],
     description: 'IP address used for resolving device location.',
@@ -5179,54 +4306,30 @@ const IpSchema = z
 
 const GnssSchema = z
   .object({
-    Payload: GnssNavSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Payload that contains the GNSS scan result, or NAV message, in hexadecimal notation.',
-        }),
-    ),
-    CaptureTime: GPSTSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional parameter that gives an estimate of the time when the GNSS scan information is taken, in seconds GPS time (GPST). If capture time is not specified, the local server time is used.',
-        }),
-    ).exactOptional(),
-    CaptureTimeAccuracy: CaptureTimeAccuracySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional value that gives the capture time estimate accuracy, in seconds. If capture time accuracy is not specified, default value of 300 is used.',
-        }),
-    ).exactOptional(),
-    AssistPosition: AssistPositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional assistance position information, specified using latitude and longitude values in degrees. The coordinates are inside the WGS84 reference frame.',
-        }),
-    ).exactOptional(),
-    AssistAltitude: CoordinateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional assistance altitude, which is the altitude of the device at capture time, specified in meters above the WGS84 reference ellipsoid.',
-        }),
-    ).exactOptional(),
-    Use2DSolver: Use2DSolverSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional parameter that forces 2D solve, which modifies the positioning algorithm to a 2D solution problem. When this parameter is specified, the assistance altitude should have an accuracy of at least 10 meters.',
-        }),
-    ).exactOptional(),
+    Payload: GnssNavSchema.openapi({
+      description:
+        'Payload that contains the GNSS scan result, or NAV message, in hexadecimal notation.',
+    }),
+    CaptureTime: GPSTSchema.exactOptional().openapi({
+      description:
+        'Optional parameter that gives an estimate of the time when the GNSS scan information is taken, in seconds GPS time (GPST). If capture time is not specified, the local server time is used.',
+    }),
+    CaptureTimeAccuracy: CaptureTimeAccuracySchema.exactOptional().openapi({
+      description:
+        'Optional value that gives the capture time estimate accuracy, in seconds. If capture time accuracy is not specified, default value of 300 is used.',
+    }),
+    AssistPosition: AssistPositionSchema.exactOptional().openapi({
+      description:
+        'Optional assistance position information, specified using latitude and longitude values in degrees. The coordinates are inside the WGS84 reference frame.',
+    }),
+    AssistAltitude: CoordinateSchema.exactOptional().openapi({
+      description:
+        'Optional assistance altitude, which is the altitude of the device at capture time, specified in meters above the WGS84 reference ellipsoid.',
+    }),
+    Use2DSolver: Use2DSolverSchema.exactOptional().openapi({
+      description:
+        'Optional parameter that forces 2D solve, which modifies the positioning algorithm to a 2D solution problem. When this parameter is specified, the assistance altitude should have an accuracy of at least 10 meters.',
+    }),
   })
   .openapi({
     required: ['Payload'],
@@ -5236,52 +4339,32 @@ const GnssSchema = z
 
 const GetPositionEstimateRequestSchema = z
   .object({
-    WiFiAccessPoints: WiFiAccessPointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Retrieves an estimated device position by resolving WLAN measurement data. The position is resolved using HERE's Wi-Fi based solver.",
-        }),
-    ).exactOptional(),
-    CellTowers: CellTowersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Retrieves an estimated device position by resolving measurement data from cellular radio towers. The position is resolved using HERE's cellular-based solver.",
-        }),
-    ).exactOptional(),
-    Ip: IpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Retrieves an estimated device position by resolving the IP address information from the device. The position is resolved using MaxMind's IP-based solver.",
-        }),
-    ).exactOptional(),
-    Gnss: GnssSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Retrieves an estimated device position by resolving the global navigation satellite system (GNSS) scan data. The position is resolved using the GNSS solver powered by LoRa Cloud.',
-        }),
-    ).exactOptional(),
-    Timestamp: CreationDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional information that specifies the time when the position information will be resolved. It uses the Unix timestamp format. If not specified, the time at which the request was received will be used.',
-        }),
-    ).exactOptional(),
+    WiFiAccessPoints: WiFiAccessPointsSchema.exactOptional().openapi({
+      description:
+        "Retrieves an estimated device position by resolving WLAN measurement data. The position is resolved using HERE's Wi-Fi based solver.",
+    }),
+    CellTowers: CellTowersSchema.exactOptional().openapi({
+      description:
+        "Retrieves an estimated device position by resolving measurement data from cellular radio towers. The position is resolved using HERE's cellular-based solver.",
+    }),
+    Ip: IpSchema.exactOptional().openapi({
+      description:
+        "Retrieves an estimated device position by resolving the IP address information from the device. The position is resolved using MaxMind's IP-based solver.",
+    }),
+    Gnss: GnssSchema.exactOptional().openapi({
+      description:
+        'Retrieves an estimated device position by resolving the global navigation satellite system (GNSS) scan data. The position is resolved using the GNSS solver powered by LoRa Cloud.',
+    }),
+    Timestamp: CreationDateSchema.exactOptional().openapi({
+      description:
+        'Optional information that specifies the time when the position information will be resolved. It uses the Unix timestamp format. If not specified, the time at which the request was received will be used.',
+    }),
   })
   .openapi({ title: 'GetPositionEstimateRequest', required: [] })
   .openapi('GetPositionEstimateRequest')
 
 const GetPositionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     deprecated: true,
     title: 'GetPositionRequest',
@@ -5290,7 +4373,7 @@ const GetPositionRequestSchema = z
   .openapi('GetPositionRequest')
 
 const GetResourceEventConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourceEventConfigurationRequest' })
   .openapi('GetResourceEventConfigurationRequest')
 
@@ -5306,27 +4389,27 @@ const ResourceIdentifierSchema = z
 const ResourceTypeSchema = z.string().openapi('ResourceType')
 
 const GetResourceLogLevelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourceLogLevelRequest' })
   .openapi('GetResourceLogLevelRequest')
 
 const GetResourcePositionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourcePositionRequest' })
   .openapi('GetResourcePositionRequest')
 
 const GetServiceEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetServiceEndpointRequest' })
   .openapi('GetServiceEndpointRequest')
 
 const GetServiceProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetServiceProfileRequest' })
   .openapi('GetServiceProfileRequest')
 
 const GetWirelessDeviceImportTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessDeviceImportTaskRequest' })
   .openapi('GetWirelessDeviceImportTaskRequest')
 
@@ -5335,22 +4418,22 @@ const WirelessDeviceIdTypeSchema = z
   .openapi('WirelessDeviceIdType')
 
 const GetWirelessDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessDeviceRequest' })
   .openapi('GetWirelessDeviceRequest')
 
 const GetWirelessDeviceStatisticsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessDeviceStatisticsRequest' })
   .openapi('GetWirelessDeviceStatisticsRequest')
 
 const GetWirelessGatewayCertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessGatewayCertificateRequest' })
   .openapi('GetWirelessGatewayCertificateRequest')
 
 const GetWirelessGatewayFirmwareInformationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessGatewayFirmwareInformationRequest' })
   .openapi('GetWirelessGatewayFirmwareInformationRequest')
 
@@ -5359,22 +4442,22 @@ const WirelessGatewayIdTypeSchema = z
   .openapi('WirelessGatewayIdType')
 
 const GetWirelessGatewayRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessGatewayRequest' })
   .openapi('GetWirelessGatewayRequest')
 
 const GetWirelessGatewayStatisticsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessGatewayStatisticsRequest' })
   .openapi('GetWirelessGatewayStatisticsRequest')
 
 const GetWirelessGatewayTaskDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessGatewayTaskDefinitionRequest' })
   .openapi('GetWirelessGatewayTaskDefinitionRequest')
 
 const GetWirelessGatewayTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWirelessGatewayTaskRequest' })
   .openapi('GetWirelessGatewayTaskRequest')
 
@@ -5386,52 +4469,52 @@ const MaxResultsSchema = z
   .openapi('MaxResults')
 
 const ListDestinationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDestinationsRequest' })
   .openapi('ListDestinationsRequest')
 
 const ListDeviceProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDeviceProfilesRequest' })
   .openapi('ListDeviceProfilesRequest')
 
 const ListDevicesForWirelessDeviceImportTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDevicesForWirelessDeviceImportTaskRequest' })
   .openapi('ListDevicesForWirelessDeviceImportTaskRequest')
 
 const ListEventConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEventConfigurationsRequest' })
   .openapi('ListEventConfigurationsRequest')
 
 const ListFuotaTasksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFuotaTasksRequest' })
   .openapi('ListFuotaTasksRequest')
 
 const ListMulticastGroupsByFuotaTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMulticastGroupsByFuotaTaskRequest' })
   .openapi('ListMulticastGroupsByFuotaTaskRequest')
 
 const ListMulticastGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMulticastGroupsRequest' })
   .openapi('ListMulticastGroupsRequest')
 
 const ListNetworkAnalyzerConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListNetworkAnalyzerConfigurationsRequest' })
   .openapi('ListNetworkAnalyzerConfigurationsRequest')
 
 const ListPartnerAccountsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPartnerAccountsRequest' })
   .openapi('ListPartnerAccountsRequest')
 
 const ListPositionConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     deprecated: true,
     title: 'ListPositionConfigurationsRequest',
@@ -5440,27 +4523,27 @@ const ListPositionConfigurationsRequestSchema = z
   .openapi('ListPositionConfigurationsRequest')
 
 const ListQueuedMessagesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListQueuedMessagesRequest' })
   .openapi('ListQueuedMessagesRequest')
 
 const ListServiceProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListServiceProfilesRequest' })
   .openapi('ListServiceProfilesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListWirelessDeviceImportTasksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListWirelessDeviceImportTasksRequest' })
   .openapi('ListWirelessDeviceImportTasksRequest')
 
 const ListWirelessDevicesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListWirelessDevicesRequest' })
   .openapi('ListWirelessDevicesRequest')
 
@@ -5469,12 +4552,12 @@ const WirelessGatewayTaskDefinitionTypeSchema = z
   .openapi('WirelessGatewayTaskDefinitionType')
 
 const ListWirelessGatewayTaskDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListWirelessGatewayTaskDefinitionsRequest' })
   .openapi('ListWirelessGatewayTaskDefinitionsRequest')
 
 const ListWirelessGatewaysRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListWirelessGatewaysRequest' })
   .openapi('ListWirelessGatewaysRequest')
 
@@ -5485,23 +4568,21 @@ const LoRaWANStartFuotaTaskSchema = z
 
 const LoRaWANUpdateDeviceSchema = z
   .object({
-    DeviceProfileId: DeviceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the device profile for the wireless device.' }),
-    ).exactOptional(),
-    ServiceProfileId: ServiceProfileIdSchema.and(
-      z.any().openapi({ description: 'The ID of the service profile.' }),
-    ).exactOptional(),
-    AbpV1_1: UpdateAbpV1_1Schema.and(
-      z.any().openapi({ description: 'ABP device object for update APIs for v1.1' }),
-    ).exactOptional(),
-    AbpV1_0_x: UpdateAbpV1_0XSchema.and(
-      z.any().openapi({ description: 'ABP device object for update APIs for v1.0.x' }),
-    ).exactOptional(),
-    FPorts: UpdateFPortsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'FPorts object for the positioning information of the device.' }),
-    ).exactOptional(),
+    DeviceProfileId: DeviceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the device profile for the wireless device.',
+    }),
+    ServiceProfileId: ServiceProfileIdSchema.exactOptional().openapi({
+      description: 'The ID of the service profile.',
+    }),
+    AbpV1_1: UpdateAbpV1_1Schema.exactOptional().openapi({
+      description: 'ABP device object for update APIs for v1.1',
+    }),
+    AbpV1_0_x: UpdateAbpV1_0XSchema.exactOptional().openapi({
+      description: 'ABP device object for update APIs for v1.0.x',
+    }),
+    FPorts: UpdateFPortsSchema.exactOptional().openapi({
+      description: 'FPorts object for the positioning information of the device.',
+    }),
   })
   .openapi({ description: 'LoRaWAN object for update functions.', required: [] })
   .openapi('LoRaWANUpdateDevice')
@@ -5523,31 +4604,23 @@ const PayloadDataSchema = z
 
 const PositionSolverConfigurationsSchema = z
   .object({
-    SemtechGnss: SemtechGnssConfigurationSchema.and(
-      z.any().openapi({ description: 'The Semtech GNSS solver configuration object.' }),
-    ).exactOptional(),
+    SemtechGnss: SemtechGnssConfigurationSchema.exactOptional().openapi({
+      description: 'The Semtech GNSS solver configuration object.',
+    }),
   })
   .openapi({ description: 'The wrapper for position solver configurations.', required: [] })
   .openapi('PositionSolverConfigurations')
 
 const PutPositionConfigurationRequestSchema = z
   .object({
-    Solvers: PositionSolverConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The positioning solvers used to update the position configuration of the resource.',
-        }),
-    ).exactOptional(),
-    Destination: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
-        }),
-    ).exactOptional(),
+    Solvers: PositionSolverConfigurationsSchema.exactOptional().openapi({
+      description:
+        'The positioning solvers used to update the position configuration of the resource.',
+    }),
+    Destination: DestinationNameSchema.exactOptional().openapi({
+      description:
+        "The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.",
+    }),
   })
   .openapi({
     deprecated: true,
@@ -5572,12 +4645,12 @@ const QueryStringSchema = z
   .openapi('QueryString')
 
 const ResetAllResourceLogLevelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ResetAllResourceLogLevelsRequest' })
   .openapi('ResetAllResourceLogLevelsRequest')
 
 const ResetResourceLogLevelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ResetResourceLogLevelRequest' })
   .openapi('ResetResourceLogLevelRequest')
 
@@ -5591,44 +4664,36 @@ const SendDataToMulticastGroupRequestSchema = z
 
 const WirelessMetadataSchema = z
   .object({
-    LoRaWAN: LoRaWANSendDataToDeviceSchema.and(
-      z.any().openapi({ description: 'LoRaWAN device info.' }),
-    ).exactOptional(),
-    Sidewalk: SidewalkSendDataToDeviceSchema.and(
-      z.any().openapi({ description: 'The Sidewalk account credentials.' }),
-    ).exactOptional(),
+    LoRaWAN: LoRaWANSendDataToDeviceSchema.exactOptional().openapi({
+      description: 'LoRaWAN device info.',
+    }),
+    Sidewalk: SidewalkSendDataToDeviceSchema.exactOptional().openapi({
+      description: 'The Sidewalk account credentials.',
+    }),
   })
   .openapi({ description: 'WirelessMetadata object.', required: [] })
   .openapi('WirelessMetadata')
 
 const SendDataToWirelessDeviceRequestSchema = z
   .object({
-    TransmitMode: TransmitModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The transmit mode to use to send data to the wireless device. Can be: <code>0</code> for UM (unacknowledge mode) or <code>1</code> for AM (acknowledge mode).',
-        }),
-    ),
+    TransmitMode: TransmitModeSchema.openapi({
+      description:
+        'The transmit mode to use to send data to the wireless device. Can be: <code>0</code> for UM (unacknowledge mode) or <code>1</code> for AM (acknowledge mode).',
+    }),
     PayloadData: PayloadDataSchema,
-    WirelessMetadata: WirelessMetadataSchema.and(
-      z.any().openapi({ description: 'Metadata about the message request.' }),
-    ).exactOptional(),
+    WirelessMetadata: WirelessMetadataSchema.exactOptional().openapi({
+      description: 'Metadata about the message request.',
+    }),
   })
   .openapi({ required: ['TransmitMode', 'PayloadData'], title: 'SendDataToWirelessDeviceRequest' })
   .openapi('SendDataToWirelessDeviceRequest')
 
 const SidewalkSingleStartImportInfoSchema = z
   .object({
-    SidewalkManufacturingSn: SidewalkManufacturingSnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Sidewalk manufacturing serial number (SMSN) of the device added to the import task.',
-        }),
-    ).exactOptional(),
+    SidewalkManufacturingSn: SidewalkManufacturingSnSchema.exactOptional().openapi({
+      description:
+        'The Sidewalk manufacturing serial number (SMSN) of the device added to the import task.',
+    }),
   })
   .openapi({
     description: 'Information about an import task created for an individual Sidewalk device.',
@@ -5638,22 +4703,14 @@ const SidewalkSingleStartImportInfoSchema = z
 
 const SidewalkStartImportInfoSchema = z
   .object({
-    DeviceCreationFile: DeviceCreationFileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The CSV file contained in an S3 bucket that's used for adding devices to an import task.",
-        }),
-    ).exactOptional(),
-    Role: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.',
-        }),
-    ).exactOptional(),
+    DeviceCreationFile: DeviceCreationFileSchema.exactOptional().openapi({
+      description:
+        "The CSV file contained in an S3 bucket that's used for adding devices to an import task.",
+    }),
+    Role: RoleSchema.exactOptional().openapi({
+      description:
+        'The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.',
+    }),
   })
   .openapi({
     description: 'Information about an import task created for bulk provisioning.',
@@ -5663,23 +4720,19 @@ const SidewalkStartImportInfoSchema = z
 
 const SidewalkUpdateAccountSchema = z
   .object({
-    AppServerPrivateKey: AppServerPrivateKeySchema.and(
-      z.any().openapi({ description: 'The new Sidewalk application server private key.' }),
-    ).exactOptional(),
+    AppServerPrivateKey: AppServerPrivateKeySchema.exactOptional().openapi({
+      description: 'The new Sidewalk application server private key.',
+    }),
   })
   .openapi({ description: 'Sidewalk update.', required: [] })
   .openapi('SidewalkUpdateAccount')
 
 const SidewalkUpdateImportInfoSchema = z
   .object({
-    DeviceCreationFile: DeviceCreationFileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The CSV file contained in an S3 bucket that's used for appending devices to an existing import task.",
-        }),
-    ).exactOptional(),
+    DeviceCreationFile: DeviceCreationFileSchema.exactOptional().openapi({
+      description:
+        "The CSV file contained in an S3 bucket that's used for appending devices to an existing import task.",
+    }),
   })
   .openapi({
     description: 'Sidewalk object information for updating an import task.',
@@ -5709,30 +4762,18 @@ const StartMulticastGroupSessionRequestSchema = z
 
 const StartSingleWirelessDeviceImportTaskRequestSchema = z
   .object({
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Sidewalk destination that describes the IoT rule to route messages from the device in the import task that will be onboarded to AWS IoT Wireless.',
-        }),
-    ),
+    DestinationName: DestinationNameSchema.openapi({
+      description:
+        'The name of the Sidewalk destination that describes the IoT rule to route messages from the device in the import task that will be onboarded to AWS IoT Wireless.',
+    }),
     ClientRequestToken: ClientRequestTokenSchema.exactOptional(),
-    DeviceName: DeviceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the wireless device for which an import task is being started.',
-        }),
-    ).exactOptional(),
+    DeviceName: DeviceNameSchema.exactOptional().openapi({
+      description: 'The name of the wireless device for which an import task is being started.',
+    }),
     Tags: TagListSchema.exactOptional(),
-    Sidewalk: SidewalkSingleStartImportInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Sidewalk-related parameters for importing a single wireless device.',
-        }),
-    ),
+    Sidewalk: SidewalkSingleStartImportInfoSchema.openapi({
+      description: 'The Sidewalk-related parameters for importing a single wireless device.',
+    }),
   })
   .openapi({
     required: ['DestinationName', 'Sidewalk'],
@@ -5742,24 +4783,16 @@ const StartSingleWirelessDeviceImportTaskRequestSchema = z
 
 const StartWirelessDeviceImportTaskRequestSchema = z
   .object({
-    DestinationName: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Sidewalk destination that describes the IoT rule to route messages from the devices in the import task that are onboarded to AWS IoT Wireless.',
-        }),
-    ),
+    DestinationName: DestinationNameSchema.openapi({
+      description:
+        'The name of the Sidewalk destination that describes the IoT rule to route messages from the devices in the import task that are onboarded to AWS IoT Wireless.',
+    }),
     ClientRequestToken: ClientRequestTokenSchema.exactOptional(),
     Tags: TagListSchema.exactOptional(),
-    Sidewalk: SidewalkStartImportInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Sidewalk-related parameters for importing wireless devices that need to be provisioned in bulk.',
-        }),
-    ),
+    Sidewalk: SidewalkStartImportInfoSchema.openapi({
+      description:
+        'The Sidewalk-related parameters for importing wireless devices that need to be provisioned in bulk.',
+    }),
   })
   .openapi({
     required: ['DestinationName', 'Sidewalk'],
@@ -5771,88 +4804,66 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Adds to or modifies the tags of the given resource. Tags are metadata that you can use to manage a resource.',
-        }),
-    ),
+    Tags: TagListSchema.openapi({
+      description:
+        'Adds to or modifies the tags of the given resource. Tags are metadata that you can use to manage a resource.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const TestWirelessDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'TestWirelessDeviceRequest' })
   .openapi('TestWirelessDeviceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDestinationRequestSchema = z
   .object({
-    ExpressionType: ExpressionTypeSchema.and(
-      z.any().openapi({ description: 'The type of value in <code>Expression</code>.' }),
-    ).exactOptional(),
-    Expression: ExpressionSchema.and(
-      z.any().openapi({ description: 'The new rule name or topic rule to send messages to.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A new description of the resource.' }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM Role that authorizes the destination.' }),
-    ).exactOptional(),
+    ExpressionType: ExpressionTypeSchema.exactOptional().openapi({
+      description: 'The type of value in <code>Expression</code>.',
+    }),
+    Expression: ExpressionSchema.exactOptional().openapi({
+      description: 'The new rule name or topic rule to send messages to.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A new description of the resource.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM Role that authorizes the destination.',
+    }),
   })
   .openapi({ title: 'UpdateDestinationRequest', required: [] })
   .openapi('UpdateDestinationRequest')
 
 const UpdateEventConfigurationByResourceTypesRequestSchema = z
   .object({
-    DeviceRegistrationState: DeviceRegistrationStateResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Device registration state resource type event configuration object for enabling and disabling wireless gateway topic.',
-        }),
-    ).exactOptional(),
-    Proximity: ProximityResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Proximity resource type event configuration object for enabling and disabling wireless gateway topic.',
-        }),
-    ).exactOptional(),
-    Join: JoinResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Join resource type event configuration object for enabling and disabling wireless device topic.',
-        }),
-    ).exactOptional(),
-    ConnectionStatus: ConnectionStatusResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Connection status resource type event configuration object for enabling and disabling wireless gateway topic.',
-        }),
-    ).exactOptional(),
-    MessageDeliveryStatus: MessageDeliveryStatusResourceTypeEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Message delivery status resource type event configuration object for enabling and disabling wireless device topic.',
-        }),
-    ).exactOptional(),
+    DeviceRegistrationState:
+      DeviceRegistrationStateResourceTypeEventConfigurationSchema.exactOptional().openapi({
+        description:
+          'Device registration state resource type event configuration object for enabling and disabling wireless gateway topic.',
+      }),
+    Proximity: ProximityResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'Proximity resource type event configuration object for enabling and disabling wireless gateway topic.',
+    }),
+    Join: JoinResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'Join resource type event configuration object for enabling and disabling wireless device topic.',
+    }),
+    ConnectionStatus: ConnectionStatusResourceTypeEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'Connection status resource type event configuration object for enabling and disabling wireless gateway topic.',
+    }),
+    MessageDeliveryStatus:
+      MessageDeliveryStatusResourceTypeEventConfigurationSchema.exactOptional().openapi({
+        description:
+          'Message delivery status resource type event configuration object for enabling and disabling wireless device topic.',
+      }),
   })
   .openapi({ title: 'UpdateEventConfigurationByResourceTypesRequest', required: [] })
   .openapi('UpdateEventConfigurationByResourceTypesRequest')
@@ -5892,38 +4903,22 @@ const UpdateMulticastGroupRequestSchema = z
 const UpdateNetworkAnalyzerConfigurationRequestSchema = z
   .object({
     TraceContent: TraceContentSchema.exactOptional(),
-    WirelessDevicesToAdd: WirelessDeviceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Wireless device resources to add to the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resource to add in the input array.',
-        }),
-    ).exactOptional(),
-    WirelessDevicesToRemove: WirelessDeviceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Wireless device resources to remove from the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resources to remove in the input array.',
-        }),
-    ).exactOptional(),
-    WirelessGatewaysToAdd: WirelessGatewayListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Wireless gateway resources to add to the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resource to add in the input array.',
-        }),
-    ).exactOptional(),
-    WirelessGatewaysToRemove: WirelessGatewayListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Wireless gateway resources to remove from the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resources to remove in the input array.',
-        }),
-    ).exactOptional(),
+    WirelessDevicesToAdd: WirelessDeviceListSchema.exactOptional().openapi({
+      description:
+        'Wireless device resources to add to the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resource to add in the input array.',
+    }),
+    WirelessDevicesToRemove: WirelessDeviceListSchema.exactOptional().openapi({
+      description:
+        'Wireless device resources to remove from the network analyzer configuration. Provide the <code>WirelessDeviceId</code> of the resources to remove in the input array.',
+    }),
+    WirelessGatewaysToAdd: WirelessGatewayListSchema.exactOptional().openapi({
+      description:
+        'Wireless gateway resources to add to the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resource to add in the input array.',
+    }),
+    WirelessGatewaysToRemove: WirelessGatewayListSchema.exactOptional().openapi({
+      description:
+        'Wireless gateway resources to remove from the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resources to remove in the input array.',
+    }),
     Description: DescriptionSchema.exactOptional(),
   })
   .openapi({ title: 'UpdateNetworkAnalyzerConfigurationRequest', required: [] })
@@ -5931,18 +4926,18 @@ const UpdateNetworkAnalyzerConfigurationRequestSchema = z
 
 const UpdatePartnerAccountRequestSchema = z
   .object({
-    Sidewalk: SidewalkUpdateAccountSchema.and(
-      z.any().openapi({ description: 'The Sidewalk account credentials.' }),
-    ),
+    Sidewalk: SidewalkUpdateAccountSchema.openapi({
+      description: 'The Sidewalk account credentials.',
+    }),
   })
   .openapi({ required: ['Sidewalk'], title: 'UpdatePartnerAccountRequest' })
   .openapi('UpdatePartnerAccountRequest')
 
 const UpdatePositionRequestSchema = z
   .object({
-    Position: PositionCoordinateSchema.and(
-      z.any().openapi({ description: 'The position information of the resource.' }),
-    ),
+    Position: PositionCoordinateSchema.openapi({
+      description: 'The position information of the resource.',
+    }),
   })
   .openapi({
     required: ['Position'],
@@ -5954,95 +4949,78 @@ const UpdatePositionRequestSchema = z
 
 const UpdateResourceEventConfigurationRequestSchema = z
   .object({
-    DeviceRegistrationState: DeviceRegistrationStateEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Event configuration for the device registration state event.' }),
-    ).exactOptional(),
-    Proximity: ProximityEventConfigurationSchema.and(
-      z.any().openapi({ description: 'Event configuration for the proximity event.' }),
-    ).exactOptional(),
-    Join: JoinEventConfigurationSchema.and(
-      z.any().openapi({ description: 'Event configuration for the join event.' }),
-    ).exactOptional(),
-    ConnectionStatus: ConnectionStatusEventConfigurationSchema.and(
-      z.any().openapi({ description: 'Event configuration for the connection status event.' }),
-    ).exactOptional(),
-    MessageDeliveryStatus: MessageDeliveryStatusEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Event configuration for the message delivery status event.' }),
-    ).exactOptional(),
+    DeviceRegistrationState:
+      DeviceRegistrationStateEventConfigurationSchema.exactOptional().openapi({
+        description: 'Event configuration for the device registration state event.',
+      }),
+    Proximity: ProximityEventConfigurationSchema.exactOptional().openapi({
+      description: 'Event configuration for the proximity event.',
+    }),
+    Join: JoinEventConfigurationSchema.exactOptional().openapi({
+      description: 'Event configuration for the join event.',
+    }),
+    ConnectionStatus: ConnectionStatusEventConfigurationSchema.exactOptional().openapi({
+      description: 'Event configuration for the connection status event.',
+    }),
+    MessageDeliveryStatus: MessageDeliveryStatusEventConfigurationSchema.exactOptional().openapi({
+      description: 'Event configuration for the message delivery status event.',
+    }),
   })
   .openapi({ title: 'UpdateResourceEventConfigurationRequest', required: [] })
   .openapi('UpdateResourceEventConfigurationRequest')
 
 const UpdateResourcePositionRequestSchema = z
   .object({
-    GeoJsonPayload: GeoJsonPayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that\'s used to encode geographic data structures. For more information, see <a href="https://geojson.org/">GeoJSON</a>.',
-        }),
-    ).exactOptional(),
+    GeoJsonPayload: GeoJsonPayloadSchema.exactOptional().openapi({
+      description:
+        'The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that\'s used to encode geographic data structures. For more information, see <a href="https://geojson.org/">GeoJSON</a>.',
+    }),
   })
   .openapi({ title: 'UpdateResourcePositionRequest', required: [] })
   .openapi('UpdateResourcePositionRequest')
 
 const UpdateWirelessDeviceImportTaskRequestSchema = z
   .object({
-    Sidewalk: SidewalkUpdateImportInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Sidewalk-related parameters of the import task to be updated.',
-        }),
-    ),
+    Sidewalk: SidewalkUpdateImportInfoSchema.openapi({
+      description: 'The Sidewalk-related parameters of the import task to be updated.',
+    }),
   })
   .openapi({ required: ['Sidewalk'], title: 'UpdateWirelessDeviceImportTaskRequest' })
   .openapi('UpdateWirelessDeviceImportTaskRequest')
 
 const UpdateWirelessDeviceRequestSchema = z
   .object({
-    DestinationName: DestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the new destination for the device.' }),
-    ).exactOptional(),
-    Name: WirelessDeviceNameSchema.and(
-      z.any().openapi({ description: 'The new name of the resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A new description of the resource.' }),
-    ).exactOptional(),
-    LoRaWAN: LoRaWANUpdateDeviceSchema.and(
-      z.any().openapi({ description: "The updated wireless device's configuration." }),
-    ).exactOptional(),
-    Positioning: PositioningConfigStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'FPort values for the GNSS, stream, and ClockSync functions of the positioning information.',
-        }),
-    ).exactOptional(),
+    DestinationName: DestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the new destination for the device.',
+    }),
+    Name: WirelessDeviceNameSchema.exactOptional().openapi({
+      description: 'The new name of the resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A new description of the resource.',
+    }),
+    LoRaWAN: LoRaWANUpdateDeviceSchema.exactOptional().openapi({
+      description: "The updated wireless device's configuration.",
+    }),
+    Positioning: PositioningConfigStatusSchema.exactOptional().openapi({
+      description:
+        'FPort values for the GNSS, stream, and ClockSync functions of the positioning information.',
+    }),
   })
   .openapi({ title: 'UpdateWirelessDeviceRequest', required: [] })
   .openapi('UpdateWirelessDeviceRequest')
 
 const UpdateWirelessGatewayRequestSchema = z
   .object({
-    Name: WirelessGatewayNameSchema.and(
-      z.any().openapi({ description: 'The new name of the resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A new description of the resource.' }),
-    ).exactOptional(),
+    Name: WirelessGatewayNameSchema.exactOptional().openapi({
+      description: 'The new name of the resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A new description of the resource.',
+    }),
     JoinEuiFilters: JoinEuiFiltersSchema.exactOptional(),
     NetIdFilters: NetIdFiltersSchema.exactOptional(),
-    MaxEirp: GatewayMaxEirpSchema.and(
-      z.any().openapi({ description: 'The MaxEIRP value.' }),
-    ).exactOptional(),
+    MaxEirp: GatewayMaxEirpSchema.exactOptional().openapi({ description: 'The MaxEIRP value.' }),
   })
   .openapi({ title: 'UpdateWirelessGatewayRequest', required: [] })
   .openapi('UpdateWirelessGatewayRequest')
@@ -6223,14 +5201,12 @@ export const postPartnerAccountsRoute = createRoute({
             .object({
               Sidewalk: z
                 .object({
-                  AmazonId: AmazonIdSchema.and(
-                    z.any().openapi({ description: 'The Sidewalk Amazon ID.' }),
-                  ).exactOptional(),
-                  AppServerPrivateKey: AppServerPrivateKeySchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The Sidewalk application server private key.' }),
-                  ).exactOptional(),
+                  AmazonId: AmazonIdSchema.exactOptional().openapi({
+                    description: 'The Sidewalk Amazon ID.',
+                  }),
+                  AppServerPrivateKey: AppServerPrivateKeySchema.exactOptional().openapi({
+                    description: 'The Sidewalk application server private key.',
+                  }),
                 })
                 .openapi({ description: 'Information about a Sidewalk account.', required: [] }),
               ClientRequestToken: z
@@ -7140,9 +6116,9 @@ export const putMulticastGroupsIdSessionRoute = createRoute({
                   DlFreq: DlFreqSchema.exactOptional(),
                   SessionStartTime: SessionStartTimeTimestampSchema.exactOptional(),
                   SessionTimeout: SessionTimeoutSchema.exactOptional(),
-                  PingSlotPeriod: PingSlotPeriodSchema.and(
-                    z.any().openapi({ description: 'The PingSlotPeriod value.' }),
-                  ).exactOptional(),
+                  PingSlotPeriod: PingSlotPeriodSchema.exactOptional().openapi({
+                    description: 'The PingSlotPeriod value.',
+                  }),
                 })
                 .openapi({
                   description: 'The LoRaWAN information used with the multicast session.',
@@ -7608,73 +6584,64 @@ export const postDeviceProfilesRoute = createRoute({
                 .openapi({ description: 'The name of the new resource.' }),
               LoRaWAN: z
                 .object({
-                  SupportsClassB: SupportsClassBSchema.and(
-                    z.any().openapi({ description: 'The SupportsClassB value.' }),
-                  ).exactOptional(),
-                  ClassBTimeout: ClassBTimeoutSchema.and(
-                    z.any().openapi({ description: 'The ClassBTimeout value.' }),
-                  ).exactOptional(),
-                  PingSlotPeriod: PingSlotPeriodSchema.and(
-                    z.any().openapi({ description: 'The PingSlotPeriod value.' }),
-                  ).exactOptional(),
-                  PingSlotDr: PingSlotDrSchema.and(
-                    z.any().openapi({ description: 'The PingSlotDR value.' }),
-                  ).exactOptional(),
-                  PingSlotFreq: PingSlotFreqSchema.and(
-                    z.any().openapi({ description: 'The PingSlotFreq value.' }),
-                  ).exactOptional(),
-                  SupportsClassC: SupportsClassCSchema.and(
-                    z.any().openapi({ description: 'The SupportsClassC value.' }),
-                  ).exactOptional(),
-                  ClassCTimeout: ClassCTimeoutSchema.and(
-                    z.any().openapi({ description: 'The ClassCTimeout value.' }),
-                  ).exactOptional(),
-                  MacVersion: MacVersionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The MAC version (such as OTAA 1.1 or OTAA 1.0.3) to use with this device profile.',
-                      }),
-                  ).exactOptional(),
-                  RegParamsRevision: RegParamsRevisionSchema.and(
-                    z.any().openapi({ description: 'The version of regional parameters.' }),
-                  ).exactOptional(),
-                  RxDelay1: RxDelay1Schema.and(
-                    z.any().openapi({ description: 'The RXDelay1 value.' }),
-                  ).exactOptional(),
-                  RxDrOffset1: RxDrOffset1Schema.and(
-                    z.any().openapi({ description: 'The RXDROffset1 value.' }),
-                  ).exactOptional(),
-                  RxDataRate2: RxDataRate2Schema.and(
-                    z.any().openapi({ description: 'The RXDataRate2 value.' }),
-                  ).exactOptional(),
-                  RxFreq2: RxFreq2Schema.and(
-                    z.any().openapi({ description: 'The RXFreq2 value.' }),
-                  ).exactOptional(),
-                  FactoryPresetFreqsList: FactoryPresetFreqsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of values that make up the FactoryPresetFreqs value.',
-                      }),
-                  ).exactOptional(),
-                  MaxEirp: MaxEirpSchema.and(
-                    z.any().openapi({ description: 'The MaxEIRP value.' }),
-                  ).exactOptional(),
-                  MaxDutyCycle: MaxDutyCycleSchema.and(
-                    z.any().openapi({ description: 'The MaxDutyCycle value.' }),
-                  ).exactOptional(),
-                  RfRegion: RfRegionSchema.and(
-                    z.any().openapi({ description: 'The frequency band (RFRegion) value.' }),
-                  ).exactOptional(),
-                  SupportsJoin: SupportsJoinSchema.and(
-                    z.any().openapi({ description: 'The SupportsJoin value.' }),
-                  ).exactOptional(),
-                  Supports32BitFCnt: Supports32BitFCntSchema.and(
-                    z.any().openapi({ description: 'The Supports32BitFCnt value.' }),
-                  ).exactOptional(),
+                  SupportsClassB: SupportsClassBSchema.exactOptional().openapi({
+                    description: 'The SupportsClassB value.',
+                  }),
+                  ClassBTimeout: ClassBTimeoutSchema.exactOptional().openapi({
+                    description: 'The ClassBTimeout value.',
+                  }),
+                  PingSlotPeriod: PingSlotPeriodSchema.exactOptional().openapi({
+                    description: 'The PingSlotPeriod value.',
+                  }),
+                  PingSlotDr: PingSlotDrSchema.exactOptional().openapi({
+                    description: 'The PingSlotDR value.',
+                  }),
+                  PingSlotFreq: PingSlotFreqSchema.exactOptional().openapi({
+                    description: 'The PingSlotFreq value.',
+                  }),
+                  SupportsClassC: SupportsClassCSchema.exactOptional().openapi({
+                    description: 'The SupportsClassC value.',
+                  }),
+                  ClassCTimeout: ClassCTimeoutSchema.exactOptional().openapi({
+                    description: 'The ClassCTimeout value.',
+                  }),
+                  MacVersion: MacVersionSchema.exactOptional().openapi({
+                    description:
+                      'The MAC version (such as OTAA 1.1 or OTAA 1.0.3) to use with this device profile.',
+                  }),
+                  RegParamsRevision: RegParamsRevisionSchema.exactOptional().openapi({
+                    description: 'The version of regional parameters.',
+                  }),
+                  RxDelay1: RxDelay1Schema.exactOptional().openapi({
+                    description: 'The RXDelay1 value.',
+                  }),
+                  RxDrOffset1: RxDrOffset1Schema.exactOptional().openapi({
+                    description: 'The RXDROffset1 value.',
+                  }),
+                  RxDataRate2: RxDataRate2Schema.exactOptional().openapi({
+                    description: 'The RXDataRate2 value.',
+                  }),
+                  RxFreq2: RxFreq2Schema.exactOptional().openapi({
+                    description: 'The RXFreq2 value.',
+                  }),
+                  FactoryPresetFreqsList: FactoryPresetFreqsListSchema.exactOptional().openapi({
+                    description: 'The list of values that make up the FactoryPresetFreqs value.',
+                  }),
+                  MaxEirp: MaxEirpSchema.exactOptional().openapi({
+                    description: 'The MaxEIRP value.',
+                  }),
+                  MaxDutyCycle: MaxDutyCycleSchema.exactOptional().openapi({
+                    description: 'The MaxDutyCycle value.',
+                  }),
+                  RfRegion: RfRegionSchema.exactOptional().openapi({
+                    description: 'The frequency band (RFRegion) value.',
+                  }),
+                  SupportsJoin: SupportsJoinSchema.exactOptional().openapi({
+                    description: 'The SupportsJoin value.',
+                  }),
+                  Supports32BitFCnt: Supports32BitFCntSchema.exactOptional().openapi({
+                    description: 'The Supports32BitFCnt value.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'LoRaWANDeviceProfile object.', required: [] }),
@@ -7698,7 +6665,7 @@ export const postDeviceProfilesRoute = createRoute({
                     'Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request.',
                 }),
               Sidewalk: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Sidewalk object for creating a device profile.' }),
             })
@@ -8536,31 +7503,23 @@ export const postServiceProfilesRoute = createRoute({
                 .openapi({ description: 'The name of the new resource.' }),
               LoRaWAN: z
                 .object({
-                  AddGwMetadata: AddGwMetadataSchema.and(
-                    z.any().openapi({ description: 'The AddGWMetaData value.' }),
-                  ).exactOptional(),
-                  DrMin: DrMinBoxSchema.and(
-                    z.any().openapi({ description: 'The DrMin value.' }),
-                  ).exactOptional(),
-                  DrMax: DrMaxBoxSchema.and(
-                    z.any().openapi({ description: 'The DrMax value.' }),
-                  ).exactOptional(),
-                  PrAllowed: PrAllowedSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The PRAllowed value that describes whether passive roaming is allowed.',
-                      }),
-                  ).exactOptional(),
-                  RaAllowed: RaAllowedSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The RAAllowed value that describes whether roaming activation is allowed.',
-                      }),
-                  ).exactOptional(),
+                  AddGwMetadata: AddGwMetadataSchema.exactOptional().openapi({
+                    description: 'The AddGWMetaData value.',
+                  }),
+                  DrMin: DrMinBoxSchema.exactOptional().openapi({
+                    description: 'The DrMin value.',
+                  }),
+                  DrMax: DrMaxBoxSchema.exactOptional().openapi({
+                    description: 'The DrMax value.',
+                  }),
+                  PrAllowed: PrAllowedSchema.exactOptional().openapi({
+                    description:
+                      'The PRAllowed value that describes whether passive roaming is allowed.',
+                  }),
+                  RaAllowed: RaAllowedSchema.exactOptional().openapi({
+                    description:
+                      'The RAAllowed value that describes whether roaming activation is allowed.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'LoRaWANServiceProfile object.', required: [] }),
@@ -8862,33 +7821,27 @@ export const postWirelessDevicesRoute = createRoute({
                 }),
               LoRaWAN: z
                 .object({
-                  DevEui: DevEuiSchema.and(
-                    z.any().openapi({ description: 'The DevEUI value.' }),
-                  ).exactOptional(),
-                  DeviceProfileId: DeviceProfileIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the device profile for the new wireless device.',
-                      }),
-                  ).exactOptional(),
-                  ServiceProfileId: ServiceProfileIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the service profile.' }),
-                  ).exactOptional(),
-                  OtaaV1_1: OtaaV1_1Schema.and(
-                    z.any().openapi({ description: 'OTAA device object for v1.1 for create APIs' }),
-                  ).exactOptional(),
-                  OtaaV1_0_x: OtaaV1_0XSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'OTAA device object for create APIs for v1.0.x' }),
-                  ).exactOptional(),
-                  AbpV1_1: AbpV1_1Schema.and(
-                    z.any().openapi({ description: 'ABP device object for create APIs for v1.1' }),
-                  ).exactOptional(),
-                  AbpV1_0_x: AbpV1_0XSchema.and(
-                    z.any().openapi({ description: 'LoRaWAN object for create APIs' }),
-                  ).exactOptional(),
+                  DevEui: DevEuiSchema.exactOptional().openapi({
+                    description: 'The DevEUI value.',
+                  }),
+                  DeviceProfileId: DeviceProfileIdSchema.exactOptional().openapi({
+                    description: 'The ID of the device profile for the new wireless device.',
+                  }),
+                  ServiceProfileId: ServiceProfileIdSchema.exactOptional().openapi({
+                    description: 'The ID of the service profile.',
+                  }),
+                  OtaaV1_1: OtaaV1_1Schema.exactOptional().openapi({
+                    description: 'OTAA device object for v1.1 for create APIs',
+                  }),
+                  OtaaV1_0_x: OtaaV1_0XSchema.exactOptional().openapi({
+                    description: 'OTAA device object for create APIs for v1.0.x',
+                  }),
+                  AbpV1_1: AbpV1_1Schema.exactOptional().openapi({
+                    description: 'ABP device object for create APIs for v1.1',
+                  }),
+                  AbpV1_0_x: AbpV1_0XSchema.exactOptional().openapi({
+                    description: 'LoRaWAN object for create APIs',
+                  }),
                   FPorts: FPortsSchema.exactOptional(),
                 })
                 .exactOptional()
@@ -8911,9 +7864,9 @@ export const postWirelessDevicesRoute = createRoute({
                 }),
               Sidewalk: z
                 .object({
-                  DeviceProfileId: DeviceProfileIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the Sidewalk device profile.' }),
-                  ).exactOptional(),
+                  DeviceProfileId: DeviceProfileIdSchema.exactOptional().openapi({
+                    description: 'The ID of the Sidewalk device profile.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9097,26 +8050,22 @@ export const postWirelessGatewaysRoute = createRoute({
                 .openapi({ description: 'The description of the new resource.' }),
               LoRaWAN: z
                 .object({
-                  GatewayEui: GatewayEuiSchema.and(
-                    z.any().openapi({ description: "The gateway's EUI value." }),
-                  ).exactOptional(),
-                  RfRegion: RfRegionSchema.and(
-                    z.any().openapi({ description: 'The frequency band (RFRegion) value.' }),
-                  ).exactOptional(),
+                  GatewayEui: GatewayEuiSchema.exactOptional().openapi({
+                    description: "The gateway's EUI value.",
+                  }),
+                  RfRegion: RfRegionSchema.exactOptional().openapi({
+                    description: 'The frequency band (RFRegion) value.',
+                  }),
                   JoinEuiFilters: JoinEuiFiltersSchema.exactOptional(),
                   NetIdFilters: NetIdFiltersSchema.exactOptional(),
                   SubBands: SubBandsSchema.exactOptional(),
-                  Beaconing: BeaconingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Beaconing object information, which consists of the data rate and frequency parameters.',
-                      }),
-                  ).exactOptional(),
-                  MaxEirp: GatewayMaxEirpSchema.and(
-                    z.any().openapi({ description: 'The MaxEIRP value.' }),
-                  ).exactOptional(),
+                  Beaconing: BeaconingSchema.exactOptional().openapi({
+                    description:
+                      'Beaconing object information, which consists of the data rate and frequency parameters.',
+                  }),
+                  MaxEirp: GatewayMaxEirpSchema.exactOptional().openapi({
+                    description: 'The MaxEIRP value.',
+                  }),
                 })
                 .openapi({ description: 'LoRaWANGateway object.', required: [] }),
               Tags: z
@@ -9498,23 +8447,15 @@ export const postWirelessGatewayTaskDefinitionsRoute = createRoute({
                 .openapi({ description: 'The name of the new resource.' }),
               Update: z
                 .object({
-                  UpdateDataSource: UpdateDataSourceSchema.and(
-                    z.any().openapi({ description: 'The link to the S3 bucket.' }),
-                  ).exactOptional(),
-                  UpdateDataRole: UpdateDataSourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The IAM role used to read data from the S3 bucket.',
-                      }),
-                  ).exactOptional(),
-                  LoRaWAN: LoRaWANUpdateGatewayTaskCreateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The properties that relate to the LoRaWAN wireless gateway.',
-                      }),
-                  ).exactOptional(),
+                  UpdateDataSource: UpdateDataSourceSchema.exactOptional().openapi({
+                    description: 'The link to the S3 bucket.',
+                  }),
+                  UpdateDataRole: UpdateDataSourceSchema.exactOptional().openapi({
+                    description: 'The IAM role used to read data from the S3 bucket.',
+                  }),
+                  LoRaWAN: LoRaWANUpdateGatewayTaskCreateSchema.exactOptional().openapi({
+                    description: 'The properties that relate to the LoRaWAN wireless gateway.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'UpdateWirelessGatewayTaskCreate object.', required: [] }),
@@ -11067,31 +10008,21 @@ export const patchWirelessDevicesIdRoute = createRoute({
                 .openapi({ description: 'The description of the new resource.' }),
               LoRaWAN: z
                 .object({
-                  DeviceProfileId: DeviceProfileIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the device profile for the wireless device.',
-                      }),
-                  ).exactOptional(),
-                  ServiceProfileId: ServiceProfileIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the service profile.' }),
-                  ).exactOptional(),
-                  AbpV1_1: UpdateAbpV1_1Schema.and(
-                    z.any().openapi({ description: 'ABP device object for update APIs for v1.1' }),
-                  ).exactOptional(),
-                  AbpV1_0_x: UpdateAbpV1_0XSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'ABP device object for update APIs for v1.0.x' }),
-                  ).exactOptional(),
-                  FPorts: UpdateFPortsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'FPorts object for the positioning information of the device.',
-                      }),
-                  ).exactOptional(),
+                  DeviceProfileId: DeviceProfileIdSchema.exactOptional().openapi({
+                    description: 'The ID of the device profile for the wireless device.',
+                  }),
+                  ServiceProfileId: ServiceProfileIdSchema.exactOptional().openapi({
+                    description: 'The ID of the service profile.',
+                  }),
+                  AbpV1_1: UpdateAbpV1_1Schema.exactOptional().openapi({
+                    description: 'ABP device object for update APIs for v1.1',
+                  }),
+                  AbpV1_0_x: UpdateAbpV1_0XSchema.exactOptional().openapi({
+                    description: 'ABP device object for update APIs for v1.0.x',
+                  }),
+                  FPorts: UpdateFPortsSchema.exactOptional().openapi({
+                    description: 'FPorts object for the positioning information of the device.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'LoRaWAN object for update functions.', required: [] }),
@@ -11298,14 +10229,10 @@ export const patchWirelessDeviceImportTaskIdRoute = createRoute({
             .object({
               Sidewalk: z
                 .object({
-                  DeviceCreationFile: DeviceCreationFileSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The CSV file contained in an S3 bucket that's used for appending devices to an existing import task.",
-                      }),
-                  ).exactOptional(),
+                  DeviceCreationFile: DeviceCreationFileSchema.exactOptional().openapi({
+                    description:
+                      "The CSV file contained in an S3 bucket that's used for appending devices to an existing import task.",
+                  }),
                 })
                 .openapi({
                   description: 'Sidewalk object information for updating an import task.',
@@ -11899,11 +10826,9 @@ export const patchPartnerAccountsPartnerAccountIdPartnerTypeRoute = createRoute(
             .object({
               Sidewalk: z
                 .object({
-                  AppServerPrivateKey: AppServerPrivateKeySchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The new Sidewalk application server private key.' }),
-                  ).exactOptional(),
+                  AppServerPrivateKey: AppServerPrivateKeySchema.exactOptional().openapi({
+                    description: 'The new Sidewalk application server private key.',
+                  }),
                 })
                 .openapi({ description: 'Sidewalk update.', required: [] }),
             })
@@ -12239,14 +11164,10 @@ export const patchEventConfigurationsResourceTypesRoute = createRoute({
             .object({
               DeviceRegistrationState: z
                 .object({
-                  Sidewalk: SidewalkResourceTypeEventConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Device registration resource type state event configuration object for enabling or disabling Sidewalk related event topics.',
-                      }),
-                  ).exactOptional(),
+                  Sidewalk: SidewalkResourceTypeEventConfigurationSchema.exactOptional().openapi({
+                    description:
+                      'Device registration resource type state event configuration object for enabling or disabling Sidewalk related event topics.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12256,14 +11177,10 @@ export const patchEventConfigurationsResourceTypesRoute = createRoute({
                 }),
               Proximity: z
                 .object({
-                  Sidewalk: SidewalkResourceTypeEventConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Proximity resource type event configuration object for enabling and disabling wireless device topic.',
-                      }),
-                  ).exactOptional(),
+                  Sidewalk: SidewalkResourceTypeEventConfigurationSchema.exactOptional().openapi({
+                    description:
+                      'Proximity resource type event configuration object for enabling and disabling wireless device topic.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12273,14 +11190,10 @@ export const patchEventConfigurationsResourceTypesRoute = createRoute({
                 }),
               Join: z
                 .object({
-                  LoRaWAN: LoRaWANJoinResourceTypeEventConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Join resource type event configuration object for enabling or disabling LoRaWAN related event topics.',
-                      }),
-                  ).exactOptional(),
+                  LoRaWAN: LoRaWANJoinResourceTypeEventConfigurationSchema.exactOptional().openapi({
+                    description:
+                      'Join resource type event configuration object for enabling or disabling LoRaWAN related event topics.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12290,14 +11203,13 @@ export const patchEventConfigurationsResourceTypesRoute = createRoute({
                 }),
               ConnectionStatus: z
                 .object({
-                  LoRaWAN: LoRaWANConnectionStatusResourceTypeEventConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
+                  LoRaWAN:
+                    LoRaWANConnectionStatusResourceTypeEventConfigurationSchema.exactOptional().openapi(
+                      {
                         description:
                           'Connection status resource type event configuration object for enabling or disabling LoRaWAN related event topics.',
-                      }),
-                  ).exactOptional(),
+                      },
+                    ),
                 })
                 .exactOptional()
                 .openapi({
@@ -12813,11 +11725,9 @@ export const putPositionConfigurationsResourceIdentifierResourceTypeRoute = crea
             .object({
               Solvers: z
                 .object({
-                  SemtechGnss: SemtechGnssConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The Semtech GNSS solver configuration object.' }),
-                  ).exactOptional(),
+                  SemtechGnss: SemtechGnssConfigurationSchema.exactOptional().openapi({
+                    description: 'The Semtech GNSS solver configuration object.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12899,21 +11809,21 @@ export const postPositionEstimateRoute = createRoute({
                 }),
               CellTowers: z
                 .object({
-                  Gsm: GsmListSchema.and(
-                    z.any().openapi({ description: 'GSM object information.' }),
-                  ).exactOptional(),
-                  Wcdma: WcdmaListSchema.and(
-                    z.any().openapi({ description: 'WCDMA object information.' }),
-                  ).exactOptional(),
-                  Tdscdma: TdscdmaListSchema.and(
-                    z.any().openapi({ description: 'TD-SCDMA object information.' }),
-                  ).exactOptional(),
-                  Lte: LteListSchema.and(
-                    z.any().openapi({ description: 'LTE object information.' }),
-                  ).exactOptional(),
-                  Cdma: CdmaListSchema.and(
-                    z.any().openapi({ description: 'CDMA object information.' }),
-                  ).exactOptional(),
+                  Gsm: GsmListSchema.exactOptional().openapi({
+                    description: 'GSM object information.',
+                  }),
+                  Wcdma: WcdmaListSchema.exactOptional().openapi({
+                    description: 'WCDMA object information.',
+                  }),
+                  Tdscdma: TdscdmaListSchema.exactOptional().openapi({
+                    description: 'TD-SCDMA object information.',
+                  }),
+                  Lte: LteListSchema.exactOptional().openapi({
+                    description: 'LTE object information.',
+                  }),
+                  Cdma: CdmaListSchema.exactOptional().openapi({
+                    description: 'CDMA object information.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12922,9 +11832,9 @@ export const postPositionEstimateRoute = createRoute({
                 }),
               Ip: z
                 .object({
-                  IpAddress: IPAddressSchema.and(
-                    z.any().openapi({ description: 'IP address information.' }),
-                  ).exactOptional(),
+                  IpAddress: IPAddressSchema.exactOptional().openapi({
+                    description: 'IP address information.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -12933,54 +11843,30 @@ export const postPositionEstimateRoute = createRoute({
                 }),
               Gnss: z
                 .object({
-                  Payload: GnssNavSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Payload that contains the GNSS scan result, or NAV message, in hexadecimal notation.',
-                      }),
-                  ).exactOptional(),
-                  CaptureTime: GPSTSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Optional parameter that gives an estimate of the time when the GNSS scan information is taken, in seconds GPS time (GPST). If capture time is not specified, the local server time is used.',
-                      }),
-                  ).exactOptional(),
-                  CaptureTimeAccuracy: CaptureTimeAccuracySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Optional value that gives the capture time estimate accuracy, in seconds. If capture time accuracy is not specified, default value of 300 is used.',
-                      }),
-                  ).exactOptional(),
-                  AssistPosition: AssistPositionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Optional assistance position information, specified using latitude and longitude values in degrees. The coordinates are inside the WGS84 reference frame.',
-                      }),
-                  ).exactOptional(),
-                  AssistAltitude: CoordinateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Optional assistance altitude, which is the altitude of the device at capture time, specified in meters above the WGS84 reference ellipsoid.',
-                      }),
-                  ).exactOptional(),
-                  Use2DSolver: Use2DSolverSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Optional parameter that forces 2D solve, which modifies the positioning algorithm to a 2D solution problem. When this parameter is specified, the assistance altitude should have an accuracy of at least 10 meters.',
-                      }),
-                  ).exactOptional(),
+                  Payload: GnssNavSchema.exactOptional().openapi({
+                    description:
+                      'Payload that contains the GNSS scan result, or NAV message, in hexadecimal notation.',
+                  }),
+                  CaptureTime: GPSTSchema.exactOptional().openapi({
+                    description:
+                      'Optional parameter that gives an estimate of the time when the GNSS scan information is taken, in seconds GPS time (GPST). If capture time is not specified, the local server time is used.',
+                  }),
+                  CaptureTimeAccuracy: CaptureTimeAccuracySchema.exactOptional().openapi({
+                    description:
+                      'Optional value that gives the capture time estimate accuracy, in seconds. If capture time accuracy is not specified, default value of 300 is used.',
+                  }),
+                  AssistPosition: AssistPositionSchema.exactOptional().openapi({
+                    description:
+                      'Optional assistance position information, specified using latitude and longitude values in degrees. The coordinates are inside the WGS84 reference frame.',
+                  }),
+                  AssistAltitude: CoordinateSchema.exactOptional().openapi({
+                    description:
+                      'Optional assistance altitude, which is the altitude of the device at capture time, specified in meters above the WGS84 reference ellipsoid.',
+                  }),
+                  Use2DSolver: Use2DSolverSchema.exactOptional().openapi({
+                    description:
+                      'Optional parameter that forces 2D solve, which modifies the positioning algorithm to a 2D solution problem. When this parameter is specified, the assistance altitude should have an accuracy of at least 10 meters.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13196,22 +12082,15 @@ export const patchEventConfigurationsIdentifierIdentifierTypeRoute = createRoute
             .object({
               DeviceRegistrationState: z
                 .object({
-                  Sidewalk: SidewalkEventNotificationConfigurationsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Device registration state event configuration object for enabling or disabling Sidewalk related event topics.',
-                      }),
-                  ).exactOptional(),
-                  WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Denotes whether the wireless device ID device registration state event topic is enabled or disabled.',
-                      }),
-                  ).exactOptional(),
+                  Sidewalk: SidewalkEventNotificationConfigurationsSchema.exactOptional().openapi({
+                    description:
+                      'Device registration state event configuration object for enabling or disabling Sidewalk related event topics.',
+                  }),
+                  WirelessDeviceIdEventTopic:
+                    EventNotificationTopicStatusSchema.exactOptional().openapi({
+                      description:
+                        'Denotes whether the wireless device ID device registration state event topic is enabled or disabled.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13221,22 +12100,15 @@ export const patchEventConfigurationsIdentifierIdentifierTypeRoute = createRoute
                 }),
               Proximity: z
                 .object({
-                  Sidewalk: SidewalkEventNotificationConfigurationsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Proximity event configuration object for enabling or disabling Sidewalk related event topics.',
-                      }),
-                  ).exactOptional(),
-                  WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Denotes whether the wireless device ID proximity event topic is enabled or disabled.',
-                      }),
-                  ).exactOptional(),
+                  Sidewalk: SidewalkEventNotificationConfigurationsSchema.exactOptional().openapi({
+                    description:
+                      'Proximity event configuration object for enabling or disabling Sidewalk related event topics.',
+                  }),
+                  WirelessDeviceIdEventTopic:
+                    EventNotificationTopicStatusSchema.exactOptional().openapi({
+                      description:
+                        'Denotes whether the wireless device ID proximity event topic is enabled or disabled.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13246,22 +12118,17 @@ export const patchEventConfigurationsIdentifierIdentifierTypeRoute = createRoute
                 }),
               Join: z
                 .object({
-                  LoRaWAN: LoRaWANJoinEventNotificationConfigurationsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Join event configuration object for enabling or disabling LoRaWAN related event topics.',
-                      }),
-                  ).exactOptional(),
-                  WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Denotes whether the wireless device ID join event topic is enabled or disabled.',
-                      }),
-                  ).exactOptional(),
+                  LoRaWAN: LoRaWANJoinEventNotificationConfigurationsSchema.exactOptional().openapi(
+                    {
+                      description:
+                        'Join event configuration object for enabling or disabling LoRaWAN related event topics.',
+                    },
+                  ),
+                  WirelessDeviceIdEventTopic:
+                    EventNotificationTopicStatusSchema.exactOptional().openapi({
+                      description:
+                        'Denotes whether the wireless device ID join event topic is enabled or disabled.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13270,22 +12137,18 @@ export const patchEventConfigurationsIdentifierIdentifierTypeRoute = createRoute
                 }),
               ConnectionStatus: z
                 .object({
-                  LoRaWAN: LoRaWANConnectionStatusEventNotificationConfigurationsSchema.and(
-                    z
-                      .any()
-                      .openapi({
+                  LoRaWAN:
+                    LoRaWANConnectionStatusEventNotificationConfigurationsSchema.exactOptional().openapi(
+                      {
                         description:
                           'Connection status event configuration object for enabling or disabling LoRaWAN related event topics.',
-                      }),
-                  ).exactOptional(),
-                  WirelessGatewayIdEventTopic: EventNotificationTopicStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Denotes whether the wireless gateway ID connection status event topic is enabled or disabled.',
-                      }),
-                  ).exactOptional(),
+                      },
+                    ),
+                  WirelessGatewayIdEventTopic:
+                    EventNotificationTopicStatusSchema.exactOptional().openapi({
+                      description:
+                        'Denotes whether the wireless gateway ID connection status event topic is enabled or disabled.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -13296,14 +12159,11 @@ export const patchEventConfigurationsIdentifierIdentifierTypeRoute = createRoute
               MessageDeliveryStatus: z
                 .object({
                   Sidewalk: SidewalkEventNotificationConfigurationsSchema.exactOptional(),
-                  WirelessDeviceIdEventTopic: EventNotificationTopicStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Denotes whether the wireless device ID message delivery status event topic is enabled or disabled.',
-                      }),
-                  ).exactOptional(),
+                  WirelessDeviceIdEventTopic:
+                    EventNotificationTopicStatusSchema.exactOptional().openapi({
+                      description:
+                        'Denotes whether the wireless device ID message delivery status event topic is enabled or disabled.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -14818,12 +13678,12 @@ export const postWirelessDevicesIdDataRoute = createRoute({
                 }),
               WirelessMetadata: z
                 .object({
-                  LoRaWAN: LoRaWANSendDataToDeviceSchema.and(
-                    z.any().openapi({ description: 'LoRaWAN device info.' }),
-                  ).exactOptional(),
-                  Sidewalk: SidewalkSendDataToDeviceSchema.and(
-                    z.any().openapi({ description: 'The Sidewalk account credentials.' }),
-                  ).exactOptional(),
+                  LoRaWAN: LoRaWANSendDataToDeviceSchema.exactOptional().openapi({
+                    description: 'LoRaWAN device info.',
+                  }),
+                  Sidewalk: SidewalkSendDataToDeviceSchema.exactOptional().openapi({
+                    description: 'The Sidewalk account credentials.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'WirelessMetadata object.', required: [] }),
@@ -15428,14 +14288,10 @@ export const postWirelessSingleDeviceImportTaskRoute = createRoute({
                 }),
               Sidewalk: z
                 .object({
-                  SidewalkManufacturingSn: SidewalkManufacturingSnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Sidewalk manufacturing serial number (SMSN) of the device added to the import task.',
-                      }),
-                  ).exactOptional(),
+                  SidewalkManufacturingSn: SidewalkManufacturingSnSchema.exactOptional().openapi({
+                    description:
+                      'The Sidewalk manufacturing serial number (SMSN) of the device added to the import task.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -15532,22 +14388,14 @@ export const postWirelessDeviceImportTaskRoute = createRoute({
                 }),
               Sidewalk: z
                 .object({
-                  DeviceCreationFile: DeviceCreationFileSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The CSV file contained in an S3 bucket that's used for adding devices to an import task.",
-                      }),
-                  ).exactOptional(),
-                  Role: RoleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.',
-                      }),
-                  ).exactOptional(),
+                  DeviceCreationFile: DeviceCreationFileSchema.exactOptional().openapi({
+                    description:
+                      "The CSV file contained in an S3 bucket that's used for adding devices to an import task.",
+                  }),
+                  Role: RoleSchema.exactOptional().openapi({
+                    description:
+                      'The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.',
+                  }),
                 })
                 .openapi({
                   description: 'Information about an import task created for bulk provisioning.',

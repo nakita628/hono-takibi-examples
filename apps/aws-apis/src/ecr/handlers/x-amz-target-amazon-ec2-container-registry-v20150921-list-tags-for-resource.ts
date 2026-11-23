@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAmazonEC2ContainerRegistryV20150921ListTagsForResourceRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetAmazonEc2ContainerRegistryV20150921ListTagsForResourceHandler = app.openapi(
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921ListTagsForResourceRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

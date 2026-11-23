@@ -339,14 +339,12 @@ const DocGenDocumentGenerationDataSchema = z
 
 const DocGenBatchCreateRequestSchema = z
   .object({
-    file: FileReferenceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A Box Doc Gen template that is used to generate the document.' }),
-    ),
-    file_version: FileVersionBaseSchema.and(
-      z.any().openapi({ description: 'File version of a template.' }),
-    ).exactOptional(),
+    file: FileReferenceSchema.openapi({
+      description: 'A Box Doc Gen template that is used to generate the document.',
+    }),
+    file_version: FileVersionBaseSchema.exactOptional().openapi({
+      description: 'File version of a template.',
+    }),
     input_source: z
       .string()
       .openapi({
@@ -366,7 +364,7 @@ const DocGenBatchCreateRequestSchema = z
         description: 'Folder reference.',
         required: ['type', 'id'],
       })
-      .and(z.any().openapi({ description: 'Destination folder for the generated files.' })),
+      .openapi({ description: 'Destination folder for the generated files.' }),
     output_type: z.string().openapi({ description: 'Type of the output file.', example: 'docx' }),
     document_generation_data: z.array(DocGenDocumentGenerationDataSchema),
   })
@@ -408,97 +406,118 @@ const DocGenJobBaseSchema = z
 
 const DocGenJobSchema = DocGenJobBaseSchema.and(
   z
-    .object({
-      external_id: z
-        .string()
-        .max(36)
-        .exactOptional()
-        .openapi({
-          description:
-            'An optional identifier supplied by the caller when the Box Doc Gen\njob was created. Returned for correlation only. It is not a Box\nresource ID, is not required to be unique, and cannot be used to\nlook up the job.',
-          example: '111222_externalID',
-        }),
-      batch: DocGenBatchBaseSchema.and(
-        z.any().openapi({ description: 'Box Doc Gen batch that the job belongs to.' }),
-      ).exactOptional(),
-      template_file: FileReferenceSchema.and(
-        z.any().openapi({ description: 'Box Doc Gen template used in the job.' }),
-      ).exactOptional(),
-      template_file_version: FileVersionBaseSchema.and(
-        z.any().openapi({ description: 'File version of a template.' }),
-      ).exactOptional(),
-      output_file: z
-        .xor([
-          FileReferenceSchema,
-          z
-            .strictObject({})
-            .nullable()
-            .openapi({
-              title: 'OpenAPI 3.0 null schema type',
-              description: 'The definition for a null schema type in OpenAPI `3.0`.',
-            }),
-        ])
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The output file of the job. This property is `null` until the job is completed.',
-            }),
-        )
-        .exactOptional(),
-      output_file_version: z
-        .xor([
-          FileVersionBaseSchema,
-          z
-            .strictObject({})
-            .nullable()
-            .openapi({
-              title: 'OpenAPI 3.0 null schema type',
-              description: 'The definition for a null schema type in OpenAPI `3.0`.',
-            }),
-        ])
-        .and(
-          z
-            .any()
-            .openapi({
-              description:
-                'File version of the output file. This property is `null` until the job is completed.',
-            }),
-        )
-        .exactOptional(),
-      status: z
-        .enum(['submitted', 'completed', 'failed', 'completed_with_error', 'pending'])
-        .exactOptional()
-        .openapi({ description: 'Status of the job.', example: 'completed' }),
-      output_type: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Type of the generated file.', example: 'docx' }),
-      failures: z
-        .object({
-          errors: z
-            .array(z.string())
-            .openapi({
-              description: 'A list of errors that occurred during document generation.',
-              example: ["The tag 'customer_name' was not provided in the input data."],
-            }),
-          warnings: z
-            .array(z.string())
-            .openapi({
-              description: 'A list of warnings that occurred during document generation.',
-              example: ["The tag 'optional_field' was provided but not used in the template."],
-            }),
-        })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Errors and warnings that occurred during document generation.',
-          required: ['errors', 'warnings'],
-        }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: ['id', 'batch', 'template_file', 'template_file_version', 'status', 'output_type'],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'batch')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'template_file')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'template_file_version')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'output_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        external_id: z
+          .string()
+          .max(36)
+          .exactOptional()
+          .openapi({
+            description:
+              'An optional identifier supplied by the caller when the Box Doc Gen\njob was created. Returned for correlation only. It is not a Box\nresource ID, is not required to be unique, and cannot be used to\nlook up the job.',
+            example: '111222_externalID',
+          }),
+        batch: DocGenBatchBaseSchema.exactOptional().openapi({
+          description: 'Box Doc Gen batch that the job belongs to.',
+        }),
+        template_file: FileReferenceSchema.exactOptional().openapi({
+          description: 'Box Doc Gen template used in the job.',
+        }),
+        template_file_version: FileVersionBaseSchema.exactOptional().openapi({
+          description: 'File version of a template.',
+        }),
+        output_file: z
+          .xor([
+            FileReferenceSchema,
+            z
+              .strictObject({})
+              .nullable()
+              .openapi({
+                title: 'OpenAPI 3.0 null schema type',
+                description: 'The definition for a null schema type in OpenAPI `3.0`.',
+              }),
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'The output file of the job. This property is `null` until the job is completed.',
+          }),
+        output_file_version: z
+          .xor([
+            FileVersionBaseSchema,
+            z
+              .strictObject({})
+              .nullable()
+              .openapi({
+                title: 'OpenAPI 3.0 null schema type',
+                description: 'The definition for a null schema type in OpenAPI `3.0`.',
+              }),
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'File version of the output file. This property is `null` until the job is completed.',
+          }),
+        status: z
+          .enum(['submitted', 'completed', 'failed', 'completed_with_error', 'pending'])
+          .exactOptional()
+          .openapi({ description: 'Status of the job.', example: 'completed' }),
+        output_type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Type of the generated file.', example: 'docx' }),
+        failures: z
+          .object({
+            errors: z
+              .array(z.string())
+              .openapi({
+                description: 'A list of errors that occurred during document generation.',
+                example: ["The tag 'customer_name' was not provided in the input data."],
+              }),
+            warnings: z
+              .array(z.string())
+              .openapi({
+                description: 'A list of warnings that occurred during document generation.',
+                example: ["The tag 'optional_field' was provided but not used in the template."],
+              }),
+          })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Errors and warnings that occurred during document generation.',
+            required: ['errors', 'warnings'],
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A standard representation of a Box Doc Gen job.',
     required: ['id', 'batch', 'template_file', 'template_file_version', 'status', 'output_type'],
@@ -546,28 +565,76 @@ const EnterpriseReferenceSchema = z
 
 const DocGenJobFullSchema = DocGenJobSchema.and(
   z
-    .object({
-      created_at: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Time of job creation.',
-          example: '2022-05-11T10:56:11-07:00',
-          readOnly: true,
-        }),
-      created_by: UserBaseSchema.and(
-        z.any().openapi({ description: 'User who created the job.' }),
-      ).exactOptional(),
-      enterprise: EnterpriseReferenceSchema.and(
-        z.any().openapi({ description: 'ID of the enterprise.' }),
-      ).exactOptional(),
-      source: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Source of the request.', example: 'api', readOnly: true }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: [
+        'id',
+        'batch',
+        'created_by',
+        'enterprise',
+        'template_file',
+        'template_file_version',
+        'output_type',
+        'source',
+        'status',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'batch')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'created_by')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'enterprise')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'template_file')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'template_file_version')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'output_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'source')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        created_at: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Time of job creation.',
+            example: '2022-05-11T10:56:11-07:00',
+            readOnly: true,
+          }),
+        created_by: UserBaseSchema.exactOptional().openapi({
+          description: 'User who created the job.',
+        }),
+        enterprise: EnterpriseReferenceSchema.exactOptional().openapi({
+          description: 'ID of the enterprise.',
+        }),
+        source: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Source of the request.', example: 'api', readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A full representation of a Box Doc Gen job.',
     required: [
@@ -815,9 +882,9 @@ const DocGenTagsProcessingMessageSchema = z
 
 const DocGenTemplateBaseSchema = z
   .object({
-    file: FileReferenceSchema.and(
-      z.any().openapi({ description: 'Enable the file to generate a document from.' }),
-    ).exactOptional(),
+    file: FileReferenceSchema.exactOptional().openapi({
+      description: 'Enable the file to generate a document from.',
+    }),
   })
   .openapi({
     description:
@@ -853,13 +920,9 @@ const DocGenTemplateSchema = DocGenTemplateBaseSchema.and(
 
 const DocGenTemplateCreateRequestSchema = z
   .object({
-    file: FileReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Marks the file as a Box Doc Gen template to generate the document from.',
-        }),
-    ),
+    file: FileReferenceSchema.openapi({
+      description: 'Marks the file as a Box Doc Gen template to generate the document from.',
+    }),
   })
   .openapi({
     description: 'The schema for marking document as Box Doc Gen template.',
@@ -1123,51 +1186,41 @@ const KeysafeSettingsSchema = z
 
 const EnterpriseConfigurationSecuritySchema = z
   .object({
-    is_managed_user_signup_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Determines if users are allowed to sign up on their own.' }),
-    ).exactOptional(),
-    is_managed_user_signup_notification_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Determines if users must sign up with your corporate email.' }),
-    ).exactOptional(),
-    is_managed_user_signup_corporate_email_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'When enabled, admin are emailed when new users are added.' }),
-    ).exactOptional(),
-    is_new_user_notification_daily_digest_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Depends on `is_managed_user_signup_corporate_email_enabled`. A true value represents `In daily summary emails`. A false value represents `Immediately`.',
-        }),
-    ).exactOptional(),
-    is_managed_user_email_change_disabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When enabled, prevents users from changing their primary email address.',
-        }),
-    ).exactOptional(),
-    is_multi_factor_auth_required: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if multi-factor authentication is required for all managed users.',
-        }),
-    ).exactOptional(),
-    is_weak_password_prevention_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When enabled, prevents common words / email address to be used in a password.',
-        }),
-    ).exactOptional(),
-    is_password_leak_detection_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables exposed password detection.' }),
-    ).exactOptional(),
+    is_managed_user_signup_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Determines if users are allowed to sign up on their own.',
+      }),
+    is_managed_user_signup_notification_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Determines if users must sign up with your corporate email.',
+      }),
+    is_managed_user_signup_corporate_email_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'When enabled, admin are emailed when new users are added.',
+      }),
+    is_new_user_notification_daily_digest_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Depends on `is_managed_user_signup_corporate_email_enabled`. A true value represents `In daily summary emails`. A false value represents `Immediately`.',
+      }),
+    is_managed_user_email_change_disabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'When enabled, prevents users from changing their primary email address.',
+      }),
+    is_multi_factor_auth_required: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi(
+      {
+        description: 'Determines if multi-factor authentication is required for all managed users.',
+      },
+    ),
+    is_weak_password_prevention_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'When enabled, prevents common words / email address to be used in a password.',
+      }),
+    is_password_leak_detection_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Enables exposed password detection.',
+      }),
     last_password_reset_at: EnterpriseConfigurationItemSchema.and(
       z
         .object({
@@ -1182,115 +1235,81 @@ const EnterpriseConfigurationSecuritySchema = z
         })
         .openapi({ required: [] }),
     ).exactOptional(),
-    is_password_request_notification_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When enabled, admins are notified when users request a forget password email.',
-        }),
-    ).exactOptional(),
-    is_password_change_notification_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When enabled, admins are notified when users change passwords in Settings.',
-        }),
-    ).exactOptional(),
-    is_strong_password_for_ext_collab_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Requires strong passwords for External Collaborators.' }),
-    ).exactOptional(),
-    is_managed_user_migration_disabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Disables users from being migrated in or out of the enterprise.',
-        }),
-    ).exactOptional(),
-    join_link: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Join url for self sign up. Depends on `is_managed_user_signup_enabled`. Applies if `join_url` is not used.',
-        }),
-    ).exactOptional(),
-    join_url: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Join url for self sign up. Depends on `is_managed_user_signup_enabled`. Applies if `join_link` is not used.',
-        }),
-    ).exactOptional(),
+    is_password_request_notification_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'When enabled, admins are notified when users request a forget password email.',
+      }),
+    is_password_change_notification_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'When enabled, admins are notified when users change passwords in Settings.',
+      }),
+    is_strong_password_for_ext_collab_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Requires strong passwords for External Collaborators.',
+      }),
+    is_managed_user_migration_disabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Disables users from being migrated in or out of the enterprise.',
+      }),
+    join_link: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description:
+        'Join url for self sign up. Depends on `is_managed_user_signup_enabled`. Applies if `join_url` is not used.',
+    }),
+    join_url: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description:
+        'Join url for self sign up. Depends on `is_managed_user_signup_enabled`. Applies if `join_link` is not used.',
+    }),
     failed_login_attempts_to_trigger_admin_notification:
-      EnterpriseConfigurationItemIntegerSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'Number of failed login attempts before the primary admin is notified.',
-          }),
-      ).exactOptional(),
-    password_min_length: EnterpriseConfigurationItemIntegerSchema.and(
-      z.any().openapi({ description: 'Minimum number of characters required for passwords.' }),
-    ).exactOptional(),
-    password_min_uppercase_characters: EnterpriseConfigurationItemIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Minimum number of upper case characters required in passwords.' }),
-    ).exactOptional(),
-    password_min_numeric_characters: EnterpriseConfigurationItemIntegerSchema.and(
-      z.any().openapi({ description: 'Minimum number of numbers required in passwords.' }),
-    ).exactOptional(),
-    password_min_special_characters: EnterpriseConfigurationItemIntegerSchema.and(
-      z.any().openapi({ description: 'Minimum number of symbols required in passwords.' }),
-    ).exactOptional(),
-    password_reset_frequency: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if users must reset their passwords every specified time period.',
-        }),
-    ).exactOptional(),
-    previous_password_reuse_limit: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Number of previous passwords users are prevented from using.' }),
-    ).exactOptional(),
-    session_duration: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Value indicating time from the last activity a user can remain logged in without activity before being logged out.',
-        }),
-    ).exactOptional(),
+      EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+        description: 'Number of failed login attempts before the primary admin is notified.',
+      }),
+    password_min_length: EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+      description: 'Minimum number of characters required for passwords.',
+    }),
+    password_min_uppercase_characters:
+      EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+        description: 'Minimum number of upper case characters required in passwords.',
+      }),
+    password_min_numeric_characters:
+      EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+        description: 'Minimum number of numbers required in passwords.',
+      }),
+    password_min_special_characters:
+      EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+        description: 'Minimum number of symbols required in passwords.',
+      }),
+    password_reset_frequency: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'Determines if users must reset their passwords every specified time period.',
+    }),
+    previous_password_reuse_limit: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'Number of previous passwords users are prevented from using.',
+    }),
+    session_duration: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description:
+        'Value indicating time from the last activity a user can remain logged in without activity before being logged out.',
+    }),
     external_collab_multi_factor_auth_settings: EnterpriseConfigurationItemSchema.and(
       z
-        .any()
-        .openapi({ description: 'External Collaborators multi-factor authentication settings.' }),
+        .object({
+          value: z
+            .xor([
+              ExternalCollabSecuritySettingsSchema,
+              z
+                .strictObject({})
+                .nullable()
+                .openapi({
+                  title: 'OpenAPI 3.0 null schema type',
+                  description: 'The definition for a null schema type in OpenAPI `3.0`.',
+                }),
+            ])
+            .exactOptional()
+            .openapi({ description: 'External collab security settings.' }),
+        })
+        .openapi({ required: [] }),
     )
-      .and(
-        z
-          .object({
-            value: z
-              .xor([
-                ExternalCollabSecuritySettingsSchema,
-                z
-                  .strictObject({})
-                  .nullable()
-                  .openapi({
-                    title: 'OpenAPI 3.0 null schema type',
-                    description: 'The definition for a null schema type in OpenAPI `3.0`.',
-                  }),
-              ])
-              .and(z.any().openapi({ description: 'External collab security settings.' }))
-              .exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'External Collaborators multi-factor authentication settings.' }),
     keysafe: EnterpriseConfigurationItemSchema.and(
       z
         .object({
@@ -1305,76 +1324,61 @@ const EnterpriseConfigurationSecuritySchema = z
                   description: 'The definition for a null schema type in OpenAPI `3.0`.',
                 }),
             ])
-            .and(z.any().openapi({ description: 'Keysafe settings.' }))
-            .exactOptional(),
+            .exactOptional()
+            .openapi({ description: 'Keysafe settings.' }),
         })
         .openapi({ required: [] }),
     ).exactOptional(),
-    is_custom_session_duration_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables custom session duration for select users.' }),
-    ).exactOptional(),
-    custom_session_duration_value: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Value indicating duration users from specified groups can remain logged in without activity before being logged out.',
-        }),
-    ).exactOptional(),
+    is_custom_session_duration_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Enables custom session duration for select users.',
+      }),
+    custom_session_duration_value: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description:
+        'Value indicating duration users from specified groups can remain logged in without activity before being logged out.',
+    }),
     custom_session_duration_groups: EnterpriseConfigurationItemSchema.and(
-      z.any().openapi({ description: 'Groups for custom session duration.' }),
-    )
-      .and(
-        z
-          .object({ value: z.array(CustomSessionDurationGroupItemSchema).exactOptional() })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    multi_factor_auth_type: EnterpriseConfigurationItemStringSchema.and(
       z
-        .any()
-        .openapi({
-          description: 'Managed Users multi-factor authentication requirement method type.',
-        }),
-    ).exactOptional(),
+        .object({ value: z.array(CustomSessionDurationGroupItemSchema).exactOptional() })
+        .openapi({ required: [] }),
+    )
+      .exactOptional()
+      .openapi({ description: 'Groups for custom session duration.' }),
+    multi_factor_auth_type: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'Managed Users multi-factor authentication requirement method type.',
+    }),
     enforced_mfa_frequency: EnterpriseConfigurationItemSchema.and(
       z
-        .any()
-        .openapi({
-          description:
-            'Managed Users multi-factor authentication frequency. The default authentication frequency is set to 30 days, with authentication time calculated from the most recent successful MFA login.',
-        }),
+        .object({
+          value: z
+            .object({
+              days: z
+                .int()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description: 'Number of days before the user is required to authenticate again.',
+                  example: 30,
+                }),
+              hours: z
+                .int()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description: 'Number of hours before the user is required to authenticate again.',
+                  example: 24,
+                }),
+            })
+            .exactOptional()
+            .openapi({ required: [] }),
+        })
+        .openapi({ required: [] }),
     )
-      .and(
-        z
-          .object({
-            value: z
-              .object({
-                days: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Number of days before the user is required to authenticate again.',
-                    example: 30,
-                  }),
-                hours: z
-                  .int()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Number of hours before the user is required to authenticate again.',
-                    example: 24,
-                  }),
-              })
-              .exactOptional()
-              .openapi({ required: [] }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'Managed Users multi-factor authentication frequency. The default authentication frequency is set to 30 days, with authentication time calculated from the most recent successful MFA login.',
+      }),
   })
   .openapi({
     description: 'The enterprise configuration for the security category.',
@@ -1462,11 +1466,8 @@ const EnterpriseFeatureSettingSchema = z
   .openapi('EnterpriseFeatureSetting')
 
 const EnterpriseFeatureSettingsItemSchema = EnterpriseConfigurationItemSchema.and(
-  z.any().openapi({ description: 'The enterprise feature settings.' }),
+  z.object({ value: EnterpriseFeatureSettingSchema.exactOptional() }).openapi({ required: [] }),
 )
-  .and(
-    z.object({ value: EnterpriseFeatureSettingSchema.exactOptional() }).openapi({ required: [] }),
-  )
   .openapi({
     description: 'An enterprise feature settings item.',
     title: 'Enterprise feature settings item',
@@ -1539,254 +1540,218 @@ const ListUserSchema = z
 const EnterpriseConfigurationContentAndSharingSchema = z
   .object({
     enterprise_feature_settings: z.array(EnterpriseFeatureSettingsItemSchema).exactOptional(),
-    sharing_item_type: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The selected option for the type of items that sharing is enable for.',
-        }),
-    ).exactOptional(),
-    shared_link_company_definition: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The definition of the company for shared links (such as `enterprise_id`, `users_with_email_domain`).',
-        }),
-    ).exactOptional(),
-    shared_link_access: EnterpriseConfigurationItemStringSchema.and(
-      z.any().openapi({ description: 'The selected option for who has access to shared links.' }),
-    ).exactOptional(),
-    shared_link_default_access: EnterpriseConfigurationItemStringSchema.and(
-      z.any().openapi({ description: 'The selected option for the access level of shared links.' }),
-    ).exactOptional(),
+    sharing_item_type: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'The selected option for the type of items that sharing is enable for.',
+    }),
+    shared_link_company_definition: EnterpriseConfigurationItemStringSchema.exactOptional().openapi(
+      {
+        description:
+          'The definition of the company for shared links (such as `enterprise_id`, `users_with_email_domain`).',
+      },
+    ),
+    shared_link_access: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'The selected option for who has access to shared links.',
+    }),
+    shared_link_default_access: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'The selected option for the access level of shared links.',
+    }),
     shared_link_default_permissions_selected: EnterpriseConfigurationItemSchema.and(
-      z.any().openapi({ description: 'The permissions selected for shared links for each type.' }),
+      z.object({ value: SharedLinkPermissionsSchema.exactOptional() }).openapi({ required: [] }),
     )
-      .and(
-        z.object({ value: SharedLinkPermissionsSchema.exactOptional() }).openapi({ required: [] }),
-      )
-      .exactOptional(),
-    is_open_custom_urls_disabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Disables custom shared link URLs for public access.' }),
-    ).exactOptional(),
-    is_custom_domain_hidden_in_shared_link: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Hides the custom domain in shared links.' }),
-    ).exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'The permissions selected for shared links for each type.' }),
+    is_open_custom_urls_disabled: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Disables custom shared link URLs for public access.',
+    }),
+    is_custom_domain_hidden_in_shared_link:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Hides the custom domain in shared links.',
+      }),
     collaboration_permissions: EnterpriseConfigurationItemSchema.and(
       z.object({ value: CollaborationPermissionsSchema.exactOptional() }).openapi({ required: [] }),
     ).exactOptional(),
-    default_collaboration_role: EnterpriseConfigurationItemStringSchema.and(
-      z.any().openapi({ description: 'The current default collaboration role.' }),
-    ).exactOptional(),
-    is_invite_privilege_restricted: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Restrict invites to only admin, folder owners, and co-owners.' }),
-    ).exactOptional(),
+    default_collaboration_role: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'The current default collaboration role.',
+    }),
+    is_invite_privilege_restricted:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Restrict invites to only admin, folder owners, and co-owners.',
+      }),
     collaboration_restrictions: EnterpriseConfigurationItemSchema.and(
-      z.any().openapi({ description: 'The collaboration restrictions for the enterprise.' }),
-    )
-      .and(
-        z
-          .object({
-            value: z
-              .array(
-                z
-                  .string()
-                  .openapi({
-                    description:
-                      'The collaboration restriction. Possible values: `internal`, `external`.',
-                    example: 'internal',
-                  }),
-              )
-              .exactOptional()
-              .openapi({ example: ['internal'] }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    is_collaborator_invite_links_disabled: EnterpriseConfigurationItemBooleanSchema.and(
       z
-        .any()
-        .openapi({ description: 'Disables users to invite collaborators using invite links.' }),
-    ).exactOptional(),
-    is_invite_group_collaborator_disabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Disables users to invite group collaborators.' }),
-    ).exactOptional(),
-    is_ownership_transfer_restricted: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Prevents ownership transfer to external users.' }),
-    ).exactOptional(),
+        .object({
+          value: z
+            .array(
+              z
+                .string()
+                .openapi({
+                  description:
+                    'The collaboration restriction. Possible values: `internal`, `external`.',
+                  example: 'internal',
+                }),
+            )
+            .exactOptional()
+            .openapi({ example: ['internal'] }),
+        })
+        .openapi({ required: [] }),
+    )
+      .exactOptional()
+      .openapi({ description: 'The collaboration restrictions for the enterprise.' }),
+    is_collaborator_invite_links_disabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Disables users to invite collaborators using invite links.',
+      }),
+    is_invite_group_collaborator_disabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Disables users to invite group collaborators.',
+      }),
+    is_ownership_transfer_restricted:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Prevents ownership transfer to external users.',
+      }),
     external_collaboration_status: EnterpriseConfigurationItemSchema.and(
       z
-        .any()
-        .openapi({
-          description:
-            'The external collaboration status.\nPossible values: `enable_external_collaboration`, `limit_collaboration_to_allowlisted_domains`, `limit_collaboration_to_users_within_enterprise`.',
-        }),
+        .object({
+          value: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'The external collaboration status.',
+              example: 'enable_external_collaboration',
+            }),
+        })
+        .openapi({ required: [] }),
     )
-      .and(
-        z
-          .object({
-            value: z
-              .string()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'The external collaboration status.',
-                example: 'enable_external_collaboration',
-              }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'The external collaboration status.\nPossible values: `enable_external_collaboration`, `limit_collaboration_to_allowlisted_domains`, `limit_collaboration_to_users_within_enterprise`.',
+      }),
     external_collaboration_allowlist_users: EnterpriseConfigurationItemSchema.and(
-      z.any().openapi({ description: 'The external collaboration allowlist users.' }),
+      z.object({ value: z.array(ListUserSchema).exactOptional() }).openapi({ required: [] }),
     )
-      .and(z.object({ value: z.array(ListUserSchema).exactOptional() }).openapi({ required: [] }))
-      .exactOptional(),
-    is_watermarking_enterprise_feature_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables watermarking enterprise feature.' }),
-    ).exactOptional(),
-    is_root_content_creation_restricted: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Only admins can create and delete first-level folders, files, and bookmarks.',
-        }),
-    ).exactOptional(),
-    is_tag_creation_restricted: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Only selected users can create tags.' }),
-    ).exactOptional(),
-    tag_creation_restriction: EnterpriseConfigurationItemStringSchema.and(
-      z.any().openapi({ description: 'The selected option for tag creation restriction.' }),
-    ).exactOptional(),
-    is_email_uploads_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables email uploads.' }),
-    ).exactOptional(),
-    is_custom_settings_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables custom settings.' }),
-    ).exactOptional(),
-    is_forms_login_required: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Require uploaders to log in with a Box account for Forms.' }),
-    ).exactOptional(),
-    is_forms_branding_default_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Company brand color and logo defaults to Logo for use on Brand Color for Forms.',
-        }),
-    ).exactOptional(),
-    is_cc_free_trial_active: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Indicates if the enterprise is on a free trial.' }),
-    ).exactOptional(),
-    is_file_request_editors_allowed: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates if editors are allowed for file requests feature.' }),
-    ).exactOptional(),
-    is_file_request_branding_default_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Company brand color and logo defaults to Logo for use on Brand Color for File Requests.',
-        }),
-    ).exactOptional(),
-    is_file_request_login_required: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Require uploaders to log in with a Box account for File Requests.',
-        }),
-    ).exactOptional(),
-    is_shared_links_expiration_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables shared links expiration.' }),
-    ).exactOptional(),
-    shared_links_expiration_days: EnterpriseConfigurationItemIntegerSchema.and(
-      z.any().openapi({ description: 'The expiration time for shared links.' }),
-    ).exactOptional(),
-    is_public_shared_links_expiration_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables public shared links expiration.' }),
-    ).exactOptional(),
-    public_shared_links_expiration_days: EnterpriseConfigurationItemIntegerSchema.and(
-      z.any().openapi({ description: 'The expiration time for public shared links.' }),
-    ).exactOptional(),
-    shared_expiration_target: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The selected option of types for applying shared link expiration.',
-        }),
-    ).exactOptional(),
-    is_shared_links_expiration_notification_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables shared links expiration notification.' }),
-    ).exactOptional(),
-    shared_links_expiration_notification_days: EnterpriseConfigurationItemIntegerSchema.and(
-      z.any().openapi({ description: 'The number of days before expiration to notify users.' }),
-    ).exactOptional(),
-    is_shared_links_expiration_notification_prevented: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Prevents users from disabling shared links expiration notification.',
-        }),
-    ).exactOptional(),
-    is_auto_delete_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables auto delete.' }),
-    ).exactOptional(),
-    auto_delete_days: EnterpriseConfigurationItemIntegerSchema.and(
-      z.any().openapi({ description: 'The number of days before auto delete.' }),
-    ).exactOptional(),
-    is_auto_delete_expiration_modification_prevented: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Prevents users from modifying auto delete expiration.' }),
-    ).exactOptional(),
-    auto_delete_target: EnterpriseConfigurationItemStringSchema.and(
-      z.any().openapi({ description: 'The selected option of types for applying auto delete.' }),
-    ).exactOptional(),
-    is_collaboration_expiration_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables collaboration expiration.' }),
-    ).exactOptional(),
-    collaboration_expiration_days: EnterpriseConfigurationItemIntegerSchema.and(
-      z.any().openapi({ description: 'The number of days before collaboration expiration.' }),
-    ).exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'The external collaboration allowlist users.' }),
+    is_watermarking_enterprise_feature_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Enables watermarking enterprise feature.',
+      }),
+    is_root_content_creation_restricted:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Only admins can create and delete first-level folders, files, and bookmarks.',
+      }),
+    is_tag_creation_restricted: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Only selected users can create tags.',
+    }),
+    tag_creation_restriction: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'The selected option for tag creation restriction.',
+    }),
+    is_email_uploads_enabled: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Enables email uploads.',
+    }),
+    is_custom_settings_enabled: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Enables custom settings.',
+    }),
+    is_forms_login_required: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Require uploaders to log in with a Box account for Forms.',
+    }),
+    is_forms_branding_default_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Company brand color and logo defaults to Logo for use on Brand Color for Forms.',
+      }),
+    is_cc_free_trial_active: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Indicates if the enterprise is on a free trial.',
+    }),
+    is_file_request_editors_allowed:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Indicates if editors are allowed for file requests feature.',
+      }),
+    is_file_request_branding_default_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Company brand color and logo defaults to Logo for use on Brand Color for File Requests.',
+      }),
+    is_file_request_login_required:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Require uploaders to log in with a Box account for File Requests.',
+      }),
+    is_shared_links_expiration_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Enables shared links expiration.',
+      }),
+    shared_links_expiration_days: EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+      description: 'The expiration time for shared links.',
+    }),
+    is_public_shared_links_expiration_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Enables public shared links expiration.',
+      }),
+    public_shared_links_expiration_days:
+      EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+        description: 'The expiration time for public shared links.',
+      }),
+    shared_expiration_target: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'The selected option of types for applying shared link expiration.',
+    }),
+    is_shared_links_expiration_notification_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Enables shared links expiration notification.',
+      }),
+    shared_links_expiration_notification_days:
+      EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+        description: 'The number of days before expiration to notify users.',
+      }),
+    is_shared_links_expiration_notification_prevented:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Prevents users from disabling shared links expiration notification.',
+      }),
+    is_auto_delete_enabled: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Enables auto delete.',
+    }),
+    auto_delete_days: EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+      description: 'The number of days before auto delete.',
+    }),
+    is_auto_delete_expiration_modification_prevented:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Prevents users from modifying auto delete expiration.',
+      }),
+    auto_delete_target: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'The selected option of types for applying auto delete.',
+    }),
+    is_collaboration_expiration_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Enables collaboration expiration.',
+      }),
+    collaboration_expiration_days: EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi(
+      { description: 'The number of days before collaboration expiration.' },
+    ),
     is_collaboration_expiration_modification_prevented:
-      EnterpriseConfigurationItemBooleanSchema.and(
-        z.any().openapi({ description: 'Prevents users from modifying collaboration expiration.' }),
-      ).exactOptional(),
-    is_collaboration_expiration_notification_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Enables collaboration expiration notification.' }),
-    ).exactOptional(),
-    collaboration_expiration_target: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The selected option of types for applying collaboration expiration.',
-        }),
-    ).exactOptional(),
-    trash_auto_clear_time: EnterpriseConfigurationItemIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time before items are permanently deleted from the trash in seconds.',
-        }),
-    ).exactOptional(),
-    permanent_deletion_access: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The selected option for who can delete items from the trash.' }),
-    ).exactOptional(),
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Prevents users from modifying collaboration expiration.',
+      }),
+    is_collaboration_expiration_notification_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Enables collaboration expiration notification.',
+      }),
+    collaboration_expiration_target:
+      EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+        description: 'The selected option of types for applying collaboration expiration.',
+      }),
+    trash_auto_clear_time: EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+      description: 'The time before items are permanently deleted from the trash in seconds.',
+    }),
+    permanent_deletion_access: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'The selected option for who can delete items from the trash.',
+    }),
     permanent_deletion_allowlist_users: EnterpriseConfigurationItemSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The allowlist users for permanently deleting items from the trash.',
-        }),
+      z.object({ value: z.array(ListUserSchema).exactOptional() }).openapi({ required: [] }),
     )
-      .and(z.object({ value: z.array(ListUserSchema).exactOptional() }).openapi({ required: [] }))
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description: 'The allowlist users for permanently deleting items from the trash.',
+      }),
   })
   .openapi({
     description: 'The enterprise configuration for the content and sharing category.',
@@ -1829,134 +1794,93 @@ const UserTrackingCodeSchema = z
 const EnterpriseConfigurationUserSettingsSchema = z
   .object({
     enterprise_feature_settings: z.array(EnterpriseFeatureSettingsItemSchema).exactOptional(),
-    user_invites_expiration_time_frame: EnterpriseConfigurationItemStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines the time frame for any unaccepted invitation to your Box enterprise account to expire.',
-        }),
-    )
-      .and(z.any().openapi({ example: { is_used: true, value: '7 days' } }))
-      .exactOptional(),
-    is_username_change_restricted: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if users are restricted from changing their username in Account Settings.',
-        }),
-    ).exactOptional(),
-    is_box_sync_restricted_for_new_users: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Determines if Box Sync is restricted for new users.' }),
-    ).exactOptional(),
-    is_view_all_users_enabled_for_new_users: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if new users can see all managed users in their contacts when inviting collaborators.',
-        }),
-    ).exactOptional(),
-    is_device_limit_exemption_enabled_for_new_users: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if new users are exempt from the maximum number of devices specified in the Device Protection settings.',
-        }),
-    ).exactOptional(),
+    user_invites_expiration_time_frame:
+      EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+        description:
+          'Determines the time frame for any unaccepted invitation to your Box enterprise account to expire.',
+        example: { is_used: true, value: '7 days' },
+      }),
+    is_username_change_restricted: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi(
+      {
+        description:
+          'Determines if users are restricted from changing their username in Account Settings.',
+      },
+    ),
+    is_box_sync_restricted_for_new_users:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Determines if Box Sync is restricted for new users.',
+      }),
+    is_view_all_users_enabled_for_new_users:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Determines if new users can see all managed users in their contacts when inviting collaborators.',
+      }),
+    is_device_limit_exemption_enabled_for_new_users:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Determines if new users are exempt from the maximum number of devices specified in the Device Protection settings.',
+      }),
     is_external_collaboration_restricted_for_new_users:
-      EnterpriseConfigurationItemBooleanSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Determines if new users will not be allowed to create folders that can have external collaborators.',
-          }),
-      ).exactOptional(),
-    is_unlimited_storage_enabled_for_new_users: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Determines if new users are given unlimited storage.' }),
-    ).exactOptional(),
-    new_user_default_storage_limit: EnterpriseConfigurationItemIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines the default storage limit for new users. Does not apply if `is_unlimited_storage_enabled_for_new_users` is true.',
-        }),
-    ).exactOptional(),
-    new_user_default_timezone: EnterpriseConfigurationItemStringSchema.and(
-      z.any().openapi({ description: 'Determines the default timezone for new users.' }),
-    )
-      .and(
-        z.any().openapi({ example: { is_used: true, value: 'GMT-05:00 America\\/Chicago CDT' } }),
-      )
-      .exactOptional(),
-    new_user_default_language: EnterpriseConfigurationItemStringSchema.and(
-      z.any().openapi({ description: 'Determines the default language for new users.' }),
-    )
-      .and(z.any().openapi({ example: { is_used: true, value: 'English (US)' } }))
-      .exactOptional(),
-    is_enterprise_sso_required: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Value indicating if SSO is required for all users.' }),
-    ).exactOptional(),
-    is_enterprise_sso_in_testing: EnterpriseConfigurationItemBooleanSchema.and(
-      z.any().openapi({ description: 'Value indicating if SSO is in testing mode for all users.' }),
-    ).exactOptional(),
-    is_sso_auto_add_groups_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if any new groups received for a user upon login through SSO but not present in the enterprise will be auto added to the enterprise.',
-        }),
-    ).exactOptional(),
-    is_sso_auto_add_user_to_groups_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if a user will be added to enterprise groups received upon user login through SSO.',
-        }),
-    ).exactOptional(),
-    is_sso_auto_remove_user_from_groups_enabled: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if a user will be removed from enterprise groups upon user login through SSO.',
-        }),
-    ).exactOptional(),
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Determines if new users will not be allowed to create folders that can have external collaborators.',
+      }),
+    is_unlimited_storage_enabled_for_new_users:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description: 'Determines if new users are given unlimited storage.',
+      }),
+    new_user_default_storage_limit:
+      EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+        description:
+          'Determines the default storage limit for new users. Does not apply if `is_unlimited_storage_enabled_for_new_users` is true.',
+      }),
+    new_user_default_timezone: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'Determines the default timezone for new users.',
+      example: { is_used: true, value: 'GMT-05:00 America\\/Chicago CDT' },
+    }),
+    new_user_default_language: EnterpriseConfigurationItemStringSchema.exactOptional().openapi({
+      description: 'Determines the default language for new users.',
+      example: { is_used: true, value: 'English (US)' },
+    }),
+    is_enterprise_sso_required: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Value indicating if SSO is required for all users.',
+    }),
+    is_enterprise_sso_in_testing: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description: 'Value indicating if SSO is in testing mode for all users.',
+    }),
+    is_sso_auto_add_groups_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Determines if any new groups received for a user upon login through SSO but not present in the enterprise will be auto added to the enterprise.',
+      }),
+    is_sso_auto_add_user_to_groups_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Determines if a user will be added to enterprise groups received upon user login through SSO.',
+      }),
+    is_sso_auto_remove_user_from_groups_enabled:
+      EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+        description:
+          'Determines if a user will be removed from enterprise groups upon user login through SSO.',
+      }),
     user_tracking_codes: EnterpriseConfigurationItemSchema.and(
       z
-        .any()
-        .openapi({
-          description:
-            'Properties that are assigned as additional values to users, like employee ID or region.',
-        }),
+        .object({ value: z.array(UserTrackingCodeSchema).exactOptional() })
+        .openapi({ required: [] }),
     )
-      .and(
-        z
-          .object({ value: z.array(UserTrackingCodeSchema).exactOptional() })
-          .openapi({ required: [] }),
-      )
-      .exactOptional(),
-    number_of_user_tracking_codes_remaining: EnterpriseConfigurationItemIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The remaining number of `user_tracking_codes` that can be created.',
-        }),
-    ).exactOptional(),
-    is_instant_login_restricted: EnterpriseConfigurationItemBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines if users are restricted from granting (limited) access for Box Support for troubleshooting.',
-        }),
-    ).exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'Properties that are assigned as additional values to users, like employee ID or region.',
+      }),
+    number_of_user_tracking_codes_remaining:
+      EnterpriseConfigurationItemIntegerSchema.exactOptional().openapi({
+        description: 'The remaining number of `user_tracking_codes` that can be created.',
+      }),
+    is_instant_login_restricted: EnterpriseConfigurationItemBooleanSchema.exactOptional().openapi({
+      description:
+        'Determines if users are restricted from granting (limited) access for Box Support for troubleshooting.',
+    }),
   })
   .openapi({
     description: 'The enterprise configuration for the user settings category.',
@@ -2058,12 +1982,8 @@ const EnterpriseConfigurationSchema = z
             description: 'The definition for a null schema type in OpenAPI `3.0`.',
           }),
       ])
-      .and(
-        z
-          .any()
-          .openapi({ description: 'The enterprise configurations for the security category.' }),
-      )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'The enterprise configurations for the security category.' }),
     content_and_sharing: z
       .xor([
         EnterpriseConfigurationContentAndSharingSchema,
@@ -2075,14 +1995,10 @@ const EnterpriseConfigurationSchema = z
             description: 'The definition for a null schema type in OpenAPI `3.0`.',
           }),
       ])
-      .and(
-        z
-          .any()
-          .openapi({
-            description: 'The enterprise configurations for the content and sharing category.',
-          }),
-      )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description: 'The enterprise configurations for the content and sharing category.',
+      }),
     user_settings: z
       .xor([
         EnterpriseConfigurationUserSettingsSchema,
@@ -2094,14 +2010,8 @@ const EnterpriseConfigurationSchema = z
             description: 'The definition for a null schema type in OpenAPI `3.0`.',
           }),
       ])
-      .and(
-        z
-          .any()
-          .openapi({
-            description: 'The enterprise configurations for the user settings category.',
-          }),
-      )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({ description: 'The enterprise configurations for the user settings category.' }),
     shield: z
       .xor([
         EnterpriseConfigurationShieldSchema,
@@ -2113,15 +2023,11 @@ const EnterpriseConfigurationSchema = z
             description: 'The definition for a null schema type in OpenAPI `3.0`.',
           }),
       ])
-      .and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The enterprise configurations for the shield category. If shield is turned off for given enterprise, the response will be 404.',
-          }),
-      )
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'The enterprise configurations for the shield category. If shield is turned off for given enterprise, the response will be 404.',
+      }),
   })
   .openapi({
     description: 'The enterprise configuration for a given enterprise.',
@@ -2325,12 +2231,12 @@ const HubSchema = HubBaseSchema.and(
           description: 'The date and time when the Box Hub was last updated.',
           example: '2012-12-12T10:53:43Z',
         }),
-      created_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who created this Box Hub.' }),
-      ).exactOptional(),
-      updated_by: UserMiniSchema.and(
-        z.any().openapi({ description: 'The user who last modified this Box Hub.' }),
-      ).exactOptional(),
+      created_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who created this Box Hub.',
+      }),
+      updated_by: UserMiniSchema.exactOptional().openapi({
+        description: 'The user who last modified this Box Hub.',
+      }),
       view_count: z
         .int32()
         .exactOptional()
@@ -2456,25 +2362,41 @@ const HubDocumentBlockSchema = z
   .openapi('HubDocumentBlock')
 
 const HubCalloutBoxTextBlockSchema = HubDocumentBlockSchema.and(
-  z
-    .object({
-      type: z
-        .literal('callout_box')
-        .exactOptional()
-        .openapi({
-          description: 'The type of this block. The value is always `callout_box`.',
-          example: 'callout_box',
-        }),
-      fragment: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Text content of the block. Includes rich text formatting.',
-          example: 'This is the callout box',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['id', 'type', 'fragment'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'fragment')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('callout_box')
+          .exactOptional()
+          .openapi({
+            description: 'The type of this block. The value is always `callout_box`.',
+            example: 'callout_box',
+          }),
+        fragment: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Text content of the block. Includes rich text formatting.',
+            example: 'This is the callout box',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A callout box block in the Box Hub Document.',
     required: ['id', 'type', 'fragment'],
@@ -2551,14 +2473,10 @@ const HubCollaborationSchema = z
                   'Whether or not the terms of service have been accepted.  The\nfield is `null` when there is no terms of service required.',
                 example: true,
               }),
-            terms_of_service: TermsOfServiceBaseSchema.and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'The terms of service that must be accepted before the\ncollaboration can be accepted. The field is `null` when\nthere is no terms of service required.',
-                }),
-            ).exactOptional(),
+            terms_of_service: TermsOfServiceBaseSchema.exactOptional().openapi({
+              description:
+                'The terms of service that must be accepted before the\ncollaboration can be accepted. The field is `null` when\nthere is no terms of service required.',
+            }),
           })
           .exactOptional()
           .openapi({ required: [] }),
@@ -2808,18 +2726,31 @@ const HubCreateRequestSchema = z
   .openapi('HubCreateRequest')
 
 const HubDividerBlockSchema = HubDocumentBlockSchema.and(
-  z
-    .object({
-      type: z
-        .literal('divider')
-        .exactOptional()
-        .openapi({
-          description: 'The type of this block. The value is always `divider`.',
-          example: 'divider',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['id', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('divider')
+          .exactOptional()
+          .openapi({
+            description: 'The type of this block. The value is always `divider`.',
+            example: 'divider',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A divider block in the Box Hub Document.',
     required: ['id', 'type'],
@@ -2830,25 +2761,41 @@ const HubDividerBlockSchema = HubDocumentBlockSchema.and(
   .openapi('HubDividerBlock')
 
 const HubParagraphTextBlockSchema = HubDocumentBlockSchema.and(
-  z
-    .object({
-      type: z
-        .literal('paragraph')
-        .exactOptional()
-        .openapi({
-          description: 'The type of this block. The value is always `paragraph`.',
-          example: 'paragraph',
-        }),
-      fragment: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Text content of the block. Includes rich text formatting.',
-          example: 'This is the paragraph',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['id', 'type', 'fragment'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'fragment')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('paragraph')
+          .exactOptional()
+          .openapi({
+            description: 'The type of this block. The value is always `paragraph`.',
+            example: 'paragraph',
+          }),
+        fragment: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Text content of the block. Includes rich text formatting.',
+            example: 'This is the paragraph',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A paragraph block in the Box Hub Document.',
     required: ['id', 'type', 'fragment'],
@@ -2859,25 +2806,41 @@ const HubParagraphTextBlockSchema = HubDocumentBlockSchema.and(
   .openapi('HubParagraphTextBlock')
 
 const HubSectionTitleTextBlockSchema = HubDocumentBlockSchema.and(
-  z
-    .object({
-      type: z
-        .literal('section_title')
-        .exactOptional()
-        .openapi({
-          description: 'The type of this block. The value is always `section_title`.',
-          example: 'section_title',
-        }),
-      fragment: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Text content of the block. Includes rich text formatting.',
-          example: 'This is the section title',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['id', 'type', 'fragment'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'fragment')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('section_title')
+          .exactOptional()
+          .openapi({
+            description: 'The type of this block. The value is always `section_title`.',
+            example: 'section_title',
+          }),
+        fragment: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Text content of the block. Includes rich text formatting.',
+            example: 'This is the section title',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'A section title block in the Box Hub Document.',
     required: ['id', 'type', 'fragment'],
@@ -2888,18 +2851,31 @@ const HubSectionTitleTextBlockSchema = HubDocumentBlockSchema.and(
   .openapi('HubSectionTitleTextBlock')
 
 const HubItemListBlockSchema = HubDocumentBlockSchema.and(
-  z
-    .object({
-      type: z
-        .literal('item_list')
-        .exactOptional()
-        .openapi({
-          description: 'The type of this block. The value is always `item_list`.',
-          example: 'item_list',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['id', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        type: z
+          .literal('item_list')
+          .exactOptional()
+          .openapi({
+            description: 'The type of this block. The value is always `item_list`.',
+            example: 'item_list',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description: 'An item list block in the Box Hub Document.',
     required: ['id', 'type'],
@@ -3543,9 +3519,9 @@ const ShieldListSchema = z
     name: z
       .string()
       .openapi({ description: 'Name of the shield list.', example: 'Shield List Name' }),
-    enterprise: EnterpriseReferenceSchema.and(
-      z.any().openapi({ description: 'Enterprise for which this list belongs to.' }),
-    ),
+    enterprise: EnterpriseReferenceSchema.openapi({
+      description: 'Enterprise for which this list belongs to.',
+    }),
     description: z
       .string()
       .exactOptional()
@@ -3565,14 +3541,10 @@ const ShieldListSchema = z
         description: 'ISO date time string when this shield list object was updated.',
         example: '2025-01-13T15:31:01.896Z',
       }),
-    content: ShieldListContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of elements in this Shield List and includes the elements themselves.',
-        }),
-    ),
+    content: ShieldListContentSchema.openapi({
+      description:
+        'Specifies the type of elements in this Shield List and includes the elements themselves.',
+    }),
   })
   .openapi({
     description: 'A standard representation of a Shield List.',
@@ -3657,14 +3629,10 @@ const ShieldListsCreateSchema = z
         description: 'Optional description of Shield List.',
         example: 'A list of things that are shielded',
       }),
-    content: ShieldListContentRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of elements in this Shield List and includes the elements themselves.\nIt is not possible to update Integration Shield Lists by Public API.',
-        }),
-    ),
+    content: ShieldListContentRequestSchema.openapi({
+      description:
+        'Specifies the type of elements in this Shield List and includes the elements themselves.\nIt is not possible to update Integration Shield Lists by Public API.',
+    }),
   })
   .openapi({
     description: 'The schema for Shield List create request.',
@@ -3686,14 +3654,10 @@ const ShieldListsUpdateSchema = z
         description: 'Optional description of Shield List.',
         example: 'A list of things that are shielded',
       }),
-    content: ShieldListContentRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of elements in this Shield List and includes the elements themselves.\nIt is not possible to update Integration Shield Lists by Public API.',
-        }),
-    ),
+    content: ShieldListContentRequestSchema.openapi({
+      description:
+        'Specifies the type of elements in this Shield List and includes the elements themselves.\nIt is not possible to update Integration Shield Lists by Public API.',
+    }),
   })
   .openapi({
     description: 'The schema for Shield List update request.',

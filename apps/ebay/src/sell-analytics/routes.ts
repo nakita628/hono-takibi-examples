@@ -1,22 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const BenchmarkMetadataSchema = z
-  .object({
-    average: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field returns the average value for the group, as defined by the specified basis. When the benchmark basis is set to PEER_BENCHMARK, the value returned in this field is the benchmark value to which the seller's metric value is compared to determine the seller's rating for the customer service metric.",
-      }),
-  })
-  .openapi({
-    description:
-      "This complex type defines the fields that comprise the benchmark against which the seller's performance is compared. The comparison determines the seller's rating for the metric.",
-    required: [],
-  })
-  .openapi('BenchmarkMetadata')
-
 const CycleSchema = z
   .object({
     cycleType: z
@@ -44,65 +27,22 @@ const CycleSchema = z
   .openapi({ description: 'A complex type that describes a program cycle.', required: [] })
   .openapi('Cycle')
 
-const DefinitionSchema = z
+const BenchmarkMetadataSchema = z
   .object({
-    dataType: z
+    average: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          "Indicates the data type of the returned dimension. For example, if the dimension is day, the data type is DATE. For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/DataTypeEnum.html'>eBay API documentation</a>",
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The value the dimension or metric parameter as submitted in the request.',
-      }),
-    localizedName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The localized name of the metric or dimension (translated into the language specified in the Accept-Language HTTP request header). For example, if Accept-Language is set to de-DE, the value &quot;day&quot; in the dimension container is returned as &quot;tag&quot;, and a metric of TRANSACTION is returned as &quot;Transaktionsanzahl&quot;.',
-      }),
-  })
-  .openapi({
-    description: 'A complex type that defines a dimension key and metrics in a traffic report.',
-    required: [],
-  })
-  .openapi('Definition')
-
-const DimensionSchema = z
-  .object({
-    dimensionKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "dimensionKey defines the basis against which the seller's customer service metric is measured. The value of this field gets set according to the value of the customer_service_metric_type input parameter. The following input configurations return the responses shown: ITEM_NOT_AS_DESCRIBED &ndash; Returns benchmark ratings based on L1 listing categories, so the result shows metrics where the dimensionKey is set to LISTING_CATEGORY. ITEM_NOT_RECEIVED &ndash; Returns benchmark ratings based on world shipping regions, so the result shows metrics where the dimensionKey is set to SHIPPING_REGION. The shipping region is indicated by the associated value field. For specifics on world shipping regions, see the FAQ section on the following page: Monitor your service metrics For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/DimensionTypeEnum.html'>eBay API documentation</a>",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The dimension name returned in this field depends on the dimensionKey: If dimensionKey is set to SHIPPING_REGION, this field is set to one of following values, which represent established shipping corridors: Domestic International: Mature region International: Emerging region If dimensionKey is set to LISTING_CATEGORY, this field is set to the name of the primary (L1) category in which the items being rated were listed.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value returned in this field depends on the dimensionKey. If dimensionKey equals LISTING_CATEGORY, the value returned in this field is the category ID of the primary (L1) category in which the items being rated were listed. If dimensionKey equals SHIPPING_REGION, one of the following values is returned: DOMESTIC INTERNATIONAL_MATURED_REGION INTERNATIONAL_EMERGING_REGION',
+          "This field returns the average value for the group, as defined by the specified basis. When the benchmark basis is set to PEER_BENCHMARK, the value returned in this field is the benchmark value to which the seller's metric value is compared to determine the seller's rating for the customer service metric.",
       }),
   })
   .openapi({
     description:
-      'The fields in this complex type define the dimension, or attributes, by which the associated customer service metric and benchmark data is measured. The value of dimensionKey gets set according to the configuration of the input request. The name and value pair further define dimension under the key.',
+      "This complex type defines the fields that comprise the benchmark against which the seller's performance is compared. The comparison determines the seller's rating for the metric.",
     required: [],
   })
-  .openapi('Dimension')
+  .openapi('BenchmarkMetadata')
 
 const MetricBenchmarkSchema = z
   .object({
@@ -217,6 +157,86 @@ const MetricSchema = z
   })
   .openapi('Metric')
 
+const StandardsProfileSchema = z
+  .object({
+    cycle: CycleSchema.exactOptional().openapi({
+      description:
+        "A complex type that specifies the profile's evaluation cycle (CURRENT or PROJECTED), the date the evaluation was calculated, and the month to which the evaluation pertains. Each program has at least one cycle, but a program can include both cycle types.",
+    }),
+    defaultProgram: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If set to true, this flag indicates this is the default program for the seller. Except for sellers in China, a seller's default program is the marketplace where they registered with eBay. Seller's in China select their default program when they register.",
+      }),
+    evaluationReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Specifies how the overall seller level was calculated. In the event of special circumstances (as determined by eBay), eBay may override the calculated seller level. In general, such overrides protect a seller's level. The usual value for both cycle types is &quot;Seller level generated by standards monthly evaluation cycle.&quot;",
+      }),
+    metrics: z
+      .array(MetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "A list of the metrics upon which a seller's profile is evaluated. Each program's applicable metrics and requirements are listed at eBay Top Rated seller program standards.",
+      }),
+    program: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates the program used to generate the profile data. Values can be PROGRAM_DE, PROGRAM_UK, PROGRAM_US, or PROGRAM_GLOBAL. For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/ProgramEnum.html'>eBay API documentation</a>",
+      }),
+    standardsLevel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The overall standards level of the seller, one of TOP_RATED, ABOVE_STANDARD, or BELOW_STANDARD. For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/StandardsLevelEnum.html'>eBay API documentation</a>",
+      }),
+  })
+  .openapi({ description: 'A complex type that defines a seller profile.', required: [] })
+  .openapi('StandardsProfile')
+
+type FindSellerStandardsProfilesResponseType = {
+  standardsProfiles?: z.infer<typeof StandardsProfileSchema>[]
+}
+
+const DimensionSchema = z
+  .object({
+    dimensionKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "dimensionKey defines the basis against which the seller's customer service metric is measured. The value of this field gets set according to the value of the customer_service_metric_type input parameter. The following input configurations return the responses shown: ITEM_NOT_AS_DESCRIBED &ndash; Returns benchmark ratings based on L1 listing categories, so the result shows metrics where the dimensionKey is set to LISTING_CATEGORY. ITEM_NOT_RECEIVED &ndash; Returns benchmark ratings based on world shipping regions, so the result shows metrics where the dimensionKey is set to SHIPPING_REGION. The shipping region is indicated by the associated value field. For specifics on world shipping regions, see the FAQ section on the following page: Monitor your service metrics For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/DimensionTypeEnum.html'>eBay API documentation</a>",
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The dimension name returned in this field depends on the dimensionKey: If dimensionKey is set to SHIPPING_REGION, this field is set to one of following values, which represent established shipping corridors: Domestic International: Mature region International: Emerging region If dimensionKey is set to LISTING_CATEGORY, this field is set to the name of the primary (L1) category in which the items being rated were listed.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value returned in this field depends on the dimensionKey. If dimensionKey equals LISTING_CATEGORY, the value returned in this field is the category ID of the primary (L1) category in which the items being rated were listed. If dimensionKey equals SHIPPING_REGION, one of the following values is returned: DOMESTIC INTERNATIONAL_MATURED_REGION INTERNATIONAL_EMERGING_REGION',
+      }),
+  })
+  .openapi({
+    description:
+      'The fields in this complex type define the dimension, or attributes, by which the associated customer service metric and benchmark data is measured. The value of dimensionKey gets set according to the configuration of the input request. The name and value pair further define dimension under the key.',
+    required: [],
+  })
+  .openapi('Dimension')
+
 const DimensionMetricSchema = z
   .object({
     dimension: DimensionSchema.exactOptional().openapi({
@@ -237,6 +257,79 @@ const DimensionMetricSchema = z
     required: [],
   })
   .openapi('DimensionMetric')
+
+const EvaluationCycleSchema = z
+  .object({
+    endDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'End date and time of the transaction lookback range. All timestamps are based on Mountain Standard Time (MST). The timestamp is formatted as an ISO 8601 string, which is based on the 24-hour Coordinated Universal Time (UTC) clock.',
+      }),
+    evaluationDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ISO-8601 date and time at which the seller was evaluated for this customer service metric rating.',
+      }),
+    evaluationType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This field specifies the transaction lookback period used for the evaluation. The evaluation_type value specified in the request is returned in this field. There are two possible values: CURRENT &ndash; A monthly evaluation that occurs on the 20th of every month. PROJECTED &ndash; A daily evaluation that provides a projection of how the seller is currently performing with regards to the upcoming evaluation period. For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/EvaluationTypeEnum.html'>eBay API documentation</a>",
+      }),
+    startDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The start date and time of the transaction lookback range. All timestamps are based on Mountain Standard Time (MST). The timestamp is formatted as an ISO 8601 string, which is based on the 24-hour Coordinated Universal Time (UTC) clock. Format: [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z Example: 2018-08-04T07:09:00.000Z',
+      }),
+  })
+  .openapi({
+    description:
+      'This complex type describes the start and end dates of the of the time period over which the associated benchmark is computed. All timestamps are based on Mountain Standard Time (MST). The timestamp is formatted as an ISO 8601 string, which is based on the 24-hour Coordinated Universal Time (UTC) clock.',
+    required: [],
+  })
+  .openapi('EvaluationCycle')
+
+type GetCustomerServiceMetricResponseType = {
+  dimensionMetrics?: z.infer<typeof DimensionMetricSchema>[]
+  evaluationCycle?: z.infer<typeof EvaluationCycleSchema>
+  marketplaceId?: string
+}
+
+const DefinitionSchema = z
+  .object({
+    dataType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicates the data type of the returned dimension. For example, if the dimension is day, the data type is DATE. For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/DataTypeEnum.html'>eBay API documentation</a>",
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The value the dimension or metric parameter as submitted in the request.',
+      }),
+    localizedName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The localized name of the metric or dimension (translated into the language specified in the Accept-Language HTTP request header). For example, if Accept-Language is set to de-DE, the value &quot;day&quot; in the dimension container is returned as &quot;tag&quot;, and a metric of TRANSACTION is returned as &quot;Transaktionsanzahl&quot;.',
+      }),
+  })
+  .openapi({
+    description: 'A complex type that defines a dimension key and metrics in a traffic report.',
+    required: [],
+  })
+  .openapi('Definition')
 
 const ErrorParameterSchema = z
   .object({
@@ -320,103 +413,21 @@ const ErrorSchema = z
   })
   .openapi('Error')
 
-const EvaluationCycleSchema = z
-  .object({
-    endDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'End date and time of the transaction lookback range. All timestamps are based on Mountain Standard Time (MST). The timestamp is formatted as an ISO 8601 string, which is based on the 24-hour Coordinated Universal Time (UTC) clock.',
-      }),
-    evaluationDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ISO-8601 date and time at which the seller was evaluated for this customer service metric rating.',
-      }),
-    evaluationType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This field specifies the transaction lookback period used for the evaluation. The evaluation_type value specified in the request is returned in this field. There are two possible values: CURRENT &ndash; A monthly evaluation that occurs on the 20th of every month. PROJECTED &ndash; A daily evaluation that provides a projection of how the seller is currently performing with regards to the upcoming evaluation period. For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/EvaluationTypeEnum.html'>eBay API documentation</a>",
-      }),
-    startDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The start date and time of the transaction lookback range. All timestamps are based on Mountain Standard Time (MST). The timestamp is formatted as an ISO 8601 string, which is based on the 24-hour Coordinated Universal Time (UTC) clock. Format: [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].[sss]Z Example: 2018-08-04T07:09:00.000Z',
-      }),
-  })
-  .openapi({
-    description:
-      'This complex type describes the start and end dates of the of the time period over which the associated benchmark is computed. All timestamps are based on Mountain Standard Time (MST). The timestamp is formatted as an ISO 8601 string, which is based on the 24-hour Coordinated Universal Time (UTC) clock.',
-    required: [],
-  })
-  .openapi('EvaluationCycle')
+const FindSellerStandardsProfilesResponseSchema: z.ZodType<FindSellerStandardsProfilesResponseType> =
+  z
+    .object({
+      standardsProfiles: z
+        .array(StandardsProfileSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "A list of the seller's standards profiles. A &quot;standards profile&quot; is a set of eBay seller standards categories and the values related to the associated seller. Profiles are distinguished by a combination of cycle and program values. The &quot;program&quot; value specifies the region to which the data is from. The &quot;cycle&quot; value specifies whether the values were determined just now, or if the values are from the last official eBay seller standards evaluation.",
+        }),
+    })
+    .openapi({ description: 'The response container for a list of seller profiles.', required: [] })
+    .openapi('FindSellerStandardsProfilesResponse')
 
-const StandardsProfileSchema = z
-  .object({
-    cycle: CycleSchema.exactOptional().openapi({
-      description:
-        "A complex type that specifies the profile's evaluation cycle (CURRENT or PROJECTED), the date the evaluation was calculated, and the month to which the evaluation pertains. Each program has at least one cycle, but a program can include both cycle types.",
-    }),
-    defaultProgram: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If set to true, this flag indicates this is the default program for the seller. Except for sellers in China, a seller's default program is the marketplace where they registered with eBay. Seller's in China select their default program when they register.",
-      }),
-    evaluationReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Specifies how the overall seller level was calculated. In the event of special circumstances (as determined by eBay), eBay may override the calculated seller level. In general, such overrides protect a seller's level. The usual value for both cycle types is &quot;Seller level generated by standards monthly evaluation cycle.&quot;",
-      }),
-    metrics: z
-      .array(MetricSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "A list of the metrics upon which a seller's profile is evaluated. Each program's applicable metrics and requirements are listed at eBay Top Rated seller program standards.",
-      }),
-    program: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Indicates the program used to generate the profile data. Values can be PROGRAM_DE, PROGRAM_UK, PROGRAM_US, or PROGRAM_GLOBAL. For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/ProgramEnum.html'>eBay API documentation</a>",
-      }),
-    standardsLevel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The overall standards level of the seller, one of TOP_RATED, ABOVE_STANDARD, or BELOW_STANDARD. For implementation help, refer to <a href='https://developer.ebay.com/devzone/rest/api-ref/analytics/types/StandardsLevelEnum.html'>eBay API documentation</a>",
-      }),
-  })
-  .openapi({ description: 'A complex type that defines a seller profile.', required: [] })
-  .openapi('StandardsProfile')
-
-const FindSellerStandardsProfilesResponseSchema = z
-  .object({
-    standardsProfiles: z
-      .array(StandardsProfileSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "A list of the seller's standards profiles. A &quot;standards profile&quot; is a set of eBay seller standards categories and the values related to the associated seller. Profiles are distinguished by a combination of cycle and program values. The &quot;program&quot; value specifies the region to which the data is from. The &quot;cycle&quot; value specifies whether the values were determined just now, or if the values are from the last official eBay seller standards evaluation.",
-      }),
-  })
-  .openapi({ description: 'The response container for a list of seller profiles.', required: [] })
-  .openapi('FindSellerStandardsProfilesResponse')
-
-const GetCustomerServiceMetricResponseSchema = z
+const GetCustomerServiceMetricResponseSchema: z.ZodType<GetCustomerServiceMetricResponseType> = z
   .object({
     dimensionMetrics: z
       .array(DimensionMetricSchema)
@@ -497,7 +508,10 @@ const ValueSchema = z
         description:
           'If set to true, this flag indicates the value in the value field is valid as computed. A value of false indicates one or more of the values used to calculate the value was invalid. The occurrence of this is a rare, however consider this case: suppose a buyer navigates to a View Item page at 11:59 pm (the end of the day) and purchases the item at 12:05am the next day. In this case, the item would have been purchased with 0 views for the day.',
       }),
-    value: z.object({}).exactOptional().openapi({ description: 'The value of the report data.' }),
+    value: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'The value of the report data.' }),
   })
   .openapi({
     description: 'A complex type that contains a value, plus the veracity of that value.',

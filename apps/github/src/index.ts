@@ -1,101 +1,83 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  actionsHandler,
-  activityHandler,
-  agentAutomationsHandler,
-  agentMergeHandler,
+  __rootHandler,
+  advisoriesHandler,
   agentsHandler,
-  agentTasksHandler,
+  appHandler,
+  applicationsHandler,
+  appManifestsHandler,
   appsHandler,
-  billingHandler,
-  campaignsHandler,
-  checksHandler,
-  classroomHandler,
-  codeQualityHandler,
-  codeScanningHandler,
-  codeSecurityHandler,
+  assignmentsHandler,
+  classroomsHandler,
   codesOfConductHandler,
-  codespacesHandler,
-  copilotHandler,
-  copilotSpacesHandler,
   credentialsHandler,
-  dependabotHandler,
-  dependencyGraphHandler,
   emojisHandler,
+  enterprisesHandler,
+  eventsHandler,
+  feedsHandler,
   gistsHandler,
-  gitHandler,
   gitignoreHandler,
-  hostedComputeHandler,
-  interactionsHandler,
+  installationHandler,
   issuesHandler,
   licensesHandler,
   markdownHandler,
+  marketplaceListingHandler,
   metaHandler,
-  migrationsHandler,
-  oidcHandler,
+  networksHandler,
+  notificationsHandler,
+  octocatHandler,
+  organizationsHandler,
   orgsHandler,
-  packagesHandler,
-  privateRegistriesHandler,
-  projectsHandler,
-  pullsHandler,
   rateLimitHandler,
-  reactionsHandler,
   reposHandler,
+  repositoriesHandler,
   searchHandler,
-  secretScanningHandler,
-  securityAdvisoriesHandler,
   teamsHandler,
+  userHandler,
   usersHandler,
+  versionsHandler,
+  zenHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', metaHandler)
-  .route('/', securityAdvisoriesHandler)
-  .route('/', agentAutomationsHandler)
-  .route('/', agentMergeHandler)
-  .route('/', agentTasksHandler)
+  .route('/', __rootHandler)
+  .route('/', advisoriesHandler)
+  .route('/', agentsHandler)
+  .route('/', appHandler)
+  .route('/', appManifestsHandler)
+  .route('/', applicationsHandler)
   .route('/', appsHandler)
-  .route('/', classroomHandler)
+  .route('/', assignmentsHandler)
+  .route('/', classroomsHandler)
   .route('/', codesOfConductHandler)
   .route('/', credentialsHandler)
   .route('/', emojisHandler)
-  .route('/', actionsHandler)
-  .route('/', oidcHandler)
-  .route('/', codeSecurityHandler)
-  .route('/', copilotHandler)
-  .route('/', dependabotHandler)
-  .route('/', activityHandler)
+  .route('/', enterprisesHandler)
+  .route('/', eventsHandler)
+  .route('/', feedsHandler)
   .route('/', gistsHandler)
   .route('/', gitignoreHandler)
+  .route('/', installationHandler)
   .route('/', issuesHandler)
   .route('/', licensesHandler)
   .route('/', markdownHandler)
+  .route('/', marketplaceListingHandler)
+  .route('/', metaHandler)
+  .route('/', networksHandler)
+  .route('/', notificationsHandler)
+  .route('/', octocatHandler)
+  .route('/', organizationsHandler)
   .route('/', orgsHandler)
-  .route('/', billingHandler)
-  .route('/', agentsHandler)
-  .route('/', campaignsHandler)
-  .route('/', codeScanningHandler)
-  .route('/', codespacesHandler)
-  .route('/', copilotSpacesHandler)
-  .route('/', packagesHandler)
-  .route('/', interactionsHandler)
-  .route('/', migrationsHandler)
-  .route('/', privateRegistriesHandler)
-  .route('/', projectsHandler)
-  .route('/', reposHandler)
-  .route('/', secretScanningHandler)
-  .route('/', hostedComputeHandler)
-  .route('/', teamsHandler)
   .route('/', rateLimitHandler)
-  .route('/', checksHandler)
-  .route('/', codeQualityHandler)
-  .route('/', reactionsHandler)
-  .route('/', dependencyGraphHandler)
-  .route('/', gitHandler)
-  .route('/', pullsHandler)
+  .route('/', reposHandler)
+  .route('/', repositoriesHandler)
   .route('/', searchHandler)
+  .route('/', teamsHandler)
+  .route('/', userHandler)
   .route('/', usersHandler)
+  .route('/', versionsHandler)
+  .route('/', zenHandler)
 
 export default app

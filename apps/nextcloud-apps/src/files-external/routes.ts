@@ -6,7 +6,7 @@ const StorageConfigSchema = z
     applicableUsers: z.array(z.string()).exactOptional(),
     authMechanism: z.string(),
     backend: z.string(),
-    backendOptions: z.record(z.string(), z.object({})),
+    backendOptions: z.record(z.string(), z.looseObject({})),
     id: z
       .preprocess(
         (val) =>
@@ -19,7 +19,7 @@ const StorageConfigSchema = z
       )
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
-    mountOptions: z.record(z.string(), z.object({})).exactOptional(),
+    mountOptions: z.record(z.string(), z.looseObject({})).exactOptional(),
     mountPoint: z.string(),
     priority: z
       .preprocess(

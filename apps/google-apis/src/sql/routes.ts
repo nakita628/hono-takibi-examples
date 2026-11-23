@@ -1,72 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const MySqlReplicaConfigurationSchema = z
-  .object({
-    caCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "PEM representation of the trusted CA's x509 certificate." }),
-    clientCertificate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "PEM representation of the replica's x509 certificate." }),
-    clientKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "PEM representation of the replica's private key. The corresponsing public key is encoded in the client's certificate.",
-      }),
-    connectRetryInterval: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: "Seconds to wait between connect retries. MySQL's default is 60 seconds.",
-      }),
-    dumpFilePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Path to a SQL dump file in Google Cloud Storage from which the replica instance is to be created. The URI is in the form gs://bucketName/fileName. Compressed gzip files (.gz) are also supported. Dumps have the binlog co-ordinates from which replication begins. This can be accomplished by setting --master-data to 1 when using mysqldump.',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'This is always `sql#mysqlReplicaConfiguration`.' }),
-    masterHeartbeatPeriod: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Interval in milliseconds between replication heartbeats.' }),
-    password: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The password for the replication connection.' }),
-    sslCipher: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A list of permissible ciphers to use for SSL encryption.' }),
-    username: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The username for the replication connection.' }),
-    verifyServerCertificate: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether or not to check the primary instance's Common Name value in the certificate that it sends during the SSL handshake.",
-      }),
-  })
-  .openapi({ description: 'Read-replica configuration specific to MySQL databases.', required: [] })
-  .openapi('MySqlReplicaConfiguration')
-
-type ReplicaConfigurationType = {
-  failoverTarget?: boolean
-  kind?: string
-  mysqlReplicaConfiguration?: z.infer<typeof MySqlReplicaConfigurationSchema>
-}
-
 const AclEntrySchema = z
   .object({
     expirationTime: z
@@ -719,31 +652,89 @@ const SqlOutOfDiskReportSchema = z
   })
   .openapi('SqlOutOfDiskReport')
 
-const ReplicaConfigurationSchema: z.ZodType<ReplicaConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        failoverTarget: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Specifies if the replica is the failover target. If the field is set to `true` the replica will be designated as a failover replica. In case the primary instance fails, the replica instance will be promoted as the new primary instance. Only one replica can be specified as failover target, and the replica has to be in different zone with the primary instance.',
-          }),
-        kind: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'This is always `sql#replicaConfiguration`.' }),
-        mysqlReplicaConfiguration: MySqlReplicaConfigurationSchema.exactOptional().openapi({
-          description:
-            'MySQL specific configuration when replicating from a MySQL on-premises primary instance. Replication configuration information such as the username, password, certificates, and keys are not stored in the instance metadata. The configuration information is used only to set up the replication connection and is stored by MySQL in a file named `master.info` in the data directory.',
-        }),
-      })
+const MySqlReplicaConfigurationSchema = z
+  .object({
+    caCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "PEM representation of the trusted CA's x509 certificate." }),
+    clientCertificate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "PEM representation of the replica's x509 certificate." }),
+    clientKey: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'Read-replica configuration for connecting to the primary instance.',
-        required: [],
+        description:
+          "PEM representation of the replica's private key. The corresponsing public key is encoded in the client's certificate.",
       }),
-  )
+    connectRetryInterval: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: "Seconds to wait between connect retries. MySQL's default is 60 seconds.",
+      }),
+    dumpFilePath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Path to a SQL dump file in Google Cloud Storage from which the replica instance is to be created. The URI is in the form gs://bucketName/fileName. Compressed gzip files (.gz) are also supported. Dumps have the binlog co-ordinates from which replication begins. This can be accomplished by setting --master-data to 1 when using mysqldump.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'This is always `sql#mysqlReplicaConfiguration`.' }),
+    masterHeartbeatPeriod: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Interval in milliseconds between replication heartbeats.' }),
+    password: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The password for the replication connection.' }),
+    sslCipher: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A list of permissible ciphers to use for SSL encryption.' }),
+    username: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The username for the replication connection.' }),
+    verifyServerCertificate: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether or not to check the primary instance's Common Name value in the certificate that it sends during the SSL handshake.",
+      }),
+  })
+  .openapi({ description: 'Read-replica configuration specific to MySQL databases.', required: [] })
+  .openapi('MySqlReplicaConfiguration')
+
+const ReplicaConfigurationSchema = z
+  .object({
+    failoverTarget: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies if the replica is the failover target. If the field is set to `true` the replica will be designated as a failover replica. In case the primary instance fails, the replica instance will be promoted as the new primary instance. Only one replica can be specified as failover target, and the replica has to be in different zone with the primary instance.',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'This is always `sql#replicaConfiguration`.' }),
+    mysqlReplicaConfiguration: MySqlReplicaConfigurationSchema.exactOptional().openapi({
+      description:
+        'MySQL specific configuration when replicating from a MySQL on-premises primary instance. Replication configuration information such as the username, password, certificates, and keys are not stored in the instance metadata. The configuration information is used only to set up the replication connection and is stored by MySQL in a file named `master.info` in the data directory.',
+    }),
+  })
+  .openapi({
+    description: 'Read-replica configuration for connecting to the primary instance.',
+    required: [],
+  })
   .openapi('ReplicaConfiguration')
 
 const SqlScheduledMaintenanceSchema = z
@@ -2436,7 +2427,7 @@ const SqlInstancesRescheduleMaintenanceRequestBodySchema = z
   .openapi('SqlInstancesRescheduleMaintenanceRequestBody')
 
 const SqlInstancesResetReplicaSizeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Instance reset replica size request.' })
   .openapi('SqlInstancesResetReplicaSizeRequest')
 

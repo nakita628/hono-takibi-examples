@@ -1,4 +1,4 @@
-<h1 id="kintone-rest-api">Kintone REST API v2026.8.31</h1>
+<h1 id="kintone-rest-api">Kintone REST API v2026.11.20</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -12,7 +12,7 @@ If **Basic authentication (access restriction)** or **secure access (client cert
 ## Limitations (Kintone-specific)
 - **Record schemas are dynamic per app.** Field codes are arbitrary keys (`additionalProperties`) and values are represented as a union per field type (`oneOf`/`anyOf` with a `type` discriminator). The exact types of an individual app cannot be fully expressed, so supplement real app types with examples / fixtures.
 - **When a GET query is long**, you can avoid URL-length limits by sending `POST` with the `X-HTTP-Method-Override: GET` header and putting parameters in the body (the server processes it as GET). Such GET operations are marked with `x-kintone-method-override: true`. No duplicate operation is defined; the GET definition is authoritative.
-- **Authentication differs per endpoint.** Which methods (API token / password / OAuth2) each API accepts is taken directly from the "Authentication" row of the official documentation pages (cybozu.dev) via harvest and reflected in `security`. Management APIs that do not support tokens (space/guest administration, app move, plugins, statistics, etc.) end up as password authentication only. Only the OAuth2 scope each operation needs is a best-effort estimate derived from the path family, because no machine-readable scope mapping is published.
+- **Authentication differs per endpoint.** Which methods (API token / password / OAuth2) each API accepts is taken directly from the "Authentication" row of the official documentation pages (cybozu.dev) via harvest and reflected in `security`. Management APIs that do not support tokens (space/guest administration, app move, plugins, statistics, etc.) end up as password authentication only. The OAuth2 scope each operation needs is taken the same way from the scope list in the official documentation; an API that the list does not cover yet has no OAuth2 entry.
 
 Copyright (c) 2026 Cybozu, Inc. Licensed under MIT No Attribution (SPDX: MIT-0), which does not require attribution.
 
@@ -1178,7 +1178,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|timezone|string(timezone)|false|none|none|
+|timezone|string(timezone) \| null|false|none|none|
 |notifications|[[AppNotificationsReminderGetNotification](#schemaappnotificationsremindergetnotification)]|true|none|none|
 |revision|string|false|none|none|
 
@@ -1559,7 +1559,7 @@ Gets the process management settings of an App.
 |---|---|---|---|---|
 |guestSpaceId|path|integer(int64)|true|Guest space ID (the number that appears in the space URL /k/#/space/<ID> when the space is open in a browser).|
 |app|query|integer(int64)|true|The App ID.|
-|lang|query|string|false|The localized language to retrieve the data in:<br>- `default`: retrieves the default names<br>- `en`: retrieves the localized English names<br>- `zh`: retrieves the localized Chinese names<br>- `ja`: retrieves the localized Japanese names<br>- `user`: retrieves the localized names, in the same language as the language setting* set on the user used for the authentication.<br>If ignored, the default names will be retrieved.|
+|lang|query|string|false|The language of the names to retrieve. Specify this when localized names are set for status names, action names, and similar items.<br>- `default`: retrieves the default names<br>- `en`: retrieves the localized English names<br>- `zh`: retrieves the localized Chinese names<br>- `ja`: retrieves the localized Japanese names<br>- `user`: retrieves the localized names in the display language set by the user running the API*<br>If omitted, the default names are retrieved.|
 
 #### Enumerated Values
 
@@ -1600,6 +1600,7 @@ Gets the process management settings of an App.
   ],
   "states": {
     "property1": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -1616,6 +1617,7 @@ Gets the process management settings of an App.
       }
     },
     "property2": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -1661,7 +1663,7 @@ Status Code **200**
 |---|---|---|---|---|
 |enable|boolean|false|none|none|
 |actions|[[AppStatusGetActionForm](#schemaappstatusgetactionform)]|false|none|none|
-|states|object|false|none|none|
+|states|object \| null|false|none|none|
 |» **additionalProperties**|[AppStatusGetStateForm](#schemaappstatusgetstateform)|false|none|none|
 |revision|string|false|none|none|
 
@@ -3072,7 +3074,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|timezone|string(timezone)|false|none|none|
+|timezone|string(timezone) \| null|false|none|none|
 |notifications|[[AppNotificationsReminderGetNotification](#schemaappnotificationsremindergetnotification)]|true|none|none|
 |revision|string|false|none|none|
 
@@ -3449,7 +3451,7 @@ Gets the process management settings of an App.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |app|query|integer(int64)|true|The App ID.|
-|lang|query|string|false|The localized language to retrieve the data in:<br>- `default`: retrieves the default names<br>- `en`: retrieves the localized English names<br>- `zh`: retrieves the localized Chinese names<br>- `ja`: retrieves the localized Japanese names<br>- `user`: retrieves the localized names, in the same language as the language setting* set on the user used for the authentication.<br>If ignored, the default names will be retrieved.|
+|lang|query|string|false|The language of the names to retrieve. Specify this when localized names are set for status names, action names, and similar items.<br>- `default`: retrieves the default names<br>- `en`: retrieves the localized English names<br>- `zh`: retrieves the localized Chinese names<br>- `ja`: retrieves the localized Japanese names<br>- `user`: retrieves the localized names in the display language set by the user running the API*<br>If omitted, the default names are retrieved.|
 
 #### Enumerated Values
 
@@ -3490,6 +3492,7 @@ Gets the process management settings of an App.
   ],
   "states": {
     "property1": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -3506,6 +3509,7 @@ Gets the process management settings of an App.
       }
     },
     "property2": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -3551,7 +3555,7 @@ Status Code **200**
 |---|---|---|---|---|
 |enable|boolean|false|none|none|
 |actions|[[AppStatusGetActionForm](#schemaappstatusgetactionform)]|false|none|none|
-|states|object|false|none|none|
+|states|object \| null|false|none|none|
 |» **additionalProperties**|[AppStatusGetStateForm](#schemaappstatusgetstateform)|false|none|none|
 |revision|string|false|none|none|
 
@@ -8516,7 +8520,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|timezone|string(timezone)|false|none|none|
+|timezone|string(timezone) \| null|false|none|none|
 |notifications|[[PreviewAppNotificationsReminderGetNotification](#schemapreviewappnotificationsremindergetnotification)]|false|none|none|
 |revision|string|false|none|none|
 
@@ -9497,7 +9501,7 @@ Gets the process management settings of an App.
 |---|---|---|---|---|
 |guestSpaceId|path|integer(int64)|true|Guest space ID (the number that appears in the space URL /k/#/space/<ID> when the space is open in a browser).|
 |app|query|integer(int64)|true|The App ID.|
-|lang|query|string|false|The localized language to retrieve the data in:<br>- `default`: retrieves the default names<br>- `en`: retrieves the localized English names<br>- `zh`: retrieves the localized Chinese names<br>- `ja`: retrieves the localized Japanese names<br>- `user`: retrieves the localized names, in the same language as the language setting* set on the user used for the authentication.<br>If ignored, the default names will be retrieved.|
+|lang|query|string|false|The language of the names to retrieve. Specify this when localized names are set for status names, action names, and similar items.<br>- `default`: retrieves the default names<br>- `en`: retrieves the localized English names<br>- `zh`: retrieves the localized Chinese names<br>- `ja`: retrieves the localized Japanese names<br>- `user`: retrieves the localized names in the display language set by the user running the API*<br>If omitted, the default names are retrieved.|
 
 #### Enumerated Values
 
@@ -9538,6 +9542,7 @@ Gets the process management settings of an App.
   ],
   "states": {
     "property1": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -9554,6 +9559,7 @@ Gets the process management settings of an App.
       }
     },
     "property2": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -9599,7 +9605,7 @@ Status Code **200**
 |---|---|---|---|---|
 |enable|boolean|false|none|none|
 |actions|[[PreviewAppStatusGetActionForm](#schemapreviewappstatusgetactionform)]|false|none|none|
-|states|object|false|none|none|
+|states|object \| null|false|none|none|
 |» **additionalProperties**|[PreviewAppStatusGetStateForm](#schemapreviewappstatusgetstateform)|false|none|none|
 |revision|string|false|none|none|
 
@@ -9646,6 +9652,7 @@ curl https://example.cybozu.com/k/guest/0/v1/preview/app/status.json \
     "revision": 0,
     "states": {
       "property1": {
+        "instructions": "string",
         "name": "string",
         "index": 0,
         "assignee": {
@@ -9662,6 +9669,7 @@ curl https://example.cybozu.com/k/guest/0/v1/preview/app/status.json \
         }
       },
       "property2": {
+        "instructions": "string",
         "name": "string",
         "index": 0,
         "assignee": {
@@ -9714,6 +9722,7 @@ Updates the process management settings of an App.
   "revision": 0,
   "states": {
     "property1": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -9730,6 +9739,7 @@ Updates the process management settings of an App.
       }
     },
     "property2": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -9756,11 +9766,11 @@ Updates the process management settings of an App.
 |guestSpaceId|path|integer(int64)|true|Guest space ID (the number that appears in the space URL /k/#/space/<ID> when the space is open in a browser).|
 |body|body|object|true|none|
 |» app|body|integer(int64)|true|The App ID.|
-|» enable|body|boolean|false|The on/off settings of the process management settings.<br>- `true`: Process management settings is enabled.<br>- `false`: Process management settings is disabled.|
+|» enable|body|boolean|false|Whether process management is enabled.<br>- `true`: Process management is enabled.<br>- `false`: Process management is disabled.|
 |» actions|body|[[PreviewAppStatusPutActionForm](#schemapreviewappstatusputactionform)]|false|An array containing data of the Actions.|
-|» revision|body|integer(int64)|false|Specify the revision number of the settings that will be deployed.<br>The request will fail if the revision number is not the latest revision.<br>The revision will not be checked if this parameter is ignored, or `-1` is specified.|
+|» revision|body|integer(int64)|false|The expected revision number of the App settings.<br>If it does not match the actual revision number, the request fails and the settings are not changed.<br>The revision number is not checked if this parameter is omitted or `-1` is specified.|
 |» states|body|object|false|An object containing data of the process management statuses.<br>When adding or updating a status, specify the existing statuses in `states` as well.<br>If not specified, the existing statuses will be deleted.|
-|» » **additionalProperties**|body|[PreviewAppStatusPutStateForm](#schemapreviewappstatusputstateform)|false|An object containing the settings of each status.<br>- Add a new status: Specify a status name that does not exist.<br>- Update a status: Specify the name of the status to be updated.<br>- Delete a status: Do not specify the status name for deletion.<br>The first status cannot be added. To change the first status, update the name of the existing first status.|
+|» » **additionalProperties**|body|[PreviewAppStatusPutStateForm](#schemapreviewappstatusputstateform)|false|An object containing the settings of each status.<br>- To add a new status, specify a status name that does not exist.<br>- To update a status, specify the name of the status to be updated.<br>- To delete a status, omit it from `states`.<br>A new status cannot be added as the first status. To change the first status, rename the existing one.|
 
 > Example responses
 
@@ -12908,7 +12918,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|timezone|string(timezone)|false|none|none|
+|timezone|string(timezone) \| null|false|none|none|
 |notifications|[[PreviewAppNotificationsReminderGetNotification](#schemapreviewappnotificationsremindergetnotification)]|false|none|none|
 |revision|string|false|none|none|
 
@@ -13881,7 +13891,7 @@ Gets the process management settings of an App.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |app|query|integer(int64)|true|The App ID.|
-|lang|query|string|false|The localized language to retrieve the data in:<br>- `default`: retrieves the default names<br>- `en`: retrieves the localized English names<br>- `zh`: retrieves the localized Chinese names<br>- `ja`: retrieves the localized Japanese names<br>- `user`: retrieves the localized names, in the same language as the language setting* set on the user used for the authentication.<br>If ignored, the default names will be retrieved.|
+|lang|query|string|false|The language of the names to retrieve. Specify this when localized names are set for status names, action names, and similar items.<br>- `default`: retrieves the default names<br>- `en`: retrieves the localized English names<br>- `zh`: retrieves the localized Chinese names<br>- `ja`: retrieves the localized Japanese names<br>- `user`: retrieves the localized names in the display language set by the user running the API*<br>If omitted, the default names are retrieved.|
 
 #### Enumerated Values
 
@@ -13922,6 +13932,7 @@ Gets the process management settings of an App.
   ],
   "states": {
     "property1": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -13938,6 +13949,7 @@ Gets the process management settings of an App.
       }
     },
     "property2": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -13983,7 +13995,7 @@ Status Code **200**
 |---|---|---|---|---|
 |enable|boolean|false|none|none|
 |actions|[[PreviewAppStatusGetActionForm](#schemapreviewappstatusgetactionform)]|false|none|none|
-|states|object|false|none|none|
+|states|object \| null|false|none|none|
 |» **additionalProperties**|[PreviewAppStatusGetStateForm](#schemapreviewappstatusgetstateform)|false|none|none|
 |revision|string|false|none|none|
 
@@ -14030,6 +14042,7 @@ curl https://example.cybozu.com/k/v1/preview/app/status.json \
     "revision": 0,
     "states": {
       "property1": {
+        "instructions": "string",
         "name": "string",
         "index": 0,
         "assignee": {
@@ -14046,6 +14059,7 @@ curl https://example.cybozu.com/k/v1/preview/app/status.json \
         }
       },
       "property2": {
+        "instructions": "string",
         "name": "string",
         "index": 0,
         "assignee": {
@@ -14098,6 +14112,7 @@ Updates the process management settings of an App.
   "revision": 0,
   "states": {
     "property1": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -14114,6 +14129,7 @@ Updates the process management settings of an App.
       }
     },
     "property2": {
+      "instructions": "string",
       "name": "string",
       "index": 0,
       "assignee": {
@@ -14139,11 +14155,11 @@ Updates the process management settings of an App.
 |---|---|---|---|---|
 |body|body|object|true|none|
 |» app|body|integer(int64)|true|The App ID.|
-|» enable|body|boolean|false|The on/off settings of the process management settings.<br>- `true`: Process management settings is enabled.<br>- `false`: Process management settings is disabled.|
+|» enable|body|boolean|false|Whether process management is enabled.<br>- `true`: Process management is enabled.<br>- `false`: Process management is disabled.|
 |» actions|body|[[PreviewAppStatusPutActionForm](#schemapreviewappstatusputactionform)]|false|An array containing data of the Actions.|
-|» revision|body|integer(int64)|false|Specify the revision number of the settings that will be deployed.<br>The request will fail if the revision number is not the latest revision.<br>The revision will not be checked if this parameter is ignored, or `-1` is specified.|
+|» revision|body|integer(int64)|false|The expected revision number of the App settings.<br>If it does not match the actual revision number, the request fails and the settings are not changed.<br>The revision number is not checked if this parameter is omitted or `-1` is specified.|
 |» states|body|object|false|An object containing data of the process management statuses.<br>When adding or updating a status, specify the existing statuses in `states` as well.<br>If not specified, the existing statuses will be deleted.|
-|» » **additionalProperties**|body|[PreviewAppStatusPutStateForm](#schemapreviewappstatusputstateform)|false|An object containing the settings of each status.<br>- Add a new status: Specify a status name that does not exist.<br>- Update a status: Specify the name of the status to be updated.<br>- Delete a status: Do not specify the status name for deletion.<br>The first status cannot be added. To change the first status, update the name of the existing first status.|
+|» » **additionalProperties**|body|[PreviewAppStatusPutStateForm](#schemapreviewappstatusputstateform)|false|An object containing the settings of each status.<br>- To add a new status, specify a status name that does not exist.<br>- To update a status, specify the name of the status to be updated.<br>- To delete a status, omit it from `states`.<br>A new status cannot be added as the first status. To change the first status, rename the existing one.|
 
 > Example responses
 
@@ -15318,7 +15334,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-apiToken, passwordAuth, oauth2 ( Scopes: k:app_record:read )
+apiToken, passwordAuth, oauth2 ( Scopes: k:app_settings:read )
 </aside>
 
 ## Put record acl (guest space)
@@ -15436,7 +15452,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-apiToken, passwordAuth, oauth2 ( Scopes: k:app_record:write )
+apiToken, passwordAuth, oauth2 ( Scopes: k:app_settings:write )
 </aside>
 
 ## Put record assignees (guest space)
@@ -16547,7 +16563,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
-|totalCount|string \| null|true|none|none|
+|totalCount|string|true|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -17112,7 +17128,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-apiToken, passwordAuth, oauth2 ( Scopes: k:app_record:read )
+apiToken, passwordAuth, oauth2 ( Scopes: k:app_settings:read )
 </aside>
 
 ## Put record acl
@@ -17229,7 +17245,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-apiToken, passwordAuth, oauth2 ( Scopes: k:app_record:write )
+apiToken, passwordAuth, oauth2 ( Scopes: k:app_settings:write )
 </aside>
 
 ## Put record assignees
@@ -18404,7 +18420,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
-|totalCount|string \| null|true|none|none|
+|totalCount|string|true|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -18575,6 +18591,921 @@ To perform this operation, you must be authenticated by means of one of the foll
 apiToken, passwordAuth, oauth2 ( Scopes: k:app_record:write )
 </aside>
 
+<h1 id="kintone-rest-api-searchs">SEARCHS</h1>
+
+## Post search (guest space)
+
+<a id="opIdpostSearchForGuestSpace"></a>
+
+> Code samples
+
+```bash
+curl https://example.cybozu.com/k/guest/0/v1/search.json \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Cybozu-Authorization: ${API_KEY}" \
+  -d '{
+    "types": [
+      "RECORD"
+    ],
+    "excludeScopes": [
+      {
+        "codes": [
+          "string"
+        ],
+        "scope": "SPACE",
+        "ids": [
+          0
+        ]
+      }
+    ],
+    "creators": [
+      "string"
+    ],
+    "includeSynonyms": true,
+    "query": [
+      {
+        "keywords": [
+          "string"
+        ],
+        "operator": "AND"
+      }
+    ],
+    "limit": 0,
+    "scopes": [
+      {
+        "codes": [
+          "string"
+        ],
+        "scope": "SPACE",
+        "ids": [
+          0
+        ]
+      }
+    ],
+    "createdBefore": "1970-01-01T00:00:00Z",
+    "sort": {
+      "by": "RELEVANCE",
+      "order": "ASC"
+    },
+    "pageToken": "string",
+    "createdAfter": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`POST /k/guest/{guestSpaceId}/v1/search.json`
+
+Searches across Kintone, including App records and Thread posts.
+
+> Body parameter
+
+```json
+{
+  "types": [
+    "RECORD"
+  ],
+  "excludeScopes": [
+    {
+      "codes": [
+        "string"
+      ],
+      "scope": "SPACE",
+      "ids": [
+        0
+      ]
+    }
+  ],
+  "creators": [
+    "string"
+  ],
+  "includeSynonyms": true,
+  "query": [
+    {
+      "keywords": [
+        "string"
+      ],
+      "operator": "AND"
+    }
+  ],
+  "limit": 0,
+  "scopes": [
+    {
+      "codes": [
+        "string"
+      ],
+      "scope": "SPACE",
+      "ids": [
+        0
+      ]
+    }
+  ],
+  "createdBefore": "1970-01-01T00:00:00Z",
+  "sort": {
+    "by": "RELEVANCE",
+    "order": "ASC"
+  },
+  "pageToken": "string",
+  "createdAfter": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="post-search-guest-space-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|guestSpaceId|path|integer(int64)|true|Guest space ID (the number that appears in the space URL /k/#/space/<ID> when the space is open in a browser).|
+|body|body|object|true|none|
+|» types|body|[string]|false|The types of data to search.<br>Specify any of the following values:<br>- `RECORD`: Records<br>- `RECORD_COMMENT`: Record comments<br>- `SPACE`: Spaces<br>- `THREAD`: Threads<br>- `THREAD_COMMENT`: Thread comments<br>- `PEOPLE_COMMENT`: People comments<br>- `MESSAGE_COMMENT`: Message comments<br>- `ATTACHMENT`: Attachments<br>If ignored, all data types are searched.|
+|» excludeScopes|body|[[SearchPostScopeForm](#schemasearchpostscopeform)]|false|The scopes to exclude from the search.<br>The maximum limit is 20 scopes.<br>If multiple scopes are specified, data that meets all conditions is returned.<br>If both `scopes` and `excludeScopes` are specified, data that meets both conditions is returned. Therefore, `excludeScopes` takes priority where the two scopes overlap.|
+|» creators|body|[string]|false|The log in names of the creators.<br>The maximum limit is 20 log in names.|
+|» includeSynonyms|body|boolean|false|Whether to include spelling variations, abbreviations, and synonyms of the keywords in the search.<br>If ignored, this value is `false`.|
+|» query|body|[[SearchPostQueryForm](#schemasearchpostqueryform)]|true|The search conditions.<br>Specify between 1 and 20 conditions.<br>If multiple conditions are specified, data that meets all conditions is returned.|
+|» limit|body|integer(int64)|false|The maximum number of results to retrieve.<br>Specify a value between 1 and 20.<br>If ignored, this value is `20`.<br>The response may contain fewer results than the limit, even if more matching data remains. Use the `nextPageToken` property in the response to check whether more matching data remains.|
+|» scopes|body|[[SearchPostScopeForm](#schemasearchpostscopeform)]|false|The search scopes.<br>The maximum limit is 20 scopes.<br>If multiple scopes are specified, data that meets any of the scopes is returned.|
+|» createdBefore|body|string(date-time)|false|The latest created datetime.<br>Returns data created on or before the specified datetime. This value cannot be earlier than `createdAfter`.<br>For more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.|
+|» sort|body|object|false|The sort conditions.|
+|» » by|body|string|false|The sort criteria.<br>Specify one of the following values:<br>- `RELEVANCE`: Relevance to the keywords<br>- `CREATED_AT`: Created datetime<br>If ignored, this value is `RELEVANCE`.|
+|» » order|body|string|false|The sort direction.<br>Specify one of the following values:<br>- `ASC`: Ascending order<br>- `DESC`: Descending order<br>If ignored, this value is `DESC`.<br>`ASC` cannot be specified if `sort.by` is `RELEVANCE`.|
+|» pageToken|body|string|false|The token used to retrieve the next page of search results.<br>Ignore this parameter in the first request. To retrieve the next page, specify the `nextPageToken` value from the previous response.<br>The token expires 30 minutes after it is issued. The request will fail if an expired token is specified.|
+|» createdAfter|body|string(date-time)|false|The earliest created datetime.<br>Returns data created on or after the specified datetime. This value cannot be later than `createdBefore`.<br>For more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» types|RECORD|
+|» types|RECORD_COMMENT|
+|» types|SPACE|
+|» types|THREAD|
+|» types|THREAD_COMMENT|
+|» types|PEOPLE_COMMENT|
+|» types|MESSAGE_COMMENT|
+|» types|ATTACHMENT|
+|» » by|RELEVANCE|
+|» » by|CREATED_AT|
+|» » order|ASC|
+|» » order|DESC|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "hits": [
+    {
+      "messageComment": {
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "recipient": {
+          "code": "string",
+          "name": "string"
+        },
+        "commentId": "string"
+      },
+      "attachment": {
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "name": "string",
+        "fileKey": "string",
+        "attachedTo": "RECORD"
+      },
+      "snippets": [
+        "string"
+      ],
+      "record": {
+        "recordId": "string",
+        "spaceName": "string",
+        "recordTitle": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "spaceId": "string",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "matchedFields": [
+          {
+            "code": "string",
+            "label": "string"
+          }
+        ],
+        "appName": "string",
+        "appId": "string"
+      },
+      "threadComment": {
+        "spaceName": "string",
+        "threadId": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "replyId": "string",
+        "commentId": "string",
+        "threadName": "string"
+      },
+      "peopleComment": {
+        "owner": {
+          "code": "string",
+          "name": "string"
+        },
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "replyId": "string",
+        "commentId": "string"
+      },
+      "recordComment": {
+        "recordId": "string",
+        "spaceName": "string",
+        "recordTitle": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "spaceId": "string",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "appName": "string",
+        "appId": "string",
+        "commentId": "string"
+      },
+      "thread": {
+        "spaceName": "string",
+        "threadId": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "threadName": "string"
+      },
+      "type": "RECORD",
+      "url": "string",
+      "space": {
+        "spaceName": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        }
+      }
+    }
+  ],
+  "nextPageToken": "string"
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "id": "1505999166-897850006",
+  "code": "CB_IJ01",
+  "message": "Invalid JSON string."
+}
+```
+
+<h3 id="post-search-guest-space-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|success case of search/post|Inline|
+|4XX|Client Error|Error response. When a request fails, an HTTP status code other than 2xx is returned together with an error object containing id / code / message.|[KintoneError](#schemakintoneerror)|
+
+<h3 id="post-search-guest-space-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|hits|[[SearchPostHit](#schemasearchposthit)]|false|none|none|
+|nextPageToken|string \| null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+passwordAuth
+</aside>
+
+## Post search (all participating guest spaces)
+
+<a id="opIdpostSearchForGuest"></a>
+
+> Code samples
+
+```bash
+curl https://example.cybozu.com/k/guest/v1/search.json \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Cybozu-Authorization: ${API_KEY}" \
+  -d '{
+    "types": [
+      "RECORD"
+    ],
+    "excludeScopes": [
+      {
+        "codes": [
+          "string"
+        ],
+        "scope": "SPACE",
+        "ids": [
+          0
+        ]
+      }
+    ],
+    "creators": [
+      "string"
+    ],
+    "includeSynonyms": true,
+    "query": [
+      {
+        "keywords": [
+          "string"
+        ],
+        "operator": "AND"
+      }
+    ],
+    "limit": 0,
+    "scopes": [
+      {
+        "codes": [
+          "string"
+        ],
+        "scope": "SPACE",
+        "ids": [
+          0
+        ]
+      }
+    ],
+    "createdBefore": "1970-01-01T00:00:00Z",
+    "sort": {
+      "by": "RELEVANCE",
+      "order": "ASC"
+    },
+    "pageToken": "string",
+    "createdAfter": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`POST /k/guest/v1/search.json`
+
+Searches across Kintone, including App records and Thread posts.
+
+> Body parameter
+
+```json
+{
+  "types": [
+    "RECORD"
+  ],
+  "excludeScopes": [
+    {
+      "codes": [
+        "string"
+      ],
+      "scope": "SPACE",
+      "ids": [
+        0
+      ]
+    }
+  ],
+  "creators": [
+    "string"
+  ],
+  "includeSynonyms": true,
+  "query": [
+    {
+      "keywords": [
+        "string"
+      ],
+      "operator": "AND"
+    }
+  ],
+  "limit": 0,
+  "scopes": [
+    {
+      "codes": [
+        "string"
+      ],
+      "scope": "SPACE",
+      "ids": [
+        0
+      ]
+    }
+  ],
+  "createdBefore": "1970-01-01T00:00:00Z",
+  "sort": {
+    "by": "RELEVANCE",
+    "order": "ASC"
+  },
+  "pageToken": "string",
+  "createdAfter": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="post-search-all-participating-guest-spaces-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» types|body|[string]|false|The types of data to search.<br>Specify any of the following values:<br>- `RECORD`: Records<br>- `RECORD_COMMENT`: Record comments<br>- `SPACE`: Spaces<br>- `THREAD`: Threads<br>- `THREAD_COMMENT`: Thread comments<br>- `PEOPLE_COMMENT`: People comments<br>- `MESSAGE_COMMENT`: Message comments<br>- `ATTACHMENT`: Attachments<br>If ignored, all data types are searched.|
+|» excludeScopes|body|[[SearchPostScopeForm](#schemasearchpostscopeform)]|false|The scopes to exclude from the search.<br>The maximum limit is 20 scopes.<br>If multiple scopes are specified, data that meets all conditions is returned.<br>If both `scopes` and `excludeScopes` are specified, data that meets both conditions is returned. Therefore, `excludeScopes` takes priority where the two scopes overlap.|
+|» creators|body|[string]|false|The log in names of the creators.<br>The maximum limit is 20 log in names.|
+|» includeSynonyms|body|boolean|false|Whether to include spelling variations, abbreviations, and synonyms of the keywords in the search.<br>If ignored, this value is `false`.|
+|» query|body|[[SearchPostQueryForm](#schemasearchpostqueryform)]|true|The search conditions.<br>Specify between 1 and 20 conditions.<br>If multiple conditions are specified, data that meets all conditions is returned.|
+|» limit|body|integer(int64)|false|The maximum number of results to retrieve.<br>Specify a value between 1 and 20.<br>If ignored, this value is `20`.<br>The response may contain fewer results than the limit, even if more matching data remains. Use the `nextPageToken` property in the response to check whether more matching data remains.|
+|» scopes|body|[[SearchPostScopeForm](#schemasearchpostscopeform)]|false|The search scopes.<br>The maximum limit is 20 scopes.<br>If multiple scopes are specified, data that meets any of the scopes is returned.|
+|» createdBefore|body|string(date-time)|false|The latest created datetime.<br>Returns data created on or before the specified datetime. This value cannot be earlier than `createdAfter`.<br>For more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.|
+|» sort|body|object|false|The sort conditions.|
+|» » by|body|string|false|The sort criteria.<br>Specify one of the following values:<br>- `RELEVANCE`: Relevance to the keywords<br>- `CREATED_AT`: Created datetime<br>If ignored, this value is `RELEVANCE`.|
+|» » order|body|string|false|The sort direction.<br>Specify one of the following values:<br>- `ASC`: Ascending order<br>- `DESC`: Descending order<br>If ignored, this value is `DESC`.<br>`ASC` cannot be specified if `sort.by` is `RELEVANCE`.|
+|» pageToken|body|string|false|The token used to retrieve the next page of search results.<br>Ignore this parameter in the first request. To retrieve the next page, specify the `nextPageToken` value from the previous response.<br>The token expires 30 minutes after it is issued. The request will fail if an expired token is specified.|
+|» createdAfter|body|string(date-time)|false|The earliest created datetime.<br>Returns data created on or after the specified datetime. This value cannot be later than `createdBefore`.<br>For more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» types|RECORD|
+|» types|RECORD_COMMENT|
+|» types|SPACE|
+|» types|THREAD|
+|» types|THREAD_COMMENT|
+|» types|PEOPLE_COMMENT|
+|» types|MESSAGE_COMMENT|
+|» types|ATTACHMENT|
+|» » by|RELEVANCE|
+|» » by|CREATED_AT|
+|» » order|ASC|
+|» » order|DESC|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "hits": [
+    {
+      "messageComment": {
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "recipient": {
+          "code": "string",
+          "name": "string"
+        },
+        "commentId": "string"
+      },
+      "attachment": {
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "name": "string",
+        "fileKey": "string",
+        "attachedTo": "RECORD"
+      },
+      "snippets": [
+        "string"
+      ],
+      "record": {
+        "recordId": "string",
+        "spaceName": "string",
+        "recordTitle": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "spaceId": "string",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "matchedFields": [
+          {
+            "code": "string",
+            "label": "string"
+          }
+        ],
+        "appName": "string",
+        "appId": "string"
+      },
+      "threadComment": {
+        "spaceName": "string",
+        "threadId": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "replyId": "string",
+        "commentId": "string",
+        "threadName": "string"
+      },
+      "peopleComment": {
+        "owner": {
+          "code": "string",
+          "name": "string"
+        },
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "replyId": "string",
+        "commentId": "string"
+      },
+      "recordComment": {
+        "recordId": "string",
+        "spaceName": "string",
+        "recordTitle": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "spaceId": "string",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "appName": "string",
+        "appId": "string",
+        "commentId": "string"
+      },
+      "thread": {
+        "spaceName": "string",
+        "threadId": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "threadName": "string"
+      },
+      "type": "RECORD",
+      "url": "string",
+      "space": {
+        "spaceName": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        }
+      }
+    }
+  ],
+  "nextPageToken": "string"
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "id": "1505999166-897850006",
+  "code": "CB_IJ01",
+  "message": "Invalid JSON string."
+}
+```
+
+<h3 id="post-search-all-participating-guest-spaces-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|success case of search/post|Inline|
+|4XX|Client Error|Error response. When a request fails, an HTTP status code other than 2xx is returned together with an error object containing id / code / message.|[KintoneError](#schemakintoneerror)|
+
+<h3 id="post-search-all-participating-guest-spaces-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|hits|[[SearchPostHit](#schemasearchposthit)]|false|none|none|
+|nextPageToken|string \| null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+passwordAuth
+</aside>
+
+## Post search
+
+<a id="opIdpostSearch"></a>
+
+> Code samples
+
+```bash
+curl https://example.cybozu.com/k/v1/search.json \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "X-Cybozu-Authorization: ${API_KEY}" \
+  -d '{
+    "types": [
+      "RECORD"
+    ],
+    "excludeScopes": [
+      {
+        "codes": [
+          "string"
+        ],
+        "scope": "SPACE",
+        "ids": [
+          0
+        ]
+      }
+    ],
+    "creators": [
+      "string"
+    ],
+    "includeSynonyms": true,
+    "query": [
+      {
+        "keywords": [
+          "string"
+        ],
+        "operator": "AND"
+      }
+    ],
+    "limit": 0,
+    "scopes": [
+      {
+        "codes": [
+          "string"
+        ],
+        "scope": "SPACE",
+        "ids": [
+          0
+        ]
+      }
+    ],
+    "createdBefore": "1970-01-01T00:00:00Z",
+    "sort": {
+      "by": "RELEVANCE",
+      "order": "ASC"
+    },
+    "pageToken": "string",
+    "createdAfter": "1970-01-01T00:00:00Z"
+  }'
+```
+
+`POST /k/v1/search.json`
+
+Searches across Kintone, including App records and Thread posts.
+
+> Body parameter
+
+```json
+{
+  "types": [
+    "RECORD"
+  ],
+  "excludeScopes": [
+    {
+      "codes": [
+        "string"
+      ],
+      "scope": "SPACE",
+      "ids": [
+        0
+      ]
+    }
+  ],
+  "creators": [
+    "string"
+  ],
+  "includeSynonyms": true,
+  "query": [
+    {
+      "keywords": [
+        "string"
+      ],
+      "operator": "AND"
+    }
+  ],
+  "limit": 0,
+  "scopes": [
+    {
+      "codes": [
+        "string"
+      ],
+      "scope": "SPACE",
+      "ids": [
+        0
+      ]
+    }
+  ],
+  "createdBefore": "1970-01-01T00:00:00Z",
+  "sort": {
+    "by": "RELEVANCE",
+    "order": "ASC"
+  },
+  "pageToken": "string",
+  "createdAfter": "1970-01-01T00:00:00Z"
+}
+```
+
+<h3 id="post-search-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» types|body|[string]|false|The types of data to search.<br>Specify any of the following values:<br>- `RECORD`: Records<br>- `RECORD_COMMENT`: Record comments<br>- `SPACE`: Spaces<br>- `THREAD`: Threads<br>- `THREAD_COMMENT`: Thread comments<br>- `PEOPLE_COMMENT`: People comments<br>- `MESSAGE_COMMENT`: Message comments<br>- `ATTACHMENT`: Attachments<br>If ignored, all data types are searched.|
+|» excludeScopes|body|[[SearchPostScopeForm](#schemasearchpostscopeform)]|false|The scopes to exclude from the search.<br>The maximum limit is 20 scopes.<br>If multiple scopes are specified, data that meets all conditions is returned.<br>If both `scopes` and `excludeScopes` are specified, data that meets both conditions is returned. Therefore, `excludeScopes` takes priority where the two scopes overlap.|
+|» creators|body|[string]|false|The log in names of the creators.<br>The maximum limit is 20 log in names.|
+|» includeSynonyms|body|boolean|false|Whether to include spelling variations, abbreviations, and synonyms of the keywords in the search.<br>If ignored, this value is `false`.|
+|» query|body|[[SearchPostQueryForm](#schemasearchpostqueryform)]|true|The search conditions.<br>Specify between 1 and 20 conditions.<br>If multiple conditions are specified, data that meets all conditions is returned.|
+|» limit|body|integer(int64)|false|The maximum number of results to retrieve.<br>Specify a value between 1 and 20.<br>If ignored, this value is `20`.<br>The response may contain fewer results than the limit, even if more matching data remains. Use the `nextPageToken` property in the response to check whether more matching data remains.|
+|» scopes|body|[[SearchPostScopeForm](#schemasearchpostscopeform)]|false|The search scopes.<br>The maximum limit is 20 scopes.<br>If multiple scopes are specified, data that meets any of the scopes is returned.|
+|» createdBefore|body|string(date-time)|false|The latest created datetime.<br>Returns data created on or before the specified datetime. This value cannot be earlier than `createdAfter`.<br>For more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.|
+|» sort|body|object|false|The sort conditions.|
+|» » by|body|string|false|The sort criteria.<br>Specify one of the following values:<br>- `RELEVANCE`: Relevance to the keywords<br>- `CREATED_AT`: Created datetime<br>If ignored, this value is `RELEVANCE`.|
+|» » order|body|string|false|The sort direction.<br>Specify one of the following values:<br>- `ASC`: Ascending order<br>- `DESC`: Descending order<br>If ignored, this value is `DESC`.<br>`ASC` cannot be specified if `sort.by` is `RELEVANCE`.|
+|» pageToken|body|string|false|The token used to retrieve the next page of search results.<br>Ignore this parameter in the first request. To retrieve the next page, specify the `nextPageToken` value from the previous response.<br>The token expires 30 minutes after it is issued. The request will fail if an expired token is specified.|
+|» createdAfter|body|string(date-time)|false|The earliest created datetime.<br>Returns data created on or after the specified datetime. This value cannot be later than `createdBefore`.<br>For more information on the datetime format, refer to the [Kintone REST API Overview](https://kintone.dev/en/id/d509b956c8f84c45e1e129ae/#date-and-time-for-requests) article.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» types|RECORD|
+|» types|RECORD_COMMENT|
+|» types|SPACE|
+|» types|THREAD|
+|» types|THREAD_COMMENT|
+|» types|PEOPLE_COMMENT|
+|» types|MESSAGE_COMMENT|
+|» types|ATTACHMENT|
+|» » by|RELEVANCE|
+|» » by|CREATED_AT|
+|» » order|ASC|
+|» » order|DESC|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "hits": [
+    {
+      "messageComment": {
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "recipient": {
+          "code": "string",
+          "name": "string"
+        },
+        "commentId": "string"
+      },
+      "attachment": {
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "name": "string",
+        "fileKey": "string",
+        "attachedTo": "RECORD"
+      },
+      "snippets": [
+        "string"
+      ],
+      "record": {
+        "recordId": "string",
+        "spaceName": "string",
+        "recordTitle": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "spaceId": "string",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "matchedFields": [
+          {
+            "code": "string",
+            "label": "string"
+          }
+        ],
+        "appName": "string",
+        "appId": "string"
+      },
+      "threadComment": {
+        "spaceName": "string",
+        "threadId": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "replyId": "string",
+        "commentId": "string",
+        "threadName": "string"
+      },
+      "peopleComment": {
+        "owner": {
+          "code": "string",
+          "name": "string"
+        },
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "replyId": "string",
+        "commentId": "string"
+      },
+      "recordComment": {
+        "recordId": "string",
+        "spaceName": "string",
+        "recordTitle": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "spaceId": "string",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "appName": "string",
+        "appId": "string",
+        "commentId": "string"
+      },
+      "thread": {
+        "spaceName": "string",
+        "threadId": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        },
+        "threadName": "string"
+      },
+      "type": "RECORD",
+      "url": "string",
+      "space": {
+        "spaceName": "string",
+        "spaceId": "string",
+        "createdAt": "1970-01-01T00:00:00Z",
+        "creator": {
+          "code": "string",
+          "name": "string"
+        }
+      }
+    }
+  ],
+  "nextPageToken": "string"
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "id": "1505999166-897850006",
+  "code": "CB_IJ01",
+  "message": "Invalid JSON string."
+}
+```
+
+<h3 id="post-search-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|success case of search/post|Inline|
+|4XX|Client Error|Error response. When a request fails, an HTTP status code other than 2xx is returned together with an error object containing id / code / message.|[KintoneError](#schemakintoneerror)|
+
+<h3 id="post-search-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|hits|[[SearchPostHit](#schemasearchposthit)]|false|none|none|
+|nextPageToken|string \| null|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+passwordAuth
+</aside>
+
 <h1 id="kintone-rest-api-spaces">SPACES</h1>
 
 ## Get space (guest space)
@@ -18690,8 +19621,8 @@ Status Code **200**
 |memberCount|string|false|none|none|
 |attachedApps|[[SpaceGetAttachedApp](#schemaspacegetattachedapp)]|false|none|none|
 |isPrivate|boolean|false|none|none|
-|body|string|false|none|none|
-|showAppList|boolean|false|none|none|
+|body|string \| null|false|none|none|
+|showAppList|boolean \| null|false|none|none|
 |coverUrl|string|false|none|none|
 |coverType|string|false|none|none|
 |fixedMember|boolean|false|none|none|
@@ -18699,11 +19630,11 @@ Status Code **200**
 |» createApp|string|false|none|none|
 |name|string|false|none|none|
 |useMultiThread|boolean|false|none|none|
-|showMemberList|boolean|false|none|none|
-|showRelatedLinkList|boolean|false|none|none|
+|showMemberList|boolean \| null|false|none|none|
+|showRelatedLinkList|boolean \| null|false|none|none|
 |id|string|false|none|none|
-|showAnnouncement|boolean|false|none|none|
-|showThreadList|boolean|false|none|none|
+|showAnnouncement|boolean \| null|false|none|none|
+|showThreadList|boolean \| null|false|none|none|
 |defaultThread|string|false|none|none|
 
 #### Enumerated Values
@@ -19661,8 +20592,8 @@ Status Code **200**
 |memberCount|string|false|none|none|
 |attachedApps|[[SpaceGetAttachedApp](#schemaspacegetattachedapp)]|false|none|none|
 |isPrivate|boolean|false|none|none|
-|body|string|false|none|none|
-|showAppList|boolean|false|none|none|
+|body|string \| null|false|none|none|
+|showAppList|boolean \| null|false|none|none|
 |coverUrl|string|false|none|none|
 |coverType|string|false|none|none|
 |fixedMember|boolean|false|none|none|
@@ -19670,11 +20601,11 @@ Status Code **200**
 |» createApp|string|false|none|none|
 |name|string|false|none|none|
 |useMultiThread|boolean|false|none|none|
-|showMemberList|boolean|false|none|none|
-|showRelatedLinkList|boolean|false|none|none|
+|showMemberList|boolean \| null|false|none|none|
+|showRelatedLinkList|boolean \| null|false|none|none|
 |id|string|false|none|none|
-|showAnnouncement|boolean|false|none|none|
-|showThreadList|boolean|false|none|none|
+|showAnnouncement|boolean \| null|false|none|none|
+|showThreadList|boolean \| null|false|none|none|
 |defaultThread|string|false|none|none|
 
 #### Enumerated Values
@@ -21699,7 +22630,7 @@ passwordAuth
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |noLabel|boolean(boolean)|false|none|none|
-|lookup|object|false|none|none|
+|lookup|object \| null|false|none|none|
 |code|string|false|none|none|
 |label|string|false|none|none|
 |type|string|true|none|none|
@@ -22263,7 +23194,7 @@ passwordAuth
 |code|string|false|none|none|
 |label|string|false|none|none|
 |type|string|true|none|none|
-|referenceTable|object|false|none|none|
+|referenceTable|object \| null|false|none|none|
 
 #### Enumerated Values
 
@@ -25000,7 +25931,7 @@ passwordAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|periodicReport|object|false|none|none|
+|periodicReport|object \| null|false|none|none|
 |chartType|string|false|none|none|
 |name|string|false|none|none|
 |index|integer(int64)|false|none|none|
@@ -25071,7 +26002,7 @@ passwordAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|periodicReport|object|false|none|none|
+|periodicReport|object \| null|false|none|none|
 |chartType|string|false|none|none|
 |name|string|false|none|none|
 |index|integer(int64)|false|none|none|
@@ -25548,6 +26479,7 @@ passwordAuth
 
 ```json
 {
+  "instructions": "string",
   "name": "string",
   "index": 0,
   "assignee": {
@@ -25569,6 +26501,7 @@ passwordAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|instructions|string|false|none|none|
 |name|string|false|none|none|
 |index|integer(int64)|false|none|none|
 |assignee|object|false|none|none|
@@ -26941,14 +27874,14 @@ Attachment
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
-|unit|string|false|none|none|
+|unit|string \| null|false|none|none|
 |expression|string|false|none|none|
 |code|string|false|none|none|
 |format|string|false|none|none|
 |unitPosition|string|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
-|displayScale|integer(int64)|false|none|none|
+|displayScale|integer(int64) \| null|false|none|none|
 |hideExpression|boolean|false|none|none|
 |required|boolean|false|none|none|
 
@@ -27017,8 +27950,8 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|defaultExpression|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|defaultExpression|string \| null|false|none|none|
 |unique|boolean|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
@@ -27082,8 +28015,8 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|defaultExpression|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|defaultExpression|string \| null|false|none|none|
 |unique|boolean|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
@@ -27152,16 +28085,16 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|maxValue|integer(int64)|false|none|none|
-|defaultValue|string|false|none|none|
+|maxValue|integer(int64) \| null|false|none|none|
+|defaultValue|string \| null|false|none|none|
 |unitPosition|string|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
-|minValue|integer(int64)|false|none|none|
-|unit|string|false|none|none|
+|minValue|integer(int64) \| null|false|none|none|
+|unit|string \| null|false|none|none|
 |unique|boolean|false|none|none|
-|displayScale|integer(int64)|false|none|none|
+|displayScale|integer(int64) \| null|false|none|none|
 |digit|boolean|false|none|none|
 
 #### Enumerated Values
@@ -27220,7 +28153,7 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
@@ -27508,12 +28441,12 @@ Attachment
 |noLabel|boolean|false|none|none|
 |protocol|string|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|minLength|integer(int64)|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|minLength|integer(int64) \| null|false|none|none|
 |unique|boolean|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
-|maxLength|integer(int64)|false|none|none|
+|maxLength|integer(int64) \| null|false|none|none|
 |required|boolean|false|none|none|
 
 #### Enumerated Values
@@ -27575,7 +28508,7 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|relatedApp|integer(int64)|false|none|none|
+|relatedApp|integer(int64) \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
@@ -27636,7 +28569,7 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
@@ -27822,7 +28755,7 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|relatedApp|integer(int64)|false|none|none|
+|relatedApp|integer(int64) \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 
@@ -27888,12 +28821,12 @@ Attachment
 |noLabel|boolean|false|none|none|
 |expression|string|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|minLength|integer(int64)|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|minLength|integer(int64) \| null|false|none|none|
 |unique|boolean|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
-|maxLength|integer(int64)|false|none|none|
+|maxLength|integer(int64) \| null|false|none|none|
 |hideExpression|boolean|false|none|none|
 |required|boolean|false|none|none|
 
@@ -27956,7 +28889,7 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
 |options|[string]|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
@@ -28135,8 +29068,8 @@ Attachment
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|defaultExpression|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|defaultExpression|string \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
@@ -29939,7 +30872,7 @@ Any existing `Action` that is not set for this parameter will be deleted.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |noLabel|boolean(boolean)|false|none|none|
-|lookup|object|false|none|none|
+|lookup|object \| null|false|none|none|
 |code|string|false|none|none|
 |label|string|false|none|none|
 |type|string|true|none|none|
@@ -30503,7 +31436,7 @@ Any existing `Action` that is not set for this parameter will be deleted.
 |code|string|false|none|none|
 |label|string|false|none|none|
 |type|string|true|none|none|
-|referenceTable|object|false|none|none|
+|referenceTable|object \| null|false|none|none|
 
 #### Enumerated Values
 
@@ -38835,7 +39768,7 @@ If a new option is specified for this parameter, it will be treated as a new opt
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|periodicReport|object|false|none|none|
+|periodicReport|object \| null|false|none|none|
 |chartType|string|false|none|none|
 |name|string|false|none|none|
 |index|integer(int64)|false|none|none|
@@ -38906,7 +39839,7 @@ If a new option is specified for this parameter, it will be treated as a new opt
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|periodicReport|object|false|none|none|
+|periodicReport|object \| null|false|none|none|
 |chartType|string|false|none|none|
 |name|string|false|none|none|
 |index|integer(int64)|false|none|none|
@@ -40011,6 +40944,7 @@ If this parameter is ignored, no changes will be made to the "Periodic Reports" 
 
 ```json
 {
+  "instructions": "string",
   "name": "string",
   "index": 0,
   "assignee": {
@@ -40032,6 +40966,7 @@ If this parameter is ignored, no changes will be made to the "Periodic Reports" 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|instructions|string|false|none|none|
 |name|string|false|none|none|
 |index|integer(int64)|false|none|none|
 |assignee|object|false|none|none|
@@ -40070,9 +41005,9 @@ If this parameter is ignored, no changes will be made to the "Periodic Reports" 
 |---|---|---|---|---|
 |name|string|true|none|The Action name.<br>The maximum length is 64 characters.<br>Required, if setting the `actions` parameter.|
 |executableUser|object|false|none|none|
-|from|string|true|none|The Status name before taking action.<br>If a Status name that you want to specify has been changed, place the changed value for this parameter.<br>Required, if setting the `actions` parameter.|
-|to|string|true|none|The Status name after taking action.<br>If a Status name that you want to specify has been changed, place the changed value for this parameter.<br>Required, if setting the `actions` parameter.|
-|filterCond|string|false|none|The branch criteria of the action, specified as a query.<br>For more information on query formats refer to the following document:<br>[Query String](https://kintone.dev/en/docs/kintone/overview/query-string/)<br>There are restrictions on the conditions that can be specified:<br>[Available Operators and Functions for Each Field](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/#available-operators-and-functions-for-each-field)<br>[Additional Restrictions for Each API](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/#additional-restrictions-for-each-api)|
+|from|string|true|none|The Status name before taking action.<br>If you are renaming the status, specify the new name.<br>Required, if setting the `actions` parameter.|
+|to|string|true|none|The Status name after taking action.<br>If you are renaming the status, specify the new name.<br>Required, if setting the `actions` parameter.|
+|filterCond|string|false|none|The branch criteria of the action, specified as a query.<br>For more information on query formats refer to the following document:<br>[Query String](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/)<br>There are restrictions on the conditions that can be specified:<br>[Available Operators and Functions for Each Field](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/#available-operators-and-functions-for-each-field)<br>[Additional Restrictions for Each API](https://kintone.dev/en/id/0d9792ee2b6e4b0e3829c9ee/#additional-restrictions-for-each-api)|
 |type|string|false|none|none|
 
 #### Enumerated Values
@@ -40103,7 +41038,7 @@ If this parameter is ignored, no changes will be made to the "Periodic Reports" 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|includeSubs|boolean|false|none|The **Include affiliated departments** settings of the department.<br>- `true`: Affiliated departments are included as Assignees<br>- `false`: Affiliated departments are not included as Assignees<br>If ignored, this value is false.|
+|includeSubs|boolean|false|none|The **Include affiliated departments** settings of the department.<br>- `true`: Affiliated departments are included as Assignees<br>- `false`: Affiliated departments are not included as Assignees<br>If omitted, this value is false.|
 |entity|object|true|none|An object containing user data of the Assignees.<br>Required, if setting the `entities` parameter.|
 
 <h2 id="tocS_PreviewAppStatusPutExecutableUserEntityForm">PreviewAppStatusPutExecutableUserEntityForm</h2>
@@ -40139,6 +41074,7 @@ If this parameter is ignored, no changes will be made to the "Periodic Reports" 
 
 ```json
 {
+  "instructions": "string",
   "name": "string",
   "index": 0,
   "assignee": {
@@ -40157,15 +41093,16 @@ If this parameter is ignored, no changes will be made to the "Periodic Reports" 
 ```
 
 An object containing the settings of each status.
-- Add a new status: Specify a status name that does not exist.
-- Update a status: Specify the name of the status to be updated.
-- Delete a status: Do not specify the status name for deletion.
-The first status cannot be added. To change the first status, update the name of the existing first status.
+- To add a new status, specify a status name that does not exist.
+- To update a status, specify the name of the status to be updated.
+- To delete a status, omit it from `states`.
+A new status cannot be added as the first status. To change the first status, rename the existing one.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|instructions|string|false|none|The assignee instructions of the status.<br>The maximum limit is 10,000 characters.<br>If ignored, the following applies:<br>- Updating an existing status: The current instructions are not changed.<br>- Adding a new status: An empty string is set.|
 |name|string|false|none|The status name.<br>The maximum length is 64 characters.<br>Required, if stating a new status for `{status_name}`. In this case, state the same value used for `{status_name}`.|
 |index|integer(int64)|true|none|The display order (ascending from 0) of the Status, when listed with the other statuses. Required, if setting the `{status_name}` parameter.|
 |assignee|object|false|none|An object containing data of the Assignee settings.|
@@ -40747,14 +41684,14 @@ The first status cannot be added. To change the first status, update the name of
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
-|unit|string|false|none|none|
+|unit|string \| null|false|none|none|
 |expression|string|false|none|none|
 |code|string|false|none|none|
 |format|string|false|none|none|
 |unitPosition|string|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
-|displayScale|integer(int64)|false|none|none|
+|displayScale|integer(int64) \| null|false|none|none|
 |hideExpression|boolean|false|none|none|
 |required|boolean|false|none|none|
 
@@ -40823,8 +41760,8 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|defaultExpression|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|defaultExpression|string \| null|false|none|none|
 |unique|boolean|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
@@ -40888,8 +41825,8 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|defaultExpression|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|defaultExpression|string \| null|false|none|none|
 |unique|boolean|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
@@ -40958,16 +41895,16 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|maxValue|integer(int64)|false|none|none|
-|defaultValue|string|false|none|none|
+|maxValue|integer(int64) \| null|false|none|none|
+|defaultValue|string \| null|false|none|none|
 |unitPosition|string|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
-|minValue|integer(int64)|false|none|none|
-|unit|string|false|none|none|
+|minValue|integer(int64) \| null|false|none|none|
+|unit|string \| null|false|none|none|
 |unique|boolean|false|none|none|
-|displayScale|integer(int64)|false|none|none|
+|displayScale|integer(int64) \| null|false|none|none|
 |digit|boolean|false|none|none|
 
 #### Enumerated Values
@@ -41026,7 +41963,7 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
@@ -41314,12 +42251,12 @@ The first status cannot be added. To change the first status, update the name of
 |noLabel|boolean|false|none|none|
 |protocol|string|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|minLength|integer(int64)|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|minLength|integer(int64) \| null|false|none|none|
 |unique|boolean|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
-|maxLength|integer(int64)|false|none|none|
+|maxLength|integer(int64) \| null|false|none|none|
 |required|boolean|false|none|none|
 
 #### Enumerated Values
@@ -41381,7 +42318,7 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|relatedApp|integer(int64)|false|none|none|
+|relatedApp|integer(int64) \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
@@ -41442,7 +42379,7 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
@@ -41628,7 +42565,7 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|relatedApp|integer(int64)|false|none|none|
+|relatedApp|integer(int64) \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 
@@ -41694,12 +42631,12 @@ The first status cannot be added. To change the first status, update the name of
 |noLabel|boolean|false|none|none|
 |expression|string|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|minLength|integer(int64)|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|minLength|integer(int64) \| null|false|none|none|
 |unique|boolean|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
-|maxLength|integer(int64)|false|none|none|
+|maxLength|integer(int64) \| null|false|none|none|
 |hideExpression|boolean|false|none|none|
 |required|boolean|false|none|none|
 
@@ -41762,7 +42699,7 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
 |options|[string]|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
@@ -41941,8 +42878,8 @@ The first status cannot be added. To change the first status, update the name of
 |---|---|---|---|---|
 |noLabel|boolean|false|none|none|
 |code|string|false|none|none|
-|defaultValue|string|false|none|none|
-|defaultExpression|string|false|none|none|
+|defaultValue|string \| null|false|none|none|
+|defaultExpression|string \| null|false|none|none|
 |label|string|false|none|none|
 |type|string|false|none|none|
 |required|boolean|false|none|none|
@@ -42908,6 +43845,241 @@ Revision
 |---|---|
 |type|__REVISION__|
 
+<h2 id="tocS_SearchPostField">SearchPostField</h2>
+<!-- backwards compatibility -->
+<a id="schemasearchpostfield"></a>
+<a id="schema_SearchPostField"></a>
+<a id="tocSsearchpostfield"></a>
+<a id="tocssearchpostfield"></a>
+
+```json
+{
+  "code": "string",
+  "label": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|label|string|false|none|none|
+
+<h2 id="tocS_SearchPostHit">SearchPostHit</h2>
+<!-- backwards compatibility -->
+<a id="schemasearchposthit"></a>
+<a id="schema_SearchPostHit"></a>
+<a id="tocSsearchposthit"></a>
+<a id="tocssearchposthit"></a>
+
+```json
+{
+  "messageComment": {
+    "createdAt": "1970-01-01T00:00:00Z",
+    "creator": {
+      "code": "string",
+      "name": "string"
+    },
+    "recipient": {
+      "code": "string",
+      "name": "string"
+    },
+    "commentId": "string"
+  },
+  "attachment": {
+    "createdAt": "1970-01-01T00:00:00Z",
+    "creator": {
+      "code": "string",
+      "name": "string"
+    },
+    "name": "string",
+    "fileKey": "string",
+    "attachedTo": "RECORD"
+  },
+  "snippets": [
+    "string"
+  ],
+  "record": {
+    "recordId": "string",
+    "spaceName": "string",
+    "recordTitle": "string",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "spaceId": "string",
+    "creator": {
+      "code": "string",
+      "name": "string"
+    },
+    "matchedFields": [
+      {
+        "code": "string",
+        "label": "string"
+      }
+    ],
+    "appName": "string",
+    "appId": "string"
+  },
+  "threadComment": {
+    "spaceName": "string",
+    "threadId": "string",
+    "spaceId": "string",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "creator": {
+      "code": "string",
+      "name": "string"
+    },
+    "replyId": "string",
+    "commentId": "string",
+    "threadName": "string"
+  },
+  "peopleComment": {
+    "owner": {
+      "code": "string",
+      "name": "string"
+    },
+    "createdAt": "1970-01-01T00:00:00Z",
+    "creator": {
+      "code": "string",
+      "name": "string"
+    },
+    "replyId": "string",
+    "commentId": "string"
+  },
+  "recordComment": {
+    "recordId": "string",
+    "spaceName": "string",
+    "recordTitle": "string",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "spaceId": "string",
+    "creator": {
+      "code": "string",
+      "name": "string"
+    },
+    "appName": "string",
+    "appId": "string",
+    "commentId": "string"
+  },
+  "thread": {
+    "spaceName": "string",
+    "threadId": "string",
+    "spaceId": "string",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "creator": {
+      "code": "string",
+      "name": "string"
+    },
+    "threadName": "string"
+  },
+  "type": "RECORD",
+  "url": "string",
+  "space": {
+    "spaceName": "string",
+    "spaceId": "string",
+    "createdAt": "1970-01-01T00:00:00Z",
+    "creator": {
+      "code": "string",
+      "name": "string"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|messageComment|object|false|none|none|
+|attachment|object|false|none|none|
+|snippets|[string]|false|none|none|
+|record|object|false|none|none|
+|threadComment|object|false|none|none|
+|peopleComment|object|false|none|none|
+|recordComment|object|false|none|none|
+|thread|object|false|none|none|
+|type|string|false|none|none|
+|url|string|false|none|none|
+|space|object|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|RECORD|
+|type|RECORD_COMMENT|
+|type|SPACE|
+|type|THREAD|
+|type|THREAD_COMMENT|
+|type|PEOPLE_COMMENT|
+|type|MESSAGE_COMMENT|
+|type|ATTACHMENT|
+
+<h2 id="tocS_SearchPostQueryForm">SearchPostQueryForm</h2>
+<!-- backwards compatibility -->
+<a id="schemasearchpostqueryform"></a>
+<a id="schema_SearchPostQueryForm"></a>
+<a id="tocSsearchpostqueryform"></a>
+<a id="tocssearchpostqueryform"></a>
+
+```json
+{
+  "keywords": [
+    "string"
+  ],
+  "operator": "AND"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|keywords|[string]|true|none|An array of keywords.<br>Specify between 1 and 20 keywords.<br>Each keyword must be between 1 and 50 characters.<br>The maximum limit is 20 keywords across the entire `query`. The request will fail if this limit is exceeded.|
+|operator|string|true|none|How the search condition is evaluated.<br>Specify one of the following values:<br>- `AND`: Returns data that contains all keywords.<br>- `OR`: Returns data that contains any of the keywords.<br>- `NOT`: Returns data that does not contain the keywords.<br>The search result will be empty if `query` contains no conditions that use `AND` or `OR`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|operator|AND|
+|operator|OR|
+|operator|NOT|
+
+<h2 id="tocS_SearchPostScopeForm">SearchPostScopeForm</h2>
+<!-- backwards compatibility -->
+<a id="schemasearchpostscopeform"></a>
+<a id="schema_SearchPostScopeForm"></a>
+<a id="tocSsearchpostscopeform"></a>
+<a id="tocssearchpostscopeform"></a>
+
+```json
+{
+  "codes": [
+    "string"
+  ],
+  "scope": "SPACE",
+  "ids": [
+    0
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|codes|[string]|false|none|The log in names of users.<br>The maximum limit is 20 log in names.<br>If `scopes[].scope` is `PEOPLE` or `MESSAGE`, specify the log in names of People owners or Message partners. This limits the search scope to those People or Messages. If ignored, all People or all Messages are searched.<br>This parameter cannot be specified if `scopes[].scope` is `APP` or `SPACE`.|
+|scope|string|true|none|The type of search scope.<br>Specify one of the following values:<br>- `APP`: Apps<br>- `SPACE`: Spaces<br>- `PEOPLE`: People<br>- `MESSAGE`: Messages<br>Required if `scopes` is specified.|
+|ids|[integer(int64)]|false|none|The App IDs or Space IDs.<br>The maximum limit is 20 IDs.<br>If `scopes[].scope` is `APP` or `SPACE`, specify App IDs or Space IDs to limit the search scope to those Apps or Spaces. If ignored, all Apps or all Spaces are searched.<br>This parameter cannot be specified if `scopes[].scope` is `PEOPLE` or `MESSAGE`.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|scope|SPACE|
+|scope|APP|
+|scope|PEOPLE|
+|scope|MESSAGE|
+
 <h2 id="tocS_SimpleRowValue">SimpleRowValue</h2>
 <!-- backwards compatibility -->
 <a id="schemasimplerowvalue"></a>
@@ -43160,7 +44332,7 @@ Drop-down
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|threadId|string \| null|false|none|none|
+|threadId|string|false|none|none|
 |createdAt|string(date-time)|false|none|none|
 |creator|object|false|none|none|
 |code|string|false|none|none|

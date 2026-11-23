@@ -1104,7 +1104,7 @@ const SelfmetadataSchema = z
   .openapi('Selfmetadata')
 
 const CustomFieldsByNameSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: {
       birthday: '2002-10-02T15:00:00Z',
@@ -1150,7 +1150,7 @@ const ContactDetails2Schema = z
     city: z.string().exactOptional(),
     country: z.string().exactOptional(),
     created_at: z.iso.datetime({ offset: true }),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     email: z.email().exactOptional(),
     facebook: z.string().exactOptional(),
     first_name: z.string().exactOptional(),
@@ -1178,7 +1178,7 @@ const ContactDetails3Schema = z
     city: z.string().exactOptional(),
     country: z.string().exactOptional(),
     created_at: z.string(),
-    custom_fields: z.object({}).exactOptional(),
+    custom_fields: z.looseObject({}).exactOptional(),
     email: z.string().exactOptional(),
     facebook: z.string().exactOptional(),
     first_name: z.string().exactOptional(),
@@ -1302,7 +1302,7 @@ const ContactImportSchema = z
   .openapi('ContactImport')
 
 const CustomFieldsByIdSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: {
       e2: 'Coffee is a beverage that puts one to sleep when not drank.',
@@ -1764,7 +1764,7 @@ const ContactdbSegmentsWithIdSchema = z
 const ContactsSchema = z
   .object({
     address: z.string().exactOptional(),
-    address2: z.object({}).exactOptional(),
+    address2: z.looseObject({}).exactOptional(),
     city: z.string().exactOptional(),
     company: z.string().exactOptional(),
     country: z.string().exactOptional(),
@@ -2635,7 +2635,7 @@ const FullSegmentSchema = SegmentSummarySchema.and(
     .object({
       contacts_sample: z.array(ContactResponseSchema),
       query_json: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({ description: 'AST representation of the query DSL' }),
     })
@@ -2700,7 +2700,7 @@ const GlobalErrorResponseSchemaSchema = z
               .exactOptional()
               .openapi({ description: 'the field that generated the error' }),
             help: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'helper text or docs for troubleshooting' }),
             message: z.string().openapi({ description: 'the error message' }),
@@ -3820,7 +3820,7 @@ const SenderIDSchema = SenderIdRequestSchema.and(
     })
     .openapi({ required: [] }),
 )
-  .and(z.object({}).openapi({ required: ['nickname', 'address', 'city', 'country'] }))
+  .and(z.looseObject({}).openapi({ required: ['nickname', 'address', 'city', 'country'] }))
   .openapi({
     example: {
       address: '123 Elm St.',
@@ -4575,7 +4575,7 @@ const StatsAdvancedStatsBaseSchemaSchema = z
           .exactOptional()
           .openapi({ description: 'The date the stats were gathered.' }),
         stats: z
-          .array(z.object({ metrics: z.object({}).exactOptional() }).openapi({ required: [] }))
+          .array(z.object({ metrics: z.looseObject({}).exactOptional() }).openapi({ required: [] }))
           .exactOptional()
           .openapi({ description: 'The individual email activity stats.' }),
       })
@@ -5375,7 +5375,7 @@ const TraitCancelScheduledSendsErrors_400Response = {
               z
                 .object({
                   field: z.string().exactOptional(),
-                  help: z.object({}).exactOptional(),
+                  help: z.looseObject({}).exactOptional(),
                   message: z.string().exactOptional(),
                 })
                 .openapi({ required: [] }),
@@ -6349,7 +6349,7 @@ export const deleteAccessSettingsWhitelistRoute = createRoute({
     },
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: TraitGlobalErrors_401Response,
     403: TraitGlobalErrors_403Response,
     404: TraitGlobalErrors_404Response,
@@ -6425,7 +6425,7 @@ export const deleteAccessSettingsWhitelistRuleIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -6818,7 +6818,7 @@ export const deleteAlertsAlertIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -7475,7 +7475,7 @@ export const deleteAsmGroupsGroupIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -7895,7 +7895,7 @@ export const deleteAsmSuppressionsGlobalEmailRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -8279,7 +8279,7 @@ export const postCampaignsRoute = createRoute({
         },
       },
     },
-    401: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    401: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -8364,7 +8364,7 @@ export const getCampaignsCampaignIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: { value: { errors: [{ field: null, message: 'authorization required' }] } },
           },
@@ -8375,7 +8375,7 @@ export const getCampaignsCampaignIdRoute = createRoute({
       description: '"": "not found"',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { errors: [{ field: null, message: 'not found' }] } } },
         },
       },
@@ -8421,7 +8421,7 @@ export const deleteCampaignsCampaignIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: { value: { errors: [{ field: null, message: 'authorization required' }] } },
           },
@@ -8430,7 +8430,7 @@ export const deleteCampaignsCampaignIdRoute = createRoute({
     },
     404: {
       description: '"": "not found"',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   security: [{ Authorization: [] }],
@@ -8534,7 +8534,7 @@ export const patchCampaignsCampaignIdRoute = createRoute({
         '"title": "title can\'t be blank"\n"title": "title is too long (maximum is 100 characters)"\n"categories": "categories exceeds 10 category limit"\n"html_content": "html_content exceeds the 1MB limit"\n"plain_content": "plain_content exceeds the 1MB limit"\n"sender_id": "sender_id does not exist"\n"sender_id": "sender_id is not a verified sender identity"\n"list_ids": "list_ids do not all exist"\n"segment_ids": "segment_ids do not all exist"\n"ip_pool": "The ip pool you provided is invalid"\n"suppression_group_id": "suppression_group_id does not exist"\n"unsubscribes": "Either suppression_group_id or custom_unsubscribe_url may be set/used, but not both. Please remove one before setting the other."\n"": "The JSON you have submitted cannot be parsed."',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -8578,7 +8578,7 @@ export const patchCampaignsCampaignIdRoute = createRoute({
       description: '"": "You may only update a campaign when it is in draft mode."',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10834,7 +10834,7 @@ export const getContactdbListsListIdRecipientsRoute = createRoute({
       description: '"list_id" : "Returned if list_id does not exist"',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { errors: [{ field: 'list_id', message: 'Returned if list_id is invalid' }] },
@@ -11237,7 +11237,7 @@ export const getContactdbRecipientsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ recipients: z.array(z.object({})) })
+            .object({ recipients: z.array(z.looseObject({})) })
             .openapi({ required: ['recipients'], title: 'List Recipients response' }),
         },
       },
@@ -11245,7 +11245,7 @@ export const getContactdbRecipientsRoute = createRoute({
     400: {
       description:
         '"page" : "Returned if page is not a valid integer"\n"page" : "Returned if page is less than 1"\n"page_size" : "Returned if page_size is not a valid integer"\n"page_size" : "Returned if page_size is less than 1 or greater than 1000"',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: '',
@@ -11375,7 +11375,7 @@ export const deleteContactdbRecipientsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: {
       description:
         '"" : "Returned if no recipients are deleted"\n"" : "Returned if all of the provided recipient ids are invalid"\n"" : "Returned if request body is not valid json"',
@@ -11801,7 +11801,7 @@ export const getContactdbRecipientsRecipientIdRoute = createRoute({
     200: { description: '', content: { 'application/json': { schema: ContactdbRecipientSchema } } },
     400: {
       description: '"recipient_id" : "Returned if recipient_id is not valid"',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: '',
@@ -11816,7 +11816,7 @@ export const getContactdbRecipientsRecipientIdRoute = createRoute({
     },
     404: {
       description: '"recipient_id" : "Returned if record for recipient id does not exist"',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   security: [{ Authorization: [] }],
@@ -11847,7 +11847,7 @@ export const deleteContactdbRecipientsRecipientIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: {
       description: '"recipient_id" : "Returned if recipient_id is not valid"',
       content: {
@@ -12595,7 +12595,7 @@ export const getContactdbSegmentsSegmentIdRecipientsRoute = createRoute({
     400: {
       description:
         '"page" : "Returned if page is not a valid integer"\n"page" : "Returned if page is less than 1"\n"page_size" : "Returned if page_size is not a valid integer"',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: '',
@@ -12611,7 +12611,7 @@ export const getContactdbSegmentsSegmentIdRecipientsRoute = createRoute({
     404: {
       description:
         '"segment_id" : "Returned if segment_id is not valid"\n"segment_id" : "Returned if segment_id does not exist"',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   security: [{ Authorization: [] }],
@@ -13175,7 +13175,7 @@ export const deleteDesignsIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: { description: '', content: { 'application/json': { schema: ApiErrorsSchema } } },
     404: { description: '', content: { 'application/json': { schema: ApiErrorsSchema } } },
   },
@@ -14530,7 +14530,7 @@ export const deleteIpsPoolsPoolNameRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: {
       description: '',
       content: {
@@ -14688,7 +14688,7 @@ export const deleteIpsPoolsPoolNameIpsIpRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: {
       description: '',
       content: {
@@ -14938,7 +14938,7 @@ export const deleteIpsWarmupIpAddressRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: {
       description: '',
       content: {
@@ -15250,7 +15250,7 @@ export const postMailSendRoute = createRoute({
                 }),
               from: FromEmailObjectSchema,
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -15380,7 +15380,7 @@ export const postMailSendRoute = createRoute({
                             "An array of recipients who will receive a copy of your email. Each object in this array must contain the recipient's email address. Each object in the array may optionally contain the recipient's name.",
                         }),
                       custom_args: z
-                        .object({})
+                        .looseObject({})
                         .refine((val) => Object.keys(val).length <= 10000)
                         .exactOptional()
                         .openapi({
@@ -15388,7 +15388,7 @@ export const postMailSendRoute = createRoute({
                             'Values that are specific to this personalization that will be carried along with the email and its activity data. Substitutions will not be made on custom arguments, so any string that is entered into this parameter will be assumed to be the custom argument that you would like to be used. This field may not exceed 10,000 bytes.',
                         }),
                       dynamic_template_data: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -15396,7 +15396,7 @@ export const postMailSendRoute = createRoute({
                         }),
                       from: FromEmailObjectSchema.exactOptional(),
                       headers: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -15418,7 +15418,7 @@ export const postMailSendRoute = createRoute({
                             'The subject of your email. See character length requirements according to [RFC 2822](http://stackoverflow.com/questions/1592291/what-is-the-email-subject-length-limit#answer-1592310).',
                         }),
                       substitutions: z
-                        .object({})
+                        .looseObject({})
                         .refine((val) => Object.keys(val).length <= 10000)
                         .exactOptional()
                         .openapi({
@@ -17096,7 +17096,7 @@ export const getMarketingContactsRoute = createRoute({
     },
     401: TraitGlobalErrors_401Response,
     403: TraitGlobalErrors_403Response,
-    404: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    404: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     500: TraitGlobalErrors_500Response,
   },
   security: [{ Authorization: [] }],
@@ -17215,7 +17215,7 @@ export const deleteMarketingContactsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ job_id: z.object({}).openapi({ description: 'The deletion job ID.' }) })
+            .object({ job_id: z.looseObject({}).openapi({ description: 'The deletion job ID.' }) })
             .openapi({
               description: 'The deletion job has been accepted and is being processed.',
               required: ['job_id'],
@@ -17227,7 +17227,9 @@ export const deleteMarketingContactsRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({ errors: z.array(z.object({})) }).openapi({ required: ['errors'] }),
+          schema: z
+            .object({ errors: z.array(z.looseObject({})) })
+            .openapi({ required: ['errors'] }),
         },
       },
     },
@@ -17275,7 +17277,7 @@ export const postMarketingContactsBatchRoute = createRoute({
     },
     401: TraitGlobalErrors_401Response,
     403: TraitGlobalErrors_403Response,
-    404: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    404: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     500: TraitGlobalErrors_500Response,
   },
 })
@@ -17298,7 +17300,7 @@ export const getMarketingContactsCountRoute = createRoute({
               billable_breakdown: z
                 .object({
                   breakdown: z
-                    .object({})
+                    .looseObject({})
                     .refine((val) => Object.keys(val).length >= 0)
                     .exactOptional()
                     .openapi({
@@ -18523,7 +18525,9 @@ export const deleteMarketingListsIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({ errors: z.array(z.object({})) }).openapi({ required: ['errors'] }),
+          schema: z
+            .object({ errors: z.array(z.looseObject({})) })
+            .openapi({ required: ['errors'] }),
         },
       },
     },
@@ -18587,7 +18591,7 @@ export const patchMarketingListsIdRoute = createRoute({
         },
       },
     },
-    404: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    404: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -18684,7 +18688,7 @@ export const getMarketingListsIdContactsCountRoute = createRoute({
         },
       },
     },
-    404: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    404: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -19125,7 +19129,7 @@ export const postMarketingSegmentsDeleteRoute = createRoute({
         },
       },
     },
-    202: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    202: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: {
       description: '',
       content: {
@@ -19314,7 +19318,7 @@ export const deleteMarketingSegmentsSegmentIdRoute = createRoute({
     }),
   },
   responses: {
-    202: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    202: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: {
       description: '',
       content: { 'application/json': { schema: GlobalErrorResponseSchemaSchema } },
@@ -20882,7 +20886,7 @@ export const getMarketingStatsSinglesendsIdLinksRoute = createRoute({
       content: { 'application/json': { schema: SinglesendsLinkStatsResponseSchema } },
     },
     400: TraitErrorResponse_400Response,
-    404: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    404: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -20965,7 +20969,7 @@ export const postMarketingTestSendEmailRoute = createRoute({
     },
   },
   responses: {
-    202: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    202: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: TraitErrorResponse_400Response,
   },
   security: [{ Authorization: [] }],
@@ -22367,7 +22371,7 @@ export const patchScopesRequestsRequestIdApproveRoute = createRoute({
         },
       },
     },
-    401: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    401: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     404: {
       description: '',
       content: {
@@ -22458,11 +22462,11 @@ export const postSendersRoute = createRoute({
             z
               .object({
                 from: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ required: ['email'] }),
                 reply_to: z
-                  .object({})
+                  .looseObject({})
                   .exactOptional()
                   .openapi({ required: ['email'] }),
               })
@@ -22685,7 +22689,7 @@ export const deleteSendersSenderIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     403: {
       description: '',
       content: {
@@ -22946,7 +22950,7 @@ export const postSendersSenderIdResendVerificationRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: {
       description: '',
       content: {
@@ -24102,7 +24106,7 @@ export const postSubusersRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: { value: { errors: [{ message: 'unable to validate IPs at this time' }] } },
           },
@@ -24901,7 +24905,7 @@ export const deleteSubusersSubuserNameRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: {
       description: '',
       content: {
@@ -24951,7 +24955,7 @@ export const patchSubusersSubuserNameRoute = createRoute({
     },
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: {
       description: '',
       content: {
@@ -25251,7 +25255,7 @@ export const deleteSubusersSubuserNameMonitorRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: {
       description: '',
       content: {
@@ -25593,7 +25597,7 @@ export const deleteSuppressionBlocksRoute = createRoute({
     },
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -25673,7 +25677,7 @@ export const deleteSuppressionBlocksEmailRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -25915,7 +25919,7 @@ export const deleteSuppressionBouncesEmailRoute = createRoute({
     body: DELETEContactdbListsListIdBodyRequestBody,
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: {
       description: '',
       content: {
@@ -26097,7 +26101,7 @@ export const deleteSuppressionInvalidEmailsRoute = createRoute({
     },
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -26180,7 +26184,7 @@ export const deleteSuppressionInvalidEmailsEmailRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -26342,7 +26346,7 @@ export const deleteSuppressionSpamReportsRoute = createRoute({
     },
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -26413,7 +26417,7 @@ export const deleteSuppressionSpamReportsEmailRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -27761,7 +27765,7 @@ export const deleteTemplatesTemplateIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -28658,7 +28662,7 @@ export const putUserPasswordRoute = createRoute({
     },
   },
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -29600,7 +29604,7 @@ export const deleteUserWebhooksParseSettingsHostnameRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: TraitGlobalErrors_401Response,
     403: TraitGlobalErrors_403Response,
     404: TraitGlobalErrors_404Response,
@@ -30216,7 +30220,7 @@ export const postVerifiedSendersResendIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: {
       description: '',
       content: {
@@ -30352,7 +30356,7 @@ export const deleteVerifiedSendersIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: TraitGlobalErrors_401Response,
     403: {
       description: '',
@@ -31041,7 +31045,7 @@ export const deleteWhitelabelDomainsSubuserRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -31131,7 +31135,7 @@ export const deleteWhitelabelDomainsDomainIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -32007,7 +32011,7 @@ export const deleteWhitelabelIpsIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -32488,7 +32492,7 @@ export const deleteWhitelabelLinksSubuserRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })
@@ -32599,7 +32603,7 @@ export const deleteWhitelabelLinksIdRoute = createRoute({
     headers: z.object({ 'on-behalf-of': TraitOnBehalfOfSubuserOnBehalfOfParamsSchema }),
   },
   responses: {
-    204: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    204: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ Authorization: [] }],
 })

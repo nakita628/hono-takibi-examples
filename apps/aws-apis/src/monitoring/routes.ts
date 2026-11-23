@@ -1,5 +1,109 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ActionsEnabledSchema = z.boolean().openapi('ActionsEnabled')
+
+const ResourceNameSchema = z.string().min(1).max(1024).openapi('ResourceName')
+
+const ResourceListSchema = z.array(ResourceNameSchema).max(5).openapi('ResourceList')
+
+const AlarmArnSchema = z.string().min(1).max(1600).openapi('AlarmArn')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const AlarmDescriptionSchema = z.string().min(0).max(1024).openapi('AlarmDescription')
+
+const AlarmNameSchema = z.string().min(1).max(255).openapi('AlarmName')
+
+const AlarmRuleSchema = z.string().min(1).max(10240).openapi('AlarmRule')
+
+const StateReasonSchema = z.string().min(0).max(1023).openapi('StateReason')
+
+const StateReasonDataSchema = z.string().min(0).max(4000).openapi('StateReasonData')
+
+const StateValueSchema = z.enum(['OK', 'ALARM', 'INSUFFICIENT_DATA']).openapi('StateValue')
+
+const ActionsSuppressedBySchema = z
+  .enum(['WaitPeriod', 'ExtensionPeriod', 'Alarm'])
+  .openapi('ActionsSuppressedBy')
+
+const ActionsSuppressedReasonSchema = z.string().min(0).max(1024).openapi('ActionsSuppressedReason')
+
+const SuppressorPeriodSchema = z.int().openapi('SuppressorPeriod')
+
+const CompositeAlarmSchema = z
+  .object({
+    ActionsEnabled: ActionsEnabledSchema.exactOptional().openapi({
+      description:
+        'Indicates whether actions should be executed during any changes to the alarm state.',
+    }),
+    AlarmActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        'The actions to execute when this alarm transitions to the ALARM state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
+    }),
+    AlarmArn: AlarmArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the alarm.',
+    }),
+    AlarmConfigurationUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time stamp of the last update to the alarm configuration.',
+    }),
+    AlarmDescription: AlarmDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the alarm.',
+    }),
+    AlarmName: AlarmNameSchema.exactOptional().openapi({ description: 'The name of the alarm.' }),
+    AlarmRule: AlarmRuleSchema.exactOptional().openapi({
+      description: 'The rule that this alarm uses to evaluate its alarm state.',
+    }),
+    InsufficientDataActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        'The actions to execute when this alarm transitions to the INSUFFICIENT_DATA state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
+    }),
+    OKActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        'The actions to execute when this alarm transitions to the OK state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
+    }),
+    StateReason: StateReasonSchema.exactOptional().openapi({
+      description: 'An explanation for the alarm state, in text format.',
+    }),
+    StateReasonData: StateReasonDataSchema.exactOptional().openapi({
+      description: 'An explanation for the alarm state, in JSON format.',
+    }),
+    StateUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "Tracks the timestamp of any state update, even if <code>StateValue</code> doesn't change.",
+    }),
+    StateValue: StateValueSchema.exactOptional().openapi({
+      description: 'The state value for the alarm.',
+    }),
+    StateTransitionedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: " The timestamp of the last change to the alarm's <code>StateValue</code>. ",
+    }),
+    ActionsSuppressedBy: ActionsSuppressedBySchema.exactOptional().openapi({
+      description:
+        ' When the value is <code>ALARM</code>, it means that the actions are suppressed because the suppressor alarm is in <code>ALARM</code> When the value is <code>WaitPeriod</code>, it means that the actions are suppressed because the composite alarm is waiting for the suppressor alarm to go into into the <code>ALARM</code> state. The maximum waiting time is as specified in <code>ActionsSuppressorWaitPeriod</code>. After this time, the composite alarm performs its actions. When the value is <code>ExtensionPeriod</code>, it means that the actions are suppressed because the composite alarm is waiting after the suppressor alarm went out of the <code>ALARM</code> state. The maximum waiting time is as specified in <code>ActionsSuppressorExtensionPeriod</code>. After this time, the composite alarm performs its actions. ',
+    }),
+    ActionsSuppressedReason: ActionsSuppressedReasonSchema.exactOptional().openapi({
+      description: ' Captures the reason for action suppression. ',
+    }),
+    ActionsSuppressor: AlarmArnSchema.exactOptional().openapi({
+      description:
+        ' Actions will be suppressed if the suppressor alarm is in the <code>ALARM</code> state. <code>ActionsSuppressor</code> can be an AlarmName or an Amazon Resource Name (ARN) from an existing alarm. ',
+    }),
+    ActionsSuppressorWaitPeriod: SuppressorPeriodSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum time in seconds that the composite alarm waits for the suppressor alarm to go into the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>WaitPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>',
+    }),
+    ActionsSuppressorExtensionPeriod: SuppressorPeriodSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum time in seconds that the composite alarm waits after suppressor alarm goes out of the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>ExtensionPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>',
+    }),
+  })
+  .openapi({ description: 'The details about a composite alarm.', required: [] })
+  .openapi('CompositeAlarm')
+
+const CompositeAlarmsSchema = z.array(CompositeAlarmSchema).openapi('CompositeAlarms')
+
+const MetricNameSchema = z.string().min(1).max(255).openapi('MetricName')
+
 const NamespaceSchema = z
   .string()
   .regex(/[^:].*/)
@@ -7,7 +111,11 @@ const NamespaceSchema = z
   .max(255)
   .openapi('Namespace')
 
-const MetricNameSchema = z.string().min(1).max(255).openapi('MetricName')
+const StatisticSchema = z
+  .enum(['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'])
+  .openapi('Statistic')
+
+const ExtendedStatisticSchema = z.string().openapi('ExtendedStatistic')
 
 const DimensionNameSchema = z.string().min(1).max(255).openapi('DimensionName')
 
@@ -15,22 +123,14 @@ const DimensionValueSchema = z.string().min(1).max(1024).openapi('DimensionValue
 
 const DimensionSchema = z
   .object({
-    Name: DimensionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the dimension. Dimension names must contain only ASCII characters, must include at least one non-whitespace character, and cannot start with a colon (<code>:</code>). ASCII control characters are not supported as part of dimension names.',
-        }),
-    ),
-    Value: DimensionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the dimension. Dimension values must contain only ASCII characters and must include at least one non-whitespace character. ASCII control characters are not supported as part of dimension values.',
-        }),
-    ),
+    Name: DimensionNameSchema.openapi({
+      description:
+        'The name of the dimension. Dimension names must contain only ASCII characters, must include at least one non-whitespace character, and cannot start with a colon (<code>:</code>). ASCII control characters are not supported as part of dimension names.',
+    }),
+    Value: DimensionValueSchema.openapi({
+      description:
+        'The value of the dimension. Dimension values must contain only ASCII characters and must include at least one non-whitespace character. ASCII control characters are not supported as part of dimension values.',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -41,140 +141,7 @@ const DimensionSchema = z
 
 const DimensionsSchema = z.array(DimensionSchema).max(30).openapi('Dimensions')
 
-const AnomalyDetectorMetricStatSchema = z
-  .string()
-  .regex(
-    /(SampleCount|Average|Sum|Minimum|Maximum|IQM|(p|tc|tm|ts|wm)(\d{1,2}(\.\d{0,10})?|100)|[ou]\d+(\.\d*)?)(_E|_L|_H)?|(TM|TC|TS|WM)\(((((\d{1,2})(\.\d{0,10})?|100(\.0{0,10})?)%)?:((\d{1,2})(\.\d{0,10})?|100(\.0{0,10})?)%|((\d{1,2})(\.\d{0,10})?|100(\.0{0,10})?)%:(((\d{1,2})(\.\d{0,10})?|100(\.0{0,10})?)%)?)\)|(TM|TC|TS|WM|PR)\(((\d+(\.\d{0,10})?|(\d+(\.\d{0,10})?[Ee][+-]?\d+)):((\d+(\.\d{0,10})?|(\d+(\.\d{0,10})?[Ee][+-]?\d+)))?|((\d+(\.\d{0,10})?|(\d+(\.\d{0,10})?[Ee][+-]?\d+)))?:(\d+(\.\d{0,10})?|(\d+(\.\d{0,10})?[Ee][+-]?\d+)))\)/,
-  )
-  .max(50)
-  .openapi('AnomalyDetectorMetricStat')
-
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
-const RangeSchema = z
-  .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The start time of the range to exclude. The format is <code>yyyy-MM-dd'T'HH:mm:ss</code>. For example, <code>2019-07-01T23:59:59</code>.",
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The end time of the range to exclude. The format is <code>yyyy-MM-dd'T'HH:mm:ss</code>. For example, <code>2019-07-01T23:59:59</code>.",
-        }),
-    ),
-  })
-  .openapi({
-    required: ['StartTime', 'EndTime'],
-    description:
-      'Specifies one range of days or times to exclude from use for training an anomaly detection model.',
-  })
-  .openapi('Range')
-
-const AnomalyDetectorExcludedTimeRangesSchema = z
-  .array(RangeSchema)
-  .openapi('AnomalyDetectorExcludedTimeRanges')
-
-const AnomalyDetectorMetricTimezoneSchema = z
-  .string()
-  .regex(/.*/)
-  .max(50)
-  .openapi('AnomalyDetectorMetricTimezone')
-
-const AnomalyDetectorConfigurationSchema = z
-  .object({
-    ExcludedTimeRanges: AnomalyDetectorExcludedTimeRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of time ranges to exclude from use when the anomaly detection model is trained. Use this to make sure that events that could cause unusual values for the metric, such as deployments, aren't used when CloudWatch creates the model.",
-        }),
-    ).exactOptional(),
-    MetricTimezone: AnomalyDetectorMetricTimezoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time zone to use for the metric. This is useful to enable the model to automatically account for daylight savings time changes if the metric is sensitive to such time changes.</p> <p>To specify a time zone, use the name of the time zone as specified in the standard tz database. For more information, see <a href="https://en.wikipedia.org/wiki/Tz_database">tz database</a>.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude from use for training the model and the time zone to use for the metric.',
-    required: [],
-  })
-  .openapi('AnomalyDetectorConfiguration')
-
-const AnomalyDetectorStateValueSchema = z
-  .enum(['PENDING_TRAINING', 'TRAINED_INSUFFICIENT_DATA', 'TRAINED'])
-  .openapi('AnomalyDetectorStateValue')
-
-const SingleMetricAnomalyDetectorSchema = z
-  .object({
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The namespace of the metric to create the anomaly detection model for.',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the metric to create the anomaly detection model for.',
-        }),
-    ).exactOptional(),
-    Dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The metric dimensions to create the anomaly detection model for.',
-        }),
-    ).exactOptional(),
-    Stat: AnomalyDetectorMetricStatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The statistic to use for the metric and anomaly detection model.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Designates the CloudWatch metric and statistic that provides the time series the anomaly detector uses as input.',
-    required: [],
-  })
-  .openapi('SingleMetricAnomalyDetector')
-
-const MetricIdSchema = z.string().min(1).max(255).openapi('MetricId')
-
-const MetricSchema = z
-  .object({
-    Namespace: NamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the metric.' }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric. This is a required field.' }),
-    ).exactOptional(),
-    Dimensions: DimensionsSchema.and(
-      z.any().openapi({ description: 'The dimensions for the metric.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents a specific metric.', required: [] })
-  .openapi('Metric')
-
 const PeriodSchema = z.int().min(1).openapi('Period')
-
-const StatSchema = z.string().openapi('Stat')
 
 const StandardUnitSchema = z
   .enum([
@@ -208,470 +175,6 @@ const StandardUnitSchema = z
   ])
   .openapi('StandardUnit')
 
-const MetricStatSchema = z
-  .object({
-    Metric: MetricSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric to return, including the metric name, namespace, and dimensions.',
-        }),
-    ),
-    Period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
-        }),
-    ),
-    Stat: StatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
-        }),
-    ),
-    Unit: StandardUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Metric', 'Period', 'Stat'],
-    description:
-      'This structure defines the metric to be returned, along with the statistics, period, and units.',
-  })
-  .openapi('MetricStat')
-
-const MetricExpressionSchema = z.string().min(1).max(2048).openapi('MetricExpression')
-
-const MetricLabelSchema = z.string().openapi('MetricLabel')
-
-const ReturnDataSchema = z.boolean().openapi('ReturnData')
-
-const AccountIdSchema = z.string().min(1).max(255).openapi('AccountId')
-
-const MetricDataQuerySchema = z
-  .object({
-    Id: MetricIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
-        }),
-    ),
-    MetricStat: MetricStatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-        }),
-    ).exactOptional(),
-    Expression: MetricExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-        }),
-    ).exactOptional(),
-    Label: MetricLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
-        }),
-    ).exactOptional(),
-    ReturnData: ReturnDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
-        }),
-    ).exactOptional(),
-    Period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
-        }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Id'],
-    description:
-      '<p>This structure is used in both <code>GetMetricData</code> and <code>PutMetricAlarm</code>. The supported use of this structure is different for those two operations.</p> <p>When used in <code>GetMetricData</code>, it indicates the metric data to return, and whether this call is just retrieving a batch set of data for one metric, or is performing a Metrics Insights query or a math expression. A single <code>GetMetricData</code> call can include up to 500 <code>MetricDataQuery</code> structures.</p> <p>When used in <code>PutMetricAlarm</code>, it enables you to create an alarm based on a metric math expression. Each <code>MetricDataQuery</code> in the array specifies either a metric to retrieve, or a math expression to be performed on retrieved metrics. A single <code>PutMetricAlarm</code> call can include up to 20 <code>MetricDataQuery</code> structures in the array. The 20 structures can include as many as 10 structures that contain a <code>MetricStat</code> parameter to retrieve a metric, and as many as 10 structures that contain the <code>Expression</code> parameter to perform a math expression. Of those <code>Expression</code> structures, one must have <code>true</code> as the value for <code>ReturnData</code>. The result of this expression is the value the alarm watches.</p> <p>Any expression used in a <code>PutMetricAlarm</code> operation must return a single time series. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Some of the parameters of this structure also have different uses whether you are using this structure in a <code>GetMetricData</code> operation or a <code>PutMetricAlarm</code> operation. These differences are explained in the following parameter list.</p>',
-  })
-  .openapi('MetricDataQuery')
-
-const MetricDataQueriesSchema = z.array(MetricDataQuerySchema).openapi('MetricDataQueries')
-
-const MetricMathAnomalyDetectorSchema = z
-  .object({
-    MetricDataQueries: MetricDataQueriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of metric data query structures that enables you to create an anomaly detector based on the result of a metric math expression. Each item in <code>MetricDataQueries</code> gets a metric or performs a math expression. One item in <code>MetricDataQueries</code> is the expression that provides the time series that the anomaly detector uses as input. Designate the expression by setting <code>ReturnData</code> to <code>true</code> for this object in the array. For all other expressions and metrics, set <code>ReturnData</code> to <code>false</code>. The designated expression must return a single time series.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Indicates the CloudWatch math expression that provides the time series the anomaly detector uses as input. The designated math expression must return a single time series.',
-    required: [],
-  })
-  .openapi('MetricMathAnomalyDetector')
-
-type AnomalyDetectorType = {
-  Namespace?: z.infer<typeof NamespaceSchema> & { [key: string]: unknown }
-  MetricName?: z.infer<typeof MetricNameSchema> & { [key: string]: unknown }
-  Dimensions?: z.infer<typeof DimensionsSchema> & { [key: string]: unknown }
-  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema> & { [key: string]: unknown }
-  Configuration?: z.infer<typeof AnomalyDetectorConfigurationSchema> & { [key: string]: unknown }
-  StateValue?: z.infer<typeof AnomalyDetectorStateValueSchema> & { [key: string]: unknown }
-  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema> & {
-    [key: string]: unknown
-  }
-  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const InsightRuleNameSchema = z
-  .string()
-  .regex(/[\x20-\x7E]+/)
-  .min(1)
-  .max(128)
-  .openapi('InsightRuleName')
-
-const InsightRuleStateSchema = z
-  .string()
-  .regex(/[\x20-\x7E]+/)
-  .min(1)
-  .max(32)
-  .openapi('InsightRuleState')
-
-const InsightRuleSchemaSchema = z.string().openapi('InsightRuleSchema')
-
-const InsightRuleDefinitionSchema = z
-  .string()
-  .regex(/[\x00-\x7F]+/)
-  .min(1)
-  .max(8192)
-  .openapi('InsightRuleDefinition')
-
-const InsightRuleIsManagedSchema = z.boolean().openapi('InsightRuleIsManaged')
-
-type InsightRuleType = {
-  Name: z.infer<typeof InsightRuleNameSchema> & { [key: string]: unknown }
-  State: z.infer<typeof InsightRuleStateSchema> & { [key: string]: unknown }
-  Schema: z.infer<typeof InsightRuleSchemaSchema> & { [key: string]: unknown }
-  Definition: z.infer<typeof InsightRuleDefinitionSchema> & { [key: string]: unknown }
-  ManagedRule?: z.infer<typeof InsightRuleIsManagedSchema> & { [key: string]: unknown }
-}
-
-const AlarmNameSchema = z.string().min(1).max(255).openapi('AlarmName')
-
-const ResourceNotFoundSchema = z.any().openapi('ResourceNotFound')
-
-const DeleteAnomalyDetectorOutputSchema = z.object({}).openapi('DeleteAnomalyDetectorOutput')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const InternalServiceFaultSchema = z.any().openapi('InternalServiceFault')
-
-const InvalidParameterValueExceptionSchema = z.any().openapi('InvalidParameterValueException')
-
-const MissingRequiredParameterExceptionSchema = z.any().openapi('MissingRequiredParameterException')
-
-const InvalidParameterCombinationExceptionSchema = z
-  .any()
-  .openapi('InvalidParameterCombinationException')
-
-const DeleteDashboardsOutputSchema = z.object({}).openapi('DeleteDashboardsOutput')
-
-const DashboardNameSchema = z.string().openapi('DashboardName')
-
-const DashboardNotFoundErrorSchema = z.any().openapi('DashboardNotFoundError')
-
-const FailureResourceSchema = z.string().openapi('FailureResource')
-
-const ExceptionTypeSchema = z.string().openapi('ExceptionType')
-
-const FailureCodeSchema = z.string().openapi('FailureCode')
-
-const FailureDescriptionSchema = z.string().openapi('FailureDescription')
-
-const PartialFailureSchema = z
-  .object({
-    FailureResource: FailureResourceSchema.and(
-      z.any().openapi({ description: 'The specified rule that could not be deleted.' }),
-    ).exactOptional(),
-    ExceptionType: ExceptionTypeSchema.and(
-      z.any().openapi({ description: 'The type of error.' }),
-    ).exactOptional(),
-    FailureCode: FailureCodeSchema.and(
-      z.any().openapi({ description: 'The code of the error.' }),
-    ).exactOptional(),
-    FailureDescription: FailureDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the error.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'This array is empty if the API operation was successful for all the rules specified in the request. If the operation could not process one of the rules, the following data is returned for each of those rules.',
-    required: [],
-  })
-  .openapi('PartialFailure')
-
-const BatchFailuresSchema = z.array(PartialFailureSchema).openapi('BatchFailures')
-
-const DeleteInsightRulesOutputSchema = z
-  .object({
-    Failures: BatchFailuresSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array listing the rules that could not be deleted. You cannot delete built-in rules.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DeleteInsightRulesOutput')
-
-const DeleteMetricStreamOutputSchema = z.object({}).openapi('DeleteMetricStreamOutput')
-
-const AlarmTypeSchema = z.enum(['CompositeAlarm', 'MetricAlarm']).openapi('AlarmType')
-
-const HistoryItemTypeSchema = z
-  .enum(['ConfigurationUpdate', 'StateUpdate', 'Action'])
-  .openapi('HistoryItemType')
-
-const HistorySummarySchema = z.string().min(1).max(255).openapi('HistorySummary')
-
-const HistoryDataSchema = z.string().min(1).max(4095).openapi('HistoryData')
-
-const AlarmHistoryItemSchema = z
-  .object({
-    AlarmName: AlarmNameSchema.and(
-      z.any().openapi({ description: 'The descriptive name for the alarm.' }),
-    ).exactOptional(),
-    AlarmType: AlarmTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of alarm, either metric alarm or composite alarm.' }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time stamp for the alarm history item.' }),
-    ).exactOptional(),
-    HistoryItemType: HistoryItemTypeSchema.and(
-      z.any().openapi({ description: 'The type of alarm history item.' }),
-    ).exactOptional(),
-    HistorySummary: HistorySummarySchema.and(
-      z.any().openapi({ description: 'A summary of the alarm history, in text format.' }),
-    ).exactOptional(),
-    HistoryData: HistoryDataSchema.and(
-      z.any().openapi({ description: 'Data about the alarm, in JSON format.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents the history of a specific alarm.', required: [] })
-  .openapi('AlarmHistoryItem')
-
-const AlarmHistoryItemsSchema = z.array(AlarmHistoryItemSchema).openapi('AlarmHistoryItems')
-
-const NextTokenSchema = z.string().openapi('NextToken')
-
-const DescribeAlarmHistoryOutputSchema = z
-  .object({
-    AlarmHistoryItems: AlarmHistoryItemsSchema.and(
-      z.any().openapi({ description: 'The alarm histories, in JSON format.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token that marks the start of the next batch of returned results.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeAlarmHistoryOutput')
-
-const InvalidNextTokenSchema = z.any().openapi('InvalidNextToken')
-
-const ActionsEnabledSchema = z.boolean().openapi('ActionsEnabled')
-
-const ResourceNameSchema = z.string().min(1).max(1024).openapi('ResourceName')
-
-const ResourceListSchema = z.array(ResourceNameSchema).max(5).openapi('ResourceList')
-
-const AlarmArnSchema = z.string().min(1).max(1600).openapi('AlarmArn')
-
-const AlarmDescriptionSchema = z.string().min(0).max(1024).openapi('AlarmDescription')
-
-const AlarmRuleSchema = z.string().min(1).max(10240).openapi('AlarmRule')
-
-const StateReasonSchema = z.string().min(0).max(1023).openapi('StateReason')
-
-const StateReasonDataSchema = z.string().min(0).max(4000).openapi('StateReasonData')
-
-const StateValueSchema = z.enum(['OK', 'ALARM', 'INSUFFICIENT_DATA']).openapi('StateValue')
-
-const ActionsSuppressedBySchema = z
-  .enum(['WaitPeriod', 'ExtensionPeriod', 'Alarm'])
-  .openapi('ActionsSuppressedBy')
-
-const ActionsSuppressedReasonSchema = z.string().min(0).max(1024).openapi('ActionsSuppressedReason')
-
-const SuppressorPeriodSchema = z.int().openapi('SuppressorPeriod')
-
-const CompositeAlarmSchema = z
-  .object({
-    ActionsEnabled: ActionsEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether actions should be executed during any changes to the alarm state.',
-        }),
-    ).exactOptional(),
-    AlarmActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions to execute when this alarm transitions to the ALARM state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    AlarmArn: AlarmArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the alarm.' }),
-    ).exactOptional(),
-    AlarmConfigurationUpdatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time stamp of the last update to the alarm configuration.' }),
-    ).exactOptional(),
-    AlarmDescription: AlarmDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the alarm.' }),
-    ).exactOptional(),
-    AlarmName: AlarmNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm.' }),
-    ).exactOptional(),
-    AlarmRule: AlarmRuleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The rule that this alarm uses to evaluate its alarm state.' }),
-    ).exactOptional(),
-    InsufficientDataActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions to execute when this alarm transitions to the INSUFFICIENT_DATA state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    OKActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions to execute when this alarm transitions to the OK state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    StateReason: StateReasonSchema.and(
-      z.any().openapi({ description: 'An explanation for the alarm state, in text format.' }),
-    ).exactOptional(),
-    StateReasonData: StateReasonDataSchema.and(
-      z.any().openapi({ description: 'An explanation for the alarm state, in JSON format.' }),
-    ).exactOptional(),
-    StateUpdatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Tracks the timestamp of any state update, even if <code>StateValue</code> doesn't change.",
-        }),
-    ).exactOptional(),
-    StateValue: StateValueSchema.and(
-      z.any().openapi({ description: 'The state value for the alarm.' }),
-    ).exactOptional(),
-    StateTransitionedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The timestamp of the last change to the alarm's <code>StateValue</code>. ",
-        }),
-    ).exactOptional(),
-    ActionsSuppressedBy: ActionsSuppressedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' When the value is <code>ALARM</code>, it means that the actions are suppressed because the suppressor alarm is in <code>ALARM</code> When the value is <code>WaitPeriod</code>, it means that the actions are suppressed because the composite alarm is waiting for the suppressor alarm to go into into the <code>ALARM</code> state. The maximum waiting time is as specified in <code>ActionsSuppressorWaitPeriod</code>. After this time, the composite alarm performs its actions. When the value is <code>ExtensionPeriod</code>, it means that the actions are suppressed because the composite alarm is waiting after the suppressor alarm went out of the <code>ALARM</code> state. The maximum waiting time is as specified in <code>ActionsSuppressorExtensionPeriod</code>. After this time, the composite alarm performs its actions. ',
-        }),
-    ).exactOptional(),
-    ActionsSuppressedReason: ActionsSuppressedReasonSchema.and(
-      z.any().openapi({ description: ' Captures the reason for action suppression. ' }),
-    ).exactOptional(),
-    ActionsSuppressor: AlarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Actions will be suppressed if the suppressor alarm is in the <code>ALARM</code> state. <code>ActionsSuppressor</code> can be an AlarmName or an Amazon Resource Name (ARN) from an existing alarm. ',
-        }),
-    ).exactOptional(),
-    ActionsSuppressorWaitPeriod: SuppressorPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum time in seconds that the composite alarm waits for the suppressor alarm to go into the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>WaitPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>',
-        }),
-    ).exactOptional(),
-    ActionsSuppressorExtensionPeriod: SuppressorPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum time in seconds that the composite alarm waits after suppressor alarm goes out of the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>ExtensionPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The details about a composite alarm.', required: [] })
-  .openapi('CompositeAlarm')
-
-const CompositeAlarmsSchema = z.array(CompositeAlarmSchema).openapi('CompositeAlarms')
-
-const StatisticSchema = z
-  .enum(['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'])
-  .openapi('Statistic')
-
-const ExtendedStatisticSchema = z.string().openapi('ExtendedStatistic')
-
 const EvaluationPeriodsSchema = z.int().min(1).openapi('EvaluationPeriods')
 
 const DatapointsToAlarmSchema = z.int().min(1).openapi('DatapointsToAlarm')
@@ -698,325 +201,560 @@ const EvaluateLowSampleCountPercentileSchema = z
   .max(255)
   .openapi('EvaluateLowSampleCountPercentile')
 
+const MetricIdSchema = z.string().min(1).max(255).openapi('MetricId')
+
+const MetricSchema = z
+  .object({
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      description: 'The namespace of the metric.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric. This is a required field.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description: 'The dimensions for the metric.',
+    }),
+  })
+  .openapi({ description: 'Represents a specific metric.', required: [] })
+  .openapi('Metric')
+
+const StatSchema = z.string().openapi('Stat')
+
+const MetricStatSchema = z
+  .object({
+    Metric: MetricSchema.openapi({
+      description: 'The metric to return, including the metric name, namespace, and dimensions.',
+    }),
+    Period: PeriodSchema.openapi({
+      description:
+        '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
+    }),
+    Stat: StatSchema.openapi({
+      description:
+        'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
+    }),
+    Unit: StandardUnitSchema.exactOptional().openapi({
+      description:
+        '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
+    }),
+  })
+  .openapi({
+    required: ['Metric', 'Period', 'Stat'],
+    description:
+      'This structure defines the metric to be returned, along with the statistics, period, and units.',
+  })
+  .openapi('MetricStat')
+
+const MetricExpressionSchema = z.string().min(1).max(2048).openapi('MetricExpression')
+
+const MetricLabelSchema = z.string().openapi('MetricLabel')
+
+const ReturnDataSchema = z.boolean().openapi('ReturnData')
+
+const AccountIdSchema = z.string().min(1).max(255).openapi('AccountId')
+
+const MetricDataQuerySchema = z
+  .object({
+    Id: MetricIdSchema.openapi({
+      description:
+        'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
+    }),
+    MetricStat: MetricStatSchema.exactOptional().openapi({
+      description:
+        '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+    }),
+    Expression: MetricExpressionSchema.exactOptional().openapi({
+      description:
+        '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+    }),
+    Label: MetricLabelSchema.exactOptional().openapi({
+      description:
+        '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
+    }),
+    ReturnData: ReturnDataSchema.exactOptional().openapi({
+      description:
+        '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
+    }),
+    Period: PeriodSchema.exactOptional().openapi({
+      description:
+        'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
+    }),
+  })
+  .openapi({
+    required: ['Id'],
+    description:
+      '<p>This structure is used in both <code>GetMetricData</code> and <code>PutMetricAlarm</code>. The supported use of this structure is different for those two operations.</p> <p>When used in <code>GetMetricData</code>, it indicates the metric data to return, and whether this call is just retrieving a batch set of data for one metric, or is performing a Metrics Insights query or a math expression. A single <code>GetMetricData</code> call can include up to 500 <code>MetricDataQuery</code> structures.</p> <p>When used in <code>PutMetricAlarm</code>, it enables you to create an alarm based on a metric math expression. Each <code>MetricDataQuery</code> in the array specifies either a metric to retrieve, or a math expression to be performed on retrieved metrics. A single <code>PutMetricAlarm</code> call can include up to 20 <code>MetricDataQuery</code> structures in the array. The 20 structures can include as many as 10 structures that contain a <code>MetricStat</code> parameter to retrieve a metric, and as many as 10 structures that contain the <code>Expression</code> parameter to perform a math expression. Of those <code>Expression</code> structures, one must have <code>true</code> as the value for <code>ReturnData</code>. The result of this expression is the value the alarm watches.</p> <p>Any expression used in a <code>PutMetricAlarm</code> operation must return a single time series. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Some of the parameters of this structure also have different uses whether you are using this structure in a <code>GetMetricData</code> operation or a <code>PutMetricAlarm</code> operation. These differences are explained in the following parameter list.</p>',
+  })
+  .openapi('MetricDataQuery')
+
+const MetricDataQueriesSchema = z.array(MetricDataQuerySchema).openapi('MetricDataQueries')
+
 const EvaluationStateSchema = z.literal('PARTIAL_DATA').openapi('EvaluationState')
 
 const MetricAlarmSchema = z
   .object({
-    AlarmName: AlarmNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm.' }),
-    ).exactOptional(),
-    AlarmArn: AlarmArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the alarm.' }),
-    ).exactOptional(),
-    AlarmDescription: AlarmDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the alarm.' }),
-    ).exactOptional(),
-    AlarmConfigurationUpdatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time stamp of the last update to the alarm configuration.' }),
-    ).exactOptional(),
-    ActionsEnabled: ActionsEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether actions should be executed during any changes to the alarm state.',
-        }),
-    ).exactOptional(),
-    OKActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions to execute when this alarm transitions to the <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    AlarmActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions to execute when this alarm transitions to the <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    InsufficientDataActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions to execute when this alarm transitions to the <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    StateValue: StateValueSchema.and(
-      z.any().openapi({ description: 'The state value for the alarm.' }),
-    ).exactOptional(),
-    StateReason: StateReasonSchema.and(
-      z.any().openapi({ description: 'An explanation for the alarm state, in text format.' }),
-    ).exactOptional(),
-    StateReasonData: StateReasonDataSchema.and(
-      z.any().openapi({ description: 'An explanation for the alarm state, in JSON format.' }),
-    ).exactOptional(),
-    StateUpdatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time stamp of the last update to the value of either the <code>StateValue</code> or <code>EvaluationState</code> parameters.',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the metric associated with the alarm, if this is an alarm based on a single metric.',
-        }),
-    ).exactOptional(),
-    Namespace: NamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the metric associated with the alarm.' }),
-    ).exactOptional(),
-    Statistic: StatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The statistic for the metric associated with the alarm, other than percentile. For percentile statistics, use <code>ExtendedStatistic</code>.',
-        }),
-    ).exactOptional(),
-    ExtendedStatistic: ExtendedStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentile statistic for the metric associated with the alarm. Specify a value between p0.0 and p100.',
-        }),
-    ).exactOptional(),
-    Dimensions: DimensionsSchema.and(
-      z.any().openapi({ description: 'The dimensions for the metric associated with the alarm.' }),
-    ).exactOptional(),
-    Period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The period, in seconds, over which the statistic is applied.' }),
-    ).exactOptional(),
-    Unit: StandardUnitSchema.and(
-      z.any().openapi({ description: 'The unit of the metric associated with the alarm.' }),
-    ).exactOptional(),
-    EvaluationPeriods: EvaluationPeriodsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of periods over which data is compared to the specified threshold.',
-        }),
-    ).exactOptional(),
-    DatapointsToAlarm: DatapointsToAlarmSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of data points that must be breaching to trigger the alarm.',
-        }),
-    ).exactOptional(),
-    Threshold: ThresholdSchema.and(
-      z.any().openapi({ description: 'The value to compare with the specified statistic.' }),
-    ).exactOptional(),
-    ComparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The arithmetic operation to use when comparing the specified statistic and threshold. The specified statistic value is used as the first operand.',
-        }),
-    ).exactOptional(),
-    TreatMissingData: TreatMissingDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Sets how this alarm is to handle missing data points. The valid values are <code>breaching</code>, <code>notBreaching</code>, <code>ignore</code>, and <code>missing</code>. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data">Configuring how CloudWatch alarms treat missing data</a>.</p> <p>If this parameter is omitted, the default behavior of <code>missing</code> is used.</p>',
-        }),
-    ).exactOptional(),
-    EvaluateLowSampleCountPercentile: EvaluateLowSampleCountPercentileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used only for alarms based on percentiles. If <code>ignore</code>, the alarm state does not change during periods with too few data points to be statistically significant. If <code>evaluate</code> or this parameter is not used, the alarm is always evaluated and possibly changes state no matter how many data points are available.',
-        }),
-    ).exactOptional(),
-    Metrics: MetricDataQueriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of MetricDataQuery structures, used in an alarm based on a metric math expression. Each structure either retrieves a metric or performs a math expression. One item in the Metrics array is the math expression that the alarm watches. This expression by designated by having <code>ReturnData</code> set to true.',
-        }),
-    ).exactOptional(),
-    ThresholdMetricId: MetricIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In an alarm based on an anomaly detection model, this is the ID of the <code>ANOMALY_DETECTION_BAND</code> function used as the threshold for the alarm.',
-        }),
-    ).exactOptional(),
-    EvaluationState: EvaluationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the value of this field is <code>PARTIAL_DATA</code>, the alarm is being evaluated based on only partial data. This happens if the query used for the alarm returns more than 10,000 metrics. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Metrics_Insights_Alarm.html">Create alarms on Metrics Insights queries</a>.',
-        }),
-    ).exactOptional(),
-    StateTransitionedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The date and time that the alarm's <code>StateValue</code> most recently changed.",
-        }),
-    ).exactOptional(),
+    AlarmName: AlarmNameSchema.exactOptional().openapi({ description: 'The name of the alarm.' }),
+    AlarmArn: AlarmArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the alarm.',
+    }),
+    AlarmDescription: AlarmDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the alarm.',
+    }),
+    AlarmConfigurationUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time stamp of the last update to the alarm configuration.',
+    }),
+    ActionsEnabled: ActionsEnabledSchema.exactOptional().openapi({
+      description:
+        'Indicates whether actions should be executed during any changes to the alarm state.',
+    }),
+    OKActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        'The actions to execute when this alarm transitions to the <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
+    }),
+    AlarmActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        'The actions to execute when this alarm transitions to the <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
+    }),
+    InsufficientDataActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        'The actions to execute when this alarm transitions to the <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).',
+    }),
+    StateValue: StateValueSchema.exactOptional().openapi({
+      description: 'The state value for the alarm.',
+    }),
+    StateReason: StateReasonSchema.exactOptional().openapi({
+      description: 'An explanation for the alarm state, in text format.',
+    }),
+    StateReasonData: StateReasonDataSchema.exactOptional().openapi({
+      description: 'An explanation for the alarm state, in JSON format.',
+    }),
+    StateUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time stamp of the last update to the value of either the <code>StateValue</code> or <code>EvaluationState</code> parameters.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        'The name of the metric associated with the alarm, if this is an alarm based on a single metric.',
+    }),
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      description: 'The namespace of the metric associated with the alarm.',
+    }),
+    Statistic: StatisticSchema.exactOptional().openapi({
+      description:
+        'The statistic for the metric associated with the alarm, other than percentile. For percentile statistics, use <code>ExtendedStatistic</code>.',
+    }),
+    ExtendedStatistic: ExtendedStatisticSchema.exactOptional().openapi({
+      description:
+        'The percentile statistic for the metric associated with the alarm. Specify a value between p0.0 and p100.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description: 'The dimensions for the metric associated with the alarm.',
+    }),
+    Period: PeriodSchema.exactOptional().openapi({
+      description: 'The period, in seconds, over which the statistic is applied.',
+    }),
+    Unit: StandardUnitSchema.exactOptional().openapi({
+      description: 'The unit of the metric associated with the alarm.',
+    }),
+    EvaluationPeriods: EvaluationPeriodsSchema.exactOptional().openapi({
+      description: 'The number of periods over which data is compared to the specified threshold.',
+    }),
+    DatapointsToAlarm: DatapointsToAlarmSchema.exactOptional().openapi({
+      description: 'The number of data points that must be breaching to trigger the alarm.',
+    }),
+    Threshold: ThresholdSchema.exactOptional().openapi({
+      description: 'The value to compare with the specified statistic.',
+    }),
+    ComparisonOperator: ComparisonOperatorSchema.exactOptional().openapi({
+      description:
+        'The arithmetic operation to use when comparing the specified statistic and threshold. The specified statistic value is used as the first operand.',
+    }),
+    TreatMissingData: TreatMissingDataSchema.exactOptional().openapi({
+      description:
+        '<p>Sets how this alarm is to handle missing data points. The valid values are <code>breaching</code>, <code>notBreaching</code>, <code>ignore</code>, and <code>missing</code>. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data">Configuring how CloudWatch alarms treat missing data</a>.</p> <p>If this parameter is omitted, the default behavior of <code>missing</code> is used.</p>',
+    }),
+    EvaluateLowSampleCountPercentile:
+      EvaluateLowSampleCountPercentileSchema.exactOptional().openapi({
+        description:
+          'Used only for alarms based on percentiles. If <code>ignore</code>, the alarm state does not change during periods with too few data points to be statistically significant. If <code>evaluate</code> or this parameter is not used, the alarm is always evaluated and possibly changes state no matter how many data points are available.',
+      }),
+    Metrics: MetricDataQueriesSchema.exactOptional().openapi({
+      description:
+        'An array of MetricDataQuery structures, used in an alarm based on a metric math expression. Each structure either retrieves a metric or performs a math expression. One item in the Metrics array is the math expression that the alarm watches. This expression by designated by having <code>ReturnData</code> set to true.',
+    }),
+    ThresholdMetricId: MetricIdSchema.exactOptional().openapi({
+      description:
+        'In an alarm based on an anomaly detection model, this is the ID of the <code>ANOMALY_DETECTION_BAND</code> function used as the threshold for the alarm.',
+    }),
+    EvaluationState: EvaluationStateSchema.exactOptional().openapi({
+      description:
+        'If the value of this field is <code>PARTIAL_DATA</code>, the alarm is being evaluated based on only partial data. This happens if the query used for the alarm returns more than 10,000 metrics. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Metrics_Insights_Alarm.html">Create alarms on Metrics Insights queries</a>.',
+    }),
+    StateTransitionedTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "The date and time that the alarm's <code>StateValue</code> most recently changed.",
+    }),
   })
   .openapi({ description: 'The details about a metric alarm.', required: [] })
   .openapi('MetricAlarm')
 
-const MetricAlarmsSchema = z.array(MetricAlarmSchema).openapi('MetricAlarms')
+type MetricAlarmsType = z.infer<typeof MetricAlarmSchema>[]
 
-const DescribeAlarmsOutputSchema = z
+const MetricAlarmsSchema: z.ZodType<MetricAlarmsType> = z
+  .array(MetricAlarmSchema)
+  .openapi('MetricAlarms')
+
+const NextTokenSchema = z.string().openapi('NextToken')
+
+type DescribeAlarmsOutputType = {
+  CompositeAlarms?: z.infer<typeof CompositeAlarmsSchema> & unknown
+  MetricAlarms?: z.infer<typeof MetricAlarmsSchema> & unknown
+  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+}
+
+type DescribeAlarmsForMetricOutputType = {
+  MetricAlarms?: z.infer<typeof MetricAlarmsSchema> & unknown
+}
+
+const AnomalyDetectorMetricStatSchema = z
+  .string()
+  .regex(
+    /(SampleCount|Average|Sum|Minimum|Maximum|IQM|(p|tc|tm|ts|wm)(\d{1,2}(\.\d{0,10})?|100)|[ou]\d+(\.\d*)?)(_E|_L|_H)?|(TM|TC|TS|WM)\(((((\d{1,2})(\.\d{0,10})?|100(\.0{0,10})?)%)?:((\d{1,2})(\.\d{0,10})?|100(\.0{0,10})?)%|((\d{1,2})(\.\d{0,10})?|100(\.0{0,10})?)%:(((\d{1,2})(\.\d{0,10})?|100(\.0{0,10})?)%)?)\)|(TM|TC|TS|WM|PR)\(((\d+(\.\d{0,10})?|(\d+(\.\d{0,10})?[Ee][+-]?\d+)):((\d+(\.\d{0,10})?|(\d+(\.\d{0,10})?[Ee][+-]?\d+)))?|((\d+(\.\d{0,10})?|(\d+(\.\d{0,10})?[Ee][+-]?\d+)))?:(\d+(\.\d{0,10})?|(\d+(\.\d{0,10})?[Ee][+-]?\d+)))\)/,
+  )
+  .max(50)
+  .openapi('AnomalyDetectorMetricStat')
+
+const RangeSchema = z
   .object({
-    CompositeAlarms: CompositeAlarmsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The information about any composite alarms returned by the operation.',
-        }),
-    ).exactOptional(),
-    MetricAlarms: MetricAlarmsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The information about any metric alarms returned by the operation.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token that marks the start of the next batch of returned results.',
-        }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.openapi({
+      description:
+        "The start time of the range to exclude. The format is <code>yyyy-MM-dd'T'HH:mm:ss</code>. For example, <code>2019-07-01T23:59:59</code>.",
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        "The end time of the range to exclude. The format is <code>yyyy-MM-dd'T'HH:mm:ss</code>. For example, <code>2019-07-01T23:59:59</code>.",
+    }),
+  })
+  .openapi({
+    required: ['StartTime', 'EndTime'],
+    description:
+      'Specifies one range of days or times to exclude from use for training an anomaly detection model.',
+  })
+  .openapi('Range')
+
+const AnomalyDetectorExcludedTimeRangesSchema = z
+  .array(RangeSchema)
+  .openapi('AnomalyDetectorExcludedTimeRanges')
+
+const AnomalyDetectorMetricTimezoneSchema = z
+  .string()
+  .regex(/.*/)
+  .max(50)
+  .openapi('AnomalyDetectorMetricTimezone')
+
+const AnomalyDetectorConfigurationSchema = z
+  .object({
+    ExcludedTimeRanges: AnomalyDetectorExcludedTimeRangesSchema.exactOptional().openapi({
+      description:
+        "An array of time ranges to exclude from use when the anomaly detection model is trained. Use this to make sure that events that could cause unusual values for the metric, such as deployments, aren't used when CloudWatch creates the model.",
+    }),
+    MetricTimezone: AnomalyDetectorMetricTimezoneSchema.exactOptional().openapi({
+      description:
+        '<p>The time zone to use for the metric. This is useful to enable the model to automatically account for daylight savings time changes if the metric is sensitive to such time changes.</p> <p>To specify a time zone, use the name of the time zone as specified in the standard tz database. For more information, see <a href="https://en.wikipedia.org/wiki/Tz_database">tz database</a>.</p>',
+    }),
+  })
+  .openapi({
+    description:
+      'The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude from use for training the model and the time zone to use for the metric.',
+    required: [],
+  })
+  .openapi('AnomalyDetectorConfiguration')
+
+const AnomalyDetectorStateValueSchema = z
+  .enum(['PENDING_TRAINING', 'TRAINED_INSUFFICIENT_DATA', 'TRAINED'])
+  .openapi('AnomalyDetectorStateValue')
+
+const SingleMetricAnomalyDetectorSchema = z
+  .object({
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      description: 'The namespace of the metric to create the anomaly detection model for.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric to create the anomaly detection model for.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description: 'The metric dimensions to create the anomaly detection model for.',
+    }),
+    Stat: AnomalyDetectorMetricStatSchema.exactOptional().openapi({
+      description: 'The statistic to use for the metric and anomaly detection model.',
+    }),
+  })
+  .openapi({
+    description:
+      'Designates the CloudWatch metric and statistic that provides the time series the anomaly detector uses as input.',
+    required: [],
+  })
+  .openapi('SingleMetricAnomalyDetector')
+
+const MetricMathAnomalyDetectorSchema = z
+  .object({
+    MetricDataQueries: MetricDataQueriesSchema.exactOptional().openapi({
+      description:
+        'An array of metric data query structures that enables you to create an anomaly detector based on the result of a metric math expression. Each item in <code>MetricDataQueries</code> gets a metric or performs a math expression. One item in <code>MetricDataQueries</code> is the expression that provides the time series that the anomaly detector uses as input. Designate the expression by setting <code>ReturnData</code> to <code>true</code> for this object in the array. For all other expressions and metrics, set <code>ReturnData</code> to <code>false</code>. The designated expression must return a single time series.',
+    }),
+  })
+  .openapi({
+    description:
+      'Indicates the CloudWatch math expression that provides the time series the anomaly detector uses as input. The designated math expression must return a single time series.',
+    required: [],
+  })
+  .openapi('MetricMathAnomalyDetector')
+
+type AnomalyDetectorType = {
+  Namespace?: z.infer<typeof NamespaceSchema> & unknown
+  MetricName?: z.infer<typeof MetricNameSchema> & unknown
+  Dimensions?: z.infer<typeof DimensionsSchema> & unknown
+  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema> & unknown
+  Configuration?: z.infer<typeof AnomalyDetectorConfigurationSchema> & unknown
+  StateValue?: z.infer<typeof AnomalyDetectorStateValueSchema> & unknown
+  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema> & unknown
+  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema> & unknown
+}
+
+const AnomalyDetectorSchema: z.ZodType<AnomalyDetectorType> = z
+  .object({
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The namespace of the metric associated with the anomaly detection model.Use SingleMetricAnomalyDetector.Namespace property.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The name of the metric associated with the anomaly detection model.Use SingleMetricAnomalyDetector.MetricName property.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The metric dimensions associated with the anomaly detection model.Use SingleMetricAnomalyDetector.Dimensions property.',
+    }),
+    Stat: AnomalyDetectorMetricStatSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The statistic associated with the anomaly detection model.Use SingleMetricAnomalyDetector.Stat property.',
+    }),
+    Configuration: AnomalyDetectorConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude from use for training the model, and the time zone to use for the metric.',
+    }),
+    StateValue: AnomalyDetectorStateValueSchema.exactOptional().openapi({
+      description:
+        "The current status of the anomaly detector's training. The possible values are <code>TRAINED | PENDING_TRAINING | TRAINED_INSUFFICIENT_DATA</code> ",
+    }),
+    SingleMetricAnomalyDetector: SingleMetricAnomalyDetectorSchema.exactOptional().openapi({
+      description: 'The CloudWatch metric and statistic for this anomaly detector.',
+    }),
+    MetricMathAnomalyDetector: MetricMathAnomalyDetectorSchema.exactOptional().openapi({
+      description: 'The CloudWatch metric math expression for this anomaly detector.',
+    }),
+  })
+  .openapi({
+    description:
+      'An anomaly detection model associated with a particular CloudWatch metric, statistic, or metric math expression. You can use the model to display a band of expected, normal values when the metric is graphed.',
+    required: [],
+  })
+  .openapi('AnomalyDetector')
+
+type AnomalyDetectorsType = z.infer<typeof AnomalyDetectorSchema>[]
+
+const AnomalyDetectorsSchema: z.ZodType<AnomalyDetectorsType> = z
+  .array(AnomalyDetectorSchema)
+  .openapi('AnomalyDetectors')
+
+type DescribeAnomalyDetectorsOutputType = {
+  AnomalyDetectors?: z.infer<typeof AnomalyDetectorsSchema> & unknown
+  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+}
+
+type DeleteAnomalyDetectorInputType = {
+  Namespace?: z.infer<typeof NamespaceSchema> & unknown
+  MetricName?: z.infer<typeof MetricNameSchema> & unknown
+  Dimensions?: z.infer<typeof DimensionsSchema> & unknown
+  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema> & unknown
+  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema> & unknown
+  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema> & unknown
+}
+
+type PutAnomalyDetectorInputType = {
+  Namespace?: z.infer<typeof NamespaceSchema> & unknown
+  MetricName?: z.infer<typeof MetricNameSchema> & unknown
+  Dimensions?: z.infer<typeof DimensionsSchema> & unknown
+  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema> & unknown
+  Configuration?: z.infer<typeof AnomalyDetectorConfigurationSchema> & unknown
+  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema> & unknown
+  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema> & unknown
+}
+
+const ResourceNotFoundSchema = z.any().openapi('ResourceNotFound')
+
+const DeleteAnomalyDetectorOutputSchema = z.looseObject({}).openapi('DeleteAnomalyDetectorOutput')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const InternalServiceFaultSchema = z.any().openapi('InternalServiceFault')
+
+const InvalidParameterValueExceptionSchema = z.any().openapi('InvalidParameterValueException')
+
+const MissingRequiredParameterExceptionSchema = z.any().openapi('MissingRequiredParameterException')
+
+const InvalidParameterCombinationExceptionSchema = z
+  .any()
+  .openapi('InvalidParameterCombinationException')
+
+const DeleteDashboardsOutputSchema = z.looseObject({}).openapi('DeleteDashboardsOutput')
+
+const DashboardNameSchema = z.string().openapi('DashboardName')
+
+const DashboardNotFoundErrorSchema = z.any().openapi('DashboardNotFoundError')
+
+const FailureResourceSchema = z.string().openapi('FailureResource')
+
+const ExceptionTypeSchema = z.string().openapi('ExceptionType')
+
+const FailureCodeSchema = z.string().openapi('FailureCode')
+
+const FailureDescriptionSchema = z.string().openapi('FailureDescription')
+
+const PartialFailureSchema = z
+  .object({
+    FailureResource: FailureResourceSchema.exactOptional().openapi({
+      description: 'The specified rule that could not be deleted.',
+    }),
+    ExceptionType: ExceptionTypeSchema.exactOptional().openapi({
+      description: 'The type of error.',
+    }),
+    FailureCode: FailureCodeSchema.exactOptional().openapi({
+      description: 'The code of the error.',
+    }),
+    FailureDescription: FailureDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the error.',
+    }),
+  })
+  .openapi({
+    description:
+      'This array is empty if the API operation was successful for all the rules specified in the request. If the operation could not process one of the rules, the following data is returned for each of those rules.',
+    required: [],
+  })
+  .openapi('PartialFailure')
+
+const BatchFailuresSchema = z.array(PartialFailureSchema).openapi('BatchFailures')
+
+const DeleteInsightRulesOutputSchema = z
+  .object({
+    Failures: BatchFailuresSchema.exactOptional().openapi({
+      description:
+        'An array listing the rules that could not be deleted. You cannot delete built-in rules.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteInsightRulesOutput')
+
+const InsightRuleNameSchema = z
+  .string()
+  .regex(/[\x20-\x7E]+/)
+  .min(1)
+  .max(128)
+  .openapi('InsightRuleName')
+
+const DeleteMetricStreamOutputSchema = z.looseObject({}).openapi('DeleteMetricStreamOutput')
+
+const AlarmTypeSchema = z.enum(['CompositeAlarm', 'MetricAlarm']).openapi('AlarmType')
+
+const HistoryItemTypeSchema = z
+  .enum(['ConfigurationUpdate', 'StateUpdate', 'Action'])
+  .openapi('HistoryItemType')
+
+const HistorySummarySchema = z.string().min(1).max(255).openapi('HistorySummary')
+
+const HistoryDataSchema = z.string().min(1).max(4095).openapi('HistoryData')
+
+const AlarmHistoryItemSchema = z
+  .object({
+    AlarmName: AlarmNameSchema.exactOptional().openapi({
+      description: 'The descriptive name for the alarm.',
+    }),
+    AlarmType: AlarmTypeSchema.exactOptional().openapi({
+      description: 'The type of alarm, either metric alarm or composite alarm.',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time stamp for the alarm history item.',
+    }),
+    HistoryItemType: HistoryItemTypeSchema.exactOptional().openapi({
+      description: 'The type of alarm history item.',
+    }),
+    HistorySummary: HistorySummarySchema.exactOptional().openapi({
+      description: 'A summary of the alarm history, in text format.',
+    }),
+    HistoryData: HistoryDataSchema.exactOptional().openapi({
+      description: 'Data about the alarm, in JSON format.',
+    }),
+  })
+  .openapi({ description: 'Represents the history of a specific alarm.', required: [] })
+  .openapi('AlarmHistoryItem')
+
+const AlarmHistoryItemsSchema = z.array(AlarmHistoryItemSchema).openapi('AlarmHistoryItems')
+
+const DescribeAlarmHistoryOutputSchema = z
+  .object({
+    AlarmHistoryItems: AlarmHistoryItemsSchema.exactOptional().openapi({
+      description: 'The alarm histories, in JSON format.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token that marks the start of the next batch of returned results.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeAlarmHistoryOutput')
+
+const InvalidNextTokenSchema = z.any().openapi('InvalidNextToken')
+
+const DescribeAlarmsOutputSchema: z.ZodType<DescribeAlarmsOutputType> = z
+  .object({
+    CompositeAlarms: CompositeAlarmsSchema.exactOptional().openapi({
+      description: 'The information about any composite alarms returned by the operation.',
+    }),
+    MetricAlarms: MetricAlarmsSchema.exactOptional().openapi({
+      description: 'The information about any metric alarms returned by the operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token that marks the start of the next batch of returned results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAlarmsOutput')
 
-const DescribeAlarmsForMetricOutputSchema = z
+const DescribeAlarmsForMetricOutputSchema: z.ZodType<DescribeAlarmsForMetricOutputType> = z
   .object({
-    MetricAlarms: MetricAlarmsSchema.and(
-      z.any().openapi({ description: 'The information for each alarm with the specified metric.' }),
-    ).exactOptional(),
+    MetricAlarms: MetricAlarmsSchema.exactOptional().openapi({
+      description: 'The information for each alarm with the specified metric.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAlarmsForMetricOutput')
 
-const AnomalyDetectorSchema: z.ZodType<AnomalyDetectorType> = z
-  .lazy(() =>
-    z
-      .object({
-        Namespace: NamespaceSchema.and(
-          z
-            .any()
-            .openapi({
-              deprecated: true,
-              description:
-                'The namespace of the metric associated with the anomaly detection model.Use SingleMetricAnomalyDetector.Namespace property.',
-            }),
-        ).exactOptional(),
-        MetricName: MetricNameSchema.and(
-          z
-            .any()
-            .openapi({
-              deprecated: true,
-              description:
-                'The name of the metric associated with the anomaly detection model.Use SingleMetricAnomalyDetector.MetricName property.',
-            }),
-        ).exactOptional(),
-        Dimensions: DimensionsSchema.and(
-          z
-            .any()
-            .openapi({
-              deprecated: true,
-              description:
-                'The metric dimensions associated with the anomaly detection model.Use SingleMetricAnomalyDetector.Dimensions property.',
-            }),
-        ).exactOptional(),
-        Stat: AnomalyDetectorMetricStatSchema.and(
-          z
-            .any()
-            .openapi({
-              deprecated: true,
-              description:
-                'The statistic associated with the anomaly detection model.Use SingleMetricAnomalyDetector.Stat property.',
-            }),
-        ).exactOptional(),
-        Configuration: AnomalyDetectorConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude from use for training the model, and the time zone to use for the metric.',
-            }),
-        ).exactOptional(),
-        StateValue: AnomalyDetectorStateValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "The current status of the anomaly detector's training. The possible values are <code>TRAINED | PENDING_TRAINING | TRAINED_INSUFFICIENT_DATA</code> ",
-            }),
-        ).exactOptional(),
-        SingleMetricAnomalyDetector: SingleMetricAnomalyDetectorSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The CloudWatch metric and statistic for this anomaly detector.',
-            }),
-        ).exactOptional(),
-        MetricMathAnomalyDetector: MetricMathAnomalyDetectorSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The CloudWatch metric math expression for this anomaly detector.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'An anomaly detection model associated with a particular CloudWatch metric, statistic, or metric math expression. You can use the model to display a band of expected, normal values when the metric is graphed.',
-        required: [],
-      }),
-  )
-  .openapi('AnomalyDetector')
-
-const AnomalyDetectorsSchema = z.array(AnomalyDetectorSchema).openapi('AnomalyDetectors')
-
-const DescribeAnomalyDetectorsOutputSchema = z
+const DescribeAnomalyDetectorsOutputSchema: z.ZodType<DescribeAnomalyDetectorsOutputType> = z
   .object({
-    AnomalyDetectors: AnomalyDetectorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of anomaly detection models returned by the operation.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    AnomalyDetectors: AnomalyDetectorsSchema.exactOptional().openapi({
+      description: 'The list of anomaly detection models returned by the operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAnomalyDetectorsOutput')
@@ -1025,89 +763,80 @@ const AnomalyDetectorTypeSchema = z
   .enum(['SINGLE_METRIC', 'METRIC_MATH'])
   .openapi('AnomalyDetectorType')
 
-const InsightRuleSchema: z.ZodType<InsightRuleType> = z
-  .lazy(() =>
-    z
-      .object({
-        Name: InsightRuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-        State: InsightRuleStateSchema.and(
-          z.any().openapi({ description: 'Indicates whether the rule is enabled or disabled.' }),
-        ),
-        Schema: InsightRuleSchemaSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'For rules that you create, this is always <code>{"Name": "CloudWatchLogRule", "Version": 1}</code>. For managed rules, this is <code>{"Name": "ServiceLogRule", "Version": 1}</code> ',
-            }),
-        ),
-        Definition: InsightRuleDefinitionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The definition of the rule, as a JSON object. The definition contains the keywords used to define contributors, the value to aggregate on if this rule returns a sum instead of a count, and the filters. For details on the valid syntax, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights-RuleSyntax.html">Contributor Insights Rule Syntax</a>.',
-            }),
-        ),
-        ManagedRule: InsightRuleIsManagedSchema.and(
-          z
-            .any()
-            .openapi({
-              description: ' An optional built-in rule that Amazon Web Services manages. ',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['Name', 'State', 'Schema', 'Definition'],
-        description:
-          'This structure contains the definition for a Contributor Insights rule. For more information about this rule, see<a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html"> Using Constributor Insights to analyze high-cardinality data</a> in the <i>Amazon CloudWatch User Guide</i>.',
-      }),
-  )
+const InsightRuleStateSchema = z
+  .string()
+  .regex(/[\x20-\x7E]+/)
+  .min(1)
+  .max(32)
+  .openapi('InsightRuleState')
+
+const InsightRuleSchemaSchema = z.string().openapi('InsightRuleSchema')
+
+const InsightRuleDefinitionSchema = z
+  .string()
+  .regex(/[\x00-\x7F]+/)
+  .min(1)
+  .max(8192)
+  .openapi('InsightRuleDefinition')
+
+const InsightRuleIsManagedSchema = z.boolean().openapi('InsightRuleIsManaged')
+
+const InsightRuleSchema = z
+  .object({
+    Name: InsightRuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    State: InsightRuleStateSchema.openapi({
+      description: 'Indicates whether the rule is enabled or disabled.',
+    }),
+    Schema: InsightRuleSchemaSchema.openapi({
+      description:
+        'For rules that you create, this is always <code>{"Name": "CloudWatchLogRule", "Version": 1}</code>. For managed rules, this is <code>{"Name": "ServiceLogRule", "Version": 1}</code> ',
+    }),
+    Definition: InsightRuleDefinitionSchema.openapi({
+      description:
+        'The definition of the rule, as a JSON object. The definition contains the keywords used to define contributors, the value to aggregate on if this rule returns a sum instead of a count, and the filters. For details on the valid syntax, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights-RuleSyntax.html">Contributor Insights Rule Syntax</a>.',
+    }),
+    ManagedRule: InsightRuleIsManagedSchema.exactOptional().openapi({
+      description: ' An optional built-in rule that Amazon Web Services manages. ',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'State', 'Schema', 'Definition'],
+    description:
+      'This structure contains the definition for a Contributor Insights rule. For more information about this rule, see<a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html"> Using Constributor Insights to analyze high-cardinality data</a> in the <i>Amazon CloudWatch User Guide</i>.',
+  })
   .openapi('InsightRule')
 
 const InsightRulesSchema = z.array(InsightRuleSchema).openapi('InsightRules')
 
 const DescribeInsightRulesOutputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this parameter is present, it is a token that marks the start of the next batch of returned results. ',
-        }),
-    ).exactOptional(),
-    InsightRules: InsightRulesSchema.and(
-      z.any().openapi({ description: 'The rules returned by the operation.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If this parameter is present, it is a token that marks the start of the next batch of returned results. ',
+    }),
+    InsightRules: InsightRulesSchema.exactOptional().openapi({
+      description: 'The rules returned by the operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInsightRulesOutput')
 
 const DisableInsightRulesOutputSchema = z
   .object({
-    Failures: BatchFailuresSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array listing the rules that could not be disabled. You cannot disable built-in rules.',
-        }),
-    ).exactOptional(),
+    Failures: BatchFailuresSchema.exactOptional().openapi({
+      description:
+        'An array listing the rules that could not be disabled. You cannot disable built-in rules.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisableInsightRulesOutput')
 
 const EnableInsightRulesOutputSchema = z
   .object({
-    Failures: BatchFailuresSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array listing the rules that could not be enabled. You cannot disable or enable built-in rules.',
-        }),
-    ).exactOptional(),
+    Failures: BatchFailuresSchema.exactOptional().openapi({
+      description:
+        'An array listing the rules that could not be enabled. You cannot disable or enable built-in rules.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('EnableInsightRulesOutput')
@@ -1120,20 +849,16 @@ const DashboardBodySchema = z.string().openapi('DashboardBody')
 
 const GetDashboardOutputSchema = z
   .object({
-    DashboardArn: DashboardArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dashboard.' }),
-    ).exactOptional(),
-    DashboardBody: DashboardBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The detailed information about the dashboard, including what widgets are included and their location on the dashboard. For more information about the <code>DashboardBody</code> syntax, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html">Dashboard Body Structure and Syntax</a>. ',
-        }),
-    ).exactOptional(),
-    DashboardName: DashboardNameSchema.and(
-      z.any().openapi({ description: 'The name of the dashboard.' }),
-    ).exactOptional(),
+    DashboardArn: DashboardArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dashboard.',
+    }),
+    DashboardBody: DashboardBodySchema.exactOptional().openapi({
+      description:
+        'The detailed information about the dashboard, including what widgets are included and their location on the dashboard. For more information about the <code>DashboardBody</code> syntax, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html">Dashboard Body Structure and Syntax</a>. ',
+    }),
+    DashboardName: DashboardNameSchema.exactOptional().openapi({
+      description: 'The name of the dashboard.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDashboardOutput')
@@ -1158,16 +883,10 @@ const InsightRuleContributorKeysSchema = z
 
 const InsightRuleContributorDatapointSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the data point.' }),
-    ),
-    ApproximateValue: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The approximate value that this contributor added during this timestamp.',
-        }),
-    ),
+    Timestamp: TimestampSchema.openapi({ description: 'The timestamp of the data point.' }),
+    ApproximateValue: InsightRuleUnboundDoubleSchema.openapi({
+      description: 'The approximate value that this contributor added during this timestamp.',
+    }),
   })
   .openapi({
     required: ['Timestamp', 'ApproximateValue'],
@@ -1182,29 +901,17 @@ const InsightRuleContributorDatapointsSchema = z
 
 const InsightRuleContributorSchema = z
   .object({
-    Keys: InsightRuleContributorKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One of the log entry field keywords that is used to define contributors for this rule.',
-        }),
-    ),
-    ApproximateAggregateValue: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An approximation of the aggregate value that comes from this contributor.',
-        }),
-    ),
-    Datapoints: InsightRuleContributorDatapointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the data points where this contributor is present. Only the data points when this contributor appeared are included in the array.',
-        }),
-    ),
+    Keys: InsightRuleContributorKeysSchema.openapi({
+      description:
+        'One of the log entry field keywords that is used to define contributors for this rule.',
+    }),
+    ApproximateAggregateValue: InsightRuleUnboundDoubleSchema.openapi({
+      description: 'An approximation of the aggregate value that comes from this contributor.',
+    }),
+    Datapoints: InsightRuleContributorDatapointsSchema.openapi({
+      description:
+        'An array of the data points where this contributor is present. Only the data points when this contributor appeared are included in the array.',
+    }),
   })
   .openapi({
     required: ['Keys', 'ApproximateAggregateValue', 'Datapoints'],
@@ -1219,65 +926,35 @@ const InsightRuleContributorsSchema = z
 
 const InsightRuleMetricDatapointSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the data point.' }),
-    ),
-    UniqueContributors: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of unique contributors who published data during this timestamp.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
-        }),
-    ).exactOptional(),
-    MaxContributorValue: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum value provided by one contributor during this timestamp. Each timestamp is evaluated separately, so the identity of the max contributor could be different for each timestamp.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
-        }),
-    ).exactOptional(),
-    SampleCount: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of occurrences that matched the rule during this data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
-        }),
-    ).exactOptional(),
-    Average: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The average value from all contributors during the time period represented by that data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
-        }),
-    ).exactOptional(),
-    Sum: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The sum of the values from all contributors during the time period represented by that data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
-        }),
-    ).exactOptional(),
-    Minimum: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum value from a single contributor during the time period represented by that data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
-        }),
-    ).exactOptional(),
-    Maximum: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum value from a single occurence from a single contributor during the time period represented by that data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
-        }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.openapi({ description: 'The timestamp of the data point.' }),
+    UniqueContributors: InsightRuleUnboundDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The number of unique contributors who published data during this timestamp.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
+    }),
+    MaxContributorValue: InsightRuleUnboundDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum value provided by one contributor during this timestamp. Each timestamp is evaluated separately, so the identity of the max contributor could be different for each timestamp.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
+    }),
+    SampleCount: InsightRuleUnboundDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The number of occurrences that matched the rule during this data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
+    }),
+    Average: InsightRuleUnboundDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The average value from all contributors during the time period represented by that data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
+    }),
+    Sum: InsightRuleUnboundDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The sum of the values from all contributors during the time period represented by that data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
+    }),
+    Minimum: InsightRuleUnboundDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The minimum value from a single contributor during the time period represented by that data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
+    }),
+    Maximum: InsightRuleUnboundDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum value from a single occurence from a single contributor during the time period represented by that data point.</p> <p>This statistic is returned only if you included it in the <code>Metrics</code> array in your request.</p>',
+    }),
   })
   .openapi({
     required: ['Timestamp'],
@@ -1292,53 +969,28 @@ const InsightRuleMetricDatapointsSchema = z
 
 const GetInsightRuleReportOutputSchema = z
   .object({
-    KeyLabels: InsightRuleContributorKeyLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the strings used as the keys for this rule. The keys are the dimensions used to classify contributors. If the rule contains more than one key, then each unique combination of values for the keys is counted as a unique contributor.',
-        }),
-    ).exactOptional(),
-    AggregationStatistic: InsightRuleAggregationStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether this rule aggregates contributor data by COUNT or SUM.',
-        }),
-    ).exactOptional(),
-    AggregateValue: InsightRuleUnboundDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sum of the values from all individual contributors that match the rule.',
-        }),
-    ).exactOptional(),
-    ApproximateUniqueCount: InsightRuleUnboundLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An approximate count of the unique contributors found by this rule in this time period.',
-        }),
-    ).exactOptional(),
-    Contributors: InsightRuleContributorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the unique contributors found by this rule in this time period. If the rule contains multiple keys, each combination of values for the keys counts as a unique contributor.',
-        }),
-    ).exactOptional(),
-    MetricDatapoints: InsightRuleMetricDatapointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time series of metric data points that matches the time period in the rule request.',
-        }),
-    ).exactOptional(),
+    KeyLabels: InsightRuleContributorKeyLabelsSchema.exactOptional().openapi({
+      description:
+        'An array of the strings used as the keys for this rule. The keys are the dimensions used to classify contributors. If the rule contains more than one key, then each unique combination of values for the keys is counted as a unique contributor.',
+    }),
+    AggregationStatistic: InsightRuleAggregationStatisticSchema.exactOptional().openapi({
+      description: 'Specifies whether this rule aggregates contributor data by COUNT or SUM.',
+    }),
+    AggregateValue: InsightRuleUnboundDoubleSchema.exactOptional().openapi({
+      description: 'The sum of the values from all individual contributors that match the rule.',
+    }),
+    ApproximateUniqueCount: InsightRuleUnboundLongSchema.exactOptional().openapi({
+      description:
+        'An approximate count of the unique contributors found by this rule in this time period.',
+    }),
+    Contributors: InsightRuleContributorsSchema.exactOptional().openapi({
+      description:
+        'An array of the unique contributors found by this rule in this time period. If the rule contains multiple keys, each combination of values for the keys counts as a unique contributor.',
+    }),
+    MetricDatapoints: InsightRuleMetricDatapointsSchema.exactOptional().openapi({
+      description:
+        'A time series of metric data points that matches the time period in the rule request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInsightRuleReportOutput')
@@ -1366,14 +1018,10 @@ const MessageDataValueSchema = z.string().openapi('MessageDataValue')
 
 const MessageDataSchema = z
   .object({
-    Code: MessageDataCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error code or status code associated with the message.' }),
-    ).exactOptional(),
-    Value: MessageDataValueSchema.and(
-      z.any().openapi({ description: 'The message text.' }),
-    ).exactOptional(),
+    Code: MessageDataCodeSchema.exactOptional().openapi({
+      description: 'The error code or status code associated with the message.',
+    }),
+    Value: MessageDataValueSchema.exactOptional().openapi({ description: 'The message text.' }),
   })
   .openapi({
     description:
@@ -1388,43 +1036,27 @@ const MetricDataResultMessagesSchema = z
 
 const MetricDataResultSchema = z
   .object({
-    Id: MetricIdSchema.and(
-      z.any().openapi({ description: 'The short name you specified to represent this metric.' }),
-    ).exactOptional(),
-    Label: MetricLabelSchema.and(
-      z.any().openapi({ description: 'The human-readable label associated with the data.' }),
-    ).exactOptional(),
-    Timestamps: TimestampsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamps for the data points, formatted in Unix timestamp format. The number of timestamps always matches the number of values and the value for Timestamps[x] is Values[x].',
-        }),
-    ).exactOptional(),
-    Values: DatapointValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data points for the metric corresponding to <code>Timestamps</code>. The number of values always matches the number of timestamps and the timestamp for Values[x] is Timestamps[x].',
-        }),
-    ).exactOptional(),
-    StatusCode: StatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the returned data. <code>Complete</code> indicates that all data points in the requested time range were returned. <code>PartialData</code> means that an incomplete set of data points were returned. You can use the <code>NextToken</code> value that was returned and repeat your request to get more data points. <code>NextToken</code> is not returned if you are performing a math expression. <code>InternalError</code> indicates that an error occurred. Retry your request using <code>NextToken</code>, if present.',
-        }),
-    ).exactOptional(),
-    Messages: MetricDataResultMessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of messages with additional information about the data returned.',
-        }),
-    ).exactOptional(),
+    Id: MetricIdSchema.exactOptional().openapi({
+      description: 'The short name you specified to represent this metric.',
+    }),
+    Label: MetricLabelSchema.exactOptional().openapi({
+      description: 'The human-readable label associated with the data.',
+    }),
+    Timestamps: TimestampsSchema.exactOptional().openapi({
+      description:
+        'The timestamps for the data points, formatted in Unix timestamp format. The number of timestamps always matches the number of values and the value for Timestamps[x] is Values[x].',
+    }),
+    Values: DatapointValuesSchema.exactOptional().openapi({
+      description:
+        'The data points for the metric corresponding to <code>Timestamps</code>. The number of values always matches the number of timestamps and the timestamp for Values[x] is Timestamps[x].',
+    }),
+    StatusCode: StatusCodeSchema.exactOptional().openapi({
+      description:
+        'The status of the returned data. <code>Complete</code> indicates that all data points in the requested time range were returned. <code>PartialData</code> means that an incomplete set of data points were returned. You can use the <code>NextToken</code> value that was returned and repeat your request to get more data points. <code>NextToken</code> is not returned if you are performing a math expression. <code>InternalError</code> indicates that an error occurred. Retry your request using <code>NextToken</code>, if present.',
+    }),
+    Messages: MetricDataResultMessagesSchema.exactOptional().openapi({
+      description: 'A list of messages with additional information about the data returned.',
+    }),
   })
   .openapi({
     description:
@@ -1437,25 +1069,17 @@ const MetricDataResultsSchema = z.array(MetricDataResultSchema).openapi('MetricD
 
 const GetMetricDataOutputSchema = z
   .object({
-    MetricDataResults: MetricDataResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metrics that are returned, including the metric name, namespace, and dimensions.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A token that marks the next batch of returned results.' }),
-    ).exactOptional(),
-    Messages: MetricDataResultMessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains a message about this <code>GetMetricData</code> operation, if the operation results in such a message. An example of a message that might be returned is <code>Maximum number of allowed metrics exceeded</code>. If there is a message, as much of the operation as possible is still executed.</p> <p>A message appears here only if it is related to the global <code>GetMetricData</code> operation. Any message about a specific metric returned by the operation appears in the <code>MetricDataResult</code> object returned for that metric.</p>',
-        }),
-    ).exactOptional(),
+    MetricDataResults: MetricDataResultsSchema.exactOptional().openapi({
+      description:
+        'The metrics that are returned, including the metric name, namespace, and dimensions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token that marks the next batch of returned results.',
+    }),
+    Messages: MetricDataResultMessagesSchema.exactOptional().openapi({
+      description:
+        '<p>Contains a message about this <code>GetMetricData</code> operation, if the operation results in such a message. An example of a message that might be returned is <code>Maximum number of allowed metrics exceeded</code>. If there is a message, as much of the operation as possible is still executed.</p> <p>A message appears here only if it is related to the global <code>GetMetricData</code> operation. Any message about a specific metric returned by the operation appears in the <code>MetricDataResult</code> object returned for that metric.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMetricDataOutput')
@@ -1468,39 +1092,31 @@ const DatapointValueMapSchema = z
 
 const DatapointSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time stamp used for the data point.' }),
-    ).exactOptional(),
-    SampleCount: DatapointValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of metric values that contributed to the aggregate value of this data point.',
-        }),
-    ).exactOptional(),
-    Average: DatapointValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The average of the metric values that correspond to the data point.',
-        }),
-    ).exactOptional(),
-    Sum: DatapointValueSchema.and(
-      z.any().openapi({ description: 'The sum of the metric values for the data point.' }),
-    ).exactOptional(),
-    Minimum: DatapointValueSchema.and(
-      z.any().openapi({ description: 'The minimum metric value for the data point.' }),
-    ).exactOptional(),
-    Maximum: DatapointValueSchema.and(
-      z.any().openapi({ description: 'The maximum metric value for the data point.' }),
-    ).exactOptional(),
-    Unit: StandardUnitSchema.and(
-      z.any().openapi({ description: 'The standard unit for the data point.' }),
-    ).exactOptional(),
-    ExtendedStatistics: DatapointValueMapSchema.and(
-      z.any().openapi({ description: 'The percentile statistic for the data point.' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time stamp used for the data point.',
+    }),
+    SampleCount: DatapointValueSchema.exactOptional().openapi({
+      description:
+        'The number of metric values that contributed to the aggregate value of this data point.',
+    }),
+    Average: DatapointValueSchema.exactOptional().openapi({
+      description: 'The average of the metric values that correspond to the data point.',
+    }),
+    Sum: DatapointValueSchema.exactOptional().openapi({
+      description: 'The sum of the metric values for the data point.',
+    }),
+    Minimum: DatapointValueSchema.exactOptional().openapi({
+      description: 'The minimum metric value for the data point.',
+    }),
+    Maximum: DatapointValueSchema.exactOptional().openapi({
+      description: 'The maximum metric value for the data point.',
+    }),
+    Unit: StandardUnitSchema.exactOptional().openapi({
+      description: 'The standard unit for the data point.',
+    }),
+    ExtendedStatistics: DatapointValueMapSchema.exactOptional().openapi({
+      description: 'The percentile statistic for the data point.',
+    }),
   })
   .openapi({
     description: 'Encapsulates the statistical data that CloudWatch computes from metric data.',
@@ -1512,12 +1128,12 @@ const DatapointsSchema = z.array(DatapointSchema).openapi('Datapoints')
 
 const GetMetricStatisticsOutputSchema = z
   .object({
-    Label: MetricLabelSchema.and(
-      z.any().openapi({ description: 'A label for the specified metric.' }),
-    ).exactOptional(),
-    Datapoints: DatapointsSchema.and(
-      z.any().openapi({ description: 'The data points for the specified metric.' }),
-    ).exactOptional(),
+    Label: MetricLabelSchema.exactOptional().openapi({
+      description: 'A label for the specified metric.',
+    }),
+    Datapoints: DatapointsSchema.exactOptional().openapi({
+      description: 'The data points for the specified metric.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMetricStatisticsOutput')
@@ -1532,22 +1148,14 @@ const MetricStreamFilterMetricNamesSchema = z
 
 const MetricStreamFilterSchema = z
   .object({
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the metric namespace for this filter.</p> <p>The namespace can contain only ASCII printable characters (ASCII range 32 through 126). It must contain at least one non-whitespace character.</p>',
-        }),
-    ).exactOptional(),
-    MetricNames: MetricStreamFilterMetricNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The names of the metrics to either include or exclude from the metric stream. </p> <p>If you omit this parameter, all metrics in the namespace are included or excluded, depending on whether this filter is specified as an exclude filter or an include filter.</p> <p>Each metric name can contain only ASCII printable characters (ASCII range 32 through 126). Each metric name must contain at least one non-whitespace character.</p>',
-        }),
-    ).exactOptional(),
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the metric namespace for this filter.</p> <p>The namespace can contain only ASCII printable characters (ASCII range 32 through 126). It must contain at least one non-whitespace character.</p>',
+    }),
+    MetricNames: MetricStreamFilterMetricNamesSchema.exactOptional().openapi({
+      description:
+        '<p>The names of the metrics to either include or exclude from the metric stream. </p> <p>If you omit this parameter, all metrics in the namespace are included or excluded, depending on whether this filter is specified as an exclude filter or an include filter.</p> <p>Each metric name can contain only ASCII printable characters (ASCII range 32 through 126). Each metric name must contain at least one non-whitespace character.</p>',
+    }),
   })
   .openapi({
     description:
@@ -1566,10 +1174,8 @@ const MetricStreamOutputFormatSchema = z
 
 const MetricStreamStatisticsMetricSchema = z
   .object({
-    Namespace: NamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the metric.' }),
-    ),
-    MetricName: MetricNameSchema.and(z.any().openapi({ description: 'The name of the metric.' })),
+    Namespace: NamespaceSchema.openapi({ description: 'The namespace of the metric.' }),
+    MetricName: MetricNameSchema.openapi({ description: 'The name of the metric.' }),
   })
   .openapi({
     required: ['Namespace', 'MetricName'],
@@ -1590,22 +1196,14 @@ const MetricStreamStatisticsAdditionalStatisticsSchema = z
 
 const MetricStreamStatisticsConfigurationSchema = z
   .object({
-    IncludeMetrics: MetricStreamStatisticsIncludeMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of metric name and namespace pairs that stream the additional statistics listed in the value of the <code>AdditionalStatistics</code> parameter. There can be as many as 100 pairs in the array.</p> <p>All metrics that match the combination of metric name and namespace will be streamed with the additional statistics, no matter their dimensions.</p>',
-        }),
-    ),
-    AdditionalStatistics: MetricStreamStatisticsAdditionalStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of additional statistics that are to be streamed for the metrics listed in the <code>IncludeMetrics</code> array in this structure. This list can include as many as 20 statistics.</p> <p>If the <code>OutputFormat</code> for the stream is <code>opentelemetry0.7</code>, the only valid values are <code>p<i>??</i> </code> percentile statistics such as <code>p90</code>, <code>p99</code> and so on.</p> <p>If the <code>OutputFormat</code> for the stream is <code>json</code>, the valid values include the abbreviations for all of the statistics listed in <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html"> CloudWatch statistics definitions</a>. For example, this includes <code>tm98, </code> <code>wm90</code>, <code>PR(:300)</code>, and so on.</p>',
-        }),
-    ),
+    IncludeMetrics: MetricStreamStatisticsIncludeMetricsSchema.openapi({
+      description:
+        '<p>An array of metric name and namespace pairs that stream the additional statistics listed in the value of the <code>AdditionalStatistics</code> parameter. There can be as many as 100 pairs in the array.</p> <p>All metrics that match the combination of metric name and namespace will be streamed with the additional statistics, no matter their dimensions.</p>',
+    }),
+    AdditionalStatistics: MetricStreamStatisticsAdditionalStatisticsSchema.openapi({
+      description:
+        '<p>The list of additional statistics that are to be streamed for the metrics listed in the <code>IncludeMetrics</code> array in this structure. This list can include as many as 20 statistics.</p> <p>If the <code>OutputFormat</code> for the stream is <code>opentelemetry0.7</code>, the only valid values are <code>p<i>??</i> </code> percentile statistics such as <code>p90</code>, <code>p99</code> and so on.</p> <p>If the <code>OutputFormat</code> for the stream is <code>json</code>, the valid values include the abbreviations for all of the statistics listed in <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html"> CloudWatch statistics definitions</a>. For example, this includes <code>tm98, </code> <code>wm90</code>, <code>PR(:300)</code>, and so on.</p>',
+    }),
   })
   .openapi({
     required: ['IncludeMetrics', 'AdditionalStatistics'],
@@ -1622,83 +1220,49 @@ const IncludeLinkedAccountsMetricsSchema = z.boolean().openapi('IncludeLinkedAcc
 
 const GetMetricStreamOutputSchema = z
   .object({
-    Arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the metric stream.' }),
-    ).exactOptional(),
-    Name: MetricStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric stream.' }),
-    ).exactOptional(),
-    IncludeFilters: MetricStreamFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this array of metric namespaces is present, then these namespaces are the only metric namespaces that are streamed by this metric stream.',
-        }),
-    ).exactOptional(),
-    ExcludeFilters: MetricStreamFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this array of metric namespaces is present, then these namespaces are the only metric namespaces that are not streamed by this metric stream. In this case, all other metric namespaces in the account are streamed by this metric stream.',
-        }),
-    ).exactOptional(),
-    FirehoseArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Kinesis Data Firehose delivery stream that is used by this metric stream.',
-        }),
-    ).exactOptional(),
-    RoleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the IAM role that is used by this metric stream.' }),
-    ).exactOptional(),
-    State: MetricStreamStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the metric stream. The possible values are <code>running</code> and <code>stopped</code>.',
-        }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date that the metric stream was created.' }),
-    ).exactOptional(),
-    LastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The date of the most recent update to the metric stream's configuration.",
-        }),
-    ).exactOptional(),
-    OutputFormat: MetricStreamOutputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output format for the stream. Valid values are <code>json</code> and <code>opentelemetry0.7</code>. For more information about metric stream output formats, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-formats.html">Metric streams output formats</a>.',
-        }),
-    ).exactOptional(),
-    StatisticsConfigurations: MetricStreamStatisticsConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each entry in this array displays information about one or more metrics that include additional statistics in the metric stream. For more information about the additional statistics, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html"> CloudWatch statistics definitions</a>. ',
-        }),
-    ).exactOptional(),
-    IncludeLinkedAccountsMetrics: IncludeLinkedAccountsMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this is <code>true</code> and this metric stream is in a monitoring account, then the stream includes metrics from source accounts that the monitoring account is linked to.',
-        }),
-    ).exactOptional(),
+    Arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the metric stream.',
+    }),
+    Name: MetricStreamNameSchema.exactOptional().openapi({
+      description: 'The name of the metric stream.',
+    }),
+    IncludeFilters: MetricStreamFiltersSchema.exactOptional().openapi({
+      description:
+        'If this array of metric namespaces is present, then these namespaces are the only metric namespaces that are streamed by this metric stream.',
+    }),
+    ExcludeFilters: MetricStreamFiltersSchema.exactOptional().openapi({
+      description:
+        'If this array of metric namespaces is present, then these namespaces are the only metric namespaces that are not streamed by this metric stream. In this case, all other metric namespaces in the account are streamed by this metric stream.',
+    }),
+    FirehoseArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Amazon Kinesis Data Firehose delivery stream that is used by this metric stream.',
+    }),
+    RoleArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role that is used by this metric stream.',
+    }),
+    State: MetricStreamStateSchema.exactOptional().openapi({
+      description:
+        'The state of the metric stream. The possible values are <code>running</code> and <code>stopped</code>.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date that the metric stream was created.',
+    }),
+    LastUpdateDate: TimestampSchema.exactOptional().openapi({
+      description: "The date of the most recent update to the metric stream's configuration.",
+    }),
+    OutputFormat: MetricStreamOutputFormatSchema.exactOptional().openapi({
+      description:
+        'The output format for the stream. Valid values are <code>json</code> and <code>opentelemetry0.7</code>. For more information about metric stream output formats, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-formats.html">Metric streams output formats</a>.',
+    }),
+    StatisticsConfigurations: MetricStreamStatisticsConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Each entry in this array displays information about one or more metrics that include additional statistics in the metric stream. For more information about the additional statistics, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html"> CloudWatch statistics definitions</a>. ',
+    }),
+    IncludeLinkedAccountsMetrics: IncludeLinkedAccountsMetricsSchema.exactOptional().openapi({
+      description:
+        'If this is <code>true</code> and this metric stream is in a monitoring account, then the stream includes metrics from source accounts that the monitoring account is linked to.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMetricStreamOutput')
@@ -1707,14 +1271,10 @@ const MetricWidgetImageSchema = z.string().openapi('MetricWidgetImage')
 
 const GetMetricWidgetImageOutputSchema = z
   .object({
-    MetricWidgetImage: MetricWidgetImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The image of the graph, in the output format specified. The output is base64-encoded.',
-        }),
-    ).exactOptional(),
+    MetricWidgetImage: MetricWidgetImageSchema.exactOptional().openapi({
+      description:
+        'The image of the graph, in the output format specified. The output is base64-encoded.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMetricWidgetImageOutput')
@@ -1725,23 +1285,19 @@ const SizeSchema = z.int().openapi('Size')
 
 const DashboardEntrySchema = z
   .object({
-    DashboardName: DashboardNameSchema.and(
-      z.any().openapi({ description: 'The name of the dashboard.' }),
-    ).exactOptional(),
-    DashboardArn: DashboardArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dashboard.' }),
-    ).exactOptional(),
-    LastModified: LastModifiedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time stamp of when the dashboard was last modified, either by an API call or through the console. This number is expressed as the number of milliseconds since Jan 1, 1970 00:00:00 UTC.',
-        }),
-    ).exactOptional(),
-    Size: SizeSchema.and(
-      z.any().openapi({ description: 'The size of the dashboard, in bytes.' }),
-    ).exactOptional(),
+    DashboardName: DashboardNameSchema.exactOptional().openapi({
+      description: 'The name of the dashboard.',
+    }),
+    DashboardArn: DashboardArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dashboard.',
+    }),
+    LastModified: LastModifiedSchema.exactOptional().openapi({
+      description:
+        'The time stamp of when the dashboard was last modified, either by an API call or through the console. This number is expressed as the number of milliseconds since Jan 1, 1970 00:00:00 UTC.',
+    }),
+    Size: SizeSchema.exactOptional().openapi({
+      description: 'The size of the dashboard, in bytes.',
+    }),
   })
   .openapi({ description: 'Represents a specific dashboard.', required: [] })
   .openapi('DashboardEntry')
@@ -1750,16 +1306,12 @@ const DashboardEntriesSchema = z.array(DashboardEntrySchema).openapi('DashboardE
 
 const ListDashboardsOutputSchema = z
   .object({
-    DashboardEntries: DashboardEntriesSchema.and(
-      z.any().openapi({ description: 'The list of matching dashboards.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token that marks the start of the next batch of returned results.',
-        }),
-    ).exactOptional(),
+    DashboardEntries: DashboardEntriesSchema.exactOptional().openapi({
+      description: 'The list of matching dashboards.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token that marks the start of the next batch of returned results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDashboardsOutput')
@@ -1773,17 +1325,13 @@ const TemplateNameSchema = z
 
 const ManagedRuleStateSchema = z
   .object({
-    RuleName: InsightRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the Contributor Insights rule that contains data for the specified Amazon Web Services resource. ',
-        }),
-    ),
-    State: InsightRuleStateSchema.and(
-      z.any().openapi({ description: ' Indicates whether the rule is enabled or disabled. ' }),
-    ),
+    RuleName: InsightRuleNameSchema.openapi({
+      description:
+        ' The name of the Contributor Insights rule that contains data for the specified Amazon Web Services resource. ',
+    }),
+    State: InsightRuleStateSchema.openapi({
+      description: ' Indicates whether the rule is enabled or disabled. ',
+    }),
   })
   .openapi({
     required: ['RuleName', 'State'],
@@ -1793,30 +1341,18 @@ const ManagedRuleStateSchema = z
 
 const ManagedRuleDescriptionSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The template name for the managed rule. Used to enable managed rules using <code>PutManagedInsightRules</code>. ',
-        }),
-    ).exactOptional(),
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If a managed rule is enabled, this is the ARN for the related Amazon Web Services resource. ',
-        }),
-    ).exactOptional(),
-    RuleState: ManagedRuleStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes the state of a managed rule. If present, it contains information about the Contributor Insights rule that contains information about the related Amazon Web Services resource. ',
-        }),
-    ).exactOptional(),
+    TemplateName: TemplateNameSchema.exactOptional().openapi({
+      description:
+        ' The template name for the managed rule. Used to enable managed rules using <code>PutManagedInsightRules</code>. ',
+    }),
+    ResourceARN: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        ' If a managed rule is enabled, this is the ARN for the related Amazon Web Services resource. ',
+    }),
+    RuleState: ManagedRuleStateSchema.exactOptional().openapi({
+      description:
+        ' Describes the state of a managed rule. If present, it contains information about the Contributor Insights rule that contains information about the related Amazon Web Services resource. ',
+    }),
   })
   .openapi({
     description:
@@ -1831,69 +1367,45 @@ const ManagedRuleDescriptionsSchema = z
 
 const ListManagedInsightRulesOutputSchema = z
   .object({
-    ManagedRules: ManagedRuleDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The managed rules that are available for the specified Amazon Web Services resource. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Include this value to get the next set of rules if the value was returned by the previous operation. ',
-        }),
-    ).exactOptional(),
+    ManagedRules: ManagedRuleDescriptionsSchema.exactOptional().openapi({
+      description:
+        ' The managed rules that are available for the specified Amazon Web Services resource. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' Include this value to get the next set of rules if the value was returned by the previous operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListManagedInsightRulesOutput')
 
 const MetricStreamEntrySchema = z
   .object({
-    Arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the metric stream.' }),
-    ).exactOptional(),
-    CreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date that the metric stream was originally created.' }),
-    ).exactOptional(),
-    LastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the configuration of this metric stream was most recently updated.',
-        }),
-    ).exactOptional(),
-    Name: MetricStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric stream.' }),
-    ).exactOptional(),
-    FirehoseArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Kinesis Firehose devlivery stream that is used for this metric stream.',
-        }),
-    ).exactOptional(),
-    State: MetricStreamStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of this stream. Valid values are <code>running</code> and <code>stopped</code>.',
-        }),
-    ).exactOptional(),
-    OutputFormat: MetricStreamOutputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output format of this metric stream. Valid values are <code>json</code> and <code>opentelemetry0.7</code>.',
-        }),
-    ).exactOptional(),
+    Arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the metric stream.',
+    }),
+    CreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date that the metric stream was originally created.',
+    }),
+    LastUpdateDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date that the configuration of this metric stream was most recently updated.',
+    }),
+    Name: MetricStreamNameSchema.exactOptional().openapi({
+      description: 'The name of the metric stream.',
+    }),
+    FirehoseArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Kinesis Firehose devlivery stream that is used for this metric stream.',
+    }),
+    State: MetricStreamStateSchema.exactOptional().openapi({
+      description:
+        'The current state of this stream. Valid values are <code>running</code> and <code>stopped</code>.',
+    }),
+    OutputFormat: MetricStreamOutputFormatSchema.exactOptional().openapi({
+      description:
+        'The output format of this metric stream. Valid values are <code>json</code> and <code>opentelemetry0.7</code>.',
+    }),
   })
   .openapi({
     description: 'This structure contains the configuration information about one metric stream.',
@@ -1905,17 +1417,13 @@ const MetricStreamEntriesSchema = z.array(MetricStreamEntrySchema).openapi('Metr
 
 const ListMetricStreamsOutputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that marks the start of the next batch of returned results. You can use this token in a subsequent operation to get the next batch of results.',
-        }),
-    ).exactOptional(),
-    Entries: MetricStreamEntriesSchema.and(
-      z.any().openapi({ description: 'The array of metric stream information.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that marks the start of the next batch of returned results. You can use this token in a subsequent operation to get the next batch of results.',
+    }),
+    Entries: MetricStreamEntriesSchema.exactOptional().openapi({
+      description: 'The array of metric stream information.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMetricStreamsOutput')
@@ -1926,36 +1434,26 @@ const OwningAccountsSchema = z.array(AccountIdSchema).openapi('OwningAccounts')
 
 const ListMetricsOutputSchema = z
   .object({
-    Metrics: MetricsSchema.and(
-      z.any().openapi({ description: 'The metrics that match your request. ' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token that marks the start of the next batch of returned results. ',
-        }),
-    ).exactOptional(),
-    OwningAccounts: OwningAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you are using this operation in a monitoring account, this array contains the account IDs of the source accounts where the metrics in the returned data are from.</p> <p>This field is a 1:1 mapping between each metric that is returned and the ID of the owning account.</p>',
-        }),
-    ).exactOptional(),
+    Metrics: MetricsSchema.exactOptional().openapi({
+      description: 'The metrics that match your request. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token that marks the start of the next batch of returned results. ',
+    }),
+    OwningAccounts: OwningAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>If you are using this operation in a monitoring account, this array contains the account IDs of the source accounts where the metrics in the returned data are from.</p> <p>This field is a 1:1 mapping between each metric that is returned and the ID of the owning account.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMetricsOutput')
 
 const DimensionFilterSchema = z
   .object({
-    Name: DimensionNameSchema.and(
-      z.any().openapi({ description: 'The dimension name to be matched.' }),
-    ),
-    Value: DimensionValueSchema.and(
-      z.any().openapi({ description: 'The value of the dimension to be matched.' }),
-    ).exactOptional(),
+    Name: DimensionNameSchema.openapi({ description: 'The dimension name to be matched.' }),
+    Value: DimensionValueSchema.exactOptional().openapi({
+      description: 'The value of the dimension to be matched.',
+    }),
   })
   .openapi({ required: ['Name'], description: 'Represents filters for a dimension.' })
   .openapi('DimensionFilter')
@@ -1966,17 +1464,11 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value for the specified tag key.' }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'A string that you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.',
+    }),
+    Value: TagValueSchema.openapi({ description: 'The value for the specified tag key.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -1988,19 +1480,14 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tag keys and values associated with the resource you specified.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tag keys and values associated with the resource you specified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
 
-const PutAnomalyDetectorOutputSchema = z.object({}).openapi('PutAnomalyDetectorOutput')
+const PutAnomalyDetectorOutputSchema = z.looseObject({}).openapi('PutAnomalyDetectorOutput')
 
 const LimitExceededFaultSchema = z.any().openapi('LimitExceededFault')
 
@@ -2010,12 +1497,12 @@ const MessageSchema = z.string().openapi('Message')
 
 const DashboardValidationMessageSchema = z
   .object({
-    DataPath: DataPathSchema.and(
-      z.any().openapi({ description: 'The data path related to the message.' }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'A message describing the error or warning.' }),
-    ).exactOptional(),
+    DataPath: DataPathSchema.exactOptional().openapi({
+      description: 'The data path related to the message.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'A message describing the error or warning.',
+    }),
   })
   .openapi({ description: 'An error or warning for the operation.', required: [] })
   .openapi('DashboardValidationMessage')
@@ -2026,59 +1513,41 @@ const DashboardValidationMessagesSchema = z
 
 const PutDashboardOutputSchema = z
   .object({
-    DashboardValidationMessages: DashboardValidationMessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If the input for <code>PutDashboard</code> was correct and the dashboard was successfully created or modified, this result is empty.</p> <p>If this result includes only warning messages, then the input was valid enough for the dashboard to be created or modified, but some elements of the dashboard might not render.</p> <p>If this result includes error messages, the input was not valid and the operation failed.</p>',
-        }),
-    ).exactOptional(),
+    DashboardValidationMessages: DashboardValidationMessagesSchema.exactOptional().openapi({
+      description:
+        '<p>If the input for <code>PutDashboard</code> was correct and the dashboard was successfully created or modified, this result is empty.</p> <p>If this result includes only warning messages, then the input was valid enough for the dashboard to be created or modified, but some elements of the dashboard might not render.</p> <p>If this result includes error messages, the input was not valid and the operation failed.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutDashboardOutput')
 
 const DashboardInvalidInputErrorSchema = z.any().openapi('DashboardInvalidInputError')
 
-const PutInsightRuleOutputSchema = z.object({}).openapi('PutInsightRuleOutput')
+const PutInsightRuleOutputSchema = z.looseObject({}).openapi('PutInsightRuleOutput')
 
 const PutManagedInsightRulesOutputSchema = z
   .object({
-    Failures: BatchFailuresSchema.and(
-      z
-        .any()
-        .openapi({ description: ' An array that lists the rules that could not be enabled. ' }),
-    ).exactOptional(),
+    Failures: BatchFailuresSchema.exactOptional().openapi({
+      description: ' An array that lists the rules that could not be enabled. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutManagedInsightRulesOutput')
 
 const ManagedRuleSchema = z
   .object({
-    TemplateName: TemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The template name for the managed Contributor Insights rule, as returned by <code>ListManagedInsightRules</code>. ',
-        }),
-    ),
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of an Amazon Web Services resource that has managed Contributor Insights rules. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of key-value pairs that you can associate with a managed Contributor Insights rule. You can associate as many as 50 tags with a rule. Tags can help you organize and categorize your resources. You also can use them to scope user permissions by granting a user permission to access or change only the resources that have certain tag values. To associate tags with a rule, you must have the <code>cloudwatch:TagResource</code> permission in addition to the <code>cloudwatch:PutInsightRule</code> permission. If you are using this operation to update an existing Contributor Insights rule, any tags that you specify in this parameter are ignored. To change the tags of an existing rule, use <code>TagResource</code>. ',
-        }),
-    ).exactOptional(),
+    TemplateName: TemplateNameSchema.openapi({
+      description:
+        ' The template name for the managed Contributor Insights rule, as returned by <code>ListManagedInsightRules</code>. ',
+    }),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        ' The ARN of an Amazon Web Services resource that has managed Contributor Insights rules. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        ' A list of key-value pairs that you can associate with a managed Contributor Insights rule. You can associate as many as 50 tags with a rule. Tags can help you organize and categorize your resources. You also can use them to scope user permissions by granting a user permission to access or change only the resources that have certain tag values. To associate tags with a rule, you must have the <code>cloudwatch:TagResource</code> permission in addition to the <code>cloudwatch:PutInsightRule</code> permission. If you are using this operation to update an existing Contributor Insights rule, any tags that you specify in this parameter are ignored. To change the tags of an existing rule, use <code>TagResource</code>. ',
+    }),
   })
   .openapi({
     required: ['TemplateName', 'ResourceARN'],
@@ -2089,18 +1558,12 @@ const ManagedRuleSchema = z
 
 const StatisticSetSchema = z
   .object({
-    SampleCount: DatapointValueSchema.and(
-      z.any().openapi({ description: 'The number of samples used for the statistic set.' }),
-    ),
-    Sum: DatapointValueSchema.and(
-      z.any().openapi({ description: 'The sum of values for the sample set.' }),
-    ),
-    Minimum: DatapointValueSchema.and(
-      z.any().openapi({ description: 'The minimum value of the sample set.' }),
-    ),
-    Maximum: DatapointValueSchema.and(
-      z.any().openapi({ description: 'The maximum value of the sample set.' }),
-    ),
+    SampleCount: DatapointValueSchema.openapi({
+      description: 'The number of samples used for the statistic set.',
+    }),
+    Sum: DatapointValueSchema.openapi({ description: 'The sum of values for the sample set.' }),
+    Minimum: DatapointValueSchema.openapi({ description: 'The minimum value of the sample set.' }),
+    Maximum: DatapointValueSchema.openapi({ description: 'The maximum value of the sample set.' }),
   })
   .openapi({
     required: ['SampleCount', 'Sum', 'Minimum', 'Maximum'],
@@ -2116,61 +1579,37 @@ const StorageResolutionSchema = z.int().min(1).openapi('StorageResolution')
 
 const MetricDatumSchema = z
   .object({
-    MetricName: MetricNameSchema.and(z.any().openapi({ description: 'The name of the metric.' })),
-    Dimensions: DimensionsSchema.and(
-      z.any().openapi({ description: 'The dimensions associated with the metric. ' }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the metric data was received, expressed as the number of milliseconds since Jan 1, 1970 00:00:00 UTC.',
-        }),
-    ).exactOptional(),
-    Value: DatapointValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value for the metric.</p> <p>Although the parameter accepts numbers of type Double, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>',
-        }),
-    ).exactOptional(),
-    StatisticValues: StatisticSetSchema.and(
-      z.any().openapi({ description: 'The statistical values for the metric.' }),
-    ).exactOptional(),
-    Values: ValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Array of numbers representing the values for the metric during the period. Each unique value is listed just once in this array, and the corresponding number in the <code>Counts</code> array specifies the number of times that value occurred during the period. You can include up to 150 unique values in each <code>PutMetricData</code> action that specifies a <code>Values</code> array.</p> <p>Although the <code>Values</code> array accepts numbers of type <code>Double</code>, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>',
-        }),
-    ).exactOptional(),
-    Counts: CountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Array of numbers that is used along with the <code>Values</code> array. Each number in the <code>Count</code> array is the number of times the corresponding value in the <code>Values</code> array occurred during the period. </p> <p>If you omit the <code>Counts</code> array, the default of 1 is used as the value for each count. If you include a <code>Counts</code> array, it must include the same amount of values as the <code>Values</code> array.</p>',
-        }),
-    ).exactOptional(),
-    Unit: StandardUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, this displays the unit that is used for the metric.</p>',
-        }),
-    ).exactOptional(),
-    StorageResolution: StorageResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Valid values are 1 and 60. Setting this to 1 specifies this metric as a high-resolution metric, so that CloudWatch stores the metric with sub-minute resolution down to one second. Setting this to 60 specifies this metric as a regular-resolution metric, which CloudWatch stores at 1-minute resolution. Currently, high resolution is available only for custom metrics. For more information about high-resolution metrics, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#high-resolution-metrics">High-Resolution Metrics</a> in the <i>Amazon CloudWatch User Guide</i>. </p> <p>This field is optional, if you do not specify it the default of 60 is used.</p>',
-        }),
-    ).exactOptional(),
+    MetricName: MetricNameSchema.openapi({ description: 'The name of the metric.' }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description: 'The dimensions associated with the metric. ',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the metric data was received, expressed as the number of milliseconds since Jan 1, 1970 00:00:00 UTC.',
+    }),
+    Value: DatapointValueSchema.exactOptional().openapi({
+      description:
+        '<p>The value for the metric.</p> <p>Although the parameter accepts numbers of type Double, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>',
+    }),
+    StatisticValues: StatisticSetSchema.exactOptional().openapi({
+      description: 'The statistical values for the metric.',
+    }),
+    Values: ValuesSchema.exactOptional().openapi({
+      description:
+        '<p>Array of numbers representing the values for the metric during the period. Each unique value is listed just once in this array, and the corresponding number in the <code>Counts</code> array specifies the number of times that value occurred during the period. You can include up to 150 unique values in each <code>PutMetricData</code> action that specifies a <code>Values</code> array.</p> <p>Although the <code>Values</code> array accepts numbers of type <code>Double</code>, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>',
+    }),
+    Counts: CountsSchema.exactOptional().openapi({
+      description:
+        '<p>Array of numbers that is used along with the <code>Values</code> array. Each number in the <code>Count</code> array is the number of times the corresponding value in the <code>Values</code> array occurred during the period. </p> <p>If you omit the <code>Counts</code> array, the default of 1 is used as the value for each count. If you include a <code>Counts</code> array, it must include the same amount of values as the <code>Values</code> array.</p>',
+    }),
+    Unit: StandardUnitSchema.exactOptional().openapi({
+      description:
+        '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, this displays the unit that is used for the metric.</p>',
+    }),
+    StorageResolution: StorageResolutionSchema.exactOptional().openapi({
+      description:
+        '<p>Valid values are 1 and 60. Setting this to 1 specifies this metric as a high-resolution metric, so that CloudWatch stores the metric with sub-minute resolution down to one second. Setting this to 60 specifies this metric as a regular-resolution metric, which CloudWatch stores at 1-minute resolution. Currently, high resolution is available only for custom metrics. For more information about high-resolution metrics, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#high-resolution-metrics">High-Resolution Metrics</a> in the <i>Amazon CloudWatch User Guide</i>. </p> <p>This field is optional, if you do not specify it the default of 60 is used.</p>',
+    }),
   })
   .openapi({
     required: ['MetricName'],
@@ -2181,9 +1620,9 @@ const MetricDatumSchema = z
 
 const PutMetricStreamOutputSchema = z
   .object({
-    Arn: AmazonResourceNameSchema.and(
-      z.any().openapi({ description: 'The ARN of the metric stream.' }),
-    ).exactOptional(),
+    Arn: AmazonResourceNameSchema.exactOptional().openapi({
+      description: 'The ARN of the metric stream.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutMetricStreamOutput')
@@ -2192,13 +1631,13 @@ const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModific
 
 const InvalidFormatFaultSchema = z.any().openapi('InvalidFormatFault')
 
-const StartMetricStreamsOutputSchema = z.object({}).openapi('StartMetricStreamsOutput')
+const StartMetricStreamsOutputSchema = z.looseObject({}).openapi('StartMetricStreamsOutput')
 
-const StopMetricStreamsOutputSchema = z.object({}).openapi('StopMetricStreamsOutput')
+const StopMetricStreamsOutputSchema = z.looseObject({}).openapi('StopMetricStreamsOutput')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
 const ActionPrefixSchema = z.string().min(1).max(1024).openapi('ActionPrefix')
 
@@ -2219,80 +1658,52 @@ const DashboardNamesSchema = z.array(DashboardNameSchema).openapi('DashboardName
 
 const DeleteAlarmsInputSchema = z
   .object({
-    AlarmNames: AlarmNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The alarms to be deleted. Do not enclose the alarm names in quote marks.',
-        }),
-    ),
+    AlarmNames: AlarmNamesSchema.openapi({
+      description: 'The alarms to be deleted. Do not enclose the alarm names in quote marks.',
+    }),
   })
   .openapi({ required: ['AlarmNames'], title: 'DeleteAlarmsInput' })
   .openapi('DeleteAlarmsInput')
 
-const DeleteAnomalyDetectorInputSchema = z
+const DeleteAnomalyDetectorInputSchema: z.ZodType<DeleteAnomalyDetectorInputType> = z
   .object({
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The namespace associated with the anomaly detection model to delete.Use SingleMetricAnomalyDetector.',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The metric name associated with the anomaly detection model to delete.Use SingleMetricAnomalyDetector.',
-        }),
-    ).exactOptional(),
-    Dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The metric dimensions associated with the anomaly detection model to delete.Use SingleMetricAnomalyDetector.',
-        }),
-    ).exactOptional(),
-    Stat: AnomalyDetectorMetricStatSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The statistic associated with the anomaly detection model to delete.Use SingleMetricAnomalyDetector.',
-        }),
-    ).exactOptional(),
-    SingleMetricAnomalyDetector: SingleMetricAnomalyDetectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A single metric anomaly detector to be deleted.</p> <p>When using <code>SingleMetricAnomalyDetector</code>, you cannot include the following parameters in the same operation:</p> <ul> <li> <p> <code>Dimensions</code>,</p> </li> <li> <p> <code>MetricName</code> </p> </li> <li> <p> <code>Namespace</code> </p> </li> <li> <p> <code>Stat</code> </p> </li> <li> <p>the <code>MetricMathAnomalyDetector</code> parameters of <code>DeleteAnomalyDetectorInput</code> </p> </li> </ul> <p>Instead, specify the single metric anomaly detector attributes as part of the <code>SingleMetricAnomalyDetector</code> property.</p>',
-        }),
-    ).exactOptional(),
-    MetricMathAnomalyDetector: MetricMathAnomalyDetectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metric math anomaly detector to be deleted.</p> <p>When using <code>MetricMathAnomalyDetector</code>, you cannot include following parameters in the same operation:</p> <ul> <li> <p> <code>Dimensions</code>,</p> </li> <li> <p> <code>MetricName</code> </p> </li> <li> <p> <code>Namespace</code> </p> </li> <li> <p> <code>Stat</code> </p> </li> <li> <p>the <code>SingleMetricAnomalyDetector</code> parameters of <code>DeleteAnomalyDetectorInput</code> </p> </li> </ul> <p>Instead, specify the metric math anomaly detector attributes as part of the <code>MetricMathAnomalyDetector</code> property.</p>',
-        }),
-    ).exactOptional(),
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The namespace associated with the anomaly detection model to delete.Use SingleMetricAnomalyDetector.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The metric name associated with the anomaly detection model to delete.Use SingleMetricAnomalyDetector.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The metric dimensions associated with the anomaly detection model to delete.Use SingleMetricAnomalyDetector.',
+    }),
+    Stat: AnomalyDetectorMetricStatSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The statistic associated with the anomaly detection model to delete.Use SingleMetricAnomalyDetector.',
+    }),
+    SingleMetricAnomalyDetector: SingleMetricAnomalyDetectorSchema.exactOptional().openapi({
+      description:
+        '<p>A single metric anomaly detector to be deleted.</p> <p>When using <code>SingleMetricAnomalyDetector</code>, you cannot include the following parameters in the same operation:</p> <ul> <li> <p> <code>Dimensions</code>,</p> </li> <li> <p> <code>MetricName</code> </p> </li> <li> <p> <code>Namespace</code> </p> </li> <li> <p> <code>Stat</code> </p> </li> <li> <p>the <code>MetricMathAnomalyDetector</code> parameters of <code>DeleteAnomalyDetectorInput</code> </p> </li> </ul> <p>Instead, specify the single metric anomaly detector attributes as part of the <code>SingleMetricAnomalyDetector</code> property.</p>',
+    }),
+    MetricMathAnomalyDetector: MetricMathAnomalyDetectorSchema.exactOptional().openapi({
+      description:
+        '<p>The metric math anomaly detector to be deleted.</p> <p>When using <code>MetricMathAnomalyDetector</code>, you cannot include following parameters in the same operation:</p> <ul> <li> <p> <code>Dimensions</code>,</p> </li> <li> <p> <code>MetricName</code> </p> </li> <li> <p> <code>Namespace</code> </p> </li> <li> <p> <code>Stat</code> </p> </li> <li> <p>the <code>SingleMetricAnomalyDetector</code> parameters of <code>DeleteAnomalyDetectorInput</code> </p> </li> </ul> <p>Instead, specify the metric math anomaly detector attributes as part of the <code>MetricMathAnomalyDetector</code> property.</p>',
+    }),
   })
   .openapi({ title: 'DeleteAnomalyDetectorInput', required: [] })
   .openapi('DeleteAnomalyDetectorInput')
 
 const DeleteDashboardsInputSchema = z
   .object({
-    DashboardNames: DashboardNamesSchema.and(
-      z.any().openapi({ description: 'The dashboards to be deleted. This parameter is required.' }),
-    ),
+    DashboardNames: DashboardNamesSchema.openapi({
+      description: 'The dashboards to be deleted. This parameter is required.',
+    }),
   })
   .openapi({ required: ['DashboardNames'], title: 'DeleteDashboardsInput' })
   .openapi('DeleteDashboardsInput')
@@ -2301,23 +1712,19 @@ const InsightRuleNamesSchema = z.array(InsightRuleNameSchema).openapi('InsightRu
 
 const DeleteInsightRulesInputSchema = z
   .object({
-    RuleNames: InsightRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the rule names to delete. If you need to find out the names of your rules, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html">DescribeInsightRules</a>.',
-        }),
-    ),
+    RuleNames: InsightRuleNamesSchema.openapi({
+      description:
+        'An array of the rule names to delete. If you need to find out the names of your rules, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html">DescribeInsightRules</a>.',
+    }),
   })
   .openapi({ required: ['RuleNames'], title: 'DeleteInsightRulesInput' })
   .openapi('DeleteInsightRulesInput')
 
 const DeleteMetricStreamInputSchema = z
   .object({
-    Name: MetricStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric stream to delete.' }),
-    ),
+    Name: MetricStreamNameSchema.openapi({
+      description: 'The name of the metric stream to delete.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteMetricStreamInput' })
   .openapi('DeleteMetricStreamInput')
@@ -2328,155 +1735,95 @@ const ScanBySchema = z.enum(['TimestampDescending', 'TimestampAscending']).opena
 
 const DescribeAlarmHistoryInputSchema = z
   .object({
-    AlarmName: AlarmNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm.' }),
-    ).exactOptional(),
-    AlarmTypes: AlarmTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter to specify whether you want the operation to return metric alarms or composite alarms. If you omit this parameter, only metric alarms are returned.',
-        }),
-    ).exactOptional(),
-    HistoryItemType: HistoryItemTypeSchema.and(
-      z.any().openapi({ description: 'The type of alarm histories to retrieve.' }),
-    ).exactOptional(),
-    StartDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The starting date to retrieve alarm history.' }),
-    ).exactOptional(),
-    EndDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The ending date to retrieve alarm history.' }),
-    ).exactOptional(),
-    MaxRecords: MaxRecordsSchema.and(
-      z.any().openapi({ description: 'The maximum number of alarm history records to retrieve.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned by a previous call to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    ScanBy: ScanBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specified whether to return the newest or oldest alarm history first. Specify <code>TimestampDescending</code> to have the newest event history returned first, and specify <code>TimestampAscending</code> to have the oldest history returned first.',
-        }),
-    ).exactOptional(),
+    AlarmName: AlarmNameSchema.exactOptional().openapi({ description: 'The name of the alarm.' }),
+    AlarmTypes: AlarmTypesSchema.exactOptional().openapi({
+      description:
+        'Use this parameter to specify whether you want the operation to return metric alarms or composite alarms. If you omit this parameter, only metric alarms are returned.',
+    }),
+    HistoryItemType: HistoryItemTypeSchema.exactOptional().openapi({
+      description: 'The type of alarm histories to retrieve.',
+    }),
+    StartDate: TimestampSchema.exactOptional().openapi({
+      description: 'The starting date to retrieve alarm history.',
+    }),
+    EndDate: TimestampSchema.exactOptional().openapi({
+      description: 'The ending date to retrieve alarm history.',
+    }),
+    MaxRecords: MaxRecordsSchema.exactOptional().openapi({
+      description: 'The maximum number of alarm history records to retrieve.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned by a previous call to indicate that there is more data available.',
+    }),
+    ScanBy: ScanBySchema.exactOptional().openapi({
+      description:
+        'Specified whether to return the newest or oldest alarm history first. Specify <code>TimestampDescending</code> to have the newest event history returned first, and specify <code>TimestampAscending</code> to have the oldest history returned first.',
+    }),
   })
   .openapi({ title: 'DescribeAlarmHistoryInput', required: [] })
   .openapi('DescribeAlarmHistoryInput')
 
 const DescribeAlarmsForMetricInputSchema = z
   .object({
-    MetricName: MetricNameSchema.and(z.any().openapi({ description: 'The name of the metric.' })),
-    Namespace: NamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the metric.' }),
-    ),
-    Statistic: StatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The statistic for the metric, other than percentiles. For percentile statistics, use <code>ExtendedStatistics</code>.',
-        }),
-    ).exactOptional(),
-    ExtendedStatistic: ExtendedStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentile statistic for the metric. Specify a value between p0.0 and p100.',
-        }),
-    ).exactOptional(),
-    Dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dimensions associated with the metric. If the metric has any associated dimensions, you must specify them in order for the call to succeed.',
-        }),
-    ).exactOptional(),
-    Period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The period, in seconds, over which the statistic is applied.' }),
-    ).exactOptional(),
-    Unit: StandardUnitSchema.and(
-      z.any().openapi({ description: 'The unit for the metric.' }),
-    ).exactOptional(),
+    MetricName: MetricNameSchema.openapi({ description: 'The name of the metric.' }),
+    Namespace: NamespaceSchema.openapi({ description: 'The namespace of the metric.' }),
+    Statistic: StatisticSchema.exactOptional().openapi({
+      description:
+        'The statistic for the metric, other than percentiles. For percentile statistics, use <code>ExtendedStatistics</code>.',
+    }),
+    ExtendedStatistic: ExtendedStatisticSchema.exactOptional().openapi({
+      description:
+        'The percentile statistic for the metric. Specify a value between p0.0 and p100.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description:
+        'The dimensions associated with the metric. If the metric has any associated dimensions, you must specify them in order for the call to succeed.',
+    }),
+    Period: PeriodSchema.exactOptional().openapi({
+      description: 'The period, in seconds, over which the statistic is applied.',
+    }),
+    Unit: StandardUnitSchema.exactOptional().openapi({ description: 'The unit for the metric.' }),
   })
   .openapi({ required: ['MetricName', 'Namespace'], title: 'DescribeAlarmsForMetricInput' })
   .openapi('DescribeAlarmsForMetricInput')
 
 const DescribeAlarmsInputSchema = z
   .object({
-    AlarmNames: AlarmNamesSchema.and(
-      z.any().openapi({ description: 'The names of the alarms to retrieve information about.' }),
-    ).exactOptional(),
-    AlarmNamePrefix: AlarmNamePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An alarm name prefix. If you specify this parameter, you receive information about all alarms that have names that start with this prefix.</p> <p>If this parameter is specified, you cannot specify <code>AlarmNames</code>.</p>',
-        }),
-    ).exactOptional(),
-    AlarmTypes: AlarmTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter to specify whether you want the operation to return metric alarms or composite alarms. If you omit this parameter, only metric alarms are returned.',
-        }),
-    ).exactOptional(),
-    ChildrenOfAlarmName: AlarmNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you use this parameter and specify the name of a composite alarm, the operation returns information about the "children" alarms of the alarm you specify. These are the metric alarms and composite alarms referenced in the <code>AlarmRule</code> field of the composite alarm that you specify in <code>ChildrenOfAlarmName</code>. Information about the composite alarm that you name in <code>ChildrenOfAlarmName</code> is not returned.</p> <p>If you specify <code>ChildrenOfAlarmName</code>, you cannot specify any other parameters in the request except for <code>MaxRecords</code> and <code>NextToken</code>. If you do so, you receive a validation error.</p> <note> <p>Only the <code>Alarm Name</code>, <code>ARN</code>, <code>StateValue</code> (OK/ALARM/INSUFFICIENT_DATA), and <code>StateUpdatedTimestamp</code> information are returned by this operation when you use this parameter. To get complete information about these alarms, perform another <code>DescribeAlarms</code> operation and specify the parent alarm names in the <code>AlarmNames</code> parameter.</p> </note>',
-        }),
-    ).exactOptional(),
-    ParentsOfAlarmName: AlarmNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you use this parameter and specify the name of a metric or composite alarm, the operation returns information about the "parent" alarms of the alarm you specify. These are the composite alarms that have <code>AlarmRule</code> parameters that reference the alarm named in <code>ParentsOfAlarmName</code>. Information about the alarm that you specify in <code>ParentsOfAlarmName</code> is not returned.</p> <p>If you specify <code>ParentsOfAlarmName</code>, you cannot specify any other parameters in the request except for <code>MaxRecords</code> and <code>NextToken</code>. If you do so, you receive a validation error.</p> <note> <p>Only the Alarm Name and ARN are returned by this operation when you use this parameter. To get complete information about these alarms, perform another <code>DescribeAlarms</code> operation and specify the parent alarm names in the <code>AlarmNames</code> parameter.</p> </note>',
-        }),
-    ).exactOptional(),
-    StateValue: StateValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to receive information only about alarms that are currently in the state that you specify.',
-        }),
-    ).exactOptional(),
-    ActionPrefix: ActionPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter to filter the results of the operation to only those alarms that use a certain alarm action. For example, you could specify the ARN of an SNS topic to find all alarms that send notifications to that topic.',
-        }),
-    ).exactOptional(),
-    MaxRecords: MaxRecordsSchema.and(
-      z.any().openapi({ description: 'The maximum number of alarm descriptions to retrieve.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned by a previous call to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
+    AlarmNames: AlarmNamesSchema.exactOptional().openapi({
+      description: 'The names of the alarms to retrieve information about.',
+    }),
+    AlarmNamePrefix: AlarmNamePrefixSchema.exactOptional().openapi({
+      description:
+        '<p>An alarm name prefix. If you specify this parameter, you receive information about all alarms that have names that start with this prefix.</p> <p>If this parameter is specified, you cannot specify <code>AlarmNames</code>.</p>',
+    }),
+    AlarmTypes: AlarmTypesSchema.exactOptional().openapi({
+      description:
+        'Use this parameter to specify whether you want the operation to return metric alarms or composite alarms. If you omit this parameter, only metric alarms are returned.',
+    }),
+    ChildrenOfAlarmName: AlarmNameSchema.exactOptional().openapi({
+      description:
+        '<p>If you use this parameter and specify the name of a composite alarm, the operation returns information about the "children" alarms of the alarm you specify. These are the metric alarms and composite alarms referenced in the <code>AlarmRule</code> field of the composite alarm that you specify in <code>ChildrenOfAlarmName</code>. Information about the composite alarm that you name in <code>ChildrenOfAlarmName</code> is not returned.</p> <p>If you specify <code>ChildrenOfAlarmName</code>, you cannot specify any other parameters in the request except for <code>MaxRecords</code> and <code>NextToken</code>. If you do so, you receive a validation error.</p> <note> <p>Only the <code>Alarm Name</code>, <code>ARN</code>, <code>StateValue</code> (OK/ALARM/INSUFFICIENT_DATA), and <code>StateUpdatedTimestamp</code> information are returned by this operation when you use this parameter. To get complete information about these alarms, perform another <code>DescribeAlarms</code> operation and specify the parent alarm names in the <code>AlarmNames</code> parameter.</p> </note>',
+    }),
+    ParentsOfAlarmName: AlarmNameSchema.exactOptional().openapi({
+      description:
+        '<p>If you use this parameter and specify the name of a metric or composite alarm, the operation returns information about the "parent" alarms of the alarm you specify. These are the composite alarms that have <code>AlarmRule</code> parameters that reference the alarm named in <code>ParentsOfAlarmName</code>. Information about the alarm that you specify in <code>ParentsOfAlarmName</code> is not returned.</p> <p>If you specify <code>ParentsOfAlarmName</code>, you cannot specify any other parameters in the request except for <code>MaxRecords</code> and <code>NextToken</code>. If you do so, you receive a validation error.</p> <note> <p>Only the Alarm Name and ARN are returned by this operation when you use this parameter. To get complete information about these alarms, perform another <code>DescribeAlarms</code> operation and specify the parent alarm names in the <code>AlarmNames</code> parameter.</p> </note>',
+    }),
+    StateValue: StateValueSchema.exactOptional().openapi({
+      description:
+        'Specify this parameter to receive information only about alarms that are currently in the state that you specify.',
+    }),
+    ActionPrefix: ActionPrefixSchema.exactOptional().openapi({
+      description:
+        'Use this parameter to filter the results of the operation to only those alarms that use a certain alarm action. For example, you could specify the ARN of an SNS topic to find all alarms that send notifications to that topic.',
+    }),
+    MaxRecords: MaxRecordsSchema.exactOptional().openapi({
+      description: 'The maximum number of alarm descriptions to retrieve.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned by a previous call to indicate that there is more data available.',
+    }),
   })
   .openapi({ title: 'DescribeAlarmsInput', required: [] })
   .openapi('DescribeAlarmsInput')
@@ -2485,54 +1832,30 @@ const MaxReturnedResultsCountSchema = z.int().min(1).openapi('MaxReturnedResults
 
 const DescribeAnomalyDetectorsInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use the token returned by the previous operation to request the next page of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxReturnedResultsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results to return in one operation. The maximum value that you can specify is 100.</p> <p>To retrieve the remaining results, make another call with the returned <code>NextToken</code> value. </p>',
-        }),
-    ).exactOptional(),
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Limits the results to only the anomaly detection models that are associated with the specified namespace.',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Limits the results to only the anomaly detection models that are associated with the specified metric name. If there are multiple metrics with this name in different namespaces that have anomaly detection models, they're all returned.",
-        }),
-    ).exactOptional(),
-    Dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Limits the results to only the anomaly detection models that are associated with the specified metric dimensions. If there are multiple metrics that have these dimensions and have anomaly detection models associated, they're all returned.",
-        }),
-    ).exactOptional(),
-    AnomalyDetectorTypes: AnomalyDetectorTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The anomaly detector types to request when using <code>DescribeAnomalyDetectorsInput</code>. If empty, defaults to <code>SINGLE_METRIC</code>.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Use the token returned by the previous operation to request the next page of results.',
+    }),
+    MaxResults: MaxReturnedResultsCountSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results to return in one operation. The maximum value that you can specify is 100.</p> <p>To retrieve the remaining results, make another call with the returned <code>NextToken</code> value. </p>',
+    }),
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      description:
+        'Limits the results to only the anomaly detection models that are associated with the specified namespace.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        "Limits the results to only the anomaly detection models that are associated with the specified metric name. If there are multiple metrics with this name in different namespaces that have anomaly detection models, they're all returned.",
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description:
+        "Limits the results to only the anomaly detection models that are associated with the specified metric dimensions. If there are multiple metrics that have these dimensions and have anomaly detection models associated, they're all returned.",
+    }),
+    AnomalyDetectorTypes: AnomalyDetectorTypesSchema.exactOptional().openapi({
+      description:
+        'The anomaly detector types to request when using <code>DescribeAnomalyDetectorsInput</code>. If empty, defaults to <code>SINGLE_METRIC</code>.',
+    }),
   })
   .openapi({ title: 'DescribeAnomalyDetectorsInput', required: [] })
   .openapi('DescribeAnomalyDetectorsInput')
@@ -2541,22 +1864,14 @@ const InsightRuleMaxResultsSchema = z.int().min(1).max(500).openapi('InsightRule
 
 const DescribeInsightRulesInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Include this value, if it was returned by the previous operation, to get the next set of rules.',
-        }),
-    ).exactOptional(),
-    MaxResults: InsightRuleMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in one operation. If you omit this parameter, the default of 500 is used.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Include this value, if it was returned by the previous operation, to get the next set of rules.',
+    }),
+    MaxResults: InsightRuleMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in one operation. If you omit this parameter, the default of 500 is used.',
+    }),
   })
   .openapi({ title: 'DescribeInsightRulesInput', required: [] })
   .openapi('DescribeInsightRulesInput')
@@ -2564,43 +1879,31 @@ const DescribeInsightRulesInputSchema = z
 const DimensionFiltersSchema = z.array(DimensionFilterSchema).max(10).openapi('DimensionFilters')
 
 const DisableAlarmActionsInputSchema = z
-  .object({
-    AlarmNames: AlarmNamesSchema.and(z.any().openapi({ description: 'The names of the alarms.' })),
-  })
+  .object({ AlarmNames: AlarmNamesSchema.openapi({ description: 'The names of the alarms.' }) })
   .openapi({ required: ['AlarmNames'], title: 'DisableAlarmActionsInput' })
   .openapi('DisableAlarmActionsInput')
 
 const DisableInsightRulesInputSchema = z
   .object({
-    RuleNames: InsightRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the rule names to disable. If you need to find out the names of your rules, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html">DescribeInsightRules</a>.',
-        }),
-    ),
+    RuleNames: InsightRuleNamesSchema.openapi({
+      description:
+        'An array of the rule names to disable. If you need to find out the names of your rules, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html">DescribeInsightRules</a>.',
+    }),
   })
   .openapi({ required: ['RuleNames'], title: 'DisableInsightRulesInput' })
   .openapi('DisableInsightRulesInput')
 
 const EnableAlarmActionsInputSchema = z
-  .object({
-    AlarmNames: AlarmNamesSchema.and(z.any().openapi({ description: 'The names of the alarms.' })),
-  })
+  .object({ AlarmNames: AlarmNamesSchema.openapi({ description: 'The names of the alarms.' }) })
   .openapi({ required: ['AlarmNames'], title: 'EnableAlarmActionsInput' })
   .openapi('EnableAlarmActionsInput')
 
 const EnableInsightRulesInputSchema = z
   .object({
-    RuleNames: InsightRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the rule names to enable. If you need to find out the names of your rules, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html">DescribeInsightRules</a>.',
-        }),
-    ),
+    RuleNames: InsightRuleNamesSchema.openapi({
+      description:
+        'An array of the rule names to enable. If you need to find out the names of your rules, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeInsightRules.html">DescribeInsightRules</a>.',
+    }),
   })
   .openapi({ required: ['RuleNames'], title: 'EnableInsightRulesInput' })
   .openapi('EnableInsightRulesInput')
@@ -2613,9 +1916,9 @@ const ExtendedStatisticsSchema = z
 
 const GetDashboardInputSchema = z
   .object({
-    DashboardName: DashboardNameSchema.and(
-      z.any().openapi({ description: 'The name of the dashboard to be described.' }),
-    ),
+    DashboardName: DashboardNameSchema.openapi({
+      description: 'The name of the dashboard to be described.',
+    }),
   })
   .openapi({ required: ['DashboardName'], title: 'GetDashboardInput' })
   .openapi('GetDashboardInput')
@@ -2635,57 +1938,33 @@ const InsightRuleOrderBySchema = z
 
 const GetInsightRuleReportInputSchema = z
   .object({
-    RuleName: InsightRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule that you want to see data from.' }),
-    ),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The start time of the data to use in the report. When used in a raw HTTP Query API, it is formatted as <code>yyyy-MM-dd'T'HH:mm:ss</code>. For example, <code>2019-07-01T23:59:59</code>.",
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The end time of the data to use in the report. When used in a raw HTTP Query API, it is formatted as <code>yyyy-MM-dd'T'HH:mm:ss</code>. For example, <code>2019-07-01T23:59:59</code>.",
-        }),
-    ),
-    Period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The period, in seconds, to use for the statistics in the <code>InsightRuleMetricDatapoint</code> results.',
-        }),
-    ),
-    MaxContributorCount: InsightRuleUnboundIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of contributors to include in the report. The range is 1 to 100. If you omit this, the default of 10 is used.',
-        }),
-    ).exactOptional(),
-    Metrics: InsightRuleMetricListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies which metrics to use for aggregation of contributor values for the report. You can specify one or more of the following metrics:</p> <ul> <li> <p> <code>UniqueContributors</code> -- the number of unique contributors for each data point.</p> </li> <li> <p> <code>MaxContributorValue</code> -- the value of the top contributor for each data point. The identity of the contributor might change for each data point in the graph.</p> <p>If this rule aggregates by COUNT, the top contributor for each data point is the contributor with the most occurrences in that period. If the rule aggregates by SUM, the top contributor is the contributor with the highest sum in the log field specified by the rule's <code>Value</code>, during that period.</p> </li> <li> <p> <code>SampleCount</code> -- the number of data points matched by the rule.</p> </li> <li> <p> <code>Sum</code> -- the sum of the values from all contributors during the time period represented by that data point.</p> </li> <li> <p> <code>Minimum</code> -- the minimum value from a single observation during the time period represented by that data point.</p> </li> <li> <p> <code>Maximum</code> -- the maximum value from a single observation during the time period represented by that data point.</p> </li> <li> <p> <code>Average</code> -- the average value from all contributors during the time period represented by that data point.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    OrderBy: InsightRuleOrderBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines what statistic to use to rank the contributors. Valid values are SUM and MAXIMUM.',
-        }),
-    ).exactOptional(),
+    RuleName: InsightRuleNameSchema.openapi({
+      description: 'The name of the rule that you want to see data from.',
+    }),
+    StartTime: TimestampSchema.openapi({
+      description:
+        "The start time of the data to use in the report. When used in a raw HTTP Query API, it is formatted as <code>yyyy-MM-dd'T'HH:mm:ss</code>. For example, <code>2019-07-01T23:59:59</code>.",
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        "The end time of the data to use in the report. When used in a raw HTTP Query API, it is formatted as <code>yyyy-MM-dd'T'HH:mm:ss</code>. For example, <code>2019-07-01T23:59:59</code>.",
+    }),
+    Period: PeriodSchema.openapi({
+      description:
+        'The period, in seconds, to use for the statistics in the <code>InsightRuleMetricDatapoint</code> results.',
+    }),
+    MaxContributorCount: InsightRuleUnboundIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of contributors to include in the report. The range is 1 to 100. If you omit this, the default of 10 is used.',
+    }),
+    Metrics: InsightRuleMetricListSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies which metrics to use for aggregation of contributor values for the report. You can specify one or more of the following metrics:</p> <ul> <li> <p> <code>UniqueContributors</code> -- the number of unique contributors for each data point.</p> </li> <li> <p> <code>MaxContributorValue</code> -- the value of the top contributor for each data point. The identity of the contributor might change for each data point in the graph.</p> <p>If this rule aggregates by COUNT, the top contributor for each data point is the contributor with the most occurrences in that period. If the rule aggregates by SUM, the top contributor is the contributor with the highest sum in the log field specified by the rule's <code>Value</code>, during that period.</p> </li> <li> <p> <code>SampleCount</code> -- the number of data points matched by the rule.</p> </li> <li> <p> <code>Sum</code> -- the sum of the values from all contributors during the time period represented by that data point.</p> </li> <li> <p> <code>Minimum</code> -- the minimum value from a single observation during the time period represented by that data point.</p> </li> <li> <p> <code>Maximum</code> -- the maximum value from a single observation during the time period represented by that data point.</p> </li> <li> <p> <code>Average</code> -- the average value from all contributors during the time period represented by that data point.</p> </li> </ul>",
+    }),
+    OrderBy: InsightRuleOrderBySchema.exactOptional().openapi({
+      description:
+        'Determines what statistic to use to rank the contributors. Valid values are SUM and MAXIMUM.',
+    }),
   })
   .openapi({
     required: ['RuleName', 'StartTime', 'EndTime', 'Period'],
@@ -2697,14 +1976,10 @@ const GetMetricDataMaxDatapointsSchema = z.int().openapi('GetMetricDataMaxDatapo
 
 const LabelOptionsSchema = z
   .object({
-    Timezone: GetMetricDataLabelTimezoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time zone to use for metric data return in this operation. The format is <code>+</code> or <code>-</code> followed by four digits. The first two digits indicate the number of hours ahead or behind of UTC, and the final two digits are the number of minutes. For example, +0130 indicates a time zone that is 1 hour and 30 minutes ahead of UTC. The default is +0000. ',
-        }),
-    ).exactOptional(),
+    Timezone: GetMetricDataLabelTimezoneSchema.exactOptional().openapi({
+      description:
+        'The time zone to use for metric data return in this operation. The format is <code>+</code> or <code>-</code> followed by four digits. The first two digits indicate the number of hours ahead or behind of UTC, and the final two digits are the number of minutes. For example, +0130 indicates a time zone that is 1 hour and 30 minutes ahead of UTC. The default is +0000. ',
+    }),
   })
   .openapi({
     description:
@@ -2715,62 +1990,34 @@ const LabelOptionsSchema = z
 
 const GetMetricDataInputSchema = z
   .object({
-    MetricDataQueries: MetricDataQueriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric queries to be returned. A single <code>GetMetricData</code> call can include as many as 500 <code>MetricDataQuery</code> structures. Each of these structures can specify either a metric to retrieve, a Metrics Insights query, or a math expression to perform on retrieved data. ',
-        }),
-    ),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time stamp indicating the earliest data to be returned.</p> <p>The value specified is inclusive; results include data points with the specified time stamp. </p> <p>CloudWatch rounds the specified time stamp as follows:</p> <ul> <li> <p>Start time less than 15 days ago - Round down to the nearest whole minute. For example, 12:32:34 is rounded down to 12:32:00.</p> </li> <li> <p>Start time between 15 and 63 days ago - Round down to the nearest 5-minute clock interval. For example, 12:32:34 is rounded down to 12:30:00.</p> </li> <li> <p>Start time greater than 63 days ago - Round down to the nearest 1-hour clock interval. For example, 12:32:34 is rounded down to 12:00:00.</p> </li> </ul> <p>If you set <code>Period</code> to 5, 10, or 30, the start time of your request is rounded down to the nearest time that corresponds to even 5-, 10-, or 30-second divisions of a minute. For example, if you make a query at (HH:mm:ss) 01:05:23 for the previous 10-second period, the start time of your request is rounded down and you receive data from 01:05:10 to 01:05:20. If you make a query at 15:07:17 for the previous 5 minutes of data, using a period of 5 seconds, you receive data timestamped between 15:02:15 and 15:07:15. </p> <p>For better performance, specify <code>StartTime</code> and <code>EndTime</code> values that align with the value of the metric's <code>Period</code> and sync up with the beginning and end of an hour. For example, if the <code>Period</code> of a metric is 5 minutes, specifying 12:05 or 12:30 as <code>StartTime</code> can get a faster response from CloudWatch than setting 12:07 or 12:29 as the <code>StartTime</code>.</p>",
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time stamp indicating the latest data to be returned.</p> <p>The value specified is exclusive; results include data points up to the specified time stamp.</p> <p>For better performance, specify <code>StartTime</code> and <code>EndTime</code> values that align with the value of the metric's <code>Period</code> and sync up with the beginning and end of an hour. For example, if the <code>Period</code> of a metric is 5 minutes, specifying 12:05 or 12:30 as <code>EndTime</code> can get a faster response from CloudWatch than setting 12:07 or 12:29 as the <code>EndTime</code>.</p>",
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Include this value, if it was returned by the previous <code>GetMetricData</code> operation, to get the next set of data points.',
-        }),
-    ).exactOptional(),
-    ScanBy: ScanBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The order in which data points should be returned. <code>TimestampDescending</code> returns the newest data first and paginates when the <code>MaxDatapoints</code> limit is reached. <code>TimestampAscending</code> returns the oldest data first and paginates when the <code>MaxDatapoints</code> limit is reached.',
-        }),
-    ).exactOptional(),
-    MaxDatapoints: GetMetricDataMaxDatapointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of data points the request should return before paginating. If you omit this, the default of 100,800 is used.',
-        }),
-    ).exactOptional(),
-    LabelOptions: LabelOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This structure includes the <code>Timezone</code> parameter, which you can use to specify your time zone so that the labels of returned data display the correct time for your time zone. ',
-        }),
-    ).exactOptional(),
+    MetricDataQueries: MetricDataQueriesSchema.openapi({
+      description:
+        'The metric queries to be returned. A single <code>GetMetricData</code> call can include as many as 500 <code>MetricDataQuery</code> structures. Each of these structures can specify either a metric to retrieve, a Metrics Insights query, or a math expression to perform on retrieved data. ',
+    }),
+    StartTime: TimestampSchema.openapi({
+      description:
+        "<p>The time stamp indicating the earliest data to be returned.</p> <p>The value specified is inclusive; results include data points with the specified time stamp. </p> <p>CloudWatch rounds the specified time stamp as follows:</p> <ul> <li> <p>Start time less than 15 days ago - Round down to the nearest whole minute. For example, 12:32:34 is rounded down to 12:32:00.</p> </li> <li> <p>Start time between 15 and 63 days ago - Round down to the nearest 5-minute clock interval. For example, 12:32:34 is rounded down to 12:30:00.</p> </li> <li> <p>Start time greater than 63 days ago - Round down to the nearest 1-hour clock interval. For example, 12:32:34 is rounded down to 12:00:00.</p> </li> </ul> <p>If you set <code>Period</code> to 5, 10, or 30, the start time of your request is rounded down to the nearest time that corresponds to even 5-, 10-, or 30-second divisions of a minute. For example, if you make a query at (HH:mm:ss) 01:05:23 for the previous 10-second period, the start time of your request is rounded down and you receive data from 01:05:10 to 01:05:20. If you make a query at 15:07:17 for the previous 5 minutes of data, using a period of 5 seconds, you receive data timestamped between 15:02:15 and 15:07:15. </p> <p>For better performance, specify <code>StartTime</code> and <code>EndTime</code> values that align with the value of the metric's <code>Period</code> and sync up with the beginning and end of an hour. For example, if the <code>Period</code> of a metric is 5 minutes, specifying 12:05 or 12:30 as <code>StartTime</code> can get a faster response from CloudWatch than setting 12:07 or 12:29 as the <code>StartTime</code>.</p>",
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        "<p>The time stamp indicating the latest data to be returned.</p> <p>The value specified is exclusive; results include data points up to the specified time stamp.</p> <p>For better performance, specify <code>StartTime</code> and <code>EndTime</code> values that align with the value of the metric's <code>Period</code> and sync up with the beginning and end of an hour. For example, if the <code>Period</code> of a metric is 5 minutes, specifying 12:05 or 12:30 as <code>EndTime</code> can get a faster response from CloudWatch than setting 12:07 or 12:29 as the <code>EndTime</code>.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Include this value, if it was returned by the previous <code>GetMetricData</code> operation, to get the next set of data points.',
+    }),
+    ScanBy: ScanBySchema.exactOptional().openapi({
+      description:
+        'The order in which data points should be returned. <code>TimestampDescending</code> returns the newest data first and paginates when the <code>MaxDatapoints</code> limit is reached. <code>TimestampAscending</code> returns the oldest data first and paginates when the <code>MaxDatapoints</code> limit is reached.',
+    }),
+    MaxDatapoints: GetMetricDataMaxDatapointsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of data points the request should return before paginating. If you omit this, the default of 100,800 is used.',
+    }),
+    LabelOptions: LabelOptionsSchema.exactOptional().openapi({
+      description:
+        'This structure includes the <code>Timezone</code> parameter, which you can use to specify your time zone so that the labels of returned data display the correct time for your time zone. ',
+    }),
   })
   .openapi({ required: ['MetricDataQueries', 'StartTime', 'EndTime'], title: 'GetMetricDataInput' })
   .openapi('GetMetricDataInput')
@@ -2779,68 +2026,40 @@ const StatisticsSchema = z.array(StatisticSchema).min(1).max(5).openapi('Statist
 
 const GetMetricStatisticsInputSchema = z
   .object({
-    Namespace: NamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the metric, with or without spaces.' }),
-    ),
-    MetricName: MetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric, with or without spaces.' }),
-    ),
-    Dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dimensions. If the metric contains multiple dimensions, you must include a value for each dimension. CloudWatch treats each unique combination of dimensions as a separate metric. If a specific combination of dimensions was not published, you can\'t retrieve statistics for it. You must specify the same dimensions that were used when the metrics were created. For an example, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#dimension-combinations">Dimension Combinations</a> in the <i>Amazon CloudWatch User Guide</i>. For more information about specifying dimensions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html">Publishing Metrics</a> in the <i>Amazon CloudWatch User Guide</i>.',
-        }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time stamp that determines the first data point to return. Start times are evaluated relative to the time that CloudWatch receives the request.</p> <p>The value specified is inclusive; results include data points with the specified time stamp. In a raw HTTP query, the time stamp must be in ISO 8601 UTC format (for example, 2016-10-03T23:00:00Z).</p> <p>CloudWatch rounds the specified time stamp as follows:</p> <ul> <li> <p>Start time less than 15 days ago - Round down to the nearest whole minute. For example, 12:32:34 is rounded down to 12:32:00.</p> </li> <li> <p>Start time between 15 and 63 days ago - Round down to the nearest 5-minute clock interval. For example, 12:32:34 is rounded down to 12:30:00.</p> </li> <li> <p>Start time greater than 63 days ago - Round down to the nearest 1-hour clock interval. For example, 12:32:34 is rounded down to 12:00:00.</p> </li> </ul> <p>If you set <code>Period</code> to 5, 10, or 30, the start time of your request is rounded down to the nearest time that corresponds to even 5-, 10-, or 30-second divisions of a minute. For example, if you make a query at (HH:mm:ss) 01:05:23 for the previous 10-second period, the start time of your request is rounded down and you receive data from 01:05:10 to 01:05:20. If you make a query at 15:07:17 for the previous 5 minutes of data, using a period of 5 seconds, you receive data timestamped between 15:02:15 and 15:07:15. </p>',
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time stamp that determines the last data point to return.</p> <p>The value specified is exclusive; results include data points up to the specified time stamp. In a raw HTTP query, the time stamp must be in ISO 8601 UTC format (for example, 2016-10-10T23:00:00Z).</p>',
-        }),
-    ),
-    Period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
-        }),
-    ),
-    Statistics: StatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric statistics, other than percentile. For percentile statistics, use <code>ExtendedStatistics</code>. When calling <code>GetMetricStatistics</code>, you must specify either <code>Statistics</code> or <code>ExtendedStatistics</code>, but not both.',
-        }),
-    ).exactOptional(),
-    ExtendedStatistics: ExtendedStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentile statistics. Specify values between p0.0 and p100. When calling <code>GetMetricStatistics</code>, you must specify either <code>Statistics</code> or <code>ExtendedStatistics</code>, but not both. Percentile statistics are not available for metrics when any of the metric values are negative numbers.',
-        }),
-    ).exactOptional(),
-    Unit: StandardUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit for a given metric. If you omit <code>Unit</code>, all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.',
-        }),
-    ).exactOptional(),
+    Namespace: NamespaceSchema.openapi({
+      description: 'The namespace of the metric, with or without spaces.',
+    }),
+    MetricName: MetricNameSchema.openapi({
+      description: 'The name of the metric, with or without spaces.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description:
+        'The dimensions. If the metric contains multiple dimensions, you must include a value for each dimension. CloudWatch treats each unique combination of dimensions as a separate metric. If a specific combination of dimensions was not published, you can\'t retrieve statistics for it. You must specify the same dimensions that were used when the metrics were created. For an example, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#dimension-combinations">Dimension Combinations</a> in the <i>Amazon CloudWatch User Guide</i>. For more information about specifying dimensions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html">Publishing Metrics</a> in the <i>Amazon CloudWatch User Guide</i>.',
+    }),
+    StartTime: TimestampSchema.openapi({
+      description:
+        '<p>The time stamp that determines the first data point to return. Start times are evaluated relative to the time that CloudWatch receives the request.</p> <p>The value specified is inclusive; results include data points with the specified time stamp. In a raw HTTP query, the time stamp must be in ISO 8601 UTC format (for example, 2016-10-03T23:00:00Z).</p> <p>CloudWatch rounds the specified time stamp as follows:</p> <ul> <li> <p>Start time less than 15 days ago - Round down to the nearest whole minute. For example, 12:32:34 is rounded down to 12:32:00.</p> </li> <li> <p>Start time between 15 and 63 days ago - Round down to the nearest 5-minute clock interval. For example, 12:32:34 is rounded down to 12:30:00.</p> </li> <li> <p>Start time greater than 63 days ago - Round down to the nearest 1-hour clock interval. For example, 12:32:34 is rounded down to 12:00:00.</p> </li> </ul> <p>If you set <code>Period</code> to 5, 10, or 30, the start time of your request is rounded down to the nearest time that corresponds to even 5-, 10-, or 30-second divisions of a minute. For example, if you make a query at (HH:mm:ss) 01:05:23 for the previous 10-second period, the start time of your request is rounded down and you receive data from 01:05:10 to 01:05:20. If you make a query at 15:07:17 for the previous 5 minutes of data, using a period of 5 seconds, you receive data timestamped between 15:02:15 and 15:07:15. </p>',
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        '<p>The time stamp that determines the last data point to return.</p> <p>The value specified is exclusive; results include data points up to the specified time stamp. In a raw HTTP query, the time stamp must be in ISO 8601 UTC format (for example, 2016-10-10T23:00:00Z).</p>',
+    }),
+    Period: PeriodSchema.openapi({
+      description:
+        '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
+    }),
+    Statistics: StatisticsSchema.exactOptional().openapi({
+      description:
+        'The metric statistics, other than percentile. For percentile statistics, use <code>ExtendedStatistics</code>. When calling <code>GetMetricStatistics</code>, you must specify either <code>Statistics</code> or <code>ExtendedStatistics</code>, but not both.',
+    }),
+    ExtendedStatistics: ExtendedStatisticsSchema.exactOptional().openapi({
+      description:
+        'The percentile statistics. Specify values between p0.0 and p100. When calling <code>GetMetricStatistics</code>, you must specify either <code>Statistics</code> or <code>ExtendedStatistics</code>, but not both. Percentile statistics are not available for metrics when any of the metric values are negative numbers.',
+    }),
+    Unit: StandardUnitSchema.exactOptional().openapi({
+      description:
+        'The unit for a given metric. If you omit <code>Unit</code>, all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.',
+    }),
   })
   .openapi({
     required: ['Namespace', 'MetricName', 'StartTime', 'EndTime', 'Period'],
@@ -2850,11 +2069,9 @@ const GetMetricStatisticsInputSchema = z
 
 const GetMetricStreamInputSchema = z
   .object({
-    Name: MetricStreamNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the metric stream to retrieve information about.' }),
-    ),
+    Name: MetricStreamNameSchema.openapi({
+      description: 'The name of the metric stream to retrieve information about.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'GetMetricStreamInput' })
   .openapi('GetMetricStreamInput')
@@ -2865,22 +2082,14 @@ const OutputFormatSchema = z.string().openapi('OutputFormat')
 
 const GetMetricWidgetImageInputSchema = z
   .object({
-    MetricWidget: MetricWidgetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON string that defines the bitmap graph to be retrieved. The string includes the metrics to include in the graph, statistics, annotations, title, axis limits, and so on. You can include only one <code>MetricWidget</code> parameter in each <code>GetMetricWidgetImage</code> call.</p> <p>For more information about the syntax of <code>MetricWidget</code> see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Metric-Widget-Structure.html">GetMetricWidgetImage: Metric Widget Structure and Syntax</a>.</p> <p>If any metric on the graph could not load all the requested data points, an orange triangle with an exclamation point appears next to the graph legend.</p>',
-        }),
-    ),
-    OutputFormat: OutputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of the resulting image. Only PNG images are supported.</p> <p>The default is <code>png</code>. If you specify <code>png</code>, the API returns an HTTP response with the content-type set to <code>text/xml</code>. The image data is in a <code>MetricWidgetImage</code> field. For example:</p> <p> <code> &lt;GetMetricWidgetImageResponse xmlns=&lt;URLstring&gt;&gt;</code> </p> <p> <code> &lt;GetMetricWidgetImageResult&gt;</code> </p> <p> <code> &lt;MetricWidgetImage&gt;</code> </p> <p> <code> iVBORw0KGgoAAAANSUhEUgAAAlgAAAGQEAYAAAAip...</code> </p> <p> <code> &lt;/MetricWidgetImage&gt;</code> </p> <p> <code> &lt;/GetMetricWidgetImageResult&gt;</code> </p> <p> <code> &lt;ResponseMetadata&gt;</code> </p> <p> <code> &lt;RequestId&gt;6f0d4192-4d42-11e8-82c1-f539a07e0e3b&lt;/RequestId&gt;</code> </p> <p> <code> &lt;/ResponseMetadata&gt;</code> </p> <p> <code>&lt;/GetMetricWidgetImageResponse&gt;</code> </p> <p>The <code>image/png</code> setting is intended only for custom HTTP requests. For most use cases, and all actions using an Amazon Web Services SDK, you should use <code>png</code>. If you specify <code>image/png</code>, the HTTP response has a content-type set to <code>image/png</code>, and the body of the response is a PNG image. </p>',
-        }),
-    ).exactOptional(),
+    MetricWidget: MetricWidgetSchema.openapi({
+      description:
+        '<p>A JSON string that defines the bitmap graph to be retrieved. The string includes the metrics to include in the graph, statistics, annotations, title, axis limits, and so on. You can include only one <code>MetricWidget</code> parameter in each <code>GetMetricWidgetImage</code> call.</p> <p>For more information about the syntax of <code>MetricWidget</code> see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Metric-Widget-Structure.html">GetMetricWidgetImage: Metric Widget Structure and Syntax</a>.</p> <p>If any metric on the graph could not load all the requested data points, an orange triangle with an exclamation point appears next to the graph legend.</p>',
+    }),
+    OutputFormat: OutputFormatSchema.exactOptional().openapi({
+      description:
+        '<p>The format of the resulting image. Only PNG images are supported.</p> <p>The default is <code>png</code>. If you specify <code>png</code>, the API returns an HTTP response with the content-type set to <code>text/xml</code>. The image data is in a <code>MetricWidgetImage</code> field. For example:</p> <p> <code> &lt;GetMetricWidgetImageResponse xmlns=&lt;URLstring&gt;&gt;</code> </p> <p> <code> &lt;GetMetricWidgetImageResult&gt;</code> </p> <p> <code> &lt;MetricWidgetImage&gt;</code> </p> <p> <code> iVBORw0KGgoAAAANSUhEUgAAAlgAAAGQEAYAAAAip...</code> </p> <p> <code> &lt;/MetricWidgetImage&gt;</code> </p> <p> <code> &lt;/GetMetricWidgetImageResult&gt;</code> </p> <p> <code> &lt;ResponseMetadata&gt;</code> </p> <p> <code> &lt;RequestId&gt;6f0d4192-4d42-11e8-82c1-f539a07e0e3b&lt;/RequestId&gt;</code> </p> <p> <code> &lt;/ResponseMetadata&gt;</code> </p> <p> <code>&lt;/GetMetricWidgetImageResponse&gt;</code> </p> <p>The <code>image/png</code> setting is intended only for custom HTTP requests. For most use cases, and all actions using an Amazon Web Services SDK, you should use <code>png</code>. If you specify <code>image/png</code>, the HTTP response has a content-type set to <code>image/png</code>, and the body of the response is a PNG image. </p>',
+    }),
   })
   .openapi({ required: ['MetricWidget'], title: 'GetMetricWidgetImageInput' })
   .openapi('GetMetricWidgetImageInput')
@@ -2889,52 +2098,32 @@ const IncludeLinkedAccountsSchema = z.boolean().openapi('IncludeLinkedAccounts')
 
 const ListDashboardsInputSchema = z
   .object({
-    DashboardNamePrefix: DashboardNamePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify this parameter, only the dashboards with names starting with the specified string are listed. The maximum length is 255, and valid characters are A-Z, a-z, 0-9, ".", "-", and "_". ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned by a previous call to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
+    DashboardNamePrefix: DashboardNamePrefixSchema.exactOptional().openapi({
+      description:
+        'If you specify this parameter, only the dashboards with names starting with the specified string are listed. The maximum length is 255, and valid characters are A-Z, a-z, 0-9, ".", "-", and "_". ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned by a previous call to indicate that there is more data available.',
+    }),
   })
   .openapi({ title: 'ListDashboardsInput', required: [] })
   .openapi('ListDashboardsInput')
 
 const ListManagedInsightRulesInputSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of an Amazon Web Services resource that has managed Contributor Insights rules. ',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Include this value to get the next set of rules if the value was returned by the previous operation. ',
-        }),
-    ).exactOptional(),
-    MaxResults: InsightRuleMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The maximum number of results to return in one operation. If you omit this parameter, the default number is used. The default number is <code>100</code>. ',
-        }),
-    ).exactOptional(),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        ' The ARN of an Amazon Web Services resource that has managed Contributor Insights rules. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' Include this value to get the next set of rules if the value was returned by the previous operation. ',
+    }),
+    MaxResults: InsightRuleMaxResultsSchema.exactOptional().openapi({
+      description:
+        ' The maximum number of results to return in one operation. If you omit this parameter, the default number is used. The default number is <code>100</code>. ',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListManagedInsightRulesInput' })
   .openapi('ListManagedInsightRulesInput')
@@ -2947,17 +2136,13 @@ const ListMetricStreamsMaxResultsSchema = z
 
 const ListMetricStreamsInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Include this value, if it was returned by the previous call, to get the next set of metric streams.',
-        }),
-    ).exactOptional(),
-    MaxResults: ListMetricStreamsMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in one operation.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Include this value, if it was returned by the previous call, to get the next set of metric streams.',
+    }),
+    MaxResults: ListMetricStreamsMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in one operation.',
+    }),
   })
   .openapi({ title: 'ListMetricStreamsInput', required: [] })
   .openapi('ListMetricStreamsInput')
@@ -2966,76 +2151,44 @@ const RecentlyActiveSchema = z.literal('PT3H').openapi('RecentlyActive')
 
 const ListMetricsInputSchema = z
   .object({
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric namespace to filter against. Only the namespace that matches exactly will be returned.',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the metric to filter against. Only the metrics with names that match exactly will be returned.',
-        }),
-    ).exactOptional(),
-    Dimensions: DimensionFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dimensions to filter against. Only the dimensions that match exactly will be returned.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned by a previous call to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    RecentlyActive: RecentlyActiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To filter the results to show only metrics that have had data points published in the past three hours, specify this parameter with a value of <code>PT3H</code>. This is the only valid value for this parameter.</p> <p>The results that are returned are an approximation of the value you specify. There is a low probability that the returned results include metrics with last published data as much as 40 minutes more than the specified time interval.</p>',
-        }),
-    ).exactOptional(),
-    IncludeLinkedAccounts: IncludeLinkedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you are using this operation in a monitoring account, specify <code>true</code> to include metrics from source accounts in the returned data.</p> <p>The default is <code>false</code>.</p>',
-        }),
-    ).exactOptional(),
-    OwningAccount: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you use this operation in a monitoring account, use this field to return metrics only from one source account. To do so, specify that source account ID in this field, and also specify <code>true</code> for <code>IncludeLinkedAccounts</code>.',
-        }),
-    ).exactOptional(),
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      description:
+        'The metric namespace to filter against. Only the namespace that matches exactly will be returned.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        'The name of the metric to filter against. Only the metrics with names that match exactly will be returned.',
+    }),
+    Dimensions: DimensionFiltersSchema.exactOptional().openapi({
+      description:
+        'The dimensions to filter against. Only the dimensions that match exactly will be returned.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned by a previous call to indicate that there is more data available.',
+    }),
+    RecentlyActive: RecentlyActiveSchema.exactOptional().openapi({
+      description:
+        '<p>To filter the results to show only metrics that have had data points published in the past three hours, specify this parameter with a value of <code>PT3H</code>. This is the only valid value for this parameter.</p> <p>The results that are returned are an approximation of the value you specify. There is a low probability that the returned results include metrics with last published data as much as 40 minutes more than the specified time interval.</p>',
+    }),
+    IncludeLinkedAccounts: IncludeLinkedAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>If you are using this operation in a monitoring account, specify <code>true</code> to include metrics from source accounts in the returned data.</p> <p>The default is <code>false</code>.</p>',
+    }),
+    OwningAccount: AccountIdSchema.exactOptional().openapi({
+      description:
+        'When you use this operation in a monitoring account, use this field to return metrics only from one source account. To do so, specify that source account ID in this field, and also specify <code>true</code> for <code>IncludeLinkedAccounts</code>.',
+    }),
   })
   .openapi({ title: 'ListMetricsInput', required: [] })
   .openapi('ListMetricsInput')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the CloudWatch resource that you want to view tags for.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule:<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        '<p>The ARN of the CloudWatch resource that you want to view tags for.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule:<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
@@ -3046,394 +2199,221 @@ const MetricDataSchema = z.array(MetricDatumSchema).openapi('MetricData')
 
 const MetricStreamNamesSchema = z.array(MetricStreamNameSchema).openapi('MetricStreamNames')
 
-const PutAnomalyDetectorInputSchema = z
+const PutAnomalyDetectorInputSchema: z.ZodType<PutAnomalyDetectorInputType> = z
   .object({
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The namespace of the metric to create the anomaly detection model for.Use SingleMetricAnomalyDetector.',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The name of the metric to create the anomaly detection model for.Use SingleMetricAnomalyDetector.',
-        }),
-    ).exactOptional(),
-    Dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The metric dimensions to create the anomaly detection model for.Use SingleMetricAnomalyDetector.',
-        }),
-    ).exactOptional(),
-    Stat: AnomalyDetectorMetricStatSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The statistic to use for the metric and the anomaly detection model.Use SingleMetricAnomalyDetector.',
-        }),
-    ).exactOptional(),
-    Configuration: AnomalyDetectorConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude when training and updating the model. You can specify as many as 10 time ranges.</p> <p>The configuration can also include the time zone to use for the metric.</p>',
-        }),
-    ).exactOptional(),
-    SingleMetricAnomalyDetector: SingleMetricAnomalyDetectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A single metric anomaly detector to be created.</p> <p>When using <code>SingleMetricAnomalyDetector</code>, you cannot include the following parameters in the same operation:</p> <ul> <li> <p> <code>Dimensions</code> </p> </li> <li> <p> <code>MetricName</code> </p> </li> <li> <p> <code>Namespace</code> </p> </li> <li> <p> <code>Stat</code> </p> </li> <li> <p>the <code>MetricMatchAnomalyDetector</code> parameters of <code>PutAnomalyDetectorInput</code> </p> </li> </ul> <p>Instead, specify the single metric anomaly detector attributes as part of the property <code>SingleMetricAnomalyDetector</code>.</p>',
-        }),
-    ).exactOptional(),
-    MetricMathAnomalyDetector: MetricMathAnomalyDetectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metric math anomaly detector to be created.</p> <p>When using <code>MetricMathAnomalyDetector</code>, you cannot include the following parameters in the same operation:</p> <ul> <li> <p> <code>Dimensions</code> </p> </li> <li> <p> <code>MetricName</code> </p> </li> <li> <p> <code>Namespace</code> </p> </li> <li> <p> <code>Stat</code> </p> </li> <li> <p>the <code>SingleMetricAnomalyDetector</code> parameters of <code>PutAnomalyDetectorInput</code> </p> </li> </ul> <p>Instead, specify the metric math anomaly detector attributes as part of the property <code>MetricMathAnomalyDetector</code>.</p>',
-        }),
-    ).exactOptional(),
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The namespace of the metric to create the anomaly detection model for.Use SingleMetricAnomalyDetector.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The name of the metric to create the anomaly detection model for.Use SingleMetricAnomalyDetector.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The metric dimensions to create the anomaly detection model for.Use SingleMetricAnomalyDetector.',
+    }),
+    Stat: AnomalyDetectorMetricStatSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The statistic to use for the metric and the anomaly detection model.Use SingleMetricAnomalyDetector.',
+    }),
+    Configuration: AnomalyDetectorConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude when training and updating the model. You can specify as many as 10 time ranges.</p> <p>The configuration can also include the time zone to use for the metric.</p>',
+    }),
+    SingleMetricAnomalyDetector: SingleMetricAnomalyDetectorSchema.exactOptional().openapi({
+      description:
+        '<p>A single metric anomaly detector to be created.</p> <p>When using <code>SingleMetricAnomalyDetector</code>, you cannot include the following parameters in the same operation:</p> <ul> <li> <p> <code>Dimensions</code> </p> </li> <li> <p> <code>MetricName</code> </p> </li> <li> <p> <code>Namespace</code> </p> </li> <li> <p> <code>Stat</code> </p> </li> <li> <p>the <code>MetricMatchAnomalyDetector</code> parameters of <code>PutAnomalyDetectorInput</code> </p> </li> </ul> <p>Instead, specify the single metric anomaly detector attributes as part of the property <code>SingleMetricAnomalyDetector</code>.</p>',
+    }),
+    MetricMathAnomalyDetector: MetricMathAnomalyDetectorSchema.exactOptional().openapi({
+      description:
+        '<p>The metric math anomaly detector to be created.</p> <p>When using <code>MetricMathAnomalyDetector</code>, you cannot include the following parameters in the same operation:</p> <ul> <li> <p> <code>Dimensions</code> </p> </li> <li> <p> <code>MetricName</code> </p> </li> <li> <p> <code>Namespace</code> </p> </li> <li> <p> <code>Stat</code> </p> </li> <li> <p>the <code>SingleMetricAnomalyDetector</code> parameters of <code>PutAnomalyDetectorInput</code> </p> </li> </ul> <p>Instead, specify the metric math anomaly detector attributes as part of the property <code>MetricMathAnomalyDetector</code>.</p>',
+    }),
   })
   .openapi({ title: 'PutAnomalyDetectorInput', required: [] })
   .openapi('PutAnomalyDetectorInput')
 
 const PutCompositeAlarmInputSchema = z
   .object({
-    ActionsEnabled: ActionsEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether actions should be executed during any changes to the alarm state of the composite alarm. The default is <code>TRUE</code>.',
-        }),
-    ).exactOptional(),
-    AlarmActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The actions to execute when this alarm transitions to the <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values: <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> | <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i> </code> </p>',
-        }),
-    ).exactOptional(),
-    AlarmDescription: AlarmDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the composite alarm.' }),
-    ).exactOptional(),
-    AlarmName: AlarmNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the composite alarm. This name must be unique within the Region.',
-        }),
-    ),
-    AlarmRule: AlarmRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An expression that specifies which other alarms are to be evaluated to determine this composite alarm\'s state. For each alarm that you reference, you designate a function that specifies whether that alarm needs to be in ALARM state, OK state, or INSUFFICIENT_DATA state. You can use operators (AND, OR and NOT) to combine multiple functions in a single expression. You can use parenthesis to logically group the functions in your expression.</p> <p>You can use either alarm names or ARNs to reference the other alarms that are to be evaluated.</p> <p>Functions can include the following:</p> <ul> <li> <p> <code>ALARM("<i>alarm-name</i> or <i>alarm-ARN</i>")</code> is TRUE if the named alarm is in ALARM state.</p> </li> <li> <p> <code>OK("<i>alarm-name</i> or <i>alarm-ARN</i>")</code> is TRUE if the named alarm is in OK state.</p> </li> <li> <p> <code>INSUFFICIENT_DATA("<i>alarm-name</i> or <i>alarm-ARN</i>")</code> is TRUE if the named alarm is in INSUFFICIENT_DATA state.</p> </li> <li> <p> <code>TRUE</code> always evaluates to TRUE.</p> </li> <li> <p> <code>FALSE</code> always evaluates to FALSE.</p> </li> </ul> <p>TRUE and FALSE are useful for testing a complex <code>AlarmRule</code> structure, and for testing your alarm actions.</p> <p>Alarm names specified in <code>AlarmRule</code> can be surrounded with double-quotes ("), but do not have to be.</p> <p>The following are some examples of <code>AlarmRule</code>:</p> <ul> <li> <p> <code>ALARM(CPUUtilizationTooHigh) AND ALARM(DiskReadOpsTooHigh)</code> specifies that the composite alarm goes into ALARM state only if both CPUUtilizationTooHigh and DiskReadOpsTooHigh alarms are in ALARM state.</p> </li> <li> <p> <code>ALARM(CPUUtilizationTooHigh) AND NOT ALARM(DeploymentInProgress)</code> specifies that the alarm goes to ALARM state if CPUUtilizationTooHigh is in ALARM state and DeploymentInProgress is not in ALARM state. This example reduces alarm noise during a known deployment window.</p> </li> <li> <p> <code>(ALARM(CPUUtilizationTooHigh) OR ALARM(DiskReadOpsTooHigh)) AND OK(NetworkOutTooHigh)</code> goes into ALARM state if CPUUtilizationTooHigh OR DiskReadOpsTooHigh is in ALARM state, and if NetworkOutTooHigh is in OK state. This provides another example of using a composite alarm to prevent noise. This rule ensures that you are not notified with an alarm action on high CPU or disk usage if a known network problem is also occurring.</p> </li> </ul> <p>The <code>AlarmRule</code> can specify as many as 100 "children" alarms. The <code>AlarmRule</code> expression can have as many as 500 elements. Elements are child alarms, TRUE or FALSE statements, and parentheses.</p>',
-        }),
-    ),
-    InsufficientDataActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The actions to execute when this alarm transitions to the <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values: <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> </p>',
-        }),
-    ).exactOptional(),
-    OKActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The actions to execute when this alarm transitions to an <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values: <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> </p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of key-value pairs to associate with the composite alarm. You can associate as many as 50 tags with an alarm.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only resources with certain tag values.</p>',
-        }),
-    ).exactOptional(),
-    ActionsSuppressor: AlarmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Actions will be suppressed if the suppressor alarm is in the <code>ALARM</code> state. <code>ActionsSuppressor</code> can be an AlarmName or an Amazon Resource Name (ARN) from an existing alarm. ',
-        }),
-    ).exactOptional(),
-    ActionsSuppressorWaitPeriod: SuppressorPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum time in seconds that the composite alarm waits for the suppressor alarm to go into the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>WaitPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>',
-        }),
-    ).exactOptional(),
-    ActionsSuppressorExtensionPeriod: SuppressorPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum time in seconds that the composite alarm waits after suppressor alarm goes out of the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>ExtensionPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>',
-        }),
-    ).exactOptional(),
+    ActionsEnabled: ActionsEnabledSchema.exactOptional().openapi({
+      description:
+        'Indicates whether actions should be executed during any changes to the alarm state of the composite alarm. The default is <code>TRUE</code>.',
+    }),
+    AlarmActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        '<p>The actions to execute when this alarm transitions to the <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values: <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> | <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i> </code> </p>',
+    }),
+    AlarmDescription: AlarmDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the composite alarm.',
+    }),
+    AlarmName: AlarmNameSchema.openapi({
+      description: 'The name for the composite alarm. This name must be unique within the Region.',
+    }),
+    AlarmRule: AlarmRuleSchema.openapi({
+      description:
+        '<p>An expression that specifies which other alarms are to be evaluated to determine this composite alarm\'s state. For each alarm that you reference, you designate a function that specifies whether that alarm needs to be in ALARM state, OK state, or INSUFFICIENT_DATA state. You can use operators (AND, OR and NOT) to combine multiple functions in a single expression. You can use parenthesis to logically group the functions in your expression.</p> <p>You can use either alarm names or ARNs to reference the other alarms that are to be evaluated.</p> <p>Functions can include the following:</p> <ul> <li> <p> <code>ALARM("<i>alarm-name</i> or <i>alarm-ARN</i>")</code> is TRUE if the named alarm is in ALARM state.</p> </li> <li> <p> <code>OK("<i>alarm-name</i> or <i>alarm-ARN</i>")</code> is TRUE if the named alarm is in OK state.</p> </li> <li> <p> <code>INSUFFICIENT_DATA("<i>alarm-name</i> or <i>alarm-ARN</i>")</code> is TRUE if the named alarm is in INSUFFICIENT_DATA state.</p> </li> <li> <p> <code>TRUE</code> always evaluates to TRUE.</p> </li> <li> <p> <code>FALSE</code> always evaluates to FALSE.</p> </li> </ul> <p>TRUE and FALSE are useful for testing a complex <code>AlarmRule</code> structure, and for testing your alarm actions.</p> <p>Alarm names specified in <code>AlarmRule</code> can be surrounded with double-quotes ("), but do not have to be.</p> <p>The following are some examples of <code>AlarmRule</code>:</p> <ul> <li> <p> <code>ALARM(CPUUtilizationTooHigh) AND ALARM(DiskReadOpsTooHigh)</code> specifies that the composite alarm goes into ALARM state only if both CPUUtilizationTooHigh and DiskReadOpsTooHigh alarms are in ALARM state.</p> </li> <li> <p> <code>ALARM(CPUUtilizationTooHigh) AND NOT ALARM(DeploymentInProgress)</code> specifies that the alarm goes to ALARM state if CPUUtilizationTooHigh is in ALARM state and DeploymentInProgress is not in ALARM state. This example reduces alarm noise during a known deployment window.</p> </li> <li> <p> <code>(ALARM(CPUUtilizationTooHigh) OR ALARM(DiskReadOpsTooHigh)) AND OK(NetworkOutTooHigh)</code> goes into ALARM state if CPUUtilizationTooHigh OR DiskReadOpsTooHigh is in ALARM state, and if NetworkOutTooHigh is in OK state. This provides another example of using a composite alarm to prevent noise. This rule ensures that you are not notified with an alarm action on high CPU or disk usage if a known network problem is also occurring.</p> </li> </ul> <p>The <code>AlarmRule</code> can specify as many as 100 "children" alarms. The <code>AlarmRule</code> expression can have as many as 500 elements. Elements are child alarms, TRUE or FALSE statements, and parentheses.</p>',
+    }),
+    InsufficientDataActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        '<p>The actions to execute when this alarm transitions to the <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values: <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> </p>',
+    }),
+    OKActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        '<p>The actions to execute when this alarm transitions to an <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN).</p> <p>Valid Values: <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i> </code> </p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of key-value pairs to associate with the composite alarm. You can associate as many as 50 tags with an alarm.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only resources with certain tag values.</p>',
+    }),
+    ActionsSuppressor: AlarmArnSchema.exactOptional().openapi({
+      description:
+        ' Actions will be suppressed if the suppressor alarm is in the <code>ALARM</code> state. <code>ActionsSuppressor</code> can be an AlarmName or an Amazon Resource Name (ARN) from an existing alarm. ',
+    }),
+    ActionsSuppressorWaitPeriod: SuppressorPeriodSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum time in seconds that the composite alarm waits for the suppressor alarm to go into the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>WaitPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>',
+    }),
+    ActionsSuppressorExtensionPeriod: SuppressorPeriodSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum time in seconds that the composite alarm waits after suppressor alarm goes out of the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>ExtensionPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>',
+    }),
   })
   .openapi({ required: ['AlarmName', 'AlarmRule'], title: 'PutCompositeAlarmInput' })
   .openapi('PutCompositeAlarmInput')
 
 const PutDashboardInputSchema = z
   .object({
-    DashboardName: DashboardNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the dashboard. If a dashboard with this name already exists, this call modifies that dashboard, replacing its current contents. Otherwise, a new dashboard is created. The maximum length is 255, and valid characters are A-Z, a-z, 0-9, "-", and "_". This parameter is required.',
-        }),
-    ),
-    DashboardBody: DashboardBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The detailed information about the dashboard in JSON format, including the widgets to include and their location on the dashboard. This parameter is required.</p> <p>For more information about the syntax, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html">Dashboard Body Structure and Syntax</a>.</p>',
-        }),
-    ),
+    DashboardName: DashboardNameSchema.openapi({
+      description:
+        'The name of the dashboard. If a dashboard with this name already exists, this call modifies that dashboard, replacing its current contents. Otherwise, a new dashboard is created. The maximum length is 255, and valid characters are A-Z, a-z, 0-9, "-", and "_". This parameter is required.',
+    }),
+    DashboardBody: DashboardBodySchema.openapi({
+      description:
+        '<p>The detailed information about the dashboard in JSON format, including the widgets to include and their location on the dashboard. This parameter is required.</p> <p>For more information about the syntax, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html">Dashboard Body Structure and Syntax</a>.</p>',
+    }),
   })
   .openapi({ required: ['DashboardName', 'DashboardBody'], title: 'PutDashboardInput' })
   .openapi('PutDashboardInput')
 
 const PutInsightRuleInputSchema = z
   .object({
-    RuleName: InsightRuleNameSchema.and(
-      z.any().openapi({ description: 'A unique name for the rule.' }),
-    ),
-    RuleState: InsightRuleStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The state of the rule. Valid values are ENABLED and DISABLED.' }),
-    ).exactOptional(),
-    RuleDefinition: InsightRuleDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The definition of the rule, as a JSON object. For details on the valid syntax, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights-RuleSyntax.html">Contributor Insights Rule Syntax</a>.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of key-value pairs to associate with the Contributor Insights rule. You can associate as many as 50 tags with a rule.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p> <p>To be able to associate tags with a rule, you must have the <code>cloudwatch:TagResource</code> permission in addition to the <code>cloudwatch:PutInsightRule</code> permission.</p> <p>If you are using this operation to update an existing Contributor Insights rule, any tags you specify in this parameter are ignored. To change the tags of an existing rule, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_TagResource.html">TagResource</a>.</p>',
-        }),
-    ).exactOptional(),
+    RuleName: InsightRuleNameSchema.openapi({ description: 'A unique name for the rule.' }),
+    RuleState: InsightRuleStateSchema.exactOptional().openapi({
+      description: 'The state of the rule. Valid values are ENABLED and DISABLED.',
+    }),
+    RuleDefinition: InsightRuleDefinitionSchema.openapi({
+      description:
+        'The definition of the rule, as a JSON object. For details on the valid syntax, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights-RuleSyntax.html">Contributor Insights Rule Syntax</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of key-value pairs to associate with the Contributor Insights rule. You can associate as many as 50 tags with a rule.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p> <p>To be able to associate tags with a rule, you must have the <code>cloudwatch:TagResource</code> permission in addition to the <code>cloudwatch:PutInsightRule</code> permission.</p> <p>If you are using this operation to update an existing Contributor Insights rule, any tags you specify in this parameter are ignored. To change the tags of an existing rule, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_TagResource.html">TagResource</a>.</p>',
+    }),
   })
   .openapi({ required: ['RuleName', 'RuleDefinition'], title: 'PutInsightRuleInput' })
   .openapi('PutInsightRuleInput')
 
 const PutManagedInsightRulesInputSchema = z
   .object({
-    ManagedRules: ManagedRulesSchema.and(
-      z.any().openapi({ description: ' A list of <code>ManagedRules</code> to enable. ' }),
-    ),
+    ManagedRules: ManagedRulesSchema.openapi({
+      description: ' A list of <code>ManagedRules</code> to enable. ',
+    }),
   })
   .openapi({ required: ['ManagedRules'], title: 'PutManagedInsightRulesInput' })
   .openapi('PutManagedInsightRulesInput')
 
 const PutMetricAlarmInputSchema = z
   .object({
-    AlarmName: AlarmNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name for the alarm. This name must be unique within the Region.</p> <p>The name must contain only UTF-8 characters, and can't contain ASCII control characters</p>",
-        }),
-    ),
-    AlarmDescription: AlarmDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the alarm.' }),
-    ).exactOptional(),
-    ActionsEnabled: ActionsEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether actions should be executed during any changes to the alarm state. The default is <code>TRUE</code>.',
-        }),
-    ).exactOptional(),
-    OKActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The actions to execute when this alarm transitions to an <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN). Valid values:</p> <p> <b>EC2 actions:</b> </p> <ul> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:stop</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:terminate</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:reboot</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:recover</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Stop/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Terminate/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Reboot/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Recover/1.0</code> </p> </li> </ul> <p> <b>Autoscaling action:</b> </p> <ul> <li> <p> <code>arn:aws:autoscaling:<i>region</i>:<i>account-id</i>:scalingPolicy:<i>policy-id</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SNS notification action:</b> </p> <ul> <li> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SSM integration actions:</b> </p> <ul> <li> <p> <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i>#CATEGORY=<i>category-name</i> </code> </p> </li> <li> <p> <code>arn:aws:ssm-incidents::<i>account-id</i>:responseplan/<i>response-plan-name</i> </code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AlarmActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The actions to execute when this alarm transitions to the <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN). Valid values:</p> <p> <b>EC2 actions:</b> </p> <ul> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:stop</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:terminate</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:reboot</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:recover</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Stop/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Terminate/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Reboot/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Recover/1.0</code> </p> </li> </ul> <p> <b>Autoscaling action:</b> </p> <ul> <li> <p> <code>arn:aws:autoscaling:<i>region</i>:<i>account-id</i>:scalingPolicy:<i>policy-id</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SNS notification action:</b> </p> <ul> <li> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SSM integration actions:</b> </p> <ul> <li> <p> <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i>#CATEGORY=<i>category-name</i> </code> </p> </li> <li> <p> <code>arn:aws:ssm-incidents::<i>account-id</i>:responseplan/<i>response-plan-name</i> </code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    InsufficientDataActions: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The actions to execute when this alarm transitions to the <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN). Valid values:</p> <p> <b>EC2 actions:</b> </p> <ul> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:stop</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:terminate</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:reboot</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:recover</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Stop/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Terminate/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Reboot/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Recover/1.0</code> </p> </li> </ul> <p> <b>Autoscaling action:</b> </p> <ul> <li> <p> <code>arn:aws:autoscaling:<i>region</i>:<i>account-id</i>:scalingPolicy:<i>policy-id</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SNS notification action:</b> </p> <ul> <li> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SSM integration actions:</b> </p> <ul> <li> <p> <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i>#CATEGORY=<i>category-name</i> </code> </p> </li> <li> <p> <code>arn:aws:ssm-incidents::<i>account-id</i>:responseplan/<i>response-plan-name</i> </code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the metric associated with the alarm. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code> or a <code>Metrics</code> array.</p> <p>If you are creating an alarm based on a math expression, you cannot specify this parameter, or any of the <code>Dimensions</code>, <code>Period</code>, <code>Namespace</code>, <code>Statistic</code>, or <code>ExtendedStatistic</code> parameters. Instead, you specify all this information in the <code>Metrics</code> array.</p>',
-        }),
-    ).exactOptional(),
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The namespace for the metric associated specified in <code>MetricName</code>.',
-        }),
-    ).exactOptional(),
-    Statistic: StatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The statistic for the metric specified in <code>MetricName</code>, other than percentile. For percentile statistics, use <code>ExtendedStatistic</code>. When you call <code>PutMetricAlarm</code> and specify a <code>MetricName</code>, you must specify either <code>Statistic</code> or <code>ExtendedStatistic,</code> but not both.',
-        }),
-    ).exactOptional(),
-    ExtendedStatistic: ExtendedStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentile statistic for the metric specified in <code>MetricName</code>. Specify a value between p0.0 and p100. When you call <code>PutMetricAlarm</code> and specify a <code>MetricName</code>, you must specify either <code>Statistic</code> or <code>ExtendedStatistic,</code> but not both.',
-        }),
-    ).exactOptional(),
-    Dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The dimensions for the metric specified in <code>MetricName</code>.',
-        }),
-    ).exactOptional(),
-    Period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The length, in seconds, used each time the metric specified in <code>MetricName</code> is evaluated. Valid values are 10, 30, and any multiple of 60.</p> <p> <code>Period</code> is required for alarms based on static thresholds. If you are creating an alarm based on a metric math expression, you specify the period for each metric within the objects in the <code>Metrics</code> array.</p> <p>Be sure to specify 10 or 30 only for metrics that are stored by a <code>PutMetricData</code> call with a <code>StorageResolution</code> of 1. If you specify a period of 10 or 30 for a metric that does not have sub-minute resolution, the alarm still attempts to gather data at the period rate that you specify. In this case, it does not receive data for the attempts that do not correspond to a one-minute data resolution, and the alarm might often lapse into INSUFFICENT_DATA status. Specifying 10 or 30 also sets this alarm as a high-resolution alarm, which has a higher charge than other alarms. For more information about pricing, see <a href="https://aws.amazon.com/cloudwatch/pricing/">Amazon CloudWatch Pricing</a>.</p> <p>An alarm\'s total current evaluation period can be no longer than one day, so <code>Period</code> multiplied by <code>EvaluationPeriods</code> cannot be more than 86,400 seconds.</p>',
-        }),
-    ).exactOptional(),
-    Unit: StandardUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The unit of measure for the statistic. For example, the units for the Amazon EC2 NetworkIn metric are Bytes because NetworkIn tracks the number of bytes that an instance receives on all network interfaces. You can also specify a unit when you create a custom metric. Units help provide conceptual meaning to your data. Metric data points that specify a unit of measure, such as Percent, are aggregated separately.</p> <p>If you don't specify <code>Unit</code>, CloudWatch retrieves all unit types that have been published for the metric and attempts to evaluate the alarm. Usually, metrics are published with only one unit, so the alarm works as intended.</p> <p>However, if the metric is published with multiple types of units and you don't specify a unit, the alarm's behavior is not defined and it behaves unpredictably.</p> <p>We recommend omitting <code>Unit</code> so that you don't inadvertently specify an incorrect unit that is not published for this metric. Doing so causes the alarm to be stuck in the <code>INSUFFICIENT DATA</code> state.</p>",
-        }),
-    ).exactOptional(),
-    EvaluationPeriods: EvaluationPeriodsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of periods over which data is compared to the specified threshold. If you are setting an alarm that requires that a number of consecutive data points be breaching to trigger the alarm, this value specifies that number. If you are setting an "M out of N" alarm, this value is the N.</p> <p>An alarm\'s total current evaluation period can be no longer than one day, so this number multiplied by <code>Period</code> cannot be more than 86,400 seconds.</p>',
-        }),
-    ),
-    DatapointsToAlarm: DatapointsToAlarmSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of data points that must be breaching to trigger the alarm. This is used only if you are setting an "M out of N" alarm. In that case, this value is the M. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarm-evaluation">Evaluating an Alarm</a> in the <i>Amazon CloudWatch User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Threshold: ThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value against which the specified statistic is compared.</p> <p>This parameter is required for alarms based on static thresholds, but should not be used for alarms based on anomaly detection models.</p>',
-        }),
-    ).exactOptional(),
-    ComparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The arithmetic operation to use when comparing the specified statistic and threshold. The specified statistic value is used as the first operand.</p> <p>The values <code>LessThanLowerOrGreaterThanUpperThreshold</code>, <code>LessThanLowerThreshold</code>, and <code>GreaterThanUpperThreshold</code> are used only for alarms based on anomaly detection models.</p>',
-        }),
-    ),
-    TreatMissingData: TreatMissingDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Sets how this alarm is to handle missing data points. If <code>TreatMissingData</code> is omitted, the default behavior of <code>missing</code> is used. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data">Configuring How CloudWatch Alarms Treats Missing Data</a>.</p> <p>Valid Values: <code>breaching | notBreaching | ignore | missing</code> </p> <note> <p>Alarms that evaluate metrics in the <code>AWS/DynamoDB</code> namespace always <code>ignore</code> missing data even if you choose a different option for <code>TreatMissingData</code>. When an <code>AWS/DynamoDB</code> metric has missing data, alarms that evaluate that metric remain in their current state.</p> </note>',
-        }),
-    ).exactOptional(),
-    EvaluateLowSampleCountPercentile: EvaluateLowSampleCountPercentileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Used only for alarms based on percentiles. If you specify <code>ignore</code>, the alarm state does not change during periods with too few data points to be statistically significant. If you specify <code>evaluate</code> or omit this parameter, the alarm is always evaluated and possibly changes state no matter how many data points are available. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#percentiles-with-low-samples">Percentile-Based CloudWatch Alarms and Low Data Samples</a>.</p> <p>Valid Values: <code>evaluate | ignore</code> </p>',
-        }),
-    ).exactOptional(),
-    Metrics: MetricDataQueriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>MetricDataQuery</code> structures that enable you to create an alarm based on the result of a metric math expression. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code> or a <code>Metrics</code> array.</p> <p>Each item in the <code>Metrics</code> array either retrieves a metric or performs a math expression.</p> <p>One item in the <code>Metrics</code> array is the expression that the alarm watches. You designate this expression by setting <code>ReturnData</code> to true for this object in the array. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDataQuery.html">MetricDataQuery</a>.</p> <p>If you use the <code>Metrics</code> parameter, you cannot include the <code>MetricName</code>, <code>Dimensions</code>, <code>Period</code>, <code>Namespace</code>, <code>Statistic</code>, or <code>ExtendedStatistic</code> parameters of <code>PutMetricAlarm</code> in the same operation. Instead, you retrieve the metrics you are using in your math expression as part of the <code>Metrics</code> array.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of key-value pairs to associate with the alarm. You can associate as many as 50 tags with an alarm.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>If you are using this operation to update an existing alarm, any tags you specify in this parameter are ignored. To change the tags of an existing alarm, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_TagResource.html">TagResource</a> or <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UntagResource.html">UntagResource</a>.</p>',
-        }),
-    ).exactOptional(),
-    ThresholdMetricId: MetricIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If this is an alarm based on an anomaly detection model, make this value match the ID of the <code>ANOMALY_DETECTION_BAND</code> function.</p> <p>For an example of how to use this parameter, see the <b>Anomaly Detection Model Alarm</b> example on this page.</p> <p>If your alarm uses this parameter, it cannot have Auto Scaling actions.</p>',
-        }),
-    ).exactOptional(),
+    AlarmName: AlarmNameSchema.openapi({
+      description:
+        "<p>The name for the alarm. This name must be unique within the Region.</p> <p>The name must contain only UTF-8 characters, and can't contain ASCII control characters</p>",
+    }),
+    AlarmDescription: AlarmDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the alarm.',
+    }),
+    ActionsEnabled: ActionsEnabledSchema.exactOptional().openapi({
+      description:
+        'Indicates whether actions should be executed during any changes to the alarm state. The default is <code>TRUE</code>.',
+    }),
+    OKActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        '<p>The actions to execute when this alarm transitions to an <code>OK</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN). Valid values:</p> <p> <b>EC2 actions:</b> </p> <ul> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:stop</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:terminate</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:reboot</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:recover</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Stop/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Terminate/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Reboot/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Recover/1.0</code> </p> </li> </ul> <p> <b>Autoscaling action:</b> </p> <ul> <li> <p> <code>arn:aws:autoscaling:<i>region</i>:<i>account-id</i>:scalingPolicy:<i>policy-id</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SNS notification action:</b> </p> <ul> <li> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SSM integration actions:</b> </p> <ul> <li> <p> <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i>#CATEGORY=<i>category-name</i> </code> </p> </li> <li> <p> <code>arn:aws:ssm-incidents::<i>account-id</i>:responseplan/<i>response-plan-name</i> </code> </p> </li> </ul>',
+    }),
+    AlarmActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        '<p>The actions to execute when this alarm transitions to the <code>ALARM</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN). Valid values:</p> <p> <b>EC2 actions:</b> </p> <ul> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:stop</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:terminate</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:reboot</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:recover</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Stop/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Terminate/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Reboot/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Recover/1.0</code> </p> </li> </ul> <p> <b>Autoscaling action:</b> </p> <ul> <li> <p> <code>arn:aws:autoscaling:<i>region</i>:<i>account-id</i>:scalingPolicy:<i>policy-id</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SNS notification action:</b> </p> <ul> <li> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SSM integration actions:</b> </p> <ul> <li> <p> <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i>#CATEGORY=<i>category-name</i> </code> </p> </li> <li> <p> <code>arn:aws:ssm-incidents::<i>account-id</i>:responseplan/<i>response-plan-name</i> </code> </p> </li> </ul>',
+    }),
+    InsufficientDataActions: ResourceListSchema.exactOptional().openapi({
+      description:
+        '<p>The actions to execute when this alarm transitions to the <code>INSUFFICIENT_DATA</code> state from any other state. Each action is specified as an Amazon Resource Name (ARN). Valid values:</p> <p> <b>EC2 actions:</b> </p> <ul> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:stop</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:terminate</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:reboot</code> </p> </li> <li> <p> <code>arn:aws:automate:<i>region</i>:ec2:recover</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Stop/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Terminate/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Reboot/1.0</code> </p> </li> <li> <p> <code>arn:aws:swf:<i>region</i>:<i>account-id</i>:action/actions/AWS_EC2.InstanceId.Recover/1.0</code> </p> </li> </ul> <p> <b>Autoscaling action:</b> </p> <ul> <li> <p> <code>arn:aws:autoscaling:<i>region</i>:<i>account-id</i>:scalingPolicy:<i>policy-id</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SNS notification action:</b> </p> <ul> <li> <p> <code>arn:aws:sns:<i>region</i>:<i>account-id</i>:<i>sns-topic-name</i>:autoScalingGroupName/<i>group-friendly-name</i>:policyName/<i>policy-friendly-name</i> </code> </p> </li> </ul> <p> <b>SSM integration actions:</b> </p> <ul> <li> <p> <code>arn:aws:ssm:<i>region</i>:<i>account-id</i>:opsitem:<i>severity</i>#CATEGORY=<i>category-name</i> </code> </p> </li> <li> <p> <code>arn:aws:ssm-incidents::<i>account-id</i>:responseplan/<i>response-plan-name</i> </code> </p> </li> </ul>',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name for the metric associated with the alarm. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code> or a <code>Metrics</code> array.</p> <p>If you are creating an alarm based on a math expression, you cannot specify this parameter, or any of the <code>Dimensions</code>, <code>Period</code>, <code>Namespace</code>, <code>Statistic</code>, or <code>ExtendedStatistic</code> parameters. Instead, you specify all this information in the <code>Metrics</code> array.</p>',
+    }),
+    Namespace: NamespaceSchema.exactOptional().openapi({
+      description: 'The namespace for the metric associated specified in <code>MetricName</code>.',
+    }),
+    Statistic: StatisticSchema.exactOptional().openapi({
+      description:
+        'The statistic for the metric specified in <code>MetricName</code>, other than percentile. For percentile statistics, use <code>ExtendedStatistic</code>. When you call <code>PutMetricAlarm</code> and specify a <code>MetricName</code>, you must specify either <code>Statistic</code> or <code>ExtendedStatistic,</code> but not both.',
+    }),
+    ExtendedStatistic: ExtendedStatisticSchema.exactOptional().openapi({
+      description:
+        'The percentile statistic for the metric specified in <code>MetricName</code>. Specify a value between p0.0 and p100. When you call <code>PutMetricAlarm</code> and specify a <code>MetricName</code>, you must specify either <code>Statistic</code> or <code>ExtendedStatistic,</code> but not both.',
+    }),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description: 'The dimensions for the metric specified in <code>MetricName</code>.',
+    }),
+    Period: PeriodSchema.exactOptional().openapi({
+      description:
+        '<p>The length, in seconds, used each time the metric specified in <code>MetricName</code> is evaluated. Valid values are 10, 30, and any multiple of 60.</p> <p> <code>Period</code> is required for alarms based on static thresholds. If you are creating an alarm based on a metric math expression, you specify the period for each metric within the objects in the <code>Metrics</code> array.</p> <p>Be sure to specify 10 or 30 only for metrics that are stored by a <code>PutMetricData</code> call with a <code>StorageResolution</code> of 1. If you specify a period of 10 or 30 for a metric that does not have sub-minute resolution, the alarm still attempts to gather data at the period rate that you specify. In this case, it does not receive data for the attempts that do not correspond to a one-minute data resolution, and the alarm might often lapse into INSUFFICENT_DATA status. Specifying 10 or 30 also sets this alarm as a high-resolution alarm, which has a higher charge than other alarms. For more information about pricing, see <a href="https://aws.amazon.com/cloudwatch/pricing/">Amazon CloudWatch Pricing</a>.</p> <p>An alarm\'s total current evaluation period can be no longer than one day, so <code>Period</code> multiplied by <code>EvaluationPeriods</code> cannot be more than 86,400 seconds.</p>',
+    }),
+    Unit: StandardUnitSchema.exactOptional().openapi({
+      description:
+        "<p>The unit of measure for the statistic. For example, the units for the Amazon EC2 NetworkIn metric are Bytes because NetworkIn tracks the number of bytes that an instance receives on all network interfaces. You can also specify a unit when you create a custom metric. Units help provide conceptual meaning to your data. Metric data points that specify a unit of measure, such as Percent, are aggregated separately.</p> <p>If you don't specify <code>Unit</code>, CloudWatch retrieves all unit types that have been published for the metric and attempts to evaluate the alarm. Usually, metrics are published with only one unit, so the alarm works as intended.</p> <p>However, if the metric is published with multiple types of units and you don't specify a unit, the alarm's behavior is not defined and it behaves unpredictably.</p> <p>We recommend omitting <code>Unit</code> so that you don't inadvertently specify an incorrect unit that is not published for this metric. Doing so causes the alarm to be stuck in the <code>INSUFFICIENT DATA</code> state.</p>",
+    }),
+    EvaluationPeriods: EvaluationPeriodsSchema.openapi({
+      description:
+        '<p>The number of periods over which data is compared to the specified threshold. If you are setting an alarm that requires that a number of consecutive data points be breaching to trigger the alarm, this value specifies that number. If you are setting an "M out of N" alarm, this value is the N.</p> <p>An alarm\'s total current evaluation period can be no longer than one day, so this number multiplied by <code>Period</code> cannot be more than 86,400 seconds.</p>',
+    }),
+    DatapointsToAlarm: DatapointsToAlarmSchema.exactOptional().openapi({
+      description:
+        'The number of data points that must be breaching to trigger the alarm. This is used only if you are setting an "M out of N" alarm. In that case, this value is the M. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarm-evaluation">Evaluating an Alarm</a> in the <i>Amazon CloudWatch User Guide</i>.',
+    }),
+    Threshold: ThresholdSchema.exactOptional().openapi({
+      description:
+        '<p>The value against which the specified statistic is compared.</p> <p>This parameter is required for alarms based on static thresholds, but should not be used for alarms based on anomaly detection models.</p>',
+    }),
+    ComparisonOperator: ComparisonOperatorSchema.openapi({
+      description:
+        '<p> The arithmetic operation to use when comparing the specified statistic and threshold. The specified statistic value is used as the first operand.</p> <p>The values <code>LessThanLowerOrGreaterThanUpperThreshold</code>, <code>LessThanLowerThreshold</code>, and <code>GreaterThanUpperThreshold</code> are used only for alarms based on anomaly detection models.</p>',
+    }),
+    TreatMissingData: TreatMissingDataSchema.exactOptional().openapi({
+      description:
+        '<p> Sets how this alarm is to handle missing data points. If <code>TreatMissingData</code> is omitted, the default behavior of <code>missing</code> is used. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data">Configuring How CloudWatch Alarms Treats Missing Data</a>.</p> <p>Valid Values: <code>breaching | notBreaching | ignore | missing</code> </p> <note> <p>Alarms that evaluate metrics in the <code>AWS/DynamoDB</code> namespace always <code>ignore</code> missing data even if you choose a different option for <code>TreatMissingData</code>. When an <code>AWS/DynamoDB</code> metric has missing data, alarms that evaluate that metric remain in their current state.</p> </note>',
+    }),
+    EvaluateLowSampleCountPercentile:
+      EvaluateLowSampleCountPercentileSchema.exactOptional().openapi({
+        description:
+          '<p> Used only for alarms based on percentiles. If you specify <code>ignore</code>, the alarm state does not change during periods with too few data points to be statistically significant. If you specify <code>evaluate</code> or omit this parameter, the alarm is always evaluated and possibly changes state no matter how many data points are available. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#percentiles-with-low-samples">Percentile-Based CloudWatch Alarms and Low Data Samples</a>.</p> <p>Valid Values: <code>evaluate | ignore</code> </p>',
+      }),
+    Metrics: MetricDataQueriesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of <code>MetricDataQuery</code> structures that enable you to create an alarm based on the result of a metric math expression. For each <code>PutMetricAlarm</code> operation, you must specify either <code>MetricName</code> or a <code>Metrics</code> array.</p> <p>Each item in the <code>Metrics</code> array either retrieves a metric or performs a math expression.</p> <p>One item in the <code>Metrics</code> array is the expression that the alarm watches. You designate this expression by setting <code>ReturnData</code> to true for this object in the array. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDataQuery.html">MetricDataQuery</a>.</p> <p>If you use the <code>Metrics</code> parameter, you cannot include the <code>MetricName</code>, <code>Dimensions</code>, <code>Period</code>, <code>Namespace</code>, <code>Statistic</code>, or <code>ExtendedStatistic</code> parameters of <code>PutMetricAlarm</code> in the same operation. Instead, you retrieve the metrics you are using in your math expression as part of the <code>Metrics</code> array.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of key-value pairs to associate with the alarm. You can associate as many as 50 tags with an alarm.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>If you are using this operation to update an existing alarm, any tags you specify in this parameter are ignored. To change the tags of an existing alarm, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_TagResource.html">TagResource</a> or <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UntagResource.html">UntagResource</a>.</p>',
+    }),
+    ThresholdMetricId: MetricIdSchema.exactOptional().openapi({
+      description:
+        '<p>If this is an alarm based on an anomaly detection model, make this value match the ID of the <code>ANOMALY_DETECTION_BAND</code> function.</p> <p>For an example of how to use this parameter, see the <b>Anomaly Detection Model Alarm</b> example on this page.</p> <p>If your alarm uses this parameter, it cannot have Auto Scaling actions.</p>',
+    }),
   })
   .openapi({
     required: ['AlarmName', 'EvaluationPeriods', 'ComparisonOperator'],
@@ -3443,100 +2423,56 @@ const PutMetricAlarmInputSchema = z
 
 const PutMetricDataInputSchema = z
   .object({
-    Namespace: NamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace for the metric data. You can use ASCII characters for the namespace, except for control characters which are not supported.</p> <p>To avoid conflicts with Amazon Web Services service namespaces, you should not specify a namespace that begins with <code>AWS/</code> </p>',
-        }),
-    ),
-    MetricData: MetricDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data for the metric. The array can include no more than 1000 metrics per call.',
-        }),
-    ),
+    Namespace: NamespaceSchema.openapi({
+      description:
+        '<p>The namespace for the metric data. You can use ASCII characters for the namespace, except for control characters which are not supported.</p> <p>To avoid conflicts with Amazon Web Services service namespaces, you should not specify a namespace that begins with <code>AWS/</code> </p>',
+    }),
+    MetricData: MetricDataSchema.openapi({
+      description:
+        'The data for the metric. The array can include no more than 1000 metrics per call.',
+    }),
   })
   .openapi({ required: ['Namespace', 'MetricData'], title: 'PutMetricDataInput' })
   .openapi('PutMetricDataInput')
 
 const PutMetricStreamInputSchema = z
   .object({
-    Name: MetricStreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you are creating a new metric stream, this is the name for the new stream. The name must be different than the names of other metric streams in this account and Region.</p> <p>If you are updating a metric stream, specify the name of that stream here.</p> <p>Valid characters are A-Z, a-z, 0-9, "-" and "_".</p>',
-        }),
-    ),
-    IncludeFilters: MetricStreamFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you specify this parameter, the stream sends only the metrics from the metric namespaces that you specify here.</p> <p>You cannot include <code>IncludeFilters</code> and <code>ExcludeFilters</code> in the same operation.</p>',
-        }),
-    ).exactOptional(),
-    ExcludeFilters: MetricStreamFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you specify this parameter, the stream sends metrics from all metric namespaces except for the namespaces that you specify here.</p> <p>You cannot include <code>ExcludeFilters</code> and <code>IncludeFilters</code> in the same operation.</p>',
-        }),
-    ).exactOptional(),
-    FirehoseArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Kinesis Data Firehose delivery stream to use for this metric stream. This Amazon Kinesis Data Firehose delivery stream must already exist and must be in the same account as the metric stream.',
-        }),
-    ),
-    RoleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of an IAM role that this metric stream will use to access Amazon Kinesis Data Firehose resources. This IAM role must already exist and must be in the same account as the metric stream. This IAM role must include the following permissions:</p> <ul> <li> <p>firehose:PutRecord</p> </li> <li> <p>firehose:PutRecordBatch</p> </li> </ul>',
-        }),
-    ),
-    OutputFormat: MetricStreamOutputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output format for the stream. Valid values are <code>json</code> and <code>opentelemetry0.7</code>. For more information about metric stream output formats, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-formats.html"> Metric streams output formats</a>.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of key-value pairs to associate with the metric stream. You can associate as many as 50 tags with a metric stream.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>You can use this parameter only when you are creating a new metric stream. If you are using this operation to update an existing metric stream, any tags you specify in this parameter are ignored. To change the tags of an existing metric stream, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_TagResource.html">TagResource</a> or <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UntagResource.html">UntagResource</a>.</p>',
-        }),
-    ).exactOptional(),
-    StatisticsConfigurations: MetricStreamStatisticsConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>By default, a metric stream always sends the <code>MAX</code>, <code>MIN</code>, <code>SUM</code>, and <code>SAMPLECOUNT</code> statistics for each metric that is streamed. You can use this parameter to have the metric stream also send additional statistics in the stream. This array can have up to 100 members.</p> <p>For each entry in this array, you specify one or more metrics and the list of additional statistics to stream for those metrics. The additional statistics that you can stream depend on the stream\'s <code>OutputFormat</code>. If the <code>OutputFormat</code> is <code>json</code>, you can stream any additional statistic that is supported by CloudWatch, listed in <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html"> CloudWatch statistics definitions</a>. If the <code>OutputFormat</code> is <code>opentelemetry0.7</code>, you can stream percentile statistics such as p95, p99.9, and so on.</p>',
-        }),
-    ).exactOptional(),
-    IncludeLinkedAccountsMetrics: IncludeLinkedAccountsMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you are creating a metric stream in a monitoring account, specify <code>true</code> to include metrics from source accounts in the metric stream.',
-        }),
-    ).exactOptional(),
+    Name: MetricStreamNameSchema.openapi({
+      description:
+        '<p>If you are creating a new metric stream, this is the name for the new stream. The name must be different than the names of other metric streams in this account and Region.</p> <p>If you are updating a metric stream, specify the name of that stream here.</p> <p>Valid characters are A-Z, a-z, 0-9, "-" and "_".</p>',
+    }),
+    IncludeFilters: MetricStreamFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>If you specify this parameter, the stream sends only the metrics from the metric namespaces that you specify here.</p> <p>You cannot include <code>IncludeFilters</code> and <code>ExcludeFilters</code> in the same operation.</p>',
+    }),
+    ExcludeFilters: MetricStreamFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>If you specify this parameter, the stream sends metrics from all metric namespaces except for the namespaces that you specify here.</p> <p>You cannot include <code>ExcludeFilters</code> and <code>IncludeFilters</code> in the same operation.</p>',
+    }),
+    FirehoseArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The ARN of the Amazon Kinesis Data Firehose delivery stream to use for this metric stream. This Amazon Kinesis Data Firehose delivery stream must already exist and must be in the same account as the metric stream.',
+    }),
+    RoleArn: AmazonResourceNameSchema.openapi({
+      description:
+        '<p>The ARN of an IAM role that this metric stream will use to access Amazon Kinesis Data Firehose resources. This IAM role must already exist and must be in the same account as the metric stream. This IAM role must include the following permissions:</p> <ul> <li> <p>firehose:PutRecord</p> </li> <li> <p>firehose:PutRecordBatch</p> </li> </ul>',
+    }),
+    OutputFormat: MetricStreamOutputFormatSchema.openapi({
+      description:
+        'The output format for the stream. Valid values are <code>json</code> and <code>opentelemetry0.7</code>. For more information about metric stream output formats, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-metric-streams-formats.html"> Metric streams output formats</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of key-value pairs to associate with the metric stream. You can associate as many as 50 tags with a metric stream.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p> <p>You can use this parameter only when you are creating a new metric stream. If you are using this operation to update an existing metric stream, any tags you specify in this parameter are ignored. To change the tags of an existing metric stream, use <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_TagResource.html">TagResource</a> or <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UntagResource.html">UntagResource</a>.</p>',
+    }),
+    StatisticsConfigurations: MetricStreamStatisticsConfigurationsSchema.exactOptional().openapi({
+      description:
+        '<p>By default, a metric stream always sends the <code>MAX</code>, <code>MIN</code>, <code>SUM</code>, and <code>SAMPLECOUNT</code> statistics for each metric that is streamed. You can use this parameter to have the metric stream also send additional statistics in the stream. This array can have up to 100 members.</p> <p>For each entry in this array, you specify one or more metrics and the list of additional statistics to stream for those metrics. The additional statistics that you can stream depend on the stream\'s <code>OutputFormat</code>. If the <code>OutputFormat</code> is <code>json</code>, you can stream any additional statistic that is supported by CloudWatch, listed in <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html"> CloudWatch statistics definitions</a>. If the <code>OutputFormat</code> is <code>opentelemetry0.7</code>, you can stream percentile statistics such as p95, p99.9, and so on.</p>',
+    }),
+    IncludeLinkedAccountsMetrics: IncludeLinkedAccountsMetricsSchema.exactOptional().openapi({
+      description:
+        'If you are creating a metric stream in a monitoring account, specify <code>true</code> to include metrics from source accounts in the metric stream.',
+    }),
   })
   .openapi({
     required: ['Name', 'FirehoseArn', 'RoleArn', 'OutputFormat'],
@@ -3546,51 +2482,35 @@ const PutMetricStreamInputSchema = z
 
 const SetAlarmStateInputSchema = z
   .object({
-    AlarmName: AlarmNameSchema.and(z.any().openapi({ description: 'The name of the alarm.' })),
-    StateValue: StateValueSchema.and(z.any().openapi({ description: 'The value of the state.' })),
-    StateReason: StateReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason that this alarm is set to this specific state, in text format.',
-        }),
-    ),
-    StateReasonData: StateReasonDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The reason that this alarm is set to this specific state, in JSON format.</p> <p>For SNS or EC2 alarm actions, this is just informational. But for EC2 Auto Scaling or application Auto Scaling alarm actions, the Auto Scaling policy uses the information in this field to take the correct action.</p>',
-        }),
-    ).exactOptional(),
+    AlarmName: AlarmNameSchema.openapi({ description: 'The name of the alarm.' }),
+    StateValue: StateValueSchema.openapi({ description: 'The value of the state.' }),
+    StateReason: StateReasonSchema.openapi({
+      description: 'The reason that this alarm is set to this specific state, in text format.',
+    }),
+    StateReasonData: StateReasonDataSchema.exactOptional().openapi({
+      description:
+        '<p>The reason that this alarm is set to this specific state, in JSON format.</p> <p>For SNS or EC2 alarm actions, this is just informational. But for EC2 Auto Scaling or application Auto Scaling alarm actions, the Auto Scaling policy uses the information in this field to take the correct action.</p>',
+    }),
   })
   .openapi({ required: ['AlarmName', 'StateValue', 'StateReason'], title: 'SetAlarmStateInput' })
   .openapi('SetAlarmStateInput')
 
 const StartMetricStreamsInputSchema = z
   .object({
-    Names: MetricStreamNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The array of the names of metric streams to start streaming.</p> <p>This is an "all or nothing" operation. If you do not have permission to access all of the metric streams that you list here, then none of the streams that you list in the operation will start streaming.</p>',
-        }),
-    ),
+    Names: MetricStreamNamesSchema.openapi({
+      description:
+        '<p>The array of the names of metric streams to start streaming.</p> <p>This is an "all or nothing" operation. If you do not have permission to access all of the metric streams that you list here, then none of the streams that you list in the operation will start streaming.</p>',
+    }),
   })
   .openapi({ required: ['Names'], title: 'StartMetricStreamsInput' })
   .openapi('StartMetricStreamsInput')
 
 const StopMetricStreamsInputSchema = z
   .object({
-    Names: MetricStreamNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The array of the names of metric streams to stop streaming.</p> <p>This is an "all or nothing" operation. If you do not have permission to access all of the metric streams that you list here, then none of the streams that you list in the operation will stop streaming.</p>',
-        }),
-    ),
+    Names: MetricStreamNamesSchema.openapi({
+      description:
+        '<p>The array of the names of metric streams to stop streaming.</p> <p>This is an "all or nothing" operation. If you do not have permission to access all of the metric streams that you list here, then none of the streams that you list in the operation will stop streaming.</p>',
+    }),
   })
   .openapi({ required: ['Names'], title: 'StopMetricStreamsInput' })
   .openapi('StopMetricStreamsInput')
@@ -3599,34 +2519,26 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceInputSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the CloudWatch resource that you\'re adding tags to.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule:<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of key-value pairs to associate with the alarm.' }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        '<p>The ARN of the CloudWatch resource that you\'re adding tags to.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule:<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The list of key-value pairs to associate with the alarm.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
 const UntagResourceInputSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the CloudWatch resource that you\'re removing tags from.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule:<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The list of tag keys to remove from the resource.' }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        '<p>The ARN of the CloudWatch resource that you\'re removing tags from.</p> <p>The ARN format of an alarm is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:alarm:<i>alarm-name</i> </code> </p> <p>The ARN format of a Contributor Insights rule is <code>arn:aws:cloudwatch:<i>Region</i>:<i>account-id</i>:insight-rule:<i>insight-rule-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazoncloudwatch.html#amazoncloudwatch-resources-for-iam-policies"> Resource Types Defined by Amazon CloudWatch</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The list of tag keys to remove from the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
@@ -3936,36 +2848,19 @@ export const getActionDeleteAnomalyDetectorRoute = createRoute({
             }),
           SingleMetricAnomalyDetector: z
             .object({
-              Namespace: NamespaceSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The namespace of the metric to create the anomaly detection model for.',
-                  }),
-              ).exactOptional(),
-              MetricName: MetricNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The name of the metric to create the anomaly detection model for.',
-                  }),
-              ).exactOptional(),
-              Dimensions: DimensionsSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The metric dimensions to create the anomaly detection model for.',
-                  }),
-              ).exactOptional(),
-              Stat: AnomalyDetectorMetricStatSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The statistic to use for the metric and anomaly detection model.',
-                  }),
-              ).exactOptional(),
+              Namespace: NamespaceSchema.exactOptional().openapi({
+                description:
+                  'The namespace of the metric to create the anomaly detection model for.',
+              }),
+              MetricName: MetricNameSchema.exactOptional().openapi({
+                description: 'The name of the metric to create the anomaly detection model for.',
+              }),
+              Dimensions: DimensionsSchema.exactOptional().openapi({
+                description: 'The metric dimensions to create the anomaly detection model for.',
+              }),
+              Stat: AnomalyDetectorMetricStatSchema.exactOptional().openapi({
+                description: 'The statistic to use for the metric and anomaly detection model.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -4031,24 +2926,16 @@ export const getActionDeleteAnomalyDetectorRoute = createRoute({
                   z.array(
                     z
                       .object({
-                        Id: MetricIdSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
-                            }),
-                        ),
+                        Id: MetricIdSchema.openapi({
+                          description:
+                            'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
+                        }),
                         MetricStat: z
                           .object({
-                            Metric: MetricSchema.and(
-                              z
-                                .any()
-                                .openapi({
-                                  description:
-                                    'The metric to return, including the metric name, namespace, and dimensions.',
-                                }),
-                            ),
+                            Metric: MetricSchema.openapi({
+                              description:
+                                'The metric to return, including the metric name, namespace, and dimensions.',
+                            }),
                             Period: z
                               .preprocess(
                                 (val) =>
@@ -4059,61 +2946,37 @@ export const getActionDeleteAnomalyDetectorRoute = createRoute({
                                     : val,
                                 PeriodSchema,
                               )
-                              .and(
-                                z
-                                  .any()
-                                  .openapi({
-                                    description:
-                                      '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
-                                  }),
-                              ),
-                            Stat: StatSchema.and(
-                              z
-                                .any()
-                                .openapi({
-                                  description:
-                                    'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
-                                }),
-                            ),
-                            Unit: StandardUnitSchema.and(
-                              z
-                                .any()
-                                .openapi({
-                                  description:
-                                    '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
-                                }),
-                            ).exactOptional(),
+                              .openapi({
+                                description:
+                                  '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
+                              }),
+                            Stat: StatSchema.openapi({
+                              description:
+                                'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
+                            }),
+                            Unit: StandardUnitSchema.exactOptional().openapi({
+                              description:
+                                '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
+                            }),
                           })
                           .openapi({
                             required: ['Metric', 'Period', 'Stat'],
                             description:
                               'This structure defines the metric to be returned, along with the statistics, period, and units.',
                           })
-                          .and(
-                            z
-                              .any()
-                              .openapi({
-                                description:
-                                  '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-                              }),
-                          )
-                          .exactOptional(),
-                        Expression: MetricExpressionSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-                            }),
-                        ).exactOptional(),
-                        Label: MetricLabelSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
-                            }),
-                        ).exactOptional(),
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+                          }),
+                        Expression: MetricExpressionSchema.exactOptional().openapi({
+                          description:
+                            '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+                        }),
+                        Label: MetricLabelSchema.exactOptional().openapi({
+                          description:
+                            '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
+                        }),
                         ReturnData: z
                           .preprocess(
                             ((read) => (val: unknown) => {
@@ -4122,15 +2985,11 @@ export const getActionDeleteAnomalyDetectorRoute = createRoute({
                             })(z.stringbool()),
                             ReturnDataSchema,
                           )
-                          .and(
-                            z
-                              .any()
-                              .openapi({
-                                description:
-                                  '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
-                              }),
-                          )
-                          .exactOptional(),
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
+                          }),
                         Period: z
                           .preprocess(
                             (val) =>
@@ -4141,23 +3000,15 @@ export const getActionDeleteAnomalyDetectorRoute = createRoute({
                                 : val,
                             PeriodSchema,
                           )
-                          .and(
-                            z
-                              .any()
-                              .openapi({
-                                description:
-                                  'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
-                              }),
-                          )
-                          .exactOptional(),
-                        AccountId: AccountIdSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
-                            }),
-                        ).exactOptional(),
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
+                          }),
+                        AccountId: AccountIdSchema.exactOptional().openapi({
+                          description:
+                            '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
+                        }),
                       })
                       .openapi({
                         required: ['Id'],
@@ -4166,15 +3017,11 @@ export const getActionDeleteAnomalyDetectorRoute = createRoute({
                       }),
                   ),
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'An array of metric data query structures that enables you to create an anomaly detector based on the result of a metric math expression. Each item in <code>MetricDataQueries</code> gets a metric or performs a math expression. One item in <code>MetricDataQueries</code> is the expression that provides the time series that the anomaly detector uses as input. Designate the expression by setting <code>ReturnData</code> to <code>true</code> for this object in the array. For all other expressions and metrics, set <code>ReturnData</code> to <code>false</code>. The designated expression must return a single time series.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'An array of metric data query structures that enables you to create an anomaly detector based on the result of a metric math expression. Each item in <code>MetricDataQueries</code> gets a metric or performs a math expression. One item in <code>MetricDataQueries</code> is the expression that provides the time series that the anomaly detector uses as input. Designate the expression by setting <code>ReturnData</code> to <code>true</code> for this object in the array. For all other expressions and metrics, set <code>ReturnData</code> to <code>false</code>. The designated expression must return a single time series.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -6885,24 +5732,16 @@ export const getActionGetMetricDataRoute = createRoute({
               z.array(
                 z
                   .object({
-                    Id: MetricIdSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
-                        }),
-                    ),
+                    Id: MetricIdSchema.openapi({
+                      description:
+                        'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
+                    }),
                     MetricStat: z
                       .object({
-                        Metric: MetricSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'The metric to return, including the metric name, namespace, and dimensions.',
-                            }),
-                        ),
+                        Metric: MetricSchema.openapi({
+                          description:
+                            'The metric to return, including the metric name, namespace, and dimensions.',
+                        }),
                         Period: z
                           .preprocess(
                             (val) =>
@@ -6913,61 +5752,37 @@ export const getActionGetMetricDataRoute = createRoute({
                                 : val,
                             PeriodSchema,
                           )
-                          .and(
-                            z
-                              .any()
-                              .openapi({
-                                description:
-                                  '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
-                              }),
-                          ),
-                        Stat: StatSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
-                            }),
-                        ),
-                        Unit: StandardUnitSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
-                            }),
-                        ).exactOptional(),
+                          .openapi({
+                            description:
+                              '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
+                          }),
+                        Stat: StatSchema.openapi({
+                          description:
+                            'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
+                        }),
+                        Unit: StandardUnitSchema.exactOptional().openapi({
+                          description:
+                            '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
+                        }),
                       })
                       .openapi({
                         required: ['Metric', 'Period', 'Stat'],
                         description:
                           'This structure defines the metric to be returned, along with the statistics, period, and units.',
                       })
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-                          }),
-                      )
-                      .exactOptional(),
-                    Expression: MetricExpressionSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-                        }),
-                    ).exactOptional(),
-                    Label: MetricLabelSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+                      }),
+                    Expression: MetricExpressionSchema.exactOptional().openapi({
+                      description:
+                        '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+                    }),
+                    Label: MetricLabelSchema.exactOptional().openapi({
+                      description:
+                        '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
+                    }),
                     ReturnData: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -6976,15 +5791,11 @@ export const getActionGetMetricDataRoute = createRoute({
                         })(z.stringbool()),
                         ReturnDataSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
-                          }),
-                      )
-                      .exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
+                      }),
                     Period: z
                       .preprocess(
                         (val) =>
@@ -6995,23 +5806,15 @@ export const getActionGetMetricDataRoute = createRoute({
                             : val,
                         PeriodSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
-                          }),
-                      )
-                      .exactOptional(),
-                    AccountId: AccountIdSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
+                      }),
+                    AccountId: AccountIdSchema.exactOptional().openapi({
+                      description:
+                        '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
+                    }),
                   })
                   .openapi({
                     required: ['Id'],
@@ -7219,14 +6022,10 @@ export const getActionGetMetricDataRoute = createRoute({
             }),
           LabelOptions: z
             .object({
-              Timezone: GetMetricDataLabelTimezoneSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The time zone to use for metric data return in this operation. The format is <code>+</code> or <code>-</code> followed by four digits. The first two digits indicate the number of hours ahead or behind of UTC, and the final two digits are the number of minutes. For example, +0130 indicates a time zone that is 1 hour and 30 minutes ahead of UTC. The default is +0000. ',
-                  }),
-              ).exactOptional(),
+              Timezone: GetMetricDataLabelTimezoneSchema.exactOptional().openapi({
+                description:
+                  'The time zone to use for metric data return in this operation. The format is <code>+</code> or <code>-</code> followed by four digits. The first two digits indicate the number of hours ahead or behind of UTC, and the final two digits are the number of minutes. For example, +0130 indicates a time zone that is 1 hour and 30 minutes ahead of UTC. The default is +0000. ',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -8956,22 +7755,14 @@ export const getActionPutAnomalyDetectorRoute = createRoute({
             }),
           Configuration: z
             .object({
-              ExcludedTimeRanges: AnomalyDetectorExcludedTimeRangesSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "An array of time ranges to exclude from use when the anomaly detection model is trained. Use this to make sure that events that could cause unusual values for the metric, such as deployments, aren't used when CloudWatch creates the model.",
-                  }),
-              ).exactOptional(),
-              MetricTimezone: AnomalyDetectorMetricTimezoneSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The time zone to use for the metric. This is useful to enable the model to automatically account for daylight savings time changes if the metric is sensitive to such time changes.</p> <p>To specify a time zone, use the name of the time zone as specified in the standard tz database. For more information, see <a href="https://en.wikipedia.org/wiki/Tz_database">tz database</a>.</p>',
-                  }),
-              ).exactOptional(),
+              ExcludedTimeRanges: AnomalyDetectorExcludedTimeRangesSchema.exactOptional().openapi({
+                description:
+                  "An array of time ranges to exclude from use when the anomaly detection model is trained. Use this to make sure that events that could cause unusual values for the metric, such as deployments, aren't used when CloudWatch creates the model.",
+              }),
+              MetricTimezone: AnomalyDetectorMetricTimezoneSchema.exactOptional().openapi({
+                description:
+                  '<p>The time zone to use for the metric. This is useful to enable the model to automatically account for daylight savings time changes if the metric is sensitive to such time changes.</p> <p>To specify a time zone, use the name of the time zone as specified in the standard tz database. For more information, see <a href="https://en.wikipedia.org/wiki/Tz_database">tz database</a>.</p>',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -9013,36 +7804,19 @@ export const getActionPutAnomalyDetectorRoute = createRoute({
             }),
           SingleMetricAnomalyDetector: z
             .object({
-              Namespace: NamespaceSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The namespace of the metric to create the anomaly detection model for.',
-                  }),
-              ).exactOptional(),
-              MetricName: MetricNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The name of the metric to create the anomaly detection model for.',
-                  }),
-              ).exactOptional(),
-              Dimensions: DimensionsSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The metric dimensions to create the anomaly detection model for.',
-                  }),
-              ).exactOptional(),
-              Stat: AnomalyDetectorMetricStatSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The statistic to use for the metric and anomaly detection model.',
-                  }),
-              ).exactOptional(),
+              Namespace: NamespaceSchema.exactOptional().openapi({
+                description:
+                  'The namespace of the metric to create the anomaly detection model for.',
+              }),
+              MetricName: MetricNameSchema.exactOptional().openapi({
+                description: 'The name of the metric to create the anomaly detection model for.',
+              }),
+              Dimensions: DimensionsSchema.exactOptional().openapi({
+                description: 'The metric dimensions to create the anomaly detection model for.',
+              }),
+              Stat: AnomalyDetectorMetricStatSchema.exactOptional().openapi({
+                description: 'The statistic to use for the metric and anomaly detection model.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -9108,24 +7882,16 @@ export const getActionPutAnomalyDetectorRoute = createRoute({
                   z.array(
                     z
                       .object({
-                        Id: MetricIdSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
-                            }),
-                        ),
+                        Id: MetricIdSchema.openapi({
+                          description:
+                            'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
+                        }),
                         MetricStat: z
                           .object({
-                            Metric: MetricSchema.and(
-                              z
-                                .any()
-                                .openapi({
-                                  description:
-                                    'The metric to return, including the metric name, namespace, and dimensions.',
-                                }),
-                            ),
+                            Metric: MetricSchema.openapi({
+                              description:
+                                'The metric to return, including the metric name, namespace, and dimensions.',
+                            }),
                             Period: z
                               .preprocess(
                                 (val) =>
@@ -9136,61 +7902,37 @@ export const getActionPutAnomalyDetectorRoute = createRoute({
                                     : val,
                                 PeriodSchema,
                               )
-                              .and(
-                                z
-                                  .any()
-                                  .openapi({
-                                    description:
-                                      '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
-                                  }),
-                              ),
-                            Stat: StatSchema.and(
-                              z
-                                .any()
-                                .openapi({
-                                  description:
-                                    'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
-                                }),
-                            ),
-                            Unit: StandardUnitSchema.and(
-                              z
-                                .any()
-                                .openapi({
-                                  description:
-                                    '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
-                                }),
-                            ).exactOptional(),
+                              .openapi({
+                                description:
+                                  '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
+                              }),
+                            Stat: StatSchema.openapi({
+                              description:
+                                'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
+                            }),
+                            Unit: StandardUnitSchema.exactOptional().openapi({
+                              description:
+                                '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
+                            }),
                           })
                           .openapi({
                             required: ['Metric', 'Period', 'Stat'],
                             description:
                               'This structure defines the metric to be returned, along with the statistics, period, and units.',
                           })
-                          .and(
-                            z
-                              .any()
-                              .openapi({
-                                description:
-                                  '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-                              }),
-                          )
-                          .exactOptional(),
-                        Expression: MetricExpressionSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-                            }),
-                        ).exactOptional(),
-                        Label: MetricLabelSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
-                            }),
-                        ).exactOptional(),
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+                          }),
+                        Expression: MetricExpressionSchema.exactOptional().openapi({
+                          description:
+                            '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+                        }),
+                        Label: MetricLabelSchema.exactOptional().openapi({
+                          description:
+                            '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
+                        }),
                         ReturnData: z
                           .preprocess(
                             ((read) => (val: unknown) => {
@@ -9199,15 +7941,11 @@ export const getActionPutAnomalyDetectorRoute = createRoute({
                             })(z.stringbool()),
                             ReturnDataSchema,
                           )
-                          .and(
-                            z
-                              .any()
-                              .openapi({
-                                description:
-                                  '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
-                              }),
-                          )
-                          .exactOptional(),
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
+                          }),
                         Period: z
                           .preprocess(
                             (val) =>
@@ -9218,23 +7956,15 @@ export const getActionPutAnomalyDetectorRoute = createRoute({
                                 : val,
                             PeriodSchema,
                           )
-                          .and(
-                            z
-                              .any()
-                              .openapi({
-                                description:
-                                  'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
-                              }),
-                          )
-                          .exactOptional(),
-                        AccountId: AccountIdSchema.and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
-                            }),
-                        ).exactOptional(),
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
+                          }),
+                        AccountId: AccountIdSchema.exactOptional().openapi({
+                          description:
+                            '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
+                        }),
                       })
                       .openapi({
                         required: ['Id'],
@@ -9243,15 +7973,11 @@ export const getActionPutAnomalyDetectorRoute = createRoute({
                       }),
                   ),
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'An array of metric data query structures that enables you to create an anomaly detector based on the result of a metric math expression. Each item in <code>MetricDataQueries</code> gets a metric or performs a math expression. One item in <code>MetricDataQueries</code> is the expression that provides the time series that the anomaly detector uses as input. Designate the expression by setting <code>ReturnData</code> to <code>true</code> for this object in the array. For all other expressions and metrics, set <code>ReturnData</code> to <code>false</code>. The designated expression must return a single time series.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'An array of metric data query structures that enables you to create an anomaly detector based on the result of a metric math expression. Each item in <code>MetricDataQueries</code> gets a metric or performs a math expression. One item in <code>MetricDataQueries</code> is the expression that provides the time series that the anomaly detector uses as input. Designate the expression by setting <code>ReturnData</code> to <code>true</code> for this object in the array. For all other expressions and metrics, set <code>ReturnData</code> to <code>false</code>. The designated expression must return a single time series.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -10654,24 +9380,16 @@ export const getActionPutMetricAlarmRoute = createRoute({
           z.array(
             z
               .object({
-                Id: MetricIdSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
-                    }),
-                ),
+                Id: MetricIdSchema.openapi({
+                  description:
+                    'A short name used to tie this object to the results in the response. This name must be unique within a single call to <code>GetMetricData</code>. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscore. The first character must be a lowercase letter.',
+                }),
                 MetricStat: z
                   .object({
-                    Metric: MetricSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The metric to return, including the metric name, namespace, and dimensions.',
-                        }),
-                    ),
+                    Metric: MetricSchema.openapi({
+                      description:
+                        'The metric to return, including the metric name, namespace, and dimensions.',
+                    }),
                     Period: z
                       .preprocess(
                         (val) =>
@@ -10682,61 +9400,37 @@ export const getActionPutMetricAlarmRoute = createRoute({
                             : val,
                         PeriodSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
-                          }),
-                      ),
-                    Stat: StatSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
-                        }),
-                    ),
-                    Unit: StandardUnitSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
-                        }),
-                    ).exactOptional(),
+                      .openapi({
+                        description:
+                          '<p>The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> call that includes a <code>StorageResolution</code> of 1 second.</p> <p>If the <code>StartTime</code> parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:</p> <ul> <li> <p>Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).</p> </li> <li> <p>Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).</p> </li> <li> <p>Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).</p> </li> </ul>',
+                      }),
+                    Stat: StatSchema.openapi({
+                      description:
+                        'The statistic to return. It can include any CloudWatch statistic or extended statistic.',
+                    }),
+                    Unit: StandardUnitSchema.exactOptional().openapi({
+                      description:
+                        '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, if you omit <code>Unit</code> then all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p>',
+                    }),
                   })
                   .openapi({
                     required: ['Metric', 'Period', 'Stat'],
                     description:
                       'This structure defines the metric to be returned, along with the statistics, period, and units.',
                   })
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-                      }),
-                  )
-                  .exactOptional(),
-                Expression: MetricExpressionSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
-                    }),
-                ).exactOptional(),
-                Label: MetricLabelSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
-                    }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '<p>The metric to be returned, along with statistics, period, and units. Use this parameter only if this object is retrieving a metric and not performing a math expression on returned data.</p> <p>Within one MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+                  }),
+                Expression: MetricExpressionSchema.exactOptional().openapi({
+                  description:
+                    '<p>This field can contain either a Metrics Insights query, or a metric math expression to be performed on the returned data. For more information about Metrics Insights queries, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-metrics-insights-querylanguage">Metrics Insights query components and syntax</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>A math expression can use the <code>Id</code> of the other metrics or queries to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. For more information about metric math expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>Within each MetricDataQuery object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>',
+                }),
+                Label: MetricLabelSchema.exactOptional().openapi({
+                  description:
+                    '<p>A human-readable label for this metric or expression. This is especially useful if this is an expression, so that you know what the value represents. If the metric or expression is shown in a CloudWatch dashboard widget, the label is shown. If Label is omitted, CloudWatch generates a default.</p> <p>You can put dynamic expressions into a label, so that it is more descriptive. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html">Using Dynamic Labels</a>.</p>',
+                }),
                 ReturnData: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -10745,15 +9439,11 @@ export const getActionPutMetricAlarmRoute = createRoute({
                     })(z.stringbool()),
                     ReturnDataSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '<p>When used in <code>GetMetricData</code>, this option indicates whether to return the timestamps and raw data values of this metric. If you are performing this call just to do math expressions and do not also need the raw data returned, you can specify <code>false</code>. If you omit this, the default of <code>true</code> is used.</p> <p>When used in <code>PutMetricAlarm</code>, specify <code>true</code> for the one expression result to use as the alarm. For all other metrics and expressions in the same <code>PutMetricAlarm</code> operation, specify <code>ReturnData</code> as False.</p>',
+                  }),
                 Period: z
                   .preprocess(
                     (val) =>
@@ -10764,23 +9454,15 @@ export const getActionPutMetricAlarmRoute = createRoute({
                         : val,
                     PeriodSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
-                      }),
-                  )
-                  .exactOptional(),
-                AccountId: AccountIdSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
-                    }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a <code>PutMetricData</code> operation that includes a <code>StorageResolution of 1 second</code>.',
+                  }),
+                AccountId: AccountIdSchema.exactOptional().openapi({
+                  description:
+                    '<p>The ID of the account where the metrics are located.</p> <p>If you are performing a <code>GetMetricData</code> operation in a monitoring account, use this to specify which account to retrieve this metric from.</p> <p>If you are performing a <code>PutMetricAlarm</code> operation, use this to specify which account contains the metric that the alarm is watching.</p>',
+                }),
               })
               .openapi({
                 required: ['Id'],
@@ -11065,20 +9747,14 @@ export const getActionPutMetricDataRoute = createRoute({
           z.array(
             z
               .object({
-                MetricName: MetricNameSchema.and(
-                  z.any().openapi({ description: 'The name of the metric.' }),
-                ),
-                Dimensions: DimensionsSchema.and(
-                  z.any().openapi({ description: 'The dimensions associated with the metric. ' }),
-                ).exactOptional(),
-                Timestamp: TimestampSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The time the metric data was received, expressed as the number of milliseconds since Jan 1, 1970 00:00:00 UTC.',
-                    }),
-                ).exactOptional(),
+                MetricName: MetricNameSchema.openapi({ description: 'The name of the metric.' }),
+                Dimensions: DimensionsSchema.exactOptional().openapi({
+                  description: 'The dimensions associated with the metric. ',
+                }),
+                Timestamp: TimestampSchema.exactOptional().openapi({
+                  description:
+                    'The time the metric data was received, expressed as the number of milliseconds since Jan 1, 1970 00:00:00 UTC.',
+                }),
                 Value: z
                   .preprocess(
                     (val) =>
@@ -11089,15 +9765,11 @@ export const getActionPutMetricDataRoute = createRoute({
                         : val,
                     DatapointValueSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The value for the metric.</p> <p>Although the parameter accepts numbers of type Double, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>',
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '<p>The value for the metric.</p> <p>Although the parameter accepts numbers of type Double, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>',
+                  }),
                 StatisticValues: z
                   .object({
                     SampleCount: z
@@ -11110,13 +9782,9 @@ export const getActionPutMetricDataRoute = createRoute({
                             : val,
                         DatapointValueSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description: 'The number of samples used for the statistic set.',
-                          }),
-                      ),
+                      .openapi({
+                        description: 'The number of samples used for the statistic set.',
+                      }),
                     Sum: z
                       .preprocess(
                         (val) =>
@@ -11127,9 +9795,7 @@ export const getActionPutMetricDataRoute = createRoute({
                             : val,
                         DatapointValueSchema,
                       )
-                      .and(
-                        z.any().openapi({ description: 'The sum of values for the sample set.' }),
-                      ),
+                      .openapi({ description: 'The sum of values for the sample set.' }),
                     Minimum: z
                       .preprocess(
                         (val) =>
@@ -11140,9 +9806,7 @@ export const getActionPutMetricDataRoute = createRoute({
                             : val,
                         DatapointValueSchema,
                       )
-                      .and(
-                        z.any().openapi({ description: 'The minimum value of the sample set.' }),
-                      ),
+                      .openapi({ description: 'The minimum value of the sample set.' }),
                     Maximum: z
                       .preprocess(
                         (val) =>
@@ -11153,17 +9817,15 @@ export const getActionPutMetricDataRoute = createRoute({
                             : val,
                         DatapointValueSchema,
                       )
-                      .and(
-                        z.any().openapi({ description: 'The maximum value of the sample set.' }),
-                      ),
+                      .openapi({ description: 'The maximum value of the sample set.' }),
                   })
                   .openapi({
                     required: ['SampleCount', 'Sum', 'Minimum', 'Maximum'],
                     description:
                       'Represents a set of statistics that describes a specific metric. ',
                   })
-                  .and(z.any().openapi({ description: 'The statistical values for the metric.' }))
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({ description: 'The statistical values for the metric.' }),
                 Values: z
                   .array(
                     z.preprocess(
@@ -11176,15 +9838,11 @@ export const getActionPutMetricDataRoute = createRoute({
                       DatapointValueSchema,
                     ),
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Array of numbers representing the values for the metric during the period. Each unique value is listed just once in this array, and the corresponding number in the <code>Counts</code> array specifies the number of times that value occurred during the period. You can include up to 150 unique values in each <code>PutMetricData</code> action that specifies a <code>Values</code> array.</p> <p>Although the <code>Values</code> array accepts numbers of type <code>Double</code>, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>',
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '<p>Array of numbers representing the values for the metric during the period. Each unique value is listed just once in this array, and the corresponding number in the <code>Counts</code> array specifies the number of times that value occurred during the period. You can include up to 150 unique values in each <code>PutMetricData</code> action that specifies a <code>Values</code> array.</p> <p>Although the <code>Values</code> array accepts numbers of type <code>Double</code>, CloudWatch rejects values that are either too small or too large. Values must be in the range of -2^360 to 2^360. In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.</p>',
+                  }),
                 Counts: z
                   .array(
                     z.preprocess(
@@ -11197,23 +9855,15 @@ export const getActionPutMetricDataRoute = createRoute({
                       DatapointValueSchema,
                     ),
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Array of numbers that is used along with the <code>Values</code> array. Each number in the <code>Count</code> array is the number of times the corresponding value in the <code>Values</code> array occurred during the period. </p> <p>If you omit the <code>Counts</code> array, the default of 1 is used as the value for each count. If you include a <code>Counts</code> array, it must include the same amount of values as the <code>Values</code> array.</p>',
-                      }),
-                  )
-                  .exactOptional(),
-                Unit: StandardUnitSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, this displays the unit that is used for the metric.</p>',
-                    }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '<p>Array of numbers that is used along with the <code>Values</code> array. Each number in the <code>Count</code> array is the number of times the corresponding value in the <code>Values</code> array occurred during the period. </p> <p>If you omit the <code>Counts</code> array, the default of 1 is used as the value for each count. If you include a <code>Counts</code> array, it must include the same amount of values as the <code>Values</code> array.</p>',
+                  }),
+                Unit: StandardUnitSchema.exactOptional().openapi({
+                  description:
+                    '<p>When you are using a <code>Put</code> operation, this defines what unit you want to use when storing the metric.</p> <p>In a <code>Get</code> operation, this displays the unit that is used for the metric.</p>',
+                }),
                 StorageResolution: z
                   .preprocess(
                     (val) =>
@@ -11224,15 +9874,11 @@ export const getActionPutMetricDataRoute = createRoute({
                         : val,
                     StorageResolutionSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Valid values are 1 and 60. Setting this to 1 specifies this metric as a high-resolution metric, so that CloudWatch stores the metric with sub-minute resolution down to one second. Setting this to 60 specifies this metric as a regular-resolution metric, which CloudWatch stores at 1-minute resolution. Currently, high resolution is available only for custom metrics. For more information about high-resolution metrics, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#high-resolution-metrics">High-Resolution Metrics</a> in the <i>Amazon CloudWatch User Guide</i>. </p> <p>This field is optional, if you do not specify it the default of 60 is used.</p>',
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      '<p>Valid values are 1 and 60. Setting this to 1 specifies this metric as a high-resolution metric, so that CloudWatch stores the metric with sub-minute resolution down to one second. Setting this to 60 specifies this metric as a regular-resolution metric, which CloudWatch stores at 1-minute resolution. Currently, high resolution is available only for custom metrics. For more information about high-resolution metrics, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#high-resolution-metrics">High-Resolution Metrics</a> in the <i>Amazon CloudWatch User Guide</i>. </p> <p>This field is optional, if you do not specify it the default of 60 is used.</p>',
+                  }),
               })
               .openapi({
                 required: ['MetricName'],

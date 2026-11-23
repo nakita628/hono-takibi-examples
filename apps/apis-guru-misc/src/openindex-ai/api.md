@@ -6,7 +6,7 @@ A retrieval API for querying and filtering documents based on natural language q
 
 Base URLs:
 
-* <a href="https://api.apis.guru/sub">https://api.apis.guru/sub</a>
+* <a href="/sub">/sub</a>
 
 * <a href="https://retriever.openindex.ai">https://retriever.openindex.ai</a>
 

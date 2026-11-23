@@ -1,323 +1,22 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ElasticConfigSchema = z
-  .object({
-    clusterUri: z
-      .string()
-      .openapi({ description: 'URL of the elastic cluster', example: 'a string value' }),
-    headers: z
-      .record(z.string(), z.string())
-      .openapi({ description: 'Additionnal http headers', example: { key: 'value' } }),
-    index: z
-      .string()
-      .openapi({
-        description: 'Index for events. Default is otoroshi-events',
-        example: 'a string value',
-      }),
-    password: z.string().openapi({ description: 'Optional password', example: 'a string value' }),
-    type: z
-      .string()
-      .openapi({ description: 'Type of events. Default is event', example: 'a string value' }),
-    user: z.string().openapi({ description: 'Optional user', example: 'a string value' }),
-  })
-  .openapi({
-    description: 'The configuration for elastic access',
-    required: ['clusterUri', 'index', 'type', 'user', 'password', 'headers'],
-  })
-  .openapi('ElasticConfig')
-
-const KafkaConfigSchema = z
-  .object({
-    keyPass: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional keypass', example: 'a string value' }),
-    keyStore: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional path to keystore', example: 'a string value' }),
-    servers: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'URLs of the kafka servers' }),
-    topic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional kafka topic (otoroshi-events by default)',
-        example: 'a string value',
-      }),
-    trustore: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional path to trustore', example: 'a string value' }),
-  })
-  .openapi({ description: 'The configuration for kafka access', required: ['servers'] })
-  .openapi('KafkaConfig')
-
-const PulsarDataExporterConfigSchema = z
-  .object({
-    namespace: z.string().openapi({ description: 'Namespace', example: 'a string value' }),
-    tenant: z.string().openapi({ description: 'Tenant', example: 'a string value' }),
-    topic: z.string().openapi({ description: 'Topic', example: 'a string value' }),
-    uri: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'URI of the pulsar server' }),
-  })
-  .openapi({
-    description: 'The configuration for kafka access',
-    required: ['uri', 'tenant', 'namespace', 'topic'],
-  })
-  .openapi('PulsarDataExporterConfig')
-
-const FileDataExporterConfigSchema = z
-  .object({ path: z.string().openapi({ description: 'Path to file', example: 'a string value' }) })
-  .openapi({ required: ['path'] })
-  .openapi('FileDataExporterConfig')
-
-const MailerGenericExporterConfigSchema = z
+const WebhookSchema = z
   .object({
     headers: z
       .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Optional headers', example: { key: 'value' } }),
-    to: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .exactOptional()
-      .openapi({ description: 'Email adresses of recipents' }),
-    type: z.literal('generic').openapi({ description: 'Type of mailer' }),
+      .openapi({
+        description: 'Headers to authorize the call or whatever',
+        example: { key: 'value' },
+      }),
     url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Url of mailer', example: 'a string value' }),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('MailerGenericExporterConfig')
-
-const MailerConsoleExporterConfigSchema = z
-  .object({ type: z.literal('generic').exactOptional().openapi({ description: 'Type of mailer' }) })
-  .openapi({ required: [] })
-  .openapi('MailerConsoleExporterConfig')
-
-const MailerMailgunExporterConfigSchema = z
-  .object({
-    apiKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Mailgun apiKey', example: 'a string value' }),
-    domain: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Mailgun domain', example: 'a string value' }),
-    eu: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the mailgun server is european', example: true }),
-    to: z
-      .array(z.email().openapi({ example: 'admin@otoroshi.io' }))
-      .exactOptional()
-      .openapi({ description: 'Email adresses of recipents' }),
-    type: z.literal('mailgun').openapi({ description: 'Type of mailer' }),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('MailerMailgunExporterConfig')
-
-const MailerMailjetExporterConfigSchema = z
-  .object({
-    apiKeyPrivate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Mailjet private apiKey', example: 'a string value' }),
-    apiKeyPublic: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Mailjet public apiKey', example: 'a string value' }),
-    to: z
-      .array(z.email().openapi({ example: 'admin@otoroshi.io' }))
-      .exactOptional()
-      .openapi({ description: 'Email adresses of recipents' }),
-    type: z.literal('mailjet').openapi({ description: 'Type of mailer' }),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('MailerMailjetExporterConfig')
-
-const MailerSendgridExporterConfigSchema = z
-  .object({
-    apiKeyPublic: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Sendgrid apiKey', example: 'a string value' }),
-    to: z
-      .array(z.email().openapi({ example: 'admin@otoroshi.io' }))
-      .exactOptional()
-      .openapi({ description: 'Email adresses of recipents' }),
-    type: z.literal('sendgrid').openapi({ description: 'Type of mailer' }),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('MailerSendgridExporterConfig')
-
-const ConsoleDataExporterConfigSchema = z.object({}).openapi('ConsoleDataExporterConfig')
-
-const CustomDataExporterConfigSchema = z
-  .object({
-    config: z
-      .record(z.string(), z.string())
-      .openapi({ description: 'Custom data exporter config', example: { key: 'value' } }),
-    ref: z.string().openapi({ description: 'Script Ref', example: 'a string value' }),
-  })
-  .openapi({ required: ['ref', 'config'] })
-  .openapi('CustomDataExporterConfig')
-
-const FilteringSchema = z
-  .object({
-    exclude: z
-      .array(z.record(z.string(), z.string()).openapi({ example: { key: 'value' } }))
-      .exactOptional()
-      .openapi({ description: 'Excluding pattern' }),
-    include: z
-      .array(z.record(z.string(), z.string()).openapi({ example: { key: 'value' } }))
-      .exactOptional()
-      .openapi({ description: 'Including pattern' }),
-  })
-  .openapi({ required: ['include, exclude'] })
-  .openapi('Filtering')
-
-const LocationSchema = z
-  .object({
-    teams: z
-      .array(z.record(z.string(), z.string()).openapi({ example: { key: 'value' } }))
-      .openapi({ description: 'Team ids' }),
-    tenant: z.string().openapi({ description: 'Tenant id', example: 'a string value' }),
-  })
-  .openapi({ required: ['tenant', 'teams'] })
-  .openapi('Location')
-
-type DataExporterConfigType = {
-  bufferSize?: number
-  config?:
-    | z.infer<typeof ElasticConfigSchema>
-    | z.infer<typeof KafkaConfigSchema>
-    | z.infer<typeof PulsarDataExporterConfigSchema>
-    | z.infer<typeof FileDataExporterConfigSchema>
-    | z.infer<typeof MailerGenericExporterConfigSchema>
-    | z.infer<typeof MailerConsoleExporterConfigSchema>
-    | z.infer<typeof MailerMailgunExporterConfigSchema>
-    | z.infer<typeof MailerMailjetExporterConfigSchema>
-    | z.infer<typeof MailerSendgridExporterConfigSchema>
-    | z.infer<typeof ConsoleDataExporterConfigSchema>
-    | z.infer<typeof CustomDataExporterConfigSchema>
-  desc?: string
-  enabled?: string
-  filtering?: z.infer<typeof FilteringSchema>
-  groupDuration?: bigint
-  groupSize?: number
-  id?: string
-  jsonWorkers?: number
-  location?: z.infer<typeof LocationSchema>
-  metadata?: { [key: string]: string }
-  name?: string
-  projection?: { [key: string]: string }
-  sendWorkers?: number
-  typ?: 'kafka' | 'pulsar' | 'file' | 'mailer' | 'elastic' | 'console' | 'custom'
-}
-
-const ApiKeySchema = z
-  .object({
-    authorizedEntities: z
-      .array(z.string().openapi({ example: 'a string value' }))
+      .url()
       .openapi({
-        description:
-          'The group/service ids (prefixed by group_ or service_ on which the key is authorized',
-        example: ['a string value'],
-      }),
-    clientId: z
-      .string()
-      .openapi({
-        description:
-          'The unique id of the Api Key. Usually 16 random alpha numerical characters, but can be anything',
-        example: 'a string value',
-      }),
-    clientName: z
-      .string()
-      .openapi({
-        description: 'The name of the api key, for humans ;-)',
-        example: 'a string value',
-      }),
-    clientSecret: z
-      .string()
-      .openapi({
-        description:
-          'The secret of the Api Key. Usually 64 random alpha numerical characters, but can be anything',
-        example: 'a string value',
-      }),
-    dailyQuota: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Authorized number of calls per day',
-        example: 123,
-      }),
-    enabled: z
-      .boolean()
-      .openapi({
-        description:
-          "Whether or not the key is enabled. If disabled, resources won't be available to calls using this key",
-        example: true,
-      }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Bunch of metadata for the key', example: { key: 'value' } }),
-    monthlyQuota: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Authorized number of calls per month',
-        example: 123,
-      }),
-    throttlingQuota: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Authorized number of calls per second, measured on 10 seconds',
-        example: 123,
+        description: 'The URL where events are posted',
+        example: 'http://www.google.com',
       }),
   })
-  .openapi({
-    description:
-      'An Otoroshi Api Key. An Api Key is defined for a group of services to allow usage of the same Api Key for multiple services.',
-    required: ['clientId', 'clientSecret', 'clientName', 'authorizedEntities', 'enabled'],
-  })
-  .openapi('ApiKey')
+  .openapi({ description: 'A callback URL where events are posted', required: ['url', 'headers'] })
+  .openapi('Webhook')
 
 const Auth0ConfigSchema = z
   .object({
@@ -335,245 +34,6 @@ const Auth0ConfigSchema = z
     required: ['clientId', 'clientSecret', 'domain', 'callbackUrl'],
   })
   .openapi('Auth0Config')
-
-const BadResponseSchema = z
-  .object({
-    body: z
-      .string()
-      .openapi({ description: 'The body of the HTTP response', example: 'a string value' }),
-    headers: z
-      .record(z.string(), z.string())
-      .openapi({ description: 'The HTTP headers of the response', example: { key: 'value' } }),
-    status: z.int32().openapi({ description: 'The HTTP status for the response', example: 123123 }),
-  })
-  .openapi({
-    description: 'An HTTP response that is not supposed to be returned by a service',
-    required: ['status', 'body', 'headers'],
-  })
-  .openapi('BadResponse')
-
-const BadResponsesFaultConfigSchema = z
-  .object({
-    ratio: z
-      .float64()
-      .openapi({
-        description:
-          'The percentage of requests affected by this fault. Value should be between 0.0 and 1.0',
-        example: 42.2,
-      }),
-    responses: z.array(BadResponseSchema).openapi({ description: 'The possibles responses' }),
-  })
-  .openapi({
-    description: 'Config for bad requests injection fault',
-    required: ['ratio', 'responses'],
-  })
-  .openapi('BadResponsesFaultConfig')
-
-const TargetSchema = z
-  .object({
-    host: z
-      .hostname()
-      .openapi({
-        description:
-          'The host on which the HTTP call will be forwarded. Can be a domain name, or an IP address. Can also have a port',
-        example: 'www.google.com',
-      }),
-    scheme: z
-      .string()
-      .openapi({
-        description: 'The protocol used for communication. Can be http or https',
-        example: 'a string value',
-      }),
-  })
-  .openapi({
-    description:
-      'A Target is where an HTTP call will be forwarded in the end from a service domain',
-    required: ['host', 'scheme'],
-  })
-  .openapi('Target')
-
-const CanarySchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({ description: 'Use canary mode for this service', example: true }),
-    root: z
-      .string()
-      .openapi({
-        description:
-          "Otoroshi will append this root to any target choosen. If the specified root is '/api/foo', then a request to https://yyyyyyy/bar will actually hit https://xxxxxxxxx/api/foo/bar",
-        example: 'a string value',
-      }),
-    targets: z
-      .array(TargetSchema)
-      .openapi({
-        description:
-          'The list of target that Otoroshi will proxy and expose through the subdomain defined before. Otoroshi will do round-robin load balancing between all those targets with circuit breaker mecanism to avoid cascading failures',
-      }),
-    traffic: z
-      .int32()
-      .openapi({
-        description: 'Ratio of traffic that will be sent to canary targets.',
-        example: 123123,
-      }),
-  })
-  .openapi({
-    description: 'The configuration of the canary mode for a service descriptor',
-    required: ['enabled', 'traffic', 'targets', 'root'],
-  })
-  .openapi('Canary')
-
-const CertificateSchema = z
-  .object({
-    autoRenew: z
-      .string()
-      .openapi({
-        description: 'Allow Otoroshi to renew the certificate (if self signed)',
-        example: 'a string value',
-      }),
-    ca: z
-      .string()
-      .openapi({ description: 'Certificate is a CA (read only)', example: 'a string value' }),
-    caRef: z
-      .string()
-      .openapi({
-        description: 'Reference for a CA certificate in otoroshi',
-        example: 'a string value',
-      }),
-    chain: z
-      .string()
-      .openapi({
-        description: 'Certificate chain of trust in PEM format',
-        example: 'a string value',
-      }),
-    domain: z
-      .string()
-      .openapi({ description: 'Domain of the certificate (read only)', example: 'a string value' }),
-    from: z.string().openapi({ description: 'Start date of validity', example: 'a string value' }),
-    id: z.string().openapi({ description: 'Id of the certificate', example: 'a string value' }),
-    privateKey: z
-      .string()
-      .openapi({ description: 'PKCS8 private key in PEM format', example: 'a string value' }),
-    selfSigned: z
-      .string()
-      .openapi({
-        description: 'Certificate is self signed  read only)',
-        example: 'a string value',
-      }),
-    subject: z
-      .string()
-      .openapi({
-        description: 'Subject of the certificate (read only)',
-        example: 'a string value',
-      }),
-    to: z.string().openapi({ description: 'End date of validity', example: 'a string value' }),
-    valid: z
-      .string()
-      .openapi({ description: 'Certificate is valid (read only)', example: 'a string value' }),
-  })
-  .openapi({
-    description: 'A SSL/TLS X509 certificate',
-    required: [
-      'id',
-      'chain',
-      'privateKey',
-      'caRef',
-      'domain',
-      'selfSigned',
-      'ca',
-      'valid',
-      'autoRenew',
-      'subject',
-      'from',
-      'to',
-    ],
-  })
-  .openapi('Certificate')
-
-const LargeRequestFaultConfigSchema = z
-  .object({
-    additionalRequestSize: z
-      .int32()
-      .openapi({
-        description:
-          'The size added to the request body in bytes. Added payload will be spaces only.',
-        example: 123123,
-      }),
-    ratio: z
-      .float64()
-      .openapi({
-        description:
-          'The percentage of requests affected by this fault. Value should be between 0.0 and 1.0',
-        example: 42.2,
-      }),
-  })
-  .openapi({
-    description: 'Config for large request injection fault',
-    required: ['ratio', 'additionalRequestSize'],
-  })
-  .openapi('LargeRequestFaultConfig')
-
-const LargeResponseFaultConfigSchema = z
-  .object({
-    additionalRequestSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The size added to the response body in bytes. Added payload will be spaces only.',
-        example: 123123,
-      }),
-    ratio: z
-      .float64()
-      .openapi({
-        description:
-          'The percentage of requests affected by this fault. Value should be between 0.0 and 1.0',
-        example: 42.2,
-      }),
-  })
-  .openapi({
-    description: 'Config for large response injection fault',
-    required: ['ratio', 'additionalResponseSize'],
-  })
-  .openapi('LargeResponseFaultConfig')
-
-const LatencyInjectionFaultConfigSchema = z
-  .object({
-    from: z
-      .int32()
-      .openapi({ description: 'The start range of latency added to the request', example: 123123 }),
-    ratio: z
-      .float64()
-      .openapi({
-        description:
-          'The percentage of requests affected by this fault. Value should be between 0.0 and 1.0',
-        example: 42.2,
-      }),
-    to: z
-      .int32()
-      .openapi({ description: 'The end range of latency added to the request', example: 123123 }),
-  })
-  .openapi({
-    description: 'Config for large latency injection fault',
-    required: ['ratio', 'from', 'to'],
-  })
-  .openapi('LatencyInjectionFaultConfig')
-
-const ChaosConfigSchema = z
-  .object({
-    badResponsesFaultConfig: BadResponsesFaultConfigSchema.exactOptional(),
-    enabled: z
-      .boolean()
-      .openapi({ description: 'Whether or not this config is enabled', example: true }),
-    largeRequestFaultConfig: LargeRequestFaultConfigSchema.exactOptional(),
-    largeResponseFaultConfig: LargeResponseFaultConfigSchema.exactOptional(),
-    latencyInjectionFaultConfig: LatencyInjectionFaultConfigSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Configuration for the faults that can be injected in requests',
-    required: ['enabled'],
-  })
-  .openapi('ChaosConfig')
 
 const CleverSettingsSchema = z
   .object({
@@ -599,522 +59,31 @@ const CleverSettingsSchema = z
   })
   .openapi('CleverSettings')
 
-const ClientConfigSchema = z
+const ElasticConfigSchema = z
   .object({
-    backoffFactor: z
-      .int32()
-      .openapi({
-        description: 'Specify the factor to multiply the delay for each retry',
-        example: 123123,
-      }),
-    callTimeout: z
-      .int32()
-      .openapi({
-        description: 'Specify how long each call should last at most in milliseconds',
-        example: 123123,
-      }),
-    globalTimeout: z
-      .int32()
-      .openapi({
-        description:
-          'Specify how long the global call (with retries) should last at most in milliseconds',
-        example: 123123,
-      }),
-    maxErrors: z
-      .int32()
-      .openapi({
-        description: 'Specify how many errors can pass before opening the circuit breaker',
-        example: 123123,
-      }),
-    retries: z
-      .int32()
-      .openapi({
-        description:
-          'Specify how many times the client will try to fetch the result of the request after an error before giving up.',
-        example: 123123,
-      }),
-    retryInitialDelay: z
-      .int32()
-      .openapi({
-        description:
-          'Specify the delay between two retries. Each retry, the delay is multiplied by the backoff factor',
-        example: 123123,
-      }),
-    sampleInterval: z
-      .int32()
-      .openapi({
-        description:
-          'Specify the sliding window time for the circuit breaker in milliseconds, after this time, error count will be reseted',
-        example: 123123,
-      }),
-    useCircuitBreaker: z
-      .boolean()
-      .openapi({
-        description:
-          'Use a circuit breaker to avoid cascading failure when calling chains of services. Highly recommended !',
-        example: true,
-      }),
-  })
-  .openapi({
-    description: 'The configuration of the circuit breaker for a service descriptor',
-    required: [
-      'useCircuitBreaker',
-      'retries',
-      'maxErrors',
-      'retryInitialDelay',
-      'backoffFactor',
-      'callTimeout',
-      'globalTimeout',
-      'sampleInterval',
-    ],
-  })
-  .openapi('ClientConfig')
-
-const CorsSettingsSchema = z
-  .object({
-    allowCredentials: z
-      .boolean()
-      .openapi({ description: 'Allow to pass credentials', example: true }),
-    allowHeaders: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'The cors allowed headers' }),
-    allowMethods: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'The cors allowed methods' }),
-    allowOrigin: z
+    clusterUri: z
       .string()
-      .openapi({ description: 'The cors allowed origin', example: 'a string value' }),
-    enabled: z.boolean().openapi({ description: 'Whether or not cors is enabled', example: true }),
-    excludedPatterns: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'The cors excluded patterns' }),
-    exposeHeaders: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'The cors exposed header' }),
-    maxAge: z.int32().openapi({ description: 'Cors max age', example: 123123 }),
-  })
-  .openapi({
-    description: 'The configuration for cors support',
-    required: [
-      'enabled',
-      'allowOrigin',
-      'exposeHeaders',
-      'allowHeaders',
-      'allowMethods',
-      'excludedPatterns',
-      'maxAge',
-      'allowCredentials',
-    ],
-  })
-  .openapi('CorsSettings')
-
-const DataExporterConfigSchema: z.ZodType<DataExporterConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        bufferSize: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'buffer size', example: 123123 }),
-        config: z
-          .xor([
-            ElasticConfigSchema,
-            KafkaConfigSchema,
-            PulsarDataExporterConfigSchema,
-            FileDataExporterConfigSchema,
-            MailerGenericExporterConfigSchema,
-            MailerConsoleExporterConfigSchema,
-            MailerMailgunExporterConfigSchema,
-            MailerMailjetExporterConfigSchema,
-            MailerSendgridExporterConfigSchema,
-            ConsoleDataExporterConfigSchema,
-            CustomDataExporterConfigSchema,
-          ])
-          .exactOptional()
-          .openapi({ description: 'Data Exporter config' }),
-        desc: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Description', example: 'a string value' }),
-        enabled: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Boolean', example: 'a string value' }),
-        filtering: FilteringSchema.exactOptional().openapi({ description: 'filtering' }),
-        groupDuration: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', description: 'duration', example: 123 }),
-        groupSize: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'Group size', example: 123123 }),
-        id: z.string().exactOptional().openapi({ description: 'Id', example: 'a string value' }),
-        jsonWorkers: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'nb workers', example: 123123 }),
-        location: LocationSchema.exactOptional().openapi({ description: 'location' }),
-        metadata: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({ description: 'Metadata', example: { key: 'value' } }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Name', example: 'a string value' }),
-        projection: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({ description: 'projection', example: { key: 'value' } }),
-        sendWorkers: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'send workers', example: 123123 }),
-        typ: z
-          .enum(['kafka', 'pulsar', 'file', 'mailer', 'elastic', 'console', 'custom'])
-          .exactOptional()
-          .openapi({ description: 'Type of data exporter' }),
-      })
-      .openapi({ description: 'Settings to export Otorshi events', required: [] }),
-  )
-  .openapi('DataExporterConfig')
-
-const DeletedSchema = z
-  .object({ deleted: z.boolean().openapi({ example: true }) })
-  .openapi({ required: ['deleted'] })
-  .openapi('Deleted')
-
-const DoneSchema = z
-  .object({ done: z.boolean().openapi({ example: true }) })
-  .openapi({ required: ['done'] })
-  .openapi('Done')
-
-const ESAlgoSettingsSchema = z
-  .object({
-    privateKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The private key for the RSA function', example: 'a string value' }),
-    publicKey: z
-      .string()
-      .openapi({ description: 'The public key for the RSA function', example: 'a string value' }),
-    size: z
-      .int32()
-      .openapi({ description: 'Size for SHA function. can be 256, 384 or 512', example: 123123 }),
-    type: z
-      .string()
-      .openapi({ description: 'String with value ESAlgoSettings', example: 'a string value' }),
-  })
-  .openapi({
-    description: 'Settings for an EC + SHA signing algorithm',
-    required: ['type', 'size', 'publicKey'],
-  })
-  .openapi('ESAlgoSettings')
-
-const EnvironmentSchema = z
-  .string()
-  .openapi({ description: 'The name of the environment for service descriptors', example: 'prod' })
-  .openapi('Environment')
-
-const ErrorTemplateSchema = z
-  .object({
-    messages: z
-      .record(z.string(), z.string())
-      .openapi({ description: 'Map for custom messages', example: { key: 'value' } }),
-    serviceId: z
-      .string()
-      .openapi({
-        description: 'The Id of the service for which the error template is enabled',
-        example: 'a string value',
-      }),
-    template40x: z
-      .string()
-      .openapi({ description: 'The html template for 40x errors', example: 'a string value' }),
-    template50x: z
-      .string()
-      .openapi({ description: 'The html template for 50x errors', example: 'a string value' }),
-    templateBuild: z
-      .string()
-      .openapi({ description: 'The html template for build page', example: 'a string value' }),
-    templateMaintenance: z
-      .string()
-      .openapi({
-        description: 'The html template for maintenance page',
-        example: 'a string value',
-      }),
-  })
-  .openapi({
-    description: 'Error templates for a service descriptor',
-    required: [
-      'serviceId',
-      'template40x',
-      'template50x',
-      'templateBuild',
-      'templateMaintenance',
-      'messages',
-    ],
-  })
-  .openapi('ErrorTemplate')
-
-const ExposedApiSchema = z
-  .object({
-    exposeApi: z
-      .boolean()
-      .openapi({
-        description: 'Whether or not the current service expose an API with an Open API descriptor',
-        example: true,
-      }),
-    openApiDescriptorUrl: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: 'The URL of the Open API descriptor',
-        example: 'http://www.google.com',
-      }),
-  })
-  .openapi({
-    description: 'The Open API configuration for your service (if one)',
-    required: ['exposeApi'],
-  })
-  .openapi('ExposedApi')
-
-const HSAlgoSettingsSchema = z
-  .object({
-    secret: z
-      .string()
-      .openapi({
-        description: 'The secret value for the HMAC function',
-        example: 'a string value',
-      }),
-    size: z
-      .int32()
-      .openapi({ description: 'Size for SHA function. can be 256, 384 or 512', example: 123123 }),
-    type: z
-      .string()
-      .openapi({ description: 'String with value HSAlgoSettings', example: 'a string value' }),
-  })
-  .openapi({
-    description: 'Settings for an HMAC + SHA signing algorithm',
-    required: ['type', 'size', 'secret'],
-  })
-  .openapi('HSAlgoSettings')
-
-const RSAlgoSettingsSchema = z
-  .object({
-    privateKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The private key for the RSA function', example: 'a string value' }),
-    publicKey: z
-      .string()
-      .openapi({ description: 'The public key for the RSA function', example: 'a string value' }),
-    size: z
-      .int32()
-      .openapi({ description: 'Size for SHA function. can be 256, 384 or 512', example: 123123 }),
-    type: z
-      .string()
-      .openapi({ description: 'String with value RSAlgoSettings', example: 'a string value' }),
-  })
-  .openapi({
-    description: 'Settings for an HMAC + SHA signing algorithm',
-    required: ['type', 'size', 'publicKey'],
-  })
-  .openapi('RSAlgoSettings')
-
-const JWKSAlgoSettingsSchema = z
-  .object({
+      .openapi({ description: 'URL of the elastic cluster', example: 'a string value' }),
     headers: z
       .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The headers for the http call', example: { key: 'value' } }),
-    kty: z
+      .openapi({ description: 'Additionnal http headers', example: { key: 'value' } }),
+    index: z
       .string()
-      .exactOptional()
-      .openapi({ description: 'The type of key: RSA or EC', example: 'a string value' }),
-    timeout: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
       .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The timeout of the http call',
-        example: 123,
+        description: 'Index for events. Default is otoroshi-events',
+        example: 'a string value',
       }),
-    ttl: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The ttl of the keyset',
-        example: 123,
-      }),
+    password: z.string().openapi({ description: 'Optional password', example: 'a string value' }),
     type: z
       .string()
-      .openapi({ description: 'String with value JWKSAlgoSettings', example: 'a string value' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The url for the http call', example: 'a string value' }),
-  })
-  .openapi({ description: 'Settings for a JWK set', required: ['type', 'size', 'publicKey'] })
-  .openapi('JWKSAlgoSettings')
-
-const GenericOauth2ModuleConfigSchema = z
-  .object({
-    accessTokenField: z
-      .string()
-      .openapi({ description: 'Field name to get access token', example: 'a string value' }),
-    authorizeUrl: z
-      .string()
-      .openapi({ description: 'OAuth authorize URL', example: 'a string value' }),
-    callbackUrl: z
-      .string()
-      .openapi({ description: 'Otoroshi callback URL', example: 'a string value' }),
-    claims: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The claims of the token', example: 'a string value' }),
-    clientId: z.string().openapi({ description: 'OAuth Client id', example: 'a string value' }),
-    clientSecret: z
-      .string()
-      .openapi({ description: 'OAuth Client secret', example: 'a string value' }),
-    desc: z
-      .string()
-      .openapi({ description: 'Description of the config', example: 'a string value' }),
-    emailField: z
-      .string()
-      .openapi({
-        description: 'Field name to get email from user profile',
-        example: 'a string value',
-      }),
-    id: z.string().openapi({ description: 'Unique id of the config', example: 'a string value' }),
-    jwtVerifier: z
-      .xor([
-        HSAlgoSettingsSchema,
-        RSAlgoSettingsSchema,
-        ESAlgoSettingsSchema,
-        JWKSAlgoSettingsSchema,
-      ])
-      .exactOptional()
-      .openapi({ description: 'Algo. settings to verify JWT token' }),
-    loginUrl: z.string().openapi({ description: 'OAuth login URL', example: 'a string value' }),
-    logoutUrl: z.string().openapi({ description: 'OAuth logout URL', example: 'a string value' }),
-    name: z.string().openapi({ description: 'Name of the config', example: 'a string value' }),
-    nameField: z
-      .string()
-      .openapi({
-        description: 'Field name to get name from user profile',
-        example: 'a string value',
-      }),
-    oidConfig: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL of the OIDC config. file', example: 'a string value' }),
-    otoroshiDataField: z
-      .string()
-      .openapi({
-        description:
-          'Field name to get otoroshi metadata from. You can specify sub fields using | as separator',
-        example: 'a string value',
-      }),
-    readProfileFromToken: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'The user profile will be read from the JWT token in id_token',
-        example: true,
-      }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The scope of the token', example: 'a string value' }),
-    sessionMaxAge: z.int32().openapi({ description: 'Max age of the session', example: 123123 }),
-    tokenUrl: z.string().openapi({ description: 'OAuth token URL', example: 'a string value' }),
-    type: z
-      .string()
-      .openapi({ description: 'Type of settings. value is oauth2', example: 'a string value' }),
-    useCookies: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Use for redirection to actual service', example: true }),
-    useJson: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Use JSON or URL Form Encoded as payload with the OAuth provider',
-        example: true,
-      }),
-    userInfoUrl: z
-      .string()
-      .openapi({ description: 'OAuth userinfo to get user profile', example: 'a string value' }),
+      .openapi({ description: 'Type of events. Default is event', example: 'a string value' }),
+    user: z.string().openapi({ description: 'Optional user', example: 'a string value' }),
   })
   .openapi({
-    description: 'Settings to authenticate users using a generic OAuth2 provider',
-    required: [
-      'type',
-      'id',
-      'name',
-      'desc',
-      'sessionMaxAge',
-      'clientId',
-      'clientSecret',
-      'authorizeUrl',
-      'tokenUrl',
-      'userInfoUrl',
-      'loginUrl',
-      'logoutUrl',
-      'callbackUrl',
-      'accessTokenField',
-      'nameField',
-      'emailField',
-      'otoroshiDataField',
-    ],
+    description: 'The configuration for elastic access',
+    required: ['clusterUri', 'index', 'type', 'user', 'password', 'headers'],
   })
-  .openapi('GenericOauth2ModuleConfig')
-
-const WebhookSchema = z
-  .object({
-    headers: z
-      .record(z.string(), z.string())
-      .openapi({
-        description: 'Headers to authorize the call or whatever',
-        example: { key: 'value' },
-      }),
-    url: z
-      .url()
-      .openapi({
-        description: 'The URL where events are posted',
-        example: 'http://www.google.com',
-      }),
-  })
-  .openapi({ description: 'A callback URL where events are posted', required: ['url', 'headers'] })
-  .openapi('Webhook')
+  .openapi('ElasticConfig')
 
 const IpFilteringSchema = z
   .object({
@@ -1346,6 +315,513 @@ const GlobalConfigSchema = z
   })
   .openapi('GlobalConfig')
 
+const TargetSchema = z
+  .object({
+    host: z
+      .hostname()
+      .openapi({
+        description:
+          'The host on which the HTTP call will be forwarded. Can be a domain name, or an IP address. Can also have a port',
+        example: 'www.google.com',
+      }),
+    scheme: z
+      .string()
+      .openapi({
+        description: 'The protocol used for communication. Can be http or https',
+        example: 'a string value',
+      }),
+  })
+  .openapi({
+    description:
+      'A Target is where an HTTP call will be forwarded in the end from a service domain',
+    required: ['host', 'scheme'],
+  })
+  .openapi('Target')
+
+const CanarySchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Use canary mode for this service', example: true }),
+    root: z
+      .string()
+      .openapi({
+        description:
+          "Otoroshi will append this root to any target choosen. If the specified root is '/api/foo', then a request to https://yyyyyyy/bar will actually hit https://xxxxxxxxx/api/foo/bar",
+        example: 'a string value',
+      }),
+    targets: z
+      .array(TargetSchema)
+      .openapi({
+        description:
+          'The list of target that Otoroshi will proxy and expose through the subdomain defined before. Otoroshi will do round-robin load balancing between all those targets with circuit breaker mecanism to avoid cascading failures',
+      }),
+    traffic: z
+      .int32()
+      .openapi({
+        description: 'Ratio of traffic that will be sent to canary targets.',
+        example: 123123,
+      }),
+  })
+  .openapi({
+    description: 'The configuration of the canary mode for a service descriptor',
+    required: ['enabled', 'traffic', 'targets', 'root'],
+  })
+  .openapi('Canary')
+
+const ExposedApiSchema = z
+  .object({
+    exposeApi: z
+      .boolean()
+      .openapi({
+        description: 'Whether or not the current service expose an API with an Open API descriptor',
+        example: true,
+      }),
+    openApiDescriptorUrl: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'The URL of the Open API descriptor',
+        example: 'http://www.google.com',
+      }),
+  })
+  .openapi({
+    description: 'The Open API configuration for your service (if one)',
+    required: ['exposeApi'],
+  })
+  .openapi('ExposedApi')
+
+const BadResponseSchema = z
+  .object({
+    body: z
+      .string()
+      .openapi({ description: 'The body of the HTTP response', example: 'a string value' }),
+    headers: z
+      .record(z.string(), z.string())
+      .openapi({ description: 'The HTTP headers of the response', example: { key: 'value' } }),
+    status: z.int32().openapi({ description: 'The HTTP status for the response', example: 123123 }),
+  })
+  .openapi({
+    description: 'An HTTP response that is not supposed to be returned by a service',
+    required: ['status', 'body', 'headers'],
+  })
+  .openapi('BadResponse')
+
+const BadResponsesFaultConfigSchema = z
+  .object({
+    ratio: z
+      .float64()
+      .openapi({
+        description:
+          'The percentage of requests affected by this fault. Value should be between 0.0 and 1.0',
+        example: 42.2,
+      }),
+    responses: z.array(BadResponseSchema).openapi({ description: 'The possibles responses' }),
+  })
+  .openapi({
+    description: 'Config for bad requests injection fault',
+    required: ['ratio', 'responses'],
+  })
+  .openapi('BadResponsesFaultConfig')
+
+const LargeRequestFaultConfigSchema = z
+  .object({
+    additionalRequestSize: z
+      .int32()
+      .openapi({
+        description:
+          'The size added to the request body in bytes. Added payload will be spaces only.',
+        example: 123123,
+      }),
+    ratio: z
+      .float64()
+      .openapi({
+        description:
+          'The percentage of requests affected by this fault. Value should be between 0.0 and 1.0',
+        example: 42.2,
+      }),
+  })
+  .openapi({
+    description: 'Config for large request injection fault',
+    required: ['ratio', 'additionalRequestSize'],
+  })
+  .openapi('LargeRequestFaultConfig')
+
+const LargeResponseFaultConfigSchema = z
+  .object({
+    additionalRequestSize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The size added to the response body in bytes. Added payload will be spaces only.',
+        example: 123123,
+      }),
+    ratio: z
+      .float64()
+      .openapi({
+        description:
+          'The percentage of requests affected by this fault. Value should be between 0.0 and 1.0',
+        example: 42.2,
+      }),
+  })
+  .openapi({
+    description: 'Config for large response injection fault',
+    required: ['ratio', 'additionalResponseSize'],
+  })
+  .openapi('LargeResponseFaultConfig')
+
+const LatencyInjectionFaultConfigSchema = z
+  .object({
+    from: z
+      .int32()
+      .openapi({ description: 'The start range of latency added to the request', example: 123123 }),
+    ratio: z
+      .float64()
+      .openapi({
+        description:
+          'The percentage of requests affected by this fault. Value should be between 0.0 and 1.0',
+        example: 42.2,
+      }),
+    to: z
+      .int32()
+      .openapi({ description: 'The end range of latency added to the request', example: 123123 }),
+  })
+  .openapi({
+    description: 'Config for large latency injection fault',
+    required: ['ratio', 'from', 'to'],
+  })
+  .openapi('LatencyInjectionFaultConfig')
+
+const ChaosConfigSchema = z
+  .object({
+    badResponsesFaultConfig: BadResponsesFaultConfigSchema.exactOptional(),
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Whether or not this config is enabled', example: true }),
+    largeRequestFaultConfig: LargeRequestFaultConfigSchema.exactOptional(),
+    largeResponseFaultConfig: LargeResponseFaultConfigSchema.exactOptional(),
+    latencyInjectionFaultConfig: LatencyInjectionFaultConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Configuration for the faults that can be injected in requests',
+    required: ['enabled'],
+  })
+  .openapi('ChaosConfig')
+
+const ClientConfigSchema = z
+  .object({
+    backoffFactor: z
+      .int32()
+      .openapi({
+        description: 'Specify the factor to multiply the delay for each retry',
+        example: 123123,
+      }),
+    callTimeout: z
+      .int32()
+      .openapi({
+        description: 'Specify how long each call should last at most in milliseconds',
+        example: 123123,
+      }),
+    globalTimeout: z
+      .int32()
+      .openapi({
+        description:
+          'Specify how long the global call (with retries) should last at most in milliseconds',
+        example: 123123,
+      }),
+    maxErrors: z
+      .int32()
+      .openapi({
+        description: 'Specify how many errors can pass before opening the circuit breaker',
+        example: 123123,
+      }),
+    retries: z
+      .int32()
+      .openapi({
+        description:
+          'Specify how many times the client will try to fetch the result of the request after an error before giving up.',
+        example: 123123,
+      }),
+    retryInitialDelay: z
+      .int32()
+      .openapi({
+        description:
+          'Specify the delay between two retries. Each retry, the delay is multiplied by the backoff factor',
+        example: 123123,
+      }),
+    sampleInterval: z
+      .int32()
+      .openapi({
+        description:
+          'Specify the sliding window time for the circuit breaker in milliseconds, after this time, error count will be reseted',
+        example: 123123,
+      }),
+    useCircuitBreaker: z
+      .boolean()
+      .openapi({
+        description:
+          'Use a circuit breaker to avoid cascading failure when calling chains of services. Highly recommended !',
+        example: true,
+      }),
+  })
+  .openapi({
+    description: 'The configuration of the circuit breaker for a service descriptor',
+    required: [
+      'useCircuitBreaker',
+      'retries',
+      'maxErrors',
+      'retryInitialDelay',
+      'backoffFactor',
+      'callTimeout',
+      'globalTimeout',
+      'sampleInterval',
+    ],
+  })
+  .openapi('ClientConfig')
+
+const CorsSettingsSchema = z
+  .object({
+    allowCredentials: z
+      .boolean()
+      .openapi({ description: 'Allow to pass credentials', example: true }),
+    allowHeaders: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'The cors allowed headers' }),
+    allowMethods: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'The cors allowed methods' }),
+    allowOrigin: z
+      .string()
+      .openapi({ description: 'The cors allowed origin', example: 'a string value' }),
+    enabled: z.boolean().openapi({ description: 'Whether or not cors is enabled', example: true }),
+    excludedPatterns: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'The cors excluded patterns' }),
+    exposeHeaders: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'The cors exposed header' }),
+    maxAge: z.int32().openapi({ description: 'Cors max age', example: 123123 }),
+  })
+  .openapi({
+    description: 'The configuration for cors support',
+    required: [
+      'enabled',
+      'allowOrigin',
+      'exposeHeaders',
+      'allowHeaders',
+      'allowMethods',
+      'excludedPatterns',
+      'maxAge',
+      'allowCredentials',
+    ],
+  })
+  .openapi('CorsSettings')
+
+const GzipSchema = z
+  .object({
+    blackList: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'Blacklisted mime types. Wildcard supported' }),
+    bufferSize: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Size of the GZip buffer',
+        example: 123,
+      }),
+    chunkedThreshold: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Threshold for chunking data',
+        example: 123,
+      }),
+    compressionLevel: z
+      .int32()
+      .openapi({ description: 'Compression level. From 0 to 9', example: 123123 }),
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Whether gzip compression is enabled or not', example: true }),
+    excludedPatterns: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'Patterns that are excluded from gzipping' }),
+    whiteList: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'Whitelisted mime types. Wildcard supported' }),
+  })
+  .openapi({
+    description: 'Configuration for gzip of service responses',
+    required: [
+      'enabled',
+      'excludedPatterns',
+      'whiteList',
+      'blackList',
+      'bufferSize',
+      'chunkedThreshold',
+      'compressionLevel',
+    ],
+  })
+  .openapi('Gzip')
+
+const HealthCheckSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({
+        description: 'Whether or not healthcheck is enabled on the current service descriptor',
+        example: true,
+      }),
+    url: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL to check', example: 'http://www.google.com' }),
+  })
+  .openapi({
+    description:
+      'The configuration for checking health of a service. Otoroshi will perform GET call on the URL to check if the service is still alive',
+    required: ['enabled'],
+  })
+  .openapi('HealthCheck')
+
+const HSAlgoSettingsSchema = z
+  .object({
+    secret: z
+      .string()
+      .openapi({
+        description: 'The secret value for the HMAC function',
+        example: 'a string value',
+      }),
+    size: z
+      .int32()
+      .openapi({ description: 'Size for SHA function. can be 256, 384 or 512', example: 123123 }),
+    type: z
+      .string()
+      .openapi({ description: 'String with value HSAlgoSettings', example: 'a string value' }),
+  })
+  .openapi({
+    description: 'Settings for an HMAC + SHA signing algorithm',
+    required: ['type', 'size', 'secret'],
+  })
+  .openapi('HSAlgoSettings')
+
+const RSAlgoSettingsSchema = z
+  .object({
+    privateKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The private key for the RSA function', example: 'a string value' }),
+    publicKey: z
+      .string()
+      .openapi({ description: 'The public key for the RSA function', example: 'a string value' }),
+    size: z
+      .int32()
+      .openapi({ description: 'Size for SHA function. can be 256, 384 or 512', example: 123123 }),
+    type: z
+      .string()
+      .openapi({ description: 'String with value RSAlgoSettings', example: 'a string value' }),
+  })
+  .openapi({
+    description: 'Settings for an HMAC + SHA signing algorithm',
+    required: ['type', 'size', 'publicKey'],
+  })
+  .openapi('RSAlgoSettings')
+
+const ESAlgoSettingsSchema = z
+  .object({
+    privateKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The private key for the RSA function', example: 'a string value' }),
+    publicKey: z
+      .string()
+      .openapi({ description: 'The public key for the RSA function', example: 'a string value' }),
+    size: z
+      .int32()
+      .openapi({ description: 'Size for SHA function. can be 256, 384 or 512', example: 123123 }),
+    type: z
+      .string()
+      .openapi({ description: 'String with value ESAlgoSettings', example: 'a string value' }),
+  })
+  .openapi({
+    description: 'Settings for an EC + SHA signing algorithm',
+    required: ['type', 'size', 'publicKey'],
+  })
+  .openapi('ESAlgoSettings')
+
+const JWKSAlgoSettingsSchema = z
+  .object({
+    headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The headers for the http call', example: { key: 'value' } }),
+    kty: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of key: RSA or EC', example: 'a string value' }),
+    timeout: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The timeout of the http call',
+        example: 123,
+      }),
+    ttl: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The ttl of the keyset',
+        example: 123,
+      }),
+    type: z
+      .string()
+      .openapi({ description: 'String with value JWKSAlgoSettings', example: 'a string value' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The url for the http call', example: 'a string value' }),
+  })
+  .openapi({ description: 'Settings for a JWK set', required: ['type', 'size', 'publicKey'] })
+  .openapi('JWKSAlgoSettings')
+
 const InQueryParamSchema = z
   .object({
     name: z.string().openapi({ description: 'Name of the query param', example: 'a string value' }),
@@ -1476,144 +952,6 @@ const TransformSchema = z
   })
   .openapi('Transform')
 
-const GlobalJwtVerifierSchema = z
-  .object({
-    algoSettings: z.xor([
-      HSAlgoSettingsSchema,
-      RSAlgoSettingsSchema,
-      ESAlgoSettingsSchema,
-      JWKSAlgoSettingsSchema,
-    ]),
-    desc: z.string().openapi({ description: 'Verifier description', example: 'a string value' }),
-    enabled: z.boolean().openapi({ description: 'Is it enabled', example: true }),
-    id: z.string().openapi({ description: 'Verifier id', example: 'a string value' }),
-    name: z.string().openapi({ description: 'Verifier name', example: 'a string value' }),
-    source: z.xor([InQueryParamSchema, InHeaderSchema, InCookieSchema]),
-    strategy: z.xor([PassThroughSchema, SignSchema, TransformSchema]),
-    strict: z.boolean().openapi({ description: 'Does it fail if JWT not found', example: true }),
-  })
-  .openapi({
-    description: 'A JWT verifier used by multiple service descriptor',
-    required: [
-      'type',
-      'id',
-      'name',
-      'desc',
-      'enabled',
-      'strict',
-      'source',
-      'algoSettings',
-      'strategy',
-    ],
-  })
-  .openapi('GlobalJwtVerifier')
-
-const GroupSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The descriptoin of the group', example: 'a string value' }),
-    id: z
-      .string()
-      .openapi({
-        description:
-          'The unique id of the group. Usually 64 random alpha numerical characters, but can be anything',
-        example: 'a string value',
-      }),
-    name: z.string().openapi({ description: 'The name of the group', example: 'a string value' }),
-  })
-  .openapi({
-    description:
-      'An Otoroshi service group is just a group of service descriptor. It is useful to be able to define Api Keys for the whole group',
-    required: ['id', 'name'],
-  })
-  .openapi('Group')
-
-const GzipSchema = z
-  .object({
-    blackList: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'Blacklisted mime types. Wildcard supported' }),
-    bufferSize: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Size of the GZip buffer',
-        example: 123,
-      }),
-    chunkedThreshold: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Threshold for chunking data',
-        example: 123,
-      }),
-    compressionLevel: z
-      .int32()
-      .openapi({ description: 'Compression level. From 0 to 9', example: 123123 }),
-    enabled: z
-      .boolean()
-      .openapi({ description: 'Whether gzip compression is enabled or not', example: true }),
-    excludedPatterns: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'Patterns that are excluded from gzipping' }),
-    whiteList: z
-      .array(z.string().openapi({ example: 'a string value' }))
-      .openapi({ description: 'Whitelisted mime types. Wildcard supported' }),
-  })
-  .openapi({
-    description: 'Configuration for gzip of service responses',
-    required: [
-      'enabled',
-      'excludedPatterns',
-      'whiteList',
-      'blackList',
-      'bufferSize',
-      'chunkedThreshold',
-      'compressionLevel',
-    ],
-  })
-  .openapi('Gzip')
-
-const HealthCheckSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({
-        description: 'Whether or not healthcheck is enabled on the current service descriptor',
-        example: true,
-      }),
-    url: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL to check', example: 'http://www.google.com' }),
-  })
-  .openapi({
-    description:
-      'The configuration for checking health of a service. Otoroshi will perform GET call on the URL to check if the service is still alive',
-    required: ['enabled'],
-  })
-  .openapi('HealthCheck')
-
 const LocalJwtVerifierSchema = z
   .object({
     algoSettings: z.xor([
@@ -1739,7 +1077,712 @@ const ImportExportStatsSchema = z
   })
   .openapi('ImportExportStats')
 
-const ImportExportSchema = z
+type ImportExportType = {
+  admins: {
+    createdAt: bigint
+    label: string
+    password: string
+    registration: { [key: string]: string }
+    username: string
+  }[]
+  apiKeys: {
+    authorizedEntities: string[]
+    clientId: string
+    clientName: string
+    clientSecret: string
+    dailyQuota?: bigint
+    enabled: boolean
+    metadata?: { [key: string]: string }
+    monthlyQuota?: bigint
+    throttlingQuota?: bigint
+  }[]
+  appConfig?: { [key: string]: string }
+  config: z.infer<typeof GlobalConfigSchema>
+  date: string
+  dateRaw: bigint
+  errorTemplates: {
+    messages: { [key: string]: string }
+    serviceId: string
+    template40x: string
+    template50x: string
+    templateBuild: string
+    templateMaintenance: string
+  }[]
+  label: string
+  serviceDescriptors: {
+    Canary?: z.infer<typeof CanarySchema>
+    additionalHeaders?: { [key: string]: string }
+    api?: z.infer<typeof ExposedApiSchema>
+    authConfigRef?: string
+    buildMode: boolean
+    chaosConfig?: z.infer<typeof ChaosConfigSchema>
+    clientConfig?: z.infer<typeof ClientConfigSchema>
+    clientValidatorRef?: string
+    cors?: z.infer<typeof CorsSettingsSchema>
+    domain: string
+    enabled: boolean
+    enforceSecureCommunication: boolean
+    env: string
+    forceHttps: boolean
+    groups: string[]
+    gzip?: z.infer<typeof GzipSchema>
+    headersVerification?: { [key: string]: string }
+    healthCheck?: z.infer<typeof HealthCheckSchema>
+    id: string
+    ipFiltering?: z.infer<typeof IpFilteringSchema>
+    jwtVerifier?: z.infer<typeof LocalJwtVerifierSchema> | z.infer<typeof RefJwtVerifierSchema>
+    localHost?: string
+    localScheme?: string
+    maintenanceMode: boolean
+    matchingHeaders?: { [key: string]: string }
+    matchingRoot?: string
+    metadata?: { [key: string]: string }
+    name: string
+    overrideHost?: boolean
+    privateApp: boolean
+    privatePatterns?: string[]
+    publicPatterns?: string[]
+    redirectToLocal?: boolean
+    redirection?: z.infer<typeof RedirectionSettingsSchema>
+    root: string
+    secComExcludedPatterns?: string[]
+    secComSettings?:
+      | z.infer<typeof HSAlgoSettingsSchema>
+      | z.infer<typeof RSAlgoSettingsSchema>
+      | z.infer<typeof ESAlgoSettingsSchema>
+      | z.infer<typeof JWKSAlgoSettingsSchema>
+    sendOtoroshiHeadersBack?: boolean
+    statsdConfig?: z.infer<typeof StatsdConfigSchema>
+    subdomain: string
+    targets: z.infer<typeof TargetSchema>[]
+    transformerRef?: string
+    userFacing?: boolean
+    xForwardedHeaders?: boolean
+  }[]
+  serviceGroups: { description?: string; id: string; name: string }[]
+  simpleAdmins: { createdAt: bigint; label: string; password: string; username: string }[]
+  stats: z.infer<typeof ImportExportStatsSchema>
+}
+
+const ApiKeySchema = z
+  .object({
+    authorizedEntities: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({
+        description:
+          'The group/service ids (prefixed by group_ or service_ on which the key is authorized',
+        example: ['a string value'],
+      }),
+    clientId: z
+      .string()
+      .openapi({
+        description:
+          'The unique id of the Api Key. Usually 16 random alpha numerical characters, but can be anything',
+        example: 'a string value',
+      }),
+    clientName: z
+      .string()
+      .openapi({
+        description: 'The name of the api key, for humans ;-)',
+        example: 'a string value',
+      }),
+    clientSecret: z
+      .string()
+      .openapi({
+        description:
+          'The secret of the Api Key. Usually 64 random alpha numerical characters, but can be anything',
+        example: 'a string value',
+      }),
+    dailyQuota: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Authorized number of calls per day',
+        example: 123,
+      }),
+    enabled: z
+      .boolean()
+      .openapi({
+        description:
+          "Whether or not the key is enabled. If disabled, resources won't be available to calls using this key",
+        example: true,
+      }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Bunch of metadata for the key', example: { key: 'value' } }),
+    monthlyQuota: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Authorized number of calls per month',
+        example: 123,
+      }),
+    throttlingQuota: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Authorized number of calls per second, measured on 10 seconds',
+        example: 123,
+      }),
+  })
+  .openapi({
+    description:
+      'An Otoroshi Api Key. An Api Key is defined for a group of services to allow usage of the same Api Key for multiple services.',
+    required: ['clientId', 'clientSecret', 'clientName', 'authorizedEntities', 'enabled'],
+  })
+  .openapi('ApiKey')
+
+const CertificateSchema = z
+  .object({
+    autoRenew: z
+      .string()
+      .openapi({
+        description: 'Allow Otoroshi to renew the certificate (if self signed)',
+        example: 'a string value',
+      }),
+    ca: z
+      .string()
+      .openapi({ description: 'Certificate is a CA (read only)', example: 'a string value' }),
+    caRef: z
+      .string()
+      .openapi({
+        description: 'Reference for a CA certificate in otoroshi',
+        example: 'a string value',
+      }),
+    chain: z
+      .string()
+      .openapi({
+        description: 'Certificate chain of trust in PEM format',
+        example: 'a string value',
+      }),
+    domain: z
+      .string()
+      .openapi({ description: 'Domain of the certificate (read only)', example: 'a string value' }),
+    from: z.string().openapi({ description: 'Start date of validity', example: 'a string value' }),
+    id: z.string().openapi({ description: 'Id of the certificate', example: 'a string value' }),
+    privateKey: z
+      .string()
+      .openapi({ description: 'PKCS8 private key in PEM format', example: 'a string value' }),
+    selfSigned: z
+      .string()
+      .openapi({
+        description: 'Certificate is self signed  read only)',
+        example: 'a string value',
+      }),
+    subject: z
+      .string()
+      .openapi({
+        description: 'Subject of the certificate (read only)',
+        example: 'a string value',
+      }),
+    to: z.string().openapi({ description: 'End date of validity', example: 'a string value' }),
+    valid: z
+      .string()
+      .openapi({ description: 'Certificate is valid (read only)', example: 'a string value' }),
+  })
+  .openapi({
+    description: 'A SSL/TLS X509 certificate',
+    required: [
+      'id',
+      'chain',
+      'privateKey',
+      'caRef',
+      'domain',
+      'selfSigned',
+      'ca',
+      'valid',
+      'autoRenew',
+      'subject',
+      'from',
+      'to',
+    ],
+  })
+  .openapi('Certificate')
+
+const ConsoleDataExporterConfigSchema = z.looseObject({}).openapi('ConsoleDataExporterConfig')
+
+const CustomDataExporterConfigSchema = z
+  .object({
+    config: z
+      .record(z.string(), z.string())
+      .openapi({ description: 'Custom data exporter config', example: { key: 'value' } }),
+    ref: z.string().openapi({ description: 'Script Ref', example: 'a string value' }),
+  })
+  .openapi({ required: ['ref', 'config'] })
+  .openapi('CustomDataExporterConfig')
+
+const KafkaConfigSchema = z
+  .object({
+    keyPass: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional keypass', example: 'a string value' }),
+    keyStore: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional path to keystore', example: 'a string value' }),
+    servers: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'URLs of the kafka servers' }),
+    topic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional kafka topic (otoroshi-events by default)',
+        example: 'a string value',
+      }),
+    trustore: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional path to trustore', example: 'a string value' }),
+  })
+  .openapi({ description: 'The configuration for kafka access', required: ['servers'] })
+  .openapi('KafkaConfig')
+
+const PulsarDataExporterConfigSchema = z
+  .object({
+    namespace: z.string().openapi({ description: 'Namespace', example: 'a string value' }),
+    tenant: z.string().openapi({ description: 'Tenant', example: 'a string value' }),
+    topic: z.string().openapi({ description: 'Topic', example: 'a string value' }),
+    uri: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .openapi({ description: 'URI of the pulsar server' }),
+  })
+  .openapi({
+    description: 'The configuration for kafka access',
+    required: ['uri', 'tenant', 'namespace', 'topic'],
+  })
+  .openapi('PulsarDataExporterConfig')
+
+const FileDataExporterConfigSchema = z
+  .object({ path: z.string().openapi({ description: 'Path to file', example: 'a string value' }) })
+  .openapi({ required: ['path'] })
+  .openapi('FileDataExporterConfig')
+
+const MailerGenericExporterConfigSchema = z
+  .object({
+    headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Optional headers', example: { key: 'value' } }),
+    to: z
+      .array(z.string().openapi({ example: 'a string value' }))
+      .exactOptional()
+      .openapi({ description: 'Email adresses of recipents' }),
+    type: z.literal('generic').openapi({ description: 'Type of mailer' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Url of mailer', example: 'a string value' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('MailerGenericExporterConfig')
+
+const MailerConsoleExporterConfigSchema = z
+  .object({ type: z.literal('generic').exactOptional().openapi({ description: 'Type of mailer' }) })
+  .openapi({ required: [] })
+  .openapi('MailerConsoleExporterConfig')
+
+const MailerMailgunExporterConfigSchema = z
+  .object({
+    apiKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Mailgun apiKey', example: 'a string value' }),
+    domain: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Mailgun domain', example: 'a string value' }),
+    eu: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the mailgun server is european', example: true }),
+    to: z
+      .array(z.email().openapi({ example: 'admin@otoroshi.io' }))
+      .exactOptional()
+      .openapi({ description: 'Email adresses of recipents' }),
+    type: z.literal('mailgun').openapi({ description: 'Type of mailer' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('MailerMailgunExporterConfig')
+
+const MailerMailjetExporterConfigSchema = z
+  .object({
+    apiKeyPrivate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Mailjet private apiKey', example: 'a string value' }),
+    apiKeyPublic: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Mailjet public apiKey', example: 'a string value' }),
+    to: z
+      .array(z.email().openapi({ example: 'admin@otoroshi.io' }))
+      .exactOptional()
+      .openapi({ description: 'Email adresses of recipents' }),
+    type: z.literal('mailjet').openapi({ description: 'Type of mailer' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('MailerMailjetExporterConfig')
+
+const MailerSendgridExporterConfigSchema = z
+  .object({
+    apiKeyPublic: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Sendgrid apiKey', example: 'a string value' }),
+    to: z
+      .array(z.email().openapi({ example: 'admin@otoroshi.io' }))
+      .exactOptional()
+      .openapi({ description: 'Email adresses of recipents' }),
+    type: z.literal('sendgrid').openapi({ description: 'Type of mailer' }),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('MailerSendgridExporterConfig')
+
+const FilteringSchema = z
+  .object({
+    exclude: z
+      .array(z.record(z.string(), z.string()).openapi({ example: { key: 'value' } }))
+      .exactOptional()
+      .openapi({ description: 'Excluding pattern' }),
+    include: z
+      .array(z.record(z.string(), z.string()).openapi({ example: { key: 'value' } }))
+      .exactOptional()
+      .openapi({ description: 'Including pattern' }),
+  })
+  .openapi({ required: ['include, exclude'] })
+  .openapi('Filtering')
+
+const LocationSchema = z
+  .object({
+    teams: z
+      .array(z.record(z.string(), z.string()).openapi({ example: { key: 'value' } }))
+      .openapi({ description: 'Team ids' }),
+    tenant: z.string().openapi({ description: 'Tenant id', example: 'a string value' }),
+  })
+  .openapi({ required: ['tenant', 'teams'] })
+  .openapi('Location')
+
+const DataExporterConfigSchema = z
+  .object({
+    bufferSize: z.int32().exactOptional().openapi({ description: 'buffer size', example: 123123 }),
+    config: z
+      .xor([
+        ElasticConfigSchema,
+        KafkaConfigSchema,
+        PulsarDataExporterConfigSchema,
+        FileDataExporterConfigSchema,
+        MailerGenericExporterConfigSchema,
+        MailerConsoleExporterConfigSchema,
+        MailerMailgunExporterConfigSchema,
+        MailerMailjetExporterConfigSchema,
+        MailerSendgridExporterConfigSchema,
+        ConsoleDataExporterConfigSchema,
+        CustomDataExporterConfigSchema,
+      ])
+      .exactOptional()
+      .openapi({ description: 'Data Exporter config' }),
+    desc: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description', example: 'a string value' }),
+    enabled: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Boolean', example: 'a string value' }),
+    filtering: FilteringSchema.exactOptional().openapi({ description: 'filtering' }),
+    groupDuration: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'duration', example: 123 }),
+    groupSize: z.int32().exactOptional().openapi({ description: 'Group size', example: 123123 }),
+    id: z.string().exactOptional().openapi({ description: 'Id', example: 'a string value' }),
+    jsonWorkers: z.int32().exactOptional().openapi({ description: 'nb workers', example: 123123 }),
+    location: LocationSchema.exactOptional().openapi({ description: 'location' }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Metadata', example: { key: 'value' } }),
+    name: z.string().exactOptional().openapi({ description: 'Name', example: 'a string value' }),
+    projection: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'projection', example: { key: 'value' } }),
+    sendWorkers: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'send workers', example: 123123 }),
+    typ: z
+      .enum(['kafka', 'pulsar', 'file', 'mailer', 'elastic', 'console', 'custom'])
+      .exactOptional()
+      .openapi({ description: 'Type of data exporter' }),
+  })
+  .openapi({ description: 'Settings to export Otorshi events', required: [] })
+  .openapi('DataExporterConfig')
+
+const DeletedSchema = z
+  .object({ deleted: z.boolean().openapi({ example: true }) })
+  .openapi({ required: ['deleted'] })
+  .openapi('Deleted')
+
+const DoneSchema = z
+  .object({ done: z.boolean().openapi({ example: true }) })
+  .openapi({ required: ['done'] })
+  .openapi('Done')
+
+const EnvironmentSchema = z
+  .string()
+  .openapi({ description: 'The name of the environment for service descriptors', example: 'prod' })
+  .openapi('Environment')
+
+const ErrorTemplateSchema = z
+  .object({
+    messages: z
+      .record(z.string(), z.string())
+      .openapi({ description: 'Map for custom messages', example: { key: 'value' } }),
+    serviceId: z
+      .string()
+      .openapi({
+        description: 'The Id of the service for which the error template is enabled',
+        example: 'a string value',
+      }),
+    template40x: z
+      .string()
+      .openapi({ description: 'The html template for 40x errors', example: 'a string value' }),
+    template50x: z
+      .string()
+      .openapi({ description: 'The html template for 50x errors', example: 'a string value' }),
+    templateBuild: z
+      .string()
+      .openapi({ description: 'The html template for build page', example: 'a string value' }),
+    templateMaintenance: z
+      .string()
+      .openapi({
+        description: 'The html template for maintenance page',
+        example: 'a string value',
+      }),
+  })
+  .openapi({
+    description: 'Error templates for a service descriptor',
+    required: [
+      'serviceId',
+      'template40x',
+      'template50x',
+      'templateBuild',
+      'templateMaintenance',
+      'messages',
+    ],
+  })
+  .openapi('ErrorTemplate')
+
+const GenericOauth2ModuleConfigSchema = z
+  .object({
+    accessTokenField: z
+      .string()
+      .openapi({ description: 'Field name to get access token', example: 'a string value' }),
+    authorizeUrl: z
+      .string()
+      .openapi({ description: 'OAuth authorize URL', example: 'a string value' }),
+    callbackUrl: z
+      .string()
+      .openapi({ description: 'Otoroshi callback URL', example: 'a string value' }),
+    claims: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The claims of the token', example: 'a string value' }),
+    clientId: z.string().openapi({ description: 'OAuth Client id', example: 'a string value' }),
+    clientSecret: z
+      .string()
+      .openapi({ description: 'OAuth Client secret', example: 'a string value' }),
+    desc: z
+      .string()
+      .openapi({ description: 'Description of the config', example: 'a string value' }),
+    emailField: z
+      .string()
+      .openapi({
+        description: 'Field name to get email from user profile',
+        example: 'a string value',
+      }),
+    id: z.string().openapi({ description: 'Unique id of the config', example: 'a string value' }),
+    jwtVerifier: z
+      .xor([
+        HSAlgoSettingsSchema,
+        RSAlgoSettingsSchema,
+        ESAlgoSettingsSchema,
+        JWKSAlgoSettingsSchema,
+      ])
+      .exactOptional()
+      .openapi({ description: 'Algo. settings to verify JWT token' }),
+    loginUrl: z.string().openapi({ description: 'OAuth login URL', example: 'a string value' }),
+    logoutUrl: z.string().openapi({ description: 'OAuth logout URL', example: 'a string value' }),
+    name: z.string().openapi({ description: 'Name of the config', example: 'a string value' }),
+    nameField: z
+      .string()
+      .openapi({
+        description: 'Field name to get name from user profile',
+        example: 'a string value',
+      }),
+    oidConfig: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL of the OIDC config. file', example: 'a string value' }),
+    otoroshiDataField: z
+      .string()
+      .openapi({
+        description:
+          'Field name to get otoroshi metadata from. You can specify sub fields using | as separator',
+        example: 'a string value',
+      }),
+    readProfileFromToken: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'The user profile will be read from the JWT token in id_token',
+        example: true,
+      }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The scope of the token', example: 'a string value' }),
+    sessionMaxAge: z.int32().openapi({ description: 'Max age of the session', example: 123123 }),
+    tokenUrl: z.string().openapi({ description: 'OAuth token URL', example: 'a string value' }),
+    type: z
+      .string()
+      .openapi({ description: 'Type of settings. value is oauth2', example: 'a string value' }),
+    useCookies: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Use for redirection to actual service', example: true }),
+    useJson: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Use JSON or URL Form Encoded as payload with the OAuth provider',
+        example: true,
+      }),
+    userInfoUrl: z
+      .string()
+      .openapi({ description: 'OAuth userinfo to get user profile', example: 'a string value' }),
+  })
+  .openapi({
+    description: 'Settings to authenticate users using a generic OAuth2 provider',
+    required: [
+      'type',
+      'id',
+      'name',
+      'desc',
+      'sessionMaxAge',
+      'clientId',
+      'clientSecret',
+      'authorizeUrl',
+      'tokenUrl',
+      'userInfoUrl',
+      'loginUrl',
+      'logoutUrl',
+      'callbackUrl',
+      'accessTokenField',
+      'nameField',
+      'emailField',
+      'otoroshiDataField',
+    ],
+  })
+  .openapi('GenericOauth2ModuleConfig')
+
+const GlobalJwtVerifierSchema = z
+  .object({
+    algoSettings: z.xor([
+      HSAlgoSettingsSchema,
+      RSAlgoSettingsSchema,
+      ESAlgoSettingsSchema,
+      JWKSAlgoSettingsSchema,
+    ]),
+    desc: z.string().openapi({ description: 'Verifier description', example: 'a string value' }),
+    enabled: z.boolean().openapi({ description: 'Is it enabled', example: true }),
+    id: z.string().openapi({ description: 'Verifier id', example: 'a string value' }),
+    name: z.string().openapi({ description: 'Verifier name', example: 'a string value' }),
+    source: z.xor([InQueryParamSchema, InHeaderSchema, InCookieSchema]),
+    strategy: z.xor([PassThroughSchema, SignSchema, TransformSchema]),
+    strict: z.boolean().openapi({ description: 'Does it fail if JWT not found', example: true }),
+  })
+  .openapi({
+    description: 'A JWT verifier used by multiple service descriptor',
+    required: [
+      'type',
+      'id',
+      'name',
+      'desc',
+      'enabled',
+      'strict',
+      'source',
+      'algoSettings',
+      'strategy',
+    ],
+  })
+  .openapi('GlobalJwtVerifier')
+
+const GroupSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The descriptoin of the group', example: 'a string value' }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The unique id of the group. Usually 64 random alpha numerical characters, but can be anything',
+        example: 'a string value',
+      }),
+    name: z.string().openapi({ description: 'The name of the group', example: 'a string value' }),
+  })
+  .openapi({
+    description:
+      'An Otoroshi service group is just a group of service descriptor. It is useful to be able to define Api Keys for the whole group',
+    required: ['id', 'name'],
+  })
+  .openapi('Group')
+
+const ImportExportSchema: z.ZodType<ImportExportType> = z
   .object({
     admins: z
       .array(

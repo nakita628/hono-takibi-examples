@@ -1,0 +1,1479 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getCrmKey() {
+  return ['crm'] as const
+}
+
+export function getCrmObjects202609CartsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['$get']>>,
+) {
+  return ['crm', '/crm/objects/2026-09/carts', toValue(args)] as const
+}
+
+export function getCrmObjects202609CartsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getCrmObjects202609CartsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.crm.objects['2026-09'].carts.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useCrmObjects202609Carts<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getCrmObjects202609CartsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getCrmObjects202609CartsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getCrmObjects202609CartsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.crm.objects['2026-09'].carts.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['$post']>,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts.$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609Carts<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsBatchArchiveMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/batch/archive', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsBatchArchiveMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.crm.objects)['2026-09']['carts']['batch']['archive']['$post']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['batch']['archive']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsBatchArchiveMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09']['carts']['batch']['archive']['$post']
+      >,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts.batch.archive.$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609CartsBatchArchive<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<
+                    ReturnType<
+                      (typeof client.crm.objects)['2026-09']['carts']['batch']['archive']['$post']
+                    >
+                  >
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<
+            (typeof client.crm.objects)['2026-09']['carts']['batch']['archive']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsBatchArchiveMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsBatchCreateMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/batch/create', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsBatchCreateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.crm.objects)['2026-09']['carts']['batch']['create']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['batch']['create']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsBatchCreateMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09']['carts']['batch']['create']['$post']
+      >,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts.batch.create.$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609CartsBatchCreate<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.crm.objects)['2026-09']['carts']['batch']['create']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.crm.objects)['2026-09']['carts']['batch']['create']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsBatchCreateMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsBatchReadMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/batch/read', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsBatchReadMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.crm.objects)['2026-09']['carts']['batch']['read']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['batch']['read']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsBatchReadMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09']['carts']['batch']['read']['$post']
+      >,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts.batch.read.$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609CartsBatchRead<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.crm.objects)['2026-09']['carts']['batch']['read']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.crm.objects)['2026-09']['carts']['batch']['read']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsBatchReadMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsBatchUpdateMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/batch/update', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsBatchUpdateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.crm.objects)['2026-09']['carts']['batch']['update']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['batch']['update']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsBatchUpdateMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09']['carts']['batch']['update']['$post']
+      >,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts.batch.update.$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609CartsBatchUpdate<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.crm.objects)['2026-09']['carts']['batch']['update']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.crm.objects)['2026-09']['carts']['batch']['update']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsBatchUpdateMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsBatchUpsertMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/batch/upsert', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsBatchUpsertMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.crm.objects)['2026-09']['carts']['batch']['upsert']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['batch']['upsert']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsBatchUpsertMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09']['carts']['batch']['upsert']['$post']
+      >,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts.batch.upsert.$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609CartsBatchUpsert<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.crm.objects)['2026-09']['carts']['batch']['upsert']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.crm.objects)['2026-09']['carts']['batch']['upsert']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsBatchUpsertMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsGdprDeleteMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/gdpr-delete', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsGdprDeleteMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<(typeof client.crm.objects)['2026-09']['carts']['gdpr-delete']['$post']>
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['gdpr-delete']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsGdprDeleteMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09']['carts']['gdpr-delete']['$post']
+      >,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts['gdpr-delete'].$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609CartsGdprDelete<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<
+                    ReturnType<
+                      (typeof client.crm.objects)['2026-09']['carts']['gdpr-delete']['$post']
+                    >
+                  >
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['gdpr-delete']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsGdprDeleteMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsMergeMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/merge', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsMergeMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts']['merge']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['merge']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsMergeMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['merge']['$post']>,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts.merge.$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609CartsMerge<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.crm.objects)['2026-09']['carts']['merge']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['merge']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsMergeMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostCrmObjects202609CartsSearchMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/search', 'POST'] as const
+}
+
+export function getPostCrmObjects202609CartsSearchMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts']['search']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['search']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCrmObjects202609CartsSearchMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['search']['$post']>,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts.search.$post(args, options))
+    },
+  })
+}
+
+export function usePostCrmObjects202609CartsSearch<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.crm.objects)['2026-09']['carts']['search']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.crm.objects)['2026-09']['carts']['search']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostCrmObjects202609CartsSearchMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getCrmObjects202609CartsCartIdQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$get']>
+  >,
+) {
+  return ['crm', '/crm/objects/2026-09/carts/:cartId', toValue(args)] as const
+}
+
+export function getCrmObjects202609CartsCartIdQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getCrmObjects202609CartsCartIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.crm.objects['2026-09'].carts[':cartId'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useCrmObjects202609CartsCartId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$get']>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$get']>
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getCrmObjects202609CartsCartIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getCrmObjects202609CartsCartIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getCrmObjects202609CartsCartIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.crm.objects['2026-09'].carts[':cartId'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteCrmObjects202609CartsCartIdMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/:cartId', 'DELETE'] as const
+}
+
+export function getDeleteCrmObjects202609CartsCartIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$delete']>
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteCrmObjects202609CartsCartIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$delete']>,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts[':cartId'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeleteCrmObjects202609CartsCartId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<
+                    ReturnType<
+                      (typeof client.crm.objects)['2026-09']['carts'][':cartId']['$delete']
+                    >
+                  >
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteCrmObjects202609CartsCartIdMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchCrmObjects202609CartsCartIdMutationKey() {
+  return ['crm', '/crm/objects/2026-09/carts/:cartId', 'PATCH'] as const
+}
+
+export function getPatchCrmObjects202609CartsCartIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchCrmObjects202609CartsCartIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$patch']>,
+    ) {
+      return parseResponse(client.crm.objects['2026-09'].carts[':cartId'].$patch(args, options))
+    },
+  })
+}
+
+export function usePatchCrmObjects202609CartsCartId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$patch']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.crm.objects)['2026-09']['carts'][':cartId']['$patch']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPatchCrmObjects202609CartsCartIdMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getCrmObjects202609CartsCartIdAssociationsToObjectTypeQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.crm.objects)['2026-09']['carts'][':cartId']['associations'][':toObjectType']['$get']
+    >
+  >,
+) {
+  return [
+    'crm',
+    '/crm/objects/2026-09/carts/:cartId/associations/:toObjectType',
+    toValue(args),
+  ] as const
+}
+
+export function getCrmObjects202609CartsCartIdAssociationsToObjectTypeQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.crm.objects)['2026-09']['carts'][':cartId']['associations'][':toObjectType']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getCrmObjects202609CartsCartIdAssociationsToObjectTypeQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.crm.objects['2026-09'].carts[':cartId'].associations[':toObjectType'].$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useCrmObjects202609CartsCartIdAssociationsToObjectType<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.crm.objects)['2026-09']['carts'][':cartId']['associations'][':toObjectType']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.crm.objects)['2026-09']['carts'][':cartId']['associations'][':toObjectType']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.crm.objects)['2026-09']['carts'][':cartId']['associations'][':toObjectType']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.crm.objects)['2026-09']['carts'][':cartId']['associations'][':toObjectType']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getCrmObjects202609CartsCartIdAssociationsToObjectTypeQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.crm.objects)['2026-09']['carts'][':cartId']['associations'][':toObjectType']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getCrmObjects202609CartsCartIdAssociationsToObjectTypeQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getCrmObjects202609CartsCartIdAssociationsToObjectTypeQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.crm.objects['2026-09'].carts[':cartId'].associations[':toObjectType'].$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdMutationKey() {
+  return [
+    'crm',
+    '/crm/objects/2026-09/:fromObjectType/:fromObjectId/associations/default/:toObjectType/:toObjectId',
+    'PUT',
+  ] as const
+}
+
+export function getPutCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.crm.objects)['2026-09'][':fromObjectType'][':fromObjectId']['associations']['default'][':toObjectType'][':toObjectId']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.crm.objects)['2026-09'][':fromObjectType'][':fromObjectId']['associations']['default'][':toObjectType'][':toObjectId']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPutCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09'][':fromObjectType'][':fromObjectId']['associations']['default'][':toObjectType'][':toObjectId']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.crm.objects['2026-09'][':fromObjectType'][':fromObjectId'].associations.default[
+          ':toObjectType'
+        ][':toObjectId'].$put(args, options),
+      )
+    },
+  })
+}
+
+export function usePutCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.crm.objects)['2026-09'][':fromObjectType'][':fromObjectId']['associations']['default'][':toObjectType'][':toObjectId']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.crm.objects)['2026-09'][':fromObjectType'][':fromObjectId']['associations']['default'][':toObjectType'][':toObjectId']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPutCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdMutationKey() {
+  return [
+    'crm',
+    '/crm/objects/2026-09/:objectType/:objectId/associations/:toObjectType/:toObjectId',
+    'PUT',
+  ] as const
+}
+
+export function getPutCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getPutCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.crm.objects['2026-09'][':objectType'][':objectId'].associations[':toObjectType'][
+          ':toObjectId'
+        ].$put(args, options),
+      )
+    },
+  })
+}
+
+export function usePutCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdMutationKey() {
+  return [
+    'crm',
+    '/crm/objects/2026-09/:objectType/:objectId/associations/:toObjectType/:toObjectId',
+    'DELETE',
+  ] as const
+}
+
+export function getDeleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$delete']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<
+      (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey:
+      getDeleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.crm.objects['2026-09'][':objectType'][':objectId'].associations[':toObjectType'][
+          ':toObjectId'
+        ].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function useDeleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<
+                    ReturnType<
+                      (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$delete']
+                    >
+                  >
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<
+            (typeof client.crm.objects)['2026-09'][':objectType'][':objectId']['associations'][':toObjectType'][':toObjectId']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

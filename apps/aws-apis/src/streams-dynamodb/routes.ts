@@ -57,102 +57,62 @@ const BooleanAttributeValueSchema: z.ZodType<BooleanAttributeValueType> = z
   .openapi('BooleanAttributeValue')
 
 type AttributeValueType = {
-  S?: z.infer<typeof StringAttributeValueSchema> & { [key: string]: unknown }
-  N?: z.infer<typeof NumberAttributeValueSchema> & { [key: string]: unknown }
-  B?: z.infer<typeof BinaryAttributeValueSchema> & { [key: string]: unknown }
-  SS?: z.infer<typeof StringSetAttributeValueSchema> & { [key: string]: unknown }
-  NS?: z.infer<typeof NumberSetAttributeValueSchema> & { [key: string]: unknown }
-  BS?: z.infer<typeof BinarySetAttributeValueSchema> & { [key: string]: unknown }
-  M?: z.infer<typeof MapAttributeValueSchema> & { [key: string]: unknown }
-  L?: z.infer<typeof ListAttributeValueSchema> & { [key: string]: unknown }
-  NULL?: z.infer<typeof NullAttributeValueSchema> & { [key: string]: unknown }
-  BOOL?: z.infer<typeof BooleanAttributeValueSchema> & { [key: string]: unknown }
+  S?: z.infer<typeof StringAttributeValueSchema> & unknown
+  N?: z.infer<typeof NumberAttributeValueSchema> & unknown
+  B?: z.infer<typeof BinaryAttributeValueSchema> & unknown
+  SS?: z.infer<typeof StringSetAttributeValueSchema> & unknown
+  NS?: z.infer<typeof NumberSetAttributeValueSchema> & unknown
+  BS?: z.infer<typeof BinarySetAttributeValueSchema> & unknown
+  M?: z.infer<typeof MapAttributeValueSchema> & unknown
+  L?: z.infer<typeof ListAttributeValueSchema> & unknown
+  NULL?: z.infer<typeof NullAttributeValueSchema> & unknown
+  BOOL?: z.infer<typeof BooleanAttributeValueSchema> & unknown
 }
 
 const AttributeValueSchema: z.ZodType<AttributeValueType> = z
   .lazy(() =>
     z
       .object({
-        S: StringAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type String. For example:</p> <p> <code>"S": "Hello"</code> </p>',
-            }),
-        ).exactOptional(),
-        N: NumberAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type Number. For example:</p> <p> <code>"N": "123.45"</code> </p> <p>Numbers are sent across the network to DynamoDB as strings, to maximize compatibility across languages and libraries. However, DynamoDB treats them as number type attributes for mathematical operations.</p>',
-            }),
-        ).exactOptional(),
-        B: BinaryAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type Binary. For example:</p> <p> <code>"B": "dGhpcyB0ZXh0IGlzIGJhc2U2NC1lbmNvZGVk"</code> </p>',
-            }),
-        ).exactOptional(),
-        SS: StringSetAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type String Set. For example:</p> <p> <code>"SS": ["Giraffe", "Hippo" ,"Zebra"]</code> </p>',
-            }),
-        ).exactOptional(),
-        NS: NumberSetAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type Number Set. For example:</p> <p> <code>"NS": ["42.2", "-19", "7.5", "3.14"]</code> </p> <p>Numbers are sent across the network to DynamoDB as strings, to maximize compatibility across languages and libraries. However, DynamoDB treats them as number type attributes for mathematical operations.</p>',
-            }),
-        ).exactOptional(),
-        BS: BinarySetAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type Binary Set. For example:</p> <p> <code>"BS": ["U3Vubnk=", "UmFpbnk=", "U25vd3k="]</code> </p>',
-            }),
-        ).exactOptional(),
-        M: MapAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type Map. For example:</p> <p> <code>"M": {"Name": {"S": "Joe"}, "Age": {"N": "35"}}</code> </p>',
-            }),
-        ).exactOptional(),
-        L: ListAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type List. For example:</p> <p> <code>"L": [ {"S": "Cookies"} , {"S": "Coffee"}, {"N": "3.14159"}]</code> </p>',
-            }),
-        ).exactOptional(),
-        NULL: NullAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type Null. For example:</p> <p> <code>"NULL": true</code> </p>',
-            }),
-        ).exactOptional(),
-        BOOL: BooleanAttributeValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>An attribute of type Boolean. For example:</p> <p> <code>"BOOL": true</code> </p>',
-            }),
-        ).exactOptional(),
+        S: StringAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type String. For example:</p> <p> <code>"S": "Hello"</code> </p>',
+        }),
+        N: NumberAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type Number. For example:</p> <p> <code>"N": "123.45"</code> </p> <p>Numbers are sent across the network to DynamoDB as strings, to maximize compatibility across languages and libraries. However, DynamoDB treats them as number type attributes for mathematical operations.</p>',
+        }),
+        B: BinaryAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type Binary. For example:</p> <p> <code>"B": "dGhpcyB0ZXh0IGlzIGJhc2U2NC1lbmNvZGVk"</code> </p>',
+        }),
+        SS: StringSetAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type String Set. For example:</p> <p> <code>"SS": ["Giraffe", "Hippo" ,"Zebra"]</code> </p>',
+        }),
+        NS: NumberSetAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type Number Set. For example:</p> <p> <code>"NS": ["42.2", "-19", "7.5", "3.14"]</code> </p> <p>Numbers are sent across the network to DynamoDB as strings, to maximize compatibility across languages and libraries. However, DynamoDB treats them as number type attributes for mathematical operations.</p>',
+        }),
+        BS: BinarySetAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type Binary Set. For example:</p> <p> <code>"BS": ["U3Vubnk=", "UmFpbnk=", "U25vd3k="]</code> </p>',
+        }),
+        M: MapAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type Map. For example:</p> <p> <code>"M": {"Name": {"S": "Joe"}, "Age": {"N": "35"}}</code> </p>',
+        }),
+        L: ListAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type List. For example:</p> <p> <code>"L": [ {"S": "Cookies"} , {"S": "Coffee"}, {"N": "3.14159"}]</code> </p>',
+        }),
+        NULL: NullAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type Null. For example:</p> <p> <code>"NULL": true</code> </p>',
+        }),
+        BOOL: BooleanAttributeValueSchema.exactOptional().openapi({
+          description:
+            '<p>An attribute of type Boolean. For example:</p> <p> <code>"BOOL": true</code> </p>',
+        }),
       })
       .openapi({
         description:
@@ -166,114 +126,19 @@ type MapAttributeValueType = { [key: string]: z.infer<typeof AttributeValueSchem
 
 type ListAttributeValueType = z.infer<typeof AttributeValueSchema>[]
 
+const StreamArnSchema = z.string().min(37).max(1024).openapi('StreamArn')
+
 const StringSchema = z.string().openapi('String')
 
-const OperationTypeSchema = z.enum(['INSERT', 'MODIFY', 'REMOVE']).openapi('OperationType')
-
-const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
-
-const AttributeMapSchema = z.record(z.string(), AttributeValueSchema).openapi('AttributeMap')
-
-const SequenceNumberSchema = z.string().min(21).max(40).openapi('SequenceNumber')
-
-const PositiveLongObjectSchema = z.int().min(1).openapi('PositiveLongObject')
+const StreamStatusSchema = z
+  .enum(['ENABLING', 'ENABLED', 'DISABLING', 'DISABLED'])
+  .openapi('StreamStatus')
 
 const StreamViewTypeSchema = z
   .enum(['NEW_IMAGE', 'OLD_IMAGE', 'NEW_AND_OLD_IMAGES', 'KEYS_ONLY'])
   .openapi('StreamViewType')
 
-const StreamRecordSchema = z
-  .object({
-    ApproximateCreationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate date and time when the stream record was created, in <a href="http://www.epochconverter.com/">UNIX epoch time</a> format.',
-        }),
-    ).exactOptional(),
-    Keys: AttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The primary key attribute(s) for the DynamoDB item that was modified.',
-        }),
-    ).exactOptional(),
-    NewImage: AttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The item in the DynamoDB table as it appeared after it was modified.',
-        }),
-    ).exactOptional(),
-    OldImage: AttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The item in the DynamoDB table as it appeared before it was modified.',
-        }),
-    ).exactOptional(),
-    SequenceNumber: SequenceNumberSchema.and(
-      z.any().openapi({ description: 'The sequence number of the stream record.' }),
-    ).exactOptional(),
-    SizeBytes: PositiveLongObjectSchema.and(
-      z.any().openapi({ description: 'The size of the stream record, in bytes.' }),
-    ).exactOptional(),
-    StreamViewType: StreamViewTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of data from the modified DynamoDB item that was captured in this stream record:</p> <ul> <li> <p> <code>KEYS_ONLY</code> - only the key attributes of the modified item.</p> </li> <li> <p> <code>NEW_IMAGE</code> - the entire item, as it appeared after it was modified.</p> </li> <li> <p> <code>OLD_IMAGE</code> - the entire item, as it appeared before it was modified.</p> </li> <li> <p> <code>NEW_AND_OLD_IMAGES</code> - both the new and the old item images of the item.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A description of a single data modification that was performed on an item in a DynamoDB table.',
-    required: [],
-  })
-  .openapi('StreamRecord')
-
-const IdentitySchema = z
-  .object({
-    PrincipalId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the entity that made the call. For Time To Live, the principalId is "dynamodb.amazonaws.com".',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the identity. For Time To Live, the type is "Service".',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains details about the type of identity that made the request.',
-    required: [],
-  })
-  .openapi('Identity')
-
-type RecordType = {
-  eventID?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  eventName?: z.infer<typeof OperationTypeSchema> & { [key: string]: unknown }
-  eventVersion?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  eventSource?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  awsRegion?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  dynamodb?: z.infer<typeof StreamRecordSchema> & { [key: string]: unknown }
-  userIdentity?: z.infer<typeof IdentitySchema> & { [key: string]: unknown }
-}
-
-const StreamArnSchema = z.string().min(37).max(1024).openapi('StreamArn')
-
-const StreamStatusSchema = z
-  .enum(['ENABLING', 'ENABLED', 'DISABLING', 'DISABLED'])
-  .openapi('StreamStatus')
+const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
 
 const TableNameSchema = z
   .string()
@@ -288,17 +153,13 @@ const KeyTypeSchema = z.enum(['HASH', 'RANGE']).openapi('KeyType')
 
 const KeySchemaElementSchema = z
   .object({
-    AttributeName: KeySchemaAttributeNameSchema.and(
-      z.any().openapi({ description: 'The name of a key attribute.' }),
-    ),
-    KeyType: KeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The role that this key attribute will assume:</p> <ul> <li> <p> <code>HASH</code> - partition key</p> </li> <li> <p> <code>RANGE</code> - sort key</p> </li> </ul> <note> <p>The partition key of an item is also known as its <i>hash attribute</i>. The term "hash attribute" derives from DynamoDB\'s usage of an internal hash function to evenly distribute data items across partitions, based on their partition key values.</p> <p>The sort key of an item is also known as its <i>range attribute</i>. The term "range attribute" derives from the way DynamoDB stores items with the same partition key physically close together, in sorted order by the sort key value.</p> </note>',
-        }),
-    ),
+    AttributeName: KeySchemaAttributeNameSchema.openapi({
+      description: 'The name of a key attribute.',
+    }),
+    KeyType: KeyTypeSchema.openapi({
+      description:
+        '<p>The role that this key attribute will assume:</p> <ul> <li> <p> <code>HASH</code> - partition key</p> </li> <li> <p> <code>RANGE</code> - sort key</p> </li> </ul> <note> <p>The partition key of an item is also known as its <i>hash attribute</i>. The term "hash attribute" derives from DynamoDB\'s usage of an internal hash function to evenly distribute data items across partitions, based on their partition key values.</p> <p>The sort key of an item is also known as its <i>range attribute</i>. The term "range attribute" derives from the way DynamoDB stores items with the same partition key physically close together, in sorted order by the sort key value.</p> </note>',
+    }),
   })
   .openapi({
     required: ['AttributeName', 'KeyType'],
@@ -311,24 +172,18 @@ const KeySchemaSchema = z.array(KeySchemaElementSchema).min(1).max(2).openapi('K
 
 const ShardIdSchema = z.string().min(28).max(65).openapi('ShardId')
 
+const SequenceNumberSchema = z.string().min(21).max(40).openapi('SequenceNumber')
+
 const SequenceNumberRangeSchema = z
   .object({
-    StartingSequenceNumber: SequenceNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The first sequence number for the stream records contained within a shard. String contains numeric characters only.',
-        }),
-    ).exactOptional(),
-    EndingSequenceNumber: SequenceNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last sequence number for the stream records contained within a shard. String contains numeric characters only.',
-        }),
-    ).exactOptional(),
+    StartingSequenceNumber: SequenceNumberSchema.exactOptional().openapi({
+      description:
+        'The first sequence number for the stream records contained within a shard. String contains numeric characters only.',
+    }),
+    EndingSequenceNumber: SequenceNumberSchema.exactOptional().openapi({
+      description:
+        'The last sequence number for the stream records contained within a shard. String contains numeric characters only.',
+    }),
   })
   .openapi({
     description:
@@ -339,15 +194,15 @@ const SequenceNumberRangeSchema = z
 
 const ShardSchema = z
   .object({
-    ShardId: ShardIdSchema.and(
-      z.any().openapi({ description: 'The system-generated identifier for this shard.' }),
-    ).exactOptional(),
-    SequenceNumberRange: SequenceNumberRangeSchema.and(
-      z.any().openapi({ description: 'The range of possible sequence numbers for the shard.' }),
-    ).exactOptional(),
-    ParentShardId: ShardIdSchema.and(
-      z.any().openapi({ description: "The shard ID of the current shard's parent." }),
-    ).exactOptional(),
+    ShardId: ShardIdSchema.exactOptional().openapi({
+      description: 'The system-generated identifier for this shard.',
+    }),
+    SequenceNumberRange: SequenceNumberRangeSchema.exactOptional().openapi({
+      description: 'The range of possible sequence numbers for the shard.',
+    }),
+    ParentShardId: ShardIdSchema.exactOptional().openapi({
+      description: "The shard ID of the current shard's parent.",
+    }),
   })
   .openapi({
     description: 'A uniquely identified group of stream records within a stream.',
@@ -359,57 +214,37 @@ const ShardDescriptionListSchema = z.array(ShardSchema).openapi('ShardDescriptio
 
 const StreamDescriptionSchema = z
   .object({
-    StreamArn: StreamArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the stream.' }),
-    ).exactOptional(),
-    StreamLabel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A timestamp, in ISO 8601 format, for this stream.</p> <p>Note that <code>LatestStreamLabel</code> is not a unique identifier for the stream, because it is possible that a stream from another table might have the same timestamp. However, the combination of the following three elements is guaranteed to be unique:</p> <ul> <li> <p>the AWS customer ID.</p> </li> <li> <p>the table name</p> </li> <li> <p>the <code>StreamLabel</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StreamStatus: StreamStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates the current status of the stream:</p> <ul> <li> <p> <code>ENABLING</code> - Streams is currently being enabled on the DynamoDB table.</p> </li> <li> <p> <code>ENABLED</code> - the stream is enabled.</p> </li> <li> <p> <code>DISABLING</code> - Streams is currently being disabled on the DynamoDB table.</p> </li> <li> <p> <code>DISABLED</code> - the stream is disabled.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StreamViewType: StreamViewTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates the format of the records within this stream:</p> <ul> <li> <p> <code>KEYS_ONLY</code> - only the key attributes of items that were modified in the DynamoDB table.</p> </li> <li> <p> <code>NEW_IMAGE</code> - entire items from the table, as they appeared after they were modified.</p> </li> <li> <p> <code>OLD_IMAGE</code> - entire items from the table, as they appeared before they were modified.</p> </li> <li> <p> <code>NEW_AND_OLD_IMAGES</code> - both the new and the old images of the items from the table.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreationRequestDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the request to create this stream was issued.',
-        }),
-    ).exactOptional(),
-    TableName: TableNameSchema.and(
-      z.any().openapi({ description: 'The DynamoDB table with which the stream is associated.' }),
-    ).exactOptional(),
-    KeySchema: KeySchemaSchema.and(
-      z.any().openapi({ description: "The key attribute(s) of the stream's DynamoDB table." }),
-    ).exactOptional(),
-    Shards: ShardDescriptionListSchema.and(
-      z.any().openapi({ description: 'The shards that comprise the stream.' }),
-    ).exactOptional(),
-    LastEvaluatedShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The shard ID of the item where the operation stopped, inclusive of the previous result set. Use this value to start a new operation, excluding this value in the new request.</p> <p>If <code>LastEvaluatedShardId</code> is empty, then the "last page" of results has been processed and there is currently no more data to be retrieved.</p> <p>If <code>LastEvaluatedShardId</code> is not empty, it does not necessarily mean that there is more data in the result set. The only way to know when you have reached the end of the result set is when <code>LastEvaluatedShardId</code> is empty.</p>',
-        }),
-    ).exactOptional(),
+    StreamArn: StreamArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the stream.',
+    }),
+    StreamLabel: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A timestamp, in ISO 8601 format, for this stream.</p> <p>Note that <code>LatestStreamLabel</code> is not a unique identifier for the stream, because it is possible that a stream from another table might have the same timestamp. However, the combination of the following three elements is guaranteed to be unique:</p> <ul> <li> <p>the AWS customer ID.</p> </li> <li> <p>the table name</p> </li> <li> <p>the <code>StreamLabel</code> </p> </li> </ul>',
+    }),
+    StreamStatus: StreamStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates the current status of the stream:</p> <ul> <li> <p> <code>ENABLING</code> - Streams is currently being enabled on the DynamoDB table.</p> </li> <li> <p> <code>ENABLED</code> - the stream is enabled.</p> </li> <li> <p> <code>DISABLING</code> - Streams is currently being disabled on the DynamoDB table.</p> </li> <li> <p> <code>DISABLED</code> - the stream is disabled.</p> </li> </ul>',
+    }),
+    StreamViewType: StreamViewTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates the format of the records within this stream:</p> <ul> <li> <p> <code>KEYS_ONLY</code> - only the key attributes of items that were modified in the DynamoDB table.</p> </li> <li> <p> <code>NEW_IMAGE</code> - entire items from the table, as they appeared after they were modified.</p> </li> <li> <p> <code>OLD_IMAGE</code> - entire items from the table, as they appeared before they were modified.</p> </li> <li> <p> <code>NEW_AND_OLD_IMAGES</code> - both the new and the old images of the items from the table.</p> </li> </ul>',
+    }),
+    CreationRequestDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the request to create this stream was issued.',
+    }),
+    TableName: TableNameSchema.exactOptional().openapi({
+      description: 'The DynamoDB table with which the stream is associated.',
+    }),
+    KeySchema: KeySchemaSchema.exactOptional().openapi({
+      description: "The key attribute(s) of the stream's DynamoDB table.",
+    }),
+    Shards: ShardDescriptionListSchema.exactOptional().openapi({
+      description: 'The shards that comprise the stream.',
+    }),
+    LastEvaluatedShardId: ShardIdSchema.exactOptional().openapi({
+      description:
+        '<p>The shard ID of the item where the operation stopped, inclusive of the previous result set. Use this value to start a new operation, excluding this value in the new request.</p> <p>If <code>LastEvaluatedShardId</code> is empty, then the "last page" of results has been processed and there is currently no more data to be retrieved.</p> <p>If <code>LastEvaluatedShardId</code> is not empty, it does not necessarily mean that there is more data in the result set. The only way to know when you have reached the end of the result set is when <code>LastEvaluatedShardId</code> is empty.</p>',
+    }),
   })
   .openapi({
     description: 'Represents all of the data describing a particular stream.',
@@ -419,14 +254,10 @@ const StreamDescriptionSchema = z
 
 const DescribeStreamOutputSchema = z
   .object({
-    StreamDescription: StreamDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complete description of the stream, including its creation date and time, the DynamoDB table associated with the stream, the shard IDs within the stream, and the beginning and ending sequence numbers of stream records within the shards.',
-        }),
-    ).exactOptional(),
+    StreamDescription: StreamDescriptionSchema.exactOptional().openapi({
+      description:
+        'A complete description of the stream, including its creation date and time, the DynamoDB table associated with the stream, the shard IDs within the stream, and the beginning and ending sequence numbers of stream records within the shards.',
+    }),
   })
   .openapi({
     example: {
@@ -483,24 +314,16 @@ const PositiveIntegerObjectSchema = z.int().min(1).openapi('PositiveIntegerObjec
 
 const DescribeStreamInputSchema = z
   .object({
-    StreamArn: StreamArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the stream.' }),
-    ),
-    Limit: PositiveIntegerObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of shard objects to return. The upper limit is 100.',
-        }),
-    ).exactOptional(),
-    ExclusiveStartShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The shard ID of the first item that this operation will evaluate. Use the value that was returned for <code>LastEvaluatedShardId</code> in the previous operation. ',
-        }),
-    ).exactOptional(),
+    StreamArn: StreamArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the stream.',
+    }),
+    Limit: PositiveIntegerObjectSchema.exactOptional().openapi({
+      description: 'The maximum number of shard objects to return. The upper limit is 100.',
+    }),
+    ExclusiveStartShardId: ShardIdSchema.exactOptional().openapi({
+      description:
+        'The shard ID of the first item that this operation will evaluate. Use the value that was returned for <code>LastEvaluatedShardId</code> in the previous operation. ',
+    }),
   })
   .openapi({
     required: ['StreamArn'],
@@ -513,68 +336,92 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const InternalServerErrorSchema = z.any().openapi('InternalServerError')
 
-const RecordSchema: z.ZodType<RecordType> = z
-  .lazy(() =>
-    z
-      .object({
-        eventID: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A globally unique identifier for the event that was recorded in this stream record.',
-            }),
-        ).exactOptional(),
-        eventName: OperationTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "<p>The type of data modification that was performed on the DynamoDB table:</p> <ul> <li> <p> <code>INSERT</code> - a new item was added to the table.</p> </li> <li> <p> <code>MODIFY</code> - one or more of an existing item's attributes were modified.</p> </li> <li> <p> <code>REMOVE</code> - the item was deleted from the table</p> </li> </ul>",
-            }),
-        ).exactOptional(),
-        eventVersion: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>The version number of the stream record format. This number is updated whenever the structure of <code>Record</code> is modified.</p> <p>Client applications must not assume that <code>eventVersion</code> will remain at a particular value, as this number is subject to change at any time. In general, <code>eventVersion</code> will only increase as the low-level DynamoDB Streams API evolves.</p>',
-            }),
-        ).exactOptional(),
-        eventSource: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The AWS service from which the stream record originated. For DynamoDB Streams, this is <code>aws:dynamodb</code>.',
-            }),
-        ).exactOptional(),
-        awsRegion: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The region in which the <code>GetRecords</code> request was received.',
-            }),
-        ).exactOptional(),
-        dynamodb: StreamRecordSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The main body of the stream record, containing all of the DynamoDB-specific fields.',
-            }),
-        ).exactOptional(),
-        userIdentity: IdentitySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>Items that are deleted by the Time to Live process after expiration have the following fields: </p> <ul> <li> <p>Records[].userIdentity.type</p> <p>"Service"</p> </li> <li> <p>Records[].userIdentity.principalId</p> <p>"dynamodb.amazonaws.com"</p> </li> </ul>',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'A description of a unique event within a stream.', required: [] }),
-  )
+const OperationTypeSchema = z.enum(['INSERT', 'MODIFY', 'REMOVE']).openapi('OperationType')
+
+const AttributeMapSchema = z.record(z.string(), AttributeValueSchema).openapi('AttributeMap')
+
+const PositiveLongObjectSchema = z.int().min(1).openapi('PositiveLongObject')
+
+const StreamRecordSchema = z
+  .object({
+    ApproximateCreationDateTime: DateSchema.exactOptional().openapi({
+      description:
+        'The approximate date and time when the stream record was created, in <a href="http://www.epochconverter.com/">UNIX epoch time</a> format.',
+    }),
+    Keys: AttributeMapSchema.exactOptional().openapi({
+      description: 'The primary key attribute(s) for the DynamoDB item that was modified.',
+    }),
+    NewImage: AttributeMapSchema.exactOptional().openapi({
+      description: 'The item in the DynamoDB table as it appeared after it was modified.',
+    }),
+    OldImage: AttributeMapSchema.exactOptional().openapi({
+      description: 'The item in the DynamoDB table as it appeared before it was modified.',
+    }),
+    SequenceNumber: SequenceNumberSchema.exactOptional().openapi({
+      description: 'The sequence number of the stream record.',
+    }),
+    SizeBytes: PositiveLongObjectSchema.exactOptional().openapi({
+      description: 'The size of the stream record, in bytes.',
+    }),
+    StreamViewType: StreamViewTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of data from the modified DynamoDB item that was captured in this stream record:</p> <ul> <li> <p> <code>KEYS_ONLY</code> - only the key attributes of the modified item.</p> </li> <li> <p> <code>NEW_IMAGE</code> - the entire item, as it appeared after it was modified.</p> </li> <li> <p> <code>OLD_IMAGE</code> - the entire item, as it appeared before it was modified.</p> </li> <li> <p> <code>NEW_AND_OLD_IMAGES</code> - both the new and the old item images of the item.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    description:
+      'A description of a single data modification that was performed on an item in a DynamoDB table.',
+    required: [],
+  })
+  .openapi('StreamRecord')
+
+const IdentitySchema = z
+  .object({
+    PrincipalId: StringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the entity that made the call. For Time To Live, the principalId is "dynamodb.amazonaws.com".',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description: 'The type of the identity. For Time To Live, the type is "Service".',
+    }),
+  })
+  .openapi({
+    description: 'Contains details about the type of identity that made the request.',
+    required: [],
+  })
+  .openapi('Identity')
+
+const RecordSchema = z
+  .object({
+    eventID: StringSchema.exactOptional().openapi({
+      description:
+        'A globally unique identifier for the event that was recorded in this stream record.',
+    }),
+    eventName: OperationTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The type of data modification that was performed on the DynamoDB table:</p> <ul> <li> <p> <code>INSERT</code> - a new item was added to the table.</p> </li> <li> <p> <code>MODIFY</code> - one or more of an existing item's attributes were modified.</p> </li> <li> <p> <code>REMOVE</code> - the item was deleted from the table</p> </li> </ul>",
+    }),
+    eventVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The version number of the stream record format. This number is updated whenever the structure of <code>Record</code> is modified.</p> <p>Client applications must not assume that <code>eventVersion</code> will remain at a particular value, as this number is subject to change at any time. In general, <code>eventVersion</code> will only increase as the low-level DynamoDB Streams API evolves.</p>',
+    }),
+    eventSource: StringSchema.exactOptional().openapi({
+      description:
+        'The AWS service from which the stream record originated. For DynamoDB Streams, this is <code>aws:dynamodb</code>.',
+    }),
+    awsRegion: StringSchema.exactOptional().openapi({
+      description: 'The region in which the <code>GetRecords</code> request was received.',
+    }),
+    dynamodb: StreamRecordSchema.exactOptional().openapi({
+      description:
+        'The main body of the stream record, containing all of the DynamoDB-specific fields.',
+    }),
+    userIdentity: IdentitySchema.exactOptional().openapi({
+      description:
+        '<p>Items that are deleted by the Time to Live process after expiration have the following fields: </p> <ul> <li> <p>Records[].userIdentity.type</p> <p>"Service"</p> </li> <li> <p>Records[].userIdentity.principalId</p> <p>"dynamodb.amazonaws.com"</p> </li> </ul>',
+    }),
+  })
+  .openapi({ description: 'A description of a unique event within a stream.', required: [] })
   .openapi('Record')
 
 const RecordListSchema = z.array(RecordSchema).openapi('RecordList')
@@ -583,22 +430,14 @@ const ShardIteratorSchema = z.string().min(1).max(2048).openapi('ShardIterator')
 
 const GetRecordsOutputSchema = z
   .object({
-    Records: RecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stream records from the shard, which were retrieved using the shard iterator.',
-        }),
-    ).exactOptional(),
-    NextShardIterator: ShardIteratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next position in the shard from which to start sequentially reading stream records. If set to <code>null</code>, the shard has been closed and the requested iterator will not return any more data.',
-        }),
-    ).exactOptional(),
+    Records: RecordListSchema.exactOptional().openapi({
+      description:
+        'The stream records from the shard, which were retrieved using the shard iterator.',
+    }),
+    NextShardIterator: ShardIteratorSchema.exactOptional().openapi({
+      description:
+        'The next position in the shard from which to start sequentially reading stream records. If set to <code>null</code>, the shard has been closed and the requested iterator will not return any more data.',
+    }),
   })
   .openapi({
     example: {
@@ -656,22 +495,14 @@ const GetRecordsOutputSchema = z
 
 const GetRecordsInputSchema = z
   .object({
-    ShardIterator: ShardIteratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A shard iterator that was retrieved from a previous GetShardIterator operation. This iterator can be used to access the stream records in this shard.',
-        }),
-    ),
-    Limit: PositiveIntegerObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of records to return from the shard. The upper limit is 1000.',
-        }),
-    ).exactOptional(),
+    ShardIterator: ShardIteratorSchema.openapi({
+      description:
+        'A shard iterator that was retrieved from a previous GetShardIterator operation. This iterator can be used to access the stream records in this shard.',
+    }),
+    Limit: PositiveIntegerObjectSchema.exactOptional().openapi({
+      description:
+        'The maximum number of records to return from the shard. The upper limit is 1000.',
+    }),
   })
   .openapi({
     required: ['ShardIterator'],
@@ -688,14 +519,10 @@ const TrimmedDataAccessExceptionSchema = z.any().openapi('TrimmedDataAccessExcep
 
 const GetShardIteratorOutputSchema = z
   .object({
-    ShardIterator: ShardIteratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position in the shard from which to start reading stream records sequentially. A shard iterator specifies this position using the sequence number of a stream record in a shard.',
-        }),
-    ).exactOptional(),
+    ShardIterator: ShardIteratorSchema.exactOptional().openapi({
+      description:
+        'The position in the shard from which to start reading stream records sequentially. A shard iterator specifies this position using the sequence number of a stream record in a shard.',
+    }),
   })
   .openapi({
     example: {
@@ -713,33 +540,20 @@ const ShardIteratorTypeSchema = z
 
 const GetShardIteratorInputSchema = z
   .object({
-    StreamArn: StreamArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the stream.' }),
-    ),
-    ShardId: ShardIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the shard. The iterator will be returned for this shard ID.',
-        }),
-    ),
-    ShardIteratorType: ShardIteratorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines how the shard iterator is used to start reading stream records from the shard:</p> <ul> <li> <p> <code>AT_SEQUENCE_NUMBER</code> - Start reading exactly from the position denoted by a specific sequence number.</p> </li> <li> <p> <code>AFTER_SEQUENCE_NUMBER</code> - Start reading right after the position denoted by a specific sequence number.</p> </li> <li> <p> <code>TRIM_HORIZON</code> - Start reading at the last (untrimmed) stream record, which is the oldest record in the shard. In DynamoDB Streams, there is a 24 hour limit on data retention. Stream records whose age exceeds this limit are subject to removal (trimming) from the stream.</p> </li> <li> <p> <code>LATEST</code> - Start reading just after the most recent stream record in the shard, so that you always read the most recent data in the shard.</p> </li> </ul>',
-        }),
-    ),
-    SequenceNumber: SequenceNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sequence number of a stream record in the shard from which to start reading.',
-        }),
-    ).exactOptional(),
+    StreamArn: StreamArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the stream.',
+    }),
+    ShardId: ShardIdSchema.openapi({
+      description: 'The identifier of the shard. The iterator will be returned for this shard ID.',
+    }),
+    ShardIteratorType: ShardIteratorTypeSchema.openapi({
+      description:
+        '<p>Determines how the shard iterator is used to start reading stream records from the shard:</p> <ul> <li> <p> <code>AT_SEQUENCE_NUMBER</code> - Start reading exactly from the position denoted by a specific sequence number.</p> </li> <li> <p> <code>AFTER_SEQUENCE_NUMBER</code> - Start reading right after the position denoted by a specific sequence number.</p> </li> <li> <p> <code>TRIM_HORIZON</code> - Start reading at the last (untrimmed) stream record, which is the oldest record in the shard. In DynamoDB Streams, there is a 24 hour limit on data retention. Stream records whose age exceeds this limit are subject to removal (trimming) from the stream.</p> </li> <li> <p> <code>LATEST</code> - Start reading just after the most recent stream record in the shard, so that you always read the most recent data in the shard.</p> </li> </ul>',
+    }),
+    SequenceNumber: SequenceNumberSchema.exactOptional().openapi({
+      description:
+        'The sequence number of a stream record in the shard from which to start reading.',
+    }),
   })
   .openapi({
     required: ['StreamArn', 'ShardId', 'ShardIteratorType'],
@@ -750,20 +564,16 @@ const GetShardIteratorInputSchema = z
 
 const StreamSchema = z
   .object({
-    StreamArn: StreamArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the stream.' }),
-    ).exactOptional(),
-    TableName: TableNameSchema.and(
-      z.any().openapi({ description: 'The DynamoDB table with which the stream is associated.' }),
-    ).exactOptional(),
-    StreamLabel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A timestamp, in ISO 8601 format, for this stream.</p> <p>Note that <code>LatestStreamLabel</code> is not a unique identifier for the stream, because it is possible that a stream from another table might have the same timestamp. However, the combination of the following three elements is guaranteed to be unique:</p> <ul> <li> <p>the AWS customer ID.</p> </li> <li> <p>the table name</p> </li> <li> <p>the <code>StreamLabel</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StreamArn: StreamArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the stream.',
+    }),
+    TableName: TableNameSchema.exactOptional().openapi({
+      description: 'The DynamoDB table with which the stream is associated.',
+    }),
+    StreamLabel: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A timestamp, in ISO 8601 format, for this stream.</p> <p>Note that <code>LatestStreamLabel</code> is not a unique identifier for the stream, because it is possible that a stream from another table might have the same timestamp. However, the combination of the following three elements is guaranteed to be unique:</p> <ul> <li> <p>the AWS customer ID.</p> </li> <li> <p>the table name</p> </li> <li> <p>the <code>StreamLabel</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     description: 'Represents all of the data describing a particular stream.',
@@ -775,22 +585,13 @@ const StreamListSchema = z.array(StreamSchema).openapi('StreamList')
 
 const ListStreamsOutputSchema = z
   .object({
-    Streams: StreamListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of stream descriptors associated with the current account and endpoint.',
-        }),
-    ).exactOptional(),
-    LastEvaluatedStreamArn: StreamArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stream ARN of the item where the operation stopped, inclusive of the previous result set. Use this value to start a new operation, excluding this value in the new request.</p> <p>If <code>LastEvaluatedStreamArn</code> is empty, then the "last page" of results has been processed and there is no more data to be retrieved.</p> <p>If <code>LastEvaluatedStreamArn</code> is not empty, it does not necessarily mean that there is more data in the result set. The only way to know when you have reached the end of the result set is when <code>LastEvaluatedStreamArn</code> is empty.</p>',
-        }),
-    ).exactOptional(),
+    Streams: StreamListSchema.exactOptional().openapi({
+      description: 'A list of stream descriptors associated with the current account and endpoint.',
+    }),
+    LastEvaluatedStreamArn: StreamArnSchema.exactOptional().openapi({
+      description:
+        '<p>The stream ARN of the item where the operation stopped, inclusive of the previous result set. Use this value to start a new operation, excluding this value in the new request.</p> <p>If <code>LastEvaluatedStreamArn</code> is empty, then the "last page" of results has been processed and there is no more data to be retrieved.</p> <p>If <code>LastEvaluatedStreamArn</code> is not empty, it does not necessarily mean that there is more data in the result set. The only way to know when you have reached the end of the result set is when <code>LastEvaluatedStreamArn</code> is empty.</p>',
+    }),
   })
   .openapi({
     example: {
@@ -822,29 +623,17 @@ const ListStreamsOutputSchema = z
 
 const ListStreamsInputSchema = z
   .object({
-    TableName: TableNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this parameter is provided, then only the streams associated with this table name are returned.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of streams to return. The upper limit is 100.',
-        }),
-    ).exactOptional(),
-    ExclusiveStartStreamArn: StreamArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN (Amazon Resource Name) of the first item that this operation will evaluate. Use the value that was returned for <code>LastEvaluatedStreamArn</code> in the previous operation. ',
-        }),
-    ).exactOptional(),
+    TableName: TableNameSchema.exactOptional().openapi({
+      description:
+        'If this parameter is provided, then only the streams associated with this table name are returned.',
+    }),
+    Limit: PositiveIntegerObjectSchema.exactOptional().openapi({
+      description: 'The maximum number of streams to return. The upper limit is 100.',
+    }),
+    ExclusiveStartStreamArn: StreamArnSchema.exactOptional().openapi({
+      description:
+        'The ARN (Amazon Resource Name) of the first item that this operation will evaluate. Use the value that was returned for <code>LastEvaluatedStreamArn</code> in the previous operation. ',
+    }),
   })
   .openapi({
     title: 'ListStreamsInput',

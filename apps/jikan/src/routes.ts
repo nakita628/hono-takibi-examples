@@ -1,5 +1,66 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CharacterImagesSchema = z
+  .object({
+    jpg: z
+      .object({
+        image_url: z.string().nullable().exactOptional().openapi({ description: 'Image URL JPG' }),
+        small_image_url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Small Image URL JPG' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Available images in JPG', required: [] }),
+    webp: z
+      .object({
+        image_url: z.string().nullable().exactOptional().openapi({ description: 'Image URL WEBP' }),
+        small_image_url: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Small Image URL WEBP' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Available images in WEBP', required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('CharacterImages')
+
+const PeopleImagesSchema = z
+  .object({
+    jpg: z
+      .object({
+        image_url: z.string().nullable().exactOptional().openapi({ description: 'Image URL JPG' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Available images in JPG', required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('PeopleImages')
+
+type AnimeCharactersType = {
+  data?: {
+    character?: {
+      mal_id?: number
+      url?: string
+      images?: z.infer<typeof CharacterImagesSchema>
+      name?: string
+    }
+    role?: string
+    voice_actors?: {
+      person?: {
+        mal_id?: number
+        url?: string
+        images?: z.infer<typeof PeopleImagesSchema>
+        name?: string
+      }
+      language?: string
+    }[]
+  }[]
+}
+
 const UserAnimeListStatusFilterSchema = z
   .enum(['all', 'watching', 'completed', 'onhold', 'dropped', 'plantowatch'])
   .openapi({ description: "User's anime list status filter options" })
@@ -397,18 +458,6 @@ const MangaPicturesSchema = z
   .openapi({ description: 'Manga Pictures', required: [] })
   .openapi('MangaPictures')
 
-const PeopleImagesSchema = z
-  .object({
-    jpg: z
-      .object({
-        image_url: z.string().nullable().exactOptional().openapi({ description: 'Image URL JPG' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Available images in JPG', required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('PeopleImages')
-
 const PersonPicturesSchema = z
   .object({ data: z.array(PeopleImagesSchema).exactOptional() })
   .openapi({ description: 'Character Pictures', required: [] })
@@ -676,34 +725,6 @@ const MangaSchema = z
   })
   .openapi({ description: 'Manga Resource', required: [] })
   .openapi('Manga')
-
-const CharacterImagesSchema = z
-  .object({
-    jpg: z
-      .object({
-        image_url: z.string().nullable().exactOptional().openapi({ description: 'Image URL JPG' }),
-        small_image_url: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Small Image URL JPG' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Available images in JPG', required: [] }),
-    webp: z
-      .object({
-        image_url: z.string().nullable().exactOptional().openapi({ description: 'Image URL WEBP' }),
-        small_image_url: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Small Image URL WEBP' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Available images in WEBP', required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('CharacterImages')
 
 const CharacterSchema = z
   .object({
@@ -1071,7 +1092,7 @@ const WatchPromosSchema = PaginationSchema.and(
   .openapi({ description: 'Watch Promos' })
   .openapi('WatchPromos')
 
-const AnimeCharactersSchema = z
+const AnimeCharactersSchema: z.ZodType<AnimeCharactersType> = z
   .object({
     data: z
       .array(
@@ -2590,15 +2611,12 @@ const RecommendationsSchema = z
 const EntryRecommendationsSchema = z
   .object({
     data: z
-      .object({
-        url: z.string().exactOptional().openapi({ description: 'Recommendation MyAnimeList URL' }),
-        votes: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'Number of users who have recommended this entry' }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
+      .array(
+        z
+          .object({ entry: z.xor([AnimeMetaSchema, MangaMetaSchema]).exactOptional() })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
   })
   .openapi({ description: 'Entry Recommendations Resource', required: [] })
   .openapi('EntryRecommendations')

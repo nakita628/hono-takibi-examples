@@ -174,18 +174,23 @@ const MultiDailyMetricTimeSeriesSchema = z
   })
   .openapi('MultiDailyMetricTimeSeries')
 
-const FetchMultiDailyMetricsTimeSeriesResponseSchema = z
-  .object({
-    multiDailyMetricTimeSeries: z
-      .array(MultiDailyMetricTimeSeriesSchema)
-      .exactOptional()
-      .openapi({ description: 'DailyMetrics and their corresponding time series.' }),
-  })
-  .openapi({
-    description: 'Represents the response for FetchMultiDailyMetricsTimeSeries.',
-    required: [],
-  })
-  .openapi('FetchMultiDailyMetricsTimeSeriesResponse')
+type FetchMultiDailyMetricsTimeSeriesResponseType = {
+  multiDailyMetricTimeSeries?: z.infer<typeof MultiDailyMetricTimeSeriesSchema>[]
+}
+
+const FetchMultiDailyMetricsTimeSeriesResponseSchema: z.ZodType<FetchMultiDailyMetricsTimeSeriesResponseType> =
+  z
+    .object({
+      multiDailyMetricTimeSeries: z
+        .array(MultiDailyMetricTimeSeriesSchema)
+        .exactOptional()
+        .openapi({ description: 'DailyMetrics and their corresponding time series.' }),
+    })
+    .openapi({
+      description: 'Represents the response for FetchMultiDailyMetricsTimeSeries.',
+      required: [],
+    })
+    .openapi('FetchMultiDailyMetricsTimeSeriesResponse')
 
 const GetDailyMetricsTimeSeriesResponseSchema = z
   .object({

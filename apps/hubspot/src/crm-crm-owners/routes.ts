@@ -247,11 +247,17 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    automation: { portal: ['public', 'private'], developer: false },
+    'crm.objects.owners.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: true,
+    },
+    'crm.pipelines.approval.read': { portal: ['public', 'private'], developer: false },
+    'crm.pipelines.governance.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCrmOwners202609Route = createRoute({
   method: 'get',

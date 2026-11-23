@@ -1,290 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const UserBaseSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'The unique identifier for this user.', example: '11446498' }),
-    type: z
-      .literal('user')
-      .openapi({ description: 'The value will always be `user`.', example: 'user' }),
-  })
-  .openapi({
-    description: 'A mini representation of a user, used when\nnested within another resource.',
-    required: ['type', 'id'],
-    title: 'User (Base)',
-  })
-  .openapi('UserBase')
-
-const UserMiniSchema = UserBaseSchema.and(
-  z
-    .object({
-      name: z
-        .string()
-        .max(50)
-        .exactOptional()
-        .openapi({ description: 'The display name of this user.', example: 'Aaron Levie' }),
-      login: z
-        .email()
-        .exactOptional()
-        .openapi({
-          description: 'The primary email address of this user.',
-          example: 'ceo@example.com',
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description:
-      'A mini representation of a user, as can be returned when nested within other\nresources.',
-    title: 'User (Mini)',
-  })
-  .openapi('UserMini')
-
-const AutomateWorkflowReferenceSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'The identifier for the Automate workflow instance.',
-        example: '545',
-      }),
-    type: z.literal('workflow').openapi({ description: 'The object type.', example: 'workflow' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The display name for the Automate workflow.',
-        example: 'Contract approval workflow',
-      }),
-  })
-  .openapi({
-    description: 'A reference to an Automate workflow.',
-    required: ['id', 'type'],
-    title: 'Automate Workflow Reference',
-  })
-  .openapi('AutomateWorkflowReference')
-
-const AutomateWorkflowActionSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'The identifier for the Automate action.', example: '981' }),
-    type: z
-      .literal('workflow_action')
-      .openapi({
-        description: 'The object type for this workflow action wrapper.',
-        example: 'workflow_action',
-      }),
-    action_type: z
-      .literal('run_workflow')
-      .openapi({
-        description: 'The type that defines the behavior of this action.',
-        example: 'run_workflow',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A human-readable description of the workflow action.',
-        example: 'Runs workflow execution for selected files',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when the action was created.',
-        example: '2026-04-01T10:00:00.000Z',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The date and time when the action was last updated.',
-        example: '2026-04-02T11:00:00.000Z',
-      }),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user that created the action.' }),
-    ).exactOptional(),
-    updated_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user that last updated the action.' }),
-    ).exactOptional(),
-    workflow: AutomateWorkflowReferenceSchema,
-  })
-  .openapi({
-    description: 'An Automate action that can start a workflow.',
-    required: ['id', 'type', 'action_type', 'workflow'],
-    title: 'Automate Workflow Action',
-  })
-  .openapi('AutomateWorkflowAction')
-
-const AutomateWorkflowsSchema = z
-  .object({
-    entries: z
-      .array(AutomateWorkflowActionSchema)
-      .exactOptional()
-      .openapi({ description: 'Workflow actions available for manual start.' }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        limit: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description:
-              'The limit that was used for these entries. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed. The maximum value varies by API.',
-            example: 1000,
-          }),
-        next_marker: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description: 'The marker for the start of the next page of results.',
-            example: 'JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii',
-          }),
-      })
-      .openapi({
-        description: 'The part of an API response that describes marker\nbased pagination.',
-        required: [],
-      }),
-  )
-  .openapi({
-    description: 'A list of Automate workflow actions.',
-    title: 'Automate Workflow Actions',
-    'x-box-resource-id': 'automate_workflows_v2026.0',
-  })
-  .openapi('AutomateWorkflows')
-
-const AutomateWorkflowStartRequestSchema = z
-  .object({
-    workflow_action_id: z
-      .string()
-      .openapi({
-        description: 'The callable action ID used to trigger the selected workflow.',
-        example: '981',
-      }),
-    file_ids: z
-      .array(z.string().openapi({ example: '123' }))
-      .min(1)
-      .openapi({
-        description: 'The files to process with the selected workflow.',
-        example: ['123'],
-      }),
-  })
-  .openapi({
-    description: 'Request body to start an Automate workflow.',
-    required: ['workflow_action_id', 'file_ids'],
-    title: 'Automate Workflow Start Request',
-  })
-  .openapi('AutomateWorkflowStartRequest')
-
-const ClientErrorSchema = z
-  .object({
-    type: z
-      .literal('error')
-      .exactOptional()
-      .openapi({ description: 'The value will always be `error`.', example: 'error' }),
-    status: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The HTTP status of the response.', example: 400 }),
-    code: z
-      .enum([
-        'created',
-        'accepted',
-        'no_content',
-        'redirect',
-        'not_modified',
-        'bad_request',
-        'unauthorized',
-        'forbidden',
-        'not_found',
-        'method_not_allowed',
-        'conflict',
-        'precondition_failed',
-        'too_many_requests',
-        'internal_server_error',
-        'unavailable',
-        'item_name_invalid',
-        'insufficient_scope',
-      ])
-      .exactOptional()
-      .openapi({ description: 'A Box-specific error code.', example: 'item_name_invalid' }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A short message describing the error.',
-        example: 'Method Not Allowed',
-      }),
-    context_info: z
-      .record(z.string(), z.any())
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A free-form object that contains additional context\nabout the error. The possible fields are defined on\na per-endpoint basis. `message` is only one example.',
-        example: { message: 'Something went wrong' },
-      }),
-    help_url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A URL that links to more information about why this error occurred.',
-        example: 'https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/',
-      }),
-    request_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier for this response, which can be used\nwhen contacting Box support.',
-        example: 'abcdef123456',
-      }),
-  })
-  .openapi({
-    description: 'A generic error.',
-    title: 'Client error',
-    'x-box-resource-id': 'client_error_v2026.0',
-    required: [],
-  })
-  .openapi('ClientError')
-
-const DocumentFailuresSchema = z
-  .object({
-    errors: z
-      .array(z.string())
-      .openapi({
-        description: 'A list of errors that occurred during the document job.',
-        example: ['The source file could not be processed.'],
-      }),
-    warnings: z
-      .array(z.string())
-      .openapi({
-        description: 'A list of warnings that occurred during the document job.',
-        example: ['Some pages were skipped because they were blank.'],
-      }),
-  })
-  .openapi({
-    description: 'Errors and warnings that occurred during a document job.',
-    required: ['errors', 'warnings'],
-    title: 'Document failures',
-  })
-  .openapi('DocumentFailures')
-
 const FileReferenceSchema = z
   .object({
     type: z
@@ -378,6 +93,7 @@ const DocumentSplitCreateRequestManualSchema = z
     required: ['split_type', 'split_definition'],
     title: 'Document Split manual create request',
     'x-box-tag': 'document_split',
+    not: { anyOf: [{ required: ['prompt'] }, { required: ['page_selection'] }] },
   })
   .openapi('DocumentSplitCreateRequestManual')
 
@@ -541,6 +257,7 @@ const DocumentSplitCreateRequestPageSelectionSchema = z
     required: ['split_type', 'page_selection'],
     title: 'Document Split page selection create request',
     'x-box-tag': 'document_split',
+    not: { anyOf: [{ required: ['prompt'] }, { required: ['split_definition'] }] },
   })
   .openapi('DocumentSplitCreateRequestPageSelection')
 
@@ -596,6 +313,7 @@ const DocumentSplitCreateRequestSmartSchema = z
     required: ['split_type', 'prompt'],
     title: 'Document Split smart create request',
     'x-box-tag': 'document_split',
+    not: { anyOf: [{ required: ['split_definition'] }, { required: ['page_selection'] }] },
   })
   .openapi('DocumentSplitCreateRequestSmart')
 
@@ -654,6 +372,47 @@ const FolderReferenceSchema = z
   })
   .openapi('FolderReference')
 
+const UserBaseSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'The unique identifier for this user.', example: '11446498' }),
+    type: z
+      .literal('user')
+      .openapi({ description: 'The value will always be `user`.', example: 'user' }),
+  })
+  .openapi({
+    description: 'A mini representation of a user, used when\nnested within another resource.',
+    required: ['type', 'id'],
+    title: 'User (Base)',
+  })
+  .openapi('UserBase')
+
+const UserMiniSchema = UserBaseSchema.and(
+  z
+    .object({
+      name: z
+        .string()
+        .max(50)
+        .exactOptional()
+        .openapi({ description: 'The display name of this user.', example: 'Aaron Levie' }),
+      login: z
+        .email()
+        .exactOptional()
+        .openapi({
+          description: 'The primary email address of this user.',
+          example: 'ceo@example.com',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description:
+      'A mini representation of a user, as can be returned when nested within other\nresources.',
+    title: 'User (Mini)',
+  })
+  .openapi('UserMini')
+
 const EnterpriseReferenceSchema = z
   .object({
     id: z
@@ -669,6 +428,28 @@ const EnterpriseReferenceSchema = z
     title: 'Enterprise reference',
   })
   .openapi('EnterpriseReference')
+
+const DocumentFailuresSchema = z
+  .object({
+    errors: z
+      .array(z.string())
+      .openapi({
+        description: 'A list of errors that occurred during the document job.',
+        example: ['The source file could not be processed.'],
+      }),
+    warnings: z
+      .array(z.string())
+      .openapi({
+        description: 'A list of warnings that occurred during the document job.',
+        example: ['Some pages were skipped because they were blank.'],
+      }),
+  })
+  .openapi({
+    description: 'Errors and warnings that occurred during a document job.',
+    required: ['errors', 'warnings'],
+    title: 'Document failures',
+  })
+  .openapi('DocumentFailures')
 
 const DocumentSplitFailuresSchema = DocumentFailuresSchema.openapi({
   description: 'Errors and warnings that occurred during a Document Split job.',
@@ -691,21 +472,17 @@ const DocumentSplitSchema = z
         description: 'The value will always be `document_split`.',
         example: 'document_split',
       }),
-    source_file: FileReferenceSchema.and(z.any().openapi({ description: 'The file to split.' })),
+    source_file: FileReferenceSchema.openapi({ description: 'The file to split.' }),
     status: z
       .enum(['submitted', 'completed', 'failed', 'completed_with_error'])
       .openapi({
         description: 'The current state of the Document Split job.',
         example: 'submitted',
       }),
-    split_input: DocumentSplitCreateRequestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The caller-supplied input that was used to perform the split. The\nshape mirrors the request: for a `manual` split, `split_input`\ncontains `split_type` and `split_definition`; for a `page_selection`\nsplit, `split_input` contains `split_type` and `page_selection`; for\na `smart` split, `split_input` contains `split_type` and the\ncaller-supplied `prompt`. For smart splits, the page ranges that Box\nproduced are exposed under `output.split_definition`.',
-        }),
-    ),
+    split_input: DocumentSplitCreateRequestTypeSchema.openapi({
+      description:
+        'The caller-supplied input that was used to perform the split. The\nshape mirrors the request: for a `manual` split, `split_input`\ncontains `split_type` and `split_definition`; for a `page_selection`\nsplit, `split_input` contains `split_type` and `page_selection`; for\na `smart` split, `split_input` contains `split_type` and the\ncaller-supplied `prompt`. For smart splits, the page ranges that Box\nproduced are exposed under `output.split_definition`.',
+    }),
     output: z
       .xor([
         DocumentSplitOutputSchema,
@@ -722,9 +499,9 @@ const DocumentSplitSchema = z
         description:
           'The result of the Document Split job. `null` until the job has produced\noutput.',
       }),
-    destination_folder: FolderReferenceSchema.and(
-      z.any().openapi({ description: 'The folder that received the generated files.' }),
-    ),
+    destination_folder: FolderReferenceSchema.openapi({
+      description: 'The folder that received the generated files.',
+    }),
     input_source: z
       .enum(['api', 'box', 'relay', 'salesforce'])
       .openapi({
@@ -738,12 +515,12 @@ const DocumentSplitSchema = z
         description: 'When the Document Split job was created.',
         example: '2023-10-26T15:30:00Z',
       }),
-    created_by: UserMiniSchema.and(
-      z.any().openapi({ description: 'The user who created the Document Split job.' }),
-    ).exactOptional(),
-    enterprise: EnterpriseReferenceSchema.and(
-      z.any().openapi({ description: 'The enterprise that owns the Document Split job.' }),
-    ).exactOptional(),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user who created the Document Split job.',
+    }),
+    enterprise: EnterpriseReferenceSchema.exactOptional().openapi({
+      description: 'The enterprise that owns the Document Split job.',
+    }),
     failures: z
       .xor([
         DocumentSplitFailuresSchema,
@@ -787,6 +564,358 @@ const DocumentSplitSchema = z
     'x-box-tag': 'document_split',
   })
   .openapi('DocumentSplit')
+
+type DocumentSplitsType = { entries?: z.infer<typeof DocumentSplitSchema>[] } & {
+  limit?: bigint
+  next_marker?: string | null
+}
+
+const AiSessionSchema = z
+  .object({
+    type: z
+      .literal('ai_session')
+      .openapi({ description: 'The value is always `ai_session`.', example: 'ai_session' }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The unique identifier for the AI session. This is also the A2A\n`contextId` for the conversation. Treat the value as opaque.',
+        example: '23489723',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The display name of the AI session. Sessions created through the A2A API\nare named automatically. The value is `null` only when no name was\nrecorded.',
+        example: 'a2a-126bda90-ae78-4c81-b55f-c7ed9b678a8f',
+      }),
+    source: z
+      .literal('api')
+      .openapi({
+        description:
+          'The origin of the AI session. Currently always `api`. New values\nmay be added, so clients must tolerate values they do not recognize.',
+        example: 'api',
+      }),
+    client_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'The OAuth client ID of the application that created the AI session, as\nshown in the Developer Console. The value is `null` if the application is\nnot known.',
+        example: 'ly1nj6n11vionaie65emwzk575hnnmrk',
+      }),
+    created_by: UserBaseSchema.openapi({ description: 'The user who created the AI session.' }),
+    updated_by: UserBaseSchema.openapi({
+      description: 'The user whose action last updated the AI session.',
+    }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time when the AI session was created.',
+        example: '2026-09-01T10:30:00Z',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description:
+          'The date and time when the AI session was last updated. It advances on\neach turn of session activity, so it also serves as the most recently\nused ordering.',
+        example: '2026-09-18T14:22:00Z',
+      }),
+  })
+  .openapi({
+    description:
+      'A standard representation of an AI session. An AI session holds the\nconversation state for a series of interactions with a Box AI agent. Its `id`\nis the A2A context identifier for that conversation.',
+    required: [
+      'type',
+      'id',
+      'name',
+      'source',
+      'client_id',
+      'created_by',
+      'updated_by',
+      'created_at',
+      'updated_at',
+    ],
+    title: 'AI session',
+    'x-box-resource-id': 'ai_session_v2026.0',
+    'x-box-tag': 'ai_sessions',
+  })
+  .openapi('AiSession')
+
+const AiSessionsSchema = z
+  .object({
+    entries: z
+      .array(AiSessionSchema)
+      .openapi({
+        description: 'A list of AI sessions. The list is empty when there are no results.',
+      }),
+  })
+  .openapi({ required: ['entries', 'limit', 'next_marker'] })
+  .and(
+    z
+      .object({
+        limit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'The limit that was used for these entries. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed. The maximum value varies by API.',
+            example: 1000,
+          }),
+        next_marker: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The marker for the start of the next page of results.',
+            example: 'JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii',
+          }),
+      })
+      .openapi({
+        description: 'The part of an API response that describes marker\nbased pagination.',
+        required: [],
+      }),
+  )
+  .openapi({
+    description: 'A paginated list of AI sessions.',
+    title: 'AI sessions',
+    'x-box-resource-id': 'ai_sessions_v2026.0',
+    'x-box-tag': 'ai_sessions',
+  })
+  .openapi('AiSessions')
+
+const AutomateWorkflowReferenceSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'The identifier for the Automate workflow instance.',
+        example: '545',
+      }),
+    type: z.literal('workflow').openapi({ description: 'The object type.', example: 'workflow' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The display name for the Automate workflow.',
+        example: 'Contract approval workflow',
+      }),
+  })
+  .openapi({
+    description: 'A reference to an Automate workflow.',
+    required: ['id', 'type'],
+    title: 'Automate Workflow Reference',
+  })
+  .openapi('AutomateWorkflowReference')
+
+const AutomateWorkflowActionSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'The identifier for the Automate action.', example: '981' }),
+    type: z
+      .literal('workflow_action')
+      .openapi({
+        description: 'The object type for this workflow action wrapper.',
+        example: 'workflow_action',
+      }),
+    action_type: z
+      .literal('run_workflow')
+      .openapi({
+        description: 'The type that defines the behavior of this action.',
+        example: 'run_workflow',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A human-readable description of the workflow action.',
+        example: 'Runs workflow execution for selected files',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when the action was created.',
+        example: '2026-04-01T10:00:00.000Z',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The date and time when the action was last updated.',
+        example: '2026-04-02T11:00:00.000Z',
+      }),
+    created_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user that created the action.',
+    }),
+    updated_by: UserMiniSchema.exactOptional().openapi({
+      description: 'The user that last updated the action.',
+    }),
+    workflow: AutomateWorkflowReferenceSchema,
+  })
+  .openapi({
+    description: 'An Automate action that can start a workflow.',
+    required: ['id', 'type', 'action_type', 'workflow'],
+    title: 'Automate Workflow Action',
+  })
+  .openapi('AutomateWorkflowAction')
+
+const AutomateWorkflowsSchema = z
+  .object({
+    entries: z
+      .array(AutomateWorkflowActionSchema)
+      .exactOptional()
+      .openapi({ description: 'Workflow actions available for manual start.' }),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .object({
+        limit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            description:
+              'The limit that was used for these entries. This will be the same as the\n`limit` query parameter unless that value exceeded the maximum value\nallowed. The maximum value varies by API.',
+            example: 1000,
+          }),
+        next_marker: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The marker for the start of the next page of results.',
+            example: 'JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii',
+          }),
+      })
+      .openapi({
+        description: 'The part of an API response that describes marker\nbased pagination.',
+        required: [],
+      }),
+  )
+  .openapi({
+    description: 'A list of Automate workflow actions.',
+    title: 'Automate Workflow Actions',
+    'x-box-resource-id': 'automate_workflows_v2026.0',
+  })
+  .openapi('AutomateWorkflows')
+
+const AutomateWorkflowStartRequestSchema = z
+  .object({
+    workflow_action_id: z
+      .string()
+      .openapi({
+        description: 'The callable action ID used to trigger the selected workflow.',
+        example: '981',
+      }),
+    file_ids: z
+      .array(z.string().openapi({ example: '123' }))
+      .min(1)
+      .openapi({
+        description: 'The files to process with the selected workflow.',
+        example: ['123'],
+      }),
+  })
+  .openapi({
+    description: 'Request body to start an Automate workflow.',
+    required: ['workflow_action_id', 'file_ids'],
+    title: 'Automate Workflow Start Request',
+  })
+  .openapi('AutomateWorkflowStartRequest')
+
+const ClientErrorSchema = z
+  .object({
+    type: z
+      .literal('error')
+      .exactOptional()
+      .openapi({ description: 'The value will always be `error`.', example: 'error' }),
+    status: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The HTTP status of the response.', example: 400 }),
+    code: z
+      .enum([
+        'created',
+        'accepted',
+        'no_content',
+        'redirect',
+        'not_modified',
+        'bad_request',
+        'unauthorized',
+        'forbidden',
+        'not_found',
+        'method_not_allowed',
+        'conflict',
+        'precondition_failed',
+        'too_many_requests',
+        'internal_server_error',
+        'unavailable',
+        'item_name_invalid',
+        'insufficient_scope',
+      ])
+      .exactOptional()
+      .openapi({ description: 'A Box-specific error code.', example: 'item_name_invalid' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A short message describing the error.',
+        example: 'Method Not Allowed',
+      }),
+    context_info: z
+      .record(z.string(), z.any())
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A free-form object that contains additional context\nabout the error. The possible fields are defined on\na per-endpoint basis. `message` is only one example.',
+        example: { message: 'Something went wrong' },
+      }),
+    help_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A URL that links to more information about why this error occurred.',
+        example: 'https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/',
+      }),
+    request_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for this response, which can be used\nwhen contacting Box support.',
+        example: 'abcdef123456',
+      }),
+  })
+  .openapi({
+    description: 'A generic error.',
+    title: 'Client error',
+    'x-box-resource-id': 'client_error_v2026.0',
+    required: [],
+  })
+  .openapi('ClientError')
 
 const DocumentSplitCreateRequestSchema = z
   .object({
@@ -851,7 +980,7 @@ const DocumentSplitCreateResponseSchema = z
   })
   .openapi('DocumentSplitCreateResponse')
 
-const DocumentSplitsSchema = z
+const DocumentSplitsSchema: z.ZodType<DocumentSplitsType> = z
   .object({
     entries: z
       .array(DocumentSplitSchema)
@@ -1547,9 +1676,7 @@ const ShuttleDiscoveredSubjectSchema = z
         description: 'The scan revision this discovered subject belongs to.',
         example: 3,
       }),
-    source: ShuttleSubjectSchema.and(
-      z.any().openapi({ description: 'The source subject as discovered.' }),
-    ),
+    source: ShuttleSubjectSchema.openapi({ description: 'The source subject as discovered.' }),
     suggested_target: z
       .xor([
         ShuttleTargetSubjectSchema,
@@ -2819,14 +2946,11 @@ const ShuttlePathEntrySchema = z
         description: 'The human-readable path of the parent entry, or `null` for a root\nentry.',
         example: '/Shared Documents',
       }),
-    scope: ShuttlePathEntryScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mapping namespace of this entry. Exactly one variant is\npresent, discriminated by `type`. An `account` scope is the\nowning account flattened onto the object. A `shared_space`\nscope carries the container name. Whether the entry is a file\nor a folder is indicated by `is_directory`, not by `scope`.',
-        }),
-    ).openapi({ example: { type: 'shared_space', space: 'HR Team Site' } }),
+    scope: ShuttlePathEntryScopeSchema.openapi({
+      description:
+        'The mapping namespace of this entry. Exactly one variant is\npresent, discriminated by `type`. An `account` scope is the\nowning account flattened onto the object. A `shared_space`\nscope carries the container name. Whether the entry is a file\nor a folder is indicated by `is_directory`, not by `scope`.',
+      example: { type: 'shared_space', space: 'HR Team Site' },
+    }),
     is_directory: z
       .boolean()
       .openapi({
@@ -2966,9 +3090,9 @@ const ShuttlePathMappingAccountLocationSchema = z
           'The stable identifier of the location. `null` when the system does not\nprovide one.',
         example: '1234567890',
       }),
-    account: ShuttlePathMappingAccountSchema.and(
-      z.any().openapi({ description: 'The account that owns this location.' }),
-    ).exactOptional(),
+    account: ShuttlePathMappingAccountSchema.exactOptional().openapi({
+      description: 'The account that owns this location.',
+    }),
     is_directory: z
       .boolean()
       .nullable()
@@ -3074,9 +3198,9 @@ const ShuttlePathMappingSchema = z
         description: 'Whether this source path is skipped during the migration.',
         example: false,
       }),
-    source: ShuttlePathMappingLocationSchema.and(
-      z.any().openapi({ description: 'The source location being mapped.' }),
-    ),
+    source: ShuttlePathMappingLocationSchema.openapi({
+      description: 'The source location being mapped.',
+    }),
     target: z
       .xor([
         ShuttlePathMappingLocationSchema,
@@ -3158,14 +3282,9 @@ const ShuttlePathMappingAccountLocationInputSchema = z
         description: 'An optional stable identifier of the location, when obtained from\nbrowsing.',
         example: 'sp-folder-001',
       }),
-    account: ShuttlePathMappingAccountInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account that owns this location. Provide at least one of `id`\nor `email`.',
-        }),
-    ),
+    account: ShuttlePathMappingAccountInputSchema.openapi({
+      description: 'The account that owns this location. Provide at least one of `id`\nor `email`.',
+    }),
     is_directory: z
       .boolean()
       .exactOptional()
@@ -3204,14 +3323,9 @@ const ShuttlePathMappingAccountLocationTargetInputSchema = z
         description: 'An optional stable identifier of the location, when obtained from\nbrowsing.',
         example: '1234567890',
       }),
-    account: ShuttlePathMappingAccountInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account that owns this location. Provide at least one of `id`\nor `email`.',
-        }),
-    ),
+    account: ShuttlePathMappingAccountInputSchema.openapi({
+      description: 'The account that owns this location. Provide at least one of `id`\nor `email`.',
+    }),
   })
   .openapi({
     description:
@@ -3358,9 +3472,9 @@ const ShuttlePathMappingCreateRequestSchema = z
           'Whether this source path should be skipped during the migration.\nDefaults to `false`.',
         example: false,
       }),
-    source: ShuttlePathMappingLocationInputSchema.and(
-      z.any().openapi({ description: 'The source location to migrate from.' }),
-    ),
+    source: ShuttlePathMappingLocationInputSchema.openapi({
+      description: 'The source location to migrate from.',
+    }),
     target: z
       .xor([
         ShuttlePathMappingTargetLocationInputSchema,
@@ -3485,9 +3599,9 @@ const ShuttlePathMappingUpdateRequestSchema = z
         description: 'Whether this source path should be skipped during the migration.',
         example: true,
       }),
-    source: ShuttlePathMappingLocationInputSchema.and(
-      z.any().openapi({ description: 'The source location to migrate from.' }),
-    ).exactOptional(),
+    source: ShuttlePathMappingLocationInputSchema.exactOptional().openapi({
+      description: 'The source location to migrate from.',
+    }),
     target: z
       .xor([
         ShuttlePathMappingTargetLocationInputSchema,
@@ -4009,9 +4123,7 @@ const ShuttleSubjectMappingSchema = z
         description: 'Whether this subject is skipped during the migration.',
         example: false,
       }),
-    source: ShuttleSubjectSchema.and(
-      z.any().openapi({ description: 'The source subject being mapped.' }),
-    ),
+    source: ShuttleSubjectSchema.openapi({ description: 'The source subject being mapped.' }),
     target: z
       .xor([
         ShuttleTargetSubjectSchema,
@@ -7769,6 +7881,218 @@ export const getShuttleReportsShuttleReportIdRoute = createRoute({
     },
     429: {
       description: 'Returned when the user has sent too many requests in a given amount of\ntime.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected client error.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+  },
+})
+
+export const getAiSessionsRoute = createRoute({
+  method: 'get',
+  path: '/ai_sessions',
+  tags: ['AI Sessions'],
+  summary: 'List AI sessions',
+  description:
+    'Returns a marker-paginated list of the AI sessions that the authenticated\nuser can read and that were created through the Box public API. Entries are\nordered by `sort` and `direction`, defaulting to `updated_at` descending so\nthe most recently active session appears first.\n\nThe access token must have both the `ai.readwrite` and `root_readwrite`\nscopes.\n\nA page may contain fewer than `limit` entries while further pages remain.\nTreat a non-null `next_marker` as the only signal that more results exist.',
+  operationId: 'get_ai_sessions_v2026.0',
+  request: {
+    headers: z.object({ 'box-version': BoxVersionHeaderParamsSchema }),
+    query: z.object({
+      source: z
+        .literal('api')
+        .openapi({
+          param: {
+            name: 'source',
+            in: 'query',
+            description:
+              'Restricts the list to AI sessions with this origin. The only supported\nvalue is `api`.',
+            required: true,
+            schema: { type: 'string', enum: ['api'] },
+            example: 'api',
+          },
+        }),
+      marker: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'marker',
+            in: 'query',
+            description:
+              'The position marker at which to begin returning results, as returned in\n`next_marker` by the previous page. Omit it for the first page. All other\nparameters must match the request that returned the marker.',
+            required: false,
+            schema: { type: 'string' },
+            example: 'JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii',
+          },
+        }),
+      sort: z
+        .enum(['created_at', 'updated_at', 'name'])
+        .default('updated_at')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'sort',
+            in: 'query',
+            description:
+              'The field to sort results by. Possible values are `created_at`,\n`updated_at`, and `name`. Default is `updated_at`, which advances on each\nturn of session activity.',
+            required: false,
+            schema: {
+              type: 'string',
+              default: 'updated_at',
+              enum: ['created_at', 'updated_at', 'name'],
+            },
+            example: 'updated_at',
+          },
+        }),
+      direction: z
+        .enum(['asc', 'desc'])
+        .default('desc')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'direction',
+            in: 'query',
+            description:
+              'The direction to sort results in, either ascending (`asc`) or\ndescending (`desc`). Default is `desc`.',
+            required: false,
+            schema: { type: 'string', default: 'desc', enum: ['asc', 'desc'] },
+            example: 'desc',
+          },
+        }),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1),
+        )
+        .default(100)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            description:
+              'The maximum number of AI sessions to return per page. The maximum is\n`100`; larger values are treated as `100`. The server may return fewer\nentries than requested.',
+            required: false,
+            schema: { type: 'integer', format: 'int32', default: 100, minimum: 1 },
+            example: 100,
+          },
+        }),
+      client_ids: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'client_ids',
+            in: 'query',
+            description:
+              'A comma-separated list of OAuth client IDs. Restricts the list to AI\nsessions created by any of these applications. Client IDs that match no\napplication are ignored, so the response is an empty list if none of them\nmatch. Empty entries are ignored, and an empty value is treated as if the\nparameter were not provided.',
+            required: false,
+            schema: { type: 'array', items: { type: 'string' } },
+            example: ['ly1nj6n11vionaie65emwzk575hnnmrk'],
+            explode: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Returns a paginated list of AI sessions.',
+      content: { 'application/json': { schema: AiSessionsSchema } },
+    },
+    400: {
+      description:
+        'Returned with the `bad_request` code when `source` is missing, or when\n`source`, `marker`, `sort`, `direction`, or `limit` holds an unsupported\nvalue.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    401: {
+      description:
+        'Returned when the access token provided in the `Authorization` header\nis not recognized or not provided.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    403: {
+      description:
+        'Returned with the `insufficient_scope` code when the access token does\nnot have both the `ai.readwrite` and `root_readwrite` scopes.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    429: {
+      description:
+        'Returned with the `too_many_requests` code when the user has sent too\nmany requests in a given amount of time.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    default: {
+      description: 'An unexpected client error.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+  },
+})
+
+export const deleteAiSessionsAiSessionIdRoute = createRoute({
+  method: 'delete',
+  path: '/ai_sessions/{ai_session_id}',
+  tags: ['AI Sessions'],
+  summary: 'Delete AI session',
+  description:
+    "Deletes an AI session created through the Box public API, together with its\nagent tasks. The session's agent-generated files and uploaded files are\nmoved to the trash. Files attached as sources from elsewhere in Box are not\naffected. Deleting a session does not stop a running task or notify the\nagent.\n\nThe access token must have both the `ai.readwrite` and `root_readwrite`\nscopes.",
+  operationId: 'delete_ai_sessions_id_v2026.0',
+  request: {
+    headers: z.object({ 'box-version': BoxVersionHeaderParamsSchema }),
+    params: z.object({
+      ai_session_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ai_session_id',
+            in: 'path',
+            description:
+              'The unique identifier of the AI session. This is the same value returned as\n`id` by the list endpoint and used as the A2A `contextId`.',
+            required: true,
+            schema: { type: 'string' },
+            example: '23489723',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Returns an empty response when the AI session was successfully deleted.' },
+    400: {
+      description:
+        'Returned with the `bad_request` code when `ai_session_id` is empty or\nmalformed.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    401: {
+      description:
+        'Returned when the access token provided in the `Authorization` header\nis not recognized or not provided.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    403: {
+      description:
+        'Returned with the `insufficient_scope` code when the access token does\nnot have both the `ai.readwrite` and `root_readwrite` scopes, or with the\n`forbidden` code when the user can read the AI session but is not\npermitted to delete it.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    404: {
+      description:
+        'Returned with the `not_found` code when the AI session does not exist,\nis not visible to the user, was not created through the Box public API,\nor was already deleted.',
+      content: { 'application/json': { schema: ClientErrorSchema } },
+    },
+    429: {
+      description:
+        'Returned with the `too_many_requests` code when the user has sent too\nmany requests in a given amount of time.',
       content: { 'application/json': { schema: ClientErrorSchema } },
     },
     default: {

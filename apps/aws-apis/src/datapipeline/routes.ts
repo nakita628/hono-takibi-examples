@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const ActivatePipelineOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of ActivatePipeline.' })
   .openapi('ActivatePipelineOutput')
 
@@ -34,12 +34,10 @@ const FieldStringValueSchema = z
 
 const ParameterValueSchema = z
   .object({
-    id: FieldNameStringSchema.and(
-      z.any().openapi({ description: 'The ID of the parameter value.' }),
-    ),
-    stringValue: FieldStringValueSchema.and(
-      z.any().openapi({ description: 'The field value, expressed as a String.' }),
-    ),
+    id: FieldNameStringSchema.openapi({ description: 'The ID of the parameter value.' }),
+    stringValue: FieldStringValueSchema.openapi({
+      description: 'The field value, expressed as a String.',
+    }),
   })
   .openapi({
     required: ['id', 'stringValue'],
@@ -53,22 +51,14 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const ActivatePipelineInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    parameterValues: ParameterValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of parameter values to pass to the pipeline at activation.',
-        }),
-    ).exactOptional(),
-    startTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time to resume the pipeline. By default, the pipeline resumes from the last completed execution.',
-        }),
-    ).exactOptional(),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    parameterValues: ParameterValueListSchema.exactOptional().openapi({
+      description: 'A list of parameter values to pass to the pipeline at activation.',
+    }),
+    startTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time to resume the pipeline. By default, the pipeline resumes from the last completed execution.',
+    }),
   })
   .openapi({
     required: ['pipelineId'],
@@ -86,7 +76,7 @@ const InternalServiceErrorSchema = z.any().openapi('InternalServiceError')
 const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
 
 const AddTagsOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of AddTags.' })
   .openapi('AddTagsOutput')
 
@@ -96,22 +86,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key name of a tag defined by a user. For more information, see <a href="http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html">Controlling User Access to Pipelines</a> in the <i>AWS Data Pipeline Developer Guide</i>.',
-        }),
-    ),
-    value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional value portion of a tag defined by a user. For more information, see <a href="http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html">Controlling User Access to Pipelines</a> in the <i>AWS Data Pipeline Developer Guide</i>.',
-        }),
-    ),
+    key: TagKeySchema.openapi({
+      description:
+        'The key name of a tag defined by a user. For more information, see <a href="http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html">Controlling User Access to Pipelines</a> in the <i>AWS Data Pipeline Developer Guide</i>.',
+    }),
+    value: TagValueSchema.openapi({
+      description:
+        'The optional value portion of a tag defined by a user. For more information, see <a href="http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html">Controlling User Access to Pipelines</a> in the <i>AWS Data Pipeline Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['key', 'value'],
@@ -124,10 +106,8 @@ const TagListSchema = z.array(TagSchema).min(0).max(10).openapi('TagList')
 
 const AddTagsInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to add, as key/value pairs.' }),
-    ),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    tags: TagListSchema.openapi({ description: 'The tags to add, as key/value pairs.' }),
   })
   .openapi({
     required: ['pipelineId', 'tags'],
@@ -138,14 +118,10 @@ const AddTagsInputSchema = z
 
 const CreatePipelineOutputSchema = z
   .object({
-    pipelineId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID that AWS Data Pipeline assigns the newly created pipeline. For example, <code>df-06372391ZG65EXAMPLE</code>.',
-        }),
-    ),
+    pipelineId: IdSchema.openapi({
+      description:
+        'The ID that AWS Data Pipeline assigns the newly created pipeline. For example, <code>df-06372391ZG65EXAMPLE</code>.',
+    }),
   })
   .openapi({ required: ['pipelineId'], description: 'Contains the output of CreatePipeline.' })
   .openapi('CreatePipelineOutput')
@@ -161,33 +137,21 @@ const StringSchema = z
 
 const CreatePipelineInputSchema = z
   .object({
-    name: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the pipeline. You can use the same name for multiple pipelines associated with your AWS account, because AWS Data Pipeline assigns each pipeline a unique pipeline identifier.',
-        }),
-    ),
-    uniqueId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier. This identifier is not the same as the pipeline identifier assigned by AWS Data Pipeline. You are responsible for defining the format and ensuring the uniqueness of this identifier. You use this parameter to ensure idempotency during repeated calls to <code>CreatePipeline</code>. For example, if the first call to <code>CreatePipeline</code> does not succeed, you can pass in the same unique identifier and pipeline name combination on a subsequent call to <code>CreatePipeline</code>. <code>CreatePipeline</code> ensures that if a pipeline already exists with the same name and unique identifier, a new pipeline is not created. Instead, you'll receive the pipeline identifier from the previous attempt. The uniqueness of the name and unique identifier combination is scoped to the AWS account or IAM user credentials.",
-        }),
-    ),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description for the pipeline.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to associate with the pipeline at creation. Tags let you control access to pipelines. For more information, see <a href="http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html">Controlling User Access to Pipelines</a> in the <i>AWS Data Pipeline Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    name: IdSchema.openapi({
+      description:
+        'The name for the pipeline. You can use the same name for multiple pipelines associated with your AWS account, because AWS Data Pipeline assigns each pipeline a unique pipeline identifier.',
+    }),
+    uniqueId: IdSchema.openapi({
+      description:
+        "A unique identifier. This identifier is not the same as the pipeline identifier assigned by AWS Data Pipeline. You are responsible for defining the format and ensuring the uniqueness of this identifier. You use this parameter to ensure idempotency during repeated calls to <code>CreatePipeline</code>. For example, if the first call to <code>CreatePipeline</code> does not succeed, you can pass in the same unique identifier and pipeline name combination on a subsequent call to <code>CreatePipeline</code>. <code>CreatePipeline</code> ensures that if a pipeline already exists with the same name and unique identifier, a new pipeline is not created. Instead, you'll receive the pipeline identifier from the previous attempt. The uniqueness of the name and unique identifier combination is scoped to the AWS account or IAM user credentials.",
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'The description for the pipeline.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to associate with the pipeline at creation. Tags let you control access to pipelines. For more information, see <a href="http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html">Controlling User Access to Pipelines</a> in the <i>AWS Data Pipeline Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['name', 'uniqueId'],
@@ -197,7 +161,7 @@ const CreatePipelineInputSchema = z
   .openapi('CreatePipelineInput')
 
 const DeactivatePipelineOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of DeactivatePipeline.' })
   .openapi('DeactivatePipelineOutput')
 
@@ -205,15 +169,11 @@ const CancelActiveSchema = z.boolean().openapi('CancelActive')
 
 const DeactivatePipelineInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    cancelActive: CancelActiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to cancel any running objects. The default is true, which sets the state of any running objects to <code>CANCELED</code>. If this value is false, the pipeline is deactivated after all running objects finish.',
-        }),
-    ).exactOptional(),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    cancelActive: CancelActiveSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to cancel any running objects. The default is true, which sets the state of any running objects to <code>CANCELED</code>. If this value is false, the pipeline is deactivated after all running objects finish.',
+    }),
   })
   .openapi({
     required: ['pipelineId'],
@@ -223,7 +183,7 @@ const DeactivatePipelineInputSchema = z
   .openapi('DeactivatePipelineInput')
 
 const DeletePipelineInputSchema = z
-  .object({ pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })) })
+  .object({ pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }) })
   .openapi({
     required: ['pipelineId'],
     title: 'DeletePipelineInput',
@@ -233,17 +193,13 @@ const DeletePipelineInputSchema = z
 
 const FieldSchema = z
   .object({
-    key: FieldNameStringSchema.and(z.any().openapi({ description: 'The field identifier.' })),
-    stringValue: FieldStringValueSchema.and(
-      z.any().openapi({ description: 'The field value, expressed as a String.' }),
-    ).exactOptional(),
-    refValue: FieldNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The field value, expressed as the identifier of another object.',
-        }),
-    ).exactOptional(),
+    key: FieldNameStringSchema.openapi({ description: 'The field identifier.' }),
+    stringValue: FieldStringValueSchema.exactOptional().openapi({
+      description: 'The field value, expressed as a String.',
+    }),
+    refValue: FieldNameStringSchema.exactOptional().openapi({
+      description: 'The field value, expressed as the identifier of another object.',
+    }),
   })
   .openapi({
     required: ['key'],
@@ -256,11 +212,11 @@ const FieldListSchema = z.array(FieldSchema).openapi('FieldList')
 
 const PipelineObjectSchema = z
   .object({
-    id: IdSchema.and(z.any().openapi({ description: 'The ID of the object.' })),
-    name: IdSchema.and(z.any().openapi({ description: 'The name of the object.' })),
-    fields: FieldListSchema.and(
-      z.any().openapi({ description: 'Key-value pairs that define the properties of the object.' }),
-    ),
+    id: IdSchema.openapi({ description: 'The ID of the object.' }),
+    name: IdSchema.openapi({ description: 'The name of the object.' }),
+    fields: FieldListSchema.openapi({
+      description: 'Key-value pairs that define the properties of the object.',
+    }),
   })
   .openapi({
     required: ['id', 'name', 'fields'],
@@ -275,20 +231,16 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const DescribeObjectsOutputSchema = z
   .object({
-    pipelineObjects: PipelineObjectListSchema.and(
-      z.any().openapi({ description: 'An array of object definitions.' }),
-    ),
-    marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The starting point for the next page of results. To view the next page of results, call <code>DescribeObjects</code> again with this marker value. If the value is null, there are no more results.',
-        }),
-    ).exactOptional(),
-    hasMoreResults: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether there are more results to return.' }),
-    ).exactOptional(),
+    pipelineObjects: PipelineObjectListSchema.openapi({
+      description: 'An array of object definitions.',
+    }),
+    marker: StringSchema.exactOptional().openapi({
+      description:
+        'The starting point for the next page of results. To view the next page of results, call <code>DescribeObjects</code> again with this marker value. If the value is null, there are no more results.',
+    }),
+    hasMoreResults: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether there are more results to return.',
+    }),
   })
   .openapi({
     required: ['pipelineObjects'],
@@ -300,35 +252,21 @@ const IdListSchema = z.array(IdSchema).openapi('IdList')
 
 const DescribeObjectsInputSchema = z
   .object({
-    pipelineId: IdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the pipeline that contains the object definitions.' }),
-    ),
-    objectIds: IdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs of the pipeline objects that contain the definitions to be described. You can pass as many as 25 identifiers in a single call to <code>DescribeObjects</code>.',
-        }),
-    ),
-    evaluateExpressions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether any expressions in the object should be evaluated when the object descriptions are returned.',
-        }),
-    ).exactOptional(),
-    marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call <code>DescribeObjects</code> with the marker value from the previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    pipelineId: IdSchema.openapi({
+      description: 'The ID of the pipeline that contains the object definitions.',
+    }),
+    objectIds: IdListSchema.openapi({
+      description:
+        'The IDs of the pipeline objects that contain the definitions to be described. You can pass as many as 25 identifiers in a single call to <code>DescribeObjects</code>.',
+    }),
+    evaluateExpressions: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether any expressions in the object should be evaluated when the object descriptions are returned.',
+    }),
+    marker: StringSchema.exactOptional().openapi({
+      description:
+        'The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call <code>DescribeObjects</code> with the marker value from the previous call to retrieve the next set of results.',
+    }),
   })
   .openapi({
     required: ['pipelineId', 'objectIds'],
@@ -339,34 +277,22 @@ const DescribeObjectsInputSchema = z
 
 const PipelineDescriptionSchema = z
   .object({
-    pipelineId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pipeline identifier that was assigned by AWS Data Pipeline. This is a string of the form <code>df-297EG78HU43EEXAMPLE</code>.',
-        }),
-    ),
-    name: IdSchema.and(z.any().openapi({ description: 'The name of the pipeline.' })),
-    fields: FieldListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of read-only fields that contain metadata about the pipeline: @userId, @accountId, and @pipelineState.',
-        }),
-    ),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'Description of the pipeline.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to associated with a pipeline. Tags let you control access to pipelines. For more information, see <a href="http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html">Controlling User Access to Pipelines</a> in the <i>AWS Data Pipeline Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    pipelineId: IdSchema.openapi({
+      description:
+        'The pipeline identifier that was assigned by AWS Data Pipeline. This is a string of the form <code>df-297EG78HU43EEXAMPLE</code>.',
+    }),
+    name: IdSchema.openapi({ description: 'The name of the pipeline.' }),
+    fields: FieldListSchema.openapi({
+      description:
+        'A list of read-only fields that contain metadata about the pipeline: @userId, @accountId, and @pipelineState.',
+    }),
+    description: StringSchema.exactOptional().openapi({
+      description: 'Description of the pipeline.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to associated with a pipeline. Tags let you control access to pipelines. For more information, see <a href="http://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-control-access.html">Controlling User Access to Pipelines</a> in the <i>AWS Data Pipeline Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['pipelineId', 'name', 'fields'],
@@ -380,9 +306,9 @@ const PipelineDescriptionListSchema = z
 
 const DescribePipelinesOutputSchema = z
   .object({
-    pipelineDescriptionList: PipelineDescriptionListSchema.and(
-      z.any().openapi({ description: 'An array of descriptions for the specified pipelines.' }),
-    ),
+    pipelineDescriptionList: PipelineDescriptionListSchema.openapi({
+      description: 'An array of descriptions for the specified pipelines.',
+    }),
   })
   .openapi({
     required: ['pipelineDescriptionList'],
@@ -392,14 +318,10 @@ const DescribePipelinesOutputSchema = z
 
 const DescribePipelinesInputSchema = z
   .object({
-    pipelineIds: IdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs of the pipelines to describe. You can pass as many as 25 identifiers in a single call. To obtain pipeline IDs, call <a>ListPipelines</a>.',
-        }),
-    ),
+    pipelineIds: IdListSchema.openapi({
+      description:
+        'The IDs of the pipelines to describe. You can pass as many as 25 identifiers in a single call. To obtain pipeline IDs, call <a>ListPipelines</a>.',
+    }),
   })
   .openapi({
     required: ['pipelineIds'],
@@ -419,9 +341,7 @@ const LongStringSchema = z
 
 const EvaluateExpressionOutputSchema = z
   .object({
-    evaluatedExpression: LongStringSchema.and(
-      z.any().openapi({ description: 'The evaluated expression.' }),
-    ),
+    evaluatedExpression: LongStringSchema.openapi({ description: 'The evaluated expression.' }),
   })
   .openapi({
     required: ['evaluatedExpression'],
@@ -431,11 +351,9 @@ const EvaluateExpressionOutputSchema = z
 
 const EvaluateExpressionInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    objectId: IdSchema.and(z.any().openapi({ description: 'The ID of the object.' })),
-    expression: LongStringSchema.and(
-      z.any().openapi({ description: 'The expression to evaluate.' }),
-    ),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    objectId: IdSchema.openapi({ description: 'The ID of the object.' }),
+    expression: LongStringSchema.openapi({ description: 'The expression to evaluate.' }),
   })
   .openapi({
     required: ['pipelineId', 'objectId', 'expression'],
@@ -466,10 +384,10 @@ const AttributeValueStringSchema = z
 
 const ParameterAttributeSchema = z
   .object({
-    key: AttributeNameStringSchema.and(z.any().openapi({ description: 'The field identifier.' })),
-    stringValue: AttributeValueStringSchema.and(
-      z.any().openapi({ description: 'The field value, expressed as a String.' }),
-    ),
+    key: AttributeNameStringSchema.openapi({ description: 'The field identifier.' }),
+    stringValue: AttributeValueStringSchema.openapi({
+      description: 'The field value, expressed as a String.',
+    }),
   })
   .openapi({
     required: ['key', 'stringValue'],
@@ -483,12 +401,10 @@ const ParameterAttributeListSchema = z
 
 const ParameterObjectSchema = z
   .object({
-    id: FieldNameStringSchema.and(
-      z.any().openapi({ description: 'The ID of the parameter object. ' }),
-    ),
-    attributes: ParameterAttributeListSchema.and(
-      z.any().openapi({ description: 'The attributes of the parameter object.' }),
-    ),
+    id: FieldNameStringSchema.openapi({ description: 'The ID of the parameter object. ' }),
+    attributes: ParameterAttributeListSchema.openapi({
+      description: 'The attributes of the parameter object.',
+    }),
   })
   .openapi({
     required: ['id', 'attributes'],
@@ -500,30 +416,26 @@ const ParameterObjectListSchema = z.array(ParameterObjectSchema).openapi('Parame
 
 const GetPipelineDefinitionOutputSchema = z
   .object({
-    pipelineObjects: PipelineObjectListSchema.and(
-      z.any().openapi({ description: 'The objects defined in the pipeline.' }),
-    ).exactOptional(),
-    parameterObjects: ParameterObjectListSchema.and(
-      z.any().openapi({ description: 'The parameter objects used in the pipeline definition.' }),
-    ).exactOptional(),
-    parameterValues: ParameterValueListSchema.and(
-      z.any().openapi({ description: 'The parameter values used in the pipeline definition.' }),
-    ).exactOptional(),
+    pipelineObjects: PipelineObjectListSchema.exactOptional().openapi({
+      description: 'The objects defined in the pipeline.',
+    }),
+    parameterObjects: ParameterObjectListSchema.exactOptional().openapi({
+      description: 'The parameter objects used in the pipeline definition.',
+    }),
+    parameterValues: ParameterValueListSchema.exactOptional().openapi({
+      description: 'The parameter values used in the pipeline definition.',
+    }),
   })
   .openapi({ description: 'Contains the output of GetPipelineDefinition.', required: [] })
   .openapi('GetPipelineDefinitionOutput')
 
 const GetPipelineDefinitionInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    version: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the pipeline definition to retrieve. Set this parameter to <code>latest</code> (default) to use the last definition saved to the pipeline or <code>active</code> to use the last definition that was activated.',
-        }),
-    ).exactOptional(),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    version: StringSchema.exactOptional().openapi({
+      description:
+        'The version of the pipeline definition to retrieve. Set this parameter to <code>latest</code> (default) to use the last definition saved to the pipeline or <code>active</code> to use the last definition that was activated.',
+    }),
   })
   .openapi({
     required: ['pipelineId'],
@@ -534,17 +446,11 @@ const GetPipelineDefinitionInputSchema = z
 
 const PipelineIdNameSchema = z
   .object({
-    id: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pipeline that was assigned by AWS Data Pipeline. This is a string of the form <code>df-297EG78HU43EEXAMPLE</code>.',
-        }),
-    ).exactOptional(),
-    name: IdSchema.and(
-      z.any().openapi({ description: 'The name of the pipeline.' }),
-    ).exactOptional(),
+    id: IdSchema.exactOptional().openapi({
+      description:
+        'The ID of the pipeline that was assigned by AWS Data Pipeline. This is a string of the form <code>df-297EG78HU43EEXAMPLE</code>.',
+    }),
+    name: IdSchema.exactOptional().openapi({ description: 'The name of the pipeline.' }),
   })
   .openapi({ description: 'Contains the name and identifier of a pipeline.', required: [] })
   .openapi('PipelineIdName')
@@ -553,44 +459,28 @@ const PipelineListSchema = z.array(PipelineIdNameSchema).openapi('PipelineList')
 
 const ListPipelinesOutputSchema = z
   .object({
-    pipelineIdList: PipelineListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pipeline identifiers. If you require additional information about the pipelines, you can use these identifiers to call <a>DescribePipelines</a> and <a>GetPipelineDefinition</a>.',
-        }),
-    ),
-    marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The starting point for the next page of results. To view the next page of results, call <code>ListPipelinesOutput</code> again with this marker value. If the value is null, there are no more results.',
-        }),
-    ).exactOptional(),
-    hasMoreResults: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether there are more results that can be obtained by a subsequent call.',
-        }),
-    ).exactOptional(),
+    pipelineIdList: PipelineListSchema.openapi({
+      description:
+        'The pipeline identifiers. If you require additional information about the pipelines, you can use these identifiers to call <a>DescribePipelines</a> and <a>GetPipelineDefinition</a>.',
+    }),
+    marker: StringSchema.exactOptional().openapi({
+      description:
+        'The starting point for the next page of results. To view the next page of results, call <code>ListPipelinesOutput</code> again with this marker value. If the value is null, there are no more results.',
+    }),
+    hasMoreResults: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether there are more results that can be obtained by a subsequent call.',
+    }),
   })
   .openapi({ required: ['pipelineIdList'], description: 'Contains the output of ListPipelines.' })
   .openapi('ListPipelinesOutput')
 
 const ListPipelinesInputSchema = z
   .object({
-    marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call <code>ListPipelines</code> with the marker value from the previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    marker: StringSchema.exactOptional().openapi({
+      description:
+        'The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call <code>ListPipelines</code> with the marker value from the previous call to retrieve the next set of results.',
+    }),
   })
   .openapi({
     title: 'ListPipelinesInput',
@@ -614,33 +504,21 @@ const PipelineObjectMapSchema = z
 
 const TaskObjectSchema = z
   .object({
-    taskId: TaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An internal identifier for the task. This ID is passed to the <a>SetTaskStatus</a> and <a>ReportTaskProgress</a> actions.',
-        }),
-    ).exactOptional(),
-    pipelineId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the pipeline that provided the task.' }),
-    ).exactOptional(),
-    attemptId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pipeline task attempt object. AWS Data Pipeline uses this value to track how many times a task is attempted.',
-        }),
-    ).exactOptional(),
-    objects: PipelineObjectMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Connection information for the location where the task runner will publish the output of the task.',
-        }),
-    ).exactOptional(),
+    taskId: TaskIdSchema.exactOptional().openapi({
+      description:
+        'An internal identifier for the task. This ID is passed to the <a>SetTaskStatus</a> and <a>ReportTaskProgress</a> actions.',
+    }),
+    pipelineId: IdSchema.exactOptional().openapi({
+      description: 'The ID of the pipeline that provided the task.',
+    }),
+    attemptId: IdSchema.exactOptional().openapi({
+      description:
+        'The ID of the pipeline task attempt object. AWS Data Pipeline uses this value to track how many times a task is attempted.',
+    }),
+    objects: PipelineObjectMapSchema.exactOptional().openapi({
+      description:
+        'Connection information for the location where the task runner will publish the output of the task.',
+    }),
   })
   .openapi({
     description: 'Contains information about a pipeline task that is assigned to a task runner.',
@@ -650,36 +528,24 @@ const TaskObjectSchema = z
 
 const PollForTaskOutputSchema = z
   .object({
-    taskObject: TaskObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The information needed to complete the task that is being assigned to the task runner. One of the fields returned in this object is <code>taskId</code>, which contains an identifier for the task being assigned. The calling task runner uses <code>taskId</code> in subsequent calls to <a>ReportTaskProgress</a> and <a>SetTaskStatus</a>.',
-        }),
-    ).exactOptional(),
+    taskObject: TaskObjectSchema.exactOptional().openapi({
+      description:
+        'The information needed to complete the task that is being assigned to the task runner. One of the fields returned in this object is <code>taskId</code>, which contains an identifier for the task being assigned. The calling task runner uses <code>taskId</code> in subsequent calls to <a>ReportTaskProgress</a> and <a>SetTaskStatus</a>.',
+    }),
   })
   .openapi({ description: 'Contains the output of PollForTask.', required: [] })
   .openapi('PollForTaskOutput')
 
 const InstanceIdentitySchema = z
   .object({
-    document: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of an EC2 instance that is generated when the instance is launched and exposed to the instance via the instance metadata service in the form of a JSON representation of an object.',
-        }),
-    ).exactOptional(),
-    signature: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A signature which can be used to verify the accuracy and authenticity of the information provided in the instance identity document.',
-        }),
-    ).exactOptional(),
+    document: StringSchema.exactOptional().openapi({
+      description:
+        'A description of an EC2 instance that is generated when the instance is launched and exposed to the instance via the instance metadata service in the form of a JSON representation of an object.',
+    }),
+    signature: StringSchema.exactOptional().openapi({
+      description:
+        'A signature which can be used to verify the accuracy and authenticity of the information provided in the instance identity document.',
+    }),
   })
   .openapi({
     description:
@@ -690,25 +556,17 @@ const InstanceIdentitySchema = z
 
 const PollForTaskInputSchema = z
   .object({
-    workerGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of task the task runner is configured to accept and process. The worker group is set as a field on objects in the pipeline when they are created. You can only specify a single value for <code>workerGroup</code> in the call to <code>PollForTask</code>. There are no wildcard values permitted in <code>workerGroup</code>; the string must be an exact, case-sensitive, match.',
-        }),
-    ),
-    hostname: IdSchema.and(
-      z.any().openapi({ description: 'The public DNS name of the calling task runner.' }),
-    ).exactOptional(),
-    instanceIdentity: InstanceIdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identity information for the EC2 instance that is hosting the task runner. You can get this value from the instance using <code>http://169.254.169.254/latest/meta-data/instance-id</code>. For more information, see <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AESDG-chapter-instancedata.html">Instance Metadata</a> in the <i>Amazon Elastic Compute Cloud User Guide.</i> Passing in this value proves that your task runner is running on an EC2 instance, and ensures the proper AWS Data Pipeline service charges are applied to your pipeline.',
-        }),
-    ).exactOptional(),
+    workerGroup: StringSchema.openapi({
+      description:
+        'The type of task the task runner is configured to accept and process. The worker group is set as a field on objects in the pipeline when they are created. You can only specify a single value for <code>workerGroup</code> in the call to <code>PollForTask</code>. There are no wildcard values permitted in <code>workerGroup</code>; the string must be an exact, case-sensitive, match.',
+    }),
+    hostname: IdSchema.exactOptional().openapi({
+      description: 'The public DNS name of the calling task runner.',
+    }),
+    instanceIdentity: InstanceIdentitySchema.exactOptional().openapi({
+      description:
+        'Identity information for the EC2 instance that is hosting the task runner. You can get this value from the instance using <code>http://169.254.169.254/latest/meta-data/instance-id</code>. For more information, see <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AESDG-chapter-instancedata.html">Instance Metadata</a> in the <i>Amazon Elastic Compute Cloud User Guide.</i> Passing in this value proves that your task runner is running on an EC2 instance, and ensures the proper AWS Data Pipeline service charges are applied to your pipeline.',
+    }),
   })
   .openapi({
     required: ['workerGroup'],
@@ -730,16 +588,12 @@ const ValidationMessagesSchema = z.array(ValidationMessageSchema).openapi('Valid
 
 const ValidationErrorSchema = z
   .object({
-    id: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the object that contains the validation error.',
-        }),
-    ).exactOptional(),
-    errors: ValidationMessagesSchema.and(
-      z.any().openapi({ description: 'A description of the validation error.' }),
-    ).exactOptional(),
+    id: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the object that contains the validation error.',
+    }),
+    errors: ValidationMessagesSchema.exactOptional().openapi({
+      description: 'A description of the validation error.',
+    }),
   })
   .openapi({
     description:
@@ -752,16 +606,12 @@ const ValidationErrorsSchema = z.array(ValidationErrorSchema).openapi('Validatio
 
 const ValidationWarningSchema = z
   .object({
-    id: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the object that contains the validation warning.',
-        }),
-    ).exactOptional(),
-    warnings: ValidationMessagesSchema.and(
-      z.any().openapi({ description: 'A description of the validation warning.' }),
-    ).exactOptional(),
+    id: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the object that contains the validation warning.',
+    }),
+    warnings: ValidationMessagesSchema.exactOptional().openapi({
+      description: 'A description of the validation warning.',
+    }),
   })
   .openapi({
     description:
@@ -774,51 +624,35 @@ const ValidationWarningsSchema = z.array(ValidationWarningSchema).openapi('Valid
 
 const PutPipelineDefinitionOutputSchema = z
   .object({
-    validationErrors: ValidationErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The validation errors that are associated with the objects defined in <code>pipelineObjects</code>.',
-        }),
-    ).exactOptional(),
-    validationWarnings: ValidationWarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The validation warnings that are associated with the objects defined in <code>pipelineObjects</code>.',
-        }),
-    ).exactOptional(),
-    errored: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether there were validation errors, and the pipeline definition is stored but cannot be activated until you correct the pipeline and call <code>PutPipelineDefinition</code> to commit the corrected pipeline.',
-        }),
-    ),
+    validationErrors: ValidationErrorsSchema.exactOptional().openapi({
+      description:
+        'The validation errors that are associated with the objects defined in <code>pipelineObjects</code>.',
+    }),
+    validationWarnings: ValidationWarningsSchema.exactOptional().openapi({
+      description:
+        'The validation warnings that are associated with the objects defined in <code>pipelineObjects</code>.',
+    }),
+    errored: BooleanSchema.openapi({
+      description:
+        'Indicates whether there were validation errors, and the pipeline definition is stored but cannot be activated until you correct the pipeline and call <code>PutPipelineDefinition</code> to commit the corrected pipeline.',
+    }),
   })
   .openapi({ required: ['errored'], description: 'Contains the output of PutPipelineDefinition.' })
   .openapi('PutPipelineDefinitionOutput')
 
 const PutPipelineDefinitionInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    pipelineObjects: PipelineObjectListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The objects that define the pipeline. These objects overwrite the existing pipeline definition.',
-        }),
-    ),
-    parameterObjects: ParameterObjectListSchema.and(
-      z.any().openapi({ description: 'The parameter objects used with the pipeline.' }),
-    ).exactOptional(),
-    parameterValues: ParameterValueListSchema.and(
-      z.any().openapi({ description: 'The parameter values used with the pipeline.' }),
-    ).exactOptional(),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    pipelineObjects: PipelineObjectListSchema.openapi({
+      description:
+        'The objects that define the pipeline. These objects overwrite the existing pipeline definition.',
+    }),
+    parameterObjects: ParameterObjectListSchema.exactOptional().openapi({
+      description: 'The parameter objects used with the pipeline.',
+    }),
+    parameterValues: ParameterValueListSchema.exactOptional().openapi({
+      description: 'The parameter values used with the pipeline.',
+    }),
   })
   .openapi({
     required: ['pipelineId', 'pipelineObjects'],
@@ -829,25 +663,17 @@ const PutPipelineDefinitionInputSchema = z
 
 const QueryObjectsOutputSchema = z
   .object({
-    ids: IdListSchema.and(
-      z.any().openapi({ description: 'The identifiers that match the query selectors.' }),
-    ).exactOptional(),
-    marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The starting point for the next page of results. To view the next page of results, call <code>QueryObjects</code> again with this marker value. If the value is null, there are no more results.',
-        }),
-    ).exactOptional(),
-    hasMoreResults: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether there are more results that can be obtained by a subsequent call.',
-        }),
-    ).exactOptional(),
+    ids: IdListSchema.exactOptional().openapi({
+      description: 'The identifiers that match the query selectors.',
+    }),
+    marker: StringSchema.exactOptional().openapi({
+      description:
+        'The starting point for the next page of results. To view the next page of results, call <code>QueryObjects</code> again with this marker value. If the value is null, there are no more results.',
+    }),
+    hasMoreResults: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether there are more results that can be obtained by a subsequent call.',
+    }),
   })
   .openapi({ description: 'Contains the output of QueryObjects.', required: [] })
   .openapi('QueryObjectsOutput')
@@ -858,19 +684,13 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const OperatorSchema = z
   .object({
-    type: OperatorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The logical operation to be performed: equal (<code>EQ</code>), equal reference (<code>REF_EQ</code>), less than or equal (<code>LE</code>), greater than or equal (<code>GE</code>), or between (<code>BETWEEN</code>). Equal reference (<code>REF_EQ</code>) can be used only with reference fields. The other comparison types can be used only with String fields. The comparison types you can use apply only to certain object fields, as detailed below. </p> <p> The comparison operators EQ and REF_EQ act on the following fields: </p> <ul> <li>name</li> <li>@sphere</li> <li>parent</li> <li>@componentParent</li> <li>@instanceParent</li> <li>@status</li> <li>@scheduledStartTime</li> <li>@scheduledEndTime</li> <li>@actualStartTime</li> <li>@actualEndTime</li> </ul> <p> The comparison operators <code>GE</code>, <code>LE</code>, and <code>BETWEEN</code> act on the following fields: </p> <ul> <li>@scheduledStartTime</li> <li>@scheduledEndTime</li> <li>@actualStartTime</li> <li>@actualEndTime</li> </ul> <p>Note that fields beginning with the at sign (@) are read-only and set by the web service. When you name fields, you should choose names containing only alpha-numeric values, as symbols may be reserved by AWS Data Pipeline. User-defined fields that you add to a pipeline should prefix their name with the string "my".</p>',
-        }),
-    ).exactOptional(),
-    values: StringListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value that the actual field value will be compared with.' }),
-    ).exactOptional(),
+    type: OperatorTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The logical operation to be performed: equal (<code>EQ</code>), equal reference (<code>REF_EQ</code>), less than or equal (<code>LE</code>), greater than or equal (<code>GE</code>), or between (<code>BETWEEN</code>). Equal reference (<code>REF_EQ</code>) can be used only with reference fields. The other comparison types can be used only with String fields. The comparison types you can use apply only to certain object fields, as detailed below. </p> <p> The comparison operators EQ and REF_EQ act on the following fields: </p> <ul> <li>name</li> <li>@sphere</li> <li>parent</li> <li>@componentParent</li> <li>@instanceParent</li> <li>@status</li> <li>@scheduledStartTime</li> <li>@scheduledEndTime</li> <li>@actualStartTime</li> <li>@actualEndTime</li> </ul> <p> The comparison operators <code>GE</code>, <code>LE</code>, and <code>BETWEEN</code> act on the following fields: </p> <ul> <li>@scheduledStartTime</li> <li>@scheduledEndTime</li> <li>@actualStartTime</li> <li>@actualEndTime</li> </ul> <p>Note that fields beginning with the at sign (@) are read-only and set by the web service. When you name fields, you should choose names containing only alpha-numeric values, as symbols may be reserved by AWS Data Pipeline. User-defined fields that you add to a pipeline should prefix their name with the string "my".</p>',
+    }),
+    values: StringListSchema.exactOptional().openapi({
+      description: 'The value that the actual field value will be compared with.',
+    }),
   })
   .openapi({
     description:
@@ -881,14 +701,10 @@ const OperatorSchema = z
 
 const SelectorSchema = z
   .object({
-    fieldName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the field that the operator will be applied to. The field name is the "key" portion of the field definition in the pipeline definition syntax that is used by the AWS Data Pipeline API. If the field is not set on the object, the condition fails.',
-        }),
-    ).exactOptional(),
+    fieldName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the field that the operator will be applied to. The field name is the "key" portion of the field definition in the pipeline definition syntax that is used by the AWS Data Pipeline API. If the field is not set on the object, the condition fails.',
+    }),
     operator: OperatorSchema.exactOptional(),
   })
   .openapi({
@@ -905,14 +721,10 @@ const SelectorListSchema = z
 
 const QuerySchema = z
   .object({
-    selectors: SelectorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of selectors that define the query. An object must satisfy all of the selectors to match the query.',
-        }),
-    ).exactOptional(),
+    selectors: SelectorListSchema.exactOptional().openapi({
+      description:
+        'List of selectors that define the query. An object must satisfy all of the selectors to match the query.',
+    }),
   })
   .openapi({ description: 'Defines the query to run against an object.', required: [] })
   .openapi('Query')
@@ -921,39 +733,23 @@ const IntSchema = z.int().openapi('Int')
 
 const QueryObjectsInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    query: QuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The query that defines the objects to be returned. The <code>Query</code> object can contain a maximum of ten selectors. The conditions in the query are limited to top-level String fields in the object. These filters can be applied to components, instances, and attempts.',
-        }),
-    ).exactOptional(),
-    sphere: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the query applies to components or instances. The possible values are: <code>COMPONENT</code>, <code>INSTANCE</code>, and <code>ATTEMPT</code>.',
-        }),
-    ),
-    marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call <code>QueryObjects</code> with the marker value from the previous call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    limit: IntSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of object names that <code>QueryObjects</code> will return in a single call. The default value is 100. ',
-        }),
-    ).exactOptional(),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    query: QuerySchema.exactOptional().openapi({
+      description:
+        'The query that defines the objects to be returned. The <code>Query</code> object can contain a maximum of ten selectors. The conditions in the query are limited to top-level String fields in the object. These filters can be applied to components, instances, and attempts.',
+    }),
+    sphere: StringSchema.openapi({
+      description:
+        'Indicates whether the query applies to components or instances. The possible values are: <code>COMPONENT</code>, <code>INSTANCE</code>, and <code>ATTEMPT</code>.',
+    }),
+    marker: StringSchema.exactOptional().openapi({
+      description:
+        'The starting point for the results to be returned. For the first call, this value should be empty. As long as there are more results, continue to call <code>QueryObjects</code> with the marker value from the previous call to retrieve the next set of results.',
+    }),
+    limit: IntSchema.exactOptional().openapi({
+      description:
+        'The maximum number of object names that <code>QueryObjects</code> will return in a single call. The default value is 100. ',
+    }),
   })
   .openapi({
     required: ['pipelineId', 'sphere'],
@@ -963,16 +759,14 @@ const QueryObjectsInputSchema = z
   .openapi('QueryObjectsInput')
 
 const RemoveTagsOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of RemoveTags.' })
   .openapi('RemoveTagsOutput')
 
 const RemoveTagsInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    tagKeys: StringListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to remove.' }),
-    ),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    tagKeys: StringListSchema.openapi({ description: 'The keys of the tags to remove.' }),
   })
   .openapi({
     required: ['pipelineId', 'tagKeys'],
@@ -983,36 +777,24 @@ const RemoveTagsInputSchema = z
 
 const ReportTaskProgressOutputSchema = z
   .object({
-    canceled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, the calling task runner should cancel processing of the task. The task runner does not need to call <a>SetTaskStatus</a> for canceled tasks.',
-        }),
-    ),
+    canceled: BooleanSchema.openapi({
+      description:
+        'If true, the calling task runner should cancel processing of the task. The task runner does not need to call <a>SetTaskStatus</a> for canceled tasks.',
+    }),
   })
   .openapi({ required: ['canceled'], description: 'Contains the output of ReportTaskProgress.' })
   .openapi('ReportTaskProgressOutput')
 
 const ReportTaskProgressInputSchema = z
   .object({
-    taskId: TaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the task assigned to the task runner. This value is provided in the response for <a>PollForTask</a>.',
-        }),
-    ),
-    fields: FieldListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Key-value pairs that define the properties of the ReportTaskProgressInput object.',
-        }),
-    ).exactOptional(),
+    taskId: TaskIdSchema.openapi({
+      description:
+        'The ID of the task assigned to the task runner. This value is provided in the response for <a>PollForTask</a>.',
+    }),
+    fields: FieldListSchema.exactOptional().openapi({
+      description:
+        'Key-value pairs that define the properties of the ReportTaskProgressInput object.',
+    }),
   })
   .openapi({
     required: ['taskId'],
@@ -1023,11 +805,9 @@ const ReportTaskProgressInputSchema = z
 
 const ReportTaskRunnerHeartbeatOutputSchema = z
   .object({
-    terminate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the calling task runner should terminate.' }),
-    ),
+    terminate: BooleanSchema.openapi({
+      description: 'Indicates whether the calling task runner should terminate.',
+    }),
   })
   .openapi({
     required: ['terminate'],
@@ -1037,25 +817,17 @@ const ReportTaskRunnerHeartbeatOutputSchema = z
 
 const ReportTaskRunnerHeartbeatInputSchema = z
   .object({
-    taskrunnerId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the task runner. This value should be unique across your AWS account. In the case of AWS Data Pipeline Task Runner launched on a resource managed by AWS Data Pipeline, the web service provides a unique identifier when it launches the application. If you have written a custom task runner, you should assign a unique identifier for the task runner.',
-        }),
-    ),
-    workerGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of task the task runner is configured to accept and process. The worker group is set as a field on objects in the pipeline when they are created. You can only specify a single value for <code>workerGroup</code>. There are no wildcard values permitted in <code>workerGroup</code>; the string must be an exact, case-sensitive, match.',
-        }),
-    ).exactOptional(),
-    hostname: IdSchema.and(
-      z.any().openapi({ description: 'The public DNS name of the task runner.' }),
-    ).exactOptional(),
+    taskrunnerId: IdSchema.openapi({
+      description:
+        'The ID of the task runner. This value should be unique across your AWS account. In the case of AWS Data Pipeline Task Runner launched on a resource managed by AWS Data Pipeline, the web service provides a unique identifier when it launches the application. If you have written a custom task runner, you should assign a unique identifier for the task runner.',
+    }),
+    workerGroup: StringSchema.exactOptional().openapi({
+      description:
+        'The type of task the task runner is configured to accept and process. The worker group is set as a field on objects in the pipeline when they are created. You can only specify a single value for <code>workerGroup</code>. There are no wildcard values permitted in <code>workerGroup</code>; the string must be an exact, case-sensitive, match.',
+    }),
+    hostname: IdSchema.exactOptional().openapi({
+      description: 'The public DNS name of the task runner.',
+    }),
   })
   .openapi({
     required: ['taskrunnerId'],
@@ -1066,25 +838,17 @@ const ReportTaskRunnerHeartbeatInputSchema = z
 
 const SetStatusInputSchema = z
   .object({
-    pipelineId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the pipeline that contains the objects.' }),
-    ),
-    objectIds: IdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs of the objects. The corresponding objects can be either physical or components, but not a mix of both types.',
-        }),
-    ),
-    status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status to be set on all the objects specified in <code>objectIds</code>. For components, use <code>PAUSE</code> or <code>RESUME</code>. For instances, use <code>TRY_CANCEL</code>, <code>RERUN</code>, or <code>MARK_FINISHED</code>.',
-        }),
-    ),
+    pipelineId: IdSchema.openapi({
+      description: 'The ID of the pipeline that contains the objects.',
+    }),
+    objectIds: IdListSchema.openapi({
+      description:
+        'The IDs of the objects. The corresponding objects can be either physical or components, but not a mix of both types.',
+    }),
+    status: StringSchema.openapi({
+      description:
+        'The status to be set on all the objects specified in <code>objectIds</code>. For components, use <code>PAUSE</code> or <code>RESUME</code>. For instances, use <code>TRY_CANCEL</code>, <code>RERUN</code>, or <code>MARK_FINISHED</code>.',
+    }),
   })
   .openapi({
     required: ['pipelineId', 'objectIds', 'status'],
@@ -1094,7 +858,7 @@ const SetStatusInputSchema = z
   .openapi('SetStatusInput')
 
 const SetTaskStatusOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of SetTaskStatus.' })
   .openapi('SetTaskStatusOutput')
 
@@ -1104,46 +868,26 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const SetTaskStatusInputSchema = z
   .object({
-    taskId: TaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the task assigned to the task runner. This value is provided in the response for <a>PollForTask</a>.',
-        }),
-    ),
-    taskStatus: TaskStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>FINISHED</code>, the task successfully completed. If <code>FAILED</code>, the task ended unsuccessfully. Preconditions use false.',
-        }),
-    ),
-    errorId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If an error occurred during the task, this value specifies the error code. This value is set on the physical attempt object. It is used to display error information to the user. It should not start with string "Service_" which is reserved by the system.',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If an error occurred during the task, this value specifies a text description of the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.',
-        }),
-    ).exactOptional(),
-    errorStackTrace: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If an error occurred during the task, this value specifies the stack trace associated with the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.',
-        }),
-    ).exactOptional(),
+    taskId: TaskIdSchema.openapi({
+      description:
+        'The ID of the task assigned to the task runner. This value is provided in the response for <a>PollForTask</a>.',
+    }),
+    taskStatus: TaskStatusSchema.openapi({
+      description:
+        'If <code>FINISHED</code>, the task successfully completed. If <code>FAILED</code>, the task ended unsuccessfully. Preconditions use false.',
+    }),
+    errorId: StringSchema.exactOptional().openapi({
+      description:
+        'If an error occurred during the task, this value specifies the error code. This value is set on the physical attempt object. It is used to display error information to the user. It should not start with string "Service_" which is reserved by the system.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'If an error occurred during the task, this value specifies a text description of the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.',
+    }),
+    errorStackTrace: StringSchema.exactOptional().openapi({
+      description:
+        'If an error occurred during the task, this value specifies the stack trace associated with the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.',
+    }),
   })
   .openapi({
     required: ['taskId', 'taskStatus'],
@@ -1154,15 +898,15 @@ const SetTaskStatusInputSchema = z
 
 const ValidatePipelineDefinitionOutputSchema = z
   .object({
-    validationErrors: ValidationErrorsSchema.and(
-      z.any().openapi({ description: 'Any validation errors that were found.' }),
-    ).exactOptional(),
-    validationWarnings: ValidationWarningsSchema.and(
-      z.any().openapi({ description: 'Any validation warnings that were found.' }),
-    ).exactOptional(),
-    errored: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether there were validation errors.' }),
-    ),
+    validationErrors: ValidationErrorsSchema.exactOptional().openapi({
+      description: 'Any validation errors that were found.',
+    }),
+    validationWarnings: ValidationWarningsSchema.exactOptional().openapi({
+      description: 'Any validation warnings that were found.',
+    }),
+    errored: BooleanSchema.openapi({
+      description: 'Indicates whether there were validation errors.',
+    }),
   })
   .openapi({
     required: ['errored'],
@@ -1172,21 +916,16 @@ const ValidatePipelineDefinitionOutputSchema = z
 
 const ValidatePipelineDefinitionInputSchema = z
   .object({
-    pipelineId: IdSchema.and(z.any().openapi({ description: 'The ID of the pipeline.' })),
-    pipelineObjects: PipelineObjectListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The objects that define the pipeline changes to validate against the pipeline.',
-        }),
-    ),
-    parameterObjects: ParameterObjectListSchema.and(
-      z.any().openapi({ description: 'The parameter objects used with the pipeline.' }),
-    ).exactOptional(),
-    parameterValues: ParameterValueListSchema.and(
-      z.any().openapi({ description: 'The parameter values used with the pipeline.' }),
-    ).exactOptional(),
+    pipelineId: IdSchema.openapi({ description: 'The ID of the pipeline.' }),
+    pipelineObjects: PipelineObjectListSchema.openapi({
+      description: 'The objects that define the pipeline changes to validate against the pipeline.',
+    }),
+    parameterObjects: ParameterObjectListSchema.exactOptional().openapi({
+      description: 'The parameter objects used with the pipeline.',
+    }),
+    parameterValues: ParameterValueListSchema.exactOptional().openapi({
+      description: 'The parameter values used with the pipeline.',
+    }),
   })
   .openapi({
     required: ['pipelineId', 'pipelineObjects'],

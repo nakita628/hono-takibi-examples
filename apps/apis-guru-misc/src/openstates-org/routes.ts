@@ -1,5 +1,15 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const PaginationMetaSchema = z
+  .object({
+    max_page: z.int().openapi({ example: 3, title: 'Max Page' }),
+    page: z.int().openapi({ example: 1, title: 'Page' }),
+    per_page: z.int().openapi({ example: 20, title: 'Per Page' }),
+    total_items: z.int().openapi({ example: 52, title: 'Total Items' }),
+  })
+  .openapi({ required: ['per_page', 'page', 'max_page', 'total_items'], title: 'PaginationMeta' })
+  .openapi('PaginationMeta')
+
 const BillAbstractSchema = z
   .object({
     abstract: z
@@ -173,7 +183,7 @@ const PersonVoteSchema = z
 const VoteEventSchema = z
   .object({
     counts: z.array(VoteCountSchema).openapi({ title: 'Counts' }),
-    extras: z.object({}).openapi({ title: 'Extras' }),
+    extras: z.looseObject({}).openapi({ title: 'Extras' }),
     id: z.string().openapi({ title: 'Id' }),
     identifier: z.string().openapi({ example: 'HV #3312', title: 'Identifier' }),
     motion_classification: z
@@ -205,269 +215,100 @@ const VoteEventSchema = z
   })
   .openapi('VoteEvent')
 
-type BillType = {
-  abstracts?: z.infer<typeof BillAbstractSchema>[]
-  actions?: z.infer<typeof BillActionSchema>[]
-  classification?: string[]
-  created_at: string
-  documents?: z.infer<typeof BillDocumentOrVersionSchema>[]
-  extras?: { [key: string]: unknown }
-  first_action_date?: string
-  from_organization: z.infer<typeof OrganizationSchema>
-  id: string
-  identifier: string
-  jurisdiction: z.infer<typeof CompactJurisdictionSchema>
-  latest_action_date?: string
-  latest_action_description?: string
-  latest_passage_date?: string
-  openstates_url: string
-  other_identifiers?: z.infer<typeof BillIdentifierSchema>[]
-  other_titles?: z.infer<typeof BillTitleSchema>[]
-  related_bills?: z.infer<typeof RelatedBillSchema>[]
-  session: string
-  sources?: z.infer<typeof LinkSchema>[]
-  sponsorships?: z.infer<typeof BillSponsorshipSchema>[]
-  subject?: string[]
-  title: string
-  updated_at: string
-  versions?: z.infer<typeof BillDocumentOrVersionSchema>[]
-  votes?: z.infer<typeof VoteEventSchema>[]
-}
-
-const AltIdentifierSchema = z
+const BillSchema = z
   .object({
-    identifier: z.string().openapi({ example: 'NCL000123', title: 'Identifier' }),
-    scheme: z.string().openapi({ example: 'legacy_openstates', title: 'Scheme' }),
-  })
-  .openapi({ required: ['identifier', 'scheme'], title: 'AltIdentifier' })
-  .openapi('AltIdentifier')
-
-const AltNameSchema = z
-  .object({
-    name: z.string().openapi({ example: 'Auggie', title: 'Name' }),
-    note: z.string().openapi({ example: 'nickname', title: 'Note' }),
-  })
-  .openapi({ required: ['name', 'note'], title: 'AltName' })
-  .openapi('AltName')
-
-const BillSchema: z.ZodType<BillType> = z
-  .lazy(() =>
-    z
-      .object({
-        abstracts: z.array(BillAbstractSchema).exactOptional().openapi({ title: 'Abstracts' }),
-        actions: z.array(BillActionSchema).exactOptional().openapi({ title: 'Actions' }),
-        classification: z
-          .array(z.string())
-          .default([])
-          .exactOptional()
-          .openapi({ example: ['resolution'], title: 'Classification' }),
-        created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
-        documents: z
-          .array(BillDocumentOrVersionSchema)
-          .exactOptional()
-          .openapi({ title: 'Documents' }),
-        extras: z.object({}).default({}).exactOptional().openapi({ example: {}, title: 'Extras' }),
-        first_action_date: z
-          .string()
-          .default('')
-          .exactOptional()
-          .openapi({ example: '2020-01-01', title: 'First Action Date' }),
-        from_organization: OrganizationSchema,
-        id: z
-          .string()
-          .openapi({ example: 'ocd-bill/f0049138-1ad8-4506-a2a4-f4dd1251bbba', title: 'Id' }),
-        identifier: z.string().openapi({ example: 'SB 113', title: 'Identifier' }),
-        jurisdiction: CompactJurisdictionSchema,
-        latest_action_date: z
-          .string()
-          .default('')
-          .exactOptional()
-          .openapi({ example: '2020-02-01', title: 'Latest Action Date' }),
-        latest_action_description: z
-          .string()
-          .default('')
-          .exactOptional()
-          .openapi({ example: 'Introduced in House', title: 'Latest Action Description' }),
-        latest_passage_date: z
-          .string()
-          .default('')
-          .exactOptional()
-          .openapi({ example: '2020-03-01', title: 'Latest Passage Date' }),
-        openstates_url: z
-          .string()
-          .openapi({
-            example: 'https://openstates.org/nc/bills/2019/HB1105/',
-            title: 'Openstates Url',
-          }),
-        other_identifiers: z
-          .array(BillIdentifierSchema)
-          .exactOptional()
-          .openapi({ title: 'Other Identifiers' }),
-        other_titles: z.array(BillTitleSchema).exactOptional().openapi({ title: 'Other Titles' }),
-        related_bills: z
-          .array(RelatedBillSchema)
-          .exactOptional()
-          .openapi({ title: 'Related Bills' }),
-        session: z.string().openapi({ example: '2020', title: 'Session' }),
-        sources: z.array(LinkSchema).exactOptional().openapi({ title: 'Sources' }),
-        sponsorships: z
-          .array(BillSponsorshipSchema)
-          .exactOptional()
-          .openapi({ title: 'Sponsorships' }),
-        subject: z
-          .array(z.string())
-          .default([])
-          .exactOptional()
-          .openapi({ example: ['SCORPIONS', 'SYMBOLS'], title: 'Subject' }),
-        title: z.string().openapi({ example: 'Adopting a State Scorpion', title: 'Title' }),
-        updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
-        versions: z
-          .array(BillDocumentOrVersionSchema)
-          .exactOptional()
-          .openapi({ title: 'Versions' }),
-        votes: z.array(VoteEventSchema).exactOptional().openapi({ title: 'Votes' }),
-      })
-      .openapi({
-        required: [
-          'id',
-          'session',
-          'jurisdiction',
-          'from_organization',
-          'identifier',
-          'title',
-          'created_at',
-          'updated_at',
-          'openstates_url',
-        ],
-        title: 'Bill',
-      }),
-  )
-  .openapi('Bill')
-
-const BillIncludeSchema = z
-  .enum([
-    'sponsorships',
-    'abstracts',
-    'other_titles',
-    'other_identifiers',
-    'actions',
-    'sources',
-    'documents',
-    'versions',
-    'votes',
-    'related_bills',
-  ])
-  .openapi({ description: 'An enumeration.', title: 'BillInclude' })
-  .openapi('BillInclude')
-
-const PaginationMetaSchema = z
-  .object({
-    max_page: z.int().openapi({ example: 3, title: 'Max Page' }),
-    page: z.int().openapi({ example: 1, title: 'Page' }),
-    per_page: z.int().openapi({ example: 20, title: 'Per Page' }),
-    total_items: z.int().openapi({ example: 52, title: 'Total Items' }),
-  })
-  .openapi({ required: ['per_page', 'page', 'max_page', 'total_items'], title: 'PaginationMeta' })
-  .openapi('PaginationMeta')
-
-const BillListSchema = z
-  .object({
-    pagination: PaginationMetaSchema,
-    results: z.array(BillSchema).openapi({ title: 'Results' }),
-  })
-  .openapi({ required: ['results', 'pagination'], title: 'BillList' })
-  .openapi('BillList')
-
-const BillSortOptionSchema = z
-  .enum([
-    'updated_asc',
-    'updated_desc',
-    'first_action_asc',
-    'first_action_desc',
-    'latest_action_asc',
-    'latest_action_desc',
-  ])
-  .openapi({ description: 'An enumeration.', title: 'BillSortOption' })
-  .openapi('BillSortOption')
-
-const PostSchema = z
-  .object({
-    division_id: z
-      .string()
-      .openapi({ example: 'ocd-division/country:us/state:mn/sldu:4', title: 'Division Id' }),
-    label: z.string().openapi({ example: '2', title: 'Label' }),
-    maximum_memberships: z.int().openapi({ example: 1, title: 'Maximum Memberships' }),
-    role: z.string().openapi({ example: 'Senator', title: 'Role' }),
-  })
-  .openapi({ required: ['label', 'role', 'division_id', 'maximum_memberships'], title: 'Post' })
-  .openapi('Post')
-
-const ChamberSchema = z
-  .object({
-    classification: z.string().openapi({ example: 'legislature', title: 'Classification' }),
-    districts: z.array(PostSchema).exactOptional().openapi({ title: 'Districts' }),
-    id: z
-      .string()
-      .openapi({ example: 'ocd-organization/32aab083-d7a0-44e0-9b95-a7790c542605', title: 'Id' }),
-    name: z.string().openapi({ example: 'North Carolina General Assembly', title: 'Name' }),
-  })
-  .openapi({ required: ['id', 'name', 'classification'], title: 'Chamber' })
-  .openapi('Chamber')
-
-const CommitteeClassificationSchema = z
-  .enum(['committee', 'subcommittee'])
-  .openapi({ description: 'An enumeration.', title: 'CommitteeClassification' })
-  .openapi('CommitteeClassification')
-
-const CommitteeMembershipSchema = z
-  .object({
-    person: CompactPersonSchema.exactOptional(),
-    person_name: z.string().openapi({ title: 'Person Name' }),
-    role: z.string().openapi({ title: 'Role' }),
-  })
-  .openapi({ required: ['person_name', 'role'], title: 'CommitteeMembership' })
-  .openapi('CommitteeMembership')
-
-const CommitteeSchema = z
-  .object({
-    classification: CommitteeClassificationSchema,
-    extras: z.object({}).openapi({ example: { room: 'Room 4B' }, title: 'Extras' }),
-    id: z
-      .string()
-      .openapi({ example: 'ocd-organization/aabbbbcc-dddd-eeee-ffff-0123456789ab', title: 'Id' }),
-    links: z.array(LinkSchema).exactOptional().openapi({ title: 'Links' }),
-    memberships: z
-      .array(CommitteeMembershipSchema)
+    abstracts: z.array(BillAbstractSchema).exactOptional().openapi({ title: 'Abstracts' }),
+    actions: z.array(BillActionSchema).exactOptional().openapi({ title: 'Actions' }),
+    classification: z
+      .array(z.string())
+      .default([])
       .exactOptional()
-      .openapi({ title: 'Memberships' }),
-    name: z.string().openapi({ example: 'Health & Public Services', title: 'Name' }),
-    other_names: z.array(AltNameSchema).exactOptional().openapi({ title: 'Other Names' }),
-    parent_id: z
+      .openapi({ example: ['resolution'], title: 'Classification' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
+    documents: z.array(BillDocumentOrVersionSchema).exactOptional().openapi({ title: 'Documents' }),
+    extras: z.looseObject({}).default({}).exactOptional().openapi({ example: {}, title: 'Extras' }),
+    first_action_date: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({ example: '2020-01-01', title: 'First Action Date' }),
+    from_organization: OrganizationSchema,
+    id: z
+      .string()
+      .openapi({ example: 'ocd-bill/f0049138-1ad8-4506-a2a4-f4dd1251bbba', title: 'Id' }),
+    identifier: z.string().openapi({ example: 'SB 113', title: 'Identifier' }),
+    jurisdiction: CompactJurisdictionSchema,
+    latest_action_date: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({ example: '2020-02-01', title: 'Latest Action Date' }),
+    latest_action_description: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({ example: 'Introduced in House', title: 'Latest Action Description' }),
+    latest_passage_date: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({ example: '2020-03-01', title: 'Latest Passage Date' }),
+    openstates_url: z
       .string()
       .openapi({
-        example: 'ocd-organization/aabbbbcc-dddd-eeee-ffff-999988887777',
-        title: 'Parent Id',
+        example: 'https://openstates.org/nc/bills/2019/HB1105/',
+        title: 'Openstates Url',
       }),
+    other_identifiers: z
+      .array(BillIdentifierSchema)
+      .exactOptional()
+      .openapi({ title: 'Other Identifiers' }),
+    other_titles: z.array(BillTitleSchema).exactOptional().openapi({ title: 'Other Titles' }),
+    related_bills: z.array(RelatedBillSchema).exactOptional().openapi({ title: 'Related Bills' }),
+    session: z.string().openapi({ example: '2020', title: 'Session' }),
     sources: z.array(LinkSchema).exactOptional().openapi({ title: 'Sources' }),
+    sponsorships: z.array(BillSponsorshipSchema).exactOptional().openapi({ title: 'Sponsorships' }),
+    subject: z
+      .array(z.string())
+      .default([])
+      .exactOptional()
+      .openapi({ example: ['SCORPIONS', 'SYMBOLS'], title: 'Subject' }),
+    title: z.string().openapi({ example: 'Adopting a State Scorpion', title: 'Title' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
+    versions: z.array(BillDocumentOrVersionSchema).exactOptional().openapi({ title: 'Versions' }),
+    votes: z.array(VoteEventSchema).exactOptional().openapi({ title: 'Votes' }),
   })
   .openapi({
-    required: ['id', 'name', 'classification', 'parent_id', 'extras'],
-    title: 'Committee',
+    required: [
+      'id',
+      'session',
+      'jurisdiction',
+      'from_organization',
+      'identifier',
+      'title',
+      'created_at',
+      'updated_at',
+      'openstates_url',
+    ],
+    title: 'Bill',
   })
-  .openapi('Committee')
+  .openapi('Bill')
 
-const CommitteeIncludeSchema = z
-  .enum(['memberships', 'links', 'sources'])
-  .openapi({ description: 'An enumeration.', title: 'CommitteeInclude' })
-  .openapi('CommitteeInclude')
+type BillListType = {
+  pagination: z.infer<typeof PaginationMetaSchema>
+  results: z.infer<typeof BillSchema>[]
+}
 
-const CommitteeListSchema = z
+const EventMediaSchema = z
   .object({
-    pagination: PaginationMetaSchema,
-    results: z.array(CommitteeSchema).openapi({ title: 'Results' }),
+    classification: z.string().openapi({ title: 'Classification' }),
+    date: z.string().openapi({ title: 'Date' }),
+    links: z.array(LinkSchema).openapi({ title: 'Links' }),
+    note: z.string().openapi({ title: 'Note' }),
+    offset: z.int().openapi({ title: 'Offset' }),
   })
-  .openapi({ required: ['results', 'pagination'], title: 'CommitteeList' })
-  .openapi('CommitteeList')
+  .openapi({ required: ['note', 'date', 'offset', 'classification', 'links'], title: 'EventMedia' })
+  .openapi('EventMedia')
 
 const CompactBillSchema = z
   .object({
@@ -491,27 +332,6 @@ const CompactVoteEventSchema = z
   .openapi({ required: ['id', 'motion_text'], title: 'CompactVoteEvent' })
   .openapi('CompactVoteEvent')
 
-const DataExportSchema = z
-  .object({
-    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
-    data_type: z.string().openapi({ title: 'Data Type' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
-    url: z.string().openapi({ title: 'Url' }),
-  })
-  .openapi({ required: ['created_at', 'updated_at', 'data_type', 'url'], title: 'DataExport' })
-  .openapi('DataExport')
-
-const EventMediaSchema = z
-  .object({
-    classification: z.string().openapi({ title: 'Classification' }),
-    date: z.string().openapi({ title: 'Date' }),
-    links: z.array(LinkSchema).openapi({ title: 'Links' }),
-    note: z.string().openapi({ title: 'Note' }),
-    offset: z.int().openapi({ title: 'Offset' }),
-  })
-  .openapi({ required: ['note', 'date', 'offset', 'classification', 'links'], title: 'EventMedia' })
-  .openapi('EventMedia')
-
 const EventRelatedEntitySchema = z
   .object({
     bill: CompactBillSchema.exactOptional(),
@@ -529,7 +349,7 @@ const EventAgendaItemSchema = z
   .object({
     classification: z.array(z.string()).openapi({ title: 'Classification' }),
     description: z.string().openapi({ title: 'Description' }),
-    extras: z.object({}).openapi({ title: 'Extras' }),
+    extras: z.looseObject({}).openapi({ title: 'Extras' }),
     media: z.array(EventMediaSchema).openapi({ title: 'Media' }),
     notes: z.array(z.string()).openapi({ title: 'Notes' }),
     order: z.int().openapi({ title: 'Order' }),
@@ -622,12 +442,158 @@ const EventSchema = z
   })
   .openapi('Event')
 
+type EventListType = {
+  pagination: z.infer<typeof PaginationMetaSchema>
+  results: z.infer<typeof EventSchema>[]
+}
+
+const AltIdentifierSchema = z
+  .object({
+    identifier: z.string().openapi({ example: 'NCL000123', title: 'Identifier' }),
+    scheme: z.string().openapi({ example: 'legacy_openstates', title: 'Scheme' }),
+  })
+  .openapi({ required: ['identifier', 'scheme'], title: 'AltIdentifier' })
+  .openapi('AltIdentifier')
+
+const AltNameSchema = z
+  .object({
+    name: z.string().openapi({ example: 'Auggie', title: 'Name' }),
+    note: z.string().openapi({ example: 'nickname', title: 'Note' }),
+  })
+  .openapi({ required: ['name', 'note'], title: 'AltName' })
+  .openapi('AltName')
+
+const BillIncludeSchema = z
+  .enum([
+    'sponsorships',
+    'abstracts',
+    'other_titles',
+    'other_identifiers',
+    'actions',
+    'sources',
+    'documents',
+    'versions',
+    'votes',
+    'related_bills',
+  ])
+  .openapi({ description: 'An enumeration.', title: 'BillInclude' })
+  .openapi('BillInclude')
+
+const BillListSchema: z.ZodType<BillListType> = z
+  .object({
+    pagination: PaginationMetaSchema,
+    results: z.array(BillSchema).openapi({ title: 'Results' }),
+  })
+  .openapi({ required: ['results', 'pagination'], title: 'BillList' })
+  .openapi('BillList')
+
+const BillSortOptionSchema = z
+  .enum([
+    'updated_asc',
+    'updated_desc',
+    'first_action_asc',
+    'first_action_desc',
+    'latest_action_asc',
+    'latest_action_desc',
+  ])
+  .openapi({ description: 'An enumeration.', title: 'BillSortOption' })
+  .openapi('BillSortOption')
+
+const PostSchema = z
+  .object({
+    division_id: z
+      .string()
+      .openapi({ example: 'ocd-division/country:us/state:mn/sldu:4', title: 'Division Id' }),
+    label: z.string().openapi({ example: '2', title: 'Label' }),
+    maximum_memberships: z.int().openapi({ example: 1, title: 'Maximum Memberships' }),
+    role: z.string().openapi({ example: 'Senator', title: 'Role' }),
+  })
+  .openapi({ required: ['label', 'role', 'division_id', 'maximum_memberships'], title: 'Post' })
+  .openapi('Post')
+
+const ChamberSchema = z
+  .object({
+    classification: z.string().openapi({ example: 'legislature', title: 'Classification' }),
+    districts: z.array(PostSchema).exactOptional().openapi({ title: 'Districts' }),
+    id: z
+      .string()
+      .openapi({ example: 'ocd-organization/32aab083-d7a0-44e0-9b95-a7790c542605', title: 'Id' }),
+    name: z.string().openapi({ example: 'North Carolina General Assembly', title: 'Name' }),
+  })
+  .openapi({ required: ['id', 'name', 'classification'], title: 'Chamber' })
+  .openapi('Chamber')
+
+const CommitteeClassificationSchema = z
+  .enum(['committee', 'subcommittee'])
+  .openapi({ description: 'An enumeration.', title: 'CommitteeClassification' })
+  .openapi('CommitteeClassification')
+
+const CommitteeMembershipSchema = z
+  .object({
+    person: CompactPersonSchema.exactOptional(),
+    person_name: z.string().openapi({ title: 'Person Name' }),
+    role: z.string().openapi({ title: 'Role' }),
+  })
+  .openapi({ required: ['person_name', 'role'], title: 'CommitteeMembership' })
+  .openapi('CommitteeMembership')
+
+const CommitteeSchema = z
+  .object({
+    classification: CommitteeClassificationSchema,
+    extras: z.looseObject({}).openapi({ example: { room: 'Room 4B' }, title: 'Extras' }),
+    id: z
+      .string()
+      .openapi({ example: 'ocd-organization/aabbbbcc-dddd-eeee-ffff-0123456789ab', title: 'Id' }),
+    links: z.array(LinkSchema).exactOptional().openapi({ title: 'Links' }),
+    memberships: z
+      .array(CommitteeMembershipSchema)
+      .exactOptional()
+      .openapi({ title: 'Memberships' }),
+    name: z.string().openapi({ example: 'Health & Public Services', title: 'Name' }),
+    other_names: z.array(AltNameSchema).exactOptional().openapi({ title: 'Other Names' }),
+    parent_id: z
+      .string()
+      .openapi({
+        example: 'ocd-organization/aabbbbcc-dddd-eeee-ffff-999988887777',
+        title: 'Parent Id',
+      }),
+    sources: z.array(LinkSchema).exactOptional().openapi({ title: 'Sources' }),
+  })
+  .openapi({
+    required: ['id', 'name', 'classification', 'parent_id', 'extras'],
+    title: 'Committee',
+  })
+  .openapi('Committee')
+
+const CommitteeIncludeSchema = z
+  .enum(['memberships', 'links', 'sources'])
+  .openapi({ description: 'An enumeration.', title: 'CommitteeInclude' })
+  .openapi('CommitteeInclude')
+
+const CommitteeListSchema = z
+  .object({
+    pagination: PaginationMetaSchema,
+    results: z.array(CommitteeSchema).openapi({ title: 'Results' }),
+  })
+  .openapi({ required: ['results', 'pagination'], title: 'CommitteeList' })
+  .openapi('CommitteeList')
+
+const DataExportSchema = z
+  .object({
+    created_at: z.iso.datetime({ offset: true }).openapi({ title: 'Created At' }),
+    data_type: z.string().openapi({ title: 'Data Type' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ title: 'Updated At' }),
+    url: z.string().openapi({ title: 'Url' }),
+  })
+  .openapi({ required: ['created_at', 'updated_at', 'data_type', 'url'], title: 'DataExport' })
+  .openapi('DataExport')
+
 const EventIncludeSchema = z
   .enum(['links', 'sources', 'media', 'documents', 'participants', 'agenda'])
   .openapi({ description: 'An enumeration.', title: 'EventInclude' })
   .openapi('EventInclude')
 
-const EventListSchema = z
+const EventListSchema: z.ZodType<EventListType> = z
   .object({
     pagination: PaginationMetaSchema,
     results: z.array(EventSchema).openapi({ title: 'Results' }),
@@ -740,7 +706,7 @@ const PersonSchema = z
     current_role: CurrentRoleSchema.exactOptional(),
     death_date: z.string().openapi({ example: '2019-04-10', title: 'Death Date' }),
     email: z.string().openapi({ example: 'aperson@example.com', title: 'Email' }),
-    extras: z.object({}).openapi({ example: { profession: 'Doctor' }, title: 'Extras' }),
+    extras: z.looseObject({}).openapi({ example: { profession: 'Doctor' }, title: 'Extras' }),
     family_name: z.string().openapi({ example: 'Augusta', title: 'Family Name' }),
     gender: z.string().openapi({ example: 'female', title: 'Gender' }),
     given_name: z.string().openapi({ example: 'Angela', title: 'Given Name' }),

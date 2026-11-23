@@ -1,0 +1,5 @@
+export * from './collections'
+export * from './describe-index-stats'
+export * from './indexes'
+export * from './query'
+export * from './vectors'

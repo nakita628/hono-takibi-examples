@@ -23,12 +23,6 @@ Base URLs:
 |---|---|
 |content||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="cms-content-audit-advanced">Advanced</h1>
 
 ## Export Logs

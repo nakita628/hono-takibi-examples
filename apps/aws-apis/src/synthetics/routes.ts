@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AssociateResourceResponseSchema = z.object({}).openapi('AssociateResourceResponse')
+const AssociateResourceResponseSchema = z.looseObject({}).openapi('AssociateResourceResponse')
 
 const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 
@@ -28,21 +28,12 @@ const StringSchema = z.string().min(1).max(1024).openapi('String')
 
 const CanaryCodeOutputSchema = z
   .object({
-    SourceLocationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Lambda layer where Synthetics stores the canary script code.',
-        }),
-    ).exactOptional(),
-    Handler: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The entry point to use for the source code when running the canary.',
-        }),
-    ).exactOptional(),
+    SourceLocationArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the Lambda layer where Synthetics stores the canary script code.',
+    }),
+    Handler: StringSchema.exactOptional().openapi({
+      description: 'The entry point to use for the source code when running the canary.',
+    }),
   })
   .openapi({
     description:
@@ -62,22 +53,14 @@ const MaxOneYearInSecondsSchema = z.int().min(0).max(31622400).openapi('MaxOneYe
 
 const CanaryScheduleOutputSchema = z
   .object({
-    Expression: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A <code>rate</code> expression or a <code>cron</code> expression that defines how often the canary is to run.</p> <p>For a rate expression, The syntax is <code>rate(<i>number unit</i>)</code>. <i>unit</i> can be <code>minute</code>, <code>minutes</code>, or <code>hour</code>. </p> <p>For example, <code>rate(1 minute)</code> runs the canary once a minute, <code>rate(10 minutes)</code> runs it once every 10 minutes, and <code>rate(1 hour)</code> runs it once every hour. You can specify a frequency between <code>rate(1 minute)</code> and <code>rate(1 hour)</code>.</p> <p>Specifying <code>rate(0 minute)</code> or <code>rate(0 hour)</code> is a special value that causes the canary to run only once when it is started.</p> <p>Use <code>cron(<i>expression</i>)</code> to specify a cron expression. For information about the syntax for cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_cron.html"> Scheduling canary runs using cron</a>.</p>',
-        }),
-    ).exactOptional(),
-    DurationInSeconds: MaxOneYearInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long, in seconds, for the canary to continue making regular runs after it was created. The runs are performed according to the schedule in the <code>Expression</code> value.',
-        }),
-    ).exactOptional(),
+    Expression: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A <code>rate</code> expression or a <code>cron</code> expression that defines how often the canary is to run.</p> <p>For a rate expression, The syntax is <code>rate(<i>number unit</i>)</code>. <i>unit</i> can be <code>minute</code>, <code>minutes</code>, or <code>hour</code>. </p> <p>For example, <code>rate(1 minute)</code> runs the canary once a minute, <code>rate(10 minutes)</code> runs it once every 10 minutes, and <code>rate(1 hour)</code> runs it once every hour. You can specify a frequency between <code>rate(1 minute)</code> and <code>rate(1 hour)</code>.</p> <p>Specifying <code>rate(0 minute)</code> or <code>rate(0 hour)</code> is a special value that causes the canary to run only once when it is started.</p> <p>Use <code>cron(<i>expression</i>)</code> to specify a cron expression. For information about the syntax for cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_cron.html"> Scheduling canary runs using cron</a>.</p>',
+    }),
+    DurationInSeconds: MaxOneYearInSecondsSchema.exactOptional().openapi({
+      description:
+        'How long, in seconds, for the canary to continue making regular runs after it was created. The runs are performed according to the schedule in the <code>Expression</code> value.',
+    }),
   })
   .openapi({
     description:
@@ -98,24 +81,16 @@ const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
 
 const CanaryRunConfigOutputSchema = z
   .object({
-    TimeoutInSeconds: MaxFifteenMinutesInSecondsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'How long the canary is allowed to run before it must stop.' }),
-    ).exactOptional(),
-    MemoryInMB: MaxSize3008Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of memory available to the canary while it is running, in MB. This value must be a multiple of 64.',
-        }),
-    ).exactOptional(),
-    ActiveTracing: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Displays whether this canary run used active X-Ray tracing. ' }),
-    ).exactOptional(),
+    TimeoutInSeconds: MaxFifteenMinutesInSecondsSchema.exactOptional().openapi({
+      description: 'How long the canary is allowed to run before it must stop.',
+    }),
+    MemoryInMB: MaxSize3008Schema.exactOptional().openapi({
+      description:
+        'The maximum amount of memory available to the canary while it is running, in MB. This value must be a multiple of 64.',
+    }),
+    ActiveTracing: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Displays whether this canary run used active X-Ray tracing. ',
+    }),
   })
   .openapi({
     description: 'A structure that contains information about a canary run.',
@@ -158,24 +133,16 @@ const CanaryStateReasonCodeSchema = z
 
 const CanaryStatusSchema = z
   .object({
-    State: CanaryStateSchema.and(
-      z.any().openapi({ description: 'The current state of the canary.' }),
-    ).exactOptional(),
-    StateReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the canary has insufficient permissions to run, this field provides more details.',
-        }),
-    ).exactOptional(),
-    StateReasonCode: CanaryStateReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If the canary cannot run or has failed, this field displays the reason.',
-        }),
-    ).exactOptional(),
+    State: CanaryStateSchema.exactOptional().openapi({
+      description: 'The current state of the canary.',
+    }),
+    StateReason: StringSchema.exactOptional().openapi({
+      description:
+        'If the canary has insufficient permissions to run, this field provides more details.',
+    }),
+    StateReasonCode: CanaryStateReasonCodeSchema.exactOptional().openapi({
+      description: 'If the canary cannot run or has failed, this field displays the reason.',
+    }),
   })
   .openapi({
     description: 'A structure that contains the current state of the canary.',
@@ -187,22 +154,18 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const CanaryTimelineSchema = z
   .object({
-    Created: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the canary was created.' }),
-    ).exactOptional(),
-    LastModified: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the canary was most recently modified.' }),
-    ).exactOptional(),
-    LastStarted: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: "The date and time that the canary's most recent run started." }),
-    ).exactOptional(),
-    LastStopped: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: "The date and time that the canary's most recent run ended." }),
-    ).exactOptional(),
+    Created: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the canary was created.',
+    }),
+    LastModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the canary was most recently modified.',
+    }),
+    LastStarted: TimestampSchema.exactOptional().openapi({
+      description: "The date and time that the canary's most recent run started.",
+    }),
+    LastStopped: TimestampSchema.exactOptional().openapi({
+      description: "The date and time that the canary's most recent run ended.",
+    }),
   })
   .openapi({
     description:
@@ -236,15 +199,15 @@ const SecurityGroupIdsSchema = z
 
 const VpcConfigOutputSchema = z
   .object({
-    VpcId: VpcIdSchema.and(
-      z.any().openapi({ description: 'The IDs of the VPC where this canary is to run.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdsSchema.and(
-      z.any().openapi({ description: 'The IDs of the subnets where this canary is to run.' }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z.any().openapi({ description: 'The IDs of the security groups for this canary.' }),
-    ).exactOptional(),
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description: 'The IDs of the VPC where this canary is to run.',
+    }),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description: 'The IDs of the subnets where this canary is to run.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+      description: 'The IDs of the security groups for this canary.',
+    }),
   })
   .openapi({
     description:
@@ -266,22 +229,14 @@ const BaseScreenshotIgnoreCoordinatesSchema = z
 
 const BaseScreenshotSchema = z
   .object({
-    ScreenshotName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the screenshot. This is generated the first time the canary is run after the <code>UpdateCanary</code> operation that specified for this canary to perform visual monitoring.',
-        }),
-    ),
-    IgnoreCoordinates: BaseScreenshotIgnoreCoordinatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Coordinates that define the part of a screen to ignore during screenshot comparisons. To obtain the coordinates to use here, use the CloudWatch console to draw the boundaries on the screen. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/synthetics_canaries_deletion.html"> Editing or deleting a canary</a> ',
-        }),
-    ).exactOptional(),
+    ScreenshotName: StringSchema.openapi({
+      description:
+        'The name of the screenshot. This is generated the first time the canary is run after the <code>UpdateCanary</code> operation that specified for this canary to perform visual monitoring.',
+    }),
+    IgnoreCoordinates: BaseScreenshotIgnoreCoordinatesSchema.exactOptional().openapi({
+      description:
+        'Coordinates that define the part of a screen to ignore during screenshot comparisons. To obtain the coordinates to use here, use the CloudWatch console to draw the boundaries on the screen. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/synthetics_canaries_deletion.html"> Editing or deleting a canary</a> ',
+    }),
   })
   .openapi({
     required: ['ScreenshotName'],
@@ -294,22 +249,14 @@ const BaseScreenshotsSchema = z.array(BaseScreenshotSchema).openapi('BaseScreens
 
 const VisualReferenceOutputSchema = z
   .object({
-    BaseScreenshots: BaseScreenshotsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of screenshots that are used as the baseline for comparisons during visual monitoring.',
-        }),
-    ).exactOptional(),
-    BaseCanaryRunId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the canary run that produced the baseline screenshots that are used for visual monitoring comparisons by this canary.',
-        }),
-    ).exactOptional(),
+    BaseScreenshots: BaseScreenshotsSchema.exactOptional().openapi({
+      description:
+        'An array of screenshots that are used as the baseline for comparisons during visual monitoring.',
+    }),
+    BaseCanaryRunId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the canary run that produced the baseline screenshots that are used for visual monitoring comparisons by this canary.',
+    }),
   })
   .openapi({
     description:
@@ -337,22 +284,14 @@ const KmsKeyArnSchema = z
 
 const S3EncryptionConfigSchema = z
   .object({
-    EncryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The encryption method to use for artifacts created by this canary. Specify <code>SSE_S3</code> to use server-side encryption (SSE) with an Amazon S3-managed key. Specify <code>SSE-KMS</code> to use server-side encryption with a customer-managed KMS key.</p> <p>If you omit this parameter, an Amazon Web Services-managed KMS key is used. </p>',
-        }),
-    ).exactOptional(),
-    KmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the customer-managed KMS key to use, if you specify <code>SSE-KMS</code> for <code>EncryptionMode</code> ',
-        }),
-    ).exactOptional(),
+    EncryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p> The encryption method to use for artifacts created by this canary. Specify <code>SSE_S3</code> to use server-side encryption (SSE) with an Amazon S3-managed key. Specify <code>SSE-KMS</code> to use server-side encryption with a customer-managed KMS key.</p> <p>If you omit this parameter, an Amazon Web Services-managed KMS key is used. </p>',
+    }),
+    KmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the customer-managed KMS key to use, if you specify <code>SSE-KMS</code> for <code>EncryptionMode</code> ',
+    }),
   })
   .openapi({
     description:
@@ -363,14 +302,10 @@ const S3EncryptionConfigSchema = z
 
 const ArtifactConfigOutputSchema = z
   .object({
-    S3Encryption: S3EncryptionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the configuration of encryption settings for canary artifacts that are stored in Amazon S3. ',
-        }),
-    ).exactOptional(),
+    S3Encryption: S3EncryptionConfigSchema.exactOptional().openapi({
+      description:
+        'A structure that contains the configuration of encryption settings for canary artifacts that are stored in Amazon S3. ',
+    }),
   })
   .openapi({
     description:
@@ -381,107 +316,55 @@ const ArtifactConfigOutputSchema = z
 
 const CanarySchema = z
   .object({
-    Id: UUIDSchema.and(
-      z.any().openapi({ description: 'The unique ID of this canary.' }),
-    ).exactOptional(),
-    Name: CanaryNameSchema.and(
-      z.any().openapi({ description: 'The name of the canary.' }),
-    ).exactOptional(),
+    Id: UUIDSchema.exactOptional().openapi({ description: 'The unique ID of this canary.' }),
+    Name: CanaryNameSchema.exactOptional().openapi({ description: 'The name of the canary.' }),
     Code: CanaryCodeOutputSchema.exactOptional(),
-    ExecutionRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role used to run the canary. This role must include <code>lambda.amazonaws.com</code> as a principal in the trust policy.',
-        }),
-    ).exactOptional(),
-    Schedule: CanaryScheduleOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains information about how often the canary is to run, and when these runs are to stop.',
-        }),
-    ).exactOptional(),
+    ExecutionRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the IAM role used to run the canary. This role must include <code>lambda.amazonaws.com</code> as a principal in the trust policy.',
+    }),
+    Schedule: CanaryScheduleOutputSchema.exactOptional().openapi({
+      description:
+        'A structure that contains information about how often the canary is to run, and when these runs are to stop.',
+    }),
     RunConfig: CanaryRunConfigOutputSchema.exactOptional(),
-    SuccessRetentionPeriodInDays: MaxSize1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of days to retain data about successful runs of this canary.',
-        }),
-    ).exactOptional(),
-    FailureRetentionPeriodInDays: MaxSize1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of days to retain data about failed runs of this canary.',
-        }),
-    ).exactOptional(),
-    Status: CanaryStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A structure that contains information about the canary's status.",
-        }),
-    ).exactOptional(),
-    Timeline: CanaryTimelineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains information about when the canary was created, modified, and most recently run.',
-        }),
-    ).exactOptional(),
-    ArtifactS3Location: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location in Amazon S3 where Synthetics stores artifacts from the runs of this canary. Artifacts include the log file, screenshots, and HAR files.',
-        }),
-    ).exactOptional(),
-    EngineArn: FunctionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Lambda function that is used as your canary\'s engine. For more information about Lambda ARN format, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html">Resources and Conditions for Lambda Actions</a>.',
-        }),
-    ).exactOptional(),
-    RuntimeVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the runtime version to use for the canary. For more information about runtime versions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html"> Canary Runtime Versions</a>.',
-        }),
-    ).exactOptional(),
+    SuccessRetentionPeriodInDays: MaxSize1024Schema.exactOptional().openapi({
+      description: 'The number of days to retain data about successful runs of this canary.',
+    }),
+    FailureRetentionPeriodInDays: MaxSize1024Schema.exactOptional().openapi({
+      description: 'The number of days to retain data about failed runs of this canary.',
+    }),
+    Status: CanaryStatusSchema.exactOptional().openapi({
+      description: "A structure that contains information about the canary's status.",
+    }),
+    Timeline: CanaryTimelineSchema.exactOptional().openapi({
+      description:
+        'A structure that contains information about when the canary was created, modified, and most recently run.',
+    }),
+    ArtifactS3Location: StringSchema.exactOptional().openapi({
+      description:
+        'The location in Amazon S3 where Synthetics stores artifacts from the runs of this canary. Artifacts include the log file, screenshots, and HAR files.',
+    }),
+    EngineArn: FunctionArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Lambda function that is used as your canary\'s engine. For more information about Lambda ARN format, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html">Resources and Conditions for Lambda Actions</a>.',
+    }),
+    RuntimeVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the runtime version to use for the canary. For more information about runtime versions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html"> Canary Runtime Versions</a>.',
+    }),
     VpcConfig: VpcConfigOutputSchema.exactOptional(),
-    VisualReference: VisualReferenceOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this canary performs visual monitoring by comparing screenshots, this structure contains the ID of the canary run to use as the baseline for screenshots, and the coordinates of any parts of the screen to ignore during the visual monitoring comparison.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of key-value pairs that are associated with the canary.',
-        }),
-    ).exactOptional(),
-    ArtifactConfig: ArtifactConfigOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the configuration for canary artifacts, including the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3.',
-        }),
-    ).exactOptional(),
+    VisualReference: VisualReferenceOutputSchema.exactOptional().openapi({
+      description:
+        'If this canary performs visual monitoring by comparing screenshots, this structure contains the ID of the canary run to use as the baseline for screenshots, and the coordinates of any parts of the screen to ignore during the visual monitoring comparison.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The list of key-value pairs that are associated with the canary.',
+    }),
+    ArtifactConfig: ArtifactConfigOutputSchema.exactOptional().openapi({
+      description:
+        'A structure that contains the configuration for canary artifacts, including the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3.',
+    }),
   })
   .openapi({
     description: 'This structure contains all information about one canary in your account.',
@@ -491,9 +374,9 @@ const CanarySchema = z
 
 const CreateCanaryResponseSchema = z
   .object({
-    Canary: CanarySchema.and(
-      z.any().openapi({ description: 'The full details about the canary you have created.' }),
-    ).exactOptional(),
+    Canary: CanarySchema.exactOptional().openapi({
+      description: 'The full details about the canary you have created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCanaryResponse')
@@ -528,51 +411,34 @@ const GroupArnSchema = z
 
 const GroupSchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the group.' }),
-    ).exactOptional(),
-    Name: GroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the group.' }),
-    ).exactOptional(),
-    Arn: GroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the group.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of key-value pairs that are associated with the canary.',
-        }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the group was created.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the group was most recently updated.' }),
-    ).exactOptional(),
+    Id: StringSchema.exactOptional().openapi({ description: 'The unique ID of the group.' }),
+    Name: GroupNameSchema.exactOptional().openapi({ description: 'The name of the group.' }),
+    Arn: GroupArnSchema.exactOptional().openapi({ description: 'The ARN of the group.' }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The list of key-value pairs that are associated with the canary.',
+    }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the group was created.',
+    }),
+    LastModifiedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the group was most recently updated.',
+    }),
   })
   .openapi({ description: 'This structure contains information about one group.', required: [] })
   .openapi('Group')
 
 const CreateGroupResponseSchema = z
   .object({
-    Group: GroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains information about the group that was just created.',
-        }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description: 'A structure that contains information about the group that was just created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGroupResponse')
 
-const DeleteCanaryResponseSchema = z.object({}).openapi('DeleteCanaryResponse')
+const DeleteCanaryResponseSchema = z.looseObject({}).openapi('DeleteCanaryResponse')
 
-const DeleteGroupResponseSchema = z.object({}).openapi('DeleteGroupResponse')
+const DeleteGroupResponseSchema = z.looseObject({}).openapi('DeleteGroupResponse')
 
 const CanariesSchema = z.array(CanarySchema).openapi('Canaries')
 
@@ -580,22 +446,14 @@ const TokenSchema = z.string().min(4).max(252).openapi('Token')
 
 const DescribeCanariesResponseSchema = z
   .object({
-    Canaries: CanariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns an array. Each item in the array contains the full information about one canary.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeCanaries</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Canaries: CanariesSchema.exactOptional().openapi({
+      description:
+        'Returns an array. Each item in the array contains the full information about one canary.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeCanaries</code> operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCanariesResponse')
@@ -608,24 +466,16 @@ const CanaryRunStateReasonCodeSchema = z
 
 const CanaryRunStatusSchema = z
   .object({
-    State: CanaryRunStateSchema.and(
-      z.any().openapi({ description: 'The current state of the run.' }),
-    ).exactOptional(),
-    StateReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If run of the canary failed, this field contains the reason for the error.',
-        }),
-    ).exactOptional(),
-    StateReasonCode: CanaryRunStateReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this value is <code>CANARY_FAILURE</code>, an exception occurred in the canary code. If this value is <code>EXECUTION_FAILURE</code>, an exception occurred in CloudWatch Synthetics.',
-        }),
-    ).exactOptional(),
+    State: CanaryRunStateSchema.exactOptional().openapi({
+      description: 'The current state of the run.',
+    }),
+    StateReason: StringSchema.exactOptional().openapi({
+      description: 'If run of the canary failed, this field contains the reason for the error.',
+    }),
+    StateReasonCode: CanaryRunStateReasonCodeSchema.exactOptional().openapi({
+      description:
+        'If this value is <code>CANARY_FAILURE</code>, an exception occurred in the canary code. If this value is <code>EXECUTION_FAILURE</code>, an exception occurred in CloudWatch Synthetics.',
+    }),
   })
   .openapi({
     description: 'This structure contains the status information about a canary run.',
@@ -635,12 +485,8 @@ const CanaryRunStatusSchema = z
 
 const CanaryRunTimelineSchema = z
   .object({
-    Started: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the run.' }),
-    ).exactOptional(),
-    Completed: TimestampSchema.and(
-      z.any().openapi({ description: 'The end time of the run.' }),
-    ).exactOptional(),
+    Started: TimestampSchema.exactOptional().openapi({ description: 'The start time of the run.' }),
+    Completed: TimestampSchema.exactOptional().openapi({ description: 'The end time of the run.' }),
   })
   .openapi({
     description: 'This structure contains the start and end times of a single canary run.',
@@ -650,28 +496,20 @@ const CanaryRunTimelineSchema = z
 
 const CanaryRunSchema = z
   .object({
-    Id: UUIDSchema.and(
-      z.any().openapi({ description: 'A unique ID that identifies this canary run.' }),
-    ).exactOptional(),
-    Name: CanaryNameSchema.and(
-      z.any().openapi({ description: 'The name of the canary.' }),
-    ).exactOptional(),
-    Status: CanaryRunStatusSchema.and(
-      z.any().openapi({ description: 'The status of this run.' }),
-    ).exactOptional(),
-    Timeline: CanaryRunTimelineSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that contains the start and end times of this run.' }),
-    ).exactOptional(),
-    ArtifactS3Location: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location where the canary stored artifacts from the run. Artifacts include the log file, screenshots, and HAR files.',
-        }),
-    ).exactOptional(),
+    Id: UUIDSchema.exactOptional().openapi({
+      description: 'A unique ID that identifies this canary run.',
+    }),
+    Name: CanaryNameSchema.exactOptional().openapi({ description: 'The name of the canary.' }),
+    Status: CanaryRunStatusSchema.exactOptional().openapi({
+      description: 'The status of this run.',
+    }),
+    Timeline: CanaryRunTimelineSchema.exactOptional().openapi({
+      description: 'A structure that contains the start and end times of this run.',
+    }),
+    ArtifactS3Location: StringSchema.exactOptional().openapi({
+      description:
+        'The location where the canary stored artifacts from the run. Artifacts include the log file, screenshots, and HAR files.',
+    }),
   })
   .openapi({
     description: 'This structure contains the details about one run of one canary.',
@@ -681,12 +519,12 @@ const CanaryRunSchema = z
 
 const CanaryLastRunSchema = z
   .object({
-    CanaryName: CanaryNameSchema.and(
-      z.any().openapi({ description: 'The name of the canary.' }),
-    ).exactOptional(),
-    LastRun: CanaryRunSchema.and(
-      z.any().openapi({ description: "The results from this canary's most recent run." }),
-    ).exactOptional(),
+    CanaryName: CanaryNameSchema.exactOptional().openapi({
+      description: 'The name of the canary.',
+    }),
+    LastRun: CanaryRunSchema.exactOptional().openapi({
+      description: "The results from this canary's most recent run.",
+    }),
   })
   .openapi({
     description:
@@ -699,50 +537,33 @@ const CanariesLastRunSchema = z.array(CanaryLastRunSchema).openapi('CanariesLast
 
 const DescribeCanariesLastRunResponseSchema = z
   .object({
-    CanariesLastRun: CanariesLastRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains the information from the most recent run of each canary.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeCanariesLastRun</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    CanariesLastRun: CanariesLastRunSchema.exactOptional().openapi({
+      description:
+        'An array that contains the information from the most recent run of each canary.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeCanariesLastRun</code> operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCanariesLastRunResponse')
 
 const RuntimeVersionSchema = z
   .object({
-    VersionName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the runtime version. For a list of valid runtime versions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html"> Canary Runtime Versions</a>.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the runtime version, created by Amazon.' }),
-    ).exactOptional(),
-    ReleaseDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date that the runtime version was released.' }),
-    ).exactOptional(),
-    DeprecationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this runtime version is deprecated, this value is the date of deprecation.',
-        }),
-    ).exactOptional(),
+    VersionName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the runtime version. For a list of valid runtime versions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html"> Canary Runtime Versions</a>.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A description of the runtime version, created by Amazon.',
+    }),
+    ReleaseDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date that the runtime version was released.',
+    }),
+    DeprecationDate: TimestampSchema.exactOptional().openapi({
+      description: 'If this runtime version is deprecated, this value is the date of deprecation.',
+    }),
   })
   .openapi({
     description:
@@ -755,37 +576,25 @@ const RuntimeVersionListSchema = z.array(RuntimeVersionSchema).openapi('RuntimeV
 
 const DescribeRuntimeVersionsResponseSchema = z
   .object({
-    RuntimeVersions: RuntimeVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that display the details about each Synthetics canary runtime version.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeRuntimeVersions</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    RuntimeVersions: RuntimeVersionListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that display the details about each Synthetics canary runtime version.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeRuntimeVersions</code> operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRuntimeVersionsResponse')
 
-const DisassociateResourceResponseSchema = z.object({}).openapi('DisassociateResourceResponse')
+const DisassociateResourceResponseSchema = z.looseObject({}).openapi('DisassociateResourceResponse')
 
 const GetCanaryResponseSchema = z
   .object({
-    Canary: CanarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure that contains the full information about the canary.',
-        }),
-    ).exactOptional(),
+    Canary: CanarySchema.exactOptional().openapi({
+      description: 'A structure that contains the full information about the canary.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCanaryResponse')
@@ -794,46 +603,32 @@ const CanaryRunsSchema = z.array(CanaryRunSchema).openapi('CanaryRuns')
 
 const GetCanaryRunsResponseSchema = z
   .object({
-    CanaryRuns: CanaryRunsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of structures. Each structure contains the details of one of the retrieved canary runs.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>GetCanaryRuns</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    CanaryRuns: CanaryRunsSchema.exactOptional().openapi({
+      description:
+        'An array of structures. Each structure contains the details of one of the retrieved canary runs.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>GetCanaryRuns</code> operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCanaryRunsResponse')
 
 const GetGroupResponseSchema = z
   .object({
-    Group: GroupSchema.and(
-      z.any().openapi({ description: 'A structure that contains information about the group.' }),
-    ).exactOptional(),
+    Group: GroupSchema.exactOptional().openapi({
+      description: 'A structure that contains information about the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupResponse')
 
 const GroupSummarySchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the group.' }),
-    ).exactOptional(),
-    Name: GroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the group.' }),
-    ).exactOptional(),
-    Arn: GroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the group.' }),
-    ).exactOptional(),
+    Id: StringSchema.exactOptional().openapi({ description: 'The unique ID of the group.' }),
+    Name: GroupNameSchema.exactOptional().openapi({ description: 'The name of the group.' }),
+    Arn: GroupArnSchema.exactOptional().openapi({ description: 'The ARN of the group.' }),
   })
   .openapi({ description: 'A structure containing some information about a group.', required: [] })
   .openapi('GroupSummary')
@@ -844,22 +639,14 @@ const PaginationTokenSchema = z.string().regex(/^.+$/).min(1).max(512).openapi('
 
 const ListAssociatedGroupsResponseSchema = z
   .object({
-    Groups: GroupSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of structures that contain information about the groups that this canary is associated with.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>ListAssociatedGroups</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Groups: GroupSummaryListSchema.exactOptional().openapi({
+      description:
+        'An array of structures that contain information about the groups that this canary is associated with.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>ListAssociatedGroups</code> operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssociatedGroupsResponse')
@@ -868,57 +655,37 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const ListGroupResourcesResponseSchema = z
   .object({
-    Resources: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of ARNs. These ARNs are for the canaries that are associated with the group.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>ListGroupResources</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Resources: StringListSchema.exactOptional().openapi({
+      description:
+        'An array of ARNs. These ARNs are for the canaries that are associated with the group.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>ListGroupResources</code> operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupResourcesResponse')
 
 const ListGroupsResponseSchema = z
   .object({
-    Groups: GroupSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of structures that each contain information about one group.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>ListGroups</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Groups: GroupSummaryListSchema.exactOptional().openapi({
+      description: 'An array of structures that each contain information about one group.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>ListGroups</code> operation to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tag keys and values associated with the resource that you specified.',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The list of tag keys and values associated with the resource that you specified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -931,13 +698,13 @@ const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException
 
 const InternalFailureExceptionSchema = z.any().openapi('InternalFailureException')
 
-const StartCanaryResponseSchema = z.object({}).openapi('StartCanaryResponse')
+const StartCanaryResponseSchema = z.looseObject({}).openapi('StartCanaryResponse')
 
-const StopCanaryResponseSchema = z.object({}).openapi('StopCanaryResponse')
+const StopCanaryResponseSchema = z.looseObject({}).openapi('StopCanaryResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -946,18 +713,14 @@ const TagKeySchema = z
   .max(128)
   .openapi('TagKey')
 
-const UpdateCanaryResponseSchema = z.object({}).openapi('UpdateCanaryResponse')
+const UpdateCanaryResponseSchema = z.looseObject({}).openapi('UpdateCanaryResponse')
 
 const ArtifactConfigInputSchema = z
   .object({
-    S3Encryption: S3EncryptionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the configuration of the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3. Artifact encryption functionality is available only for canaries that use Synthetics runtime version syn-nodejs-puppeteer-3.3 or later. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_artifact_encryption.html">Encrypting canary artifacts</a> ',
-        }),
-    ).exactOptional(),
+    S3Encryption: S3EncryptionConfigSchema.exactOptional().openapi({
+      description:
+        'A structure that contains the configuration of the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3. Artifact encryption functionality is available only for canaries that use Synthetics runtime version syn-nodejs-puppeteer-3.3 or later. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_artifact_encryption.html">Encrypting canary artifacts</a> ',
+    }),
   })
   .openapi({
     description:
@@ -979,54 +742,34 @@ const CanaryArnSchema = z
 
 const AssociateResourceRequestSchema = z
   .object({
-    ResourceArn: CanaryArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the canary that you want to associate with the specified group.',
-        }),
-    ),
+    ResourceArn: CanaryArnSchema.openapi({
+      description: 'The ARN of the canary that you want to associate with the specified group.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'AssociateResourceRequest' })
   .openapi('AssociateResourceRequest')
 
 const CanaryCodeInputSchema = z
   .object({
-    S3Bucket: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If your canary script is located in S3, specify the bucket name here. Do not include <code>s3://</code> as the start of the bucket name.',
-        }),
-    ).exactOptional(),
-    S3Key: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 key of your script. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingObjects.html">Working with Amazon S3 Objects</a>.',
-        }),
-    ).exactOptional(),
-    S3Version: StringSchema.and(
-      z.any().openapi({ description: 'The S3 version ID of your script.' }),
-    ).exactOptional(),
-    ZipFile: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you input your canary script directly into the canary instead of referring to an S3 location, the value of this parameter is the base64-encoded contents of the .zip file that contains the script. It must be smaller than 225 Kb.</p> <p>For large canary scripts, we recommend that you use an S3 location instead of inputting it directly with this parameter.</p>',
-        }),
-    ).exactOptional(),
-    Handler: CodeHandlerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.',
-        }),
-    ),
+    S3Bucket: StringSchema.exactOptional().openapi({
+      description:
+        'If your canary script is located in S3, specify the bucket name here. Do not include <code>s3://</code> as the start of the bucket name.',
+    }),
+    S3Key: StringSchema.exactOptional().openapi({
+      description:
+        'The S3 key of your script. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingObjects.html">Working with Amazon S3 Objects</a>.',
+    }),
+    S3Version: StringSchema.exactOptional().openapi({
+      description: 'The S3 version ID of your script.',
+    }),
+    ZipFile: BlobSchema.exactOptional().openapi({
+      description:
+        '<p>If you input your canary script directly into the canary instead of referring to an S3 location, the value of this parameter is the base64-encoded contents of the .zip file that contains the script. It must be smaller than 225 Kb.</p> <p>For large canary scripts, we recommend that you use an S3 location instead of inputting it directly with this parameter.</p>',
+    }),
+    Handler: CodeHandlerSchema.openapi({
+      description:
+        'The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.',
+    }),
   })
   .openapi({
     required: ['Handler'],
@@ -1037,38 +780,22 @@ const CanaryCodeInputSchema = z
 
 const CanaryRunConfigInputSchema = z
   .object({
-    TimeoutInSeconds: MaxFifteenMinutesInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>How long the canary is allowed to run before it must stop. You can't set this time to be longer than the frequency of the runs of this canary.</p> <p>If you omit this field, the frequency of the canary is used as this value, up to a maximum of 14 minutes.</p>",
-        }),
-    ).exactOptional(),
-    MemoryInMB: MaxSize3008Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of memory available to the canary while it is running, in MB. This value must be a multiple of 64.',
-        }),
-    ).exactOptional(),
-    ActiveTracing: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this canary is to use active X-Ray tracing when it runs. Active tracing enables this canary run to be displayed in the ServiceLens and X-Ray service maps even if the canary does not hit an endpoint that has X-Ray tracing enabled. Using X-Ray tracing incurs charges. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_tracing.html"> Canaries and X-Ray tracing</a>.</p> <p>You can enable active tracing only for canaries that use version <code>syn-nodejs-2.0</code> or later for their canary runtime.</p>',
-        }),
-    ).exactOptional(),
-    EnvironmentVariables: EnvironmentVariablesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the keys and values to use for any environment variables used in the canary script. Use the following format:</p> <p>{ "key1" : "value1", "key2" : "value2", ...}</p> <p>Keys must start with a letter and be at least two characters. The total size of your environment variables cannot exceed 4 KB. You can\'t specify any Lambda reserved environment variables as the keys for your environment variables. For more information about reserved keys, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime"> Runtime environment variables</a>.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
-        }),
-    ).exactOptional(),
+    TimeoutInSeconds: MaxFifteenMinutesInSecondsSchema.exactOptional().openapi({
+      description:
+        "<p>How long the canary is allowed to run before it must stop. You can't set this time to be longer than the frequency of the runs of this canary.</p> <p>If you omit this field, the frequency of the canary is used as this value, up to a maximum of 14 minutes.</p>",
+    }),
+    MemoryInMB: MaxSize3008Schema.exactOptional().openapi({
+      description:
+        'The maximum amount of memory available to the canary while it is running, in MB. This value must be a multiple of 64.',
+    }),
+    ActiveTracing: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether this canary is to use active X-Ray tracing when it runs. Active tracing enables this canary run to be displayed in the ServiceLens and X-Ray service maps even if the canary does not hit an endpoint that has X-Ray tracing enabled. Using X-Ray tracing incurs charges. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_tracing.html"> Canaries and X-Ray tracing</a>.</p> <p>You can enable active tracing only for canaries that use version <code>syn-nodejs-2.0</code> or later for their canary runtime.</p>',
+    }),
+    EnvironmentVariables: EnvironmentVariablesMapSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the keys and values to use for any environment variables used in the canary script. Use the following format:</p> <p>{ "key1" : "value1", "key2" : "value2", ...}</p> <p>Keys must start with a letter and be at least two characters. The total size of your environment variables cannot exceed 4 KB. You can\'t specify any Lambda reserved environment variables as the keys for your environment variables. For more information about reserved keys, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime"> Runtime environment variables</a>.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
+    }),
   })
   .openapi({
     description: 'A structure that contains input information for a canary run.',
@@ -1078,22 +805,14 @@ const CanaryRunConfigInputSchema = z
 
 const CanaryScheduleInputSchema = z
   .object({
-    Expression: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A <code>rate</code> expression or a <code>cron</code> expression that defines how often the canary is to run.</p> <p>For a rate expression, The syntax is <code>rate(<i>number unit</i>)</code>. <i>unit</i> can be <code>minute</code>, <code>minutes</code>, or <code>hour</code>. </p> <p>For example, <code>rate(1 minute)</code> runs the canary once a minute, <code>rate(10 minutes)</code> runs it once every 10 minutes, and <code>rate(1 hour)</code> runs it once every hour. You can specify a frequency between <code>rate(1 minute)</code> and <code>rate(1 hour)</code>.</p> <p>Specifying <code>rate(0 minute)</code> or <code>rate(0 hour)</code> is a special value that causes the canary to run only once when it is started.</p> <p>Use <code>cron(<i>expression</i>)</code> to specify a cron expression. You can\'t schedule a canary to wait for more than a year before running. For information about the syntax for cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_cron.html"> Scheduling canary runs using cron</a>.</p>',
-        }),
-    ),
-    DurationInSeconds: MaxOneYearInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long, in seconds, for the canary to continue making regular runs according to the schedule in the <code>Expression</code> value. If you specify 0, the canary continues making runs until you stop it. If you omit this field, the default of 0 is used.',
-        }),
-    ).exactOptional(),
+    Expression: StringSchema.openapi({
+      description:
+        '<p>A <code>rate</code> expression or a <code>cron</code> expression that defines how often the canary is to run.</p> <p>For a rate expression, The syntax is <code>rate(<i>number unit</i>)</code>. <i>unit</i> can be <code>minute</code>, <code>minutes</code>, or <code>hour</code>. </p> <p>For example, <code>rate(1 minute)</code> runs the canary once a minute, <code>rate(10 minutes)</code> runs it once every 10 minutes, and <code>rate(1 hour)</code> runs it once every hour. You can specify a frequency between <code>rate(1 minute)</code> and <code>rate(1 hour)</code>.</p> <p>Specifying <code>rate(0 minute)</code> or <code>rate(0 hour)</code> is a special value that causes the canary to run only once when it is started.</p> <p>Use <code>cron(<i>expression</i>)</code> to specify a cron expression. You can\'t schedule a canary to wait for more than a year before running. For information about the syntax for cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_cron.html"> Scheduling canary runs using cron</a>.</p>',
+    }),
+    DurationInSeconds: MaxOneYearInSecondsSchema.exactOptional().openapi({
+      description:
+        'How long, in seconds, for the canary to continue making regular runs according to the schedule in the <code>Expression</code> value. If you specify 0, the canary continues making runs until you stop it. If you omit this field, the default of 0 is used.',
+    }),
   })
   .openapi({
     required: ['Expression'],
@@ -1104,12 +823,12 @@ const CanaryScheduleInputSchema = z
 
 const VpcConfigInputSchema = z
   .object({
-    SubnetIds: SubnetIdsSchema.and(
-      z.any().openapi({ description: 'The IDs of the subnets where this canary is to run.' }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z.any().openapi({ description: 'The IDs of the security groups for this canary.' }),
-    ).exactOptional(),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description: 'The IDs of the subnets where this canary is to run.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+      description: 'The IDs of the security groups for this canary.',
+    }),
   })
   .openapi({
     description:
@@ -1120,102 +839,54 @@ const VpcConfigInputSchema = z
 
 const CreateCanaryRequestSchema = z
   .object({
-    Name: CanaryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for this canary. Be sure to give it a descriptive name that distinguishes it from other canaries in your account.</p> <p>Do not include secrets or proprietary information in your canary names. The canary name makes up part of the canary ARN, and the ARN is included in outbound calls over the internet. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/servicelens_canaries_security.html">Security Considerations for Synthetics Canaries</a>.</p>',
-        }),
-    ),
-    Code: CanaryCodeInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that includes the entry point from which the canary should start running your script. If the script is stored in an S3 bucket, the bucket name, key, and version are also included. ',
-        }),
-    ),
-    ArtifactS3Location: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The location in Amazon S3 where Synthetics stores artifacts from the test runs of this canary. Artifacts include the log file, screenshots, and HAR files. The name of the S3 bucket can't include a period (.).",
-        }),
-    ),
-    ExecutionRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role to be used to run the canary. This role must already exist, and must include <code>lambda.amazonaws.com</code> as a principal in the trust policy. The role must also have the following permissions:</p> <ul> <li> <p> <code>s3:PutObject</code> </p> </li> <li> <p> <code>s3:GetBucketLocation</code> </p> </li> <li> <p> <code>s3:ListAllMyBuckets</code> </p> </li> <li> <p> <code>cloudwatch:PutMetricData</code> </p> </li> <li> <p> <code>logs:CreateLogGroup</code> </p> </li> <li> <p> <code>logs:CreateLogStream</code> </p> </li> <li> <p> <code>logs:PutLogEvents</code> </p> </li> </ul>',
-        }),
-    ),
-    Schedule: CanaryScheduleInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains information about how often the canary is to run and when these test runs are to stop.',
-        }),
-    ),
-    RunConfig: CanaryRunConfigInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A structure that contains the configuration for individual canary runs, such as timeout value and environment variables.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
-        }),
-    ).exactOptional(),
-    SuccessRetentionPeriodInDays: MaxSize1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days to retain data about successful runs of this canary. If you omit this field, the default of 31 days is used. The valid range is 1 to 455 days.',
-        }),
-    ).exactOptional(),
-    FailureRetentionPeriodInDays: MaxSize1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days to retain data about failed runs of this canary. If you omit this field, the default of 31 days is used. The valid range is 1 to 455 days.',
-        }),
-    ).exactOptional(),
-    RuntimeVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the runtime version to use for the canary. For a list of valid runtime versions and more information about runtime versions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html"> Canary Runtime Versions</a>.',
-        }),
-    ),
-    VpcConfig: VpcConfigInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this canary is to test an endpoint in a VPC, this structure contains information about the subnet and security groups of the VPC endpoint. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html"> Running a Canary in a VPC</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of key-value pairs to associate with the canary. You can associate as many as 50 tags with a canary.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p>',
-        }),
-    ).exactOptional(),
-    ArtifactConfig: ArtifactConfigInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the configuration for canary artifacts, including the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3.',
-        }),
-    ).exactOptional(),
+    Name: CanaryNameSchema.openapi({
+      description:
+        '<p>The name for this canary. Be sure to give it a descriptive name that distinguishes it from other canaries in your account.</p> <p>Do not include secrets or proprietary information in your canary names. The canary name makes up part of the canary ARN, and the ARN is included in outbound calls over the internet. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/servicelens_canaries_security.html">Security Considerations for Synthetics Canaries</a>.</p>',
+    }),
+    Code: CanaryCodeInputSchema.openapi({
+      description:
+        'A structure that includes the entry point from which the canary should start running your script. If the script is stored in an S3 bucket, the bucket name, key, and version are also included. ',
+    }),
+    ArtifactS3Location: StringSchema.openapi({
+      description:
+        "The location in Amazon S3 where Synthetics stores artifacts from the test runs of this canary. Artifacts include the log file, screenshots, and HAR files. The name of the S3 bucket can't include a period (.).",
+    }),
+    ExecutionRoleArn: RoleArnSchema.openapi({
+      description:
+        '<p>The ARN of the IAM role to be used to run the canary. This role must already exist, and must include <code>lambda.amazonaws.com</code> as a principal in the trust policy. The role must also have the following permissions:</p> <ul> <li> <p> <code>s3:PutObject</code> </p> </li> <li> <p> <code>s3:GetBucketLocation</code> </p> </li> <li> <p> <code>s3:ListAllMyBuckets</code> </p> </li> <li> <p> <code>cloudwatch:PutMetricData</code> </p> </li> <li> <p> <code>logs:CreateLogGroup</code> </p> </li> <li> <p> <code>logs:CreateLogStream</code> </p> </li> <li> <p> <code>logs:PutLogEvents</code> </p> </li> </ul>',
+    }),
+    Schedule: CanaryScheduleInputSchema.openapi({
+      description:
+        'A structure that contains information about how often the canary is to run and when these test runs are to stop.',
+    }),
+    RunConfig: CanaryRunConfigInputSchema.exactOptional().openapi({
+      description:
+        '<p>A structure that contains the configuration for individual canary runs, such as timeout value and environment variables.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
+    }),
+    SuccessRetentionPeriodInDays: MaxSize1024Schema.exactOptional().openapi({
+      description:
+        'The number of days to retain data about successful runs of this canary. If you omit this field, the default of 31 days is used. The valid range is 1 to 455 days.',
+    }),
+    FailureRetentionPeriodInDays: MaxSize1024Schema.exactOptional().openapi({
+      description:
+        'The number of days to retain data about failed runs of this canary. If you omit this field, the default of 31 days is used. The valid range is 1 to 455 days.',
+    }),
+    RuntimeVersion: StringSchema.openapi({
+      description:
+        'Specifies the runtime version to use for the canary. For a list of valid runtime versions and more information about runtime versions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html"> Canary Runtime Versions</a>.',
+    }),
+    VpcConfig: VpcConfigInputSchema.exactOptional().openapi({
+      description:
+        'If this canary is to test an endpoint in a VPC, this structure contains information about the subnet and security groups of the VPC endpoint. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html"> Running a Canary in a VPC</a>.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>A list of key-value pairs to associate with the canary. You can associate as many as 50 tags with a canary.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p>',
+    }),
+    ArtifactConfig: ArtifactConfigInputSchema.exactOptional().openapi({
+      description:
+        'A structure that contains the configuration for canary artifacts, including the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3.',
+    }),
   })
   .openapi({
     required: [
@@ -1232,22 +903,14 @@ const CreateCanaryRequestSchema = z
 
 const CreateGroupRequestSchema = z
   .object({
-    Name: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the group. It can include any Unicode characters.</p> <p>The names for all groups in your account, across all Regions, must be unique.</p>',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of key-value pairs to associate with the group. You can associate as many as 50 tags with a group.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p>',
-        }),
-    ).exactOptional(),
+    Name: GroupNameSchema.openapi({
+      description:
+        '<p>The name for the group. It can include any Unicode characters.</p> <p>The names for all groups in your account, across all Regions, must be unique.</p>',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>A list of key-value pairs to associate with the group. You can associate as many as 50 tags with a group.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p>',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateGroupRequest' })
   .openapi('CreateGroupRequest')
@@ -1255,12 +918,12 @@ const CreateGroupRequestSchema = z
 const BooleanSchema = z.boolean().openapi('Boolean')
 
 const DeleteCanaryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCanaryRequest' })
   .openapi('DeleteCanaryRequest')
 
 const DeleteGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteGroupRequest' })
   .openapi('DeleteGroupRequest')
 
@@ -1274,30 +937,18 @@ const MaxSize100Schema = z.int().min(1).max(100).openapi('MaxSize100')
 
 const DescribeCanariesLastRunRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeCanariesLastRun</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to limit how many runs are returned each time you use the <code>DescribeLastRun</code> operation. If you omit this parameter, the default of 100 is used.',
-        }),
-    ).exactOptional(),
-    Names: DescribeCanariesLastRunNameFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this parameter to return only canaries that match the names that you specify here. You can specify as many as five canary names.</p> <p>If you specify this parameter, the operation is successful only if you have authorization to view all the canaries that you specify in your request. If you do not have permission to view any of the canaries, the request fails with a 403 response.</p> <p>You are required to use the <code>Names</code> parameter if you are logged on to a user or role that has an IAM policy that restricts which canaries that you are allowed to view. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html"> Limiting a user to viewing specific canaries</a>.</p>',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeCanariesLastRun</code> operation to retrieve the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description:
+        'Specify this parameter to limit how many runs are returned each time you use the <code>DescribeLastRun</code> operation. If you omit this parameter, the default of 100 is used.',
+    }),
+    Names: DescribeCanariesLastRunNameFilterSchema.exactOptional().openapi({
+      description:
+        '<p>Use this parameter to return only canaries that match the names that you specify here. You can specify as many as five canary names.</p> <p>If you specify this parameter, the operation is successful only if you have authorization to view all the canaries that you specify in your request. If you do not have permission to view any of the canaries, the request fails with a 403 response.</p> <p>You are required to use the <code>Names</code> parameter if you are logged on to a user or role that has an IAM policy that restricts which canaries that you are allowed to view. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html"> Limiting a user to viewing specific canaries</a>.</p>',
+    }),
   })
   .openapi({ title: 'DescribeCanariesLastRunRequest', required: [] })
   .openapi('DescribeCanariesLastRunRequest')
@@ -1312,65 +963,41 @@ const MaxCanaryResultsSchema = z.int().min(1).max(20).openapi('MaxCanaryResults'
 
 const DescribeCanariesRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxCanaryResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to limit how many canaries are returned each time you use the <code>DescribeCanaries</code> operation. If you omit this parameter, the default of 100 is used.',
-        }),
-    ).exactOptional(),
-    Names: DescribeCanariesNameFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this parameter to return only canaries that match the names that you specify here. You can specify as many as five canary names.</p> <p>If you specify this parameter, the operation is successful only if you have authorization to view all the canaries that you specify in your request. If you do not have permission to view any of the canaries, the request fails with a 403 response.</p> <p>You are required to use this parameter if you are logged on to a user or role that has an IAM policy that restricts which canaries that you are allowed to view. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html"> Limiting a user to viewing specific canaries</a>.</p>',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.',
+    }),
+    MaxResults: MaxCanaryResultsSchema.exactOptional().openapi({
+      description:
+        'Specify this parameter to limit how many canaries are returned each time you use the <code>DescribeCanaries</code> operation. If you omit this parameter, the default of 100 is used.',
+    }),
+    Names: DescribeCanariesNameFilterSchema.exactOptional().openapi({
+      description:
+        '<p>Use this parameter to return only canaries that match the names that you specify here. You can specify as many as five canary names.</p> <p>If you specify this parameter, the operation is successful only if you have authorization to view all the canaries that you specify in your request. If you do not have permission to view any of the canaries, the request fails with a 403 response.</p> <p>You are required to use this parameter if you are logged on to a user or role that has an IAM policy that restricts which canaries that you are allowed to view. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html"> Limiting a user to viewing specific canaries</a>.</p>',
+    }),
   })
   .openapi({ title: 'DescribeCanariesRequest', required: [] })
   .openapi('DescribeCanariesRequest')
 
 const DescribeRuntimeVersionsRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeRuntimeVersions</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to limit how many runs are returned each time you use the <code>DescribeRuntimeVersions</code> operation. If you omit this parameter, the default of 100 is used.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>DescribeRuntimeVersions</code> operation to retrieve the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description:
+        'Specify this parameter to limit how many runs are returned each time you use the <code>DescribeRuntimeVersions</code> operation. If you omit this parameter, the default of 100 is used.',
+    }),
   })
   .openapi({ title: 'DescribeRuntimeVersionsRequest', required: [] })
   .openapi('DescribeRuntimeVersionsRequest')
 
 const DisassociateResourceRequestSchema = z
   .object({
-    ResourceArn: CanaryArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the canary that you want to remove from the specified group.',
-        }),
-    ),
+    ResourceArn: CanaryArnSchema.openapi({
+      description: 'The ARN of the canary that you want to remove from the specified group.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DisassociateResourceRequest' })
   .openapi('DisassociateResourceRequest')
@@ -1381,34 +1008,26 @@ const EnvironmentVariableNameSchema = z
   .openapi('EnvironmentVariableName')
 
 const GetCanaryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCanaryRequest' })
   .openapi('GetCanaryRequest')
 
 const GetCanaryRunsRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent <code>GetCanaryRuns</code> operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to limit how many runs are returned each time you use the <code>GetCanaryRuns</code> operation. If you omit this parameter, the default of 100 is used.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent <code>GetCanaryRuns</code> operation to retrieve the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description:
+        'Specify this parameter to limit how many runs are returned each time you use the <code>GetCanaryRuns</code> operation. If you omit this parameter, the default of 100 is used.',
+    }),
   })
   .openapi({ title: 'GetCanaryRunsRequest', required: [] })
   .openapi('GetCanaryRunsRequest')
 
 const GetGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetGroupRequest' })
   .openapi('GetGroupRequest')
 
@@ -1416,66 +1035,42 @@ const MaxGroupResultsSchema = z.int().min(1).max(20).openapi('MaxGroupResults')
 
 const ListAssociatedGroupsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxGroupResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to limit how many groups are returned each time you use the <code>ListAssociatedGroups</code> operation. If you omit this parameter, the default of 20 is used.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.',
+    }),
+    MaxResults: MaxGroupResultsSchema.exactOptional().openapi({
+      description:
+        'Specify this parameter to limit how many groups are returned each time you use the <code>ListAssociatedGroups</code> operation. If you omit this parameter, the default of 20 is used.',
+    }),
   })
   .openapi({ title: 'ListAssociatedGroupsRequest', required: [] })
   .openapi('ListAssociatedGroupsRequest')
 
 const ListGroupResourcesRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxGroupResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to limit how many canary ARNs are returned each time you use the <code>ListGroupResources</code> operation. If you omit this parameter, the default of 20 is used.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.',
+    }),
+    MaxResults: MaxGroupResultsSchema.exactOptional().openapi({
+      description:
+        'Specify this parameter to limit how many canary ARNs are returned each time you use the <code>ListGroupResources</code> operation. If you omit this parameter, the default of 20 is used.',
+    }),
   })
   .openapi({ title: 'ListGroupResourcesRequest', required: [] })
   .openapi('ListGroupResourcesRequest')
 
 const ListGroupsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxGroupResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to limit how many groups are returned each time you use the <code>ListGroups</code> operation. If you omit this parameter, the default of 20 is used.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there is more data available. You can use this token in a subsequent operation to retrieve the next set of results.',
+    }),
+    MaxResults: MaxGroupResultsSchema.exactOptional().openapi({
+      description:
+        'Specify this parameter to limit how many groups are returned each time you use the <code>ListGroups</code> operation. If you omit this parameter, the default of 20 is used.',
+    }),
   })
   .openapi({ title: 'ListGroupsRequest', required: [] })
   .openapi('ListGroupsRequest')
@@ -1490,17 +1085,17 @@ const ResourceArnSchema = z
   .openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const StartCanaryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StartCanaryRequest' })
   .openapi('StartCanaryRequest')
 
 const StopCanaryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopCanaryRequest' })
   .openapi('StopCanaryRequest')
 
@@ -1508,38 +1103,28 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of key-value pairs to associate with the resource.' }),
-    ),
+    Tags: TagMapSchema.openapi({
+      description: 'The list of key-value pairs to associate with the resource.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const VisualReferenceInputSchema = z
   .object({
-    BaseScreenshots: BaseScreenshotsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of screenshots that will be used as the baseline for visual monitoring in future runs of this canary. If there is a screenshot that you don't want to be used for visual monitoring, remove it from this array.",
-        }),
-    ).exactOptional(),
-    BaseCanaryRunId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which canary run to use the screenshots from as the baseline for future visual monitoring with this canary. Valid values are <code>nextrun</code> to use the screenshots from the next run after this update is made, <code>lastrun</code> to use the screenshots from the most recent run before this update was made, or the value of <code>Id</code> in the <a href="https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_CanaryRun.html"> CanaryRun</a> from any past run of this canary.',
-        }),
-    ),
+    BaseScreenshots: BaseScreenshotsSchema.exactOptional().openapi({
+      description:
+        "An array of screenshots that will be used as the baseline for visual monitoring in future runs of this canary. If there is a screenshot that you don't want to be used for visual monitoring, remove it from this array.",
+    }),
+    BaseCanaryRunId: StringSchema.openapi({
+      description:
+        'Specifies which canary run to use the screenshots from as the baseline for future visual monitoring with this canary. Valid values are <code>nextrun</code> to use the screenshots from the next run after this update is made, <code>lastrun</code> to use the screenshots from the most recent run before this update was made, or the value of <code>Id</code> in the <a href="https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_CanaryRun.html"> CanaryRun</a> from any past run of this canary.',
+    }),
   })
   .openapi({
     required: ['BaseCanaryRunId'],
@@ -1550,92 +1135,48 @@ const VisualReferenceInputSchema = z
 
 const UpdateCanaryRequestSchema = z
   .object({
-    Code: CanaryCodeInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that includes the entry point from which the canary should start running your script. If the script is stored in an S3 bucket, the bucket name, key, and version are also included. ',
-        }),
-    ).exactOptional(),
-    ExecutionRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role to be used to run the canary. This role must already exist, and must include <code>lambda.amazonaws.com</code> as a principal in the trust policy. The role must also have the following permissions:</p> <ul> <li> <p> <code>s3:PutObject</code> </p> </li> <li> <p> <code>s3:GetBucketLocation</code> </p> </li> <li> <p> <code>s3:ListAllMyBuckets</code> </p> </li> <li> <p> <code>cloudwatch:PutMetricData</code> </p> </li> <li> <p> <code>logs:CreateLogGroup</code> </p> </li> <li> <p> <code>logs:CreateLogStream</code> </p> </li> <li> <p> <code>logs:CreateLogStream</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    RuntimeVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the runtime version to use for the canary. For a list of valid runtime versions and for more information about runtime versions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html"> Canary Runtime Versions</a>.',
-        }),
-    ).exactOptional(),
-    Schedule: CanaryScheduleInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains information about how often the canary is to run, and when these runs are to stop.',
-        }),
-    ).exactOptional(),
-    RunConfig: CanaryRunConfigInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A structure that contains the timeout value that is used for each individual run of the canary.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
-        }),
-    ).exactOptional(),
-    SuccessRetentionPeriodInDays: MaxSize1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of days to retain data about successful runs of this canary.',
-        }),
-    ).exactOptional(),
-    FailureRetentionPeriodInDays: MaxSize1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of days to retain data about failed runs of this canary.',
-        }),
-    ).exactOptional(),
-    VpcConfig: VpcConfigInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this canary is to test an endpoint in a VPC, this structure contains information about the subnet and security groups of the VPC endpoint. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html"> Running a Canary in a VPC</a>.',
-        }),
-    ).exactOptional(),
-    VisualReference: VisualReferenceInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines the screenshots to use as the baseline for comparisons during visual monitoring comparisons during future runs of this canary. If you omit this parameter, no changes are made to any baseline screenshots that the canary might be using already.</p> <p>Visual monitoring is supported only on canaries running the <b>syn-puppeteer-node-3.2</b> runtime or later. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Library_SyntheticsLogger_VisualTesting.html"> Visual monitoring</a> and <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Blueprints_VisualTesting.html"> Visual monitoring blueprint</a> </p>',
-        }),
-    ).exactOptional(),
-    ArtifactS3Location: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The location in Amazon S3 where Synthetics stores artifacts from the test runs of this canary. Artifacts include the log file, screenshots, and HAR files. The name of the S3 bucket can't include a period (.).",
-        }),
-    ).exactOptional(),
-    ArtifactConfig: ArtifactConfigInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the configuration for canary artifacts, including the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3.',
-        }),
-    ).exactOptional(),
+    Code: CanaryCodeInputSchema.exactOptional().openapi({
+      description:
+        'A structure that includes the entry point from which the canary should start running your script. If the script is stored in an S3 bucket, the bucket name, key, and version are also included. ',
+    }),
+    ExecutionRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role to be used to run the canary. This role must already exist, and must include <code>lambda.amazonaws.com</code> as a principal in the trust policy. The role must also have the following permissions:</p> <ul> <li> <p> <code>s3:PutObject</code> </p> </li> <li> <p> <code>s3:GetBucketLocation</code> </p> </li> <li> <p> <code>s3:ListAllMyBuckets</code> </p> </li> <li> <p> <code>cloudwatch:PutMetricData</code> </p> </li> <li> <p> <code>logs:CreateLogGroup</code> </p> </li> <li> <p> <code>logs:CreateLogStream</code> </p> </li> <li> <p> <code>logs:CreateLogStream</code> </p> </li> </ul>',
+    }),
+    RuntimeVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the runtime version to use for the canary. For a list of valid runtime versions and for more information about runtime versions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html"> Canary Runtime Versions</a>.',
+    }),
+    Schedule: CanaryScheduleInputSchema.exactOptional().openapi({
+      description:
+        'A structure that contains information about how often the canary is to run, and when these runs are to stop.',
+    }),
+    RunConfig: CanaryRunConfigInputSchema.exactOptional().openapi({
+      description:
+        '<p>A structure that contains the timeout value that is used for each individual run of the canary.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
+    }),
+    SuccessRetentionPeriodInDays: MaxSize1024Schema.exactOptional().openapi({
+      description: 'The number of days to retain data about successful runs of this canary.',
+    }),
+    FailureRetentionPeriodInDays: MaxSize1024Schema.exactOptional().openapi({
+      description: 'The number of days to retain data about failed runs of this canary.',
+    }),
+    VpcConfig: VpcConfigInputSchema.exactOptional().openapi({
+      description:
+        'If this canary is to test an endpoint in a VPC, this structure contains information about the subnet and security groups of the VPC endpoint. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html"> Running a Canary in a VPC</a>.',
+    }),
+    VisualReference: VisualReferenceInputSchema.exactOptional().openapi({
+      description:
+        '<p>Defines the screenshots to use as the baseline for comparisons during visual monitoring comparisons during future runs of this canary. If you omit this parameter, no changes are made to any baseline screenshots that the canary might be using already.</p> <p>Visual monitoring is supported only on canaries running the <b>syn-puppeteer-node-3.2</b> runtime or later. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Library_SyntheticsLogger_VisualTesting.html"> Visual monitoring</a> and <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Blueprints_VisualTesting.html"> Visual monitoring blueprint</a> </p>',
+    }),
+    ArtifactS3Location: StringSchema.exactOptional().openapi({
+      description:
+        "The location in Amazon S3 where Synthetics stores artifacts from the test runs of this canary. Artifacts include the log file, screenshots, and HAR files. The name of the S3 bucket can't include a period (.).",
+    }),
+    ArtifactConfig: ArtifactConfigInputSchema.exactOptional().openapi({
+      description:
+        'A structure that contains the configuration for canary artifacts, including the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3.',
+    }),
   })
   .openapi({ title: 'UpdateCanaryRequest', required: [] })
   .openapi('UpdateCanaryRequest')
@@ -1827,41 +1368,25 @@ export const postCanaryRoute = createRoute({
                 }),
               Code: z
                 .object({
-                  S3Bucket: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If your canary script is located in S3, specify the bucket name here. Do not include <code>s3://</code> as the start of the bucket name.',
-                      }),
-                  ).exactOptional(),
-                  S3Key: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The S3 key of your script. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingObjects.html">Working with Amazon S3 Objects</a>.',
-                      }),
-                  ).exactOptional(),
-                  S3Version: StringSchema.and(
-                    z.any().openapi({ description: 'The S3 version ID of your script.' }),
-                  ).exactOptional(),
-                  ZipFile: BlobSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>If you input your canary script directly into the canary instead of referring to an S3 location, the value of this parameter is the base64-encoded contents of the .zip file that contains the script. It must be smaller than 225 Kb.</p> <p>For large canary scripts, we recommend that you use an S3 location instead of inputting it directly with this parameter.</p>',
-                      }),
-                  ).exactOptional(),
-                  Handler: CodeHandlerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.',
-                      }),
-                  ).exactOptional(),
+                  S3Bucket: StringSchema.exactOptional().openapi({
+                    description:
+                      'If your canary script is located in S3, specify the bucket name here. Do not include <code>s3://</code> as the start of the bucket name.',
+                  }),
+                  S3Key: StringSchema.exactOptional().openapi({
+                    description:
+                      'The S3 key of your script. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingObjects.html">Working with Amazon S3 Objects</a>.',
+                  }),
+                  S3Version: StringSchema.exactOptional().openapi({
+                    description: 'The S3 version ID of your script.',
+                  }),
+                  ZipFile: BlobSchema.exactOptional().openapi({
+                    description:
+                      '<p>If you input your canary script directly into the canary instead of referring to an S3 location, the value of this parameter is the base64-encoded contents of the .zip file that contains the script. It must be smaller than 225 Kb.</p> <p>For large canary scripts, we recommend that you use an S3 location instead of inputting it directly with this parameter.</p>',
+                  }),
+                  Handler: CodeHandlerSchema.exactOptional().openapi({
+                    description:
+                      'The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -1887,22 +1412,14 @@ export const postCanaryRoute = createRoute({
                 }),
               Schedule: z
                 .object({
-                  Expression: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A <code>rate</code> expression or a <code>cron</code> expression that defines how often the canary is to run.</p> <p>For a rate expression, The syntax is <code>rate(<i>number unit</i>)</code>. <i>unit</i> can be <code>minute</code>, <code>minutes</code>, or <code>hour</code>. </p> <p>For example, <code>rate(1 minute)</code> runs the canary once a minute, <code>rate(10 minutes)</code> runs it once every 10 minutes, and <code>rate(1 hour)</code> runs it once every hour. You can specify a frequency between <code>rate(1 minute)</code> and <code>rate(1 hour)</code>.</p> <p>Specifying <code>rate(0 minute)</code> or <code>rate(0 hour)</code> is a special value that causes the canary to run only once when it is started.</p> <p>Use <code>cron(<i>expression</i>)</code> to specify a cron expression. You can\'t schedule a canary to wait for more than a year before running. For information about the syntax for cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_cron.html"> Scheduling canary runs using cron</a>.</p>',
-                      }),
-                  ).exactOptional(),
-                  DurationInSeconds: MaxOneYearInSecondsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'How long, in seconds, for the canary to continue making regular runs according to the schedule in the <code>Expression</code> value. If you specify 0, the canary continues making runs until you stop it. If you omit this field, the default of 0 is used.',
-                      }),
-                  ).exactOptional(),
+                  Expression: StringSchema.exactOptional().openapi({
+                    description:
+                      '<p>A <code>rate</code> expression or a <code>cron</code> expression that defines how often the canary is to run.</p> <p>For a rate expression, The syntax is <code>rate(<i>number unit</i>)</code>. <i>unit</i> can be <code>minute</code>, <code>minutes</code>, or <code>hour</code>. </p> <p>For example, <code>rate(1 minute)</code> runs the canary once a minute, <code>rate(10 minutes)</code> runs it once every 10 minutes, and <code>rate(1 hour)</code> runs it once every hour. You can specify a frequency between <code>rate(1 minute)</code> and <code>rate(1 hour)</code>.</p> <p>Specifying <code>rate(0 minute)</code> or <code>rate(0 hour)</code> is a special value that causes the canary to run only once when it is started.</p> <p>Use <code>cron(<i>expression</i>)</code> to specify a cron expression. You can\'t schedule a canary to wait for more than a year before running. For information about the syntax for cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_cron.html"> Scheduling canary runs using cron</a>.</p>',
+                  }),
+                  DurationInSeconds: MaxOneYearInSecondsSchema.exactOptional().openapi({
+                    description:
+                      'How long, in seconds, for the canary to continue making regular runs according to the schedule in the <code>Expression</code> value. If you specify 0, the canary continues making runs until you stop it. If you omit this field, the default of 0 is used.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -1911,38 +1428,22 @@ export const postCanaryRoute = createRoute({
                 }),
               RunConfig: z
                 .object({
-                  TimeoutInSeconds: MaxFifteenMinutesInSecondsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>How long the canary is allowed to run before it must stop. You can't set this time to be longer than the frequency of the runs of this canary.</p> <p>If you omit this field, the frequency of the canary is used as this value, up to a maximum of 14 minutes.</p>",
-                      }),
-                  ).exactOptional(),
-                  MemoryInMB: MaxSize3008Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The maximum amount of memory available to the canary while it is running, in MB. This value must be a multiple of 64.',
-                      }),
-                  ).exactOptional(),
-                  ActiveTracing: NullableBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies whether this canary is to use active X-Ray tracing when it runs. Active tracing enables this canary run to be displayed in the ServiceLens and X-Ray service maps even if the canary does not hit an endpoint that has X-Ray tracing enabled. Using X-Ray tracing incurs charges. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_tracing.html"> Canaries and X-Ray tracing</a>.</p> <p>You can enable active tracing only for canaries that use version <code>syn-nodejs-2.0</code> or later for their canary runtime.</p>',
-                      }),
-                  ).exactOptional(),
-                  EnvironmentVariables: EnvironmentVariablesMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies the keys and values to use for any environment variables used in the canary script. Use the following format:</p> <p>{ "key1" : "value1", "key2" : "value2", ...}</p> <p>Keys must start with a letter and be at least two characters. The total size of your environment variables cannot exceed 4 KB. You can\'t specify any Lambda reserved environment variables as the keys for your environment variables. For more information about reserved keys, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime"> Runtime environment variables</a>.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
-                      }),
-                  ).exactOptional(),
+                  TimeoutInSeconds: MaxFifteenMinutesInSecondsSchema.exactOptional().openapi({
+                    description:
+                      "<p>How long the canary is allowed to run before it must stop. You can't set this time to be longer than the frequency of the runs of this canary.</p> <p>If you omit this field, the frequency of the canary is used as this value, up to a maximum of 14 minutes.</p>",
+                  }),
+                  MemoryInMB: MaxSize3008Schema.exactOptional().openapi({
+                    description:
+                      'The maximum amount of memory available to the canary while it is running, in MB. This value must be a multiple of 64.',
+                  }),
+                  ActiveTracing: NullableBooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies whether this canary is to use active X-Ray tracing when it runs. Active tracing enables this canary run to be displayed in the ServiceLens and X-Ray service maps even if the canary does not hit an endpoint that has X-Ray tracing enabled. Using X-Ray tracing incurs charges. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_tracing.html"> Canaries and X-Ray tracing</a>.</p> <p>You can enable active tracing only for canaries that use version <code>syn-nodejs-2.0</code> or later for their canary runtime.</p>',
+                  }),
+                  EnvironmentVariables: EnvironmentVariablesMapSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies the keys and values to use for any environment variables used in the canary script. Use the following format:</p> <p>{ "key1" : "value1", "key2" : "value2", ...}</p> <p>Keys must start with a letter and be at least two characters. The total size of your environment variables cannot exceed 4 KB. You can\'t specify any Lambda reserved environment variables as the keys for your environment variables. For more information about reserved keys, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime"> Runtime environment variables</a>.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1977,18 +1478,12 @@ export const postCanaryRoute = createRoute({
                 }),
               VpcConfig: z
                 .object({
-                  SubnetIds: SubnetIdsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The IDs of the subnets where this canary is to run.',
-                      }),
-                  ).exactOptional(),
-                  SecurityGroupIds: SecurityGroupIdsSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The IDs of the security groups for this canary.' }),
-                  ).exactOptional(),
+                  SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+                    description: 'The IDs of the subnets where this canary is to run.',
+                  }),
+                  SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+                    description: 'The IDs of the security groups for this canary.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2007,14 +1502,10 @@ export const postCanaryRoute = createRoute({
                 }),
               ArtifactConfig: z
                 .object({
-                  S3Encryption: S3EncryptionConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A structure that contains the configuration of the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3. Artifact encryption functionality is available only for canaries that use Synthetics runtime version syn-nodejs-puppeteer-3.3 or later. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_artifact_encryption.html">Encrypting canary artifacts</a> ',
-                      }),
-                  ).exactOptional(),
+                  S3Encryption: S3EncryptionConfigSchema.exactOptional().openapi({
+                    description:
+                      'A structure that contains the configuration of the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3. Artifact encryption functionality is available only for canaries that use Synthetics runtime version syn-nodejs-puppeteer-3.3 or later. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_artifact_encryption.html">Encrypting canary artifacts</a> ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2289,41 +1780,25 @@ export const patchCanaryNameRoute = createRoute({
             .object({
               Code: z
                 .object({
-                  S3Bucket: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If your canary script is located in S3, specify the bucket name here. Do not include <code>s3://</code> as the start of the bucket name.',
-                      }),
-                  ).exactOptional(),
-                  S3Key: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The S3 key of your script. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingObjects.html">Working with Amazon S3 Objects</a>.',
-                      }),
-                  ).exactOptional(),
-                  S3Version: StringSchema.and(
-                    z.any().openapi({ description: 'The S3 version ID of your script.' }),
-                  ).exactOptional(),
-                  ZipFile: BlobSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>If you input your canary script directly into the canary instead of referring to an S3 location, the value of this parameter is the base64-encoded contents of the .zip file that contains the script. It must be smaller than 225 Kb.</p> <p>For large canary scripts, we recommend that you use an S3 location instead of inputting it directly with this parameter.</p>',
-                      }),
-                  ).exactOptional(),
-                  Handler: CodeHandlerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.',
-                      }),
-                  ).exactOptional(),
+                  S3Bucket: StringSchema.exactOptional().openapi({
+                    description:
+                      'If your canary script is located in S3, specify the bucket name here. Do not include <code>s3://</code> as the start of the bucket name.',
+                  }),
+                  S3Key: StringSchema.exactOptional().openapi({
+                    description:
+                      'The S3 key of your script. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingObjects.html">Working with Amazon S3 Objects</a>.',
+                  }),
+                  S3Version: StringSchema.exactOptional().openapi({
+                    description: 'The S3 version ID of your script.',
+                  }),
+                  ZipFile: BlobSchema.exactOptional().openapi({
+                    description:
+                      '<p>If you input your canary script directly into the canary instead of referring to an S3 location, the value of this parameter is the base64-encoded contents of the .zip file that contains the script. It must be smaller than 225 Kb.</p> <p>For large canary scripts, we recommend that you use an S3 location instead of inputting it directly with this parameter.</p>',
+                  }),
+                  Handler: CodeHandlerSchema.exactOptional().openapi({
+                    description:
+                      'The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2352,22 +1827,14 @@ export const patchCanaryNameRoute = createRoute({
                 }),
               Schedule: z
                 .object({
-                  Expression: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A <code>rate</code> expression or a <code>cron</code> expression that defines how often the canary is to run.</p> <p>For a rate expression, The syntax is <code>rate(<i>number unit</i>)</code>. <i>unit</i> can be <code>minute</code>, <code>minutes</code>, or <code>hour</code>. </p> <p>For example, <code>rate(1 minute)</code> runs the canary once a minute, <code>rate(10 minutes)</code> runs it once every 10 minutes, and <code>rate(1 hour)</code> runs it once every hour. You can specify a frequency between <code>rate(1 minute)</code> and <code>rate(1 hour)</code>.</p> <p>Specifying <code>rate(0 minute)</code> or <code>rate(0 hour)</code> is a special value that causes the canary to run only once when it is started.</p> <p>Use <code>cron(<i>expression</i>)</code> to specify a cron expression. You can\'t schedule a canary to wait for more than a year before running. For information about the syntax for cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_cron.html"> Scheduling canary runs using cron</a>.</p>',
-                      }),
-                  ).exactOptional(),
-                  DurationInSeconds: MaxOneYearInSecondsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'How long, in seconds, for the canary to continue making regular runs according to the schedule in the <code>Expression</code> value. If you specify 0, the canary continues making runs until you stop it. If you omit this field, the default of 0 is used.',
-                      }),
-                  ).exactOptional(),
+                  Expression: StringSchema.exactOptional().openapi({
+                    description:
+                      '<p>A <code>rate</code> expression or a <code>cron</code> expression that defines how often the canary is to run.</p> <p>For a rate expression, The syntax is <code>rate(<i>number unit</i>)</code>. <i>unit</i> can be <code>minute</code>, <code>minutes</code>, or <code>hour</code>. </p> <p>For example, <code>rate(1 minute)</code> runs the canary once a minute, <code>rate(10 minutes)</code> runs it once every 10 minutes, and <code>rate(1 hour)</code> runs it once every hour. You can specify a frequency between <code>rate(1 minute)</code> and <code>rate(1 hour)</code>.</p> <p>Specifying <code>rate(0 minute)</code> or <code>rate(0 hour)</code> is a special value that causes the canary to run only once when it is started.</p> <p>Use <code>cron(<i>expression</i>)</code> to specify a cron expression. You can\'t schedule a canary to wait for more than a year before running. For information about the syntax for cron expressions, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_cron.html"> Scheduling canary runs using cron</a>.</p>',
+                  }),
+                  DurationInSeconds: MaxOneYearInSecondsSchema.exactOptional().openapi({
+                    description:
+                      'How long, in seconds, for the canary to continue making regular runs according to the schedule in the <code>Expression</code> value. If you specify 0, the canary continues making runs until you stop it. If you omit this field, the default of 0 is used.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2377,38 +1844,22 @@ export const patchCanaryNameRoute = createRoute({
                 }),
               RunConfig: z
                 .object({
-                  TimeoutInSeconds: MaxFifteenMinutesInSecondsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>How long the canary is allowed to run before it must stop. You can't set this time to be longer than the frequency of the runs of this canary.</p> <p>If you omit this field, the frequency of the canary is used as this value, up to a maximum of 14 minutes.</p>",
-                      }),
-                  ).exactOptional(),
-                  MemoryInMB: MaxSize3008Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The maximum amount of memory available to the canary while it is running, in MB. This value must be a multiple of 64.',
-                      }),
-                  ).exactOptional(),
-                  ActiveTracing: NullableBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies whether this canary is to use active X-Ray tracing when it runs. Active tracing enables this canary run to be displayed in the ServiceLens and X-Ray service maps even if the canary does not hit an endpoint that has X-Ray tracing enabled. Using X-Ray tracing incurs charges. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_tracing.html"> Canaries and X-Ray tracing</a>.</p> <p>You can enable active tracing only for canaries that use version <code>syn-nodejs-2.0</code> or later for their canary runtime.</p>',
-                      }),
-                  ).exactOptional(),
-                  EnvironmentVariables: EnvironmentVariablesMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies the keys and values to use for any environment variables used in the canary script. Use the following format:</p> <p>{ "key1" : "value1", "key2" : "value2", ...}</p> <p>Keys must start with a letter and be at least two characters. The total size of your environment variables cannot exceed 4 KB. You can\'t specify any Lambda reserved environment variables as the keys for your environment variables. For more information about reserved keys, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime"> Runtime environment variables</a>.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
-                      }),
-                  ).exactOptional(),
+                  TimeoutInSeconds: MaxFifteenMinutesInSecondsSchema.exactOptional().openapi({
+                    description:
+                      "<p>How long the canary is allowed to run before it must stop. You can't set this time to be longer than the frequency of the runs of this canary.</p> <p>If you omit this field, the frequency of the canary is used as this value, up to a maximum of 14 minutes.</p>",
+                  }),
+                  MemoryInMB: MaxSize3008Schema.exactOptional().openapi({
+                    description:
+                      'The maximum amount of memory available to the canary while it is running, in MB. This value must be a multiple of 64.',
+                  }),
+                  ActiveTracing: NullableBooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies whether this canary is to use active X-Ray tracing when it runs. Active tracing enables this canary run to be displayed in the ServiceLens and X-Ray service maps even if the canary does not hit an endpoint that has X-Ray tracing enabled. Using X-Ray tracing incurs charges. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_tracing.html"> Canaries and X-Ray tracing</a>.</p> <p>You can enable active tracing only for canaries that use version <code>syn-nodejs-2.0</code> or later for their canary runtime.</p>',
+                  }),
+                  EnvironmentVariables: EnvironmentVariablesMapSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies the keys and values to use for any environment variables used in the canary script. Use the following format:</p> <p>{ "key1" : "value1", "key2" : "value2", ...}</p> <p>Keys must start with a letter and be at least two characters. The total size of your environment variables cannot exceed 4 KB. You can\'t specify any Lambda reserved environment variables as the keys for your environment variables. For more information about reserved keys, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime"> Runtime environment variables</a>.</p> <important> <p>The environment variables keys and values are not encrypted. Do not store sensitive information in this field.</p> </important>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2435,18 +1886,12 @@ export const patchCanaryNameRoute = createRoute({
                 }),
               VpcConfig: z
                 .object({
-                  SubnetIds: SubnetIdsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The IDs of the subnets where this canary is to run.',
-                      }),
-                  ).exactOptional(),
-                  SecurityGroupIds: SecurityGroupIdsSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The IDs of the security groups for this canary.' }),
-                  ).exactOptional(),
+                  SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+                    description: 'The IDs of the subnets where this canary is to run.',
+                  }),
+                  SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+                    description: 'The IDs of the security groups for this canary.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2456,22 +1901,14 @@ export const patchCanaryNameRoute = createRoute({
                 }),
               VisualReference: z
                 .object({
-                  BaseScreenshots: BaseScreenshotsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "An array of screenshots that will be used as the baseline for visual monitoring in future runs of this canary. If there is a screenshot that you don't want to be used for visual monitoring, remove it from this array.",
-                      }),
-                  ).exactOptional(),
-                  BaseCanaryRunId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies which canary run to use the screenshots from as the baseline for future visual monitoring with this canary. Valid values are <code>nextrun</code> to use the screenshots from the next run after this update is made, <code>lastrun</code> to use the screenshots from the most recent run before this update was made, or the value of <code>Id</code> in the <a href="https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_CanaryRun.html"> CanaryRun</a> from any past run of this canary.',
-                      }),
-                  ).exactOptional(),
+                  BaseScreenshots: BaseScreenshotsSchema.exactOptional().openapi({
+                    description:
+                      "An array of screenshots that will be used as the baseline for visual monitoring in future runs of this canary. If there is a screenshot that you don't want to be used for visual monitoring, remove it from this array.",
+                  }),
+                  BaseCanaryRunId: StringSchema.exactOptional().openapi({
+                    description:
+                      'Specifies which canary run to use the screenshots from as the baseline for future visual monitoring with this canary. Valid values are <code>nextrun</code> to use the screenshots from the next run after this update is made, <code>lastrun</code> to use the screenshots from the most recent run before this update was made, or the value of <code>Id</code> in the <a href="https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_CanaryRun.html"> CanaryRun</a> from any past run of this canary.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2490,14 +1927,10 @@ export const patchCanaryNameRoute = createRoute({
                 }),
               ArtifactConfig: z
                 .object({
-                  S3Encryption: S3EncryptionConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A structure that contains the configuration of the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3. Artifact encryption functionality is available only for canaries that use Synthetics runtime version syn-nodejs-puppeteer-3.3 or later. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_artifact_encryption.html">Encrypting canary artifacts</a> ',
-                      }),
-                  ).exactOptional(),
+                  S3Encryption: S3EncryptionConfigSchema.exactOptional().openapi({
+                    description:
+                      'A structure that contains the configuration of the encryption-at-rest settings for artifacts that the canary uploads to Amazon S3. Artifact encryption functionality is available only for canaries that use Synthetics runtime version syn-nodejs-puppeteer-3.3 or later. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_artifact_encryption.html">Encrypting canary artifacts</a> ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

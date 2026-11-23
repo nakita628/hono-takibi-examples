@@ -4,22 +4,20 @@ const StringSchema = z.string().openapi('String')
 
 const DeletableAttributeSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the attribute.' })),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The value of the attribute.' }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The name of the attribute.' }),
+    Value: StringSchema.exactOptional().openapi({ description: 'The value of the attribute.' }),
   })
   .openapi({ required: ['Name'], description: '' })
   .openapi('DeletableAttribute')
 
 const DeletableAttributeListSchema = z
-  .array(DeletableAttributeSchema.and(z.any().openapi({ xml: { name: 'Attribute' } })))
+  .array(DeletableAttributeSchema.openapi({ xml: { name: 'Attribute' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('DeletableAttributeList')
 
 const DeletableItemSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ xml: { name: 'ItemName' } })),
+    Name: StringSchema.openapi({ xml: { name: 'ItemName' } }),
     Attributes: DeletableAttributeListSchema.exactOptional(),
   })
   .openapi({ required: ['Name'] })
@@ -29,39 +27,30 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const ReplaceableAttributeSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the replaceable attribute.' }),
-    ),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The value of the replaceable attribute.' }),
-    ),
-    Replace: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag specifying whether or not to replace the attribute/value pair or to add a new attribute/value pair. The default setting is <code>false</code>.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The name of the replaceable attribute.' }),
+    Value: StringSchema.openapi({ description: 'The value of the replaceable attribute.' }),
+    Replace: BooleanSchema.exactOptional().openapi({
+      description:
+        'A flag specifying whether or not to replace the attribute/value pair or to add a new attribute/value pair. The default setting is <code>false</code>.',
+    }),
   })
   .openapi({ required: ['Name', 'Value'], description: '' })
   .openapi('ReplaceableAttribute')
 
 const ReplaceableAttributeListSchema = z
-  .array(ReplaceableAttributeSchema.and(z.any().openapi({ xml: { name: 'Attribute' } })))
+  .array(ReplaceableAttributeSchema.openapi({ xml: { name: 'Attribute' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('ReplaceableAttributeList')
 
 const ReplaceableItemSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'ItemName' }, description: 'The name of the replaceable item.' }),
-    ),
-    Attributes: ReplaceableAttributeListSchema.and(
-      z.any().openapi({ description: 'The list of attributes for a replaceable item.' }),
-    ),
+    Name: StringSchema.openapi({
+      xml: { name: 'ItemName' },
+      description: 'The name of the replaceable item.',
+    }),
+    Attributes: ReplaceableAttributeListSchema.openapi({
+      description: 'The list of attributes for a replaceable item.',
+    }),
   })
   .openapi({ required: ['Name', 'Attributes'], description: '' })
   .openapi('ReplaceableItem')
@@ -132,87 +121,69 @@ const LongSchema = z.int().openapi('Long')
 
 const DomainMetadataResultSchema = z
   .object({
-    ItemCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of all items in the domain.' }),
-    ).exactOptional(),
-    ItemNamesSizeBytes: LongSchema.and(
-      z.any().openapi({ description: 'The total size of all item names in the domain, in bytes.' }),
-    ).exactOptional(),
-    AttributeNameCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of unique attribute names in the domain.' }),
-    ).exactOptional(),
-    AttributeNamesSizeBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total size of all unique attribute names in the domain, in bytes.',
-        }),
-    ).exactOptional(),
-    AttributeValueCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of all attribute name/value pairs in the domain.' }),
-    ).exactOptional(),
-    AttributeValuesSizeBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total size of all attribute values in the domain, in bytes.',
-        }),
-    ).exactOptional(),
-    Timestamp: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The data and time when metadata was calculated, in Epoch (UNIX) seconds.',
-        }),
-    ).exactOptional(),
+    ItemCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of all items in the domain.',
+    }),
+    ItemNamesSizeBytes: LongSchema.exactOptional().openapi({
+      description: 'The total size of all item names in the domain, in bytes.',
+    }),
+    AttributeNameCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of unique attribute names in the domain.',
+    }),
+    AttributeNamesSizeBytes: LongSchema.exactOptional().openapi({
+      description: 'The total size of all unique attribute names in the domain, in bytes.',
+    }),
+    AttributeValueCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of all attribute name/value pairs in the domain.',
+    }),
+    AttributeValuesSizeBytes: LongSchema.exactOptional().openapi({
+      description: 'The total size of all attribute values in the domain, in bytes.',
+    }),
+    Timestamp: IntegerSchema.exactOptional().openapi({
+      description: 'The data and time when metadata was calculated, in Epoch (UNIX) seconds.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DomainMetadataResult')
 
 const AttributeSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the attribute.' })),
-    AlternateNameEncoding: StringSchema.and(z.any().openapi({ description: '' })).exactOptional(),
-    Value: StringSchema.and(z.any().openapi({ description: 'The value of the attribute.' })),
-    AlternateValueEncoding: StringSchema.and(z.any().openapi({ description: '' })).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The name of the attribute.' }),
+    AlternateNameEncoding: StringSchema.exactOptional().openapi({ description: '' }),
+    Value: StringSchema.openapi({ description: 'The value of the attribute.' }),
+    AlternateValueEncoding: StringSchema.exactOptional().openapi({ description: '' }),
   })
   .openapi({ required: ['Name', 'Value'], description: '' })
   .openapi('Attribute')
 
 const AttributeListSchema = z
-  .array(AttributeSchema.and(z.any().openapi({ xml: { name: 'Attribute' } })))
+  .array(AttributeSchema.openapi({ xml: { name: 'Attribute' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('AttributeList')
 
 const GetAttributesResultSchema = z
   .object({
-    Attributes: AttributeListSchema.and(
-      z.any().openapi({ description: 'The list of attributes returned by the operation.' }),
-    ).exactOptional(),
+    Attributes: AttributeListSchema.exactOptional().openapi({
+      description: 'The list of attributes returned by the operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAttributesResult')
 
 const DomainNameListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'DomainName' } })))
+  .array(StringSchema.openapi({ xml: { name: 'DomainName' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('DomainNameList')
 
 const ListDomainsResultSchema = z
   .object({
-    DomainNames: DomainNameListSchema.and(
-      z.any().openapi({ description: 'A list of domain names that match the expression.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque token indicating that there are more domains than the specified <code>MaxNumberOfDomains</code> still available.',
-        }),
-    ).exactOptional(),
+    DomainNames: DomainNameListSchema.exactOptional().openapi({
+      description: 'A list of domain names that match the expression.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'An opaque token indicating that there are more domains than the specified <code>MaxNumberOfDomains</code> still available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDomainsResult')
@@ -224,31 +195,27 @@ const InvalidNextTokenSchema = z
 
 const ItemSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the item.' })),
-    AlternateNameEncoding: StringSchema.and(z.any().openapi({ description: '' })).exactOptional(),
-    Attributes: AttributeListSchema.and(z.any().openapi({ description: 'A list of attributes.' })),
+    Name: StringSchema.openapi({ description: 'The name of the item.' }),
+    AlternateNameEncoding: StringSchema.exactOptional().openapi({ description: '' }),
+    Attributes: AttributeListSchema.openapi({ description: 'A list of attributes.' }),
   })
   .openapi({ required: ['Name', 'Attributes'], description: '' })
   .openapi('Item')
 
 const ItemListSchema = z
-  .array(ItemSchema.and(z.any().openapi({ xml: { name: 'Item' } })))
+  .array(ItemSchema.openapi({ xml: { name: 'Item' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('ItemList')
 
 const SelectResultSchema = z
   .object({
-    Items: ItemListSchema.and(
-      z.any().openapi({ description: 'A list of items that match the select expression.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque token indicating that more items than <code>MaxNumberOfItems</code> were matched, the response size exceeded 1 megabyte, or the execution time exceeded 5 seconds.',
-        }),
-    ).exactOptional(),
+    Items: ItemListSchema.exactOptional().openapi({
+      description: 'A list of items that match the select expression.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'An opaque token indicating that more items than <code>MaxNumberOfItems</code> were matched, the response size exceeded 1 megabyte, or the execution time exceeded 5 seconds.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SelectResult')
@@ -283,87 +250,67 @@ const TooManyRequestedAttributesSchema = z
   .openapi('TooManyRequestedAttributes')
 
 const AttributeNameListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'AttributeName' } })))
+  .array(StringSchema.openapi({ xml: { name: 'AttributeName' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('AttributeNameList')
 
 const DeletableItemListSchema = z
-  .array(DeletableItemSchema.and(z.any().openapi({ xml: { name: 'Item' } })))
+  .array(DeletableItemSchema.openapi({ xml: { name: 'Item' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('DeletableItemList')
 
 const BatchDeleteAttributesRequestSchema = z
   .object({
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which the attributes are being deleted.',
-        }),
-    ),
-    Items: DeletableItemListSchema.and(
-      z.any().openapi({ description: 'A list of items on which to perform the operation.' }),
-    ),
+    DomainName: StringSchema.openapi({
+      description: 'The name of the domain in which the attributes are being deleted.',
+    }),
+    Items: DeletableItemListSchema.openapi({
+      description: 'A list of items on which to perform the operation.',
+    }),
   })
   .openapi({ required: ['DomainName', 'Items'], title: 'BatchDeleteAttributesRequest' })
   .openapi('BatchDeleteAttributesRequest')
 
 const ReplaceableItemListSchema = z
-  .array(ReplaceableItemSchema.and(z.any().openapi({ xml: { name: 'Item' } })))
+  .array(ReplaceableItemSchema.openapi({ xml: { name: 'Item' } }))
   .openapi({ xml: { wrapped: false } })
   .openapi('ReplaceableItemList')
 
 const BatchPutAttributesRequestSchema = z
   .object({
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which the attributes are being stored.',
-        }),
-    ),
-    Items: ReplaceableItemListSchema.and(
-      z.any().openapi({ description: 'A list of items on which to perform the operation.' }),
-    ),
+    DomainName: StringSchema.openapi({
+      description: 'The name of the domain in which the attributes are being stored.',
+    }),
+    Items: ReplaceableItemListSchema.openapi({
+      description: 'A list of items on which to perform the operation.',
+    }),
   })
   .openapi({ required: ['DomainName', 'Items'], title: 'BatchPutAttributesRequest' })
   .openapi('BatchPutAttributesRequest')
 
 const CreateDomainRequestSchema = z
   .object({
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the domain to create. The name can range between 3 and 255 characters and can contain the following characters: a-z, A-Z, 0-9, '_', '-', and '.'.",
-        }),
-    ),
+    DomainName: StringSchema.openapi({
+      description:
+        "The name of the domain to create. The name can range between 3 and 255 characters and can contain the following characters: a-z, A-Z, 0-9, '_', '-', and '.'.",
+    }),
   })
   .openapi({ required: ['DomainName'], title: 'CreateDomainRequest' })
   .openapi('CreateDomainRequest')
 
 const UpdateConditionSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the attribute involved in the condition.' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of an attribute. This value can only be specified when the <code>Exists</code> parameter is equal to <code>true</code>.',
-        }),
-    ).exactOptional(),
-    Exists: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value specifying whether or not the specified attribute must exist with the specified value in order for the update condition to be satisfied. Specify <code>true</code> if the attribute must exist for the update condition to be satisfied. Specify <code>false</code> if the attribute should not exist in order for the update condition to be satisfied.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the attribute involved in the condition.',
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      description:
+        'The value of an attribute. This value can only be specified when the <code>Exists</code> parameter is equal to <code>true</code>.',
+    }),
+    Exists: BooleanSchema.exactOptional().openapi({
+      description:
+        'A value specifying whether or not the specified attribute must exist with the specified value in order for the update condition to be satisfied. Specify <code>true</code> if the attribute must exist for the update condition to be satisfied. Specify <code>false</code> if the attribute should not exist in order for the update condition to be satisfied.',
+    }),
   })
   .openapi({
     description:
@@ -374,142 +321,100 @@ const UpdateConditionSchema = z
 
 const DeleteAttributesRequestSchema = z
   .object({
-    DomainName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the domain in which to perform the operation.' }),
-    ),
-    ItemName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the item. Similar to rows on a spreadsheet, items represent individual objects that contain one or more value-attribute pairs.',
-        }),
-    ),
-    Attributes: DeletableAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Attributes. Similar to columns on a spreadsheet, attributes represent categories of data that can be assigned to items.',
-        }),
-    ).exactOptional(),
-    Expected: UpdateConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The update condition which, if specified, determines whether the specified attributes will be deleted or not. The update condition must be satisfied in order for this request to be processed and the attributes to be deleted.',
-        }),
-    ).exactOptional(),
+    DomainName: StringSchema.openapi({
+      description: 'The name of the domain in which to perform the operation.',
+    }),
+    ItemName: StringSchema.openapi({
+      description:
+        'The name of the item. Similar to rows on a spreadsheet, items represent individual objects that contain one or more value-attribute pairs.',
+    }),
+    Attributes: DeletableAttributeListSchema.exactOptional().openapi({
+      description:
+        'A list of Attributes. Similar to columns on a spreadsheet, attributes represent categories of data that can be assigned to items.',
+    }),
+    Expected: UpdateConditionSchema.exactOptional().openapi({
+      description:
+        'The update condition which, if specified, determines whether the specified attributes will be deleted or not. The update condition must be satisfied in order for this request to be processed and the attributes to be deleted.',
+    }),
   })
   .openapi({ required: ['DomainName', 'ItemName'], title: 'DeleteAttributesRequest' })
   .openapi('DeleteAttributesRequest')
 
 const DeleteDomainRequestSchema = z
   .object({
-    DomainName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the domain to delete.' }),
-    ),
+    DomainName: StringSchema.openapi({ description: 'The name of the domain to delete.' }),
   })
   .openapi({ required: ['DomainName'], title: 'DeleteDomainRequest' })
   .openapi('DeleteDomainRequest')
 
 const DomainMetadataRequestSchema = z
   .object({
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the domain for which to display the metadata of.' }),
-    ),
+    DomainName: StringSchema.openapi({
+      description: 'The name of the domain for which to display the metadata of.',
+    }),
   })
   .openapi({ required: ['DomainName'], title: 'DomainMetadataRequest' })
   .openapi('DomainMetadataRequest')
 
 const GetAttributesRequestSchema = z
   .object({
-    DomainName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the domain in which to perform the operation.' }),
-    ),
-    ItemName: StringSchema.and(z.any().openapi({ description: 'The name of the item.' })),
-    AttributeNames: AttributeNameListSchema.and(
-      z.any().openapi({ description: 'The names of the attributes.' }),
-    ).exactOptional(),
-    ConsistentRead: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines whether or not strong consistency should be enforced when data is read from SimpleDB. If <code>true</code>, any data previously written to SimpleDB will be returned. Otherwise, results will be consistent eventually, and the client may not see data that was written immediately before your read.',
-        }),
-    ).exactOptional(),
+    DomainName: StringSchema.openapi({
+      description: 'The name of the domain in which to perform the operation.',
+    }),
+    ItemName: StringSchema.openapi({ description: 'The name of the item.' }),
+    AttributeNames: AttributeNameListSchema.exactOptional().openapi({
+      description: 'The names of the attributes.',
+    }),
+    ConsistentRead: BooleanSchema.exactOptional().openapi({
+      description:
+        'Determines whether or not strong consistency should be enforced when data is read from SimpleDB. If <code>true</code>, any data previously written to SimpleDB will be returned. Otherwise, results will be consistent eventually, and the client may not see data that was written immediately before your read.',
+    }),
   })
   .openapi({ required: ['DomainName', 'ItemName'], title: 'GetAttributesRequest' })
   .openapi('GetAttributesRequest')
 
 const ListDomainsRequestSchema = z
   .object({
-    MaxNumberOfDomains: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of domain names you want returned. The range is 1 to 100. The default setting is 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string informing Amazon SimpleDB where to start the next list of domain names.',
-        }),
-    ).exactOptional(),
+    MaxNumberOfDomains: IntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of domain names you want returned. The range is 1 to 100. The default setting is 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A string informing Amazon SimpleDB where to start the next list of domain names.',
+    }),
   })
   .openapi({ title: 'ListDomainsRequest', required: [] })
   .openapi('ListDomainsRequest')
 
 const PutAttributesRequestSchema = z
   .object({
-    DomainName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the domain in which to perform the operation.' }),
-    ),
-    ItemName: StringSchema.and(z.any().openapi({ description: 'The name of the item.' })),
-    Attributes: ReplaceableAttributeListSchema.and(
-      z.any().openapi({ description: 'The list of attributes.' }),
-    ),
-    Expected: UpdateConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The update condition which, if specified, determines whether the specified attributes will be updated or not. The update condition must be satisfied in order for this request to be processed and the attributes to be updated.',
-        }),
-    ).exactOptional(),
+    DomainName: StringSchema.openapi({
+      description: 'The name of the domain in which to perform the operation.',
+    }),
+    ItemName: StringSchema.openapi({ description: 'The name of the item.' }),
+    Attributes: ReplaceableAttributeListSchema.openapi({ description: 'The list of attributes.' }),
+    Expected: UpdateConditionSchema.exactOptional().openapi({
+      description:
+        'The update condition which, if specified, determines whether the specified attributes will be updated or not. The update condition must be satisfied in order for this request to be processed and the attributes to be updated.',
+    }),
   })
   .openapi({ required: ['DomainName', 'ItemName', 'Attributes'], title: 'PutAttributesRequest' })
   .openapi('PutAttributesRequest')
 
 const SelectRequestSchema = z
   .object({
-    SelectExpression: StringSchema.and(
-      z.any().openapi({ description: 'The expression used to query the domain.' }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string informing Amazon SimpleDB where to start the next list of <code>ItemNames</code>.',
-        }),
-    ).exactOptional(),
-    ConsistentRead: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines whether or not strong consistency should be enforced when data is read from SimpleDB. If <code>true</code>, any data previously written to SimpleDB will be returned. Otherwise, results will be consistent eventually, and the client may not see data that was written immediately before your read.',
-        }),
-    ).exactOptional(),
+    SelectExpression: StringSchema.openapi({
+      description: 'The expression used to query the domain.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A string informing Amazon SimpleDB where to start the next list of <code>ItemNames</code>.',
+    }),
+    ConsistentRead: BooleanSchema.exactOptional().openapi({
+      description:
+        'Determines whether or not strong consistency should be enforced when data is read from SimpleDB. If <code>true</code>, any data previously written to SimpleDB will be returned. Otherwise, results will be consistent eventually, and the client may not see data that was written immediately before your read.',
+    }),
   })
   .openapi({ required: ['SelectExpression'], title: 'SelectRequest' })
   .openapi('SelectRequest')
@@ -607,14 +512,7 @@ export const getActionBatchDeleteAttributesRoute = createRoute({
       Items: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            DeletableItemSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Item' } }),
-            ),
-          ),
+          z.array(DeletableItemSchema.openapi({ xml: { name: 'Item' } })),
         )
         .openapi({
           param: {
@@ -726,30 +624,20 @@ export const getActionBatchPutAttributesRoute = createRoute({
           z.array(
             z
               .object({
-                Name: StringSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({
-                    xml: { name: 'ItemName' },
-                    description: 'The name of the replaceable item.',
-                  }),
-                ),
+                Name: StringSchema.openapi({
+                  xml: { name: 'ItemName' },
+                  description: 'The name of the replaceable item.',
+                }),
                 Attributes: z
                   .array(
                     z
                       .object({
-                        Name: StringSchema.and(
-                          z
-                            .any()
-                            .openapi({ description: 'The name of the replaceable attribute.' }),
-                        ),
-                        Value: StringSchema.and(
-                          z
-                            .any()
-                            .openapi({ description: 'The value of the replaceable attribute.' }),
-                        ),
+                        Name: StringSchema.openapi({
+                          description: 'The name of the replaceable attribute.',
+                        }),
+                        Value: StringSchema.openapi({
+                          description: 'The value of the replaceable attribute.',
+                        }),
                         Replace: z
                           .preprocess(
                             ((read) => (val: unknown) => {
@@ -758,39 +646,20 @@ export const getActionBatchPutAttributesRoute = createRoute({
                             })(z.stringbool()),
                             BooleanSchema,
                           )
-                          .and(
-                            z
-                              .any()
-                              .openapi({
-                                description:
-                                  'A flag specifying whether or not to replace the attribute/value pair or to add a new attribute/value pair. The default setting is <code>false</code>.',
-                              }),
-                          )
-                          .exactOptional(),
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'A flag specifying whether or not to replace the attribute/value pair or to add a new attribute/value pair. The default setting is <code>false</code>.',
+                          }),
                       })
                       .openapi({ required: ['Name', 'Value'], description: '' })
-                      .and(
-                        ((schema) =>
-                          z.union([
-                            schema,
-                            z.preprocess((val) => (val === 'null' ? null : val), schema),
-                          ]))(z.any()).openapi({ xml: { name: 'Attribute' } }),
-                      ),
+                      .openapi({ xml: { name: 'Attribute' } }),
                   )
                   .openapi({ xml: { wrapped: false } })
-                  .and(
-                    z
-                      .any()
-                      .openapi({ description: 'The list of attributes for a replaceable item.' }),
-                  ),
+                  .openapi({ description: 'The list of attributes for a replaceable item.' }),
               })
               .openapi({ required: ['Name', 'Attributes'], description: '' })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'Item' } }),
-              ),
+              .openapi({ xml: { name: 'Item' } }),
           ),
         )
         .openapi({
@@ -1125,15 +994,7 @@ export const getActionDeleteAttributesRoute = createRoute({
           Attributes: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                DeletableAttributeSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'Attribute' } }),
-                ),
-              ),
+              z.array(DeletableAttributeSchema.openapi({ xml: { name: 'Attribute' } })),
             )
             .exactOptional()
             .openapi({
@@ -1158,19 +1019,13 @@ export const getActionDeleteAttributesRoute = createRoute({
             }),
           Expected: z
             .object({
-              Name: StringSchema.and(
-                z
-                  .any()
-                  .openapi({ description: 'The name of the attribute involved in the condition.' }),
-              ).exactOptional(),
-              Value: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The value of an attribute. This value can only be specified when the <code>Exists</code> parameter is equal to <code>true</code>.',
-                  }),
-              ).exactOptional(),
+              Name: StringSchema.exactOptional().openapi({
+                description: 'The name of the attribute involved in the condition.',
+              }),
+              Value: StringSchema.exactOptional().openapi({
+                description:
+                  'The value of an attribute. This value can only be specified when the <code>Exists</code> parameter is equal to <code>true</code>.',
+              }),
               Exists: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -1179,15 +1034,11 @@ export const getActionDeleteAttributesRoute = createRoute({
                   })(z.stringbool()),
                   BooleanSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'A value specifying whether or not the specified attribute must exist with the specified value in order for the update condition to be satisfied. Specify <code>true</code> if the attribute must exist for the update condition to be satisfied. Specify <code>false</code> if the attribute should not exist in order for the update condition to be satisfied.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A value specifying whether or not the specified attribute must exist with the specified value in order for the update condition to be satisfied. Specify <code>true</code> if the attribute must exist for the update condition to be satisfied. Specify <code>false</code> if the attribute should not exist in order for the update condition to be satisfied.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -1550,14 +1401,7 @@ export const getActionGetAttributesRoute = createRoute({
       AttributeNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'AttributeName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'AttributeName' } })),
         )
         .exactOptional()
         .openapi({
@@ -1880,12 +1724,12 @@ export const getActionPutAttributesRoute = createRoute({
               z.array(
                 z
                   .object({
-                    Name: StringSchema.and(
-                      z.any().openapi({ description: 'The name of the replaceable attribute.' }),
-                    ),
-                    Value: StringSchema.and(
-                      z.any().openapi({ description: 'The value of the replaceable attribute.' }),
-                    ),
+                    Name: StringSchema.openapi({
+                      description: 'The name of the replaceable attribute.',
+                    }),
+                    Value: StringSchema.openapi({
+                      description: 'The value of the replaceable attribute.',
+                    }),
                     Replace: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -1894,24 +1738,14 @@ export const getActionPutAttributesRoute = createRoute({
                         })(z.stringbool()),
                         BooleanSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'A flag specifying whether or not to replace the attribute/value pair or to add a new attribute/value pair. The default setting is <code>false</code>.',
-                          }),
-                      )
-                      .exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'A flag specifying whether or not to replace the attribute/value pair or to add a new attribute/value pair. The default setting is <code>false</code>.',
+                      }),
                   })
                   .openapi({ required: ['Name', 'Value'], description: '' })
-                  .and(
-                    ((schema) =>
-                      z.union([
-                        schema,
-                        z.preprocess((val) => (val === 'null' ? null : val), schema),
-                      ]))(z.any()).openapi({ xml: { name: 'Attribute' } }),
-                  ),
+                  .openapi({ xml: { name: 'Attribute' } }),
               ),
             )
             .openapi({
@@ -1962,19 +1796,13 @@ export const getActionPutAttributesRoute = createRoute({
             }),
           Expected: z
             .object({
-              Name: StringSchema.and(
-                z
-                  .any()
-                  .openapi({ description: 'The name of the attribute involved in the condition.' }),
-              ).exactOptional(),
-              Value: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The value of an attribute. This value can only be specified when the <code>Exists</code> parameter is equal to <code>true</code>.',
-                  }),
-              ).exactOptional(),
+              Name: StringSchema.exactOptional().openapi({
+                description: 'The name of the attribute involved in the condition.',
+              }),
+              Value: StringSchema.exactOptional().openapi({
+                description:
+                  'The value of an attribute. This value can only be specified when the <code>Exists</code> parameter is equal to <code>true</code>.',
+              }),
               Exists: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -1983,15 +1811,11 @@ export const getActionPutAttributesRoute = createRoute({
                   })(z.stringbool()),
                   BooleanSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'A value specifying whether or not the specified attribute must exist with the specified value in order for the update condition to be satisfied. Specify <code>true</code> if the attribute must exist for the update condition to be satisfied. Specify <code>false</code> if the attribute should not exist in order for the update condition to be satisfied.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A value specifying whether or not the specified attribute must exist with the specified value in order for the update condition to be satisfied. Specify <code>true</code> if the attribute must exist for the update condition to be satisfied. Specify <code>false</code> if the attribute should not exist in order for the update condition to be satisfied.',
+                }),
             })
             .exactOptional()
             .openapi({

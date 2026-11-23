@@ -1,116 +1,179 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AgoraCallSchema = z
-  .object({ channel: z.string().openapi({ 'x-stream-index': '001' }) })
-  .openapi({ required: ['channel'] })
-  .openapi('AgoraCall')
-
-const HMSCallSchema = z
+const LabelThresholdsSchema = z
   .object({
-    room_id: z.string().openapi({ 'x-stream-index': '001' }),
-    room_name: z.string().openapi({ 'x-stream-index': '002' }),
-  })
-  .openapi({ required: ['room_id', 'room_name'] })
-  .openapi('HMSCall')
-
-type CallType = {
-  agora?: z.infer<typeof AgoraCallSchema>
-  hms?: z.infer<typeof HMSCallSchema>
-  id: string
-  provider: string
-  type: string
-}
-
-const ActionSchema = z
-  .object({
-    name: z.string().openapi({ 'x-stream-index': '001' }),
-    style: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    text: z.string().openapi({ 'x-stream-index': '002' }),
-    type: z.string().openapi({ 'x-stream-index': '004' }),
-    value: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'text', 'type'] })
-  .openapi('Action')
-
-const FieldSchema = z
-  .object({
-    short: z.boolean().openapi({ 'x-stream-index': '003' }),
-    title: z.string().openapi({ 'x-stream-index': '001' }),
-    value: z.string().openapi({ 'x-stream-index': '002' }),
-  })
-  .nullable()
-  .openapi({ required: ['title', 'value', 'short'] })
-  .openapi('Field')
-
-const ImageDataSchema = z
-  .object({
-    frames: z.string().openapi({ 'x-stream-index': '005' }),
-    height: z.string().openapi({ 'x-stream-index': '003' }),
-    size: z.string().openapi({ 'x-stream-index': '004' }),
-    url: z.string().openapi({ 'x-stream-index': '001' }),
-    width: z.string().openapi({ 'x-stream-index': '002' }),
-  })
-  .openapi({ required: ['url', 'width', 'height', 'size', 'frames'] })
-  .openapi('ImageData')
-
-const ImagesSchema = z
-  .object({
-    fixed_height: ImageDataSchema.openapi({ 'x-stream-index': '002' }),
-    fixed_height_downsampled: ImageDataSchema.openapi({ 'x-stream-index': '004' }),
-    fixed_height_still: ImageDataSchema.openapi({ 'x-stream-index': '003' }),
-    fixed_width: ImageDataSchema.openapi({ 'x-stream-index': '005' }),
-    fixed_width_downsampled: ImageDataSchema.openapi({ 'x-stream-index': '007' }),
-    fixed_width_still: ImageDataSchema.openapi({ 'x-stream-index': '006' }),
-    original: ImageDataSchema.openapi({ 'x-stream-index': '001' }),
-  })
-  .openapi({
-    required: [
-      'original',
-      'fixed_height',
-      'fixed_height_still',
-      'fixed_height_downsampled',
-      'fixed_width',
-      'fixed_width_still',
-      'fixed_width_downsampled',
-    ],
-  })
-  .openapi('Images')
-
-const AttachmentSchema = z
-  .looseObject({
-    actions: z.array(ActionSchema).exactOptional().openapi({ 'x-stream-index': '015' }),
-    asset_url: z.string().exactOptional().openapi({ 'x-stream-index': '017' }),
-    author_icon: z.string().exactOptional().openapi({ 'x-stream-index': '007' }),
-    author_link: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
-    author_name: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-    color: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    fallback: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
-    fields: z.array(FieldSchema).exactOptional().openapi({ 'x-stream-index': '016' }),
-    footer: z.string().exactOptional().openapi({ 'x-stream-index': '013' }),
-    footer_icon: z.string().exactOptional().openapi({ 'x-stream-index': '014' }),
-    giphy: ImagesSchema.exactOptional().openapi({ 'x-stream-index': '019' }),
-    image_url: z.string().exactOptional().openapi({ 'x-stream-index': '011' }),
-    og_scrape_url: z.string().exactOptional().openapi({ 'x-stream-index': '020' }),
-    original_height: z.number().exactOptional().openapi({ 'x-stream-index': '022' }),
-    original_width: z.number().exactOptional().openapi({ 'x-stream-index': '021' }),
-    pretext: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    text: z.string().exactOptional().openapi({ 'x-stream-index': '010' }),
-    thumb_url: z.string().exactOptional().openapi({ 'x-stream-index': '012' }),
-    title: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
-    title_link: z.string().exactOptional().openapi({ 'x-stream-index': '009' }),
-    type: z
-      .string()
+    block: z
+      .float32()
+      .min(0)
+      .max(1)
       .exactOptional()
       .openapi({
-        description: 'Attachment type (e.g. image, video, url)',
-        title: 'Type',
+        description: 'Threshold for automatic message block',
+        title: 'Block',
+        'x-stream-index': '002',
+      }),
+    flag: z
+      .float32()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description: 'Threshold for automatic message flag',
+        title: 'Flag',
         'x-stream-index': '001',
       }),
   })
+  .openapi({ required: [] })
+  .openapi('LabelThresholds')
+
+const ThresholdsSchema = z
+  .object({
+    explicit: LabelThresholdsSchema.exactOptional().openapi({
+      description: 'Thresholds for explicit messages',
+      title: 'Explicit',
+      'x-stream-index': '001',
+    }),
+    spam: LabelThresholdsSchema.exactOptional().openapi({
+      description: 'Thresholds for spam',
+      title: 'Spam',
+      'x-stream-index': '002',
+    }),
+    toxic: LabelThresholdsSchema.exactOptional().openapi({
+      description: 'Thresholds for toxic messages',
+      title: 'Toxic',
+      'x-stream-index': '003',
+    }),
+  })
+  .openapi({
+    description: 'Sets thresholds for AI moderation',
+    title: 'Auto moderation thresholds',
+    required: [],
+  })
+  .openapi('Thresholds')
+
+const CommandSchema = z
+  .object({
+    args: z
+      .string()
+      .openapi({
+        description: 'Arguments help text, shown in commands auto-completion',
+        title: 'Arguments',
+        'x-stream-index': '006',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of creation',
+        readOnly: true,
+        title: 'Created at',
+        'x-stream-index': '001',
+      }),
+    description: z
+      .string()
+      .openapi({
+        description: 'Description, shown in commands auto-completion',
+        title: 'Description',
+        'x-stream-index': '005',
+      }),
+    name: z
+      .string()
+      .openapi({ description: 'Unique command name', title: 'Name', 'x-stream-index': '004' }),
+    set: z
+      .string()
+      .openapi({
+        description: 'Set name used for grouping commands',
+        title: 'Set',
+        'x-stream-index': '007',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of the last update',
+        readOnly: true,
+        title: 'Updated at',
+        'x-stream-index': '002',
+      }),
+  })
   .nullable()
-  .openapi({ title: 'Attachment', 'x-stream-docs-page-id': 'file_uploads', required: [] })
-  .openapi('Attachment')
+  .openapi({
+    description: 'Represents custom chat command',
+    required: ['name', 'description', 'args', 'set'],
+    title: 'Command',
+  })
+  .openapi('Command')
+
+const ChannelConfigWithInfoSchema = z
+  .object({
+    automod: z.enum(['disabled', 'simple', 'AI']).openapi({ 'x-stream-index': '001.002.017' }),
+    automod_behavior: z.enum(['flag', 'block']).openapi({ 'x-stream-index': '001.002.018' }),
+    automod_thresholds: ThresholdsSchema.exactOptional().openapi({
+      'x-stream-index': '001.002.021',
+    }),
+    blocklist: z.string().exactOptional().openapi({ 'x-stream-index': '001.002.019' }),
+    blocklist_behavior: z
+      .enum(['flag', 'block'])
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.002.020' }),
+    commands: z.array(CommandSchema).openapi({ 'x-stream-index': '001.003' }),
+    connect_events: z.boolean().openapi({ 'x-stream-index': '001.002.004' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.001.003' }),
+    custom_events: z.boolean().openapi({ 'x-stream-index': '001.002.012' }),
+    grants: z
+      .record(z.string(), z.array(z.string()))
+      .exactOptional()
+      .openapi({
+        title: 'Grants',
+        'x-stream-index': '002',
+        'x-stream-map': {
+          description: 'List of grants modifiers that apply to a role',
+          key: 'role',
+          title: 'Grants',
+        },
+      }),
+    max_message_length: z.number().max(20000).openapi({ 'x-stream-index': '001.002.016' }),
+    message_retention: z.string().openapi({ 'x-stream-index': '001.002.015' }),
+    mutes: z.boolean().openapi({ 'x-stream-index': '001.002.009' }),
+    name: z.string().openapi({ 'x-stream-index': '001.002.001' }),
+    push_notifications: z.boolean().openapi({ 'x-stream-index': '001.002.013' }),
+    quotes: z.boolean().openapi({ 'x-stream-index': '001.002.008' }),
+    reactions: z.boolean().openapi({ 'x-stream-index': '001.002.006' }),
+    read_events: z.boolean().openapi({ 'x-stream-index': '001.002.003' }),
+    reminders: z.boolean().openapi({ 'x-stream-index': '001.002.014' }),
+    replies: z.boolean().openapi({ 'x-stream-index': '001.002.007' }),
+    search: z.boolean().openapi({ 'x-stream-index': '001.002.005' }),
+    typing_events: z.boolean().openapi({ 'x-stream-index': '001.002.002' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.001.004' }),
+    uploads: z.boolean().openapi({ 'x-stream-index': '001.002.010' }),
+    url_enrichment: z.boolean().openapi({ 'x-stream-index': '001.002.011' }),
+  })
+  .openapi({
+    required: [
+      'created_at',
+      'updated_at',
+      'name',
+      'typing_events',
+      'read_events',
+      'connect_events',
+      'search',
+      'reactions',
+      'replies',
+      'quotes',
+      'mutes',
+      'uploads',
+      'url_enrichment',
+      'custom_events',
+      'push_notifications',
+      'reminders',
+      'message_retention',
+      'max_message_length',
+      'automod',
+      'automod_behavior',
+      'commands',
+    ],
+  })
+  .openapi('ChannelConfigWithInfo')
 
 const PushNotificationSettingsSchema = z
   .object({
@@ -238,1082 +301,6 @@ const UserObjectSchema = z
     title: 'User object',
   })
   .openapi('UserObject')
-
-const ReactionSchema = z
-  .looseObject({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Date/time of creation',
-        readOnly: true,
-        title: 'Created at',
-        'x-stream-index': '008',
-      }),
-    message_id: z
-      .string()
-      .openapi({
-        description: 'ID of a message user reacted to',
-        title: 'Message ID',
-        'x-stream-index': '003',
-      }),
-    score: z
-      .number()
-      .openapi({
-        description: 'Reaction score. If not specified reaction has score of 1',
-        title: 'Score',
-        'x-stream-index': '007',
-      }),
-    type: z
-      .string()
-      .max(30)
-      .openapi({
-        description: "The type of reaction (e.g. 'like', 'laugh', 'wow')",
-        title: 'Type',
-        'x-stream-index': '006',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Date/time of the last update',
-        readOnly: true,
-        title: 'Updated at',
-        'x-stream-index': '009',
-      }),
-    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
-    user_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of a user who reacted to a message',
-        title: 'User ID',
-        'x-stream-index': '004',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description: 'Represents user reaction to a message',
-    required: ['message_id', 'type', 'score', 'created_at', 'updated_at'],
-    title: 'Reaction',
-    'x-stream-docs-page-id': 'send_reaction',
-  })
-  .openapi('Reaction')
-
-type MessageType = {
-  attachments: z.infer<typeof AttachmentSchema>[]
-  before_message_send_failed?: boolean
-  cid: string
-  command?: string
-  created_at: string
-  deleted_at?: string
-  html: string
-  i18n?: { [key: string]: string }
-  id: string
-  image_labels?: { [key: string]: string[] }
-  latest_reactions: z.infer<typeof ReactionSchema>[]
-  mentioned_users: z.infer<typeof UserObjectSchema>[]
-  mml?: string
-  own_reactions: z.infer<typeof ReactionSchema>[]
-  parent_id?: string
-  pin_expires?: string
-  pinned: boolean
-  pinned_at?: string
-  pinned_by?: z.infer<typeof UserObjectSchema>
-  quoted_message?: MessageType
-  quoted_message_id?: string
-  reaction_counts: { [key: string]: number }
-  reaction_scores: { [key: string]: number }
-  reply_count: number
-  shadowed: boolean
-  show_in_channel?: boolean
-  silent: boolean
-  text: string
-  thread_participants?: z.infer<typeof UserObjectSchema>[]
-  type: 'regular' | 'ephemeral' | 'error' | 'reply' | 'system' | 'deleted'
-  updated_at: string
-  user?: z.infer<typeof UserObjectSchema>
-} | null
-
-const ActionRequestSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
-    style: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    text: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
-    type: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    value: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-  })
-  .nullable()
-  .openapi({ required: [] })
-  .openapi('ActionRequest')
-
-const FieldRequestSchema = z
-  .object({
-    short: z.boolean().exactOptional().openapi({ 'x-stream-index': '003' }),
-    title: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
-    value: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
-  })
-  .nullable()
-  .openapi({ required: [] })
-  .openapi('FieldRequest')
-
-const ImageDataRequestSchema = z
-  .object({
-    frames: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-    height: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    size: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    url: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
-    width: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ImageDataRequest')
-
-const ImagesRequestSchema = z
-  .object({
-    fixed_height: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '002' }),
-    fixed_height_downsampled: ImageDataRequestSchema.exactOptional().openapi({
-      'x-stream-index': '004',
-    }),
-    fixed_height_still: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '003' }),
-    fixed_width: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
-    fixed_width_downsampled: ImageDataRequestSchema.exactOptional().openapi({
-      'x-stream-index': '007',
-    }),
-    fixed_width_still: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '006' }),
-    original: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ImagesRequest')
-
-const AttachmentRequestSchema = z
-  .looseObject({
-    actions: z.array(ActionRequestSchema).exactOptional().openapi({ 'x-stream-index': '015' }),
-    asset_url: z.string().exactOptional().openapi({ 'x-stream-index': '017' }),
-    author_icon: z.string().exactOptional().openapi({ 'x-stream-index': '007' }),
-    author_link: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
-    author_name: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-    color: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    fallback: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
-    fields: z.array(FieldRequestSchema).exactOptional().openapi({ 'x-stream-index': '016' }),
-    footer: z.string().exactOptional().openapi({ 'x-stream-index': '013' }),
-    footer_icon: z.string().exactOptional().openapi({ 'x-stream-index': '014' }),
-    giphy: ImagesRequestSchema.exactOptional().openapi({ 'x-stream-index': '019' }),
-    image_url: z.string().exactOptional().openapi({ 'x-stream-index': '011' }),
-    og_scrape_url: z.string().exactOptional().openapi({ 'x-stream-index': '020' }),
-    original_height: z.number().exactOptional().openapi({ 'x-stream-index': '022' }),
-    original_width: z.number().exactOptional().openapi({ 'x-stream-index': '021' }),
-    pretext: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    text: z.string().exactOptional().openapi({ 'x-stream-index': '010' }),
-    thumb_url: z.string().exactOptional().openapi({ 'x-stream-index': '012' }),
-    title: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
-    title_link: z.string().exactOptional().openapi({ 'x-stream-index': '009' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Attachment type (e.g. image, video, url)',
-        title: 'Type',
-        'x-stream-index': '001',
-      }),
-  })
-  .nullable()
-  .openapi({ title: 'Attachment', 'x-stream-docs-page-id': 'file_uploads', required: [] })
-  .openapi('AttachmentRequest')
-
-const PushNotificationSettingsRequestSchema = z
-  .object({
-    disabled: z.boolean().exactOptional().openapi({ 'x-stream-index': '001' }),
-    disabled_until: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '002' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PushNotificationSettingsRequest')
-
-const UserObjectRequestSchema = z
-  .looseObject({
-    ban_expires: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Expiration date of the ban',
-        title: 'Ban expires',
-        'x-stream-index': '015',
-      }),
-    banned: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether a user is banned or not',
-        title: 'Banned',
-        'x-stream-index': '014',
-      }),
-    id: z
-      .string()
-      .openapi({ description: 'Unique user identifier', title: 'ID', 'x-stream-index': '003' }),
-    invisible: z.boolean().exactOptional().openapi({ 'x-stream-index': '021' }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Preferred language of a user',
-        title: 'Language',
-        'x-stream-index': '030',
-      }),
-    push_notifications: PushNotificationSettingsRequestSchema.exactOptional().openapi({
-      'x-stream-index': '023',
-    }),
-    revoke_tokens_issued_before: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Revocation date for tokens',
-        title: 'Revoke tokens issued before',
-        'x-stream-index': '037',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Determines the set of user permissions',
-        title: 'Role',
-        'x-stream-index': '004',
-      }),
-    teams: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'List of teams user is a part of',
-        title: 'Teams',
-        'x-stream-index': '031',
-      }),
-  })
-  .openapi({ description: 'Represents chat user', required: ['id'], title: 'User object' })
-  .openapi('UserObjectRequest')
-
-const ReactionRequestSchema = z
-  .looseObject({
-    message_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of a message user reacted to',
-        title: 'Message ID',
-        'x-stream-index': '003',
-      }),
-    score: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Reaction score. If not specified reaction has score of 1',
-        title: 'Score',
-        'x-stream-index': '007',
-      }),
-    type: z
-      .string()
-      .max(30)
-      .openapi({
-        description: "The type of reaction (e.g. 'like', 'laugh', 'wow')",
-        title: 'Type',
-        'x-stream-index': '006',
-      }),
-    user: UserObjectRequestSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
-    user_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of a user who reacted to a message',
-        title: 'User ID',
-        'x-stream-index': '004',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description: 'Represents user reaction to a message',
-    required: ['type'],
-    title: 'Reaction',
-    'x-stream-docs-page-id': 'send_reaction',
-  })
-  .openapi('ReactionRequest')
-
-type MessageRequest_1Type = {
-  attachments?: z.infer<typeof AttachmentRequestSchema>[]
-  before_message_send_failed?: boolean
-  cid?: string
-  command?: string
-  created_at?: string
-  deleted_at?: string
-  html?: string
-  i18n?: { [key: string]: string }
-  id?: string
-  image_labels?: { [key: string]: string[] }
-  latest_reactions?: z.infer<typeof ReactionRequestSchema>[]
-  mentioned_users?: z.infer<typeof UserObjectRequestSchema>[]
-  mml: string
-  own_reactions?: z.infer<typeof ReactionRequestSchema>[]
-  parent_id?: string
-  pin_expires?: string
-  pinned?: boolean
-  pinned_at?: string
-  pinned_by?: z.infer<typeof UserObjectRequestSchema>
-  quoted_message?: MessageRequest_1Type
-  quoted_message_id?: string
-  reaction_counts?: { [key: string]: number }
-  reaction_scores?: { [key: string]: number }
-  reply_count?: number
-  shadowed?: boolean
-  show_in_channel?: boolean
-  silent?: boolean
-  text: string
-  thread_participants?: z.infer<typeof UserObjectRequestSchema>[]
-  type?: 'regular' | 'ephemeral' | 'error' | 'reply' | 'system' | 'deleted'
-  updated_at?: string
-  user?: z.infer<typeof UserObjectRequestSchema>
-}
-
-const LabelThresholdsSchema = z
-  .object({
-    block: z
-      .float32()
-      .min(0)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description: 'Threshold for automatic message block',
-        title: 'Block',
-        'x-stream-index': '002',
-      }),
-    flag: z
-      .float32()
-      .min(0)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description: 'Threshold for automatic message flag',
-        title: 'Flag',
-        'x-stream-index': '001',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('LabelThresholds')
-
-type ThresholdsType = {
-  explicit?: z.infer<typeof LabelThresholdsSchema>
-  spam?: z.infer<typeof LabelThresholdsSchema>
-  toxic?: z.infer<typeof LabelThresholdsSchema>
-}
-
-const LabelThresholdsRequestSchema = z
-  .object({
-    block: z
-      .float32()
-      .min(0)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description: 'Threshold for automatic message block',
-        title: 'Block',
-        'x-stream-index': '002',
-      }),
-    flag: z
-      .float32()
-      .min(0)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description: 'Threshold for automatic message flag',
-        title: 'Flag',
-        'x-stream-index': '001',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('LabelThresholdsRequest')
-
-type ThresholdsRequestType = {
-  explicit?: z.infer<typeof LabelThresholdsRequestSchema>
-  spam?: z.infer<typeof LabelThresholdsRequestSchema>
-  toxic?: z.infer<typeof LabelThresholdsRequestSchema>
-}
-
-const APIErrorSchema = z
-  .object({
-    StatusCode: z
-      .number()
-      .openapi({
-        description: 'Response HTTP status code',
-        title: 'Status code',
-        'x-stream-index': '004',
-      }),
-    code: z
-      .number()
-      .openapi({ description: 'API error code', title: 'Code', 'x-stream-index': '001' }),
-    details: z
-      .array(z.number())
-      .openapi({
-        description: 'Additional error-specific information',
-        title: 'Details',
-        'x-stream-index': '007',
-      }),
-    duration: z
-      .string()
-      .openapi({ description: 'Request duration', title: 'Duration', 'x-stream-index': '005' }),
-    exception_fields: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Additional error info',
-        title: 'Exception fields',
-        'x-stream-index': '003',
-      }),
-    message: z
-      .string()
-      .openapi({
-        description: 'Message describing an error',
-        title: 'Message',
-        'x-stream-index': '002',
-      }),
-    more_info: z
-      .string()
-      .openapi({
-        description: 'URL with additional information',
-        title: 'More info',
-        'x-stream-index': '006',
-      }),
-  })
-  .nullable()
-  .openapi({
-    required: ['code', 'message', 'StatusCode', 'duration', 'more_info', 'details'],
-    title: 'Error response',
-  })
-  .openapi('APIError')
-
-const APNConfigFieldsSchema = z
-  .object({
-    auth_key: z.string().exactOptional().openapi({ 'x-stream-index': '009' }),
-    auth_type: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    bundle_id: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
-    development: z.boolean().openapi({ 'x-stream-index': '002' }),
-    enabled: z.boolean().openapi({ 'x-stream-index': '001' }),
-    host: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-    key_id: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
-    notification_template: z.string().openapi({ 'x-stream-index': '004' }),
-    p12_cert: z.string().exactOptional().openapi({ 'x-stream-index': '010' }),
-    team_id: z.string().exactOptional().openapi({ 'x-stream-index': '007' }),
-  })
-  .openapi({ required: ['enabled', 'development', 'notification_template'] })
-  .openapi('APNConfigFields')
-
-const APNConfigRequestSchema = z
-  .object({
-    Disabled: z.boolean().exactOptional().openapi({ writeOnly: true, 'x-stream-index': '005' }),
-    auth_key: z.string().exactOptional().openapi({ 'x-stream-index': '006.001' }),
-    auth_type: z
-      .enum(['certificate', 'token'])
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001' }),
-    bundle_id: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    development: z.boolean().exactOptional().openapi({ 'x-stream-index': '002' }),
-    host: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    key_id: z.string().exactOptional().openapi({ 'x-stream-index': '006.002' }),
-    notification_template: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
-    p12_cert: z.string().exactOptional().openapi({ 'x-stream-index': '007.001' }),
-    team_id: z.string().exactOptional().openapi({ 'x-stream-index': '006.003' }),
-  })
-  .openapi({ required: [] })
-  .openapi('APNConfigRequest')
-
-const AnyEventSchema = z
-  .object({
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
-    type: z.string().openapi({ 'x-stream-index': '001.001' }),
-  })
-  .nullable()
-  .openapi({ required: ['type', 'created_at'], title: 'AnyEvent', 'x-stream-is-event': true })
-  .openapi('AnyEvent')
-
-const ConfigSchema = z
-  .object({
-    app_certificate: z.string().openapi({ 'x-stream-index': '002' }),
-    app_id: z.string().openapi({ 'x-stream-index': '001' }),
-    default_role: z
-      .enum(['attendee', 'publisher', 'subscriber', 'admin'])
-      .exactOptional()
-      .openapi({ 'x-stream-index': '003' }),
-    role_map: z.record(z.string(), z.string()).exactOptional().openapi({ 'x-stream-index': '004' }),
-  })
-  .openapi({ required: ['app_id', 'app_certificate'] })
-  .openapi('Config')
-
-const ThresholdsSchema: z.ZodType<ThresholdsType> = z
-  .lazy(() =>
-    z
-      .object({
-        explicit: LabelThresholdsSchema.exactOptional().openapi({
-          description: 'Thresholds for explicit messages',
-          title: 'Explicit',
-          'x-stream-index': '001',
-        }),
-        spam: LabelThresholdsSchema.exactOptional().openapi({
-          description: 'Thresholds for spam',
-          title: 'Spam',
-          'x-stream-index': '002',
-        }),
-        toxic: LabelThresholdsSchema.exactOptional().openapi({
-          description: 'Thresholds for toxic messages',
-          title: 'Toxic',
-          'x-stream-index': '003',
-        }),
-      })
-      .openapi({
-        description: 'Sets thresholds for AI moderation',
-        title: 'Auto moderation thresholds',
-        required: [],
-      }),
-  )
-  .openapi('Thresholds')
-
-const ChannelConfigSchema = z
-  .object({
-    automod: z.enum(['disabled', 'simple', 'AI']).openapi({ 'x-stream-index': '001.017' }),
-    automod_behavior: z.enum(['flag', 'block']).openapi({ 'x-stream-index': '001.018' }),
-    automod_thresholds: ThresholdsSchema.exactOptional().openapi({ 'x-stream-index': '001.021' }),
-    blocklist: z.string().exactOptional().openapi({ 'x-stream-index': '001.019' }),
-    blocklist_behavior: z
-      .enum(['flag', 'block'])
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.020' }),
-    commands: z
-      .array(z.string())
-      .openapi({
-        description: 'List of commands that channel supports',
-        title: 'Commands',
-        'x-stream-index': '003',
-      }),
-    connect_events: z.boolean().openapi({ 'x-stream-index': '001.004' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.003' }),
-    custom_events: z.boolean().openapi({ 'x-stream-index': '001.012' }),
-    max_message_length: z.number().max(20000).openapi({ 'x-stream-index': '001.016' }),
-    message_retention: z.string().openapi({ 'x-stream-index': '001.015' }),
-    mutes: z.boolean().openapi({ 'x-stream-index': '001.009' }),
-    name: z.string().openapi({ 'x-stream-index': '001.001' }),
-    push_notifications: z.boolean().openapi({ 'x-stream-index': '001.013' }),
-    quotes: z.boolean().openapi({ 'x-stream-index': '001.008' }),
-    reactions: z.boolean().openapi({ 'x-stream-index': '001.006' }),
-    read_events: z.boolean().openapi({ 'x-stream-index': '001.003' }),
-    reminders: z.boolean().openapi({ 'x-stream-index': '001.014' }),
-    replies: z.boolean().openapi({ 'x-stream-index': '001.007' }),
-    search: z.boolean().openapi({ 'x-stream-index': '001.005' }),
-    typing_events: z.boolean().openapi({ 'x-stream-index': '001.002' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.004' }),
-    uploads: z.boolean().openapi({ 'x-stream-index': '001.010' }),
-    url_enrichment: z.boolean().openapi({ 'x-stream-index': '001.011' }),
-  })
-  .openapi({
-    required: [
-      'name',
-      'typing_events',
-      'read_events',
-      'connect_events',
-      'search',
-      'reactions',
-      'replies',
-      'quotes',
-      'mutes',
-      'uploads',
-      'url_enrichment',
-      'custom_events',
-      'push_notifications',
-      'reminders',
-      'message_retention',
-      'max_message_length',
-      'automod',
-      'automod_behavior',
-      'created_at',
-      'updated_at',
-      'commands',
-    ],
-  })
-  .openapi('ChannelConfig')
-
-const FileUploadConfigSchema = z
-  .object({
-    allowed_file_extensions: z.array(z.string()).openapi({ 'x-stream-index': '001' }),
-    allowed_mime_types: z.array(z.string()).openapi({ 'x-stream-index': '003' }),
-    blocked_file_extensions: z.array(z.string()).openapi({ 'x-stream-index': '002' }),
-    blocked_mime_types: z.array(z.string()).openapi({ 'x-stream-index': '004' }),
-  })
-  .openapi({
-    required: [
-      'allowed_file_extensions',
-      'blocked_file_extensions',
-      'allowed_mime_types',
-      'blocked_mime_types',
-    ],
-  })
-  .openapi('FileUploadConfig')
-
-const PolicySchema = z
-  .object({
-    action: z.number().openapi({ 'x-stream-index': '007' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '010' }),
-    name: z.string().openapi({ 'x-stream-index': '004' }),
-    owner: z.boolean().openapi({ 'x-stream-index': '008' }),
-    priority: z.number().openapi({ 'x-stream-index': '009' }),
-    resources: z.array(z.string()).openapi({ 'x-stream-index': '005' }),
-    roles: z.array(z.string()).openapi({ 'x-stream-index': '006' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '011' }),
-  })
-  .openapi({
-    required: [
-      'name',
-      'resources',
-      'roles',
-      'action',
-      'owner',
-      'priority',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('Policy')
-
-const FirebaseConfigFieldsSchema = z
-  .object({
-    apn_template: z.string().openapi({ 'x-stream-index': '004' }),
-    credentials_json: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
-    data_template: z.string().openapi({ 'x-stream-index': '003' }),
-    enabled: z.boolean().openapi({ 'x-stream-index': '001' }),
-    notification_template: z.string().openapi({ 'x-stream-index': '002' }),
-    server_key: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-  })
-  .openapi({ required: ['enabled', 'notification_template', 'data_template', 'apn_template'] })
-  .openapi('FirebaseConfigFields')
-
-const HuaweiConfigFieldsSchema = z
-  .object({
-    enabled: z.boolean().openapi({ 'x-stream-index': '001' }),
-    id: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
-    secret: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-  })
-  .openapi({ required: ['enabled'] })
-  .openapi('HuaweiConfigFields')
-
-const PushProviderSchema = z
-  .object({
-    apn_auth_key: z.string().exactOptional().openapi({ 'x-stream-index': '012' }),
-    apn_auth_type: z.string().exactOptional().openapi({ 'x-stream-index': '017' }),
-    apn_development: z.boolean().exactOptional().openapi({ 'x-stream-index': '018' }),
-    apn_host: z.string().exactOptional().openapi({ 'x-stream-index': '019' }),
-    apn_key_id: z.string().exactOptional().openapi({ 'x-stream-index': '013' }),
-    apn_notification_template: z.string().exactOptional().openapi({ 'x-stream-index': '020' }),
-    apn_p12_cert: z.string().exactOptional().openapi({ 'x-stream-index': '014' }),
-    apn_team_id: z.string().exactOptional().openapi({ 'x-stream-index': '015' }),
-    apn_topic: z.string().exactOptional().openapi({ 'x-stream-index': '016' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '008' }),
-    description: z.string().max(128).exactOptional().openapi({ 'x-stream-index': '007' }),
-    disabled_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '010' }),
-    disabled_reason: z.string().max(255).exactOptional().openapi({ 'x-stream-index': '011' }),
-    firebase_apn_template: z.string().exactOptional().openapi({ 'x-stream-index': '025' }),
-    firebase_credentials: z.string().exactOptional().openapi({ 'x-stream-index': '022' }),
-    firebase_data_template: z.string().exactOptional().openapi({ 'x-stream-index': '023' }),
-    firebase_notification_template: z.string().exactOptional().openapi({ 'x-stream-index': '024' }),
-    firebase_server_key: z.string().exactOptional().openapi({ 'x-stream-index': '021' }),
-    huawei_app_id: z.string().exactOptional().openapi({ 'x-stream-index': '026' }),
-    huawei_app_secret: z.string().exactOptional().openapi({ 'x-stream-index': '027' }),
-    name: z.string().min(1).max(36).openapi({ 'x-stream-index': '005' }),
-    type: z.number().openapi({ 'x-stream-index': '006' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '009' }),
-    xiaomi_app_secret: z.string().exactOptional().openapi({ 'x-stream-index': '029' }),
-    xiaomi_package_name: z.string().exactOptional().openapi({ 'x-stream-index': '028' }),
-  })
-  .nullable()
-  .openapi({ required: ['name', 'type', 'created_at', 'updated_at'] })
-  .openapi('PushProvider')
-
-const XiaomiConfigFieldsSchema = z
-  .object({
-    enabled: z.boolean().openapi({ 'x-stream-index': '001' }),
-    package_name: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
-    secret: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-  })
-  .openapi({ required: ['enabled'] })
-  .openapi('XiaomiConfigFields')
-
-const PushNotificationFieldsSchema = z
-  .object({
-    apn: APNConfigFieldsSchema.openapi({ 'x-stream-index': '002' }),
-    firebase: FirebaseConfigFieldsSchema.openapi({ 'x-stream-index': '003' }),
-    huawei: HuaweiConfigFieldsSchema.openapi({ 'x-stream-index': '004' }),
-    offline_only: z.boolean().openapi({ 'x-stream-index': '001.002' }),
-    providers: z.array(PushProviderSchema).exactOptional().openapi({ 'x-stream-index': '006' }),
-    version: z.string().openapi({ 'x-stream-index': '001.001' }),
-    xiaomi: XiaomiConfigFieldsSchema.openapi({ 'x-stream-index': '005' }),
-  })
-  .openapi({ required: ['version', 'offline_only', 'apn', 'firebase', 'huawei', 'xiaomi'] })
-  .openapi('PushNotificationFields')
-
-const AppSchema = z
-  .object({
-    agora_options: ConfigSchema.exactOptional().openapi({ 'x-stream-index': '001.034' }),
-    async_url_enrich_enabled: z.boolean().openapi({ 'x-stream-index': '001.015' }),
-    auto_translation_enabled: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.017' }),
-    before_message_send_hook_url: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.018' }),
-    campaign_enabled: z.boolean().openapi({ 'x-stream-index': '001.028' }),
-    cdn_expiration_seconds: z.number().openapi({ 'x-stream-index': '001.032' }),
-    channel_configs: z
-      .record(z.string(), ChannelConfigSchema)
-      .openapi({
-        description: 'Object with channel configs',
-        title: 'Channel configs',
-        'x-stream-index': '001.005',
-        'x-stream-map': { key: 'channel_type' },
-      }),
-    custom_action_handler_url: z.string().openapi({ 'x-stream-index': '001.019' }),
-    disable_auth_checks: z.boolean().openapi({ 'x-stream-index': '001.009' }),
-    disable_permissions_checks: z.boolean().openapi({ 'x-stream-index': '001.010' }),
-    enforce_unique_usernames: z.string().openapi({ 'x-stream-index': '001.020' }),
-    file_upload_config: FileUploadConfigSchema.openapi({ 'x-stream-index': '001.024' }),
-    grants: z.record(z.string(), z.array(z.string())).openapi({ 'x-stream-index': '001.027' }),
-    hms_options: ConfigSchema.exactOptional().openapi({ 'x-stream-index': '001.035' }),
-    image_moderation_enabled: z.boolean().openapi({ 'x-stream-index': '001.014' }),
-    image_moderation_labels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.016' }),
-    image_upload_config: FileUploadConfigSchema.openapi({ 'x-stream-index': '001.025' }),
-    multi_tenant_enabled: z.boolean().openapi({ 'x-stream-index': '001.013' }),
-    name: z.string().openapi({ 'x-stream-index': '001.001' }),
-    organization: z.string().openapi({ 'x-stream-index': '001.002' }),
-    permission_version: z.string().openapi({ 'x-stream-index': '001.011' }),
-    policies: z.record(z.string(), z.array(PolicySchema)).openapi({ 'x-stream-index': '001.006' }),
-    push_notifications: PushNotificationFieldsSchema.openapi({ 'x-stream-index': '001.003' }),
-    reminders_interval: z.number().openapi({ 'x-stream-index': '001.031' }),
-    revoke_tokens_issued_before: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.026' }),
-    search_backend: z
-      .enum(['elasticsearch', 'postgres', 'disabled'])
-      .openapi({
-        description: 'Backend implementation used for search',
-        title: 'Search Backend',
-        'x-stream-index': '001.029',
-      }),
-    sqs_key: z.string().openapi({ 'x-stream-index': '001.022' }),
-    sqs_secret: z.string().openapi({ 'x-stream-index': '001.023' }),
-    sqs_url: z.string().openapi({ 'x-stream-index': '001.021' }),
-    suspended: z.boolean().openapi({ 'x-stream-index': '001.007' }),
-    suspended_explanation: z.string().openapi({ 'x-stream-index': '001.008' }),
-    user_search_disallowed_roles: z.array(z.string()).openapi({ 'x-stream-index': '001.012' }),
-    video_provider: z.string().openapi({ 'x-stream-index': '001.033' }),
-    webhook_events: z.array(z.string()).openapi({ 'x-stream-index': '001.030' }),
-    webhook_url: z.string().openapi({ 'x-stream-index': '001.004' }),
-  })
-  .openapi({
-    required: [
-      'name',
-      'organization',
-      'push_notifications',
-      'webhook_url',
-      'channel_configs',
-      'policies',
-      'suspended',
-      'suspended_explanation',
-      'disable_auth_checks',
-      'disable_permissions_checks',
-      'permission_version',
-      'user_search_disallowed_roles',
-      'multi_tenant_enabled',
-      'image_moderation_enabled',
-      'async_url_enrich_enabled',
-      'custom_action_handler_url',
-      'enforce_unique_usernames',
-      'sqs_url',
-      'sqs_key',
-      'sqs_secret',
-      'file_upload_config',
-      'image_upload_config',
-      'grants',
-      'campaign_enabled',
-      'search_backend',
-      'webhook_events',
-      'reminders_interval',
-      'cdn_expiration_seconds',
-      'video_provider',
-    ],
-  })
-  .openapi('App')
-
-const AsyncModerationCallbackConfigRequestSchema = z
-  .object({
-    mode: z
-      .enum(['CALLBACK_MODE_NONE', 'CALLBACK_MODE_REST', 'CALLBACK_MODE_TWIRP'])
-      .exactOptional()
-      .openapi({ 'x-stream-index': '002' }),
-    server_url: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AsyncModerationCallbackConfigRequest')
-
-const AsyncModerationConfigurationRequestSchema = z
-  .object({
-    callback: AsyncModerationCallbackConfigRequestSchema.exactOptional().openapi({
-      'x-stream-index': '002',
-    }),
-    timeout_ms: z.number().exactOptional().openapi({ 'x-stream-index': '001' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AsyncModerationConfigurationRequest')
-
-const FlagMessageDetailsSchema = z
-  .object({
-    pin_changed: z.boolean().exactOptional().openapi({ 'x-stream-index': '002' }),
-    should_enrich: z.boolean().exactOptional().openapi({ 'x-stream-index': '003' }),
-    skip_push: z.boolean().exactOptional().openapi({ 'x-stream-index': '004' }),
-    updated_by_id: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FlagMessageDetails')
-
-const ModerationResponseSchema = z
-  .object({
-    action: z.string().openapi({ 'x-stream-index': '004' }),
-    explicit: z.float32().openapi({ 'x-stream-index': '002' }),
-    spam: z.float32().openapi({ 'x-stream-index': '003' }),
-    toxic: z.float32().openapi({ 'x-stream-index': '001' }),
-  })
-  .openapi({ required: ['toxic', 'explicit', 'spam', 'action'] })
-  .openapi('ModerationResponse')
-
-const MessageModerationResultSchema = z
-  .object({
-    action: z.string().openapi({ 'x-stream-index': '004' }),
-    ai_moderation_response: ModerationResponseSchema.exactOptional().openapi({
-      'x-stream-index': '009',
-    }),
-    blocked_word: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
-    blocklist_name: z.string().exactOptional().openapi({ 'x-stream-index': '007' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '012' }),
-    message_id: z.string().openapi({ 'x-stream-index': '003' }),
-    moderated_by: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-    moderation_thresholds: ThresholdsSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '013' }),
-    user_bad_karma: z.boolean().openapi({ 'x-stream-index': '011' }),
-    user_karma: z.float32().openapi({ 'x-stream-index': '010' }),
-  })
-  .openapi({
-    required: ['message_id', 'action', 'user_karma', 'user_bad_karma', 'created_at', 'updated_at'],
-  })
-  .openapi('MessageModerationResult')
-
-const AutomodDetailsSchema = z
-  .object({
-    action: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
-    image_labels: z.array(z.string()).exactOptional().openapi({ 'x-stream-index': '005' }),
-    message_details: FlagMessageDetailsSchema.exactOptional().openapi({ 'x-stream-index': '004' }),
-    original_message_type: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
-    result: MessageModerationResultSchema.exactOptional().openapi({ 'x-stream-index': '003' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AutomodDetails')
-
-const BanRequestSchema = z
-  .object({
-    banned_by: UserObjectRequestSchema.exactOptional().openapi({
-      description: 'User who issued a ban',
-      title: 'Banned by',
-      'x-stream-index': '009',
-    }),
-    banned_by_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'User ID who issued a ban',
-        title: 'Banned by ID',
-        'x-stream-index': '008',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Channel ID to ban user in', title: 'ID', 'x-stream-index': '005' }),
-    ip_ban: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether to perform IP ban or not',
-        title: 'IP ban',
-        'x-stream-index': '007',
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Ban reason', title: 'Reason', 'x-stream-index': '003' }),
-    shadow: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether to perform shadow ban or not',
-        title: 'Shadow',
-        'x-stream-index': '006',
-      }),
-    target_user_id: z
-      .string()
-      .openapi({
-        description: 'ID of user to ban',
-        title: 'Target user ID',
-        'x-stream-index': '001',
-      }),
-    timeout: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Timeout of ban in minutes. User will be unbanned after this period of time',
-        title: 'Timeout',
-        'x-stream-index': '002',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Channel type to ban user in',
-        title: 'Type',
-        'x-stream-index': '004',
-      }),
-    user: UserObjectRequestSchema.exactOptional().openapi({ 'x-stream-index': '010.002' }),
-    user_id: z.string().exactOptional().openapi({ 'x-stream-index': '010.001' }),
-  })
-  .nullable()
-  .openapi({ required: ['target_user_id'] })
-  .openapi('BanRequest')
-
-const CommandSchema = z
-  .object({
-    args: z
-      .string()
-      .openapi({
-        description: 'Arguments help text, shown in commands auto-completion',
-        title: 'Arguments',
-        'x-stream-index': '006',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of creation',
-        readOnly: true,
-        title: 'Created at',
-        'x-stream-index': '001',
-      }),
-    description: z
-      .string()
-      .openapi({
-        description: 'Description, shown in commands auto-completion',
-        title: 'Description',
-        'x-stream-index': '005',
-      }),
-    name: z
-      .string()
-      .openapi({ description: 'Unique command name', title: 'Name', 'x-stream-index': '004' }),
-    set: z
-      .string()
-      .openapi({
-        description: 'Set name used for grouping commands',
-        title: 'Set',
-        'x-stream-index': '007',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of the last update',
-        readOnly: true,
-        title: 'Updated at',
-        'x-stream-index': '002',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description: 'Represents custom chat command',
-    required: ['name', 'description', 'args', 'set'],
-    title: 'Command',
-  })
-  .openapi('Command')
-
-const ChannelConfigWithInfoSchema = z
-  .object({
-    automod: z.enum(['disabled', 'simple', 'AI']).openapi({ 'x-stream-index': '001.002.017' }),
-    automod_behavior: z.enum(['flag', 'block']).openapi({ 'x-stream-index': '001.002.018' }),
-    automod_thresholds: ThresholdsSchema.exactOptional().openapi({
-      'x-stream-index': '001.002.021',
-    }),
-    blocklist: z.string().exactOptional().openapi({ 'x-stream-index': '001.002.019' }),
-    blocklist_behavior: z
-      .enum(['flag', 'block'])
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.002.020' }),
-    commands: z.array(CommandSchema).openapi({ 'x-stream-index': '001.003' }),
-    connect_events: z.boolean().openapi({ 'x-stream-index': '001.002.004' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.001.003' }),
-    custom_events: z.boolean().openapi({ 'x-stream-index': '001.002.012' }),
-    grants: z
-      .record(z.string(), z.array(z.string()))
-      .exactOptional()
-      .openapi({
-        title: 'Grants',
-        'x-stream-index': '002',
-        'x-stream-map': {
-          description: 'List of grants modifiers that apply to a role',
-          key: 'role',
-          title: 'Grants',
-        },
-      }),
-    max_message_length: z.number().max(20000).openapi({ 'x-stream-index': '001.002.016' }),
-    message_retention: z.string().openapi({ 'x-stream-index': '001.002.015' }),
-    mutes: z.boolean().openapi({ 'x-stream-index': '001.002.009' }),
-    name: z.string().openapi({ 'x-stream-index': '001.002.001' }),
-    push_notifications: z.boolean().openapi({ 'x-stream-index': '001.002.013' }),
-    quotes: z.boolean().openapi({ 'x-stream-index': '001.002.008' }),
-    reactions: z.boolean().openapi({ 'x-stream-index': '001.002.006' }),
-    read_events: z.boolean().openapi({ 'x-stream-index': '001.002.003' }),
-    reminders: z.boolean().openapi({ 'x-stream-index': '001.002.014' }),
-    replies: z.boolean().openapi({ 'x-stream-index': '001.002.007' }),
-    search: z.boolean().openapi({ 'x-stream-index': '001.002.005' }),
-    typing_events: z.boolean().openapi({ 'x-stream-index': '001.002.002' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.001.004' }),
-    uploads: z.boolean().openapi({ 'x-stream-index': '001.002.010' }),
-    url_enrichment: z.boolean().openapi({ 'x-stream-index': '001.002.011' }),
-  })
-  .openapi({
-    required: [
-      'created_at',
-      'updated_at',
-      'name',
-      'typing_events',
-      'read_events',
-      'connect_events',
-      'search',
-      'reactions',
-      'replies',
-      'quotes',
-      'mutes',
-      'uploads',
-      'url_enrichment',
-      'custom_events',
-      'push_notifications',
-      'reminders',
-      'message_retention',
-      'max_message_length',
-      'automod',
-      'automod_behavior',
-      'commands',
-    ],
-  })
-  .openapi('ChannelConfigWithInfo')
 
 const ChannelMemberSchema = z
   .object({
@@ -1585,768 +572,6 @@ const ChannelResponseSchema = z
     title: 'Channel',
   })
   .openapi('ChannelResponse')
-
-const BanResponseSchema = z
-  .object({
-    banned_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '006' }),
-    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '007' }),
-    expires: z.iso.datetime({ offset: true }).exactOptional().openapi({ 'x-stream-index': '003' }),
-    reason: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    shadow: z.boolean().exactOptional().openapi({ 'x-stream-index': '005' }),
-    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '002' }),
-  })
-  .nullable()
-  .openapi({ required: ['created_at'] })
-  .openapi('BanResponse')
-
-const BlockListSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of creation',
-        title: 'Created at',
-        'x-stream-index': '004',
-      }),
-    name: z
-      .string()
-      .openapi({ description: 'Block list name', title: 'Name', 'x-stream-index': '006' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of the last update',
-        title: 'Updated at',
-        'x-stream-index': '005',
-      }),
-    words: z
-      .array(z.string())
-      .openapi({ description: 'List of words to block', title: 'Words', 'x-stream-index': '007' }),
-  })
-  .openapi({
-    description: 'Block list contains restricted words',
-    required: ['name', 'words'],
-    title: 'Block list',
-    'x-stream-docs-page-id': 'block_lists',
-  })
-  .openapi('BlockList')
-
-const CallSchema: z.ZodType<CallType> = z
-  .lazy(() =>
-    z
-      .object({
-        agora: AgoraCallSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
-        hms: HMSCallSchema.exactOptional().openapi({ 'x-stream-index': '004' }),
-        id: z.string().openapi({ 'x-stream-index': '002' }),
-        provider: z.string().openapi({ 'x-stream-index': '001' }),
-        type: z.string().openapi({ 'x-stream-index': '003' }),
-      })
-      .openapi({ required: ['provider', 'id', 'type'] }),
-  )
-  .openapi('Call')
-
-const CampaignSchema = z
-  .object({
-    attachments: z.array(AttachmentSchema).openapi({ 'x-stream-index': '005.007' }),
-    channel_type: z.string().max(64).openapi({ 'x-stream-index': '005.008' }),
-    completed_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '006.004' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '007' }),
-    defaults: z.record(z.string(), z.string()).openapi({ 'x-stream-index': '005.006' }),
-    description: z.string().max(1024).openapi({ 'x-stream-index': '005.002' }),
-    details: z.string().exactOptional().openapi({ 'x-stream-index': '006.011' }),
-    errored_messages: z.number().exactOptional().openapi({ 'x-stream-index': '006.009' }),
-    failed_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '006.005' }),
-    id: z.string().openapi({ 'x-stream-index': '003' }),
-    name: z.string().max(256).openapi({ 'x-stream-index': '005.001' }),
-    resumed_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '006.007' }),
-    scheduled_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '006.003' }),
-    scheduled_for: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '006.002' }),
-    segment_id: z.string().openapi({ 'x-stream-index': '005.004' }),
-    sender_id: z.string().openapi({ 'x-stream-index': '005.005' }),
-    sent_messages: z.number().exactOptional().openapi({ 'x-stream-index': '006.008' }),
-    status: z.string().exactOptional().openapi({ 'x-stream-index': '006.001' }),
-    stopped_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '006.006' }),
-    task_id: z.string().exactOptional().openapi({ 'x-stream-index': '006.010' }),
-    text: z.string().openapi({ 'x-stream-index': '005.003' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '008' }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'name',
-      'description',
-      'text',
-      'segment_id',
-      'sender_id',
-      'defaults',
-      'attachments',
-      'channel_type',
-      'created_at',
-      'updated_at',
-    ],
-  })
-  .openapi('Campaign')
-
-const CampaignDataRequestSchema = z
-  .object({
-    attachments: z
-      .array(AttachmentRequestSchema)
-      .exactOptional()
-      .openapi({ 'x-stream-index': '007' }),
-    channel_type: z.string().max(64).exactOptional().openapi({ 'x-stream-index': '008' }),
-    defaults: z.record(z.string(), z.string()).exactOptional().openapi({ 'x-stream-index': '006' }),
-    description: z.string().max(1024).exactOptional().openapi({ 'x-stream-index': '002' }),
-    name: z.string().max(256).openapi({ 'x-stream-index': '001' }),
-    segment_id: z.string().openapi({ 'x-stream-index': '004' }),
-    sender_id: z.string().openapi({ 'x-stream-index': '005' }),
-    text: z.string().openapi({ 'x-stream-index': '003' }),
-  })
-  .openapi({ required: ['name', 'text', 'segment_id', 'sender_id'] })
-  .openapi('CampaignDataRequest')
-
-const CampaignSortFieldSchema = z
-  .object({
-    field: z.string().openapi({ 'x-stream-index': '001' }),
-    value: z.any().openapi({ 'x-stream-index': '002' }),
-  })
-  .openapi({ required: ['field', 'value'] })
-  .openapi('CampaignSortField')
-
-const CampaignSortSchema = z
-  .object({
-    direction: z.enum(['asc', 'desc']).exactOptional().openapi({ 'x-stream-index': '001' }),
-    fields: z.array(CampaignSortFieldSchema).openapi({ 'x-stream-index': '002' }),
-  })
-  .openapi({ required: ['fields'] })
-  .openapi('CampaignSort')
-
-const CampaignUpdateableFieldsRequestSchema = z
-  .object({
-    attachments: z
-      .array(AttachmentRequestSchema)
-      .exactOptional()
-      .openapi({ 'x-stream-index': '007' }),
-    channel_type: z.string().max(64).exactOptional().openapi({ 'x-stream-index': '008' }),
-    defaults: z.record(z.string(), z.string()).exactOptional().openapi({ 'x-stream-index': '006' }),
-    description: z.string().max(1024).exactOptional().openapi({ 'x-stream-index': '002' }),
-    name: z.string().max(256).exactOptional().openapi({ 'x-stream-index': '001' }),
-    segment_id: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    sender_id: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-    text: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CampaignUpdateableFieldsRequest')
-
-const ChannelSchema = z
-  .looseObject({
-    auto_translation_enabled: z.boolean().exactOptional().openapi({ 'x-stream-index': '027' }),
-    auto_translation_language: z.string().openapi({ 'x-stream-index': '028' }),
-    cid: z.string().openapi({ 'x-stream-index': '003' }),
-    config: ChannelConfigSchema.exactOptional().openapi({ 'x-stream-index': '024' }),
-    config_overrides: ChannelConfigSchema.exactOptional().openapi({ 'x-stream-index': '025' }),
-    cooldown: z.number().exactOptional().openapi({ 'x-stream-index': '029' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '009' }),
-    created_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
-    deleted_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '011' }),
-    disabled: z.boolean().openapi({ 'x-stream-index': '016' }),
-    frozen: z.boolean().openapi({ 'x-stream-index': '015' }),
-    id: z.string().openapi({ 'x-stream-index': '004' }),
-    invites: z.array(ChannelMemberSchema).exactOptional().openapi({ 'x-stream-index': '020' }),
-    last_message_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '006' }),
-    member_count: z.number().exactOptional().openapi({ 'x-stream-index': '019' }),
-    members: z.array(ChannelMemberSchema).exactOptional().openapi({ 'x-stream-index': '018' }),
-    team: z.string().exactOptional().openapi({ 'x-stream-index': '026' }),
-    truncated_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '014' }),
-    type: z.string().openapi({ 'x-stream-index': '005' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '010' }),
-  })
-  .openapi({
-    required: [
-      'cid',
-      'id',
-      'type',
-      'created_at',
-      'updated_at',
-      'frozen',
-      'disabled',
-      'auto_translation_language',
-    ],
-  })
-  .openapi('Channel')
-
-const ChannelConfigRequestSchema = z
-  .object({
-    blocklist: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
-    blocklist_behavior: z
-      .enum(['flag', 'block'])
-      .exactOptional()
-      .openapi({ 'x-stream-index': '009' }),
-    commands: z.array(z.string()).exactOptional().openapi({ 'x-stream-index': '011' }),
-    grants: z
-      .record(z.string(), z.array(z.string()))
-      .exactOptional()
-      .openapi({
-        title: 'Grants',
-        'x-stream-index': '010',
-        'x-stream-map': {
-          description: 'List of grants modifiers that apply to a role',
-          key: 'role',
-          title: 'Grants',
-        },
-      }),
-    max_message_length: z
-      .number()
-      .max(20000)
-      .exactOptional()
-      .openapi({
-        description: 'Overrides max message length',
-        title: 'Max Message Length',
-        'x-stream-index': '007',
-      }),
-    quotes: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enables message quotes', title: 'Quotes', 'x-stream-index': '004' }),
-    reactions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Enables or disables reactions',
-        title: 'Reactions',
-        'x-stream-index': '002',
-      }),
-    replies: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Enables message replies (threads)',
-        title: 'Replies',
-        'x-stream-index': '003',
-      }),
-    typing_events: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Enables or disables typing events',
-        title: 'Typing events',
-        'x-stream-index': '001',
-      }),
-    uploads: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Enables or disables file uploads',
-        title: 'Uploads',
-        'x-stream-index': '005',
-      }),
-    url_enrichment: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Enables or disables URL enrichment',
-        title: 'URL Enrichment',
-        'x-stream-index': '006',
-      }),
-  })
-  .openapi({ description: 'Channel configuration overrides', required: [] })
-  .openapi('ChannelConfigRequest')
-
-const ThresholdsRequestSchema: z.ZodType<ThresholdsRequestType> = z
-  .lazy(() =>
-    z
-      .object({
-        explicit: LabelThresholdsRequestSchema.exactOptional().openapi({
-          description: 'Thresholds for explicit messages',
-          title: 'Explicit',
-          'x-stream-index': '001',
-        }),
-        spam: LabelThresholdsRequestSchema.exactOptional().openapi({
-          description: 'Thresholds for spam',
-          title: 'Spam',
-          'x-stream-index': '002',
-        }),
-        toxic: LabelThresholdsRequestSchema.exactOptional().openapi({
-          description: 'Thresholds for toxic messages',
-          title: 'Toxic',
-          'x-stream-index': '003',
-        }),
-      })
-      .openapi({
-        description: 'Sets thresholds for AI moderation',
-        title: 'Auto moderation thresholds',
-        required: [],
-      }),
-  )
-  .openapi('ThresholdsRequest')
-
-const CommandRequestSchema = z
-  .object({
-    args: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Arguments help text, shown in commands auto-completion',
-        title: 'Arguments',
-        'x-stream-index': '006',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Description, shown in commands auto-completion',
-        title: 'Description',
-        'x-stream-index': '005',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique command name', title: 'Name', 'x-stream-index': '004' }),
-    set: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Set name used for grouping commands',
-        title: 'Set',
-        'x-stream-index': '007',
-      }),
-  })
-  .nullable()
-  .openapi({ description: 'Represents custom chat command', title: 'Command', required: [] })
-  .openapi('CommandRequest')
-
-const ChannelConfigWithInfoRequestSchema = z
-  .object({
-    automod: z.enum(['disabled', 'simple', 'AI']).openapi({ 'x-stream-index': '001.002.017' }),
-    automod_behavior: z
-      .enum(['flag', 'block'])
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.002.018' }),
-    automod_thresholds: ThresholdsRequestSchema.exactOptional().openapi({
-      'x-stream-index': '001.002.021',
-    }),
-    blocklist: z.string().exactOptional().openapi({ 'x-stream-index': '001.002.019' }),
-    blocklist_behavior: z
-      .enum(['flag', 'block'])
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.002.020' }),
-    commands: z
-      .array(CommandRequestSchema)
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.003' }),
-    connect_events: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.004' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.001.003' }),
-    custom_events: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.012' }),
-    grants: z
-      .record(z.string(), z.array(z.string()))
-      .exactOptional()
-      .openapi({
-        title: 'Grants',
-        'x-stream-index': '002',
-        'x-stream-map': {
-          description: 'List of grants modifiers that apply to a role',
-          key: 'role',
-          title: 'Grants',
-        },
-      }),
-    max_message_length: z
-      .number()
-      .max(20000)
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.002.016' }),
-    message_retention: z.string().exactOptional().openapi({ 'x-stream-index': '001.002.015' }),
-    mutes: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.009' }),
-    name: z.string().exactOptional().openapi({ 'x-stream-index': '001.002.001' }),
-    push_notifications: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.013' }),
-    quotes: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.008' }),
-    reactions: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.006' }),
-    read_events: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.003' }),
-    reminders: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.014' }),
-    replies: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.007' }),
-    search: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.005' }),
-    typing_events: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.002' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.001.004' }),
-    uploads: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.010' }),
-    url_enrichment: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.011' }),
-  })
-  .openapi({ required: ['automod'] })
-  .openapi('ChannelConfigWithInfoRequest')
-
-const ChannelCreatedEventSchema = z
-  .object({
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
-    type: z.string().openapi({ 'x-stream-index': '001.001' }),
-  })
-  .nullable()
-  .openapi({
-    required: ['type', 'created_at'],
-    title: 'ChannelCreatedEvent',
-    'x-stream-is-event': true,
-  })
-  .openapi('ChannelCreatedEvent')
-
-const ChannelDeletedEventSchema = z
-  .object({
-    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '003.004' }),
-    channel_id: z.string().openapi({ 'x-stream-index': '003.002' }),
-    channel_type: z.string().openapi({ 'x-stream-index': '003.003' }),
-    cid: z.string().openapi({ 'x-stream-index': '003.001' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.002' }),
-    team: z.string().exactOptional().openapi({ 'x-stream-index': '001.001' }),
-    type: z.string().openapi({ 'x-stream-index': '002.001' }),
-  })
-  .nullable()
-  .openapi({
-    required: ['type', 'created_at', 'cid', 'channel_id', 'channel_type'],
-    title: 'ChannelDeletedEvent',
-    'x-stream-is-event': true,
-  })
-  .openapi('ChannelDeletedEvent')
-
-const ChannelExportRequestSchema = z
-  .object({
-    cid: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Channel ID', title: 'ID', 'x-stream-index': '002' }),
-    messages_since: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date to export messages since',
-        title: 'Messages since',
-        'x-stream-index': '004',
-      }),
-    messages_until: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date to export messages until',
-        title: 'Messages until',
-        'x-stream-index': '005',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Channel type', title: 'Type', 'x-stream-index': '001' }),
-  })
-  .openapi({ title: 'Channel Export', required: [] })
-  .openapi('ChannelExportRequest')
-
-const ChannelFrozenEventSchema = z
-  .object({
-    channel_id: z.string().openapi({ 'x-stream-index': '002.002' }),
-    channel_type: z.string().openapi({ 'x-stream-index': '002.003' }),
-    cid: z.string().openapi({ 'x-stream-index': '002.001' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
-    type: z.string().openapi({ 'x-stream-index': '001.001' }),
-  })
-  .openapi({
-    required: ['type', 'created_at', 'cid', 'channel_id', 'channel_type'],
-    title: 'ChannelFrozenEvent',
-    'x-stream-is-event': true,
-  })
-  .openapi('ChannelFrozenEvent')
-
-const ChannelMemberRequestSchema = z
-  .object({
-    ban_expires: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Expiration date of the ban',
-        title: 'Ban expires',
-        'x-stream-index': '015',
-      }),
-    banned: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether member is banned this channel or not',
-        title: 'Banned',
-        'x-stream-index': '014',
-      }),
-    channel_role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Role of the member in the channel',
-        title: 'Channel Role',
-        'x-stream-index': '019',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of creation',
-        title: 'Created at',
-        'x-stream-index': '010',
-      }),
-    deleted_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '012' }),
-    invite_accepted_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date when invite was accepted',
-        title: 'Invited accepted at',
-        'x-stream-index': '008',
-      }),
-    invite_rejected_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date when invite was rejected',
-        title: 'Invited rejected at',
-        'x-stream-index': '009',
-      }),
-    invited: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether member was invited or not',
-        title: 'Invited',
-        'x-stream-index': '007',
-      }),
-    is_moderator: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether member is channel moderator or not',
-        title: 'Is moderator',
-        'x-stream-index': '006',
-      }),
-    role: z
-      .enum(['member', 'moderator', 'admin', 'owner'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Permission level of the member in the channel (DEPRECATED: use channel_role instead)',
-        title: 'Role',
-        'x-stream-index': '018',
-      }),
-    shadow_banned: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether member is shadow banned in this channel or not',
-        title: 'Shadow banned',
-        'x-stream-index': '017',
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of the last update',
-        title: 'Updated at',
-        'x-stream-index': '011',
-      }),
-    user: UserObjectRequestSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
-    user_id: z.string().exactOptional().openapi({ title: 'User ID', 'x-stream-index': '004' }),
-  })
-  .nullable()
-  .openapi({ title: 'Channel member', required: [] })
-  .openapi('ChannelMemberRequest')
-
-const ChannelRequestSchema = z
-  .looseObject({
-    auto_translation_enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Enable or disable auto translation',
-        title: 'Auto translation',
-        'x-stream-index': '007',
-      }),
-    auto_translation_language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Switch auto translation language',
-        title: 'Auto translation language',
-        'x-stream-index': '008',
-      }),
-    config_overrides: ChannelConfigRequestSchema.exactOptional().openapi({
-      'x-stream-index': '026',
-    }),
-    created_by: UserObjectRequestSchema.exactOptional(),
-    disabled: z.boolean().exactOptional().openapi({ 'x-stream-index': '016' }),
-    frozen: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Freeze or unfreeze the channel',
-        title: 'Frozen',
-        'x-stream-index': '015',
-      }),
-    members: z
-      .array(ChannelMemberRequestSchema)
-      .exactOptional()
-      .openapi({ 'x-stream-index': '020' }),
-    own_capabilities: z.array(z.number()).exactOptional().openapi({ 'x-stream-index': '027' }),
-    team: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Team the channel belongs to (if multi-tenant mode is enabled)',
-        title: 'Team',
-        'x-stream-index': '006',
-      }),
-    truncated_at: z.array(z.number()).exactOptional().openapi({ 'x-stream-index': '014' }),
-    truncated_by: z.array(z.number()).exactOptional().openapi({ 'x-stream-index': '013' }),
-    truncated_by_id: z.string().exactOptional().openapi({ 'x-stream-index': '012' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ChannelRequest')
-
-const PaginationParamsRequestSchema = z
-  .object({
-    id_gt: z.number().exactOptional().openapi({ 'x-stream-index': '004' }),
-    id_gte: z.number().exactOptional().openapi({ 'x-stream-index': '003' }),
-    id_lt: z.number().exactOptional().openapi({ 'x-stream-index': '006' }),
-    id_lte: z.number().exactOptional().openapi({ 'x-stream-index': '005' }),
-    limit: z.number().min(0).exactOptional().openapi({ 'x-stream-index': '001' }),
-    offset: z.number().exactOptional().openapi({ 'x-stream-index': '002' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PaginationParamsRequest')
-
-const MessagePaginationParamsRequestSchema = z
-  .object({
-    created_at_after: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '008' }),
-    created_at_after_or_equal: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '007' }),
-    created_at_around: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '012' }),
-    created_at_before: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '010' }),
-    created_at_before_or_equal: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '009' }),
-    id_around: z.string().exactOptional().openapi({ 'x-stream-index': '011' }),
-    id_gt: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    id_gte: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    id_lt: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
-    id_lte: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
-    limit: z.number().min(0).exactOptional().openapi({ 'x-stream-index': '001' }),
-    offset: z.number().exactOptional().openapi({ 'x-stream-index': '002' }),
-  })
-  .openapi({ required: [] })
-  .openapi('MessagePaginationParamsRequest')
-
-const ChannelGetOrCreateRequestSchema = z
-  .object({
-    client_id: z.string().exactOptional().openapi({ 'x-stream-index': '001.002' }),
-    connection_id: z.string().exactOptional().openapi({ 'x-stream-index': '001.003' }),
-    data: ChannelRequestSchema.exactOptional().openapi({ 'x-stream-index': '004' }),
-    members: PaginationParamsRequestSchema.exactOptional().openapi({ 'x-stream-index': '009' }),
-    messages: MessagePaginationParamsRequestSchema.exactOptional().openapi({
-      'x-stream-index': '008',
-    }),
-    presence: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Fetch user presence info',
-        title: 'Presence',
-        'x-stream-index': '007',
-      }),
-    state: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Refresh channel state', title: 'State', 'x-stream-index': '006' }),
-    watch: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Start watching the channel',
-        title: 'Watch',
-        'x-stream-index': '005',
-      }),
-    watchers: PaginationParamsRequestSchema.exactOptional().openapi({ 'x-stream-index': '010' }),
-  })
-  .nullable()
-  .openapi({ required: [] })
-  .openapi('ChannelGetOrCreateRequest')
-
-const ChannelHiddenEventSchema = z
-  .object({
-    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '003.004' }),
-    channel_id: z.string().openapi({ 'x-stream-index': '003.002' }),
-    channel_type: z.string().openapi({ 'x-stream-index': '003.003' }),
-    cid: z.string().openapi({ 'x-stream-index': '003.001' }),
-    clear_history: z.boolean().openapi({ 'x-stream-index': '001' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '004.002' }),
-    type: z.string().openapi({ 'x-stream-index': '004.001' }),
-    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '002.001' }),
-  })
-  .nullable()
-  .openapi({
-    required: ['clear_history', 'cid', 'channel_id', 'channel_type', 'type', 'created_at'],
-    title: 'ChannelHiddenEvent',
-    'x-stream-is-event': true,
-  })
-  .openapi('ChannelHiddenEvent')
-
-const ChannelKickedEventSchema = z
-  .object({
-    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '002.004' }),
-    channel_id: z.string().openapi({ 'x-stream-index': '002.002' }),
-    channel_type: z.string().openapi({ 'x-stream-index': '002.003' }),
-    cid: z.string().openapi({ 'x-stream-index': '002.001' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
-    type: z.string().openapi({ 'x-stream-index': '001.001' }),
-  })
-  .openapi({
-    required: ['type', 'created_at', 'cid', 'channel_id', 'channel_type'],
-    title: 'ChannelKickedEvent',
-    'x-stream-is-event': true,
-  })
-  .openapi('ChannelKickedEvent')
 
 const MessageSchema: z.ZodType<MessageType> = z
   .lazy(() =>
@@ -2632,14 +857,266 @@ const MessageSchema: z.ZodType<MessageType> = z
   )
   .openapi('Message')
 
-const ChannelMessagesSchema = z
+const ChannelConfigSchema = z
   .object({
-    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
-    messages: z.array(MessageSchema).openapi({ 'x-stream-index': '002' }),
+    automod: z.enum(['disabled', 'simple', 'AI']).openapi({ 'x-stream-index': '001.017' }),
+    automod_behavior: z.enum(['flag', 'block']).openapi({ 'x-stream-index': '001.018' }),
+    automod_thresholds: ThresholdsSchema.exactOptional().openapi({ 'x-stream-index': '001.021' }),
+    blocklist: z.string().exactOptional().openapi({ 'x-stream-index': '001.019' }),
+    blocklist_behavior: z
+      .enum(['flag', 'block'])
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.020' }),
+    commands: z
+      .array(z.string())
+      .openapi({
+        description: 'List of commands that channel supports',
+        title: 'Commands',
+        'x-stream-index': '003',
+      }),
+    connect_events: z.boolean().openapi({ 'x-stream-index': '001.004' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.003' }),
+    custom_events: z.boolean().openapi({ 'x-stream-index': '001.012' }),
+    max_message_length: z.number().max(20000).openapi({ 'x-stream-index': '001.016' }),
+    message_retention: z.string().openapi({ 'x-stream-index': '001.015' }),
+    mutes: z.boolean().openapi({ 'x-stream-index': '001.009' }),
+    name: z.string().openapi({ 'x-stream-index': '001.001' }),
+    push_notifications: z.boolean().openapi({ 'x-stream-index': '001.013' }),
+    quotes: z.boolean().openapi({ 'x-stream-index': '001.008' }),
+    reactions: z.boolean().openapi({ 'x-stream-index': '001.006' }),
+    read_events: z.boolean().openapi({ 'x-stream-index': '001.003' }),
+    reminders: z.boolean().openapi({ 'x-stream-index': '001.014' }),
+    replies: z.boolean().openapi({ 'x-stream-index': '001.007' }),
+    search: z.boolean().openapi({ 'x-stream-index': '001.005' }),
+    typing_events: z.boolean().openapi({ 'x-stream-index': '001.002' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.004' }),
+    uploads: z.boolean().openapi({ 'x-stream-index': '001.010' }),
+    url_enrichment: z.boolean().openapi({ 'x-stream-index': '001.011' }),
+  })
+  .openapi({
+    required: [
+      'name',
+      'typing_events',
+      'read_events',
+      'connect_events',
+      'search',
+      'reactions',
+      'replies',
+      'quotes',
+      'mutes',
+      'uploads',
+      'url_enrichment',
+      'custom_events',
+      'push_notifications',
+      'reminders',
+      'message_retention',
+      'max_message_length',
+      'automod',
+      'automod_behavior',
+      'created_at',
+      'updated_at',
+      'commands',
+    ],
+  })
+  .openapi('ChannelConfig')
+
+const ChannelSchema = z
+  .looseObject({
+    auto_translation_enabled: z.boolean().exactOptional().openapi({ 'x-stream-index': '027' }),
+    auto_translation_language: z.string().openapi({ 'x-stream-index': '028' }),
+    cid: z.string().openapi({ 'x-stream-index': '003' }),
+    config: ChannelConfigSchema.exactOptional().openapi({ 'x-stream-index': '024' }),
+    config_overrides: ChannelConfigSchema.exactOptional().openapi({ 'x-stream-index': '025' }),
+    cooldown: z.number().exactOptional().openapi({ 'x-stream-index': '029' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '009' }),
+    created_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
+    deleted_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '011' }),
+    disabled: z.boolean().openapi({ 'x-stream-index': '016' }),
+    frozen: z.boolean().openapi({ 'x-stream-index': '015' }),
+    id: z.string().openapi({ 'x-stream-index': '004' }),
+    invites: z.array(ChannelMemberSchema).exactOptional().openapi({ 'x-stream-index': '020' }),
+    last_message_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '006' }),
+    member_count: z.number().exactOptional().openapi({ 'x-stream-index': '019' }),
+    members: z.array(ChannelMemberSchema).exactOptional().openapi({ 'x-stream-index': '018' }),
+    team: z.string().exactOptional().openapi({ 'x-stream-index': '026' }),
+    truncated_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '014' }),
+    type: z.string().openapi({ 'x-stream-index': '005' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '010' }),
+  })
+  .openapi({
+    required: [
+      'cid',
+      'id',
+      'type',
+      'created_at',
+      'updated_at',
+      'frozen',
+      'disabled',
+      'auto_translation_language',
+    ],
+  })
+  .openapi('Channel')
+
+const PendingMessageSchema = z
+  .object({
+    channel: ChannelSchema.exactOptional().openapi({ 'x-stream-index': '007' }),
+    message: MessageSchema.exactOptional().openapi({
+      description: 'The message',
+      title: 'Message',
+      'x-stream-index': '009',
+    }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional data attached to the pending message. This data is discarded once the pending message is committed.',
+        title: 'Metadata',
+        'x-stream-index': '010',
+      }),
+    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '002' }),
   })
   .nullable()
-  .openapi({ required: ['messages'] })
-  .openapi('ChannelMessages')
+  .openapi({ required: [] })
+  .openapi('PendingMessage')
+
+const ReadSchema = z
+  .object({
+    last_read: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002' }),
+    unread_messages: z.number().openapi({ 'x-stream-index': '003' }),
+    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
+  })
+  .nullable()
+  .openapi({ required: ['last_read', 'unread_messages'] })
+  .openapi('Read')
+
+type ChannelStateResponseType = {
+  channel?: z.infer<typeof ChannelResponseSchema>
+  duration: string
+  hidden?: boolean
+  hide_messages_before?: string
+  members: z.infer<typeof ChannelMemberSchema>[]
+  membership?: z.infer<typeof ChannelMemberSchema>
+  messages: z.infer<typeof MessageSchema>[]
+  pending_messages?: z.infer<typeof PendingMessageSchema>[]
+  pinned_messages: z.infer<typeof MessageSchema>[]
+  read?: z.infer<typeof ReadSchema>[]
+  watcher_count?: number
+  watchers?: z.infer<typeof UserObjectSchema>[]
+} | null
+
+type ChannelStateResponseFieldsType = {
+  channel?: z.infer<typeof ChannelResponseSchema>
+  hidden?: boolean
+  hide_messages_before?: string
+  members: z.infer<typeof ChannelMemberSchema>[]
+  membership?: z.infer<typeof ChannelMemberSchema>
+  messages: z.infer<typeof MessageSchema>[]
+  pending_messages?: z.infer<typeof PendingMessageSchema>[]
+  pinned_messages: z.infer<typeof MessageSchema>[]
+  read?: z.infer<typeof ReadSchema>[]
+  watcher_count?: number
+  watchers?: z.infer<typeof UserObjectSchema>[]
+}
+
+const ChannelStateResponseFieldsSchema: z.ZodType<ChannelStateResponseFieldsType> = z
+  .object({
+    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
+    hidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether this channel is hidden or not',
+        title: 'Hidden',
+        'x-stream-index': '009',
+      }),
+    hide_messages_before: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Messages before this date are hidden from the user',
+        title: 'Hide messages before',
+        'x-stream-index': '010',
+      }),
+    members: z
+      .array(ChannelMemberSchema)
+      .openapi({
+        description: 'List of channel members',
+        title: 'Members',
+        'x-stream-index': '007',
+      }),
+    membership: ChannelMemberSchema.exactOptional().openapi({
+      description: 'Current user membership object',
+      title: 'Membership',
+      'x-stream-index': '008',
+    }),
+    messages: z
+      .array(MessageSchema)
+      .openapi({
+        description: 'List of channel messages',
+        title: 'Message',
+        'x-stream-index': '002',
+      }),
+    pending_messages: z
+      .array(PendingMessageSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Pending messages that this user has sent',
+        title: 'Pending messages',
+        'x-stream-index': '011',
+      }),
+    pinned_messages: z
+      .array(MessageSchema)
+      .openapi({
+        description: 'List of pinned messages in the channel',
+        title: 'Pinned messages',
+        'x-stream-docs-page-id': 'pinned_messages',
+        'x-stream-index': '003',
+      }),
+    read: z
+      .array(ReadSchema)
+      .exactOptional()
+      .openapi({ description: 'List of read states', title: 'Read', 'x-stream-index': '006' }),
+    watcher_count: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Number of channel watchers',
+        title: 'Watcher count',
+        'x-stream-index': '004',
+      }),
+    watchers: z
+      .array(UserObjectSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of user who is watching the channel',
+        title: 'Watchers',
+        'x-stream-index': '005',
+      }),
+  })
+  .openapi({ required: ['messages', 'pinned_messages', 'members'] })
+  .openapi('ChannelStateResponseFields')
+
+type ChannelsResponseType = {
+  channels: z.infer<typeof ChannelStateResponseFieldsSchema>[]
+  duration: string
+} | null
+
+const ModerationResponseSchema = z
+  .object({
+    action: z.string().openapi({ 'x-stream-index': '004' }),
+    explicit: z.float32().openapi({ 'x-stream-index': '002' }),
+    spam: z.float32().openapi({ 'x-stream-index': '003' }),
+    toxic: z.float32().openapi({ 'x-stream-index': '001' }),
+  })
+  .openapi({ required: ['toxic', 'explicit', 'spam', 'action'] })
+  .openapi('ModerationResponse')
 
 const ChannelMuteSchema = z
   .object({
@@ -2675,6 +1152,573 @@ const ChannelMuteSchema = z
   .nullable()
   .openapi({ required: ['created_at', 'updated_at'] })
   .openapi('ChannelMute')
+
+const DeviceSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Date/time of creation',
+        title: 'Created at',
+        'x-stream-index': '002.002',
+      }),
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether device is disabled or not',
+        title: 'Disabled',
+        'x-stream-index': '002.003',
+      }),
+    disabled_reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Reason explaining why device had been disabled',
+        title: 'Reason',
+        'x-stream-index': '002.004',
+      }),
+    id: z.string().openapi({ 'x-stream-index': '002.001.004' }),
+    push_provider: z.string().openapi({ 'x-stream-index': '002.001.001' }),
+    push_provider_name: z.string().exactOptional().openapi({ 'x-stream-index': '002.001.003' }),
+    user_id: z.string().openapi({ 'x-stream-index': '004' }),
+  })
+  .nullable()
+  .openapi({ required: ['push_provider', 'id', 'created_at', 'user_id'], title: 'Device' })
+  .openapi('Device')
+
+const UserMuteSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Date/time of creation',
+        title: 'Created at',
+        'x-stream-index': '009',
+      }),
+    expires: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of mute expiration',
+        title: 'Expires',
+        'x-stream-index': '008',
+      }),
+    target: UserObjectSchema.exactOptional().openapi({
+      description: "User who's muted",
+      title: 'Target',
+      'x-stream-index': '007',
+    }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Date/time of the last update',
+        title: 'Updated at',
+        'x-stream-index': '010',
+      }),
+    user: UserObjectSchema.exactOptional().openapi({
+      description: 'Owner of channel mute',
+      title: 'User',
+      'x-stream-index': '005',
+    }),
+  })
+  .nullable()
+  .openapi({ required: ['created_at', 'updated_at'] })
+  .openapi('UserMute')
+
+type OwnUserType = {
+  banned: boolean
+  channel_mutes: z.infer<typeof ChannelMuteSchema>[]
+  created_at: string
+  deactivated_at?: string
+  deleted_at?: string
+  devices: z.infer<typeof DeviceSchema>[]
+  id: string
+  invisible?: boolean
+  language: string
+  last_active?: string
+  latest_hidden_channels?: string[]
+  mutes: z.infer<typeof UserMuteSchema>[]
+  online: boolean
+  push_notifications?: z.infer<typeof PushNotificationSettingsSchema>
+  role: string
+  teams?: string[]
+  total_unread_count: number
+  unread_channels: number
+  unread_count: number
+  updated_at: string
+}
+
+const OwnUserSchema: z.ZodType<OwnUserType> = z
+  .looseObject({
+    banned: z.boolean().openapi({ 'x-stream-index': '014' }),
+    channel_mutes: z.array(ChannelMuteSchema).openapi({ 'x-stream-index': '026' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '007' }),
+    deactivated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '012' }),
+    deleted_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '011' }),
+    devices: z.array(DeviceSchema).openapi({ 'x-stream-index': '024' }),
+    id: z.string().openapi({ 'x-stream-index': '003' }),
+    invisible: z.boolean().exactOptional().openapi({ 'x-stream-index': '021' }),
+    language: z.string().openapi({ 'x-stream-index': '030' }),
+    last_active: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '010' }),
+    latest_hidden_channels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ 'x-stream-index': '032' }),
+    mutes: z.array(UserMuteSchema).openapi({ 'x-stream-index': '025' }),
+    online: z.boolean().openapi({ 'x-stream-index': '020' }),
+    push_notifications: PushNotificationSettingsSchema.exactOptional().openapi({
+      'x-stream-index': '023',
+    }),
+    role: z.string().openapi({ 'x-stream-index': '004' }),
+    teams: z.array(z.string()).exactOptional().openapi({ 'x-stream-index': '031' }),
+    total_unread_count: z.number().openapi({ 'x-stream-index': '028' }),
+    unread_channels: z.number().openapi({ 'x-stream-index': '029' }),
+    unread_count: z.number().openapi({ 'x-stream-index': '027' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '008' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'role',
+      'created_at',
+      'updated_at',
+      'banned',
+      'online',
+      'devices',
+      'mutes',
+      'channel_mutes',
+      'unread_count',
+      'total_unread_count',
+      'unread_channels',
+      'language',
+    ],
+  })
+  .openapi('OwnUser')
+
+const ReactionSchema = z
+  .looseObject({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Date/time of creation',
+        readOnly: true,
+        title: 'Created at',
+        'x-stream-index': '008',
+      }),
+    message_id: z
+      .string()
+      .openapi({
+        description: 'ID of a message user reacted to',
+        title: 'Message ID',
+        'x-stream-index': '003',
+      }),
+    score: z
+      .number()
+      .openapi({
+        description: 'Reaction score. If not specified reaction has score of 1',
+        title: 'Score',
+        'x-stream-index': '007',
+      }),
+    type: z
+      .string()
+      .max(30)
+      .openapi({
+        description: "The type of reaction (e.g. 'like', 'laugh', 'wow')",
+        title: 'Type',
+        'x-stream-index': '006',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Date/time of the last update',
+        readOnly: true,
+        title: 'Updated at',
+        'x-stream-index': '009',
+      }),
+    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of a user who reacted to a message',
+        title: 'User ID',
+        'x-stream-index': '004',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description: 'Represents user reaction to a message',
+    required: ['message_id', 'type', 'score', 'created_at', 'updated_at'],
+    title: 'Reaction',
+    'x-stream-docs-page-id': 'send_reaction',
+  })
+  .openapi('Reaction')
+
+type EventType = {
+  automoderation?: boolean
+  automoderation_scores?: z.infer<typeof ModerationResponseSchema>
+  channel?: z.infer<typeof ChannelResponseSchema>
+  channel_id?: string
+  channel_type?: string
+  cid?: string
+  connection_id?: string
+  created_at: string
+  created_by?: z.infer<typeof UserObjectSchema>
+  me?: z.infer<typeof OwnUserSchema>
+  member?: z.infer<typeof ChannelMemberSchema>
+  message?: z.infer<typeof MessageSchema>
+  parent_id?: string
+  reaction?: z.infer<typeof ReactionSchema>
+  reason?: string
+  team?: string
+  type: string
+  user?: z.infer<typeof UserObjectSchema>
+  user_id?: string
+  watcher_count?: number
+}
+
+const ModerationResponseRequestSchema = z
+  .object({
+    action: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    explicit: z.float32().exactOptional().openapi({ 'x-stream-index': '002' }),
+    spam: z.float32().exactOptional().openapi({ 'x-stream-index': '003' }),
+    toxic: z.float32().exactOptional().openapi({ 'x-stream-index': '001' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ModerationResponseRequest')
+
+const LabelThresholdsRequestSchema = z
+  .object({
+    block: z
+      .float32()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description: 'Threshold for automatic message block',
+        title: 'Block',
+        'x-stream-index': '002',
+      }),
+    flag: z
+      .float32()
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description: 'Threshold for automatic message flag',
+        title: 'Flag',
+        'x-stream-index': '001',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('LabelThresholdsRequest')
+
+const ThresholdsRequestSchema = z
+  .object({
+    explicit: LabelThresholdsRequestSchema.exactOptional().openapi({
+      description: 'Thresholds for explicit messages',
+      title: 'Explicit',
+      'x-stream-index': '001',
+    }),
+    spam: LabelThresholdsRequestSchema.exactOptional().openapi({
+      description: 'Thresholds for spam',
+      title: 'Spam',
+      'x-stream-index': '002',
+    }),
+    toxic: LabelThresholdsRequestSchema.exactOptional().openapi({
+      description: 'Thresholds for toxic messages',
+      title: 'Toxic',
+      'x-stream-index': '003',
+    }),
+  })
+  .openapi({
+    description: 'Sets thresholds for AI moderation',
+    title: 'Auto moderation thresholds',
+    required: [],
+  })
+  .openapi('ThresholdsRequest')
+
+const CommandRequestSchema = z
+  .object({
+    args: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Arguments help text, shown in commands auto-completion',
+        title: 'Arguments',
+        'x-stream-index': '006',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Description, shown in commands auto-completion',
+        title: 'Description',
+        'x-stream-index': '005',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique command name', title: 'Name', 'x-stream-index': '004' }),
+    set: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Set name used for grouping commands',
+        title: 'Set',
+        'x-stream-index': '007',
+      }),
+  })
+  .nullable()
+  .openapi({ description: 'Represents custom chat command', title: 'Command', required: [] })
+  .openapi('CommandRequest')
+
+const ChannelConfigWithInfoRequestSchema = z
+  .object({
+    automod: z.enum(['disabled', 'simple', 'AI']).openapi({ 'x-stream-index': '001.002.017' }),
+    automod_behavior: z
+      .enum(['flag', 'block'])
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.002.018' }),
+    automod_thresholds: ThresholdsRequestSchema.exactOptional().openapi({
+      'x-stream-index': '001.002.021',
+    }),
+    blocklist: z.string().exactOptional().openapi({ 'x-stream-index': '001.002.019' }),
+    blocklist_behavior: z
+      .enum(['flag', 'block'])
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.002.020' }),
+    commands: z
+      .array(CommandRequestSchema)
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.003' }),
+    connect_events: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.004' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.001.003' }),
+    custom_events: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.012' }),
+    grants: z
+      .record(z.string(), z.array(z.string()))
+      .exactOptional()
+      .openapi({
+        title: 'Grants',
+        'x-stream-index': '002',
+        'x-stream-map': {
+          description: 'List of grants modifiers that apply to a role',
+          key: 'role',
+          title: 'Grants',
+        },
+      }),
+    max_message_length: z
+      .number()
+      .max(20000)
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.002.016' }),
+    message_retention: z.string().exactOptional().openapi({ 'x-stream-index': '001.002.015' }),
+    mutes: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.009' }),
+    name: z.string().exactOptional().openapi({ 'x-stream-index': '001.002.001' }),
+    push_notifications: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.013' }),
+    quotes: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.008' }),
+    reactions: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.006' }),
+    read_events: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.003' }),
+    reminders: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.014' }),
+    replies: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.007' }),
+    search: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.005' }),
+    typing_events: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.002' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.001.004' }),
+    uploads: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.010' }),
+    url_enrichment: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.002.011' }),
+  })
+  .openapi({ required: ['automod'] })
+  .openapi('ChannelConfigWithInfoRequest')
+
+const PushNotificationSettingsRequestSchema = z
+  .object({
+    disabled: z.boolean().exactOptional().openapi({ 'x-stream-index': '001' }),
+    disabled_until: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '002' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PushNotificationSettingsRequest')
+
+const UserObjectRequestSchema = z
+  .looseObject({
+    ban_expires: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Expiration date of the ban',
+        title: 'Ban expires',
+        'x-stream-index': '015',
+      }),
+    banned: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether a user is banned or not',
+        title: 'Banned',
+        'x-stream-index': '014',
+      }),
+    id: z
+      .string()
+      .openapi({ description: 'Unique user identifier', title: 'ID', 'x-stream-index': '003' }),
+    invisible: z.boolean().exactOptional().openapi({ 'x-stream-index': '021' }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Preferred language of a user',
+        title: 'Language',
+        'x-stream-index': '030',
+      }),
+    push_notifications: PushNotificationSettingsRequestSchema.exactOptional().openapi({
+      'x-stream-index': '023',
+    }),
+    revoke_tokens_issued_before: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Revocation date for tokens',
+        title: 'Revoke tokens issued before',
+        'x-stream-index': '037',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Determines the set of user permissions',
+        title: 'Role',
+        'x-stream-index': '004',
+      }),
+    teams: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'List of teams user is a part of',
+        title: 'Teams',
+        'x-stream-index': '031',
+      }),
+  })
+  .openapi({ description: 'Represents chat user', required: ['id'], title: 'User object' })
+  .openapi('UserObjectRequest')
+
+const ChannelMemberRequestSchema = z
+  .object({
+    ban_expires: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Expiration date of the ban',
+        title: 'Ban expires',
+        'x-stream-index': '015',
+      }),
+    banned: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether member is banned this channel or not',
+        title: 'Banned',
+        'x-stream-index': '014',
+      }),
+    channel_role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Role of the member in the channel',
+        title: 'Channel Role',
+        'x-stream-index': '019',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of creation',
+        title: 'Created at',
+        'x-stream-index': '010',
+      }),
+    deleted_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '012' }),
+    invite_accepted_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date when invite was accepted',
+        title: 'Invited accepted at',
+        'x-stream-index': '008',
+      }),
+    invite_rejected_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date when invite was rejected',
+        title: 'Invited rejected at',
+        'x-stream-index': '009',
+      }),
+    invited: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether member was invited or not',
+        title: 'Invited',
+        'x-stream-index': '007',
+      }),
+    is_moderator: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether member is channel moderator or not',
+        title: 'Is moderator',
+        'x-stream-index': '006',
+      }),
+    role: z
+      .enum(['member', 'moderator', 'admin', 'owner'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Permission level of the member in the channel (DEPRECATED: use channel_role instead)',
+        title: 'Role',
+        'x-stream-index': '018',
+      }),
+    shadow_banned: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether member is shadow banned in this channel or not',
+        title: 'Shadow banned',
+        'x-stream-index': '017',
+      }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of the last update',
+        title: 'Updated at',
+        'x-stream-index': '011',
+      }),
+    user: UserObjectRequestSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
+    user_id: z.string().exactOptional().openapi({ title: 'User ID', 'x-stream-index': '004' }),
+  })
+  .nullable()
+  .openapi({ title: 'Channel member', required: [] })
+  .openapi('ChannelMemberRequest')
 
 const ChannelResponseRequestSchema = z
   .looseObject({
@@ -2884,6 +1928,2136 @@ const ChannelMuteRequestSchema = z
   .openapi({ required: [] })
   .openapi('ChannelMuteRequest')
 
+const DeviceRequestSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of creation',
+        title: 'Created at',
+        'x-stream-index': '002.002',
+      }),
+    disabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether device is disabled or not',
+        title: 'Disabled',
+        'x-stream-index': '002.003',
+      }),
+    disabled_reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Reason explaining why device had been disabled',
+        title: 'Reason',
+        'x-stream-index': '002.004',
+      }),
+    id: z.string().exactOptional().openapi({ 'x-stream-index': '002.001.004' }),
+    push_provider: z.string().exactOptional().openapi({ 'x-stream-index': '002.001.001' }),
+    push_provider_name: z.string().exactOptional().openapi({ 'x-stream-index': '002.001.003' }),
+    user_id: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+  })
+  .nullable()
+  .openapi({ title: 'Device', required: [] })
+  .openapi('DeviceRequest')
+
+const UserMuteRequestSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of creation',
+        title: 'Created at',
+        'x-stream-index': '009',
+      }),
+    expires: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of mute expiration',
+        title: 'Expires',
+        'x-stream-index': '008',
+      }),
+    target: UserObjectRequestSchema.exactOptional().openapi({
+      description: "User who's muted",
+      title: 'Target',
+      'x-stream-index': '007',
+    }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of the last update',
+        title: 'Updated at',
+        'x-stream-index': '010',
+      }),
+    user: UserObjectRequestSchema.exactOptional().openapi({
+      description: 'Owner of channel mute',
+      title: 'User',
+      'x-stream-index': '005',
+    }),
+  })
+  .nullable()
+  .openapi({ required: [] })
+  .openapi('UserMuteRequest')
+
+type OwnUserRequestType = {
+  banned?: boolean
+  channel_mutes?: z.infer<typeof ChannelMuteRequestSchema>[]
+  created_at?: string
+  deactivated_at?: string
+  deleted_at?: string
+  devices?: z.infer<typeof DeviceRequestSchema>[]
+  id?: string
+  invisible?: boolean
+  language?: string
+  last_active?: string
+  latest_hidden_channels?: string[]
+  mutes?: z.infer<typeof UserMuteRequestSchema>[]
+  online?: boolean
+  push_notifications?: z.infer<typeof PushNotificationSettingsRequestSchema>
+  role?: string
+  teams?: string[]
+  total_unread_count?: number
+  unread_channels?: number
+  unread_count?: number
+  updated_at?: string
+}
+
+const OwnUserRequestSchema: z.ZodType<OwnUserRequestType> = z
+  .looseObject({
+    banned: z.boolean().exactOptional().openapi({ 'x-stream-index': '014' }),
+    channel_mutes: z
+      .array(ChannelMuteRequestSchema)
+      .exactOptional()
+      .openapi({ 'x-stream-index': '026' }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '007' }),
+    deactivated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '012' }),
+    deleted_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '011' }),
+    devices: z.array(DeviceRequestSchema).exactOptional().openapi({ 'x-stream-index': '024' }),
+    id: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    invisible: z.boolean().exactOptional().openapi({ 'x-stream-index': '021' }),
+    language: z.string().exactOptional().openapi({ 'x-stream-index': '030' }),
+    last_active: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '010' }),
+    latest_hidden_channels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ 'x-stream-index': '032' }),
+    mutes: z.array(UserMuteRequestSchema).exactOptional().openapi({ 'x-stream-index': '025' }),
+    online: z.boolean().exactOptional().openapi({ 'x-stream-index': '020' }),
+    push_notifications: PushNotificationSettingsRequestSchema.exactOptional().openapi({
+      'x-stream-index': '023',
+    }),
+    role: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    teams: z.array(z.string()).exactOptional().openapi({ 'x-stream-index': '031' }),
+    total_unread_count: z.number().exactOptional().openapi({ 'x-stream-index': '028' }),
+    unread_channels: z.number().exactOptional().openapi({ 'x-stream-index': '029' }),
+    unread_count: z.number().exactOptional().openapi({ 'x-stream-index': '027' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '008' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OwnUserRequest')
+
+const MessageRequest_1Schema: z.ZodType<MessageRequest_1Type> = z
+  .lazy(() =>
+    z
+      .looseObject({
+        attachments: z
+          .array(AttachmentRequestSchema)
+          .exactOptional()
+          .openapi({
+            description: 'Array of message attachments',
+            title: 'Message attachments',
+            'x-stream-docs-page-id': 'message_format#attachment-format',
+            'x-stream-index': '011',
+          }),
+        before_message_send_failed: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether `before_message_send webhook` failed or not. Field is only accessible in push webhook',
+            title: 'Before Message Send Failed',
+            'x-stream-docs-page-id': 'before_message_send_webhook',
+            'x-stream-index': '041',
+          }),
+        cid: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Channel unique identifier in <type>:<id> format',
+            title: 'Channel CID',
+            'x-stream-index': '025',
+          }),
+        command: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Contains provided slash command',
+            title: 'Command',
+            'x-stream-docs-page-id': 'custom_commands_webhook',
+            'x-stream-index': '006',
+          }),
+        created_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Date/time of creation',
+            title: 'Created at',
+            'x-stream-index': '027',
+          }),
+        deleted_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Date/time of deletion',
+            title: 'Deleted at',
+            'x-stream-index': '029',
+          }),
+        html: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Contains HTML markup of the message. Can only be set when using server-side API',
+            title: 'HTML content',
+            'x-stream-index': '007',
+          }),
+        i18n: z
+          .record(z.string(), z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'Object with translations. Key `language` contains the original language key. Other keys contain translations',
+            title: 'Internationalization info',
+            'x-stream-docs-page-id': 'translation',
+            'x-stream-index': '039',
+          }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Message ID is unique string identifier of the message',
+            title: 'ID',
+            'x-stream-index': '002',
+          }),
+        image_labels: z
+          .record(z.string(), z.array(z.string()))
+          .exactOptional()
+          .openapi({
+            description: 'Contains image moderation information',
+            title: 'Image moderation labels',
+            'x-stream-index': '035',
+          }),
+        latest_reactions: z
+          .array(ReactionRequestSchema)
+          .exactOptional()
+          .openapi({
+            description: 'List of 10 latest reactions to this message',
+            title: 'Latest reactions',
+            'x-stream-index': '012',
+          }),
+        mentioned_users: z
+          .array(UserObjectRequestSchema)
+          .exactOptional()
+          .openapi({
+            description: 'List of mentioned users',
+            title: 'Mentioned Users',
+            'x-stream-index': '038',
+          }),
+        mml: z
+          .string()
+          .openapi({
+            description:
+              'Should be empty if `text` is provided. Can only be set when using server-side API',
+            title: 'Messaging Markup Language',
+            'x-stream-docs-page-id': 'mml_overview',
+            'x-stream-index': '005',
+          }),
+        own_reactions: z
+          .array(ReactionRequestSchema)
+          .exactOptional()
+          .openapi({
+            description: 'List of 10 latest reactions of authenticated user to this message',
+            title: 'Own reactions',
+            'x-stream-index': '013',
+          }),
+        parent_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'ID of parent message (thread)',
+            title: 'Parent message ID',
+            'x-stream-docs-page-id': 'threads',
+            'x-stream-index': '017',
+          }),
+        pin_expires: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Date when pinned message expires',
+            title: 'Pin expiration date',
+            'x-stream-docs-page-id': 'pinned_messages',
+            'x-stream-index': '046',
+          }),
+        pinned: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether message is pinned or not',
+            title: 'Pinned',
+            'x-stream-docs-page-id': 'pinned_messages',
+            'x-stream-index': '042',
+          }),
+        pinned_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Date when message got pinned',
+            title: 'Pinned at',
+            'x-stream-docs-page-id': 'pinned_messages',
+            'x-stream-index': '043',
+          }),
+        pinned_by: UserObjectRequestSchema.exactOptional().openapi({
+          description: 'Contains user who pinned the message',
+          title: 'Pinned by',
+          'x-stream-docs-page-id': 'pinned_messages',
+          'x-stream-index': '045',
+        }),
+        quoted_message: MessageRequest_1Schema.exactOptional().openapi({
+          description: 'Contains quoted message',
+          title: 'Quoted message',
+          'x-stream-docs-page-id': 'threads#quote-message',
+          'x-stream-index': '022',
+        }),
+        quoted_message_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            title: 'ID of quoted message',
+            'x-stream-docs-page-id': 'threads#quote-message',
+            'x-stream-index': '021',
+          }),
+        reaction_counts: z
+          .record(z.string(), z.number())
+          .exactOptional()
+          .openapi({
+            description:
+              'An object containing number of reactions of each type. Key: reaction type (string), value: number of reactions (int)',
+            title: 'Reaction counts',
+            'x-stream-index': '014',
+          }),
+        reaction_scores: z
+          .record(z.string(), z.number())
+          .exactOptional()
+          .openapi({
+            description:
+              'An object containing scores of reactions of each type. Key: reaction type (string), value: total score of reactions (int)',
+            title: 'Reaction scores',
+            'x-stream-index': '015',
+          }),
+        reply_count: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description: 'Number of replies to this message',
+            title: 'Reply count',
+            'x-stream-index': '020',
+          }),
+        shadowed: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether the message was shadowed or not',
+            title: 'Shadowed',
+            'x-stream-docs-page-id': 'moderation#shadow-ban',
+            'x-stream-index': '031',
+          }),
+        show_in_channel: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether thread reply should be shown in the channel as well',
+            title: 'Show in channel',
+            'x-stream-docs-page-id': 'threads',
+            'x-stream-index': '019',
+          }),
+        silent: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether message is silent or not',
+            title: 'Silent',
+            'x-stream-index': '040',
+          }),
+        text: z
+          .string()
+          .openapi({
+            description: 'Text of the message. Should be empty if `mml` is provided',
+            title: 'Text',
+            'x-stream-index': '004',
+          }),
+        thread_participants: z
+          .array(UserObjectRequestSchema)
+          .exactOptional()
+          .openapi({
+            description: 'List of users who participate in thread',
+            title: 'Thread participants',
+            'x-stream-docs-page-id': 'threads#quote-message',
+            'x-stream-index': '024',
+          }),
+        type: z
+          .enum(['regular', 'ephemeral', 'error', 'reply', 'system', 'deleted'])
+          .exactOptional()
+          .openapi({
+            description: 'Contains type of the message',
+            title: 'Message Type',
+            'x-stream-docs-page-id': 'message_format#message-types',
+            'x-stream-index': '008',
+          }),
+        updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description: 'Date/time of the last update',
+            title: 'Updated at',
+            'x-stream-index': '028',
+          }),
+        user: UserObjectRequestSchema.exactOptional().openapi({
+          description: 'Sender of the message. Required when using server-side API',
+          title: 'User object',
+          'x-stream-index': '010',
+        }),
+      })
+      .openapi({
+        description: 'Represents any chat message',
+        required: ['text', 'mml'],
+        title: 'Message',
+        'x-stream-docs-page-id': 'send_message',
+      }),
+  )
+  .openapi('MessageRequest_1')
+
+const ReactionRequestSchema = z
+  .looseObject({
+    message_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of a message user reacted to',
+        title: 'Message ID',
+        'x-stream-index': '003',
+      }),
+    score: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Reaction score. If not specified reaction has score of 1',
+        title: 'Score',
+        'x-stream-index': '007',
+      }),
+    type: z
+      .string()
+      .max(30)
+      .openapi({
+        description: "The type of reaction (e.g. 'like', 'laugh', 'wow')",
+        title: 'Type',
+        'x-stream-index': '006',
+      }),
+    user: UserObjectRequestSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
+    user_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of a user who reacted to a message',
+        title: 'User ID',
+        'x-stream-index': '004',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description: 'Represents user reaction to a message',
+    required: ['type'],
+    title: 'Reaction',
+    'x-stream-docs-page-id': 'send_reaction',
+  })
+  .openapi('ReactionRequest')
+
+type EventRequestType = {
+  automoderation?: boolean
+  automoderation_scores?: z.infer<typeof ModerationResponseRequestSchema>
+  channel?: z.infer<typeof ChannelResponseRequestSchema>
+  channel_id?: string
+  channel_type?: string
+  cid?: string
+  connection_id?: string
+  created_at?: string
+  created_by?: z.infer<typeof UserObjectRequestSchema>
+  me?: z.infer<typeof OwnUserRequestSchema>
+  member?: z.infer<typeof ChannelMemberRequestSchema>
+  message?: z.infer<typeof MessageRequest_1Schema>
+  parent_id?: string
+  reaction?: z.infer<typeof ReactionRequestSchema>
+  reason?: string
+  team?: string
+  type: string
+  user?: z.infer<typeof UserObjectRequestSchema>
+  user_id?: string
+  watcher_count?: number
+}
+
+const EventSchema: z.ZodType<EventType> = z
+  .looseObject({
+    automoderation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Only applicable to `message.flagged` BaseEvent.',
+        title: 'Auto moderation',
+        'x-stream-index': '016',
+      }),
+    automoderation_scores: ModerationResponseSchema.exactOptional().openapi({
+      description: 'Only applicable to `message.flagged` BaseEvent.',
+      title: 'Auto moderation scores',
+      'x-stream-index': '017',
+    }),
+    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
+    channel_id: z
+      .string()
+      .exactOptional()
+      .openapi({ title: 'Channel ID', 'x-stream-index': '004' }),
+    channel_type: z
+      .string()
+      .exactOptional()
+      .openapi({ title: 'Channel type', 'x-stream-index': '005' }),
+    cid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Channel CID (<type>:<id>)', title: 'CID', 'x-stream-index': '003' }),
+    connection_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Only applicable to `health.check` BaseEvent',
+        title: 'Connection ID',
+        'x-stream-index': '002',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'Date/time of creation',
+        title: 'Created at',
+        'x-stream-index': '021',
+      }),
+    created_by: UserObjectSchema.exactOptional().openapi({
+      description:
+        'User who issued moderation action. Only applicable to moderation-related events',
+      title: 'Created by',
+      'x-stream-index': '015',
+    }),
+    me: OwnUserSchema.exactOptional().openapi({ 'x-stream-index': '012' }),
+    member: ChannelMemberSchema.exactOptional().openapi({ 'x-stream-index': '009' }),
+    message: MessageSchema.exactOptional().openapi({ 'x-stream-index': '006' }),
+    parent_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of thread. Used in typing events',
+        title: 'Parent ID',
+        'x-stream-index': '018',
+      }),
+    reaction: ReactionSchema.exactOptional().openapi({ 'x-stream-index': '007' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Ban reason. Only applicable to `user.banned` BaseEvent',
+        title: 'Reason',
+        'x-stream-index': '014',
+      }),
+    team: z.string().exactOptional().openapi({ 'x-stream-index': '019' }),
+    type: z
+      .string()
+      .openapi({
+        description: 'Event type. To use custom BaseEvent types see Custom Events documentation',
+        title: 'Type',
+        'x-stream-docs-page-id': 'custom_events',
+        'x-stream-index': '001',
+      }),
+    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '010' }),
+    user_id: z.string().exactOptional().openapi({ title: 'User ID', 'x-stream-index': '011' }),
+    watcher_count: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Number of watchers who received this BaseEvent',
+        title: 'Watcher count',
+        'x-stream-index': '013',
+      }),
+  })
+  .openapi({
+    description: 'Represents an BaseEvent that happened in Stream Chat',
+    required: ['type', 'created_at'],
+    title: 'Event',
+    'x-stream-docs-page-id': 'event_object',
+  })
+  .openapi('Event')
+
+type EventResponseType = { duration: string; event?: z.infer<typeof EventSchema> } | null
+
+type HealthCheckEventType = {
+  cid: string
+  created_at: string
+  me?: z.infer<typeof OwnUserSchema>
+  type: string
+}
+
+type MarkReadResponseType = { duration: string; event?: z.infer<typeof EventSchema> } | null
+
+const ActionSchema = z
+  .object({
+    name: z.string().openapi({ 'x-stream-index': '001' }),
+    style: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    text: z.string().openapi({ 'x-stream-index': '002' }),
+    type: z.string().openapi({ 'x-stream-index': '004' }),
+    value: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'text', 'type'] })
+  .openapi('Action')
+
+const FieldSchema = z
+  .object({
+    short: z.boolean().openapi({ 'x-stream-index': '003' }),
+    title: z.string().openapi({ 'x-stream-index': '001' }),
+    value: z.string().openapi({ 'x-stream-index': '002' }),
+  })
+  .nullable()
+  .openapi({ required: ['title', 'value', 'short'] })
+  .openapi('Field')
+
+const ImageDataSchema = z
+  .object({
+    frames: z.string().openapi({ 'x-stream-index': '005' }),
+    height: z.string().openapi({ 'x-stream-index': '003' }),
+    size: z.string().openapi({ 'x-stream-index': '004' }),
+    url: z.string().openapi({ 'x-stream-index': '001' }),
+    width: z.string().openapi({ 'x-stream-index': '002' }),
+  })
+  .openapi({ required: ['url', 'width', 'height', 'size', 'frames'] })
+  .openapi('ImageData')
+
+const ImagesSchema = z
+  .object({
+    fixed_height: ImageDataSchema.openapi({ 'x-stream-index': '002' }),
+    fixed_height_downsampled: ImageDataSchema.openapi({ 'x-stream-index': '004' }),
+    fixed_height_still: ImageDataSchema.openapi({ 'x-stream-index': '003' }),
+    fixed_width: ImageDataSchema.openapi({ 'x-stream-index': '005' }),
+    fixed_width_downsampled: ImageDataSchema.openapi({ 'x-stream-index': '007' }),
+    fixed_width_still: ImageDataSchema.openapi({ 'x-stream-index': '006' }),
+    original: ImageDataSchema.openapi({ 'x-stream-index': '001' }),
+  })
+  .openapi({
+    required: [
+      'original',
+      'fixed_height',
+      'fixed_height_still',
+      'fixed_height_downsampled',
+      'fixed_width',
+      'fixed_width_still',
+      'fixed_width_downsampled',
+    ],
+  })
+  .openapi('Images')
+
+const AttachmentSchema = z
+  .looseObject({
+    actions: z.array(ActionSchema).exactOptional().openapi({ 'x-stream-index': '015' }),
+    asset_url: z.string().exactOptional().openapi({ 'x-stream-index': '017' }),
+    author_icon: z.string().exactOptional().openapi({ 'x-stream-index': '007' }),
+    author_link: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
+    author_name: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+    color: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    fallback: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
+    fields: z.array(FieldSchema).exactOptional().openapi({ 'x-stream-index': '016' }),
+    footer: z.string().exactOptional().openapi({ 'x-stream-index': '013' }),
+    footer_icon: z.string().exactOptional().openapi({ 'x-stream-index': '014' }),
+    giphy: ImagesSchema.exactOptional().openapi({ 'x-stream-index': '019' }),
+    image_url: z.string().exactOptional().openapi({ 'x-stream-index': '011' }),
+    og_scrape_url: z.string().exactOptional().openapi({ 'x-stream-index': '020' }),
+    original_height: z.number().exactOptional().openapi({ 'x-stream-index': '022' }),
+    original_width: z.number().exactOptional().openapi({ 'x-stream-index': '021' }),
+    pretext: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    text: z.string().exactOptional().openapi({ 'x-stream-index': '010' }),
+    thumb_url: z.string().exactOptional().openapi({ 'x-stream-index': '012' }),
+    title: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
+    title_link: z.string().exactOptional().openapi({ 'x-stream-index': '009' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Attachment type (e.g. image, video, url)',
+        title: 'Type',
+        'x-stream-index': '001',
+      }),
+  })
+  .nullable()
+  .openapi({ title: 'Attachment', 'x-stream-docs-page-id': 'file_uploads', required: [] })
+  .openapi('Attachment')
+
+type MessageType = {
+  attachments: z.infer<typeof AttachmentSchema>[]
+  before_message_send_failed?: boolean
+  cid: string
+  command?: string
+  created_at: string
+  deleted_at?: string
+  html: string
+  i18n?: { [key: string]: string }
+  id: string
+  image_labels?: { [key: string]: string[] }
+  latest_reactions: z.infer<typeof ReactionSchema>[]
+  mentioned_users: z.infer<typeof UserObjectSchema>[]
+  mml?: string
+  own_reactions: z.infer<typeof ReactionSchema>[]
+  parent_id?: string
+  pin_expires?: string
+  pinned: boolean
+  pinned_at?: string
+  pinned_by?: z.infer<typeof UserObjectSchema>
+  quoted_message?: MessageType
+  quoted_message_id?: string
+  reaction_counts: { [key: string]: number }
+  reaction_scores: { [key: string]: number }
+  reply_count: number
+  shadowed: boolean
+  show_in_channel?: boolean
+  silent: boolean
+  text: string
+  thread_participants?: z.infer<typeof UserObjectSchema>[]
+  type: 'regular' | 'ephemeral' | 'error' | 'reply' | 'system' | 'deleted'
+  updated_at: string
+  user?: z.infer<typeof UserObjectSchema>
+} | null
+
+const ActionRequestSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
+    style: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    text: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
+    type: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    value: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+  })
+  .nullable()
+  .openapi({ required: [] })
+  .openapi('ActionRequest')
+
+const FieldRequestSchema = z
+  .object({
+    short: z.boolean().exactOptional().openapi({ 'x-stream-index': '003' }),
+    title: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
+    value: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
+  })
+  .nullable()
+  .openapi({ required: [] })
+  .openapi('FieldRequest')
+
+const ImageDataRequestSchema = z
+  .object({
+    frames: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+    height: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    size: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    url: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
+    width: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ImageDataRequest')
+
+const ImagesRequestSchema = z
+  .object({
+    fixed_height: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '002' }),
+    fixed_height_downsampled: ImageDataRequestSchema.exactOptional().openapi({
+      'x-stream-index': '004',
+    }),
+    fixed_height_still: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '003' }),
+    fixed_width: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
+    fixed_width_downsampled: ImageDataRequestSchema.exactOptional().openapi({
+      'x-stream-index': '007',
+    }),
+    fixed_width_still: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '006' }),
+    original: ImageDataRequestSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ImagesRequest')
+
+const AttachmentRequestSchema = z
+  .looseObject({
+    actions: z.array(ActionRequestSchema).exactOptional().openapi({ 'x-stream-index': '015' }),
+    asset_url: z.string().exactOptional().openapi({ 'x-stream-index': '017' }),
+    author_icon: z.string().exactOptional().openapi({ 'x-stream-index': '007' }),
+    author_link: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
+    author_name: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+    color: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    fallback: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
+    fields: z.array(FieldRequestSchema).exactOptional().openapi({ 'x-stream-index': '016' }),
+    footer: z.string().exactOptional().openapi({ 'x-stream-index': '013' }),
+    footer_icon: z.string().exactOptional().openapi({ 'x-stream-index': '014' }),
+    giphy: ImagesRequestSchema.exactOptional().openapi({ 'x-stream-index': '019' }),
+    image_url: z.string().exactOptional().openapi({ 'x-stream-index': '011' }),
+    og_scrape_url: z.string().exactOptional().openapi({ 'x-stream-index': '020' }),
+    original_height: z.number().exactOptional().openapi({ 'x-stream-index': '022' }),
+    original_width: z.number().exactOptional().openapi({ 'x-stream-index': '021' }),
+    pretext: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    text: z.string().exactOptional().openapi({ 'x-stream-index': '010' }),
+    thumb_url: z.string().exactOptional().openapi({ 'x-stream-index': '012' }),
+    title: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
+    title_link: z.string().exactOptional().openapi({ 'x-stream-index': '009' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Attachment type (e.g. image, video, url)',
+        title: 'Type',
+        'x-stream-index': '001',
+      }),
+  })
+  .nullable()
+  .openapi({ title: 'Attachment', 'x-stream-docs-page-id': 'file_uploads', required: [] })
+  .openapi('AttachmentRequest')
+
+type MessageRequest_1Type = {
+  attachments?: z.infer<typeof AttachmentRequestSchema>[]
+  before_message_send_failed?: boolean
+  cid?: string
+  command?: string
+  created_at?: string
+  deleted_at?: string
+  html?: string
+  i18n?: { [key: string]: string }
+  id?: string
+  image_labels?: { [key: string]: string[] }
+  latest_reactions?: z.infer<typeof ReactionRequestSchema>[]
+  mentioned_users?: z.infer<typeof UserObjectRequestSchema>[]
+  mml: string
+  own_reactions?: z.infer<typeof ReactionRequestSchema>[]
+  parent_id?: string
+  pin_expires?: string
+  pinned?: boolean
+  pinned_at?: string
+  pinned_by?: z.infer<typeof UserObjectRequestSchema>
+  quoted_message?: MessageRequest_1Type
+  quoted_message_id?: string
+  reaction_counts?: { [key: string]: number }
+  reaction_scores?: { [key: string]: number }
+  reply_count?: number
+  shadowed?: boolean
+  show_in_channel?: boolean
+  silent?: boolean
+  text: string
+  thread_participants?: z.infer<typeof UserObjectRequestSchema>[]
+  type?: 'regular' | 'ephemeral' | 'error' | 'reply' | 'system' | 'deleted'
+  updated_at?: string
+  user?: z.infer<typeof UserObjectRequestSchema>
+}
+
+type MuteChannelResponseType = {
+  channel_mute?: z.infer<typeof ChannelMuteSchema>
+  channel_mutes?: z.infer<typeof ChannelMuteSchema>[]
+  duration: string
+  own_user?: z.infer<typeof OwnUserSchema>
+} | null
+
+type MuteUserResponseType = {
+  duration: string
+  mute?: z.infer<typeof UserMuteSchema>
+  mutes?: z.infer<typeof UserMuteSchema>[]
+  own_user?: z.infer<typeof OwnUserSchema>
+} | null
+
+type NotificationChannelMutesUpdatedEventType = {
+  created_at: string
+  me: z.infer<typeof OwnUserSchema>
+  type: string
+}
+
+type NotificationMutesUpdatedEventType = {
+  created_at: string
+  me: z.infer<typeof OwnUserSchema>
+  type: string
+}
+
+const BanResponseSchema = z
+  .object({
+    banned_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '006' }),
+    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '007' }),
+    expires: z.iso.datetime({ offset: true }).exactOptional().openapi({ 'x-stream-index': '003' }),
+    reason: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    shadow: z.boolean().exactOptional().openapi({ 'x-stream-index': '005' }),
+    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '002' }),
+  })
+  .nullable()
+  .openapi({ required: ['created_at'] })
+  .openapi('BanResponse')
+
+type QueryBannedUsersResponseType = {
+  bans: z.infer<typeof BanResponseSchema>[]
+  duration: string
+} | null
+
+const MessageModerationResultSchema = z
+  .object({
+    action: z.string().openapi({ 'x-stream-index': '004' }),
+    ai_moderation_response: ModerationResponseSchema.exactOptional().openapi({
+      'x-stream-index': '009',
+    }),
+    blocked_word: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
+    blocklist_name: z.string().exactOptional().openapi({ 'x-stream-index': '007' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '012' }),
+    message_id: z.string().openapi({ 'x-stream-index': '003' }),
+    moderated_by: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+    moderation_thresholds: ThresholdsSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '013' }),
+    user_bad_karma: z.boolean().openapi({ 'x-stream-index': '011' }),
+    user_karma: z.float32().openapi({ 'x-stream-index': '010' }),
+  })
+  .openapi({
+    required: ['message_id', 'action', 'user_karma', 'user_bad_karma', 'created_at', 'updated_at'],
+  })
+  .openapi('MessageModerationResult')
+
+const MessageFlagSchema = z
+  .object({
+    approved_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '009' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '005' }),
+    created_by_automod: z.boolean().openapi({ 'x-stream-index': '001' }),
+    message: MessageSchema.exactOptional().openapi({ 'x-stream-index': '004' }),
+    moderation_result: MessageModerationResultSchema.exactOptional().openapi({
+      'x-stream-index': '002',
+    }),
+    rejected_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '010' }),
+    reviewed_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '007' }),
+    reviewed_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '006' }),
+    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '003' }),
+  })
+  .nullable()
+  .openapi({ required: ['created_by_automod', 'created_at', 'updated_at'] })
+  .openapi('MessageFlag')
+
+type QueryMessageFlagsResponseType = {
+  duration: string
+  flags: z.infer<typeof MessageFlagSchema>[]
+} | null
+
+const SearchResultMessageSchema = z
+  .looseObject({
+    attachments: z.array(AttachmentSchema).openapi({ 'x-stream-index': '001.011' }),
+    before_message_send_failed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.041' }),
+    channel: ChannelResponseSchema.exactOptional().openapi({
+      description: 'Channel object',
+      title: 'Channel',
+      'x-stream-index': '002',
+    }),
+    cid: z.string().openapi({ 'x-stream-index': '001.025' }),
+    command: z.string().exactOptional().openapi({ 'x-stream-index': '001.006' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.027' }),
+    deleted_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.029' }),
+    html: z.string().openapi({ 'x-stream-index': '001.007' }),
+    i18n: z.record(z.string(), z.string()).exactOptional().openapi({ 'x-stream-index': '001.039' }),
+    id: z.string().openapi({ 'x-stream-index': '001.002' }),
+    image_labels: z
+      .record(z.string(), z.array(z.string()))
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.035' }),
+    latest_reactions: z.array(ReactionSchema).openapi({ 'x-stream-index': '001.012' }),
+    mentioned_users: z.array(UserObjectSchema).openapi({ 'x-stream-index': '001.038' }),
+    mml: z.string().exactOptional().openapi({ 'x-stream-index': '001.005' }),
+    own_reactions: z.array(ReactionSchema).openapi({ 'x-stream-index': '001.013' }),
+    parent_id: z.string().exactOptional().openapi({ 'x-stream-index': '001.017' }),
+    pin_expires: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.046' }),
+    pinned: z.boolean().openapi({ 'x-stream-index': '001.042' }),
+    pinned_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.043' }),
+    pinned_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '001.045' }),
+    quoted_message: MessageSchema.exactOptional().openapi({ 'x-stream-index': '001.022' }),
+    quoted_message_id: z.string().exactOptional().openapi({ 'x-stream-index': '001.021' }),
+    reaction_counts: z.record(z.string(), z.number()).openapi({ 'x-stream-index': '001.014' }),
+    reaction_scores: z.record(z.string(), z.number()).openapi({ 'x-stream-index': '001.015' }),
+    reply_count: z.number().openapi({ 'x-stream-index': '001.020' }),
+    shadowed: z.boolean().openapi({ 'x-stream-index': '001.031' }),
+    show_in_channel: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.019' }),
+    silent: z.boolean().openapi({ 'x-stream-index': '001.040' }),
+    text: z.string().openapi({ 'x-stream-index': '001.004' }),
+    thread_participants: z
+      .array(UserObjectSchema)
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.024' }),
+    type: z.string().openapi({ 'x-stream-index': '001.008' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.028' }),
+    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '001.010' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'text',
+      'html',
+      'type',
+      'attachments',
+      'latest_reactions',
+      'own_reactions',
+      'reaction_counts',
+      'reaction_scores',
+      'reply_count',
+      'cid',
+      'created_at',
+      'updated_at',
+      'shadowed',
+      'mentioned_users',
+      'silent',
+      'pinned',
+    ],
+  })
+  .openapi('SearchResultMessage')
+
+const SearchResultSchema = z
+  .object({
+    message: SearchResultMessageSchema.exactOptional().openapi({
+      description: 'Found message',
+      title: 'Message',
+      'x-stream-index': '001',
+    }),
+  })
+  .nullable()
+  .openapi({ required: [] })
+  .openapi('SearchResult')
+
+const SearchWarningSchema = z
+  .object({
+    channel_search_cids: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Channel CIDs for the searched channels',
+        title: 'Channel Search CIDs',
+        'x-stream-index': '004',
+      }),
+    channel_search_count: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Number of channels searched',
+        title: 'Channel Search Count',
+        'x-stream-index': '003',
+      }),
+    warning_code: z
+      .number()
+      .openapi({
+        description: 'Code corresponding to the warning',
+        title: 'Warning Code',
+        'x-stream-index': '002',
+      }),
+    warning_description: z
+      .string()
+      .openapi({
+        description: 'Description of the warning',
+        title: 'Warning Description',
+        'x-stream-index': '001',
+      }),
+  })
+  .openapi({ required: ['warning_description', 'warning_code'] })
+  .openapi('SearchWarning')
+
+type SearchResponseType = {
+  duration: string
+  next?: string
+  previous?: string
+  results: z.infer<typeof SearchResultSchema>[]
+  results_warning?: z.infer<typeof SearchWarningSchema>
+} | null
+
+const EventRequestSchema: z.ZodType<EventRequestType> = z
+  .looseObject({
+    automoderation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Only applicable to `message.flagged` BaseEvent.',
+        title: 'Auto moderation',
+        'x-stream-index': '016',
+      }),
+    automoderation_scores: ModerationResponseRequestSchema.exactOptional().openapi({
+      description: 'Only applicable to `message.flagged` BaseEvent.',
+      title: 'Auto moderation scores',
+      'x-stream-index': '017',
+    }),
+    channel: ChannelResponseRequestSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
+    channel_id: z
+      .string()
+      .exactOptional()
+      .openapi({ title: 'Channel ID', 'x-stream-index': '004' }),
+    channel_type: z
+      .string()
+      .exactOptional()
+      .openapi({ title: 'Channel type', 'x-stream-index': '005' }),
+    cid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Channel CID (<type>:<id>)', title: 'CID', 'x-stream-index': '003' }),
+    connection_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Only applicable to `health.check` BaseEvent',
+        title: 'Connection ID',
+        'x-stream-index': '002',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of creation',
+        title: 'Created at',
+        'x-stream-index': '021',
+      }),
+    created_by: UserObjectRequestSchema.exactOptional().openapi({
+      description:
+        'User who issued moderation action. Only applicable to moderation-related events',
+      title: 'Created by',
+      'x-stream-index': '015',
+    }),
+    me: OwnUserRequestSchema.exactOptional().openapi({ 'x-stream-index': '012' }),
+    member: ChannelMemberRequestSchema.exactOptional().openapi({ 'x-stream-index': '009' }),
+    message: MessageRequest_1Schema.exactOptional().openapi({ 'x-stream-index': '006' }),
+    parent_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'ID of thread. Used in typing events',
+        title: 'Parent ID',
+        'x-stream-index': '018',
+      }),
+    reaction: ReactionRequestSchema.exactOptional().openapi({ 'x-stream-index': '007' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Ban reason. Only applicable to `user.banned` BaseEvent',
+        title: 'Reason',
+        'x-stream-index': '014',
+      }),
+    team: z.string().exactOptional().openapi({ 'x-stream-index': '019' }),
+    type: z
+      .string()
+      .openapi({
+        description: 'Event type. To use custom BaseEvent types see Custom Events documentation',
+        title: 'Type',
+        'x-stream-docs-page-id': 'custom_events',
+        'x-stream-index': '001',
+      }),
+    user: UserObjectRequestSchema.exactOptional().openapi({ 'x-stream-index': '010' }),
+    user_id: z.string().exactOptional().openapi({ title: 'User ID', 'x-stream-index': '011' }),
+    watcher_count: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Number of watchers who received this BaseEvent',
+        title: 'Watcher count',
+        'x-stream-index': '013',
+      }),
+  })
+  .openapi({
+    description: 'Represents an BaseEvent that happened in Stream Chat',
+    required: ['type'],
+    title: 'Event',
+    'x-stream-docs-page-id': 'event_object',
+  })
+  .openapi('EventRequest')
+
+type SendEventRequestType = { event: z.infer<typeof EventRequestSchema> } | null
+
+type SyncResponseType = {
+  duration: string
+  events: z.infer<typeof EventSchema>[]
+  inaccessible_cids?: string[]
+} | null
+
+const ChannelMessagesSchema = z
+  .object({
+    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
+    messages: z.array(MessageSchema).openapi({ 'x-stream-index': '002' }),
+  })
+  .nullable()
+  .openapi({ required: ['messages'] })
+  .openapi('ChannelMessages')
+
+type UserUnreadReminderEventType = {
+  channels: { [key: string]: z.infer<typeof ChannelMessagesSchema> }
+  created_at: string
+  type: string
+  user?: z.infer<typeof UserObjectSchema>
+}
+
+const APIErrorSchema = z
+  .object({
+    StatusCode: z
+      .number()
+      .openapi({
+        description: 'Response HTTP status code',
+        title: 'Status code',
+        'x-stream-index': '004',
+      }),
+    code: z
+      .number()
+      .openapi({ description: 'API error code', title: 'Code', 'x-stream-index': '001' }),
+    details: z
+      .array(z.number())
+      .openapi({
+        description: 'Additional error-specific information',
+        title: 'Details',
+        'x-stream-index': '007',
+      }),
+    duration: z
+      .string()
+      .openapi({ description: 'Request duration', title: 'Duration', 'x-stream-index': '005' }),
+    exception_fields: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Additional error info',
+        title: 'Exception fields',
+        'x-stream-index': '003',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'Message describing an error',
+        title: 'Message',
+        'x-stream-index': '002',
+      }),
+    more_info: z
+      .string()
+      .openapi({
+        description: 'URL with additional information',
+        title: 'More info',
+        'x-stream-index': '006',
+      }),
+  })
+  .nullable()
+  .openapi({
+    required: ['code', 'message', 'StatusCode', 'duration', 'more_info', 'details'],
+    title: 'Error response',
+  })
+  .openapi('APIError')
+
+const APNConfigFieldsSchema = z
+  .object({
+    auth_key: z.string().exactOptional().openapi({ 'x-stream-index': '009' }),
+    auth_type: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    bundle_id: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
+    development: z.boolean().openapi({ 'x-stream-index': '002' }),
+    enabled: z.boolean().openapi({ 'x-stream-index': '001' }),
+    host: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+    key_id: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
+    notification_template: z.string().openapi({ 'x-stream-index': '004' }),
+    p12_cert: z.string().exactOptional().openapi({ 'x-stream-index': '010' }),
+    team_id: z.string().exactOptional().openapi({ 'x-stream-index': '007' }),
+  })
+  .openapi({ required: ['enabled', 'development', 'notification_template'] })
+  .openapi('APNConfigFields')
+
+const APNConfigRequestSchema = z
+  .object({
+    Disabled: z.boolean().exactOptional().openapi({ writeOnly: true, 'x-stream-index': '005' }),
+    auth_key: z.string().exactOptional().openapi({ 'x-stream-index': '006.001' }),
+    auth_type: z
+      .enum(['certificate', 'token'])
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001' }),
+    bundle_id: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    development: z.boolean().exactOptional().openapi({ 'x-stream-index': '002' }),
+    host: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    key_id: z.string().exactOptional().openapi({ 'x-stream-index': '006.002' }),
+    notification_template: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
+    p12_cert: z.string().exactOptional().openapi({ 'x-stream-index': '007.001' }),
+    team_id: z.string().exactOptional().openapi({ 'x-stream-index': '006.003' }),
+  })
+  .openapi({ required: [] })
+  .openapi('APNConfigRequest')
+
+const AgoraCallSchema = z
+  .object({ channel: z.string().openapi({ 'x-stream-index': '001' }) })
+  .openapi({ required: ['channel'] })
+  .openapi('AgoraCall')
+
+const AnyEventSchema = z
+  .object({
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
+    type: z.string().openapi({ 'x-stream-index': '001.001' }),
+  })
+  .nullable()
+  .openapi({ required: ['type', 'created_at'], title: 'AnyEvent', 'x-stream-is-event': true })
+  .openapi('AnyEvent')
+
+const ConfigSchema = z
+  .object({
+    app_certificate: z.string().openapi({ 'x-stream-index': '002' }),
+    app_id: z.string().openapi({ 'x-stream-index': '001' }),
+    default_role: z
+      .enum(['attendee', 'publisher', 'subscriber', 'admin'])
+      .exactOptional()
+      .openapi({ 'x-stream-index': '003' }),
+    role_map: z.record(z.string(), z.string()).exactOptional().openapi({ 'x-stream-index': '004' }),
+  })
+  .openapi({ required: ['app_id', 'app_certificate'] })
+  .openapi('Config')
+
+const FileUploadConfigSchema = z
+  .object({
+    allowed_file_extensions: z.array(z.string()).openapi({ 'x-stream-index': '001' }),
+    allowed_mime_types: z.array(z.string()).openapi({ 'x-stream-index': '003' }),
+    blocked_file_extensions: z.array(z.string()).openapi({ 'x-stream-index': '002' }),
+    blocked_mime_types: z.array(z.string()).openapi({ 'x-stream-index': '004' }),
+  })
+  .openapi({
+    required: [
+      'allowed_file_extensions',
+      'blocked_file_extensions',
+      'allowed_mime_types',
+      'blocked_mime_types',
+    ],
+  })
+  .openapi('FileUploadConfig')
+
+const PolicySchema = z
+  .object({
+    action: z.number().openapi({ 'x-stream-index': '007' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '010' }),
+    name: z.string().openapi({ 'x-stream-index': '004' }),
+    owner: z.boolean().openapi({ 'x-stream-index': '008' }),
+    priority: z.number().openapi({ 'x-stream-index': '009' }),
+    resources: z.array(z.string()).openapi({ 'x-stream-index': '005' }),
+    roles: z.array(z.string()).openapi({ 'x-stream-index': '006' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '011' }),
+  })
+  .openapi({
+    required: [
+      'name',
+      'resources',
+      'roles',
+      'action',
+      'owner',
+      'priority',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('Policy')
+
+const FirebaseConfigFieldsSchema = z
+  .object({
+    apn_template: z.string().openapi({ 'x-stream-index': '004' }),
+    credentials_json: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
+    data_template: z.string().openapi({ 'x-stream-index': '003' }),
+    enabled: z.boolean().openapi({ 'x-stream-index': '001' }),
+    notification_template: z.string().openapi({ 'x-stream-index': '002' }),
+    server_key: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+  })
+  .openapi({ required: ['enabled', 'notification_template', 'data_template', 'apn_template'] })
+  .openapi('FirebaseConfigFields')
+
+const HuaweiConfigFieldsSchema = z
+  .object({
+    enabled: z.boolean().openapi({ 'x-stream-index': '001' }),
+    id: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
+    secret: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+  })
+  .openapi({ required: ['enabled'] })
+  .openapi('HuaweiConfigFields')
+
+const PushProviderSchema = z
+  .object({
+    apn_auth_key: z.string().exactOptional().openapi({ 'x-stream-index': '012' }),
+    apn_auth_type: z.string().exactOptional().openapi({ 'x-stream-index': '017' }),
+    apn_development: z.boolean().exactOptional().openapi({ 'x-stream-index': '018' }),
+    apn_host: z.string().exactOptional().openapi({ 'x-stream-index': '019' }),
+    apn_key_id: z.string().exactOptional().openapi({ 'x-stream-index': '013' }),
+    apn_notification_template: z.string().exactOptional().openapi({ 'x-stream-index': '020' }),
+    apn_p12_cert: z.string().exactOptional().openapi({ 'x-stream-index': '014' }),
+    apn_team_id: z.string().exactOptional().openapi({ 'x-stream-index': '015' }),
+    apn_topic: z.string().exactOptional().openapi({ 'x-stream-index': '016' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '008' }),
+    description: z.string().max(128).exactOptional().openapi({ 'x-stream-index': '007' }),
+    disabled_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '010' }),
+    disabled_reason: z.string().max(255).exactOptional().openapi({ 'x-stream-index': '011' }),
+    firebase_apn_template: z.string().exactOptional().openapi({ 'x-stream-index': '025' }),
+    firebase_credentials: z.string().exactOptional().openapi({ 'x-stream-index': '022' }),
+    firebase_data_template: z.string().exactOptional().openapi({ 'x-stream-index': '023' }),
+    firebase_notification_template: z.string().exactOptional().openapi({ 'x-stream-index': '024' }),
+    firebase_server_key: z.string().exactOptional().openapi({ 'x-stream-index': '021' }),
+    huawei_app_id: z.string().exactOptional().openapi({ 'x-stream-index': '026' }),
+    huawei_app_secret: z.string().exactOptional().openapi({ 'x-stream-index': '027' }),
+    name: z.string().min(1).max(36).openapi({ 'x-stream-index': '005' }),
+    type: z.number().openapi({ 'x-stream-index': '006' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '009' }),
+    xiaomi_app_secret: z.string().exactOptional().openapi({ 'x-stream-index': '029' }),
+    xiaomi_package_name: z.string().exactOptional().openapi({ 'x-stream-index': '028' }),
+  })
+  .nullable()
+  .openapi({ required: ['name', 'type', 'created_at', 'updated_at'] })
+  .openapi('PushProvider')
+
+const XiaomiConfigFieldsSchema = z
+  .object({
+    enabled: z.boolean().openapi({ 'x-stream-index': '001' }),
+    package_name: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
+    secret: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+  })
+  .openapi({ required: ['enabled'] })
+  .openapi('XiaomiConfigFields')
+
+const PushNotificationFieldsSchema = z
+  .object({
+    apn: APNConfigFieldsSchema.openapi({ 'x-stream-index': '002' }),
+    firebase: FirebaseConfigFieldsSchema.openapi({ 'x-stream-index': '003' }),
+    huawei: HuaweiConfigFieldsSchema.openapi({ 'x-stream-index': '004' }),
+    offline_only: z.boolean().openapi({ 'x-stream-index': '001.002' }),
+    providers: z.array(PushProviderSchema).exactOptional().openapi({ 'x-stream-index': '006' }),
+    version: z.string().openapi({ 'x-stream-index': '001.001' }),
+    xiaomi: XiaomiConfigFieldsSchema.openapi({ 'x-stream-index': '005' }),
+  })
+  .openapi({ required: ['version', 'offline_only', 'apn', 'firebase', 'huawei', 'xiaomi'] })
+  .openapi('PushNotificationFields')
+
+const AppSchema = z
+  .object({
+    agora_options: ConfigSchema.exactOptional().openapi({ 'x-stream-index': '001.034' }),
+    async_url_enrich_enabled: z.boolean().openapi({ 'x-stream-index': '001.015' }),
+    auto_translation_enabled: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.017' }),
+    before_message_send_hook_url: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.018' }),
+    campaign_enabled: z.boolean().openapi({ 'x-stream-index': '001.028' }),
+    cdn_expiration_seconds: z.number().openapi({ 'x-stream-index': '001.032' }),
+    channel_configs: z
+      .record(z.string(), ChannelConfigSchema)
+      .openapi({
+        description: 'Object with channel configs',
+        title: 'Channel configs',
+        'x-stream-index': '001.005',
+        'x-stream-map': { key: 'channel_type' },
+      }),
+    custom_action_handler_url: z.string().openapi({ 'x-stream-index': '001.019' }),
+    disable_auth_checks: z.boolean().openapi({ 'x-stream-index': '001.009' }),
+    disable_permissions_checks: z.boolean().openapi({ 'x-stream-index': '001.010' }),
+    enforce_unique_usernames: z.string().openapi({ 'x-stream-index': '001.020' }),
+    file_upload_config: FileUploadConfigSchema.openapi({ 'x-stream-index': '001.024' }),
+    grants: z.record(z.string(), z.array(z.string())).openapi({ 'x-stream-index': '001.027' }),
+    hms_options: ConfigSchema.exactOptional().openapi({ 'x-stream-index': '001.035' }),
+    image_moderation_enabled: z.boolean().openapi({ 'x-stream-index': '001.014' }),
+    image_moderation_labels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.016' }),
+    image_upload_config: FileUploadConfigSchema.openapi({ 'x-stream-index': '001.025' }),
+    multi_tenant_enabled: z.boolean().openapi({ 'x-stream-index': '001.013' }),
+    name: z.string().openapi({ 'x-stream-index': '001.001' }),
+    organization: z.string().openapi({ 'x-stream-index': '001.002' }),
+    permission_version: z.string().openapi({ 'x-stream-index': '001.011' }),
+    policies: z.record(z.string(), z.array(PolicySchema)).openapi({ 'x-stream-index': '001.006' }),
+    push_notifications: PushNotificationFieldsSchema.openapi({ 'x-stream-index': '001.003' }),
+    reminders_interval: z.number().openapi({ 'x-stream-index': '001.031' }),
+    revoke_tokens_issued_before: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '001.026' }),
+    search_backend: z
+      .enum(['elasticsearch', 'postgres', 'disabled'])
+      .openapi({
+        description: 'Backend implementation used for search',
+        title: 'Search Backend',
+        'x-stream-index': '001.029',
+      }),
+    sqs_key: z.string().openapi({ 'x-stream-index': '001.022' }),
+    sqs_secret: z.string().openapi({ 'x-stream-index': '001.023' }),
+    sqs_url: z.string().openapi({ 'x-stream-index': '001.021' }),
+    suspended: z.boolean().openapi({ 'x-stream-index': '001.007' }),
+    suspended_explanation: z.string().openapi({ 'x-stream-index': '001.008' }),
+    user_search_disallowed_roles: z.array(z.string()).openapi({ 'x-stream-index': '001.012' }),
+    video_provider: z.string().openapi({ 'x-stream-index': '001.033' }),
+    webhook_events: z.array(z.string()).openapi({ 'x-stream-index': '001.030' }),
+    webhook_url: z.string().openapi({ 'x-stream-index': '001.004' }),
+  })
+  .openapi({
+    required: [
+      'name',
+      'organization',
+      'push_notifications',
+      'webhook_url',
+      'channel_configs',
+      'policies',
+      'suspended',
+      'suspended_explanation',
+      'disable_auth_checks',
+      'disable_permissions_checks',
+      'permission_version',
+      'user_search_disallowed_roles',
+      'multi_tenant_enabled',
+      'image_moderation_enabled',
+      'async_url_enrich_enabled',
+      'custom_action_handler_url',
+      'enforce_unique_usernames',
+      'sqs_url',
+      'sqs_key',
+      'sqs_secret',
+      'file_upload_config',
+      'image_upload_config',
+      'grants',
+      'campaign_enabled',
+      'search_backend',
+      'webhook_events',
+      'reminders_interval',
+      'cdn_expiration_seconds',
+      'video_provider',
+    ],
+  })
+  .openapi('App')
+
+const AsyncModerationCallbackConfigRequestSchema = z
+  .object({
+    mode: z
+      .enum(['CALLBACK_MODE_NONE', 'CALLBACK_MODE_REST', 'CALLBACK_MODE_TWIRP'])
+      .exactOptional()
+      .openapi({ 'x-stream-index': '002' }),
+    server_url: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AsyncModerationCallbackConfigRequest')
+
+const AsyncModerationConfigurationRequestSchema = z
+  .object({
+    callback: AsyncModerationCallbackConfigRequestSchema.exactOptional().openapi({
+      'x-stream-index': '002',
+    }),
+    timeout_ms: z.number().exactOptional().openapi({ 'x-stream-index': '001' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AsyncModerationConfigurationRequest')
+
+const FlagMessageDetailsSchema = z
+  .object({
+    pin_changed: z.boolean().exactOptional().openapi({ 'x-stream-index': '002' }),
+    should_enrich: z.boolean().exactOptional().openapi({ 'x-stream-index': '003' }),
+    skip_push: z.boolean().exactOptional().openapi({ 'x-stream-index': '004' }),
+    updated_by_id: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FlagMessageDetails')
+
+const AutomodDetailsSchema = z
+  .object({
+    action: z.string().exactOptional().openapi({ 'x-stream-index': '001' }),
+    image_labels: z.array(z.string()).exactOptional().openapi({ 'x-stream-index': '005' }),
+    message_details: FlagMessageDetailsSchema.exactOptional().openapi({ 'x-stream-index': '004' }),
+    original_message_type: z.string().exactOptional().openapi({ 'x-stream-index': '002' }),
+    result: MessageModerationResultSchema.exactOptional().openapi({ 'x-stream-index': '003' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AutomodDetails')
+
+const BanRequestSchema = z
+  .object({
+    banned_by: UserObjectRequestSchema.exactOptional().openapi({
+      description: 'User who issued a ban',
+      title: 'Banned by',
+      'x-stream-index': '009',
+    }),
+    banned_by_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'User ID who issued a ban',
+        title: 'Banned by ID',
+        'x-stream-index': '008',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Channel ID to ban user in', title: 'ID', 'x-stream-index': '005' }),
+    ip_ban: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether to perform IP ban or not',
+        title: 'IP ban',
+        'x-stream-index': '007',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Ban reason', title: 'Reason', 'x-stream-index': '003' }),
+    shadow: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether to perform shadow ban or not',
+        title: 'Shadow',
+        'x-stream-index': '006',
+      }),
+    target_user_id: z
+      .string()
+      .openapi({
+        description: 'ID of user to ban',
+        title: 'Target user ID',
+        'x-stream-index': '001',
+      }),
+    timeout: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: 'Timeout of ban in minutes. User will be unbanned after this period of time',
+        title: 'Timeout',
+        'x-stream-index': '002',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Channel type to ban user in',
+        title: 'Type',
+        'x-stream-index': '004',
+      }),
+    user: UserObjectRequestSchema.exactOptional().openapi({ 'x-stream-index': '010.002' }),
+    user_id: z.string().exactOptional().openapi({ 'x-stream-index': '010.001' }),
+  })
+  .nullable()
+  .openapi({ required: ['target_user_id'] })
+  .openapi('BanRequest')
+
+const BlockListSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of creation',
+        title: 'Created at',
+        'x-stream-index': '004',
+      }),
+    name: z
+      .string()
+      .openapi({ description: 'Block list name', title: 'Name', 'x-stream-index': '006' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date/time of the last update',
+        title: 'Updated at',
+        'x-stream-index': '005',
+      }),
+    words: z
+      .array(z.string())
+      .openapi({ description: 'List of words to block', title: 'Words', 'x-stream-index': '007' }),
+  })
+  .openapi({
+    description: 'Block list contains restricted words',
+    required: ['name', 'words'],
+    title: 'Block list',
+    'x-stream-docs-page-id': 'block_lists',
+  })
+  .openapi('BlockList')
+
+const HMSCallSchema = z
+  .object({
+    room_id: z.string().openapi({ 'x-stream-index': '001' }),
+    room_name: z.string().openapi({ 'x-stream-index': '002' }),
+  })
+  .openapi({ required: ['room_id', 'room_name'] })
+  .openapi('HMSCall')
+
+const CallSchema = z
+  .object({
+    agora: AgoraCallSchema.exactOptional().openapi({ 'x-stream-index': '005' }),
+    hms: HMSCallSchema.exactOptional().openapi({ 'x-stream-index': '004' }),
+    id: z.string().openapi({ 'x-stream-index': '002' }),
+    provider: z.string().openapi({ 'x-stream-index': '001' }),
+    type: z.string().openapi({ 'x-stream-index': '003' }),
+  })
+  .openapi({ required: ['provider', 'id', 'type'] })
+  .openapi('Call')
+
+const CampaignSchema = z
+  .object({
+    attachments: z.array(AttachmentSchema).openapi({ 'x-stream-index': '005.007' }),
+    channel_type: z.string().max(64).openapi({ 'x-stream-index': '005.008' }),
+    completed_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '006.004' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '007' }),
+    defaults: z.record(z.string(), z.string()).openapi({ 'x-stream-index': '005.006' }),
+    description: z.string().max(1024).openapi({ 'x-stream-index': '005.002' }),
+    details: z.string().exactOptional().openapi({ 'x-stream-index': '006.011' }),
+    errored_messages: z.number().exactOptional().openapi({ 'x-stream-index': '006.009' }),
+    failed_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '006.005' }),
+    id: z.string().openapi({ 'x-stream-index': '003' }),
+    name: z.string().max(256).openapi({ 'x-stream-index': '005.001' }),
+    resumed_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '006.007' }),
+    scheduled_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '006.003' }),
+    scheduled_for: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '006.002' }),
+    segment_id: z.string().openapi({ 'x-stream-index': '005.004' }),
+    sender_id: z.string().openapi({ 'x-stream-index': '005.005' }),
+    sent_messages: z.number().exactOptional().openapi({ 'x-stream-index': '006.008' }),
+    status: z.string().exactOptional().openapi({ 'x-stream-index': '006.001' }),
+    stopped_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '006.006' }),
+    task_id: z.string().exactOptional().openapi({ 'x-stream-index': '006.010' }),
+    text: z.string().openapi({ 'x-stream-index': '005.003' }),
+    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '008' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'name',
+      'description',
+      'text',
+      'segment_id',
+      'sender_id',
+      'defaults',
+      'attachments',
+      'channel_type',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('Campaign')
+
+const CampaignDataRequestSchema = z
+  .object({
+    attachments: z
+      .array(AttachmentRequestSchema)
+      .exactOptional()
+      .openapi({ 'x-stream-index': '007' }),
+    channel_type: z.string().max(64).exactOptional().openapi({ 'x-stream-index': '008' }),
+    defaults: z.record(z.string(), z.string()).exactOptional().openapi({ 'x-stream-index': '006' }),
+    description: z.string().max(1024).exactOptional().openapi({ 'x-stream-index': '002' }),
+    name: z.string().max(256).openapi({ 'x-stream-index': '001' }),
+    segment_id: z.string().openapi({ 'x-stream-index': '004' }),
+    sender_id: z.string().openapi({ 'x-stream-index': '005' }),
+    text: z.string().openapi({ 'x-stream-index': '003' }),
+  })
+  .openapi({ required: ['name', 'text', 'segment_id', 'sender_id'] })
+  .openapi('CampaignDataRequest')
+
+const CampaignSortFieldSchema = z
+  .object({
+    field: z.string().openapi({ 'x-stream-index': '001' }),
+    value: z.any().openapi({ 'x-stream-index': '002' }),
+  })
+  .openapi({ required: ['field', 'value'] })
+  .openapi('CampaignSortField')
+
+const CampaignSortSchema = z
+  .object({
+    direction: z.enum(['asc', 'desc']).exactOptional().openapi({ 'x-stream-index': '001' }),
+    fields: z.array(CampaignSortFieldSchema).openapi({ 'x-stream-index': '002' }),
+  })
+  .openapi({ required: ['fields'] })
+  .openapi('CampaignSort')
+
+const CampaignUpdateableFieldsRequestSchema = z
+  .object({
+    attachments: z
+      .array(AttachmentRequestSchema)
+      .exactOptional()
+      .openapi({ 'x-stream-index': '007' }),
+    channel_type: z.string().max(64).exactOptional().openapi({ 'x-stream-index': '008' }),
+    defaults: z.record(z.string(), z.string()).exactOptional().openapi({ 'x-stream-index': '006' }),
+    description: z.string().max(1024).exactOptional().openapi({ 'x-stream-index': '002' }),
+    name: z.string().max(256).exactOptional().openapi({ 'x-stream-index': '001' }),
+    segment_id: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    sender_id: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+    text: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CampaignUpdateableFieldsRequest')
+
+const ChannelConfigRequestSchema = z
+  .object({
+    blocklist: z.string().exactOptional().openapi({ 'x-stream-index': '008' }),
+    blocklist_behavior: z
+      .enum(['flag', 'block'])
+      .exactOptional()
+      .openapi({ 'x-stream-index': '009' }),
+    commands: z.array(z.string()).exactOptional().openapi({ 'x-stream-index': '011' }),
+    grants: z
+      .record(z.string(), z.array(z.string()))
+      .exactOptional()
+      .openapi({
+        title: 'Grants',
+        'x-stream-index': '010',
+        'x-stream-map': {
+          description: 'List of grants modifiers that apply to a role',
+          key: 'role',
+          title: 'Grants',
+        },
+      }),
+    max_message_length: z
+      .number()
+      .max(20000)
+      .exactOptional()
+      .openapi({
+        description: 'Overrides max message length',
+        title: 'Max Message Length',
+        'x-stream-index': '007',
+      }),
+    quotes: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enables message quotes', title: 'Quotes', 'x-stream-index': '004' }),
+    reactions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Enables or disables reactions',
+        title: 'Reactions',
+        'x-stream-index': '002',
+      }),
+    replies: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Enables message replies (threads)',
+        title: 'Replies',
+        'x-stream-index': '003',
+      }),
+    typing_events: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Enables or disables typing events',
+        title: 'Typing events',
+        'x-stream-index': '001',
+      }),
+    uploads: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Enables or disables file uploads',
+        title: 'Uploads',
+        'x-stream-index': '005',
+      }),
+    url_enrichment: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Enables or disables URL enrichment',
+        title: 'URL Enrichment',
+        'x-stream-index': '006',
+      }),
+  })
+  .openapi({ description: 'Channel configuration overrides', required: [] })
+  .openapi('ChannelConfigRequest')
+
+const ChannelCreatedEventSchema = z
+  .object({
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
+    type: z.string().openapi({ 'x-stream-index': '001.001' }),
+  })
+  .nullable()
+  .openapi({
+    required: ['type', 'created_at'],
+    title: 'ChannelCreatedEvent',
+    'x-stream-is-event': true,
+  })
+  .openapi('ChannelCreatedEvent')
+
+const ChannelDeletedEventSchema = z
+  .object({
+    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '003.004' }),
+    channel_id: z.string().openapi({ 'x-stream-index': '003.002' }),
+    channel_type: z.string().openapi({ 'x-stream-index': '003.003' }),
+    cid: z.string().openapi({ 'x-stream-index': '003.001' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.002' }),
+    team: z.string().exactOptional().openapi({ 'x-stream-index': '001.001' }),
+    type: z.string().openapi({ 'x-stream-index': '002.001' }),
+  })
+  .nullable()
+  .openapi({
+    required: ['type', 'created_at', 'cid', 'channel_id', 'channel_type'],
+    title: 'ChannelDeletedEvent',
+    'x-stream-is-event': true,
+  })
+  .openapi('ChannelDeletedEvent')
+
+const ChannelExportRequestSchema = z
+  .object({
+    cid: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Channel ID', title: 'ID', 'x-stream-index': '002' }),
+    messages_since: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date to export messages since',
+        title: 'Messages since',
+        'x-stream-index': '004',
+      }),
+    messages_until: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date to export messages until',
+        title: 'Messages until',
+        'x-stream-index': '005',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Channel type', title: 'Type', 'x-stream-index': '001' }),
+  })
+  .openapi({ title: 'Channel Export', required: [] })
+  .openapi('ChannelExportRequest')
+
+const ChannelFrozenEventSchema = z
+  .object({
+    channel_id: z.string().openapi({ 'x-stream-index': '002.002' }),
+    channel_type: z.string().openapi({ 'x-stream-index': '002.003' }),
+    cid: z.string().openapi({ 'x-stream-index': '002.001' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
+    type: z.string().openapi({ 'x-stream-index': '001.001' }),
+  })
+  .openapi({
+    required: ['type', 'created_at', 'cid', 'channel_id', 'channel_type'],
+    title: 'ChannelFrozenEvent',
+    'x-stream-is-event': true,
+  })
+  .openapi('ChannelFrozenEvent')
+
+const ChannelRequestSchema = z
+  .looseObject({
+    auto_translation_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Enable or disable auto translation',
+        title: 'Auto translation',
+        'x-stream-index': '007',
+      }),
+    auto_translation_language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Switch auto translation language',
+        title: 'Auto translation language',
+        'x-stream-index': '008',
+      }),
+    config_overrides: ChannelConfigRequestSchema.exactOptional().openapi({
+      'x-stream-index': '026',
+    }),
+    created_by: UserObjectRequestSchema.exactOptional(),
+    disabled: z.boolean().exactOptional().openapi({ 'x-stream-index': '016' }),
+    frozen: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Freeze or unfreeze the channel',
+        title: 'Frozen',
+        'x-stream-index': '015',
+      }),
+    members: z
+      .array(ChannelMemberRequestSchema)
+      .exactOptional()
+      .openapi({ 'x-stream-index': '020' }),
+    own_capabilities: z.array(z.number()).exactOptional().openapi({ 'x-stream-index': '027' }),
+    team: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Team the channel belongs to (if multi-tenant mode is enabled)',
+        title: 'Team',
+        'x-stream-index': '006',
+      }),
+    truncated_at: z.array(z.number()).exactOptional().openapi({ 'x-stream-index': '014' }),
+    truncated_by: z.array(z.number()).exactOptional().openapi({ 'x-stream-index': '013' }),
+    truncated_by_id: z.string().exactOptional().openapi({ 'x-stream-index': '012' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ChannelRequest')
+
+const PaginationParamsRequestSchema = z
+  .object({
+    id_gt: z.number().exactOptional().openapi({ 'x-stream-index': '004' }),
+    id_gte: z.number().exactOptional().openapi({ 'x-stream-index': '003' }),
+    id_lt: z.number().exactOptional().openapi({ 'x-stream-index': '006' }),
+    id_lte: z.number().exactOptional().openapi({ 'x-stream-index': '005' }),
+    limit: z.number().min(0).exactOptional().openapi({ 'x-stream-index': '001' }),
+    offset: z.number().exactOptional().openapi({ 'x-stream-index': '002' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PaginationParamsRequest')
+
+const MessagePaginationParamsRequestSchema = z
+  .object({
+    created_at_after: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '008' }),
+    created_at_after_or_equal: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '007' }),
+    created_at_around: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '012' }),
+    created_at_before: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '010' }),
+    created_at_before_or_equal: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ 'x-stream-index': '009' }),
+    id_around: z.string().exactOptional().openapi({ 'x-stream-index': '011' }),
+    id_gt: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
+    id_gte: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
+    id_lt: z.string().exactOptional().openapi({ 'x-stream-index': '006' }),
+    id_lte: z.string().exactOptional().openapi({ 'x-stream-index': '005' }),
+    limit: z.number().min(0).exactOptional().openapi({ 'x-stream-index': '001' }),
+    offset: z.number().exactOptional().openapi({ 'x-stream-index': '002' }),
+  })
+  .openapi({ required: [] })
+  .openapi('MessagePaginationParamsRequest')
+
+const ChannelGetOrCreateRequestSchema = z
+  .object({
+    client_id: z.string().exactOptional().openapi({ 'x-stream-index': '001.002' }),
+    connection_id: z.string().exactOptional().openapi({ 'x-stream-index': '001.003' }),
+    data: ChannelRequestSchema.exactOptional().openapi({ 'x-stream-index': '004' }),
+    members: PaginationParamsRequestSchema.exactOptional().openapi({ 'x-stream-index': '009' }),
+    messages: MessagePaginationParamsRequestSchema.exactOptional().openapi({
+      'x-stream-index': '008',
+    }),
+    presence: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Fetch user presence info',
+        title: 'Presence',
+        'x-stream-index': '007',
+      }),
+    state: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Refresh channel state', title: 'State', 'x-stream-index': '006' }),
+    watch: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Start watching the channel',
+        title: 'Watch',
+        'x-stream-index': '005',
+      }),
+    watchers: PaginationParamsRequestSchema.exactOptional().openapi({ 'x-stream-index': '010' }),
+  })
+  .nullable()
+  .openapi({ required: [] })
+  .openapi('ChannelGetOrCreateRequest')
+
+const ChannelHiddenEventSchema = z
+  .object({
+    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '003.004' }),
+    channel_id: z.string().openapi({ 'x-stream-index': '003.002' }),
+    channel_type: z.string().openapi({ 'x-stream-index': '003.003' }),
+    cid: z.string().openapi({ 'x-stream-index': '003.001' }),
+    clear_history: z.boolean().openapi({ 'x-stream-index': '001' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '004.002' }),
+    type: z.string().openapi({ 'x-stream-index': '004.001' }),
+    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '002.001' }),
+  })
+  .nullable()
+  .openapi({
+    required: ['clear_history', 'cid', 'channel_id', 'channel_type', 'type', 'created_at'],
+    title: 'ChannelHiddenEvent',
+    'x-stream-is-event': true,
+  })
+  .openapi('ChannelHiddenEvent')
+
+const ChannelKickedEventSchema = z
+  .object({
+    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '002.004' }),
+    channel_id: z.string().openapi({ 'x-stream-index': '002.002' }),
+    channel_type: z.string().openapi({ 'x-stream-index': '002.003' }),
+    cid: z.string().openapi({ 'x-stream-index': '002.001' }),
+    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
+    type: z.string().openapi({ 'x-stream-index': '001.001' }),
+  })
+  .openapi({
+    required: ['type', 'created_at', 'cid', 'channel_id', 'channel_type'],
+    title: 'ChannelKickedEvent',
+    'x-stream-is-event': true,
+  })
+  .openapi('ChannelKickedEvent')
+
 const ChannelMutedEventSchema = z
   .object({
     created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
@@ -2897,40 +4071,7 @@ const ChannelMutedEventSchema = z
   })
   .openapi('ChannelMutedEvent')
 
-const PendingMessageSchema = z
-  .object({
-    channel: ChannelSchema.exactOptional().openapi({ 'x-stream-index': '007' }),
-    message: MessageSchema.exactOptional().openapi({
-      description: 'The message',
-      title: 'Message',
-      'x-stream-index': '009',
-    }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional data attached to the pending message. This data is discarded once the pending message is committed.',
-        title: 'Metadata',
-        'x-stream-index': '010',
-      }),
-    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '002' }),
-  })
-  .nullable()
-  .openapi({ required: [] })
-  .openapi('PendingMessage')
-
-const ReadSchema = z
-  .object({
-    last_read: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002' }),
-    unread_messages: z.number().openapi({ 'x-stream-index': '003' }),
-    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
-  })
-  .nullable()
-  .openapi({ required: ['last_read', 'unread_messages'] })
-  .openapi('Read')
-
-const ChannelStateResponseSchema = z
+const ChannelStateResponseSchema: z.ZodType<ChannelStateResponseType> = z
   .object({
     channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '001.001' }),
     duration: z.string().openapi({ 'x-stream-index': '002.001' }),
@@ -2954,84 +4095,6 @@ const ChannelStateResponseSchema = z
   .nullable()
   .openapi({ required: ['messages', 'pinned_messages', 'members', 'duration'] })
   .openapi('ChannelStateResponse')
-
-const ChannelStateResponseFieldsSchema = z
-  .object({
-    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '001' }),
-    hidden: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether this channel is hidden or not',
-        title: 'Hidden',
-        'x-stream-index': '009',
-      }),
-    hide_messages_before: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Messages before this date are hidden from the user',
-        title: 'Hide messages before',
-        'x-stream-index': '010',
-      }),
-    members: z
-      .array(ChannelMemberSchema)
-      .openapi({
-        description: 'List of channel members',
-        title: 'Members',
-        'x-stream-index': '007',
-      }),
-    membership: ChannelMemberSchema.exactOptional().openapi({
-      description: 'Current user membership object',
-      title: 'Membership',
-      'x-stream-index': '008',
-    }),
-    messages: z
-      .array(MessageSchema)
-      .openapi({
-        description: 'List of channel messages',
-        title: 'Message',
-        'x-stream-index': '002',
-      }),
-    pending_messages: z
-      .array(PendingMessageSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Pending messages that this user has sent',
-        title: 'Pending messages',
-        'x-stream-index': '011',
-      }),
-    pinned_messages: z
-      .array(MessageSchema)
-      .openapi({
-        description: 'List of pinned messages in the channel',
-        title: 'Pinned messages',
-        'x-stream-docs-page-id': 'pinned_messages',
-        'x-stream-index': '003',
-      }),
-    read: z
-      .array(ReadSchema)
-      .exactOptional()
-      .openapi({ description: 'List of read states', title: 'Read', 'x-stream-index': '006' }),
-    watcher_count: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Number of channel watchers',
-        title: 'Watcher count',
-        'x-stream-index': '004',
-      }),
-    watchers: z
-      .array(UserObjectSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of user who is watching the channel',
-        title: 'Watchers',
-        'x-stream-index': '005',
-      }),
-  })
-  .openapi({ required: ['messages', 'pinned_messages', 'members'] })
-  .openapi('ChannelStateResponseFields')
 
 const ChannelStopWatchingRequestSchema = z
   .object({
@@ -3234,7 +4297,7 @@ const ChannelVisibleEventSchema = z
   })
   .openapi('ChannelVisibleEvent')
 
-const ChannelsResponseSchema = z
+const ChannelsResponseSchema: z.ZodType<ChannelsResponseType> = z
   .object({
     channels: z
       .array(ChannelStateResponseFieldsSchema)
@@ -3405,7 +4468,7 @@ const CheckSQSResponseSchema = z
   .openapi({ required: ['status', 'duration'] })
   .openapi('CheckSQSResponse')
 
-const CommitMessageRequestSchema = z.object({}).nullable().openapi('CommitMessageRequest')
+const CommitMessageRequestSchema = z.looseObject({}).nullable().openapi('CommitMessageRequest')
 
 const ConfigRequestSchema = z
   .object({
@@ -4340,75 +5403,6 @@ const DeleteUsersResponseSchema = z
   .openapi({ required: ['task_id', 'duration'] })
   .openapi('DeleteUsersResponse')
 
-const DeviceSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Date/time of creation',
-        title: 'Created at',
-        'x-stream-index': '002.002',
-      }),
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether device is disabled or not',
-        title: 'Disabled',
-        'x-stream-index': '002.003',
-      }),
-    disabled_reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Reason explaining why device had been disabled',
-        title: 'Reason',
-        'x-stream-index': '002.004',
-      }),
-    id: z.string().openapi({ 'x-stream-index': '002.001.004' }),
-    push_provider: z.string().openapi({ 'x-stream-index': '002.001.001' }),
-    push_provider_name: z.string().exactOptional().openapi({ 'x-stream-index': '002.001.003' }),
-    user_id: z.string().openapi({ 'x-stream-index': '004' }),
-  })
-  .nullable()
-  .openapi({ required: ['push_provider', 'id', 'created_at', 'user_id'], title: 'Device' })
-  .openapi('Device')
-
-const DeviceRequestSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of creation',
-        title: 'Created at',
-        'x-stream-index': '002.002',
-      }),
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether device is disabled or not',
-        title: 'Disabled',
-        'x-stream-index': '002.003',
-      }),
-    disabled_reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Reason explaining why device had been disabled',
-        title: 'Reason',
-        'x-stream-index': '002.004',
-      }),
-    id: z.string().exactOptional().openapi({ 'x-stream-index': '002.001.004' }),
-    push_provider: z.string().exactOptional().openapi({ 'x-stream-index': '002.001.001' }),
-    push_provider_name: z.string().exactOptional().openapi({ 'x-stream-index': '002.001.003' }),
-    user_id: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-  })
-  .nullable()
-  .openapi({ title: 'Device', required: [] })
-  .openapi('DeviceRequest')
-
 const ErrorResultSchema = z
   .object({
     description: z.any().openapi({ 'x-stream-index': '002' }),
@@ -4419,677 +5413,7 @@ const ErrorResultSchema = z
   .openapi({ required: ['type', 'description'] })
   .openapi('ErrorResult')
 
-const UserMuteSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Date/time of creation',
-        title: 'Created at',
-        'x-stream-index': '009',
-      }),
-    expires: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of mute expiration',
-        title: 'Expires',
-        'x-stream-index': '008',
-      }),
-    target: UserObjectSchema.exactOptional().openapi({
-      description: "User who's muted",
-      title: 'Target',
-      'x-stream-index': '007',
-    }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Date/time of the last update',
-        title: 'Updated at',
-        'x-stream-index': '010',
-      }),
-    user: UserObjectSchema.exactOptional().openapi({
-      description: 'Owner of channel mute',
-      title: 'User',
-      'x-stream-index': '005',
-    }),
-  })
-  .nullable()
-  .openapi({ required: ['created_at', 'updated_at'] })
-  .openapi('UserMute')
-
-const OwnUserSchema = z
-  .looseObject({
-    banned: z.boolean().openapi({ 'x-stream-index': '014' }),
-    channel_mutes: z.array(ChannelMuteSchema).openapi({ 'x-stream-index': '026' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '007' }),
-    deactivated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '012' }),
-    deleted_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '011' }),
-    devices: z.array(DeviceSchema).openapi({ 'x-stream-index': '024' }),
-    id: z.string().openapi({ 'x-stream-index': '003' }),
-    invisible: z.boolean().exactOptional().openapi({ 'x-stream-index': '021' }),
-    language: z.string().openapi({ 'x-stream-index': '030' }),
-    last_active: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '010' }),
-    latest_hidden_channels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ 'x-stream-index': '032' }),
-    mutes: z.array(UserMuteSchema).openapi({ 'x-stream-index': '025' }),
-    online: z.boolean().openapi({ 'x-stream-index': '020' }),
-    push_notifications: PushNotificationSettingsSchema.exactOptional().openapi({
-      'x-stream-index': '023',
-    }),
-    role: z.string().openapi({ 'x-stream-index': '004' }),
-    teams: z.array(z.string()).exactOptional().openapi({ 'x-stream-index': '031' }),
-    total_unread_count: z.number().openapi({ 'x-stream-index': '028' }),
-    unread_channels: z.number().openapi({ 'x-stream-index': '029' }),
-    unread_count: z.number().openapi({ 'x-stream-index': '027' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '008' }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'role',
-      'created_at',
-      'updated_at',
-      'banned',
-      'online',
-      'devices',
-      'mutes',
-      'channel_mutes',
-      'unread_count',
-      'total_unread_count',
-      'unread_channels',
-      'language',
-    ],
-  })
-  .openapi('OwnUser')
-
-const EventSchema = z
-  .looseObject({
-    automoderation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Only applicable to `message.flagged` BaseEvent.',
-        title: 'Auto moderation',
-        'x-stream-index': '016',
-      }),
-    automoderation_scores: ModerationResponseSchema.exactOptional().openapi({
-      description: 'Only applicable to `message.flagged` BaseEvent.',
-      title: 'Auto moderation scores',
-      'x-stream-index': '017',
-    }),
-    channel: ChannelResponseSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
-    channel_id: z
-      .string()
-      .exactOptional()
-      .openapi({ title: 'Channel ID', 'x-stream-index': '004' }),
-    channel_type: z
-      .string()
-      .exactOptional()
-      .openapi({ title: 'Channel type', 'x-stream-index': '005' }),
-    cid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Channel CID (<type>:<id>)', title: 'CID', 'x-stream-index': '003' }),
-    connection_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Only applicable to `health.check` BaseEvent',
-        title: 'Connection ID',
-        'x-stream-index': '002',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'Date/time of creation',
-        title: 'Created at',
-        'x-stream-index': '021',
-      }),
-    created_by: UserObjectSchema.exactOptional().openapi({
-      description:
-        'User who issued moderation action. Only applicable to moderation-related events',
-      title: 'Created by',
-      'x-stream-index': '015',
-    }),
-    me: OwnUserSchema.exactOptional().openapi({ 'x-stream-index': '012' }),
-    member: ChannelMemberSchema.exactOptional().openapi({ 'x-stream-index': '009' }),
-    message: MessageSchema.exactOptional().openapi({ 'x-stream-index': '006' }),
-    parent_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of thread. Used in typing events',
-        title: 'Parent ID',
-        'x-stream-index': '018',
-      }),
-    reaction: ReactionSchema.exactOptional().openapi({ 'x-stream-index': '007' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Ban reason. Only applicable to `user.banned` BaseEvent',
-        title: 'Reason',
-        'x-stream-index': '014',
-      }),
-    team: z.string().exactOptional().openapi({ 'x-stream-index': '019' }),
-    type: z
-      .string()
-      .openapi({
-        description: 'Event type. To use custom BaseEvent types see Custom Events documentation',
-        title: 'Type',
-        'x-stream-docs-page-id': 'custom_events',
-        'x-stream-index': '001',
-      }),
-    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '010' }),
-    user_id: z.string().exactOptional().openapi({ title: 'User ID', 'x-stream-index': '011' }),
-    watcher_count: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Number of watchers who received this BaseEvent',
-        title: 'Watcher count',
-        'x-stream-index': '013',
-      }),
-  })
-  .openapi({
-    description: 'Represents an BaseEvent that happened in Stream Chat',
-    required: ['type', 'created_at'],
-    title: 'Event',
-    'x-stream-docs-page-id': 'event_object',
-  })
-  .openapi('Event')
-
-const ModerationResponseRequestSchema = z
-  .object({
-    action: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    explicit: z.float32().exactOptional().openapi({ 'x-stream-index': '002' }),
-    spam: z.float32().exactOptional().openapi({ 'x-stream-index': '003' }),
-    toxic: z.float32().exactOptional().openapi({ 'x-stream-index': '001' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ModerationResponseRequest')
-
-const UserMuteRequestSchema = z
-  .object({
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of creation',
-        title: 'Created at',
-        'x-stream-index': '009',
-      }),
-    expires: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of mute expiration',
-        title: 'Expires',
-        'x-stream-index': '008',
-      }),
-    target: UserObjectRequestSchema.exactOptional().openapi({
-      description: "User who's muted",
-      title: 'Target',
-      'x-stream-index': '007',
-    }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of the last update',
-        title: 'Updated at',
-        'x-stream-index': '010',
-      }),
-    user: UserObjectRequestSchema.exactOptional().openapi({
-      description: 'Owner of channel mute',
-      title: 'User',
-      'x-stream-index': '005',
-    }),
-  })
-  .nullable()
-  .openapi({ required: [] })
-  .openapi('UserMuteRequest')
-
-const OwnUserRequestSchema = z
-  .looseObject({
-    banned: z.boolean().exactOptional().openapi({ 'x-stream-index': '014' }),
-    channel_mutes: z
-      .array(ChannelMuteRequestSchema)
-      .exactOptional()
-      .openapi({ 'x-stream-index': '026' }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '007' }),
-    deactivated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '012' }),
-    deleted_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '011' }),
-    devices: z.array(DeviceRequestSchema).exactOptional().openapi({ 'x-stream-index': '024' }),
-    id: z.string().exactOptional().openapi({ 'x-stream-index': '003' }),
-    invisible: z.boolean().exactOptional().openapi({ 'x-stream-index': '021' }),
-    language: z.string().exactOptional().openapi({ 'x-stream-index': '030' }),
-    last_active: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '010' }),
-    latest_hidden_channels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ 'x-stream-index': '032' }),
-    mutes: z.array(UserMuteRequestSchema).exactOptional().openapi({ 'x-stream-index': '025' }),
-    online: z.boolean().exactOptional().openapi({ 'x-stream-index': '020' }),
-    push_notifications: PushNotificationSettingsRequestSchema.exactOptional().openapi({
-      'x-stream-index': '023',
-    }),
-    role: z.string().exactOptional().openapi({ 'x-stream-index': '004' }),
-    teams: z.array(z.string()).exactOptional().openapi({ 'x-stream-index': '031' }),
-    total_unread_count: z.number().exactOptional().openapi({ 'x-stream-index': '028' }),
-    unread_channels: z.number().exactOptional().openapi({ 'x-stream-index': '029' }),
-    unread_count: z.number().exactOptional().openapi({ 'x-stream-index': '027' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '008' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OwnUserRequest')
-
-const MessageRequest_1Schema: z.ZodType<MessageRequest_1Type> = z
-  .lazy(() =>
-    z
-      .looseObject({
-        attachments: z
-          .array(AttachmentRequestSchema)
-          .exactOptional()
-          .openapi({
-            description: 'Array of message attachments',
-            title: 'Message attachments',
-            'x-stream-docs-page-id': 'message_format#attachment-format',
-            'x-stream-index': '011',
-          }),
-        before_message_send_failed: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether `before_message_send webhook` failed or not. Field is only accessible in push webhook',
-            title: 'Before Message Send Failed',
-            'x-stream-docs-page-id': 'before_message_send_webhook',
-            'x-stream-index': '041',
-          }),
-        cid: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Channel unique identifier in <type>:<id> format',
-            title: 'Channel CID',
-            'x-stream-index': '025',
-          }),
-        command: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Contains provided slash command',
-            title: 'Command',
-            'x-stream-docs-page-id': 'custom_commands_webhook',
-            'x-stream-index': '006',
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'Date/time of creation',
-            title: 'Created at',
-            'x-stream-index': '027',
-          }),
-        deleted_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'Date/time of deletion',
-            title: 'Deleted at',
-            'x-stream-index': '029',
-          }),
-        html: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Contains HTML markup of the message. Can only be set when using server-side API',
-            title: 'HTML content',
-            'x-stream-index': '007',
-          }),
-        i18n: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Object with translations. Key `language` contains the original language key. Other keys contain translations',
-            title: 'Internationalization info',
-            'x-stream-docs-page-id': 'translation',
-            'x-stream-index': '039',
-          }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Message ID is unique string identifier of the message',
-            title: 'ID',
-            'x-stream-index': '002',
-          }),
-        image_labels: z
-          .record(z.string(), z.array(z.string()))
-          .exactOptional()
-          .openapi({
-            description: 'Contains image moderation information',
-            title: 'Image moderation labels',
-            'x-stream-index': '035',
-          }),
-        latest_reactions: z
-          .array(ReactionRequestSchema)
-          .exactOptional()
-          .openapi({
-            description: 'List of 10 latest reactions to this message',
-            title: 'Latest reactions',
-            'x-stream-index': '012',
-          }),
-        mentioned_users: z
-          .array(UserObjectRequestSchema)
-          .exactOptional()
-          .openapi({
-            description: 'List of mentioned users',
-            title: 'Mentioned Users',
-            'x-stream-index': '038',
-          }),
-        mml: z
-          .string()
-          .openapi({
-            description:
-              'Should be empty if `text` is provided. Can only be set when using server-side API',
-            title: 'Messaging Markup Language',
-            'x-stream-docs-page-id': 'mml_overview',
-            'x-stream-index': '005',
-          }),
-        own_reactions: z
-          .array(ReactionRequestSchema)
-          .exactOptional()
-          .openapi({
-            description: 'List of 10 latest reactions of authenticated user to this message',
-            title: 'Own reactions',
-            'x-stream-index': '013',
-          }),
-        parent_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'ID of parent message (thread)',
-            title: 'Parent message ID',
-            'x-stream-docs-page-id': 'threads',
-            'x-stream-index': '017',
-          }),
-        pin_expires: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'Date when pinned message expires',
-            title: 'Pin expiration date',
-            'x-stream-docs-page-id': 'pinned_messages',
-            'x-stream-index': '046',
-          }),
-        pinned: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether message is pinned or not',
-            title: 'Pinned',
-            'x-stream-docs-page-id': 'pinned_messages',
-            'x-stream-index': '042',
-          }),
-        pinned_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'Date when message got pinned',
-            title: 'Pinned at',
-            'x-stream-docs-page-id': 'pinned_messages',
-            'x-stream-index': '043',
-          }),
-        pinned_by: UserObjectRequestSchema.exactOptional().openapi({
-          description: 'Contains user who pinned the message',
-          title: 'Pinned by',
-          'x-stream-docs-page-id': 'pinned_messages',
-          'x-stream-index': '045',
-        }),
-        quoted_message: MessageRequest_1Schema.exactOptional().openapi({
-          description: 'Contains quoted message',
-          title: 'Quoted message',
-          'x-stream-docs-page-id': 'threads#quote-message',
-          'x-stream-index': '022',
-        }),
-        quoted_message_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            title: 'ID of quoted message',
-            'x-stream-docs-page-id': 'threads#quote-message',
-            'x-stream-index': '021',
-          }),
-        reaction_counts: z
-          .record(z.string(), z.number())
-          .exactOptional()
-          .openapi({
-            description:
-              'An object containing number of reactions of each type. Key: reaction type (string), value: number of reactions (int)',
-            title: 'Reaction counts',
-            'x-stream-index': '014',
-          }),
-        reaction_scores: z
-          .record(z.string(), z.number())
-          .exactOptional()
-          .openapi({
-            description:
-              'An object containing scores of reactions of each type. Key: reaction type (string), value: total score of reactions (int)',
-            title: 'Reaction scores',
-            'x-stream-index': '015',
-          }),
-        reply_count: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description: 'Number of replies to this message',
-            title: 'Reply count',
-            'x-stream-index': '020',
-          }),
-        shadowed: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether the message was shadowed or not',
-            title: 'Shadowed',
-            'x-stream-docs-page-id': 'moderation#shadow-ban',
-            'x-stream-index': '031',
-          }),
-        show_in_channel: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether thread reply should be shown in the channel as well',
-            title: 'Show in channel',
-            'x-stream-docs-page-id': 'threads',
-            'x-stream-index': '019',
-          }),
-        silent: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether message is silent or not',
-            title: 'Silent',
-            'x-stream-index': '040',
-          }),
-        text: z
-          .string()
-          .openapi({
-            description: 'Text of the message. Should be empty if `mml` is provided',
-            title: 'Text',
-            'x-stream-index': '004',
-          }),
-        thread_participants: z
-          .array(UserObjectRequestSchema)
-          .exactOptional()
-          .openapi({
-            description: 'List of users who participate in thread',
-            title: 'Thread participants',
-            'x-stream-docs-page-id': 'threads#quote-message',
-            'x-stream-index': '024',
-          }),
-        type: z
-          .enum(['regular', 'ephemeral', 'error', 'reply', 'system', 'deleted'])
-          .exactOptional()
-          .openapi({
-            description: 'Contains type of the message',
-            title: 'Message Type',
-            'x-stream-docs-page-id': 'message_format#message-types',
-            'x-stream-index': '008',
-          }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'Date/time of the last update',
-            title: 'Updated at',
-            'x-stream-index': '028',
-          }),
-        user: UserObjectRequestSchema.exactOptional().openapi({
-          description: 'Sender of the message. Required when using server-side API',
-          title: 'User object',
-          'x-stream-index': '010',
-        }),
-      })
-      .openapi({
-        description: 'Represents any chat message',
-        required: ['text', 'mml'],
-        title: 'Message',
-        'x-stream-docs-page-id': 'send_message',
-      }),
-  )
-  .openapi('MessageRequest_1')
-
-const EventRequestSchema = z
-  .looseObject({
-    automoderation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Only applicable to `message.flagged` BaseEvent.',
-        title: 'Auto moderation',
-        'x-stream-index': '016',
-      }),
-    automoderation_scores: ModerationResponseRequestSchema.exactOptional().openapi({
-      description: 'Only applicable to `message.flagged` BaseEvent.',
-      title: 'Auto moderation scores',
-      'x-stream-index': '017',
-    }),
-    channel: ChannelResponseRequestSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
-    channel_id: z
-      .string()
-      .exactOptional()
-      .openapi({ title: 'Channel ID', 'x-stream-index': '004' }),
-    channel_type: z
-      .string()
-      .exactOptional()
-      .openapi({ title: 'Channel type', 'x-stream-index': '005' }),
-    cid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Channel CID (<type>:<id>)', title: 'CID', 'x-stream-index': '003' }),
-    connection_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Only applicable to `health.check` BaseEvent',
-        title: 'Connection ID',
-        'x-stream-index': '002',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Date/time of creation',
-        title: 'Created at',
-        'x-stream-index': '021',
-      }),
-    created_by: UserObjectRequestSchema.exactOptional().openapi({
-      description:
-        'User who issued moderation action. Only applicable to moderation-related events',
-      title: 'Created by',
-      'x-stream-index': '015',
-    }),
-    me: OwnUserRequestSchema.exactOptional().openapi({ 'x-stream-index': '012' }),
-    member: ChannelMemberRequestSchema.exactOptional().openapi({ 'x-stream-index': '009' }),
-    message: MessageRequest_1Schema.exactOptional().openapi({ 'x-stream-index': '006' }),
-    parent_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of thread. Used in typing events',
-        title: 'Parent ID',
-        'x-stream-index': '018',
-      }),
-    reaction: ReactionRequestSchema.exactOptional().openapi({ 'x-stream-index': '007' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Ban reason. Only applicable to `user.banned` BaseEvent',
-        title: 'Reason',
-        'x-stream-index': '014',
-      }),
-    team: z.string().exactOptional().openapi({ 'x-stream-index': '019' }),
-    type: z
-      .string()
-      .openapi({
-        description: 'Event type. To use custom BaseEvent types see Custom Events documentation',
-        title: 'Type',
-        'x-stream-docs-page-id': 'custom_events',
-        'x-stream-index': '001',
-      }),
-    user: UserObjectRequestSchema.exactOptional().openapi({ 'x-stream-index': '010' }),
-    user_id: z.string().exactOptional().openapi({ title: 'User ID', 'x-stream-index': '011' }),
-    watcher_count: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Number of watchers who received this BaseEvent',
-        title: 'Watcher count',
-        'x-stream-index': '013',
-      }),
-  })
-  .openapi({
-    description: 'Represents an BaseEvent that happened in Stream Chat',
-    required: ['type'],
-    title: 'Event',
-    'x-stream-docs-page-id': 'event_object',
-  })
-  .openapi('EventRequest')
-
-const EventResponseSchema = z
+const EventResponseSchema: z.ZodType<EventResponseType> = z
   .object({
     duration: z
       .string()
@@ -5907,7 +6231,7 @@ const GuestResponseSchema = z
   .openapi({ required: ['access_token', 'duration'] })
   .openapi('GuestResponse')
 
-const HealthCheckEventSchema = z
+const HealthCheckEventSchema: z.ZodType<HealthCheckEventType> = z
   .object({
     cid: z.string().openapi({ 'x-stream-index': '001' }),
     created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '003.002' }),
@@ -6192,7 +6516,7 @@ const MarkReadRequestSchema = z
   .openapi({ required: [] })
   .openapi('MarkReadRequest')
 
-const MarkReadResponseSchema = z
+const MarkReadResponseSchema: z.ZodType<MarkReadResponseType> = z
   .object({
     duration: z.string().openapi({ 'x-stream-index': '002.001' }),
     event: EventSchema.exactOptional().openapi({
@@ -6328,34 +6652,6 @@ const MessageDeletedEventSchema = z
     'x-stream-is-event': true,
   })
   .openapi('MessageDeletedEvent')
-
-const MessageFlagSchema = z
-  .object({
-    approved_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '009' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '005' }),
-    created_by_automod: z.boolean().openapi({ 'x-stream-index': '001' }),
-    message: MessageSchema.exactOptional().openapi({ 'x-stream-index': '004' }),
-    moderation_result: MessageModerationResultSchema.exactOptional().openapi({
-      'x-stream-index': '002',
-    }),
-    rejected_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '010' }),
-    reviewed_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '007' }),
-    reviewed_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '008' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '006' }),
-    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '003' }),
-  })
-  .nullable()
-  .openapi({ required: ['created_by_automod', 'created_at', 'updated_at'] })
-  .openapi('MessageFlag')
 
 const MessageFlaggedEventSchema = z
   .object({
@@ -6676,7 +6972,7 @@ const MuteChannelRequestSchema = z
   .openapi({ required: ['channel_cid', 'channel_cids'] })
   .openapi('MuteChannelRequest')
 
-const MuteChannelResponseSchema = z
+const MuteChannelResponseSchema: z.ZodType<MuteChannelResponseType> = z
   .object({
     channel_mute: ChannelMuteSchema.exactOptional().openapi({
       description: 'Object with channel mute (if one channel was muted)',
@@ -6727,7 +7023,7 @@ const MuteUserRequestSchema = z
   .openapi({ required: ['target_id', 'target_ids'] })
   .openapi('MuteUserRequest')
 
-const MuteUserResponseSchema = z
+const MuteUserResponseSchema: z.ZodType<MuteUserResponseType> = z
   .object({
     duration: z.string().openapi({ 'x-stream-index': '004.001' }),
     mute: UserMuteSchema.exactOptional().openapi({
@@ -6787,18 +7083,19 @@ const NotificationChannelDeletedEventSchema = z
   })
   .openapi('NotificationChannelDeletedEvent')
 
-const NotificationChannelMutesUpdatedEventSchema = z
-  .object({
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.002' }),
-    me: OwnUserSchema.openapi({ 'x-stream-index': '001' }),
-    type: z.string().openapi({ 'x-stream-index': '002.001' }),
-  })
-  .openapi({
-    required: ['me', 'type', 'created_at'],
-    title: 'NotificationChannelMutesUpdatedEvent',
-    'x-stream-is-event': true,
-  })
-  .openapi('NotificationChannelMutesUpdatedEvent')
+const NotificationChannelMutesUpdatedEventSchema: z.ZodType<NotificationChannelMutesUpdatedEventType> =
+  z
+    .object({
+      created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.002' }),
+      me: OwnUserSchema.openapi({ 'x-stream-index': '001' }),
+      type: z.string().openapi({ 'x-stream-index': '002.001' }),
+    })
+    .openapi({
+      required: ['me', 'type', 'created_at'],
+      title: 'NotificationChannelMutesUpdatedEvent',
+      'x-stream-is-event': true,
+    })
+    .openapi('NotificationChannelMutesUpdatedEvent')
 
 const NotificationChannelTruncatedEventSchema = z
   .object({
@@ -6930,7 +7227,7 @@ const NotificationMarkUnreadEventSchema = z
   })
   .openapi('NotificationMarkUnreadEvent')
 
-const NotificationMutesUpdatedEventSchema = z
+const NotificationMutesUpdatedEventSchema: z.ZodType<NotificationMutesUpdatedEventType> = z
   .object({
     created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '002.002' }),
     me: OwnUserSchema.openapi({ 'x-stream-index': '001' }),
@@ -7075,7 +7372,7 @@ const QueryBannedUsersRequestSchema = z
   .openapi({ required: ['filter_conditions'] })
   .openapi('QueryBannedUsersRequest')
 
-const QueryBannedUsersResponseSchema = z
+const QueryBannedUsersResponseSchema: z.ZodType<QueryBannedUsersResponseType> = z
   .object({
     bans: z.array(BanResponseSchema).openapi({ 'x-stream-index': '001' }),
     duration: z
@@ -7308,7 +7605,7 @@ const QueryMessageFlagsRequestSchema = z
   .openapi({ required: [] })
   .openapi('QueryMessageFlagsRequest')
 
-const QueryMessageFlagsResponseSchema = z
+const QueryMessageFlagsResponseSchema: z.ZodType<QueryMessageFlagsResponseType> = z
   .object({
     duration: z
       .string()
@@ -7648,7 +7945,7 @@ const RestoreUsersRequestSchema = z
   .openapi({ required: ['user_ids'] })
   .openapi('RestoreUsersRequest')
 
-const ResumeCampaignRequestSchema = z.object({}).openapi('ResumeCampaignRequest')
+const ResumeCampaignRequestSchema = z.looseObject({}).openapi('ResumeCampaignRequest')
 
 const ResumeCampaignResponseSchema = z
   .object({
@@ -7744,136 +8041,7 @@ const SearchRequestSchema = z
   .openapi({ required: ['filter_conditions'] })
   .openapi('SearchRequest')
 
-const SearchResultMessageSchema = z
-  .looseObject({
-    attachments: z.array(AttachmentSchema).openapi({ 'x-stream-index': '001.011' }),
-    before_message_send_failed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.041' }),
-    channel: ChannelResponseSchema.exactOptional().openapi({
-      description: 'Channel object',
-      title: 'Channel',
-      'x-stream-index': '002',
-    }),
-    cid: z.string().openapi({ 'x-stream-index': '001.025' }),
-    command: z.string().exactOptional().openapi({ 'x-stream-index': '001.006' }),
-    created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.027' }),
-    deleted_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.029' }),
-    html: z.string().openapi({ 'x-stream-index': '001.007' }),
-    i18n: z.record(z.string(), z.string()).exactOptional().openapi({ 'x-stream-index': '001.039' }),
-    id: z.string().openapi({ 'x-stream-index': '001.002' }),
-    image_labels: z
-      .record(z.string(), z.array(z.string()))
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.035' }),
-    latest_reactions: z.array(ReactionSchema).openapi({ 'x-stream-index': '001.012' }),
-    mentioned_users: z.array(UserObjectSchema).openapi({ 'x-stream-index': '001.038' }),
-    mml: z.string().exactOptional().openapi({ 'x-stream-index': '001.005' }),
-    own_reactions: z.array(ReactionSchema).openapi({ 'x-stream-index': '001.013' }),
-    parent_id: z.string().exactOptional().openapi({ 'x-stream-index': '001.017' }),
-    pin_expires: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.046' }),
-    pinned: z.boolean().openapi({ 'x-stream-index': '001.042' }),
-    pinned_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.043' }),
-    pinned_by: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '001.045' }),
-    quoted_message: MessageSchema.exactOptional().openapi({ 'x-stream-index': '001.022' }),
-    quoted_message_id: z.string().exactOptional().openapi({ 'x-stream-index': '001.021' }),
-    reaction_counts: z.record(z.string(), z.number()).openapi({ 'x-stream-index': '001.014' }),
-    reaction_scores: z.record(z.string(), z.number()).openapi({ 'x-stream-index': '001.015' }),
-    reply_count: z.number().openapi({ 'x-stream-index': '001.020' }),
-    shadowed: z.boolean().openapi({ 'x-stream-index': '001.031' }),
-    show_in_channel: z.boolean().exactOptional().openapi({ 'x-stream-index': '001.019' }),
-    silent: z.boolean().openapi({ 'x-stream-index': '001.040' }),
-    text: z.string().openapi({ 'x-stream-index': '001.004' }),
-    thread_participants: z
-      .array(UserObjectSchema)
-      .exactOptional()
-      .openapi({ 'x-stream-index': '001.024' }),
-    type: z.string().openapi({ 'x-stream-index': '001.008' }),
-    updated_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.028' }),
-    user: UserObjectSchema.exactOptional().openapi({ 'x-stream-index': '001.010' }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'text',
-      'html',
-      'type',
-      'attachments',
-      'latest_reactions',
-      'own_reactions',
-      'reaction_counts',
-      'reaction_scores',
-      'reply_count',
-      'cid',
-      'created_at',
-      'updated_at',
-      'shadowed',
-      'mentioned_users',
-      'silent',
-      'pinned',
-    ],
-  })
-  .openapi('SearchResultMessage')
-
-const SearchResultSchema = z
-  .object({
-    message: SearchResultMessageSchema.exactOptional().openapi({
-      description: 'Found message',
-      title: 'Message',
-      'x-stream-index': '001',
-    }),
-  })
-  .nullable()
-  .openapi({ required: [] })
-  .openapi('SearchResult')
-
-const SearchWarningSchema = z
-  .object({
-    channel_search_cids: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Channel CIDs for the searched channels',
-        title: 'Channel Search CIDs',
-        'x-stream-index': '004',
-      }),
-    channel_search_count: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description: 'Number of channels searched',
-        title: 'Channel Search Count',
-        'x-stream-index': '003',
-      }),
-    warning_code: z
-      .number()
-      .openapi({
-        description: 'Code corresponding to the warning',
-        title: 'Warning Code',
-        'x-stream-index': '002',
-      }),
-    warning_description: z
-      .string()
-      .openapi({
-        description: 'Description of the warning',
-        title: 'Warning Description',
-        'x-stream-index': '001',
-      }),
-  })
-  .openapi({ required: ['warning_description', 'warning_code'] })
-  .openapi('SearchWarning')
-
-const SearchResponseSchema = z
+const SearchResponseSchema: z.ZodType<SearchResponseType> = z
   .object({
     duration: z.string().openapi({ 'x-stream-index': '005.001' }),
     next: z
@@ -7916,7 +8084,7 @@ const SegmentUpdateableFieldsRequestSchema = z
   .openapi({ required: [] })
   .openapi('SegmentUpdateableFieldsRequest')
 
-const SendEventRequestSchema = z
+const SendEventRequestSchema: z.ZodType<SendEventRequestType> = z
   .object({ event: EventRequestSchema.openapi({ 'x-stream-index': '001' }) })
   .nullable()
   .openapi({ required: ['event'] })
@@ -8036,7 +8204,7 @@ const ShowChannelResponseSchema = z
   .openapi({ required: ['duration'] })
   .openapi('ShowChannelResponse')
 
-const StopCampaignRequestSchema = z.object({}).nullable().openapi('StopCampaignRequest')
+const StopCampaignRequestSchema = z.looseObject({}).nullable().openapi('StopCampaignRequest')
 
 const StopCampaignResponseSchema = z
   .object({
@@ -8110,7 +8278,7 @@ const SyncRequestSchema = z
   .openapi({ required: ['last_sync_at'] })
   .openapi('SyncRequest')
 
-const SyncResponseSchema = z
+const SyncResponseSchema: z.ZodType<SyncResponseType> = z
   .object({
     duration: z.string().openapi({ 'x-stream-index': '003.001' }),
     events: z
@@ -9145,7 +9313,7 @@ const UserUnmutedEventSchema = z
   })
   .openapi('UserUnmutedEvent')
 
-const UserUnreadReminderEventSchema = z
+const UserUnreadReminderEventSchema: z.ZodType<UserUnreadReminderEventType> = z
   .object({
     channels: z.record(z.string(), ChannelMessagesSchema).openapi({ 'x-stream-index': '003' }),
     created_at: z.iso.datetime({ offset: true }).openapi({ 'x-stream-index': '001.002' }),
@@ -9264,36 +9432,27 @@ export const getAppRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9322,36 +9481,27 @@ export const patchAppRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9377,36 +9527,27 @@ export const getBlocklistsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9440,36 +9581,27 @@ export const postBlocklistsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9530,36 +9662,27 @@ export const getBlocklistsNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9616,36 +9739,27 @@ export const putBlocklistsNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9706,36 +9820,27 @@ export const deleteBlocklistsNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9766,36 +9871,27 @@ export const postCallsIndexRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9851,36 +9947,27 @@ export const postCallsCallIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9937,36 +10024,27 @@ export const getCampaignsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9998,36 +10076,27 @@ export const postCampaignsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10084,36 +10153,27 @@ export const putCampaignsIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10192,36 +10252,27 @@ export const deleteCampaignsIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10274,36 +10325,27 @@ export const patchCampaignsIdResumeRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10360,36 +10402,27 @@ export const patchCampaignsIdScheduleRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10442,36 +10475,27 @@ export const patchCampaignsIdStopRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10528,36 +10552,27 @@ export const postCampaignsIdTestRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10634,36 +10649,27 @@ export const postChannelsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10695,36 +10701,27 @@ export const postChannelsDeleteRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10757,36 +10754,27 @@ export const postChannelsReadRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10896,36 +10884,27 @@ export const postChannelsTypeQueryRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11006,36 +10985,27 @@ export const postChannelsTypeIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11150,36 +11120,27 @@ export const deleteChannelsTypeIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11259,36 +11220,27 @@ export const patchChannelsTypeIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11364,36 +11316,27 @@ export const postChannelsTypeIdCallRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11486,36 +11429,27 @@ export const postChannelsTypeIdEventRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11595,36 +11529,27 @@ export const postChannelsTypeIdFileRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11710,36 +11635,27 @@ export const deleteChannelsTypeIdFileRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11816,36 +11732,27 @@ export const postChannelsTypeIdHideRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12001,36 +11908,27 @@ export const postChannelsTypeIdImageRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12116,36 +12014,27 @@ export const deleteChannelsTypeIdImageRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12226,36 +12115,27 @@ export const postChannelsTypeIdMessageRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12366,36 +12246,27 @@ export const getChannelsTypeIdMessagesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12537,36 +12408,27 @@ export const postChannelsTypeIdQueryRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12643,36 +12505,27 @@ export const postChannelsTypeIdReadRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12749,36 +12602,27 @@ export const postChannelsTypeIdShowRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12902,36 +12746,27 @@ export const postChannelsTypeIdStopWatchingRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13011,36 +12846,27 @@ export const postChannelsTypeIdTruncateRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13117,36 +12943,27 @@ export const postChannelsTypeIdUnreadRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13172,36 +12989,27 @@ export const getChanneltypesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13233,36 +13041,27 @@ export const postChanneltypesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13323,36 +13122,27 @@ export const getChanneltypesNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13409,36 +13199,27 @@ export const putChanneltypesNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13499,36 +13280,27 @@ export const deleteChanneltypesNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13558,36 +13330,27 @@ export const postCheckPushRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13616,36 +13379,27 @@ export const postCheckSqsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13671,36 +13425,27 @@ export const getCommandsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13733,36 +13478,27 @@ export const postCommandsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13812,36 +13548,27 @@ export const getCommandsNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13907,36 +13634,27 @@ export const putCommandsNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -13986,36 +13704,27 @@ export const deleteCommandsNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14065,36 +13774,27 @@ export const getConnectRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14156,36 +13856,27 @@ export const getDevicesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14218,36 +13909,27 @@ export const postDevicesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14341,36 +14023,27 @@ export const deleteDevicesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14399,36 +14072,27 @@ export const postExportUsersRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14460,36 +14124,27 @@ export const postExportChannelsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14549,36 +14204,27 @@ export const getExportChannelsIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14607,36 +14253,27 @@ export const postGuestRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14668,36 +14305,27 @@ export const postImportUrlsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14723,36 +14351,27 @@ export const getImportsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14784,36 +14403,27 @@ export const postImportsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14866,36 +14476,27 @@ export const getImportsIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14969,36 +14570,27 @@ export const getLongpollRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15055,36 +14647,27 @@ export const getMembersRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15145,36 +14728,27 @@ export const getMessagesIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15219,36 +14793,27 @@ export const putMessagesIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15294,36 +14859,27 @@ export const postMessagesIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15418,36 +14974,27 @@ export const deleteMessagesIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15512,36 +15059,27 @@ export const postMessagesIdActionRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15593,36 +15131,27 @@ export const postMessagesIdCommitRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15687,36 +15216,27 @@ export const postMessagesIdReactionRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15842,36 +15362,27 @@ export const deleteMessagesIdReactionTypeRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15998,36 +15509,27 @@ export const getMessagesIdReactionsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16072,36 +15574,27 @@ export const postMessagesIdTranslateRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16399,36 +15892,27 @@ export const getMessagesParentIdRepliesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16457,36 +15941,27 @@ export const postModerationBanRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16579,36 +16054,27 @@ export const deleteModerationBanRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16637,36 +16103,27 @@ export const postModerationFlagRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16723,36 +16180,27 @@ export const getModerationFlagsMessageRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16781,36 +16229,27 @@ export const postModerationMuteRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16839,36 +16278,27 @@ export const postModerationMuteChannelRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16897,36 +16327,27 @@ export const postModerationUnflagRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16955,36 +16376,27 @@ export const postModerationUnmuteRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17016,36 +16428,27 @@ export const postModerationUnmuteChannelRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17107,36 +16510,27 @@ export const getOgRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17162,36 +16556,27 @@ export const getPermissionsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17252,36 +16637,27 @@ export const getPermissionsIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17307,36 +16683,27 @@ export const getPushProvidersRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17368,36 +16735,27 @@ export const postPushProvidersRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17488,36 +16846,27 @@ export const deletePushProvidersTypeNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17574,36 +16923,27 @@ export const getQueryBannedUsersRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17794,36 +17134,27 @@ export const getRateLimitsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17880,36 +17211,27 @@ export const getRecipientsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17935,36 +17257,27 @@ export const getRolesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -17993,36 +17306,27 @@ export const postRolesRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18083,36 +17387,27 @@ export const deleteRolesNameRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18171,36 +17466,27 @@ export const getSearchRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18257,36 +17543,27 @@ export const getSegmentsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18318,36 +17595,27 @@ export const postSegmentsRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18404,36 +17672,27 @@ export const putSegmentsIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18486,36 +17745,27 @@ export const deleteSegmentsIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18650,36 +17900,27 @@ export const postSyncRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18740,36 +17981,27 @@ export const getTasksIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18826,36 +18058,27 @@ export const getUsersRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18884,36 +18107,27 @@ export const postUsersRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18945,36 +18159,27 @@ export const patchUsersRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19006,36 +18211,27 @@ export const postUsersDeactivateRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19064,36 +18260,27 @@ export const postUsersDeleteRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19125,36 +18312,27 @@ export const postUsersReactivateRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19186,36 +18364,27 @@ export const postUsersRestoreRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19367,36 +18536,27 @@ export const deleteUsersUserIdRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19453,36 +18613,27 @@ export const postUsersUserIdDeactivateRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19539,36 +18690,27 @@ export const postUsersUserIdEventRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19618,36 +18760,27 @@ export const getUsersUserIdExportRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19704,36 +18837,27 @@ export const postUsersUserIdReactivateRoute = createRoute({
       description: 'Too many requests',
       content: { 'application/json': { schema: APIErrorSchema } },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'The number of allowed requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of allowed requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of remaining requests in the current period',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of remaining requests in the current period',
-              param: { required: false },
-            }),
-        },
-        'X-RateLimit-Reset': {
-          description: 'Timestamp when number of requests will be reset',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Timestamp when number of requests will be reset',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of allowed requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of remaining requests in the current period',
+            param: { required: false },
+          }),
+        'X-RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Timestamp when number of requests will be reset',
+            param: { required: false },
+          }),
       }),
     },
   },

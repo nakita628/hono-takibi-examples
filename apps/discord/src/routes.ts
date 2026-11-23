@@ -1,224 +1,1573 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ApplicationCommandOptionTypeSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({ title: 'SUB_COMMAND', description: 'A sub-action within a command or group' }),
+    z.literal(2).openapi({ title: 'SUB_COMMAND_GROUP', description: 'A group of subcommands' }),
+    z.literal(3).openapi({ title: 'STRING', description: 'A string option' }),
+    z
+      .literal(4)
+      .openapi({
+        title: 'INTEGER',
+        description: 'An integer option. Any integer between -2^53 and 2^53 is a valid value',
+      }),
+    z.literal(5).openapi({ title: 'BOOLEAN', description: 'A boolean option' }),
+    z
+      .literal(6)
+      .openapi({ title: 'USER', description: 'A snowflake option that represents a User' }),
+    z
+      .literal(7)
+      .openapi({
+        title: 'CHANNEL',
+        description:
+          'A snowflake option that represents a Channel. Includes all channel types and categories',
+      }),
+    z
+      .literal(8)
+      .openapi({ title: 'ROLE', description: 'A snowflake option that represents a Role' }),
+    z
+      .literal(9)
+      .openapi({
+        title: 'MENTIONABLE',
+        description: 'A snowflake option that represents anything you can mention',
+      }),
+    z
+      .literal(10)
+      .openapi({
+        title: 'NUMBER',
+        description: 'A number option. Any double between -2^53 and 2^53 is a valid value',
+      }),
+    z.literal(11).openapi({ title: 'ATTACHMENT', description: 'An attachment option' }),
+  ])
+  .openapi('ApplicationCommandOptionType')
+
+const ApplicationCommandAttachmentOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    file_types: z
+      .array(z.string().min(1).max(16))
+      .max(10)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandAttachmentOption')
+
+const ApplicationCommandBooleanOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandBooleanOption')
+
+const ChannelTypesSchema = z
+  .xor([
+    z.literal(1).openapi({ title: 'DM', description: 'A direct message between users' }),
+    z
+      .literal(3)
+      .openapi({ title: 'GROUP_DM', description: 'A direct message between multiple users' }),
+    z.literal(0).openapi({ title: 'GUILD_TEXT', description: 'A text channel within a server' }),
+    z.literal(2).openapi({ title: 'GUILD_VOICE', description: 'A voice channel within a server' }),
+    z
+      .literal(4)
+      .openapi({
+        title: 'GUILD_CATEGORY',
+        description: 'An organizational category that contains up to 50 channels',
+      }),
+    z
+      .literal(5)
+      .openapi({
+        title: 'GUILD_ANNOUNCEMENT',
+        description:
+          'A channel that users can follow and crosspost into their own server (formerly news channels)',
+      }),
+    z
+      .literal(10)
+      .openapi({
+        title: 'ANNOUNCEMENT_THREAD',
+        description: 'A temporary sub-channel within a GUILD_ANNOUNCEMENT channel',
+      }),
+    z
+      .literal(11)
+      .openapi({
+        title: 'PUBLIC_THREAD',
+        description:
+          'A temporary sub-channel within a GUILD_TEXT or GUILD_THREADS_ONLY channel type set',
+      }),
+    z
+      .literal(12)
+      .openapi({
+        title: 'PRIVATE_THREAD',
+        description:
+          'A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission',
+      }),
+    z
+      .literal(13)
+      .openapi({
+        title: 'GUILD_STAGE_VOICE',
+        description: 'A voice channel for hosting events with an audience',
+      }),
+    z
+      .literal(14)
+      .openapi({
+        title: 'GUILD_DIRECTORY',
+        description: 'The channel in a hub containing the listed servers',
+      }),
+    z
+      .literal(15)
+      .openapi({ title: 'GUILD_FORUM', description: 'Channel that can only contain threads' }),
+  ])
+  .openapi('ChannelTypes')
+
+const ApplicationCommandChannelOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    channel_types: z
+      .array(ChannelTypesSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandChannelOption')
+
+const Int53TypeSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'number' && Number.isSafeInteger(val)
+        ? BigInt(val)
+        : typeof val === 'string' && /^-?\d+$/.test(val)
+          ? BigInt(val)
+          : val,
+    z.int64().min(-9007199254740991n).max(9007199254740991n),
+  )
+  .openapi({
+    type: 'integer',
+    format: 'int64',
+    minimum: -9007199254740991,
+    maximum: 9007199254740991,
+  })
+  .openapi('Int53Type')
+
+const ApplicationCommandOptionIntegerChoiceSchema = z
+  .object({
+    name: z.string().min(1).max(100),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    value: Int53TypeSchema,
+  })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('ApplicationCommandOptionIntegerChoice')
+
+const ApplicationCommandIntegerOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    autocomplete: z.boolean().nullable().exactOptional(),
+    choices: z
+      .array(ApplicationCommandOptionIntegerChoiceSchema)
+      .max(25)
+      .nullable()
+      .exactOptional(),
+    min_value: z.xor([z.null().nullable(), Int53TypeSchema]).exactOptional(),
+    max_value: z.xor([z.null().nullable(), Int53TypeSchema]).exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandIntegerOption')
+
+const ApplicationCommandMentionableOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandMentionableOption')
+
+const ApplicationCommandOptionNumberChoiceSchema = z
+  .object({
+    name: z.string().min(1).max(100),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    value: z.float64(),
+  })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('ApplicationCommandOptionNumberChoice')
+
+const ApplicationCommandNumberOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    autocomplete: z.boolean().nullable().exactOptional(),
+    choices: z.array(ApplicationCommandOptionNumberChoiceSchema).max(25).nullable().exactOptional(),
+    min_value: z.float64().nullable().exactOptional(),
+    max_value: z.float64().nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandNumberOption')
+
+const ApplicationCommandRoleOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandRoleOption')
+
+const ApplicationCommandOptionStringChoiceSchema = z
+  .object({
+    name: z.string().min(1).max(100),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    value: z.string().max(6000),
+  })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('ApplicationCommandOptionStringChoice')
+
+const ApplicationCommandStringOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    autocomplete: z.boolean().nullable().exactOptional(),
+    min_length: z.int().min(0).max(6000).nullable().exactOptional(),
+    max_length: z.int().min(1).max(6000).nullable().exactOptional(),
+    choices: z.array(ApplicationCommandOptionStringChoiceSchema).max(25).nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandStringOption')
+
+const ApplicationCommandUserOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandUserOption')
+
+const ApplicationCommandSubcommandOptionSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string().min(1).max(32),
+    name_localizations: z
+      .record(z.string(), z.string().min(1).max(32))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    description: z.string().min(1).max(100),
+    description_localizations: z
+      .record(z.string(), z.string().min(1).max(100))
+      .refine((val) => Object.keys(val).length <= 34)
+      .nullable()
+      .exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    options: z
+      .array(
+        z.xor([
+          ApplicationCommandAttachmentOptionSchema,
+          ApplicationCommandBooleanOptionSchema,
+          ApplicationCommandChannelOptionSchema,
+          ApplicationCommandIntegerOptionSchema,
+          ApplicationCommandMentionableOptionSchema,
+          ApplicationCommandNumberOptionSchema,
+          ApplicationCommandRoleOptionSchema,
+          ApplicationCommandStringOptionSchema,
+          ApplicationCommandUserOptionSchema,
+        ]),
+      )
+      .max(25)
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandSubcommandOption')
+
+type ApplicationCommandSubcommandGroupOptionType = {
+  type: z.infer<typeof ApplicationCommandOptionTypeSchema>
+  name: string
+  name_localizations?: { [key: string]: string } | null
+  description: string
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
+  options?: z.infer<typeof ApplicationCommandSubcommandOptionSchema>[] | null
+}
+
+const ApplicationCommandSubcommandGroupOptionSchema: z.ZodType<ApplicationCommandSubcommandGroupOptionType> =
+  z
+    .object({
+      type: ApplicationCommandOptionTypeSchema,
+      name: z.string().min(1).max(32),
+      name_localizations: z
+        .record(z.string(), z.string().min(1).max(32))
+        .refine((val) => Object.keys(val).length <= 34)
+        .nullable()
+        .exactOptional(),
+      description: z.string().min(1).max(100),
+      description_localizations: z
+        .record(z.string(), z.string().min(1).max(100))
+        .refine((val) => Object.keys(val).length <= 34)
+        .nullable()
+        .exactOptional(),
+      required: z.boolean().nullable().exactOptional(),
+      options: z.array(ApplicationCommandSubcommandOptionSchema).max(25).nullable().exactOptional(),
+    })
+    .openapi({ required: ['type', 'name', 'description'] })
+    .openapi('ApplicationCommandSubcommandGroupOption')
+
+const InteractionContextTypeSchema = z
+  .xor([
+    z
+      .literal(0)
+      .openapi({ title: 'GUILD', description: 'This command can be used within a Guild.' }),
+    z
+      .literal(1)
+      .openapi({
+        title: 'BOT_DM',
+        description: "This command can be used within a DM with this application's bot.",
+      }),
+    z
+      .literal(2)
+      .openapi({
+        title: 'PRIVATE_CHANNEL',
+        description: 'This command can be used within DMs and Group DMs with users.',
+      }),
+  ])
+  .openapi('InteractionContextType')
+
+const ApplicationIntegrationTypeSchema = z
+  .xor([
+    z.literal(0).openapi({ title: 'GUILD_INSTALL', description: 'For Guild install.' }),
+    z.literal(1).openapi({ title: 'USER_INSTALL', description: 'For User install.' }),
+  ])
+  .openapi('ApplicationIntegrationType')
+
+const ApplicationCommandHandlerSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({
+        title: 'APP_HANDLER',
+        description: 'The app handles the interaction using an interaction token',
+      }),
+    z
+      .literal(2)
+      .openapi({
+        title: 'DISCORD_LAUNCH_ACTIVITY',
+        description:
+          'Discord handles the interaction by launching an Activity and sending a follow-up message without coordinating with the app',
+      }),
+  ])
+  .openapi('ApplicationCommandHandler')
+
+const ApplicationCommandTypeSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({
+        title: 'CHAT',
+        description: 'Slash commands; a text-based command that shows up when a user types /',
+      }),
+    z
+      .literal(2)
+      .openapi({
+        title: 'USER',
+        description: 'A UI-based command that shows up when you right click or tap on a user',
+      }),
+    z
+      .literal(3)
+      .openapi({
+        title: 'MESSAGE',
+        description: 'A UI-based command that shows up when you right click or tap on a message',
+      }),
+    z
+      .literal(4)
+      .openapi({
+        title: 'PRIMARY_ENTRY_POINT',
+        description:
+          'A command that represents the primary way to use an application (e.g. launching an Activity)',
+      }),
+  ])
+  .openapi('ApplicationCommandType')
+
+type ApplicationCommandCreateRequestType = {
+  name: string
+  name_localizations?: { [key: string]: string } | null
+  description?: string | null
+  description_localizations?: { [key: string]: string } | null
+  options?:
+    | (
+        | z.infer<typeof ApplicationCommandAttachmentOptionSchema>
+        | z.infer<typeof ApplicationCommandBooleanOptionSchema>
+        | z.infer<typeof ApplicationCommandChannelOptionSchema>
+        | z.infer<typeof ApplicationCommandIntegerOptionSchema>
+        | z.infer<typeof ApplicationCommandMentionableOptionSchema>
+        | z.infer<typeof ApplicationCommandNumberOptionSchema>
+        | z.infer<typeof ApplicationCommandRoleOptionSchema>
+        | z.infer<typeof ApplicationCommandStringOptionSchema>
+        | z.infer<typeof ApplicationCommandSubcommandGroupOptionSchema>
+        | z.infer<typeof ApplicationCommandSubcommandOptionSchema>
+        | z.infer<typeof ApplicationCommandUserOptionSchema>
+      )[]
+    | null
+  default_member_permissions?: number | null
+  dm_permission?: boolean | null
+  contexts?: z.infer<typeof InteractionContextTypeSchema>[] | null
+  integration_types?: z.infer<typeof ApplicationIntegrationTypeSchema>[] | null
+  handler?: null | z.infer<typeof ApplicationCommandHandlerSchema>
+  type?: null | z.infer<typeof ApplicationCommandTypeSchema>
+}
+
+type ApplicationCommandPatchRequestPartialType = {
+  name?: string
+  name_localizations?: { [key: string]: string } | null
+  description?: string | null
+  description_localizations?: { [key: string]: string } | null
+  options?:
+    | (
+        | z.infer<typeof ApplicationCommandAttachmentOptionSchema>
+        | z.infer<typeof ApplicationCommandBooleanOptionSchema>
+        | z.infer<typeof ApplicationCommandChannelOptionSchema>
+        | z.infer<typeof ApplicationCommandIntegerOptionSchema>
+        | z.infer<typeof ApplicationCommandMentionableOptionSchema>
+        | z.infer<typeof ApplicationCommandNumberOptionSchema>
+        | z.infer<typeof ApplicationCommandRoleOptionSchema>
+        | z.infer<typeof ApplicationCommandStringOptionSchema>
+        | z.infer<typeof ApplicationCommandSubcommandGroupOptionSchema>
+        | z.infer<typeof ApplicationCommandSubcommandOptionSchema>
+        | z.infer<typeof ApplicationCommandUserOptionSchema>
+      )[]
+    | null
+  default_member_permissions?: number | null
+  dm_permission?: boolean | null
+  contexts?: z.infer<typeof InteractionContextTypeSchema>[] | null
+  integration_types?: z.infer<typeof ApplicationIntegrationTypeSchema>[] | null
+  handler?: null | z.infer<typeof ApplicationCommandHandlerSchema>
+}
+
 const SnowflakeTypeSchema = z
   .string()
   .regex(/^(0|[1-9][0-9]*)$/)
   .openapi('SnowflakeType')
 
-const InteractionTypesSchema = z
+const ApplicationCommandAttachmentOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+    file_types: z
+      .array(z.string().max(16))
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandAttachmentOptionResponse')
+
+const ApplicationCommandBooleanOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandBooleanOptionResponse')
+
+const ApplicationCommandChannelOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+    channel_types: z
+      .array(ChannelTypesSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandChannelOptionResponse')
+
+const ApplicationCommandOptionIntegerChoiceResponseSchema = z
+  .object({
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    value: Int53TypeSchema,
+  })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('ApplicationCommandOptionIntegerChoiceResponse')
+
+const ApplicationCommandIntegerOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+    autocomplete: z.boolean().exactOptional(),
+    choices: z.array(ApplicationCommandOptionIntegerChoiceResponseSchema).exactOptional(),
+    min_value: Int53TypeSchema.exactOptional(),
+    max_value: Int53TypeSchema.exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandIntegerOptionResponse')
+
+const ApplicationCommandMentionableOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandMentionableOptionResponse')
+
+const ApplicationCommandOptionNumberChoiceResponseSchema = z
+  .object({
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    value: z.float64(),
+  })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('ApplicationCommandOptionNumberChoiceResponse')
+
+const ApplicationCommandNumberOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+    autocomplete: z.boolean().exactOptional(),
+    choices: z.array(ApplicationCommandOptionNumberChoiceResponseSchema).exactOptional(),
+    min_value: z.float64().exactOptional(),
+    max_value: z.float64().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandNumberOptionResponse')
+
+const ApplicationCommandRoleOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandRoleOptionResponse')
+
+const ApplicationCommandOptionStringChoiceResponseSchema = z
+  .object({
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    value: z.string(),
+  })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('ApplicationCommandOptionStringChoiceResponse')
+
+const ApplicationCommandStringOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+    autocomplete: z.boolean().exactOptional(),
+    choices: z.array(ApplicationCommandOptionStringChoiceResponseSchema).exactOptional(),
+    min_length: z.int32().exactOptional(),
+    max_length: z.int32().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandStringOptionResponse')
+
+const ApplicationCommandUserOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandUserOptionResponse')
+
+const ApplicationCommandSubcommandOptionResponseSchema = z
+  .object({
+    type: ApplicationCommandOptionTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    required: z.boolean().exactOptional(),
+    options: z
+      .array(
+        z.xor([
+          ApplicationCommandAttachmentOptionResponseSchema,
+          ApplicationCommandBooleanOptionResponseSchema,
+          ApplicationCommandChannelOptionResponseSchema,
+          ApplicationCommandIntegerOptionResponseSchema,
+          ApplicationCommandMentionableOptionResponseSchema,
+          ApplicationCommandNumberOptionResponseSchema,
+          ApplicationCommandRoleOptionResponseSchema,
+          ApplicationCommandStringOptionResponseSchema,
+          ApplicationCommandUserOptionResponseSchema,
+        ]),
+      )
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'description'] })
+  .openapi('ApplicationCommandSubcommandOptionResponse')
+
+type ApplicationCommandSubcommandGroupOptionResponseType = {
+  type: z.infer<typeof ApplicationCommandOptionTypeSchema>
+  name: string
+  name_localized?: string
+  name_localizations?: { [key: string]: string } | null
+  description: string
+  description_localized?: string
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean
+  options?: z.infer<typeof ApplicationCommandSubcommandOptionResponseSchema>[]
+}
+
+const ApplicationCommandSubcommandGroupOptionResponseSchema: z.ZodType<ApplicationCommandSubcommandGroupOptionResponseType> =
+  z
+    .object({
+      type: ApplicationCommandOptionTypeSchema,
+      name: z.string(),
+      name_localized: z.string().exactOptional(),
+      name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+      description: z.string(),
+      description_localized: z.string().exactOptional(),
+      description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+      required: z.boolean().exactOptional(),
+      options: z.array(ApplicationCommandSubcommandOptionResponseSchema).exactOptional(),
+    })
+    .openapi({ required: ['type', 'name', 'description'] })
+    .openapi('ApplicationCommandSubcommandGroupOptionResponse')
+
+type ApplicationCommandResponseType = {
+  id: z.infer<typeof SnowflakeTypeSchema>
+  application_id: z.infer<typeof SnowflakeTypeSchema>
+  version: z.infer<typeof SnowflakeTypeSchema>
+  default_member_permissions: string | null
+  type: z.infer<typeof ApplicationCommandTypeSchema>
+  name: string
+  name_localized?: string
+  name_localizations?: { [key: string]: string } | null
+  description: string
+  description_localized?: string
+  description_localizations?: { [key: string]: string } | null
+  guild_id?: z.infer<typeof SnowflakeTypeSchema>
+  dm_permission?: boolean
+  contexts?: z.infer<typeof InteractionContextTypeSchema>[] | null
+  integration_types?: z.infer<typeof ApplicationIntegrationTypeSchema>[]
+  options?: (
+    | z.infer<typeof ApplicationCommandAttachmentOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandBooleanOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandChannelOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandIntegerOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandMentionableOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandNumberOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandRoleOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandStringOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandSubcommandGroupOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandSubcommandOptionResponseSchema>
+    | z.infer<typeof ApplicationCommandUserOptionResponseSchema>
+  )[]
+  nsfw?: boolean
+  handler?: z.infer<typeof ApplicationCommandHandlerSchema>
+}
+
+type ApplicationCommandUpdateRequestType = {
+  name: string
+  name_localizations?: { [key: string]: string } | null
+  description?: string | null
+  description_localizations?: { [key: string]: string } | null
+  options?:
+    | (
+        | z.infer<typeof ApplicationCommandAttachmentOptionSchema>
+        | z.infer<typeof ApplicationCommandBooleanOptionSchema>
+        | z.infer<typeof ApplicationCommandChannelOptionSchema>
+        | z.infer<typeof ApplicationCommandIntegerOptionSchema>
+        | z.infer<typeof ApplicationCommandMentionableOptionSchema>
+        | z.infer<typeof ApplicationCommandNumberOptionSchema>
+        | z.infer<typeof ApplicationCommandRoleOptionSchema>
+        | z.infer<typeof ApplicationCommandStringOptionSchema>
+        | z.infer<typeof ApplicationCommandSubcommandGroupOptionSchema>
+        | z.infer<typeof ApplicationCommandSubcommandOptionSchema>
+        | z.infer<typeof ApplicationCommandUserOptionSchema>
+      )[]
+    | null
+  default_member_permissions?: number | null
+  dm_permission?: boolean | null
+  contexts?: z.infer<typeof InteractionContextTypeSchema>[] | null
+  integration_types?: z.infer<typeof ApplicationIntegrationTypeSchema>[] | null
+  handler?: null | z.infer<typeof ApplicationCommandHandlerSchema>
+  type?: null | z.infer<typeof ApplicationCommandTypeSchema>
+  id?: null | z.infer<typeof SnowflakeTypeSchema>
+}
+
+const RichEmbedAuthorSchema = z
+  .object({
+    name: z.string().max(256).nullable().exactOptional(),
+    url: z.url().max(2048).nullable().exactOptional(),
+    icon_url: z.url().max(2048).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RichEmbedAuthor')
+
+const RichEmbedImageSchema = z
+  .object({
+    url: z.url().max(2048).nullable().exactOptional(),
+    width: z.int().nullable().exactOptional(),
+    height: z.int().nullable().exactOptional(),
+    placeholder: z.string().max(64).nullable().exactOptional(),
+    placeholder_version: z.int().min(0).max(2147483647).nullable().exactOptional(),
+    is_animated: z.boolean().nullable().exactOptional(),
+    description: z.string().max(4096).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RichEmbedImage')
+
+const RichEmbedThumbnailSchema = z
+  .object({
+    url: z.url().max(2048).nullable().exactOptional(),
+    width: z.int().nullable().exactOptional(),
+    height: z.int().nullable().exactOptional(),
+    placeholder: z.string().max(64).nullable().exactOptional(),
+    placeholder_version: z.int().min(0).max(2147483647).nullable().exactOptional(),
+    is_animated: z.boolean().nullable().exactOptional(),
+    description: z.string().max(4096).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RichEmbedThumbnail')
+
+const RichEmbedFooterSchema = z
+  .object({
+    text: z.string().max(2048).nullable().exactOptional(),
+    icon_url: z.url().max(2048).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RichEmbedFooter')
+
+const RichEmbedFieldSchema = z
+  .object({
+    name: z.string().max(256),
+    value: z.string().max(1024),
+    inline: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['name', 'value'] })
+  .openapi('RichEmbedField')
+
+const RichEmbedProviderSchema = z
+  .object({
+    name: z.string().max(256).nullable().exactOptional(),
+    url: z.url().max(2048).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RichEmbedProvider')
+
+const RichEmbedVideoSchema = z
+  .object({
+    url: z.url().max(2048).nullable().exactOptional(),
+    width: z.int().nullable().exactOptional(),
+    height: z.int().nullable().exactOptional(),
+    placeholder: z.string().max(64).nullable().exactOptional(),
+    placeholder_version: z.int().min(0).max(2147483647).nullable().exactOptional(),
+    is_animated: z.boolean().nullable().exactOptional(),
+    description: z.string().max(4096).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RichEmbedVideo')
+
+const RichEmbedAudioSchema = z
+  .object({
+    url: z.url().max(2048).nullable().exactOptional(),
+    description: z.string().max(4096).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RichEmbedAudio')
+
+const RichEmbedSchema = z
+  .object({
+    type: z.string().max(152133).nullable().exactOptional(),
+    url: z.url().max(2048).nullable().exactOptional(),
+    title: z.string().max(256).nullable().exactOptional(),
+    color: z.int().min(0).max(16777215).nullable().exactOptional(),
+    timestamp: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    description: z.string().max(4096).nullable().exactOptional(),
+    author: z.xor([z.null().nullable(), RichEmbedAuthorSchema]).exactOptional(),
+    image: z.xor([z.null().nullable(), RichEmbedImageSchema]).exactOptional(),
+    thumbnail: z.xor([z.null().nullable(), RichEmbedThumbnailSchema]).exactOptional(),
+    footer: z.xor([z.null().nullable(), RichEmbedFooterSchema]).exactOptional(),
+    fields: z.array(RichEmbedFieldSchema).max(25).nullable().exactOptional(),
+    provider: z.xor([z.null().nullable(), RichEmbedProviderSchema]).exactOptional(),
+    video: z.xor([z.null().nullable(), RichEmbedVideoSchema]).exactOptional(),
+    audio: z.xor([z.null().nullable(), RichEmbedAudioSchema]).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RichEmbed')
+
+const AllowedMentionTypesSchema = z
   .xor([
+    z.literal('users').openapi({ title: 'USERS', description: 'Controls role mentions' }),
+    z.literal('roles').openapi({ title: 'ROLES', description: 'Controls user mentions' }),
     z
-      .literal(1)
-      .openapi({
-        title: 'PING',
-        description: "Sent by Discord to validate your application's interaction handler",
-      }),
-    z
-      .literal(2)
-      .openapi({
-        title: 'APPLICATION_COMMAND',
-        description: 'Sent when a user uses an application command',
-      }),
+      .literal('everyone')
+      .openapi({ title: 'EVERYONE', description: 'Controls @everyone and @here mentions' }),
+  ])
+  .openapi('AllowedMentionTypes')
+
+const MessageAllowedMentionsRequestSchema = z
+  .object({
+    parse: z
+      .array(z.xor([z.null().nullable(), AllowedMentionTypesSchema]))
+      .max(1521)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+    users: z
+      .array(z.xor([z.null().nullable(), SnowflakeTypeSchema]))
+      .max(100)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+    roles: z
+      .array(z.xor([z.null().nullable(), SnowflakeTypeSchema]))
+      .max(100)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+    replied_user: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MessageAllowedMentionsRequest')
+
+const MessageComponentTypesSchema = z
+  .xor([
+    z.literal(1).openapi({ title: 'ACTION_ROW', description: 'Container for other components' }),
+    z.literal(2).openapi({ title: 'BUTTON', description: 'Button object' }),
     z
       .literal(3)
       .openapi({
-        title: 'MESSAGE_COMPONENT',
-        description:
-          'Sent when a user interacts with a message component previously sent by your application',
+        title: 'STRING_SELECT',
+        description: 'Select menu for picking from defined text options',
       }),
+    z.literal(4).openapi({ title: 'TEXT_INPUT', description: 'Text input object' }),
+    z.literal(5).openapi({ title: 'USER_SELECT', description: 'Select menu for users' }),
+    z.literal(6).openapi({ title: 'ROLE_SELECT', description: 'Select menu for roles' }),
     z
-      .literal(4)
+      .literal(7)
       .openapi({
-        title: 'APPLICATION_COMMAND_AUTOCOMPLETE',
-        description: 'Sent when a user is filling in an autocomplete option in a chat command',
+        title: 'MENTIONABLE_SELECT',
+        description: 'Select menu for mentionables (users and roles)',
       }),
-    z
-      .literal(5)
-      .openapi({
-        title: 'MODAL_SUBMIT',
-        description: 'Sent when a user submits a modal previously sent by your application',
-      }),
-    z
-      .literal(6)
-      .openapi({
-        title: 'SOCIAL_LAYER_SKU_PURCHASE_ELIGIBILITY',
-        description: 'Sent when Discord is checking if a user can purchase a Social Layer SKU',
-      }),
+    z.literal(8).openapi({ title: 'CHANNEL_SELECT', description: 'Select menu for channels' }),
+    z.literal(9).openapi({ title: 'SECTION', description: 'Section component' }),
+    z.literal(10).openapi({ title: 'TEXT_DISPLAY', description: 'Text component' }),
+    z.literal(11).openapi({ title: 'THUMBNAIL', description: 'Thumbnail component' }),
+    z.literal(12).openapi({ title: 'MEDIA_GALLERY', description: 'Media gallery component' }),
+    z.literal(13).openapi({ title: 'FILE', description: 'File component' }),
+    z.literal(14).openapi({ title: 'SEPARATOR', description: 'Separator component' }),
+    z.literal(17).openapi({ title: 'CONTAINER', description: 'Container component' }),
+    z.literal(18).openapi({ title: 'LABEL', description: 'Label component' }),
+    z.literal(19).openapi({ title: 'FILE_UPLOAD', description: 'File upload component' }),
+    z.literal(21).openapi({ title: 'RADIO_GROUP', description: 'Radio group component' }),
+    z.literal(22).openapi({ title: 'CHECKBOX_GROUP', description: 'Checkbox group component' }),
+    z.literal(23).openapi({ title: 'CHECKBOX', description: 'Checkbox component' }),
   ])
-  .openapi('InteractionTypes')
+  .openapi('MessageComponentTypes')
 
-const InteractionResponseSchema = z
+const ButtonStyleTypesSchema = z
+  .xor([
+    z.literal(1).openapi({ title: 'PRIMARY' }),
+    z.literal(2).openapi({ title: 'SECONDARY' }),
+    z.literal(3).openapi({ title: 'SUCCESS' }),
+    z.literal(4).openapi({ title: 'DANGER' }),
+    z.literal(5).openapi({ title: 'LINK' }),
+    z.literal(6).openapi({ title: 'PREMIUM' }),
+  ])
+  .openapi('ButtonStyleTypes')
+
+const ComponentEmojiForRequestSchema = z
+  .object({
+    id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
+    name: z.string().max(32),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('ComponentEmojiForRequest')
+
+const ButtonComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100).nullable().exactOptional(),
+    style: ButtonStyleTypesSchema,
+    label: z.string().max(80).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    url: z.url().max(512).nullable().exactOptional(),
+    sku_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
+    emoji: z.xor([z.null().nullable(), ComponentEmojiForRequestSchema]).exactOptional(),
+  })
+  .openapi({ required: ['type', 'style'] })
+  .openapi('ButtonComponentForMessageRequest')
+
+const SnowflakeSelectDefaultValueTypesSchema = z
+  .xor([
+    z.literal('user').openapi({ title: 'USER' }),
+    z.literal('role').openapi({ title: 'ROLE' }),
+    z.literal('channel').openapi({ title: 'CHANNEL' }),
+  ])
+  .openapi('SnowflakeSelectDefaultValueTypes')
+
+const ChannelSelectDefaultValueSchema = z
+  .object({ type: SnowflakeSelectDefaultValueTypesSchema, id: SnowflakeTypeSchema })
+  .openapi({ required: ['type', 'id'] })
+  .openapi('ChannelSelectDefaultValue')
+
+const ChannelSelectComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    default_values: z.array(ChannelSelectDefaultValueSchema).max(25).nullable().exactOptional(),
+    channel_types: z
+      .array(ChannelTypesSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('ChannelSelectComponentForMessageRequest')
+
+const RoleSelectDefaultValueSchema = z
+  .object({ type: SnowflakeSelectDefaultValueTypesSchema, id: SnowflakeTypeSchema })
+  .openapi({ required: ['type', 'id'] })
+  .openapi('RoleSelectDefaultValue')
+
+const UserSelectDefaultValueSchema = z
+  .object({ type: SnowflakeSelectDefaultValueTypesSchema, id: SnowflakeTypeSchema })
+  .openapi({ required: ['type', 'id'] })
+  .openapi('UserSelectDefaultValue')
+
+const MentionableSelectComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    default_values: z
+      .array(z.xor([RoleSelectDefaultValueSchema, UserSelectDefaultValueSchema]))
+      .max(25)
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('MentionableSelectComponentForMessageRequest')
+
+const RoleSelectComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    default_values: z.array(RoleSelectDefaultValueSchema).max(25).nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('RoleSelectComponentForMessageRequest')
+
+const StringSelectOptionForRequestSchema = z
+  .object({
+    label: z.string().min(1).max(100),
+    value: z.string().min(1).max(100),
+    description: z.string().max(100).nullable().exactOptional(),
+    default: z.boolean().nullable().exactOptional(),
+    emoji: z.xor([z.null().nullable(), ComponentEmojiForRequestSchema]).exactOptional(),
+  })
+  .openapi({ required: ['label', 'value'] })
+  .openapi('StringSelectOptionForRequest')
+
+const StringSelectComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    options: z.array(StringSelectOptionForRequestSchema).min(1).max(25),
+  })
+  .openapi({ required: ['type', 'custom_id', 'options'] })
+  .openapi('StringSelectComponentForMessageRequest')
+
+const UserSelectComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    default_values: z.array(UserSelectDefaultValueSchema).max(25).nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('UserSelectComponentForMessageRequest')
+
+const ActionRowComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    components: z
+      .array(
+        z.xor([
+          ButtonComponentForMessageRequestSchema,
+          ChannelSelectComponentForMessageRequestSchema,
+          MentionableSelectComponentForMessageRequestSchema,
+          RoleSelectComponentForMessageRequestSchema,
+          StringSelectComponentForMessageRequestSchema,
+          UserSelectComponentForMessageRequestSchema,
+        ]),
+      )
+      .min(1)
+      .max(5),
+  })
+  .openapi({ required: ['type', 'components'] })
+  .openapi('ActionRowComponentForMessageRequest')
+
+const UnfurledMediaRequestWithAttachmentReferenceRequiredSchema = z
+  .object({ url: z.url().max(2048) })
+  .openapi({ required: ['url'] })
+  .openapi('UnfurledMediaRequestWithAttachmentReferenceRequired')
+
+const FileComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    spoiler: z.boolean().nullable().exactOptional(),
+    file: UnfurledMediaRequestWithAttachmentReferenceRequiredSchema,
+  })
+  .openapi({ required: ['type', 'file'] })
+  .openapi('FileComponentForMessageRequest')
+
+const UnfurledMediaRequestSchema = z
+  .object({ url: z.url().max(2048) })
+  .openapi({ required: ['url'] })
+  .openapi('UnfurledMediaRequest')
+
+const MediaGalleryItemForMessageRequestSchema = z
+  .object({
+    description: z.string().min(1).max(1024).nullable().exactOptional(),
+    spoiler: z.boolean().nullable().exactOptional(),
+    media: UnfurledMediaRequestSchema,
+  })
+  .openapi({ required: ['media'] })
+  .openapi('MediaGalleryItemForMessageRequest')
+
+const MediaGalleryComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    items: z.array(MediaGalleryItemForMessageRequestSchema).min(1).max(10),
+  })
+  .openapi({ required: ['type', 'items'] })
+  .openapi('MediaGalleryComponentForMessageRequest')
+
+const TextDisplayComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    content: z.string().min(1).max(4000),
+  })
+  .openapi({ required: ['type', 'content'] })
+  .openapi('TextDisplayComponentForMessageRequest')
+
+const ThumbnailComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    description: z.string().min(1).max(1024).nullable().exactOptional(),
+    spoiler: z.boolean().nullable().exactOptional(),
+    media: UnfurledMediaRequestSchema,
+  })
+  .openapi({ required: ['type', 'media'] })
+  .openapi('ThumbnailComponentForMessageRequest')
+
+const SectionComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    components: z.array(TextDisplayComponentForMessageRequestSchema).min(1).max(3),
+    accessory: z.xor([
+      ButtonComponentForMessageRequestSchema,
+      ThumbnailComponentForMessageRequestSchema,
+    ]),
+  })
+  .openapi({ required: ['type', 'components', 'accessory'] })
+  .openapi('SectionComponentForMessageRequest')
+
+const MessageComponentSeparatorSpacingSizeSchema = z
+  .xor([
+    z.literal(1).openapi({ title: 'SMALL', description: 'Small spacing' }),
+    z.literal(2).openapi({ title: 'LARGE', description: 'Large spacing' }),
+  ])
+  .openapi('MessageComponentSeparatorSpacingSize')
+
+const SeparatorComponentForMessageRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    spacing: z
+      .xor([z.null().nullable(), MessageComponentSeparatorSpacingSizeSchema])
+      .exactOptional(),
+    divider: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['type'] })
+  .openapi('SeparatorComponentForMessageRequest')
+
+type ContainerComponentForMessageRequestType = {
+  type: z.infer<typeof MessageComponentTypesSchema>
+  id?: number | null
+  accent_color?: number | null
+  components: (
+    | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+    | z.infer<typeof FileComponentForMessageRequestSchema>
+    | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+    | z.infer<typeof SectionComponentForMessageRequestSchema>
+    | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+    | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+  )[]
+  spoiler?: boolean | null
+}
+
+const ContainerComponentForMessageRequestSchema: z.ZodType<ContainerComponentForMessageRequestType> =
+  z
+    .object({
+      type: MessageComponentTypesSchema,
+      id: z.int32().min(0).nullable().exactOptional(),
+      accent_color: z.int().min(0).max(16777215).nullable().exactOptional(),
+      components: z
+        .array(
+          z.xor([
+            ActionRowComponentForMessageRequestSchema,
+            FileComponentForMessageRequestSchema,
+            MediaGalleryComponentForMessageRequestSchema,
+            SectionComponentForMessageRequestSchema,
+            SeparatorComponentForMessageRequestSchema,
+            TextDisplayComponentForMessageRequestSchema,
+          ]),
+        )
+        .min(1)
+        .max(40),
+      spoiler: z.boolean().nullable().exactOptional(),
+    })
+    .openapi({ required: ['type', 'components'] })
+    .openapi('ContainerComponentForMessageRequest')
+
+const MessageAttachmentRequestSchema = z
   .object({
     id: SnowflakeTypeSchema,
-    type: InteractionTypesSchema,
-    activity_instance_id: z.string().nullable().exactOptional(),
-    response_message_id: SnowflakeTypeSchema.exactOptional(),
-    response_message_loading: z.boolean().exactOptional(),
-    response_message_ephemeral: z.boolean().exactOptional(),
-    channel_id: SnowflakeTypeSchema.exactOptional(),
-    guild_id: SnowflakeTypeSchema.exactOptional(),
+    filename: z.string().min(1).max(1024).nullable().exactOptional(),
+    description: z.string().max(1024).nullable().exactOptional(),
+    duration_secs: z.float64().min(0).max(2147483647).nullable().exactOptional(),
+    waveform: z.string().max(400).nullable().exactOptional(),
+    title: z.string().max(1024).nullable().exactOptional(),
+    is_spoiler: z.boolean().nullable().exactOptional(),
   })
-  .openapi({ required: ['id', 'type'] })
-  .openapi('InteractionResponse')
-
-const InteractionCallbackTypesSchema = z
-  .xor([
-    z.literal(1).openapi({ title: 'PONG' }),
-    z.literal(4).openapi({ title: 'CHANNEL_MESSAGE_WITH_SOURCE' }),
-    z.literal(5).openapi({ title: 'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE' }),
-    z.literal(6).openapi({ title: 'DEFERRED_UPDATE_MESSAGE' }),
-    z.literal(7).openapi({ title: 'UPDATE_MESSAGE' }),
-    z.literal(8).openapi({ title: 'APPLICATION_COMMAND_AUTOCOMPLETE_RESULT' }),
-    z.literal(9).openapi({ title: 'MODAL' }),
-    z.literal(12).openapi({ title: 'LAUNCH_ACTIVITY' }),
-    z.literal(13).openapi({ title: 'SOCIAL_LAYER_SKU_PURCHASE_ELIGIBILITY' }),
-  ])
-  .openapi('InteractionCallbackTypes')
-
-const MessageResponseSchema: z.ZodType<MessageResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        type: MessageTypeSchema,
-        content: z.string(),
-        mentions: z.array(UserResponseSchema),
-        mention_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-          const seen = new Map()
-          for (const [i, val] of items.entries()) {
-            const key = JSON.stringify(val)
-            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-            else seen.set(key, i)
-          }
-        }),
-        attachments: z.array(MessageAttachmentResponseSchema),
-        embeds: z.array(MessageEmbedResponseSchema),
-        timestamp: z.iso.datetime({ offset: true }),
-        edited_timestamp: z.iso.datetime({ offset: true }).nullable(),
-        flags: z.int32(),
-        components: z.array(
-          z.xor([
-            ActionRowComponentResponseSchema,
-            ContainerComponentResponseSchema,
-            FileComponentResponseSchema,
-            MediaGalleryComponentResponseSchema,
-            SectionComponentResponseSchema,
-            SeparatorComponentResponseSchema,
-            TextDisplayComponentResponseSchema,
-          ]),
-        ),
-        stickers: z
-          .array(z.xor([GuildStickerResponseSchema, StandardStickerResponseSchema]))
-          .exactOptional(),
-        sticker_items: z.array(MessageStickerItemResponseSchema).exactOptional(),
-        id: SnowflakeTypeSchema,
-        channel_id: SnowflakeTypeSchema,
-        author: UserResponseSchema,
-        pinned: z.boolean(),
-        mention_everyone: z.boolean(),
-        tts: z.boolean(),
-        call: MessageCallResponseSchema.exactOptional(),
-        activity: MessageActivityResponseSchema.exactOptional(),
-        application: BasicApplicationResponseWithBotSchema.exactOptional(),
-        application_id: SnowflakeTypeSchema.exactOptional(),
-        interaction: MessageInteractionResponseSchema.exactOptional(),
-        nonce: z
-          .xor([
-            z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64().min(-9223372036854776000n).max(9223372036854776000n),
-              )
-              .openapi({
-                type: 'integer',
-                format: 'int64',
-                minimum: -9223372036854776000,
-                maximum: 9223372036854776000,
-              }),
-            z.string().max(25),
-          ])
-          .exactOptional(),
-        webhook_id: SnowflakeTypeSchema.exactOptional(),
-        message_reference: MessageReferenceResponseSchema.exactOptional(),
-        thread: ThreadResponseSchema.exactOptional(),
-        mention_channels: z.array(MessageMentionChannelResponseSchema).exactOptional(),
-        role_subscription_data: MessageRoleSubscriptionDataResponseSchema.exactOptional(),
-        purchase_notification: PurchaseNotificationResponseSchema.exactOptional(),
-        position: z.int32().exactOptional(),
-        resolved: ResolvedObjectsResponseSchema.exactOptional(),
-        poll: PollResponseSchema.exactOptional(),
-        shared_client_theme: CustomClientThemeResponseSchema.exactOptional(),
-        interaction_metadata: z
-          .xor([
-            ApplicationCommandInteractionMetadataResponseSchema,
-            MessageComponentInteractionMetadataResponseSchema,
-            ModalSubmitInteractionMetadataResponseSchema,
-          ])
-          .exactOptional(),
-        message_snapshots: z.array(MessageSnapshotResponseSchema).exactOptional(),
-        lobby_member: MessageLobbyMemberResponseSchema.exactOptional(),
-        actor: UserResponseSchema.exactOptional(),
-        reactions: z.array(MessageReactionResponseSchema).exactOptional(),
-        referenced_message: z
-          .xor([z.null().nullable(), BasicMessageResponseSchema])
-          .exactOptional(),
-      })
-      .openapi({
-        required: [
-          'type',
-          'content',
-          'mentions',
-          'mention_roles',
-          'attachments',
-          'embeds',
-          'timestamp',
-          'edited_timestamp',
-          'flags',
-          'components',
-          'id',
-          'channel_id',
-          'author',
-          'pinned',
-          'mention_everyone',
-          'tts',
-        ],
-      }),
-  )
-  .openapi('MessageResponse')
-
-const CreateMessageInteractionCallbackResponseSchema = z
-  .object({ type: InteractionCallbackTypesSchema, message: MessageResponseSchema })
-  .openapi({ required: ['type', 'message'] })
-  .openapi('CreateMessageInteractionCallbackResponse')
-
-const ActivityInstanceCallbackResponseSchema = z
-  .object({ id: z.string() })
   .openapi({ required: ['id'] })
-  .openapi('ActivityInstanceCallbackResponse')
+  .openapi('MessageAttachmentRequest')
 
-const LaunchActivityInteractionCallbackResponseSchema = z
+const PollEmojiSchema = z
   .object({
-    type: InteractionCallbackTypesSchema,
-    activity_instance: ActivityInstanceCallbackResponseSchema,
+    id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .exactOptional()
+      .openapi({ description: 'The ID of the custom emoji' }),
+    name: z
+      .string()
+      .max(32)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The name of the emoji, or the unicode emoji character' }),
+    animated: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether the emoji is animated' }),
   })
-  .openapi({ required: ['type', 'activity_instance'] })
-  .openapi('LaunchActivityInteractionCallbackResponse')
+  .openapi({ required: [] })
+  .openapi('PollEmoji')
 
-const UpdateMessageInteractionCallbackResponseSchema = z
-  .object({ type: InteractionCallbackTypesSchema, message: MessageResponseSchema })
-  .openapi({ required: ['type', 'message'] })
-  .openapi('UpdateMessageInteractionCallbackResponse')
+const PollMediaSchema = z
+  .object({
+    text: z
+      .string()
+      .min(1)
+      .max(300)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The text of the field' }),
+    emoji: z
+      .xor([z.null().nullable(), PollEmojiSchema])
+      .exactOptional()
+      .openapi({ description: 'The emoji of the field' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PollMedia')
 
-type InteractionCallbackResponseType = {
-  interaction: z.infer<typeof InteractionResponseSchema>
-  resource?:
-    | z.infer<typeof CreateMessageInteractionCallbackResponseSchema>
-    | z.infer<typeof LaunchActivityInteractionCallbackResponseSchema>
-    | z.infer<typeof UpdateMessageInteractionCallbackResponseSchema>
+const PollEmojiCreateRequestSchema = z
+  .object({
+    id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .exactOptional()
+      .openapi({ description: 'The ID of the custom emoji' }),
+    name: z
+      .string()
+      .max(32)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The name of the emoji, or the unicode emoji character' }),
+    animated: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether the emoji is animated' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PollEmojiCreateRequest')
+
+const PollMediaCreateRequestSchema = z
+  .object({
+    text: z
+      .string()
+      .min(1)
+      .max(300)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The text of the field' }),
+    emoji: z
+      .xor([z.null().nullable(), PollEmojiCreateRequestSchema])
+      .exactOptional()
+      .openapi({ description: 'The emoji of the field' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PollMediaCreateRequest')
+
+const PollAnswerCreateRequestSchema = z
+  .object({
+    poll_media: PollMediaCreateRequestSchema.openapi({ description: 'The data of the answer' }),
+  })
+  .openapi({ required: ['poll_media'] })
+  .openapi('PollAnswerCreateRequest')
+
+const PollLayoutTypesSchema = z
+  .xor([z.literal(1).openapi({ title: 'DEFAULT', description: 'The, uhm, default layout type.' })])
+  .openapi('PollLayoutTypes')
+
+const PollCreateRequestSchema = z
+  .object({
+    question: PollMediaSchema.openapi({
+      description: 'The question of the poll. Only `text` is supported.',
+    }),
+    answers: z
+      .array(PollAnswerCreateRequestSchema)
+      .min(1)
+      .max(10)
+      .openapi({ description: 'Each of the answers available in the poll, up to 10' }),
+    allow_multiselect: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Whether a user can select multiple answers' }),
+    layout_type: z
+      .xor([z.null().nullable(), PollLayoutTypesSchema])
+      .exactOptional()
+      .openapi({ description: 'The layout type of the poll. Defaults to... DEFAULT!' }),
+    duration: z
+      .int32()
+      .min(1)
+      .max(768)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Number of hours the poll should be open for, up to 32 days. Defaults to 24',
+      }),
+  })
+  .openapi({ required: ['question', 'answers'] })
+  .openapi('PollCreateRequest')
+
+const MessageShareCustomUserThemeBaseThemeSchema = z
+  .xor([
+    z.literal(0).openapi({ title: 'UNSET', description: 'No base theme' }),
+    z.literal(1).openapi({ title: 'DARK', description: 'Dark base theme' }),
+    z.literal(2).openapi({ title: 'LIGHT', description: 'Light base theme' }),
+    z.literal(3).openapi({ title: 'DARKER', description: 'Darker base theme' }),
+    z.literal(4).openapi({ title: 'MIDNIGHT', description: 'Midnight base theme' }),
+  ])
+  .openapi('MessageShareCustomUserThemeBaseTheme')
+
+const CustomClientThemeShareRequestSchema = z
+  .object({
+    colors: z.array(z.string().length(6)).min(1).max(5),
+    gradient_angle: z.int32().min(0).max(360),
+    base_mix: z.int32().min(0).max(100),
+    base_theme: z
+      .xor([z.null().nullable(), MessageShareCustomUserThemeBaseThemeSchema])
+      .exactOptional(),
+  })
+  .openapi({ required: ['colors', 'gradient_angle', 'base_mix'] })
+  .openapi('CustomClientThemeShareRequest')
+
+type BaseCreateMessageCreateRequestType = {
+  content?: string | null
+  embeds?: z.infer<typeof RichEmbedSchema>[] | null
+  allowed_mentions?: null | z.infer<typeof MessageAllowedMentionsRequestSchema>
+  sticker_ids?: z.infer<typeof SnowflakeTypeSchema>[] | null
+  components?:
+    | (
+        | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+        | z.infer<typeof ContainerComponentForMessageRequestSchema>
+        | z.infer<typeof FileComponentForMessageRequestSchema>
+        | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+        | z.infer<typeof SectionComponentForMessageRequestSchema>
+        | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+        | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+      )[]
+    | null
+  flags?: number | null
+  attachments?: z.infer<typeof MessageAttachmentRequestSchema>[] | null
+  poll?: null | z.infer<typeof PollCreateRequestSchema>
+  shared_client_theme?: null | z.infer<typeof CustomClientThemeShareRequestSchema>
 }
 
 const MessageTypeSchema = z
@@ -264,24 +1613,6 @@ const MessageTypeSchema = z
     z.literal(55).openapi({ title: 'HD_STREAMING_UPGRADED', description: '' }),
   ])
   .openapi('MessageType')
-
-const Int53TypeSchema = z
-  .preprocess(
-    (val) =>
-      typeof val === 'number' && Number.isSafeInteger(val)
-        ? BigInt(val)
-        : typeof val === 'string' && /^-?\d+$/.test(val)
-          ? BigInt(val)
-          : val,
-    z.int64().min(-9007199254740991n).max(9007199254740991n),
-  )
-  .openapi({
-    type: 'integer',
-    format: 'int64',
-    minimum: -9007199254740991,
-    maximum: 9007199254740991,
-  })
-  .openapi('Int53Type')
 
 const UserAvatarDecorationResponseSchema = z
   .object({
@@ -816,52 +2147,6 @@ const MessageEmbedFooterResponseSchema = z
   .openapi({ required: ['text'] })
   .openapi('MessageEmbedFooterResponse')
 
-const MessageComponentTypesSchema = z
-  .xor([
-    z.literal(1).openapi({ title: 'ACTION_ROW', description: 'Container for other components' }),
-    z.literal(2).openapi({ title: 'BUTTON', description: 'Button object' }),
-    z
-      .literal(3)
-      .openapi({
-        title: 'STRING_SELECT',
-        description: 'Select menu for picking from defined text options',
-      }),
-    z.literal(4).openapi({ title: 'TEXT_INPUT', description: 'Text input object' }),
-    z.literal(5).openapi({ title: 'USER_SELECT', description: 'Select menu for users' }),
-    z.literal(6).openapi({ title: 'ROLE_SELECT', description: 'Select menu for roles' }),
-    z
-      .literal(7)
-      .openapi({
-        title: 'MENTIONABLE_SELECT',
-        description: 'Select menu for mentionables (users and roles)',
-      }),
-    z.literal(8).openapi({ title: 'CHANNEL_SELECT', description: 'Select menu for channels' }),
-    z.literal(9).openapi({ title: 'SECTION', description: 'Section component' }),
-    z.literal(10).openapi({ title: 'TEXT_DISPLAY', description: 'Text component' }),
-    z.literal(11).openapi({ title: 'THUMBNAIL', description: 'Thumbnail component' }),
-    z.literal(12).openapi({ title: 'MEDIA_GALLERY', description: 'Media gallery component' }),
-    z.literal(13).openapi({ title: 'FILE', description: 'File component' }),
-    z.literal(14).openapi({ title: 'SEPARATOR', description: 'Separator component' }),
-    z.literal(17).openapi({ title: 'CONTAINER', description: 'Container component' }),
-    z.literal(18).openapi({ title: 'LABEL', description: 'Label component' }),
-    z.literal(19).openapi({ title: 'FILE_UPLOAD', description: 'File upload component' }),
-    z.literal(21).openapi({ title: 'RADIO_GROUP', description: 'Radio group component' }),
-    z.literal(22).openapi({ title: 'CHECKBOX_GROUP', description: 'Checkbox group component' }),
-    z.literal(23).openapi({ title: 'CHECKBOX', description: 'Checkbox component' }),
-  ])
-  .openapi('MessageComponentTypes')
-
-const ButtonStyleTypesSchema = z
-  .xor([
-    z.literal(1).openapi({ title: 'PRIMARY' }),
-    z.literal(2).openapi({ title: 'SECONDARY' }),
-    z.literal(3).openapi({ title: 'SUCCESS' }),
-    z.literal(4).openapi({ title: 'DANGER' }),
-    z.literal(5).openapi({ title: 'LINK' }),
-    z.literal(6).openapi({ title: 'PREMIUM' }),
-  ])
-  .openapi('ButtonStyleTypes')
-
 const ComponentEmojiResponseSchema = z
   .object({
     id: SnowflakeTypeSchema.exactOptional(),
@@ -885,73 +2170,6 @@ const ButtonComponentResponseSchema = z
   })
   .openapi({ required: ['type', 'id', 'style'] })
   .openapi('ButtonComponentResponse')
-
-const ChannelTypesSchema = z
-  .xor([
-    z.literal(1).openapi({ title: 'DM', description: 'A direct message between users' }),
-    z
-      .literal(3)
-      .openapi({ title: 'GROUP_DM', description: 'A direct message between multiple users' }),
-    z.literal(0).openapi({ title: 'GUILD_TEXT', description: 'A text channel within a server' }),
-    z.literal(2).openapi({ title: 'GUILD_VOICE', description: 'A voice channel within a server' }),
-    z
-      .literal(4)
-      .openapi({
-        title: 'GUILD_CATEGORY',
-        description: 'An organizational category that contains up to 50 channels',
-      }),
-    z
-      .literal(5)
-      .openapi({
-        title: 'GUILD_ANNOUNCEMENT',
-        description:
-          'A channel that users can follow and crosspost into their own server (formerly news channels)',
-      }),
-    z
-      .literal(10)
-      .openapi({
-        title: 'ANNOUNCEMENT_THREAD',
-        description: 'A temporary sub-channel within a GUILD_ANNOUNCEMENT channel',
-      }),
-    z
-      .literal(11)
-      .openapi({
-        title: 'PUBLIC_THREAD',
-        description:
-          'A temporary sub-channel within a GUILD_TEXT or GUILD_THREADS_ONLY channel type set',
-      }),
-    z
-      .literal(12)
-      .openapi({
-        title: 'PRIVATE_THREAD',
-        description:
-          'A temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission',
-      }),
-    z
-      .literal(13)
-      .openapi({
-        title: 'GUILD_STAGE_VOICE',
-        description: 'A voice channel for hosting events with an audience',
-      }),
-    z
-      .literal(14)
-      .openapi({
-        title: 'GUILD_DIRECTORY',
-        description: 'The channel in a hub containing the listed servers',
-      }),
-    z
-      .literal(15)
-      .openapi({ title: 'GUILD_FORUM', description: 'Channel that can only contain threads' }),
-  ])
-  .openapi('ChannelTypes')
-
-const SnowflakeSelectDefaultValueTypesSchema = z
-  .xor([
-    z.literal('user').openapi({ title: 'USER' }),
-    z.literal('role').openapi({ title: 'ROLE' }),
-    z.literal('channel').openapi({ title: 'CHANNEL' }),
-  ])
-  .openapi('SnowflakeSelectDefaultValueTypes')
 
 const ChannelSelectDefaultValueResponseSchema = z
   .object({ type: SnowflakeSelectDefaultValueTypesSchema, id: SnowflakeTypeSchema })
@@ -1182,13 +2400,6 @@ const SectionComponentResponseSchema = z
   .openapi({ required: ['type', 'id', 'components', 'accessory'] })
   .openapi('SectionComponentResponse')
 
-const MessageComponentSeparatorSpacingSizeSchema = z
-  .xor([
-    z.literal(1).openapi({ title: 'SMALL', description: 'Small spacing' }),
-    z.literal(2).openapi({ title: 'LARGE', description: 'Large spacing' }),
-  ])
-  .openapi('MessageComponentSeparatorSpacingSize')
-
 const SeparatorComponentResponseSchema = z
   .object({
     type: MessageComponentTypesSchema,
@@ -1199,7 +2410,22 @@ const SeparatorComponentResponseSchema = z
   .openapi({ required: ['type', 'id', 'spacing', 'divider'] })
   .openapi('SeparatorComponentResponse')
 
-const ContainerComponentResponseSchema = z
+type ContainerComponentResponseType = {
+  type: z.infer<typeof MessageComponentTypesSchema>
+  id: number
+  accent_color: number | null
+  components: (
+    | z.infer<typeof ActionRowComponentResponseSchema>
+    | z.infer<typeof FileComponentResponseSchema>
+    | z.infer<typeof MediaGalleryComponentResponseSchema>
+    | z.infer<typeof SectionComponentResponseSchema>
+    | z.infer<typeof SeparatorComponentResponseSchema>
+    | z.infer<typeof TextDisplayComponentResponseSchema>
+  )[]
+  spoiler: boolean
+}
+
+const ContainerComponentResponseSchema: z.ZodType<ContainerComponentResponseType> = z
   .object({
     type: MessageComponentTypesSchema,
     id: z.int32(),
@@ -1219,7 +2445,26 @@ const ContainerComponentResponseSchema = z
   .openapi({ required: ['type', 'id', 'accent_color', 'components', 'spoiler'] })
   .openapi('ContainerComponentResponse')
 
-const MessageEmbedResponseSchema = z
+type MessageEmbedResponseType = {
+  type: string
+  url?: string
+  title?: string
+  description?: string
+  color?: number
+  timestamp?: string
+  fields?: z.infer<typeof MessageEmbedFieldResponseSchema>[]
+  author?: z.infer<typeof MessageEmbedAuthorResponseSchema>
+  provider?: z.infer<typeof MessageEmbedProviderResponseSchema>
+  image?: z.infer<typeof MessageEmbedImageResponseSchema>
+  thumbnail?: z.infer<typeof MessageEmbedImageResponseSchema>
+  video?: z.infer<typeof MessageEmbedVideoResponseSchema>
+  audio?: z.infer<typeof MessageEmbedAudioResponseSchema>
+  footer?: z.infer<typeof MessageEmbedFooterResponseSchema>
+  flags?: number | null
+  components?: z.infer<typeof ContainerComponentResponseSchema>[]
+}
+
+const MessageEmbedResponseSchema: z.ZodType<MessageEmbedResponseType> = z
   .object({
     type: z.string(),
     url: z.url().exactOptional(),
@@ -1351,6 +2596,48 @@ const BasicApplicationResponseWithBotSchema = z
   })
   .openapi({ required: ['id', 'name', 'icon', 'description', 'type', 'flags', 'flags_new'] })
   .openapi('BasicApplicationResponseWithBot')
+
+const InteractionTypesSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({
+        title: 'PING',
+        description: "Sent by Discord to validate your application's interaction handler",
+      }),
+    z
+      .literal(2)
+      .openapi({
+        title: 'APPLICATION_COMMAND',
+        description: 'Sent when a user uses an application command',
+      }),
+    z
+      .literal(3)
+      .openapi({
+        title: 'MESSAGE_COMPONENT',
+        description:
+          'Sent when a user interacts with a message component previously sent by your application',
+      }),
+    z
+      .literal(4)
+      .openapi({
+        title: 'APPLICATION_COMMAND_AUTOCOMPLETE',
+        description: 'Sent when a user is filling in an autocomplete option in a chat command',
+      }),
+    z
+      .literal(5)
+      .openapi({
+        title: 'MODAL_SUBMIT',
+        description: 'Sent when a user submits a modal previously sent by your application',
+      }),
+    z
+      .literal(6)
+      .openapi({
+        title: 'SOCIAL_LAYER_SKU_PURCHASE_ELIGIBILITY',
+        description: 'Sent when Discord is checking if a user can purchase a Social Layer SKU',
+      }),
+  ])
+  .openapi('InteractionTypes')
 
 const MessageInteractionResponseSchema = z
   .object({
@@ -1826,7 +3113,20 @@ const GuildRoleResponseSchema = z
   })
   .openapi('GuildRoleResponse')
 
-const ResolvedObjectsResponseSchema = z
+type ResolvedObjectsResponseType = {
+  users?: { [key: string]: z.infer<typeof UserResponseSchema> } | null
+  members?: { [key: string]: z.infer<typeof BasicGuildMemberResponseSchema> } | null
+  channels?: {
+    [key: string]:
+      | z.infer<typeof GuildChannelResponseSchema>
+      | z.infer<typeof PrivateChannelResponseSchema>
+      | z.infer<typeof PrivateGroupChannelResponseSchema>
+      | z.infer<typeof ThreadResponseSchema>
+  } | null
+  roles?: { [key: string]: z.infer<typeof GuildRoleResponseSchema> } | null
+}
+
+const ResolvedObjectsResponseSchema: z.ZodType<ResolvedObjectsResponseType> = z
   .object({
     users: z.record(z.string(), UserResponseSchema).nullable().exactOptional(),
     members: z.record(z.string(), BasicGuildMemberResponseSchema).nullable().exactOptional(),
@@ -1874,10 +3174,6 @@ const PollAnswerResponseSchema = z
   .openapi({ required: ['answer_id', 'poll_media'] })
   .openapi('PollAnswerResponse')
 
-const PollLayoutTypesSchema = z
-  .xor([z.literal(1).openapi({ title: 'DEFAULT', description: 'The, uhm, default layout type.' })])
-  .openapi('PollLayoutTypes')
-
 const PollResultsEntryResponseSchema = z
   .object({
     id: z.int32().openapi({ description: 'The answer_id' }),
@@ -1922,16 +3218,6 @@ const PollResponseSchema = z
     required: ['question', 'answers', 'expiry', 'allow_multiselect', 'layout_type', 'results'],
   })
   .openapi('PollResponse')
-
-const MessageShareCustomUserThemeBaseThemeSchema = z
-  .xor([
-    z.literal(0).openapi({ title: 'UNSET', description: 'No base theme' }),
-    z.literal(1).openapi({ title: 'DARK', description: 'Dark base theme' }),
-    z.literal(2).openapi({ title: 'LIGHT', description: 'Light base theme' }),
-    z.literal(3).openapi({ title: 'DARKER', description: 'Darker base theme' }),
-    z.literal(4).openapi({ title: 'MIDNIGHT', description: 'Midnight base theme' }),
-  ])
-  .openapi('MessageShareCustomUserThemeBaseTheme')
 
 const CustomClientThemeResponseSchema = z
   .object({
@@ -1985,7 +3271,33 @@ const ModalSubmitInteractionMetadataResponseSchema = z
   })
   .openapi('ModalSubmitInteractionMetadataResponse')
 
-const MinimalContentMessageResponseSchema = z
+type MinimalContentMessageResponseType = {
+  type: z.infer<typeof MessageTypeSchema>
+  content: string
+  mentions: z.infer<typeof UserResponseSchema>[]
+  mention_roles: z.infer<typeof SnowflakeTypeSchema>[]
+  attachments: z.infer<typeof MessageAttachmentResponseSchema>[]
+  embeds: z.infer<typeof MessageEmbedResponseSchema>[]
+  timestamp: string
+  edited_timestamp: string | null
+  flags: number
+  components: (
+    | z.infer<typeof ActionRowComponentResponseSchema>
+    | z.infer<typeof ContainerComponentResponseSchema>
+    | z.infer<typeof FileComponentResponseSchema>
+    | z.infer<typeof MediaGalleryComponentResponseSchema>
+    | z.infer<typeof SectionComponentResponseSchema>
+    | z.infer<typeof SeparatorComponentResponseSchema>
+    | z.infer<typeof TextDisplayComponentResponseSchema>
+  )[]
+  stickers?: (
+    | z.infer<typeof GuildStickerResponseSchema>
+    | z.infer<typeof StandardStickerResponseSchema>
+  )[]
+  sticker_items?: z.infer<typeof MessageStickerItemResponseSchema>[]
+}
+
+const MinimalContentMessageResponseSchema: z.ZodType<MinimalContentMessageResponseType> = z
   .object({
     type: MessageTypeSchema,
     content: z.string(),
@@ -2035,7 +3347,9 @@ const MinimalContentMessageResponseSchema = z
   })
   .openapi('MinimalContentMessageResponse')
 
-const MessageSnapshotResponseSchema = z
+type MessageSnapshotResponseType = { message: z.infer<typeof MinimalContentMessageResponseSchema> }
+
+const MessageSnapshotResponseSchema: z.ZodType<MessageSnapshotResponseType> = z
   .object({ message: MinimalContentMessageResponseSchema })
   .openapi({ required: ['message'] })
   .openapi('MessageSnapshotResponse')
@@ -2044,6 +3358,172 @@ const MessageLobbyMemberResponseSchema = z
   .object({ additional_name: z.string() })
   .openapi({ required: ['additional_name'] })
   .openapi('MessageLobbyMemberResponse')
+
+type BasicMessageResponseType = {
+  type: z.infer<typeof MessageTypeSchema>
+  content: string
+  mentions: z.infer<typeof UserResponseSchema>[]
+  mention_roles: z.infer<typeof SnowflakeTypeSchema>[]
+  attachments: z.infer<typeof MessageAttachmentResponseSchema>[]
+  embeds: z.infer<typeof MessageEmbedResponseSchema>[]
+  timestamp: string
+  edited_timestamp: string | null
+  flags: number
+  components: (
+    | z.infer<typeof ActionRowComponentResponseSchema>
+    | z.infer<typeof ContainerComponentResponseSchema>
+    | z.infer<typeof FileComponentResponseSchema>
+    | z.infer<typeof MediaGalleryComponentResponseSchema>
+    | z.infer<typeof SectionComponentResponseSchema>
+    | z.infer<typeof SeparatorComponentResponseSchema>
+    | z.infer<typeof TextDisplayComponentResponseSchema>
+  )[]
+  stickers?: (
+    | z.infer<typeof GuildStickerResponseSchema>
+    | z.infer<typeof StandardStickerResponseSchema>
+  )[]
+  sticker_items?: z.infer<typeof MessageStickerItemResponseSchema>[]
+  id: z.infer<typeof SnowflakeTypeSchema>
+  channel_id: z.infer<typeof SnowflakeTypeSchema>
+  author: z.infer<typeof UserResponseSchema>
+  pinned: boolean
+  mention_everyone: boolean
+  tts: boolean
+  call?: z.infer<typeof MessageCallResponseSchema>
+  activity?: z.infer<typeof MessageActivityResponseSchema>
+  application?: z.infer<typeof BasicApplicationResponseWithBotSchema>
+  application_id?: z.infer<typeof SnowflakeTypeSchema>
+  interaction?: z.infer<typeof MessageInteractionResponseSchema>
+  nonce?: bigint | string
+  webhook_id?: z.infer<typeof SnowflakeTypeSchema>
+  message_reference?: z.infer<typeof MessageReferenceResponseSchema>
+  thread?: z.infer<typeof ThreadResponseSchema>
+  mention_channels?: z.infer<typeof MessageMentionChannelResponseSchema>[]
+  role_subscription_data?: z.infer<typeof MessageRoleSubscriptionDataResponseSchema>
+  purchase_notification?: z.infer<typeof PurchaseNotificationResponseSchema>
+  position?: number
+  resolved?: z.infer<typeof ResolvedObjectsResponseSchema>
+  poll?: z.infer<typeof PollResponseSchema>
+  shared_client_theme?: z.infer<typeof CustomClientThemeResponseSchema>
+  interaction_metadata?:
+    | z.infer<typeof ApplicationCommandInteractionMetadataResponseSchema>
+    | z.infer<typeof MessageComponentInteractionMetadataResponseSchema>
+    | z.infer<typeof ModalSubmitInteractionMetadataResponseSchema>
+  message_snapshots?: z.infer<typeof MessageSnapshotResponseSchema>[]
+  lobby_member?: z.infer<typeof MessageLobbyMemberResponseSchema>
+  actor?: z.infer<typeof UserResponseSchema>
+}
+
+const BaseCreateMessageCreateRequestSchema: z.ZodType<BaseCreateMessageCreateRequestType> = z
+  .object({
+    content: z.string().max(4000).nullable().exactOptional(),
+    embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
+    allowed_mentions: z
+      .xor([z.null().nullable(), MessageAllowedMentionsRequestSchema])
+      .exactOptional(),
+    sticker_ids: z.array(SnowflakeTypeSchema).max(3).nullable().exactOptional(),
+    components: z
+      .array(
+        z.xor([
+          ActionRowComponentForMessageRequestSchema,
+          ContainerComponentForMessageRequestSchema,
+          FileComponentForMessageRequestSchema,
+          MediaGalleryComponentForMessageRequestSchema,
+          SectionComponentForMessageRequestSchema,
+          SeparatorComponentForMessageRequestSchema,
+          TextDisplayComponentForMessageRequestSchema,
+        ]),
+      )
+      .max(40)
+      .nullable()
+      .exactOptional(),
+    flags: z.int().nullable().exactOptional(),
+    attachments: z.array(MessageAttachmentRequestSchema).max(10).nullable().exactOptional(),
+    poll: z.xor([z.null().nullable(), PollCreateRequestSchema]).exactOptional(),
+    shared_client_theme: z
+      .xor([z.null().nullable(), CustomClientThemeShareRequestSchema])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BaseCreateMessageCreateRequest')
+
+type CreateForumThreadRequestType = {
+  name: string
+  auto_archive_duration?: null | z.infer<typeof ThreadAutoArchiveDurationSchema>
+  rate_limit_per_user?: number | null
+  applied_tags?: z.infer<typeof SnowflakeTypeSchema>[] | null
+  message: z.infer<typeof BaseCreateMessageCreateRequestSchema>
+}
+
+const InteractionCallbackTypesSchema = z
+  .xor([
+    z.literal(1).openapi({ title: 'PONG' }),
+    z.literal(4).openapi({ title: 'CHANNEL_MESSAGE_WITH_SOURCE' }),
+    z.literal(5).openapi({ title: 'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE' }),
+    z.literal(6).openapi({ title: 'DEFERRED_UPDATE_MESSAGE' }),
+    z.literal(7).openapi({ title: 'UPDATE_MESSAGE' }),
+    z.literal(8).openapi({ title: 'APPLICATION_COMMAND_AUTOCOMPLETE_RESULT' }),
+    z.literal(9).openapi({ title: 'MODAL' }),
+    z.literal(12).openapi({ title: 'LAUNCH_ACTIVITY' }),
+    z.literal(13).openapi({ title: 'SOCIAL_LAYER_SKU_PURCHASE_ELIGIBILITY' }),
+  ])
+  .openapi('InteractionCallbackTypes')
+
+type IncomingWebhookInteractionRequestType = {
+  content?: string | null
+  embeds?: z.infer<typeof RichEmbedSchema>[] | null
+  allowed_mentions?: null | z.infer<typeof MessageAllowedMentionsRequestSchema>
+  components?:
+    | (
+        | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+        | z.infer<typeof ContainerComponentForMessageRequestSchema>
+        | z.infer<typeof FileComponentForMessageRequestSchema>
+        | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+        | z.infer<typeof SectionComponentForMessageRequestSchema>
+        | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+        | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+      )[]
+    | null
+  attachments?: z.infer<typeof MessageAttachmentRequestSchema>[] | null
+  poll?: null | z.infer<typeof PollCreateRequestSchema>
+  tts?: boolean | null
+  flags?: number | null
+}
+
+const IncomingWebhookInteractionRequestSchema: z.ZodType<IncomingWebhookInteractionRequestType> = z
+  .object({
+    content: z.string().max(2000).nullable().exactOptional(),
+    embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
+    allowed_mentions: z
+      .xor([z.null().nullable(), MessageAllowedMentionsRequestSchema])
+      .exactOptional(),
+    components: z
+      .array(
+        z.xor([
+          ActionRowComponentForMessageRequestSchema,
+          ContainerComponentForMessageRequestSchema,
+          FileComponentForMessageRequestSchema,
+          MediaGalleryComponentForMessageRequestSchema,
+          SectionComponentForMessageRequestSchema,
+          SeparatorComponentForMessageRequestSchema,
+          TextDisplayComponentForMessageRequestSchema,
+        ]),
+      )
+      .max(40)
+      .nullable()
+      .exactOptional(),
+    attachments: z.array(MessageAttachmentRequestSchema).max(10).nullable().exactOptional(),
+    poll: z.xor([z.null().nullable(), PollCreateRequestSchema]).exactOptional(),
+    tts: z.boolean().nullable().exactOptional(),
+    flags: z.int().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IncomingWebhookInteractionRequest')
+
+type CreateMessageInteractionCallbackRequestType = {
+  type: z.infer<typeof InteractionCallbackTypesSchema>
+  data?: null | z.infer<typeof IncomingWebhookInteractionRequestSchema>
+}
 
 const MessageReactionCountDetailsResponseSchema = z
   .object({ burst: z.int32(), normal: z.int32() })
@@ -2062,7 +3542,7 @@ const MessageReactionResponseSchema = z
   .openapi({ required: ['emoji', 'count', 'count_details', 'burst_colors', 'me_burst', 'me'] })
   .openapi('MessageReactionResponse')
 
-const BasicMessageResponseSchema = z
+const BasicMessageResponseSchema: z.ZodType<BasicMessageResponseType> = z
   .object({
     type: MessageTypeSchema,
     content: z.string(),
@@ -2116,7 +3596,7 @@ const BasicMessageResponseSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+            z.int64().min(-9223372036854775808n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -2224,77 +3704,868 @@ type MessageResponseType = {
   lobby_member?: z.infer<typeof MessageLobbyMemberResponseSchema>
   actor?: z.infer<typeof UserResponseSchema>
   reactions?: z.infer<typeof MessageReactionResponseSchema>[]
-  referenced_message?:
-    | ({ [key: string]: unknown } | null)
-    | z.infer<typeof BasicMessageResponseSchema>
+  referenced_message?: null | z.infer<typeof BasicMessageResponseSchema>
 }
 
-const ErrorSchema = z
+const MessageResponseSchema: z.ZodType<MessageResponseType> = z
   .object({
-    code: z.int().openapi({ description: 'Discord internal error code. See error code reference' }),
-    message: z.string().openapi({ description: 'Human-readable error message' }),
+    type: MessageTypeSchema,
+    content: z.string(),
+    mentions: z.array(UserResponseSchema),
+    mention_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    attachments: z.array(MessageAttachmentResponseSchema),
+    embeds: z.array(MessageEmbedResponseSchema),
+    timestamp: z.iso.datetime({ offset: true }),
+    edited_timestamp: z.iso.datetime({ offset: true }).nullable(),
+    flags: z.int32(),
+    components: z.array(
+      z.xor([
+        ActionRowComponentResponseSchema,
+        ContainerComponentResponseSchema,
+        FileComponentResponseSchema,
+        MediaGalleryComponentResponseSchema,
+        SectionComponentResponseSchema,
+        SeparatorComponentResponseSchema,
+        TextDisplayComponentResponseSchema,
+      ]),
+    ),
+    stickers: z
+      .array(z.xor([GuildStickerResponseSchema, StandardStickerResponseSchema]))
+      .exactOptional(),
+    sticker_items: z.array(MessageStickerItemResponseSchema).exactOptional(),
+    id: SnowflakeTypeSchema,
+    channel_id: SnowflakeTypeSchema,
+    author: UserResponseSchema,
+    pinned: z.boolean(),
+    mention_everyone: z.boolean(),
+    tts: z.boolean(),
+    call: MessageCallResponseSchema.exactOptional(),
+    activity: MessageActivityResponseSchema.exactOptional(),
+    application: BasicApplicationResponseWithBotSchema.exactOptional(),
+    application_id: SnowflakeTypeSchema.exactOptional(),
+    interaction: MessageInteractionResponseSchema.exactOptional(),
+    nonce: z
+      .xor([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(-9223372036854775808n).max(9223372036854775807n),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: -9223372036854776000,
+            maximum: 9223372036854776000,
+          }),
+        z.string().max(25),
+      ])
+      .exactOptional(),
+    webhook_id: SnowflakeTypeSchema.exactOptional(),
+    message_reference: MessageReferenceResponseSchema.exactOptional(),
+    thread: ThreadResponseSchema.exactOptional(),
+    mention_channels: z.array(MessageMentionChannelResponseSchema).exactOptional(),
+    role_subscription_data: MessageRoleSubscriptionDataResponseSchema.exactOptional(),
+    purchase_notification: PurchaseNotificationResponseSchema.exactOptional(),
+    position: z.int32().exactOptional(),
+    resolved: ResolvedObjectsResponseSchema.exactOptional(),
+    poll: PollResponseSchema.exactOptional(),
+    shared_client_theme: CustomClientThemeResponseSchema.exactOptional(),
+    interaction_metadata: z
+      .xor([
+        ApplicationCommandInteractionMetadataResponseSchema,
+        MessageComponentInteractionMetadataResponseSchema,
+        ModalSubmitInteractionMetadataResponseSchema,
+      ])
+      .exactOptional(),
+    message_snapshots: z.array(MessageSnapshotResponseSchema).exactOptional(),
+    lobby_member: MessageLobbyMemberResponseSchema.exactOptional(),
+    actor: UserResponseSchema.exactOptional(),
+    reactions: z.array(MessageReactionResponseSchema).exactOptional(),
+    referenced_message: z.xor([z.null().nullable(), BasicMessageResponseSchema]).exactOptional(),
   })
   .openapi({
-    description: 'A single error, either for an API response or a specific field.',
-    required: ['code', 'message'],
+    required: [
+      'type',
+      'content',
+      'mentions',
+      'mention_roles',
+      'attachments',
+      'embeds',
+      'timestamp',
+      'edited_timestamp',
+      'flags',
+      'components',
+      'id',
+      'channel_id',
+      'author',
+      'pinned',
+      'mention_everyone',
+      'tts',
+    ],
   })
-  .openapi('Error')
+  .openapi('MessageResponse')
 
-const InnerErrorsSchema = z
-  .strictObject({
-    _errors: z.array(ErrorSchema).openapi({ description: 'The list of errors for this field' }),
+type CreateMessageInteractionCallbackResponseType = {
+  type: z.infer<typeof InteractionCallbackTypesSchema>
+  message: z.infer<typeof MessageResponseSchema>
+}
+
+const AuditLogActionTypesSchema = z
+  .xor([
+    z.literal(1).openapi({ title: 'GUILD_UPDATE' }),
+    z.literal(10).openapi({ title: 'CHANNEL_CREATE' }),
+    z.literal(11).openapi({ title: 'CHANNEL_UPDATE' }),
+    z.literal(12).openapi({ title: 'CHANNEL_DELETE' }),
+    z.literal(13).openapi({ title: 'CHANNEL_OVERWRITE_CREATE' }),
+    z.literal(14).openapi({ title: 'CHANNEL_OVERWRITE_UPDATE' }),
+    z.literal(15).openapi({ title: 'CHANNEL_OVERWRITE_DELETE' }),
+    z
+      .literal(16)
+      .openapi({ title: 'CHANNEL_POSITION_UPDATE', description: 'Channels were reordered' }),
+    z.literal(20).openapi({ title: 'MEMBER_KICK' }),
+    z.literal(21).openapi({ title: 'MEMBER_PRUNE' }),
+    z.literal(22).openapi({ title: 'MEMBER_BAN_ADD' }),
+    z.literal(23).openapi({ title: 'MEMBER_BAN_REMOVE' }),
+    z.literal(24).openapi({ title: 'MEMBER_UPDATE' }),
+    z.literal(25).openapi({ title: 'MEMBER_ROLE_UPDATE' }),
+    z.literal(26).openapi({ title: 'MEMBER_MOVE' }),
+    z.literal(27).openapi({ title: 'MEMBER_DISCONNECT' }),
+    z.literal(28).openapi({ title: 'BOT_ADD' }),
+    z.literal(30).openapi({ title: 'ROLE_CREATE' }),
+    z.literal(31).openapi({ title: 'ROLE_UPDATE' }),
+    z.literal(32).openapi({ title: 'ROLE_DELETE' }),
+    z.literal(33).openapi({ title: 'ROLE_POSITION_UPDATE', description: 'Roles were reordered' }),
+    z.literal(40).openapi({ title: 'INVITE_CREATE' }),
+    z.literal(41).openapi({ title: 'INVITE_UPDATE' }),
+    z.literal(42).openapi({ title: 'INVITE_DELETE' }),
+    z.literal(50).openapi({ title: 'WEBHOOK_CREATE' }),
+    z.literal(51).openapi({ title: 'WEBHOOK_UPDATE' }),
+    z.literal(52).openapi({ title: 'WEBHOOK_DELETE' }),
+    z.literal(60).openapi({ title: 'EMOJI_CREATE' }),
+    z.literal(61).openapi({ title: 'EMOJI_UPDATE' }),
+    z.literal(62).openapi({ title: 'EMOJI_DELETE' }),
+    z.literal(72).openapi({ title: 'MESSAGE_DELETE' }),
+    z.literal(73).openapi({ title: 'MESSAGE_BULK_DELETE' }),
+    z.literal(74).openapi({ title: 'MESSAGE_PIN' }),
+    z.literal(75).openapi({ title: 'MESSAGE_UNPIN' }),
+    z.literal(80).openapi({ title: 'INTEGRATION_CREATE' }),
+    z.literal(81).openapi({ title: 'INTEGRATION_UPDATE' }),
+    z.literal(82).openapi({ title: 'INTEGRATION_DELETE' }),
+    z.literal(83).openapi({ title: 'STAGE_INSTANCE_CREATE' }),
+    z.literal(84).openapi({ title: 'STAGE_INSTANCE_UPDATE' }),
+    z.literal(85).openapi({ title: 'STAGE_INSTANCE_DELETE' }),
+    z.literal(90).openapi({ title: 'STICKER_CREATE' }),
+    z.literal(91).openapi({ title: 'STICKER_UPDATE' }),
+    z.literal(92).openapi({ title: 'STICKER_DELETE' }),
+    z.literal(100).openapi({ title: 'GUILD_SCHEDULED_EVENT_CREATE' }),
+    z.literal(101).openapi({ title: 'GUILD_SCHEDULED_EVENT_UPDATE' }),
+    z.literal(102).openapi({ title: 'GUILD_SCHEDULED_EVENT_DELETE' }),
+    z.literal(110).openapi({ title: 'THREAD_CREATE' }),
+    z.literal(111).openapi({ title: 'THREAD_UPDATE' }),
+    z.literal(112).openapi({ title: 'THREAD_DELETE' }),
+    z.literal(121).openapi({ title: 'APPLICATION_COMMAND_PERMISSION_UPDATE' }),
+    z.literal(130).openapi({ title: 'SOUNDBOARD_SOUND_CREATE' }),
+    z.literal(131).openapi({ title: 'SOUNDBOARD_SOUND_UPDATE' }),
+    z.literal(132).openapi({ title: 'SOUNDBOARD_SOUND_DELETE' }),
+    z.literal(140).openapi({ title: 'AUTO_MODERATION_RULE_CREATE' }),
+    z.literal(141).openapi({ title: 'AUTO_MODERATION_RULE_UPDATE' }),
+    z.literal(142).openapi({ title: 'AUTO_MODERATION_RULE_DELETE' }),
+    z.literal(143).openapi({ title: 'AUTO_MODERATION_BLOCK_MESSAGE' }),
+    z.literal(144).openapi({ title: 'AUTO_MODERATION_FLAG_TO_CHANNEL' }),
+    z.literal(145).openapi({ title: 'AUTO_MODERATION_USER_COMM_DISABLED' }),
+    z.literal(146).openapi({ title: 'AUTO_MODERATION_QUARANTINE_USER' }),
+    z.literal(150).openapi({ title: 'CREATOR_MONETIZATION_REQUEST_CREATED' }),
+    z.literal(151).openapi({ title: 'CREATOR_MONETIZATION_TERMS_ACCEPTED' }),
+    z.literal(163).openapi({ title: 'ONBOARDING_PROMPT_CREATE' }),
+    z.literal(164).openapi({ title: 'ONBOARDING_PROMPT_UPDATE' }),
+    z.literal(165).openapi({ title: 'ONBOARDING_PROMPT_DELETE' }),
+    z.literal(166).openapi({ title: 'ONBOARDING_CREATE' }),
+    z.literal(167).openapi({ title: 'ONBOARDING_UPDATE' }),
+    z.literal(171).openapi({ title: 'GUILD_HOME_FEATURE_ITEM' }),
+    z.literal(172).openapi({ title: 'GUILD_HOME_REMOVE_ITEM' }),
+    z.literal(180).openapi({ title: 'HARMFUL_LINKS_BLOCKED_MESSAGE' }),
+    z.literal(190).openapi({ title: 'HOME_SETTINGS_CREATE' }),
+    z.literal(191).openapi({ title: 'HOME_SETTINGS_UPDATE' }),
+    z.literal(192).openapi({ title: 'VOICE_CHANNEL_STATUS_CREATE' }),
+    z.literal(193).openapi({ title: 'VOICE_CHANNEL_STATUS_DELETE' }),
+    z
+      .literal(200)
+      .openapi({
+        title: 'GUILD_SCHEDULED_EVENT_EXCEPTION_CREATE',
+        description: 'Scheduled event exception was created',
+      }),
+    z
+      .literal(201)
+      .openapi({
+        title: 'GUILD_SCHEDULED_EVENT_EXCEPTION_UPDATE',
+        description: 'Scheduled event exception was updated',
+      }),
+    z
+      .literal(202)
+      .openapi({
+        title: 'GUILD_SCHEDULED_EVENT_EXCEPTION_DELETE',
+        description: 'Scheduled event exception was deleted',
+      }),
+    z.literal(211).openapi({ title: 'GUILD_PROFILE_UPDATE' }),
+  ])
+  .openapi('AuditLogActionTypes')
+
+const AuditLogObjectChangeResponseSchema = z
+  .object({
+    key: z.string().nullable(),
+    new_value: z.any().exactOptional(),
+    old_value: z.any().exactOptional(),
   })
-  .openapi({ required: ['_errors'] })
-  .openapi('InnerErrors')
+  .openapi({ required: ['key'] })
+  .openapi('AuditLogObjectChangeResponse')
 
-type ErrorDetailsType = { [key: string]: ErrorDetailsType } | z.infer<typeof InnerErrorsSchema>
+const AuditLogEntryResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema,
+    action_type: AuditLogActionTypesSchema,
+    user_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
+    target_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
+    changes: z.array(AuditLogObjectChangeResponseSchema).exactOptional(),
+    options: z.record(z.string(), z.string()).exactOptional(),
+    reason: z.string().exactOptional(),
+  })
+  .openapi({ required: ['id', 'action_type', 'user_id', 'target_id'] })
+  .openapi('AuditLogEntryResponse')
+
+const IntegrationTypesSchema = z
+  .xor([
+    z.literal('discord').openapi({ title: 'DISCORD' }),
+    z.literal('twitch').openapi({ title: 'TWITCH' }),
+    z.literal('youtube').openapi({ title: 'YOUTUBE' }),
+    z.literal('guild_subscription').openapi({ title: 'GUILD_SUBSCRIPTION' }),
+  ])
+  .openapi('IntegrationTypes')
 
 const AccountResponseSchema = z
   .object({ id: z.string(), name: z.string().nullable() })
   .openapi({ required: ['id', 'name'] })
   .openapi('AccountResponse')
 
-const ComponentEmojiForRequestSchema = z
+const PartialDiscordIntegrationResponseSchema = z
   .object({
-    id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
-    name: z.string().max(32),
+    id: SnowflakeTypeSchema,
+    type: IntegrationTypesSchema,
+    name: z.string().nullable(),
+    account: AccountResponseSchema,
+    application_id: SnowflakeTypeSchema,
   })
-  .openapi({ required: ['name'] })
-  .openapi('ComponentEmojiForRequest')
+  .openapi({ required: ['id', 'type', 'name', 'account', 'application_id'] })
+  .openapi('PartialDiscordIntegrationResponse')
 
-const ButtonComponentForMessageRequestSchema = z
+const PartialExternalConnectionIntegrationResponseSchema = z
   .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100).nullable().exactOptional(),
-    style: ButtonStyleTypesSchema,
-    label: z.string().max(80).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    url: z.url().max(512).nullable().exactOptional(),
-    sku_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
-    emoji: z.xor([z.null().nullable(), ComponentEmojiForRequestSchema]).exactOptional(),
+    id: SnowflakeTypeSchema,
+    type: IntegrationTypesSchema,
+    name: z.string().nullable(),
+    account: AccountResponseSchema,
   })
-  .openapi({ required: ['type', 'style'] })
-  .openapi('ButtonComponentForMessageRequest')
+  .openapi({ required: ['id', 'type', 'name', 'account'] })
+  .openapi('PartialExternalConnectionIntegrationResponse')
 
-const ChannelSelectDefaultValueSchema = z
-  .object({ type: SnowflakeSelectDefaultValueTypesSchema, id: SnowflakeTypeSchema })
-  .openapi({ required: ['type', 'id'] })
-  .openapi('ChannelSelectDefaultValue')
-
-const ChannelSelectComponentForMessageRequestSchema = z
+const PartialGuildSubscriptionIntegrationResponseSchema = z
   .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    default_values: z.array(ChannelSelectDefaultValueSchema).max(25).nullable().exactOptional(),
-    channel_types: z
-      .array(ChannelTypesSchema)
+    id: SnowflakeTypeSchema,
+    type: IntegrationTypesSchema,
+    name: z.string().nullable(),
+    account: AccountResponseSchema,
+  })
+  .openapi({ required: ['id', 'type', 'name', 'account'] })
+  .openapi('PartialGuildSubscriptionIntegrationResponse')
+
+const WebhookTypesSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({
+        title: 'GUILD_INCOMING',
+        description: 'Incoming Webhooks can post messages to channels with a generated token',
+      }),
+    z
+      .literal(2)
+      .openapi({
+        title: 'CHANNEL_FOLLOWER',
+        description:
+          'Channel Follower Webhooks are internal webhooks used with Channel Following to post new messages into channels',
+      }),
+    z
+      .literal(3)
+      .openapi({
+        title: 'APPLICATION_INCOMING',
+        description: 'Application webhooks are webhooks used with Interactions',
+      }),
+  ])
+  .openapi('WebhookTypes')
+
+const ApplicationIncomingWebhookResponseSchema = z
+  .object({
+    application_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
+    avatar: z.string().nullable(),
+    channel_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
+    guild_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
+    id: SnowflakeTypeSchema,
+    name: z.string(),
+    type: WebhookTypesSchema,
+    user: UserResponseSchema.exactOptional(),
+  })
+  .openapi({ required: ['application_id', 'avatar', 'channel_id', 'id', 'name', 'type'] })
+  .openapi('ApplicationIncomingWebhookResponse')
+
+const WebhookSourceGuildResponseSchema = z
+  .object({ id: SnowflakeTypeSchema, icon: z.string().nullable(), name: z.string() })
+  .openapi({ required: ['id', 'icon', 'name'] })
+  .openapi('WebhookSourceGuildResponse')
+
+const WebhookSourceChannelResponseSchema = z
+  .object({ id: SnowflakeTypeSchema, name: z.string() })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('WebhookSourceChannelResponse')
+
+const ChannelFollowerWebhookResponseSchema = z
+  .object({
+    application_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
+    avatar: z.string().nullable(),
+    channel_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
+    guild_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
+    id: SnowflakeTypeSchema,
+    name: z.string(),
+    type: WebhookTypesSchema,
+    user: UserResponseSchema.exactOptional(),
+    source_guild: WebhookSourceGuildResponseSchema.exactOptional(),
+    source_channel: WebhookSourceChannelResponseSchema.exactOptional(),
+  })
+  .openapi({ required: ['application_id', 'avatar', 'channel_id', 'id', 'name', 'type'] })
+  .openapi('ChannelFollowerWebhookResponse')
+
+const GuildIncomingWebhookResponseSchema = z
+  .object({
+    application_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
+    avatar: z.string().nullable(),
+    channel_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
+    guild_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
+    id: SnowflakeTypeSchema,
+    name: z.string(),
+    type: WebhookTypesSchema,
+    user: UserResponseSchema.exactOptional(),
+    token: z.string().exactOptional(),
+    url: z.url().exactOptional(),
+  })
+  .openapi({ required: ['application_id', 'avatar', 'channel_id', 'id', 'name', 'type'] })
+  .openapi('GuildIncomingWebhookResponse')
+
+const GuildScheduledEventStatusesSchema = z
+  .xor([
+    z.literal(1).openapi({ title: 'SCHEDULED' }),
+    z.literal(2).openapi({ title: 'ACTIVE' }),
+    z.literal(3).openapi({ title: 'COMPLETED' }),
+    z.literal(4).openapi({ title: 'CANCELED' }),
+  ])
+  .openapi('GuildScheduledEventStatuses')
+
+const GuildScheduledEventEntityTypesSchema = z
+  .xor([
+    z.literal(0).openapi({ title: 'NONE' }),
+    z.literal(1).openapi({ title: 'STAGE_INSTANCE' }),
+    z.literal(2).openapi({ title: 'VOICE' }),
+    z.literal(3).openapi({ title: 'EXTERNAL' }),
+  ])
+  .openapi('GuildScheduledEventEntityTypes')
+
+const RecurrenceRuleFrequenciesSchema = z
+  .xor([
+    z.literal(3).openapi({ title: 'DAILY' }),
+    z.literal(2).openapi({ title: 'WEEKLY' }),
+    z.literal(1).openapi({ title: 'MONTHLY' }),
+    z.literal(0).openapi({ title: 'YEARLY' }),
+  ])
+  .openapi('RecurrenceRuleFrequencies')
+
+const RecurrenceRuleWeekdaysSchema = z
+  .xor([
+    z.literal(0).openapi({ title: 'MONDAY' }),
+    z.literal(1).openapi({ title: 'TUESDAY' }),
+    z.literal(2).openapi({ title: 'WEDNESDAY' }),
+    z.literal(3).openapi({ title: 'THURSDAY' }),
+    z.literal(4).openapi({ title: 'FRIDAY' }),
+    z.literal(5).openapi({ title: 'SATURDAY' }),
+    z.literal(6).openapi({ title: 'SUNDAY' }),
+  ])
+  .openapi('RecurrenceRuleWeekdays')
+
+const ByNWeekdayResponseSchema = z
+  .object({
+    n: z
+      .int32()
+      .openapi({ description: 'The week to reoccur on (1-5, where 5 represents the last week)' }),
+    day: RecurrenceRuleWeekdaysSchema.openapi({
+      description: 'The day within the week to reoccur on',
+    }),
+  })
+  .openapi({ required: ['n', 'day'] })
+  .openapi('ByNWeekdayResponse')
+
+const RecurrenceRuleMonthsSchema = z
+  .xor([
+    z.literal(1).openapi({ title: 'JANUARY' }),
+    z.literal(2).openapi({ title: 'FEBRUARY' }),
+    z.literal(3).openapi({ title: 'MARCH' }),
+    z.literal(4).openapi({ title: 'APRIL' }),
+    z.literal(5).openapi({ title: 'MAY' }),
+    z.literal(6).openapi({ title: 'JUNE' }),
+    z.literal(7).openapi({ title: 'JULY' }),
+    z.literal(8).openapi({ title: 'AUGUST' }),
+    z.literal(9).openapi({ title: 'SEPTEMBER' }),
+    z.literal(10).openapi({ title: 'OCTOBER' }),
+    z.literal(11).openapi({ title: 'NOVEMBER' }),
+    z.literal(12).openapi({ title: 'DECEMBER' }),
+  ])
+  .openapi('RecurrenceRuleMonths')
+
+const RecurrenceRuleResponseSchema = z
+  .object({
+    start: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Starting time of the recurrence interval' }),
+    end: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Ending time of the recurrence interval' }),
+    frequency: RecurrenceRuleFrequenciesSchema.openapi({
+      description: 'How often the event occurs',
+    }),
+    interval: z
+      .int32()
+      .openapi({ description: 'The spacing between events, defined by frequency' }),
+    by_weekday: z
+      .array(RecurrenceRuleWeekdaysSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .openapi({ description: 'Set of specific days within a week for the event to recur on' }),
+    by_n_weekday: z
+      .array(ByNWeekdayResponseSchema)
+      .nullable()
+      .openapi({ description: 'List of specific days within a specific week to recur on' }),
+    by_month: z
+      .array(RecurrenceRuleMonthsSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .openapi({ description: 'Set of specific months to recur on' }),
+    by_month_day: z
+      .array(z.int32())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .openapi({ description: 'Set of specific dates within a month to recur on' }),
+    by_year_day: z
+      .array(z.int32())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Set of days within a year to recur on (1-364)' }),
+    count: z
+      .int32()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Total number of times the event is allowed to recur' }),
+  })
+  .openapi({
+    required: [
+      'start',
+      'frequency',
+      'interval',
+      'by_weekday',
+      'by_n_weekday',
+      'by_month',
+      'by_month_day',
+    ],
+  })
+  .openapi('RecurrenceRuleResponse')
+
+const GuildScheduledEventPrivacyLevelsSchema = z
+  .xor([
+    z
+      .literal(2)
+      .openapi({
+        title: 'GUILD_ONLY',
+        description: 'the scheduled event is only accessible to guild members',
+      }),
+  ])
+  .openapi('GuildScheduledEventPrivacyLevels')
+
+const GuildScheduledEventUserResponsesSchema = z
+  .xor([
+    z
+      .literal(0)
+      .openapi({ title: 'UNINTERESTED', description: 'User is not interested in the event' }),
+    z.literal(1).openapi({ title: 'INTERESTED', description: 'User is interested in the event' }),
+  ])
+  .openapi('GuildScheduledEventUserResponses')
+
+const ScheduledEventUserResponseSchema = z
+  .object({
+    guild_scheduled_event_id: SnowflakeTypeSchema.openapi({
+      description: 'ID of the scheduled event',
+    }),
+    guild_scheduled_event_exception_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .exactOptional()
+      .openapi({ description: 'ID of the scheduled event exception' }),
+    user_id: SnowflakeTypeSchema.openapi({ description: 'ID of the user' }),
+    user: UserResponseSchema.exactOptional().openapi({
+      description: 'User object for the RSVP user',
+    }),
+    member: GuildMemberResponseSchema.exactOptional().openapi({
+      description: 'Guild member object for the RSVP user',
+    }),
+    response: GuildScheduledEventUserResponsesSchema.openapi({
+      description: "User's RSVP status for the event",
+    }),
+  })
+  .openapi({ required: ['guild_scheduled_event_id', 'user_id', 'response'] })
+  .openapi('ScheduledEventUserResponse')
+
+const GuildScheduledEventExceptionResponseSchema = z
+  .object({
+    event_id: SnowflakeTypeSchema.openapi({
+      description: 'ID of the scheduled event this exception belongs to',
+    }),
+    event_exception_id: SnowflakeTypeSchema.openapi({ description: 'ID of the event exception' }),
+    scheduled_start_time: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'Overridden start time of this occurrence' }),
+    scheduled_end_time: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'Overridden end time of this occurrence' }),
+    is_canceled: z.boolean().openapi({ description: 'Whether this occurrence is canceled' }),
+  })
+  .openapi({
+    required: [
+      'event_id',
+      'event_exception_id',
+      'scheduled_start_time',
+      'scheduled_end_time',
+      'is_canceled',
+    ],
+  })
+  .openapi('GuildScheduledEventExceptionResponse')
+
+const EntityMetadataExternalResponseSchema = z
+  .object({ location: z.string().openapi({ description: 'Location of the external event' }) })
+  .openapi({ required: ['location'] })
+  .openapi('EntityMetadataExternalResponse')
+
+const ExternalScheduledEventResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema.openapi({ description: 'ID of the scheduled event' }),
+    guild_id: SnowflakeTypeSchema.openapi({
+      description: 'ID of the guild the scheduled event belongs to',
+    }),
+    name: z.string().openapi({ description: 'Name of the scheduled event' }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Description of the scheduled event' }),
+    channel_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({
+        description:
+          'Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL',
+      }),
+    creator_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({ description: 'ID of the user that created the scheduled event' }),
+    creator: UserResponseSchema.exactOptional().openapi({
+      description: 'User that created the scheduled event',
+    }),
+    image: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Cover image hash of the scheduled event' }),
+    scheduled_start_time: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the scheduled event will start' }),
+    scheduled_end_time: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'When the scheduled event will end, or null if no end time' }),
+    status: GuildScheduledEventStatusesSchema.openapi({
+      description: 'Status of the scheduled event',
+    }),
+    entity_type: GuildScheduledEventEntityTypesSchema.openapi({
+      description: 'Type of hosting entity associated with the scheduled event',
+    }),
+    entity_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({ description: 'ID of the hosting entity associated with the scheduled event' }),
+    recurrence_rule: z
+      .xor([z.null().nullable(), RecurrenceRuleResponseSchema])
+      .openapi({
+        description: 'Recurrence rule for the scheduled event, or null if not recurring',
+      }),
+    user_count: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of users subscribed to the scheduled event' }),
+    privacy_level: GuildScheduledEventPrivacyLevelsSchema.openapi({
+      description: 'Privacy level of the scheduled event',
+    }),
+    user_rsvp: z.xor([z.null().nullable(), ScheduledEventUserResponseSchema]).exactOptional(),
+    guild_scheduled_event_exceptions: z.array(GuildScheduledEventExceptionResponseSchema),
+    entity_metadata: EntityMetadataExternalResponseSchema,
+  })
+  .openapi({
+    required: [
+      'id',
+      'guild_id',
+      'name',
+      'description',
+      'channel_id',
+      'creator_id',
+      'image',
+      'scheduled_start_time',
+      'scheduled_end_time',
+      'status',
+      'entity_type',
+      'entity_id',
+      'recurrence_rule',
+      'privacy_level',
+      'guild_scheduled_event_exceptions',
+      'entity_metadata',
+    ],
+  })
+  .openapi('ExternalScheduledEventResponse')
+
+const EntityMetadataStageInstanceResponseSchema = z
+  .looseObject({})
+  .openapi('EntityMetadataStageInstanceResponse')
+
+const StageScheduledEventResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema.openapi({ description: 'ID of the scheduled event' }),
+    guild_id: SnowflakeTypeSchema.openapi({
+      description: 'ID of the guild the scheduled event belongs to',
+    }),
+    name: z.string().openapi({ description: 'Name of the scheduled event' }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Description of the scheduled event' }),
+    channel_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({
+        description:
+          'Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL',
+      }),
+    creator_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({ description: 'ID of the user that created the scheduled event' }),
+    creator: UserResponseSchema.exactOptional().openapi({
+      description: 'User that created the scheduled event',
+    }),
+    image: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Cover image hash of the scheduled event' }),
+    scheduled_start_time: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the scheduled event will start' }),
+    scheduled_end_time: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'When the scheduled event will end, or null if no end time' }),
+    status: GuildScheduledEventStatusesSchema.openapi({
+      description: 'Status of the scheduled event',
+    }),
+    entity_type: GuildScheduledEventEntityTypesSchema.openapi({
+      description: 'Type of hosting entity associated with the scheduled event',
+    }),
+    entity_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({ description: 'ID of the hosting entity associated with the scheduled event' }),
+    recurrence_rule: z
+      .xor([z.null().nullable(), RecurrenceRuleResponseSchema])
+      .openapi({
+        description: 'Recurrence rule for the scheduled event, or null if not recurring',
+      }),
+    user_count: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of users subscribed to the scheduled event' }),
+    privacy_level: GuildScheduledEventPrivacyLevelsSchema.openapi({
+      description: 'Privacy level of the scheduled event',
+    }),
+    user_rsvp: z.xor([z.null().nullable(), ScheduledEventUserResponseSchema]).exactOptional(),
+    guild_scheduled_event_exceptions: z.array(GuildScheduledEventExceptionResponseSchema),
+    entity_metadata: z.xor([z.null().nullable(), EntityMetadataStageInstanceResponseSchema]),
+  })
+  .openapi({
+    required: [
+      'id',
+      'guild_id',
+      'name',
+      'description',
+      'channel_id',
+      'creator_id',
+      'image',
+      'scheduled_start_time',
+      'scheduled_end_time',
+      'status',
+      'entity_type',
+      'entity_id',
+      'recurrence_rule',
+      'privacy_level',
+      'guild_scheduled_event_exceptions',
+      'entity_metadata',
+    ],
+  })
+  .openapi('StageScheduledEventResponse')
+
+const EntityMetadataVoiceResponseSchema = z.looseObject({}).openapi('EntityMetadataVoiceResponse')
+
+const VoiceScheduledEventResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema.openapi({ description: 'ID of the scheduled event' }),
+    guild_id: SnowflakeTypeSchema.openapi({
+      description: 'ID of the guild the scheduled event belongs to',
+    }),
+    name: z.string().openapi({ description: 'Name of the scheduled event' }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Description of the scheduled event' }),
+    channel_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({
+        description:
+          'Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL',
+      }),
+    creator_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({ description: 'ID of the user that created the scheduled event' }),
+    creator: UserResponseSchema.exactOptional().openapi({
+      description: 'User that created the scheduled event',
+    }),
+    image: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Cover image hash of the scheduled event' }),
+    scheduled_start_time: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the scheduled event will start' }),
+    scheduled_end_time: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'When the scheduled event will end, or null if no end time' }),
+    status: GuildScheduledEventStatusesSchema.openapi({
+      description: 'Status of the scheduled event',
+    }),
+    entity_type: GuildScheduledEventEntityTypesSchema.openapi({
+      description: 'Type of hosting entity associated with the scheduled event',
+    }),
+    entity_id: z
+      .xor([z.null().nullable(), SnowflakeTypeSchema])
+      .openapi({ description: 'ID of the hosting entity associated with the scheduled event' }),
+    recurrence_rule: z
+      .xor([z.null().nullable(), RecurrenceRuleResponseSchema])
+      .openapi({
+        description: 'Recurrence rule for the scheduled event, or null if not recurring',
+      }),
+    user_count: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of users subscribed to the scheduled event' }),
+    privacy_level: GuildScheduledEventPrivacyLevelsSchema.openapi({
+      description: 'Privacy level of the scheduled event',
+    }),
+    user_rsvp: z.xor([z.null().nullable(), ScheduledEventUserResponseSchema]).exactOptional(),
+    guild_scheduled_event_exceptions: z.array(GuildScheduledEventExceptionResponseSchema),
+    entity_metadata: z.xor([z.null().nullable(), EntityMetadataVoiceResponseSchema]),
+  })
+  .openapi({
+    required: [
+      'id',
+      'guild_id',
+      'name',
+      'description',
+      'channel_id',
+      'creator_id',
+      'image',
+      'scheduled_start_time',
+      'scheduled_end_time',
+      'status',
+      'entity_type',
+      'entity_id',
+      'recurrence_rule',
+      'privacy_level',
+      'guild_scheduled_event_exceptions',
+      'entity_metadata',
+    ],
+  })
+  .openapi('VoiceScheduledEventResponse')
+
+const ApplicationCommandResponseSchema: z.ZodType<ApplicationCommandResponseType> = z
+  .object({
+    id: SnowflakeTypeSchema,
+    application_id: SnowflakeTypeSchema,
+    version: SnowflakeTypeSchema,
+    default_member_permissions: z.string().nullable(),
+    type: ApplicationCommandTypeSchema,
+    name: z.string(),
+    name_localized: z.string().exactOptional(),
+    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    description: z.string(),
+    description_localized: z.string().exactOptional(),
+    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
+    guild_id: SnowflakeTypeSchema.exactOptional(),
+    dm_permission: z.boolean().exactOptional(),
+    contexts: z
+      .array(InteractionContextTypeSchema)
       .superRefine((items, ctx) => {
         const seen = new Map()
         for (const [i, val] of items.entries()) {
@@ -2305,115 +4576,888 @@ const ChannelSelectComponentForMessageRequestSchema = z
       })
       .nullable()
       .exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('ChannelSelectComponentForMessageRequest')
-
-const RoleSelectDefaultValueSchema = z
-  .object({ type: SnowflakeSelectDefaultValueTypesSchema, id: SnowflakeTypeSchema })
-  .openapi({ required: ['type', 'id'] })
-  .openapi('RoleSelectDefaultValue')
-
-const UserSelectDefaultValueSchema = z
-  .object({ type: SnowflakeSelectDefaultValueTypesSchema, id: SnowflakeTypeSchema })
-  .openapi({ required: ['type', 'id'] })
-  .openapi('UserSelectDefaultValue')
-
-const MentionableSelectComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    default_values: z
-      .array(z.xor([RoleSelectDefaultValueSchema, UserSelectDefaultValueSchema]))
-      .max(25)
-      .nullable()
+    integration_types: z
+      .array(ApplicationIntegrationTypeSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
       .exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('MentionableSelectComponentForMessageRequest')
-
-const RoleSelectComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    default_values: z.array(RoleSelectDefaultValueSchema).max(25).nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('RoleSelectComponentForMessageRequest')
-
-const StringSelectOptionForRequestSchema = z
-  .object({
-    label: z.string().min(1).max(100),
-    value: z.string().min(1).max(100),
-    description: z.string().max(100).nullable().exactOptional(),
-    default: z.boolean().nullable().exactOptional(),
-    emoji: z.xor([z.null().nullable(), ComponentEmojiForRequestSchema]).exactOptional(),
-  })
-  .openapi({ required: ['label', 'value'] })
-  .openapi('StringSelectOptionForRequest')
-
-const StringSelectComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    options: z.array(StringSelectOptionForRequestSchema).min(1).max(25),
-  })
-  .openapi({ required: ['type', 'custom_id', 'options'] })
-  .openapi('StringSelectComponentForMessageRequest')
-
-const UserSelectComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    default_values: z.array(UserSelectDefaultValueSchema).max(25).nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('UserSelectComponentForMessageRequest')
-
-const ActionRowComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    components: z
+    options: z
       .array(
         z.xor([
-          ButtonComponentForMessageRequestSchema,
-          ChannelSelectComponentForMessageRequestSchema,
-          MentionableSelectComponentForMessageRequestSchema,
-          RoleSelectComponentForMessageRequestSchema,
-          StringSelectComponentForMessageRequestSchema,
-          UserSelectComponentForMessageRequestSchema,
+          ApplicationCommandAttachmentOptionResponseSchema,
+          ApplicationCommandBooleanOptionResponseSchema,
+          ApplicationCommandChannelOptionResponseSchema,
+          ApplicationCommandIntegerOptionResponseSchema,
+          ApplicationCommandMentionableOptionResponseSchema,
+          ApplicationCommandNumberOptionResponseSchema,
+          ApplicationCommandRoleOptionResponseSchema,
+          ApplicationCommandStringOptionResponseSchema,
+          ApplicationCommandSubcommandGroupOptionResponseSchema,
+          ApplicationCommandSubcommandOptionResponseSchema,
+          ApplicationCommandUserOptionResponseSchema,
         ]),
       )
-      .min(1)
-      .max(5),
+      .exactOptional(),
+    nsfw: z.boolean().exactOptional(),
+    handler: ApplicationCommandHandlerSchema.exactOptional().openapi({
+      description:
+        "Determines whether the interaction is handled by the app's interactions handler or by Discord",
+    }),
   })
-  .openapi({ required: ['type', 'components'] })
-  .openapi('ActionRowComponentForMessageRequest')
+  .openapi({
+    required: [
+      'id',
+      'application_id',
+      'version',
+      'default_member_permissions',
+      'type',
+      'name',
+      'description',
+    ],
+  })
+  .openapi('ApplicationCommandResponse')
+
+const AutomodEventTypeSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({ title: 'MESSAGE_SEND', description: 'A user submitted a message to a channel' }),
+    z
+      .literal(2)
+      .openapi({
+        title: 'GUILD_MEMBER_JOIN_OR_UPDATE',
+        description:
+          "A user is attempting to join the server or a member's properties were updated.",
+      }),
+  ])
+  .openapi('AutomodEventType')
+
+const AutomodActionTypeSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({
+        title: 'BLOCK_MESSAGE',
+        description:
+          "Block a user's message and prevent it from being posted. A custom explanation can be specified and shown to members whenever their message is blocked",
+      }),
+    z
+      .literal(2)
+      .openapi({
+        title: 'FLAG_TO_CHANNEL',
+        description:
+          'Send a system message to a channel in order to log the user message that triggered the rule',
+      }),
+    z
+      .literal(3)
+      .openapi({
+        title: 'USER_COMMUNICATION_DISABLED',
+        description: "Temporarily disable a user's ability to communicate in the server (timeout)",
+      }),
+    z
+      .literal(4)
+      .openapi({
+        title: 'QUARANTINE_USER',
+        description: 'Prevent a user from interacting in the server',
+      }),
+  ])
+  .openapi('AutomodActionType')
+
+const BlockMessageActionMetadataResponseSchema = z
+  .object({ custom_message: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('BlockMessageActionMetadataResponse')
+
+const BlockMessageActionResponseSchema = z
+  .object({ type: AutomodActionTypeSchema, metadata: BlockMessageActionMetadataResponseSchema })
+  .openapi({ required: ['type', 'metadata'] })
+  .openapi('BlockMessageActionResponse')
+
+const FlagToChannelActionMetadataResponseSchema = z
+  .object({ channel_id: SnowflakeTypeSchema })
+  .openapi({ required: ['channel_id'] })
+  .openapi('FlagToChannelActionMetadataResponse')
+
+const FlagToChannelActionResponseSchema = z
+  .object({ type: AutomodActionTypeSchema, metadata: FlagToChannelActionMetadataResponseSchema })
+  .openapi({ required: ['type', 'metadata'] })
+  .openapi('FlagToChannelActionResponse')
+
+const QuarantineUserActionMetadataResponseSchema = z
+  .looseObject({})
+  .openapi('QuarantineUserActionMetadataResponse')
+
+const QuarantineUserActionResponseSchema = z
+  .object({ type: AutomodActionTypeSchema, metadata: QuarantineUserActionMetadataResponseSchema })
+  .openapi({ required: ['type', 'metadata'] })
+  .openapi('QuarantineUserActionResponse')
+
+const UserCommunicationDisabledActionMetadataResponseSchema = z
+  .object({ duration_seconds: z.int32() })
+  .openapi({ required: ['duration_seconds'] })
+  .openapi('UserCommunicationDisabledActionMetadataResponse')
+
+const UserCommunicationDisabledActionResponseSchema = z
+  .object({
+    type: AutomodActionTypeSchema,
+    metadata: UserCommunicationDisabledActionMetadataResponseSchema,
+  })
+  .openapi({ required: ['type', 'metadata'] })
+  .openapi('UserCommunicationDisabledActionResponse')
+
+const AutomodTriggerTypeSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({
+        title: 'KEYWORD',
+        description: 'Check if content contains words from a list of keywords or matches regex',
+      }),
+    z
+      .literal(3)
+      .openapi({ title: 'ML_SPAM', description: 'Check if content represents generic spam' }),
+    z
+      .literal(4)
+      .openapi({
+        title: 'DEFAULT_KEYWORD_LIST',
+        description: 'Check if content contains words from internal pre-defined wordsets',
+      }),
+    z
+      .literal(5)
+      .openapi({
+        title: 'MENTION_SPAM',
+        description: 'Check if content contains more unique mentions than allowed',
+      }),
+    z
+      .literal(6)
+      .openapi({
+        title: 'USER_PROFILE',
+        description:
+          'Check if user profile fields contains words from a list of keywords or matches regex',
+      }),
+  ])
+  .openapi('AutomodTriggerType')
+
+const AutomodKeywordPresetTypeSchema = z
+  .xor([
+    z
+      .literal(1)
+      .openapi({
+        title: 'PROFANITY',
+        description: 'Words and phrases that may be considered profanity',
+      }),
+    z
+      .literal(2)
+      .openapi({
+        title: 'SEXUAL_CONTENT',
+        description: 'Words and phrases that may be considered as sexual content',
+      }),
+    z
+      .literal(3)
+      .openapi({
+        title: 'SLURS',
+        description: 'Words and phrases that may be considered slurs and hate speech',
+      }),
+  ])
+  .openapi('AutomodKeywordPresetType')
+
+const DefaultKeywordListTriggerMetadataResponseSchema = z
+  .object({
+    allow_list: z.array(z.string()),
+    presets: z.array(AutomodKeywordPresetTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+  })
+  .openapi({ required: ['allow_list', 'presets'] })
+  .openapi('DefaultKeywordListTriggerMetadataResponse')
+
+const DefaultKeywordRuleResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema,
+    guild_id: SnowflakeTypeSchema,
+    creator_id: SnowflakeTypeSchema,
+    name: z.string(),
+    event_type: AutomodEventTypeSchema,
+    actions: z.array(
+      z.xor([
+        BlockMessageActionResponseSchema,
+        FlagToChannelActionResponseSchema,
+        QuarantineUserActionResponseSchema,
+        UserCommunicationDisabledActionResponseSchema,
+      ]),
+    ),
+    trigger_type: AutomodTriggerTypeSchema,
+    enabled: z.boolean(),
+    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    trigger_metadata: DefaultKeywordListTriggerMetadataResponseSchema,
+  })
+  .openapi({
+    required: [
+      'id',
+      'guild_id',
+      'creator_id',
+      'name',
+      'event_type',
+      'actions',
+      'trigger_type',
+      'enabled',
+      'exempt_roles',
+      'exempt_channels',
+      'trigger_metadata',
+    ],
+  })
+  .openapi('DefaultKeywordRuleResponse')
+
+const KeywordTriggerMetadataResponseSchema = z
+  .object({
+    keyword_filter: z.array(z.string()),
+    regex_patterns: z.array(z.string()),
+    allow_list: z.array(z.string()),
+  })
+  .openapi({ required: ['keyword_filter', 'regex_patterns', 'allow_list'] })
+  .openapi('KeywordTriggerMetadataResponse')
+
+const KeywordRuleResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema,
+    guild_id: SnowflakeTypeSchema,
+    creator_id: SnowflakeTypeSchema,
+    name: z.string(),
+    event_type: AutomodEventTypeSchema,
+    actions: z.array(
+      z.xor([
+        BlockMessageActionResponseSchema,
+        FlagToChannelActionResponseSchema,
+        QuarantineUserActionResponseSchema,
+        UserCommunicationDisabledActionResponseSchema,
+      ]),
+    ),
+    trigger_type: AutomodTriggerTypeSchema,
+    enabled: z.boolean(),
+    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    trigger_metadata: KeywordTriggerMetadataResponseSchema,
+  })
+  .openapi({
+    required: [
+      'id',
+      'guild_id',
+      'creator_id',
+      'name',
+      'event_type',
+      'actions',
+      'trigger_type',
+      'enabled',
+      'exempt_roles',
+      'exempt_channels',
+      'trigger_metadata',
+    ],
+  })
+  .openapi('KeywordRuleResponse')
+
+const MLSpamTriggerMetadataResponseSchema = z
+  .looseObject({})
+  .openapi('MLSpamTriggerMetadataResponse')
+
+const MLSpamRuleResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema,
+    guild_id: SnowflakeTypeSchema,
+    creator_id: SnowflakeTypeSchema,
+    name: z.string(),
+    event_type: AutomodEventTypeSchema,
+    actions: z.array(
+      z.xor([
+        BlockMessageActionResponseSchema,
+        FlagToChannelActionResponseSchema,
+        QuarantineUserActionResponseSchema,
+        UserCommunicationDisabledActionResponseSchema,
+      ]),
+    ),
+    trigger_type: AutomodTriggerTypeSchema,
+    enabled: z.boolean(),
+    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    trigger_metadata: MLSpamTriggerMetadataResponseSchema,
+  })
+  .openapi({
+    required: [
+      'id',
+      'guild_id',
+      'creator_id',
+      'name',
+      'event_type',
+      'actions',
+      'trigger_type',
+      'enabled',
+      'exempt_roles',
+      'exempt_channels',
+      'trigger_metadata',
+    ],
+  })
+  .openapi('MLSpamRuleResponse')
+
+const MentionSpamTriggerMetadataResponseSchema = z
+  .object({ mention_total_limit: z.int32(), mention_raid_protection_enabled: z.boolean() })
+  .openapi({ required: ['mention_total_limit', 'mention_raid_protection_enabled'] })
+  .openapi('MentionSpamTriggerMetadataResponse')
+
+const MentionSpamRuleResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema,
+    guild_id: SnowflakeTypeSchema,
+    creator_id: SnowflakeTypeSchema,
+    name: z.string(),
+    event_type: AutomodEventTypeSchema,
+    actions: z.array(
+      z.xor([
+        BlockMessageActionResponseSchema,
+        FlagToChannelActionResponseSchema,
+        QuarantineUserActionResponseSchema,
+        UserCommunicationDisabledActionResponseSchema,
+      ]),
+    ),
+    trigger_type: AutomodTriggerTypeSchema,
+    enabled: z.boolean(),
+    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    trigger_metadata: MentionSpamTriggerMetadataResponseSchema,
+  })
+  .openapi({
+    required: [
+      'id',
+      'guild_id',
+      'creator_id',
+      'name',
+      'event_type',
+      'actions',
+      'trigger_type',
+      'enabled',
+      'exempt_roles',
+      'exempt_channels',
+      'trigger_metadata',
+    ],
+  })
+  .openapi('MentionSpamRuleResponse')
+
+const UserProfileMetadataResponseSchema = z
+  .object({
+    keyword_filter: z.array(z.string()),
+    regex_patterns: z.array(z.string()),
+    allow_list: z.array(z.string()),
+  })
+  .openapi({ required: ['keyword_filter', 'regex_patterns', 'allow_list'] })
+  .openapi('UserProfileMetadataResponse')
+
+const UserProfileRuleResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema,
+    guild_id: SnowflakeTypeSchema,
+    creator_id: SnowflakeTypeSchema,
+    name: z.string(),
+    event_type: AutomodEventTypeSchema,
+    actions: z.array(
+      z.xor([
+        BlockMessageActionResponseSchema,
+        FlagToChannelActionResponseSchema,
+        QuarantineUserActionResponseSchema,
+        UserCommunicationDisabledActionResponseSchema,
+      ]),
+    ),
+    trigger_type: AutomodTriggerTypeSchema,
+    enabled: z.boolean(),
+    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    trigger_metadata: UserProfileMetadataResponseSchema,
+  })
+  .openapi({
+    required: [
+      'id',
+      'guild_id',
+      'creator_id',
+      'name',
+      'event_type',
+      'actions',
+      'trigger_type',
+      'enabled',
+      'exempt_roles',
+      'exempt_channels',
+      'trigger_metadata',
+    ],
+  })
+  .openapi('UserProfileRuleResponse')
+
+type GuildAuditLogResponseType = {
+  audit_log_entries: z.infer<typeof AuditLogEntryResponseSchema>[]
+  users: z.infer<typeof UserResponseSchema>[]
+  integrations: (
+    | z.infer<typeof PartialDiscordIntegrationResponseSchema>
+    | z.infer<typeof PartialExternalConnectionIntegrationResponseSchema>
+    | z.infer<typeof PartialGuildSubscriptionIntegrationResponseSchema>
+  )[]
+  webhooks: (
+    | z.infer<typeof ApplicationIncomingWebhookResponseSchema>
+    | z.infer<typeof ChannelFollowerWebhookResponseSchema>
+    | z.infer<typeof GuildIncomingWebhookResponseSchema>
+  )[]
+  guild_scheduled_events: (
+    | z.infer<typeof ExternalScheduledEventResponseSchema>
+    | z.infer<typeof StageScheduledEventResponseSchema>
+    | z.infer<typeof VoiceScheduledEventResponseSchema>
+  )[]
+  threads: z.infer<typeof ThreadResponseSchema>[]
+  application_commands: z.infer<typeof ApplicationCommandResponseSchema>[]
+  auto_moderation_rules: (
+    | z.infer<typeof DefaultKeywordRuleResponseSchema>
+    | z.infer<typeof KeywordRuleResponseSchema>
+    | z.infer<typeof MLSpamRuleResponseSchema>
+    | z.infer<typeof MentionSpamRuleResponseSchema>
+    | z.infer<typeof UserProfileRuleResponseSchema>
+    | null
+  )[]
+}
+
+type SearchMessageResponseType = {
+  type: z.infer<typeof MessageTypeSchema>
+  content: string
+  mentions: z.infer<typeof UserResponseSchema>[]
+  mention_roles: z.infer<typeof SnowflakeTypeSchema>[]
+  attachments: z.infer<typeof MessageAttachmentResponseSchema>[]
+  embeds: z.infer<typeof MessageEmbedResponseSchema>[]
+  timestamp: string
+  edited_timestamp: string | null
+  flags: number
+  components: (
+    | z.infer<typeof ActionRowComponentResponseSchema>
+    | z.infer<typeof ContainerComponentResponseSchema>
+    | z.infer<typeof FileComponentResponseSchema>
+    | z.infer<typeof MediaGalleryComponentResponseSchema>
+    | z.infer<typeof SectionComponentResponseSchema>
+    | z.infer<typeof SeparatorComponentResponseSchema>
+    | z.infer<typeof TextDisplayComponentResponseSchema>
+  )[]
+  stickers?: (
+    | z.infer<typeof GuildStickerResponseSchema>
+    | z.infer<typeof StandardStickerResponseSchema>
+  )[]
+  sticker_items?: z.infer<typeof MessageStickerItemResponseSchema>[]
+  id: z.infer<typeof SnowflakeTypeSchema>
+  channel_id: z.infer<typeof SnowflakeTypeSchema>
+  author: z.infer<typeof UserResponseSchema>
+  pinned: boolean
+  mention_everyone: boolean
+  tts: boolean
+  call?: z.infer<typeof MessageCallResponseSchema>
+  activity?: z.infer<typeof MessageActivityResponseSchema>
+  application?: z.infer<typeof BasicApplicationResponseWithBotSchema>
+  application_id?: z.infer<typeof SnowflakeTypeSchema>
+  interaction?: z.infer<typeof MessageInteractionResponseSchema>
+  nonce?: bigint | string
+  webhook_id?: z.infer<typeof SnowflakeTypeSchema>
+  message_reference?: z.infer<typeof MessageReferenceResponseSchema>
+  thread?: z.infer<typeof ThreadResponseSchema>
+  mention_channels?: z.infer<typeof MessageMentionChannelResponseSchema>[]
+  role_subscription_data?: z.infer<typeof MessageRoleSubscriptionDataResponseSchema>
+  purchase_notification?: z.infer<typeof PurchaseNotificationResponseSchema>
+  position?: number
+  resolved?: z.infer<typeof ResolvedObjectsResponseSchema>
+  poll?: z.infer<typeof PollResponseSchema>
+  shared_client_theme?: z.infer<typeof CustomClientThemeResponseSchema>
+  interaction_metadata?:
+    | z.infer<typeof ApplicationCommandInteractionMetadataResponseSchema>
+    | z.infer<typeof MessageComponentInteractionMetadataResponseSchema>
+    | z.infer<typeof ModalSubmitInteractionMetadataResponseSchema>
+  message_snapshots?: z.infer<typeof MessageSnapshotResponseSchema>[]
+  lobby_member?: z.infer<typeof MessageLobbyMemberResponseSchema>
+  actor?: z.infer<typeof UserResponseSchema>
+  reactions?: z.infer<typeof MessageReactionResponseSchema>[]
+  referenced_message?: null | z.infer<typeof BasicMessageResponseSchema>
+  hit: boolean
+  restriction_count?: number
+  author_restriction_count?: number
+  source_author_restriction_count?: number
+  forward_source_author_id?: z.infer<typeof SnowflakeTypeSchema>
+}
+
+const SearchMessageResponseSchema: z.ZodType<SearchMessageResponseType> = z
+  .object({
+    type: MessageTypeSchema,
+    content: z.string(),
+    mentions: z.array(UserResponseSchema),
+    mention_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+    attachments: z.array(MessageAttachmentResponseSchema),
+    embeds: z.array(MessageEmbedResponseSchema),
+    timestamp: z.iso.datetime({ offset: true }),
+    edited_timestamp: z.iso.datetime({ offset: true }).nullable(),
+    flags: z.int32(),
+    components: z.array(
+      z.xor([
+        ActionRowComponentResponseSchema,
+        ContainerComponentResponseSchema,
+        FileComponentResponseSchema,
+        MediaGalleryComponentResponseSchema,
+        SectionComponentResponseSchema,
+        SeparatorComponentResponseSchema,
+        TextDisplayComponentResponseSchema,
+      ]),
+    ),
+    stickers: z
+      .array(z.xor([GuildStickerResponseSchema, StandardStickerResponseSchema]))
+      .exactOptional(),
+    sticker_items: z.array(MessageStickerItemResponseSchema).exactOptional(),
+    id: SnowflakeTypeSchema,
+    channel_id: SnowflakeTypeSchema,
+    author: UserResponseSchema,
+    pinned: z.boolean(),
+    mention_everyone: z.boolean(),
+    tts: z.boolean(),
+    call: MessageCallResponseSchema.exactOptional(),
+    activity: MessageActivityResponseSchema.exactOptional(),
+    application: BasicApplicationResponseWithBotSchema.exactOptional(),
+    application_id: SnowflakeTypeSchema.exactOptional(),
+    interaction: MessageInteractionResponseSchema.exactOptional(),
+    nonce: z
+      .xor([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(-9223372036854775808n).max(9223372036854775807n),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: -9223372036854776000,
+            maximum: 9223372036854776000,
+          }),
+        z.string().max(25),
+      ])
+      .exactOptional(),
+    webhook_id: SnowflakeTypeSchema.exactOptional(),
+    message_reference: MessageReferenceResponseSchema.exactOptional(),
+    thread: ThreadResponseSchema.exactOptional(),
+    mention_channels: z.array(MessageMentionChannelResponseSchema).exactOptional(),
+    role_subscription_data: MessageRoleSubscriptionDataResponseSchema.exactOptional(),
+    purchase_notification: PurchaseNotificationResponseSchema.exactOptional(),
+    position: z.int32().exactOptional(),
+    resolved: ResolvedObjectsResponseSchema.exactOptional(),
+    poll: PollResponseSchema.exactOptional(),
+    shared_client_theme: CustomClientThemeResponseSchema.exactOptional(),
+    interaction_metadata: z
+      .xor([
+        ApplicationCommandInteractionMetadataResponseSchema,
+        MessageComponentInteractionMetadataResponseSchema,
+        ModalSubmitInteractionMetadataResponseSchema,
+      ])
+      .exactOptional(),
+    message_snapshots: z.array(MessageSnapshotResponseSchema).exactOptional(),
+    lobby_member: MessageLobbyMemberResponseSchema.exactOptional(),
+    actor: UserResponseSchema.exactOptional(),
+    reactions: z.array(MessageReactionResponseSchema).exactOptional(),
+    referenced_message: z.xor([z.null().nullable(), BasicMessageResponseSchema]).exactOptional(),
+    hit: z.boolean(),
+    restriction_count: z.int32().exactOptional(),
+    author_restriction_count: z.int32().exactOptional(),
+    source_author_restriction_count: z.int32().exactOptional(),
+    forward_source_author_id: SnowflakeTypeSchema.exactOptional(),
+  })
+  .openapi({
+    required: [
+      'type',
+      'content',
+      'mentions',
+      'mention_roles',
+      'attachments',
+      'embeds',
+      'timestamp',
+      'edited_timestamp',
+      'flags',
+      'components',
+      'id',
+      'channel_id',
+      'author',
+      'pinned',
+      'mention_everyone',
+      'tts',
+      'hit',
+    ],
+  })
+  .openapi('SearchMessageResponse')
+
+type GuildSearchResponseType = {
+  messages: z.infer<typeof SearchMessageResponseSchema>[][]
+  doing_deep_historical_index: boolean
+  total_results: number
+  threads?: z.infer<typeof ThreadResponseSchema>[] | null
+  members?: z.infer<typeof ThreadMemberResponseSchema>[] | null
+  documents_indexed?: number | null
+}
+
+type IncomingWebhookRequestPartialType = {
+  content?: string | null
+  embeds?: z.infer<typeof RichEmbedSchema>[] | null
+  allowed_mentions?: null | z.infer<typeof MessageAllowedMentionsRequestSchema>
+  components?:
+    | (
+        | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+        | z.infer<typeof ContainerComponentForMessageRequestSchema>
+        | z.infer<typeof FileComponentForMessageRequestSchema>
+        | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+        | z.infer<typeof SectionComponentForMessageRequestSchema>
+        | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+        | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+      )[]
+    | null
+  attachments?: z.infer<typeof MessageAttachmentRequestSchema>[] | null
+  poll?: null | z.infer<typeof PollCreateRequestSchema>
+  tts?: boolean | null
+  flags?: number | null
+  username?: string | null
+  avatar_url?: string | null
+  thread_name?: string | null
+  applied_tags?: z.infer<typeof SnowflakeTypeSchema>[] | null
+}
+
+type IncomingWebhookUpdateForInteractionCallbackRequestPartialType = {
+  content?: string | null
+  embeds?: z.infer<typeof RichEmbedSchema>[] | null
+  allowed_mentions?: null | z.infer<typeof MessageAllowedMentionsRequestSchema>
+  components?:
+    | (
+        | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+        | z.infer<typeof ContainerComponentForMessageRequestSchema>
+        | z.infer<typeof FileComponentForMessageRequestSchema>
+        | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+        | z.infer<typeof SectionComponentForMessageRequestSchema>
+        | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+        | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+      )[]
+    | null
+  attachments?: z.infer<typeof MessageAttachmentRequestSchema>[] | null
+  flags?: number | null
+}
+
+type IncomingWebhookUpdateRequestPartialType = {
+  content?: string | null
+  embeds?: z.infer<typeof RichEmbedSchema>[] | null
+  allowed_mentions?: null | z.infer<typeof MessageAllowedMentionsRequestSchema>
+  components?:
+    | (
+        | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+        | z.infer<typeof ContainerComponentForMessageRequestSchema>
+        | z.infer<typeof FileComponentForMessageRequestSchema>
+        | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+        | z.infer<typeof SectionComponentForMessageRequestSchema>
+        | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+        | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+      )[]
+    | null
+  attachments?: z.infer<typeof MessageAttachmentRequestSchema>[] | null
+  poll?: null | z.infer<typeof PollCreateRequestSchema>
+  flags?: number | null
+}
+
+const InteractionResponseSchema = z
+  .object({
+    id: SnowflakeTypeSchema,
+    type: InteractionTypesSchema,
+    activity_instance_id: z.string().nullable().exactOptional(),
+    response_message_id: SnowflakeTypeSchema.exactOptional(),
+    response_message_loading: z.boolean().exactOptional(),
+    response_message_ephemeral: z.boolean().exactOptional(),
+    channel_id: SnowflakeTypeSchema.exactOptional(),
+    guild_id: SnowflakeTypeSchema.exactOptional(),
+  })
+  .openapi({ required: ['id', 'type'] })
+  .openapi('InteractionResponse')
+
+const CreateMessageInteractionCallbackResponseSchema: z.ZodType<CreateMessageInteractionCallbackResponseType> =
+  z
+    .object({ type: InteractionCallbackTypesSchema, message: MessageResponseSchema })
+    .openapi({ required: ['type', 'message'] })
+    .openapi('CreateMessageInteractionCallbackResponse')
+
+const ActivityInstanceCallbackResponseSchema = z
+  .object({ id: z.string() })
+  .openapi({ required: ['id'] })
+  .openapi('ActivityInstanceCallbackResponse')
+
+const LaunchActivityInteractionCallbackResponseSchema = z
+  .object({
+    type: InteractionCallbackTypesSchema,
+    activity_instance: ActivityInstanceCallbackResponseSchema,
+  })
+  .openapi({ required: ['type', 'activity_instance'] })
+  .openapi('LaunchActivityInteractionCallbackResponse')
+
+type UpdateMessageInteractionCallbackResponseType = {
+  type: z.infer<typeof InteractionCallbackTypesSchema>
+  message: z.infer<typeof MessageResponseSchema>
+}
+
+const UpdateMessageInteractionCallbackResponseSchema: z.ZodType<UpdateMessageInteractionCallbackResponseType> =
+  z
+    .object({ type: InteractionCallbackTypesSchema, message: MessageResponseSchema })
+    .openapi({ required: ['type', 'message'] })
+    .openapi('UpdateMessageInteractionCallbackResponse')
+
+type InteractionCallbackResponseType = {
+  interaction: z.infer<typeof InteractionResponseSchema>
+  resource?:
+    | z.infer<typeof CreateMessageInteractionCallbackResponseSchema>
+    | z.infer<typeof LaunchActivityInteractionCallbackResponseSchema>
+    | z.infer<typeof UpdateMessageInteractionCallbackResponseSchema>
+}
+
+const MessageReferenceRequestSchema = z
+  .object({
+    guild_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
+    channel_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
+    message_id: SnowflakeTypeSchema,
+    fail_if_not_exists: z.boolean().nullable().exactOptional(),
+    type: z.xor([z.null().nullable(), MessageReferenceTypeSchema]).exactOptional(),
+  })
+  .openapi({ required: ['message_id'] })
+  .openapi('MessageReferenceRequest')
+
+type MessageCreateRequestType = {
+  content?: string | null
+  embeds?: z.infer<typeof RichEmbedSchema>[] | null
+  allowed_mentions?: null | z.infer<typeof MessageAllowedMentionsRequestSchema>
+  sticker_ids?: z.infer<typeof SnowflakeTypeSchema>[] | null
+  components?:
+    | (
+        | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+        | z.infer<typeof ContainerComponentForMessageRequestSchema>
+        | z.infer<typeof FileComponentForMessageRequestSchema>
+        | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+        | z.infer<typeof SectionComponentForMessageRequestSchema>
+        | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+        | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+      )[]
+    | null
+  flags?: number | null
+  attachments?: z.infer<typeof MessageAttachmentRequestSchema>[] | null
+  poll?: null | z.infer<typeof PollCreateRequestSchema>
+  shared_client_theme?: null | z.infer<typeof CustomClientThemeShareRequestSchema>
+  message_reference?: null | z.infer<typeof MessageReferenceRequestSchema>
+  nonce?: bigint | string | null
+  enforce_nonce?: boolean | null
+  tts?: boolean | null
+}
+
+type MessageEditRequestPartialType = {
+  content?: string | null
+  embeds?: z.infer<typeof RichEmbedSchema>[] | null
+  flags?: number | null
+  allowed_mentions?: null | z.infer<typeof MessageAllowedMentionsRequestSchema>
+  sticker_ids?: z.infer<typeof SnowflakeTypeSchema>[] | null
+  components?:
+    | (
+        | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+        | z.infer<typeof ContainerComponentForMessageRequestSchema>
+        | z.infer<typeof FileComponentForMessageRequestSchema>
+        | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+        | z.infer<typeof SectionComponentForMessageRequestSchema>
+        | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+        | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+      )[]
+    | null
+  attachments?: z.infer<typeof MessageAttachmentRequestSchema>[] | null
+}
 
 const TextInputComponentForModalRequestSchema = z
   .object({
@@ -2439,6 +5483,340 @@ const ActionRowComponentForModalRequestSchema = z
   })
   .openapi({ required: ['type', 'components'] })
   .openapi('ActionRowComponentForModalRequest')
+
+const ChannelSelectComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    default_values: z.array(ChannelSelectDefaultValueSchema).max(25).nullable().exactOptional(),
+    channel_types: z
+      .array(ChannelTypesSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('ChannelSelectComponentForModalRequest')
+
+const CheckboxComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    default: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('CheckboxComponentForModalRequest')
+
+const CheckboxGroupOptionForRequestSchema = z
+  .object({
+    label: z.string().min(1).max(100),
+    value: z.string().min(1).max(100),
+    description: z.string().max(100).nullable().exactOptional(),
+    default: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['label', 'value'] })
+  .openapi('CheckboxGroupOptionForRequest')
+
+const CheckboxGroupComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    min_values: z.int().min(0).max(10).nullable().exactOptional(),
+    max_values: z.int().min(1).max(10).nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    options: z.array(CheckboxGroupOptionForRequestSchema).min(1).max(10),
+  })
+  .openapi({ required: ['type', 'custom_id', 'options'] })
+  .openapi('CheckboxGroupComponentForModalRequest')
+
+const FileUploadComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    min_values: z.int().min(0).max(10).nullable().exactOptional(),
+    max_values: z.int().min(1).max(10).nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    file_types: z
+      .array(z.string().min(1).max(16))
+      .max(10)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('FileUploadComponentForModalRequest')
+
+const MentionableSelectComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    default_values: z
+      .array(z.xor([RoleSelectDefaultValueSchema, UserSelectDefaultValueSchema]))
+      .max(25)
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('MentionableSelectComponentForModalRequest')
+
+const RadioGroupOptionForRequestSchema = z
+  .object({
+    label: z.string().min(1).max(100),
+    value: z.string().min(1).max(100),
+    description: z.string().max(100).nullable().exactOptional(),
+    default: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: ['label', 'value'] })
+  .openapi('RadioGroupOptionForRequest')
+
+const RadioGroupComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    required: z.boolean().nullable().exactOptional(),
+    options: z.array(RadioGroupOptionForRequestSchema).min(2).max(10),
+  })
+  .openapi({ required: ['type', 'custom_id', 'options'] })
+  .openapi('RadioGroupComponentForModalRequest')
+
+const RoleSelectComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    default_values: z.array(RoleSelectDefaultValueSchema).max(25).nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('RoleSelectComponentForModalRequest')
+
+const StringSelectComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    options: z.array(StringSelectOptionForRequestSchema).min(1).max(25),
+  })
+  .openapi({ required: ['type', 'custom_id', 'options'] })
+  .openapi('StringSelectComponentForModalRequest')
+
+const UserSelectComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    custom_id: z.string().min(1).max(100),
+    placeholder: z.string().max(150).nullable().exactOptional(),
+    min_values: z.int().min(0).max(25).nullable().exactOptional(),
+    max_values: z.int().min(1).max(25).nullable().exactOptional(),
+    disabled: z.boolean().nullable().exactOptional(),
+    required: z.boolean().nullable().exactOptional(),
+    default_values: z.array(UserSelectDefaultValueSchema).max(25).nullable().exactOptional(),
+  })
+  .openapi({ required: ['type', 'custom_id'] })
+  .openapi('UserSelectComponentForModalRequest')
+
+const LabelComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    label: z.string().min(1).max(45),
+    description: z.string().min(1).max(100).nullable().exactOptional(),
+    component: z.xor([
+      ChannelSelectComponentForModalRequestSchema,
+      CheckboxComponentForModalRequestSchema,
+      CheckboxGroupComponentForModalRequestSchema,
+      FileUploadComponentForModalRequestSchema,
+      MentionableSelectComponentForModalRequestSchema,
+      RadioGroupComponentForModalRequestSchema,
+      RoleSelectComponentForModalRequestSchema,
+      StringSelectComponentForModalRequestSchema,
+      TextInputComponentForModalRequestSchema,
+      UserSelectComponentForModalRequestSchema,
+    ]),
+  })
+  .openapi({ required: ['type', 'label', 'component'] })
+  .openapi('LabelComponentForModalRequest')
+
+const TextDisplayComponentForModalRequestSchema = z
+  .object({
+    type: MessageComponentTypesSchema,
+    id: z.int32().min(0).nullable().exactOptional(),
+    content: z.string().min(1).max(4000),
+  })
+  .openapi({ required: ['type', 'content'] })
+  .openapi('TextDisplayComponentForModalRequest')
+
+const ModalInteractionCallbackRequestDataSchema = z
+  .object({
+    custom_id: z.string().min(1).max(100),
+    title: z.string().min(1).max(45),
+    components: z
+      .array(
+        z.xor([
+          ActionRowComponentForModalRequestSchema,
+          LabelComponentForModalRequestSchema,
+          TextDisplayComponentForModalRequestSchema,
+        ]),
+      )
+      .min(1)
+      .max(40),
+  })
+  .openapi({ required: ['custom_id', 'title', 'components'] })
+  .openapi('ModalInteractionCallbackRequestData')
+
+type ModalInteractionCallbackRequestType = {
+  type: z.infer<typeof InteractionCallbackTypesSchema>
+  data: z.infer<typeof ModalInteractionCallbackRequestDataSchema>
+}
+
+type PinnedMessageResponseType = {
+  pinned_at: string
+  message: z.infer<typeof MessageResponseSchema>
+}
+
+const PinnedMessageResponseSchema: z.ZodType<PinnedMessageResponseType> = z
+  .object({ pinned_at: z.iso.datetime({ offset: true }), message: MessageResponseSchema })
+  .openapi({ required: ['pinned_at', 'message'] })
+  .openapi('PinnedMessageResponse')
+
+type PinnedMessagesResponseType = {
+  items: z.infer<typeof PinnedMessageResponseSchema>[]
+  has_more: boolean
+}
+
+type SDKMessageRequestType = {
+  content?: string | null
+  embeds?: z.infer<typeof RichEmbedSchema>[] | null
+  allowed_mentions?: null | z.infer<typeof MessageAllowedMentionsRequestSchema>
+  sticker_ids?: z.infer<typeof SnowflakeTypeSchema>[] | null
+  components?:
+    | (
+        | z.infer<typeof ActionRowComponentForMessageRequestSchema>
+        | z.infer<typeof ContainerComponentForMessageRequestSchema>
+        | z.infer<typeof FileComponentForMessageRequestSchema>
+        | z.infer<typeof MediaGalleryComponentForMessageRequestSchema>
+        | z.infer<typeof SectionComponentForMessageRequestSchema>
+        | z.infer<typeof SeparatorComponentForMessageRequestSchema>
+        | z.infer<typeof TextDisplayComponentForMessageRequestSchema>
+      )[]
+    | null
+  flags?: number | null
+  attachments?: z.infer<typeof MessageAttachmentRequestSchema>[] | null
+  poll?: null | z.infer<typeof PollCreateRequestSchema>
+  shared_client_theme?: null | z.infer<typeof CustomClientThemeShareRequestSchema>
+  message_reference?: null | z.infer<typeof MessageReferenceRequestSchema>
+  nonce?: bigint | string | null
+  enforce_nonce?: boolean | null
+  tts?: boolean | null
+}
+
+type ThreadSearchResponseType = {
+  threads: z.infer<typeof ThreadResponseSchema>[]
+  members: z.infer<typeof ThreadMemberResponseSchema>[]
+  has_more: boolean
+  first_messages?: z.infer<typeof MessageResponseSchema>[]
+  total_results: number
+}
+
+type ThreadsResponseType = {
+  threads: z.infer<typeof ThreadResponseSchema>[]
+  members: z.infer<typeof ThreadMemberResponseSchema>[]
+  has_more: boolean
+  first_messages?: z.infer<typeof MessageResponseSchema>[]
+}
+
+const IncomingWebhookUpdateForInteractionCallbackRequestPartialSchema: z.ZodType<IncomingWebhookUpdateForInteractionCallbackRequestPartialType> =
+  z
+    .object({
+      content: z.string().max(2000).nullable().exactOptional(),
+      embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
+      allowed_mentions: z
+        .xor([z.null().nullable(), MessageAllowedMentionsRequestSchema])
+        .exactOptional(),
+      components: z
+        .array(
+          z.xor([
+            ActionRowComponentForMessageRequestSchema,
+            ContainerComponentForMessageRequestSchema,
+            FileComponentForMessageRequestSchema,
+            MediaGalleryComponentForMessageRequestSchema,
+            SectionComponentForMessageRequestSchema,
+            SeparatorComponentForMessageRequestSchema,
+            TextDisplayComponentForMessageRequestSchema,
+          ]),
+        )
+        .max(40)
+        .nullable()
+        .exactOptional(),
+      attachments: z.array(MessageAttachmentRequestSchema).max(10).nullable().exactOptional(),
+      flags: z.int().nullable().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('IncomingWebhookUpdateForInteractionCallbackRequestPartial')
+
+type UpdateMessageInteractionCallbackRequestType = {
+  type: z.infer<typeof InteractionCallbackTypesSchema>
+  data?: null | z.infer<typeof IncomingWebhookUpdateForInteractionCallbackRequestPartialSchema>
+}
+
+const ErrorSchema = z
+  .object({
+    code: z.int().openapi({ description: 'Discord internal error code. See error code reference' }),
+    message: z.string().openapi({ description: 'Human-readable error message' }),
+  })
+  .openapi({
+    description: 'A single error, either for an API response or a specific field.',
+    required: ['code', 'message'],
+  })
+  .openapi('Error')
+
+const InnerErrorsSchema = z
+  .strictObject({
+    _errors: z.array(ErrorSchema).openapi({ description: 'The list of errors for this field' }),
+  })
+  .openapi({ required: ['_errors'] })
+  .openapi('InnerErrors')
+
+type ErrorDetailsType = { [key: string]: ErrorDetailsType } | z.infer<typeof InnerErrorsSchema>
 
 const ActionTypesSchema = z
   .xor([
@@ -2821,130 +6199,6 @@ const AfkTimeoutsSchema = z
   ])
   .openapi('AfkTimeouts')
 
-const AllowedMentionTypesSchema = z
-  .xor([
-    z.literal('users').openapi({ title: 'USERS', description: 'Controls role mentions' }),
-    z.literal('roles').openapi({ title: 'ROLES', description: 'Controls user mentions' }),
-    z
-      .literal('everyone')
-      .openapi({ title: 'EVERYONE', description: 'Controls @everyone and @here mentions' }),
-  ])
-  .openapi('AllowedMentionTypes')
-
-const ApplicationCommandOptionTypeSchema = z
-  .xor([
-    z
-      .literal(1)
-      .openapi({ title: 'SUB_COMMAND', description: 'A sub-action within a command or group' }),
-    z.literal(2).openapi({ title: 'SUB_COMMAND_GROUP', description: 'A group of subcommands' }),
-    z.literal(3).openapi({ title: 'STRING', description: 'A string option' }),
-    z
-      .literal(4)
-      .openapi({
-        title: 'INTEGER',
-        description: 'An integer option. Any integer between -2^53 and 2^53 is a valid value',
-      }),
-    z.literal(5).openapi({ title: 'BOOLEAN', description: 'A boolean option' }),
-    z
-      .literal(6)
-      .openapi({ title: 'USER', description: 'A snowflake option that represents a User' }),
-    z
-      .literal(7)
-      .openapi({
-        title: 'CHANNEL',
-        description:
-          'A snowflake option that represents a Channel. Includes all channel types and categories',
-      }),
-    z
-      .literal(8)
-      .openapi({ title: 'ROLE', description: 'A snowflake option that represents a Role' }),
-    z
-      .literal(9)
-      .openapi({
-        title: 'MENTIONABLE',
-        description: 'A snowflake option that represents anything you can mention',
-      }),
-    z
-      .literal(10)
-      .openapi({
-        title: 'NUMBER',
-        description: 'A number option. Any double between -2^53 and 2^53 is a valid value',
-      }),
-    z.literal(11).openapi({ title: 'ATTACHMENT', description: 'An attachment option' }),
-  ])
-  .openapi('ApplicationCommandOptionType')
-
-const ApplicationCommandAttachmentOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    file_types: z
-      .array(z.string().min(1).max(16))
-      .max(10)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandAttachmentOption')
-
-const ApplicationCommandAttachmentOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-    file_types: z
-      .array(z.string().max(16))
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandAttachmentOptionResponse')
-
-const ApplicationCommandOptionIntegerChoiceSchema = z
-  .object({
-    name: z.string().min(1).max(100),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    value: Int53TypeSchema,
-  })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('ApplicationCommandOptionIntegerChoice')
-
 const InteractionApplicationCommandAutocompleteCallbackIntegerDataSchema = z
   .object({
     choices: z
@@ -2956,19 +6210,6 @@ const InteractionApplicationCommandAutocompleteCallbackIntegerDataSchema = z
   .openapi({ required: [] })
   .openapi('InteractionApplicationCommandAutocompleteCallbackIntegerData')
 
-const ApplicationCommandOptionNumberChoiceSchema = z
-  .object({
-    name: z.string().min(1).max(100),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    value: z.float64(),
-  })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('ApplicationCommandOptionNumberChoice')
-
 const InteractionApplicationCommandAutocompleteCallbackNumberDataSchema = z
   .object({
     choices: z
@@ -2979,19 +6220,6 @@ const InteractionApplicationCommandAutocompleteCallbackNumberDataSchema = z
   })
   .openapi({ required: [] })
   .openapi('InteractionApplicationCommandAutocompleteCallbackNumberData')
-
-const ApplicationCommandOptionStringChoiceSchema = z
-  .object({
-    name: z.string().min(1).max(100),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    value: z.string().max(6000),
-  })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('ApplicationCommandOptionStringChoice')
 
 const InteractionApplicationCommandAutocompleteCallbackStringDataSchema = z
   .object({
@@ -3018,367 +6246,7 @@ const ApplicationCommandAutocompleteCallbackRequestSchema = z
   .openapi({ required: ['type', 'data'] })
   .openapi('ApplicationCommandAutocompleteCallbackRequest')
 
-const ApplicationCommandBooleanOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandBooleanOption')
-
-const ApplicationCommandBooleanOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandBooleanOptionResponse')
-
-const ApplicationCommandChannelOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    channel_types: z
-      .array(ChannelTypesSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandChannelOption')
-
-const ApplicationCommandChannelOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-    channel_types: z
-      .array(ChannelTypesSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandChannelOptionResponse')
-
-const ApplicationCommandIntegerOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    autocomplete: z.boolean().nullable().exactOptional(),
-    choices: z
-      .array(ApplicationCommandOptionIntegerChoiceSchema)
-      .max(25)
-      .nullable()
-      .exactOptional(),
-    min_value: z.xor([z.null().nullable(), Int53TypeSchema]).exactOptional(),
-    max_value: z.xor([z.null().nullable(), Int53TypeSchema]).exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandIntegerOption')
-
-const ApplicationCommandMentionableOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandMentionableOption')
-
-const ApplicationCommandNumberOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    autocomplete: z.boolean().nullable().exactOptional(),
-    choices: z.array(ApplicationCommandOptionNumberChoiceSchema).max(25).nullable().exactOptional(),
-    min_value: z.float64().nullable().exactOptional(),
-    max_value: z.float64().nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandNumberOption')
-
-const ApplicationCommandRoleOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandRoleOption')
-
-const ApplicationCommandStringOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    autocomplete: z.boolean().nullable().exactOptional(),
-    min_length: z.int().min(0).max(6000).nullable().exactOptional(),
-    max_length: z.int().min(1).max(6000).nullable().exactOptional(),
-    choices: z.array(ApplicationCommandOptionStringChoiceSchema).max(25).nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandStringOption')
-
-const ApplicationCommandUserOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandUserOption')
-
-const ApplicationCommandSubcommandOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    options: z
-      .array(
-        z.xor([
-          ApplicationCommandAttachmentOptionSchema,
-          ApplicationCommandBooleanOptionSchema,
-          ApplicationCommandChannelOptionSchema,
-          ApplicationCommandIntegerOptionSchema,
-          ApplicationCommandMentionableOptionSchema,
-          ApplicationCommandNumberOptionSchema,
-          ApplicationCommandRoleOptionSchema,
-          ApplicationCommandStringOptionSchema,
-          ApplicationCommandUserOptionSchema,
-        ]),
-      )
-      .max(25)
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandSubcommandOption')
-
-const ApplicationCommandSubcommandGroupOptionSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string().min(1).max(32),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().min(1).max(100),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    options: z.array(ApplicationCommandSubcommandOptionSchema).max(25).nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandSubcommandGroupOption')
-
-const InteractionContextTypeSchema = z
-  .xor([
-    z
-      .literal(0)
-      .openapi({ title: 'GUILD', description: 'This command can be used within a Guild.' }),
-    z
-      .literal(1)
-      .openapi({
-        title: 'BOT_DM',
-        description: "This command can be used within a DM with this application's bot.",
-      }),
-    z
-      .literal(2)
-      .openapi({
-        title: 'PRIVATE_CHANNEL',
-        description: 'This command can be used within DMs and Group DMs with users.',
-      }),
-  ])
-  .openapi('InteractionContextType')
-
-const ApplicationIntegrationTypeSchema = z
-  .xor([
-    z.literal(0).openapi({ title: 'GUILD_INSTALL', description: 'For Guild install.' }),
-    z.literal(1).openapi({ title: 'USER_INSTALL', description: 'For User install.' }),
-  ])
-  .openapi('ApplicationIntegrationType')
-
-const ApplicationCommandHandlerSchema = z
-  .xor([
-    z
-      .literal(1)
-      .openapi({
-        title: 'APP_HANDLER',
-        description: 'The app handles the interaction using an interaction token',
-      }),
-    z
-      .literal(2)
-      .openapi({
-        title: 'DISCORD_LAUNCH_ACTIVITY',
-        description:
-          'Discord handles the interaction by launching an Activity and sending a follow-up message without coordinating with the app',
-      }),
-  ])
-  .openapi('ApplicationCommandHandler')
-
-const ApplicationCommandTypeSchema = z
-  .xor([
-    z
-      .literal(1)
-      .openapi({
-        title: 'CHAT',
-        description: 'Slash commands; a text-based command that shows up when a user types /',
-      }),
-    z
-      .literal(2)
-      .openapi({
-        title: 'USER',
-        description: 'A UI-based command that shows up when you right click or tap on a user',
-      }),
-    z
-      .literal(3)
-      .openapi({
-        title: 'MESSAGE',
-        description: 'A UI-based command that shows up when you right click or tap on a message',
-      }),
-    z
-      .literal(4)
-      .openapi({
-        title: 'PRIMARY_ENTRY_POINT',
-        description:
-          'A command that represents the primary way to use an application (e.g. launching an Activity)',
-      }),
-  ])
-  .openapi('ApplicationCommandType')
-
-const ApplicationCommandCreateRequestSchema = z
+const ApplicationCommandCreateRequestSchema: z.ZodType<ApplicationCommandCreateRequestType> = z
   .object({
     name: z.string().min(1).max(32),
     name_localizations: z
@@ -3451,157 +6319,78 @@ const ApplicationCommandCreateRequestSchema = z
   .openapi({ required: ['name'] })
   .openapi('ApplicationCommandCreateRequest')
 
-const ApplicationCommandOptionIntegerChoiceResponseSchema = z
-  .object({
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    value: Int53TypeSchema,
-  })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('ApplicationCommandOptionIntegerChoiceResponse')
-
-const ApplicationCommandIntegerOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-    autocomplete: z.boolean().exactOptional(),
-    choices: z.array(ApplicationCommandOptionIntegerChoiceResponseSchema).exactOptional(),
-    min_value: Int53TypeSchema.exactOptional(),
-    max_value: Int53TypeSchema.exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandIntegerOptionResponse')
-
-const ApplicationCommandMentionableOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandMentionableOptionResponse')
-
-const ApplicationCommandOptionNumberChoiceResponseSchema = z
-  .object({
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    value: z.float64(),
-  })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('ApplicationCommandOptionNumberChoiceResponse')
-
-const ApplicationCommandNumberOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-    autocomplete: z.boolean().exactOptional(),
-    choices: z.array(ApplicationCommandOptionNumberChoiceResponseSchema).exactOptional(),
-    min_value: z.float64().exactOptional(),
-    max_value: z.float64().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandNumberOptionResponse')
-
-const ApplicationCommandOptionStringChoiceResponseSchema = z
-  .object({
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    value: z.string(),
-  })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('ApplicationCommandOptionStringChoiceResponse')
-
-const ApplicationCommandPatchRequestPartialSchema = z
-  .object({
-    name: z.string().min(1).max(32).exactOptional(),
-    name_localizations: z
-      .record(z.string(), z.string().min(1).max(32))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    description: z.string().max(100).nullable().exactOptional(),
-    description_localizations: z
-      .record(z.string(), z.string().min(1).max(100))
-      .refine((val) => Object.keys(val).length <= 34)
-      .nullable()
-      .exactOptional(),
-    options: z
-      .array(
-        z.xor([
-          ApplicationCommandAttachmentOptionSchema,
-          ApplicationCommandBooleanOptionSchema,
-          ApplicationCommandChannelOptionSchema,
-          ApplicationCommandIntegerOptionSchema,
-          ApplicationCommandMentionableOptionSchema,
-          ApplicationCommandNumberOptionSchema,
-          ApplicationCommandRoleOptionSchema,
-          ApplicationCommandStringOptionSchema,
-          ApplicationCommandSubcommandGroupOptionSchema,
-          ApplicationCommandSubcommandOptionSchema,
-          ApplicationCommandUserOptionSchema,
-        ]),
-      )
-      .max(25)
-      .nullable()
-      .exactOptional(),
-    default_member_permissions: z.int().min(0).max(18014398509481984).nullable().exactOptional(),
-    dm_permission: z.boolean().nullable().exactOptional(),
-    contexts: z
-      .array(InteractionContextTypeSchema)
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-    integration_types: z
-      .array(ApplicationIntegrationTypeSchema)
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-    handler: z
-      .xor([z.null().nullable(), ApplicationCommandHandlerSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          "Determines whether the interaction is handled by the app's interactions handler or by Discord",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApplicationCommandPatchRequestPartial')
+const ApplicationCommandPatchRequestPartialSchema: z.ZodType<ApplicationCommandPatchRequestPartialType> =
+  z
+    .object({
+      name: z.string().min(1).max(32).exactOptional(),
+      name_localizations: z
+        .record(z.string(), z.string().min(1).max(32))
+        .refine((val) => Object.keys(val).length <= 34)
+        .nullable()
+        .exactOptional(),
+      description: z.string().max(100).nullable().exactOptional(),
+      description_localizations: z
+        .record(z.string(), z.string().min(1).max(100))
+        .refine((val) => Object.keys(val).length <= 34)
+        .nullable()
+        .exactOptional(),
+      options: z
+        .array(
+          z.xor([
+            ApplicationCommandAttachmentOptionSchema,
+            ApplicationCommandBooleanOptionSchema,
+            ApplicationCommandChannelOptionSchema,
+            ApplicationCommandIntegerOptionSchema,
+            ApplicationCommandMentionableOptionSchema,
+            ApplicationCommandNumberOptionSchema,
+            ApplicationCommandRoleOptionSchema,
+            ApplicationCommandStringOptionSchema,
+            ApplicationCommandSubcommandGroupOptionSchema,
+            ApplicationCommandSubcommandOptionSchema,
+            ApplicationCommandUserOptionSchema,
+          ]),
+        )
+        .max(25)
+        .nullable()
+        .exactOptional(),
+      default_member_permissions: z.int().min(0).max(18014398509481984).nullable().exactOptional(),
+      dm_permission: z.boolean().nullable().exactOptional(),
+      contexts: z
+        .array(InteractionContextTypeSchema)
+        .min(1)
+        .superRefine((items, ctx) => {
+          const seen = new Map()
+          for (const [i, val] of items.entries()) {
+            const key = JSON.stringify(val)
+            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+            else seen.set(key, i)
+          }
+        })
+        .nullable()
+        .exactOptional(),
+      integration_types: z
+        .array(ApplicationIntegrationTypeSchema)
+        .min(1)
+        .superRefine((items, ctx) => {
+          const seen = new Map()
+          for (const [i, val] of items.entries()) {
+            const key = JSON.stringify(val)
+            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+            else seen.set(key, i)
+          }
+        })
+        .nullable()
+        .exactOptional(),
+      handler: z
+        .xor([z.null().nullable(), ApplicationCommandHandlerSchema])
+        .exactOptional()
+        .openapi({
+          description:
+            "Determines whether the interaction is handled by the app's interactions handler or by Discord",
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('ApplicationCommandPatchRequestPartial')
 
 const ApplicationCommandPermissionTypeSchema = z
   .xor([
@@ -3620,171 +6409,7 @@ const ApplicationCommandPermissionSchema = z
   .openapi({ required: ['id', 'type', 'permission'] })
   .openapi('ApplicationCommandPermission')
 
-const ApplicationCommandRoleOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandRoleOptionResponse')
-
-const ApplicationCommandStringOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-    autocomplete: z.boolean().exactOptional(),
-    choices: z.array(ApplicationCommandOptionStringChoiceResponseSchema).exactOptional(),
-    min_length: z.int32().exactOptional(),
-    max_length: z.int32().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandStringOptionResponse')
-
-const ApplicationCommandUserOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandUserOptionResponse')
-
-const ApplicationCommandSubcommandOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-    options: z
-      .array(
-        z.xor([
-          ApplicationCommandAttachmentOptionResponseSchema,
-          ApplicationCommandBooleanOptionResponseSchema,
-          ApplicationCommandChannelOptionResponseSchema,
-          ApplicationCommandIntegerOptionResponseSchema,
-          ApplicationCommandMentionableOptionResponseSchema,
-          ApplicationCommandNumberOptionResponseSchema,
-          ApplicationCommandRoleOptionResponseSchema,
-          ApplicationCommandStringOptionResponseSchema,
-          ApplicationCommandUserOptionResponseSchema,
-        ]),
-      )
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandSubcommandOptionResponse')
-
-const ApplicationCommandSubcommandGroupOptionResponseSchema = z
-  .object({
-    type: ApplicationCommandOptionTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    required: z.boolean().exactOptional(),
-    options: z.array(ApplicationCommandSubcommandOptionResponseSchema).exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'description'] })
-  .openapi('ApplicationCommandSubcommandGroupOptionResponse')
-
-const ApplicationCommandResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    application_id: SnowflakeTypeSchema,
-    version: SnowflakeTypeSchema,
-    default_member_permissions: z.string().nullable(),
-    type: ApplicationCommandTypeSchema,
-    name: z.string(),
-    name_localized: z.string().exactOptional(),
-    name_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    description: z.string(),
-    description_localized: z.string().exactOptional(),
-    description_localizations: z.record(z.string(), z.string()).nullable().exactOptional(),
-    guild_id: SnowflakeTypeSchema.exactOptional(),
-    dm_permission: z.boolean().exactOptional(),
-    contexts: z
-      .array(InteractionContextTypeSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-    integration_types: z
-      .array(ApplicationIntegrationTypeSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    options: z
-      .array(
-        z.xor([
-          ApplicationCommandAttachmentOptionResponseSchema,
-          ApplicationCommandBooleanOptionResponseSchema,
-          ApplicationCommandChannelOptionResponseSchema,
-          ApplicationCommandIntegerOptionResponseSchema,
-          ApplicationCommandMentionableOptionResponseSchema,
-          ApplicationCommandNumberOptionResponseSchema,
-          ApplicationCommandRoleOptionResponseSchema,
-          ApplicationCommandStringOptionResponseSchema,
-          ApplicationCommandSubcommandGroupOptionResponseSchema,
-          ApplicationCommandSubcommandOptionResponseSchema,
-          ApplicationCommandUserOptionResponseSchema,
-        ]),
-      )
-      .exactOptional(),
-    nsfw: z.boolean().exactOptional(),
-    handler: ApplicationCommandHandlerSchema.exactOptional().openapi({
-      description:
-        "Determines whether the interaction is handled by the app's interactions handler or by Discord",
-    }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'application_id',
-      'version',
-      'default_member_permissions',
-      'type',
-      'name',
-      'description',
-    ],
-  })
-  .openapi('ApplicationCommandResponse')
-
-const ApplicationCommandUpdateRequestSchema = z
+const ApplicationCommandUpdateRequestSchema: z.ZodType<ApplicationCommandUpdateRequestType> = z
   .object({
     name: z.string().min(1).max(32),
     name_localizations: z
@@ -4012,44 +6637,6 @@ const ApplicationIdentityProviderAuthTypeSchema = z
   ])
   .openapi('ApplicationIdentityProviderAuthType')
 
-const WebhookTypesSchema = z
-  .xor([
-    z
-      .literal(1)
-      .openapi({
-        title: 'GUILD_INCOMING',
-        description: 'Incoming Webhooks can post messages to channels with a generated token',
-      }),
-    z
-      .literal(2)
-      .openapi({
-        title: 'CHANNEL_FOLLOWER',
-        description:
-          'Channel Follower Webhooks are internal webhooks used with Channel Following to post new messages into channels',
-      }),
-    z
-      .literal(3)
-      .openapi({
-        title: 'APPLICATION_INCOMING',
-        description: 'Application webhooks are webhooks used with Interactions',
-      }),
-  ])
-  .openapi('WebhookTypes')
-
-const ApplicationIncomingWebhookResponseSchema = z
-  .object({
-    application_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
-    avatar: z.string().nullable(),
-    channel_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
-    guild_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
-    id: SnowflakeTypeSchema,
-    name: z.string(),
-    type: WebhookTypesSchema,
-    user: UserResponseSchema.exactOptional(),
-  })
-  .openapi({ required: ['application_id', 'avatar', 'channel_id', 'id', 'name', 'type'] })
-  .openapi('ApplicationIncomingWebhookResponse')
-
 const MetadataItemTypesSchema = z
   .xor([
     z
@@ -4152,124 +6739,6 @@ const ApplicationUserRoleConnectionResponseSchema = z
   .openapi({ required: [] })
   .openapi('ApplicationUserRoleConnectionResponse')
 
-const AuditLogActionTypesSchema = z
-  .xor([
-    z.literal(1).openapi({ title: 'GUILD_UPDATE' }),
-    z.literal(10).openapi({ title: 'CHANNEL_CREATE' }),
-    z.literal(11).openapi({ title: 'CHANNEL_UPDATE' }),
-    z.literal(12).openapi({ title: 'CHANNEL_DELETE' }),
-    z.literal(13).openapi({ title: 'CHANNEL_OVERWRITE_CREATE' }),
-    z.literal(14).openapi({ title: 'CHANNEL_OVERWRITE_UPDATE' }),
-    z.literal(15).openapi({ title: 'CHANNEL_OVERWRITE_DELETE' }),
-    z.literal(20).openapi({ title: 'MEMBER_KICK' }),
-    z.literal(21).openapi({ title: 'MEMBER_PRUNE' }),
-    z.literal(22).openapi({ title: 'MEMBER_BAN_ADD' }),
-    z.literal(23).openapi({ title: 'MEMBER_BAN_REMOVE' }),
-    z.literal(24).openapi({ title: 'MEMBER_UPDATE' }),
-    z.literal(25).openapi({ title: 'MEMBER_ROLE_UPDATE' }),
-    z.literal(26).openapi({ title: 'MEMBER_MOVE' }),
-    z.literal(27).openapi({ title: 'MEMBER_DISCONNECT' }),
-    z.literal(28).openapi({ title: 'BOT_ADD' }),
-    z.literal(30).openapi({ title: 'ROLE_CREATE' }),
-    z.literal(31).openapi({ title: 'ROLE_UPDATE' }),
-    z.literal(32).openapi({ title: 'ROLE_DELETE' }),
-    z.literal(40).openapi({ title: 'INVITE_CREATE' }),
-    z.literal(41).openapi({ title: 'INVITE_UPDATE' }),
-    z.literal(42).openapi({ title: 'INVITE_DELETE' }),
-    z.literal(50).openapi({ title: 'WEBHOOK_CREATE' }),
-    z.literal(51).openapi({ title: 'WEBHOOK_UPDATE' }),
-    z.literal(52).openapi({ title: 'WEBHOOK_DELETE' }),
-    z.literal(60).openapi({ title: 'EMOJI_CREATE' }),
-    z.literal(61).openapi({ title: 'EMOJI_UPDATE' }),
-    z.literal(62).openapi({ title: 'EMOJI_DELETE' }),
-    z.literal(72).openapi({ title: 'MESSAGE_DELETE' }),
-    z.literal(73).openapi({ title: 'MESSAGE_BULK_DELETE' }),
-    z.literal(74).openapi({ title: 'MESSAGE_PIN' }),
-    z.literal(75).openapi({ title: 'MESSAGE_UNPIN' }),
-    z.literal(80).openapi({ title: 'INTEGRATION_CREATE' }),
-    z.literal(81).openapi({ title: 'INTEGRATION_UPDATE' }),
-    z.literal(82).openapi({ title: 'INTEGRATION_DELETE' }),
-    z.literal(83).openapi({ title: 'STAGE_INSTANCE_CREATE' }),
-    z.literal(84).openapi({ title: 'STAGE_INSTANCE_UPDATE' }),
-    z.literal(85).openapi({ title: 'STAGE_INSTANCE_DELETE' }),
-    z.literal(90).openapi({ title: 'STICKER_CREATE' }),
-    z.literal(91).openapi({ title: 'STICKER_UPDATE' }),
-    z.literal(92).openapi({ title: 'STICKER_DELETE' }),
-    z.literal(100).openapi({ title: 'GUILD_SCHEDULED_EVENT_CREATE' }),
-    z.literal(101).openapi({ title: 'GUILD_SCHEDULED_EVENT_UPDATE' }),
-    z.literal(102).openapi({ title: 'GUILD_SCHEDULED_EVENT_DELETE' }),
-    z.literal(110).openapi({ title: 'THREAD_CREATE' }),
-    z.literal(111).openapi({ title: 'THREAD_UPDATE' }),
-    z.literal(112).openapi({ title: 'THREAD_DELETE' }),
-    z.literal(121).openapi({ title: 'APPLICATION_COMMAND_PERMISSION_UPDATE' }),
-    z.literal(130).openapi({ title: 'SOUNDBOARD_SOUND_CREATE' }),
-    z.literal(131).openapi({ title: 'SOUNDBOARD_SOUND_UPDATE' }),
-    z.literal(132).openapi({ title: 'SOUNDBOARD_SOUND_DELETE' }),
-    z.literal(140).openapi({ title: 'AUTO_MODERATION_RULE_CREATE' }),
-    z.literal(141).openapi({ title: 'AUTO_MODERATION_RULE_UPDATE' }),
-    z.literal(142).openapi({ title: 'AUTO_MODERATION_RULE_DELETE' }),
-    z.literal(143).openapi({ title: 'AUTO_MODERATION_BLOCK_MESSAGE' }),
-    z.literal(144).openapi({ title: 'AUTO_MODERATION_FLAG_TO_CHANNEL' }),
-    z.literal(145).openapi({ title: 'AUTO_MODERATION_USER_COMM_DISABLED' }),
-    z.literal(146).openapi({ title: 'AUTO_MODERATION_QUARANTINE_USER' }),
-    z.literal(150).openapi({ title: 'CREATOR_MONETIZATION_REQUEST_CREATED' }),
-    z.literal(151).openapi({ title: 'CREATOR_MONETIZATION_TERMS_ACCEPTED' }),
-    z.literal(163).openapi({ title: 'ONBOARDING_PROMPT_CREATE' }),
-    z.literal(164).openapi({ title: 'ONBOARDING_PROMPT_UPDATE' }),
-    z.literal(165).openapi({ title: 'ONBOARDING_PROMPT_DELETE' }),
-    z.literal(166).openapi({ title: 'ONBOARDING_CREATE' }),
-    z.literal(167).openapi({ title: 'ONBOARDING_UPDATE' }),
-    z.literal(171).openapi({ title: 'GUILD_HOME_FEATURE_ITEM' }),
-    z.literal(172).openapi({ title: 'GUILD_HOME_REMOVE_ITEM' }),
-    z.literal(180).openapi({ title: 'HARMFUL_LINKS_BLOCKED_MESSAGE' }),
-    z.literal(190).openapi({ title: 'HOME_SETTINGS_CREATE' }),
-    z.literal(191).openapi({ title: 'HOME_SETTINGS_UPDATE' }),
-    z.literal(192).openapi({ title: 'VOICE_CHANNEL_STATUS_CREATE' }),
-    z.literal(193).openapi({ title: 'VOICE_CHANNEL_STATUS_DELETE' }),
-    z
-      .literal(200)
-      .openapi({
-        title: 'GUILD_SCHEDULED_EVENT_EXCEPTION_CREATE',
-        description: 'Scheduled event exception was created',
-      }),
-    z
-      .literal(201)
-      .openapi({
-        title: 'GUILD_SCHEDULED_EVENT_EXCEPTION_UPDATE',
-        description: 'Scheduled event exception was updated',
-      }),
-    z
-      .literal(202)
-      .openapi({
-        title: 'GUILD_SCHEDULED_EVENT_EXCEPTION_DELETE',
-        description: 'Scheduled event exception was deleted',
-      }),
-    z.literal(211).openapi({ title: 'GUILD_PROFILE_UPDATE' }),
-  ])
-  .openapi('AuditLogActionTypes')
-
-const AuditLogObjectChangeResponseSchema = z
-  .object({
-    key: z.string().nullable(),
-    new_value: z.any().exactOptional(),
-    old_value: z.any().exactOptional(),
-  })
-  .openapi({ required: ['key'] })
-  .openapi('AuditLogObjectChangeResponse')
-
-const AuditLogEntryResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    action_type: AuditLogActionTypesSchema,
-    user_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
-    target_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
-    changes: z.array(AuditLogObjectChangeResponseSchema).exactOptional(),
-    options: z.record(z.string(), z.string()).exactOptional(),
-    reason: z.string().exactOptional(),
-  })
-  .openapi({ required: ['id', 'action_type', 'user_id', 'target_id'] })
-  .openapi('AuditLogEntryResponse')
-
 const AuthorTypeSchema = z
   .xor([
     z.literal('user').openapi({ title: 'USER' }),
@@ -4280,108 +6749,6 @@ const AuthorTypeSchema = z
     z.literal('-webhook').openapi({ title: 'NO_WEBHOOK' }),
   ])
   .openapi('AuthorType')
-
-const AutomodActionTypeSchema = z
-  .xor([
-    z
-      .literal(1)
-      .openapi({
-        title: 'BLOCK_MESSAGE',
-        description:
-          "Block a user's message and prevent it from being posted. A custom explanation can be specified and shown to members whenever their message is blocked",
-      }),
-    z
-      .literal(2)
-      .openapi({
-        title: 'FLAG_TO_CHANNEL',
-        description:
-          'Send a system message to a channel in order to log the user message that triggered the rule',
-      }),
-    z
-      .literal(3)
-      .openapi({
-        title: 'USER_COMMUNICATION_DISABLED',
-        description: "Temporarily disable a user's ability to communicate in the server (timeout)",
-      }),
-    z
-      .literal(4)
-      .openapi({
-        title: 'QUARANTINE_USER',
-        description: 'Prevent a user from interacting in the server',
-      }),
-  ])
-  .openapi('AutomodActionType')
-
-const AutomodEventTypeSchema = z
-  .xor([
-    z
-      .literal(1)
-      .openapi({ title: 'MESSAGE_SEND', description: 'A user submitted a message to a channel' }),
-    z
-      .literal(2)
-      .openapi({
-        title: 'GUILD_MEMBER_JOIN_OR_UPDATE',
-        description:
-          "A user is attempting to join the server or a member's properties were updated.",
-      }),
-  ])
-  .openapi('AutomodEventType')
-
-const AutomodKeywordPresetTypeSchema = z
-  .xor([
-    z
-      .literal(1)
-      .openapi({
-        title: 'PROFANITY',
-        description: 'Words and phrases that may be considered profanity',
-      }),
-    z
-      .literal(2)
-      .openapi({
-        title: 'SEXUAL_CONTENT',
-        description: 'Words and phrases that may be considered as sexual content',
-      }),
-    z
-      .literal(3)
-      .openapi({
-        title: 'SLURS',
-        description: 'Words and phrases that may be considered slurs and hate speech',
-      }),
-  ])
-  .openapi('AutomodKeywordPresetType')
-
-const AutomodTriggerTypeSchema = z
-  .xor([
-    z
-      .literal(1)
-      .openapi({
-        title: 'KEYWORD',
-        description: 'Check if content contains words from a list of keywords or matches regex',
-      }),
-    z
-      .literal(3)
-      .openapi({ title: 'ML_SPAM', description: 'Check if content represents generic spam' }),
-    z
-      .literal(4)
-      .openapi({
-        title: 'DEFAULT_KEYWORD_LIST',
-        description: 'Check if content contains words from internal pre-defined wordsets',
-      }),
-    z
-      .literal(5)
-      .openapi({
-        title: 'MENTION_SPAM',
-        description: 'Check if content contains more unique mentions than allowed',
-      }),
-    z
-      .literal(6)
-      .openapi({
-        title: 'USER_PROFILE',
-        description:
-          'Check if user profile fields contains words from a list of keywords or matches regex',
-      }),
-  ])
-  .openapi('AutomodTriggerType')
 
 const AvailableLocalesEnumSchema = z
   .xor([
@@ -4430,432 +6797,6 @@ const BanUserFromGuildRequestSchema = z
   .openapi({ required: [] })
   .openapi('BanUserFromGuildRequest')
 
-const RichEmbedAuthorSchema = z
-  .object({
-    name: z.string().max(256).nullable().exactOptional(),
-    url: z.url().max(2048).nullable().exactOptional(),
-    icon_url: z.url().max(2048).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RichEmbedAuthor')
-
-const RichEmbedImageSchema = z
-  .object({
-    url: z.url().max(2048).nullable().exactOptional(),
-    width: z.int().nullable().exactOptional(),
-    height: z.int().nullable().exactOptional(),
-    placeholder: z.string().max(64).nullable().exactOptional(),
-    placeholder_version: z.int().min(0).max(2147483647).nullable().exactOptional(),
-    is_animated: z.boolean().nullable().exactOptional(),
-    description: z.string().max(4096).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RichEmbedImage')
-
-const RichEmbedThumbnailSchema = z
-  .object({
-    url: z.url().max(2048).nullable().exactOptional(),
-    width: z.int().nullable().exactOptional(),
-    height: z.int().nullable().exactOptional(),
-    placeholder: z.string().max(64).nullable().exactOptional(),
-    placeholder_version: z.int().min(0).max(2147483647).nullable().exactOptional(),
-    is_animated: z.boolean().nullable().exactOptional(),
-    description: z.string().max(4096).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RichEmbedThumbnail')
-
-const RichEmbedFooterSchema = z
-  .object({
-    text: z.string().max(2048).nullable().exactOptional(),
-    icon_url: z.url().max(2048).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RichEmbedFooter')
-
-const RichEmbedFieldSchema = z
-  .object({
-    name: z.string().max(256),
-    value: z.string().max(1024),
-    inline: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['name', 'value'] })
-  .openapi('RichEmbedField')
-
-const RichEmbedProviderSchema = z
-  .object({
-    name: z.string().max(256).nullable().exactOptional(),
-    url: z.url().max(2048).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RichEmbedProvider')
-
-const RichEmbedVideoSchema = z
-  .object({
-    url: z.url().max(2048).nullable().exactOptional(),
-    width: z.int().nullable().exactOptional(),
-    height: z.int().nullable().exactOptional(),
-    placeholder: z.string().max(64).nullable().exactOptional(),
-    placeholder_version: z.int().min(0).max(2147483647).nullable().exactOptional(),
-    is_animated: z.boolean().nullable().exactOptional(),
-    description: z.string().max(4096).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RichEmbedVideo')
-
-const RichEmbedAudioSchema = z
-  .object({
-    url: z.url().max(2048).nullable().exactOptional(),
-    description: z.string().max(4096).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RichEmbedAudio')
-
-const RichEmbedSchema = z
-  .object({
-    type: z.string().max(152133).nullable().exactOptional(),
-    url: z.url().max(2048).nullable().exactOptional(),
-    title: z.string().max(256).nullable().exactOptional(),
-    color: z.int().min(0).max(16777215).nullable().exactOptional(),
-    timestamp: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    description: z.string().max(4096).nullable().exactOptional(),
-    author: z.xor([z.null().nullable(), RichEmbedAuthorSchema]).exactOptional(),
-    image: z.xor([z.null().nullable(), RichEmbedImageSchema]).exactOptional(),
-    thumbnail: z.xor([z.null().nullable(), RichEmbedThumbnailSchema]).exactOptional(),
-    footer: z.xor([z.null().nullable(), RichEmbedFooterSchema]).exactOptional(),
-    fields: z.array(RichEmbedFieldSchema).max(25).nullable().exactOptional(),
-    provider: z.xor([z.null().nullable(), RichEmbedProviderSchema]).exactOptional(),
-    video: z.xor([z.null().nullable(), RichEmbedVideoSchema]).exactOptional(),
-    audio: z.xor([z.null().nullable(), RichEmbedAudioSchema]).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RichEmbed')
-
-const MessageAllowedMentionsRequestSchema = z
-  .object({
-    parse: z
-      .array(z.xor([z.null().nullable(), AllowedMentionTypesSchema]))
-      .max(1521)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-    users: z
-      .array(z.xor([z.null().nullable(), SnowflakeTypeSchema]))
-      .max(100)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-    roles: z
-      .array(z.xor([z.null().nullable(), SnowflakeTypeSchema]))
-      .max(100)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-    replied_user: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MessageAllowedMentionsRequest')
-
-const UnfurledMediaRequestWithAttachmentReferenceRequiredSchema = z
-  .object({ url: z.url().max(2048) })
-  .openapi({ required: ['url'] })
-  .openapi('UnfurledMediaRequestWithAttachmentReferenceRequired')
-
-const FileComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    spoiler: z.boolean().nullable().exactOptional(),
-    file: UnfurledMediaRequestWithAttachmentReferenceRequiredSchema,
-  })
-  .openapi({ required: ['type', 'file'] })
-  .openapi('FileComponentForMessageRequest')
-
-const UnfurledMediaRequestSchema = z
-  .object({ url: z.url().max(2048) })
-  .openapi({ required: ['url'] })
-  .openapi('UnfurledMediaRequest')
-
-const MediaGalleryItemForMessageRequestSchema = z
-  .object({
-    description: z.string().min(1).max(1024).nullable().exactOptional(),
-    spoiler: z.boolean().nullable().exactOptional(),
-    media: UnfurledMediaRequestSchema,
-  })
-  .openapi({ required: ['media'] })
-  .openapi('MediaGalleryItemForMessageRequest')
-
-const MediaGalleryComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    items: z.array(MediaGalleryItemForMessageRequestSchema).min(1).max(10),
-  })
-  .openapi({ required: ['type', 'items'] })
-  .openapi('MediaGalleryComponentForMessageRequest')
-
-const TextDisplayComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    content: z.string().min(1).max(4000),
-  })
-  .openapi({ required: ['type', 'content'] })
-  .openapi('TextDisplayComponentForMessageRequest')
-
-const ThumbnailComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    description: z.string().min(1).max(1024).nullable().exactOptional(),
-    spoiler: z.boolean().nullable().exactOptional(),
-    media: UnfurledMediaRequestSchema,
-  })
-  .openapi({ required: ['type', 'media'] })
-  .openapi('ThumbnailComponentForMessageRequest')
-
-const SectionComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    components: z.array(TextDisplayComponentForMessageRequestSchema).min(1).max(3),
-    accessory: z.xor([
-      ButtonComponentForMessageRequestSchema,
-      ThumbnailComponentForMessageRequestSchema,
-    ]),
-  })
-  .openapi({ required: ['type', 'components', 'accessory'] })
-  .openapi('SectionComponentForMessageRequest')
-
-const SeparatorComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    spacing: z
-      .xor([z.null().nullable(), MessageComponentSeparatorSpacingSizeSchema])
-      .exactOptional(),
-    divider: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('SeparatorComponentForMessageRequest')
-
-const ContainerComponentForMessageRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    accent_color: z.int().min(0).max(16777215).nullable().exactOptional(),
-    components: z
-      .array(
-        z.xor([
-          ActionRowComponentForMessageRequestSchema,
-          FileComponentForMessageRequestSchema,
-          MediaGalleryComponentForMessageRequestSchema,
-          SectionComponentForMessageRequestSchema,
-          SeparatorComponentForMessageRequestSchema,
-          TextDisplayComponentForMessageRequestSchema,
-        ]),
-      )
-      .min(1)
-      .max(40),
-    spoiler: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'components'] })
-  .openapi('ContainerComponentForMessageRequest')
-
-const MessageAttachmentRequestSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    filename: z.string().min(1).max(1024).nullable().exactOptional(),
-    description: z.string().max(1024).nullable().exactOptional(),
-    duration_secs: z.float64().min(0).max(2147483647).nullable().exactOptional(),
-    waveform: z.string().max(400).nullable().exactOptional(),
-    title: z.string().max(1024).nullable().exactOptional(),
-    is_spoiler: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['id'] })
-  .openapi('MessageAttachmentRequest')
-
-const PollEmojiSchema = z
-  .object({
-    id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .exactOptional()
-      .openapi({ description: 'The ID of the custom emoji' }),
-    name: z
-      .string()
-      .max(32)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The name of the emoji, or the unicode emoji character' }),
-    animated: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether the emoji is animated' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PollEmoji')
-
-const PollMediaSchema = z
-  .object({
-    text: z
-      .string()
-      .min(1)
-      .max(300)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The text of the field' }),
-    emoji: z
-      .xor([z.null().nullable(), PollEmojiSchema])
-      .exactOptional()
-      .openapi({ description: 'The emoji of the field' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PollMedia')
-
-const PollEmojiCreateRequestSchema = z
-  .object({
-    id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .exactOptional()
-      .openapi({ description: 'The ID of the custom emoji' }),
-    name: z
-      .string()
-      .max(32)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The name of the emoji, or the unicode emoji character' }),
-    animated: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether the emoji is animated' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PollEmojiCreateRequest')
-
-const PollMediaCreateRequestSchema = z
-  .object({
-    text: z
-      .string()
-      .min(1)
-      .max(300)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The text of the field' }),
-    emoji: z
-      .xor([z.null().nullable(), PollEmojiCreateRequestSchema])
-      .exactOptional()
-      .openapi({ description: 'The emoji of the field' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PollMediaCreateRequest')
-
-const PollAnswerCreateRequestSchema = z
-  .object({
-    poll_media: PollMediaCreateRequestSchema.openapi({ description: 'The data of the answer' }),
-  })
-  .openapi({ required: ['poll_media'] })
-  .openapi('PollAnswerCreateRequest')
-
-const PollCreateRequestSchema = z
-  .object({
-    question: PollMediaSchema.openapi({
-      description: 'The question of the poll. Only `text` is supported.',
-    }),
-    answers: z
-      .array(PollAnswerCreateRequestSchema)
-      .min(1)
-      .max(10)
-      .openapi({ description: 'Each of the answers available in the poll, up to 10' }),
-    allow_multiselect: z
-      .boolean()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Whether a user can select multiple answers' }),
-    layout_type: z
-      .xor([z.null().nullable(), PollLayoutTypesSchema])
-      .exactOptional()
-      .openapi({ description: 'The layout type of the poll. Defaults to... DEFAULT!' }),
-    duration: z
-      .int32()
-      .min(1)
-      .max(768)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Number of hours the poll should be open for, up to 32 days. Defaults to 24',
-      }),
-  })
-  .openapi({ required: ['question', 'answers'] })
-  .openapi('PollCreateRequest')
-
-const CustomClientThemeShareRequestSchema = z
-  .object({
-    colors: z.array(z.string().length(6)).min(1).max(5),
-    gradient_angle: z.int32().min(0).max(360),
-    base_mix: z.int32().min(0).max(100),
-    base_theme: z
-      .xor([z.null().nullable(), MessageShareCustomUserThemeBaseThemeSchema])
-      .exactOptional(),
-  })
-  .openapi({ required: ['colors', 'gradient_angle', 'base_mix'] })
-  .openapi('CustomClientThemeShareRequest')
-
-const BaseCreateMessageCreateRequestSchema = z
-  .object({
-    content: z.string().max(4000).nullable().exactOptional(),
-    embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
-    allowed_mentions: z
-      .xor([z.null().nullable(), MessageAllowedMentionsRequestSchema])
-      .exactOptional(),
-    sticker_ids: z.array(SnowflakeTypeSchema).max(3).nullable().exactOptional(),
-    components: z
-      .array(
-        z.xor([
-          ActionRowComponentForMessageRequestSchema,
-          ContainerComponentForMessageRequestSchema,
-          FileComponentForMessageRequestSchema,
-          MediaGalleryComponentForMessageRequestSchema,
-          SectionComponentForMessageRequestSchema,
-          SeparatorComponentForMessageRequestSchema,
-          TextDisplayComponentForMessageRequestSchema,
-        ]),
-      )
-      .max(40)
-      .nullable()
-      .exactOptional(),
-    flags: z.int().nullable().exactOptional(),
-    attachments: z.array(MessageAttachmentRequestSchema).max(10).nullable().exactOptional(),
-    poll: z.xor([z.null().nullable(), PollCreateRequestSchema]).exactOptional(),
-    shared_client_theme: z
-      .xor([z.null().nullable(), CustomClientThemeShareRequestSchema])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BaseCreateMessageCreateRequest')
-
 const BlockMessageActionMetadataSchema = z
   .object({ custom_message: z.string().max(300).nullable().exactOptional() })
   .openapi({ required: [] })
@@ -4868,16 +6809,6 @@ const BlockMessageActionSchema = z
   })
   .openapi({ required: ['type'] })
   .openapi('BlockMessageAction')
-
-const BlockMessageActionMetadataResponseSchema = z
-  .object({ custom_message: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('BlockMessageActionMetadataResponse')
-
-const BlockMessageActionResponseSchema = z
-  .object({ type: AutomodActionTypeSchema, metadata: BlockMessageActionMetadataResponseSchema })
-  .openapi({ required: ['type', 'metadata'] })
-  .openapi('BlockMessageActionResponse')
 
 const BotAccountPatchRequestSchema = z
   .object({
@@ -4965,18 +6896,6 @@ const BulkLobbyMemberRequestSchema = z
   .openapi({ required: ['id'] })
   .openapi('BulkLobbyMemberRequest')
 
-const RecurrenceRuleWeekdaysSchema = z
-  .xor([
-    z.literal(0).openapi({ title: 'MONDAY' }),
-    z.literal(1).openapi({ title: 'TUESDAY' }),
-    z.literal(2).openapi({ title: 'WEDNESDAY' }),
-    z.literal(3).openapi({ title: 'THURSDAY' }),
-    z.literal(4).openapi({ title: 'FRIDAY' }),
-    z.literal(5).openapi({ title: 'SATURDAY' }),
-    z.literal(6).openapi({ title: 'SUNDAY' }),
-  ])
-  .openapi('RecurrenceRuleWeekdays')
-
 const ByNWeekdaySchema = z
   .object({
     n: z
@@ -4991,48 +6910,10 @@ const ByNWeekdaySchema = z
   .openapi({ required: ['n', 'day'] })
   .openapi('ByNWeekday')
 
-const ByNWeekdayResponseSchema = z
-  .object({
-    n: z
-      .int32()
-      .openapi({ description: 'The week to reoccur on (1-5, where 5 represents the last week)' }),
-    day: RecurrenceRuleWeekdaysSchema.openapi({
-      description: 'The day within the week to reoccur on',
-    }),
-  })
-  .openapi({ required: ['n', 'day'] })
-  .openapi('ByNWeekdayResponse')
-
 const ChannelFollowerResponseSchema = z
   .object({ channel_id: SnowflakeTypeSchema, webhook_id: SnowflakeTypeSchema })
   .openapi({ required: ['channel_id', 'webhook_id'] })
   .openapi('ChannelFollowerResponse')
-
-const WebhookSourceGuildResponseSchema = z
-  .object({ id: SnowflakeTypeSchema, icon: z.string().nullable(), name: z.string() })
-  .openapi({ required: ['id', 'icon', 'name'] })
-  .openapi('WebhookSourceGuildResponse')
-
-const WebhookSourceChannelResponseSchema = z
-  .object({ id: SnowflakeTypeSchema, name: z.string() })
-  .openapi({ required: ['id', 'name'] })
-  .openapi('WebhookSourceChannelResponse')
-
-const ChannelFollowerWebhookResponseSchema = z
-  .object({
-    application_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
-    avatar: z.string().nullable(),
-    channel_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
-    guild_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
-    id: SnowflakeTypeSchema,
-    name: z.string(),
-    type: WebhookTypesSchema,
-    user: UserResponseSchema.exactOptional(),
-    source_guild: WebhookSourceGuildResponseSchema.exactOptional(),
-    source_channel: WebhookSourceChannelResponseSchema.exactOptional(),
-  })
-  .openapi({ required: ['application_id', 'avatar', 'channel_id', 'id', 'name', 'type'] })
-  .openapi('ChannelFollowerWebhookResponse')
 
 const ChannelPermissionOverwriteRequestSchema = z
   .object({
@@ -5043,66 +6924,6 @@ const ChannelPermissionOverwriteRequestSchema = z
   })
   .openapi({ required: ['id'] })
   .openapi('ChannelPermissionOverwriteRequest')
-
-const ChannelSelectComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    default_values: z.array(ChannelSelectDefaultValueSchema).max(25).nullable().exactOptional(),
-    channel_types: z
-      .array(ChannelTypesSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('ChannelSelectComponentForModalRequest')
-
-const CheckboxComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    default: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('CheckboxComponentForModalRequest')
-
-const CheckboxGroupOptionForRequestSchema = z
-  .object({
-    label: z.string().min(1).max(100),
-    value: z.string().min(1).max(100),
-    description: z.string().max(100).nullable().exactOptional(),
-    default: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['label', 'value'] })
-  .openapi('CheckboxGroupOptionForRequest')
-
-const CheckboxGroupComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    min_values: z.int().min(0).max(10).nullable().exactOptional(),
-    max_values: z.int().min(1).max(10).nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    options: z.array(CheckboxGroupOptionForRequestSchema).min(1).max(10),
-  })
-  .openapi({ required: ['type', 'custom_id', 'options'] })
-  .openapi('CheckboxGroupComponentForModalRequest')
 
 const CommandPermissionResponseSchema = z
   .object({
@@ -5127,15 +6948,6 @@ const ConnectedAccountGuildResponseSchema = z
   .object({ id: SnowflakeTypeSchema, name: z.string(), icon: z.string().nullable() })
   .openapi({ required: ['id', 'name', 'icon'] })
   .openapi('ConnectedAccountGuildResponse')
-
-const IntegrationTypesSchema = z
-  .xor([
-    z.literal('discord').openapi({ title: 'DISCORD' }),
-    z.literal('twitch').openapi({ title: 'TWITCH' }),
-    z.literal('youtube').openapi({ title: 'YOUTUBE' }),
-    z.literal('guild_subscription').openapi({ title: 'GUILD_SUBSCRIPTION' }),
-  ])
-  .openapi('IntegrationTypes')
 
 const ConnectedAccountIntegrationResponseSchema = z
   .object({
@@ -5230,7 +7042,7 @@ const CreateEntitlementRequestDataSchema = z
   .openapi({ required: ['sku_id', 'owner_id', 'owner_type'] })
   .openapi('CreateEntitlementRequestData')
 
-const CreateForumThreadRequestSchema = z
+const CreateForumThreadRequestSchema: z.ZodType<CreateForumThreadRequestType> = z
   .object({
     name: z.string().min(1).max(100),
     auto_archive_duration: z
@@ -5359,43 +7171,14 @@ const CreateGuildInviteRequestSchema = z
   .openapi({ required: [] })
   .openapi('CreateGuildInviteRequest')
 
-const IncomingWebhookInteractionRequestSchema = z
-  .object({
-    content: z.string().max(2000).nullable().exactOptional(),
-    embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
-    allowed_mentions: z
-      .xor([z.null().nullable(), MessageAllowedMentionsRequestSchema])
-      .exactOptional(),
-    components: z
-      .array(
-        z.xor([
-          ActionRowComponentForMessageRequestSchema,
-          ContainerComponentForMessageRequestSchema,
-          FileComponentForMessageRequestSchema,
-          MediaGalleryComponentForMessageRequestSchema,
-          SectionComponentForMessageRequestSchema,
-          SeparatorComponentForMessageRequestSchema,
-          TextDisplayComponentForMessageRequestSchema,
-        ]),
-      )
-      .max(40)
-      .nullable()
-      .exactOptional(),
-    attachments: z.array(MessageAttachmentRequestSchema).max(10).nullable().exactOptional(),
-    poll: z.xor([z.null().nullable(), PollCreateRequestSchema]).exactOptional(),
-    tts: z.boolean().nullable().exactOptional(),
-    flags: z.int().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IncomingWebhookInteractionRequest')
-
-const CreateMessageInteractionCallbackRequestSchema = z
-  .object({
-    type: InteractionCallbackTypesSchema,
-    data: z.xor([z.null().nullable(), IncomingWebhookInteractionRequestSchema]).exactOptional(),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('CreateMessageInteractionCallbackRequest')
+const CreateMessageInteractionCallbackRequestSchema: z.ZodType<CreateMessageInteractionCallbackRequestType> =
+  z
+    .object({
+      type: InteractionCallbackTypesSchema,
+      data: z.xor([z.null().nullable(), IncomingWebhookInteractionRequestSchema]).exactOptional(),
+    })
+    .openapi({ required: ['type'] })
+    .openapi('CreateMessageInteractionCallbackRequest')
 
 const CreatePrivateChannelRequestSchema = z
   .object({
@@ -5534,21 +7317,6 @@ const DefaultKeywordListTriggerMetadataSchema = z
   .openapi({ required: [] })
   .openapi('DefaultKeywordListTriggerMetadata')
 
-const DefaultKeywordListTriggerMetadataResponseSchema = z
-  .object({
-    allow_list: z.array(z.string()),
-    presets: z.array(AutomodKeywordPresetTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-  })
-  .openapi({ required: ['allow_list', 'presets'] })
-  .openapi('DefaultKeywordListTriggerMetadataResponse')
-
 const FlagToChannelActionMetadataSchema = z
   .object({ channel_id: SnowflakeTypeSchema })
   .openapi({ required: ['channel_id'] })
@@ -5559,7 +7327,7 @@ const FlagToChannelActionSchema = z
   .openapi({ required: ['type', 'metadata'] })
   .openapi('FlagToChannelAction')
 
-const QuarantineUserActionMetadataSchema = z.object({}).openapi('QuarantineUserActionMetadata')
+const QuarantineUserActionMetadataSchema = z.looseObject({}).openapi('QuarantineUserActionMetadata')
 
 const QuarantineUserActionSchema = z
   .object({
@@ -5681,90 +7449,6 @@ const DefaultKeywordListUpsertRequestPartialSchema = z
   })
   .openapi({ required: [] })
   .openapi('DefaultKeywordListUpsertRequestPartial')
-
-const FlagToChannelActionMetadataResponseSchema = z
-  .object({ channel_id: SnowflakeTypeSchema })
-  .openapi({ required: ['channel_id'] })
-  .openapi('FlagToChannelActionMetadataResponse')
-
-const FlagToChannelActionResponseSchema = z
-  .object({ type: AutomodActionTypeSchema, metadata: FlagToChannelActionMetadataResponseSchema })
-  .openapi({ required: ['type', 'metadata'] })
-  .openapi('FlagToChannelActionResponse')
-
-const QuarantineUserActionMetadataResponseSchema = z
-  .object({})
-  .openapi('QuarantineUserActionMetadataResponse')
-
-const QuarantineUserActionResponseSchema = z
-  .object({ type: AutomodActionTypeSchema, metadata: QuarantineUserActionMetadataResponseSchema })
-  .openapi({ required: ['type', 'metadata'] })
-  .openapi('QuarantineUserActionResponse')
-
-const UserCommunicationDisabledActionMetadataResponseSchema = z
-  .object({ duration_seconds: z.int32() })
-  .openapi({ required: ['duration_seconds'] })
-  .openapi('UserCommunicationDisabledActionMetadataResponse')
-
-const UserCommunicationDisabledActionResponseSchema = z
-  .object({
-    type: AutomodActionTypeSchema,
-    metadata: UserCommunicationDisabledActionMetadataResponseSchema,
-  })
-  .openapi({ required: ['type', 'metadata'] })
-  .openapi('UserCommunicationDisabledActionResponse')
-
-const DefaultKeywordRuleResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    guild_id: SnowflakeTypeSchema,
-    creator_id: SnowflakeTypeSchema,
-    name: z.string(),
-    event_type: AutomodEventTypeSchema,
-    actions: z.array(
-      z.xor([
-        BlockMessageActionResponseSchema,
-        FlagToChannelActionResponseSchema,
-        QuarantineUserActionResponseSchema,
-        UserCommunicationDisabledActionResponseSchema,
-      ]),
-    ),
-    trigger_type: AutomodTriggerTypeSchema,
-    enabled: z.boolean(),
-    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    trigger_metadata: DefaultKeywordListTriggerMetadataResponseSchema,
-  })
-  .openapi({
-    required: [
-      'id',
-      'guild_id',
-      'creator_id',
-      'name',
-      'event_type',
-      'actions',
-      'trigger_type',
-      'enabled',
-      'exempt_roles',
-      'exempt_channels',
-      'trigger_metadata',
-    ],
-  })
-  .openapi('DefaultKeywordRuleResponse')
 
 const IntegrationApplicationResponseSchema = z
   .object({
@@ -5915,20 +7599,9 @@ const EntityMetadataExternalSchema = z
   .openapi({ required: ['location'] })
   .openapi('EntityMetadataExternal')
 
-const EntityMetadataExternalResponseSchema = z
-  .object({ location: z.string().openapi({ description: 'Location of the external event' }) })
-  .openapi({ required: ['location'] })
-  .openapi('EntityMetadataExternalResponse')
+const EntityMetadataStageInstanceSchema = z.looseObject({}).openapi('EntityMetadataStageInstance')
 
-const EntityMetadataStageInstanceSchema = z.object({}).openapi('EntityMetadataStageInstance')
-
-const EntityMetadataStageInstanceResponseSchema = z
-  .object({})
-  .openapi('EntityMetadataStageInstanceResponse')
-
-const EntityMetadataVoiceSchema = z.object({}).openapi('EntityMetadataVoice')
-
-const EntityMetadataVoiceResponseSchema = z.object({}).openapi('EntityMetadataVoiceResponse')
+const EntityMetadataVoiceSchema = z.looseObject({}).openapi('EntityMetadataVoice')
 
 const IntegrationExpireBehaviorTypesSchema = z
   .xor([
@@ -5966,52 +7639,6 @@ const ExternalConnectionIntegrationResponseSchema = z
   })
   .openapi({ required: ['type', 'name', 'account', 'enabled', 'id', 'user'] })
   .openapi('ExternalConnectionIntegrationResponse')
-
-const GuildScheduledEventPrivacyLevelsSchema = z
-  .xor([
-    z
-      .literal(2)
-      .openapi({
-        title: 'GUILD_ONLY',
-        description: 'the scheduled event is only accessible to guild members',
-      }),
-  ])
-  .openapi('GuildScheduledEventPrivacyLevels')
-
-const GuildScheduledEventEntityTypesSchema = z
-  .xor([
-    z.literal(0).openapi({ title: 'NONE' }),
-    z.literal(1).openapi({ title: 'STAGE_INSTANCE' }),
-    z.literal(2).openapi({ title: 'VOICE' }),
-    z.literal(3).openapi({ title: 'EXTERNAL' }),
-  ])
-  .openapi('GuildScheduledEventEntityTypes')
-
-const RecurrenceRuleFrequenciesSchema = z
-  .xor([
-    z.literal(3).openapi({ title: 'DAILY' }),
-    z.literal(2).openapi({ title: 'WEEKLY' }),
-    z.literal(1).openapi({ title: 'MONTHLY' }),
-    z.literal(0).openapi({ title: 'YEARLY' }),
-  ])
-  .openapi('RecurrenceRuleFrequencies')
-
-const RecurrenceRuleMonthsSchema = z
-  .xor([
-    z.literal(1).openapi({ title: 'JANUARY' }),
-    z.literal(2).openapi({ title: 'FEBRUARY' }),
-    z.literal(3).openapi({ title: 'MARCH' }),
-    z.literal(4).openapi({ title: 'APRIL' }),
-    z.literal(5).openapi({ title: 'MAY' }),
-    z.literal(6).openapi({ title: 'JUNE' }),
-    z.literal(7).openapi({ title: 'JULY' }),
-    z.literal(8).openapi({ title: 'AUGUST' }),
-    z.literal(9).openapi({ title: 'SEPTEMBER' }),
-    z.literal(10).openapi({ title: 'OCTOBER' }),
-    z.literal(11).openapi({ title: 'NOVEMBER' }),
-    z.literal(12).openapi({ title: 'DECEMBER' }),
-  ])
-  .openapi('RecurrenceRuleMonths')
 
 const RecurrenceRuleSchema = z
   .object({
@@ -6129,15 +7756,6 @@ const ExternalScheduledEventCreateRequestSchema = z
   })
   .openapi('ExternalScheduledEventCreateRequest')
 
-const GuildScheduledEventStatusesSchema = z
-  .xor([
-    z.literal(1).openapi({ title: 'SCHEDULED' }),
-    z.literal(2).openapi({ title: 'ACTIVE' }),
-    z.literal(3).openapi({ title: 'COMPLETED' }),
-    z.literal(4).openapi({ title: 'CANCELED' }),
-  ])
-  .openapi('GuildScheduledEventStatuses')
-
 const ExternalScheduledEventPatchRequestPartialSchema = z
   .object({
     status: z.xor([z.null().nullable(), GuildScheduledEventStatusesSchema]).exactOptional(),
@@ -6163,259 +7781,6 @@ const ExternalScheduledEventPatchRequestPartialSchema = z
   })
   .openapi({ required: [] })
   .openapi('ExternalScheduledEventPatchRequestPartial')
-
-const RecurrenceRuleResponseSchema = z
-  .object({
-    start: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Starting time of the recurrence interval' }),
-    end: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Ending time of the recurrence interval' }),
-    frequency: RecurrenceRuleFrequenciesSchema.openapi({
-      description: 'How often the event occurs',
-    }),
-    interval: z
-      .int32()
-      .openapi({ description: 'The spacing between events, defined by frequency' }),
-    by_weekday: z
-      .array(RecurrenceRuleWeekdaysSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .openapi({ description: 'Set of specific days within a week for the event to recur on' }),
-    by_n_weekday: z
-      .array(ByNWeekdayResponseSchema)
-      .nullable()
-      .openapi({ description: 'List of specific days within a specific week to recur on' }),
-    by_month: z
-      .array(RecurrenceRuleMonthsSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .openapi({ description: 'Set of specific months to recur on' }),
-    by_month_day: z
-      .array(z.int32())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .openapi({ description: 'Set of specific dates within a month to recur on' }),
-    by_year_day: z
-      .array(z.int32())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Set of days within a year to recur on (1-364)' }),
-    count: z
-      .int32()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Total number of times the event is allowed to recur' }),
-  })
-  .openapi({
-    required: [
-      'start',
-      'frequency',
-      'interval',
-      'by_weekday',
-      'by_n_weekday',
-      'by_month',
-      'by_month_day',
-    ],
-  })
-  .openapi('RecurrenceRuleResponse')
-
-const GuildScheduledEventUserResponsesSchema = z
-  .xor([
-    z
-      .literal(0)
-      .openapi({ title: 'UNINTERESTED', description: 'User is not interested in the event' }),
-    z.literal(1).openapi({ title: 'INTERESTED', description: 'User is interested in the event' }),
-  ])
-  .openapi('GuildScheduledEventUserResponses')
-
-const ScheduledEventUserResponseSchema = z
-  .object({
-    guild_scheduled_event_id: SnowflakeTypeSchema.openapi({
-      description: 'ID of the scheduled event',
-    }),
-    guild_scheduled_event_exception_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .exactOptional()
-      .openapi({ description: 'ID of the scheduled event exception' }),
-    user_id: SnowflakeTypeSchema.openapi({ description: 'ID of the user' }),
-    user: UserResponseSchema.exactOptional().openapi({
-      description: 'User object for the RSVP user',
-    }),
-    member: GuildMemberResponseSchema.exactOptional().openapi({
-      description: 'Guild member object for the RSVP user',
-    }),
-    response: GuildScheduledEventUserResponsesSchema.openapi({
-      description: "User's RSVP status for the event",
-    }),
-  })
-  .openapi({ required: ['guild_scheduled_event_id', 'user_id', 'response'] })
-  .openapi('ScheduledEventUserResponse')
-
-const GuildScheduledEventExceptionResponseSchema = z
-  .object({
-    event_id: SnowflakeTypeSchema.openapi({
-      description: 'ID of the scheduled event this exception belongs to',
-    }),
-    event_exception_id: SnowflakeTypeSchema.openapi({ description: 'ID of the event exception' }),
-    scheduled_start_time: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({ description: 'Overridden start time of this occurrence' }),
-    scheduled_end_time: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({ description: 'Overridden end time of this occurrence' }),
-    is_canceled: z.boolean().openapi({ description: 'Whether this occurrence is canceled' }),
-  })
-  .openapi({
-    required: [
-      'event_id',
-      'event_exception_id',
-      'scheduled_start_time',
-      'scheduled_end_time',
-      'is_canceled',
-    ],
-  })
-  .openapi('GuildScheduledEventExceptionResponse')
-
-const ExternalScheduledEventResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema.openapi({ description: 'ID of the scheduled event' }),
-    guild_id: SnowflakeTypeSchema.openapi({
-      description: 'ID of the guild the scheduled event belongs to',
-    }),
-    name: z.string().openapi({ description: 'Name of the scheduled event' }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Description of the scheduled event' }),
-    channel_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({
-        description:
-          'Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL',
-      }),
-    creator_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({ description: 'ID of the user that created the scheduled event' }),
-    creator: UserResponseSchema.exactOptional().openapi({
-      description: 'User that created the scheduled event',
-    }),
-    image: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Cover image hash of the scheduled event' }),
-    scheduled_start_time: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'When the scheduled event will start' }),
-    scheduled_end_time: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({ description: 'When the scheduled event will end, or null if no end time' }),
-    status: GuildScheduledEventStatusesSchema.openapi({
-      description: 'Status of the scheduled event',
-    }),
-    entity_type: GuildScheduledEventEntityTypesSchema.openapi({
-      description: 'Type of hosting entity associated with the scheduled event',
-    }),
-    entity_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({ description: 'ID of the hosting entity associated with the scheduled event' }),
-    recurrence_rule: z
-      .xor([z.null().nullable(), RecurrenceRuleResponseSchema])
-      .openapi({
-        description: 'Recurrence rule for the scheduled event, or null if not recurring',
-      }),
-    user_count: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of users subscribed to the scheduled event' }),
-    privacy_level: GuildScheduledEventPrivacyLevelsSchema.openapi({
-      description: 'Privacy level of the scheduled event',
-    }),
-    user_rsvp: z.xor([z.null().nullable(), ScheduledEventUserResponseSchema]).exactOptional(),
-    guild_scheduled_event_exceptions: z.array(GuildScheduledEventExceptionResponseSchema),
-    entity_metadata: EntityMetadataExternalResponseSchema,
-  })
-  .openapi({
-    required: [
-      'id',
-      'guild_id',
-      'name',
-      'description',
-      'channel_id',
-      'creator_id',
-      'image',
-      'scheduled_start_time',
-      'scheduled_end_time',
-      'status',
-      'entity_type',
-      'entity_id',
-      'recurrence_rule',
-      'privacy_level',
-      'guild_scheduled_event_exceptions',
-      'entity_metadata',
-    ],
-  })
-  .openapi('ExternalScheduledEventResponse')
-
-const FileUploadComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    min_values: z.int().min(0).max(10).nullable().exactOptional(),
-    max_values: z.int().min(1).max(10).nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    file_types: z
-      .array(z.string().min(1).max(16))
-      .max(10)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('FileUploadComponentForModalRequest')
 
 const InviteTypesSchema = z
   .xor([
@@ -6660,449 +8025,7 @@ const GroupDMInviteResponseSchema = z
   .openapi({ required: ['type', 'code', 'expires_at', 'channel'] })
   .openapi('GroupDMInviteResponse')
 
-const PartialDiscordIntegrationResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    type: IntegrationTypesSchema,
-    name: z.string().nullable(),
-    account: AccountResponseSchema,
-    application_id: SnowflakeTypeSchema,
-  })
-  .openapi({ required: ['id', 'type', 'name', 'account', 'application_id'] })
-  .openapi('PartialDiscordIntegrationResponse')
-
-const PartialExternalConnectionIntegrationResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    type: IntegrationTypesSchema,
-    name: z.string().nullable(),
-    account: AccountResponseSchema,
-  })
-  .openapi({ required: ['id', 'type', 'name', 'account'] })
-  .openapi('PartialExternalConnectionIntegrationResponse')
-
-const PartialGuildSubscriptionIntegrationResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    type: IntegrationTypesSchema,
-    name: z.string().nullable(),
-    account: AccountResponseSchema,
-  })
-  .openapi({ required: ['id', 'type', 'name', 'account'] })
-  .openapi('PartialGuildSubscriptionIntegrationResponse')
-
-const GuildIncomingWebhookResponseSchema = z
-  .object({
-    application_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
-    avatar: z.string().nullable(),
-    channel_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]),
-    guild_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
-    id: SnowflakeTypeSchema,
-    name: z.string(),
-    type: WebhookTypesSchema,
-    user: UserResponseSchema.exactOptional(),
-    token: z.string().exactOptional(),
-    url: z.url().exactOptional(),
-  })
-  .openapi({ required: ['application_id', 'avatar', 'channel_id', 'id', 'name', 'type'] })
-  .openapi('GuildIncomingWebhookResponse')
-
-const StageScheduledEventResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema.openapi({ description: 'ID of the scheduled event' }),
-    guild_id: SnowflakeTypeSchema.openapi({
-      description: 'ID of the guild the scheduled event belongs to',
-    }),
-    name: z.string().openapi({ description: 'Name of the scheduled event' }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Description of the scheduled event' }),
-    channel_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({
-        description:
-          'Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL',
-      }),
-    creator_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({ description: 'ID of the user that created the scheduled event' }),
-    creator: UserResponseSchema.exactOptional().openapi({
-      description: 'User that created the scheduled event',
-    }),
-    image: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Cover image hash of the scheduled event' }),
-    scheduled_start_time: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'When the scheduled event will start' }),
-    scheduled_end_time: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({ description: 'When the scheduled event will end, or null if no end time' }),
-    status: GuildScheduledEventStatusesSchema.openapi({
-      description: 'Status of the scheduled event',
-    }),
-    entity_type: GuildScheduledEventEntityTypesSchema.openapi({
-      description: 'Type of hosting entity associated with the scheduled event',
-    }),
-    entity_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({ description: 'ID of the hosting entity associated with the scheduled event' }),
-    recurrence_rule: z
-      .xor([z.null().nullable(), RecurrenceRuleResponseSchema])
-      .openapi({
-        description: 'Recurrence rule for the scheduled event, or null if not recurring',
-      }),
-    user_count: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of users subscribed to the scheduled event' }),
-    privacy_level: GuildScheduledEventPrivacyLevelsSchema.openapi({
-      description: 'Privacy level of the scheduled event',
-    }),
-    user_rsvp: z.xor([z.null().nullable(), ScheduledEventUserResponseSchema]).exactOptional(),
-    guild_scheduled_event_exceptions: z.array(GuildScheduledEventExceptionResponseSchema),
-    entity_metadata: z.xor([z.null().nullable(), EntityMetadataStageInstanceResponseSchema]),
-  })
-  .openapi({
-    required: [
-      'id',
-      'guild_id',
-      'name',
-      'description',
-      'channel_id',
-      'creator_id',
-      'image',
-      'scheduled_start_time',
-      'scheduled_end_time',
-      'status',
-      'entity_type',
-      'entity_id',
-      'recurrence_rule',
-      'privacy_level',
-      'guild_scheduled_event_exceptions',
-      'entity_metadata',
-    ],
-  })
-  .openapi('StageScheduledEventResponse')
-
-const VoiceScheduledEventResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema.openapi({ description: 'ID of the scheduled event' }),
-    guild_id: SnowflakeTypeSchema.openapi({
-      description: 'ID of the guild the scheduled event belongs to',
-    }),
-    name: z.string().openapi({ description: 'Name of the scheduled event' }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Description of the scheduled event' }),
-    channel_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({
-        description:
-          'Channel ID in which the scheduled event will be hosted, or null if entity type is EXTERNAL',
-      }),
-    creator_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({ description: 'ID of the user that created the scheduled event' }),
-    creator: UserResponseSchema.exactOptional().openapi({
-      description: 'User that created the scheduled event',
-    }),
-    image: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Cover image hash of the scheduled event' }),
-    scheduled_start_time: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'When the scheduled event will start' }),
-    scheduled_end_time: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({ description: 'When the scheduled event will end, or null if no end time' }),
-    status: GuildScheduledEventStatusesSchema.openapi({
-      description: 'Status of the scheduled event',
-    }),
-    entity_type: GuildScheduledEventEntityTypesSchema.openapi({
-      description: 'Type of hosting entity associated with the scheduled event',
-    }),
-    entity_id: z
-      .xor([z.null().nullable(), SnowflakeTypeSchema])
-      .openapi({ description: 'ID of the hosting entity associated with the scheduled event' }),
-    recurrence_rule: z
-      .xor([z.null().nullable(), RecurrenceRuleResponseSchema])
-      .openapi({
-        description: 'Recurrence rule for the scheduled event, or null if not recurring',
-      }),
-    user_count: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of users subscribed to the scheduled event' }),
-    privacy_level: GuildScheduledEventPrivacyLevelsSchema.openapi({
-      description: 'Privacy level of the scheduled event',
-    }),
-    user_rsvp: z.xor([z.null().nullable(), ScheduledEventUserResponseSchema]).exactOptional(),
-    guild_scheduled_event_exceptions: z.array(GuildScheduledEventExceptionResponseSchema),
-    entity_metadata: z.xor([z.null().nullable(), EntityMetadataVoiceResponseSchema]),
-  })
-  .openapi({
-    required: [
-      'id',
-      'guild_id',
-      'name',
-      'description',
-      'channel_id',
-      'creator_id',
-      'image',
-      'scheduled_start_time',
-      'scheduled_end_time',
-      'status',
-      'entity_type',
-      'entity_id',
-      'recurrence_rule',
-      'privacy_level',
-      'guild_scheduled_event_exceptions',
-      'entity_metadata',
-    ],
-  })
-  .openapi('VoiceScheduledEventResponse')
-
-const KeywordTriggerMetadataResponseSchema = z
-  .object({
-    keyword_filter: z.array(z.string()),
-    regex_patterns: z.array(z.string()),
-    allow_list: z.array(z.string()),
-  })
-  .openapi({ required: ['keyword_filter', 'regex_patterns', 'allow_list'] })
-  .openapi('KeywordTriggerMetadataResponse')
-
-const KeywordRuleResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    guild_id: SnowflakeTypeSchema,
-    creator_id: SnowflakeTypeSchema,
-    name: z.string(),
-    event_type: AutomodEventTypeSchema,
-    actions: z.array(
-      z.xor([
-        BlockMessageActionResponseSchema,
-        FlagToChannelActionResponseSchema,
-        QuarantineUserActionResponseSchema,
-        UserCommunicationDisabledActionResponseSchema,
-      ]),
-    ),
-    trigger_type: AutomodTriggerTypeSchema,
-    enabled: z.boolean(),
-    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    trigger_metadata: KeywordTriggerMetadataResponseSchema,
-  })
-  .openapi({
-    required: [
-      'id',
-      'guild_id',
-      'creator_id',
-      'name',
-      'event_type',
-      'actions',
-      'trigger_type',
-      'enabled',
-      'exempt_roles',
-      'exempt_channels',
-      'trigger_metadata',
-    ],
-  })
-  .openapi('KeywordRuleResponse')
-
-const MLSpamTriggerMetadataResponseSchema = z.object({}).openapi('MLSpamTriggerMetadataResponse')
-
-const MLSpamRuleResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    guild_id: SnowflakeTypeSchema,
-    creator_id: SnowflakeTypeSchema,
-    name: z.string(),
-    event_type: AutomodEventTypeSchema,
-    actions: z.array(
-      z.xor([
-        BlockMessageActionResponseSchema,
-        FlagToChannelActionResponseSchema,
-        QuarantineUserActionResponseSchema,
-        UserCommunicationDisabledActionResponseSchema,
-      ]),
-    ),
-    trigger_type: AutomodTriggerTypeSchema,
-    enabled: z.boolean(),
-    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    trigger_metadata: MLSpamTriggerMetadataResponseSchema,
-  })
-  .openapi({
-    required: [
-      'id',
-      'guild_id',
-      'creator_id',
-      'name',
-      'event_type',
-      'actions',
-      'trigger_type',
-      'enabled',
-      'exempt_roles',
-      'exempt_channels',
-      'trigger_metadata',
-    ],
-  })
-  .openapi('MLSpamRuleResponse')
-
-const MentionSpamTriggerMetadataResponseSchema = z
-  .object({ mention_total_limit: z.int32(), mention_raid_protection_enabled: z.boolean() })
-  .openapi({ required: ['mention_total_limit', 'mention_raid_protection_enabled'] })
-  .openapi('MentionSpamTriggerMetadataResponse')
-
-const MentionSpamRuleResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    guild_id: SnowflakeTypeSchema,
-    creator_id: SnowflakeTypeSchema,
-    name: z.string(),
-    event_type: AutomodEventTypeSchema,
-    actions: z.array(
-      z.xor([
-        BlockMessageActionResponseSchema,
-        FlagToChannelActionResponseSchema,
-        QuarantineUserActionResponseSchema,
-        UserCommunicationDisabledActionResponseSchema,
-      ]),
-    ),
-    trigger_type: AutomodTriggerTypeSchema,
-    enabled: z.boolean(),
-    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    trigger_metadata: MentionSpamTriggerMetadataResponseSchema,
-  })
-  .openapi({
-    required: [
-      'id',
-      'guild_id',
-      'creator_id',
-      'name',
-      'event_type',
-      'actions',
-      'trigger_type',
-      'enabled',
-      'exempt_roles',
-      'exempt_channels',
-      'trigger_metadata',
-    ],
-  })
-  .openapi('MentionSpamRuleResponse')
-
-const UserProfileMetadataResponseSchema = z
-  .object({
-    keyword_filter: z.array(z.string()),
-    regex_patterns: z.array(z.string()),
-    allow_list: z.array(z.string()),
-  })
-  .openapi({ required: ['keyword_filter', 'regex_patterns', 'allow_list'] })
-  .openapi('UserProfileMetadataResponse')
-
-const UserProfileRuleResponseSchema = z
-  .object({
-    id: SnowflakeTypeSchema,
-    guild_id: SnowflakeTypeSchema,
-    creator_id: SnowflakeTypeSchema,
-    name: z.string(),
-    event_type: AutomodEventTypeSchema,
-    actions: z.array(
-      z.xor([
-        BlockMessageActionResponseSchema,
-        FlagToChannelActionResponseSchema,
-        QuarantineUserActionResponseSchema,
-        UserCommunicationDisabledActionResponseSchema,
-      ]),
-    ),
-    trigger_type: AutomodTriggerTypeSchema,
-    enabled: z.boolean(),
-    exempt_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    exempt_channels: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    trigger_metadata: UserProfileMetadataResponseSchema,
-  })
-  .openapi({
-    required: [
-      'id',
-      'guild_id',
-      'creator_id',
-      'name',
-      'event_type',
-      'actions',
-      'trigger_type',
-      'enabled',
-      'exempt_roles',
-      'exempt_channels',
-      'trigger_metadata',
-    ],
-  })
-  .openapi('UserProfileRuleResponse')
-
-const GuildAuditLogResponseSchema = z
+const GuildAuditLogResponseSchema: z.ZodType<GuildAuditLogResponseType> = z
   .object({
     audit_log_entries: z.array(AuditLogEntryResponseSchema),
     users: z.array(UserResponseSchema),
@@ -8232,123 +9155,7 @@ const GuildScheduledEventExceptionPatchRequestPartialSchema = z
   .openapi({ required: [] })
   .openapi('GuildScheduledEventExceptionPatchRequestPartial')
 
-const SearchMessageResponseSchema = z
-  .object({
-    type: MessageTypeSchema,
-    content: z.string(),
-    mentions: z.array(UserResponseSchema),
-    mention_roles: z.array(SnowflakeTypeSchema).superRefine((items, ctx) => {
-      const seen = new Map()
-      for (const [i, val] of items.entries()) {
-        const key = JSON.stringify(val)
-        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-        else seen.set(key, i)
-      }
-    }),
-    attachments: z.array(MessageAttachmentResponseSchema),
-    embeds: z.array(MessageEmbedResponseSchema),
-    timestamp: z.iso.datetime({ offset: true }),
-    edited_timestamp: z.iso.datetime({ offset: true }).nullable(),
-    flags: z.int32(),
-    components: z.array(
-      z.xor([
-        ActionRowComponentResponseSchema,
-        ContainerComponentResponseSchema,
-        FileComponentResponseSchema,
-        MediaGalleryComponentResponseSchema,
-        SectionComponentResponseSchema,
-        SeparatorComponentResponseSchema,
-        TextDisplayComponentResponseSchema,
-      ]),
-    ),
-    stickers: z
-      .array(z.xor([GuildStickerResponseSchema, StandardStickerResponseSchema]))
-      .exactOptional(),
-    sticker_items: z.array(MessageStickerItemResponseSchema).exactOptional(),
-    id: SnowflakeTypeSchema,
-    channel_id: SnowflakeTypeSchema,
-    author: UserResponseSchema,
-    pinned: z.boolean(),
-    mention_everyone: z.boolean(),
-    tts: z.boolean(),
-    call: MessageCallResponseSchema.exactOptional(),
-    activity: MessageActivityResponseSchema.exactOptional(),
-    application: BasicApplicationResponseWithBotSchema.exactOptional(),
-    application_id: SnowflakeTypeSchema.exactOptional(),
-    interaction: MessageInteractionResponseSchema.exactOptional(),
-    nonce: z
-      .xor([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64().min(-9223372036854776000n).max(9223372036854776000n),
-          )
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            minimum: -9223372036854776000,
-            maximum: 9223372036854776000,
-          }),
-        z.string().max(25),
-      ])
-      .exactOptional(),
-    webhook_id: SnowflakeTypeSchema.exactOptional(),
-    message_reference: MessageReferenceResponseSchema.exactOptional(),
-    thread: ThreadResponseSchema.exactOptional(),
-    mention_channels: z.array(MessageMentionChannelResponseSchema).exactOptional(),
-    role_subscription_data: MessageRoleSubscriptionDataResponseSchema.exactOptional(),
-    purchase_notification: PurchaseNotificationResponseSchema.exactOptional(),
-    position: z.int32().exactOptional(),
-    resolved: ResolvedObjectsResponseSchema.exactOptional(),
-    poll: PollResponseSchema.exactOptional(),
-    shared_client_theme: CustomClientThemeResponseSchema.exactOptional(),
-    interaction_metadata: z
-      .xor([
-        ApplicationCommandInteractionMetadataResponseSchema,
-        MessageComponentInteractionMetadataResponseSchema,
-        ModalSubmitInteractionMetadataResponseSchema,
-      ])
-      .exactOptional(),
-    message_snapshots: z.array(MessageSnapshotResponseSchema).exactOptional(),
-    lobby_member: MessageLobbyMemberResponseSchema.exactOptional(),
-    actor: UserResponseSchema.exactOptional(),
-    reactions: z.array(MessageReactionResponseSchema).exactOptional(),
-    referenced_message: z.xor([z.null().nullable(), BasicMessageResponseSchema]).exactOptional(),
-    hit: z.boolean(),
-    restriction_count: z.int32().exactOptional(),
-    author_restriction_count: z.int32().exactOptional(),
-    source_author_restriction_count: z.int32().exactOptional(),
-    forward_source_author_id: SnowflakeTypeSchema.exactOptional(),
-  })
-  .openapi({
-    required: [
-      'type',
-      'content',
-      'mentions',
-      'mention_roles',
-      'attachments',
-      'embeds',
-      'timestamp',
-      'edited_timestamp',
-      'flags',
-      'components',
-      'id',
-      'channel_id',
-      'author',
-      'pinned',
-      'mention_everyone',
-      'tts',
-      'hit',
-    ],
-  })
-  .openapi('SearchMessageResponse')
-
-const GuildSearchResponseSchema = z
+const GuildSearchResponseSchema: z.ZodType<GuildSearchResponseType> = z
   .object({
     messages: z.array(z.array(SearchMessageResponseSchema)),
     doing_deep_historical_index: z.boolean(),
@@ -8686,7 +9493,7 @@ const HasOptionSchema = z
   ])
   .openapi('HasOption')
 
-const IncomingWebhookRequestPartialSchema = z
+const IncomingWebhookRequestPartialSchema: z.ZodType<IncomingWebhookRequestPartialType> = z
   .object({
     content: z.string().max(2000).nullable().exactOptional(),
     embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
@@ -8720,78 +9527,48 @@ const IncomingWebhookRequestPartialSchema = z
   .openapi({ required: [] })
   .openapi('IncomingWebhookRequestPartial')
 
-const IncomingWebhookUpdateForInteractionCallbackRequestPartialSchema = z
-  .object({
-    content: z.string().max(2000).nullable().exactOptional(),
-    embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
-    allowed_mentions: z
-      .xor([z.null().nullable(), MessageAllowedMentionsRequestSchema])
-      .exactOptional(),
-    components: z
-      .array(
-        z.xor([
-          ActionRowComponentForMessageRequestSchema,
-          ContainerComponentForMessageRequestSchema,
-          FileComponentForMessageRequestSchema,
-          MediaGalleryComponentForMessageRequestSchema,
-          SectionComponentForMessageRequestSchema,
-          SeparatorComponentForMessageRequestSchema,
-          TextDisplayComponentForMessageRequestSchema,
-        ]),
-      )
-      .max(40)
-      .nullable()
-      .exactOptional(),
-    attachments: z.array(MessageAttachmentRequestSchema).max(10).nullable().exactOptional(),
-    flags: z.int().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IncomingWebhookUpdateForInteractionCallbackRequestPartial')
-
-const IncomingWebhookUpdateRequestPartialSchema = z
-  .object({
-    content: z.string().max(2000).nullable().exactOptional(),
-    embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
-    allowed_mentions: z
-      .xor([z.null().nullable(), MessageAllowedMentionsRequestSchema])
-      .exactOptional(),
-    components: z
-      .array(
-        z.xor([
-          ActionRowComponentForMessageRequestSchema,
-          ContainerComponentForMessageRequestSchema,
-          FileComponentForMessageRequestSchema,
-          MediaGalleryComponentForMessageRequestSchema,
-          SectionComponentForMessageRequestSchema,
-          SeparatorComponentForMessageRequestSchema,
-          TextDisplayComponentForMessageRequestSchema,
-        ]),
-      )
-      .max(40)
-      .nullable()
-      .exactOptional(),
-    attachments: z.array(MessageAttachmentRequestSchema).max(10).nullable().exactOptional(),
-    poll: z.xor([z.null().nullable(), PollCreateRequestSchema]).exactOptional(),
-    flags: z.int().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IncomingWebhookUpdateRequestPartial')
+const IncomingWebhookUpdateRequestPartialSchema: z.ZodType<IncomingWebhookUpdateRequestPartialType> =
+  z
+    .object({
+      content: z.string().max(2000).nullable().exactOptional(),
+      embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
+      allowed_mentions: z
+        .xor([z.null().nullable(), MessageAllowedMentionsRequestSchema])
+        .exactOptional(),
+      components: z
+        .array(
+          z.xor([
+            ActionRowComponentForMessageRequestSchema,
+            ContainerComponentForMessageRequestSchema,
+            FileComponentForMessageRequestSchema,
+            MediaGalleryComponentForMessageRequestSchema,
+            SectionComponentForMessageRequestSchema,
+            SeparatorComponentForMessageRequestSchema,
+            TextDisplayComponentForMessageRequestSchema,
+          ]),
+        )
+        .max(40)
+        .nullable()
+        .exactOptional(),
+      attachments: z.array(MessageAttachmentRequestSchema).max(10).nullable().exactOptional(),
+      poll: z.xor([z.null().nullable(), PollCreateRequestSchema]).exactOptional(),
+      flags: z.int().nullable().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('IncomingWebhookUpdateRequestPartial')
 
 const InteractionCallbackResponseSchema: z.ZodType<InteractionCallbackResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        interaction: InteractionResponseSchema,
-        resource: z
-          .xor([
-            CreateMessageInteractionCallbackResponseSchema,
-            LaunchActivityInteractionCallbackResponseSchema,
-            UpdateMessageInteractionCallbackResponseSchema,
-          ])
-          .exactOptional(),
-      })
-      .openapi({ required: ['interaction'] }),
-  )
+  .object({
+    interaction: InteractionResponseSchema,
+    resource: z
+      .xor([
+        CreateMessageInteractionCallbackResponseSchema,
+        LaunchActivityInteractionCallbackResponseSchema,
+        UpdateMessageInteractionCallbackResponseSchema,
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: ['interaction'] })
   .openapi('InteractionCallbackResponse')
 
 const KeywordTriggerMetadataSchema = z
@@ -8903,113 +9680,6 @@ const KeywordUpsertRequestPartialSchema = z
   .openapi({ required: [] })
   .openapi('KeywordUpsertRequestPartial')
 
-const MentionableSelectComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    default_values: z
-      .array(z.xor([RoleSelectDefaultValueSchema, UserSelectDefaultValueSchema]))
-      .max(25)
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('MentionableSelectComponentForModalRequest')
-
-const RadioGroupOptionForRequestSchema = z
-  .object({
-    label: z.string().min(1).max(100),
-    value: z.string().min(1).max(100),
-    description: z.string().max(100).nullable().exactOptional(),
-    default: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: ['label', 'value'] })
-  .openapi('RadioGroupOptionForRequest')
-
-const RadioGroupComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    required: z.boolean().nullable().exactOptional(),
-    options: z.array(RadioGroupOptionForRequestSchema).min(2).max(10),
-  })
-  .openapi({ required: ['type', 'custom_id', 'options'] })
-  .openapi('RadioGroupComponentForModalRequest')
-
-const RoleSelectComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    default_values: z.array(RoleSelectDefaultValueSchema).max(25).nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('RoleSelectComponentForModalRequest')
-
-const StringSelectComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    options: z.array(StringSelectOptionForRequestSchema).min(1).max(25),
-  })
-  .openapi({ required: ['type', 'custom_id', 'options'] })
-  .openapi('StringSelectComponentForModalRequest')
-
-const UserSelectComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    custom_id: z.string().min(1).max(100),
-    placeholder: z.string().max(150).nullable().exactOptional(),
-    min_values: z.int().min(0).max(25).nullable().exactOptional(),
-    max_values: z.int().min(1).max(25).nullable().exactOptional(),
-    disabled: z.boolean().nullable().exactOptional(),
-    required: z.boolean().nullable().exactOptional(),
-    default_values: z.array(UserSelectDefaultValueSchema).max(25).nullable().exactOptional(),
-  })
-  .openapi({ required: ['type', 'custom_id'] })
-  .openapi('UserSelectComponentForModalRequest')
-
-const LabelComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    label: z.string().min(1).max(45),
-    description: z.string().min(1).max(100).nullable().exactOptional(),
-    component: z.xor([
-      ChannelSelectComponentForModalRequestSchema,
-      CheckboxComponentForModalRequestSchema,
-      CheckboxGroupComponentForModalRequestSchema,
-      FileUploadComponentForModalRequestSchema,
-      MentionableSelectComponentForModalRequestSchema,
-      RadioGroupComponentForModalRequestSchema,
-      RoleSelectComponentForModalRequestSchema,
-      StringSelectComponentForModalRequestSchema,
-      TextInputComponentForModalRequestSchema,
-      UserSelectComponentForModalRequestSchema,
-    ]),
-  })
-  .openapi({ required: ['type', 'label', 'component'] })
-  .openapi('LabelComponentForModalRequest')
-
 const LaunchActivityInteractionCallbackRequestSchema = z
   .object({ type: InteractionCallbackTypesSchema })
   .openapi({ required: ['type'] })
@@ -9098,7 +9768,7 @@ const LobbyResponseSchema = z
   .openapi({ required: ['id', 'application_id', 'metadata', 'members', 'flags'] })
   .openapi('LobbyResponse')
 
-const MLSpamTriggerMetadataSchema = z.object({}).openapi('MLSpamTriggerMetadata')
+const MLSpamTriggerMetadataSchema = z.looseObject({}).openapi('MLSpamTriggerMetadata')
 
 const MLSpamUpsertRequestSchema = z
   .object({
@@ -9312,18 +9982,7 @@ const MentionSpamUpsertRequestPartialSchema = z
   .openapi({ required: [] })
   .openapi('MentionSpamUpsertRequestPartial')
 
-const MessageReferenceRequestSchema = z
-  .object({
-    guild_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
-    channel_id: z.xor([z.null().nullable(), SnowflakeTypeSchema]).exactOptional(),
-    message_id: SnowflakeTypeSchema,
-    fail_if_not_exists: z.boolean().nullable().exactOptional(),
-    type: z.xor([z.null().nullable(), MessageReferenceTypeSchema]).exactOptional(),
-  })
-  .openapi({ required: ['message_id'] })
-  .openapi('MessageReferenceRequest')
-
-const MessageCreateRequestSchema = z
+const MessageCreateRequestSchema: z.ZodType<MessageCreateRequestType> = z
   .object({
     content: z.string().max(4000).nullable().exactOptional(),
     embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
@@ -9363,7 +10022,7 @@ const MessageCreateRequestSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+            z.int64().min(-9223372036854775808n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -9381,7 +10040,7 @@ const MessageCreateRequestSchema = z
   .openapi({ required: [] })
   .openapi('MessageCreateRequest')
 
-const MessageEditRequestPartialSchema = z
+const MessageEditRequestPartialSchema: z.ZodType<MessageEditRequestPartialType> = z
   .object({
     content: z.string().max(4000).nullable().exactOptional(),
     embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
@@ -9410,34 +10069,7 @@ const MessageEditRequestPartialSchema = z
   .openapi({ required: [] })
   .openapi('MessageEditRequestPartial')
 
-const TextDisplayComponentForModalRequestSchema = z
-  .object({
-    type: MessageComponentTypesSchema,
-    id: z.int32().min(0).nullable().exactOptional(),
-    content: z.string().min(1).max(4000),
-  })
-  .openapi({ required: ['type', 'content'] })
-  .openapi('TextDisplayComponentForModalRequest')
-
-const ModalInteractionCallbackRequestDataSchema = z
-  .object({
-    custom_id: z.string().min(1).max(100),
-    title: z.string().min(1).max(45),
-    components: z
-      .array(
-        z.xor([
-          ActionRowComponentForModalRequestSchema,
-          LabelComponentForModalRequestSchema,
-          TextDisplayComponentForModalRequestSchema,
-        ]),
-      )
-      .min(1)
-      .max(40),
-  })
-  .openapi({ required: ['custom_id', 'title', 'components'] })
-  .openapi('ModalInteractionCallbackRequestData')
-
-const ModalInteractionCallbackRequestSchema = z
+const ModalInteractionCallbackRequestSchema: z.ZodType<ModalInteractionCallbackRequestType> = z
   .object({ type: InteractionCallbackTypesSchema, data: ModalInteractionCallbackRequestDataSchema })
   .openapi({ required: ['type', 'data'] })
   .openapi('ModalInteractionCallbackRequest')
@@ -9558,12 +10190,7 @@ const PermissionsResponseSchema = z
   .openapi({ required: ['permissions'] })
   .openapi('PermissionsResponse')
 
-const PinnedMessageResponseSchema = z
-  .object({ pinned_at: z.iso.datetime({ offset: true }), message: MessageResponseSchema })
-  .openapi({ required: ['pinned_at', 'message'] })
-  .openapi('PinnedMessageResponse')
-
-const PinnedMessagesResponseSchema = z
+const PinnedMessagesResponseSchema: z.ZodType<PinnedMessagesResponseType> = z
   .object({ items: z.array(PinnedMessageResponseSchema), has_more: z.boolean() })
   .openapi({ required: ['items', 'has_more'] })
   .openapi('PinnedMessagesResponse')
@@ -9847,7 +10474,7 @@ const ReactionTypesSchema = z
   ])
   .openapi('ReactionTypes')
 
-const SDKMessageRequestSchema = z
+const SDKMessageRequestSchema: z.ZodType<SDKMessageRequestType> = z
   .object({
     content: z.string().max(4000).nullable().exactOptional(),
     embeds: z.array(RichEmbedSchema).max(10).nullable().exactOptional(),
@@ -9887,7 +10514,7 @@ const SDKMessageRequestSchema = z
                 : typeof val === 'string' && /^-?\d+$/.test(val)
                   ? BigInt(val)
                   : val,
-            z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+            z.int64().min(-9223372036854775808n).max(9223372036854775807n),
           )
           .openapi({
             type: 'integer',
@@ -10317,7 +10944,7 @@ const TargetUsersJobStatusResponseSchema = z
   })
   .openapi('TargetUsersJobStatusResponse')
 
-const ThreadSearchResponseSchema = z
+const ThreadSearchResponseSchema: z.ZodType<ThreadSearchResponseType> = z
   .object({
     threads: z.array(ThreadResponseSchema),
     members: z.array(ThreadMemberResponseSchema),
@@ -10337,7 +10964,7 @@ const ThreadSortingModeSchema = z
   ])
   .openapi('ThreadSortingMode')
 
-const ThreadsResponseSchema = z
+const ThreadsResponseSchema: z.ZodType<ThreadsResponseType> = z
   .object({
     threads: z.array(ThreadResponseSchema),
     members: z.array(ThreadMemberResponseSchema),
@@ -10347,9 +10974,9 @@ const ThreadsResponseSchema = z
   .openapi({ required: ['threads', 'members', 'has_more'] })
   .openapi('ThreadsResponse')
 
-const TypingIndicatorResponseSchema = z.object({}).openapi('TypingIndicatorResponse')
+const TypingIndicatorResponseSchema = z.looseObject({}).openapi('TypingIndicatorResponse')
 
-const UnbanUserFromGuildRequestSchema = z.object({}).openapi('UnbanUserFromGuildRequest')
+const UnbanUserFromGuildRequestSchema = z.looseObject({}).openapi('UnbanUserFromGuildRequest')
 
 const UpdateApplicationUserRoleConnectionRequestSchema = z
   .object({
@@ -10463,15 +11090,16 @@ const UpdateGuildOnboardingRequestSchema = z
   .openapi({ required: [] })
   .openapi('UpdateGuildOnboardingRequest')
 
-const UpdateMessageInteractionCallbackRequestSchema = z
-  .object({
-    type: InteractionCallbackTypesSchema,
-    data: z
-      .xor([z.null().nullable(), IncomingWebhookUpdateForInteractionCallbackRequestPartialSchema])
-      .exactOptional(),
-  })
-  .openapi({ required: ['type'] })
-  .openapi('UpdateMessageInteractionCallbackRequest')
+const UpdateMessageInteractionCallbackRequestSchema: z.ZodType<UpdateMessageInteractionCallbackRequestType> =
+  z
+    .object({
+      type: InteractionCallbackTypesSchema,
+      data: z
+        .xor([z.null().nullable(), IncomingWebhookUpdateForInteractionCallbackRequestPartialSchema])
+        .exactOptional(),
+    })
+    .openapi({ required: ['type'] })
+    .openapi('UpdateMessageInteractionCallbackRequest')
 
 const UpdateRolePositionsRequestSchema = z
   .object({
@@ -17220,7 +17848,7 @@ export const postChannelsChannelIdMessagesRoute = createRoute({
                           : typeof val === 'string' && /^-?\d+$/.test(val)
                             ? BigInt(val)
                             : val,
-                      z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                      z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                     )
                     .openapi({
                       type: 'integer',
@@ -20899,7 +21527,7 @@ export const postChannelsChannelIdMessagesRoute = createRoute({
                           : typeof val === 'string' && /^-?\d+$/.test(val)
                             ? BigInt(val)
                             : val,
-                      z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                      z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                     )
                     .openapi({
                       type: 'integer',
@@ -28371,6 +28999,7 @@ export const getChannelsChannelIdPermissionsMemberUserIdRoute = createRoute({
           name: 'channel_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the channel',
           required: true,
         },
       }),
@@ -28379,6 +29008,7 @@ export const getChannelsChannelIdPermissionsMemberUserIdRoute = createRoute({
           name: 'user_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the member',
           required: true,
         },
       }),
@@ -28388,7 +29018,14 @@ export const getChannelsChannelIdPermissionsMemberUserIdRoute = createRoute({
         .stringbool()
         .exactOptional()
         .openapi({
-          param: { name: 'implicit', in: 'query', schema: { type: 'boolean' }, required: false },
+          param: {
+            name: 'implicit',
+            in: 'query',
+            schema: { type: 'boolean' },
+            description:
+              'Whether to apply implicit-permission computations. Defaults to true; pass false for the raw explicit permissions.',
+            required: false,
+          },
         }),
     }),
   },
@@ -28423,6 +29060,7 @@ export const getChannelsChannelIdPermissionsRoleRoleIdRoute = createRoute({
           name: 'channel_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the channel',
           required: true,
         },
       }),
@@ -28431,6 +29069,7 @@ export const getChannelsChannelIdPermissionsRoleRoleIdRoute = createRoute({
           name: 'role_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the role',
           required: true,
         },
       }),
@@ -28440,7 +29079,14 @@ export const getChannelsChannelIdPermissionsRoleRoleIdRoute = createRoute({
         .stringbool()
         .exactOptional()
         .openapi({
-          param: { name: 'implicit', in: 'query', schema: { type: 'boolean' }, required: false },
+          param: {
+            name: 'implicit',
+            in: 'query',
+            schema: { type: 'boolean' },
+            description:
+              'Whether to apply implicit-permission computations. Defaults to true. Pass false for the raw explicit permissions.',
+            required: false,
+          },
         }),
     }),
   },
@@ -28711,6 +29357,7 @@ export const getChannelsChannelIdPollsMessageIdAnswersAnswerIdRoute = createRout
             name: 'answer_id',
             in: 'path',
             schema: { type: 'integer', minimum: 1, maximum: 10, format: 'int32' },
+            description: 'The ID of the answer',
             required: true,
           },
         }),
@@ -39018,6 +39665,7 @@ export const putGuildsGuildIdIncidentActionsRoute = createRoute({
           name: 'guild_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the guild',
           required: true,
         },
       }),
@@ -39737,6 +40385,8 @@ export const getGuildsGuildIdMessagesSearchRoute = createRoute({
             name: 'content',
             in: 'query',
             schema: { type: 'string', maxLength: 1024 },
+            description:
+              'Text to search for. Matches messages containing these words within slop positions of each other.',
             required: false,
           },
         }),
@@ -39756,6 +40406,8 @@ export const getGuildsGuildIdMessagesSearchRoute = createRoute({
             name: 'slop',
             in: 'query',
             schema: { type: 'integer', minimum: 0, maximum: 100 },
+            description:
+              'How many positions apart or out of order the words in content can be and still match. 0 matches the exact phrase; higher values, up to 100, match words further apart.',
             required: false,
           },
         }),
@@ -40378,6 +41030,7 @@ export const getGuildsGuildIdPermissionsMemberUserIdRoute = createRoute({
           name: 'guild_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the guild',
           required: true,
         },
       }),
@@ -40386,6 +41039,7 @@ export const getGuildsGuildIdPermissionsMemberUserIdRoute = createRoute({
           name: 'user_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the member',
           required: true,
         },
       }),
@@ -40422,6 +41076,7 @@ export const getGuildsGuildIdPermissionsRoleRoleIdRoute = createRoute({
           name: 'guild_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the guild',
           required: true,
         },
       }),
@@ -40430,6 +41085,7 @@ export const getGuildsGuildIdPermissionsRoleRoleIdRoute = createRoute({
           name: 'role_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the role',
           required: true,
         },
       }),
@@ -40681,6 +41337,7 @@ export const getGuildsGuildIdRequestsRoute = createRoute({
             enum: [],
             allOf: [{ $ref: '#/components/schemas/GuildJoinRequestApplicationStatus' }],
           },
+          description: 'Filter by application status. Defaults to SUBMITTED if omitted',
           required: false,
         },
       }).exactOptional(),
@@ -40700,6 +41357,7 @@ export const getGuildsGuildIdRequestsRoute = createRoute({
             name: 'limit',
             in: 'query',
             schema: { type: 'integer', minimum: 1, maximum: 100 },
+            description: 'Maximum number of join requests to return',
             required: false,
           },
         }),
@@ -41367,6 +42025,7 @@ export const postGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsRout
           name: 'guild_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the guild',
           required: true,
         },
       }),
@@ -41375,6 +42034,7 @@ export const postGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsRout
           name: 'guild_scheduled_event_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the scheduled event',
           required: true,
         },
       }),
@@ -41415,6 +42075,7 @@ export const deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsEx
             name: 'guild_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the guild',
             required: true,
           },
         }),
@@ -41423,6 +42084,7 @@ export const deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsEx
             name: 'guild_scheduled_event_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the scheduled event',
             required: true,
           },
         }),
@@ -41431,6 +42093,7 @@ export const deleteGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsEx
             name: 'exception_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the event exception',
             required: true,
           },
         }),
@@ -41466,6 +42129,7 @@ export const patchGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExc
             name: 'guild_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the guild',
             required: true,
           },
         }),
@@ -41474,6 +42138,7 @@ export const patchGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExc
             name: 'guild_scheduled_event_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the scheduled event',
             required: true,
           },
         }),
@@ -41482,6 +42147,7 @@ export const patchGuildsGuildIdScheduledEventsGuildScheduledEventIdExceptionsExc
             name: 'exception_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the event exception',
             required: true,
           },
         }),
@@ -41539,7 +42205,13 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersRoute = cr
         .stringbool()
         .exactOptional()
         .openapi({
-          param: { name: 'with_member', in: 'query', schema: { type: 'boolean' }, required: false },
+          param: {
+            name: 'with_member',
+            in: 'query',
+            schema: { type: 'boolean' },
+            description: 'Include guild member data if it exists',
+            required: false,
+          },
         }),
       limit: z
         .preprocess(
@@ -41557,6 +42229,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersRoute = cr
             name: 'limit',
             in: 'query',
             schema: { type: 'integer', minimum: 1, maximum: 100 },
+            description: 'Number of users to return (up to maximum 100)',
             required: false,
           },
         }),
@@ -41565,6 +42238,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersRoute = cr
           name: 'before',
           in: 'query',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'Consider only users before given user id',
           required: false,
         },
       }).exactOptional(),
@@ -41573,6 +42247,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersRoute = cr
           name: 'after',
           in: 'query',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'Consider only users after given user id',
           required: false,
         },
       }).exactOptional(),
@@ -41610,6 +42285,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersCountsRout
           name: 'guild_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the guild',
           required: true,
         },
       }),
@@ -41618,6 +42294,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersCountsRout
           name: 'guild_scheduled_event_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the scheduled event',
           required: true,
         },
       }),
@@ -41638,6 +42315,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdUsersCountsRout
               items: { $ref: '#/components/schemas/SnowflakeType' },
               maxItems: 10,
             },
+            description: 'List of scheduled event exception ids to get user counts for',
             required: false,
           },
         }),
@@ -41674,6 +42352,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledE
             name: 'guild_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the guild',
             required: true,
           },
         }),
@@ -41682,6 +42361,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledE
             name: 'guild_scheduled_event_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the scheduled event',
             required: true,
           },
         }),
@@ -41690,6 +42370,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledE
             name: 'guild_scheduled_event_exception_id',
             in: 'path',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'The ID of the event exception',
             required: true,
           },
         }),
@@ -41703,6 +42384,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledE
               name: 'with_member',
               in: 'query',
               schema: { type: 'boolean' },
+              description: 'Include guild member data if it exists',
               required: false,
             },
           }),
@@ -41722,6 +42404,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledE
               name: 'limit',
               in: 'query',
               schema: { type: 'integer', minimum: 1, maximum: 100 },
+              description: 'Number of users to return (up to maximum 100)',
               required: false,
             },
           }),
@@ -41730,6 +42413,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledE
             name: 'before',
             in: 'query',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'Consider only users before given user id',
             required: false,
           },
         }).exactOptional(),
@@ -41738,6 +42422,7 @@ export const getGuildsGuildIdScheduledEventsGuildScheduledEventIdGuildScheduledE
             name: 'after',
             in: 'query',
             schema: { $ref: '#/components/schemas/SnowflakeType' },
+            description: 'Consider only users after given user id',
             required: false,
           },
         }).exactOptional(),
@@ -62453,6 +63138,7 @@ export const putInvitesCodeTargetUsersUserIdRoute = createRoute({
           name: 'user_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the user to target',
           required: true,
         },
       }),
@@ -62498,6 +63184,7 @@ export const deleteInvitesCodeTargetUsersUserIdRoute = createRoute({
           name: 'user_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the user to stop targeting',
           required: true,
         },
       }),
@@ -66745,7 +67432,7 @@ export const postLobbiesLobbyIdMessagesRoute = createRoute({
                           : typeof val === 'string' && /^-?\d+$/.test(val)
                             ? BigInt(val)
                             : val,
-                      z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                      z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                     )
                     .openapi({
                       type: 'integer',
@@ -70424,7 +71111,7 @@ export const postLobbiesLobbyIdMessagesRoute = createRoute({
                           : typeof val === 'string' && /^-?\d+$/.test(val)
                             ? BigInt(val)
                             : val,
-                      z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+                      z.int64().min(-9223372036854775808n).max(9223372036854775807n),
                     )
                     .openapi({
                       type: 'integer',
@@ -70501,6 +71188,7 @@ export const putLobbiesLobbyIdMessagesMessageIdModerationMetadataRoute = createR
           name: 'lobby_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the lobby the message is in',
           required: true,
         },
       }),
@@ -70509,6 +71197,7 @@ export const putLobbiesLobbyIdMessagesMessageIdModerationMetadataRoute = createR
           name: 'message_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the message to update',
           required: true,
         },
       }),
@@ -70694,6 +71383,7 @@ export const putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRo
           name: 'user_id_1',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the first user in the DM',
           required: true,
         },
       }),
@@ -70702,6 +71392,7 @@ export const putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRo
           name: 'user_id_2',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the second user in the DM',
           required: true,
         },
       }),
@@ -70710,6 +71401,7 @@ export const putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRo
           name: 'message_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'The ID of the message to update',
           required: true,
         },
       }),
@@ -70917,6 +71609,7 @@ export const getSkusSkuIdSubscriptionsRoute = createRoute({
           name: 'sku_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'ID of SKU',
           required: true,
         },
       }),
@@ -70927,6 +71620,7 @@ export const getSkusSkuIdSubscriptionsRoute = createRoute({
           name: 'before',
           in: 'query',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'List subscriptions before this ID',
           required: false,
         },
       }).exactOptional(),
@@ -70935,6 +71629,7 @@ export const getSkusSkuIdSubscriptionsRoute = createRoute({
           name: 'after',
           in: 'query',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'List subscriptions after this ID',
           required: false,
         },
       }).exactOptional(),
@@ -70954,6 +71649,7 @@ export const getSkusSkuIdSubscriptionsRoute = createRoute({
             name: 'limit',
             in: 'query',
             schema: { type: 'integer', minimum: 1, maximum: 100 },
+            description: 'Number of results to return (1-100)',
             required: false,
           },
         }),
@@ -70962,6 +71658,8 @@ export const getSkusSkuIdSubscriptionsRoute = createRoute({
           name: 'user_id',
           in: 'query',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description:
+            'User ID for which to return subscriptions. Required except for OAuth queries.',
           required: false,
         },
       }).exactOptional(),
@@ -71037,6 +71735,7 @@ export const getSkusSkuIdSubscriptionsSubscriptionIdRoute = createRoute({
           name: 'sku_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'ID of SKU',
           required: true,
         },
       }),
@@ -71045,6 +71744,7 @@ export const getSkusSkuIdSubscriptionsSubscriptionIdRoute = createRoute({
           name: 'subscription_id',
           in: 'path',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description: 'ID of the subscription',
           required: true,
         },
       }),
@@ -71055,6 +71755,8 @@ export const getSkusSkuIdSubscriptionsSubscriptionIdRoute = createRoute({
           name: 'user_id',
           in: 'query',
           schema: { $ref: '#/components/schemas/SnowflakeType' },
+          description:
+            'User ID for which to return the subscription. Required except for OAuth queries.',
           required: false,
         },
       }).exactOptional(),
@@ -71790,6 +72492,8 @@ export const getUsersMeGuildsRoute = createRoute({
             name: 'shard',
             in: 'query',
             schema: { type: 'integer', minimum: 0 },
+            description:
+              'Return the guilds contained within the specified shard. Required for applications that are sharded. Valid values are 0 to session_start_limit.max_concurrency - 1. Not the same as Gateway shard ids.',
             required: false,
           },
         }),

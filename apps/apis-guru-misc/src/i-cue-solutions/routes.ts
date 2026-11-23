@@ -1,61 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ForecastHyperparameterResponseSchema = z
-  .strictObject({
-    discardData: z.boolean().nullable().exactOptional().openapi({ example: false }),
-    errorType: z
-      .enum([
-        'MeanAbsolutePercentageError',
-        'MeanSquaredError',
-        'MeanAbsoluteError',
-        'MedianAbsoluteDeviation',
-        'None',
-      ])
-      .exactOptional()
-      .openapi({ example: 'MeanAbsolutePercentageError' }),
-    holdOutPeriod: z.int32().nullable().exactOptional().openapi({ example: 4 }),
-    noFcst: z.int32().nullable().exactOptional().openapi({ example: 18 }),
-    periodicity: z.int32().nullable().exactOptional().openapi({ example: 12 }),
-  })
-  .openapi({ required: [] })
-  .openapi('ForecastHyperparameterResponse')
-
-const PlanningLevelForecastResultDataSchema = z
-  .strictObject({ date: z.string().nullable().exactOptional(), value: z.float64().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('PlanningLevelForecastResultData')
-
-const TimeSeriesForecastResponseSchema = z
-  .strictObject({
-    error: z.float64().nullable().exactOptional(),
-    forecastData: z.array(PlanningLevelForecastResultDataSchema).nullable().exactOptional(),
-    method: z.string().nullable().exactOptional(),
-    timeSeriesId: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TimeSeriesForecastResponse')
-
-type ForecastResponseType = {
-  hyperparameters?: z.infer<typeof ForecastHyperparameterResponseSchema>
-  timeSeries?: z.infer<typeof TimeSeriesForecastResponseSchema>[] | null
-}
-
-const TimeSeriesHistoryAndForecastResponseSchema = z
-  .strictObject({
-    error: z.float64().nullable().exactOptional(),
-    forecastData: z.array(PlanningLevelForecastResultDataSchema).nullable().exactOptional(),
-    historyData: z.array(PlanningLevelForecastResultDataSchema).nullable().exactOptional(),
-    method: z.string().nullable().exactOptional(),
-    timeSeriesId: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TimeSeriesHistoryAndForecastResponse')
-
-type HistoryAndForecastResponseType = {
-  hyperparameters?: z.infer<typeof ForecastHyperparameterResponseSchema>
-  timeSeries?: z.infer<typeof TimeSeriesHistoryAndForecastResponseSchema>[] | null
-}
-
 const PlanningLevelDataDtoSchema = z
   .strictObject({
     historyValues: z.array(z.float64()).nullable().exactOptional(),
@@ -117,6 +61,31 @@ const EntityResponseSchema = z
   .openapi({ required: [] })
   .openapi('EntityResponse')
 
+const PlanningLevelForecastResultDataSchema = z
+  .strictObject({ date: z.string().nullable().exactOptional(), value: z.float64().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('PlanningLevelForecastResultData')
+
+const ForecastHyperparameterResponseSchema = z
+  .strictObject({
+    discardData: z.boolean().nullable().exactOptional().openapi({ example: false }),
+    errorType: z
+      .enum([
+        'MeanAbsolutePercentageError',
+        'MeanSquaredError',
+        'MeanAbsoluteError',
+        'MedianAbsoluteDeviation',
+        'None',
+      ])
+      .exactOptional()
+      .openapi({ example: 'MeanAbsolutePercentageError' }),
+    holdOutPeriod: z.int32().nullable().exactOptional().openapi({ example: 4 }),
+    noFcst: z.int32().nullable().exactOptional().openapi({ example: 18 }),
+    periodicity: z.int32().nullable().exactOptional().openapi({ example: 12 }),
+  })
+  .openapi({ required: [] })
+  .openapi('ForecastHyperparameterResponse')
+
 const ForecastBottomUpResponseSchema = z
   .strictObject({
     forecastData: z.array(PlanningLevelForecastResultDataSchema).nullable().exactOptional(),
@@ -156,15 +125,22 @@ const ForecastPerformanceRequestSchema = z
   .openapi({ required: ['method', 'planningLevelId', 'rewindTimeFrame', 'startDate'] })
   .openapi('ForecastPerformanceRequest')
 
-const ForecastResponseSchema: z.ZodType<ForecastResponseType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        hyperparameters: ForecastHyperparameterResponseSchema.exactOptional(),
-        timeSeries: z.array(TimeSeriesForecastResponseSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const TimeSeriesForecastResponseSchema = z
+  .strictObject({
+    error: z.float64().nullable().exactOptional(),
+    forecastData: z.array(PlanningLevelForecastResultDataSchema).nullable().exactOptional(),
+    method: z.string().nullable().exactOptional(),
+    timeSeriesId: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TimeSeriesForecastResponse')
+
+const ForecastResponseSchema = z
+  .strictObject({
+    hyperparameters: ForecastHyperparameterResponseSchema.exactOptional(),
+    timeSeries: z.array(TimeSeriesForecastResponseSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('ForecastResponse')
 
 const OutlierResponseSchema = z
@@ -197,15 +173,23 @@ const FullDetailsForecastResponseSchema = z
   .openapi({ required: [] })
   .openapi('FullDetailsForecastResponse')
 
-const HistoryAndForecastResponseSchema: z.ZodType<HistoryAndForecastResponseType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        hyperparameters: ForecastHyperparameterResponseSchema.exactOptional(),
-        timeSeries: z.array(TimeSeriesHistoryAndForecastResponseSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const TimeSeriesHistoryAndForecastResponseSchema = z
+  .strictObject({
+    error: z.float64().nullable().exactOptional(),
+    forecastData: z.array(PlanningLevelForecastResultDataSchema).nullable().exactOptional(),
+    historyData: z.array(PlanningLevelForecastResultDataSchema).nullable().exactOptional(),
+    method: z.string().nullable().exactOptional(),
+    timeSeriesId: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TimeSeriesHistoryAndForecastResponse')
+
+const HistoryAndForecastResponseSchema = z
+  .strictObject({
+    hyperparameters: ForecastHyperparameterResponseSchema.exactOptional(),
+    timeSeries: z.array(TimeSeriesHistoryAndForecastResponseSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('HistoryAndForecastResponse')
 
 const HyperparameterModelSchema = z

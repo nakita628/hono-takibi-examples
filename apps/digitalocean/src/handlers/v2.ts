@@ -1,0 +1,3524 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  deleteV2AccountKeysSshKeyIdentifierRoute,
+  deleteV2ActionGatewayConnectionsIdRoute,
+  deleteV2ActionGatewayEndpointsEndpointIdRoute,
+  deleteV2ActionGatewayEndpointVersionsVersionIdRoute,
+  deleteV2ActionGatewayMcpServersServerRefRoute,
+  deleteV2ActionGatewayOutputViewsViewIdRoute,
+  deleteV2ActionGatewayProviderCredentialsIdRoute,
+  deleteV2ActionGatewaySessionsSessionUrnRoute,
+  deleteV2ActionGatewayToolbeltsNameRoute,
+  deleteV2AddOnsSaasResourceUuidRoute,
+  deleteV2AppsIdRoute,
+  deleteV2ByoipPrefixesByoipPrefixUuidRoute,
+  deleteV2CdnEndpointsCdnIdCacheRoute,
+  deleteV2CdnEndpointsCdnIdRoute,
+  deleteV2CertificatesCertificateIdRoute,
+  deleteV2DatabasesDatabaseClusterUuidDbsDatabaseNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidIndexesIndexNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+  deleteV2DatabasesDatabaseClusterUuidOnlineMigrationMigrationIdRoute,
+  deleteV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidReplicasReplicaNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidRoute,
+  deleteV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+  deleteV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+  deleteV2DedicatedInferencesDedicatedInferenceIdRoute,
+  deleteV2DedicatedInferencesDedicatedInferenceIdTokensTokenIdRoute,
+  deleteV2DomainsDomainNameRecordsDomainRecordIdRoute,
+  deleteV2DomainsDomainNameRoute,
+  deleteV2DropletsAutoscaleAutoscalePoolIdDangerousRoute,
+  deleteV2DropletsAutoscaleAutoscalePoolIdRoute,
+  deleteV2DropletsDropletIdDestroyWithAssociatedResourcesDangerousRoute,
+  deleteV2DropletsDropletIdDestroyWithAssociatedResourcesSelectiveRoute,
+  deleteV2DropletsDropletIdRoute,
+  deleteV2DropletsRoute,
+  deleteV2FirewallsFirewallIdDropletsRoute,
+  deleteV2FirewallsFirewallIdRoute,
+  deleteV2FirewallsFirewallIdRulesRoute,
+  deleteV2FirewallsFirewallIdTagsRoute,
+  deleteV2FloatingIpsFloatingIpRoute,
+  deleteV2FunctionsNamespacesNamespaceIdKeysKeyIdRoute,
+  deleteV2FunctionsNamespacesNamespaceIdRoute,
+  deleteV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+  deleteV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRoute,
+  deleteV2GenAiAgentsAgentUuidFunctionsFunctionUuidRoute,
+  deleteV2GenAiAgentsAgentUuidGuardrailsGuardrailUuidRoute,
+  deleteV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRoute,
+  deleteV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+  deleteV2GenAiAgentsUuidRoute,
+  deleteV2GenAiAnthropicKeysApiKeyUuidRoute,
+  deleteV2GenAiCustomEvaluationMetricsMetricUuidRoute,
+  deleteV2GenAiCustomModelsUuidRoute,
+  deleteV2GenAiEvaluationDatasetsDatasetUuidRoute,
+  deleteV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRoute,
+  deleteV2GenAiKnowledgeBasesUuidRoute,
+  deleteV2GenAiModelEvaluationPresetsEvalPresetUuidRoute,
+  deleteV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+  deleteV2GenAiModelsApiKeysApiKeyUuidRoute,
+  deleteV2GenAiModelsRoutersUuidRoute,
+  deleteV2GenAiOpenaiKeysApiKeyUuidRoute,
+  deleteV2GenAiScenarioSetsScenarioSetUuidRoute,
+  deleteV2GenAiScheduledIndexingUuidRoute,
+  deleteV2GenAiSimulationRunsRunUuidRoute,
+  deleteV2GenAiWorkspacesWorkspaceUuidRoute,
+  deleteV2HarnessRuntimeAuthProviderConnectionsConnectionIdRoute,
+  deleteV2HarnessRuntimeConfigsConfigIdRoute,
+  deleteV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRoute,
+  deleteV2HarnessRuntimeSessionsSessionIdRoute,
+  deleteV2HarnessRuntimeTemplatesTemplateIdRoute,
+  deleteV2HarnessRuntimeTriggersTriggerIdRoute,
+  deleteV2HarnessRuntimeWorkspacesWorkspaceIdRoute,
+  deleteV2ImagesImageIdRoute,
+  deleteV2InsightsAlertRulesIdRoute,
+  deleteV2InsightsDashboardsUuidRoute,
+  deleteV2InsightsNotificationChannelsIdRoute,
+  deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesDangerousRoute,
+  deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesSelectiveRoute,
+  deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdNodesNodeIdRoute,
+  deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+  deleteV2KubernetesClustersClusterIdRoute,
+  deleteV2KubernetesRegistriesRoute,
+  deleteV2KubernetesRegistryRoute,
+  deleteV2LoadBalancersLbIdCacheRoute,
+  deleteV2LoadBalancersLbIdDropletsRoute,
+  deleteV2LoadBalancersLbIdForwardingRulesRoute,
+  deleteV2LoadBalancersLbIdRoute,
+  deleteV2MicrovmsCheckpointsCheckpointIdRoute,
+  deleteV2MicrovmsMicrovmIdAccessTokensTokenIdRoute,
+  deleteV2MicrovmsMicrovmIdRoute,
+  deleteV2MicrovmsMicrovmIdUrlsUrlIdRoute,
+  deleteV2MonitoringAlertsAlertUuidRoute,
+  deleteV2MonitoringSinksDestinationsDestinationUuidRoute,
+  deleteV2MonitoringSinksSinkUuidRoute,
+  deleteV2NfsAccessPointsAccessPointIdRoute,
+  deleteV2NfsNfsIdRoute,
+  deleteV2NfsSnapshotsNfsSnapshotIdRoute,
+  deleteV2PartnerNetworkConnectAttachmentsPaIdRoute,
+  deleteV2ProjectsProjectIdRoute,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRoute,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameRoute,
+  deleteV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRoute,
+  deleteV2RegistriesRegistryNameRoute,
+  deleteV2RegistryRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRoute,
+  deleteV2RegistryRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRoute,
+  deleteV2RegistryRoute,
+  deleteV2ReservedIpsReservedIpRoute,
+  deleteV2ReservedIpv6ReservedIpv6Route,
+  deleteV2SecuritySecretsSecretRoute,
+  deleteV2SecuritySettingsSuppressionsSuppressionUuidRoute,
+  deleteV2SnapshotsSnapshotIdRegionsRegionRoute,
+  deleteV2SnapshotsSnapshotIdRoute,
+  deleteV2SpacesKeysAccessKeyRoute,
+  deleteV2TagsTagIdResourcesRoute,
+  deleteV2TagsTagIdRoute,
+  deleteV2UptimeChecksCheckIdAlertsAlertIdRoute,
+  deleteV2UptimeChecksCheckIdRoute,
+  deleteV2VectorDatabasesIdRoute,
+  deleteV2VolumesRoute,
+  deleteV2VolumesSnapshotsSnapshotIdRoute,
+  deleteV2VolumesVolumeIdRoute,
+  deleteV2VpcNatGatewaysIdRoute,
+  deleteV2VpcPeeringsVpcPeeringIdRoute,
+  deleteV2VpcsVpcIdRoute,
+  deleteV2VpcsVpcUuidSubnetsSubnetUuidRoute,
+  deleteV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRoute,
+  getV21ClicksRoute,
+  getV2AccountKeysRoute,
+  getV2AccountKeysSshKeyIdentifierRoute,
+  getV2AccountRoute,
+  getV2ActionGatewayActorsActorIdLimitsRoute,
+  getV2ActionGatewayConnectionsIdRoute,
+  getV2ActionGatewayConnectionsRoute,
+  getV2ActionGatewayEndpointsEndpointIdRoute,
+  getV2ActionGatewayEndpointsEndpointIdVersionsRoute,
+  getV2ActionGatewayEndpointsRoute,
+  getV2ActionGatewayEndpointsSearchRoute,
+  getV2ActionGatewayEndpointVersionsVersionIdRoute,
+  getV2ActionGatewayMcpServersRoute,
+  getV2ActionGatewayMcpServersServerRefRoute,
+  getV2ActionGatewayMcpServersServerRefToolsRoute,
+  getV2ActionGatewayOutputViewsRoute,
+  getV2ActionGatewayOutputViewsViewIdRoute,
+  getV2ActionGatewayProviderCredentialsIdRoute,
+  getV2ActionGatewayProviderCredentialsRoute,
+  getV2ActionGatewaySessionsRoute,
+  getV2ActionGatewaySessionsSearchRoute,
+  getV2ActionGatewayToolbeltsNameProvidersProviderToolsRoute,
+  getV2ActionGatewayToolbeltsNameProvidersRoute,
+  getV2ActionGatewayToolbeltsNameRoute,
+  getV2ActionGatewayToolbeltsRoute,
+  getV2ActionGatewayToolbeltsSearchRoute,
+  getV2ActionGatewayToolsHealthProvidersRoute,
+  getV2ActionGatewayToolsHealthRoute,
+  getV2ActionGatewayToolsHealthToolsToolSlugRoute,
+  getV2ActionGatewayToolsProvidersRoute,
+  getV2ActionGatewayToolsProvidersSearchRoute,
+  getV2ActionGatewayToolsRoute,
+  getV2ActionGatewayToolsSearchRoute,
+  getV2ActionGatewayToolsToolkitsRoute,
+  getV2ActionGatewayToolsToolSlugVersionsRoute,
+  getV2ActionGatewayUsersRoute,
+  getV2ActionGatewayUsersUserIdRoute,
+  getV2ActionsActionIdRoute,
+  getV2ActionsRoute,
+  getV2AddOnsAppsAppSlugMetadataRoute,
+  getV2AddOnsAppsRoute,
+  getV2AddOnsSaasResourceUuidRoute,
+  getV2AddOnsSaasRoute,
+  getV2AppsAppIdAlertsRoute,
+  getV2AppsAppIdComponentsComponentNameExecRoute,
+  getV2AppsAppIdComponentsComponentNameLogsRoute,
+  getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameExecRoute,
+  getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameLogsRoute,
+  getV2AppsAppIdDeploymentsDeploymentIdLogsRoute,
+  getV2AppsAppIdDeploymentsDeploymentIdRoute,
+  getV2AppsAppIdDeploymentsRoute,
+  getV2AppsAppIdEventsEventIdLogsRoute,
+  getV2AppsAppIdEventsEventIdRoute,
+  getV2AppsAppIdEventsRoute,
+  getV2AppsAppIdHealthRoute,
+  getV2AppsAppIdInstancesRoute,
+  getV2AppsAppIdJobInvocationsJobInvocationIdRoute,
+  getV2AppsAppIdJobInvocationsRoute,
+  getV2AppsAppIdJobsJobNameInvocationsJobInvocationIdLogsRoute,
+  getV2AppsAppIdLogsRoute,
+  getV2AppsAppIdMetricsBandwidthDailyRoute,
+  getV2AppsIdRoute,
+  getV2AppsRegionsRoute,
+  getV2AppsRoute,
+  getV2AppsTiersInstanceSizesRoute,
+  getV2AppsTiersInstanceSizesSlugRoute,
+  getV2BillingAccountUrnInsightsStartDateEndDateRoute,
+  getV2ByoipPrefixesByoipPrefixUuidIpsRoute,
+  getV2ByoipPrefixesByoipPrefixUuidRoute,
+  getV2ByoipPrefixesRoute,
+  getV2CdnEndpointsCdnIdRoute,
+  getV2CdnEndpointsRoute,
+  getV2CertificatesCertificateIdRoute,
+  getV2CertificatesRoute,
+  getV2CustomersMyBalanceRoute,
+  getV2CustomersMyBillingHistoryRoute,
+  getV2CustomersMyInvoicesInvoiceUuidCsvRoute,
+  getV2CustomersMyInvoicesInvoiceUuidPdfRoute,
+  getV2CustomersMyInvoicesInvoiceUuidRoute,
+  getV2CustomersMyInvoicesInvoiceUuidSummaryRoute,
+  getV2CustomersMyInvoicesRoute,
+  getV2CustomersMyPrepaymentConfigRoute,
+  getV2CustomersMyPrepaymentStatusRoute,
+  getV2DatabasesDatabaseClusterUuidAutoscaleRoute,
+  getV2DatabasesDatabaseClusterUuidBackupsRoute,
+  getV2DatabasesDatabaseClusterUuidCaRoute,
+  getV2DatabasesDatabaseClusterUuidConfigRoute,
+  getV2DatabasesDatabaseClusterUuidDbsDatabaseNameRoute,
+  getV2DatabasesDatabaseClusterUuidDbsRoute,
+  getV2DatabasesDatabaseClusterUuidDoSettingsRoute,
+  getV2DatabasesDatabaseClusterUuidEventsRoute,
+  getV2DatabasesDatabaseClusterUuidEvictionPolicyRoute,
+  getV2DatabasesDatabaseClusterUuidFirewallRoute,
+  getV2DatabasesDatabaseClusterUuidIndexesRoute,
+  getV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+  getV2DatabasesDatabaseClusterUuidLogsinkRoute,
+  getV2DatabasesDatabaseClusterUuidOnlineMigrationRoute,
+  getV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+  getV2DatabasesDatabaseClusterUuidPoolsRoute,
+  getV2DatabasesDatabaseClusterUuidReplicasReplicaNameRoute,
+  getV2DatabasesDatabaseClusterUuidReplicasRoute,
+  getV2DatabasesDatabaseClusterUuidRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistryRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRoute,
+  getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameVersionsVersionRoute,
+  getV2DatabasesDatabaseClusterUuidSqlModeRoute,
+  getV2DatabasesDatabaseClusterUuidTopicsRoute,
+  getV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+  getV2DatabasesDatabaseClusterUuidUsersRoute,
+  getV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+  getV2DatabasesMetricsCredentialsRoute,
+  getV2DatabasesOptionsRoute,
+  getV2DatabasesRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsAcceleratorIdRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdCaRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdRoute,
+  getV2DedicatedInferencesDedicatedInferenceIdTokensRoute,
+  getV2DedicatedInferencesGpuModelConfigRoute,
+  getV2DedicatedInferencesRoute,
+  getV2DedicatedInferencesSizesRoute,
+  getV2DomainsDomainNameRecordsDomainRecordIdRoute,
+  getV2DomainsDomainNameRecordsRoute,
+  getV2DomainsDomainNameRoute,
+  getV2DomainsRoute,
+  getV2DropletsAutoscaleAutoscalePoolIdHistoryRoute,
+  getV2DropletsAutoscaleAutoscalePoolIdMembersRoute,
+  getV2DropletsAutoscaleAutoscalePoolIdRoute,
+  getV2DropletsAutoscaleRoute,
+  getV2DropletsBackupsPoliciesRoute,
+  getV2DropletsBackupsSupportedPoliciesRoute,
+  getV2DropletsDropletIdActionsActionIdRoute,
+  getV2DropletsDropletIdActionsRoute,
+  getV2DropletsDropletIdBackupsPolicyRoute,
+  getV2DropletsDropletIdBackupsRoute,
+  getV2DropletsDropletIdDestroyWithAssociatedResourcesRoute,
+  getV2DropletsDropletIdDestroyWithAssociatedResourcesStatusRoute,
+  getV2DropletsDropletIdFirewallsRoute,
+  getV2DropletsDropletIdKernelsRoute,
+  getV2DropletsDropletIdNeighborsRoute,
+  getV2DropletsDropletIdRoute,
+  getV2DropletsDropletIdSnapshotsRoute,
+  getV2DropletsRoute,
+  getV2FirewallsFirewallIdRoute,
+  getV2FirewallsRoute,
+  getV2FloatingIpsFloatingIpActionsActionIdRoute,
+  getV2FloatingIpsFloatingIpActionsRoute,
+  getV2FloatingIpsFloatingIpRoute,
+  getV2FloatingIpsRoute,
+  getV2FunctionsNamespacesNamespaceIdKeysRoute,
+  getV2FunctionsNamespacesNamespaceIdRoute,
+  getV2FunctionsNamespacesNamespaceIdTriggersRoute,
+  getV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+  getV2FunctionsNamespacesRoute,
+  getV2GenAiAgentsAgentUuidApiKeysRoute,
+  getV2GenAiAgentsRoute,
+  getV2GenAiAgentsUuidChildAgentsRoute,
+  getV2GenAiAgentsUuidRoute,
+  getV2GenAiAgentsUuidUsageRoute,
+  getV2GenAiAgentsUuidVersionsRoute,
+  getV2GenAiAnthropicKeysApiKeyUuidRoute,
+  getV2GenAiAnthropicKeysRoute,
+  getV2GenAiAnthropicKeysUuidAgentsRoute,
+  getV2GenAiCustomModelsRoute,
+  getV2GenAiCustomModelsUuidRoute,
+  getV2GenAiEvaluationDatasetsDatasetUuidDownloadUrlRoute,
+  getV2GenAiEvaluationDatasetsRoute,
+  getV2GenAiEvaluationMetricsRoute,
+  getV2GenAiEvaluationRunsEvaluationRunUuidResultsPromptIdRoute,
+  getV2GenAiEvaluationRunsEvaluationRunUuidResultsRoute,
+  getV2GenAiEvaluationRunsEvaluationRunUuidRoute,
+  getV2GenAiEvaluationTestCasesEvaluationTestCaseUuidEvaluationRunsRoute,
+  getV2GenAiEvaluationTestCasesRoute,
+  getV2GenAiEvaluationTestCasesTestCaseUuidRoute,
+  getV2GenAiIndexingJobsIndexingJobUuidDataSourcesRoute,
+  getV2GenAiIndexingJobsIndexingJobUuidDetailsSignedUrlRoute,
+  getV2GenAiIndexingJobsRoute,
+  getV2GenAiIndexingJobsUuidRoute,
+  getV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRoute,
+  getV2GenAiKnowledgeBasesKnowledgeBaseUuidIndexingJobsRoute,
+  getV2GenAiKnowledgeBasesRoute,
+  getV2GenAiKnowledgeBasesUuidRoute,
+  getV2GenAiModelEvaluationMetricsRoute,
+  getV2GenAiModelEvaluationPresetsEvalPresetUuidRoute,
+  getV2GenAiModelEvaluationPresetsRoute,
+  getV2GenAiModelEvaluationRunsEvalRunUuidResultsDownloadUrlRoute,
+  getV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+  getV2GenAiModelEvaluationRunsRoute,
+  getV2GenAiModelsApiKeysRoute,
+  getV2GenAiModelsCatalogIdRoute,
+  getV2GenAiModelsCatalogRoute,
+  getV2GenAiModelsCatalogV2IdRoute,
+  getV2GenAiModelsCatalogV2Route,
+  getV2GenAiModelsRoute,
+  getV2GenAiModelsRoutersPresetsRoute,
+  getV2GenAiModelsRoutersRoute,
+  getV2GenAiModelsRoutersTasksPresetsRoute,
+  getV2GenAiModelsRoutersUuidRoute,
+  getV2GenAiOauth2UrlRoute,
+  getV2GenAiOpenaiKeysApiKeyUuidRoute,
+  getV2GenAiOpenaiKeysRoute,
+  getV2GenAiOpenaiKeysUuidAgentsRoute,
+  getV2GenAiRegionsRoute,
+  getV2GenAiScenarioLibraryLibraryScenarioUuidScenariosRoute,
+  getV2GenAiScenarioLibraryRoute,
+  getV2GenAiScenarioSetsRoute,
+  getV2GenAiScenarioSetsScenarioSetUuidDownloadUrlRoute,
+  getV2GenAiScenarioSetsScenarioSetUuidRoute,
+  getV2GenAiScenarioSetsScenarioSetUuidScenariosRoute,
+  getV2GenAiScheduledIndexingKnowledgeBaseKnowledgeBaseUuidRoute,
+  getV2GenAiSimulationRunsRoute,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidRoute,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryRoute,
+  getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryUrlRoute,
+  getV2GenAiSimulationRunsRunUuidEpisodesRoute,
+  getV2GenAiSimulationRunsRunUuidRoute,
+  getV2GenAiWorkspacesRoute,
+  getV2GenAiWorkspacesWorkspaceUuidAgentsRoute,
+  getV2GenAiWorkspacesWorkspaceUuidEvaluationTestCasesRoute,
+  getV2GenAiWorkspacesWorkspaceUuidRoute,
+  getV2HarnessRuntimeAuthProviderConnectionsConnectionIdRoute,
+  getV2HarnessRuntimeAuthProviderConnectionsRoute,
+  getV2HarnessRuntimeAuthProviderPollRoute,
+  getV2HarnessRuntimeConfigsConfigIdRoute,
+  getV2HarnessRuntimeConfigsConfigIdSessionsRoute,
+  getV2HarnessRuntimeConfigsRoute,
+  getV2HarnessRuntimeImageMessagesRoute,
+  getV2HarnessRuntimeRegionsRoute,
+  getV2HarnessRuntimeSessionsRoute,
+  getV2HarnessRuntimeSessionsSandboxSizesRoute,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdImageMessagesRoute,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRoute,
+  getV2HarnessRuntimeSessionsSessionIdCheckpointsRoute,
+  getV2HarnessRuntimeSessionsSessionIdEventsRoute,
+  getV2HarnessRuntimeSessionsSessionIdImageMessagesRoute,
+  getV2HarnessRuntimeSessionsSessionIdIngressRoute,
+  getV2HarnessRuntimeSessionsSessionIdPortForwardPortRoute,
+  getV2HarnessRuntimeSessionsSessionIdRoute,
+  getV2HarnessRuntimeSessionsSessionIdWorkspaceDownloadRoute,
+  getV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdRoute,
+  getV2HarnessRuntimeTemplatesRoute,
+  getV2HarnessRuntimeTemplatesTemplateIdBuildsBuildIdRoute,
+  getV2HarnessRuntimeTemplatesTemplateIdBuildsRoute,
+  getV2HarnessRuntimeTemplatesTemplateIdRoute,
+  getV2HarnessRuntimeTriggersBySessionSessionIdRoute,
+  getV2HarnessRuntimeTriggersReusableSessionsRoute,
+  getV2HarnessRuntimeTriggersRoute,
+  getV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdRoute,
+  getV2HarnessRuntimeTriggersTriggerIdExecutionsRoute,
+  getV2HarnessRuntimeTriggersTriggerIdRoute,
+  getV2HarnessRuntimeWebhookProvidersRoute,
+  getV2HarnessRuntimeWorkspacesRoute,
+  getV2HarnessRuntimeWorkspacesWorkspaceIdRoute,
+  getV2ImagesImageIdActionsActionIdRoute,
+  getV2ImagesImageIdActionsRoute,
+  getV2ImagesImageIdRoute,
+  getV2ImagesRoute,
+  getV2InsightsAlertInstancesIdRoute,
+  getV2InsightsAlertInstancesRoute,
+  getV2InsightsAlertRulesIdRoute,
+  getV2InsightsAlertRulesRoute,
+  getV2InsightsDashboardsRoute,
+  getV2InsightsDashboardsSchemaRoute,
+  getV2InsightsDashboardsUuidRoute,
+  getV2InsightsNotificationChannelsIdRoute,
+  getV2InsightsNotificationChannelsRoute,
+  getV2InsightsQueryRegionPromApiV1LabelNameValuesRoute,
+  getV2InsightsQueryRegionPromApiV1LabelsRoute,
+  getV2InsightsQueryRegionPromApiV1QueryRangeRoute,
+  getV2InsightsQueryRegionPromApiV1QueryRoute,
+  getV2InsightsQueryRegionPromApiV1SeriesRoute,
+  getV2InsightsQueryRegionTracesTraceIdRoute,
+  getV2InsightsResourcesResourceUrnRoute,
+  getV2InsightsResourcesRoute,
+  getV2KubernetesClustersClusterIdClusterlintRoute,
+  getV2KubernetesClustersClusterIdCredentialsRoute,
+  getV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesRoute,
+  getV2KubernetesClustersClusterIdKubeconfigRoute,
+  getV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+  getV2KubernetesClustersClusterIdNodePoolsRoute,
+  getV2KubernetesClustersClusterIdRoute,
+  getV2KubernetesClustersClusterIdStatusMessagesRoute,
+  getV2KubernetesClustersClusterIdUpgradesRoute,
+  getV2KubernetesClustersClusterIdUserRoute,
+  getV2KubernetesClustersRoute,
+  getV2KubernetesOptionsRoute,
+  getV2LoadBalancersLbIdRoute,
+  getV2LoadBalancersRoute,
+  getV2MicrovmsCheckpointsCheckpointIdRoute,
+  getV2MicrovmsCheckpointsRoute,
+  getV2MicrovmsMicrovmIdAccessTokensRoute,
+  getV2MicrovmsMicrovmIdConsoleRoute,
+  getV2MicrovmsMicrovmIdFilesRoute,
+  getV2MicrovmsMicrovmIdPortForwardRoute,
+  getV2MicrovmsMicrovmIdRoute,
+  getV2MicrovmsOptionsRoute,
+  getV2MicrovmsRoute,
+  getV2MonitoringAlertsAlertUuidRoute,
+  getV2MonitoringAlertsRoute,
+  getV2MonitoringMetricsAppsCpuPercentageRoute,
+  getV2MonitoringMetricsAppsMemoryPercentageRoute,
+  getV2MonitoringMetricsAppsRestartCountRoute,
+  getV2MonitoringMetricsDatabaseMysqlCpuUsageRoute,
+  getV2MonitoringMetricsDatabaseMysqlDiskUsageRoute,
+  getV2MonitoringMetricsDatabaseMysqlIndexVsSequentialReadsRoute,
+  getV2MonitoringMetricsDatabaseMysqlLoadRoute,
+  getV2MonitoringMetricsDatabaseMysqlMemoryUsageRoute,
+  getV2MonitoringMetricsDatabaseMysqlOpRatesRoute,
+  getV2MonitoringMetricsDatabaseMysqlSchemaLatencyRoute,
+  getV2MonitoringMetricsDatabaseMysqlSchemaThroughputRoute,
+  getV2MonitoringMetricsDatabaseMysqlThreadsActiveRoute,
+  getV2MonitoringMetricsDatabaseMysqlThreadsConnectedRoute,
+  getV2MonitoringMetricsDatabaseMysqlThreadsCreatedRateRoute,
+  getV2MonitoringMetricsDropletAutoscaleCurrentCpuUtilizationRoute,
+  getV2MonitoringMetricsDropletAutoscaleCurrentInstancesRoute,
+  getV2MonitoringMetricsDropletAutoscaleCurrentMemoryUtilizationRoute,
+  getV2MonitoringMetricsDropletAutoscaleTargetCpuUtilizationRoute,
+  getV2MonitoringMetricsDropletAutoscaleTargetInstancesRoute,
+  getV2MonitoringMetricsDropletAutoscaleTargetMemoryUtilizationRoute,
+  getV2MonitoringMetricsDropletBandwidthRoute,
+  getV2MonitoringMetricsDropletCpuRoute,
+  getV2MonitoringMetricsDropletFilesystemFreeRoute,
+  getV2MonitoringMetricsDropletFilesystemSizeRoute,
+  getV2MonitoringMetricsDropletLoad15Route,
+  getV2MonitoringMetricsDropletLoad1Route,
+  getV2MonitoringMetricsDropletLoad5Route,
+  getV2MonitoringMetricsDropletMemoryAvailableRoute,
+  getV2MonitoringMetricsDropletMemoryCachedRoute,
+  getV2MonitoringMetricsDropletMemoryFreeRoute,
+  getV2MonitoringMetricsDropletMemoryTotalRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsConnectionsRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsDowntimeRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHealthChecksRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponsesRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime50pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime95pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime99pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTimeAvgRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration50pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration95pRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDurationAvgRoute,
+  getV2MonitoringMetricsLoadBalancerDropletsQueueSizeRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendConnectionsCurrentRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendConnectionsLimitRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendCpuUtilizationRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedBytesRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedPacketsRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendHttpRequestsPerSecondRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendHttpResponsesRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputHttpRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputTcpRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputUdpRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNlbTcpNetworkThroughputRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendNlbUdpNetworkThroughputRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsCurrentRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsExceedingRateLimitRoute,
+  getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsLimitRoute,
+  getV2MonitoringSinksDestinationsDestinationUuidRoute,
+  getV2MonitoringSinksDestinationsRoute,
+  getV2MonitoringSinksRoute,
+  getV2MonitoringSinksSinkUuidRoute,
+  getV2NfsAccessPointsAccessPointIdRoute,
+  getV2NfsNfsIdRoute,
+  getV2NfsRoute,
+  getV2NfsSharesShareIdAccessPointsRoute,
+  getV2NfsSnapshotsNfsSnapshotIdRoute,
+  getV2NfsSnapshotsRoute,
+  getV2OrganizationsTeamsRoute,
+  getV2PartnerNetworkConnectAttachmentsPaIdBgpAuthKeyRoute,
+  getV2PartnerNetworkConnectAttachmentsPaIdRemoteRoutesRoute,
+  getV2PartnerNetworkConnectAttachmentsPaIdRoute,
+  getV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRoute,
+  getV2PartnerNetworkConnectAttachmentsRoute,
+  getV2ProjectsDefaultResourcesRoute,
+  getV2ProjectsDefaultRoute,
+  getV2ProjectsProjectIdResourcesRoute,
+  getV2ProjectsProjectIdRoute,
+  getV2ProjectsRoute,
+  getV2RegionsRoute,
+  getV2RegistriesOptionsRoute,
+  getV2RegistriesRegistryNameDockerCredentialsRoute,
+  getV2RegistriesRegistryNameGarbageCollectionRoute,
+  getV2RegistriesRegistryNameGarbageCollectionsRoute,
+  getV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsRoute,
+  getV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRoute,
+  getV2RegistriesRegistryNameRepositoriesV2Route,
+  getV2RegistriesRegistryNameRoute,
+  getV2RegistriesRoute,
+  getV2RegistriesSubscriptionRoute,
+  getV2RegistryDockerCredentialsRoute,
+  getV2RegistryOptionsRoute,
+  getV2RegistryRegistryNameGarbageCollectionRoute,
+  getV2RegistryRegistryNameGarbageCollectionsRoute,
+  getV2RegistryRegistryNameRepositoriesRepositoryNameDigestsRoute,
+  getV2RegistryRegistryNameRepositoriesRepositoryNameTagsRoute,
+  getV2RegistryRegistryNameRepositoriesRoute,
+  getV2RegistryRegistryNameRepositoriesV2Route,
+  getV2RegistryRoute,
+  getV2RegistrySubscriptionRoute,
+  getV2ReportsDropletNeighborsIdsRoute,
+  getV2ReservedIpsReservedIpActionsActionIdRoute,
+  getV2ReservedIpsReservedIpActionsRoute,
+  getV2ReservedIpsReservedIpRoute,
+  getV2ReservedIpsRoute,
+  getV2ReservedIpv6ReservedIpv6Route,
+  getV2ReservedIpv6Route,
+  getV2SecurityScansLatestRoute,
+  getV2SecurityScansRoute,
+  getV2SecurityScansScanIdFindingsFindingUuidAffectedResourcesRoute,
+  getV2SecurityScansScanIdRoute,
+  getV2SecuritySecretsRoute,
+  getV2SecuritySecretsSecretRoute,
+  getV2SecuritySecretsSecretVersionsRoute,
+  getV2SecuritySettingsRoute,
+  getV2SizesRoute,
+  getV2SnapshotsRoute,
+  getV2SnapshotsSnapshotIdRoute,
+  getV2SpacesKeysAccessKeyRoute,
+  getV2SpacesKeysRoute,
+  getV2TagsRoute,
+  getV2TagsTagIdRoute,
+  getV2UptimeChecksCheckIdAlertsAlertIdRoute,
+  getV2UptimeChecksCheckIdAlertsRoute,
+  getV2UptimeChecksCheckIdRoute,
+  getV2UptimeChecksCheckIdStateRoute,
+  getV2UptimeChecksRoute,
+  getV2VectorDatabasesIdBackupsBackupIdRestoreRoute,
+  getV2VectorDatabasesIdBackupsRoute,
+  getV2VectorDatabasesIdCredentialsRoute,
+  getV2VectorDatabasesIdRoute,
+  getV2VectorDatabasesRoute,
+  getV2VolumesRoute,
+  getV2VolumesSnapshotsSnapshotIdRoute,
+  getV2VolumesVolumeIdActionsActionIdRoute,
+  getV2VolumesVolumeIdActionsRoute,
+  getV2VolumesVolumeIdRoute,
+  getV2VolumesVolumeIdSnapshotsRoute,
+  getV2VpcNatGatewaysIdRoute,
+  getV2VpcNatGatewaysRoute,
+  getV2VpcPeeringsRoute,
+  getV2VpcPeeringsVpcPeeringIdRoute,
+  getV2VpcsRoute,
+  getV2VpcsVpcIdMembersRoute,
+  getV2VpcsVpcIdPeeringsRoute,
+  getV2VpcsVpcIdRoute,
+  getV2VpcsVpcUuidRoutesRoute,
+  getV2VpcsVpcUuidSubnetsRoute,
+  getV2VpcsVpcUuidSubnetsSubnetUuidMembersRoute,
+  getV2VpcsVpcUuidSubnetsSubnetUuidRoute,
+  getV2VpcsVpcUuidSubnetsSubnetUuidRoutesRoute,
+  patchV2ActionGatewayEndpointsEndpointIdRoute,
+  patchV2ActionGatewayMcpServersServerRefRoute,
+  patchV2ActionGatewayProviderCredentialsIdRoute,
+  patchV2AddOnsSaasResourceUuidPlanRoute,
+  patchV2AddOnsSaasResourceUuidRoute,
+  patchV2ByoipPrefixesByoipPrefixUuidRoute,
+  patchV2DatabasesDatabaseClusterUuidConfigRoute,
+  patchV2DedicatedInferencesDedicatedInferenceIdRoute,
+  patchV2DomainsDomainNameRecordsDomainRecordIdRoute,
+  patchV2GenAiCustomModelsUuidMetadataRoute,
+  patchV2GenAiModelEvaluationRunsEvalRunUuidRoute,
+  patchV2GenAiSimulationRunsRunUuidCancelRoute,
+  patchV2HarnessRuntimeSessionsSessionIdRoute,
+  patchV2HarnessRuntimeTriggersTriggerIdRoute,
+  patchV2MicrovmsMicrovmIdRoute,
+  patchV2PartnerNetworkConnectAttachmentsPaIdRoute,
+  patchV2ProjectsDefaultRoute,
+  patchV2ProjectsProjectIdRoute,
+  patchV2SpacesKeysAccessKeyRoute,
+  patchV2VpcPeeringsVpcPeeringIdRoute,
+  patchV2VpcsVpcIdPeeringsVpcPeeringIdRoute,
+  patchV2VpcsVpcIdRoute,
+  patchV2VpcsVpcUuidSubnetsSubnetUuidRoute,
+  patchV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRoute,
+  postV21ClicksKubernetesRoute,
+  postV2AccountKeysRoute,
+  postV2ActionGatewayActorsActorIdLimitsClearRoute,
+  postV2ActionGatewayActorsActorIdLimitsSetRoute,
+  postV2ActionGatewayConnectionsRoute,
+  postV2ActionGatewayEndpointsEndpointIdVersionsPromoteRoute,
+  postV2ActionGatewayEndpointsEndpointIdVersionsRoute,
+  postV2ActionGatewayEndpointsRoute,
+  postV2ActionGatewayMcpServersRoute,
+  postV2ActionGatewayMcpServersServerRefResyncRoute,
+  postV2ActionGatewayOutputViewsPreviewRoute,
+  postV2ActionGatewayOutputViewsRoute,
+  postV2ActionGatewayProviderCredentialsRoute,
+  postV2ActionGatewaySessionsRoute,
+  postV2ActionGatewayToolbeltsNameToolsAddRoute,
+  postV2ActionGatewayToolbeltsNameToolsRemoveRoute,
+  postV2ActionGatewayToolbeltsRoute,
+  postV2AddOnsSaasRoute,
+  postV2AppsAppIdAlertsAlertIdDestinationsRoute,
+  postV2AppsAppIdDeploymentsDeploymentIdCancelRoute,
+  postV2AppsAppIdDeploymentsRoute,
+  postV2AppsAppIdEventsEventIdCancelRoute,
+  postV2AppsAppIdJobInvocationsJobInvocationIdCancelRoute,
+  postV2AppsAppIdRestartRoute,
+  postV2AppsAppIdRollbackCommitRoute,
+  postV2AppsAppIdRollbackRevertRoute,
+  postV2AppsAppIdRollbackRoute,
+  postV2AppsAppIdRollbackValidateRoute,
+  postV2AppsMetricsBandwidthDailyRoute,
+  postV2AppsProposeRoute,
+  postV2AppsRoute,
+  postV2ByoipPrefixesRoute,
+  postV2CdnEndpointsRoute,
+  postV2CertificatesRoute,
+  postV2DatabasesDatabaseClusterUuidDbsRoute,
+  postV2DatabasesDatabaseClusterUuidLogsinkRoute,
+  postV2DatabasesDatabaseClusterUuidPoolsRoute,
+  postV2DatabasesDatabaseClusterUuidReplicasRoute,
+  postV2DatabasesDatabaseClusterUuidSchemaRegistryRoute,
+  postV2DatabasesDatabaseClusterUuidTopicsRoute,
+  postV2DatabasesDatabaseClusterUuidUsersRoute,
+  postV2DatabasesDatabaseClusterUuidUsersUsernameResetAuthRoute,
+  postV2DatabasesRoute,
+  postV2DedicatedInferencesDedicatedInferenceIdTokensRoute,
+  postV2DedicatedInferencesRoute,
+  postV2DomainsDomainNameRecordsRoute,
+  postV2DomainsRoute,
+  postV2DropletsActionsRoute,
+  postV2DropletsAutoscaleRoute,
+  postV2DropletsDropletIdActionsRoute,
+  postV2DropletsDropletIdDestroyWithAssociatedResourcesRetryRoute,
+  postV2DropletsRoute,
+  postV2FirewallsFirewallIdDropletsRoute,
+  postV2FirewallsFirewallIdRulesRoute,
+  postV2FirewallsFirewallIdTagsRoute,
+  postV2FirewallsRoute,
+  postV2FloatingIpsFloatingIpActionsRoute,
+  postV2FloatingIpsRoute,
+  postV2FunctionsNamespacesNamespaceIdKeysRoute,
+  postV2FunctionsNamespacesNamespaceIdTriggersRoute,
+  postV2FunctionsNamespacesRoute,
+  postV2GenAiAgentsAgentUuidApiKeysRoute,
+  postV2GenAiAgentsAgentUuidFunctionsRoute,
+  postV2GenAiAgentsAgentUuidGuardrailsRoute,
+  postV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRoute,
+  postV2GenAiAgentsAgentUuidKnowledgeBasesRoute,
+  postV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+  postV2GenAiAgentsRoute,
+  postV2GenAiAnthropicKeysRoute,
+  postV2GenAiCustomEvaluationMetricsRoute,
+  postV2GenAiCustomModelsImportRoute,
+  postV2GenAiEvaluationDatasetsFileUploadPresignedUrlsRoute,
+  postV2GenAiEvaluationDatasetsRoute,
+  postV2GenAiEvaluationRunsRoute,
+  postV2GenAiEvaluationTestCasesRoute,
+  postV2GenAiIndexingJobsRoute,
+  postV2GenAiKnowledgeBasesDataSourcesFileUploadPresignedUrlsRoute,
+  postV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRoute,
+  postV2GenAiKnowledgeBasesRoute,
+  postV2GenAiModelEvaluationDatasetsFileUploadPresignedUrlsRoute,
+  postV2GenAiModelEvaluationRunsRoute,
+  postV2GenAiModelsApiKeysRoute,
+  postV2GenAiModelsRoutersRoute,
+  postV2GenAiOauth2DropboxTokensRoute,
+  postV2GenAiOpenaiKeysRoute,
+  postV2GenAiScenarioLibraryLibraryScenarioUuidCreateScenarioSetRoute,
+  postV2GenAiScenarioSetsFileUploadPresignedUrlsRoute,
+  postV2GenAiScenarioSetsGenerateRoute,
+  postV2GenAiScenarioSetsRoute,
+  postV2GenAiScenarioSetsScenarioSetUuidDuplicateRoute,
+  postV2GenAiScheduledIndexingRoute,
+  postV2GenAiSimulationRunsRoute,
+  postV2GenAiWorkspacesRoute,
+  postV2HarnessRuntimeAuthProviderConnectionsConnectionIdReconnectRoute,
+  postV2HarnessRuntimeAuthProviderConnectionsRoute,
+  postV2HarnessRuntimeAuthProviderRoute,
+  postV2HarnessRuntimeConfigsConfigIdCloneRoute,
+  postV2HarnessRuntimeConfigsRoute,
+  postV2HarnessRuntimeSessionsPolicyValidateRoute,
+  postV2HarnessRuntimeSessionsRoute,
+  postV2HarnessRuntimeSessionsSessionIdCancelRoute,
+  postV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRollbackRoute,
+  postV2HarnessRuntimeSessionsSessionIdCheckpointsRoute,
+  postV2HarnessRuntimeSessionsSessionIdForkRoute,
+  postV2HarnessRuntimeSessionsSessionIdHitlRequestIdRoute,
+  postV2HarnessRuntimeSessionsSessionIdInputRoute,
+  postV2HarnessRuntimeSessionsSessionIdPauseRoute,
+  postV2HarnessRuntimeSessionsSessionIdResumeRoute,
+  postV2HarnessRuntimeSessionsSessionIdSandboxExecExecIdStdinRoute,
+  postV2HarnessRuntimeSessionsSessionIdSandboxExecRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCancelRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCommitRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdPartUploadUrlsRoute,
+  postV2HarnessRuntimeSessionsSessionIdWorkspaceUploadRoute,
+  postV2HarnessRuntimeTemplatesRoute,
+  postV2HarnessRuntimeTriggersRoute,
+  postV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdCancelRoute,
+  postV2HarnessRuntimeTriggersTriggerIdRotateSecretRoute,
+  postV2HarnessRuntimeTriggersTriggerIdWebhookRoute,
+  postV2HarnessRuntimeWorkspacesRoute,
+  postV2ImagesImageIdAccountTransferAcceptRoute,
+  postV2ImagesImageIdAccountTransferCancelRoute,
+  postV2ImagesImageIdAccountTransferDeclineRoute,
+  postV2ImagesImageIdAccountTransferRoute,
+  postV2ImagesImageIdActionsRoute,
+  postV2ImagesRoute,
+  postV2InsightsAlertRulesRoute,
+  postV2InsightsDashboardsRoute,
+  postV2InsightsNotificationChannelsRoute,
+  postV2InsightsQueryRegionLogsSearchRoute,
+  postV2InsightsQueryRegionPromApiV1LabelsRoute,
+  postV2InsightsQueryRegionPromApiV1QueryRangeRoute,
+  postV2InsightsQueryRegionPromApiV1QueryRoute,
+  postV2InsightsQueryRegionPromApiV1SeriesRoute,
+  postV2InsightsQueryRegionSpansSearchRoute,
+  postV2InsightsQueryRegionTracesSearchRoute,
+  postV2KubernetesClustersClusterIdClusterlintRoute,
+  postV2KubernetesClustersClusterIdNodePoolsNodePoolIdRecycleRoute,
+  postV2KubernetesClustersClusterIdNodePoolsRoute,
+  postV2KubernetesClustersClusterIdUpgradeRoute,
+  postV2KubernetesClustersRoute,
+  postV2KubernetesRegistriesRoute,
+  postV2KubernetesRegistryRoute,
+  postV2LoadBalancersLbIdDropletsRoute,
+  postV2LoadBalancersLbIdForwardingRulesRoute,
+  postV2LoadBalancersRoute,
+  postV2MicrovmsMicrovmIdAccessTokensRoute,
+  postV2MicrovmsMicrovmIdCheckpointsRoute,
+  postV2MicrovmsMicrovmIdExecRoute,
+  postV2MicrovmsMicrovmIdPauseRoute,
+  postV2MicrovmsMicrovmIdResumeRoute,
+  postV2MicrovmsMicrovmIdUrlsRoute,
+  postV2MicrovmsRoute,
+  postV2MonitoringAlertsRoute,
+  postV2MonitoringSinksDestinationsDestinationUuidRoute,
+  postV2MonitoringSinksDestinationsRoute,
+  postV2MonitoringSinksRoute,
+  postV2NfsNfsIdActionsRoute,
+  postV2NfsRoute,
+  postV2NfsSharesShareIdAccessPointsRoute,
+  postV2OrganizationsTeamRoute,
+  postV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRoute,
+  postV2PartnerNetworkConnectAttachmentsRoute,
+  postV2ProjectsDefaultResourcesRoute,
+  postV2ProjectsProjectIdResourcesRoute,
+  postV2ProjectsRoute,
+  postV2RegistriesRegistryNameGarbageCollectionRoute,
+  postV2RegistriesRoute,
+  postV2RegistriesSubscriptionRoute,
+  postV2RegistriesValidateNameRoute,
+  postV2RegistryRegistryNameGarbageCollectionRoute,
+  postV2RegistryRoute,
+  postV2RegistrySubscriptionRoute,
+  postV2RegistryValidateNameRoute,
+  postV2ReservedIpsReservedIpActionsRoute,
+  postV2ReservedIpsRoute,
+  postV2ReservedIpv6ReservedIpv6ActionsRoute,
+  postV2ReservedIpv6Route,
+  postV2SecurityScansRoute,
+  postV2SecurityScansRulesRoute,
+  postV2SecuritySecretsRoute,
+  postV2SecuritySecretsSecretRestoreRoute,
+  postV2SecuritySettingsSuppressionsRoute,
+  postV2SpacesKeysRoute,
+  postV2TagsRoute,
+  postV2TagsTagIdResourcesRoute,
+  postV2UptimeChecksCheckIdAlertsRoute,
+  postV2UptimeChecksRoute,
+  postV2VectorDatabasesIdBackupsBackupIdRestoreRoute,
+  postV2VectorDatabasesIdResizeRoute,
+  postV2VectorDatabasesRoute,
+  postV2VolumesActionsRoute,
+  postV2VolumesRoute,
+  postV2VolumesVolumeIdActionsRoute,
+  postV2VolumesVolumeIdSnapshotsRoute,
+  postV2VpcNatGatewaysRoute,
+  postV2VpcPeeringsRoute,
+  postV2VpcsRoute,
+  postV2VpcsVpcIdPeeringsRoute,
+  postV2VpcsVpcUuidSubnetsRoute,
+  postV2VpcsVpcUuidSubnetsSubnetUuidRoutesRoute,
+  putV2AccountKeysSshKeyIdentifierRoute,
+  putV2ActionGatewayMcpServersServerRefToolsRoute,
+  putV2AppsIdRoute,
+  putV2CdnEndpointsCdnIdRoute,
+  putV2DatabasesDatabaseClusterUuidAutoscaleRoute,
+  putV2DatabasesDatabaseClusterUuidDoSettingsRoute,
+  putV2DatabasesDatabaseClusterUuidEvictionPolicyRoute,
+  putV2DatabasesDatabaseClusterUuidFirewallRoute,
+  putV2DatabasesDatabaseClusterUuidInstallUpdateRoute,
+  putV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute,
+  putV2DatabasesDatabaseClusterUuidMaintenanceRoute,
+  putV2DatabasesDatabaseClusterUuidMigrateRoute,
+  putV2DatabasesDatabaseClusterUuidOnlineMigrationRoute,
+  putV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute,
+  putV2DatabasesDatabaseClusterUuidReplicasReplicaNamePromoteRoute,
+  putV2DatabasesDatabaseClusterUuidResizeRoute,
+  putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRoute,
+  putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRoute,
+  putV2DatabasesDatabaseClusterUuidSqlModeRoute,
+  putV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute,
+  putV2DatabasesDatabaseClusterUuidUpgradeRoute,
+  putV2DatabasesDatabaseClusterUuidUsersUsernameRoute,
+  putV2DatabasesMetricsCredentialsRoute,
+  putV2DomainsDomainNameRecordsDomainRecordIdRoute,
+  putV2DropletsAutoscaleAutoscalePoolIdRoute,
+  putV2FirewallsFirewallIdRoute,
+  putV2FunctionsNamespacesNamespaceIdKeysKeyIdRoute,
+  putV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute,
+  putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRegenerateRoute,
+  putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRoute,
+  putV2GenAiAgentsAgentUuidFunctionsFunctionUuidRoute,
+  putV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute,
+  putV2GenAiAgentsUuidDeploymentVisibilityRoute,
+  putV2GenAiAgentsUuidRoute,
+  putV2GenAiAgentsUuidVersionsRoute,
+  putV2GenAiAnthropicKeysApiKeyUuidRoute,
+  putV2GenAiCustomEvaluationMetricsMetricUuidRoute,
+  putV2GenAiEvaluationTestCasesTestCaseUuidRoute,
+  putV2GenAiIndexingJobsUuidCancelRoute,
+  putV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRoute,
+  putV2GenAiKnowledgeBasesUuidRoute,
+  putV2GenAiModelEvaluationRunsEvalRunUuidCancelRoute,
+  putV2GenAiModelsApiKeysApiKeyUuidRegenerateRoute,
+  putV2GenAiModelsApiKeysApiKeyUuidRoute,
+  putV2GenAiModelsRoutersUuidRoute,
+  putV2GenAiOpenaiKeysApiKeyUuidRoute,
+  putV2GenAiScenarioSetsScenarioSetUuidRoute,
+  putV2GenAiSimulationRunsRunUuidRoute,
+  putV2GenAiWorkspacesWorkspaceUuidAgentsRoute,
+  putV2GenAiWorkspacesWorkspaceUuidRoute,
+  putV2HarnessRuntimeTemplatesTemplateIdRoute,
+  putV2ImagesImageIdRoute,
+  putV2InsightsAlertRulesIdRoute,
+  putV2InsightsDashboardsUuidRoute,
+  putV2InsightsNotificationChannelsIdRoute,
+  putV2InsightsResourcesResourceUrnSignalsRoute,
+  putV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute,
+  putV2KubernetesClustersClusterIdRoute,
+  putV2LoadBalancersLbIdRoute,
+  putV2MicrovmsMicrovmIdFilesRoute,
+  putV2MonitoringAlertsAlertUuidRoute,
+  putV2ProjectsDefaultRoute,
+  putV2ProjectsProjectIdRoute,
+  putV2RegistriesRegistryNameGarbageCollectionGarbageCollectionUuidRoute,
+  putV2RegistryRegistryNameGarbageCollectionGarbageCollectionUuidRoute,
+  putV2SecuritySecretsSecretRoute,
+  putV2SecuritySettingsPlanRoute,
+  putV2SpacesKeysAccessKeyRoute,
+  putV2UptimeChecksCheckIdAlertsAlertIdRoute,
+  putV2UptimeChecksCheckIdRoute,
+  putV2VectorDatabasesIdRoute,
+  putV2VectorDatabasesIdTagsRoute,
+  putV2VpcNatGatewaysIdRoute,
+  putV2VpcsVpcIdRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const v2Handler = app
+  .openapi(getV2ActionGatewayActorsActorIdLimitsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayActorsActorIdLimitsClearRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayActorsActorIdLimitsSetRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayProviderCredentialsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayProviderCredentialsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayProviderCredentialsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2ActionGatewayProviderCredentialsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ActionGatewayProviderCredentialsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayConnectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayConnectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayConnectionsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ActionGatewayConnectionsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayMcpServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayMcpServersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayMcpServersServerRefRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2ActionGatewayMcpServersServerRefRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ActionGatewayMcpServersServerRefRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayMcpServersServerRefResyncRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayMcpServersServerRefToolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2ActionGatewayMcpServersServerRefToolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayOutputViewsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayOutputViewsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayOutputViewsPreviewRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayOutputViewsViewIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ActionGatewayOutputViewsViewIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayEndpointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayEndpointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayEndpointsSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayEndpointsEndpointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2ActionGatewayEndpointsEndpointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ActionGatewayEndpointsEndpointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayEndpointsEndpointIdVersionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayEndpointsEndpointIdVersionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayEndpointsEndpointIdVersionsPromoteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayEndpointVersionsVersionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ActionGatewayEndpointVersionsVersionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewaySessionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewaySessionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewaySessionsSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ActionGatewaySessionsSessionUrnRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayToolbeltsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolbeltsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolbeltsSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolbeltsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ActionGatewayToolbeltsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolbeltsNameProvidersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolbeltsNameProvidersProviderToolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayToolbeltsNameToolsAddRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ActionGatewayToolbeltsNameToolsRemoveRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsHealthRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsHealthProvidersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsHealthToolsToolSlugRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsToolSlugVersionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsProvidersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsProvidersSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayToolsToolkitsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayUsersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionGatewayUsersUserIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV21ClicksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV21ClicksKubernetesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AccountRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AccountKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AccountKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AccountKeysSshKeyIdentifierRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2AccountKeysSshKeyIdentifierRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2AccountKeysSshKeyIdentifierRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ActionsActionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AddOnsAppsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AddOnsAppsAppSlugMetadataRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AddOnsSaasRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AddOnsSaasRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AddOnsSaasResourceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2AddOnsSaasResourceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2AddOnsSaasResourceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2AddOnsSaasResourceUuidPlanRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeAuthProviderRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeAuthProviderPollRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeAuthProviderConnectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeAuthProviderConnectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeAuthProviderConnectionsConnectionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2HarnessRuntimeAuthProviderConnectionsConnectionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeAuthProviderConnectionsConnectionIdReconnectRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeImageMessagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeConfigsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeConfigsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeConfigsConfigIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2HarnessRuntimeConfigsConfigIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeConfigsConfigIdCloneRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeConfigsConfigIdSessionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeRegionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsPolicyValidateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSandboxSizesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2HarnessRuntimeSessionsSessionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2HarnessRuntimeSessionsSessionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdCheckpointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdCheckpointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdImageMessagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdCheckpointsCheckpointIdRollbackRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdForkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdHitlRequestIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdImageMessagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdInputRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdPauseRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdResumeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdSandboxExecRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdSandboxExecExecIdStdinRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdWorkspaceDownloadRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdCommitRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    postV2HarnessRuntimeSessionsSessionIdWorkspaceTransfersTransferIdPartUploadUrlsRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(postV2HarnessRuntimeSessionsSessionIdWorkspaceUploadRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdEventsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdPortForwardPortRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeSessionsSessionIdIngressRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTemplatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeTemplatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTemplatesTemplateIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2HarnessRuntimeTemplatesTemplateIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2HarnessRuntimeTemplatesTemplateIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTemplatesTemplateIdBuildsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTemplatesTemplateIdBuildsBuildIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTriggersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeTriggersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTriggersBySessionSessionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTriggersReusableSessionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTriggersTriggerIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2HarnessRuntimeTriggersTriggerIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2HarnessRuntimeTriggersTriggerIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTriggersTriggerIdExecutionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeTriggersTriggerIdExecutionsExecutionIdCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeTriggersTriggerIdRotateSecretRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeTriggersTriggerIdWebhookRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeWebhookProvidersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeWorkspacesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2HarnessRuntimeWorkspacesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2HarnessRuntimeWorkspacesWorkspaceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2HarnessRuntimeWorkspacesWorkspaceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2AppsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2AppsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdRestartRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdComponentsComponentNameLogsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdComponentsComponentNameExecRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdInstancesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdDeploymentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdDeploymentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdDeploymentsDeploymentIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdDeploymentsDeploymentIdCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameLogsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdDeploymentsDeploymentIdLogsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdDeploymentsDeploymentIdComponentsComponentNameExecRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdLogsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdJobInvocationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdJobInvocationsJobInvocationIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdJobInvocationsJobInvocationIdCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdJobsJobNameInvocationsJobInvocationIdLogsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdEventsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdEventsEventIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdEventsEventIdCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdEventsEventIdLogsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsTiersInstanceSizesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsTiersInstanceSizesSlugRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsRegionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsProposeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdAlertsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdAlertsAlertIdDestinationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdRollbackRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdRollbackValidateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdRollbackCommitRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsAppIdRollbackRevertRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdMetricsBandwidthDailyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2AppsMetricsBandwidthDailyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2AppsAppIdHealthRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CdnEndpointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2CdnEndpointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CdnEndpointsCdnIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2CdnEndpointsCdnIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2CdnEndpointsCdnIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2CdnEndpointsCdnIdCacheRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CertificatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2CertificatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CertificatesCertificateIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2CertificatesCertificateIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyBalanceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyPrepaymentConfigRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyPrepaymentStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyBillingHistoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyInvoicesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyInvoicesInvoiceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyInvoicesInvoiceUuidCsvRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyInvoicesInvoiceUuidPdfRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2CustomersMyInvoicesInvoiceUuidSummaryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2BillingAccountUrnInsightsStartDateEndDateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesOptionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidConfigRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2DatabasesDatabaseClusterUuidConfigRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidCaRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidOnlineMigrationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidOnlineMigrationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidOnlineMigrationMigrationIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidMigrateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidResizeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidFirewallRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidFirewallRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidDoSettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidDoSettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidMaintenanceRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidInstallUpdateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidBackupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidReplicasRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesDatabaseClusterUuidReplicasRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidEventsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidReplicasReplicaNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidReplicasReplicaNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidReplicasReplicaNamePromoteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidUsersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesDatabaseClusterUuidUsersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidUsersUsernameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidUsersUsernameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidUsersUsernameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesDatabaseClusterUuidUsersUsernameResetAuthRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidDbsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesDatabaseClusterUuidDbsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidDbsDatabaseNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidDbsDatabaseNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidPoolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesDatabaseClusterUuidPoolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidPoolsPoolNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidEvictionPolicyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidEvictionPolicyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidSqlModeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidSqlModeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidUpgradeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidAutoscaleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidAutoscaleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidTopicsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesDatabaseClusterUuidTopicsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidTopicsTopicNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidLogsinkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesDatabaseClusterUuidLogsinkRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidLogsinkLogsinkIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidSchemaRegistryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DatabasesDatabaseClusterUuidSchemaRegistryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidSchemaRegistrySubjectNameVersionsVersionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesDatabaseClusterUuidSchemaRegistryConfigSubjectNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesMetricsCredentialsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DatabasesMetricsCredentialsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DatabasesDatabaseClusterUuidIndexesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DatabasesDatabaseClusterUuidIndexesIndexNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DedicatedInferencesDedicatedInferenceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2DedicatedInferencesDedicatedInferenceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DedicatedInferencesDedicatedInferenceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DedicatedInferencesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DedicatedInferencesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DedicatedInferencesDedicatedInferenceIdAcceleratorsAcceleratorIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DedicatedInferencesDedicatedInferenceIdCaRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DedicatedInferencesDedicatedInferenceIdTokensRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DedicatedInferencesDedicatedInferenceIdTokensRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DedicatedInferencesDedicatedInferenceIdTokensTokenIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DedicatedInferencesSizesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DedicatedInferencesGpuModelConfigRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DomainsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DomainsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DomainsDomainNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DomainsDomainNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DomainsDomainNameRecordsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DomainsDomainNameRecordsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DomainsDomainNameRecordsDomainRecordIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2DomainsDomainNameRecordsDomainRecordIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DomainsDomainNameRecordsDomainRecordIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DomainsDomainNameRecordsDomainRecordIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DropletsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DropletsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DropletsDropletIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdBackupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdBackupsPolicyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsBackupsPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsBackupsSupportedPoliciesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdSnapshotsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DropletsDropletIdActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DropletsActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdActionsActionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdKernelsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdFirewallsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdNeighborsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdDestroyWithAssociatedResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DropletsDropletIdDestroyWithAssociatedResourcesSelectiveRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DropletsDropletIdDestroyWithAssociatedResourcesDangerousRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsDropletIdDestroyWithAssociatedResourcesStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DropletsDropletIdDestroyWithAssociatedResourcesRetryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsAutoscaleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2DropletsAutoscaleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsAutoscaleAutoscalePoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2DropletsAutoscaleAutoscalePoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DropletsAutoscaleAutoscalePoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2DropletsAutoscaleAutoscalePoolIdDangerousRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsAutoscaleAutoscalePoolIdMembersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2DropletsAutoscaleAutoscalePoolIdHistoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FirewallsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FirewallsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FirewallsFirewallIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2FirewallsFirewallIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2FirewallsFirewallIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FirewallsFirewallIdDropletsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2FirewallsFirewallIdDropletsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FirewallsFirewallIdTagsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2FirewallsFirewallIdTagsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FirewallsFirewallIdRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2FirewallsFirewallIdRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FloatingIpsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FloatingIpsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FloatingIpsFloatingIpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2FloatingIpsFloatingIpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FloatingIpsFloatingIpActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FloatingIpsFloatingIpActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FloatingIpsFloatingIpActionsActionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FunctionsNamespacesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FunctionsNamespacesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FunctionsNamespacesNamespaceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2FunctionsNamespacesNamespaceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FunctionsNamespacesNamespaceIdTriggersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FunctionsNamespacesNamespaceIdTriggersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2FunctionsNamespacesNamespaceIdTriggersTriggerNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2FunctionsNamespacesNamespaceIdKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2FunctionsNamespacesNamespaceIdKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2FunctionsNamespacesNamespaceIdKeysKeyIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2FunctionsNamespacesNamespaceIdKeysKeyIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ImagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ImagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ImagesImageIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2ImagesImageIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ImagesImageIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ImagesImageIdAccountTransferRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ImagesImageIdAccountTransferAcceptRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ImagesImageIdAccountTransferCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ImagesImageIdAccountTransferDeclineRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ImagesImageIdActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ImagesImageIdActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ImagesImageIdActionsActionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsAlertInstancesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsAlertInstancesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsAlertRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsAlertRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsAlertRulesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2InsightsAlertRulesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2InsightsAlertRulesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsDashboardsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsDashboardsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsDashboardsSchemaRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsDashboardsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2InsightsDashboardsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2InsightsDashboardsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsNotificationChannelsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsNotificationChannelsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsNotificationChannelsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2InsightsNotificationChannelsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2InsightsNotificationChannelsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsQueryRegionPromApiV1QueryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsQueryRegionPromApiV1QueryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsQueryRegionPromApiV1QueryRangeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsQueryRegionPromApiV1QueryRangeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsQueryRegionPromApiV1LabelsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsQueryRegionPromApiV1LabelsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsQueryRegionPromApiV1LabelNameValuesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsQueryRegionPromApiV1SeriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsQueryRegionPromApiV1SeriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsQueryRegionLogsSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsQueryRegionTracesSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsQueryRegionTracesTraceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2InsightsQueryRegionSpansSearchRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2InsightsResourcesResourceUrnRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2InsightsResourcesResourceUrnSignalsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2KubernetesClustersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2KubernetesClustersClusterIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2KubernetesClustersClusterIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesSelectiveRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2KubernetesClustersClusterIdDestroyWithAssociatedResourcesDangerousRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdKubeconfigRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdCredentialsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdUpgradesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2KubernetesClustersClusterIdUpgradeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdNodePoolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2KubernetesClustersClusterIdNodePoolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2KubernetesClustersClusterIdNodePoolsNodePoolIdNodesNodeIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2KubernetesClustersClusterIdNodePoolsNodePoolIdRecycleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdUserRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesOptionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2KubernetesClustersClusterIdClusterlintRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdClusterlintRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2KubernetesRegistryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2KubernetesRegistryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2KubernetesRegistriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2KubernetesRegistriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2KubernetesClustersClusterIdStatusMessagesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2LoadBalancersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2LoadBalancersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2LoadBalancersLbIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2LoadBalancersLbIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2LoadBalancersLbIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2LoadBalancersLbIdCacheRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2LoadBalancersLbIdDropletsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2LoadBalancersLbIdDropletsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2LoadBalancersLbIdForwardingRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2LoadBalancersLbIdForwardingRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MicrovmsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsOptionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsCheckpointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsCheckpointsCheckpointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2MicrovmsCheckpointsCheckpointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsMicrovmIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2MicrovmsMicrovmIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2MicrovmsMicrovmIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MicrovmsMicrovmIdUrlsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2MicrovmsMicrovmIdUrlsUrlIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MicrovmsMicrovmIdAccessTokensRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsMicrovmIdAccessTokensRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2MicrovmsMicrovmIdAccessTokensTokenIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MicrovmsMicrovmIdPauseRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MicrovmsMicrovmIdResumeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MicrovmsMicrovmIdExecRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsMicrovmIdConsoleRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsMicrovmIdPortForwardRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2MicrovmsMicrovmIdFilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MicrovmsMicrovmIdFilesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MicrovmsMicrovmIdCheckpointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringAlertsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MonitoringAlertsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringAlertsAlertUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2MonitoringAlertsAlertUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2MonitoringAlertsAlertUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletBandwidthRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletCpuRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletFilesystemFreeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletFilesystemSizeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletLoad1Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletLoad5Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletLoad15Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletMemoryCachedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletMemoryFreeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletMemoryTotalRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletMemoryAvailableRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsAppsMemoryPercentageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsAppsCpuPercentageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsAppsRestartCountRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendConnectionsCurrentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendConnectionsLimitRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendCpuUtilizationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedBytesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendFirewallDroppedPacketsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendHttpResponsesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendHttpRequestsPerSecondRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputHttpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputUdpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendNetworkThroughputTcpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendNlbTcpNetworkThroughputRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendNlbUdpNetworkThroughputRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsCurrentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsLimitRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerFrontendTlsConnectionsExceedingRateLimitRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDurationAvgRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration50pRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHttpSessionDuration95pRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTimeAvgRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime50pRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime95pRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHttpResponseTime99pRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsQueueSizeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHttpResponsesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsConnectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsHealthChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsLoadBalancerDropletsDowntimeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletAutoscaleCurrentInstancesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletAutoscaleTargetInstancesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletAutoscaleCurrentCpuUtilizationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletAutoscaleTargetCpuUtilizationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletAutoscaleCurrentMemoryUtilizationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDropletAutoscaleTargetMemoryUtilizationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlCpuUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlLoadRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlMemoryUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlDiskUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlThreadsConnectedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlThreadsCreatedRateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlThreadsActiveRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlIndexVsSequentialReadsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlOpRatesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlSchemaThroughputRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringMetricsDatabaseMysqlSchemaLatencyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MonitoringSinksDestinationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringSinksDestinationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringSinksDestinationsDestinationUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MonitoringSinksDestinationsDestinationUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2MonitoringSinksDestinationsDestinationUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2MonitoringSinksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringSinksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2MonitoringSinksSinkUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2MonitoringSinksSinkUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2NfsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2NfsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2NfsNfsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2NfsNfsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2NfsNfsIdActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2NfsSnapshotsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2NfsSnapshotsNfsSnapshotIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2NfsSnapshotsNfsSnapshotIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2NfsSharesShareIdAccessPointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2NfsSharesShareIdAccessPointsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2NfsAccessPointsAccessPointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2NfsAccessPointsAccessPointIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2OrganizationsTeamRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2OrganizationsTeamsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2PartnerNetworkConnectAttachmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2PartnerNetworkConnectAttachmentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2PartnerNetworkConnectAttachmentsPaIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2PartnerNetworkConnectAttachmentsPaIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2PartnerNetworkConnectAttachmentsPaIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2PartnerNetworkConnectAttachmentsPaIdBgpAuthKeyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2PartnerNetworkConnectAttachmentsPaIdRemoteRoutesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2PartnerNetworkConnectAttachmentsPaIdServiceKeyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ProjectsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ProjectsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ProjectsDefaultRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2ProjectsDefaultRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2ProjectsDefaultRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ProjectsProjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2ProjectsProjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2ProjectsProjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ProjectsProjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ProjectsProjectIdResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ProjectsProjectIdResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ProjectsDefaultResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ProjectsDefaultResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2RegistriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesRegistryNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2RegistriesRegistryNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesRegistryNameDockerCredentialsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesSubscriptionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2RegistriesSubscriptionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesOptionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesRegistryNameGarbageCollectionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2RegistriesRegistryNameGarbageCollectionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesRegistryNameGarbageCollectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2RegistriesRegistryNameGarbageCollectionGarbageCollectionUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesRegistryNameRepositoriesV2Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2RegistriesRegistryNameRepositoriesRepositoryNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2RegistriesRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteV2RegistriesRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(postV2RegistriesValidateNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2RegistryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2RegistryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistrySubscriptionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2RegistrySubscriptionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryDockerCredentialsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2RegistryValidateNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryRegistryNameRepositoriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryRegistryNameRepositoriesV2Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryRegistryNameRepositoriesRepositoryNameTagsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2RegistryRegistryNameRepositoriesRepositoryNameTagsRepositoryTagRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryRegistryNameRepositoriesRepositoryNameDigestsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(
+    deleteV2RegistryRegistryNameRepositoriesRepositoryNameDigestsManifestDigestRoute,
+    (c) => {
+      throw new Error('Not implemented')
+    },
+  )
+  .openapi(postV2RegistryRegistryNameGarbageCollectionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryRegistryNameGarbageCollectionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryRegistryNameGarbageCollectionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2RegistryRegistryNameGarbageCollectionGarbageCollectionUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2RegistryOptionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ReportsDropletNeighborsIdsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ReservedIpsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ReservedIpsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ReservedIpsReservedIpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ReservedIpsReservedIpRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ReservedIpsReservedIpActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ReservedIpsReservedIpActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ReservedIpsReservedIpActionsActionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ReservedIpv6Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ReservedIpv6Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ReservedIpv6ReservedIpv6Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ReservedIpv6ReservedIpv6Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ReservedIpv6ReservedIpv6ActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2ByoipPrefixesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ByoipPrefixesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ByoipPrefixesByoipPrefixUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2ByoipPrefixesByoipPrefixUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2ByoipPrefixesByoipPrefixUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2ByoipPrefixesByoipPrefixUuidIpsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SecurityScansRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2SecurityScansRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SecurityScansScanIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SecurityScansLatestRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2SecurityScansRulesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SecurityScansScanIdFindingsFindingUuidAffectedResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SecuritySettingsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2SecuritySettingsPlanRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2SecuritySettingsSuppressionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2SecuritySettingsSuppressionsSuppressionUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SecuritySecretsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2SecuritySecretsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SecuritySecretsSecretRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2SecuritySecretsSecretRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2SecuritySecretsSecretRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SecuritySecretsSecretVersionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2SecuritySecretsSecretRestoreRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SizesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SnapshotsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SnapshotsSnapshotIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2SnapshotsSnapshotIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2SnapshotsSnapshotIdRegionsRegionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SpacesKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2SpacesKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2SpacesKeysAccessKeyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2SpacesKeysAccessKeyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2SpacesKeysAccessKeyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2SpacesKeysAccessKeyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2TagsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2TagsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2TagsTagIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2TagsTagIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2TagsTagIdResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2TagsTagIdResourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VectorDatabasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VectorDatabasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VectorDatabasesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2VectorDatabasesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VectorDatabasesIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VectorDatabasesIdBackupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VectorDatabasesIdBackupsBackupIdRestoreRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VectorDatabasesIdBackupsBackupIdRestoreRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VectorDatabasesIdCredentialsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VectorDatabasesIdResizeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2VectorDatabasesIdTagsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VolumesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VolumesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VolumesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VolumesActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VolumesSnapshotsSnapshotIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VolumesSnapshotsSnapshotIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VolumesVolumeIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VolumesVolumeIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VolumesVolumeIdActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VolumesVolumeIdActionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VolumesVolumeIdActionsActionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VolumesVolumeIdSnapshotsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VolumesVolumeIdSnapshotsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VpcsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsVpcIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2VpcsVpcIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2VpcsVpcIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VpcsVpcIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsVpcIdMembersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsVpcIdPeeringsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VpcsVpcIdPeeringsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2VpcsVpcIdPeeringsVpcPeeringIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsVpcUuidRoutesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsVpcUuidSubnetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VpcsVpcUuidSubnetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsVpcUuidSubnetsSubnetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2VpcsVpcUuidSubnetsSubnetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VpcsVpcUuidSubnetsSubnetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsVpcUuidSubnetsSubnetUuidMembersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcsVpcUuidSubnetsSubnetUuidRoutesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VpcsVpcUuidSubnetsSubnetUuidRoutesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VpcsVpcUuidSubnetsSubnetUuidRoutesRouteUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcPeeringsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VpcPeeringsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcPeeringsVpcPeeringIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2VpcPeeringsVpcPeeringIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VpcPeeringsVpcPeeringIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcNatGatewaysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2VpcNatGatewaysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2VpcNatGatewaysIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2VpcNatGatewaysIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2VpcNatGatewaysIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2UptimeChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2UptimeChecksRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2UptimeChecksCheckIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2UptimeChecksCheckIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2UptimeChecksCheckIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2UptimeChecksCheckIdStateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2UptimeChecksCheckIdAlertsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2UptimeChecksCheckIdAlertsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2UptimeChecksCheckIdAlertsAlertIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2UptimeChecksCheckIdAlertsAlertIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2UptimeChecksCheckIdAlertsAlertIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAgentsAgentUuidApiKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiAgentsAgentUuidApiKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiAgentsAgentUuidApiKeysApiKeyUuidRegenerateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiAgentsAgentUuidFunctionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiAgentsAgentUuidFunctionsFunctionUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiAgentsAgentUuidFunctionsFunctionUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiAgentsAgentUuidGuardrailsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiAgentsAgentUuidGuardrailsGuardrailUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiAgentsAgentUuidKnowledgeBasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiAgentsAgentUuidKnowledgeBasesKnowledgeBaseUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiAgentsParentAgentUuidChildAgentsChildAgentUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAgentsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiAgentsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiAgentsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAgentsUuidChildAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiAgentsUuidDeploymentVisibilityRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAgentsUuidUsageRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAgentsUuidVersionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiAgentsUuidVersionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAnthropicKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiAnthropicKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAnthropicKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiAnthropicKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiAnthropicKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiAnthropicKeysUuidAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiCustomModelsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiCustomModelsImportRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiCustomModelsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiCustomModelsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2GenAiCustomModelsUuidMetadataRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationDatasetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiEvaluationDatasetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiEvaluationDatasetsFileUploadPresignedUrlsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiEvaluationDatasetsDatasetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationDatasetsDatasetUuidDownloadUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationMetricsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiCustomEvaluationMetricsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiCustomEvaluationMetricsMetricUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiCustomEvaluationMetricsMetricUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiEvaluationRunsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationRunsEvaluationRunUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationRunsEvaluationRunUuidResultsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationRunsEvaluationRunUuidResultsPromptIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationTestCasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiEvaluationTestCasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationTestCasesEvaluationTestCaseUuidEvaluationRunsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiEvaluationTestCasesTestCaseUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiEvaluationTestCasesTestCaseUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiIndexingJobsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiIndexingJobsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiIndexingJobsIndexingJobUuidDataSourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiIndexingJobsIndexingJobUuidDetailsSignedUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiIndexingJobsUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiIndexingJobsUuidCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiKnowledgeBasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiKnowledgeBasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiKnowledgeBasesDataSourcesFileUploadPresignedUrlsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiKnowledgeBasesKnowledgeBaseUuidDataSourcesDataSourceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiKnowledgeBasesKnowledgeBaseUuidIndexingJobsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiKnowledgeBasesUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiKnowledgeBasesUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiKnowledgeBasesUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiModelEvaluationDatasetsFileUploadPresignedUrlsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelEvaluationMetricsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelEvaluationPresetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelEvaluationPresetsEvalPresetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiModelEvaluationPresetsEvalPresetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelEvaluationRunsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiModelEvaluationRunsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelEvaluationRunsEvalRunUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiModelEvaluationRunsEvalRunUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2GenAiModelEvaluationRunsEvalRunUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiModelEvaluationRunsEvalRunUuidCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelEvaluationRunsEvalRunUuidResultsDownloadUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsApiKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiModelsApiKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiModelsApiKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiModelsApiKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiModelsApiKeysApiKeyUuidRegenerateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsCatalogRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsCatalogIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsCatalogV2Route, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsCatalogV2IdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsRoutersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiModelsRoutersRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsRoutersPresetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsRoutersTasksPresetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiModelsRoutersUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiModelsRoutersUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiModelsRoutersUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiOauth2DropboxTokensRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiOauth2UrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiOpenaiKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiOpenaiKeysRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiOpenaiKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiOpenaiKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiOpenaiKeysApiKeyUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiOpenaiKeysUuidAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiRegionsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiScenarioLibraryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiScenarioLibraryLibraryScenarioUuidCreateScenarioSetRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiScenarioLibraryLibraryScenarioUuidScenariosRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiScenarioSetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiScenarioSetsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiScenarioSetsFileUploadPresignedUrlsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiScenarioSetsGenerateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiScenarioSetsScenarioSetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiScenarioSetsScenarioSetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiScenarioSetsScenarioSetUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiScenarioSetsScenarioSetUuidDownloadUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiScenarioSetsScenarioSetUuidDuplicateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiScenarioSetsScenarioSetUuidScenariosRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiScheduledIndexingRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiScheduledIndexingKnowledgeBaseKnowledgeBaseUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiScheduledIndexingUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiSimulationRunsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiSimulationRunsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiSimulationRunsRunUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiSimulationRunsRunUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiSimulationRunsRunUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchV2GenAiSimulationRunsRunUuidCancelRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiSimulationRunsRunUuidEpisodesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiSimulationRunsRunUuidEpisodesEpisodeUuidTrajectoryUrlRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiWorkspacesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postV2GenAiWorkspacesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiWorkspacesWorkspaceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiWorkspacesWorkspaceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteV2GenAiWorkspacesWorkspaceUuidRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiWorkspacesWorkspaceUuidAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putV2GenAiWorkspacesWorkspaceUuidAgentsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getV2GenAiWorkspacesWorkspaceUuidEvaluationTestCasesRoute, (c) => {
+    throw new Error('Not implemented')
+  })

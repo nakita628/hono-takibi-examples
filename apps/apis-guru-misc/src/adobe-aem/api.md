@@ -6,7 +6,7 @@ Swagger AEM is an OpenAPI specification for Adobe Experience Manager (AEM) API
 
 Base URLs:
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 * <a href="http://adobe.local">http://adobe.local</a>
 

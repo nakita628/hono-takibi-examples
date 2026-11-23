@@ -1,7 +1,353 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const NextTokenSchema = z.string().openapi('NextToken')
+
+const ServiceArnSchema = z.string().openapi('ServiceArn')
+
+const AccountIdSchema = z.string().openapi('AccountId')
+
+const NullableMemorySchema = z.int().openapi('NullableMemory')
+
+const NullableCpuSchema = z.int().openapi('NullableCpu')
+
+const ContainerNameSchema = z.string().openapi('ContainerName')
+
+const NullableMemoryReservationSchema = z.int().openapi('NullableMemoryReservation')
+
+const MemorySizeConfigurationSchema = z
+  .object({
+    memory: NullableMemorySchema.exactOptional().openapi({
+      description: ' The amount of memory in the container. ',
+    }),
+    memoryReservation: NullableMemoryReservationSchema.exactOptional().openapi({
+      description: ' The limit of memory reserve for the container. ',
+    }),
+  })
+  .openapi({ description: ' The memory size configurations of a container. ', required: [] })
+  .openapi('MemorySizeConfiguration')
+
+const ContainerConfigurationSchema = z
+  .object({
+    containerName: ContainerNameSchema.exactOptional().openapi({
+      description: ' The name of the container. ',
+    }),
+    memorySizeConfiguration: MemorySizeConfigurationSchema.exactOptional().openapi({
+      description: ' The memory size configurations for the container. ',
+    }),
+    cpu: NullableCpuSchema.exactOptional().openapi({
+      description: ' The number of CPU units reserved for the container. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' Describes the container configurations within the tasks of your Amazon ECS service. ',
+    required: [],
+  })
+  .openapi('ContainerConfiguration')
+
+const ContainerConfigurationsSchema = z
+  .array(ContainerConfigurationSchema)
+  .openapi('ContainerConfigurations')
+
+const AutoScalingConfigurationSchema = z
+  .enum(['TargetTrackingScalingCpu', 'TargetTrackingScalingMemory'])
+  .openapi('AutoScalingConfiguration')
+
+const TaskDefinitionArnSchema = z.string().openapi('TaskDefinitionArn')
+
+const ServiceConfigurationSchema = z
+  .object({
+    memory: NullableMemorySchema.exactOptional().openapi({
+      description: ' The amount of memory used by the tasks in the Amazon ECS service. ',
+    }),
+    cpu: NullableCpuSchema.exactOptional().openapi({
+      description: ' The number of CPU units used by the tasks in the Amazon ECS service. ',
+    }),
+    containerConfigurations: ContainerConfigurationsSchema.exactOptional().openapi({
+      description: ' The container configurations within a task of an Amazon ECS service. ',
+    }),
+    autoScalingConfiguration: AutoScalingConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p> Describes the Auto Scaling configuration methods for an Amazon ECS service. This affects the generated recommendations. For example, if Auto Scaling is configured on a service’s CPU, then Compute Optimizer doesn’t generate CPU size recommendations. </p> <p>The Auto Scaling configuration methods include:</p> <ul> <li> <p> <code>TARGET_TRACKING_SCALING_CPU</code> — If the Amazon ECS service is configured to use target scaling on CPU, Compute Optimizer doesn\'t generate CPU recommendations.</p> </li> <li> <p> <code>TARGET_TRACKING_SCALING_MEMORY</code> — If the Amazon ECS service is configured to use target scaling on memory, Compute Optimizer doesn\'t generate memory recommendations.</p> </li> </ul> <p>For more information about step scaling and target scaling, see <a href="https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-step-scaling-policies.html"> Step scaling policies for Application Auto Scaling</a> and <a href="https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html"> Target tracking scaling policies for Application Auto Scaling</a> in the <i>Application Auto Scaling User Guide</i>.</p>',
+    }),
+    taskDefinitionArn: TaskDefinitionArnSchema.exactOptional().openapi({
+      description: ' The task definition ARN used by the tasks in the Amazon ECS service. ',
+    }),
+  })
+  .openapi({
+    description: ' The Amazon ECS service configurations used for recommendations. ',
+    required: [],
+  })
+  .openapi('ServiceConfiguration')
+
+const ECSServiceMetricNameSchema = z.enum(['Cpu', 'Memory']).openapi('ECSServiceMetricName')
+
+const ECSServiceMetricStatisticSchema = z
+  .enum(['Maximum', 'Average'])
+  .openapi('ECSServiceMetricStatistic')
+
+const MetricValueSchema = z.float64().openapi('MetricValue')
+
+const ECSServiceUtilizationMetricSchema = z
+  .object({
+    name: ECSServiceMetricNameSchema.exactOptional().openapi({
+      description:
+        "<p> The name of the utilization metric. </p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> — The amount of CPU capacity that's used in the service.</p> </li> <li> <p> <code>Memory</code> — The amount of memory that's used in the service.</p> </li> </ul>",
+    }),
+    statistic: ECSServiceMetricStatisticSchema.exactOptional().openapi({
+      description:
+        '<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
+    }),
+    value: MetricValueSchema.exactOptional().openapi({
+      description: ' The value of the utilization metric. ',
+    }),
+  })
+  .openapi({
+    description:
+      '<p> Describes the utilization metric of an Amazon ECS service. </p> <p>To determine the performance difference between your current Amazon ECS service and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.</p>',
+    required: [],
+  })
+  .openapi('ECSServiceUtilizationMetric')
+
+const ECSServiceUtilizationMetricsSchema = z
+  .array(ECSServiceUtilizationMetricSchema)
+  .openapi('ECSServiceUtilizationMetrics')
+
+const LookBackPeriodInDaysSchema = z.float64().openapi('LookBackPeriodInDays')
+
+const ECSServiceLaunchTypeSchema = z.enum(['EC2', 'Fargate']).openapi('ECSServiceLaunchType')
+
+const LastRefreshTimestampSchema = z.iso.datetime({ offset: true }).openapi('LastRefreshTimestamp')
+
+const ECSServiceRecommendationFindingSchema = z
+  .enum(['Optimized', 'Underprovisioned', 'Overprovisioned'])
+  .openapi('ECSServiceRecommendationFinding')
+
+const ECSServiceRecommendationFindingReasonCodeSchema = z
+  .enum([
+    'MemoryOverprovisioned',
+    'MemoryUnderprovisioned',
+    'CPUOverprovisioned',
+    'CPUUnderprovisioned',
+  ])
+  .openapi('ECSServiceRecommendationFindingReasonCode')
+
+const ECSServiceRecommendationFindingReasonCodesSchema = z
+  .array(ECSServiceRecommendationFindingReasonCodeSchema)
+  .openapi('ECSServiceRecommendationFindingReasonCodes')
+
+const SavingsOpportunityPercentageSchema = z.float64().openapi('SavingsOpportunityPercentage')
+
+const CurrencySchema = z.enum(['USD', 'CNY']).openapi('Currency')
+
+const ValueSchema = z.float64().openapi('Value')
+
+const EstimatedMonthlySavingsSchema = z
+  .object({
+    currency: CurrencySchema.exactOptional().openapi({
+      description: 'The currency of the estimated monthly savings.',
+    }),
+    value: ValueSchema.exactOptional().openapi({
+      description: 'The value of the estimated monthly savings.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes the estimated monthly savings amount possible, based on On-Demand instance pricing, by adopting Compute Optimizer recommendations for a given resource.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-ec2-recommendations.html#ec2-savings-calculation">Estimated monthly savings and savings opportunities</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    required: [],
+  })
+  .openapi('EstimatedMonthlySavings')
+
+const SavingsOpportunitySchema = z
+  .object({
+    savingsOpportunityPercentage: SavingsOpportunityPercentageSchema.exactOptional().openapi({
+      description:
+        'The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer recommendations for a given resource.',
+    }),
+    estimatedMonthlySavings: EstimatedMonthlySavingsSchema.exactOptional().openapi({
+      description:
+        'An object that describes the estimated monthly savings amount possible, based on On-Demand instance pricing, by adopting Compute Optimizer recommendations for a given resource.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes the savings opportunity for recommendations of a given resource type or for the recommendation option of an individual resource.</p> <p>Savings opportunity represents the estimated monthly savings you can achieve by implementing a given Compute Optimizer recommendation.</p> <important> <p>Savings opportunity data requires that you opt in to Cost Explorer, as well as activate <b>Receive Amazon EC2 resource recommendations</b> in the Cost Explorer preferences page. That creates a connection between Cost Explorer and Compute Optimizer. With this connection, Cost Explorer generates savings estimates considering the price of existing resources, the price of recommended resources, and historical usage data. Estimated monthly savings reflects the projected dollar savings associated with each of the recommendations generated. For more information, see <a href="https://docs.aws.amazon.com/cost-management/latest/userguide/ce-enable.html">Enabling Cost Explorer</a> and <a href="https://docs.aws.amazon.com/cost-management/latest/userguide/ce-rightsizing.html">Optimizing your cost with Rightsizing Recommendations</a> in the <i>Cost Management User Guide</i>.</p> </important>',
+    required: [],
+  })
+  .openapi('SavingsOpportunity')
+
+const LowerBoundValueSchema = z.float64().openapi('LowerBoundValue')
+
+const UpperBoundValueSchema = z.float64().openapi('UpperBoundValue')
+
+const ECSServiceProjectedUtilizationMetricSchema = z
+  .object({
+    name: ECSServiceMetricNameSchema.exactOptional().openapi({
+      description:
+        "<p> The name of the projected utilization metric. </p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> — The percentage of allocated compute units that are currently in use on the service tasks.</p> </li> <li> <p> <code>Memory</code> — The percentage of memory that's currently in use on the service tasks.</p> </li> </ul>",
+    }),
+    statistic: ECSServiceMetricStatisticSchema.exactOptional().openapi({
+      description:
+        '<p>The statistic of the projected utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
+    }),
+    lowerBoundValue: LowerBoundValueSchema.exactOptional().openapi({
+      description: ' The lower bound values for the projected utilization metrics. ',
+    }),
+    upperBoundValue: UpperBoundValueSchema.exactOptional().openapi({
+      description: ' The upper bound values for the projected utilization metrics. ',
+    }),
+  })
+  .openapi({
+    description:
+      '<p> Describes the projected utilization metrics of an Amazon ECS service recommendation option. </p> <p>To determine the performance difference between your current Amazon ECS service and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.</p>',
+    required: [],
+  })
+  .openapi('ECSServiceProjectedUtilizationMetric')
+
+const ECSServiceProjectedUtilizationMetricsSchema = z
+  .array(ECSServiceProjectedUtilizationMetricSchema)
+  .openapi('ECSServiceProjectedUtilizationMetrics')
+
+const ContainerRecommendationSchema = z
+  .object({
+    containerName: ContainerNameSchema.exactOptional().openapi({
+      description: ' The name of the container. ',
+    }),
+    memorySizeConfiguration: MemorySizeConfigurationSchema.exactOptional().openapi({
+      description: ' The recommended memory size configurations for the container. ',
+    }),
+    cpu: NullableCpuSchema.exactOptional().openapi({
+      description: ' The recommended number of CPU units reserved for the container. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' The CPU and memory recommendations for a container within the tasks of your Amazon ECS service. ',
+    required: [],
+  })
+  .openapi('ContainerRecommendation')
+
+const ContainerRecommendationsSchema = z
+  .array(ContainerRecommendationSchema)
+  .openapi('ContainerRecommendations')
+
+const ECSServiceRecommendationOptionSchema = z
+  .object({
+    memory: NullableMemorySchema.exactOptional().openapi({
+      description: ' The memory size of the Amazon ECS service recommendation option. ',
+    }),
+    cpu: NullableCpuSchema.exactOptional().openapi({
+      description: ' The CPU size of the Amazon ECS service recommendation option. ',
+    }),
+    savingsOpportunity: SavingsOpportunitySchema.exactOptional(),
+    projectedUtilizationMetrics:
+      ECSServiceProjectedUtilizationMetricsSchema.exactOptional().openapi({
+        description:
+          ' An array of objects that describe the projected utilization metrics of the Amazon ECS service recommendation option. ',
+      }),
+    containerRecommendations: ContainerRecommendationsSchema.exactOptional().openapi({
+      description:
+        ' The CPU and memory size recommendations for the containers within the task of your Amazon ECS service. ',
+    }),
+  })
+  .openapi({
+    description: ' Describes the recommendation options for an Amazon ECS service. ',
+    required: [],
+  })
+  .openapi('ECSServiceRecommendationOption')
+
+const ECSServiceRecommendationOptionsSchema = z
+  .array(ECSServiceRecommendationOptionSchema)
+  .openapi('ECSServiceRecommendationOptions')
+
+const CurrentPerformanceRiskSchema = z
+  .enum(['VeryLow', 'Low', 'Medium', 'High'])
+  .openapi('CurrentPerformanceRisk')
+
+const ECSServiceRecommendationSchema = z
+  .object({
+    serviceArn: ServiceArnSchema.exactOptional().openapi({
+      description:
+        '<p> The Amazon Resource Name (ARN) of the current Amazon ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>',
+    }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: ' The Amazon Web Services account ID of the Amazon ECS service. ',
+    }),
+    currentServiceConfiguration: ServiceConfigurationSchema.exactOptional().openapi({
+      description: ' The configuration of the current Amazon ECS service. ',
+    }),
+    utilizationMetrics: ECSServiceUtilizationMetricsSchema.exactOptional().openapi({
+      description:
+        ' An array of objects that describe the utilization metrics of the Amazon ECS service. ',
+    }),
+    lookbackPeriodInDays: LookBackPeriodInDaysSchema.exactOptional().openapi({
+      description: ' The number of days the Amazon ECS service utilization metrics were analyzed. ',
+    }),
+    launchType: ECSServiceLaunchTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The launch type the Amazon ECS service is using. </p> <note> <p>Compute Optimizer only supports the Fargate launch type.</p> </note>',
+    }),
+    lastRefreshTimestamp: LastRefreshTimestampSchema.exactOptional().openapi({
+      description:
+        ' The timestamp of when the Amazon ECS service recommendation was last generated. ',
+    }),
+    finding: ECSServiceRecommendationFindingSchema.exactOptional().openapi({
+      description:
+        '<p> The finding classification of an Amazon ECS service. </p> <p>Findings for Amazon ECS services include:</p> <ul> <li> <p> <b> <code>Underprovisioned</code> </b> — When Compute Optimizer detects that there’s not enough memory or CPU, an Amazon ECS service is considered under-provisioned. An under-provisioned service might result in poor application performance.</p> </li> <li> <p> <b> <code>Overprovisioned</code> </b> — When Compute Optimizer detects that there’s excessive memory or CPU, an Amazon ECS service is considered over-provisioned. An over-provisioned service might result in additional infrastructure costs. </p> </li> <li> <p> <b> <code>Optimized</code> </b> — When both the CPU and memory of your Amazon ECS service meet the performance requirements of your workload, the service is considered optimized.</p> </li> </ul>',
+    }),
+    findingReasonCodes: ECSServiceRecommendationFindingReasonCodesSchema.exactOptional().openapi({
+      description:
+        '<p> The reason for the finding classification of an Amazon ECS service. </p> <p>Finding reason codes for Amazon ECS services include:</p> <ul> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The service CPU configuration can be sized up to enhance the performance of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current service during the look-back period.</p> </li> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The service CPU configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current service during the look-back period. </p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The service memory configuration can be sized up to enhance the performance of your workload. This is identified by analyzing the <code>MemoryUtilization</code> metric of the current service during the look-back period.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The service memory configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>MemoryUtilization</code> metric of the current service during the look-back period.</p> </li> </ul>',
+    }),
+    serviceRecommendationOptions: ECSServiceRecommendationOptionsSchema.exactOptional().openapi({
+      description:
+        ' An array of objects that describe the recommendation options for the Amazon ECS service. ',
+    }),
+    currentPerformanceRisk: CurrentPerformanceRiskSchema.exactOptional().openapi({
+      description:
+        " The risk of the current Amazon ECS service not meeting the performance needs of its workloads. The higher the risk, the more likely the current service can't meet the performance requirements of its workload. ",
+    }),
+  })
+  .openapi({ description: ' Describes an Amazon ECS service recommendation. ', required: [] })
+  .openapi('ECSServiceRecommendation')
+
+const ECSServiceRecommendationsSchema = z
+  .array(ECSServiceRecommendationSchema)
+  .openapi('ECSServiceRecommendations')
+
+const IdentifierSchema = z.string().openapi('Identifier')
+
+const CodeSchema = z.string().openapi('Code')
+
+const MessageSchema = z.string().openapi('Message')
+
+const GetRecommendationErrorSchema = z
+  .object({
+    identifier: IdentifierSchema.exactOptional().openapi({ description: 'The ID of the error.' }),
+    code: CodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    message: MessageSchema.exactOptional().openapi({
+      description: 'The message, or reason, for the error.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Describes an error experienced when getting recommendations.</p> <p>For example, an error is returned if you request recommendations for an unsupported Auto Scaling group, or if you request recommendations for an instance of an unsupported instance family.</p>',
+    required: [],
+  })
+  .openapi('GetRecommendationError')
+
+const GetRecommendationErrorsSchema = z
+  .array(GetRecommendationErrorSchema)
+  .openapi('GetRecommendationErrors')
+
+type GetECSServiceRecommendationsResponseType = {
+  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+  ecsServiceRecommendations?: z.infer<typeof ECSServiceRecommendationsSchema> & unknown
+  errors?: z.infer<typeof GetRecommendationErrorsSchema> & unknown
+}
+
 const DeleteRecommendationPreferencesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteRecommendationPreferencesResponse')
 
 const ResourceTypeSchema = z
@@ -21,22 +367,14 @@ const ScopeValueSchema = z.string().openapi('ScopeValue')
 
 const ScopeSchema = z
   .object({
-    name: ScopeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the scope.</p> <p>The following scopes are possible:</p> <ul> <li> <p> <code>Organization</code> - Specifies that the recommendation preference applies at the organization level, for all member accounts of an organization.</p> </li> <li> <p> <code>AccountId</code> - Specifies that the recommendation preference applies at the account level, for all resources of a given resource type in an account.</p> </li> <li> <p> <code>ResourceArn</code> - Specifies that the recommendation preference applies at the individual resource level.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    value: ScopeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value of the scope.</p> <p>If you specified the <code>name</code> of the scope as:</p> <ul> <li> <p> <code>Organization</code> - The <code>value</code> must be <code>ALL_ACCOUNTS</code>.</p> </li> <li> <p> <code>AccountId</code> - The <code>value</code> must be a 12-digit Amazon Web Services account ID.</p> </li> <li> <p> <code>ResourceArn</code> - The <code>value</code> must be the Amazon Resource Name (ARN) of an EC2 instance or an Auto Scaling group.</p> </li> </ul> <p>Only EC2 instance and Auto Scaling group ARNs are currently supported.</p>',
-        }),
-    ).exactOptional(),
+    name: ScopeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the scope.</p> <p>The following scopes are possible:</p> <ul> <li> <p> <code>Organization</code> - Specifies that the recommendation preference applies at the organization level, for all member accounts of an organization.</p> </li> <li> <p> <code>AccountId</code> - Specifies that the recommendation preference applies at the account level, for all resources of a given resource type in an account.</p> </li> <li> <p> <code>ResourceArn</code> - Specifies that the recommendation preference applies at the individual resource level.</p> </li> </ul>',
+    }),
+    value: ScopeValueSchema.exactOptional().openapi({
+      description:
+        '<p>The value of the scope.</p> <p>If you specified the <code>name</code> of the scope as:</p> <ul> <li> <p> <code>Organization</code> - The <code>value</code> must be <code>ALL_ACCOUNTS</code>.</p> </li> <li> <p> <code>AccountId</code> - The <code>value</code> must be a 12-digit Amazon Web Services account ID.</p> </li> <li> <p> <code>ResourceArn</code> - The <code>value</code> must be the Amazon Resource Name (ARN) of an EC2 instance or an Auto Scaling group.</p> </li> </ul> <p>Only EC2 instance and Auto Scaling group ARNs are currently supported.</p>',
+    }),
   })
   .openapi({
     description:
@@ -55,25 +393,17 @@ const RecommendationPreferenceNamesSchema = z
 
 const DeleteRecommendationPreferencesRequestSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target resource type of the recommendation preference to delete.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p> <note> <p>The valid values for this parameter are <code>Ec2Instance</code> and <code>AutoScalingGroup</code>.</p> </note>',
-        }),
-    ),
-    scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the scope of the recommendation preference to delete.</p> <p>You can delete recommendation preferences that are created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    recommendationPreferenceNames: RecommendationPreferenceNamesSchema.and(
-      z.any().openapi({ description: 'The name of the recommendation preference to delete.' }),
-    ),
+    resourceType: ResourceTypeSchema.openapi({
+      description:
+        '<p>The target resource type of the recommendation preference to delete.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p> <note> <p>The valid values for this parameter are <code>Ec2Instance</code> and <code>AutoScalingGroup</code>.</p> </note>',
+    }),
+    scope: ScopeSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the scope of the recommendation preference to delete.</p> <p>You can delete recommendation preferences that are created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    recommendationPreferenceNames: RecommendationPreferenceNamesSchema.openapi({
+      description: 'The name of the recommendation preference to delete.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'recommendationPreferenceNames'],
@@ -107,30 +437,17 @@ const MetadataKeySchema = z.string().openapi('MetadataKey')
 
 const S3DestinationSchema = z
   .object({
-    bucket: DestinationBucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon S3 bucket used as the destination of an export file.',
-        }),
-    ).exactOptional(),
-    key: DestinationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 bucket key of an export file.</p> <p>The key uniquely identifies the object, or export file, in the S3 bucket.</p>',
-        }),
-    ).exactOptional(),
-    metadataKey: MetadataKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 bucket key of a metadata file.</p> <p>The key uniquely identifies the object, or metadata file, in the S3 bucket.</p>',
-        }),
-    ).exactOptional(),
+    bucket: DestinationBucketSchema.exactOptional().openapi({
+      description: 'The name of the Amazon S3 bucket used as the destination of an export file.',
+    }),
+    key: DestinationKeySchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon S3 bucket key of an export file.</p> <p>The key uniquely identifies the object, or export file, in the S3 bucket.</p>',
+    }),
+    metadataKey: MetadataKeySchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon S3 bucket key of a metadata file.</p> <p>The key uniquely identifies the object, or metadata file, in the S3 bucket.</p>',
+    }),
   })
   .openapi({
     description:
@@ -141,14 +458,10 @@ const S3DestinationSchema = z
 
 const ExportDestinationSchema = z
   .object({
-    s3: S3DestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.',
-        }),
-    ).exactOptional(),
+    s3: S3DestinationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and object keys of a recommendations export file, and its associated metadata file.',
+    }),
   })
   .openapi({
     description: 'Describes the destination of the recommendations export and metadata files.',
@@ -166,29 +479,27 @@ const FailureReasonSchema = z.string().openapi('FailureReason')
 
 const RecommendationExportJobSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The identification number of the export job.' }),
-    ).exactOptional(),
-    destination: ExportDestinationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that describes the destination of the export file.' }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type of the exported recommendations.' }),
-    ).exactOptional(),
-    status: JobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the export job.' }),
-    ).exactOptional(),
-    creationTimestamp: CreationTimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the export job was created.' }),
-    ).exactOptional(),
-    lastUpdatedTimestamp: LastUpdatedTimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the export job was last updated.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason for an export job failure.' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The identification number of the export job.',
+    }),
+    destination: ExportDestinationSchema.exactOptional().openapi({
+      description: 'An object that describes the destination of the export file.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type of the exported recommendations.',
+    }),
+    status: JobStatusSchema.exactOptional().openapi({
+      description: 'The status of the export job.',
+    }),
+    creationTimestamp: CreationTimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the export job was created.',
+    }),
+    lastUpdatedTimestamp: LastUpdatedTimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the export job was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'The reason for an export job failure.',
+    }),
   })
   .openapi({
     description:
@@ -201,23 +512,15 @@ const RecommendationExportJobsSchema = z
   .array(RecommendationExportJobSchema)
   .openapi('RecommendationExportJobs')
 
-const NextTokenSchema = z.string().openapi('NextToken')
-
 const DescribeRecommendationExportJobsResponseSchema = z
   .object({
-    recommendationExportJobs: RecommendationExportJobsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe recommendation export jobs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to use to advance to the next page of export jobs.</p> <p>This value is null when there are no more pages of export jobs to return.</p>',
-        }),
-    ).exactOptional(),
+    recommendationExportJobs: RecommendationExportJobsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe recommendation export jobs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token to use to advance to the next page of export jobs.</p> <p>This value is null when there are no more pages of export jobs to return.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRecommendationExportJobsResponse')
@@ -232,22 +535,14 @@ const FilterValuesSchema = z.array(FilterValueSchema).openapi('FilterValues')
 
 const JobFilterSchema = z
   .object({
-    name: JobFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the filter.</p> <p>Specify <code>ResourceType</code> to return export jobs of a specific resource type (for example, <code>Ec2Instance</code>).</p> <p>Specify <code>JobStatus</code> to return export jobs with a specific status (e.g, <code>Complete</code>).</p>',
-        }),
-    ).exactOptional(),
-    values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value of the filter.</p> <p>The valid values for this parameter are as follows, depending on what you specify for the <code>name</code> parameter:</p> <ul> <li> <p>Specify <code>Ec2Instance</code> or <code>AutoScalingGroup</code> if you specify the <code>name</code> parameter as <code>ResourceType</code>. There is no filter for EBS volumes because volume recommendations cannot be exported at this time.</p> </li> <li> <p>Specify <code>Queued</code>, <code>InProgress</code>, <code>Complete</code>, or <code>Failed</code> if you specify the <code>name</code> parameter as <code>JobStatus</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    name: JobFilterNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the filter.</p> <p>Specify <code>ResourceType</code> to return export jobs of a specific resource type (for example, <code>Ec2Instance</code>).</p> <p>Specify <code>JobStatus</code> to return export jobs with a specific status (e.g, <code>Complete</code>).</p>',
+    }),
+    values: FilterValuesSchema.exactOptional().openapi({
+      description:
+        '<p>The value of the filter.</p> <p>The valid values for this parameter are as follows, depending on what you specify for the <code>name</code> parameter:</p> <ul> <li> <p>Specify <code>Ec2Instance</code> or <code>AutoScalingGroup</code> if you specify the <code>name</code> parameter as <code>ResourceType</code>. There is no filter for EBS volumes because volume recommendations cannot be exported at this time.</p> </li> <li> <p>Specify <code>Queued</code>, <code>InProgress</code>, <code>Complete</code>, or <code>Failed</code> if you specify the <code>name</code> parameter as <code>JobStatus</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -262,60 +557,38 @@ const MaxResultsSchema = z.int().min(0).max(1000).openapi('MaxResults')
 
 const DescribeRecommendationExportJobsRequestSchema = z
   .object({
-    jobIds: JobIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identification numbers of the export jobs to return.</p> <p>An export job ID is returned when you create an export using the <a>ExportAutoScalingGroupRecommendations</a> or <a>ExportEC2InstanceRecommendations</a> actions.</p> <p>All export jobs created in the last seven days are returned if this parameter is omitted.</p>',
-        }),
-    ).exactOptional(),
-    filters: JobFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that returns a more specific list of export jobs.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to advance to the next page of export jobs.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of export jobs to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    jobIds: JobIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The identification numbers of the export jobs to return.</p> <p>An export job ID is returned when you create an export using the <a>ExportAutoScalingGroupRecommendations</a> or <a>ExportEC2InstanceRecommendations</a> actions.</p> <p>All export jobs created in the last seven days are returned if this parameter is omitted.</p>',
+    }),
+    filters: JobFiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that returns a more specific list of export jobs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to advance to the next page of export jobs.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of export jobs to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
   })
   .openapi({ title: 'DescribeRecommendationExportJobsRequest', required: [] })
   .openapi('DescribeRecommendationExportJobsRequest')
 
 const ExportAutoScalingGroupRecommendationsResponseSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identification number of the export job.</p> <p>Use the <a>DescribeRecommendationExportJobs</a> action, and specify the job ID to view the status of an export job.</p>',
-        }),
-    ).exactOptional(),
-    s3Destination: S3DestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the destination Amazon S3 bucket of a recommendations export file.',
-        }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description:
+        '<p>The identification number of the export job.</p> <p>Use the <a>DescribeRecommendationExportJobs</a> action, and specify the job ID to view the status of an export job.</p>',
+    }),
+    s3Destination: S3DestinationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the destination Amazon S3 bucket of a recommendations export file.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExportAutoScalingGroupRecommendationsResponse')
-
-const AccountIdSchema = z.string().openapi('AccountId')
 
 const AccountIdsSchema = z.array(AccountIdSchema).openapi('AccountIds')
 
@@ -325,22 +598,14 @@ const FilterNameSchema = z
 
 const FilterSchema = z
   .object({
-    name: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>Underprovisioned</code>).</p> <p>Specify <code>RecommendationSourceType</code> to return recommendations of a specific resource type (for example, <code>Ec2Instance</code>).</p> <p>Specify <code>FindingReasonCodes</code> to return recommendations with a specific finding reason code (for example, <code>CPUUnderprovisioned</code>).</p>',
-        }),
-    ).exactOptional(),
-    values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The value of the filter.</p> <p>The valid values for this parameter are as follows, depending on what you specify for the <code>name</code> parameter and the resource type that you wish to filter results for:</p> <ul> <li> <p>Specify <code>Optimized</code> or <code>NotOptimized</code> if you specify the <code>name</code> parameter as <code>Finding</code> and you want to filter results for Auto Scaling groups.</p> </li> <li> <p>Specify <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code> if you specify the <code>name</code> parameter as <code>Finding</code> and you want to filter results for EC2 instances.</p> </li> <li> <p>Specify <code>Ec2Instance</code> or <code>AutoScalingGroup</code> if you specify the <code>name</code> parameter as <code>RecommendationSourceType</code>.</p> </li> <li> <p>Specify one of the following options if you specify the <code>name</code> parameter as <code>FindingReasonCodes</code>:</p> <ul> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The instance’s CPU configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The instance’s CPU configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better CPU performance.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The instance’s memory configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The instance’s memory configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better memory performance.</p> </li> <li> <p> <b> <code>EBSThroughputOverprovisioned</code> </b> — The instance’s EBS throughput configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>EBSThroughputUnderprovisioned</code> </b> — The instance’s EBS throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS throughput performance.</p> </li> <li> <p> <b> <code>EBSIOPSOverprovisioned</code> </b> — The instance’s EBS IOPS configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>EBSIOPSUnderprovisioned</code> </b> — The instance’s EBS IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS IOPS performance.</p> </li> <li> <p> <b> <code>NetworkBandwidthOverprovisioned</code> </b> — The instance’s network bandwidth configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>NetworkBandwidthUnderprovisioned</code> </b> — The instance’s network bandwidth configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network bandwidth performance. This finding reason happens when the <code>NetworkIn</code> or <code>NetworkOut</code> performance of an instance is impacted.</p> </li> <li> <p> <b> <code>NetworkPPSOverprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>NetworkPPSUnderprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network PPS performance.</p> </li> <li> <p> <b> <code>DiskIOPSOverprovisioned</code> </b> — The instance’s disk IOPS configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>DiskIOPSUnderprovisioned</code> </b> — The instance’s disk IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk IOPS performance.</p> </li> <li> <p> <b> <code>DiskThroughputOverprovisioned</code> </b> — The instance’s disk throughput configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>DiskThroughputUnderprovisioned</code> </b> — The instance’s disk throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk throughput performance.</p> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
+    name: FilterNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>Underprovisioned</code>).</p> <p>Specify <code>RecommendationSourceType</code> to return recommendations of a specific resource type (for example, <code>Ec2Instance</code>).</p> <p>Specify <code>FindingReasonCodes</code> to return recommendations with a specific finding reason code (for example, <code>CPUUnderprovisioned</code>).</p>',
+    }),
+    values: FilterValuesSchema.exactOptional().openapi({
+      description:
+        "<p>The value of the filter.</p> <p>The valid values for this parameter are as follows, depending on what you specify for the <code>name</code> parameter and the resource type that you wish to filter results for:</p> <ul> <li> <p>Specify <code>Optimized</code> or <code>NotOptimized</code> if you specify the <code>name</code> parameter as <code>Finding</code> and you want to filter results for Auto Scaling groups.</p> </li> <li> <p>Specify <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code> if you specify the <code>name</code> parameter as <code>Finding</code> and you want to filter results for EC2 instances.</p> </li> <li> <p>Specify <code>Ec2Instance</code> or <code>AutoScalingGroup</code> if you specify the <code>name</code> parameter as <code>RecommendationSourceType</code>.</p> </li> <li> <p>Specify one of the following options if you specify the <code>name</code> parameter as <code>FindingReasonCodes</code>:</p> <ul> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The instance’s CPU configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The instance’s CPU configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better CPU performance.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The instance’s memory configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The instance’s memory configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better memory performance.</p> </li> <li> <p> <b> <code>EBSThroughputOverprovisioned</code> </b> — The instance’s EBS throughput configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>EBSThroughputUnderprovisioned</code> </b> — The instance’s EBS throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS throughput performance.</p> </li> <li> <p> <b> <code>EBSIOPSOverprovisioned</code> </b> — The instance’s EBS IOPS configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>EBSIOPSUnderprovisioned</code> </b> — The instance’s EBS IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS IOPS performance.</p> </li> <li> <p> <b> <code>NetworkBandwidthOverprovisioned</code> </b> — The instance’s network bandwidth configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>NetworkBandwidthUnderprovisioned</code> </b> — The instance’s network bandwidth configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network bandwidth performance. This finding reason happens when the <code>NetworkIn</code> or <code>NetworkOut</code> performance of an instance is impacted.</p> </li> <li> <p> <b> <code>NetworkPPSOverprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>NetworkPPSUnderprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network PPS performance.</p> </li> <li> <p> <b> <code>DiskIOPSOverprovisioned</code> </b> — The instance’s disk IOPS configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>DiskIOPSUnderprovisioned</code> </b> — The instance’s disk IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk IOPS performance.</p> </li> <li> <p> <b> <code>DiskThroughputOverprovisioned</code> </b> — The instance’s disk throughput configuration can be sized down while still meeting the performance requirements of your workload.</p> </li> <li> <p> <b> <code>DiskThroughputUnderprovisioned</code> </b> — The instance’s disk throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk throughput performance.</p> </li> </ul> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -418,17 +683,12 @@ const DestinationKeyPrefixSchema = z.string().openapi('DestinationKeyPrefix')
 
 const S3DestinationConfigSchema = z
   .object({
-    bucket: DestinationBucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon S3 bucket to use as the destination for an export job.',
-        }),
-    ).exactOptional(),
-    keyPrefix: DestinationKeyPrefixSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket prefix for an export job.' }),
-    ).exactOptional(),
+    bucket: DestinationBucketSchema.exactOptional().openapi({
+      description: 'The name of the Amazon S3 bucket to use as the destination for an export job.',
+    }),
+    keyPrefix: DestinationKeyPrefixSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket prefix for an export job.',
+    }),
   })
   .openapi({
     description:
@@ -451,14 +711,10 @@ const CpuVendorArchitecturesSchema = z
 
 const RecommendationPreferencesSchema = z
   .object({
-    cpuVendorArchitectures: CpuVendorArchitecturesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the CPU vendor and architecture for Amazon EC2 instance and Auto Scaling group recommendations.</p> <p>For example, when you specify <code>AWS_ARM64</code> with:</p> <ul> <li> <p>A <a>GetEC2InstanceRecommendations</a> or <a>GetAutoScalingGroupRecommendations</a> request, Compute Optimizer returns recommendations that consist of Graviton2 instance types only.</p> </li> <li> <p>A <a>GetEC2RecommendationProjectedMetrics</a> request, Compute Optimizer returns projected utilization metrics for Graviton2 instance type recommendations only.</p> </li> <li> <p>A <a>ExportEC2InstanceRecommendations</a> or <a>ExportAutoScalingGroupRecommendations</a> request, Compute Optimizer exports recommendations that consist of Graviton2 instance types only.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    cpuVendorArchitectures: CpuVendorArchitecturesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the CPU vendor and architecture for Amazon EC2 instance and Auto Scaling group recommendations.</p> <p>For example, when you specify <code>AWS_ARM64</code> with:</p> <ul> <li> <p>A <a>GetEC2InstanceRecommendations</a> or <a>GetAutoScalingGroupRecommendations</a> request, Compute Optimizer returns recommendations that consist of Graviton2 instance types only.</p> </li> <li> <p>A <a>GetEC2RecommendationProjectedMetrics</a> request, Compute Optimizer returns projected utilization metrics for Graviton2 instance type recommendations only.</p> </li> <li> <p>A <a>ExportEC2InstanceRecommendations</a> or <a>ExportAutoScalingGroupRecommendations</a> request, Compute Optimizer exports recommendations that consist of Graviton2 instance types only.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -469,62 +725,34 @@ const RecommendationPreferencesSchema = z
 
 const ExportAutoScalingGroupRecommendationsRequestSchema = z
   .object({
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IDs of the Amazon Web Services accounts for which to export Auto Scaling group recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted.</p> <p>You can specify multiple account IDs per request.</p>',
-        }),
-    ).exactOptional(),
-    filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that exports a more specific set of Auto Scaling group recommendations.',
-        }),
-    ).exactOptional(),
-    fieldsToExport: ExportableAutoScalingGroupFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
-        }),
-    ).exactOptional(),
-    s3DestinationConfig: S3DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object to specify the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for the export job.</p> <p>You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permissions policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the policy that you add to the S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html">Amazon S3 Bucket Policy for Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ),
-    fileFormat: FileFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of the export file.</p> <p>The only export file format currently supported is <code>Csv</code>.</p>',
-        }),
-    ).exactOptional(),
-    includeMemberAccounts: IncludeMemberAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>Recommendations for member accounts of the organization are not included in the export file if this parameter is omitted.</p> <p>This parameter cannot be specified together with the account IDs parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the account IDs parameter, is omitted.</p>',
-        }),
-    ).exactOptional(),
-    recommendationPreferences: RecommendationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object to specify the preferences for the Auto Scaling group recommendations to export.',
-        }),
-    ).exactOptional(),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The IDs of the Amazon Web Services accounts for which to export Auto Scaling group recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted.</p> <p>You can specify multiple account IDs per request.</p>',
+    }),
+    filters: FiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that exports a more specific set of Auto Scaling group recommendations.',
+    }),
+    fieldsToExport: ExportableAutoScalingGroupFieldsSchema.exactOptional().openapi({
+      description:
+        'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
+    }),
+    s3DestinationConfig: S3DestinationConfigSchema.openapi({
+      description:
+        '<p>An object to specify the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for the export job.</p> <p>You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permissions policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the policy that you add to the S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html">Amazon S3 Bucket Policy for Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    fileFormat: FileFormatSchema.exactOptional().openapi({
+      description:
+        '<p>The format of the export file.</p> <p>The only export file format currently supported is <code>Csv</code>.</p>',
+    }),
+    includeMemberAccounts: IncludeMemberAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>Recommendations for member accounts of the organization are not included in the export file if this parameter is omitted.</p> <p>This parameter cannot be specified together with the account IDs parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the account IDs parameter, is omitted.</p>',
+    }),
+    recommendationPreferences: RecommendationPreferencesSchema.exactOptional().openapi({
+      description:
+        'An object to specify the preferences for the Auto Scaling group recommendations to export.',
+    }),
   })
   .openapi({
     required: ['s3DestinationConfig'],
@@ -536,14 +764,10 @@ const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const ExportEBSVolumeRecommendationsResponseSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identification number of the export job.</p> <p>Use the <a>DescribeRecommendationExportJobs</a> action, and specify the job ID to view the status of an export job.</p>',
-        }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description:
+        '<p>The identification number of the export job.</p> <p>Use the <a>DescribeRecommendationExportJobs</a> action, and specify the job ID to view the status of an export job.</p>',
+    }),
     s3Destination: S3DestinationSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -553,22 +777,14 @@ const EBSFilterNameSchema = z.literal('Finding').openapi('EBSFilterName')
 
 const EBSFilterSchema = z
   .object({
-    name: EBSFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>NotOptimized</code>).</p>',
-        }),
-    ).exactOptional(),
-    values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value of the filter.</p> <p>The valid values are <code>Optimized</code>, or <code>NotOptimized</code>.</p>',
-        }),
-    ).exactOptional(),
+    name: EBSFilterNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>NotOptimized</code>).</p>',
+    }),
+    values: FilterValuesSchema.exactOptional().openapi({
+      description:
+        '<p>The value of the filter.</p> <p>The valid values are <code>Optimized</code>, or <code>NotOptimized</code>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -619,69 +835,41 @@ const ExportableVolumeFieldsSchema = z
 
 const ExportEBSVolumeRecommendationsRequestSchema = z
   .object({
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IDs of the Amazon Web Services accounts for which to export Amazon EBS volume recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted.</p> <p>You can specify multiple account IDs per request.</p>',
-        }),
-    ).exactOptional(),
-    filters: EBSFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that exports a more specific set of Amazon EBS volume recommendations.',
-        }),
-    ).exactOptional(),
-    fieldsToExport: ExportableVolumeFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
-        }),
-    ).exactOptional(),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The IDs of the Amazon Web Services accounts for which to export Amazon EBS volume recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted.</p> <p>You can specify multiple account IDs per request.</p>',
+    }),
+    filters: EBSFiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that exports a more specific set of Amazon EBS volume recommendations.',
+    }),
+    fieldsToExport: ExportableVolumeFieldsSchema.exactOptional().openapi({
+      description:
+        'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
+    }),
     s3DestinationConfig: S3DestinationConfigSchema,
-    fileFormat: FileFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of the export file.</p> <p>The only export file format currently supported is <code>Csv</code>.</p>',
-        }),
-    ).exactOptional(),
-    includeMemberAccounts: IncludeMemberAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>Recommendations for member accounts of the organization are not included in the export file if this parameter is omitted.</p> <p>This parameter cannot be specified together with the account IDs parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the account IDs parameter, is omitted.</p>',
-        }),
-    ).exactOptional(),
+    fileFormat: FileFormatSchema.exactOptional().openapi({
+      description:
+        '<p>The format of the export file.</p> <p>The only export file format currently supported is <code>Csv</code>.</p>',
+    }),
+    includeMemberAccounts: IncludeMemberAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>Recommendations for member accounts of the organization are not included in the export file if this parameter is omitted.</p> <p>This parameter cannot be specified together with the account IDs parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the account IDs parameter, is omitted.</p>',
+    }),
   })
   .openapi({ required: ['s3DestinationConfig'], title: 'ExportEBSVolumeRecommendationsRequest' })
   .openapi('ExportEBSVolumeRecommendationsRequest')
 
 const ExportEC2InstanceRecommendationsResponseSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identification number of the export job.</p> <p>Use the <a>DescribeRecommendationExportJobs</a> action, and specify the job ID to view the status of an export job.</p>',
-        }),
-    ).exactOptional(),
-    s3Destination: S3DestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the destination Amazon S3 bucket of a recommendations export file.',
-        }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description:
+        '<p>The identification number of the export job.</p> <p>Use the <a>DescribeRecommendationExportJobs</a> action, and specify the job ID to view the status of an export job.</p>',
+    }),
+    s3Destination: S3DestinationSchema.exactOptional().openapi({
+      description:
+        'An object that describes the destination Amazon S3 bucket of a recommendations export file.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExportEC2InstanceRecommendationsResponse')
@@ -751,76 +939,44 @@ const ExportableInstanceFieldsSchema = z
 
 const ExportEC2InstanceRecommendationsRequestSchema = z
   .object({
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IDs of the Amazon Web Services accounts for which to export instance recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted.</p> <p>You can specify multiple account IDs per request.</p>',
-        }),
-    ).exactOptional(),
-    filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that exports a more specific set of instance recommendations.',
-        }),
-    ).exactOptional(),
-    fieldsToExport: ExportableInstanceFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
-        }),
-    ).exactOptional(),
-    s3DestinationConfig: S3DestinationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object to specify the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for the export job.</p> <p>You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permissions policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the policy that you add to the S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html">Amazon S3 Bucket Policy for Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ),
-    fileFormat: FileFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of the export file.</p> <p>The only export file format currently supported is <code>Csv</code>.</p>',
-        }),
-    ).exactOptional(),
-    includeMemberAccounts: IncludeMemberAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>Recommendations for member accounts of the organization are not included in the export file if this parameter is omitted.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the account IDs parameter, is omitted.</p>',
-        }),
-    ).exactOptional(),
-    recommendationPreferences: RecommendationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object to specify the preferences for the Amazon EC2 instance recommendations to export.',
-        }),
-    ).exactOptional(),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The IDs of the Amazon Web Services accounts for which to export instance recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted.</p> <p>You can specify multiple account IDs per request.</p>',
+    }),
+    filters: FiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that exports a more specific set of instance recommendations.',
+    }),
+    fieldsToExport: ExportableInstanceFieldsSchema.exactOptional().openapi({
+      description:
+        'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
+    }),
+    s3DestinationConfig: S3DestinationConfigSchema.openapi({
+      description:
+        '<p>An object to specify the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for the export job.</p> <p>You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permissions policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the policy that you add to the S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html">Amazon S3 Bucket Policy for Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    fileFormat: FileFormatSchema.exactOptional().openapi({
+      description:
+        '<p>The format of the export file.</p> <p>The only export file format currently supported is <code>Csv</code>.</p>',
+    }),
+    includeMemberAccounts: IncludeMemberAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>Recommendations for member accounts of the organization are not included in the export file if this parameter is omitted.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the account IDs parameter, is omitted.</p>',
+    }),
+    recommendationPreferences: RecommendationPreferencesSchema.exactOptional().openapi({
+      description:
+        'An object to specify the preferences for the Amazon EC2 instance recommendations to export.',
+    }),
   })
   .openapi({ required: ['s3DestinationConfig'], title: 'ExportEC2InstanceRecommendationsRequest' })
   .openapi('ExportEC2InstanceRecommendationsRequest')
 
 const ExportECSServiceRecommendationsResponseSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The identification number of the export job. </p> <p>To view the status of an export job, use the <a>DescribeRecommendationExportJobs</a> action and specify the job ID. </p>',
-        }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description:
+        '<p> The identification number of the export job. </p> <p>To view the status of an export job, use the <a>DescribeRecommendationExportJobs</a> action and specify the job ID. </p>',
+    }),
     s3Destination: S3DestinationSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -832,22 +988,14 @@ const ECSServiceRecommendationFilterNameSchema = z
 
 const ECSServiceRecommendationFilterSchema = z
   .object({
-    name: ECSServiceRecommendationFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The name of the filter. </p> <p> Specify <code>Finding</code> to return recommendations with a specific finding classification. </p> <p> Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code. </p>',
-        }),
-    ).exactOptional(),
-    values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The value of the filter. </p> <p>The valid values for this parameter are as follows:</p> <ul> <li> <p>If you specify the <code>name</code> parameter as <code>Finding</code>, specify <code>Optimized</code>, <code>NotOptimized</code>, or <code>Unavailable</code>.</p> </li> <li> <p>If you specify the <code>name</code> parameter as <code>FindingReasonCode</code>, specify <code>CPUUnderprovisioned</code>, <code>CPUOverprovisioned</code>, <code>MemoryUnderprovisioned</code>, or <code>MemoryOverprovisioned</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    name: ECSServiceRecommendationFilterNameSchema.exactOptional().openapi({
+      description:
+        '<p> The name of the filter. </p> <p> Specify <code>Finding</code> to return recommendations with a specific finding classification. </p> <p> Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code. </p>',
+    }),
+    values: FilterValuesSchema.exactOptional().openapi({
+      description:
+        '<p> The value of the filter. </p> <p>The valid values for this parameter are as follows:</p> <ul> <li> <p>If you specify the <code>name</code> parameter as <code>Finding</code>, specify <code>Optimized</code>, <code>NotOptimized</code>, or <code>Unavailable</code>.</p> </li> <li> <p>If you specify the <code>name</code> parameter as <code>FindingReasonCode</code>, specify <code>CPUUnderprovisioned</code>, <code>CPUOverprovisioned</code>, <code>MemoryUnderprovisioned</code>, or <code>MemoryOverprovisioned</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -894,61 +1042,37 @@ const ExportableECSServiceFieldsSchema = z
 
 const ExportECSServiceRecommendationsRequestSchema = z
   .object({
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The Amazon Web Services account IDs for the export Amazon ECS service recommendations. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to specify the member account you want to export recommendations to.</p> <p>This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>If this parameter or the include member accounts parameter is omitted, the recommendations for member accounts aren't included in the export.</p> <p>You can specify multiple account IDs per request.</p>",
-        }),
-    ).exactOptional(),
-    filters: ECSServiceRecommendationFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of objects to specify a filter that exports a more specific set of Amazon ECS service recommendations. ',
-        }),
-    ).exactOptional(),
-    fieldsToExport: ExportableECSServiceFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
-        }),
-    ).exactOptional(),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        "<p> The Amazon Web Services account IDs for the export Amazon ECS service recommendations. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to specify the member account you want to export recommendations to.</p> <p>This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>If this parameter or the include member accounts parameter is omitted, the recommendations for member accounts aren't included in the export.</p> <p>You can specify multiple account IDs per request.</p>",
+    }),
+    filters: ECSServiceRecommendationFiltersSchema.exactOptional().openapi({
+      description:
+        ' An array of objects to specify a filter that exports a more specific set of Amazon ECS service recommendations. ',
+    }),
+    fieldsToExport: ExportableECSServiceFieldsSchema.exactOptional().openapi({
+      description:
+        'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
+    }),
     s3DestinationConfig: S3DestinationConfigSchema,
-    fileFormat: FileFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The format of the export file. </p> <p>The CSV file is the only export file format currently supported.</p>',
-        }),
-    ).exactOptional(),
-    includeMemberAccounts: IncludeMemberAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If your account is the management account or the delegated administrator of an organization, this parameter indicates whether to include recommendations for resources in all member accounts of the organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>If this parameter is omitted, recommendations for member accounts of the organization aren\'t included in the export file.</p> <p>If this parameter or the account ID parameter is omitted, recommendations for member accounts aren\'t included in the export.</p>',
-        }),
-    ).exactOptional(),
+    fileFormat: FileFormatSchema.exactOptional().openapi({
+      description:
+        '<p> The format of the export file. </p> <p>The CSV file is the only export file format currently supported.</p>',
+    }),
+    includeMemberAccounts: IncludeMemberAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>If your account is the management account or the delegated administrator of an organization, this parameter indicates whether to include recommendations for resources in all member accounts of the organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>If this parameter is omitted, recommendations for member accounts of the organization aren\'t included in the export file.</p> <p>If this parameter or the account ID parameter is omitted, recommendations for member accounts aren\'t included in the export.</p>',
+    }),
   })
   .openapi({ required: ['s3DestinationConfig'], title: 'ExportECSServiceRecommendationsRequest' })
   .openapi('ExportECSServiceRecommendationsRequest')
 
 const ExportLambdaFunctionRecommendationsResponseSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identification number of the export job.</p> <p>Use the <a>DescribeRecommendationExportJobs</a> action, and specify the job ID to view the status of an export job.</p>',
-        }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description:
+        '<p>The identification number of the export job.</p> <p>Use the <a>DescribeRecommendationExportJobs</a> action, and specify the job ID to view the status of an export job.</p>',
+    }),
     s3Destination: S3DestinationSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -960,22 +1084,14 @@ const LambdaFunctionRecommendationFilterNameSchema = z
 
 const LambdaFunctionRecommendationFilterSchema = z
   .object({
-    name: LambdaFunctionRecommendationFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>NotOptimized</code>).</p> <p>Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code (for example, <code>MemoryUnderprovisioned</code>).</p>',
-        }),
-    ).exactOptional(),
-    values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value of the filter.</p> <p>The valid values for this parameter are as follows, depending on what you specify for the <code>name</code> parameter:</p> <ul> <li> <p>Specify <code>Optimized</code>, <code>NotOptimized</code>, or <code>Unavailable</code> if you specify the <code>name</code> parameter as <code>Finding</code>.</p> </li> <li> <p>Specify <code>MemoryOverprovisioned</code>, <code>MemoryUnderprovisioned</code>, <code>InsufficientData</code>, or <code>Inconclusive</code> if you specify the <code>name</code> parameter as <code>FindingReasonCode</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    name: LambdaFunctionRecommendationFilterNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>NotOptimized</code>).</p> <p>Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code (for example, <code>MemoryUnderprovisioned</code>).</p>',
+    }),
+    values: FilterValuesSchema.exactOptional().openapi({
+      description:
+        '<p>The value of the filter.</p> <p>The valid values for this parameter are as follows, depending on what you specify for the <code>name</code> parameter:</p> <ul> <li> <p>Specify <code>Optimized</code>, <code>NotOptimized</code>, or <code>Unavailable</code> if you specify the <code>name</code> parameter as <code>Finding</code>.</p> </li> <li> <p>Specify <code>MemoryOverprovisioned</code>, <code>MemoryUnderprovisioned</code>, <code>InsufficientData</code>, or <code>Inconclusive</code> if you specify the <code>name</code> parameter as <code>FindingReasonCode</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -1025,47 +1141,27 @@ const ExportableLambdaFunctionFieldsSchema = z
 
 const ExportLambdaFunctionRecommendationsRequestSchema = z
   .object({
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IDs of the Amazon Web Services accounts for which to export Lambda function recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted.</p> <p>You can specify multiple account IDs per request.</p>',
-        }),
-    ).exactOptional(),
-    filters: LambdaFunctionRecommendationFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that exports a more specific set of Lambda function recommendations.',
-        }),
-    ).exactOptional(),
-    fieldsToExport: ExportableLambdaFunctionFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
-        }),
-    ).exactOptional(),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The IDs of the Amazon Web Services accounts for which to export Lambda function recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter cannot be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the include member accounts parameter, is omitted.</p> <p>You can specify multiple account IDs per request.</p>',
+    }),
+    filters: LambdaFunctionRecommendationFiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that exports a more specific set of Lambda function recommendations.',
+    }),
+    fieldsToExport: ExportableLambdaFunctionFieldsSchema.exactOptional().openapi({
+      description:
+        'The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files">Exported files</a> in the <i>Compute Optimizer User Guide</i>.',
+    }),
     s3DestinationConfig: S3DestinationConfigSchema,
-    fileFormat: FileFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of the export file.</p> <p>The only export file format currently supported is <code>Csv</code>.</p>',
-        }),
-    ).exactOptional(),
-    includeMemberAccounts: IncludeMemberAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>Recommendations for member accounts of the organization are not included in the export file if this parameter is omitted.</p> <p>This parameter cannot be specified together with the account IDs parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the account IDs parameter, is omitted.</p>',
-        }),
-    ).exactOptional(),
+    fileFormat: FileFormatSchema.exactOptional().openapi({
+      description:
+        '<p>The format of the export file.</p> <p>The only export file format currently supported is <code>Csv</code>.</p>',
+    }),
+    includeMemberAccounts: IncludeMemberAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>Recommendations for member accounts of the organization are not included in the export file if this parameter is omitted.</p> <p>This parameter cannot be specified together with the account IDs parameter. The parameters are mutually exclusive.</p> <p>Recommendations for member accounts are not included in the export if this parameter, or the account IDs parameter, is omitted.</p>',
+    }),
   })
   .openapi({
     required: ['s3DestinationConfig'],
@@ -1102,29 +1198,19 @@ const MetricNameSchema = z
 
 const MetricStatisticSchema = z.enum(['Maximum', 'Average']).openapi('MetricStatistic')
 
-const MetricValueSchema = z.float64().openapi('MetricValue')
-
 const UtilizationMetricSchema = z
   .object({
-    name: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> - The percentage of allocated EC2 compute units that are currently in use on the instance. This metric identifies the processing power required to run an application on the instance.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that is currently in use on the instance. This metric identifies the amount of memory required to run an application on the instance.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>EBS_READ_OPS_PER_SECOND</code> - The completed read operations from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_WRITE_OPS_PER_SECOND</code> - The completed write operations to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_READ_BYTES_PER_SECOND</code> - The bytes read from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>EBS_WRITE_BYTES_PER_SECOND</code> - The bytes written to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>DISK_READ_OPS_PER_SECOND</code> - The completed read operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_OPS_PER_SECOND</code> - The completed write operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_READ_BYTES_PER_SECOND</code> - The bytes read from all instance store volumes available to the instance. This metric is used to determine the volume of the data the application reads from the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_BYTES_PER_SECOND</code> - The bytes written to all instance store volumes available to the instance. This metric is used to determine the volume of the data the application writes onto the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>NETWORK_IN_BYTES_PER_SECOND</code> - The number of bytes received by the instance on all network interfaces. This metric identifies the volume of incoming network traffic to a single instance.</p> </li> <li> <p> <code>NETWORK_OUT_BYTES_PER_SECOND</code> - The number of bytes sent out by the instance on all network interfaces. This metric identifies the volume of outgoing network traffic from a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_IN_PER_SECOND</code> - The number of packets received by the instance on all network interfaces. This metric identifies the volume of incoming traffic in terms of the number of packets on a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_OUT_PER_SECOND</code> - The number of packets sent out by the instance on all network interfaces. This metric identifies the volume of outgoing traffic in terms of the number of packets on a single instance.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    statistic: MetricStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    value: MetricValueSchema.and(
-      z.any().openapi({ description: 'The value of the utilization metric.' }),
-    ).exactOptional(),
+    name: MetricNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> - The percentage of allocated EC2 compute units that are currently in use on the instance. This metric identifies the processing power required to run an application on the instance.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that is currently in use on the instance. This metric identifies the amount of memory required to run an application on the instance.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>EBS_READ_OPS_PER_SECOND</code> - The completed read operations from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_WRITE_OPS_PER_SECOND</code> - The completed write operations to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_READ_BYTES_PER_SECOND</code> - The bytes read from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>EBS_WRITE_BYTES_PER_SECOND</code> - The bytes written to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>DISK_READ_OPS_PER_SECOND</code> - The completed read operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_OPS_PER_SECOND</code> - The completed write operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_READ_BYTES_PER_SECOND</code> - The bytes read from all instance store volumes available to the instance. This metric is used to determine the volume of the data the application reads from the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_BYTES_PER_SECOND</code> - The bytes written to all instance store volumes available to the instance. This metric is used to determine the volume of the data the application writes onto the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>NETWORK_IN_BYTES_PER_SECOND</code> - The number of bytes received by the instance on all network interfaces. This metric identifies the volume of incoming network traffic to a single instance.</p> </li> <li> <p> <code>NETWORK_OUT_BYTES_PER_SECOND</code> - The number of bytes sent out by the instance on all network interfaces. This metric identifies the volume of outgoing network traffic from a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_IN_PER_SECOND</code> - The number of packets received by the instance on all network interfaces. This metric identifies the volume of incoming traffic in terms of the number of packets on a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_OUT_PER_SECOND</code> - The number of packets sent out by the instance on all network interfaces. This metric identifies the volume of outgoing traffic in terms of the number of packets on a single instance.</p> </li> </ul>',
+    }),
+    statistic: MetricStatisticSchema.exactOptional().openapi({
+      description:
+        '<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
+    }),
+    value: MetricValueSchema.exactOptional().openapi({
+      description: 'The value of the utilization metric.',
+    }),
   })
   .openapi({
     description:
@@ -1134,8 +1220,6 @@ const UtilizationMetricSchema = z
   .openapi('UtilizationMetric')
 
 const UtilizationMetricsSchema = z.array(UtilizationMetricSchema).openapi('UtilizationMetrics')
-
-const LookBackPeriodInDaysSchema = z.float64().openapi('LookBackPeriodInDays')
 
 const DesiredCapacitySchema = z.int().openapi('DesiredCapacity')
 
@@ -1147,32 +1231,18 @@ const InstanceTypeSchema = z.string().openapi('InstanceType')
 
 const AutoScalingGroupConfigurationSchema = z
   .object({
-    desiredCapacity: DesiredCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The desired capacity, or number of instances, for the Auto Scaling group.',
-        }),
-    ).exactOptional(),
-    minSize: MinSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum size, or minimum number of instances, for the Auto Scaling group.',
-        }),
-    ).exactOptional(),
-    maxSize: MaxSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum size, or maximum number of instances, for the Auto Scaling group.',
-        }),
-    ).exactOptional(),
-    instanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'The instance type for the Auto Scaling group.' }),
-    ).exactOptional(),
+    desiredCapacity: DesiredCapacitySchema.exactOptional().openapi({
+      description: 'The desired capacity, or number of instances, for the Auto Scaling group.',
+    }),
+    minSize: MinSizeSchema.exactOptional().openapi({
+      description: 'The minimum size, or minimum number of instances, for the Auto Scaling group.',
+    }),
+    maxSize: MaxSizeSchema.exactOptional().openapi({
+      description: 'The maximum size, or maximum number of instances, for the Auto Scaling group.',
+    }),
+    instanceType: InstanceTypeSchema.exactOptional().openapi({
+      description: 'The instance type for the Auto Scaling group.',
+    }),
   })
   .openapi({ description: 'Describes the configuration of an Auto Scaling group.', required: [] })
   .openapi('AutoScalingGroupConfiguration')
@@ -1185,107 +1255,35 @@ const PerformanceRiskSchema = z.float64().min(0).max(4).openapi('PerformanceRisk
 
 const RankSchema = z.int().openapi('Rank')
 
-const SavingsOpportunityPercentageSchema = z.float64().openapi('SavingsOpportunityPercentage')
-
-const CurrencySchema = z.enum(['USD', 'CNY']).openapi('Currency')
-
-const ValueSchema = z.float64().openapi('Value')
-
-const EstimatedMonthlySavingsSchema = z
-  .object({
-    currency: CurrencySchema.and(
-      z.any().openapi({ description: 'The currency of the estimated monthly savings.' }),
-    ).exactOptional(),
-    value: ValueSchema.and(
-      z.any().openapi({ description: 'The value of the estimated monthly savings.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes the estimated monthly savings amount possible, based on On-Demand instance pricing, by adopting Compute Optimizer recommendations for a given resource.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-ec2-recommendations.html#ec2-savings-calculation">Estimated monthly savings and savings opportunities</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-    required: [],
-  })
-  .openapi('EstimatedMonthlySavings')
-
-const SavingsOpportunitySchema = z
-  .object({
-    savingsOpportunityPercentage: SavingsOpportunityPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer recommendations for a given resource.',
-        }),
-    ).exactOptional(),
-    estimatedMonthlySavings: EstimatedMonthlySavingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the estimated monthly savings amount possible, based on On-Demand instance pricing, by adopting Compute Optimizer recommendations for a given resource.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes the savings opportunity for recommendations of a given resource type or for the recommendation option of an individual resource.</p> <p>Savings opportunity represents the estimated monthly savings you can achieve by implementing a given Compute Optimizer recommendation.</p> <important> <p>Savings opportunity data requires that you opt in to Cost Explorer, as well as activate <b>Receive Amazon EC2 resource recommendations</b> in the Cost Explorer preferences page. That creates a connection between Cost Explorer and Compute Optimizer. With this connection, Cost Explorer generates savings estimates considering the price of existing resources, the price of recommended resources, and historical usage data. Estimated monthly savings reflects the projected dollar savings associated with each of the recommendations generated. For more information, see <a href="https://docs.aws.amazon.com/cost-management/latest/userguide/ce-enable.html">Enabling Cost Explorer</a> and <a href="https://docs.aws.amazon.com/cost-management/latest/userguide/ce-rightsizing.html">Optimizing your cost with Rightsizing Recommendations</a> in the <i>Cost Management User Guide</i>.</p> </important>',
-    required: [],
-  })
-  .openapi('SavingsOpportunity')
-
 const MigrationEffortSchema = z
   .enum(['VeryLow', 'Low', 'Medium', 'High'])
   .openapi('MigrationEffort')
 
 const AutoScalingGroupRecommendationOptionSchema = z
   .object({
-    configuration: AutoScalingGroupConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe an Auto Scaling group configuration.',
-        }),
-    ).exactOptional(),
-    projectedUtilizationMetrics: ProjectedUtilizationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of objects that describe the projected utilization metrics of the Auto Scaling group recommendation option.</p> <note> <p>The <code>Cpu</code> and <code>Memory</code> metrics are the only projected utilization metrics returned. Additionally, the <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    performanceRisk: PerformanceRiskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The performance risk of the Auto Scaling group configuration recommendation.</p> <p>Performance risk indicates the likelihood of the recommended instance type not meeting the resource needs of your workload. Compute Optimizer calculates an individual performance risk score for each specification of the recommended instance, including CPU, memory, EBS throughput, EBS IOPS, disk throughput, disk IOPS, network throughput, and network PPS. The performance risk of the recommended instance is calculated as the maximum performance risk score across the analyzed resource specifications.</p> <p>The value ranges from <code>0</code> - <code>4</code>, with <code>0</code> meaning that the recommended resource is predicted to always provide enough hardware capability. The higher the performance risk is, the more likely you should validate whether the recommendation will meet the performance requirements of your workload before migrating your resource.</p>',
-        }),
-    ).exactOptional(),
-    rank: RankSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rank of the Auto Scaling group recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>',
-        }),
-    ).exactOptional(),
-    savingsOpportunity: SavingsOpportunitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the savings opportunity for the Auto Scaling group recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.',
-        }),
-    ).exactOptional(),
-    migrationEffort: MigrationEffortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>",
-        }),
-    ).exactOptional(),
+    configuration: AutoScalingGroupConfigurationSchema.exactOptional().openapi({
+      description: 'An array of objects that describe an Auto Scaling group configuration.',
+    }),
+    projectedUtilizationMetrics: ProjectedUtilizationMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of objects that describe the projected utilization metrics of the Auto Scaling group recommendation option.</p> <note> <p>The <code>Cpu</code> and <code>Memory</code> metrics are the only projected utilization metrics returned. Additionally, the <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note>',
+    }),
+    performanceRisk: PerformanceRiskSchema.exactOptional().openapi({
+      description:
+        '<p>The performance risk of the Auto Scaling group configuration recommendation.</p> <p>Performance risk indicates the likelihood of the recommended instance type not meeting the resource needs of your workload. Compute Optimizer calculates an individual performance risk score for each specification of the recommended instance, including CPU, memory, EBS throughput, EBS IOPS, disk throughput, disk IOPS, network throughput, and network PPS. The performance risk of the recommended instance is calculated as the maximum performance risk score across the analyzed resource specifications.</p> <p>The value ranges from <code>0</code> - <code>4</code>, with <code>0</code> meaning that the recommended resource is predicted to always provide enough hardware capability. The higher the performance risk is, the more likely you should validate whether the recommendation will meet the performance requirements of your workload before migrating your resource.</p>',
+    }),
+    rank: RankSchema.exactOptional().openapi({
+      description:
+        '<p>The rank of the Auto Scaling group recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>',
+    }),
+    savingsOpportunity: SavingsOpportunitySchema.exactOptional().openapi({
+      description:
+        'An object that describes the savings opportunity for the Auto Scaling group recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.',
+    }),
+    migrationEffort: MigrationEffortSchema.exactOptional().openapi({
+      description:
+        "<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>",
+    }),
   })
   .openapi({
     description: 'Describes a recommendation option for an Auto Scaling group.',
@@ -1296,12 +1294,6 @@ const AutoScalingGroupRecommendationOptionSchema = z
 const AutoScalingGroupRecommendationOptionsSchema = z
   .array(AutoScalingGroupRecommendationOptionSchema)
   .openapi('AutoScalingGroupRecommendationOptions')
-
-const LastRefreshTimestampSchema = z.iso.datetime({ offset: true }).openapi('LastRefreshTimestamp')
-
-const CurrentPerformanceRiskSchema = z
-  .enum(['VeryLow', 'Low', 'Medium', 'High'])
-  .openapi('CurrentPerformanceRisk')
 
 const EnhancedInfrastructureMetricsSchema = z
   .enum(['Active', 'Inactive'])
@@ -1317,13 +1309,9 @@ const ExternalMetricsSourceSchema = z
 
 const ExternalMetricsPreferenceSchema = z
   .object({
-    source: ExternalMetricsSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Contains the source options for external metrics preferences. ',
-        }),
-    ).exactOptional(),
+    source: ExternalMetricsSourceSchema.exactOptional().openapi({
+      description: ' Contains the source options for external metrics preferences. ',
+    }),
   })
   .openapi({
     description:
@@ -1334,38 +1322,22 @@ const ExternalMetricsPreferenceSchema = z
 
 const EffectiveRecommendationPreferencesSchema = z
   .object({
-    cpuVendorArchitectures: CpuVendorArchitecturesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the CPU vendor and architecture for an instance or Auto Scaling group recommendations.</p> <p>For example, when you specify <code>AWS_ARM64</code> with:</p> <ul> <li> <p>A <a>GetEC2InstanceRecommendations</a> or <a>GetAutoScalingGroupRecommendations</a> request, Compute Optimizer returns recommendations that consist of Graviton2 instance types only.</p> </li> <li> <p>A <a>GetEC2RecommendationProjectedMetrics</a> request, Compute Optimizer returns projected utilization metrics for Graviton2 instance type recommendations only.</p> </li> <li> <p>A <a>ExportEC2InstanceRecommendations</a> or <a>ExportAutoScalingGroupRecommendations</a> request, Compute Optimizer exports recommendations that consist of Graviton2 instance types only.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    enhancedInfrastructureMetrics: EnhancedInfrastructureMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the activation status of the enhanced infrastructure metrics preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it\'s not yet applied to recommendations.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    inferredWorkloadTypes: InferredWorkloadTypesPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Describes the activation status of the inferred workload types preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh. A status of <code>Inactive</code> confirms that it's not yet applied to recommendations.</p>",
-        }),
-    ).exactOptional(),
-    externalMetricsPreference: ExternalMetricsPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> An object that describes the external metrics recommendation preference. </p> <p> If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response. </p>",
-        }),
-    ).exactOptional(),
+    cpuVendorArchitectures: CpuVendorArchitecturesSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the CPU vendor and architecture for an instance or Auto Scaling group recommendations.</p> <p>For example, when you specify <code>AWS_ARM64</code> with:</p> <ul> <li> <p>A <a>GetEC2InstanceRecommendations</a> or <a>GetAutoScalingGroupRecommendations</a> request, Compute Optimizer returns recommendations that consist of Graviton2 instance types only.</p> </li> <li> <p>A <a>GetEC2RecommendationProjectedMetrics</a> request, Compute Optimizer returns projected utilization metrics for Graviton2 instance type recommendations only.</p> </li> <li> <p>A <a>ExportEC2InstanceRecommendations</a> or <a>ExportAutoScalingGroupRecommendations</a> request, Compute Optimizer exports recommendations that consist of Graviton2 instance types only.</p> </li> </ul>',
+    }),
+    enhancedInfrastructureMetrics: EnhancedInfrastructureMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the activation status of the enhanced infrastructure metrics preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it\'s not yet applied to recommendations.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    inferredWorkloadTypes: InferredWorkloadTypesPreferenceSchema.exactOptional().openapi({
+      description:
+        "<p>Describes the activation status of the inferred workload types preference.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh. A status of <code>Inactive</code> confirms that it's not yet applied to recommendations.</p>",
+    }),
+    externalMetricsPreference: ExternalMetricsPreferenceSchema.exactOptional().openapi({
+      description:
+        "<p> An object that describes the external metrics recommendation preference. </p> <p> If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response. </p>",
+    }),
   })
   .openapi({
     description: 'Describes the effective recommendation preferences for a resource.',
@@ -1392,89 +1364,52 @@ const InferredWorkloadTypesSchema = z
 
 const AutoScalingGroupRecommendationSchema = z
   .object({
-    accountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account ID of the Auto Scaling group.' }),
-    ).exactOptional(),
-    autoScalingGroupArn: AutoScalingGroupArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Auto Scaling group.' }),
-    ).exactOptional(),
-    autoScalingGroupName: AutoScalingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the Auto Scaling group.' }),
-    ).exactOptional(),
-    finding: FindingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The finding classification of the Auto Scaling group.</p> <p>Findings for Auto Scaling groups include:</p> <ul> <li> <p> <b> <code>NotOptimized</code> </b>—An Auto Scaling group is considered not optimized when Compute Optimizer identifies a recommendation that can provide better performance for your workload.</p> </li> <li> <p> <b> <code>Optimized</code> </b>—An Auto Scaling group is considered optimized when Compute Optimizer determines that the group is correctly provisioned to run your workload based on the chosen instance type. For optimized resources, Compute Optimizer might recommend a new generation instance type.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    utilizationMetrics: UtilizationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the utilization metrics of the Auto Scaling group.',
-        }),
-    ).exactOptional(),
-    lookBackPeriodInDays: LookBackPeriodInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days for which utilization metrics were analyzed for the Auto Scaling group.',
-        }),
-    ).exactOptional(),
-    currentConfiguration: AutoScalingGroupConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the current configuration of the Auto Scaling group.',
-        }),
-    ).exactOptional(),
-    recommendationOptions: AutoScalingGroupRecommendationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the recommendation options for the Auto Scaling group.',
-        }),
-    ).exactOptional(),
-    lastRefreshTimestamp: LastRefreshTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of when the Auto Scaling group recommendation was last generated.',
-        }),
-    ).exactOptional(),
-    currentPerformanceRisk: CurrentPerformanceRiskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The risk of the current Auto Scaling group not meeting the performance needs of its workloads. The higher the risk, the more likely the current Auto Scaling group configuration has insufficient capacity and cannot meet workload requirements.',
-        }),
-    ).exactOptional(),
-    effectiveRecommendationPreferences: EffectiveRecommendationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the effective recommendation preferences for the Auto Scaling group.',
-        }),
-    ).exactOptional(),
-    inferredWorkloadTypes: InferredWorkloadTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The applications that might be running on the instances in the Auto Scaling group as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instances:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instances.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instances.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instances.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instances.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instances.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instances.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instances.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the Auto Scaling group.',
+    }),
+    autoScalingGroupArn: AutoScalingGroupArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Auto Scaling group.',
+    }),
+    autoScalingGroupName: AutoScalingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the Auto Scaling group.',
+    }),
+    finding: FindingSchema.exactOptional().openapi({
+      description:
+        '<p>The finding classification of the Auto Scaling group.</p> <p>Findings for Auto Scaling groups include:</p> <ul> <li> <p> <b> <code>NotOptimized</code> </b>—An Auto Scaling group is considered not optimized when Compute Optimizer identifies a recommendation that can provide better performance for your workload.</p> </li> <li> <p> <b> <code>Optimized</code> </b>—An Auto Scaling group is considered optimized when Compute Optimizer determines that the group is correctly provisioned to run your workload based on the chosen instance type. For optimized resources, Compute Optimizer might recommend a new generation instance type.</p> </li> </ul>',
+    }),
+    utilizationMetrics: UtilizationMetricsSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the utilization metrics of the Auto Scaling group.',
+    }),
+    lookBackPeriodInDays: LookBackPeriodInDaysSchema.exactOptional().openapi({
+      description:
+        'The number of days for which utilization metrics were analyzed for the Auto Scaling group.',
+    }),
+    currentConfiguration: AutoScalingGroupConfigurationSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the current configuration of the Auto Scaling group.',
+    }),
+    recommendationOptions: AutoScalingGroupRecommendationOptionsSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the recommendation options for the Auto Scaling group.',
+    }),
+    lastRefreshTimestamp: LastRefreshTimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp of when the Auto Scaling group recommendation was last generated.',
+    }),
+    currentPerformanceRisk: CurrentPerformanceRiskSchema.exactOptional().openapi({
+      description:
+        'The risk of the current Auto Scaling group not meeting the performance needs of its workloads. The higher the risk, the more likely the current Auto Scaling group configuration has insufficient capacity and cannot meet workload requirements.',
+    }),
+    effectiveRecommendationPreferences:
+      EffectiveRecommendationPreferencesSchema.exactOptional().openapi({
+        description:
+          'An object that describes the effective recommendation preferences for the Auto Scaling group.',
+      }),
+    inferredWorkloadTypes: InferredWorkloadTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The applications that might be running on the instances in the Auto Scaling group as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instances:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instances.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instances.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instances.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instances.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instances.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instances.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instances.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Describes an Auto Scaling group recommendation.', required: [] })
   .openapi('AutoScalingGroupRecommendation')
@@ -1483,58 +1418,19 @@ const AutoScalingGroupRecommendationsSchema = z
   .array(AutoScalingGroupRecommendationSchema)
   .openapi('AutoScalingGroupRecommendations')
 
-const IdentifierSchema = z.string().openapi('Identifier')
-
-const CodeSchema = z.string().openapi('Code')
-
-const MessageSchema = z.string().openapi('Message')
-
-const GetRecommendationErrorSchema = z
-  .object({
-    identifier: IdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the error.' }),
-    ).exactOptional(),
-    code: CodeSchema.and(z.any().openapi({ description: 'The error code.' })).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: 'The message, or reason, for the error.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Describes an error experienced when getting recommendations.</p> <p>For example, an error is returned if you request recommendations for an unsupported Auto Scaling group, or if you request recommendations for an instance of an unsupported instance family.</p>',
-    required: [],
-  })
-  .openapi('GetRecommendationError')
-
-const GetRecommendationErrorsSchema = z
-  .array(GetRecommendationErrorSchema)
-  .openapi('GetRecommendationErrors')
-
 const GetAutoScalingGroupRecommendationsResponseSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to use to advance to the next page of Auto Scaling group recommendations.</p> <p>This value is null when there are no more pages of Auto Scaling group recommendations to return.</p>',
-        }),
-    ).exactOptional(),
-    autoScalingGroupRecommendations: AutoScalingGroupRecommendationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe Auto Scaling group recommendations.',
-        }),
-    ).exactOptional(),
-    errors: GetRecommendationErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of objects that describe errors of the request.</p> <p>For example, an error is returned if you request recommendations for an unsupported Auto Scaling group.</p>',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token to use to advance to the next page of Auto Scaling group recommendations.</p> <p>This value is null when there are no more pages of Auto Scaling group recommendations to return.</p>',
+    }),
+    autoScalingGroupRecommendations: AutoScalingGroupRecommendationsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe Auto Scaling group recommendations.',
+    }),
+    errors: GetRecommendationErrorsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of objects that describe errors of the request.</p> <p>For example, an error is returned if you request recommendations for an unsupported Auto Scaling group.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAutoScalingGroupRecommendationsResponse')
@@ -1545,54 +1441,29 @@ const AutoScalingGroupArnsSchema = z
 
 const GetAutoScalingGroupRecommendationsRequestSchema = z
   .object({
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the Amazon Web Services account for which to return Auto Scaling group recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return Auto Scaling group recommendations.</p> <p>Only one account ID can be specified per request.</p>',
-        }),
-    ).exactOptional(),
-    autoScalingGroupArns: AutoScalingGroupArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Auto Scaling groups for which to return recommendations.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to advance to the next page of Auto Scaling group recommendations.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of Auto Scaling group recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
-    filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that returns a more specific list of Auto Scaling group recommendations.',
-        }),
-    ).exactOptional(),
-    recommendationPreferences: RecommendationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object to specify the preferences for the Auto Scaling group recommendations to return in the response.',
-        }),
-    ).exactOptional(),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the Amazon Web Services account for which to return Auto Scaling group recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return Auto Scaling group recommendations.</p> <p>Only one account ID can be specified per request.</p>',
+    }),
+    autoScalingGroupArns: AutoScalingGroupArnsSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Auto Scaling groups for which to return recommendations.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to advance to the next page of Auto Scaling group recommendations.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of Auto Scaling group recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
+    filters: FiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that returns a more specific list of Auto Scaling group recommendations.',
+    }),
+    recommendationPreferences: RecommendationPreferencesSchema.exactOptional().openapi({
+      description:
+        'An object to specify the preferences for the Auto Scaling group recommendations to return in the response.',
+    }),
   })
   .openapi({ title: 'GetAutoScalingGroupRecommendationsRequest', required: [] })
   .openapi('GetAutoScalingGroupRecommendationsRequest')
@@ -1615,34 +1486,28 @@ const RootVolumeSchema = z.boolean().openapi('RootVolume')
 
 const VolumeConfigurationSchema = z
   .object({
-    volumeType: VolumeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The volume type.</p> <p>This can be <code>gp2</code> for General Purpose SSD, <code>io1</code> or <code>io2</code> for Provisioned IOPS SSD, <code>st1</code> for Throughput Optimized HDD, <code>sc1</code> for Cold HDD, or <code>standard</code> for Magnetic volumes.</p>',
-        }),
-    ).exactOptional(),
-    volumeSize: VolumeSizeSchema.and(
-      z.any().openapi({ description: 'The size of the volume, in GiB.' }),
-    ).exactOptional(),
-    volumeBaselineIOPS: VolumeBaselineIOPSSchema.and(
-      z.any().openapi({ description: 'The baseline IOPS of the volume.' }),
-    ).exactOptional(),
-    volumeBurstIOPS: VolumeBurstIOPSSchema.and(
-      z.any().openapi({ description: 'The burst IOPS of the volume.' }),
-    ).exactOptional(),
-    volumeBaselineThroughput: VolumeBaselineThroughputSchema.and(
-      z.any().openapi({ description: 'The baseline throughput of the volume.' }),
-    ).exactOptional(),
-    volumeBurstThroughput: VolumeBurstThroughputSchema.and(
-      z.any().openapi({ description: 'The burst throughput of the volume.' }),
-    ).exactOptional(),
-    rootVolume: RootVolumeSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Contains the image used to boot the instance during launch. ' }),
-    ).exactOptional(),
+    volumeType: VolumeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The volume type.</p> <p>This can be <code>gp2</code> for General Purpose SSD, <code>io1</code> or <code>io2</code> for Provisioned IOPS SSD, <code>st1</code> for Throughput Optimized HDD, <code>sc1</code> for Cold HDD, or <code>standard</code> for Magnetic volumes.</p>',
+    }),
+    volumeSize: VolumeSizeSchema.exactOptional().openapi({
+      description: 'The size of the volume, in GiB.',
+    }),
+    volumeBaselineIOPS: VolumeBaselineIOPSSchema.exactOptional().openapi({
+      description: 'The baseline IOPS of the volume.',
+    }),
+    volumeBurstIOPS: VolumeBurstIOPSSchema.exactOptional().openapi({
+      description: 'The burst IOPS of the volume.',
+    }),
+    volumeBaselineThroughput: VolumeBaselineThroughputSchema.exactOptional().openapi({
+      description: 'The baseline throughput of the volume.',
+    }),
+    volumeBurstThroughput: VolumeBurstThroughputSchema.exactOptional().openapi({
+      description: 'The burst throughput of the volume.',
+    }),
+    rootVolume: RootVolumeSchema.exactOptional().openapi({
+      description: ' Contains the image used to boot the instance during launch. ',
+    }),
   })
   .openapi({
     description:
@@ -1664,25 +1529,17 @@ const EBSMetricNameSchema = z
 
 const EBSUtilizationMetricSchema = z
   .object({
-    name: EBSMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>VolumeReadOpsPerSecond</code> - The completed read operations per second from the volume in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>VolumeWriteOpsPerSecond</code> - The completed write operations per second to the volume in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>VolumeReadBytesPerSecond</code> - The bytes read per second from the volume in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>VolumeWriteBytesPerSecond</code> - The bytes written to the volume in a specified period of time.</p> <p>Unit: Bytes</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    statistic: MetricStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    value: MetricValueSchema.and(
-      z.any().openapi({ description: 'The value of the utilization metric.' }),
-    ).exactOptional(),
+    name: EBSMetricNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>VolumeReadOpsPerSecond</code> - The completed read operations per second from the volume in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>VolumeWriteOpsPerSecond</code> - The completed write operations per second to the volume in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>VolumeReadBytesPerSecond</code> - The bytes read per second from the volume in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>VolumeWriteBytesPerSecond</code> - The bytes written to the volume in a specified period of time.</p> <p>Unit: Bytes</p> </li> </ul>',
+    }),
+    statistic: MetricStatisticSchema.exactOptional().openapi({
+      description:
+        '<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
+    }),
+    value: MetricValueSchema.exactOptional().openapi({
+      description: 'The value of the utilization metric.',
+    }),
   })
   .openapi({
     description:
@@ -1697,33 +1554,21 @@ const EBSUtilizationMetricsSchema = z
 
 const VolumeRecommendationOptionSchema = z
   .object({
-    configuration: VolumeConfigurationSchema.and(
-      z.any().openapi({ description: 'An array of objects that describe a volume configuration.' }),
-    ).exactOptional(),
-    performanceRisk: PerformanceRiskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The performance risk of the volume recommendation option.</p> <p>Performance risk is the likelihood of the recommended volume type meeting the performance requirement of your workload.</p> <p>The value ranges from <code>0</code> - <code>4</code>, with <code>0</code> meaning that the recommended resource is predicted to always provide enough hardware capability. The higher the performance risk is, the more likely you should validate whether the recommendation will meet the performance requirements of your workload before migrating your resource.</p>',
-        }),
-    ).exactOptional(),
-    rank: RankSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rank of the volume recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>',
-        }),
-    ).exactOptional(),
-    savingsOpportunity: SavingsOpportunitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the savings opportunity for the EBS volume recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.',
-        }),
-    ).exactOptional(),
+    configuration: VolumeConfigurationSchema.exactOptional().openapi({
+      description: 'An array of objects that describe a volume configuration.',
+    }),
+    performanceRisk: PerformanceRiskSchema.exactOptional().openapi({
+      description:
+        '<p>The performance risk of the volume recommendation option.</p> <p>Performance risk is the likelihood of the recommended volume type meeting the performance requirement of your workload.</p> <p>The value ranges from <code>0</code> - <code>4</code>, with <code>0</code> meaning that the recommended resource is predicted to always provide enough hardware capability. The higher the performance risk is, the more likely you should validate whether the recommendation will meet the performance requirements of your workload before migrating your resource.</p>',
+    }),
+    rank: RankSchema.exactOptional().openapi({
+      description:
+        '<p>The rank of the volume recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>',
+    }),
+    savingsOpportunity: SavingsOpportunitySchema.exactOptional().openapi({
+      description:
+        'An object that describes the savings opportunity for the EBS volume recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.',
+    }),
   })
   .openapi({
     description:
@@ -1738,65 +1583,35 @@ const VolumeRecommendationOptionsSchema = z
 
 const VolumeRecommendationSchema = z
   .object({
-    volumeArn: VolumeArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the current volume.' }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID of the volume.' }),
-    ).exactOptional(),
-    currentConfiguration: VolumeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe the current configuration of the volume.',
-        }),
-    ).exactOptional(),
-    finding: EBSFindingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The finding classification of the volume.</p> <p>Findings for volumes include:</p> <ul> <li> <p> <b> <code>NotOptimized</code> </b>—A volume is considered not optimized when Compute Optimizer identifies a recommendation that can provide better performance for your workload.</p> </li> <li> <p> <b> <code>Optimized</code> </b>—An volume is considered optimized when Compute Optimizer determines that the volume is correctly provisioned to run your workload based on the chosen volume type. For optimized resources, Compute Optimizer might recommend a new generation volume type.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    utilizationMetrics: EBSUtilizationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe the utilization metrics of the volume.',
-        }),
-    ).exactOptional(),
-    lookBackPeriodInDays: LookBackPeriodInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days for which utilization metrics were analyzed for the volume.',
-        }),
-    ).exactOptional(),
-    volumeRecommendationOptions: VolumeRecommendationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the recommendation options for the volume.',
-        }),
-    ).exactOptional(),
-    lastRefreshTimestamp: LastRefreshTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp of when the volume recommendation was last generated.',
-        }),
-    ).exactOptional(),
-    currentPerformanceRisk: CurrentPerformanceRiskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The risk of the current EBS volume not meeting the performance needs of its workloads. The higher the risk, the more likely the current EBS volume doesn't have sufficient capacity.",
-        }),
-    ).exactOptional(),
+    volumeArn: VolumeArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the current volume.',
+    }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the volume.',
+    }),
+    currentConfiguration: VolumeConfigurationSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the current configuration of the volume.',
+    }),
+    finding: EBSFindingSchema.exactOptional().openapi({
+      description:
+        '<p>The finding classification of the volume.</p> <p>Findings for volumes include:</p> <ul> <li> <p> <b> <code>NotOptimized</code> </b>—A volume is considered not optimized when Compute Optimizer identifies a recommendation that can provide better performance for your workload.</p> </li> <li> <p> <b> <code>Optimized</code> </b>—An volume is considered optimized when Compute Optimizer determines that the volume is correctly provisioned to run your workload based on the chosen volume type. For optimized resources, Compute Optimizer might recommend a new generation volume type.</p> </li> </ul>',
+    }),
+    utilizationMetrics: EBSUtilizationMetricsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the utilization metrics of the volume.',
+    }),
+    lookBackPeriodInDays: LookBackPeriodInDaysSchema.exactOptional().openapi({
+      description: 'The number of days for which utilization metrics were analyzed for the volume.',
+    }),
+    volumeRecommendationOptions: VolumeRecommendationOptionsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the recommendation options for the volume.',
+    }),
+    lastRefreshTimestamp: LastRefreshTimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the volume recommendation was last generated.',
+    }),
+    currentPerformanceRisk: CurrentPerformanceRiskSchema.exactOptional().openapi({
+      description:
+        "The risk of the current EBS volume not meeting the performance needs of its workloads. The higher the risk, the more likely the current EBS volume doesn't have sufficient capacity.",
+    }),
   })
   .openapi({
     description: 'Describes an Amazon Elastic Block Store (Amazon EBS) volume recommendation.',
@@ -1810,25 +1625,17 @@ const VolumeRecommendationsSchema = z
 
 const GetEBSVolumeRecommendationsResponseSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to use to advance to the next page of volume recommendations.</p> <p>This value is null when there are no more pages of volume recommendations to return.</p>',
-        }),
-    ).exactOptional(),
-    volumeRecommendations: VolumeRecommendationsSchema.and(
-      z.any().openapi({ description: 'An array of objects that describe volume recommendations.' }),
-    ).exactOptional(),
-    errors: GetRecommendationErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of objects that describe errors of the request.</p> <p>For example, an error is returned if you request recommendations for an unsupported volume.</p>',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token to use to advance to the next page of volume recommendations.</p> <p>This value is null when there are no more pages of volume recommendations to return.</p>',
+    }),
+    volumeRecommendations: VolumeRecommendationsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe volume recommendations.',
+    }),
+    errors: GetRecommendationErrorsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of objects that describe errors of the request.</p> <p>For example, an error is returned if you request recommendations for an unsupported volume.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEBSVolumeRecommendationsResponse')
@@ -1837,45 +1644,25 @@ const VolumeArnsSchema = z.array(VolumeArnSchema).openapi('VolumeArns')
 
 const GetEBSVolumeRecommendationsRequestSchema = z
   .object({
-    volumeArns: VolumeArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volumes for which to return recommendations.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token to advance to the next page of volume recommendations.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of volume recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
-    filters: EBSFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that returns a more specific list of volume recommendations.',
-        }),
-    ).exactOptional(),
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the Amazon Web Services account for which to return volume recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return volume recommendations.</p> <p>Only one account ID can be specified per request.</p>',
-        }),
-    ).exactOptional(),
+    volumeArns: VolumeArnsSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volumes for which to return recommendations.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to advance to the next page of volume recommendations.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of volume recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
+    filters: EBSFiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that returns a more specific list of volume recommendations.',
+    }),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the Amazon Web Services account for which to return volume recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return volume recommendations.</p> <p>Only one account ID can be specified per request.</p>',
+    }),
   })
   .openapi({ title: 'GetEBSVolumeRecommendationsRequest', required: [] })
   .openapi('GetEBSVolumeRecommendationsRequest')
@@ -1926,57 +1713,33 @@ const PlatformDifferencesSchema = z.array(PlatformDifferenceSchema).openapi('Pla
 
 const InstanceRecommendationOptionSchema = z
   .object({
-    instanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'The instance type of the instance recommendation.' }),
-    ).exactOptional(),
-    projectedUtilizationMetrics: ProjectedUtilizationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of objects that describe the projected utilization metrics of the instance recommendation option.</p> <note> <p>The <code>Cpu</code> and <code>Memory</code> metrics are the only projected utilization metrics returned. Additionally, the <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    platformDifferences: PlatformDifferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the configuration differences between the current instance and the recommended instance type. You should consider the configuration differences before migrating your workloads from the current instance to the recommended instance type. The <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html">Change the instance type guide for Linux</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-instance-resize.html">Change the instance type guide for Windows</a> provide general guidance for getting started with an instance migration.</p> <p>Platform differences include:</p> <ul> <li> <p> <b> <code>Hypervisor</code> </b> — The hypervisor of the recommended instance type is different than that of the current instance. For example, the recommended instance type uses a Nitro hypervisor and the current instance uses a Xen hypervisor. The differences that you should consider between these hypervisors are covered in the <a href="http://aws.amazon.com/ec2/faqs/#Nitro_Hypervisor">Nitro Hypervisor</a> section of the Amazon EC2 frequently asked questions. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances">Instances built on the Nitro System</a> in the <i>Amazon EC2 User Guide for Linux</i>, or <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instance-types.html#ec2-nitro-instances">Instances built on the Nitro System</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>NetworkInterface</code> </b> — The network interface of the recommended instance type is different than that of the current instance. For example, the recommended instance type supports enhanced networking and the current instance might not. To enable enhanced networking for the recommended instance type, you must install the Elastic Network Adapter (ENA) driver or the Intel 82599 Virtual Function driver. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html">Enhanced networking on Linux</a> in the <i>Amazon EC2 User Guide for Linux</i>, or <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/enhanced-networking.html">Enhanced networking on Windows</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>StorageInterface</code> </b> — The storage interface of the recommended instance type is different than that of the current instance. For example, the recommended instance type uses an NVMe storage interface and the current instance does not. To access NVMe volumes for the recommended instance type, you will need to install or upgrade the NVMe driver. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nvme-ebs-volumes.html">Amazon EBS and NVMe on Linux instances</a> in the <i>Amazon EC2 User Guide for Linux</i>, or <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/nvme-ebs-volumes.html">Amazon EBS and NVMe on Windows instances</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>InstanceStoreAvailability</code> </b> — The recommended instance type does not support instance store volumes and the current instance does. Before migrating, you might need to back up the data on your instance store volumes if you want to preserve them. For more information, see <a href="https://aws.amazon.com/premiumsupport/knowledge-center/back-up-instance-store-ebs/">How do I back up an instance store volume on my Amazon EC2 instance to Amazon EBS?</a> in the <i>Amazon Web Services Premium Support Knowledge Base</i>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html">Amazon EC2 instance store</a> in the <i>Amazon EC2 User Guide for Linux</i>, or see <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/InstanceStorage.html">Amazon EC2 instance store</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>VirtualizationType</code> </b> — The recommended instance type uses the hardware virtual machine (HVM) virtualization type and the current instance uses the paravirtual (PV) virtualization type. For more information about the differences between these virtualization types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/virtualization_types.html">Linux AMI virtualization types</a> in the <i>Amazon EC2 User Guide for Linux</i>, or <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/windows-ami-version-history.html#virtualization-types">Windows AMI virtualization types</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>Architecture</code> </b> — The CPU architecture between the recommended instance type and the current instance is different. For example, the recommended instance type might use an Arm CPU architecture and the current instance type might use a different one, such as x86. Before migrating, you should consider recompiling the software on your instance for the new architecture. Alternatively, you might switch to an Amazon Machine Image (AMI) that supports the new architecture. For more information about the CPU architecture for each instance type, see <a href="http://aws.amazon.com/ec2/instance-types/">Amazon EC2 Instance Types</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    performanceRisk: PerformanceRiskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The performance risk of the instance recommendation option.</p> <p>Performance risk indicates the likelihood of the recommended instance type not meeting the resource needs of your workload. Compute Optimizer calculates an individual performance risk score for each specification of the recommended instance, including CPU, memory, EBS throughput, EBS IOPS, disk throughput, disk IOPS, network throughput, and network PPS. The performance risk of the recommended instance is calculated as the maximum performance risk score across the analyzed resource specifications.</p> <p>The value ranges from <code>0</code> - <code>4</code>, with <code>0</code> meaning that the recommended resource is predicted to always provide enough hardware capability. The higher the performance risk is, the more likely you should validate whether the recommendation will meet the performance requirements of your workload before migrating your resource.</p>',
-        }),
-    ).exactOptional(),
-    rank: RankSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rank of the instance recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>',
-        }),
-    ).exactOptional(),
-    savingsOpportunity: SavingsOpportunitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the savings opportunity for the instance recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.',
-        }),
-    ).exactOptional(),
-    migrationEffort: MigrationEffortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>",
-        }),
-    ).exactOptional(),
+    instanceType: InstanceTypeSchema.exactOptional().openapi({
+      description: 'The instance type of the instance recommendation.',
+    }),
+    projectedUtilizationMetrics: ProjectedUtilizationMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of objects that describe the projected utilization metrics of the instance recommendation option.</p> <note> <p>The <code>Cpu</code> and <code>Memory</code> metrics are the only projected utilization metrics returned. Additionally, the <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note>',
+    }),
+    platformDifferences: PlatformDifferencesSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the configuration differences between the current instance and the recommended instance type. You should consider the configuration differences before migrating your workloads from the current instance to the recommended instance type. The <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html">Change the instance type guide for Linux</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-instance-resize.html">Change the instance type guide for Windows</a> provide general guidance for getting started with an instance migration.</p> <p>Platform differences include:</p> <ul> <li> <p> <b> <code>Hypervisor</code> </b> — The hypervisor of the recommended instance type is different than that of the current instance. For example, the recommended instance type uses a Nitro hypervisor and the current instance uses a Xen hypervisor. The differences that you should consider between these hypervisors are covered in the <a href="http://aws.amazon.com/ec2/faqs/#Nitro_Hypervisor">Nitro Hypervisor</a> section of the Amazon EC2 frequently asked questions. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances">Instances built on the Nitro System</a> in the <i>Amazon EC2 User Guide for Linux</i>, or <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instance-types.html#ec2-nitro-instances">Instances built on the Nitro System</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>NetworkInterface</code> </b> — The network interface of the recommended instance type is different than that of the current instance. For example, the recommended instance type supports enhanced networking and the current instance might not. To enable enhanced networking for the recommended instance type, you must install the Elastic Network Adapter (ENA) driver or the Intel 82599 Virtual Function driver. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html">Enhanced networking on Linux</a> in the <i>Amazon EC2 User Guide for Linux</i>, or <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/enhanced-networking.html">Enhanced networking on Windows</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>StorageInterface</code> </b> — The storage interface of the recommended instance type is different than that of the current instance. For example, the recommended instance type uses an NVMe storage interface and the current instance does not. To access NVMe volumes for the recommended instance type, you will need to install or upgrade the NVMe driver. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/nvme-ebs-volumes.html">Amazon EBS and NVMe on Linux instances</a> in the <i>Amazon EC2 User Guide for Linux</i>, or <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/nvme-ebs-volumes.html">Amazon EBS and NVMe on Windows instances</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>InstanceStoreAvailability</code> </b> — The recommended instance type does not support instance store volumes and the current instance does. Before migrating, you might need to back up the data on your instance store volumes if you want to preserve them. For more information, see <a href="https://aws.amazon.com/premiumsupport/knowledge-center/back-up-instance-store-ebs/">How do I back up an instance store volume on my Amazon EC2 instance to Amazon EBS?</a> in the <i>Amazon Web Services Premium Support Knowledge Base</i>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html">Amazon EC2 instance store</a> in the <i>Amazon EC2 User Guide for Linux</i>, or see <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instance-types.html#instance-networking-storage">Networking and storage features</a> and <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/InstanceStorage.html">Amazon EC2 instance store</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>VirtualizationType</code> </b> — The recommended instance type uses the hardware virtual machine (HVM) virtualization type and the current instance uses the paravirtual (PV) virtualization type. For more information about the differences between these virtualization types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/virtualization_types.html">Linux AMI virtualization types</a> in the <i>Amazon EC2 User Guide for Linux</i>, or <a href="https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/windows-ami-version-history.html#virtualization-types">Windows AMI virtualization types</a> in the <i>Amazon EC2 User Guide for Windows</i>.</p> </li> <li> <p> <b> <code>Architecture</code> </b> — The CPU architecture between the recommended instance type and the current instance is different. For example, the recommended instance type might use an Arm CPU architecture and the current instance type might use a different one, such as x86. Before migrating, you should consider recompiling the software on your instance for the new architecture. Alternatively, you might switch to an Amazon Machine Image (AMI) that supports the new architecture. For more information about the CPU architecture for each instance type, see <a href="http://aws.amazon.com/ec2/instance-types/">Amazon EC2 Instance Types</a>.</p> </li> </ul>',
+    }),
+    performanceRisk: PerformanceRiskSchema.exactOptional().openapi({
+      description:
+        '<p>The performance risk of the instance recommendation option.</p> <p>Performance risk indicates the likelihood of the recommended instance type not meeting the resource needs of your workload. Compute Optimizer calculates an individual performance risk score for each specification of the recommended instance, including CPU, memory, EBS throughput, EBS IOPS, disk throughput, disk IOPS, network throughput, and network PPS. The performance risk of the recommended instance is calculated as the maximum performance risk score across the analyzed resource specifications.</p> <p>The value ranges from <code>0</code> - <code>4</code>, with <code>0</code> meaning that the recommended resource is predicted to always provide enough hardware capability. The higher the performance risk is, the more likely you should validate whether the recommendation will meet the performance requirements of your workload before migrating your resource.</p>',
+    }),
+    rank: RankSchema.exactOptional().openapi({
+      description:
+        '<p>The rank of the instance recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>',
+    }),
+    savingsOpportunity: SavingsOpportunitySchema.exactOptional().openapi({
+      description:
+        'An object that describes the savings opportunity for the instance recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.',
+    }),
+    migrationEffort: MigrationEffortSchema.exactOptional().openapi({
+      description:
+        "<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>",
+    }),
   })
   .openapi({
     description: 'Describes a recommendation option for an Amazon EC2 instance.',
@@ -1996,14 +1759,12 @@ const RecommendationSourceTypeSchema = z
 
 const RecommendationSourceSchema = z
   .object({
-    recommendationSourceArn: RecommendationSourceArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the recommendation source.' }),
-    ).exactOptional(),
-    recommendationSourceType: RecommendationSourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type of the recommendation source.' }),
-    ).exactOptional(),
+    recommendationSourceArn: RecommendationSourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommendation source.',
+    }),
+    recommendationSourceType: RecommendationSourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type of the recommendation source.',
+    }),
   })
   .openapi({
     description:
@@ -2022,103 +1783,58 @@ const InstanceStateSchema = z
 
 const InstanceRecommendationSchema = z
   .object({
-    instanceArn: InstanceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the current instance.' }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID of the instance.' }),
-    ).exactOptional(),
-    instanceName: InstanceNameSchema.and(
-      z.any().openapi({ description: 'The name of the current instance.' }),
-    ).exactOptional(),
-    currentInstanceType: CurrentInstanceTypeSchema.and(
-      z.any().openapi({ description: 'The instance type of the current instance.' }),
-    ).exactOptional(),
-    finding: FindingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The finding classification of the instance.</p> <p>Findings for instances include:</p> <ul> <li> <p> <b> <code>Underprovisioned</code> </b>—An instance is considered under-provisioned when at least one specification of your instance, such as CPU, memory, or network, does not meet the performance requirements of your workload. Under-provisioned instances may lead to poor application performance.</p> </li> <li> <p> <b> <code>Overprovisioned</code> </b>—An instance is considered over-provisioned when at least one specification of your instance, such as CPU, memory, or network, can be sized down while still meeting the performance requirements of your workload, and no specification is under-provisioned. Over-provisioned instances may lead to unnecessary infrastructure cost.</p> </li> <li> <p> <b> <code>Optimized</code> </b>—An instance is considered optimized when all specifications of your instance, such as CPU, memory, and network, meet the performance requirements of your workload and is not over provisioned. For optimized resources, Compute Optimizer might recommend a new generation instance type.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    findingReasonCodes: InstanceRecommendationFindingReasonCodesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The reason for the finding classification of the instance.</p> <p>Finding reason codes for instances include:</p> <ul> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The instance’s CPU configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The instance’s CPU configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better CPU performance. This is identified by analyzing the <code>CPUUtilization</code> metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The instance’s memory configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the memory utilization metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The instance’s memory configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better memory performance. This is identified by analyzing the memory utilization metric of the current instance during the look-back period.</p> <note> <p>Memory utilization is analyzed only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling memory utilization with the Amazon CloudWatch Agent</a> in the <i>Compute Optimizer User Guide</i>. On Linux instances, Compute Optimizer analyses the <code>mem_used_percent</code> metric in the <code>CWAgent</code> namespace, or the legacy <code>MemoryUtilization</code> metric in the <code>System/Linux</code> namespace. On Windows instances, Compute Optimizer analyses the <code>Memory % Committed Bytes In Use</code> metric in the <code>CWAgent</code> namespace.</p> </note> </li> <li> <p> <b> <code>EBSThroughputOverprovisioned</code> </b> — The instance’s EBS throughput configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>VolumeReadBytes</code> and <code>VolumeWriteBytes</code> metrics of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSThroughputUnderprovisioned</code> </b> — The instance’s EBS throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS throughput performance. This is identified by analyzing the <code>VolumeReadBytes</code> and <code>VolumeWriteBytes</code>&gt; metrics of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSIOPSOverprovisioned</code> </b> — The instance’s EBS IOPS configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>VolumeReadOps</code> and <code>VolumeWriteOps</code> metric of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSIOPSUnderprovisioned</code> </b> — The instance’s EBS IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS IOPS performance. This is identified by analyzing the <code>VolumeReadOps</code> and <code>VolumeWriteOps</code> metric of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkBandwidthOverprovisioned</code> </b> — The instance’s network bandwidth configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>NetworkIn</code> and <code>NetworkOut</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkBandwidthUnderprovisioned</code> </b> — The instance’s network bandwidth configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network bandwidth performance. This is identified by analyzing the <code>NetworkIn</code> and <code>NetworkOut</code> metrics of the current instance during the look-back period. This finding reason happens when the <code>NetworkIn</code> or <code>NetworkOut</code> performance of an instance is impacted.</p> </li> <li> <p> <b> <code>NetworkPPSOverprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>NetworkPacketsIn</code> and <code>NetworkPacketsIn</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkPPSUnderprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network PPS performance. This is identified by analyzing the <code>NetworkPacketsIn</code> and <code>NetworkPacketsIn</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskIOPSOverprovisioned</code> </b> — The instance’s disk IOPS configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>DiskReadOps</code> and <code>DiskWriteOps</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskIOPSUnderprovisioned</code> </b> — The instance’s disk IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk IOPS performance. This is identified by analyzing the <code>DiskReadOps</code> and <code>DiskWriteOps</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskThroughputOverprovisioned</code> </b> — The instance’s disk throughput configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>DiskReadBytes</code> and <code>DiskWriteBytes</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskThroughputUnderprovisioned</code> </b> — The instance’s disk throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk throughput performance. This is identified by analyzing the <code>DiskReadBytes</code> and <code>DiskWriteBytes</code> metrics of the current instance during the look-back period.</p> </li> </ul> <note> <p>For more information about instance metrics, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/viewing_metrics_with_cloudwatch.html\">List the available CloudWatch metrics for your instances</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about EBS volume metrics, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using_cloudwatch_ebs.html\">Amazon CloudWatch metrics for Amazon EBS</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>",
-        }),
-    ).exactOptional(),
-    utilizationMetrics: UtilizationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe the utilization metrics of the instance.',
-        }),
-    ).exactOptional(),
-    lookBackPeriodInDays: LookBackPeriodInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days for which utilization metrics were analyzed for the instance.',
-        }),
-    ).exactOptional(),
-    recommendationOptions: RecommendationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the recommendation options for the instance.',
-        }),
-    ).exactOptional(),
-    recommendationSources: RecommendationSourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the source resource of the recommendation.',
-        }),
-    ).exactOptional(),
-    lastRefreshTimestamp: LastRefreshTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp of when the instance recommendation was last generated.',
-        }),
-    ).exactOptional(),
-    currentPerformanceRisk: CurrentPerformanceRiskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The risk of the current instance not meeting the performance needs of its workloads. The higher the risk, the more likely the current instance cannot meet the performance requirements of its workload.',
-        }),
-    ).exactOptional(),
-    effectiveRecommendationPreferences: EffectiveRecommendationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the effective recommendation preferences for the instance.',
-        }),
-    ).exactOptional(),
-    inferredWorkloadTypes: InferredWorkloadTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The applications that might be running on the instance as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instance:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instance.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instance.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instance.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instance.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instance.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instance.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instance.</p> </li> <li> <p> <code>Kafka</code> - Infers that Kafka might be running on the instance.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    instanceState: InstanceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The state of the instance when the recommendation was generated. ',
-        }),
-    ).exactOptional(),
+    instanceArn: InstanceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the current instance.',
+    }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the instance.',
+    }),
+    instanceName: InstanceNameSchema.exactOptional().openapi({
+      description: 'The name of the current instance.',
+    }),
+    currentInstanceType: CurrentInstanceTypeSchema.exactOptional().openapi({
+      description: 'The instance type of the current instance.',
+    }),
+    finding: FindingSchema.exactOptional().openapi({
+      description:
+        '<p>The finding classification of the instance.</p> <p>Findings for instances include:</p> <ul> <li> <p> <b> <code>Underprovisioned</code> </b>—An instance is considered under-provisioned when at least one specification of your instance, such as CPU, memory, or network, does not meet the performance requirements of your workload. Under-provisioned instances may lead to poor application performance.</p> </li> <li> <p> <b> <code>Overprovisioned</code> </b>—An instance is considered over-provisioned when at least one specification of your instance, such as CPU, memory, or network, can be sized down while still meeting the performance requirements of your workload, and no specification is under-provisioned. Over-provisioned instances may lead to unnecessary infrastructure cost.</p> </li> <li> <p> <b> <code>Optimized</code> </b>—An instance is considered optimized when all specifications of your instance, such as CPU, memory, and network, meet the performance requirements of your workload and is not over provisioned. For optimized resources, Compute Optimizer might recommend a new generation instance type.</p> </li> </ul>',
+    }),
+    findingReasonCodes: InstanceRecommendationFindingReasonCodesSchema.exactOptional().openapi({
+      description:
+        "<p>The reason for the finding classification of the instance.</p> <p>Finding reason codes for instances include:</p> <ul> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The instance’s CPU configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The instance’s CPU configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better CPU performance. This is identified by analyzing the <code>CPUUtilization</code> metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The instance’s memory configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the memory utilization metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The instance’s memory configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better memory performance. This is identified by analyzing the memory utilization metric of the current instance during the look-back period.</p> <note> <p>Memory utilization is analyzed only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling memory utilization with the Amazon CloudWatch Agent</a> in the <i>Compute Optimizer User Guide</i>. On Linux instances, Compute Optimizer analyses the <code>mem_used_percent</code> metric in the <code>CWAgent</code> namespace, or the legacy <code>MemoryUtilization</code> metric in the <code>System/Linux</code> namespace. On Windows instances, Compute Optimizer analyses the <code>Memory % Committed Bytes In Use</code> metric in the <code>CWAgent</code> namespace.</p> </note> </li> <li> <p> <b> <code>EBSThroughputOverprovisioned</code> </b> — The instance’s EBS throughput configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>VolumeReadBytes</code> and <code>VolumeWriteBytes</code> metrics of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSThroughputUnderprovisioned</code> </b> — The instance’s EBS throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS throughput performance. This is identified by analyzing the <code>VolumeReadBytes</code> and <code>VolumeWriteBytes</code>&gt; metrics of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSIOPSOverprovisioned</code> </b> — The instance’s EBS IOPS configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>VolumeReadOps</code> and <code>VolumeWriteOps</code> metric of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSIOPSUnderprovisioned</code> </b> — The instance’s EBS IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS IOPS performance. This is identified by analyzing the <code>VolumeReadOps</code> and <code>VolumeWriteOps</code> metric of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkBandwidthOverprovisioned</code> </b> — The instance’s network bandwidth configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>NetworkIn</code> and <code>NetworkOut</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkBandwidthUnderprovisioned</code> </b> — The instance’s network bandwidth configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network bandwidth performance. This is identified by analyzing the <code>NetworkIn</code> and <code>NetworkOut</code> metrics of the current instance during the look-back period. This finding reason happens when the <code>NetworkIn</code> or <code>NetworkOut</code> performance of an instance is impacted.</p> </li> <li> <p> <b> <code>NetworkPPSOverprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>NetworkPacketsIn</code> and <code>NetworkPacketsIn</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkPPSUnderprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network PPS performance. This is identified by analyzing the <code>NetworkPacketsIn</code> and <code>NetworkPacketsIn</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskIOPSOverprovisioned</code> </b> — The instance’s disk IOPS configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>DiskReadOps</code> and <code>DiskWriteOps</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskIOPSUnderprovisioned</code> </b> — The instance’s disk IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk IOPS performance. This is identified by analyzing the <code>DiskReadOps</code> and <code>DiskWriteOps</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskThroughputOverprovisioned</code> </b> — The instance’s disk throughput configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>DiskReadBytes</code> and <code>DiskWriteBytes</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskThroughputUnderprovisioned</code> </b> — The instance’s disk throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk throughput performance. This is identified by analyzing the <code>DiskReadBytes</code> and <code>DiskWriteBytes</code> metrics of the current instance during the look-back period.</p> </li> </ul> <note> <p>For more information about instance metrics, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/viewing_metrics_with_cloudwatch.html\">List the available CloudWatch metrics for your instances</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about EBS volume metrics, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using_cloudwatch_ebs.html\">Amazon CloudWatch metrics for Amazon EBS</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>",
+    }),
+    utilizationMetrics: UtilizationMetricsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the utilization metrics of the instance.',
+    }),
+    lookBackPeriodInDays: LookBackPeriodInDaysSchema.exactOptional().openapi({
+      description:
+        'The number of days for which utilization metrics were analyzed for the instance.',
+    }),
+    recommendationOptions: RecommendationOptionsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the recommendation options for the instance.',
+    }),
+    recommendationSources: RecommendationSourcesSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the source resource of the recommendation.',
+    }),
+    lastRefreshTimestamp: LastRefreshTimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the instance recommendation was last generated.',
+    }),
+    currentPerformanceRisk: CurrentPerformanceRiskSchema.exactOptional().openapi({
+      description:
+        'The risk of the current instance not meeting the performance needs of its workloads. The higher the risk, the more likely the current instance cannot meet the performance requirements of its workload.',
+    }),
+    effectiveRecommendationPreferences:
+      EffectiveRecommendationPreferencesSchema.exactOptional().openapi({
+        description:
+          'An object that describes the effective recommendation preferences for the instance.',
+      }),
+    inferredWorkloadTypes: InferredWorkloadTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The applications that might be running on the instance as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instance:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instance.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instance.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instance.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instance.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instance.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instance.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instance.</p> </li> <li> <p> <code>Kafka</code> - Infers that Kafka might be running on the instance.</p> </li> </ul>',
+    }),
+    instanceState: InstanceStateSchema.exactOptional().openapi({
+      description: ' The state of the instance when the recommendation was generated. ',
+    }),
   })
   .openapi({ description: 'Describes an Amazon EC2 instance recommendation.', required: [] })
   .openapi('InstanceRecommendation')
@@ -2129,27 +1845,17 @@ const InstanceRecommendationsSchema = z
 
 const GetEC2InstanceRecommendationsResponseSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to use to advance to the next page of instance recommendations.</p> <p>This value is null when there are no more pages of instance recommendations to return.</p>',
-        }),
-    ).exactOptional(),
-    instanceRecommendations: InstanceRecommendationsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe instance recommendations.' }),
-    ).exactOptional(),
-    errors: GetRecommendationErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of objects that describe errors of the request.</p> <p>For example, an error is returned if you request recommendations for an instance of an unsupported instance family.</p>',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token to use to advance to the next page of instance recommendations.</p> <p>This value is null when there are no more pages of instance recommendations to return.</p>',
+    }),
+    instanceRecommendations: InstanceRecommendationsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe instance recommendations.',
+    }),
+    errors: GetRecommendationErrorsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of objects that describe errors of the request.</p> <p>For example, an error is returned if you request recommendations for an instance of an unsupported instance family.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEC2InstanceRecommendationsResponse')
@@ -2158,53 +1864,29 @@ const InstanceArnsSchema = z.array(InstanceArnSchema).openapi('InstanceArns')
 
 const GetEC2InstanceRecommendationsRequestSchema = z
   .object({
-    instanceArns: InstanceArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the instances for which to return recommendations.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token to advance to the next page of instance recommendations.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of instance recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
-    filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that returns a more specific list of instance recommendations.',
-        }),
-    ).exactOptional(),
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the Amazon Web Services account for which to return instance recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return instance recommendations.</p> <p>Only one account ID can be specified per request.</p>',
-        }),
-    ).exactOptional(),
-    recommendationPreferences: RecommendationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object to specify the preferences for the Amazon EC2 instance recommendations to return in the response.',
-        }),
-    ).exactOptional(),
+    instanceArns: InstanceArnsSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the instances for which to return recommendations.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to advance to the next page of instance recommendations.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of instance recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
+    filters: FiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that returns a more specific list of instance recommendations.',
+    }),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the Amazon Web Services account for which to return instance recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return instance recommendations.</p> <p>Only one account ID can be specified per request.</p>',
+    }),
+    recommendationPreferences: RecommendationPreferencesSchema.exactOptional().openapi({
+      description:
+        'An object to specify the preferences for the Amazon EC2 instance recommendations to return in the response.',
+    }),
   })
   .openapi({ title: 'GetEC2InstanceRecommendationsRequest', required: [] })
   .openapi('GetEC2InstanceRecommendationsRequest')
@@ -2219,20 +1901,16 @@ const MetricValuesSchema = z.array(MetricValueSchema).openapi('MetricValues')
 
 const ProjectedMetricSchema = z
   .object({
-    name: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the projected utilization metric.</p> <p>The following projected utilization metrics are returned:</p> <ul> <li> <p> <code>Cpu</code> - The projected percentage of allocated EC2 compute units that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the processing power required to run an application on the recommendation option.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the amount of memory required to run an application on the recommendation option.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> </ul>',
-        }),
-    ).exactOptional(),
-    timestamps: TimestampsSchema.and(
-      z.any().openapi({ description: 'The timestamps of the projected utilization metric.' }),
-    ).exactOptional(),
-    values: MetricValuesSchema.and(
-      z.any().openapi({ description: 'The values of the projected utilization metrics.' }),
-    ).exactOptional(),
+    name: MetricNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the projected utilization metric.</p> <p>The following projected utilization metrics are returned:</p> <ul> <li> <p> <code>Cpu</code> - The projected percentage of allocated EC2 compute units that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the processing power required to run an application on the recommendation option.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the amount of memory required to run an application on the recommendation option.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> </ul>',
+    }),
+    timestamps: TimestampsSchema.exactOptional().openapi({
+      description: 'The timestamps of the projected utilization metric.',
+    }),
+    values: MetricValuesSchema.exactOptional().openapi({
+      description: 'The values of the projected utilization metrics.',
+    }),
   })
   .openapi({
     description:
@@ -2245,24 +1923,16 @@ const ProjectedMetricsSchema = z.array(ProjectedMetricSchema).openapi('Projected
 
 const RecommendedOptionProjectedMetricSchema = z
   .object({
-    recommendedInstanceType: RecommendedInstanceTypeSchema.and(
-      z.any().openapi({ description: 'The recommended instance type.' }),
-    ).exactOptional(),
-    rank: RankSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rank of the recommendation option projected metric.</p> <p>The top recommendation option is ranked as <code>1</code>.</p> <p>The projected metric rank correlates to the recommendation option rank. For example, the projected metric ranked as <code>1</code> is related to the recommendation option that is also ranked as <code>1</code> in the same response.</p>',
-        }),
-    ).exactOptional(),
-    projectedMetrics: ProjectedMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe a projected utilization metric.',
-        }),
-    ).exactOptional(),
+    recommendedInstanceType: RecommendedInstanceTypeSchema.exactOptional().openapi({
+      description: 'The recommended instance type.',
+    }),
+    rank: RankSchema.exactOptional().openapi({
+      description:
+        '<p>The rank of the recommendation option projected metric.</p> <p>The top recommendation option is ranked as <code>1</code>.</p> <p>The projected metric rank correlates to the recommendation option rank. For example, the projected metric ranked as <code>1</code> is related to the recommendation option that is also ranked as <code>1</code> in the same response.</p>',
+    }),
+    projectedMetrics: ProjectedMetricsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe a projected utilization metric.',
+    }),
   })
   .openapi({
     description:
@@ -2277,9 +1947,10 @@ const RecommendedOptionProjectedMetricsSchema = z
 
 const GetEC2RecommendationProjectedMetricsResponseSchema = z
   .object({
-    recommendedOptionProjectedMetrics: RecommendedOptionProjectedMetricsSchema.and(
-      z.any().openapi({ description: 'An array of objects that describes projected metrics.' }),
-    ).exactOptional(),
+    recommendedOptionProjectedMetrics:
+      RecommendedOptionProjectedMetricsSchema.exactOptional().openapi({
+        description: 'An array of objects that describes projected metrics.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetEC2RecommendationProjectedMetricsResponse')
@@ -2288,46 +1959,24 @@ const PeriodSchema = z.int().openapi('Period')
 
 const GetEC2RecommendationProjectedMetricsRequestSchema = z
   .object({
-    instanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the instances for which to return recommendation projected metrics.',
-        }),
-    ),
-    stat: MetricStatisticSchema.and(
-      z.any().openapi({ description: 'The statistic of the projected metrics.' }),
-    ),
-    period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The granularity, in seconds, of the projected metrics data points.',
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp of the first projected metrics data point to return.',
-        }),
-    ),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp of the last projected metrics data point to return.',
-        }),
-    ),
-    recommendationPreferences: RecommendationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object to specify the preferences for the Amazon EC2 recommendation projected metrics to return in the response.',
-        }),
-    ).exactOptional(),
+    instanceArn: InstanceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the instances for which to return recommendation projected metrics.',
+    }),
+    stat: MetricStatisticSchema.openapi({ description: 'The statistic of the projected metrics.' }),
+    period: PeriodSchema.openapi({
+      description: 'The granularity, in seconds, of the projected metrics data points.',
+    }),
+    startTime: TimestampSchema.openapi({
+      description: 'The timestamp of the first projected metrics data point to return.',
+    }),
+    endTime: TimestampSchema.openapi({
+      description: 'The timestamp of the last projected metrics data point to return.',
+    }),
+    recommendationPreferences: RecommendationPreferencesSchema.exactOptional().openapi({
+      description:
+        'An object to specify the preferences for the Amazon EC2 recommendation projected metrics to return in the response.',
+    }),
   })
   .openapi({
     required: ['instanceArn', 'stat', 'period', 'startTime', 'endTime'],
@@ -2339,27 +1988,21 @@ const CpuSizeSchema = z.int().openapi('CpuSize')
 
 const MemorySizeSchema = z.int().openapi('MemorySize')
 
-const ECSServiceMetricNameSchema = z.enum(['Cpu', 'Memory']).openapi('ECSServiceMetricName')
-
 const ECSServiceProjectedMetricSchema = z
   .object({
-    name: ECSServiceMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The name of the projected metric. </p> <p>The following metrics are available:</p> <ul> <li> <p> <code>Cpu</code> — The percentage of allocated compute units that are currently in use on the service tasks.</p> </li> <li> <p> <code>Memory</code> — The percentage of memory that's currently in use on the service tasks.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    timestamps: TimestampsSchema.and(
-      z.any().openapi({ description: ' The timestamps of the projected metric. ' }),
-    ).exactOptional(),
-    upperBoundValues: MetricValuesSchema.and(
-      z.any().openapi({ description: ' The upper bound values for the projected metric. ' }),
-    ).exactOptional(),
-    lowerBoundValues: MetricValuesSchema.and(
-      z.any().openapi({ description: ' The lower bound values for the projected metric. ' }),
-    ).exactOptional(),
+    name: ECSServiceMetricNameSchema.exactOptional().openapi({
+      description:
+        "<p> The name of the projected metric. </p> <p>The following metrics are available:</p> <ul> <li> <p> <code>Cpu</code> — The percentage of allocated compute units that are currently in use on the service tasks.</p> </li> <li> <p> <code>Memory</code> — The percentage of memory that's currently in use on the service tasks.</p> </li> </ul>",
+    }),
+    timestamps: TimestampsSchema.exactOptional().openapi({
+      description: ' The timestamps of the projected metric. ',
+    }),
+    upperBoundValues: MetricValuesSchema.exactOptional().openapi({
+      description: ' The upper bound values for the projected metric. ',
+    }),
+    lowerBoundValues: MetricValuesSchema.exactOptional().openapi({
+      description: ' The lower bound values for the projected metric. ',
+    }),
   })
   .openapi({
     description:
@@ -2374,15 +2017,15 @@ const ECSServiceProjectedMetricsSchema = z
 
 const ECSServiceRecommendedOptionProjectedMetricSchema = z
   .object({
-    recommendedCpuUnits: CpuSizeSchema.and(
-      z.any().openapi({ description: ' The recommended CPU size for the Amazon ECS service. ' }),
-    ).exactOptional(),
-    recommendedMemorySize: MemorySizeSchema.and(
-      z.any().openapi({ description: ' The recommended memory size for the Amazon ECS service. ' }),
-    ).exactOptional(),
-    projectedMetrics: ECSServiceProjectedMetricsSchema.and(
-      z.any().openapi({ description: ' An array of objects that describe the projected metric. ' }),
-    ).exactOptional(),
+    recommendedCpuUnits: CpuSizeSchema.exactOptional().openapi({
+      description: ' The recommended CPU size for the Amazon ECS service. ',
+    }),
+    recommendedMemorySize: MemorySizeSchema.exactOptional().openapi({
+      description: ' The recommended memory size for the Amazon ECS service. ',
+    }),
+    projectedMetrics: ECSServiceProjectedMetricsSchema.exactOptional().openapi({
+      description: ' An array of objects that describe the projected metric. ',
+    }),
   })
   .openapi({
     description:
@@ -2397,51 +2040,32 @@ const ECSServiceRecommendedOptionProjectedMetricsSchema = z
 
 const GetECSServiceRecommendationProjectedMetricsResponseSchema = z
   .object({
-    recommendedOptionProjectedMetrics: ECSServiceRecommendedOptionProjectedMetricsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' An array of objects that describes the projected metrics. ' }),
-    ).exactOptional(),
+    recommendedOptionProjectedMetrics:
+      ECSServiceRecommendedOptionProjectedMetricsSchema.exactOptional().openapi({
+        description: ' An array of objects that describes the projected metrics. ',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetECSServiceRecommendationProjectedMetricsResponse')
 
-const ServiceArnSchema = z.string().openapi('ServiceArn')
-
 const GetECSServiceRecommendationProjectedMetricsRequestSchema = z
   .object({
-    serviceArn: ServiceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The ARN that identifies the Amazon ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>',
-        }),
-    ),
-    stat: MetricStatisticSchema.and(
-      z.any().openapi({ description: ' The statistic of the projected metrics. ' }),
-    ),
-    period: PeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The granularity, in seconds, of the projected metrics data points. ',
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The timestamp of the first projected metrics data point to return. ',
-        }),
-    ),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The timestamp of the last projected metrics data point to return. ',
-        }),
-    ),
+    serviceArn: ServiceArnSchema.openapi({
+      description:
+        '<p> The ARN that identifies the Amazon ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>',
+    }),
+    stat: MetricStatisticSchema.openapi({
+      description: ' The statistic of the projected metrics. ',
+    }),
+    period: PeriodSchema.openapi({
+      description: ' The granularity, in seconds, of the projected metrics data points. ',
+    }),
+    startTime: TimestampSchema.openapi({
+      description: ' The timestamp of the first projected metrics data point to return. ',
+    }),
+    endTime: TimestampSchema.openapi({
+      description: ' The timestamp of the last projected metrics data point to return. ',
+    }),
   })
   .openapi({
     required: ['serviceArn', 'stat', 'period', 'startTime', 'endTime'],
@@ -2449,464 +2073,60 @@ const GetECSServiceRecommendationProjectedMetricsRequestSchema = z
   })
   .openapi('GetECSServiceRecommendationProjectedMetricsRequest')
 
-const NullableMemorySchema = z.int().openapi('NullableMemory')
-
-const NullableCpuSchema = z.int().openapi('NullableCpu')
-
-const ContainerNameSchema = z.string().openapi('ContainerName')
-
-const NullableMemoryReservationSchema = z.int().openapi('NullableMemoryReservation')
-
-const MemorySizeConfigurationSchema = z
-  .object({
-    memory: NullableMemorySchema.and(
-      z.any().openapi({ description: ' The amount of memory in the container. ' }),
-    ).exactOptional(),
-    memoryReservation: NullableMemoryReservationSchema.and(
-      z.any().openapi({ description: ' The limit of memory reserve for the container. ' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The memory size configurations of a container. ', required: [] })
-  .openapi('MemorySizeConfiguration')
-
-const ContainerConfigurationSchema = z
-  .object({
-    containerName: ContainerNameSchema.and(
-      z.any().openapi({ description: ' The name of the container. ' }),
-    ).exactOptional(),
-    memorySizeConfiguration: MemorySizeConfigurationSchema.and(
-      z.any().openapi({ description: ' The memory size configurations for the container. ' }),
-    ).exactOptional(),
-    cpu: NullableCpuSchema.and(
-      z.any().openapi({ description: ' The number of CPU units reserved for the container. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' Describes the container configurations within the tasks of your Amazon ECS service. ',
-    required: [],
-  })
-  .openapi('ContainerConfiguration')
-
-const ContainerConfigurationsSchema = z
-  .array(ContainerConfigurationSchema)
-  .openapi('ContainerConfigurations')
-
-const AutoScalingConfigurationSchema = z
-  .enum(['TargetTrackingScalingCpu', 'TargetTrackingScalingMemory'])
-  .openapi('AutoScalingConfiguration')
-
-const TaskDefinitionArnSchema = z.string().openapi('TaskDefinitionArn')
-
-const ServiceConfigurationSchema = z
-  .object({
-    memory: NullableMemorySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The amount of memory used by the tasks in the Amazon ECS service. ',
-        }),
-    ).exactOptional(),
-    cpu: NullableCpuSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The number of CPU units used by the tasks in the Amazon ECS service. ',
-        }),
-    ).exactOptional(),
-    containerConfigurations: ContainerConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The container configurations within a task of an Amazon ECS service. ',
-        }),
-    ).exactOptional(),
-    autoScalingConfiguration: AutoScalingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Describes the Auto Scaling configuration methods for an Amazon ECS service. This affects the generated recommendations. For example, if Auto Scaling is configured on a service’s CPU, then Compute Optimizer doesn’t generate CPU size recommendations. </p> <p>The Auto Scaling configuration methods include:</p> <ul> <li> <p> <code>TARGET_TRACKING_SCALING_CPU</code> — If the Amazon ECS service is configured to use target scaling on CPU, Compute Optimizer doesn\'t generate CPU recommendations.</p> </li> <li> <p> <code>TARGET_TRACKING_SCALING_MEMORY</code> — If the Amazon ECS service is configured to use target scaling on memory, Compute Optimizer doesn\'t generate memory recommendations.</p> </li> </ul> <p>For more information about step scaling and target scaling, see <a href="https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-step-scaling-policies.html"> Step scaling policies for Application Auto Scaling</a> and <a href="https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html"> Target tracking scaling policies for Application Auto Scaling</a> in the <i>Application Auto Scaling User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    taskDefinitionArn: TaskDefinitionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The task definition ARN used by the tasks in the Amazon ECS service. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The Amazon ECS service configurations used for recommendations. ',
-    required: [],
-  })
-  .openapi('ServiceConfiguration')
-
-const ECSServiceMetricStatisticSchema = z
-  .enum(['Maximum', 'Average'])
-  .openapi('ECSServiceMetricStatistic')
-
-const ECSServiceUtilizationMetricSchema = z
-  .object({
-    name: ECSServiceMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The name of the utilization metric. </p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> — The amount of CPU capacity that's used in the service.</p> </li> <li> <p> <code>Memory</code> — The amount of memory that's used in the service.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    statistic: ECSServiceMetricStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    value: MetricValueSchema.and(
-      z.any().openapi({ description: ' The value of the utilization metric. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p> Describes the utilization metric of an Amazon ECS service. </p> <p>To determine the performance difference between your current Amazon ECS service and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.</p>',
-    required: [],
-  })
-  .openapi('ECSServiceUtilizationMetric')
-
-const ECSServiceUtilizationMetricsSchema = z
-  .array(ECSServiceUtilizationMetricSchema)
-  .openapi('ECSServiceUtilizationMetrics')
-
-const ECSServiceLaunchTypeSchema = z.enum(['EC2', 'Fargate']).openapi('ECSServiceLaunchType')
-
-const ECSServiceRecommendationFindingSchema = z
-  .enum(['Optimized', 'Underprovisioned', 'Overprovisioned'])
-  .openapi('ECSServiceRecommendationFinding')
-
-const ECSServiceRecommendationFindingReasonCodeSchema = z
-  .enum([
-    'MemoryOverprovisioned',
-    'MemoryUnderprovisioned',
-    'CPUOverprovisioned',
-    'CPUUnderprovisioned',
-  ])
-  .openapi('ECSServiceRecommendationFindingReasonCode')
-
-const ECSServiceRecommendationFindingReasonCodesSchema = z
-  .array(ECSServiceRecommendationFindingReasonCodeSchema)
-  .openapi('ECSServiceRecommendationFindingReasonCodes')
-
-const LowerBoundValueSchema = z.float64().openapi('LowerBoundValue')
-
-const UpperBoundValueSchema = z.float64().openapi('UpperBoundValue')
-
-const ECSServiceProjectedUtilizationMetricSchema = z
-  .object({
-    name: ECSServiceMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The name of the projected utilization metric. </p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> — The percentage of allocated compute units that are currently in use on the service tasks.</p> </li> <li> <p> <code>Memory</code> — The percentage of memory that's currently in use on the service tasks.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    statistic: ECSServiceMetricStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic of the projected utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    lowerBoundValue: LowerBoundValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The lower bound values for the projected utilization metrics. ',
-        }),
-    ).exactOptional(),
-    upperBoundValue: UpperBoundValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The upper bound values for the projected utilization metrics. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p> Describes the projected utilization metrics of an Amazon ECS service recommendation option. </p> <p>To determine the performance difference between your current Amazon ECS service and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.</p>',
-    required: [],
-  })
-  .openapi('ECSServiceProjectedUtilizationMetric')
-
-const ECSServiceProjectedUtilizationMetricsSchema = z
-  .array(ECSServiceProjectedUtilizationMetricSchema)
-  .openapi('ECSServiceProjectedUtilizationMetrics')
-
-const ContainerRecommendationSchema = z
-  .object({
-    containerName: ContainerNameSchema.and(
-      z.any().openapi({ description: ' The name of the container. ' }),
-    ).exactOptional(),
-    memorySizeConfiguration: MemorySizeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The recommended memory size configurations for the container. ',
-        }),
-    ).exactOptional(),
-    cpu: NullableCpuSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The recommended number of CPU units reserved for the container. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' The CPU and memory recommendations for a container within the tasks of your Amazon ECS service. ',
-    required: [],
-  })
-  .openapi('ContainerRecommendation')
-
-const ContainerRecommendationsSchema = z
-  .array(ContainerRecommendationSchema)
-  .openapi('ContainerRecommendations')
-
-const ECSServiceRecommendationOptionSchema = z
-  .object({
-    memory: NullableMemorySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The memory size of the Amazon ECS service recommendation option. ',
-        }),
-    ).exactOptional(),
-    cpu: NullableCpuSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The CPU size of the Amazon ECS service recommendation option. ',
-        }),
-    ).exactOptional(),
-    savingsOpportunity: SavingsOpportunitySchema.exactOptional(),
-    projectedUtilizationMetrics: ECSServiceProjectedUtilizationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of objects that describe the projected utilization metrics of the Amazon ECS service recommendation option. ',
-        }),
-    ).exactOptional(),
-    containerRecommendations: ContainerRecommendationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The CPU and memory size recommendations for the containers within the task of your Amazon ECS service. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' Describes the recommendation options for an Amazon ECS service. ',
-    required: [],
-  })
-  .openapi('ECSServiceRecommendationOption')
-
-const ECSServiceRecommendationOptionsSchema = z
-  .array(ECSServiceRecommendationOptionSchema)
-  .openapi('ECSServiceRecommendationOptions')
-
-const ECSServiceRecommendationSchema = z
-  .object({
-    serviceArn: ServiceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The Amazon Resource Name (ARN) of the current Amazon ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>',
-        }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Web Services account ID of the Amazon ECS service. ',
-        }),
-    ).exactOptional(),
-    currentServiceConfiguration: ServiceConfigurationSchema.and(
-      z.any().openapi({ description: ' The configuration of the current Amazon ECS service. ' }),
-    ).exactOptional(),
-    utilizationMetrics: ECSServiceUtilizationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of objects that describe the utilization metrics of the Amazon ECS service. ',
-        }),
-    ).exactOptional(),
-    lookbackPeriodInDays: LookBackPeriodInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of days the Amazon ECS service utilization metrics were analyzed. ',
-        }),
-    ).exactOptional(),
-    launchType: ECSServiceLaunchTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The launch type the Amazon ECS service is using. </p> <note> <p>Compute Optimizer only supports the Fargate launch type.</p> </note>',
-        }),
-    ).exactOptional(),
-    lastRefreshTimestamp: LastRefreshTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The timestamp of when the Amazon ECS service recommendation was last generated. ',
-        }),
-    ).exactOptional(),
-    finding: ECSServiceRecommendationFindingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The finding classification of an Amazon ECS service. </p> <p>Findings for Amazon ECS services include:</p> <ul> <li> <p> <b> <code>Underprovisioned</code> </b> — When Compute Optimizer detects that there’s not enough memory or CPU, an Amazon ECS service is considered under-provisioned. An under-provisioned service might result in poor application performance.</p> </li> <li> <p> <b> <code>Overprovisioned</code> </b> — When Compute Optimizer detects that there’s excessive memory or CPU, an Amazon ECS service is considered over-provisioned. An over-provisioned service might result in additional infrastructure costs. </p> </li> <li> <p> <b> <code>Optimized</code> </b> — When both the CPU and memory of your Amazon ECS service meet the performance requirements of your workload, the service is considered optimized.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    findingReasonCodes: ECSServiceRecommendationFindingReasonCodesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The reason for the finding classification of an Amazon ECS service. </p> <p>Finding reason codes for Amazon ECS services include:</p> <ul> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The service CPU configuration can be sized up to enhance the performance of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current service during the look-back period.</p> </li> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The service CPU configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current service during the look-back period. </p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The service memory configuration can be sized up to enhance the performance of your workload. This is identified by analyzing the <code>MemoryUtilization</code> metric of the current service during the look-back period.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The service memory configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>MemoryUtilization</code> metric of the current service during the look-back period.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    serviceRecommendationOptions: ECSServiceRecommendationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of objects that describe the recommendation options for the Amazon ECS service. ',
-        }),
-    ).exactOptional(),
-    currentPerformanceRisk: CurrentPerformanceRiskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The risk of the current Amazon ECS service not meeting the performance needs of its workloads. The higher the risk, the more likely the current service can't meet the performance requirements of its workload. ",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' Describes an Amazon ECS service recommendation. ', required: [] })
-  .openapi('ECSServiceRecommendation')
-
-const ECSServiceRecommendationsSchema = z
-  .array(ECSServiceRecommendationSchema)
-  .openapi('ECSServiceRecommendations')
-
-const GetECSServiceRecommendationsResponseSchema = z
-  .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token to advance to the next page of Amazon ECS service recommendations. ',
-        }),
-    ).exactOptional(),
-    ecsServiceRecommendations: ECSServiceRecommendationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of objects that describe the Amazon ECS service recommendations. ',
-        }),
-    ).exactOptional(),
-    errors: GetRecommendationErrorsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' An array of objects that describe errors of the request. ' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetECSServiceRecommendationsResponse')
+const GetECSServiceRecommendationsResponseSchema: z.ZodType<GetECSServiceRecommendationsResponseType> =
+  z
+    .object({
+      nextToken: NextTokenSchema.exactOptional().openapi({
+        description:
+          ' The token to advance to the next page of Amazon ECS service recommendations. ',
+      }),
+      ecsServiceRecommendations: ECSServiceRecommendationsSchema.exactOptional().openapi({
+        description: ' An array of objects that describe the Amazon ECS service recommendations. ',
+      }),
+      errors: GetRecommendationErrorsSchema.exactOptional().openapi({
+        description: ' An array of objects that describe errors of the request. ',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('GetECSServiceRecommendationsResponse')
 
 const ServiceArnsSchema = z.array(ServiceArnSchema).openapi('ServiceArns')
 
 const GetECSServiceRecommendationsRequestSchema = z
   .object({
-    serviceArns: ServiceArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The ARN that identifies the Amazon ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token to advance to the next page of Amazon ECS service recommendations. ',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The maximum number of Amazon ECS service recommendations to return with a single request. </p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
-    filters: ECSServiceRecommendationFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of objects to specify a filter that returns a more specific list of Amazon ECS service recommendations. ',
-        }),
-    ).exactOptional(),
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Return the Amazon ECS service recommendations to the specified Amazon Web Services account IDs. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to return the Amazon ECS service recommendations to specific member accounts.</p> <p>You can only specify one account ID per request.</p>',
-        }),
-    ).exactOptional(),
+    serviceArns: ServiceArnsSchema.exactOptional().openapi({
+      description:
+        '<p> The ARN that identifies the Amazon ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: ' The token to advance to the next page of Amazon ECS service recommendations. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p> The maximum number of Amazon ECS service recommendations to return with a single request. </p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
+    filters: ECSServiceRecommendationFiltersSchema.exactOptional().openapi({
+      description:
+        ' An array of objects to specify a filter that returns a more specific list of Amazon ECS service recommendations. ',
+    }),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p> Return the Amazon ECS service recommendations to the specified Amazon Web Services account IDs. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to return the Amazon ECS service recommendations to specific member accounts.</p> <p>You can only specify one account ID per request.</p>',
+    }),
   })
   .openapi({ title: 'GetECSServiceRecommendationsRequest', required: [] })
   .openapi('GetECSServiceRecommendationsRequest')
 
 const GetEffectiveRecommendationPreferencesResponseSchema = z
   .object({
-    enhancedInfrastructureMetrics: EnhancedInfrastructureMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the enhanced infrastructure metrics recommendation preference. Considers all applicable preferences that you might have set at the resource, account, and organization level.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it\'s not yet applied to recommendations.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetAutoScalingGroupRecommendations</a> and <a>GetEC2InstanceRecommendations</a> actions.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    externalMetricsPreference: ExternalMetricsPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The provider of the external metrics recommendation preference. Considers all applicable preferences that you might have set at the account and organization level.</p> <p>If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn\'t applied to the recommendations already, then this object doesn\'t appear in the response.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetEC2InstanceRecommendations</a> actions.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    enhancedInfrastructureMetrics: EnhancedInfrastructureMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the enhanced infrastructure metrics recommendation preference. Considers all applicable preferences that you might have set at the resource, account, and organization level.</p> <p>A status of <code>Active</code> confirms that the preference is applied in the latest recommendation refresh, and a status of <code>Inactive</code> confirms that it\'s not yet applied to recommendations.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetAutoScalingGroupRecommendations</a> and <a>GetEC2InstanceRecommendations</a> actions.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    externalMetricsPreference: ExternalMetricsPreferenceSchema.exactOptional().openapi({
+      description:
+        '<p>The provider of the external metrics recommendation preference. Considers all applicable preferences that you might have set at the account and organization level.</p> <p>If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn\'t applied to the recommendations already, then this object doesn\'t appear in the response.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetEC2InstanceRecommendations</a> actions.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEffectiveRecommendationPreferencesResponse')
@@ -2915,14 +2135,10 @@ const ResourceArnSchema = z.string().openapi('ResourceArn')
 
 const GetEffectiveRecommendationPreferencesRequestSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource for which to confirm effective recommendation preferences. Only EC2 instance and Auto Scaling group ARNs are currently supported.',
-        }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource for which to confirm effective recommendation preferences. Only EC2 instance and Auto Scaling group ARNs are currently supported.',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'GetEffectiveRecommendationPreferencesRequest' })
   .openapi('GetEffectiveRecommendationPreferencesRequest')
@@ -2937,74 +2153,48 @@ const NumberOfMemberAccountsOptedInSchema = z.int().openapi('NumberOfMemberAccou
 
 const GetEnrollmentStatusResponseSchema = z
   .object({
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The enrollment status of the account.' }),
-    ).exactOptional(),
-    statusReason: StatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The reason for the enrollment status of the account.</p> <p>For example, an account might show a status of <code>Pending</code> because member accounts of an organization require more time to be enrolled in the service.</p>',
-        }),
-    ).exactOptional(),
-    memberAccountsEnrolled: MemberAccountsEnrolledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Confirms the enrollment status of member accounts of the organization, if the account is a management account of an organization.',
-        }),
-    ).exactOptional(),
-    lastUpdatedTimestamp: LastUpdatedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp, in seconds, of when the account enrollment status was last updated.',
-        }),
-    ).exactOptional(),
-    numberOfMemberAccountsOptedIn: NumberOfMemberAccountsOptedInSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The count of organization member accounts that are opted in to the service, if your account is an organization management account.',
-        }),
-    ).exactOptional(),
+    status: StatusSchema.exactOptional().openapi({
+      description: 'The enrollment status of the account.',
+    }),
+    statusReason: StatusReasonSchema.exactOptional().openapi({
+      description:
+        '<p>The reason for the enrollment status of the account.</p> <p>For example, an account might show a status of <code>Pending</code> because member accounts of an organization require more time to be enrolled in the service.</p>',
+    }),
+    memberAccountsEnrolled: MemberAccountsEnrolledSchema.exactOptional().openapi({
+      description:
+        'Confirms the enrollment status of member accounts of the organization, if the account is a management account of an organization.',
+    }),
+    lastUpdatedTimestamp: LastUpdatedTimestampSchema.exactOptional().openapi({
+      description:
+        'The Unix epoch timestamp, in seconds, of when the account enrollment status was last updated.',
+    }),
+    numberOfMemberAccountsOptedIn: NumberOfMemberAccountsOptedInSchema.exactOptional().openapi({
+      description:
+        'The count of organization member accounts that are opted in to the service, if your account is an organization management account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEnrollmentStatusResponse')
 
 const GetEnrollmentStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEnrollmentStatusRequest' })
   .openapi('GetEnrollmentStatusRequest')
 
 const AccountEnrollmentStatusSchema = z
   .object({
-    accountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The account enrollment status.' }),
-    ).exactOptional(),
-    statusReason: StatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The reason for the account enrollment status.</p> <p>For example, an account might show a status of <code>Pending</code> because member accounts of an organization require more time to be enrolled in the service.</p>',
-        }),
-    ).exactOptional(),
-    lastUpdatedTimestamp: LastUpdatedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix epoch timestamp, in seconds, of when the account enrollment status was last updated.',
-        }),
-    ).exactOptional(),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID.',
+    }),
+    status: StatusSchema.exactOptional().openapi({ description: 'The account enrollment status.' }),
+    statusReason: StatusReasonSchema.exactOptional().openapi({
+      description:
+        '<p>The reason for the account enrollment status.</p> <p>For example, an account might show a status of <code>Pending</code> because member accounts of an organization require more time to be enrolled in the service.</p>',
+    }),
+    lastUpdatedTimestamp: LastUpdatedTimestampSchema.exactOptional().openapi({
+      description:
+        'The Unix epoch timestamp, in seconds, of when the account enrollment status was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -3019,22 +2209,14 @@ const AccountEnrollmentStatusesSchema = z
 
 const GetEnrollmentStatusesForOrganizationResponseSchema = z
   .object({
-    accountEnrollmentStatuses: AccountEnrollmentStatusesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the enrollment statuses of organization member accounts.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to use to advance to the next page of account enrollment statuses.</p> <p>This value is null when there are no more pages of account enrollment statuses to return.</p>',
-        }),
-    ).exactOptional(),
+    accountEnrollmentStatuses: AccountEnrollmentStatusesSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describe the enrollment statuses of organization member accounts.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token to use to advance to the next page of account enrollment statuses.</p> <p>This value is null when there are no more pages of account enrollment statuses to return.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEnrollmentStatusesForOrganizationResponse')
@@ -3043,22 +2225,14 @@ const EnrollmentFilterNameSchema = z.literal('Status').openapi('EnrollmentFilter
 
 const EnrollmentFilterSchema = z
   .object({
-    name: EnrollmentFilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the filter.</p> <p>Specify <code>Status</code> to return accounts with a specific enrollment status (for example, <code>Active</code>).</p>',
-        }),
-    ).exactOptional(),
-    values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value of the filter.</p> <p>The valid values are <code>Active</code>, <code>Inactive</code>, <code>Pending</code>, and <code>Failed</code>.</p>',
-        }),
-    ).exactOptional(),
+    name: EnrollmentFilterNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the filter.</p> <p>Specify <code>Status</code> to return accounts with a specific enrollment status (for example, <code>Active</code>).</p>',
+    }),
+    values: FilterValuesSchema.exactOptional().openapi({
+      description:
+        '<p>The value of the filter.</p> <p>The valid values are <code>Active</code>, <code>Inactive</code>, <code>Pending</code>, and <code>Failed</code>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -3071,29 +2245,17 @@ const EnrollmentFiltersSchema = z.array(EnrollmentFilterSchema).openapi('Enrollm
 
 const GetEnrollmentStatusesForOrganizationRequestSchema = z
   .object({
-    filters: EnrollmentFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that returns a more specific list of account enrollment statuses.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token to advance to the next page of account enrollment statuses.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of account enrollment statuses to return with a single request. You can specify up to 100 statuses to return with each request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    filters: EnrollmentFiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that returns a more specific list of account enrollment statuses.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to advance to the next page of account enrollment statuses.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of account enrollment statuses to return with a single request. You can specify up to 100 statuses to return with each request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
   })
   .openapi({ title: 'GetEnrollmentStatusesForOrganizationRequest', required: [] })
   .openapi('GetEnrollmentStatusesForOrganizationRequest')
@@ -3114,25 +2276,17 @@ const LambdaFunctionMetricStatisticSchema = z
 
 const LambdaFunctionUtilizationMetricSchema = z
   .object({
-    name: LambdaFunctionMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Duration</code> - The amount of time that your function code spends processing an event.</p> </li> <li> <p> <code>Memory</code> - The amount of memory used per invocation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    statistic: LambdaFunctionMetricStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
-        }),
-    ).exactOptional(),
-    value: MetricValueSchema.and(
-      z.any().openapi({ description: 'The value of the utilization metric.' }),
-    ).exactOptional(),
+    name: LambdaFunctionMetricNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Duration</code> - The amount of time that your function code spends processing an event.</p> </li> <li> <p> <code>Memory</code> - The amount of memory used per invocation.</p> </li> </ul>',
+    }),
+    statistic: LambdaFunctionMetricStatisticSchema.exactOptional().openapi({
+      description:
+        '<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html">Amazon CloudWatch User Guide</a>.</p>',
+    }),
+    value: MetricValueSchema.exactOptional().openapi({
+      description: 'The value of the utilization metric.',
+    }),
   })
   .openapi({ description: 'Describes a utilization metric of an Lambda function.', required: [] })
   .openapi('LambdaFunctionUtilizationMetric')
@@ -3163,15 +2317,15 @@ const LambdaFunctionMemoryMetricStatisticSchema = z
 
 const LambdaFunctionMemoryProjectedMetricSchema = z
   .object({
-    name: LambdaFunctionMemoryMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the projected utilization metric.' }),
-    ).exactOptional(),
-    statistic: LambdaFunctionMemoryMetricStatisticSchema.and(
-      z.any().openapi({ description: 'The statistic of the projected utilization metric.' }),
-    ).exactOptional(),
-    value: MetricValueSchema.and(
-      z.any().openapi({ description: 'The values of the projected utilization metrics.' }),
-    ).exactOptional(),
+    name: LambdaFunctionMemoryMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the projected utilization metric.',
+    }),
+    statistic: LambdaFunctionMemoryMetricStatisticSchema.exactOptional().openapi({
+      description: 'The statistic of the projected utilization metric.',
+    }),
+    value: MetricValueSchema.exactOptional().openapi({
+      description: 'The values of the projected utilization metrics.',
+    }),
   })
   .openapi({
     description:
@@ -3186,35 +2340,23 @@ const LambdaFunctionMemoryProjectedMetricsSchema = z
 
 const LambdaFunctionMemoryRecommendationOptionSchema = z
   .object({
-    rank: RankSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rank of the function recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>',
-        }),
-    ).exactOptional(),
-    memorySize: MemorySizeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The memory size, in MB, of the function recommendation option.' }),
-    ).exactOptional(),
-    projectedUtilizationMetrics: LambdaFunctionMemoryProjectedMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the projected utilization metrics of the function recommendation option.',
-        }),
-    ).exactOptional(),
-    savingsOpportunity: SavingsOpportunitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the savings opportunity for the Lambda function recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.',
-        }),
-    ).exactOptional(),
+    rank: RankSchema.exactOptional().openapi({
+      description:
+        '<p>The rank of the function recommendation option.</p> <p>The top recommendation option is ranked as <code>1</code>.</p>',
+    }),
+    memorySize: MemorySizeSchema.exactOptional().openapi({
+      description: 'The memory size, in MB, of the function recommendation option.',
+    }),
+    projectedUtilizationMetrics: LambdaFunctionMemoryProjectedMetricsSchema.exactOptional().openapi(
+      {
+        description:
+          'An array of objects that describe the projected utilization metrics of the function recommendation option.',
+      },
+    ),
+    savingsOpportunity: SavingsOpportunitySchema.exactOptional().openapi({
+      description:
+        'An object that describes the savings opportunity for the Lambda function recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.',
+    }),
   })
   .openapi({
     description: 'Describes a recommendation option for an Lambda function.',
@@ -3228,84 +2370,50 @@ const LambdaFunctionMemoryRecommendationOptionsSchema = z
 
 const LambdaFunctionRecommendationSchema = z
   .object({
-    functionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the current function.' }),
-    ).exactOptional(),
-    functionVersion: FunctionVersionSchema.and(
-      z.any().openapi({ description: 'The version number of the current function.' }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID of the function.' }),
-    ).exactOptional(),
-    currentMemorySize: MemorySizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The amount of memory, in MB, that's allocated to the current function.",
-        }),
-    ).exactOptional(),
-    numberOfInvocations: NumberOfInvocationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of times your function code was applied during the look-back period.',
-        }),
-    ).exactOptional(),
-    utilizationMetrics: LambdaFunctionUtilizationMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects that describe the utilization metrics of the function.',
-        }),
-    ).exactOptional(),
-    lookbackPeriodInDays: LookBackPeriodInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of days for which utilization metrics were analyzed for the function.',
-        }),
-    ).exactOptional(),
-    lastRefreshTimestamp: LastRefreshTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp of when the function recommendation was last generated.',
-        }),
-    ).exactOptional(),
-    finding: LambdaFunctionRecommendationFindingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The finding classification of the function.</p> <p>Findings for functions include:</p> <ul> <li> <p> <b> <code>Optimized</code> </b> — The function is correctly provisioned to run your workload based on its current configuration and its utilization history. This finding classification does not include finding reason codes.</p> </li> <li> <p> <b> <code>NotOptimized</code> </b> — The function is performing at a higher level (over-provisioned) or at a lower level (under-provisioned) than required for your workload because its current configuration is not optimal. Over-provisioned resources might lead to unnecessary infrastructure cost, and under-provisioned resources might lead to poor application performance. This finding classification can include the <code>MemoryUnderprovisioned</code> and <code>MemoryUnderprovisioned</code> finding reason codes.</p> </li> <li> <p> <b> <code>Unavailable</code> </b> — Compute Optimizer was unable to generate a recommendation for the function. This could be because the function has not accumulated sufficient metric data, or the function does not qualify for a recommendation. This finding classification can include the <code>InsufficientData</code> and <code>Inconclusive</code> finding reason codes.</p> <note> <p>Functions with a finding of unavailable are not returned unless you specify the <code>filter</code> parameter with a value of <code>Unavailable</code> in your <code>GetLambdaFunctionRecommendations</code> request.</p> </note> </li> </ul>',
-        }),
-    ).exactOptional(),
-    findingReasonCodes: LambdaFunctionRecommendationFindingReasonCodesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The reason for the finding classification of the function.</p> <note> <p>Functions that have a finding classification of <code>Optimized</code> don\'t have a finding reason code.</p> </note> <p>Finding reason codes for functions include:</p> <ul> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The function is over-provisioned when its memory configuration can be sized down while still meeting the performance requirements of your workload. An over-provisioned function might lead to unnecessary infrastructure cost. This finding reason code is part of the <code>NotOptimized</code> finding classification.</p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The function is under-provisioned when its memory configuration doesn\'t meet the performance requirements of the workload. An under-provisioned function might lead to poor application performance. This finding reason code is part of the <code>NotOptimized</code> finding classification.</p> </li> <li> <p> <b> <code>InsufficientData</code> </b> — The function does not have sufficient metric data for Compute Optimizer to generate a recommendation. For more information, see the <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>. This finding reason code is part of the <code>Unavailable</code> finding classification.</p> </li> <li> <p> <b> <code>Inconclusive</code> </b> — The function does not qualify for a recommendation because Compute Optimizer cannot generate a recommendation with a high degree of confidence. This finding reason code is part of the <code>Unavailable</code> finding classification.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    memorySizeRecommendationOptions: LambdaFunctionMemoryRecommendationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describe the memory configuration recommendation options for the function.',
-        }),
-    ).exactOptional(),
-    currentPerformanceRisk: CurrentPerformanceRiskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The risk of the current Lambda function not meeting the performance needs of its workloads. The higher the risk, the more likely the current Lambda function requires more memory.',
-        }),
-    ).exactOptional(),
+    functionArn: FunctionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the current function.',
+    }),
+    functionVersion: FunctionVersionSchema.exactOptional().openapi({
+      description: 'The version number of the current function.',
+    }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the function.',
+    }),
+    currentMemorySize: MemorySizeSchema.exactOptional().openapi({
+      description: "The amount of memory, in MB, that's allocated to the current function.",
+    }),
+    numberOfInvocations: NumberOfInvocationsSchema.exactOptional().openapi({
+      description:
+        'The number of times your function code was applied during the look-back period.',
+    }),
+    utilizationMetrics: LambdaFunctionUtilizationMetricsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe the utilization metrics of the function.',
+    }),
+    lookbackPeriodInDays: LookBackPeriodInDaysSchema.exactOptional().openapi({
+      description:
+        'The number of days for which utilization metrics were analyzed for the function.',
+    }),
+    lastRefreshTimestamp: LastRefreshTimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the function recommendation was last generated.',
+    }),
+    finding: LambdaFunctionRecommendationFindingSchema.exactOptional().openapi({
+      description:
+        '<p>The finding classification of the function.</p> <p>Findings for functions include:</p> <ul> <li> <p> <b> <code>Optimized</code> </b> — The function is correctly provisioned to run your workload based on its current configuration and its utilization history. This finding classification does not include finding reason codes.</p> </li> <li> <p> <b> <code>NotOptimized</code> </b> — The function is performing at a higher level (over-provisioned) or at a lower level (under-provisioned) than required for your workload because its current configuration is not optimal. Over-provisioned resources might lead to unnecessary infrastructure cost, and under-provisioned resources might lead to poor application performance. This finding classification can include the <code>MemoryUnderprovisioned</code> and <code>MemoryUnderprovisioned</code> finding reason codes.</p> </li> <li> <p> <b> <code>Unavailable</code> </b> — Compute Optimizer was unable to generate a recommendation for the function. This could be because the function has not accumulated sufficient metric data, or the function does not qualify for a recommendation. This finding classification can include the <code>InsufficientData</code> and <code>Inconclusive</code> finding reason codes.</p> <note> <p>Functions with a finding of unavailable are not returned unless you specify the <code>filter</code> parameter with a value of <code>Unavailable</code> in your <code>GetLambdaFunctionRecommendations</code> request.</p> </note> </li> </ul>',
+    }),
+    findingReasonCodes:
+      LambdaFunctionRecommendationFindingReasonCodesSchema.exactOptional().openapi({
+        description:
+          '<p>The reason for the finding classification of the function.</p> <note> <p>Functions that have a finding classification of <code>Optimized</code> don\'t have a finding reason code.</p> </note> <p>Finding reason codes for functions include:</p> <ul> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The function is over-provisioned when its memory configuration can be sized down while still meeting the performance requirements of your workload. An over-provisioned function might lead to unnecessary infrastructure cost. This finding reason code is part of the <code>NotOptimized</code> finding classification.</p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The function is under-provisioned when its memory configuration doesn\'t meet the performance requirements of the workload. An under-provisioned function might lead to poor application performance. This finding reason code is part of the <code>NotOptimized</code> finding classification.</p> </li> <li> <p> <b> <code>InsufficientData</code> </b> — The function does not have sufficient metric data for Compute Optimizer to generate a recommendation. For more information, see the <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>. This finding reason code is part of the <code>Unavailable</code> finding classification.</p> </li> <li> <p> <b> <code>Inconclusive</code> </b> — The function does not qualify for a recommendation because Compute Optimizer cannot generate a recommendation with a high degree of confidence. This finding reason code is part of the <code>Unavailable</code> finding classification.</p> </li> </ul>',
+      }),
+    memorySizeRecommendationOptions:
+      LambdaFunctionMemoryRecommendationOptionsSchema.exactOptional().openapi({
+        description:
+          'An array of objects that describe the memory configuration recommendation options for the function.',
+      }),
+    currentPerformanceRisk: CurrentPerformanceRiskSchema.exactOptional().openapi({
+      description:
+        'The risk of the current Lambda function not meeting the performance needs of its workloads. The higher the risk, the more likely the current Lambda function requires more memory.',
+    }),
   })
   .openapi({ description: 'Describes an Lambda function recommendation.', required: [] })
   .openapi('LambdaFunctionRecommendation')
@@ -3316,19 +2424,13 @@ const LambdaFunctionRecommendationsSchema = z
 
 const GetLambdaFunctionRecommendationsResponseSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to use to advance to the next page of function recommendations.</p> <p>This value is null when there are no more pages of function recommendations to return.</p>',
-        }),
-    ).exactOptional(),
-    lambdaFunctionRecommendations: LambdaFunctionRecommendationsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe function recommendations.' }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token to use to advance to the next page of function recommendations.</p> <p>This value is null when there are no more pages of function recommendations to return.</p>',
+    }),
+    lambdaFunctionRecommendations: LambdaFunctionRecommendationsSchema.exactOptional().openapi({
+      description: 'An array of objects that describe function recommendations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLambdaFunctionRecommendationsResponse')
@@ -3337,91 +2439,51 @@ const FunctionArnsSchema = z.array(FunctionArnSchema).openapi('FunctionArns')
 
 const GetLambdaFunctionRecommendationsRequestSchema = z
   .object({
-    functionArns: FunctionArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the functions for which to return recommendations.</p> <p>You can specify a qualified or unqualified ARN. If you specify an unqualified ARN without a function version suffix, Compute Optimizer will return recommendations for the latest (<code>$LATEST</code>) version of the function. If you specify a qualified ARN with a version suffix, Compute Optimizer will return recommendations for the specified function version. For more information about using function versions, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html#versioning-versions-using">Using versions</a> in the <i>Lambda Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the Amazon Web Services account for which to return function recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return function recommendations.</p> <p>Only one account ID can be specified per request.</p>',
-        }),
-    ).exactOptional(),
-    filters: LambdaFunctionRecommendationFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects to specify a filter that returns a more specific list of function recommendations.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token to advance to the next page of function recommendations.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of function recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    functionArns: FunctionArnsSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the functions for which to return recommendations.</p> <p>You can specify a qualified or unqualified ARN. If you specify an unqualified ARN without a function version suffix, Compute Optimizer will return recommendations for the latest (<code>$LATEST</code>) version of the function. If you specify a qualified ARN with a version suffix, Compute Optimizer will return recommendations for the specified function version. For more information about using function versions, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html#versioning-versions-using">Using versions</a> in the <i>Lambda Developer Guide</i>.</p>',
+    }),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the Amazon Web Services account for which to return function recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return function recommendations.</p> <p>Only one account ID can be specified per request.</p>',
+    }),
+    filters: LambdaFunctionRecommendationFiltersSchema.exactOptional().openapi({
+      description:
+        'An array of objects to specify a filter that returns a more specific list of function recommendations.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to advance to the next page of function recommendations.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of function recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
   })
   .openapi({ title: 'GetLambdaFunctionRecommendationsRequest', required: [] })
   .openapi('GetLambdaFunctionRecommendationsRequest')
 
 const RecommendationPreferencesDetailSchema = z
   .object({
-    scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the scope of the recommendation preference.</p> <p>Recommendation preferences can be created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target resource type of the recommendation preference to create.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p>',
-        }),
-    ).exactOptional(),
-    enhancedInfrastructureMetrics: EnhancedInfrastructureMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the enhanced infrastructure metrics recommendation preference.</p> <p>When the recommendations page is refreshed, a status of <code>Active</code> confirms that the preference is applied to the recommendations, and a status of <code>Inactive</code> confirms that the preference isn\'t yet applied to recommendations.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    inferredWorkloadTypes: InferredWorkloadTypesPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the inferred workload types recommendation preference.</p> <p>When the recommendations page is refreshed, a status of <code>Active</code> confirms that the preference is applied to the recommendations, and a status of <code>Inactive</code> confirms that the preference isn't yet applied to recommendations.</p>",
-        }),
-    ).exactOptional(),
-    externalMetricsPreference: ExternalMetricsPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> An object that describes the external metrics recommendation preference. </p> <p> If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response. </p>",
-        }),
-    ).exactOptional(),
+    scope: ScopeSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the scope of the recommendation preference.</p> <p>Recommendation preferences can be created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The target resource type of the recommendation preference to create.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p>',
+    }),
+    enhancedInfrastructureMetrics: EnhancedInfrastructureMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the enhanced infrastructure metrics recommendation preference.</p> <p>When the recommendations page is refreshed, a status of <code>Active</code> confirms that the preference is applied to the recommendations, and a status of <code>Inactive</code> confirms that the preference isn\'t yet applied to recommendations.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    inferredWorkloadTypes: InferredWorkloadTypesPreferenceSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the inferred workload types recommendation preference.</p> <p>When the recommendations page is refreshed, a status of <code>Active</code> confirms that the preference is applied to the recommendations, and a status of <code>Inactive</code> confirms that the preference isn't yet applied to recommendations.</p>",
+    }),
+    externalMetricsPreference: ExternalMetricsPreferenceSchema.exactOptional().openapi({
+      description:
+        "<p> An object that describes the external metrics recommendation preference. </p> <p> If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response. </p>",
+    }),
   })
   .openapi({ description: 'Describes a recommendation preference.', required: [] })
   .openapi('RecommendationPreferencesDetail')
@@ -3432,56 +2494,35 @@ const RecommendationPreferencesDetailsSchema = z
 
 const GetRecommendationPreferencesResponseSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to use to advance to the next page of recommendation preferences.</p> <p>This value is null when there are no more pages of recommendation preferences to return.</p>',
-        }),
-    ).exactOptional(),
-    recommendationPreferencesDetails: RecommendationPreferencesDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe recommendation preferences.' }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token to use to advance to the next page of recommendation preferences.</p> <p>This value is null when there are no more pages of recommendation preferences to return.</p>',
+    }),
+    recommendationPreferencesDetails:
+      RecommendationPreferencesDetailsSchema.exactOptional().openapi({
+        description: 'An array of objects that describe recommendation preferences.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetRecommendationPreferencesResponse')
 
 const GetRecommendationPreferencesRequestSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target resource type of the recommendation preference for which to return preferences.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p> <note> <p>The valid values for this parameter are <code>Ec2Instance</code> and <code>AutoScalingGroup</code>.</p> </note>',
-        }),
-    ),
-    scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the scope of the recommendation preference to return.</p> <p>You can return recommendation preferences that are created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token to advance to the next page of recommendation preferences.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of recommendation preferences to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.openapi({
+      description:
+        '<p>The target resource type of the recommendation preference for which to return preferences.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p> <note> <p>The valid values for this parameter are <code>Ec2Instance</code> and <code>AutoScalingGroup</code>.</p> </note>',
+    }),
+    scope: ScopeSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the scope of the recommendation preference to return.</p> <p>You can return recommendation preferences that are created at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to advance to the next page of recommendation preferences.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of recommendation preferences to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
   })
   .openapi({ required: ['resourceType'], title: 'GetRecommendationPreferencesRequest' })
   .openapi('GetRecommendationPreferencesRequest')
@@ -3494,12 +2535,12 @@ const FindingReasonCodeSchema = z
 
 const ReasonCodeSummarySchema = z
   .object({
-    name: FindingReasonCodeSchema.and(
-      z.any().openapi({ description: 'The name of the finding reason code.' }),
-    ).exactOptional(),
-    value: SummaryValueSchema.and(
-      z.any().openapi({ description: 'The value of the finding reason code summary.' }),
-    ).exactOptional(),
+    name: FindingReasonCodeSchema.exactOptional().openapi({
+      description: 'The name of the finding reason code.',
+    }),
+    value: SummaryValueSchema.exactOptional().openapi({
+      description: 'The value of the finding reason code summary.',
+    }),
   })
   .openapi({ description: 'A summary of a finding reason code.', required: [] })
   .openapi('ReasonCodeSummary')
@@ -3508,15 +2549,15 @@ const ReasonCodeSummariesSchema = z.array(ReasonCodeSummarySchema).openapi('Reas
 
 const SummarySchema = z
   .object({
-    name: FindingSchema.and(
-      z.any().openapi({ description: 'The finding classification of the recommendation.' }),
-    ).exactOptional(),
-    value: SummaryValueSchema.and(
-      z.any().openapi({ description: 'The value of the recommendation summary.' }),
-    ).exactOptional(),
-    reasonCodeSummaries: ReasonCodeSummariesSchema.and(
-      z.any().openapi({ description: 'An array of objects that summarize a finding reason code.' }),
-    ).exactOptional(),
+    name: FindingSchema.exactOptional().openapi({
+      description: 'The finding classification of the recommendation.',
+    }),
+    value: SummaryValueSchema.exactOptional().openapi({
+      description: 'The value of the recommendation summary.',
+    }),
+    reasonCodeSummaries: ReasonCodeSummariesSchema.exactOptional().openapi({
+      description: 'An array of objects that summarize a finding reason code.',
+    }),
   })
   .openapi({ description: 'The summary of a recommendation.', required: [] })
   .openapi('Summary')
@@ -3533,38 +2574,20 @@ const VeryLowSchema = z.int().openapi('VeryLow')
 
 const CurrentPerformanceRiskRatingsSchema = z
   .object({
-    high: HighSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A count of the applicable resource types with a high performance risk rating.',
-        }),
-    ).exactOptional(),
-    medium: MediumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A count of the applicable resource types with a medium performance risk rating.',
-        }),
-    ).exactOptional(),
-    low: LowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A count of the applicable resource types with a low performance risk rating.',
-        }),
-    ).exactOptional(),
-    veryLow: VeryLowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A count of the applicable resource types with a very low performance risk rating.',
-        }),
-    ).exactOptional(),
+    high: HighSchema.exactOptional().openapi({
+      description: 'A count of the applicable resource types with a high performance risk rating.',
+    }),
+    medium: MediumSchema.exactOptional().openapi({
+      description:
+        'A count of the applicable resource types with a medium performance risk rating.',
+    }),
+    low: LowSchema.exactOptional().openapi({
+      description: 'A count of the applicable resource types with a low performance risk rating.',
+    }),
+    veryLow: VeryLowSchema.exactOptional().openapi({
+      description:
+        'A count of the applicable resource types with a very low performance risk rating.',
+    }),
   })
   .openapi({
     description:
@@ -3575,39 +2598,23 @@ const CurrentPerformanceRiskRatingsSchema = z
 
 const RecommendationSummarySchema = z
   .object({
-    summaries: SummariesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects that describe a recommendation summary.' }),
-    ).exactOptional(),
-    recommendationResourceType: RecommendationSourceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource type that the recommendation summary applies to.' }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account ID of the recommendation summary.',
-        }),
-    ).exactOptional(),
-    savingsOpportunity: SavingsOpportunitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the savings opportunity for a given resource type. Savings opportunity includes the estimated monthly savings amount and percentage.',
-        }),
-    ).exactOptional(),
-    currentPerformanceRiskRatings: CurrentPerformanceRiskRatingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the performance risk ratings for a given resource type.',
-        }),
-    ).exactOptional(),
+    summaries: SummariesSchema.exactOptional().openapi({
+      description: 'An array of objects that describe a recommendation summary.',
+    }),
+    recommendationResourceType: RecommendationSourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type that the recommendation summary applies to.',
+    }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the recommendation summary.',
+    }),
+    savingsOpportunity: SavingsOpportunitySchema.exactOptional().openapi({
+      description:
+        'An object that describes the savings opportunity for a given resource type. Savings opportunity includes the estimated monthly savings amount and percentage.',
+    }),
+    currentPerformanceRiskRatings: CurrentPerformanceRiskRatingsSchema.exactOptional().openapi({
+      description:
+        'An object that describes the performance risk ratings for a given resource type.',
+    }),
   })
   .openapi({ description: 'A summary of a recommendation.', required: [] })
   .openapi('RecommendationSummary')
@@ -3618,135 +2625,87 @@ const RecommendationSummariesSchema = z
 
 const GetRecommendationSummariesResponseSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token to use to advance to the next page of recommendation summaries.</p> <p>This value is null when there are no more pages of recommendation summaries to return.</p>',
-        }),
-    ).exactOptional(),
-    recommendationSummaries: RecommendationSummariesSchema.and(
-      z.any().openapi({ description: 'An array of objects that summarize a recommendation.' }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token to use to advance to the next page of recommendation summaries.</p> <p>This value is null when there are no more pages of recommendation summaries to return.</p>',
+    }),
+    recommendationSummaries: RecommendationSummariesSchema.exactOptional().openapi({
+      description: 'An array of objects that summarize a recommendation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRecommendationSummariesResponse')
 
 const GetRecommendationSummariesRequestSchema = z
   .object({
-    accountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the Amazon Web Services account for which to return recommendation summaries.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return recommendation summaries.</p> <p>Only one account ID can be specified per request.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token to advance to the next page of recommendation summaries.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of recommendation summaries to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    accountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the Amazon Web Services account for which to return recommendation summaries.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return recommendation summaries.</p> <p>Only one account ID can be specified per request.</p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to advance to the next page of recommendation summaries.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of recommendation summaries to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>',
+    }),
   })
   .openapi({ title: 'GetRecommendationSummariesRequest', required: [] })
   .openapi('GetRecommendationSummariesRequest')
 
 const PutRecommendationPreferencesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutRecommendationPreferencesResponse')
 
 const PutRecommendationPreferencesRequestSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target resource type of the recommendation preference to create.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p> <note> <p>The valid values for this parameter are <code>Ec2Instance</code> and <code>AutoScalingGroup</code>.</p> </note>',
-        }),
-    ),
-    scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An object that describes the scope of the recommendation preference to create.</p> <p>You can create recommendation preferences at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p> <note> <p>You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of <code>ResourceArn</code> and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified Auto Scaling group. You also cannot create recommendation preferences at the resource level for instances that are part of an Auto Scaling group. You can create recommendation preferences at the resource level only for standalone instances.</p> </note>',
-        }),
-    ).exactOptional(),
-    enhancedInfrastructureMetrics: EnhancedInfrastructureMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the enhanced infrastructure metrics recommendation preference to create or update.</p> <p>Specify the <code>Active</code> status to activate the preference, or specify <code>Inactive</code> to deactivate the preference.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    inferredWorkloadTypes: InferredWorkloadTypesPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the inferred workload types recommendation preference to create or update.</p> <note> <p>The inferred workload type feature is active by default. To deactivate it, create a recommendation preference.</p> </note> <p>Specify the <code>Inactive</code> status to deactivate the feature, or specify <code>Active</code> to activate it.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/inferred-workload-types.html">Inferred workload types</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    externalMetricsPreference: ExternalMetricsPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The provider of the external metrics recommendation preference to create or update.</p> <p>Specify a valid provider in the <code>source</code> field to activate the preference. To delete this preference, see the <a>DeleteRecommendationPreferences</a> action.</p> <p>This preference can only be set for the <code>Ec2Instance</code> resource type.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html">External metrics ingestion</a> in the <i>Compute Optimizer User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.openapi({
+      description:
+        '<p>The target resource type of the recommendation preference to create.</p> <p>The <code>Ec2Instance</code> option encompasses standalone instances and instances that are part of Auto Scaling groups. The <code>AutoScalingGroup</code> option encompasses only instances that are part of an Auto Scaling group.</p> <note> <p>The valid values for this parameter are <code>Ec2Instance</code> and <code>AutoScalingGroup</code>.</p> </note>',
+    }),
+    scope: ScopeSchema.exactOptional().openapi({
+      description:
+        '<p>An object that describes the scope of the recommendation preference to create.</p> <p>You can create recommendation preferences at the organization level (for management accounts of an organization only), account level, and resource level. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Activating enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p> <note> <p>You cannot create recommendation preferences for Auto Scaling groups at the organization and account levels. You can create recommendation preferences for Auto Scaling groups only at the resource level by specifying a scope name of <code>ResourceArn</code> and a scope value of the Auto Scaling group Amazon Resource Name (ARN). This will configure the preference for all instances that are part of the specified Auto Scaling group. You also cannot create recommendation preferences at the resource level for instances that are part of an Auto Scaling group. You can create recommendation preferences at the resource level only for standalone instances.</p> </note>',
+    }),
+    enhancedInfrastructureMetrics: EnhancedInfrastructureMetricsSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the enhanced infrastructure metrics recommendation preference to create or update.</p> <p>Specify the <code>Active</code> status to activate the preference, or specify <code>Inactive</code> to deactivate the preference.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    inferredWorkloadTypes: InferredWorkloadTypesPreferenceSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the inferred workload types recommendation preference to create or update.</p> <note> <p>The inferred workload type feature is active by default. To deactivate it, create a recommendation preference.</p> </note> <p>Specify the <code>Inactive</code> status to deactivate the feature, or specify <code>Active</code> to activate it.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/inferred-workload-types.html">Inferred workload types</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
+    externalMetricsPreference: ExternalMetricsPreferenceSchema.exactOptional().openapi({
+      description:
+        '<p>The provider of the external metrics recommendation preference to create or update.</p> <p>Specify a valid provider in the <code>source</code> field to activate the preference. To delete this preference, see the <a>DeleteRecommendationPreferences</a> action.</p> <p>This preference can only be set for the <code>Ec2Instance</code> resource type.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html">External metrics ingestion</a> in the <i>Compute Optimizer User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['resourceType'], title: 'PutRecommendationPreferencesRequest' })
   .openapi('PutRecommendationPreferencesRequest')
 
 const UpdateEnrollmentStatusResponseSchema = z
   .object({
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The enrollment status of the account.' }),
-    ).exactOptional(),
-    statusReason: StatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason for the enrollment status of the account. For example, an account might show a status of <code>Pending</code> because member accounts of an organization require more time to be enrolled in the service.',
-        }),
-    ).exactOptional(),
+    status: StatusSchema.exactOptional().openapi({
+      description: 'The enrollment status of the account.',
+    }),
+    statusReason: StatusReasonSchema.exactOptional().openapi({
+      description:
+        'The reason for the enrollment status of the account. For example, an account might show a status of <code>Pending</code> because member accounts of an organization require more time to be enrolled in the service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateEnrollmentStatusResponse')
 
 const UpdateEnrollmentStatusRequestSchema = z
   .object({
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new enrollment status of the account.</p> <p>The following status options are available:</p> <ul> <li> <p> <code>Active</code> - Opts in your account to the Compute Optimizer service. Compute Optimizer begins analyzing the configuration and utilization metrics of your Amazon Web Services resources after you opt in. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html">Metrics analyzed by Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p> </li> <li> <p> <code>Inactive</code> - Opts out your account from the Compute Optimizer service. Your account\'s recommendations and related metrics data will be deleted from Compute Optimizer after you opt out.</p> </li> </ul> <note> <p>The <code>Pending</code> and <code>Failed</code> options cannot be used to update the enrollment status of an account. They are returned in the response of a request to update the enrollment status of an account.</p> </note>',
-        }),
-    ),
-    includeMemberAccounts: IncludeMemberAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to enroll member accounts of the organization if the account is the management account of an organization.',
-        }),
-    ).exactOptional(),
+    status: StatusSchema.openapi({
+      description:
+        '<p>The new enrollment status of the account.</p> <p>The following status options are available:</p> <ul> <li> <p> <code>Active</code> - Opts in your account to the Compute Optimizer service. Compute Optimizer begins analyzing the configuration and utilization metrics of your Amazon Web Services resources after you opt in. For more information, see <a href="https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html">Metrics analyzed by Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p> </li> <li> <p> <code>Inactive</code> - Opts out your account from the Compute Optimizer service. Your account\'s recommendations and related metrics data will be deleted from Compute Optimizer after you opt out.</p> </li> </ul> <note> <p>The <code>Pending</code> and <code>Failed</code> options cannot be used to update the enrollment status of an account. They are returned in the response of a request to update the enrollment status of an account.</p> </note>',
+    }),
+    includeMemberAccounts: IncludeMemberAccountsSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to enroll member accounts of the organization if the account is the management account of an organization.',
+    }),
   })
   .openapi({ required: ['status'], title: 'UpdateEnrollmentStatusRequest' })
   .openapi('UpdateEnrollmentStatusRequest')

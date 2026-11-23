@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AssociateDeviceWithPlacementResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateDeviceWithPlacementResponse')
 
 const InternalFailureExceptionSchema = z.any().openapi('InternalFailureException')
@@ -12,11 +12,11 @@ const ResourceConflictExceptionSchema = z.any().openapi('ResourceConflictExcepti
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const CreatePlacementResponseSchema = z.object({}).openapi('CreatePlacementResponse')
+const CreatePlacementResponseSchema = z.looseObject({}).openapi('CreatePlacementResponse')
 
 const AttributeValueSchema = z.string().max(800).openapi('AttributeValue')
 
-const CreateProjectResponseSchema = z.object({}).openapi('CreateProjectResponse')
+const CreateProjectResponseSchema = z.looseObject({}).openapi('CreateProjectResponse')
 
 const AttributeDefaultValueSchema = z.string().max(800).openapi('AttributeDefaultValue')
 
@@ -34,21 +34,13 @@ const DeviceCallbackOverrideMapSchema = z
 
 const DeviceTemplateSchema = z
   .object({
-    deviceType: DeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device type, which currently must be <code>"button"</code>.',
-        }),
-    ).exactOptional(),
-    callbackOverrides: DeviceCallbackOverrideMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional Lambda function to invoke instead of the default Lambda function provided by the placement template.',
-        }),
-    ).exactOptional(),
+    deviceType: DeviceTypeSchema.exactOptional().openapi({
+      description: 'The device type, which currently must be <code>"button"</code>.',
+    }),
+    callbackOverrides: DeviceCallbackOverrideMapSchema.exactOptional().openapi({
+      description:
+        'An optional Lambda function to invoke instead of the default Lambda function provided by the placement template.',
+    }),
   })
   .openapi({
     description:
@@ -63,11 +55,11 @@ const DeviceTemplateMapSchema = z
 
 const TagValueSchema = z.string().max(256).openapi('TagValue')
 
-const DeletePlacementResponseSchema = z.object({}).openapi('DeletePlacementResponse')
+const DeletePlacementResponseSchema = z.looseObject({}).openapi('DeletePlacementResponse')
 
 const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException')
 
-const DeleteProjectResponseSchema = z.object({}).openapi('DeleteProjectResponse')
+const DeleteProjectResponseSchema = z.looseObject({}).openapi('DeleteProjectResponse')
 
 const ProjectNameSchema = z
   .string()
@@ -91,33 +83,20 @@ const TimeSchema = z.iso.datetime({ offset: true }).openapi('Time')
 
 const PlacementDescriptionSchema = z
   .object({
-    projectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project containing the placement.' }),
-    ),
-    placementName: PlacementNameSchema.and(
-      z.any().openapi({ description: 'The name of the placement.' }),
-    ),
-    attributes: PlacementAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user-defined attributes associated with the placement.' }),
-    ),
-    createdDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the placement was initially created, in UNIX epoch time format.',
-        }),
-    ),
-    updatedDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the placement was last updated, in UNIX epoch time format. If the placement was not updated, then <code>createdDate</code> and <code>updatedDate</code> are the same.',
-        }),
-    ),
+    projectName: ProjectNameSchema.openapi({
+      description: 'The name of the project containing the placement.',
+    }),
+    placementName: PlacementNameSchema.openapi({ description: 'The name of the placement.' }),
+    attributes: PlacementAttributeMapSchema.openapi({
+      description: 'The user-defined attributes associated with the placement.',
+    }),
+    createdDate: TimeSchema.openapi({
+      description: 'The date when the placement was initially created, in UNIX epoch time format.',
+    }),
+    updatedDate: TimeSchema.openapi({
+      description:
+        'The date when the placement was last updated, in UNIX epoch time format. If the placement was not updated, then <code>createdDate</code> and <code>updatedDate</code> are the same.',
+    }),
   })
   .openapi({
     required: ['projectName', 'placementName', 'attributes', 'createdDate', 'updatedDate'],
@@ -127,9 +106,9 @@ const PlacementDescriptionSchema = z
 
 const DescribePlacementResponseSchema = z
   .object({
-    placement: PlacementDescriptionSchema.and(
-      z.any().openapi({ description: 'An object describing the placement.' }),
-    ),
+    placement: PlacementDescriptionSchema.openapi({
+      description: 'An object describing the placement.',
+    }),
   })
   .openapi({ required: ['placement'] })
   .openapi('DescribePlacementResponse')
@@ -143,22 +122,14 @@ const DescriptionSchema = z.string().min(0).max(500).openapi('Description')
 
 const PlacementTemplateSchema = z
   .object({
-    defaultAttributes: DefaultPlacementAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default attributes (key/value pairs) to be applied to all placements using this template.',
-        }),
-    ).exactOptional(),
-    deviceTemplates: DeviceTemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object specifying the <a>DeviceTemplate</a> for all placements using this (<a>PlacementTemplate</a>) template.',
-        }),
-    ).exactOptional(),
+    defaultAttributes: DefaultPlacementAttributeMapSchema.exactOptional().openapi({
+      description:
+        'The default attributes (key/value pairs) to be applied to all placements using this template.',
+    }),
+    deviceTemplates: DeviceTemplateMapSchema.exactOptional().openapi({
+      description:
+        'An object specifying the <a>DeviceTemplate</a> for all placements using this (<a>PlacementTemplate</a>) template.',
+    }),
   })
   .openapi({ description: 'An object defining the template for a placement.', required: [] })
   .openapi('PlacementTemplate')
@@ -171,45 +142,26 @@ const TagMapSchema = z
 
 const ProjectDescriptionSchema = z
   .object({
-    arn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the project.' }),
-    ).exactOptional(),
-    projectName: ProjectNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the project for which to obtain information from.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the project.' }),
-    ).exactOptional(),
-    createdDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the project was originally created, in UNIX epoch time format.',
-        }),
-    ),
-    updatedDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the project was last updated, in UNIX epoch time format. If the project was not updated, then <code>createdDate</code> and <code>updatedDate</code> are the same.',
-        }),
-    ),
-    placementTemplate: PlacementTemplateSchema.and(
-      z
-        .any()
-        .openapi({ description: "An object describing the project's placement specifications." }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags (metadata key/value pairs) associated with the project.',
-        }),
-    ).exactOptional(),
+    arn: ProjectArnSchema.exactOptional().openapi({ description: 'The ARN of the project.' }),
+    projectName: ProjectNameSchema.openapi({
+      description: 'The name of the project for which to obtain information from.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the project.',
+    }),
+    createdDate: TimeSchema.openapi({
+      description: 'The date when the project was originally created, in UNIX epoch time format.',
+    }),
+    updatedDate: TimeSchema.openapi({
+      description:
+        'The date when the project was last updated, in UNIX epoch time format. If the project was not updated, then <code>createdDate</code> and <code>updatedDate</code> are the same.',
+    }),
+    placementTemplate: PlacementTemplateSchema.exactOptional().openapi({
+      description: "An object describing the project's placement specifications.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags (metadata key/value pairs) associated with the project.',
+    }),
   })
   .openapi({
     required: ['projectName', 'createdDate', 'updatedDate'],
@@ -220,15 +172,13 @@ const ProjectDescriptionSchema = z
 
 const DescribeProjectResponseSchema = z
   .object({
-    project: ProjectDescriptionSchema.and(
-      z.any().openapi({ description: 'An object describing the project.' }),
-    ),
+    project: ProjectDescriptionSchema.openapi({ description: 'An object describing the project.' }),
   })
   .openapi({ required: ['project'] })
   .openapi('DescribeProjectResponse')
 
 const DisassociateDeviceFromPlacementResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateDeviceFromPlacementResponse')
 
 const DeviceIdSchema = z.string().min(1).max(32).openapi('DeviceId')
@@ -237,41 +187,28 @@ const DeviceMapSchema = z.record(z.string(), DeviceIdSchema).openapi('DeviceMap'
 
 const GetDevicesInPlacementResponseSchema = z
   .object({
-    devices: DeviceMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object containing the devices (zero or more) within the placement.',
-        }),
-    ),
+    devices: DeviceMapSchema.openapi({
+      description: 'An object containing the devices (zero or more) within the placement.',
+    }),
   })
   .openapi({ required: ['devices'] })
   .openapi('GetDevicesInPlacementResponse')
 
 const PlacementSummarySchema = z
   .object({
-    projectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project containing the placement.' }),
-    ),
-    placementName: PlacementNameSchema.and(
-      z.any().openapi({ description: 'The name of the placement being summarized.' }),
-    ),
-    createdDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the placement was originally created, in UNIX epoch time format.',
-        }),
-    ),
-    updatedDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the placement was last updated, in UNIX epoch time format. If the placement was not updated, then <code>createdDate</code> and <code>updatedDate</code> are the same.',
-        }),
-    ),
+    projectName: ProjectNameSchema.openapi({
+      description: 'The name of the project containing the placement.',
+    }),
+    placementName: PlacementNameSchema.openapi({
+      description: 'The name of the placement being summarized.',
+    }),
+    createdDate: TimeSchema.openapi({
+      description: 'The date when the placement was originally created, in UNIX epoch time format.',
+    }),
+    updatedDate: TimeSchema.openapi({
+      description:
+        'The date when the placement was last updated, in UNIX epoch time format. If the placement was not updated, then <code>createdDate</code> and <code>updatedDate</code> are the same.',
+    }),
   })
   .openapi({
     required: ['projectName', 'placementName', 'createdDate', 'updatedDate'],
@@ -285,52 +222,33 @@ const NextTokenSchema = z.string().min(1).max(1024).openapi('NextToken')
 
 const ListPlacementsResponseSchema = z
   .object({
-    placements: PlacementSummaryListSchema.and(
-      z.any().openapi({ description: 'An object listing the requested placements.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to retrieve the next set of results - will be effectively empty if there are no further results.',
-        }),
-    ).exactOptional(),
+    placements: PlacementSummaryListSchema.openapi({
+      description: 'An object listing the requested placements.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to retrieve the next set of results - will be effectively empty if there are no further results.',
+    }),
   })
   .openapi({ required: ['placements'] })
   .openapi('ListPlacementsResponse')
 
 const ProjectSummarySchema = z
   .object({
-    arn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the project.' }),
-    ).exactOptional(),
-    projectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project being summarized.' }),
-    ),
-    createdDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the project was originally created, in UNIX epoch time format.',
-        }),
-    ),
-    updatedDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the project was last updated, in UNIX epoch time format. If the project was not updated, then <code>createdDate</code> and <code>updatedDate</code> are the same.',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags (metadata key/value pairs) associated with the project.',
-        }),
-    ).exactOptional(),
+    arn: ProjectArnSchema.exactOptional().openapi({ description: 'The ARN of the project.' }),
+    projectName: ProjectNameSchema.openapi({
+      description: 'The name of the project being summarized.',
+    }),
+    createdDate: TimeSchema.openapi({
+      description: 'The date when the project was originally created, in UNIX epoch time format.',
+    }),
+    updatedDate: TimeSchema.openapi({
+      description:
+        'The date when the project was last updated, in UNIX epoch time format. If the project was not updated, then <code>createdDate</code> and <code>updatedDate</code> are the same.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags (metadata key/value pairs) associated with the project.',
+    }),
   })
   .openapi({
     required: ['projectName', 'createdDate', 'updatedDate'],
@@ -343,38 +261,29 @@ const ProjectSummaryListSchema = z.array(ProjectSummarySchema).openapi('ProjectS
 
 const ListProjectsResponseSchema = z
   .object({
-    projects: ProjectSummaryListSchema.and(
-      z.any().openapi({ description: 'An object containing the list of projects.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to retrieve the next set of results - will be effectively empty if there are no further results.',
-        }),
-    ).exactOptional(),
+    projects: ProjectSummaryListSchema.openapi({
+      description: 'An object containing the list of projects.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to retrieve the next set of results - will be effectively empty if there are no further results.',
+    }),
   })
   .openapi({ required: ['projects'] })
   .openapi('ListProjectsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags (metadata key/value pairs) which you have assigned to the resource.',
-        }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags (metadata key/value pairs) which you have assigned to the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -383,9 +292,9 @@ const TagKeySchema = z
   .max(128)
   .openapi('TagKey')
 
-const UpdatePlacementResponseSchema = z.object({}).openapi('UpdatePlacementResponse')
+const UpdatePlacementResponseSchema = z.looseObject({}).openapi('UpdatePlacementResponse')
 
-const UpdateProjectResponseSchema = z.object({}).openapi('UpdateProjectResponse')
+const UpdateProjectResponseSchema = z.looseObject({}).openapi('UpdateProjectResponse')
 
 const DeviceTemplateNameSchema = z
   .string()
@@ -396,14 +305,10 @@ const DeviceTemplateNameSchema = z
 
 const AssociateDeviceWithPlacementRequestSchema = z
   .object({
-    deviceId: DeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the physical device to be associated with the given placement in the project. Note that a mandatory 4 character prefix is required for all <code>deviceId</code> values.',
-        }),
-    ),
+    deviceId: DeviceIdSchema.openapi({
+      description:
+        'The ID of the physical device to be associated with the given placement in the project. Note that a mandatory 4 character prefix is required for all <code>deviceId</code> values.',
+    }),
   })
   .openapi({ required: ['deviceId'], title: 'AssociateDeviceWithPlacementRequest' })
   .openapi('AssociateDeviceWithPlacementRequest')
@@ -412,95 +317,81 @@ const AttributeNameSchema = z.string().min(1).max(128).openapi('AttributeName')
 
 const CreatePlacementRequestSchema = z
   .object({
-    placementName: PlacementNameSchema.and(
-      z.any().openapi({ description: 'The name of the placement to be created.' }),
-    ),
-    attributes: PlacementAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional user-defined key/value pairs providing contextual data (such as location or function) for the placement.',
-        }),
-    ).exactOptional(),
+    placementName: PlacementNameSchema.openapi({
+      description: 'The name of the placement to be created.',
+    }),
+    attributes: PlacementAttributeMapSchema.exactOptional().openapi({
+      description:
+        'Optional user-defined key/value pairs providing contextual data (such as location or function) for the placement.',
+    }),
   })
   .openapi({ required: ['placementName'], title: 'CreatePlacementRequest' })
   .openapi('CreatePlacementRequest')
 
 const CreateProjectRequestSchema = z
   .object({
-    projectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project to create.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description for the project.' }),
-    ).exactOptional(),
-    placementTemplate: PlacementTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The schema defining the placement to be created. A placement template defines placement default attributes and device templates. You cannot add or remove device templates after the project has been created. However, you can update <code>callbackOverrides</code> for the device templates using the <code>UpdateProject</code> API.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional tags (metadata key/value pairs) to be associated with the project. For example, <code>{ {"key1": "value1", "key2": "value2"} }</code>. For more information, see <a href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">AWS Tagging Strategies</a>.',
-        }),
-    ).exactOptional(),
+    projectName: ProjectNameSchema.openapi({ description: 'The name of the project to create.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional description for the project.',
+    }),
+    placementTemplate: PlacementTemplateSchema.exactOptional().openapi({
+      description:
+        'The schema defining the placement to be created. A placement template defines placement default attributes and device templates. You cannot add or remove device templates after the project has been created. However, you can update <code>callbackOverrides</code> for the device templates using the <code>UpdateProject</code> API.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Optional tags (metadata key/value pairs) to be associated with the project. For example, <code>{ {"key1": "value1", "key2": "value2"} }</code>. For more information, see <a href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">AWS Tagging Strategies</a>.',
+    }),
   })
   .openapi({ required: ['projectName'], title: 'CreateProjectRequest' })
   .openapi('CreateProjectRequest')
 
 const DeletePlacementRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePlacementRequest' })
   .openapi('DeletePlacementRequest')
 
 const DeleteProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProjectRequest' })
   .openapi('DeleteProjectRequest')
 
 const DescribePlacementRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePlacementRequest' })
   .openapi('DescribePlacementRequest')
 
 const DescribeProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeProjectRequest' })
   .openapi('DescribeProjectRequest')
 
 const DeviceCallbackKeySchema = z.string().min(1).max(128).openapi('DeviceCallbackKey')
 
 const DisassociateDeviceFromPlacementRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateDeviceFromPlacementRequest' })
   .openapi('DisassociateDeviceFromPlacementRequest')
 
 const GetDevicesInPlacementRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDevicesInPlacementRequest' })
   .openapi('GetDevicesInPlacementRequest')
 
 const MaxResultsSchema = z.int().min(1).max(250).openapi('MaxResults')
 
 const ListPlacementsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPlacementsRequest' })
   .openapi('ListPlacementsRequest')
 
 const ListProjectsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProjectsRequest' })
   .openapi('ListProjectsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -508,50 +399,38 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new or modifying tag(s) for the resource. See <a href="https://docs.aws.amazon.com/iot-1-click/latest/developerguide/1click-appendix.html#1click-limits">AWS IoT 1-Click Service Limits</a> for the maximum number of tags allowed per resource.',
-        }),
-    ),
+    tags: TagMapSchema.openapi({
+      description:
+        'The new or modifying tag(s) for the resource. See <a href="https://docs.aws.amazon.com/iot-1-click/latest/developerguide/1click-appendix.html#1click-limits">AWS IoT 1-Click Service Limits</a> for the maximum number of tags allowed per resource.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdatePlacementRequestSchema = z
   .object({
-    attributes: PlacementAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-defined object of attributes used to update the placement. The maximum number of key/value pairs is 50.',
-        }),
-    ).exactOptional(),
+    attributes: PlacementAttributeMapSchema.exactOptional().openapi({
+      description:
+        'The user-defined object of attributes used to update the placement. The maximum number of key/value pairs is 50.',
+    }),
   })
   .openapi({ title: 'UpdatePlacementRequest', required: [] })
   .openapi('UpdatePlacementRequest')
 
 const UpdateProjectRequestSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'An optional user-defined description for the project.' }),
-    ).exactOptional(),
-    placementTemplate: PlacementTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object defining the project update. Once a project has been created, you cannot add device template names to the project. However, for a given <code>placementTemplate</code>, you can update the associated <code>callbackOverrides</code> for the device definition using this API.',
-        }),
-    ).exactOptional(),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional user-defined description for the project.',
+    }),
+    placementTemplate: PlacementTemplateSchema.exactOptional().openapi({
+      description:
+        'An object defining the project update. Once a project has been created, you cannot add device template names to the project. However, for a given <code>placementTemplate</code>, you can update the associated <code>callbackOverrides</code> for the device definition using this API.',
+    }),
   })
   .openapi({ title: 'UpdateProjectRequest', required: [] })
   .openapi('UpdateProjectRequest')
@@ -1091,22 +970,14 @@ export const postProjectsRoute = createRoute({
                 .openapi({ description: 'An optional description for the project.' }),
               placementTemplate: z
                 .object({
-                  defaultAttributes: DefaultPlacementAttributeMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The default attributes (key/value pairs) to be applied to all placements using this template.',
-                      }),
-                  ).exactOptional(),
-                  deviceTemplates: DeviceTemplateMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An object specifying the <a>DeviceTemplate</a> for all placements using this (<a>PlacementTemplate</a>) template.',
-                      }),
-                  ).exactOptional(),
+                  defaultAttributes: DefaultPlacementAttributeMapSchema.exactOptional().openapi({
+                    description:
+                      'The default attributes (key/value pairs) to be applied to all placements using this template.',
+                  }),
+                  deviceTemplates: DeviceTemplateMapSchema.exactOptional().openapi({
+                    description:
+                      'An object specifying the <a>DeviceTemplate</a> for all placements using this (<a>PlacementTemplate</a>) template.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1472,22 +1343,14 @@ export const putProjectsProjectNameRoute = createRoute({
                 .openapi({ description: 'An optional user-defined description for the project.' }),
               placementTemplate: z
                 .object({
-                  defaultAttributes: DefaultPlacementAttributeMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The default attributes (key/value pairs) to be applied to all placements using this template.',
-                      }),
-                  ).exactOptional(),
-                  deviceTemplates: DeviceTemplateMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An object specifying the <a>DeviceTemplate</a> for all placements using this (<a>PlacementTemplate</a>) template.',
-                      }),
-                  ).exactOptional(),
+                  defaultAttributes: DefaultPlacementAttributeMapSchema.exactOptional().openapi({
+                    description:
+                      'The default attributes (key/value pairs) to be applied to all placements using this template.',
+                  }),
+                  deviceTemplates: DeviceTemplateMapSchema.exactOptional().openapi({
+                    description:
+                      'An object specifying the <a>DeviceTemplate</a> for all placements using this (<a>PlacementTemplate</a>) template.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

@@ -6088,18 +6088,40 @@ const ConditionSchema = z
   .openapi('Condition')
 
 const BalanceWebhookSettingSchema = WebhookSettingSchema.and(
-  z
-    .object({
-      conditions: z
-        .array(ConditionSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'The list of settings and criteria for triggering the [balance webhook](https://docs.adyen.com/api-explorer/balance-webhooks/latest/post/balanceAccount.balance.updated).',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['currency', 'id', 'status', 'target', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'currency')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'status')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'target')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        conditions: z
+          .array(ConditionSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The list of settings and criteria for triggering the [balance webhook](https://docs.adyen.com/api-explorer/balance-webhooks/latest/post/balanceAccount.balance.updated).',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['currency', 'id', 'status', 'target', 'type'] })
   .openapi('BalanceWebhookSetting')
 
@@ -7038,27 +7060,43 @@ const TransferLimitListResponseSchema = z
   .openapi('TransferLimitListResponse')
 
 const UKLocalMandateAccountIdentificationSchema = MandateAccountIdentificationSchema.and(
-  z
-    .object({
-      accountNumber: z
-        .string()
-        .length(8)
-        .exactOptional()
-        .openapi({
-          description: 'The 8-digit bank account number, without separators or whitespace.',
-        }),
-      sortCode: z
-        .string()
-        .length(6)
-        .exactOptional()
-        .openapi({
-          description:
-            'The 6-digit [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace.',
-        }),
-      type: z.string().default('ukLocal').exactOptional().openapi({ description: '**ukLocal**' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['accountNumber', 'sortCode', 'type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountNumber')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'sortCode')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        accountNumber: z
+          .string()
+          .length(8)
+          .exactOptional()
+          .openapi({
+            description: 'The 8-digit bank account number, without separators or whitespace.',
+          }),
+        sortCode: z
+          .string()
+          .length(6)
+          .exactOptional()
+          .openapi({
+            description:
+              'The 6-digit [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace.',
+          }),
+        type: z.string().default('ukLocal').exactOptional().openapi({ description: '**ukLocal**' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['accountNumber', 'sortCode', 'type'] })
   .openapi('UKLocalMandateAccountIdentification')
 

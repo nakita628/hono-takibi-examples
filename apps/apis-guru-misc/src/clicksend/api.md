@@ -19715,7 +19715,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://example.com/uploads?convert={convert}' \
+curl 'https://example.com/uploads?convert=string' \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -19738,6 +19738,7 @@ curl 'https://example.com/uploads?convert={convert}' \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|convert|path|string|true|none|
 |body|body|object|false|none|
 |» *anyOf*|body|object|false|none|
 |» content|body|string|true|Your file contents encoded in `base64`.|

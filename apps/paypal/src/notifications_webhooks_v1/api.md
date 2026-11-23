@@ -1612,7 +1612,7 @@ A list of webhooks events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|events|[event_list](#schemaevent_list)|false|none|An array of webhooks events.|
+|events|[event_list2](#schemaevent_list2)|false|none|An array of webhooks events.|
 |count|integer|false|none|The number of items in each range of results. Note that the response might have fewer items than the requested `page_size` value.|
 |links|[link_description_list](#schemalink_description_list)|false|read-only|An array of request-related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links).|
 
@@ -1644,7 +1644,7 @@ A list of webhook events.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|event_types|[event_type_list](#schemaevent_type_list)|false|none|An array of webhook events.|
+|event_types|[event_type_list2](#schemaevent_type_list2)|false|none|An array of webhook events.|
 
 <h2 id="tocS_WebhookList">WebhookList</h2>
 <!-- backwards compatibility -->
@@ -1687,7 +1687,7 @@ A list of webhooks.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|webhooks|[webhook_list](#schemawebhook_list)|false|none|An array of webhooks.|
+|webhooks|[webhook_list2](#schemawebhook_list2)|false|none|An array of webhooks.|
 
 <h2 id="tocS_WebhookLookupList">WebhookLookupList</h2>
 <!-- backwards compatibility -->
@@ -2445,12 +2445,12 @@ A webhook event notification.
 |resource|[resource](#schemaresource)|false|read-only|The resource that triggered the webhook event notification.|
 |links|[link_description_list](#schemalink_description_list)|false|read-only|An array of request-related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links).|
 
-<h2 id="tocS_event_list">event_list</h2>
+<h2 id="tocS_event_list2">event_list2</h2>
 <!-- backwards compatibility -->
-<a id="schemaevent_list"></a>
-<a id="schema_event_list"></a>
-<a id="tocSevent_list"></a>
-<a id="tocsevent_list"></a>
+<a id="schemaevent_list2"></a>
+<a id="schema_event_list2"></a>
+<a id="tocSevent_list2"></a>
+<a id="tocsevent_list2"></a>
 
 ```json
 [
@@ -2528,12 +2528,12 @@ An event type.
 |status|string|false|read-only|The status of a webhook event.|
 |resource_versions|[resource_versions_list](#schemaresource_versions_list)|false|read-only|Identifier for the event type example: 1.0/2.0 etc.|
 
-<h2 id="tocS_event_type_list">event_type_list</h2>
+<h2 id="tocS_event_type_list2">event_type_list2</h2>
 <!-- backwards compatibility -->
-<a id="schemaevent_type_list"></a>
-<a id="schema_event_type_list"></a>
-<a id="tocSevent_type_list"></a>
-<a id="tocsevent_type_list"></a>
+<a id="schemaevent_type_list2"></a>
+<a id="schema_event_type_list2"></a>
+<a id="tocSevent_type_list2"></a>
+<a id="tocsevent_type_list2"></a>
 
 ```json
 [
@@ -2944,12 +2944,12 @@ The ID of the webhook event notification to resend.
 
 An array of webhook account IDs.
 
-<h2 id="tocS_webhook_list">webhook_list</h2>
+<h2 id="tocS_webhook_list2">webhook_list2</h2>
 <!-- backwards compatibility -->
-<a id="schemawebhook_list"></a>
-<a id="schema_webhook_list"></a>
-<a id="tocSwebhook_list"></a>
-<a id="tocswebhook_list"></a>
+<a id="schemawebhook_list2"></a>
+<a id="schema_webhook_list2"></a>
+<a id="tocSwebhook_list2"></a>
+<a id="tocswebhook_list2"></a>
 
 ```json
 [

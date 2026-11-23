@@ -6,7 +6,7 @@ REST Web Services for DRACOON<br><br>This page provides an overview of all avail
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api">https://api.apis.guru/api</a>
+* <a href="/api">/api</a>
 
 # Authentication
 

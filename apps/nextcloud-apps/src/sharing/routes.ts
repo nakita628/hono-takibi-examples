@@ -321,6 +321,7 @@ export const getOcsV2PhpAppsSharingApiV1RecipientsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 10, minimum: 1, maximum: 100 },
             required: false,
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -340,6 +341,7 @@ export const getOcsV2PhpAppsSharingApiV1RecipientsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
       id: z
         .string()
@@ -387,12 +389,10 @@ export const getOcsV2PhpAppsSharingApiV1RecipientsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {
@@ -1953,7 +1953,7 @@ export const postOcsV2PhpAppsSharingApiV1ShareIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Secret of the share' }),
               arguments: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .default({})
                 .exactOptional()
                 .openapi({ description: 'Arguments for accessing the share' }),
@@ -2175,6 +2175,7 @@ export const getOcsV2PhpAppsSharingApiV1SharesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 100, minimum: 1, maximum: 100 },
             required: false,
           },
+          default: 100,
         }),
     }),
     headers: z.object({

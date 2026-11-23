@@ -25,7 +25,7 @@ const NearMissesResponse = {
                       example: 'Hello world',
                     }),
                   cookies: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -33,7 +33,7 @@ const NearMissesResponse = {
                       example: {},
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -97,7 +97,7 @@ const StubMappingResponse = {
             .exactOptional()
             .openapi({ description: "This stub mapping's unique identifier" }),
           metadata: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -119,7 +119,7 @@ const StubMappingResponse = {
                 'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
             }),
           postServeActions: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -142,21 +142,21 @@ const StubMappingResponse = {
                   required: ['username', 'password'],
                 }),
               bodyPatterns: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
                     'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               cookies: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -167,7 +167,7 @@ const StubMappingResponse = {
                 .exactOptional()
                 .openapi({ description: 'The HTTP request method e.g. GET' }),
               queryParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -222,7 +222,7 @@ const StubMappingResponse = {
           response: z
             .object({
               additionalProxyRequestHeaders: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Extra request headers to send when proxying to another host.',
@@ -303,11 +303,11 @@ const StubMappingResponse = {
                     'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Map of response headers to send' }),
               jsonBody: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -328,7 +328,7 @@ const StubMappingResponse = {
                 .exactOptional()
                 .openapi({ description: 'The HTTP status message to be returned' }),
               transformerParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Parameters to apply to response transformers.' }),
               transformers: z
@@ -374,21 +374,21 @@ const RequestPatternRequestBody = {
               required: ['username', 'password'],
             }),
           bodyPatterns: z
-            .array(z.object({}))
+            .array(z.looseObject({}))
             .exactOptional()
             .openapi({
               description:
                 'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
             }),
           cookies: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
                 'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
             }),
           headers: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -399,7 +399,7 @@ const RequestPatternRequestBody = {
             .exactOptional()
             .openapi({ description: 'The HTTP request method e.g. GET' }),
           queryParameters: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -593,7 +593,7 @@ const SnapshotRecordingRequestBody = {
               description: 'Control the request body matcher used in generated stub mappings',
             }),
           transformerParameters: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -625,21 +625,21 @@ const SnapshotRecordingRequestBody = {
                           required: ['username', 'password'],
                         }),
                       bodyPatterns: z
-                        .array(z.object({}))
+                        .array(z.looseObject({}))
                         .exactOptional()
                         .openapi({
                           description:
                             'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                         }),
                       cookies: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
                             'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                         }),
                       headers: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -650,7 +650,7 @@ const SnapshotRecordingRequestBody = {
                         .exactOptional()
                         .openapi({ description: 'The HTTP request method e.g. GET' }),
                       queryParameters: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -863,7 +863,7 @@ const StartRecordingRequestBody = {
               description: 'Control the request body matcher used in generated stub mappings',
             }),
           transformerParameters: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -888,21 +888,21 @@ const StartRecordingRequestBody = {
                       required: ['username', 'password'],
                     }),
                   bodyPatterns: z
-                    .array(z.object({}))
+                    .array(z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
                         'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   cookies: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -913,7 +913,7 @@ const StartRecordingRequestBody = {
                     .exactOptional()
                     .openapi({ description: 'The HTTP request method e.g. GET' }),
                   queryParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -957,12 +957,8 @@ const StartRecordingRequestBody = {
                   },
                   required: [],
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({ description: 'Filter requests for which to create stub mapping' }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({ description: 'Filter requests for which to create stub mapping' }),
               targetBaseUrl: z
                 .string()
                 .exactOptional()
@@ -1003,7 +999,7 @@ const StubMappingRequestBody = {
             .exactOptional()
             .openapi({ description: "This stub mapping's unique identifier" }),
           metadata: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -1025,7 +1021,7 @@ const StubMappingRequestBody = {
                 'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
             }),
           postServeActions: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -1048,21 +1044,21 @@ const StubMappingRequestBody = {
                   required: ['username', 'password'],
                 }),
               bodyPatterns: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
                     'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               cookies: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1073,7 +1069,7 @@ const StubMappingRequestBody = {
                 .exactOptional()
                 .openapi({ description: 'The HTTP request method e.g. GET' }),
               queryParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1128,7 +1124,7 @@ const StubMappingRequestBody = {
           response: z
             .object({
               additionalProxyRequestHeaders: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Extra request headers to send when proxying to another host.',
@@ -1209,11 +1205,11 @@ const StubMappingRequestBody = {
                     'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Map of response headers to send' }),
               jsonBody: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1234,7 +1230,7 @@ const StubMappingRequestBody = {
                 .exactOptional()
                 .openapi({ description: 'The HTTP status message to be returned' }),
               transformerParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Parameters to apply to response transformers.' }),
               transformers: z
@@ -1328,7 +1324,7 @@ export const getAdminMappingsRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: "This stub mapping's unique identifier" }),
                       metadata: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -1353,7 +1349,7 @@ export const getAdminMappingsRoute = createRoute({
                             'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                         }),
                       postServeActions: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -1377,21 +1373,21 @@ export const getAdminMappingsRoute = createRoute({
                               required: ['username', 'password'],
                             }),
                           bodyPatterns: z
-                            .array(z.object({}))
+                            .array(z.looseObject({}))
                             .exactOptional()
                             .openapi({
                               description:
                                 'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           cookies: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
                                 'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -1402,7 +1398,7 @@ export const getAdminMappingsRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP request method e.g. GET' }),
                           queryParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -1457,7 +1453,7 @@ export const getAdminMappingsRoute = createRoute({
                       response: z
                         .object({
                           additionalProxyRequestHeaders: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -1541,11 +1537,11 @@ export const getAdminMappingsRoute = createRoute({
                                 'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ description: 'Map of response headers to send' }),
                           jsonBody: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -1567,7 +1563,7 @@ export const getAdminMappingsRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP status message to be returned' }),
                           transformerParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description: 'Parameters to apply to response transformers.',
@@ -1648,7 +1644,7 @@ export const postAdminMappingsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: "This stub mapping's unique identifier" }),
               metadata: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1670,7 +1666,7 @@ export const postAdminMappingsRoute = createRoute({
                     'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                 }),
               postServeActions: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1693,21 +1689,21 @@ export const postAdminMappingsRoute = createRoute({
                       required: ['username', 'password'],
                     }),
                   bodyPatterns: z
-                    .array(z.object({}))
+                    .array(z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
                         'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   cookies: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -1718,7 +1714,7 @@ export const postAdminMappingsRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP request method e.g. GET' }),
                   queryParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -1773,7 +1769,7 @@ export const postAdminMappingsRoute = createRoute({
               response: z
                 .object({
                   additionalProxyRequestHeaders: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'Extra request headers to send when proxying to another host.',
@@ -1855,11 +1851,11 @@ export const postAdminMappingsRoute = createRoute({
                         'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Map of response headers to send' }),
                   jsonBody: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -1880,7 +1876,7 @@ export const postAdminMappingsRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP status message to be returned' }),
                   transformerParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Parameters to apply to response transformers.' }),
                   transformers: z
@@ -1925,7 +1921,7 @@ export const postAdminMappingsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: "This stub mapping's unique identifier" }),
               metadata: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1947,7 +1943,7 @@ export const postAdminMappingsRoute = createRoute({
                     'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                 }),
               postServeActions: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -1970,21 +1966,21 @@ export const postAdminMappingsRoute = createRoute({
                       required: ['username', 'password'],
                     }),
                   bodyPatterns: z
-                    .array(z.object({}))
+                    .array(z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
                         'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   cookies: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -1995,7 +1991,7 @@ export const postAdminMappingsRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP request method e.g. GET' }),
                   queryParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -2050,7 +2046,7 @@ export const postAdminMappingsRoute = createRoute({
               response: z
                 .object({
                   additionalProxyRequestHeaders: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'Extra request headers to send when proxying to another host.',
@@ -2132,11 +2128,11 @@ export const postAdminMappingsRoute = createRoute({
                         'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Map of response headers to send' }),
                   jsonBody: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -2157,7 +2153,7 @@ export const postAdminMappingsRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP status message to be returned' }),
                   transformerParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Parameters to apply to response transformers.' }),
                   transformers: z
@@ -2244,8 +2240,8 @@ export const postAdminMappingsFindByMetadataRoute = createRoute({
             z
               .object({
                 matchesXpath: z.string(),
-                namespaces: z.object({}).exactOptional(),
-                valuePattern: z.object({}).exactOptional(),
+                namespaces: z.looseObject({}).exactOptional(),
+                valuePattern: z.looseObject({}).exactOptional(),
               })
               .openapi({ required: ['matchesXpath'], title: 'XPath match' }),
           ]),
@@ -2271,7 +2267,7 @@ export const postAdminMappingsFindByMetadataRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: "This stub mapping's unique identifier" }),
                       metadata: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -2296,7 +2292,7 @@ export const postAdminMappingsFindByMetadataRoute = createRoute({
                             'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                         }),
                       postServeActions: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -2320,21 +2316,21 @@ export const postAdminMappingsFindByMetadataRoute = createRoute({
                               required: ['username', 'password'],
                             }),
                           bodyPatterns: z
-                            .array(z.object({}))
+                            .array(z.looseObject({}))
                             .exactOptional()
                             .openapi({
                               description:
                                 'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           cookies: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
                                 'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -2345,7 +2341,7 @@ export const postAdminMappingsFindByMetadataRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP request method e.g. GET' }),
                           queryParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -2400,7 +2396,7 @@ export const postAdminMappingsFindByMetadataRoute = createRoute({
                       response: z
                         .object({
                           additionalProxyRequestHeaders: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -2484,11 +2480,11 @@ export const postAdminMappingsFindByMetadataRoute = createRoute({
                                 'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ description: 'Map of response headers to send' }),
                           jsonBody: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -2510,7 +2506,7 @@ export const postAdminMappingsFindByMetadataRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP status message to be returned' }),
                           transformerParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description: 'Parameters to apply to response transformers.',
@@ -2622,8 +2618,8 @@ export const postAdminMappingsRemoveByMetadataRoute = createRoute({
             z
               .object({
                 matchesXpath: z.string(),
-                namespaces: z.object({}).exactOptional(),
-                valuePattern: z.object({}).exactOptional(),
+                namespaces: z.looseObject({}).exactOptional(),
+                valuePattern: z.looseObject({}).exactOptional(),
               })
               .openapi({ required: ['matchesXpath'], title: 'XPath match' }),
           ]),
@@ -2686,7 +2682,7 @@ export const getAdminMappingsStubMappingIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: "This stub mapping's unique identifier" }),
               metadata: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -2708,7 +2704,7 @@ export const getAdminMappingsStubMappingIdRoute = createRoute({
                     'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                 }),
               postServeActions: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -2731,21 +2727,21 @@ export const getAdminMappingsStubMappingIdRoute = createRoute({
                       required: ['username', 'password'],
                     }),
                   bodyPatterns: z
-                    .array(z.object({}))
+                    .array(z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
                         'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   cookies: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -2756,7 +2752,7 @@ export const getAdminMappingsStubMappingIdRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP request method e.g. GET' }),
                   queryParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -2811,7 +2807,7 @@ export const getAdminMappingsStubMappingIdRoute = createRoute({
               response: z
                 .object({
                   additionalProxyRequestHeaders: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'Extra request headers to send when proxying to another host.',
@@ -2893,11 +2889,11 @@ export const getAdminMappingsStubMappingIdRoute = createRoute({
                         'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Map of response headers to send' }),
                   jsonBody: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -2918,7 +2914,7 @@ export const getAdminMappingsStubMappingIdRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP status message to be returned' }),
                   transformerParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Parameters to apply to response transformers.' }),
                   transformers: z
@@ -2990,7 +2986,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: "This stub mapping's unique identifier" }),
               metadata: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3012,7 +3008,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                     'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                 }),
               postServeActions: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3035,21 +3031,21 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                       required: ['username', 'password'],
                     }),
                   bodyPatterns: z
-                    .array(z.object({}))
+                    .array(z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
                         'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   cookies: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3060,7 +3056,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP request method e.g. GET' }),
                   queryParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3115,7 +3111,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
               response: z
                 .object({
                   additionalProxyRequestHeaders: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'Extra request headers to send when proxying to another host.',
@@ -3197,11 +3193,11 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                         'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Map of response headers to send' }),
                   jsonBody: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3222,7 +3218,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP status message to be returned' }),
                   transformerParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Parameters to apply to response transformers.' }),
                   transformers: z
@@ -3267,7 +3263,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: "This stub mapping's unique identifier" }),
               metadata: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3289,7 +3285,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                     'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                 }),
               postServeActions: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3312,21 +3308,21 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                       required: ['username', 'password'],
                     }),
                   bodyPatterns: z
-                    .array(z.object({}))
+                    .array(z.looseObject({}))
                     .exactOptional()
                     .openapi({
                       description:
                         'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   cookies: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3337,7 +3333,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP request method e.g. GET' }),
                   queryParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3392,7 +3388,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
               response: z
                 .object({
                   additionalProxyRequestHeaders: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description: 'Extra request headers to send when proxying to another host.',
@@ -3474,11 +3470,11 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                         'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Map of response headers to send' }),
                   jsonBody: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3499,7 +3495,7 @@ export const putAdminMappingsStubMappingIdRoute = createRoute({
                     .exactOptional()
                     .openapi({ description: 'The HTTP status message to be returned' }),
                   transformerParameters: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({ description: 'Parameters to apply to response transformers.' }),
                   transformers: z
@@ -3589,7 +3585,7 @@ export const postAdminNearMissesRequestRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Body string to match against', example: 'Hello world' }),
               cookies: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3597,7 +3593,7 @@ export const postAdminNearMissesRequestRoute = createRoute({
                   example: {},
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3665,7 +3661,7 @@ export const postAdminNearMissesRequestRoute = createRoute({
                           example: 'Hello world',
                         }),
                       cookies: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -3673,7 +3669,7 @@ export const postAdminNearMissesRequestRoute = createRoute({
                           example: {},
                         }),
                       headers: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -3749,21 +3745,21 @@ export const postAdminNearMissesRequestPatternRoute = createRoute({
                   required: ['username', 'password'],
                 }),
               bodyPatterns: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
                     'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               cookies: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3774,7 +3770,7 @@ export const postAdminNearMissesRequestPatternRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The HTTP request method e.g. GET' }),
               queryParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3854,7 +3850,7 @@ export const postAdminNearMissesRequestPatternRoute = createRoute({
                           example: 'Hello world',
                         }),
                       cookies: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -3862,7 +3858,7 @@ export const postAdminNearMissesRequestPatternRoute = createRoute({
                           example: {},
                         }),
                       headers: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -4064,7 +4060,7 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                   description: 'Control the request body matcher used in generated stub mappings',
                 }),
               transformerParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -4096,21 +4092,21 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                               required: ['username', 'password'],
                             }),
                           bodyPatterns: z
-                            .array(z.object({}))
+                            .array(z.looseObject({}))
                             .exactOptional()
                             .openapi({
                               description:
                                 'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           cookies: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
                                 'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -4121,7 +4117,7 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP request method e.g. GET' }),
                           queryParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -4210,7 +4206,7 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: "This stub mapping's unique identifier" }),
                       metadata: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -4235,7 +4231,7 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                             'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                         }),
                       postServeActions: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -4259,21 +4255,21 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                               required: ['username', 'password'],
                             }),
                           bodyPatterns: z
-                            .array(z.object({}))
+                            .array(z.looseObject({}))
                             .exactOptional()
                             .openapi({
                               description:
                                 'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           cookies: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
                                 'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -4284,7 +4280,7 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP request method e.g. GET' }),
                           queryParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -4339,7 +4335,7 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                       response: z
                         .object({
                           additionalProxyRequestHeaders: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -4423,11 +4419,11 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                                 'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ description: 'Map of response headers to send' }),
                           jsonBody: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -4449,7 +4445,7 @@ export const postAdminRecordingsSnapshotRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP status message to be returned' }),
                           transformerParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description: 'Parameters to apply to response transformers.',
@@ -4651,7 +4647,7 @@ export const postAdminRecordingsStartRoute = createRoute({
                   description: 'Control the request body matcher used in generated stub mappings',
                 }),
               transformerParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -4676,21 +4672,21 @@ export const postAdminRecordingsStartRoute = createRoute({
                           required: ['username', 'password'],
                         }),
                       bodyPatterns: z
-                        .array(z.object({}))
+                        .array(z.looseObject({}))
                         .exactOptional()
                         .openapi({
                           description:
                             'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                         }),
                       cookies: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
                             'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                         }),
                       headers: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -4701,7 +4697,7 @@ export const postAdminRecordingsStartRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: 'The HTTP request method e.g. GET' }),
                       queryParameters: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -4745,14 +4741,8 @@ export const postAdminRecordingsStartRoute = createRoute({
                       },
                       required: [],
                     })
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'Filter requests for which to create stub mapping',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({ description: 'Filter requests for which to create stub mapping' }),
                   targetBaseUrl: z
                     .string()
                     .exactOptional()
@@ -4832,7 +4822,7 @@ export const postAdminRecordingsStopRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: "This stub mapping's unique identifier" }),
                       metadata: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -4857,7 +4847,7 @@ export const postAdminRecordingsStopRoute = createRoute({
                             'Indicates that the stub mapping should be persisted immediately on create/update/delete and survive resets to default.',
                         }),
                       postServeActions: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -4881,21 +4871,21 @@ export const postAdminRecordingsStopRoute = createRoute({
                               required: ['username', 'password'],
                             }),
                           bodyPatterns: z
-                            .array(z.object({}))
+                            .array(z.looseObject({}))
                             .exactOptional()
                             .openapi({
                               description:
                                 'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           cookies: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
                                 'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -4906,7 +4896,7 @@ export const postAdminRecordingsStopRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP request method e.g. GET' }),
                           queryParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -4961,7 +4951,7 @@ export const postAdminRecordingsStopRoute = createRoute({
                       response: z
                         .object({
                           additionalProxyRequestHeaders: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -5045,11 +5035,11 @@ export const postAdminRecordingsStopRoute = createRoute({
                                 'Read-only flag indicating false if this was the default, unmatched response. Not present otherwise.',
                             }),
                           headers: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({ description: 'Map of response headers to send' }),
                           jsonBody: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description:
@@ -5071,7 +5061,7 @@ export const postAdminRecordingsStopRoute = createRoute({
                             .exactOptional()
                             .openapi({ description: 'The HTTP status message to be returned' }),
                           transformerParameters: z
-                            .object({})
+                            .looseObject({})
                             .exactOptional()
                             .openapi({
                               description: 'Parameters to apply to response transformers.',
@@ -5191,21 +5181,21 @@ export const postAdminRequestsCountRoute = createRoute({
                   required: ['username', 'password'],
                 }),
               bodyPatterns: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
                     'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               cookies: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5216,7 +5206,7 @@ export const postAdminRequestsCountRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The HTTP request method e.g. GET' }),
               queryParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5304,21 +5294,21 @@ export const postAdminRequestsFindRoute = createRoute({
                   required: ['username', 'password'],
                 }),
               bodyPatterns: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
                     'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               cookies: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5329,7 +5319,7 @@ export const postAdminRequestsFindRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The HTTP request method e.g. GET' }),
               queryParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5406,21 +5396,21 @@ export const postAdminRequestsRemoveRoute = createRoute({
                   required: ['username', 'password'],
                 }),
               bodyPatterns: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
                     'Request body patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               cookies: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     'Cookie patterns to match against in the <key>: { "<predicate>": "<value>" } form',
                 }),
               headers: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5431,7 +5421,7 @@ export const postAdminRequestsRemoveRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The HTTP request method e.g. GET' }),
               queryParameters: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5526,8 +5516,8 @@ export const postAdminRequestsRemoveByMetadataRoute = createRoute({
             z
               .object({
                 matchesXpath: z.string(),
-                namespaces: z.object({}).exactOptional(),
-                valuePattern: z.object({}).exactOptional(),
+                namespaces: z.looseObject({}).exactOptional(),
+                valuePattern: z.looseObject({}).exactOptional(),
               })
               .openapi({ required: ['matchesXpath'], title: 'XPath match' }),
           ]),
@@ -5588,7 +5578,7 @@ export const getAdminRequestsUnmatchedNearMissesRoute = createRoute({
                           example: 'Hello world',
                         }),
                       cookies: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -5596,7 +5586,7 @@ export const getAdminRequestsUnmatchedNearMissesRoute = createRoute({
                           example: {},
                         }),
                       headers: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
